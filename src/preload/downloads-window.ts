@@ -6,6 +6,7 @@ import type {
   YtdlpDownloadOptionsPatch,
   YtdlpDownloadOptionsPayload
 } from '../main/ytdlp-download-options'
+import type { YtdlpDownloadHistoryEntry } from '../main/ytdlp-download-history'
 
 const QUEUE_SNAPSHOT_CHANNEL = 'fluxalloy-downloads-state'
 
@@ -45,6 +46,13 @@ contextBridge.exposeInMainWorld('fluxalloyDownloads', {
     ipcRenderer.invoke('fluxalloy-downloads-move', id, direction),
 
   getSnapshot: (): Promise<unknown[]> => ipcRenderer.invoke('fluxalloy-downloads-get-snapshot'),
+
+  /** §6.4 — последние записи истории (newest first). */
+  getHistory: (): Promise<YtdlpDownloadHistoryEntry[]> =>
+    ipcRenderer.invoke('fluxalloy-downloads-get-history'),
+
+  clearHistory: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke('fluxalloy-downloads-clear-history'),
 
   onSnapshot: (listener: (rows: unknown[]) => void): (() => void) => {
     const handler = (_event: unknown, rows: unknown): void => {

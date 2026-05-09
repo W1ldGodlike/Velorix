@@ -31,6 +31,10 @@ import {
   type YtdlpDownloadOptionsPatch
 } from './ytdlp-download-options'
 import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
+import {
+  clearYtdlpDownloadHistory,
+  readYtdlpDownloadHistoryNewestFirst
+} from './ytdlp-download-history'
 import { logError } from './logger-service'
 
 /** Совпадает с preload подпиской на снимок очереди. */
@@ -208,6 +212,16 @@ function buildDownloadsHtml(): string {
     #hintSummary { min-height: 2.5em; margin-top: 6px; }
     .opts-hint { font-size: 11px; opacity: 0.75; margin: 0 0 8px; line-height: 1.35; }
     .note { margin-top: 12px; font-size: 11px; opacity: 0.72; }
+    .history-panel { margin-top: 14px; border-top: 1px solid #3f3f46; padding-top: 10px; }
+    .history-panel summary { cursor: pointer; font-weight: 600; font-size: 12px; margin-bottom: 6px; user-select: none; color: #c9c9cf; }
+    .history-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 8px; }
+    table.history-table { font-size: 11px; }
+    table.history-table th:nth-child(1), table.history-table td:nth-child(1) { width: 10.5rem; white-space: nowrap; }
+    table.history-table th:nth-child(4), table.history-table td:nth-child(4) { width: 5.5rem; }
+    table.history-table th:nth-child(5), table.history-table td:nth-child(5) { width: 3rem; text-align: right; }
+    td.h-out-ok { color: #b9d79f; }
+    td.h-out-err { color: #f0a8a8; }
+    td.h-out-can { color: #9dc3ff; }
   </style>
 </head>
 <body>
@@ -302,6 +316,17 @@ function buildDownloadsHtml(): string {
     <thead><tr><th>№</th><th>Имя</th><th>Ссылка</th><th>Прогресс</th><th>Статус</th><th></th></tr></thead>
     <tbody id="queueBody"></tbody>
   </table>
+  <details class="history-panel" id="historyDetails">
+    <summary>История загрузок §6.4 (файл userData/downloads/history.json)</summary>
+    <div class="history-actions">
+      <button type="button" class="cmd" id="refreshHistoryBtn">Обновить</button>
+      <button type="button" class="cmd cmd-warn" id="clearHistoryBtn">Очистить историю</button>
+    </div>
+    <table class="history-table">
+      <thead><tr><th>Завершено</th><th>Имя</th><th>Ссылка</th><th>Исход</th><th>Код</th><th>Статус</th></tr></thead>
+      <tbody id="historyBody"></tbody>
+    </table>
+  </details>
   <div class="log-panel">
     <details id="logDetails">
       <summary>Лог yt-dlp (stdout / stderr)</summary>
@@ -344,6 +369,103 @@ function buildDownloadsHtml(): string {
       var extraArgsWarn = document.getElementById('extraArgsWarn');
       var hintInsert = document.getElementById('hintInsert');
       var hintSummary = document.getElementById('hintSummary');
+      var historyBody = document.getElementById('historyBody');
+      var refreshHistoryBtn = document.getElementById('refreshHistoryBtn');
+      var clearHistoryBtn = document.getElementById('clearHistoryBtn');
+      var historyRefreshTimer = null;
+
+      function formatHistoryWhen(ms) {
+        try {
+          var d = new Date(ms);
+          if (isNaN(d.getTime())) return '—';
+          return d.toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'medium' });
+        } catch (e) {
+          return '—';
+        }
+      }
+
+      function outcomeCellClass(o) {
+        if (o === 'success') return 'h-out-ok';
+        if (o === 'cancelled') return 'h-out-can';
+        return 'h-out-err';
+      }
+
+      function outcomeLabel(o) {
+        if (o === 'success') return 'Успех';
+        if (o === 'cancelled') return 'Отмена';
+        return 'Ошибка';
+      }
+
+      function renderHistoryEntries(raw) {
+        if (!historyBody) return;
+        var list = Array.isArray(raw) ? raw : [];
+        historyBody.replaceChildren();
+        if (list.length === 0) {
+          var tr0 = document.createElement('tr');
+          var td0 = document.createElement('td');
+          td0.colSpan = 6;
+          td0.style.opacity = '0.7';
+          td0.textContent = 'Записей пока нет';
+          tr0.appendChild(td0);
+          historyBody.appendChild(tr0);
+          return;
+        }
+        list.forEach(function (e) {
+          if (!e || typeof e !== 'object') return;
+          var tr = document.createElement('tr');
+          function td(cls, text) {
+            var x = document.createElement('td');
+            if (cls) x.className = cls;
+            x.textContent = text;
+            return x;
+          }
+          var fin = typeof e.finishedAt === 'number' ? e.finishedAt : 0;
+          tr.appendChild(td('num', formatHistoryWhen(fin)));
+          tr.appendChild(td('', typeof e.shortLabel === 'string' && e.shortLabel ? e.shortLabel : '—'));
+          var tdUrl = document.createElement('td');
+          var u = typeof e.url === 'string' ? e.url : '';
+          tdUrl.title = u;
+          tdUrl.textContent = u.length > 80 ? u.slice(0, 78) + '…' : (u || '—');
+          tr.appendChild(tdUrl);
+          var oc = typeof e.outcome === 'string' ? e.outcome : 'error';
+          tr.appendChild(td(outcomeCellClass(oc), outcomeLabel(oc)));
+          var code = e.exitCode;
+          var codeStr = code === null || code === undefined ? '—' : String(code);
+          tr.appendChild(td('num', codeStr));
+          var st = typeof e.status === 'string' ? e.status : '';
+          tr.appendChild(td('', st.length > 120 ? st.slice(0, 118) + '…' : (st || '—')));
+          historyBody.appendChild(tr);
+        });
+      }
+
+      function refreshHistory() {
+        api.getHistory().then(renderHistoryEntries);
+      }
+
+      function scheduleHistoryRefresh() {
+        if (historyRefreshTimer !== null) {
+          clearTimeout(historyRefreshTimer);
+        }
+        historyRefreshTimer = setTimeout(function () {
+          historyRefreshTimer = null;
+          refreshHistory();
+        }, 300);
+      }
+
+      if (refreshHistoryBtn) {
+        refreshHistoryBtn.addEventListener('click', function () {
+          refreshHistory();
+        });
+      }
+      if (clearHistoryBtn) {
+        clearHistoryBtn.addEventListener('click', function () {
+          if (!window.confirm('Удалить все записи истории загрузок?')) return;
+          api.clearHistory().then(function (res) {
+            if (res && res.ok === false && res.error) window.alert(res.error);
+            refreshHistory();
+          });
+        });
+      }
 
       function fillHintSelect(hints) {
         if (!hintInsert) return;
@@ -666,9 +788,14 @@ function buildDownloadsHtml(): string {
         if (txt) api.addLines(txt);
       });
 
-      api.getSnapshot().then(renderRows);
+      function onQueueSnapshot(rows) {
+        renderRows(rows);
+        scheduleHistoryRefresh();
+      }
 
-      api.onSnapshot(renderRows);
+      api.getSnapshot().then(onQueueSnapshot);
+
+      api.onSnapshot(onQueueSnapshot);
       refreshOutDir();
       refreshCliOpts();
     })();
@@ -934,6 +1061,27 @@ export function registerDownloadsWindowIpcHandlers(): void {
     clearDownloadsQueue()
     broadcastDownloadsSnapshot()
   })
+
+  /** §6.4 — чтение истории завершённых загрузок (newest first). */
+  ipcMain.handle('fluxalloy-downloads-get-history', (event) => {
+    if (!isDownloadsSender(event.sender)) {
+      return []
+    }
+    const paths = resolveAppPaths()
+    return readYtdlpDownloadHistoryNewestFirst(paths.userData, 100)
+  })
+
+  ipcMain.handle(
+    'fluxalloy-downloads-clear-history',
+    (event): { ok: true } | { ok: false; error: string } => {
+      if (!isDownloadsSender(event.sender)) {
+        return { ok: false, error: 'Недопустимый отправитель' }
+      }
+      const paths = resolveAppPaths()
+      clearYtdlpDownloadHistory(paths.userData)
+      return { ok: true }
+    }
+  )
 
   ipcMain.handle('fluxalloy-downloads-remove', (event, id: unknown) => {
     if (!isDownloadsSender(event.sender)) {

@@ -15,6 +15,7 @@ import {
   runYtdlpOnce
 } from './ytdlp-download-service'
 import { resolveYtdlpOutputDirectory } from './ytdlp-download-output'
+import { appendYtdlpDownloadHistoryEntry, outcomeFromQueueStatus } from './ytdlp-download-history'
 import { resolveYtdlpQueueRetryPlan } from './ytdlp-queue-retry'
 import { getYtdlpRunOptionsSnapshot } from './ytdlp-run-options-sync'
 
@@ -90,6 +91,10 @@ async function runYtdlpForWaitingRow(
   }
 
   const rowUrl = snap.url
+  const startedAtMs = Date.now()
+  /** Запись в history.json только после реального запуска yt-dlp (не только смена статуса в UI). */
+  let shouldRecordHistory = false
+  let finalExitCode: number | null = null
 
   activeAbort = new AbortController()
   const signal = activeAbort.signal
@@ -158,6 +163,7 @@ async function runYtdlpForWaitingRow(
 
       let result: { exitCode: number | null; signal: NodeJS.Signals | null }
       try {
+        shouldRecordHistory = true
         result = await runYtdlpOnce(
           paths,
           rowUrl,
@@ -198,8 +204,11 @@ async function runYtdlpForWaitingRow(
           status: aborted ? 'Отменено' : `Ошибка: ${msg.slice(0, 140)}`,
           progress: lastProgressCell ?? '—'
         })
+        finalExitCode = null
         break
       }
+
+      finalExitCode = result.exitCode
 
       if (result.exitCode === 0) {
         updateDownloadsRow(rowId, {
@@ -226,6 +235,21 @@ async function runYtdlpForWaitingRow(
       }
     }
   } finally {
+    if (shouldRecordHistory) {
+      const finalRow = getDownloadsQueueRowById(rowId)
+      if (finalRow) {
+        appendYtdlpDownloadHistoryEntry(paths.userData, {
+          startedAt: startedAtMs,
+          finishedAt: Date.now(),
+          url: rowUrl,
+          shortLabel: finalRow.shortLabel,
+          outcome: outcomeFromQueueStatus(finalRow.status),
+          status: finalRow.status,
+          exitCode: finalExitCode,
+          errorHint: lastErrorSummary
+        })
+      }
+    }
     activeAbort = null
     notifySnapshot()
   }
