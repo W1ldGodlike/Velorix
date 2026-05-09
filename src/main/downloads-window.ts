@@ -9,7 +9,8 @@ import {
   clearDownloadsQueue,
   getDownloadsQueueSnapshot,
   moveDownloadsQueueRow,
-  removeDownloadsQueueRow
+  removeDownloadsQueueRow,
+  resetDownloadsQueueRowForRetry
 } from './downloads-queue'
 import {
   cancelDownloadsRunner,
@@ -681,6 +682,11 @@ function buildDownloadsHtml(): string {
         return r && typeof r.id === 'number' && typeof r.url === 'string';
       }
 
+      function rowCanRetry(status) {
+        if (status === 'Ожидание' || status === 'Загрузка…') return false;
+        return !(typeof status === 'string' && status.indexOf('Пауза перед повтором') === 0);
+      }
+
       function renderRows(rawRows) {
         var rows = Array.isArray(rawRows) ? rawRows.filter(rowShape) : [];
         body.replaceChildren();
@@ -723,6 +729,8 @@ function buildDownloadsHtml(): string {
           }
           if (r.status === 'Ожидание') {
             mk('start', 'Скачать только эту строку', '▶', r.id);
+          } else if (rowCanRetry(r.status)) {
+            mk('retry', 'Сбросить статус и скачать эту строку заново', '↻', r.id);
           }
           mk('up', 'Вверх', '↑', r.id);
           mk('dn', 'Вниз', '↓', r.id);
@@ -740,6 +748,13 @@ function buildDownloadsHtml(): string {
         if (act === 'rm') api.removeRow(id);
         else if (act === 'up') api.moveRow(id, -1);
         else if (act === 'dn') api.moveRow(id, 1);
+        else if (act === 'retry') {
+          api.retryRow(id).then(function (res) {
+            if (res && res.ok === false && res.error) {
+              window.alert(res.error);
+            }
+          });
+        }
         else if (act === 'start') {
           api.startRow(id).then(function (res) {
             if (res && res.ok === false && res.error) {
@@ -1258,6 +1273,35 @@ export function registerDownloadsWindowIpcHandlers(): void {
         return await startDownloadSingleRow(id)
       } catch (err: unknown) {
         logError('downloads-queue', 'startDownloadSingleRow failed', err)
+        return { ok: false, error: err instanceof Error ? err.message : String(err) }
+      }
+    }
+  )
+
+  ipcMain.handle(
+    'fluxalloy-downloads-retry-row',
+    async (event, id: unknown): Promise<{ ok: true } | { ok: false; error: string }> => {
+      if (!isDownloadsSender(event.sender)) {
+        return { ok: false, error: 'Недопустимый отправитель' }
+      }
+      if (typeof id !== 'number' || !Number.isFinite(id)) {
+        return { ok: false, error: 'Некорректный идентификатор строки' }
+      }
+      const current = getDownloadsQueueSnapshot().find((row) => row.id === id)
+      if (!current) {
+        return { ok: false, error: 'Строка не найдена' }
+      }
+      if (current.status === 'Загрузка…' || current.status.startsWith('Пауза перед повтором')) {
+        return { ok: false, error: 'Нельзя повторить строку, пока она выполняется.' }
+      }
+      if (!resetDownloadsQueueRowForRetry(id)) {
+        return { ok: false, error: 'Не удалось сбросить строку' }
+      }
+      broadcastDownloadsSnapshot()
+      try {
+        return await startDownloadSingleRow(id)
+      } catch (err: unknown) {
+        logError('downloads-queue', 'retry row failed', err)
         return { ok: false, error: err instanceof Error ? err.message : String(err) }
       }
     }

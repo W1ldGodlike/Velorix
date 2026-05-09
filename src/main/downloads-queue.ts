@@ -84,6 +84,17 @@ export function updateDownloadsRow(
   return true
 }
 
+export function resetDownloadsQueueRowForRetry(id: number): boolean {
+  const row = rows.find((r) => r.id === id)
+  if (!row) {
+    return false
+  }
+  row.shortLabel = shortUrlLabel(row.url)
+  row.progress = '—'
+  row.status = 'Ожидание'
+  return true
+}
+
 export function removeDownloadsQueueRow(id: number): boolean {
   const ix = rows.findIndex((r) => r.id === id)
   if (ix < 0) {

@@ -70,6 +70,9 @@ contextBridge.exposeInMainWorld('fluxalloyDownloads', {
   startRow: (id: number): Promise<{ ok: true } | { ok: false; error: string }> =>
     ipcRenderer.invoke('fluxalloy-downloads-start-row', id),
 
+  retryRow: (id: number): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke('fluxalloy-downloads-retry-row', id),
+
   cancelQueue: (): Promise<{ ok: true } | { ok: false; error: string }> =>
     ipcRenderer.invoke('fluxalloy-downloads-cancel-run'),
 
