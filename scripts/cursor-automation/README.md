@@ -24,6 +24,14 @@ npm run loop
 npm run loop -- --max-steps 8 --verbose
 ```
 
+Из корня репозитория можно использовать алиасы:
+
+```bash
+npm run agent:once
+npm run agent:loop
+npm run agent:loop -- --max-steps 8 --verbose
+```
+
 Можно без переменной в терминале: создайте рядом файл **`.env`** (он игнорируется Git):
 
 ```dotenv
@@ -31,6 +39,23 @@ CURSOR_API_KEY=crsr_...
 ```
 
 Промпты по умолчанию: каталог **`prompts/`** (`initial.txt`, `continue.txt`). Свой текст — через `PROMPTS_DIR` или правка файлов.
+
+## Число продолжений
+
+По умолчанию цикл делает **5 итераций**: первый промпт из `initial.txt`, затем до 4 продолжений из `continue.txt`.
+
+Способы задать число:
+
+```powershell
+# Разово из корня репозитория:
+npm run agent:loop -- --max-steps 8
+
+# Разово из scripts/cursor-automation:
+npm run loop -- --max-steps 8
+
+# Постоянно в scripts/cursor-automation\.env:
+MAX_STEPS=8
+```
 
 ## Стоп без убийства процесса
 
