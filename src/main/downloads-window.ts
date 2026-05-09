@@ -1,5 +1,4 @@
-import { existsSync, statSync, writeFileSync } from 'fs'
-import { isAbsolute, relative, resolve } from 'path'
+import { writeFileSync } from 'fs'
 import { BrowserWindow, dialog, ipcMain, shell, type WebContents } from 'electron'
 
 import { resolveAppPaths } from './app-paths'
@@ -25,6 +24,7 @@ import { DOWNLOADS_LOG_CHANNEL, setDownloadsLogSink } from './downloads-log-ipc'
 import { resolvePreloadOutFile } from './preload-resolve'
 import {
   isYtdlpDownloadDirectoryDefault,
+  resolveAllowedYtdlpDownloadOutputFile,
   resolveYtdlpOutputDirectory
 } from './ytdlp-download-output'
 import {
@@ -102,24 +102,8 @@ function isDownloadOutputOpenMode(raw: unknown): raw is DownloadOutputOpenMode {
 }
 
 function resolveAllowedDownloadOutputPath(raw: unknown): string | null {
-  if (typeof raw !== 'string' || raw.trim().length === 0 || raw.length > 4096) {
-    return null
-  }
-  if (!isAbsolute(raw)) {
-    return null
-  }
   const paths = resolveAppPaths()
-  const outDir = resolve(resolveYtdlpOutputDirectory(paths.userData))
-  const file = resolve(raw)
-  const rel = relative(outDir, file)
-  if (rel === '' || rel.startsWith('..') || isAbsolute(rel)) {
-    return null
-  }
-  try {
-    return existsSync(file) && statSync(file).isFile() ? file : null
-  } catch {
-    return null
-  }
+  return resolveAllowedYtdlpDownloadOutputFile(raw, paths.userData)
 }
 
 async function openDownloadOutputPath(
@@ -381,6 +365,10 @@ function buildDownloadsHtml(): string {
       <option value="normal">Обычный (2 повтора: 3 с + 8 с)</option>
     </select>
     <p class="opts-hint">Отдельно от <code>--retries</code> yt-dlp: после ненулевого кода процесса FluxAlloy делает паузу и запускает ту же ссылку снова (без повторного добавления в таблицу).</p>
+    <div class="opts-check-row">
+      <label class="chk"><input type="checkbox" id="chkOpenInHandlerOnComplete" /> После успешной загрузки открыть файл в обработчике FluxAlloy <span class="opts-check-muted">(§6.4)</span></label>
+    </div>
+    <p class="opts-hint">Работает при известном пути к файлу (парсинг вывода yt-dlp); для очереди каждая завершённая строка может переключить превью главного окна.</p>
     <details class="expert-panel" id="expertArgsDetails">
       <summary>Экспертные аргументы и превью argv §6.3</summary>
       <label for="extraArgsInput">Дополнительные аргументы (через пробел, без shell)</label>
@@ -487,6 +475,7 @@ function buildDownloadsHtml(): string {
       var retriesInput = document.getElementById('retriesInput');
       var fragmentRetriesInput = document.getElementById('fragmentRetriesInput');
       var queueRetrySelect = document.getElementById('queueRetrySelect');
+      var chkOpenInHandlerOnComplete = document.getElementById('chkOpenInHandlerOnComplete');
       var extraArgsInput = document.getElementById('extraArgsInput');
       var argsPreview = document.getElementById('argsPreview');
       var extraArgsWarn = document.getElementById('extraArgsWarn');
@@ -738,6 +727,9 @@ function buildDownloadsHtml(): string {
             var qv = p.queueRetryProfile;
             queueRetrySelect.value =
               qv === 'light' || qv === 'normal' ? qv : 'off';
+          }
+          if (chkOpenInHandlerOnComplete && typeof p.openInHandlerOnComplete === 'boolean') {
+            chkOpenInHandlerOnComplete.checked = p.openInHandlerOnComplete;
           }
           if (!fmtPreset) return;
           fmtPreset.replaceChildren();
@@ -1040,6 +1032,7 @@ function buildDownloadsHtml(): string {
             retriesLine: retriesInput ? retriesInput.value : '',
             fragmentRetriesLine: fragmentRetriesInput ? fragmentRetriesInput.value : '',
             queueRetryProfile: queueRetrySelect ? queueRetrySelect.value : 'off',
+            openInHandlerOnComplete: !!(chkOpenInHandlerOnComplete && chkOpenInHandlerOnComplete.checked),
             extraArgsLine: extraArgsInput ? extraArgsInput.value : ''
           }).then(function (res) {
             if (res && res.ok === false && res.error) window.alert(res.error);
@@ -1283,6 +1276,12 @@ export function registerDownloadsWindowIpcHandlers(): void {
       if (Object.prototype.hasOwnProperty.call(o, 'queueRetryProfile')) {
         patch.queueRetryProfile = parseYtdlpQueueRetryProfile(o['queueRetryProfile'])
       }
+      if (Object.prototype.hasOwnProperty.call(o, 'openInHandlerOnComplete')) {
+        if (typeof o['openInHandlerOnComplete'] !== 'boolean') {
+          return { ok: false, error: 'Флаг авто-открытия в обработчике должен быть boolean' }
+        }
+        patch.openInHandlerOnComplete = o['openInHandlerOnComplete']
+      }
       if (
         patch.filenameTemplate === undefined &&
         patch.formatPreset === undefined &&
@@ -1296,7 +1295,8 @@ export function registerDownloadsWindowIpcHandlers(): void {
         patch.retriesLine === undefined &&
         patch.fragmentRetriesLine === undefined &&
         patch.extraArgsLine === undefined &&
-        patch.queueRetryProfile === undefined
+        patch.queueRetryProfile === undefined &&
+        patch.openInHandlerOnComplete === undefined
       ) {
         return { ok: false, error: 'Нечего сохранять' }
       }

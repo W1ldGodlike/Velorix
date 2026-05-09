@@ -53,6 +53,8 @@ export interface YtdlpDownloadOptionsPayload {
   fragmentRetriesLine: string
   queueRetryProfile: YtdlpQueueRetryProfileId
   queueRetryProfileChoices: Array<{ id: YtdlpQueueRetryProfileId; label: string }>
+  /** §6.4 — после успеха yt-dlp открыть результат в preview главного окна без ручного «В обработчик». */
+  openInHandlerOnComplete: boolean
 }
 
 export interface YtdlpDownloadOptionsPatch {
@@ -72,4 +74,6 @@ export interface YtdlpDownloadOptionsPatch {
   extraArgsLine?: string
   /** §6.4 — только `off` | `light` | `normal`. */
   queueRetryProfile?: YtdlpQueueRetryProfileId
+  /** §6.4 — авто-открытие скачанного файла в обработчике после успешной строки очереди. */
+  openInHandlerOnComplete?: boolean
 }

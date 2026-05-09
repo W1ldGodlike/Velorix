@@ -7,7 +7,11 @@ import icon from '../../resources/icon.png?asset'
 
 import { resolveAppPaths } from './app-paths'
 import { downloadEnginesWindows, isAnyEngineMissing } from './engine-download'
-import { cancelDownloadsRunner, isDownloadsRunnerBusy } from './downloads-queue-runner'
+import {
+  cancelDownloadsRunner,
+  configureDownloadsQueueRunnerHooks,
+  isDownloadsRunnerBusy
+} from './downloads-queue-runner'
 import {
   configureDownloadsWindowBoundsHooks,
   focusOrCreateDownloadsWindow,
@@ -567,6 +571,13 @@ function persistYtdlpDownloadCliOptionsPatch(
       delete merged.ytdlpQueueRetryProfile
     } else {
       merged.ytdlpQueueRetryProfile = id
+    }
+  }
+  if (patch.openInHandlerOnComplete !== undefined) {
+    if (patch.openInHandlerOnComplete) {
+      merged.ytdlpOpenInHandlerOnComplete = true
+    } else {
+      delete merged.ytdlpOpenInHandlerOnComplete
     }
   }
   cachedSettings = merged
@@ -1214,6 +1225,9 @@ app.whenReady().then(() => {
     getYtdlpDownloadCliOptions: () =>
       payloadFromSnapshot(buildYtdlpRunOptionsSnapshot(cachedSettings)),
     applyYtdlpDownloadCliPatch: (patch) => persistYtdlpDownloadCliOptionsPatch(patch),
+    openDownloadedFileInHandler: (absoluteFile) => openDownloadedFileInMainHandler(absoluteFile)
+  })
+  configureDownloadsQueueRunnerHooks({
     openDownloadedFileInHandler: (absoluteFile) => openDownloadedFileInMainHandler(absoluteFile)
   })
   registerFluxMediaProtocol()

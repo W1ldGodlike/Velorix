@@ -14,6 +14,7 @@ vi.mock('@electron-toolkit/utils', () => ({
 }))
 
 import {
+  buildYtdlpRunOptionsSnapshot,
   resolveSafeYtdlpOutputPattern,
   validateFilenameTemplate,
   validateYtdlpFragmentRetriesLine,
@@ -96,5 +97,20 @@ describe('validateYtdlpFragmentRetriesLine', () => {
     expect(validateYtdlpFragmentRetriesLine('')).toEqual({ ok: true, value: null, line: '' })
     expect(validateYtdlpFragmentRetriesLine('4')).toEqual({ ok: true, value: 4, line: '4' })
     expect(validateYtdlpFragmentRetriesLine('100').ok).toBe(false)
+  })
+})
+
+describe('buildYtdlpRunOptionsSnapshot §6.4 openInHandlerOnComplete', () => {
+  it('по умолчанию выключено', () => {
+    expect(buildYtdlpRunOptionsSnapshot({ theme: 'dark' }).openInHandlerOnComplete).toBe(false)
+  })
+
+  it('включается только при явном true в settings.json', () => {
+    expect(
+      buildYtdlpRunOptionsSnapshot({
+        theme: 'dark',
+        ytdlpOpenInHandlerOnComplete: true
+      }).openInHandlerOnComplete
+    ).toBe(true)
   })
 })

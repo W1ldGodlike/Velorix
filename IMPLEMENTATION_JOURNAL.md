@@ -101,3 +101,4 @@
 - 2026-05-10 01:32:06 [SDK]: §21 — `noPropertyAccessFromIndexSignature`; bracket-доступ для `Record<string, unknown>` в main и для `dataset`/версий в renderer.
 - 2026-05-10 01:33:13 [SDK]: §21 — явный `useUnknownInCatchVariables` в tsconfig node/web/tests (политика catch уже совместима; без изменений в логике).
 - 2026-05-10 01:35:57 [SDK]: §6.4 — статус неуспеха очереди: `formatYtdlpQueueFailureStatus` (сигнал ОС, stderr fallback); Vitest.
+- 2026-05-10 02:08:37 [SDK]: §6.4 — «Скачать и сразу обработать»: `ytdlpOpenInHandlerOnComplete` в settings, чекбокс в окне загрузок, после успеха yt-dlp — авто-открытие в preview через общий guard пути; тесты `resolveAllowedYtdlpDownloadOutputFile` и snapshot.

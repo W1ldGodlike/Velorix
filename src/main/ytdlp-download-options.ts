@@ -75,6 +75,8 @@ export interface YtdlpRunOptionsSnapshot {
   fragmentRetriesLine: string
   /** §6.4 — повтор запуска той же строки очереди при ошибке (не `--retries`). */
   queueRetryProfile: YtdlpQueueRetryProfileId
+  /** §6.4 — после успешной загрузки открыть файл в главном окне (runner). */
+  openInHandlerOnComplete: boolean
 }
 
 export function parseYtdlpFormatPreset(raw: unknown): YtdlpFormatPresetId {
@@ -381,6 +383,7 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
   const fragmentRetriesLine = fragmentRetriesParsed.ok ? fragmentRetriesParsed.line : ''
 
   const queueRetryProfile = parseYtdlpQueueRetryProfile(settings.ytdlpQueueRetryProfile)
+  const openInHandlerOnComplete = settings.ytdlpOpenInHandlerOnComplete === true
 
   return {
     filenameTemplate,
@@ -406,7 +409,8 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
     retriesLine,
     fragmentRetries,
     fragmentRetriesLine,
-    queueRetryProfile
+    queueRetryProfile,
+    openInHandlerOnComplete
   }
 }
 
@@ -459,6 +463,7 @@ export function payloadFromSnapshot(snap: YtdlpRunOptionsSnapshot): YtdlpDownloa
       { id: 'off', label: 'Выключено' },
       { id: 'light', label: 'Лёгкий (1 повтор, 2.5 с)' },
       { id: 'normal', label: 'Обычный (2 повтора: 3 с + 8 с)' }
-    ]
+    ],
+    openInHandlerOnComplete: snap.openInHandlerOnComplete
   }
 }

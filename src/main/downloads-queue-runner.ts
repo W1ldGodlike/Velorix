@@ -1,5 +1,6 @@
 import type { AppPaths } from './app-paths'
 import { resolveAppPaths } from './app-paths'
+import { resolveAllowedYtdlpDownloadOutputFile } from './ytdlp-download-output'
 import { getEnginePathOverridesSnapshot } from './engine-path-sync'
 import {
   findFirstWaitingRow,
@@ -25,6 +26,22 @@ let activeAbort: AbortController | null = null
 let sequentialBusy = false
 
 let notifySnapshot = (): void => {}
+
+type OpenDownloadedInMainHandlerFn = (
+  absoluteFile: string
+) => { ok: true } | { ok: false; error: string }
+
+/** Из index.ts: то же открытие в preview, что кнопка «В обработчик» в окне загрузок. */
+let openDownloadedFileInMainHandlerHook: OpenDownloadedInMainHandlerFn | null = null
+
+/**
+ * Регистрируется при старте приложения: без hook авто-открытие §6.4 после успеха yt-dlp отключено.
+ */
+export function configureDownloadsQueueRunnerHooks(hooks: {
+  openDownloadedFileInHandler?: OpenDownloadedInMainHandlerFn
+}): void {
+  openDownloadedFileInMainHandlerHook = hooks.openDownloadedFileInHandler ?? null
+}
 
 /** Вызывается из downloads-window: обновить UI после изменений очереди/прогресса. */
 export function setDownloadsRunnerNotifier(fn: () => void): void {
@@ -232,6 +249,17 @@ async function runYtdlpForWaitingRow(
           status: 'Готово',
           progress: lastProgressCell ?? '100%'
         })
+        const cliOpen = getYtdlpRunOptionsSnapshot()
+        if (cliOpen.openInHandlerOnComplete && openDownloadedFileInMainHandlerHook) {
+          const cand = lastOutputPath ?? getDownloadsQueueRowById(rowId)?.outputPath ?? null
+          const safe =
+            cand !== null && cand.length > 0
+              ? resolveAllowedYtdlpDownloadOutputFile(cand, paths.userData)
+              : null
+          if (safe) {
+            openDownloadedFileInMainHandlerHook(safe)
+          }
+        }
         break
       }
 

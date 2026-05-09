@@ -59,6 +59,8 @@ export interface AppSettings {
   ytdlpExtraArgsLine?: string
   /** §6.4: профиль повторов всей строки очереди при ненулевом exit code (не путать с `--retries`). */
   ytdlpQueueRetryProfile?: 'off' | 'light' | 'normal'
+  /** §6.4: после успешной загрузки автоматически открыть файл в главном окне обработки (preview). */
+  ytdlpOpenInHandlerOnComplete?: boolean
   /** §7.2: системный пресет экспорта MP4 (libx264 CRF + `-preset`). */
   ffmpegExportEncodePreset?: string
   /** §7.2: контейнер экспорта по умолчанию. */
