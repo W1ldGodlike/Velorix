@@ -40,6 +40,10 @@ function tokenIsOption(token: string, option: string): boolean {
   return token === option || token.startsWith(`${option}=`)
 }
 
+function tokenIsShortOptionWithAttachedValue(token: string, option: string): boolean {
+  return token.length > option.length && token.startsWith(option)
+}
+
 function tokenViolationReason(token: string): string | null {
   if (token.length > MAX_TOKEN_CHARS) {
     return `Токен длиннее ${MAX_TOKEN_CHARS} символов.`
@@ -50,16 +54,31 @@ function tokenViolationReason(token: string): string | null {
   if (token.startsWith('@')) {
     return 'Аргументы вида @файл запрещены.'
   }
-  // `-P` — case-sensitive short option в yt-dlp; после toLowerCase сравнение ломается,
-  // поэтому ловим короткий флаг до приведения регистра. Покрыто unit-тестом §21.
-  if (token === '-P' || token.startsWith('-P=')) {
+  // `-P` — case-sensitive short option в yt-dlp. Python argparse принимает и glued-форму
+  // `-Ptemp:/path`, поэтому ловим её до toLowerCase вместе с обычными `-P` / `-P=`.
+  if (
+    token === '-P' ||
+    token.startsWith('-P=') ||
+    tokenIsShortOptionWithAttachedValue(token, '-P')
+  ) {
     return 'Каталоги вывода задаются настройками FluxAlloy; -P/--paths запрещены.'
   }
   const low = token.toLowerCase()
-  if (low === '-o' || low === '--output' || low.startsWith('-o=') || low.startsWith('--output=')) {
+  if (
+    low === '-o' ||
+    low === '--output' ||
+    low.startsWith('-o=') ||
+    low.startsWith('--output=') ||
+    tokenIsShortOptionWithAttachedValue(low, '-o')
+  ) {
     return 'Шаблон вывода задаётся полем выше; не дублируйте -o/--output.'
   }
-  if (low === '-a' || low === '--batch-file' || low.startsWith('--batch-file=')) {
+  if (
+    low === '-a' ||
+    low === '--batch-file' ||
+    low.startsWith('--batch-file=') ||
+    tokenIsShortOptionWithAttachedValue(low, '-a')
+  ) {
     return 'Пакетные файлы (-a/--batch-file) здесь запрещены.'
   }
   if (low === '--cookies' || low.startsWith('--cookies=')) {
@@ -74,7 +93,7 @@ function tokenViolationReason(token: string): string | null {
   if (low === '--limit-rate' || low.startsWith('--limit-rate=')) {
     return 'Ограничение скорости задаётся отдельным полем §6.2; не дублируйте --limit-rate.'
   }
-  if (low === '-r') {
+  if (low === '-r' || tokenIsShortOptionWithAttachedValue(low, '-r')) {
     return 'Ограничение скорости задаётся отдельным полем §6.2; не дублируйте -r.'
   }
   if (low === '--retries' || low.startsWith('--retries=')) {

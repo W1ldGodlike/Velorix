@@ -57,6 +57,19 @@ describe('parseExtraYtdlpArgsLine', () => {
     expect(r.ok).toBe(false)
   })
 
+  const gluedShortOptionCases = [
+    '-P/tmp/evil',
+    '-Ptemp:/tmp/evil',
+    '-a/tmp/list.txt',
+    '-o/tmp/%(title)s.%(ext)s',
+    '-r5M'
+  ]
+
+  it.each(gluedShortOptionCases)('запрещает glued short-option %s', (token) => {
+    const r = parseExtraYtdlpArgsLine(token)
+    expect(r.ok).toBe(false)
+  })
+
   const dangerousFlags = [
     '--exec',
     '--exec-before-download',
