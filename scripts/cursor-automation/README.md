@@ -9,7 +9,8 @@ cd scripts/cursor-automation
 npm install
 ```
 
-Ключ API (личный или service account): [Cloud Agents / API](https://cursor.com/dashboard/cloud-agents).
+Ключ API (личный или service account): обычно **Dashboard → Integrations**.
+Если ключ был отправлен в чат/лог, лучше сразу отозвать его и создать новый.
 
 ```bash
 # Windows PowerShell
@@ -21,6 +22,12 @@ npm run once
 # Цикл из нескольких «продолжай работу по чеклисту»
 npm run loop
 npm run loop -- --max-steps 8 --verbose
+```
+
+Можно без переменной в терминале: создайте рядом файл **`.env`** (он игнорируется Git):
+
+```dotenv
+CURSOR_API_KEY=crsr_...
 ```
 
 Промпты по умолчанию: каталог **`prompts/`** (`initial.txt`, `continue.txt`). Свой текст — через `PROMPTS_DIR` или правка файлов.

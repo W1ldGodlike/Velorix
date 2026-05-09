@@ -1,3 +1,5 @@
+import 'dotenv/config'
+
 import { existsSync, readFileSync } from 'fs'
 import { join } from 'path'
 

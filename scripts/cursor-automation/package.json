@@ -12,7 +12,8 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "@cursor/sdk": "^1.0.12"
+    "@cursor/sdk": "^1.0.12",
+    "dotenv": "^17.4.2"
   },
   "devDependencies": {
     "@types/node": "^22.19.1",
