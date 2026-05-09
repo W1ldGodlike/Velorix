@@ -259,14 +259,36 @@ async function runYtdlpForWaitingRow(
           progress: lastProgressCell ?? '100%'
         })
         const cliOpen = getYtdlpRunOptionsSnapshot()
-        if (cliOpen.openInHandlerOnComplete && openDownloadedFileInMainHandlerHook) {
+        if (cliOpen.openInHandlerOnComplete) {
           const cand = lastOutputPath ?? getDownloadsQueueRowById(rowId)?.outputPath ?? null
           const safe =
             cand !== null && cand.length > 0
               ? resolveAllowedYtdlpDownloadOutputFile(cand, paths.userData)
               : null
-          if (safe) {
-            openDownloadedFileInMainHandlerHook(safe)
+          if (!openDownloadedFileInMainHandlerHook) {
+            emitDownloadsLog({
+              kind: 'line',
+              rowId,
+              stream: 'stderr',
+              text: '[FluxAlloy] Авто-открытие в обработчике пропущено: обработчик не подключён.'
+            })
+          } else if (!safe) {
+            emitDownloadsLog({
+              kind: 'line',
+              rowId,
+              stream: 'stderr',
+              text: '[FluxAlloy] Авто-открытие в обработчике пропущено: путь результата неизвестен или вне каталога загрузок.'
+            })
+          } else {
+            const openResult = openDownloadedFileInMainHandlerHook(safe)
+            if (!openResult.ok) {
+              emitDownloadsLog({
+                kind: 'line',
+                rowId,
+                stream: 'stderr',
+                text: `[FluxAlloy] Авто-открытие в обработчике не удалось: ${openResult.error}`
+              })
+            }
           }
         }
         break

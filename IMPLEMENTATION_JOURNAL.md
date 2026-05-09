@@ -112,3 +112,4 @@
 - 2026-05-10 02:26:20 [SDK]: §6.4 — коды выхода yt-dlp 2/100/101 в `classifyYtdlpQueueFailureKind`; `shouldSkipQueueRetriesForFailureKind`; суффиксы статуса; раннер передаёт exitCode в классификацию.
 - 2026-05-10 02:27:17 [SDK]: §6.4 — парсер прогресса: `Total progress:`, `Downloading video|item X of Y` (плейлист); Vitest.
 - 2026-05-10 02:33:05 [Assistant]: ревью SDK-изменений после `9d0a36f`: метки журнала после 01:10:11 корректно `[SDK]`, `npm run check` проходит; исправлен пропуск persisted `ytdlpOpenInHandlerOnComplete` в `loadSettings`, чтобы флаг авто-открытия yt-dlp в обработчике переживал рестарт.
+- 2026-05-10 02:37:22 [Assistant]: follow-up §6.4 после ревью: авто-открытие yt-dlp в обработчике теперь пишет причину пропуска/ошибки в лог строки; `Total progress` имеет приоритет над fragment-строкой в парсере прогресса; чек-лист уточнён по POSIX-паузе.

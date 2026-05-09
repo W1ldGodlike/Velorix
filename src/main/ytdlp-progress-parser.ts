@@ -39,19 +39,6 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
     return null
   }
 
-  const fragMatch = t.match(/\bfragment\s+(\d+)\s+of\s+(\d+)\b/i)
-  if (fragMatch) {
-    const a = fragMatch[1]
-    const b = fragMatch[2]
-    if (a !== undefined && b !== undefined) {
-      return {
-        percent: null,
-        speed: `фрагмент ${a}/${b}`,
-        eta: null
-      }
-    }
-  }
-
   const totalProgMatch = t.match(/\btotal\s+progress:\s*(\d+(?:\.\d+)?)%/i)
   if (totalProgMatch) {
     const p = totalProgMatch[1]
@@ -68,6 +55,19 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
       return {
         percent: null,
         speed: `плейлист ${a}/${b}`,
+        eta: null
+      }
+    }
+  }
+
+  const fragMatch = t.match(/\bfragment\s+(\d+)\s+of\s+(\d+)\b/i)
+  if (fragMatch) {
+    const a = fragMatch[1]
+    const b = fragMatch[2]
+    if (a !== undefined && b !== undefined) {
+      return {
+        percent: null,
+        speed: `фрагмент ${a}/${b}`,
         eta: null
       }
     }
