@@ -63,3 +63,4 @@
 - 2026-05-09 22:55:59 [SDK]: §6.4 — `ytdlp-download-history.ts` + запись из раннера после фактического `runYtdlpOnce`; IPC `fluxalloy-downloads-get/clear-history`, preload, сворачиваемая таблица в окне загрузок; тесты `outcomeFromQueueStatus`.
 - 2026-05-09 23:12:19 [Assistant]: ревью SDK-коммитов `c604794..2ce01e1`: исправлены метки журнала на `[SDK]`, спринт-блок снова приведён к 6 пунктам; история yt-dlp теперь ставит флаг записи через `runYtdlpOnce.onStarted`, то есть только после создания child process, а не до валидационных ошибок.
 - 2026-05-09 23:23:14 [Assistant]: §6.3/§21 — закрыт обход blacklist через glued short-options yt-dlp (`-Ptmp`, `-a/list`, `-oX`, `-r5M`) и добавлены Vitest-кейсы для этих форм.
+- 2026-05-09 23:26:16 [Assistant]: §18 — renderer log IPC закреплён за main window, получил token bucket rate limit и очистку control chars в `scope/message`; `attachProcessErrorHandlers()` перенесён на ранний старт main до `app.whenReady`.

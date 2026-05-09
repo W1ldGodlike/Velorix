@@ -119,6 +119,15 @@ function rotateIfTooLarge(filePath: string): void {
   }
 }
 
+function sanitizeRendererText(raw: string, maxChars: number): string {
+  let out = ''
+  for (let i = 0; i < raw.length && out.length < maxChars; i++) {
+    const code = raw.charCodeAt(i)
+    out += (code >= 0 && code < 32) || code === 127 ? ' ' : raw[i]
+  }
+  return raw.length > maxChars ? `${out}…[truncated]` : out
+}
+
 function writeLine(level: LogLevel, scope: string, message: string, extra: unknown[]): void {
   const file = ensureLogFilePath()
   const line = `[${timestampNow()}] [${levelLabel(level)}] [${scope}] ${message}${formatExtra(
@@ -154,7 +163,7 @@ export function logError(scope: string, message: string, ...extra: unknown[]): v
   writeLine('error', scope, message, extra)
 }
 
-/** Безопасный приём записи из renderer/preload: проверка whitelist уровней и лимиты длины. */
+/** Безопасный приём записи из renderer/preload: whitelist уровней, лимиты длины и запрет log injection. */
 export function logFromRendererSafe(raw: unknown): void {
   if (!raw || typeof raw !== 'object') {
     return
@@ -166,12 +175,9 @@ export function logFromRendererSafe(raw: unknown): void {
   const scope =
     scopeRaw.length === 0
       ? 'renderer'
-      : `renderer/${scopeRaw.slice(0, RENDERER_SCOPE_MAX).replace(/[\r\n\t]/g, ' ')}`
+      : `renderer/${sanitizeRendererText(scopeRaw, RENDERER_SCOPE_MAX)}`
   const msgRaw = typeof o.message === 'string' ? o.message : ''
-  const message =
-    msgRaw.length > RENDERER_MESSAGE_MAX
-      ? `${msgRaw.slice(0, RENDERER_MESSAGE_MAX)}…[truncated]`
-      : msgRaw
+  const message = sanitizeRendererText(msgRaw, RENDERER_MESSAGE_MAX)
   if (message.length === 0) {
     return
   }
@@ -180,7 +186,8 @@ export function logFromRendererSafe(raw: unknown): void {
 
 /**
  * Подвязать перехват необработанных ошибок процесса.
- * Делаем это после `app.whenReady`, чтобы `app.getPath('userData')` уже отвечал.
+ * Регистрируем на уровне модуля main: `ensureLogFilePath` лениво создаст `userData/logs`
+ * только в момент реальной записи, зато ранние падения до `app.whenReady` не пропадут.
  */
 export function attachProcessErrorHandlers(): void {
   process.on('uncaughtException', (err) => {

@@ -1,6 +1,7 @@
 import { existsSync, statSync } from 'fs'
 import { basename, isAbsolute, join, normalize, resolve } from 'path'
 import { BrowserWindow, Menu, app, clipboard, dialog, ipcMain, shell } from 'electron'
+import type { IpcMainEvent } from 'electron'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
@@ -75,6 +76,7 @@ import { refreshYtdlpRunOptionsSnapshot } from './ytdlp-run-options-sync'
 import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
 
 /** Кастомная схема для локального видеопревью; привилегии обязаны зарегистрироваться до `app.whenReady`. */
+attachProcessErrorHandlers()
 registerFluxMediaPrivileges()
 
 function parseDownloadsOpenPayload(raw: unknown): string | null {
@@ -128,6 +130,42 @@ let activeExportAbort: AbortController | null = null
 
 /** Обход диалога §4.2 после явного подтверждения «Закрыть и прервать». */
 let allowMainWindowClose = false
+
+let mainWindowWebContentsId: number | null = null
+
+interface RendererLogBucket {
+  tokens: number
+  updatedAtMs: number
+}
+
+const RENDERER_LOG_BUCKET_CAPACITY = 30
+const RENDERER_LOG_REFILL_PER_SECOND = 10
+const rendererLogBuckets = new Map<number, RendererLogBucket>()
+
+function consumeRendererLogToken(senderId: number): boolean {
+  const now = Date.now()
+  const bucket = rendererLogBuckets.get(senderId) ?? {
+    tokens: RENDERER_LOG_BUCKET_CAPACITY,
+    updatedAtMs: now
+  }
+  const elapsedMs = Math.max(0, now - bucket.updatedAtMs)
+  bucket.tokens = Math.min(
+    RENDERER_LOG_BUCKET_CAPACITY,
+    bucket.tokens + (elapsedMs / 1000) * RENDERER_LOG_REFILL_PER_SECOND
+  )
+  bucket.updatedAtMs = now
+  if (bucket.tokens < 1) {
+    rendererLogBuckets.set(senderId, bucket)
+    return false
+  }
+  bucket.tokens -= 1
+  rendererLogBuckets.set(senderId, bucket)
+  return true
+}
+
+function isMainWindowSender(event: IpcMainEvent): boolean {
+  return mainWindowWebContentsId !== null && event.sender.id === mainWindowWebContentsId
+}
 
 function parseExportTrim(raw: unknown): MediaExportTrimPayload | undefined {
   if (!raw || typeof raw !== 'object') {
@@ -624,6 +662,14 @@ function createWindow(): void {
   })
 
   allowMainWindowClose = false
+  const mainWebContentsId = mainWindow.webContents.id
+  mainWindowWebContentsId = mainWebContentsId
+  mainWindow.on('closed', () => {
+    if (mainWindowWebContentsId === mainWebContentsId) {
+      mainWindowWebContentsId = null
+    }
+    rendererLogBuckets.delete(mainWebContentsId)
+  })
   mainWindow.on('close', (e) => {
     if (allowMainWindowClose) {
       return
@@ -684,7 +730,6 @@ function createWindow(): void {
 
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.fluxalloy')
-  attachProcessErrorHandlers()
   logStartupBanner()
   cachedSettings = loadSettings(settingsPath())
   refreshEnginePathOverridesSnapshot()
@@ -1107,7 +1152,10 @@ app.whenReady().then(() => {
 
   ipcMain.on('ping', () => logInfo('ipc', 'ping'))
 
-  ipcMain.on('fluxalloy:log-renderer', (_event, raw: unknown) => {
+  ipcMain.on('fluxalloy:log-renderer', (event, raw: unknown) => {
+    if (!isMainWindowSender(event) || !consumeRendererLogToken(event.sender.id)) {
+      return
+    }
     logFromRendererSafe(raw)
   })
 
