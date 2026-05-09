@@ -41,7 +41,7 @@ export interface YtdlpDownloadOptionsPayload {
   /** Редактируемое значение `--sub-langs` в окне загрузок. */
   subLangsLine: string
   extraArgsLine: string
-  /** Превью полной командной строки (`yt-dlp …`), без реального пути и URL. */
+  /** Превью полной командной строки (`yt-dlp …`) с безопасным примером URL и текущим каталогом. */
   commandPreview: string
   extraArgsParseWarning: string | null
   /** Подсказки для поля доп. аргументов §6.3 (из `Data/ytdlp_commands.json`). */
@@ -74,7 +74,7 @@ export interface YtdlpDownloadOptionsPatch {
   retriesLine?: string
   fragmentRetriesLine?: string
   extraArgsLine?: string
-  /** §6.4 — только `off` | `light` | `normal`. */
+  /** §6.4 — профиль `off` | `light` | `normal` | `persistent`. */
   queueRetryProfile?: YtdlpQueueRetryProfileId
   /** §6.4 — авто-открытие скачанного файла в обработчике после успешной строки очереди. */
   openInHandlerOnComplete?: boolean

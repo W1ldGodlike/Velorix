@@ -376,6 +376,9 @@ export function loadSettings(filePath: string): AppSettings {
     if (parsed.ytdlpAudioOnly === true) {
       base.ytdlpAudioOnly = true
     }
+    if (parsed.ytdlpOpenInHandlerOnComplete === true) {
+      base.ytdlpOpenInHandlerOnComplete = true
+    }
     if (ytdlpSubtitlePreset !== undefined) {
       base.ytdlpSubtitlePreset = ytdlpSubtitlePreset
     }
