@@ -52,6 +52,8 @@ export interface AppSettings {
   ytdlpRateLimit?: string
   /** §6.2: количество повторов `--retries`; отсутствует — дефолт yt-dlp. */
   ytdlpRetries?: number
+  /** §6.4: количество повторов фрагментов `--fragment-retries`; отсутствует — дефолт yt-dlp. */
+  ytdlpFragmentRetries?: number
   /** §6.3: дополнительные аргументы yt-dlp одной строкой (токены через пробел). */
   ytdlpExtraArgsLine?: string
   /** §6.4: профиль повторов всей строки очереди при ненулевом exit code (не путать с `--retries`). */
@@ -262,6 +264,7 @@ export function loadSettings(filePath: string): AppSettings {
     const ytdlpImpersonate = parseYtdlpImpersonateStored(parsed.ytdlpImpersonate)
     const ytdlpRateLimit = parseYtdlpRateLimitStored(parsed.ytdlpRateLimit)
     const ytdlpRetries = parseYtdlpRetriesStored(parsed.ytdlpRetries)
+    const ytdlpFragmentRetries = parseYtdlpRetriesStored(parsed.ytdlpFragmentRetries)
 
     const base: AppSettings = { theme }
     if (last !== undefined) {
@@ -311,6 +314,9 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (ytdlpRetries !== undefined) {
       base.ytdlpRetries = ytdlpRetries
+    }
+    if (ytdlpFragmentRetries !== undefined) {
+      base.ytdlpFragmentRetries = ytdlpFragmentRetries
     }
     if (ytdlpExtraArgsLine !== undefined) {
       base.ytdlpExtraArgsLine = ytdlpExtraArgsLine

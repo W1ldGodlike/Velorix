@@ -67,6 +67,7 @@ import {
   validateFilenameTemplate,
   validateYtdlpCookiesFilePath,
   validateYtdlpRateLimit,
+  validateYtdlpFragmentRetriesLine,
   validateYtdlpRetriesLine,
   validateYtdlpSubLangs,
   type YtdlpDownloadOptionsPatch
@@ -409,6 +410,17 @@ function persistYtdlpDownloadCliOptionsPatch(
       delete merged.ytdlpRetries
     } else {
       merged.ytdlpRetries = rt.value
+    }
+  }
+  if (patch.fragmentRetriesLine !== undefined) {
+    const frt = validateYtdlpFragmentRetriesLine(patch.fragmentRetriesLine)
+    if (!frt.ok) {
+      return frt
+    }
+    if (frt.value === null) {
+      delete merged.ytdlpFragmentRetries
+    } else {
+      merged.ytdlpFragmentRetries = frt.value
     }
   }
   if (patch.extraArgsLine !== undefined) {

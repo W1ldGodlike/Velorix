@@ -110,6 +110,7 @@ describe('buildYtdlpSpawnArgvTokens', () => {
     impersonateTarget: null,
     rateLimit: '',
     retries: null,
+    fragmentRetries: null,
     formatExtraArgs: [],
     extraArgs: [],
     outputPattern: '/tmp/%(title)s.%(ext)s',
@@ -144,12 +145,13 @@ describe('buildYtdlpSpawnArgvTokens', () => {
     expect(args).not.toContain('--cookies-from-browser')
   })
 
-  it('добавляет --impersonate, --limit-rate, --retries по флагам', () => {
+  it('добавляет --impersonate, --limit-rate, --retries, --fragment-retries по флагам', () => {
     const args = buildYtdlpSpawnArgvTokens({
       ...base,
       impersonateTarget: 'firefox',
       rateLimit: '500K',
-      retries: 3
+      retries: 3,
+      fragmentRetries: 7
     })
     expect(args).toContain('--impersonate')
     expect(args).toContain('firefox')
@@ -157,6 +159,8 @@ describe('buildYtdlpSpawnArgvTokens', () => {
     expect(args).toContain('500K')
     expect(args).toContain('--retries')
     expect(args).toContain('3')
+    expect(args).toContain('--fragment-retries')
+    expect(args).toContain('7')
   })
 
   it('собирает субтитры manual_auto + sub-langs только при непустых langs', () => {

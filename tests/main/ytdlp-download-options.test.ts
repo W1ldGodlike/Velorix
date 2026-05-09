@@ -16,6 +16,7 @@ vi.mock('@electron-toolkit/utils', () => ({
 import {
   resolveSafeYtdlpOutputPattern,
   validateFilenameTemplate,
+  validateYtdlpFragmentRetriesLine,
   validateYtdlpRateLimit,
   validateYtdlpRetriesLine,
   YTDLP_DEFAULT_FILENAME_TEMPLATE
@@ -87,5 +88,13 @@ describe('validateYtdlpRetriesLine', () => {
     for (const value of ['1.5', '-1', '100']) {
       expect(validateYtdlpRetriesLine(value).ok, value).toBe(false)
     }
+  })
+})
+
+describe('validateYtdlpFragmentRetriesLine', () => {
+  it('использует те же границы 0-99 и пустой дефолт yt-dlp', () => {
+    expect(validateYtdlpFragmentRetriesLine('')).toEqual({ ok: true, value: null, line: '' })
+    expect(validateYtdlpFragmentRetriesLine('4')).toEqual({ ok: true, value: 4, line: '4' })
+    expect(validateYtdlpFragmentRetriesLine('100').ok).toBe(false)
   })
 })

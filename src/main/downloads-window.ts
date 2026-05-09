@@ -286,7 +286,9 @@ function buildDownloadsHtml(): string {
     <input type="text" id="rateLimitInput" spellcheck="false" autocomplete="off" placeholder="Пусто = без лимита; пример: 500K или 2M" />
     <label for="retriesInput">Повторы при ошибках (--retries)</label>
     <input type="text" id="retriesInput" inputmode="numeric" spellcheck="false" autocomplete="off" placeholder="Пусто = дефолт yt-dlp; 0–99" />
-    <p class="opts-hint">Лимит скорости и ретраи вынесены из «Доп. аргументов», чтобы не смешивать их с произвольным argv и не конфликтовать с настройками FluxAlloy.</p>
+    <label for="fragmentRetriesInput">Повторы фрагментов (--fragment-retries)</label>
+    <input type="text" id="fragmentRetriesInput" inputmode="numeric" spellcheck="false" autocomplete="off" placeholder="Пусто = дефолт yt-dlp; 0–99" />
+    <p class="opts-hint">Лимит скорости, ретраи и ретраи фрагментов вынесены из «Доп. аргументов», чтобы не смешивать их с произвольным argv и не конфликтовать с настройками FluxAlloy.</p>
     <label for="queueRetrySelect">Повтор строки при сбое (очередь) §6.4</label>
     <select id="queueRetrySelect" aria-label="Профиль повторов очереди при ошибке">
       <option value="off">Выключено</option>
@@ -377,6 +379,7 @@ function buildDownloadsHtml(): string {
       var impersonateSelect = document.getElementById('impersonateSelect');
       var rateLimitInput = document.getElementById('rateLimitInput');
       var retriesInput = document.getElementById('retriesInput');
+      var fragmentRetriesInput = document.getElementById('fragmentRetriesInput');
       var queueRetrySelect = document.getElementById('queueRetrySelect');
       var extraArgsInput = document.getElementById('extraArgsInput');
       var argsPreview = document.getElementById('argsPreview');
@@ -582,6 +585,9 @@ function buildDownloadsHtml(): string {
           if (retriesInput && typeof p.retriesLine === 'string') {
             retriesInput.value = p.retriesLine;
           }
+          if (fragmentRetriesInput && typeof p.fragmentRetriesLine === 'string') {
+            fragmentRetriesInput.value = p.fragmentRetriesLine;
+          }
           if (queueRetrySelect && typeof p.queueRetryProfile === 'string') {
             var qv = p.queueRetryProfile;
             queueRetrySelect.value =
@@ -785,6 +791,7 @@ function buildDownloadsHtml(): string {
             impersonate: impersonateSelect ? impersonateSelect.value : 'none',
             rateLimit: rateLimitInput ? rateLimitInput.value : '',
             retriesLine: retriesInput ? retriesInput.value : '',
+            fragmentRetriesLine: fragmentRetriesInput ? fragmentRetriesInput.value : '',
             queueRetryProfile: queueRetrySelect ? queueRetrySelect.value : 'off',
             extraArgsLine: extraArgsInput ? extraArgsInput.value : ''
           }).then(function (res) {
@@ -1014,6 +1021,12 @@ export function registerDownloadsWindowIpcHandlers(): void {
         }
         patch.retriesLine = o.retriesLine
       }
+      if (Object.prototype.hasOwnProperty.call(o, 'fragmentRetriesLine')) {
+        if (typeof o.fragmentRetriesLine !== 'string') {
+          return { ok: false, error: 'Количество повторов фрагментов должно быть строкой' }
+        }
+        patch.fragmentRetriesLine = o.fragmentRetriesLine
+      }
       if (Object.prototype.hasOwnProperty.call(o, 'extraArgsLine')) {
         if (typeof o.extraArgsLine !== 'string') {
           return { ok: false, error: 'Доп. аргументы должны быть строкой' }
@@ -1034,6 +1047,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
         patch.impersonate === undefined &&
         patch.rateLimit === undefined &&
         patch.retriesLine === undefined &&
+        patch.fragmentRetriesLine === undefined &&
         patch.extraArgsLine === undefined &&
         patch.queueRetryProfile === undefined
       ) {

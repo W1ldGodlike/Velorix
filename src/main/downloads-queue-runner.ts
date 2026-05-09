@@ -196,6 +196,7 @@ async function runYtdlpForWaitingRow(
             impersonateTarget: cli.impersonateTarget,
             rateLimit: cli.rateLimit,
             retries: cli.retries,
+            fragmentRetries: cli.fragmentRetries,
             extraArgs: cli.extraArgs
           }
         )

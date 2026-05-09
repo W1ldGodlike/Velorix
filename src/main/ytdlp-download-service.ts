@@ -58,6 +58,7 @@ export function runYtdlpOnce(
     | 'impersonateTarget'
     | 'rateLimit'
     | 'retries'
+    | 'fragmentRetries'
     | 'extraArgs'
   >
 ): Promise<{ exitCode: number | null; signal: NodeJS.Signals | null }> {
@@ -87,6 +88,7 @@ export function runYtdlpOnce(
   const impersonateTarget = cli?.impersonateTarget ?? null
   const rateLimit = cli?.rateLimit ?? ''
   const retries = cli?.retries ?? null
+  const fragmentRetries = cli?.fragmentRetries ?? null
   const fmtArgs = audioOnly ? [] : (cli?.formatExtraArgs ?? [])
   const extraArgs = cli?.extraArgs ?? []
   const args = buildYtdlpSpawnArgvTokens({
@@ -99,6 +101,7 @@ export function runYtdlpOnce(
     impersonateTarget,
     rateLimit,
     retries,
+    fragmentRetries,
     formatExtraArgs: fmtArgs,
     extraArgs,
     outputPattern: outPattern,

@@ -62,6 +62,9 @@ export interface YtdlpRunOptionsSnapshot {
   /** §6.2 `--retries`; null — дефолт yt-dlp. */
   retries: number | null
   retriesLine: string
+  /** §6.4 `--fragment-retries`; null — дефолт yt-dlp. */
+  fragmentRetries: number | null
+  fragmentRetriesLine: string
   /** §6.4 — повтор запуска той же строки очереди при ошибке (не `--retries`). */
   queueRetryProfile: YtdlpQueueRetryProfileId
 }
@@ -89,6 +92,7 @@ export interface YtdlpDownloadOptionsPayload {
   impersonateChoice: 'none' | YtdlpImpersonateId
   rateLimit: string
   retriesLine: string
+  fragmentRetriesLine: string
   queueRetryProfile: YtdlpQueueRetryProfileId
   queueRetryProfileChoices: Array<{ id: YtdlpQueueRetryProfileId; label: string }>
 }
@@ -106,6 +110,7 @@ export interface YtdlpDownloadOptionsPatch {
   impersonate?: 'none' | YtdlpImpersonateId
   rateLimit?: string
   retriesLine?: string
+  fragmentRetriesLine?: string
   extraArgsLine?: string
   /** §6.4 — только `off` | `light` | `normal`. */
   queueRetryProfile?: YtdlpQueueRetryProfileId
@@ -221,6 +226,16 @@ export function validateYtdlpRetriesLine(
     return { ok: false, error: 'Количество повторов должно быть целым числом от 0 до 99.' }
   }
   return { ok: true, value: n, line: String(n) }
+}
+
+export function validateYtdlpFragmentRetriesLine(
+  raw: string
+): { ok: true; value: number | null; line: string } | { ok: false; error: string } {
+  const parsed = validateYtdlpRetriesLine(raw)
+  if (parsed.ok) {
+    return parsed
+  }
+  return { ok: false, error: 'Количество повторов фрагментов должно быть целым числом от 0 до 99.' }
 }
 
 /** Строковые поля из JSON без семантической проверки шаблона — см. validateFilenameTemplate. */
@@ -395,6 +410,14 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
   )
   const retries = retriesParsed.ok ? retriesParsed.value : null
   const retriesLine = retriesParsed.ok ? retriesParsed.line : ''
+  const fragmentRetriesParsed = validateYtdlpFragmentRetriesLine(
+    typeof settings.ytdlpFragmentRetries === 'number' &&
+      Number.isInteger(settings.ytdlpFragmentRetries)
+      ? String(settings.ytdlpFragmentRetries)
+      : ''
+  )
+  const fragmentRetries = fragmentRetriesParsed.ok ? fragmentRetriesParsed.value : null
+  const fragmentRetriesLine = fragmentRetriesParsed.ok ? fragmentRetriesParsed.line : ''
 
   const queueRetryProfile = parseYtdlpQueueRetryProfile(settings.ytdlpQueueRetryProfile)
 
@@ -420,6 +443,8 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
     rateLimit,
     retries,
     retriesLine,
+    fragmentRetries,
+    fragmentRetriesLine,
     queueRetryProfile
   }
 }
@@ -436,6 +461,7 @@ export function payloadFromSnapshot(snap: YtdlpRunOptionsSnapshot): YtdlpDownloa
     impersonateTarget: snap.impersonateTarget,
     rateLimit: snap.rateLimit,
     retries: snap.retries,
+    fragmentRetries: snap.fragmentRetries,
     formatExtraArgs: snap.formatExtraArgs,
     extraArgs: snap.extraArgs,
     outputPattern: outPh,
@@ -466,6 +492,7 @@ export function payloadFromSnapshot(snap: YtdlpRunOptionsSnapshot): YtdlpDownloa
     impersonateChoice: snap.impersonateChoice,
     rateLimit: snap.rateLimit,
     retriesLine: snap.retriesLine,
+    fragmentRetriesLine: snap.fragmentRetriesLine,
     queueRetryProfile: snap.queueRetryProfile,
     queueRetryProfileChoices: [
       { id: 'off', label: 'Выключено' },

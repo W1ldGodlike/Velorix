@@ -100,7 +100,7 @@ function tokenViolationReason(token: string): string | null {
     return 'Количество повторов задаётся отдельным полем §6.2; не дублируйте --retries.'
   }
   if (low === '--fragment-retries' || low.startsWith('--fragment-retries=')) {
-    return 'Повторы фрагментов зададим отдельным режимом позже; пока не дублируйте --fragment-retries.'
+    return 'Повторы фрагментов задаются отдельным полем §6.4; не дублируйте --fragment-retries.'
   }
   const forbidden = FORBIDDEN_RUNTIME_OPTIONS.find((opt) => tokenIsOption(low, opt))
   if (forbidden) {
@@ -175,6 +175,8 @@ export function buildYtdlpSpawnArgvTokens(params: {
   rateLimit: string
   /** §6.2 `--retries`: число повторов, `null` — значение yt-dlp по умолчанию. */
   retries: number | null
+  /** §6.4 `--fragment-retries`: число повторов фрагментов, `null` — значение yt-dlp по умолчанию. */
+  fragmentRetries: number | null
   formatExtraArgs: string[]
   extraArgs: string[]
   outputPattern: string
@@ -211,6 +213,9 @@ export function buildYtdlpSpawnArgvTokens(params: {
   }
   if (params.retries !== null) {
     args.push('--retries', String(params.retries))
+  }
+  if (params.fragmentRetries !== null) {
+    args.push('--fragment-retries', String(params.fragmentRetries))
   }
   args.push(...params.extraArgs)
   args.push('-o', params.outputPattern, params.url)
