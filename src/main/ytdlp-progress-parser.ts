@@ -82,6 +82,35 @@ export function formatYtdlpProgressCell(parts: YtdlpDownloadProgressParts): stri
 }
 
 /**
+ * Текст статуса строки очереди §6.1 при неуспешном yt-dlp: код выхода или сигнал ОС,
+ * плюс краткая подсказка из `ERROR:` или последней строки stderr (если явной ошибки не было).
+ */
+export function formatYtdlpQueueFailureStatus(
+  exitCode: number | null | undefined,
+  signal: NodeJS.Signals | null | undefined,
+  errorHint: string | null | undefined,
+  stderrFallback: string | null | undefined
+): string {
+  let base: string
+  if (exitCode === null && signal) {
+    base = `Ошибка (сигнал ${signal})`
+  } else {
+    const code = exitCode ?? '?'
+    base = `Ошибка (код ${code})`
+  }
+
+  const primary = errorHint?.trim() ?? ''
+  const fallback = stderrFallback?.trim() ?? ''
+  const hint = primary.length > 0 ? primary : fallback
+
+  if (hint.length === 0) {
+    return base.length > 200 ? `${base.slice(0, 199)}…` : base
+  }
+  const joined = `${base}: ${hint}`
+  return joined.length > 200 ? `${joined.slice(0, 199)}…` : joined
+}
+
+/**
  * Последняя осмысленная строка об ошибке из stdout/stderr yt-dlp для статуса §6.4.
  * Не исполняет код — только эвристика по тексту.
  */

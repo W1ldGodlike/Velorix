@@ -4,6 +4,7 @@ import {
   extractYtdlpErrorSummary,
   extractYtdlpOutputPath,
   formatYtdlpProgressCell,
+  formatYtdlpQueueFailureStatus,
   parseYtdlpDownloadProgressLine
 } from '../../src/main/ytdlp-progress-parser'
 
@@ -57,6 +58,33 @@ describe('formatYtdlpProgressCell', () => {
 
   it('возвращает пустую строку, если нет полей', () => {
     expect(formatYtdlpProgressCell({ percent: null, speed: null, eta: null })).toBe('')
+  })
+})
+
+describe('formatYtdlpQueueFailureStatus', () => {
+  it('показывает сигнал, если кода выхода нет', () => {
+    expect(formatYtdlpQueueFailureStatus(null, 'SIGTERM', null, null)).toBe(
+      'Ошибка (сигнал SIGTERM)'
+    )
+  })
+
+  it('предпочитает явный ERROR: текст последней строке stderr', () => {
+    expect(
+      formatYtdlpQueueFailureStatus(1, null, 'Video unavailable', '[foo] last stderr line')
+    ).toBe('Ошибка (код 1): Video unavailable')
+  })
+
+  it('берёт stderr как подсказку, если ERROR: не распарсился', () => {
+    expect(
+      formatYtdlpQueueFailureStatus(1, null, null, 'WARNING: [youtube] Sign in to confirm')
+    ).toBe('Ошибка (код 1): WARNING: [youtube] Sign in to confirm')
+  })
+
+  it('обрезает итог длиннее 200 символов', () => {
+    const longHint = 'x'.repeat(220)
+    const s = formatYtdlpQueueFailureStatus(2, null, longHint, null)
+    expect(s.length).toBe(200)
+    expect(s.endsWith('…')).toBe(true)
   })
 })
 

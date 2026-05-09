@@ -18,6 +18,7 @@ export {
   extractYtdlpErrorSummary,
   extractYtdlpOutputPath,
   formatYtdlpProgressCell,
+  formatYtdlpQueueFailureStatus,
   parseYtdlpDownloadProgressLine,
   type YtdlpDownloadProgressParts
 } from './ytdlp-progress-parser'

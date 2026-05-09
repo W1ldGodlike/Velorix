@@ -12,6 +12,7 @@ import {
   extractYtdlpErrorSummary,
   extractYtdlpOutputPath,
   formatYtdlpProgressCell,
+  formatYtdlpQueueFailureStatus,
   parseYtdlpDownloadProgressLine,
   runYtdlpOnce
 } from './ytdlp-download-service'
@@ -68,19 +69,6 @@ function delayWithAbort(ms: number, signal: AbortSignal): Promise<void> {
   })
 }
 
-function formatFailureStatus(
-  exitCode: number | null | undefined,
-  errorHint: string | null
-): string {
-  const code = exitCode ?? '?'
-  const base = `Ошибка (код ${code})`
-  if (!errorHint || errorHint.trim().length === 0) {
-    return base.slice(0, 200)
-  }
-  const joined = `${base}: ${errorHint.trim()}`
-  return joined.length > 200 ? `${joined.slice(0, 197)}…` : joined
-}
-
 async function runYtdlpForWaitingRow(
   paths: AppPaths,
   outputDir: string,
@@ -108,6 +96,15 @@ async function runYtdlpForWaitingRow(
   let lastProgressCell: string | null = null
   let lastErrorSummary: string | null = null
   let lastOutputPath: string | null = snap.outputPath ?? null
+  let lastStderrLine: string | null = null
+
+  const rememberStderrLine = (line: string): void => {
+    const t = line.trimEnd()
+    if (t.length === 0) {
+      return
+    }
+    lastStderrLine = t.length > 400 ? `${t.slice(0, 397)}…` : t
+  }
 
   const applyProgressLine = (line: string): void => {
     const parsed = parseYtdlpDownloadProgressLine(line)
@@ -146,6 +143,8 @@ async function runYtdlpForWaitingRow(
 
   try {
     for (let runIndex = 0; runIndex < maxRuns; runIndex++) {
+      lastStderrLine = null
+      lastErrorSummary = null
       if (runIndex > 0) {
         const delayMs = retryPlan.delaysMs[runIndex - 1] ?? 2000
         const sec = Math.round(delayMs / 100) / 10
@@ -191,6 +190,7 @@ async function runYtdlpForWaitingRow(
               applyProgressLine(line)
             },
             onStderrLine: (line) => {
+              rememberStderrLine(line)
               emitDownloadsLog({ kind: 'line', rowId, stream: 'stderr', text: line })
               noteErrorLine(line)
               noteOutputPathLine(line)
@@ -245,7 +245,12 @@ async function runYtdlpForWaitingRow(
 
       if (runIndex >= maxRuns - 1) {
         updateDownloadsRow(rowId, {
-          status: formatFailureStatus(code, lastErrorSummary),
+          status: formatYtdlpQueueFailureStatus(
+            code,
+            result.signal,
+            lastErrorSummary,
+            lastStderrLine
+          ),
           progress: lastProgressCell ?? '—'
         })
         break
