@@ -5,6 +5,7 @@ import type { EngineDownloadProgress } from '../main/engine-download'
 import type { EnginesStatusSnapshot } from '../main/engine-service'
 import type { MediaProbeResult } from '../main/ffprobe-service'
 import type { PreviewDialogResult } from '../main/preview-dialog'
+import type { EngineId, EnginePathOverridesPatch } from '../main/engine-service'
 import type { AppSettings, AppTheme } from '../main/settings-store'
 
 type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
@@ -18,7 +19,11 @@ const fluxalloy = {
   settings: {
     get: (): Promise<AppSettings> => ipcRenderer.invoke('fluxalloy:settings-get'),
     setTheme: (theme: AppTheme): Promise<AppSettings> =>
-      ipcRenderer.invoke('fluxalloy:settings-set-theme', theme)
+      ipcRenderer.invoke('fluxalloy:settings-set-theme', theme),
+    setEngineExecutablePaths: (patch: EnginePathOverridesPatch): Promise<AppSettings> =>
+      ipcRenderer.invoke('fluxalloy:settings-set-engine-paths', patch),
+    pickEngineExecutable: (engineId: EngineId): Promise<string | null> =>
+      ipcRenderer.invoke('fluxalloy:pick-engine-executable', engineId)
   },
   preview: {
     openFileDialog: (): Promise<PreviewDialogResult> =>
@@ -88,6 +93,26 @@ const fluxalloy = {
     const handler = (_: unknown, raw: unknown): void => {
       // События из IPC валидируем так же, как invoke-аргументы: renderer не доверяет raw payload.
       listener(raw === 'light' ? 'light' : 'dark')
+    }
+    ipcRenderer.on(channel, handler)
+    return (): void => {
+      ipcRenderer.removeListener(channel, handler)
+    }
+  },
+  onOpenEnginePaths: (listener: () => void): (() => void) => {
+    const channel = 'fluxalloy:open-engine-paths'
+    const handler = (): void => {
+      listener()
+    }
+    ipcRenderer.on(channel, handler)
+    return (): void => {
+      ipcRenderer.removeListener(channel, handler)
+    }
+  },
+  onEnginePathsChanged: (listener: () => void): (() => void) => {
+    const channel = 'fluxalloy:engine-paths-changed'
+    const handler = (): void => {
+      listener()
     }
     ipcRenderer.on(channel, handler)
     return (): void => {

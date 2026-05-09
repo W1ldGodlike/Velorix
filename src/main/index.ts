@@ -1,6 +1,6 @@
 import { existsSync } from 'fs'
 import { basename, join, normalize, resolve } from 'path'
-import { BrowserWindow, Menu, app, clipboard, ipcMain, shell } from 'electron'
+import { BrowserWindow, Menu, app, clipboard, dialog, ipcMain, shell } from 'electron'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
@@ -12,8 +12,14 @@ import {
 } from './downloads-window'
 import { probeMediaFile } from './ffprobe-service'
 import type { EngineDownloadProgress } from './engine-download'
-import { getEnginesStatus } from './engine-service'
-import type { EnginesStatusSnapshot } from './engine-service'
+import { setEnginePathOverridesSnapshot } from './engine-path-sync'
+import {
+  getEnginesStatus,
+  type EngineId,
+  type EnginePathOverrides,
+  type EnginePathOverridesPatch,
+  type EnginesStatusSnapshot
+} from './engine-service'
 import {
   grantMediaPath,
   isGrantedMediaPath,
@@ -78,6 +84,39 @@ let cachedSettings: AppSettings = { theme: 'dark' }
 
 function applyTheme(theme: AppTheme): void {
   cachedSettings = { ...cachedSettings, theme }
+}
+
+function refreshEnginePathOverridesSnapshot(): void {
+  setEnginePathOverridesSnapshot(cachedSettings.engineExecutablePaths)
+}
+
+function persistEnginePathOverridesPatch(patch: EnginePathOverridesPatch): AppSettings {
+  const nextPaths: EnginePathOverrides = { ...(cachedSettings.engineExecutablePaths ?? {}) }
+  const ids: EngineId[] = ['ffmpeg', 'ffprobe', 'yt-dlp']
+  for (const id of ids) {
+    if (!(id in patch)) {
+      continue
+    }
+    const v = patch[id]
+    if (v === null || v === '') {
+      delete nextPaths[id]
+    } else if (typeof v === 'string' && v.trim() !== '') {
+      nextPaths[id] = v.trim()
+    }
+  }
+  const merged: AppSettings = { ...cachedSettings }
+  if (Object.keys(nextPaths).length === 0) {
+    delete merged.engineExecutablePaths
+  } else {
+    merged.engineExecutablePaths = nextPaths
+  }
+  cachedSettings = merged
+  saveSettings(settingsPath(), cachedSettings)
+  refreshEnginePathOverridesSnapshot()
+  BrowserWindow.getAllWindows().forEach((w) => {
+    w.webContents.send('fluxalloy:engine-paths-changed')
+  })
+  return { ...cachedSettings }
 }
 
 function persistLastOpenedSource(absolutePath: string | null): void {
@@ -172,6 +211,21 @@ function buildApplicationMenu(): void {
       ]
     },
     {
+      label: 'Настройки',
+      submenu: [
+        {
+          label: 'Пути к движкам…',
+          click: (): void => {
+            const target = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0]
+            if (!target || target.isDestroyed()) {
+              return
+            }
+            target.webContents.send('fluxalloy:open-engine-paths')
+          }
+        }
+      ]
+    },
+    {
       label: 'Вид',
       submenu: [
         {
@@ -257,6 +311,7 @@ function createWindow(): void {
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.fluxalloy')
   cachedSettings = loadSettings(settingsPath())
+  refreshEnginePathOverridesSnapshot()
   registerFluxMediaProtocol()
   registerDownloadsWindowIpcHandlers()
 
@@ -274,12 +329,49 @@ app.whenReady().then(() => {
     return persistAndBroadcast(next)
   })
 
+  ipcMain.handle('fluxalloy:settings-set-engine-paths', (_, patch: unknown): AppSettings => {
+    if (!patch || typeof patch !== 'object') {
+      return { ...cachedSettings }
+    }
+    return persistEnginePathOverridesPatch(patch as EnginePathOverridesPatch)
+  })
+
+  ipcMain.handle(
+    'fluxalloy:pick-engine-executable',
+    async (event, engineId: unknown): Promise<string | null> => {
+      const win = BrowserWindow.fromWebContents(event.sender)
+      if (!win) {
+        return null
+      }
+      const id =
+        engineId === 'ffmpeg' || engineId === 'ffprobe' || engineId === 'yt-dlp' ? engineId : null
+      if (!id) {
+        return null
+      }
+      const result = await dialog.showOpenDialog(win, {
+        title: `Выберите исполняемый файл: ${id}`,
+        properties: ['openFile'],
+        filters:
+          process.platform === 'win32'
+            ? [
+                { name: 'Исполняемые файлы', extensions: ['exe'] },
+                { name: 'Все файлы', extensions: ['*'] }
+              ]
+            : [{ name: 'Все файлы', extensions: ['*'] }]
+      })
+      if (result.canceled || result.filePaths.length === 0) {
+        return null
+      }
+      return result.filePaths[0] ?? null
+    }
+  )
+
   ipcMain.handle('fluxalloy:engines-status', async (): Promise<EnginesStatusSnapshot> => {
-    return getEnginesStatus(resolveAppPaths())
+    return getEnginesStatus(resolveAppPaths(), cachedSettings.engineExecutablePaths)
   })
 
   ipcMain.handle('fluxalloy:engines-should-offer-download', (): boolean => {
-    return isAnyEngineMissing(resolveAppPaths())
+    return isAnyEngineMissing(resolveAppPaths(), cachedSettings.engineExecutablePaths)
   })
 
   ipcMain.handle(
@@ -367,7 +459,7 @@ app.whenReady().then(() => {
         error: 'Нет доступа к этому пути для анализа (сначала откройте файл в превью).'
       }
     }
-    return probeMediaFile(resolveAppPaths(), abs)
+    return probeMediaFile(resolveAppPaths(), abs, cachedSettings.engineExecutablePaths)
   })
 
   ipcMain.handle('fluxalloy:clipboard-read-text', () => clipboard.readText())

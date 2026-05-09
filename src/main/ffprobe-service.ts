@@ -1,7 +1,7 @@
 import { execFile } from 'child_process'
 
 import type { AppPaths } from './app-paths'
-import { resolveEngineExecutablePath } from './engine-service'
+import { resolveEngineExecutablePath, type EnginePathOverrides } from './engine-service'
 
 /** Краткий срез JSON ffprobe для главного окна §7 (превью и таймлайн). */
 export interface MediaProbeSuccess {
@@ -51,9 +51,10 @@ function runFfprobeJson(ffprobePath: string, mediaPath: string): Promise<string>
 
 export async function probeMediaFile(
   paths: AppPaths,
-  absoluteMediaPath: string
+  absoluteMediaPath: string,
+  engineOverrides?: EnginePathOverrides
 ): Promise<MediaProbeResult> {
-  const ffprobe = resolveEngineExecutablePath(paths, 'ffprobe')
+  const ffprobe = resolveEngineExecutablePath(paths, 'ffprobe', engineOverrides)
   if (!ffprobe) {
     return { ok: false, error: 'ffprobe не найден — установите движки через «Скачать движки».' }
   }

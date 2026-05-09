@@ -23,6 +23,7 @@ import { Readable } from 'stream'
 import { pipeline } from 'stream/promises'
 
 import type { AppPaths } from './app-paths'
+import type { EngineId, EnginePathOverrides } from './engine-service'
 import { ENGINE_SOURCES_WINDOWS } from './engine-sources'
 import type { TrustedHashesFile } from './trusted-hashes-store'
 import { trustedHashForFfmpegZipWin, trustedHashForYtDlpWin } from './trusted-hashes-store'
@@ -219,11 +220,15 @@ function fileExistsNonEmpty(candidate: string): boolean {
   }
 }
 
-/** `true`, если хотя бы один из трёх движков отсутствует и в bundled, и в userData/bin. */
-export function isAnyEngineMissing(paths: AppPaths): boolean {
+/** `true`, если хотя бы один из трёх движков недоступен с учётом override, bundled и userData/bin. */
+export function isAnyEngineMissing(paths: AppPaths, overrides?: EnginePathOverrides): boolean {
   const suffix = process.platform === 'win32' ? '.exe' : ''
-  const ids = ['ffmpeg', 'ffprobe', 'yt-dlp'] as const
+  const ids: EngineId[] = ['ffmpeg', 'ffprobe', 'yt-dlp']
   return ids.some((id) => {
+    const manual = overrides?.[id]
+    if (typeof manual === 'string' && manual.trim() !== '' && fileExistsNonEmpty(manual.trim())) {
+      return false
+    }
     const fileName = `${id}${suffix}`
     const bundled = join(paths.bundledBin, fileName)
     const user = join(paths.userBin, fileName)

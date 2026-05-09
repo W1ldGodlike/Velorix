@@ -281,3 +281,92 @@
 .versions-inline li:last-child {
   border-right: none;
 }
+
+/* Диалог ручных путей движков §3 */
+.app-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: color-mix(in srgb, var(--fa-bg) 55%, rgba(0, 0, 0, 0.65));
+}
+
+.app-modal {
+  width: min(520px, 100%);
+  max-height: min(90vh, 640px);
+  overflow: auto;
+  border-radius: 12px;
+  border: 1px solid var(--fa-border);
+  background: var(--fa-surface-elevated);
+  color: var(--fa-text-primary);
+  padding: 1.1rem 1.25rem 1rem;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.35);
+}
+
+.app-modal-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.app-modal-hint {
+  margin: 0 0 1rem;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--fa-text-secondary);
+}
+
+.app-engine-path-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.app-engine-path-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.app-engine-path-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--fa-text-secondary);
+}
+
+.app-engine-path-input {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 34px;
+  padding: 0 0.55rem;
+  border-radius: 8px;
+  border: 1px solid var(--fa-border);
+  background: var(--fa-surface);
+  color: var(--fa-text-primary);
+  font-size: 0.75rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.app-engine-path-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.app-btn-compact {
+  min-height: 30px;
+  padding: 0 0.65rem;
+  font-size: 0.8125rem;
+}
+
+.app-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.55rem;
+  margin-top: 1.15rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--fa-border-subtle);
+}

@@ -2,7 +2,11 @@ import type { ElectronAPI } from '@electron-toolkit/preload'
 
 import type { EngineDownloadProgress } from '../main/engine-download'
 import type { MediaProbeResult } from '../main/ffprobe-service'
-import type { EnginesStatusSnapshot } from '../main/engine-service'
+import type {
+  EngineId,
+  EnginePathOverridesPatch,
+  EnginesStatusSnapshot
+} from '../main/engine-service'
 import type { PreviewDialogResult } from '../main/preview-dialog'
 import type { AppSettings, AppTheme } from '../main/settings-store'
 
@@ -21,6 +25,8 @@ export interface FluxAlloyApi {
   settings: {
     get: () => Promise<AppSettings>
     setTheme: (theme: AppTheme) => Promise<AppSettings>
+    setEngineExecutablePaths: (patch: EnginePathOverridesPatch) => Promise<AppSettings>
+    pickEngineExecutable: (engineId: EngineId) => Promise<string | null>
   }
   preview: {
     openFileDialog: () => Promise<PreviewDialogResult>
@@ -50,6 +56,8 @@ export interface FluxAlloyApi {
   }
   onPreviewOpened: (listener: (payload: PreviewOpenedPayload) => void) => () => void
   onThemeChanged: (listener: (theme: AppTheme) => void) => () => void
+  onOpenEnginePaths: (listener: () => void) => () => void
+  onEnginePathsChanged: (listener: () => void) => () => void
 }
 
 declare global {

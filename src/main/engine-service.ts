@@ -1,11 +1,17 @@
 import { existsSync } from 'fs'
 import { execFile } from 'child_process'
-import { basename, join } from 'path'
+import { basename, join, normalize, resolve } from 'path'
 
 import type { AppPaths } from './app-paths'
 
 export type EngineId = 'ffmpeg' | 'ffprobe' | 'yt-dlp'
 export type EngineState = 'missing' | 'checking' | 'ready' | 'error'
+
+/** Явные пути из настроек: полный путь к исполняемому файлу (имеет приоритет над bundled/user bin). */
+export type EnginePathOverrides = Partial<Record<EngineId, string>>
+
+/** Patch для IPC: `null` или пустая строка сбрасывают override для ключа. */
+export type EnginePathOverridesPatch = Partial<Record<EngineId, string | null>>
 
 export interface EngineStatus {
   /** Стабильный ID для IPC/UI; не зависит от расширения `.exe` на Windows. */
@@ -48,18 +54,27 @@ function firstExistingPath(paths: string[]): string | null {
   return paths.find((candidate) => existsSync(candidate)) ?? null
 }
 
-function candidatePaths(paths: AppPaths, id: EngineId): string[] {
+function candidatePaths(paths: AppPaths, id: EngineId, overrides?: EnginePathOverrides): string[] {
   const exe = executableName(id)
+  const ordered: string[] = []
 
-  // Сначала bundled `bin` из сборки, затем пользовательский `userData/bin`.
-  // Позже сюда добавятся ручные override-пути из настроек, но порядок останется централизованным.
-  // TODO(§3/§4.6): добавить override-пути из настроек перед bundled/user bin, чтобы ручной путь был приоритетным.
-  return [join(paths.bundledBin, exe), join(paths.userBin, exe)]
+  const manual = overrides?.[id]
+  if (typeof manual === 'string' && manual.trim() !== '') {
+    ordered.push(resolve(normalize(manual.trim())))
+  }
+
+  // bundled `bin`, затем `userData/bin`; ручной путь (если задан) проверяется первым.
+  ordered.push(join(paths.bundledBin, exe), join(paths.userBin, exe))
+  return ordered
 }
 
 /** Путь к уже существующему исполняемому файлу движка (для запусков вроде ffprobe/ffmpeg). */
-export function resolveEngineExecutablePath(paths: AppPaths, id: EngineId): string | null {
-  return firstExistingPath(candidatePaths(paths, id))
+export function resolveEngineExecutablePath(
+  paths: AppPaths,
+  id: EngineId,
+  overrides?: EnginePathOverrides
+): string | null {
+  return firstExistingPath(candidatePaths(paths, id, overrides))
 }
 
 function readVersion(executablePath: string): Promise<string> {
@@ -84,9 +99,13 @@ function readVersion(executablePath: string): Promise<string> {
   })
 }
 
-async function checkEngine(paths: AppPaths, id: EngineId): Promise<EngineStatus> {
+async function checkEngine(
+  paths: AppPaths,
+  id: EngineId,
+  overrides?: EnginePathOverrides
+): Promise<EngineStatus> {
   const exe = executableName(id)
-  const foundPath = firstExistingPath(candidatePaths(paths, id))
+  const foundPath = firstExistingPath(candidatePaths(paths, id, overrides))
 
   if (!foundPath) {
     // `missing` — нормальное состояние свежей установки до реализации загрузчика §3.
@@ -98,7 +117,7 @@ async function checkEngine(paths: AppPaths, id: EngineId): Promise<EngineStatus>
       executableName: exe,
       path: null,
       version: null,
-      message: `Не найден ${exe} в bundled/user bin`
+      message: `Не найден ${exe} (override/bundled/user bin)`
     }
   }
 
@@ -135,10 +154,13 @@ async function checkEngine(paths: AppPaths, id: EngineId): Promise<EngineStatus>
  * Сейчас это только локальная проверка наличия и `--version`. Скачивание, хеши и обновления
  * будут наращиваться поверх этих же статусов, чтобы UI не менял контракт при расширении §3.
  */
-export async function getEnginesStatus(paths: AppPaths): Promise<EnginesStatusSnapshot> {
+export async function getEnginesStatus(
+  paths: AppPaths,
+  overrides?: EnginePathOverrides
+): Promise<EnginesStatusSnapshot> {
   const ids: EngineId[] = ['ffmpeg', 'ffprobe', 'yt-dlp']
   // TODO(§3): после загрузчика хешей добавить сюда состояние `checking`/progress для длительных проверок.
-  const statuses = await Promise.all(ids.map((id) => checkEngine(paths, id)))
+  const statuses = await Promise.all(ids.map((id) => checkEngine(paths, id, overrides)))
 
   return {
     checkedAt: new Date().toISOString(),

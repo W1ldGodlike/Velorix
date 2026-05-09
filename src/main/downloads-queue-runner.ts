@@ -1,6 +1,7 @@
 import { join } from 'path'
 
 import { resolveAppPaths } from './app-paths'
+import { getEnginePathOverridesSnapshot } from './engine-path-sync'
 import { findFirstWaitingRow, updateDownloadsRow, type DownloadsQueueRow } from './downloads-queue'
 import { extractDownloadPercent, runYtdlpOnce } from './ytdlp-download-service'
 
@@ -53,16 +54,23 @@ export async function startDownloadsSequential(): Promise<void> {
       let lastPct: string | null = null
 
       try {
-        const result = await runYtdlpOnce(paths, rowUrl, outputDir, signal, {
-          onStderrLine: (line) => {
-            const pct = extractDownloadPercent(line)
-            if (pct) {
-              lastPct = pct
-              updateDownloadsRow(rowId, { progress: pct })
-              notifySnapshot()
+        const result = await runYtdlpOnce(
+          paths,
+          rowUrl,
+          outputDir,
+          signal,
+          {
+            onStderrLine: (line) => {
+              const pct = extractDownloadPercent(line)
+              if (pct) {
+                lastPct = pct
+                updateDownloadsRow(rowId, { progress: pct })
+                notifySnapshot()
+              }
             }
-          }
-        })
+          },
+          getEnginePathOverridesSnapshot()
+        )
 
         if (result.exitCode !== 0) {
           updateDownloadsRow(rowId, {

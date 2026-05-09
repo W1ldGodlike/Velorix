@@ -3,13 +3,13 @@ import { mkdirSync } from 'fs'
 import { join } from 'path'
 
 import type { AppPaths } from './app-paths'
+import { resolveEngineExecutablePath, type EnginePathOverrides } from './engine-service'
 
 function abortErr(): Error {
   const e = new Error('Отменено')
   e.name = 'AbortError'
   return e
 }
-import { resolveEngineExecutablePath } from './engine-service'
 
 export interface YtdlpRunCallbacks {
   onStdoutLine?: (line: string) => void
@@ -31,9 +31,10 @@ export function runYtdlpOnce(
   url: string,
   outputDir: string,
   signal: AbortSignal,
-  callbacks: YtdlpRunCallbacks = {}
+  callbacks: YtdlpRunCallbacks = {},
+  engineOverrides?: EnginePathOverrides
 ): Promise<{ exitCode: number | null; signal: NodeJS.Signals | null }> {
-  const ytDlp = resolveEngineExecutablePath(paths, 'yt-dlp')
+  const ytDlp = resolveEngineExecutablePath(paths, 'yt-dlp', engineOverrides)
   if (!ytDlp) {
     return Promise.reject(new Error('yt-dlp не найден — скачайте движки из главного окна'))
   }

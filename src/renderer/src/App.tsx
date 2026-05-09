@@ -15,6 +15,25 @@ type EngineSummary = 'checking' | 'ready' | 'missing' | 'error'
 
 type EnginesSnapshot = Awaited<ReturnType<typeof window.fluxalloy.engines.getStatus>>
 
+type EngineId = 'ffmpeg' | 'ffprobe' | 'yt-dlp'
+
+const ENGINE_IDS: EngineId[] = ['ffmpeg', 'ffprobe', 'yt-dlp']
+
+function engineLabel(id: EngineId): string {
+  switch (id) {
+    case 'ffmpeg':
+      return 'ffmpeg'
+    case 'ffprobe':
+      return 'ffprobe'
+    case 'yt-dlp':
+      return 'yt-dlp'
+    default:
+      return id
+  }
+}
+
+type EnginePathsDraft = Record<EngineId, string>
+
 function formatEngineVersionsLine(snapshot: EnginesSnapshot): string {
   const ids = ['ffmpeg', 'ffprobe', 'yt-dlp'] as const
   const parts = ids.map((id) => {
@@ -101,6 +120,12 @@ function App(): React.JSX.Element {
   const [engineSummary, setEngineSummary] = useState<EngineSummary>('checking')
   const [enginesOfferDownload, setEnginesOfferDownload] = useState(false)
   const [engineDownloadBusy, setEngineDownloadBusy] = useState(false)
+  const [enginePathsOpen, setEnginePathsOpen] = useState(false)
+  const [enginePathsDraft, setEnginePathsDraft] = useState<EnginePathsDraft>({
+    ffmpeg: '',
+    ffprobe: '',
+    'yt-dlp': ''
+  })
   /** Подстрочное сообщение статусбара: прогресс загрузки движков, ошибки DnD и т.п. */
   const [statusHint, setStatusHint] = useState<string | null>(null)
   const [preview, setPreview] = useState<PreviewOpenedPayload | null>(null)
@@ -119,6 +144,19 @@ function App(): React.JSX.Element {
   const applyTheme = useCallback((value: Theme) => {
     document.documentElement.dataset.theme = value
     setTheme(value)
+  }, [])
+
+  const refreshEngineUi = useCallback(async (): Promise<void> => {
+    try {
+      const snapshot = await window.fluxalloy.engines.getStatus()
+      setEngineSummary(summarizeEngines(snapshot.engines))
+      setEngineVersionsLine(formatEngineVersionsLine(snapshot))
+      const need = await window.fluxalloy.engines.shouldOfferDownload()
+      setEnginesOfferDownload(need)
+    } catch {
+      setEngineSummary('error')
+      setEngineVersionsLine('')
+    }
   }, [])
 
   useEffect(() => {
@@ -173,17 +211,43 @@ function App(): React.JSX.Element {
   }, [preview?.path])
 
   useEffect(() => {
-    void window.fluxalloy.engines
-      .getStatus()
-      .then((snapshot) => {
-        setEngineSummary(summarizeEngines(snapshot.engines))
-        setEngineVersionsLine(formatEngineVersionsLine(snapshot))
+    let cancelled = false
+    const handle = window.setTimeout(() => {
+      if (!cancelled) {
+        void refreshEngineUi()
+      }
+    }, 0)
+    return (): void => {
+      cancelled = true
+      window.clearTimeout(handle)
+    }
+  }, [refreshEngineUi])
+
+  useEffect(() => {
+    if (!enginePathsOpen) {
+      return
+    }
+    void window.fluxalloy.settings.get().then((s) => {
+      setEnginePathsDraft({
+        ffmpeg: s.engineExecutablePaths?.ffmpeg ?? '',
+        ffprobe: s.engineExecutablePaths?.ffprobe ?? '',
+        'yt-dlp': s.engineExecutablePaths?.['yt-dlp'] ?? ''
       })
-      .catch(() => {
-        setEngineSummary('error')
-        setEngineVersionsLine('')
-      })
-  }, [])
+    })
+  }, [enginePathsOpen])
+
+  useEffect(() => {
+    const offMenu = window.fluxalloy.onOpenEnginePaths(() => {
+      setEnginePathsOpen(true)
+    })
+    const offSynced = window.fluxalloy.onEnginePathsChanged(() => {
+      void refreshEngineUi()
+    })
+    return (): void => {
+      offMenu()
+      offSynced()
+    }
+  }, [refreshEngineUi])
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent): void {
@@ -256,18 +320,32 @@ function App(): React.JSX.Element {
         return
       }
 
-      const snapshot = await window.fluxalloy.engines.getStatus()
-      setEngineSummary(summarizeEngines(snapshot.engines))
-      setEngineVersionsLine(formatEngineVersionsLine(snapshot))
-
-      const need = await window.fluxalloy.engines.shouldOfferDownload()
-      setEnginesOfferDownload(need)
+      await refreshEngineUi()
       setStatusHint('Движки загружены')
     } catch (error) {
       setStatusHint(error instanceof Error ? error.message : 'Ошибка загрузки')
     } finally {
       setEngineDownloadBusy(false)
     }
+  }
+
+  async function handleSaveEnginePaths(): Promise<void> {
+    await window.fluxalloy.settings.setEngineExecutablePaths({
+      ffmpeg: enginePathsDraft.ffmpeg.trim() || null,
+      ffprobe: enginePathsDraft.ffprobe.trim() || null,
+      'yt-dlp': enginePathsDraft['yt-dlp'].trim() || null
+    })
+    await refreshEngineUi()
+    setEnginePathsOpen(false)
+    setStatusHint('Пути к движкам сохранены')
+  }
+
+  async function handlePickEngine(id: EngineId): Promise<void> {
+    const picked = await window.fluxalloy.settings.pickEngineExecutable(id)
+    if (!picked) {
+      return
+    }
+    setEnginePathsDraft((prev) => ({ ...prev, [id]: picked }))
   }
 
   async function handlePreviewDrop(files: FileList | null): Promise<void> {
@@ -330,6 +408,16 @@ function App(): React.JSX.Element {
           </button>
         ) : null}
         <div className="app-toolbar-spacer" aria-hidden />
+        <button
+          type="button"
+          className="app-btn"
+          onClick={() => {
+            setEnginePathsOpen(true)
+          }}
+          title="Задать исполняемые файлы ffmpeg, ffprobe и yt-dlp вручную"
+        >
+          Пути движков
+        </button>
         <button
           type="button"
           className="app-btn"
@@ -454,6 +542,96 @@ function App(): React.JSX.Element {
         <span className="app-statusbar-sep" aria-hidden />
         <Versions />
       </footer>
+
+      {enginePathsOpen ? (
+        <div
+          className="app-modal-backdrop"
+          role="presentation"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) {
+              setEnginePathsOpen(false)
+            }
+          }}
+        >
+          <div
+            className="app-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="engine-paths-title"
+            onMouseDown={(e) => {
+              e.stopPropagation()
+            }}
+          >
+            <h2 id="engine-paths-title" className="app-modal-title">
+              Пути к движкам
+            </h2>
+            <p className="app-modal-hint">
+              Полный путь к каждому исполняемому файлу имеет приоритет над встроенным каталогом и
+              загрузкой в userData/bin. Оставьте поле пустым и сохраните — сброс на авто-поиск.
+            </p>
+            <div className="app-engine-path-rows">
+              {ENGINE_IDS.map((id) => (
+                <div key={id} className="app-engine-path-row">
+                  <label className="app-engine-path-label" htmlFor={`engine-path-${id}`}>
+                    {engineLabel(id)}
+                  </label>
+                  <input
+                    id={`engine-path-${id}`}
+                    className="app-engine-path-input"
+                    type="text"
+                    spellCheck={false}
+                    placeholder="Авто"
+                    value={enginePathsDraft[id]}
+                    onChange={(e) => {
+                      setEnginePathsDraft((prev) => ({ ...prev, [id]: e.target.value }))
+                    }}
+                  />
+                  <div className="app-engine-path-actions">
+                    <button
+                      type="button"
+                      className="app-btn app-btn-compact"
+                      onClick={() => {
+                        void handlePickEngine(id)
+                      }}
+                    >
+                      Выбрать…
+                    </button>
+                    <button
+                      type="button"
+                      className="app-btn app-btn-compact"
+                      onClick={() => {
+                        setEnginePathsDraft((prev) => ({ ...prev, [id]: '' }))
+                      }}
+                    >
+                      Сбросить
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="app-modal-footer">
+              <button
+                type="button"
+                className="app-btn"
+                onClick={() => {
+                  setEnginePathsOpen(false)
+                }}
+              >
+                Отмена
+              </button>
+              <button
+                type="button"
+                className="app-btn app-btn-primary"
+                onClick={() => {
+                  void handleSaveEnginePaths()
+                }}
+              >
+                Сохранить
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }

@@ -1,6 +1,8 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs'
 import { dirname } from 'path'
 
+import type { EngineId, EnginePathOverrides } from './engine-service'
+
 export type AppTheme = 'dark' | 'light'
 
 export interface AppSettings {
@@ -8,7 +10,25 @@ export interface AppSettings {
   theme: AppTheme
   /** §4.1: последний успешно открытый локальный файл для мягкого восстановления сессии. */
   lastOpenedSourcePath?: string
-  // TODO(§3/§4.6): язык, override-пути движков, hotkeys.
+  /** §3: полные пути к exe движков; имеют приоритет над bundled и userData/bin. */
+  engineExecutablePaths?: EnginePathOverrides
+  // TODO(§4.6): язык, hotkeys.
+}
+
+function parseEngineExecutablePaths(raw: unknown): EnginePathOverrides | undefined {
+  if (!raw || typeof raw !== 'object') {
+    return undefined
+  }
+  const src = raw as Record<string, unknown>
+  const ids: EngineId[] = ['ffmpeg', 'ffprobe', 'yt-dlp']
+  const out: EnginePathOverrides = {}
+  for (const id of ids) {
+    const v = src[id]
+    if (typeof v === 'string' && v.trim() !== '') {
+      out[id] = v.trim()
+    }
+  }
+  return Object.keys(out).length > 0 ? out : undefined
 }
 
 const defaults: AppSettings = { theme: 'dark' }
@@ -32,7 +52,16 @@ export function loadSettings(filePath: string): AppSettings {
       typeof parsed.lastOpenedSourcePath === 'string' && parsed.lastOpenedSourcePath.trim() !== ''
         ? parsed.lastOpenedSourcePath.trim()
         : undefined
-    return last === undefined ? { theme } : { theme, lastOpenedSourcePath: last }
+    const engineExecutablePaths = parseEngineExecutablePaths(parsed.engineExecutablePaths)
+
+    const base: AppSettings = { theme }
+    if (last !== undefined) {
+      base.lastOpenedSourcePath = last
+    }
+    if (engineExecutablePaths !== undefined) {
+      base.engineExecutablePaths = engineExecutablePaths
+    }
+    return base
   } catch {
     return { ...defaults }
   }
