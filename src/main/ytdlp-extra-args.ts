@@ -50,6 +50,11 @@ function tokenViolationReason(token: string): string | null {
   if (token.startsWith('@')) {
     return 'Аргументы вида @файл запрещены.'
   }
+  // `-P` — case-sensitive short option в yt-dlp; после toLowerCase сравнение ломается,
+  // поэтому ловим короткий флаг до приведения регистра. Покрыто unit-тестом §21.
+  if (token === '-P' || token.startsWith('-P=')) {
+    return 'Каталоги вывода задаются настройками FluxAlloy; -P/--paths запрещены.'
+  }
   const low = token.toLowerCase()
   if (low === '-o' || low === '--output' || low.startsWith('-o=') || low.startsWith('--output=')) {
     return 'Шаблон вывода задаётся полем выше; не дублируйте -o/--output.'
@@ -77,9 +82,6 @@ function tokenViolationReason(token: string): string | null {
   }
   if (low === '--fragment-retries' || low.startsWith('--fragment-retries=')) {
     return 'Повторы фрагментов зададим отдельным режимом позже; пока не дублируйте --fragment-retries.'
-  }
-  if (low === '-P') {
-    return 'Каталоги вывода задаются настройками FluxAlloy; -P/--paths запрещены.'
   }
   const forbidden = FORBIDDEN_RUNTIME_OPTIONS.find((opt) => tokenIsOption(low, opt))
   if (forbidden) {

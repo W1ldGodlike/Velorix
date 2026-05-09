@@ -25,7 +25,7 @@
 - [~] Нет запуска `ffmpeg`/пайплайна обработки; движки можно **скачать кнопкой** в UI (Windows) в `userData/bin`, есть проверка `--version` после загрузки.
 - [~] Автозагрузка движков **Windows x64** (yt-dlp GitHub + ffmpeg zip gyan.dev), SHA256 опционально через `Data/trusted_hashes.json`; в установщике есть пустой `resources/bin` (`extraResources`), бинарники — подкладка/`userData/bin`.
 - [ ] Нет локализации `locales/**`.
-- [ ] Нет тестового раннера.
+- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; есть базовое покрытие чистых парсеров (`ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`).
 
 ## Журнал решений и проверок
 
@@ -40,8 +40,9 @@
 - [~] §7: превью + таймлайн + экспорт MP4 + снимок кадра §7.6 + ffprobe под превью; отдельное окно инспектора §9 — позже.
 - [~] §7.2/§20: системные пресеты libx264 есть; дальше пользовательские пресеты, контейнер/формат и расширенные параметры кодирования.
 - [~] §17/§18: меню «Инструменты → Открыть папку…», IPC `diagnostics-*` и базовый `logger-service` (`main.log` + ротация + crash handler + renderer-канал); дальше — диалог ошибки, Support ZIP и логи stdout движков.
-- [ ] §21: выделить общие IPC contracts/shared models и добавить первые unit tests для чистых парсеров (`ytdlp-extra-args`, progress parsers).
+- [~] §21: подключён Vitest + 62 теста для парсеров yt-dlp; найден и закрыт обход whitelist `-P`. Дальше — IPC contracts/shared models и тесты на ffmpeg-прогресс/output-pattern.
 - [ ] §6.4: история загрузок yt-dlp (persist в `userData/downloads/history.json`, фильтры/повтор).
+- [ ] §18: dialog ошибки + Support ZIP + лог stdout/stderr внешних процессов в `main.log`.
 
 ---
 
@@ -495,8 +496,8 @@
 - [ ] Вынести IPC contracts в отдельный слой.
 - [ ] Вынести сервисы main.
 - [ ] Вынести модели shared.
-- [ ] Добавить unit tests для чистых модулей.
-- [ ] Выбрать Vitest/Jest.
+- [~] Unit tests для чистых модулей: `tests/main/*` — `ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry` (62 теста). Дальше — output-pattern, ffmpeg-progress, settings-store парсеры.
+- [x] Выбрать Vitest/Jest: Vitest подключён (`npm run test`/`test:watch`, `tsconfig.tests.json`).
 - [ ] Добавить e2e smoke позже.
 - [~] Комментарии на русском для публичных API и сложной логики: базовые комментарии добавлены; дальше писать чуть развёрнутее, чтобы следующему проходу агента было понятно «зачем» и «где границы», не только «что делает строка».
 - [ ] Не использовать shell string для внешних процессов; только args arrays.
