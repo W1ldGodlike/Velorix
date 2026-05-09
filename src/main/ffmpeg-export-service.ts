@@ -12,6 +12,7 @@ export interface MediaExportTrimPayload {
 export type FfmpegExportEncodePresetId = 'balance' | 'smaller' | 'quality'
 export type FfmpegExportContainerId = 'mp4' | 'mkv' | 'mov'
 export type FfmpegExportScalePresetId = 'source' | '480p' | '720p' | '1080p'
+export type FfmpegExportAudioModeId = 'aac' | 'none'
 
 export interface MediaExportRequestPayload {
   inputPath: string
@@ -25,6 +26,8 @@ export interface MediaExportRequestPayload {
   crf?: number | null
   /** Video bitrate (`2500k`, `8000k`); если задан — используется вместо CRF. */
   videoBitrate?: string | null
+  /** `aac` — перекодировать звук, `none` — экспорт без аудиодорожки. */
+  audioMode?: FfmpegExportAudioModeId | null
   /** Битрейт AAC одним токеном (`128k`, `192k`, `320k`). */
   audioBitrate?: string | null
   /** FPS вывода; null/undefined — оставить исходную частоту. */
@@ -96,6 +99,13 @@ export function parseFfmpegExportAudioBitrate(raw: unknown): string | null {
     return null
   }
   return `${kbps}k`
+}
+
+export function parseFfmpegExportAudioMode(raw: unknown): FfmpegExportAudioModeId {
+  if (raw === 'none') {
+    return 'none'
+  }
+  return 'aac'
 }
 
 export function parseFfmpegExportVideoBitrate(raw: unknown): string | null {
@@ -246,6 +256,7 @@ function buildEncodeArgs(
   encodePreset: FfmpegExportEncodePresetId,
   crfOverride: number | null,
   videoBitrate: string | null,
+  audioMode: FfmpegExportAudioModeId,
   audioBitrate: string,
   fps: number | null,
   scalePreset: FfmpegExportScalePresetId
@@ -276,7 +287,12 @@ function buildEncodeArgs(
   if (filters.length > 0) {
     args.push('-vf', filters.join(','))
   }
-  args.push('-c:a', 'aac', '-b:a', audioBitrate, '-movflags', '+faststart', outputPath)
+  if (audioMode === 'none') {
+    args.push('-an')
+  } else {
+    args.push('-c:a', 'aac', '-b:a', audioBitrate)
+  }
+  args.push('-movflags', '+faststart', outputPath)
   return args
 }
 
@@ -295,6 +311,7 @@ export function runFfmpegExportJob(params: {
   encodePreset?: FfmpegExportEncodePresetId
   crf?: number | null
   videoBitrate?: string | null
+  audioMode?: FfmpegExportAudioModeId | null
   audioBitrate?: string | null
   fps?: number | null
   scalePreset?: FfmpegExportScalePresetId | null
@@ -305,6 +322,7 @@ export function runFfmpegExportJob(params: {
   const encodePreset = params.encodePreset ?? 'balance'
   const crf = parseFfmpegExportCrf(params.crf)
   const videoBitrate = parseFfmpegExportVideoBitrate(params.videoBitrate)
+  const audioMode = parseFfmpegExportAudioMode(params.audioMode)
   const audioBitrate = parseFfmpegExportAudioBitrate(params.audioBitrate) ?? '192k'
   const fps = parseFfmpegExportFps(params.fps)
   const scalePreset = parseFfmpegExportScalePreset(params.scalePreset)
@@ -321,6 +339,7 @@ export function runFfmpegExportJob(params: {
     encodePreset,
     crf,
     videoBitrate,
+    audioMode,
     audioBitrate,
     fps,
     scalePreset

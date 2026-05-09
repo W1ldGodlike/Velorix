@@ -66,6 +66,8 @@ export interface AppSettings {
   ffmpegExportCrf?: number
   /** §7.2: video bitrate одним argv-токеном; если задан — заменяет CRF mode. */
   ffmpegExportVideoBitrate?: string
+  /** §7.2: режим аудио экспорта: AAC или без аудиодорожки. */
+  ffmpegExportAudioMode?: 'aac' | 'none'
   /** §7.2: битрейт AAC одним argv-токеном (`128k`, `192k`, `320k`). */
   ffmpegExportAudioBitrate?: string
   /** §7.2: FPS вывода; отсутствует — исходная частота. */
@@ -299,6 +301,13 @@ function parseFfmpegExportVideoBitrateStored(raw: unknown): string | undefined {
   return `${kbps}k`
 }
 
+function parseFfmpegExportAudioModeStored(raw: unknown): 'aac' | 'none' | undefined {
+  if (raw === 'aac' || raw === 'none') {
+    return raw
+  }
+  return undefined
+}
+
 function parseFfmpegExportFpsStored(raw: unknown): number | undefined {
   if (typeof raw !== 'number' || ![24, 25, 30, 50, 60].includes(raw)) {
     return undefined
@@ -352,6 +361,7 @@ export function loadSettings(filePath: string): AppSettings {
     const ffmpegExportAudioBitrate = parseFfmpegExportAudioBitrateStored(
       parsed.ffmpegExportAudioBitrate
     )
+    const ffmpegExportAudioMode = parseFfmpegExportAudioModeStored(parsed.ffmpegExportAudioMode)
     const ffmpegExportFps = parseFfmpegExportFpsStored(parsed.ffmpegExportFps)
     const ffmpegExportScalePreset = parseFfmpegExportScalePresetStored(
       parsed.ffmpegExportScalePreset
@@ -403,6 +413,9 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (ffmpegExportAudioBitrate !== undefined) {
       base.ffmpegExportAudioBitrate = ffmpegExportAudioBitrate
+    }
+    if (ffmpegExportAudioMode !== undefined && ffmpegExportAudioMode !== 'aac') {
+      base.ffmpegExportAudioMode = ffmpegExportAudioMode
     }
     if (ffmpegExportFps !== undefined) {
       base.ffmpegExportFps = ffmpegExportFps

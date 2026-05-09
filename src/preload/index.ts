@@ -4,6 +4,7 @@ import { electronAPI } from '@electron-toolkit/preload'
 import type { DiagnosticsFolderEntry, DiagnosticsFolderId } from '../main/diagnostics-paths'
 import type { EngineDownloadProgress } from '../main/engine-download'
 import type {
+  FfmpegExportAudioModeId,
   FfmpegExportContainerId,
   FfmpegExportEncodePresetId,
   FfmpegExportScalePresetId,
@@ -42,6 +43,8 @@ const fluxalloy = {
       ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-crf', crf),
     setFfmpegExportVideoBitrate: (bitrate: string | null): Promise<AppSettings> =>
       ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-video-bitrate', bitrate),
+    setFfmpegExportAudioMode: (mode: FfmpegExportAudioModeId): Promise<AppSettings> =>
+      ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-audio-mode', mode),
     setFfmpegExportAudioBitrate: (bitrate: string | null): Promise<AppSettings> =>
       ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-audio-bitrate', bitrate),
     setFfmpegExportFps: (fps: number | null): Promise<AppSettings> =>

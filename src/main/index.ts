@@ -38,6 +38,7 @@ import { runFfmpegSnapshotFrame } from './ffmpeg-frame-snapshot-service'
 import {
   parseFfmpegExportContainer,
   parseFfmpegExportAudioBitrate,
+  parseFfmpegExportAudioMode,
   parseFfmpegExportCrf,
   parseFfmpegExportEncodePreset,
   parseFfmpegExportFps,
@@ -617,6 +618,19 @@ function persistFfmpegExportAudioBitrate(raw: unknown): AppSettings {
     delete next.ffmpegExportAudioBitrate
   } else {
     next.ffmpegExportAudioBitrate = value
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistFfmpegExportAudioMode(raw: unknown): AppSettings {
+  const value = parseFfmpegExportAudioMode(raw)
+  const next = { ...cachedSettings }
+  if (value === 'aac') {
+    delete next.ffmpegExportAudioMode
+  } else {
+    next.ffmpegExportAudioMode = value
   }
   cachedSettings = next
   saveSettings(settingsPath(), cachedSettings)
@@ -1223,6 +1237,11 @@ app.whenReady().then(() => {
   )
 
   ipcMain.handle(
+    'fluxalloy:settings-set-ffmpeg-export-audio-mode',
+    (_, raw: unknown): AppSettings => persistFfmpegExportAudioMode(raw)
+  )
+
+  ipcMain.handle(
     'fluxalloy:settings-set-ffmpeg-export-video-bitrate',
     (_, raw: unknown): AppSettings => persistFfmpegExportVideoBitrate(raw)
   )
@@ -1461,6 +1480,11 @@ app.whenReady().then(() => {
         videoBitrateRaw !== undefined && videoBitrateRaw !== null
           ? parseFfmpegExportVideoBitrate(videoBitrateRaw)
           : parseFfmpegExportVideoBitrate(cachedSettings.ffmpegExportVideoBitrate)
+      const audioModeRaw = (raw as { audioMode?: unknown }).audioMode
+      const exportAudioMode =
+        audioModeRaw !== undefined && audioModeRaw !== null
+          ? parseFfmpegExportAudioMode(audioModeRaw)
+          : parseFfmpegExportAudioMode(cachedSettings.ffmpegExportAudioMode)
       const audioBitrateRaw = (raw as { audioBitrate?: unknown }).audioBitrate
       const exportAudioBitrate =
         audioBitrateRaw !== undefined && audioBitrateRaw !== null
@@ -1528,6 +1552,7 @@ app.whenReady().then(() => {
           encodePreset,
           crf: exportCrf,
           videoBitrate: exportVideoBitrate,
+          audioMode: exportAudioMode,
           audioBitrate: exportAudioBitrate,
           fps: exportFps,
           scalePreset: exportScalePreset,

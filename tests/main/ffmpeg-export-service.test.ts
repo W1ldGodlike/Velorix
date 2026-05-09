@@ -4,6 +4,7 @@ import {
   ensureFfmpegExportExtension,
   inferFfmpegExportContainerFromPath,
   parseFfmpegExportAudioBitrate,
+  parseFfmpegExportAudioMode,
   parseFfmpegExportEncodePreset,
   parseFfmpegExportContainer,
   parseFfmpegExportCrf,
@@ -52,6 +53,8 @@ describe('ffmpeg export pure helpers', () => {
     expect(parseFfmpegExportAudioBitrate('192K')).toBe('192k')
     expect(parseFfmpegExportAudioBitrate('16k')).toBeNull()
     expect(parseFfmpegExportAudioBitrate('1000k')).toBeNull()
+    expect(parseFfmpegExportAudioMode('none')).toBe('none')
+    expect(parseFfmpegExportAudioMode('bad')).toBe('aac')
   })
 
   it('валидирует FPS и scale preset', () => {

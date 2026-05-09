@@ -22,6 +22,7 @@ type EngineId = 'ffmpeg' | 'ffprobe' | 'yt-dlp'
 type ExportEncodePresetId = 'balance' | 'smaller' | 'quality'
 type ExportContainerId = 'mp4' | 'mkv' | 'mov'
 type ExportScalePresetId = 'source' | '480p' | '720p' | '1080p'
+type ExportAudioModeId = 'aac' | 'none'
 
 const EXPORT_ENCODE_PRESETS: Array<{ id: ExportEncodePresetId; label: string }> = [
   { id: 'balance', label: 'Баланс' },
@@ -37,6 +38,10 @@ const EXPORT_CONTAINERS: Array<{ id: ExportContainerId; label: string }> = [
 
 const EXPORT_CRF_OPTIONS = [18, 20, 23, 26, 28, 30]
 const EXPORT_VIDEO_BITRATES = ['1000k', '2500k', '5000k', '8000k', '12000k', '20000k']
+const EXPORT_AUDIO_MODES: Array<{ id: ExportAudioModeId; label: string }> = [
+  { id: 'aac', label: 'AAC audio' },
+  { id: 'none', label: 'Без аудио' }
+]
 const EXPORT_AUDIO_BITRATES = ['96k', '128k', '160k', '192k', '256k', '320k']
 const EXPORT_FPS_OPTIONS = [24, 25, 30, 50, 60]
 const EXPORT_SCALE_PRESETS: Array<{ id: ExportScalePresetId; label: string }> = [
@@ -305,6 +310,7 @@ function App(): JSX.Element {
   const [exportContainer, setExportContainer] = useState<ExportContainerId>('mp4')
   const [exportCrf, setExportCrf] = useState<number | null>(null)
   const [exportVideoBitrate, setExportVideoBitrate] = useState<string | null>(null)
+  const [exportAudioMode, setExportAudioMode] = useState<ExportAudioModeId>('aac')
   const [exportAudioBitrate, setExportAudioBitrate] = useState('192k')
   const [exportFps, setExportFps] = useState<number | null>(null)
   const [exportScalePreset, setExportScalePreset] = useState<ExportScalePresetId>('source')
@@ -379,6 +385,9 @@ function App(): JSX.Element {
         EXPORT_AUDIO_BITRATES.includes(loaded.ffmpegExportAudioBitrate)
       ) {
         setExportAudioBitrate(loaded.ffmpegExportAudioBitrate)
+      }
+      if (loaded.ffmpegExportAudioMode === 'none') {
+        setExportAudioMode('none')
       }
       if (
         typeof loaded.ffmpegExportFps === 'number' &&
@@ -638,6 +647,7 @@ function App(): JSX.Element {
         container: exportContainer,
         crf: exportCrf,
         videoBitrate: exportVideoBitrate,
+        audioMode: exportAudioMode,
         audioBitrate: exportAudioBitrate,
         fps: exportFps,
         scalePreset: exportScalePreset
@@ -876,10 +886,28 @@ function App(): JSX.Element {
         </select>
         <select
           className="app-toolbar-select"
+          aria-label="Режим аудио экспорта"
+          title="AAC audio или экспорт без аудиодорожки"
+          value={exportAudioMode}
+          disabled={exportBusy || snapshotBusy}
+          onChange={(e) => {
+            const v = e.target.value === 'none' ? 'none' : 'aac'
+            setExportAudioMode(v)
+            void window.fluxalloy.settings.setFfmpegExportAudioMode(v).catch(console.error)
+          }}
+        >
+          {EXPORT_AUDIO_MODES.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.label}
+            </option>
+          ))}
+        </select>
+        <select
+          className="app-toolbar-select"
           aria-label="Аудио bitrate экспорта"
           title="Битрейт AAC audio"
           value={exportAudioBitrate}
-          disabled={exportBusy || snapshotBusy}
+          disabled={exportBusy || snapshotBusy || exportAudioMode === 'none'}
           onChange={(e) => {
             const v = e.target.value
             setExportAudioBitrate(v)

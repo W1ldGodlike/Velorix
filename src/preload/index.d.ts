@@ -3,6 +3,7 @@ import type { ElectronAPI } from '@electron-toolkit/preload'
 import type { DiagnosticsFolderEntry, DiagnosticsFolderId } from '../main/diagnostics-paths'
 import type { EngineDownloadProgress } from '../main/engine-download'
 import type {
+  FfmpegExportAudioModeId,
   FfmpegExportContainerId,
   FfmpegExportEncodePresetId,
   FfmpegExportScalePresetId,
@@ -41,6 +42,7 @@ export interface FluxAlloyApi {
     setFfmpegExportContainer: (container: FfmpegExportContainerId) => Promise<AppSettings>
     setFfmpegExportCrf: (crf: number | null) => Promise<AppSettings>
     setFfmpegExportVideoBitrate: (bitrate: string | null) => Promise<AppSettings>
+    setFfmpegExportAudioMode: (mode: FfmpegExportAudioModeId) => Promise<AppSettings>
     setFfmpegExportAudioBitrate: (bitrate: string | null) => Promise<AppSettings>
     setFfmpegExportFps: (fps: number | null) => Promise<AppSettings>
     setFfmpegExportScalePreset: (scale: FfmpegExportScalePresetId) => Promise<AppSettings>
