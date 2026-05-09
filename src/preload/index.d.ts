@@ -11,7 +11,7 @@ import type {
   FfmpegExportProgressPayload,
   MediaExportRequestPayload,
   MediaExportStartResult
-} from '../main/ffmpeg-export-service'
+} from '../shared/ffmpeg-export-contract'
 import type { MediaProbeResult } from '../main/ffprobe-service'
 import type {
   EngineId,

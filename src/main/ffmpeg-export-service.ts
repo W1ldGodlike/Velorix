@@ -1,42 +1,27 @@
 import { spawn } from 'child_process'
 
+import type {
+  FfmpegExportAudioModeId,
+  FfmpegExportContainerId,
+  FfmpegExportEncodePresetId,
+  FfmpegExportProgressPayload,
+  FfmpegExportScalePresetId,
+  MediaExportTrimPayload
+} from '../shared/ffmpeg-export-contract'
+
 import { logExternalProcessLine } from './external-process-log'
 
-/** Диапазон экспорта по маркерам §7.1 (секунды на шкале исходника). */
-export interface MediaExportTrimPayload {
-  inSec: number
-  outSec: number
-}
+export type {
+  FfmpegExportAudioModeId,
+  FfmpegExportContainerId,
+  FfmpegExportEncodePresetId,
+  FfmpegExportProgressPayload,
+  FfmpegExportScalePresetId,
+  MediaExportRequestPayload,
+  MediaExportStartResult,
+  MediaExportTrimPayload
+} from '../shared/ffmpeg-export-contract'
 
-/** Первые системные пресеты libx264 §7.2 — только белый список, без произвольных аргументов. */
-export type FfmpegExportEncodePresetId = 'balance' | 'smaller' | 'quality'
-export type FfmpegExportContainerId = 'mp4' | 'mkv' | 'mov'
-export type FfmpegExportScalePresetId = 'source' | '480p' | '720p' | '1080p'
-export type FfmpegExportAudioModeId = 'aac' | 'none'
-
-export interface MediaExportRequestPayload {
-  inputPath: string
-  trim?: MediaExportTrimPayload
-  probeDurationSec?: number | null
-  /** Если не задан — в main берётся из `settings.json`. */
-  encodePreset?: FfmpegExportEncodePresetId
-  /** Если не задан — в main берётся из `settings.json`. */
-  container?: FfmpegExportContainerId
-  /** CRF libx264 0..51; если не задан — берётся из пресета/settings. */
-  crf?: number | null
-  /** Video bitrate (`2500k`, `8000k`); если задан — используется вместо CRF. */
-  videoBitrate?: string | null
-  /** `aac` — перекодировать звук, `none` — экспорт без аудиодорожки. */
-  audioMode?: FfmpegExportAudioModeId | null
-  /** Битрейт AAC одним токеном (`128k`, `192k`, `320k`). */
-  audioBitrate?: string | null
-  /** FPS вывода; null/undefined — оставить исходную частоту. */
-  fps?: number | null
-  /** Масштабирование с сохранением пропорций; `source` — без `scale`. */
-  scalePreset?: FfmpegExportScalePresetId | null
-}
-
-/** Разбор сохранённой строки или поля IPC; мусор → безопасный `balance`. */
 export function parseFfmpegExportEncodePreset(raw: unknown): FfmpegExportEncodePresetId {
   if (raw === 'balance' || raw === 'smaller' || raw === 'quality') {
     return raw
@@ -169,19 +154,6 @@ export function resolveExportEncodeParams(preset: FfmpegExportEncodePresetId): {
     default:
       return { crf: '23', x264preset: 'fast' }
   }
-}
-
-export type MediaExportStartResult =
-  | { ok: true; path: string }
-  | { ok: false; cancelled: true }
-  | { ok: false; error: string }
-
-export interface FfmpegExportProgressPayload {
-  /** 0..100 или −1, если по stderr ещё не удалось оценить прогресс. */
-  percent: number
-  message: string
-  /** Множитель относительно реального времени (`1.04x`, `N/A`), из последней строки статистики со `speed=`. */
-  speed?: string
 }
 
 /** Поле `speed=` в строках прогресса ffmpeg (`-stats`). */

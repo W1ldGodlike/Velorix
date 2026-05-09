@@ -12,7 +12,7 @@ import type {
   FfmpegExportProgressPayload,
   MediaExportRequestPayload,
   MediaExportStartResult
-} from '../main/ffmpeg-export-service'
+} from '../shared/ffmpeg-export-contract'
 import type { EnginesStatusSnapshot } from '../main/engine-service'
 import type { MediaProbeResult } from '../main/ffprobe-service'
 import type { PreviewDialogResult } from '../main/preview-dialog'

@@ -18,7 +18,7 @@ type EnginesSnapshot = Awaited<ReturnType<typeof window.fluxalloy.engines.getSta
 
 type EngineId = 'ffmpeg' | 'ffprobe' | 'yt-dlp'
 
-/** Совпадает с `FfmpegExportEncodePresetId` в main §7.2 (renderer не импортирует main TS). */
+/** Совпадает с `FfmpegExportEncodePresetId` в `src/shared/ffmpeg-export-contract.ts` §7.2 (renderer не тянет main TS). */
 type ExportEncodePresetId = 'balance' | 'smaller' | 'quality'
 type ExportContainerId = 'mp4' | 'mkv' | 'mov'
 type ExportScalePresetId = 'source' | '480p' | '720p' | '1080p'

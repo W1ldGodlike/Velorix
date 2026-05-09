@@ -92,3 +92,4 @@
 - 2026-05-10 01:01:46 [Assistant]: §7.2/§21 — экспорт получил persisted audio mode `AAC`/`Без аудио`; при `none` ffmpeg получает `-an`, а AAC bitrate в toolbar отключается.
 - 2026-05-10 01:10:11 [Assistant]: §7.6/§21 — снимок кадра получил persisted формат `PNG`/`JPEG` в toolbar; save dialog стартует с нужным расширением, путь без расширения нормализуется helper-ом, settings/snapshot helpers покрыты тестами.
 - 2026-05-10 01:16:21 [SDK]: §21 — реестр IPC `src/shared/ipc-channels.ts`, main/preload на общих константах, Vitest на уникальность строк каналов.
+- 2026-05-10 01:18:24 [SDK]: §21 — `src/shared/ffmpeg-export-contract.ts`: типы экспорта ffmpeg для preload/main, сервис реэкспортирует из shared.
