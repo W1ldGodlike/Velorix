@@ -6,7 +6,11 @@
 export interface DownloadsQueueRow {
   id: number
   url: string
-  /** Краткая метка статуса; позже синхронизируем с реальным прогрессом yt-dlp. */
+  /** Короткая подпись для таблицы (хост + путь). */
+  shortLabel: string
+  /** Прогресс yt-dlp (процент из stderr) или «—». */
+  progress: string
+  /** Человекочитаемый статус строки очереди. */
   status: string
 }
 
@@ -28,6 +32,17 @@ export function lineLooksLikeUrl(line: string): boolean {
   return /^www\./i.test(t)
 }
 
+export function shortUrlLabel(url: string): string {
+  try {
+    const u = new URL(url)
+    const path = u.pathname === '/' ? '' : u.pathname
+    const tail = path.length > 28 ? `${path.slice(0, 26)}…` : path
+    return `${u.hostname}${tail}`
+  } catch {
+    return url.length > 42 ? `${url.slice(0, 40)}…` : url
+  }
+}
+
 function normalizeUrlLine(line: string): string | null {
   const t = line.trim()
   if (!lineLooksLikeUrl(t)) {
@@ -45,6 +60,22 @@ export function getDownloadsQueueSnapshot(): DownloadsQueueRow[] {
 
 export function clearDownloadsQueue(): void {
   rows = []
+}
+
+export function findFirstWaitingRow(): DownloadsQueueRow | undefined {
+  return rows.find((r) => r.status === 'Ожидание')
+}
+
+export function updateDownloadsRow(
+  id: number,
+  patch: Partial<Pick<DownloadsQueueRow, 'status' | 'progress' | 'shortLabel'>>
+): boolean {
+  const row = rows.find((r) => r.id === id)
+  if (!row) {
+    return false
+  }
+  Object.assign(row, patch)
+  return true
 }
 
 export function removeDownloadsQueueRow(id: number): boolean {
@@ -79,7 +110,13 @@ export function appendUrlsFromMultilineBlock(raw: string): number {
   for (const line of lines) {
     const url = normalizeUrlLine(line)
     if (url) {
-      rows.push({ id: nextId++, url, status: 'Ожидание' })
+      rows.push({
+        id: nextId++,
+        url,
+        shortLabel: shortUrlLabel(url),
+        progress: '—',
+        status: 'Ожидание'
+      })
       n += 1
     }
   }

@@ -41,4 +41,6 @@ npm run build:linux
 ## Полезное
 
 - `Data/`, `Help/` — материалы для UI и конфигураций (**§3** ТЗ и подсказки).
+- Автоцикл по чеклисту через Cursor SDK (не IDE-чат): см. [`scripts/cursor-automation/README.md`](./scripts/cursor-automation/README.md).
+- Файлы yt-dlp из окна загрузок по умолчанию: `%AppData%\<FluxAlloy>\downloads\ytdlp` (Electron `userData/downloads/ytdlp`).
 - **Настоятельно используйте `contextIsolation`** и узкий IPC; тяжёлая работа только в **main process** (§2 ТЗ).

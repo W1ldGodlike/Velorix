@@ -7,19 +7,21 @@ import {
   moveDownloadsQueueRow,
   removeDownloadsQueueRow
 } from './downloads-queue'
+import {
+  cancelDownloadsRunner,
+  setDownloadsRunnerNotifier,
+  startDownloadsSequential
+} from './downloads-queue-runner'
 import { resolvePreloadOutFile } from './preload-resolve'
+
+/** Совпадает с preload подпиской на снимок очереди. */
+export const DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL = 'fluxalloy-downloads-state'
 
 let downloadsWindow: BrowserWindow | null = null
 
 let ipcRegistered = false
 
-function escapeHtml(text: string): string {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
-}
+let broadcastThrottleTimer: ReturnType<typeof setTimeout> | null = null
 
 function isDownloadsSender(sender: WebContents): boolean {
   return (
@@ -29,33 +31,31 @@ function isDownloadsSender(sender: WebContents): boolean {
   )
 }
 
-function reloadDownloadsDocument(): void {
+/** Отправить очередь в окно загрузок без полной перезагрузки документа. */
+export function broadcastDownloadsSnapshot(): void {
   if (!downloadsWindow || downloadsWindow.isDestroyed()) {
     return
   }
-  const dataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(buildDownloadsHtml())}`
-  void downloadsWindow.loadURL(dataUrl)
+  if (broadcastThrottleTimer !== null) {
+    return
+  }
+  broadcastThrottleTimer = setTimeout(() => {
+    broadcastThrottleTimer = null
+    try {
+      if (!downloadsWindow || downloadsWindow.isDestroyed()) {
+        return
+      }
+      downloadsWindow.webContents.send(
+        DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL,
+        getDownloadsQueueSnapshot()
+      )
+    } catch {
+      /* окно закрывается */
+    }
+  }, 120)
 }
 
 function buildDownloadsHtml(): string {
-  const rows = getDownloadsQueueSnapshot()
-  const bodyRows = rows
-    .map((r, i) => {
-      const url = escapeHtml(r.url)
-      const st = escapeHtml(r.status)
-      return `<tr>
-  <td class="num">${i + 1}</td>
-  <td class="url" title="${url}">${url}</td>
-  <td>${st}</td>
-  <td class="act">
-    <button type="button" data-act="up" data-id="${r.id}" title="Вверх">↑</button>
-    <button type="button" data-act="dn" data-id="${r.id}" title="Вниз">↓</button>
-    <button type="button" data-act="rm" data-id="${r.id}" title="Удалить">✕</button>
-  </td>
-</tr>`
-    })
-    .join('\n')
-
   return `<!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -72,17 +72,31 @@ function buildDownloadsHtml(): string {
       border-radius: 8px; border: 1px solid #3f3f46; background: #252526; color: #ececec;
       padding: 8px 10px; font-family: inherit; font-size: 12px;
     }
+    textarea.drag {
+      outline: 2px dashed #0078d4;
+      outline-offset: 2px;
+    }
     .row { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 14px; align-items: center; }
     button.cmd {
       border-radius: 8px; border: 1px solid #56565d; background: #2d2d30; color: #ececec;
       padding: 6px 11px; font-size: 12px; cursor: pointer;
     }
     button.cmd:hover { filter: brightness(1.06); }
-    table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    th, td { border-bottom: 1px solid #3f3f46; padding: 6px 8px; text-align: left; vertical-align: top; }
+    button.cmd-primary {
+      border-color: color-mix(in srgb, #0078d4 65%, #56565d);
+      background: color-mix(in srgb, #0078d4 28%, #2d2d30);
+    }
+    button.cmd-warn {
+      border-color: color-mix(in srgb, #c95454 55%, #56565d);
+      background: color-mix(in srgb, #c95454 15%, #2d2d30);
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
+    th, td { border-bottom: 1px solid #3f3f46; padding: 6px 8px; text-align: left; vertical-align: top; word-break: break-word; }
     th { color: #b9b9c0; font-weight: 500; font-size: 11px; }
-    td.url { word-break: break-all; max-width: 340px; }
-    td.num { width: 2rem; color: #9d9da2; font-variant-numeric: tabular-nums; }
+    th:nth-child(1), td:nth-child(1) { width: 2rem; }
+    th:nth-child(5), td:nth-child(5) { width: 6.5rem; white-space: nowrap; }
+    td.num { color: #9d9da2; font-variant-numeric: tabular-nums; }
+    td.prog { font-variant-numeric: tabular-nums; color: #b9d79f; }
     td.act { white-space: nowrap; width: 6.5rem; }
     td.act button {
       border: none; background: transparent; color: #9dc3ff; cursor: pointer; padding: 2px 5px; font-size: 13px;
@@ -93,40 +107,125 @@ function buildDownloadsHtml(): string {
 </head>
 <body>
   <h1>Менеджер загрузок (yt-dlp)</h1>
-  <p class="hint">Вставьте ссылки на видео (по одной на строку). Запуск yt-dlp и прогресс — в следующих итерациях §6.</p>
+  <p class="hint">Ссылки по строкам или перетащите текст/URL сюда. Файлы: %(title)s в каталог userData/downloads/ytdlp. Очередь последовательная §6.</p>
   <textarea id="urls" placeholder="https://…"></textarea>
   <div class="row">
+    <button type="button" class="cmd cmd-primary" id="startBtn" title="Скачать все строки со статусом «Ожидание»">Старт очереди</button>
+    <button type="button" class="cmd cmd-warn" id="cancelBtn" title="Отменить текущую загрузку yt-dlp">Отмена загрузки</button>
     <button type="button" class="cmd" id="addBtn">Добавить в очередь</button>
     <button type="button" class="cmd" id="clearBtn">Очистить очередь</button>
   </div>
   <table>
-    <thead><tr><th>№</th><th>Ссылка</th><th>Статус</th><th>Действия</th></tr></thead>
-    <tbody id="queueBody">${bodyRows.length > 0 ? bodyRows : '<tr><td colspan="4" style="opacity:0.7">Очередь пуста</td></tr>'}</tbody>
+    <thead><tr><th>№</th><th>Имя</th><th>Ссылка</th><th>Прогресс</th><th>Статус</th><th></th></tr></thead>
+    <tbody id="queueBody"></tbody>
   </table>
-  <p class="note">Окно использует отдельный preload: команды идут в main; очередь хранится в памяти процесса.</p>
+  <p class="note">Отдельный preload IPC только для этого окна. yt-dlp запускается из main через spawn без shell.</p>
   <script>
     (function () {
+      var api = window.fluxalloyDownloads;
       var addBtn = document.getElementById('addBtn');
       var clearBtn = document.getElementById('clearBtn');
+      var startBtn = document.getElementById('startBtn');
+      var cancelBtn = document.getElementById('cancelBtn');
       var urls = document.getElementById('urls');
       var body = document.getElementById('queueBody');
-      addBtn.addEventListener('click', function () {
-        window.fluxalloyDownloads.addLines(urls.value).then(function () {
-          urls.value = '';
+
+      function rowShape(r) {
+        return r && typeof r.id === 'number' && typeof r.url === 'string';
+      }
+
+      function renderRows(rawRows) {
+        var rows = Array.isArray(rawRows) ? rawRows.filter(rowShape) : [];
+        body.replaceChildren();
+        if (rows.length === 0) {
+          var tr0 = document.createElement('tr');
+          var td0 = document.createElement('td');
+          td0.colSpan = 6;
+          td0.style.opacity = '0.7';
+          td0.textContent = 'Очередь пуста';
+          tr0.appendChild(td0);
+          body.appendChild(tr0);
+          return;
+        }
+        rows.forEach(function (r, i) {
+          var tr = document.createElement('tr');
+          function tdText(cls, text) {
+            var td = document.createElement('td');
+            if (cls) td.className = cls;
+            td.textContent = text;
+            return td;
+          }
+          tr.appendChild(tdText('num', String(i + 1)));
+          tr.appendChild(tdText('', r.shortLabel || '—'));
+          var tdUrl = document.createElement('td');
+          tdUrl.title = r.url;
+          tdUrl.textContent = r.url.length > 96 ? r.url.slice(0, 94) + '…' : r.url;
+          tr.appendChild(tdUrl);
+          tr.appendChild(tdText('prog', r.progress || '—'));
+          tr.appendChild(tdText('', r.status || '—'));
+          var tdAct = document.createElement('td');
+          tdAct.className = 'act';
+          function mk(act, title, label, id) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.setAttribute('data-act', act);
+            b.setAttribute('data-id', String(id));
+            b.title = title;
+            b.textContent = label;
+            tdAct.appendChild(b);
+          }
+          mk('up', 'Вверх', '↑', r.id);
+          mk('dn', 'Вниз', '↓', r.id);
+          mk('rm', 'Удалить', '✕', r.id);
+          tr.appendChild(tdAct);
+          body.appendChild(tr);
         });
-      });
-      clearBtn.addEventListener('click', function () {
-        window.fluxalloyDownloads.clearQueue();
-      });
+      }
+
       body.addEventListener('click', function (e) {
         var t = e.target.closest('[data-act]');
         if (!t) return;
         var act = t.getAttribute('data-act');
         var id = Number(t.getAttribute('data-id'));
-        if (act === 'rm') window.fluxalloyDownloads.removeRow(id);
-        else if (act === 'up') window.fluxalloyDownloads.moveRow(id, -1);
-        else if (act === 'dn') window.fluxalloyDownloads.moveRow(id, 1);
+        if (act === 'rm') api.removeRow(id);
+        else if (act === 'up') api.moveRow(id, -1);
+        else if (act === 'dn') api.moveRow(id, 1);
       });
+
+      addBtn.addEventListener('click', function () {
+        api.addLines(urls.value).then(function () {
+          urls.value = '';
+        });
+      });
+      clearBtn.addEventListener('click', function () {
+        api.clearQueue();
+      });
+      startBtn.addEventListener('click', function () {
+        api.startQueue();
+      });
+      cancelBtn.addEventListener('click', function () {
+        api.cancelQueue();
+      });
+
+      urls.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        urls.classList.add('drag');
+      });
+      urls.addEventListener('dragleave', function (e) {
+        if (!urls.contains(e.relatedTarget)) urls.classList.remove('drag');
+      });
+      urls.addEventListener('drop', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        urls.classList.remove('drag');
+        var txt = e.dataTransfer.getData('text/plain') || e.dataTransfer.getData('text/uri-list');
+        if (txt) api.addLines(txt);
+      });
+
+      api.getSnapshot().then(renderRows);
+
+      api.onSnapshot(renderRows);
     })();
   </script>
 </body>
@@ -139,6 +238,17 @@ export function registerDownloadsWindowIpcHandlers(): void {
   }
   ipcRegistered = true
 
+  setDownloadsRunnerNotifier(() => {
+    broadcastDownloadsSnapshot()
+  })
+
+  ipcMain.handle('fluxalloy-downloads-get-snapshot', (event) => {
+    if (!isDownloadsSender(event.sender)) {
+      return []
+    }
+    return getDownloadsQueueSnapshot()
+  })
+
   ipcMain.handle('fluxalloy-downloads-add-lines', (event, text: unknown) => {
     if (!isDownloadsSender(event.sender)) {
       return 0
@@ -147,7 +257,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
       return 0
     }
     const n = appendUrlsFromMultilineBlock(text)
-    reloadDownloadsDocument()
+    broadcastDownloadsSnapshot()
     return n
   })
 
@@ -155,8 +265,9 @@ export function registerDownloadsWindowIpcHandlers(): void {
     if (!isDownloadsSender(event.sender)) {
       return
     }
+    cancelDownloadsRunner()
     clearDownloadsQueue()
-    reloadDownloadsDocument()
+    broadcastDownloadsSnapshot()
   })
 
   ipcMain.handle('fluxalloy-downloads-remove', (event, id: unknown) => {
@@ -167,7 +278,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
       return
     }
     removeDownloadsQueueRow(id)
-    reloadDownloadsDocument()
+    broadcastDownloadsSnapshot()
   })
 
   ipcMain.handle('fluxalloy-downloads-move', (event, id: unknown, direction: unknown) => {
@@ -182,8 +293,36 @@ export function registerDownloadsWindowIpcHandlers(): void {
       return
     }
     moveDownloadsQueueRow(id, d)
-    reloadDownloadsDocument()
+    broadcastDownloadsSnapshot()
   })
+
+  ipcMain.handle(
+    'fluxalloy-downloads-start-queue',
+    async (event): Promise<{ ok: true } | { ok: false; error: string }> => {
+      if (!isDownloadsSender(event.sender)) {
+        return { ok: false, error: 'Недопустимый отправитель' }
+      }
+
+      void startDownloadsSequential().catch((err: unknown) => {
+        console.error('[downloads-queue]', err)
+      })
+
+      return { ok: true }
+    }
+  )
+
+  ipcMain.handle(
+    'fluxalloy-downloads-cancel-run',
+    (event): { ok: true } | { ok: false; error: string } => {
+      if (!isDownloadsSender(event.sender)) {
+        return { ok: false, error: 'Недопустимый отправитель' }
+      }
+      cancelDownloadsRunner()
+      broadcastDownloadsSnapshot()
+
+      return { ok: true }
+    }
+  )
 }
 
 /**
@@ -200,13 +339,14 @@ export function focusOrCreateDownloadsWindow(mergeText?: string | null): void {
 
   if (downloadsWindow && !downloadsWindow.isDestroyed()) {
     downloadsWindow.focus()
-    void downloadsWindow.loadURL(dataUrl)
+
+    broadcastDownloadsSnapshot()
     return
   }
 
   downloadsWindow = new BrowserWindow({
-    width: 920,
-    height: 620,
+    width: 960,
+    height: 640,
     show: false,
     title: 'FluxAlloy — загрузки',
     webPreferences: {
@@ -224,5 +364,6 @@ export function focusOrCreateDownloadsWindow(mergeText?: string | null): void {
   void downloadsWindow.loadURL(dataUrl)
   downloadsWindow.once('ready-to-show', () => {
     downloadsWindow?.show()
+    broadcastDownloadsSnapshot()
   })
 }
