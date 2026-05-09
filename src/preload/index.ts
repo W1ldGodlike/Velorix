@@ -36,7 +36,11 @@ const fluxalloy = {
     setFfmpegExportEncodePreset: (preset: FfmpegExportEncodePresetId): Promise<AppSettings> =>
       ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-encode-preset', preset),
     setFfmpegExportContainer: (container: FfmpegExportContainerId): Promise<AppSettings> =>
-      ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-container', container)
+      ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-container', container),
+    setFfmpegExportCrf: (crf: number | null): Promise<AppSettings> =>
+      ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-crf', crf),
+    setFfmpegExportAudioBitrate: (bitrate: string | null): Promise<AppSettings> =>
+      ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-audio-bitrate', bitrate)
   },
   preview: {
     openFileDialog: (): Promise<PreviewDialogResult> =>

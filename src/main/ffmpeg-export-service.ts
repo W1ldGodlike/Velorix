@@ -20,6 +20,10 @@ export interface MediaExportRequestPayload {
   encodePreset?: FfmpegExportEncodePresetId
   /** Если не задан — в main берётся из `settings.json`. */
   container?: FfmpegExportContainerId
+  /** CRF libx264 0..51; если не задан — берётся из пресета/settings. */
+  crf?: number | null
+  /** Битрейт AAC одним токеном (`128k`, `192k`, `320k`). */
+  audioBitrate?: string | null
 }
 
 /** Разбор сохранённой строки или поля IPC; мусор → безопасный `balance`. */
@@ -57,6 +61,34 @@ export function ensureFfmpegExportExtension(
     return trimmed
   }
   return `${trimmed}.${parseFfmpegExportContainer(fallback)}`
+}
+
+export function parseFfmpegExportCrf(raw: unknown): number | null {
+  const n =
+    typeof raw === 'number'
+      ? raw
+      : typeof raw === 'string' && raw.trim() !== ''
+        ? Number(raw.trim())
+        : NaN
+  if (!Number.isInteger(n) || n < 0 || n > 51) {
+    return null
+  }
+  return n
+}
+
+export function parseFfmpegExportAudioBitrate(raw: unknown): string | null {
+  if (typeof raw !== 'string') {
+    return null
+  }
+  const t = raw.trim().toLowerCase()
+  if (!/^\d{2,3}k$/.test(t)) {
+    return null
+  }
+  const kbps = Number(t.slice(0, -1))
+  if (!Number.isInteger(kbps) || kbps < 32 || kbps > 512) {
+    return null
+  }
+  return `${kbps}k`
 }
 
 /** CRF и `-preset` x264 для выбранного пресета (аудио пока фиксированное AAC §7.1). */
@@ -156,9 +188,12 @@ function buildEncodeArgs(
   outputPath: string,
   trim: MediaExportTrimPayload | undefined,
   applyTrim: boolean,
-  encodePreset: FfmpegExportEncodePresetId
+  encodePreset: FfmpegExportEncodePresetId,
+  crfOverride: number | null,
+  audioBitrate: string
 ): string[] {
   const enc = resolveExportEncodeParams(encodePreset)
+  const crf = crfOverride === null ? enc.crf : String(crfOverride)
   const args = ['-y', '-hide_banner', '-loglevel', 'info', '-stats']
   if (applyTrim && trim) {
     args.push('-ss', String(trim.inSec), '-i', inputPath, '-t', String(trim.outSec - trim.inSec))
@@ -171,13 +206,13 @@ function buildEncodeArgs(
     '-preset',
     enc.x264preset,
     '-crf',
-    enc.crf,
+    crf,
     '-pix_fmt',
     'yuv420p',
     '-c:a',
     'aac',
     '-b:a',
-    '192k',
+    audioBitrate,
     '-movflags',
     '+faststart',
     outputPath
@@ -198,11 +233,15 @@ export function runFfmpegExportJob(params: {
   trim?: MediaExportTrimPayload
   probeDurationSec?: number | null
   encodePreset?: FfmpegExportEncodePresetId
+  crf?: number | null
+  audioBitrate?: string | null
   signal: AbortSignal
   onProgress?: (p: FfmpegExportProgressPayload) => void
 }): Promise<{ ok: true } | { ok: false; error: string }> {
   const applyTrim = shouldApplyTrim(params.trim, params.probeDurationSec)
   const encodePreset = params.encodePreset ?? 'balance'
+  const crf = parseFfmpegExportCrf(params.crf)
+  const audioBitrate = parseFfmpegExportAudioBitrate(params.audioBitrate) ?? '192k'
   const segmentDur = resolveExportSegmentDurationSec(
     params.trim,
     applyTrim,
@@ -213,7 +252,9 @@ export function runFfmpegExportJob(params: {
     params.outputPath,
     params.trim,
     applyTrim,
-    encodePreset
+    encodePreset,
+    crf,
+    audioBitrate
   )
 
   return new Promise((resolve) => {

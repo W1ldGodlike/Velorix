@@ -38,6 +38,8 @@ export interface FluxAlloyApi {
     pickEngineExecutable: (engineId: EngineId) => Promise<string | null>
     setFfmpegExportEncodePreset: (preset: FfmpegExportEncodePresetId) => Promise<AppSettings>
     setFfmpegExportContainer: (container: FfmpegExportContainerId) => Promise<AppSettings>
+    setFfmpegExportCrf: (crf: number | null) => Promise<AppSettings>
+    setFfmpegExportAudioBitrate: (bitrate: string | null) => Promise<AppSettings>
   }
   preview: {
     openFileDialog: () => Promise<PreviewDialogResult>

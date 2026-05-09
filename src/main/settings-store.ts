@@ -62,6 +62,10 @@ export interface AppSettings {
   ffmpegExportEncodePreset?: string
   /** §7.2: контейнер экспорта по умолчанию. */
   ffmpegExportContainer?: 'mp4' | 'mkv' | 'mov'
+  /** §7.2: явный CRF libx264 0..51; если отсутствует — CRF берётся из пресета. */
+  ffmpegExportCrf?: number
+  /** §7.2: битрейт AAC одним argv-токеном (`128k`, `192k`, `320k`). */
+  ffmpegExportAudioBitrate?: string
   // TODO(§4.6): язык, hotkeys.
 }
 
@@ -236,6 +240,28 @@ function parseFfmpegExportContainerStored(raw: unknown): 'mp4' | 'mkv' | 'mov' |
   return undefined
 }
 
+function parseFfmpegExportCrfStored(raw: unknown): number | undefined {
+  if (typeof raw !== 'number' || !Number.isInteger(raw) || raw < 0 || raw > 51) {
+    return undefined
+  }
+  return raw
+}
+
+function parseFfmpegExportAudioBitrateStored(raw: unknown): string | undefined {
+  if (typeof raw !== 'string') {
+    return undefined
+  }
+  const t = raw.trim().toLowerCase()
+  if (!/^\d{2,3}k$/.test(t)) {
+    return undefined
+  }
+  const kbps = Number(t.slice(0, -1))
+  if (!Number.isInteger(kbps) || kbps < 32 || kbps > 512) {
+    return undefined
+  }
+  return `${kbps}k`
+}
+
 const defaults: AppSettings = { theme: 'dark' }
 
 /**
@@ -266,6 +292,10 @@ export function loadSettings(filePath: string): AppSettings {
       parsed.ffmpegExportEncodePreset
     )
     const ffmpegExportContainer = parseFfmpegExportContainerStored(parsed.ffmpegExportContainer)
+    const ffmpegExportCrf = parseFfmpegExportCrfStored(parsed.ffmpegExportCrf)
+    const ffmpegExportAudioBitrate = parseFfmpegExportAudioBitrateStored(
+      parsed.ffmpegExportAudioBitrate
+    )
     const ytdlpExtraArgsLine = parseYtdlpExtraArgsLineStored(parsed.ytdlpExtraArgsLine)
     const ytdlpSubtitlePreset = parseYtdlpSubtitlePresetStored(parsed.ytdlpSubtitlePreset)
     const ytdlpSubLangs = parseYtdlpSubLangsStored(parsed.ytdlpSubLangs)
@@ -300,6 +330,12 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (ffmpegExportContainer !== undefined) {
       base.ffmpegExportContainer = ffmpegExportContainer
+    }
+    if (ffmpegExportCrf !== undefined) {
+      base.ffmpegExportCrf = ffmpegExportCrf
+    }
+    if (ffmpegExportAudioBitrate !== undefined) {
+      base.ffmpegExportAudioBitrate = ffmpegExportAudioBitrate
     }
     if (parsed.ytdlpDownloadPlaylist === true) {
       base.ytdlpDownloadPlaylist = true

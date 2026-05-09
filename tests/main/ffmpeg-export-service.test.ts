@@ -3,8 +3,10 @@ import { describe, expect, it } from 'vitest'
 import {
   ensureFfmpegExportExtension,
   inferFfmpegExportContainerFromPath,
+  parseFfmpegExportAudioBitrate,
   parseFfmpegExportEncodePreset,
   parseFfmpegExportContainer,
+  parseFfmpegExportCrf,
   parseFfmpegSpeedToken,
   parseFfmpegTimeSeconds,
   resolveExportEncodeParams,
@@ -35,6 +37,15 @@ describe('ffmpeg export pure helpers', () => {
     expect(inferFfmpegExportContainerFromPath('out.MOV')).toBe('mov')
     expect(ensureFfmpegExportExtension('out', 'mkv')).toBe('out.mkv')
     expect(ensureFfmpegExportExtension('out.mp4', 'mkv')).toBe('out.mp4')
+  })
+
+  it('валидирует ручные CRF и audio bitrate', () => {
+    expect(parseFfmpegExportCrf(18)).toBe(18)
+    expect(parseFfmpegExportCrf('28')).toBe(28)
+    expect(parseFfmpegExportCrf(52)).toBeNull()
+    expect(parseFfmpegExportAudioBitrate('192K')).toBe('192k')
+    expect(parseFfmpegExportAudioBitrate('16k')).toBeNull()
+    expect(parseFfmpegExportAudioBitrate('1000k')).toBeNull()
   })
 
   it('считает длительность сегмента с учётом trim', () => {

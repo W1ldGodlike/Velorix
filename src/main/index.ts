@@ -37,6 +37,8 @@ import {
 import { runFfmpegSnapshotFrame } from './ffmpeg-frame-snapshot-service'
 import {
   parseFfmpegExportContainer,
+  parseFfmpegExportAudioBitrate,
+  parseFfmpegExportCrf,
   parseFfmpegExportEncodePreset,
   ensureFfmpegExportExtension,
   runFfmpegExportJob,
@@ -487,6 +489,32 @@ function persistFfmpegExportEncodePreset(raw: unknown): AppSettings {
 function persistFfmpegExportContainer(raw: unknown): AppSettings {
   const id = parseFfmpegExportContainer(raw)
   cachedSettings = { ...cachedSettings, ffmpegExportContainer: id }
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistFfmpegExportCrf(raw: unknown): AppSettings {
+  const value = parseFfmpegExportCrf(raw)
+  const next = { ...cachedSettings }
+  if (value === null) {
+    delete next.ffmpegExportCrf
+  } else {
+    next.ffmpegExportCrf = value
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistFfmpegExportAudioBitrate(raw: unknown): AppSettings {
+  const value = parseFfmpegExportAudioBitrate(raw)
+  const next = { ...cachedSettings }
+  if (value === null) {
+    delete next.ffmpegExportAudioBitrate
+  } else {
+    next.ffmpegExportAudioBitrate = value
+  }
+  cachedSettings = next
   saveSettings(settingsPath(), cachedSettings)
   return { ...cachedSettings }
 }
@@ -1041,6 +1069,16 @@ app.whenReady().then(() => {
     (_, raw: unknown): AppSettings => persistFfmpegExportContainer(raw)
   )
 
+  ipcMain.handle(
+    'fluxalloy:settings-set-ffmpeg-export-crf',
+    (_, raw: unknown): AppSettings => persistFfmpegExportCrf(raw)
+  )
+
+  ipcMain.handle(
+    'fluxalloy:settings-set-ffmpeg-export-audio-bitrate',
+    (_, raw: unknown): AppSettings => persistFfmpegExportAudioBitrate(raw)
+  )
+
   ipcMain.handle('fluxalloy:settings-set-engine-paths', (_, patch: unknown): AppSettings => {
     if (!patch || typeof patch !== 'object') {
       return { ...cachedSettings }
@@ -1255,6 +1293,16 @@ app.whenReady().then(() => {
         containerRaw !== undefined && containerRaw !== null
           ? parseFfmpegExportContainer(containerRaw)
           : parseFfmpegExportContainer(cachedSettings.ffmpegExportContainer)
+      const crfRaw = (raw as { crf?: unknown }).crf
+      const exportCrf =
+        crfRaw !== undefined && crfRaw !== null
+          ? parseFfmpegExportCrf(crfRaw)
+          : parseFfmpegExportCrf(cachedSettings.ffmpegExportCrf)
+      const audioBitrateRaw = (raw as { audioBitrate?: unknown }).audioBitrate
+      const exportAudioBitrate =
+        audioBitrateRaw !== undefined && audioBitrateRaw !== null
+          ? parseFfmpegExportAudioBitrate(audioBitrateRaw)
+          : parseFfmpegExportAudioBitrate(cachedSettings.ffmpegExportAudioBitrate)
 
       const paths = resolveAppPaths()
       const ffmpeg = resolveEngineExecutablePath(
@@ -1304,6 +1352,8 @@ app.whenReady().then(() => {
           trim,
           probeDurationSec,
           encodePreset,
+          crf: exportCrf,
+          audioBitrate: exportAudioBitrate,
           signal: ac.signal,
           onProgress: pushProgress
         })

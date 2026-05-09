@@ -34,6 +34,9 @@ const EXPORT_CONTAINERS: Array<{ id: ExportContainerId; label: string }> = [
   { id: 'mov', label: 'MOV' }
 ]
 
+const EXPORT_CRF_OPTIONS = [18, 20, 23, 26, 28, 30]
+const EXPORT_AUDIO_BITRATES = ['96k', '128k', '160k', '192k', '256k', '320k']
+
 const ENGINE_IDS: EngineId[] = ['ffmpeg', 'ffprobe', 'yt-dlp']
 
 function engineLabel(id: EngineId): string {
@@ -290,6 +293,8 @@ function App(): JSX.Element {
   const [exportBusy, setExportBusy] = useState(false)
   const [exportEncodePreset, setExportEncodePreset] = useState<ExportEncodePresetId>('balance')
   const [exportContainer, setExportContainer] = useState<ExportContainerId>('mp4')
+  const [exportCrf, setExportCrf] = useState<number | null>(null)
+  const [exportAudioBitrate, setExportAudioBitrate] = useState('192k')
   const [snapshotBusy, setSnapshotBusy] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   /** Последний диапазон In/Out с таймлайна для IPC экспорта. */
@@ -339,6 +344,20 @@ function App(): JSX.Element {
       const ec = loaded.ffmpegExportContainer
       if (ec === 'mp4' || ec === 'mkv' || ec === 'mov') {
         setExportContainer(ec)
+      }
+      if (
+        typeof loaded.ffmpegExportCrf === 'number' &&
+        Number.isInteger(loaded.ffmpegExportCrf) &&
+        loaded.ffmpegExportCrf >= 0 &&
+        loaded.ffmpegExportCrf <= 51
+      ) {
+        setExportCrf(loaded.ffmpegExportCrf)
+      }
+      if (
+        typeof loaded.ffmpegExportAudioBitrate === 'string' &&
+        EXPORT_AUDIO_BITRATES.includes(loaded.ffmpegExportAudioBitrate)
+      ) {
+        setExportAudioBitrate(loaded.ffmpegExportAudioBitrate)
       }
       cleanupTheme = window.fluxalloy.onThemeChanged((next) => {
         applyTheme(next)
@@ -581,7 +600,9 @@ function App(): JSX.Element {
         trim: trimSnap ?? undefined,
         probeDurationSec: probeInfo?.durationSec ?? null,
         encodePreset: exportEncodePreset,
-        container: exportContainer
+        container: exportContainer,
+        crf: exportCrf,
+        audioBitrate: exportAudioBitrate
       })
       if (res.ok) {
         const savedName = res.path.split(/[\\/]/).pop() || res.path
@@ -682,6 +703,44 @@ function App(): JSX.Element {
           {EXPORT_CONTAINERS.map((p) => (
             <option key={p.id} value={p.id}>
               {p.label}
+            </option>
+          ))}
+        </select>
+        <select
+          className="app-toolbar-select"
+          aria-label="CRF экспорта"
+          title="CRF libx264: меньше = выше качество и больше размер"
+          value={exportCrf === null ? 'preset' : String(exportCrf)}
+          disabled={exportBusy || snapshotBusy}
+          onChange={(e) => {
+            const raw = e.target.value
+            const next = raw === 'preset' ? null : Number(raw)
+            setExportCrf(next)
+            void window.fluxalloy.settings.setFfmpegExportCrf(next).catch(console.error)
+          }}
+        >
+          <option value="preset">CRF пресета</option>
+          {EXPORT_CRF_OPTIONS.map((v) => (
+            <option key={v} value={v}>
+              CRF {v}
+            </option>
+          ))}
+        </select>
+        <select
+          className="app-toolbar-select"
+          aria-label="Аудио bitrate экспорта"
+          title="Битрейт AAC audio"
+          value={exportAudioBitrate}
+          disabled={exportBusy || snapshotBusy}
+          onChange={(e) => {
+            const v = e.target.value
+            setExportAudioBitrate(v)
+            void window.fluxalloy.settings.setFfmpegExportAudioBitrate(v).catch(console.error)
+          }}
+        >
+          {EXPORT_AUDIO_BITRATES.map((v) => (
+            <option key={v} value={v}>
+              AAC {v}
             </option>
           ))}
         </select>
