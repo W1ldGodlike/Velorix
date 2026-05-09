@@ -89,7 +89,9 @@ async function runYtdlpForWaitingRow(
       getEnginePathOverridesSnapshot(),
       {
         filenameTemplate: cli.filenameTemplate,
-        formatExtraArgs: cli.formatExtraArgs
+        formatExtraArgs: cli.formatExtraArgs,
+        downloadPlaylist: cli.downloadPlaylist,
+        audioOnly: cli.audioOnly
       }
     )
 

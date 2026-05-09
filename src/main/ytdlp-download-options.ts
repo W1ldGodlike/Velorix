@@ -7,7 +7,7 @@ export const YTDLP_DEFAULT_FILENAME_TEMPLATE = '%(title)s [%(id)s].%(ext)s'
 
 /**
  * Упрощённый выбор «качества» без произвольного `-f` от пользователя (иначе легко сломать
- * кавычками и порядком аргументов); только белый список пар§вметров §6.2.
+ * кавычками и порядком аргументов); только белый список параметров §6.2.
  */
 export type YtdlpFormatPresetId = 'default' | 'merge_bv_ba' | 'best_single'
 
@@ -16,6 +16,10 @@ export interface YtdlpRunOptionsSnapshot {
   formatPreset: YtdlpFormatPresetId
   /** Дополнительные аргументы yt-dlp перед `-o` (уже разобранные токены, без shell). */
   formatExtraArgs: string[]
+  /** Передаётся в spawn как `--yes-playlist`; иначе `--no-playlist`. */
+  downloadPlaylist: boolean
+  /** `-x --audio-format best`; `-f` из пресета при этом не добавляется. */
+  audioOnly: boolean
 }
 
 /** То, что видит окно загрузок: текущие значения и метки для `<select>`. */
@@ -24,11 +28,15 @@ export interface YtdlpDownloadOptionsPayload {
   defaultFilenameTemplate: string
   formatPreset: YtdlpFormatPresetId
   formatPresetChoices: Array<{ id: YtdlpFormatPresetId; label: string }>
+  downloadPlaylist: boolean
+  audioOnly: boolean
 }
 
 export interface YtdlpDownloadOptionsPatch {
   filenameTemplate?: string
   formatPreset?: YtdlpFormatPresetId
+  downloadPlaylist?: boolean
+  audioOnly?: boolean
 }
 
 export function parseYtdlpFormatPreset(raw: unknown): YtdlpFormatPresetId {
@@ -129,6 +137,7 @@ export function formatPresetToExtraArgs(id: YtdlpFormatPresetId): string[] {
 
 export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOptionsSnapshot {
   const preset = parseYtdlpFormatPreset(settings.ytdlpFormatPreset)
+  const audioOnly = settings.ytdlpAudioOnly === true
   const stored = settings.ytdlpFilenameTemplate
   let filenameTemplate = YTDLP_DEFAULT_FILENAME_TEMPLATE
   if (typeof stored === 'string') {
@@ -140,7 +149,9 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
   return {
     filenameTemplate,
     formatPreset: preset,
-    formatExtraArgs: formatPresetToExtraArgs(preset)
+    formatExtraArgs: audioOnly ? [] : formatPresetToExtraArgs(preset),
+    downloadPlaylist: settings.ytdlpDownloadPlaylist === true,
+    audioOnly
   }
 }
 
@@ -153,6 +164,8 @@ export function payloadFromSnapshot(snap: YtdlpRunOptionsSnapshot): YtdlpDownloa
       { id: 'default', label: 'По умолчанию (yt-dlp)' },
       { id: 'merge_bv_ba', label: 'Лучшее видео + аудио (слить)' },
       { id: 'best_single', label: 'Лучший один файл (-f best)' }
-    ]
+    ],
+    downloadPlaylist: snap.downloadPlaylist,
+    audioOnly: snap.audioOnly
   }
 }

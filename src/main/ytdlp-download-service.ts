@@ -88,6 +88,7 @@ export function formatYtdlpProgressCell(parts: YtdlpDownloadProgressParts): stri
 
 /**
  * Одна загрузка через yt-dlp без shell: только массив аргументов.
+ * Режим плейлиста и аудио задаются только флагами снимка §6.2 (`downloadPlaylist`, `audioOnly`).
  * Вывод и ошибки стримятся построчно для лога UI §6.4.
  */
 export function runYtdlpOnce(
@@ -97,7 +98,10 @@ export function runYtdlpOnce(
   signal: AbortSignal,
   callbacks: YtdlpRunCallbacks = {},
   engineOverrides?: EnginePathOverrides,
-  cli?: Pick<YtdlpRunOptionsSnapshot, 'filenameTemplate' | 'formatExtraArgs'>
+  cli?: Pick<
+    YtdlpRunOptionsSnapshot,
+    'filenameTemplate' | 'formatExtraArgs' | 'downloadPlaylist' | 'audioOnly'
+  >
 ): Promise<{ exitCode: number | null; signal: NodeJS.Signals | null }> {
   const ytDlp = resolveEngineExecutablePath(paths, 'yt-dlp', engineOverrides)
   if (!ytDlp) {
@@ -116,8 +120,16 @@ export function runYtdlpOnce(
     )
   }
 
-  const fmtArgs = cli?.formatExtraArgs ?? []
-  const args = ['--newline', '--no-playlist', '--no-color', ...fmtArgs, '-o', outPattern, url]
+  const downloadPlaylist = cli?.downloadPlaylist === true
+  const audioOnly = cli?.audioOnly === true
+  const fmtArgs = audioOnly ? [] : (cli?.formatExtraArgs ?? [])
+  const args: string[] = ['--newline', '--no-color']
+  args.push(downloadPlaylist ? '--yes-playlist' : '--no-playlist')
+  args.push(...fmtArgs)
+  if (audioOnly) {
+    args.push('-x', '--audio-format', 'best')
+  }
+  args.push('-o', outPattern, url)
 
   return new Promise((resolve, reject) => {
     const child = spawn(ytDlp, args, {

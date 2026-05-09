@@ -239,6 +239,20 @@ function persistYtdlpDownloadCliOptionsPatch(
   if (patch.formatPreset !== undefined) {
     merged.ytdlpFormatPreset = patch.formatPreset
   }
+  if (patch.downloadPlaylist !== undefined) {
+    if (patch.downloadPlaylist) {
+      merged.ytdlpDownloadPlaylist = true
+    } else {
+      delete merged.ytdlpDownloadPlaylist
+    }
+  }
+  if (patch.audioOnly !== undefined) {
+    if (patch.audioOnly) {
+      merged.ytdlpAudioOnly = true
+    } else {
+      delete merged.ytdlpAudioOnly
+    }
+  }
   cachedSettings = merged
   saveSettings(settingsPath(), cachedSettings)
   refreshYtdlpRunOptionsSnapshot(cachedSettings)

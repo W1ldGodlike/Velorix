@@ -33,6 +33,10 @@ export interface AppSettings {
   ytdlpFilenameTemplate?: string
   /** §6.2: пресет `-f` (`default` | `merge_bv_ba` | `best_single` и др.). */
   ytdlpFormatPreset?: string
+  /** §6.2: с `--yes-playlist` скачивать весь плейлист (иначе `--no-playlist`). */
+  ytdlpDownloadPlaylist?: boolean
+  /** §6.2: извлечение аудио `-x` (нужен ffmpeg рядом с yt-dlp). */
+  ytdlpAudioOnly?: boolean
   /** §7.2: системный пресет экспорта MP4 (libx264 CRF + `-preset`). */
   ffmpegExportEncodePreset?: string
   // TODO(§4.6): язык, hotkeys.
@@ -177,6 +181,12 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (ffmpegExportEncodePreset !== undefined) {
       base.ffmpegExportEncodePreset = ffmpegExportEncodePreset
+    }
+    if (parsed.ytdlpDownloadPlaylist === true) {
+      base.ytdlpDownloadPlaylist = true
+    }
+    if (parsed.ytdlpAudioOnly === true) {
+      base.ytdlpAudioOnly = true
     }
     return base
   } catch {

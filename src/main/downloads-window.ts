@@ -168,6 +168,13 @@ function buildDownloadsHtml(): string {
       border: 1px solid #3f3f46; background: #1e1e1e; color: #ececec; font-size: 12px;
     }
     .opts-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 4px; }
+    .opts-check-row { display: flex; flex-direction: column; gap: 6px; margin: 8px 0 6px; }
+    .opts-check-row label.chk {
+      display: flex; align-items: flex-start; gap: 8px; font-weight: 400; color: #dcdcdc;
+      cursor: pointer; margin-bottom: 0; line-height: 1.35;
+    }
+    .opts-check-row input[type=checkbox] { margin-top: 3px; flex-shrink: 0; accent-color: #0078d4; }
+    .opts-check-muted { opacity: 0.75; }
     .opts-hint { font-size: 11px; opacity: 0.75; margin: 0 0 8px; line-height: 1.35; }
     .note { margin-top: 12px; font-size: 11px; opacity: 0.72; }
   </style>
@@ -187,6 +194,10 @@ function buildDownloadsHtml(): string {
     <input type="text" id="tmplInput" spellcheck="false" autocomplete="off" />
     <label for="fmtPreset">Формат / качество (-f)</label>
     <select id="fmtPreset"></select>
+    <div class="opts-check-row">
+      <label class="chk"><input type="checkbox" id="chkPlaylist" /> Весь плейлист <span class="opts-check-muted">(--yes-playlist)</span></label>
+      <label class="chk"><input type="checkbox" id="chkAudioOnly" /> Только аудио <span class="opts-check-muted">(-x --audio-format best; нужен ffmpeg)</span></label>
+    </div>
     <div class="opts-actions">
       <button type="button" class="cmd cmd-primary" id="applyOptsBtn">Сохранить параметры</button>
       <button type="button" class="cmd" id="tmplReset">Шаблон по умолчанию</button>
@@ -226,12 +237,20 @@ function buildDownloadsHtml(): string {
       var fmtPreset = document.getElementById('fmtPreset');
       var applyOptsBtn = document.getElementById('applyOptsBtn');
       var tmplReset = document.getElementById('tmplReset');
+      var chkPlaylist = document.getElementById('chkPlaylist');
+      var chkAudioOnly = document.getElementById('chkAudioOnly');
 
       function refreshCliOpts() {
         api.getCliOptions().then(function (r) {
           if (!r || r.ok !== true || !r.payload) return;
           var p = r.payload;
           if (tmplInput) tmplInput.value = p.filenameTemplate || '';
+          if (chkPlaylist && typeof p.downloadPlaylist === 'boolean') {
+            chkPlaylist.checked = p.downloadPlaylist;
+          }
+          if (chkAudioOnly && typeof p.audioOnly === 'boolean') {
+            chkAudioOnly.checked = p.audioOnly;
+          }
           if (!fmtPreset) return;
           fmtPreset.replaceChildren();
           (p.formatPresetChoices || []).forEach(function (c) {
@@ -384,7 +403,9 @@ function buildDownloadsHtml(): string {
         applyOptsBtn.addEventListener('click', function () {
           api.setCliOptions({
             filenameTemplate: tmplInput.value,
-            formatPreset: fmtPreset.value
+            formatPreset: fmtPreset.value,
+            downloadPlaylist: !!(chkPlaylist && chkPlaylist.checked),
+            audioOnly: !!(chkAudioOnly && chkAudioOnly.checked)
           }).then(function (res) {
             if (res && res.ok === false && res.error) window.alert(res.error);
             refreshCliOpts();
@@ -514,7 +535,24 @@ export function registerDownloadsWindowIpcHandlers(): void {
       if (Object.prototype.hasOwnProperty.call(o, 'formatPreset')) {
         patch.formatPreset = parseYtdlpFormatPreset(o.formatPreset)
       }
-      if (patch.filenameTemplate === undefined && patch.formatPreset === undefined) {
+      if (Object.prototype.hasOwnProperty.call(o, 'downloadPlaylist')) {
+        if (typeof o.downloadPlaylist !== 'boolean') {
+          return { ok: false, error: 'Поле плейлиста должно быть boolean' }
+        }
+        patch.downloadPlaylist = o.downloadPlaylist
+      }
+      if (Object.prototype.hasOwnProperty.call(o, 'audioOnly')) {
+        if (typeof o.audioOnly !== 'boolean') {
+          return { ok: false, error: 'Поле «только аудио» должно быть boolean' }
+        }
+        patch.audioOnly = o.audioOnly
+      }
+      if (
+        patch.filenameTemplate === undefined &&
+        patch.formatPreset === undefined &&
+        patch.downloadPlaylist === undefined &&
+        patch.audioOnly === undefined
+      ) {
         return { ok: false, error: 'Нечего сохранять' }
       }
       return fn(patch)
