@@ -94,3 +94,4 @@
 - 2026-05-10 01:16:21 [SDK]: §21 — реестр IPC `src/shared/ipc-channels.ts`, main/preload на общих константах, Vitest на уникальность строк каналов.
 - 2026-05-10 01:18:24 [SDK]: §21 — `src/shared/ffmpeg-export-contract.ts`: типы экспорта ffmpeg для preload/main, сервис реэкспортирует из shared.
 - 2026-05-10 01:22:21 [SDK]: §21 — shared-контракты yt-dlp окна/лога/истории, диагностики, прогресса движков, формата снимка; main реэкспортирует, preload без импортов типов из main по этим доменам.
+- 2026-05-10 01:25:00 [SDK]: §21 — `ffprobe-contract`, `settings-contract`, `engine-contract`, `about-contract`, `preview-dialog-contract`; main реэкспортирует, главный preload импортирует типы только из `src/shared`.

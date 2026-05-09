@@ -1,13 +1,8 @@
 import { app } from 'electron'
 
-/** Данные для диалога «О программе» §4.5 (без произвольного FS/main-доступа из renderer). */
-export interface AppAboutInfo {
-  appName: string
-  appVersion: string
-  electronVersion: string
-  chromeVersion: string
-  nodeVersion: string
-}
+import type { AppAboutInfo } from '../shared/about-contract'
+
+export type { AppAboutInfo } from '../shared/about-contract'
 
 export function getAppAboutInfo(): AppAboutInfo {
   return {

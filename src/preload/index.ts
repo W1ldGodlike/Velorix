@@ -13,12 +13,15 @@ import type {
   MediaExportRequestPayload,
   MediaExportStartResult
 } from '../shared/ffmpeg-export-contract'
-import type { EnginesStatusSnapshot } from '../main/engine-service'
-import type { MediaProbeResult } from '../main/ffprobe-service'
-import type { PreviewDialogResult } from '../main/preview-dialog'
-import type { EngineId, EnginePathOverridesPatch } from '../main/engine-service'
-import type { AppAboutInfo } from '../main/about-info'
-import type { AppSettings, AppTheme } from '../main/settings-store'
+import type { AppAboutInfo } from '../shared/about-contract'
+import type {
+  EngineId,
+  EnginePathOverridesPatch,
+  EnginesStatusSnapshot
+} from '../shared/engine-contract'
+import type { MediaProbeResult } from '../shared/ffprobe-contract'
+import type { PreviewDialogResult } from '../shared/preview-dialog-contract'
+import type { AppSettings, AppTheme } from '../shared/settings-contract'
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
 
 type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>

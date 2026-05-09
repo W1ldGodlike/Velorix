@@ -12,15 +12,15 @@ import type {
   MediaExportRequestPayload,
   MediaExportStartResult
 } from '../shared/ffmpeg-export-contract'
-import type { MediaProbeResult } from '../main/ffprobe-service'
+import type { AppAboutInfo } from '../shared/about-contract'
 import type {
   EngineId,
   EnginePathOverridesPatch,
   EnginesStatusSnapshot
-} from '../main/engine-service'
-import type { PreviewDialogResult } from '../main/preview-dialog'
-import type { AppAboutInfo } from '../main/about-info'
-import type { AppSettings, AppTheme } from '../main/settings-store'
+} from '../shared/engine-contract'
+import type { MediaProbeResult } from '../shared/ffprobe-contract'
+import type { PreviewDialogResult } from '../shared/preview-dialog-contract'
+import type { AppSettings, AppTheme } from '../shared/settings-contract'
 
 /** Данные для привязки `<video>` к локальному файлу через allowlist-схему `fluxmedia://`. */
 export type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>

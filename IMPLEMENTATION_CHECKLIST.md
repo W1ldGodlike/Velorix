@@ -40,7 +40,7 @@
 - [~] §7: превью + таймлайн + экспорт MP4/MKV/MOV + запоминание папки экспорта + отмена активного экспорта + действия открыть файл/папку результата/вернуть экспорт в превью/скопировать путь + снимок кадра §7.6 с persisted PNG/JPEG, запоминанием папки и действиями файл/папка/копия пути + ffprobe под превью; отдельное окно инспектора §9 — позже.
 - [~] §7.2/§20: системные пресеты libx264, persisted контейнер/формат, CRF или video bitrate, аудио AAC/без аудио, AAC bitrate, FPS и scale preset есть; дальше пользовательские пресеты, расширенные параметры кодирования и live preview команды.
 - [~] §17/§18: меню диагностических папок с актуальным `enabled`, `logger-service`, диалог ошибок, Support ZIP, логи stdout/stderr движков и prune старых crash dumps; дальше — логи сессий/расширенная политика хранения.
-- [~] §21: Vitest + IPC + shared: ffmpeg export + yt-dlp окно + лог/история + диагностика + engine progress + snapshot format; дальше — вынести в `shared` типы главного preload (`MediaProbeResult`, `AppSettings`, engines status, about, preview).
+- [~] §21: IPC + shared — главный preload берёт типы из `src/shared` (ffprobe, settings, engines, about, preview и ранее вынесенные домены); дальше — политика strict TypeScript, точечные Vitest для новых `shared/*-contract` при расширении IPC.
 
 ---
 
@@ -491,7 +491,7 @@
 
 - [~] Есть структура main/preload/renderer.
 - [ ] Включить/проверить strict TypeScript политику.
-- [~] IPC contracts: `ipc-channels.ts`; `ffmpeg-export-contract.ts`; контракты yt-dlp окна (`ytdlp-download-contract.ts`), лога (`downloads-log-contract.ts`), истории (`ytdlp-history-contract.ts`), диагностики (`diagnostics-contract.ts`), прогресса загрузки движков (`engine-download-contract.ts`), формата снимка (`ffmpeg-snapshot-contract.ts`) — preload импортирует их из `src/shared`; дальше — типы ffprobe / настроек / движков / about / preview без импорта из `main` в preload.
+- [x] IPC contracts: `ipc-channels.ts`; перечисленные `src/shared/*-contract.ts` (в т.ч. ffprobe, settings, engine, about, preview-dialog, ffmpeg export, yt-dlp окно/лог/история, диагностика, engine-download, snapshot) — главный preload импортирует типы из `src/shared`, не из `main`; дальше — новые домены по мере IPC и политика strict TypeScript.
 - [ ] Вынести сервисы main (упорядочить без дублирования с текущими модулями).
 - [ ] Вынести модели shared.
 - [~] Unit tests для чистых модулей: `tests/main/*` — `ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`, `ytdlp-download-history` (append/read/clear), `ytdlp-download-options` (filename/output-pattern/rate-limit/retries), `downloads-queue` (cleanup), `settings-store` (yt-dlp/export/snapshot persisted fields), `ffmpeg-export-service` (progress helpers/presets/container/CRF/video+audio bitrate/FPS/scale), `ffmpeg-frame-snapshot-service` (format/extension helpers), `external-process-log` (sanitize/format), `support-bundle` (ZIP structure/log inclusion/prune); `tests/shared/ipc-channels` — уникальность строк каналов. Дальше — расширять `src/shared/*` контрактами под остальные IPC.

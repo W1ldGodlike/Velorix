@@ -3,11 +3,9 @@ import { basename } from 'path'
 import { BrowserWindow, dialog } from 'electron'
 
 import { grantMediaPath } from './media-protocol'
+import type { PreviewDialogResult } from '../shared/preview-dialog-contract'
 
-export type PreviewDialogResult =
-  | { ok: true; path: string; mediaUrl: string; name: string }
-  | { ok: false; canceled: true }
-  | { ok: false; canceled?: false; error: string }
+export type { PreviewDialogResult } from '../shared/preview-dialog-contract'
 
 /**
  * Системный диалог выбора локального видео (§4.B). Путь сразу регистрируется в allowlist
