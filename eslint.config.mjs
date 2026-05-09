@@ -7,7 +7,9 @@ import eslintPluginReactRefresh from 'eslint-plugin-react-refresh'
 
 export default defineConfig(
   // Сгенерированные каталоги и зависимости не линтим: они большие и не являются исходниками проекта.
-  { ignores: ['**/node_modules', '**/dist', '**/out'] },
+  {
+    ignores: ['**/node_modules', '**/dist', '**/out', 'scripts/cursor-automation/**']
+  },
   tseslint.configs.recommended,
   eslintPluginReact.configs.flat.recommended,
   eslintPluginReact.configs.flat['jsx-runtime'],

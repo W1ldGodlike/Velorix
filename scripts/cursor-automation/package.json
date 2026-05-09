@@ -1,0 +1,22 @@
+{
+  "name": "fluxalloy-cursor-automation",
+  "private": true,
+  "description": "Локальный цикл Cursor Agent по чек‑листу (SDK), вне Composer-чата IDE",
+  "type": "module",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "loop": "tsx src/run-loop.ts",
+    "once": "tsx src/run-loop.ts --once",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@cursor/sdk": "^1.0.12"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
