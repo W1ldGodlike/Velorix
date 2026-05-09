@@ -40,7 +40,7 @@ CURSOR_API_KEY=crsr_...
 # CURSOR_MODEL=default
 ```
 
-Промпты по умолчанию: каталог **`prompts/`** (`initial.txt`, `continue.txt`). Свой текст — через `PROMPTS_DIR` или правка файлов.
+Промпты по умолчанию: каталог **`prompts/`** (`initial.txt`, `continue.txt`). Общие правила поведения — **`prompts/agent-contract.txt`**; именно туда добавляйте нюансы, которые агент должен соблюдать всегда. Свой текст — через `PROMPTS_DIR` или правка файлов.
 
 ## Число продолжений
 
