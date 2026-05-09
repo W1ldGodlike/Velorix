@@ -40,7 +40,7 @@
 - [~] §7: превью + таймлайн + экспорт MP4 + снимок кадра §7.6 + ffprobe под превью; отдельное окно инспектора §9 — позже.
 - [~] §7.2/§20: системные пресеты libx264 есть; дальше пользовательские пресеты, контейнер/формат и расширенные параметры кодирования.
 - [~] §17/§18: меню диагностических папок с актуальным `enabled` и `logger-service` (`main.log`, ротация, ранний crash handler, защищённый renderer-канал); дальше — диалог ошибки, Support ZIP и логи stdout/stderr движков.
-- [~] §21: подключён Vitest + тесты для парсеров yt-dlp; закрыт обход whitelist через glued short-options `-P`/`-a`/`-o`/`-r`. Дальше — IPC contracts/shared models и тесты на ffmpeg-прогресс/output-pattern.
+- [~] §21: подключён Vitest + тесты для парсеров/опций yt-dlp; закрыт обход whitelist через glued short-options `-P`/`-a`/`-o`/`-r`. Дальше — IPC contracts/shared models и тесты на ffmpeg-прогресс.
 
 ---
 
@@ -494,7 +494,7 @@
 - [ ] Вынести IPC contracts в отдельный слой.
 - [ ] Вынести сервисы main.
 - [ ] Вынести модели shared.
-- [~] Unit tests для чистых модулей: `tests/main/*` — `ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`, `ytdlp-download-history` (append/read/clear). Дальше — output-pattern, ffmpeg-progress, settings-store парсеры.
+- [~] Unit tests для чистых модулей: `tests/main/*` — `ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`, `ytdlp-download-history` (append/read/clear), `ytdlp-download-options` (filename/output-pattern/rate-limit/retries). Дальше — ffmpeg-progress, settings-store парсеры.
 - [x] Выбрать Vitest/Jest: Vitest подключён (`npm run test`/`test:watch`, `tsconfig.tests.json`).
 - [ ] Добавить e2e smoke позже.
 - [~] Комментарии на русском для публичных API и сложной логики: базовые комментарии добавлены; дальше писать чуть развёрнутее, чтобы следующему проходу агента было понятно «зачем» и «где границы», не только «что делает строка».

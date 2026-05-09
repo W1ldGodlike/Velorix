@@ -66,3 +66,4 @@
 - 2026-05-09 23:26:16 [Assistant]: §18 — renderer log IPC закреплён за main window, получил token bucket rate limit и очистку control chars в `scope/message`; `attachProcessErrorHandlers()` перенесён на ранний старт main до `app.whenReady`.
 - 2026-05-09 23:28:03 [Assistant]: §6.4/§21 — запись и очистка `downloads/history.json` переведены на атомарный temp+rename; тесты истории расширены сценариями append/read newest-first и clear с валидной схемой.
 - 2026-05-09 23:31:11 [Assistant]: §17 — меню «Инструменты → Открыть папку…» пересобирается при фокусе окна и после изменения диагностически важных путей (`ytdlpDownloads`, engine bin), чтобы `enabled` отражал актуальное существование каталогов.
+- 2026-05-09 23:33:23 [Assistant]: §21 — добавлены unit-тесты `ytdlp-download-options`: шаблон имени/безопасный output pattern, нормализация `--limit-rate`, границы `--retries`; Electron-зависимость справочника yt-dlp замокана в тесте.
