@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  classifyYtdlpQueueFailureKind,
   extractYtdlpErrorSummary,
   extractYtdlpOutputPath,
   formatYtdlpProgressCell,
@@ -37,6 +38,11 @@ describe('parseYtdlpDownloadProgressLine', () => {
   it('парсит строку только с процентом', () => {
     const r = parseYtdlpDownloadProgressLine('[download] 7%')
     expect(r).toEqual({ percent: '7%', speed: null, eta: null })
+  })
+
+  it('парсит строку fragment X of Y (DASH/HLS)', () => {
+    const r = parseYtdlpDownloadProgressLine('[download] fragment 5 of 120')
+    expect(r).toEqual({ percent: null, speed: 'фрагмент 5/120', eta: null })
   })
 
   it('возвращает null если ни процента, ни скорости нет', () => {
@@ -125,6 +131,31 @@ describe('shouldSkipYtdlpQueueRetriesAfterFailure', () => {
       shouldSkipYtdlpQueueRetriesAfterFailure('Unable to download webpage', 'Connection timed out')
     ).toBe(false)
     expect(shouldSkipYtdlpQueueRetriesAfterFailure(null, null)).toBe(false)
+  })
+
+  it('транзиент имеет приоритет: не skip даже при наличии «video unavailable» в stderr', () => {
+    expect(
+      shouldSkipYtdlpQueueRetriesAfterFailure(
+        'ERROR: Video unavailable',
+        'ERROR: Unable to download webpage: HTTP Error 503'
+      )
+    ).toBe(false)
+  })
+})
+
+describe('classifyYtdlpQueueFailureKind', () => {
+  it('transient_network для типичной сетевой ошибки', () => {
+    expect(classifyYtdlpQueueFailureKind('Got server HTTP error: HTTP Error 503', null)).toBe(
+      'transient_network'
+    )
+  })
+
+  it('likely_source_block для приватного видео', () => {
+    expect(classifyYtdlpQueueFailureKind('Private video', null)).toBe('likely_source_block')
+  })
+
+  it('unknown если нет явных маркеров', () => {
+    expect(classifyYtdlpQueueFailureKind('Something went wrong', null)).toBe('unknown')
   })
 })
 

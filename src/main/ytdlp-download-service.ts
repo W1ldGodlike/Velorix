@@ -16,13 +16,15 @@ import {
 // чтобы покрываться юнит-тестами вне Electron-runtime. Здесь — только реэкспорт
 // для совместимости старых импортов; новые места могут импортировать напрямую.
 export {
+  classifyYtdlpQueueFailureKind,
   extractYtdlpErrorSummary,
   extractYtdlpOutputPath,
   formatYtdlpProgressCell,
   formatYtdlpQueueFailureStatus,
   parseYtdlpDownloadProgressLine,
   shouldSkipYtdlpQueueRetriesAfterFailure,
-  type YtdlpDownloadProgressParts
+  type YtdlpDownloadProgressParts,
+  type YtdlpQueueFailureKind
 } from './ytdlp-progress-parser'
 
 function abortErr(): Error {

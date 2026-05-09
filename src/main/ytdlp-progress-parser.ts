@@ -27,6 +27,19 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
     return null
   }
 
+  const fragMatch = t.match(/\bfragment\s+(\d+)\s+of\s+(\d+)\b/i)
+  if (fragMatch) {
+    const a = fragMatch[1]
+    const b = fragMatch[2]
+    if (a !== undefined && b !== undefined) {
+      return {
+        percent: null,
+        speed: `фрагмент ${a}/${b}`,
+        eta: null
+      }
+    }
+  }
+
   const pctMatch = t.match(/(\d+(?:\.\d+)?)%/)
   const percent = pctMatch ? `${pctMatch[1]}%` : null
 
@@ -128,12 +141,56 @@ const YTDLP_QUEUE_RETRY_SKIP_MARKERS = [
   'blocked it on copyright'
 ] as const
 
+/**
+ * Типичные транзиентные сбои (сеть/CDN): повторы очереди оставляем, даже если рядом шумный текст.
+ * Имеет приоритет над маркерами «не повторять» (консервативный порядок проверки).
+ */
+const YTDLP_QUEUE_RETRY_KEEP_TRYING_MARKERS = [
+  'unable to download webpage',
+  'unable to download video',
+  'connection timed out',
+  'connection reset',
+  'connection refused',
+  'timed out',
+  'temporary failure',
+  'temporary error',
+  'network is unreachable',
+  'no route to host',
+  'name or service not known',
+  'failed to resolve',
+  'http error 503',
+  'http error 502',
+  'http error 429',
+  'too many requests',
+  'got server http error',
+  'certificate verify failed',
+  'ssl: ',
+  'errno 110',
+  'errno 113'
+] as const
+
+/** Грубая классификация текста ошибки для §6.4 (без IPC; только эвристика). */
+export type YtdlpQueueFailureKind = 'transient_network' | 'likely_source_block' | 'unknown'
+
+export function classifyYtdlpQueueFailureKind(
+  errorSummary: string | null | undefined,
+  stderrFallback: string | null | undefined
+): YtdlpQueueFailureKind {
+  const haystack = `${errorSummary ?? ''}\n${stderrFallback ?? ''}`.toLowerCase()
+  if (YTDLP_QUEUE_RETRY_KEEP_TRYING_MARKERS.some((m) => haystack.includes(m))) {
+    return 'transient_network'
+  }
+  if (YTDLP_QUEUE_RETRY_SKIP_MARKERS.some((m) => haystack.includes(m))) {
+    return 'likely_source_block'
+  }
+  return 'unknown'
+}
+
 export function shouldSkipYtdlpQueueRetriesAfterFailure(
   errorSummary: string | null | undefined,
   stderrFallback: string | null | undefined
 ): boolean {
-  const haystack = `${errorSummary ?? ''}\n${stderrFallback ?? ''}`.toLowerCase()
-  return YTDLP_QUEUE_RETRY_SKIP_MARKERS.some((m) => haystack.includes(m))
+  return classifyYtdlpQueueFailureKind(errorSummary, stderrFallback) === 'likely_source_block'
 }
 
 /**
