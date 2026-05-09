@@ -17,17 +17,14 @@
 
 ### Windows / PowerShell: «выполнение сценариев отключено» для `npm.ps1`
 
-1. Одноразово в корне репозитория: `powershell -ExecutionPolicy Bypass -File .\scripts\fix-powershell-npm.ps1`
-   — снимает **Mark-of-the-Web** с `npm.ps1`/`npx.ps1` и пытается выставить `RemoteSigned` для **текущего пользователя**. Если доменная **GPO** запрещает менять политику, скрипт напишет, что добавить в `$PROFILE`.
+1. В корне репозитория выполните:
+   `powershell -ExecutionPolicy Bypass -File .\scripts\fix-powershell-npm.ps1`
+   Скрипт сам: снимает **Mark-of-the-Web** с `npm.ps1`/`npx.ps1`, пытается выставить **RemoteSigned** для текущего пользователя и **дописывает алиасы** `npm`/`npx` → `npm.cmd`/`npx.cmd` в профили:
+   `Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1` и `Documents\PowerShell\Microsoft.PowerShell_profile.ps1` (блок не дублируется). Перезапустите терминал.
 
-2. Вручную без скриптов: в PowerShell использовать **`npm.cmd`** вместо **`npm`** (например `npm.cmd run dev`) — всегда обходит ограничение на `.ps1`.
+2. Если **GPO** запрещает менять политику — алиасы из п.1 всё равно делают обычный вызов `npm` рабочим.
 
-3. Постоянный вариант: в файле профиля (`notepad $PROFILE`) добавить:
-   ```powershell
-   Set-Alias -Name npm -Value 'C:\Program Files\nodejs\npm.cmd'
-   Set-Alias -Name npx -Value 'C:\Program Files\nodejs\npx.cmd'
-   ```
-   Если Node установлен в другое место — подставьте свой путь к `nodejs`.
+3. Вручную без скрипта: `npm.cmd run dev` или алиасы в `$PROFILE` (см. скрипт как образец).
 
 ## Команды
 
