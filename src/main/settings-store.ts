@@ -37,6 +37,8 @@ export interface AppSettings {
   ytdlpDownloadPlaylist?: boolean
   /** §6.2: извлечение аудио `-x` (нужен ffmpeg рядом с yt-dlp). */
   ytdlpAudioOnly?: boolean
+  /** §6.3: дополнительные аргументы yt-dlp одной строкой (токены через пробел). */
+  ytdlpExtraArgsLine?: string
   /** §7.2: системный пресет экспорта MP4 (libx264 CRF + `-preset`). */
   ffmpegExportEncodePreset?: string
   // TODO(§4.6): язык, hotkeys.
@@ -119,6 +121,17 @@ function parseYtdlpFormatPresetStored(raw: unknown): string | undefined {
   return raw.trim().slice(0, 64)
 }
 
+function parseYtdlpExtraArgsLineStored(raw: unknown): string | undefined {
+  if (typeof raw !== 'string') {
+    return undefined
+  }
+  const t = raw.trim()
+  if (t.length === 0) {
+    return undefined
+  }
+  return t.length <= 2000 ? t : t.slice(0, 2000)
+}
+
 function parseFfmpegExportEncodePresetStored(raw: unknown): string | undefined {
   if (typeof raw !== 'string') {
     return undefined
@@ -159,6 +172,7 @@ export function loadSettings(filePath: string): AppSettings {
     const ffmpegExportEncodePreset = parseFfmpegExportEncodePresetStored(
       parsed.ffmpegExportEncodePreset
     )
+    const ytdlpExtraArgsLine = parseYtdlpExtraArgsLineStored(parsed.ytdlpExtraArgsLine)
 
     const base: AppSettings = { theme }
     if (last !== undefined) {
@@ -187,6 +201,9 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (parsed.ytdlpAudioOnly === true) {
       base.ytdlpAudioOnly = true
+    }
+    if (ytdlpExtraArgsLine !== undefined) {
+      base.ytdlpExtraArgsLine = ytdlpExtraArgsLine
     }
     return base
   } catch {

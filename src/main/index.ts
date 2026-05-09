@@ -53,6 +53,7 @@ import {
   validateFilenameTemplate,
   type YtdlpDownloadOptionsPatch
 } from './ytdlp-download-options'
+import { parseExtraYtdlpArgsLine } from './ytdlp-extra-args'
 import { refreshYtdlpRunOptionsSnapshot } from './ytdlp-run-options-sync'
 
 /** Кастомная схема для локального видеопревью; привилегии обязаны зарегистрироваться до `app.whenReady`. */
@@ -251,6 +252,21 @@ function persistYtdlpDownloadCliOptionsPatch(
       merged.ytdlpAudioOnly = true
     } else {
       delete merged.ytdlpAudioOnly
+    }
+  }
+  if (patch.extraArgsLine !== undefined) {
+    if (typeof patch.extraArgsLine !== 'string') {
+      return { ok: false, error: 'Дополнительные аргументы должны быть строкой.' }
+    }
+    const trimmed = patch.extraArgsLine.trim()
+    if (trimmed === '') {
+      delete merged.ytdlpExtraArgsLine
+    } else {
+      const pe = parseExtraYtdlpArgsLine(trimmed)
+      if (!pe.ok) {
+        return pe
+      }
+      merged.ytdlpExtraArgsLine = trimmed
     }
   }
   cachedSettings = merged

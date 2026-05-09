@@ -91,7 +91,8 @@ async function runYtdlpForWaitingRow(
         filenameTemplate: cli.filenameTemplate,
         formatExtraArgs: cli.formatExtraArgs,
         downloadPlaylist: cli.downloadPlaylist,
-        audioOnly: cli.audioOnly
+        audioOnly: cli.audioOnly,
+        extraArgs: cli.extraArgs
       }
     )
 

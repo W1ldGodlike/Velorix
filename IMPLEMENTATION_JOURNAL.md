@@ -46,3 +46,4 @@
 - 2026-05-09 21:42:07: §7.1 — прогресс экспорта ffmpeg: парсинг `speed=`, склейка stderr по `\r`/`\n`; статусбар показывает множитель после процента (`FfmpegExportProgressPayload.speed`).
 - 2026-05-09 21:43:43: §7.2 — три системных пресета libx264 (`balance`/`smaller`/`quality`), `ffmpegExportEncodePreset` в settings, `<select>` в тулбаре, IPC `settings-set-ffmpeg-export-encode-preset`, передача в `runFfmpegExportJob`.
 - 2026-05-09 21:45:14: §6.2 — плейлист (`ytdlpDownloadPlaylist` → `--yes-playlist`/`--no-playlist`) и только аудио (`ytdlpAudioOnly` → `-x --audio-format best`, без `-f` пресета); чекбоксы в окне загрузок, расширен снимок `YtdlpRunOptionsSnapshot` и `runYtdlpOnce`.
+- 2026-05-09 21:48:01: §6.3 — `ytdlpExtraArgsLine` + `parseExtraYtdlpArgsLine`/`buildYtdlpSpawnArgvTokens`, превью `yt-dlp …` в окне загрузок; блок конфликта `-o`/batch/`@`; раннер берёт `extraArgs` из снимка.

@@ -1,6 +1,11 @@
 import { join, normalize, relative, resolve, sep } from 'path'
 
 import type { AppSettings } from './settings-store'
+import {
+  buildYtdlpSpawnArgvTokens,
+  formatArgvTokensForPreview,
+  parseExtraYtdlpArgsLine
+} from './ytdlp-extra-args'
 
 /** Шаблон по умолчанию совпадает с тем, что раньше был захардкожен в `runYtdlpOnce`. */
 export const YTDLP_DEFAULT_FILENAME_TEMPLATE = '%(title)s [%(id)s].%(ext)s'
@@ -20,6 +25,12 @@ export interface YtdlpRunOptionsSnapshot {
   downloadPlaylist: boolean
   /** `-x --audio-format best`; `-f` из пресета при этом не добавляется. */
   audioOnly: boolean
+  /** Исходная строка из UI/settings для редактирования §6.3. */
+  extraArgsLine: string
+  /** Уже проверенные токены; при ошибке чтения JSON — пусто, см. `extraArgsParseWarning`. */
+  extraArgs: string[]
+  /** Если строка из файла не прошла parse — показываем в UI, runner игнорирует extras. */
+  extraArgsParseWarning: string | null
 }
 
 /** То, что видит окно загрузок: текущие значения и метки для `<select>`. */
@@ -30,6 +41,10 @@ export interface YtdlpDownloadOptionsPayload {
   formatPresetChoices: Array<{ id: YtdlpFormatPresetId; label: string }>
   downloadPlaylist: boolean
   audioOnly: boolean
+  extraArgsLine: string
+  /** Превью полной командной строки (`yt-dlp …`), без реального пути и URL. */
+  commandPreview: string
+  extraArgsParseWarning: string | null
 }
 
 export interface YtdlpDownloadOptionsPatch {
@@ -37,6 +52,7 @@ export interface YtdlpDownloadOptionsPatch {
   formatPreset?: YtdlpFormatPresetId
   downloadPlaylist?: boolean
   audioOnly?: boolean
+  extraArgsLine?: string
 }
 
 export function parseYtdlpFormatPreset(raw: unknown): YtdlpFormatPresetId {
@@ -146,16 +162,34 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
       filenameTemplate = vt.value
     }
   }
+  const extraArgsLine =
+    typeof settings.ytdlpExtraArgsLine === 'string' ? settings.ytdlpExtraArgsLine.trim() : ''
+  const parsedExtras = parseExtraYtdlpArgsLine(extraArgsLine)
+  const extraArgs = parsedExtras.ok ? parsedExtras.args : []
+  const extraArgsParseWarning = parsedExtras.ok ? null : parsedExtras.error
   return {
     filenameTemplate,
     formatPreset: preset,
     formatExtraArgs: audioOnly ? [] : formatPresetToExtraArgs(preset),
     downloadPlaylist: settings.ytdlpDownloadPlaylist === true,
-    audioOnly
+    audioOnly,
+    extraArgsLine,
+    extraArgs,
+    extraArgsParseWarning
   }
 }
 
 export function payloadFromSnapshot(snap: YtdlpRunOptionsSnapshot): YtdlpDownloadOptionsPayload {
+  const outPh = `<downloadDir>/${snap.filenameTemplate}`
+  const argv = buildYtdlpSpawnArgvTokens({
+    downloadPlaylist: snap.downloadPlaylist,
+    audioOnly: snap.audioOnly,
+    formatExtraArgs: snap.formatExtraArgs,
+    extraArgs: snap.extraArgs,
+    outputPattern: outPh,
+    url: '<url>'
+  })
+  const commandPreview = `yt-dlp ${formatArgvTokensForPreview(argv)}`
   return {
     filenameTemplate: snap.filenameTemplate,
     defaultFilenameTemplate: YTDLP_DEFAULT_FILENAME_TEMPLATE,
@@ -166,6 +200,9 @@ export function payloadFromSnapshot(snap: YtdlpRunOptionsSnapshot): YtdlpDownloa
       { id: 'best_single', label: 'Лучший один файл (-f best)' }
     ],
     downloadPlaylist: snap.downloadPlaylist,
-    audioOnly: snap.audioOnly
+    audioOnly: snap.audioOnly,
+    extraArgsLine: snap.extraArgsLine,
+    commandPreview,
+    extraArgsParseWarning: snap.extraArgsParseWarning
   }
 }

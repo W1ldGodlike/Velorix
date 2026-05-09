@@ -175,6 +175,18 @@ function buildDownloadsHtml(): string {
     }
     .opts-check-row input[type=checkbox] { margin-top: 3px; flex-shrink: 0; accent-color: #0078d4; }
     .opts-check-muted { opacity: 0.75; }
+    .opts-preview-label { display: block; margin: 8px 0 4px; font-size: 11px; color: #b9b9c0; font-weight: 500; }
+    textarea#extraArgsInput {
+      width: 100%; box-sizing: border-box; min-height: 52px; margin-bottom: 6px; padding: 6px 8px;
+      border-radius: 6px; border: 1px solid #3f3f46; background: #1e1e1e; color: #ececec;
+      font-family: ui-monospace, Consolas, Menlo, monospace; font-size: 11px; resize: vertical;
+    }
+    .opts-warn { color: #f0a8a8; margin: 4px 0 8px; line-height: 1.35; }
+    .args-preview {
+      margin: 0 0 8px; padding: 8px 10px; border-radius: 6px; border: 1px solid #3f3f46;
+      background: #18181b; color: #c9e79f; font-family: ui-monospace, Consolas, Menlo, monospace;
+      font-size: 11px; white-space: pre-wrap; word-break: break-word; max-height: 120px; overflow: auto;
+    }
     .opts-hint { font-size: 11px; opacity: 0.75; margin: 0 0 8px; line-height: 1.35; }
     .note { margin-top: 12px; font-size: 11px; opacity: 0.72; }
   </style>
@@ -198,6 +210,11 @@ function buildDownloadsHtml(): string {
       <label class="chk"><input type="checkbox" id="chkPlaylist" /> Весь плейлист <span class="opts-check-muted">(--yes-playlist)</span></label>
       <label class="chk"><input type="checkbox" id="chkAudioOnly" /> Только аудио <span class="opts-check-muted">(-x --audio-format best; нужен ffmpeg)</span></label>
     </div>
+    <label for="extraArgsInput">Дополнительные аргументы (через пробел, без shell) §6.3</label>
+    <textarea id="extraArgsInput" rows="2" spellcheck="false" autocomplete="off" placeholder="Например: --write-sub --sub-lang ru"></textarea>
+    <p class="opts-hint opts-warn" id="extraArgsWarn" hidden></p>
+    <span class="opts-preview-label">Превью argv</span>
+    <pre class="args-preview" id="argsPreview"></pre>
     <div class="opts-actions">
       <button type="button" class="cmd cmd-primary" id="applyOptsBtn">Сохранить параметры</button>
       <button type="button" class="cmd" id="tmplReset">Шаблон по умолчанию</button>
@@ -239,6 +256,9 @@ function buildDownloadsHtml(): string {
       var tmplReset = document.getElementById('tmplReset');
       var chkPlaylist = document.getElementById('chkPlaylist');
       var chkAudioOnly = document.getElementById('chkAudioOnly');
+      var extraArgsInput = document.getElementById('extraArgsInput');
+      var argsPreview = document.getElementById('argsPreview');
+      var extraArgsWarn = document.getElementById('extraArgsWarn');
 
       function refreshCliOpts() {
         api.getCliOptions().then(function (r) {
@@ -260,6 +280,21 @@ function buildDownloadsHtml(): string {
             fmtPreset.appendChild(o);
           });
           fmtPreset.value = p.formatPreset || 'default';
+          if (extraArgsInput && typeof p.extraArgsLine === 'string') {
+            extraArgsInput.value = p.extraArgsLine;
+          }
+          if (argsPreview && typeof p.commandPreview === 'string') {
+            argsPreview.textContent = p.commandPreview;
+          }
+          if (extraArgsWarn) {
+            if (p.extraArgsParseWarning) {
+              extraArgsWarn.textContent = p.extraArgsParseWarning;
+              extraArgsWarn.hidden = false;
+            } else {
+              extraArgsWarn.textContent = '';
+              extraArgsWarn.hidden = true;
+            }
+          }
         });
       }
 
@@ -405,7 +440,8 @@ function buildDownloadsHtml(): string {
             filenameTemplate: tmplInput.value,
             formatPreset: fmtPreset.value,
             downloadPlaylist: !!(chkPlaylist && chkPlaylist.checked),
-            audioOnly: !!(chkAudioOnly && chkAudioOnly.checked)
+            audioOnly: !!(chkAudioOnly && chkAudioOnly.checked),
+            extraArgsLine: extraArgsInput ? extraArgsInput.value : ''
           }).then(function (res) {
             if (res && res.ok === false && res.error) window.alert(res.error);
             refreshCliOpts();
@@ -547,11 +583,18 @@ export function registerDownloadsWindowIpcHandlers(): void {
         }
         patch.audioOnly = o.audioOnly
       }
+      if (Object.prototype.hasOwnProperty.call(o, 'extraArgsLine')) {
+        if (typeof o.extraArgsLine !== 'string') {
+          return { ok: false, error: 'Доп. аргументы должны быть строкой' }
+        }
+        patch.extraArgsLine = o.extraArgsLine
+      }
       if (
         patch.filenameTemplate === undefined &&
         patch.formatPreset === undefined &&
         patch.downloadPlaylist === undefined &&
-        patch.audioOnly === undefined
+        patch.audioOnly === undefined &&
+        patch.extraArgsLine === undefined
       ) {
         return { ok: false, error: 'Нечего сохранять' }
       }

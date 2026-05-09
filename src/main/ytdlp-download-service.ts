@@ -3,6 +3,7 @@ import { mkdirSync } from 'fs'
 
 import type { AppPaths } from './app-paths'
 import { resolveEngineExecutablePath, type EnginePathOverrides } from './engine-service'
+import { buildYtdlpSpawnArgvTokens } from './ytdlp-extra-args'
 import {
   resolveSafeYtdlpOutputPattern,
   YTDLP_DEFAULT_FILENAME_TEMPLATE,
@@ -100,7 +101,7 @@ export function runYtdlpOnce(
   engineOverrides?: EnginePathOverrides,
   cli?: Pick<
     YtdlpRunOptionsSnapshot,
-    'filenameTemplate' | 'formatExtraArgs' | 'downloadPlaylist' | 'audioOnly'
+    'filenameTemplate' | 'formatExtraArgs' | 'downloadPlaylist' | 'audioOnly' | 'extraArgs'
   >
 ): Promise<{ exitCode: number | null; signal: NodeJS.Signals | null }> {
   const ytDlp = resolveEngineExecutablePath(paths, 'yt-dlp', engineOverrides)
@@ -123,13 +124,15 @@ export function runYtdlpOnce(
   const downloadPlaylist = cli?.downloadPlaylist === true
   const audioOnly = cli?.audioOnly === true
   const fmtArgs = audioOnly ? [] : (cli?.formatExtraArgs ?? [])
-  const args: string[] = ['--newline', '--no-color']
-  args.push(downloadPlaylist ? '--yes-playlist' : '--no-playlist')
-  args.push(...fmtArgs)
-  if (audioOnly) {
-    args.push('-x', '--audio-format', 'best')
-  }
-  args.push('-o', outPattern, url)
+  const extraArgs = cli?.extraArgs ?? []
+  const args = buildYtdlpSpawnArgvTokens({
+    downloadPlaylist,
+    audioOnly,
+    formatExtraArgs: fmtArgs,
+    extraArgs,
+    outputPattern: outPattern,
+    url
+  })
 
   return new Promise((resolve, reject) => {
     const child = spawn(ytDlp, args, {
