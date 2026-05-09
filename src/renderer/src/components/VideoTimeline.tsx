@@ -50,11 +50,14 @@ interface VideoTimelineProps {
   /** Совпадает с `key` у `<video>`, чтобы переподписаться при смене источника. */
   mediaKey: string
   videoRef: RefObject<HTMLVideoElement | null>
+  /** Снимок актуальных маркеров для экспорта §7.1 (родитель держит только ref на последнее значение). */
+  onTrimRangeChange?: (range: { inSec: number; outSec: number }) => void
 }
 
 export default function VideoTimeline({
   mediaKey,
-  videoRef
+  videoRef,
+  onTrimRangeChange
 }: VideoTimelineProps): React.JSX.Element {
   const [duration, setDuration] = useState(0)
   const [current, setCurrent] = useState(0)
@@ -119,6 +122,12 @@ export default function VideoTimeline({
     const width = Math.max(0, ((outSec - inSec) / duration) * 100)
     return { leftPct: left, widthPct: width, inSec, outSec }
   }, [trim.inSec, effectiveOut, duration])
+
+  useEffect(() => {
+    if (markerGeometry && onTrimRangeChange) {
+      onTrimRangeChange({ inSec: markerGeometry.inSec, outSec: markerGeometry.outSec })
+    }
+  }, [markerGeometry, onTrimRangeChange])
 
   const ratio = duration > 0 ? Math.min(1, Math.max(0, current / duration)) : 0
 
@@ -206,7 +215,10 @@ export default function VideoTimeline({
       ) : null}
 
       <div className="app-timeline-io" aria-label="Маркеры In / Out">
-        <span className="app-timeline-io-readout" title="Диапазон для будущего экспорта (§7)">
+        <span
+          className="app-timeline-io-readout"
+          title="Диапазон для экспорта (§7.1): передаётся в ffmpeg как -ss/-t"
+        >
           In <strong>{formatTime(displayIn)}</strong> — Out{' '}
           <strong>{formatTime(displayOut)}</strong>
         </span>

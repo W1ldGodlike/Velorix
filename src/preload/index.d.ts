@@ -1,6 +1,11 @@
 import type { ElectronAPI } from '@electron-toolkit/preload'
 
 import type { EngineDownloadProgress } from '../main/engine-download'
+import type {
+  FfmpegExportProgressPayload,
+  MediaExportRequestPayload,
+  MediaExportStartResult
+} from '../main/ffmpeg-export-service'
 import type { MediaProbeResult } from '../main/ffprobe-service'
 import type {
   EngineId,
@@ -53,6 +58,11 @@ export interface FluxAlloyApi {
     shouldOfferDownload: () => Promise<boolean>
     download: () => Promise<{ ok: true } | { ok: false; error: string }>
     onDownloadProgress: (listener: (progress: EngineDownloadProgress) => void) => () => void
+  }
+  export: {
+    start: (payload: MediaExportRequestPayload) => Promise<MediaExportStartResult>
+    cancel: () => Promise<{ ok: true } | { ok: false; error: string }>
+    onProgress: (listener: (progress: FfmpegExportProgressPayload) => void) => () => void
   }
   onPreviewOpened: (listener: (payload: PreviewOpenedPayload) => void) => () => void
   onThemeChanged: (listener: (theme: AppTheme) => void) => () => void

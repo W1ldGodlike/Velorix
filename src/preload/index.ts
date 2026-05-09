@@ -2,6 +2,11 @@ import { contextBridge, ipcRenderer, webUtils } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 import type { EngineDownloadProgress } from '../main/engine-download'
+import type {
+  FfmpegExportProgressPayload,
+  MediaExportRequestPayload,
+  MediaExportStartResult
+} from '../main/ffmpeg-export-service'
 import type { EnginesStatusSnapshot } from '../main/engine-service'
 import type { MediaProbeResult } from '../main/ffprobe-service'
 import type { PreviewDialogResult } from '../main/preview-dialog'
@@ -64,6 +69,25 @@ const fluxalloy = {
           return
         }
         listener(raw as EngineDownloadProgress)
+      }
+      ipcRenderer.on(channel, handler)
+      return (): void => {
+        ipcRenderer.removeListener(channel, handler)
+      }
+    }
+  },
+  export: {
+    start: (payload: MediaExportRequestPayload): Promise<MediaExportStartResult> =>
+      ipcRenderer.invoke('fluxalloy:export-start', payload),
+    cancel: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke('fluxalloy:export-cancel'),
+    onProgress: (listener: (progress: FfmpegExportProgressPayload) => void): (() => void) => {
+      const channel = 'fluxalloy:export-progress'
+      const handler = (_event: unknown, raw: unknown): void => {
+        if (!raw || typeof raw !== 'object') {
+          return
+        }
+        listener(raw as FfmpegExportProgressPayload)
       }
       ipcRenderer.on(channel, handler)
       return (): void => {

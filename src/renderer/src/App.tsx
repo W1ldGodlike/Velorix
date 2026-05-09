@@ -133,13 +133,24 @@ function App(): React.JSX.Element {
   const [probeError, setProbeError] = useState<string | null>(null)
   const [downloadsUrl, setDownloadsUrl] = useState('')
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
+  const [exportBusy, setExportBusy] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
+  /** Последний диапазон In/Out с таймлайна для IPC экспорта. */
+  const trimSnapshotRef = useRef<{ inSec: number; outSec: number } | null>(null)
 
   const applyPreview = useCallback((payload: PreviewOpenedPayload): void => {
     setProbeInfo(null)
     setProbeError(null)
     setPreview(payload)
   }, [])
+
+  const onTrimRangeSnapshot = useCallback((range: { inSec: number; outSec: number }) => {
+    trimSnapshotRef.current = range
+  }, [])
+
+  useEffect(() => {
+    trimSnapshotRef.current = null
+  }, [preview?.path])
 
   const applyTheme = useCallback((value: Theme) => {
     document.documentElement.dataset.theme = value
@@ -288,12 +299,19 @@ function App(): React.JSX.Element {
       setStatusHint(`${pct}${p.message}`)
     })
 
+    const offExport = window.fluxalloy.export.onProgress((p) => {
+      const pct =
+        typeof p.percent === 'number' && p.percent >= 0 ? `${Math.round(p.percent)}% · ` : ''
+      setStatusHint(`Экспорт · ${pct}${p.message}`)
+    })
+
     const offMenuPreview = window.fluxalloy.onPreviewOpened((payload) => {
       applyPreview(payload)
     })
 
     return (): void => {
       offProgress()
+      offExport()
       offMenuPreview()
     }
   }, [applyPreview])
@@ -348,6 +366,35 @@ function App(): React.JSX.Element {
     setEnginePathsDraft((prev) => ({ ...prev, [id]: picked }))
   }
 
+  async function handleExport(): Promise<void> {
+    if (!preview || exportBusy) {
+      return
+    }
+    setExportBusy(true)
+    setStatusHint('Подготовка экспорта…')
+    try {
+      const trimSnap = trimSnapshotRef.current
+      const res = await window.fluxalloy.export.start({
+        inputPath: preview.path,
+        trim: trimSnap ?? undefined,
+        probeDurationSec: probeInfo?.durationSec ?? null
+      })
+      if (res.ok) {
+        setStatusHint('Экспорт завершён')
+      } else if ('cancelled' in res && res.cancelled) {
+        setStatusHint(null)
+      } else if ('error' in res) {
+        setStatusHint(`Экспорт: ${res.error}`)
+      } else {
+        setStatusHint('Экспорт: ошибка')
+      }
+    } catch (e) {
+      setStatusHint(e instanceof Error ? e.message : 'Ошибка экспорта')
+    } finally {
+      setExportBusy(false)
+    }
+  }
+
   async function handlePreviewDrop(files: FileList | null): Promise<void> {
     const file = files?.[0]
     if (!file) {
@@ -389,10 +436,13 @@ function App(): React.JSX.Element {
         <button
           type="button"
           className="app-btn app-btn-primary"
-          disabled
-          title="Старт экспорта (скоро)"
+          disabled={!preview || exportBusy}
+          onClick={() => {
+            void handleExport()
+          }}
+          title="Сохранить фрагмент In–Out или весь файл в MP4 (libx264/aac), нужен ffmpeg"
         >
-          Экспорт
+          {exportBusy ? 'Экспорт…' : 'Экспорт'}
         </button>
         {enginesOfferDownload ? (
           <button
@@ -490,6 +540,7 @@ function App(): React.JSX.Element {
                   key={preview.mediaUrl}
                   mediaKey={preview.mediaUrl}
                   videoRef={videoRef}
+                  onTrimRangeChange={onTrimRangeSnapshot}
                 />
                 {(probeInfo || probeError) && (
                   <div className="app-preview-probe" aria-live="polite">

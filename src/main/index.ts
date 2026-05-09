@@ -10,11 +10,17 @@ import {
   focusOrCreateDownloadsWindow,
   registerDownloadsWindowIpcHandlers
 } from './downloads-window'
+import {
+  runFfmpegExportJob,
+  type MediaExportTrimPayload,
+  type FfmpegExportProgressPayload
+} from './ffmpeg-export-service'
 import { probeMediaFile } from './ffprobe-service'
 import type { EngineDownloadProgress } from './engine-download'
 import { setEnginePathOverridesSnapshot } from './engine-path-sync'
 import {
   getEnginesStatus,
+  resolveEngineExecutablePath,
   type EngineId,
   type EnginePathOverrides,
   type EnginePathOverridesPatch,
@@ -81,6 +87,22 @@ function technicalSpecPath(): string {
 
 // Main process хранит актуальные настройки в памяти, чтобы меню и IPC отвечали одинаково.
 let cachedSettings: AppSettings = { theme: 'dark' }
+
+let activeExportAbort: AbortController | null = null
+
+function parseExportTrim(raw: unknown): MediaExportTrimPayload | undefined {
+  if (!raw || typeof raw !== 'object') {
+    return undefined
+  }
+  const o = raw as Record<string, unknown>
+  if (typeof o.inSec !== 'number' || typeof o.outSec !== 'number') {
+    return undefined
+  }
+  if (!Number.isFinite(o.inSec) || !Number.isFinite(o.outSec)) {
+    return undefined
+  }
+  return { inSec: o.inSec, outSec: o.outSec }
+}
 
 function applyTheme(theme: AppTheme): void {
   cachedSettings = { ...cachedSettings, theme }
@@ -467,6 +489,101 @@ app.whenReady().then(() => {
   ipcMain.handle('fluxalloy:open-downloads-window', (_, raw: unknown) => {
     const payload = parseDownloadsOpenPayload(raw)
     focusOrCreateDownloadsWindow(payload ?? undefined)
+  })
+
+  ipcMain.handle(
+    'fluxalloy:export-start',
+    async (
+      event,
+      raw: unknown
+    ): Promise<{ ok: true } | { ok: false; cancelled: true } | { ok: false; error: string }> => {
+      if (activeExportAbort !== null) {
+        return { ok: false, error: 'Уже выполняется экспорт' }
+      }
+      if (!raw || typeof raw !== 'object') {
+        return { ok: false, error: 'Некорректный запрос' }
+      }
+      const inputRaw = (raw as { inputPath?: unknown }).inputPath
+      if (typeof inputRaw !== 'string' || inputRaw.trim().length === 0) {
+        return { ok: false, error: 'Не указан входной файл' }
+      }
+      const abs = resolve(normalize(inputRaw.trim()))
+      if (!existsSync(abs)) {
+        return { ok: false, error: 'Файл не найден' }
+      }
+      if (!isGrantedMediaPath(abs)) {
+        return {
+          ok: false,
+          error: 'Нет доступа к этому файлу — откройте его через превью.'
+        }
+      }
+
+      const pd = (raw as { probeDurationSec?: unknown }).probeDurationSec
+      const probeDurationSec = typeof pd === 'number' && Number.isFinite(pd) && pd > 0 ? pd : null
+
+      const trim = parseExportTrim((raw as { trim?: unknown }).trim)
+
+      const paths = resolveAppPaths()
+      const ffmpeg = resolveEngineExecutablePath(
+        paths,
+        'ffmpeg',
+        cachedSettings.engineExecutablePaths
+      )
+      if (!ffmpeg) {
+        return { ok: false, error: 'ffmpeg не найден — установите движки.' }
+      }
+
+      const win = BrowserWindow.fromWebContents(event.sender)
+      if (!win) {
+        return { ok: false, error: 'Нет активного окна' }
+      }
+
+      const stem = basename(abs).replace(/\.[^.]+$/, '')
+      const pick = await dialog.showSaveDialog(win, {
+        title: 'Экспорт в MP4',
+        defaultPath: `${stem}-export.mp4`,
+        filters: [
+          { name: 'MP4', extensions: ['mp4'] },
+          { name: 'Все файлы', extensions: ['*'] }
+        ]
+      })
+
+      if (pick.canceled || !pick.filePath || pick.filePath.trim().length === 0) {
+        return { ok: false, cancelled: true }
+      }
+
+      const outPath = pick.filePath.trim()
+      const ac = new AbortController()
+      activeExportAbort = ac
+
+      const pushProgress = (p: FfmpegExportProgressPayload): void => {
+        win.webContents.send('fluxalloy:export-progress', p)
+      }
+
+      try {
+        pushProgress({ percent: -1, message: 'Запуск ffmpeg…' })
+        const result = await runFfmpegExportJob({
+          ffmpegPath: ffmpeg,
+          inputPath: abs,
+          outputPath: outPath,
+          trim,
+          probeDurationSec,
+          signal: ac.signal,
+          onProgress: pushProgress
+        })
+        return result.ok ? { ok: true } : { ok: false, error: result.error }
+      } finally {
+        activeExportAbort = null
+      }
+    }
+  )
+
+  ipcMain.handle('fluxalloy:export-cancel', (): { ok: true } | { ok: false; error: string } => {
+    if (activeExportAbort === null) {
+      return { ok: false, error: 'Нет активного экспорта' }
+    }
+    activeExportAbort.abort()
+    return { ok: true }
   })
 
   ipcMain.on('ping', () => console.log('pong'))
