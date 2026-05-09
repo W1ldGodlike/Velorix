@@ -187,6 +187,13 @@ function buildDownloadsHtml(): string {
       background: #18181b; color: #c9e79f; font-family: ui-monospace, Consolas, Menlo, monospace;
       font-size: 11px; white-space: pre-wrap; word-break: break-word; max-height: 120px; overflow: auto;
     }
+    .hints-panel { margin: 6px 0 10px; }
+    .hints-panel summary { cursor: pointer; font-weight: 600; font-size: 12px; color: #c9c9cf; margin-bottom: 6px; user-select: none; }
+    .hint-select {
+      width: 100%; max-width: 28rem; padding: 6px 8px; border-radius: 6px;
+      border: 1px solid #3f3f46; background: #1e1e1e; color: #ececec; font-size: 11px;
+    }
+    #hintSummary { min-height: 2.5em; margin-top: 6px; }
     .opts-hint { font-size: 11px; opacity: 0.75; margin: 0 0 8px; line-height: 1.35; }
     .note { margin-top: 12px; font-size: 11px; opacity: 0.72; }
   </style>
@@ -215,6 +222,13 @@ function buildDownloadsHtml(): string {
     <p class="opts-hint opts-warn" id="extraArgsWarn" hidden></p>
     <span class="opts-preview-label">Превью argv</span>
     <pre class="args-preview" id="argsPreview"></pre>
+    <details class="hints-panel" id="hintsPanel">
+      <summary>Справочник флагов (Data/ytdlp_commands.json)</summary>
+      <select id="hintInsert" class="hint-select" aria-label="Вставить флаг из справочника">
+        <option value="">Выберите флаг — он добавится в «Доп. аргументы»…</option>
+      </select>
+      <p class="opts-hint" id="hintSummary"></p>
+    </details>
     <div class="opts-actions">
       <button type="button" class="cmd cmd-primary" id="applyOptsBtn">Сохранить параметры</button>
       <button type="button" class="cmd" id="tmplReset">Шаблон по умолчанию</button>
@@ -259,6 +273,26 @@ function buildDownloadsHtml(): string {
       var extraArgsInput = document.getElementById('extraArgsInput');
       var argsPreview = document.getElementById('argsPreview');
       var extraArgsWarn = document.getElementById('extraArgsWarn');
+      var hintInsert = document.getElementById('hintInsert');
+      var hintSummary = document.getElementById('hintSummary');
+
+      function fillHintSelect(hints) {
+        if (!hintInsert) return;
+        var list = Array.isArray(hints) ? hints : [];
+        hintInsert.replaceChildren();
+        var ph = document.createElement('option');
+        ph.value = '';
+        ph.textContent = list.length === 0 ? 'Справочник недоступен' : 'Выберите флаг — добавить в поле…';
+        hintInsert.appendChild(ph);
+        list.forEach(function (h) {
+          if (!h || typeof h.token !== 'string') return;
+          var o = document.createElement('option');
+          o.value = h.token;
+          o.textContent = h.token;
+          o.title = typeof h.summary === 'string' ? h.summary : '';
+          hintInsert.appendChild(o);
+        });
+      }
 
       function refreshCliOpts() {
         api.getCliOptions().then(function (r) {
@@ -295,6 +329,7 @@ function buildDownloadsHtml(): string {
               extraArgsWarn.hidden = true;
             }
           }
+          fillHintSelect(p.commandHints);
         });
       }
 
@@ -455,6 +490,23 @@ function buildDownloadsHtml(): string {
               tmplInput.value = r.payload.defaultFilenameTemplate;
             }
           });
+        });
+      }
+
+      if (hintInsert && extraArgsInput) {
+        hintInsert.addEventListener('change', function () {
+          var opt = hintInsert.selectedOptions && hintInsert.selectedOptions[0];
+          var token = hintInsert.value;
+          if (!token) {
+            if (hintSummary) hintSummary.textContent = '';
+            return;
+          }
+          if (hintSummary && opt && opt.title) {
+            hintSummary.textContent = opt.title.length > 360 ? opt.title.slice(0, 358) + '…' : opt.title;
+          }
+          var cur = extraArgsInput.value.trim();
+          extraArgsInput.value = cur ? cur + ' ' + token : token;
+          hintInsert.value = '';
         });
       }
 

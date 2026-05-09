@@ -47,3 +47,4 @@
 - 2026-05-09 21:43:43: §7.2 — три системных пресета libx264 (`balance`/`smaller`/`quality`), `ffmpegExportEncodePreset` в settings, `<select>` в тулбаре, IPC `settings-set-ffmpeg-export-encode-preset`, передача в `runFfmpegExportJob`.
 - 2026-05-09 21:45:14: §6.2 — плейлист (`ytdlpDownloadPlaylist` → `--yes-playlist`/`--no-playlist`) и только аудио (`ytdlpAudioOnly` → `-x --audio-format best`, без `-f` пресета); чекбоксы в окне загрузок, расширен снимок `YtdlpRunOptionsSnapshot` и `runYtdlpOnce`.
 - 2026-05-09 21:48:01: §6.3 — `ytdlpExtraArgsLine` + `parseExtraYtdlpArgsLine`/`buildYtdlpSpawnArgvTokens`, превью `yt-dlp …` в окне загрузок; блок конфликта `-o`/batch/`@`; раннер берёт `extraArgs` из снимка.
+- 2026-05-09 21:49:21: §6.3 — подсказки из `Data/ytdlp_commands.json`: `getYtdlpCommandHints` в main, `commandHints` в payload окна загрузок, сворачиваемый справочник и вставка токена в поле доп. argv с кратким описанием выбранного флага.

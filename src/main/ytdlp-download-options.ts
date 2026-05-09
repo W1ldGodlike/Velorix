@@ -6,6 +6,7 @@ import {
   formatArgvTokensForPreview,
   parseExtraYtdlpArgsLine
 } from './ytdlp-extra-args'
+import { getYtdlpCommandHints, type YtdlpCommandHintEntry } from './ytdlp-commands-hints'
 
 /** Шаблон по умолчанию совпадает с тем, что раньше был захардкожен в `runYtdlpOnce`. */
 export const YTDLP_DEFAULT_FILENAME_TEMPLATE = '%(title)s [%(id)s].%(ext)s'
@@ -45,6 +46,8 @@ export interface YtdlpDownloadOptionsPayload {
   /** Превью полной командной строки (`yt-dlp …`), без реального пути и URL. */
   commandPreview: string
   extraArgsParseWarning: string | null
+  /** Подсказки для поля доп. аргументов §6.3 (из `Data/ytdlp_commands.json`). */
+  commandHints: YtdlpCommandHintEntry[]
 }
 
 export interface YtdlpDownloadOptionsPatch {
@@ -190,6 +193,7 @@ export function payloadFromSnapshot(snap: YtdlpRunOptionsSnapshot): YtdlpDownloa
     url: '<url>'
   })
   const commandPreview = `yt-dlp ${formatArgvTokensForPreview(argv)}`
+  const commandHints = getYtdlpCommandHints()
   return {
     filenameTemplate: snap.filenameTemplate,
     defaultFilenameTemplate: YTDLP_DEFAULT_FILENAME_TEMPLATE,
@@ -203,6 +207,7 @@ export function payloadFromSnapshot(snap: YtdlpRunOptionsSnapshot): YtdlpDownloa
     audioOnly: snap.audioOnly,
     extraArgsLine: snap.extraArgsLine,
     commandPreview,
-    extraArgsParseWarning: snap.extraArgsParseWarning
+    extraArgsParseWarning: snap.extraArgsParseWarning,
+    commandHints
   }
 }

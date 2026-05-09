@@ -43,7 +43,7 @@
 - [x] §4/§7: Drag-and-Drop файла в область превью с регистрацией пути в main.
 - [~] §7: превью + таймлайн + экспорт MP4 + снимок кадра §7.6 + ffprobe под превью; отдельное окно инспектора §9 — позже.
 - [x] §6.1: колонка «Прогресс» в очереди yt-dlp — `% · скорость · ETA` из stderr (`parseYtdlpDownloadProgressLine` / `formatYtdlpProgressCell`).
-- [~] §6.2: шаблон `-o`, пресеты `-f`, плейлист, аудио `-x`; §6.3 — строка доп. argv + превью; дальше субтитры как пресет, cookies.
+- [~] §6.2: шаблон `-o`, пресеты `-f`, плейлист, аудио `-x`; §6.3 — строка доп. argv + превью + справочник из `ytdlp_commands.json`; дальше субтитры как пресет, cookies.
 - [x] §7.1: в статусе экспорта — `speed=` из stderr ffmpeg + разбор прогресса по `\r`/`\n`.
 - [~] §7.2: первые системные пресеты экспорта (`balance`/`smaller`/`quality` → CRF + `-preset` libx264 + UI + settings); пользовательские пресеты §20 — позже.
 - [x] §19: пустой `bin/` в репозитории + `extraResources` в installer (бинарники не в Git; подкладка вручную перед сборкой).
@@ -278,7 +278,7 @@
 
 - [~] Live preview команды yt-dlp (`commandPreview` в окне загрузок; заглушки `<downloadDir>`, `<url>`).
 - [~] Поле дополнительных аргументов (`ytdlpExtraArgsLine` в settings).
-- [ ] Подсказки из `Data/ytdlp_commands.json`.
+- [x] Подсказки из `Data/ytdlp_commands.json`.
 - [~] Безопасная сборка аргументов без shell (`parseExtraYtdlpArgsLine`, spawn-массив §21).
 
 ### §6.4 Прогресс, лог, комбинированный режим
