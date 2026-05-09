@@ -71,6 +71,9 @@ export interface FluxAlloyApi {
       id: DiagnosticsFolderId
     ) => Promise<{ ok: true; path: string } | { ok: false; error: string }>
   }
+  log: {
+    send: (entry: { level: 'info' | 'warn' | 'error'; scope?: string; message: string }) => void
+  }
   engines: {
     getStatus: () => Promise<EnginesStatusSnapshot>
     shouldOfferDownload: () => Promise<boolean>

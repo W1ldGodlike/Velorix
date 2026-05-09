@@ -31,6 +31,7 @@ import {
   type YtdlpDownloadOptionsPatch
 } from './ytdlp-download-options'
 import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
+import { logError } from './logger-service'
 
 /** Совпадает с preload подпиской на снимок очереди. */
 export const DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL = 'fluxalloy-downloads-state'
@@ -968,7 +969,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
       }
 
       void startDownloadsSequential().catch((err: unknown) => {
-        console.error('[downloads-queue]', err)
+        logError('downloads-queue', 'startDownloadsSequential failed', err)
       })
 
       return { ok: true }
@@ -987,7 +988,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
       try {
         return await startDownloadSingleRow(id)
       } catch (err: unknown) {
-        console.error('[downloads-queue]', err)
+        logError('downloads-queue', 'startDownloadSingleRow failed', err)
         return { ok: false, error: err instanceof Error ? err.message : String(err) }
       }
     }

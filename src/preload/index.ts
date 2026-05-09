@@ -79,6 +79,15 @@ const fluxalloy = {
     ): Promise<{ ok: true; path: string } | { ok: false; error: string }> =>
       ipcRenderer.invoke('fluxalloy:diagnostics-open-folder', id)
   },
+  log: {
+    /**
+     * §18 — отправить запись в `userData/logs/main.log` через main-логгер.
+     * Без ответа: это «fire and forget», промахнувшийся payload отбрасывается на стороне main.
+     */
+    send: (entry: { level: 'info' | 'warn' | 'error'; scope?: string; message: string }): void => {
+      ipcRenderer.send('fluxalloy:log-renderer', entry)
+    }
+  },
   engines: {
     getStatus: (): Promise<EnginesStatusSnapshot> => ipcRenderer.invoke('fluxalloy:engines-status'),
     shouldOfferDownload: (): Promise<boolean> =>

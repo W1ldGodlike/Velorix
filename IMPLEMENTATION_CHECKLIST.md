@@ -39,8 +39,9 @@
 - [~] §6.3: экспертный режим — доп. argv + whitelist/blacklist + справочник; дальше лучше сгруппировать параметры в сворачиваемые секции.
 - [~] §7: превью + таймлайн + экспорт MP4 + снимок кадра §7.6 + ffprobe под превью; отдельное окно инспектора §9 — позже.
 - [~] §7.2/§20: системные пресеты libx264 есть; дальше пользовательские пресеты, контейнер/формат и расширенные параметры кодирования.
-- [~] §17/§18: меню «Инструменты → Открыть папку…» + IPC `diagnostics-*` (userData, logs, ytdlp, bin, resources); дальше — собственно логирование §18 и UI кнопок в «О программе»/Настройках.
+- [~] §17/§18: меню «Инструменты → Открыть папку…», IPC `diagnostics-*` и базовый `logger-service` (`main.log` + ротация + crash handler + renderer-канал); дальше — диалог ошибки, Support ZIP и логи stdout движков.
 - [ ] §21: выделить общие IPC contracts/shared models и добавить первые unit tests для чистых парсеров (`ytdlp-extra-args`, progress parsers).
+- [ ] §6.4: история загрузок yt-dlp (persist в `userData/downloads/history.json`, фильтры/повтор).
 
 ---
 
@@ -448,13 +449,13 @@
 
 ## §18. Логирование и диагностика
 
-- [~] Выбрать библиотеку: `electron-log`, `pino` или другой стек — пока только заведена пустая папка `userData/logs` (создаётся при первом обращении из меню).
-- [ ] Логи main.
-- [ ] Логи renderer.
+- [~] Выбрать библиотеку: пока используется собственный `logger-service` (без зависимостей); решение про `electron-log`/`pino` — позже.
+- [~] Логи main: `logInfo/logWarn/logError` пишут в `userData/logs/main.log` с timestamp/scope; уровни `info/warn/error`.
+- [~] Логи renderer: `window.fluxalloy.log.send` через IPC `fluxalloy:log-renderer` + перехват `error`/`unhandledrejection` в `main.tsx`.
 - [ ] Логи внешних процессов stdout/stderr.
-- [ ] Ротация по размеру.
+- [~] Ротация по размеру: один backup `main.log.1` при превышении 1 MiB.
 - [ ] Prune старых сессий.
-- [ ] Crash handler.
+- [~] Crash handler: `process.on('uncaughtException'|'unhandledRejection')` в main; диалога/Support ZIP пока нет.
 - [ ] Диалог ошибки: кратко + детали.
 - [ ] Копировать детали.
 - [ ] Открыть лог.

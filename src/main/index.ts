@@ -18,6 +18,12 @@ import {
   openDiagnosticsFolder,
   type DiagnosticsFolderEntry
 } from './diagnostics-paths'
+import {
+  attachProcessErrorHandlers,
+  logFromRendererSafe,
+  logInfo,
+  logStartupBanner
+} from './logger-service'
 import { runFfmpegSnapshotFrame } from './ffmpeg-frame-snapshot-service'
 import {
   parseFfmpegExportEncodePreset,
@@ -678,6 +684,8 @@ function createWindow(): void {
 
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.fluxalloy')
+  attachProcessErrorHandlers()
+  logStartupBanner()
   cachedSettings = loadSettings(settingsPath())
   refreshEnginePathOverridesSnapshot()
   syncYtdlpDownloadDirectoryFromSettings(cachedSettings.ytdlpDownloadDirectory)
@@ -1097,7 +1105,11 @@ app.whenReady().then(() => {
     }
   )
 
-  ipcMain.on('ping', () => console.log('pong'))
+  ipcMain.on('ping', () => logInfo('ipc', 'ping'))
+
+  ipcMain.on('fluxalloy:log-renderer', (_event, raw: unknown) => {
+    logFromRendererSafe(raw)
+  })
 
   buildApplicationMenu()
   createWindow()
