@@ -31,7 +31,7 @@ export function resolveAppPaths(): AppPaths {
     appRoot,
     resources,
     userData,
-    // TODO(§19): когда появится реальный `bin`, добавить его в `electron-builder.yml extraResources`.
+    // В сборке `bin` попадает из `electron-builder.yml extraResources` (может быть пустым).
     bundledBin: join(resources, 'bin'),
     userBin: join(userData, 'bin')
   }

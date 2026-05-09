@@ -81,6 +81,103 @@ type MediaProbeSuccess = Extract<
   { ok: true }
 >
 
+type MediaProbeTrackRow = MediaProbeSuccess['tracks'][number]
+
+function formatProbeDuration(sec: number | null): string {
+  if (sec === null || !Number.isFinite(sec)) {
+    return 'длительность ?'
+  }
+  if (sec < 60) {
+    return `${sec.toFixed(1)} с`
+  }
+  const s = Math.floor(sec)
+  const h = Math.floor(s / 3600)
+  const m = Math.floor((s % 3600) / 60)
+  const r = s % 60
+  if (h > 0) {
+    return `${h}:${String(m).padStart(2, '0')}:${String(r).padStart(2, '0')} · ${Math.round(sec)} с`
+  }
+  return `${m}:${String(r).padStart(2, '0')} · ${Math.round(sec)} с`
+}
+
+function formatBitrateLine(kbps: number | null): string | null {
+  if (kbps === null || !Number.isFinite(kbps)) {
+    return null
+  }
+  if (kbps >= 10_000) {
+    return `${(kbps / 1000).toFixed(2)} Mb/s`
+  }
+  return `${Math.round(kbps)} kb/s`
+}
+
+function trackKindRu(kind: MediaProbeTrackRow['kind']): string {
+  switch (kind) {
+    case 'video':
+      return 'Видео'
+    case 'audio':
+      return 'Аудио'
+    case 'subtitle':
+      return 'Субтитры'
+    case 'attachment':
+      return 'Вложение'
+    case 'data':
+      return 'Данные'
+    default:
+      return 'Прочее'
+  }
+}
+
+function PreviewProbeBody({ probeInfo }: { probeInfo: MediaProbeSuccess }): React.JSX.Element {
+  const bitrateLabel = formatBitrateLine(probeInfo.bitrateKbps)
+  const formatTooltip =
+    probeInfo.formatLongName && probeInfo.formatName !== probeInfo.formatLongName
+      ? probeInfo.formatLongName
+      : undefined
+
+  return (
+    <div className="app-preview-probe-stack">
+      <div className="app-preview-probe-summary-line">
+        <span title={formatTooltip}>
+          {formatProbeDuration(probeInfo.durationSec)}
+          {probeInfo.video
+            ? ` · ${probeInfo.video.width}×${probeInfo.video.height} · ${probeInfo.video.codec}`
+            : ''}
+          {probeInfo.audioCodec ? ` · аудио ${probeInfo.audioCodec}` : ''}
+          {probeInfo.formatName ? ` · ${probeInfo.formatName}` : ''}
+          {bitrateLabel ? ` · ${bitrateLabel}` : ''}
+        </span>
+      </div>
+      {probeInfo.tracks.length > 0 ? (
+        <details className="app-probe-details">
+          <summary className="app-probe-summary">Дорожки ({probeInfo.tracks.length})</summary>
+          <div className="app-probe-table-wrap">
+            <table className="app-probe-table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Тип</th>
+                  <th scope="col">Кодек</th>
+                  <th scope="col">Сведения</th>
+                </tr>
+              </thead>
+              <tbody>
+                {probeInfo.tracks.map((row) => (
+                  <tr key={`track-${row.index}`}>
+                    <td>{row.index}</td>
+                    <td>{trackKindRu(row.kind)}</td>
+                    <td className="app-probe-table-mono">{row.codec}</td>
+                    <td>{row.detail}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </details>
+      ) : null}
+    </div>
+  )
+}
+
 /**
  * Сводит подробные статусы движков к одной строке для нижнего статусбара.
  *
@@ -547,16 +644,7 @@ function App(): React.JSX.Element {
                     {probeError ? (
                       <span className="app-preview-probe-error">{probeError}</span>
                     ) : probeInfo ? (
-                      <span>
-                        {probeInfo.durationSec !== null
-                          ? `${Math.round(probeInfo.durationSec)} с`
-                          : 'длительность ?'}
-                        {probeInfo.video
-                          ? ` · ${probeInfo.video.width}×${probeInfo.video.height} · ${probeInfo.video.codec}`
-                          : ''}
-                        {probeInfo.audioCodec ? ` · аудио ${probeInfo.audioCodec}` : ''}
-                        {probeInfo.formatName ? ` · ${probeInfo.formatName}` : ''}
-                      </span>
+                      <PreviewProbeBody probeInfo={probeInfo} />
                     ) : null}
                   </div>
                 )}

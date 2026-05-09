@@ -245,8 +245,87 @@
   background: color-mix(in srgb, var(--fa-surface) 96%, transparent);
 }
 
+.app-preview-probe-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.app-preview-probe-summary-line {
+  line-height: 1.35;
+}
+
 .app-preview-probe-error {
   color: color-mix(in srgb, #f87171 82%, var(--fa-text-muted));
+}
+
+/* §9: сворачиваемая таблица дорожек под строкой ffprobe */
+.app-probe-details {
+  border-radius: 6px;
+  border: 1px solid var(--fa-border-subtle);
+  background: color-mix(in srgb, var(--fa-surface-elevated) 55%, transparent);
+  overflow: hidden;
+}
+
+.app-probe-summary {
+  cursor: pointer;
+  padding: 0.25rem 0.45rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--fa-text-secondary);
+  user-select: none;
+  list-style: none;
+}
+
+.app-probe-summary::-webkit-details-marker {
+  display: none;
+}
+
+.app-probe-summary::before {
+  content: '▸';
+  display: inline-block;
+  margin-right: 0.35rem;
+  transition: transform 0.12s ease;
+  font-size: 0.65rem;
+  opacity: 0.75;
+}
+
+.app-probe-details[open] .app-probe-summary::before {
+  transform: rotate(90deg);
+}
+
+.app-probe-table-wrap {
+  max-height: 11rem;
+  overflow: auto;
+  border-top: 1px solid var(--fa-border-subtle);
+}
+
+.app-probe-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.app-probe-table th,
+.app-probe-table td {
+  padding: 0.2rem 0.45rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--fa-border-subtle);
+}
+
+.app-probe-table th {
+  position: sticky;
+  top: 0;
+  background: color-mix(in srgb, var(--fa-surface) 94%, transparent);
+  color: var(--fa-text-muted);
+  font-weight: 600;
+  z-index: 1;
+}
+
+.app-probe-table-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
 .app-preview-caption {
