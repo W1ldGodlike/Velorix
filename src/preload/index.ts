@@ -6,6 +6,7 @@ import type { EngineDownloadProgress } from '../main/engine-download'
 import type {
   FfmpegExportContainerId,
   FfmpegExportEncodePresetId,
+  FfmpegExportScalePresetId,
   FfmpegExportProgressPayload,
   MediaExportRequestPayload,
   MediaExportStartResult
@@ -40,7 +41,11 @@ const fluxalloy = {
     setFfmpegExportCrf: (crf: number | null): Promise<AppSettings> =>
       ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-crf', crf),
     setFfmpegExportAudioBitrate: (bitrate: string | null): Promise<AppSettings> =>
-      ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-audio-bitrate', bitrate)
+      ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-audio-bitrate', bitrate),
+    setFfmpegExportFps: (fps: number | null): Promise<AppSettings> =>
+      ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-fps', fps),
+    setFfmpegExportScalePreset: (scale: FfmpegExportScalePresetId): Promise<AppSettings> =>
+      ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-scale-preset', scale)
   },
   preview: {
     openFileDialog: (): Promise<PreviewDialogResult> =>

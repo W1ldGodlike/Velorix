@@ -40,6 +40,8 @@ import {
   parseFfmpegExportAudioBitrate,
   parseFfmpegExportCrf,
   parseFfmpegExportEncodePreset,
+  parseFfmpegExportFps,
+  parseFfmpegExportScalePreset,
   ensureFfmpegExportExtension,
   runFfmpegExportJob,
   type MediaExportTrimPayload,
@@ -513,6 +515,32 @@ function persistFfmpegExportAudioBitrate(raw: unknown): AppSettings {
     delete next.ffmpegExportAudioBitrate
   } else {
     next.ffmpegExportAudioBitrate = value
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistFfmpegExportFps(raw: unknown): AppSettings {
+  const value = parseFfmpegExportFps(raw)
+  const next = { ...cachedSettings }
+  if (value === null) {
+    delete next.ffmpegExportFps
+  } else {
+    next.ffmpegExportFps = value
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistFfmpegExportScalePreset(raw: unknown): AppSettings {
+  const value = parseFfmpegExportScalePreset(raw)
+  const next = { ...cachedSettings }
+  if (value === 'source') {
+    delete next.ffmpegExportScalePreset
+  } else {
+    next.ffmpegExportScalePreset = value
   }
   cachedSettings = next
   saveSettings(settingsPath(), cachedSettings)
@@ -1079,6 +1107,16 @@ app.whenReady().then(() => {
     (_, raw: unknown): AppSettings => persistFfmpegExportAudioBitrate(raw)
   )
 
+  ipcMain.handle(
+    'fluxalloy:settings-set-ffmpeg-export-fps',
+    (_, raw: unknown): AppSettings => persistFfmpegExportFps(raw)
+  )
+
+  ipcMain.handle(
+    'fluxalloy:settings-set-ffmpeg-export-scale-preset',
+    (_, raw: unknown): AppSettings => persistFfmpegExportScalePreset(raw)
+  )
+
   ipcMain.handle('fluxalloy:settings-set-engine-paths', (_, patch: unknown): AppSettings => {
     if (!patch || typeof patch !== 'object') {
       return { ...cachedSettings }
@@ -1303,6 +1341,16 @@ app.whenReady().then(() => {
         audioBitrateRaw !== undefined && audioBitrateRaw !== null
           ? parseFfmpegExportAudioBitrate(audioBitrateRaw)
           : parseFfmpegExportAudioBitrate(cachedSettings.ffmpegExportAudioBitrate)
+      const fpsRaw = (raw as { fps?: unknown }).fps
+      const exportFps =
+        fpsRaw !== undefined && fpsRaw !== null
+          ? parseFfmpegExportFps(fpsRaw)
+          : parseFfmpegExportFps(cachedSettings.ffmpegExportFps)
+      const scalePresetRaw = (raw as { scalePreset?: unknown }).scalePreset
+      const exportScalePreset =
+        scalePresetRaw !== undefined && scalePresetRaw !== null
+          ? parseFfmpegExportScalePreset(scalePresetRaw)
+          : parseFfmpegExportScalePreset(cachedSettings.ffmpegExportScalePreset)
 
       const paths = resolveAppPaths()
       const ffmpeg = resolveEngineExecutablePath(
@@ -1354,6 +1402,8 @@ app.whenReady().then(() => {
           encodePreset,
           crf: exportCrf,
           audioBitrate: exportAudioBitrate,
+          fps: exportFps,
+          scalePreset: exportScalePreset,
           signal: ac.signal,
           onProgress: pushProgress
         })

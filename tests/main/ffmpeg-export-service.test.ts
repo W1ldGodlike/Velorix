@@ -7,6 +7,8 @@ import {
   parseFfmpegExportEncodePreset,
   parseFfmpegExportContainer,
   parseFfmpegExportCrf,
+  parseFfmpegExportFps,
+  parseFfmpegExportScalePreset,
   parseFfmpegSpeedToken,
   parseFfmpegTimeSeconds,
   resolveExportEncodeParams,
@@ -46,6 +48,14 @@ describe('ffmpeg export pure helpers', () => {
     expect(parseFfmpegExportAudioBitrate('192K')).toBe('192k')
     expect(parseFfmpegExportAudioBitrate('16k')).toBeNull()
     expect(parseFfmpegExportAudioBitrate('1000k')).toBeNull()
+  })
+
+  it('валидирует FPS и scale preset', () => {
+    expect(parseFfmpegExportFps(30)).toBe(30)
+    expect(parseFfmpegExportFps('60')).toBe(60)
+    expect(parseFfmpegExportFps(29.97)).toBeNull()
+    expect(parseFfmpegExportScalePreset('720p')).toBe('720p')
+    expect(parseFfmpegExportScalePreset('bad')).toBe('source')
   })
 
   it('считает длительность сегмента с учётом trim', () => {

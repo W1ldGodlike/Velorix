@@ -82,3 +82,4 @@
 - 2026-05-10 00:28:22 [Assistant]: §6.4/§7/§21 — из очереди и истории yt-dlp добавлено действие «В обработчик» для открытия готового файла в главном preview; экспорт получил фильтры MP4/MKV/MOV и нормализацию расширения.
 - 2026-05-10 00:32:53 [Assistant]: §7.2/§21 — контейнер экспорта MP4/MKV/MOV вынесен в toolbar и persisted settings; export-start возвращает путь результата, UI показывает имя сохранённого файла.
 - 2026-05-10 00:36:32 [Assistant]: §7.2/§21 — добавлены persisted настройки CRF libx264 и AAC bitrate в toolbar/settings/preload; ffmpeg export принимает валидированные overrides без shell-строк.
+- 2026-05-10 00:40:30 [Assistant]: §7.2/§21 — добавлены persisted настройки FPS и scale preset (исходный/480p/720p/1080p) для ffmpeg export; фильтры собираются через `-vf` без shell-строк, тесты settings/export helpers расширены.

@@ -21,6 +21,7 @@ type EngineId = 'ffmpeg' | 'ffprobe' | 'yt-dlp'
 /** Совпадает с `FfmpegExportEncodePresetId` в main §7.2 (renderer не импортирует main TS). */
 type ExportEncodePresetId = 'balance' | 'smaller' | 'quality'
 type ExportContainerId = 'mp4' | 'mkv' | 'mov'
+type ExportScalePresetId = 'source' | '480p' | '720p' | '1080p'
 
 const EXPORT_ENCODE_PRESETS: Array<{ id: ExportEncodePresetId; label: string }> = [
   { id: 'balance', label: 'Баланс' },
@@ -36,6 +37,13 @@ const EXPORT_CONTAINERS: Array<{ id: ExportContainerId; label: string }> = [
 
 const EXPORT_CRF_OPTIONS = [18, 20, 23, 26, 28, 30]
 const EXPORT_AUDIO_BITRATES = ['96k', '128k', '160k', '192k', '256k', '320k']
+const EXPORT_FPS_OPTIONS = [24, 25, 30, 50, 60]
+const EXPORT_SCALE_PRESETS: Array<{ id: ExportScalePresetId; label: string }> = [
+  { id: 'source', label: 'Размер исходный' },
+  { id: '480p', label: '480p' },
+  { id: '720p', label: '720p' },
+  { id: '1080p', label: '1080p' }
+]
 
 const ENGINE_IDS: EngineId[] = ['ffmpeg', 'ffprobe', 'yt-dlp']
 
@@ -295,6 +303,8 @@ function App(): JSX.Element {
   const [exportContainer, setExportContainer] = useState<ExportContainerId>('mp4')
   const [exportCrf, setExportCrf] = useState<number | null>(null)
   const [exportAudioBitrate, setExportAudioBitrate] = useState('192k')
+  const [exportFps, setExportFps] = useState<number | null>(null)
+  const [exportScalePreset, setExportScalePreset] = useState<ExportScalePresetId>('source')
   const [snapshotBusy, setSnapshotBusy] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   /** Последний диапазон In/Out с таймлайна для IPC экспорта. */
@@ -358,6 +368,16 @@ function App(): JSX.Element {
         EXPORT_AUDIO_BITRATES.includes(loaded.ffmpegExportAudioBitrate)
       ) {
         setExportAudioBitrate(loaded.ffmpegExportAudioBitrate)
+      }
+      if (
+        typeof loaded.ffmpegExportFps === 'number' &&
+        EXPORT_FPS_OPTIONS.includes(loaded.ffmpegExportFps)
+      ) {
+        setExportFps(loaded.ffmpegExportFps)
+      }
+      const scale = loaded.ffmpegExportScalePreset
+      if (scale === '480p' || scale === '720p' || scale === '1080p') {
+        setExportScalePreset(scale)
       }
       cleanupTheme = window.fluxalloy.onThemeChanged((next) => {
         applyTheme(next)
@@ -602,7 +622,9 @@ function App(): JSX.Element {
         encodePreset: exportEncodePreset,
         container: exportContainer,
         crf: exportCrf,
-        audioBitrate: exportAudioBitrate
+        audioBitrate: exportAudioBitrate,
+        fps: exportFps,
+        scalePreset: exportScalePreset
       })
       if (res.ok) {
         const savedName = res.path.split(/[\\/]/).pop() || res.path
@@ -741,6 +763,44 @@ function App(): JSX.Element {
           {EXPORT_AUDIO_BITRATES.map((v) => (
             <option key={v} value={v}>
               AAC {v}
+            </option>
+          ))}
+        </select>
+        <select
+          className="app-toolbar-select"
+          aria-label="FPS экспорта"
+          title="Частота кадров вывода"
+          value={exportFps === null ? 'source' : String(exportFps)}
+          disabled={exportBusy || snapshotBusy}
+          onChange={(e) => {
+            const raw = e.target.value
+            const next = raw === 'source' ? null : Number(raw)
+            setExportFps(next)
+            void window.fluxalloy.settings.setFfmpegExportFps(next).catch(console.error)
+          }}
+        >
+          <option value="source">FPS исходный</option>
+          {EXPORT_FPS_OPTIONS.map((v) => (
+            <option key={v} value={v}>
+              {v} fps
+            </option>
+          ))}
+        </select>
+        <select
+          className="app-toolbar-select"
+          aria-label="Размер экспорта"
+          title="Масштабирование с сохранением пропорций"
+          value={exportScalePreset}
+          disabled={exportBusy || snapshotBusy}
+          onChange={(e) => {
+            const v = e.target.value as ExportScalePresetId
+            setExportScalePreset(v)
+            void window.fluxalloy.settings.setFfmpegExportScalePreset(v).catch(console.error)
+          }}
+        >
+          {EXPORT_SCALE_PRESETS.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.label}
             </option>
           ))}
         </select>

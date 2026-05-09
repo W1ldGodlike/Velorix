@@ -66,6 +66,10 @@ export interface AppSettings {
   ffmpegExportCrf?: number
   /** §7.2: битрейт AAC одним argv-токеном (`128k`, `192k`, `320k`). */
   ffmpegExportAudioBitrate?: string
+  /** §7.2: FPS вывода; отсутствует — исходная частота. */
+  ffmpegExportFps?: number
+  /** §7.2: preset масштабирования с сохранением пропорций. */
+  ffmpegExportScalePreset?: 'source' | '480p' | '720p' | '1080p'
   // TODO(§4.6): язык, hotkeys.
 }
 
@@ -262,6 +266,22 @@ function parseFfmpegExportAudioBitrateStored(raw: unknown): string | undefined {
   return `${kbps}k`
 }
 
+function parseFfmpegExportFpsStored(raw: unknown): number | undefined {
+  if (typeof raw !== 'number' || ![24, 25, 30, 50, 60].includes(raw)) {
+    return undefined
+  }
+  return raw
+}
+
+function parseFfmpegExportScalePresetStored(
+  raw: unknown
+): 'source' | '480p' | '720p' | '1080p' | undefined {
+  if (raw === 'source' || raw === '480p' || raw === '720p' || raw === '1080p') {
+    return raw
+  }
+  return undefined
+}
+
 const defaults: AppSettings = { theme: 'dark' }
 
 /**
@@ -295,6 +315,10 @@ export function loadSettings(filePath: string): AppSettings {
     const ffmpegExportCrf = parseFfmpegExportCrfStored(parsed.ffmpegExportCrf)
     const ffmpegExportAudioBitrate = parseFfmpegExportAudioBitrateStored(
       parsed.ffmpegExportAudioBitrate
+    )
+    const ffmpegExportFps = parseFfmpegExportFpsStored(parsed.ffmpegExportFps)
+    const ffmpegExportScalePreset = parseFfmpegExportScalePresetStored(
+      parsed.ffmpegExportScalePreset
     )
     const ytdlpExtraArgsLine = parseYtdlpExtraArgsLineStored(parsed.ytdlpExtraArgsLine)
     const ytdlpSubtitlePreset = parseYtdlpSubtitlePresetStored(parsed.ytdlpSubtitlePreset)
@@ -336,6 +360,12 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (ffmpegExportAudioBitrate !== undefined) {
       base.ffmpegExportAudioBitrate = ffmpegExportAudioBitrate
+    }
+    if (ffmpegExportFps !== undefined) {
+      base.ffmpegExportFps = ffmpegExportFps
+    }
+    if (ffmpegExportScalePreset !== undefined && ffmpegExportScalePreset !== 'source') {
+      base.ffmpegExportScalePreset = ffmpegExportScalePreset
     }
     if (parsed.ytdlpDownloadPlaylist === true) {
       base.ytdlpDownloadPlaylist = true

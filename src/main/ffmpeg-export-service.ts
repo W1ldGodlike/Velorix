@@ -11,6 +11,7 @@ export interface MediaExportTrimPayload {
 /** Первые системные пресеты libx264 §7.2 — только белый список, без произвольных аргументов. */
 export type FfmpegExportEncodePresetId = 'balance' | 'smaller' | 'quality'
 export type FfmpegExportContainerId = 'mp4' | 'mkv' | 'mov'
+export type FfmpegExportScalePresetId = 'source' | '480p' | '720p' | '1080p'
 
 export interface MediaExportRequestPayload {
   inputPath: string
@@ -24,6 +25,10 @@ export interface MediaExportRequestPayload {
   crf?: number | null
   /** Битрейт AAC одним токеном (`128k`, `192k`, `320k`). */
   audioBitrate?: string | null
+  /** FPS вывода; null/undefined — оставить исходную частоту. */
+  fps?: number | null
+  /** Масштабирование с сохранением пропорций; `source` — без `scale`. */
+  scalePreset?: FfmpegExportScalePresetId | null
 }
 
 /** Разбор сохранённой строки или поля IPC; мусор → безопасный `balance`. */
@@ -89,6 +94,39 @@ export function parseFfmpegExportAudioBitrate(raw: unknown): string | null {
     return null
   }
   return `${kbps}k`
+}
+
+export function parseFfmpegExportFps(raw: unknown): number | null {
+  const n =
+    typeof raw === 'number'
+      ? raw
+      : typeof raw === 'string' && raw.trim() !== ''
+        ? Number(raw.trim())
+        : NaN
+  if (![24, 25, 30, 50, 60].includes(n)) {
+    return null
+  }
+  return n
+}
+
+export function parseFfmpegExportScalePreset(raw: unknown): FfmpegExportScalePresetId {
+  if (raw === '480p' || raw === '720p' || raw === '1080p') {
+    return raw
+  }
+  return 'source'
+}
+
+function scaleFilterForPreset(preset: FfmpegExportScalePresetId): string | null {
+  switch (preset) {
+    case '480p':
+      return 'scale=-2:480'
+    case '720p':
+      return 'scale=-2:720'
+    case '1080p':
+      return 'scale=-2:1080'
+    default:
+      return null
+  }
 }
 
 /** CRF и `-preset` x264 для выбранного пресета (аудио пока фиксированное AAC §7.1). */
@@ -190,33 +228,31 @@ function buildEncodeArgs(
   applyTrim: boolean,
   encodePreset: FfmpegExportEncodePresetId,
   crfOverride: number | null,
-  audioBitrate: string
+  audioBitrate: string,
+  fps: number | null,
+  scalePreset: FfmpegExportScalePresetId
 ): string[] {
   const enc = resolveExportEncodeParams(encodePreset)
   const crf = crfOverride === null ? enc.crf : String(crfOverride)
+  const filters: string[] = []
+  const scale = scaleFilterForPreset(scalePreset)
+  if (scale !== null) {
+    filters.push(scale)
+  }
+  if (fps !== null) {
+    filters.push(`fps=${fps}`)
+  }
   const args = ['-y', '-hide_banner', '-loglevel', 'info', '-stats']
   if (applyTrim && trim) {
     args.push('-ss', String(trim.inSec), '-i', inputPath, '-t', String(trim.outSec - trim.inSec))
   } else {
     args.push('-i', inputPath)
   }
-  args.push(
-    '-c:v',
-    'libx264',
-    '-preset',
-    enc.x264preset,
-    '-crf',
-    crf,
-    '-pix_fmt',
-    'yuv420p',
-    '-c:a',
-    'aac',
-    '-b:a',
-    audioBitrate,
-    '-movflags',
-    '+faststart',
-    outputPath
-  )
+  args.push('-c:v', 'libx264', '-preset', enc.x264preset, '-crf', crf, '-pix_fmt', 'yuv420p')
+  if (filters.length > 0) {
+    args.push('-vf', filters.join(','))
+  }
+  args.push('-c:a', 'aac', '-b:a', audioBitrate, '-movflags', '+faststart', outputPath)
   return args
 }
 
@@ -235,6 +271,8 @@ export function runFfmpegExportJob(params: {
   encodePreset?: FfmpegExportEncodePresetId
   crf?: number | null
   audioBitrate?: string | null
+  fps?: number | null
+  scalePreset?: FfmpegExportScalePresetId | null
   signal: AbortSignal
   onProgress?: (p: FfmpegExportProgressPayload) => void
 }): Promise<{ ok: true } | { ok: false; error: string }> {
@@ -242,6 +280,8 @@ export function runFfmpegExportJob(params: {
   const encodePreset = params.encodePreset ?? 'balance'
   const crf = parseFfmpegExportCrf(params.crf)
   const audioBitrate = parseFfmpegExportAudioBitrate(params.audioBitrate) ?? '192k'
+  const fps = parseFfmpegExportFps(params.fps)
+  const scalePreset = parseFfmpegExportScalePreset(params.scalePreset)
   const segmentDur = resolveExportSegmentDurationSec(
     params.trim,
     applyTrim,
@@ -254,7 +294,9 @@ export function runFfmpegExportJob(params: {
     applyTrim,
     encodePreset,
     crf,
-    audioBitrate
+    audioBitrate,
+    fps,
+    scalePreset
   )
 
   return new Promise((resolve) => {

@@ -5,6 +5,7 @@ import type { EngineDownloadProgress } from '../main/engine-download'
 import type {
   FfmpegExportContainerId,
   FfmpegExportEncodePresetId,
+  FfmpegExportScalePresetId,
   FfmpegExportProgressPayload,
   MediaExportRequestPayload,
   MediaExportStartResult
@@ -40,6 +41,8 @@ export interface FluxAlloyApi {
     setFfmpegExportContainer: (container: FfmpegExportContainerId) => Promise<AppSettings>
     setFfmpegExportCrf: (crf: number | null) => Promise<AppSettings>
     setFfmpegExportAudioBitrate: (bitrate: string | null) => Promise<AppSettings>
+    setFfmpegExportFps: (fps: number | null) => Promise<AppSettings>
+    setFfmpegExportScalePreset: (scale: FfmpegExportScalePresetId) => Promise<AppSettings>
   }
   preview: {
     openFileDialog: () => Promise<PreviewDialogResult>
