@@ -46,6 +46,24 @@ describe('parseYtdlpDownloadProgressLine', () => {
     expect(r).toEqual({ percent: null, speed: 'фрагмент 5/120', eta: null })
   })
 
+  it('парсит Total progress: N%', () => {
+    const r = parseYtdlpDownloadProgressLine('[download] Total progress: 33.3%')
+    expect(r).toEqual({ percent: '33.3%', speed: null, eta: null })
+  })
+
+  it('парсит Downloading video/item X of Y (плейлист)', () => {
+    expect(parseYtdlpDownloadProgressLine('[download] Downloading item 3 of 25')).toEqual({
+      percent: null,
+      speed: 'плейлист 3/25',
+      eta: null
+    })
+    expect(parseYtdlpDownloadProgressLine('[download] Downloading video 1 of 5')).toEqual({
+      percent: null,
+      speed: 'плейлист 1/5',
+      eta: null
+    })
+  })
+
   it('возвращает null если ни процента, ни скорости нет', () => {
     expect(parseYtdlpDownloadProgressLine('[download] Resuming download at byte 0')).toBeNull()
   })

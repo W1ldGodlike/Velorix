@@ -52,6 +52,27 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
     }
   }
 
+  const totalProgMatch = t.match(/\btotal\s+progress:\s*(\d+(?:\.\d+)?)%/i)
+  if (totalProgMatch) {
+    const p = totalProgMatch[1]
+    if (p !== undefined) {
+      return { percent: `${p}%`, speed: null, eta: null }
+    }
+  }
+
+  const playlistMatch = t.match(/\bdownloading\s+(?:video|item)\s+(\d+)\s+of\s+(\d+)\b/i)
+  if (playlistMatch) {
+    const a = playlistMatch[1]
+    const b = playlistMatch[2]
+    if (a !== undefined && b !== undefined) {
+      return {
+        percent: null,
+        speed: `плейлист ${a}/${b}`,
+        eta: null
+      }
+    }
+  }
+
   const pctMatch = t.match(/(\d+(?:\.\d+)?)%/)
   const percent = pctMatch ? `${pctMatch[1]}%` : null
 
