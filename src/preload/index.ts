@@ -40,8 +40,8 @@ const fluxalloy = {
       ipcRenderer.invoke('fluxalloy:restore-last-source')
   },
   downloads: {
-    openWindow: (url?: string | null): Promise<void> =>
-      ipcRenderer.invoke('fluxalloy:open-downloads-window', url ?? null)
+    openWindow: (initial?: string | { text?: string } | null): Promise<void> =>
+      ipcRenderer.invoke('fluxalloy:open-downloads-window', initial ?? null)
   },
   clipboard: {
     readText: (): Promise<string> => ipcRenderer.invoke('fluxalloy:clipboard-read-text')

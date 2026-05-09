@@ -37,7 +37,7 @@ export interface FluxAlloyApi {
     restoreLastSource: () => Promise<PreviewOpenedPayload | null>
   }
   downloads: {
-    openWindow: (url?: string | null) => Promise<void>
+    openWindow: (initial?: string | { text?: string } | null) => Promise<void>
   }
   clipboard: {
     readText: () => Promise<string>

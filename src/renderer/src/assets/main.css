@@ -248,6 +248,17 @@
   text-overflow: ellipsis;
 }
 
+.app-statusbar-engines {
+  max-width: 42vw;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.68rem;
+  line-height: 1.25;
+  color: var(--fa-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* Версии среды — диагностическая строка, поэтому использует моноширинный шрифт и компактные разделители. */
 .versions-inline {
   display: flex;

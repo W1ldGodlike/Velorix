@@ -3,9 +3,18 @@ import { defineConfig } from 'electron-vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  // Main и preload пока используют дефолты electron-vite; доменные сервисы подключаются из src/main.
+  // Main — дефолт; preload: два entry (главное окно + окно загрузок §6).
   main: {},
-  preload: {},
+  preload: {
+    build: {
+      rollupOptions: {
+        input: {
+          index: resolve('src/preload/index.ts'),
+          downloadsWindow: resolve('src/preload/downloads-window.ts')
+        }
+      }
+    }
+  },
   renderer: {
     resolve: {
       alias: {

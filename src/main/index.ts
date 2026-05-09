@@ -6,7 +6,10 @@ import icon from '../../resources/icon.png?asset'
 
 import { resolveAppPaths } from './app-paths'
 import { downloadEnginesWindows, isAnyEngineMissing } from './engine-download'
-import { focusOrCreateDownloadsWindow } from './downloads-window'
+import {
+  focusOrCreateDownloadsWindow,
+  registerDownloadsWindowIpcHandlers
+} from './downloads-window'
 import { probeMediaFile } from './ffprobe-service'
 import type { EngineDownloadProgress } from './engine-download'
 import { getEnginesStatus } from './engine-service'
@@ -21,9 +24,28 @@ import { openVideoWithDialog } from './preview-dialog'
 import type { AppSettings, AppTheme } from './settings-store'
 import { loadSettings, saveSettings } from './settings-store'
 import { loadTrustedHashes, resolveTrustedHashesPath } from './trusted-hashes-store'
+import { resolvePreloadOutFile } from './preload-resolve'
 
 /** Кастомная схема для локального видеопревью; привилегии обязаны зарегистрироваться до `app.whenReady`. */
 registerFluxMediaPrivileges()
+
+function parseDownloadsOpenPayload(raw: unknown): string | null {
+  if (raw === null || raw === undefined) {
+    return null
+  }
+  if (typeof raw === 'string') {
+    const t = raw.trim()
+    return t.length > 0 ? t : null
+  }
+  if (typeof raw === 'object' && raw !== null && 'text' in raw) {
+    const v = (raw as { text?: unknown }).text
+    if (typeof v === 'string') {
+      const t = v.trim()
+      return t.length > 0 ? t : null
+    }
+  }
+  return null
+}
 
 /**
  * Путь настроек в userData.
@@ -134,7 +156,15 @@ function buildApplicationMenu(): void {
           label: 'Менеджер загрузок (yt-dlp)…',
           accelerator: 'CmdOrCtrl+Shift+Y',
           click: (): void => {
-            focusOrCreateDownloadsWindow(null)
+            focusOrCreateDownloadsWindow(undefined)
+          }
+        },
+        {
+          label: 'Вставить URL из буфера в менеджер…',
+          accelerator: 'CmdOrCtrl+Shift+V',
+          click: (): void => {
+            const t = clipboard.readText().trim()
+            focusOrCreateDownloadsWindow(t.length > 0 ? t : undefined)
           }
         },
         { type: 'separator' },
@@ -198,7 +228,7 @@ function createWindow(): void {
     autoHideMenuBar: false,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
+      preload: resolvePreloadOutFile('index', __dirname),
       sandbox: false,
       // Renderer не получает Node API напрямую; вся работа с FS/процессами пойдёт через whitelist IPC.
       contextIsolation: true,
@@ -228,6 +258,7 @@ app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.fluxalloy')
   cachedSettings = loadSettings(settingsPath())
   registerFluxMediaProtocol()
+  registerDownloadsWindowIpcHandlers()
 
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
@@ -341,9 +372,9 @@ app.whenReady().then(() => {
 
   ipcMain.handle('fluxalloy:clipboard-read-text', () => clipboard.readText())
 
-  ipcMain.handle('fluxalloy:open-downloads-window', (_, rawUrl: unknown) => {
-    const url = typeof rawUrl === 'string' && rawUrl.trim().length > 0 ? rawUrl.trim() : null
-    focusOrCreateDownloadsWindow(url)
+  ipcMain.handle('fluxalloy:open-downloads-window', (_, raw: unknown) => {
+    const payload = parseDownloadsOpenPayload(raw)
+    focusOrCreateDownloadsWindow(payload ?? undefined)
   })
 
   ipcMain.on('ping', () => console.log('pong'))

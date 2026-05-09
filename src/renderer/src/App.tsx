@@ -13,6 +13,50 @@ interface PreviewOpenedPayload {
 }
 type EngineSummary = 'checking' | 'ready' | 'missing' | 'error'
 
+type EnginesSnapshot = Awaited<ReturnType<typeof window.fluxalloy.engines.getStatus>>
+
+function formatEngineVersionsLine(snapshot: EnginesSnapshot): string {
+  const ids = ['ffmpeg', 'ffprobe', 'yt-dlp'] as const
+  const parts = ids.map((id) => {
+    const e = snapshot.engines[id]
+    if (e.state === 'ready' && e.version) {
+      const cut = e.version.length > 30 ? `${e.version.slice(0, 28)}…` : e.version
+      return `${id}: ${cut}`
+    }
+    if (e.state === 'missing') {
+      return `${id}: —`
+    }
+    if (e.state === 'error') {
+      return `${id}: !`
+    }
+    return `${id}: …`
+  })
+  return parts.join(' · ')
+}
+
+function clipboardLooksLikeDownloadsPayload(text: string): boolean {
+  const t = text.trim()
+  if (t.length < 12) {
+    return false
+  }
+  const lines = t.split(/\r?\n/)
+  return lines.some((line) => {
+    const x = line.trim()
+    return /^https?:\/\//i.test(x) || (/^[\w.-]+\.[a-z]{2,}\//i.test(x) && x.includes('/'))
+  })
+}
+
+function domTargetIsTextField(target: EventTarget | null): boolean {
+  if (!target || !(target instanceof HTMLElement)) {
+    return false
+  }
+  const tag = target.tagName
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
+    return true
+  }
+  return target.isContentEditable
+}
+
 type MediaProbeSuccess = Extract<
   Awaited<ReturnType<typeof window.fluxalloy.preview.probe>>,
   { ok: true }
@@ -63,6 +107,7 @@ function App(): React.JSX.Element {
   const [probeInfo, setProbeInfo] = useState<MediaProbeSuccess | null>(null)
   const [probeError, setProbeError] = useState<string | null>(null)
   const [downloadsUrl, setDownloadsUrl] = useState('')
+  const [engineVersionsLine, setEngineVersionsLine] = useState('')
   const videoRef = useRef<HTMLVideoElement>(null)
 
   const applyPreview = useCallback((payload: PreviewOpenedPayload): void => {
@@ -132,10 +177,38 @@ function App(): React.JSX.Element {
       .getStatus()
       .then((snapshot) => {
         setEngineSummary(summarizeEngines(snapshot.engines))
+        setEngineVersionsLine(formatEngineVersionsLine(snapshot))
       })
       .catch(() => {
         setEngineSummary('error')
+        setEngineVersionsLine('')
       })
+  }, [])
+
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent): void {
+      if (!e.ctrlKey && !e.metaKey) {
+        return
+      }
+      if (e.key !== 'v' && e.key !== 'V') {
+        return
+      }
+      if (domTargetIsTextField(e.target)) {
+        return
+      }
+      e.preventDefault()
+      void window.fluxalloy.clipboard.readText().then((raw) => {
+        if (!clipboardLooksLikeDownloadsPayload(raw)) {
+          return
+        }
+        void window.fluxalloy.downloads.openWindow(raw.trim())
+      })
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+    return (): void => {
+      document.removeEventListener('keydown', onKeyDown)
+    }
   }, [])
 
   useEffect(() => {
@@ -185,6 +258,7 @@ function App(): React.JSX.Element {
 
       const snapshot = await window.fluxalloy.engines.getStatus()
       setEngineSummary(summarizeEngines(snapshot.engines))
+      setEngineVersionsLine(formatEngineVersionsLine(snapshot))
 
       const need = await window.fluxalloy.engines.shouldOfferDownload()
       setEnginesOfferDownload(need)
@@ -363,6 +437,14 @@ function App(): React.JSX.Element {
 
       <footer className="app-statusbar">
         <span>{engineSummaryText(engineSummary)}</span>
+        {engineVersionsLine ? (
+          <>
+            <span className="app-statusbar-sep" aria-hidden />
+            <span className="app-statusbar-engines" title={engineVersionsLine}>
+              {engineVersionsLine}
+            </span>
+          </>
+        ) : null}
         {statusHint ? (
           <>
             <span className="app-statusbar-sep" aria-hidden />
