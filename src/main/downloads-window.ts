@@ -215,6 +215,11 @@ function buildDownloadsHtml(): string {
     .history-panel { margin-top: 14px; border-top: 1px solid #3f3f46; padding-top: 10px; }
     .history-panel summary { cursor: pointer; font-weight: 600; font-size: 12px; margin-bottom: 6px; user-select: none; color: #c9c9cf; }
     .history-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 8px; }
+    .history-actions label { display: inline-flex; align-items: center; gap: 6px; color: #c9c9cf; font-size: 11px; }
+    .history-actions select {
+      border-radius: 8px; border: 1px solid #56565d; background: #252526; color: #ececec;
+      padding: 5px 8px; font-size: 12px;
+    }
     table.history-table { font-size: 11px; }
     table.history-table th:nth-child(1), table.history-table td:nth-child(1) { width: 10.5rem; white-space: nowrap; }
     table.history-table th:nth-child(4), table.history-table td:nth-child(4) { width: 5.5rem; }
@@ -322,6 +327,14 @@ function buildDownloadsHtml(): string {
     <div class="history-actions">
       <button type="button" class="cmd" id="refreshHistoryBtn">Обновить</button>
       <button type="button" class="cmd cmd-warn" id="clearHistoryBtn">Очистить историю</button>
+      <label>Исход
+        <select id="historyOutcomeFilter">
+          <option value="all">Все</option>
+          <option value="success">Успех</option>
+          <option value="error">Ошибка</option>
+          <option value="cancelled">Отмена</option>
+        </select>
+      </label>
     </div>
     <table class="history-table">
       <thead><tr><th>Завершено</th><th>Имя</th><th>Ссылка</th><th>Исход</th><th>Код</th><th>Статус</th><th></th></tr></thead>
@@ -373,7 +386,9 @@ function buildDownloadsHtml(): string {
       var historyBody = document.getElementById('historyBody');
       var refreshHistoryBtn = document.getElementById('refreshHistoryBtn');
       var clearHistoryBtn = document.getElementById('clearHistoryBtn');
+      var historyOutcomeFilter = document.getElementById('historyOutcomeFilter');
       var historyRefreshTimer = null;
+      var lastHistoryEntries = [];
 
       function formatHistoryWhen(ms) {
         try {
@@ -399,14 +414,19 @@ function buildDownloadsHtml(): string {
 
       function renderHistoryEntries(raw) {
         if (!historyBody) return;
-        var list = Array.isArray(raw) ? raw : [];
+        lastHistoryEntries = Array.isArray(raw) ? raw : [];
+        var filter = historyOutcomeFilter ? historyOutcomeFilter.value : 'all';
+        var list = lastHistoryEntries.filter(function (entry) {
+          if (filter === 'all') return true;
+          return entry && typeof entry === 'object' && entry.outcome === filter;
+        });
         historyBody.replaceChildren();
         if (list.length === 0) {
           var tr0 = document.createElement('tr');
           var td0 = document.createElement('td');
           td0.colSpan = 7;
           td0.style.opacity = '0.7';
-          td0.textContent = 'Записей пока нет';
+          td0.textContent = lastHistoryEntries.length === 0 ? 'Записей пока нет' : 'Нет записей с таким исходом';
           tr0.appendChild(td0);
           historyBody.appendChild(tr0);
           return;
@@ -467,6 +487,11 @@ function buildDownloadsHtml(): string {
       if (refreshHistoryBtn) {
         refreshHistoryBtn.addEventListener('click', function () {
           refreshHistory();
+        });
+      }
+      if (historyOutcomeFilter) {
+        historyOutcomeFilter.addEventListener('change', function () {
+          renderHistoryEntries(lastHistoryEntries);
         });
       }
       if (clearHistoryBtn) {
