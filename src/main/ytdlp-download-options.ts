@@ -11,6 +11,7 @@ import {
   type YtdlpSubtitlePresetId
 } from './ytdlp-extra-args'
 import { getYtdlpCommandHints, type YtdlpCommandHintEntry } from './ytdlp-commands-hints'
+import { parseYtdlpQueueRetryProfile, type YtdlpQueueRetryProfileId } from './ytdlp-queue-retry'
 
 /** Шаблон по умолчанию совпадает с тем, что раньше был захардкожен в `runYtdlpOnce`. */
 export const YTDLP_DEFAULT_FILENAME_TEMPLATE = '%(title)s [%(id)s].%(ext)s'
@@ -61,6 +62,8 @@ export interface YtdlpRunOptionsSnapshot {
   /** §6.2 `--retries`; null — дефолт yt-dlp. */
   retries: number | null
   retriesLine: string
+  /** §6.4 — повтор запуска той же строки очереди при ошибке (не `--retries`). */
+  queueRetryProfile: YtdlpQueueRetryProfileId
 }
 
 /** То, что видит окно загрузок: текущие значения и метки для `<select>`. */
@@ -86,6 +89,8 @@ export interface YtdlpDownloadOptionsPayload {
   impersonateChoice: 'none' | YtdlpImpersonateId
   rateLimit: string
   retriesLine: string
+  queueRetryProfile: YtdlpQueueRetryProfileId
+  queueRetryProfileChoices: Array<{ id: YtdlpQueueRetryProfileId; label: string }>
 }
 
 export interface YtdlpDownloadOptionsPatch {
@@ -102,6 +107,8 @@ export interface YtdlpDownloadOptionsPatch {
   rateLimit?: string
   retriesLine?: string
   extraArgsLine?: string
+  /** §6.4 — только `off` | `light` | `normal`. */
+  queueRetryProfile?: YtdlpQueueRetryProfileId
 }
 
 export function parseYtdlpFormatPreset(raw: unknown): YtdlpFormatPresetId {
@@ -389,6 +396,8 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
   const retries = retriesParsed.ok ? retriesParsed.value : null
   const retriesLine = retriesParsed.ok ? retriesParsed.line : ''
 
+  const queueRetryProfile = parseYtdlpQueueRetryProfile(settings.ytdlpQueueRetryProfile)
+
   return {
     filenameTemplate,
     formatPreset: preset,
@@ -410,7 +419,8 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
     impersonateChoice,
     rateLimit,
     retries,
-    retriesLine
+    retriesLine,
+    queueRetryProfile
   }
 }
 
@@ -455,6 +465,12 @@ export function payloadFromSnapshot(snap: YtdlpRunOptionsSnapshot): YtdlpDownloa
     cookiesWarning: snap.cookiesWarning,
     impersonateChoice: snap.impersonateChoice,
     rateLimit: snap.rateLimit,
-    retriesLine: snap.retriesLine
+    retriesLine: snap.retriesLine,
+    queueRetryProfile: snap.queueRetryProfile,
+    queueRetryProfileChoices: [
+      { id: 'off', label: 'Выключено' },
+      { id: 'light', label: 'Лёгкий (1 повтор, 2.5 с)' },
+      { id: 'normal', label: 'Обычный (2 повтора: 3 с + 8 с)' }
+    ]
   }
 }

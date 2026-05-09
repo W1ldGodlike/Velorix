@@ -66,6 +66,7 @@ import {
 } from './ytdlp-download-options'
 import { parseExtraYtdlpArgsLine } from './ytdlp-extra-args'
 import { refreshYtdlpRunOptionsSnapshot } from './ytdlp-run-options-sync'
+import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
 
 /** Кастомная схема для локального видеопревью; привилегии обязаны зарегистрироваться до `app.whenReady`. */
 registerFluxMediaPrivileges()
@@ -377,6 +378,14 @@ function persistYtdlpDownloadCliOptionsPatch(
         return pe
       }
       merged.ytdlpExtraArgsLine = trimmed
+    }
+  }
+  if (patch.queueRetryProfile !== undefined) {
+    const id = parseYtdlpQueueRetryProfile(patch.queueRetryProfile)
+    if (id === 'off') {
+      delete merged.ytdlpQueueRetryProfile
+    } else {
+      merged.ytdlpQueueRetryProfile = id
     }
   }
   cachedSettings = merged

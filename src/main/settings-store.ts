@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs'
 import { dirname, isAbsolute, normalize } from 'path'
 
 import type { EngineId, EnginePathOverrides } from './engine-service'
+import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
 
 export type AppTheme = 'dark' | 'light'
 
@@ -53,6 +54,8 @@ export interface AppSettings {
   ytdlpRetries?: number
   /** §6.3: дополнительные аргументы yt-dlp одной строкой (токены через пробел). */
   ytdlpExtraArgsLine?: string
+  /** §6.4: профиль повторов всей строки очереди при ненулевом exit code (не путать с `--retries`). */
+  ytdlpQueueRetryProfile?: 'off' | 'light' | 'normal'
   /** §7.2: системный пресет экспорта MP4 (libx264 CRF + `-preset`). */
   ffmpegExportEncodePreset?: string
   // TODO(§4.6): язык, hotkeys.
@@ -311,6 +314,10 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (ytdlpExtraArgsLine !== undefined) {
       base.ytdlpExtraArgsLine = ytdlpExtraArgsLine
+    }
+    const qrp = parseYtdlpQueueRetryProfile(parsed.ytdlpQueueRetryProfile)
+    if (qrp !== 'off') {
+      base.ytdlpQueueRetryProfile = qrp
     }
     return base
   } catch {

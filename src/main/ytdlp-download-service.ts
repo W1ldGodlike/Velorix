@@ -70,6 +70,23 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
   return { percent, speed, eta }
 }
 
+/**
+ * Последняя осмысленная строка об ошибке из stdout/stderr yt-dlp для статуса §6.4.
+ * Не исполняет код — только эвристика по тексту.
+ */
+export function extractYtdlpErrorSummary(line: string): string | null {
+  const t = line.trimEnd()
+  const m = t.match(/\bERROR:\s*(.+)$/i)
+  if (!m) {
+    return null
+  }
+  const msg = m[1].trim()
+  if (msg.length === 0) {
+    return null
+  }
+  return msg.length > 200 ? `${msg.slice(0, 198)}…` : msg
+}
+
 /** Компактная подпись для ячейки: «42.1% · 1.2MiB/s · ETA 00:15». */
 export function formatYtdlpProgressCell(parts: YtdlpDownloadProgressParts): string {
   const bits: string[] = []

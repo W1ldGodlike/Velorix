@@ -30,6 +30,7 @@ import {
   type YtdlpDownloadOptionsPayload,
   type YtdlpDownloadOptionsPatch
 } from './ytdlp-download-options'
+import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
 
 /** Совпадает с preload подпиской на снимок очереди. */
 export const DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL = 'fluxalloy-downloads-state'
@@ -265,6 +266,13 @@ function buildDownloadsHtml(): string {
     <label for="retriesInput">Повторы при ошибках (--retries)</label>
     <input type="text" id="retriesInput" inputmode="numeric" spellcheck="false" autocomplete="off" placeholder="Пусто = дефолт yt-dlp; 0–99" />
     <p class="opts-hint">Лимит скорости и ретраи вынесены из «Доп. аргументов», чтобы не смешивать их с произвольным argv и не конфликтовать с настройками FluxAlloy.</p>
+    <label for="queueRetrySelect">Повтор строки при сбое (очередь) §6.4</label>
+    <select id="queueRetrySelect" aria-label="Профиль повторов очереди при ошибке">
+      <option value="off">Выключено</option>
+      <option value="light">Лёгкий (1 повтор, 2.5 с)</option>
+      <option value="normal">Обычный (2 повтора: 3 с + 8 с)</option>
+    </select>
+    <p class="opts-hint">Отдельно от <code>--retries</code> yt-dlp: после ненулевого кода процесса FluxAlloy делает паузу и запускает ту же ссылку снова (без повторного добавления в таблицу).</p>
     <label for="extraArgsInput">Дополнительные аргументы (через пробел, без shell) §6.3</label>
     <textarea id="extraArgsInput" rows="2" spellcheck="false" autocomplete="off" placeholder="Например: --write-sub --sub-lang ru"></textarea>
     <p class="opts-hint opts-warn" id="extraArgsWarn" hidden></p>
@@ -329,6 +337,7 @@ function buildDownloadsHtml(): string {
       var impersonateSelect = document.getElementById('impersonateSelect');
       var rateLimitInput = document.getElementById('rateLimitInput');
       var retriesInput = document.getElementById('retriesInput');
+      var queueRetrySelect = document.getElementById('queueRetrySelect');
       var extraArgsInput = document.getElementById('extraArgsInput');
       var argsPreview = document.getElementById('argsPreview');
       var extraArgsWarn = document.getElementById('extraArgsWarn');
@@ -401,6 +410,11 @@ function buildDownloadsHtml(): string {
           }
           if (retriesInput && typeof p.retriesLine === 'string') {
             retriesInput.value = p.retriesLine;
+          }
+          if (queueRetrySelect && typeof p.queueRetryProfile === 'string') {
+            var qv = p.queueRetryProfile;
+            queueRetrySelect.value =
+              qv === 'light' || qv === 'normal' ? qv : 'off';
           }
           if (!fmtPreset) return;
           fmtPreset.replaceChildren();
@@ -600,6 +614,7 @@ function buildDownloadsHtml(): string {
             impersonate: impersonateSelect ? impersonateSelect.value : 'none',
             rateLimit: rateLimitInput ? rateLimitInput.value : '',
             retriesLine: retriesInput ? retriesInput.value : '',
+            queueRetryProfile: queueRetrySelect ? queueRetrySelect.value : 'off',
             extraArgsLine: extraArgsInput ? extraArgsInput.value : ''
           }).then(function (res) {
             if (res && res.ok === false && res.error) window.alert(res.error);
@@ -829,6 +844,9 @@ export function registerDownloadsWindowIpcHandlers(): void {
         }
         patch.extraArgsLine = o.extraArgsLine
       }
+      if (Object.prototype.hasOwnProperty.call(o, 'queueRetryProfile')) {
+        patch.queueRetryProfile = parseYtdlpQueueRetryProfile(o.queueRetryProfile)
+      }
       if (
         patch.filenameTemplate === undefined &&
         patch.formatPreset === undefined &&
@@ -840,7 +858,8 @@ export function registerDownloadsWindowIpcHandlers(): void {
         patch.impersonate === undefined &&
         patch.rateLimit === undefined &&
         patch.retriesLine === undefined &&
-        patch.extraArgsLine === undefined
+        patch.extraArgsLine === undefined &&
+        patch.queueRetryProfile === undefined
       ) {
         return { ok: false, error: 'Нечего сохранять' }
       }
