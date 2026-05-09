@@ -5,6 +5,19 @@ import type { EngineId, EnginePathOverrides } from './engine-service'
 
 export type AppTheme = 'dark' | 'light'
 
+/** §4.1 — прямоугольник окна в экранных координатах (DIP). */
+export interface StoredWindowRect {
+  x: number
+  y: number
+  width: number
+  height: number
+}
+
+export interface WindowBoundsConfig {
+  main?: StoredWindowRect
+  downloads?: StoredWindowRect
+}
+
 export interface AppSettings {
   /** Тема хранится в main, чтобы меню, renderer и будущие окна не расходились между собой. */
   theme: AppTheme
@@ -12,7 +25,47 @@ export interface AppSettings {
   lastOpenedSourcePath?: string
   /** §3: полные пути к exe движков; имеют приоритет над bundled и userData/bin. */
   engineExecutablePaths?: EnginePathOverrides
+  /** §4.1: последние размеры/позиции отдельных окон (main + менеджер загрузок). */
+  windowBounds?: WindowBoundsConfig
   // TODO(§4.6): язык, hotkeys.
+}
+
+function parseStoredWindowRect(raw: unknown): StoredWindowRect | undefined {
+  if (!raw || typeof raw !== 'object') {
+    return undefined
+  }
+  const o = raw as Record<string, unknown>
+  const x = Number(o.x)
+  const y = Number(o.y)
+  const width = Number(o.width)
+  const height = Number(o.height)
+  if (![x, y, width, height].every(Number.isFinite)) {
+    return undefined
+  }
+  if (width < 320 || height < 240 || width > 16384 || height > 16384) {
+    return undefined
+  }
+  return { x, y, width, height }
+}
+
+function parseWindowBoundsConfig(raw: unknown): WindowBoundsConfig | undefined {
+  if (!raw || typeof raw !== 'object') {
+    return undefined
+  }
+  const o = raw as Record<string, unknown>
+  const main = parseStoredWindowRect(o.main)
+  const downloads = parseStoredWindowRect(o.downloads)
+  if (!main && !downloads) {
+    return undefined
+  }
+  const cfg: WindowBoundsConfig = {}
+  if (main) {
+    cfg.main = main
+  }
+  if (downloads) {
+    cfg.downloads = downloads
+  }
+  return cfg
 }
 
 function parseEngineExecutablePaths(raw: unknown): EnginePathOverrides | undefined {
@@ -53,6 +106,7 @@ export function loadSettings(filePath: string): AppSettings {
         ? parsed.lastOpenedSourcePath.trim()
         : undefined
     const engineExecutablePaths = parseEngineExecutablePaths(parsed.engineExecutablePaths)
+    const windowBounds = parseWindowBoundsConfig(parsed.windowBounds)
 
     const base: AppSettings = { theme }
     if (last !== undefined) {
@@ -60,6 +114,9 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (engineExecutablePaths !== undefined) {
       base.engineExecutablePaths = engineExecutablePaths
+    }
+    if (windowBounds !== undefined) {
+      base.windowBounds = windowBounds
     }
     return base
   } catch {

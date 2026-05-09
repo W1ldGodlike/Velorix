@@ -7,6 +7,7 @@ import icon from '../../resources/icon.png?asset'
 import { resolveAppPaths } from './app-paths'
 import { downloadEnginesWindows, isAnyEngineMissing } from './engine-download'
 import {
+  configureDownloadsWindowBoundsHooks,
   focusOrCreateDownloadsWindow,
   registerDownloadsWindowIpcHandlers
 } from './downloads-window'
@@ -33,10 +34,11 @@ import {
   registerFluxMediaProtocol
 } from './media-protocol'
 import { openVideoWithDialog } from './preview-dialog'
-import type { AppSettings, AppTheme } from './settings-store'
+import type { AppSettings, AppTheme, WindowBoundsConfig } from './settings-store'
 import { loadSettings, saveSettings } from './settings-store'
 import { loadTrustedHashes, resolveTrustedHashesPath } from './trusted-hashes-store'
 import { resolvePreloadOutFile } from './preload-resolve'
+import { boundsFromBrowserWindow, rectifyBoundsForRestore } from './window-bounds'
 
 /** Кастомная схема для локального видеопревью; привилегии обязаны зарегистрироваться до `app.whenReady`. */
 registerFluxMediaPrivileges()
@@ -110,6 +112,48 @@ function applyTheme(theme: AppTheme): void {
 
 function refreshEnginePathOverridesSnapshot(): void {
   setEnginePathOverridesSnapshot(cachedSettings.engineExecutablePaths)
+}
+
+function patchWindowBounds(partial: Partial<WindowBoundsConfig>): void {
+  cachedSettings = {
+    ...cachedSettings,
+    windowBounds: {
+      ...cachedSettings.windowBounds,
+      ...partial
+    }
+  }
+  saveSettings(settingsPath(), cachedSettings)
+}
+
+let mainWindowBoundsTimer: ReturnType<typeof setTimeout> | null = null
+
+function attachMainWindowBoundsPersistence(win: BrowserWindow): void {
+  const flush = (): void => {
+    if (win.isDestroyed()) {
+      return
+    }
+    patchWindowBounds({ main: boundsFromBrowserWindow(win) })
+  }
+
+  const schedule = (): void => {
+    if (mainWindowBoundsTimer !== null) {
+      clearTimeout(mainWindowBoundsTimer)
+    }
+    mainWindowBoundsTimer = setTimeout(() => {
+      mainWindowBoundsTimer = null
+      flush()
+    }, 480)
+  }
+
+  win.on('resize', schedule)
+  win.on('move', schedule)
+  win.on('close', () => {
+    if (mainWindowBoundsTimer !== null) {
+      clearTimeout(mainWindowBoundsTimer)
+      mainWindowBoundsTimer = null
+    }
+    flush()
+  })
 }
 
 function persistEnginePathOverridesPatch(patch: EnginePathOverridesPatch): AppSettings {
@@ -297,9 +341,13 @@ function buildApplicationMenu(): void {
 }
 
 function createWindow(): void {
+  const savedMain = cachedSettings.windowBounds?.main
+  const rect = savedMain ? rectifyBoundsForRestore(savedMain) : null
+
   const mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    width: rect?.width ?? 1200,
+    height: rect?.height ?? 800,
+    ...(rect ? { x: rect.x, y: rect.y } : {}),
     show: false,
     autoHideMenuBar: false,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -311,6 +359,8 @@ function createWindow(): void {
       nodeIntegration: false
     }
   })
+
+  attachMainWindowBoundsPersistence(mainWindow)
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
@@ -334,6 +384,12 @@ app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.fluxalloy')
   cachedSettings = loadSettings(settingsPath())
   refreshEnginePathOverridesSnapshot()
+  configureDownloadsWindowBoundsHooks({
+    getSavedDownloadsBounds: () => cachedSettings.windowBounds?.downloads,
+    persistDownloadsBounds: (r) => {
+      patchWindowBounds({ downloads: r })
+    }
+  })
   registerFluxMediaProtocol()
   registerDownloadsWindowIpcHandlers()
 

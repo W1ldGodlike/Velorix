@@ -1,5 +1,7 @@
 import { BrowserWindow, ipcMain, type WebContents } from 'electron'
 
+import type { StoredWindowRect } from './settings-store'
+import { boundsFromBrowserWindow, rectifyBoundsForRestore } from './window-bounds'
 import {
   appendUrlsFromMultilineBlock,
   clearDownloadsQueue,
@@ -17,6 +19,18 @@ import { resolvePreloadOutFile } from './preload-resolve'
 
 /** Совпадает с preload подпиской на снимок очереди. */
 export const DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL = 'fluxalloy-downloads-state'
+
+interface DownloadsWindowBoundsHooks {
+  getSavedDownloadsBounds?: () => StoredWindowRect | undefined
+  persistDownloadsBounds?: (rect: StoredWindowRect) => void
+}
+
+let downloadsBoundsHooks: DownloadsWindowBoundsHooks = {}
+
+/** Вызывается из main после загрузки `settings.json`, чтобы не тянуть замыкание из `index.ts` в этот модуль. */
+export function configureDownloadsWindowBoundsHooks(hooks: DownloadsWindowBoundsHooks): void {
+  downloadsBoundsHooks = hooks
+}
 
 let downloadsWindow: BrowserWindow | null = null
 
@@ -374,9 +388,13 @@ export function focusOrCreateDownloadsWindow(mergeText?: string | null): void {
     return
   }
 
+  const savedDl = downloadsBoundsHooks.getSavedDownloadsBounds?.()
+  const dlRect = savedDl ? rectifyBoundsForRestore(savedDl) : null
+
   downloadsWindow = new BrowserWindow({
-    width: 960,
-    height: 640,
+    width: dlRect?.width ?? 960,
+    height: dlRect?.height ?? 640,
+    ...(dlRect ? { x: dlRect.x, y: dlRect.y } : {}),
     show: false,
     title: 'FluxAlloy — загрузки',
     webPreferences: {
@@ -385,6 +403,33 @@ export function focusOrCreateDownloadsWindow(mergeText?: string | null): void {
       nodeIntegration: false,
       preload: resolvePreloadOutFile('downloadsWindow', __dirname)
     }
+  })
+
+  let downloadsBoundsTimer: ReturnType<typeof setTimeout> | null = null
+  const flushDownloadsBounds = (): void => {
+    if (!downloadsWindow || downloadsWindow.isDestroyed()) {
+      return
+    }
+    downloadsBoundsHooks.persistDownloadsBounds?.(boundsFromBrowserWindow(downloadsWindow))
+  }
+  const scheduleDownloadsBounds = (): void => {
+    if (downloadsBoundsTimer !== null) {
+      clearTimeout(downloadsBoundsTimer)
+    }
+    downloadsBoundsTimer = setTimeout(() => {
+      downloadsBoundsTimer = null
+      flushDownloadsBounds()
+    }, 480)
+  }
+
+  downloadsWindow.on('resize', scheduleDownloadsBounds)
+  downloadsWindow.on('move', scheduleDownloadsBounds)
+  downloadsWindow.on('close', () => {
+    if (downloadsBoundsTimer !== null) {
+      clearTimeout(downloadsBoundsTimer)
+      downloadsBoundsTimer = null
+    }
+    flushDownloadsBounds()
   })
 
   downloadsWindow.on('closed', () => {
