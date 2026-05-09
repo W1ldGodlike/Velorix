@@ -1,4 +1,4 @@
-import { existsSync } from 'fs'
+import { existsSync, statSync } from 'fs'
 import { basename, isAbsolute, join, normalize, resolve } from 'path'
 import { BrowserWindow, Menu, app, clipboard, dialog, ipcMain, shell } from 'electron'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
@@ -53,6 +53,8 @@ import {
   payloadFromSnapshot,
   validateFilenameTemplate,
   validateYtdlpCookiesFilePath,
+  validateYtdlpRateLimit,
+  validateYtdlpRetriesLine,
   validateYtdlpSubLangs,
   type YtdlpDownloadOptionsPatch
 } from './ytdlp-download-options'
@@ -147,9 +149,9 @@ function patchWindowBounds(partial: Partial<WindowBoundsConfig>): void {
   saveSettings(settingsPath(), cachedSettings)
 }
 
-let mainWindowBoundsTimer: ReturnType<typeof setTimeout> | null = null
-
 function attachMainWindowBoundsPersistence(win: BrowserWindow): void {
+  let mainWindowBoundsTimer: ReturnType<typeof setTimeout> | null = null
+
   const flush = (): void => {
     if (win.isDestroyed()) {
       return
@@ -178,6 +180,18 @@ function attachMainWindowBoundsPersistence(win: BrowserWindow): void {
   })
 }
 
+function validateEngineOverridePath(raw: string): string | null {
+  const normalized = normalize(raw.trim())
+  if (!isAbsolute(normalized) || normalized.length > 4096 || !existsSync(normalized)) {
+    return null
+  }
+  try {
+    return statSync(normalized).isFile() ? normalized : null
+  } catch {
+    return null
+  }
+}
+
 function persistEnginePathOverridesPatch(patch: EnginePathOverridesPatch): AppSettings {
   const nextPaths: EnginePathOverrides = { ...(cachedSettings.engineExecutablePaths ?? {}) }
   const ids: EngineId[] = ['ffmpeg', 'ffprobe', 'yt-dlp']
@@ -189,7 +203,10 @@ function persistEnginePathOverridesPatch(patch: EnginePathOverridesPatch): AppSe
     if (v === null || v === '') {
       delete nextPaths[id]
     } else if (typeof v === 'string' && v.trim() !== '') {
-      nextPaths[id] = v.trim()
+      const validPath = validateEngineOverridePath(v)
+      if (validPath !== null) {
+        nextPaths[id] = validPath
+      }
     }
   }
   const merged: AppSettings = { ...cachedSettings }
@@ -317,6 +334,28 @@ function persistYtdlpDownloadCliOptionsPatch(
       delete merged.ytdlpImpersonate
     } else {
       merged.ytdlpImpersonate = patch.impersonate
+    }
+  }
+  if (patch.rateLimit !== undefined) {
+    const rv = validateYtdlpRateLimit(patch.rateLimit)
+    if (!rv.ok) {
+      return rv
+    }
+    if (rv.value === '') {
+      delete merged.ytdlpRateLimit
+    } else {
+      merged.ytdlpRateLimit = rv.value
+    }
+  }
+  if (patch.retriesLine !== undefined) {
+    const rt = validateYtdlpRetriesLine(patch.retriesLine)
+    if (!rt.ok) {
+      return rt
+    }
+    if (rt.value === null) {
+      delete merged.ytdlpRetries
+    } else {
+      merged.ytdlpRetries = rt.value
     }
   }
   if (patch.extraArgsLine !== undefined) {
@@ -520,6 +559,8 @@ function createWindow(): void {
   const mainWindow = new BrowserWindow({
     width: rect?.width ?? 1200,
     height: rect?.height ?? 800,
+    minWidth: 400,
+    minHeight: 320,
     ...(rect ? { x: rect.x, y: rect.y } : {}),
     show: false,
     autoHideMenuBar: false,

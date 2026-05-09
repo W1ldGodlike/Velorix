@@ -56,6 +56,11 @@ export interface YtdlpRunOptionsSnapshot {
   /** §6.2 — только whitelist; null если выключено. */
   impersonateTarget: YtdlpImpersonateId | null
   impersonateChoice: 'none' | YtdlpImpersonateId
+  /** §6.2 `--limit-rate`; один безопасный токен, пусто — без лимита. */
+  rateLimit: string
+  /** §6.2 `--retries`; null — дефолт yt-dlp. */
+  retries: number | null
+  retriesLine: string
 }
 
 /** То, что видит окно загрузок: текущие значения и метки для `<select>`. */
@@ -79,6 +84,8 @@ export interface YtdlpDownloadOptionsPayload {
   cookiesFilePathStored: string
   cookiesWarning: string | null
   impersonateChoice: 'none' | YtdlpImpersonateId
+  rateLimit: string
+  retriesLine: string
 }
 
 export interface YtdlpDownloadOptionsPatch {
@@ -92,6 +99,8 @@ export interface YtdlpDownloadOptionsPatch {
   cookiesBrowser?: 'none' | YtdlpCookiesBrowserId
   /** §6.2 `--impersonate` только chrome / edge / firefox. */
   impersonate?: 'none' | YtdlpImpersonateId
+  rateLimit?: string
+  retriesLine?: string
   extraArgsLine?: string
 }
 
@@ -169,6 +178,42 @@ export function validateYtdlpSubLangs(
     }
   }
   return { ok: true, value: t }
+}
+
+export function validateYtdlpRateLimit(
+  raw: string
+): { ok: true; value: string } | { ok: false; error: string } {
+  const t = raw.trim()
+  if (t.length === 0) {
+    return { ok: true, value: '' }
+  }
+  if (t.length > 16) {
+    return { ok: false, error: 'Ограничение скорости слишком длинное.' }
+  }
+  if (!/^\d+(?:\.\d+)?[KMG]?$/i.test(t)) {
+    return {
+      ok: false,
+      error: 'Формат скорости: число и необязательный суффикс K/M/G, например 500K или 2M.'
+    }
+  }
+  return { ok: true, value: t.toUpperCase() }
+}
+
+export function validateYtdlpRetriesLine(
+  raw: string
+): { ok: true; value: number | null; line: string } | { ok: false; error: string } {
+  const t = raw.trim()
+  if (t.length === 0) {
+    return { ok: true, value: null, line: '' }
+  }
+  if (!/^\d+$/.test(t)) {
+    return { ok: false, error: 'Количество повторов должно быть целым числом от 0 до 99.' }
+  }
+  const n = Number(t)
+  if (!Number.isInteger(n) || n < 0 || n > 99) {
+    return { ok: false, error: 'Количество повторов должно быть целым числом от 0 до 99.' }
+  }
+  return { ok: true, value: n, line: String(n) }
 }
 
 /** Строковые поля из JSON без семантической проверки шаблона — см. validateFilenameTemplate. */
@@ -332,6 +377,18 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
   const impersonateChoice: 'none' | YtdlpImpersonateId =
     impersonateParsed !== undefined ? impersonateParsed : 'none'
 
+  const rateLimitStored =
+    typeof settings.ytdlpRateLimit === 'string' ? settings.ytdlpRateLimit.trim() : ''
+  const rateLimitParsed = validateYtdlpRateLimit(rateLimitStored)
+  const rateLimit = rateLimitParsed.ok ? rateLimitParsed.value : ''
+  const retriesParsed = validateYtdlpRetriesLine(
+    typeof settings.ytdlpRetries === 'number' && Number.isInteger(settings.ytdlpRetries)
+      ? String(settings.ytdlpRetries)
+      : ''
+  )
+  const retries = retriesParsed.ok ? retriesParsed.value : null
+  const retriesLine = retriesParsed.ok ? retriesParsed.line : ''
+
   return {
     filenameTemplate,
     formatPreset: preset,
@@ -350,7 +407,10 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
     cookiesBrowserChoice,
     cookiesWarning,
     impersonateTarget,
-    impersonateChoice
+    impersonateChoice,
+    rateLimit,
+    retries,
+    retriesLine
   }
 }
 
@@ -364,6 +424,8 @@ export function payloadFromSnapshot(snap: YtdlpRunOptionsSnapshot): YtdlpDownloa
     cookiesFile: snap.cookiesArgvFile,
     cookiesBrowser: snap.cookiesArgvBrowser,
     impersonateTarget: snap.impersonateTarget,
+    rateLimit: snap.rateLimit,
+    retries: snap.retries,
     formatExtraArgs: snap.formatExtraArgs,
     extraArgs: snap.extraArgs,
     outputPattern: outPh,
@@ -391,6 +453,8 @@ export function payloadFromSnapshot(snap: YtdlpRunOptionsSnapshot): YtdlpDownloa
     cookiesBrowserChoice: snap.cookiesBrowserChoice,
     cookiesFilePathStored: snap.cookiesFilePathStored,
     cookiesWarning: snap.cookiesWarning,
-    impersonateChoice: snap.impersonateChoice
+    impersonateChoice: snap.impersonateChoice,
+    rateLimit: snap.rateLimit,
+    retriesLine: snap.retriesLine
   }
 }

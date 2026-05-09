@@ -47,6 +47,10 @@ export interface AppSettings {
   ytdlpCookiesBrowser?: 'chrome' | 'edge' | 'firefox'
   /** §6.2: клиент для `--impersonate` (ограниченный whitelist). */
   ytdlpImpersonate?: 'chrome' | 'edge' | 'firefox'
+  /** §6.2: ограничение скорости `--limit-rate` одним безопасным токеном (`500K`, `2M`). */
+  ytdlpRateLimit?: string
+  /** §6.2: количество повторов `--retries`; отсутствует — дефолт yt-dlp. */
+  ytdlpRetries?: number
   /** §6.3: дополнительные аргументы yt-dlp одной строкой (токены через пробел). */
   ytdlpExtraArgsLine?: string
   /** §7.2: системный пресет экспорта MP4 (libx264 CRF + `-preset`). */
@@ -189,6 +193,24 @@ function parseYtdlpImpersonateStored(raw: unknown): 'chrome' | 'edge' | 'firefox
   return undefined
 }
 
+function parseYtdlpRateLimitStored(raw: unknown): string | undefined {
+  if (typeof raw !== 'string') {
+    return undefined
+  }
+  const t = raw.trim()
+  if (t.length === 0 || t.length > 16 || !/^\d+(?:\.\d+)?[KMG]?$/i.test(t)) {
+    return undefined
+  }
+  return t.toUpperCase()
+}
+
+function parseYtdlpRetriesStored(raw: unknown): number | undefined {
+  if (typeof raw !== 'number' || !Number.isInteger(raw) || raw < 0 || raw > 99) {
+    return undefined
+  }
+  return raw
+}
+
 function parseFfmpegExportEncodePresetStored(raw: unknown): string | undefined {
   if (typeof raw !== 'string') {
     return undefined
@@ -235,6 +257,8 @@ export function loadSettings(filePath: string): AppSettings {
     const ytdlpCookiesFile = parseYtdlpCookiesFileStored(parsed.ytdlpCookiesFile)
     const ytdlpCookiesBrowser = parseYtdlpCookiesBrowserStored(parsed.ytdlpCookiesBrowser)
     const ytdlpImpersonate = parseYtdlpImpersonateStored(parsed.ytdlpImpersonate)
+    const ytdlpRateLimit = parseYtdlpRateLimitStored(parsed.ytdlpRateLimit)
+    const ytdlpRetries = parseYtdlpRetriesStored(parsed.ytdlpRetries)
 
     const base: AppSettings = { theme }
     if (last !== undefined) {
@@ -278,6 +302,12 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (ytdlpImpersonate !== undefined) {
       base.ytdlpImpersonate = ytdlpImpersonate
+    }
+    if (ytdlpRateLimit !== undefined) {
+      base.ytdlpRateLimit = ytdlpRateLimit
+    }
+    if (ytdlpRetries !== undefined) {
+      base.ytdlpRetries = ytdlpRetries
     }
     if (ytdlpExtraArgsLine !== undefined) {
       base.ytdlpExtraArgsLine = ytdlpExtraArgsLine

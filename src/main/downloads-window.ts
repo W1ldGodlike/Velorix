@@ -259,6 +259,11 @@ function buildDownloadsHtml(): string {
       <option value="firefox">firefox</option>
     </select>
     <p class="opts-hint">Список целей ограничен chrome / edge / firefox — см. документацию yt-dlp для поддерживаемых сборкой клиентов; флаг impersonate в «Доп. аргументы» недопустим.</p>
+    <label for="rateLimitInput">Ограничение скорости (--limit-rate)</label>
+    <input type="text" id="rateLimitInput" spellcheck="false" autocomplete="off" placeholder="Пусто = без лимита; пример: 500K или 2M" />
+    <label for="retriesInput">Повторы при ошибках (--retries)</label>
+    <input type="text" id="retriesInput" inputmode="numeric" spellcheck="false" autocomplete="off" placeholder="Пусто = дефолт yt-dlp; 0–99" />
+    <p class="opts-hint">Лимит скорости и ретраи вынесены из «Доп. аргументов», чтобы не смешивать их с произвольным argv и не конфликтовать с настройками FluxAlloy.</p>
     <label for="extraArgsInput">Дополнительные аргументы (через пробел, без shell) §6.3</label>
     <textarea id="extraArgsInput" rows="2" spellcheck="false" autocomplete="off" placeholder="Например: --write-sub --sub-lang ru"></textarea>
     <p class="opts-hint opts-warn" id="extraArgsWarn" hidden></p>
@@ -320,6 +325,8 @@ function buildDownloadsHtml(): string {
       var clearCookiesBtn = document.getElementById('clearCookiesBtn');
       var cookiesWarn = document.getElementById('cookiesWarn');
       var impersonateSelect = document.getElementById('impersonateSelect');
+      var rateLimitInput = document.getElementById('rateLimitInput');
+      var retriesInput = document.getElementById('retriesInput');
       var extraArgsInput = document.getElementById('extraArgsInput');
       var argsPreview = document.getElementById('argsPreview');
       var extraArgsWarn = document.getElementById('extraArgsWarn');
@@ -386,6 +393,12 @@ function buildDownloadsHtml(): string {
             var im = p.impersonateChoice;
             impersonateSelect.value =
               im === 'chrome' || im === 'edge' || im === 'firefox' ? im : 'none';
+          }
+          if (rateLimitInput && typeof p.rateLimit === 'string') {
+            rateLimitInput.value = p.rateLimit;
+          }
+          if (retriesInput && typeof p.retriesLine === 'string') {
+            retriesInput.value = p.retriesLine;
           }
           if (!fmtPreset) return;
           fmtPreset.replaceChildren();
@@ -578,6 +591,8 @@ function buildDownloadsHtml(): string {
             subLangs: subLangsInput ? subLangsInput.value : '',
             cookiesBrowser: cookiesBrowserSelect ? cookiesBrowserSelect.value : 'none',
             impersonate: impersonateSelect ? impersonateSelect.value : 'none',
+            rateLimit: rateLimitInput ? rateLimitInput.value : '',
+            retriesLine: retriesInput ? retriesInput.value : '',
             extraArgsLine: extraArgsInput ? extraArgsInput.value : ''
           }).then(function (res) {
             if (res && res.ok === false && res.error) window.alert(res.error);
@@ -776,6 +791,18 @@ export function registerDownloadsWindowIpcHandlers(): void {
           patch.impersonate = im
         }
       }
+      if (Object.prototype.hasOwnProperty.call(o, 'rateLimit')) {
+        if (typeof o.rateLimit !== 'string') {
+          return { ok: false, error: 'Ограничение скорости должно быть строкой' }
+        }
+        patch.rateLimit = o.rateLimit
+      }
+      if (Object.prototype.hasOwnProperty.call(o, 'retriesLine')) {
+        if (typeof o.retriesLine !== 'string') {
+          return { ok: false, error: 'Количество повторов должно быть строкой' }
+        }
+        patch.retriesLine = o.retriesLine
+      }
       if (Object.prototype.hasOwnProperty.call(o, 'extraArgsLine')) {
         if (typeof o.extraArgsLine !== 'string') {
           return { ok: false, error: 'Доп. аргументы должны быть строкой' }
@@ -791,6 +818,8 @@ export function registerDownloadsWindowIpcHandlers(): void {
         patch.subLangs === undefined &&
         patch.cookiesBrowser === undefined &&
         patch.impersonate === undefined &&
+        patch.rateLimit === undefined &&
+        patch.retriesLine === undefined &&
         patch.extraArgsLine === undefined
       ) {
         return { ok: false, error: 'Нечего сохранять' }

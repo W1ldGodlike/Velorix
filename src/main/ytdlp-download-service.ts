@@ -110,6 +110,8 @@ export function runYtdlpOnce(
     | 'cookiesArgvFile'
     | 'cookiesArgvBrowser'
     | 'impersonateTarget'
+    | 'rateLimit'
+    | 'retries'
     | 'extraArgs'
   >
 ): Promise<{ exitCode: number | null; signal: NodeJS.Signals | null }> {
@@ -137,6 +139,8 @@ export function runYtdlpOnce(
   const cookiesFile = cli?.cookiesArgvFile ?? null
   const cookiesBrowser = cli?.cookiesArgvBrowser ?? null
   const impersonateTarget = cli?.impersonateTarget ?? null
+  const rateLimit = cli?.rateLimit ?? ''
+  const retries = cli?.retries ?? null
   const fmtArgs = audioOnly ? [] : (cli?.formatExtraArgs ?? [])
   const extraArgs = cli?.extraArgs ?? []
   const args = buildYtdlpSpawnArgvTokens({
@@ -147,6 +151,8 @@ export function runYtdlpOnce(
     cookiesFile,
     cookiesBrowser,
     impersonateTarget,
+    rateLimit,
+    retries,
     formatExtraArgs: fmtArgs,
     extraArgs,
     outputPattern: outPattern,

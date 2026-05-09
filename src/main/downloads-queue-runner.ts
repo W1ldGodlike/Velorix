@@ -60,6 +60,20 @@ async function runYtdlpForWaitingRow(
 
   let lastProgressCell: string | null = null
 
+  const applyProgressLine = (line: string): void => {
+    const parsed = parseYtdlpDownloadProgressLine(line)
+    if (!parsed) {
+      return
+    }
+    const cell = formatYtdlpProgressCell(parsed)
+    if (cell.length === 0) {
+      return
+    }
+    lastProgressCell = cell
+    updateDownloadsRow(rowId, { progress: cell })
+    notifySnapshot()
+  }
+
   try {
     const cli = getYtdlpRunOptionsSnapshot()
     const result = await runYtdlpOnce(
@@ -70,20 +84,11 @@ async function runYtdlpForWaitingRow(
       {
         onStdoutLine: (line) => {
           emitDownloadsLog({ kind: 'line', rowId, stream: 'stdout', text: line })
+          applyProgressLine(line)
         },
         onStderrLine: (line) => {
           emitDownloadsLog({ kind: 'line', rowId, stream: 'stderr', text: line })
-          const parsed = parseYtdlpDownloadProgressLine(line)
-          if (!parsed) {
-            return
-          }
-          const cell = formatYtdlpProgressCell(parsed)
-          if (cell.length === 0) {
-            return
-          }
-          lastProgressCell = cell
-          updateDownloadsRow(rowId, { progress: cell })
-          notifySnapshot()
+          applyProgressLine(line)
         }
       },
       getEnginePathOverridesSnapshot(),
@@ -97,6 +102,8 @@ async function runYtdlpForWaitingRow(
         cookiesArgvFile: cli.cookiesArgvFile,
         cookiesArgvBrowser: cli.cookiesArgvBrowser,
         impersonateTarget: cli.impersonateTarget,
+        rateLimit: cli.rateLimit,
+        retries: cli.retries,
         extraArgs: cli.extraArgs
       }
     )

@@ -19,6 +19,27 @@ const MAX_LINE_CHARS = 1800
 const MAX_TOKENS = 48
 const MAX_TOKEN_CHARS = 400
 
+const FORBIDDEN_RUNTIME_OPTIONS = [
+  '--exec',
+  '--exec-before-download',
+  '--use-postprocessor',
+  '--postprocessor-args',
+  '--ppa',
+  '--external-downloader',
+  '--downloader',
+  '--external-downloader-args',
+  '--config-location',
+  '--config-locations',
+  '--plugin-dirs',
+  '--ffmpeg-location',
+  '--paths',
+  '--enable-file-urls'
+] as const
+
+function tokenIsOption(token: string, option: string): boolean {
+  return token === option || token.startsWith(`${option}=`)
+}
+
 function tokenViolationReason(token: string): string | null {
   if (token.length > MAX_TOKEN_CHARS) {
     return `Токен длиннее ${MAX_TOKEN_CHARS} символов.`
@@ -44,6 +65,25 @@ function tokenViolationReason(token: string): string | null {
   }
   if (low === '--impersonate' || low.startsWith('--impersonate=')) {
     return 'Импersonate задаётся в блоке §6.2; не дублируйте --impersonate.'
+  }
+  if (low === '--limit-rate' || low.startsWith('--limit-rate=')) {
+    return 'Ограничение скорости задаётся отдельным полем §6.2; не дублируйте --limit-rate.'
+  }
+  if (low === '-r') {
+    return 'Ограничение скорости задаётся отдельным полем §6.2; не дублируйте -r.'
+  }
+  if (low === '--retries' || low.startsWith('--retries=')) {
+    return 'Количество повторов задаётся отдельным полем §6.2; не дублируйте --retries.'
+  }
+  if (low === '--fragment-retries' || low.startsWith('--fragment-retries=')) {
+    return 'Повторы фрагментов зададим отдельным режимом позже; пока не дублируйте --fragment-retries.'
+  }
+  if (low === '-P') {
+    return 'Каталоги вывода задаются настройками FluxAlloy; -P/--paths запрещены.'
+  }
+  const forbidden = FORBIDDEN_RUNTIME_OPTIONS.find((opt) => tokenIsOption(low, opt))
+  if (forbidden) {
+    return `Флаг ${forbidden} запрещён в доп. аргументах: он может запускать внешние команды, менять runtime-пути или подгружать конфигурацию.`
   }
   return null
 }
@@ -110,6 +150,10 @@ export function buildYtdlpSpawnArgvTokens(params: {
   cookiesBrowser: YtdlpCookiesBrowserId | null
   /** §6.2 `--impersonate` только для whitelist-клиентов; поддержка зависит от сборки yt-dlp. */
   impersonateTarget: YtdlpImpersonateId | null
+  /** §6.2 `--limit-rate`: уже проверенный один argv-токен вроде `500K`, `2M`; пусто — без лимита. */
+  rateLimit: string
+  /** §6.2 `--retries`: число повторов, `null` — значение yt-dlp по умолчанию. */
+  retries: number | null
   formatExtraArgs: string[]
   extraArgs: string[]
   outputPattern: string
@@ -139,6 +183,13 @@ export function buildYtdlpSpawnArgvTokens(params: {
   }
   if (params.audioOnly) {
     args.push('-x', '--audio-format', 'best')
+  }
+  const rate = params.rateLimit.trim()
+  if (rate.length > 0) {
+    args.push('--limit-rate', rate)
+  }
+  if (params.retries !== null) {
+    args.push('--retries', String(params.retries))
   }
   args.push(...params.extraArgs)
   args.push('-o', params.outputPattern, params.url)
