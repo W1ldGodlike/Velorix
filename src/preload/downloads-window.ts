@@ -1,6 +1,32 @@
 import { contextBridge, ipcRenderer } from 'electron'
 
+import type { DownloadsLogPayload } from '../main/downloads-log-ipc'
+import { DOWNLOADS_LOG_CHANNEL } from '../main/downloads-log-ipc'
+
 const QUEUE_SNAPSHOT_CHANNEL = 'fluxalloy-downloads-state'
+
+function isDownloadsLogPayload(raw: unknown): raw is DownloadsLogPayload {
+  if (!raw || typeof raw !== 'object') {
+    return false
+  }
+  const o = raw as { kind?: unknown }
+  if (o.kind === 'reset') {
+    const rowId = (raw as { rowId?: unknown }).rowId
+    return typeof rowId === 'number' && Number.isFinite(rowId)
+  }
+  if (o.kind === 'line') {
+    const rowId = (raw as { rowId?: unknown }).rowId
+    const stream = (raw as { stream?: unknown }).stream
+    const text = (raw as { text?: unknown }).text
+    return (
+      typeof rowId === 'number' &&
+      Number.isFinite(rowId) &&
+      (stream === 'stdout' || stream === 'stderr') &&
+      typeof text === 'string'
+    )
+  }
+  return false
+}
 
 /**
  * Узкий API только для второго окна (data-document + sandbox).
@@ -33,5 +59,18 @@ contextBridge.exposeInMainWorld('fluxalloyDownloads', {
     ipcRenderer.invoke('fluxalloy-downloads-start-row', id),
 
   cancelQueue: (): Promise<{ ok: true } | { ok: false; error: string }> =>
-    ipcRenderer.invoke('fluxalloy-downloads-cancel-run')
+    ipcRenderer.invoke('fluxalloy-downloads-cancel-run'),
+
+  onLog: (listener: (payload: DownloadsLogPayload) => void): (() => void) => {
+    const handler = (_event: unknown, raw: unknown): void => {
+      if (!isDownloadsLogPayload(raw)) {
+        return
+      }
+      listener(raw)
+    }
+    ipcRenderer.on(DOWNLOADS_LOG_CHANNEL, handler)
+    return (): void => {
+      ipcRenderer.removeListener(DOWNLOADS_LOG_CHANNEL, handler)
+    }
+  }
 })

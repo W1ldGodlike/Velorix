@@ -15,6 +15,7 @@ import {
   startDownloadSingleRow,
   startDownloadsSequential
 } from './downloads-queue-runner'
+import { DOWNLOADS_LOG_CHANNEL, setDownloadsLogSink } from './downloads-log-ipc'
 import { resolvePreloadOutFile } from './preload-resolve'
 
 /** Совпадает с preload подпиской на снимок очереди. */
@@ -118,6 +119,13 @@ function buildDownloadsHtml(): string {
       border: none; background: transparent; color: #9dc3ff; cursor: pointer; padding: 2px 5px; font-size: 13px;
     }
     td.act button:hover { text-decoration: underline; }
+    .log-panel { margin-top: 14px; border-top: 1px solid #3f3f46; padding-top: 10px; }
+    .log-panel summary { cursor: pointer; font-weight: 600; font-size: 12px; margin-bottom: 6px; user-select: none; color: #c9c9cf; }
+    .log-panel pre {
+      margin: 0; max-height: 240px; overflow: auto; white-space: pre-wrap; word-break: break-word;
+      font-family: ui-monospace, Consolas, Menlo, monospace; font-size: 11px; line-height: 1.35;
+      background: #18181b; color: #d4d4d8; padding: 8px 10px; border-radius: 8px; border: 1px solid #3f3f46;
+    }
     .note { margin-top: 12px; font-size: 11px; opacity: 0.72; }
   </style>
 </head>
@@ -135,6 +143,12 @@ function buildDownloadsHtml(): string {
     <thead><tr><th>№</th><th>Имя</th><th>Ссылка</th><th>Прогресс</th><th>Статус</th><th></th></tr></thead>
     <tbody id="queueBody"></tbody>
   </table>
+  <div class="log-panel">
+    <details id="logDetails">
+      <summary>Лог yt-dlp (stdout / stderr)</summary>
+      <pre id="logPre"></pre>
+    </details>
+  </div>
   <p class="note">Отдельный preload IPC только для этого окна. yt-dlp запускается из main через spawn без shell.</p>
   <script>
     (function () {
@@ -145,6 +159,34 @@ function buildDownloadsHtml(): string {
       var cancelBtn = document.getElementById('cancelBtn');
       var urls = document.getElementById('urls');
       var body = document.getElementById('queueBody');
+      var logPre = document.getElementById('logPre');
+      var logDetails = document.getElementById('logDetails');
+      var logTargetRowId = null;
+      var maxLogChars = 240000;
+
+      function appendLogLine(stream, text) {
+        var prefix = stream === 'stdout' ? 'out | ' : 'err | ';
+        logPre.textContent += prefix + text + '\\n';
+        if (logPre.textContent.length > maxLogChars) {
+          logPre.textContent = logPre.textContent.slice(-maxLogChars);
+        }
+        logPre.scrollTop = logPre.scrollHeight;
+      }
+
+      api.onLog(function (payload) {
+        if (!payload || typeof payload !== 'object') return;
+        if (payload.kind === 'reset') {
+          logTargetRowId = payload.rowId;
+          logPre.textContent = '';
+          if (logDetails && !logDetails.open) {
+            logDetails.open = true;
+          }
+          return;
+        }
+        if (payload.kind === 'line' && payload.rowId === logTargetRowId) {
+          appendLogLine(payload.stream, payload.text);
+        }
+      });
 
       function rowShape(r) {
         return r && typeof r.id === 'number' && typeof r.url === 'string';
@@ -433,11 +475,22 @@ export function focusOrCreateDownloadsWindow(mergeText?: string | null): void {
   })
 
   downloadsWindow.on('closed', () => {
+    setDownloadsLogSink(null)
     downloadsWindow = null
   })
 
   void downloadsWindow.loadURL(dataUrl)
   downloadsWindow.once('ready-to-show', () => {
+    if (downloadsWindow && !downloadsWindow.isDestroyed()) {
+      const wc = downloadsWindow.webContents
+      setDownloadsLogSink((payload) => {
+        try {
+          wc.send(DOWNLOADS_LOG_CHANNEL, payload)
+        } catch {
+          /* окно закрывается */
+        }
+      })
+    }
     downloadsWindow?.show()
     broadcastDownloadsSnapshot()
   })

@@ -38,3 +38,4 @@
 - 2026-05-10 16:10:00: §4.1 — `windowBounds.main/downloads` в `settings.json`, debounced persist при resize/move и flush на `close`; восстановление через `rectifyBoundsForRestore` (fallback на центр основного монитора).
 - 2026-05-10 17:45:00: §9 — расширен `ffprobe-service` (битрейт, `tracks`, tooltip формата) и UI под превью; §19 — `bin/.gitkeep` + `extraResources` для пустого `resources/bin` в сборке.
 - 2026-05-10 18:30:00: §4.5 — меню «Справка → О программе», IPC `app-about-info`, модалка; §9 — `rawJson` в probe, блок JSON + «Копировать», IPC `clipboard-write-text` (лимит 24 MiB).
+- 2026-05-10 19:05:00: §6.4 — `downloads-log-ipc.ts`, стрим строк yt-dlp в окно загрузок (`onLog`, авто-раскрытие `<details>`, лимит буфера в UI).

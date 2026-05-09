@@ -9,6 +9,7 @@ import {
   updateDownloadsRow,
   type DownloadsQueueRow
 } from './downloads-queue'
+import { emitDownloadsLog } from './downloads-log-ipc'
 import { extractDownloadPercent, runYtdlpOnce } from './ytdlp-download-service'
 
 let activeAbort: AbortController | null = null
@@ -51,6 +52,8 @@ async function runYtdlpForWaitingRow(
   updateDownloadsRow(rowId, { status: 'Загрузка…', progress: '…' })
   notifySnapshot()
 
+  emitDownloadsLog({ kind: 'reset', rowId })
+
   let lastPct: string | null = null
 
   try {
@@ -60,7 +63,11 @@ async function runYtdlpForWaitingRow(
       outputDir,
       signal,
       {
+        onStdoutLine: (line) => {
+          emitDownloadsLog({ kind: 'line', rowId, stream: 'stdout', text: line })
+        },
         onStderrLine: (line) => {
+          emitDownloadsLog({ kind: 'line', rowId, stream: 'stderr', text: line })
           const pct = extractDownloadPercent(line)
           if (pct) {
             lastPct = pct
