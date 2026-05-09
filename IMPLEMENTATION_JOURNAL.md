@@ -43,3 +43,4 @@
 - 2026-05-09 21:26:24: §6.2 — настраиваемый каталог yt-dlp (`ytdlp-download-output.ts`, поле `ytdlpDownloadDirectory` в settings, UI «Выбрать…»/«По умолчанию», IPC в окне загрузок).
 - 2026-05-09 21:38:31: §6.1/§6.4 — парсинг stderr yt-dlp: колонка «Прогресс» — процент, скорость и ETA (`parseYtdlpDownloadProgressLine`, `formatYtdlpProgressCell`); разметка ячейки в окне загрузок под длинные строки.
 - 2026-05-09 21:41:13: §6.2 — сохраняемый шаблон `-o` (`ytdlpFilenameTemplate`) и пресеты `-f` (`ytdlpFormatPreset`); IPC/preload `getCliOptions`/`setCliOptions`; `resolveSafeYtdlpOutputPattern`; снимок опций для runner (`ytdlp-run-options-sync`).
+- 2026-05-09 21:42:07: §7.1 — прогресс экспорта ffmpeg: парсинг `speed=`, склейка stderr по `\r`/`\n`; статусбар показывает множитель после процента (`FfmpegExportProgressPayload.speed`).

@@ -448,7 +448,8 @@ function App(): JSX.Element {
     const offExport = window.fluxalloy.export.onProgress((p) => {
       const pct =
         typeof p.percent === 'number' && p.percent >= 0 ? `${Math.round(p.percent)}% · ` : ''
-      setStatusHint(`Экспорт · ${pct}${p.message}`)
+      const spd = typeof p.speed === 'string' && p.speed.trim() !== '' ? `${p.speed.trim()} · ` : ''
+      setStatusHint(`Экспорт · ${pct}${spd}${p.message}`)
     })
 
     const offMenuPreview = window.fluxalloy.onPreviewOpened((payload) => {

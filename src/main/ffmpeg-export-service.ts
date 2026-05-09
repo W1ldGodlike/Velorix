@@ -21,6 +21,14 @@ export interface FfmpegExportProgressPayload {
   /** 0..100 или −1, если по stderr ещё не удалось оценить прогресс. */
   percent: number
   message: string
+  /** Множитель относительно реального времени (`1.04x`, `N/A`), из последней строки статистики со `speed=`. */
+  speed?: string
+}
+
+/** Поле `speed=` в строках прогресса ffmpeg (`-stats`). */
+function parseFfmpegSpeedToken(line: string): string | null {
+  const m = line.match(/\bspeed=\s*(\S+)/)
+  return m ? m[1] : null
 }
 
 function parseFfmpegTimeSeconds(line: string): number | null {
@@ -115,7 +123,9 @@ function buildEncodeArgs(
 
 /**
  * Один проход ffmpeg без shell: только массив аргументов §7 / §21.
- * Прогресс — по полю `time=` в stderr относительно длительности сегмента.
+ * Прогресс — по полю `time=` в stderr относительно длительности сегмента
+ * и множитель `speed=` для статусбара §7.1. Строки режутся по `\r` и `\n`: ffmpeg
+ * переписывает кадр статистики через carriage return.
  */
 export function runFfmpegExportJob(params: {
   ffmpegPath: string
@@ -142,11 +152,16 @@ export function runFfmpegExportJob(params: {
     })
 
     let stderrTail = ''
+    let lastSpeed: string | null = null
 
     function emitLine(line: string): void {
       const trimmed = line.trimEnd()
       if (trimmed.length === 0) {
         return
+      }
+      const spd = parseFfmpegSpeedToken(trimmed)
+      if (spd !== null) {
+        lastSpeed = spd
       }
       const t = parseFfmpegTimeSeconds(trimmed)
       let pct = -1
@@ -154,16 +169,23 @@ export function runFfmpegExportJob(params: {
         pct = Math.min(99.9, Math.max(0, (t / segmentDur) * 100))
       }
       const msg = trimmed.length > 140 ? `${trimmed.slice(0, 138)}…` : trimmed
-      params.onProgress?.({ percent: pct, message: msg })
+      params.onProgress?.({
+        percent: pct,
+        message: msg,
+        ...(lastSpeed !== null ? { speed: lastSpeed } : {})
+      })
     }
 
     child.stderr?.setEncoding('utf8')
     child.stderr?.on('data', (chunk: string) => {
       stderrTail += chunk
-      const parts = stderrTail.split(/\r?\n/)
+      const parts = stderrTail.split(/\r|\n/)
       stderrTail = parts.pop() ?? ''
       for (const part of parts) {
-        emitLine(part)
+        const t = part.trimEnd()
+        if (t.length > 0) {
+          emitLine(t)
+        }
       }
     })
 
