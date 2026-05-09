@@ -93,7 +93,7 @@ export interface FluxAlloyApi {
     cancel: () => Promise<{ ok: true } | { ok: false; error: string }>
     openOutput: (
       path: string,
-      mode: 'file' | 'folder'
+      mode: 'file' | 'folder' | 'preview'
     ) => Promise<{ ok: true; path: string } | { ok: false; error: string }>
     onProgress: (listener: (progress: FfmpegExportProgressPayload) => void) => () => void
   }

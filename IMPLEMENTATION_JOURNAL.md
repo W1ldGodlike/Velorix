@@ -85,3 +85,4 @@
 - 2026-05-10 00:40:30 [Assistant]: §7.2/§21 — добавлены persisted настройки FPS и scale preset (исходный/480p/720p/1080p) для ffmpeg export; фильтры собираются через `-vf` без shell-строк, тесты settings/export helpers расширены.
 - 2026-05-10 00:44:44 [Assistant]: §7.2/§21 — добавлен persisted video bitrate mode для экспорта: при выборе bitrate ffmpeg получает `-b:v`, без него остаётся CRF mode; preload/settings/UI и unit-тесты расширены.
 - 2026-05-10 00:47:47 [Assistant]: §7/§21 — после успешного экспорта main запоминает результат в allowlist и renderer показывает действия «Файл экспорта»/«Папка экспорта»; IPC не открывает произвольные пути.
+- 2026-05-10 00:50:13 [Assistant]: §7/§21 — результат экспорта можно вернуть в preview через кнопку «В превью»; main использует тот же allowlist export output и существующий `grantMediaPath`.

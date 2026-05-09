@@ -129,7 +129,7 @@ const fluxalloy = {
       ipcRenderer.invoke('fluxalloy:export-cancel'),
     openOutput: (
       path: string,
-      mode: 'file' | 'folder'
+      mode: 'file' | 'folder' | 'preview'
     ): Promise<{ ok: true; path: string } | { ok: false; error: string }> =>
       ipcRenderer.invoke('fluxalloy:export-open-output', { path, mode }),
     onProgress: (listener: (progress: FfmpegExportProgressPayload) => void): (() => void) => {

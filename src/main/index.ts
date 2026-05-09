@@ -153,7 +153,7 @@ let allowMainWindowClose = false
 
 let mainWindowWebContentsId: number | null = null
 
-type ExportOutputOpenMode = 'file' | 'folder'
+type ExportOutputOpenMode = 'file' | 'folder' | 'preview'
 
 interface RendererLogBucket {
   tokens: number
@@ -186,7 +186,7 @@ function consumeRendererLogToken(senderId: number): boolean {
 }
 
 function isExportOutputOpenMode(raw: unknown): raw is ExportOutputOpenMode {
-  return raw === 'file' || raw === 'folder'
+  return raw === 'file' || raw === 'folder' || raw === 'preview'
 }
 
 function rememberExportOutputPath(filePath: string): void {
@@ -229,6 +229,10 @@ async function openExportOutputPath(
   if (rawMode === 'folder') {
     shell.showItemInFolder(abs)
     return { ok: true, path: abs }
+  }
+  if (rawMode === 'preview') {
+    const opened = openDownloadedFileInMainHandler(abs)
+    return opened.ok ? { ok: true, path: abs } : opened
   }
   const result = await shell.openPath(abs)
   return result ? { ok: false, error: result } : { ok: true, path: abs }

@@ -655,13 +655,15 @@ function App(): JSX.Element {
     }
   }
 
-  async function handleOpenLastExport(mode: 'file' | 'folder'): Promise<void> {
+  async function handleOpenLastExport(mode: 'file' | 'folder' | 'preview'): Promise<void> {
     if (!lastExportPath || exportBusy || snapshotBusy) {
       return
     }
     const res = await window.fluxalloy.export.openOutput(lastExportPath, mode)
     if (!res.ok) {
       setStatusHint(`Экспорт: ${res.error}`)
+    } else if (mode === 'preview') {
+      setStatusHint('Экспорт открыт в превью')
     }
   }
 
@@ -880,6 +882,17 @@ function App(): JSX.Element {
               title="Показать последний экспорт в папке"
             >
               Папка экспорта
+            </button>
+            <button
+              type="button"
+              className="app-btn"
+              disabled={exportBusy || snapshotBusy}
+              onClick={() => {
+                void handleOpenLastExport('preview')
+              }}
+              title="Открыть последний экспорт в preview FluxAlloy"
+            >
+              В превью
             </button>
           </>
         ) : null}
