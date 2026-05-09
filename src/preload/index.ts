@@ -41,6 +41,11 @@ const fluxalloy = {
     > => ipcRenderer.invoke('fluxalloy:preview-grant-path', absolutePath),
     probe: (absolutePath: string): Promise<MediaProbeResult> =>
       ipcRenderer.invoke('fluxalloy:media-probe', absolutePath),
+    snapshotFrame: (payload: {
+      inputPath: string
+      timeSec: number
+    }): Promise<{ ok: true } | { ok: false; cancelled: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke('fluxalloy:snapshot-frame', payload),
     /** Только узкий API на путь: renderer не имеет доступа к `File.path`. */
     getPathForFile: (file: File): string => webUtils.getPathForFile(file)
   },

@@ -272,6 +272,7 @@ function App(): JSX.Element {
   const [downloadsUrl, setDownloadsUrl] = useState('')
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
   const [exportBusy, setExportBusy] = useState(false)
+  const [snapshotBusy, setSnapshotBusy] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   /** Последний диапазон In/Out с таймлайна для IPC экспорта. */
   const trimSnapshotRef = useRef<{ inSec: number; outSec: number } | null>(null)
@@ -511,8 +512,37 @@ function App(): JSX.Element {
     setEnginePathsDraft((prev) => ({ ...prev, [id]: picked }))
   }
 
+  async function handleSnapshot(): Promise<void> {
+    if (!preview || exportBusy || snapshotBusy) {
+      return
+    }
+    const el = videoRef.current
+    const timeSec = el && Number.isFinite(el.currentTime) ? Math.max(0, el.currentTime) : 0
+    setSnapshotBusy(true)
+    setStatusHint('Снимок кадра…')
+    try {
+      const res = await window.fluxalloy.preview.snapshotFrame({
+        inputPath: preview.path,
+        timeSec
+      })
+      if (res.ok) {
+        setStatusHint('Кадр сохранён')
+      } else if ('cancelled' in res && res.cancelled) {
+        setStatusHint(null)
+      } else if ('error' in res) {
+        setStatusHint(`Кадр: ${res.error}`)
+      } else {
+        setStatusHint('Кадр: ошибка')
+      }
+    } catch (e) {
+      setStatusHint(e instanceof Error ? e.message : 'Ошибка снимка')
+    } finally {
+      setSnapshotBusy(false)
+    }
+  }
+
   async function handleExport(): Promise<void> {
-    if (!preview || exportBusy) {
+    if (!preview || exportBusy || snapshotBusy) {
       return
     }
     setExportBusy(true)
@@ -580,8 +610,19 @@ function App(): JSX.Element {
         </button>
         <button
           type="button"
+          className="app-btn"
+          disabled={!preview || exportBusy || snapshotBusy}
+          onClick={() => {
+            void handleSnapshot()
+          }}
+          title="Сохранить текущий кадр превью в PNG или JPEG (ffmpeg)"
+        >
+          {snapshotBusy ? 'Кадр…' : 'Кадр'}
+        </button>
+        <button
+          type="button"
           className="app-btn app-btn-primary"
-          disabled={!preview || exportBusy}
+          disabled={!preview || exportBusy || snapshotBusy}
           onClick={() => {
             void handleExport()
           }}

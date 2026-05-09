@@ -42,6 +42,10 @@ export interface FluxAlloyApi {
       { ok: true; path: string; mediaUrl: string; name: string } | { ok: false; error: string }
     >
     probe: (absolutePath: string) => Promise<MediaProbeResult>
+    snapshotFrame: (payload: {
+      inputPath: string
+      timeSec: number
+    }) => Promise<{ ok: true } | { ok: false; cancelled: true } | { ok: false; error: string }>
     getPathForFile: (file: File) => string
   }
   session: {

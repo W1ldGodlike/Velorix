@@ -6,11 +6,13 @@ import icon from '../../resources/icon.png?asset'
 
 import { resolveAppPaths } from './app-paths'
 import { downloadEnginesWindows, isAnyEngineMissing } from './engine-download'
+import { cancelDownloadsRunner, isDownloadsRunnerBusy } from './downloads-queue-runner'
 import {
   configureDownloadsWindowBoundsHooks,
   focusOrCreateDownloadsWindow,
   registerDownloadsWindowIpcHandlers
 } from './downloads-window'
+import { runFfmpegSnapshotFrame } from './ffmpeg-frame-snapshot-service'
 import {
   runFfmpegExportJob,
   type MediaExportTrimPayload,
@@ -92,6 +94,9 @@ function technicalSpecPath(): string {
 let cachedSettings: AppSettings = { theme: 'dark' }
 
 let activeExportAbort: AbortController | null = null
+
+/** Обход диалога §4.2 после явного подтверждения «Закрыть и прервать». */
+let allowMainWindowClose = false
 
 function parseExportTrim(raw: unknown): MediaExportTrimPayload | undefined {
   if (!raw || typeof raw !== 'object') {
@@ -369,6 +374,45 @@ function createWindow(): void {
       contextIsolation: true,
       nodeIntegration: false
     }
+  })
+
+  allowMainWindowClose = false
+  mainWindow.on('close', (e) => {
+    if (allowMainWindowClose) {
+      return
+    }
+    const exportBusy = activeExportAbort !== null
+    const downloadsBusy = isDownloadsRunnerBusy()
+    if (!exportBusy && !downloadsBusy) {
+      return
+    }
+    e.preventDefault()
+    const msg =
+      exportBusy && downloadsBusy
+        ? 'Идёт экспорт видео и активная загрузка yt-dlp. Закрыть приложение и прервать задачи?'
+        : exportBusy
+          ? 'Идёт экспорт видео. Закрыть приложение и прервать экспорт?'
+          : 'Идёт активная загрузка yt-dlp. Закрыть приложение и прервать загрузку?'
+
+    void dialog
+      .showMessageBox(mainWindow, {
+        type: 'warning',
+        buttons: ['Остаться', 'Закрыть и прервать'],
+        defaultId: 0,
+        cancelId: 0,
+        title: 'FluxAlloy',
+        message: msg,
+        noLink: true
+      })
+      .then(({ response }) => {
+        if (response !== 1) {
+          return
+        }
+        activeExportAbort?.abort()
+        cancelDownloadsRunner()
+        allowMainWindowClose = true
+        mainWindow.close()
+      })
   })
 
   attachMainWindowBoundsPersistence(mainWindow)
@@ -669,6 +713,68 @@ app.whenReady().then(() => {
     activeExportAbort.abort()
     return { ok: true }
   })
+
+  ipcMain.handle(
+    'fluxalloy:snapshot-frame',
+    async (
+      event,
+      raw: unknown
+    ): Promise<{ ok: true } | { ok: false; cancelled: true } | { ok: false; error: string }> => {
+      const win = BrowserWindow.fromWebContents(event.sender)
+      if (!win) {
+        return { ok: false, error: 'Нет активного окна' }
+      }
+      if (!raw || typeof raw !== 'object') {
+        return { ok: false, error: 'Некорректный запрос' }
+      }
+      const inputRaw = (raw as { inputPath?: unknown }).inputPath
+      const timeRaw = (raw as { timeSec?: unknown }).timeSec
+      if (typeof inputRaw !== 'string' || inputRaw.trim().length === 0) {
+        return { ok: false, error: 'Не указан входной файл' }
+      }
+      const abs = resolve(normalize(inputRaw.trim()))
+      if (!existsSync(abs)) {
+        return { ok: false, error: 'Файл не найден' }
+      }
+      if (!isGrantedMediaPath(abs)) {
+        return { ok: false, error: 'Нет доступа к файлу — откройте его через превью.' }
+      }
+      const timeSec =
+        typeof timeRaw === 'number' && Number.isFinite(timeRaw) ? Math.max(0, timeRaw) : 0
+
+      const paths = resolveAppPaths()
+      const ffmpeg = resolveEngineExecutablePath(
+        paths,
+        'ffmpeg',
+        cachedSettings.engineExecutablePaths
+      )
+      if (!ffmpeg) {
+        return { ok: false, error: 'ffmpeg не найден — установите движки.' }
+      }
+
+      const stem = basename(abs).replace(/\.[^.]+$/, '')
+      const pick = await dialog.showSaveDialog(win, {
+        title: 'Сохранить кадр',
+        defaultPath: `${stem}-frame.png`,
+        filters: [
+          { name: 'PNG', extensions: ['png'] },
+          { name: 'JPEG', extensions: ['jpg', 'jpeg'] }
+        ]
+      })
+
+      if (pick.canceled || !pick.filePath || pick.filePath.trim().length === 0) {
+        return { ok: false, cancelled: true }
+      }
+
+      const outPath = pick.filePath.trim()
+      return runFfmpegSnapshotFrame({
+        ffmpegPath: ffmpeg,
+        inputPath: abs,
+        outputPath: outPath,
+        timeSec
+      })
+    }
+  )
 
   ipcMain.on('ping', () => console.log('pong'))
 

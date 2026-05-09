@@ -39,3 +39,4 @@
 - 2026-05-10 17:45:00: §9 — расширен `ffprobe-service` (битрейт, `tracks`, tooltip формата) и UI под превью; §19 — `bin/.gitkeep` + `extraResources` для пустого `resources/bin` в сборке.
 - 2026-05-10 18:30:00: §4.5 — меню «Справка → О программе», IPC `app-about-info`, модалка; §9 — `rawJson` в probe, блок JSON + «Копировать», IPC `clipboard-write-text` (лимит 24 MiB).
 - 2026-05-10 19:05:00: §6.4 — `downloads-log-ipc.ts`, стрим строк yt-dlp в окно загрузок (`onLog`, авто-раскрытие `<details>`, лимит буфера в UI).
+- 2026-05-10 19:40:00: §7.6 — `ffmpeg-frame-snapshot-service`, IPC `snapshot-frame`, кнопка «Кадр»; §4.2 — диалог закрытия главного окна при экспорте или активной загрузке yt-dlp.
