@@ -111,6 +111,32 @@ export function formatYtdlpQueueFailureStatus(
 }
 
 /**
+ * §6.4 — не тратить повторы **очереди** на типичные «устойчивые» отказы источника (private, 403/404 и т.д.).
+ * Консервативно: только явные подстроки в нижнем регистре; транзиентные сетевые ошибки не матчим.
+ */
+const YTDLP_QUEUE_RETRY_SKIP_MARKERS = [
+  'private video',
+  'members only',
+  'video unavailable',
+  'this video is not available',
+  'video has been removed',
+  'is no longer available',
+  'http error 403',
+  'http error 404',
+  'sign in to confirm your age',
+  'login required',
+  'blocked it on copyright'
+] as const
+
+export function shouldSkipYtdlpQueueRetriesAfterFailure(
+  errorSummary: string | null | undefined,
+  stderrFallback: string | null | undefined
+): boolean {
+  const haystack = `${errorSummary ?? ''}\n${stderrFallback ?? ''}`.toLowerCase()
+  return YTDLP_QUEUE_RETRY_SKIP_MARKERS.some((m) => haystack.includes(m))
+}
+
+/**
  * Последняя осмысленная строка об ошибке из stdout/stderr yt-dlp для статуса §6.4.
  * Не исполняет код — только эвристика по тексту.
  */

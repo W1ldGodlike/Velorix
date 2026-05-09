@@ -5,7 +5,8 @@ import {
   extractYtdlpOutputPath,
   formatYtdlpProgressCell,
   formatYtdlpQueueFailureStatus,
-  parseYtdlpDownloadProgressLine
+  parseYtdlpDownloadProgressLine,
+  shouldSkipYtdlpQueueRetriesAfterFailure
 } from '../../src/main/ytdlp-progress-parser'
 
 describe('parseYtdlpDownloadProgressLine', () => {
@@ -109,6 +110,21 @@ describe('extractYtdlpErrorSummary', () => {
 
   it('возвращает null для пустого хвоста', () => {
     expect(extractYtdlpErrorSummary('ERROR:    ')).toBeNull()
+  })
+})
+
+describe('shouldSkipYtdlpQueueRetriesAfterFailure', () => {
+  it('true для типичных отказов источника (ERROR: или stderr)', () => {
+    expect(shouldSkipYtdlpQueueRetriesAfterFailure('Private video', null)).toBe(true)
+    expect(shouldSkipYtdlpQueueRetriesAfterFailure(null, '[youtube] Video unavailable')).toBe(true)
+    expect(shouldSkipYtdlpQueueRetriesAfterFailure('HTTP Error 403: Forbidden', null)).toBe(true)
+  })
+
+  it('false для транзиентных/неопределённых ошибок', () => {
+    expect(
+      shouldSkipYtdlpQueueRetriesAfterFailure('Unable to download webpage', 'Connection timed out')
+    ).toBe(false)
+    expect(shouldSkipYtdlpQueueRetriesAfterFailure(null, null)).toBe(false)
   })
 })
 

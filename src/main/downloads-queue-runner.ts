@@ -15,7 +15,8 @@ import {
   formatYtdlpProgressCell,
   formatYtdlpQueueFailureStatus,
   parseYtdlpDownloadProgressLine,
-  runYtdlpOnce
+  runYtdlpOnce,
+  shouldSkipYtdlpQueueRetriesAfterFailure
 } from './ytdlp-download-service'
 import { resolveYtdlpOutputDirectory } from './ytdlp-download-output'
 import { appendYtdlpDownloadHistoryEntry, outcomeFromQueueStatus } from './ytdlp-download-history'
@@ -270,6 +271,28 @@ async function runYtdlpForWaitingRow(
         stream: 'stderr',
         text: `[FluxAlloy] Попытка ${runIndex + 1}/${maxRuns} завершилась с кодом ${code ?? '?'}.`
       })
+
+      if (
+        runIndex < maxRuns - 1 &&
+        shouldSkipYtdlpQueueRetriesAfterFailure(lastErrorSummary, lastStderrLine)
+      ) {
+        emitDownloadsLog({
+          kind: 'line',
+          rowId,
+          stream: 'stderr',
+          text: '[FluxAlloy] Дальнейшие повторы очереди отменены: сообщение похоже на устойчивый отказ источника.'
+        })
+        updateDownloadsRow(rowId, {
+          status: formatYtdlpQueueFailureStatus(
+            code,
+            result.signal,
+            lastErrorSummary,
+            lastStderrLine
+          ),
+          progress: lastProgressCell ?? '—'
+        })
+        break
+      }
 
       if (runIndex >= maxRuns - 1) {
         updateDownloadsRow(rowId, {
