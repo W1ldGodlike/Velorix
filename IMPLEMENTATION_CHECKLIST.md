@@ -25,7 +25,7 @@
 - [~] Нет запуска `ffmpeg`/пайплайна обработки; движки можно **скачать кнопкой** в UI (Windows) в `userData/bin`, есть проверка `--version` после загрузки.
 - [~] Автозагрузка движков **Windows x64** (yt-dlp GitHub + ffmpeg zip gyan.dev), SHA256 опционально через `Data/trusted_hashes.json`; в установщике есть пустой `resources/bin` (`extraResources`), бинарники — подкладка/`userData/bin`.
 - [ ] Нет локализации `locales/**`.
-- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; есть покрытие чистых парсеров и сервисов (`ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-frame-snapshot-service`, `ipc-channels`, `engine-contract`).
+- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; есть покрытие чистых парсеров и сервисов (`ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options`, `ytdlp-commands-hints`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-frame-snapshot-service`, `ipc-channels`, `engine-contract`).
 
 ## Журнал решений и проверок
 
@@ -35,12 +35,12 @@
 
 Правило для агента: этот блок — рабочий навигатор ближайшего спринта. После каждой крупной итерации обновлять его: отмечать сделанное, переводить частичное в `[~]`, убирать устаревшее только если оно отражено ниже по §, и добавлять 3–7 следующих конкретных пунктов. Не оставлять блок полностью закрытым.
 
-- [~] §6.1/§6.2/§6.4: менеджер yt-dlp — очередь, сводка/фильтр/очистка строк, прогресс, каталог, cookies, impersonate, лимит/ретраи, retry строки, история + фильтр/повтор URL/открытие файла/открытие в обработчике/авто-открытие в preview по флагу, экспорт видимого лога; статус ошибки — ERROR:, fallback stderr, код/сигнал; дальше — расширенный retry/политика ошибок.
-- [~] §6.3: экспертный режим — доп. argv + whitelist/blacklist + справочник в сворачиваемом блоке; дальше улучшать справочник/категории.
-- [~] §7: превью + таймлайн + экспорт MP4/MKV/MOV + запоминание папки экспорта + отмена активного экспорта + действия открыть файл/папку результата/вернуть экспорт в превью/скопировать путь + снимок кадра §7.6 с persisted PNG/JPEG, запоминанием папки и действиями файл/папка/копия пути + ffprobe под превью; отдельное окно инспектора §9 — позже.
-- [~] §7.2/§20: системные пресеты libx264, persisted контейнер/формат, CRF или video bitrate, аудио AAC/без аудио, AAC bitrate, FPS и scale preset есть; дальше пользовательские пресеты, расширенные параметры кодирования и live preview команды.
-- [~] §17/§18: меню диагностических папок с актуальным `enabled`, `logger-service`, диалог ошибок, Support ZIP, логи stdout/stderr движков и prune старых crash dumps; дальше — логи сессий/расширенная политика хранения.
-- [~] §21: явно зафиксированы `noImplicitAny`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `noPropertyAccessFromIndexSignature`, `useUnknownInCatchVariables` в tsconfig node/web/tests; bracket-доступ для неструктурных JSON/DOM; новые строгие флаги TS — только по необходимости.
+- [~] §6.1/§6.4: yt-dlp — очередь, лог, история, авто-preview по флагу; дальше расширенная политика retry/ошибок и пауза yt-dlp где поддерживается.
+- [~] §6.3: экспертный argv + whitelist/chёрный список + справочник с `<optgroup>` по категориям; дальше превью команды без «магических» заглушек пути там, где это уместно.
+- [~] §7: превью, таймлайн, экспорт MKV/MOV/MP4, снимок кадра, ffprobe под превью; отдельное окно инспектора §9 — позже.
+- [~] §7.2/§20: системные пресеты libx264 и базовые параметры экспорта; дальше пользовательские пресеты и превью строки ffmpeg.
+- [~] §17/§18: диагностические папки, Support ZIP, логи процессов; дальше политика сессионных логов и ротация.
+- [~] §21: строгий TS и shared-контракты IPC; новые каналы — по мере новых фич.
 
 ---
 
@@ -266,13 +266,13 @@
 - [x] Каталог загрузки (выбор папки в окне yt-dlp + `ytdlpDownloadDirectory` в `settings.json`; по умолчанию `userData/downloads/ytdlp`).
 - [x] Открыть текущий каталог загрузки из окна yt-dlp.
 - [x] Ограничения скорости/ретраи (`--limit-rate`, `--retries`, `--fragment-retries`); профили **повтора строки очереди** при ненулевом exit (`off`/`light`/`normal`).
-- [~] Дополнительные параметры в сворачиваемых секциях: экспертные argv/preview/справочник вынесены в `details`; дальше — категории справочника.
+- [x] Дополнительные параметры в сворачиваемых секциях: экспертные argv/preview/справочник по категориям §6.3 (`optgroup`, карта токенов в main, опциональный `category` в JSON).
 
 ### §6.3 Экспертный режим
 
 - [~] Live preview команды yt-dlp (`commandPreview` в окне загрузок; заглушки `<downloadDir>`, `<url>`).
 - [~] Поле дополнительных аргументов (`ytdlpExtraArgsLine` в settings).
-- [x] Подсказки из `Data/ytdlp_commands.json`.
+- [x] Подсказки из `Data/ytdlp_commands.json` (группы в UI; при необходимости категория в JSON переопределяет встроенную карту в main).
 - [~] Безопасная сборка аргументов без shell (`parseExtraYtdlpArgsLine`, spawn-массив §21).
 
 ### §6.4 Прогресс, лог, комбинированный режим

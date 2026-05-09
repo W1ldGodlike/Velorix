@@ -25,6 +25,8 @@ export type YtdlpFormatPresetId = 'default' | 'merge_bv_ba' | 'best_single'
 export interface YtdlpCommandHintEntry {
   token: string
   summary: string
+  /** Группа для `<optgroup>`; из JSON или встроенная карта в main. */
+  category: string
 }
 
 /** То, что видит окно загрузок: текущие значения и метки для `<select>`. */

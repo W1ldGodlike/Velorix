@@ -377,7 +377,7 @@ function buildDownloadsHtml(): string {
       <span class="opts-preview-label">Превью argv</span>
       <pre class="args-preview" id="argsPreview"></pre>
       <details class="hints-panel" id="hintsPanel">
-        <summary>Справочник флагов (Data/ytdlp_commands.json)</summary>
+        <summary>Справочник флагов по категориям (Data/ytdlp_commands.json)</summary>
         <select id="hintInsert" class="hint-select" aria-label="Вставить флаг из справочника">
           <option value="">Выберите флаг — он добавится в «Доп. аргументы»…</option>
         </select>
@@ -661,13 +661,22 @@ function buildDownloadsHtml(): string {
         ph.value = '';
         ph.textContent = list.length === 0 ? 'Справочник недоступен' : 'Выберите флаг — добавить в поле…';
         hintInsert.appendChild(ph);
+        var curCat = null;
+        var og = null;
         list.forEach(function (h) {
           if (!h || typeof h.token !== 'string') return;
+          var cat = typeof h.category === 'string' && h.category.length ? h.category : 'Прочее';
+          if (cat !== curCat) {
+            curCat = cat;
+            og = document.createElement('optgroup');
+            og.label = cat;
+            hintInsert.appendChild(og);
+          }
           var o = document.createElement('option');
           o.value = h.token;
           o.textContent = h.token;
           o.title = typeof h.summary === 'string' ? h.summary : '';
-          hintInsert.appendChild(o);
+          if (og) og.appendChild(o);
         });
       }
 
