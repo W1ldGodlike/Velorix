@@ -3,6 +3,13 @@ import { useCallback, useEffect, useState } from 'react'
 import Versions from './components/Versions'
 
 type Theme = 'dark' | 'light'
+
+/** Совпадает с `Extract<PreviewDialogResult,{ok:true}>` в preload-контракте §4/§7. */
+interface PreviewOpenedPayload {
+  path: string
+  mediaUrl: string
+  name: string
+}
 type EngineSummary = 'checking' | 'ready' | 'missing' | 'error'
 
 /**
@@ -42,33 +49,38 @@ function engineSummaryText(summary: EngineSummary): string {
 function App(): React.JSX.Element {
   const [theme, setTheme] = useState<Theme>('dark')
   const [engineSummary, setEngineSummary] = useState<EngineSummary>('checking')
+  const [enginesOfferDownload, setEnginesOfferDownload] = useState(false)
+  const [engineDownloadBusy, setEngineDownloadBusy] = useState(false)
+  /** Подстрочное сообщение статусбара: прогресс загрузки движков, ошибки DnD и т.п. */
+  const [statusHint, setStatusHint] = useState<string | null>(null)
+  const [preview, setPreview] = useState<PreviewOpenedPayload | null>(null)
+
+  const applyPreview = useCallback((payload: PreviewOpenedPayload): void => {
+    setPreview(payload)
+  }, [])
 
   const applyTheme = useCallback((value: Theme) => {
-    // data-attribute на html позволяет CSS-токенам переключать весь UI без перерендера дерева стилей.
     document.documentElement.dataset.theme = value
     setTheme(value)
   }, [])
 
   useEffect(() => {
-    let cleanup: (() => void) | undefined
-    // Тема приходит из main: renderer не читает файлы настроек напрямую.
+    let cleanupTheme: (() => void) | undefined
     void (async () => {
       const loaded = await window.fluxalloy.settings.get()
       applyTheme(loaded.theme === 'light' ? 'light' : 'dark')
-      cleanup = window.fluxalloy.onThemeChanged((next) => {
+      cleanupTheme = window.fluxalloy.onThemeChanged((next) => {
         applyTheme(next)
       })
     })().catch(console.error)
 
     return (): void => {
-      cleanup?.()
+      cleanupTheme?.()
     }
   }, [applyTheme])
 
   useEffect(() => {
-    // Статусбар пока показывает сводку. Подробное окно зависимостей появится в §3/§4.6.
-    // TODO(§3/§4.6): заменить одноразовую проверку на store/refresh-кнопку и детальный диалог зависимостей.
-    window.fluxalloy.engines
+    void window.fluxalloy.engines
       .getStatus()
       .then((snapshot) => {
         setEngineSummary(summarizeEngines(snapshot.engines))
@@ -78,18 +90,90 @@ function App(): React.JSX.Element {
       })
   }, [])
 
+  useEffect(() => {
+    void window.fluxalloy.engines
+      .shouldOfferDownload()
+      .then(setEnginesOfferDownload)
+      .catch(() => setEnginesOfferDownload(false))
+  }, [engineSummary])
+
+  useEffect(() => {
+    const offProgress = window.fluxalloy.engines.onDownloadProgress((p) => {
+      const pct = typeof p.percent === 'number' && p.percent >= 0 ? `${p.percent}% · ` : ''
+      setStatusHint(`${pct}${p.message}`)
+    })
+
+    const offMenuPreview = window.fluxalloy.onPreviewOpened((payload) => {
+      applyPreview(payload)
+    })
+
+    return (): void => {
+      offProgress()
+      offMenuPreview()
+    }
+  }, [applyPreview])
+
   function toggleTheme(): void {
     const next = theme === 'dark' ? 'light' : 'dark'
-    // Persist делает main: так меню, будущие окна и renderer не спорят за источник истины.
     void window.fluxalloy.settings.setTheme(next)
+  }
+
+  async function handleOpenToolbar(): Promise<void> {
+    const result = await window.fluxalloy.preview.openFileDialog()
+    if (result.ok) {
+      applyPreview(result)
+    }
+  }
+
+  async function handleEnginesDownload(): Promise<void> {
+    setEngineDownloadBusy(true)
+    setStatusHint('Подготовка загрузки…')
+    try {
+      const res = await window.fluxalloy.engines.download()
+      if (!res.ok) {
+        setStatusHint(`Ошибка: ${res.error}`)
+        return
+      }
+
+      const snapshot = await window.fluxalloy.engines.getStatus()
+      setEngineSummary(summarizeEngines(snapshot.engines))
+
+      const need = await window.fluxalloy.engines.shouldOfferDownload()
+      setEnginesOfferDownload(need)
+      setStatusHint('Движки загружены')
+    } catch (error) {
+      setStatusHint(error instanceof Error ? error.message : 'Ошибка загрузки')
+    } finally {
+      setEngineDownloadBusy(false)
+    }
+  }
+
+  async function handlePreviewDrop(files: FileList | null): Promise<void> {
+    const file = files?.[0]
+    if (!file) {
+      return
+    }
+    const absolutePath = window.fluxalloy.preview.getPathForFile(file)
+    const granted = await window.fluxalloy.preview.grantPath(absolutePath)
+    if (!granted.ok) {
+      setStatusHint(`DnD: ${granted.error}`)
+      return
+    }
+    applyPreview(granted)
   }
 
   return (
     <div className="app-shell">
       <header className="app-toolbar">
         <div className="app-toolbar-brand">FluxAlloy</div>
-        {/* TODO(§4/§7): включить кнопку после IPC выбора локального файла и DnD-источников. */}
-        <button type="button" className="app-btn" disabled title="Открыть файл источника (скоро)">
+        <button
+          type="button"
+          className="app-btn"
+          onClick={() => {
+            void handleOpenToolbar()
+          }}
+          title="Открыть локальный видеофайл"
+        >
           Открыть
         </button>
         <button
@@ -100,6 +184,19 @@ function App(): React.JSX.Element {
         >
           Экспорт
         </button>
+        {enginesOfferDownload ? (
+          <button
+            type="button"
+            className="app-btn app-btn-warn"
+            disabled={engineDownloadBusy}
+            onClick={() => {
+              void handleEnginesDownload()
+            }}
+            title="Скачать yt-dlp и FFmpeg в папку приложения пользователя"
+          >
+            {engineDownloadBusy ? 'Загрузка…' : 'Скачать движки'}
+          </button>
+        ) : null}
         <div className="app-toolbar-spacer" aria-hidden />
         <button
           type="button"
@@ -112,19 +209,52 @@ function App(): React.JSX.Element {
       </header>
 
       <main className="app-main">
-        <section className="app-preview" aria-label="Область предпросмотра">
-          <div className="app-preview-placeholder">
-            Нет источника — перетащите видеофайл сюда или воспользуйтесь пунктом меню «Файл» →
-            «Открыть…»
-            <p className="app-preview-hint">
-              Каркас главного окна по §1.1 ТЗ: превью и таймлайн — в следующих итерациях.
-            </p>
-          </div>
+        <section
+          className="app-preview"
+          aria-label="Область предпросмотра"
+          onDragOver={(event) => {
+            event.preventDefault()
+            event.stopPropagation()
+          }}
+          onDrop={(event) => {
+            event.preventDefault()
+            event.stopPropagation()
+            void handlePreviewDrop(event.dataTransfer.files)
+          }}
+        >
+          {preview ? (
+            <>
+              <video
+                key={preview.mediaUrl}
+                className="app-preview-video"
+                controls
+                src={preview.mediaUrl}
+              />
+              <footer className="app-preview-caption" title={preview.path}>
+                {preview.name}
+              </footer>
+            </>
+          ) : (
+            <div className="app-preview-placeholder">
+              Нет источника — перетащите видеофайл сюда или «Открыть…» в меню «Файл» / кнопка
+              сверху.
+              <p className="app-preview-hint">
+                Локальный файл стримится через защищённую схему fluxmedia — только после выбора или
+                DnD по пути из Electron.
+              </p>
+            </div>
+          )}
         </section>
       </main>
 
       <footer className="app-statusbar">
         <span>{engineSummaryText(engineSummary)}</span>
+        {statusHint ? (
+          <>
+            <span className="app-statusbar-sep" aria-hidden />
+            <span className="app-statusbar-extra">{statusHint}</span>
+          </>
+        ) : null}
         <span className="app-statusbar-sep" aria-hidden />
         <Versions />
       </footer>

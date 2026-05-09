@@ -1,14 +1,26 @@
 import { existsSync } from 'fs'
+import { basename, join } from 'path'
 import { BrowserWindow, Menu, app, ipcMain, shell } from 'electron'
-import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
 import { resolveAppPaths } from './app-paths'
+import { downloadEnginesWindows, isAnyEngineMissing } from './engine-download'
+import type { EngineDownloadProgress } from './engine-download'
 import { getEnginesStatus } from './engine-service'
 import type { EnginesStatusSnapshot } from './engine-service'
+import {
+  grantMediaPath,
+  registerFluxMediaPrivileges,
+  registerFluxMediaProtocol
+} from './media-protocol'
+import { openVideoWithDialog } from './preview-dialog'
 import type { AppSettings, AppTheme } from './settings-store'
 import { loadSettings, saveSettings } from './settings-store'
+import { loadTrustedHashes, resolveTrustedHashesPath } from './trusted-hashes-store'
+
+/** Кастомная схема для локального видеопревью; привилегии обязаны зарегистрироваться до `app.whenReady`. */
+registerFluxMediaPrivileges()
 
 /**
  * Путь настроек в userData.
@@ -91,9 +103,17 @@ function buildApplicationMenu(): void {
         {
           label: 'Открыть…',
           accelerator: 'CmdOrCtrl+O',
-          // Пункт уже стоит на своём будущем месте, но будет включён вместе с IPC выбора файла (§4/§7).
-          // TODO(§4/§7): подключить dialog.showOpenDialog и отправку выбранного источника в renderer.
-          enabled: false
+          click: async (): Promise<void> => {
+            const target = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0]
+            if (!target || target.isDestroyed()) {
+              return
+            }
+            const result = await openVideoWithDialog(target)
+            if (!result.ok) {
+              return
+            }
+            target.webContents.send('fluxalloy:preview-opened', result)
+          }
         },
         { type: 'separator' },
         isMac ? { role: 'close' } : { role: 'quit' }
@@ -185,6 +205,7 @@ function createWindow(): void {
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.fluxalloy')
   cachedSettings = loadSettings(settingsPath())
+  registerFluxMediaProtocol()
 
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
@@ -201,9 +222,53 @@ app.whenReady().then(() => {
   })
 
   ipcMain.handle('fluxalloy:engines-status', async (): Promise<EnginesStatusSnapshot> => {
-    // Проверка движков живёт в main: renderer не должен знать реальные пути и запускать процессы.
-    // TODO(§3): добавить отдельный IPC для загрузки/обновления движков с progress events.
     return getEnginesStatus(resolveAppPaths())
+  })
+
+  ipcMain.handle('fluxalloy:engines-should-offer-download', (): boolean => {
+    return isAnyEngineMissing(resolveAppPaths())
+  })
+
+  ipcMain.handle(
+    'fluxalloy:engines-download',
+    async (event): Promise<{ ok: true } | { ok: false; error: string }> => {
+      const win = BrowserWindow.fromWebContents(event.sender)
+      const paths = resolveAppPaths()
+      const trusted = loadTrustedHashes(resolveTrustedHashesPath())
+      try {
+        await downloadEnginesWindows(paths, trusted, (p: EngineDownloadProgress) => {
+          win?.webContents.send('fluxalloy:engines-progress', p)
+        })
+        return { ok: true }
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : String(error)
+        return { ok: false, error: msg }
+      }
+    }
+  )
+
+  ipcMain.handle('fluxalloy:open-video-dialog', async (event) => {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    if (!win) {
+      return { ok: false, error: 'Нет активного окна' }
+    }
+    return openVideoWithDialog(win)
+  })
+
+  ipcMain.handle('fluxalloy:preview-grant-path', (_, rawPath: unknown) => {
+    if (typeof rawPath !== 'string' || rawPath.length === 0) {
+      return { ok: false, error: 'Пустой путь' }
+    }
+    const mediaUrl = grantMediaPath(rawPath)
+    if (!mediaUrl) {
+      return { ok: false, error: 'Не удалось открыть файл' }
+    }
+    return {
+      ok: true,
+      path: rawPath,
+      mediaUrl,
+      name: basename(rawPath)
+    }
   })
 
   ipcMain.on('ping', () => console.log('pong'))

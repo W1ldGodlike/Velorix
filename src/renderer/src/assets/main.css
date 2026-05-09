@@ -73,6 +73,17 @@
   border-color: transparent;
 }
 
+/* Вторичный акцент: привлекает внимание к обязательной загрузке движков §3 без крика как у primary CTA */
+.app-btn-warn {
+  border-color: color-mix(in srgb, var(--fa-accent) 55%, var(--fa-border));
+  background: color-mix(in srgb, var(--fa-accent) 18%, var(--fa-surface-elevated));
+  color: var(--fa-text-primary);
+}
+
+.app-btn-warn:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+
 .app-main {
   flex: 1;
   min-height: 0;
@@ -82,14 +93,18 @@
   gap: 0.75rem;
 }
 
-/* Preview area пока заглушка, но размеры и фон уже соответствуют будущему видеоплееру/таймлайну. */
+/* Превью: зона Drag-and-Drop §4.B + живой `<video>` §7. */
 .app-preview {
-  /* TODO(§7): когда появится video/timeline, разделить стили preview shell и внутренних media-controls. */
+  /* TODO(§7): когда появится таймлайн, разделить стили preview shell и timeline controls. */
   flex: 1;
   min-height: 200px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   justify-content: center;
+  position: relative;
+  padding: 0;
+  overflow: hidden;
   border-radius: 10px;
   border: 1px solid var(--fa-border-subtle);
   background: var(--fa-surface-elevated);
@@ -97,10 +112,32 @@
   font-size: 0.95rem;
 }
 
+.app-preview-video {
+  flex: 1;
+  width: 100%;
+  min-height: 220px;
+  max-height: 100%;
+  object-fit: contain;
+  background: #000000;
+}
+
+.app-preview-caption {
+  flex-shrink: 0;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.75rem;
+  color: var(--fa-text-muted);
+  border-top: 1px solid var(--fa-border-subtle);
+  background: color-mix(in srgb, var(--fa-surface) 94%, transparent);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .app-preview-placeholder {
   text-align: center;
   max-width: 28rem;
   padding: 1.25rem;
+  align-self: center;
 }
 
 .app-preview-hint {
@@ -128,18 +165,21 @@
   flex-shrink: 0;
 }
 
+.app-statusbar-extra {
+  flex: 1;
+  min-width: 10rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* Версии среды — диагностическая строка, поэтому использует моноширинный шрифт и компактные разделители. */
 .versions-inline {
   display: flex;
   align-items: center;
   gap: 0;
   flex-wrap: wrap;
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Consolas,
-    monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
 .versions-inline li {

@@ -1,6 +1,11 @@
 {
+  "schema": 2,
+  "windows-x64": {
+    "yt-dlp.exe": "",
+    "ffmpeg-release-essentials.zip": ""
+  },
   "YtDlpSha256": "",
-  "FfmpegSha256": "",
   "YtDlpVersion": "",
+  "FfmpegSha256": "",
   "FfmpegVersion": ""
 }

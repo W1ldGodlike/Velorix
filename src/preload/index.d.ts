@@ -1,7 +1,12 @@
 import type { ElectronAPI } from '@electron-toolkit/preload'
 
+import type { EngineDownloadProgress } from '../main/engine-download'
 import type { EnginesStatusSnapshot } from '../main/engine-service'
+import type { PreviewDialogResult } from '../main/preview-dialog'
 import type { AppSettings, AppTheme } from '../main/settings-store'
+
+/** Данные для привязки `<video>` к локальному файлу через allowlist-схему `fluxmedia://`. */
+export type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
 
 /**
  * Типизированный контракт preload -> renderer.
@@ -16,9 +21,22 @@ export interface FluxAlloyApi {
     get: () => Promise<AppSettings>
     setTheme: (theme: AppTheme) => Promise<AppSettings>
   }
+  preview: {
+    openFileDialog: () => Promise<PreviewDialogResult>
+    grantPath: (
+      absolutePath: string
+    ) => Promise<
+      { ok: true; path: string; mediaUrl: string; name: string } | { ok: false; error: string }
+    >
+    getPathForFile: (file: File) => string
+  }
   engines: {
     getStatus: () => Promise<EnginesStatusSnapshot>
+    shouldOfferDownload: () => Promise<boolean>
+    download: () => Promise<{ ok: true } | { ok: false; error: string }>
+    onDownloadProgress: (listener: (progress: EngineDownloadProgress) => void) => () => void
   }
+  onPreviewOpened: (listener: (payload: PreviewOpenedPayload) => void) => () => void
   onThemeChanged: (listener: (theme: AppTheme) => void) => () => void
 }
 

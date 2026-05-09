@@ -1,8 +1,12 @@
-import { contextBridge, ipcRenderer } from 'electron'
+import { contextBridge, ipcRenderer, webUtils } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
+import type { EngineDownloadProgress } from '../main/engine-download'
 import type { EnginesStatusSnapshot } from '../main/engine-service'
+import type { PreviewDialogResult } from '../main/preview-dialog'
 import type { AppSettings, AppTheme } from '../main/settings-store'
+
+type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
 
 // Единственная публичная поверхность приложения в renderer.
 // Всё, что требует Node/Electron прав (FS, процессы, реальные пути), остаётся в main и
@@ -15,9 +19,53 @@ const fluxalloy = {
     setTheme: (theme: AppTheme): Promise<AppSettings> =>
       ipcRenderer.invoke('fluxalloy:settings-set-theme', theme)
   },
+  preview: {
+    openFileDialog: (): Promise<PreviewDialogResult> =>
+      ipcRenderer.invoke('fluxalloy:open-video-dialog'),
+    grantPath: (
+      absolutePath: string
+    ): Promise<
+      { ok: true; path: string; mediaUrl: string; name: string } | { ok: false; error: string }
+    > => ipcRenderer.invoke('fluxalloy:preview-grant-path', absolutePath),
+    /** Только узкий API на путь: renderer не имеет доступа к `File.path`. */
+    getPathForFile: (file: File): string => webUtils.getPathForFile(file)
+  },
   engines: {
-    // Renderer видит только агрегированный статус, а не произвольный доступ к файловой системе.
-    getStatus: (): Promise<EnginesStatusSnapshot> => ipcRenderer.invoke('fluxalloy:engines-status')
+    getStatus: (): Promise<EnginesStatusSnapshot> => ipcRenderer.invoke('fluxalloy:engines-status'),
+    shouldOfferDownload: (): Promise<boolean> =>
+      ipcRenderer.invoke('fluxalloy:engines-should-offer-download'),
+    download: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke('fluxalloy:engines-download'),
+    onDownloadProgress: (listener: (progress: EngineDownloadProgress) => void): (() => void) => {
+      const channel = 'fluxalloy:engines-progress'
+      const handler = (_event: unknown, raw: unknown): void => {
+        if (!raw || typeof raw !== 'object') {
+          return
+        }
+        listener(raw as EngineDownloadProgress)
+      }
+      ipcRenderer.on(channel, handler)
+      return (): void => {
+        ipcRenderer.removeListener(channel, handler)
+      }
+    }
+  },
+  onPreviewOpened: (listener: (payload: PreviewOpenedPayload) => void): (() => void) => {
+    const channel = 'fluxalloy:preview-opened'
+    const handler = (_event: unknown, raw: unknown): void => {
+      if (
+        raw &&
+        typeof raw === 'object' &&
+        'mediaUrl' in raw &&
+        typeof (raw as { mediaUrl?: unknown }).mediaUrl === 'string'
+      ) {
+        listener(raw as PreviewOpenedPayload)
+      }
+    }
+    ipcRenderer.on(channel, handler)
+    return (): void => {
+      ipcRenderer.removeListener(channel, handler)
+    }
   },
   onThemeChanged: (listener: (theme: AppTheme) => void): (() => void) => {
     const channel = 'fluxalloy:theme-changed'
@@ -40,9 +88,11 @@ if (process.contextIsolated) {
     console.error(error)
   }
 } else {
-  // Fallback оставлен для dev-сценариев electron-toolkit; production идёт через contextBridge.
-  // @ts-expect-error preload
-  window.electron = electronAPI
-  // @ts-expect-error preload
-  window.fluxalloy = fluxalloy
+  // Fallback для редкого `contextIsolation: false`; глобальные типы здесь из index.d.ts не подхватываются.
+  const root = window as unknown as {
+    electron: typeof electronAPI
+    fluxalloy: typeof fluxalloy
+  }
+  root.electron = electronAPI
+  root.fluxalloy = fluxalloy
 }
