@@ -1605,11 +1605,11 @@ export function registerDownloadsWindowIpcHandlers(): void {
     if (typeof id !== 'number' || !Number.isFinite(id)) {
       return
     }
-    const d = direction === -1 || direction === 1 ? direction : 0
-    if (d === 0) {
+    const delta = direction === -1 || direction === 1 ? direction : 0
+    if (delta === 0) {
       return
     }
-    moveDownloadsQueueRow(id, d)
+    moveDownloadsQueueRow(id, delta)
     broadcastDownloadsSnapshot()
   })
 

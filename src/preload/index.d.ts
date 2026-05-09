@@ -19,7 +19,7 @@ import type {
   EnginesStatusSnapshot
 } from '../shared/engine-contract'
 import type { MediaProbeResult } from '../shared/ffprobe-contract'
-import type { PreviewDialogResult } from '../shared/preview-dialog-contract'
+import type { PreviewDialogResult, RestoredSourceInfo } from '../shared/preview-dialog-contract'
 import type { AppSettings, AppTheme } from '../shared/settings-contract'
 
 /** Данные для привязки `<video>` к локальному файлу через allowlist-схему `fluxmedia://`. */
@@ -67,7 +67,7 @@ export interface FluxAlloyApi {
   }
   session: {
     persistLastSource: (path: string | null) => Promise<void>
-    restoreLastSource: () => Promise<PreviewOpenedPayload | null>
+    restoreLastSource: () => Promise<RestoredSourceInfo | null>
   }
   downloads: {
     openWindow: (initial?: string | { text?: string } | null) => Promise<void>

@@ -20,7 +20,7 @@ import type {
   EnginesStatusSnapshot
 } from '../shared/engine-contract'
 import type { MediaProbeResult } from '../shared/ffprobe-contract'
-import type { PreviewDialogResult } from '../shared/preview-dialog-contract'
+import type { PreviewDialogResult, RestoredSourceInfo } from '../shared/preview-dialog-contract'
 import type { AppSettings, AppTheme } from '../shared/settings-contract'
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
 
@@ -79,7 +79,7 @@ const fluxalloy = {
   session: {
     persistLastSource: (path: string | null): Promise<void> =>
       ipcRenderer.invoke(mw.persistLastSource, path),
-    restoreLastSource: (): Promise<PreviewOpenedPayload | null> =>
+    restoreLastSource: (): Promise<RestoredSourceInfo | null> =>
       ipcRenderer.invoke(mw.restoreLastSource)
   },
   downloads: {

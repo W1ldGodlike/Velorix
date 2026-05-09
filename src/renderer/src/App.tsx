@@ -5,33 +5,29 @@ import VideoTimeline from './components/VideoTimeline'
 import Versions from './components/Versions'
 import type { EngineId } from '../../shared/engine-contract'
 import { ENGINE_IDS } from '../../shared/engine-contract'
+import type {
+  FfmpegExportAudioModeId,
+  FfmpegExportContainerId,
+  FfmpegExportEncodePresetId,
+  FfmpegExportScalePresetId
+} from '../../shared/ffmpeg-export-contract'
+import type { FfmpegSnapshotFormatId } from '../../shared/ffmpeg-snapshot-contract'
+import type { RestoredSourceInfo } from '../../shared/preview-dialog-contract'
 
 type Theme = 'dark' | 'light'
 
-/** Совпадает с `Extract<PreviewDialogResult,{ok:true}>` в preload-контракте §4/§7. */
-interface PreviewOpenedPayload {
-  path: string
-  mediaUrl: string
-  name: string
-}
+type PreviewOpenedPayload = RestoredSourceInfo
 type EngineSummary = 'checking' | 'ready' | 'missing' | 'error'
 
 type EnginesSnapshot = Awaited<ReturnType<typeof window.fluxalloy.engines.getStatus>>
 
-/** Совпадает с `FfmpegExportEncodePresetId` в `src/shared/ffmpeg-export-contract.ts` §7.2 (renderer не тянет main TS). */
-type ExportEncodePresetId = 'balance' | 'smaller' | 'quality'
-type ExportContainerId = 'mp4' | 'mkv' | 'mov'
-type ExportScalePresetId = 'source' | '480p' | '720p' | '1080p'
-type ExportAudioModeId = 'aac' | 'none'
-type SnapshotFormatId = 'png' | 'jpg'
-
-const EXPORT_ENCODE_PRESETS: Array<{ id: ExportEncodePresetId; label: string }> = [
+const EXPORT_ENCODE_PRESETS: Array<{ id: FfmpegExportEncodePresetId; label: string }> = [
   { id: 'balance', label: 'Баланс' },
   { id: 'smaller', label: 'Меньше размер' },
   { id: 'quality', label: 'Качество' }
 ]
 
-const EXPORT_CONTAINERS: Array<{ id: ExportContainerId; label: string }> = [
+const EXPORT_CONTAINERS: Array<{ id: FfmpegExportContainerId; label: string }> = [
   { id: 'mp4', label: 'MP4' },
   { id: 'mkv', label: 'MKV' },
   { id: 'mov', label: 'MOV' }
@@ -39,19 +35,19 @@ const EXPORT_CONTAINERS: Array<{ id: ExportContainerId; label: string }> = [
 
 const EXPORT_CRF_OPTIONS = [18, 20, 23, 26, 28, 30]
 const EXPORT_VIDEO_BITRATES = ['1000k', '2500k', '5000k', '8000k', '12000k', '20000k']
-const EXPORT_AUDIO_MODES: Array<{ id: ExportAudioModeId; label: string }> = [
+const EXPORT_AUDIO_MODES: Array<{ id: FfmpegExportAudioModeId; label: string }> = [
   { id: 'aac', label: 'AAC audio' },
   { id: 'none', label: 'Без аудио' }
 ]
 const EXPORT_AUDIO_BITRATES = ['96k', '128k', '160k', '192k', '256k', '320k']
 const EXPORT_FPS_OPTIONS = [24, 25, 30, 50, 60]
-const EXPORT_SCALE_PRESETS: Array<{ id: ExportScalePresetId; label: string }> = [
+const EXPORT_SCALE_PRESETS: Array<{ id: FfmpegExportScalePresetId; label: string }> = [
   { id: 'source', label: 'Размер исходный' },
   { id: '480p', label: '480p' },
   { id: '720p', label: '720p' },
   { id: '1080p', label: '1080p' }
 ]
-const SNAPSHOT_FORMATS: Array<{ id: SnapshotFormatId; label: string }> = [
+const SNAPSHOT_FORMATS: Array<{ id: FfmpegSnapshotFormatId; label: string }> = [
   { id: 'png', label: 'Кадр PNG' },
   { id: 'jpg', label: 'Кадр JPEG' }
 ]
@@ -308,17 +304,18 @@ function App(): JSX.Element {
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
   const [exportBusy, setExportBusy] = useState(false)
   const [exportCancelBusy, setExportCancelBusy] = useState(false)
-  const [exportEncodePreset, setExportEncodePreset] = useState<ExportEncodePresetId>('balance')
-  const [exportContainer, setExportContainer] = useState<ExportContainerId>('mp4')
+  const [exportEncodePreset, setExportEncodePreset] =
+    useState<FfmpegExportEncodePresetId>('balance')
+  const [exportContainer, setExportContainer] = useState<FfmpegExportContainerId>('mp4')
   const [exportCrf, setExportCrf] = useState<number | null>(null)
   const [exportVideoBitrate, setExportVideoBitrate] = useState<string | null>(null)
-  const [exportAudioMode, setExportAudioMode] = useState<ExportAudioModeId>('aac')
+  const [exportAudioMode, setExportAudioMode] = useState<FfmpegExportAudioModeId>('aac')
   const [exportAudioBitrate, setExportAudioBitrate] = useState('192k')
   const [exportFps, setExportFps] = useState<number | null>(null)
-  const [exportScalePreset, setExportScalePreset] = useState<ExportScalePresetId>('source')
+  const [exportScalePreset, setExportScalePreset] = useState<FfmpegExportScalePresetId>('source')
   const [lastExportPath, setLastExportPath] = useState<string | null>(null)
   const [lastSnapshotPath, setLastSnapshotPath] = useState<string | null>(null)
-  const [snapshotFormat, setSnapshotFormat] = useState<SnapshotFormatId>('png')
+  const [snapshotFormat, setSnapshotFormat] = useState<FfmpegSnapshotFormatId>('png')
   const [snapshotBusy, setSnapshotBusy] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   /** Последний диапазон In/Out с таймлайна для IPC экспорта. */
@@ -839,7 +836,7 @@ function App(): JSX.Element {
           value={exportEncodePreset}
           disabled={exportBusy || snapshotBusy}
           onChange={(e) => {
-            const v = e.target.value as ExportEncodePresetId
+            const v = e.target.value as FfmpegExportEncodePresetId
             setExportEncodePreset(v)
             void window.fluxalloy.settings.setFfmpegExportEncodePreset(v).catch(console.error)
           }}
@@ -877,7 +874,7 @@ function App(): JSX.Element {
           value={exportContainer}
           disabled={exportBusy || snapshotBusy}
           onChange={(e) => {
-            const v = e.target.value as ExportContainerId
+            const v = e.target.value as FfmpegExportContainerId
             setExportContainer(v)
             void window.fluxalloy.settings.setFfmpegExportContainer(v).catch(console.error)
           }}
@@ -971,7 +968,7 @@ function App(): JSX.Element {
           value={exportScalePreset}
           disabled={exportBusy || snapshotBusy}
           onChange={(e) => {
-            const v = e.target.value as ExportScalePresetId
+            const v = e.target.value as FfmpegExportScalePresetId
             setExportScalePreset(v)
             void window.fluxalloy.settings.setFfmpegExportScalePreset(v).catch(console.error)
           }}
