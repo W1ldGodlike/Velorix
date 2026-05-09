@@ -41,6 +41,8 @@ contextBridge.exposeInMainWorld('fluxalloyDownloads', {
   addLines: (text: string): Promise<number> =>
     ipcRenderer.invoke('fluxalloy-downloads-add-lines', text),
   clearQueue: (): Promise<void> => ipcRenderer.invoke('fluxalloy-downloads-clear'),
+  clearFinishedRows: (): Promise<number> =>
+    ipcRenderer.invoke('fluxalloy-downloads-clear-finished'),
   removeRow: (id: number): Promise<void> => ipcRenderer.invoke('fluxalloy-downloads-remove', id),
   moveRow: (id: number, direction: number): Promise<void> =>
     ipcRenderer.invoke('fluxalloy-downloads-move', id, direction),

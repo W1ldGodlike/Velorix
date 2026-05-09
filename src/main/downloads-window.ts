@@ -6,6 +6,7 @@ import type { StoredWindowRect } from './settings-store'
 import { boundsFromBrowserWindow, rectifyBoundsForRestore } from './window-bounds'
 import {
   appendUrlsFromMultilineBlock,
+  clearFinishedDownloadsQueueRows,
   clearDownloadsQueue,
   getDownloadsQueueSnapshot,
   moveDownloadsQueueRow,
@@ -133,6 +134,11 @@ function buildDownloadsHtml(): string {
       outline-offset: 2px;
     }
     .row { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 14px; align-items: center; }
+    .row label.inline-filter { display: inline-flex; align-items: center; gap: 6px; color: #c9c9cf; font-size: 11px; }
+    .row label.inline-filter select {
+      border-radius: 8px; border: 1px solid #56565d; background: #252526; color: #ececec;
+      padding: 5px 8px; font-size: 12px;
+    }
     button.cmd {
       border-radius: 8px; border: 1px solid #56565d; background: #2d2d30; color: #ececec;
       padding: 6px 11px; font-size: 12px; cursor: pointer;
@@ -194,6 +200,14 @@ function buildDownloadsHtml(): string {
     .opts-check-row input[type=checkbox] { margin-top: 3px; flex-shrink: 0; accent-color: #0078d4; }
     .opts-check-muted { opacity: 0.75; }
     .opts-preview-label { display: block; margin: 8px 0 4px; font-size: 11px; color: #b9b9c0; font-weight: 500; }
+    .expert-panel {
+      margin: 10px 0 8px; padding: 8px 10px; border-radius: 8px; border: 1px solid #3f3f46;
+      background: color-mix(in srgb, #1e1e1e 72%, #252526);
+    }
+    .expert-panel summary {
+      cursor: pointer; font-weight: 600; font-size: 12px; color: #c9c9cf; user-select: none;
+    }
+    .expert-panel[open] summary { margin-bottom: 8px; }
     textarea#extraArgsInput {
       width: 100%; box-sizing: border-box; min-height: 52px; margin-bottom: 6px; padding: 6px 8px;
       border-radius: 6px; border: 1px solid #3f3f46; background: #1e1e1e; color: #ececec;
@@ -298,17 +312,20 @@ function buildDownloadsHtml(): string {
       <option value="normal">Обычный (2 повтора: 3 с + 8 с)</option>
     </select>
     <p class="opts-hint">Отдельно от <code>--retries</code> yt-dlp: после ненулевого кода процесса FluxAlloy делает паузу и запускает ту же ссылку снова (без повторного добавления в таблицу).</p>
-    <label for="extraArgsInput">Дополнительные аргументы (через пробел, без shell) §6.3</label>
-    <textarea id="extraArgsInput" rows="2" spellcheck="false" autocomplete="off" placeholder="Например: --write-sub --sub-lang ru"></textarea>
-    <p class="opts-hint opts-warn" id="extraArgsWarn" hidden></p>
-    <span class="opts-preview-label">Превью argv</span>
-    <pre class="args-preview" id="argsPreview"></pre>
-    <details class="hints-panel" id="hintsPanel">
-      <summary>Справочник флагов (Data/ytdlp_commands.json)</summary>
-      <select id="hintInsert" class="hint-select" aria-label="Вставить флаг из справочника">
-        <option value="">Выберите флаг — он добавится в «Доп. аргументы»…</option>
-      </select>
-      <p class="opts-hint" id="hintSummary"></p>
+    <details class="expert-panel" id="expertArgsDetails">
+      <summary>Экспертные аргументы и превью argv §6.3</summary>
+      <label for="extraArgsInput">Дополнительные аргументы (через пробел, без shell)</label>
+      <textarea id="extraArgsInput" rows="2" spellcheck="false" autocomplete="off" placeholder="Например: --write-sub --sub-lang ru"></textarea>
+      <p class="opts-hint opts-warn" id="extraArgsWarn" hidden></p>
+      <span class="opts-preview-label">Превью argv</span>
+      <pre class="args-preview" id="argsPreview"></pre>
+      <details class="hints-panel" id="hintsPanel">
+        <summary>Справочник флагов (Data/ytdlp_commands.json)</summary>
+        <select id="hintInsert" class="hint-select" aria-label="Вставить флаг из справочника">
+          <option value="">Выберите флаг — он добавится в «Доп. аргументы»…</option>
+        </select>
+        <p class="opts-hint" id="hintSummary"></p>
+      </details>
     </details>
     <div class="opts-actions">
       <button type="button" class="cmd cmd-primary" id="applyOptsBtn">Сохранить параметры</button>
@@ -321,6 +338,17 @@ function buildDownloadsHtml(): string {
     <button type="button" class="cmd cmd-warn" id="cancelBtn" title="Отменить текущую загрузку yt-dlp">Отмена загрузки</button>
     <button type="button" class="cmd" id="addBtn">Добавить в очередь</button>
     <button type="button" class="cmd" id="clearBtn">Очистить очередь</button>
+    <button type="button" class="cmd" id="clearFinishedBtn">Убрать завершённые</button>
+    <label class="inline-filter">Статус
+      <select id="queueStatusFilter">
+        <option value="all">Все</option>
+        <option value="waiting">Ожидание</option>
+        <option value="running">В работе</option>
+        <option value="done">Готово</option>
+        <option value="error">Ошибки</option>
+        <option value="cancelled">Отменено</option>
+      </select>
+    </label>
   </div>
   <table>
     <thead><tr><th>№</th><th>Имя</th><th>Ссылка</th><th>Прогресс</th><th>Статус</th><th></th></tr></thead>
@@ -360,10 +388,12 @@ function buildDownloadsHtml(): string {
       var api = window.fluxalloyDownloads;
       var addBtn = document.getElementById('addBtn');
       var clearBtn = document.getElementById('clearBtn');
+      var clearFinishedBtn = document.getElementById('clearFinishedBtn');
       var startBtn = document.getElementById('startBtn');
       var cancelBtn = document.getElementById('cancelBtn');
       var urls = document.getElementById('urls');
       var body = document.getElementById('queueBody');
+      var queueStatusFilter = document.getElementById('queueStatusFilter');
       var outDirText = document.getElementById('outDirText');
       var openOutBtn = document.getElementById('openOutBtn');
       var pickOutBtn = document.getElementById('pickOutBtn');
@@ -397,6 +427,7 @@ function buildDownloadsHtml(): string {
       var historyOutcomeFilter = document.getElementById('historyOutcomeFilter');
       var historyRefreshTimer = null;
       var lastHistoryEntries = [];
+      var lastQueueRows = [];
 
       function formatHistoryWhen(ms) {
         try {
@@ -687,15 +718,30 @@ function buildDownloadsHtml(): string {
         return !(typeof status === 'string' && status.indexOf('Пауза перед повтором') === 0);
       }
 
+      function queueRowMatchesFilter(row, filter) {
+        var status = typeof row.status === 'string' ? row.status : '';
+        if (filter === 'all') return true;
+        if (filter === 'waiting') return status === 'Ожидание';
+        if (filter === 'running') return status === 'Загрузка…' || status.indexOf('Пауза перед повтором') === 0;
+        if (filter === 'done') return status === 'Готово';
+        if (filter === 'cancelled') return status === 'Отменено';
+        if (filter === 'error') return status.indexOf('Ошибка') === 0;
+        return true;
+      }
+
       function renderRows(rawRows) {
-        var rows = Array.isArray(rawRows) ? rawRows.filter(rowShape) : [];
+        lastQueueRows = Array.isArray(rawRows) ? rawRows.filter(rowShape) : [];
+        var filter = queueStatusFilter ? queueStatusFilter.value : 'all';
+        var rows = lastQueueRows.filter(function (row) {
+          return queueRowMatchesFilter(row, filter);
+        });
         body.replaceChildren();
         if (rows.length === 0) {
           var tr0 = document.createElement('tr');
           var td0 = document.createElement('td');
           td0.colSpan = 6;
           td0.style.opacity = '0.7';
-          td0.textContent = 'Очередь пуста';
+          td0.textContent = lastQueueRows.length === 0 ? 'Очередь пуста' : 'Нет строк с таким статусом';
           tr0.appendChild(td0);
           body.appendChild(tr0);
           return;
@@ -763,6 +809,11 @@ function buildDownloadsHtml(): string {
           });
         }
       });
+      if (queueStatusFilter) {
+        queueStatusFilter.addEventListener('change', function () {
+          renderRows(lastQueueRows);
+        });
+      }
 
       addBtn.addEventListener('click', function () {
         api.addLines(urls.value).then(function () {
@@ -772,6 +823,13 @@ function buildDownloadsHtml(): string {
       clearBtn.addEventListener('click', function () {
         api.clearQueue();
       });
+      if (clearFinishedBtn) {
+        clearFinishedBtn.addEventListener('click', function () {
+          api.clearFinishedRows().then(function () {
+            api.getSnapshot().then(onQueueSnapshot);
+          });
+        });
+      }
       startBtn.addEventListener('click', function () {
         api.startQueue();
       });
@@ -1156,6 +1214,15 @@ export function registerDownloadsWindowIpcHandlers(): void {
     cancelDownloadsRunner()
     clearDownloadsQueue()
     broadcastDownloadsSnapshot()
+  })
+
+  ipcMain.handle('fluxalloy-downloads-clear-finished', (event) => {
+    if (!isDownloadsSender(event.sender)) {
+      return 0
+    }
+    const removed = clearFinishedDownloadsQueueRows()
+    broadcastDownloadsSnapshot()
+    return removed
   })
 
   /** §6.4 — чтение истории завершённых загрузок (newest first). */

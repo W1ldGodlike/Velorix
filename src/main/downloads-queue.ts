@@ -62,6 +62,17 @@ export function clearDownloadsQueue(): void {
   rows = []
 }
 
+export function clearFinishedDownloadsQueueRows(): number {
+  const before = rows.length
+  rows = rows.filter(
+    (r) =>
+      r.status === 'Ожидание' ||
+      r.status === 'Загрузка…' ||
+      r.status.startsWith('Пауза перед повтором')
+  )
+  return before - rows.length
+}
+
 export function findFirstWaitingRow(): DownloadsQueueRow | undefined {
   return rows.find((r) => r.status === 'Ожидание')
 }
