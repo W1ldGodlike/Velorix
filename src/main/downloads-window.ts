@@ -139,6 +139,7 @@ function buildDownloadsHtml(): string {
       border-radius: 8px; border: 1px solid #56565d; background: #252526; color: #ececec;
       padding: 5px 8px; font-size: 12px;
     }
+    .queue-summary { margin-left: auto; color: #b9b9c0; font-size: 11px; font-variant-numeric: tabular-nums; }
     button.cmd {
       border-radius: 8px; border: 1px solid #56565d; background: #2d2d30; color: #ececec;
       padding: 6px 11px; font-size: 12px; cursor: pointer;
@@ -349,6 +350,7 @@ function buildDownloadsHtml(): string {
         <option value="cancelled">Отменено</option>
       </select>
     </label>
+    <span class="queue-summary" id="queueSummary">Всего: 0</span>
   </div>
   <table>
     <thead><tr><th>№</th><th>Имя</th><th>Ссылка</th><th>Прогресс</th><th>Статус</th><th></th></tr></thead>
@@ -394,6 +396,7 @@ function buildDownloadsHtml(): string {
       var urls = document.getElementById('urls');
       var body = document.getElementById('queueBody');
       var queueStatusFilter = document.getElementById('queueStatusFilter');
+      var queueSummary = document.getElementById('queueSummary');
       var outDirText = document.getElementById('outDirText');
       var openOutBtn = document.getElementById('openOutBtn');
       var pickOutBtn = document.getElementById('pickOutBtn');
@@ -729,8 +732,34 @@ function buildDownloadsHtml(): string {
         return true;
       }
 
+      function updateQueueSummary(rows) {
+        if (!queueSummary) return;
+        var total = rows.length;
+        var waiting = 0;
+        var running = 0;
+        var done = 0;
+        var error = 0;
+        var cancelled = 0;
+        rows.forEach(function (row) {
+          var status = typeof row.status === 'string' ? row.status : '';
+          if (status === 'Ожидание') waiting += 1;
+          else if (status === 'Загрузка…' || status.indexOf('Пауза перед повтором') === 0) running += 1;
+          else if (status === 'Готово') done += 1;
+          else if (status === 'Отменено') cancelled += 1;
+          else if (status.indexOf('Ошибка') === 0) error += 1;
+        });
+        queueSummary.textContent =
+          'Всего: ' + total +
+          ' · ждёт: ' + waiting +
+          ' · в работе: ' + running +
+          ' · готово: ' + done +
+          ' · ошибок: ' + error +
+          ' · отменено: ' + cancelled;
+      }
+
       function renderRows(rawRows) {
         lastQueueRows = Array.isArray(rawRows) ? rawRows.filter(rowShape) : [];
+        updateQueueSummary(lastQueueRows);
         var filter = queueStatusFilter ? queueStatusFilter.value : 'all';
         var rows = lastQueueRows.filter(function (row) {
           return queueRowMatchesFilter(row, filter);
