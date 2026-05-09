@@ -494,7 +494,7 @@
 - [ ] Вынести IPC contracts в отдельный слой.
 - [ ] Вынести сервисы main.
 - [ ] Вынести модели shared.
-- [~] Unit tests для чистых модулей: `tests/main/*` — `ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`, `ytdlp-download-history` (append/read/clear), `ytdlp-download-options` (filename/output-pattern/rate-limit/retries), `downloads-queue` (cleanup). Дальше — ffmpeg-progress, settings-store парсеры.
+- [~] Unit tests для чистых модулей: `tests/main/*` — `ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`, `ytdlp-download-history` (append/read/clear), `ytdlp-download-options` (filename/output-pattern/rate-limit/retries), `downloads-queue` (cleanup), `settings-store` (yt-dlp persisted fields). Дальше — ffmpeg-progress.
 - [x] Выбрать Vitest/Jest: Vitest подключён (`npm run test`/`test:watch`, `tsconfig.tests.json`).
 - [ ] Добавить e2e smoke позже.
 - [~] Комментарии на русском для публичных API и сложной логики: базовые комментарии добавлены; дальше писать чуть развёрнутее, чтобы следующему проходу агента было понятно «зачем» и «где границы», не только «что делает строка».
