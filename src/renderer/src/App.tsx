@@ -23,6 +23,7 @@ type ExportEncodePresetId = 'balance' | 'smaller' | 'quality'
 type ExportContainerId = 'mp4' | 'mkv' | 'mov'
 type ExportScalePresetId = 'source' | '480p' | '720p' | '1080p'
 type ExportAudioModeId = 'aac' | 'none'
+type SnapshotFormatId = 'png' | 'jpg'
 
 const EXPORT_ENCODE_PRESETS: Array<{ id: ExportEncodePresetId; label: string }> = [
   { id: 'balance', label: 'Баланс' },
@@ -49,6 +50,10 @@ const EXPORT_SCALE_PRESETS: Array<{ id: ExportScalePresetId; label: string }> = 
   { id: '480p', label: '480p' },
   { id: '720p', label: '720p' },
   { id: '1080p', label: '1080p' }
+]
+const SNAPSHOT_FORMATS: Array<{ id: SnapshotFormatId; label: string }> = [
+  { id: 'png', label: 'Кадр PNG' },
+  { id: 'jpg', label: 'Кадр JPEG' }
 ]
 
 const ENGINE_IDS: EngineId[] = ['ffmpeg', 'ffprobe', 'yt-dlp']
@@ -316,6 +321,7 @@ function App(): JSX.Element {
   const [exportScalePreset, setExportScalePreset] = useState<ExportScalePresetId>('source')
   const [lastExportPath, setLastExportPath] = useState<string | null>(null)
   const [lastSnapshotPath, setLastSnapshotPath] = useState<string | null>(null)
+  const [snapshotFormat, setSnapshotFormat] = useState<SnapshotFormatId>('png')
   const [snapshotBusy, setSnapshotBusy] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   /** Последний диапазон In/Out с таймлайна для IPC экспорта. */
@@ -398,6 +404,9 @@ function App(): JSX.Element {
       const scale = loaded.ffmpegExportScalePreset
       if (scale === '480p' || scale === '720p' || scale === '1080p') {
         setExportScalePreset(scale)
+      }
+      if (loaded.ffmpegSnapshotFormat === 'jpg') {
+        setSnapshotFormat('jpg')
       }
       cleanupTheme = window.fluxalloy.onThemeChanged((next) => {
         applyTheme(next)
@@ -771,6 +780,24 @@ function App(): JSX.Element {
         >
           {snapshotBusy ? 'Кадр…' : 'Кадр'}
         </button>
+        <select
+          className="app-toolbar-select"
+          aria-label="Формат снимка кадра"
+          title="Формат для сохранения текущего кадра"
+          value={snapshotFormat}
+          disabled={exportBusy || snapshotBusy}
+          onChange={(e) => {
+            const v = e.target.value === 'jpg' ? 'jpg' : 'png'
+            setSnapshotFormat(v)
+            void window.fluxalloy.settings.setFfmpegSnapshotFormat(v).catch(console.error)
+          }}
+        >
+          {SNAPSHOT_FORMATS.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.label}
+            </option>
+          ))}
+        </select>
         {lastSnapshotPath ? (
           <>
             <button

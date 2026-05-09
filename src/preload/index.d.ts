@@ -2,6 +2,7 @@ import type { ElectronAPI } from '@electron-toolkit/preload'
 
 import type { DiagnosticsFolderEntry, DiagnosticsFolderId } from '../main/diagnostics-paths'
 import type { EngineDownloadProgress } from '../main/engine-download'
+import type { FfmpegSnapshotFormatId } from '../main/ffmpeg-frame-snapshot-service'
 import type {
   FfmpegExportAudioModeId,
   FfmpegExportContainerId,
@@ -46,6 +47,7 @@ export interface FluxAlloyApi {
     setFfmpegExportAudioBitrate: (bitrate: string | null) => Promise<AppSettings>
     setFfmpegExportFps: (fps: number | null) => Promise<AppSettings>
     setFfmpegExportScalePreset: (scale: FfmpegExportScalePresetId) => Promise<AppSettings>
+    setFfmpegSnapshotFormat: (format: FfmpegSnapshotFormatId) => Promise<AppSettings>
   }
   preview: {
     openFileDialog: () => Promise<PreviewDialogResult>

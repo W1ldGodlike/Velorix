@@ -3,6 +3,7 @@ import { electronAPI } from '@electron-toolkit/preload'
 
 import type { DiagnosticsFolderEntry, DiagnosticsFolderId } from '../main/diagnostics-paths'
 import type { EngineDownloadProgress } from '../main/engine-download'
+import type { FfmpegSnapshotFormatId } from '../main/ffmpeg-frame-snapshot-service'
 import type {
   FfmpegExportAudioModeId,
   FfmpegExportContainerId,
@@ -50,7 +51,9 @@ const fluxalloy = {
     setFfmpegExportFps: (fps: number | null): Promise<AppSettings> =>
       ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-fps', fps),
     setFfmpegExportScalePreset: (scale: FfmpegExportScalePresetId): Promise<AppSettings> =>
-      ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-scale-preset', scale)
+      ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-scale-preset', scale),
+    setFfmpegSnapshotFormat: (format: FfmpegSnapshotFormatId): Promise<AppSettings> =>
+      ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-snapshot-format', format)
   },
   preview: {
     openFileDialog: (): Promise<PreviewDialogResult> =>

@@ -34,7 +34,11 @@ import {
   pruneOldDiagnosticFiles,
   type SupportBundleRuntimeInfo
 } from './support-bundle'
-import { runFfmpegSnapshotFrame } from './ffmpeg-frame-snapshot-service'
+import {
+  ensureFfmpegSnapshotExtension,
+  parseFfmpegSnapshotFormat,
+  runFfmpegSnapshotFrame
+} from './ffmpeg-frame-snapshot-service'
 import {
   parseFfmpegExportContainer,
   parseFfmpegExportAudioBitrate,
@@ -676,6 +680,19 @@ function persistFfmpegExportScalePreset(raw: unknown): AppSettings {
   return { ...cachedSettings }
 }
 
+function persistFfmpegSnapshotFormat(raw: unknown): AppSettings {
+  const value = parseFfmpegSnapshotFormat(raw)
+  const next = { ...cachedSettings }
+  if (value === 'png') {
+    delete next.ffmpegSnapshotFormat
+  } else {
+    next.ffmpegSnapshotFormat = value
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
 function persistAndBroadcast(theme: AppTheme): AppSettings {
   applyTheme(theme)
   saveSettings(settingsPath(), cachedSettings)
@@ -1256,6 +1273,11 @@ app.whenReady().then(() => {
     (_, raw: unknown): AppSettings => persistFfmpegExportScalePreset(raw)
   )
 
+  ipcMain.handle(
+    'fluxalloy:settings-set-ffmpeg-snapshot-format',
+    (_, raw: unknown): AppSettings => persistFfmpegSnapshotFormat(raw)
+  )
+
   ipcMain.handle('fluxalloy:settings-set-engine-paths', (_, patch: unknown): AppSettings => {
     if (!patch || typeof patch !== 'object') {
       return { ...cachedSettings }
@@ -1637,9 +1659,10 @@ app.whenReady().then(() => {
       }
 
       const stem = basename(abs).replace(/\.[^.]+$/, '')
+      const snapshotFormat = parseFfmpegSnapshotFormat(cachedSettings.ffmpegSnapshotFormat)
       const pick = await dialog.showSaveDialog(win, {
         title: 'Сохранить кадр',
-        defaultPath: rememberedSnapshotDefaultPath(`${stem}-frame.png`),
+        defaultPath: rememberedSnapshotDefaultPath(`${stem}-frame.${snapshotFormat}`),
         filters: [
           { name: 'PNG', extensions: ['png'] },
           { name: 'JPEG', extensions: ['jpg', 'jpeg'] }
@@ -1650,7 +1673,7 @@ app.whenReady().then(() => {
         return { ok: false, cancelled: true }
       }
 
-      const outPath = pick.filePath.trim()
+      const outPath = ensureFfmpegSnapshotExtension(pick.filePath, snapshotFormat)
       const result = await runFfmpegSnapshotFrame({
         ffmpegPath: ffmpeg,
         inputPath: abs,

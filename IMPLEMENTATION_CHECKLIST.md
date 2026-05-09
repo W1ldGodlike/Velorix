@@ -25,7 +25,7 @@
 - [~] Нет запуска `ffmpeg`/пайплайна обработки; движки можно **скачать кнопкой** в UI (Windows) в `userData/bin`, есть проверка `--version` после загрузки.
 - [~] Автозагрузка движков **Windows x64** (yt-dlp GitHub + ffmpeg zip gyan.dev), SHA256 опционально через `Data/trusted_hashes.json`; в установщике есть пустой `resources/bin` (`extraResources`), бинарники — подкладка/`userData/bin`.
 - [ ] Нет локализации `locales/**`.
-- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; есть покрытие чистых парсеров и сервисов (`ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`).
+- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; есть покрытие чистых парсеров и сервисов (`ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-frame-snapshot-service`).
 
 ## Журнал решений и проверок
 
@@ -37,8 +37,8 @@
 
 - [~] §6.1/§6.2/§6.4: менеджер yt-dlp — очередь, сводка/фильтр/очистка строк, прогресс, каталог, cookies, impersonate, лимит/ретраи, retry строки, история + фильтр/повтор URL/открытие файла/открытие в обработчике, экспорт видимого лога; дальше обработка ошибок.
 - [~] §6.3: экспертный режим — доп. argv + whitelist/blacklist + справочник в сворачиваемом блоке; дальше улучшать справочник/категории.
-- [~] §7: превью + таймлайн + экспорт MP4/MKV/MOV + запоминание папки экспорта + отмена активного экспорта + действия открыть файл/папку результата/вернуть экспорт в превью/скопировать путь + снимок кадра §7.6 с запоминанием папки и действиями файл/папка/копия пути + ffprobe под превью; отдельное окно инспектора §9 — позже.
-- [~] §7.2/§20: системные пресеты libx264, persisted контейнер/формат, CRF или video bitrate, аудио AAC/без аудио, AAC bitrate, FPS и scale preset есть; дальше пользовательские пресеты и расширенные параметры кодирования.
+- [~] §7: превью + таймлайн + экспорт MP4/MKV/MOV + запоминание папки экспорта + отмена активного экспорта + действия открыть файл/папку результата/вернуть экспорт в превью/скопировать путь + снимок кадра §7.6 с persisted PNG/JPEG, запоминанием папки и действиями файл/папка/копия пути + ffprobe под превью; отдельное окно инспектора §9 — позже.
+- [~] §7.2/§20: системные пресеты libx264, persisted контейнер/формат, CRF или video bitrate, аудио AAC/без аудио, AAC bitrate, FPS и scale preset есть; дальше пользовательские пресеты, расширенные параметры кодирования и live preview команды.
 - [~] §17/§18: меню диагностических папок с актуальным `enabled`, `logger-service`, диалог ошибок, Support ZIP, логи stdout/stderr движков и prune старых crash dumps; дальше — логи сессий/расширенная политика хранения.
 - [~] §21: подключён Vitest + тесты для парсеров/опций yt-dlp, очереди, истории, persisted settings, helpers ffmpeg, external process log formatter и Support ZIP/prune; дальше — IPC contracts/shared models.
 
@@ -302,10 +302,10 @@
 - [~] Пресеты обработки (три встроенных пресета libx264 в тулбаре + `ffmpegExportEncodePreset` в settings).
 - [~] Контейнер/формат: toolbar + settings поддерживают MP4/MKV/MOV, save dialog добавляет расширение по умолчанию; расширенная панель — позже.
 - [ ] Видео кодек.
-- [ ] Аудио кодек.
-- [~] Bitrate/CRF/quality: persisted CRF override и AAC bitrate в toolbar/settings; bitrate видео и расширенная quality-панель — позже.
-- [ ] FPS.
-- [ ] Resolution/scale.
+- [~] Аудио кодек: AAC или без аудио; выбор другого кодека — позже.
+- [~] Bitrate/CRF/quality: persisted CRF override, video bitrate mode и AAC bitrate в toolbar/settings; расширенная quality-панель — позже.
+- [~] FPS: persisted preset source/24/25/30/50/60 для экспорта.
+- [~] Resolution/scale: persisted preset source/480p/720p/1080p с сохранением пропорций.
 - [ ] Crop.
 - [ ] Trim.
 - [ ] Rotate/flip.
@@ -343,7 +343,7 @@
 ### §7.6 Snapshot
 
 - [x] Извлечение кадра из текущей позиции превью (`currentTime` → ffmpeg `-frames:v 1`).
-- [x] Выбор формата: PNG или JPEG через диалог сохранения.
+- [x] Выбор формата: persisted PNG/JPEG в toolbar + диалог сохранения с нужным расширением по умолчанию.
 - [x] Выбор пути сохранения через диалог (`fluxalloy:snapshot-frame`).
 
 ## §8. Терминал, CLI и IntelliSense
@@ -494,7 +494,7 @@
 - [ ] Вынести IPC contracts в отдельный слой.
 - [ ] Вынести сервисы main.
 - [ ] Вынести модели shared.
-- [~] Unit tests для чистых модулей: `tests/main/*` — `ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`, `ytdlp-download-history` (append/read/clear), `ytdlp-download-options` (filename/output-pattern/rate-limit/retries), `downloads-queue` (cleanup), `settings-store` (yt-dlp/export persisted fields), `ffmpeg-export-service` (progress helpers/presets/container/CRF/video+audio bitrate/FPS/scale), `external-process-log` (sanitize/format), `support-bundle` (ZIP structure/log inclusion/prune). Дальше — IPC contracts/shared models.
+- [~] Unit tests для чистых модулей: `tests/main/*` — `ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`, `ytdlp-download-history` (append/read/clear), `ytdlp-download-options` (filename/output-pattern/rate-limit/retries), `downloads-queue` (cleanup), `settings-store` (yt-dlp/export/snapshot persisted fields), `ffmpeg-export-service` (progress helpers/presets/container/CRF/video+audio bitrate/FPS/scale), `ffmpeg-frame-snapshot-service` (format/extension helpers), `external-process-log` (sanitize/format), `support-bundle` (ZIP structure/log inclusion/prune). Дальше — IPC contracts/shared models.
 - [x] Выбрать Vitest/Jest: Vitest подключён (`npm run test`/`test:watch`, `tsconfig.tests.json`).
 - [ ] Добавить e2e smoke позже.
 - [~] Комментарии на русском для публичных API и сложной логики: базовые комментарии добавлены; дальше писать чуть развёрнутее, чтобы следующему проходу агента было понятно «зачем» и «где границы», не только «что делает строка».

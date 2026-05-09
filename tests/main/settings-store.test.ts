@@ -44,7 +44,8 @@ describe('settings-store yt-dlp fields', () => {
         ffmpegExportFps: 30,
         ffmpegExportScalePreset: '720p',
         ffmpegExportDirectory: root,
-        ffmpegSnapshotDirectory: root
+        ffmpegSnapshotDirectory: root,
+        ffmpegSnapshotFormat: 'jpg'
       }),
       'utf-8'
     )
@@ -65,7 +66,8 @@ describe('settings-store yt-dlp fields', () => {
       ffmpegExportFps: 30,
       ffmpegExportScalePreset: '720p',
       ffmpegExportDirectory: root,
-      ffmpegSnapshotDirectory: root
+      ffmpegSnapshotDirectory: root,
+      ffmpegSnapshotFormat: 'jpg'
     })
   })
 
@@ -87,7 +89,8 @@ describe('settings-store yt-dlp fields', () => {
         ffmpegExportFps: 29.97,
         ffmpegExportScalePreset: '4k',
         ffmpegExportDirectory: 'relative',
-        ffmpegSnapshotDirectory: 'relative'
+        ffmpegSnapshotDirectory: 'relative',
+        ffmpegSnapshotFormat: 'webp'
       }),
       'utf-8'
     )
@@ -105,6 +108,7 @@ describe('settings-store yt-dlp fields', () => {
     expect(loaded.ffmpegExportScalePreset).toBeUndefined()
     expect(loaded.ffmpegExportDirectory).toBeUndefined()
     expect(loaded.ffmpegSnapshotDirectory).toBeUndefined()
+    expect(loaded.ffmpegSnapshotFormat).toBeUndefined()
   })
 
   it('создаёт каталог при сохранении settings.json', () => {

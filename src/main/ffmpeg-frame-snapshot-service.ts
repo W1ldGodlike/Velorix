@@ -2,6 +2,23 @@ import { spawn } from 'child_process'
 
 import { logExternalProcessLine } from './external-process-log'
 
+export type FfmpegSnapshotFormatId = 'png' | 'jpg'
+
+export function parseFfmpegSnapshotFormat(raw: unknown): FfmpegSnapshotFormatId {
+  return raw === 'jpg' || raw === 'jpeg' ? 'jpg' : 'png'
+}
+
+export function ensureFfmpegSnapshotExtension(
+  path: string,
+  fallback: FfmpegSnapshotFormatId
+): string {
+  const trimmed = path.trim()
+  if (/\.(png|jpe?g)$/i.test(trimmed)) {
+    return trimmed
+  }
+  return `${trimmed}.${parseFfmpegSnapshotFormat(fallback)}`
+}
+
 /**
  * Один кадр в PNG/JPEG через ffmpeg без shell §7.6.
  * `-ss` до `-i`: быстрый seek; для превью достаточно.

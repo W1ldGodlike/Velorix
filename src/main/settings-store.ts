@@ -78,6 +78,8 @@ export interface AppSettings {
   ffmpegExportDirectory?: string
   /** §7.6: последняя папка успешного снимка кадра; используется как defaultPath save dialog. */
   ffmpegSnapshotDirectory?: string
+  /** §7.6: формат снимка кадра по умолчанию. */
+  ffmpegSnapshotFormat?: 'png' | 'jpg'
   // TODO(§4.6): язык, hotkeys.
 }
 
@@ -153,6 +155,13 @@ function parseFfmpegExportDirectoryStored(raw: unknown): string | undefined {
 
 function parseFfmpegSnapshotDirectoryStored(raw: unknown): string | undefined {
   return parseFfmpegExportDirectoryStored(raw)
+}
+
+function parseFfmpegSnapshotFormatStored(raw: unknown): 'png' | 'jpg' | undefined {
+  if (raw === 'png' || raw === 'jpg') {
+    return raw
+  }
+  return undefined
 }
 
 function parseYtdlpFilenameTemplate(raw: unknown): string | undefined {
@@ -370,6 +379,7 @@ export function loadSettings(filePath: string): AppSettings {
     const ffmpegSnapshotDirectory = parseFfmpegSnapshotDirectoryStored(
       parsed.ffmpegSnapshotDirectory
     )
+    const ffmpegSnapshotFormat = parseFfmpegSnapshotFormatStored(parsed.ffmpegSnapshotFormat)
     const ytdlpExtraArgsLine = parseYtdlpExtraArgsLineStored(parsed.ytdlpExtraArgsLine)
     const ytdlpSubtitlePreset = parseYtdlpSubtitlePresetStored(parsed.ytdlpSubtitlePreset)
     const ytdlpSubLangs = parseYtdlpSubLangsStored(parsed.ytdlpSubLangs)
@@ -428,6 +438,9 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (ffmpegSnapshotDirectory !== undefined) {
       base.ffmpegSnapshotDirectory = ffmpegSnapshotDirectory
+    }
+    if (ffmpegSnapshotFormat !== undefined && ffmpegSnapshotFormat !== 'png') {
+      base.ffmpegSnapshotFormat = ffmpegSnapshotFormat
     }
     if (parsed.ytdlpDownloadPlaylist === true) {
       base.ytdlpDownloadPlaylist = true
