@@ -3,6 +3,18 @@
  * жёсткая фильтрация опасных символов и конфликтующих ключей с основным конвейером.
  */
 
+import type {
+  YtdlpCookiesBrowserId,
+  YtdlpImpersonateId,
+  YtdlpSubtitlePresetId
+} from '../shared/ytdlp-download-contract'
+
+export type {
+  YtdlpCookiesBrowserId,
+  YtdlpImpersonateId,
+  YtdlpSubtitlePresetId
+} from '../shared/ytdlp-download-contract'
+
 /** ASCII control + классический shell-/Injection-мусор (без `\x..` в RegExp — см. eslint no-control-regex). */
 function tokenHasDangerChars(token: string): boolean {
   for (let i = 0; i < token.length; i++) {
@@ -147,15 +159,6 @@ export function formatArgvTokensForPreview(tokens: string[]): string {
     })
     .join(' ')
 }
-
-/** Белый список режимов субтитров §6.2 (без произвольных флагов в UI). */
-export type YtdlpSubtitlePresetId = 'none' | 'manual' | 'manual_auto'
-
-/** §6.2 — только распространённые движки для `--cookies-from-browser` (без произвольной строки профиля). */
-export type YtdlpCookiesBrowserId = 'chrome' | 'edge' | 'firefox'
-
-/** §6.2 — whitelist целей `--impersonate` без версионирования и произвольных строк клиента. */
-export type YtdlpImpersonateId = 'chrome' | 'edge' | 'firefox'
 
 /** Полный argv yt-dlp без пути к exe §6 / §6.3. */
 export function buildYtdlpSpawnArgvTokens(params: {

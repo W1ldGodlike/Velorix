@@ -5,7 +5,9 @@
  * не добавляя URL заново. Профили фиксированы в коде, чтобы не превратить настройки в произвольный sleep.
  */
 
-export type YtdlpQueueRetryProfileId = 'off' | 'light' | 'normal'
+import type { YtdlpQueueRetryProfileId } from '../shared/ytdlp-download-contract'
+
+export type { YtdlpQueueRetryProfileId } from '../shared/ytdlp-download-contract'
 
 export interface YtdlpQueueRetryPlan {
   /** Сколько дополнительных запусков после первой неудачи (0 = только одна попытка). */

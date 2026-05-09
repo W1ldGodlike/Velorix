@@ -1,8 +1,8 @@
 import type { ElectronAPI } from '@electron-toolkit/preload'
 
-import type { DiagnosticsFolderEntry, DiagnosticsFolderId } from '../main/diagnostics-paths'
-import type { EngineDownloadProgress } from '../main/engine-download'
-import type { FfmpegSnapshotFormatId } from '../main/ffmpeg-frame-snapshot-service'
+import type { DiagnosticsFolderEntry, DiagnosticsFolderId } from '../shared/diagnostics-contract'
+import type { EngineDownloadProgress } from '../shared/engine-download-contract'
+import type { FfmpegSnapshotFormatId } from '../shared/ffmpeg-snapshot-contract'
 import type {
   FfmpegExportAudioModeId,
   FfmpegExportContainerId,

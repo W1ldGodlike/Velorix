@@ -93,3 +93,4 @@
 - 2026-05-10 01:10:11 [Assistant]: §7.6/§21 — снимок кадра получил persisted формат `PNG`/`JPEG` в toolbar; save dialog стартует с нужным расширением, путь без расширения нормализуется helper-ом, settings/snapshot helpers покрыты тестами.
 - 2026-05-10 01:16:21 [SDK]: §21 — реестр IPC `src/shared/ipc-channels.ts`, main/preload на общих константах, Vitest на уникальность строк каналов.
 - 2026-05-10 01:18:24 [SDK]: §21 — `src/shared/ffmpeg-export-contract.ts`: типы экспорта ffmpeg для preload/main, сервис реэкспортирует из shared.
+- 2026-05-10 01:22:21 [SDK]: §21 — shared-контракты yt-dlp окна/лога/истории, диагностики, прогресса движков, формата снимка; main реэкспортирует, preload без импортов типов из main по этим доменам.

@@ -2,6 +2,15 @@ import { existsSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileS
 import { dirname, join } from 'path'
 
 import { logError } from './logger-service'
+import type {
+  YtdlpDownloadHistoryEntry,
+  YtdlpDownloadHistoryOutcome
+} from '../shared/ytdlp-history-contract'
+
+export type {
+  YtdlpDownloadHistoryEntry,
+  YtdlpDownloadHistoryOutcome
+} from '../shared/ytdlp-history-contract'
 
 /**
  * §6.4 — персистентная история завершённых загрузок yt-dlp (отдельно от живой очереди).
@@ -13,25 +22,6 @@ import { logError } from './logger-service'
 
 export const YTDLP_DOWNLOAD_HISTORY_SCHEMA = 1
 export const YTDLP_DOWNLOAD_HISTORY_MAX_ENTRIES = 500
-
-export type YtdlpDownloadHistoryOutcome = 'success' | 'error' | 'cancelled'
-
-export interface YtdlpDownloadHistoryEntry {
-  id: string
-  startedAt: number
-  finishedAt: number
-  url: string
-  shortLabel: string
-  outcome: YtdlpDownloadHistoryOutcome
-  /** Финальный статус строки очереди (как в таблице §6.1). */
-  status: string
-  /** Последний известный код выхода yt-dlp; при ошибке spawn — null. */
-  exitCode: number | null
-  /** Последняя распознанная строка ERROR: из stdout/stderr, если была. */
-  errorHint: string | null
-  /** Best-effort путь готового файла, если yt-dlp сообщил его в stdout/stderr. */
-  outputPath?: string | null
-}
 
 interface HistoryFileShape {
   schema: number

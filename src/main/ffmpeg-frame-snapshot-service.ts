@@ -1,8 +1,9 @@
 import { spawn } from 'child_process'
 
 import { logExternalProcessLine } from './external-process-log'
+import type { FfmpegSnapshotFormatId } from '../shared/ffmpeg-snapshot-contract'
 
-export type FfmpegSnapshotFormatId = 'png' | 'jpg'
+export type { FfmpegSnapshotFormatId } from '../shared/ffmpeg-snapshot-contract'
 
 export function parseFfmpegSnapshotFormat(raw: unknown): FfmpegSnapshotFormatId {
   return raw === 'jpg' || raw === 'jpeg' ? 'jpg' : 'png'

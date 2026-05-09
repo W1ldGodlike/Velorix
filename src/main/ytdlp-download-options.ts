@@ -5,24 +5,32 @@ import type { AppSettings } from './settings-store'
 import {
   buildYtdlpSpawnArgvTokens,
   formatArgvTokensForPreview,
-  parseExtraYtdlpArgsLine,
-  type YtdlpCookiesBrowserId,
-  type YtdlpImpersonateId,
-  type YtdlpSubtitlePresetId
+  parseExtraYtdlpArgsLine
 } from './ytdlp-extra-args'
-import { getYtdlpCommandHints, type YtdlpCommandHintEntry } from './ytdlp-commands-hints'
-import { parseYtdlpQueueRetryProfile, type YtdlpQueueRetryProfileId } from './ytdlp-queue-retry'
+import { getYtdlpCommandHints } from './ytdlp-commands-hints'
+import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
+import type {
+  YtdlpCookiesBrowserId,
+  YtdlpDownloadOptionsPayload,
+  YtdlpFormatPresetId,
+  YtdlpImpersonateId,
+  YtdlpQueueRetryProfileId,
+  YtdlpSubtitlePresetId
+} from '../shared/ytdlp-download-contract'
+
+export type {
+  YtdlpCommandHintEntry,
+  YtdlpCookiesBrowserId,
+  YtdlpDownloadOptionsPatch,
+  YtdlpDownloadOptionsPayload,
+  YtdlpFormatPresetId,
+  YtdlpImpersonateId,
+  YtdlpQueueRetryProfileId,
+  YtdlpSubtitlePresetId
+} from '../shared/ytdlp-download-contract'
 
 /** Шаблон по умолчанию совпадает с тем, что раньше был захардкожен в `runYtdlpOnce`. */
 export const YTDLP_DEFAULT_FILENAME_TEMPLATE = '%(title)s [%(id)s].%(ext)s'
-
-/**
- * Упрощённый выбор «качества» без произвольного `-f` от пользователя (иначе легко сломать
- * кавычками и порядком аргументов); только белый список параметров §6.2.
- */
-export type YtdlpFormatPresetId = 'default' | 'merge_bv_ba' | 'best_single'
-
-export type { YtdlpSubtitlePresetId, YtdlpCookiesBrowserId, YtdlpImpersonateId }
 
 export interface YtdlpRunOptionsSnapshot {
   filenameTemplate: string
@@ -67,53 +75,6 @@ export interface YtdlpRunOptionsSnapshot {
   fragmentRetriesLine: string
   /** §6.4 — повтор запуска той же строки очереди при ошибке (не `--retries`). */
   queueRetryProfile: YtdlpQueueRetryProfileId
-}
-
-/** То, что видит окно загрузок: текущие значения и метки для `<select>`. */
-export interface YtdlpDownloadOptionsPayload {
-  filenameTemplate: string
-  defaultFilenameTemplate: string
-  formatPreset: YtdlpFormatPresetId
-  formatPresetChoices: Array<{ id: YtdlpFormatPresetId; label: string }>
-  downloadPlaylist: boolean
-  audioOnly: boolean
-  subtitlePreset: YtdlpSubtitlePresetId
-  /** Редактируемое значение `--sub-langs` в окне загрузок. */
-  subLangsLine: string
-  extraArgsLine: string
-  /** Превью полной командной строки (`yt-dlp …`), без реального пути и URL. */
-  commandPreview: string
-  extraArgsParseWarning: string | null
-  /** Подсказки для поля доп. аргументов §6.3 (из `Data/ytdlp_commands.json`). */
-  commandHints: YtdlpCommandHintEntry[]
-  cookiesBrowserChoice: 'none' | YtdlpCookiesBrowserId
-  cookiesFilePathStored: string
-  cookiesWarning: string | null
-  impersonateChoice: 'none' | YtdlpImpersonateId
-  rateLimit: string
-  retriesLine: string
-  fragmentRetriesLine: string
-  queueRetryProfile: YtdlpQueueRetryProfileId
-  queueRetryProfileChoices: Array<{ id: YtdlpQueueRetryProfileId; label: string }>
-}
-
-export interface YtdlpDownloadOptionsPatch {
-  filenameTemplate?: string
-  formatPreset?: YtdlpFormatPresetId
-  downloadPlaylist?: boolean
-  audioOnly?: boolean
-  subtitlePreset?: YtdlpSubtitlePresetId
-  subLangs?: string
-  /** §6.2 `none` или whitelist браузера; при сохранении отличного от «нет» сбрасывает файл cookies. */
-  cookiesBrowser?: 'none' | YtdlpCookiesBrowserId
-  /** §6.2 `--impersonate` только chrome / edge / firefox. */
-  impersonate?: 'none' | YtdlpImpersonateId
-  rateLimit?: string
-  retriesLine?: string
-  fragmentRetriesLine?: string
-  extraArgsLine?: string
-  /** §6.4 — только `off` | `light` | `normal`. */
-  queueRetryProfile?: YtdlpQueueRetryProfileId
 }
 
 export function parseYtdlpFormatPreset(raw: unknown): YtdlpFormatPresetId {

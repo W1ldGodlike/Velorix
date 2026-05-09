@@ -4,6 +4,9 @@ import { shell } from 'electron'
 
 import { resolveAppPaths } from './app-paths'
 import { resolveYtdlpOutputDirectory } from './ytdlp-download-output'
+import type { DiagnosticsFolderEntry, DiagnosticsFolderId } from '../shared/diagnostics-contract'
+
+export type { DiagnosticsFolderEntry, DiagnosticsFolderId } from '../shared/diagnostics-contract'
 
 /**
  * §17/§18 — белый список диагностических каталогов, которые приложение готово открыть в проводнике.
@@ -13,24 +16,6 @@ import { resolveYtdlpOutputDirectory } from './ytdlp-download-output'
  * каталог гарантированно создаётся при первом обращении, чтобы пункт меню «Открыть папку логов»
  * не оставался мёртвым пока полноценное логирование не подключено.
  */
-export type DiagnosticsFolderId =
-  | 'userData'
-  | 'resources'
-  | 'bundledBin'
-  | 'userBin'
-  | 'logs'
-  | 'ytdlpDownloads'
-
-export interface DiagnosticsFolderEntry {
-  id: DiagnosticsFolderId
-  /** Короткая русская подпись для пункта меню/UI. */
-  label: string
-  /** Абсолютный путь, который будет передан в `shell.openPath`. */
-  path: string
-  /** Существует ли каталог в момент перечисления (для disabled-состояния пункта меню). */
-  exists: boolean
-}
-
 function resolveLogsDirectory(userData: string): string {
   return join(userData, 'logs')
 }

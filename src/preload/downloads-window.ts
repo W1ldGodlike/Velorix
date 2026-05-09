@@ -1,11 +1,11 @@
 import { contextBridge, ipcRenderer } from 'electron'
 
-import type { DownloadsLogPayload } from '../main/downloads-log-ipc'
+import type { DownloadsLogPayload } from '../shared/downloads-log-contract'
 import type {
   YtdlpDownloadOptionsPatch,
   YtdlpDownloadOptionsPayload
-} from '../main/ytdlp-download-options'
-import type { YtdlpDownloadHistoryEntry } from '../main/ytdlp-download-history'
+} from '../shared/ytdlp-download-contract'
+import type { YtdlpDownloadHistoryEntry } from '../shared/ytdlp-history-contract'
 import { downloadsIpc as d } from '../shared/ipc-channels'
 
 function isDownloadsLogPayload(raw: unknown): raw is DownloadsLogPayload {

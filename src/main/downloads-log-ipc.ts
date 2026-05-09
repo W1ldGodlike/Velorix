@@ -1,10 +1,8 @@
-/** События лога yt-dlp для окна загрузок §6.4 (без зависимости runner → downloads-window). */
+import type { DownloadsLogPayload } from '../shared/downloads-log-contract'
 
 import { downloadsIpc } from '../shared/ipc-channels'
 
-export type DownloadsLogPayload =
-  | { kind: 'reset'; rowId: number }
-  | { kind: 'line'; rowId: number; stream: 'stdout' | 'stderr'; text: string }
+export type { DownloadsLogPayload } from '../shared/downloads-log-contract'
 
 export const DOWNLOADS_LOG_CHANNEL = downloadsIpc.log
 

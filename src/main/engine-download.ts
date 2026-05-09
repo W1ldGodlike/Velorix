@@ -27,15 +27,12 @@ import type { EngineId, EnginePathOverrides } from './engine-service'
 import { ENGINE_SOURCES_WINDOWS } from './engine-sources'
 import type { TrustedHashesFile } from './trusted-hashes-store'
 import { trustedHashForFfmpegZipWin, trustedHashForYtDlpWin } from './trusted-hashes-store'
+import type { EngineDownloadProgress } from '../shared/engine-download-contract'
 
-export type EngineDownloadPhase = 'idle' | 'yt-dlp' | 'ffmpeg-zip' | 'extract' | 'done'
-
-export interface EngineDownloadProgress {
-  phase: EngineDownloadPhase
-  message: string
-  /** -1 означает «неизвестно» (распаковка без процентов). */
-  percent: number
-}
+export type {
+  EngineDownloadPhase,
+  EngineDownloadProgress
+} from '../shared/engine-download-contract'
 
 function userAgent(): string {
   return 'FluxAlloy/0.1.0 (engine downloader; Electron)'

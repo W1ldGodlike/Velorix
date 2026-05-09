@@ -4,11 +4,9 @@ import { join } from 'path'
 import { app } from 'electron'
 import { is } from '@electron-toolkit/utils'
 
-/** Компактная запись для окна загрузок §6.3 (полный JSON может быть длиннее). */
-export interface YtdlpCommandHintEntry {
-  token: string
-  summary: string
-}
+import type { YtdlpCommandHintEntry } from '../shared/ytdlp-download-contract'
+
+export type { YtdlpCommandHintEntry } from '../shared/ytdlp-download-contract'
 
 let memo: YtdlpCommandHintEntry[] | undefined
 

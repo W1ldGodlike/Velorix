@@ -1,0 +1,75 @@
+/**
+ * IPC/persisted типы окна yt-dlp §6.2–§6.4 и связанных whitelist-идентификаторов.
+ * Реализация парсеров и сборки argv остаётся в main (`ytdlp-download-options`, `ytdlp-extra-args`).
+ */
+
+/** Белый список режимов субтитров §6.2 (без произвольных флагов в UI). */
+export type YtdlpSubtitlePresetId = 'none' | 'manual' | 'manual_auto'
+
+/** §6.2 — только распространённые движки для `--cookies-from-browser`. */
+export type YtdlpCookiesBrowserId = 'chrome' | 'edge' | 'firefox'
+
+/** §6.2 — whitelist целей `--impersonate` без версионирования. */
+export type YtdlpImpersonateId = 'chrome' | 'edge' | 'firefox'
+
+/** §6.4 — повторы на уровне очереди (отдельно от `--retries` yt-dlp). */
+export type YtdlpQueueRetryProfileId = 'off' | 'light' | 'normal'
+
+/**
+ * Упрощённый выбор «качества» без произвольного `-f` от пользователя §6.2;
+ * только белый список параметров.
+ */
+export type YtdlpFormatPresetId = 'default' | 'merge_bv_ba' | 'best_single'
+
+/** Компактная запись для окна загрузок §6.3 (из `Data/ytdlp_commands.json`). */
+export interface YtdlpCommandHintEntry {
+  token: string
+  summary: string
+}
+
+/** То, что видит окно загрузок: текущие значения и метки для `<select>`. */
+export interface YtdlpDownloadOptionsPayload {
+  filenameTemplate: string
+  defaultFilenameTemplate: string
+  formatPreset: YtdlpFormatPresetId
+  formatPresetChoices: Array<{ id: YtdlpFormatPresetId; label: string }>
+  downloadPlaylist: boolean
+  audioOnly: boolean
+  subtitlePreset: YtdlpSubtitlePresetId
+  /** Редактируемое значение `--sub-langs` в окне загрузок. */
+  subLangsLine: string
+  extraArgsLine: string
+  /** Превью полной командной строки (`yt-dlp …`), без реального пути и URL. */
+  commandPreview: string
+  extraArgsParseWarning: string | null
+  /** Подсказки для поля доп. аргументов §6.3 (из `Data/ytdlp_commands.json`). */
+  commandHints: YtdlpCommandHintEntry[]
+  cookiesBrowserChoice: 'none' | YtdlpCookiesBrowserId
+  cookiesFilePathStored: string
+  cookiesWarning: string | null
+  impersonateChoice: 'none' | YtdlpImpersonateId
+  rateLimit: string
+  retriesLine: string
+  fragmentRetriesLine: string
+  queueRetryProfile: YtdlpQueueRetryProfileId
+  queueRetryProfileChoices: Array<{ id: YtdlpQueueRetryProfileId; label: string }>
+}
+
+export interface YtdlpDownloadOptionsPatch {
+  filenameTemplate?: string
+  formatPreset?: YtdlpFormatPresetId
+  downloadPlaylist?: boolean
+  audioOnly?: boolean
+  subtitlePreset?: YtdlpSubtitlePresetId
+  subLangs?: string
+  /** §6.2 `none` или whitelist браузера; при сохранении отличного от «нет» сбрасывает файл cookies. */
+  cookiesBrowser?: 'none' | YtdlpCookiesBrowserId
+  /** §6.2 `--impersonate` только chrome / edge / firefox. */
+  impersonate?: 'none' | YtdlpImpersonateId
+  rateLimit?: string
+  retriesLine?: string
+  fragmentRetriesLine?: string
+  extraArgsLine?: string
+  /** §6.4 — только `off` | `light` | `normal`. */
+  queueRetryProfile?: YtdlpQueueRetryProfileId
+}
