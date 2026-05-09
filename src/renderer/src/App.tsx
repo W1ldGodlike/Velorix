@@ -647,7 +647,7 @@ function App(): JSX.Element {
       const trimSnap = trimSnapshotRef.current
       const res = await window.fluxalloy.export.start({
         inputPath: preview.path,
-        trim: trimSnap ?? undefined,
+        ...(trimSnap != null ? { trim: trimSnap } : {}),
         probeDurationSec: probeInfo?.durationSec ?? null,
         encodePreset: exportEncodePreset,
         container: exportContainer,

@@ -1568,7 +1568,7 @@ app.whenReady().then(() => {
         ffmpegPath: ffmpeg,
         inputPath: abs,
         outputPath: outPath,
-        trim,
+        ...(trim !== undefined ? { trim } : {}),
         probeDurationSec,
         encodePreset,
         crf: exportCrf,
