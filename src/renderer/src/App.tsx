@@ -14,7 +14,8 @@ function App(): React.JSX.Element {
 
   useEffect(() => {
     let cleanup: (() => void) | undefined
-    ;(async () => {
+    // Тема приходит из main: renderer не читает файлы настроек напрямую.
+    void (async () => {
       const loaded = await window.fluxalloy.settings.get()
       applyTheme(loaded.theme === 'light' ? 'light' : 'dark')
       cleanup = window.fluxalloy.onThemeChanged((next) => {

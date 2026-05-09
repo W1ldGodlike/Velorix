@@ -9,6 +9,7 @@ export interface AppSettings {
 
 const defaults: AppSettings = { theme: 'dark' }
 
+/** Читает настройки терпимо: повреждённый JSON не блокирует запуск приложения. */
 export function loadSettings(filePath: string): AppSettings {
   try {
     if (!existsSync(filePath)) {
@@ -23,6 +24,7 @@ export function loadSettings(filePath: string): AppSettings {
   }
 }
 
+/** Записывает настройки атомарно для текущей простой схемы: каталог userData создаётся лениво. */
 export function saveSettings(filePath: string, settings: AppSettings): void {
   mkdirSync(dirname(filePath), { recursive: true })
   writeFileSync(filePath, JSON.stringify(settings, null, 2), 'utf-8')

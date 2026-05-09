@@ -21,6 +21,7 @@ function technicalSpecPath(): string {
   return join(app.getAppPath(), 'FLUXALLOY_TZ.md')
 }
 
+// Main process хранит актуальные настройки в памяти, чтобы меню и IPC отвечали одинаково.
 let cachedSettings: AppSettings = { theme: 'dark' }
 
 function applyTheme(theme: AppTheme): void {
@@ -30,6 +31,7 @@ function applyTheme(theme: AppTheme): void {
 function persistAndBroadcast(theme: AppTheme): AppSettings {
   applyTheme(theme)
   saveSettings(settingsPath(), cachedSettings)
+  // Renderer подписан на событие, поэтому смена темы из меню сразу отражается во всех окнах.
   BrowserWindow.getAllWindows().forEach((w) => {
     w.webContents.send('fluxalloy:theme-changed', theme)
   })
@@ -47,6 +49,7 @@ function buildApplicationMenu(): void {
   const isMac = process.platform === 'darwin'
   const isDark = cachedSettings.theme === 'dark'
 
+  // Меню пересобирается после смены темы, чтобы radio-состояния оставались честными.
   const template: Electron.MenuItemConstructorOptions[] = []
 
   if (isMac) {
@@ -138,6 +141,7 @@ function createWindow(): void {
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
+      // Renderer не получает Node API напрямую; вся работа с FS/процессами пойдёт через whitelist IPC.
       contextIsolation: true,
       nodeIntegration: false
     }
@@ -168,6 +172,7 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
+  // IPC-каналы держим узкими: renderer просит только конкретные операции, без произвольного доступа к Node.
   ipcMain.handle('fluxalloy:settings-get', (): AppSettings => {
     return { ...cachedSettings }
   })

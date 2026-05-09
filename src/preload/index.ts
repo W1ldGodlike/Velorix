@@ -3,6 +3,7 @@ import { electronAPI } from '@electron-toolkit/preload'
 
 import type { AppSettings, AppTheme } from '../main/settings-store'
 
+// Единственная публичная поверхность приложения в renderer: добавлять сюда только проверенные IPC-операции.
 const fluxalloy = {
   settings: {
     get: (): Promise<AppSettings> => ipcRenderer.invoke('fluxalloy:settings-get'),
@@ -29,6 +30,7 @@ if (process.contextIsolated) {
     console.error(error)
   }
 } else {
+  // Fallback оставлен для dev-сценариев electron-toolkit; production идёт через contextBridge.
   // @ts-expect-error preload
   window.electron = electronAPI
   // @ts-expect-error preload
