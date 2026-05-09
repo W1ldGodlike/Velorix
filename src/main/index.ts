@@ -42,6 +42,7 @@ import {
   parseFfmpegExportEncodePreset,
   parseFfmpegExportFps,
   parseFfmpegExportScalePreset,
+  parseFfmpegExportVideoBitrate,
   ensureFfmpegExportExtension,
   runFfmpegExportJob,
   type MediaExportTrimPayload,
@@ -515,6 +516,19 @@ function persistFfmpegExportAudioBitrate(raw: unknown): AppSettings {
     delete next.ffmpegExportAudioBitrate
   } else {
     next.ffmpegExportAudioBitrate = value
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistFfmpegExportVideoBitrate(raw: unknown): AppSettings {
+  const value = parseFfmpegExportVideoBitrate(raw)
+  const next = { ...cachedSettings }
+  if (value === null) {
+    delete next.ffmpegExportVideoBitrate
+  } else {
+    next.ffmpegExportVideoBitrate = value
   }
   cachedSettings = next
   saveSettings(settingsPath(), cachedSettings)
@@ -1108,6 +1122,11 @@ app.whenReady().then(() => {
   )
 
   ipcMain.handle(
+    'fluxalloy:settings-set-ffmpeg-export-video-bitrate',
+    (_, raw: unknown): AppSettings => persistFfmpegExportVideoBitrate(raw)
+  )
+
+  ipcMain.handle(
     'fluxalloy:settings-set-ffmpeg-export-fps',
     (_, raw: unknown): AppSettings => persistFfmpegExportFps(raw)
   )
@@ -1336,6 +1355,11 @@ app.whenReady().then(() => {
         crfRaw !== undefined && crfRaw !== null
           ? parseFfmpegExportCrf(crfRaw)
           : parseFfmpegExportCrf(cachedSettings.ffmpegExportCrf)
+      const videoBitrateRaw = (raw as { videoBitrate?: unknown }).videoBitrate
+      const exportVideoBitrate =
+        videoBitrateRaw !== undefined && videoBitrateRaw !== null
+          ? parseFfmpegExportVideoBitrate(videoBitrateRaw)
+          : parseFfmpegExportVideoBitrate(cachedSettings.ffmpegExportVideoBitrate)
       const audioBitrateRaw = (raw as { audioBitrate?: unknown }).audioBitrate
       const exportAudioBitrate =
         audioBitrateRaw !== undefined && audioBitrateRaw !== null
@@ -1401,6 +1425,7 @@ app.whenReady().then(() => {
           probeDurationSec,
           encodePreset,
           crf: exportCrf,
+          videoBitrate: exportVideoBitrate,
           audioBitrate: exportAudioBitrate,
           fps: exportFps,
           scalePreset: exportScalePreset,

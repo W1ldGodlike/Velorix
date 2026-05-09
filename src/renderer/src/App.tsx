@@ -36,6 +36,7 @@ const EXPORT_CONTAINERS: Array<{ id: ExportContainerId; label: string }> = [
 ]
 
 const EXPORT_CRF_OPTIONS = [18, 20, 23, 26, 28, 30]
+const EXPORT_VIDEO_BITRATES = ['1000k', '2500k', '5000k', '8000k', '12000k', '20000k']
 const EXPORT_AUDIO_BITRATES = ['96k', '128k', '160k', '192k', '256k', '320k']
 const EXPORT_FPS_OPTIONS = [24, 25, 30, 50, 60]
 const EXPORT_SCALE_PRESETS: Array<{ id: ExportScalePresetId; label: string }> = [
@@ -302,6 +303,7 @@ function App(): JSX.Element {
   const [exportEncodePreset, setExportEncodePreset] = useState<ExportEncodePresetId>('balance')
   const [exportContainer, setExportContainer] = useState<ExportContainerId>('mp4')
   const [exportCrf, setExportCrf] = useState<number | null>(null)
+  const [exportVideoBitrate, setExportVideoBitrate] = useState<string | null>(null)
   const [exportAudioBitrate, setExportAudioBitrate] = useState('192k')
   const [exportFps, setExportFps] = useState<number | null>(null)
   const [exportScalePreset, setExportScalePreset] = useState<ExportScalePresetId>('source')
@@ -362,6 +364,12 @@ function App(): JSX.Element {
         loaded.ffmpegExportCrf <= 51
       ) {
         setExportCrf(loaded.ffmpegExportCrf)
+      }
+      if (
+        typeof loaded.ffmpegExportVideoBitrate === 'string' &&
+        EXPORT_VIDEO_BITRATES.includes(loaded.ffmpegExportVideoBitrate)
+      ) {
+        setExportVideoBitrate(loaded.ffmpegExportVideoBitrate)
       }
       if (
         typeof loaded.ffmpegExportAudioBitrate === 'string' &&
@@ -622,6 +630,7 @@ function App(): JSX.Element {
         encodePreset: exportEncodePreset,
         container: exportContainer,
         crf: exportCrf,
+        videoBitrate: exportVideoBitrate,
         audioBitrate: exportAudioBitrate,
         fps: exportFps,
         scalePreset: exportScalePreset
@@ -707,6 +716,26 @@ function App(): JSX.Element {
           {EXPORT_ENCODE_PRESETS.map((p) => (
             <option key={p.id} value={p.id}>
               {p.label}
+            </option>
+          ))}
+        </select>
+        <select
+          className="app-toolbar-select"
+          aria-label="Video bitrate экспорта"
+          title="Если выбран bitrate, он заменяет CRF mode"
+          value={exportVideoBitrate === null ? 'crf' : exportVideoBitrate}
+          disabled={exportBusy || snapshotBusy}
+          onChange={(e) => {
+            const raw = e.target.value
+            const next = raw === 'crf' ? null : raw
+            setExportVideoBitrate(next)
+            void window.fluxalloy.settings.setFfmpegExportVideoBitrate(next).catch(console.error)
+          }}
+        >
+          <option value="crf">Видео CRF</option>
+          {EXPORT_VIDEO_BITRATES.map((v) => (
+            <option key={v} value={v}>
+              Video {v}
             </option>
           ))}
         </select>

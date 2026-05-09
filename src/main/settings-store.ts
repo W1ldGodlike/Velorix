@@ -64,6 +64,8 @@ export interface AppSettings {
   ffmpegExportContainer?: 'mp4' | 'mkv' | 'mov'
   /** §7.2: явный CRF libx264 0..51; если отсутствует — CRF берётся из пресета. */
   ffmpegExportCrf?: number
+  /** §7.2: video bitrate одним argv-токеном; если задан — заменяет CRF mode. */
+  ffmpegExportVideoBitrate?: string
   /** §7.2: битрейт AAC одним argv-токеном (`128k`, `192k`, `320k`). */
   ffmpegExportAudioBitrate?: string
   /** §7.2: FPS вывода; отсутствует — исходная частота. */
@@ -266,6 +268,21 @@ function parseFfmpegExportAudioBitrateStored(raw: unknown): string | undefined {
   return `${kbps}k`
 }
 
+function parseFfmpegExportVideoBitrateStored(raw: unknown): string | undefined {
+  if (typeof raw !== 'string') {
+    return undefined
+  }
+  const t = raw.trim().toLowerCase()
+  if (!/^\d{3,5}k$/.test(t)) {
+    return undefined
+  }
+  const kbps = Number(t.slice(0, -1))
+  if (!Number.isInteger(kbps) || kbps < 300 || kbps > 50000) {
+    return undefined
+  }
+  return `${kbps}k`
+}
+
 function parseFfmpegExportFpsStored(raw: unknown): number | undefined {
   if (typeof raw !== 'number' || ![24, 25, 30, 50, 60].includes(raw)) {
     return undefined
@@ -313,6 +330,9 @@ export function loadSettings(filePath: string): AppSettings {
     )
     const ffmpegExportContainer = parseFfmpegExportContainerStored(parsed.ffmpegExportContainer)
     const ffmpegExportCrf = parseFfmpegExportCrfStored(parsed.ffmpegExportCrf)
+    const ffmpegExportVideoBitrate = parseFfmpegExportVideoBitrateStored(
+      parsed.ffmpegExportVideoBitrate
+    )
     const ffmpegExportAudioBitrate = parseFfmpegExportAudioBitrateStored(
       parsed.ffmpegExportAudioBitrate
     )
@@ -357,6 +377,9 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (ffmpegExportCrf !== undefined) {
       base.ffmpegExportCrf = ffmpegExportCrf
+    }
+    if (ffmpegExportVideoBitrate !== undefined) {
+      base.ffmpegExportVideoBitrate = ffmpegExportVideoBitrate
     }
     if (ffmpegExportAudioBitrate !== undefined) {
       base.ffmpegExportAudioBitrate = ffmpegExportAudioBitrate

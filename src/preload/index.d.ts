@@ -40,6 +40,7 @@ export interface FluxAlloyApi {
     setFfmpegExportEncodePreset: (preset: FfmpegExportEncodePresetId) => Promise<AppSettings>
     setFfmpegExportContainer: (container: FfmpegExportContainerId) => Promise<AppSettings>
     setFfmpegExportCrf: (crf: number | null) => Promise<AppSettings>
+    setFfmpegExportVideoBitrate: (bitrate: string | null) => Promise<AppSettings>
     setFfmpegExportAudioBitrate: (bitrate: string | null) => Promise<AppSettings>
     setFfmpegExportFps: (fps: number | null) => Promise<AppSettings>
     setFfmpegExportScalePreset: (scale: FfmpegExportScalePresetId) => Promise<AppSettings>

@@ -38,6 +38,7 @@ describe('settings-store yt-dlp fields', () => {
         ytdlpQueueRetryProfile: 'normal',
         ffmpegExportContainer: 'mkv',
         ffmpegExportCrf: 20,
+        ffmpegExportVideoBitrate: '8000K',
         ffmpegExportAudioBitrate: '256K',
         ffmpegExportFps: 30,
         ffmpegExportScalePreset: '720p'
@@ -55,6 +56,7 @@ describe('settings-store yt-dlp fields', () => {
       ytdlpQueueRetryProfile: 'normal',
       ffmpegExportContainer: 'mkv',
       ffmpegExportCrf: 20,
+      ffmpegExportVideoBitrate: '8000k',
       ffmpegExportAudioBitrate: '256k',
       ffmpegExportFps: 30,
       ffmpegExportScalePreset: '720p'
@@ -73,6 +75,7 @@ describe('settings-store yt-dlp fields', () => {
         ytdlpRateLimit: 'fast',
         ffmpegExportContainer: 'avi',
         ffmpegExportCrf: 52,
+        ffmpegExportVideoBitrate: '60M',
         ffmpegExportAudioBitrate: '9999k',
         ffmpegExportFps: 29.97,
         ffmpegExportScalePreset: '4k'
@@ -86,6 +89,7 @@ describe('settings-store yt-dlp fields', () => {
     expect(loaded.ytdlpRateLimit).toBeUndefined()
     expect(loaded.ffmpegExportContainer).toBeUndefined()
     expect(loaded.ffmpegExportCrf).toBeUndefined()
+    expect(loaded.ffmpegExportVideoBitrate).toBeUndefined()
     expect(loaded.ffmpegExportAudioBitrate).toBeUndefined()
     expect(loaded.ffmpegExportFps).toBeUndefined()
     expect(loaded.ffmpegExportScalePreset).toBeUndefined()

@@ -23,6 +23,8 @@ export interface MediaExportRequestPayload {
   container?: FfmpegExportContainerId
   /** CRF libx264 0..51; если не задан — берётся из пресета/settings. */
   crf?: number | null
+  /** Video bitrate (`2500k`, `8000k`); если задан — используется вместо CRF. */
+  videoBitrate?: string | null
   /** Битрейт AAC одним токеном (`128k`, `192k`, `320k`). */
   audioBitrate?: string | null
   /** FPS вывода; null/undefined — оставить исходную частоту. */
@@ -91,6 +93,21 @@ export function parseFfmpegExportAudioBitrate(raw: unknown): string | null {
   }
   const kbps = Number(t.slice(0, -1))
   if (!Number.isInteger(kbps) || kbps < 32 || kbps > 512) {
+    return null
+  }
+  return `${kbps}k`
+}
+
+export function parseFfmpegExportVideoBitrate(raw: unknown): string | null {
+  if (typeof raw !== 'string') {
+    return null
+  }
+  const t = raw.trim().toLowerCase()
+  if (!/^\d{3,5}k$/.test(t)) {
+    return null
+  }
+  const kbps = Number(t.slice(0, -1))
+  if (!Number.isInteger(kbps) || kbps < 300 || kbps > 50000) {
     return null
   }
   return `${kbps}k`
@@ -228,6 +245,7 @@ function buildEncodeArgs(
   applyTrim: boolean,
   encodePreset: FfmpegExportEncodePresetId,
   crfOverride: number | null,
+  videoBitrate: string | null,
   audioBitrate: string,
   fps: number | null,
   scalePreset: FfmpegExportScalePresetId
@@ -248,7 +266,13 @@ function buildEncodeArgs(
   } else {
     args.push('-i', inputPath)
   }
-  args.push('-c:v', 'libx264', '-preset', enc.x264preset, '-crf', crf, '-pix_fmt', 'yuv420p')
+  args.push('-c:v', 'libx264', '-preset', enc.x264preset)
+  if (videoBitrate === null) {
+    args.push('-crf', crf)
+  } else {
+    args.push('-b:v', videoBitrate)
+  }
+  args.push('-pix_fmt', 'yuv420p')
   if (filters.length > 0) {
     args.push('-vf', filters.join(','))
   }
@@ -270,6 +294,7 @@ export function runFfmpegExportJob(params: {
   probeDurationSec?: number | null
   encodePreset?: FfmpegExportEncodePresetId
   crf?: number | null
+  videoBitrate?: string | null
   audioBitrate?: string | null
   fps?: number | null
   scalePreset?: FfmpegExportScalePresetId | null
@@ -279,6 +304,7 @@ export function runFfmpegExportJob(params: {
   const applyTrim = shouldApplyTrim(params.trim, params.probeDurationSec)
   const encodePreset = params.encodePreset ?? 'balance'
   const crf = parseFfmpegExportCrf(params.crf)
+  const videoBitrate = parseFfmpegExportVideoBitrate(params.videoBitrate)
   const audioBitrate = parseFfmpegExportAudioBitrate(params.audioBitrate) ?? '192k'
   const fps = parseFfmpegExportFps(params.fps)
   const scalePreset = parseFfmpegExportScalePreset(params.scalePreset)
@@ -294,6 +320,7 @@ export function runFfmpegExportJob(params: {
     applyTrim,
     encodePreset,
     crf,
+    videoBitrate,
     audioBitrate,
     fps,
     scalePreset

@@ -9,6 +9,7 @@ import {
   parseFfmpegExportCrf,
   parseFfmpegExportFps,
   parseFfmpegExportScalePreset,
+  parseFfmpegExportVideoBitrate,
   parseFfmpegSpeedToken,
   parseFfmpegTimeSeconds,
   resolveExportEncodeParams,
@@ -41,10 +42,13 @@ describe('ffmpeg export pure helpers', () => {
     expect(ensureFfmpegExportExtension('out.mp4', 'mkv')).toBe('out.mp4')
   })
 
-  it('валидирует ручные CRF и audio bitrate', () => {
+  it('валидирует ручные CRF и audio/video bitrate', () => {
     expect(parseFfmpegExportCrf(18)).toBe(18)
     expect(parseFfmpegExportCrf('28')).toBe(28)
     expect(parseFfmpegExportCrf(52)).toBeNull()
+    expect(parseFfmpegExportVideoBitrate('8000K')).toBe('8000k')
+    expect(parseFfmpegExportVideoBitrate('100k')).toBeNull()
+    expect(parseFfmpegExportVideoBitrate('60000k')).toBeNull()
     expect(parseFfmpegExportAudioBitrate('192K')).toBe('192k')
     expect(parseFfmpegExportAudioBitrate('16k')).toBeNull()
     expect(parseFfmpegExportAudioBitrate('1000k')).toBeNull()

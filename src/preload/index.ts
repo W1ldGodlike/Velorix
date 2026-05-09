@@ -40,6 +40,8 @@ const fluxalloy = {
       ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-container', container),
     setFfmpegExportCrf: (crf: number | null): Promise<AppSettings> =>
       ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-crf', crf),
+    setFfmpegExportVideoBitrate: (bitrate: string | null): Promise<AppSettings> =>
+      ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-video-bitrate', bitrate),
     setFfmpegExportAudioBitrate: (bitrate: string | null): Promise<AppSettings> =>
       ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-audio-bitrate', bitrate),
     setFfmpegExportFps: (fps: number | null): Promise<AppSettings> =>

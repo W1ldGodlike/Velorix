@@ -38,7 +38,7 @@
 - [~] §6.1/§6.2/§6.4: менеджер yt-dlp — очередь, сводка/фильтр/очистка строк, прогресс, каталог, cookies, impersonate, лимит/ретраи, retry строки, история + фильтр/повтор URL/открытие файла/открытие в обработчике, экспорт видимого лога; дальше обработка ошибок.
 - [~] §6.3: экспертный режим — доп. argv + whitelist/blacklist + справочник в сворачиваемом блоке; дальше улучшать справочник/категории.
 - [~] §7: превью + таймлайн + экспорт MP4/MKV/MOV + снимок кадра §7.6 + ffprobe под превью; отдельное окно инспектора §9 — позже.
-- [~] §7.2/§20: системные пресеты libx264, persisted контейнер/формат, CRF, AAC bitrate, FPS и scale preset есть; дальше пользовательские пресеты и расширенные параметры кодирования.
+- [~] §7.2/§20: системные пресеты libx264, persisted контейнер/формат, CRF или video bitrate, AAC bitrate, FPS и scale preset есть; дальше пользовательские пресеты и расширенные параметры кодирования.
 - [~] §17/§18: меню диагностических папок с актуальным `enabled`, `logger-service`, диалог ошибок, Support ZIP, логи stdout/stderr движков и prune старых crash dumps; дальше — логи сессий/расширенная политика хранения.
 - [~] §21: подключён Vitest + тесты для парсеров/опций yt-dlp, очереди, истории, persisted settings, helpers ffmpeg, external process log formatter и Support ZIP/prune; дальше — IPC contracts/shared models.
 
@@ -494,7 +494,7 @@
 - [ ] Вынести IPC contracts в отдельный слой.
 - [ ] Вынести сервисы main.
 - [ ] Вынести модели shared.
-- [~] Unit tests для чистых модулей: `tests/main/*` — `ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`, `ytdlp-download-history` (append/read/clear), `ytdlp-download-options` (filename/output-pattern/rate-limit/retries), `downloads-queue` (cleanup), `settings-store` (yt-dlp/export persisted fields), `ffmpeg-export-service` (progress helpers/presets/container/CRF/audio bitrate/FPS/scale), `external-process-log` (sanitize/format), `support-bundle` (ZIP structure/log inclusion/prune). Дальше — IPC contracts/shared models.
+- [~] Unit tests для чистых модулей: `tests/main/*` — `ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`, `ytdlp-download-history` (append/read/clear), `ytdlp-download-options` (filename/output-pattern/rate-limit/retries), `downloads-queue` (cleanup), `settings-store` (yt-dlp/export persisted fields), `ffmpeg-export-service` (progress helpers/presets/container/CRF/video+audio bitrate/FPS/scale), `external-process-log` (sanitize/format), `support-bundle` (ZIP structure/log inclusion/prune). Дальше — IPC contracts/shared models.
 - [x] Выбрать Vitest/Jest: Vitest подключён (`npm run test`/`test:watch`, `tsconfig.tests.json`).
 - [ ] Добавить e2e smoke позже.
 - [~] Комментарии на русском для публичных API и сложной логики: базовые комментарии добавлены; дальше писать чуть развёрнутее, чтобы следующему проходу агента было понятно «зачем» и «где границы», не только «что делает строка».
