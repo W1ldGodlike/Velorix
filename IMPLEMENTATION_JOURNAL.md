@@ -33,3 +33,4 @@
 - 2026-05-09 23:15:00: окно yt-dlp — реальный spawn yt-dlp (`ytdlp-download-service`, без shell), очередь последовательная, колонки прогресс/имя, IPC-снимок очереди без reload страницы; вывод в `userData/downloads/ytdlp`; отмена через kill дочернего процесса.
 - 2026-05-09 23:52:00: §3 — `engineExecutablePaths` в `settings.json`, приоритет резолва override → bundled → user bin; IPC выбора exe и сохранения; минимальный UI (кнопка + модалка) и пункт меню «Настройки → Пути к движкам»; снапшот для `downloads-queue-runner`, ffprobe и статуса движков.
 - 2026-05-10 10:20:00: §6.1 — `startDownloadSingleRow`, IPC `fluxalloy-downloads-start-row`, кнопка «▶» для строк «Ожидание»; общий флаг занятости с «Старт очереди».
+- 2026-05-10 14:05:00: §7.1 — маркеры In/Out у превью: индикатор диапазона, кнопки «In/Out здесь» и «Весь клип», синхронизация границ при появлении duration; смена файла — remount `VideoTimeline` по `key`.

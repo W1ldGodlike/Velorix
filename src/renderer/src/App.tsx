@@ -486,7 +486,11 @@ function App(): React.JSX.Element {
                   controls
                   src={preview.mediaUrl}
                 />
-                <VideoTimeline mediaKey={preview.mediaUrl} videoRef={videoRef} />
+                <VideoTimeline
+                  key={preview.mediaUrl}
+                  mediaKey={preview.mediaUrl}
+                  videoRef={videoRef}
+                />
                 {(probeInfo || probeError) && (
                   <div className="app-preview-probe" aria-live="polite">
                     {probeError ? (
