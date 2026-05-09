@@ -163,13 +163,15 @@ async function runYtdlpForWaitingRow(
 
       let result: { exitCode: number | null; signal: NodeJS.Signals | null }
       try {
-        shouldRecordHistory = true
         result = await runYtdlpOnce(
           paths,
           rowUrl,
           outputDir,
           signal,
           {
+            onStarted: () => {
+              shouldRecordHistory = true
+            },
             onStdoutLine: (line) => {
               emitDownloadsLog({ kind: 'line', rowId, stream: 'stdout', text: line })
               noteErrorLine(line)

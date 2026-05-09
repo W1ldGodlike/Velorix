@@ -27,6 +27,8 @@ function abortErr(): Error {
 }
 
 export interface YtdlpRunCallbacks {
+  /** Вызывается после успешного создания child process; валидационные ошибки до spawn сюда не попадают. */
+  onStarted?: () => void
   onStdoutLine?: (line: string) => void
   onStderrLine?: (line: string) => void
 }
@@ -125,6 +127,7 @@ export function runYtdlpOnce(
     }
 
     signal.addEventListener('abort', onAbort, { once: true })
+    callbacks.onStarted?.()
 
     function pipeLines(stream: NodeJS.ReadableStream | null, sink?: (line: string) => void): void {
       if (!stream || !sink) {
