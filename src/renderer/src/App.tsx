@@ -309,6 +309,7 @@ function App(): JSX.Element {
   const [exportFps, setExportFps] = useState<number | null>(null)
   const [exportScalePreset, setExportScalePreset] = useState<ExportScalePresetId>('source')
   const [lastExportPath, setLastExportPath] = useState<string | null>(null)
+  const [lastSnapshotPath, setLastSnapshotPath] = useState<string | null>(null)
   const [snapshotBusy, setSnapshotBusy] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   /** Последний диапазон In/Out с таймлайна для IPC экспорта. */
@@ -594,6 +595,7 @@ function App(): JSX.Element {
     }
     const el = videoRef.current
     const timeSec = el && Number.isFinite(el.currentTime) ? Math.max(0, el.currentTime) : 0
+    setLastSnapshotPath(null)
     setSnapshotBusy(true)
     setStatusHint('Снимок кадра…')
     try {
@@ -602,7 +604,9 @@ function App(): JSX.Element {
         timeSec
       })
       if (res.ok) {
-        setStatusHint('Кадр сохранён')
+        const savedName = res.path.split(/[\\/]/).pop() || res.path
+        setLastSnapshotPath(res.path)
+        setStatusHint(`Кадр сохранён: ${savedName}`)
       } else if ('cancelled' in res && res.cancelled) {
         setStatusHint(null)
       } else if ('error' in res) {
@@ -690,6 +694,24 @@ function App(): JSX.Element {
     setStatusHint(res.ok ? 'Путь экспорта скопирован' : 'Не удалось скопировать путь экспорта')
   }
 
+  async function handleOpenLastSnapshot(mode: 'file' | 'folder'): Promise<void> {
+    if (!lastSnapshotPath || exportBusy || snapshotBusy) {
+      return
+    }
+    const res = await window.fluxalloy.export.openOutput(lastSnapshotPath, mode)
+    if (!res.ok) {
+      setStatusHint(`Кадр: ${res.error}`)
+    }
+  }
+
+  async function handleCopyLastSnapshotPath(): Promise<void> {
+    if (!lastSnapshotPath) {
+      return
+    }
+    const res = await window.fluxalloy.clipboard.writeText(lastSnapshotPath)
+    setStatusHint(res.ok ? 'Путь кадра скопирован' : 'Не удалось скопировать путь кадра')
+  }
+
   async function handlePreviewDrop(files: FileList | null): Promise<void> {
     const file = files?.[0]
     if (!file) {
@@ -739,6 +761,43 @@ function App(): JSX.Element {
         >
           {snapshotBusy ? 'Кадр…' : 'Кадр'}
         </button>
+        {lastSnapshotPath ? (
+          <>
+            <button
+              type="button"
+              className="app-btn"
+              disabled={exportBusy || snapshotBusy}
+              onClick={() => {
+                void handleOpenLastSnapshot('file')
+              }}
+              title="Открыть последний сохранённый кадр"
+            >
+              Файл кадра
+            </button>
+            <button
+              type="button"
+              className="app-btn"
+              disabled={exportBusy || snapshotBusy}
+              onClick={() => {
+                void handleOpenLastSnapshot('folder')
+              }}
+              title="Показать последний кадр в папке"
+            >
+              Папка кадра
+            </button>
+            <button
+              type="button"
+              className="app-btn"
+              disabled={exportBusy || snapshotBusy}
+              onClick={() => {
+                void handleCopyLastSnapshotPath()
+              }}
+              title="Скопировать путь последнего сохранённого кадра"
+            >
+              Копировать кадр
+            </button>
+          </>
+        ) : null}
         <select
           className="app-toolbar-select"
           aria-label="Пресет кодирования экспорта MP4"

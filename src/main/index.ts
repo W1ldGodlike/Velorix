@@ -260,6 +260,28 @@ function rememberFfmpegExportDirectory(outputPath: string): void {
   saveSettings(settingsPath(), cachedSettings)
 }
 
+function rememberedSnapshotDefaultPath(fileName: string): string {
+  const raw = cachedSettings.ffmpegSnapshotDirectory
+  if (typeof raw !== 'string' || raw.trim().length === 0) {
+    return fileName
+  }
+  const dir = resolve(normalize(raw.trim()))
+  try {
+    if (existsSync(dir) && statSync(dir).isDirectory()) {
+      return join(dir, fileName)
+    }
+  } catch {
+    // Удалённая/недоступная папка не должна мешать сохранению нового кадра.
+  }
+  return fileName
+}
+
+function rememberFfmpegSnapshotDirectory(outputPath: string): void {
+  const dir = dirname(resolve(normalize(outputPath)))
+  cachedSettings = { ...cachedSettings, ffmpegSnapshotDirectory: dir }
+  saveSettings(settingsPath(), cachedSettings)
+}
+
 function isMainWindowSender(event: IpcMainEvent): boolean {
   return mainWindowWebContentsId !== null && event.sender.id === mainWindowWebContentsId
 }
@@ -1554,7 +1576,9 @@ app.whenReady().then(() => {
     async (
       event,
       raw: unknown
-    ): Promise<{ ok: true } | { ok: false; cancelled: true } | { ok: false; error: string }> => {
+    ): Promise<
+      { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
+    > => {
       const win = BrowserWindow.fromWebContents(event.sender)
       if (!win) {
         return { ok: false, error: 'Нет активного окна' }
@@ -1590,7 +1614,7 @@ app.whenReady().then(() => {
       const stem = basename(abs).replace(/\.[^.]+$/, '')
       const pick = await dialog.showSaveDialog(win, {
         title: 'Сохранить кадр',
-        defaultPath: `${stem}-frame.png`,
+        defaultPath: rememberedSnapshotDefaultPath(`${stem}-frame.png`),
         filters: [
           { name: 'PNG', extensions: ['png'] },
           { name: 'JPEG', extensions: ['jpg', 'jpeg'] }
@@ -1602,12 +1626,18 @@ app.whenReady().then(() => {
       }
 
       const outPath = pick.filePath.trim()
-      return runFfmpegSnapshotFrame({
+      const result = await runFfmpegSnapshotFrame({
         ffmpegPath: ffmpeg,
         inputPath: abs,
         outputPath: outPath,
         timeSec
       })
+      if (result.ok) {
+        rememberExportOutputPath(outPath)
+        rememberFfmpegSnapshotDirectory(outPath)
+        return { ok: true, path: outPath }
+      }
+      return result
     }
   )
 
