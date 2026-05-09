@@ -312,6 +312,13 @@ function persistYtdlpDownloadCliOptionsPatch(
       delete merged.ytdlpCookiesFile
     }
   }
+  if (patch.impersonate !== undefined) {
+    if (patch.impersonate === 'none') {
+      delete merged.ytdlpImpersonate
+    } else {
+      merged.ytdlpImpersonate = patch.impersonate
+    }
+  }
   if (patch.extraArgsLine !== undefined) {
     if (typeof patch.extraArgsLine !== 'string') {
       return { ok: false, error: 'Дополнительные аргументы должны быть строкой.' }

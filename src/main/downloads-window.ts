@@ -25,6 +25,7 @@ import {
 import {
   parseYtdlpCookiesBrowser,
   parseYtdlpFormatPreset,
+  parseYtdlpImpersonate,
   parseYtdlpSubtitlePreset,
   type YtdlpDownloadOptionsPayload,
   type YtdlpDownloadOptionsPatch
@@ -250,6 +251,14 @@ function buildDownloadsHtml(): string {
       <button type="button" class="cmd" id="clearCookiesBtn" title="Убрать файл из настроек">Очистить</button>
     </div>
     <p class="opts-hint opts-warn" id="cookiesWarn" hidden></p>
+    <label for="impersonateSelect">Импersonate клиента (TLS/JA3 и заголовки; §6.2)</label>
+    <select id="impersonateSelect">
+      <option value="none">Выключено</option>
+      <option value="chrome">chrome</option>
+      <option value="edge">edge</option>
+      <option value="firefox">firefox</option>
+    </select>
+    <p class="opts-hint">Список целей ограничен chrome / edge / firefox — см. документацию yt-dlp для поддерживаемых сборкой клиентов; флаг impersonate в «Доп. аргументы» недопустим.</p>
     <label for="extraArgsInput">Дополнительные аргументы (через пробел, без shell) §6.3</label>
     <textarea id="extraArgsInput" rows="2" spellcheck="false" autocomplete="off" placeholder="Например: --write-sub --sub-lang ru"></textarea>
     <p class="opts-hint opts-warn" id="extraArgsWarn" hidden></p>
@@ -310,6 +319,7 @@ function buildDownloadsHtml(): string {
       var pickCookiesBtn = document.getElementById('pickCookiesBtn');
       var clearCookiesBtn = document.getElementById('clearCookiesBtn');
       var cookiesWarn = document.getElementById('cookiesWarn');
+      var impersonateSelect = document.getElementById('impersonateSelect');
       var extraArgsInput = document.getElementById('extraArgsInput');
       var argsPreview = document.getElementById('argsPreview');
       var extraArgsWarn = document.getElementById('extraArgsWarn');
@@ -371,6 +381,11 @@ function buildDownloadsHtml(): string {
               cookiesWarn.textContent = '';
               cookiesWarn.hidden = true;
             }
+          }
+          if (impersonateSelect && typeof p.impersonateChoice === 'string') {
+            var im = p.impersonateChoice;
+            impersonateSelect.value =
+              im === 'chrome' || im === 'edge' || im === 'firefox' ? im : 'none';
           }
           if (!fmtPreset) return;
           fmtPreset.replaceChildren();
@@ -562,6 +577,7 @@ function buildDownloadsHtml(): string {
             subtitlePreset: subPreset ? subPreset.value : 'none',
             subLangs: subLangsInput ? subLangsInput.value : '',
             cookiesBrowser: cookiesBrowserSelect ? cookiesBrowserSelect.value : 'none',
+            impersonate: impersonateSelect ? impersonateSelect.value : 'none',
             extraArgsLine: extraArgsInput ? extraArgsInput.value : ''
           }).then(function (res) {
             if (res && res.ok === false && res.error) window.alert(res.error);
@@ -745,6 +761,21 @@ export function registerDownloadsWindowIpcHandlers(): void {
           patch.cookiesBrowser = b
         }
       }
+      if (Object.prototype.hasOwnProperty.call(o, 'impersonate')) {
+        if (typeof o.impersonate !== 'string') {
+          return { ok: false, error: 'Поле impersonate должно быть строкой' }
+        }
+        const iv = o.impersonate
+        if (iv === 'none') {
+          patch.impersonate = 'none'
+        } else {
+          const im = parseYtdlpImpersonate(iv)
+          if (!im) {
+            return { ok: false, error: 'Недопустимое значение impersonate' }
+          }
+          patch.impersonate = im
+        }
+      }
       if (Object.prototype.hasOwnProperty.call(o, 'extraArgsLine')) {
         if (typeof o.extraArgsLine !== 'string') {
           return { ok: false, error: 'Доп. аргументы должны быть строкой' }
@@ -759,6 +790,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
         patch.subtitlePreset === undefined &&
         patch.subLangs === undefined &&
         patch.cookiesBrowser === undefined &&
+        patch.impersonate === undefined &&
         patch.extraArgsLine === undefined
       ) {
         return { ok: false, error: 'Нечего сохранять' }

@@ -42,6 +42,9 @@ function tokenViolationReason(token: string): string | null {
   if (low === '--cookies-from-browser' || low.startsWith('--cookies-from-browser=')) {
     return 'Источник cookies задаётся в §6.2; не дублируйте --cookies-from-browser.'
   }
+  if (low === '--impersonate' || low.startsWith('--impersonate=')) {
+    return 'Импersonate задаётся в блоке §6.2; не дублируйте --impersonate.'
+  }
   return null
 }
 
@@ -90,6 +93,9 @@ export type YtdlpSubtitlePresetId = 'none' | 'manual' | 'manual_auto'
 /** §6.2 — только распространённые движки для `--cookies-from-browser` (без произвольной строки профиля). */
 export type YtdlpCookiesBrowserId = 'chrome' | 'edge' | 'firefox'
 
+/** §6.2 — whitelist целей `--impersonate` без версионирования и произвольных строк клиента. */
+export type YtdlpImpersonateId = 'chrome' | 'edge' | 'firefox'
+
 /** Полный argv yt-dlp без пути к exe §6 / §6.3. */
 export function buildYtdlpSpawnArgvTokens(params: {
   downloadPlaylist: boolean
@@ -102,6 +108,8 @@ export function buildYtdlpSpawnArgvTokens(params: {
   cookiesFile: string | null
   /** `--cookies-from-browser`, если файла нет. */
   cookiesBrowser: YtdlpCookiesBrowserId | null
+  /** §6.2 `--impersonate` только для whitelist-клиентов; поддержка зависит от сборки yt-dlp. */
+  impersonateTarget: YtdlpImpersonateId | null
   formatExtraArgs: string[]
   extraArgs: string[]
   outputPattern: string
@@ -114,6 +122,9 @@ export function buildYtdlpSpawnArgvTokens(params: {
     args.push('--cookies', cf)
   } else if (params.cookiesBrowser) {
     args.push('--cookies-from-browser', params.cookiesBrowser)
+  }
+  if (params.impersonateTarget) {
+    args.push('--impersonate', params.impersonateTarget)
   }
   args.push(...params.formatExtraArgs)
   const sub = params.subtitlePreset ?? 'none'

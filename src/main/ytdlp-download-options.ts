@@ -7,6 +7,7 @@ import {
   formatArgvTokensForPreview,
   parseExtraYtdlpArgsLine,
   type YtdlpCookiesBrowserId,
+  type YtdlpImpersonateId,
   type YtdlpSubtitlePresetId
 } from './ytdlp-extra-args'
 import { getYtdlpCommandHints, type YtdlpCommandHintEntry } from './ytdlp-commands-hints'
@@ -20,7 +21,7 @@ export const YTDLP_DEFAULT_FILENAME_TEMPLATE = '%(title)s [%(id)s].%(ext)s'
  */
 export type YtdlpFormatPresetId = 'default' | 'merge_bv_ba' | 'best_single'
 
-export type { YtdlpSubtitlePresetId, YtdlpCookiesBrowserId }
+export type { YtdlpSubtitlePresetId, YtdlpCookiesBrowserId, YtdlpImpersonateId }
 
 export interface YtdlpRunOptionsSnapshot {
   filenameTemplate: string
@@ -52,6 +53,9 @@ export interface YtdlpRunOptionsSnapshot {
   /** Выбор в UI (может сосуществовать с файлом в JSON до сохранения). */
   cookiesBrowserChoice: 'none' | YtdlpCookiesBrowserId
   cookiesWarning: string | null
+  /** §6.2 — только whitelist; null если выключено. */
+  impersonateTarget: YtdlpImpersonateId | null
+  impersonateChoice: 'none' | YtdlpImpersonateId
 }
 
 /** То, что видит окно загрузок: текущие значения и метки для `<select>`. */
@@ -74,6 +78,7 @@ export interface YtdlpDownloadOptionsPayload {
   cookiesBrowserChoice: 'none' | YtdlpCookiesBrowserId
   cookiesFilePathStored: string
   cookiesWarning: string | null
+  impersonateChoice: 'none' | YtdlpImpersonateId
 }
 
 export interface YtdlpDownloadOptionsPatch {
@@ -85,6 +90,8 @@ export interface YtdlpDownloadOptionsPatch {
   subLangs?: string
   /** §6.2 `none` или whitelist браузера; при сохранении отличного от «нет» сбрасывает файл cookies. */
   cookiesBrowser?: 'none' | YtdlpCookiesBrowserId
+  /** §6.2 `--impersonate` только chrome / edge / firefox. */
+  impersonate?: 'none' | YtdlpImpersonateId
   extraArgsLine?: string
 }
 
@@ -103,6 +110,13 @@ export function parseYtdlpSubtitlePreset(raw: unknown): YtdlpSubtitlePresetId {
 }
 
 export function parseYtdlpCookiesBrowser(raw: unknown): YtdlpCookiesBrowserId | undefined {
+  if (raw === 'chrome' || raw === 'edge' || raw === 'firefox') {
+    return raw
+  }
+  return undefined
+}
+
+export function parseYtdlpImpersonate(raw: unknown): YtdlpImpersonateId | undefined {
   if (raw === 'chrome' || raw === 'edge' || raw === 'firefox') {
     return raw
   }
@@ -312,6 +326,12 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
   const cookiesBrowserChoice: 'none' | YtdlpCookiesBrowserId =
     browserParsed !== undefined ? browserParsed : 'none'
 
+  const impersonateParsed = parseYtdlpImpersonate(settings.ytdlpImpersonate)
+  const impersonateTarget: YtdlpImpersonateId | null =
+    impersonateParsed !== undefined ? impersonateParsed : null
+  const impersonateChoice: 'none' | YtdlpImpersonateId =
+    impersonateParsed !== undefined ? impersonateParsed : 'none'
+
   return {
     filenameTemplate,
     formatPreset: preset,
@@ -328,7 +348,9 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
     cookiesArgvBrowser,
     cookiesFilePathStored: cookiesFileStored,
     cookiesBrowserChoice,
-    cookiesWarning
+    cookiesWarning,
+    impersonateTarget,
+    impersonateChoice
   }
 }
 
@@ -341,6 +363,7 @@ export function payloadFromSnapshot(snap: YtdlpRunOptionsSnapshot): YtdlpDownloa
     subLangs: snap.subLangs,
     cookiesFile: snap.cookiesArgvFile,
     cookiesBrowser: snap.cookiesArgvBrowser,
+    impersonateTarget: snap.impersonateTarget,
     formatExtraArgs: snap.formatExtraArgs,
     extraArgs: snap.extraArgs,
     outputPattern: outPh,
@@ -367,6 +390,7 @@ export function payloadFromSnapshot(snap: YtdlpRunOptionsSnapshot): YtdlpDownloa
     commandHints,
     cookiesBrowserChoice: snap.cookiesBrowserChoice,
     cookiesFilePathStored: snap.cookiesFilePathStored,
-    cookiesWarning: snap.cookiesWarning
+    cookiesWarning: snap.cookiesWarning,
+    impersonateChoice: snap.impersonateChoice
   }
 }

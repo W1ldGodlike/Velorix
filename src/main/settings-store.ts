@@ -45,6 +45,8 @@ export interface AppSettings {
   ytdlpCookiesFile?: string
   /** §6.2: `--cookies-from-browser` для ограниченного whitelist (если нет файла). */
   ytdlpCookiesBrowser?: 'chrome' | 'edge' | 'firefox'
+  /** §6.2: клиент для `--impersonate` (ограниченный whitelist). */
+  ytdlpImpersonate?: 'chrome' | 'edge' | 'firefox'
   /** §6.3: дополнительные аргументы yt-dlp одной строкой (токены через пробел). */
   ytdlpExtraArgsLine?: string
   /** §7.2: системный пресет экспорта MP4 (libx264 CRF + `-preset`). */
@@ -180,6 +182,13 @@ function parseYtdlpCookiesBrowserStored(raw: unknown): 'chrome' | 'edge' | 'fire
   return undefined
 }
 
+function parseYtdlpImpersonateStored(raw: unknown): 'chrome' | 'edge' | 'firefox' | undefined {
+  if (raw === 'chrome' || raw === 'edge' || raw === 'firefox') {
+    return raw
+  }
+  return undefined
+}
+
 function parseFfmpegExportEncodePresetStored(raw: unknown): string | undefined {
   if (typeof raw !== 'string') {
     return undefined
@@ -225,6 +234,7 @@ export function loadSettings(filePath: string): AppSettings {
     const ytdlpSubLangs = parseYtdlpSubLangsStored(parsed.ytdlpSubLangs)
     const ytdlpCookiesFile = parseYtdlpCookiesFileStored(parsed.ytdlpCookiesFile)
     const ytdlpCookiesBrowser = parseYtdlpCookiesBrowserStored(parsed.ytdlpCookiesBrowser)
+    const ytdlpImpersonate = parseYtdlpImpersonateStored(parsed.ytdlpImpersonate)
 
     const base: AppSettings = { theme }
     if (last !== undefined) {
@@ -265,6 +275,9 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (ytdlpCookiesBrowser !== undefined) {
       base.ytdlpCookiesBrowser = ytdlpCookiesBrowser
+    }
+    if (ytdlpImpersonate !== undefined) {
+      base.ytdlpImpersonate = ytdlpImpersonate
     }
     if (ytdlpExtraArgsLine !== undefined) {
       base.ytdlpExtraArgsLine = ytdlpExtraArgsLine

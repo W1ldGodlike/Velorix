@@ -49,3 +49,5 @@
 - 2026-05-09 21:48:01: §6.3 — `ytdlpExtraArgsLine` + `parseExtraYtdlpArgsLine`/`buildYtdlpSpawnArgvTokens`, превью `yt-dlp …` в окне загрузок; блок конфликта `-o`/batch/`@`; раннер берёт `extraArgs` из снимка.
 - 2026-05-09 21:49:21: §6.3 — подсказки из `Data/ytdlp_commands.json`: `getYtdlpCommandHints` в main, `commandHints` в payload окна загрузок, сворачиваемый справочник и вставка токена в поле доп. argv с кратким описанием выбранного флага.
 - 2026-05-09 21:51:30: §6.2 — пресет субтитров (`ytdlpSubtitlePreset`/`ytdlpSubLangs` в settings), argv через `buildYtdlpSpawnArgvTokens`, UI в окне загрузок и раннер очереди.
+- 2026-05-09 21:54:00: §6.2 — cookies: `ytdlpCookiesFile`/`ytdlpCookiesBrowser`, диалог выбора файла в окне загрузок, приоритет файла над браузером; запрет дублей `--cookies*` в доп. argv.
+- 2026-05-09 21:55:39: §6.2 — `--impersonate`: whitelist chrome/edge/firefox (`ytdlpImpersonate`), сбор argv и окно загрузок; запрет дубля `--impersonate` в доп. argv.
