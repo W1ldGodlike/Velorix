@@ -84,6 +84,7 @@
 
 /* Preview area пока заглушка, но размеры и фон уже соответствуют будущему видеоплееру/таймлайну. */
 .app-preview {
+  /* TODO(§7): когда появится video/timeline, разделить стили preview shell и внутренних media-controls. */
   flex: 1;
   min-height: 200px;
   display: flex;

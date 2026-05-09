@@ -6,6 +6,7 @@ export type AppTheme = 'dark' | 'light'
 export interface AppSettings {
   /** Тема хранится в main, чтобы меню, renderer и будущие окна не расходились между собой. */
   theme: AppTheme
+  // TODO(§3/§4.6): добавить язык, override-пути движков, hotkeys и настройки сессий без ломки старого JSON.
 }
 
 const defaults: AppSettings = { theme: 'dark' }

@@ -53,6 +53,7 @@ function candidatePaths(paths: AppPaths, id: EngineId): string[] {
 
   // Сначала bundled `bin` из сборки, затем пользовательский `userData/bin`.
   // Позже сюда добавятся ручные override-пути из настроек, но порядок останется централизованным.
+  // TODO(§3/§4.6): добавить override-пути из настроек перед bundled/user bin, чтобы ручной путь был приоритетным.
   return [join(paths.bundledBin, exe), join(paths.userBin, exe)]
 }
 
@@ -131,6 +132,7 @@ async function checkEngine(paths: AppPaths, id: EngineId): Promise<EngineStatus>
  */
 export async function getEnginesStatus(paths: AppPaths): Promise<EnginesStatusSnapshot> {
   const ids: EngineId[] = ['ffmpeg', 'ffprobe', 'yt-dlp']
+  // TODO(§3): после загрузчика хешей добавить сюда состояние `checking`/progress для длительных проверок.
   const statuses = await Promise.all(ids.map((id) => checkEngine(paths, id)))
 
   return {

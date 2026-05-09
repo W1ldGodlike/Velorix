@@ -9,6 +9,7 @@ import type { AppSettings, AppTheme } from '../main/settings-store'
 // прокидывается сюда маленькими методами. Это упрощает аудит безопасности и не даёт UI
 // случайно начать выполнять произвольные команды.
 const fluxalloy = {
+  // TODO(§21): при росте API разнести настройки/движки/файлы по отдельным typed contract modules.
   settings: {
     get: (): Promise<AppSettings> => ipcRenderer.invoke('fluxalloy:settings-get'),
     setTheme: (theme: AppTheme): Promise<AppSettings> =>

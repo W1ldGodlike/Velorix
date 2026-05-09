@@ -92,6 +92,7 @@ function buildApplicationMenu(): void {
           label: 'Открыть…',
           accelerator: 'CmdOrCtrl+O',
           // Пункт уже стоит на своём будущем месте, но будет включён вместе с IPC выбора файла (§4/§7).
+          // TODO(§4/§7): подключить dialog.showOpenDialog и отправку выбранного источника в renderer.
           enabled: false
         },
         { type: 'separator' },
@@ -201,6 +202,7 @@ app.whenReady().then(() => {
 
   ipcMain.handle('fluxalloy:engines-status', async (): Promise<EnginesStatusSnapshot> => {
     // Проверка движков живёт в main: renderer не должен знать реальные пути и запускать процессы.
+    // TODO(§3): добавить отдельный IPC для загрузки/обновления движков с progress events.
     return getEnginesStatus(resolveAppPaths())
   })
 

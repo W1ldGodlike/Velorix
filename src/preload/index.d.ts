@@ -11,6 +11,7 @@ import type { AppSettings, AppTheme } from '../main/settings-store'
  * обращаться к нему через `ipcRenderer` напрямую.
  */
 export interface FluxAlloyApi {
+  // TODO(§21): держать этот интерфейс синхронным с `src/preload/index.ts`; renderer не использует raw ipcRenderer.
   settings: {
     get: () => Promise<AppSettings>
     setTheme: (theme: AppTheme) => Promise<AppSettings>

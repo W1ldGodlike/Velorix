@@ -24,6 +24,7 @@ win:
   executableName: FluxAlloy
   # Временно отключено для dev-сборки: на Windows без symlink-прав electron-builder падает на winCodeSign.
   # Перед релизной подписью пересмотреть вместе с сертификатами и Developer Mode/CI.
+  # TODO(§19): после нового логина проверить symlink-права и вернуть нормальное sign/edit поведение.
   signAndEditExecutable: false
 nsis:
   artifactName: ${name}-${version}-setup.${ext}

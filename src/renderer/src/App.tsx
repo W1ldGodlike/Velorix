@@ -67,6 +67,7 @@ function App(): React.JSX.Element {
 
   useEffect(() => {
     // Статусбар пока показывает сводку. Подробное окно зависимостей появится в §3/§4.6.
+    // TODO(§3/§4.6): заменить одноразовую проверку на store/refresh-кнопку и детальный диалог зависимостей.
     window.fluxalloy.engines
       .getStatus()
       .then((snapshot) => {
@@ -87,6 +88,7 @@ function App(): React.JSX.Element {
     <div className="app-shell">
       <header className="app-toolbar">
         <div className="app-toolbar-brand">FluxAlloy</div>
+        {/* TODO(§4/§7): включить кнопку после IPC выбора локального файла и DnD-источников. */}
         <button type="button" className="app-btn" disabled title="Открыть файл источника (скоро)">
           Открыть
         </button>
