@@ -102,6 +102,11 @@ contextBridge.exposeInMainWorld('fluxalloyDownloads', {
   ): Promise<{ ok: true } | { ok: false; error: string }> =>
     ipcRenderer.invoke('fluxalloy-downloads-set-cli-options', patch),
 
+  saveVisibleLog: (
+    text: string
+  ): Promise<{ ok: true; path: string } | { ok: false; error: string }> =>
+    ipcRenderer.invoke('fluxalloy-downloads-save-visible-log', text),
+
   onLog: (listener: (payload: DownloadsLogPayload) => void): (() => void) => {
     const handler = (_event: unknown, raw: unknown): void => {
       if (!isDownloadsLogPayload(raw)) {

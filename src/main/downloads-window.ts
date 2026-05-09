@@ -1,4 +1,5 @@
-import { BrowserWindow, ipcMain, shell, type WebContents } from 'electron'
+import { writeFileSync } from 'fs'
+import { BrowserWindow, dialog, ipcMain, shell, type WebContents } from 'electron'
 
 import { resolveAppPaths } from './app-paths'
 import type { StoredWindowRect } from './settings-store'
@@ -346,6 +347,9 @@ function buildDownloadsHtml(): string {
   <div class="log-panel">
     <details id="logDetails">
       <summary>Лог yt-dlp (stdout / stderr)</summary>
+      <div class="history-actions">
+        <button type="button" class="cmd" id="saveLogBtn">Сохранить лог…</button>
+      </div>
       <pre id="logPre"></pre>
     </details>
   </div>
@@ -631,6 +635,7 @@ function buildDownloadsHtml(): string {
       }
       var logPre = document.getElementById('logPre');
       var logDetails = document.getElementById('logDetails');
+      var saveLogBtn = document.getElementById('saveLogBtn');
       var logTargetRowId = null;
       var maxLogChars = 240000;
 
@@ -657,6 +662,20 @@ function buildDownloadsHtml(): string {
           appendLogLine(payload.stream, payload.text);
         }
       });
+      if (saveLogBtn) {
+        saveLogBtn.addEventListener('click', function () {
+          var text = logPre ? logPre.textContent || '' : '';
+          if (!text.trim()) {
+            window.alert('Лог пуст — пока нечего сохранять.');
+            return;
+          }
+          api.saveVisibleLog(text).then(function (res) {
+            if (res && res.ok === false && res.error && res.error !== 'Сохранение отменено') {
+              window.alert(res.error);
+            }
+          });
+        });
+      }
 
       function rowShape(r) {
         return r && typeof r.id === 'number' && typeof r.url === 'string';
@@ -1142,6 +1161,46 @@ export function registerDownloadsWindowIpcHandlers(): void {
       const paths = resolveAppPaths()
       clearYtdlpDownloadHistory(paths.userData)
       return { ok: true }
+    }
+  )
+
+  ipcMain.handle(
+    'fluxalloy-downloads-save-visible-log',
+    async (
+      event,
+      raw: unknown
+    ): Promise<{ ok: true; path: string } | { ok: false; error: string }> => {
+      if (!isDownloadsSender(event.sender)) {
+        return { ok: false, error: 'Недопустимый отправитель' }
+      }
+      if (typeof raw !== 'string' || raw.trim().length === 0) {
+        return { ok: false, error: 'Лог пуст' }
+      }
+      const win = BrowserWindow.fromWebContents(event.sender)
+      if (!win || win.isDestroyed()) {
+        return { ok: false, error: 'Нет окна' }
+      }
+      const text = raw.length > 260_000 ? raw.slice(-260_000) : raw
+      const stamp = new Date().toISOString().replace(/[:.]/g, '-')
+      const pick = await dialog.showSaveDialog(win, {
+        title: 'Сохранить лог yt-dlp',
+        defaultPath: `fluxalloy-ytdlp-${stamp}.log`,
+        filters: [
+          { name: 'Log', extensions: ['log'] },
+          { name: 'Text', extensions: ['txt'] }
+        ]
+      })
+      if (pick.canceled || !pick.filePath) {
+        return { ok: false, error: 'Сохранение отменено' }
+      }
+      try {
+        writeFileSync(pick.filePath, text, 'utf-8')
+        return { ok: true, path: pick.filePath }
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err)
+        logError('downloads-window', 'save yt-dlp visible log failed', err)
+        return { ok: false, error: msg }
+      }
     }
   )
 
