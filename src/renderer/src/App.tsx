@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import type { JSX } from 'react'
 
 import VideoTimeline from './components/VideoTimeline'
 import Versions from './components/Versions'
@@ -127,12 +128,30 @@ function trackKindRu(kind: MediaProbeTrackRow['kind']): string {
   }
 }
 
-function PreviewProbeBody({ probeInfo }: { probeInfo: MediaProbeSuccess }): React.JSX.Element {
+function formatProbeJsonForDisplay(raw: string): string {
+  try {
+    return JSON.stringify(JSON.parse(raw) as unknown, null, 2)
+  } catch {
+    return raw
+  }
+}
+
+function PreviewProbeBody({ probeInfo }: { probeInfo: MediaProbeSuccess }): JSX.Element {
+  const [copyTip, setCopyTip] = useState<string | null>(null)
   const bitrateLabel = formatBitrateLine(probeInfo.bitrateKbps)
   const formatTooltip =
     probeInfo.formatLongName && probeInfo.formatName !== probeInfo.formatLongName
       ? probeInfo.formatLongName
       : undefined
+
+  async function handleCopyProbeJson(): Promise<void> {
+    const text = formatProbeJsonForDisplay(probeInfo.rawJson)
+    const r = await window.fluxalloy.clipboard.writeText(text)
+    setCopyTip(r.ok ? 'Скопировано в буфер' : 'Не удалось скопировать')
+    window.setTimeout(() => {
+      setCopyTip(null)
+    }, 2200)
+  }
 
   return (
     <div className="app-preview-probe-stack">
@@ -174,6 +193,24 @@ function PreviewProbeBody({ probeInfo }: { probeInfo: MediaProbeSuccess }): Reac
           </div>
         </details>
       ) : null}
+      {probeInfo.rawJson.length > 0 ? (
+        <details className="app-probe-details">
+          <summary className="app-probe-summary">JSON ffprobe</summary>
+          <div className="app-probe-json-toolbar">
+            <button
+              type="button"
+              className="app-btn app-btn-compact"
+              onClick={() => {
+                void handleCopyProbeJson()
+              }}
+            >
+              Копировать JSON
+            </button>
+            {copyTip ? <span className="app-probe-copy-tip">{copyTip}</span> : null}
+          </div>
+          <pre className="app-probe-json-pre">{formatProbeJsonForDisplay(probeInfo.rawJson)}</pre>
+        </details>
+      ) : null}
     </div>
   )
 }
@@ -212,12 +249,16 @@ function engineSummaryText(summary: EngineSummary): string {
   }
 }
 
-function App(): React.JSX.Element {
+function App(): JSX.Element {
   const [theme, setTheme] = useState<Theme>('dark')
   const [engineSummary, setEngineSummary] = useState<EngineSummary>('checking')
   const [enginesOfferDownload, setEnginesOfferDownload] = useState(false)
   const [engineDownloadBusy, setEngineDownloadBusy] = useState(false)
   const [enginePathsOpen, setEnginePathsOpen] = useState(false)
+  const [aboutOpen, setAboutOpen] = useState(false)
+  const [aboutInfo, setAboutInfo] = useState<Awaited<
+    ReturnType<typeof window.fluxalloy.about.getInfo>
+  > | null>(null)
   const [enginePathsDraft, setEnginePathsDraft] = useState<EnginePathsDraft>({
     ffmpeg: '',
     ffprobe: '',
@@ -351,9 +392,16 @@ function App(): React.JSX.Element {
     const offSynced = window.fluxalloy.onEnginePathsChanged(() => {
       void refreshEngineUi()
     })
+    const offAbout = window.fluxalloy.onOpenAbout(() => {
+      void window.fluxalloy.about.getInfo().then((info) => {
+        setAboutInfo(info)
+        setAboutOpen(true)
+      })
+    })
     return (): void => {
       offMenu()
       offSynced()
+      offAbout()
     }
   }, [refreshEngineUi])
 
@@ -685,6 +733,69 @@ function App(): React.JSX.Element {
         <span className="app-statusbar-sep" aria-hidden />
         <Versions />
       </footer>
+
+      {aboutOpen ? (
+        <div
+          className="app-modal-backdrop"
+          role="presentation"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) {
+              setAboutOpen(false)
+            }
+          }}
+        >
+          <div
+            className="app-modal app-modal-narrow"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="about-title"
+            onMouseDown={(e) => {
+              e.stopPropagation()
+            }}
+          >
+            <h2 id="about-title" className="app-modal-title">
+              О программе
+            </h2>
+            {aboutInfo ? (
+              <dl className="app-about-dl">
+                <div className="app-about-row">
+                  <dt>Приложение</dt>
+                  <dd>{aboutInfo.appName}</dd>
+                </div>
+                <div className="app-about-row">
+                  <dt>Версия</dt>
+                  <dd className="app-about-mono">{aboutInfo.appVersion}</dd>
+                </div>
+                <div className="app-about-row">
+                  <dt>Electron</dt>
+                  <dd className="app-about-mono">{aboutInfo.electronVersion}</dd>
+                </div>
+                <div className="app-about-row">
+                  <dt>Chromium</dt>
+                  <dd className="app-about-mono">{aboutInfo.chromeVersion}</dd>
+                </div>
+                <div className="app-about-row">
+                  <dt>Node</dt>
+                  <dd className="app-about-mono">{aboutInfo.nodeVersion}</dd>
+                </div>
+              </dl>
+            ) : (
+              <p className="app-modal-hint">Загрузка…</p>
+            )}
+            <div className="app-modal-footer">
+              <button
+                type="button"
+                className="app-btn app-btn-primary"
+                onClick={() => {
+                  setAboutOpen(false)
+                }}
+              >
+                Закрыть
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {enginePathsOpen ? (
         <div

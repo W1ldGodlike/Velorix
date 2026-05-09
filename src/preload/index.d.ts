@@ -13,6 +13,7 @@ import type {
   EnginesStatusSnapshot
 } from '../main/engine-service'
 import type { PreviewDialogResult } from '../main/preview-dialog'
+import type { AppAboutInfo } from '../main/about-info'
 import type { AppSettings, AppTheme } from '../main/settings-store'
 
 /** Данные для привязки `<video>` к локальному файлу через allowlist-схему `fluxmedia://`. */
@@ -52,6 +53,10 @@ export interface FluxAlloyApi {
   }
   clipboard: {
     readText: () => Promise<string>
+    writeText: (text: string) => Promise<{ ok: true } | { ok: false }>
+  }
+  about: {
+    getInfo: () => Promise<AppAboutInfo>
   }
   engines: {
     getStatus: () => Promise<EnginesStatusSnapshot>
@@ -68,6 +73,7 @@ export interface FluxAlloyApi {
   onThemeChanged: (listener: (theme: AppTheme) => void) => () => void
   onOpenEnginePaths: (listener: () => void) => () => void
   onEnginePathsChanged: (listener: () => void) => () => void
+  onOpenAbout: (listener: () => void) => () => void
 }
 
 declare global {

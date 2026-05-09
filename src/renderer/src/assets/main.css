@@ -328,6 +328,69 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
+.app-probe-json-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  padding: 0.25rem 0.45rem;
+  border-bottom: 1px solid var(--fa-border-subtle);
+  background: color-mix(in srgb, var(--fa-surface) 92%, transparent);
+}
+
+.app-probe-copy-tip {
+  font-size: 0.68rem;
+  color: var(--fa-text-secondary);
+}
+
+.app-probe-json-pre {
+  margin: 0;
+  max-height: 14rem;
+  overflow: auto;
+  padding: 0.4rem 0.5rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.62rem;
+  line-height: 1.35;
+  white-space: pre;
+  color: var(--fa-text-secondary);
+  background: color-mix(in srgb, var(--fa-bg) 88%, transparent);
+}
+
+.app-modal-narrow {
+  width: min(400px, 100%);
+}
+
+.app-about-dl {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.app-about-row {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: 0.35rem 0.65rem;
+  align-items: baseline;
+  font-size: 0.8125rem;
+}
+
+.app-about-row dt {
+  margin: 0;
+  color: var(--fa-text-muted);
+  font-weight: 600;
+}
+
+.app-about-row dd {
+  margin: 0;
+  color: var(--fa-text-primary);
+}
+
+.app-about-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+}
+
 .app-preview-caption {
   flex-shrink: 0;
   padding: 0.35rem 0.6rem;

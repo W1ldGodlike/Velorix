@@ -11,6 +11,7 @@ import type { EnginesStatusSnapshot } from '../main/engine-service'
 import type { MediaProbeResult } from '../main/ffprobe-service'
 import type { PreviewDialogResult } from '../main/preview-dialog'
 import type { EngineId, EnginePathOverridesPatch } from '../main/engine-service'
+import type { AppAboutInfo } from '../main/about-info'
 import type { AppSettings, AppTheme } from '../main/settings-store'
 
 type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
@@ -54,7 +55,12 @@ const fluxalloy = {
       ipcRenderer.invoke('fluxalloy:open-downloads-window', initial ?? null)
   },
   clipboard: {
-    readText: (): Promise<string> => ipcRenderer.invoke('fluxalloy:clipboard-read-text')
+    readText: (): Promise<string> => ipcRenderer.invoke('fluxalloy:clipboard-read-text'),
+    writeText: (text: string): Promise<{ ok: true } | { ok: false }> =>
+      ipcRenderer.invoke('fluxalloy:clipboard-write-text', text)
+  },
+  about: {
+    getInfo: (): Promise<AppAboutInfo> => ipcRenderer.invoke('fluxalloy:app-about-info')
   },
   engines: {
     getStatus: (): Promise<EnginesStatusSnapshot> => ipcRenderer.invoke('fluxalloy:engines-status'),
@@ -135,6 +141,16 @@ const fluxalloy = {
   },
   onEnginePathsChanged: (listener: () => void): (() => void) => {
     const channel = 'fluxalloy:engine-paths-changed'
+    const handler = (): void => {
+      listener()
+    }
+    ipcRenderer.on(channel, handler)
+    return (): void => {
+      ipcRenderer.removeListener(channel, handler)
+    }
+  },
+  onOpenAbout: (listener: () => void): (() => void) => {
+    const channel = 'fluxalloy:open-about'
     const handler = (): void => {
       listener()
     }

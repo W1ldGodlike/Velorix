@@ -29,6 +29,8 @@ export interface MediaProbeSuccess {
   bitrateKbps: number | null
   /** Все потоки в порядке индекса ffprobe. */
   tracks: MediaProbeTrackRow[]
+  /** Сырой JSON stdout ffprobe (для §9: просмотр / копирование). */
+  rawJson: string
 }
 
 export type MediaProbeResult = MediaProbeSuccess | { ok: false; error: string }
@@ -294,6 +296,7 @@ export async function probeMediaFile(
         : null,
     formatLongName: formatLong,
     bitrateKbps: formatBitrateKbps(parsed.format?.bit_rate),
-    tracks: buildTrackRows(parsed.streams)
+    tracks: buildTrackRows(parsed.streams),
+    rawJson
   }
 }

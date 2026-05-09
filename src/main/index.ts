@@ -39,6 +39,7 @@ import { loadSettings, saveSettings } from './settings-store'
 import { loadTrustedHashes, resolveTrustedHashesPath } from './trusted-hashes-store'
 import { resolvePreloadOutFile } from './preload-resolve'
 import { boundsFromBrowserWindow, rectifyBoundsForRestore } from './window-bounds'
+import { getAppAboutInfo } from './about-info'
 
 /** Кастомная схема для локального видеопревью; привилегии обязаны зарегистрироваться до `app.whenReady`. */
 registerFluxMediaPrivileges()
@@ -321,6 +322,16 @@ function buildApplicationMenu(): void {
       label: 'Справка',
       submenu: [
         {
+          label: 'О программе FluxAlloy…',
+          click: (): void => {
+            const target = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0]
+            if (!target || target.isDestroyed()) {
+              return
+            }
+            target.webContents.send('fluxalloy:open-about')
+          }
+        },
+        {
           label: 'Документация FluxAlloy (ТЗ)',
           click: (): void => {
             const tzPath = technicalSpecPath()
@@ -541,6 +552,23 @@ app.whenReady().then(() => {
   })
 
   ipcMain.handle('fluxalloy:clipboard-read-text', () => clipboard.readText())
+
+  ipcMain.handle(
+    'fluxalloy:clipboard-write-text',
+    (_, raw: unknown): { ok: true } | { ok: false } => {
+      if (typeof raw !== 'string') {
+        return { ok: false }
+      }
+      const max = 24 * 1024 * 1024
+      if (raw.length > max) {
+        return { ok: false }
+      }
+      clipboard.writeText(raw)
+      return { ok: true }
+    }
+  )
+
+  ipcMain.handle('fluxalloy:app-about-info', () => getAppAboutInfo())
 
   ipcMain.handle('fluxalloy:open-downloads-window', (_, raw: unknown) => {
     const payload = parseDownloadsOpenPayload(raw)
