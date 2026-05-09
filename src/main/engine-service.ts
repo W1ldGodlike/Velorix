@@ -57,6 +57,11 @@ function candidatePaths(paths: AppPaths, id: EngineId): string[] {
   return [join(paths.bundledBin, exe), join(paths.userBin, exe)]
 }
 
+/** Путь к уже существующему исполняемому файлу движка (для запусков вроде ffprobe/ffmpeg). */
+export function resolveEngineExecutablePath(paths: AppPaths, id: EngineId): string | null {
+  return firstExistingPath(candidatePaths(paths, id))
+}
+
 function readVersion(executablePath: string): Promise<string> {
   return new Promise((resolve, reject) => {
     // Внешние процессы запускаем только через execFile/args array: без shell и без конкатенации команд.

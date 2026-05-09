@@ -1,16 +1,19 @@
 import { existsSync } from 'fs'
-import { basename, join } from 'path'
-import { BrowserWindow, Menu, app, ipcMain, shell } from 'electron'
+import { basename, join, normalize, resolve } from 'path'
+import { BrowserWindow, Menu, app, clipboard, ipcMain, shell } from 'electron'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
 import { resolveAppPaths } from './app-paths'
 import { downloadEnginesWindows, isAnyEngineMissing } from './engine-download'
+import { focusOrCreateDownloadsWindow } from './downloads-window'
+import { probeMediaFile } from './ffprobe-service'
 import type { EngineDownloadProgress } from './engine-download'
 import { getEnginesStatus } from './engine-service'
 import type { EnginesStatusSnapshot } from './engine-service'
 import {
   grantMediaPath,
+  isGrantedMediaPath,
   registerFluxMediaPrivileges,
   registerFluxMediaProtocol
 } from './media-protocol'
@@ -52,7 +55,18 @@ function technicalSpecPath(): string {
 let cachedSettings: AppSettings = { theme: 'dark' }
 
 function applyTheme(theme: AppTheme): void {
-  cachedSettings = { theme }
+  cachedSettings = { ...cachedSettings, theme }
+}
+
+function persistLastOpenedSource(absolutePath: string | null): void {
+  if (absolutePath === null || absolutePath.trim().length === 0) {
+    const rest = { ...cachedSettings }
+    delete rest.lastOpenedSourcePath
+    cachedSettings = rest
+  } else {
+    cachedSettings = { ...cachedSettings, lastOpenedSourcePath: absolutePath.trim() }
+  }
+  saveSettings(settingsPath(), cachedSettings)
 }
 
 function persistAndBroadcast(theme: AppTheme): AppSettings {
@@ -112,7 +126,15 @@ function buildApplicationMenu(): void {
             if (!result.ok) {
               return
             }
+            persistLastOpenedSource(result.path)
             target.webContents.send('fluxalloy:preview-opened', result)
+          }
+        },
+        {
+          label: 'Менеджер загрузок (yt-dlp)…',
+          accelerator: 'CmdOrCtrl+Shift+Y',
+          click: (): void => {
+            focusOrCreateDownloadsWindow(null)
           }
         },
         { type: 'separator' },
@@ -252,7 +274,11 @@ app.whenReady().then(() => {
     if (!win) {
       return { ok: false, error: 'Нет активного окна' }
     }
-    return openVideoWithDialog(win)
+    const result = await openVideoWithDialog(win)
+    if (result.ok) {
+      persistLastOpenedSource(result.path)
+    }
+    return result
   })
 
   ipcMain.handle('fluxalloy:preview-grant-path', (_, rawPath: unknown) => {
@@ -263,12 +289,61 @@ app.whenReady().then(() => {
     if (!mediaUrl) {
       return { ok: false, error: 'Не удалось открыть файл' }
     }
+    persistLastOpenedSource(rawPath)
     return {
       ok: true,
       path: rawPath,
       mediaUrl,
       name: basename(rawPath)
     }
+  })
+
+  ipcMain.handle('fluxalloy:persist-last-source', (_, raw: unknown) => {
+    if (raw === null || raw === undefined || raw === '') {
+      persistLastOpenedSource(null)
+      return
+    }
+    if (typeof raw === 'string') {
+      persistLastOpenedSource(raw)
+    }
+  })
+
+  ipcMain.handle('fluxalloy:restore-last-source', () => {
+    const saved = cachedSettings.lastOpenedSourcePath
+    if (typeof saved !== 'string' || saved.trim().length === 0 || !existsSync(saved)) {
+      return null
+    }
+    const mediaUrl = grantMediaPath(saved.trim())
+    if (!mediaUrl) {
+      persistLastOpenedSource(null)
+      return null
+    }
+    return {
+      path: saved.trim(),
+      mediaUrl,
+      name: basename(saved.trim())
+    }
+  })
+
+  ipcMain.handle('fluxalloy:media-probe', async (_, rawPath: unknown) => {
+    if (typeof rawPath !== 'string' || rawPath.trim().length === 0) {
+      return { ok: false as const, error: 'Не указан путь к медиафайлу' }
+    }
+    const abs = resolve(normalize(rawPath.trim()))
+    if (!isGrantedMediaPath(abs)) {
+      return {
+        ok: false as const,
+        error: 'Нет доступа к этому пути для анализа (сначала откройте файл в превью).'
+      }
+    }
+    return probeMediaFile(resolveAppPaths(), abs)
+  })
+
+  ipcMain.handle('fluxalloy:clipboard-read-text', () => clipboard.readText())
+
+  ipcMain.handle('fluxalloy:open-downloads-window', (_, rawUrl: unknown) => {
+    const url = typeof rawUrl === 'string' && rawUrl.trim().length > 0 ? rawUrl.trim() : null
+    focusOrCreateDownloadsWindow(url)
   })
 
   ipcMain.on('ping', () => console.log('pong'))

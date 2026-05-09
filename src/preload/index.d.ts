@@ -1,6 +1,7 @@
 import type { ElectronAPI } from '@electron-toolkit/preload'
 
 import type { EngineDownloadProgress } from '../main/engine-download'
+import type { MediaProbeResult } from '../main/ffprobe-service'
 import type { EnginesStatusSnapshot } from '../main/engine-service'
 import type { PreviewDialogResult } from '../main/preview-dialog'
 import type { AppSettings, AppTheme } from '../main/settings-store'
@@ -28,7 +29,18 @@ export interface FluxAlloyApi {
     ) => Promise<
       { ok: true; path: string; mediaUrl: string; name: string } | { ok: false; error: string }
     >
+    probe: (absolutePath: string) => Promise<MediaProbeResult>
     getPathForFile: (file: File) => string
+  }
+  session: {
+    persistLastSource: (path: string | null) => Promise<void>
+    restoreLastSource: () => Promise<PreviewOpenedPayload | null>
+  }
+  downloads: {
+    openWindow: (url?: string | null) => Promise<void>
+  }
+  clipboard: {
+    readText: () => Promise<string>
   }
   engines: {
     getStatus: () => Promise<EnginesStatusSnapshot>

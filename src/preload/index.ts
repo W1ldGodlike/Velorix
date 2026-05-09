@@ -3,6 +3,7 @@ import { electronAPI } from '@electron-toolkit/preload'
 
 import type { EngineDownloadProgress } from '../main/engine-download'
 import type { EnginesStatusSnapshot } from '../main/engine-service'
+import type { MediaProbeResult } from '../main/ffprobe-service'
 import type { PreviewDialogResult } from '../main/preview-dialog'
 import type { AppSettings, AppTheme } from '../main/settings-store'
 
@@ -27,8 +28,23 @@ const fluxalloy = {
     ): Promise<
       { ok: true; path: string; mediaUrl: string; name: string } | { ok: false; error: string }
     > => ipcRenderer.invoke('fluxalloy:preview-grant-path', absolutePath),
+    probe: (absolutePath: string): Promise<MediaProbeResult> =>
+      ipcRenderer.invoke('fluxalloy:media-probe', absolutePath),
     /** Только узкий API на путь: renderer не имеет доступа к `File.path`. */
     getPathForFile: (file: File): string => webUtils.getPathForFile(file)
+  },
+  session: {
+    persistLastSource: (path: string | null): Promise<void> =>
+      ipcRenderer.invoke('fluxalloy:persist-last-source', path),
+    restoreLastSource: (): Promise<PreviewOpenedPayload | null> =>
+      ipcRenderer.invoke('fluxalloy:restore-last-source')
+  },
+  downloads: {
+    openWindow: (url?: string | null): Promise<void> =>
+      ipcRenderer.invoke('fluxalloy:open-downloads-window', url ?? null)
+  },
+  clipboard: {
+    readText: (): Promise<string> => ipcRenderer.invoke('fluxalloy:clipboard-read-text')
   },
   engines: {
     getStatus: (): Promise<EnginesStatusSnapshot> => ipcRenderer.invoke('fluxalloy:engines-status'),

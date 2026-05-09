@@ -6,7 +6,9 @@ export type AppTheme = 'dark' | 'light'
 export interface AppSettings {
   /** Тема хранится в main, чтобы меню, renderer и будущие окна не расходились между собой. */
   theme: AppTheme
-  // TODO(§3/§4.6): добавить язык, override-пути движков, hotkeys и настройки сессий без ломки старого JSON.
+  /** §4.1: последний успешно открытый локальный файл для мягкого восстановления сессии. */
+  lastOpenedSourcePath?: string
+  // TODO(§3/§4.6): язык, override-пути движков, hotkeys.
 }
 
 const defaults: AppSettings = { theme: 'dark' }
@@ -26,7 +28,11 @@ export function loadSettings(filePath: string): AppSettings {
     const raw = readFileSync(filePath, 'utf-8')
     const parsed = JSON.parse(raw) as Partial<AppSettings>
     const theme = parsed.theme === 'light' ? 'light' : 'dark'
-    return { theme }
+    const last =
+      typeof parsed.lastOpenedSourcePath === 'string' && parsed.lastOpenedSourcePath.trim() !== ''
+        ? parsed.lastOpenedSourcePath.trim()
+        : undefined
+    return last === undefined ? { theme } : { theme, lastOpenedSourcePath: last }
   } catch {
     return { ...defaults }
   }

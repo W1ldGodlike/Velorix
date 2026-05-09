@@ -42,6 +42,16 @@ function stableKey(absPath: string): string | null {
   }
 }
 
+/**
+ * Проверка, что путь уже зарегистрирован через `grantMediaPath` — нужна для ffprobe/будущих IPC,
+ * чтобы renderer не мог анализировать произвольные файлы по угадыванию пути.
+ */
+export function isGrantedMediaPath(filePath: string): boolean {
+  const abs = resolve(normalize(filePath))
+  const key = stableKey(abs)
+  return key !== null && allowedMediaPaths.has(key)
+}
+
 /** Регистрирует абсолютный путь к медиафайлу и возвращает URL для `<video src>`. */
 export function grantMediaPath(filePath: string): string | null {
   const abs = resolve(normalize(filePath))

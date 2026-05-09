@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
+import VideoTimeline from './components/VideoTimeline'
 import Versions from './components/Versions'
 
 type Theme = 'dark' | 'light'
@@ -11,6 +12,11 @@ interface PreviewOpenedPayload {
   name: string
 }
 type EngineSummary = 'checking' | 'ready' | 'missing' | 'error'
+
+type MediaProbeSuccess = Extract<
+  Awaited<ReturnType<typeof window.fluxalloy.preview.probe>>,
+  { ok: true }
+>
 
 /**
  * Сводит подробные статусы движков к одной строке для нижнего статусбара.
@@ -54,8 +60,14 @@ function App(): React.JSX.Element {
   /** Подстрочное сообщение статусбара: прогресс загрузки движков, ошибки DnD и т.п. */
   const [statusHint, setStatusHint] = useState<string | null>(null)
   const [preview, setPreview] = useState<PreviewOpenedPayload | null>(null)
+  const [probeInfo, setProbeInfo] = useState<MediaProbeSuccess | null>(null)
+  const [probeError, setProbeError] = useState<string | null>(null)
+  const [downloadsUrl, setDownloadsUrl] = useState('')
+  const videoRef = useRef<HTMLVideoElement>(null)
 
   const applyPreview = useCallback((payload: PreviewOpenedPayload): void => {
+    setProbeInfo(null)
+    setProbeError(null)
     setPreview(payload)
   }, [])
 
@@ -78,6 +90,42 @@ function App(): React.JSX.Element {
       cleanupTheme?.()
     }
   }, [applyTheme])
+
+  useEffect(() => {
+    let cancelled = false
+    void window.fluxalloy.session.restoreLastSource().then((restored) => {
+      if (cancelled || !restored) {
+        return
+      }
+      applyPreview(restored)
+    })
+    return (): void => {
+      cancelled = true
+    }
+  }, [applyPreview])
+
+  useEffect(() => {
+    const path = preview?.path
+    if (!path) {
+      return
+    }
+    let cancelled = false
+    void window.fluxalloy.preview.probe(path).then((r) => {
+      if (cancelled) {
+        return
+      }
+      if (r.ok) {
+        setProbeInfo(r)
+        setProbeError(null)
+      } else {
+        setProbeInfo(null)
+        setProbeError(r.error)
+      }
+    })
+    return (): void => {
+      cancelled = true
+    }
+  }, [preview?.path])
 
   useEffect(() => {
     void window.fluxalloy.engines
@@ -170,6 +218,16 @@ function App(): React.JSX.Element {
           type="button"
           className="app-btn"
           onClick={() => {
+            void window.fluxalloy.downloads.openWindow(downloadsUrl || null)
+          }}
+          title="Отдельное окно заглушки менеджера загрузок (§4.A)"
+        >
+          Загрузки yt-dlp
+        </button>
+        <button
+          type="button"
+          className="app-btn"
+          onClick={() => {
             void handleOpenToolbar()
           }}
           title="Открыть локальный видеофайл"
@@ -208,6 +266,40 @@ function App(): React.JSX.Element {
         </button>
       </header>
 
+      <div className="app-url-bar" aria-label="Ссылка для будущего yt-dlp">
+        <input
+          className="app-url-input"
+          type="url"
+          inputMode="url"
+          placeholder="URL для будущих загрузок (пока только передаётся в окно-заглушку)"
+          value={downloadsUrl}
+          onChange={(e) => {
+            setDownloadsUrl(e.target.value)
+          }}
+        />
+        <button
+          type="button"
+          className="app-btn"
+          onClick={() => {
+            void window.fluxalloy.downloads.openWindow(downloadsUrl || null)
+          }}
+        >
+          Открыть окно
+        </button>
+        <button
+          type="button"
+          className="app-btn"
+          onClick={() => {
+            void window.fluxalloy.clipboard.readText().then((t) => {
+              setDownloadsUrl(t.trim())
+            })
+          }}
+          title="Вставить текст из буфера обмена в поле URL"
+        >
+          Из буфера
+        </button>
+      </div>
+
       <main className="app-main">
         <section
           className="app-preview"
@@ -224,15 +316,37 @@ function App(): React.JSX.Element {
         >
           {preview ? (
             <>
-              <video
-                key={preview.mediaUrl}
-                className="app-preview-video"
-                controls
-                src={preview.mediaUrl}
-              />
-              <footer className="app-preview-caption" title={preview.path}>
-                {preview.name}
-              </footer>
+              <div className="app-preview-stack">
+                <video
+                  key={preview.mediaUrl}
+                  ref={videoRef}
+                  className="app-preview-video"
+                  controls
+                  src={preview.mediaUrl}
+                />
+                <VideoTimeline mediaKey={preview.mediaUrl} videoRef={videoRef} />
+                {(probeInfo || probeError) && (
+                  <div className="app-preview-probe" aria-live="polite">
+                    {probeError ? (
+                      <span className="app-preview-probe-error">{probeError}</span>
+                    ) : probeInfo ? (
+                      <span>
+                        {probeInfo.durationSec !== null
+                          ? `${Math.round(probeInfo.durationSec)} с`
+                          : 'длительность ?'}
+                        {probeInfo.video
+                          ? ` · ${probeInfo.video.width}×${probeInfo.video.height} · ${probeInfo.video.codec}`
+                          : ''}
+                        {probeInfo.audioCodec ? ` · аудио ${probeInfo.audioCodec}` : ''}
+                        {probeInfo.formatName ? ` · ${probeInfo.formatName}` : ''}
+                      </span>
+                    ) : null}
+                  </div>
+                )}
+                <footer className="app-preview-caption" title={preview.path}>
+                  {preview.name}
+                </footer>
+              </div>
             </>
           ) : (
             <div className="app-preview-placeholder">
