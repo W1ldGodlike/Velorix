@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs'
+import { existsSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from 'fs'
 import { dirname, join } from 'path'
 
 import { logError } from './logger-service'
@@ -38,6 +38,27 @@ interface HistoryFileShape {
 
 function historyFilePath(userDataRoot: string): string {
   return join(userDataRoot, 'downloads', 'history.json')
+}
+
+function writeHistoryFileAtomic(
+  file: string,
+  payload: HistoryFileShape,
+  failureMessage: string
+): void {
+  const tmp = `${file}.${process.pid}.${Date.now()}-${Math.random().toString(36).slice(2, 10)}.tmp`
+  try {
+    writeFileSync(tmp, JSON.stringify(payload, null, 2), 'utf-8')
+    renameSync(tmp, file)
+  } catch (err) {
+    try {
+      if (existsSync(tmp)) {
+        unlinkSync(tmp)
+      }
+    } catch {
+      /* не мешаем исходной ошибке записи попасть в лог */
+    }
+    logError('ytdlp-history', failureMessage, err)
+  }
 }
 
 /** Маппинг финального статуса очереди на исход для истории §6.4. */
@@ -181,11 +202,7 @@ export function appendYtdlpDownloadHistoryEntry(
     schema: YTDLP_DOWNLOAD_HISTORY_SCHEMA,
     entries
   }
-  try {
-    writeFileSync(file, JSON.stringify(payload, null, 2), 'utf-8')
-  } catch (err) {
-    logError('ytdlp-history', 'write history.json failed', err)
-  }
+  writeHistoryFileAtomic(file, payload, 'write history.json failed')
 }
 
 /** Последние `limit` записей в порядке от новых к старым. */
@@ -203,12 +220,13 @@ export function clearYtdlpDownloadHistory(userDataRoot: string): void {
   const file = historyFilePath(userDataRoot)
   try {
     mkdirSync(dirname(file), { recursive: true })
-    writeFileSync(
-      file,
-      JSON.stringify({ schema: YTDLP_DOWNLOAD_HISTORY_SCHEMA, entries: [] }, null, 2),
-      'utf-8'
-    )
   } catch (err) {
-    logError('ytdlp-history', 'clear history.json failed', err)
+    logError('ytdlp-history', 'mkdir downloads for clear history failed', err)
+    return
   }
+  writeHistoryFileAtomic(
+    file,
+    { schema: YTDLP_DOWNLOAD_HISTORY_SCHEMA, entries: [] },
+    'clear history.json failed'
+  )
 }

@@ -282,7 +282,7 @@
 - [ ] «Скачать и открыть в обработчике».
 - [ ] «Скачать и сразу обработать».
 - [~] Обработка ошибок: краткий текст из последней строки `ERROR:` в статусе + повторы очереди §6.4; расширенная политика retry — позже.
-- [x] История загрузок (файл `downloads/history.json`, запись после yt-dlp, IPC, UI).
+- [x] История загрузок (файл `downloads/history.json`, атомарная запись temp+rename после yt-dlp, IPC, UI).
 
 ## §7. Главное окно: обработка (ffmpeg)
 
@@ -494,7 +494,7 @@
 - [ ] Вынести IPC contracts в отдельный слой.
 - [ ] Вынести сервисы main.
 - [ ] Вынести модели shared.
-- [~] Unit tests для чистых модулей: `tests/main/*` — `ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`, `ytdlp-download-history`. Дальше — output-pattern, ffmpeg-progress, settings-store парсеры.
+- [~] Unit tests для чистых модулей: `tests/main/*` — `ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`, `ytdlp-download-history` (append/read/clear). Дальше — output-pattern, ffmpeg-progress, settings-store парсеры.
 - [x] Выбрать Vitest/Jest: Vitest подключён (`npm run test`/`test:watch`, `tsconfig.tests.json`).
 - [ ] Добавить e2e smoke позже.
 - [~] Комментарии на русском для публичных API и сложной логики: базовые комментарии добавлены; дальше писать чуть развёрнутее, чтобы следующему проходу агента было понятно «зачем» и «где границы», не только «что делает строка».
