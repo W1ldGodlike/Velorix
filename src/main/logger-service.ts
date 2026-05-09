@@ -181,14 +181,14 @@ export function logFromRendererSafe(raw: unknown): void {
     return
   }
   const o = raw as Record<string, unknown>
-  const lvl = o.level
+  const lvl = o['level']
   const level: LogLevel = lvl === 'error' ? 'error' : lvl === 'warn' ? 'warn' : 'info'
-  const scopeRaw = typeof o.scope === 'string' ? o.scope.trim() : ''
+  const scopeRaw = typeof o['scope'] === 'string' ? o['scope'].trim() : ''
   const scope =
     scopeRaw.length === 0
       ? 'renderer'
       : `renderer/${sanitizeRendererText(scopeRaw, RENDERER_SCOPE_MAX)}`
-  const msgRaw = typeof o.message === 'string' ? o.message : ''
+  const msgRaw = typeof o['message'] === 'string' ? o['message'] : ''
   const message = sanitizeRendererText(msgRaw, RENDERER_MESSAGE_MAX)
   if (message.length === 0) {
     return

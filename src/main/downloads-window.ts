@@ -1197,40 +1197,40 @@ export function registerDownloadsWindowIpcHandlers(): void {
       const o = raw as Record<string, unknown>
       const patch: YtdlpDownloadOptionsPatch = {}
       if (Object.prototype.hasOwnProperty.call(o, 'filenameTemplate')) {
-        if (typeof o.filenameTemplate !== 'string') {
+        if (typeof o['filenameTemplate'] !== 'string') {
           return { ok: false, error: 'Шаблон имени должен быть строкой' }
         }
-        patch.filenameTemplate = o.filenameTemplate
+        patch.filenameTemplate = o['filenameTemplate']
       }
       if (Object.prototype.hasOwnProperty.call(o, 'formatPreset')) {
-        patch.formatPreset = parseYtdlpFormatPreset(o.formatPreset)
+        patch.formatPreset = parseYtdlpFormatPreset(o['formatPreset'])
       }
       if (Object.prototype.hasOwnProperty.call(o, 'downloadPlaylist')) {
-        if (typeof o.downloadPlaylist !== 'boolean') {
+        if (typeof o['downloadPlaylist'] !== 'boolean') {
           return { ok: false, error: 'Поле плейлиста должно быть boolean' }
         }
-        patch.downloadPlaylist = o.downloadPlaylist
+        patch.downloadPlaylist = o['downloadPlaylist']
       }
       if (Object.prototype.hasOwnProperty.call(o, 'audioOnly')) {
-        if (typeof o.audioOnly !== 'boolean') {
+        if (typeof o['audioOnly'] !== 'boolean') {
           return { ok: false, error: 'Поле «только аудио» должно быть boolean' }
         }
-        patch.audioOnly = o.audioOnly
+        patch.audioOnly = o['audioOnly']
       }
       if (Object.prototype.hasOwnProperty.call(o, 'subtitlePreset')) {
-        patch.subtitlePreset = parseYtdlpSubtitlePreset(o.subtitlePreset)
+        patch.subtitlePreset = parseYtdlpSubtitlePreset(o['subtitlePreset'])
       }
       if (Object.prototype.hasOwnProperty.call(o, 'subLangs')) {
-        if (typeof o.subLangs !== 'string') {
+        if (typeof o['subLangs'] !== 'string') {
           return { ok: false, error: 'Языки субтитров должны быть строкой' }
         }
-        patch.subLangs = o.subLangs
+        patch.subLangs = o['subLangs']
       }
       if (Object.prototype.hasOwnProperty.call(o, 'cookiesBrowser')) {
-        if (typeof o.cookiesBrowser !== 'string') {
+        if (typeof o['cookiesBrowser'] !== 'string') {
           return { ok: false, error: 'Поле cookies браузера должно быть строкой' }
         }
-        const cv = o.cookiesBrowser
+        const cv = o['cookiesBrowser']
         if (cv === 'none') {
           patch.cookiesBrowser = 'none'
         } else {
@@ -1242,10 +1242,10 @@ export function registerDownloadsWindowIpcHandlers(): void {
         }
       }
       if (Object.prototype.hasOwnProperty.call(o, 'impersonate')) {
-        if (typeof o.impersonate !== 'string') {
+        if (typeof o['impersonate'] !== 'string') {
           return { ok: false, error: 'Поле impersonate должно быть строкой' }
         }
-        const iv = o.impersonate
+        const iv = o['impersonate']
         if (iv === 'none') {
           patch.impersonate = 'none'
         } else {
@@ -1257,31 +1257,31 @@ export function registerDownloadsWindowIpcHandlers(): void {
         }
       }
       if (Object.prototype.hasOwnProperty.call(o, 'rateLimit')) {
-        if (typeof o.rateLimit !== 'string') {
+        if (typeof o['rateLimit'] !== 'string') {
           return { ok: false, error: 'Ограничение скорости должно быть строкой' }
         }
-        patch.rateLimit = o.rateLimit
+        patch.rateLimit = o['rateLimit']
       }
       if (Object.prototype.hasOwnProperty.call(o, 'retriesLine')) {
-        if (typeof o.retriesLine !== 'string') {
+        if (typeof o['retriesLine'] !== 'string') {
           return { ok: false, error: 'Количество повторов должно быть строкой' }
         }
-        patch.retriesLine = o.retriesLine
+        patch.retriesLine = o['retriesLine']
       }
       if (Object.prototype.hasOwnProperty.call(o, 'fragmentRetriesLine')) {
-        if (typeof o.fragmentRetriesLine !== 'string') {
+        if (typeof o['fragmentRetriesLine'] !== 'string') {
           return { ok: false, error: 'Количество повторов фрагментов должно быть строкой' }
         }
-        patch.fragmentRetriesLine = o.fragmentRetriesLine
+        patch.fragmentRetriesLine = o['fragmentRetriesLine']
       }
       if (Object.prototype.hasOwnProperty.call(o, 'extraArgsLine')) {
-        if (typeof o.extraArgsLine !== 'string') {
+        if (typeof o['extraArgsLine'] !== 'string') {
           return { ok: false, error: 'Доп. аргументы должны быть строкой' }
         }
-        patch.extraArgsLine = o.extraArgsLine
+        patch.extraArgsLine = o['extraArgsLine']
       }
       if (Object.prototype.hasOwnProperty.call(o, 'queueRetryProfile')) {
-        patch.queueRetryProfile = parseYtdlpQueueRetryProfile(o.queueRetryProfile)
+        patch.queueRetryProfile = parseYtdlpQueueRetryProfile(o['queueRetryProfile'])
       }
       if (
         patch.filenameTemplate === undefined &&

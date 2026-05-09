@@ -7,9 +7,9 @@ function Versions(): React.JSX.Element {
 
   return (
     <ul className="versions-inline" aria-label="Версии среды">
-      <li>Electron {versions.electron}</li>
-      <li>Chromium {versions.chrome}</li>
-      <li>Node {versions.node}</li>
+      <li>Electron {versions['electron']}</li>
+      <li>Chromium {versions['chrome']}</li>
+      <li>Node {versions['node']}</li>
     </ul>
   )
 }

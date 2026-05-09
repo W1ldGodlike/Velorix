@@ -339,7 +339,7 @@ function App(): JSX.Element {
   }, [preview?.path])
 
   const applyTheme = useCallback((value: Theme) => {
-    document.documentElement.dataset.theme = value
+    document.documentElement.dataset['theme'] = value
     setTheme(value)
   }, [])
 

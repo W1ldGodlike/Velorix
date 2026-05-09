@@ -17,10 +17,10 @@ function parseStoredWindowRect(raw: unknown): StoredWindowRect | undefined {
     return undefined
   }
   const o = raw as Record<string, unknown>
-  const x = Number(o.x)
-  const y = Number(o.y)
-  const width = Number(o.width)
-  const height = Number(o.height)
+  const x = Number(o['x'])
+  const y = Number(o['y'])
+  const width = Number(o['width'])
+  const height = Number(o['height'])
   if (![x, y, width, height].every(Number.isFinite)) {
     return undefined
   }
@@ -35,8 +35,8 @@ function parseWindowBoundsConfig(raw: unknown): WindowBoundsConfig | undefined {
     return undefined
   }
   const o = raw as Record<string, unknown>
-  const main = parseStoredWindowRect(o.main)
-  const downloads = parseStoredWindowRect(o.downloads)
+  const main = parseStoredWindowRect(o['main'])
+  const downloads = parseStoredWindowRect(o['downloads'])
   if (!main && !downloads) {
     return undefined
   }

@@ -98,3 +98,4 @@
 - 2026-05-10 01:26:59 [SDK]: §21 — `noImplicitAny` в tsconfig node/web/tests; константа `ENGINE_IDS` в `engine-contract`, main/renderer на общем списке; Vitest `tests/shared/engine-contract`.
 - 2026-05-10 01:28:36 [SDK]: §21 — `noUncheckedIndexedAccess` в tsconfig node/web/tests; точечные правки main и Vitest под безопасный доступ по индексу.
 - 2026-05-10 01:30:06 [SDK]: §21 — `exactOptionalPropertyTypes` в tsconfig node/web/tests; экспорт IPC передаёт `trim` только если задан (main/renderer).
+- 2026-05-10 01:32:06 [SDK]: §21 — `noPropertyAccessFromIndexSignature`; bracket-доступ для `Record<string, unknown>` в main и для `dataset`/версий в renderer.

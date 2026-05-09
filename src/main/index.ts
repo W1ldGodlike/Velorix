@@ -297,13 +297,13 @@ function parseExportTrim(raw: unknown): MediaExportTrimPayload | undefined {
     return undefined
   }
   const o = raw as Record<string, unknown>
-  if (typeof o.inSec !== 'number' || typeof o.outSec !== 'number') {
+  if (typeof o['inSec'] !== 'number' || typeof o['outSec'] !== 'number') {
     return undefined
   }
-  if (!Number.isFinite(o.inSec) || !Number.isFinite(o.outSec)) {
+  if (!Number.isFinite(o['inSec']) || !Number.isFinite(o['outSec'])) {
     return undefined
   }
-  return { inSec: o.inSec, outSec: o.outSec }
+  return { inSec: o['inSec'], outSec: o['outSec'] }
 }
 
 function applyTheme(theme: AppTheme): void {

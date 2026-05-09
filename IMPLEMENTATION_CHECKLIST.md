@@ -40,7 +40,7 @@
 - [~] §7: превью + таймлайн + экспорт MP4/MKV/MOV + запоминание папки экспорта + отмена активного экспорта + действия открыть файл/папку результата/вернуть экспорт в превью/скопировать путь + снимок кадра §7.6 с persisted PNG/JPEG, запоминанием папки и действиями файл/папка/копия пути + ffprobe под превью; отдельное окно инспектора §9 — позже.
 - [~] §7.2/§20: системные пресеты libx264, persisted контейнер/формат, CRF или video bitrate, аудио AAC/без аудио, AAC bitrate, FPS и scale preset есть; дальше пользовательские пресеты, расширенные параметры кодирования и live preview команды.
 - [~] §17/§18: меню диагностических папок с актуальным `enabled`, `logger-service`, диалог ошибок, Support ZIP, логи stdout/stderr движков и prune старых crash dumps; дальше — логи сессий/расширенная политика хранения.
-- [~] §21: включены `noUncheckedIndexedAccess` и `exactOptionalPropertyTypes` в tsconfig node/web/tests + точечные правки экспорта IPC; дальше — остальные строгие флаги только при необходимости (`noPropertyAccessFromIndexSignature` и т.п.).
+- [~] §21: включены `noImplicitAny`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `noPropertyAccessFromIndexSignature` в tsconfig node/web/tests + bracket-доступ для неструктурных JSON/DOM; дальше — опционально `useUnknownInCatchVariables` или смещение фокуса на §6/§7 по продукту.
 
 ---
 
@@ -490,7 +490,7 @@
 ## §21. Архитектура и качество
 
 - [~] Есть структура main/preload/renderer.
-- [x] Включить/проверить strict TypeScript политику: базовый `@electron-toolkit/tsconfig` уже с `strict`; дополнительно явно включены `noImplicitAny`, `noUncheckedIndexedAccess` и `exactOptionalPropertyTypes` в `tsconfig.node.json`, `tsconfig.web.json`, `tsconfig.tests.json`.
+- [x] Включить/проверить strict TypeScript политику: базовый `@electron-toolkit/tsconfig` уже с `strict`; дополнительно явно включены `noImplicitAny`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes` и `noPropertyAccessFromIndexSignature` в `tsconfig.node.json`, `tsconfig.web.json`, `tsconfig.tests.json`.
 - [x] IPC contracts: `ipc-channels.ts`; перечисленные `src/shared/*-contract.ts` (в т.ч. ffprobe, settings, engine, about, preview-dialog, ffmpeg export, yt-dlp окно/лог/история, диагностика, engine-download, snapshot) — главный preload импортирует типы из `src/shared`, не из `main`; дальше — новые домены по мере IPC.
 - [ ] Вынести сервисы main (упорядочить без дублирования с текущими модулями).
 - [ ] Вынести модели shared.

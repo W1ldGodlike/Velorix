@@ -78,37 +78,37 @@ function parseEntry(raw: unknown): YtdlpDownloadHistoryEntry | null {
     return null
   }
   const o = raw as Record<string, unknown>
-  if (typeof o.id !== 'string' || o.id.length === 0) {
+  if (typeof o['id'] !== 'string' || o['id'].length === 0) {
     return null
   }
-  if (!isFiniteNumber(o.startedAt) || !isFiniteNumber(o.finishedAt)) {
+  if (!isFiniteNumber(o['startedAt']) || !isFiniteNumber(o['finishedAt'])) {
     return null
   }
   if (
-    typeof o.url !== 'string' ||
-    typeof o.shortLabel !== 'string' ||
-    typeof o.status !== 'string'
+    typeof o['url'] !== 'string' ||
+    typeof o['shortLabel'] !== 'string' ||
+    typeof o['status'] !== 'string'
   ) {
     return null
   }
-  if (!isOutcome(o.outcome)) {
+  if (!isOutcome(o['outcome'])) {
     return null
   }
-  const exitCode = o.exitCode
+  const exitCode = o['exitCode']
   const ec =
     exitCode === null || exitCode === undefined
       ? null
       : typeof exitCode === 'number' && Number.isFinite(exitCode)
         ? exitCode
         : null
-  const hint = o.errorHint
+  const hint = o['errorHint']
   const errorHint =
     hint === null || hint === undefined
       ? null
       : typeof hint === 'string'
         ? hint.slice(0, 500)
         : null
-  const outPath = o.outputPath
+  const outPath = o['outputPath']
   const outputPath =
     outPath === null || outPath === undefined
       ? null
@@ -116,13 +116,13 @@ function parseEntry(raw: unknown): YtdlpDownloadHistoryEntry | null {
         ? outPath.slice(0, 4096)
         : null
   return {
-    id: o.id.slice(0, 64),
-    startedAt: o.startedAt,
-    finishedAt: o.finishedAt,
-    url: o.url.slice(0, 2048),
-    shortLabel: o.shortLabel.slice(0, 300),
-    outcome: o.outcome,
-    status: o.status.slice(0, 400),
+    id: o['id'].slice(0, 64),
+    startedAt: o['startedAt'],
+    finishedAt: o['finishedAt'],
+    url: o['url'].slice(0, 2048),
+    shortLabel: o['shortLabel'].slice(0, 300),
+    outcome: o['outcome'],
+    status: o['status'].slice(0, 400),
     exitCode: ec,
     errorHint,
     outputPath
