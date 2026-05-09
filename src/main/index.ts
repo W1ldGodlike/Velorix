@@ -52,6 +52,7 @@ import {
   parseYtdlpSubtitlePreset,
   payloadFromSnapshot,
   validateFilenameTemplate,
+  validateYtdlpCookiesFilePath,
   validateYtdlpSubLangs,
   type YtdlpDownloadOptionsPatch
 } from './ytdlp-download-options'
@@ -222,6 +223,31 @@ function persistYtdlpDownloadDirectory(abs: string | null): void {
   syncYtdlpDownloadDirectoryFromSettings(cachedSettings.ytdlpDownloadDirectory)
 }
 
+/** §6.2 — выбор файла Netscape cookies; взаимоисключающий с --cookies-from-browser. */
+function persistYtdlpCookiesFileFromPicker(
+  absPath: string
+): { ok: true } | { ok: false; error: string } {
+  const v = validateYtdlpCookiesFilePath(absPath)
+  if (!v.ok) {
+    return v
+  }
+  const merged: AppSettings = { ...cachedSettings }
+  merged.ytdlpCookiesFile = v.path
+  delete merged.ytdlpCookiesBrowser
+  cachedSettings = merged
+  saveSettings(settingsPath(), cachedSettings)
+  refreshYtdlpRunOptionsSnapshot(cachedSettings)
+  return { ok: true }
+}
+
+function persistClearYtdlpCookiesFile(): void {
+  const merged: AppSettings = { ...cachedSettings }
+  delete merged.ytdlpCookiesFile
+  cachedSettings = merged
+  saveSettings(settingsPath(), cachedSettings)
+  refreshYtdlpRunOptionsSnapshot(cachedSettings)
+}
+
 /** §6.2 — шаблон `-o` и белый список `-f`; синхронно обновляет снимок для downloads-queue-runner. */
 function persistYtdlpDownloadCliOptionsPatch(
   patch: YtdlpDownloadOptionsPatch
@@ -276,6 +302,14 @@ function persistYtdlpDownloadCliOptionsPatch(
       delete merged.ytdlpSubLangs
     } else {
       merged.ytdlpSubLangs = sv.value
+    }
+  }
+  if (patch.cookiesBrowser !== undefined) {
+    if (patch.cookiesBrowser === 'none') {
+      delete merged.ytdlpCookiesBrowser
+    } else {
+      merged.ytdlpCookiesBrowser = patch.cookiesBrowser
+      delete merged.ytdlpCookiesFile
     }
   }
   if (patch.extraArgsLine !== undefined) {
@@ -582,6 +616,31 @@ app.whenReady().then(() => {
     },
     clearYtdlpOutputDirectoryOverride: (): void => {
       persistYtdlpDownloadDirectory(null)
+    },
+    pickYtdlpCookiesFile: async (win: BrowserWindow) => {
+      const result = await dialog.showOpenDialog(win, {
+        properties: ['openFile'],
+        title: 'Файл cookies для yt-dlp (формат Netscape)',
+        filters: [
+          { name: 'Текстовые файлы', extensions: ['txt'] },
+          { name: 'Все файлы', extensions: ['*'] }
+        ]
+      })
+      if (result.canceled || result.filePaths.length === 0 || !result.filePaths[0]) {
+        return { ok: false, cancelled: true }
+      }
+      const picked = normalize(result.filePaths[0])
+      if (!isAbsolute(picked)) {
+        return { ok: false, error: 'Нужен абсолютный путь к файлу' }
+      }
+      const saved = persistYtdlpCookiesFileFromPicker(picked)
+      if (!saved.ok) {
+        return saved
+      }
+      return { ok: true, path: picked }
+    },
+    clearYtdlpCookiesFile: (): void => {
+      persistClearYtdlpCookiesFile()
     },
     getYtdlpDownloadCliOptions: () =>
       payloadFromSnapshot(buildYtdlpRunOptionsSnapshot(cachedSettings)),

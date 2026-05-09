@@ -1,10 +1,12 @@
-import { join, normalize, relative, resolve, sep } from 'path'
+import { existsSync, statSync } from 'fs'
+import { isAbsolute, join, normalize, relative, resolve, sep } from 'path'
 
 import type { AppSettings } from './settings-store'
 import {
   buildYtdlpSpawnArgvTokens,
   formatArgvTokensForPreview,
   parseExtraYtdlpArgsLine,
+  type YtdlpCookiesBrowserId,
   type YtdlpSubtitlePresetId
 } from './ytdlp-extra-args'
 import { getYtdlpCommandHints, type YtdlpCommandHintEntry } from './ytdlp-commands-hints'
@@ -18,7 +20,7 @@ export const YTDLP_DEFAULT_FILENAME_TEMPLATE = '%(title)s [%(id)s].%(ext)s'
  */
 export type YtdlpFormatPresetId = 'default' | 'merge_bv_ba' | 'best_single'
 
-export type { YtdlpSubtitlePresetId }
+export type { YtdlpSubtitlePresetId, YtdlpCookiesBrowserId }
 
 export interface YtdlpRunOptionsSnapshot {
   filenameTemplate: string
@@ -41,6 +43,15 @@ export interface YtdlpRunOptionsSnapshot {
   extraArgs: string[]
   /** Если строка из файла не прошла parse — показываем в UI, runner игнорирует extras. */
   extraArgsParseWarning: string | null
+  /** §6.2 — путь для `--cookies`, только если файл на диске доступен. */
+  cookiesArgvFile: string | null
+  /** §6.2 — только если нет рабочего файла cookies. */
+  cookiesArgvBrowser: YtdlpCookiesBrowserId | null
+  /** Путь из settings для подписи в UI (может быть битым). */
+  cookiesFilePathStored: string
+  /** Выбор в UI (может сосуществовать с файлом в JSON до сохранения). */
+  cookiesBrowserChoice: 'none' | YtdlpCookiesBrowserId
+  cookiesWarning: string | null
 }
 
 /** То, что видит окно загрузок: текущие значения и метки для `<select>`. */
@@ -60,6 +71,9 @@ export interface YtdlpDownloadOptionsPayload {
   extraArgsParseWarning: string | null
   /** Подсказки для поля доп. аргументов §6.3 (из `Data/ytdlp_commands.json`). */
   commandHints: YtdlpCommandHintEntry[]
+  cookiesBrowserChoice: 'none' | YtdlpCookiesBrowserId
+  cookiesFilePathStored: string
+  cookiesWarning: string | null
 }
 
 export interface YtdlpDownloadOptionsPatch {
@@ -69,6 +83,8 @@ export interface YtdlpDownloadOptionsPatch {
   audioOnly?: boolean
   subtitlePreset?: YtdlpSubtitlePresetId
   subLangs?: string
+  /** §6.2 `none` или whitelist браузера; при сохранении отличного от «нет» сбрасывает файл cookies. */
+  cookiesBrowser?: 'none' | YtdlpCookiesBrowserId
   extraArgsLine?: string
 }
 
@@ -84,6 +100,41 @@ export function parseYtdlpSubtitlePreset(raw: unknown): YtdlpSubtitlePresetId {
     return raw
   }
   return 'none'
+}
+
+export function parseYtdlpCookiesBrowser(raw: unknown): YtdlpCookiesBrowserId | undefined {
+  if (raw === 'chrome' || raw === 'edge' || raw === 'firefox') {
+    return raw
+  }
+  return undefined
+}
+
+/** Проверка перед сохранением пути и после диалога выбора файла §6.2. */
+export function validateYtdlpCookiesFilePath(
+  raw: string
+): { ok: true; path: string } | { ok: false; error: string } {
+  const t = raw.trim()
+  if (t.length === 0) {
+    return { ok: false, error: 'Путь к файлу cookies пуст.' }
+  }
+  if (t.length > 4096) {
+    return { ok: false, error: 'Путь слишком длинный.' }
+  }
+  const n = normalize(t)
+  if (!isAbsolute(n)) {
+    return { ok: false, error: 'Нужен абсолютный путь к файлу cookies.' }
+  }
+  if (!existsSync(n)) {
+    return { ok: false, error: 'Файл cookies не найден.' }
+  }
+  try {
+    if (!statSync(n).isFile()) {
+      return { ok: false, error: 'Указанный путь не является файлом.' }
+    }
+  } catch {
+    return { ok: false, error: 'Не удалось прочитать файл cookies.' }
+  }
+  return { ok: true, path: n }
 }
 
 /** Одна строка без пробелов — станет вторым токеном после `--sub-langs`. */
@@ -220,6 +271,47 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
   const parsedExtras = parseExtraYtdlpArgsLine(extraArgsLine)
   const extraArgs = parsedExtras.ok ? parsedExtras.args : []
   const extraArgsParseWarning = parsedExtras.ok ? null : parsedExtras.error
+
+  const cookiesFileStored =
+    typeof settings.ytdlpCookiesFile === 'string' ? settings.ytdlpCookiesFile.trim() : ''
+  let cookiesArgvFile: string | null = null
+  let cookiesWarning: string | null = null
+  let cookiesFileBroken = false
+  if (cookiesFileStored !== '') {
+    const n = normalize(cookiesFileStored)
+    if (!isAbsolute(n)) {
+      cookiesFileBroken = true
+      cookiesWarning =
+        'Путь к cookies не абсолютный — выберите файл через «Выбрать…» или очистите поле.'
+    } else if (!existsSync(n)) {
+      cookiesFileBroken = true
+      cookiesWarning =
+        'Файл cookies не найден — исправьте путь или очистите; браузерный источник до исправления не используется.'
+    } else {
+      try {
+        if (!statSync(n).isFile()) {
+          cookiesFileBroken = true
+          cookiesWarning =
+            'Путь cookies не указывает на обычный файл; браузерный источник до исправления не используется.'
+        } else {
+          cookiesArgvFile = n
+        }
+      } catch {
+        cookiesFileBroken = true
+        cookiesWarning =
+          'Не удалось проверить файл cookies; браузерный источник до исправления не используется.'
+      }
+    }
+  }
+
+  const browserParsed = parseYtdlpCookiesBrowser(settings.ytdlpCookiesBrowser)
+  const cookiesArgvBrowser: YtdlpCookiesBrowserId | null =
+    !cookiesFileBroken && cookiesArgvFile === null && browserParsed !== undefined
+      ? browserParsed
+      : null
+  const cookiesBrowserChoice: 'none' | YtdlpCookiesBrowserId =
+    browserParsed !== undefined ? browserParsed : 'none'
+
   return {
     filenameTemplate,
     formatPreset: preset,
@@ -231,7 +323,12 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
     subLangsLine,
     extraArgsLine,
     extraArgs,
-    extraArgsParseWarning
+    extraArgsParseWarning,
+    cookiesArgvFile,
+    cookiesArgvBrowser,
+    cookiesFilePathStored: cookiesFileStored,
+    cookiesBrowserChoice,
+    cookiesWarning
   }
 }
 
@@ -242,6 +339,8 @@ export function payloadFromSnapshot(snap: YtdlpRunOptionsSnapshot): YtdlpDownloa
     audioOnly: snap.audioOnly,
     subtitlePreset: snap.subtitlePreset,
     subLangs: snap.subLangs,
+    cookiesFile: snap.cookiesArgvFile,
+    cookiesBrowser: snap.cookiesArgvBrowser,
     formatExtraArgs: snap.formatExtraArgs,
     extraArgs: snap.extraArgs,
     outputPattern: outPh,
@@ -265,6 +364,9 @@ export function payloadFromSnapshot(snap: YtdlpRunOptionsSnapshot): YtdlpDownloa
     extraArgsLine: snap.extraArgsLine,
     commandPreview,
     extraArgsParseWarning: snap.extraArgsParseWarning,
-    commandHints
+    commandHints,
+    cookiesBrowserChoice: snap.cookiesBrowserChoice,
+    cookiesFilePathStored: snap.cookiesFilePathStored,
+    cookiesWarning: snap.cookiesWarning
   }
 }

@@ -107,6 +107,8 @@ export function runYtdlpOnce(
     | 'audioOnly'
     | 'subtitlePreset'
     | 'subLangs'
+    | 'cookiesArgvFile'
+    | 'cookiesArgvBrowser'
     | 'extraArgs'
   >
 ): Promise<{ exitCode: number | null; signal: NodeJS.Signals | null }> {
@@ -131,6 +133,8 @@ export function runYtdlpOnce(
   const audioOnly = cli?.audioOnly === true
   const subtitlePreset = cli?.subtitlePreset ?? 'none'
   const subLangs = cli?.subLangs ?? ''
+  const cookiesFile = cli?.cookiesArgvFile ?? null
+  const cookiesBrowser = cli?.cookiesArgvBrowser ?? null
   const fmtArgs = audioOnly ? [] : (cli?.formatExtraArgs ?? [])
   const extraArgs = cli?.extraArgs ?? []
   const args = buildYtdlpSpawnArgvTokens({
@@ -138,6 +142,8 @@ export function runYtdlpOnce(
     audioOnly,
     subtitlePreset,
     subLangs,
+    cookiesFile,
+    cookiesBrowser,
     formatExtraArgs: fmtArgs,
     extraArgs,
     outputPattern: outPattern,

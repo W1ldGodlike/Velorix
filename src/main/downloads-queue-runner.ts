@@ -94,6 +94,8 @@ async function runYtdlpForWaitingRow(
         audioOnly: cli.audioOnly,
         subtitlePreset: cli.subtitlePreset,
         subLangs: cli.subLangs,
+        cookiesArgvFile: cli.cookiesArgvFile,
+        cookiesArgvBrowser: cli.cookiesArgvBrowser,
         extraArgs: cli.extraArgs
       }
     )

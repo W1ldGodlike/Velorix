@@ -41,6 +41,10 @@ export interface AppSettings {
   ytdlpSubtitlePreset?: 'manual' | 'manual_auto'
   /** §6.2: необязательный фильтр `--sub-langs` (один токен без пробелов). */
   ytdlpSubLangs?: string
+  /** §6.2: абсолютный путь к Netscape cookies (`--cookies`). */
+  ytdlpCookiesFile?: string
+  /** §6.2: `--cookies-from-browser` для ограниченного whitelist (если нет файла). */
+  ytdlpCookiesBrowser?: 'chrome' | 'edge' | 'firefox'
   /** §6.3: дополнительные аргументы yt-dlp одной строкой (токены через пробел). */
   ytdlpExtraArgsLine?: string
   /** §7.2: системный пресет экспорта MP4 (libx264 CRF + `-preset`). */
@@ -158,6 +162,24 @@ function parseYtdlpSubLangsStored(raw: unknown): string | undefined {
   return t
 }
 
+function parseYtdlpCookiesFileStored(raw: unknown): string | undefined {
+  if (typeof raw !== 'string' || raw.trim() === '') {
+    return undefined
+  }
+  const n = normalize(raw.trim())
+  if (!isAbsolute(n) || n.length > 4096) {
+    return undefined
+  }
+  return n
+}
+
+function parseYtdlpCookiesBrowserStored(raw: unknown): 'chrome' | 'edge' | 'firefox' | undefined {
+  if (raw === 'chrome' || raw === 'edge' || raw === 'firefox') {
+    return raw
+  }
+  return undefined
+}
+
 function parseFfmpegExportEncodePresetStored(raw: unknown): string | undefined {
   if (typeof raw !== 'string') {
     return undefined
@@ -201,6 +223,8 @@ export function loadSettings(filePath: string): AppSettings {
     const ytdlpExtraArgsLine = parseYtdlpExtraArgsLineStored(parsed.ytdlpExtraArgsLine)
     const ytdlpSubtitlePreset = parseYtdlpSubtitlePresetStored(parsed.ytdlpSubtitlePreset)
     const ytdlpSubLangs = parseYtdlpSubLangsStored(parsed.ytdlpSubLangs)
+    const ytdlpCookiesFile = parseYtdlpCookiesFileStored(parsed.ytdlpCookiesFile)
+    const ytdlpCookiesBrowser = parseYtdlpCookiesBrowserStored(parsed.ytdlpCookiesBrowser)
 
     const base: AppSettings = { theme }
     if (last !== undefined) {
@@ -235,6 +259,12 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (ytdlpSubLangs !== undefined) {
       base.ytdlpSubLangs = ytdlpSubLangs
+    }
+    if (ytdlpCookiesFile !== undefined) {
+      base.ytdlpCookiesFile = ytdlpCookiesFile
+    }
+    if (ytdlpCookiesBrowser !== undefined) {
+      base.ytdlpCookiesBrowser = ytdlpCookiesBrowser
     }
     if (ytdlpExtraArgsLine !== undefined) {
       base.ytdlpExtraArgsLine = ytdlpExtraArgsLine

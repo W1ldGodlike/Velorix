@@ -36,6 +36,12 @@ function tokenViolationReason(token: string): string | null {
   if (low === '-a' || low === '--batch-file' || low.startsWith('--batch-file=')) {
     return 'Пакетные файлы (-a/--batch-file) здесь запрещены.'
   }
+  if (low === '--cookies' || low.startsWith('--cookies=')) {
+    return 'Cookies задаются в блоке §6.2; не дублируйте --cookies.'
+  }
+  if (low === '--cookies-from-browser' || low.startsWith('--cookies-from-browser=')) {
+    return 'Источник cookies задаётся в §6.2; не дублируйте --cookies-from-browser.'
+  }
   return null
 }
 
@@ -81,6 +87,9 @@ export function formatArgvTokensForPreview(tokens: string[]): string {
 /** Белый список режимов субтитров §6.2 (без произвольных флагов в UI). */
 export type YtdlpSubtitlePresetId = 'none' | 'manual' | 'manual_auto'
 
+/** §6.2 — только распространённые движки для `--cookies-from-browser` (без произвольной строки профиля). */
+export type YtdlpCookiesBrowserId = 'chrome' | 'edge' | 'firefox'
+
 /** Полный argv yt-dlp без пути к exe §6 / §6.3. */
 export function buildYtdlpSpawnArgvTokens(params: {
   downloadPlaylist: boolean
@@ -89,6 +98,10 @@ export function buildYtdlpSpawnArgvTokens(params: {
   subtitlePreset: YtdlpSubtitlePresetId
   /** Уже проверенная строка для одного токена `--sub-langs`; пусто — ключ не добавляем. */
   subLangs: string
+  /** Файл Netscape cookies; приоритетнее `cookiesBrowser`. */
+  cookiesFile: string | null
+  /** `--cookies-from-browser`, если файла нет. */
+  cookiesBrowser: YtdlpCookiesBrowserId | null
   formatExtraArgs: string[]
   extraArgs: string[]
   outputPattern: string
@@ -96,6 +109,12 @@ export function buildYtdlpSpawnArgvTokens(params: {
 }): string[] {
   const args: string[] = ['--newline', '--no-color']
   args.push(params.downloadPlaylist ? '--yes-playlist' : '--no-playlist')
+  const cf = params.cookiesFile?.trim()
+  if (cf) {
+    args.push('--cookies', cf)
+  } else if (params.cookiesBrowser) {
+    args.push('--cookies-from-browser', params.cookiesBrowser)
+  }
   args.push(...params.formatExtraArgs)
   const sub = params.subtitlePreset ?? 'none'
   if (sub === 'manual') {

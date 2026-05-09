@@ -75,6 +75,13 @@ contextBridge.exposeInMainWorld('fluxalloyDownloads', {
   clearOutputDirectory: (): Promise<void> =>
     ipcRenderer.invoke('fluxalloy-downloads-clear-output-dir'),
 
+  pickCookiesFile: (): Promise<
+    { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
+  > => ipcRenderer.invoke('fluxalloy-downloads-pick-cookies-file'),
+
+  clearCookiesFile: (): Promise<void> =>
+    ipcRenderer.invoke('fluxalloy-downloads-clear-cookies-file'),
+
   getCliOptions: (): Promise<
     { ok: true; payload: YtdlpDownloadOptionsPayload } | { ok: false; error: string }
   > => ipcRenderer.invoke('fluxalloy-downloads-get-cli-options'),

@@ -23,6 +23,7 @@ import {
   resolveYtdlpOutputDirectory
 } from './ytdlp-download-output'
 import {
+  parseYtdlpCookiesBrowser,
   parseYtdlpFormatPreset,
   parseYtdlpSubtitlePreset,
   type YtdlpDownloadOptionsPayload,
@@ -42,6 +43,13 @@ interface DownloadsWindowBoundsHooks {
     { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
   >
   clearYtdlpOutputDirectoryOverride?: () => void
+  /** §6.2 — файл Netscape cookies (`--cookies`), сохраняется сразу после диалога. */
+  pickYtdlpCookiesFile?: (
+    win: BrowserWindow
+  ) => Promise<
+    { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
+  >
+  clearYtdlpCookiesFile?: () => void
   /** §6.2 — шаблон `-o` и пресет `-f`; persisted в `settings.json` из index.ts. */
   getYtdlpDownloadCliOptions?: () => YtdlpDownloadOptionsPayload
   applyYtdlpDownloadCliPatch?: (
@@ -227,6 +235,21 @@ function buildDownloadsHtml(): string {
     <label for="subLangsInput">Языки субтитров (--sub-langs, без пробелов)</label>
     <input type="text" id="subLangsInput" spellcheck="false" autocomplete="off" placeholder="Пусто = все; пример: ru,en или all" />
     <p class="opts-hint">Фильтр языков учитывается только если включены субтитры; произвольные флаги — в «Доп. аргументы».</p>
+    <label for="cookiesBrowserSelect">Cookies §6.2</label>
+    <select id="cookiesBrowserSelect">
+      <option value="none">Не использовать</option>
+      <option value="chrome">Из браузера: Chrome</option>
+      <option value="edge">Из браузера: Edge</option>
+      <option value="firefox">Из браузера: Firefox</option>
+    </select>
+    <p class="opts-hint">Файл cookies имеет приоритет: если он задан и доступен, флаг cookies-from-browser не передаётся.</p>
+    <div class="out-dir-row">
+      <span>Файл cookies (Netscape):</span>
+      <span id="cookiesPathText" class="out-path" title="">—</span>
+      <button type="button" class="cmd" id="pickCookiesBtn">Выбрать…</button>
+      <button type="button" class="cmd" id="clearCookiesBtn" title="Убрать файл из настроек">Очистить</button>
+    </div>
+    <p class="opts-hint opts-warn" id="cookiesWarn" hidden></p>
     <label for="extraArgsInput">Дополнительные аргументы (через пробел, без shell) §6.3</label>
     <textarea id="extraArgsInput" rows="2" spellcheck="false" autocomplete="off" placeholder="Например: --write-sub --sub-lang ru"></textarea>
     <p class="opts-hint opts-warn" id="extraArgsWarn" hidden></p>
@@ -282,6 +305,11 @@ function buildDownloadsHtml(): string {
       var chkAudioOnly = document.getElementById('chkAudioOnly');
       var subPreset = document.getElementById('subPreset');
       var subLangsInput = document.getElementById('subLangsInput');
+      var cookiesBrowserSelect = document.getElementById('cookiesBrowserSelect');
+      var cookiesPathText = document.getElementById('cookiesPathText');
+      var pickCookiesBtn = document.getElementById('pickCookiesBtn');
+      var clearCookiesBtn = document.getElementById('clearCookiesBtn');
+      var cookiesWarn = document.getElementById('cookiesWarn');
       var extraArgsInput = document.getElementById('extraArgsInput');
       var argsPreview = document.getElementById('argsPreview');
       var extraArgsWarn = document.getElementById('extraArgsWarn');
@@ -324,6 +352,25 @@ function buildDownloadsHtml(): string {
           }
           if (subLangsInput && typeof p.subLangsLine === 'string') {
             subLangsInput.value = p.subLangsLine;
+          }
+          if (cookiesBrowserSelect && typeof p.cookiesBrowserChoice === 'string') {
+            var cb = p.cookiesBrowserChoice;
+            cookiesBrowserSelect.value =
+              cb === 'chrome' || cb === 'edge' || cb === 'firefox' ? cb : 'none';
+          }
+          if (cookiesPathText && typeof p.cookiesFilePathStored === 'string') {
+            var cp = p.cookiesFilePathStored;
+            cookiesPathText.textContent = cp.length > 0 ? cp : '—';
+            cookiesPathText.title = cp.length > 0 ? cp : '';
+          }
+          if (cookiesWarn) {
+            if (p.cookiesWarning) {
+              cookiesWarn.textContent = p.cookiesWarning;
+              cookiesWarn.hidden = false;
+            } else {
+              cookiesWarn.textContent = '';
+              cookiesWarn.hidden = true;
+            }
           }
           if (!fmtPreset) return;
           fmtPreset.replaceChildren();
@@ -489,6 +536,22 @@ function buildDownloadsHtml(): string {
         });
       });
 
+      if (pickCookiesBtn) {
+        pickCookiesBtn.addEventListener('click', function () {
+          api.pickCookiesFile().then(function (res) {
+            if (res && res.ok === false && res.error) window.alert(res.error);
+            refreshCliOpts();
+          });
+        });
+      }
+      if (clearCookiesBtn) {
+        clearCookiesBtn.addEventListener('click', function () {
+          api.clearCookiesFile().then(function () {
+            refreshCliOpts();
+          });
+        });
+      }
+
       if (applyOptsBtn && tmplInput && fmtPreset) {
         applyOptsBtn.addEventListener('click', function () {
           api.setCliOptions({
@@ -498,6 +561,7 @@ function buildDownloadsHtml(): string {
             audioOnly: !!(chkAudioOnly && chkAudioOnly.checked),
             subtitlePreset: subPreset ? subPreset.value : 'none',
             subLangs: subLangsInput ? subLangsInput.value : '',
+            cookiesBrowser: cookiesBrowserSelect ? cookiesBrowserSelect.value : 'none',
             extraArgsLine: extraArgsInput ? extraArgsInput.value : ''
           }).then(function (res) {
             if (res && res.ok === false && res.error) window.alert(res.error);
@@ -666,6 +730,21 @@ export function registerDownloadsWindowIpcHandlers(): void {
         }
         patch.subLangs = o.subLangs
       }
+      if (Object.prototype.hasOwnProperty.call(o, 'cookiesBrowser')) {
+        if (typeof o.cookiesBrowser !== 'string') {
+          return { ok: false, error: 'Поле cookies браузера должно быть строкой' }
+        }
+        const cv = o.cookiesBrowser
+        if (cv === 'none') {
+          patch.cookiesBrowser = 'none'
+        } else {
+          const b = parseYtdlpCookiesBrowser(cv)
+          if (!b) {
+            return { ok: false, error: 'Недопустимое значение браузера для cookies' }
+          }
+          patch.cookiesBrowser = b
+        }
+      }
       if (Object.prototype.hasOwnProperty.call(o, 'extraArgsLine')) {
         if (typeof o.extraArgsLine !== 'string') {
           return { ok: false, error: 'Доп. аргументы должны быть строкой' }
@@ -679,6 +758,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
         patch.audioOnly === undefined &&
         patch.subtitlePreset === undefined &&
         patch.subLangs === undefined &&
+        patch.cookiesBrowser === undefined &&
         patch.extraArgsLine === undefined
       ) {
         return { ok: false, error: 'Нечего сохранять' }
@@ -714,6 +794,35 @@ export function registerDownloadsWindowIpcHandlers(): void {
       return
     }
     downloadsBoundsHooks.clearYtdlpOutputDirectoryOverride?.()
+  })
+
+  ipcMain.handle(
+    'fluxalloy-downloads-pick-cookies-file',
+    async (
+      event
+    ): Promise<
+      { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
+    > => {
+      if (!isDownloadsSender(event.sender)) {
+        return { ok: false, error: 'Недопустимый отправитель' }
+      }
+      const fn = downloadsBoundsHooks.pickYtdlpCookiesFile
+      if (!fn) {
+        return { ok: false, error: 'Выбор файла cookies не подключён' }
+      }
+      const win = BrowserWindow.fromWebContents(event.sender)
+      if (!win || win.isDestroyed()) {
+        return { ok: false, error: 'Нет окна' }
+      }
+      return fn(win)
+    }
+  )
+
+  ipcMain.handle('fluxalloy-downloads-clear-cookies-file', (event) => {
+    if (!isDownloadsSender(event.sender)) {
+      return
+    }
+    downloadsBoundsHooks.clearYtdlpCookiesFile?.()
   })
 
   ipcMain.handle('fluxalloy-downloads-clear', (event) => {

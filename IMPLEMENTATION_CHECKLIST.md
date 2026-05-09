@@ -43,7 +43,7 @@
 - [x] §4/§7: Drag-and-Drop файла в область превью с регистрацией пути в main.
 - [~] §7: превью + таймлайн + экспорт MP4 + снимок кадра §7.6 + ffprobe под превью; отдельное окно инспектора §9 — позже.
 - [x] §6.1: колонка «Прогресс» в очереди yt-dlp — `% · скорость · ETA` из stderr (`parseYtdlpDownloadProgressLine` / `formatYtdlpProgressCell`).
-- [~] §6.2: шаблон `-o`, пресеты `-f`, плейлист, аудио `-x`, пресет субтитров + `--sub-langs`; §6.3 — доп. argv + превью + справочник; дальше cookies / `--impersonate` и пр.
+- [~] §6.2: шаблон `-o`, пресеты `-f`, плейлист, аудио `-x`, субтитры, cookies (файл + whitelist браузера); §6.3 — доп. argv + превью + справочник; дальше `--impersonate` и пр.
 - [x] §7.1: в статусе экспорта — `speed=` из stderr ffmpeg + разбор прогресса по `\r`/`\n`.
 - [~] §7.2: первые системные пресеты экспорта (`balance`/`smaller`/`quality` → CRF + `-preset` libx264 + UI + settings); пользовательские пресеты §20 — позже.
 - [x] §19: пустой `bin/` в репозитории + `extraResources` в installer (бинарники не в Git; подкладка вручную перед сборкой).
@@ -267,7 +267,7 @@
 - [~] Аудио-only (`-x --audio-format best`; ffmpeg должен быть доступен yt-dlp; без выбора кодека).
 - [x] Субтитры (пресет §6.2: выкл. / `--write-subs` / `--write-auto-subs`; опционально `--sub-langs` без пробелов; persist в settings).
 - [~] Плейлист/одиночный ролик (`--yes-playlist` / по умолчанию `--no-playlist`).
-- [ ] Cookies/browser profile.
+- [~] Cookies / профиль браузера: файл Netscape (--cookies) + whitelist `--cookies-from-browser` (Chrome/Edge/Firefox); строка профиля/контейнера yt-dlp в UI — позже.
 - [ ] `--impersonate chrome`.
 - [x] Шаблон имени `-o` (относительно каталога загрузки, проверка выхода из каталога, `%(ext)s`; `ytdlpFilenameTemplate` в settings).
 - [x] Каталог загрузки (выбор папки в окне yt-dlp + `ytdlpDownloadDirectory` в `settings.json`; по умолчанию `userData/downloads/ytdlp`).
