@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer, webUtils } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
+import type { DiagnosticsFolderEntry, DiagnosticsFolderId } from '../main/diagnostics-paths'
 import type { EngineDownloadProgress } from '../main/engine-download'
 import type {
   FfmpegExportEncodePresetId,
@@ -69,6 +70,14 @@ const fluxalloy = {
   },
   about: {
     getInfo: (): Promise<AppAboutInfo> => ipcRenderer.invoke('fluxalloy:app-about-info')
+  },
+  diagnostics: {
+    listFolders: (): Promise<DiagnosticsFolderEntry[]> =>
+      ipcRenderer.invoke('fluxalloy:diagnostics-list-folders'),
+    openFolder: (
+      id: DiagnosticsFolderId
+    ): Promise<{ ok: true; path: string } | { ok: false; error: string }> =>
+      ipcRenderer.invoke('fluxalloy:diagnostics-open-folder', id)
   },
   engines: {
     getStatus: (): Promise<EnginesStatusSnapshot> => ipcRenderer.invoke('fluxalloy:engines-status'),

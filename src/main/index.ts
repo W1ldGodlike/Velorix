@@ -12,6 +12,12 @@ import {
   focusOrCreateDownloadsWindow,
   registerDownloadsWindowIpcHandlers
 } from './downloads-window'
+import {
+  isDiagnosticsFolderId,
+  listDiagnosticsFolders,
+  openDiagnosticsFolder,
+  type DiagnosticsFolderEntry
+} from './diagnostics-paths'
 import { runFfmpegSnapshotFrame } from './ffmpeg-frame-snapshot-service'
 import {
   parseFfmpegExportEncodePreset,
@@ -414,6 +420,25 @@ function setTheme(theme: AppTheme): AppTheme {
   return theme
 }
 
+/**
+ * §17/§18 — пункты «Инструменты → Открыть папку…».
+ *
+ * Подменю строится из whitelist `listDiagnosticsFolders`, чтобы пользователь не мог
+ * через меню заставить приложение открыть произвольный путь. Если каталог уже отсутствует
+ * (например, `bin` не подложен в dev), пункт остаётся видимым, но disabled — это лучше,
+ * чем менять состав меню от запуска к запуску.
+ */
+function buildDiagnosticsFolderSubmenu(): Electron.MenuItemConstructorOptions[] {
+  const entries = listDiagnosticsFolders()
+  return entries.map((entry: DiagnosticsFolderEntry) => ({
+    label: entry.label,
+    enabled: entry.exists,
+    click: (): void => {
+      void openDiagnosticsFolder(entry.id)
+    }
+  }))
+}
+
 function buildApplicationMenu(): void {
   const win = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0] ?? undefined
   const isMac = process.platform === 'darwin'
@@ -490,6 +515,15 @@ function buildApplicationMenu(): void {
             }
             target.webContents.send('fluxalloy:open-engine-paths')
           }
+        }
+      ]
+    },
+    {
+      label: 'Инструменты',
+      submenu: [
+        {
+          label: 'Открыть папку…',
+          submenu: buildDiagnosticsFolderSubmenu()
         }
       ]
     },
@@ -867,6 +901,23 @@ app.whenReady().then(() => {
   )
 
   ipcMain.handle('fluxalloy:app-about-info', () => getAppAboutInfo())
+
+  ipcMain.handle('fluxalloy:diagnostics-list-folders', (): DiagnosticsFolderEntry[] => {
+    return listDiagnosticsFolders()
+  })
+
+  ipcMain.handle(
+    'fluxalloy:diagnostics-open-folder',
+    async (
+      _event,
+      raw: unknown
+    ): Promise<{ ok: true; path: string } | { ok: false; error: string }> => {
+      if (!isDiagnosticsFolderId(raw)) {
+        return { ok: false, error: 'Неизвестный каталог' }
+      }
+      return openDiagnosticsFolder(raw)
+    }
+  )
 
   ipcMain.handle('fluxalloy:open-downloads-window', (_, raw: unknown) => {
     const payload = parseDownloadsOpenPayload(raw)

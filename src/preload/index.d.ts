@@ -1,5 +1,6 @@
 import type { ElectronAPI } from '@electron-toolkit/preload'
 
+import type { DiagnosticsFolderEntry, DiagnosticsFolderId } from '../main/diagnostics-paths'
 import type { EngineDownloadProgress } from '../main/engine-download'
 import type {
   FfmpegExportEncodePresetId,
@@ -63,6 +64,12 @@ export interface FluxAlloyApi {
   }
   about: {
     getInfo: () => Promise<AppAboutInfo>
+  }
+  diagnostics: {
+    listFolders: () => Promise<DiagnosticsFolderEntry[]>
+    openFolder: (
+      id: DiagnosticsFolderId
+    ) => Promise<{ ok: true; path: string } | { ok: false; error: string }>
   }
   engines: {
     getStatus: () => Promise<EnginesStatusSnapshot>
