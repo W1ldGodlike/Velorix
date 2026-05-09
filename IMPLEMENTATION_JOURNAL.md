@@ -65,3 +65,4 @@
 - 2026-05-09 23:23:14 [Assistant]: §6.3/§21 — закрыт обход blacklist через glued short-options yt-dlp (`-Ptmp`, `-a/list`, `-oX`, `-r5M`) и добавлены Vitest-кейсы для этих форм.
 - 2026-05-09 23:26:16 [Assistant]: §18 — renderer log IPC закреплён за main window, получил token bucket rate limit и очистку control chars в `scope/message`; `attachProcessErrorHandlers()` перенесён на ранний старт main до `app.whenReady`.
 - 2026-05-09 23:28:03 [Assistant]: §6.4/§21 — запись и очистка `downloads/history.json` переведены на атомарный temp+rename; тесты истории расширены сценариями append/read newest-first и clear с валидной схемой.
+- 2026-05-09 23:31:11 [Assistant]: §17 — меню «Инструменты → Открыть папку…» пересобирается при фокусе окна и после изменения диагностически важных путей (`ytdlpDownloads`, engine bin), чтобы `enabled` отражал актуальное существование каталогов.

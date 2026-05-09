@@ -269,6 +269,7 @@ function persistEnginePathOverridesPatch(patch: EnginePathOverridesPatch): AppSe
   cachedSettings = merged
   saveSettings(settingsPath(), cachedSettings)
   refreshEnginePathOverridesSnapshot()
+  buildApplicationMenu()
   BrowserWindow.getAllWindows().forEach((w) => {
     w.webContents.send('fluxalloy:engine-paths-changed')
   })
@@ -289,6 +290,7 @@ function persistYtdlpDownloadDirectory(abs: string | null): void {
   cachedSettings = merged
   saveSettings(settingsPath(), cachedSettings)
   syncYtdlpDownloadDirectoryFromSettings(cachedSettings.ytdlpDownloadDirectory)
+  buildApplicationMenu()
 }
 
 /** §6.2 — выбор файла Netscape cookies; взаимоисключающий с --cookies-from-browser. */
@@ -478,8 +480,8 @@ function setTheme(theme: AppTheme): AppTheme {
  *
  * Подменю строится из whitelist `listDiagnosticsFolders`, чтобы пользователь не мог
  * через меню заставить приложение открыть произвольный путь. Если каталог уже отсутствует
- * (например, `bin` не подложен в dev), пункт остаётся видимым, но disabled — это лучше,
- * чем менять состав меню от запуска к запуску.
+ * (например, `bin` не подложен в dev), пункт остаётся видимым, но disabled. Меню пересобирается
+ * при фокусе окна и после операций с путями, поэтому `enabled` не застывает на весь запуск.
  */
 function buildDiagnosticsFolderSubmenu(): Electron.MenuItemConstructorOptions[] {
   const entries = listDiagnosticsFolders()
@@ -797,6 +799,10 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
+  app.on('browser-window-focus', () => {
+    buildApplicationMenu()
+  })
+
   // IPC-каналы держим узкими: renderer просит только конкретные операции, без произвольного доступа к Node.
   ipcMain.handle('fluxalloy:settings-get', (): AppSettings => {
     return { ...cachedSettings }
@@ -867,6 +873,7 @@ app.whenReady().then(() => {
         await downloadEnginesWindows(paths, trusted, (p: EngineDownloadProgress) => {
           win?.webContents.send('fluxalloy:engines-progress', p)
         })
+        buildApplicationMenu()
         return { ok: true }
       } catch (error) {
         const msg = error instanceof Error ? error.message : String(error)
