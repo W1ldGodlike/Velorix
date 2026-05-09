@@ -21,10 +21,15 @@ import {
 } from './diagnostics-paths'
 import {
   attachProcessErrorHandlers,
+  getMainLogBackupFilePath,
+  getMainLogFilePath,
+  logError,
   logFromRendererSafe,
   logInfo,
-  logStartupBanner
+  logStartupBanner,
+  setProcessErrorReporter
 } from './logger-service'
+import { createSupportBundleZip, type SupportBundleRuntimeInfo } from './support-bundle'
 import { runFfmpegSnapshotFrame } from './ffmpeg-frame-snapshot-service'
 import {
   parseFfmpegExportEncodePreset,
@@ -506,6 +511,136 @@ function buildDiagnosticsFolderSubmenu(): Electron.MenuItemConstructorOptions[] 
   }))
 }
 
+function getCrashDumpsPathSafe(): string | null {
+  try {
+    return app.getPath('crashDumps')
+  } catch {
+    return null
+  }
+}
+
+function supportBundleRuntimeInfo(): SupportBundleRuntimeInfo {
+  const paths = resolveAppPaths()
+  return {
+    appVersion: app.getVersion(),
+    electronVersion: process.versions.electron ?? '?',
+    chromeVersion: process.versions.chrome ?? '?',
+    nodeVersion: process.versions.node ?? '?',
+    platform: process.platform,
+    arch: process.arch,
+    userData: paths.userData,
+    resources: paths.resources,
+    logFile: getMainLogFilePath(),
+    logBackupFile: getMainLogBackupFilePath(),
+    crashDumps: getCrashDumpsPathSafe()
+  }
+}
+
+async function openMainLogFile(): Promise<void> {
+  const file = getMainLogFilePath()
+  if (!file) {
+    return
+  }
+  if (!existsSync(file)) {
+    logInfo('diagnostics', 'main.log does not exist yet')
+    return
+  }
+  const result = await shell.openPath(file)
+  if (result.length > 0) {
+    logError('diagnostics', 'open main.log failed', result)
+  }
+}
+
+async function createSupportBundleWithDialog(parent?: BrowserWindow): Promise<string | null> {
+  const stamp = new Date().toISOString().replace(/[:.]/g, '-')
+  const saveOptions = {
+    title: 'Собрать Support ZIP',
+    defaultPath: `fluxalloy-support-${stamp}.zip`,
+    filters: [{ name: 'ZIP', extensions: ['zip'] }]
+  }
+  const result = parent
+    ? await dialog.showSaveDialog(parent, saveOptions)
+    : await dialog.showSaveDialog(saveOptions)
+  if (result.canceled || !result.filePath) {
+    return null
+  }
+  try {
+    createSupportBundleZip(result.filePath, supportBundleRuntimeInfo())
+    logInfo('diagnostics', 'support zip created', result.filePath)
+    return result.filePath
+  } catch (err) {
+    logError('diagnostics', 'support zip failed', err)
+    const messageOptions = {
+      type: 'error',
+      title: 'Не удалось собрать Support ZIP',
+      message: 'Не удалось собрать диагностический архив.',
+      detail: err instanceof Error ? err.message : String(err)
+    } as const
+    void (parent
+      ? dialog.showMessageBox(parent, messageOptions)
+      : dialog.showMessageBox(messageOptions))
+    return null
+  }
+}
+
+function formatProcessErrorDetails(
+  kind: 'uncaughtException' | 'unhandledRejection',
+  reason: unknown
+): string {
+  let serialized: string | null = null
+  try {
+    serialized = JSON.stringify(reason, null, 2)
+  } catch {
+    serialized = null
+  }
+  const body =
+    reason instanceof Error
+      ? (reason.stack ?? `${reason.name}: ${reason.message}`)
+      : typeof reason === 'string'
+        ? reason
+        : (serialized ?? String(reason))
+  return [
+    `Тип: ${kind}`,
+    `Время: ${new Date().toISOString()}`,
+    `Версия: ${app.getVersion()}`,
+    `Платформа: ${process.platform}/${process.arch}`,
+    '',
+    body ?? String(reason)
+  ].join('\n')
+}
+
+let processErrorDialogOpen = false
+
+async function showProcessErrorDialog(
+  kind: 'uncaughtException' | 'unhandledRejection',
+  reason: unknown
+): Promise<void> {
+  if (processErrorDialogOpen || !app.isReady()) {
+    return
+  }
+  processErrorDialogOpen = true
+  const win = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0] ?? undefined
+  const detail = formatProcessErrorDetails(kind, reason)
+  const result = await dialog.showMessageBox(win, {
+    type: 'error',
+    title: 'Ошибка FluxAlloy',
+    message: 'В приложении произошла ошибка.',
+    detail,
+    buttons: ['Копировать детали', 'Открыть лог', 'Собрать Support ZIP', 'Закрыть'],
+    defaultId: 3,
+    cancelId: 3,
+    noLink: true
+  })
+  processErrorDialogOpen = false
+  if (result.response === 0) {
+    clipboard.writeText(detail)
+  } else if (result.response === 1) {
+    await openMainLogFile()
+  } else if (result.response === 2) {
+    await createSupportBundleWithDialog(win)
+  }
+}
+
 function buildApplicationMenu(): void {
   const win = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0] ?? undefined
   const isMac = process.platform === 'darwin'
@@ -591,6 +726,19 @@ function buildApplicationMenu(): void {
         {
           label: 'Открыть папку…',
           submenu: buildDiagnosticsFolderSubmenu()
+        },
+        {
+          label: 'Открыть main.log',
+          click: (): void => {
+            void openMainLogFile()
+          }
+        },
+        {
+          label: 'Собрать Support ZIP…',
+          click: (): void => {
+            const target = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0]
+            void createSupportBundleWithDialog(target && !target.isDestroyed() ? target : undefined)
+          }
         }
       ]
     },
@@ -744,6 +892,9 @@ function createWindow(): void {
 
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.fluxalloy')
+  setProcessErrorReporter((kind, reason) => {
+    void showProcessErrorDialog(kind, reason)
+  })
   logStartupBanner()
   cachedSettings = loadSettings(settingsPath())
   refreshEnginePathOverridesSnapshot()

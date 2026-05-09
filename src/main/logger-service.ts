@@ -27,6 +27,9 @@ const RENDERER_SCOPE_MAX = 64
 
 let resolvedLogFilePath: string | null = null
 let initFailed = false
+let processErrorReporter:
+  | ((kind: 'uncaughtException' | 'unhandledRejection', reason: unknown) => void)
+  | null = null
 
 function levelLabel(level: LogLevel): string {
   if (level === 'info') return 'INFO '
@@ -94,6 +97,15 @@ function ensureLogFilePath(): string | null {
     initFailed = true
     return null
   }
+}
+
+export function getMainLogFilePath(): string | null {
+  return ensureLogFilePath()
+}
+
+export function getMainLogBackupFilePath(): string | null {
+  const file = ensureLogFilePath()
+  return file ? join(dirname(file), LOG_BACKUP_NAME) : null
 }
 
 function rotateIfTooLarge(filePath: string): void {
@@ -192,10 +204,18 @@ export function logFromRendererSafe(raw: unknown): void {
 export function attachProcessErrorHandlers(): void {
   process.on('uncaughtException', (err) => {
     logError('process', 'uncaughtException', err)
+    processErrorReporter?.('uncaughtException', err)
   })
   process.on('unhandledRejection', (reason) => {
     logError('process', 'unhandledRejection', reason)
+    processErrorReporter?.('unhandledRejection', reason)
   })
+}
+
+export function setProcessErrorReporter(
+  reporter: ((kind: 'uncaughtException' | 'unhandledRejection', reason: unknown) => void) | null
+): void {
+  processErrorReporter = reporter
 }
 
 /** Один раз в начале сессии: версия и платформа — чтобы лог сам по себе говорил о среде. */
