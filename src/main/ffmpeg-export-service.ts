@@ -54,12 +54,12 @@ export interface FfmpegExportProgressPayload {
 }
 
 /** Поле `speed=` в строках прогресса ffmpeg (`-stats`). */
-function parseFfmpegSpeedToken(line: string): string | null {
+export function parseFfmpegSpeedToken(line: string): string | null {
   const m = line.match(/\bspeed=\s*(\S+)/)
   return m ? m[1] : null
 }
 
-function parseFfmpegTimeSeconds(line: string): number | null {
+export function parseFfmpegTimeSeconds(line: string): number | null {
   const m = line.match(/time=(\d+):(\d+):(\d+(?:\.\d+)?)/)
   if (!m) {
     return null
