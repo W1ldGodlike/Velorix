@@ -17,7 +17,7 @@ import {
   formatYtdlpQueueFailureStatus,
   parseYtdlpDownloadProgressLine,
   runYtdlpOnce,
-  shouldSkipYtdlpQueueRetriesAfterFailure
+  shouldSkipQueueRetriesForFailureKind
 } from './ytdlp-download-service'
 import { resolveYtdlpOutputDirectory } from './ytdlp-download-output'
 import { appendYtdlpDownloadHistoryEntry, outcomeFromQueueStatus } from './ytdlp-download-history'
@@ -273,7 +273,7 @@ async function runYtdlpForWaitingRow(
       }
 
       const code = result.exitCode
-      const failureKind = classifyYtdlpQueueFailureKind(lastErrorSummary, lastStderrLine)
+      const failureKind = classifyYtdlpQueueFailureKind(lastErrorSummary, lastStderrLine, code)
       emitDownloadsLog({
         kind: 'line',
         rowId,
@@ -281,15 +281,12 @@ async function runYtdlpForWaitingRow(
         text: `[FluxAlloy] Попытка ${runIndex + 1}/${maxRuns} завершилась с кодом ${code ?? '?'}.`
       })
 
-      if (
-        runIndex < maxRuns - 1 &&
-        shouldSkipYtdlpQueueRetriesAfterFailure(lastErrorSummary, lastStderrLine)
-      ) {
+      if (runIndex < maxRuns - 1 && shouldSkipQueueRetriesForFailureKind(failureKind)) {
         emitDownloadsLog({
           kind: 'line',
           rowId,
           stream: 'stderr',
-          text: '[FluxAlloy] Дальнейшие повторы очереди отменены: сообщение похоже на устойчивый отказ источника.'
+          text: '[FluxAlloy] Дальнейшие повторы очереди отменены: ошибка или код выхода не подразумевают повтор той же команды.'
         })
         updateDownloadsRow(rowId, {
           status: formatYtdlpQueueFailureStatus(

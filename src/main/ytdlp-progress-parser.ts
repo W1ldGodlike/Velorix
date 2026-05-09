@@ -13,8 +13,17 @@ export interface YtdlpDownloadProgressParts {
   eta: string | null
 }
 
-/** Грубая классификация текста ошибки для §6.4 (без IPC; только эвристика). */
-export type YtdlpQueueFailureKind = 'transient_network' | 'likely_source_block' | 'unknown'
+/**
+ * Классификация ошибки очереди §6.4: текст stderr + стабильные коды выхода yt-dlp
+ * (см. обсуждение кодов в репозитории yt-dlp, напр. #4262: 2 / 100 / 101).
+ */
+export type YtdlpQueueFailureKind =
+  | 'transient_network'
+  | 'likely_source_block'
+  | 'unknown'
+  | 'exit_bad_options'
+  | 'exit_needs_restart'
+  | 'exit_download_limit'
 
 /**
  * Разбор строки прогресса yt-dlp для колонки таблицы §6.1.
@@ -103,6 +112,12 @@ function ytdlpQueueFailureKindSuffix(kind: YtdlpQueueFailureKind): string {
       return ' · вероятно сеть'
     case 'likely_source_block':
       return ' · отказ источника'
+    case 'exit_bad_options':
+      return ' · ошибка параметров'
+    case 'exit_needs_restart':
+      return ' · нужен перезапуск yt-dlp'
+    case 'exit_download_limit':
+      return ' · лимит загрузок'
     default:
       return ''
   }
@@ -187,10 +202,10 @@ const YTDLP_QUEUE_RETRY_KEEP_TRYING_MARKERS = [
   'errno 113'
 ] as const
 
-export function classifyYtdlpQueueFailureKind(
+function classifyYtdlpQueueFailureKindFromText(
   errorSummary: string | null | undefined,
   stderrFallback: string | null | undefined
-): YtdlpQueueFailureKind {
+): 'transient_network' | 'likely_source_block' | 'unknown' {
   const haystack = `${errorSummary ?? ''}\n${stderrFallback ?? ''}`.toLowerCase()
   if (YTDLP_QUEUE_RETRY_KEEP_TRYING_MARKERS.some((m) => haystack.includes(m))) {
     return 'transient_network'
@@ -201,11 +216,48 @@ export function classifyYtdlpQueueFailureKind(
   return 'unknown'
 }
 
+export function classifyYtdlpQueueFailureKind(
+  errorSummary: string | null | undefined,
+  stderrFallback: string | null | undefined,
+  exitCode?: number | null
+): YtdlpQueueFailureKind {
+  const textKind = classifyYtdlpQueueFailureKindFromText(errorSummary, stderrFallback)
+  if (textKind !== 'unknown') {
+    return textKind
+  }
+  if (typeof exitCode !== 'number' || !Number.isFinite(exitCode)) {
+    return 'unknown'
+  }
+  if (exitCode === 2) {
+    return 'exit_bad_options'
+  }
+  if (exitCode === 100) {
+    return 'exit_needs_restart'
+  }
+  if (exitCode === 101) {
+    return 'exit_download_limit'
+  }
+  return 'unknown'
+}
+
+/** Пропуск дальнейших повторов **очереди** для данного уже вычисленного класса. */
+export function shouldSkipQueueRetriesForFailureKind(kind: YtdlpQueueFailureKind): boolean {
+  return (
+    kind === 'likely_source_block' ||
+    kind === 'exit_bad_options' ||
+    kind === 'exit_needs_restart' ||
+    kind === 'exit_download_limit'
+  )
+}
+
 export function shouldSkipYtdlpQueueRetriesAfterFailure(
   errorSummary: string | null | undefined,
-  stderrFallback: string | null | undefined
+  stderrFallback: string | null | undefined,
+  exitCode?: number | null
 ): boolean {
-  return classifyYtdlpQueueFailureKind(errorSummary, stderrFallback) === 'likely_source_block'
+  return shouldSkipQueueRetriesForFailureKind(
+    classifyYtdlpQueueFailureKind(errorSummary, stderrFallback, exitCode)
+  )
 }
 
 /**

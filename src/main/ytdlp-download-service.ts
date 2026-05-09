@@ -22,6 +22,7 @@ export {
   formatYtdlpProgressCell,
   formatYtdlpQueueFailureStatus,
   parseYtdlpDownloadProgressLine,
+  shouldSkipQueueRetriesForFailureKind,
   shouldSkipYtdlpQueueRetriesAfterFailure,
   type YtdlpDownloadProgressParts,
   type YtdlpQueueFailureKind

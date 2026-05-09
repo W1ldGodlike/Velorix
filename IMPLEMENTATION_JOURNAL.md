@@ -109,3 +109,4 @@
 - 2026-05-10 02:21:04 [SDK]: §6.4 — пауза/продолжить yt-dlp: SIGSTOP/SIGCONT в сервисе, IPC + кнопка в окне загрузок; Windows отключено; `ytdlp-os-pause-support` + Vitest.
 - 2026-05-10 02:22:44 [SDK]: §6.4 — `classifyYtdlpQueueFailureKind`, транзиентные маркеры с приоритетом над «не повторять»; парсинг `fragment X of Y` в прогресс; реэкспорт из `ytdlp-download-service`.
 - 2026-05-10 02:24:10 [SDK]: §6.4 — статус ошибки строки очереди: суффиксы «вероятно сеть» / «отказ источника» через `formatYtdlpQueueFailureStatus(..., failureKind)`; раннер передаёт `classifyYtdlpQueueFailureKind`; Vitest.
+- 2026-05-10 02:26:20 [SDK]: §6.4 — коды выхода yt-dlp 2/100/101 в `classifyYtdlpQueueFailureKind`; `shouldSkipQueueRetriesForFailureKind`; суффиксы статуса; раннер передаёт exitCode в классификацию.

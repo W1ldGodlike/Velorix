@@ -7,6 +7,7 @@ import {
   formatYtdlpProgressCell,
   formatYtdlpQueueFailureStatus,
   parseYtdlpDownloadProgressLine,
+  shouldSkipQueueRetriesForFailureKind,
   shouldSkipYtdlpQueueRetriesAfterFailure
 } from '../../src/main/ytdlp-progress-parser'
 
@@ -114,6 +115,18 @@ describe('formatYtdlpQueueFailureStatus', () => {
       'Ошибка (код 1): Odd message'
     )
   })
+
+  it('подпись для кодов выхода yt-dlp (2 / 100 / 101)', () => {
+    expect(formatYtdlpQueueFailureStatus(2, null, 'bad flag', null, 'exit_bad_options')).toContain(
+      'ошибка параметров'
+    )
+    expect(
+      formatYtdlpQueueFailureStatus(100, null, 'restart', null, 'exit_needs_restart')
+    ).toContain('перезапуск')
+    expect(
+      formatYtdlpQueueFailureStatus(101, null, 'max dl', null, 'exit_download_limit')
+    ).toContain('лимит загрузок')
+  })
 })
 
 describe('extractYtdlpErrorSummary', () => {
@@ -162,6 +175,13 @@ describe('shouldSkipYtdlpQueueRetriesAfterFailure', () => {
       )
     ).toBe(false)
   })
+
+  it('стабильные коды yt-dlp 2/100/101 — отмена повторов очереди даже без маркеров в тексте', () => {
+    expect(shouldSkipYtdlpQueueRetriesAfterFailure(null, null, 2)).toBe(true)
+    expect(shouldSkipYtdlpQueueRetriesAfterFailure(null, null, 100)).toBe(true)
+    expect(shouldSkipYtdlpQueueRetriesAfterFailure(null, null, 101)).toBe(true)
+    expect(shouldSkipYtdlpQueueRetriesAfterFailure(null, null, 1)).toBe(false)
+  })
 })
 
 describe('classifyYtdlpQueueFailureKind', () => {
@@ -177,6 +197,31 @@ describe('classifyYtdlpQueueFailureKind', () => {
 
   it('unknown если нет явных маркеров', () => {
     expect(classifyYtdlpQueueFailureKind('Something went wrong', null)).toBe('unknown')
+  })
+
+  it('при неясном тексте использует код выхода yt-dlp (2, 100, 101)', () => {
+    expect(classifyYtdlpQueueFailureKind(null, null, 2)).toBe('exit_bad_options')
+    expect(classifyYtdlpQueueFailureKind(null, null, 100)).toBe('exit_needs_restart')
+    expect(classifyYtdlpQueueFailureKind(null, null, 101)).toBe('exit_download_limit')
+    expect(classifyYtdlpQueueFailureKind(null, null, 1)).toBe('unknown')
+  })
+
+  it('транзиент по тексту сильнее кода выхода', () => {
+    expect(classifyYtdlpQueueFailureKind('Connection timed out', null, 2)).toBe('transient_network')
+  })
+})
+
+describe('shouldSkipQueueRetriesForFailureKind', () => {
+  it('не skip для transient и unknown', () => {
+    expect(shouldSkipQueueRetriesForFailureKind('transient_network')).toBe(false)
+    expect(shouldSkipQueueRetriesForFailureKind('unknown')).toBe(false)
+  })
+
+  it('skip для источника и кодов 2/100/101', () => {
+    expect(shouldSkipQueueRetriesForFailureKind('likely_source_block')).toBe(true)
+    expect(shouldSkipQueueRetriesForFailureKind('exit_bad_options')).toBe(true)
+    expect(shouldSkipQueueRetriesForFailureKind('exit_needs_restart')).toBe(true)
+    expect(shouldSkipQueueRetriesForFailureKind('exit_download_limit')).toBe(true)
   })
 })
 
