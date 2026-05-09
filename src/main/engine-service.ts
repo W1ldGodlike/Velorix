@@ -3,11 +3,12 @@ import { execFile } from 'child_process'
 import { basename, join, normalize, resolve } from 'path'
 
 import type { AppPaths } from './app-paths'
-import type {
-  EngineId,
-  EnginePathOverrides,
-  EngineStatus,
-  EnginesStatusSnapshot
+import {
+  ENGINE_IDS,
+  type EngineId,
+  type EnginePathOverrides,
+  type EngineStatus,
+  type EnginesStatusSnapshot
 } from '../shared/engine-contract'
 
 export type {
@@ -18,6 +19,8 @@ export type {
   EngineStatus,
   EnginesStatusSnapshot
 } from '../shared/engine-contract'
+
+export { ENGINE_IDS }
 
 const engineDisplayNames: Record<EngineId, string> = {
   ffmpeg: 'ffmpeg',
@@ -140,9 +143,8 @@ export async function getEnginesStatus(
   paths: AppPaths,
   overrides?: EnginePathOverrides
 ): Promise<EnginesStatusSnapshot> {
-  const ids: EngineId[] = ['ffmpeg', 'ffprobe', 'yt-dlp']
   // TODO(§3): после загрузчика хешей добавить сюда состояние `checking`/progress для длительных проверок.
-  const statuses = await Promise.all(ids.map((id) => checkEngine(paths, id, overrides)))
+  const statuses = await Promise.all(ENGINE_IDS.map((id) => checkEngine(paths, id, overrides)))
 
   return {
     checkedAt: new Date().toISOString(),

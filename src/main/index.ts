@@ -58,9 +58,9 @@ import { probeMediaFile } from './ffprobe-service'
 import type { EngineDownloadProgress } from './engine-download'
 import { setEnginePathOverridesSnapshot } from './engine-path-sync'
 import {
+  ENGINE_IDS,
   getEnginesStatus,
   resolveEngineExecutablePath,
-  type EngineId,
   type EnginePathOverrides,
   type EnginePathOverridesPatch,
   type EnginesStatusSnapshot
@@ -370,8 +370,7 @@ function validateEngineOverridePath(raw: string): string | null {
 
 function persistEnginePathOverridesPatch(patch: EnginePathOverridesPatch): AppSettings {
   const nextPaths: EnginePathOverrides = { ...(cachedSettings.engineExecutablePaths ?? {}) }
-  const ids: EngineId[] = ['ffmpeg', 'ffprobe', 'yt-dlp']
-  for (const id of ids) {
+  for (const id of ENGINE_IDS) {
     if (!(id in patch)) {
       continue
     }

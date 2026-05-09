@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs'
 import { dirname, isAbsolute, normalize } from 'path'
 
-import type { EngineId, EnginePathOverrides } from '../shared/engine-contract'
+import { ENGINE_IDS, type EnginePathOverrides } from '../shared/engine-contract'
 import type { AppSettings, StoredWindowRect, WindowBoundsConfig } from '../shared/settings-contract'
 import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
 
@@ -55,9 +55,8 @@ function parseEngineExecutablePaths(raw: unknown): EnginePathOverrides | undefin
     return undefined
   }
   const src = raw as Record<string, unknown>
-  const ids: EngineId[] = ['ffmpeg', 'ffprobe', 'yt-dlp']
   const out: EnginePathOverrides = {}
-  for (const id of ids) {
+  for (const id of ENGINE_IDS) {
     const v = src[id]
     if (typeof v === 'string' && v.trim() !== '') {
       out[id] = v.trim()

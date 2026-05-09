@@ -3,6 +3,8 @@ import type { JSX } from 'react'
 
 import VideoTimeline from './components/VideoTimeline'
 import Versions from './components/Versions'
+import type { EngineId } from '../../shared/engine-contract'
+import { ENGINE_IDS } from '../../shared/engine-contract'
 
 type Theme = 'dark' | 'light'
 
@@ -15,8 +17,6 @@ interface PreviewOpenedPayload {
 type EngineSummary = 'checking' | 'ready' | 'missing' | 'error'
 
 type EnginesSnapshot = Awaited<ReturnType<typeof window.fluxalloy.engines.getStatus>>
-
-type EngineId = 'ffmpeg' | 'ffprobe' | 'yt-dlp'
 
 /** Совпадает с `FfmpegExportEncodePresetId` в `src/shared/ffmpeg-export-contract.ts` §7.2 (renderer не тянет main TS). */
 type ExportEncodePresetId = 'balance' | 'smaller' | 'quality'
@@ -56,8 +56,6 @@ const SNAPSHOT_FORMATS: Array<{ id: SnapshotFormatId; label: string }> = [
   { id: 'jpg', label: 'Кадр JPEG' }
 ]
 
-const ENGINE_IDS: EngineId[] = ['ffmpeg', 'ffprobe', 'yt-dlp']
-
 function engineLabel(id: EngineId): string {
   switch (id) {
     case 'ffmpeg':
@@ -74,8 +72,7 @@ function engineLabel(id: EngineId): string {
 type EnginePathsDraft = Record<EngineId, string>
 
 function formatEngineVersionsLine(snapshot: EnginesSnapshot): string {
-  const ids = ['ffmpeg', 'ffprobe', 'yt-dlp'] as const
-  const parts = ids.map((id) => {
+  const parts = ENGINE_IDS.map((id) => {
     const e = snapshot.engines[id]
     if (e.state === 'ready' && e.version) {
       const cut = e.version.length > 30 ? `${e.version.slice(0, 28)}…` : e.version

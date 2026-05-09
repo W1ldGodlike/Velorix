@@ -1,6 +1,9 @@
 /** IPC/UI модель статусов движков ffmpeg/ffprobe/yt-dlp §3 (без резолва путей). */
 
 export type EngineId = 'ffmpeg' | 'ffprobe' | 'yt-dlp'
+
+/** Стабильный порядок обхода движков (настройки, IPC, статусбар); синхронизируй с `EngineId`. */
+export const ENGINE_IDS = ['ffmpeg', 'ffprobe', 'yt-dlp'] as const satisfies readonly EngineId[]
 export type EngineState = 'missing' | 'checking' | 'ready' | 'error'
 
 /** Явные пути из настроек: полный путь к исполняемому файлу (имеет приоритет над bundled/user bin). */
