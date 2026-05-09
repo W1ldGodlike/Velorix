@@ -22,10 +22,8 @@ extraResources:
     to: Data
 win:
   executableName: FluxAlloy
-  # Временно отключено для dev-сборки: на Windows без symlink-прав electron-builder падает на winCodeSign.
-  # Перед релизной подписью пересмотреть вместе с сертификатами и Developer Mode/CI.
-  # TODO(§19): после нового логина проверить symlink-права и вернуть нормальное sign/edit поведение.
-  signAndEditExecutable: false
+  # Значение по умолчанию electron-builder: подпись/правка exe при упаковке. После перезагрузки и
+  # выдачи `SeCreateSymbolicLinkPrivilege` / Developer Mode распаковка winCodeSign снова должна проходить.
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
