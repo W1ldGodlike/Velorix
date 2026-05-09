@@ -29,6 +29,9 @@ contextBridge.exposeInMainWorld('fluxalloyDownloads', {
   startQueue: (): Promise<{ ok: true } | { ok: false; error: string }> =>
     ipcRenderer.invoke('fluxalloy-downloads-start-queue'),
 
+  startRow: (id: number): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke('fluxalloy-downloads-start-row', id),
+
   cancelQueue: (): Promise<{ ok: true } | { ok: false; error: string }> =>
     ipcRenderer.invoke('fluxalloy-downloads-cancel-run')
 })

@@ -10,6 +10,7 @@ import {
 import {
   cancelDownloadsRunner,
   setDownloadsRunnerNotifier,
+  startDownloadSingleRow,
   startDownloadsSequential
 } from './downloads-queue-runner'
 import { resolvePreloadOutFile } from './preload-resolve'
@@ -95,6 +96,7 @@ function buildDownloadsHtml(): string {
     th { color: #b9b9c0; font-weight: 500; font-size: 11px; }
     th:nth-child(1), td:nth-child(1) { width: 2rem; }
     th:nth-child(5), td:nth-child(5) { width: 6.5rem; white-space: nowrap; }
+    th:nth-child(6), td:nth-child(6) { width: 8.5rem; }
     td.num { color: #9d9da2; font-variant-numeric: tabular-nums; }
     td.prog { font-variant-numeric: tabular-nums; color: #b9d79f; }
     td.act { white-space: nowrap; width: 6.5rem; }
@@ -174,6 +176,9 @@ function buildDownloadsHtml(): string {
             b.textContent = label;
             tdAct.appendChild(b);
           }
+          if (r.status === 'Ожидание') {
+            mk('start', 'Скачать только эту строку', '▶', r.id);
+          }
           mk('up', 'Вверх', '↑', r.id);
           mk('dn', 'Вниз', '↓', r.id);
           mk('rm', 'Удалить', '✕', r.id);
@@ -190,6 +195,13 @@ function buildDownloadsHtml(): string {
         if (act === 'rm') api.removeRow(id);
         else if (act === 'up') api.moveRow(id, -1);
         else if (act === 'dn') api.moveRow(id, 1);
+        else if (act === 'start') {
+          api.startRow(id).then(function (res) {
+            if (res && res.ok === false && res.error) {
+              window.alert(res.error);
+            }
+          });
+        }
       });
 
       addBtn.addEventListener('click', function () {
@@ -308,6 +320,24 @@ export function registerDownloadsWindowIpcHandlers(): void {
       })
 
       return { ok: true }
+    }
+  )
+
+  ipcMain.handle(
+    'fluxalloy-downloads-start-row',
+    async (event, id: unknown): Promise<{ ok: true } | { ok: false; error: string }> => {
+      if (!isDownloadsSender(event.sender)) {
+        return { ok: false, error: 'Недопустимый отправитель' }
+      }
+      if (typeof id !== 'number' || !Number.isFinite(id)) {
+        return { ok: false, error: 'Некорректный идентификатор строки' }
+      }
+      try {
+        return await startDownloadSingleRow(id)
+      } catch (err: unknown) {
+        console.error('[downloads-queue]', err)
+        return { ok: false, error: err instanceof Error ? err.message : String(err) }
+      }
     }
   )
 

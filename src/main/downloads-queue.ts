@@ -66,6 +66,12 @@ export function findFirstWaitingRow(): DownloadsQueueRow | undefined {
   return rows.find((r) => r.status === 'Ожидание')
 }
 
+/** Копия строки по id для main-сервисов (очередь мутируется только через этот модуль). */
+export function getDownloadsQueueRowById(id: number): DownloadsQueueRow | undefined {
+  const row = rows.find((r) => r.id === id)
+  return row ? { ...row } : undefined
+}
+
 export function updateDownloadsRow(
   id: number,
   patch: Partial<Pick<DownloadsQueueRow, 'status' | 'progress' | 'shortLabel'>>
