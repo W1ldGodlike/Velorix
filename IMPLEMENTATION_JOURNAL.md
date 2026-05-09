@@ -99,3 +99,4 @@
 - 2026-05-10 01:28:36 [SDK]: §21 — `noUncheckedIndexedAccess` в tsconfig node/web/tests; точечные правки main и Vitest под безопасный доступ по индексу.
 - 2026-05-10 01:30:06 [SDK]: §21 — `exactOptionalPropertyTypes` в tsconfig node/web/tests; экспорт IPC передаёт `trim` только если задан (main/renderer).
 - 2026-05-10 01:32:06 [SDK]: §21 — `noPropertyAccessFromIndexSignature`; bracket-доступ для `Record<string, unknown>` в main и для `dataset`/версий в renderer.
+- 2026-05-10 01:33:13 [SDK]: §21 — явный `useUnknownInCatchVariables` в tsconfig node/web/tests (политика catch уже совместима; без изменений в логике).
