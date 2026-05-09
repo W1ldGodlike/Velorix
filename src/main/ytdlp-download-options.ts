@@ -519,7 +519,8 @@ export function payloadFromSnapshot(
     queueRetryProfileChoices: [
       { id: 'off', label: 'Выключено' },
       { id: 'light', label: 'Лёгкий (1 повтор, 2.5 с)' },
-      { id: 'normal', label: 'Обычный (2 повтора: 3 с + 8 с)' }
+      { id: 'normal', label: 'Обычный (2 повтора: 3 с + 8 с)' },
+      { id: 'persistent', label: 'Устойчивый (3 повтора: 5 с + 15 с + 45 с)' }
     ],
     openInHandlerOnComplete: snap.openInHandlerOnComplete
   }

@@ -10,6 +10,7 @@ describe('parseYtdlpQueueRetryProfile', () => {
     expect(parseYtdlpQueueRetryProfile('off')).toBe('off')
     expect(parseYtdlpQueueRetryProfile('light')).toBe('light')
     expect(parseYtdlpQueueRetryProfile('normal')).toBe('normal')
+    expect(parseYtdlpQueueRetryProfile('persistent')).toBe('persistent')
   })
 
   it('падает в off для мусора и неправильных типов', () => {
@@ -38,5 +39,11 @@ describe('resolveYtdlpQueueRetryPlan', () => {
     expect(p.delaysMs).toHaveLength(2)
     expect(p.delaysMs).toHaveLength(2)
     expect(p.delaysMs[1]!).toBeGreaterThanOrEqual(p.delaysMs[0]!)
+  })
+
+  it('persistent — три повтора с растущими паузами', () => {
+    const p = resolveYtdlpQueueRetryPlan('persistent')
+    expect(p.extraAttempts).toBe(3)
+    expect(p.delaysMs).toEqual([5000, 15000, 45000])
   })
 })

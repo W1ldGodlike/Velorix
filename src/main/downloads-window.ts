@@ -363,6 +363,7 @@ function buildDownloadsHtml(): string {
       <option value="off">Выключено</option>
       <option value="light">Лёгкий (1 повтор, 2.5 с)</option>
       <option value="normal">Обычный (2 повтора: 3 с + 8 с)</option>
+      <option value="persistent">Устойчивый (3 повтора: 5 с + 15 с + 45 с)</option>
     </select>
     <p class="opts-hint">Отдельно от <code>--retries</code> yt-dlp: после ненулевого кода процесса FluxAlloy делает паузу и запускает ту же ссылку снова (без повторного добавления в таблицу).</p>
     <div class="opts-check-row">
@@ -735,7 +736,7 @@ function buildDownloadsHtml(): string {
           if (queueRetrySelect && typeof p.queueRetryProfile === 'string') {
             var qv = p.queueRetryProfile;
             queueRetrySelect.value =
-              qv === 'light' || qv === 'normal' ? qv : 'off';
+              qv === 'light' || qv === 'normal' || qv === 'persistent' ? qv : 'off';
           }
           if (chkOpenInHandlerOnComplete && typeof p.openInHandlerOnComplete === 'boolean') {
             chkOpenInHandlerOnComplete.checked = p.openInHandlerOnComplete;

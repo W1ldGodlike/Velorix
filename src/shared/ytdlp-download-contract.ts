@@ -13,7 +13,7 @@ export type YtdlpCookiesBrowserId = 'chrome' | 'edge' | 'firefox'
 export type YtdlpImpersonateId = 'chrome' | 'edge' | 'firefox'
 
 /** §6.4 — повторы на уровне очереди (отдельно от `--retries` yt-dlp). */
-export type YtdlpQueueRetryProfileId = 'off' | 'light' | 'normal'
+export type YtdlpQueueRetryProfileId = 'off' | 'light' | 'normal' | 'persistent'
 
 /**
  * Упрощённый выбор «качества» без произвольного `-f` от пользователя §6.2;

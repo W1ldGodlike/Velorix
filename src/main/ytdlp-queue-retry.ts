@@ -17,7 +17,7 @@ export interface YtdlpQueueRetryPlan {
 }
 
 export function parseYtdlpQueueRetryProfile(raw: unknown): YtdlpQueueRetryProfileId {
-  if (raw === 'light' || raw === 'normal') {
+  if (raw === 'light' || raw === 'normal' || raw === 'persistent') {
     return raw
   }
   return 'off'
@@ -30,6 +30,10 @@ export function resolveYtdlpQueueRetryPlan(profile: YtdlpQueueRetryProfileId): Y
   }
   if (profile === 'normal') {
     return { extraAttempts: 2, delaysMs: [3000, 8000] }
+  }
+  /** Долгие сетевые сбои / rate-limit: до четырёх запусков с растущей паузой §6.4. */
+  if (profile === 'persistent') {
+    return { extraAttempts: 3, delaysMs: [5000, 15000, 45000] }
   }
   return { extraAttempts: 0, delaysMs: [] }
 }
