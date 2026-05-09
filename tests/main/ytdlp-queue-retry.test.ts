@@ -36,6 +36,7 @@ describe('resolveYtdlpQueueRetryPlan', () => {
     const p = resolveYtdlpQueueRetryPlan('normal')
     expect(p.extraAttempts).toBe(2)
     expect(p.delaysMs).toHaveLength(2)
-    expect(p.delaysMs[1]).toBeGreaterThanOrEqual(p.delaysMs[0])
+    expect(p.delaysMs).toHaveLength(2)
+    expect(p.delaysMs[1]!).toBeGreaterThanOrEqual(p.delaysMs[0]!)
   })
 })

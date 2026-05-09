@@ -35,16 +35,25 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
 
   const etaMatch = t.match(/\bETA\s+(\S+)/i)
   if (etaMatch) {
-    eta = etaMatch[1]
+    const token = etaMatch[1]
+    if (token !== undefined) {
+      eta = token
+    }
   }
 
   const atEtaMatch = t.match(/\bat\s+(.+?)\s+ETA\s+/i)
   if (atEtaMatch) {
-    speed = atEtaMatch[1].trim().replace(/\s+/g, ' ')
+    const chunk = atEtaMatch[1]
+    if (chunk !== undefined) {
+      speed = chunk.trim().replace(/\s+/g, ' ')
+    }
   } else {
     const atTailMatch = t.match(/\bin\s+[\d:.]+\s+at\s+(.+?)\s*$/i)
     if (atTailMatch) {
-      speed = atTailMatch[1].trim().replace(/\s+/g, ' ')
+      const chunk = atTailMatch[1]
+      if (chunk !== undefined) {
+        speed = chunk.trim().replace(/\s+/g, ' ')
+      }
     }
   }
 
@@ -82,7 +91,11 @@ export function extractYtdlpErrorSummary(line: string): string | null {
   if (!m) {
     return null
   }
-  const msg = m[1].trim()
+  const rawMsg = m[1]
+  if (rawMsg === undefined) {
+    return null
+  }
+  const msg = rawMsg.trim()
   if (msg.length === 0) {
     return null
   }
@@ -105,19 +118,23 @@ export function extractYtdlpOutputPath(line: string): string | null {
   const t = line.trim()
   const destination = t.match(/^\[(?:download|ExtractAudio)]\s+Destination:\s+(.+)$/i)
   if (destination) {
-    return unquoteYtdlpPath(destination[1])
+    const cap = destination[1]
+    return cap !== undefined ? unquoteYtdlpPath(cap) : null
   }
   const alreadyDownloaded = t.match(/^\[download]\s+(.+?)\s+has already been downloaded$/i)
   if (alreadyDownloaded) {
-    return unquoteYtdlpPath(alreadyDownloaded[1])
+    const cap = alreadyDownloaded[1]
+    return cap !== undefined ? unquoteYtdlpPath(cap) : null
   }
   const merging = t.match(/^\[Merger]\s+Merging formats into\s+(.+)$/i)
   if (merging) {
-    return unquoteYtdlpPath(merging[1])
+    const cap = merging[1]
+    return cap !== undefined ? unquoteYtdlpPath(cap) : null
   }
   const moving = t.match(/^\[MoveFiles]\s+Moving file\s+.+?\s+to\s+(.+)$/i)
   if (moving) {
-    return unquoteYtdlpPath(moving[1])
+    const cap = moving[1]
+    return cap !== undefined ? unquoteYtdlpPath(cap) : null
   }
   return null
 }

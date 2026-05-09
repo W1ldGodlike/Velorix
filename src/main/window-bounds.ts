@@ -37,7 +37,14 @@ export function rectifyBoundsForRestore(r: StoredWindowRect): StoredWindowRect {
 }
 
 export function boundsFromBrowserWindow(win: BrowserWindow): StoredWindowRect {
-  const [x, y] = win.getPosition()
-  const [width, height] = win.getSize()
+  const pos = win.getPosition()
+  const size = win.getSize()
+  const x = pos[0]
+  const y = pos[1]
+  const width = size[0]
+  const height = size[1]
+  if (x === undefined || y === undefined || width === undefined || height === undefined) {
+    throw new Error('boundsFromBrowserWindow: ожидалась пара координат/размеров от Electron')
+  }
   return { x, y, width, height }
 }

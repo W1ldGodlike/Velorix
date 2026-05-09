@@ -96,3 +96,4 @@
 - 2026-05-10 01:22:21 [SDK]: §21 — shared-контракты yt-dlp окна/лога/истории, диагностики, прогресса движков, формата снимка; main реэкспортирует, preload без импортов типов из main по этим доменам.
 - 2026-05-10 01:25:00 [SDK]: §21 — `ffprobe-contract`, `settings-contract`, `engine-contract`, `about-contract`, `preview-dialog-contract`; main реэкспортирует, главный preload импортирует типы только из `src/shared`.
 - 2026-05-10 01:26:59 [SDK]: §21 — `noImplicitAny` в tsconfig node/web/tests; константа `ENGINE_IDS` в `engine-contract`, main/renderer на общем списке; Vitest `tests/shared/engine-contract`.
+- 2026-05-10 01:28:36 [SDK]: §21 — `noUncheckedIndexedAccess` в tsconfig node/web/tests; точечные правки main и Vitest под безопасный доступ по индексу.

@@ -52,7 +52,8 @@ for (let n = 0; n < 256; n++) {
 function crc32(buf: Buffer): number {
   let c = 0xffffffff
   for (const b of buf) {
-    c = crcTable[(c ^ b) & 0xff] ^ (c >>> 8)
+    const idx = (c ^ b) & 0xff
+    c = crcTable[idx]! ^ (c >>> 8)
   }
   return (c ^ 0xffffffff) >>> 0
 }

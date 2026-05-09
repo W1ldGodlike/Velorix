@@ -28,6 +28,9 @@ export async function openVideoWithDialog(
     return { ok: false, canceled: true }
   }
   const filePath = filePaths[0]
+  if (typeof filePath !== 'string' || filePath.length === 0) {
+    return { ok: false, canceled: true }
+  }
   const mediaUrl = grantMediaPath(filePath)
   if (!mediaUrl) {
     return { ok: false, error: 'Не удалось открыть файл (нет доступа или это не обычный файл)' }

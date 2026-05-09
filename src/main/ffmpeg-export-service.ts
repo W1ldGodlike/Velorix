@@ -159,7 +159,8 @@ export function resolveExportEncodeParams(preset: FfmpegExportEncodePresetId): {
 /** Поле `speed=` в строках прогресса ffmpeg (`-stats`). */
 export function parseFfmpegSpeedToken(line: string): string | null {
   const m = line.match(/\bspeed=\s*(\S+)/)
-  return m ? m[1] : null
+  const token = m?.[1]
+  return token !== undefined ? token : null
 }
 
 export function parseFfmpegTimeSeconds(line: string): number | null {

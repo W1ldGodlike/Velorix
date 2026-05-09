@@ -135,7 +135,13 @@ export function moveDownloadsQueueRow(id: number, delta: -1 | 1): boolean {
   if (j < 0 || j >= rows.length) {
     return false
   }
-  ;[rows[ix], rows[j]] = [rows[j], rows[ix]]
+  const rowA = rows[ix]
+  const rowB = rows[j]
+  if (!rowA || !rowB) {
+    return false
+  }
+  rows[ix] = rowB
+  rows[j] = rowA
   return true
 }
 

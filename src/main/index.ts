@@ -848,9 +848,9 @@ async function showProcessErrorDialog(
     return
   }
   processErrorDialogOpen = true
-  const win = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0] ?? undefined
+  const win = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0]
   const detail = formatProcessErrorDetails(kind, reason)
-  const result = await dialog.showMessageBox(win, {
+  const messageBoxOptions: Electron.MessageBoxOptions = {
     type: 'error',
     title: 'Ошибка FluxAlloy',
     message: 'В приложении произошла ошибка.',
@@ -859,7 +859,11 @@ async function showProcessErrorDialog(
     defaultId: 3,
     cancelId: 3,
     noLink: true
-  })
+  }
+  const result =
+    win !== undefined
+      ? await dialog.showMessageBox(win, messageBoxOptions)
+      : await dialog.showMessageBox(messageBoxOptions)
   processErrorDialogOpen = false
   if (result.response === 0) {
     clipboard.writeText(detail)

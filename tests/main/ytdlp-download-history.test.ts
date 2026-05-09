@@ -72,7 +72,8 @@ describe('ytdlp download history persistence', () => {
 
     const newest = readYtdlpDownloadHistoryNewestFirst(root)
     expect(newest.map((entry) => entry.id)).toEqual(['b', 'a'])
-    expect(newest[1].outputPath).toBe(join(root, 'downloads', 'ytdlp', 'a.mp4'))
+    expect(newest).toHaveLength(2)
+    expect(newest[1]!.outputPath).toBe(join(root, 'downloads', 'ytdlp', 'a.mp4'))
   })
 
   it('очищает историю через валидный schema-файл', () => {
