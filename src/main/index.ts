@@ -97,6 +97,7 @@ import {
 import { parseExtraYtdlpArgsLine } from './ytdlp-extra-args'
 import { refreshYtdlpRunOptionsSnapshot } from './ytdlp-run-options-sync'
 import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
+import { mainWindowIpc as mw } from '../shared/ipc-channels'
 
 /** Кастомная схема для локального видеопревью; привилегии обязаны зарегистрироваться до `app.whenReady`. */
 attachProcessErrorHandlers()
@@ -395,7 +396,7 @@ function persistEnginePathOverridesPatch(patch: EnginePathOverridesPatch): AppSe
   refreshEnginePathOverridesSnapshot()
   buildApplicationMenu()
   BrowserWindow.getAllWindows().forEach((w) => {
-    w.webContents.send('fluxalloy:engine-paths-changed')
+    w.webContents.send(mw.enginePathsChanged)
   })
   return { ...cachedSettings }
 }
@@ -698,7 +699,7 @@ function persistAndBroadcast(theme: AppTheme): AppSettings {
   saveSettings(settingsPath(), cachedSettings)
   // Renderer подписан на событие, поэтому смена темы из меню сразу отражается во всех окнах.
   BrowserWindow.getAllWindows().forEach((w) => {
-    w.webContents.send('fluxalloy:theme-changed', theme)
+    w.webContents.send(mw.themeChanged, theme)
   })
   buildApplicationMenu()
   return cachedSettings
@@ -912,7 +913,7 @@ function buildApplicationMenu(): void {
               return
             }
             persistLastOpenedSource(result.path)
-            target.webContents.send('fluxalloy:preview-opened', result)
+            target.webContents.send(mw.previewOpened, result)
           }
         },
         {
@@ -944,7 +945,7 @@ function buildApplicationMenu(): void {
             if (!target || target.isDestroyed()) {
               return
             }
-            target.webContents.send('fluxalloy:open-engine-paths')
+            target.webContents.send(mw.openEnginePaths)
           }
         }
       ]
@@ -1007,7 +1008,7 @@ function buildApplicationMenu(): void {
             if (!target || target.isDestroyed()) {
               return
             }
-            target.webContents.send('fluxalloy:open-about')
+            target.webContents.send(mw.openAbout)
           }
         },
         {
@@ -1136,7 +1137,7 @@ function openDownloadedFileInMainHandler(
   persistLastOpenedSource(absoluteFile)
   target.show()
   target.focus()
-  target.webContents.send('fluxalloy:preview-opened', {
+  target.webContents.send(mw.previewOpened, {
     ok: true,
     path: absoluteFile,
     mediaUrl,
@@ -1224,61 +1225,61 @@ app.whenReady().then(() => {
   })
 
   // IPC-каналы держим узкими: renderer просит только конкретные операции, без произвольного доступа к Node.
-  ipcMain.handle('fluxalloy:settings-get', (): AppSettings => {
+  ipcMain.handle(mw.settingsGet, (): AppSettings => {
     return { ...cachedSettings }
   })
 
-  ipcMain.handle('fluxalloy:settings-set-theme', (_, theme: unknown): AppSettings => {
+  ipcMain.handle(mw.settingsSetTheme, (_, theme: unknown): AppSettings => {
     const next = theme === 'light' ? 'light' : 'dark'
     return persistAndBroadcast(next)
   })
 
   ipcMain.handle(
-    'fluxalloy:settings-set-ffmpeg-export-encode-preset',
+    mw.settingsSetFfmpegExportEncodePreset,
     (_, raw: unknown): AppSettings => persistFfmpegExportEncodePreset(raw)
   )
 
   ipcMain.handle(
-    'fluxalloy:settings-set-ffmpeg-export-container',
+    mw.settingsSetFfmpegExportContainer,
     (_, raw: unknown): AppSettings => persistFfmpegExportContainer(raw)
   )
 
   ipcMain.handle(
-    'fluxalloy:settings-set-ffmpeg-export-crf',
+    mw.settingsSetFfmpegExportCrf,
     (_, raw: unknown): AppSettings => persistFfmpegExportCrf(raw)
   )
 
   ipcMain.handle(
-    'fluxalloy:settings-set-ffmpeg-export-audio-bitrate',
+    mw.settingsSetFfmpegExportAudioBitrate,
     (_, raw: unknown): AppSettings => persistFfmpegExportAudioBitrate(raw)
   )
 
   ipcMain.handle(
-    'fluxalloy:settings-set-ffmpeg-export-audio-mode',
+    mw.settingsSetFfmpegExportAudioMode,
     (_, raw: unknown): AppSettings => persistFfmpegExportAudioMode(raw)
   )
 
   ipcMain.handle(
-    'fluxalloy:settings-set-ffmpeg-export-video-bitrate',
+    mw.settingsSetFfmpegExportVideoBitrate,
     (_, raw: unknown): AppSettings => persistFfmpegExportVideoBitrate(raw)
   )
 
   ipcMain.handle(
-    'fluxalloy:settings-set-ffmpeg-export-fps',
+    mw.settingsSetFfmpegExportFps,
     (_, raw: unknown): AppSettings => persistFfmpegExportFps(raw)
   )
 
   ipcMain.handle(
-    'fluxalloy:settings-set-ffmpeg-export-scale-preset',
+    mw.settingsSetFfmpegExportScalePreset,
     (_, raw: unknown): AppSettings => persistFfmpegExportScalePreset(raw)
   )
 
   ipcMain.handle(
-    'fluxalloy:settings-set-ffmpeg-snapshot-format',
+    mw.settingsSetFfmpegSnapshotFormat,
     (_, raw: unknown): AppSettings => persistFfmpegSnapshotFormat(raw)
   )
 
-  ipcMain.handle('fluxalloy:settings-set-engine-paths', (_, patch: unknown): AppSettings => {
+  ipcMain.handle(mw.settingsSetEnginePaths, (_, patch: unknown): AppSettings => {
     if (!patch || typeof patch !== 'object') {
       return { ...cachedSettings }
     }
@@ -1286,7 +1287,7 @@ app.whenReady().then(() => {
   })
 
   ipcMain.handle(
-    'fluxalloy:pick-engine-executable',
+    mw.pickEngineExecutable,
     async (event, engineId: unknown): Promise<string | null> => {
       const win = BrowserWindow.fromWebContents(event.sender)
       if (!win) {
@@ -1315,23 +1316,23 @@ app.whenReady().then(() => {
     }
   )
 
-  ipcMain.handle('fluxalloy:engines-status', async (): Promise<EnginesStatusSnapshot> => {
+  ipcMain.handle(mw.enginesStatus, async (): Promise<EnginesStatusSnapshot> => {
     return getEnginesStatus(resolveAppPaths(), cachedSettings.engineExecutablePaths)
   })
 
-  ipcMain.handle('fluxalloy:engines-should-offer-download', (): boolean => {
+  ipcMain.handle(mw.enginesShouldOfferDownload, (): boolean => {
     return isAnyEngineMissing(resolveAppPaths(), cachedSettings.engineExecutablePaths)
   })
 
   ipcMain.handle(
-    'fluxalloy:engines-download',
+    mw.enginesDownload,
     async (event): Promise<{ ok: true } | { ok: false; error: string }> => {
       const win = BrowserWindow.fromWebContents(event.sender)
       const paths = resolveAppPaths()
       const trusted = loadTrustedHashes(resolveTrustedHashesPath())
       try {
         await downloadEnginesWindows(paths, trusted, (p: EngineDownloadProgress) => {
-          win?.webContents.send('fluxalloy:engines-progress', p)
+          win?.webContents.send(mw.enginesProgress, p)
         })
         buildApplicationMenu()
         return { ok: true }
@@ -1342,7 +1343,7 @@ app.whenReady().then(() => {
     }
   )
 
-  ipcMain.handle('fluxalloy:open-video-dialog', async (event) => {
+  ipcMain.handle(mw.openVideoDialog, async (event) => {
     const win = BrowserWindow.fromWebContents(event.sender)
     if (!win) {
       return { ok: false, error: 'Нет активного окна' }
@@ -1354,7 +1355,7 @@ app.whenReady().then(() => {
     return result
   })
 
-  ipcMain.handle('fluxalloy:preview-grant-path', (_, rawPath: unknown) => {
+  ipcMain.handle(mw.previewGrantPath, (_, rawPath: unknown) => {
     if (typeof rawPath !== 'string' || rawPath.length === 0) {
       return { ok: false, error: 'Пустой путь' }
     }
@@ -1371,7 +1372,7 @@ app.whenReady().then(() => {
     }
   })
 
-  ipcMain.handle('fluxalloy:persist-last-source', (_, raw: unknown) => {
+  ipcMain.handle(mw.persistLastSource, (_, raw: unknown) => {
     if (raw === null || raw === undefined || raw === '') {
       persistLastOpenedSource(null)
       return
@@ -1381,7 +1382,7 @@ app.whenReady().then(() => {
     }
   })
 
-  ipcMain.handle('fluxalloy:restore-last-source', () => {
+  ipcMain.handle(mw.restoreLastSource, () => {
     const saved = cachedSettings.lastOpenedSourcePath
     if (typeof saved !== 'string' || saved.trim().length === 0 || !existsSync(saved)) {
       return null
@@ -1398,7 +1399,7 @@ app.whenReady().then(() => {
     }
   })
 
-  ipcMain.handle('fluxalloy:media-probe', async (_, rawPath: unknown) => {
+  ipcMain.handle(mw.mediaProbe, async (_, rawPath: unknown) => {
     if (typeof rawPath !== 'string' || rawPath.trim().length === 0) {
       return { ok: false as const, error: 'Не указан путь к медиафайлу' }
     }
@@ -1412,31 +1413,28 @@ app.whenReady().then(() => {
     return probeMediaFile(resolveAppPaths(), abs, cachedSettings.engineExecutablePaths)
   })
 
-  ipcMain.handle('fluxalloy:clipboard-read-text', () => clipboard.readText())
+  ipcMain.handle(mw.clipboardReadText, () => clipboard.readText())
 
-  ipcMain.handle(
-    'fluxalloy:clipboard-write-text',
-    (_, raw: unknown): { ok: true } | { ok: false } => {
-      if (typeof raw !== 'string') {
-        return { ok: false }
-      }
-      const max = 24 * 1024 * 1024
-      if (raw.length > max) {
-        return { ok: false }
-      }
-      clipboard.writeText(raw)
-      return { ok: true }
+  ipcMain.handle(mw.clipboardWriteText, (_, raw: unknown): { ok: true } | { ok: false } => {
+    if (typeof raw !== 'string') {
+      return { ok: false }
     }
-  )
+    const max = 24 * 1024 * 1024
+    if (raw.length > max) {
+      return { ok: false }
+    }
+    clipboard.writeText(raw)
+    return { ok: true }
+  })
 
-  ipcMain.handle('fluxalloy:app-about-info', () => getAppAboutInfo())
+  ipcMain.handle(mw.appAboutInfo, () => getAppAboutInfo())
 
-  ipcMain.handle('fluxalloy:diagnostics-list-folders', (): DiagnosticsFolderEntry[] => {
+  ipcMain.handle(mw.diagnosticsListFolders, (): DiagnosticsFolderEntry[] => {
     return listDiagnosticsFolders()
   })
 
   ipcMain.handle(
-    'fluxalloy:diagnostics-open-folder',
+    mw.diagnosticsOpenFolder,
     async (
       _event,
       raw: unknown
@@ -1448,155 +1446,152 @@ app.whenReady().then(() => {
     }
   )
 
-  ipcMain.handle('fluxalloy:open-downloads-window', (_, raw: unknown) => {
+  ipcMain.handle(mw.openDownloadsWindow, (_, raw: unknown) => {
     const payload = parseDownloadsOpenPayload(raw)
     focusOrCreateDownloadsWindow(payload ?? undefined)
   })
 
-  ipcMain.handle(
-    'fluxalloy:export-start',
-    async (event, raw: unknown): Promise<MediaExportStartResult> => {
-      if (activeExportAbort !== null) {
-        return { ok: false, error: 'Уже выполняется экспорт' }
-      }
-      if (!raw || typeof raw !== 'object') {
-        return { ok: false, error: 'Некорректный запрос' }
-      }
-      const inputRaw = (raw as { inputPath?: unknown }).inputPath
-      if (typeof inputRaw !== 'string' || inputRaw.trim().length === 0) {
-        return { ok: false, error: 'Не указан входной файл' }
-      }
-      const abs = resolve(normalize(inputRaw.trim()))
-      if (!existsSync(abs)) {
-        return { ok: false, error: 'Файл не найден' }
-      }
-      if (!isGrantedMediaPath(abs)) {
-        return {
-          ok: false,
-          error: 'Нет доступа к этому файлу — откройте его через превью.'
-        }
-      }
-
-      const pd = (raw as { probeDurationSec?: unknown }).probeDurationSec
-      const probeDurationSec = typeof pd === 'number' && Number.isFinite(pd) && pd > 0 ? pd : null
-
-      const trim = parseExportTrim((raw as { trim?: unknown }).trim)
-
-      const encodePresetRaw = (raw as { encodePreset?: unknown }).encodePreset
-      const encodePreset =
-        encodePresetRaw !== undefined && encodePresetRaw !== null
-          ? parseFfmpegExportEncodePreset(encodePresetRaw)
-          : parseFfmpegExportEncodePreset(cachedSettings.ffmpegExportEncodePreset)
-      const containerRaw = (raw as { container?: unknown }).container
-      const exportContainer =
-        containerRaw !== undefined && containerRaw !== null
-          ? parseFfmpegExportContainer(containerRaw)
-          : parseFfmpegExportContainer(cachedSettings.ffmpegExportContainer)
-      const crfRaw = (raw as { crf?: unknown }).crf
-      const exportCrf =
-        crfRaw !== undefined && crfRaw !== null
-          ? parseFfmpegExportCrf(crfRaw)
-          : parseFfmpegExportCrf(cachedSettings.ffmpegExportCrf)
-      const videoBitrateRaw = (raw as { videoBitrate?: unknown }).videoBitrate
-      const exportVideoBitrate =
-        videoBitrateRaw !== undefined && videoBitrateRaw !== null
-          ? parseFfmpegExportVideoBitrate(videoBitrateRaw)
-          : parseFfmpegExportVideoBitrate(cachedSettings.ffmpegExportVideoBitrate)
-      const audioModeRaw = (raw as { audioMode?: unknown }).audioMode
-      const exportAudioMode =
-        audioModeRaw !== undefined && audioModeRaw !== null
-          ? parseFfmpegExportAudioMode(audioModeRaw)
-          : parseFfmpegExportAudioMode(cachedSettings.ffmpegExportAudioMode)
-      const audioBitrateRaw = (raw as { audioBitrate?: unknown }).audioBitrate
-      const exportAudioBitrate =
-        audioBitrateRaw !== undefined && audioBitrateRaw !== null
-          ? parseFfmpegExportAudioBitrate(audioBitrateRaw)
-          : parseFfmpegExportAudioBitrate(cachedSettings.ffmpegExportAudioBitrate)
-      const fpsRaw = (raw as { fps?: unknown }).fps
-      const exportFps =
-        fpsRaw !== undefined && fpsRaw !== null
-          ? parseFfmpegExportFps(fpsRaw)
-          : parseFfmpegExportFps(cachedSettings.ffmpegExportFps)
-      const scalePresetRaw = (raw as { scalePreset?: unknown }).scalePreset
-      const exportScalePreset =
-        scalePresetRaw !== undefined && scalePresetRaw !== null
-          ? parseFfmpegExportScalePreset(scalePresetRaw)
-          : parseFfmpegExportScalePreset(cachedSettings.ffmpegExportScalePreset)
-
-      const paths = resolveAppPaths()
-      const ffmpeg = resolveEngineExecutablePath(
-        paths,
-        'ffmpeg',
-        cachedSettings.engineExecutablePaths
-      )
-      if (!ffmpeg) {
-        return { ok: false, error: 'ffmpeg не найден — установите движки.' }
-      }
-
-      const win = BrowserWindow.fromWebContents(event.sender)
-      if (!win) {
-        return { ok: false, error: 'Нет активного окна' }
-      }
-
-      const stem = basename(abs).replace(/\.[^.]+$/, '')
-      const defaultExportName = `${stem}-export.${exportContainer}`
-      const pick = await dialog.showSaveDialog(win, {
-        title: 'Экспорт видео',
-        defaultPath: rememberedExportDefaultPath(defaultExportName),
-        filters: [
-          { name: 'MP4', extensions: ['mp4'] },
-          { name: 'Matroska', extensions: ['mkv'] },
-          { name: 'QuickTime', extensions: ['mov'] },
-          { name: 'Все файлы', extensions: ['*'] }
-        ]
-      })
-
-      if (pick.canceled || !pick.filePath || pick.filePath.trim().length === 0) {
-        return { ok: false, cancelled: true }
-      }
-
-      const outPath = ensureFfmpegExportExtension(pick.filePath, exportContainer)
-      const ac = new AbortController()
-      activeExportAbort = ac
-
-      const pushProgress = (p: FfmpegExportProgressPayload): void => {
-        win.webContents.send('fluxalloy:export-progress', p)
-      }
-
-      try {
-        pushProgress({ percent: -1, message: 'Запуск ffmpeg…' })
-        const result = await runFfmpegExportJob({
-          ffmpegPath: ffmpeg,
-          inputPath: abs,
-          outputPath: outPath,
-          trim,
-          probeDurationSec,
-          encodePreset,
-          crf: exportCrf,
-          videoBitrate: exportVideoBitrate,
-          audioMode: exportAudioMode,
-          audioBitrate: exportAudioBitrate,
-          fps: exportFps,
-          scalePreset: exportScalePreset,
-          signal: ac.signal,
-          onProgress: pushProgress
-        })
-        if (result.ok) {
-          rememberExportOutputPath(outPath)
-          rememberFfmpegExportDirectory(outPath)
-          return { ok: true, path: outPath }
-        }
-        if (result.error === 'Экспорт отменён') {
-          return { ok: false, cancelled: true }
-        }
-        return { ok: false, error: result.error }
-      } finally {
-        activeExportAbort = null
+  ipcMain.handle(mw.exportStart, async (event, raw: unknown): Promise<MediaExportStartResult> => {
+    if (activeExportAbort !== null) {
+      return { ok: false, error: 'Уже выполняется экспорт' }
+    }
+    if (!raw || typeof raw !== 'object') {
+      return { ok: false, error: 'Некорректный запрос' }
+    }
+    const inputRaw = (raw as { inputPath?: unknown }).inputPath
+    if (typeof inputRaw !== 'string' || inputRaw.trim().length === 0) {
+      return { ok: false, error: 'Не указан входной файл' }
+    }
+    const abs = resolve(normalize(inputRaw.trim()))
+    if (!existsSync(abs)) {
+      return { ok: false, error: 'Файл не найден' }
+    }
+    if (!isGrantedMediaPath(abs)) {
+      return {
+        ok: false,
+        error: 'Нет доступа к этому файлу — откройте его через превью.'
       }
     }
-  )
 
-  ipcMain.handle('fluxalloy:export-cancel', (): { ok: true } | { ok: false; error: string } => {
+    const pd = (raw as { probeDurationSec?: unknown }).probeDurationSec
+    const probeDurationSec = typeof pd === 'number' && Number.isFinite(pd) && pd > 0 ? pd : null
+
+    const trim = parseExportTrim((raw as { trim?: unknown }).trim)
+
+    const encodePresetRaw = (raw as { encodePreset?: unknown }).encodePreset
+    const encodePreset =
+      encodePresetRaw !== undefined && encodePresetRaw !== null
+        ? parseFfmpegExportEncodePreset(encodePresetRaw)
+        : parseFfmpegExportEncodePreset(cachedSettings.ffmpegExportEncodePreset)
+    const containerRaw = (raw as { container?: unknown }).container
+    const exportContainer =
+      containerRaw !== undefined && containerRaw !== null
+        ? parseFfmpegExportContainer(containerRaw)
+        : parseFfmpegExportContainer(cachedSettings.ffmpegExportContainer)
+    const crfRaw = (raw as { crf?: unknown }).crf
+    const exportCrf =
+      crfRaw !== undefined && crfRaw !== null
+        ? parseFfmpegExportCrf(crfRaw)
+        : parseFfmpegExportCrf(cachedSettings.ffmpegExportCrf)
+    const videoBitrateRaw = (raw as { videoBitrate?: unknown }).videoBitrate
+    const exportVideoBitrate =
+      videoBitrateRaw !== undefined && videoBitrateRaw !== null
+        ? parseFfmpegExportVideoBitrate(videoBitrateRaw)
+        : parseFfmpegExportVideoBitrate(cachedSettings.ffmpegExportVideoBitrate)
+    const audioModeRaw = (raw as { audioMode?: unknown }).audioMode
+    const exportAudioMode =
+      audioModeRaw !== undefined && audioModeRaw !== null
+        ? parseFfmpegExportAudioMode(audioModeRaw)
+        : parseFfmpegExportAudioMode(cachedSettings.ffmpegExportAudioMode)
+    const audioBitrateRaw = (raw as { audioBitrate?: unknown }).audioBitrate
+    const exportAudioBitrate =
+      audioBitrateRaw !== undefined && audioBitrateRaw !== null
+        ? parseFfmpegExportAudioBitrate(audioBitrateRaw)
+        : parseFfmpegExportAudioBitrate(cachedSettings.ffmpegExportAudioBitrate)
+    const fpsRaw = (raw as { fps?: unknown }).fps
+    const exportFps =
+      fpsRaw !== undefined && fpsRaw !== null
+        ? parseFfmpegExportFps(fpsRaw)
+        : parseFfmpegExportFps(cachedSettings.ffmpegExportFps)
+    const scalePresetRaw = (raw as { scalePreset?: unknown }).scalePreset
+    const exportScalePreset =
+      scalePresetRaw !== undefined && scalePresetRaw !== null
+        ? parseFfmpegExportScalePreset(scalePresetRaw)
+        : parseFfmpegExportScalePreset(cachedSettings.ffmpegExportScalePreset)
+
+    const paths = resolveAppPaths()
+    const ffmpeg = resolveEngineExecutablePath(
+      paths,
+      'ffmpeg',
+      cachedSettings.engineExecutablePaths
+    )
+    if (!ffmpeg) {
+      return { ok: false, error: 'ffmpeg не найден — установите движки.' }
+    }
+
+    const win = BrowserWindow.fromWebContents(event.sender)
+    if (!win) {
+      return { ok: false, error: 'Нет активного окна' }
+    }
+
+    const stem = basename(abs).replace(/\.[^.]+$/, '')
+    const defaultExportName = `${stem}-export.${exportContainer}`
+    const pick = await dialog.showSaveDialog(win, {
+      title: 'Экспорт видео',
+      defaultPath: rememberedExportDefaultPath(defaultExportName),
+      filters: [
+        { name: 'MP4', extensions: ['mp4'] },
+        { name: 'Matroska', extensions: ['mkv'] },
+        { name: 'QuickTime', extensions: ['mov'] },
+        { name: 'Все файлы', extensions: ['*'] }
+      ]
+    })
+
+    if (pick.canceled || !pick.filePath || pick.filePath.trim().length === 0) {
+      return { ok: false, cancelled: true }
+    }
+
+    const outPath = ensureFfmpegExportExtension(pick.filePath, exportContainer)
+    const ac = new AbortController()
+    activeExportAbort = ac
+
+    const pushProgress = (p: FfmpegExportProgressPayload): void => {
+      win.webContents.send(mw.exportProgress, p)
+    }
+
+    try {
+      pushProgress({ percent: -1, message: 'Запуск ffmpeg…' })
+      const result = await runFfmpegExportJob({
+        ffmpegPath: ffmpeg,
+        inputPath: abs,
+        outputPath: outPath,
+        trim,
+        probeDurationSec,
+        encodePreset,
+        crf: exportCrf,
+        videoBitrate: exportVideoBitrate,
+        audioMode: exportAudioMode,
+        audioBitrate: exportAudioBitrate,
+        fps: exportFps,
+        scalePreset: exportScalePreset,
+        signal: ac.signal,
+        onProgress: pushProgress
+      })
+      if (result.ok) {
+        rememberExportOutputPath(outPath)
+        rememberFfmpegExportDirectory(outPath)
+        return { ok: true, path: outPath }
+      }
+      if (result.error === 'Экспорт отменён') {
+        return { ok: false, cancelled: true }
+      }
+      return { ok: false, error: result.error }
+    } finally {
+      activeExportAbort = null
+    }
+  })
+
+  ipcMain.handle(mw.exportCancel, (): { ok: true } | { ok: false; error: string } => {
     if (activeExportAbort === null) {
       return { ok: false, error: 'Нет активного экспорта' }
     }
@@ -1605,7 +1600,7 @@ app.whenReady().then(() => {
   })
 
   ipcMain.handle(
-    'fluxalloy:export-open-output',
+    mw.exportOpenOutput,
     async (
       _event,
       raw: unknown
@@ -1619,7 +1614,7 @@ app.whenReady().then(() => {
   )
 
   ipcMain.handle(
-    'fluxalloy:snapshot-frame',
+    mw.snapshotFrame,
     async (
       event,
       raw: unknown
@@ -1691,7 +1686,7 @@ app.whenReady().then(() => {
 
   ipcMain.on('ping', () => logInfo('ipc', 'ping'))
 
-  ipcMain.on('fluxalloy:log-renderer', (event, raw: unknown) => {
+  ipcMain.on(mw.logRenderer, (event, raw: unknown) => {
     if (!isMainWindowSender(event) || !consumeRendererLogToken(event.sender.id)) {
       return
     }

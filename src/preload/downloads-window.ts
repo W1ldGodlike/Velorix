@@ -1,14 +1,12 @@
 import { contextBridge, ipcRenderer } from 'electron'
 
 import type { DownloadsLogPayload } from '../main/downloads-log-ipc'
-import { DOWNLOADS_LOG_CHANNEL } from '../main/downloads-log-ipc'
 import type {
   YtdlpDownloadOptionsPatch,
   YtdlpDownloadOptionsPayload
 } from '../main/ytdlp-download-options'
 import type { YtdlpDownloadHistoryEntry } from '../main/ytdlp-download-history'
-
-const QUEUE_SNAPSHOT_CHANNEL = 'fluxalloy-downloads-state'
+import { downloadsIpc as d } from '../shared/ipc-channels'
 
 function isDownloadsLogPayload(raw: unknown): raw is DownloadsLogPayload {
   if (!raw || typeof raw !== 'object') {
@@ -38,97 +36,92 @@ function isDownloadsLogPayload(raw: unknown): raw is DownloadsLogPayload {
  * Основное приложение этот объект не экспонирует.
  */
 contextBridge.exposeInMainWorld('fluxalloyDownloads', {
-  addLines: (text: string): Promise<number> =>
-    ipcRenderer.invoke('fluxalloy-downloads-add-lines', text),
-  clearQueue: (): Promise<void> => ipcRenderer.invoke('fluxalloy-downloads-clear'),
-  clearFinishedRows: (): Promise<number> =>
-    ipcRenderer.invoke('fluxalloy-downloads-clear-finished'),
-  removeRow: (id: number): Promise<void> => ipcRenderer.invoke('fluxalloy-downloads-remove', id),
+  addLines: (text: string): Promise<number> => ipcRenderer.invoke(d.addLines, text),
+  clearQueue: (): Promise<void> => ipcRenderer.invoke(d.clear),
+  clearFinishedRows: (): Promise<number> => ipcRenderer.invoke(d.clearFinished),
+  removeRow: (id: number): Promise<void> => ipcRenderer.invoke(d.remove, id),
   moveRow: (id: number, direction: number): Promise<void> =>
-    ipcRenderer.invoke('fluxalloy-downloads-move', id, direction),
+    ipcRenderer.invoke(d.move, id, direction),
 
-  getSnapshot: (): Promise<unknown[]> => ipcRenderer.invoke('fluxalloy-downloads-get-snapshot'),
+  getSnapshot: (): Promise<unknown[]> => ipcRenderer.invoke(d.getSnapshot),
 
   /** §6.4 — последние записи истории (newest first). */
-  getHistory: (): Promise<YtdlpDownloadHistoryEntry[]> =>
-    ipcRenderer.invoke('fluxalloy-downloads-get-history'),
+  getHistory: (): Promise<YtdlpDownloadHistoryEntry[]> => ipcRenderer.invoke(d.getHistory),
 
   clearHistory: (): Promise<{ ok: true } | { ok: false; error: string }> =>
-    ipcRenderer.invoke('fluxalloy-downloads-clear-history'),
+    ipcRenderer.invoke(d.clearHistory),
 
   onSnapshot: (listener: (rows: unknown[]) => void): (() => void) => {
     const handler = (_event: unknown, rows: unknown): void => {
       listener(Array.isArray(rows) ? rows : [])
     }
-    ipcRenderer.on(QUEUE_SNAPSHOT_CHANNEL, handler)
+    ipcRenderer.on(d.queueSnapshot, handler)
     return (): void => {
-      ipcRenderer.removeListener(QUEUE_SNAPSHOT_CHANNEL, handler)
+      ipcRenderer.removeListener(d.queueSnapshot, handler)
     }
   },
 
   startQueue: (): Promise<{ ok: true } | { ok: false; error: string }> =>
-    ipcRenderer.invoke('fluxalloy-downloads-start-queue'),
+    ipcRenderer.invoke(d.startQueue),
 
   startRow: (id: number): Promise<{ ok: true } | { ok: false; error: string }> =>
-    ipcRenderer.invoke('fluxalloy-downloads-start-row', id),
+    ipcRenderer.invoke(d.startRow, id),
 
   retryRow: (id: number): Promise<{ ok: true } | { ok: false; error: string }> =>
-    ipcRenderer.invoke('fluxalloy-downloads-retry-row', id),
+    ipcRenderer.invoke(d.retryRow, id),
 
   cancelQueue: (): Promise<{ ok: true } | { ok: false; error: string }> =>
-    ipcRenderer.invoke('fluxalloy-downloads-cancel-run'),
+    ipcRenderer.invoke(d.cancelRun),
 
   getOutputDirectory: (): Promise<{ path: string; isDefault: boolean }> =>
-    ipcRenderer.invoke('fluxalloy-downloads-get-output-dir'),
+    ipcRenderer.invoke(d.getOutputDir),
 
   openOutputDirectory: (): Promise<{ ok: true } | { ok: false; error: string }> =>
-    ipcRenderer.invoke('fluxalloy-downloads-open-output-dir'),
+    ipcRenderer.invoke(d.openOutputDir),
 
   pickOutputDirectory: (): Promise<
     { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
-  > => ipcRenderer.invoke('fluxalloy-downloads-pick-output-dir'),
+  > => ipcRenderer.invoke(d.pickOutputDir),
 
-  clearOutputDirectory: (): Promise<void> =>
-    ipcRenderer.invoke('fluxalloy-downloads-clear-output-dir'),
+  clearOutputDirectory: (): Promise<void> => ipcRenderer.invoke(d.clearOutputDir),
 
   pickCookiesFile: (): Promise<
     { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
-  > => ipcRenderer.invoke('fluxalloy-downloads-pick-cookies-file'),
+  > => ipcRenderer.invoke(d.pickCookiesFile),
 
-  clearCookiesFile: (): Promise<void> =>
-    ipcRenderer.invoke('fluxalloy-downloads-clear-cookies-file'),
+  clearCookiesFile: (): Promise<void> => ipcRenderer.invoke(d.clearCookiesFile),
 
   getCliOptions: (): Promise<
     { ok: true; payload: YtdlpDownloadOptionsPayload } | { ok: false; error: string }
-  > => ipcRenderer.invoke('fluxalloy-downloads-get-cli-options'),
+  > => ipcRenderer.invoke(d.getCliOptions),
 
   setCliOptions: (
     patch: YtdlpDownloadOptionsPatch
   ): Promise<{ ok: true } | { ok: false; error: string }> =>
-    ipcRenderer.invoke('fluxalloy-downloads-set-cli-options', patch),
+    ipcRenderer.invoke(d.setCliOptions, patch),
 
   saveVisibleLog: (
     text: string
   ): Promise<{ ok: true; path: string } | { ok: false; error: string }> =>
-    ipcRenderer.invoke('fluxalloy-downloads-save-visible-log', text),
+    ipcRenderer.invoke(d.saveVisibleLog, text),
 
   openQueueOutput: (
     id: number,
     mode: 'file' | 'folder'
   ): Promise<{ ok: true } | { ok: false; error: string }> =>
-    ipcRenderer.invoke('fluxalloy-downloads-open-queue-output', id, mode),
+    ipcRenderer.invoke(d.openQueueOutput, id, mode),
 
   openHistoryOutput: (
     id: string,
     mode: 'file' | 'folder'
   ): Promise<{ ok: true } | { ok: false; error: string }> =>
-    ipcRenderer.invoke('fluxalloy-downloads-open-history-output', id, mode),
+    ipcRenderer.invoke(d.openHistoryOutput, id, mode),
 
   openQueueOutputInHandler: (id: number): Promise<{ ok: true } | { ok: false; error: string }> =>
-    ipcRenderer.invoke('fluxalloy-downloads-open-queue-output-in-handler', id),
+    ipcRenderer.invoke(d.openQueueOutputInHandler, id),
 
   openHistoryOutputInHandler: (id: string): Promise<{ ok: true } | { ok: false; error: string }> =>
-    ipcRenderer.invoke('fluxalloy-downloads-open-history-output-in-handler', id),
+    ipcRenderer.invoke(d.openHistoryOutputInHandler, id),
 
   onLog: (listener: (payload: DownloadsLogPayload) => void): (() => void) => {
     const handler = (_event: unknown, raw: unknown): void => {
@@ -137,9 +130,9 @@ contextBridge.exposeInMainWorld('fluxalloyDownloads', {
       }
       listener(raw)
     }
-    ipcRenderer.on(DOWNLOADS_LOG_CHANNEL, handler)
+    ipcRenderer.on(d.log, handler)
     return (): void => {
-      ipcRenderer.removeListener(DOWNLOADS_LOG_CHANNEL, handler)
+      ipcRenderer.removeListener(d.log, handler)
     }
   }
 })

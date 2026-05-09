@@ -41,9 +41,10 @@ import {
   readYtdlpDownloadHistoryNewestFirst
 } from './ytdlp-download-history'
 import { logError } from './logger-service'
+import { downloadsIpc as d } from '../shared/ipc-channels'
 
 /** Совпадает с preload подпиской на снимок очереди. */
-export const DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL = 'fluxalloy-downloads-state'
+export const DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL = d.queueSnapshot
 
 interface DownloadsWindowBoundsHooks {
   getSavedDownloadsBounds?: () => StoredWindowRect | undefined
@@ -1115,14 +1116,14 @@ export function registerDownloadsWindowIpcHandlers(): void {
     broadcastDownloadsSnapshot()
   })
 
-  ipcMain.handle('fluxalloy-downloads-get-snapshot', (event) => {
+  ipcMain.handle(d.getSnapshot, (event) => {
     if (!isDownloadsSender(event.sender)) {
       return []
     }
     return getDownloadsQueueSnapshot()
   })
 
-  ipcMain.handle('fluxalloy-downloads-add-lines', (event, text: unknown) => {
+  ipcMain.handle(d.addLines, (event, text: unknown) => {
     if (!isDownloadsSender(event.sender)) {
       return 0
     }
@@ -1135,7 +1136,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   })
 
   ipcMain.handle(
-    'fluxalloy-downloads-get-output-dir',
+    d.getOutputDir,
     (
       event
     ): {
@@ -1154,7 +1155,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   )
 
   ipcMain.handle(
-    'fluxalloy-downloads-open-output-dir',
+    d.openOutputDir,
     async (event): Promise<{ ok: true } | { ok: false; error: string }> => {
       if (!isDownloadsSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
@@ -1167,7 +1168,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   )
 
   ipcMain.handle(
-    'fluxalloy-downloads-get-cli-options',
+    d.getCliOptions,
     (event): { ok: true; payload: YtdlpDownloadOptionsPayload } | { ok: false; error: string } => {
       if (!isDownloadsSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
@@ -1181,7 +1182,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   )
 
   ipcMain.handle(
-    'fluxalloy-downloads-set-cli-options',
+    d.setCliOptions,
     (event, raw: unknown): { ok: true } | { ok: false; error: string } => {
       if (!isDownloadsSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
@@ -1304,7 +1305,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   )
 
   ipcMain.handle(
-    'fluxalloy-downloads-pick-output-dir',
+    d.pickOutputDir,
     async (
       event
     ): Promise<
@@ -1325,7 +1326,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
     }
   )
 
-  ipcMain.handle('fluxalloy-downloads-clear-output-dir', (event) => {
+  ipcMain.handle(d.clearOutputDir, (event) => {
     if (!isDownloadsSender(event.sender)) {
       return
     }
@@ -1333,7 +1334,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   })
 
   ipcMain.handle(
-    'fluxalloy-downloads-pick-cookies-file',
+    d.pickCookiesFile,
     async (
       event
     ): Promise<
@@ -1354,14 +1355,14 @@ export function registerDownloadsWindowIpcHandlers(): void {
     }
   )
 
-  ipcMain.handle('fluxalloy-downloads-clear-cookies-file', (event) => {
+  ipcMain.handle(d.clearCookiesFile, (event) => {
     if (!isDownloadsSender(event.sender)) {
       return
     }
     downloadsBoundsHooks.clearYtdlpCookiesFile?.()
   })
 
-  ipcMain.handle('fluxalloy-downloads-clear', (event) => {
+  ipcMain.handle(d.clear, (event) => {
     if (!isDownloadsSender(event.sender)) {
       return
     }
@@ -1370,7 +1371,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
     broadcastDownloadsSnapshot()
   })
 
-  ipcMain.handle('fluxalloy-downloads-clear-finished', (event) => {
+  ipcMain.handle(d.clearFinished, (event) => {
     if (!isDownloadsSender(event.sender)) {
       return 0
     }
@@ -1380,7 +1381,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   })
 
   /** §6.4 — чтение истории завершённых загрузок (newest first). */
-  ipcMain.handle('fluxalloy-downloads-get-history', (event) => {
+  ipcMain.handle(d.getHistory, (event) => {
     if (!isDownloadsSender(event.sender)) {
       return []
     }
@@ -1388,20 +1389,17 @@ export function registerDownloadsWindowIpcHandlers(): void {
     return readYtdlpDownloadHistoryNewestFirst(paths.userData, 100)
   })
 
-  ipcMain.handle(
-    'fluxalloy-downloads-clear-history',
-    (event): { ok: true } | { ok: false; error: string } => {
-      if (!isDownloadsSender(event.sender)) {
-        return { ok: false, error: 'Недопустимый отправитель' }
-      }
-      const paths = resolveAppPaths()
-      clearYtdlpDownloadHistory(paths.userData)
-      return { ok: true }
+  ipcMain.handle(d.clearHistory, (event): { ok: true } | { ok: false; error: string } => {
+    if (!isDownloadsSender(event.sender)) {
+      return { ok: false, error: 'Недопустимый отправитель' }
     }
-  )
+    const paths = resolveAppPaths()
+    clearYtdlpDownloadHistory(paths.userData)
+    return { ok: true }
+  })
 
   ipcMain.handle(
-    'fluxalloy-downloads-save-visible-log',
+    d.saveVisibleLog,
     async (
       event,
       raw: unknown
@@ -1441,7 +1439,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   )
 
   ipcMain.handle(
-    'fluxalloy-downloads-open-queue-output',
+    d.openQueueOutput,
     async (
       event,
       id: unknown,
@@ -1462,7 +1460,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   )
 
   ipcMain.handle(
-    'fluxalloy-downloads-open-history-output',
+    d.openHistoryOutput,
     async (
       event,
       id: unknown,
@@ -1486,7 +1484,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   )
 
   ipcMain.handle(
-    'fluxalloy-downloads-open-queue-output-in-handler',
+    d.openQueueOutputInHandler,
     (event, id: unknown): { ok: true } | { ok: false; error: string } => {
       if (!isDownloadsSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
@@ -1503,7 +1501,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   )
 
   ipcMain.handle(
-    'fluxalloy-downloads-open-history-output-in-handler',
+    d.openHistoryOutputInHandler,
     (event, id: unknown): { ok: true } | { ok: false; error: string } => {
       if (!isDownloadsSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
@@ -1522,7 +1520,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
     }
   )
 
-  ipcMain.handle('fluxalloy-downloads-remove', (event, id: unknown) => {
+  ipcMain.handle(d.remove, (event, id: unknown) => {
     if (!isDownloadsSender(event.sender)) {
       return
     }
@@ -1533,7 +1531,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
     broadcastDownloadsSnapshot()
   })
 
-  ipcMain.handle('fluxalloy-downloads-move', (event, id: unknown, direction: unknown) => {
+  ipcMain.handle(d.move, (event, id: unknown, direction: unknown) => {
     if (!isDownloadsSender(event.sender)) {
       return
     }
@@ -1549,7 +1547,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   })
 
   ipcMain.handle(
-    'fluxalloy-downloads-start-queue',
+    d.startQueue,
     async (event): Promise<{ ok: true } | { ok: false; error: string }> => {
       if (!isDownloadsSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
@@ -1564,7 +1562,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   )
 
   ipcMain.handle(
-    'fluxalloy-downloads-start-row',
+    d.startRow,
     async (event, id: unknown): Promise<{ ok: true } | { ok: false; error: string }> => {
       if (!isDownloadsSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
@@ -1582,7 +1580,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   )
 
   ipcMain.handle(
-    'fluxalloy-downloads-retry-row',
+    d.retryRow,
     async (event, id: unknown): Promise<{ ok: true } | { ok: false; error: string }> => {
       if (!isDownloadsSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
@@ -1610,18 +1608,15 @@ export function registerDownloadsWindowIpcHandlers(): void {
     }
   )
 
-  ipcMain.handle(
-    'fluxalloy-downloads-cancel-run',
-    (event): { ok: true } | { ok: false; error: string } => {
-      if (!isDownloadsSender(event.sender)) {
-        return { ok: false, error: 'Недопустимый отправитель' }
-      }
-      cancelDownloadsRunner()
-      broadcastDownloadsSnapshot()
-
-      return { ok: true }
+  ipcMain.handle(d.cancelRun, (event): { ok: true } | { ok: false; error: string } => {
+    if (!isDownloadsSender(event.sender)) {
+      return { ok: false, error: 'Недопустимый отправитель' }
     }
-  )
+    cancelDownloadsRunner()
+    broadcastDownloadsSnapshot()
+
+    return { ok: true }
+  })
 }
 
 /**

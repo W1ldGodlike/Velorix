@@ -19,6 +19,7 @@ import type { PreviewDialogResult } from '../main/preview-dialog'
 import type { EngineId, EnginePathOverridesPatch } from '../main/engine-service'
 import type { AppAboutInfo } from '../main/about-info'
 import type { AppSettings, AppTheme } from '../main/settings-store'
+import { mainWindowIpc as mw } from '../shared/ipc-channels'
 
 type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
 
@@ -27,78 +28,76 @@ type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
 // прокидывается сюда маленькими методами. Это упрощает аудит безопасности и не даёт UI
 // случайно начать выполнять произвольные команды.
 const fluxalloy = {
-  // TODO(§21): при росте API разнести настройки/движки/файлы по отдельным typed contract modules.
   settings: {
-    get: (): Promise<AppSettings> => ipcRenderer.invoke('fluxalloy:settings-get'),
+    get: (): Promise<AppSettings> => ipcRenderer.invoke(mw.settingsGet),
     setTheme: (theme: AppTheme): Promise<AppSettings> =>
-      ipcRenderer.invoke('fluxalloy:settings-set-theme', theme),
+      ipcRenderer.invoke(mw.settingsSetTheme, theme),
     setEngineExecutablePaths: (patch: EnginePathOverridesPatch): Promise<AppSettings> =>
-      ipcRenderer.invoke('fluxalloy:settings-set-engine-paths', patch),
+      ipcRenderer.invoke(mw.settingsSetEnginePaths, patch),
     pickEngineExecutable: (engineId: EngineId): Promise<string | null> =>
-      ipcRenderer.invoke('fluxalloy:pick-engine-executable', engineId),
+      ipcRenderer.invoke(mw.pickEngineExecutable, engineId),
     setFfmpegExportEncodePreset: (preset: FfmpegExportEncodePresetId): Promise<AppSettings> =>
-      ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-encode-preset', preset),
+      ipcRenderer.invoke(mw.settingsSetFfmpegExportEncodePreset, preset),
     setFfmpegExportContainer: (container: FfmpegExportContainerId): Promise<AppSettings> =>
-      ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-container', container),
+      ipcRenderer.invoke(mw.settingsSetFfmpegExportContainer, container),
     setFfmpegExportCrf: (crf: number | null): Promise<AppSettings> =>
-      ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-crf', crf),
+      ipcRenderer.invoke(mw.settingsSetFfmpegExportCrf, crf),
     setFfmpegExportVideoBitrate: (bitrate: string | null): Promise<AppSettings> =>
-      ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-video-bitrate', bitrate),
+      ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoBitrate, bitrate),
     setFfmpegExportAudioMode: (mode: FfmpegExportAudioModeId): Promise<AppSettings> =>
-      ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-audio-mode', mode),
+      ipcRenderer.invoke(mw.settingsSetFfmpegExportAudioMode, mode),
     setFfmpegExportAudioBitrate: (bitrate: string | null): Promise<AppSettings> =>
-      ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-audio-bitrate', bitrate),
+      ipcRenderer.invoke(mw.settingsSetFfmpegExportAudioBitrate, bitrate),
     setFfmpegExportFps: (fps: number | null): Promise<AppSettings> =>
-      ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-fps', fps),
+      ipcRenderer.invoke(mw.settingsSetFfmpegExportFps, fps),
     setFfmpegExportScalePreset: (scale: FfmpegExportScalePresetId): Promise<AppSettings> =>
-      ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-scale-preset', scale),
+      ipcRenderer.invoke(mw.settingsSetFfmpegExportScalePreset, scale),
     setFfmpegSnapshotFormat: (format: FfmpegSnapshotFormatId): Promise<AppSettings> =>
-      ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-snapshot-format', format)
+      ipcRenderer.invoke(mw.settingsSetFfmpegSnapshotFormat, format)
   },
   preview: {
-    openFileDialog: (): Promise<PreviewDialogResult> =>
-      ipcRenderer.invoke('fluxalloy:open-video-dialog'),
+    openFileDialog: (): Promise<PreviewDialogResult> => ipcRenderer.invoke(mw.openVideoDialog),
     grantPath: (
       absolutePath: string
     ): Promise<
       { ok: true; path: string; mediaUrl: string; name: string } | { ok: false; error: string }
-    > => ipcRenderer.invoke('fluxalloy:preview-grant-path', absolutePath),
+    > => ipcRenderer.invoke(mw.previewGrantPath, absolutePath),
     probe: (absolutePath: string): Promise<MediaProbeResult> =>
-      ipcRenderer.invoke('fluxalloy:media-probe', absolutePath),
+      ipcRenderer.invoke(mw.mediaProbe, absolutePath),
     snapshotFrame: (payload: {
       inputPath: string
       timeSec: number
     }): Promise<
       { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
-    > => ipcRenderer.invoke('fluxalloy:snapshot-frame', payload),
+    > => ipcRenderer.invoke(mw.snapshotFrame, payload),
     /** Только узкий API на путь: renderer не имеет доступа к `File.path`. */
     getPathForFile: (file: File): string => webUtils.getPathForFile(file)
   },
   session: {
     persistLastSource: (path: string | null): Promise<void> =>
-      ipcRenderer.invoke('fluxalloy:persist-last-source', path),
+      ipcRenderer.invoke(mw.persistLastSource, path),
     restoreLastSource: (): Promise<PreviewOpenedPayload | null> =>
-      ipcRenderer.invoke('fluxalloy:restore-last-source')
+      ipcRenderer.invoke(mw.restoreLastSource)
   },
   downloads: {
     openWindow: (initial?: string | { text?: string } | null): Promise<void> =>
-      ipcRenderer.invoke('fluxalloy:open-downloads-window', initial ?? null)
+      ipcRenderer.invoke(mw.openDownloadsWindow, initial ?? null)
   },
   clipboard: {
-    readText: (): Promise<string> => ipcRenderer.invoke('fluxalloy:clipboard-read-text'),
+    readText: (): Promise<string> => ipcRenderer.invoke(mw.clipboardReadText),
     writeText: (text: string): Promise<{ ok: true } | { ok: false }> =>
-      ipcRenderer.invoke('fluxalloy:clipboard-write-text', text)
+      ipcRenderer.invoke(mw.clipboardWriteText, text)
   },
   about: {
-    getInfo: (): Promise<AppAboutInfo> => ipcRenderer.invoke('fluxalloy:app-about-info')
+    getInfo: (): Promise<AppAboutInfo> => ipcRenderer.invoke(mw.appAboutInfo)
   },
   diagnostics: {
     listFolders: (): Promise<DiagnosticsFolderEntry[]> =>
-      ipcRenderer.invoke('fluxalloy:diagnostics-list-folders'),
+      ipcRenderer.invoke(mw.diagnosticsListFolders),
     openFolder: (
       id: DiagnosticsFolderId
     ): Promise<{ ok: true; path: string } | { ok: false; error: string }> =>
-      ipcRenderer.invoke('fluxalloy:diagnostics-open-folder', id)
+      ipcRenderer.invoke(mw.diagnosticsOpenFolder, id)
   },
   log: {
     /**
@@ -106,17 +105,16 @@ const fluxalloy = {
      * Без ответа: это «fire and forget», промахнувшийся payload отбрасывается на стороне main.
      */
     send: (entry: { level: 'info' | 'warn' | 'error'; scope?: string; message: string }): void => {
-      ipcRenderer.send('fluxalloy:log-renderer', entry)
+      ipcRenderer.send(mw.logRenderer, entry)
     }
   },
   engines: {
-    getStatus: (): Promise<EnginesStatusSnapshot> => ipcRenderer.invoke('fluxalloy:engines-status'),
-    shouldOfferDownload: (): Promise<boolean> =>
-      ipcRenderer.invoke('fluxalloy:engines-should-offer-download'),
+    getStatus: (): Promise<EnginesStatusSnapshot> => ipcRenderer.invoke(mw.enginesStatus),
+    shouldOfferDownload: (): Promise<boolean> => ipcRenderer.invoke(mw.enginesShouldOfferDownload),
     download: (): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke('fluxalloy:engines-download'),
+      ipcRenderer.invoke(mw.enginesDownload),
     onDownloadProgress: (listener: (progress: EngineDownloadProgress) => void): (() => void) => {
-      const channel = 'fluxalloy:engines-progress'
+      const channel = mw.enginesProgress
       const handler = (_event: unknown, raw: unknown): void => {
         if (!raw || typeof raw !== 'object') {
           return
@@ -131,16 +129,16 @@ const fluxalloy = {
   },
   export: {
     start: (payload: MediaExportRequestPayload): Promise<MediaExportStartResult> =>
-      ipcRenderer.invoke('fluxalloy:export-start', payload),
+      ipcRenderer.invoke(mw.exportStart, payload),
     cancel: (): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke('fluxalloy:export-cancel'),
+      ipcRenderer.invoke(mw.exportCancel),
     openOutput: (
       path: string,
       mode: 'file' | 'folder' | 'preview'
     ): Promise<{ ok: true; path: string } | { ok: false; error: string }> =>
-      ipcRenderer.invoke('fluxalloy:export-open-output', { path, mode }),
+      ipcRenderer.invoke(mw.exportOpenOutput, { path, mode }),
     onProgress: (listener: (progress: FfmpegExportProgressPayload) => void): (() => void) => {
-      const channel = 'fluxalloy:export-progress'
+      const channel = mw.exportProgress
       const handler = (_event: unknown, raw: unknown): void => {
         if (!raw || typeof raw !== 'object') {
           return
@@ -154,7 +152,7 @@ const fluxalloy = {
     }
   },
   onPreviewOpened: (listener: (payload: PreviewOpenedPayload) => void): (() => void) => {
-    const channel = 'fluxalloy:preview-opened'
+    const channel = mw.previewOpened
     const handler = (_event: unknown, raw: unknown): void => {
       if (
         raw &&
@@ -171,7 +169,7 @@ const fluxalloy = {
     }
   },
   onThemeChanged: (listener: (theme: AppTheme) => void): (() => void) => {
-    const channel = 'fluxalloy:theme-changed'
+    const channel = mw.themeChanged
     const handler = (_: unknown, raw: unknown): void => {
       // События из IPC валидируем так же, как invoke-аргументы: renderer не доверяет raw payload.
       listener(raw === 'light' ? 'light' : 'dark')
@@ -182,7 +180,7 @@ const fluxalloy = {
     }
   },
   onOpenEnginePaths: (listener: () => void): (() => void) => {
-    const channel = 'fluxalloy:open-engine-paths'
+    const channel = mw.openEnginePaths
     const handler = (): void => {
       listener()
     }
@@ -192,7 +190,7 @@ const fluxalloy = {
     }
   },
   onEnginePathsChanged: (listener: () => void): (() => void) => {
-    const channel = 'fluxalloy:engine-paths-changed'
+    const channel = mw.enginePathsChanged
     const handler = (): void => {
       listener()
     }
@@ -202,7 +200,7 @@ const fluxalloy = {
     }
   },
   onOpenAbout: (listener: () => void): (() => void) => {
-    const channel = 'fluxalloy:open-about'
+    const channel = mw.openAbout
     const handler = (): void => {
       listener()
     }

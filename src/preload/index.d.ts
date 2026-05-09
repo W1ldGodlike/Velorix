@@ -33,7 +33,7 @@ export type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
  * обращаться к нему через `ipcRenderer` напрямую.
  */
 export interface FluxAlloyApi {
-  // TODO(§21): держать этот интерфейс синхронным с `src/preload/index.ts`; renderer не использует raw ipcRenderer.
+  // Имена IPC-каналов — `src/shared/ipc-channels.ts`; держать этот интерфейс синхронным с `src/preload/index.ts`.
   settings: {
     get: () => Promise<AppSettings>
     setTheme: (theme: AppTheme) => Promise<AppSettings>
