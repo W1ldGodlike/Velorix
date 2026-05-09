@@ -219,6 +219,7 @@ function buildDownloadsHtml(): string {
     table.history-table th:nth-child(1), table.history-table td:nth-child(1) { width: 10.5rem; white-space: nowrap; }
     table.history-table th:nth-child(4), table.history-table td:nth-child(4) { width: 5.5rem; }
     table.history-table th:nth-child(5), table.history-table td:nth-child(5) { width: 3rem; text-align: right; }
+    table.history-table th:nth-child(7), table.history-table td:nth-child(7) { width: 5.5rem; text-align: right; }
     td.h-out-ok { color: #b9d79f; }
     td.h-out-err { color: #f0a8a8; }
     td.h-out-can { color: #9dc3ff; }
@@ -323,7 +324,7 @@ function buildDownloadsHtml(): string {
       <button type="button" class="cmd cmd-warn" id="clearHistoryBtn">Очистить историю</button>
     </div>
     <table class="history-table">
-      <thead><tr><th>Завершено</th><th>Имя</th><th>Ссылка</th><th>Исход</th><th>Код</th><th>Статус</th></tr></thead>
+      <thead><tr><th>Завершено</th><th>Имя</th><th>Ссылка</th><th>Исход</th><th>Код</th><th>Статус</th><th></th></tr></thead>
       <tbody id="historyBody"></tbody>
     </table>
   </details>
@@ -403,7 +404,7 @@ function buildDownloadsHtml(): string {
         if (list.length === 0) {
           var tr0 = document.createElement('tr');
           var td0 = document.createElement('td');
-          td0.colSpan = 6;
+          td0.colSpan = 7;
           td0.style.opacity = '0.7';
           td0.textContent = 'Записей пока нет';
           tr0.appendChild(td0);
@@ -434,6 +435,17 @@ function buildDownloadsHtml(): string {
           tr.appendChild(td('num', codeStr));
           var st = typeof e.status === 'string' ? e.status : '';
           tr.appendChild(td('', st.length > 120 ? st.slice(0, 118) + '…' : (st || '—')));
+          var tdAction = document.createElement('td');
+          tdAction.className = 'act';
+          if (u) {
+            var retry = document.createElement('button');
+            retry.type = 'button';
+            retry.textContent = 'В очередь';
+            retry.title = 'Добавить этот URL в очередь повторно';
+            retry.setAttribute('data-history-url', u);
+            tdAction.appendChild(retry);
+          }
+          tr.appendChild(tdAction);
           historyBody.appendChild(tr);
         });
       }
@@ -463,6 +475,17 @@ function buildDownloadsHtml(): string {
           api.clearHistory().then(function (res) {
             if (res && res.ok === false && res.error) window.alert(res.error);
             refreshHistory();
+          });
+        });
+      }
+      if (historyBody) {
+        historyBody.addEventListener('click', function (e) {
+          var t = e.target.closest('[data-history-url]');
+          if (!t) return;
+          var url = t.getAttribute('data-history-url') || '';
+          if (!url) return;
+          api.addLines(url).then(function () {
+            api.getSnapshot().then(onQueueSnapshot);
           });
         });
       }
