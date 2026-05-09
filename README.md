@@ -15,6 +15,20 @@
 4. Разработка: `npm run dev`.
 5. Рекомендуемые расширения VS Code / Cursor перечислены в [`.vscode/extensions.json`](./.vscode/extensions.json); для форматирования и ESLint см. [`.vscode/settings.json`](./.vscode/settings.json).
 
+### Windows / PowerShell: «выполнение сценариев отключено» для `npm.ps1`
+
+1. Одноразово в корне репозитория: `powershell -ExecutionPolicy Bypass -File .\scripts\fix-powershell-npm.ps1`
+   — снимает **Mark-of-the-Web** с `npm.ps1`/`npx.ps1` и пытается выставить `RemoteSigned` для **текущего пользователя**. Если доменная **GPO** запрещает менять политику, скрипт напишет, что добавить в `$PROFILE`.
+
+2. Вручную без скриптов: в PowerShell использовать **`npm.cmd`** вместо **`npm`** (например `npm.cmd run dev`) — всегда обходит ограничение на `.ps1`.
+
+3. Постоянный вариант: в файле профиля (`notepad $PROFILE`) добавить:
+   ```powershell
+   Set-Alias -Name npm -Value 'C:\Program Files\nodejs\npm.cmd'
+   Set-Alias -Name npx -Value 'C:\Program Files\nodejs\npx.cmd'
+   ```
+   Если Node установлен в другое место — подставьте свой путь к `nodejs`.
+
 ## Команды
 
 ```bash
