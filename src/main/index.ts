@@ -1493,6 +1493,9 @@ app.whenReady().then(() => {
           rememberExportOutputPath(outPath)
           return { ok: true, path: outPath }
         }
+        if (result.error === 'Экспорт отменён') {
+          return { ok: false, cancelled: true }
+        }
         return { ok: false, error: result.error }
       } finally {
         activeExportAbort = null

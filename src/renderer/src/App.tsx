@@ -300,6 +300,7 @@ function App(): JSX.Element {
   const [downloadsUrl, setDownloadsUrl] = useState('')
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
   const [exportBusy, setExportBusy] = useState(false)
+  const [exportCancelBusy, setExportCancelBusy] = useState(false)
   const [exportEncodePreset, setExportEncodePreset] = useState<ExportEncodePresetId>('balance')
   const [exportContainer, setExportContainer] = useState<ExportContainerId>('mp4')
   const [exportCrf, setExportCrf] = useState<number | null>(null)
@@ -642,7 +643,7 @@ function App(): JSX.Element {
         setLastExportPath(res.path)
         setStatusHint(`Экспорт завершён: ${savedName}`)
       } else if ('cancelled' in res && res.cancelled) {
-        setStatusHint(null)
+        setStatusHint('Экспорт отменён')
       } else if ('error' in res) {
         setStatusHint(`Экспорт: ${res.error}`)
       } else {
@@ -652,6 +653,20 @@ function App(): JSX.Element {
       setStatusHint(e instanceof Error ? e.message : 'Ошибка экспорта')
     } finally {
       setExportBusy(false)
+      setExportCancelBusy(false)
+    }
+  }
+
+  async function handleCancelExport(): Promise<void> {
+    if (!exportBusy || exportCancelBusy) {
+      return
+    }
+    setExportCancelBusy(true)
+    setStatusHint('Отмена экспорта…')
+    const res = await window.fluxalloy.export.cancel()
+    if (!res.ok) {
+      setExportCancelBusy(false)
+      setStatusHint(`Экспорт: ${res.error}`)
     }
   }
 
@@ -665,6 +680,14 @@ function App(): JSX.Element {
     } else if (mode === 'preview') {
       setStatusHint('Экспорт открыт в превью')
     }
+  }
+
+  async function handleCopyLastExportPath(): Promise<void> {
+    if (!lastExportPath) {
+      return
+    }
+    const res = await window.fluxalloy.clipboard.writeText(lastExportPath)
+    setStatusHint(res.ok ? 'Путь экспорта скопирован' : 'Не удалось скопировать путь экспорта')
   }
 
   async function handlePreviewDrop(files: FileList | null): Promise<void> {
@@ -859,6 +882,19 @@ function App(): JSX.Element {
         >
           {exportBusy ? 'Экспорт…' : 'Экспорт'}
         </button>
+        {exportBusy ? (
+          <button
+            type="button"
+            className="app-btn app-btn-warn"
+            disabled={exportCancelBusy}
+            onClick={() => {
+              void handleCancelExport()
+            }}
+            title="Остановить текущий ffmpeg export"
+          >
+            {exportCancelBusy ? 'Отмена…' : 'Отменить'}
+          </button>
+        ) : null}
         {lastExportPath ? (
           <>
             <button
@@ -893,6 +929,17 @@ function App(): JSX.Element {
               title="Открыть последний экспорт в preview FluxAlloy"
             >
               В превью
+            </button>
+            <button
+              type="button"
+              className="app-btn"
+              disabled={exportBusy || snapshotBusy}
+              onClick={() => {
+                void handleCopyLastExportPath()
+              }}
+              title="Скопировать путь последнего результата экспорта"
+            >
+              Копировать путь
             </button>
           </>
         ) : null}
