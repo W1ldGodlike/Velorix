@@ -86,7 +86,7 @@ function parseArgs(argv: string[]): {
   MAX_STEPS            число итераций (по умолчанию 5)
   VERBOSE=1            стрим текста assistant в stdout
   PROMPTS_DIR          каталог с initial.txt и continue.txt
-  CURSOR_MODEL          ID модели (по умолчанию auto)
+  CURSOR_MODEL          ID модели (по умолчанию default)
 
 Примеры:
   npm run loop
@@ -181,7 +181,7 @@ async function main(): Promise<number> {
     return 1
   }
 
-  const modelId = (process.env.CURSOR_MODEL ?? 'auto').trim() || 'auto'
+  const modelId = (process.env.CURSOR_MODEL ?? 'default').trim() || 'default'
 
   const initialDisk = loadPrompt('initial.txt', opts.promptsDir)
   const continueDisk = loadPrompt('continue.txt', opts.promptsDir)

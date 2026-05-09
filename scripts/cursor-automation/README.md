@@ -36,6 +36,8 @@ npm run agent:loop -- --max-steps 8 --verbose
 
 ```dotenv
 CURSOR_API_KEY=crsr_...
+# Не задавайте `auto`: в SDK ближайший вариант — `default`.
+# CURSOR_MODEL=default
 ```
 
 Промпты по умолчанию: каталог **`prompts/`** (`initial.txt`, `continue.txt`). Свой текст — через `PROMPTS_DIR` или правка файлов.
@@ -74,7 +76,7 @@ MAX_STEPS=8
 |------------|------------|
 | `CURSOR_API_KEY` | Обязательна |
 | `MAX_STEPS` | Число итераций (если не задан `--max-steps`) |
-| `CURSOR_MODEL` | По умолчанию `auto` |
+| `CURSOR_MODEL` | По умолчанию `default`; `auto` в SDK невалиден |
 | `VERBOSE=1` | Печать assistant/thinking из стрима |
 | `PROMPTS_DIR` | Альтернативный каталог с `initial.txt` / `continue.txt` |
 | `STEP_DELAY_MS` | Пауза между итерациями (мс), по умолчанию `400` |
