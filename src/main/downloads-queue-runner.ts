@@ -1,5 +1,3 @@
-import { join } from 'path'
-
 import type { AppPaths } from './app-paths'
 import { resolveAppPaths } from './app-paths'
 import { getEnginePathOverridesSnapshot } from './engine-path-sync'
@@ -11,6 +9,7 @@ import {
 } from './downloads-queue'
 import { emitDownloadsLog } from './downloads-log-ipc'
 import { extractDownloadPercent, runYtdlpOnce } from './ytdlp-download-service'
+import { resolveYtdlpOutputDirectory } from './ytdlp-download-output'
 
 let activeAbort: AbortController | null = null
 let sequentialBusy = false
@@ -110,7 +109,7 @@ export async function startDownloadsSequential(): Promise<void> {
   sequentialBusy = true
 
   const paths = resolveAppPaths()
-  const outputDir = join(paths.userData, 'downloads', 'ytdlp')
+  const outputDir = resolveYtdlpOutputDirectory(paths.userData)
 
   try {
     let row: DownloadsQueueRow | undefined
@@ -146,7 +145,7 @@ export async function startDownloadSingleRow(
 
   sequentialBusy = true
   const paths = resolveAppPaths()
-  const outputDir = join(paths.userData, 'downloads', 'ytdlp')
+  const outputDir = resolveYtdlpOutputDirectory(paths.userData)
 
   try {
     await runYtdlpForWaitingRow(paths, outputDir, rowId)

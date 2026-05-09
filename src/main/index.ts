@@ -1,5 +1,5 @@
 import { existsSync } from 'fs'
-import { basename, join, normalize, resolve } from 'path'
+import { basename, isAbsolute, join, normalize, resolve } from 'path'
 import { BrowserWindow, Menu, app, clipboard, dialog, ipcMain, shell } from 'electron'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -42,6 +42,10 @@ import { loadTrustedHashes, resolveTrustedHashesPath } from './trusted-hashes-st
 import { resolvePreloadOutFile } from './preload-resolve'
 import { boundsFromBrowserWindow, rectifyBoundsForRestore } from './window-bounds'
 import { getAppAboutInfo } from './about-info'
+import {
+  resolveYtdlpOutputDirectory,
+  syncYtdlpDownloadDirectoryFromSettings
+} from './ytdlp-download-output'
 
 /** Кастомная схема для локального видеопревью; привилегии обязаны зарегистрироваться до `app.whenReady`. */
 registerFluxMediaPrivileges()
@@ -189,6 +193,22 @@ function persistEnginePathOverridesPatch(patch: EnginePathOverridesPatch): AppSe
     w.webContents.send('fluxalloy:engine-paths-changed')
   })
   return { ...cachedSettings }
+}
+
+function persistYtdlpDownloadDirectory(abs: string | null): void {
+  const merged: AppSettings = { ...cachedSettings }
+  if (abs === null || abs.trim() === '') {
+    delete merged.ytdlpDownloadDirectory
+  } else {
+    const n = normalize(abs.trim())
+    if (!isAbsolute(n)) {
+      return
+    }
+    merged.ytdlpDownloadDirectory = n
+  }
+  cachedSettings = merged
+  saveSettings(settingsPath(), cachedSettings)
+  syncYtdlpDownloadDirectoryFromSettings(cachedSettings.ytdlpDownloadDirectory)
 }
 
 function persistLastOpenedSource(absolutePath: string | null): void {
@@ -439,10 +459,32 @@ app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.fluxalloy')
   cachedSettings = loadSettings(settingsPath())
   refreshEnginePathOverridesSnapshot()
+  syncYtdlpDownloadDirectoryFromSettings(cachedSettings.ytdlpDownloadDirectory)
   configureDownloadsWindowBoundsHooks({
     getSavedDownloadsBounds: () => cachedSettings.windowBounds?.downloads,
     persistDownloadsBounds: (r) => {
       patchWindowBounds({ downloads: r })
+    },
+    pickYtdlpOutputDirectory: async (win: BrowserWindow) => {
+      const result = await dialog.showOpenDialog(win, {
+        properties: ['openDirectory', 'createDirectory'],
+        title: 'Каталог загрузок yt-dlp'
+      })
+      if (result.canceled || result.filePaths.length === 0 || !result.filePaths[0]) {
+        return { ok: false, cancelled: true }
+      }
+      const picked = normalize(result.filePaths[0])
+      if (!isAbsolute(picked)) {
+        return { ok: false, error: 'Нужен абсолютный путь к каталогу' }
+      }
+      persistYtdlpDownloadDirectory(picked)
+      return {
+        ok: true,
+        path: resolveYtdlpOutputDirectory(resolveAppPaths().userData)
+      }
+    },
+    clearYtdlpOutputDirectoryOverride: (): void => {
+      persistYtdlpDownloadDirectory(null)
     }
   })
   registerFluxMediaProtocol()

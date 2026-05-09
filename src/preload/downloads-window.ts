@@ -61,6 +61,16 @@ contextBridge.exposeInMainWorld('fluxalloyDownloads', {
   cancelQueue: (): Promise<{ ok: true } | { ok: false; error: string }> =>
     ipcRenderer.invoke('fluxalloy-downloads-cancel-run'),
 
+  getOutputDirectory: (): Promise<{ path: string; isDefault: boolean }> =>
+    ipcRenderer.invoke('fluxalloy-downloads-get-output-dir'),
+
+  pickOutputDirectory: (): Promise<
+    { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
+  > => ipcRenderer.invoke('fluxalloy-downloads-pick-output-dir'),
+
+  clearOutputDirectory: (): Promise<void> =>
+    ipcRenderer.invoke('fluxalloy-downloads-clear-output-dir'),
+
   onLog: (listener: (payload: DownloadsLogPayload) => void): (() => void) => {
     const handler = (_event: unknown, raw: unknown): void => {
       if (!isDownloadsLogPayload(raw)) {

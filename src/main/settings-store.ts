@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs'
-import { dirname } from 'path'
+import { dirname, isAbsolute, normalize } from 'path'
 
 import type { EngineId, EnginePathOverrides } from './engine-service'
 
@@ -27,6 +27,8 @@ export interface AppSettings {
   engineExecutablePaths?: EnginePathOverrides
   /** §4.1: последние размеры/позиции отдельных окон (main + менеджер загрузок). */
   windowBounds?: WindowBoundsConfig
+  /** §6.2: абсолютный каталог для `-o` yt-dlp; если нет — `userData/downloads/ytdlp`. */
+  ytdlpDownloadDirectory?: string
   // TODO(§4.6): язык, hotkeys.
 }
 
@@ -84,6 +86,14 @@ function parseEngineExecutablePaths(raw: unknown): EnginePathOverrides | undefin
   return Object.keys(out).length > 0 ? out : undefined
 }
 
+function parseYtdlpDownloadDirectory(raw: unknown): string | undefined {
+  if (typeof raw !== 'string' || raw.trim() === '') {
+    return undefined
+  }
+  const n = normalize(raw.trim())
+  return isAbsolute(n) ? n : undefined
+}
+
 const defaults: AppSettings = { theme: 'dark' }
 
 /**
@@ -107,6 +117,7 @@ export function loadSettings(filePath: string): AppSettings {
         : undefined
     const engineExecutablePaths = parseEngineExecutablePaths(parsed.engineExecutablePaths)
     const windowBounds = parseWindowBoundsConfig(parsed.windowBounds)
+    const ytdlpDownloadDirectory = parseYtdlpDownloadDirectory(parsed.ytdlpDownloadDirectory)
 
     const base: AppSettings = { theme }
     if (last !== undefined) {
@@ -117,6 +128,9 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (windowBounds !== undefined) {
       base.windowBounds = windowBounds
+    }
+    if (ytdlpDownloadDirectory !== undefined) {
+      base.ytdlpDownloadDirectory = ytdlpDownloadDirectory
     }
     return base
   } catch {

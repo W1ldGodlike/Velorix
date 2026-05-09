@@ -1,5 +1,6 @@
 import { BrowserWindow, ipcMain, type WebContents } from 'electron'
 
+import { resolveAppPaths } from './app-paths'
 import type { StoredWindowRect } from './settings-store'
 import { boundsFromBrowserWindow, rectifyBoundsForRestore } from './window-bounds'
 import {
@@ -17,6 +18,10 @@ import {
 } from './downloads-queue-runner'
 import { DOWNLOADS_LOG_CHANNEL, setDownloadsLogSink } from './downloads-log-ipc'
 import { resolvePreloadOutFile } from './preload-resolve'
+import {
+  isYtdlpDownloadDirectoryDefault,
+  resolveYtdlpOutputDirectory
+} from './ytdlp-download-output'
 
 /** Совпадает с preload подпиской на снимок очереди. */
 export const DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL = 'fluxalloy-downloads-state'
@@ -24,6 +29,13 @@ export const DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL = 'fluxalloy-downloads-state'
 interface DownloadsWindowBoundsHooks {
   getSavedDownloadsBounds?: () => StoredWindowRect | undefined
   persistDownloadsBounds?: (rect: StoredWindowRect) => void
+  /** §6.2 — диалог выбора каталога и сохранение в settings.json (реализуется в index.ts). */
+  pickYtdlpOutputDirectory?: (
+    win: BrowserWindow
+  ) => Promise<
+    { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
+  >
+  clearYtdlpOutputDirectoryOverride?: () => void
 }
 
 let downloadsBoundsHooks: DownloadsWindowBoundsHooks = {}
@@ -126,12 +138,23 @@ function buildDownloadsHtml(): string {
       font-family: ui-monospace, Consolas, Menlo, monospace; font-size: 11px; line-height: 1.35;
       background: #18181b; color: #d4d4d8; padding: 8px 10px; border-radius: 8px; border: 1px solid #3f3f46;
     }
+    .out-dir-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 6px 0 10px; font-size: 12px; }
+    .out-dir-row .out-path {
+      flex: 1; min-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      font-family: ui-monospace, Consolas, Menlo, monospace; font-size: 11px; opacity: 0.9;
+    }
     .note { margin-top: 12px; font-size: 11px; opacity: 0.72; }
   </style>
 </head>
 <body>
   <h1>Менеджер загрузок (yt-dlp)</h1>
-  <p class="hint">Ссылки по строкам или перетащите текст/URL сюда. Файлы: %(title)s в каталог userData/downloads/ytdlp. Очередь последовательная §6.</p>
+  <p class="hint">Ссылки по строкам или перетащите текст/URL сюда. Имена файлов задаёт yt-dlp (%(title)s …). Очередь последовательная §6.</p>
+  <div class="out-dir-row">
+    <span>Каталог загрузок:</span>
+    <span id="outDirText" class="out-path" title="">…</span>
+    <button type="button" class="cmd" id="pickOutBtn">Выбрать…</button>
+    <button type="button" class="cmd" id="resetOutBtn" title="Использовать каталог по умолчанию в userData">По умолчанию</button>
+  </div>
   <textarea id="urls" placeholder="https://…"></textarea>
   <div class="row">
     <button type="button" class="cmd cmd-primary" id="startBtn" title="Скачать все строки со статусом «Ожидание»">Старт очереди</button>
@@ -159,6 +182,18 @@ function buildDownloadsHtml(): string {
       var cancelBtn = document.getElementById('cancelBtn');
       var urls = document.getElementById('urls');
       var body = document.getElementById('queueBody');
+      var outDirText = document.getElementById('outDirText');
+      var pickOutBtn = document.getElementById('pickOutBtn');
+      var resetOutBtn = document.getElementById('resetOutBtn');
+
+      function refreshOutDir() {
+        api.getOutputDirectory().then(function (r) {
+          if (!r || typeof r.path !== 'string') return;
+          outDirText.textContent = r.path;
+          outDirText.title = r.path;
+          resetOutBtn.disabled = r.isDefault === true;
+        });
+      }
       var logPre = document.getElementById('logPre');
       var logDetails = document.getElementById('logDetails');
       var logTargetRowId = null;
@@ -275,6 +310,18 @@ function buildDownloadsHtml(): string {
         api.cancelQueue();
       });
 
+      pickOutBtn.addEventListener('click', function () {
+        api.pickOutputDirectory().then(function (res) {
+          if (res && res.ok === false && res.error) window.alert(res.error);
+          refreshOutDir();
+        });
+      });
+      resetOutBtn.addEventListener('click', function () {
+        api.clearOutputDirectory().then(function () {
+          refreshOutDir();
+        });
+      });
+
       urls.addEventListener('dragover', function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -294,6 +341,7 @@ function buildDownloadsHtml(): string {
       api.getSnapshot().then(renderRows);
 
       api.onSnapshot(renderRows);
+      refreshOutDir();
     })();
   </script>
 </body>
@@ -327,6 +375,54 @@ export function registerDownloadsWindowIpcHandlers(): void {
     const n = appendUrlsFromMultilineBlock(text)
     broadcastDownloadsSnapshot()
     return n
+  })
+
+  ipcMain.handle(
+    'fluxalloy-downloads-get-output-dir',
+    (
+      event
+    ): {
+      path: string
+      isDefault: boolean
+    } => {
+      if (!isDownloadsSender(event.sender)) {
+        return { path: '', isDefault: true }
+      }
+      const paths = resolveAppPaths()
+      return {
+        path: resolveYtdlpOutputDirectory(paths.userData),
+        isDefault: isYtdlpDownloadDirectoryDefault()
+      }
+    }
+  )
+
+  ipcMain.handle(
+    'fluxalloy-downloads-pick-output-dir',
+    async (
+      event
+    ): Promise<
+      { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
+    > => {
+      if (!isDownloadsSender(event.sender)) {
+        return { ok: false, error: 'Недопустимый отправитель' }
+      }
+      const fn = downloadsBoundsHooks.pickYtdlpOutputDirectory
+      if (!fn) {
+        return { ok: false, error: 'Выбор каталога не подключён' }
+      }
+      const win = BrowserWindow.fromWebContents(event.sender)
+      if (!win || win.isDestroyed()) {
+        return { ok: false, error: 'Нет окна' }
+      }
+      return fn(win)
+    }
+  )
+
+  ipcMain.handle('fluxalloy-downloads-clear-output-dir', (event) => {
+    if (!isDownloadsSender(event.sender)) {
+      return
+    }
+    downloadsBoundsHooks.clearYtdlpOutputDirectoryOverride?.()
   })
 
   ipcMain.handle('fluxalloy-downloads-clear', (event) => {
