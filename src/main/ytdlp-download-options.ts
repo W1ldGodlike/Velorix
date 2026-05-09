@@ -9,6 +9,7 @@ import {
 } from './ytdlp-extra-args'
 import { getYtdlpCommandHints } from './ytdlp-commands-hints'
 import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
+import { resolveYtdlpOutputDirectory } from './ytdlp-download-output'
 import type {
   YtdlpCookiesBrowserId,
   YtdlpDownloadOptionsPayload,
@@ -28,6 +29,42 @@ export type {
   YtdlpQueueRetryProfileId,
   YtdlpSubtitlePresetId
 } from '../shared/ytdlp-download-contract'
+
+/** §6.3 — данные для строки превью argv без фиктивного `<downloadDir>` там, где известен userData. */
+export interface YtdlpCommandPreviewContext {
+  /** Абсолютный каталог `-o` после `resolveYtdlpOutputDirectory(userData)`. */
+  outputDirectoryAbsolute: string
+  /** Первый URL из очереди загрузок; иначе в превью подставляется нейтральный пример. */
+  sampleUrl?: string
+}
+
+/** Убирает управляющие символы из URL перед показом в превью (не влияет на spawn). */
+export function sanitizeYtdlpPreviewUrl(raw: string): string {
+  const t = raw
+    .split('')
+    .filter((ch) => {
+      const c = ch.charCodeAt(0)
+      return c >= 32 && c !== 127
+    })
+    .join('')
+    .trim()
+  return t.length > 2048 ? `${t.slice(0, 2045)}…` : t
+}
+
+/**
+ * Собирает контекст превью для окна yt-dlp: реальный каталог загрузки и опционально пример ссылки.
+ */
+export function buildYtdlpCommandPreviewContext(params: {
+  userDataRoot: string
+  sampleUrl?: string | null
+}): YtdlpCommandPreviewContext {
+  const dir = resolveYtdlpOutputDirectory(params.userDataRoot)
+  const u = typeof params.sampleUrl === 'string' ? params.sampleUrl.trim() : ''
+  if (u.length > 0) {
+    return { outputDirectoryAbsolute: dir, sampleUrl: u }
+  }
+  return { outputDirectoryAbsolute: dir }
+}
 
 /** Шаблон по умолчанию совпадает с тем, что раньше был захардкожен в `runYtdlpOnce`. */
 export const YTDLP_DEFAULT_FILENAME_TEMPLATE = '%(title)s [%(id)s].%(ext)s'
@@ -414,8 +451,28 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
   }
 }
 
-export function payloadFromSnapshot(snap: YtdlpRunOptionsSnapshot): YtdlpDownloadOptionsPayload {
-  const outPh = `<downloadDir>/${snap.filenameTemplate}`
+export function payloadFromSnapshot(
+  snap: YtdlpRunOptionsSnapshot,
+  previewCtx?: YtdlpCommandPreviewContext
+): YtdlpDownloadOptionsPayload {
+  let outputPattern: string
+  let urlArg: string
+  if (
+    previewCtx &&
+    typeof previewCtx.outputDirectoryAbsolute === 'string' &&
+    previewCtx.outputDirectoryAbsolute.trim().length > 0
+  ) {
+    const root = normalize(previewCtx.outputDirectoryAbsolute.trim())
+    const resolved = resolveSafeYtdlpOutputPattern(root, snap.filenameTemplate)
+    outputPattern = resolved ?? join(root, snap.filenameTemplate)
+    urlArg =
+      previewCtx.sampleUrl && previewCtx.sampleUrl.trim().length > 0
+        ? sanitizeYtdlpPreviewUrl(previewCtx.sampleUrl)
+        : 'https://example.com/'
+  } else {
+    outputPattern = `<downloadDir>/${snap.filenameTemplate}`
+    urlArg = '<url>'
+  }
   const argv = buildYtdlpSpawnArgvTokens({
     downloadPlaylist: snap.downloadPlaylist,
     audioOnly: snap.audioOnly,
@@ -429,8 +486,8 @@ export function payloadFromSnapshot(snap: YtdlpRunOptionsSnapshot): YtdlpDownloa
     fragmentRetries: snap.fragmentRetries,
     formatExtraArgs: snap.formatExtraArgs,
     extraArgs: snap.extraArgs,
-    outputPattern: outPh,
-    url: '<url>'
+    outputPattern,
+    url: urlArg
   })
   const commandPreview = `yt-dlp ${formatArgvTokensForPreview(argv)}`
   const commandHints = getYtdlpCommandHints()

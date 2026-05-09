@@ -103,3 +103,4 @@
 - 2026-05-10 01:35:57 [SDK]: §6.4 — статус неуспеха очереди: `formatYtdlpQueueFailureStatus` (сигнал ОС, stderr fallback); Vitest.
 - 2026-05-10 02:08:37 [SDK]: §6.4 — «Скачать и сразу обработать»: `ytdlpOpenInHandlerOnComplete` в settings, чекбокс в окне загрузок, после успеха yt-dlp — авто-открытие в preview через общий guard пути; тесты `resolveAllowedYtdlpDownloadOutputFile` и snapshot.
 - 2026-05-10 02:11:06 [SDK]: §6.3 — справочник yt-dlp: карта категорий токенов в main, сортировка списка, `<optgroup>` в окне загрузок; опциональный `category` в JSON переопределяет категорию; Vitest `sortYtdlpCommandHintsForUi`.
+- 2026-05-10 02:15:15 [SDK]: §6.3 — превью argv yt-dlp: контекст с реальным каталогом `-o`, первый URL из очереди или `example.com`; debounce обновления превью при снимке очереди; Vitest `sanitizeYtdlpPreviewUrl`/`payloadFromSnapshot`.

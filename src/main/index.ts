@@ -12,6 +12,7 @@ import {
   configureDownloadsQueueRunnerHooks,
   isDownloadsRunnerBusy
 } from './downloads-queue-runner'
+import { getDownloadsQueueSnapshot } from './downloads-queue'
 import {
   configureDownloadsWindowBoundsHooks,
   focusOrCreateDownloadsWindow,
@@ -87,6 +88,7 @@ import {
   syncYtdlpDownloadDirectoryFromSettings
 } from './ytdlp-download-output'
 import {
+  buildYtdlpCommandPreviewContext,
   buildYtdlpRunOptionsSnapshot,
   parseYtdlpSubtitlePreset,
   payloadFromSnapshot,
@@ -1222,8 +1224,21 @@ app.whenReady().then(() => {
     clearYtdlpCookiesFile: (): void => {
       persistClearYtdlpCookiesFile()
     },
-    getYtdlpDownloadCliOptions: () =>
-      payloadFromSnapshot(buildYtdlpRunOptionsSnapshot(cachedSettings)),
+    getYtdlpDownloadCliOptions: () => {
+      const paths = resolveAppPaths()
+      const rows = getDownloadsQueueSnapshot()
+      const hit = rows.find((r) => r.url.trim().length > 0)
+      const previewParams: { userDataRoot: string; sampleUrl?: string } = {
+        userDataRoot: paths.userData
+      }
+      if (hit !== undefined) {
+        previewParams.sampleUrl = hit.url
+      }
+      return payloadFromSnapshot(
+        buildYtdlpRunOptionsSnapshot(cachedSettings),
+        buildYtdlpCommandPreviewContext(previewParams)
+      )
+    },
     applyYtdlpDownloadCliPatch: (patch) => persistYtdlpDownloadCliOptionsPatch(patch),
     openDownloadedFileInHandler: (absoluteFile) => openDownloadedFileInMainHandler(absoluteFile)
   })

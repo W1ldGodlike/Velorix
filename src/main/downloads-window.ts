@@ -1092,9 +1092,21 @@ function buildDownloadsHtml(): string {
         if (txt) api.addLines(txt);
       });
 
+      var cliOptsRefreshTimer = null;
+      function scheduleCliOptsRefresh() {
+        if (cliOptsRefreshTimer !== null) {
+          clearTimeout(cliOptsRefreshTimer);
+        }
+        cliOptsRefreshTimer = setTimeout(function () {
+          cliOptsRefreshTimer = null;
+          refreshCliOpts();
+        }, 400);
+      }
+
       function onQueueSnapshot(rows) {
         renderRows(rows);
         scheduleHistoryRefresh();
+        scheduleCliOptsRefresh();
       }
 
       api.getSnapshot().then(onQueueSnapshot);
