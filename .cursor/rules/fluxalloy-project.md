@@ -3,7 +3,7 @@ description: FluxAlloy coding standards (соответствие FLUXALLOY_TZ.m
 alwaysApply: true
 ---
 
-Все изменения трактуйте только в связке с [`FLUXALLOY_TZ.md`](../../FLUXALLOY_TZ.md) и отмечайте прогресс в [`IMPLEMENTATION_CHECKLIST.md`](../../IMPLEMENTATION_CHECKLIST.md).
+Все изменения трактуйте только в связке с [`FLUXALLOY_TZ.md`](../../FLUXALLOY_TZ.md): прогресс по § — в [`IMPLEMENTATION_CHECKLIST.md`](../../IMPLEMENTATION_CHECKLIST.md), хронология решений и проверок — в [`IMPLEMENTATION_JOURNAL.md`](../../IMPLEMENTATION_JOURNAL.md).
 
 - **Автономность:** не спрашивать пользователя подтверждение на `run`, установки, перезапуски; выполнять самостоятельно. Неясности по ТЗ — короткий уточняющий вопрос, работа по остальным пунктам не стопорится.
 

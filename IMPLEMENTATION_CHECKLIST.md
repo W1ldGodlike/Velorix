@@ -1,6 +1,6 @@
 # FluxAlloy — рабочий чек‑лист реализации
 
-Источник требований: **[`FLUXALLOY_TZ.md`](FLUXALLOY_TZ.md)**. ТЗ не редактировать без явного согласования; всё текущее состояние, отклонения, TODO и заметки агента фиксировать здесь.
+Источник требований: **[`FLUXALLOY_TZ.md`](FLUXALLOY_TZ.md)**. ТЗ не редактировать без явного согласования. Состояние по §, спринту и TODO — **в этом файле**; хронологию решений, проверок окружения и длинные заметки — в **[`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md)**.
 
 ## Легенда
 
@@ -20,7 +20,7 @@
 - [x] Renderer изолирован: `contextIsolation: true`, `nodeIntegration: false`.
 - [x] Есть базовая тёмная/светлая тема, сохранение в `userData/settings.json`, меню `Вид -> Тема`.
 - [~] Есть главное окно 1200x800, тулбар, **базовый** видеопредпросмотр (`fluxmedia://` allowlist), DnD/«Открыть», статусбар.
-- [~] Есть `Data/`, `Help/`, `FLUXALLOY_TZ.md`, `IMPLEMENTATION_CHECKLIST.md`, упаковка `Data/`, `Help/`, ТЗ через `extraResources`.
+- [~] Есть `Data/`, `Help/`, `FLUXALLOY_TZ.md`, `IMPLEMENTATION_CHECKLIST.md`, [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md), упаковка `Data/`, `Help/`, ТЗ через `extraResources` (журнал в установщик пока не включаем — только для разработки).
 - [x] Windows: `electron-builder` с режимом sign по умолчанию; после перезагрузки проверены `build:unpack`/`winCodeSign`.
 - [~] Нет запуска `ffmpeg`/пайплайна обработки; движки можно **скачать кнопкой** в UI (Windows) в `userData/bin`, есть проверка `--version` после загрузки.
 - [~] Автозагрузка движков **Windows x64** (yt-dlp GitHub + ffmpeg zip gyan.dev), SHA256 опционально через `Data/trusted_hashes.json`; bundled `bin/` в установщике пока не доставляется.
@@ -29,19 +29,7 @@
 
 ## Журнал решений и проверок
 
-- 2026-05-09 17:02:00: повторно проверено окружение перед разработкой. Node/npm/Git доступны через установленный Node.js/Git; `npm install`, `npm run check`, `npm run build`, `npm audit --audit-level=moderate` проходят, уязвимостей `0`.
-- 2026-05-09 17:02:00: `dist/`, `out/`, `.eslintcache` — только сгенерированные артефакты проверок/сборки; удалены из рабочей папки после аудита, остаются в `.gitignore`.
-- 2026-05-09 17:02:00: `package-lock.json` создан `npm install`; его нужно хранить в Git для воспроизводимой установки, поэтому он больше не игнорируется.
-- 2026-05-09 17:11:00: добавлены архитектурные комментарии в `main`, `preload`, `settings-store` и renderer bootstrap. Дальше комментировать чуть подробнее обычного: объяснять назначение модулей, границы IPC, причины проверок/ограничений и неочевидные решения; не пересказывать только совсем очевидный синтаксис.
-- 2026-05-09 17:17:00: начат §3. Добавлены `app-paths` и `engine-service`: dev/prod пути ресурсов, bundled/user `bin`, безопасная проверка `ffmpeg`/`ffprobe`/`yt-dlp` через `execFile(..., ['--version'])`, IPC `fluxalloy:engines-status` и краткий статус внизу окна.
-- 2026-05-09 17:21:00: выполнен полный проход по комментариям в исходниках и конфигурации. Подробные пояснения добавлены в main/preload/renderer/CSS/build/lint/gitignore/editorconfig; JSON/lockfile не комментируются, потому что формат не поддерживает комментарии.
-- 2026-05-09 17:26:00: включён Windows Developer Mode и выдано право `SeCreateSymbolicLinkPrivilege` пользователю `truno`; для текущего процесса право появится после нового входа в Windows/перезапуска сессии.
-- 2026-05-09 17:28:00: разрешено оставлять короткие `TODO(...)` прямо в файлах проекта, если уже понятно, что модуль надо доработать позже. Формат: кратко, с привязкой к разделу ТЗ, без длинных планов вместо чек-листа.
-- 2026-05-09 17:28:30: правило на будущее — в «Журнале решений и проверок» писать дату и время до секунд в формате `YYYY-MM-DD HH:mm:ss`.
-- 2026-05-09 17:44:44: после перезагрузки ПК проверено окружение без ручного PATH: `node` v22.22.0, `npm` 11.12.1, `git` 2.54; `whoami /priv` показывает `SeCreateSymbolicLinkPrivilege` (в колонке состояния для этой оболочки — `Disabled`, это нормально для токена до явного enable в процессе).
-- 2026-05-09 17:44:44: убран временный `win.signAndEditExecutable: false` из `electron-builder.yml`; `npm run build:unpack` проходит: winCodeSign распаковывается, выполняется `signing with signtool.exe` для `FluxAlloy.exe`.
-- 2026-05-09 17:46:19: Git не делал коммит без автора (`Author identity unknown`). Для этого репозитория локально выставлено `git config user.name truno` и `git config user.email truno@local.fluxalloy` (без `--global`). Перед пушем на GitHub лучше заменить почту на свою: `git config user.email "ты@example.com"` (при необходимости поправить и `user.name`).
-- 2026-05-09 17:54:43: крупный шаг §3 + §4.B + база §7. Добавлены `fluxmedia`-протокол с allowlist, IPC открытия файла (`dialog`/`grantPath`), DnD через `webUtils.getPathForFile`, `<video>` в превью, прогресс IPC загрузки движков, `extract-zip`, `trusted-hashes-store` и расширенный формат `Data/trusted_hashes.json` (`schema`, `windows-x64`). Отдельное окно первого запуска и macOS/Linux-загрузчики пока не делались — не запускать `prettier .` по репозиторию без исключений: случайно трогает `FLUXALLOY_TZ.md`.
+Не дублируем здесь длинную хронику — смотри **[`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md)**. Новые записи добавляй туда (время до секунд: `YYYY-MM-DD HH:mm:ss`).
 
 ## Ближайший TODO спринта
 
@@ -61,6 +49,7 @@
 
 - [x] `FLUXALLOY_TZ.md` существует в корне.
 - [x] `IMPLEMENTATION_CHECKLIST.md` существует в корне и используется как рабочий TODO.
+- [x] [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md) — хроника решений и проверок (отдельно от чек‑листа).
 - [x] Стек проекта переведён в Electron + TypeScript + React.
 - [x] Базовые темы и IPC настроек заведены.
 - [x] Локальный Git-репозиторий создан.
