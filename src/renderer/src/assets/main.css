@@ -36,6 +36,27 @@
   flex: 1;
 }
 
+.app-toolbar-select {
+  min-height: 34px;
+  padding: 0 0.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--fa-border);
+  background: var(--fa-surface-elevated);
+  color: var(--fa-text-primary);
+  font-size: 0.8125rem;
+  max-width: 11rem;
+}
+
+.app-toolbar-select:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.app-toolbar-select:focus-visible {
+  outline: 2px solid var(--fa-accent);
+  outline-offset: 2px;
+}
+
 .app-url-bar {
   display: flex;
   align-items: center;

@@ -6,10 +6,38 @@ export interface MediaExportTrimPayload {
   outSec: number
 }
 
+/** Первые системные пресеты libx264 §7.2 — только белый список, без произвольных аргументов. */
+export type FfmpegExportEncodePresetId = 'balance' | 'smaller' | 'quality'
+
 export interface MediaExportRequestPayload {
   inputPath: string
   trim?: MediaExportTrimPayload
   probeDurationSec?: number | null
+  /** Если не задан — в main берётся из `settings.json`. */
+  encodePreset?: FfmpegExportEncodePresetId
+}
+
+/** Разбор сохранённой строки или поля IPC; мусор → безопасный `balance`. */
+export function parseFfmpegExportEncodePreset(raw: unknown): FfmpegExportEncodePresetId {
+  if (raw === 'balance' || raw === 'smaller' || raw === 'quality') {
+    return raw
+  }
+  return 'balance'
+}
+
+/** CRF и `-preset` x264 для выбранного пресета (аудио пока фиксированное AAC §7.1). */
+export function resolveExportEncodeParams(preset: FfmpegExportEncodePresetId): {
+  crf: string
+  x264preset: string
+} {
+  switch (preset) {
+    case 'smaller':
+      return { crf: '28', x264preset: 'fast' }
+    case 'quality':
+      return { crf: '18', x264preset: 'medium' }
+    default:
+      return { crf: '23', x264preset: 'fast' }
+  }
 }
 
 export type MediaExportStartResult =
@@ -93,8 +121,10 @@ function buildEncodeArgs(
   inputPath: string,
   outputPath: string,
   trim: MediaExportTrimPayload | undefined,
-  applyTrim: boolean
+  applyTrim: boolean,
+  encodePreset: FfmpegExportEncodePresetId
 ): string[] {
+  const enc = resolveExportEncodeParams(encodePreset)
   const args = ['-y', '-hide_banner', '-loglevel', 'info', '-stats']
   if (applyTrim && trim) {
     args.push('-ss', String(trim.inSec), '-i', inputPath, '-t', String(trim.outSec - trim.inSec))
@@ -105,9 +135,9 @@ function buildEncodeArgs(
     '-c:v',
     'libx264',
     '-preset',
-    'fast',
+    enc.x264preset,
     '-crf',
-    '23',
+    enc.crf,
     '-pix_fmt',
     'yuv420p',
     '-c:a',
@@ -133,16 +163,24 @@ export function runFfmpegExportJob(params: {
   outputPath: string
   trim?: MediaExportTrimPayload
   probeDurationSec?: number | null
+  encodePreset?: FfmpegExportEncodePresetId
   signal: AbortSignal
   onProgress?: (p: FfmpegExportProgressPayload) => void
 }): Promise<{ ok: true } | { ok: false; error: string }> {
   const applyTrim = shouldApplyTrim(params.trim, params.probeDurationSec)
+  const encodePreset = params.encodePreset ?? 'balance'
   const segmentDur = resolveExportSegmentDurationSec(
     params.trim,
     applyTrim,
     params.probeDurationSec
   )
-  const args = buildEncodeArgs(params.inputPath, params.outputPath, params.trim, applyTrim)
+  const args = buildEncodeArgs(
+    params.inputPath,
+    params.outputPath,
+    params.trim,
+    applyTrim,
+    encodePreset
+  )
 
   return new Promise((resolve) => {
     const child = spawn(params.ffmpegPath, args, {

@@ -2,6 +2,7 @@ import type { ElectronAPI } from '@electron-toolkit/preload'
 
 import type { EngineDownloadProgress } from '../main/engine-download'
 import type {
+  FfmpegExportEncodePresetId,
   FfmpegExportProgressPayload,
   MediaExportRequestPayload,
   MediaExportStartResult
@@ -33,6 +34,7 @@ export interface FluxAlloyApi {
     setTheme: (theme: AppTheme) => Promise<AppSettings>
     setEngineExecutablePaths: (patch: EnginePathOverridesPatch) => Promise<AppSettings>
     pickEngineExecutable: (engineId: EngineId) => Promise<string | null>
+    setFfmpegExportEncodePreset: (preset: FfmpegExportEncodePresetId) => Promise<AppSettings>
   }
   preview: {
     openFileDialog: () => Promise<PreviewDialogResult>

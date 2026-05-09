@@ -3,6 +3,7 @@ import { electronAPI } from '@electron-toolkit/preload'
 
 import type { EngineDownloadProgress } from '../main/engine-download'
 import type {
+  FfmpegExportEncodePresetId,
   FfmpegExportProgressPayload,
   MediaExportRequestPayload,
   MediaExportStartResult
@@ -29,7 +30,9 @@ const fluxalloy = {
     setEngineExecutablePaths: (patch: EnginePathOverridesPatch): Promise<AppSettings> =>
       ipcRenderer.invoke('fluxalloy:settings-set-engine-paths', patch),
     pickEngineExecutable: (engineId: EngineId): Promise<string | null> =>
-      ipcRenderer.invoke('fluxalloy:pick-engine-executable', engineId)
+      ipcRenderer.invoke('fluxalloy:pick-engine-executable', engineId),
+    setFfmpegExportEncodePreset: (preset: FfmpegExportEncodePresetId): Promise<AppSettings> =>
+      ipcRenderer.invoke('fluxalloy:settings-set-ffmpeg-export-encode-preset', preset)
   },
   preview: {
     openFileDialog: (): Promise<PreviewDialogResult> =>

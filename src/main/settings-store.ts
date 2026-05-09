@@ -33,6 +33,8 @@ export interface AppSettings {
   ytdlpFilenameTemplate?: string
   /** §6.2: пресет `-f` (`default` | `merge_bv_ba` | `best_single` и др.). */
   ytdlpFormatPreset?: string
+  /** §7.2: системный пресет экспорта MP4 (libx264 CRF + `-preset`). */
+  ffmpegExportEncodePreset?: string
   // TODO(§4.6): язык, hotkeys.
 }
 
@@ -113,6 +115,17 @@ function parseYtdlpFormatPresetStored(raw: unknown): string | undefined {
   return raw.trim().slice(0, 64)
 }
 
+function parseFfmpegExportEncodePresetStored(raw: unknown): string | undefined {
+  if (typeof raw !== 'string') {
+    return undefined
+  }
+  const t = raw.trim()
+  if (t === 'balance' || t === 'smaller' || t === 'quality') {
+    return t
+  }
+  return undefined
+}
+
 const defaults: AppSettings = { theme: 'dark' }
 
 /**
@@ -139,6 +152,9 @@ export function loadSettings(filePath: string): AppSettings {
     const ytdlpDownloadDirectory = parseYtdlpDownloadDirectory(parsed.ytdlpDownloadDirectory)
     const ytdlpFilenameTemplate = parseYtdlpFilenameTemplate(parsed.ytdlpFilenameTemplate)
     const ytdlpFormatPreset = parseYtdlpFormatPresetStored(parsed.ytdlpFormatPreset)
+    const ffmpegExportEncodePreset = parseFfmpegExportEncodePresetStored(
+      parsed.ffmpegExportEncodePreset
+    )
 
     const base: AppSettings = { theme }
     if (last !== undefined) {
@@ -158,6 +174,9 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (ytdlpFormatPreset !== undefined) {
       base.ytdlpFormatPreset = ytdlpFormatPreset
+    }
+    if (ffmpegExportEncodePreset !== undefined) {
+      base.ffmpegExportEncodePreset = ffmpegExportEncodePreset
     }
     return base
   } catch {

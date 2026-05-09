@@ -14,6 +14,7 @@ import {
 } from './downloads-window'
 import { runFfmpegSnapshotFrame } from './ffmpeg-frame-snapshot-service'
 import {
+  parseFfmpegExportEncodePreset,
   runFfmpegExportJob,
   type MediaExportTrimPayload,
   type FfmpegExportProgressPayload
@@ -253,6 +254,14 @@ function persistLastOpenedSource(absolutePath: string | null): void {
     cachedSettings = { ...cachedSettings, lastOpenedSourcePath: absolutePath.trim() }
   }
   saveSettings(settingsPath(), cachedSettings)
+}
+
+/** §7.2 — пресет libx264 для экспорта; только белый список через parse. */
+function persistFfmpegExportEncodePreset(raw: unknown): AppSettings {
+  const id = parseFfmpegExportEncodePreset(raw)
+  cachedSettings = { ...cachedSettings, ffmpegExportEncodePreset: id }
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
 }
 
 function persistAndBroadcast(theme: AppTheme): AppSettings {
@@ -541,6 +550,11 @@ app.whenReady().then(() => {
     return persistAndBroadcast(next)
   })
 
+  ipcMain.handle(
+    'fluxalloy:settings-set-ffmpeg-export-encode-preset',
+    (_, raw: unknown): AppSettings => persistFfmpegExportEncodePreset(raw)
+  )
+
   ipcMain.handle('fluxalloy:settings-set-engine-paths', (_, patch: unknown): AppSettings => {
     if (!patch || typeof patch !== 'object') {
       return { ...cachedSettings }
@@ -730,6 +744,12 @@ app.whenReady().then(() => {
 
       const trim = parseExportTrim((raw as { trim?: unknown }).trim)
 
+      const encodePresetRaw = (raw as { encodePreset?: unknown }).encodePreset
+      const encodePreset =
+        encodePresetRaw !== undefined && encodePresetRaw !== null
+          ? parseFfmpegExportEncodePreset(encodePresetRaw)
+          : parseFfmpegExportEncodePreset(cachedSettings.ffmpegExportEncodePreset)
+
       const paths = resolveAppPaths()
       const ffmpeg = resolveEngineExecutablePath(
         paths,
@@ -775,6 +795,7 @@ app.whenReady().then(() => {
           outputPath: outPath,
           trim,
           probeDurationSec,
+          encodePreset,
           signal: ac.signal,
           onProgress: pushProgress
         })

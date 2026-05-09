@@ -18,6 +18,15 @@ type EnginesSnapshot = Awaited<ReturnType<typeof window.fluxalloy.engines.getSta
 
 type EngineId = 'ffmpeg' | 'ffprobe' | 'yt-dlp'
 
+/** Совпадает с `FfmpegExportEncodePresetId` в main §7.2 (renderer не импортирует main TS). */
+type ExportEncodePresetId = 'balance' | 'smaller' | 'quality'
+
+const EXPORT_ENCODE_PRESETS: Array<{ id: ExportEncodePresetId; label: string }> = [
+  { id: 'balance', label: 'Баланс' },
+  { id: 'smaller', label: 'Меньше размер' },
+  { id: 'quality', label: 'Качество' }
+]
+
 const ENGINE_IDS: EngineId[] = ['ffmpeg', 'ffprobe', 'yt-dlp']
 
 function engineLabel(id: EngineId): string {
@@ -272,6 +281,7 @@ function App(): JSX.Element {
   const [downloadsUrl, setDownloadsUrl] = useState('')
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
   const [exportBusy, setExportBusy] = useState(false)
+  const [exportEncodePreset, setExportEncodePreset] = useState<ExportEncodePresetId>('balance')
   const [snapshotBusy, setSnapshotBusy] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   /** Последний диапазон In/Out с таймлайна для IPC экспорта. */
@@ -314,6 +324,10 @@ function App(): JSX.Element {
     void (async () => {
       const loaded = await window.fluxalloy.settings.get()
       applyTheme(loaded.theme === 'light' ? 'light' : 'dark')
+      const ep = loaded.ffmpegExportEncodePreset
+      if (ep === 'balance' || ep === 'smaller' || ep === 'quality') {
+        setExportEncodePreset(ep)
+      }
       cleanupTheme = window.fluxalloy.onThemeChanged((next) => {
         applyTheme(next)
       })
@@ -553,7 +567,8 @@ function App(): JSX.Element {
       const res = await window.fluxalloy.export.start({
         inputPath: preview.path,
         trim: trimSnap ?? undefined,
-        probeDurationSec: probeInfo?.durationSec ?? null
+        probeDurationSec: probeInfo?.durationSec ?? null,
+        encodePreset: exportEncodePreset
       })
       if (res.ok) {
         setStatusHint('Экспорт завершён')
@@ -620,6 +635,24 @@ function App(): JSX.Element {
         >
           {snapshotBusy ? 'Кадр…' : 'Кадр'}
         </button>
+        <select
+          className="app-toolbar-select"
+          aria-label="Пресет кодирования экспорта MP4"
+          title="Пресет libx264 (CRF и -preset) §7.2"
+          value={exportEncodePreset}
+          disabled={exportBusy || snapshotBusy}
+          onChange={(e) => {
+            const v = e.target.value as ExportEncodePresetId
+            setExportEncodePreset(v)
+            void window.fluxalloy.settings.setFfmpegExportEncodePreset(v).catch(console.error)
+          }}
+        >
+          {EXPORT_ENCODE_PRESETS.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.label}
+            </option>
+          ))}
+        </select>
         <button
           type="button"
           className="app-btn app-btn-primary"
