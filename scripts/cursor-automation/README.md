@@ -49,7 +49,7 @@ CURSOR_API_KEY=crsr_...
 |------------|------------|
 | `CURSOR_API_KEY` | Обязательна |
 | `MAX_STEPS` | Число итераций (если не задан `--max-steps`) |
-| `CURSOR_MODEL` | По умолчанию `composer-2` |
+| `CURSOR_MODEL` | По умолчанию `auto` |
 | `VERBOSE=1` | Печать assistant/thinking из стрима |
 | `PROMPTS_DIR` | Альтернативный каталог с `initial.txt` / `continue.txt` |
 | `STEP_DELAY_MS` | Пауза между итерациями (мс), по умолчанию `400` |
