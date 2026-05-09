@@ -127,6 +127,11 @@ const fluxalloy = {
       ipcRenderer.invoke('fluxalloy:export-start', payload),
     cancel: (): Promise<{ ok: true } | { ok: false; error: string }> =>
       ipcRenderer.invoke('fluxalloy:export-cancel'),
+    openOutput: (
+      path: string,
+      mode: 'file' | 'folder'
+    ): Promise<{ ok: true; path: string } | { ok: false; error: string }> =>
+      ipcRenderer.invoke('fluxalloy:export-open-output', { path, mode }),
     onProgress: (listener: (progress: FfmpegExportProgressPayload) => void): (() => void) => {
       const channel = 'fluxalloy:export-progress'
       const handler = (_event: unknown, raw: unknown): void => {

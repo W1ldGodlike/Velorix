@@ -307,6 +307,7 @@ function App(): JSX.Element {
   const [exportAudioBitrate, setExportAudioBitrate] = useState('192k')
   const [exportFps, setExportFps] = useState<number | null>(null)
   const [exportScalePreset, setExportScalePreset] = useState<ExportScalePresetId>('source')
+  const [lastExportPath, setLastExportPath] = useState<string | null>(null)
   const [snapshotBusy, setSnapshotBusy] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   /** Последний диапазон In/Out с таймлайна для IPC экспорта. */
@@ -620,6 +621,7 @@ function App(): JSX.Element {
       return
     }
     setExportBusy(true)
+    setLastExportPath(null)
     setStatusHint('Подготовка экспорта…')
     try {
       const trimSnap = trimSnapshotRef.current
@@ -637,6 +639,7 @@ function App(): JSX.Element {
       })
       if (res.ok) {
         const savedName = res.path.split(/[\\/]/).pop() || res.path
+        setLastExportPath(res.path)
         setStatusHint(`Экспорт завершён: ${savedName}`)
       } else if ('cancelled' in res && res.cancelled) {
         setStatusHint(null)
@@ -649,6 +652,16 @@ function App(): JSX.Element {
       setStatusHint(e instanceof Error ? e.message : 'Ошибка экспорта')
     } finally {
       setExportBusy(false)
+    }
+  }
+
+  async function handleOpenLastExport(mode: 'file' | 'folder'): Promise<void> {
+    if (!lastExportPath || exportBusy || snapshotBusy) {
+      return
+    }
+    const res = await window.fluxalloy.export.openOutput(lastExportPath, mode)
+    if (!res.ok) {
+      setStatusHint(`Экспорт: ${res.error}`)
     }
   }
 
@@ -844,6 +857,32 @@ function App(): JSX.Element {
         >
           {exportBusy ? 'Экспорт…' : 'Экспорт'}
         </button>
+        {lastExportPath ? (
+          <>
+            <button
+              type="button"
+              className="app-btn"
+              disabled={exportBusy || snapshotBusy}
+              onClick={() => {
+                void handleOpenLastExport('file')
+              }}
+              title="Открыть последний экспортированный файл"
+            >
+              Файл экспорта
+            </button>
+            <button
+              type="button"
+              className="app-btn"
+              disabled={exportBusy || snapshotBusy}
+              onClick={() => {
+                void handleOpenLastExport('folder')
+              }}
+              title="Показать последний экспорт в папке"
+            >
+              Папка экспорта
+            </button>
+          </>
+        ) : null}
         {enginesOfferDownload ? (
           <button
             type="button"

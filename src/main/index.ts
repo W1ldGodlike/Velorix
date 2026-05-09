@@ -145,11 +145,15 @@ function technicalSpecPath(): string {
 let cachedSettings: AppSettings = { theme: 'dark' }
 
 let activeExportAbort: AbortController | null = null
+const grantedExportOutputPaths = new Set<string>()
+const MAX_GRANTED_EXPORT_OUTPUT_PATHS = 20
 
 /** Обход диалога §4.2 после явного подтверждения «Закрыть и прервать». */
 let allowMainWindowClose = false
 
 let mainWindowWebContentsId: number | null = null
+
+type ExportOutputOpenMode = 'file' | 'folder'
 
 interface RendererLogBucket {
   tokens: number
@@ -179,6 +183,55 @@ function consumeRendererLogToken(senderId: number): boolean {
   bucket.tokens -= 1
   rendererLogBuckets.set(senderId, bucket)
   return true
+}
+
+function isExportOutputOpenMode(raw: unknown): raw is ExportOutputOpenMode {
+  return raw === 'file' || raw === 'folder'
+}
+
+function rememberExportOutputPath(filePath: string): void {
+  const abs = resolve(normalize(filePath))
+  grantedExportOutputPaths.delete(abs)
+  grantedExportOutputPaths.add(abs)
+  while (grantedExportOutputPaths.size > MAX_GRANTED_EXPORT_OUTPUT_PATHS) {
+    const oldest = grantedExportOutputPaths.values().next().value as string | undefined
+    if (oldest === undefined) {
+      break
+    }
+    grantedExportOutputPaths.delete(oldest)
+  }
+}
+
+async function openExportOutputPath(
+  rawPath: unknown,
+  rawMode: unknown
+): Promise<{ ok: true; path: string } | { ok: false; error: string }> {
+  if (typeof rawPath !== 'string' || rawPath.trim().length === 0) {
+    return { ok: false, error: 'Не указан файл экспорта' }
+  }
+  if (!isExportOutputOpenMode(rawMode)) {
+    return { ok: false, error: 'Некорректное действие' }
+  }
+  const abs = resolve(normalize(rawPath.trim()))
+  if (!grantedExportOutputPaths.has(abs)) {
+    return { ok: false, error: 'Нет доступа к этому результату экспорта' }
+  }
+  if (!existsSync(abs)) {
+    return { ok: false, error: 'Файл экспорта не найден' }
+  }
+  try {
+    if (!statSync(abs).isFile()) {
+      return { ok: false, error: 'Путь экспорта не является файлом' }
+    }
+  } catch {
+    return { ok: false, error: 'Не удалось проверить файл экспорта' }
+  }
+  if (rawMode === 'folder') {
+    shell.showItemInFolder(abs)
+    return { ok: true, path: abs }
+  }
+  const result = await shell.openPath(abs)
+  return result ? { ok: false, error: result } : { ok: true, path: abs }
 }
 
 function isMainWindowSender(event: IpcMainEvent): boolean {
@@ -1432,7 +1485,11 @@ app.whenReady().then(() => {
           signal: ac.signal,
           onProgress: pushProgress
         })
-        return result.ok ? { ok: true, path: outPath } : { ok: false, error: result.error }
+        if (result.ok) {
+          rememberExportOutputPath(outPath)
+          return { ok: true, path: outPath }
+        }
+        return { ok: false, error: result.error }
       } finally {
         activeExportAbort = null
       }
@@ -1446,6 +1503,20 @@ app.whenReady().then(() => {
     activeExportAbort.abort()
     return { ok: true }
   })
+
+  ipcMain.handle(
+    'fluxalloy:export-open-output',
+    async (
+      _event,
+      raw: unknown
+    ): Promise<{ ok: true; path: string } | { ok: false; error: string }> => {
+      if (!raw || typeof raw !== 'object') {
+        return { ok: false, error: 'Некорректный запрос' }
+      }
+      const payload = raw as { path?: unknown; mode?: unknown }
+      return openExportOutputPath(payload.path, payload.mode)
+    }
+  )
 
   ipcMain.handle(
     'fluxalloy:snapshot-frame',

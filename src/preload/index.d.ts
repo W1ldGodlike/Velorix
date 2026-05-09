@@ -91,6 +91,10 @@ export interface FluxAlloyApi {
   export: {
     start: (payload: MediaExportRequestPayload) => Promise<MediaExportStartResult>
     cancel: () => Promise<{ ok: true } | { ok: false; error: string }>
+    openOutput: (
+      path: string,
+      mode: 'file' | 'folder'
+    ) => Promise<{ ok: true; path: string } | { ok: false; error: string }>
     onProgress: (listener: (progress: FfmpegExportProgressPayload) => void) => () => void
   }
   onPreviewOpened: (listener: (payload: PreviewOpenedPayload) => void) => () => void
