@@ -4,7 +4,10 @@ import { electronAPI } from '@electron-toolkit/preload'
 import type { EnginesStatusSnapshot } from '../main/engine-service'
 import type { AppSettings, AppTheme } from '../main/settings-store'
 
-// Единственная публичная поверхность приложения в renderer: добавлять сюда только проверенные IPC-операции.
+// Единственная публичная поверхность приложения в renderer.
+// Всё, что требует Node/Electron прав (FS, процессы, реальные пути), остаётся в main и
+// прокидывается сюда маленькими методами. Это упрощает аудит безопасности и не даёт UI
+// случайно начать выполнять произвольные команды.
 const fluxalloy = {
   settings: {
     get: (): Promise<AppSettings> => ipcRenderer.invoke('fluxalloy:settings-get'),
@@ -18,6 +21,7 @@ const fluxalloy = {
   onThemeChanged: (listener: (theme: AppTheme) => void): (() => void) => {
     const channel = 'fluxalloy:theme-changed'
     const handler = (_: unknown, raw: unknown): void => {
+      // События из IPC валидируем так же, как invoke-аргументы: renderer не доверяет raw payload.
       listener(raw === 'light' ? 'light' : 'dark')
     }
     ipcRenderer.on(channel, handler)

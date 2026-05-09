@@ -3,10 +3,15 @@ import { join } from 'path'
 import { is } from '@electron-toolkit/utils'
 
 export interface AppPaths {
+  /** Корень приложения как его видит Electron: в dev это проект, в prod — app.asar/пакет. */
   appRoot: string
+  /** Каталог, из которого можно читать bundled ресурсы (`Data`, `Help`, будущий `bin`). */
   resources: string
+  /** Пользовательский каталог Electron для настроек, кэшей и скачанных runtime-ресурсов. */
   userData: string
+  /** `bin` внутри поставки приложения: сюда попадут проверенные ffmpeg/ffprobe/yt-dlp. */
   bundledBin: string
+  /** `bin` внутри userData: резерв для автообновления движков без пересборки приложения. */
   userBin: string
 }
 

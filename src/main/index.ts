@@ -10,12 +10,24 @@ import type { EnginesStatusSnapshot } from './engine-service'
 import type { AppSettings, AppTheme } from './settings-store'
 import { loadSettings, saveSettings } from './settings-store'
 
-/** Путь настроек в userData — тема UI и последующие поля без пересборки. */
+/**
+ * Путь настроек в userData.
+ *
+ * userData выбирает сам Electron под каждую ОС, поэтому настройки не зависят от папки
+ * установки и переживают обновления приложения. Сейчас здесь только тема, но файл
+ * задуман как точка расширения для языка, путей движков, hotkeys и session-политик.
+ */
 function settingsPath(): string {
   return join(app.getPath('userData'), 'settings.json')
 }
 
-/** ТЗ в dev — из корня проекта; в сборке — из `resources` (extraResources). */
+/**
+ * Путь к ТЗ для пункта меню «Справка».
+ *
+ * В dev читаем файл из корня репозитория, чтобы агент/разработчик видел актуальный документ.
+ * В production читаем копию из `extraResources`, потому что исходный корень уже не существует
+ * как обычная папка рядом с exe.
+ */
 function technicalSpecPath(): string {
   const packaged = join(process.resourcesPath, 'FLUXALLOY_TZ.md')
   if (!is.dev && existsSync(packaged)) {
@@ -79,6 +91,7 @@ function buildApplicationMenu(): void {
         {
           label: 'Открыть…',
           accelerator: 'CmdOrCtrl+O',
+          // Пункт уже стоит на своём будущем месте, но будет включён вместе с IPC выбора файла (§4/§7).
           enabled: false
         },
         { type: 'separator' },
@@ -156,6 +169,7 @@ function createWindow(): void {
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
+    // Внешние ссылки не открываем внутри Electron-окна: так renderer не получает незапланированную навигацию.
     shell.openExternal(details.url)
     return { action: 'deny' }
   })
@@ -186,6 +200,7 @@ app.whenReady().then(() => {
   })
 
   ipcMain.handle('fluxalloy:engines-status', async (): Promise<EnginesStatusSnapshot> => {
+    // Проверка движков живёт в main: renderer не должен знать реальные пути и запускать процессы.
     return getEnginesStatus(resolveAppPaths())
   })
 

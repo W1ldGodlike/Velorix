@@ -33,6 +33,7 @@ html[data-theme='light'] {
   --fa-focus-ring: rgba(47, 111, 235, 0.4);
 }
 
+/* Глобальный reset минимальный: не спорим с компонентами, только убираем неожиданные браузерные отступы. */
 *,
 *::before,
 *::after {
@@ -70,6 +71,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Mono-оформление понадобится для путей, команд ffmpeg/yt-dlp и будущих логов терминала. */
 code {
   font-weight: 500;
   padding: 0.15rem 0.35rem;
@@ -90,6 +92,7 @@ button {
   font: inherit;
 }
 
+/* Focus-visible обязателен для клавиатурной навигации и проверки масштабирования/доступности из ТЗ. */
 button:focus-visible,
 a:focus-visible {
   outline: 2px solid var(--fa-focus-ring);

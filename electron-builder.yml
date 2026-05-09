@@ -3,6 +3,7 @@ productName: FluxAlloy
 directories:
   buildResources: build
 files:
+  # В пакет кладём только собранный Electron output и runtime-ресурсы; исходники/конфиги остаются вне installer.
   - '!**/.vscode/*'
   - '!src/*'
   - '!electron.vite.config.{js,ts,mjs,cjs}'
@@ -12,6 +13,7 @@ files:
 asarUnpack:
   - resources/**
 extraResources:
+  # Эти материалы нужны приложению как файлы рядом с resourcesPath, а не внутри JS bundle.
   - from: FLUXALLOY_TZ.md
     to: FLUXALLOY_TZ.md
   - from: Help
@@ -20,6 +22,8 @@ extraResources:
     to: Data
 win:
   executableName: FluxAlloy
+  # Временно отключено для dev-сборки: на Windows без symlink-прав electron-builder падает на winCodeSign.
+  # Перед релизной подписью пересмотреть вместе с сертификатами и Developer Mode/CI.
   signAndEditExecutable: false
 nsis:
   artifactName: ${name}-${version}-setup.${ext}

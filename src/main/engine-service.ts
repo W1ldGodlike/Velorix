@@ -8,17 +8,26 @@ export type EngineId = 'ffmpeg' | 'ffprobe' | 'yt-dlp'
 export type EngineState = 'missing' | 'checking' | 'ready' | 'error'
 
 export interface EngineStatus {
+  /** Стабильный ID для IPC/UI; не зависит от расширения `.exe` на Windows. */
   id: EngineId
+  /** Состояние для UI: renderer не должен гадать по тексту ошибки или пути. */
   state: EngineState
+  /** Человекочитаемое имя для статуса/настроек; отдельно от имени файла. */
   displayName: string
+  /** Реальное имя файла под текущую ОС (`ffmpeg.exe` на Windows, `ffmpeg` на Unix). */
   executableName: string
+  /** Найденный путь, если бинарник существует хотя бы в одном из известных `bin`. */
   path: string | null
+  /** Первая строка `--version`; позже пригодится для сравнения обновлений. */
   version: string | null
+  /** Краткая причина `missing/error`, которую можно безопасно показать пользователю. */
   message: string | null
 }
 
 export interface EnginesStatusSnapshot {
+  /** Время проверки: важно, когда UI позже будет обновлять статус по кнопке/таймеру. */
   checkedAt: string
+  /** Статусы всех обязательных движков, индексированные по стабильному EngineId. */
   engines: Record<EngineId, EngineStatus>
 }
 
@@ -29,11 +38,13 @@ const engineDisplayNames: Record<EngineId, string> = {
 }
 
 function executableName(id: EngineId): string {
+  // yt-dlp тоже имеет `.exe` на Windows, поэтому правило единое для всех трёх движков.
   const suffix = process.platform === 'win32' ? '.exe' : ''
   return `${id}${suffix}`
 }
 
 function firstExistingPath(paths: string[]): string | null {
+  // Проверяем только заранее собранный список путей: никакого поиска по PATH до явного решения в ТЗ/настройках.
   return paths.find((candidate) => existsSync(candidate)) ?? null
 }
 
@@ -72,6 +83,8 @@ async function checkEngine(paths: AppPaths, id: EngineId): Promise<EngineStatus>
   const foundPath = firstExistingPath(candidatePaths(paths, id))
 
   if (!foundPath) {
+    // `missing` — нормальное состояние свежей установки до реализации загрузчика §3.
+    // UI должен подсказывать действие, а не считать это аварией приложения.
     return {
       id,
       state: 'missing',
@@ -96,6 +109,8 @@ async function checkEngine(paths: AppPaths, id: EngineId): Promise<EngineStatus>
       message: null
     }
   } catch (error) {
+    // Бинарник может существовать, но не запускаться: битый файл, неверная архитектура,
+    // нет прав на выполнение или антивирус/SmartScreen вмешался в запуск.
     return {
       id,
       state: 'error',

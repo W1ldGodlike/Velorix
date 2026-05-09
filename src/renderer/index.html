@@ -1,4 +1,9 @@
 <!doctype html>
+<!--
+  Корневой HTML renderer-процесса.
+  Держим CSP максимально узкой: React-бандл и стили грузятся из собственного пакета,
+  а внешние ссылки должны открываться через main process, не внутри этого окна.
+-->
 <html lang="ru" data-theme="dark">
   <head>
     <meta charset="UTF-8" />

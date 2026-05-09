@@ -1,3 +1,4 @@
+# Минимальный EditorConfig: фиксируем UTF-8 для всех файлов, остальное отдаём Prettier/ESLint.
 root = true
 
 [*]

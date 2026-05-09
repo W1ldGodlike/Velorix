@@ -5,6 +5,13 @@ import Versions from './components/Versions'
 type Theme = 'dark' | 'light'
 type EngineSummary = 'checking' | 'ready' | 'missing' | 'error'
 
+/**
+ * Сводит подробные статусы движков к одной строке для нижнего статусбара.
+ *
+ * Подробности (пути, версии, ошибки по каждому бинарнику) позже уйдут в окно настроек
+ * зависимостей. Статусбар должен оставаться компактным и показывать только состояние,
+ * требующее внимания пользователя.
+ */
 function summarizeEngines(
   engines: Awaited<ReturnType<typeof window.fluxalloy.engines.getStatus>>['engines']
 ): EngineSummary {
@@ -37,6 +44,7 @@ function App(): React.JSX.Element {
   const [engineSummary, setEngineSummary] = useState<EngineSummary>('checking')
 
   const applyTheme = useCallback((value: Theme) => {
+    // data-attribute на html позволяет CSS-токенам переключать весь UI без перерендера дерева стилей.
     document.documentElement.dataset.theme = value
     setTheme(value)
   }, [])
@@ -71,6 +79,7 @@ function App(): React.JSX.Element {
 
   function toggleTheme(): void {
     const next = theme === 'dark' ? 'light' : 'dark'
+    // Persist делает main: так меню, будущие окна и renderer не спорят за источник истины.
     void window.fluxalloy.settings.setTheme(next)
   }
 

@@ -1,6 +1,8 @@
 import { useState } from 'react'
 
 function Versions(): React.JSX.Element {
+  // Версии Electron/Chromium/Node оставляем в статусбаре как быстрый диагностический минимум.
+  // Для support ZIP (§18) эти же значения позже пойдут в manifest вместе с ОС и билдом.
   const [versions] = useState(window.electron.process.versions)
 
   return (

@@ -1,8 +1,15 @@
+# Тяжёлые зависимости восстанавливаются через npm install и фиксируются package-lock.json.
 node_modules
+
+# Результаты сборки electron-vite/electron-builder; их можно пересоздать командами npm run build*.
 dist
 out
 .DS_Store
+
+# Локальный кэш линтера и любые временные логи не должны попадать в историю.
 .eslintcache
 *.log*
+
+# Альтернативные lockfile не используем, пока проект стандартизован на npm.
 pnpm-lock.yaml
 yarn.lock
