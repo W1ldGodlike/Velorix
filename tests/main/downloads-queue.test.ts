@@ -5,6 +5,7 @@ import {
   clearDownloadsQueue,
   clearFinishedDownloadsQueueRows,
   getDownloadsQueueSnapshot,
+  resetDownloadsQueueRowForRetry,
   updateDownloadsRow
 } from '../../src/main/downloads-queue'
 
@@ -34,5 +35,20 @@ describe('downloads queue cleanup', () => {
       'https://example.com/waiting',
       'https://example.com/pause'
     ])
+  })
+})
+
+describe('downloads queue output path', () => {
+  it('сохраняет путь готового файла и очищает его при retry', () => {
+    appendUrlsFromMultilineBlock('https://example.com/video')
+    const [row] = getDownloadsQueueSnapshot()
+
+    updateDownloadsRow(row.id, { status: 'Готово', outputPath: 'C:\\Downloads\\video.mp4' })
+    expect(getDownloadsQueueSnapshot()[0].outputPath).toBe('C:\\Downloads\\video.mp4')
+
+    expect(resetDownloadsQueueRowForRetry(row.id)).toBe(true)
+    const [reset] = getDownloadsQueueSnapshot()
+    expect(reset.status).toBe('Ожидание')
+    expect(reset.outputPath).toBeUndefined()
   })
 })

@@ -76,3 +76,4 @@
 - 2026-05-09 23:56:27 [Assistant]: §6.1 — над таблицей очереди добавлена живая сводка статусов (всего/ожидание/в работе/готово/ошибки/отмена), обновляется вместе со snapshot.
 - 2026-05-09 23:57:53 [Assistant]: §21 — добавлены unit-тесты `settings-store` для persisted yt-dlp полей (`ytdlpRateLimit`, `ytdlpRetries`, `ytdlpFragmentRetries`, queue retry profile) и сохранения settings.json.
 - 2026-05-09 23:59:33 [Assistant]: §7/§21 — pure helpers ffmpeg export (`parseFfmpegTimeSeconds`, `parseFfmpegSpeedToken`) экспортированы и покрыты unit-тестами вместе с encode preset/segment duration.
+- 2026-05-10 00:05:53 [Assistant]: §6.1/§6.4 — очередь и история yt-dlp сохраняют best-effort `outputPath` из stdout/stderr (`Destination`, merge, already downloaded); добавлены guarded IPC-действия открыть файл/показать в папке и тесты парсера/модели.

@@ -88,3 +88,36 @@ export function extractYtdlpErrorSummary(line: string): string | null {
   }
   return msg.length > 200 ? `${msg.slice(0, 198)}…` : msg
 }
+
+function unquoteYtdlpPath(raw: string): string {
+  const t = raw.trim()
+  if (t.length >= 2 && t.startsWith('"') && t.endsWith('"')) {
+    return t.slice(1, -1)
+  }
+  return t
+}
+
+/**
+ * Best-effort извлечение фактического файла из обычных строк yt-dlp.
+ * Не добавляем новых argv-флагов, чтобы не ломать старые версии yt-dlp; ловим типовые сообщения.
+ */
+export function extractYtdlpOutputPath(line: string): string | null {
+  const t = line.trim()
+  const destination = t.match(/^\[(?:download|ExtractAudio)]\s+Destination:\s+(.+)$/i)
+  if (destination) {
+    return unquoteYtdlpPath(destination[1])
+  }
+  const alreadyDownloaded = t.match(/^\[download]\s+(.+?)\s+has already been downloaded$/i)
+  if (alreadyDownloaded) {
+    return unquoteYtdlpPath(alreadyDownloaded[1])
+  }
+  const merging = t.match(/^\[Merger]\s+Merging formats into\s+(.+)$/i)
+  if (merging) {
+    return unquoteYtdlpPath(merging[1])
+  }
+  const moving = t.match(/^\[MoveFiles]\s+Moving file\s+.+?\s+to\s+(.+)$/i)
+  if (moving) {
+    return unquoteYtdlpPath(moving[1])
+  }
+  return null
+}

@@ -10,6 +10,7 @@ import {
 import { emitDownloadsLog } from './downloads-log-ipc'
 import {
   extractYtdlpErrorSummary,
+  extractYtdlpOutputPath,
   formatYtdlpProgressCell,
   parseYtdlpDownloadProgressLine,
   runYtdlpOnce
@@ -106,6 +107,7 @@ async function runYtdlpForWaitingRow(
 
   let lastProgressCell: string | null = null
   let lastErrorSummary: string | null = null
+  let lastOutputPath: string | null = snap.outputPath ?? null
 
   const applyProgressLine = (line: string): void => {
     const parsed = parseYtdlpDownloadProgressLine(line)
@@ -126,6 +128,16 @@ async function runYtdlpForWaitingRow(
     if (s) {
       lastErrorSummary = s
     }
+  }
+
+  const noteOutputPathLine = (line: string): void => {
+    const p = extractYtdlpOutputPath(line)
+    if (!p) {
+      return
+    }
+    lastOutputPath = p
+    updateDownloadsRow(rowId, { outputPath: p })
+    notifySnapshot()
   }
 
   const cli = getYtdlpRunOptionsSnapshot()
@@ -175,11 +187,13 @@ async function runYtdlpForWaitingRow(
             onStdoutLine: (line) => {
               emitDownloadsLog({ kind: 'line', rowId, stream: 'stdout', text: line })
               noteErrorLine(line)
+              noteOutputPathLine(line)
               applyProgressLine(line)
             },
             onStderrLine: (line) => {
               emitDownloadsLog({ kind: 'line', rowId, stream: 'stderr', text: line })
               noteErrorLine(line)
+              noteOutputPathLine(line)
               applyProgressLine(line)
             }
           },
@@ -249,7 +263,8 @@ async function runYtdlpForWaitingRow(
           outcome: outcomeFromQueueStatus(finalRow.status),
           status: finalRow.status,
           exitCode: finalExitCode,
-          errorHint: lastErrorSummary
+          errorHint: lastErrorSummary,
+          outputPath: finalRow.outputPath ?? lastOutputPath
         })
       }
     }

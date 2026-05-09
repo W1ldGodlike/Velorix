@@ -12,6 +12,8 @@ export interface DownloadsQueueRow {
   progress: string
   /** Человекочитаемый статус строки очереди. */
   status: string
+  /** Best-effort путь фактически созданного файла yt-dlp, если удалось распознать stdout/stderr. */
+  outputPath?: string
 }
 
 let rows: DownloadsQueueRow[] = []
@@ -85,13 +87,21 @@ export function getDownloadsQueueRowById(id: number): DownloadsQueueRow | undefi
 
 export function updateDownloadsRow(
   id: number,
-  patch: Partial<Pick<DownloadsQueueRow, 'status' | 'progress' | 'shortLabel'>>
+  patch: Partial<Pick<DownloadsQueueRow, 'status' | 'progress' | 'shortLabel'>> & {
+    outputPath?: string | null
+  }
 ): boolean {
   const row = rows.find((r) => r.id === id)
   if (!row) {
     return false
   }
-  Object.assign(row, patch)
+  const { outputPath, ...rest } = patch
+  Object.assign(row, rest)
+  if (outputPath === null) {
+    delete row.outputPath
+  } else if (typeof outputPath === 'string' && outputPath.trim().length > 0) {
+    row.outputPath = outputPath.trim()
+  }
   return true
 }
 
@@ -103,6 +113,7 @@ export function resetDownloadsQueueRowForRetry(id: number): boolean {
   row.shortLabel = shortUrlLabel(row.url)
   row.progress = '—'
   row.status = 'Ожидание'
+  delete row.outputPath
   return true
 }
 

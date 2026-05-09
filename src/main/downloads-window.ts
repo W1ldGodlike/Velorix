@@ -1,4 +1,5 @@
-import { writeFileSync } from 'fs'
+import { existsSync, statSync, writeFileSync } from 'fs'
+import { isAbsolute, relative, resolve } from 'path'
 import { BrowserWindow, dialog, ipcMain, shell, type WebContents } from 'electron'
 
 import { resolveAppPaths } from './app-paths'
@@ -9,6 +10,7 @@ import {
   clearFinishedDownloadsQueueRows,
   clearDownloadsQueue,
   getDownloadsQueueSnapshot,
+  getDownloadsQueueRowById,
   moveDownloadsQueueRow,
   removeDownloadsQueueRow,
   resetDownloadsQueueRowForRetry
@@ -86,6 +88,53 @@ function isDownloadsSender(sender: WebContents): boolean {
     !downloadsWindow.isDestroyed() &&
     sender.id === downloadsWindow.webContents.id
   )
+}
+
+type DownloadOutputOpenMode = 'file' | 'folder'
+
+function isDownloadOutputOpenMode(raw: unknown): raw is DownloadOutputOpenMode {
+  return raw === 'file' || raw === 'folder'
+}
+
+function resolveAllowedDownloadOutputPath(raw: unknown): string | null {
+  if (typeof raw !== 'string' || raw.trim().length === 0 || raw.length > 4096) {
+    return null
+  }
+  if (!isAbsolute(raw)) {
+    return null
+  }
+  const paths = resolveAppPaths()
+  const outDir = resolve(resolveYtdlpOutputDirectory(paths.userData))
+  const file = resolve(raw)
+  const rel = relative(outDir, file)
+  if (rel === '' || rel.startsWith('..') || isAbsolute(rel)) {
+    return null
+  }
+  try {
+    return existsSync(file) && statSync(file).isFile() ? file : null
+  } catch {
+    return null
+  }
+}
+
+async function openDownloadOutputPath(
+  rawPath: unknown,
+  mode: DownloadOutputOpenMode
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const file = resolveAllowedDownloadOutputPath(rawPath)
+  if (!file) {
+    return { ok: false, error: 'Файл не найден или находится вне каталога загрузок.' }
+  }
+  try {
+    if (mode === 'folder') {
+      shell.showItemInFolder(file)
+      return { ok: true }
+    }
+    const err = await shell.openPath(file)
+    return err ? { ok: false, error: err } : { ok: true }
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err) }
+  }
 }
 
 /** Отправить очередь в окно загрузок без полной перезагрузки документа. */
@@ -507,6 +556,22 @@ function buildDownloadsHtml(): string {
             retry.setAttribute('data-history-url', u);
             tdAction.appendChild(retry);
           }
+          if (typeof e.outputPath === 'string' && e.outputPath) {
+            var openFile = document.createElement('button');
+            openFile.type = 'button';
+            openFile.textContent = 'Файл';
+            openFile.title = 'Открыть скачанный файл';
+            openFile.setAttribute('data-history-open', 'file');
+            openFile.setAttribute('data-history-id', typeof e.id === 'string' ? e.id : '');
+            tdAction.appendChild(openFile);
+            var openFolder = document.createElement('button');
+            openFolder.type = 'button';
+            openFolder.textContent = 'Папка';
+            openFolder.title = 'Показать файл в папке';
+            openFolder.setAttribute('data-history-open', 'folder');
+            openFolder.setAttribute('data-history-id', typeof e.id === 'string' ? e.id : '');
+            tdAction.appendChild(openFolder);
+          }
           tr.appendChild(tdAction);
           historyBody.appendChild(tr);
         });
@@ -547,6 +612,15 @@ function buildDownloadsHtml(): string {
       }
       if (historyBody) {
         historyBody.addEventListener('click', function (e) {
+          var open = e.target.closest('[data-history-open]');
+          if (open) {
+            var mode = open.getAttribute('data-history-open') || 'file';
+            var hid = open.getAttribute('data-history-id') || '';
+            api.openHistoryOutput(hid, mode).then(function (res) {
+              if (res && res.ok === false && res.error) window.alert(res.error);
+            });
+            return;
+          }
           var t = e.target.closest('[data-history-url]');
           if (!t) return;
           var url = t.getAttribute('data-history-url') || '';
@@ -807,6 +881,10 @@ function buildDownloadsHtml(): string {
           } else if (rowCanRetry(r.status)) {
             mk('retry', 'Сбросить статус и скачать эту строку заново', '↻', r.id);
           }
+          if (typeof r.outputPath === 'string' && r.outputPath) {
+            mk('open-file', 'Открыть скачанный файл', 'Файл', r.id);
+            mk('open-folder', 'Показать файл в папке', 'Папка', r.id);
+          }
           mk('up', 'Вверх', '↑', r.id);
           mk('dn', 'Вниз', '↓', r.id);
           mk('rm', 'Удалить', '✕', r.id);
@@ -825,6 +903,13 @@ function buildDownloadsHtml(): string {
         else if (act === 'dn') api.moveRow(id, 1);
         else if (act === 'retry') {
           api.retryRow(id).then(function (res) {
+            if (res && res.ok === false && res.error) {
+              window.alert(res.error);
+            }
+          });
+        }
+        else if (act === 'open-file' || act === 'open-folder') {
+          api.openQueueOutput(id, act === 'open-folder' ? 'folder' : 'file').then(function (res) {
             if (res && res.ok === false && res.error) {
               window.alert(res.error);
             }
@@ -1312,6 +1397,51 @@ export function registerDownloadsWindowIpcHandlers(): void {
         logError('downloads-window', 'save yt-dlp visible log failed', err)
         return { ok: false, error: msg }
       }
+    }
+  )
+
+  ipcMain.handle(
+    'fluxalloy-downloads-open-queue-output',
+    async (
+      event,
+      id: unknown,
+      modeRaw: unknown
+    ): Promise<{ ok: true } | { ok: false; error: string }> => {
+      if (!isDownloadsSender(event.sender)) {
+        return { ok: false, error: 'Недопустимый отправитель' }
+      }
+      if (typeof id !== 'number' || !Number.isFinite(id) || !isDownloadOutputOpenMode(modeRaw)) {
+        return { ok: false, error: 'Некорректный запрос открытия файла' }
+      }
+      const row = getDownloadsQueueRowById(id)
+      if (!row?.outputPath) {
+        return { ok: false, error: 'У этой строки нет сохранённого пути к файлу.' }
+      }
+      return openDownloadOutputPath(row.outputPath, modeRaw)
+    }
+  )
+
+  ipcMain.handle(
+    'fluxalloy-downloads-open-history-output',
+    async (
+      event,
+      id: unknown,
+      modeRaw: unknown
+    ): Promise<{ ok: true } | { ok: false; error: string }> => {
+      if (!isDownloadsSender(event.sender)) {
+        return { ok: false, error: 'Недопустимый отправитель' }
+      }
+      if (typeof id !== 'string' || id.length === 0 || !isDownloadOutputOpenMode(modeRaw)) {
+        return { ok: false, error: 'Некорректный запрос открытия файла' }
+      }
+      const paths = resolveAppPaths()
+      const entry = readYtdlpDownloadHistoryNewestFirst(paths.userData, 500).find(
+        (e) => e.id === id
+      )
+      if (!entry?.outputPath) {
+        return { ok: false, error: 'У этой записи истории нет сохранённого пути к файлу.' }
+      }
+      return openDownloadOutputPath(entry.outputPath, modeRaw)
     }
   )
 

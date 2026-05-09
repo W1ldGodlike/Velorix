@@ -15,6 +15,7 @@ import {
 // для совместимости старых импортов; новые места могут импортировать напрямую.
 export {
   extractYtdlpErrorSummary,
+  extractYtdlpOutputPath,
   formatYtdlpProgressCell,
   parseYtdlpDownloadProgressLine,
   type YtdlpDownloadProgressParts

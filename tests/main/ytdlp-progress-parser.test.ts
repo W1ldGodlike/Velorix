@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import {
   extractYtdlpErrorSummary,
+  extractYtdlpOutputPath,
   formatYtdlpProgressCell,
   parseYtdlpDownloadProgressLine
 } from '../../src/main/ytdlp-progress-parser'
@@ -80,5 +81,29 @@ describe('extractYtdlpErrorSummary', () => {
 
   it('возвращает null для пустого хвоста', () => {
     expect(extractYtdlpErrorSummary('ERROR:    ')).toBeNull()
+  })
+})
+
+describe('extractYtdlpOutputPath', () => {
+  it('извлекает путь из Destination строк', () => {
+    expect(extractYtdlpOutputPath('[download] Destination: C:\\Downloads\\video.mp4')).toBe(
+      'C:\\Downloads\\video.mp4'
+    )
+    expect(extractYtdlpOutputPath('[ExtractAudio] Destination: /tmp/audio.m4a')).toBe(
+      '/tmp/audio.m4a'
+    )
+  })
+
+  it('извлекает путь из merge/already-downloaded строк', () => {
+    expect(extractYtdlpOutputPath('[Merger] Merging formats into "C:\\Downloads\\final.mp4"')).toBe(
+      'C:\\Downloads\\final.mp4'
+    )
+    expect(extractYtdlpOutputPath('[download] /tmp/final.mp4 has already been downloaded')).toBe(
+      '/tmp/final.mp4'
+    )
+  })
+
+  it('возвращает null для обычных строк прогресса', () => {
+    expect(extractYtdlpOutputPath('[download] 50% of 1MiB at 1MiB/s')).toBeNull()
   })
 })

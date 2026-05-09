@@ -29,6 +29,8 @@ export interface YtdlpDownloadHistoryEntry {
   exitCode: number | null
   /** Последняя распознанная строка ERROR: из stdout/stderr, если была. */
   errorHint: string | null
+  /** Best-effort путь готового файла, если yt-dlp сообщил его в stdout/stderr. */
+  outputPath?: string | null
 }
 
 interface HistoryFileShape {
@@ -116,6 +118,13 @@ function parseEntry(raw: unknown): YtdlpDownloadHistoryEntry | null {
       : typeof hint === 'string'
         ? hint.slice(0, 500)
         : null
+  const outPath = o.outputPath
+  const outputPath =
+    outPath === null || outPath === undefined
+      ? null
+      : typeof outPath === 'string'
+        ? outPath.slice(0, 4096)
+        : null
   return {
     id: o.id.slice(0, 64),
     startedAt: o.startedAt,
@@ -125,7 +134,8 @@ function parseEntry(raw: unknown): YtdlpDownloadHistoryEntry | null {
     outcome: o.outcome,
     status: o.status.slice(0, 400),
     exitCode: ec,
-    errorHint
+    errorHint,
+    outputPath
   }
 }
 
@@ -192,7 +202,8 @@ export function appendYtdlpDownloadHistoryEntry(
     outcome: partial.outcome,
     status: partial.status.slice(0, 400),
     exitCode: partial.exitCode,
-    errorHint: partial.errorHint ? partial.errorHint.slice(0, 500) : null
+    errorHint: partial.errorHint ? partial.errorHint.slice(0, 500) : null,
+    outputPath: partial.outputPath ? partial.outputPath.slice(0, 4096) : null
   }
   entries.push(entry)
   while (entries.length > YTDLP_DOWNLOAD_HISTORY_MAX_ENTRIES) {

@@ -55,7 +55,8 @@ describe('ytdlp download history persistence', () => {
       outcome: 'success',
       status: 'Готово',
       exitCode: 0,
-      errorHint: null
+      errorHint: null,
+      outputPath: join(root, 'downloads', 'ytdlp', 'a.mp4')
     })
     appendYtdlpDownloadHistoryEntry(root, {
       id: 'b',
@@ -69,7 +70,9 @@ describe('ytdlp download history persistence', () => {
       errorHint: 'ERROR: fail'
     })
 
-    expect(readYtdlpDownloadHistoryNewestFirst(root).map((entry) => entry.id)).toEqual(['b', 'a'])
+    const newest = readYtdlpDownloadHistoryNewestFirst(root)
+    expect(newest.map((entry) => entry.id)).toEqual(['b', 'a'])
+    expect(newest[1].outputPath).toBe(join(root, 'downloads', 'ytdlp', 'a.mp4'))
   })
 
   it('очищает историю через валидный schema-файл', () => {
