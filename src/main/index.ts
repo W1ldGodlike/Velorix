@@ -4,6 +4,9 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
+import { resolveAppPaths } from './app-paths'
+import { getEnginesStatus } from './engine-service'
+import type { EnginesStatusSnapshot } from './engine-service'
 import type { AppSettings, AppTheme } from './settings-store'
 import { loadSettings, saveSettings } from './settings-store'
 
@@ -180,6 +183,10 @@ app.whenReady().then(() => {
   ipcMain.handle('fluxalloy:settings-set-theme', (_, theme: unknown): AppSettings => {
     const next = theme === 'light' ? 'light' : 'dark'
     return persistAndBroadcast(next)
+  })
+
+  ipcMain.handle('fluxalloy:engines-status', async (): Promise<EnginesStatusSnapshot> => {
+    return getEnginesStatus(resolveAppPaths())
   })
 
   ipcMain.on('ping', () => console.log('pong'))

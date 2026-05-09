@@ -3,9 +3,38 @@ import { useCallback, useEffect, useState } from 'react'
 import Versions from './components/Versions'
 
 type Theme = 'dark' | 'light'
+type EngineSummary = 'checking' | 'ready' | 'missing' | 'error'
+
+function summarizeEngines(
+  engines: Awaited<ReturnType<typeof window.fluxalloy.engines.getStatus>>['engines']
+): EngineSummary {
+  const states = Object.values(engines).map((engine) => engine.state)
+
+  if (states.includes('error')) {
+    return 'error'
+  }
+  if (states.includes('missing')) {
+    return 'missing'
+  }
+  return 'ready'
+}
+
+function engineSummaryText(summary: EngineSummary): string {
+  switch (summary) {
+    case 'ready':
+      return 'Движки: готовы'
+    case 'missing':
+      return 'Движки: не найдены'
+    case 'error':
+      return 'Движки: ошибка проверки'
+    case 'checking':
+      return 'Движки: проверка…'
+  }
+}
 
 function App(): React.JSX.Element {
   const [theme, setTheme] = useState<Theme>('dark')
+  const [engineSummary, setEngineSummary] = useState<EngineSummary>('checking')
 
   const applyTheme = useCallback((value: Theme) => {
     document.documentElement.dataset.theme = value
@@ -27,6 +56,18 @@ function App(): React.JSX.Element {
       cleanup?.()
     }
   }, [applyTheme])
+
+  useEffect(() => {
+    // Статусбар пока показывает сводку. Подробное окно зависимостей появится в §3/§4.6.
+    window.fluxalloy.engines
+      .getStatus()
+      .then((snapshot) => {
+        setEngineSummary(summarizeEngines(snapshot.engines))
+      })
+      .catch(() => {
+        setEngineSummary('error')
+      })
+  }, [])
 
   function toggleTheme(): void {
     const next = theme === 'dark' ? 'light' : 'dark'
@@ -72,7 +113,7 @@ function App(): React.JSX.Element {
       </main>
 
       <footer className="app-statusbar">
-        <span>Движки: не загружены</span>
+        <span>{engineSummaryText(engineSummary)}</span>
         <span className="app-statusbar-sep" aria-hidden />
         <Versions />
       </footer>

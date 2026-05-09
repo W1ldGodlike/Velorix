@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
+import type { EnginesStatusSnapshot } from '../main/engine-service'
 import type { AppSettings, AppTheme } from '../main/settings-store'
 
 // Единственная публичная поверхность приложения в renderer: добавлять сюда только проверенные IPC-операции.
@@ -9,6 +10,10 @@ const fluxalloy = {
     get: (): Promise<AppSettings> => ipcRenderer.invoke('fluxalloy:settings-get'),
     setTheme: (theme: AppTheme): Promise<AppSettings> =>
       ipcRenderer.invoke('fluxalloy:settings-set-theme', theme)
+  },
+  engines: {
+    // Renderer видит только агрегированный статус, а не произвольный доступ к файловой системе.
+    getStatus: (): Promise<EnginesStatusSnapshot> => ipcRenderer.invoke('fluxalloy:engines-status')
   },
   onThemeChanged: (listener: (theme: AppTheme) => void): (() => void) => {
     const channel = 'fluxalloy:theme-changed'
