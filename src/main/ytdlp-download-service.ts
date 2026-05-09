@@ -89,7 +89,7 @@ export function formatYtdlpProgressCell(parts: YtdlpDownloadProgressParts): stri
 
 /**
  * Одна загрузка через yt-dlp без shell: только массив аргументов.
- * Режим плейлиста и аудио задаются только флагами снимка §6.2 (`downloadPlaylist`, `audioOnly`).
+ * Режим плейлиста, аудио и субтитров задаются только полями снимка §6.2.
  * Вывод и ошибки стримятся построчно для лога UI §6.4.
  */
 export function runYtdlpOnce(
@@ -101,7 +101,13 @@ export function runYtdlpOnce(
   engineOverrides?: EnginePathOverrides,
   cli?: Pick<
     YtdlpRunOptionsSnapshot,
-    'filenameTemplate' | 'formatExtraArgs' | 'downloadPlaylist' | 'audioOnly' | 'extraArgs'
+    | 'filenameTemplate'
+    | 'formatExtraArgs'
+    | 'downloadPlaylist'
+    | 'audioOnly'
+    | 'subtitlePreset'
+    | 'subLangs'
+    | 'extraArgs'
   >
 ): Promise<{ exitCode: number | null; signal: NodeJS.Signals | null }> {
   const ytDlp = resolveEngineExecutablePath(paths, 'yt-dlp', engineOverrides)
@@ -123,11 +129,15 @@ export function runYtdlpOnce(
 
   const downloadPlaylist = cli?.downloadPlaylist === true
   const audioOnly = cli?.audioOnly === true
+  const subtitlePreset = cli?.subtitlePreset ?? 'none'
+  const subLangs = cli?.subLangs ?? ''
   const fmtArgs = audioOnly ? [] : (cli?.formatExtraArgs ?? [])
   const extraArgs = cli?.extraArgs ?? []
   const args = buildYtdlpSpawnArgvTokens({
     downloadPlaylist,
     audioOnly,
+    subtitlePreset,
+    subLangs,
     formatExtraArgs: fmtArgs,
     extraArgs,
     outputPattern: outPattern,

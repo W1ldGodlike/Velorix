@@ -78,10 +78,17 @@ export function formatArgvTokensForPreview(tokens: string[]): string {
     .join(' ')
 }
 
+/** Белый список режимов субтитров §6.2 (без произвольных флагов в UI). */
+export type YtdlpSubtitlePresetId = 'none' | 'manual' | 'manual_auto'
+
 /** Полный argv yt-dlp без пути к exe §6 / §6.3. */
 export function buildYtdlpSpawnArgvTokens(params: {
   downloadPlaylist: boolean
   audioOnly: boolean
+  /** §6.2: только фиксированные комбинации; произвольный текст — через доп. argv. */
+  subtitlePreset: YtdlpSubtitlePresetId
+  /** Уже проверенная строка для одного токена `--sub-langs`; пусто — ключ не добавляем. */
+  subLangs: string
   formatExtraArgs: string[]
   extraArgs: string[]
   outputPattern: string
@@ -90,6 +97,16 @@ export function buildYtdlpSpawnArgvTokens(params: {
   const args: string[] = ['--newline', '--no-color']
   args.push(params.downloadPlaylist ? '--yes-playlist' : '--no-playlist')
   args.push(...params.formatExtraArgs)
+  const sub = params.subtitlePreset ?? 'none'
+  if (sub === 'manual') {
+    args.push('--write-subs')
+  } else if (sub === 'manual_auto') {
+    args.push('--write-subs', '--write-auto-subs')
+  }
+  const langs = (params.subLangs ?? '').trim()
+  if (sub !== 'none' && langs.length > 0) {
+    args.push('--sub-langs', langs)
+  }
   if (params.audioOnly) {
     args.push('-x', '--audio-format', 'best')
   }

@@ -49,8 +49,10 @@ import {
 } from './ytdlp-download-output'
 import {
   buildYtdlpRunOptionsSnapshot,
+  parseYtdlpSubtitlePreset,
   payloadFromSnapshot,
   validateFilenameTemplate,
+  validateYtdlpSubLangs,
   type YtdlpDownloadOptionsPatch
 } from './ytdlp-download-options'
 import { parseExtraYtdlpArgsLine } from './ytdlp-extra-args'
@@ -252,6 +254,28 @@ function persistYtdlpDownloadCliOptionsPatch(
       merged.ytdlpAudioOnly = true
     } else {
       delete merged.ytdlpAudioOnly
+    }
+  }
+  if (patch.subtitlePreset !== undefined) {
+    const id = parseYtdlpSubtitlePreset(patch.subtitlePreset)
+    if (id === 'none') {
+      delete merged.ytdlpSubtitlePreset
+    } else {
+      merged.ytdlpSubtitlePreset = id
+    }
+  }
+  if (patch.subLangs !== undefined) {
+    if (typeof patch.subLangs !== 'string') {
+      return { ok: false, error: 'Языки субтитров должны быть строкой.' }
+    }
+    const sv = validateYtdlpSubLangs(patch.subLangs)
+    if (!sv.ok) {
+      return sv
+    }
+    if (sv.value === '') {
+      delete merged.ytdlpSubLangs
+    } else {
+      merged.ytdlpSubLangs = sv.value
     }
   }
   if (patch.extraArgsLine !== undefined) {

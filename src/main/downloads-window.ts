@@ -24,6 +24,7 @@ import {
 } from './ytdlp-download-output'
 import {
   parseYtdlpFormatPreset,
+  parseYtdlpSubtitlePreset,
   type YtdlpDownloadOptionsPayload,
   type YtdlpDownloadOptionsPatch
 } from './ytdlp-download-options'
@@ -217,6 +218,15 @@ function buildDownloadsHtml(): string {
       <label class="chk"><input type="checkbox" id="chkPlaylist" /> Весь плейлист <span class="opts-check-muted">(--yes-playlist)</span></label>
       <label class="chk"><input type="checkbox" id="chkAudioOnly" /> Только аудио <span class="opts-check-muted">(-x --audio-format best; нужен ffmpeg)</span></label>
     </div>
+    <label for="subPreset">Субтитры §6.2</label>
+    <select id="subPreset">
+      <option value="none">Не скачивать</option>
+      <option value="manual">Ручные дорожки (--write-subs)</option>
+      <option value="manual_auto">Ручные + автосгенерированные (--write-auto-subs)</option>
+    </select>
+    <label for="subLangsInput">Языки субтитров (--sub-langs, без пробелов)</label>
+    <input type="text" id="subLangsInput" spellcheck="false" autocomplete="off" placeholder="Пусто = все; пример: ru,en или all" />
+    <p class="opts-hint">Фильтр языков учитывается только если включены субтитры; произвольные флаги — в «Доп. аргументы».</p>
     <label for="extraArgsInput">Дополнительные аргументы (через пробел, без shell) §6.3</label>
     <textarea id="extraArgsInput" rows="2" spellcheck="false" autocomplete="off" placeholder="Например: --write-sub --sub-lang ru"></textarea>
     <p class="opts-hint opts-warn" id="extraArgsWarn" hidden></p>
@@ -270,6 +280,8 @@ function buildDownloadsHtml(): string {
       var tmplReset = document.getElementById('tmplReset');
       var chkPlaylist = document.getElementById('chkPlaylist');
       var chkAudioOnly = document.getElementById('chkAudioOnly');
+      var subPreset = document.getElementById('subPreset');
+      var subLangsInput = document.getElementById('subLangsInput');
       var extraArgsInput = document.getElementById('extraArgsInput');
       var argsPreview = document.getElementById('argsPreview');
       var extraArgsWarn = document.getElementById('extraArgsWarn');
@@ -304,6 +316,14 @@ function buildDownloadsHtml(): string {
           }
           if (chkAudioOnly && typeof p.audioOnly === 'boolean') {
             chkAudioOnly.checked = p.audioOnly;
+          }
+          if (subPreset && typeof p.subtitlePreset === 'string') {
+            subPreset.value = p.subtitlePreset === 'manual' || p.subtitlePreset === 'manual_auto'
+              ? p.subtitlePreset
+              : 'none';
+          }
+          if (subLangsInput && typeof p.subLangsLine === 'string') {
+            subLangsInput.value = p.subLangsLine;
           }
           if (!fmtPreset) return;
           fmtPreset.replaceChildren();
@@ -476,6 +496,8 @@ function buildDownloadsHtml(): string {
             formatPreset: fmtPreset.value,
             downloadPlaylist: !!(chkPlaylist && chkPlaylist.checked),
             audioOnly: !!(chkAudioOnly && chkAudioOnly.checked),
+            subtitlePreset: subPreset ? subPreset.value : 'none',
+            subLangs: subLangsInput ? subLangsInput.value : '',
             extraArgsLine: extraArgsInput ? extraArgsInput.value : ''
           }).then(function (res) {
             if (res && res.ok === false && res.error) window.alert(res.error);
@@ -635,6 +657,15 @@ export function registerDownloadsWindowIpcHandlers(): void {
         }
         patch.audioOnly = o.audioOnly
       }
+      if (Object.prototype.hasOwnProperty.call(o, 'subtitlePreset')) {
+        patch.subtitlePreset = parseYtdlpSubtitlePreset(o.subtitlePreset)
+      }
+      if (Object.prototype.hasOwnProperty.call(o, 'subLangs')) {
+        if (typeof o.subLangs !== 'string') {
+          return { ok: false, error: 'Языки субтитров должны быть строкой' }
+        }
+        patch.subLangs = o.subLangs
+      }
       if (Object.prototype.hasOwnProperty.call(o, 'extraArgsLine')) {
         if (typeof o.extraArgsLine !== 'string') {
           return { ok: false, error: 'Доп. аргументы должны быть строкой' }
@@ -646,6 +677,8 @@ export function registerDownloadsWindowIpcHandlers(): void {
         patch.formatPreset === undefined &&
         patch.downloadPlaylist === undefined &&
         patch.audioOnly === undefined &&
+        patch.subtitlePreset === undefined &&
+        patch.subLangs === undefined &&
         patch.extraArgsLine === undefined
       ) {
         return { ok: false, error: 'Нечего сохранять' }

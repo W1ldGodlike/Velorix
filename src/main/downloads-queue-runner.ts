@@ -92,6 +92,8 @@ async function runYtdlpForWaitingRow(
         formatExtraArgs: cli.formatExtraArgs,
         downloadPlaylist: cli.downloadPlaylist,
         audioOnly: cli.audioOnly,
+        subtitlePreset: cli.subtitlePreset,
+        subLangs: cli.subLangs,
         extraArgs: cli.extraArgs
       }
     )

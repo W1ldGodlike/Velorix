@@ -37,6 +37,10 @@ export interface AppSettings {
   ytdlpDownloadPlaylist?: boolean
   /** §6.2: извлечение аудио `-x` (нужен ffmpeg рядом с yt-dlp). */
   ytdlpAudioOnly?: boolean
+  /** §6.2: пресет субтитров (`--write-subs` / автосубы); если нет — режим «выкл». */
+  ytdlpSubtitlePreset?: 'manual' | 'manual_auto'
+  /** §6.2: необязательный фильтр `--sub-langs` (один токен без пробелов). */
+  ytdlpSubLangs?: string
   /** §6.3: дополнительные аргументы yt-dlp одной строкой (токены через пробел). */
   ytdlpExtraArgsLine?: string
   /** §7.2: системный пресет экспорта MP4 (libx264 CRF + `-preset`). */
@@ -132,6 +136,28 @@ function parseYtdlpExtraArgsLineStored(raw: unknown): string | undefined {
   return t.length <= 2000 ? t : t.slice(0, 2000)
 }
 
+function parseYtdlpSubtitlePresetStored(raw: unknown): 'manual' | 'manual_auto' | undefined {
+  if (raw === 'manual' || raw === 'manual_auto') {
+    return raw
+  }
+  return undefined
+}
+
+/** Только безопасный алфавит для одного argv-токена `--sub-langs` (без пробелов/shell). */
+function parseYtdlpSubLangsStored(raw: unknown): string | undefined {
+  if (typeof raw !== 'string') {
+    return undefined
+  }
+  const t = raw.trim()
+  if (t.length === 0 || t.length > 160) {
+    return undefined
+  }
+  if (!/^[a-zA-Z0-9.,*+\-_]+$/.test(t)) {
+    return undefined
+  }
+  return t
+}
+
 function parseFfmpegExportEncodePresetStored(raw: unknown): string | undefined {
   if (typeof raw !== 'string') {
     return undefined
@@ -173,6 +199,8 @@ export function loadSettings(filePath: string): AppSettings {
       parsed.ffmpegExportEncodePreset
     )
     const ytdlpExtraArgsLine = parseYtdlpExtraArgsLineStored(parsed.ytdlpExtraArgsLine)
+    const ytdlpSubtitlePreset = parseYtdlpSubtitlePresetStored(parsed.ytdlpSubtitlePreset)
+    const ytdlpSubLangs = parseYtdlpSubLangsStored(parsed.ytdlpSubLangs)
 
     const base: AppSettings = { theme }
     if (last !== undefined) {
@@ -201,6 +229,12 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (parsed.ytdlpAudioOnly === true) {
       base.ytdlpAudioOnly = true
+    }
+    if (ytdlpSubtitlePreset !== undefined) {
+      base.ytdlpSubtitlePreset = ytdlpSubtitlePreset
+    }
+    if (ytdlpSubLangs !== undefined) {
+      base.ytdlpSubLangs = ytdlpSubLangs
     }
     if (ytdlpExtraArgsLine !== undefined) {
       base.ytdlpExtraArgsLine = ytdlpExtraArgsLine

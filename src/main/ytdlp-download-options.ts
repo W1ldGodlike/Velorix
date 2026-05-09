@@ -4,7 +4,8 @@ import type { AppSettings } from './settings-store'
 import {
   buildYtdlpSpawnArgvTokens,
   formatArgvTokensForPreview,
-  parseExtraYtdlpArgsLine
+  parseExtraYtdlpArgsLine,
+  type YtdlpSubtitlePresetId
 } from './ytdlp-extra-args'
 import { getYtdlpCommandHints, type YtdlpCommandHintEntry } from './ytdlp-commands-hints'
 
@@ -17,6 +18,8 @@ export const YTDLP_DEFAULT_FILENAME_TEMPLATE = '%(title)s [%(id)s].%(ext)s'
  */
 export type YtdlpFormatPresetId = 'default' | 'merge_bv_ba' | 'best_single'
 
+export type { YtdlpSubtitlePresetId }
+
 export interface YtdlpRunOptionsSnapshot {
   filenameTemplate: string
   formatPreset: YtdlpFormatPresetId
@@ -26,6 +29,12 @@ export interface YtdlpRunOptionsSnapshot {
   downloadPlaylist: boolean
   /** `-x --audio-format best`; `-f` из пресета при этом не добавляется. */
   audioOnly: boolean
+  /** §6.2: только whitelist; строка языков без пробелов для `--sub-langs`. */
+  subtitlePreset: YtdlpSubtitlePresetId
+  /** Токен для argv при активном пресете и непустой строке. */
+  subLangs: string
+  /** Строка из настроек для поля UI (пусто если в JSON был мусор). */
+  subLangsLine: string
   /** Исходная строка из UI/settings для редактирования §6.3. */
   extraArgsLine: string
   /** Уже проверенные токены; при ошибке чтения JSON — пусто, см. `extraArgsParseWarning`. */
@@ -42,6 +51,9 @@ export interface YtdlpDownloadOptionsPayload {
   formatPresetChoices: Array<{ id: YtdlpFormatPresetId; label: string }>
   downloadPlaylist: boolean
   audioOnly: boolean
+  subtitlePreset: YtdlpSubtitlePresetId
+  /** Редактируемое значение `--sub-langs` в окне загрузок. */
+  subLangsLine: string
   extraArgsLine: string
   /** Превью полной командной строки (`yt-dlp …`), без реального пути и URL. */
   commandPreview: string
@@ -55,6 +67,8 @@ export interface YtdlpDownloadOptionsPatch {
   formatPreset?: YtdlpFormatPresetId
   downloadPlaylist?: boolean
   audioOnly?: boolean
+  subtitlePreset?: YtdlpSubtitlePresetId
+  subLangs?: string
   extraArgsLine?: string
 }
 
@@ -63,6 +77,33 @@ export function parseYtdlpFormatPreset(raw: unknown): YtdlpFormatPresetId {
     return raw
   }
   return 'default'
+}
+
+export function parseYtdlpSubtitlePreset(raw: unknown): YtdlpSubtitlePresetId {
+  if (raw === 'manual' || raw === 'manual_auto') {
+    return raw
+  }
+  return 'none'
+}
+
+/** Одна строка без пробелов — станет вторым токеном после `--sub-langs`. */
+export function validateYtdlpSubLangs(
+  raw: string
+): { ok: true; value: string } | { ok: false; error: string } {
+  const t = raw.trim()
+  if (t.length === 0) {
+    return { ok: true, value: '' }
+  }
+  if (t.length > 160) {
+    return { ok: false, error: 'Строка --sub-langs слишком длинная (макс. 160 символов).' }
+  }
+  if (!/^[a-zA-Z0-9.,*+\-_]+$/.test(t)) {
+    return {
+      ok: false,
+      error: 'Для --sub-langs допустимы только буквы, цифры и символы ,.*+-_'
+    }
+  }
+  return { ok: true, value: t }
 }
 
 /** Строковые поля из JSON без семантической проверки шаблона — см. validateFilenameTemplate. */
@@ -157,6 +198,15 @@ export function formatPresetToExtraArgs(id: YtdlpFormatPresetId): string[] {
 export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOptionsSnapshot {
   const preset = parseYtdlpFormatPreset(settings.ytdlpFormatPreset)
   const audioOnly = settings.ytdlpAudioOnly === true
+  const subtitlePreset = parseYtdlpSubtitlePreset(settings.ytdlpSubtitlePreset)
+  const subLangsStored =
+    typeof settings.ytdlpSubLangs === 'string' ? settings.ytdlpSubLangs.trim() : ''
+  const subLangsParsed = validateYtdlpSubLangs(subLangsStored)
+  const subLangs =
+    subtitlePreset !== 'none' && subLangsParsed.ok && subLangsParsed.value.length > 0
+      ? subLangsParsed.value
+      : ''
+  const subLangsLine = subLangsParsed.ok ? subLangsParsed.value : ''
   const stored = settings.ytdlpFilenameTemplate
   let filenameTemplate = YTDLP_DEFAULT_FILENAME_TEMPLATE
   if (typeof stored === 'string') {
@@ -176,6 +226,9 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
     formatExtraArgs: audioOnly ? [] : formatPresetToExtraArgs(preset),
     downloadPlaylist: settings.ytdlpDownloadPlaylist === true,
     audioOnly,
+    subtitlePreset,
+    subLangs,
+    subLangsLine,
     extraArgsLine,
     extraArgs,
     extraArgsParseWarning
@@ -187,6 +240,8 @@ export function payloadFromSnapshot(snap: YtdlpRunOptionsSnapshot): YtdlpDownloa
   const argv = buildYtdlpSpawnArgvTokens({
     downloadPlaylist: snap.downloadPlaylist,
     audioOnly: snap.audioOnly,
+    subtitlePreset: snap.subtitlePreset,
+    subLangs: snap.subLangs,
     formatExtraArgs: snap.formatExtraArgs,
     extraArgs: snap.extraArgs,
     outputPattern: outPh,
@@ -205,6 +260,8 @@ export function payloadFromSnapshot(snap: YtdlpRunOptionsSnapshot): YtdlpDownloa
     ],
     downloadPlaylist: snap.downloadPlaylist,
     audioOnly: snap.audioOnly,
+    subtitlePreset: snap.subtitlePreset,
+    subLangsLine: snap.subLangsLine,
     extraArgsLine: snap.extraArgsLine,
     commandPreview,
     extraArgsParseWarning: snap.extraArgsParseWarning,
