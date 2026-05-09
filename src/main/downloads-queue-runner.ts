@@ -8,7 +8,11 @@ import {
   type DownloadsQueueRow
 } from './downloads-queue'
 import { emitDownloadsLog } from './downloads-log-ipc'
-import { extractDownloadPercent, runYtdlpOnce } from './ytdlp-download-service'
+import {
+  formatYtdlpProgressCell,
+  parseYtdlpDownloadProgressLine,
+  runYtdlpOnce
+} from './ytdlp-download-service'
 import { resolveYtdlpOutputDirectory } from './ytdlp-download-output'
 
 let activeAbort: AbortController | null = null
@@ -53,7 +57,7 @@ async function runYtdlpForWaitingRow(
 
   emitDownloadsLog({ kind: 'reset', rowId })
 
-  let lastPct: string | null = null
+  let lastProgressCell: string | null = null
 
   try {
     const result = await runYtdlpOnce(
@@ -67,12 +71,17 @@ async function runYtdlpForWaitingRow(
         },
         onStderrLine: (line) => {
           emitDownloadsLog({ kind: 'line', rowId, stream: 'stderr', text: line })
-          const pct = extractDownloadPercent(line)
-          if (pct) {
-            lastPct = pct
-            updateDownloadsRow(rowId, { progress: pct })
-            notifySnapshot()
+          const parsed = parseYtdlpDownloadProgressLine(line)
+          if (!parsed) {
+            return
           }
+          const cell = formatYtdlpProgressCell(parsed)
+          if (cell.length === 0) {
+            return
+          }
+          lastProgressCell = cell
+          updateDownloadsRow(rowId, { progress: cell })
+          notifySnapshot()
         }
       },
       getEnginePathOverridesSnapshot()
@@ -81,17 +90,20 @@ async function runYtdlpForWaitingRow(
     if (result.exitCode !== 0) {
       updateDownloadsRow(rowId, {
         status: `Ошибка (код ${result.exitCode ?? '?'})`,
-        progress: lastPct ?? '—'
+        progress: lastProgressCell ?? '—'
       })
     } else {
-      updateDownloadsRow(rowId, { status: 'Готово', progress: lastPct ?? '100%' })
+      updateDownloadsRow(rowId, {
+        status: 'Готово',
+        progress: lastProgressCell ?? '100%'
+      })
     }
   } catch (e) {
     const aborted = isAbort(e)
     const msg = e instanceof Error ? e.message : String(e)
     updateDownloadsRow(rowId, {
       status: aborted ? 'Отменено' : `Ошибка: ${msg.slice(0, 140)}`,
-      progress: lastPct ?? '—'
+      progress: lastProgressCell ?? '—'
     })
   } finally {
     activeAbort = null

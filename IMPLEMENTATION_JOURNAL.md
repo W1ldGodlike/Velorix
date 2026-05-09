@@ -41,3 +41,4 @@
 - 2026-05-09 21:22:11: §6.4 — `downloads-log-ipc.ts`, стрим строк yt-dlp в окно загрузок (`onLog`, авто-раскрытие `<details>`, лимит буфера в UI).
 - 2026-05-09 21:23:40: §7.6 — `ffmpeg-frame-snapshot-service`, IPC `snapshot-frame`, кнопка «Кадр»; §4.2 — диалог закрытия главного окна при экспорте или активной загрузке yt-dlp.
 - 2026-05-09 21:26:24: §6.2 — настраиваемый каталог yt-dlp (`ytdlp-download-output.ts`, поле `ytdlpDownloadDirectory` в settings, UI «Выбрать…»/«По умолчанию», IPC в окне загрузок).
+- 2026-05-09 21:38:31: §6.1/§6.4 — парсинг stderr yt-dlp: колонка «Прогресс» — процент, скорость и ETA (`parseYtdlpDownloadProgressLine`, `formatYtdlpProgressCell`); разметка ячейки в окне загрузок под длинные строки.

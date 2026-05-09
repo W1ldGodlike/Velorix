@@ -8,7 +8,7 @@ export interface DownloadsQueueRow {
   url: string
   /** Короткая подпись для таблицы (хост + путь). */
   shortLabel: string
-  /** Прогресс yt-dlp (процент из stderr) или «—». */
+  /** Прогресс yt-dlp: процент / скорость / ETA из stderr §6.1 или «—». */
   progress: string
   /** Человекочитаемый статус строки очереди. */
   status: string

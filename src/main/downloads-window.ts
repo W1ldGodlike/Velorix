@@ -122,10 +122,11 @@ function buildDownloadsHtml(): string {
     th, td { border-bottom: 1px solid #3f3f46; padding: 6px 8px; text-align: left; vertical-align: top; word-break: break-word; }
     th { color: #b9b9c0; font-weight: 500; font-size: 11px; }
     th:nth-child(1), td:nth-child(1) { width: 2rem; }
+    th:nth-child(4), td:nth-child(4) { max-width: 20rem; }
     th:nth-child(5), td:nth-child(5) { width: 6.5rem; white-space: nowrap; }
     th:nth-child(6), td:nth-child(6) { width: 8.5rem; }
     td.num { color: #9d9da2; font-variant-numeric: tabular-nums; }
-    td.prog { font-variant-numeric: tabular-nums; color: #b9d79f; }
+    td.prog { font-variant-numeric: tabular-nums; color: #b9d79f; white-space: normal; word-break: break-word; font-size: 11px; line-height: 1.35; }
     td.act { white-space: nowrap; width: 6.5rem; }
     td.act button {
       border: none; background: transparent; color: #9dc3ff; cursor: pointer; padding: 2px 5px; font-size: 13px;
