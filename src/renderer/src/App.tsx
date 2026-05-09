@@ -20,11 +20,18 @@ type EngineId = 'ffmpeg' | 'ffprobe' | 'yt-dlp'
 
 /** Совпадает с `FfmpegExportEncodePresetId` в main §7.2 (renderer не импортирует main TS). */
 type ExportEncodePresetId = 'balance' | 'smaller' | 'quality'
+type ExportContainerId = 'mp4' | 'mkv' | 'mov'
 
 const EXPORT_ENCODE_PRESETS: Array<{ id: ExportEncodePresetId; label: string }> = [
   { id: 'balance', label: 'Баланс' },
   { id: 'smaller', label: 'Меньше размер' },
   { id: 'quality', label: 'Качество' }
+]
+
+const EXPORT_CONTAINERS: Array<{ id: ExportContainerId; label: string }> = [
+  { id: 'mp4', label: 'MP4' },
+  { id: 'mkv', label: 'MKV' },
+  { id: 'mov', label: 'MOV' }
 ]
 
 const ENGINE_IDS: EngineId[] = ['ffmpeg', 'ffprobe', 'yt-dlp']
@@ -282,6 +289,7 @@ function App(): JSX.Element {
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
   const [exportBusy, setExportBusy] = useState(false)
   const [exportEncodePreset, setExportEncodePreset] = useState<ExportEncodePresetId>('balance')
+  const [exportContainer, setExportContainer] = useState<ExportContainerId>('mp4')
   const [snapshotBusy, setSnapshotBusy] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   /** Последний диапазон In/Out с таймлайна для IPC экспорта. */
@@ -327,6 +335,10 @@ function App(): JSX.Element {
       const ep = loaded.ffmpegExportEncodePreset
       if (ep === 'balance' || ep === 'smaller' || ep === 'quality') {
         setExportEncodePreset(ep)
+      }
+      const ec = loaded.ffmpegExportContainer
+      if (ec === 'mp4' || ec === 'mkv' || ec === 'mov') {
+        setExportContainer(ec)
       }
       cleanupTheme = window.fluxalloy.onThemeChanged((next) => {
         applyTheme(next)
@@ -568,10 +580,12 @@ function App(): JSX.Element {
         inputPath: preview.path,
         trim: trimSnap ?? undefined,
         probeDurationSec: probeInfo?.durationSec ?? null,
-        encodePreset: exportEncodePreset
+        encodePreset: exportEncodePreset,
+        container: exportContainer
       })
       if (res.ok) {
-        setStatusHint('Экспорт завершён')
+        const savedName = res.path.split(/[\\/]/).pop() || res.path
+        setStatusHint(`Экспорт завершён: ${savedName}`)
       } else if ('cancelled' in res && res.cancelled) {
         setStatusHint(null)
       } else if ('error' in res) {
@@ -653,6 +667,24 @@ function App(): JSX.Element {
             </option>
           ))}
         </select>
+        <select
+          className="app-toolbar-select"
+          aria-label="Контейнер экспорта"
+          title="Контейнер/расширение экспорта §7.2"
+          value={exportContainer}
+          disabled={exportBusy || snapshotBusy}
+          onChange={(e) => {
+            const v = e.target.value as ExportContainerId
+            setExportContainer(v)
+            void window.fluxalloy.settings.setFfmpegExportContainer(v).catch(console.error)
+          }}
+        >
+          {EXPORT_CONTAINERS.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.label}
+            </option>
+          ))}
+        </select>
         <button
           type="button"
           className="app-btn app-btn-primary"
@@ -660,7 +692,7 @@ function App(): JSX.Element {
           onClick={() => {
             void handleExport()
           }}
-          title="Сохранить фрагмент In–Out или весь файл в MP4 (libx264/aac), нужен ffmpeg"
+          title="Сохранить фрагмент In–Out или весь файл (libx264/aac), нужен ffmpeg"
         >
           {exportBusy ? 'Экспорт…' : 'Экспорт'}
         </button>

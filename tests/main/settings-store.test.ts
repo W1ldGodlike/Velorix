@@ -35,7 +35,8 @@ describe('settings-store yt-dlp fields', () => {
         ytdlpFragmentRetries: 7,
         ytdlpDownloadPlaylist: true,
         ytdlpAudioOnly: true,
-        ytdlpQueueRetryProfile: 'normal'
+        ytdlpQueueRetryProfile: 'normal',
+        ffmpegExportContainer: 'mkv'
       }),
       'utf-8'
     )
@@ -47,7 +48,8 @@ describe('settings-store yt-dlp fields', () => {
       ytdlpFragmentRetries: 7,
       ytdlpDownloadPlaylist: true,
       ytdlpAudioOnly: true,
-      ytdlpQueueRetryProfile: 'normal'
+      ytdlpQueueRetryProfile: 'normal',
+      ffmpegExportContainer: 'mkv'
     })
   })
 
@@ -60,7 +62,8 @@ describe('settings-store yt-dlp fields', () => {
         theme: 'dark',
         ytdlpRetries: 100,
         ytdlpFragmentRetries: -1,
-        ytdlpRateLimit: 'fast'
+        ytdlpRateLimit: 'fast',
+        ffmpegExportContainer: 'avi'
       }),
       'utf-8'
     )
@@ -69,6 +72,7 @@ describe('settings-store yt-dlp fields', () => {
     expect(loaded.ytdlpRetries).toBeUndefined()
     expect(loaded.ytdlpFragmentRetries).toBeUndefined()
     expect(loaded.ytdlpRateLimit).toBeUndefined()
+    expect(loaded.ffmpegExportContainer).toBeUndefined()
   })
 
   it('создаёт каталог при сохранении settings.json', () => {

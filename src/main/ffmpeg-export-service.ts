@@ -18,6 +18,8 @@ export interface MediaExportRequestPayload {
   probeDurationSec?: number | null
   /** Если не задан — в main берётся из `settings.json`. */
   encodePreset?: FfmpegExportEncodePresetId
+  /** Если не задан — в main берётся из `settings.json`. */
+  container?: FfmpegExportContainerId
 }
 
 /** Разбор сохранённой строки или поля IPC; мусор → безопасный `balance`. */
@@ -73,7 +75,7 @@ export function resolveExportEncodeParams(preset: FfmpegExportEncodePresetId): {
 }
 
 export type MediaExportStartResult =
-  | { ok: true }
+  | { ok: true; path: string }
   | { ok: false; cancelled: true }
   | { ok: false; error: string }
 

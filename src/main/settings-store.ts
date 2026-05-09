@@ -60,6 +60,8 @@ export interface AppSettings {
   ytdlpQueueRetryProfile?: 'off' | 'light' | 'normal'
   /** §7.2: системный пресет экспорта MP4 (libx264 CRF + `-preset`). */
   ffmpegExportEncodePreset?: string
+  /** §7.2: контейнер экспорта по умолчанию. */
+  ffmpegExportContainer?: 'mp4' | 'mkv' | 'mov'
   // TODO(§4.6): язык, hotkeys.
 }
 
@@ -227,6 +229,13 @@ function parseFfmpegExportEncodePresetStored(raw: unknown): string | undefined {
   return undefined
 }
 
+function parseFfmpegExportContainerStored(raw: unknown): 'mp4' | 'mkv' | 'mov' | undefined {
+  if (raw === 'mp4' || raw === 'mkv' || raw === 'mov') {
+    return raw
+  }
+  return undefined
+}
+
 const defaults: AppSettings = { theme: 'dark' }
 
 /**
@@ -256,6 +265,7 @@ export function loadSettings(filePath: string): AppSettings {
     const ffmpegExportEncodePreset = parseFfmpegExportEncodePresetStored(
       parsed.ffmpegExportEncodePreset
     )
+    const ffmpegExportContainer = parseFfmpegExportContainerStored(parsed.ffmpegExportContainer)
     const ytdlpExtraArgsLine = parseYtdlpExtraArgsLineStored(parsed.ytdlpExtraArgsLine)
     const ytdlpSubtitlePreset = parseYtdlpSubtitlePresetStored(parsed.ytdlpSubtitlePreset)
     const ytdlpSubLangs = parseYtdlpSubLangsStored(parsed.ytdlpSubLangs)
@@ -287,6 +297,9 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (ffmpegExportEncodePreset !== undefined) {
       base.ffmpegExportEncodePreset = ffmpegExportEncodePreset
+    }
+    if (ffmpegExportContainer !== undefined) {
+      base.ffmpegExportContainer = ffmpegExportContainer
     }
     if (parsed.ytdlpDownloadPlaylist === true) {
       base.ytdlpDownloadPlaylist = true

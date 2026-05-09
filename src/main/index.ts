@@ -36,10 +36,12 @@ import {
 } from './support-bundle'
 import { runFfmpegSnapshotFrame } from './ffmpeg-frame-snapshot-service'
 import {
+  parseFfmpegExportContainer,
   parseFfmpegExportEncodePreset,
   ensureFfmpegExportExtension,
   runFfmpegExportJob,
   type MediaExportTrimPayload,
+  type MediaExportStartResult,
   type FfmpegExportProgressPayload
 } from './ffmpeg-export-service'
 import { probeMediaFile } from './ffprobe-service'
@@ -477,6 +479,14 @@ function persistLastOpenedSource(absolutePath: string | null): void {
 function persistFfmpegExportEncodePreset(raw: unknown): AppSettings {
   const id = parseFfmpegExportEncodePreset(raw)
   cachedSettings = { ...cachedSettings, ffmpegExportEncodePreset: id }
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+/** §7.2 — контейнер экспорта по умолчанию; влияет на defaultPath и расширение save dialog. */
+function persistFfmpegExportContainer(raw: unknown): AppSettings {
+  const id = parseFfmpegExportContainer(raw)
+  cachedSettings = { ...cachedSettings, ffmpegExportContainer: id }
   saveSettings(settingsPath(), cachedSettings)
   return { ...cachedSettings }
 }
@@ -1026,6 +1036,11 @@ app.whenReady().then(() => {
     (_, raw: unknown): AppSettings => persistFfmpegExportEncodePreset(raw)
   )
 
+  ipcMain.handle(
+    'fluxalloy:settings-set-ffmpeg-export-container',
+    (_, raw: unknown): AppSettings => persistFfmpegExportContainer(raw)
+  )
+
   ipcMain.handle('fluxalloy:settings-set-engine-paths', (_, patch: unknown): AppSettings => {
     if (!patch || typeof patch !== 'object') {
       return { ...cachedSettings }
@@ -1203,10 +1218,7 @@ app.whenReady().then(() => {
 
   ipcMain.handle(
     'fluxalloy:export-start',
-    async (
-      event,
-      raw: unknown
-    ): Promise<{ ok: true } | { ok: false; cancelled: true } | { ok: false; error: string }> => {
+    async (event, raw: unknown): Promise<MediaExportStartResult> => {
       if (activeExportAbort !== null) {
         return { ok: false, error: 'Уже выполняется экспорт' }
       }
@@ -1238,6 +1250,11 @@ app.whenReady().then(() => {
         encodePresetRaw !== undefined && encodePresetRaw !== null
           ? parseFfmpegExportEncodePreset(encodePresetRaw)
           : parseFfmpegExportEncodePreset(cachedSettings.ffmpegExportEncodePreset)
+      const containerRaw = (raw as { container?: unknown }).container
+      const exportContainer =
+        containerRaw !== undefined && containerRaw !== null
+          ? parseFfmpegExportContainer(containerRaw)
+          : parseFfmpegExportContainer(cachedSettings.ffmpegExportContainer)
 
       const paths = resolveAppPaths()
       const ffmpeg = resolveEngineExecutablePath(
@@ -1257,7 +1274,7 @@ app.whenReady().then(() => {
       const stem = basename(abs).replace(/\.[^.]+$/, '')
       const pick = await dialog.showSaveDialog(win, {
         title: 'Экспорт видео',
-        defaultPath: `${stem}-export.mp4`,
+        defaultPath: `${stem}-export.${exportContainer}`,
         filters: [
           { name: 'MP4', extensions: ['mp4'] },
           { name: 'Matroska', extensions: ['mkv'] },
@@ -1270,7 +1287,7 @@ app.whenReady().then(() => {
         return { ok: false, cancelled: true }
       }
 
-      const outPath = ensureFfmpegExportExtension(pick.filePath, 'mp4')
+      const outPath = ensureFfmpegExportExtension(pick.filePath, exportContainer)
       const ac = new AbortController()
       activeExportAbort = ac
 
@@ -1290,7 +1307,7 @@ app.whenReady().then(() => {
           signal: ac.signal,
           onProgress: pushProgress
         })
-        return result.ok ? { ok: true } : { ok: false, error: result.error }
+        return result.ok ? { ok: true, path: outPath } : { ok: false, error: result.error }
       } finally {
         activeExportAbort = null
       }
