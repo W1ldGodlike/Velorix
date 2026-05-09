@@ -124,6 +124,12 @@ contextBridge.exposeInMainWorld('fluxalloyDownloads', {
   ): Promise<{ ok: true } | { ok: false; error: string }> =>
     ipcRenderer.invoke('fluxalloy-downloads-open-history-output', id, mode),
 
+  openQueueOutputInHandler: (id: number): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke('fluxalloy-downloads-open-queue-output-in-handler', id),
+
+  openHistoryOutputInHandler: (id: string): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke('fluxalloy-downloads-open-history-output-in-handler', id),
+
   onLog: (listener: (payload: DownloadsLogPayload) => void): (() => void) => {
     const handler = (_event: unknown, raw: unknown): void => {
       if (!isDownloadsLogPayload(raw)) {

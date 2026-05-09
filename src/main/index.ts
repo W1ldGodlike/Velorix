@@ -37,6 +37,7 @@ import {
 import { runFfmpegSnapshotFrame } from './ffmpeg-frame-snapshot-service'
 import {
   parseFfmpegExportEncodePreset,
+  ensureFfmpegExportExtension,
   runFfmpegExportJob,
   type MediaExportTrimPayload,
   type FfmpegExportProgressPayload
@@ -906,6 +907,32 @@ function createWindow(): void {
   }
 }
 
+function openDownloadedFileInMainHandler(
+  absoluteFile: string
+): { ok: true } | { ok: false; error: string } {
+  const mediaUrl = grantMediaPath(absoluteFile)
+  if (!mediaUrl) {
+    return { ok: false, error: 'Нельзя открыть этот файл в предпросмотре.' }
+  }
+  const target =
+    mainWindowWebContentsId === null
+      ? null
+      : BrowserWindow.getAllWindows().find((w) => w.webContents.id === mainWindowWebContentsId)
+  if (!target || target.isDestroyed()) {
+    return { ok: false, error: 'Главное окно FluxAlloy не найдено.' }
+  }
+  persistLastOpenedSource(absoluteFile)
+  target.show()
+  target.focus()
+  target.webContents.send('fluxalloy:preview-opened', {
+    ok: true,
+    path: absoluteFile,
+    mediaUrl,
+    name: basename(absoluteFile)
+  })
+  return { ok: true }
+}
+
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.fluxalloy')
   setProcessErrorReporter((kind, reason) => {
@@ -970,7 +997,8 @@ app.whenReady().then(() => {
     },
     getYtdlpDownloadCliOptions: () =>
       payloadFromSnapshot(buildYtdlpRunOptionsSnapshot(cachedSettings)),
-    applyYtdlpDownloadCliPatch: (patch) => persistYtdlpDownloadCliOptionsPatch(patch)
+    applyYtdlpDownloadCliPatch: (patch) => persistYtdlpDownloadCliOptionsPatch(patch),
+    openDownloadedFileInHandler: (absoluteFile) => openDownloadedFileInMainHandler(absoluteFile)
   })
   registerFluxMediaProtocol()
   registerDownloadsWindowIpcHandlers()
@@ -1228,10 +1256,12 @@ app.whenReady().then(() => {
 
       const stem = basename(abs).replace(/\.[^.]+$/, '')
       const pick = await dialog.showSaveDialog(win, {
-        title: 'Экспорт в MP4',
+        title: 'Экспорт видео',
         defaultPath: `${stem}-export.mp4`,
         filters: [
           { name: 'MP4', extensions: ['mp4'] },
+          { name: 'Matroska', extensions: ['mkv'] },
+          { name: 'QuickTime', extensions: ['mov'] },
           { name: 'Все файлы', extensions: ['*'] }
         ]
       })
@@ -1240,7 +1270,7 @@ app.whenReady().then(() => {
         return { ok: false, cancelled: true }
       }
 
-      const outPath = pick.filePath.trim()
+      const outPath = ensureFfmpegExportExtension(pick.filePath, 'mp4')
       const ac = new AbortController()
       activeExportAbort = ac
 

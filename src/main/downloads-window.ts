@@ -67,6 +67,10 @@ interface DownloadsWindowBoundsHooks {
   applyYtdlpDownloadCliPatch?: (
     patch: YtdlpDownloadOptionsPatch
   ) => { ok: true } | { ok: false; error: string }
+  /** §6.4 — открыть готовый файл из yt-dlp в основном обработчике/preview FluxAlloy. */
+  openDownloadedFileInHandler?: (
+    absoluteFile: string
+  ) => { ok: true } | { ok: false; error: string }
 }
 
 let downloadsBoundsHooks: DownloadsWindowBoundsHooks = {}
@@ -135,6 +139,20 @@ async function openDownloadOutputPath(
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : String(err) }
   }
+}
+
+function openDownloadOutputInHandler(
+  rawPath: unknown
+): { ok: true } | { ok: false; error: string } {
+  const file = resolveAllowedDownloadOutputPath(rawPath)
+  if (!file) {
+    return { ok: false, error: 'Файл не найден или находится вне каталога загрузок.' }
+  }
+  const fn = downloadsBoundsHooks.openDownloadedFileInHandler
+  if (!fn) {
+    return { ok: false, error: 'Обработчик FluxAlloy не подключён.' }
+  }
+  return fn(file)
 }
 
 /** Отправить очередь в окно загрузок без полной перезагрузки документа. */
@@ -557,6 +575,12 @@ function buildDownloadsHtml(): string {
             tdAction.appendChild(retry);
           }
           if (typeof e.outputPath === 'string' && e.outputPath) {
+            var openHandler = document.createElement('button');
+            openHandler.type = 'button';
+            openHandler.textContent = 'В обработчик';
+            openHandler.title = 'Открыть скачанный файл в FluxAlloy';
+            openHandler.setAttribute('data-history-handler', typeof e.id === 'string' ? e.id : '');
+            tdAction.appendChild(openHandler);
             var openFile = document.createElement('button');
             openFile.type = 'button';
             openFile.textContent = 'Файл';
@@ -612,6 +636,14 @@ function buildDownloadsHtml(): string {
       }
       if (historyBody) {
         historyBody.addEventListener('click', function (e) {
+          var handler = e.target.closest('[data-history-handler]');
+          if (handler) {
+            var handlerId = handler.getAttribute('data-history-handler') || '';
+            api.openHistoryOutputInHandler(handlerId).then(function (res) {
+              if (res && res.ok === false && res.error) window.alert(res.error);
+            });
+            return;
+          }
           var open = e.target.closest('[data-history-open]');
           if (open) {
             var mode = open.getAttribute('data-history-open') || 'file';
@@ -882,6 +914,7 @@ function buildDownloadsHtml(): string {
             mk('retry', 'Сбросить статус и скачать эту строку заново', '↻', r.id);
           }
           if (typeof r.outputPath === 'string' && r.outputPath) {
+            mk('open-handler', 'Открыть скачанный файл в FluxAlloy', 'В обработчик', r.id);
             mk('open-file', 'Открыть скачанный файл', 'Файл', r.id);
             mk('open-folder', 'Показать файл в папке', 'Папка', r.id);
           }
@@ -910,6 +943,13 @@ function buildDownloadsHtml(): string {
         }
         else if (act === 'open-file' || act === 'open-folder') {
           api.openQueueOutput(id, act === 'open-folder' ? 'folder' : 'file').then(function (res) {
+            if (res && res.ok === false && res.error) {
+              window.alert(res.error);
+            }
+          });
+        }
+        else if (act === 'open-handler') {
+          api.openQueueOutputInHandler(id).then(function (res) {
             if (res && res.ok === false && res.error) {
               window.alert(res.error);
             }
@@ -1442,6 +1482,43 @@ export function registerDownloadsWindowIpcHandlers(): void {
         return { ok: false, error: 'У этой записи истории нет сохранённого пути к файлу.' }
       }
       return openDownloadOutputPath(entry.outputPath, modeRaw)
+    }
+  )
+
+  ipcMain.handle(
+    'fluxalloy-downloads-open-queue-output-in-handler',
+    (event, id: unknown): { ok: true } | { ok: false; error: string } => {
+      if (!isDownloadsSender(event.sender)) {
+        return { ok: false, error: 'Недопустимый отправитель' }
+      }
+      if (typeof id !== 'number' || !Number.isFinite(id)) {
+        return { ok: false, error: 'Некорректный идентификатор строки' }
+      }
+      const row = getDownloadsQueueRowById(id)
+      if (!row?.outputPath) {
+        return { ok: false, error: 'У этой строки нет сохранённого пути к файлу.' }
+      }
+      return openDownloadOutputInHandler(row.outputPath)
+    }
+  )
+
+  ipcMain.handle(
+    'fluxalloy-downloads-open-history-output-in-handler',
+    (event, id: unknown): { ok: true } | { ok: false; error: string } => {
+      if (!isDownloadsSender(event.sender)) {
+        return { ok: false, error: 'Недопустимый отправитель' }
+      }
+      if (typeof id !== 'string' || id.length === 0) {
+        return { ok: false, error: 'Некорректный идентификатор истории' }
+      }
+      const paths = resolveAppPaths()
+      const entry = readYtdlpDownloadHistoryNewestFirst(paths.userData, 500).find(
+        (e) => e.id === id
+      )
+      if (!entry?.outputPath) {
+        return { ok: false, error: 'У этой записи истории нет сохранённого пути к файлу.' }
+      }
+      return openDownloadOutputInHandler(entry.outputPath)
     }
   )
 

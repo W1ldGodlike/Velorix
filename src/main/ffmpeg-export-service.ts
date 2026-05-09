@@ -10,6 +10,7 @@ export interface MediaExportTrimPayload {
 
 /** Первые системные пресеты libx264 §7.2 — только белый список, без произвольных аргументов. */
 export type FfmpegExportEncodePresetId = 'balance' | 'smaller' | 'quality'
+export type FfmpegExportContainerId = 'mp4' | 'mkv' | 'mov'
 
 export interface MediaExportRequestPayload {
   inputPath: string
@@ -25,6 +26,35 @@ export function parseFfmpegExportEncodePreset(raw: unknown): FfmpegExportEncodeP
     return raw
   }
   return 'balance'
+}
+
+export function parseFfmpegExportContainer(raw: unknown): FfmpegExportContainerId {
+  if (raw === 'mkv' || raw === 'mov' || raw === 'mp4') {
+    return raw
+  }
+  return 'mp4'
+}
+
+export function inferFfmpegExportContainerFromPath(path: string): FfmpegExportContainerId {
+  const lower = path.trim().toLowerCase()
+  if (lower.endsWith('.mkv')) {
+    return 'mkv'
+  }
+  if (lower.endsWith('.mov')) {
+    return 'mov'
+  }
+  return 'mp4'
+}
+
+export function ensureFfmpegExportExtension(
+  path: string,
+  fallback: FfmpegExportContainerId
+): string {
+  const trimmed = path.trim()
+  if (/\.(mp4|mkv|mov)$/i.test(trimmed)) {
+    return trimmed
+  }
+  return `${trimmed}.${parseFfmpegExportContainer(fallback)}`
 }
 
 /** CRF и `-preset` x264 для выбранного пресета (аудио пока фиксированное AAC §7.1). */

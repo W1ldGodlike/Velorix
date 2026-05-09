@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  ensureFfmpegExportExtension,
+  inferFfmpegExportContainerFromPath,
   parseFfmpegExportEncodePreset,
+  parseFfmpegExportContainer,
   parseFfmpegSpeedToken,
   parseFfmpegTimeSeconds,
   resolveExportEncodeParams,
@@ -24,6 +27,14 @@ describe('ffmpeg export pure helpers', () => {
     expect(parseFfmpegExportEncodePreset('quality')).toBe('quality')
     expect(parseFfmpegExportEncodePreset('bad')).toBe('balance')
     expect(resolveExportEncodeParams('quality')).toEqual({ crf: '18', x264preset: 'medium' })
+  })
+
+  it('нормализует контейнер экспорта по расширению', () => {
+    expect(parseFfmpegExportContainer('mkv')).toBe('mkv')
+    expect(parseFfmpegExportContainer('bad')).toBe('mp4')
+    expect(inferFfmpegExportContainerFromPath('out.MOV')).toBe('mov')
+    expect(ensureFfmpegExportExtension('out', 'mkv')).toBe('out.mkv')
+    expect(ensureFfmpegExportExtension('out.mp4', 'mkv')).toBe('out.mp4')
   })
 
   it('считает длительность сегмента с учётом trim', () => {
