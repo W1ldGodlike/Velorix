@@ -40,6 +40,7 @@
 - 2026-05-09 17:28:30: правило на будущее — в «Журнале решений и проверок» писать дату и время до секунд в формате `YYYY-MM-DD HH:mm:ss`.
 - 2026-05-09 17:44:44: после перезагрузки ПК проверено окружение без ручного PATH: `node` v22.22.0, `npm` 11.12.1, `git` 2.54; `whoami /priv` показывает `SeCreateSymbolicLinkPrivilege` (в колонке состояния для этой оболочки — `Disabled`, это нормально для токена до явного enable в процессе).
 - 2026-05-09 17:44:44: убран временный `win.signAndEditExecutable: false` из `electron-builder.yml`; `npm run build:unpack` проходит: winCodeSign распаковывается, выполняется `signing with signtool.exe` для `FluxAlloy.exe`.
+- 2026-05-09 17:46:19: Git не делал коммит без автора (`Author identity unknown`). Для этого репозитория локально выставлено `git config user.name truno` и `git config user.email truno@local.fluxalloy` (без `--global`). Перед пушем на GitHub лучше заменить почту на свою: `git config user.email "ты@example.com"` (при необходимости поправить и `user.name`).
 
 ## Ближайший TODO спринта
 
