@@ -1,5 +1,7 @@
 import { spawn } from 'child_process'
 
+import { logExternalProcessLine } from './external-process-log'
+
 /** Диапазон экспорта по маркерам §7.1 (секунды на шкале исходника). */
 export interface MediaExportTrimPayload {
   inSec: number
@@ -188,6 +190,7 @@ export function runFfmpegExportJob(params: {
       stdio: ['ignore', 'ignore', 'pipe'],
       signal: params.signal
     })
+    logExternalProcessLine('ffmpeg-export', 'lifecycle', 'started')
 
     let stderrTail = ''
     let lastSpeed: string | null = null
@@ -197,6 +200,7 @@ export function runFfmpegExportJob(params: {
       if (trimmed.length === 0) {
         return
       }
+      logExternalProcessLine('ffmpeg-export', 'stderr', trimmed)
       const spd = parseFfmpegSpeedToken(trimmed)
       if (spd !== null) {
         lastSpeed = spd
@@ -228,6 +232,7 @@ export function runFfmpegExportJob(params: {
     })
 
     child.on('error', (err) => {
+      logExternalProcessLine('ffmpeg-export', 'lifecycle', `error ${err.message}`)
       if (params.signal.aborted || err.name === 'AbortError') {
         resolve({ ok: false, error: 'Экспорт отменён' })
         return
@@ -236,6 +241,7 @@ export function runFfmpegExportJob(params: {
     })
 
     child.on('close', (code) => {
+      logExternalProcessLine('ffmpeg-export', 'lifecycle', `closed exitCode=${code ?? '?'}`)
       if (params.signal.aborted) {
         resolve({ ok: false, error: 'Экспорт отменён' })
         return

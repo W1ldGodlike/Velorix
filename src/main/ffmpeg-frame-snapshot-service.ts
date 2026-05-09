@@ -1,5 +1,7 @@
 import { spawn } from 'child_process'
 
+import { logExternalProcessLine } from './external-process-log'
+
 /**
  * Один кадр в PNG/JPEG через ffmpeg без shell §7.6.
  * `-ss` до `-i`: быстрый seek; для превью достаточно.
@@ -35,22 +37,36 @@ export function runFfmpegSnapshotFrame(params: {
       windowsHide: true,
       stdio: ['ignore', 'ignore', 'pipe']
     })
+    logExternalProcessLine('ffmpeg-snapshot', 'lifecycle', 'started')
 
     let stderrTail = ''
+
+    function noteStderr(line: string): void {
+      const t = line.trimEnd()
+      if (t.length === 0) {
+        return
+      }
+      logExternalProcessLine('ffmpeg-snapshot', 'stderr', t)
+    }
 
     child.stderr?.setEncoding('utf8')
     child.stderr?.on('data', (chunk: string) => {
       stderrTail += chunk
+      for (const part of chunk.split(/\r|\n/)) {
+        noteStderr(part)
+      }
       if (stderrTail.length > 8000) {
         stderrTail = stderrTail.slice(-8000)
       }
     })
 
     child.on('error', (err) => {
+      logExternalProcessLine('ffmpeg-snapshot', 'lifecycle', `error ${err.message}`)
       resolve({ ok: false, error: err.message })
     })
 
     child.on('close', (code) => {
+      logExternalProcessLine('ffmpeg-snapshot', 'lifecycle', `closed exitCode=${code ?? '?'}`)
       if (code === 0) {
         resolve({ ok: true })
         return

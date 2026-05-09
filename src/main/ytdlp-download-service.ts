@@ -3,6 +3,7 @@ import { mkdirSync } from 'fs'
 
 import type { AppPaths } from './app-paths'
 import { resolveEngineExecutablePath, type EnginePathOverrides } from './engine-service'
+import { logExternalProcessLine } from './external-process-log'
 import { buildYtdlpSpawnArgvTokens } from './ytdlp-extra-args'
 import {
   resolveSafeYtdlpOutputPattern,
@@ -115,6 +116,7 @@ export function runYtdlpOnce(
       windowsHide: true,
       stdio: ['ignore', 'pipe', 'pipe']
     })
+    logExternalProcessLine('yt-dlp', 'lifecycle', 'started')
 
     const onAbort = (): void => {
       try {
@@ -133,8 +135,12 @@ export function runYtdlpOnce(
     signal.addEventListener('abort', onAbort, { once: true })
     callbacks.onStarted?.()
 
-    function pipeLines(stream: NodeJS.ReadableStream | null, sink?: (line: string) => void): void {
-      if (!stream || !sink) {
+    function pipeLines(
+      streamName: 'stdout' | 'stderr',
+      stream: NodeJS.ReadableStream | null,
+      sink?: (line: string) => void
+    ): void {
+      if (!stream) {
         return
       }
       let buf = ''
@@ -146,20 +152,22 @@ export function runYtdlpOnce(
         for (const line of parts) {
           const t = line.trimEnd()
           if (t.length > 0) {
-            sink(t)
+            logExternalProcessLine('yt-dlp', streamName, t)
+            sink?.(t)
           }
         }
       })
       stream.on('end', () => {
         const t = buf.trimEnd()
         if (t.length > 0) {
-          sink(t)
+          logExternalProcessLine('yt-dlp', streamName, t)
+          sink?.(t)
         }
       })
     }
 
-    pipeLines(child.stdout, callbacks.onStdoutLine)
-    pipeLines(child.stderr, callbacks.onStderrLine)
+    pipeLines('stdout', child.stdout, callbacks.onStdoutLine)
+    pipeLines('stderr', child.stderr, callbacks.onStderrLine)
 
     child.on('error', (err) => {
       signal.removeEventListener('abort', onAbort)
@@ -168,6 +176,11 @@ export function runYtdlpOnce(
 
     child.on('close', (exitCode, killSignal) => {
       signal.removeEventListener('abort', onAbort)
+      logExternalProcessLine(
+        'yt-dlp',
+        'lifecycle',
+        `closed exitCode=${exitCode ?? '?'} signal=${killSignal ?? '-'}`
+      )
       if (signal.aborted) {
         reject(abortErr())
         return

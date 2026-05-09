@@ -1,9 +1,13 @@
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'fs'
+import { existsSync, mkdtempSync, readFileSync, rmSync, utimesSync, writeFileSync } from 'fs'
 import { tmpdir } from 'os'
 import { join } from 'path'
 import { afterEach, describe, expect, it } from 'vitest'
 
-import { buildStoredZipBuffer, createSupportBundleZip } from '../../src/main/support-bundle'
+import {
+  buildStoredZipBuffer,
+  createSupportBundleZip,
+  pruneOldDiagnosticFiles
+} from '../../src/main/support-bundle'
 
 const tempRoots: string[] = []
 
@@ -58,5 +62,55 @@ describe('createSupportBundleZip', () => {
     expect(zip.includes(Buffer.from('diagnostics.txt'))).toBe(true)
     expect(zip.includes(Buffer.from('logs/main.log'))).toBe(true)
     expect(zip.includes(Buffer.from('hello log'))).toBe(true)
+  })
+})
+
+describe('pruneOldDiagnosticFiles', () => {
+  it('удаляет старые matching файлы и оставляет свежие/неподходящие', () => {
+    const root = makeTempRoot()
+    const oldDump = join(root, 'old.dmp')
+    const freshDump = join(root, 'fresh.dmp')
+    const oldOther = join(root, 'old.bin')
+    writeFileSync(oldDump, 'old')
+    writeFileSync(freshDump, 'fresh')
+    writeFileSync(oldOther, 'other')
+
+    const oldDate = new Date(Date.now() - 40 * 24 * 60 * 60 * 1000)
+    utimesSync(oldDump, oldDate, oldDate)
+    utimesSync(oldOther, oldDate, oldDate)
+
+    expect(
+      pruneOldDiagnosticFiles({
+        directory: root,
+        maxAgeMs: 30 * 24 * 60 * 60 * 1000,
+        keepNewest: 0,
+        fileNamePattern: /\.dmp$/i
+      })
+    ).toBe(1)
+    expect(existsSync(oldDump)).toBe(false)
+    expect(existsSync(freshDump)).toBe(true)
+    expect(existsSync(oldOther)).toBe(true)
+  })
+
+  it('сохраняет newest файлы даже если они старые', () => {
+    const root = makeTempRoot()
+    const oldA = join(root, 'a.dmp')
+    const oldB = join(root, 'b.dmp')
+    writeFileSync(oldA, 'a')
+    writeFileSync(oldB, 'b')
+    const base = Date.now() - 40 * 24 * 60 * 60 * 1000
+    utimesSync(oldA, new Date(base), new Date(base))
+    utimesSync(oldB, new Date(base + 1000), new Date(base + 1000))
+
+    expect(
+      pruneOldDiagnosticFiles({
+        directory: root,
+        maxAgeMs: 30 * 24 * 60 * 60 * 1000,
+        keepNewest: 1,
+        fileNamePattern: /\.dmp$/i
+      })
+    ).toBe(1)
+    expect(existsSync(oldA)).toBe(false)
+    expect(existsSync(oldB)).toBe(true)
   })
 })

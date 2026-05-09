@@ -4,6 +4,7 @@ import {
   readdirSync,
   readFileSync,
   statSync,
+  unlinkSync,
   writeFileSync,
   type Stats
 } from 'fs'
@@ -21,6 +22,13 @@ export interface SupportBundleRuntimeInfo {
   logFile: string | null
   logBackupFile: string | null
   crashDumps: string | null
+}
+
+export interface DiagnosticsPruneOptions {
+  directory: string | null
+  maxAgeMs: number
+  keepNewest: number
+  fileNamePattern?: RegExp
 }
 
 interface ZipEntryInput {
@@ -179,6 +187,41 @@ function pushCrashDumps(entries: ZipEntryInput[], crashDir: string | null): void
     }
   } catch {
     /* отсутствие crash dumps не критично */
+  }
+}
+
+export function pruneOldDiagnosticFiles(options: DiagnosticsPruneOptions): number {
+  const dir = options.directory
+  if (!dir || !existsSync(dir)) {
+    return 0
+  }
+  const keepNewest = Math.max(0, Math.floor(options.keepNewest))
+  const cutoff = Date.now() - Math.max(0, options.maxAgeMs)
+  try {
+    const files = readdirSync(dir)
+      .map((name) => {
+        const path = join(dir, name)
+        const st = statSync(path)
+        return { name, path, st }
+      })
+      .filter((file) => file.st.isFile())
+      .filter((file) => !options.fileNamePattern || options.fileNamePattern.test(file.name))
+      .sort((a, b) => b.st.mtimeMs - a.st.mtimeMs)
+    let removed = 0
+    files.forEach((file, index) => {
+      if (index < keepNewest || file.st.mtimeMs >= cutoff) {
+        return
+      }
+      try {
+        unlinkSync(file.path)
+        removed += 1
+      } catch {
+        /* один заблокированный файл не должен отменять общий prune */
+      }
+    })
+    return removed
+  } catch {
+    return 0
   }
 }
 

@@ -78,3 +78,4 @@
 - 2026-05-09 23:59:33 [Assistant]: §7/§21 — pure helpers ffmpeg export (`parseFfmpegTimeSeconds`, `parseFfmpegSpeedToken`) экспортированы и покрыты unit-тестами вместе с encode preset/segment duration.
 - 2026-05-10 00:05:53 [Assistant]: §6.1/§6.4 — очередь и история yt-dlp сохраняют best-effort `outputPath` из stdout/stderr (`Destination`, merge, already downloaded); добавлены guarded IPC-действия открыть файл/показать в папке и тесты парсера/модели.
 - 2026-05-10 00:10:59 [Assistant]: §18/§21 — добавлены действия диагностики `Открыть main.log` и `Собрать Support ZIP`, диалог необработанной ошибки с копированием деталей/логом/архивом; ZIP builder покрыт unit-тестами.
+- 2026-05-10 00:18:13 [Assistant]: §18/§21 — stdout/stderr внешних процессов (`yt-dlp`, `ffmpeg`, `ffprobe`) пишутся в `main.log` через sanitizer без полного argv; на старте добавлен prune старых crash dumps с сохранением последних 20.

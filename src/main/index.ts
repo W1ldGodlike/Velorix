@@ -29,7 +29,11 @@ import {
   logStartupBanner,
   setProcessErrorReporter
 } from './logger-service'
-import { createSupportBundleZip, type SupportBundleRuntimeInfo } from './support-bundle'
+import {
+  createSupportBundleZip,
+  pruneOldDiagnosticFiles,
+  type SupportBundleRuntimeInfo
+} from './support-bundle'
 import { runFfmpegSnapshotFrame } from './ffmpeg-frame-snapshot-service'
 import {
   parseFfmpegExportEncodePreset,
@@ -536,6 +540,18 @@ function supportBundleRuntimeInfo(): SupportBundleRuntimeInfo {
   }
 }
 
+function pruneDiagnosticsOnStartup(): void {
+  const removed = pruneOldDiagnosticFiles({
+    directory: getCrashDumpsPathSafe(),
+    maxAgeMs: 30 * 24 * 60 * 60 * 1000,
+    keepNewest: 20,
+    fileNamePattern: /\.(dmp|dump|txt|log)$/i
+  })
+  if (removed > 0) {
+    logInfo('diagnostics', `pruned old crash dump files: ${removed}`)
+  }
+}
+
 async function openMainLogFile(): Promise<void> {
   const file = getMainLogFilePath()
   if (!file) {
@@ -896,6 +912,7 @@ app.whenReady().then(() => {
     void showProcessErrorDialog(kind, reason)
   })
   logStartupBanner()
+  pruneDiagnosticsOnStartup()
   cachedSettings = loadSettings(settingsPath())
   refreshEnginePathOverridesSnapshot()
   syncYtdlpDownloadDirectoryFromSettings(cachedSettings.ytdlpDownloadDirectory)

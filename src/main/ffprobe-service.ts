@@ -2,6 +2,7 @@ import { execFile } from 'child_process'
 
 import type { AppPaths } from './app-paths'
 import { resolveEngineExecutablePath, type EnginePathOverrides } from './engine-service'
+import { logExternalProcessLine } from './external-process-log'
 
 /** Строка таблицы дорожек §9 (компактный инспектор под превью). */
 export interface MediaProbeTrackRow {
@@ -199,6 +200,7 @@ function buildTrackRows(streams: FfprobeJson['streams']): MediaProbeTrackRow[] {
 
 function runFfprobeJson(ffprobePath: string, mediaPath: string): Promise<string> {
   return new Promise((resolve, reject) => {
+    logExternalProcessLine('ffprobe', 'lifecycle', 'started')
     execFile(
       ffprobePath,
       [
@@ -213,10 +215,20 @@ function runFfprobeJson(ffprobePath: string, mediaPath: string): Promise<string>
       ],
       { timeout: 60_000, windowsHide: true, maxBuffer: 20 * 1024 * 1024 },
       (error, stdout, stderr) => {
+        if (stdout.trim().length > 0) {
+          logExternalProcessLine('ffprobe', 'stdout', `json bytes=${Buffer.byteLength(stdout)}`)
+        }
+        if (stderr.trim().length > 0) {
+          for (const line of stderr.split(/\r?\n/)) {
+            logExternalProcessLine('ffprobe', 'stderr', line)
+          }
+        }
         if (error) {
+          logExternalProcessLine('ffprobe', 'lifecycle', `error ${error.message}`)
           reject(new Error(stderr.trim() || error.message))
           return
         }
+        logExternalProcessLine('ffprobe', 'lifecycle', 'closed exitCode=0')
         resolve(stdout)
       }
     )

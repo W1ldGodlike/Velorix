@@ -39,8 +39,8 @@
 - [~] §6.3: экспертный режим — доп. argv + whitelist/blacklist + справочник в сворачиваемом блоке; дальше улучшать справочник/категории.
 - [~] §7: превью + таймлайн + экспорт MP4 + снимок кадра §7.6 + ffprobe под превью; отдельное окно инспектора §9 — позже.
 - [~] §7.2/§20: системные пресеты libx264 есть; дальше пользовательские пресеты, контейнер/формат и расширенные параметры кодирования.
-- [~] §17/§18: меню диагностических папок с актуальным `enabled`, `logger-service`, диалог ошибок и Support ZIP; дальше — логи stdout/stderr движков и prune старых сессий.
-- [~] §21: подключён Vitest + тесты для парсеров/опций yt-dlp, очереди, истории, persisted settings, helpers ffmpeg и Support ZIP builder; закрыт обход whitelist через glued short-options `-P`/`-a`/`-o`/`-r`. Дальше — IPC contracts/shared models.
+- [~] §17/§18: меню диагностических папок с актуальным `enabled`, `logger-service`, диалог ошибок, Support ZIP, логи stdout/stderr движков и prune старых crash dumps; дальше — логи сессий/расширенная политика хранения.
+- [~] §21: подключён Vitest + тесты для парсеров/опций yt-dlp, очереди, истории, persisted settings, helpers ffmpeg, external process log formatter и Support ZIP/prune; дальше — IPC contracts/shared models.
 
 ---
 
@@ -451,9 +451,9 @@
 - [~] Выбрать библиотеку: пока используется собственный `logger-service` (без зависимостей); решение про `electron-log`/`pino` — позже.
 - [~] Логи main: `logInfo/logWarn/logError` пишут в `userData/logs/main.log` с timestamp/scope; уровни `info/warn/error`.
 - [~] Логи renderer: `window.fluxalloy.log.send` через IPC `fluxalloy:log-renderer` + перехват `error`/`unhandledrejection` в `main.tsx`; канал закреплён за main window, ограничен token bucket и чистит control chars.
-- [ ] Логи внешних процессов stdout/stderr.
+- [x] Логи внешних процессов stdout/stderr: yt-dlp, ffmpeg export/snapshot, ffprobe через общий sanitizer без полного argv.
 - [~] Ротация по размеру: один backup `main.log.1` при превышении 1 MiB.
-- [ ] Prune старых сессий.
+- [~] Prune старых диагностических файлов: на старте чистятся crash dumps старше 30 дней, последние 20 сохраняются; сессионные логи — позже.
 - [~] Crash handler: `process.on('uncaughtException'|'unhandledRejection')` регистрируется на старте main до `app.whenReady`; после ready показывает диалог ошибки с деталями.
 - [x] Диалог ошибки: кратко + детали.
 - [x] Копировать детали.
@@ -494,7 +494,7 @@
 - [ ] Вынести IPC contracts в отдельный слой.
 - [ ] Вынести сервисы main.
 - [ ] Вынести модели shared.
-- [~] Unit tests для чистых модулей: `tests/main/*` — `ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`, `ytdlp-download-history` (append/read/clear), `ytdlp-download-options` (filename/output-pattern/rate-limit/retries), `downloads-queue` (cleanup), `settings-store` (yt-dlp persisted fields), `ffmpeg-export-service` (progress helpers/presets), `support-bundle` (ZIP structure/log inclusion). Дальше — IPC contracts/shared models.
+- [~] Unit tests для чистых модулей: `tests/main/*` — `ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`, `ytdlp-download-history` (append/read/clear), `ytdlp-download-options` (filename/output-pattern/rate-limit/retries), `downloads-queue` (cleanup), `settings-store` (yt-dlp persisted fields), `ffmpeg-export-service` (progress helpers/presets), `external-process-log` (sanitize/format), `support-bundle` (ZIP structure/log inclusion/prune). Дальше — IPC contracts/shared models.
 - [x] Выбрать Vitest/Jest: Vitest подключён (`npm run test`/`test:watch`, `tsconfig.tests.json`).
 - [ ] Добавить e2e smoke позже.
 - [~] Комментарии на русском для публичных API и сложной логики: базовые комментарии добавлены; дальше писать чуть развёрнутее, чтобы следующему проходу агента было понятно «зачем» и «где границы», не только «что делает строка».
