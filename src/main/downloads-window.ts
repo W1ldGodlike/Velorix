@@ -16,17 +16,23 @@ import {
 } from './downloads-queue'
 import {
   cancelDownloadsRunner,
+  getActiveDownloadsRunnerRowId,
   setDownloadsRunnerNotifier,
   startDownloadSingleRow,
   startDownloadsSequential
 } from './downloads-queue-runner'
-import { DOWNLOADS_LOG_CHANNEL, setDownloadsLogSink } from './downloads-log-ipc'
+import { DOWNLOADS_LOG_CHANNEL, emitDownloadsLog, setDownloadsLogSink } from './downloads-log-ipc'
 import { resolvePreloadOutFile } from './preload-resolve'
 import {
   isYtdlpDownloadDirectoryDefault,
   resolveAllowedYtdlpDownloadOutputFile,
   resolveYtdlpOutputDirectory
 } from './ytdlp-download-output'
+import {
+  getActiveYtdlpPauseState,
+  pauseActiveYtdlpProcess,
+  resumeActiveYtdlpProcess
+} from './ytdlp-download-service'
 import {
   parseYtdlpCookiesBrowser,
   parseYtdlpFormatPreset,
@@ -393,6 +399,7 @@ function buildDownloadsHtml(): string {
   <textarea id="urls" placeholder="https://…"></textarea>
   <div class="row">
     <button type="button" class="cmd cmd-primary" id="startBtn" title="Скачать все строки со статусом «Ожидание»">Старт очереди</button>
+    <button type="button" class="cmd" id="pauseYtdlpBtn" title="Приостановить загрузку (POSIX); на Windows недоступно">Пауза</button>
     <button type="button" class="cmd cmd-warn" id="cancelBtn" title="Отменить текущую загрузку yt-dlp">Отмена загрузки</button>
     <button type="button" class="cmd" id="addBtn">Добавить в очередь</button>
     <button type="button" class="cmd" id="clearBtn">Очистить очередь</button>
@@ -449,6 +456,7 @@ function buildDownloadsHtml(): string {
       var clearBtn = document.getElementById('clearBtn');
       var clearFinishedBtn = document.getElementById('clearFinishedBtn');
       var startBtn = document.getElementById('startBtn');
+      var pauseYtdlpBtn = document.getElementById('pauseYtdlpBtn');
       var cancelBtn = document.getElementById('cancelBtn');
       var urls = document.getElementById('urls');
       var body = document.getElementById('queueBody');
@@ -990,6 +998,42 @@ function buildDownloadsHtml(): string {
       startBtn.addEventListener('click', function () {
         api.startQueue();
       });
+      function refreshPauseBtn() {
+        if (!pauseYtdlpBtn || !api.getYtdlpPauseState) return;
+        api.getYtdlpPauseState().then(function (s) {
+          if (!pauseYtdlpBtn) return;
+          if (!s.supported) {
+            pauseYtdlpBtn.disabled = true;
+            pauseYtdlpBtn.textContent = 'Пауза';
+            pauseYtdlpBtn.title =
+              'Пауза процесса yt-dlp недоступна в Windows (нужны SIGSTOP/SIGCONT).';
+            return;
+          }
+          pauseYtdlpBtn.disabled = !s.active;
+          if (!s.active) {
+            pauseYtdlpBtn.textContent = 'Пауза';
+            pauseYtdlpBtn.title = 'Приостановить текущую загрузку yt-dlp (SIGSTOP)';
+          } else if (s.paused) {
+            pauseYtdlpBtn.textContent = 'Продолжить';
+            pauseYtdlpBtn.title = 'Возобновить загрузку yt-dlp (SIGCONT)';
+          } else {
+            pauseYtdlpBtn.textContent = 'Пауза';
+            pauseYtdlpBtn.title = 'Приостановить текущую загрузку yt-dlp (SIGSTOP)';
+          }
+        });
+      }
+      if (pauseYtdlpBtn) {
+        pauseYtdlpBtn.addEventListener('click', function () {
+          api.getYtdlpPauseState().then(function (s) {
+            if (!s.supported || !s.active) return;
+            var p = s.paused ? api.resumeYtdlp() : api.pauseYtdlp();
+            p.then(function (res) {
+              if (res && res.ok === false && res.error) window.alert(res.error);
+              refreshPauseBtn();
+            });
+          });
+        });
+      }
       cancelBtn.addEventListener('click', function () {
         api.cancelQueue();
       });
@@ -1108,6 +1152,7 @@ function buildDownloadsHtml(): string {
         renderRows(rows);
         scheduleHistoryRefresh();
         scheduleCliOptsRefresh();
+        refreshPauseBtn();
       }
 
       api.getSnapshot().then(onQueueSnapshot);
@@ -1638,6 +1683,54 @@ export function registerDownloadsWindowIpcHandlers(): void {
     broadcastDownloadsSnapshot()
 
     return { ok: true }
+  })
+
+  ipcMain.handle(
+    d.getYtdlpPauseState,
+    (event): { supported: boolean; active: boolean; paused: boolean } => {
+      if (!isDownloadsSender(event.sender)) {
+        return { supported: false, active: false, paused: false }
+      }
+      return getActiveYtdlpPauseState()
+    }
+  )
+
+  ipcMain.handle(d.pauseYtdlp, (event): { ok: true } | { ok: false; error: string } => {
+    if (!isDownloadsSender(event.sender)) {
+      return { ok: false, error: 'Недопустимый отправитель' }
+    }
+    const res = pauseActiveYtdlpProcess()
+    if (res.ok) {
+      const rowId = getActiveDownloadsRunnerRowId()
+      if (rowId !== null) {
+        emitDownloadsLog({
+          kind: 'line',
+          rowId,
+          stream: 'stderr',
+          text: '[FluxAlloy] Процесс yt-dlp приостановлен (SIGSTOP).'
+        })
+      }
+    }
+    return res
+  })
+
+  ipcMain.handle(d.resumeYtdlp, (event): { ok: true } | { ok: false; error: string } => {
+    if (!isDownloadsSender(event.sender)) {
+      return { ok: false, error: 'Недопустимый отправитель' }
+    }
+    const res = resumeActiveYtdlpProcess()
+    if (res.ok) {
+      const rowId = getActiveDownloadsRunnerRowId()
+      if (rowId !== null) {
+        emitDownloadsLog({
+          kind: 'line',
+          rowId,
+          stream: 'stderr',
+          text: '[FluxAlloy] Процесс yt-dlp возобновлён (SIGCONT).'
+        })
+      }
+    }
+    return res
   })
 }
 

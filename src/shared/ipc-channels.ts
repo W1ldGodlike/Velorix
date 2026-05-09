@@ -74,7 +74,10 @@ export const downloadsIpc = {
   startQueue: 'fluxalloy-downloads-start-queue',
   startRow: 'fluxalloy-downloads-start-row',
   retryRow: 'fluxalloy-downloads-retry-row',
-  cancelRun: 'fluxalloy-downloads-cancel-run'
+  cancelRun: 'fluxalloy-downloads-cancel-run',
+  getYtdlpPauseState: 'fluxalloy-downloads-ytdlp-pause-state',
+  pauseYtdlp: 'fluxalloy-downloads-pause-ytdlp',
+  resumeYtdlp: 'fluxalloy-downloads-resume-ytdlp'
 } as const
 
 export type MainWindowIpcChannel = (typeof mainWindowIpc)[keyof typeof mainWindowIpc]

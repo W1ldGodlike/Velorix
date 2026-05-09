@@ -1,9 +1,10 @@
-import { spawn } from 'child_process'
+import { type ChildProcess, spawn } from 'child_process'
 import { mkdirSync } from 'fs'
 
 import type { AppPaths } from './app-paths'
 import { resolveEngineExecutablePath, type EnginePathOverrides } from './engine-service'
 import { logExternalProcessLine } from './external-process-log'
+import { isYtdlpOsPauseSupported } from './ytdlp-os-pause-support'
 import { buildYtdlpSpawnArgvTokens } from './ytdlp-extra-args'
 import {
   resolveSafeYtdlpOutputPattern,
@@ -28,6 +29,73 @@ function abortErr(): Error {
   const e = new Error('Отменено')
   e.name = 'AbortError'
   return e
+}
+
+/** Активный `spawn` yt-dlp: не больше одного; пауза — SIGSTOP/SIGCONT только вне Windows. */
+let activeYtdlpChild: ChildProcess | null = null
+let activeYtdlpPaused = false
+
+export { isYtdlpOsPauseSupported } from './ytdlp-os-pause-support'
+
+export function getActiveYtdlpPauseState(): {
+  supported: boolean
+  active: boolean
+  paused: boolean
+} {
+  return {
+    supported: isYtdlpOsPauseSupported(),
+    active: activeYtdlpChild !== null,
+    paused: activeYtdlpPaused
+  }
+}
+
+/**
+ * Пауза/возобновление на уровне ОС: Windows не поддерживает доставку SIGSTOP дочерним процессам как в POSIX.
+ */
+export function pauseActiveYtdlpProcess(): { ok: true } | { ok: false; error: string } {
+  if (!isYtdlpOsPauseSupported()) {
+    return {
+      ok: false,
+      error: 'Пауза процесса yt-dlp в этом ОС не поддерживается (нужны SIGSTOP/SIGCONT).'
+    }
+  }
+  const ch = activeYtdlpChild
+  if (!ch || ch.killed) {
+    return { ok: false, error: 'Нет активной загрузки yt-dlp.' }
+  }
+  if (activeYtdlpPaused) {
+    return { ok: false, error: 'Загрузка уже приостановлена.' }
+  }
+  try {
+    ch.kill('SIGSTOP')
+    activeYtdlpPaused = true
+    return { ok: true }
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : String(e) }
+  }
+}
+
+export function resumeActiveYtdlpProcess(): { ok: true } | { ok: false; error: string } {
+  if (!isYtdlpOsPauseSupported()) {
+    return {
+      ok: false,
+      error: 'Пауза процесса yt-dlp в этом ОС не поддерживается (нужны SIGSTOP/SIGCONT).'
+    }
+  }
+  const ch = activeYtdlpChild
+  if (!ch || ch.killed) {
+    return { ok: false, error: 'Нет активной загрузки yt-dlp.' }
+  }
+  if (!activeYtdlpPaused) {
+    return { ok: false, error: 'Загрузка не на паузе.' }
+  }
+  try {
+    ch.kill('SIGCONT')
+    activeYtdlpPaused = false
+    return { ok: true }
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : String(e) }
+  }
 }
 
 export interface YtdlpRunCallbacks {
@@ -120,8 +188,22 @@ export function runYtdlpOnce(
     })
     logExternalProcessLine('yt-dlp', 'lifecycle', 'started')
 
+    const clearActiveChild = (): void => {
+      if (activeYtdlpChild === child) {
+        activeYtdlpChild = null
+        activeYtdlpPaused = false
+      }
+    }
+
+    activeYtdlpChild = child
+    activeYtdlpPaused = false
+
     const onAbort = (): void => {
       try {
+        if (isYtdlpOsPauseSupported() && activeYtdlpPaused && activeYtdlpChild === child) {
+          child.kill('SIGCONT')
+          activeYtdlpPaused = false
+        }
         child.kill()
       } catch {
         /* ignore */
@@ -172,11 +254,13 @@ export function runYtdlpOnce(
     pipeLines('stderr', child.stderr, callbacks.onStderrLine)
 
     child.on('error', (err) => {
+      clearActiveChild()
       signal.removeEventListener('abort', onAbort)
       reject(err)
     })
 
     child.on('close', (exitCode, killSignal) => {
+      clearActiveChild()
       signal.removeEventListener('abort', onAbort)
       logExternalProcessLine(
         'yt-dlp',

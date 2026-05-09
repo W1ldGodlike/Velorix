@@ -73,6 +73,18 @@ contextBridge.exposeInMainWorld('fluxalloyDownloads', {
   cancelQueue: (): Promise<{ ok: true } | { ok: false; error: string }> =>
     ipcRenderer.invoke(d.cancelRun),
 
+  getYtdlpPauseState: (): Promise<{
+    supported: boolean
+    active: boolean
+    paused: boolean
+  }> => ipcRenderer.invoke(d.getYtdlpPauseState),
+
+  pauseYtdlp: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke(d.pauseYtdlp),
+
+  resumeYtdlp: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke(d.resumeYtdlp),
+
   getOutputDirectory: (): Promise<{ path: string; isDefault: boolean }> =>
     ipcRenderer.invoke(d.getOutputDir),
 

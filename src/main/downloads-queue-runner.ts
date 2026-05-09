@@ -24,6 +24,8 @@ import { resolveYtdlpQueueRetryPlan } from './ytdlp-queue-retry'
 import { getYtdlpRunOptionsSnapshot } from './ytdlp-run-options-sync'
 
 let activeAbort: AbortController | null = null
+/** Строка очереди, для которой сейчас крутится yt-dlp (лог паузы §6.4). */
+let activeRunnerRowId: number | null = null
 let sequentialBusy = false
 
 let notifySnapshot = (): void => {}
@@ -51,6 +53,10 @@ export function setDownloadsRunnerNotifier(fn: () => void): void {
 
 export function cancelDownloadsRunner(): void {
   activeAbort?.abort()
+}
+
+export function getActiveDownloadsRunnerRowId(): number | null {
+  return activeRunnerRowId
 }
 
 export function isDownloadsRunnerBusy(): boolean {
@@ -105,6 +111,7 @@ async function runYtdlpForWaitingRow(
 
   activeAbort = new AbortController()
   const signal = activeAbort.signal
+  activeRunnerRowId = rowId
 
   updateDownloadsRow(rowId, { status: 'Загрузка…', progress: '…' })
   notifySnapshot()
@@ -325,6 +332,7 @@ async function runYtdlpForWaitingRow(
       }
     }
     activeAbort = null
+    activeRunnerRowId = null
     notifySnapshot()
   }
 }

@@ -106,3 +106,4 @@
 - 2026-05-10 02:15:15 [SDK]: §6.3 — превью argv yt-dlp: контекст с реальным каталогом `-o`, первый URL из очереди или `example.com`; debounce обновления превью при снимке очереди; Vitest `sanitizeYtdlpPreviewUrl`/`payloadFromSnapshot`.
 - 2026-05-10 02:16:39 [SDK]: §6.4 — профиль повтора очереди `persistent`: 3 дополнительных запуска с паузами 5/15/45 с; типы settings/контракт/UI/select; Vitest `ytdlp-queue-retry`.
 - 2026-05-10 02:18:06 [SDK]: §6.4 — `shouldSkipYtdlpQueueRetriesAfterFailure`: при маркерах stderr не делать дальнейшие повторы очереди; Vitest; лог `[FluxAlloy]` в раннере.
+- 2026-05-10 02:21:04 [SDK]: §6.4 — пауза/продолжить yt-dlp: SIGSTOP/SIGCONT в сервисе, IPC + кнопка в окне загрузок; Windows отключено; `ytdlp-os-pause-support` + Vitest.

@@ -25,7 +25,7 @@
 - [~] Нет запуска `ffmpeg`/пайплайна обработки; движки можно **скачать кнопкой** в UI (Windows) в `userData/bin`, есть проверка `--version` после загрузки.
 - [~] Автозагрузка движков **Windows x64** (yt-dlp GitHub + ffmpeg zip gyan.dev), SHA256 опционально через `Data/trusted_hashes.json`; в установщике есть пустой `resources/bin` (`extraResources`), бинарники — подкладка/`userData/bin`.
 - [ ] Нет локализации `locales/**`.
-- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; есть покрытие чистых парсеров и сервисов (`ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options`, `ytdlp-commands-hints`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-frame-snapshot-service`, `ipc-channels`, `engine-contract`).
+- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; есть покрытие чистых парсеров и сервисов (`ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options`, `ytdlp-commands-hints`, `ytdlp-os-pause-support`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-frame-snapshot-service`, `ipc-channels`, `engine-contract`).
 
 ## Журнал решений и проверок
 
@@ -35,7 +35,7 @@
 
 Правило для агента: этот блок — рабочий навигатор ближайшего спринта. После каждой крупной итерации обновлять его: отмечать сделанное, переводить частичное в `[~]`, убирать устаревшее только если оно отражено ниже по §, и добавлять 3–7 следующих конкретных пунктов. Не оставлять блок полностью закрытым.
 
-- [~] §6.1/§6.4: yt-dlp — очередь, лог, история, авто-preview, профили повтора до `persistent`, пропуск повторов очереди по маркерам stderr; дальше пауза yt-dlp где поддерживается и тонкая классификация ошибок.
+- [~] §6.1/§6.4: yt-dlp — очередь, лог, история, авто-preview, профили повтора, маркеры stderr, пауза SIGSTOP/SIGCONT (Linux/macOS); дальше тонкая классификация ошибок по коду выхода и улучшение парсинга прогресса.
 - [~] §6.3: экспертный argv + whitelist/chёрный список + справочник с `<optgroup>` + превью argv с реальным каталогом загрузки и первым URL из очереди; дальше тонкая подстройка превью (override каталога без перечитывания settings и т.п.).
 - [~] §7: превью, таймлайн, экспорт MKV/MOV/MP4, снимок кадра, ffprobe под превью; отдельное окно инспектора §9 — позже.
 - [~] §7.2/§20: системные пресеты libx264 и базовые параметры экспорта; дальше пользовательские пресеты и превью строки ffmpeg.
@@ -282,6 +282,7 @@
 - [x] «Скачать и открыть»: готовый файл можно открыть/показать в папке или отправить в обработчик FluxAlloy из очереди и истории.
 - [x] «Скачать и сразу обработать» (настройка §6.4: после успеха yt-dlp авто-открытие в главном preview, если известен безопасный путь в каталоге загрузок).
 - [~] Обработка ошибок: приоритет текста `ERROR:`; иначе последняя строка stderr; явное завершение по сигналу ОС; `--retries`/`--fragment-retries` yt-dlp + повторы очереди §6.4 (в т.ч. профиль `persistent`) + ручной retry строки; консервативный пропуск дальнейших повторов очереди по тексту (`private video`, HTTP 403/404 и т.п.); расширение по коду выхода и другим кейсам — позже.
+- [x] Пауза/продолжить активный yt-dlp: POSIX SIGSTOP/SIGCONT + IPC + кнопка в окне загрузок; Windows — явный отказ (без Job suspend).
 - [x] История загрузок (файл `downloads/history.json`, атомарная запись temp+rename после yt-dlp, IPC, UI, фильтр по исходу, повтор URL в очередь, открытие файла/папки при наличии `outputPath`).
 
 ## §7. Главное окно: обработка (ffmpeg)
