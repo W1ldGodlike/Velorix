@@ -68,6 +68,9 @@ contextBridge.exposeInMainWorld('fluxalloyDownloads', {
   getOutputDirectory: (): Promise<{ path: string; isDefault: boolean }> =>
     ipcRenderer.invoke('fluxalloy-downloads-get-output-dir'),
 
+  openOutputDirectory: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke('fluxalloy-downloads-open-output-dir'),
+
   pickOutputDirectory: (): Promise<
     { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
   > => ipcRenderer.invoke('fluxalloy-downloads-pick-output-dir'),

@@ -1,4 +1,4 @@
-import { BrowserWindow, ipcMain, type WebContents } from 'electron'
+import { BrowserWindow, ipcMain, shell, type WebContents } from 'electron'
 
 import { resolveAppPaths } from './app-paths'
 import type { StoredWindowRect } from './settings-store'
@@ -214,6 +214,7 @@ function buildDownloadsHtml(): string {
   <div class="out-dir-row">
     <span>Каталог загрузок:</span>
     <span id="outDirText" class="out-path" title="">…</span>
+    <button type="button" class="cmd" id="openOutBtn" title="Открыть текущий каталог загрузок в проводнике">Открыть</button>
     <button type="button" class="cmd" id="pickOutBtn">Выбрать…</button>
     <button type="button" class="cmd" id="resetOutBtn" title="Использовать каталог по умолчанию в userData">По умолчанию</button>
   </div>
@@ -309,6 +310,7 @@ function buildDownloadsHtml(): string {
       var urls = document.getElementById('urls');
       var body = document.getElementById('queueBody');
       var outDirText = document.getElementById('outDirText');
+      var openOutBtn = document.getElementById('openOutBtn');
       var pickOutBtn = document.getElementById('pickOutBtn');
       var resetOutBtn = document.getElementById('resetOutBtn');
       var tmplInput = document.getElementById('tmplInput');
@@ -558,6 +560,11 @@ function buildDownloadsHtml(): string {
           refreshOutDir();
         });
       });
+      openOutBtn.addEventListener('click', function () {
+        api.openOutputDirectory().then(function (res) {
+          if (res && res.ok === false && res.error) window.alert(res.error);
+        });
+      });
       resetOutBtn.addEventListener('click', function () {
         api.clearOutputDirectory().then(function () {
           refreshOutDir();
@@ -699,6 +706,19 @@ export function registerDownloadsWindowIpcHandlers(): void {
         path: resolveYtdlpOutputDirectory(paths.userData),
         isDefault: isYtdlpDownloadDirectoryDefault()
       }
+    }
+  )
+
+  ipcMain.handle(
+    'fluxalloy-downloads-open-output-dir',
+    async (event): Promise<{ ok: true } | { ok: false; error: string }> => {
+      if (!isDownloadsSender(event.sender)) {
+        return { ok: false, error: 'Недопустимый отправитель' }
+      }
+      const paths = resolveAppPaths()
+      const target = resolveYtdlpOutputDirectory(paths.userData)
+      const result = await shell.openPath(target)
+      return result.length === 0 ? { ok: true } : { ok: false, error: result }
     }
   )
 
