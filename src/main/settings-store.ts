@@ -72,6 +72,8 @@ export interface AppSettings {
   ffmpegExportFps?: number
   /** §7.2: preset масштабирования с сохранением пропорций. */
   ffmpegExportScalePreset?: 'source' | '480p' | '720p' | '1080p'
+  /** §7: последняя папка успешного ffmpeg export; используется только как defaultPath save dialog. */
+  ffmpegExportDirectory?: string
   // TODO(§4.6): язык, hotkeys.
 }
 
@@ -135,6 +137,14 @@ function parseYtdlpDownloadDirectory(raw: unknown): string | undefined {
   }
   const n = normalize(raw.trim())
   return isAbsolute(n) ? n : undefined
+}
+
+function parseFfmpegExportDirectoryStored(raw: unknown): string | undefined {
+  if (typeof raw !== 'string' || raw.trim() === '') {
+    return undefined
+  }
+  const n = normalize(raw.trim())
+  return isAbsolute(n) && n.length <= 4096 ? n : undefined
 }
 
 function parseYtdlpFilenameTemplate(raw: unknown): string | undefined {
@@ -340,6 +350,7 @@ export function loadSettings(filePath: string): AppSettings {
     const ffmpegExportScalePreset = parseFfmpegExportScalePresetStored(
       parsed.ffmpegExportScalePreset
     )
+    const ffmpegExportDirectory = parseFfmpegExportDirectoryStored(parsed.ffmpegExportDirectory)
     const ytdlpExtraArgsLine = parseYtdlpExtraArgsLineStored(parsed.ytdlpExtraArgsLine)
     const ytdlpSubtitlePreset = parseYtdlpSubtitlePresetStored(parsed.ytdlpSubtitlePreset)
     const ytdlpSubLangs = parseYtdlpSubLangsStored(parsed.ytdlpSubLangs)
@@ -389,6 +400,9 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (ffmpegExportScalePreset !== undefined && ffmpegExportScalePreset !== 'source') {
       base.ffmpegExportScalePreset = ffmpegExportScalePreset
+    }
+    if (ffmpegExportDirectory !== undefined) {
+      base.ffmpegExportDirectory = ffmpegExportDirectory
     }
     if (parsed.ytdlpDownloadPlaylist === true) {
       base.ytdlpDownloadPlaylist = true

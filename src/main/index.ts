@@ -1,5 +1,5 @@
 import { existsSync, statSync } from 'fs'
-import { basename, isAbsolute, join, normalize, resolve } from 'path'
+import { basename, dirname, isAbsolute, join, normalize, resolve } from 'path'
 import { BrowserWindow, Menu, app, clipboard, dialog, ipcMain, shell } from 'electron'
 import type { IpcMainEvent } from 'electron'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
@@ -236,6 +236,28 @@ async function openExportOutputPath(
   }
   const result = await shell.openPath(abs)
   return result ? { ok: false, error: result } : { ok: true, path: abs }
+}
+
+function rememberedExportDefaultPath(fileName: string): string {
+  const raw = cachedSettings.ffmpegExportDirectory
+  if (typeof raw !== 'string' || raw.trim().length === 0) {
+    return fileName
+  }
+  const dir = resolve(normalize(raw.trim()))
+  try {
+    if (existsSync(dir) && statSync(dir).isDirectory()) {
+      return join(dir, fileName)
+    }
+  } catch {
+    // Если папку удалили или доступ пропал, диалог всё равно откроется со стандартным именем.
+  }
+  return fileName
+}
+
+function rememberFfmpegExportDirectory(outputPath: string): void {
+  const dir = dirname(resolve(normalize(outputPath)))
+  cachedSettings = { ...cachedSettings, ffmpegExportDirectory: dir }
+  saveSettings(settingsPath(), cachedSettings)
 }
 
 function isMainWindowSender(event: IpcMainEvent): boolean {
@@ -1449,9 +1471,10 @@ app.whenReady().then(() => {
       }
 
       const stem = basename(abs).replace(/\.[^.]+$/, '')
+      const defaultExportName = `${stem}-export.${exportContainer}`
       const pick = await dialog.showSaveDialog(win, {
         title: 'Экспорт видео',
-        defaultPath: `${stem}-export.${exportContainer}`,
+        defaultPath: rememberedExportDefaultPath(defaultExportName),
         filters: [
           { name: 'MP4', extensions: ['mp4'] },
           { name: 'Matroska', extensions: ['mkv'] },
@@ -1491,6 +1514,7 @@ app.whenReady().then(() => {
         })
         if (result.ok) {
           rememberExportOutputPath(outPath)
+          rememberFfmpegExportDirectory(outPath)
           return { ok: true, path: outPath }
         }
         if (result.error === 'Экспорт отменён') {
