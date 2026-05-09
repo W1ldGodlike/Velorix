@@ -1,0 +1,97 @@
+/* Семантические токены §5 FLUXALLOY_TZ.md — один набор имён для тёмной и светлой темы */
+
+html[data-theme='dark'],
+html:not([data-theme]) {
+  --fa-bg: #1a1b1f;
+  --fa-surface: #232428;
+  --fa-surface-elevated: #2c2d33;
+  --fa-border: #3f4149;
+  --fa-border-subtle: #35363d;
+  --fa-text-primary: #e9eaee;
+  --fa-text-secondary: #9ea1a9;
+  --fa-text-muted: #6f737c;
+  --fa-accent: #4d84ff;
+  --fa-accent-contrast: #ffffff;
+  --fa-danger: #e45757;
+  --fa-success: #41b783;
+  --fa-focus-ring: rgba(77, 132, 255, 0.45);
+}
+
+html[data-theme='light'] {
+  --fa-bg: #f3f4f6;
+  --fa-surface: #e8eaef;
+  --fa-surface-elevated: #ffffff;
+  --fa-border: #cfd2d9;
+  --fa-border-subtle: #dfe1e8;
+  --fa-text-primary: #1f2229;
+  --fa-text-secondary: #4b5260;
+  --fa-text-muted: #717784;
+  --fa-accent: #2f6feb;
+  --fa-accent-contrast: #ffffff;
+  --fa-danger: #c43333;
+  --fa-success: #29875f;
+  --fa-focus-ring: rgba(47, 111, 235, 0.4);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: var(--fa-text-primary);
+  background: var(--fa-bg);
+  line-height: 1.5;
+  font-family:
+    Inter,
+    Segoe UI,
+    -apple-system,
+    BlinkMacSystemFont,
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-weight: 500;
+  padding: 0.15rem 0.35rem;
+  border-radius: 6px;
+  border: 1px solid var(--fa-border-subtle);
+  background: var(--fa-surface-elevated);
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
+  font-size: 0.84em;
+  color: var(--fa-text-primary);
+}
+
+button {
+  font: inherit;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 2px;
+}
