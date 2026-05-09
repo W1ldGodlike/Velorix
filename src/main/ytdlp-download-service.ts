@@ -1,9 +1,13 @@
 import { spawn } from 'child_process'
 import { mkdirSync } from 'fs'
-import { join } from 'path'
 
 import type { AppPaths } from './app-paths'
 import { resolveEngineExecutablePath, type EnginePathOverrides } from './engine-service'
+import {
+  resolveSafeYtdlpOutputPattern,
+  YTDLP_DEFAULT_FILENAME_TEMPLATE,
+  type YtdlpRunOptionsSnapshot
+} from './ytdlp-download-options'
 
 function abortErr(): Error {
   const e = new Error('Отменено')
@@ -92,7 +96,8 @@ export function runYtdlpOnce(
   outputDir: string,
   signal: AbortSignal,
   callbacks: YtdlpRunCallbacks = {},
-  engineOverrides?: EnginePathOverrides
+  engineOverrides?: EnginePathOverrides,
+  cli?: Pick<YtdlpRunOptionsSnapshot, 'filenameTemplate' | 'formatExtraArgs'>
 ): Promise<{ exitCode: number | null; signal: NodeJS.Signals | null }> {
   const ytDlp = resolveEngineExecutablePath(paths, 'yt-dlp', engineOverrides)
   if (!ytDlp) {
@@ -101,9 +106,18 @@ export function runYtdlpOnce(
 
   mkdirSync(outputDir, { recursive: true })
 
-  const outPattern = join(outputDir, '%(title)s [%(id)s].%(ext)s')
+  const tmpl = cli?.filenameTemplate?.trim() || YTDLP_DEFAULT_FILENAME_TEMPLATE
+  const outPattern = resolveSafeYtdlpOutputPattern(outputDir, tmpl)
+  if (!outPattern) {
+    return Promise.reject(
+      new Error(
+        'Некорректный шаблон имени файла (-o): проверьте %(ext)s, отсутствие «..» и выход за каталог загрузки.'
+      )
+    )
+  }
 
-  const args = ['--newline', '--no-playlist', '--no-color', '-o', outPattern, url]
+  const fmtArgs = cli?.formatExtraArgs ?? []
+  const args = ['--newline', '--no-playlist', '--no-color', ...fmtArgs, '-o', outPattern, url]
 
   return new Promise((resolve, reject) => {
     const child = spawn(ytDlp, args, {

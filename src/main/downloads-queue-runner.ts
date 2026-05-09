@@ -14,6 +14,7 @@ import {
   runYtdlpOnce
 } from './ytdlp-download-service'
 import { resolveYtdlpOutputDirectory } from './ytdlp-download-output'
+import { getYtdlpRunOptionsSnapshot } from './ytdlp-run-options-sync'
 
 let activeAbort: AbortController | null = null
 let sequentialBusy = false
@@ -60,6 +61,7 @@ async function runYtdlpForWaitingRow(
   let lastProgressCell: string | null = null
 
   try {
+    const cli = getYtdlpRunOptionsSnapshot()
     const result = await runYtdlpOnce(
       paths,
       rowUrl,
@@ -84,7 +86,11 @@ async function runYtdlpForWaitingRow(
           notifySnapshot()
         }
       },
-      getEnginePathOverridesSnapshot()
+      getEnginePathOverridesSnapshot(),
+      {
+        filenameTemplate: cli.filenameTemplate,
+        formatExtraArgs: cli.formatExtraArgs
+      }
     )
 
     if (result.exitCode !== 0) {

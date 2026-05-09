@@ -22,6 +22,11 @@ import {
   isYtdlpDownloadDirectoryDefault,
   resolveYtdlpOutputDirectory
 } from './ytdlp-download-output'
+import {
+  parseYtdlpFormatPreset,
+  type YtdlpDownloadOptionsPayload,
+  type YtdlpDownloadOptionsPatch
+} from './ytdlp-download-options'
 
 /** Совпадает с preload подпиской на снимок очереди. */
 export const DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL = 'fluxalloy-downloads-state'
@@ -36,6 +41,11 @@ interface DownloadsWindowBoundsHooks {
     { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
   >
   clearYtdlpOutputDirectoryOverride?: () => void
+  /** §6.2 — шаблон `-o` и пресет `-f`; persisted в `settings.json` из index.ts. */
+  getYtdlpDownloadCliOptions?: () => YtdlpDownloadOptionsPayload
+  applyYtdlpDownloadCliPatch?: (
+    patch: YtdlpDownloadOptionsPatch
+  ) => { ok: true } | { ok: false; error: string }
 }
 
 let downloadsBoundsHooks: DownloadsWindowBoundsHooks = {}
@@ -144,6 +154,21 @@ function buildDownloadsHtml(): string {
       flex: 1; min-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
       font-family: ui-monospace, Consolas, Menlo, monospace; font-size: 11px; opacity: 0.9;
     }
+    .opts-panel {
+      margin: 10px 0 12px; padding: 10px 12px; border-radius: 8px; border: 1px solid #3f3f46; background: #252526;
+      font-size: 12px;
+    }
+    .opts-panel label { display: block; margin-bottom: 4px; color: #c9c9cf; font-weight: 500; font-size: 11px; }
+    .opts-panel input[type=text] {
+      width: 100%; box-sizing: border-box; margin-bottom: 8px; padding: 6px 8px;
+      border-radius: 6px; border: 1px solid #3f3f46; background: #1e1e1e; color: #ececec; font-family: ui-monospace, Consolas, monospace; font-size: 11px;
+    }
+    .opts-panel select {
+      width: 100%; max-width: 28rem; margin-bottom: 8px; padding: 6px 8px; border-radius: 6px;
+      border: 1px solid #3f3f46; background: #1e1e1e; color: #ececec; font-size: 12px;
+    }
+    .opts-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 4px; }
+    .opts-hint { font-size: 11px; opacity: 0.75; margin: 0 0 8px; line-height: 1.35; }
     .note { margin-top: 12px; font-size: 11px; opacity: 0.72; }
   </style>
 </head>
@@ -155,6 +180,17 @@ function buildDownloadsHtml(): string {
     <span id="outDirText" class="out-path" title="">…</span>
     <button type="button" class="cmd" id="pickOutBtn">Выбрать…</button>
     <button type="button" class="cmd" id="resetOutBtn" title="Использовать каталог по умолчанию в userData">По умолчанию</button>
+  </div>
+  <div class="opts-panel">
+    <p class="opts-hint">Параметры сохраняются в userData/settings.json. Шаблон задаёт относительный путь внутри каталога загрузки; обязателен %(ext)s.</p>
+    <label for="tmplInput">Шаблон имени (-o)</label>
+    <input type="text" id="tmplInput" spellcheck="false" autocomplete="off" />
+    <label for="fmtPreset">Формат / качество (-f)</label>
+    <select id="fmtPreset"></select>
+    <div class="opts-actions">
+      <button type="button" class="cmd cmd-primary" id="applyOptsBtn">Сохранить параметры</button>
+      <button type="button" class="cmd" id="tmplReset">Шаблон по умолчанию</button>
+    </div>
   </div>
   <textarea id="urls" placeholder="https://…"></textarea>
   <div class="row">
@@ -186,6 +222,27 @@ function buildDownloadsHtml(): string {
       var outDirText = document.getElementById('outDirText');
       var pickOutBtn = document.getElementById('pickOutBtn');
       var resetOutBtn = document.getElementById('resetOutBtn');
+      var tmplInput = document.getElementById('tmplInput');
+      var fmtPreset = document.getElementById('fmtPreset');
+      var applyOptsBtn = document.getElementById('applyOptsBtn');
+      var tmplReset = document.getElementById('tmplReset');
+
+      function refreshCliOpts() {
+        api.getCliOptions().then(function (r) {
+          if (!r || r.ok !== true || !r.payload) return;
+          var p = r.payload;
+          if (tmplInput) tmplInput.value = p.filenameTemplate || '';
+          if (!fmtPreset) return;
+          fmtPreset.replaceChildren();
+          (p.formatPresetChoices || []).forEach(function (c) {
+            var o = document.createElement('option');
+            o.value = c.id;
+            o.textContent = c.label;
+            fmtPreset.appendChild(o);
+          });
+          fmtPreset.value = p.formatPreset || 'default';
+        });
+      }
 
       function refreshOutDir() {
         api.getOutputDirectory().then(function (r) {
@@ -323,6 +380,27 @@ function buildDownloadsHtml(): string {
         });
       });
 
+      if (applyOptsBtn && tmplInput && fmtPreset) {
+        applyOptsBtn.addEventListener('click', function () {
+          api.setCliOptions({
+            filenameTemplate: tmplInput.value,
+            formatPreset: fmtPreset.value
+          }).then(function (res) {
+            if (res && res.ok === false && res.error) window.alert(res.error);
+            refreshCliOpts();
+          });
+        });
+      }
+      if (tmplReset && tmplInput) {
+        tmplReset.addEventListener('click', function () {
+          api.getCliOptions().then(function (r) {
+            if (r && r.ok === true && r.payload && r.payload.defaultFilenameTemplate) {
+              tmplInput.value = r.payload.defaultFilenameTemplate;
+            }
+          });
+        });
+      }
+
       urls.addEventListener('dragover', function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -343,6 +421,7 @@ function buildDownloadsHtml(): string {
 
       api.onSnapshot(renderRows);
       refreshOutDir();
+      refreshCliOpts();
     })();
   </script>
 </body>
@@ -394,6 +473,51 @@ export function registerDownloadsWindowIpcHandlers(): void {
         path: resolveYtdlpOutputDirectory(paths.userData),
         isDefault: isYtdlpDownloadDirectoryDefault()
       }
+    }
+  )
+
+  ipcMain.handle(
+    'fluxalloy-downloads-get-cli-options',
+    (event): { ok: true; payload: YtdlpDownloadOptionsPayload } | { ok: false; error: string } => {
+      if (!isDownloadsSender(event.sender)) {
+        return { ok: false, error: 'Недопустимый отправитель' }
+      }
+      const fn = downloadsBoundsHooks.getYtdlpDownloadCliOptions
+      if (!fn) {
+        return { ok: false, error: 'Опции yt-dlp не подключены' }
+      }
+      return { ok: true, payload: fn() }
+    }
+  )
+
+  ipcMain.handle(
+    'fluxalloy-downloads-set-cli-options',
+    (event, raw: unknown): { ok: true } | { ok: false; error: string } => {
+      if (!isDownloadsSender(event.sender)) {
+        return { ok: false, error: 'Недопустимый отправитель' }
+      }
+      const fn = downloadsBoundsHooks.applyYtdlpDownloadCliPatch
+      if (!fn) {
+        return { ok: false, error: 'Опции yt-dlp не подключены' }
+      }
+      if (!raw || typeof raw !== 'object') {
+        return { ok: false, error: 'Некорректные данные' }
+      }
+      const o = raw as Record<string, unknown>
+      const patch: YtdlpDownloadOptionsPatch = {}
+      if (Object.prototype.hasOwnProperty.call(o, 'filenameTemplate')) {
+        if (typeof o.filenameTemplate !== 'string') {
+          return { ok: false, error: 'Шаблон имени должен быть строкой' }
+        }
+        patch.filenameTemplate = o.filenameTemplate
+      }
+      if (Object.prototype.hasOwnProperty.call(o, 'formatPreset')) {
+        patch.formatPreset = parseYtdlpFormatPreset(o.formatPreset)
+      }
+      if (patch.filenameTemplate === undefined && patch.formatPreset === undefined) {
+        return { ok: false, error: 'Нечего сохранять' }
+      }
+      return fn(patch)
     }
   )
 

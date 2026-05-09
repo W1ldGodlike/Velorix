@@ -2,6 +2,10 @@ import { contextBridge, ipcRenderer } from 'electron'
 
 import type { DownloadsLogPayload } from '../main/downloads-log-ipc'
 import { DOWNLOADS_LOG_CHANNEL } from '../main/downloads-log-ipc'
+import type {
+  YtdlpDownloadOptionsPatch,
+  YtdlpDownloadOptionsPayload
+} from '../main/ytdlp-download-options'
 
 const QUEUE_SNAPSHOT_CHANNEL = 'fluxalloy-downloads-state'
 
@@ -70,6 +74,15 @@ contextBridge.exposeInMainWorld('fluxalloyDownloads', {
 
   clearOutputDirectory: (): Promise<void> =>
     ipcRenderer.invoke('fluxalloy-downloads-clear-output-dir'),
+
+  getCliOptions: (): Promise<
+    { ok: true; payload: YtdlpDownloadOptionsPayload } | { ok: false; error: string }
+  > => ipcRenderer.invoke('fluxalloy-downloads-get-cli-options'),
+
+  setCliOptions: (
+    patch: YtdlpDownloadOptionsPatch
+  ): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke('fluxalloy-downloads-set-cli-options', patch),
 
   onLog: (listener: (payload: DownloadsLogPayload) => void): (() => void) => {
     const handler = (_event: unknown, raw: unknown): void => {

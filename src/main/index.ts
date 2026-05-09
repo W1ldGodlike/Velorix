@@ -46,6 +46,13 @@ import {
   resolveYtdlpOutputDirectory,
   syncYtdlpDownloadDirectoryFromSettings
 } from './ytdlp-download-output'
+import {
+  buildYtdlpRunOptionsSnapshot,
+  payloadFromSnapshot,
+  validateFilenameTemplate,
+  type YtdlpDownloadOptionsPatch
+} from './ytdlp-download-options'
+import { refreshYtdlpRunOptionsSnapshot } from './ytdlp-run-options-sync'
 
 /** Кастомная схема для локального видеопревью; привилегии обязаны зарегистрироваться до `app.whenReady`. */
 registerFluxMediaPrivileges()
@@ -209,6 +216,32 @@ function persistYtdlpDownloadDirectory(abs: string | null): void {
   cachedSettings = merged
   saveSettings(settingsPath(), cachedSettings)
   syncYtdlpDownloadDirectoryFromSettings(cachedSettings.ytdlpDownloadDirectory)
+}
+
+/** §6.2 — шаблон `-o` и белый список `-f`; синхронно обновляет снимок для downloads-queue-runner. */
+function persistYtdlpDownloadCliOptionsPatch(
+  patch: YtdlpDownloadOptionsPatch
+): { ok: true } | { ok: false; error: string } {
+  const merged: AppSettings = { ...cachedSettings }
+  if (patch.filenameTemplate !== undefined) {
+    const ft = patch.filenameTemplate
+    if (ft.trim() === '') {
+      delete merged.ytdlpFilenameTemplate
+    } else {
+      const v = validateFilenameTemplate(ft)
+      if (!v.ok) {
+        return v
+      }
+      merged.ytdlpFilenameTemplate = v.value
+    }
+  }
+  if (patch.formatPreset !== undefined) {
+    merged.ytdlpFormatPreset = patch.formatPreset
+  }
+  cachedSettings = merged
+  saveSettings(settingsPath(), cachedSettings)
+  refreshYtdlpRunOptionsSnapshot(cachedSettings)
+  return { ok: true }
 }
 
 function persistLastOpenedSource(absolutePath: string | null): void {
@@ -460,6 +493,7 @@ app.whenReady().then(() => {
   cachedSettings = loadSettings(settingsPath())
   refreshEnginePathOverridesSnapshot()
   syncYtdlpDownloadDirectoryFromSettings(cachedSettings.ytdlpDownloadDirectory)
+  refreshYtdlpRunOptionsSnapshot(cachedSettings)
   configureDownloadsWindowBoundsHooks({
     getSavedDownloadsBounds: () => cachedSettings.windowBounds?.downloads,
     persistDownloadsBounds: (r) => {
@@ -485,7 +519,10 @@ app.whenReady().then(() => {
     },
     clearYtdlpOutputDirectoryOverride: (): void => {
       persistYtdlpDownloadDirectory(null)
-    }
+    },
+    getYtdlpDownloadCliOptions: () =>
+      payloadFromSnapshot(buildYtdlpRunOptionsSnapshot(cachedSettings)),
+    applyYtdlpDownloadCliPatch: (patch) => persistYtdlpDownloadCliOptionsPatch(patch)
   })
   registerFluxMediaProtocol()
   registerDownloadsWindowIpcHandlers()

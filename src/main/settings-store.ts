@@ -29,6 +29,10 @@ export interface AppSettings {
   windowBounds?: WindowBoundsConfig
   /** §6.2: абсолютный каталог для `-o` yt-dlp; если нет — `userData/downloads/ytdlp`. */
   ytdlpDownloadDirectory?: string
+  /** §6.2: относительный шаблон `-o` внутри каталога загрузки; см. `ytdlp-download-options`. */
+  ytdlpFilenameTemplate?: string
+  /** §6.2: пресет `-f` (`default` | `merge_bv_ba` | `best_single` и др.). */
+  ytdlpFormatPreset?: string
   // TODO(§4.6): язык, hotkeys.
 }
 
@@ -94,6 +98,21 @@ function parseYtdlpDownloadDirectory(raw: unknown): string | undefined {
   return isAbsolute(n) ? n : undefined
 }
 
+function parseYtdlpFilenameTemplate(raw: unknown): string | undefined {
+  if (typeof raw !== 'string' || raw.trim() === '') {
+    return undefined
+  }
+  const t = raw.trim()
+  return t.length <= 480 ? t : t.slice(0, 480)
+}
+
+function parseYtdlpFormatPresetStored(raw: unknown): string | undefined {
+  if (typeof raw !== 'string' || raw.trim() === '') {
+    return undefined
+  }
+  return raw.trim().slice(0, 64)
+}
+
 const defaults: AppSettings = { theme: 'dark' }
 
 /**
@@ -118,6 +137,8 @@ export function loadSettings(filePath: string): AppSettings {
     const engineExecutablePaths = parseEngineExecutablePaths(parsed.engineExecutablePaths)
     const windowBounds = parseWindowBoundsConfig(parsed.windowBounds)
     const ytdlpDownloadDirectory = parseYtdlpDownloadDirectory(parsed.ytdlpDownloadDirectory)
+    const ytdlpFilenameTemplate = parseYtdlpFilenameTemplate(parsed.ytdlpFilenameTemplate)
+    const ytdlpFormatPreset = parseYtdlpFormatPresetStored(parsed.ytdlpFormatPreset)
 
     const base: AppSettings = { theme }
     if (last !== undefined) {
@@ -131,6 +152,12 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (ytdlpDownloadDirectory !== undefined) {
       base.ytdlpDownloadDirectory = ytdlpDownloadDirectory
+    }
+    if (ytdlpFilenameTemplate !== undefined) {
+      base.ytdlpFilenameTemplate = ytdlpFilenameTemplate
+    }
+    if (ytdlpFormatPreset !== undefined) {
+      base.ytdlpFormatPreset = ytdlpFormatPreset
     }
     return base
   } catch {
