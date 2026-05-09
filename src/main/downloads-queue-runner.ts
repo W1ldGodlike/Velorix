@@ -10,6 +10,7 @@ import {
 } from './downloads-queue'
 import { emitDownloadsLog } from './downloads-log-ipc'
 import {
+  classifyYtdlpQueueFailureKind,
   extractYtdlpErrorSummary,
   extractYtdlpOutputPath,
   formatYtdlpProgressCell,
@@ -272,6 +273,7 @@ async function runYtdlpForWaitingRow(
       }
 
       const code = result.exitCode
+      const failureKind = classifyYtdlpQueueFailureKind(lastErrorSummary, lastStderrLine)
       emitDownloadsLog({
         kind: 'line',
         rowId,
@@ -294,7 +296,8 @@ async function runYtdlpForWaitingRow(
             code,
             result.signal,
             lastErrorSummary,
-            lastStderrLine
+            lastStderrLine,
+            failureKind
           ),
           progress: lastProgressCell ?? '—'
         })
@@ -307,7 +310,8 @@ async function runYtdlpForWaitingRow(
             code,
             result.signal,
             lastErrorSummary,
-            lastStderrLine
+            lastStderrLine,
+            failureKind
           ),
           progress: lastProgressCell ?? '—'
         })

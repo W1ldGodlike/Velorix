@@ -93,6 +93,27 @@ describe('formatYtdlpQueueFailureStatus', () => {
     expect(s.length).toBe(200)
     expect(s.endsWith('…')).toBe(true)
   })
+
+  it('добавляет короткую подпись по классификации §6.4', () => {
+    expect(
+      formatYtdlpQueueFailureStatus(1, null, 'Private video', null, 'likely_source_block')
+    ).toContain('отказ источника')
+    expect(
+      formatYtdlpQueueFailureStatus(
+        1,
+        null,
+        'Got server HTTP error: HTTP Error 503',
+        null,
+        'transient_network'
+      )
+    ).toContain('вероятно сеть')
+  })
+
+  it('unknown не добавляет подпись', () => {
+    expect(formatYtdlpQueueFailureStatus(1, null, 'Odd message', null, 'unknown')).toBe(
+      'Ошибка (код 1): Odd message'
+    )
+  })
 })
 
 describe('extractYtdlpErrorSummary', () => {

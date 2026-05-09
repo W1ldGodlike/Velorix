@@ -13,6 +13,9 @@ export interface YtdlpDownloadProgressParts {
   eta: string | null
 }
 
+/** Грубая классификация текста ошибки для §6.4 (без IPC; только эвристика). */
+export type YtdlpQueueFailureKind = 'transient_network' | 'likely_source_block' | 'unknown'
+
 /**
  * Разбор строки прогресса yt-dlp для колонки таблицы §6.1.
  * Не shell и не исполнение — только эвристика по тексту.
@@ -94,15 +97,28 @@ export function formatYtdlpProgressCell(parts: YtdlpDownloadProgressParts): stri
   return bits.join(' · ')
 }
 
+function ytdlpQueueFailureKindSuffix(kind: YtdlpQueueFailureKind): string {
+  switch (kind) {
+    case 'transient_network':
+      return ' · вероятно сеть'
+    case 'likely_source_block':
+      return ' · отказ источника'
+    default:
+      return ''
+  }
+}
+
 /**
  * Текст статуса строки очереди §6.1 при неуспешном yt-dlp: код выхода или сигнал ОС,
  * плюс краткая подсказка из `ERROR:` или последней строки stderr (если явной ошибки не было).
+ * `failureKind` — необязательная подпись по эвристике §6.4 (`classifyYtdlpQueueFailureKind`).
  */
 export function formatYtdlpQueueFailureStatus(
   exitCode: number | null | undefined,
   signal: NodeJS.Signals | null | undefined,
   errorHint: string | null | undefined,
-  stderrFallback: string | null | undefined
+  stderrFallback: string | null | undefined,
+  failureKind?: YtdlpQueueFailureKind
 ): string {
   let base: string
   if (exitCode === null && signal) {
@@ -116,11 +132,13 @@ export function formatYtdlpQueueFailureStatus(
   const fallback = stderrFallback?.trim() ?? ''
   const hint = primary.length > 0 ? primary : fallback
 
-  if (hint.length === 0) {
-    return base.length > 200 ? `${base.slice(0, 199)}…` : base
-  }
-  const joined = `${base}: ${hint}`
-  return joined.length > 200 ? `${joined.slice(0, 199)}…` : joined
+  const body = hint.length === 0 ? base : `${base}: ${hint}`
+  const suf =
+    failureKind !== undefined && failureKind !== 'unknown'
+      ? ytdlpQueueFailureKindSuffix(failureKind)
+      : ''
+  const full = suf.length > 0 ? `${body}${suf}` : body
+  return full.length > 200 ? `${full.slice(0, 199)}…` : full
 }
 
 /**
@@ -168,9 +186,6 @@ const YTDLP_QUEUE_RETRY_KEEP_TRYING_MARKERS = [
   'errno 110',
   'errno 113'
 ] as const
-
-/** Грубая классификация текста ошибки для §6.4 (без IPC; только эвристика). */
-export type YtdlpQueueFailureKind = 'transient_network' | 'likely_source_block' | 'unknown'
 
 export function classifyYtdlpQueueFailureKind(
   errorSummary: string | null | undefined,
