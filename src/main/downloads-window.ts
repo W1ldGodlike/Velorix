@@ -101,6 +101,17 @@ function isDownloadsSender(sender: WebContents): boolean {
   )
 }
 
+export function isDownloadsWindow(win: BrowserWindow | null | undefined): boolean {
+  return (
+    win !== null &&
+    win !== undefined &&
+    downloadsWindow !== null &&
+    !downloadsWindow.isDestroyed() &&
+    !win.isDestroyed() &&
+    win.id === downloadsWindow.id
+  )
+}
+
 type DownloadOutputOpenMode = 'file' | 'folder'
 
 function isDownloadOutputOpenMode(raw: unknown): raw is DownloadOutputOpenMode {
@@ -1867,6 +1878,8 @@ export function focusOrCreateDownloadsWindow(mergeText?: string | null): void {
   downloadsWindow = new BrowserWindow({
     width: dlRect?.width ?? 960,
     height: dlRect?.height ?? 640,
+    minWidth: 520,
+    minHeight: 420,
     ...(dlRect ? { x: dlRect.x, y: dlRect.y } : {}),
     show: false,
     title: 'FluxAlloy — загрузки',

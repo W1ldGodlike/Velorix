@@ -16,11 +16,13 @@ import { getDownloadsQueueSnapshot } from './downloads-queue'
 import {
   configureDownloadsWindowBoundsHooks,
   focusOrCreateDownloadsWindow,
+  isDownloadsWindow,
   registerDownloadsWindowIpcHandlers
 } from './downloads-window'
 import {
   configureInspectorWindowHooks,
   focusOrCreateInspectorWindow,
+  isInspectorWindow,
   registerInspectorWindowIpcHandlers
 } from './inspector-window'
 import {
@@ -1032,6 +1034,7 @@ function formatProcessErrorDetails(
 }
 
 let processErrorDialogOpen = false
+let mainWindowRef: BrowserWindow | null = null
 
 async function showProcessErrorDialog(
   kind: 'uncaughtException' | 'unhandledRejection',
@@ -1071,6 +1074,16 @@ function buildApplicationMenu(): void {
   const win = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0] ?? undefined
   const isMac = process.platform === 'darwin'
   const isDark = cachedSettings.theme === 'dark'
+  const downloadsFocused = isDownloadsWindow(win)
+  const inspectorFocused = isInspectorWindow(win)
+  const auxiliaryFocused = downloadsFocused || inspectorFocused
+  const mainUiWindow =
+    mainWindowRef && !mainWindowRef.isDestroyed()
+      ? mainWindowRef
+      : BrowserWindow.getAllWindows().find((w) => !isDownloadsWindow(w) && !isInspectorWindow(w))
+
+  const getMainUiWindow = (): BrowserWindow | undefined =>
+    mainUiWindow && !mainUiWindow.isDestroyed() ? mainUiWindow : undefined
 
   // Меню пересобирается после смены темы, чтобы radio-состояния оставались честными.
   const template: Electron.MenuItemConstructorOptions[] = []
@@ -1100,10 +1113,11 @@ function buildApplicationMenu(): void {
           label: 'Открыть…',
           accelerator: 'CmdOrCtrl+O',
           click: async (): Promise<void> => {
-            const target = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0]
+            const target = getMainUiWindow()
             if (!target || target.isDestroyed()) {
               return
             }
+            target.focus()
             const result = await openVideoWithDialog(target)
             if (!result.ok) {
               return
@@ -1115,6 +1129,7 @@ function buildApplicationMenu(): void {
         {
           label: 'Менеджер загрузок (yt-dlp)…',
           accelerator: 'CmdOrCtrl+Shift+Y',
+          enabled: !auxiliaryFocused,
           click: (): void => {
             focusOrCreateDownloadsWindow(undefined)
           }
@@ -1122,6 +1137,7 @@ function buildApplicationMenu(): void {
         {
           label: 'Вставить URL из буфера в менеджер…',
           accelerator: 'CmdOrCtrl+Shift+V',
+          enabled: !auxiliaryFocused,
           click: (): void => {
             const t = clipboard.readText().trim()
             focusOrCreateDownloadsWindow(t.length > 0 ? t : undefined)
@@ -1137,10 +1153,11 @@ function buildApplicationMenu(): void {
         {
           label: 'Пути к движкам…',
           click: (): void => {
-            const target = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0]
+            const target = getMainUiWindow()
             if (!target || target.isDestroyed()) {
               return
             }
+            target.focus()
             target.webContents.send(mw.openEnginePaths)
           }
         }
@@ -1151,6 +1168,7 @@ function buildApplicationMenu(): void {
       submenu: [
         {
           label: 'Инспектор медиа (ffprobe)…',
+          enabled: !auxiliaryFocused,
           click: (): void => {
             focusOrCreateInspectorWindow(undefined)
           }
@@ -1213,10 +1231,11 @@ function buildApplicationMenu(): void {
         {
           label: 'О программе FluxAlloy…',
           click: (): void => {
-            const target = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0]
+            const target = getMainUiWindow()
             if (!target || target.isDestroyed()) {
               return
             }
+            target.focus()
             target.webContents.send(mw.openAbout)
           }
         },
@@ -1259,6 +1278,13 @@ function createWindow(): void {
       // Renderer не получает Node API напрямую; вся работа с FS/процессами пойдёт через whitelist IPC.
       contextIsolation: true,
       nodeIntegration: false
+    }
+  })
+  mainWindowRef = mainWindow
+
+  mainWindow.on('closed', () => {
+    if (mainWindowRef?.id === mainWindow.id) {
+      mainWindowRef = null
     }
   })
 

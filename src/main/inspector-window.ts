@@ -38,6 +38,17 @@ function isInspectorSender(senderId: number): boolean {
   )
 }
 
+export function isInspectorWindow(win: BrowserWindow | null | undefined): boolean {
+  return (
+    win !== null &&
+    win !== undefined &&
+    inspectorWindow !== null &&
+    !inspectorWindow.isDestroyed() &&
+    !win.isDestroyed() &&
+    win.id === inspectorWindow.id
+  )
+}
+
 function grantAndNormalizeExistingPath(abs: string): string | null {
   const normalized = resolve(normalize(abs.trim()))
   if (!existsSync(normalized)) {
