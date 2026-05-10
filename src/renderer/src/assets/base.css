@@ -2,19 +2,19 @@
 
 html[data-theme='dark'],
 html:not([data-theme]) {
-  --fa-bg: #1a1b1f;
-  --fa-surface: #232428;
-  --fa-surface-elevated: #2c2d33;
-  --fa-border: #3f4149;
-  --fa-border-subtle: #35363d;
-  --fa-text-primary: #e9eaee;
-  --fa-text-secondary: #9ea1a9;
-  --fa-text-muted: #6f737c;
-  --fa-accent: #4d84ff;
+  --fa-bg: #020407;
+  --fa-surface: #070a0f;
+  --fa-surface-elevated: #0d1219;
+  --fa-border: #202936;
+  --fa-border-subtle: #151c27;
+  --fa-text-primary: #e8edf5;
+  --fa-text-secondary: #9aa7b7;
+  --fa-text-muted: #5f6b7a;
+  --fa-accent: #2f8cff;
   --fa-accent-contrast: #ffffff;
-  --fa-danger: #e45757;
-  --fa-success: #41b783;
-  --fa-focus-ring: rgba(77, 132, 255, 0.45);
+  --fa-danger: #ef4444;
+  --fa-success: #22c55e;
+  --fa-focus-ring: rgba(47, 140, 255, 0.45);
 }
 
 html[data-theme='light'] {
@@ -80,12 +80,7 @@ code {
   border-radius: 6px;
   border: 1px solid var(--fa-border-subtle);
   background: var(--fa-surface-elevated);
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Consolas,
-    monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.84em;
   color: var(--fa-text-primary);
 }
