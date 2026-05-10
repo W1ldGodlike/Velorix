@@ -552,7 +552,7 @@ function buildDownloadsHtml(
     .hints-panel.details-chev[open] > summary::before {
       transform: rotate(90deg);
     }
-    .log-panel pre {
+    .log-panel pre#logPre {
       flex: 1 1 auto;
       min-height: 3.5rem;
       max-height: none;
@@ -561,13 +561,39 @@ function buildDownloadsHtml(
       white-space: pre-wrap;
       word-break: break-word;
       font-family: ui-monospace, Consolas, Menlo, monospace;
-      font-size: 0.64rem;
-      line-height: 1.32;
-      background: var(--bg);
+      font-size: 0.63rem;
+      line-height: 1.34;
+      tab-size: 2;
+      scrollbar-gutter: stable;
+      background: color-mix(in srgb, var(--bg) 92%, var(--surface-2));
       color: var(--muted);
       padding: 0.45rem 0.52rem;
       border-radius: 5px;
       border: 1px solid var(--border);
+    }
+    .log-panel pre#logPre .log-line {
+      display: block;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .log-line-tag {
+      display: inline;
+      margin-right: 0.35rem;
+      font-weight: 700;
+      font-size: 0.6rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      opacity: 0.62;
+    }
+    .log-line-out .log-line-tag { color: color-mix(in srgb, var(--blue) 35%, var(--muted)); }
+    .log-line-out .log-line-body { color: var(--muted); }
+    .log-line-err .log-line-tag { color: color-mix(in srgb, var(--red) 55%, var(--muted)); }
+    .log-line-err .log-line-body { color: color-mix(in srgb, var(--red) 18%, var(--text)); }
+    .log-panel .log-meta {
+      margin-left: auto;
+      color: var(--dim);
+      font-size: 0.64rem;
+      font-variant-numeric: tabular-nums;
     }
     .settings-rail { min-width: 0; min-height: 0; overflow: auto; background: var(--surface); }
     .rail-head { padding: 0.5rem 0.62rem; border-bottom: 1px solid var(--border); }
@@ -752,6 +778,8 @@ ${emitDownloadsTopbarClusterHtml(18)}
               <summary>Журнал операций</summary>
               <div class="history-actions">
                 <button type="button" class="cmd" id="saveLogBtn">Сохранить лог…</button>
+                <button type="button" class="cmd" id="clearLogBtn" title="Очистить только текст на экране (файл не трогаем)">Очистить вид</button>
+                <span class="queue-summary log-meta" id="logMeta"></span>
               </div>
               <pre id="logPre"></pre>
             </details>
@@ -1325,23 +1353,64 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
       var logPre = document.getElementById('logPre');
       var logDetails = document.getElementById('logDetails');
       var saveLogBtn = document.getElementById('saveLogBtn');
+      var clearLogBtn = document.getElementById('clearLogBtn');
+      var logMeta = document.getElementById('logMeta');
       var logTargetRowId = null;
       var maxLogChars = 240000;
 
-      function appendLogLine(stream, text) {
-        var prefix = stream === 'stdout' ? 'out | ' : 'err | ';
-        logPre.textContent += prefix + text + '\\n';
-        if (logPre.textContent.length > maxLogChars) {
-          logPre.textContent = logPre.textContent.slice(-maxLogChars);
+      function getVisibleLogPlainText() {
+        if (!logPre) return '';
+        var parts = [];
+        logPre.querySelectorAll('.log-line').forEach(function (el) {
+          parts.push(el.textContent || '');
+        });
+        return parts.length ? parts.join('\\n') + '\\n' : '';
+      }
+
+      function updateLogMeta() {
+        if (!logMeta || !logPre) return;
+        var lines = logPre.querySelectorAll('.log-line').length;
+        var chars = logPre.textContent.length;
+        var sz = chars >= 1024 ? (Math.round((chars / 1024) * 10) / 10) + ' KiB' : chars + ' B';
+        logMeta.textContent = lines + ' стр · ' + sz;
+      }
+
+      function trimLogDom() {
+        if (!logPre) return;
+        while (logPre.textContent.length > maxLogChars && logPre.firstChild) {
+          logPre.removeChild(logPre.firstChild);
         }
+      }
+
+      function appendLogLine(stream, text) {
+        if (!logPre) return;
+        var wrap = document.createElement('span');
+        wrap.className = 'log-line log-line-' + (stream === 'stdout' ? 'out' : 'err');
+        var tag = document.createElement('span');
+        tag.className = 'log-line-tag';
+        tag.textContent = stream === 'stdout' ? 'out ' : 'err ';
+        var body = document.createElement('span');
+        body.className = 'log-line-body';
+        body.textContent = text;
+        wrap.appendChild(tag);
+        wrap.appendChild(body);
+        logPre.appendChild(wrap);
+        trimLogDom();
         logPre.scrollTop = logPre.scrollHeight;
+        updateLogMeta();
+      }
+
+      function clearVisibleLog() {
+        if (!logPre) return;
+        logPre.replaceChildren();
+        updateLogMeta();
       }
 
       api.onLog(function (payload) {
         if (!payload || typeof payload !== 'object') return;
         if (payload.kind === 'reset') {
           logTargetRowId = payload.rowId;
-          logPre.textContent = '';
+          clearVisibleLog();
           if (logDetails && !logDetails.open) {
             logDetails.open = true;
           }
@@ -1351,9 +1420,15 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
           appendLogLine(payload.stream, payload.text);
         }
       });
+      updateLogMeta();
+      if (clearLogBtn) {
+        clearLogBtn.addEventListener('click', function () {
+          clearVisibleLog();
+        });
+      }
       if (saveLogBtn) {
         saveLogBtn.addEventListener('click', function () {
-          var text = logPre ? logPre.textContent || '' : '';
+          var text = getVisibleLogPlainText();
           if (!text.trim()) {
             window.alert('Лог пуст — пока нечего сохранять.');
             return;
