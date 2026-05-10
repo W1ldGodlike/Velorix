@@ -15,6 +15,28 @@ export type FfmpegExportContainerId = 'mp4' | 'mkv' | 'mov'
 export type FfmpegExportScalePresetId = 'source' | '480p' | '720p' | '1080p'
 export type FfmpegExportAudioModeId = 'aac' | 'none'
 
+/**
+ * §7.2 — сохранённый снимок параметров экспорта для пользовательского пресета.
+ * Совместим с белым списком parse-хелперов main (`parseFfmpegExport*`).
+ */
+export interface FfmpegExportUserPresetSnapshot {
+  encodePreset: FfmpegExportEncodePresetId
+  container: FfmpegExportContainerId
+  crf: number | null
+  videoBitrate: string | null
+  audioMode: FfmpegExportAudioModeId
+  audioBitrate: string
+  fps: number | null
+  scalePreset: FfmpegExportScalePresetId
+}
+
+/** §7.2 — именованный пользовательский пресет (до нескольких штук в settings). */
+export interface FfmpegExportUserPreset {
+  id: string
+  label: string
+  snapshot: FfmpegExportUserPresetSnapshot
+}
+
 export interface MediaExportRequestPayload {
   inputPath: string
   trim?: MediaExportTrimPayload

@@ -1,11 +1,14 @@
 import { spawn } from 'child_process'
 
+import type { AppSettings } from '../shared/settings-contract'
 import type {
   FfmpegExportAudioModeId,
   FfmpegExportContainerId,
   FfmpegExportEncodePresetId,
   FfmpegExportProgressPayload,
   FfmpegExportScalePresetId,
+  FfmpegExportUserPreset,
+  FfmpegExportUserPresetSnapshot,
   MediaExportTrimPayload
 } from '../shared/ffmpeg-export-contract'
 import { buildFfmpegExportArgv, shouldApplyFfmpegExportTrim } from '../shared/ffmpeg-export-argv'
@@ -18,6 +21,8 @@ export type {
   FfmpegExportEncodePresetId,
   FfmpegExportProgressPayload,
   FfmpegExportScalePresetId,
+  FfmpegExportUserPreset,
+  FfmpegExportUserPresetSnapshot,
   MediaExportRequestPayload,
   MediaExportStartResult,
   MediaExportTrimPayload
@@ -136,6 +141,103 @@ export function parseFfmpegExportScalePreset(raw: unknown): FfmpegExportScalePre
     return raw
   }
   return 'source'
+}
+
+/** §7.2 — разбор снимка пользовательского пресета из IPC/renderer (белые списки). */
+export function parseFfmpegExportUserPresetSnapshot(
+  raw: unknown
+): FfmpegExportUserPresetSnapshot | null {
+  if (!raw || typeof raw !== 'object') {
+    return null
+  }
+  const o = raw as Record<string, unknown>
+  const encodePreset = parseFfmpegExportEncodePreset(o['encodePreset'])
+  const container = parseFfmpegExportContainer(o['container'])
+  const crf = parseFfmpegExportCrf(o['crf'])
+  const videoBitrate = parseFfmpegExportVideoBitrate(o['videoBitrate'])
+  const audioMode = parseFfmpegExportAudioMode(o['audioMode'])
+  const audioBitrate = parseFfmpegExportAudioBitrate(o['audioBitrate']) ?? '192k'
+  const fps = parseFfmpegExportFps(o['fps'])
+  const scalePreset = parseFfmpegExportScalePreset(o['scalePreset'])
+  return {
+    encodePreset,
+    container,
+    crf,
+    videoBitrate,
+    audioMode,
+    audioBitrate,
+    fps,
+    scalePreset
+  }
+}
+
+/**
+ * §7.2 — список пользовательских пресетов для `settings.json` (не более 8 записей).
+ */
+export function parseFfmpegExportUserPresetsList(raw: unknown): FfmpegExportUserPreset[] {
+  if (!Array.isArray(raw)) {
+    return []
+  }
+  const out: FfmpegExportUserPreset[] = []
+  for (const item of raw.slice(0, 8)) {
+    if (!item || typeof item !== 'object') {
+      continue
+    }
+    const o = item as Record<string, unknown>
+    const idRaw = o['id']
+    const id =
+      typeof idRaw === 'string' && /^[a-zA-Z0-9_-]{1,64}$/.test(idRaw.trim()) ? idRaw.trim() : null
+    const labelRaw = o['label']
+    const label =
+      typeof labelRaw === 'string' && labelRaw.trim().length > 0
+        ? labelRaw.trim().slice(0, 64)
+        : null
+    const snap = parseFfmpegExportUserPresetSnapshot(o['snapshot'])
+    if (!id || !label || !snap) {
+      continue
+    }
+    out.push({ id, label, snapshot: snap })
+  }
+  return out
+}
+
+/**
+ * §7.2 — записать снимок в сериализуемые поля `AppSettings` (те же правила delete при «по умолчанию», что и точечные IPC).
+ */
+export function mergeFfmpegExportSnapshotIntoAppSettings(
+  base: AppSettings,
+  snapshot: FfmpegExportUserPresetSnapshot
+): AppSettings {
+  const next: AppSettings = { ...base }
+  next.ffmpegExportEncodePreset = snapshot.encodePreset
+  next.ffmpegExportContainer = snapshot.container
+  if (snapshot.crf === null) {
+    delete next.ffmpegExportCrf
+  } else {
+    next.ffmpegExportCrf = snapshot.crf
+  }
+  if (snapshot.videoBitrate === null) {
+    delete next.ffmpegExportVideoBitrate
+  } else {
+    next.ffmpegExportVideoBitrate = snapshot.videoBitrate
+  }
+  next.ffmpegExportAudioBitrate = snapshot.audioBitrate
+  if (snapshot.audioMode === 'aac') {
+    delete next.ffmpegExportAudioMode
+  } else {
+    next.ffmpegExportAudioMode = 'none'
+  }
+  if (snapshot.fps === null) {
+    delete next.ffmpegExportFps
+  } else {
+    next.ffmpegExportFps = snapshot.fps
+  }
+  if (snapshot.scalePreset === 'source') {
+    delete next.ffmpegExportScalePreset
+  } else {
+    next.ffmpegExportScalePreset = snapshot.scalePreset
+  }
+  return next
 }
 
 /** Поле `speed=` в строках прогресса ffmpeg (`-stats`). */

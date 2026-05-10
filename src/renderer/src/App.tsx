@@ -9,8 +9,11 @@ import type {
   FfmpegExportAudioModeId,
   FfmpegExportContainerId,
   FfmpegExportEncodePresetId,
-  FfmpegExportScalePresetId
+  FfmpegExportScalePresetId,
+  FfmpegExportUserPreset,
+  FfmpegExportUserPresetSnapshot
 } from '../../shared/ffmpeg-export-contract'
+import type { AppSettings } from '../../shared/settings-contract'
 import { buildFfmpegExportPreviewCommand } from '../../shared/ffmpeg-export-argv'
 import type { FfmpegSnapshotFormatId } from '../../shared/ffmpeg-snapshot-contract'
 import type { RestoredSourceInfo } from '../../shared/preview-dialog-contract'
@@ -314,6 +317,10 @@ function App(): JSX.Element {
   const [exportAudioBitrate, setExportAudioBitrate] = useState('192k')
   const [exportFps, setExportFps] = useState<number | null>(null)
   const [exportScalePreset, setExportScalePreset] = useState<FfmpegExportScalePresetId>('source')
+  /** §7.2 — сохранённые пользователем наборы параметров тулбара (preview/spawn используют те же поля). */
+  const [exportUserPresets, setExportUserPresets] = useState<FfmpegExportUserPreset[]>([])
+  /** Выбранный в `<select>` пользовательский пресет; ручные правки тулбара сбрасывают выбор. */
+  const [selectedUserPresetId, setSelectedUserPresetId] = useState<string | null>(null)
   const [lastExportPath, setLastExportPath] = useState<string | null>(null)
   const [lastSnapshotPath, setLastSnapshotPath] = useState<string | null>(null)
   const [snapshotFormat, setSnapshotFormat] = useState<FfmpegSnapshotFormatId>('png')
@@ -367,6 +374,125 @@ function App(): JSX.Element {
     setTheme(value)
   }, [])
 
+  const hydrateExportFieldsFromSettings = useCallback((loaded: AppSettings) => {
+    const ep = loaded.ffmpegExportEncodePreset
+    if (ep === 'balance' || ep === 'smaller' || ep === 'quality') {
+      setExportEncodePreset(ep)
+    }
+    const ec = loaded.ffmpegExportContainer
+    if (ec === 'mp4' || ec === 'mkv' || ec === 'mov') {
+      setExportContainer(ec)
+    }
+    if (
+      typeof loaded.ffmpegExportCrf === 'number' &&
+      Number.isInteger(loaded.ffmpegExportCrf) &&
+      loaded.ffmpegExportCrf >= 0 &&
+      loaded.ffmpegExportCrf <= 51
+    ) {
+      setExportCrf(loaded.ffmpegExportCrf)
+    } else {
+      setExportCrf(null)
+    }
+    if (
+      typeof loaded.ffmpegExportVideoBitrate === 'string' &&
+      EXPORT_VIDEO_BITRATES.includes(loaded.ffmpegExportVideoBitrate)
+    ) {
+      setExportVideoBitrate(loaded.ffmpegExportVideoBitrate)
+    } else {
+      setExportVideoBitrate(null)
+    }
+    if (
+      typeof loaded.ffmpegExportAudioBitrate === 'string' &&
+      EXPORT_AUDIO_BITRATES.includes(loaded.ffmpegExportAudioBitrate)
+    ) {
+      setExportAudioBitrate(loaded.ffmpegExportAudioBitrate)
+    }
+    if (loaded.ffmpegExportAudioMode === 'none') {
+      setExportAudioMode('none')
+    } else {
+      setExportAudioMode('aac')
+    }
+    if (
+      typeof loaded.ffmpegExportFps === 'number' &&
+      EXPORT_FPS_OPTIONS.includes(loaded.ffmpegExportFps)
+    ) {
+      setExportFps(loaded.ffmpegExportFps)
+    } else {
+      setExportFps(null)
+    }
+    const scale = loaded.ffmpegExportScalePreset
+    if (scale === '480p' || scale === '720p' || scale === '1080p') {
+      setExportScalePreset(scale)
+    } else {
+      setExportScalePreset('source')
+    }
+  }, [])
+
+  const bumpManualExportEdit = useCallback(() => {
+    setSelectedUserPresetId(null)
+  }, [])
+
+  const buildCurrentExportSnapshot = useCallback((): FfmpegExportUserPresetSnapshot => {
+    return {
+      encodePreset: exportEncodePreset,
+      container: exportContainer,
+      crf: exportCrf,
+      videoBitrate: exportVideoBitrate,
+      audioMode: exportAudioMode,
+      audioBitrate: exportAudioBitrate,
+      fps: exportFps,
+      scalePreset: exportScalePreset
+    }
+  }, [
+    exportEncodePreset,
+    exportContainer,
+    exportCrf,
+    exportVideoBitrate,
+    exportAudioMode,
+    exportAudioBitrate,
+    exportFps,
+    exportScalePreset
+  ])
+
+  const handleSaveExportUserPreset = useCallback(() => {
+    const label = window.prompt('Имя пользовательского пресета', 'Мой пресет')
+    if (label === null) {
+      return
+    }
+    const t = label.trim()
+    if (t.length === 0) {
+      return
+    }
+    const snap = buildCurrentExportSnapshot()
+    const id = crypto.randomUUID()
+    const next = [...exportUserPresets, { id, label: t.slice(0, 64), snapshot: snap }]
+    if (next.length > 8) {
+      window.alert('Не более 8 пользовательских пресетов.')
+      return
+    }
+    void window.fluxalloy.settings
+      .setFfmpegExportUserPresets(next)
+      .then((s) => {
+        setExportUserPresets(s.ffmpegExportUserPresets ?? [])
+        setSelectedUserPresetId(id)
+      })
+      .catch(console.error)
+  }, [buildCurrentExportSnapshot, exportUserPresets])
+
+  const handleDeleteExportUserPreset = useCallback(() => {
+    if (!selectedUserPresetId) {
+      return
+    }
+    const next = exportUserPresets.filter((p) => p.id !== selectedUserPresetId)
+    void window.fluxalloy.settings
+      .setFfmpegExportUserPresets(next)
+      .then((s) => {
+        setExportUserPresets(s.ffmpegExportUserPresets ?? [])
+        setSelectedUserPresetId(null)
+      })
+      .catch(console.error)
+  }, [exportUserPresets, selectedUserPresetId])
+
   const refreshEngineUi = useCallback(async (): Promise<void> => {
     try {
       const snapshot = await window.fluxalloy.engines.getStatus()
@@ -385,47 +511,8 @@ function App(): JSX.Element {
     void (async () => {
       const loaded = await window.fluxalloy.settings.get()
       applyTheme(loaded.theme === 'light' ? 'light' : 'dark')
-      const ep = loaded.ffmpegExportEncodePreset
-      if (ep === 'balance' || ep === 'smaller' || ep === 'quality') {
-        setExportEncodePreset(ep)
-      }
-      const ec = loaded.ffmpegExportContainer
-      if (ec === 'mp4' || ec === 'mkv' || ec === 'mov') {
-        setExportContainer(ec)
-      }
-      if (
-        typeof loaded.ffmpegExportCrf === 'number' &&
-        Number.isInteger(loaded.ffmpegExportCrf) &&
-        loaded.ffmpegExportCrf >= 0 &&
-        loaded.ffmpegExportCrf <= 51
-      ) {
-        setExportCrf(loaded.ffmpegExportCrf)
-      }
-      if (
-        typeof loaded.ffmpegExportVideoBitrate === 'string' &&
-        EXPORT_VIDEO_BITRATES.includes(loaded.ffmpegExportVideoBitrate)
-      ) {
-        setExportVideoBitrate(loaded.ffmpegExportVideoBitrate)
-      }
-      if (
-        typeof loaded.ffmpegExportAudioBitrate === 'string' &&
-        EXPORT_AUDIO_BITRATES.includes(loaded.ffmpegExportAudioBitrate)
-      ) {
-        setExportAudioBitrate(loaded.ffmpegExportAudioBitrate)
-      }
-      if (loaded.ffmpegExportAudioMode === 'none') {
-        setExportAudioMode('none')
-      }
-      if (
-        typeof loaded.ffmpegExportFps === 'number' &&
-        EXPORT_FPS_OPTIONS.includes(loaded.ffmpegExportFps)
-      ) {
-        setExportFps(loaded.ffmpegExportFps)
-      }
-      const scale = loaded.ffmpegExportScalePreset
-      if (scale === '480p' || scale === '720p' || scale === '1080p') {
-        setExportScalePreset(scale)
-      }
+      hydrateExportFieldsFromSettings(loaded)
+      setExportUserPresets(loaded.ffmpegExportUserPresets ?? [])
       if (loaded.ffmpegSnapshotFormat === 'jpg') {
         setSnapshotFormat('jpg')
       }
@@ -437,7 +524,7 @@ function App(): JSX.Element {
     return (): void => {
       cleanupTheme?.()
     }
-  }, [applyTheme])
+  }, [applyTheme, hydrateExportFieldsFromSettings])
 
   useEffect(() => {
     let cancelled = false
@@ -925,6 +1012,7 @@ function App(): JSX.Element {
           value={exportEncodePreset}
           disabled={exportBusy || snapshotBusy}
           onChange={(e) => {
+            bumpManualExportEdit()
             const v = e.target.value as FfmpegExportEncodePresetId
             setExportEncodePreset(v)
             void window.fluxalloy.settings.setFfmpegExportEncodePreset(v).catch(console.error)
@@ -943,6 +1031,7 @@ function App(): JSX.Element {
           value={exportVideoBitrate === null ? 'crf' : exportVideoBitrate}
           disabled={exportBusy || snapshotBusy}
           onChange={(e) => {
+            bumpManualExportEdit()
             const raw = e.target.value
             const next = raw === 'crf' ? null : raw
             setExportVideoBitrate(next)
@@ -963,6 +1052,7 @@ function App(): JSX.Element {
           value={exportContainer}
           disabled={exportBusy || snapshotBusy}
           onChange={(e) => {
+            bumpManualExportEdit()
             const v = e.target.value as FfmpegExportContainerId
             setExportContainer(v)
             void window.fluxalloy.settings.setFfmpegExportContainer(v).catch(console.error)
@@ -981,6 +1071,7 @@ function App(): JSX.Element {
           value={exportCrf === null ? 'preset' : String(exportCrf)}
           disabled={exportBusy || snapshotBusy}
           onChange={(e) => {
+            bumpManualExportEdit()
             const raw = e.target.value
             const next = raw === 'preset' ? null : Number(raw)
             setExportCrf(next)
@@ -1001,6 +1092,7 @@ function App(): JSX.Element {
           value={exportAudioMode}
           disabled={exportBusy || snapshotBusy}
           onChange={(e) => {
+            bumpManualExportEdit()
             const v = e.target.value === 'none' ? 'none' : 'aac'
             setExportAudioMode(v)
             void window.fluxalloy.settings.setFfmpegExportAudioMode(v).catch(console.error)
@@ -1019,6 +1111,7 @@ function App(): JSX.Element {
           value={exportAudioBitrate}
           disabled={exportBusy || snapshotBusy || exportAudioMode === 'none'}
           onChange={(e) => {
+            bumpManualExportEdit()
             const v = e.target.value
             setExportAudioBitrate(v)
             void window.fluxalloy.settings.setFfmpegExportAudioBitrate(v).catch(console.error)
@@ -1037,6 +1130,7 @@ function App(): JSX.Element {
           value={exportFps === null ? 'source' : String(exportFps)}
           disabled={exportBusy || snapshotBusy}
           onChange={(e) => {
+            bumpManualExportEdit()
             const raw = e.target.value
             const next = raw === 'source' ? null : Number(raw)
             setExportFps(next)
@@ -1057,6 +1151,7 @@ function App(): JSX.Element {
           value={exportScalePreset}
           disabled={exportBusy || snapshotBusy}
           onChange={(e) => {
+            bumpManualExportEdit()
             const v = e.target.value as FfmpegExportScalePresetId
             setExportScalePreset(v)
             void window.fluxalloy.settings.setFfmpegExportScalePreset(v).catch(console.error)
@@ -1068,6 +1163,60 @@ function App(): JSX.Element {
             </option>
           ))}
         </select>
+        <select
+          className="app-toolbar-select"
+          aria-label="Пользовательский пресет экспорта"
+          title="§7.2 — применить сохранённый набор параметров (превью ffmpeg совпадает со spawn)"
+          value={selectedUserPresetId ?? ''}
+          disabled={exportBusy || snapshotBusy}
+          onChange={(e) => {
+            const v = e.target.value
+            if (v === '') {
+              setSelectedUserPresetId(null)
+              return
+            }
+            const preset = exportUserPresets.find((p) => p.id === v)
+            if (!preset) {
+              return
+            }
+            void window.fluxalloy.settings
+              .applyFfmpegExportSnapshot(preset.snapshot)
+              .then((s) => {
+                hydrateExportFieldsFromSettings(s)
+                setSelectedUserPresetId(v)
+              })
+              .catch(console.error)
+          }}
+        >
+          <option value="">Пресет: —</option>
+          {exportUserPresets.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.label}
+            </option>
+          ))}
+        </select>
+        <button
+          type="button"
+          className="app-btn"
+          disabled={exportBusy || snapshotBusy}
+          onClick={() => {
+            handleSaveExportUserPreset()
+          }}
+          title="Сохранить текущие параметры экспорта как пользовательский пресет (до 8 шт.)"
+        >
+          + Пресет
+        </button>
+        <button
+          type="button"
+          className="app-btn"
+          disabled={exportBusy || snapshotBusy || !selectedUserPresetId}
+          onClick={() => {
+            handleDeleteExportUserPreset()
+          }}
+          title="Удалить выбранный пользовательский пресет из списка"
+        >
+          Удалить пресет
+        </button>
         <button
           type="button"
           className="app-btn app-btn-primary"

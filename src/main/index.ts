@@ -46,6 +46,7 @@ import {
   runFfmpegSnapshotFrame
 } from './ffmpeg-frame-snapshot-service'
 import {
+  mergeFfmpegExportSnapshotIntoAppSettings,
   parseFfmpegExportContainer,
   parseFfmpegExportAudioBitrate,
   parseFfmpegExportAudioMode,
@@ -53,6 +54,8 @@ import {
   parseFfmpegExportEncodePreset,
   parseFfmpegExportFps,
   parseFfmpegExportScalePreset,
+  parseFfmpegExportUserPresetSnapshot,
+  parseFfmpegExportUserPresetsList,
   parseFfmpegExportVideoBitrate,
   ensureFfmpegExportExtension,
   runFfmpegExportJob,
@@ -743,6 +746,31 @@ function persistFfmpegSnapshotFormat(raw: unknown): AppSettings {
   return { ...cachedSettings }
 }
 
+/** §7.2 — заменить список пользовательских пресетов экспорта (валидированный массив). */
+function persistFfmpegExportUserPresets(raw: unknown): AppSettings {
+  const list = parseFfmpegExportUserPresetsList(raw)
+  const next = { ...cachedSettings }
+  if (list.length === 0) {
+    delete next.ffmpegExportUserPresets
+  } else {
+    next.ffmpegExportUserPresets = list
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+/** §7.2 — применить снимок пресета к полям экспорта в settings одним сохранением. */
+function persistFfmpegExportApplySnapshot(raw: unknown): AppSettings {
+  const snapshot = parseFfmpegExportUserPresetSnapshot(raw)
+  if (!snapshot) {
+    return { ...cachedSettings }
+  }
+  cachedSettings = mergeFfmpegExportSnapshotIntoAppSettings(cachedSettings, snapshot)
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
 function persistAndBroadcast(theme: AppTheme): AppSettings {
   applyTheme(theme)
   saveSettings(settingsPath(), cachedSettings)
@@ -1389,6 +1417,16 @@ app.whenReady().then(() => {
   ipcMain.handle(
     mw.settingsSetFfmpegSnapshotFormat,
     (_, raw: unknown): AppSettings => persistFfmpegSnapshotFormat(raw)
+  )
+
+  ipcMain.handle(
+    mw.settingsSetFfmpegExportUserPresets,
+    (_, raw: unknown): AppSettings => persistFfmpegExportUserPresets(raw)
+  )
+
+  ipcMain.handle(
+    mw.settingsApplyFfmpegExportSnapshot,
+    (_, raw: unknown): AppSettings => persistFfmpegExportApplySnapshot(raw)
   )
 
   ipcMain.handle(mw.settingsSetEnginePaths, (_, patch: unknown): AppSettings => {

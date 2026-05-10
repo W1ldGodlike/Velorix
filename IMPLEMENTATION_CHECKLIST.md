@@ -38,7 +38,7 @@
 - [~] §6.1/§6.4: yt-dlp — очередь, лог, история, авто-preview, профили повтора, маркеры stderr + классификация + коды 2/100/101, пауза SIGSTOP/SIGCONT, прогресс total/playlist/fragment/`N of M videos`/`(frag N/M)` без %/Sleeping/Waiting for reconnect, best-effort пути из лога (`extractYtdlpOutputPath`: …); классификация retry (+ гео/bad gateway/service unavailable/connection lost); дальше редкие строки по логам пользователей.
 - [~] §6.3: экспертный argv + whitelist + справочник `<optgroup>` + превью argv (реальный каталог/первый URL из очереди); добавлены черновик полей формы и отдельный override каталога только для строки превью без записи в settings; дальше — при необходимости расширить overlay под редкие поля.
 - [~] §7: превью, таймлайн, экспорт MKV/MOV/MP4, снимок кадра, ffprobe под превью; отдельное окно инспектора §9 — позже.
-- [~] §7.2/§20: системные пресеты libx264, базовые параметры экспорта и live preview ffmpeg с маркерами In/Out + probeDurationSec + контейнером (хвост argv: `-movflags +faststart` только для MP4/MOV, не для MKV — совпадает со spawn); дальше пользовательские пресеты в preview и продвинутые параметры (crop/rotate/filters/HW).
+- [~] §7.2/§20: системные пресеты libx264, базовые параметры экспорта и live preview ffmpeg с маркерами In/Out + probeDurationSec + контейнером (хвост argv: `-movflags +faststart` только для MP4/MOV, не для MKV — совпадает со spawn); пользовательские пресеты экспорта (до 8 в `ffmpegExportUserPresets`, тулбар + IPC apply snapshot); дальше продвинутые параметры (crop/rotate/filters/HW).
 - [~] §17/§18: диагностические папки, Support ZIP, логи процессов, сессионный `session.log` + архивы в `logs/sessions/`; дальше при необходимости отдельные файлы по окнам/процессам или объём mid-session.
 - [~] §21: строгий TS и shared-контракты IPC + pure-хелперы для live preview ffmpeg; новые каналы — по мере новых фич.
 
@@ -316,7 +316,7 @@
 - [ ] Metadata.
 - [ ] Hardware acceleration.
 - [ ] Advanced args.
-- [~] Live preview команды ffmpeg: pure helpers в `src/shared/ffmpeg-export-argv.ts` (`buildFfmpegExportPreviewCommand` + `shouldApplyFfmpegExportTrim`), сворачиваемый блок в App.tsx с копированием; маркеры In/Out + probeDurationSec + выбранный контейнер §7.2 подмешиваются и совпадают с spawn (в т.ч. без `-movflags` для MKV); дальше: пользовательские пресеты в preview и сложные фильтры/параметры по мере готовности §7.2.
+- [~] Live preview команды ffmpeg: pure helpers в `src/shared/ffmpeg-export-argv.ts` (`buildFfmpegExportPreviewCommand` + `shouldApplyFfmpegExportTrim`), сворачиваемый блок в App.tsx с копированием; маркеры In/Out + probeDurationSec + выбранный контейнер §7.2 подмешиваются и совпадают с spawn (в т.ч. без `-movflags` для MKV); пользовательские пресеты (снимок параметров тулбара в settings, применение одним IPC — превью как spawn); дальше сложные фильтры/HW и т.п.
 - [~] Безопасная сборка аргументов без shell injection: ffmpeg-экспорт идёт через `buildFfmpegExportArgv` (массив токенов, без shell); валидация значений в main `parse*`-хелперах.
 
 ### §7.3 Пакетная обработка

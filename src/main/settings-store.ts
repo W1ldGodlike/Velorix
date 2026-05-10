@@ -3,6 +3,7 @@ import { dirname, isAbsolute, normalize } from 'path'
 
 import { ENGINE_IDS, type EnginePathOverrides } from '../shared/engine-contract'
 import type { AppSettings, StoredWindowRect, WindowBoundsConfig } from '../shared/settings-contract'
+import { parseFfmpegExportUserPresetsList } from './ffmpeg-export-service'
 import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
 
 export type {
@@ -409,6 +410,10 @@ export function loadSettings(filePath: string): AppSettings {
     const qrp = parseYtdlpQueueRetryProfile(parsed.ytdlpQueueRetryProfile)
     if (qrp !== 'off') {
       base.ytdlpQueueRetryProfile = qrp
+    }
+    const ffmpegExportUserPresets = parseFfmpegExportUserPresetsList(parsed.ffmpegExportUserPresets)
+    if (ffmpegExportUserPresets.length > 0) {
+      base.ffmpegExportUserPresets = ffmpegExportUserPresets
     }
     return base
   } catch {

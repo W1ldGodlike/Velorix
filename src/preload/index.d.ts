@@ -9,6 +9,8 @@ import type {
   FfmpegExportEncodePresetId,
   FfmpegExportScalePresetId,
   FfmpegExportProgressPayload,
+  FfmpegExportUserPreset,
+  FfmpegExportUserPresetSnapshot,
   MediaExportRequestPayload,
   MediaExportStartResult
 } from '../shared/ffmpeg-export-contract'
@@ -47,6 +49,8 @@ export interface FluxAlloyApi {
     setFfmpegExportAudioBitrate: (bitrate: string | null) => Promise<AppSettings>
     setFfmpegExportFps: (fps: number | null) => Promise<AppSettings>
     setFfmpegExportScalePreset: (scale: FfmpegExportScalePresetId) => Promise<AppSettings>
+    setFfmpegExportUserPresets: (presets: FfmpegExportUserPreset[]) => Promise<AppSettings>
+    applyFfmpegExportSnapshot: (snapshot: FfmpegExportUserPresetSnapshot) => Promise<AppSettings>
     setFfmpegSnapshotFormat: (format: FfmpegSnapshotFormatId) => Promise<AppSettings>
   }
   preview: {

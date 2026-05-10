@@ -4,6 +4,7 @@
  */
 
 import type { EnginePathOverrides } from './engine-contract'
+import type { FfmpegExportUserPreset } from './ffmpeg-export-contract'
 
 export type AppTheme = 'dark' | 'light'
 
@@ -77,6 +78,8 @@ export interface AppSettings {
   ffmpegExportFps?: number
   /** §7.2: preset масштабирования с сохранением пропорций. */
   ffmpegExportScalePreset?: 'source' | '480p' | '720p' | '1080p'
+  /** §7.2: пользовательские пресеты экспорта (имя + снимок параметров тулбара). */
+  ffmpegExportUserPresets?: FfmpegExportUserPreset[]
   /** §7: последняя папка успешного ffmpeg export; используется только как defaultPath save dialog. */
   ffmpegExportDirectory?: string
   /** §7.6: последняя папка успешного снимка кадра; используется как defaultPath save dialog. */

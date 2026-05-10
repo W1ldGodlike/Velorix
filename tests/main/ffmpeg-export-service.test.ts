@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
+import type { AppSettings } from '../../src/shared/settings-contract'
 import {
   ensureFfmpegExportExtension,
   inferFfmpegExportContainerFromPath,
+  mergeFfmpegExportSnapshotIntoAppSettings,
   parseFfmpegExportAudioBitrate,
   parseFfmpegExportAudioMode,
   parseFfmpegExportEncodePreset,
@@ -10,6 +12,8 @@ import {
   parseFfmpegExportCrf,
   parseFfmpegExportFps,
   parseFfmpegExportScalePreset,
+  parseFfmpegExportUserPresetSnapshot,
+  parseFfmpegExportUserPresetsList,
   parseFfmpegExportVideoBitrate,
   parseFfmpegSpeedToken,
   parseFfmpegTimeSeconds,
@@ -69,5 +73,53 @@ describe('ffmpeg export pure helpers', () => {
     expect(resolveExportSegmentDurationSec({ inSec: 2, outSec: 7 }, true, 20)).toBe(5)
     expect(resolveExportSegmentDurationSec(undefined, false, 12)).toBe(12)
     expect(resolveExportSegmentDurationSec(undefined, false, null)).toBe(0)
+  })
+
+  it('parseFfmpegExportUserPresetSnapshot и список пресетов §7.2', () => {
+    expect(parseFfmpegExportUserPresetSnapshot(null)).toBeNull()
+    const snap = parseFfmpegExportUserPresetSnapshot({
+      encodePreset: 'quality',
+      container: 'mkv',
+      crf: 20,
+      videoBitrate: null,
+      audioMode: 'none',
+      audioBitrate: '192k',
+      fps: 30,
+      scalePreset: '720p'
+    })
+    expect(snap).toMatchObject({
+      encodePreset: 'quality',
+      container: 'mkv',
+      crf: 20,
+      videoBitrate: null,
+      audioMode: 'none',
+      audioBitrate: '192k',
+      fps: 30,
+      scalePreset: '720p'
+    })
+    const list = parseFfmpegExportUserPresetsList([
+      { id: 'ab-cd_1', label: 'Тест', snapshot: snap },
+      { id: 'bad id!', label: 'x', snapshot: snap }
+    ])
+    expect(list).toHaveLength(1)
+    expect(list[0]?.id).toBe('ab-cd_1')
+  })
+
+  it('mergeFfmpegExportSnapshotIntoAppSettings повторяет правила delete для дефолтов', () => {
+    const base: AppSettings = { theme: 'dark', ffmpegExportCrf: 40, ffmpegExportAudioMode: 'none' }
+    const next = mergeFfmpegExportSnapshotIntoAppSettings(base, {
+      encodePreset: 'balance',
+      container: 'mp4',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '128k',
+      fps: null,
+      scalePreset: 'source'
+    })
+    expect(next.ffmpegExportCrf).toBeUndefined()
+    expect(next.ffmpegExportAudioMode).toBeUndefined()
+    expect(next.ffmpegExportAudioBitrate).toBe('128k')
+    expect(next.ffmpegExportScalePreset).toBeUndefined()
   })
 })

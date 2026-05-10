@@ -10,6 +10,8 @@ import type {
   FfmpegExportEncodePresetId,
   FfmpegExportScalePresetId,
   FfmpegExportProgressPayload,
+  FfmpegExportUserPreset,
+  FfmpegExportUserPresetSnapshot,
   MediaExportRequestPayload,
   MediaExportStartResult
 } from '../shared/ffmpeg-export-contract'
@@ -55,6 +57,10 @@ const fluxalloy = {
       ipcRenderer.invoke(mw.settingsSetFfmpegExportFps, fps),
     setFfmpegExportScalePreset: (scale: FfmpegExportScalePresetId): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportScalePreset, scale),
+    setFfmpegExportUserPresets: (presets: FfmpegExportUserPreset[]): Promise<AppSettings> =>
+      ipcRenderer.invoke(mw.settingsSetFfmpegExportUserPresets, presets),
+    applyFfmpegExportSnapshot: (snapshot: FfmpegExportUserPresetSnapshot): Promise<AppSettings> =>
+      ipcRenderer.invoke(mw.settingsApplyFfmpegExportSnapshot, snapshot),
     setFfmpegSnapshotFormat: (format: FfmpegSnapshotFormatId): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegSnapshotFormat, format)
   },
