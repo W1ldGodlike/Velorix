@@ -130,3 +130,4 @@
 - 2026-05-10 10:55:39 [SDK]: §4.5/§17/§18 — «О программе»: папка логов, main.log, Support ZIP через IPC; результат диалога ZIP различает отмену и ошибку.
 - 2026-05-10 10:57:13 [SDK]: §6.4 — прогресс «Waiting for …», маркеры transient (408/premature close) и skip live/premiere; `extractYtdlpOutputPath`: VideoRemuxer `into`, `→ Destination`; Vitest.
 - 2026-05-10 10:58:31 [SDK]: §6.4 — `extractYtdlpOutputPath`: ASCII `-> Destination`, SubtitlesConvertor `->`/`into`; классификация: transient signature/rate limit, skip DRM protected; Vitest.
+- 2026-05-10 10:59:54 [SDK]: §6.3 — окно yt-dlp: превью argv после выбора/сброса каталога загрузки, вставки флага из справочника, «Шаблон по умолчанию» (`schedulePreviewRefresh`).

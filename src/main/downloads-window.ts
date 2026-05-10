@@ -1110,6 +1110,7 @@ function buildDownloadsHtml(): string {
         api.pickOutputDirectory().then(function (res) {
           if (res && res.ok === false && res.error) window.alert(res.error);
           refreshOutDir();
+          schedulePreviewRefresh();
         });
       });
       openOutBtn.addEventListener('click', function () {
@@ -1120,6 +1121,7 @@ function buildDownloadsHtml(): string {
       resetOutBtn.addEventListener('click', function () {
         api.clearOutputDirectory().then(function () {
           refreshOutDir();
+          schedulePreviewRefresh();
         });
       });
 
@@ -1167,6 +1169,7 @@ function buildDownloadsHtml(): string {
           api.getCliOptions().then(function (r) {
             if (r && r.ok === true && r.payload && r.payload.defaultFilenameTemplate) {
               tmplInput.value = r.payload.defaultFilenameTemplate;
+              schedulePreviewRefresh();
             }
           });
         });
@@ -1186,6 +1189,7 @@ function buildDownloadsHtml(): string {
           var cur = extraArgsInput.value.trim();
           extraArgsInput.value = cur ? cur + ' ' + token : token;
           hintInsert.value = '';
+          schedulePreviewRefresh();
         });
       }
 
