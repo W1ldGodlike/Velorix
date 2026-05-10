@@ -17,6 +17,13 @@ import type { AppSettings } from '../../shared/settings-contract'
 import { buildFfmpegExportPreviewCommand } from '../../shared/ffmpeg-export-argv'
 import type { FfmpegSnapshotFormatId } from '../../shared/ffmpeg-snapshot-contract'
 import type { RestoredSourceInfo } from '../../shared/preview-dialog-contract'
+import {
+  defaultFfprobeJsonFileName,
+  defaultFfprobeSummaryHtmlFileName,
+  defaultFfprobeSummaryTxtFileName,
+  formatProbeSummaryHtmlDocument,
+  formatProbeSummaryPlainText
+} from '../../shared/ffprobe-summary-export'
 
 type Theme = 'dark' | 'light'
 
@@ -171,16 +178,6 @@ function formatProbeJsonForDisplay(raw: string): string {
   }
 }
 
-function ffprobeJsonDefaultFileName(mediaPath: string | undefined): string {
-  if (!mediaPath || mediaPath.trim().length === 0) {
-    return 'fluxalloy-ffprobe.json'
-  }
-  const name = mediaPath.replace(/^.*[/\\]/, '').trim()
-  const stem = name.replace(/\.[^./\\]+$/, '')
-  const base = stem.length > 0 ? stem : name
-  return `${base.length > 0 ? base : 'media'}-ffprobe.json`
-}
-
 function PreviewProbeBody({
   probeInfo,
   mediaPathForDefaultSave
@@ -188,7 +185,7 @@ function PreviewProbeBody({
   probeInfo: MediaProbeSuccess
   mediaPathForDefaultSave?: string
 }): JSX.Element {
-  const [jsonToolbarTip, setJsonToolbarTip] = useState<string | null>(null)
+  const [probeToolbarTip, setProbeToolbarTip] = useState<string | null>(null)
   const bitrateLabel = formatBitrateLine(probeInfo.bitrateKbps)
   const formatTooltip =
     probeInfo.formatLongName && probeInfo.formatName !== probeInfo.formatLongName
@@ -198,30 +195,64 @@ function PreviewProbeBody({
   async function handleCopyProbeJson(): Promise<void> {
     const text = formatProbeJsonForDisplay(probeInfo.rawJson)
     const r = await window.fluxalloy.clipboard.writeText(text)
-    setJsonToolbarTip(r.ok ? 'Скопировано в буфер' : 'Не удалось скопировать')
+    setProbeToolbarTip(r.ok ? 'Скопировано в буфер' : 'Не удалось скопировать')
     window.setTimeout(() => {
-      setJsonToolbarTip(null)
+      setProbeToolbarTip(null)
     }, 2200)
   }
 
   async function handleSaveProbeJson(): Promise<void> {
     const text = formatProbeJsonForDisplay(probeInfo.rawJson)
-    const defaultFileName = ffprobeJsonDefaultFileName(mediaPathForDefaultSave)
+    const defaultFileName = defaultFfprobeJsonFileName(mediaPathForDefaultSave)
     const r = await window.fluxalloy.saveTextWithDialog({
       title: 'Сохранить JSON ffprobe',
       defaultFileName,
       content: text
     })
     if (r.ok) {
-      setJsonToolbarTip(`Сохранено: ${r.path}`)
+      setProbeToolbarTip(`Сохранено: ${r.path}`)
     } else if ('cancelled' in r && r.cancelled) {
       // пользователь закрыл диалог — без сообщения
     } else if ('error' in r) {
-      setJsonToolbarTip(r.error)
+      setProbeToolbarTip(r.error)
     }
     window.setTimeout(() => {
-      setJsonToolbarTip(null)
+      setProbeToolbarTip(null)
     }, 2800)
+  }
+
+  async function handleSaveSummaryTxt(): Promise<void> {
+    const text = formatProbeSummaryPlainText(probeInfo)
+    const r = await window.fluxalloy.saveTextWithDialog({
+      title: 'Сохранить сводку ffprobe (TXT)',
+      defaultFileName: defaultFfprobeSummaryTxtFileName(mediaPathForDefaultSave),
+      content: text
+    })
+    if (r.ok) {
+      setProbeToolbarTip(`Сохранено: ${r.path}`)
+    } else if ('cancelled' in r && r.cancelled) {
+      /* noop */
+    } else if ('error' in r) {
+      setProbeToolbarTip(r.error)
+    }
+    window.setTimeout(() => setProbeToolbarTip(null), 2800)
+  }
+
+  async function handleSaveSummaryHtml(): Promise<void> {
+    const html = formatProbeSummaryHtmlDocument(probeInfo)
+    const r = await window.fluxalloy.saveTextWithDialog({
+      title: 'Сохранить сводку ffprobe (HTML)',
+      defaultFileName: defaultFfprobeSummaryHtmlFileName(mediaPathForDefaultSave),
+      content: html
+    })
+    if (r.ok) {
+      setProbeToolbarTip(`Сохранено: ${r.path}`)
+    } else if ('cancelled' in r && r.cancelled) {
+      /* noop */
+    } else if ('error' in r) {
+      setProbeToolbarTip(r.error)
+    }
+    window.setTimeout(() => setProbeToolbarTip(null), 2800)
   }
 
   return (
@@ -237,6 +268,32 @@ function PreviewProbeBody({
           {bitrateLabel ? ` · ${bitrateLabel}` : ''}
         </span>
       </div>
+      {probeToolbarTip ? (
+        <div className="app-probe-copy-tip app-probe-tip-global">{probeToolbarTip}</div>
+      ) : null}
+      <details className="app-probe-details">
+        <summary className="app-probe-summary">Экспорт сводки (TXT / HTML)</summary>
+        <div className="app-probe-json-toolbar">
+          <button
+            type="button"
+            className="app-btn app-btn-compact"
+            onClick={() => {
+              void handleSaveSummaryTxt()
+            }}
+          >
+            Сохранить сводку TXT…
+          </button>
+          <button
+            type="button"
+            className="app-btn app-btn-compact"
+            onClick={() => {
+              void handleSaveSummaryHtml()
+            }}
+          >
+            Сохранить сводку HTML…
+          </button>
+        </div>
+      </details>
       {probeInfo.tracks.length > 0 ? (
         <details className="app-probe-details">
           <summary className="app-probe-summary">Дорожки ({probeInfo.tracks.length})</summary>
@@ -286,7 +343,6 @@ function PreviewProbeBody({
             >
               Сохранить JSON…
             </button>
-            {jsonToolbarTip ? <span className="app-probe-copy-tip">{jsonToolbarTip}</span> : null}
           </div>
           <pre className="app-probe-json-pre">{formatProbeJsonForDisplay(probeInfo.rawJson)}</pre>
         </details>

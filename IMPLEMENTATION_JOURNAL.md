@@ -134,3 +134,4 @@
 - 2026-05-10 11:01:25 [SDK]: §6.4 — прогресс `Resuming download at byte…`; skip повторов: нет форматов / unsupported URL / requested format…; `extractYtdlpOutputPath`: `[download] Writing metadata to:`; Vitest.
 - 2026-05-10 11:02:42 [SDK]: §6.1 — окно yt-dlp: DnD `text/plain`/`text/uri-list` на document.body → очередь; не перехватываем drop на textarea/select и текстовых input параметров §6.2.
 - 2026-05-10 11:07:48 [SDK]: §9 — сохранение форматированного JSON ffprobe в файл: `save-text-dialog-contract`, IPC `saveTextWithDialog`, кнопка «Сохранить JSON…» под превью.
+- 2026-05-10 11:09:18 [SDK]: §9 — экспорт сводки инспектора TXT/HTML (`ffprobe-summary-export`), UI + фильтр HTML в диалоге сохранения; Vitest.

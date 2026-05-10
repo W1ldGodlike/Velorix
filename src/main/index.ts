@@ -1645,6 +1645,7 @@ app.whenReady().then(() => {
         defaultPath: parsed.defaultFileName,
         filters: [
           { name: 'JSON', extensions: ['json'] },
+          { name: 'HTML', extensions: ['html', 'htm'] },
           { name: 'Текстовые файлы', extensions: ['txt', 'log'] },
           { name: 'Все файлы', extensions: ['*'] }
         ]

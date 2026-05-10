@@ -433,6 +433,10 @@
   color: var(--fa-text-secondary);
 }
 
+.app-probe-tip-global {
+  padding: 0 0.15rem 0.2rem;
+}
+
 .app-probe-json-pre {
   margin: 0;
   max-height: 14rem;
