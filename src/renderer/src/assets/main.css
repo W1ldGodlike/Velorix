@@ -373,6 +373,11 @@
   font-size: 0.8125rem;
 }
 
+.app-url-input:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 2px;
+}
+
 .app-btn {
   display: inline-flex;
   align-items: center;
@@ -399,6 +404,11 @@
 .app-btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+.app-btn:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 2px;
 }
 
 .app-btn-primary {
