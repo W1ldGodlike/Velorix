@@ -335,19 +335,29 @@ function buildDownloadsHtml(
     /* §1.1 / §4.C: на HiDPI Chromium уже масштабирует, но плотность v0 на 125–200% Windows остаётся читабельнее с чуть большим базовым шагом и rail. */
     @media (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {
       body { font-size: 12px; }
+      .dl-topbar {
+        min-height: 64px;
+        padding: 0.48rem 0.78rem;
+      }
+      .workspace-tab {
+        min-height: 2.2rem;
+        font-size: 0.76rem;
+      }
       .dl-main { grid-template-columns: minmax(0, 1fr) minmax(266px, 290px); }
       textarea { min-height: 68px; font-size: 0.74rem; }
       button.cmd { min-height: 29px; font-size: 0.74rem; }
     }
     @media (-webkit-min-device-pixel-ratio: 1.75), (min-resolution: 168dpi) {
       body { font-size: 12.5px; }
+      .dl-topbar { min-height: 66px; }
       td.act button.icon-btn, .icon-btn { width: 26px; height: 26px; }
       .progress-track { height: 4px; }
     }
     .dl-shell { height: 100%; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
     .dl-topbar {
-      min-height: 54px; display: grid; grid-template-columns: minmax(12rem, auto) 1fr auto; align-items: center;
-      gap: 0.55rem; padding: 0.4rem 0.72rem; background: color-mix(in srgb, var(--bg) 86%, #111827 14%);
+      /* Согласование с главным app-topbar ~62px DIP; точнее на HiDPI — @media ниже */
+      min-height: 62px; display: grid; grid-template-columns: minmax(12rem, auto) 1fr auto; align-items: center;
+      gap: 0.55rem; padding: 0.46rem 0.75rem; background: color-mix(in srgb, var(--bg) 86%, #111827 14%);
       border-bottom: 1px solid var(--border); flex-shrink: 0;
     }
     .brand { display: inline-flex; align-items: center; gap: 0.45rem; min-width: 0; }
@@ -359,8 +369,8 @@ function buildDownloadsHtml(
     .brand-version { color: var(--dim); font-size: 0.68rem; font-family: ui-monospace, Consolas, Menlo, monospace; }
     .workspace-tabs { justify-self: center; display: inline-flex; align-items: center; gap: 0.15rem; }
     .workspace-tab {
-      min-height: 1.95rem; padding: 0 0.62rem; border: none; border-bottom: 2px solid transparent; background: transparent;
-      color: var(--dim); cursor: default; font-size: 0.74rem; font-weight: 600;
+      min-height: 2.08rem; padding: 0 0.62rem; border: none; border-bottom: 2px solid transparent; background: transparent;
+      color: var(--dim); cursor: default; font-size: 0.75rem; font-weight: 600;
     }
     .workspace-tab.active { color: var(--text); border-bottom-color: var(--blue); }
     .topbar-right {

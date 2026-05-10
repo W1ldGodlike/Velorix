@@ -507,6 +507,12 @@
   transform: rotate(90deg);
 }
 
+.app-settings-summary:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 .app-settings-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1081,4 +1087,32 @@
   font-size: 0.75rem;
   opacity: 0.88;
   word-break: break-all;
+}
+
+/* §1.1 / §4.C — главный renderer + `#inspector`: на 125–200 % Windows DPI чуть больше вертикальный коридор тулбаров без смены глобального rem. */
+@media (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {
+  .app-topbar {
+    min-height: 64px;
+    padding: 0.52rem 0.78rem;
+  }
+
+  .app-toolbar {
+    min-height: 56px;
+    padding: 0.68rem 0.88rem;
+  }
+}
+
+@media (-webkit-min-device-pixel-ratio: 1.75), (min-resolution: 168dpi) {
+  .app-topbar {
+    min-height: 66px;
+  }
+
+  .app-toolbar {
+    min-height: 58px;
+  }
+
+  .app-icon-btn {
+    min-width: 2.125rem;
+    height: 2.125rem;
+  }
 }

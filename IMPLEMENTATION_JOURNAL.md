@@ -169,3 +169,4 @@
 - 2026-05-10 14:04:14 [SDK]: §1.1/v0 — окно загрузок: нижняя зона под таблицей — история и журнал **вертикально** (лог снизу на всю ширину), `pre` тянется в flex-ячейке; §4.A/спринт.
 - 2026-05-10 14:05:40 [SDK]: §9/§4.C — окно инспектора: тулбар на `app-icon-btn` + общие lucide (`refreshCw` в `lucide-downloads-icons`, `IconRefreshCw`/film/папка/тема); `main.css` марка бренда; чеклист.
 - 2026-05-10 14:07:41 [SDK]: §1.1/v0/§4.1 — редактор: главный `app-topbar` выше под ~70px-референс; секция «Вывод» — вложенный `details` превью ffmpeg + persist `exportCommandPreview` (IPC whitelist settings-store/main).
+- 2026-05-10 14:09:10 [SDK]: §1.1/§4.C — `main.css`: HiDPI @media topbar/toolbar/icon-btn + `focus-visible` на FFmpeg `summary`; yt-dlp: топбар ~62px DIP, вкладки плотнее, доп. dppx для topbar; в CSS внутри TS template literal без обратных кавычек в комментариях.
