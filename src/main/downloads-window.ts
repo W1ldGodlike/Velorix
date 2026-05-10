@@ -303,14 +303,22 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
     table { width: 100%; border-collapse: collapse; font-size: 0.74rem; table-layout: fixed; }
     th, td { border-bottom: 1px solid var(--border); padding: 0.45rem 0.55rem; text-align: left; vertical-align: top; word-break: break-word; }
     th { position: sticky; top: 0; z-index: 1; color: var(--muted); background: var(--surface); font-weight: 700; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; }
-    th:nth-child(1), td:nth-child(1) { width: 2.3rem; }
-    th:nth-child(3), td:nth-child(3) { width: 12rem; }
-    th:nth-child(4), td:nth-child(4) { width: 10rem; }
-    th:nth-child(5), td:nth-child(5) { width: 12.8rem; }
+    table.queue-table th:nth-child(1), table.queue-table td:nth-child(1) { width: 2.1rem; }
+    table.queue-table th:nth-child(2), table.queue-table td:nth-child(2) { width: 24%; }
+    table.queue-table th:nth-child(3), table.queue-table td:nth-child(3) { width: 8.5%; }
+    table.queue-table th:nth-child(4), table.queue-table td:nth-child(4) { width: 7.5%; }
+    table.queue-table th:nth-child(5), table.queue-table td:nth-child(5) { width: 11.5%; }
+    table.queue-table th:nth-child(6), table.queue-table td:nth-child(6) { width: 10%; }
+    table.queue-table th:nth-child(7), table.queue-table td:nth-child(7) { width: 5rem; }
+    table.queue-table th:nth-child(8), table.queue-table td:nth-child(8) { width: 11%; }
+    table.queue-table th:nth-child(9), table.queue-table td:nth-child(9) { width: 13rem; min-width: 9.5rem; }
     td.num { color: var(--dim); font-variant-numeric: tabular-nums; }
     .queue-title { color: var(--text); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .queue-url { margin-top: 0.14rem; color: var(--dim); font-size: 0.68rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     td.prog { font-variant-numeric: tabular-nums; color: var(--muted); white-space: normal; word-break: break-word; font-size: 0.68rem; line-height: 1.35; }
+    td.queue-col-fmt, td.queue-col-size, td.queue-col-spd, td.queue-col-eta {
+      font-variant-numeric: tabular-nums; font-size: 0.65rem; color: var(--muted);
+    }
     .progress-track { height: 4px; border-radius: 999px; background: var(--border-2); overflow: hidden; margin: 0.2rem 0 0.18rem; }
     .progress-fill { height: 100%; border-radius: inherit; background: var(--blue); }
     .status-pill { display: inline-flex; align-items: center; gap: 0.34rem; color: var(--muted); }
@@ -459,8 +467,8 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
           <span class="queue-summary" id="queueSummary">Всего: 0</span>
         </div>
         <div class="queue-table-wrap">
-          <table>
-            <thead><tr><th>#</th><th>Название</th><th>Прогресс</th><th>Статус</th><th>Действия</th></tr></thead>
+          <table class="queue-table">
+            <thead><tr><th>#</th><th>Название</th><th>Формат</th><th>Размер</th><th>Прогресс</th><th>Скорость</th><th>ETA</th><th>Статус</th><th>Действия</th></tr></thead>
             <tbody id="queueBody"></tbody>
           </table>
         </div>
@@ -1208,7 +1216,12 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
         var td = document.createElement('td');
         td.className = 'prog';
         var raw = text || '—';
-        var pct = parseProgressPercent(raw);
+        var head = raw;
+        if (raw !== '—') {
+          var segs = raw.split(' · ');
+          head = segs.length > 0 && segs[0] ? segs[0].trim() : raw;
+        }
+        var pct = parseProgressPercent(head);
         if (pct !== null) {
           var track = document.createElement('div');
           track.className = 'progress-track';
@@ -1219,8 +1232,47 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
           td.appendChild(track);
         }
         var label = document.createElement('div');
-        label.textContent = raw;
+        label.className = 'prog-head';
+        label.textContent = head;
         td.appendChild(label);
+        return td;
+      }
+      function snapStr(row, key) {
+        var v = row[key];
+        return typeof v === 'string' && v.trim().length > 0 ? v.trim() : '';
+      }
+      function tdFmtCell(row) {
+        var td = document.createElement('td');
+        td.className = 'queue-col-fmt';
+        var full = snapStr(row, 'queueFmt');
+        if (!full.length) {
+          td.textContent = '—';
+          return td;
+        }
+        td.title = full;
+        td.textContent = full.length > 24 ? full.slice(0, 22) + '…' : full;
+        return td;
+      }
+      function tdSizeCell(row) {
+        var td = document.createElement('td');
+        td.className = 'queue-col-size';
+        var s = snapStr(row, 'queueSize');
+        td.textContent = s.length ? s : '—';
+        return td;
+      }
+      function tdSpdCell(row) {
+        var td = document.createElement('td');
+        td.className = 'queue-col-spd';
+        var s = snapStr(row, 'queueSpeed');
+        td.textContent = s.length ? s : '—';
+        td.title = s.length > 36 ? s : '';
+        return td;
+      }
+      function tdEtaCell(row) {
+        var td = document.createElement('td');
+        td.className = 'queue-col-eta';
+        var s = snapStr(row, 'queueEta');
+        td.textContent = s.length ? s : '—';
         return td;
       }
 
@@ -1274,7 +1326,7 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
         if (rows.length === 0) {
           var tr0 = document.createElement('tr');
           var td0 = document.createElement('td');
-          td0.colSpan = 5;
+          td0.colSpan = 9;
           td0.style.opacity = '0.7';
           td0.textContent = lastQueueRows.length === 0 ? 'Очередь пуста' : 'Нет строк с таким статусом';
           tr0.appendChild(td0);
@@ -1301,7 +1353,11 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
           tdTitle.appendChild(name);
           tdTitle.appendChild(url);
           tr.appendChild(tdTitle);
+          tr.appendChild(tdFmtCell(r));
+          tr.appendChild(tdSizeCell(r));
           tr.appendChild(tdProgress(r.progress || '—'));
+          tr.appendChild(tdSpdCell(r));
+          tr.appendChild(tdEtaCell(r));
           tr.appendChild(tdStatus(r.status || '—'));
           var tdAct = document.createElement('td');
           tdAct.className = 'act';

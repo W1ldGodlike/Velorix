@@ -14,6 +14,14 @@ export interface DownloadsQueueRow {
   status: string
   /** Best-effort путь фактически созданного файла yt-dlp, если удалось распознать stdout/stderr. */
   outputPath?: string
+  /** §6/v0 — строка формата из `[info] … format(s): …`; best-effort. */
+  queueFmt?: string
+  /** §6/v0 — размер из «% of 12.34MiB». */
+  queueSize?: string
+  /** §6/v0 — скорость или вспомогательная строка фрагмента/плейлиста. */
+  queueSpeed?: string
+  /** §6/v0 — ETA из строки yt-dlp. */
+  queueEta?: string
 }
 
 let rows: DownloadsQueueRow[] = []
@@ -89,19 +97,38 @@ export function updateDownloadsRow(
   id: number,
   patch: Partial<Pick<DownloadsQueueRow, 'status' | 'progress' | 'shortLabel'>> & {
     outputPath?: string | null
+    queueFmt?: string | null
+    queueSize?: string | null
+    queueSpeed?: string | null
+    queueEta?: string | null
   }
 ): boolean {
   const row = rows.find((r) => r.id === id)
   if (!row) {
     return false
   }
-  const { outputPath, ...rest } = patch
+  const { outputPath, queueFmt, queueSize, queueSpeed, queueEta, ...rest } = patch
   Object.assign(row, rest)
   if (outputPath === null) {
     delete row.outputPath
   } else if (typeof outputPath === 'string' && outputPath.trim().length > 0) {
     row.outputPath = outputPath.trim()
   }
+  type MetaKey = 'queueFmt' | 'queueSize' | 'queueSpeed' | 'queueEta'
+  const applyMeta = (key: MetaKey, v: string | null | undefined): void => {
+    if (v === null || v === undefined) {
+      delete row[key]
+      return
+    }
+    const t = v.trim()
+    if (t.length > 0) {
+      row[key] = t
+    }
+  }
+  applyMeta('queueFmt', queueFmt)
+  applyMeta('queueSize', queueSize)
+  applyMeta('queueSpeed', queueSpeed)
+  applyMeta('queueEta', queueEta)
   return true
 }
 
@@ -114,6 +141,10 @@ export function resetDownloadsQueueRowForRetry(id: number): boolean {
   row.progress = '—'
   row.status = 'Ожидание'
   delete row.outputPath
+  delete row.queueFmt
+  delete row.queueSize
+  delete row.queueSpeed
+  delete row.queueEta
   return true
 }
 

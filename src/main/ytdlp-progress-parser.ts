@@ -11,6 +11,8 @@ export interface YtdlpDownloadProgressParts {
   percent: string | null
   speed: string | null
   eta: string | null
+  /** Размер целевого файла из фрагмента «NN% of 12.34MiB», если распознан. §6/v0 таблица. */
+  sizeTotal?: string | null
 }
 
 /**
@@ -131,6 +133,18 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
   const pctMatch = t.match(/(\d+(?:\.\d+)?)%/)
   const percent = pctMatch ? `${pctMatch[1]}%` : null
 
+  let sizeTotal: string | null = null
+  if (percent !== null && /\d+(?:\.\d+)?%\s+of\s+/i.test(t)) {
+    const ofSm = t.match(/\b\d+(?:\.\d+)?%\s+of\s+(\S+)/i)
+    const rawTok = ofSm?.[1]
+    if (rawTok !== undefined) {
+      const raw = rawTok.replace(/^~+/, '').replace(/[,;.]+$/, '')
+      if (/^[\d.]+\s*[KMGT]?iB$/i.test(raw) || /^[\d.]+\s*[KMGT]?B$/i.test(raw)) {
+        sizeTotal = raw.replace(/\s+/g, '')
+      }
+    }
+  }
+
   let speed: string | null = null
   let eta: string | null = null
 
@@ -162,7 +176,31 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
     return null
   }
 
-  return { percent, speed, eta }
+  const parts: YtdlpDownloadProgressParts = { percent, speed, eta }
+  if (sizeTotal !== null && sizeTotal.length > 0) {
+    parts.sizeTotal = sizeTotal
+  }
+  return parts
+}
+
+/**
+ * §6/v0 — краткая подпись целевого формата из строк yt-dlp `[info] … Downloading N format(s): …`.
+ */
+export function parseYtdlpInfoFormatSnippet(line: string): string | null {
+  const t = line.trimEnd()
+  if (!t.startsWith('[info]')) {
+    return null
+  }
+  const m = t.match(/Downloading\s+\d+\s+format\(s\):\s*(.+)$/i)
+  const cap = m?.[1]
+  if (!cap) {
+    return null
+  }
+  const s = cap.trim()
+  if (s.length === 0) {
+    return null
+  }
+  return s.length <= 56 ? s : `${s.slice(0, 54)}…`
 }
 
 /** Компактная подпись для ячейки: «42.1% · 1.2MiB/s · ETA 00:15». */

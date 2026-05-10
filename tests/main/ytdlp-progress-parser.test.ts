@@ -7,6 +7,7 @@ import {
   formatYtdlpProgressCell,
   formatYtdlpQueueFailureStatus,
   parseYtdlpDownloadProgressLine,
+  parseYtdlpInfoFormatSnippet,
   shouldSkipQueueRetriesForFailureKind,
   shouldSkipYtdlpQueueRetriesAfterFailure
 } from '../../src/main/ytdlp-progress-parser'
@@ -26,7 +27,12 @@ describe('parseYtdlpDownloadProgressLine', () => {
     const r = parseYtdlpDownloadProgressLine(
       '[download]  42.1% of   12.34MiB at  1.20MiB/s ETA 00:15'
     )
-    expect(r).toEqual({ percent: '42.1%', speed: '1.20MiB/s', eta: '00:15' })
+    expect(r).toEqual({
+      percent: '42.1%',
+      speed: '1.20MiB/s',
+      eta: '00:15',
+      sizeTotal: '12.34MiB'
+    })
   })
 
   it('парсит финальную строку «in X at Y» без процента', () => {
@@ -34,6 +40,7 @@ describe('parseYtdlpDownloadProgressLine', () => {
     expect(r).not.toBeNull()
     expect(r?.percent).toBe('100%')
     expect(r?.speed).toBe('1.20MiB/s')
+    expect(r?.sizeTotal).toBe('12.34MiB')
   })
 
   it('парсит строку только с процентом', () => {
@@ -127,6 +134,19 @@ describe('parseYtdlpDownloadProgressLine', () => {
       speed: 'продолжение загрузки',
       eta: null
     })
+  })
+})
+
+describe('parseYtdlpInfoFormatSnippet', () => {
+  it('достаёт список format id из строки [info]', () => {
+    expect(parseYtdlpInfoFormatSnippet('[info] test_vid: Downloading 1 format(s): 398+251')).toBe(
+      '398+251'
+    )
+  })
+
+  it('возвращает null без шаблона format(s)', () => {
+    expect(parseYtdlpInfoFormatSnippet('[info] Sleeping 5 seconds')).toBeNull()
+    expect(parseYtdlpInfoFormatSnippet('[download] blah')).toBeNull()
   })
 })
 

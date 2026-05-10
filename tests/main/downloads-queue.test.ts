@@ -54,4 +54,22 @@ describe('downloads queue output path', () => {
     expect(reset!.status).toBe('Ожидание')
     expect(reset!.outputPath).toBeUndefined()
   })
+
+  it('очищает вспомогательные поля таблицы v0 при retry', () => {
+    appendUrlsFromMultilineBlock('https://example.com/x')
+    const row = getDownloadsQueueSnapshot()[0]
+    expect(row).toBeDefined()
+    updateDownloadsRow(row!.id, {
+      queueFmt: '398',
+      queueSize: '10MiB',
+      queueSpeed: '1MiB/s',
+      queueEta: '00:12'
+    })
+    expect(resetDownloadsQueueRowForRetry(row!.id)).toBe(true)
+    const r = getDownloadsQueueSnapshot()[0]
+    expect(r?.queueFmt).toBeUndefined()
+    expect(r?.queueSize).toBeUndefined()
+    expect(r?.queueSpeed).toBeUndefined()
+    expect(r?.queueEta).toBeUndefined()
+  })
 })
