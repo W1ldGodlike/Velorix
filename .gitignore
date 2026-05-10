@@ -19,3 +19,6 @@ Desktop.ini
 # Альтернативные lockfile не используем, пока проект стандартизован на npm.
 pnpm-lock.yaml
 yarn.lock
+
+# Временные файлы сообщений коммитов (PowerShell не поддерживает heredoc, ред-сценарий через --file).
+.git-commit-msg.tmp
