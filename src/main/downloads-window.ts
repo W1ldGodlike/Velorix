@@ -209,25 +209,38 @@ function openDownloadOutputInHandler(
   return fn(file)
 }
 
-/** Отправить очередь в окно загрузок без полной перезагрузки документа. */
+function getDownloadsQueueSnapshotForRenderer(): Array<Record<string, unknown>> {
+  const activeId = getActiveDownloadsRunnerRowId()
+  const ps = getActiveYtdlpPauseState()
+  return getDownloadsQueueSnapshot().map((r) => {
+    const isActive = r.id === activeId
+    const row: Record<string, unknown> = { ...r, isActiveRunner: isActive }
+    if (isActive) {
+      row['ytdlpPauseSupported'] = ps.supported
+      row['ytdlpPauseChildActive'] = ps.active
+      row['ytdlpPaused'] = ps.paused
+    }
+    return row
+  })
+}
+
+/** Отправить очередь во все UI-представления загрузок без полной перезагрузки документа. */
 export function broadcastDownloadsSnapshot(): void {
   schedulePersistDownloadsQueueDebounced()
-  if (!downloadsWindow || downloadsWindow.isDestroyed()) {
-    return
-  }
   if (broadcastThrottleTimer !== null) {
     return
   }
   broadcastThrottleTimer = setTimeout(() => {
     broadcastThrottleTimer = null
     try {
-      if (!downloadsWindow || downloadsWindow.isDestroyed()) {
-        return
+      const rows = getDownloadsQueueSnapshotForRenderer()
+      if (downloadsWindow && !downloadsWindow.isDestroyed()) {
+        downloadsWindow.webContents.send(DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL, rows)
       }
-      downloadsWindow.webContents.send(
-        DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL,
-        getDownloadsQueueSnapshot()
-      )
+      const mainWindow = resolveMainEditorWindow()
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.webContents.send(DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL, rows)
+      }
     } catch {
       /* окно закрывается */
     }
@@ -2378,18 +2391,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
     if (!isDownloadsOrMainSender(event.sender)) {
       return []
     }
-    const activeId = getActiveDownloadsRunnerRowId()
-    const ps = getActiveYtdlpPauseState()
-    return getDownloadsQueueSnapshot().map((r) => {
-      const isActive = r.id === activeId
-      const row: Record<string, unknown> = { ...r, isActiveRunner: isActive }
-      if (isActive) {
-        row['ytdlpPauseSupported'] = ps.supported
-        row['ytdlpPauseChildActive'] = ps.active
-        row['ytdlpPaused'] = ps.paused
-      }
-      return row
-    })
+    return getDownloadsQueueSnapshotForRenderer()
   })
 
   ipcMain.handle(d.addLines, (event, text: unknown) => {
