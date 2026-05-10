@@ -47,6 +47,11 @@ export interface MediaProbeSuccess {
   durationSec: number | null
   /** Первый видеопоток или `null` (только аудио и т.п.). */
   video: { width: number; height: number; codec: string } | null
+  /**
+   * Оценка FPS первого видеопотока: `avg_frame_rate`→`r_frame_rate` или `nb_frames`/длительность.
+   * Для §1.1 снап кадра на таймлайне; без видео или данных — `null`.
+   */
+  videoFpsApprox: number | null
   /** Кодек первой аудиодорожки или `null`. */
   audioCodec: string | null
   /** Короткое имя формата контейнера ffprobe. */

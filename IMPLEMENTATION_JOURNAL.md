@@ -188,3 +188,4 @@
 - 2026-05-10 15:06:20 [SDK]: §6.1/§4.A — окно загрузок: второй DPI-проход в inline CSS (`buildDownloadsHtml`): @120dpi/@168dpi для URL-band, queue toolbar/таблица/прогресс/иконы строк, журнал/история, rail (summary, selects, checkbox-pill).
 - 2026-05-10 15:07:28 [SDK]: §1.1/v0 — клик по `app-timeline-ruler-track` и клавиатура (Home/End/стрелки) → seek в окне zoom; `cursor` + `focus-visible` в `main.css`; чеклист §1.1/спринт.
 - 2026-05-10 15:09:01 [SDK]: §1.1 — снап seek к кадру по fps ffprobe: `snapSeekTimeSec` + Vitest; scrub/линейка/стрелки/In/Out; счётчик «кадр ~» по снапу; чеклист/спринт.
+- 2026-05-10 15:11:21 [SDK]: §1.1/IPC — `MediaProbeSuccess.videoFpsApprox` из ffprobe (`ffprobe-video-fps`, fallback `nb_frames`/duration); сводки TXT/HTML; `VideoTimeline` приоритет поля над regex `detail`; Vitest + чеклист.

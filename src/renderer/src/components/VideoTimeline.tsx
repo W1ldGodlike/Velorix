@@ -29,6 +29,10 @@ function approxVideoFpsFromProbe(probe: MediaProbeSuccess | null): number | null
   if (!probe) {
     return null
   }
+  const fromProbe = probe.videoFpsApprox
+  if (fromProbe !== null && Number.isFinite(fromProbe) && fromProbe > 0 && fromProbe < 1000) {
+    return fromProbe
+  }
   const row = probe.tracks.find((t) => t.kind === 'video')
   if (!row) {
     return null

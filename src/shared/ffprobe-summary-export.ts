@@ -77,6 +77,15 @@ function formatBitrateLine(kbps: number | null): string | null {
   return `${Math.round(kbps)} kb/s`
 }
 
+/** Строка для сводки §9 / §1.1; согласована с подписью fps в дорожке ffprobe. */
+function formatVideoFpsApproxForSummary(fps: number | null): string | null {
+  if (fps === null || !Number.isFinite(fps) || fps <= 0 || fps >= 1000) {
+    return null
+  }
+  const core = fps >= 100 ? fps.toFixed(0) : Number.isInteger(fps) ? String(fps) : fps.toFixed(3)
+  return `${core} fps`
+}
+
 function formatChapterDurationSec(endSec: number, startSec: number): string {
   const dur = endSec - startSec
   return Number.isFinite(dur) && dur >= 0 ? `${dur.toFixed(2)} с` : '—'
@@ -93,6 +102,8 @@ function escapeHtml(raw: string): string {
 /** §9 — человекочитаемая сводка для сохранения в .txt (UTF-8 в main). */
 export function formatProbeSummaryPlainText(info: MediaProbeSuccess): string {
   const bitrateLabel = formatBitrateLine(info.bitrateKbps)
+  const fpsSummary =
+    info.video !== null ? formatVideoFpsApproxForSummary(info.videoFpsApprox) : null
   const lines: string[] = [
     'FluxAlloy — сводка ffprobe',
     '========================',
@@ -101,6 +112,7 @@ export function formatProbeSummaryPlainText(info: MediaProbeSuccess): string {
     info.video
       ? `Видео: ${info.video.width}×${info.video.height}, кодек ${info.video.codec}`
       : 'Видео: нет',
+    fpsSummary ? `FPS (оценка, видео): ${fpsSummary}` : null,
     info.audioCodec ? `Аудио: кодек ${info.audioCodec}` : 'Аудио: нет',
     info.formatName ? `Формат: ${info.formatName}` : 'Формат: ?',
     info.formatLongName && info.formatLongName !== info.formatName
@@ -176,11 +188,14 @@ ${chapterRows}
   </table>`
       : ''
 
+  const fpsSummary =
+    info.video !== null ? formatVideoFpsApproxForSummary(info.videoFpsApprox) : null
   const metaParts = [
     `<li>Длительность: ${escapeHtml(formatProbeDurationLine(info.durationSec))}</li>`,
     info.video
       ? `<li>Видео: ${info.video.width}×${info.video.height}, ${escapeHtml(info.video.codec)}</li>`
       : '<li>Видео: нет</li>',
+    fpsSummary ? `<li>FPS (оценка, видео): ${escapeHtml(fpsSummary)}</li>` : '',
     info.audioCodec ? `<li>Аудио: ${escapeHtml(info.audioCodec)}</li>` : '<li>Аудио: нет</li>',
     info.formatName ? `<li>Формат: ${escapeHtml(info.formatName)}</li>` : '',
     info.formatLongName && info.formatLongName !== info.formatName

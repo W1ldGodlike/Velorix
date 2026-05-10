@@ -5,6 +5,7 @@ import { resolveEngineExecutablePath, type EnginePathOverrides } from './engine-
 import { logExternalProcessLine } from './external-process-log'
 import { formatFfprobeDispositionSummary } from '../shared/ffprobe-disposition'
 import { buildChapterRowsFromFfprobeJson } from '../shared/ffprobe-chapters'
+import { parseFfprobeRationalFps, resolveVideoFpsApprox } from '../shared/ffprobe-video-fps'
 import type {
   MediaProbeResult,
   MediaProbeSuccess,
@@ -36,6 +37,7 @@ interface FfprobeJson {
     channel_layout?: string
     avg_frame_rate?: string
     r_frame_rate?: string
+    nb_frames?: string
     pix_fmt?: string
     sample_aspect_ratio?: string
     display_aspect_ratio?: string
@@ -63,23 +65,6 @@ function parsePositiveNumber(raw: string | undefined): number | null {
 function formatBitrateKbps(bitRateBitsPerSec: string | undefined): number | null {
   const bps = parsePositiveNumber(bitRateBitsPerSec)
   return bps === null ? null : bps / 1000
-}
-
-function parseFraction(rate: string | undefined): number | null {
-  if (!rate || rate === '0/0') {
-    return null
-  }
-  const parts = rate.split('/')
-  if (parts.length !== 2) {
-    return null
-  }
-  const a = Number(parts[0])
-  const b = Number(parts[1])
-  if (!Number.isFinite(a) || !Number.isFinite(b) || b === 0) {
-    return null
-  }
-  const q = a / b
-  return Number.isFinite(q) && q > 0 ? q : null
 }
 
 /** Строки полей ffprobe вроде ratio/pix_fmt: пусто и `N/A` не показываем. */
@@ -138,7 +123,8 @@ function buildTrackDetail(stream: NonNullable<FfprobeJson['streams']>[number]): 
     if (typeof w === 'number' && typeof h === 'number') {
       parts.push(`${w}×${h}`)
     }
-    const fps = parseFraction(stream.avg_frame_rate) ?? parseFraction(stream.r_frame_rate)
+    const fps =
+      parseFfprobeRationalFps(stream.avg_frame_rate) ?? parseFfprobeRationalFps(stream.r_frame_rate)
     if (fps !== null) {
       const label =
         fps >= 100 ? fps.toFixed(0) : Number.isInteger(fps) ? String(fps) : fps.toFixed(3)
@@ -291,7 +277,10 @@ export async function probeMediaFile(
         ? durRaw
         : NaN
 
+  const durationSecResolved = Number.isFinite(durationSec) ? durationSec : null
+
   let video: MediaProbeSuccess['video'] = null
+  let videoFpsApprox: number | null = null
   let audioCodec: string | null = null
 
   for (const s of parsed.streams ?? []) {
@@ -306,6 +295,12 @@ export async function probeMediaFile(
         height: s.height,
         codec: s.codec_name ?? 'unknown'
       }
+      videoFpsApprox = resolveVideoFpsApprox({
+        durationSec: durationSecResolved,
+        ...(typeof s.avg_frame_rate === 'string' ? { avgFrameRate: s.avg_frame_rate } : {}),
+        ...(typeof s.r_frame_rate === 'string' ? { rFrameRate: s.r_frame_rate } : {}),
+        ...(typeof s.nb_frames === 'string' ? { nbFrames: s.nb_frames } : {})
+      })
     }
     if (s.codec_type === 'audio' && audioCodec === null && s.codec_name) {
       audioCodec = s.codec_name
@@ -320,8 +315,9 @@ export async function probeMediaFile(
 
   return {
     ok: true,
-    durationSec: Number.isFinite(durationSec) ? durationSec : null,
+    durationSec: durationSecResolved,
     video,
+    videoFpsApprox,
     audioCodec,
     formatName:
       typeof parsed.format?.format_name === 'string'

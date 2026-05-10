@@ -13,6 +13,7 @@ const sampleProbe: MediaProbeSuccess = {
   ok: true,
   durationSec: 125.5,
   video: { width: 1920, height: 1080, codec: 'h264' },
+  videoFpsApprox: 24,
   audioCodec: 'aac',
   formatName: 'mov,mp4,m4a,3gp,3g2,mj2',
   formatLongName: 'QuickTime / MOV',
@@ -79,6 +80,7 @@ describe('ffprobe-summary-export', () => {
     expect(t).toContain('FluxAlloy — сводка ffprobe')
     expect(t).toContain('1920×1080')
     expect(t).toContain('h264')
+    expect(t).toContain('FPS (оценка, видео): 24 fps')
     expect(t).toContain('aac')
     expect(t).toContain('Дорожек: 2')
     expect(t).toContain(
@@ -142,5 +144,6 @@ describe('ffprobe-summary-export', () => {
     expect(h).toContain('&lt;script&gt;')
     expect(h).not.toContain('<script>x</script>')
     expect(h).toContain('<meta charset="utf-8" />')
+    expect(h).toContain('FPS (оценка, видео): 24 fps')
   })
 })
