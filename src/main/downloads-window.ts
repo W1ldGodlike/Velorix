@@ -103,7 +103,7 @@ interface DownloadsWindowBoundsHooks {
   /** §6.4 — открыть готовый файл из yt-dlp в основном обработчике/preview FluxAlloy. */
   openDownloadedFileInHandler?: (
     absoluteFile: string
-  ) => { ok: true } | { ok: false; error: string }
+  ) => Promise<{ ok: true } | { ok: false; error: string }>
   /** §4.1 — снимок раскрытых секций для первичной разметки `buildDownloadsHtml`. */
   getDownloadsWindowUiPanelsSnapshot?: () => DownloadsWindowUiPanelState | undefined
   /** §4.1 — сохранить частичное состояние раскрытых секций в `settings.json`. */
@@ -195,9 +195,9 @@ async function openDownloadOutputPath(
   }
 }
 
-function openDownloadOutputInHandler(
+async function openDownloadOutputInHandler(
   rawPath: unknown
-): { ok: true } | { ok: false; error: string } {
+): Promise<{ ok: true } | { ok: false; error: string }> {
   const file = resolveAllowedDownloadOutputPath(rawPath)
   if (!file) {
     return { ok: false, error: 'Файл не найден или находится вне каталога загрузок.' }
@@ -2822,7 +2822,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
 
   ipcMain.handle(
     d.openQueueOutputInHandler,
-    (event, id: unknown): { ok: true } | { ok: false; error: string } => {
+    async (event, id: unknown): Promise<{ ok: true } | { ok: false; error: string }> => {
       if (!isDownloadsOrMainSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
       }
@@ -2839,7 +2839,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
 
   ipcMain.handle(
     d.openHistoryOutputInHandler,
-    (event, id: unknown): { ok: true } | { ok: false; error: string } => {
+    async (event, id: unknown): Promise<{ ok: true } | { ok: false; error: string }> => {
       if (!isDownloadsOrMainSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
       }

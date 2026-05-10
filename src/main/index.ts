@@ -1,5 +1,7 @@
-import { existsSync, rmSync, statSync, writeFileSync } from 'fs'
-import { basename, dirname, isAbsolute, join, normalize, resolve } from 'path'
+import { execFile } from 'child_process'
+import { createHash } from 'crypto'
+import { existsSync, mkdirSync, rmSync, statSync, writeFileSync } from 'fs'
+import { basename, dirname, extname, isAbsolute, join, normalize, resolve } from 'path'
 import { BrowserWindow, Menu, app, clipboard, dialog, ipcMain, nativeTheme, shell } from 'electron'
 import type { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
@@ -309,7 +311,7 @@ async function openExportOutputPath(
     return { ok: true, path: abs }
   }
   if (rawMode === 'preview') {
-    const opened = openDownloadedFileInMainHandler(abs)
+    const opened = await openDownloadedFileInMainHandler(abs)
     return opened.ok ? { ok: true, path: abs } : opened
   }
   const result = await shell.openPath(abs)
@@ -1438,10 +1440,127 @@ function createWindow(): void {
   }
 }
 
-function openDownloadedFileInMainHandler(
+function isLikelyBrowserPlayableMedia(filePath: string): boolean {
+  const ext = extname(filePath).toLowerCase()
+  return ['.mp4', '.m4v', '.webm', '.ogg', '.ogv', '.mp3', '.wav', '.flac'].includes(ext)
+}
+
+function runFfmpegPreviewProxy(
+  ffmpeg: string,
+  input: string,
+  output: string,
+  transcodeVideo: boolean
+): Promise<void> {
+  const args = transcodeVideo
+    ? [
+        '-y',
+        '-i',
+        input,
+        '-map',
+        '0:v:0',
+        '-map',
+        '0:a?',
+        '-c:v',
+        'libx264',
+        '-preset',
+        'veryfast',
+        '-crf',
+        '23',
+        '-c:a',
+        'aac',
+        '-b:a',
+        '160k',
+        '-movflags',
+        '+faststart',
+        output
+      ]
+    : [
+        '-y',
+        '-i',
+        input,
+        '-map',
+        '0:v:0',
+        '-map',
+        '0:a?',
+        '-c:v',
+        'copy',
+        '-c:a',
+        'aac',
+        '-b:a',
+        '160k',
+        '-movflags',
+        '+faststart',
+        output
+      ]
+
+  return new Promise((resolvePromise, reject) => {
+    execFile(
+      ffmpeg,
+      args,
+      { timeout: 20 * 60_000, windowsHide: true },
+      (error, _stdout, stderr) => {
+        if (error) {
+          reject(new Error(stderr.trim() || error.message))
+          return
+        }
+        resolvePromise()
+      }
+    )
+  })
+}
+
+async function ensurePreviewPlayableMedia(absoluteFile: string): Promise<string> {
+  if (isLikelyBrowserPlayableMedia(absoluteFile)) {
+    return absoluteFile
+  }
+
+  const paths = resolveAppPaths()
+  const ffmpeg = resolveEngineExecutablePath(paths, 'ffmpeg', cachedSettings.engineExecutablePaths)
+  if (!ffmpeg) {
+    throw new Error(
+      'Файл не поддерживается встроенным предпросмотром, а ffmpeg для MP4-proxy не найден.'
+    )
+  }
+
+  const st = statSync(absoluteFile)
+  const key = createHash('sha256')
+    .update(absoluteFile)
+    .update(String(st.mtimeMs))
+    .update(String(st.size))
+    .digest('hex')
+    .slice(0, 24)
+  const cacheDir = join(paths.userData, 'preview-cache')
+  mkdirSync(cacheDir, { recursive: true })
+  const output = join(cacheDir, `${key}.mp4`)
+  if (existsSync(output) && statSync(output).isFile()) {
+    return output
+  }
+
+  logInfo('preview', `creating mp4 preview proxy for ${absoluteFile}`)
+  try {
+    await runFfmpegPreviewProxy(ffmpeg, absoluteFile, output, false)
+  } catch (copyError) {
+    logInfo(
+      'preview',
+      `copy preview proxy failed, retrying with h264 transcode: ${
+        copyError instanceof Error ? copyError.message : String(copyError)
+      }`
+    )
+    await runFfmpegPreviewProxy(ffmpeg, absoluteFile, output, true)
+  }
+  return output
+}
+
+async function openDownloadedFileInMainHandler(
   absoluteFile: string
-): { ok: true } | { ok: false; error: string } {
-  const mediaUrl = grantMediaPath(absoluteFile)
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  let previewFile: string
+  try {
+    previewFile = await ensurePreviewPlayableMedia(absoluteFile)
+  } catch (error) {
+    return { ok: false, error: error instanceof Error ? error.message : String(error) }
+  }
+  const mediaUrl = grantMediaPath(previewFile)
   if (!mediaUrl) {
     return { ok: false, error: 'Нельзя открыть этот файл в предпросмотре.' }
   }
@@ -1452,14 +1571,17 @@ function openDownloadedFileInMainHandler(
   if (!target || target.isDestroyed()) {
     return { ok: false, error: 'Главное окно FluxAlloy не найдено.' }
   }
-  persistLastOpenedSource(absoluteFile)
+  persistLastOpenedSource(previewFile)
   target.show()
   target.focus()
   target.webContents.send(mw.previewOpened, {
     ok: true,
-    path: absoluteFile,
+    path: previewFile,
     mediaUrl,
-    name: basename(absoluteFile)
+    name:
+      previewFile === absoluteFile
+        ? basename(absoluteFile)
+        : `${basename(absoluteFile)} · preview MP4`
   })
   return { ok: true }
 }

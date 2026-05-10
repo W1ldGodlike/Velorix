@@ -141,10 +141,10 @@ export interface YtdlpRunOptionsSnapshot {
 }
 
 export function parseYtdlpFormatPreset(raw: unknown): YtdlpFormatPresetId {
-  if (raw === 'merge_bv_ba' || raw === 'best_single' || raw === 'default') {
+  if (raw === 'editor_mp4' || raw === 'merge_bv_ba' || raw === 'best_single' || raw === 'default') {
     return raw
   }
-  return 'default'
+  return 'editor_mp4'
 }
 
 export function parseYtdlpSubtitlePreset(raw: unknown): YtdlpSubtitlePresetId {
@@ -342,6 +342,14 @@ export function validateFilenameTemplate(
 }
 
 export function formatPresetToExtraArgs(id: YtdlpFormatPresetId): string[] {
+  if (id === 'editor_mp4') {
+    return [
+      '-f',
+      'bv*[ext=mp4][vcodec^=avc1]+ba[ext=m4a][acodec^=mp4a]/b[ext=mp4]/best[ext=mp4]/best',
+      '--merge-output-format',
+      'mp4'
+    ]
+  }
   if (id === 'merge_bv_ba') {
     return ['-f', 'bv*+ba/b']
   }
@@ -520,6 +528,7 @@ export function payloadFromSnapshot(
     defaultFilenameTemplate: YTDLP_DEFAULT_FILENAME_TEMPLATE,
     formatPreset: snap.formatPreset,
     formatPresetChoices: [
+      { id: 'editor_mp4', label: 'MP4 для редактора (H.264/AAC)' },
       { id: 'default', label: 'По умолчанию (yt-dlp)' },
       { id: 'merge_bv_ba', label: 'Лучшее видео + аудио (слить)' },
       { id: 'best_single', label: 'Лучший один файл (-f best)' }

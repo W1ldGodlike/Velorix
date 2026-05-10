@@ -19,7 +19,7 @@ export type YtdlpQueueRetryProfileId = 'off' | 'light' | 'normal' | 'persistent'
  * Упрощённый выбор «качества» без произвольного `-f` от пользователя §6.2;
  * только белый список параметров.
  */
-export type YtdlpFormatPresetId = 'default' | 'merge_bv_ba' | 'best_single'
+export type YtdlpFormatPresetId = 'editor_mp4' | 'default' | 'merge_bv_ba' | 'best_single'
 
 /** Компактная запись для окна загрузок §6.3 (из `Data/ytdlp_commands.json`). */
 export interface YtdlpCommandHintEntry {

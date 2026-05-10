@@ -136,6 +136,14 @@ describe('normalizeYtdlpPreviewOutputDirectory §6.3', () => {
 })
 
 describe('payloadFromSnapshot §6.3 превью argv', () => {
+  it('по умолчанию выбирает MP4-пресет для предпросмотра в редакторе', () => {
+    const snap = buildYtdlpRunOptionsSnapshot({ theme: 'dark' })
+    const p = payloadFromSnapshot(snap)
+    expect(snap.formatPreset).toBe('editor_mp4')
+    expect(p.commandPreview).toContain('--merge-output-format mp4')
+    expect(p.formatPresetChoices.map((choice) => choice.id)).toContain('editor_mp4')
+  })
+
   it('без контекста сохраняет плейсхолдеры', () => {
     const snap = buildYtdlpRunOptionsSnapshot({ theme: 'dark' })
     const p = payloadFromSnapshot(snap)

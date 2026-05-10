@@ -35,7 +35,7 @@ let notifySnapshot = (): void => {}
 
 type OpenDownloadedInMainHandlerFn = (
   absoluteFile: string
-) => { ok: true } | { ok: false; error: string }
+) => Promise<{ ok: true } | { ok: false; error: string }>
 
 /** Из index.ts: то же открытие в preview, что кнопка «В обработчик» в окне загрузок. */
 let openDownloadedFileInMainHandlerHook: OpenDownloadedInMainHandlerFn | null = null
@@ -336,7 +336,7 @@ async function runYtdlpForWaitingRow(
               text: '[FluxAlloy] Авто-открытие в обработчике пропущено: путь результата неизвестен или вне каталога загрузок.'
             })
           } else {
-            const openResult = openDownloadedFileInMainHandlerHook(safe)
+            const openResult = await openDownloadedFileInMainHandlerHook(safe)
             if (!openResult.ok) {
               emitDownloadsLog({
                 kind: 'line',

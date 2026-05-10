@@ -77,7 +77,7 @@ export interface AppSettings {
   ytdlpDownloadDirectory?: string
   /** §6.2: относительный шаблон `-o` внутри каталога загрузки; см. `ytdlp-download-options`. */
   ytdlpFilenameTemplate?: string
-  /** §6.2: пресет `-f` (`default` | `merge_bv_ba` | `best_single` и др.). */
+  /** §6.2: пресет `-f` (`editor_mp4` | `default` | `merge_bv_ba` | `best_single` и др.). */
   ytdlpFormatPreset?: string
   /** §6.2: с `--yes-playlist` скачивать весь плейлист (иначе `--no-playlist`). */
   ytdlpDownloadPlaylist?: boolean
