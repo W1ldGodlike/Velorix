@@ -337,7 +337,8 @@ function unquoteYtdlpPath(raw: string): string {
  */
 export function extractYtdlpOutputPath(line: string): string | null {
   const t = line.trim()
-  const destination = t.match(/^\[(?:download|ExtractAudio)]\s+Destination:\s+(.+)$/i)
+  /** `Destination:` встречается у download, ExtractAudio и постпроцессоров на базе ffmpeg §6.4. */
+  const destination = t.match(/^\[(?:download|ExtractAudio|ffmpeg)]\s+Destination:\s+(.+)$/i)
   if (destination) {
     const cap = destination[1]
     return cap !== undefined ? unquoteYtdlpPath(cap) : null
@@ -350,6 +351,12 @@ export function extractYtdlpOutputPath(line: string): string | null {
   const merging = t.match(/^\[Merger]\s+Merging formats into\s+(.+)$/i)
   if (merging) {
     const cap = merging[1]
+    return cap !== undefined ? unquoteYtdlpPath(cap) : null
+  }
+  /** Альтернативный тег слияния (некоторые сборки пишут `[ffmpeg]` вместо `[Merger]`). */
+  const ffmpegMerge = t.match(/^\[ffmpeg]\s+Merging formats into\s+(.+)$/i)
+  if (ffmpegMerge) {
+    const cap = ffmpegMerge[1]
     return cap !== undefined ? unquoteYtdlpPath(cap) : null
   }
   const moving = t.match(/^\[MoveFiles]\s+Moving file\s+.+?\s+to\s+(.+)$/i)
@@ -371,6 +378,16 @@ export function extractYtdlpOutputPath(line: string): string | null {
   const subsAlt = t.match(/^\[download]\s+Writing subtitles to:\s+(.+)$/i)
   if (subsAlt) {
     const cap = subsAlt[1]
+    return cap !== undefined ? unquoteYtdlpPath(cap) : null
+  }
+  const embedSub = t.match(/^\[EmbedSubtitle]\s+Embedding subtitles in\s+(.+)$/i)
+  if (embedSub) {
+    const cap = embedSub[1]
+    return cap !== undefined ? unquoteYtdlpPath(cap) : null
+  }
+  const metaWrite = t.match(/^\[Metadata]\s+Writing metadata to\s+(.+)$/i)
+  if (metaWrite) {
+    const cap = metaWrite[1]
     return cap !== undefined ? unquoteYtdlpPath(cap) : null
   }
   return null

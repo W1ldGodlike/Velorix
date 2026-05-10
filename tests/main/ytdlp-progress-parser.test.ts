@@ -294,4 +294,19 @@ describe('extractYtdlpOutputPath', () => {
       '/tmp/spaced sub.srt'
     )
   })
+
+  it('извлекает путь из постпроцессоров EmbedSubtitle / ffmpeg / Metadata', () => {
+    expect(extractYtdlpOutputPath('[EmbedSubtitle] Embedding subtitles in "/media/out.mkv"')).toBe(
+      '/media/out.mkv'
+    )
+    expect(extractYtdlpOutputPath('[ffmpeg] Merging formats into "C:\\merged.mp4"')).toBe(
+      'C:\\merged.mp4'
+    )
+    expect(extractYtdlpOutputPath('[ffmpeg] Destination: /tmp/converted.webm')).toBe(
+      '/tmp/converted.webm'
+    )
+    expect(extractYtdlpOutputPath('[Metadata] Writing metadata to /home/u/final.m4a')).toBe(
+      '/home/u/final.m4a'
+    )
+  })
 })
