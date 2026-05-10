@@ -191,6 +191,8 @@ export function runFfmpegExportJob(params: {
   trim?: MediaExportTrimPayload
   probeDurationSec?: number | null
   encodePreset?: FfmpegExportEncodePresetId
+  /** Контейнер сохранения §7.2 — влияет на хвост argv (MKV без `-movflags`). */
+  container?: FfmpegExportContainerId | null
   crf?: number | null
   videoBitrate?: string | null
   audioMode?: FfmpegExportAudioModeId | null
@@ -208,6 +210,7 @@ export function runFfmpegExportJob(params: {
   const audioBitrate = parseFfmpegExportAudioBitrate(params.audioBitrate) ?? '192k'
   const fps = parseFfmpegExportFps(params.fps)
   const scalePreset = parseFfmpegExportScalePreset(params.scalePreset)
+  const container = parseFfmpegExportContainer(params.container ?? 'mp4')
   const segmentDur = resolveExportSegmentDurationSec(
     params.trim,
     applyTrim,
@@ -216,6 +219,7 @@ export function runFfmpegExportJob(params: {
   const args = buildFfmpegExportArgv({
     inputPath: params.inputPath,
     outputPath: params.outputPath,
+    container,
     ...(params.trim !== undefined ? { trim: params.trim } : {}),
     applyTrim,
     encodePreset,

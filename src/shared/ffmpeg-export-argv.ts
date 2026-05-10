@@ -8,6 +8,7 @@
 
 import type {
   FfmpegExportAudioModeId,
+  FfmpegExportContainerId,
   FfmpegExportEncodePresetId,
   FfmpegExportScalePresetId,
   MediaExportTrimPayload
@@ -77,6 +78,8 @@ export function resolveFfmpegExportScaleFilter(preset: FfmpegExportScalePresetId
 export interface FfmpegExportArgvParams {
   inputPath: string
   outputPath: string
+  /** Контейнер выхода §7.2: для MKV не добавляем `-movflags +faststart` (muxer matroska). */
+  container?: FfmpegExportContainerId
   /** Если `applyTrim=false`, маркеры игнорируются (например, диапазон совпал с длительностью). */
   trim?: MediaExportTrimPayload
   applyTrim: boolean
@@ -95,6 +98,7 @@ export interface FfmpegExportArgvParams {
 
 /** Полный argv ffmpeg без пути к exe; используется и runner, и preview UI. */
 export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] {
+  const container: FfmpegExportContainerId = params.container ?? 'mp4'
   const enc = resolveFfmpegExportEncodeParams(params.encodePreset)
   const crf = params.crf === null ? enc.crf : String(params.crf)
   const filters: string[] = []
@@ -133,7 +137,12 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
   } else {
     args.push('-c:a', 'aac', '-b:a', params.audioBitrate)
   }
-  args.push('-movflags', '+faststart', params.outputPath)
+  /** `-movflags +faststart` относится к MP4/MOV; для MKV (Matroska) эти флаги не применяются. */
+  if (container === 'mkv') {
+    args.push(params.outputPath)
+  } else {
+    args.push('-movflags', '+faststart', params.outputPath)
+  }
   return args
 }
 
@@ -154,6 +163,8 @@ export function formatFfmpegArgvForPreview(tokens: ReadonlyArray<string>): strin
 
 export interface FfmpegExportPreviewInput {
   encodePreset: FfmpegExportEncodePresetId
+  /** Совпадает с выбором контейнера в toolbar §7.2; по умолчанию mp4. */
+  container?: FfmpegExportContainerId
   crf: number | null
   videoBitrate: string | null
   audioMode: FfmpegExportAudioModeId
@@ -211,6 +222,7 @@ export function buildFfmpegExportPreviewCommand(
     outputPath,
     ...(trim !== undefined ? { trim } : {}),
     applyTrim,
+    ...(input.container !== undefined ? { container: input.container } : {}),
     encodePreset: input.encodePreset,
     crf: input.crf,
     videoBitrate: input.videoBitrate,

@@ -767,6 +767,7 @@ function App(): JSX.Element {
     }
     return buildFfmpegExportPreviewCommand({
       encodePreset: exportEncodePreset,
+      container: exportContainer,
       crf: exportCrf,
       videoBitrate: exportVideoBitrate,
       audioMode: exportAudioMode,

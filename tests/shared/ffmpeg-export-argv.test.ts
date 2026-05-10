@@ -101,6 +101,7 @@ describe('shared ffmpeg export argv', () => {
     const argv = buildFfmpegExportArgv({
       inputPath: 'in.mp4',
       outputPath: 'out.mkv',
+      container: 'mkv',
       applyTrim: false,
       encodePreset: 'balance',
       crf: 18,
@@ -114,6 +115,40 @@ describe('shared ffmpeg export argv', () => {
     expect(argv).toContain('-b:v')
     expect(argv[argv.indexOf('-b:v') + 1]).toBe('5000k')
     expect(argv[argv.indexOf('-b:a') + 1]).toBe('160k')
+    expect(argv).not.toContain('-movflags')
+    expect(argv[argv.length - 1]).toBe('out.mkv')
+  })
+
+  it('для MKV не добавляет -movflags; для MP4/MOV — faststart', () => {
+    const mkv = buildFfmpegExportArgv({
+      inputPath: 'a.mp4',
+      outputPath: 'b.mkv',
+      container: 'mkv',
+      applyTrim: false,
+      encodePreset: 'balance',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source'
+    })
+    expect(mkv).not.toContain('-movflags')
+    const mp4 = buildFfmpegExportArgv({
+      inputPath: 'a.mp4',
+      outputPath: 'b.mp4',
+      container: 'mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source'
+    })
+    expect(mp4).toContain('-movflags')
+    expect(mp4).toContain('+faststart')
   })
 
   it('formatFfmpegArgvForPreview оборачивает токены с пробелами/кавычками в кавычки', () => {
@@ -244,5 +279,21 @@ describe('shared ffmpeg export argv', () => {
     expect(midClip.argv[midClip.argv.indexOf('-ss') + 1]).toBe('5')
     expect(midClip.argv[midClip.argv.indexOf('-t') + 1]).toBe('7')
     expect(midClip.appliedTrim).toBe(true)
+  })
+
+  it('buildFfmpegExportPreviewCommand передаёт container в argv (MKV без movflags)', () => {
+    const mkvPreview = buildFfmpegExportPreviewCommand({
+      encodePreset: 'balance',
+      container: 'mkv',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      inputPath: '/x.mp4',
+      outputPath: '/x-export.mkv'
+    })
+    expect(mkvPreview.argv).not.toContain('-movflags')
   })
 })

@@ -1680,6 +1680,7 @@ app.whenReady().then(() => {
         ...(trim !== undefined ? { trim } : {}),
         probeDurationSec,
         encodePreset,
+        container: exportContainer,
         crf: exportCrf,
         videoBitrate: exportVideoBitrate,
         audioMode: exportAudioMode,

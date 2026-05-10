@@ -121,3 +121,4 @@
 - 2026-05-10 03:27:12 [SDK]: §6.4 — `ytdlp-progress-parser`: прогресс «N of M videos», транзиентные маркеры (500/504, broken pipe, read timed out…), пути из строк Writing thumbnail/subtitles; расширены Vitest.
 - 2026-05-10 03:28:44 [SDK]: §6.4 — `extractYtdlpOutputPath`: `[ffmpeg] Destination`/merge, `[EmbedSubtitle] Embedding…`, `[Metadata] Writing metadata to`; tests Vitest.
 - 2026-05-10 03:31:03 [SDK]: §18 — сессионный `logs/session.log` (дубликат строк с main), архив прошлого запуска в `logs/sessions/session-*.log` + prune; Support ZIP и меню «Открыть session.log».
+- 2026-05-10 03:32:59 [SDK]: §7.2/§21 — `buildFfmpegExportArgv` учитывает контейнер (MKV без `-movflags +faststart`, MP4/MOV — с faststart); preview и `runFfmpegExportJob` пробрасывают `container`; Vitest на mkv/mp4 хвост argv и preview.
