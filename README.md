@@ -1,6 +1,6 @@
 # FluxAlloy
 
-Десктопное приложение (Electron + React + TypeScript): оболочка воколо **ffmpeg** и **yt‑dlp** по [`FLUXALLOY_TZ.md`](./FLUXALLOY_TZ.md).
+Десктопное приложение (Electron + React + TypeScript): оболочка вокруг **ffmpeg** и **yt‑dlp** по [`FLUXALLOY_TZ.md`](./FLUXALLOY_TZ.md).
 
 ## Требования
 
@@ -39,6 +39,10 @@ npm run build:win    # Windows installer + artifacts
 npm run build:mac
 npm run build:linux
 ```
+
+## Архитектура и точки входа
+
+Описание слоёв (main / preload / renderer), IPC, Cursor SDK automation и таблица **точек входа**: [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md). Документ следует обновлять при смене контрактов IPC или способа сборки.
 
 ## Полезное
 

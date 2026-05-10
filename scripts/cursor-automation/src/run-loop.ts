@@ -94,7 +94,8 @@ function parseArgs(argv: string[]): {
   npm run loop -- --max-steps 10 --verbose
 
 Стоп между итерациями:
-  создать пустой файл: ${stopFlagPath}
+  создать файл ${stopFlagPath} со значением 1
+  1 = остановить перед следующей итерацией, 0 = продолжать работу
 `)
 
       process.exit(0)
@@ -110,6 +111,16 @@ function sleep(ms: number): Promise<void> {
   return new Promise((r) => {
     setTimeout(r, ms)
   })
+}
+
+function shouldStopByFlag(): boolean {
+  if (!existsSync(stopFlagPath)) {
+    return false
+  }
+
+  const value = readFileSync(stopFlagPath, 'utf-8').trim()
+  // Совместимость со старым пустым STOP: пустой файл тоже останавливает цикл.
+  return value === '' || value === '1' || value.toLowerCase() === 'true'
 }
 
 async function streamVerboseAssistantText(run: { stream(): AsyncIterable<unknown> }): Promise<void> {
@@ -227,9 +238,9 @@ async function main(): Promise<number> {
   try {
 
     for (let step = 0; step < opts.maxSteps; step++) {
-      if (existsSync(stopFlagPath)) {
+      if (shouldStopByFlag()) {
 
-        console.error(`Файл STOP (${stopFlagPath}) — выход перед шагом ${step + 1}.`)
+        console.error(`STOP=1 (${stopFlagPath}) — выход перед шагом ${step + 1}.`)
 
         return 0
       }

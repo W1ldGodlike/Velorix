@@ -4,7 +4,7 @@ import { join, normalize, resolve } from 'path'
 import { BrowserWindow, ipcMain, shell } from 'electron'
 import { is } from '@electron-toolkit/utils'
 
-import { grantMediaPath } from './media-protocol'
+import { grantMediaPath, isGrantedMediaPath } from './media-protocol'
 import { resolvePreloadOutFile } from './preload-resolve'
 import type { StoredWindowRect } from './settings-store'
 import { boundsFromBrowserWindow, rectifyBoundsForRestore } from './window-bounds'
@@ -47,9 +47,17 @@ function grantAndNormalizeExistingPath(abs: string): string | null {
   return mediaUrl ? normalized : null
 }
 
+function normalizeAlreadyGrantedPath(abs: string): string | null {
+  const normalized = resolve(normalize(abs.trim()))
+  if (!existsSync(normalized) || !isGrantedMediaPath(normalized)) {
+    return null
+  }
+  return normalized
+}
+
 function resolveRequestedOrDefaultPath(raw: unknown): string | null {
   if (typeof raw === 'string' && raw.trim().length > 0) {
-    return grantAndNormalizeExistingPath(raw)
+    return normalizeAlreadyGrantedPath(raw)
   }
   const fb = inspectorHooks.getDefaultInspectorMediaPath?.()
   if (typeof fb === 'string' && fb.trim().length > 0) {

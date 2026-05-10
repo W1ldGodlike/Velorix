@@ -1994,8 +1994,6 @@ app.whenReady().then(() => {
     }
   )
 
-  ipcMain.on('ping', () => logInfo('ipc', 'ping'))
-
   ipcMain.on(mw.logRenderer, (event, raw: unknown) => {
     if (!isMainWindowSender(event) || !consumeRendererLogToken(event.sender.id)) {
       return
