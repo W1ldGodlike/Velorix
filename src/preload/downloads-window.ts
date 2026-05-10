@@ -6,6 +6,7 @@ import type {
   YtdlpDownloadOptionsPayload,
   YtdlpGetCliOptionsParams
 } from '../shared/ytdlp-download-contract'
+import type { DownloadsWindowUiPanelState } from '../shared/settings-contract'
 import type { YtdlpDownloadHistoryEntry } from '../shared/ytdlp-history-contract'
 import { downloadsIpc as d } from '../shared/ipc-channels'
 
@@ -148,5 +149,11 @@ contextBridge.exposeInMainWorld('fluxalloyDownloads', {
     return (): void => {
       ipcRenderer.removeListener(d.log, handler)
     }
-  }
+  },
+
+  /** §4.1 — сохранить раскрытие секций окна загрузок (debounce со стороны UI не нужен — редкие события). */
+  mergeUiPanels: (
+    patch: Partial<DownloadsWindowUiPanelState>
+  ): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke(d.mergeUiPanels, patch)
 })

@@ -87,6 +87,12 @@
   border-bottom-color: var(--fa-accent);
 }
 
+.app-workspace-tab-glyph {
+  display: inline-flex;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
 .app-topbar-actions {
   display: flex;
   align-items: center;
@@ -94,6 +100,62 @@
   gap: 0.35rem;
   min-width: 0;
   overflow: hidden;
+}
+
+/* Компактные icon-first кнопки (ориентир v0 / lucide 24×24). */
+.app-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.42rem;
+  gap: 0.35rem;
+  border-radius: 8px;
+  border: 1px solid var(--fa-border-subtle);
+  background: color-mix(in srgb, var(--fa-surface-elevated) 88%, transparent);
+  color: var(--fa-text-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.app-icon-btn:hover:not(:disabled) {
+  border-color: var(--fa-border);
+  background: var(--fa-surface-elevated);
+}
+
+.app-icon-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.app-icon-btn:focus-visible {
+  outline: 2px solid var(--fa-accent);
+  outline-offset: 2px;
+}
+
+.app-icon-btn-primary {
+  border-color: color-mix(in srgb, var(--fa-accent) 45%, transparent);
+  background: color-mix(in srgb, var(--fa-accent) 22%, transparent);
+  color: var(--fa-accent);
+}
+
+.app-icon-btn-warn {
+  border-color: color-mix(in srgb, var(--fa-danger) 45%, transparent);
+  background: color-mix(in srgb, var(--fa-danger) 15%, transparent);
+  color: var(--fa-danger);
+}
+
+.app-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .app-toolbar {

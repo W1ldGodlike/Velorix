@@ -2,7 +2,13 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs'
 import { dirname, isAbsolute, normalize } from 'path'
 
 import { ENGINE_IDS, type EnginePathOverrides } from '../shared/engine-contract'
-import type { AppSettings, StoredWindowRect, WindowBoundsConfig } from '../shared/settings-contract'
+import type {
+  AppSettings,
+  DownloadsWindowUiPanelState,
+  MainWindowUiPanelState,
+  StoredWindowRect,
+  WindowBoundsConfig
+} from '../shared/settings-contract'
 import {
   parseFfmpegExportCropPreset,
   parseFfmpegExportUserPresetsList,
@@ -270,6 +276,54 @@ function parseFfmpegExportScalePresetStored(
   return undefined
 }
 
+const MAIN_UI_PANEL_KEYS = [
+  'quickYtdlp',
+  'ffmpegVideo',
+  'ffmpegFormat',
+  'ffmpegAudio',
+  'ffmpegPresets',
+  'ffmpegOutput'
+] as const satisfies ReadonlyArray<keyof MainWindowUiPanelState>
+
+function parseMainWindowUiPanels(raw: unknown): MainWindowUiPanelState | undefined {
+  if (!raw || typeof raw !== 'object') {
+    return undefined
+  }
+  const o = raw as Record<string, unknown>
+  const out: MainWindowUiPanelState = {}
+  for (const k of MAIN_UI_PANEL_KEYS) {
+    if (typeof o[k] === 'boolean') {
+      out[k] = o[k]
+    }
+  }
+  return Object.keys(out).length > 0 ? out : undefined
+}
+
+const DOWNLOADS_UI_PANEL_KEYS = [
+  'history',
+  'log',
+  'format',
+  'metadata',
+  'saving',
+  'network',
+  'expert',
+  'hints'
+] as const satisfies ReadonlyArray<keyof DownloadsWindowUiPanelState>
+
+function parseDownloadsWindowUiPanels(raw: unknown): DownloadsWindowUiPanelState | undefined {
+  if (!raw || typeof raw !== 'object') {
+    return undefined
+  }
+  const o = raw as Record<string, unknown>
+  const out: DownloadsWindowUiPanelState = {}
+  for (const k of DOWNLOADS_UI_PANEL_KEYS) {
+    if (typeof o[k] === 'boolean') {
+      out[k] = o[k]
+    }
+  }
+  return Object.keys(out).length > 0 ? out : undefined
+}
+
 const defaults: AppSettings = { theme: 'dark' }
 
 /**
@@ -432,6 +486,14 @@ export function loadSettings(filePath: string): AppSettings {
     const ffmpegExportUserPresets = parseFfmpegExportUserPresetsList(parsed.ffmpegExportUserPresets)
     if (ffmpegExportUserPresets.length > 0) {
       base.ffmpegExportUserPresets = ffmpegExportUserPresets
+    }
+    const mainWindowUiPanels = parseMainWindowUiPanels(parsed.mainWindowUiPanels)
+    if (mainWindowUiPanels !== undefined) {
+      base.mainWindowUiPanels = mainWindowUiPanels
+    }
+    const downloadsWindowUiPanels = parseDownloadsWindowUiPanels(parsed.downloadsWindowUiPanels)
+    if (downloadsWindowUiPanels !== undefined) {
+      base.downloadsWindowUiPanels = downloadsWindowUiPanels
     }
     return base
   } catch {

@@ -2,6 +2,7 @@ import { writeFileSync } from 'fs'
 import { BrowserWindow, dialog, ipcMain, shell, type WebContents } from 'electron'
 
 import { resolveAppPaths } from './app-paths'
+import type { DownloadsWindowUiPanelState } from '../shared/settings-contract'
 import type { StoredWindowRect } from './settings-store'
 import { boundsFromBrowserWindow, rectifyBoundsForRestore } from './window-bounds'
 import {
@@ -78,6 +79,10 @@ interface DownloadsWindowBoundsHooks {
   openDownloadedFileInHandler?: (
     absoluteFile: string
   ) => { ok: true } | { ok: false; error: string }
+  /** §4.1 — снимок раскрытых секций для первичной разметки `buildDownloadsHtml`. */
+  getDownloadsWindowUiPanelsSnapshot?: () => DownloadsWindowUiPanelState | undefined
+  /** §4.1 — сохранить частичное состояние раскрытых секций в `settings.json`. */
+  mergeDownloadsWindowUiPanelsPatch?: (patch: Partial<DownloadsWindowUiPanelState>) => void
 }
 
 let downloadsBoundsHooks: DownloadsWindowBoundsHooks = {}
@@ -181,7 +186,36 @@ export function broadcastDownloadsSnapshot(): void {
   }, 120)
 }
 
-function buildDownloadsHtml(): string {
+function sanitizeDownloadsUiPanelPatch(raw: unknown): Partial<DownloadsWindowUiPanelState> {
+  if (!raw || typeof raw !== 'object') {
+    return {}
+  }
+  const keys: (keyof DownloadsWindowUiPanelState)[] = [
+    'history',
+    'log',
+    'format',
+    'metadata',
+    'saving',
+    'network',
+    'expert',
+    'hints'
+  ]
+  const o = raw as Record<string, unknown>
+  const out: Partial<DownloadsWindowUiPanelState> = {}
+  for (const k of keys) {
+    if (typeof o[k] === 'boolean') {
+      out[k] = o[k]
+    }
+  }
+  return out
+}
+
+function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
+  const openAttr = (key: keyof DownloadsWindowUiPanelState, defaultOpen: boolean): string => {
+    const v = panelState?.[key]
+    const isOpen = typeof v === 'boolean' ? v : defaultOpen
+    return isOpen ? ' open' : ''
+  }
   return `<!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -423,7 +457,7 @@ function buildDownloadsHtml(): string {
           </table>
         </div>
         <div class="bottom-panels">
-          <details class="history-panel" id="historyDetails">
+          <details class="history-panel" id="historyDetails"${openAttr('history', false)}>
             <summary>История загрузок</summary>
             <div class="history-actions">
               <button type="button" class="cmd" id="refreshHistoryBtn">Обновить</button>
@@ -443,7 +477,7 @@ function buildDownloadsHtml(): string {
             </table>
           </details>
           <div class="log-panel">
-            <details id="logDetails" open>
+            <details id="logDetails"${openAttr('log', true)}>
               <summary>Журнал операций</summary>
               <div class="history-actions">
                 <button type="button" class="cmd" id="saveLogBtn">Сохранить лог…</button>
@@ -459,7 +493,7 @@ function buildDownloadsHtml(): string {
           <p class="rail-subtitle">Секции повторяют v0-подход: формат, метаданные, сохранение, сеть.</p>
         </div>
         <div class="opts-panel">
-          <details class="settings-section" open>
+          <details class="settings-section" id="dlRailFormat"${openAttr('format', true)}>
             <summary>Формат</summary>
             <div class="settings-body">
               <p class="opts-hint">Параметры сохраняются в userData/settings.json. Шаблон обязан содержать %(ext)s.</p>
@@ -479,7 +513,7 @@ function buildDownloadsHtml(): string {
               <input type="text" id="subLangsInput" spellcheck="false" autocomplete="off" placeholder="ru,en или all" />
             </div>
           </details>
-          <details class="settings-section" open>
+          <details class="settings-section" id="dlRailMeta"${openAttr('metadata', true)}>
             <summary>Метаданные</summary>
             <div class="settings-body">
               <label for="cookiesBrowserSelect">Cookies §6.2</label>
@@ -508,7 +542,7 @@ function buildDownloadsHtml(): string {
               </div>
             </div>
           </details>
-          <details class="settings-section" open>
+          <details class="settings-section" id="dlRailSave"${openAttr('saving', true)}>
             <summary>Сохранение</summary>
             <div class="settings-body">
               <div class="out-dir-row">
@@ -526,7 +560,7 @@ function buildDownloadsHtml(): string {
               </div>
             </div>
           </details>
-          <details class="settings-section">
+          <details class="settings-section" id="dlRailNet"${openAttr('network', false)}>
             <summary>Сеть</summary>
             <div class="settings-body">
               <label for="rateLimitInput">Ограничение скорости (--limit-rate)</label>
@@ -544,7 +578,7 @@ function buildDownloadsHtml(): string {
               </select>
             </div>
           </details>
-          <details class="settings-section" id="expertArgsDetails">
+          <details class="settings-section" id="expertArgsDetails"${openAttr('expert', false)}>
             <summary>Экспертные argv</summary>
             <div class="settings-body">
               <label for="extraArgsInput">Дополнительные аргументы (без shell)</label>
@@ -554,7 +588,7 @@ function buildDownloadsHtml(): string {
               <input type="text" id="previewOutDirOverride" spellcheck="false" autocomplete="off" placeholder="Только строка превью argv" />
               <span class="opts-preview-label">Превью argv</span>
               <pre class="args-preview" id="argsPreview"></pre>
-              <details class="hints-panel" id="hintsPanel">
+              <details class="hints-panel" id="hintsPanel"${openAttr('hints', false)}>
                 <summary>Справочник флагов</summary>
                 <select id="hintInsert" class="hint-select" aria-label="Вставить флаг из справочника">
                   <option value="">Выберите флаг — он добавится в «Доп. аргументы»…</option>
@@ -1434,6 +1468,24 @@ function buildDownloadsHtml(): string {
         });
       }
 
+      function wireDetailsUiPersist(id, key) {
+        var el = document.getElementById(id);
+        if (!el || el.tagName !== 'DETAILS') return;
+        el.addEventListener('toggle', function () {
+          var patch = {};
+          patch[key] = el.open;
+          api.mergeUiPanels(patch);
+        });
+      }
+      wireDetailsUiPersist('historyDetails', 'history');
+      wireDetailsUiPersist('logDetails', 'log');
+      wireDetailsUiPersist('dlRailFormat', 'format');
+      wireDetailsUiPersist('dlRailMeta', 'metadata');
+      wireDetailsUiPersist('dlRailSave', 'saving');
+      wireDetailsUiPersist('dlRailNet', 'network');
+      wireDetailsUiPersist('expertArgsDetails', 'expert');
+      wireDetailsUiPersist('hintsPanel', 'hints');
+
       api.getSnapshot().then(onQueueSnapshot);
 
       api.onSnapshot(onQueueSnapshot);
@@ -2014,6 +2066,25 @@ export function registerDownloadsWindowIpcHandlers(): void {
     }
     return res
   })
+
+  ipcMain.handle(
+    d.mergeUiPanels,
+    (event, raw: unknown): { ok: true } | { ok: false; error: string } => {
+      if (!isDownloadsSender(event.sender)) {
+        return { ok: false, error: 'Недопустимый отправитель' }
+      }
+      const patch = sanitizeDownloadsUiPanelPatch(raw)
+      if (Object.keys(patch).length === 0) {
+        return { ok: true }
+      }
+      const fn = downloadsBoundsHooks.mergeDownloadsWindowUiPanelsPatch
+      if (!fn) {
+        return { ok: false, error: 'Сохранение раскладки панелей не подключено.' }
+      }
+      fn(patch)
+      return { ok: true }
+    }
+  )
 }
 
 /**
@@ -2026,7 +2097,9 @@ export function focusOrCreateDownloadsWindow(mergeText?: string | null): void {
     appendUrlsFromMultilineBlock(chunk)
   }
 
-  const dataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(buildDownloadsHtml())}`
+  const dataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(
+    buildDownloadsHtml(downloadsBoundsHooks.getDownloadsWindowUiPanelsSnapshot?.())
+  )}`
 
   if (downloadsWindow && !downloadsWindow.isDestroyed()) {
     downloadsWindow.focus()

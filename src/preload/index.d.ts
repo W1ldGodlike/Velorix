@@ -29,7 +29,7 @@ import type {
 } from '../shared/engine-contract'
 import type { MediaProbeResult } from '../shared/ffprobe-contract'
 import type { PreviewDialogResult, RestoredSourceInfo } from '../shared/preview-dialog-contract'
-import type { AppSettings, AppTheme } from '../shared/settings-contract'
+import type { AppSettings, AppTheme, MainWindowUiPanelState } from '../shared/settings-contract'
 import type {
   SaveTextDialogPayload,
   SaveTextDialogResult
@@ -65,6 +65,7 @@ export interface FluxAlloyApi {
     setFfmpegExportUserPresets: (presets: FfmpegExportUserPreset[]) => Promise<AppSettings>
     applyFfmpegExportSnapshot: (snapshot: FfmpegExportUserPresetSnapshot) => Promise<AppSettings>
     setFfmpegSnapshotFormat: (format: FfmpegSnapshotFormatId) => Promise<AppSettings>
+    mergeMainWindowUiPanels: (patch: Partial<MainWindowUiPanelState>) => Promise<AppSettings>
   }
   preview: {
     openFileDialog: () => Promise<PreviewDialogResult>

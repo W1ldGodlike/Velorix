@@ -3,6 +3,18 @@ import type { JSX } from 'react'
 
 import VideoTimeline from './components/VideoTimeline'
 import Versions from './components/Versions'
+import {
+  IconBan,
+  IconCloudDownload,
+  IconDownload,
+  IconFilm,
+  IconFolderOpen,
+  IconImage,
+  IconMoon,
+  IconSave,
+  IconSettings,
+  IconSun
+} from './components/LucideMiniIcons'
 import type { EngineId } from '../../shared/engine-contract'
 import { ENGINE_IDS } from '../../shared/engine-contract'
 import type {
@@ -15,7 +27,7 @@ import type {
   FfmpegExportUserPresetSnapshot,
   FfmpegExportVideoTransformId
 } from '../../shared/ffmpeg-export-contract'
-import type { AppSettings } from '../../shared/settings-contract'
+import type { AppSettings, MainWindowUiPanelState } from '../../shared/settings-contract'
 import { buildFfmpegExportPreviewCommand } from '../../shared/ffmpeg-export-argv'
 import type { FfmpegSnapshotFormatId } from '../../shared/ffmpeg-snapshot-contract'
 import type { RestoredSourceInfo } from '../../shared/preview-dialog-contract'
@@ -72,6 +84,16 @@ const SNAPSHOT_FORMATS: Array<{ id: FfmpegSnapshotFormatId; label: string }> = [
   { id: 'png', label: 'Кадр PNG' },
   { id: 'jpg', label: 'Кадр JPEG' }
 ]
+
+/** §4.1 / v0 — дефолты раскрытых секций FFmpeg, если в settings ещё не сохранено. */
+const MAIN_PANEL_DEFAULTS: Required<MainWindowUiPanelState> = {
+  quickYtdlp: false,
+  ffmpegVideo: true,
+  ffmpegFormat: true,
+  ffmpegAudio: false,
+  ffmpegPresets: false,
+  ffmpegOutput: true
+}
 
 function engineLabel(id: EngineId): string {
   switch (id) {
@@ -198,6 +220,7 @@ function App(): JSX.Element {
   const [exportVideoTransform, setExportVideoTransform] =
     useState<FfmpegExportVideoTransformId>('none')
   const [exportCropPreset, setExportCropPreset] = useState<FfmpegExportCropPresetId>('none')
+  const [mainUiPanels, setMainUiPanels] = useState<MainWindowUiPanelState>(MAIN_PANEL_DEFAULTS)
   const [exportScalePreset, setExportScalePreset] = useState<FfmpegExportScalePresetId>('source')
   /** §7.2 — сохранённые пользователем наборы параметров тулбара (preview/spawn используют те же поля). */
   const [exportUserPresets, setExportUserPresets] = useState<FfmpegExportUserPreset[]>([])
@@ -324,6 +347,21 @@ function App(): JSX.Element {
 
   const bumpManualExportEdit = useCallback(() => {
     setSelectedUserPresetId(null)
+  }, [])
+
+  type MainPanelKey = keyof typeof MAIN_PANEL_DEFAULTS
+
+  const panelOpen = useCallback(
+    (key: MainPanelKey): boolean => {
+      const v = mainUiPanels[key]
+      return typeof v === 'boolean' ? v : MAIN_PANEL_DEFAULTS[key]
+    },
+    [mainUiPanels]
+  )
+
+  const persistPanelToggle = useCallback((key: MainPanelKey, nextOpen: boolean): void => {
+    setMainUiPanels((p) => ({ ...p, [key]: nextOpen }))
+    void window.fluxalloy.settings.mergeMainWindowUiPanels({ [key]: nextOpen }).catch(console.error)
   }, [])
 
   const buildCurrentExportSnapshot = useCallback((): FfmpegExportUserPresetSnapshot => {
@@ -453,6 +491,7 @@ function App(): JSX.Element {
       const loaded = await window.fluxalloy.settings.get()
       applyTheme(loaded.theme === 'light' ? 'light' : 'dark')
       hydrateExportFieldsFromSettings(loaded)
+      setMainUiPanels({ ...MAIN_PANEL_DEFAULTS, ...(loaded.mainWindowUiPanels ?? {}) })
       setExportUserPresets(loaded.ffmpegExportUserPresets ?? [])
       if (loaded.ffmpegSnapshotFormat === 'jpg') {
         setSnapshotFormat('jpg')
@@ -882,111 +921,120 @@ function App(): JSX.Element {
             onClick={() => {
               void window.fluxalloy.downloads.openWindow(downloadsUrl || null)
             }}
+            title="Открыть менеджер загрузок yt-dlp"
           >
+            <span aria-hidden className="app-workspace-tab-glyph">
+              <IconDownload title="" size={16} />
+            </span>
             Загрузки
           </button>
         </nav>
         <div className="app-topbar-actions">
           <button
             type="button"
-            className="app-btn"
-            onClick={() => {
-              void window.fluxalloy.downloads.openWindow(downloadsUrl || null)
-            }}
-            title="Открыть менеджер загрузок yt-dlp"
-          >
-            ↓ Загрузки
-          </button>
-          <button
-            type="button"
-            className="app-btn"
+            className="app-icon-btn"
             onClick={() => {
               void handleOpenToolbar()
             }}
             title="Открыть локальный видеофайл"
           >
-            Открыть
+            <IconFolderOpen />
+            <span className="app-visually-hidden">Открыть</span>
           </button>
           <button
             type="button"
-            className="app-btn"
+            className="app-icon-btn"
             onClick={() => {
               void window.fluxalloy.inspector.openWindow(preview?.path ?? null)
             }}
             title="Отдельное окно инспектора ffprobe (§9). Если файл открыт в превью — сразу подставится его путь."
           >
-            Инспектор
+            <IconFilm />
+            <span className="app-visually-hidden">Инспектор</span>
           </button>
           <button
             type="button"
-            className="app-btn"
+            className="app-icon-btn"
             disabled={!preview || exportBusy || snapshotBusy}
             onClick={() => {
               void handleSnapshot()
             }}
             title="Сохранить текущий кадр превью в PNG или JPEG (ffmpeg)"
           >
-            {snapshotBusy ? 'Кадр…' : 'Кадр'}
+            <IconImage />
+            <span className="app-visually-hidden">{snapshotBusy ? 'Кадр…' : 'Кадр'}</span>
           </button>
           <button
             type="button"
-            className="app-btn app-btn-primary"
+            className="app-icon-btn app-icon-btn-primary"
             disabled={!preview || exportBusy || snapshotBusy}
             onClick={() => {
               void handleExport()
             }}
             title="Сохранить фрагмент In–Out или весь файл (libx264/aac), нужен ffmpeg"
           >
-            {exportBusy ? 'Экспорт…' : 'Экспорт'}
+            <IconSave />
+            <span className="app-visually-hidden">{exportBusy ? 'Экспорт…' : 'Экспорт'}</span>
           </button>
           {exportBusy ? (
             <button
               type="button"
-              className="app-btn app-btn-warn"
+              className="app-icon-btn app-icon-btn-warn"
               disabled={exportCancelBusy}
               onClick={() => {
                 void handleCancelExport()
               }}
               title="Остановить текущий ffmpeg export"
             >
-              {exportCancelBusy ? 'Отмена…' : 'Отменить'}
+              <IconBan title={exportCancelBusy ? 'Отмена…' : 'Отменить экспорт'} />
             </button>
           ) : null}
           {enginesOfferDownload ? (
             <button
               type="button"
-              className="app-btn app-btn-warn"
+              className="app-icon-btn app-icon-btn-warn"
               disabled={engineDownloadBusy}
               onClick={() => {
                 void handleEnginesDownload()
               }}
               title="Скачать yt-dlp и FFmpeg в папку приложения пользователя"
             >
-              {engineDownloadBusy ? 'Загрузка…' : 'Скачать движки'}
+              <IconCloudDownload title={engineDownloadBusy ? 'Загрузка…' : 'Скачать движки'} />
             </button>
           ) : null}
           <button
             type="button"
-            className="app-btn"
+            className="app-icon-btn"
             onClick={() => {
               setEnginePathsOpen(true)
             }}
             title="Задать исполняемые файлы ffmpeg, ffprobe и yt-dlp вручную"
           >
-            Пути
+            <IconSettings />
+            <span className="app-visually-hidden">Пути к движкам</span>
           </button>
           <button
             type="button"
-            className="app-btn"
+            className="app-icon-btn"
             onClick={toggleTheme}
             title="Переключить тёмную/светлую тему"
           >
-            {theme === 'dark' ? '☾' : '☀'}
+            {theme === 'dark' ? <IconSun /> : <IconMoon />}
+            <span className="app-visually-hidden">
+              {theme === 'dark' ? 'Светлая тема' : 'Тёмная тема'}
+            </span>
           </button>
         </div>
       </header>
 
-      <details className="app-url-bar" aria-label="Быстрая загрузка yt-dlp">
+      <details
+        className="app-url-bar"
+        aria-label="Быстрая загрузка yt-dlp"
+        open={panelOpen('quickYtdlp')}
+        onToggle={(e) => {
+          persistPanelToggle('quickYtdlp', e.currentTarget.open)
+        }}
+      >
         <summary className="app-url-summary">Быстрая загрузка yt-dlp</summary>
         <div className="app-url-body">
           <input
@@ -1090,7 +1138,13 @@ function App(): JSX.Element {
             <span className="app-settings-badge">{exportContainer.toUpperCase()}</span>
           </div>
 
-          <details className="app-settings-section" open>
+          <details
+            className="app-settings-section"
+            open={panelOpen('ffmpegVideo')}
+            onToggle={(e) => {
+              persistPanelToggle('ffmpegVideo', e.currentTarget.open)
+            }}
+          >
             <summary className="app-settings-summary">Видео</summary>
             <div className="app-settings-grid">
               <label className="app-field">
@@ -1188,7 +1242,13 @@ function App(): JSX.Element {
             </div>
           </details>
 
-          <details className="app-settings-section" open>
+          <details
+            className="app-settings-section"
+            open={panelOpen('ffmpegFormat')}
+            onToggle={(e) => {
+              persistPanelToggle('ffmpegFormat', e.currentTarget.open)
+            }}
+          >
             <summary className="app-settings-summary">Формат</summary>
             <div className="app-settings-grid">
               <label className="app-field">
@@ -1284,7 +1344,13 @@ function App(): JSX.Element {
             </div>
           </details>
 
-          <details className="app-settings-section">
+          <details
+            className="app-settings-section"
+            open={panelOpen('ffmpegAudio')}
+            onToggle={(e) => {
+              persistPanelToggle('ffmpegAudio', e.currentTarget.open)
+            }}
+          >
             <summary className="app-settings-summary">Аудио и кадр</summary>
             <div className="app-settings-grid">
               <label className="app-field">
@@ -1388,7 +1454,13 @@ function App(): JSX.Element {
             ) : null}
           </details>
 
-          <details className="app-settings-section">
+          <details
+            className="app-settings-section"
+            open={panelOpen('ffmpegPresets')}
+            onToggle={(e) => {
+              persistPanelToggle('ffmpegPresets', e.currentTarget.open)
+            }}
+          >
             <summary className="app-settings-summary">Пресеты</summary>
             <div className="app-settings-stack">
               <label className="app-field">
@@ -1470,7 +1542,13 @@ function App(): JSX.Element {
             </div>
           </details>
 
-          <details className="app-settings-section" open>
+          <details
+            className="app-settings-section"
+            open={panelOpen('ffmpegOutput')}
+            onToggle={(e) => {
+              persistPanelToggle('ffmpegOutput', e.currentTarget.open)
+            }}
+          >
             <summary className="app-settings-summary">Вывод</summary>
             <div className="app-settings-stack">
               <pre className="app-export-preview-pre" aria-label="Команда ffmpeg">

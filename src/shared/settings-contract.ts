@@ -26,6 +26,31 @@ export interface WindowBoundsConfig {
   inspector?: StoredWindowRect
 }
 
+/**
+ * §4.1 / v0 — раскрытие collapsible в главном окне (React `details` FFmpeg / быстрый yt-dlp).
+ * Не заданные ключи при отображении трактуются как дефолты в renderer.
+ */
+export interface MainWindowUiPanelState {
+  quickYtdlp?: boolean
+  ffmpegVideo?: boolean
+  ffmpegFormat?: boolean
+  ffmpegAudio?: boolean
+  ffmpegPresets?: boolean
+  ffmpegOutput?: boolean
+}
+
+/** §4.1 / v0 — раскрытие секций окна загрузок (data HTML + `details`). */
+export interface DownloadsWindowUiPanelState {
+  history?: boolean
+  log?: boolean
+  format?: boolean
+  metadata?: boolean
+  saving?: boolean
+  network?: boolean
+  expert?: boolean
+  hints?: boolean
+}
+
 export interface AppSettings {
   /** Тема хранится в main, чтобы меню, renderer и будущие окна не расходились между собой. */
   theme: AppTheme
@@ -95,4 +120,8 @@ export interface AppSettings {
   ffmpegSnapshotDirectory?: string
   /** §7.6: формат снимка кадра по умолчанию. */
   ffmpegSnapshotFormat?: 'png' | 'jpg'
+  /** §4.1 — сохранённое раскрытие панелей главного окна (см. `MainWindowUiPanelState`). */
+  mainWindowUiPanels?: MainWindowUiPanelState
+  /** §4.1 — сохранённое раскрытие панелей окна yt-dlp. */
+  downloadsWindowUiPanels?: DownloadsWindowUiPanelState
 }

@@ -21,6 +21,8 @@ export const mainWindowIpc = {
   settingsApplyFfmpegExportSnapshot: 'fluxalloy:settings-apply-ffmpeg-export-snapshot',
   settingsSetFfmpegSnapshotFormat: 'fluxalloy:settings-set-ffmpeg-snapshot-format',
   settingsSetEnginePaths: 'fluxalloy:settings-set-engine-paths',
+  /** §4.1 — частичное обновление раскрытых секций главного окна (persist в settings.json). */
+  settingsMergeMainWindowUiPanels: 'fluxalloy:settings-merge-main-window-ui-panels',
   pickEngineExecutable: 'fluxalloy:pick-engine-executable',
   enginesStatus: 'fluxalloy:engines-status',
   enginesShouldOfferDownload: 'fluxalloy:engines-should-offer-download',
@@ -89,7 +91,9 @@ export const downloadsIpc = {
   cancelRun: 'fluxalloy-downloads-cancel-run',
   getYtdlpPauseState: 'fluxalloy-downloads-ytdlp-pause-state',
   pauseYtdlp: 'fluxalloy-downloads-pause-ytdlp',
-  resumeYtdlp: 'fluxalloy-downloads-resume-ytdlp'
+  resumeYtdlp: 'fluxalloy-downloads-resume-ytdlp',
+  /** §4.1 — частичное сохранение раскрытых секций окна загрузок. */
+  mergeUiPanels: 'fluxalloy-downloads-merge-ui-panels'
 } as const
 
 export type MainWindowIpcChannel = (typeof mainWindowIpc)[keyof typeof mainWindowIpc]

@@ -30,7 +30,7 @@ import type {
 } from '../shared/engine-contract'
 import type { MediaProbeResult } from '../shared/ffprobe-contract'
 import type { PreviewDialogResult, RestoredSourceInfo } from '../shared/preview-dialog-contract'
-import type { AppSettings, AppTheme } from '../shared/settings-contract'
+import type { AppSettings, AppTheme, MainWindowUiPanelState } from '../shared/settings-contract'
 import type {
   SaveTextDialogPayload,
   SaveTextDialogResult
@@ -79,7 +79,9 @@ const fluxalloy = {
     applyFfmpegExportSnapshot: (snapshot: FfmpegExportUserPresetSnapshot): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsApplyFfmpegExportSnapshot, snapshot),
     setFfmpegSnapshotFormat: (format: FfmpegSnapshotFormatId): Promise<AppSettings> =>
-      ipcRenderer.invoke(mw.settingsSetFfmpegSnapshotFormat, format)
+      ipcRenderer.invoke(mw.settingsSetFfmpegSnapshotFormat, format),
+    mergeMainWindowUiPanels: (patch: Partial<MainWindowUiPanelState>): Promise<AppSettings> =>
+      ipcRenderer.invoke(mw.settingsMergeMainWindowUiPanels, patch)
   },
   preview: {
     openFileDialog: (): Promise<PreviewDialogResult> => ipcRenderer.invoke(mw.openVideoDialog),

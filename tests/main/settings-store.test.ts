@@ -130,4 +130,33 @@ describe('settings-store yt-dlp fields', () => {
 
     expect(loadSettings(file)).toMatchObject(settings)
   })
+
+  it('загружает §4.1 ui-панели: только whitelist boolean, лишнее отбрасывается', () => {
+    const root = makeTempRoot()
+    const file = join(root, 'settings.json')
+    writeFileSync(
+      file,
+      JSON.stringify({
+        theme: 'dark',
+        mainWindowUiPanels: {
+          quickYtdlp: true,
+          ffmpegVideo: false,
+          unknownKey: true,
+          bad: 'x'
+        },
+        downloadsWindowUiPanels: {
+          log: false,
+          format: true,
+          extra: false
+        }
+      }),
+      'utf-8'
+    )
+
+    expect(loadSettings(file)).toMatchObject({
+      theme: 'dark',
+      mainWindowUiPanels: { quickYtdlp: true, ffmpegVideo: false },
+      downloadsWindowUiPanels: { log: false, format: true }
+    })
+  })
 })

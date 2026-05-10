@@ -115,6 +115,7 @@ import {
   type YtdlpDownloadOptionsPatch
 } from './ytdlp-download-options'
 import type { YtdlpGetCliOptionsParams } from '../shared/ytdlp-download-contract'
+import type { MainWindowUiPanelState } from '../shared/settings-contract'
 import { parseExtraYtdlpArgsLine } from './ytdlp-extra-args'
 import { refreshYtdlpRunOptionsSnapshot } from './ytdlp-run-options-sync'
 import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
@@ -696,6 +697,45 @@ function persistLastOpenedSource(absolutePath: string | null): void {
     cachedSettings = { ...cachedSettings, lastOpenedSourcePath: absolutePath.trim() }
   }
   saveSettings(settingsPath(), cachedSettings)
+}
+
+function sanitizeMainWindowUiPanelPatch(raw: unknown): Partial<MainWindowUiPanelState> {
+  if (!raw || typeof raw !== 'object') {
+    return {}
+  }
+  const keys: (keyof MainWindowUiPanelState)[] = [
+    'quickYtdlp',
+    'ffmpegVideo',
+    'ffmpegFormat',
+    'ffmpegAudio',
+    'ffmpegPresets',
+    'ffmpegOutput'
+  ]
+  const o = raw as Record<string, unknown>
+  const out: Partial<MainWindowUiPanelState> = {}
+  for (const k of keys) {
+    if (typeof o[k] === 'boolean') {
+      out[k] = o[k]
+    }
+  }
+  return out
+}
+
+/** §4.1 — persist раскрытия collapsible FFmpeg / быстрый yt-dlp в главном renderer. */
+function persistMainWindowUiPanelsMerge(raw: unknown): AppSettings {
+  const patch = sanitizeMainWindowUiPanelPatch(raw)
+  if (Object.keys(patch).length === 0) {
+    return { ...cachedSettings }
+  }
+  cachedSettings = {
+    ...cachedSettings,
+    mainWindowUiPanels: {
+      ...(cachedSettings.mainWindowUiPanels ?? {}),
+      ...patch
+    }
+  }
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
 }
 
 /** §7.2 — пресет libx264 для экспорта; только белый список через parse. */
@@ -1480,7 +1520,16 @@ app.whenReady().then(() => {
       )
     },
     applyYtdlpDownloadCliPatch: (patch) => persistYtdlpDownloadCliOptionsPatch(patch),
-    openDownloadedFileInHandler: (absoluteFile) => openDownloadedFileInMainHandler(absoluteFile)
+    openDownloadedFileInHandler: (absoluteFile) => openDownloadedFileInMainHandler(absoluteFile),
+    getDownloadsWindowUiPanelsSnapshot: () => cachedSettings.downloadsWindowUiPanels,
+    mergeDownloadsWindowUiPanelsPatch: (patch) => {
+      const prev = cachedSettings.downloadsWindowUiPanels ?? {}
+      cachedSettings = {
+        ...cachedSettings,
+        downloadsWindowUiPanels: { ...prev, ...patch }
+      }
+      saveSettings(settingsPath(), cachedSettings)
+    }
   })
   configureDownloadsQueueRunnerHooks({
     openDownloadedFileInHandler: (absoluteFile) => openDownloadedFileInMainHandler(absoluteFile)
@@ -1589,6 +1638,10 @@ app.whenReady().then(() => {
       return { ...cachedSettings }
     }
     return persistEnginePathOverridesPatch(patch as EnginePathOverridesPatch)
+  })
+
+  ipcMain.handle(mw.settingsMergeMainWindowUiPanels, (_, raw: unknown): AppSettings => {
+    return persistMainWindowUiPanelsMerge(raw)
   })
 
   ipcMain.handle(
