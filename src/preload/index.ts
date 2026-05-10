@@ -168,11 +168,15 @@ const fluxalloy = {
   downloads: {
     openWindow: (initial?: string | { text?: string } | null): Promise<void> =>
       ipcRenderer.invoke(mw.openDownloadsWindow, initial ?? null),
-    addLines: (text: string): Promise<number> => ipcRenderer.invoke(d.addLines, text),
+    addLines: (text: string): Promise<{ ok: true; added: number } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(d.addLines, text),
     getSnapshot: (): Promise<unknown[]> => ipcRenderer.invoke(d.getSnapshot),
-    clearQueue: (): Promise<void> => ipcRenderer.invoke(d.clear),
-    clearFinished: (): Promise<number> => ipcRenderer.invoke(d.clearFinished),
-    removeRow: (id: number): Promise<void> => ipcRenderer.invoke(d.remove, id),
+    clearQueue: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(d.clear),
+    clearFinished: (): Promise<{ ok: true; removed: number } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(d.clearFinished),
+    removeRow: (id: number): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(d.remove, id),
     getOutputDirectory: (): Promise<{ path: string; isDefault: boolean }> =>
       ipcRenderer.invoke(d.getOutputDir),
     openOutputDirectory: (): Promise<{ ok: true } | { ok: false; error: string }> =>
@@ -180,11 +184,13 @@ const fluxalloy = {
     pickOutputDirectory: (): Promise<
       { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
     > => ipcRenderer.invoke(d.pickOutputDir),
-    clearOutputDirectory: (): Promise<void> => ipcRenderer.invoke(d.clearOutputDir),
+    clearOutputDirectory: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(d.clearOutputDir),
     pickCookiesFile: (): Promise<
       { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
     > => ipcRenderer.invoke(d.pickCookiesFile),
-    clearCookiesFile: (): Promise<void> => ipcRenderer.invoke(d.clearCookiesFile),
+    clearCookiesFile: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(d.clearCookiesFile),
     onSnapshot: (listener: (rows: unknown[]) => void): (() => void) => {
       const handler = (_event: unknown, rows: unknown): void => {
         listener(Array.isArray(rows) ? rows : [])

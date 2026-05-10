@@ -102,21 +102,21 @@ export interface FluxAlloyApi {
   }
   downloads: {
     openWindow: (initial?: string | { text?: string } | null) => Promise<void>
-    addLines: (text: string) => Promise<number>
+    addLines: (text: string) => Promise<{ ok: true; added: number } | { ok: false; error: string }>
     getSnapshot: () => Promise<unknown[]>
-    clearQueue: () => Promise<void>
-    clearFinished: () => Promise<number>
-    removeRow: (id: number) => Promise<void>
+    clearQueue: () => Promise<{ ok: true } | { ok: false; error: string }>
+    clearFinished: () => Promise<{ ok: true; removed: number } | { ok: false; error: string }>
+    removeRow: (id: number) => Promise<{ ok: true } | { ok: false; error: string }>
     getOutputDirectory: () => Promise<{ path: string; isDefault: boolean }>
     openOutputDirectory: () => Promise<{ ok: true } | { ok: false; error: string }>
     pickOutputDirectory: () => Promise<
       { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
     >
-    clearOutputDirectory: () => Promise<void>
+    clearOutputDirectory: () => Promise<{ ok: true } | { ok: false; error: string }>
     pickCookiesFile: () => Promise<
       { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
     >
-    clearCookiesFile: () => Promise<void>
+    clearCookiesFile: () => Promise<{ ok: true } | { ok: false; error: string }>
     onSnapshot: (listener: (rows: unknown[]) => void) => () => void
     startQueue: () => Promise<{ ok: true } | { ok: false; error: string }>
     startRow: (id: number) => Promise<{ ok: true } | { ok: false; error: string }>

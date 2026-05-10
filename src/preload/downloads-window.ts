@@ -38,10 +38,14 @@ function isDownloadsLogPayload(raw: unknown): raw is DownloadsLogPayload {
  * Основное приложение этот объект не экспонирует.
  */
 contextBridge.exposeInMainWorld('fluxalloyDownloads', {
-  addLines: (text: string): Promise<number> => ipcRenderer.invoke(d.addLines, text),
-  clearQueue: (): Promise<void> => ipcRenderer.invoke(d.clear),
-  clearFinishedRows: (): Promise<number> => ipcRenderer.invoke(d.clearFinished),
-  removeRow: (id: number): Promise<void> => ipcRenderer.invoke(d.remove, id),
+  addLines: (text: string): Promise<{ ok: true; added: number } | { ok: false; error: string }> =>
+    ipcRenderer.invoke(d.addLines, text),
+  clearQueue: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke(d.clear),
+  clearFinishedRows: (): Promise<{ ok: true; removed: number } | { ok: false; error: string }> =>
+    ipcRenderer.invoke(d.clearFinished),
+  removeRow: (id: number): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke(d.remove, id),
   moveRow: (id: number, direction: number): Promise<void> =>
     ipcRenderer.invoke(d.move, id, direction),
 
@@ -97,13 +101,15 @@ contextBridge.exposeInMainWorld('fluxalloyDownloads', {
     { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
   > => ipcRenderer.invoke(d.pickOutputDir),
 
-  clearOutputDirectory: (): Promise<void> => ipcRenderer.invoke(d.clearOutputDir),
+  clearOutputDirectory: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke(d.clearOutputDir),
 
   pickCookiesFile: (): Promise<
     { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
   > => ipcRenderer.invoke(d.pickCookiesFile),
 
-  clearCookiesFile: (): Promise<void> => ipcRenderer.invoke(d.clearCookiesFile),
+  clearCookiesFile: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke(d.clearCookiesFile),
 
   getCliOptions: (
     params?: YtdlpGetCliOptionsParams

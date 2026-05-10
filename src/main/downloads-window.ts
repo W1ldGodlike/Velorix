@@ -1532,7 +1532,11 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
           if (!t) return;
           var url = t.getAttribute('data-history-url') || '';
           if (!url) return;
-          api.addLines(url).then(function () {
+          api.addLines(url).then(function (res) {
+            if (res && res.ok === false && res.error) {
+              window.alert(res.error);
+              return;
+            }
             api.getSnapshot().then(onQueueSnapshot);
           });
         });
@@ -2038,7 +2042,11 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
         if (!t) return;
         var act = t.getAttribute('data-act');
         var id = Number(t.getAttribute('data-id'));
-        if (act === 'rm') api.removeRow(id);
+        if (act === 'rm') {
+          api.removeRow(id).then(function (res) {
+            if (res && res.ok === false && res.error) window.alert(res.error);
+          });
+        }
         else if (act === 'up') api.moveRow(id, -1);
         else if (act === 'dn') api.moveRow(id, 1);
         else if (act === 'retry') {
@@ -2092,22 +2100,34 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
       }
 
       addBtn.addEventListener('click', function () {
-        api.addLines(urls.value).then(function () {
+        api.addLines(urls.value).then(function (res) {
+          if (res && res.ok === false && res.error) {
+            window.alert(res.error);
+            return;
+          }
           urls.value = '';
         });
       });
       clearBtn.addEventListener('click', function () {
-        api.clearQueue();
+        api.clearQueue().then(function (res) {
+          if (res && res.ok === false && res.error) window.alert(res.error);
+        });
       });
       if (clearFinishedBtn) {
         clearFinishedBtn.addEventListener('click', function () {
-          api.clearFinishedRows().then(function () {
+          api.clearFinishedRows().then(function (res) {
+            if (res && res.ok === false && res.error) {
+              window.alert(res.error);
+              return;
+            }
             api.getSnapshot().then(onQueueSnapshot);
           });
         });
       }
       startBtn.addEventListener('click', function () {
-        api.startQueue();
+        api.startQueue().then(function (res) {
+          if (res && res.ok === false && res.error) window.alert(res.error);
+        });
       });
       function refreshPauseBtn() {
         if (!pauseYtdlpBtn || !api.getYtdlpPauseState) return;
@@ -2162,7 +2182,11 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
         });
       });
       resetOutBtn.addEventListener('click', function () {
-        api.clearOutputDirectory().then(function () {
+        api.clearOutputDirectory().then(function (res) {
+          if (res && res.ok === false && res.error) {
+            window.alert(res.error);
+            return;
+          }
           refreshOutDir();
           schedulePreviewRefresh();
         });
@@ -2178,7 +2202,11 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
       }
       if (clearCookiesBtn) {
         clearCookiesBtn.addEventListener('click', function () {
-          api.clearCookiesFile().then(function () {
+          api.clearCookiesFile().then(function (res) {
+            if (res && res.ok === false && res.error) {
+              window.alert(res.error);
+              return;
+            }
             refreshCliOpts();
           });
         });
@@ -2249,7 +2277,11 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
         e.stopPropagation();
         urls.classList.remove('drag');
         var txt = e.dataTransfer.getData('text/plain') || e.dataTransfer.getData('text/uri-list');
-        if (txt) api.addLines(txt);
+        if (txt) {
+          api.addLines(txt).then(function (res) {
+            if (res && res.ok === false && res.error) window.alert(res.error);
+          });
+        }
       });
 
       /** §6.1 — сброс ссылки/текста на таблицу, заголовок и т.д.: в очередь, без перехвата drop на полях ввода настроек. */
@@ -2283,7 +2315,11 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
         if (isQueueDropExcludedTarget(e.target)) return;
         e.preventDefault();
         var txt = extractDroppedQueueText(e.dataTransfer);
-        if (txt) api.addLines(txt);
+        if (txt) {
+          api.addLines(txt).then(function (res) {
+            if (res && res.ok === false && res.error) window.alert(res.error);
+          });
+        }
       });
 
       function onQueueSnapshot(rows) {
@@ -2394,17 +2430,20 @@ export function registerDownloadsWindowIpcHandlers(): void {
     return getDownloadsQueueSnapshotForRenderer()
   })
 
-  ipcMain.handle(d.addLines, (event, text: unknown) => {
-    if (!isDownloadsOrMainSender(event.sender)) {
-      return 0
+  ipcMain.handle(
+    d.addLines,
+    (event, text: unknown): { ok: true; added: number } | { ok: false; error: string } => {
+      if (!isDownloadsOrMainSender(event.sender)) {
+        return { ok: false, error: 'Недопустимый отправитель' }
+      }
+      if (typeof text !== 'string') {
+        return { ok: false, error: 'Некорректный текст URL' }
+      }
+      const n = appendUrlsFromMultilineBlock(text)
+      broadcastDownloadsSnapshot()
+      return { ok: true, added: n }
     }
-    if (typeof text !== 'string') {
-      return 0
-    }
-    const n = appendUrlsFromMultilineBlock(text)
-    broadcastDownloadsSnapshot()
-    return n
-  })
+  )
 
   ipcMain.handle(
     d.getOutputDir,
@@ -2607,11 +2646,16 @@ export function registerDownloadsWindowIpcHandlers(): void {
     }
   )
 
-  ipcMain.handle(d.clearOutputDir, (event) => {
+  ipcMain.handle(d.clearOutputDir, (event): { ok: true } | { ok: false; error: string } => {
     if (!isDownloadsOrMainSender(event.sender)) {
-      return
+      return { ok: false, error: 'Недопустимый отправитель' }
     }
-    downloadsBoundsHooks.clearYtdlpOutputDirectoryOverride?.()
+    const fn = downloadsBoundsHooks.clearYtdlpOutputDirectoryOverride
+    if (!fn) {
+      return { ok: false, error: 'Сброс каталога не подключён' }
+    }
+    fn()
+    return { ok: true }
   })
 
   ipcMain.handle(
@@ -2636,30 +2680,39 @@ export function registerDownloadsWindowIpcHandlers(): void {
     }
   )
 
-  ipcMain.handle(d.clearCookiesFile, (event) => {
+  ipcMain.handle(d.clearCookiesFile, (event): { ok: true } | { ok: false; error: string } => {
     if (!isDownloadsOrMainSender(event.sender)) {
-      return
+      return { ok: false, error: 'Недопустимый отправитель' }
     }
-    downloadsBoundsHooks.clearYtdlpCookiesFile?.()
+    const fn = downloadsBoundsHooks.clearYtdlpCookiesFile
+    if (!fn) {
+      return { ok: false, error: 'Сброс cookies-файла не подключён' }
+    }
+    fn()
+    return { ok: true }
   })
 
-  ipcMain.handle(d.clear, (event) => {
+  ipcMain.handle(d.clear, (event): { ok: true } | { ok: false; error: string } => {
     if (!isDownloadsOrMainSender(event.sender)) {
-      return
+      return { ok: false, error: 'Недопустимый отправитель' }
     }
     cancelDownloadsRunner()
     clearDownloadsQueue()
     broadcastDownloadsSnapshot()
+    return { ok: true }
   })
 
-  ipcMain.handle(d.clearFinished, (event) => {
-    if (!isDownloadsOrMainSender(event.sender)) {
-      return 0
+  ipcMain.handle(
+    d.clearFinished,
+    (event): { ok: true; removed: number } | { ok: false; error: string } => {
+      if (!isDownloadsOrMainSender(event.sender)) {
+        return { ok: false, error: 'Недопустимый отправитель' }
+      }
+      const removed = clearFinishedDownloadsQueueRows()
+      broadcastDownloadsSnapshot()
+      return { ok: true, removed }
     }
-    const removed = clearFinishedDownloadsQueueRows()
-    broadcastDownloadsSnapshot()
-    return removed
-  })
+  )
 
   /** §6.4 — чтение истории завершённых загрузок (newest first). */
   ipcMain.handle(d.getHistory, (event) => {
@@ -2801,15 +2854,16 @@ export function registerDownloadsWindowIpcHandlers(): void {
     }
   )
 
-  ipcMain.handle(d.remove, (event, id: unknown) => {
+  ipcMain.handle(d.remove, (event, id: unknown): { ok: true } | { ok: false; error: string } => {
     if (!isDownloadsOrMainSender(event.sender)) {
-      return
+      return { ok: false, error: 'Недопустимый отправитель' }
     }
     if (typeof id !== 'number' || !Number.isFinite(id)) {
-      return
+      return { ok: false, error: 'Некорректный идентификатор строки' }
     }
     removeDownloadsQueueRow(id)
     broadcastDownloadsSnapshot()
+    return { ok: true }
   })
 
   ipcMain.handle(d.move, (event, id: unknown, direction: unknown) => {

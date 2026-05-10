@@ -616,8 +616,13 @@ function App(): JSX.Element {
         setWorkspaceTab('downloads')
         return
       }
-      const added = await window.fluxalloy.downloads.addLines(text)
+      const addRes = await window.fluxalloy.downloads.addLines(text)
       setWorkspaceTab('downloads')
+      if (!addRes.ok) {
+        setStatusHint(addRes.error)
+        return
+      }
+      const added = addRes.added
       setStatusHint(added > 0 ? `Добавлено URL: ${added}` : 'Не нашёл URL для очереди.')
       if (added > 0) {
         setDownloadsUrl('')
@@ -2389,10 +2394,14 @@ function App(): JSX.Element {
                   className="app-btn"
                   disabled={downloadsRows.length === 0}
                   onClick={() => {
-                    void window.fluxalloy.downloads.clearFinished().then((removed) => {
+                    void window.fluxalloy.downloads.clearFinished().then((res) => {
+                      if (!res.ok) {
+                        setStatusHint(res.error)
+                        return
+                      }
                       setStatusHint(
-                        removed > 0
-                          ? `Убрано завершённых строк: ${removed}`
+                        res.removed > 0
+                          ? `Убрано завершённых строк: ${res.removed}`
                           : 'Завершённых строк нет.'
                       )
                     })
@@ -2405,7 +2414,11 @@ function App(): JSX.Element {
                   className="app-btn app-btn-warn"
                   disabled={downloadsRows.length === 0}
                   onClick={() => {
-                    void window.fluxalloy.downloads.clearQueue().then(() => {
+                    void window.fluxalloy.downloads.clearQueue().then((res) => {
+                      if (!res.ok) {
+                        setStatusHint(res.error)
+                        return
+                      }
                       setStatusHint('Очередь очищена.')
                     })
                   }}
@@ -2539,10 +2552,13 @@ function App(): JSX.Element {
                                     type="button"
                                     className="app-btn app-btn-compact"
                                     onClick={() => {
-                                      void window.fluxalloy.downloads.openQueueOutput(
-                                        row.id,
-                                        'file'
-                                      )
+                                      void window.fluxalloy.downloads
+                                        .openQueueOutput(row.id, 'file')
+                                        .then((res) => {
+                                          if (!res.ok) {
+                                            setStatusHint(res.error)
+                                          }
+                                        })
                                     }}
                                   >
                                     Файл
@@ -2551,10 +2567,13 @@ function App(): JSX.Element {
                                     type="button"
                                     className="app-btn app-btn-compact"
                                     onClick={() => {
-                                      void window.fluxalloy.downloads.openQueueOutput(
-                                        row.id,
-                                        'folder'
-                                      )
+                                      void window.fluxalloy.downloads
+                                        .openQueueOutput(row.id, 'folder')
+                                        .then((res) => {
+                                          if (!res.ok) {
+                                            setStatusHint(res.error)
+                                          }
+                                        })
                                     }}
                                   >
                                     Папка
@@ -2583,7 +2602,11 @@ function App(): JSX.Element {
                                 type="button"
                                 className="app-btn app-btn-compact app-btn-warn"
                                 onClick={() => {
-                                  void window.fluxalloy.downloads.removeRow(row.id)
+                                  void window.fluxalloy.downloads.removeRow(row.id).then((res) => {
+                                    if (!res.ok) {
+                                      setStatusHint(res.error)
+                                    }
+                                  })
                                 }}
                               >
                                 Удалить
@@ -2777,7 +2800,11 @@ function App(): JSX.Element {
                         downloadsOptionsBusy || downloadsOptions.cookiesFilePathStored.length === 0
                       }
                       onClick={() => {
-                        void window.fluxalloy.downloads.clearCookiesFile().then(() => {
+                        void window.fluxalloy.downloads.clearCookiesFile().then((res) => {
+                          if (!res.ok) {
+                            setStatusHint(res.error)
+                            return
+                          }
                           void refreshDownloadsOptions()
                         })
                       }}
@@ -2935,7 +2962,11 @@ function App(): JSX.Element {
                       type="button"
                       className="app-btn app-btn-compact"
                       onClick={() => {
-                        void window.fluxalloy.downloads.clearOutputDirectory().then(() => {
+                        void window.fluxalloy.downloads.clearOutputDirectory().then((res) => {
+                          if (!res.ok) {
+                            setStatusHint(res.error)
+                            return
+                          }
                           void refreshDownloadsOutputDirectory()
                         })
                       }}
@@ -3018,7 +3049,13 @@ function App(): JSX.Element {
                             type="button"
                             className="app-btn app-btn-compact"
                             onClick={() => {
-                              void window.fluxalloy.downloads.openHistoryOutput(entry.id, 'file')
+                              void window.fluxalloy.downloads
+                                .openHistoryOutput(entry.id, 'file')
+                                .then((res) => {
+                                  if (!res.ok) {
+                                    setStatusHint(res.error)
+                                  }
+                                })
                             }}
                           >
                             Файл
@@ -3027,7 +3064,13 @@ function App(): JSX.Element {
                             type="button"
                             className="app-btn app-btn-compact"
                             onClick={() => {
-                              void window.fluxalloy.downloads.openHistoryOutput(entry.id, 'folder')
+                              void window.fluxalloy.downloads
+                                .openHistoryOutput(entry.id, 'folder')
+                                .then((res) => {
+                                  if (!res.ok) {
+                                    setStatusHint(res.error)
+                                  }
+                                })
                             }}
                           >
                             Папка
