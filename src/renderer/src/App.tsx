@@ -76,6 +76,9 @@ type DownloadsQueueRowView = {
   queueSize?: string
   queueSpeed?: string
   queueEta?: string
+  isActiveRunner?: boolean
+  ytdlpPauseSupported?: boolean
+  ytdlpPaused?: boolean
 }
 type DownloadsStatusFilter = 'all' | 'running' | 'done' | 'error' | 'cancelled'
 type DownloadsQueueStats = {
@@ -308,7 +311,14 @@ function sanitizeDownloadsRows(raw: unknown[]): DownloadsQueueRowView[] {
         ...(typeof o['queueFmt'] === 'string' ? { queueFmt: o['queueFmt'] } : {}),
         ...(typeof o['queueSize'] === 'string' ? { queueSize: o['queueSize'] } : {}),
         ...(typeof o['queueSpeed'] === 'string' ? { queueSpeed: o['queueSpeed'] } : {}),
-        ...(typeof o['queueEta'] === 'string' ? { queueEta: o['queueEta'] } : {})
+        ...(typeof o['queueEta'] === 'string' ? { queueEta: o['queueEta'] } : {}),
+        ...(typeof o['isActiveRunner'] === 'boolean'
+          ? { isActiveRunner: o['isActiveRunner'] }
+          : {}),
+        ...(typeof o['ytdlpPauseSupported'] === 'boolean'
+          ? { ytdlpPauseSupported: o['ytdlpPauseSupported'] }
+          : {}),
+        ...(typeof o['ytdlpPaused'] === 'boolean' ? { ytdlpPaused: o['ytdlpPaused'] } : {})
       }
     ]
   })
@@ -2475,6 +2485,24 @@ function App(): JSX.Element {
                                     Папка
                                   </button>
                                 </>
+                              ) : null}
+                              {row.isActiveRunner && row.ytdlpPauseSupported ? (
+                                <button
+                                  type="button"
+                                  className="app-btn app-btn-compact"
+                                  onClick={() => {
+                                    const fn = row.ytdlpPaused
+                                      ? window.fluxalloy.downloads.resumeYtdlp
+                                      : window.fluxalloy.downloads.pauseYtdlp
+                                    void fn().then((res) => {
+                                      if (!res.ok) {
+                                        setStatusHint(res.error)
+                                      }
+                                    })
+                                  }}
+                                >
+                                  {row.ytdlpPaused ? 'Resume' : 'Pause'}
+                                </button>
                               ) : null}
                               <button
                                 type="button"

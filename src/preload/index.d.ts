@@ -111,6 +111,13 @@ export interface FluxAlloyApi {
     startRow: (id: number) => Promise<{ ok: true } | { ok: false; error: string }>
     retryRow: (id: number) => Promise<{ ok: true } | { ok: false; error: string }>
     cancelQueue: () => Promise<{ ok: true } | { ok: false; error: string }>
+    getYtdlpPauseState: () => Promise<{
+      supported: boolean
+      active: boolean
+      paused: boolean
+    }>
+    pauseYtdlp: () => Promise<{ ok: true } | { ok: false; error: string }>
+    resumeYtdlp: () => Promise<{ ok: true } | { ok: false; error: string }>
     openQueueOutput: (
       id: number,
       mode: 'file' | 'folder'
