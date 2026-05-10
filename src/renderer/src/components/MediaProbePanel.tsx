@@ -24,7 +24,7 @@ type ProbeTableContextMenu =
 function clampProbeTableMenuPosition(clientX: number, clientY: number): { x: number; y: number } {
   const margin = 8
   const estW = 260
-  const estH = 312
+  const estH = 420
   const x = Math.min(Math.max(margin, clientX), Math.max(margin, window.innerWidth - estW - margin))
   const y = Math.min(
     Math.max(margin, clientY),
@@ -41,7 +41,11 @@ function formatProbeTrackRowTsv(row: MediaProbeTrackRow): string {
   const pix = (row.pixelFormat ?? '').replace(/\t/g, ' ')
   const sar = (row.sampleAspectRatio ?? '').replace(/\t/g, ' ')
   const dar = (row.displayAspectRatio ?? '').replace(/\t/g, ' ')
-  return `${row.index}\t${trackKindRu(row.kind)}\t${row.codec}\t${pix}\t${sar}\t${dar}\t${br}\t${disp}\t${lang}\t${title}\t${row.detail}`
+  const cs = (row.colorSpace ?? '').replace(/\t/g, ' ')
+  const cprim = (row.colorPrimaries ?? '').replace(/\t/g, ' ')
+  const ctr = (row.colorTransfer ?? '').replace(/\t/g, ' ')
+  const crng = (row.colorRange ?? '').replace(/\t/g, ' ')
+  return `${row.index}\t${trackKindRu(row.kind)}\t${row.codec}\t${pix}\t${sar}\t${dar}\t${cs}\t${cprim}\t${ctr}\t${crng}\t${br}\t${disp}\t${lang}\t${title}\t${row.detail}`
 }
 
 function formatProbeChapterRowTsv(ch: MediaProbeChapterRow): string {
@@ -272,6 +276,10 @@ export function PreviewProbeBody({
                     <th scope="col">Pix_fmt</th>
                     <th scope="col">SAR</th>
                     <th scope="col">DAR</th>
+                    <th scope="col">Цв.простран.</th>
+                    <th scope="col">Primaries</th>
+                    <th scope="col">Transfer</th>
+                    <th scope="col">Диапазон</th>
                     <th scope="col">Битрейт</th>
                     <th scope="col">Disposition</th>
                     <th scope="col">Язык</th>
@@ -295,6 +303,10 @@ export function PreviewProbeBody({
                       <td className="app-probe-table-mono">{row.pixelFormat ?? '—'}</td>
                       <td className="app-probe-table-mono">{row.sampleAspectRatio ?? '—'}</td>
                       <td className="app-probe-table-mono">{row.displayAspectRatio ?? '—'}</td>
+                      <td className="app-probe-table-mono">{row.colorSpace ?? '—'}</td>
+                      <td className="app-probe-table-mono">{row.colorPrimaries ?? '—'}</td>
+                      <td className="app-probe-table-mono">{row.colorTransfer ?? '—'}</td>
+                      <td className="app-probe-table-mono">{row.colorRange ?? '—'}</td>
                       <td title={formatBitrateLine(row.streamBitrateKbps) ?? undefined}>
                         {formatBitrateLine(row.streamBitrateKbps) ?? '—'}
                       </td>
@@ -441,6 +453,50 @@ export function PreviewProbeBody({
                       }}
                     >
                       Копировать DAR
+                    </button>
+                  ) : null}
+                  {probeTableMenu.row.colorSpace ? (
+                    <button
+                      type="button"
+                      className="app-probe-context-menu-item"
+                      onClick={() => {
+                        void copyProbeCellAndDismiss(probeTableMenu.row.colorSpace ?? '')
+                      }}
+                    >
+                      Копировать color_space
+                    </button>
+                  ) : null}
+                  {probeTableMenu.row.colorPrimaries ? (
+                    <button
+                      type="button"
+                      className="app-probe-context-menu-item"
+                      onClick={() => {
+                        void copyProbeCellAndDismiss(probeTableMenu.row.colorPrimaries ?? '')
+                      }}
+                    >
+                      Копировать color_primaries
+                    </button>
+                  ) : null}
+                  {probeTableMenu.row.colorTransfer ? (
+                    <button
+                      type="button"
+                      className="app-probe-context-menu-item"
+                      onClick={() => {
+                        void copyProbeCellAndDismiss(probeTableMenu.row.colorTransfer ?? '')
+                      }}
+                    >
+                      Копировать color_transfer
+                    </button>
+                  ) : null}
+                  {probeTableMenu.row.colorRange ? (
+                    <button
+                      type="button"
+                      className="app-probe-context-menu-item"
+                      onClick={() => {
+                        void copyProbeCellAndDismiss(probeTableMenu.row.colorRange ?? '')
+                      }}
+                    >
+                      Копировать color_range
                     </button>
                   ) : null}
                   {formatBitrateLine(probeTableMenu.row.streamBitrateKbps) ? (

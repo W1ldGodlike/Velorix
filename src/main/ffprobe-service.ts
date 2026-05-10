@@ -39,6 +39,12 @@ interface FfprobeJson {
     pix_fmt?: string
     sample_aspect_ratio?: string
     display_aspect_ratio?: string
+    color_space?: string
+    color_primaries?: string
+    /** Основное имя в актуальных сборках ffprobe; иначе смотрим `color_trc`. */
+    color_transfer?: string
+    color_trc?: string
+    color_range?: string
     bit_rate?: string
     disposition?: Record<string, unknown>
     tags?: Record<string, string | number | undefined>
@@ -184,6 +190,7 @@ function buildTrackRows(streams: FfprobeJson['streams']): MediaProbeTrackRow[] {
   list.forEach((stream, i) => {
     const index = typeof stream.index === 'number' ? stream.index : i
     const isVideo = stream.codec_type === 'video'
+    const colorTransferRaw = stream.color_transfer ?? stream.color_trc
     rows.push({
       index,
       kind: mapCodecType(stream.codec_type),
@@ -200,7 +207,11 @@ function buildTrackRows(streams: FfprobeJson['streams']): MediaProbeTrackRow[] {
       dispositionSummary: formatFfprobeDispositionSummary(stream.disposition),
       pixelFormat: isVideo ? ffprobeScalarDisplay(stream.pix_fmt) : null,
       sampleAspectRatio: isVideo ? ffprobeScalarDisplay(stream.sample_aspect_ratio) : null,
-      displayAspectRatio: isVideo ? ffprobeScalarDisplay(stream.display_aspect_ratio) : null
+      displayAspectRatio: isVideo ? ffprobeScalarDisplay(stream.display_aspect_ratio) : null,
+      colorSpace: isVideo ? ffprobeScalarDisplay(stream.color_space) : null,
+      colorPrimaries: isVideo ? ffprobeScalarDisplay(stream.color_primaries) : null,
+      colorTransfer: isVideo ? ffprobeScalarDisplay(colorTransferRaw) : null,
+      colorRange: isVideo ? ffprobeScalarDisplay(stream.color_range) : null
     })
   })
   rows.sort((a, b) => a.index - b.index)

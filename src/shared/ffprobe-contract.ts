@@ -20,6 +20,14 @@ export interface MediaProbeTrackRow {
   sampleAspectRatio: string | null
   /** Для видео: `display_aspect_ratio`; иначе `null`. */
   displayAspectRatio: string | null
+  /** Для видео: `color_space` (например bt709/bt2020nc); иначе `null`. */
+  colorSpace: string | null
+  /** Для видео: `color_primaries`; иначе `null`. */
+  colorPrimaries: string | null
+  /** Для видео: характеристика передачи (поле ffprobe color_transfer или color_trc); иначе `null`. */
+  colorTransfer: string | null
+  /** Для видео: `color_range` (tv/pc и т.п.); иначе `null`. */
+  colorRange: string | null
 }
 
 /** Глава контейнера §9 (ffprobe `-show_chapters`). */

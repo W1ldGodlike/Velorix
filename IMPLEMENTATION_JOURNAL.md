@@ -142,3 +142,4 @@
 - 2026-05-10 11:19:50 [SDK]: §9 — `dispositionSummary` из `stream.disposition` (`ffprobe-disposition`), колонка/TSV/сводка/ПКМ; Vitest.
 - 2026-05-10 11:22:13 [SDK]: §9 — видео `pix_fmt`/SAR/DAR из ffprobe в дорожках, колонки UI/ПКМ/TSV и TXT/HTML сводка; Vitest.
 - 2026-05-10 11:28:40 [SDK]: §9 §363 — отдельное окно инспектора `#inspector`: `inspector-window.ts`, IPC (`openInspectorWindow`, bootstrap, push пути), `windowBounds.inspector`, меню «Инструменты», `MediaProbePanel` + toolbar «Инспектор…».
+- 2026-05-10 11:31:22 [SDK]: §9 — цветовые поля видеопотока ffprobe (`color_space`, `color_primaries`, `color_transfer`/`color_trc`, `color_range`) в `MediaProbeTrackRow`, таблице/ПКМ/TXT/HTML сводке; Vitest.

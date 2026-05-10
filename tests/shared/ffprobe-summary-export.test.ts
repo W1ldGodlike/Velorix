@@ -29,7 +29,11 @@ const sampleProbe: MediaProbeSuccess = {
       dispositionSummary: 'по умолчанию',
       pixelFormat: 'yuv420p',
       sampleAspectRatio: '1:1',
-      displayAspectRatio: '16:9'
+      displayAspectRatio: '16:9',
+      colorSpace: 'bt709',
+      colorPrimaries: 'bt709',
+      colorTransfer: 'bt709',
+      colorRange: 'tv'
     },
     {
       index: 1,
@@ -42,7 +46,11 @@ const sampleProbe: MediaProbeSuccess = {
       dispositionSummary: '',
       pixelFormat: null,
       sampleAspectRatio: null,
-      displayAspectRatio: null
+      displayAspectRatio: null,
+      colorSpace: null,
+      colorPrimaries: null,
+      colorTransfer: null,
+      colorRange: null
     }
   ],
   chapters: [],
@@ -73,8 +81,12 @@ describe('ffprobe-summary-export', () => {
     expect(t).toContain('h264')
     expect(t).toContain('aac')
     expect(t).toContain('Дорожек: 2')
-    expect(t).toContain('Pix_fmt\tSAR\tDAR\tБитрейт\tDisposition\tЯзык\tЗаголовок\tСведения')
+    expect(t).toContain(
+      'Pix_fmt\tSAR\tDAR\tЦв.простран.\tPrimaries\tTransfer\tДиапазон\tБитрейт\tDisposition\tЯзык\tЗаголовок\tСведения'
+    )
     expect(t).toContain('yuv420p')
+    expect(t).toContain('bt709')
+    expect(t).toContain('\ttv\t')
     expect(t).toContain('192 kb/s')
     expect(t).toContain('по умолчанию')
     expect(t).toContain('Видео\t')
@@ -107,7 +119,11 @@ describe('ffprobe-summary-export', () => {
           dispositionSummary: '',
           pixelFormat: null,
           sampleAspectRatio: null,
-          displayAspectRatio: null
+          displayAspectRatio: null,
+          colorSpace: null,
+          colorPrimaries: null,
+          colorTransfer: null,
+          colorRange: null
         }
       ]
     }
