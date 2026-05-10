@@ -28,13 +28,17 @@ import type {
   FfmpegExportUserPresetSnapshot,
   FfmpegExportVideoTransformId
 } from '../../shared/ffmpeg-export-contract'
-import type { AppSettings, MainWindowUiPanelState } from '../../shared/settings-contract'
+import type {
+  AppSettings,
+  MainWindowUiPanelState,
+  ResolvedAppTheme
+} from '../../shared/settings-contract'
 import { buildFfmpegExportPreviewCommand } from '../../shared/ffmpeg-export-argv'
 import type { FfmpegSnapshotFormatId } from '../../shared/ffmpeg-snapshot-contract'
 import type { RestoredSourceInfo } from '../../shared/preview-dialog-contract'
 import type { MediaProbeSuccess } from '../../shared/ffprobe-contract'
 import { PreviewProbeBody } from './components/MediaProbePanel'
-type Theme = 'dark' | 'light'
+type Theme = ResolvedAppTheme
 
 type PreviewOpenedPayload = RestoredSourceInfo
 type EngineSummary = 'checking' | 'ready' | 'missing' | 'error'
@@ -495,7 +499,7 @@ function App(): JSX.Element {
     let cleanupTheme: (() => void) | undefined
     void (async () => {
       const loaded = await window.fluxalloy.settings.get()
-      applyTheme(loaded.theme === 'light' ? 'light' : 'dark')
+      applyTheme(loaded.effectiveTheme)
       hydrateExportFieldsFromSettings(loaded)
       setMainUiPanels({ ...MAIN_PANEL_DEFAULTS, ...(loaded.mainWindowUiPanels ?? {}) })
       setExportUserPresets(loaded.ffmpegExportUserPresets ?? [])
@@ -651,9 +655,13 @@ function App(): JSX.Element {
     }
   }, [applyPreview])
 
-  function toggleTheme(): void {
-    const next = theme === 'dark' ? 'light' : 'dark'
-    void window.fluxalloy.settings.setTheme(next)
+  async function toggleTheme(): Promise<void> {
+    const s = await window.fluxalloy.settings.get()
+    if (s.theme === 'system') {
+      void window.fluxalloy.settings.setTheme(s.effectiveTheme === 'dark' ? 'light' : 'dark')
+    } else {
+      void window.fluxalloy.settings.setTheme(s.theme === 'dark' ? 'light' : 'dark')
+    }
   }
 
   async function handleOpenToolbar(): Promise<void> {

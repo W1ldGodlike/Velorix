@@ -18,7 +18,7 @@
 - [x] Есть `package.json`, `electron-vite`, `electron-builder`, ESLint, Prettier, TypeScript-конфиги.
 - [x] Есть `src/main`, `src/preload`, `src/renderer`.
 - [x] Renderer изолирован: `contextIsolation: true`, `nodeIntegration: false`.
-- [x] Есть базовая тёмная/светлая тема, сохранение в `userData/settings.json`, меню `Вид -> Тема`.
+- [x] Есть базовая тёмная/светлая тема и режим **как в системе** (`theme: system` + `nativeTheme`), сохранение в `userData/settings.json`, меню `Вид -> Тема`.
 - [~] Есть главное окно 1920x1080 (FHD) по умолчанию, тулбар, **базовый** видеопредпросмотр (`fluxmedia://` allowlist), DnD/«Открыть», статусбар.
 - [~] Есть `Data/`, `Help/`, `FLUXALLOY_TZ.md`, `IMPLEMENTATION_CHECKLIST.md`, [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md), упаковка `Data/`, `Help/`, ТЗ через `extraResources` (журнал в установщик пока не включаем — только для разработки).
 - [x] Windows: `electron-builder` с режимом sign по умолчанию; после перезагрузки проверены `build:unpack`/`winCodeSign`.
@@ -37,7 +37,7 @@
 
 - [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; DnD текста/URL на окно (кроме полей ввода формы) + поле URL; прогресс + `extractYtdlpOutputPath`; классификация stderr; эвристики format/size из `[info]`/merger расширены; дальше — ещё редкие строки по логам.
 - [~] §6.3: argv whitelist + справочник + превью с draft/override `-o`; после выбора каталога загрузки / вставки флага из справочника / «Шаблон по умолчанию» превью пересчитывается; при необходимости ещё редкие поля.
-- [~] §1.1/§4.A/§6/§9: загрузки lucide/layout/тема/HiDPI (топбар ~62px + dppx); инспектор — lucide-тулбар; редактор — топбар v0-кластер: `circle-help` → О программе (`LucideMiniIcons`/shared strokes) + export preview persist + HiDPI @media topbar/toolbar/icon-btn и focus-visible FFmpeg; дальше — системная тема OS, ручная матрица DPI, полировка инспектора.
+- [~] §1.1/§4.A/§6/§9: загрузки lucide/layout/тема/HiDPI (топбар ~62px + dppx); инспектор — lucide-тулбар; редактор — топбар v0-кластер + export preview persist + HiDPI/focus-visible FFmpeg; **системная тема**: `settings.json` / IPC `effectiveTheme`, `nativeTheme.updated`, радио в меню; дальше — ручная матрица DPI, полировка инспектора.
 - [~] §7.2: crop/rotate/flip готовы через whitelist `-vf`; настройки перенесены из toolbar в боковую панель; дальше расширенные filters и HW encode.
 - [~] §9: опционально Dolby Vision/`side_data` и прочие расширенные метаданные ffprobe (базовые color\_\* потока уже в таблице).
 - [~] §17/§18: диагностика, Support ZIP, `session.log`; при необходимости отдельные логи по окнам или политика объёма mid-session.

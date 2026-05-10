@@ -30,7 +30,13 @@ import type {
 } from '../shared/engine-contract'
 import type { MediaProbeResult } from '../shared/ffprobe-contract'
 import type { PreviewDialogResult, RestoredSourceInfo } from '../shared/preview-dialog-contract'
-import type { AppSettings, AppTheme, MainWindowUiPanelState } from '../shared/settings-contract'
+import type {
+  AppSettings,
+  AppSettingsView,
+  AppTheme,
+  MainWindowUiPanelState,
+  ResolvedAppTheme
+} from '../shared/settings-contract'
 import type {
   SaveTextDialogPayload,
   SaveTextDialogResult
@@ -45,8 +51,8 @@ type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
 // случайно начать выполнять произвольные команды.
 const fluxalloy = {
   settings: {
-    get: (): Promise<AppSettings> => ipcRenderer.invoke(mw.settingsGet),
-    setTheme: (theme: AppTheme): Promise<AppSettings> =>
+    get: (): Promise<AppSettingsView> => ipcRenderer.invoke(mw.settingsGet),
+    setTheme: (theme: AppTheme): Promise<AppSettingsView> =>
       ipcRenderer.invoke(mw.settingsSetTheme, theme),
     setEngineExecutablePaths: (patch: EnginePathOverridesPatch): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetEnginePaths, patch),
@@ -224,11 +230,13 @@ const fluxalloy = {
       ipcRenderer.removeListener(channel, handler)
     }
   },
-  onThemeChanged: (listener: (theme: AppTheme) => void): (() => void) => {
+  onThemeChanged: (listener: (theme: ResolvedAppTheme) => void): (() => void) => {
     const channel = mw.themeChanged
     const handler = (_: unknown, raw: unknown): void => {
       // События из IPC валидируем так же, как invoke-аргументы: renderer не доверяет raw payload.
-      listener(raw === 'light' ? 'light' : 'dark')
+      if (raw === 'light' || raw === 'dark') {
+        listener(raw)
+      }
     }
     ipcRenderer.on(channel, handler)
     return (): void => {

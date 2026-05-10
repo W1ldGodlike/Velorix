@@ -4,6 +4,7 @@ import { dirname, isAbsolute, normalize } from 'path'
 import { ENGINE_IDS, type EnginePathOverrides } from '../shared/engine-contract'
 import type {
   AppSettings,
+  AppTheme,
   DownloadsWindowUiPanelState,
   MainWindowUiPanelState,
   StoredWindowRect,
@@ -18,7 +19,9 @@ import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
 
 export type {
   AppSettings,
+  AppSettingsView,
   AppTheme,
+  ResolvedAppTheme,
   StoredWindowRect,
   WindowBoundsConfig
 } from '../shared/settings-contract'
@@ -329,6 +332,13 @@ function parseDownloadsWindowUiPanels(raw: unknown): DownloadsWindowUiPanelState
   return Object.keys(out).length > 0 ? out : undefined
 }
 
+function parseStoredTheme(raw: unknown): AppTheme {
+  if (raw === 'light' || raw === 'dark' || raw === 'system') {
+    return raw
+  }
+  return 'dark'
+}
+
 const defaults: AppSettings = { theme: 'dark' }
 
 /**
@@ -345,7 +355,7 @@ export function loadSettings(filePath: string): AppSettings {
     }
     const raw = readFileSync(filePath, 'utf-8')
     const parsed = JSON.parse(raw) as Partial<AppSettings>
-    const theme = parsed.theme === 'light' ? 'light' : 'dark'
+    const theme = parseStoredTheme(parsed.theme)
     const last =
       typeof parsed.lastOpenedSourcePath === 'string' && parsed.lastOpenedSourcePath.trim() !== ''
         ? parsed.lastOpenedSourcePath.trim()

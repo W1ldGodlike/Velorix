@@ -10,7 +10,11 @@ import type {
   FfmpegExportVideoTransformId
 } from './ffmpeg-export-contract'
 
-export type AppTheme = 'dark' | 'light'
+/** Эффективная light/dark-палитра для CSS (`data-theme`) и вторичных окон. */
+export type ResolvedAppTheme = 'dark' | 'light'
+
+/** Сохраняемое предпочтение: явная палитра или следование Electron `nativeTheme`. */
+export type AppTheme = ResolvedAppTheme | 'system'
 
 /** §4.1 — прямоугольник окна в экранных координатах (DIP). */
 export interface StoredWindowRect {
@@ -59,7 +63,7 @@ export interface DownloadsWindowUiPanelState {
 }
 
 export interface AppSettings {
-  /** Тема хранится в main, чтобы меню, renderer и будущие окна не расходились между собой. */
+  /** Тема хранится в main; `system` синхронизируется с `nativeTheme.shouldUseDarkColors`. */
   theme: AppTheme
   /** §4.1: последний успешно открытый локальный файл для мягкого восстановления сессии. */
   lastOpenedSourcePath?: string
@@ -132,3 +136,6 @@ export interface AppSettings {
   /** §4.1 — сохранённое раскрытие панелей окна yt-dlp. */
   downloadsWindowUiPanels?: DownloadsWindowUiPanelState
 }
+
+/** Ответ IPC `settingsGet` / `settingsSetTheme`: `effectiveTheme` не пишется в `settings.json`. */
+export type AppSettingsView = AppSettings & { effectiveTheme: ResolvedAppTheme }

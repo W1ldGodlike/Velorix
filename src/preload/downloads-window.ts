@@ -6,7 +6,7 @@ import type {
   YtdlpDownloadOptionsPayload,
   YtdlpGetCliOptionsParams
 } from '../shared/ytdlp-download-contract'
-import type { AppTheme, DownloadsWindowUiPanelState } from '../shared/settings-contract'
+import type { DownloadsWindowUiPanelState, ResolvedAppTheme } from '../shared/settings-contract'
 import type { YtdlpDownloadHistoryEntry } from '../shared/ytdlp-history-contract'
 import { downloadsIpc as d, mainWindowIpc as mw } from '../shared/ipc-channels'
 
@@ -157,8 +157,8 @@ contextBridge.exposeInMainWorld('fluxalloyDownloads', {
   ): Promise<{ ok: true } | { ok: false; error: string }> =>
     ipcRenderer.invoke(d.mergeUiPanels, patch),
 
-  /** §1.1 — broadcast темы из main (`persistAndBroadcast`): то же событие, что у renderer главного окна. */
-  onThemeChanged: (listener: (theme: AppTheme) => void): (() => void) => {
+  /** §1.1 — broadcast эффективной палитры из main (`persistThemePreference` / `nativeTheme`): как у главного окна. */
+  onThemeChanged: (listener: (theme: ResolvedAppTheme) => void): (() => void) => {
     const handler = (_event: unknown, raw: unknown): void => {
       if (raw === 'light' || raw === 'dark') {
         listener(raw)

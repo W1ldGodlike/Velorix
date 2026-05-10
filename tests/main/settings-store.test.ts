@@ -161,4 +161,18 @@ describe('settings-store yt-dlp fields', () => {
       downloadsWindowUiPanels: { log: false, format: true }
     })
   })
+
+  it('принимает theme: system', () => {
+    const root = makeTempRoot()
+    const file = join(root, 'settings.json')
+    writeFileSync(file, JSON.stringify({ theme: 'system' }), 'utf-8')
+    expect(loadSettings(file).theme).toBe('system')
+  })
+
+  it('невалидная theme откатывается к dark', () => {
+    const root = makeTempRoot()
+    const file = join(root, 'settings.json')
+    writeFileSync(file, JSON.stringify({ theme: 'auto' }), 'utf-8')
+    expect(loadSettings(file).theme).toBe('dark')
+  })
 })

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import type { JSX } from 'react'
 
 import type { MediaProbeSuccess } from '../../shared/ffprobe-contract'
+import type { ResolvedAppTheme } from '../../shared/settings-contract'
 import {
   IconFilm,
   IconFolderOpen,
@@ -17,7 +18,7 @@ import Versions from './components/Versions'
  * Загружается через `index.html#inspector` тем же бандлом и preload, что и главное окно.
  */
 export function InspectorStandaloneApp(): JSX.Element {
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+  const [theme, setTheme] = useState<ResolvedAppTheme>('dark')
   const [mediaPath, setMediaPath] = useState<string | null>(null)
   /** Сброс кэша React при повторном ffprobe того же файла («Обновить ffprobe»). */
   const [probeRefreshNonce, setProbeRefreshNonce] = useState(0)
@@ -25,7 +26,7 @@ export function InspectorStandaloneApp(): JSX.Element {
   const [probeError, setProbeError] = useState<string | null>(null)
   const [statusHint, setStatusHint] = useState<string | null>(null)
 
-  const applyTheme = useCallback((value: 'dark' | 'light') => {
+  const applyTheme = useCallback((value: ResolvedAppTheme) => {
     document.documentElement.dataset['theme'] = value
     setTheme(value)
   }, [])
@@ -36,9 +37,9 @@ export function InspectorStandaloneApp(): JSX.Element {
     void window.fluxalloy.settings
       .get()
       .then((loaded) => {
-        applyTheme(loaded.theme === 'light' ? 'light' : 'dark')
+        applyTheme(loaded.effectiveTheme)
         cleanupTheme = window.fluxalloy.onThemeChanged((next) => {
-          applyTheme(next === 'light' ? 'light' : 'dark')
+          applyTheme(next)
         })
       })
       .catch(console.error)
@@ -86,9 +87,13 @@ export function InspectorStandaloneApp(): JSX.Element {
   const displayedProbeInfo = mediaPath ? probeInfo : null
   const displayedProbeError = mediaPath ? probeError : null
 
-  function toggleTheme(): void {
-    const next = theme === 'dark' ? 'light' : 'dark'
-    void window.fluxalloy.settings.setTheme(next)
+  async function toggleTheme(): Promise<void> {
+    const s = await window.fluxalloy.settings.get()
+    if (s.theme === 'system') {
+      void window.fluxalloy.settings.setTheme(s.effectiveTheme === 'dark' ? 'light' : 'dark')
+    } else {
+      void window.fluxalloy.settings.setTheme(s.theme === 'dark' ? 'light' : 'dark')
+    }
   }
 
   async function handleOpenDialog(): Promise<void> {

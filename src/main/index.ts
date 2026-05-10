@@ -1,6 +1,6 @@
 import { existsSync, statSync, writeFileSync } from 'fs'
 import { basename, dirname, isAbsolute, join, normalize, resolve } from 'path'
-import { BrowserWindow, Menu, app, clipboard, dialog, ipcMain, shell } from 'electron'
+import { BrowserWindow, Menu, app, clipboard, dialog, ipcMain, nativeTheme, shell } from 'electron'
 import type { IpcMainEvent } from 'electron'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -90,7 +90,13 @@ import {
   registerFluxMediaProtocol
 } from './media-protocol'
 import { openVideoWithDialog } from './preview-dialog'
-import type { AppSettings, AppTheme, WindowBoundsConfig } from './settings-store'
+import type {
+  AppSettings,
+  AppSettingsView,
+  AppTheme,
+  ResolvedAppTheme,
+  WindowBoundsConfig
+} from './settings-store'
 import { loadSettings, saveSettings } from './settings-store'
 import { loadTrustedHashes, resolveTrustedHashesPath } from './trusted-hashes-store'
 import { resolvePreloadOutFile } from './preload-resolve'
@@ -366,8 +372,11 @@ function parseExportTrim(raw: unknown): MediaExportTrimPayload | undefined {
   return { inSec: o['inSec'], outSec: o['outSec'] }
 }
 
-function applyTheme(theme: AppTheme): void {
-  cachedSettings = { ...cachedSettings, theme }
+function resolveEffectiveTheme(pref: AppTheme): ResolvedAppTheme {
+  if (pref === 'system') {
+    return nativeTheme.shouldUseDarkColors ? 'dark' : 'light'
+  }
+  return pref
 }
 
 function refreshEnginePathOverridesSnapshot(): void {
@@ -901,20 +910,22 @@ function persistFfmpegExportApplySnapshot(raw: unknown): AppSettings {
   return { ...cachedSettings }
 }
 
-function persistAndBroadcast(theme: AppTheme): AppSettings {
-  applyTheme(theme)
+function persistThemePreference(pref: AppTheme): AppSettingsView {
+  cachedSettings = { ...cachedSettings, theme: pref }
   saveSettings(settingsPath(), cachedSettings)
+  const resolved = resolveEffectiveTheme(pref)
   // Renderer подписан на событие, поэтому смена темы из меню сразу отражается во всех окнах.
   BrowserWindow.getAllWindows().forEach((w) => {
-    w.webContents.send(mw.themeChanged, theme)
+    if (!w.isDestroyed()) {
+      w.webContents.send(mw.themeChanged, resolved)
+    }
   })
   buildApplicationMenu()
-  return cachedSettings
+  return { ...cachedSettings, effectiveTheme: resolved }
 }
 
-function setTheme(theme: AppTheme): AppTheme {
-  persistAndBroadcast(theme)
-  return theme
+function setTheme(pref: AppTheme): AppSettingsView {
+  return persistThemePreference(pref)
 }
 
 /**
@@ -1118,7 +1129,10 @@ async function showProcessErrorDialog(
 function buildApplicationMenu(): void {
   const win = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0] ?? undefined
   const isMac = process.platform === 'darwin'
-  const isDark = cachedSettings.theme === 'dark'
+  const themePref = cachedSettings.theme
+  const isSystem = themePref === 'system'
+  const isDarkPref = themePref === 'dark'
+  const isLightPref = themePref === 'light'
   const downloadsFocused = isDownloadsWindow(win)
   const inspectorFocused = isInspectorWindow(win)
   const auxiliaryFocused = downloadsFocused || inspectorFocused
@@ -1251,9 +1265,17 @@ function buildApplicationMenu(): void {
           label: 'Тема',
           submenu: [
             {
+              label: 'Как в системе',
+              type: 'radio',
+              checked: isSystem,
+              click: (): void => {
+                void setTheme('system')
+              }
+            },
+            {
               label: 'Тёмная',
               type: 'radio',
-              checked: isDark,
+              checked: isDarkPref,
               click: (): void => {
                 void setTheme('dark')
               }
@@ -1261,7 +1283,7 @@ function buildApplicationMenu(): void {
             {
               label: 'Светлая',
               type: 'radio',
-              checked: !isDark,
+              checked: isLightPref,
               click: (): void => {
                 void setTheme('light')
               }
@@ -1437,6 +1459,18 @@ app.whenReady().then(() => {
   refreshEnginePathOverridesSnapshot()
   syncYtdlpDownloadDirectoryFromSettings(cachedSettings.ytdlpDownloadDirectory)
   refreshYtdlpRunOptionsSnapshot(cachedSettings)
+  nativeTheme.on('updated', () => {
+    if (cachedSettings.theme !== 'system') {
+      return
+    }
+    const eff = resolveEffectiveTheme('system')
+    for (const w of BrowserWindow.getAllWindows()) {
+      if (!w.isDestroyed()) {
+        w.webContents.send(mw.themeChanged, eff)
+      }
+    }
+    buildApplicationMenu()
+  })
   configureDownloadsWindowBoundsHooks({
     getSavedDownloadsBounds: () => cachedSettings.windowBounds?.downloads,
     persistDownloadsBounds: (r) => {
@@ -1535,7 +1569,7 @@ app.whenReady().then(() => {
       }
       saveSettings(settingsPath(), cachedSettings)
     },
-    getAppTheme: (): AppTheme => cachedSettings.theme
+    getAppTheme: (): ResolvedAppTheme => resolveEffectiveTheme(cachedSettings.theme)
   })
   configureDownloadsQueueRunnerHooks({
     openDownloadedFileInHandler: (absoluteFile) => openDownloadedFileInMainHandler(absoluteFile)
@@ -1565,13 +1599,21 @@ app.whenReady().then(() => {
   })
 
   // IPC-каналы держим узкими: renderer просит только конкретные операции, без произвольного доступа к Node.
-  ipcMain.handle(mw.settingsGet, (): AppSettings => {
-    return { ...cachedSettings }
+  ipcMain.handle(mw.settingsGet, (): AppSettingsView => {
+    return {
+      ...cachedSettings,
+      effectiveTheme: resolveEffectiveTheme(cachedSettings.theme)
+    }
   })
 
-  ipcMain.handle(mw.settingsSetTheme, (_, theme: unknown): AppSettings => {
-    const next = theme === 'light' ? 'light' : 'dark'
-    return persistAndBroadcast(next)
+  ipcMain.handle(mw.settingsSetTheme, (_, theme: unknown): AppSettingsView => {
+    let next: AppTheme = 'dark'
+    if (theme === 'light') {
+      next = 'light'
+    } else if (theme === 'system') {
+      next = 'system'
+    }
+    return persistThemePreference(next)
   })
 
   ipcMain.handle(

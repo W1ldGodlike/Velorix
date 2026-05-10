@@ -29,7 +29,13 @@ import type {
 } from '../shared/engine-contract'
 import type { MediaProbeResult } from '../shared/ffprobe-contract'
 import type { PreviewDialogResult, RestoredSourceInfo } from '../shared/preview-dialog-contract'
-import type { AppSettings, AppTheme, MainWindowUiPanelState } from '../shared/settings-contract'
+import type {
+  AppSettings,
+  AppSettingsView,
+  AppTheme,
+  MainWindowUiPanelState,
+  ResolvedAppTheme
+} from '../shared/settings-contract'
 import type {
   SaveTextDialogPayload,
   SaveTextDialogResult
@@ -48,8 +54,8 @@ export type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
 export interface FluxAlloyApi {
   // Имена IPC-каналов — `src/shared/ipc-channels.ts`; держать этот интерфейс синхронным с `src/preload/index.ts`.
   settings: {
-    get: () => Promise<AppSettings>
-    setTheme: (theme: AppTheme) => Promise<AppSettings>
+    get: () => Promise<AppSettingsView>
+    setTheme: (theme: AppTheme) => Promise<AppSettingsView>
     setEngineExecutablePaths: (patch: EnginePathOverridesPatch) => Promise<AppSettings>
     pickEngineExecutable: (engineId: EngineId) => Promise<string | null>
     setFfmpegExportEncodePreset: (preset: FfmpegExportEncodePresetId) => Promise<AppSettings>
@@ -130,7 +136,7 @@ export interface FluxAlloyApi {
     onProgress: (listener: (progress: FfmpegExportProgressPayload) => void) => () => void
   }
   onPreviewOpened: (listener: (payload: PreviewOpenedPayload) => void) => () => void
-  onThemeChanged: (listener: (theme: AppTheme) => void) => () => void
+  onThemeChanged: (listener: (theme: ResolvedAppTheme) => void) => () => void
   onOpenEnginePaths: (listener: () => void) => () => void
   onEnginePathsChanged: (listener: () => void) => () => void
   onOpenAbout: (listener: () => void) => () => void

@@ -11,7 +11,7 @@ import {
 } from 'electron'
 
 import { resolveAppPaths } from './app-paths'
-import type { AppTheme, DownloadsWindowUiPanelState } from '../shared/settings-contract'
+import type { DownloadsWindowUiPanelState, ResolvedAppTheme } from '../shared/settings-contract'
 import type { StoredWindowRect } from './settings-store'
 import { boundsFromBrowserWindow, rectifyBoundsForRestore } from './window-bounds'
 import {
@@ -103,7 +103,7 @@ interface DownloadsWindowBoundsHooks {
   /** §4.1 — сохранить частичное состояние раскрытых секций в `settings.json`. */
   mergeDownloadsWindowUiPanelsPatch?: (patch: Partial<DownloadsWindowUiPanelState>) => void
   /** Текущая тема приложения — начальное `data-theme` и синхрон с меню главного окна. */
-  getAppTheme?: () => AppTheme
+  getAppTheme?: () => ResolvedAppTheme
 }
 
 let downloadsBoundsHooks: DownloadsWindowBoundsHooks = {}
@@ -250,7 +250,7 @@ function sanitizeDownloadsUiPanelPatch(raw: unknown): Partial<DownloadsWindowUiP
 
 function buildDownloadsHtml(
   panelState?: DownloadsWindowUiPanelState,
-  appTheme: AppTheme = 'dark'
+  appTheme: ResolvedAppTheme = 'dark'
 ): string {
   const openAttr = (key: keyof DownloadsWindowUiPanelState, defaultOpen: boolean): string => {
     const v = panelState?.[key]
