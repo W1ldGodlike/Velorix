@@ -348,7 +348,7 @@ function buildDownloadsHtml(
       body { font-size: 12.5px; }
       .dl-topbar { min-height: 66px; }
       td.act button.icon-btn, .icon-btn { width: 26px; height: 26px; }
-      .progress-track { height: 4px; }
+      .progress-track { height: 5px; }
     }
     .dl-shell { height: 100%; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
     .dl-topbar {
@@ -448,6 +448,12 @@ function buildDownloadsHtml(
     .queue-table-wrap { flex: 1; min-height: 0; overflow: auto; background: var(--bg); }
     table { width: 100%; border-collapse: collapse; font-size: 0.7rem; table-layout: fixed; }
     th, td { border-bottom: 1px solid var(--border); padding: 0.28rem 0.4rem; text-align: left; vertical-align: top; word-break: break-word; }
+    table.queue-table tbody tr:nth-child(even) td {
+      background: color-mix(in srgb, var(--surface) 16%, var(--bg));
+    }
+    table.queue-table tbody tr:hover td {
+      background: color-mix(in srgb, var(--blue) 8%, var(--surface));
+    }
     th { position: sticky; top: 0; z-index: 1; color: var(--muted); background: var(--surface); font-weight: 700; font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.06em; line-height: 1.28; }
     table.queue-table th:nth-child(1), table.queue-table td:nth-child(1) { width: 2.1rem; }
     table.queue-table th:nth-child(2), table.queue-table td:nth-child(2) { width: 24%; }
@@ -461,12 +467,22 @@ function buildDownloadsHtml(
     td.num { color: var(--dim); font-variant-numeric: tabular-nums; }
     .queue-title { color: var(--text); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .queue-url { margin-top: 0.08rem; color: var(--dim); font-size: 0.64rem; font-family: ui-monospace, Consolas, Menlo, monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    td.prog { font-variant-numeric: tabular-nums; color: var(--muted); white-space: normal; word-break: break-word; font-size: 0.68rem; line-height: 1.35; }
+    td.prog { vertical-align: middle; font-variant-numeric: tabular-nums; color: var(--muted); white-space: normal; word-break: break-word; font-size: 0.68rem; line-height: 1.35; }
     td.queue-col-fmt, td.queue-col-size, td.queue-col-spd, td.queue-col-eta {
       font-variant-numeric: tabular-nums; font-size: 0.65rem; color: var(--muted);
     }
-    .progress-track { height: 3px; border-radius: 999px; background: var(--border-2); overflow: hidden; margin: 0.14rem 0 0.12rem; }
-    .progress-fill { height: 100%; border-radius: inherit; background: var(--blue); }
+    .prog-stack { display: flex; flex-direction: column; gap: 0.22rem; min-width: 0; }
+    .prog-bar-row { display: flex; align-items: center; gap: 0.48rem; min-width: 0; }
+    .prog-bar-row .progress-track { flex: 1 1 auto; margin: 0; min-width: 0; }
+    .prog-pct {
+      flex-shrink: 0; min-width: 2.4rem; text-align: right;
+      font-variant-numeric: tabular-nums; font-size: 0.64rem; font-weight: 700; color: var(--text);
+    }
+    .prog-pct.prog-pct-done { color: color-mix(in srgb, var(--green) 90%, white); }
+    .prog-head { font-size: 0.62rem; line-height: 1.32; color: var(--muted); word-break: break-word; }
+    .progress-track { height: 4px; border-radius: 999px; background: var(--border-2); overflow: hidden; margin: 0.14rem 0 0.12rem; }
+    .progress-fill { height: 100%; border-radius: inherit; background: var(--blue); transition: width 0.16s ease; }
+    .progress-fill-done { background: var(--green); }
     .status-pill { display: inline-flex; align-items: center; gap: 0.34rem; color: var(--muted); }
     .status-dot { width: 0.45rem; height: 0.45rem; border-radius: 999px; background: var(--dim); flex-shrink: 0; }
     .status-running .status-dot { background: var(--blue); }
@@ -474,6 +490,7 @@ function buildDownloadsHtml(
     .status-error .status-dot { background: var(--red); }
     .status-cancelled .status-dot { background: var(--dim); }
     td.act { vertical-align: middle; min-width: 8.75rem; max-width: 15rem; }
+    td.num, td.queue-col-fmt, td.queue-col-size, td.queue-col-spd, td.queue-col-eta { vertical-align: middle; }
     .act-icons {
       display: inline-flex; flex-wrap: wrap; gap: 0.14rem; align-items: center;
       justify-content: flex-end;
@@ -1385,29 +1402,56 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
         return Math.max(0, Math.min(100, n));
       }
 
-      function tdProgress(text) {
+      function tdProgress(row) {
         var td = document.createElement('td');
         td.className = 'prog';
-        var raw = text || '—';
-        var head = raw;
-        if (raw !== '—') {
-          var segs = raw.split(' · ');
-          head = segs.length > 0 && segs[0] ? segs[0].trim() : raw;
-        }
+        var raw =
+          row && typeof row.progress === 'string' && row.progress.trim().length > 0 ? row.progress.trim() : '—';
+        var status = typeof (row && row.status) === 'string' ? row.status : '';
+        var segs = raw === '—' ? [] : raw.split(' · ');
+        var head = segs.length > 0 && segs[0] ? segs[0].trim() : raw;
         var pct = parseProgressPercent(head);
-        if (pct !== null) {
+        if (status === 'Готово') {
+          pct = 100;
+        }
+        var showBar = pct !== null && isFinite(pct);
+        if (status === 'Ожидание') {
+          showBar = false;
+        }
+        var stack = document.createElement('div');
+        stack.className = 'prog-stack';
+        if (showBar && pct !== null) {
+          var rowBar = document.createElement('div');
+          rowBar.className = 'prog-bar-row';
           var track = document.createElement('div');
           track.className = 'progress-track';
           var fill = document.createElement('div');
-          fill.className = 'progress-fill';
-          fill.style.width = pct + '%';
+          var done = status === 'Готово';
+          fill.className = 'progress-fill' + (done ? ' progress-fill-done' : '');
+          fill.style.width = Math.max(0, Math.min(100, pct)) + '%';
           track.appendChild(fill);
-          td.appendChild(track);
+          rowBar.appendChild(track);
+          var pctEl = document.createElement('span');
+          pctEl.className = 'prog-pct' + (done ? ' prog-pct-done' : '');
+          pctEl.textContent = Math.round(pct) + '%';
+          rowBar.appendChild(pctEl);
+          stack.appendChild(rowBar);
         }
-        var label = document.createElement('div');
-        label.className = 'prog-head';
-        label.textContent = head;
-        td.appendChild(label);
+        var subline = '';
+        if (raw === '—') {
+          subline = '—';
+        } else if (segs.length > 1) {
+          subline = segs.slice(1).join(' · ').trim();
+        } else if (!showBar) {
+          subline = head;
+        }
+        if (subline) {
+          var label = document.createElement('div');
+          label.className = 'prog-head';
+          label.textContent = subline;
+          stack.appendChild(label);
+        }
+        td.appendChild(stack);
         return td;
       }
       function snapStr(row, key) {
@@ -1451,12 +1495,14 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
 
       function tdStatus(status) {
         var td = document.createElement('td');
+        var s = status || '—';
         var pill = document.createElement('span');
-        pill.className = 'status-pill ' + statusClass(status || '');
+        pill.className = 'status-pill ' + statusClass(s);
+        pill.title = s;
         var dot = document.createElement('span');
         dot.className = 'status-dot';
         var label = document.createElement('span');
-        label.textContent = status || '—';
+        label.textContent = s;
         pill.appendChild(dot);
         pill.appendChild(label);
         td.appendChild(pill);
@@ -1528,7 +1574,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
           tr.appendChild(tdTitle);
           tr.appendChild(tdFmtCell(r));
           tr.appendChild(tdSizeCell(r));
-          tr.appendChild(tdProgress(r.progress || '—'));
+          tr.appendChild(tdProgress(r));
           tr.appendChild(tdSpdCell(r));
           tr.appendChild(tdEtaCell(r));
           tr.appendChild(tdStatus(r.status || '—'));
