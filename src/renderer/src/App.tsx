@@ -455,6 +455,10 @@ function App(): JSX.Element {
   const [downloadsHistoryBusy, setDownloadsHistoryBusy] = useState(false)
   const [downloadsLogLines, setDownloadsLogLines] = useState<DownloadsLogLineView[]>([])
   const [downloadsLogTargetRowId, setDownloadsLogTargetRowId] = useState<number | null>(null)
+  const [downloadsOutputDirectory, setDownloadsOutputDirectory] = useState<{
+    path: string
+    isDefault: boolean
+  } | null>(null)
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
   const [topbarEngineVersionsLine, setTopbarEngineVersionsLine] = useState('')
   const [exportBusy, setExportBusy] = useState(false)
@@ -561,6 +565,11 @@ function App(): JSX.Element {
     })
   }, [])
 
+  const refreshDownloadsOutputDirectory = useCallback(async (): Promise<void> => {
+    const dir = await window.fluxalloy.downloads.getOutputDirectory()
+    setDownloadsOutputDirectory(dir)
+  }, [])
+
   const applyPreview = useCallback((payload: PreviewOpenedPayload): void => {
     setProbeInfo(null)
     setProbeError(null)
@@ -657,6 +666,12 @@ function App(): JSX.Element {
   useEffect(() => {
     return window.fluxalloy.downloads.onLog(handleDownloadsLogPayload)
   }, [handleDownloadsLogPayload])
+
+  useEffect(() => {
+    void window.fluxalloy.downloads.getOutputDirectory().then((dir) => {
+      setDownloadsOutputDirectory(dir)
+    })
+  }, [])
 
   useEffect(() => {
     trimSnapshotRef.current = null
@@ -2750,6 +2765,64 @@ function App(): JSX.Element {
                     Нужен `%(ext)s`; путь наружу через `..` запрещён.
                   </span>
                 </label>
+                <div
+                  className="app-downloads-output-dir"
+                  role="group"
+                  aria-label="Каталог загрузок yt-dlp"
+                >
+                  <span className="app-field-help">Каталог загрузок</span>
+                  <strong title={downloadsOutputDirectory?.path ?? ''}>
+                    {downloadsOutputDirectory?.path ?? 'Загружаю путь…'}
+                  </strong>
+                  <span className="app-field-help">
+                    {downloadsOutputDirectory?.isDefault
+                      ? 'Используется каталог по умолчанию в userData.'
+                      : 'Используется выбранный пользователем каталог.'}
+                  </span>
+                  <div className="app-downloads-history-actions">
+                    <button
+                      type="button"
+                      className="app-btn app-btn-compact"
+                      onClick={() => {
+                        void window.fluxalloy.downloads.openOutputDirectory().then((res) => {
+                          if (!res.ok) {
+                            setStatusHint(res.error)
+                          }
+                        })
+                      }}
+                    >
+                      Открыть
+                    </button>
+                    <button
+                      type="button"
+                      className="app-btn app-btn-compact"
+                      onClick={() => {
+                        void window.fluxalloy.downloads.pickOutputDirectory().then((res) => {
+                          if (res.ok) {
+                            setDownloadsOutputDirectory({ path: res.path, isDefault: false })
+                            return
+                          }
+                          if ('error' in res) {
+                            setStatusHint(res.error)
+                          }
+                        })
+                      }}
+                    >
+                      Выбрать
+                    </button>
+                    <button
+                      type="button"
+                      className="app-btn app-btn-compact"
+                      onClick={() => {
+                        void window.fluxalloy.downloads.clearOutputDirectory().then(() => {
+                          void refreshDownloadsOutputDirectory()
+                        })
+                      }}
+                    >
+                      По умолчанию
+                    </button>
+                  </div>
+                </div>
                 <details className="app-downloads-command-preview">
                   <summary>Превью команды</summary>
                   <pre>{downloadsOptions.commandPreview}</pre>

@@ -533,6 +533,27 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
+.app-downloads-output-dir {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.28rem;
+  padding: 0.58rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid var(--fa-border-subtle);
+  background: color-mix(in srgb, var(--fa-bg) 64%, var(--fa-surface-elevated));
+}
+
+.app-downloads-output-dir strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--fa-text-primary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.66rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .app-downloads-command-preview {
   border-radius: 8px;
   border: 1px solid var(--fa-border-subtle);

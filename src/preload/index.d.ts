@@ -107,6 +107,12 @@ export interface FluxAlloyApi {
     clearQueue: () => Promise<void>
     clearFinished: () => Promise<number>
     removeRow: (id: number) => Promise<void>
+    getOutputDirectory: () => Promise<{ path: string; isDefault: boolean }>
+    openOutputDirectory: () => Promise<{ ok: true } | { ok: false; error: string }>
+    pickOutputDirectory: () => Promise<
+      { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
+    >
+    clearOutputDirectory: () => Promise<void>
     onSnapshot: (listener: (rows: unknown[]) => void) => () => void
     startQueue: () => Promise<{ ok: true } | { ok: false; error: string }>
     startRow: (id: number) => Promise<{ ok: true } | { ok: false; error: string }>

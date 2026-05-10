@@ -173,6 +173,14 @@ const fluxalloy = {
     clearQueue: (): Promise<void> => ipcRenderer.invoke(d.clear),
     clearFinished: (): Promise<number> => ipcRenderer.invoke(d.clearFinished),
     removeRow: (id: number): Promise<void> => ipcRenderer.invoke(d.remove, id),
+    getOutputDirectory: (): Promise<{ path: string; isDefault: boolean }> =>
+      ipcRenderer.invoke(d.getOutputDir),
+    openOutputDirectory: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(d.openOutputDir),
+    pickOutputDirectory: (): Promise<
+      { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
+    > => ipcRenderer.invoke(d.pickOutputDir),
+    clearOutputDirectory: (): Promise<void> => ipcRenderer.invoke(d.clearOutputDir),
     onSnapshot: (listener: (rows: unknown[]) => void): (() => void) => {
       const handler = (_event: unknown, rows: unknown): void => {
         listener(Array.isArray(rows) ? rows : [])
