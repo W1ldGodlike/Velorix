@@ -1390,6 +1390,16 @@
     padding: 0.68rem 0.88rem;
   }
 
+  .app-url-summary {
+    min-height: 2.25rem;
+    padding: 0.44rem 0.78rem;
+    font-size: 0.734rem;
+  }
+
+  .app-url-body {
+    padding: 0 0.78rem 0.58rem;
+  }
+
   .app-timeline-ruler-track {
     height: 15px;
   }
@@ -1584,5 +1594,15 @@
 
   .app-ffmpeg-rail-restore-text {
     font-size: 0.648rem;
+  }
+
+  .app-url-summary {
+    min-height: 2.35rem;
+    padding: 0.46rem 0.82rem;
+    font-size: 0.748rem;
+  }
+
+  .app-url-body {
+    padding: 0 0.82rem 0.6rem;
   }
 }
