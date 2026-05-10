@@ -1349,6 +1349,89 @@
   .app-timeline-media-facts {
     font-size: 0.69rem;
   }
+
+  /* Превью-транспорт + таймлайн под 125 % Windows: без смены rem, только целевые touch/readability. */
+  .app-preview-transport {
+    gap: 0.5rem;
+    padding: 0.38rem 0.62rem;
+    min-height: 2.6rem;
+  }
+
+  .app-preview-transport-cluster {
+    gap: 0.22rem;
+  }
+
+  .app-preview-transport-volume-range {
+    min-height: 1.12rem;
+  }
+
+  .app-preview-transport .app-icon-btn {
+    min-width: 2.05rem;
+    height: 2.05rem;
+  }
+
+  .app-timeline-stack {
+    gap: 0.4rem;
+  }
+
+  .app-timeline-zoom-row {
+    padding: 0.28rem 0.62rem 0.05rem;
+  }
+
+  .app-timeline-zoom-ico.app-icon-btn {
+    min-width: 1.9rem;
+    height: 1.9rem;
+  }
+
+  .app-timeline-zoom-readout {
+    font-size: 0.704rem;
+  }
+
+  .app-timeline-waveform {
+    min-height: 38px;
+  }
+
+  .app-timeline-waveform-hint {
+    font-size: 0.664rem;
+  }
+
+  .app-timeline-waveform-subhint {
+    font-size: 0.598rem;
+  }
+
+  .app-timeline {
+    gap: 0.52rem;
+    padding: 0.38rem 0.62rem 0.22rem;
+  }
+
+  .app-timeline-time {
+    font-size: 0.736rem;
+    min-width: 2.92rem;
+  }
+
+  .app-timeline-range {
+    min-height: 1.32rem;
+  }
+
+  .app-timeline-marker-track {
+    height: 7px;
+  }
+
+  .app-timeline-io {
+    font-size: 0.736rem;
+    gap: 0.48rem 0.68rem;
+    padding: 0 0.62rem 0.5rem;
+  }
+
+  .app-timeline-io-actions {
+    gap: 0.38rem;
+  }
+
+  /* Плотнее сводки ffprobe сразу под таймлайном. */
+  .app-preview-probe {
+    padding: 0.34rem 0.68rem;
+    font-size: 0.736rem;
+  }
 }
 
 @media (-webkit-min-device-pixel-ratio: 1.75), (min-resolution: 168dpi) {
@@ -1363,5 +1446,73 @@
   .app-icon-btn {
     min-width: 2.125rem;
     height: 2.125rem;
+  }
+
+  .app-preview-transport {
+    min-height: 2.78rem;
+    padding: 0.42rem 0.68rem;
+    gap: 0.54rem;
+  }
+
+  .app-preview-transport .app-icon-btn {
+    min-width: 2.2rem;
+    height: 2.2rem;
+  }
+
+  .app-preview-transport-volume-range {
+    min-height: 1.16rem;
+  }
+
+  .app-timeline-zoom-ico.app-icon-btn {
+    min-width: 2rem;
+    height: 2rem;
+  }
+
+  .app-timeline-zoom-readout {
+    font-size: 0.72rem;
+    min-width: 9rem;
+  }
+
+  .app-timeline-waveform {
+    min-height: 40px;
+  }
+
+  .app-timeline-ruler-track {
+    height: 17px;
+  }
+
+  .app-timeline-ruler-label {
+    font-size: 0.62rem;
+  }
+
+  .app-timeline-ruler-playhead {
+    width: 2.5px;
+    margin-left: -1.25px;
+  }
+
+  .app-timeline-media-facts {
+    font-size: 0.706rem;
+  }
+
+  .app-timeline-time {
+    font-size: 0.752rem;
+    min-width: 3rem;
+  }
+
+  .app-timeline-range {
+    min-height: 1.38rem;
+  }
+
+  .app-timeline-marker-track {
+    height: 8px;
+  }
+
+  .app-timeline-io {
+    font-size: 0.752rem;
+  }
+
+  .app-preview-probe {
+    font-size: 0.752rem;
+    padding: 0.36rem 0.72rem;
   }
 }
