@@ -55,8 +55,10 @@ import {
 } from './ytdlp-download-queue-persist'
 import { downloadsIpc as d, mainWindowIpc as mw } from '../shared/ipc-channels'
 import {
+  DOWNLOADS_TOPBAR_CLUSTER_ICONS,
   emitDownloadsQueueRowIcoBootstrapJs,
-  emitDownloadsTopbarClusterHtml
+  emitDownloadsTopbarClusterHtml,
+  emitInlineStrokeSvg
 } from '../shared/lucide-downloads-icons'
 import { focusOrCreateInspectorWindow, isInspectorWindow } from './inspector-window'
 import {
@@ -484,6 +486,13 @@ function buildDownloadsHtml(
       color: var(--dim); cursor: default; font-size: 0.75rem; font-weight: 600;
     }
     .workspace-tab.active { color: var(--text); border-bottom-color: var(--blue); }
+    .workspace-tab-glyph {
+      display: inline-flex;
+      align-items: center;
+      vertical-align: middle;
+      margin-right: 0.35rem;
+    }
+    .workspace-tab-glyph svg { display: block; }
     .topbar-right {
       justify-self: end;
       display: inline-flex;
@@ -823,8 +832,8 @@ function buildDownloadsHtml(
         <span class="brand-version">yt-dlp</span>
       </div>
       <nav class="workspace-tabs" aria-label="Рабочие вкладки">
-        <button type="button" class="workspace-tab" disabled title="Редактор находится в главном окне">Редактор</button>
-        <button type="button" class="workspace-tab active">Загрузки</button>
+        <button type="button" class="workspace-tab" disabled title="Редактор находится в главном окне"><span class="workspace-tab-glyph" aria-hidden="true">${emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS.home, 16)}</span>Редактор</button>
+        <button type="button" class="workspace-tab active"><span class="workspace-tab-glyph" aria-hidden="true">${emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS.download, 16)}</span>Загрузки</button>
       </nav>
       <div class="topbar-right">
         <span class="topbar-meta">ffmpeg / yt-dlp queue</span>

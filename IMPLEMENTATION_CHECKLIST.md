@@ -37,7 +37,7 @@
 
 - [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; `queue.json` без duplicate id; журнал out/err + truncate; дальше — редкие шаблоны логов по полю.
 - [~] §6.3: argv whitelist + справочник + превью draft/override `-o`; при необходимости редкие поля.
-- [~] §6.1/§4.A: окно загрузок — второй DPI inline CSS `@120dpi`/`@168dpi` (URL-band, таблица, журнал/history, rail); топбар-кластер lucide: `film` + **`download` (фокус поля URL)** + `home`/редактор + `settings` + `circleHelp`; базовые `scaleFactor`/min*`window-hidpi`; дальше — ручная проверка 125–200 % Win.
+- [~] §6.1/§4.A: окно загрузок — второй DPI inline CSS `@120dpi`/`@168dpi` (URL-band, таблица, журнал/history, rail); топбар-кластер lucide: `film` + **`download` (фокус поля URL)** + `home`/редактор + `settings` + `circleHelp`; **вкладки центра topbar: `home` + `download`** (как глифы в главном окне); базовые `scaleFactor`/min*`window-hidpi`; дальше — ручная проверка 125–200 % Win.
 - [~] §1.1/§4.A/§9: редактор — HiDPI + топбар **ffmpeg•yt-dlp**; seek/снап; **сворачиваемый rail FFmpeg** (persist `ffmpegSettingsRailOpen`); дальше — multi-monitor DPI, Dolby/side_data §9.
 - [~] §7.2: crop/rotate/flip; дальше расширенные фильтры и HW encode.
 - [~] §9: опционально Dolby Vision/`side_data` и прочие расширенные метаданные ffprobe.
@@ -175,7 +175,7 @@
 - [ ] Статусбар: текущий кодировщик CPU/NVENC/AMF/QSV/etc.
 - [ ] Статусбар: tooltip GPU/драйвер/лимиты.
 - [ ] Все строки UI вынести в локализацию.
-- [~] Добавить единый набор иконок: топбар редактора (folder + **rotate-ccw/cw + scissors v0**, `circle-help`/загрузки из shared) + **окно загрузок: `download` из shared в кластере топбара** (ввод URL) + транспорт под превью + столбец действий очереди/истории yt-dlp + **тулбар окна инспектора §9** (`app-icon-btn`, shared strokes); содержимое панелей инспектора — при необходимости дальнейшее выравнивание.
+- [~] Добавить единый набор иконок: топбар редактора (folder + **rotate-ccw/cw + scissors v0**, `circle-help`/загрузки из shared) + **окно загрузок: `download` в кластере топбара** (ввод URL) + **вкладки «Редактор/Загрузки» с `home`/`download` из shared** + транспорт под превью + столбец действий очереди/истории yt-dlp + **тулбар окна инспектора §9** (`app-icon-btn`, shared strokes); содержимое панелей инспектора — при необходимости дальнейшее выравнивание.
 
 ### §4.1 Запоминание настроек
 
