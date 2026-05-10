@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type KeyboardEvent, type RefObject } from
 
 import type { MediaProbeSuccess } from '../../../shared/ffprobe-contract'
 import { buildTimelineRulerTicks, pickTimelineRulerStepSec } from '../../../shared/timeline-ruler'
+import { snapSeekTimeSec } from '../../../shared/video-frame-snap'
 import { IconZoomIn, IconZoomOut } from './LucideMiniIcons'
 import TimelineWaveform from './TimelineWaveform'
 
@@ -68,8 +69,9 @@ function formatProbePositionLine(
 ): string {
   const base = `${formatTime(currentSec)} / ${formatTime(durationSec)}`
   if (fps !== null && durationSec > 0 && Number.isFinite(currentSec)) {
-    const f = Math.floor(currentSec * fps)
-    const fMax = Math.max(0, Math.floor(durationSec * fps))
+    const snapped = snapSeekTimeSec(currentSec, durationSec, fps)
+    const f = Math.round(snapped * fps)
+    const fMax = Math.max(0, Math.round(snapSeekTimeSec(durationSec, durationSec, fps) * fps))
     return `${base} · кадр ~${Math.min(Math.max(f, 0), fMax)}`
   }
   return base
@@ -237,7 +239,8 @@ export default function VideoTimeline({
       return
     }
     const next = winStartEff + fraction * windowLenSec
-    v.currentTime = Math.min(Math.max(next, 0), Math.max(0, duration - 0.02))
+    const fps = approxVideoFpsFromProbe(probe)
+    v.currentTime = snapSeekTimeSec(next, duration, fps)
   }
 
   function seekFromRulerPointer(clientX: number, trackEl: Element): void {
@@ -257,7 +260,8 @@ export default function VideoTimeline({
     if (!(duration > 0) || !(windowLenSec > 0)) {
       return
     }
-    const stepSec = Math.max(windowLenSec / 80, 1 / 60)
+    const fps = approxVideoFpsFromProbe(probe)
+    const stepSec = fps !== null && fps > 0 ? 1 / fps : Math.max(windowLenSec / 80, 1 / 60)
     const v = videoRef.current
     if (e.key === 'Home') {
       e.preventDefault()
@@ -275,8 +279,8 @@ export default function VideoTimeline({
       }
       e.preventDefault()
       const dir = e.key === 'ArrowLeft' ? -1 : 1
-      const next = v.currentTime + dir * stepSec
-      v.currentTime = Math.min(Math.max(next, 0), Math.max(0, duration - 0.02))
+      const raw = v.currentTime + dir * stepSec
+      v.currentTime = snapSeekTimeSec(raw, duration, fps)
     }
   }
 
@@ -332,7 +336,8 @@ export default function VideoTimeline({
     if (!v || !Number.isFinite(duration) || duration <= 0 || markerGeometry === null) {
       return
     }
-    const t = Math.min(Math.max(0, v.currentTime), duration)
+    const fps = approxVideoFpsFromProbe(probe)
+    const t = snapSeekTimeSec(v.currentTime, duration, fps)
     const maxIn = Math.max(0, markerGeometry.outSec - minEffectiveGap(duration))
     const nextIn = Math.min(t, maxIn)
     setTrim((prev) => {
@@ -347,7 +352,8 @@ export default function VideoTimeline({
     if (!v || !Number.isFinite(duration) || duration <= 0 || markerGeometry === null) {
       return
     }
-    const t = Math.min(Math.max(0, v.currentTime), duration)
+    const fps = approxVideoFpsFromProbe(probe)
+    const t = snapSeekTimeSec(v.currentTime, duration, fps)
     const gap = minEffectiveGap(duration)
     const minOut = Math.min(duration, markerGeometry.inSec + gap)
     const nextOut = Math.max(t, minOut)

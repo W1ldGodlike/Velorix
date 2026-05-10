@@ -25,7 +25,7 @@
 - [~] Есть запуск `ffmpeg` для экспорта и снимка кадра; полноценный пайплайн обработки/пресетов/очередей ещё впереди. Движки можно **скачать кнопкой** в UI (Windows) в `userData/bin`, есть проверка `--version` после загрузки.
 - [~] Автозагрузка движков **Windows x64** (yt-dlp GitHub + ffmpeg zip gyan.dev), SHA256 опционально через `Data/trusted_hashes.json`; в установщике есть пустой `resources/bin` (`extraResources`), бинарники — подкладка/`userData/bin`.
 - [ ] Нет локализации `locales/**`.
-- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; есть покрытие чистых парсеров и сервисов (`ytdlp-extra-args`, `ytdlp-progress-parser` + постпроцессоры yt-dlp §6.4, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options` + превью каталога §6.3, `ytdlp-download-output`, `ytdlp-download-queue-persist`, `ytdlp-commands-hints`, `ytdlp-os-pause-support`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-frame-snapshot-service`, `external-process-log`, `support-bundle`, `ipc-channels`, `engine-contract`, `ffmpeg-export-argv`, `ffprobe-summary-export`, `ffprobe-chapters`, `ffprobe-timecode`, `ffprobe-disposition`, `timeline-ruler`, `waveform-peaks`).
+- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; есть покрытие чистых парсеров и сервисов (`ytdlp-extra-args`, `ytdlp-progress-parser` + постпроцессоры yt-dlp §6.4, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options` + превью каталога §6.3, `ytdlp-download-output`, `ytdlp-download-queue-persist`, `ytdlp-commands-hints`, `ytdlp-os-pause-support`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-frame-snapshot-service`, `external-process-log`, `support-bundle`, `ipc-channels`, `engine-contract`, `ffmpeg-export-argv`, `ffprobe-summary-export`, `ffprobe-chapters`, `ffprobe-timecode`, `ffprobe-disposition`, `timeline-ruler`, `waveform-peaks`, `video-frame-snap`).
 
 ## Журнал решений и проверок
 
@@ -38,7 +38,7 @@
 - [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; `queue.json` без duplicate id; журнал out/err + truncate; дальше — редкие шаблоны логов по полю.
 - [~] §6.3: argv whitelist + справочник + превью draft/override `-o`; при необходимости редкие поля.
 - [~] §6.1/§4.A: окно загрузок — второй DPI inline CSS `@120dpi`/`@168dpi` (URL-band, таблица, журнал/history, rail); базовые `scaleFactor`/min*`window-hidpi`; дальше — ручная проверка 125–200 % Win.
-- [~] §1.1/§4.A/§9: редактор — HiDPI + топбар **ffmpeg•yt-dlp**; **клик/клавиатура на линейке** → seek в окне масштаба (`VideoTimeline`); дальше — субкадр, ручной multi-monitor, ffprobe §9.
+- [~] §1.1/§4.A/§9: редактор — HiDPI + топбар **ffmpeg•yt-dlp**; линейка/scrub — seek; **снап к кадру** по fps из ffprobe (`snapSeekTimeSec`); дальше — ручной multi-monitor, ffprobe §9, полировка без известного fps.
 - [~] §7.2: crop/rotate/flip; дальше расширенные фильтры и HW encode.
 - [~] §9: опционально Dolby Vision/`side_data` и прочие расширенные метаданные ffprobe.
 - [~] §21/§17: новые IPC через `ipc-channels` + shared-контракты; при необходимости логи по окнам; точечные Vitest.
@@ -81,7 +81,7 @@
 ### §1.1 UI и UX
 
 - [~] Построить главное окно вокруг крупного предпросмотра: базовая зона preview есть, финальная компоновка панелей — дальше.
-- [~] Таймлайн под превью (базовый range + синхрон с `<video>`); **масштаб окна scrub (×1…×8)**, **waveform** (≤~180 s) и **линейка времени** по видимому окну (`timeline-ruler`), **клик и Home/End/стрелки** на треке шкалы → позиция `<video>` в видимом окне; строка **«Видео / Аудио / Позиция»** из ffprobe при открытом источнике; под превью — **транспорт v0**; `@120dpi`/`@168dpi`: второй проход **транспорт + стек таймлайна + ffprobe-подвал** в `main.css`; нативные controls §7.1 сохранены; дальше — субкадр и полировка кадра.
+- [~] Таймлайн под превью (базовый range + синхрон с `<video>`); **масштаб окна scrub (×1…×8)**, **waveform** (≤~180 s) и **линейка времени** по видимому окну (`timeline-ruler`), клик/клавиатура → seek в окне zoom; при известном **fps** из ffprobe — **снап к границе кадра** (scrub, стрелки на линейке, **In/Out здесь**, счётчик кадра по снапу); строка **«Видео / Аудио / Позиция»**; транспорт v0; HiDPI в `main.css`; нативные controls §7.1 сохранены; дальше — fps из других полей метаданных / ручная проверка.
 - [~] Сделать панели настроек кодирования сбоку/снизу, сворачиваемые: FFmpeg-панель справа + persist раскрытия секций в `settings.json`; полировка и инспектор — дальше.
 - [~] Сформировать отдельное окно менеджера загрузок в едином стиле: data HTML ближе к v0 (компактнее layout, таблица v0-колонки, log/history, rail); живая очередь `downloads/queue.json` §4.1; HiDPI: базовый `dppx` + `window-hidpi` мин.* + второй проход `@120dpi`/`@168dpi` в inline CSS окна (URL-band/table/rail/log/history); финальная матрица — после ручных прогонов Win 125–200 %.
 - [~] Реализовать прогрессивное раскрытие сложных параметров: `details` для экспертных argv/справочника/лога и **превью команды ffmpeg** в главном окне (`exportCommandPreview` в `mainWindowUiPanels`); общая система панелей — дальше.
