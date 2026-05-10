@@ -22,7 +22,12 @@ import {
   startDownloadSingleRow,
   startDownloadsSequential
 } from './downloads-queue-runner'
-import { DOWNLOADS_LOG_CHANNEL, emitDownloadsLog, setDownloadsLogSink } from './downloads-log-ipc'
+import {
+  DOWNLOADS_LOG_CHANNEL,
+  emitDownloadsLog,
+  setDownloadsLogSink,
+  type DownloadsLogPayload
+} from './downloads-log-ipc'
 import { resolvePreloadOutFile } from './preload-resolve'
 import {
   isYtdlpDownloadDirectoryDefault,
@@ -227,6 +232,20 @@ export function broadcastDownloadsSnapshot(): void {
       /* окно закрывается */
     }
   }, 120)
+}
+
+function broadcastDownloadsLogPayload(payload: DownloadsLogPayload): void {
+  const targets = [downloadsWindow, resolveMainEditorWindow()]
+  for (const win of targets) {
+    if (!win || win.isDestroyed()) {
+      continue
+    }
+    try {
+      win.webContents.send(DOWNLOADS_LOG_CHANNEL, payload)
+    } catch {
+      /* окно закрывается */
+    }
+  }
 }
 
 function sanitizeDownloadsUiPanelPatch(raw: unknown): Partial<DownloadsWindowUiPanelState> {
@@ -2353,6 +2372,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   setDownloadsRunnerNotifier(() => {
     broadcastDownloadsSnapshot()
   })
+  setDownloadsLogSink(broadcastDownloadsLogPayload)
 
   ipcMain.handle(d.getSnapshot, (event) => {
     if (!isDownloadsOrMainSender(event.sender)) {
@@ -3078,21 +3098,13 @@ export function focusOrCreateDownloadsWindow(mergeText?: string | null): void {
   })
 
   downloadsWindow.on('closed', () => {
-    setDownloadsLogSink(null)
     downloadsWindow = null
   })
 
   void downloadsWindow.loadURL(dataUrl)
   downloadsWindow.once('ready-to-show', () => {
     if (downloadsWindow && !downloadsWindow.isDestroyed()) {
-      const wc = downloadsWindow.webContents
-      setDownloadsLogSink((payload) => {
-        try {
-          wc.send(DOWNLOADS_LOG_CHANNEL, payload)
-        } catch {
-          /* окно закрывается */
-        }
-      })
+      setDownloadsLogSink(broadcastDownloadsLogPayload)
     }
     downloadsWindow?.show()
     broadcastDownloadsSnapshot()

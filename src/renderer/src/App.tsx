@@ -54,6 +54,7 @@ import type {
   YtdlpSubtitlePresetId
 } from '../../shared/ytdlp-download-contract'
 import type { YtdlpDownloadHistoryEntry } from '../../shared/ytdlp-history-contract'
+import type { DownloadsLogPayload } from '../../shared/downloads-log-contract'
 import { PreviewProbeBody } from './components/MediaProbePanel'
 type Theme = ResolvedAppTheme
 
@@ -88,6 +89,12 @@ type DownloadsQueueStats = {
   error: number
   cancelled: number
   pending: number
+}
+type DownloadsLogLineView = {
+  id: number
+  rowId: number
+  stream: 'stdout' | 'stderr'
+  text: string
 }
 
 type EnginesSnapshot = Awaited<ReturnType<typeof window.fluxalloy.engines.getStatus>>
@@ -414,6 +421,10 @@ function downloadsHistoryOutcomeLabel(outcome: YtdlpDownloadHistoryEntry['outcom
   return 'Ошибка'
 }
 
+function formatDownloadsLogText(lines: DownloadsLogLineView[]): string {
+  return lines.map((line) => `[${line.rowId}] ${line.stream}: ${line.text}`).join('\n')
+}
+
 function App(): JSX.Element {
   const [workspaceTab, setWorkspaceTab] = useState<WorkspaceTab>('editor')
   const [theme, setTheme] = useState<Theme>('dark')
@@ -442,6 +453,8 @@ function App(): JSX.Element {
   const [downloadsOptionsBusy, setDownloadsOptionsBusy] = useState(false)
   const [downloadsHistory, setDownloadsHistory] = useState<YtdlpDownloadHistoryEntry[]>([])
   const [downloadsHistoryBusy, setDownloadsHistoryBusy] = useState(false)
+  const [downloadsLogLines, setDownloadsLogLines] = useState<DownloadsLogLineView[]>([])
+  const [downloadsLogTargetRowId, setDownloadsLogTargetRowId] = useState<number | null>(null)
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
   const [topbarEngineVersionsLine, setTopbarEngineVersionsLine] = useState('')
   const [exportBusy, setExportBusy] = useState(false)
@@ -471,6 +484,7 @@ function App(): JSX.Element {
   const videoRef = useRef<HTMLVideoElement>(null)
   /** Стек видео+транспорт+таймлайн: цель fullscreen по референсу v0. */
   const previewStackRef = useRef<HTMLDivElement>(null)
+  const downloadsLogNextIdRef = useRef(1)
   /** Последний диапазон In/Out с таймлайна для IPC экспорта, привязанный к текущему файлу. */
   const trimSnapshotRef = useRef<{
     path: string | null
@@ -528,6 +542,23 @@ function App(): JSX.Element {
     } finally {
       setDownloadsHistoryBusy(false)
     }
+  }, [])
+
+  const handleDownloadsLogPayload = useCallback((payload: DownloadsLogPayload): void => {
+    if (payload.kind === 'reset') {
+      setDownloadsLogTargetRowId(payload.rowId)
+      setDownloadsLogLines([])
+      return
+    }
+    setDownloadsLogTargetRowId(payload.rowId)
+    setDownloadsLogLines((prev) => {
+      const nextId = downloadsLogNextIdRef.current++
+      const next = [
+        ...prev,
+        { id: nextId, rowId: payload.rowId, stream: payload.stream, text: payload.text }
+      ]
+      return next.length > 420 ? next.slice(next.length - 420) : next
+    })
   }, [])
 
   const applyPreview = useCallback((payload: PreviewOpenedPayload): void => {
@@ -622,6 +653,10 @@ function App(): JSX.Element {
       mounted = false
     }
   }, [])
+
+  useEffect(() => {
+    return window.fluxalloy.downloads.onLog(handleDownloadsLogPayload)
+  }, [handleDownloadsLogPayload])
 
   useEffect(() => {
     trimSnapshotRef.current = null
@@ -2809,6 +2844,49 @@ function App(): JSX.Element {
                   ))
                 )}
               </div>
+            </details>
+            <details className="app-downloads-log-panel" open>
+              <summary>
+                Live log
+                <span>
+                  {downloadsLogTargetRowId !== null ? `#${downloadsLogTargetRowId}` : '—'}
+                </span>
+              </summary>
+              <div className="app-downloads-log-actions">
+                <button
+                  type="button"
+                  className="app-btn app-btn-compact"
+                  disabled={downloadsLogLines.length === 0}
+                  onClick={() => {
+                    setDownloadsLogLines([])
+                    setDownloadsLogTargetRowId(null)
+                  }}
+                >
+                  Очистить
+                </button>
+                <button
+                  type="button"
+                  className="app-btn app-btn-compact"
+                  disabled={downloadsLogLines.length === 0}
+                  onClick={() => {
+                    const text = formatDownloadsLogText(downloadsLogLines)
+                    void window.fluxalloy.downloads.saveVisibleLog(text).then((res) => {
+                      if (!res.ok && res.error !== 'Сохранение отменено') {
+                        setStatusHint(res.error)
+                      }
+                    })
+                  }}
+                >
+                  Сохранить
+                </button>
+              </div>
+              <pre className="app-downloads-log-pre" aria-live="polite">
+                {downloadsLogLines.length === 0
+                  ? 'Лог появится после запуска строки yt-dlp.'
+                  : downloadsLogLines
+                      .map((line) => `[${line.rowId}] ${line.stream}: ${line.text}`)
+                      .join('\n')}
+              </pre>
             </details>
             <button
               type="button"

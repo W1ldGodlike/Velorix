@@ -677,6 +677,50 @@
   font-size: 0.62rem;
 }
 
+.app-downloads-log-panel {
+  border-radius: 8px;
+  border: 1px solid var(--fa-border-subtle);
+  background: color-mix(in srgb, var(--fa-bg) 64%, var(--fa-surface-elevated));
+}
+
+.app-downloads-log-panel summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.55rem 0.65rem;
+  color: var(--fa-text-secondary);
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.app-downloads-log-panel summary:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 2px;
+}
+
+.app-downloads-log-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  padding: 0 0.65rem 0.55rem;
+}
+
+.app-downloads-log-pre {
+  margin: 0;
+  max-height: 14rem;
+  overflow: auto;
+  padding: 0 0.65rem 0.65rem;
+  color: var(--fa-text-muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.62rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 .app-downloads-band {
   display: flex;
   align-items: flex-start;

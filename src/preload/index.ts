@@ -47,6 +47,7 @@ import type {
   YtdlpGetCliOptionsParams
 } from '../shared/ytdlp-download-contract'
 import type { YtdlpDownloadHistoryEntry } from '../shared/ytdlp-history-contract'
+import type { DownloadsLogPayload } from '../shared/downloads-log-contract'
 import { downloadsIpc as d, mainWindowIpc as mw } from '../shared/ipc-channels'
 
 type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
@@ -77,6 +78,23 @@ function sanitizeMainWindowUiPanelState(raw: unknown): MainWindowUiPanelState | 
     }
   }
   return Object.keys(out).length > 0 ? out : undefined
+}
+
+function isDownloadsLogPayload(raw: unknown): raw is DownloadsLogPayload {
+  if (!raw || typeof raw !== 'object') {
+    return false
+  }
+  const o = raw as { kind?: unknown; rowId?: unknown; stream?: unknown; text?: unknown }
+  if (o.kind === 'reset') {
+    return typeof o.rowId === 'number' && Number.isFinite(o.rowId)
+  }
+  return (
+    o.kind === 'line' &&
+    typeof o.rowId === 'number' &&
+    Number.isFinite(o.rowId) &&
+    (o.stream === 'stdout' || o.stream === 'stderr') &&
+    typeof o.text === 'string'
+  )
 }
 
 // Единственная публичная поверхность приложения в renderer.
@@ -201,7 +219,22 @@ const fluxalloy = {
       id: string,
       mode: 'file' | 'folder'
     ): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.openHistoryOutput, id, mode)
+      ipcRenderer.invoke(d.openHistoryOutput, id, mode),
+    saveVisibleLog: (
+      text: string
+    ): Promise<{ ok: true; path: string } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(d.saveVisibleLog, text),
+    onLog: (listener: (payload: DownloadsLogPayload) => void): (() => void) => {
+      const handler = (_event: unknown, raw: unknown): void => {
+        if (isDownloadsLogPayload(raw)) {
+          listener(raw)
+        }
+      }
+      ipcRenderer.on(d.log, handler)
+      return (): void => {
+        ipcRenderer.removeListener(d.log, handler)
+      }
+    }
   },
   /** §9 §363 — отдельное окно инспектора (тот же preload, что главное окно). */
   inspector: {
