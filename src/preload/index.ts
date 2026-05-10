@@ -118,6 +118,8 @@ const fluxalloy = {
       ipcRenderer.invoke(mw.settingsSetFfmpegExportCrf, crf),
     setFfmpegExportVideoBitrate: (bitrate: string | null): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoBitrate, bitrate),
+    setFfmpegExportTwoPass: (enabled: boolean): Promise<AppSettings> =>
+      ipcRenderer.invoke(mw.settingsSetFfmpegExportTwoPass, enabled),
     setFfmpegExportAudioMode: (mode: FfmpegExportAudioModeId): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportAudioMode, mode),
     setFfmpegExportAudioBitrate: (bitrate: string | null): Promise<AppSettings> =>

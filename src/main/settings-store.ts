@@ -432,6 +432,9 @@ export function loadSettings(filePath: string): AppSettings {
     if (ffmpegExportVideoBitrate !== undefined) {
       base.ffmpegExportVideoBitrate = ffmpegExportVideoBitrate
     }
+    if (parsed.ffmpegExportTwoPass === true) {
+      base.ffmpegExportTwoPass = true
+    }
     if (ffmpegExportAudioBitrate !== undefined) {
       base.ffmpegExportAudioBitrate = ffmpegExportAudioBitrate
     }

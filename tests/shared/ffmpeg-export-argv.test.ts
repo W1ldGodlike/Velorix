@@ -335,4 +335,68 @@ describe('shared ffmpeg export argv', () => {
     })
     expect(mkvPreview.argv).not.toContain('-movflags')
   })
+
+  it('buildFfmpegExportArgv §7 two-pass: первый проход только видеостатистика в null-sink', () => {
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'C:/in/file.mp4',
+      outputPath: 'C:/out/file.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      crf: null,
+      videoBitrate: '2500k',
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      twoPass: { pass: 1, passlogfile: 'Z:/tmp/ffpass', nullDevice: 'NUL' }
+    })
+    const pi = argv.indexOf('-pass')
+    expect(argv[pi + 1]).toBe('1')
+    expect(argv).toContain('-passlogfile')
+    expect(argv[argv.indexOf('-passlogfile') + 1]).toBe('Z:/tmp/ffpass')
+    expect(argv).toContain('-an')
+    expect(argv[argv.indexOf('-f') + 1]).toBe('mp4')
+    expect(argv.at(-1)).toBe('NUL')
+    expect(argv).not.toContain('-movflags')
+  })
+
+  it('buildFfmpegExportArgv §7 two-pass: второй проход — обычный вывод с аудио', () => {
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'C:/in/file.mp4',
+      outputPath: 'C:/out/file.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      crf: null,
+      videoBitrate: '2500k',
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      twoPass: { pass: 2, passlogfile: 'Z:/tmp/ffpass', nullDevice: 'NUL' }
+    })
+    expect(argv[argv.indexOf('-pass') + 1]).toBe('2')
+    expect(argv).toContain('-c:a')
+    expect(argv.at(-1)).toBe('C:/out/file.mp4')
+  })
+
+  it('buildFfmpegExportPreviewCommand даёт две строки при twoPass+birate', () => {
+    const r = buildFfmpegExportPreviewCommand({
+      encodePreset: 'balance',
+      container: 'mp4',
+      crf: null,
+      videoBitrate: '2500k',
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      inputPath: '/a.mp4',
+      outputPath: '/a-out.mp4',
+      twoPass: true
+    })
+    expect(r.pass1Command).toBeDefined()
+    expect(r.pass1Command).toContain('<passlog>')
+    expect(r.pass1Command).toContain('<discard>')
+    expect(r.command).toContain('-pass')
+    expect(r.command).not.toContain('<discard>')
+  })
 })

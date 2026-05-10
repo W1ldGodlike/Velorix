@@ -34,6 +34,8 @@ export interface FfmpegExportUserPresetSnapshot {
   scalePreset: FfmpegExportScalePresetId
   videoTransform: FfmpegExportVideoTransformId
   cropPreset: FfmpegExportCropPresetId
+  /** Двухпроходный libx264; фактический запуск только при ненулевом `videoBitrate`. */
+  twoPass?: boolean
 }
 
 /** §7.2 — именованный пользовательский пресет (до нескольких штук в settings). */
@@ -67,6 +69,8 @@ export interface MediaExportRequestPayload {
   videoTransform?: FfmpegExportVideoTransformId | null
   /** Crop после поворота/зеркала и до scale/fps; только whitelist пресетов. */
   cropPreset?: FfmpegExportCropPresetId | null
+  /** Двухпроходный libx264; в main отклоняется без валидного video bitrate. */
+  twoPass?: boolean
 }
 
 export type MediaExportStartResult =

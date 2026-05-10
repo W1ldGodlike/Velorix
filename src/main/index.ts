@@ -69,6 +69,7 @@ import {
   parseFfmpegExportUserPresetSnapshot,
   parseFfmpegExportUserPresetsList,
   parseFfmpegExportVideoBitrate,
+  parseFfmpegExportTwoPass,
   ensureFfmpegExportExtension,
   runFfmpegExportJob,
   type MediaExportStartResult,
@@ -829,6 +830,19 @@ function persistFfmpegExportVideoBitrate(raw: unknown): AppSettings {
   return { ...cachedSettings }
 }
 
+/** §7.2 / v0 — двухпроходное libx264 (требует сохранённого video bitrate при экспорте). */
+function persistFfmpegExportTwoPass(raw: unknown): AppSettings {
+  const next = { ...cachedSettings }
+  if (parseFfmpegExportTwoPass(raw)) {
+    next.ffmpegExportTwoPass = true
+  } else {
+    delete next.ffmpegExportTwoPass
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
 function persistFfmpegExportFps(raw: unknown): AppSettings {
   const value = parseFfmpegExportFps(raw)
   const next = { ...cachedSettings }
@@ -1447,11 +1461,7 @@ function isLikelyBrowserPlayableMedia(filePath: string): boolean {
 
 const previewProxyJobs = new Map<string, Promise<string>>()
 
-function runFfmpegPreviewProxy(
-  ffmpeg: string,
-  input: string,
-  output: string
-): Promise<void> {
+function runFfmpegPreviewProxy(ffmpeg: string, input: string, output: string): Promise<void> {
   const args = [
     '-y',
     '-i',
@@ -1797,6 +1807,11 @@ app.whenReady().then(() => {
   )
 
   ipcMain.handle(
+    mw.settingsSetFfmpegExportTwoPass,
+    (_, raw: unknown): AppSettings => persistFfmpegExportTwoPass(raw)
+  )
+
+  ipcMain.handle(
     mw.settingsSetFfmpegExportFps,
     (_, raw: unknown): AppSettings => persistFfmpegExportFps(raw)
   )
@@ -1999,7 +2014,8 @@ app.whenReady().then(() => {
     return {
       path: sourcePath,
       mediaUrl,
-      name: previewFile === sourcePath ? basename(sourcePath) : `${basename(sourcePath)} · preview WebM`
+      name:
+        previewFile === sourcePath ? basename(sourcePath) : `${basename(sourcePath)} · preview WebM`
     }
   })
 
@@ -2187,6 +2203,11 @@ app.whenReady().then(() => {
       cropPresetRaw !== undefined && cropPresetRaw !== null
         ? parseFfmpegExportCropPreset(cropPresetRaw)
         : parseFfmpegExportCropPreset(cachedSettings.ffmpegExportCropPreset)
+    const exportTwoPassRaw = (raw as { twoPass?: unknown }).twoPass
+    const exportTwoPass =
+      exportTwoPassRaw !== undefined && exportTwoPassRaw !== null
+        ? parseFfmpegExportTwoPass(exportTwoPassRaw)
+        : parseFfmpegExportTwoPass(cachedSettings.ffmpegExportTwoPass)
 
     const paths = resolveAppPaths()
     const ffmpeg = resolveEngineExecutablePath(
@@ -2246,6 +2267,7 @@ app.whenReady().then(() => {
         scalePreset: exportScalePreset,
         videoTransform: exportVideoTransform,
         cropPreset: exportCropPreset,
+        twoPass: exportTwoPass,
         signal: ac.signal,
         onProgress: pushProgress
       })

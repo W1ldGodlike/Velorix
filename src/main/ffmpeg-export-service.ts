@@ -1,4 +1,7 @@
 import { spawn } from 'child_process'
+import { mkdtempSync, rmSync } from 'fs'
+import { tmpdir } from 'os'
+import { join } from 'path'
 
 import type { AppSettings } from '../shared/settings-contract'
 import type {
@@ -161,6 +164,11 @@ export function parseFfmpegExportCropPreset(raw: unknown): FfmpegExportCropPrese
   return 'none'
 }
 
+/** §7.2 / v0 — двухпроходное libx264; только явный `true`. */
+export function parseFfmpegExportTwoPass(raw: unknown): boolean {
+  return raw === true
+}
+
 /** §7.2 — IPC/renderer trim payload: только конечные неотрицательные маркеры In < Out. */
 export function parseFfmpegExportTrim(raw: unknown): MediaExportTrimPayload | undefined {
   if (!raw || typeof raw !== 'object') {
@@ -199,6 +207,7 @@ export function parseFfmpegExportUserPresetSnapshot(
   const scalePreset = parseFfmpegExportScalePreset(o['scalePreset'])
   const videoTransform = parseFfmpegExportVideoTransform(o['videoTransform'])
   const cropPreset = parseFfmpegExportCropPreset(o['cropPreset'])
+  const twoPass = o['twoPass'] === true
   return {
     encodePreset,
     container,
@@ -209,7 +218,8 @@ export function parseFfmpegExportUserPresetSnapshot(
     fps,
     scalePreset,
     videoTransform,
-    cropPreset
+    cropPreset,
+    ...(twoPass ? { twoPass: true as const } : {})
   }
 }
 
@@ -289,6 +299,11 @@ export function mergeFfmpegExportSnapshotIntoAppSettings(
   } else {
     next.ffmpegExportCropPreset = snapshot.cropPreset
   }
+  if (snapshot.twoPass === true) {
+    next.ffmpegExportTwoPass = true
+  } else {
+    delete next.ffmpegExportTwoPass
+  }
   return next
 }
 
@@ -353,66 +368,19 @@ export function resolveExportSegmentDurationSec(
 }
 
 /**
- * Один проход ffmpeg без shell: только массив аргументов §7 / §21.
- * Прогресс — по полю `time=` в stderr относительно длительности сегмента
- * и множитель `speed=` для статусбара §7.1. Строки режутся по `\r` и `\n`: ffmpeg
- * переписывает кадр статистики через carriage return.
+ * Один запуск ffmpeg без shell: только массив аргументов §7 / §21.
+ * Прогресс — по `time=` в stderr; `mapPercent` масштабирует процент для двухпроходного режима.
  */
-export function runFfmpegExportJob(params: {
+function runFfmpegExportOnce(params: {
   ffmpegPath: string
-  inputPath: string
-  outputPath: string
-  trim?: MediaExportTrimPayload
-  probeDurationSec?: number | null
-  encodePreset?: FfmpegExportEncodePresetId
-  /** Контейнер сохранения §7.2 — влияет на хвост argv (MKV без `-movflags`). */
-  container?: FfmpegExportContainerId | null
-  crf?: number | null
-  videoBitrate?: string | null
-  audioMode?: FfmpegExportAudioModeId | null
-  audioBitrate?: string | null
-  fps?: number | null
-  scalePreset?: FfmpegExportScalePresetId | null
-  videoTransform?: FfmpegExportVideoTransformId | null
-  cropPreset?: FfmpegExportCropPresetId | null
+  args: string[]
   signal: AbortSignal
+  segmentDur: number
   onProgress?: (p: FfmpegExportProgressPayload) => void
+  mapPercent?: (rawPercent: number) => number
 }): Promise<{ ok: true } | { ok: false; error: string }> {
-  const applyTrim = shouldApplyFfmpegExportTrim(params.trim ?? null, params.probeDurationSec)
-  const encodePreset = params.encodePreset ?? 'balance'
-  const crf = parseFfmpegExportCrf(params.crf)
-  const videoBitrate = parseFfmpegExportVideoBitrate(params.videoBitrate)
-  const audioMode = parseFfmpegExportAudioMode(params.audioMode)
-  const audioBitrate = parseFfmpegExportAudioBitrate(params.audioBitrate) ?? '192k'
-  const fps = parseFfmpegExportFps(params.fps)
-  const scalePreset = parseFfmpegExportScalePreset(params.scalePreset)
-  const videoTransform = parseFfmpegExportVideoTransform(params.videoTransform)
-  const cropPreset = parseFfmpegExportCropPreset(params.cropPreset)
-  const container = parseFfmpegExportContainer(params.container ?? 'mp4')
-  const segmentDur = resolveExportSegmentDurationSec(
-    params.trim,
-    applyTrim,
-    params.probeDurationSec
-  )
-  const args = buildFfmpegExportArgv({
-    inputPath: params.inputPath,
-    outputPath: params.outputPath,
-    container,
-    ...(params.trim !== undefined ? { trim: params.trim } : {}),
-    applyTrim,
-    encodePreset,
-    crf,
-    videoBitrate,
-    audioMode,
-    audioBitrate,
-    fps,
-    scalePreset,
-    videoTransform,
-    cropPreset
-  })
-
   return new Promise((resolve) => {
-    const child = spawn(params.ffmpegPath, args, {
+    const child = spawn(params.ffmpegPath, params.args, {
       windowsHide: true,
       stdio: ['ignore', 'ignore', 'pipe'],
       signal: params.signal
@@ -437,12 +405,13 @@ export function runFfmpegExportJob(params: {
       }
       const t = parseFfmpegTimeSeconds(trimmed)
       let pct = -1
-      if (t !== null && segmentDur > 0.05) {
-        pct = Math.min(99.9, Math.max(0, (t / segmentDur) * 100))
+      if (t !== null && params.segmentDur > 0.05) {
+        pct = Math.min(99.9, Math.max(0, (t / params.segmentDur) * 100))
       }
       const msg = trimmed.length > 140 ? `${trimmed.slice(0, 138)}…` : trimmed
+      const outPct = pct >= 0 && params.mapPercent !== undefined ? params.mapPercent(pct) : pct
       params.onProgress?.({
-        percent: pct,
+        percent: outPct,
         message: msg,
         ...(lastSpeed !== null ? { speed: lastSpeed } : {})
       })
@@ -490,4 +459,131 @@ export function runFfmpegExportJob(params: {
       }
     })
   })
+}
+
+/**
+ * §7 — экспорт: один или два прохода libx264; двухпроход только с валидным `videoBitrate`.
+ */
+export async function runFfmpegExportJob(params: {
+  ffmpegPath: string
+  inputPath: string
+  outputPath: string
+  trim?: MediaExportTrimPayload
+  probeDurationSec?: number | null
+  encodePreset?: FfmpegExportEncodePresetId
+  /** Контейнер сохранения §7.2 — влияет на хвост argv (MKV без `-movflags`). */
+  container?: FfmpegExportContainerId | null
+  crf?: number | null
+  videoBitrate?: string | null
+  audioMode?: FfmpegExportAudioModeId | null
+  audioBitrate?: string | null
+  fps?: number | null
+  scalePreset?: FfmpegExportScalePresetId | null
+  videoTransform?: FfmpegExportVideoTransformId | null
+  cropPreset?: FfmpegExportCropPresetId | null
+  /** §7.2 / v0 — двухпроход без CRF и только с bitrate. */
+  twoPass?: boolean | null
+  signal: AbortSignal
+  onProgress?: (p: FfmpegExportProgressPayload) => void
+}): Promise<{ ok: true } | { ok: false; error: string }> {
+  const applyTrim = shouldApplyFfmpegExportTrim(params.trim ?? null, params.probeDurationSec)
+  const encodePreset = params.encodePreset ?? 'balance'
+  const crf = parseFfmpegExportCrf(params.crf)
+  const videoBitrate = parseFfmpegExportVideoBitrate(params.videoBitrate)
+  const audioMode = parseFfmpegExportAudioMode(params.audioMode)
+  const audioBitrate = parseFfmpegExportAudioBitrate(params.audioBitrate) ?? '192k'
+  const fps = parseFfmpegExportFps(params.fps)
+  const scalePreset = parseFfmpegExportScalePreset(params.scalePreset)
+  const videoTransform = parseFfmpegExportVideoTransform(params.videoTransform)
+  const cropPreset = parseFfmpegExportCropPreset(params.cropPreset)
+  const container = parseFfmpegExportContainer(params.container ?? 'mp4')
+  const wantTwoPass = params.twoPass === true
+  if (wantTwoPass && videoBitrate === null) {
+    return {
+      ok: false,
+      error: 'Двухпроходное кодирование доступно только с выбранным видеобитрейтом, не с CRF.'
+    }
+  }
+  const segmentDur = resolveExportSegmentDurationSec(
+    params.trim,
+    applyTrim,
+    params.probeDurationSec
+  )
+
+  const baseArgvParams = {
+    inputPath: params.inputPath,
+    outputPath: params.outputPath,
+    container,
+    ...(params.trim !== undefined ? { trim: params.trim } : {}),
+    applyTrim,
+    encodePreset,
+    crf,
+    videoBitrate,
+    audioMode,
+    audioBitrate,
+    fps,
+    scalePreset,
+    videoTransform,
+    cropPreset
+  }
+
+  if (!wantTwoPass) {
+    const args = buildFfmpegExportArgv(baseArgvParams)
+    return await runFfmpegExportOnce({
+      ffmpegPath: params.ffmpegPath,
+      args,
+      signal: params.signal,
+      segmentDur,
+      ...(params.onProgress !== undefined ? { onProgress: params.onProgress } : {})
+    })
+  }
+
+  let tmpDir: string | null = null
+  try {
+    tmpDir = mkdtempSync(join(tmpdir(), 'fa-x264tw-'))
+    const passlogBase = join(tmpDir, 'pass')
+    const nullSink = process.platform === 'win32' ? 'NUL' : '/dev/null'
+
+    const argsPass1 = buildFfmpegExportArgv({
+      ...baseArgvParams,
+      twoPass: { pass: 1, passlogfile: passlogBase, nullDevice: nullSink }
+    })
+    const r1 = await runFfmpegExportOnce({
+      ffmpegPath: params.ffmpegPath,
+      args: argsPass1,
+      signal: params.signal,
+      segmentDur,
+      mapPercent: (p) => p * 0.5,
+      ...(params.onProgress !== undefined ? { onProgress: params.onProgress } : {})
+    })
+    if (!r1.ok) {
+      return r1
+    }
+    if (params.signal.aborted) {
+      return { ok: false, error: 'Экспорт отменён' }
+    }
+
+    params.onProgress?.({ percent: 50, message: 'Второй проход libx264…' })
+
+    const argsPass2 = buildFfmpegExportArgv({
+      ...baseArgvParams,
+      twoPass: { pass: 2, passlogfile: passlogBase, nullDevice: nullSink }
+    })
+    return await runFfmpegExportOnce({
+      ffmpegPath: params.ffmpegPath,
+      args: argsPass2,
+      signal: params.signal,
+      segmentDur,
+      mapPercent: (p) => 50 + p * 0.5,
+      ...(params.onProgress !== undefined ? { onProgress: params.onProgress } : {})
+    })
+  } finally {
+    if (tmpDir !== null) {
+      try {
+        rmSync(tmpDir, { recursive: true, force: true })
+      } catch {
+        /* каталог временный — ошибки очистки не блокируют UI */
+      }
+    }
+  }
 }

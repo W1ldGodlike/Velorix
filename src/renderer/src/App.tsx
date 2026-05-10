@@ -509,6 +509,8 @@ function App(): JSX.Element {
   const [exportCropPreset, setExportCropPreset] = useState<FfmpegExportCropPresetId>('none')
   const [mainUiPanels, setMainUiPanels] = useState<MainWindowUiPanelState>(MAIN_PANEL_DEFAULTS)
   const [exportScalePreset, setExportScalePreset] = useState<FfmpegExportScalePresetId>('source')
+  /** §7.2 / v0 — двухпроходный libx264 только вместе с выбранным видеобитрейтом. */
+  const [exportTwoPass, setExportTwoPass] = useState(false)
   /** §7.2 — сохранённые пользователем наборы параметров тулбара (preview/spawn используют те же поля). */
   const [exportUserPresets, setExportUserPresets] = useState<FfmpegExportUserPreset[]>([])
   /** Выбранный в `<select>` пользовательский пресет; ручные правки тулбара сбрасывают выбор. */
@@ -823,6 +825,10 @@ function App(): JSX.Element {
     } else {
       setExportVideoBitrate(null)
     }
+    const bitrateOk =
+      typeof loaded.ffmpegExportVideoBitrate === 'string' &&
+      EXPORT_VIDEO_BITRATES.includes(loaded.ffmpegExportVideoBitrate)
+    setExportTwoPass(loaded.ffmpegExportTwoPass === true && bitrateOk)
     if (
       typeof loaded.ffmpegExportAudioBitrate === 'string' &&
       EXPORT_AUDIO_BITRATES.includes(loaded.ffmpegExportAudioBitrate)
@@ -922,7 +928,8 @@ function App(): JSX.Element {
       fps: exportFps,
       scalePreset: exportScalePreset,
       videoTransform: exportVideoTransform,
-      cropPreset: exportCropPreset
+      cropPreset: exportCropPreset,
+      ...(exportTwoPass ? { twoPass: true as const } : {})
     }
   }, [
     exportEncodePreset,
@@ -934,7 +941,8 @@ function App(): JSX.Element {
     exportFps,
     exportScalePreset,
     exportVideoTransform,
-    exportCropPreset
+    exportCropPreset,
+    exportTwoPass
   ])
 
   const handleSaveExportUserPreset = useCallback(() => {
@@ -1092,11 +1100,13 @@ function App(): JSX.Element {
   }, [applyPreview])
 
   useEffect(() => {
-    setPreviewBlobUrl((current) => {
-      if (current) {
-        URL.revokeObjectURL(current)
-      }
-      return null
+    queueMicrotask(() => {
+      setPreviewBlobUrl((current) => {
+        if (current) {
+          URL.revokeObjectURL(current)
+        }
+        return null
+      })
     })
   }, [preview?.mediaUrl])
 
@@ -1354,7 +1364,8 @@ function App(): JSX.Element {
         fps: exportFps,
         scalePreset: exportScalePreset,
         videoTransform: exportVideoTransform,
-        cropPreset: exportCropPreset
+        cropPreset: exportCropPreset,
+        twoPass: exportTwoPass
       })
       if (res.ok) {
         const savedName = res.path.split(/[\\/]/).pop() || res.path
@@ -1450,6 +1461,7 @@ function App(): JSX.Element {
       scalePreset: exportScalePreset,
       videoTransform: exportVideoTransform,
       cropPreset: exportCropPreset,
+      twoPass: exportTwoPass && exportVideoBitrate !== null,
       inputPath: sourcePath,
       outputPath,
       trim: trimRange,
@@ -1467,6 +1479,7 @@ function App(): JSX.Element {
     exportScalePreset,
     exportVideoTransform,
     exportCropPreset,
+    exportTwoPass,
     trimRange,
     probeInfo?.durationSec
   ])
@@ -1476,6 +1489,9 @@ function App(): JSX.Element {
   function exportPreviewHint(): string {
     if (!preview) {
       return 'Источник не выбран — в превью используются плейсхолдеры <input>/<output>.'
+    }
+    if (exportPreview.pass1Command) {
+      return 'Двухпроход: исходящий файл формирует только вторая команда; для passlog см. временный каталог в main.'
     }
     if (exportPreview.appliedTrim && trimRange !== null) {
       const span = Math.max(0, trimRange.outSec - trimRange.inSec)
@@ -1488,7 +1504,10 @@ function App(): JSX.Element {
   }
 
   async function handleCopyExportPreview(): Promise<void> {
-    const r = await window.fluxalloy.clipboard.writeText(exportPreviewCommand)
+    const text = exportPreview.pass1Command
+      ? `${exportPreview.pass1Command}\n\n${exportPreviewCommand}`
+      : exportPreviewCommand
+    const r = await window.fluxalloy.clipboard.writeText(text)
     setStatusHint(r.ok ? 'Команда ffmpeg скопирована' : 'Не удалось скопировать команду ffmpeg')
   }
 
@@ -1975,6 +1994,12 @@ function App(): JSX.Element {
                         const raw = e.target.value
                         const next = raw === 'crf' ? null : raw
                         setExportVideoBitrate(next)
+                        if (next === null && exportTwoPass) {
+                          setExportTwoPass(false)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportTwoPass(false)
+                            .catch(console.error)
+                        }
                         void window.fluxalloy.settings
                           .setFfmpegExportVideoBitrate(next)
                           .catch(console.error)
@@ -2049,6 +2074,30 @@ function App(): JSX.Element {
                       ))}
                     </select>
                   </label>
+                  <div className="app-field app-field-switch">
+                    <span>2-pass libx264</span>
+                    <PillSwitch
+                      label="Двухпроходное кодирование libx264"
+                      checked={exportTwoPass && exportVideoBitrate !== null}
+                      describedBy="ffmpegFormatSectionHint ffmpegTwoPassUiHint"
+                      disabled={exportBusy || snapshotBusy || exportVideoBitrate === null}
+                      onToggle={() => {
+                        if (exportVideoBitrate === null) {
+                          return
+                        }
+                        bumpManualExportEdit()
+                        const v = !exportTwoPass
+                        setExportTwoPass(v)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportTwoPass(v)
+                          .catch(console.error)
+                      }}
+                    />
+                    <span id="ffmpegTwoPassUiHint" className="app-field-help">
+                      Требуется выбранный видеобитрейт («Видео» выше): CRF не поддерживает этот
+                      режим.
+                    </span>
+                  </div>
                   <label className="app-field">
                     <span>Поворот</span>
                     <select
@@ -2338,7 +2387,9 @@ function App(): JSX.Element {
                         aria-label="Команда ffmpeg"
                         aria-describedby="exportCommandPreviewHint"
                       >
-                        {exportPreviewCommand}
+                        {exportPreview.pass1Command
+                          ? `# Проход 1\n${exportPreview.pass1Command}\n\n# Проход 2\n${exportPreviewCommand}`
+                          : exportPreviewCommand}
                       </pre>
                       <div className="app-export-preview-actions">
                         <button
@@ -2723,7 +2774,9 @@ function App(): JSX.Element {
                                     type="button"
                                     className="app-btn app-btn-compact"
                                     onClick={() => {
-                                      setStatusHint('Готовлю файл для редактора… при необходимости будет создан WebM preview.')
+                                      setStatusHint(
+                                        'Готовлю файл для редактора… при необходимости будет создан WebM preview.'
+                                      )
                                       void window.fluxalloy.downloads
                                         .openQueueOutputInHandler(row.id)
                                         .then((res) => {
@@ -3238,7 +3291,9 @@ function App(): JSX.Element {
                             type="button"
                             className="app-btn app-btn-compact"
                             onClick={() => {
-                              setStatusHint('Готовлю файл для редактора… при необходимости будет создан WebM preview.')
+                              setStatusHint(
+                                'Готовлю файл для редактора… при необходимости будет создан WebM preview.'
+                              )
                               void window.fluxalloy.downloads
                                 .openHistoryOutputInHandler(entry.id)
                                 .then((res) => {

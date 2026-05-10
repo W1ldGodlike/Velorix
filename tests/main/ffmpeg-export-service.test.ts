@@ -15,6 +15,7 @@ import {
   parseFfmpegExportFps,
   parseFfmpegExportScalePreset,
   parseFfmpegExportTrim,
+  parseFfmpegExportTwoPass,
   parseFfmpegExportUserPresetSnapshot,
   parseFfmpegExportUserPresetsList,
   parseFfmpegExportVideoBitrate,
@@ -72,6 +73,9 @@ describe('ffmpeg export pure helpers', () => {
     expect(parseFfmpegExportAudioBitrate('1000k')).toBeNull()
     expect(parseFfmpegExportAudioMode('none')).toBe('none')
     expect(parseFfmpegExportAudioMode('bad')).toBe('aac')
+    expect(parseFfmpegExportTwoPass(true)).toBe(true)
+    expect(parseFfmpegExportTwoPass(false)).toBe(false)
+    expect(parseFfmpegExportTwoPass(1)).toBe(false)
   })
 
   it('валидирует FPS и scale preset', () => {
@@ -131,6 +135,21 @@ describe('ffmpeg export pure helpers', () => {
     ])
     expect(list).toHaveLength(1)
     expect(list[0]?.id).toBe('ab-cd_1')
+    expect(
+      parseFfmpegExportUserPresetSnapshot({
+        encodePreset: 'balance',
+        container: 'mp4',
+        crf: null,
+        videoBitrate: '2500k',
+        audioMode: 'aac',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        videoTransform: 'none',
+        cropPreset: 'none',
+        twoPass: true
+      })
+    ).toMatchObject({ twoPass: true })
   })
 
   it('mergeFfmpegExportSnapshotIntoAppSettings повторяет правила delete для дефолтов', () => {
@@ -153,5 +172,36 @@ describe('ffmpeg export pure helpers', () => {
     expect(next.ffmpegExportScalePreset).toBeUndefined()
     expect(next.ffmpegExportVideoTransform).toBeUndefined()
     expect(next.ffmpegExportCropPreset).toBeUndefined()
+    const withTp = mergeFfmpegExportSnapshotIntoAppSettings(
+      { theme: 'dark' },
+      {
+        encodePreset: 'balance',
+        container: 'mp4',
+        crf: null,
+        videoBitrate: '2500k',
+        audioMode: 'aac',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        videoTransform: 'none',
+        cropPreset: 'none',
+        twoPass: true
+      }
+    )
+    expect(withTp.ffmpegExportTwoPass).toBe(true)
+
+    const off = mergeFfmpegExportSnapshotIntoAppSettings(withTp, {
+      encodePreset: 'balance',
+      container: 'mp4',
+      crf: null,
+      videoBitrate: '2500k',
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      videoTransform: 'none',
+      cropPreset: 'none'
+    })
+    expect(off.ffmpegExportTwoPass).toBeUndefined()
   })
 })

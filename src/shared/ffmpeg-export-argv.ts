@@ -140,6 +140,11 @@ export interface FfmpegExportArgvParams {
   videoTransform?: FfmpegExportVideoTransformId
   /** После transform и до scale/fps; по умолчанию без crop. */
   cropPreset?: FfmpegExportCropPresetId
+  /**
+   * Двухпроход libx264 §7.2 / v0 — только при ненулевом `videoBitrate` (без CRF).
+   * Проход 1: `-an`, вывод в `nullDevice`; проход 2: обычный звук и `outputPath`.
+   */
+  twoPass?: { pass: 1 | 2; passlogfile: string; nullDevice: string }
 }
 
 /** Полный argv ffmpeg без пути к exe; используется и runner, и preview UI. */
@@ -175,15 +180,33 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
     args.push('-i', params.inputPath)
   }
   args.push('-c:v', 'libx264', '-preset', enc.x264preset)
-  if (params.videoBitrate === null) {
+
+  const tp = params.twoPass
+  if (tp) {
+    if (params.videoBitrate === null) {
+      throw new Error('two-pass требует videoBitrate')
+    }
+    args.push('-b:v', params.videoBitrate)
+    args.push('-pass', String(tp.pass))
+    args.push('-passlogfile', tp.passlogfile)
+  } else if (params.videoBitrate === null) {
     args.push('-crf', crf)
   } else {
     args.push('-b:v', params.videoBitrate)
   }
+
   args.push('-pix_fmt', 'yuv420p')
   if (filters.length > 0) {
     args.push('-vf', filters.join(','))
   }
+
+  if (tp?.pass === 1) {
+    /** Первый проход только подбирает статистику видео; звук отключаем, файл выбрасываем в null-sink. */
+    args.push('-an')
+    args.push('-f', 'mp4', tp.nullDevice)
+    return args
+  }
+
   if (params.audioMode === 'none') {
     args.push('-an')
   } else {
@@ -235,14 +258,22 @@ export interface FfmpegExportPreviewInput {
   probeDurationSec?: number | null
   /** Принудительно отключить `-ss/-t` в превью. По умолчанию решение берётся из `shouldApplyFfmpegExportTrim`. */
   applyTrim?: boolean
+  /** §7.2 / v0 — показать пару команд при включённом двухпроходе и режиме битрейта. */
+  twoPass?: boolean
+  /** Плейсхолдер `-passlogfile` в тексте превью (нет реального пути во временном каталоге). */
+  twoPassPasslogPlaceholder?: string | null
+  /** Плейсхолдер вывода 1-го прохода (строго текст для UI). */
+  twoPassDiscardPlaceholder?: string | null
 }
 
 export interface FfmpegExportPreviewResult {
   argv: string[]
-  /** Готовая строка для UI: `ffmpeg <argv>`. */
+  /** Готовая строка для UI: `ffmpeg <argv>` (обычно второй проход или один проход без анализа). */
   command: string
   /** Совпадает с `applyTrim`, который реально пошёл в argv; UI использует для подсказок. */
   appliedTrim: boolean
+  /** Если задан — первая команда двухпрохода (видеостатистика в null-sink). */
+  pass1Command?: string
 }
 
 /**
@@ -271,7 +302,19 @@ export function buildFfmpegExportPreviewCommand(
   const computedApply = shouldApplyFfmpegExportTrim(trim ?? null, probeDurationSec)
   const applyTrim = input.applyTrim === false ? false : computedApply
 
-  const argv = buildFfmpegExportArgv({
+  const passlogPlaceholder =
+    typeof input.twoPassPasslogPlaceholder === 'string' &&
+    input.twoPassPasslogPlaceholder.trim() !== ''
+      ? input.twoPassPasslogPlaceholder.trim()
+      : '<passlog>'
+  const discardPlaceholder =
+    typeof input.twoPassDiscardPlaceholder === 'string' &&
+    input.twoPassDiscardPlaceholder.trim() !== ''
+      ? input.twoPassDiscardPlaceholder.trim()
+      : '<discard>'
+  const useTwoPass = input.twoPass === true && input.videoBitrate !== null
+
+  const baseArgvParams = {
     inputPath,
     outputPath,
     ...(trim !== undefined ? { trim } : {}),
@@ -286,11 +329,30 @@ export function buildFfmpegExportPreviewCommand(
     scalePreset: input.scalePreset,
     ...(input.videoTransform !== undefined ? { videoTransform: input.videoTransform } : {}),
     ...(input.cropPreset !== undefined ? { cropPreset: input.cropPreset } : {})
+  }
+
+  let pass1Command: string | undefined
+  if (useTwoPass) {
+    const argv1 = buildFfmpegExportArgv({
+      ...baseArgvParams,
+      twoPass: { pass: 1, passlogfile: passlogPlaceholder, nullDevice: discardPlaceholder }
+    })
+    pass1Command = `ffmpeg ${formatFfmpegArgvForPreview(argv1)}`
+  }
+
+  const argv2 = buildFfmpegExportArgv({
+    ...baseArgvParams,
+    ...(useTwoPass
+      ? {
+          twoPass: { pass: 2, passlogfile: passlogPlaceholder, nullDevice: discardPlaceholder }
+        }
+      : {})
   })
 
   return {
-    argv,
-    command: `ffmpeg ${formatFfmpegArgvForPreview(argv)}`,
-    appliedTrim: applyTrim
+    argv: argv2,
+    command: `ffmpeg ${formatFfmpegArgvForPreview(argv2)}`,
+    appliedTrim: applyTrim,
+    ...(pass1Command !== undefined ? { pass1Command } : {})
   }
 }
