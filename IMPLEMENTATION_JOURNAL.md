@@ -190,3 +190,4 @@
 - 2026-05-10 15:09:01 [SDK]: §1.1 — снап seek к кадру по fps ffprobe: `snapSeekTimeSec` + Vitest; scrub/линейка/стрелки/In/Out; счётчик «кадр ~» по снапу; чеклист/спринт.
 - 2026-05-10 15:11:21 [SDK]: §1.1/IPC — `MediaProbeSuccess.videoFpsApprox` из ffprobe (`ffprobe-video-fps`, fallback `nb_frames`/duration); сводки TXT/HTML; `VideoTimeline` приоритет поля над regex `detail`; Vitest + чеклист.
 - 2026-05-10 15:14:05 [SDK]: §4.1/§1.1 — главное окно: **сворачивание всей колонки FFmpeg** (`ffmpegSettingsRailOpen`→`mainWindowUiPanels`, whitelist main/settings-store), chevron + FAB «FFmpeg» на превью; HiDPI правки; Vitest settings-store.
+- 2026-05-10 15:15:58 [SDK]: §6/§4.A/v0 единые иконки — окно загрузок: в топбар-кластер добавлена lucide **`download`** (`dlTopUrl`) → скролл + фокус `#urls`; порядок: film → download → home → engines → help; Vitest на HTML; чеклист §4.A/§4.

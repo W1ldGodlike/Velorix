@@ -28,6 +28,7 @@ describe('lucide-downloads-icons', () => {
     expect(svg).toContain('viewBox="0 0 24 24"')
     const html = emitDownloadsTopbarClusterHtml(18)
     expect(html).toContain('id="dlTopFilm"')
+    expect(html).toContain('id="dlTopUrl"')
     expect(html).toContain('role="toolbar"')
   })
 

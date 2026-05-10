@@ -272,6 +272,7 @@ export function emitDownloadsTopbarClusterHtml(iconPx: number): string {
     `<button type="button" class="icon-btn dl-topbar-ico" id="${id}" title="${escapeXmlAttr(label)}" aria-label="${escapeXmlAttr(label)}">${emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS[key], iconPx)}</button>`
   return `      <div class="topbar-cluster" role="toolbar" aria-label="Действия">
         ${btn('dlTopFilm', 'Инспектор ffprobe §9', 'film')}
+        ${btn('dlTopUrl', 'К полю URL (лента ввода §6)', 'download')}
         ${btn('dlTopHome', 'Главное окно (редактор)', 'home')}
         ${btn('dlTopEngines', 'Пути к движкам ffmpeg / yt-dlp / ffprobe', 'settings')}
         ${btn('dlTopHelp', 'О программе', 'circleHelp')}

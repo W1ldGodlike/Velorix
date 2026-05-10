@@ -2117,6 +2117,17 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
       function wireDownloadsTopbarBridges() {
         var pairs = [
           ['dlTopFilm', function () { return api.bridgeOpenInspector(null); }],
+          [
+            'dlTopUrl',
+            function () {
+              var el = document.getElementById('urls')
+              if (el && typeof el.focus === 'function') {
+                el.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+                el.focus()
+              }
+              return Promise.resolve({ ok: true })
+            }
+          ],
           ['dlTopHome', function () { return api.bridgeFocusMainEditor(); }],
           ['dlTopEngines', function () { return api.bridgeOpenEnginePaths(); }],
           ['dlTopHelp', function () { return api.bridgeOpenAbout(); }]
