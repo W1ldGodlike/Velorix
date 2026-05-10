@@ -10,7 +10,7 @@ import type { StoredWindowRect } from './settings-store'
 import { boundsFromBrowserWindow, rectifyBoundsForRestore } from './window-bounds'
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
 
-/** Стартовый путь для первого `inspectorBootstrap` после создания окна. */
+/** Стартовый путь для `inspectorBootstrap`; не одноразовый из-за двойного mount в React StrictMode. */
 let pendingInspectorInitialPath: string | null = null
 
 let inspectorWindow: BrowserWindow | null = null
@@ -131,6 +131,7 @@ export function focusOrCreateInspectorWindow(requestedMediaPath?: unknown): void
 
   inspectorWindow.on('closed', () => {
     inspectorWindow = null
+    pendingInspectorInitialPath = null
   })
 
   inspectorWindow.webContents.setWindowOpenHandler((details) => {
@@ -164,8 +165,6 @@ export function registerInspectorWindowIpcHandlers(): void {
     if (!isInspectorSender(event.sender.id)) {
       return { initialMediaPath: null }
     }
-    const p = pendingInspectorInitialPath
-    pendingInspectorInitialPath = null
-    return { initialMediaPath: p }
+    return { initialMediaPath: pendingInspectorInitialPath }
   })
 }

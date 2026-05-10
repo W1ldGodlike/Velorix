@@ -104,6 +104,17 @@ describe('ffprobe-summary-export', () => {
     expect(formatProbeSummaryHtmlDocument(withChapters)).toContain('Главы (1)')
   })
 
+  it('formatProbeSummaryPlainText и HTML не пишут отрицательную длительность главы', () => {
+    const withBrokenChapter: MediaProbeSuccess = {
+      ...sampleProbe,
+      chapters: [{ index: 0, startSec: 10, endSec: 5, title: 'Broken' }]
+    }
+    expect(formatProbeSummaryPlainText(withBrokenChapter)).toContain('\t—\tBroken')
+    expect(formatProbeSummaryHtmlDocument(withBrokenChapter)).toContain(
+      '<td class="mono">—</td><td>Broken</td>'
+    )
+  })
+
   it('formatProbeSummaryHtmlDocument экранирует detail и содержит таблицу', () => {
     const dirty: MediaProbeSuccess = {
       ...sampleProbe,

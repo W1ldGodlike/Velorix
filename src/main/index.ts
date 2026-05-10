@@ -508,6 +508,9 @@ function mergeYtdlpDownloadCliPatchOntoSettings(
 ): { ok: true; settings: AppSettings } | { ok: false; error: string } {
   const merged: AppSettings = { ...base }
   if (patch.filenameTemplate !== undefined) {
+    if (typeof patch.filenameTemplate !== 'string') {
+      return { ok: false, error: 'Шаблон имени файла должен быть строкой.' }
+    }
     const ft = patch.filenameTemplate
     if (ft.trim() === '') {
       delete merged.ytdlpFilenameTemplate
@@ -574,6 +577,9 @@ function mergeYtdlpDownloadCliPatchOntoSettings(
     }
   }
   if (patch.rateLimit !== undefined) {
+    if (typeof patch.rateLimit !== 'string') {
+      return { ok: false, error: 'Ограничение скорости должно быть строкой.' }
+    }
     const rv = validateYtdlpRateLimit(patch.rateLimit)
     if (!rv.ok) {
       return rv
@@ -585,6 +591,9 @@ function mergeYtdlpDownloadCliPatchOntoSettings(
     }
   }
   if (patch.retriesLine !== undefined) {
+    if (typeof patch.retriesLine !== 'string') {
+      return { ok: false, error: 'Количество повторов должно быть строкой.' }
+    }
     const rt = validateYtdlpRetriesLine(patch.retriesLine)
     if (!rt.ok) {
       return rt
@@ -596,6 +605,9 @@ function mergeYtdlpDownloadCliPatchOntoSettings(
     }
   }
   if (patch.fragmentRetriesLine !== undefined) {
+    if (typeof patch.fragmentRetriesLine !== 'string') {
+      return { ok: false, error: 'Количество повторов фрагментов должно быть строкой.' }
+    }
     const frt = validateYtdlpFragmentRetriesLine(patch.fragmentRetriesLine)
     if (!frt.ok) {
       return frt

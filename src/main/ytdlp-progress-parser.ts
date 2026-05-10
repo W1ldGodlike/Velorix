@@ -61,7 +61,7 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
   }
 
   /** Вариант без слова video/item: «… 3 of 10 videos …» (разные версии/локали yt-dlp). */
-  const playlistVideosOnlyMatch = t.match(/\b(\d+)\s+of\s+(\d+)\s+videos?\b/i)
+  const playlistVideosOnlyMatch = t.match(/\bDownloading\s+(\d+)\s+of\s+(\d+)\s+videos?\b/i)
   if (playlistVideosOnlyMatch && !/\bfragment\b/i.test(t)) {
     const a = playlistVideosOnlyMatch[1]
     const b = playlistVideosOnlyMatch[2]

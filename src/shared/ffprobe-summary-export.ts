@@ -77,6 +77,11 @@ function formatBitrateLine(kbps: number | null): string | null {
   return `${Math.round(kbps)} kb/s`
 }
 
+function formatChapterDurationSec(endSec: number, startSec: number): string {
+  const dur = endSec - startSec
+  return Number.isFinite(dur) && dur >= 0 ? `${dur.toFixed(2)} с` : '—'
+}
+
 function escapeHtml(raw: string): string {
   return raw
     .replace(/&/g, '&amp;')
@@ -134,9 +139,8 @@ export function formatProbeSummaryPlainText(info: MediaProbeSuccess): string {
     lines.push('', `Главы: ${info.chapters.length}`, '')
     lines.push('id\tНачало\tКонец\tДлит.\tЗаголовок', '-'.repeat(64))
     for (const ch of info.chapters) {
-      const dur = ch.endSec - ch.startSec
       lines.push(
-        `${ch.index}\t${formatProbeChapterTimecode(ch.startSec)}\t${formatProbeChapterTimecode(ch.endSec)}\t${dur.toFixed(2)} с\t${(ch.title ?? '').replace(/\t/g, ' ')}`
+        `${ch.index}\t${formatProbeChapterTimecode(ch.startSec)}\t${formatProbeChapterTimecode(ch.endSec)}\t${formatChapterDurationSec(ch.endSec, ch.startSec)}\t${(ch.title ?? '').replace(/\t/g, ' ')}`
       )
     }
   }
@@ -157,8 +161,7 @@ export function formatProbeSummaryHtmlDocument(info: MediaProbeSuccess): string 
 
   const chapterRows = info.chapters
     .map((ch) => {
-      const dur = ch.endSec - ch.startSec
-      return `<tr><td>${ch.index}</td><td class="mono">${escapeHtml(formatProbeChapterTimecode(ch.startSec))}</td><td class="mono">${escapeHtml(formatProbeChapterTimecode(ch.endSec))}</td><td class="mono">${escapeHtml(`${dur.toFixed(2)} с`)}</td><td>${escapeHtml(ch.title ?? '—')}</td></tr>`
+      return `<tr><td>${ch.index}</td><td class="mono">${escapeHtml(formatProbeChapterTimecode(ch.startSec))}</td><td class="mono">${escapeHtml(formatProbeChapterTimecode(ch.endSec))}</td><td class="mono">${escapeHtml(formatChapterDurationSec(ch.endSec, ch.startSec))}</td><td>${escapeHtml(ch.title ?? '—')}</td></tr>`
     })
     .join('\n')
 

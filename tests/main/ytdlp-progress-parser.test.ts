@@ -77,6 +77,10 @@ describe('parseYtdlpDownloadProgressLine', () => {
     })
   })
 
+  it('не принимает произвольные «N of M videos» как прогресс плейлиста', () => {
+    expect(parseYtdlpDownloadProgressLine('[download] Skipping 3 of 10 videos')).toBeNull()
+  })
+
   it('возвращает null если ни процента, ни скорости нет', () => {
     expect(parseYtdlpDownloadProgressLine('[download] Unable to rename file')).toBeNull()
   })
