@@ -37,7 +37,7 @@
 
 - [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; DnD текста/URL на окно (кроме полей ввода формы) + поле URL; прогресс + `extractYtdlpOutputPath`; классификация stderr; эвристики format/size из `[info]`/merger расширены; дальше — ещё редкие строки по логам.
 - [~] §6.3: argv whitelist + справочник + превью с draft/override `-o`; после выбора каталога загрузки / вставки флага из справочника / «Шаблон по умолчанию» превью пересчитывается; при необходимости ещё редкие поля.
-- [~] §1.1/§4.A/§6/§9: загрузки lucide/layout/тема/HiDPI (+ `window-hidpi`); **раскрытие секций**: после `mergeMainWindowUiPanels` main шлёт `mainWindowUiPanelsChanged` всем окнам — редактор и §9 синхронны live; инспектор — `app-topbar`, `probe*`, CSS; дальше — DPI-матрица, метаданные ffprobe, rail v0-пилюли-донастройка.
+- [~] §1.1/§4.A/§6/§9: загрузки lucide/layout/тема/HiDPI (+ `window-hidpi`); **раскрытие секций** live через `mainWindowUiPanelsChanged`; инспектор — `app-topbar`, `probe*`; **rail загрузок** — подпись↔pill-toggle и pill-select; дальше — ручная DPI-матрица 100–200%, ffprobe метаданные, полировка таблицы/лога.
 - [~] §7.2: crop/rotate/flip готовы через whitelist `-vf`; настройки перенесены из toolbar в боковую панель; дальше расширенные filters и HW encode.
 - [~] §9: опционально Dolby Vision/`side_data` и прочие расширенные метаданные ffprobe (базовые color\_\* потока уже в таблице).
 - [~] §17/§18: диагностика, Support ZIP, `session.log`; при необходимости отдельные логи по окнам или политика объёма mid-session.

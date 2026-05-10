@@ -578,10 +578,28 @@ function buildDownloadsHtml(
       border: 1px solid var(--border-2); background: color-mix(in srgb, var(--bg) 66%, var(--surface-2));
       color: var(--text); font-size: 0.72rem;
     }
+    /* §1.1/§6: в правом rail нативные select ближе к v0 pill; длинные поля путей и превью — прямоугольные. */
+    .settings-rail .opts-panel select,
+    .settings-rail .hint-select {
+      appearance: none;
+      border-radius: 999px;
+      padding: 0.34rem 1.82rem 0.34rem 0.82rem;
+      min-height: 1.82rem;
+      font-size: 0.71rem;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238c98a8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.55rem center;
+      background-size: 0.76rem;
+    }
     .opts-panel input[type=text] { font-family: ui-monospace, Consolas, Menlo, monospace; }
     .opts-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; margin-top: 0.45rem; }
     .opts-check-row { display: flex; flex-direction: column; gap: 0.45rem; margin: 0.55rem 0; }
-    .opts-check-row label.chk { display: flex; align-items: center; gap: 0.5rem; font-weight: 400; color: var(--text); cursor: pointer; margin: 0; line-height: 1.35; }
+    /* v0 rail: подпись слева на всю ширину, маленький pill-toggle справа */
+    .opts-check-row label.chk {
+      display: flex; align-items: center; justify-content: space-between; gap: 0.65rem;
+      font-weight: 400; color: var(--text); cursor: pointer; margin: 0; line-height: 1.35;
+    }
+    .opts-check-row .chk-text { min-width: 0; flex: 1 1 auto; }
     .opts-check-row input[type=checkbox] { appearance: none; width: 32px; height: 18px; border-radius: 999px; border: 1px solid var(--border-2); background: var(--surface-3); position: relative; flex-shrink: 0; }
     .opts-check-row input[type=checkbox]::after { content: ''; position: absolute; width: 12px; height: 12px; top: 2px; left: 2px; border-radius: 999px; background: var(--dim); transition: transform 0.12s ease, background 0.12s ease; }
     .opts-check-row input[type=checkbox]:checked { background: color-mix(in srgb, var(--blue) 55%, var(--surface-3)); border-color: transparent; }
@@ -605,7 +623,7 @@ function buildDownloadsHtml(
     .opts-hint { font-size: 0.68rem; color: var(--dim); margin: 0 0 0.5rem; line-height: 1.35; }
     .note { display: none; }
     .history-actions { display: flex; gap: 0.45rem; flex-wrap: wrap; align-items: center; padding: 0 0.65rem 0.55rem; }
-    .history-actions label { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--muted); font-size: 0.7rem; }
+    .history-actions label.hist-inline { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--muted); font-size: 0.7rem; }
     table.history-table { font-size: 0.64rem; }
     table.history-table th, table.history-table td { padding: 0.28rem 0.38rem; }
     table.history-table th:nth-child(1), table.history-table td:nth-child(1) { width: 10.5rem; white-space: nowrap; }
@@ -625,6 +643,8 @@ function buildDownloadsHtml(
     .opts-check-row input[type=checkbox]:focus-visible,
     label.inline-filter select:focus-visible,
     .history-actions select:focus-visible,
+    .settings-rail .opts-panel select:focus-visible,
+    .settings-rail .hint-select:focus-visible,
     .settings-section > summary:focus-visible,
     button.workspace-tab:focus-visible:not(:disabled) {
       outline: 2px solid var(--fa-focus-ring);
@@ -696,7 +716,7 @@ ${emitDownloadsTopbarClusterHtml(18)}
             <div class="history-actions">
               <button type="button" class="cmd" id="refreshHistoryBtn">Обновить</button>
               <button type="button" class="cmd cmd-warn" id="clearHistoryBtn">Очистить историю</button>
-              <label>Исход
+              <label class="hist-inline">Исход
                 <select id="historyOutcomeFilter">
                   <option value="all">Все</option>
                   <option value="success">Успех</option>
@@ -734,8 +754,8 @@ ${emitDownloadsTopbarClusterHtml(18)}
               <label for="fmtPreset">Формат / качество (-f)</label>
               <select id="fmtPreset"></select>
               <div class="opts-check-row">
-                <label class="chk"><input type="checkbox" id="chkPlaylist" /> Весь плейлист <span class="opts-check-muted">--yes-playlist</span></label>
-                <label class="chk"><input type="checkbox" id="chkAudioOnly" /> Только аудио <span class="opts-check-muted">-x --audio-format best</span></label>
+                <label class="chk"><span class="chk-text">Весь плейлист <span class="opts-check-muted">--yes-playlist</span></span><input type="checkbox" id="chkPlaylist" /></label>
+                <label class="chk"><span class="chk-text">Только аудио <span class="opts-check-muted">-x --audio-format best</span></span><input type="checkbox" id="chkAudioOnly" /></label>
               </div>
               <label for="subPreset">Субтитры §6.2</label>
               <select id="subPreset">
@@ -772,7 +792,7 @@ ${emitDownloadsTopbarClusterHtml(18)}
                 <option value="firefox">firefox</option>
               </select>
               <div class="opts-check-row">
-                <label class="chk"><input type="checkbox" id="chkOpenInHandlerOnComplete" /> Открывать результат в обработчике <span class="opts-check-muted">§6.4</span></label>
+                <label class="chk"><span class="chk-text">Открывать результат в обработчике <span class="opts-check-muted">§6.4</span></span><input type="checkbox" id="chkOpenInHandlerOnComplete" /></label>
               </div>
             </div>
           </details>
