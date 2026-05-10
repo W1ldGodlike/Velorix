@@ -1445,53 +1445,37 @@ function isLikelyBrowserPlayableMedia(filePath: string): boolean {
   return ['.webm', '.ogg', '.ogv', '.mp3', '.wav', '.flac'].includes(ext)
 }
 
+const previewProxyJobs = new Map<string, Promise<string>>()
+
 function runFfmpegPreviewProxy(
   ffmpeg: string,
   input: string,
-  output: string,
-  transcodeVideo: boolean
+  output: string
 ): Promise<void> {
-  const args = transcodeVideo
-    ? [
-        '-y',
-        '-i',
-        input,
-        '-map',
-        '0:v:0',
-        '-map',
-        '0:a?',
-        '-c:v',
-        'libvpx',
-        '-deadline',
-        'realtime',
-        '-cpu-used',
-        '5',
-        '-b:v',
-        '2500k',
-        '-vf',
-        "scale=w='min(1280,iw)':h=-2",
-        '-c:a',
-        'libopus',
-        '-b:a',
-        '128k',
-        output
-      ]
-    : [
-        '-y',
-        '-i',
-        input,
-        '-map',
-        '0:v:0',
-        '-map',
-        '0:a?',
-        '-c:v',
-        'copy',
-        '-c:a',
-        'libopus',
-        '-b:a',
-        '128k',
-        output
-      ]
+  const args = [
+    '-y',
+    '-i',
+    input,
+    '-map',
+    '0:v:0',
+    '-map',
+    '0:a?',
+    '-c:v',
+    'libvpx',
+    '-deadline',
+    'realtime',
+    '-cpu-used',
+    '5',
+    '-b:v',
+    '2500k',
+    '-vf',
+    "scale=w='min(1280,iw)':h=-2",
+    '-c:a',
+    'libopus',
+    '-b:a',
+    '128k',
+    output
+  ]
 
   return new Promise((resolvePromise, reject) => {
     execFile(
@@ -1507,6 +1491,33 @@ function runFfmpegPreviewProxy(
       }
     )
   })
+}
+
+function isUsablePreviewCache(filePath: string): boolean {
+  if (!existsSync(filePath)) {
+    return false
+  }
+  try {
+    const st = statSync(filePath)
+    return st.isFile() && st.size > 0
+  } catch {
+    return false
+  }
+}
+
+async function createWebmPreviewProxy(
+  ffmpeg: string,
+  absoluteFile: string,
+  output: string
+): Promise<string> {
+  rmSync(output, { force: true })
+  logInfo('preview', `creating webm preview proxy for ${absoluteFile}`)
+  await runFfmpegPreviewProxy(ffmpeg, absoluteFile, output)
+  if (!isUsablePreviewCache(output)) {
+    throw new Error('WebM preview не был создан.')
+  }
+  logInfo('preview', `webm preview proxy ready: ${output}`)
+  return output
 }
 
 async function ensurePreviewPlayableMedia(absoluteFile: string): Promise<string> {
@@ -1532,24 +1543,20 @@ async function ensurePreviewPlayableMedia(absoluteFile: string): Promise<string>
   const cacheDir = join(paths.userData, 'preview-cache')
   mkdirSync(cacheDir, { recursive: true })
   const output = join(cacheDir, `${key}.webm`)
-  if (existsSync(output) && statSync(output).isFile()) {
+  if (isUsablePreviewCache(output)) {
     return output
   }
+  rmSync(output, { force: true })
 
-  logInfo('preview', `creating webm preview proxy for ${absoluteFile}`)
-  try {
-    await runFfmpegPreviewProxy(ffmpeg, absoluteFile, output, false)
-  } catch (copyError) {
-    logInfo(
-      'preview',
-      `copy preview proxy failed, retrying with vp8 transcode: ${
-        copyError instanceof Error ? copyError.message : String(copyError)
-      }`
-    )
-    await runFfmpegPreviewProxy(ffmpeg, absoluteFile, output, true)
+  const existingJob = previewProxyJobs.get(output)
+  if (existingJob) {
+    return existingJob
   }
-  logInfo('preview', `webm preview proxy ready: ${output}`)
-  return output
+  const job = createWebmPreviewProxy(ffmpeg, absoluteFile, output).finally(() => {
+    previewProxyJobs.delete(output)
+  })
+  previewProxyJobs.set(output, job)
+  return job
 }
 
 async function openDownloadedFileInMainHandler(
