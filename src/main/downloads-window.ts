@@ -1224,6 +1224,8 @@ ${emitDownloadsTopbarClusterHtml(18)}
       var lastQueueRows = [];
       /** После первого полного заполнения формы из main — черновик для превью argv совпадает с полями UI. */
       var cliFormHydrated = false;
+      /** §4.1 — не писать в settings при программном открытии details (лог при старте строки очереди). */
+      var suppressDetailsUiPersist = false;
 
       function collectDraftCliPatch() {
         return {
@@ -1684,7 +1686,12 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
           logTargetRowId = payload.rowId;
           clearVisibleLog();
           if (logDetails && !logDetails.open) {
-            logDetails.open = true;
+            suppressDetailsUiPersist = true;
+            try {
+              logDetails.open = true;
+            } finally {
+              suppressDetailsUiPersist = false;
+            }
           }
           return;
         }
@@ -2258,6 +2265,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
         var el = document.getElementById(id);
         if (!el || el.tagName !== 'DETAILS') return;
         el.addEventListener('toggle', function () {
+          if (suppressDetailsUiPersist) return;
           var patch = {};
           patch[key] = el.open;
           api.mergeUiPanels(patch);
