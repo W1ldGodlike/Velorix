@@ -20,8 +20,9 @@ extraResources:
     to: Help
   - from: Data
     to: Data
-  # Пустой каталог в репозитории: сюда можно положить ffmpeg/ffprobe/yt-dlp перед сборкой;
-  # бинарники не коммитятся, но путь `resources/bin` в установке уже есть (§3/§19).
+  # Bundled-first политика: перед релизной сборкой сюда кладутся проверенные
+  # ffmpeg/ffprobe/yt-dlp; бинарники не коммитятся, но путь `resources/bin`
+  # в установке уже есть (§3/§19).
   - from: bin
     to: bin
 win:

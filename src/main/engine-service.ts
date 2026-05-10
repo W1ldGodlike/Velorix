@@ -48,7 +48,7 @@ function candidatePaths(paths: AppPaths, id: EngineId, overrides?: EnginePathOve
     ordered.push(resolve(normalize(manual.trim())))
   }
 
-  // bundled `bin`, затем `userData/bin`; ручной путь (если задан) проверяется первым.
+  // Bundled-first для релизов: ручной override -> resources/bin -> userData/bin fallback/update.
   ordered.push(join(paths.bundledBin, exe), join(paths.userBin, exe))
   return ordered
 }

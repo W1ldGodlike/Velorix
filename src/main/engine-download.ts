@@ -163,23 +163,52 @@ export async function downloadEnginesWindows(
   const extractDir = join(cacheRoot, `ffmpeg-${Date.now().toString(36)}`)
   mkdirSync(extractDir, { recursive: true })
 
-  const zipHash = trustedHashForFfmpegZipWin(trusted)
-
-  onProgress({
-    phase: 'ffmpeg-zip',
-    message: 'Скачивание FFmpeg (gyan.dev)…',
-    percent: 0
-  })
-
-  await downloadToFile(ENGINE_SOURCES_WINDOWS.ffmpegEssentialsZipUrl, zipTemp, (pct) =>
+  let ffmpegDownloaded = false
+  let lastFfmpegError: unknown = null
+  for (let i = 0; i < ENGINE_SOURCES_WINDOWS.ffmpegZipSources.length; i++) {
+    const source = ENGINE_SOURCES_WINDOWS.ffmpegZipSources[i]
+    if (!source) {
+      continue
+    }
+    const sourceLabel = `${source.label} ${i + 1}/${ENGINE_SOURCES_WINDOWS.ffmpegZipSources.length}`
     onProgress({
       phase: 'ffmpeg-zip',
-      message: 'Скачивание FFmpeg (gyan.dev)…',
-      percent: pct < 0 ? -1 : pct
+      message: `Скачивание FFmpeg (${sourceLabel})…`,
+      percent: 0
     })
-  )
+    try {
+      await downloadToFile(source.url, zipTemp, (pct) =>
+        onProgress({
+          phase: 'ffmpeg-zip',
+          message: `Скачивание FFmpeg (${sourceLabel})…`,
+          percent: pct < 0 ? -1 : pct
+        })
+      )
+      const zipHash = trustedHashForFfmpegZipWin(trusted, source.id)
+      await assertSha256Optional(zipTemp, zipHash)
+      ffmpegDownloaded = true
+      break
+    } catch (err) {
+      lastFfmpegError = err
+      try {
+        rmSync(zipTemp, { force: true })
+      } catch {
+        /* ignore lock / AV delays */
+      }
+      if (i + 1 < ENGINE_SOURCES_WINDOWS.ffmpegZipSources.length) {
+        onProgress({
+          phase: 'ffmpeg-zip',
+          message: `Источник FFmpeg ${source.label} не сработал, пробую резервный…`,
+          percent: -1
+        })
+      }
+    }
+  }
 
-  await assertSha256Optional(zipTemp, zipHash)
+  if (!ffmpegDownloaded) {
+    const msg = lastFfmpegError instanceof Error ? lastFfmpegError.message : String(lastFfmpegError)
+    throw new Error(`Не удалось скачать FFmpeg ни из одного источника: ${msg}`)
+  }
 
   onProgress({ phase: 'extract', message: 'Распаковка FFmpeg…', percent: -1 })
   await extract(zipTemp, { dir: extractDir })

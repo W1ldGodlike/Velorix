@@ -31,7 +31,8 @@ export function resolveAppPaths(): AppPaths {
     appRoot,
     resources,
     userData,
-    // В сборке `bin` попадает из `electron-builder.yml extraResources` (может быть пустым).
+    // В релизной сборке `bin` попадает из `electron-builder.yml extraResources`.
+    // Это основной источник движков; `userBin` ниже нужен для обновлений/fallback без переустановки.
     bundledBin: join(resources, 'bin'),
     userBin: join(userData, 'bin')
   }

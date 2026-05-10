@@ -12,6 +12,8 @@ import { is } from '@electron-toolkit/utils'
  */
 export interface TrustedHashesWindows {
   'yt-dlp.exe'?: string
+  /** Хеш архива GitHub BtbN перед распаковкой. */
+  'ffmpeg-master-latest-win64-gpl.zip'?: string
   /** Хеш архива с gyan.dev перед распаковкой. */
   'ffmpeg-release-essentials.zip'?: string
 }
@@ -62,14 +64,21 @@ export function trustedHashForYtDlpWin(file: TrustedHashesFile): string | undefi
   return undefined
 }
 
-export function trustedHashForFfmpegZipWin(file: TrustedHashesFile): string | undefined {
+export function trustedHashForFfmpegZipWin(
+  file: TrustedHashesFile,
+  sourceId: string
+): string | undefined {
   const w = file['windows-x64']
-  const nested = w?.['ffmpeg-release-essentials.zip']
+  const hashKey =
+    sourceId === 'btbn-github'
+      ? 'ffmpeg-master-latest-win64-gpl.zip'
+      : 'ffmpeg-release-essentials.zip'
+  const nested = w?.[hashKey]
   if (typeof nested === 'string' && nested.trim() !== '') {
     return nested.trim()
   }
   const legacy = file.FfmpegSha256
-  if (typeof legacy === 'string' && legacy.trim() !== '') {
+  if (sourceId === 'gyan-dev' && typeof legacy === 'string' && legacy.trim() !== '') {
     return legacy.trim()
   }
   return undefined

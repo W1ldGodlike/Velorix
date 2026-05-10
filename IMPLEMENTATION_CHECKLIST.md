@@ -26,8 +26,8 @@
 - [~] Есть главное окно 1920x1080 (FHD) по умолчанию и единый workspace `Редактор` / `Загрузки`; редактор содержит toolbar, видеопредпросмотр (`fluxmedia://` allowlist), DnD/«Открыть», транспорт, timeline/waveform и статусбар.
 - [~] Есть `Data/`, `Help/`, `FLUXALLOY_TZ.md`, `IMPLEMENTATION_CHECKLIST.md`, [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md), упаковка `Data/`, `Help/`, ТЗ через `extraResources` (журнал в установщик пока не включаем — только для разработки).
 - [x] Windows: `electron-builder` с режимом sign по умолчанию; после перезагрузки проверены `build:unpack`/`winCodeSign`.
-- [~] Есть ffmpeg export MP4/MKV/MOV, trim In/Out, crop/rotate/flip/scale/FPS/CRF/bitrate, пользовательские пресеты и snapshot PNG/JPEG; batch, HW encode и расширенные фильтры ещё впереди. Движки можно **скачать кнопкой** в UI (Windows) в `userData/bin`, есть проверка `--version` после загрузки.
-- [~] Автозагрузка движков **Windows x64** (yt-dlp GitHub + ffmpeg zip gyan.dev), SHA256 опционально через `Data/trusted_hashes.json`; в установщике есть пустой `resources/bin` (`extraResources`), бинарники — подкладка/`userData/bin`.
+- [~] Есть ffmpeg export MP4/MKV/MOV, trim In/Out, crop/rotate/flip/scale/FPS/CRF/bitrate, пользовательские пресеты и snapshot PNG/JPEG; batch, HW encode и расширенные фильтры ещё впереди. Политика движков — bundled-first (`resources/bin`) с кнопкой скачивания/обновления в `userData/bin`, есть проверка `--version`.
+- [~] Автозагрузка движков **Windows x64** (yt-dlp GitHub + ffmpeg zip mirror/fallback), SHA256 опционально через `Data/trusted_hashes.json`; в установщике есть `resources/bin` (`extraResources`) для заранее проверенных bundled `ffmpeg.exe`/`ffprobe.exe`/`yt-dlp.exe`, бинарники в Git не коммитятся.
 - [ ] Нет локализации `locales/**`.
 - [~] Основная вкладка `Загрузки` в React уже закрывает очередь, старт/stop/retry/pause, настройки yt-dlp, каталог/cookies/network, live log, историю и open file/folder; pop-out окно оставлено вторичным режимом для редких settings.
 - [~] ffprobe-инспектор есть под превью и отдельным окном: дорожки/главы/raw JSON, TXT/HTML export, Dolby/HDR side_data summary, контекстные действия.
@@ -126,7 +126,7 @@
 
 ## §3. Управление зависимостями (КРИТИЧНО)
 
-- [~] Структура `bin/` (bundled в установке через `extraResources` + `userData/bin`); установка через UI-загрузку на Win; в репозитории бинарники не коммитятся.
+- [~] Структура `bin/` (bundled в установке через `extraResources` + `userData/bin`): `bin/README.md` фиксирует, что в релиз перед сборкой кладутся проверенные `ffmpeg.exe`/`ffprobe.exe`/`yt-dlp.exe`; установка через UI-загрузку на Win остаётся fallback/update; в репозитории бинарники не коммитятся.
 - [x] Определить имена бинарников по платформам: `ffmpeg`, `ffprobe`, `yt-dlp`.
 - [x] Реализовать поиск bundled бинарников в `process.resourcesPath`.
 - [x] Реализовать fallback на пользовательские пути из настроек.
@@ -136,7 +136,7 @@
 - [x] Реализовать IPC: загрузка движков + прогресс (`fluxalloy:engines-download`, `fluxalloy:engines-progress`).
 - [~] Первый запуск: кнопка «Скачать движки» при отсутствии бинарников; отдельное модальное окно ТЗ — не сделано.
 - [x] Скачивание `yt-dlp` (GitHub `latest` для Win `.exe`).
-- [x] Скачивание `ffmpeg`/`ffprobe` из zip gyan.dev essentials в `userData/bin`.
+- [~] Скачивание/обновление `ffmpeg`/`ffprobe` в `userData/bin`: текущий код берёт zip gyan.dev essentials; целевое — список зеркал (GitHub build mirror + gyan.dev fallback), bundled `resources/bin` является основным релизным путём.
 - [x] Прогресс загрузки в статусбар (проценты по `Content-Length` где есть).
 - [~] SHA256: проверка при **непустых** полях в `trusted_hashes.json`; пустые поля = пропуск (dev).
 - [x] `Data/trusted_hashes.json` с `schema` и веткой `windows-x64`.
@@ -473,7 +473,7 @@
 - [x] `npm run build:win` проходит.
 - [x] `npm run build:unpack` проходит.
 - [~] `Data/`, `Help/`, `FLUXALLOY_TZ.md` добавлены в `extraResources`.
-- [~] `bin/` в `extraResources`: пустой каталог из репозитория; готовые бинарники подкладываются локально перед сборкой (в Git не хранятся).
+- [~] `bin/` в `extraResources`: bundled-first каталог с `README.md`; готовые бинарники подкладываются локально/CI перед сборкой (в Git не хранятся), скачивание в `userData/bin` остаётся fallback/update.
 - [ ] Настроить нормальную иконку приложения вместо placeholder/default.
 - [ ] Windows NSIS: проверить installer вручную.
 - [ ] Windows portable/zip target.
