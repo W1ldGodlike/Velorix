@@ -112,7 +112,7 @@
 - [ ] Добавить локализацию `locales/ru/*.json`, `locales/en/*.json`.
 - [ ] Добавить смену языка без перезапуска.
 - [~] `.cursor/rules/` обновлены под Electron/TS.
-- [~] Вспомогательный пакет `scripts/cursor-automation`: цикл `@cursor/sdk` по промптам до `MAX_STEPS` (см. README там; не IDE-чат).
+- [~] Вспомогательный пакет `scripts/cursor-automation`: цикл `@cursor/sdk` по промптам до `MAX_STEPS` (см. README там; не IDE-чат); локальный `STOP=0/1`; retry SDK/transport и по умолчанию повтор той же итерации при `status=error` (`LOOP_RETRY_RUN_ERROR=0` отключает).
 
 ### §2.3 Устаревший стек
 
@@ -161,7 +161,7 @@
 
 ### §4.C Прочее
 
-- [~] Стартовый размер главного окна до ~1920×1080, но ограничен `workArea` и `min*` из `scaleFactor` (`src/main/window-hidpi.ts`); сохранённые bounds важнее.
+- [~] Стартовый размер главного окна 1920×1080 (FHD) на подходящем дисплее; на меньших экранах fallback от размера дисплея и `min*` из `scaleFactor` (`src/main/window-hidpi.ts`); сохранённые bounds важнее.
 - [~] Проверить адаптивность и DPI: окно yt-dlp + главное + инспектор — общий helper `window-hidpi` для `displayMatching`/`min*`; renderer — точечный @media для `app-topbar`/`app-toolbar`/`app-icon-btn`; полная ручная матрица 100–200% — позже.
 - [~] Верхнее меню есть частично.
 - [~] Меню `Файл`: «Открыть…» и «Менеджер загрузок…» есть; при фокусе дочерних окон рекурсивное открытие отключается; финальные сценарии — позже.

@@ -1346,8 +1346,8 @@ function createWindow(): void {
   const mainScale = logicalScaleFactor(mainDisp)
   const mainMin = mainEditorMinLogicalSize(mainScale)
   const mainDefault = defaultMainEditorSize(
-    mainDisp.workAreaSize.width,
-    mainDisp.workAreaSize.height,
+    mainDisp.size.width,
+    mainDisp.size.height,
     mainMin.minWidth,
     mainMin.minHeight
   )

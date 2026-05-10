@@ -35,4 +35,11 @@ describe('window-hidpi', () => {
     expect(d.width).toBeGreaterThanOrEqual(minW + 64)
     expect(d.height).toBeGreaterThanOrEqual(minH + 64)
   })
+
+  it('defaultMainEditorSize сохраняет требование стартового FHD на подходящем дисплее', () => {
+    expect(defaultMainEditorSize(1920, 1080, 520, 392)).toEqual({
+      width: 1920,
+      height: 1080
+    })
+  })
 })

@@ -57,15 +57,15 @@ export function inspectorWindowMinLogicalSize(scale: number): {
   return { minWidth: 440, minHeight: 400 }
 }
 
-/** Первый запуск главного окна: ~FHD, но не шире/выше рабочей области и не меньше min*. */
+/** Первый запуск главного окна: FHD на подходящем дисплее, иначе компактный fallback не ниже min*. */
 export function defaultMainEditorSize(
-  workW: number,
-  workH: number,
+  displayW: number,
+  displayH: number,
   minW: number,
   minH: number
 ): { width: number; height: number } {
-  const width = Math.min(1920, Math.max(minW + 64, Math.round(workW * 0.96)))
-  const height = Math.min(1080, Math.max(minH + 64, Math.round(workH * 0.96)))
+  const width = displayW >= 1920 ? 1920 : Math.max(minW + 64, Math.round(displayW * 0.96))
+  const height = displayH >= 1080 ? 1080 : Math.max(minH + 64, Math.round(displayH * 0.96))
   return { width, height }
 }
 

@@ -86,6 +86,11 @@ MAX_STEPS=8
 | `VERBOSE=1` | Печать assistant/thinking из стрима |
 | `PROMPTS_DIR` | Альтернативный каталог с `initial.txt` / `continue.txt` |
 | `STEP_DELAY_MS` | Пауза между итерациями (мс), по умолчанию `400` |
+| `LOOP_STEP_RETRY_MAX` | Повторы при retryable SDK/transport-сбое на цепочке `send` → опционально `stream` → `wait` одной итерации (по умолчанию `10`) |
+| `LOOP_STEP_RETRY_BASE_MS` | Базовая пауза для таких повторов, экспоненциально до 60 с (по умолчанию `2000`) |
+| `LOOP_RETRY_RUN_ERROR` | Повтор **любого** `status=error` после `wait()` той же итерацией — **по умолчанию вкл.**; выключить: `0` / `false` / `no` / `off` |
+| `LOOP_RUN_ERROR_RETRY_MAX` | Макс. попыток на итерацию при `status=error` (по умолчанию как `LOOP_STEP_RETRY_MAX`) |
+| `LOOP_RUN_ERROR_RETRY_BASE_MS` | Пауза между такими попытками (по умолчанию как `LOOP_STEP_RETRY_BASE_MS`). Если полный повтор при `error` выключен — срабатывает только эвристика короткого run |
 | `SETTING_SOURCES_ALL=1` | Прокинуть `local.settingSources: ['all']` (см. SDK; по умолчанию не нужно) |
 
 ## Коды выхода

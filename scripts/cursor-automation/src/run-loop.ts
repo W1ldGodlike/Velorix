@@ -84,6 +84,11 @@ function parseArgs(argv: string[]): {
 Переменные окружения:
   CURSOR_API_KEY       обязательна
   MAX_STEPS            число итераций (по умолчанию 5)
+  LOOP_STEP_RETRY_MAX  число попыток одной итерации при временных SDK/transport-сбоях на цепочке send → stream → wait (по умолчанию 10)
+  LOOP_STEP_RETRY_BASE_MS  базовая пауза перед повтором, мс, растёт экспоненциально (по умолчанию 2000)
+  LOOP_RETRY_RUN_ERROR по умолчанию включено: после wait() при status=error снова отправляется тот же шаг (та же итерация). Выключить: 0|false|no|off
+  LOOP_RUN_ERROR_RETRY_MAX  макс. попыток на одну итерацию при status=error (по умолчанию как LOOP_STEP_RETRY_MAX)
+  LOOP_RUN_ERROR_RETRY_BASE_MS  базовая пауза между такими повторами (по умолчанию как LOOP_STEP_RETRY_BASE_MS)
   VERBOSE=1            стрим текста assistant в stdout
   PROMPTS_DIR          каталог с initial.txt и continue.txt
   CURSOR_MODEL          ID модели (по умолчанию default)
@@ -111,6 +116,178 @@ function sleep(ms: number): Promise<void> {
   return new Promise((r) => {
     setTimeout(r, ms)
   })
+}
+
+function readStepRetryLimits(): { maxAttempts: number; baseDelayMs: number } {
+  const maxAttemptsRaw = Number.parseInt(process.env.LOOP_STEP_RETRY_MAX ?? '10', 10)
+  const maxAttempts =
+    Number.isFinite(maxAttemptsRaw) && maxAttemptsRaw >= 1
+      ? Math.min(100, Math.floor(maxAttemptsRaw))
+      : 10
+
+  const baseDelayMsRaw = Number.parseInt(process.env.LOOP_STEP_RETRY_BASE_MS ?? '2000', 10)
+  const baseDelayMs =
+    Number.isFinite(baseDelayMsRaw) && baseDelayMsRaw >= 200 ? baseDelayMsRaw : 2000
+
+  return { maxAttempts, baseDelayMs }
+}
+
+/** Повтор при любом `status=error` после wait включён по умолчанию; выключается через `LOOP_RETRY_RUN_ERROR=0`. */
+function readLoopRetryRunErrorEnabled(): boolean {
+  const v = process.env.LOOP_RETRY_RUN_ERROR?.trim().toLowerCase()
+  if (v === undefined || v === '') {
+    return true
+  }
+  return !['0', 'false', 'no', 'off'].includes(v)
+}
+
+/**
+ * Повторы после wait() при status=error: по умолчанию любые; при LOOP_RETRY_RUN_ERROR=0 —
+ * только эвристика «очень короткий run» (см. isLikelyTransientRunError).
+ */
+function readRunErrorRetryConfig(stepRetry: { maxAttempts: number; baseDelayMs: number }): {
+  retryAnyRunError: boolean
+  maxAttempts: number
+  baseDelayMs: number
+} {
+  const retryAnyRunError = readLoopRetryRunErrorEnabled()
+
+  const maxRaw = Number.parseInt(
+    process.env.LOOP_RUN_ERROR_RETRY_MAX ?? String(stepRetry.maxAttempts),
+    10
+  )
+  const maxAttempts =
+    Number.isFinite(maxRaw) && maxRaw >= 1 ? Math.min(100, Math.floor(maxRaw)) : stepRetry.maxAttempts
+
+  const baseRaw = Number.parseInt(
+    process.env.LOOP_RUN_ERROR_RETRY_BASE_MS ?? String(stepRetry.baseDelayMs),
+    10
+  )
+  const baseDelayMs =
+    Number.isFinite(baseRaw) && baseRaw >= 200 ? baseRaw : stepRetry.baseDelayMs
+
+  return { retryAnyRunError, maxAttempts, baseDelayMs }
+}
+
+function isLikelyTransientTransportError(error: unknown): boolean {
+  if (!(error instanceof Error)) {
+    return false
+  }
+  const ex = error as NodeJS.ErrnoException
+  const code = typeof ex.code === 'string' ? ex.code : ''
+  const msg = error.message.toLowerCase()
+  return (
+    code === 'ECONNRESET' ||
+    code === 'ETIMEDOUT' ||
+    code === 'ENOTFOUND' ||
+    code === 'EAI_AGAIN' ||
+    code === 'ECONNREFUSED' ||
+    msg.includes('fetch failed') ||
+    msg.includes('network error') ||
+    msg.includes('socket hang up')
+  )
+}
+
+function isRetryableConnectionFailure(error: unknown): boolean {
+  if (error instanceof CursorAgentError) {
+    return error.isRetryable === true
+  }
+  return isLikelyTransientTransportError(error)
+}
+
+/**
+ * Повторяет действие при сбоях, которые не означают «run уже отработал с error»:
+ * сеть, недоступный API, retryable CursorAgentError. Номер итерации цикла при этом не увеличивается.
+ */
+async function runWithConnectionRetries<T>(
+  describe: string,
+  maxAttempts: number,
+  baseDelayMs: number,
+  fn: () => Promise<T>
+): Promise<T> {
+  let attempt = 0
+  while (true) {
+    try {
+      return await fn()
+    } catch (error) {
+      if (!isRetryableConnectionFailure(error)) {
+        throw error
+      }
+      if (attempt >= maxAttempts - 1) {
+        const msg = error instanceof Error ? error.message : String(error)
+        console.error(`${describe}: исчерпано ${maxAttempts} попыток. Последняя ошибка: ${msg}`)
+        throw error
+      }
+      const delayMs = Math.min(60_000, Math.round(baseDelayMs * Math.pow(2, attempt)))
+      attempt++
+      const msg = error instanceof Error ? error.message : String(error)
+      console.error(
+        `${describe}: временный сбой (повтор ${attempt}/${maxAttempts} через ${delayMs} мс) — ${msg}`
+      )
+      await sleep(delayMs)
+    }
+  }
+}
+
+interface AgentRunResultLike {
+  id: string
+  status: string
+  durationMs?: number
+}
+
+function isLikelyTransientRunError(result: AgentRunResultLike): boolean {
+  return (
+    result.status === 'error' &&
+    typeof result.durationMs === 'number' &&
+    result.durationMs > 0 &&
+    result.durationMs < 5000
+  )
+}
+
+function shouldRetryAfterRunError(
+  result: AgentRunResultLike,
+  cfg: { retryAnyRunError: boolean }
+): boolean {
+  if (result.status !== 'error') {
+    return false
+  }
+  if (cfg.retryAnyRunError) {
+    return true
+  }
+  return isLikelyTransientRunError(result)
+}
+
+async function runStepWithRetries<T extends AgentRunResultLike>(
+  describe: string,
+  maxAttempts: number,
+  baseDelayMs: number,
+  runErrorCfg: { retryAnyRunError: boolean },
+  fn: () => Promise<T>
+): Promise<T> {
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const result = await fn()
+    if (!shouldRetryAfterRunError(result, runErrorCfg)) {
+      return result
+    }
+
+    const detail =
+      typeof result.durationMs === 'number'
+        ? ` (${result.durationMs} мс)`
+        : ''
+
+    if (attempt >= maxAttempts - 1) {
+      console.error(`${describe}: run ${result.id} status=error${detail}, попытки исчерпаны (${maxAttempts}).`)
+      return result
+    }
+
+    const delayMs = Math.min(60_000, Math.round(baseDelayMs * Math.pow(2, attempt)))
+    console.error(
+      `${describe}: run ${result.id} status=error${detail}, повтор ${attempt + 1}/${maxAttempts} через ${delayMs} мс.`
+    )
+    await sleep(delayMs)
+  }
+
+  throw new Error(`${describe}: не удалось выполнить runStepWithRetries`)
 }
 
 function ensureStopFlagFile(): void {
@@ -218,10 +395,30 @@ async function main(): Promise<number> {
     }
   }
 
+  const stepRetry = readStepRetryLimits()
+  const runErrorRetry = readRunErrorRetryConfig(stepRetry)
+  if (opts.verbose && runErrorRetry.retryAnyRunError) {
+    console.error(
+      `Повторы при status=error: до ${runErrorRetry.maxAttempts} отправок того же шага (отключить: LOOP_RETRY_RUN_ERROR=0).`
+    )
+  }
+
   if (opts.once) {
     try {
       const promptText = stdinPrompt ?? initialDisk
-      const result = await Agent.prompt(promptText, baseAgentOptions)
+      const result = await runStepWithRetries(
+        'Шаг одиночный (Agent.prompt)',
+        runErrorRetry.maxAttempts,
+        runErrorRetry.baseDelayMs,
+        { retryAnyRunError: runErrorRetry.retryAnyRunError },
+        () =>
+          runWithConnectionRetries(
+            'Шаг одиночный (Agent.prompt)',
+            stepRetry.maxAttempts,
+            stepRetry.baseDelayMs,
+            () => Agent.prompt(promptText, baseAgentOptions)
+          )
+      )
       console.error(`Шаг одиночный: статус=${result.status}, run=${result.id}`)
 
       if (result.status === 'finished') {
@@ -242,7 +439,12 @@ async function main(): Promise<number> {
 
   }
 
-  const agent = await Agent.create(baseAgentOptions)
+  const agent = await runWithConnectionRetries(
+    'Agent.create',
+    stepRetry.maxAttempts,
+    stepRetry.baseDelayMs,
+    () => Agent.create(baseAgentOptions)
+  )
 
   try {
 
@@ -258,14 +460,28 @@ async function main(): Promise<number> {
 
       const promptText = step === 0 ? (stdinPrompt ?? initialDisk) : continueDisk
 
-      const run = await agent.send(promptText)
-      console.error(`  Run id: ${run.id}`)
+      const result = await runStepWithRetries(
+        `Итерация ${step + 1}/${opts.maxSteps}`,
+        runErrorRetry.maxAttempts,
+        runErrorRetry.baseDelayMs,
+        { retryAnyRunError: runErrorRetry.retryAnyRunError },
+        async () =>
+          await runWithConnectionRetries(
+            `Итерация ${step + 1}/${opts.maxSteps} send+wait`,
+            stepRetry.maxAttempts,
+            stepRetry.baseDelayMs,
+            async () => {
+              const run = await agent.send(promptText)
+              console.error(`  Run id: ${run.id}`)
 
-      if (opts.verbose && run.supports('stream')) {
-        await streamVerboseAssistantText(run)
-      }
+              if (opts.verbose && run.supports('stream')) {
+                await streamVerboseAssistantText(run)
+              }
 
-      const result = await run.wait()
+              return await run.wait()
+            }
+          )
+      )
 
       console.error(`  Статус: ${result.status} (run ${result.id})`)
 
