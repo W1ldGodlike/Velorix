@@ -248,7 +248,8 @@ const YTDLP_QUEUE_RETRY_SKIP_MARKERS = [
   'blocked it on copyright',
   'not available in your country',
   'geo restricted',
-  'geo-blocked'
+  'geo-blocked',
+  'drm protected'
 ] as const
 
 /**
@@ -291,7 +292,11 @@ const YTDLP_QUEUE_RETRY_KEEP_TRYING_MARKERS = [
   'bad gateway',
   'gateway timeout',
   'service unavailable',
-  'connection lost'
+  'connection lost',
+  // Ротация извлечения подписи на стороне YouTube и подобные временные сбои клиента yt-dlp.
+  'signature extraction failed',
+  'signature solve failed',
+  'rate limit exceeded'
 ] as const
 
 function classifyYtdlpQueueFailureKindFromText(
@@ -476,10 +481,23 @@ export function extractYtdlpOutputPath(line: string): string | null {
     const cap = remuxInto[1]
     return cap !== undefined ? unquoteYtdlpPath(cap) : null
   }
-  /** ConvertFormatPP и др.: «… → Destination: …» в одной строке без префикса PP в начале. */
-  const arrowDestination = t.match(/^\[[^\]]+\]\s+.+?\s+→\s+Destination:\s+(.+)$/i)
+  /** ConvertFormatPP и др.: «… → Destination: …» или ASCII «… -> Destination: …». */
+  const arrowDestination = t.match(/^\[[^\]]+\]\s+.+?\s+(?:→|->)\s+Destination:\s+(.+)$/i)
   if (arrowDestination) {
     const cap = arrowDestination[1]
+    return cap !== undefined ? unquoteYtdlpPath(cap) : null
+  }
+  /** SubtitlesConvertor: конвертация дорожки в другой формат (типично `->` между путями). */
+  const subsConvertArrow = t.match(
+    /^\[(?:SubsConvertor|SubtitlesConvertor)]\s+.+?\s+(?:→|->)\s+(.+)$/i
+  )
+  if (subsConvertArrow) {
+    const cap = subsConvertArrow[1]
+    return cap !== undefined ? unquoteYtdlpPath(cap) : null
+  }
+  const subsConvertInto = t.match(/^\[(?:SubsConvertor|SubtitlesConvertor)]\s+.+?\s+into\s+(.+)$/i)
+  if (subsConvertInto) {
+    const cap = subsConvertInto[1]
     return cap !== undefined ? unquoteYtdlpPath(cap) : null
   }
   return null

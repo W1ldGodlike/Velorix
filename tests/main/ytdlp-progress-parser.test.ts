@@ -242,6 +242,10 @@ describe('shouldSkipYtdlpQueueRetriesAfterFailure', () => {
     )
   })
 
+  it('true для DRM как устойчивого отказа источника', () => {
+    expect(shouldSkipYtdlpQueueRetriesAfterFailure('Video is DRM protected', null)).toBe(true)
+  })
+
   it('транзиент имеет приоритет: не skip даже при наличии «video unavailable» в stderr', () => {
     expect(
       shouldSkipYtdlpQueueRetriesAfterFailure(
@@ -275,6 +279,10 @@ describe('classifyYtdlpQueueFailureKind', () => {
     expect(classifyYtdlpQueueFailureKind(null, 'Connection prematurely closed')).toBe(
       'transient_network'
     )
+    expect(classifyYtdlpQueueFailureKind('Signature extraction failed', null)).toBe(
+      'transient_network'
+    )
+    expect(classifyYtdlpQueueFailureKind(null, 'Rate limit exceeded')).toBe('transient_network')
   })
 
   it('likely_source_block для приватного видео', () => {
@@ -282,6 +290,7 @@ describe('classifyYtdlpQueueFailureKind', () => {
     expect(classifyYtdlpQueueFailureKind('Not available in your country', null)).toBe(
       'likely_source_block'
     )
+    expect(classifyYtdlpQueueFailureKind('DRM protected video', null)).toBe('likely_source_block')
   })
 
   it('unknown если нет явных маркеров', () => {
@@ -394,5 +403,22 @@ describe('extractYtdlpOutputPath', () => {
     expect(
       extractYtdlpOutputPath('[FFmpegVideoRemuxer] Remux format → Destination: /tmp/final.mkv')
     ).toBe('/tmp/final.mkv')
+    expect(
+      extractYtdlpOutputPath('[FFmpegVideoRemuxer] Remux format -> Destination: /tmp/ascii.mkv')
+    ).toBe('/tmp/ascii.mkv')
+  })
+
+  it('извлекает путь из SubtitlesConvertor (стрелка или into)', () => {
+    expect(
+      extractYtdlpOutputPath('[SubsConvertor] Converting subtitles ./vid.en.vtt -> ./vid.ru.srt')
+    ).toBe('./vid.ru.srt')
+    expect(
+      extractYtdlpOutputPath(
+        '[SubtitlesConvertor] Converting subtitles /tmp/a.en.vtt → /tmp/a.ru.srt'
+      )
+    ).toBe('/tmp/a.ru.srt')
+    expect(
+      extractYtdlpOutputPath('[SubsConvertor] Converting subtitles into "/home/u/out.srt"')
+    ).toBe('/home/u/out.srt')
   })
 })
