@@ -93,6 +93,7 @@ const MAIN_PANEL_DEFAULTS: Required<MainWindowUiPanelState> = {
   ffmpegAudio: false,
   ffmpegPresets: false,
   ffmpegOutput: true,
+  exportCommandPreview: true,
   probeExportSummary: false,
   probeTracks: false,
   probeChapters: false,
@@ -1570,22 +1571,33 @@ function App(): JSX.Element {
           >
             <summary className="app-settings-summary">Вывод</summary>
             <div className="app-settings-stack">
-              <pre className="app-export-preview-pre" aria-label="Команда ffmpeg">
-                {exportPreviewCommand}
-              </pre>
-              <div className="app-export-preview-actions">
-                <button
-                  type="button"
-                  className="app-btn app-btn-compact"
-                  onClick={() => {
-                    void handleCopyExportPreview()
-                  }}
-                  title="Скопировать строку команды ffmpeg в буфер"
-                >
-                  Копировать
-                </button>
-                <span className="app-export-preview-hint">{exportPreviewHint()}</span>
-              </div>
+              <details
+                className="app-export-preview app-export-preview-nested"
+                open={panelOpen('exportCommandPreview')}
+                onToggle={(e) => {
+                  persistPanelToggle('exportCommandPreview', e.currentTarget.open)
+                }}
+              >
+                <summary className="app-export-preview-summary">Превью команды ffmpeg</summary>
+                <div className="app-export-preview-body">
+                  <pre className="app-export-preview-pre" aria-label="Команда ffmpeg">
+                    {exportPreviewCommand}
+                  </pre>
+                  <div className="app-export-preview-actions">
+                    <button
+                      type="button"
+                      className="app-btn app-btn-compact"
+                      onClick={() => {
+                        void handleCopyExportPreview()
+                      }}
+                      title="Скопировать строку команды ffmpeg в буфер"
+                    >
+                      Копировать
+                    </button>
+                    <span className="app-export-preview-hint">{exportPreviewHint()}</span>
+                  </div>
+                </div>
+              </details>
               {lastExportPath ? (
                 <div className="app-settings-actions">
                   <button

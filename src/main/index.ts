@@ -710,6 +710,7 @@ function sanitizeMainWindowUiPanelPatch(raw: unknown): Partial<MainWindowUiPanel
     'ffmpegAudio',
     'ffmpegPresets',
     'ffmpegOutput',
+    'exportCommandPreview',
     'probeExportSummary',
     'probeTracks',
     'probeChapters',

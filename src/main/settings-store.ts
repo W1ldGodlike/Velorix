@@ -283,6 +283,7 @@ const MAIN_UI_PANEL_KEYS = [
   'ffmpegAudio',
   'ffmpegPresets',
   'ffmpegOutput',
+  'exportCommandPreview',
   'probeExportSummary',
   'probeTracks',
   'probeChapters',

@@ -168,3 +168,4 @@
 - 2026-05-10 14:01:38 [SDK]: §1.1/§4.C — окно yt-dlp: HiDPI CSS (`min-resolution`/dppx) + дефолтный размер/`min*` от `scaleFactor`; `focus-visible` на переключателях rail/селектах/`summary`; чеклист §4.C/§1.1.
 - 2026-05-10 14:04:14 [SDK]: §1.1/v0 — окно загрузок: нижняя зона под таблицей — история и журнал **вертикально** (лог снизу на всю ширину), `pre` тянется в flex-ячейке; §4.A/спринт.
 - 2026-05-10 14:05:40 [SDK]: §9/§4.C — окно инспектора: тулбар на `app-icon-btn` + общие lucide (`refreshCw` в `lucide-downloads-icons`, `IconRefreshCw`/film/папка/тема); `main.css` марка бренда; чеклист.
+- 2026-05-10 14:07:41 [SDK]: §1.1/v0/§4.1 — редактор: главный `app-topbar` выше под ~70px-референс; секция «Вывод» — вложенный `details` превью ffmpeg + persist `exportCommandPreview` (IPC whitelist settings-store/main).
