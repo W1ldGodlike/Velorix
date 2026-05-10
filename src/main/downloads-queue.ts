@@ -1,6 +1,6 @@
 /**
- * Простое состояние очереди URL для окна менеджера загрузок §6 — пока только UI,
- * без запуска yt-dlp и без сохранения в session.json (добавим поверх этого же API).
+ * Состояние очереди URL для окна менеджера загрузок §6.
+ * Живая очередь дополнительно пишется в `userData/downloads/queue.json` (см. `ytdlp-download-queue-persist.ts`).
  */
 
 export interface DownloadsQueueRow {
@@ -66,6 +66,19 @@ function normalizeUrlLine(line: string): string | null {
 
 export function getDownloadsQueueSnapshot(): DownloadsQueueRow[] {
   return rows.map((r) => ({ ...r }))
+}
+
+/** Полная замена очереди (гидратация из `queue.json`). Пересчитывает `nextId`. */
+export function replaceDownloadsQueueState(nextRows: DownloadsQueueRow[]): void {
+  rows.length = 0
+  let maxId = 0
+  for (const e of nextRows) {
+    rows.push({ ...e })
+    if (e.id > maxId) {
+      maxId = e.id
+    }
+  }
+  nextId = maxId > 0 ? maxId + 1 : 1
 }
 
 export function clearDownloadsQueue(): void {

@@ -1,5 +1,5 @@
 import { writeFileSync } from 'fs'
-import { BrowserWindow, dialog, ipcMain, shell, type WebContents } from 'electron'
+import { BrowserWindow, app, dialog, ipcMain, shell, type WebContents } from 'electron'
 
 import { resolveAppPaths } from './app-paths'
 import type { DownloadsWindowUiPanelState } from '../shared/settings-contract'
@@ -48,6 +48,11 @@ import {
   readYtdlpDownloadHistoryNewestFirst
 } from './ytdlp-download-history'
 import { logError } from './logger-service'
+import {
+  attachDownloadsQueuePersistOnQuitOnce,
+  hydrateDownloadsQueueFromDisk,
+  schedulePersistDownloadsQueueDebounced
+} from './ytdlp-download-queue-persist'
 import { downloadsIpc as d } from '../shared/ipc-channels'
 
 /** Совпадает с preload подпиской на снимок очереди. */
@@ -164,6 +169,7 @@ function openDownloadOutputInHandler(
 
 /** Отправить очередь в окно загрузок без полной перезагрузки документа. */
 export function broadcastDownloadsSnapshot(): void {
+  schedulePersistDownloadsQueueDebounced()
   if (!downloadsWindow || downloadsWindow.isDestroyed()) {
     return
   }
@@ -1722,6 +1728,10 @@ export function registerDownloadsWindowIpcHandlers(): void {
     return
   }
   ipcRegistered = true
+
+  const pathsBoot = resolveAppPaths()
+  hydrateDownloadsQueueFromDisk(pathsBoot.userData)
+  attachDownloadsQueuePersistOnQuitOnce(app)
 
   setDownloadsRunnerNotifier(() => {
     broadcastDownloadsSnapshot()
