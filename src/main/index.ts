@@ -1442,7 +1442,7 @@ function createWindow(): void {
 
 function isLikelyBrowserPlayableMedia(filePath: string): boolean {
   const ext = extname(filePath).toLowerCase()
-  return ['.mp4', '.m4v', '.webm', '.ogg', '.ogv', '.mp3', '.wav', '.flac'].includes(ext)
+  return ['.webm', '.ogg', '.ogv', '.mp3', '.wav', '.flac'].includes(ext)
 }
 
 function runFfmpegPreviewProxy(
@@ -1461,17 +1461,19 @@ function runFfmpegPreviewProxy(
         '-map',
         '0:a?',
         '-c:v',
-        'libx264',
-        '-preset',
-        'veryfast',
-        '-crf',
-        '23',
+        'libvpx',
+        '-deadline',
+        'realtime',
+        '-cpu-used',
+        '5',
+        '-b:v',
+        '2500k',
+        '-vf',
+        "scale=w='min(1280,iw)':h=-2",
         '-c:a',
-        'aac',
+        'libopus',
         '-b:a',
-        '160k',
-        '-movflags',
-        '+faststart',
+        '128k',
         output
       ]
     : [
@@ -1485,11 +1487,9 @@ function runFfmpegPreviewProxy(
         '-c:v',
         'copy',
         '-c:a',
-        'aac',
+        'libopus',
         '-b:a',
-        '160k',
-        '-movflags',
-        '+faststart',
+        '128k',
         output
       ]
 
@@ -1518,7 +1518,7 @@ async function ensurePreviewPlayableMedia(absoluteFile: string): Promise<string>
   const ffmpeg = resolveEngineExecutablePath(paths, 'ffmpeg', cachedSettings.engineExecutablePaths)
   if (!ffmpeg) {
     throw new Error(
-      'Файл не поддерживается встроенным предпросмотром, а ffmpeg для MP4-proxy не найден.'
+      'Файл не поддерживается встроенным предпросмотром, а ffmpeg для WebM preview не найден.'
     )
   }
 
@@ -1531,24 +1531,24 @@ async function ensurePreviewPlayableMedia(absoluteFile: string): Promise<string>
     .slice(0, 24)
   const cacheDir = join(paths.userData, 'preview-cache')
   mkdirSync(cacheDir, { recursive: true })
-  const output = join(cacheDir, `${key}.mp4`)
+  const output = join(cacheDir, `${key}.webm`)
   if (existsSync(output) && statSync(output).isFile()) {
     return output
   }
 
-  logInfo('preview', `creating mp4 preview proxy for ${absoluteFile}`)
+  logInfo('preview', `creating webm preview proxy for ${absoluteFile}`)
   try {
     await runFfmpegPreviewProxy(ffmpeg, absoluteFile, output, false)
   } catch (copyError) {
     logInfo(
       'preview',
-      `copy preview proxy failed, retrying with h264 transcode: ${
+      `copy preview proxy failed, retrying with vp8 transcode: ${
         copyError instanceof Error ? copyError.message : String(copyError)
       }`
     )
     await runFfmpegPreviewProxy(ffmpeg, absoluteFile, output, true)
   }
-  logInfo('preview', `mp4 preview proxy ready: ${output}`)
+  logInfo('preview', `webm preview proxy ready: ${output}`)
   return output
 }
 
@@ -1565,6 +1565,9 @@ async function openDownloadedFileInMainHandler(
   if (!mediaUrl) {
     return { ok: false, error: 'Нельзя открыть этот файл в предпросмотре.' }
   }
+  if (!grantMediaPath(absoluteFile)) {
+    return { ok: false, error: 'Нельзя открыть исходный файл в редакторе.' }
+  }
   const target =
     mainWindowWebContentsId === null
       ? null
@@ -1572,17 +1575,17 @@ async function openDownloadedFileInMainHandler(
   if (!target || target.isDestroyed()) {
     return { ok: false, error: 'Главное окно FluxAlloy не найдено.' }
   }
-  persistLastOpenedSource(previewFile)
+  persistLastOpenedSource(absoluteFile)
   target.show()
   target.focus()
   target.webContents.send(mw.previewOpened, {
     ok: true,
-    path: previewFile,
+    path: absoluteFile,
     mediaUrl,
     name:
       previewFile === absoluteFile
         ? basename(absoluteFile)
-        : `${basename(absoluteFile)} · preview MP4`
+        : `${basename(absoluteFile)} · preview WebM`
   })
   return { ok: true }
 }
@@ -1928,13 +1931,22 @@ app.whenReady().then(() => {
     return result
   })
 
-  ipcMain.handle(mw.previewGrantPath, (_, rawPath: unknown) => {
+  ipcMain.handle(mw.previewGrantPath, async (_, rawPath: unknown) => {
     if (typeof rawPath !== 'string' || rawPath.length === 0) {
       return { ok: false, error: 'Пустой путь' }
     }
-    const mediaUrl = grantMediaPath(rawPath)
+    let previewFile: string
+    try {
+      previewFile = await ensurePreviewPlayableMedia(rawPath)
+    } catch (error) {
+      return { ok: false, error: error instanceof Error ? error.message : String(error) }
+    }
+    const mediaUrl = grantMediaPath(previewFile)
     if (!mediaUrl) {
       return { ok: false, error: 'Не удалось открыть файл' }
+    }
+    if (!grantMediaPath(rawPath)) {
+      return { ok: false, error: 'Не удалось открыть исходный файл' }
     }
     persistLastOpenedSource(rawPath)
     return {
@@ -1955,20 +1967,32 @@ app.whenReady().then(() => {
     }
   })
 
-  ipcMain.handle(mw.restoreLastSource, () => {
+  ipcMain.handle(mw.restoreLastSource, async () => {
     const saved = cachedSettings.lastOpenedSourcePath
     if (typeof saved !== 'string' || saved.trim().length === 0 || !existsSync(saved)) {
       return null
     }
-    const mediaUrl = grantMediaPath(saved.trim())
+    const sourcePath = saved.trim()
+    let previewFile: string
+    try {
+      previewFile = await ensurePreviewPlayableMedia(sourcePath)
+    } catch {
+      persistLastOpenedSource(null)
+      return null
+    }
+    const mediaUrl = grantMediaPath(previewFile)
     if (!mediaUrl) {
       persistLastOpenedSource(null)
       return null
     }
+    if (!grantMediaPath(sourcePath)) {
+      persistLastOpenedSource(null)
+      return null
+    }
     return {
-      path: saved.trim(),
+      path: sourcePath,
       mediaUrl,
-      name: basename(saved.trim())
+      name: previewFile === sourcePath ? basename(sourcePath) : `${basename(sourcePath)} · preview WebM`
     }
   })
 

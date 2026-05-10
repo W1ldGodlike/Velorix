@@ -1709,7 +1709,7 @@ function App(): JSX.Element {
                       window.fluxalloy.log.send({
                         level: 'error',
                         scope: 'preview/video',
-                        message: `video element error code=${code} detail=${detail} path=${preview.path}`
+                        message: `video element error code=${code} detail=${detail} path=${preview.path} mediaUrl=${preview.mediaUrl}`
                       })
                     }}
                   />
@@ -2651,9 +2651,7 @@ function App(): JSX.Element {
                                     type="button"
                                     className="app-btn app-btn-compact"
                                     onClick={() => {
-                                      setStatusHint(
-                                        'Готовлю файл для редактора… если это MKV/WebM, будет создан MP4 preview.'
-                                      )
+                                      setStatusHint('Готовлю файл для редактора… при необходимости будет создан WebM preview.')
                                       void window.fluxalloy.downloads
                                         .openQueueOutputInHandler(row.id)
                                         .then((res) => {
@@ -3168,9 +3166,7 @@ function App(): JSX.Element {
                             type="button"
                             className="app-btn app-btn-compact"
                             onClick={() => {
-                              setStatusHint(
-                                'Готовлю файл для редактора… если это MKV/WebM, будет создан MP4 preview.'
-                              )
+                              setStatusHint('Готовлю файл для редактора… при необходимости будет создан WebM preview.')
                               void window.fluxalloy.downloads
                                 .openHistoryOutputInHandler(entry.id)
                                 .then((res) => {
