@@ -297,8 +297,11 @@ function App(): JSX.Element {
   const videoRef = useRef<HTMLVideoElement>(null)
   /** Стек видео+транспорт+таймлайн: цель fullscreen по референсу v0. */
   const previewStackRef = useRef<HTMLDivElement>(null)
-  /** Последний диапазон In/Out с таймлайна для IPC экспорта. */
-  const trimSnapshotRef = useRef<{ inSec: number; outSec: number } | null>(null)
+  /** Последний диапазон In/Out с таймлайна для IPC экспорта, привязанный к текущему файлу. */
+  const trimSnapshotRef = useRef<{
+    path: string | null
+    range: { inSec: number; outSec: number }
+  } | null>(null)
   /**
    * Состояние таймлайна для preview команды ffmpeg.
    * `path` хранится рядом, чтобы при смене источника `trimRange` ниже выводился как `null`
@@ -320,7 +323,7 @@ function App(): JSX.Element {
 
   const onTrimRangeSnapshot = useCallback(
     (range: { inSec: number; outSec: number }) => {
-      trimSnapshotRef.current = range
+      trimSnapshotRef.current = { path: currentSourcePath, range }
       setTrimState((prev) => {
         if (
           prev.path === currentSourcePath &&
@@ -842,7 +845,8 @@ function App(): JSX.Element {
     setLastExportPath(null)
     setStatusHint('Подготовка экспорта…')
     try {
-      const trimSnap = trimSnapshotRef.current
+      const trimSnap =
+        trimSnapshotRef.current?.path === preview.path ? trimSnapshotRef.current.range : null
       const res = await window.fluxalloy.export.start({
         inputPath: preview.path,
         ...(trimSnap != null ? { trim: trimSnap } : {}),
