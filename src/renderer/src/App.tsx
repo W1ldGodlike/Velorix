@@ -1671,6 +1671,7 @@ function App(): JSX.Element {
                     type="button"
                     className="app-btn app-btn-compact"
                     disabled={exportBusy || snapshotBusy}
+                    aria-describedby="ffmpegAudioSectionHint"
                     onClick={() => {
                       void handleOpenLastSnapshot('file')
                     }}
@@ -1681,6 +1682,7 @@ function App(): JSX.Element {
                     type="button"
                     className="app-btn app-btn-compact"
                     disabled={exportBusy || snapshotBusy}
+                    aria-describedby="ffmpegAudioSectionHint"
                     onClick={() => {
                       void handleOpenLastSnapshot('folder')
                     }}
@@ -1691,6 +1693,7 @@ function App(): JSX.Element {
                     type="button"
                     className="app-btn app-btn-compact"
                     disabled={exportBusy || snapshotBusy}
+                    aria-describedby="ffmpegAudioSectionHint"
                     onClick={() => {
                       void handleCopyLastSnapshotPath()
                     }}
@@ -1752,6 +1755,7 @@ function App(): JSX.Element {
                     type="button"
                     className="app-btn app-btn-compact"
                     disabled={exportBusy || snapshotBusy}
+                    aria-describedby="ffmpegPresetsSectionHint"
                     onClick={() => {
                       handleSaveExportUserPreset()
                     }}
@@ -1762,6 +1766,7 @@ function App(): JSX.Element {
                     type="button"
                     className="app-btn app-btn-compact"
                     disabled={exportBusy || snapshotBusy || !selectedUserPresetId}
+                    aria-describedby="ffmpegPresetsSectionHint"
                     onClick={() => {
                       handleRenameExportUserPreset()
                     }}
@@ -1772,6 +1777,7 @@ function App(): JSX.Element {
                     type="button"
                     className="app-btn app-btn-compact"
                     disabled={exportBusy || snapshotBusy || !selectedUserPresetId}
+                    aria-describedby="ffmpegPresetsSectionHint"
                     onClick={() => {
                       handleOverwriteExportUserPreset()
                     }}
@@ -1782,6 +1788,7 @@ function App(): JSX.Element {
                     type="button"
                     className="app-btn app-btn-compact"
                     disabled={exportBusy || snapshotBusy || !selectedUserPresetId}
+                    aria-describedby="ffmpegPresetsSectionHint"
                     onClick={() => {
                       handleDeleteExportUserPreset()
                     }}
@@ -1845,6 +1852,7 @@ function App(): JSX.Element {
                       type="button"
                       className="app-btn app-btn-compact"
                       disabled={exportBusy || snapshotBusy}
+                      aria-describedby="ffmpegOutputSectionHint"
                       onClick={() => {
                         void handleOpenLastExport('file')
                       }}
@@ -1855,6 +1863,7 @@ function App(): JSX.Element {
                       type="button"
                       className="app-btn app-btn-compact"
                       disabled={exportBusy || snapshotBusy}
+                      aria-describedby="ffmpegOutputSectionHint"
                       onClick={() => {
                         void handleOpenLastExport('folder')
                       }}
@@ -1865,6 +1874,7 @@ function App(): JSX.Element {
                       type="button"
                       className="app-btn app-btn-compact"
                       disabled={exportBusy || snapshotBusy}
+                      aria-describedby="ffmpegOutputSectionHint"
                       onClick={() => {
                         void handleOpenLastExport('preview')
                       }}
@@ -1875,6 +1885,7 @@ function App(): JSX.Element {
                       type="button"
                       className="app-btn app-btn-compact"
                       disabled={exportBusy || snapshotBusy}
+                      aria-describedby="ffmpegOutputSectionHint"
                       onClick={() => {
                         void handleCopyLastExportPath()
                       }}
