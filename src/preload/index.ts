@@ -1,7 +1,12 @@
 import { contextBridge, ipcRenderer, webUtils } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
-import type { DiagnosticsFolderEntry, DiagnosticsFolderId } from '../shared/diagnostics-contract'
+import type {
+  DiagnosticsFolderEntry,
+  DiagnosticsFolderId,
+  DiagnosticsOpenMainLogResult,
+  DiagnosticsSupportZipResult
+} from '../shared/diagnostics-contract'
 import type { EngineDownloadProgress } from '../shared/engine-download-contract'
 import type { FfmpegSnapshotFormatId } from '../shared/ffmpeg-snapshot-contract'
 import type {
@@ -106,7 +111,13 @@ const fluxalloy = {
     openFolder: (
       id: DiagnosticsFolderId
     ): Promise<{ ok: true; path: string } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(mw.diagnosticsOpenFolder, id)
+      ipcRenderer.invoke(mw.diagnosticsOpenFolder, id),
+    /** §4.5 — тот же файл, что «Инструменты → Открыть main.log». */
+    openMainLog: (): Promise<DiagnosticsOpenMainLogResult> =>
+      ipcRenderer.invoke(mw.diagnosticsOpenMainLog),
+    /** §4.5 — диалог сохранения ZIP в main (как пункт меню «Собрать Support ZIP…»). */
+    createSupportZip: (): Promise<DiagnosticsSupportZipResult> =>
+      ipcRenderer.invoke(mw.diagnosticsCreateSupportZip)
   },
   log: {
     /**

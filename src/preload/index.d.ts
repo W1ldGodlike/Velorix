@@ -1,6 +1,11 @@
 import type { ElectronAPI } from '@electron-toolkit/preload'
 
-import type { DiagnosticsFolderEntry, DiagnosticsFolderId } from '../shared/diagnostics-contract'
+import type {
+  DiagnosticsFolderEntry,
+  DiagnosticsFolderId,
+  DiagnosticsOpenMainLogResult,
+  DiagnosticsSupportZipResult
+} from '../shared/diagnostics-contract'
 import type { EngineDownloadProgress } from '../shared/engine-download-contract'
 import type { FfmpegSnapshotFormatId } from '../shared/ffmpeg-snapshot-contract'
 import type {
@@ -88,6 +93,8 @@ export interface FluxAlloyApi {
     openFolder: (
       id: DiagnosticsFolderId
     ) => Promise<{ ok: true; path: string } | { ok: false; error: string }>
+    openMainLog: () => Promise<DiagnosticsOpenMainLogResult>
+    createSupportZip: () => Promise<DiagnosticsSupportZipResult>
   }
   log: {
     send: (entry: { level: 'info' | 'warn' | 'error'; scope?: string; message: string }) => void

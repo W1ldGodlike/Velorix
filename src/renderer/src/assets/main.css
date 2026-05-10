@@ -655,3 +655,16 @@
   padding-top: 0.85rem;
   border-top: 1px solid var(--fa-border-subtle);
 }
+
+/** §4.5 — подвал «О программе»: диагностика слева, закрытие справа. */
+.app-modal-footer-split {
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.app-about-diagnostics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}

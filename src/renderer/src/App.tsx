@@ -1569,7 +1569,50 @@ function App(): JSX.Element {
             ) : (
               <p className="app-modal-hint">Загрузка…</p>
             )}
-            <div className="app-modal-footer">
+            <div className="app-modal-footer app-modal-footer-split">
+              <div className="app-about-diagnostics">
+                <button
+                  type="button"
+                  className="app-btn app-btn-compact"
+                  onClick={() => {
+                    void window.fluxalloy.diagnostics.openFolder('logs').then((r) => {
+                      if (!r.ok) {
+                        setStatusHint(`Папка логов: ${r.error}`)
+                      }
+                    })
+                  }}
+                >
+                  Папка логов
+                </button>
+                <button
+                  type="button"
+                  className="app-btn app-btn-compact"
+                  onClick={() => {
+                    void window.fluxalloy.diagnostics.openMainLog().then((r) => {
+                      if (!r.ok) {
+                        setStatusHint(`main.log: ${r.error}`)
+                      }
+                    })
+                  }}
+                >
+                  main.log
+                </button>
+                <button
+                  type="button"
+                  className="app-btn app-btn-compact"
+                  onClick={() => {
+                    void window.fluxalloy.diagnostics.createSupportZip().then((r) => {
+                      if (r.ok) {
+                        setStatusHint('Support ZIP сохранён')
+                      } else if ('error' in r) {
+                        setStatusHint(`Support ZIP: ${r.error}`)
+                      }
+                    })
+                  }}
+                >
+                  Support ZIP…
+                </button>
+              </div>
               <button
                 type="button"
                 className="app-btn app-btn-primary"

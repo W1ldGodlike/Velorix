@@ -34,6 +34,8 @@ export const mainWindowIpc = {
   appAboutInfo: 'fluxalloy:app-about-info',
   diagnosticsListFolders: 'fluxalloy:diagnostics-list-folders',
   diagnosticsOpenFolder: 'fluxalloy:diagnostics-open-folder',
+  diagnosticsOpenMainLog: 'fluxalloy:diagnostics-open-main-log',
+  diagnosticsCreateSupportZip: 'fluxalloy:diagnostics-create-support-zip',
   openDownloadsWindow: 'fluxalloy:open-downloads-window',
   exportStart: 'fluxalloy:export-start',
   exportCancel: 'fluxalloy:export-cancel',

@@ -110,6 +110,10 @@ import { parseExtraYtdlpArgsLine } from './ytdlp-extra-args'
 import { refreshYtdlpRunOptionsSnapshot } from './ytdlp-run-options-sync'
 import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
+import type {
+  DiagnosticsOpenMainLogResult,
+  DiagnosticsSupportZipResult
+} from '../shared/diagnostics-contract'
 
 /** Кастомная схема для локального видеопревью; привилегии обязаны зарегистрироваться до `app.whenReady`. */
 attachProcessErrorHandlers()
@@ -844,19 +848,26 @@ function pruneDiagnosticsOnStartup(): void {
   }
 }
 
-async function openMainLogFile(): Promise<void> {
+/** §17/§18 — открыть main.log; результат для IPC «О программе» и для меню без дублирования логики. */
+async function openMainLogForUser(): Promise<{ ok: true } | { ok: false; error: string }> {
   const file = getMainLogFilePath()
   if (!file) {
-    return
+    return { ok: false, error: 'Путь к журналу недоступен' }
   }
   if (!existsSync(file)) {
     logInfo('diagnostics', 'main.log does not exist yet')
-    return
+    return { ok: false, error: 'Файл main.log ещё не создан' }
   }
   const result = await shell.openPath(file)
   if (result.length > 0) {
     logError('diagnostics', 'open main.log failed', result)
+    return { ok: false, error: result }
   }
+  return { ok: true }
+}
+
+async function openMainLogFile(): Promise<void> {
+  await openMainLogForUser()
 }
 
 async function openSessionLogFile(): Promise<void> {
@@ -874,7 +885,15 @@ async function openSessionLogFile(): Promise<void> {
   }
 }
 
-async function createSupportBundleWithDialog(parent?: BrowserWindow): Promise<string | null> {
+/** Исход диалога сохранения Support ZIP: отмена отделена от ошибки записи (для IPC из renderer). */
+type SupportBundleDialogOutcome =
+  | { outcome: 'saved'; path: string }
+  | { outcome: 'cancelled' }
+  | { outcome: 'failed'; message: string }
+
+async function createSupportBundleWithDialog(
+  parent?: BrowserWindow
+): Promise<SupportBundleDialogOutcome> {
   const stamp = new Date().toISOString().replace(/[:.]/g, '-')
   const saveOptions = {
     title: 'Собрать Support ZIP',
@@ -885,24 +904,25 @@ async function createSupportBundleWithDialog(parent?: BrowserWindow): Promise<st
     ? await dialog.showSaveDialog(parent, saveOptions)
     : await dialog.showSaveDialog(saveOptions)
   if (result.canceled || !result.filePath) {
-    return null
+    return { outcome: 'cancelled' }
   }
   try {
     createSupportBundleZip(result.filePath, supportBundleRuntimeInfo())
     logInfo('diagnostics', 'support zip created', result.filePath)
-    return result.filePath
+    return { outcome: 'saved', path: result.filePath }
   } catch (err) {
     logError('diagnostics', 'support zip failed', err)
+    const detail = err instanceof Error ? err.message : String(err)
     const messageOptions = {
       type: 'error',
       title: 'Не удалось собрать Support ZIP',
       message: 'Не удалось собрать диагностический архив.',
-      detail: err instanceof Error ? err.message : String(err)
+      detail
     } as const
     void (parent
       ? dialog.showMessageBox(parent, messageOptions)
       : dialog.showMessageBox(messageOptions))
-    return null
+    return { outcome: 'failed', message: detail }
   }
 }
 
@@ -964,7 +984,7 @@ async function showProcessErrorDialog(
   } else if (result.response === 1) {
     await openMainLogFile()
   } else if (result.response === 2) {
-    await createSupportBundleWithDialog(win)
+    void createSupportBundleWithDialog(win)
   }
 }
 
@@ -1593,6 +1613,26 @@ app.whenReady().then(() => {
         return { ok: false, error: 'Неизвестный каталог' }
       }
       return openDiagnosticsFolder(raw)
+    }
+  )
+
+  ipcMain.handle(mw.diagnosticsOpenMainLog, async (): Promise<DiagnosticsOpenMainLogResult> => {
+    return openMainLogForUser()
+  })
+
+  ipcMain.handle(
+    mw.diagnosticsCreateSupportZip,
+    async (event): Promise<DiagnosticsSupportZipResult> => {
+      const win = BrowserWindow.fromWebContents(event.sender)
+      const parent = win && !win.isDestroyed() ? win : undefined
+      const out = await createSupportBundleWithDialog(parent)
+      if (out.outcome === 'saved') {
+        return { ok: true, path: out.path }
+      }
+      if (out.outcome === 'cancelled') {
+        return { ok: false, cancelled: true }
+      }
+      return { ok: false, error: out.message }
     }
   )
 

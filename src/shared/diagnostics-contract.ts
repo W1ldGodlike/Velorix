@@ -17,3 +17,15 @@ export interface DiagnosticsFolderEntry {
   /** Существует ли каталог в момент перечисления (для disabled-состояния пункта меню). */
   exists: boolean
 }
+
+/** §4.5/§18 — открытие `main.log` из renderer через main (без произвольных путей). */
+export type DiagnosticsOpenMainLogResult = { ok: true } | { ok: false; error: string }
+
+/**
+ * §4.5/§18 — сохранение Support ZIP из диалога в main.
+ * Отмена диалога отделена от ошибки записи архива.
+ */
+export type DiagnosticsSupportZipResult =
+  | { ok: true; path: string }
+  | { ok: false; cancelled: true }
+  | { ok: false; error: string }
