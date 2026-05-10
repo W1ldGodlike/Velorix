@@ -774,6 +774,12 @@
   flex-wrap: wrap;
 }
 
+.app-downloads-row-actions .app-btn-compact {
+  min-height: 26px;
+  padding: 0 0.48rem;
+  font-size: 0.68rem;
+}
+
 .app-downloads-url-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
