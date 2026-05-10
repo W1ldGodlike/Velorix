@@ -126,3 +126,4 @@
 - 2026-05-10 03:36:04 [SDK]: §6.4 — прогресс: `(frag N/M)` без `%`, Sleeping/Waiting for reconnect; маркеры retry: гео/bad gateway/service unavailable/connection lost; Vitest.
 - 2026-05-10 03:39:59 [SDK]: §7.2/§21 — пользовательские пресеты экспорта: типы/snapshot в shared, `ffmpegExportUserPresets` в settings + парсер списка; IPC set list / apply snapshot; тулбар App.tsx (+ превью ffmpeg); Vitest merge/snapshot/list.
 - 2026-05-10 03:41:34 [SDK]: §7.1 — `runFfmpegExportJob`: фильтр строк для IPC прогресса (`isFfmpegExportProgressStatusLine`), сброс хвоста stderr на `close`; Vitest.
+- 2026-05-10 03:42:42 [SDK]: §7.2 — пользовательские пресеты: кнопки «Имя…» (переименование) и «Обновить пресет» (перезапись снимка из тулбара в выбранный слот).

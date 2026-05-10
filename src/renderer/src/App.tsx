@@ -493,6 +493,49 @@ function App(): JSX.Element {
       .catch(console.error)
   }, [exportUserPresets, selectedUserPresetId])
 
+  const handleRenameExportUserPreset = useCallback(() => {
+    if (!selectedUserPresetId) {
+      return
+    }
+    const current = exportUserPresets.find((p) => p.id === selectedUserPresetId)
+    if (!current) {
+      return
+    }
+    const label = window.prompt('Новое имя пресета', current.label)
+    if (label === null) {
+      return
+    }
+    const t = label.trim()
+    if (t.length === 0) {
+      return
+    }
+    const next = exportUserPresets.map((p) =>
+      p.id === selectedUserPresetId ? { ...p, label: t.slice(0, 64) } : p
+    )
+    void window.fluxalloy.settings
+      .setFfmpegExportUserPresets(next)
+      .then((s) => {
+        setExportUserPresets(s.ffmpegExportUserPresets ?? [])
+      })
+      .catch(console.error)
+  }, [exportUserPresets, selectedUserPresetId])
+
+  const handleOverwriteExportUserPreset = useCallback(() => {
+    if (!selectedUserPresetId) {
+      return
+    }
+    const snap = buildCurrentExportSnapshot()
+    const next = exportUserPresets.map((p) =>
+      p.id === selectedUserPresetId ? { ...p, snapshot: snap } : p
+    )
+    void window.fluxalloy.settings
+      .setFfmpegExportUserPresets(next)
+      .then((s) => {
+        setExportUserPresets(s.ffmpegExportUserPresets ?? [])
+      })
+      .catch(console.error)
+  }, [buildCurrentExportSnapshot, exportUserPresets, selectedUserPresetId])
+
   const refreshEngineUi = useCallback(async (): Promise<void> => {
     try {
       const snapshot = await window.fluxalloy.engines.getStatus()
@@ -1205,6 +1248,28 @@ function App(): JSX.Element {
           title="Сохранить текущие параметры экспорта как пользовательский пресет (до 8 шт.)"
         >
           + Пресет
+        </button>
+        <button
+          type="button"
+          className="app-btn"
+          disabled={exportBusy || snapshotBusy || !selectedUserPresetId}
+          onClick={() => {
+            handleRenameExportUserPreset()
+          }}
+          title="Переименовать выбранный пользовательский пресет"
+        >
+          Имя…
+        </button>
+        <button
+          type="button"
+          className="app-btn"
+          disabled={exportBusy || snapshotBusy || !selectedUserPresetId}
+          onClick={() => {
+            handleOverwriteExportUserPreset()
+          }}
+          title="Записать текущие параметры тулбара в выбранный пресет (снимок для превью/spawn)"
+        >
+          Обновить пресет
         </button>
         <button
           type="button"
