@@ -350,6 +350,10 @@ function buildDownloadsHtml(
         min-height: 2.2rem;
         font-size: 0.76rem;
       }
+      .workspace-tab-glyph svg {
+        width: 17px;
+        height: 17px;
+      }
       .dl-main { grid-template-columns: minmax(0, 1fr) minmax(266px, 294px); }
       .dl-input-band {
         padding: 0.58rem 0.68rem;
@@ -449,6 +453,10 @@ function buildDownloadsHtml(
       .workspace-tab {
         min-height: 2.28rem;
         font-size: 0.782rem;
+      }
+      .workspace-tab-glyph svg {
+        width: 18px;
+        height: 18px;
       }
       .dl-main { grid-template-columns: minmax(0, 1fr) minmax(274px, 302px); }
       .dl-input-band { padding: 0.62rem 0.72rem; gap: 0.65rem; }
