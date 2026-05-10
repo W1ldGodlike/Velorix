@@ -1225,6 +1225,7 @@ function App(): JSX.Element {
           <button
             type="button"
             className="app-btn"
+            aria-describedby="quickYtdlpUrlHint"
             onClick={() => {
               void window.fluxalloy.downloads.openWindow(downloadsUrl || null)
             }}
@@ -1234,6 +1235,7 @@ function App(): JSX.Element {
           <button
             type="button"
             className="app-btn"
+            aria-describedby="quickYtdlpUrlHint"
             onClick={() => {
               void window.fluxalloy.clipboard.readText().then((t) => {
                 setDownloadsUrl(t.trim())
