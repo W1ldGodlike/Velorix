@@ -67,6 +67,15 @@ type DownloadsQueueRowView = {
   queueSpeed?: string
   queueEta?: string
 }
+type DownloadsStatusFilter = 'all' | 'running' | 'done' | 'error' | 'cancelled'
+type DownloadsQueueStats = {
+  total: number
+  running: number
+  done: number
+  error: number
+  cancelled: number
+  pending: number
+}
 
 type EnginesSnapshot = Awaited<ReturnType<typeof window.fluxalloy.engines.getStatus>>
 
@@ -86,6 +95,13 @@ const EXPORT_CRF_OPTIONS = [18, 20, 23, 26, 28, 30]
 const EXPORT_VIDEO_BITRATES = ['1000k', '2500k', '5000k', '8000k', '12000k', '20000k']
 const EXPORT_AUDIO_BITRATES = ['96k', '128k', '160k', '192k', '256k', '320k']
 const EXPORT_FPS_OPTIONS = [24, 25, 30, 50, 60]
+const DOWNLOADS_STATUS_FILTERS: Array<{ id: DownloadsStatusFilter; label: string }> = [
+  { id: 'all', label: 'Все' },
+  { id: 'running', label: 'В работе' },
+  { id: 'done', label: 'Готово' },
+  { id: 'error', label: 'Ошибки' },
+  { id: 'cancelled', label: 'Отмена' }
+]
 const EXPORT_SCALE_PRESETS: Array<{ id: FfmpegExportScalePresetId; label: string }> = [
   { id: 'source', label: 'Размер исходный' },
   { id: '480p', label: '480p' },
@@ -288,6 +304,74 @@ function sanitizeDownloadsRows(raw: unknown[]): DownloadsQueueRowView[] {
   })
 }
 
+function downloadsRowMatchesStatus(
+  row: DownloadsQueueRowView,
+  filter: DownloadsStatusFilter
+): boolean {
+  if (filter === 'all') {
+    return true
+  }
+  if (filter === 'running') {
+    return row.status === 'Загрузка…' || row.status.startsWith('Пауза перед повтором')
+  }
+  if (filter === 'done') {
+    return row.status === 'Готово'
+  }
+  if (filter === 'error') {
+    return row.status.startsWith('Ошибка')
+  }
+  return row.status === 'Отменено'
+}
+
+function summarizeDownloadsRows(rows: DownloadsQueueRowView[]): DownloadsQueueStats {
+  return rows.reduce<DownloadsQueueStats>(
+    (acc, row) => {
+      acc.total += 1
+      if (downloadsRowMatchesStatus(row, 'running')) {
+        acc.running += 1
+      } else if (downloadsRowMatchesStatus(row, 'done')) {
+        acc.done += 1
+      } else if (downloadsRowMatchesStatus(row, 'error')) {
+        acc.error += 1
+      } else if (downloadsRowMatchesStatus(row, 'cancelled')) {
+        acc.cancelled += 1
+      } else {
+        acc.pending += 1
+      }
+      return acc
+    },
+    { total: 0, running: 0, done: 0, error: 0, cancelled: 0, pending: 0 }
+  )
+}
+
+function parseDownloadsProgressPercent(raw: string): number | null {
+  const match = raw.match(/(\d+(?:[.,]\d+)?)\s*%/)
+  if (!match?.[1]) {
+    return null
+  }
+  const n = Number(match[1].replace(',', '.'))
+  if (!Number.isFinite(n)) {
+    return null
+  }
+  return Math.max(0, Math.min(100, n))
+}
+
+function downloadsStatusTone(row: DownloadsQueueRowView): string {
+  if (downloadsRowMatchesStatus(row, 'running')) {
+    return 'running'
+  }
+  if (downloadsRowMatchesStatus(row, 'done')) {
+    return 'done'
+  }
+  if (downloadsRowMatchesStatus(row, 'error')) {
+    return 'error'
+  }
+  if (downloadsRowMatchesStatus(row, 'cancelled')) {
+    return 'cancelled'
+  }
+  return 'pending'
+}
+
 function App(): JSX.Element {
   const [workspaceTab, setWorkspaceTab] = useState<WorkspaceTab>('editor')
   const [theme, setTheme] = useState<Theme>('dark')
@@ -311,6 +395,7 @@ function App(): JSX.Element {
   const [probeError, setProbeError] = useState<string | null>(null)
   const [downloadsUrl, setDownloadsUrl] = useState('')
   const [downloadsRows, setDownloadsRows] = useState<DownloadsQueueRowView[]>([])
+  const [downloadsStatusFilter, setDownloadsStatusFilter] = useState<DownloadsStatusFilter>('all')
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
   const [topbarEngineVersionsLine, setTopbarEngineVersionsLine] = useState('')
   const [exportBusy, setExportBusy] = useState(false)
@@ -357,6 +442,11 @@ function App(): JSX.Element {
   }>({ path: null, range: null })
   const currentSourcePath = preview?.path ?? null
   const trimRange = trimState.path === currentSourcePath ? trimState.range : null
+  const downloadsStats = useMemo(() => summarizeDownloadsRows(downloadsRows), [downloadsRows])
+  const visibleDownloadsRows = useMemo(
+    () => downloadsRows.filter((row) => downloadsRowMatchesStatus(row, downloadsStatusFilter)),
+    [downloadsRows, downloadsStatusFilter]
+  )
 
   const applyPreview = useCallback((payload: PreviewOpenedPayload): void => {
     setProbeInfo(null)
@@ -2095,7 +2185,57 @@ function App(): JSX.Element {
                 >
                   Начать очередь
                 </button>
+                <button
+                  type="button"
+                  className="app-btn app-btn-warn"
+                  onClick={() => {
+                    void window.fluxalloy.downloads.cancelQueue().then((res) => {
+                      if (!res.ok) {
+                        setStatusHint(res.error)
+                      }
+                    })
+                  }}
+                >
+                  Остановить
+                </button>
               </div>
+            </div>
+            <div className="app-downloads-overview" aria-label="Сводка очереди загрузок">
+              <div className="app-downloads-stat">
+                <span className="app-downloads-stat-label">Всего</span>
+                <strong>{downloadsStats.total}</strong>
+              </div>
+              <div className="app-downloads-stat">
+                <span className="app-downloads-stat-label">В работе</span>
+                <strong>{downloadsStats.running}</strong>
+              </div>
+              <div className="app-downloads-stat">
+                <span className="app-downloads-stat-label">Готово</span>
+                <strong>{downloadsStats.done}</strong>
+              </div>
+              <div className="app-downloads-stat">
+                <span className="app-downloads-stat-label">Ошибки</span>
+                <strong>{downloadsStats.error}</strong>
+              </div>
+              <div className="app-downloads-stat">
+                <span className="app-downloads-stat-label">Ожидает</span>
+                <strong>{downloadsStats.pending}</strong>
+              </div>
+            </div>
+            <div className="app-downloads-filterbar" aria-label="Фильтр очереди по статусу">
+              {DOWNLOADS_STATUS_FILTERS.map((filter) => (
+                <button
+                  key={filter.id}
+                  type="button"
+                  className={`app-filter-chip${downloadsStatusFilter === filter.id ? ' app-filter-chip-active' : ''}`}
+                  aria-pressed={downloadsStatusFilter === filter.id}
+                  onClick={() => {
+                    setDownloadsStatusFilter(filter.id)
+                  }}
+                >
+                  {filter.label}
+                </button>
+              ))}
             </div>
             <div className="app-downloads-table-wrap">
               <table className="app-downloads-table">
@@ -2119,63 +2259,109 @@ function App(): JSX.Element {
                         Очередь пуста. Добавьте URL сверху или из быстрых действий редактора.
                       </td>
                     </tr>
+                  ) : visibleDownloadsRows.length === 0 ? (
+                    <tr>
+                      <td colSpan={9} className="app-downloads-empty">
+                        В этом фильтре строк нет. Переключите статус выше или добавьте новые URL.
+                      </td>
+                    </tr>
                   ) : (
-                    downloadsRows.map((row) => (
-                      <tr key={row.id}>
-                        <td className="app-downloads-mono">{row.id}</td>
-                        <td>
-                          <div className="app-downloads-row-title">{row.shortLabel}</div>
-                          <div className="app-downloads-row-url">{row.url}</div>
-                        </td>
-                        <td className="app-downloads-mono">{row.queueFmt ?? '—'}</td>
-                        <td className="app-downloads-mono">{row.queueSize ?? '—'}</td>
-                        <td className="app-downloads-mono">{row.progress}</td>
-                        <td className="app-downloads-mono">{row.queueSpeed ?? '—'}</td>
-                        <td className="app-downloads-mono">{row.queueEta ?? '—'}</td>
-                        <td>{row.status}</td>
-                        <td>
-                          <div className="app-downloads-row-actions">
-                            <button
-                              type="button"
-                              className="app-btn app-btn-compact"
-                              onClick={() => {
-                                const fn = row.status.startsWith('Ошибка')
-                                  ? window.fluxalloy.downloads.retryRow
-                                  : window.fluxalloy.downloads.startRow
-                                void fn(row.id).then((res) => {
-                                  if (!res.ok) {
-                                    setStatusHint(res.error)
-                                  }
-                                })
-                              }}
+                    visibleDownloadsRows.map((row) => {
+                      const progressPercent = parseDownloadsProgressPercent(row.progress)
+                      const statusTone = downloadsStatusTone(row)
+                      return (
+                        <tr key={row.id}>
+                          <td className="app-downloads-mono">{row.id}</td>
+                          <td>
+                            <div className="app-downloads-row-title">{row.shortLabel}</div>
+                            <div className="app-downloads-row-url">{row.url}</div>
+                          </td>
+                          <td className="app-downloads-mono">{row.queueFmt ?? '—'}</td>
+                          <td className="app-downloads-mono">{row.queueSize ?? '—'}</td>
+                          <td className="app-downloads-mono">
+                            <div className="app-downloads-progress">
+                              <span>{row.progress}</span>
+                              {progressPercent !== null ? (
+                                <span className="app-downloads-progress-track" aria-hidden>
+                                  <span
+                                    className="app-downloads-progress-fill"
+                                    style={{ width: `${progressPercent}%` }}
+                                  />
+                                </span>
+                              ) : null}
+                            </div>
+                          </td>
+                          <td className="app-downloads-mono">{row.queueSpeed ?? '—'}</td>
+                          <td className="app-downloads-mono">{row.queueEta ?? '—'}</td>
+                          <td>
+                            <span
+                              className={`app-downloads-status app-downloads-status-${statusTone}`}
                             >
-                              {row.status.startsWith('Ошибка') ? 'Retry' : 'Start'}
-                            </button>
-                            {row.outputPath ? (
+                              <span className="app-downloads-status-dot" aria-hidden />
+                              {row.status}
+                            </span>
+                          </td>
+                          <td>
+                            <div className="app-downloads-row-actions">
                               <button
                                 type="button"
                                 className="app-btn app-btn-compact"
                                 onClick={() => {
-                                  void window.fluxalloy.downloads.openQueueOutput(row.id, 'folder')
+                                  const fn = row.status.startsWith('Ошибка')
+                                    ? window.fluxalloy.downloads.retryRow
+                                    : window.fluxalloy.downloads.startRow
+                                  void fn(row.id).then((res) => {
+                                    if (!res.ok) {
+                                      setStatusHint(res.error)
+                                    }
+                                  })
                                 }}
                               >
-                                Папка
+                                {row.status.startsWith('Ошибка') ? 'Retry' : 'Start'}
                               </button>
-                            ) : null}
-                          </div>
-                        </td>
-                      </tr>
-                    ))
+                              {row.outputPath ? (
+                                <>
+                                  <button
+                                    type="button"
+                                    className="app-btn app-btn-compact"
+                                    onClick={() => {
+                                      void window.fluxalloy.downloads.openQueueOutput(
+                                        row.id,
+                                        'file'
+                                      )
+                                    }}
+                                  >
+                                    Файл
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="app-btn app-btn-compact"
+                                    onClick={() => {
+                                      void window.fluxalloy.downloads.openQueueOutput(
+                                        row.id,
+                                        'folder'
+                                      )
+                                    }}
+                                  >
+                                    Папка
+                                  </button>
+                                </>
+                              ) : null}
+                            </div>
+                          </td>
+                        </tr>
+                      )
+                    })
                   )}
                 </tbody>
               </table>
             </div>
           </section>
           <aside className="app-downloads-rail" aria-label="Настройки загрузок">
-            <h3 className="app-settings-title">Downloads rail</h3>
+            <h3 className="app-settings-title">Что показывает вкладка</h3>
             <p className="app-settings-subtitle">
-              Следующий шаг переноса: встроить сюда настройки `Формат / Метаданные / Сохранение /
-              Сеть`, журнал операций и историю из pop-out окна.
+              Живая очередь берётся из того же сервиса, что и pop-out: строки можно стартовать,
+              повторять после ошибок, открывать готовый файл или папку результата.
             </p>
             <button
               type="button"
