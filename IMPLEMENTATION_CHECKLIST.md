@@ -37,8 +37,8 @@
 
 - [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; `queue.json` без duplicate id; журнал out/err + truncate; дальше — редкие шаблоны логов по полю.
 - [~] §6.3: argv whitelist + справочник + превью draft/override `-o`; при необходимости редкие поля.
-- [~] §6.1/§4.A: окно загрузок — HiDPR/**a11y** (секционные hints + **`aria-describedby`** у полей/rail/нижних панелей); **persist секций**: автопоказ журнала при новой строке **не перезаписывает** сохранённое `log: false`; дальше — ручная матрица Win 125–200 %.
-- [~] §1.1/§4.A/§9: редактор + **инспектор** — HiDPR/topbar/SVG/focus; **`AboutDialog`** / **`IconCircleHelp`**; **`video` `aria-label`**; **`PreviewProbeBody`** + превью ffmpeg; **rail FFmpeg** + **быстрая yt-dlp** (`quickYtdlpUrlHint` → кнопки); seek/снап; дальше — multi-monitor DPI, Dolby/side_data §9.
+- [~] §6.1/§4.A: окно загрузок — HiDPR/**a11y** (секционные hints + **`aria-describedby`** у полей/rail/нижних панелей); **persist секций**: автопоказ журнала при новой строке подавляет async `toggle` и **не перезаписывает** сохранённое `log: false`; дальше — ручная матрица Win 125–200 %.
+- [~] §1.1/§4.A/§9: редактор + **инспектор** — HiDPR/topbar/SVG/focus; **`AboutDialog`** / **`IconCircleHelp`**; **`video` `aria-label`**; **`PreviewProbeBody`** + превью ffmpeg; **rail FFmpeg** + **быстрая yt-dlp** (`quickYtdlpUrlHint` → кнопки); seek/снап; waveform ограничен по длительности и размеру файла; дальше — multi-monitor DPI, Dolby/side_data §9.
 - [~] §7.2: crop/rotate/flip; дальше расширенные фильтры и HW encode.
 - [~] §9/§21: расширенные ffprobe (Dolby/side_data и др.); новые IPC через `ipc-channels`, при необходимости логи по окнам; точечные Vitest.
 
@@ -80,7 +80,7 @@
 ### §1.1 UI и UX
 
 - [~] Построить главное окно вокруг крупного предпросмотра: базовая зона preview есть, финальная компоновка панелей — дальше.
-- [~] Таймлайн под превью (базовый range + синхрон с `<video>`); **масштаб окна scrub (×1…×8)**, **waveform** (≤~180 s) и **линейка времени** по видимому окну (`timeline-ruler`), клик/клавиатура → seek в окне zoom; **снап к кадру** по `probe.videoFpsApprox` (`resolveVideoFpsApprox`: avg/r-дробь, иначе `nb_frames`/duration) или по regex в `detail` дорожки; сводки §9 дополняются строкой FPS; транспорт v0; HiDPI в `main.css`; §7.1 controls сохранены; дальше — ручная матрица DPI и редкие контейнеры без fps/`nb_frames`.
+- [~] Таймлайн под превью (базовый range + синхрон с `<video>`); **масштаб окна scrub (×1…×8)**, **waveform** (≤~180 s и ≤96 MiB ответа) и **линейка времени** по видимому окну (`timeline-ruler`), клик/клавиатура → seek в окне zoom; **снап к кадру** по `probe.videoFpsApprox` (`resolveVideoFpsApprox`: avg/r-дробь, иначе `nb_frames`/duration) или по regex в `detail` дорожки; сводки §9 дополняются строкой FPS; транспорт v0; HiDPI в `main.css`; §7.1 controls сохранены; дальше — ручная матрица DPI и редкие контейнеры без fps/`nb_frames`.
 - [~] Панели кодирования справа: **сворачиваемые секции** + **целиком rail FFmpeg** (`ffmpegSettingsRailOpen` в `mainWindowUiPanels`); persist в `settings.json`; полировка и инспектор — дальше.
 - [~] Сформировать отдельное окно менеджера загрузок в едином стиле: data HTML ближе к v0 (компактнее layout, таблица v0-колонки, log/history, rail); живая очередь `downloads/queue.json` §4.1; HiDPI: базовый `dppx` + `window-hidpi` мин.* + второй проход `@120dpi`/`@168dpi` в inline CSS окна (URL-band/table/rail/log/history); финальная матрица — после ручных прогонов Win 125–200 %.
 - [~] Реализовать прогрессивное раскрытие сложных параметров: `details` для **быстрой yt-dlp-полосы** (**`app-url-summary`**, **`quickYtdlpUrlHint`**: поле URL + **кнопки «Открыть окно» / «Из буфера»** через **`aria-describedby`**) + **rail FFmpeg** (секционные hints + **`aria-describedby`** на компактные кнопки) + **превью команды ffmpeg** (`exportCommandPreview`); общая система панелей — дальше.

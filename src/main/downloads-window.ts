@@ -1226,6 +1226,7 @@ ${emitDownloadsTopbarClusterHtml(18)}
       var cliFormHydrated = false;
       /** §4.1 — не писать в settings при программном открытии details (лог при старте строки очереди). */
       var suppressDetailsUiPersist = false;
+      var suppressDetailsUiPersistTimer = null;
 
       function collectDraftCliPatch() {
         return {
@@ -1687,11 +1688,14 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
           clearVisibleLog();
           if (logDetails && !logDetails.open) {
             suppressDetailsUiPersist = true;
-            try {
-              logDetails.open = true;
-            } finally {
-              suppressDetailsUiPersist = false;
+            if (suppressDetailsUiPersistTimer !== null) {
+              window.clearTimeout(suppressDetailsUiPersistTimer);
             }
+            logDetails.open = true;
+            suppressDetailsUiPersistTimer = window.setTimeout(function () {
+              suppressDetailsUiPersist = false;
+              suppressDetailsUiPersistTimer = null;
+            }, 0);
           }
           return;
         }

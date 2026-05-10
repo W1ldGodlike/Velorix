@@ -4,6 +4,7 @@ import { computeWaveformPeakEnvelopeMono } from '../../../shared/waveform-peaks'
 
 /** Декодируем waveform только для коротких клипов — полный буфер `decodeAudioData` тяжёлый для длинных роликов. */
 export const WAVEFORM_MAX_DURATION_SEC = 180
+const WAVEFORM_MAX_FETCH_BYTES = 96 * 1024 * 1024
 
 const PEAK_BUCKETS = 400
 
@@ -33,6 +34,47 @@ function mergeChannelsToMono(decoded: AudioBuffer): Float32Array {
     out[i] = sum / chCount
   }
   return out
+}
+
+async function readArrayBufferWithLimit(
+  res: Response,
+  maxBytes: number
+): Promise<ArrayBuffer | null> {
+  if (!res.body) {
+    const buf = await res.arrayBuffer()
+    return buf.byteLength > maxBytes ? null : buf
+  }
+
+  const reader = res.body.getReader()
+  const chunks: Uint8Array[] = []
+  let total = 0
+  try {
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) {
+        break
+      }
+      if (!value) {
+        continue
+      }
+      total += value.byteLength
+      if (total > maxBytes) {
+        await reader.cancel().catch(() => {})
+        return null
+      }
+      chunks.push(value)
+    }
+  } finally {
+    reader.releaseLock()
+  }
+
+  const out = new Uint8Array(total)
+  let offset = 0
+  for (const chunk of chunks) {
+    out.set(chunk, offset)
+    offset += chunk.byteLength
+  }
+  return out.buffer
 }
 
 /** Загружает огибающую из аудиотрека медиафайла; при ошибке показывает подсказку вместо графики. */
@@ -79,7 +121,20 @@ export default function TimelineWaveform({
         if (!res.ok) {
           throw new Error(`Ответ медиа: ${res.status}`)
         }
-        const buf = await res.arrayBuffer()
+        const contentLength = Number(res.headers.get('content-length') ?? '')
+        if (Number.isFinite(contentLength) && contentLength > WAVEFORM_MAX_FETCH_BYTES) {
+          if (!cancelled) {
+            setHint('Waveform отключён для крупного файла (защита памяти).')
+          }
+          return
+        }
+        const buf = await readArrayBufferWithLimit(res, WAVEFORM_MAX_FETCH_BYTES)
+        if (buf === null) {
+          if (!cancelled) {
+            setHint('Waveform отключён для крупного файла (защита памяти).')
+          }
+          return
+        }
         if (cancelled) {
           return
         }
