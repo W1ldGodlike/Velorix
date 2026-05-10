@@ -208,3 +208,4 @@
 - 2026-05-10 15:34:32 [SDK]: §4.A/§1.1 — **`MediaProbePanel`**: **`caption.app-visually-hidden`** у таблиц **дорожек** и **глав** (ffprobe); спринт §1.1; `npm run check` ок.
 - 2026-05-10 15:36:05 [SDK]: §1.1/v0 progressive disclosure — **`app-url-bar`**: текст **`.app-url-hint`** + **`aria-describedby`** для поля URL; блок **`.app-url-field`**, HiDPR `.app-url-hint` в `main.css`; спринт; `npm run check`/`lint` ок.
 - 2026-05-10 15:37:23 [SDK]: §1.1/v0 FFmpeg — **«Превью команды ffmpeg»**: **`pre`** с **`aria-describedby="exportCommandPreviewHint"`**, **`id`** на **`.app-export-preview-hint`**; спринт; `npm run check` ок.
+- 2026-05-10 15:38:47 [SDK]: §4.A/§1.1 MediaProbePanel — **`app-probe-toolbar-hint`** + **`aria-describedby`** (**экспорт сводки TXT/HTML**, **JSON ffprobe**), **`pre`** JSON с **`aria-label`**; спринт §1.1; `npm run check` ок.

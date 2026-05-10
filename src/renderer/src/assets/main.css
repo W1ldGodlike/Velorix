@@ -1127,6 +1127,14 @@
   background: color-mix(in srgb, var(--fa-surface) 92%, transparent);
 }
 
+.app-probe-toolbar-hint {
+  margin: 0;
+  padding: 0.25rem 0.45rem 0.1rem;
+  color: var(--fa-text-muted);
+  font-size: 0.62rem;
+  line-height: 1.35;
+}
+
 .app-probe-copy-tip {
   font-size: 0.68rem;
   color: var(--fa-text-secondary);

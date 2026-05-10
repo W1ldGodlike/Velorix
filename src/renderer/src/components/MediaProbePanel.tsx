@@ -290,10 +290,14 @@ export function PreviewProbeBody({
           }}
         >
           <summary className="app-probe-summary">Экспорт сводки (TXT / HTML)</summary>
+          <p id="probeExportSummaryHint" className="app-probe-toolbar-hint">
+            Текст или HTML со сводкой ffprobe («человеческое» оглавление и ключевые поля дорожек).
+          </p>
           <div className="app-probe-json-toolbar">
             <button
               type="button"
               className="app-btn app-btn-compact"
+              aria-describedby="probeExportSummaryHint"
               onClick={() => {
                 void handleSaveSummaryTxt()
               }}
@@ -303,6 +307,7 @@ export function PreviewProbeBody({
             <button
               type="button"
               className="app-btn app-btn-compact"
+              aria-describedby="probeExportSummaryHint"
               onClick={() => {
                 void handleSaveSummaryHtml()
               }}
@@ -468,10 +473,14 @@ export function PreviewProbeBody({
             }}
           >
             <summary className="app-probe-summary">JSON ffprobe</summary>
+            <p id="probeRawJsonHint" className="app-probe-toolbar-hint">
+              Вывод только для чтения; скопируйте или сохраните для поддержки или внешнего парсера.
+            </p>
             <div className="app-probe-json-toolbar">
               <button
                 type="button"
                 className="app-btn app-btn-compact"
+                aria-describedby="probeRawJsonHint"
                 onClick={() => {
                   void handleCopyProbeJson()
                 }}
@@ -481,6 +490,7 @@ export function PreviewProbeBody({
               <button
                 type="button"
                 className="app-btn app-btn-compact"
+                aria-describedby="probeRawJsonHint"
                 onClick={() => {
                   void handleSaveProbeJson()
                 }}
@@ -488,7 +498,13 @@ export function PreviewProbeBody({
                 Сохранить JSON…
               </button>
             </div>
-            <pre className="app-probe-json-pre">{formatProbeJsonForDisplay(probeInfo.rawJson)}</pre>
+            <pre
+              className="app-probe-json-pre"
+              aria-label="Сырой JSON ffprobe"
+              aria-describedby="probeRawJsonHint"
+            >
+              {formatProbeJsonForDisplay(probeInfo.rawJson)}
+            </pre>
           </details>
         ) : null}
       </div>
