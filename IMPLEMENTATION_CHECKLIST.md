@@ -23,7 +23,7 @@
 - [x] Есть `src/main`, `src/preload`, `src/renderer`.
 - [x] Renderer изолирован: `contextIsolation: true`, `nodeIntegration: false`.
 - [x] Есть базовая тёмная/светлая тема и режим **как в системе** (`theme: system` + `nativeTheme`), сохранение в `userData/settings.json`, меню `Вид -> Тема`.
-- [~] Есть главное окно 1920x1080 (FHD) по умолчанию и единый workspace `Редактор` / `Загрузки`; редактор содержит toolbar, видеопредпросмотр (`fluxmedia://` allowlist), DnD/«Открыть», транспорт, timeline/waveform и статусбар.
+- [~] Есть главное окно 1920x1080 (FHD) по умолчанию и единый workspace `Редактор` / `Загрузки`; редактор содержит toolbar, видеопредпросмотр (`fluxmedia://` allowlist + byte-range streaming для `<video>`), DnD/«Открыть», транспорт, timeline/waveform и статусбар.
 - [~] Есть `Data/`, `Help/`, `FLUXALLOY_TZ.md`, `IMPLEMENTATION_CHECKLIST.md`, [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md), упаковка `Data/`, `Help/`, ТЗ через `extraResources` (журнал в установщик пока не включаем — только для разработки).
 - [x] Windows: `electron-builder` с режимом sign по умолчанию; после перезагрузки проверены `build:unpack`/`winCodeSign`.
 - [~] Есть ffmpeg export MP4/MKV/MOV, trim In/Out, crop/rotate/flip/scale/FPS/CRF/bitrate, пользовательские пресеты и snapshot PNG/JPEG; batch, HW encode и расширенные фильтры ещё впереди. Политика движков — bundled-first (`resources/bin`) с кнопкой скачивания/обновления и очисткой скачанных копий в `userData/bin`, есть проверка `--version`.

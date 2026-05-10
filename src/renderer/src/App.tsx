@@ -1692,6 +1692,26 @@ function App(): JSX.Element {
                     controls
                     src={preview.mediaUrl}
                     aria-label={`Предпросмотр: ${basenameForAriaLabel(preview.path)}`}
+                    onError={(event) => {
+                      const mediaError = event.currentTarget.error
+                      const code = mediaError?.code ?? 0
+                      const detail =
+                        code === 1
+                          ? 'загрузка отменена'
+                          : code === 2
+                            ? 'сетевая ошибка'
+                            : code === 3
+                              ? 'ошибка декодирования'
+                              : code === 4
+                                ? 'формат не поддерживается'
+                                : 'неизвестная ошибка'
+                      setStatusHint(`Видео не удалось воспроизвести: ${detail}`)
+                      window.fluxalloy.log.send({
+                        level: 'error',
+                        scope: 'preview/video',
+                        message: `video element error code=${code} detail=${detail} path=${preview.path}`
+                      })
+                    }}
                   />
                   <PreviewTransport
                     key={preview.mediaUrl}
