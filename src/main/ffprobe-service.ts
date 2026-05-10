@@ -6,6 +6,7 @@ import { logExternalProcessLine } from './external-process-log'
 import { formatFfprobeDispositionSummary } from '../shared/ffprobe-disposition'
 import { buildChapterRowsFromFfprobeJson } from '../shared/ffprobe-chapters'
 import { parseFfprobeRationalFps, resolveVideoFpsApprox } from '../shared/ffprobe-video-fps'
+import { summarizeFfprobeSideDataList } from '../shared/ffprobe-side-data'
 import type {
   MediaProbeResult,
   MediaProbeSuccess,
@@ -50,6 +51,7 @@ interface FfprobeJson {
     bit_rate?: string
     disposition?: Record<string, unknown>
     tags?: Record<string, string | number | undefined>
+    side_data_list?: unknown
   }>
 }
 
@@ -129,6 +131,10 @@ function buildTrackDetail(stream: NonNullable<FfprobeJson['streams']>[number]): 
       const label =
         fps >= 100 ? fps.toFixed(0) : Number.isInteger(fps) ? String(fps) : fps.toFixed(3)
       parts.push(`${label} fps`)
+    }
+    const sideData = summarizeFfprobeSideDataList(stream.side_data_list)
+    if (sideData !== null) {
+      parts.push(sideData)
     }
   } else if (ct === 'audio') {
     const ch = stream.channels
