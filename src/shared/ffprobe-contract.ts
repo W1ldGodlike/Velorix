@@ -14,6 +14,12 @@ export interface MediaProbeTrackRow {
   streamBitrateKbps: number | null
   /** Активные флаги `stream.disposition`; пустая строка, если только нули / нет блока. */
   dispositionSummary: string
+  /** Для видео: `pix_fmt`; иначе `null`. */
+  pixelFormat: string | null
+  /** Для видео: `sample_aspect_ratio`; иначе `null`. */
+  sampleAspectRatio: string | null
+  /** Для видео: `display_aspect_ratio`; иначе `null`. */
+  displayAspectRatio: string | null
 }
 
 /** Глава контейнера §9 (ffprobe `-show_chapters`). */

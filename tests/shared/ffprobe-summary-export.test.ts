@@ -26,7 +26,10 @@ const sampleProbe: MediaProbeSuccess = {
       language: null,
       titleTag: null,
       streamBitrateKbps: null,
-      dispositionSummary: 'по умолчанию'
+      dispositionSummary: 'по умолчанию',
+      pixelFormat: 'yuv420p',
+      sampleAspectRatio: '1:1',
+      displayAspectRatio: '16:9'
     },
     {
       index: 1,
@@ -36,7 +39,10 @@ const sampleProbe: MediaProbeSuccess = {
       language: 'eng',
       titleTag: 'Commentary',
       streamBitrateKbps: 192,
-      dispositionSummary: ''
+      dispositionSummary: '',
+      pixelFormat: null,
+      sampleAspectRatio: null,
+      displayAspectRatio: null
     }
   ],
   chapters: [],
@@ -67,7 +73,8 @@ describe('ffprobe-summary-export', () => {
     expect(t).toContain('h264')
     expect(t).toContain('aac')
     expect(t).toContain('Дорожек: 2')
-    expect(t).toContain('Битрейт\tDisposition\tЯзык\tЗаголовок\tСведения')
+    expect(t).toContain('Pix_fmt\tSAR\tDAR\tБитрейт\tDisposition\tЯзык\tЗаголовок\tСведения')
+    expect(t).toContain('yuv420p')
     expect(t).toContain('192 kb/s')
     expect(t).toContain('по умолчанию')
     expect(t).toContain('Видео\t')
@@ -97,7 +104,10 @@ describe('ffprobe-summary-export', () => {
           language: null,
           titleTag: null,
           streamBitrateKbps: null,
-          dispositionSummary: ''
+          dispositionSummary: '',
+          pixelFormat: null,
+          sampleAspectRatio: null,
+          displayAspectRatio: null
         }
       ]
     }

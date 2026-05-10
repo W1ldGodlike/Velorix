@@ -108,14 +108,20 @@ export function formatProbeSummaryPlainText(info: MediaProbeSuccess): string {
   ].filter((x): x is string => x !== null)
 
   if (info.tracks.length > 0) {
-    lines.push('#\tТип\tКодек\tБитрейт\tDisposition\tЯзык\tЗаголовок\tСведения', '-'.repeat(88))
+    lines.push(
+      '#\tТип\tКодек\tPix_fmt\tSAR\tDAR\tБитрейт\tDisposition\tЯзык\tЗаголовок\tСведения',
+      '-'.repeat(96)
+    )
     for (const row of info.tracks) {
       const lang = row.language ?? ''
       const title = row.titleTag ?? ''
       const br = formatBitrateLine(row.streamBitrateKbps) ?? ''
       const disp = row.dispositionSummary.replace(/\t/g, ' ')
+      const pix = (row.pixelFormat ?? '').replace(/\t/g, ' ')
+      const sar = (row.sampleAspectRatio ?? '').replace(/\t/g, ' ')
+      const dar = (row.displayAspectRatio ?? '').replace(/\t/g, ' ')
       lines.push(
-        `${row.index}\t${trackKindRu(row.kind)}\t${row.codec}\t${br}\t${disp}\t${lang.replace(/\t/g, ' ')}\t${title.replace(/\t/g, ' ')}\t${row.detail.replace(/\r?\n/g, ' ')}`
+        `${row.index}\t${trackKindRu(row.kind)}\t${row.codec}\t${pix}\t${sar}\t${dar}\t${br}\t${disp}\t${lang.replace(/\t/g, ' ')}\t${title.replace(/\t/g, ' ')}\t${row.detail.replace(/\r?\n/g, ' ')}`
       )
     }
   }
@@ -141,7 +147,7 @@ export function formatProbeSummaryHtmlDocument(info: MediaProbeSuccess): string 
   const rows = info.tracks
     .map(
       (row) =>
-        `<tr><td>${row.index}</td><td>${escapeHtml(trackKindRu(row.kind))}</td><td class="mono">${escapeHtml(row.codec)}</td><td class="mono">${escapeHtml(formatBitrateLine(row.streamBitrateKbps) ?? '—')}</td><td>${escapeHtml(row.dispositionSummary.trim() !== '' ? row.dispositionSummary : '—')}</td><td>${escapeHtml(row.language ?? '—')}</td><td>${escapeHtml(row.titleTag ?? '—')}</td><td>${escapeHtml(row.detail)}</td></tr>`
+        `<tr><td>${row.index}</td><td>${escapeHtml(trackKindRu(row.kind))}</td><td class="mono">${escapeHtml(row.codec)}</td><td class="mono">${escapeHtml(row.pixelFormat ?? '—')}</td><td class="mono">${escapeHtml(row.sampleAspectRatio ?? '—')}</td><td class="mono">${escapeHtml(row.displayAspectRatio ?? '—')}</td><td class="mono">${escapeHtml(formatBitrateLine(row.streamBitrateKbps) ?? '—')}</td><td>${escapeHtml(row.dispositionSummary.trim() !== '' ? row.dispositionSummary : '—')}</td><td>${escapeHtml(row.language ?? '—')}</td><td>${escapeHtml(row.titleTag ?? '—')}</td><td>${escapeHtml(row.detail)}</td></tr>`
     )
     .join('\n')
 
@@ -199,9 +205,9 @@ ${metaParts.join('\n')}
   </ul>
   <h2>Дорожки (${info.tracks.length})</h2>
   <table>
-    <thead><tr><th>#</th><th>Тип</th><th>Кодек</th><th>Битрейт</th><th>Disposition</th><th>Язык</th><th>Заголовок</th><th>Сведения</th></tr></thead>
+    <thead><tr><th>#</th><th>Тип</th><th>Кодек</th><th>Pix_fmt</th><th>SAR</th><th>DAR</th><th>Битрейт</th><th>Disposition</th><th>Язык</th><th>Заголовок</th><th>Сведения</th></tr></thead>
     <tbody>
-${rows || '<tr><td colspan="8">Нет дорожек</td></tr>'}
+${rows || '<tr><td colspan="11">Нет дорожек</td></tr>'}
     </tbody>
   </table>
 ${chaptersSection}

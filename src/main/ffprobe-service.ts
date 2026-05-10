@@ -36,6 +36,9 @@ interface FfprobeJson {
     channel_layout?: string
     avg_frame_rate?: string
     r_frame_rate?: string
+    pix_fmt?: string
+    sample_aspect_ratio?: string
+    display_aspect_ratio?: string
     bit_rate?: string
     disposition?: Record<string, unknown>
     tags?: Record<string, string | number | undefined>
@@ -71,6 +74,18 @@ function parseFraction(rate: string | undefined): number | null {
   }
   const q = a / b
   return Number.isFinite(q) && q > 0 ? q : null
+}
+
+/** Строки полей ffprobe вроде ratio/pix_fmt: пусто и `N/A` не показываем. */
+function ffprobeScalarDisplay(raw: string | undefined): string | null {
+  if (typeof raw !== 'string') {
+    return null
+  }
+  const t = raw.trim()
+  if (t === '' || /^n\/a$/i.test(t)) {
+    return null
+  }
+  return t
 }
 
 function tagString(
@@ -168,6 +183,7 @@ function buildTrackRows(streams: FfprobeJson['streams']): MediaProbeTrackRow[] {
   const rows: MediaProbeTrackRow[] = []
   list.forEach((stream, i) => {
     const index = typeof stream.index === 'number' ? stream.index : i
+    const isVideo = stream.codec_type === 'video'
     rows.push({
       index,
       kind: mapCodecType(stream.codec_type),
@@ -181,7 +197,10 @@ function buildTrackRows(streams: FfprobeJson['streams']): MediaProbeTrackRow[] {
       streamBitrateKbps: formatBitrateKbps(
         typeof stream.bit_rate === 'string' ? stream.bit_rate : undefined
       ),
-      dispositionSummary: formatFfprobeDispositionSummary(stream.disposition)
+      dispositionSummary: formatFfprobeDispositionSummary(stream.disposition),
+      pixelFormat: isVideo ? ffprobeScalarDisplay(stream.pix_fmt) : null,
+      sampleAspectRatio: isVideo ? ffprobeScalarDisplay(stream.sample_aspect_ratio) : null,
+      displayAspectRatio: isVideo ? ffprobeScalarDisplay(stream.display_aspect_ratio) : null
     })
   })
   rows.sort((a, b) => a.index - b.index)
