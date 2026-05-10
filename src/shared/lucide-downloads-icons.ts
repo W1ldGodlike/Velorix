@@ -228,6 +228,34 @@ export const EDITOR_TOPBAR_TOOLS_ICONS = {
   ] as const satisfies readonly StrokePrim[]
 } as const
 
+/** Экспорт/снимок/отмена/загрузка движков в правой части топбара редактора (общие данные с data HTML §6 при необходимости). */
+export const EDITOR_TOPBAR_ACTION_ICONS = {
+  image: [
+    { tag: 'rect', attr: { x: '3', y: '3', width: '18', height: '18', rx: '2' } },
+    { tag: 'circle', attr: { cx: '9', cy: '9', r: '2' } },
+    { tag: 'path', attr: { d: 'm21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21' } }
+  ] as const satisfies readonly StrokePrim[],
+  save: [
+    {
+      tag: 'path',
+      attr: {
+        d: 'M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9.2Z'
+      }
+    },
+    { tag: 'path', attr: { d: 'M17 21v-8H7v8' } },
+    { tag: 'path', attr: { d: 'M7 3v5h8' } }
+  ] as const satisfies readonly StrokePrim[],
+  ban: [
+    { tag: 'circle', attr: { cx: '12', cy: '12', r: '10' } },
+    { tag: 'path', attr: { d: 'm4.9 4.9 14.2 14.2' } }
+  ] as const satisfies readonly StrokePrim[],
+  cloudDownload: [
+    { tag: 'path', attr: { d: 'M12 13v8l-4-4' } },
+    { tag: 'path', attr: { d: 'm12 21 4-4' } },
+    { tag: 'path', attr: { d: 'M4.393 15.269A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.436 8.284' } }
+  ] as const satisfies readonly StrokePrim[]
+} as const
+
 function emitPrimEl(p: StrokePrim): string {
   switch (p.tag) {
     case 'path':

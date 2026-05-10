@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   DOWNLOADS_TOPBAR_CLUSTER_ICONS,
   EDITOR_TIMELINE_ICONS,
+  EDITOR_TOPBAR_ACTION_ICONS,
   EDITOR_TRANSPORT_ICONS,
   QUEUE_ROW_ACTION_ICONS,
   emitDownloadsQueueRowIcoBootstrapJs,
@@ -41,5 +42,12 @@ describe('lucide-downloads-icons', () => {
     const z = emitInlineStrokeSvg(EDITOR_TIMELINE_ICONS.zoomIn, 20)
     expect(z).toContain('circle')
     expect(z).toContain('line')
+  })
+
+  it('EDITOR_TOPBAR_ACTION_ICONS (снимок/экспорт/бан/облако) сериализуются в stroke SVG', () => {
+    expect(emitInlineStrokeSvg(EDITOR_TOPBAR_ACTION_ICONS.save, 20)).toContain('path d=')
+    expect(emitInlineStrokeSvg(EDITOR_TOPBAR_ACTION_ICONS.image, 20)).toContain('rect')
+    expect(emitInlineStrokeSvg(EDITOR_TOPBAR_ACTION_ICONS.ban, 20)).toContain('circle')
+    expect(emitInlineStrokeSvg(EDITOR_TOPBAR_ACTION_ICONS.cloudDownload, 20)).toContain('path d=')
   })
 })
