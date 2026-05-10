@@ -251,24 +251,43 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
   <style>
     :root {
       color-scheme: dark;
-      --bg: #020407;
-      --surface: #070a0f;
-      --surface-2: #0d1219;
+      /* Синхрон с html[data-theme=dark] в src/renderer/src/assets/base.css */
+      --fa-bg: #020407;
+      --fa-surface: #070a0f;
+      --fa-surface-elevated: #0d1219;
+      --fa-border: #202936;
+      --fa-border-subtle: #151c27;
+      --fa-text-primary: #e8edf5;
+      --fa-text-secondary: #9aa7b7;
+      --fa-text-muted: #5f6b7a;
+      --fa-accent: #2f8cff;
+      --fa-accent-contrast: #ffffff;
+      --fa-danger: #ef4444;
+      --fa-success: #22c55e;
+      --fa-focus-ring: rgba(47, 140, 255, 0.45);
+      /* Локальные алиасы прежней разметки окна загрузок */
+      --bg: var(--fa-bg);
+      --surface: var(--fa-surface);
+      --surface-2: var(--fa-surface-elevated);
       --surface-3: #111823;
-      --border: #151c27;
-      --border-2: #202936;
-      --text: #e8edf5;
-      --muted: #9aa7b7;
-      --dim: #5f6b7a;
-      --blue: #2f8cff;
-      --green: #22c55e;
-      --red: #ef4444;
+      --border: var(--fa-border-subtle);
+      --border-2: var(--fa-border);
+      --text: var(--fa-text-primary);
+      --muted: var(--fa-text-secondary);
+      --dim: var(--fa-text-muted);
+      --blue: var(--fa-accent);
+      --green: var(--fa-success);
+      --red: var(--fa-danger);
     }
     * { box-sizing: border-box; }
     html, body { width: 100%; height: 100%; overflow: hidden; }
     body {
-      font-family: system-ui, Segoe UI, sans-serif; margin: 0; background: var(--bg); color: var(--text);
+      font-family: Inter, Segoe UI, -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      margin: 0; background: var(--bg); color: var(--text);
       line-height: 1.42; font-size: 11.5px;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
     .dl-shell { height: 100%; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
     .dl-topbar {
@@ -314,14 +333,14 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
       min-width: 2rem;
       padding: 0;
       border-radius: 8px;
-      border: 1px solid var(--border-2);
-      background: color-mix(in srgb, var(--surface-2) 92%, transparent);
-      color: var(--muted);
+      border: 1px solid var(--fa-border-subtle);
+      background: color-mix(in srgb, var(--fa-surface-elevated) 88%, transparent);
+      color: var(--fa-text-primary);
     }
     button.dl-topbar-ico:hover {
-      background: var(--surface-3);
-      color: var(--text);
-      border-color: var(--border-2);
+      background: var(--fa-surface-elevated);
+      color: var(--fa-text-primary);
+      border-color: var(--fa-border);
     }
     .dl-main {
       flex: 1; min-height: 0; min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(258px, 276px);
@@ -358,7 +377,11 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
     }
     button.cmd:hover { background: var(--surface-3); }
     button.cmd:disabled { opacity: 0.45; cursor: not-allowed; }
-    button.cmd-primary { border-color: transparent; background: var(--blue); color: white; }
+    button.cmd-primary {
+      border-color: transparent;
+      background: var(--blue);
+      color: var(--fa-accent-contrast);
+    }
     button.cmd-warn { border-color: color-mix(in srgb, var(--red) 45%, var(--border-2)); color: color-mix(in srgb, var(--red) 80%, white); }
     .queue-table-wrap { flex: 1; min-height: 0; overflow: auto; background: var(--bg); }
     table { width: 100%; border-collapse: collapse; font-size: 0.7rem; table-layout: fixed; }
@@ -498,10 +521,15 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
     td.h-out-ok { color: var(--green); }
     td.h-out-err { color: var(--red); }
     td.h-out-can { color: var(--blue); }
-    textarea:focus-visible, button.cmd:focus-visible, td.act button.icon-btn:focus-visible,
-    button.dl-topbar-ico:focus-visible {
-      outline: 1px solid color-mix(in srgb, var(--blue) 65%, transparent);
-      outline-offset: 1px;
+    textarea:focus-visible,
+    select:focus-visible,
+    button.cmd:focus-visible,
+    td.act button.icon-btn:focus-visible,
+    button.dl-topbar-ico:focus-visible,
+    .opts-panel input[type=text]:focus-visible,
+    #extraArgsInput:focus-visible {
+      outline: 2px solid var(--fa-focus-ring);
+      outline-offset: 2px;
     }
     @media (max-width: 960px) {
       .dl-main { grid-template-columns: 1fr; }
