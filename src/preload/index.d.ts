@@ -33,6 +33,7 @@ import type {
   AppSettings,
   AppSettingsView,
   AppTheme,
+  DownloadsWindowUiPanelState,
   MainWindowUiPanelState,
   ResolvedAppTheme
 } from '../shared/settings-contract'
@@ -153,6 +154,9 @@ export interface FluxAlloyApi {
       text: string
     ) => Promise<{ ok: true; path: string } | { ok: false; error: string }>
     onLog: (listener: (payload: DownloadsLogPayload) => void) => () => void
+    mergeUiPanels: (
+      patch: Partial<DownloadsWindowUiPanelState>
+    ) => Promise<{ ok: true } | { ok: false; error: string }>
   }
   inspector: {
     openWindow: (absoluteMediaPath?: string | null) => Promise<void>

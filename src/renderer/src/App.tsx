@@ -45,6 +45,7 @@ import type {
 } from '../../shared/ffmpeg-export-contract'
 import type {
   AppSettings,
+  DownloadsWindowUiPanelState,
   MainWindowUiPanelState,
   ResolvedAppTheme
 } from '../../shared/settings-contract'
@@ -465,6 +466,14 @@ function formatDownloadsLogText(lines: DownloadsLogLineView[]): string {
   return lines.map((line) => `[${line.rowId}] ${line.stream}: ${line.text}`).join('\n')
 }
 
+/**
+ * §4.A/§6: в `downloadsWindowUiPanels` пишется только явный boolean; без ключа —
+ * как «раскрыто» (совпадает с default pop-out через `openAttr`).
+ */
+function downloadsPanelOpenFromSettings(saved: boolean | undefined): boolean {
+  return saved !== false
+}
+
 function App(): JSX.Element {
   const [workspaceTab, setWorkspaceTab] = useState<WorkspaceTab>('editor')
   const [theme, setTheme] = useState<Theme>('dark')
@@ -500,6 +509,8 @@ function App(): JSX.Element {
     path: string
     isDefault: boolean
   } | null>(null)
+  const [downloadsEmbeddedHistoryOpen, setDownloadsEmbeddedHistoryOpen] = useState(true)
+  const [downloadsEmbeddedLogOpen, setDownloadsEmbeddedLogOpen] = useState(true)
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
   const [topbarEngineVersionsLine, setTopbarEngineVersionsLine] = useState('')
   const [exportBusy, setExportBusy] = useState(false)
@@ -591,6 +602,17 @@ function App(): JSX.Element {
       setDownloadsHistoryBusy(false)
     }
   }, [])
+
+  const persistDownloadsWindowUiPanels = useCallback(
+    (patch: Partial<DownloadsWindowUiPanelState>): void => {
+      void window.fluxalloy.downloads.mergeUiPanels(patch).then((res) => {
+        if (!res.ok) {
+          console.error(res.error)
+        }
+      })
+    },
+    []
+  )
 
   const handleDownloadsLogPayload = useCallback((payload: DownloadsLogPayload): void => {
     if (payload.kind === 'reset') {
@@ -1076,6 +1098,9 @@ function App(): JSX.Element {
       applyTheme(loaded.effectiveTheme)
       hydrateExportFieldsFromSettings(loaded)
       setMainUiPanels({ ...MAIN_PANEL_DEFAULTS, ...(loaded.mainWindowUiPanels ?? {}) })
+      const dwp = loaded.downloadsWindowUiPanels
+      setDownloadsEmbeddedHistoryOpen(downloadsPanelOpenFromSettings(dwp?.history))
+      setDownloadsEmbeddedLogOpen(downloadsPanelOpenFromSettings(dwp?.log))
       setExportUserPresets(loaded.ffmpegExportUserPresets ?? [])
       if (loaded.ffmpegSnapshotFormat === 'jpg') {
         setSnapshotFormat('jpg')
@@ -2865,7 +2890,15 @@ function App(): JSX.Element {
               </table>
               </div>
               <div className="app-downloads-lower-stack">
-                <details className="app-downloads-history-panel" open>
+                <details
+                  className="app-downloads-history-panel"
+                  open={downloadsEmbeddedHistoryOpen}
+                  onToggle={(event) => {
+                    const next = event.currentTarget.open
+                    setDownloadsEmbeddedHistoryOpen(next)
+                    persistDownloadsWindowUiPanels({ history: next })
+                  }}
+                >
                   <summary>
                     История
                     <span>{downloadsHistory.length}</span>
@@ -2981,7 +3014,15 @@ function App(): JSX.Element {
                     )}
                   </div>
                 </details>
-                <details className="app-downloads-log-panel" open>
+                <details
+                  className="app-downloads-log-panel"
+                  open={downloadsEmbeddedLogOpen}
+                  onToggle={(event) => {
+                    const next = event.currentTarget.open
+                    setDownloadsEmbeddedLogOpen(next)
+                    persistDownloadsWindowUiPanels({ log: next })
+                  }}
+                >
                   <summary>
                     Живой лог
                     <span>

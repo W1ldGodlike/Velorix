@@ -41,7 +41,7 @@
 
 Правило для агента: этот блок — рабочий навигатор ближайшего спринта. После каждой крупной итерации обновлять его: отмечать сделанное, переводить частичное в `[~]`, убирать устаревшее только если оно отражено ниже по §, и добавлять 3–7 следующих конкретных пунктов. Не оставлять блок полностью закрытым. Для UI/UX-сверки по v0 использовать [`docs/UX_REFERENCE_V0.md`](docs/UX_REFERENCE_V0.md).
 
-- [~] §6.1/§6.4: v0-компоновка вкладки «Загрузки» — центр таблица, **история+живой лог под таблицей**, rail — настройки; **действия строк очереди — icon-only (lucide shared)**; очередь/retry/pause/settings/catalog/cookies/network встроены; snapshot во вкладку и pop-out; mutating IPC с `{ok,error}`; open после merge Windows; дальше — **persist свёрнутости История/лог для встроенной вкладки** (`downloadsWindowUiPanels`), полировка высот, DPI-матрица.
+- [~] §6.1/§6.4: v0-компоновка вкладки «Загрузки» — центр таблица, **история+живой лог под таблицей**, rail — настройки; **действия строк — icon-only (lucide shared)**; **раскрытие История/Живой лог** сохраняется через тот же `downloadsWindowUiPanels`, что и pop-out (`mergeUiPanels`, только жест `toggle`); очередь/retry/pause/settings встроены; snapshot во вкладку и pop-out; дальше — **rail collapsible секции v0 → те же ключи format/metadata/saving/network**, полировка высот, DPI-матрица.
 - [~] §6.3: argv whitelist + справочник + preview команды есть; дальше — удобство экспертных токенов и редкие поля.
 - [~] §1.1/§4.A/§9: редактор/инспектор/ffprobe хорошо продвинуты; binary controls через `PillSwitch` (в т.ч. 2-pass libx264 в секции «Формат» при видеобитрейте); быстрые labels русифицированы; дальше — multi-monitor DPI, help links, локализация и редкие ffprobe-поля.
 - [~] §7.2: trim/crop/rotate/flip/scale/FPS/bitrate/presets есть; дальше — расширенные фильтры, HW encode, batch и сценарий download→encode без ручного шага.
@@ -189,7 +189,7 @@
 - [x] `settings.json` для темы.
 - [~] Последний открытый локальный файл (`lastOpenedSourcePath`) + мягкий restore превью при старте + геометрия main/downloads в `settings.json`; без полного session.json.
 - [x] Сохранять размеры/позиции окон.
-- [~] Сохранять раскрытые панели: главное окно + окно §9 (**push** снимка `mainWindowUiPanels` после сохранения; IPC только main/inspector + preload whitelist) + yt-dlp (`downloadsWindowUiPanels`, **toggle-сохранение только от жеста пользователя** — не при программном открытии журнала); FFmpeg-секции только в редакторе (`ffmpegSettingsRailOpen` + секции §7), `probe*` — shared с инспектором.
+- [~] Сохранять раскрытые панели: главное окно + окно §9 (**push** снимка `mainWindowUiPanels` после сохранения; IPC только main/inspector + preload whitelist) + yt-dlp (`downloadsWindowUiPanels`, **toggle-сохранение только от жеста пользователя** — не при программном открытии журнала; **встроенная вкладка «Загрузки»** пишет `history`/`log` тем же IPC `fluxalloy-downloads-merge-ui-panels`); FFmpeg-секции только в редакторе (`ffmpegSettingsRailOpen` + секции §7), `probe*` — shared с инспектором.
 - [~] Сохранять выбранные папки (каталог yt-dlp, последняя папка ffmpeg export и snapshot; прочие диалоги — позже).
 - [~] Сохранять состояние очередей: yt-dlp живой `queue.json` §6 (атомарная запись, гидратация при старте main, дедупликация id, `will-quit` flush); полный `session.json` и прочие очереди — позже.
 - [ ] Сохранять `session.json`.

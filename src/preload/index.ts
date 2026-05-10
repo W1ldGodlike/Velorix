@@ -34,6 +34,7 @@ import type {
   AppSettings,
   AppSettingsView,
   AppTheme,
+  DownloadsWindowUiPanelState,
   MainWindowUiPanelState,
   ResolvedAppTheme
 } from '../shared/settings-contract'
@@ -265,7 +266,12 @@ const fluxalloy = {
       return (): void => {
         ipcRenderer.removeListener(d.log, handler)
       }
-    }
+    },
+    /** Общее с pop-out §6: `downloadsWindowUiPanels` в settings (санитайз в main). */
+    mergeUiPanels: (
+      patch: Partial<DownloadsWindowUiPanelState>
+    ): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(d.mergeUiPanels, patch)
   },
   /** §9 §363 — отдельное окно инспектора (тот же preload, что главное окно). */
   inspector: {
