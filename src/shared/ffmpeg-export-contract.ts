@@ -15,6 +15,8 @@ export type FfmpegExportContainerId = 'mp4' | 'mkv' | 'mov'
 export type FfmpegExportScalePresetId = 'source' | '480p' | '720p' | '1080p'
 /** §7.2 — безопасные повороты/зеркала через whitelist `-vf` (до scale/fps). */
 export type FfmpegExportVideoTransformId = 'none' | 'cw90' | 'ccw90' | 'r180' | 'hflip' | 'vflip'
+/** §7.2 — crop только через предустановленные выражения, без пользовательской строки `-vf`. */
+export type FfmpegExportCropPresetId = 'none' | 'center-square' | 'center-16-9' | 'center-4-3'
 export type FfmpegExportAudioModeId = 'aac' | 'none'
 
 /**
@@ -31,6 +33,7 @@ export interface FfmpegExportUserPresetSnapshot {
   fps: number | null
   scalePreset: FfmpegExportScalePresetId
   videoTransform: FfmpegExportVideoTransformId
+  cropPreset: FfmpegExportCropPresetId
 }
 
 /** §7.2 — именованный пользовательский пресет (до нескольких штук в settings). */
@@ -62,6 +65,8 @@ export interface MediaExportRequestPayload {
   scalePreset?: FfmpegExportScalePresetId | null
   /** Поворот/зеркало до масштабирования и fps; `none` — без трансформа. */
   videoTransform?: FfmpegExportVideoTransformId | null
+  /** Crop после поворота/зеркала и до scale/fps; только whitelist пресетов. */
+  cropPreset?: FfmpegExportCropPresetId | null
 }
 
 export type MediaExportStartResult =

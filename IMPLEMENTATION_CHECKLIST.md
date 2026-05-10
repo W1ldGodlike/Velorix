@@ -37,7 +37,7 @@
 
 - [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; DnD текста/URL на окно (кроме полей ввода формы) + поле URL; прогресс + `extractYtdlpOutputPath`; классификация stderr; дальше — редкие строки по логам.
 - [~] §6.3: argv whitelist + справочник + превью с draft/override `-o`; после выбора каталога загрузки / вставки флага из справочника / «Шаблон по умолчанию» превью пересчитывается; при необходимости ещё редкие поля.
-- [~] §7.2: crop и расширенные filters; затем HW encode; экспорт/preview/пресеты с rotate+flip готовы.
+- [~] §7.2: crop/rotate/flip готовы через whitelist `-vf`; дальше расширенные filters и HW encode.
 - [~] §9: опционально Dolby Vision/`side_data` и прочие расширенные метаданные ffprobe (базовые color_* потока уже в таблице).
 - [~] §17/§18: диагностика, Support ZIP, `session.log`; при необходимости отдельные логи по окнам или политика объёма mid-session.
 - [~] §21: новые IPC — только через `ipc-channels` + shared-контракты; точечные Vitest на парсеры/argv.
@@ -307,7 +307,7 @@
 - [~] Bitrate/CRF/quality: persisted CRF override, video bitrate mode и AAC bitrate в toolbar/settings; расширенная quality-панель — позже.
 - [~] FPS: persisted preset source/24/25/30/50/60 для экспорта.
 - [~] Resolution/scale: persisted preset source/480p/720p/1080p с сохранением пропорций.
-- [ ] Crop.
+- [x] Crop: whitelist пресетов 1:1 / 16:9 / 4:3 после rotate/flip и до scale/fps; toolbar + settings + пользовательские пресеты §7.2.
 - [ ] Trim.
 - [x] Rotate/flip: whitelist −vf transpose/hflip/vflip до scale/fps; toolbar + settings + пользовательские пресеты §7.2.
 - [ ] Filters.
@@ -316,7 +316,7 @@
 - [ ] Metadata.
 - [ ] Hardware acceleration.
 - [ ] Advanced args.
-- [~] Live preview команды ffmpeg: pure helpers в `src/shared/ffmpeg-export-argv.ts` (`buildFfmpegExportPreviewCommand` + `shouldApplyFfmpegExportTrim`), сворачиваемый блок в App.tsx с копированием; маркеры In/Out + probeDurationSec + выбранный контейнер §7.2 подмешиваются и совпадают с spawn (в т.ч. без `-movflags` для MKV); пользовательские пресеты (persist в settings, переименование/обновление снимка/удаление в тулбаре); дальше сложные фильтры/HW и т.п.
+- [~] Live preview команды ffmpeg: pure helpers в `src/shared/ffmpeg-export-argv.ts` (`buildFfmpegExportPreviewCommand` + `shouldApplyFfmpegExportTrim`), сворачиваемый блок в App.tsx с копированием; маркеры In/Out + probeDurationSec + выбранный контейнер/crop/rotate/flip §7.2 подмешиваются и совпадают с spawn (в т.ч. без `-movflags` для MKV); пользовательские пресеты (persist в settings, переименование/обновление снимка/удаление в тулбаре); дальше сложные фильтры/HW и т.п.
 - [~] Безопасная сборка аргументов без shell injection: ffmpeg-экспорт идёт через `buildFfmpegExportArgv` (массив токенов, без shell); валидация значений в main `parse*`-хелперах.
 
 ### §7.3 Пакетная обработка

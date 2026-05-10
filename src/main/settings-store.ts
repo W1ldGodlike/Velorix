@@ -4,6 +4,7 @@ import { dirname, isAbsolute, normalize } from 'path'
 import { ENGINE_IDS, type EnginePathOverrides } from '../shared/engine-contract'
 import type { AppSettings, StoredWindowRect, WindowBoundsConfig } from '../shared/settings-contract'
 import {
+  parseFfmpegExportCropPreset,
   parseFfmpegExportUserPresetsList,
   parseFfmpegExportVideoTransform
 } from './ffmpeg-export-service'
@@ -314,6 +315,7 @@ export function loadSettings(filePath: string): AppSettings {
     const ffmpegExportVideoTransform = parseFfmpegExportVideoTransform(
       parsed.ffmpegExportVideoTransform
     )
+    const ffmpegExportCropPreset = parseFfmpegExportCropPreset(parsed.ffmpegExportCropPreset)
     const ffmpegExportDirectory = parseFfmpegExportDirectoryStored(parsed.ffmpegExportDirectory)
     const ffmpegSnapshotDirectory = parseFfmpegSnapshotDirectoryStored(
       parsed.ffmpegSnapshotDirectory
@@ -374,6 +376,9 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (ffmpegExportVideoTransform !== 'none') {
       base.ffmpegExportVideoTransform = ffmpegExportVideoTransform
+    }
+    if (ffmpegExportCropPreset !== 'none') {
+      base.ffmpegExportCropPreset = ffmpegExportCropPreset
     }
     if (ffmpegExportDirectory !== undefined) {
       base.ffmpegExportDirectory = ffmpegExportDirectory

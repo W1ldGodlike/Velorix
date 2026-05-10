@@ -8,6 +8,7 @@ import { ENGINE_IDS } from '../../shared/engine-contract'
 import type {
   FfmpegExportAudioModeId,
   FfmpegExportContainerId,
+  FfmpegExportCropPresetId,
   FfmpegExportEncodePresetId,
   FfmpegExportScalePresetId,
   FfmpegExportUserPreset,
@@ -60,6 +61,12 @@ const EXPORT_VIDEO_TRANSFORMS: Array<{ id: FfmpegExportVideoTransformId; label: 
   { id: 'r180', label: '180°' },
   { id: 'hflip', label: 'Зеркало H' },
   { id: 'vflip', label: 'Зеркало V' }
+]
+const EXPORT_CROP_PRESETS: Array<{ id: FfmpegExportCropPresetId; label: string }> = [
+  { id: 'none', label: 'Crop: нет' },
+  { id: 'center-square', label: 'Crop 1:1' },
+  { id: 'center-16-9', label: 'Crop 16:9' },
+  { id: 'center-4-3', label: 'Crop 4:3' }
 ]
 const SNAPSHOT_FORMATS: Array<{ id: FfmpegSnapshotFormatId; label: string }> = [
   { id: 'png', label: 'Кадр PNG' },
@@ -190,6 +197,7 @@ function App(): JSX.Element {
   const [exportFps, setExportFps] = useState<number | null>(null)
   const [exportVideoTransform, setExportVideoTransform] =
     useState<FfmpegExportVideoTransformId>('none')
+  const [exportCropPreset, setExportCropPreset] = useState<FfmpegExportCropPresetId>('none')
   const [exportScalePreset, setExportScalePreset] = useState<FfmpegExportScalePresetId>('source')
   /** §7.2 — сохранённые пользователем наборы параметров тулбара (preview/spawn используют те же поля). */
   const [exportUserPresets, setExportUserPresets] = useState<FfmpegExportUserPreset[]>([])
@@ -300,6 +308,12 @@ function App(): JSX.Element {
     } else {
       setExportVideoTransform('none')
     }
+    const crop = loaded.ffmpegExportCropPreset
+    if (crop === 'center-square' || crop === 'center-16-9' || crop === 'center-4-3') {
+      setExportCropPreset(crop)
+    } else {
+      setExportCropPreset('none')
+    }
     const scale = loaded.ffmpegExportScalePreset
     if (scale === '480p' || scale === '720p' || scale === '1080p') {
       setExportScalePreset(scale)
@@ -322,7 +336,8 @@ function App(): JSX.Element {
       audioBitrate: exportAudioBitrate,
       fps: exportFps,
       scalePreset: exportScalePreset,
-      videoTransform: exportVideoTransform
+      videoTransform: exportVideoTransform,
+      cropPreset: exportCropPreset
     }
   }, [
     exportEncodePreset,
@@ -333,7 +348,8 @@ function App(): JSX.Element {
     exportAudioBitrate,
     exportFps,
     exportScalePreset,
-    exportVideoTransform
+    exportVideoTransform,
+    exportCropPreset
   ])
 
   const handleSaveExportUserPreset = useCallback(() => {
@@ -693,7 +709,8 @@ function App(): JSX.Element {
         audioBitrate: exportAudioBitrate,
         fps: exportFps,
         scalePreset: exportScalePreset,
-        videoTransform: exportVideoTransform
+        videoTransform: exportVideoTransform,
+        cropPreset: exportCropPreset
       })
       if (res.ok) {
         const savedName = res.path.split(/[\\/]/).pop() || res.path
@@ -788,6 +805,7 @@ function App(): JSX.Element {
       fps: exportFps,
       scalePreset: exportScalePreset,
       videoTransform: exportVideoTransform,
+      cropPreset: exportCropPreset,
       inputPath: sourcePath,
       outputPath,
       trim: trimRange,
@@ -804,6 +822,7 @@ function App(): JSX.Element {
     exportFps,
     exportScalePreset,
     exportVideoTransform,
+    exportCropPreset,
     trimRange,
     probeInfo?.durationSec
   ])
@@ -957,6 +976,25 @@ function App(): JSX.Element {
           }}
         >
           {EXPORT_ENCODE_PRESETS.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.label}
+            </option>
+          ))}
+        </select>
+        <select
+          className="app-toolbar-select"
+          aria-label="Crop экспорта"
+          title="Crop через whitelist -vf после поворота/зеркала и до масштабирования"
+          value={exportCropPreset}
+          disabled={exportBusy || snapshotBusy}
+          onChange={(e) => {
+            bumpManualExportEdit()
+            const v = e.target.value as FfmpegExportCropPresetId
+            setExportCropPreset(v)
+            void window.fluxalloy.settings.setFfmpegExportCropPreset(v).catch(console.error)
+          }}
+        >
+          {EXPORT_CROP_PRESETS.map((p) => (
             <option key={p.id} value={p.id}>
               {p.label}
             </option>

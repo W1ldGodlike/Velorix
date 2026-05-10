@@ -4,6 +4,7 @@ import type { AppSettings } from '../shared/settings-contract'
 import type {
   FfmpegExportAudioModeId,
   FfmpegExportContainerId,
+  FfmpegExportCropPresetId,
   FfmpegExportEncodePresetId,
   FfmpegExportProgressPayload,
   FfmpegExportScalePresetId,
@@ -19,6 +20,7 @@ import { logExternalProcessLine } from './external-process-log'
 export type {
   FfmpegExportAudioModeId,
   FfmpegExportContainerId,
+  FfmpegExportCropPresetId,
   FfmpegExportEncodePresetId,
   FfmpegExportProgressPayload,
   FfmpegExportScalePresetId,
@@ -152,6 +154,13 @@ export function parseFfmpegExportVideoTransform(raw: unknown): FfmpegExportVideo
   return 'none'
 }
 
+export function parseFfmpegExportCropPreset(raw: unknown): FfmpegExportCropPresetId {
+  if (raw === 'center-square' || raw === 'center-16-9' || raw === 'center-4-3') {
+    return raw
+  }
+  return 'none'
+}
+
 /** §7.2 — разбор снимка пользовательского пресета из IPC/renderer (белые списки). */
 export function parseFfmpegExportUserPresetSnapshot(
   raw: unknown
@@ -169,6 +178,7 @@ export function parseFfmpegExportUserPresetSnapshot(
   const fps = parseFfmpegExportFps(o['fps'])
   const scalePreset = parseFfmpegExportScalePreset(o['scalePreset'])
   const videoTransform = parseFfmpegExportVideoTransform(o['videoTransform'])
+  const cropPreset = parseFfmpegExportCropPreset(o['cropPreset'])
   return {
     encodePreset,
     container,
@@ -178,7 +188,8 @@ export function parseFfmpegExportUserPresetSnapshot(
     audioBitrate,
     fps,
     scalePreset,
-    videoTransform
+    videoTransform,
+    cropPreset
   }
 }
 
@@ -252,6 +263,11 @@ export function mergeFfmpegExportSnapshotIntoAppSettings(
     delete next.ffmpegExportVideoTransform
   } else {
     next.ffmpegExportVideoTransform = snapshot.videoTransform
+  }
+  if (snapshot.cropPreset === 'none') {
+    delete next.ffmpegExportCropPreset
+  } else {
+    next.ffmpegExportCropPreset = snapshot.cropPreset
   }
   return next
 }
@@ -338,6 +354,7 @@ export function runFfmpegExportJob(params: {
   fps?: number | null
   scalePreset?: FfmpegExportScalePresetId | null
   videoTransform?: FfmpegExportVideoTransformId | null
+  cropPreset?: FfmpegExportCropPresetId | null
   signal: AbortSignal
   onProgress?: (p: FfmpegExportProgressPayload) => void
 }): Promise<{ ok: true } | { ok: false; error: string }> {
@@ -350,6 +367,7 @@ export function runFfmpegExportJob(params: {
   const fps = parseFfmpegExportFps(params.fps)
   const scalePreset = parseFfmpegExportScalePreset(params.scalePreset)
   const videoTransform = parseFfmpegExportVideoTransform(params.videoTransform)
+  const cropPreset = parseFfmpegExportCropPreset(params.cropPreset)
   const container = parseFfmpegExportContainer(params.container ?? 'mp4')
   const segmentDur = resolveExportSegmentDurationSec(
     params.trim,
@@ -369,7 +387,8 @@ export function runFfmpegExportJob(params: {
     audioBitrate,
     fps,
     scalePreset,
-    videoTransform
+    videoTransform,
+    cropPreset
   })
 
   return new Promise((resolve) => {

@@ -8,6 +8,7 @@ import {
   mergeFfmpegExportSnapshotIntoAppSettings,
   parseFfmpegExportAudioBitrate,
   parseFfmpegExportAudioMode,
+  parseFfmpegExportCropPreset,
   parseFfmpegExportEncodePreset,
   parseFfmpegExportContainer,
   parseFfmpegExportCrf,
@@ -78,6 +79,8 @@ describe('ffmpeg export pure helpers', () => {
     expect(parseFfmpegExportFps(29.97)).toBeNull()
     expect(parseFfmpegExportScalePreset('720p')).toBe('720p')
     expect(parseFfmpegExportScalePreset('bad')).toBe('source')
+    expect(parseFfmpegExportCropPreset('center-16-9')).toBe('center-16-9')
+    expect(parseFfmpegExportCropPreset('bad')).toBe('none')
   })
 
   it('считает длительность сегмента с учётом trim', () => {
@@ -97,7 +100,8 @@ describe('ffmpeg export pure helpers', () => {
       audioBitrate: '192k',
       fps: 30,
       scalePreset: '720p',
-      videoTransform: 'hflip'
+      videoTransform: 'hflip',
+      cropPreset: 'center-square'
     })
     expect(snap).toMatchObject({
       encodePreset: 'quality',
@@ -108,7 +112,8 @@ describe('ffmpeg export pure helpers', () => {
       audioBitrate: '192k',
       fps: 30,
       scalePreset: '720p',
-      videoTransform: 'hflip'
+      videoTransform: 'hflip',
+      cropPreset: 'center-square'
     })
     const list = parseFfmpegExportUserPresetsList([
       { id: 'ab-cd_1', label: 'Тест', snapshot: snap },
@@ -129,12 +134,14 @@ describe('ffmpeg export pure helpers', () => {
       audioBitrate: '128k',
       fps: null,
       scalePreset: 'source',
-      videoTransform: 'none'
+      videoTransform: 'none',
+      cropPreset: 'none'
     })
     expect(next.ffmpegExportCrf).toBeUndefined()
     expect(next.ffmpegExportAudioMode).toBeUndefined()
     expect(next.ffmpegExportAudioBitrate).toBe('128k')
     expect(next.ffmpegExportScalePreset).toBeUndefined()
     expect(next.ffmpegExportVideoTransform).toBeUndefined()
+    expect(next.ffmpegExportCropPreset).toBeUndefined()
   })
 })

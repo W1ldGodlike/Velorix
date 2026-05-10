@@ -4,7 +4,11 @@
  */
 
 import type { EnginePathOverrides } from './engine-contract'
-import type { FfmpegExportUserPreset, FfmpegExportVideoTransformId } from './ffmpeg-export-contract'
+import type {
+  FfmpegExportCropPresetId,
+  FfmpegExportUserPreset,
+  FfmpegExportVideoTransformId
+} from './ffmpeg-export-contract'
 
 export type AppTheme = 'dark' | 'light'
 
@@ -81,6 +85,8 @@ export interface AppSettings {
   ffmpegExportScalePreset?: 'source' | '480p' | '720p' | '1080p'
   /** §7.2: поворот/зеркало экспортируемого видео (whitelist фильтров). */
   ffmpegExportVideoTransform?: FfmpegExportVideoTransformId
+  /** §7.2: crop экспортируемого видео (whitelist пресетов, без произвольного `-vf`). */
+  ffmpegExportCropPreset?: FfmpegExportCropPresetId
   /** §7.2: пользовательские пресеты экспорта (имя + снимок параметров тулбара). */
   ffmpegExportUserPresets?: FfmpegExportUserPreset[]
   /** §7: последняя папка успешного ffmpeg export; используется только как defaultPath save dialog. */

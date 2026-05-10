@@ -5,6 +5,7 @@ import {
   buildFfmpegExportPreviewCommand,
   formatFfmpegArgvForPreview,
   resolveFfmpegExportEncodeParams,
+  resolveFfmpegExportCropFilter,
   resolveFfmpegExportScaleFilter,
   resolveFfmpegExportVideoTransformFilters,
   shouldApplyFfmpegExportTrim
@@ -32,7 +33,15 @@ describe('shared ffmpeg export argv', () => {
     expect(resolveFfmpegExportVideoTransformFilters('vflip')).toEqual(['vflip'])
   })
 
-  it('трансформ идёт в -vf перед scale и fps §7.2', () => {
+  it('whitelist cropPreset — только предустановленные crop-фильтры §7.2', () => {
+    expect(resolveFfmpegExportCropFilter('none')).toBeNull()
+    expect(resolveFfmpegExportCropFilter('center-square')).toBe('crop=min(iw\\,ih):min(iw\\,ih)')
+    expect(resolveFfmpegExportCropFilter('center-16-9')).toBe(
+      'crop=min(iw\\,ih*16/9):min(ih\\,iw*9/16)'
+    )
+  })
+
+  it('трансформ и crop идут в -vf перед scale и fps §7.2', () => {
     const argv = buildFfmpegExportArgv({
       inputPath: 'in.mp4',
       outputPath: 'out.mp4',
@@ -44,9 +53,12 @@ describe('shared ffmpeg export argv', () => {
       audioBitrate: '192k',
       fps: 30,
       scalePreset: '720p',
-      videoTransform: 'cw90'
+      videoTransform: 'cw90',
+      cropPreset: 'center-square'
     })
-    expect(argv[argv.indexOf('-vf') + 1]).toBe('transpose=1,scale=-2:720,fps=30')
+    expect(argv[argv.indexOf('-vf') + 1]).toBe(
+      'transpose=1,crop=min(iw\\,ih):min(iw\\,ih),scale=-2:720,fps=30'
+    )
   })
 
   it('собирает базовый argv для CRF mode без trim/scale/fps', () => {

@@ -11,6 +11,7 @@ import type { FfmpegSnapshotFormatId } from '../shared/ffmpeg-snapshot-contract'
 import type {
   FfmpegExportAudioModeId,
   FfmpegExportContainerId,
+  FfmpegExportCropPresetId,
   FfmpegExportEncodePresetId,
   FfmpegExportScalePresetId,
   FfmpegExportProgressPayload,
@@ -60,6 +61,7 @@ export interface FluxAlloyApi {
     setFfmpegExportFps: (fps: number | null) => Promise<AppSettings>
     setFfmpegExportScalePreset: (scale: FfmpegExportScalePresetId) => Promise<AppSettings>
     setFfmpegExportVideoTransform: (transform: FfmpegExportVideoTransformId) => Promise<AppSettings>
+    setFfmpegExportCropPreset: (crop: FfmpegExportCropPresetId) => Promise<AppSettings>
     setFfmpegExportUserPresets: (presets: FfmpegExportUserPreset[]) => Promise<AppSettings>
     applyFfmpegExportSnapshot: (snapshot: FfmpegExportUserPresetSnapshot) => Promise<AppSettings>
     setFfmpegSnapshotFormat: (format: FfmpegSnapshotFormatId) => Promise<AppSettings>

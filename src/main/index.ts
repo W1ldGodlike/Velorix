@@ -53,6 +53,7 @@ import {
 import {
   mergeFfmpegExportSnapshotIntoAppSettings,
   parseFfmpegExportContainer,
+  parseFfmpegExportCropPreset,
   parseFfmpegExportAudioBitrate,
   parseFfmpegExportAudioMode,
   parseFfmpegExportCrf,
@@ -802,6 +803,19 @@ function persistFfmpegExportVideoTransform(raw: unknown): AppSettings {
   return { ...cachedSettings }
 }
 
+function persistFfmpegExportCropPreset(raw: unknown): AppSettings {
+  const value = parseFfmpegExportCropPreset(raw)
+  const next = { ...cachedSettings }
+  if (value === 'none') {
+    delete next.ffmpegExportCropPreset
+  } else {
+    next.ffmpegExportCropPreset = value
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
 function persistFfmpegSnapshotFormat(raw: unknown): AppSettings {
   const value = parseFfmpegSnapshotFormat(raw)
   const next = { ...cachedSettings }
@@ -1525,6 +1539,11 @@ app.whenReady().then(() => {
   )
 
   ipcMain.handle(
+    mw.settingsSetFfmpegExportCropPreset,
+    (_, raw: unknown): AppSettings => persistFfmpegExportCropPreset(raw)
+  )
+
+  ipcMain.handle(
     mw.settingsSetFfmpegSnapshotFormat,
     (_, raw: unknown): AppSettings => persistFfmpegSnapshotFormat(raw)
   )
@@ -1838,6 +1857,11 @@ app.whenReady().then(() => {
       videoTransformRaw !== undefined && videoTransformRaw !== null
         ? parseFfmpegExportVideoTransform(videoTransformRaw)
         : parseFfmpegExportVideoTransform(cachedSettings.ffmpegExportVideoTransform)
+    const cropPresetRaw = (raw as { cropPreset?: unknown }).cropPreset
+    const exportCropPreset =
+      cropPresetRaw !== undefined && cropPresetRaw !== null
+        ? parseFfmpegExportCropPreset(cropPresetRaw)
+        : parseFfmpegExportCropPreset(cachedSettings.ffmpegExportCropPreset)
 
     const paths = resolveAppPaths()
     const ffmpeg = resolveEngineExecutablePath(
@@ -1896,6 +1920,7 @@ app.whenReady().then(() => {
         fps: exportFps,
         scalePreset: exportScalePreset,
         videoTransform: exportVideoTransform,
+        cropPreset: exportCropPreset,
         signal: ac.signal,
         onProgress: pushProgress
       })

@@ -16,6 +16,7 @@ export const mainWindowIpc = {
   settingsSetFfmpegExportFps: 'fluxalloy:settings-set-ffmpeg-export-fps',
   settingsSetFfmpegExportScalePreset: 'fluxalloy:settings-set-ffmpeg-export-scale-preset',
   settingsSetFfmpegExportVideoTransform: 'fluxalloy:settings-set-ffmpeg-export-video-transform',
+  settingsSetFfmpegExportCropPreset: 'fluxalloy:settings-set-ffmpeg-export-crop-preset',
   settingsSetFfmpegExportUserPresets: 'fluxalloy:settings-set-ffmpeg-export-user-presets',
   settingsApplyFfmpegExportSnapshot: 'fluxalloy:settings-apply-ffmpeg-export-snapshot',
   settingsSetFfmpegSnapshotFormat: 'fluxalloy:settings-set-ffmpeg-snapshot-format',

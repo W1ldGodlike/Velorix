@@ -9,6 +9,7 @@
 import type {
   FfmpegExportAudioModeId,
   FfmpegExportContainerId,
+  FfmpegExportCropPresetId,
   FfmpegExportEncodePresetId,
   FfmpegExportScalePresetId,
   FfmpegExportVideoTransformId,
@@ -99,6 +100,23 @@ export function resolveFfmpegExportVideoTransformFilters(
   }
 }
 
+/**
+ * §7.2 — crop-пресеты через безопасный whitelist выражений ffmpeg.
+ * Порядок в `-vf`: transform → crop → scale → fps.
+ */
+export function resolveFfmpegExportCropFilter(id: FfmpegExportCropPresetId): string | null {
+  switch (id) {
+    case 'center-square':
+      return 'crop=min(iw\\,ih):min(iw\\,ih)'
+    case 'center-16-9':
+      return 'crop=min(iw\\,ih*16/9):min(ih\\,iw*9/16)'
+    case 'center-4-3':
+      return 'crop=min(iw\\,ih*4/3):min(ih\\,iw*3/4)'
+    default:
+      return null
+  }
+}
+
 export interface FfmpegExportArgvParams {
   inputPath: string
   outputPath: string
@@ -120,6 +138,8 @@ export interface FfmpegExportArgvParams {
   scalePreset: FfmpegExportScalePresetId
   /** До масштабирования и fps; по умолчанию без трансформа. */
   videoTransform?: FfmpegExportVideoTransformId
+  /** После transform и до scale/fps; по умолчанию без crop. */
+  cropPreset?: FfmpegExportCropPresetId
 }
 
 /** Полный argv ffmpeg без пути к exe; используется и runner, и preview UI. */
@@ -130,6 +150,10 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
   const filters: string[] = []
   const transform = resolveFfmpegExportVideoTransformFilters(params.videoTransform ?? 'none')
   filters.push(...transform)
+  const crop = resolveFfmpegExportCropFilter(params.cropPreset ?? 'none')
+  if (crop !== null) {
+    filters.push(crop)
+  }
   const scale = resolveFfmpegExportScaleFilter(params.scalePreset)
   if (scale !== null) {
     filters.push(scale)
@@ -200,6 +224,7 @@ export interface FfmpegExportPreviewInput {
   fps: number | null
   scalePreset: FfmpegExportScalePresetId
   videoTransform?: FfmpegExportVideoTransformId
+  cropPreset?: FfmpegExportCropPresetId
   /** Если задан — используется как input в превью; иначе подставляется `<input>`. */
   inputPath?: string | null
   /** Если задан — используется как output в превью; иначе подставляется `<output>`. */
@@ -259,7 +284,8 @@ export function buildFfmpegExportPreviewCommand(
     audioBitrate: input.audioBitrate,
     fps: input.fps,
     scalePreset: input.scalePreset,
-    ...(input.videoTransform !== undefined ? { videoTransform: input.videoTransform } : {})
+    ...(input.videoTransform !== undefined ? { videoTransform: input.videoTransform } : {}),
+    ...(input.cropPreset !== undefined ? { cropPreset: input.cropPreset } : {})
   })
 
   return {

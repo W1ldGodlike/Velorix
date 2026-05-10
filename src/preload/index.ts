@@ -12,6 +12,7 @@ import type { FfmpegSnapshotFormatId } from '../shared/ffmpeg-snapshot-contract'
 import type {
   FfmpegExportAudioModeId,
   FfmpegExportContainerId,
+  FfmpegExportCropPresetId,
   FfmpegExportEncodePresetId,
   FfmpegExportScalePresetId,
   FfmpegExportProgressPayload,
@@ -71,6 +72,8 @@ const fluxalloy = {
       transform: FfmpegExportVideoTransformId
     ): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoTransform, transform),
+    setFfmpegExportCropPreset: (crop: FfmpegExportCropPresetId): Promise<AppSettings> =>
+      ipcRenderer.invoke(mw.settingsSetFfmpegExportCropPreset, crop),
     setFfmpegExportUserPresets: (presets: FfmpegExportUserPreset[]): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportUserPresets, presets),
     applyFfmpegExportSnapshot: (snapshot: FfmpegExportUserPresetSnapshot): Promise<AppSettings> =>

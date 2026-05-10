@@ -44,6 +44,8 @@ describe('settings-store yt-dlp fields', () => {
         ffmpegExportAudioBitrate: '256K',
         ffmpegExportFps: 30,
         ffmpegExportScalePreset: '720p',
+        ffmpegExportVideoTransform: 'hflip',
+        ffmpegExportCropPreset: 'center-16-9',
         ffmpegExportDirectory: root,
         ffmpegSnapshotDirectory: root,
         ffmpegSnapshotFormat: 'jpg'
@@ -67,6 +69,8 @@ describe('settings-store yt-dlp fields', () => {
       ffmpegExportAudioBitrate: '256k',
       ffmpegExportFps: 30,
       ffmpegExportScalePreset: '720p',
+      ffmpegExportVideoTransform: 'hflip',
+      ffmpegExportCropPreset: 'center-16-9',
       ffmpegExportDirectory: root,
       ffmpegSnapshotDirectory: root,
       ffmpegSnapshotFormat: 'jpg'
@@ -90,6 +94,8 @@ describe('settings-store yt-dlp fields', () => {
         ffmpegExportAudioBitrate: '9999k',
         ffmpegExportFps: 29.97,
         ffmpegExportScalePreset: '4k',
+        ffmpegExportVideoTransform: 'spin',
+        ffmpegExportCropPreset: 'freeform',
         ffmpegExportDirectory: 'relative',
         ffmpegSnapshotDirectory: 'relative',
         ffmpegSnapshotFormat: 'webp'
@@ -108,6 +114,8 @@ describe('settings-store yt-dlp fields', () => {
     expect(loaded.ffmpegExportAudioBitrate).toBeUndefined()
     expect(loaded.ffmpegExportFps).toBeUndefined()
     expect(loaded.ffmpegExportScalePreset).toBeUndefined()
+    expect(loaded.ffmpegExportVideoTransform).toBeUndefined()
+    expect(loaded.ffmpegExportCropPreset).toBeUndefined()
     expect(loaded.ffmpegExportDirectory).toBeUndefined()
     expect(loaded.ffmpegSnapshotDirectory).toBeUndefined()
     expect(loaded.ffmpegSnapshotFormat).toBeUndefined()
