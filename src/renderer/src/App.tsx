@@ -169,10 +169,10 @@ const EXPORT_VIDEO_TRANSFORMS: Array<{ id: FfmpegExportVideoTransformId; label: 
   { id: 'vflip', label: 'Зеркало V' }
 ]
 const EXPORT_CROP_PRESETS: Array<{ id: FfmpegExportCropPresetId; label: string }> = [
-  { id: 'none', label: 'Crop: нет' },
-  { id: 'center-square', label: 'Crop 1:1' },
-  { id: 'center-16-9', label: 'Crop 16:9' },
-  { id: 'center-4-3', label: 'Crop 4:3' }
+  { id: 'none', label: 'Обрезка: нет' },
+  { id: 'center-square', label: 'Обрезка 1:1' },
+  { id: 'center-16-9', label: 'Обрезка 16:9' },
+  { id: 'center-4-3', label: 'Обрезка 4:3' }
 ]
 const SNAPSHOT_FORMATS: Array<{ id: FfmpegSnapshotFormatId; label: string }> = [
   { id: 'png', label: 'Кадр PNG' },
@@ -1481,10 +1481,10 @@ function App(): JSX.Element {
               onClick={() => {
                 cycleCropPresetTopbar()
               }}
-              title="Crop: none → 1:1 → 16:9 → 4:3 (экспорт §7.2)"
+              title="Обрезка: нет → 1:1 → 16:9 → 4:3 (экспорт §7.2)"
             >
               <IconScissors />
-              <span className="app-visually-hidden">Crop</span>
+              <span className="app-visually-hidden">Обрезка</span>
             </button>
             <button
               type="button"
@@ -1957,10 +1957,10 @@ function App(): JSX.Element {
                     </select>
                   </label>
                   <label className="app-field">
-                    <span>Crop</span>
+                    <span>Обрезка</span>
                     <select
                       className="app-control"
-                      aria-label="Crop экспорта"
+                      aria-label="Обрезка экспорта"
                       value={exportCropPreset}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -2016,7 +2016,7 @@ function App(): JSX.Element {
                     </span>
                   </div>
                   <label className="app-field">
-                    <span>AAC bitrate</span>
+                    <span>Битрейт AAC</span>
                     <select
                       className="app-control"
                       aria-label="Аудио bitrate экспорта"
@@ -2576,7 +2576,7 @@ function App(): JSX.Element {
                                     })
                                   }}
                                 >
-                                  {row.ytdlpPaused ? 'Resume' : 'Pause'}
+                                  {row.ytdlpPaused ? 'Продолжить' : 'Пауза'}
                                 </button>
                               ) : null}
                               <button
@@ -2702,7 +2702,7 @@ function App(): JSX.Element {
                 </label>
                 <div className="app-downloads-select-grid">
                   <label className="app-field">
-                    <span>Cookies</span>
+                    <span>Cookies браузера</span>
                     <select
                       className="app-control"
                       value={downloadsOptions.cookiesBrowserChoice}
@@ -2720,7 +2720,7 @@ function App(): JSX.Element {
                     </select>
                   </label>
                   <label className="app-field">
-                    <span>Impersonate</span>
+                    <span>Подмена клиента</span>
                     <select
                       className="app-control"
                       value={downloadsOptions.impersonateChoice}
@@ -2748,8 +2748,8 @@ function App(): JSX.Element {
                     {downloadsOptions.cookiesFilePathStored || 'Файл не выбран'}
                   </strong>
                   <span className="app-field-help">
-                    Файл имеет приоритет над cookies из браузера; используйте только доверенные
-                    exports.
+                    Файл имеет приоритет над cookies из браузера; используйте только доверенный
+                    экспорт cookies.
                   </span>
                   <div className="app-downloads-history-actions">
                     <button
@@ -2810,7 +2810,7 @@ function App(): JSX.Element {
                 </label>
                 <div className="app-downloads-select-grid">
                   <label className="app-field">
-                    <span>Limit rate</span>
+                    <span>Лимит скорости</span>
                     <input
                       className="app-control"
                       value={downloadsOptions.rateLimit}
@@ -2829,7 +2829,7 @@ function App(): JSX.Element {
                     </span>
                   </label>
                   <label className="app-field">
-                    <span>Retries</span>
+                    <span>Повторы yt-dlp</span>
                     <input
                       className="app-control"
                       value={downloadsOptions.retriesLine}
@@ -2847,7 +2847,7 @@ function App(): JSX.Element {
                     <span className="app-field-help">Повторы самого yt-dlp (`--retries`).</span>
                   </label>
                   <label className="app-field">
-                    <span>Fragment retries</span>
+                    <span>Повторы фрагментов</span>
                     <input
                       className="app-control"
                       value={downloadsOptions.fragmentRetriesLine}
