@@ -1370,7 +1370,10 @@ function App(): JSX.Element {
               }}
             >
               <summary className="app-settings-summary">Видео</summary>
-              <div className="app-settings-grid">
+              <p id="ffmpegVideoSectionHint" className="app-settings-section-hint">
+                Кодек, контейнер, CRF и видеобитрейт итогового файла экспорта §7.
+              </p>
+              <div className="app-settings-grid" aria-describedby="ffmpegVideoSectionHint">
                 <label className="app-field">
                   <span>Кодек / пресет</span>
                   <select
@@ -1476,7 +1479,10 @@ function App(): JSX.Element {
               }}
             >
               <summary className="app-settings-summary">Формат</summary>
-              <div className="app-settings-grid">
+              <p id="ffmpegFormatSectionHint" className="app-settings-section-hint">
+                Масштаб, FPS, поворот/зеркало и кадрирование относительно исходного кадра.
+              </p>
+              <div className="app-settings-grid" aria-describedby="ffmpegFormatSectionHint">
                 <label className="app-field">
                   <span>Разрешение</span>
                   <select
@@ -1580,7 +1586,10 @@ function App(): JSX.Element {
               }}
             >
               <summary className="app-settings-summary">Аудио и кадр</summary>
-              <div className="app-settings-grid">
+              <p id="ffmpegAudioSectionHint" className="app-settings-section-hint">
+                Аудиодорожка экспорта и параметры сохранения снимка кадра §7.
+              </p>
+              <div className="app-settings-grid" aria-describedby="ffmpegAudioSectionHint">
                 <label className="app-field">
                   <span>Аудио</span>
                   <select
@@ -1692,7 +1701,10 @@ function App(): JSX.Element {
               }}
             >
               <summary className="app-settings-summary">Пресеты</summary>
-              <div className="app-settings-stack">
+              <p id="ffmpegPresetsSectionHint" className="app-settings-section-hint">
+                Сохранённые снимки настроек экспорта; кнопки меняют список пресетов в настройках.
+              </p>
+              <div className="app-settings-stack" aria-describedby="ffmpegPresetsSectionHint">
                 <label className="app-field">
                   <span>Пользовательский пресет</span>
                   <select
@@ -1780,7 +1792,11 @@ function App(): JSX.Element {
               }}
             >
               <summary className="app-settings-summary">Вывод</summary>
-              <div className="app-settings-stack">
+              <p id="ffmpegOutputSectionHint" className="app-settings-section-hint">
+                Превью argv, экспорт через диалог «Сохранить» и быстрые действия над последним
+                файлом.
+              </p>
+              <div className="app-settings-stack" aria-describedby="ffmpegOutputSectionHint">
                 <details
                   className="app-export-preview app-export-preview-nested"
                   open={panelOpen('exportCommandPreview')}

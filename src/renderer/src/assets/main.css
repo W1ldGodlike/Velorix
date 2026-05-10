@@ -620,6 +620,14 @@
   border-radius: 4px;
 }
 
+.app-settings-section-hint {
+  margin: 0;
+  padding: 0.15rem 0.8rem 0.55rem;
+  color: var(--fa-text-muted);
+  font-size: 0.62rem;
+  line-height: 1.35;
+}
+
 .app-settings-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1482,6 +1490,10 @@
     font-size: 0.648rem;
   }
 
+  .app-settings-section-hint {
+    font-size: 0.638rem;
+  }
+
   .app-timeline-ruler-track {
     height: 15px;
   }
@@ -1745,5 +1757,9 @@
 
   .app-url-hint {
     font-size: 0.668rem;
+  }
+
+  .app-settings-section-hint {
+    font-size: 0.658rem;
   }
 }
