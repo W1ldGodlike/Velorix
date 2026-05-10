@@ -394,6 +394,10 @@ function buildDownloadsHtml(
         height: 25px;
         border-radius: 6px;
       }
+      td.act button.icon-btn svg {
+        width: 17px;
+        height: 17px;
+      }
       td.act .act-icons { gap: 0.18rem; }
       table.history-table { font-size: 0.674rem; }
       table.history-table th, table.history-table td { padding: 0.3rem 0.42rem; }
@@ -474,6 +478,10 @@ function buildDownloadsHtml(
       table.queue-table { font-size: 0.736rem; }
       table.queue-table th, table.queue-table td { padding: 0.36rem 0.48rem; }
       td.act button.icon-btn, .icon-btn { width: 26px; height: 26px; }
+      td.act button.icon-btn svg {
+        width: 18px;
+        height: 18px;
+      }
       .progress-track { height: 5px; }
       .rail-title { font-size: 0.868rem; }
       .opts-check-row input[type=checkbox] { width: 34px; height: 19px; }
@@ -639,6 +647,9 @@ function buildDownloadsHtml(
       width: 24px; height: 24px; display: inline-grid; place-items: center; margin: 0; border: none;
       border-radius: 5px; background: transparent; color: var(--muted); cursor: pointer; padding: 0;
       flex-shrink: 0;
+    }
+    td.act button.icon-btn svg {
+      display: block;
     }
     td.act button.icon-btn:hover, .icon-btn:hover { background: var(--surface-2); color: var(--text); }
     td.act button.icon-btn:disabled { opacity: 0.35; cursor: not-allowed; }

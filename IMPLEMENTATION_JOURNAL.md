@@ -200,3 +200,4 @@
 - 2026-05-10 15:24:32 [SDK]: §1.1/v0 — главное окно: **`focus-visible`** на **`app-url-input`** и универсально на **`app-btn`** (--fa-focus-ring); чеклист §1.1/спринт; `npm run check` ок.
 - 2026-05-10 15:25:31 [SDK]: §6/§4.A — окно загрузок: HiDPI **SVG вкладок** «Редактор/Загрузки» — `.workspace-tab-glyph svg` **17px / 18px** в `@120dpi` / `@168dpi` inline CSS; спринт §6; `npm run check` ок.
 - 2026-05-10 15:26:38 [SDK]: §6/v0 topbar — окно загрузок: `.dl-topbar-ico svg` **19px / 20px** на @120dpi / @168dpi + `display: block` у глифа; спринт §6; `npm run check` ок.
+- 2026-05-10 15:27:59 [SDK]: §1.1/§6/v0 HiDPR stroke-icons — главный `main.css`: **topbar-кластер** SVG **21×22px** + вкладка **«Загрузки»** **17×18px**; downloads: **`td.act .icon-btn svg` 17×18px** @120/@168 + `display: block`; спринт; `npm run check` ок.

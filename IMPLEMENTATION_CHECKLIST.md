@@ -37,11 +37,10 @@
 
 - [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; `queue.json` без duplicate id; журнал out/err + truncate; дальше — редкие шаблоны логов по полю.
 - [~] §6.3: argv whitelist + справочник + превью draft/override `-o`; при необходимости редкие поля.
-- [~] §6.1/§4.A: окно загрузок — второй DPI inline CSS `@120dpi`/`@168dpi` (URL-band, таблица, журнал/history, rail); **глифы вкладок `.workspace-tab-glyph` SVG — 17px / 18px** + **иконки кластера правого topbar `.dl-topbar-ico svg` — 19px / 20px**; **`focus-visible` на `<summary>` истории / журнала / hints** (+ rail-секции); топбар lucide-кластер: `film` + **`download`** + `home` + настройки + `circleHelp`; **вкладки центра: `home` + `download`**; базовые `scaleFactor`/min*`window-hidpi`; дальше — ручная матрица Win 125–200 %.
-- [~] §1.1/§4.A/§9: редактор — HiDPI + топбар **ffmpeg•yt-dlp**; **`app-url-summary`/`app-url-body` @120dpi/@168dpi**; **`focus-visible`** на быстрой yt-dlp-полосе: **summary + поле URL (`app-url-input`) + кнопки (`app-btn`)**; **снимок/экспорт/отмена/облако + sun/moon (`EDITOR_TOPBAR_ACTION_ICONS` / `EDITOR_THEME_ICONS`)**; seek/снап; **сворачиваемый rail FFmpeg** (persist `ffmpegSettingsRailOpen`); дальше — multi-monitor DPI, Dolby/side_data §9.
+- [~] §6.1/§4.A: окно загрузок — `@120dpi`/`@168dpi`: URL-band, таблица, журнал/history, rail; **SVG табов / `.dl-topbar-ico` / действий строки `td.act .icon-btn` — 17–20px по зонам**; **`focus-visible`** на нужных `<summary>`; lucide-топбар + вкладки; дальше — ручная матрица Win 125–200 %.
+- [~] §1.1/§4.A/§9: редактор — HiDPR в `main.css`: **stroke в `app-topbar-actions` — 21px / 22px**, глиф **«Загрузки»** — **17px / 18px** (+ быстрая yt-dlp-полоса уже); топбар **ffmpeg•yt-dlp**; **снимок/экспорт/иконки** через shared lucide; seek/снап; **`ffmpegSettingsRailOpen`**; дальше — multi-monitor DPI, Dolby/side_data §9.
 - [~] §7.2: crop/rotate/flip; дальше расширенные фильтры и HW encode.
-- [~] §9: опционально Dolby Vision/`side_data` и прочие расширенные метаданные ffprobe.
-- [~] §21/§17: новые IPC через `ipc-channels` + shared-контракты; при необходимости логи по окнам; точечные Vitest.
+- [~] §9/§21: расширенные ffprobe (Dolby/side_data и др.); новые IPC через `ipc-channels`, при необходимости логи по окнам; точечные Vitest.
 
 ---
 

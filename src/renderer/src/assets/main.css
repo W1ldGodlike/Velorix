@@ -94,6 +94,10 @@
   margin-right: 6px;
 }
 
+.app-workspace-tab-glyph svg {
+  display: block;
+}
+
 .app-topbar-trailing {
   display: inline-flex;
   align-items: center;
@@ -124,6 +128,10 @@
   gap: 0.35rem;
   min-width: 0;
   overflow: hidden;
+}
+
+.app-topbar-actions .app-icon-btn > svg {
+  display: block;
 }
 
 /* Компактные icon-first кнопки (ориентир v0 / lucide 24×24). */
@@ -1395,6 +1403,16 @@
     padding: 0.52rem 0.78rem;
   }
 
+  .app-topbar-actions .app-icon-btn > svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .app-workspace-tab-glyph svg {
+    width: 17px;
+    height: 17px;
+  }
+
   .app-toolbar {
     min-height: 56px;
     padding: 0.68rem 0.88rem;
@@ -1518,6 +1536,16 @@
 @media (-webkit-min-device-pixel-ratio: 1.75), (min-resolution: 168dpi) {
   .app-topbar {
     min-height: 66px;
+  }
+
+  .app-topbar-actions .app-icon-btn > svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .app-workspace-tab-glyph svg {
+    width: 18px;
+    height: 18px;
   }
 
   .app-toolbar {
