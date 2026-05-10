@@ -44,6 +44,9 @@ describe('createSupportBundleZip', () => {
     const out = join(root, 'out', 'support.zip')
     writeFileSync(logFile, 'hello log', 'utf-8')
 
+    const sessionLog = join(root, 'session.log')
+    writeFileSync(sessionLog, 'session hello', 'utf-8')
+
     createSupportBundleZip(out, {
       appVersion: '0.1.0',
       electronVersion: '1',
@@ -55,6 +58,7 @@ describe('createSupportBundleZip', () => {
       resources: root,
       logFile,
       logBackupFile: null,
+      sessionLogFile: sessionLog,
       crashDumps: null
     })
 
@@ -62,6 +66,9 @@ describe('createSupportBundleZip', () => {
     expect(zip.includes(Buffer.from('diagnostics.txt'))).toBe(true)
     expect(zip.includes(Buffer.from('logs/main.log'))).toBe(true)
     expect(zip.includes(Buffer.from('hello log'))).toBe(true)
+    expect(zip.includes(Buffer.from('logs/session.log'))).toBe(true)
+    expect(zip.includes(Buffer.from('session hello'))).toBe(true)
+    expect(zip.includes(Buffer.from('sessionLogFile:'))).toBe(true)
   })
 })
 

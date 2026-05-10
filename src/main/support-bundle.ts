@@ -21,6 +21,8 @@ export interface SupportBundleRuntimeInfo {
   resources: string
   logFile: string | null
   logBackupFile: string | null
+  /** §18 — лог текущей сессии (`session.log`), дублирует строки с `main.log`. */
+  sessionLogFile: string | null
   crashDumps: string | null
 }
 
@@ -238,6 +240,7 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
     `resources: ${info.resources}`,
     `logFile: ${info.logFile ?? '-'}`,
     `logBackupFile: ${info.logBackupFile ?? '-'}`,
+    `sessionLogFile: ${info.sessionLogFile ?? '-'}`,
     `crashDumps: ${info.crashDumps ?? '-'}`
   ].join('\n')
 }
@@ -249,6 +252,7 @@ export function createSupportBundleZip(targetFile: string, info: SupportBundleRu
   ]
   pushFile(entries, 'logs/main.log', info.logFile)
   pushFile(entries, 'logs/main.log.1', info.logBackupFile)
+  pushFile(entries, 'logs/session.log', info.sessionLogFile)
   pushCrashDumps(entries, info.crashDumps)
   writeFileSync(targetFile, buildStoredZipBuffer(entries))
 }

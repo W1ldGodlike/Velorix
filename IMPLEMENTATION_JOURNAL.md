@@ -120,3 +120,4 @@
 - 2026-05-10 03:25:34 [SDK]: §6.3 — превью argv yt-dlp: IPC `getCliOptions` принимает опциональный override каталога `-o` и черновик полей (`draft`) без записи settings; при снимке очереди обновляется только превью/предупреждение парсера, форма не сбрасывается; `mergeYtdlpDownloadCliPatchOntoSettings` + тесты нормализации/override.
 - 2026-05-10 03:27:12 [SDK]: §6.4 — `ytdlp-progress-parser`: прогресс «N of M videos», транзиентные маркеры (500/504, broken pipe, read timed out…), пути из строк Writing thumbnail/subtitles; расширены Vitest.
 - 2026-05-10 03:28:44 [SDK]: §6.4 — `extractYtdlpOutputPath`: `[ffmpeg] Destination`/merge, `[EmbedSubtitle] Embedding…`, `[Metadata] Writing metadata to`; tests Vitest.
+- 2026-05-10 03:31:03 [SDK]: §18 — сессионный `logs/session.log` (дубликат строк с main), архив прошлого запуска в `logs/sessions/session-*.log` + prune; Support ZIP и меню «Открыть session.log».

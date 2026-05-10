@@ -2,6 +2,8 @@ import { appendFileSync, existsSync, mkdirSync, renameSync, statSync, unlinkSync
 import { dirname, join } from 'path'
 import { app } from 'electron'
 
+import { pruneOldDiagnosticFiles } from './support-bundle'
+
 /**
  * §18 — простой файловый логгер main без внешних зависимостей.
  *
@@ -10,6 +12,8 @@ import { app } from 'electron'
  *
  * - запись синхронная (`appendFileSync`) — потеря строк после жёсткого падения нежелательна;
  * - один файл с ровно одним rotate-бэкапом (`main.log.1`) при превышении лимита размера;
+ * - дублирование каждой строки в `session.log` текущего запуска; при следующем старте непустой
+ *   `session.log` переносится в `logs/sessions/session-*.log` (лимит файлов через prune);
  * - не блокирует стартап, если каталог недоступен — отвечает заглушками и пишет в `console`.
  *
  * Полноценный structured-logging / electron-log можно подключить позже, когда станет ясна
@@ -21,12 +25,19 @@ export type LogLevel = 'info' | 'warn' | 'error'
 
 const LOG_FILE_NAME = 'main.log'
 const LOG_BACKUP_NAME = 'main.log.1'
+const SESSION_LOG_NAME = 'session.log'
+/** Архивы прошлых сессий §18 — только именованные файлы, чтобы не задеть чужие `.log`. */
+const SESSION_ARCHIVE_SUBDIR = 'sessions'
+const SESSION_ARCHIVE_KEEP = 25
+const SESSION_ARCHIVE_MAX_AGE_MS = 90 * 24 * 60 * 60 * 1000
 const LOG_ROTATION_BYTES = 1_048_576 // 1 MiB достаточно для ручной диагностики; не растёт бесконтрольно
 const RENDERER_MESSAGE_MAX = 4096
 const RENDERER_SCOPE_MAX = 64
 
 let resolvedLogFilePath: string | null = null
 let initFailed = false
+/** Один раз за процесс: перед первой записью архивируем хвост прошлого `session.log`. */
+let sessionRunInitialized = false
 let processErrorReporter:
   | ((kind: 'uncaughtException' | 'unhandledRejection', reason: unknown) => void)
   | null = null
@@ -108,6 +119,62 @@ export function getMainLogBackupFilePath(): string | null {
   return file ? join(dirname(file), LOG_BACKUP_NAME) : null
 }
 
+/** Текущий сессионный лог (один файл на запуск приложения; не то же, что rolling `main.log`). */
+export function getSessionLogFilePath(): string | null {
+  const file = ensureLogFilePath()
+  return file ? join(dirname(file), SESSION_LOG_NAME) : null
+}
+
+/** Локальная метка для имени архива сессии — без двоеточий (Windows). */
+function sessionArchiveStampLocal(): string {
+  const d = new Date()
+  return (
+    `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}_` +
+    `${pad2(d.getHours())}-${pad2(d.getMinutes())}-${pad2(d.getSeconds())}`
+  )
+}
+
+/**
+ * Перед первой записью в лог: сохранить непустой `session.log` прошлого запуска в `logs/sessions/`
+ * и подчистить старые архивы §18.
+ */
+function ensureSessionRunInitialized(mainLogPath: string): void {
+  if (sessionRunInitialized) {
+    return
+  }
+  sessionRunInitialized = true
+  try {
+    const logsDir = dirname(mainLogPath)
+    const sessionPath = join(logsDir, SESSION_LOG_NAME)
+    if (existsSync(sessionPath)) {
+      const sz = statSync(sessionPath).size
+      if (sz > 0) {
+        const archiveDir = join(logsDir, SESSION_ARCHIVE_SUBDIR)
+        if (!existsSync(archiveDir)) {
+          mkdirSync(archiveDir, { recursive: true })
+        }
+        const dest = join(archiveDir, `session-${sessionArchiveStampLocal()}.log`)
+        try {
+          renameSync(sessionPath, dest)
+        } catch {
+          /* файл мог быть заблокирован — новая сессия всё равно попробует писать дальше */
+        }
+      }
+    }
+    const archiveDir = join(logsDir, SESSION_ARCHIVE_SUBDIR)
+    if (existsSync(archiveDir)) {
+      pruneOldDiagnosticFiles({
+        directory: archiveDir,
+        maxAgeMs: SESSION_ARCHIVE_MAX_AGE_MS,
+        keepNewest: SESSION_ARCHIVE_KEEP,
+        fileNamePattern: /^session-.+\.log$/i
+      })
+    }
+  } catch {
+    /* архив не должен блокировать логирование */
+  }
+}
+
 function rotateIfTooLarge(filePath: string): void {
   try {
     if (!existsSync(filePath)) {
@@ -147,10 +214,17 @@ function writeLine(level: LogLevel, scope: string, message: string, extra: unkno
   )}\n`
   if (file !== null) {
     try {
+      ensureSessionRunInitialized(file)
       rotateIfTooLarge(file)
       appendFileSync(file, line, 'utf-8')
     } catch {
       initFailed = true
+    }
+    try {
+      const sessionFile = join(dirname(file), SESSION_LOG_NAME)
+      appendFileSync(sessionFile, line, 'utf-8')
+    } catch {
+      /* дубликат в session.log не критичен; main.log уже записан */
     }
   }
   // Дублируем в console: в dev пригодится, в prod не уйдёт никуда лишнего.

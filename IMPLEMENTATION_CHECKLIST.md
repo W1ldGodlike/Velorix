@@ -39,7 +39,7 @@
 - [~] §6.3: экспертный argv + whitelist + справочник `<optgroup>` + превью argv (реальный каталог/первый URL из очереди); добавлены черновик полей формы и отдельный override каталога только для строки превью без записи в settings; дальше — при необходимости расширить overlay под редкие поля.
 - [~] §7: превью, таймлайн, экспорт MKV/MOV/MP4, снимок кадра, ffprobe под превью; отдельное окно инспектора §9 — позже.
 - [~] §7.2/§20: системные пресеты libx264, базовые параметры экспорта и live preview команды ffmpeg c маркерами In/Out + probeDurationSec (повторяет логику spawn); дальше пользовательские пресеты и продвинутые параметры (crop/rotate/filters/HW), live preview ещё нужно довести до формата сохранения.
-- [~] §17/§18: диагностические папки, Support ZIP, логи процессов; дальше политика сессионных логов и ротация.
+- [~] §17/§18: диагностические папки, Support ZIP, логи процессов, сессионный `session.log` + архивы в `logs/sessions/`; дальше при необходимости отдельные файлы по окнам/процессам или объём mid-session.
 - [~] §21: строгий TS и shared-контракты IPC + pure-хелперы для live preview ffmpeg; новые каналы — по мере новых фич.
 
 ---
@@ -454,12 +454,12 @@
 - [~] Логи renderer: `window.fluxalloy.log.send` через IPC `fluxalloy:log-renderer` + перехват `error`/`unhandledrejection` в `main.tsx`; канал закреплён за main window, ограничен token bucket и чистит control chars.
 - [x] Логи внешних процессов stdout/stderr: yt-dlp, ffmpeg export/snapshot, ffprobe через общий sanitizer без полного argv.
 - [~] Ротация по размеру: один backup `main.log.1` при превышении 1 MiB.
-- [~] Prune старых диагностических файлов: на старте чистятся crash dumps старше 30 дней, последние 20 сохраняются; сессионные логи — позже.
+- [~] Prune старых диагностических файлов: на старте чистятся crash dumps старше 30 дней, последние 20 сохраняются; архивы `logs/sessions/session-*.log` — не старше ~90 суток и не более ~25 файлов.
 - [~] Crash handler: `process.on('uncaughtException'|'unhandledRejection')` регистрируется на старте main до `app.whenReady`; после ready показывает диалог ошибки с деталями.
 - [x] Диалог ошибки: кратко + детали.
 - [x] Копировать детали.
 - [x] Открыть лог.
-- [x] Support ZIP: `diagnostics.txt`, `main.log`, `main.log.1`, последние crash dumps, версия, ОС.
+- [x] Support ZIP: `diagnostics.txt`, `main.log`, `main.log.1`, `session.log`, последние crash dumps, версия, ОС.
 
 ## §19. Система установки и дистрибуция
 

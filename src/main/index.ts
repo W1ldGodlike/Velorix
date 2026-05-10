@@ -28,6 +28,7 @@ import {
   attachProcessErrorHandlers,
   getMainLogBackupFilePath,
   getMainLogFilePath,
+  getSessionLogFilePath,
   logError,
   logFromRendererSafe,
   logInfo,
@@ -798,6 +799,7 @@ function supportBundleRuntimeInfo(): SupportBundleRuntimeInfo {
     resources: paths.resources,
     logFile: getMainLogFilePath(),
     logBackupFile: getMainLogBackupFilePath(),
+    sessionLogFile: getSessionLogFilePath(),
     crashDumps: getCrashDumpsPathSafe()
   }
 }
@@ -826,6 +828,21 @@ async function openMainLogFile(): Promise<void> {
   const result = await shell.openPath(file)
   if (result.length > 0) {
     logError('diagnostics', 'open main.log failed', result)
+  }
+}
+
+async function openSessionLogFile(): Promise<void> {
+  const file = getSessionLogFilePath()
+  if (!file) {
+    return
+  }
+  if (!existsSync(file)) {
+    logInfo('diagnostics', 'session.log does not exist yet')
+    return
+  }
+  const result = await shell.openPath(file)
+  if (result.length > 0) {
+    logError('diagnostics', 'open session.log failed', result)
   }
 }
 
@@ -1013,6 +1030,12 @@ function buildApplicationMenu(): void {
           label: 'Открыть main.log',
           click: (): void => {
             void openMainLogFile()
+          }
+        },
+        {
+          label: 'Открыть session.log',
+          click: (): void => {
+            void openSessionLogFile()
           }
         },
         {
