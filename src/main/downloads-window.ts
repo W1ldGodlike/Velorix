@@ -936,6 +936,7 @@ ${emitDownloadsTopbarClusterHtml(18)}
               </label>
             </div>
             <table class="history-table">
+              <caption class="sr-only">История завершённых загрузок</caption>
               <thead><tr><th>Завершено</th><th>Имя</th><th>Ссылка</th><th>Исход</th><th>Код</th><th>Статус</th><th></th></tr></thead>
               <tbody id="historyBody"></tbody>
             </table>
@@ -948,7 +949,7 @@ ${emitDownloadsTopbarClusterHtml(18)}
                 <button type="button" class="cmd" id="clearLogBtn" title="Очистить только текст на экране (файл не трогаем)">Очистить вид</button>
                 <span class="queue-summary log-meta" id="logMeta"></span>
               </div>
-              <pre id="logPre"></pre>
+              <pre id="logPre" role="log" aria-live="polite" aria-relevant="additions" aria-label="Вывод stdout и stderr yt-dlp"></pre>
             </details>
           </div>
         </div>
