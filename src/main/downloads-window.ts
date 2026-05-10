@@ -319,12 +319,20 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
     .status-done .status-dot { background: var(--green); }
     .status-error .status-dot { background: var(--red); }
     .status-cancelled .status-dot { background: var(--dim); }
-    td.act { white-space: nowrap; width: 12.8rem; }
-    td.act button, .icon-btn {
-      width: 24px; height: 24px; display: inline-grid; place-items: center; margin-right: 0.15rem; border: none;
-      border-radius: 5px; background: transparent; color: var(--muted); cursor: pointer; padding: 0; font-size: 0.78rem;
+    td.act { vertical-align: middle; min-width: 9.5rem; max-width: 16rem; }
+    .act-icons {
+      display: inline-flex; flex-wrap: wrap; gap: 0.14rem; align-items: center;
+      justify-content: flex-end;
     }
-    td.act button:hover, .icon-btn:hover { background: var(--surface-2); color: var(--text); text-decoration: none; }
+    td.act button.icon-btn, .icon-btn {
+      width: 26px; height: 26px; display: inline-grid; place-items: center; margin: 0; border: none;
+      border-radius: 5px; background: transparent; color: var(--muted); cursor: pointer; padding: 0;
+      flex-shrink: 0;
+    }
+    td.act button.icon-btn:hover, .icon-btn:hover { background: var(--surface-2); color: var(--text); }
+    td.act button.icon-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    td.act button.icon-btn-warn { color: color-mix(in srgb, var(--red) 88%, white); }
+    td.act button.icon-btn-warn:hover { background: color-mix(in srgb, var(--red) 12%, var(--surface-2)); color: var(--red); }
     .bottom-panels { flex-shrink: 0; min-height: 170px; max-height: 34vh; display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--border); background: var(--surface); overflow: hidden; }
     .log-panel, .history-panel { min-height: 0; overflow: auto; padding: 0; border: none; margin: 0; }
     .log-panel { border-left: 1px solid var(--border); }
@@ -1056,6 +1064,99 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
         return !(typeof status === 'string' && status.indexOf('Пауза перед повтором') === 0);
       }
 
+      function isRowDownloading(status) {
+        return status === 'Загрузка…' || (typeof status === 'string' && status.indexOf('Пауза перед повтором') === 0);
+      }
+
+      /** Lucide-подобные мини-иконки для столбца действий (stroke, 24 viewBox → 14px). */
+      var SVG_NS = 'http://www.w3.org/2000/svg';
+      function svgEl(tag, attrs) {
+        var n = document.createElementNS(SVG_NS, tag);
+        if (attrs) {
+          Object.keys(attrs).forEach(function (k) {
+            n.setAttribute(k, attrs[k]);
+          });
+        }
+        return n;
+      }
+      function svgIcon(paths) {
+        var svg = svgEl('svg', {
+          width: '14',
+          height: '14',
+          viewBox: '0 0 24 24',
+          fill: 'none',
+          stroke: 'currentColor',
+          'stroke-width': '2',
+          'stroke-linecap': 'round',
+          'stroke-linejoin': 'round'
+        });
+        paths.forEach(function (p) {
+          var el = svgEl(p.tag, p.attr);
+          svg.appendChild(el);
+        });
+        return svg;
+      }
+      var RowIco = {
+        play: function () {
+          return svgIcon([{ tag: 'polygon', attr: { points: '6 4 20 12 6 20 6 4' } }]);
+        },
+        pause: function () {
+          return svgIcon([
+            { tag: 'rect', attr: { x: '7', y: '5', width: '3.5', height: '14', rx: '1' } },
+            { tag: 'rect', attr: { x: '14.5', y: '5', width: '3.5', height: '14', rx: '1' } }
+          ]);
+        },
+        retry: function () {
+          return svgIcon([
+            { tag: 'path', attr: { d: 'M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8' } },
+            { tag: 'path', attr: { d: 'M21 3v5h-5' } },
+            { tag: 'path', attr: { d: 'M3 12a9 9 0 0 1 9 9c2.52 0 4.93-1 6.74-2.74L3 16' } },
+            { tag: 'path', attr: { d: 'M8 16H3v5' } }
+          ]);
+        },
+        outbound: function () {
+          return svgIcon([
+            { tag: 'path', attr: { d: 'M15 3h6v6' } },
+            { tag: 'path', attr: { d: 'M10 14 21 3' } },
+            { tag: 'path', attr: { d: 'M18 13v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6' } }
+          ]);
+        },
+        file: function () {
+          return svgIcon([
+            { tag: 'path', attr: { d: 'M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z' } },
+            { tag: 'path', attr: { d: 'M14 2v4a2 2 0 0 0 2 2h4' } }
+          ]);
+        },
+        folder: function () {
+          return svgIcon([
+            {
+              tag: 'path',
+              attr: {
+                d: 'm6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2h3.93a2 2 0 0 1 1.66.89l.82 1.24a2 2 0 0 0 1.66.89H18a2 2 0 0 1 2 2v2'
+              }
+            }
+          ]);
+        },
+        chevUp: function () {
+          return svgIcon([{ tag: 'path', attr: { d: 'm18 15-6-6-6 6' } }]);
+        },
+        chevDown: function () {
+          return svgIcon([{ tag: 'path', attr: { d: 'm6 9 6 6 6-6' } }]);
+        },
+        trash: function () {
+          return svgIcon([
+            { tag: 'path', attr: { d: 'M3 6h18' } },
+            { tag: 'path', attr: { d: 'M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6' } },
+            { tag: 'path', attr: { d: 'M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2' } }
+          ]);
+        },
+        stop: function () {
+          return svgIcon([
+            { tag: 'rect', attr: { x: '7', y: '7', width: '10', height: '10', rx: '2' } }
+          ]);
+        }
+      };
+
       function queueRowMatchesFilter(row, filter) {
         var status = typeof row.status === 'string' ? row.status : '';
         if (filter === 'all') return true;
@@ -1184,30 +1285,58 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
           tr.appendChild(tdStatus(r.status || '—'));
           var tdAct = document.createElement('td');
           tdAct.className = 'act';
-          function mk(act, title, label, id) {
+          var wrap = document.createElement('div');
+          wrap.className = 'act-icons';
+          function mkIcon(act, title, id, nodeFn, btnClass) {
             var b = document.createElement('button');
             b.type = 'button';
-            b.className = 'icon-btn';
+            b.className = 'icon-btn' + (btnClass ? ' ' + btnClass : '');
             b.setAttribute('data-act', act);
             b.setAttribute('data-id', String(id));
             b.title = title;
             b.setAttribute('aria-label', title);
-            b.textContent = label;
-            tdAct.appendChild(b);
+            b.appendChild(nodeFn());
+            wrap.appendChild(b);
           }
-          if (r.status === 'Ожидание') {
-            mk('start', 'Скачать только эту строку', '▶', r.id);
-          } else if (rowCanRetry(r.status)) {
-            mk('retry', 'Сбросить статус и скачать эту строку заново', '↻', r.id);
+          var st = typeof r.status === 'string' ? r.status : '';
+          var activeRun = !!r.isActiveRunner;
+          var dl = isRowDownloading(st);
+          if (dl && activeRun) {
+            mkIcon(
+              'row-cancel',
+              'Отменить текущую загрузку yt-dlp (эта строка)',
+              r.id,
+              RowIco.stop,
+              'icon-btn-warn'
+            );
+          }
+          if (dl && activeRun && r.ytdlpPauseSupported && r.ytdlpPauseChildActive) {
+            var pTitle = r.ytdlpPaused
+              ? 'Продолжить загрузку (SIGCONT)'
+              : 'Приостановить загрузку (SIGSTOP)';
+            var pFactory = r.ytdlpPaused ? RowIco.play : RowIco.pause;
+            mkIcon('row-pause-toggle', pTitle, r.id, pFactory, '');
+          }
+          if (st === 'Ожидание') {
+            mkIcon('start', 'Скачать только эту строку', r.id, RowIco.play, '');
+          } else if (rowCanRetry(st)) {
+            mkIcon('retry', 'Сбросить статус и скачать эту строку заново', r.id, RowIco.retry, '');
           }
           if (typeof r.outputPath === 'string' && r.outputPath) {
-            mk('open-handler', 'Открыть скачанный файл в FluxAlloy', '↗', r.id);
-            mk('open-file', 'Открыть скачанный файл', 'F', r.id);
-            mk('open-folder', 'Показать файл в папке', 'D', r.id);
+            mkIcon(
+              'open-handler',
+              'Открыть скачанный файл в FluxAlloy',
+              r.id,
+              RowIco.outbound,
+              ''
+            );
+            mkIcon('open-file', 'Открыть скачанный файл', r.id, RowIco.file, '');
+            mkIcon('open-folder', 'Показать файл в папке', r.id, RowIco.folder, '');
           }
-          mk('up', 'Вверх', '↑', r.id);
-          mk('dn', 'Вниз', '↓', r.id);
-          mk('rm', 'Удалить', '×', r.id);
+          mkIcon('up', 'Переместить строку вверх в очереди', r.id, RowIco.chevUp, '');
+          mkIcon('dn', 'Переместить строку вниз в очереди', r.id, RowIco.chevDown, '');
+          mkIcon('rm', 'Удалить строку из очереди', r.id, RowIco.trash, '');
+          tdAct.appendChild(wrap);
           tr.appendChild(tdAct);
           body.appendChild(tr);
         });
@@ -1247,6 +1376,21 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
             if (res && res.ok === false && res.error) {
               window.alert(res.error);
             }
+          });
+        } else if (act === 'row-cancel') {
+          api.cancelQueue().then(function (res) {
+            if (res && res.ok === false && res.error) window.alert(res.error);
+            refreshPauseBtn();
+          });
+        } else if (act === 'row-pause-toggle') {
+          api.getYtdlpPauseState().then(function (s) {
+            if (!s || !s.supported || !s.active) return;
+            var p = s.paused ? api.resumeYtdlp() : api.pauseYtdlp();
+            p.then(function (res) {
+              if (res && res.ok === false && res.error) window.alert(res.error);
+              refreshPauseBtn();
+              api.getSnapshot().then(onQueueSnapshot);
+            });
           });
         }
       });
@@ -1511,7 +1655,18 @@ export function registerDownloadsWindowIpcHandlers(): void {
     if (!isDownloadsSender(event.sender)) {
       return []
     }
-    return getDownloadsQueueSnapshot()
+    const activeId = getActiveDownloadsRunnerRowId()
+    const ps = getActiveYtdlpPauseState()
+    return getDownloadsQueueSnapshot().map((r) => {
+      const isActive = r.id === activeId
+      const row: Record<string, unknown> = { ...r, isActiveRunner: isActive }
+      if (isActive) {
+        row['ytdlpPauseSupported'] = ps.supported
+        row['ytdlpPauseChildActive'] = ps.active
+        row['ytdlpPaused'] = ps.paused
+      }
+      return row
+    })
   })
 
   ipcMain.handle(d.addLines, (event, text: unknown) => {
