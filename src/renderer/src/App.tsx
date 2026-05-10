@@ -1198,16 +1198,23 @@ function App(): JSX.Element {
       >
         <summary className="app-url-summary">Быстрая загрузка yt-dlp</summary>
         <div className="app-url-body">
-          <input
-            className="app-url-input"
-            type="url"
-            inputMode="url"
-            placeholder="URL или список URL — передать в менеджер загрузок"
-            value={downloadsUrl}
-            onChange={(e) => {
-              setDownloadsUrl(e.target.value)
-            }}
-          />
+          <div className="app-url-field">
+            <input
+              className="app-url-input"
+              type="url"
+              inputMode="url"
+              placeholder="URL или список URL — передать в менеджер загрузок"
+              aria-describedby="quickYtdlpUrlHint"
+              value={downloadsUrl}
+              onChange={(e) => {
+                setDownloadsUrl(e.target.value)
+              }}
+            />
+            <p id="quickYtdlpUrlHint" className="app-url-hint">
+              Ссылка открывается во вкладке «Загрузки»; несколько URL — по строкам уже в окне
+              менеджера yt-dlp §6.
+            </p>
+          </div>
           <button
             type="button"
             className="app-btn"

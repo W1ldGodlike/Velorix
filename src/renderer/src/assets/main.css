@@ -287,9 +287,24 @@
 
 .app-url-body {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.5rem;
   padding: 0 0.75rem 0.55rem;
+}
+
+.app-url-field {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.22rem;
+}
+
+.app-url-hint {
+  margin: 0;
+  color: var(--fa-text-muted);
+  font-size: 0.62rem;
+  line-height: 1.35;
 }
 
 /* §7.2 — превью команды ffmpeg в виде сворачиваемого блока. */
@@ -1455,6 +1470,10 @@
     padding: 0 0.78rem 0.58rem;
   }
 
+  .app-url-hint {
+    font-size: 0.648rem;
+  }
+
   .app-timeline-ruler-track {
     height: 15px;
   }
@@ -1714,5 +1733,9 @@
 
   .app-url-body {
     padding: 0 0.82rem 0.6rem;
+  }
+
+  .app-url-hint {
+    font-size: 0.668rem;
   }
 }
