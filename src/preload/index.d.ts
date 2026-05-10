@@ -45,6 +45,7 @@ import type {
   YtdlpDownloadOptionsPayload,
   YtdlpGetCliOptionsParams
 } from '../shared/ytdlp-download-contract'
+import type { YtdlpDownloadHistoryEntry } from '../shared/ytdlp-history-contract'
 
 /** Данные для привязки `<video>` к локальному файлу через allowlist-схему `fluxmedia://`. */
 export type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
@@ -116,6 +117,12 @@ export interface FluxAlloyApi {
     ) => Promise<{ ok: true; payload: YtdlpDownloadOptionsPayload } | { ok: false; error: string }>
     setCliOptions: (
       patch: YtdlpDownloadOptionsPatch
+    ) => Promise<{ ok: true } | { ok: false; error: string }>
+    getHistory: () => Promise<YtdlpDownloadHistoryEntry[]>
+    clearHistory: () => Promise<{ ok: true } | { ok: false; error: string }>
+    openHistoryOutput: (
+      id: string,
+      mode: 'file' | 'folder'
     ) => Promise<{ ok: true } | { ok: false; error: string }>
   }
   inspector: {

@@ -572,6 +572,111 @@
   line-height: 1.35;
 }
 
+.app-downloads-history-panel {
+  border-radius: 8px;
+  border: 1px solid var(--fa-border-subtle);
+  background: color-mix(in srgb, var(--fa-bg) 64%, var(--fa-surface-elevated));
+}
+
+.app-downloads-history-panel summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.55rem 0.65rem;
+  color: var(--fa-text-secondary);
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.app-downloads-history-panel summary:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 2px;
+}
+
+.app-downloads-history-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  padding: 0 0.65rem 0.55rem;
+}
+
+.app-downloads-history-list {
+  display: flex;
+  max-height: 18rem;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.55rem;
+  overflow: auto;
+  padding: 0 0.65rem 0.65rem;
+}
+
+.app-downloads-history-empty {
+  margin: 0;
+  color: var(--fa-text-muted);
+  font-size: 0.68rem;
+  line-height: 1.35;
+}
+
+.app-downloads-history-card {
+  min-width: 0;
+  padding: 0.55rem;
+  border-radius: 8px;
+  border: 1px solid var(--fa-border-subtle);
+  background: var(--fa-surface);
+}
+
+.app-downloads-history-card p {
+  margin: 0.32rem 0 0;
+  overflow: hidden;
+  color: var(--fa-text-muted);
+  font-size: 0.64rem;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-downloads-history-head,
+.app-downloads-history-meta {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.app-downloads-history-head strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--fa-text-primary);
+  font-size: 0.72rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-downloads-history-outcome {
+  flex: 0 0 auto;
+  color: var(--fa-text-muted);
+  font-size: 0.62rem;
+  font-weight: 800;
+}
+
+.app-downloads-history-success {
+  color: var(--fa-success);
+}
+
+.app-downloads-history-error {
+  color: var(--fa-danger);
+}
+
+.app-downloads-history-meta {
+  margin-top: 0.36rem;
+  color: var(--fa-text-muted);
+  font-size: 0.62rem;
+}
+
 .app-downloads-band {
   display: flex;
   align-items: flex-start;

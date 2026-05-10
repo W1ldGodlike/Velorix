@@ -72,6 +72,8 @@ import {
 export const DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL = d.queueSnapshot
 
 interface DownloadsWindowBoundsHooks {
+  /** §4.A — главное окно тоже может управлять embedded вкладкой `Загрузки`. */
+  isMainWindowSender?: (sender: WebContents) => boolean
   getSavedDownloadsBounds?: () => StoredWindowRect | undefined
   persistDownloadsBounds?: (rect: StoredWindowRect) => void
   /** §6.2 — диалог выбора каталога и сохранение в settings.json (реализуется в index.ts). */
@@ -124,6 +126,10 @@ function isDownloadsSender(sender: WebContents): boolean {
     !downloadsWindow.isDestroyed() &&
     sender.id === downloadsWindow.webContents.id
   )
+}
+
+function isDownloadsOrMainSender(sender: WebContents): boolean {
+  return isDownloadsSender(sender) || downloadsBoundsHooks.isMainWindowSender?.(sender) === true
 }
 
 export function isDownloadsWindow(win: BrowserWindow | null | undefined): boolean {
@@ -2349,7 +2355,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   })
 
   ipcMain.handle(d.getSnapshot, (event) => {
-    if (!isDownloadsSender(event.sender)) {
+    if (!isDownloadsOrMainSender(event.sender)) {
       return []
     }
     const activeId = getActiveDownloadsRunnerRowId()
@@ -2367,7 +2373,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   })
 
   ipcMain.handle(d.addLines, (event, text: unknown) => {
-    if (!isDownloadsSender(event.sender)) {
+    if (!isDownloadsOrMainSender(event.sender)) {
       return 0
     }
     if (typeof text !== 'string') {
@@ -2386,7 +2392,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
       path: string
       isDefault: boolean
     } => {
-      if (!isDownloadsSender(event.sender)) {
+      if (!isDownloadsOrMainSender(event.sender)) {
         return { path: '', isDefault: true }
       }
       const paths = resolveAppPaths()
@@ -2400,7 +2406,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   ipcMain.handle(
     d.openOutputDir,
     async (event): Promise<{ ok: true } | { ok: false; error: string }> => {
-      if (!isDownloadsSender(event.sender)) {
+      if (!isDownloadsOrMainSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
       }
       const paths = resolveAppPaths()
@@ -2416,7 +2422,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
       event,
       raw?: unknown
     ): { ok: true; payload: YtdlpDownloadOptionsPayload } | { ok: false; error: string } => {
-      if (!isDownloadsSender(event.sender)) {
+      if (!isDownloadsOrMainSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
       }
       const fn = downloadsBoundsHooks.getYtdlpDownloadCliOptions
@@ -2430,7 +2436,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   ipcMain.handle(
     d.setCliOptions,
     (event, raw: unknown): { ok: true } | { ok: false; error: string } => {
-      if (!isDownloadsSender(event.sender)) {
+      if (!isDownloadsOrMainSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
       }
       const fn = downloadsBoundsHooks.applyYtdlpDownloadCliPatch
@@ -2564,7 +2570,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
     ): Promise<
       { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
     > => {
-      if (!isDownloadsSender(event.sender)) {
+      if (!isDownloadsOrMainSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
       }
       const fn = downloadsBoundsHooks.pickYtdlpOutputDirectory
@@ -2580,7 +2586,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   )
 
   ipcMain.handle(d.clearOutputDir, (event) => {
-    if (!isDownloadsSender(event.sender)) {
+    if (!isDownloadsOrMainSender(event.sender)) {
       return
     }
     downloadsBoundsHooks.clearYtdlpOutputDirectoryOverride?.()
@@ -2593,7 +2599,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
     ): Promise<
       { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
     > => {
-      if (!isDownloadsSender(event.sender)) {
+      if (!isDownloadsOrMainSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
       }
       const fn = downloadsBoundsHooks.pickYtdlpCookiesFile
@@ -2609,14 +2615,14 @@ export function registerDownloadsWindowIpcHandlers(): void {
   )
 
   ipcMain.handle(d.clearCookiesFile, (event) => {
-    if (!isDownloadsSender(event.sender)) {
+    if (!isDownloadsOrMainSender(event.sender)) {
       return
     }
     downloadsBoundsHooks.clearYtdlpCookiesFile?.()
   })
 
   ipcMain.handle(d.clear, (event) => {
-    if (!isDownloadsSender(event.sender)) {
+    if (!isDownloadsOrMainSender(event.sender)) {
       return
     }
     cancelDownloadsRunner()
@@ -2625,7 +2631,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   })
 
   ipcMain.handle(d.clearFinished, (event) => {
-    if (!isDownloadsSender(event.sender)) {
+    if (!isDownloadsOrMainSender(event.sender)) {
       return 0
     }
     const removed = clearFinishedDownloadsQueueRows()
@@ -2635,7 +2641,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
 
   /** §6.4 — чтение истории завершённых загрузок (newest first). */
   ipcMain.handle(d.getHistory, (event) => {
-    if (!isDownloadsSender(event.sender)) {
+    if (!isDownloadsOrMainSender(event.sender)) {
       return []
     }
     const paths = resolveAppPaths()
@@ -2643,7 +2649,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   })
 
   ipcMain.handle(d.clearHistory, (event): { ok: true } | { ok: false; error: string } => {
-    if (!isDownloadsSender(event.sender)) {
+    if (!isDownloadsOrMainSender(event.sender)) {
       return { ok: false, error: 'Недопустимый отправитель' }
     }
     const paths = resolveAppPaths()
@@ -2657,7 +2663,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
       event,
       raw: unknown
     ): Promise<{ ok: true; path: string } | { ok: false; error: string }> => {
-      if (!isDownloadsSender(event.sender)) {
+      if (!isDownloadsOrMainSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
       }
       if (typeof raw !== 'string' || raw.trim().length === 0) {
@@ -2698,7 +2704,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
       id: unknown,
       modeRaw: unknown
     ): Promise<{ ok: true } | { ok: false; error: string }> => {
-      if (!isDownloadsSender(event.sender)) {
+      if (!isDownloadsOrMainSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
       }
       if (typeof id !== 'number' || !Number.isFinite(id) || !isDownloadOutputOpenMode(modeRaw)) {
@@ -2719,7 +2725,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
       id: unknown,
       modeRaw: unknown
     ): Promise<{ ok: true } | { ok: false; error: string }> => {
-      if (!isDownloadsSender(event.sender)) {
+      if (!isDownloadsOrMainSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
       }
       if (typeof id !== 'string' || id.length === 0 || !isDownloadOutputOpenMode(modeRaw)) {
@@ -2739,7 +2745,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   ipcMain.handle(
     d.openQueueOutputInHandler,
     (event, id: unknown): { ok: true } | { ok: false; error: string } => {
-      if (!isDownloadsSender(event.sender)) {
+      if (!isDownloadsOrMainSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
       }
       if (typeof id !== 'number' || !Number.isFinite(id)) {
@@ -2756,7 +2762,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   ipcMain.handle(
     d.openHistoryOutputInHandler,
     (event, id: unknown): { ok: true } | { ok: false; error: string } => {
-      if (!isDownloadsSender(event.sender)) {
+      if (!isDownloadsOrMainSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
       }
       if (typeof id !== 'string' || id.length === 0) {
@@ -2774,7 +2780,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   )
 
   ipcMain.handle(d.remove, (event, id: unknown) => {
-    if (!isDownloadsSender(event.sender)) {
+    if (!isDownloadsOrMainSender(event.sender)) {
       return
     }
     if (typeof id !== 'number' || !Number.isFinite(id)) {
@@ -2785,7 +2791,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   })
 
   ipcMain.handle(d.move, (event, id: unknown, direction: unknown) => {
-    if (!isDownloadsSender(event.sender)) {
+    if (!isDownloadsOrMainSender(event.sender)) {
       return
     }
     if (typeof id !== 'number' || !Number.isFinite(id)) {
@@ -2802,7 +2808,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   ipcMain.handle(
     d.startQueue,
     async (event): Promise<{ ok: true } | { ok: false; error: string }> => {
-      if (!isDownloadsSender(event.sender)) {
+      if (!isDownloadsOrMainSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
       }
 
@@ -2817,7 +2823,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   ipcMain.handle(
     d.startRow,
     async (event, id: unknown): Promise<{ ok: true } | { ok: false; error: string }> => {
-      if (!isDownloadsSender(event.sender)) {
+      if (!isDownloadsOrMainSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
       }
       if (typeof id !== 'number' || !Number.isFinite(id)) {
@@ -2835,7 +2841,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   ipcMain.handle(
     d.retryRow,
     async (event, id: unknown): Promise<{ ok: true } | { ok: false; error: string }> => {
-      if (!isDownloadsSender(event.sender)) {
+      if (!isDownloadsOrMainSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
       }
       if (typeof id !== 'number' || !Number.isFinite(id)) {
@@ -2862,7 +2868,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   )
 
   ipcMain.handle(d.cancelRun, (event): { ok: true } | { ok: false; error: string } => {
-    if (!isDownloadsSender(event.sender)) {
+    if (!isDownloadsOrMainSender(event.sender)) {
       return { ok: false, error: 'Недопустимый отправитель' }
     }
     cancelDownloadsRunner()
@@ -2874,7 +2880,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   ipcMain.handle(
     d.getYtdlpPauseState,
     (event): { supported: boolean; active: boolean; paused: boolean } => {
-      if (!isDownloadsSender(event.sender)) {
+      if (!isDownloadsOrMainSender(event.sender)) {
         return { supported: false, active: false, paused: false }
       }
       return getActiveYtdlpPauseState()
@@ -2882,7 +2888,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   )
 
   ipcMain.handle(d.pauseYtdlp, (event): { ok: true } | { ok: false; error: string } => {
-    if (!isDownloadsSender(event.sender)) {
+    if (!isDownloadsOrMainSender(event.sender)) {
       return { ok: false, error: 'Недопустимый отправитель' }
     }
     const res = pauseActiveYtdlpProcess()
@@ -2901,7 +2907,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   })
 
   ipcMain.handle(d.resumeYtdlp, (event): { ok: true } | { ok: false; error: string } => {
-    if (!isDownloadsSender(event.sender)) {
+    if (!isDownloadsOrMainSender(event.sender)) {
       return { ok: false, error: 'Недопустимый отправитель' }
     }
     const res = resumeActiveYtdlpProcess()
@@ -2922,7 +2928,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   ipcMain.handle(
     d.mergeUiPanels,
     (event, raw: unknown): { ok: true } | { ok: false; error: string } => {
-      if (!isDownloadsSender(event.sender)) {
+      if (!isDownloadsOrMainSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
       }
       const patch = sanitizeDownloadsUiPanelPatch(raw)
@@ -2941,7 +2947,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   ipcMain.handle(
     d.bridgeOpenInspector,
     (event, raw: unknown): { ok: true } | { ok: false; error: string } => {
-      if (!isDownloadsSender(event.sender)) {
+      if (!isDownloadsOrMainSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
       }
       const p = typeof raw === 'string' && raw.trim().length > 0 ? raw : undefined
@@ -2951,7 +2957,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   )
 
   ipcMain.handle(d.bridgeFocusMainEditor, (event): { ok: true } | { ok: false; error: string } => {
-    if (!isDownloadsSender(event.sender)) {
+    if (!isDownloadsOrMainSender(event.sender)) {
       return { ok: false, error: 'Недопустимый отправитель' }
     }
     const w = resolveMainEditorWindow()
@@ -2964,7 +2970,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   })
 
   ipcMain.handle(d.bridgeOpenEnginePaths, (event): { ok: true } | { ok: false; error: string } => {
-    if (!isDownloadsSender(event.sender)) {
+    if (!isDownloadsOrMainSender(event.sender)) {
       return { ok: false, error: 'Недопустимый отправитель' }
     }
     const w = resolveMainEditorWindow()
@@ -2978,7 +2984,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   })
 
   ipcMain.handle(d.bridgeOpenAbout, (event): { ok: true } | { ok: false; error: string } => {
-    if (!isDownloadsSender(event.sender)) {
+    if (!isDownloadsOrMainSender(event.sender)) {
       return { ok: false, error: 'Недопустимый отправитель' }
     }
     const w = resolveMainEditorWindow()

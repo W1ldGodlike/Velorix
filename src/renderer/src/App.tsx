@@ -53,6 +53,7 @@ import type {
   YtdlpQueueRetryProfileId,
   YtdlpSubtitlePresetId
 } from '../../shared/ytdlp-download-contract'
+import type { YtdlpDownloadHistoryEntry } from '../../shared/ytdlp-history-contract'
 import { PreviewProbeBody } from './components/MediaProbePanel'
 type Theme = ResolvedAppTheme
 
@@ -381,6 +382,28 @@ function downloadsStatusTone(row: DownloadsQueueRowView): string {
   return 'pending'
 }
 
+function formatDownloadsHistoryTime(ms: number): string {
+  if (!Number.isFinite(ms) || ms <= 0) {
+    return '—'
+  }
+  return new Date(ms).toLocaleString('ru-RU', {
+    day: '2-digit',
+    month: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
+
+function downloadsHistoryOutcomeLabel(outcome: YtdlpDownloadHistoryEntry['outcome']): string {
+  if (outcome === 'success') {
+    return 'Готово'
+  }
+  if (outcome === 'cancelled') {
+    return 'Отмена'
+  }
+  return 'Ошибка'
+}
+
 function App(): JSX.Element {
   const [workspaceTab, setWorkspaceTab] = useState<WorkspaceTab>('editor')
   const [theme, setTheme] = useState<Theme>('dark')
@@ -407,6 +430,8 @@ function App(): JSX.Element {
   const [downloadsStatusFilter, setDownloadsStatusFilter] = useState<DownloadsStatusFilter>('all')
   const [downloadsOptions, setDownloadsOptions] = useState<YtdlpDownloadOptionsPayload | null>(null)
   const [downloadsOptionsBusy, setDownloadsOptionsBusy] = useState(false)
+  const [downloadsHistory, setDownloadsHistory] = useState<YtdlpDownloadHistoryEntry[]>([])
+  const [downloadsHistoryBusy, setDownloadsHistoryBusy] = useState(false)
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
   const [topbarEngineVersionsLine, setTopbarEngineVersionsLine] = useState('')
   const [exportBusy, setExportBusy] = useState(false)
@@ -485,6 +510,16 @@ function App(): JSX.Element {
     [refreshDownloadsOptions]
   )
 
+  const refreshDownloadsHistory = useCallback(async (): Promise<void> => {
+    setDownloadsHistoryBusy(true)
+    try {
+      const rows = await window.fluxalloy.downloads.getHistory()
+      setDownloadsHistory(rows)
+    } finally {
+      setDownloadsHistoryBusy(false)
+    }
+  }, [])
+
   const applyPreview = useCallback((payload: PreviewOpenedPayload): void => {
     setProbeInfo(null)
     setProbeError(null)
@@ -560,6 +595,18 @@ function App(): JSX.Element {
         return
       }
       setStatusHint(res.error)
+    })
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  useEffect(() => {
+    let mounted = true
+    void window.fluxalloy.downloads.getHistory().then((rows) => {
+      if (mounted) {
+        setDownloadsHistory(rows)
+      }
     })
     return () => {
       mounted = false
@@ -2614,6 +2661,90 @@ function App(): JSX.Element {
             ) : (
               <p className="app-settings-subtitle">Загружаю настройки yt-dlp…</p>
             )}
+            <details className="app-downloads-history-panel" open>
+              <summary>
+                История
+                <span>{downloadsHistory.length}</span>
+              </summary>
+              <div className="app-downloads-history-actions">
+                <button
+                  type="button"
+                  className="app-btn app-btn-compact"
+                  disabled={downloadsHistoryBusy}
+                  onClick={() => {
+                    void refreshDownloadsHistory()
+                  }}
+                >
+                  Обновить
+                </button>
+                <button
+                  type="button"
+                  className="app-btn app-btn-compact app-btn-warn"
+                  disabled={downloadsHistoryBusy || downloadsHistory.length === 0}
+                  onClick={() => {
+                    void window.fluxalloy.downloads.clearHistory().then((res) => {
+                      if (!res.ok) {
+                        setStatusHint(res.error)
+                        return
+                      }
+                      setDownloadsHistory([])
+                    })
+                  }}
+                >
+                  Очистить
+                </button>
+              </div>
+              <div className="app-downloads-history-list">
+                {downloadsHistory.length === 0 ? (
+                  <p className="app-downloads-history-empty">
+                    История пока пуста. После завершения строк здесь появятся последние результаты.
+                  </p>
+                ) : (
+                  downloadsHistory.slice(0, 8).map((entry) => (
+                    <article key={entry.id} className="app-downloads-history-card">
+                      <div className="app-downloads-history-head">
+                        <strong>{entry.shortLabel}</strong>
+                        <span
+                          className={`app-downloads-history-outcome app-downloads-history-${entry.outcome}`}
+                        >
+                          {downloadsHistoryOutcomeLabel(entry.outcome)}
+                        </span>
+                      </div>
+                      <p title={entry.url}>{entry.url}</p>
+                      <div className="app-downloads-history-meta">
+                        <span>{formatDownloadsHistoryTime(entry.finishedAt)}</span>
+                        <span>{entry.status}</span>
+                      </div>
+                      {entry.errorHint ? (
+                        <p className="app-downloads-warning">{entry.errorHint}</p>
+                      ) : null}
+                      {entry.outputPath ? (
+                        <div className="app-downloads-history-actions">
+                          <button
+                            type="button"
+                            className="app-btn app-btn-compact"
+                            onClick={() => {
+                              void window.fluxalloy.downloads.openHistoryOutput(entry.id, 'file')
+                            }}
+                          >
+                            Файл
+                          </button>
+                          <button
+                            type="button"
+                            className="app-btn app-btn-compact"
+                            onClick={() => {
+                              void window.fluxalloy.downloads.openHistoryOutput(entry.id, 'folder')
+                            }}
+                          >
+                            Папка
+                          </button>
+                        </div>
+                      ) : null}
+                    </article>
+                  ))
+                )}
+              </div>
+            </details>
             <button
               type="button"
               className="app-btn"

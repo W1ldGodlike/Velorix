@@ -1488,6 +1488,7 @@ app.whenReady().then(() => {
     buildApplicationMenu()
   })
   configureDownloadsWindowBoundsHooks({
+    isMainWindowSender: (sender) => sender.id === mainWindowWebContentsId,
     getSavedDownloadsBounds: () => cachedSettings.windowBounds?.downloads,
     persistDownloadsBounds: (r) => {
       patchWindowBounds({ downloads: r })

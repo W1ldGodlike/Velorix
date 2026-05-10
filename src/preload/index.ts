@@ -46,6 +46,7 @@ import type {
   YtdlpDownloadOptionsPayload,
   YtdlpGetCliOptionsParams
 } from '../shared/ytdlp-download-contract'
+import type { YtdlpDownloadHistoryEntry } from '../shared/ytdlp-history-contract'
 import { downloadsIpc as d, mainWindowIpc as mw } from '../shared/ipc-channels'
 
 type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
@@ -180,7 +181,15 @@ const fluxalloy = {
     setCliOptions: (
       patch: YtdlpDownloadOptionsPatch
     ): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.setCliOptions, patch)
+      ipcRenderer.invoke(d.setCliOptions, patch),
+    getHistory: (): Promise<YtdlpDownloadHistoryEntry[]> => ipcRenderer.invoke(d.getHistory),
+    clearHistory: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(d.clearHistory),
+    openHistoryOutput: (
+      id: string,
+      mode: 'file' | 'folder'
+    ): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(d.openHistoryOutput, id, mode)
   },
   /** §9 §363 — отдельное окно инспектора (тот же preload, что главное окно). */
   inspector: {
