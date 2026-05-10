@@ -24,6 +24,7 @@ import {
   formatProbeSummaryHtmlDocument,
   formatProbeSummaryPlainText
 } from '../../shared/ffprobe-summary-export'
+import { formatProbeChapterTimecode } from '../../shared/ffprobe-timecode'
 
 type Theme = 'dark' | 'light'
 
@@ -125,6 +126,11 @@ type MediaProbeSuccess = Extract<
 >
 
 type MediaProbeTrackRow = MediaProbeSuccess['tracks'][number]
+
+function formatChapterDurationSec(endSec: number, startSec: number): string {
+  const dur = endSec - startSec
+  return Number.isFinite(dur) && dur >= 0 ? `${dur.toFixed(2)} с` : '—'
+}
 
 function formatProbeDuration(sec: number | null): string {
   if (sec === null || !Number.isFinite(sec)) {
@@ -314,6 +320,39 @@ function PreviewProbeBody({
                     <td>{trackKindRu(row.kind)}</td>
                     <td className="app-probe-table-mono">{row.codec}</td>
                     <td>{row.detail}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </details>
+      ) : null}
+      {probeInfo.chapters.length > 0 ? (
+        <details className="app-probe-details">
+          <summary className="app-probe-summary">Главы ({probeInfo.chapters.length})</summary>
+          <div className="app-probe-table-wrap">
+            <table className="app-probe-table">
+              <thead>
+                <tr>
+                  <th scope="col">id</th>
+                  <th scope="col">Начало</th>
+                  <th scope="col">Конец</th>
+                  <th scope="col">Длительность</th>
+                  <th scope="col">Заголовок</th>
+                </tr>
+              </thead>
+              <tbody>
+                {probeInfo.chapters.map((ch) => (
+                  <tr key={`chapter-${ch.index}-${ch.startSec}`}>
+                    <td>{ch.index}</td>
+                    <td className="app-probe-table-mono">
+                      {formatProbeChapterTimecode(ch.startSec)}
+                    </td>
+                    <td className="app-probe-table-mono">
+                      {formatProbeChapterTimecode(ch.endSec)}
+                    </td>
+                    <td>{formatChapterDurationSec(ch.endSec, ch.startSec)}</td>
+                    <td>{ch.title ?? '—'}</td>
                   </tr>
                 ))}
               </tbody>

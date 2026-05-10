@@ -1,4 +1,5 @@
 import type { MediaProbeSuccess, MediaProbeTrackRow } from './ffprobe-contract'
+import { formatProbeChapterTimecode } from './ffprobe-timecode'
 
 /** Общий stem для имён файлов экспорта ffprobe; без пути — префикс `fluxalloy`. */
 function stemFromMediaPath(mediaPath: string | undefined): string {
@@ -115,6 +116,17 @@ export function formatProbeSummaryPlainText(info: MediaProbeSuccess): string {
     }
   }
 
+  if (info.chapters.length > 0) {
+    lines.push('', `Главы: ${info.chapters.length}`, '')
+    lines.push('id\tНачало\tКонец\tДлит.\tЗаголовок', '-'.repeat(64))
+    for (const ch of info.chapters) {
+      const dur = ch.endSec - ch.startSec
+      lines.push(
+        `${ch.index}\t${formatProbeChapterTimecode(ch.startSec)}\t${formatProbeChapterTimecode(ch.endSec)}\t${dur.toFixed(2)} с\t${(ch.title ?? '').replace(/\t/g, ' ')}`
+      )
+    }
+  }
+
   lines.push('', '— FluxAlloy §9')
   return lines.join('\n')
 }
@@ -128,6 +140,24 @@ export function formatProbeSummaryHtmlDocument(info: MediaProbeSuccess): string 
         `<tr><td>${row.index}</td><td>${escapeHtml(trackKindRu(row.kind))}</td><td class="mono">${escapeHtml(row.codec)}</td><td>${escapeHtml(row.detail)}</td></tr>`
     )
     .join('\n')
+
+  const chapterRows = info.chapters
+    .map((ch) => {
+      const dur = ch.endSec - ch.startSec
+      return `<tr><td>${ch.index}</td><td class="mono">${escapeHtml(formatProbeChapterTimecode(ch.startSec))}</td><td class="mono">${escapeHtml(formatProbeChapterTimecode(ch.endSec))}</td><td class="mono">${escapeHtml(`${dur.toFixed(2)} с`)}</td><td>${escapeHtml(ch.title ?? '—')}</td></tr>`
+    })
+    .join('\n')
+
+  const chaptersSection =
+    info.chapters.length > 0
+      ? `<h2>Главы (${info.chapters.length})</h2>
+  <table>
+    <thead><tr><th>id</th><th>Начало</th><th>Конец</th><th>Длительность</th><th>Заголовок</th></tr></thead>
+    <tbody>
+${chapterRows}
+    </tbody>
+  </table>`
+      : ''
 
   const metaParts = [
     `<li>Длительность: ${escapeHtml(formatProbeDurationLine(info.durationSec))}</li>`,
@@ -170,6 +200,7 @@ ${metaParts.join('\n')}
 ${rows || '<tr><td colspan="4">Нет дорожек</td></tr>'}
     </tbody>
   </table>
+${chaptersSection}
   <footer>FluxAlloy §9</footer>
 </body>
 </html>

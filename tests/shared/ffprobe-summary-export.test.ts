@@ -21,6 +21,7 @@ const sampleProbe: MediaProbeSuccess = {
     { index: 0, kind: 'video', codec: 'h264', detail: '1920x1080, 24 fps' },
     { index: 1, kind: 'audio', codec: 'aac', detail: 'stereo, 48000 Hz' }
   ],
+  chapters: [],
   rawJson: '{}'
 }
 
@@ -49,6 +50,16 @@ describe('ffprobe-summary-export', () => {
     expect(t).toContain('aac')
     expect(t).toContain('Дорожек: 2')
     expect(t).toContain('Видео\t')
+  })
+
+  it('formatProbeSummaryPlainText и HTML включают главы', () => {
+    const withChapters: MediaProbeSuccess = {
+      ...sampleProbe,
+      chapters: [{ index: 0, startSec: 0, endSec: 10, title: 'Раздел' }]
+    }
+    expect(formatProbeSummaryPlainText(withChapters)).toContain('Главы: 1')
+    expect(formatProbeSummaryPlainText(withChapters)).toContain('Раздел')
+    expect(formatProbeSummaryHtmlDocument(withChapters)).toContain('Главы (1)')
   })
 
   it('formatProbeSummaryHtmlDocument экранирует detail и содержит таблицу', () => {

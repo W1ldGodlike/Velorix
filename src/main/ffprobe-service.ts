@@ -3,6 +3,7 @@ import { execFile } from 'child_process'
 import type { AppPaths } from './app-paths'
 import { resolveEngineExecutablePath, type EnginePathOverrides } from './engine-service'
 import { logExternalProcessLine } from './external-process-log'
+import { buildChapterRowsFromFfprobeJson } from '../shared/ffprobe-chapters'
 import type {
   MediaProbeResult,
   MediaProbeSuccess,
@@ -16,6 +17,7 @@ export type {
 } from '../shared/ffprobe-contract'
 
 interface FfprobeJson {
+  chapters?: unknown[]
   format?: {
     duration?: string
     format_name?: string
@@ -190,6 +192,7 @@ function runFfprobeJson(ffprobePath: string, mediaPath: string): Promise<string>
         'json',
         '-show_format',
         '-show_streams',
+        '-show_chapters',
         mediaPath
       ],
       { timeout: 60_000, windowsHide: true, maxBuffer: 20 * 1024 * 1024 },
@@ -288,6 +291,7 @@ export async function probeMediaFile(
     formatLongName: formatLong,
     bitrateKbps: formatBitrateKbps(parsed.format?.bit_rate),
     tracks: buildTrackRows(parsed.streams),
+    chapters: buildChapterRowsFromFfprobeJson(parsed.chapters),
     rawJson
   }
 }

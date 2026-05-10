@@ -8,6 +8,16 @@ export interface MediaProbeTrackRow {
   detail: string
 }
 
+/** Глава контейнера §9 (ffprobe `-show_chapters`). */
+export interface MediaProbeChapterRow {
+  /** Идентификатор из ffprobe (`id`). */
+  index: number
+  startSec: number
+  endSec: number
+  /** `tags.title`, если есть. */
+  title: string | null
+}
+
 /** Краткий срез JSON ffprobe для главного окна §7 (превью и таймлайн). */
 export interface MediaProbeSuccess {
   ok: true
@@ -25,6 +35,8 @@ export interface MediaProbeSuccess {
   bitrateKbps: number | null
   /** Все потоки в порядке индекса ffprobe. */
   tracks: MediaProbeTrackRow[]
+  /** Главы из `-show_chapters`; пусто, если в файле нет метаданных глав. */
+  chapters: MediaProbeChapterRow[]
   /** Сырой JSON stdout ffprobe (для §9: просмотр / копирование). */
   rawJson: string
 }
