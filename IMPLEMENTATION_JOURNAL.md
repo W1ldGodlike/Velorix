@@ -166,3 +166,4 @@
 - 2026-05-10 13:56:24 [SDK]: §1.1/v0 — окно загрузок: CSS `:root` дублирует тёмные `--fa-*` из `base.css` + алиасы прежних `--bg`/…; `focus-visible` как в редакторе (`--fa-focus-ring`, select/inputs/cmd/icon-btn/topbar); топбар-иконки с `fa-border-subtle`; шрифтовой стек/smoothing как у main; спринт.
 - 2026-05-10 14:00:12 [SDK]: §1.1/§6 — окно загрузок: `data-theme` light/dark при создании HTML из `cachedSettings.theme` + preload `onThemeChanged` на `themeChanged`; `npm run check` ок.
 - 2026-05-10 14:01:38 [SDK]: §1.1/§4.C — окно yt-dlp: HiDPI CSS (`min-resolution`/dppx) + дефолтный размер/`min*` от `scaleFactor`; `focus-visible` на переключателях rail/селектах/`summary`; чеклист §4.C/§1.1.
+- 2026-05-10 14:04:14 [SDK]: §1.1/v0 — окно загрузок: нижняя зона под таблицей — история и журнал **вертикально** (лог снизу на всю ширину), `pre` тянется в flex-ячейке; §4.A/спринт.

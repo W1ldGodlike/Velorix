@@ -480,9 +480,29 @@ function buildDownloadsHtml(
     td.act button.icon-btn:disabled { opacity: 0.35; cursor: not-allowed; }
     td.act button.icon-btn-warn { color: color-mix(in srgb, var(--red) 88%, white); }
     td.act button.icon-btn-warn:hover { background: color-mix(in srgb, var(--red) 12%, var(--surface-2)); color: var(--red); }
-    .bottom-panels { flex-shrink: 0; min-height: 136px; max-height: 32vh; display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--border); background: var(--surface); overflow: hidden; }
+    /* v0: под таблицей очереди — сначала история (опционально), непосредственно «снизу» — журнал операций на всю ширину столбца. */
+    .bottom-panels {
+      flex-shrink: 0;
+      min-height: 168px;
+      max-height: 38vh;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: minmax(0, 1fr) minmax(0, 1.18fr);
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      overflow: hidden;
+    }
     .log-panel, .history-panel { min-height: 0; overflow: auto; padding: 0; border: none; margin: 0; }
-    .log-panel { border-left: 1px solid var(--border); }
+    .log-panel {
+      border-left: none;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .log-panel > details.details-chev { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+    .log-panel > details.details-chev > summary { flex-shrink: 0; }
+    .log-panel .history-actions { flex-shrink: 0; }
     .log-panel summary, .history-panel summary {
       cursor: pointer; font-weight: 700; font-size: 0.64rem; padding: 0.36rem 0.55rem; margin: 0;
       user-select: none; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em;
@@ -509,9 +529,21 @@ function buildDownloadsHtml(
       transform: rotate(90deg);
     }
     .log-panel pre {
-      margin: 0 0.55rem 0.52rem; max-height: 200px; overflow: auto; white-space: pre-wrap; word-break: break-word;
-      font-family: ui-monospace, Consolas, Menlo, monospace; font-size: 0.64rem; line-height: 1.32;
-      background: var(--bg); color: var(--muted); padding: 0.45rem 0.52rem; border-radius: 5px; border: 1px solid var(--border);
+      flex: 1 1 auto;
+      min-height: 3.5rem;
+      max-height: none;
+      margin: 0.35rem 0.55rem 0.52rem;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: ui-monospace, Consolas, Menlo, monospace;
+      font-size: 0.64rem;
+      line-height: 1.32;
+      background: var(--bg);
+      color: var(--muted);
+      padding: 0.45rem 0.52rem;
+      border-radius: 5px;
+      border: 1px solid var(--border);
     }
     .settings-rail { min-width: 0; min-height: 0; overflow: auto; background: var(--surface); }
     .rail-head { padding: 0.5rem 0.62rem; border-bottom: 1px solid var(--border); }
@@ -594,8 +626,7 @@ function buildDownloadsHtml(
     @media (max-width: 960px) {
       .dl-main { grid-template-columns: 1fr; }
       .settings-rail { display: none; }
-      .bottom-panels { grid-template-columns: 1fr; max-height: 40vh; }
-      .log-panel { border-left: none; border-top: 1px solid var(--border); }
+      .bottom-panels { max-height: 44vh; }
     }
   </style>
 </head>
