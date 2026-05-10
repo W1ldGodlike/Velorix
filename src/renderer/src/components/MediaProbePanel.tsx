@@ -267,7 +267,16 @@ export function PreviewProbeBody({
 
   return (
     <>
-      <div className="app-preview-probe-stack">
+      <div
+        className="app-preview-probe-stack"
+        role="region"
+        aria-label="Расширенная сводка ffprobe"
+        aria-describedby="probePanelOverviewHint"
+      >
+        <p id="probePanelOverviewHint" className="app-visually-hidden">
+          Раскрываемые блоки §9: экспорт текстовой/HTML сводки, таблицы дорожек и глав, сырой JSON
+          ffprobe; в таблицах доступны контекстное меню и копирование ячеек.
+        </p>
         <div className="app-preview-probe-summary-line">
           <span title={formatTooltip}>
             {formatProbeDuration(probeInfo.durationSec)}

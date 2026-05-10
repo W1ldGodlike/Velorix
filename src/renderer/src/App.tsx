@@ -1828,6 +1828,7 @@ function App(): JSX.Element {
                           void handleCopyExportPreview()
                         }}
                         title="Скопировать строку команды ffmpeg в буфер"
+                        aria-describedby="exportCommandPreviewHint"
                       >
                         Копировать
                       </button>
