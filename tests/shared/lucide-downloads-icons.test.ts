@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import {
   DOWNLOADS_TOPBAR_CLUSTER_ICONS,
+  EDITOR_TRANSPORT_ICONS,
   QUEUE_ROW_ACTION_ICONS,
   emitDownloadsQueueRowIcoBootstrapJs,
   emitDownloadsTopbarClusterHtml,
@@ -27,5 +28,10 @@ describe('lucide-downloads-icons', () => {
     const html = emitDownloadsTopbarClusterHtml(18)
     expect(html).toContain('id="dlTopFilm"')
     expect(html).toContain('role="toolbar"')
+  })
+
+  it('иконки транспорта редактора (v0 §Editor layout) сериализуются в stroke SVG', () => {
+    expect(emitInlineStrokeSvg(EDITOR_TRANSPORT_ICONS.skipBack, 20)).toContain('polygon points=')
+    expect(emitInlineStrokeSvg(EDITOR_TRANSPORT_ICONS.volume2, 20)).toContain('path d=')
   })
 })

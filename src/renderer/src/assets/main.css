@@ -591,6 +591,47 @@
   background: #000000;
 }
 
+/* §1.1 / v0: транспорт сразу под превью (нативные controls у `<video>` сохраняем по §7.1). */
+.app-preview-transport {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  padding: 0.32rem 0.55rem;
+  border-top: 1px solid var(--fa-border-subtle);
+  background: color-mix(in srgb, var(--fa-surface) 93%, transparent);
+}
+
+.app-preview-transport-cluster {
+  display: flex;
+  align-items: center;
+  gap: 0.18rem;
+  flex-wrap: wrap;
+}
+
+.app-preview-transport-end {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.app-preview-transport-volume {
+  display: flex;
+  align-items: center;
+  min-width: 4.75rem;
+  max-width: 8rem;
+}
+
+.app-preview-transport-volume-range {
+  width: 100%;
+  accent-color: var(--fa-accent);
+  min-height: 1.05rem;
+}
+
 .app-timeline-stack {
   display: flex;
   flex-direction: column;

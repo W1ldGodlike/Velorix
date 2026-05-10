@@ -156,6 +156,63 @@ export const DOWNLOADS_TOPBAR_CLUSTER_ICONS = {
 
 export type DownloadsTopbarClusterIconKey = keyof typeof DOWNLOADS_TOPBAR_CLUSTER_ICONS
 
+/**
+ * Полоска транспорта под превью редактора (§1.1 / `docs/UX_REFERENCE_V0.md`): lucide-глифы без React-зависимости.
+ */
+export const EDITOR_TRANSPORT_ICONS = {
+  skipBack: [
+    { tag: 'polygon', attr: { points: '19 20 9 12 19 4 19 20' } },
+    { tag: 'line', attr: { x1: '5', y1: '19', x2: '5', y2: '5' } }
+  ] as const satisfies readonly StrokePrim[],
+  chevronLeft: [
+    { tag: 'path', attr: { d: 'm15 18-6-6 6-6' } }
+  ] as const satisfies readonly StrokePrim[],
+  play: QUEUE_ROW_ACTION_ICONS.play,
+  pause: QUEUE_ROW_ACTION_ICONS.pause,
+  chevronRight: [
+    { tag: 'path', attr: { d: 'm9 18 6-6-6-6' } }
+  ] as const satisfies readonly StrokePrim[],
+  skipForward: [
+    { tag: 'polygon', attr: { points: '5 4 15 12 5 20 5 4' } },
+    { tag: 'line', attr: { x1: '19', y1: '5', x2: '19', y2: '19' } }
+  ] as const satisfies readonly StrokePrim[],
+  volume2: [
+    { tag: 'polygon', attr: { points: '11 5 6 9 2 9 2 15 6 15 11 19 11 5' } },
+    { tag: 'path', attr: { d: 'M15.54 8.46a5 5 0 0 1 0 7.07' } },
+    { tag: 'path', attr: { d: 'M19.07 4.93a10 10 0 0 1 0 14.14' } }
+  ] as const satisfies readonly StrokePrim[],
+  volumeX: [
+    { tag: 'polygon', attr: { points: '11 5 6 9 2 9 2 15 6 15 11 19 11 5' } },
+    { tag: 'line', attr: { x1: '22', y1: '9', x2: '16', y2: '15' } },
+    { tag: 'line', attr: { x1: '16', y1: '9', x2: '22', y2: '15' } }
+  ] as const satisfies readonly StrokePrim[],
+  maximize2: [
+    { tag: 'polyline', attr: { points: '15 3 21 3 21 9' } },
+    { tag: 'polyline', attr: { points: '9 21 3 21 3 15' } },
+    { tag: 'line', attr: { x1: '21', y1: '3', x2: '14', y2: '10' } },
+    { tag: 'line', attr: { x1: '3', y1: '21', x2: '10', y2: '14' } }
+  ] as const satisfies readonly StrokePrim[]
+} as const
+
+/** Быстрые действия v0-топбара: поворот / crop-блиц (см. FFmpeg-панель). */
+export const EDITOR_TOPBAR_TOOLS_ICONS = {
+  rotateCcw: [
+    { tag: 'path', attr: { d: 'M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8' } },
+    { tag: 'path', attr: { d: 'M3 3v5h5' } }
+  ] as const satisfies readonly StrokePrim[],
+  rotateCw: [
+    { tag: 'path', attr: { d: 'M21 12a9 9 0 1 1-9-9 9.75 9.75 0 0 1 6.74 2.74L21 8' } },
+    { tag: 'path', attr: { d: 'M21 3v5h-5' } }
+  ] as const satisfies readonly StrokePrim[],
+  scissors: [
+    { tag: 'circle', attr: { cx: '6', cy: '6', r: '3' } },
+    { tag: 'circle', attr: { cx: '6', cy: '18', r: '3' } },
+    { tag: 'line', attr: { x1: '20', y1: '4', x2: '8.12', y2: '15.88' } },
+    { tag: 'line', attr: { x1: '14.47', y1: '14.48', x2: '20', y2: '20' } },
+    { tag: 'line', attr: { x1: '8.12', y1: '8.12', x2: '12', y2: '12' } }
+  ] as const satisfies readonly StrokePrim[]
+} as const
+
 function emitPrimEl(p: StrokePrim): string {
   switch (p.tag) {
     case 'path':

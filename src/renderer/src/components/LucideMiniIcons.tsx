@@ -2,6 +2,8 @@ import type { JSX, ReactNode } from 'react'
 
 import {
   DOWNLOADS_TOPBAR_CLUSTER_ICONS,
+  EDITOR_TOPBAR_TOOLS_ICONS,
+  EDITOR_TRANSPORT_ICONS,
   QUEUE_ROW_ACTION_ICONS,
   type StrokePrim
 } from '../../../shared/lucide-downloads-icons'
@@ -242,6 +244,174 @@ export function IconMoon({
   return (
     <SvgBase title={title} size={size}>
       <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+    </SvgBase>
+  )
+}
+
+export function IconSkipBack({
+  title = 'В начало',
+  size = 20
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(EDITOR_TRANSPORT_ICONS.skipBack)}
+    </SvgBase>
+  )
+}
+
+export function IconChevronLeft({
+  title = 'Назад на 5 сек',
+  size = 20
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(EDITOR_TRANSPORT_ICONS.chevronLeft)}
+    </SvgBase>
+  )
+}
+
+export function IconChevronRight({
+  title = 'Вперёд на 5 сек',
+  size = 20
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(EDITOR_TRANSPORT_ICONS.chevronRight)}
+    </SvgBase>
+  )
+}
+
+export function IconSkipForward({
+  title = 'В конец',
+  size = 20
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(EDITOR_TRANSPORT_ICONS.skipForward)}
+    </SvgBase>
+  )
+}
+
+export function IconPlay({
+  title = 'Воспроизвести',
+  size = 20
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(EDITOR_TRANSPORT_ICONS.play)}
+    </SvgBase>
+  )
+}
+
+export function IconPauseUi({
+  title = 'Пауза',
+  size = 20
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(EDITOR_TRANSPORT_ICONS.pause)}
+    </SvgBase>
+  )
+}
+
+export function IconVolume2({
+  title = 'Громкость',
+  size = 20
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(EDITOR_TRANSPORT_ICONS.volume2)}
+    </SvgBase>
+  )
+}
+
+export function IconVolumeX({
+  title = 'Без звука',
+  size = 20
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(EDITOR_TRANSPORT_ICONS.volumeX)}
+    </SvgBase>
+  )
+}
+
+export function IconMaximize2({
+  title = 'Полноэкранный предпросмотр',
+  size = 20
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(EDITOR_TRANSPORT_ICONS.maximize2)}
+    </SvgBase>
+  )
+}
+
+export function IconRotateCcw({
+  title = 'Шаг поворота против часовой (как FFmpeg §7.2)',
+  size = 20
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(EDITOR_TOPBAR_TOOLS_ICONS.rotateCcw)}
+    </SvgBase>
+  )
+}
+
+export function IconRotateCw({
+  title = 'Шаг поворота по часовой (как FFmpeg §7.2)',
+  size = 20
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(EDITOR_TOPBAR_TOOLS_ICONS.rotateCw)}
+    </SvgBase>
+  )
+}
+
+export function IconScissors({
+  title = 'Следующий crop-пресет (§7.2)',
+  size = 20
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(EDITOR_TOPBAR_TOOLS_ICONS.scissors)}
     </SvgBase>
   )
 }

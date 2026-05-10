@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { JSX } from 'react'
 
 import VideoTimeline from './components/VideoTimeline'
+import PreviewTransport from './components/PreviewTransport'
 import Versions from './components/Versions'
 import {
   IconBan,
@@ -12,7 +13,10 @@ import {
   IconFolderOpen,
   IconImage,
   IconMoon,
+  IconRotateCcw,
+  IconRotateCw,
   IconSave,
+  IconScissors,
   IconSettings,
   IconSun
 } from './components/LucideMiniIcons'
@@ -241,6 +245,8 @@ function App(): JSX.Element {
   const [snapshotFormat, setSnapshotFormat] = useState<FfmpegSnapshotFormatId>('png')
   const [snapshotBusy, setSnapshotBusy] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
+  /** Стек видео+транспорт+таймлайн: цель fullscreen по референсу v0. */
+  const previewStackRef = useRef<HTMLDivElement>(null)
   /** Последний диапазон In/Out с таймлайна для IPC экспорта. */
   const trimSnapshotRef = useRef<{ inSec: number; outSec: number } | null>(null)
   /**
@@ -358,6 +364,36 @@ function App(): JSX.Element {
   const bumpManualExportEdit = useCallback(() => {
     setSelectedUserPresetId(null)
   }, [])
+
+  const cycleVideoTransformTopbar = useCallback(
+    (dir: -1 | 1): void => {
+      if (exportBusy || snapshotBusy) {
+        return
+      }
+      bumpManualExportEdit()
+      const order: FfmpegExportVideoTransformId[] = ['none', 'ccw90', 'r180', 'cw90']
+      const i = order.indexOf(exportVideoTransform)
+      const base = i >= 0 ? i : 0
+      const next = (base + dir + order.length * 16) % order.length
+      const v = order[next] ?? 'none'
+      setExportVideoTransform(v)
+      void window.fluxalloy.settings.setFfmpegExportVideoTransform(v).catch(console.error)
+    },
+    [bumpManualExportEdit, exportBusy, exportVideoTransform, snapshotBusy]
+  )
+
+  const cycleCropPresetTopbar = useCallback((): void => {
+    if (exportBusy || snapshotBusy) {
+      return
+    }
+    bumpManualExportEdit()
+    const order: FfmpegExportCropPresetId[] = ['none', 'center-square', 'center-16-9', 'center-4-3']
+    const i = order.indexOf(exportCropPreset)
+    const base = i >= 0 ? i : 0
+    const next = order[(base + 1) % order.length] ?? 'none'
+    setExportCropPreset(next)
+    void window.fluxalloy.settings.setFfmpegExportCropPreset(next).catch(console.error)
+  }, [bumpManualExportEdit, exportBusy, exportCropPreset, snapshotBusy])
 
   type MainPanelKey = keyof typeof MAIN_PANEL_DEFAULTS
 
@@ -963,6 +999,42 @@ function App(): JSX.Element {
           <button
             type="button"
             className="app-icon-btn"
+            disabled={exportBusy || snapshotBusy}
+            onClick={() => {
+              cycleVideoTransformTopbar(-1)
+            }}
+            title="Поворот против часовой: none → 90° CCW → 180° → 90° CW (экспорт §7.2)"
+          >
+            <IconRotateCcw />
+            <span className="app-visually-hidden">Поворот CCW</span>
+          </button>
+          <button
+            type="button"
+            className="app-icon-btn"
+            disabled={exportBusy || snapshotBusy}
+            onClick={() => {
+              cycleVideoTransformTopbar(1)
+            }}
+            title="Поворот по часовой: none → 90° CW → 180° → 90° CCW (экспорт §7.2)"
+          >
+            <IconRotateCw />
+            <span className="app-visually-hidden">Поворот CW</span>
+          </button>
+          <button
+            type="button"
+            className="app-icon-btn"
+            disabled={exportBusy || snapshotBusy}
+            onClick={() => {
+              cycleCropPresetTopbar()
+            }}
+            title="Crop: none → 1:1 → 16:9 → 4:3 (экспорт §7.2)"
+          >
+            <IconScissors />
+            <span className="app-visually-hidden">Crop</span>
+          </button>
+          <button
+            type="button"
+            className="app-icon-btn"
             onClick={() => {
               void window.fluxalloy.inspector.openWindow(preview?.path ?? null)
             }}
@@ -1120,13 +1192,20 @@ function App(): JSX.Element {
         >
           {preview ? (
             <>
-              <div className="app-preview-stack">
+              <div className="app-preview-stack" ref={previewStackRef}>
                 <video
                   key={preview.mediaUrl}
                   ref={videoRef}
                   className="app-preview-video"
                   controls
                   src={preview.mediaUrl}
+                />
+                <PreviewTransport
+                  key={preview.mediaUrl}
+                  mediaKey={preview.mediaUrl}
+                  videoRef={videoRef}
+                  fullscreenRootRef={previewStackRef}
+                  disabled={exportBusy || snapshotBusy}
                 />
                 <VideoTimeline
                   key={preview.mediaUrl}
