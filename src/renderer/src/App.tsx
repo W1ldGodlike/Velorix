@@ -99,6 +99,38 @@ type DownloadsLogLineView = {
 
 type EnginesSnapshot = Awaited<ReturnType<typeof window.fluxalloy.engines.getStatus>>
 
+type PillSwitchProps = {
+  label: string
+  checked: boolean
+  disabled?: boolean
+  describedBy?: string
+  onToggle: () => void
+}
+
+function PillSwitch({
+  label,
+  checked,
+  disabled = false,
+  describedBy,
+  onToggle
+}: PillSwitchProps): JSX.Element {
+  return (
+    <button
+      type="button"
+      className={`app-pill-switch${checked ? ' app-pill-switch-on' : ''}`}
+      role="switch"
+      aria-label={label}
+      aria-checked={checked}
+      aria-describedby={describedBy}
+      disabled={disabled}
+      onClick={onToggle}
+    >
+      <span className="app-pill-switch-knob" aria-hidden />
+      <span className="app-pill-switch-text">{checked ? 'Вкл' : 'Выкл'}</span>
+    </button>
+  )
+}
+
 const EXPORT_ENCODE_PRESETS: Array<{ id: FfmpegExportEncodePresetId; label: string }> = [
   { id: 'balance', label: 'Баланс' },
   { id: 'smaller', label: 'Меньше размер' },
@@ -1964,14 +1996,12 @@ function App(): JSX.Element {
                 <div className="app-settings-grid" aria-describedby="ffmpegAudioSectionHint">
                   <div className="app-field app-field-switch">
                     <span>Без аудио</span>
-                    <button
-                      type="button"
-                      className={`app-pill-switch${exportAudioMode === 'none' ? ' app-pill-switch-on' : ''}`}
-                      role="switch"
-                      aria-checked={exportAudioMode === 'none'}
-                      aria-describedby="ffmpegAudioSectionHint ffmpegAudioModeHint"
+                    <PillSwitch
+                      label="Без аудио"
+                      checked={exportAudioMode === 'none'}
+                      describedBy="ffmpegAudioSectionHint ffmpegAudioModeHint"
                       disabled={exportBusy || snapshotBusy}
-                      onClick={() => {
+                      onToggle={() => {
                         bumpManualExportEdit()
                         const v: FfmpegExportAudioModeId =
                           exportAudioMode === 'none' ? 'aac' : 'none'
@@ -1980,12 +2010,7 @@ function App(): JSX.Element {
                           .setFfmpegExportAudioMode(v)
                           .catch(console.error)
                       }}
-                    >
-                      <span className="app-pill-switch-knob" aria-hidden />
-                      <span className="app-pill-switch-text">
-                        {exportAudioMode === 'none' ? 'Вкл' : 'Выкл'}
-                      </span>
-                    </button>
+                    />
                     <span id="ffmpegAudioModeHint" className="app-field-help">
                       Включите, если нужен немой файл или звук будет добавлен позже.
                     </span>
@@ -2607,64 +2632,52 @@ function App(): JSX.Element {
                 <div className="app-downloads-switch-grid">
                   <div className="app-field app-field-switch">
                     <span>Весь плейлист</span>
-                    <button
-                      type="button"
-                      className={`app-pill-switch${downloadsOptions.downloadPlaylist ? ' app-pill-switch-on' : ''}`}
-                      role="switch"
-                      aria-checked={downloadsOptions.downloadPlaylist}
+                    <PillSwitch
+                      label="Весь плейлист"
+                      checked={downloadsOptions.downloadPlaylist}
+                      describedBy="downloadsPlaylistHint"
                       disabled={downloadsOptionsBusy}
-                      onClick={() => {
+                      onToggle={() => {
                         void applyDownloadsOptionsPatch({
                           downloadPlaylist: !downloadsOptions.downloadPlaylist
                         })
                       }}
-                    >
-                      <span className="app-pill-switch-knob" aria-hidden />
-                      <span className="app-pill-switch-text">
-                        {downloadsOptions.downloadPlaylist ? 'Вкл' : 'Выкл'}
-                      </span>
-                    </button>
-                    <span className="app-field-help">`--yes-playlist` вместо одного видео.</span>
+                    />
+                    <span id="downloadsPlaylistHint" className="app-field-help">
+                      `--yes-playlist` вместо одного видео.
+                    </span>
                   </div>
                   <div className="app-field app-field-switch">
                     <span>Только аудио</span>
-                    <button
-                      type="button"
-                      className={`app-pill-switch${downloadsOptions.audioOnly ? ' app-pill-switch-on' : ''}`}
-                      role="switch"
-                      aria-checked={downloadsOptions.audioOnly}
+                    <PillSwitch
+                      label="Только аудио"
+                      checked={downloadsOptions.audioOnly}
+                      describedBy="downloadsAudioOnlyHint"
                       disabled={downloadsOptionsBusy}
-                      onClick={() => {
+                      onToggle={() => {
                         void applyDownloadsOptionsPatch({ audioOnly: !downloadsOptions.audioOnly })
                       }}
-                    >
-                      <span className="app-pill-switch-knob" aria-hidden />
-                      <span className="app-pill-switch-text">
-                        {downloadsOptions.audioOnly ? 'Вкл' : 'Выкл'}
-                      </span>
-                    </button>
-                    <span className="app-field-help">`-x`, если нужен звук без видеодорожки.</span>
+                    />
+                    <span id="downloadsAudioOnlyHint" className="app-field-help">
+                      `-x`, если нужен звук без видеодорожки.
+                    </span>
                   </div>
                   <div className="app-field app-field-switch">
                     <span>Открыть после успеха</span>
-                    <button
-                      type="button"
-                      className={`app-pill-switch${downloadsOptions.openInHandlerOnComplete ? ' app-pill-switch-on' : ''}`}
-                      role="switch"
-                      aria-checked={downloadsOptions.openInHandlerOnComplete}
+                    <PillSwitch
+                      label="Открыть после успеха"
+                      checked={downloadsOptions.openInHandlerOnComplete}
+                      describedBy="downloadsOpenAfterSuccessHint"
                       disabled={downloadsOptionsBusy}
-                      onClick={() => {
+                      onToggle={() => {
                         void applyDownloadsOptionsPatch({
                           openInHandlerOnComplete: !downloadsOptions.openInHandlerOnComplete
                         })
                       }}
-                    >
-                      <span className="app-pill-switch-knob" aria-hidden />
-                      <span className="app-pill-switch-text">
-                        {downloadsOptions.openInHandlerOnComplete ? 'Вкл' : 'Выкл'}
-                      </span>
-                    </button>
-                    <span className="app-field-help">Готовый файл сразу попадёт в редактор.</span>
+                    />
+                    <span id="downloadsOpenAfterSuccessHint" className="app-field-help">
+                      Готовый файл сразу попадёт в редактор.
+                    </span>
                   </div>
                 </div>
                 <label className="app-field">
