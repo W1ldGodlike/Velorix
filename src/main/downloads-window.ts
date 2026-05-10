@@ -1,14 +1,5 @@
 import { writeFileSync } from 'fs'
-import {
-  BrowserWindow,
-  app,
-  dialog,
-  ipcMain,
-  screen,
-  shell,
-  type Display,
-  type WebContents
-} from 'electron'
+import { BrowserWindow, app, dialog, ipcMain, shell, type WebContents } from 'electron'
 
 import { resolveAppPaths } from './app-paths'
 import type { DownloadsWindowUiPanelState, ResolvedAppTheme } from '../shared/settings-contract'
@@ -68,6 +59,12 @@ import {
   emitDownloadsTopbarClusterHtml
 } from '../shared/lucide-downloads-icons'
 import { focusOrCreateInspectorWindow, isInspectorWindow } from './inspector-window'
+import {
+  defaultDownloadsWindowLogicalSize,
+  displayMatchingRestoreRect,
+  downloadsWindowMinLogicalSize,
+  logicalScaleFactor
+} from './window-hidpi'
 
 /** Совпадает с preload подпиской на снимок очереди. */
 export const DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL = d.queueSnapshot
@@ -2582,30 +2579,18 @@ export function focusOrCreateDownloadsWindow(mergeText?: string | null): void {
   const savedDl = downloadsBoundsHooks.getSavedDownloadsBounds?.()
   const dlRect = savedDl ? rectifyBoundsForRestore(savedDl) : null
 
-  const downloadsDisplay = (): Display => {
-    if (dlRect) {
-      return screen.getDisplayMatching({
-        x: dlRect.x,
-        y: dlRect.y,
-        width: Math.max(8, dlRect.width),
-        height: Math.max(8, dlRect.height)
-      })
-    }
-    return screen.getPrimaryDisplay()
-  }
-  const targetDisp = downloadsDisplay()
-  const dispScale = targetDisp.scaleFactor > 0 ? targetDisp.scaleFactor : 1
+  const targetDisp = displayMatchingRestoreRect(dlRect)
+  const dispScale = logicalScaleFactor(targetDisp)
   /** На 125%+ логические px уже «мельче» физически — поднимаем минимум, чтобы таблица очереди не ломалась при первом открытии. */
-  const minDownloadsW = dispScale >= 1.5 ? 620 : dispScale >= 1.25 ? 580 : 520
-  const minDownloadsH = dispScale >= 1.5 ? 460 : dispScale >= 1.25 ? 430 : 420
+  const { minWidth: minDownloadsW, minHeight: minDownloadsH } =
+    downloadsWindowMinLogicalSize(dispScale)
   const areaW = targetDisp.workAreaSize.width
   const areaH = targetDisp.workAreaSize.height
-  const defaultDownloadsW = Math.min(Math.max(760, Math.round(areaW * 0.66)), 1220)
-  const defaultDownloadsH = Math.min(Math.max(520, Math.round(areaH * 0.72)), 880)
+  const dlDefault = defaultDownloadsWindowLogicalSize(areaW, areaH)
 
   downloadsWindow = new BrowserWindow({
-    width: dlRect?.width ?? defaultDownloadsW,
-    height: dlRect?.height ?? defaultDownloadsH,
+    width: dlRect?.width ?? dlDefault.width,
+    height: dlRect?.height ?? dlDefault.height,
     minWidth: minDownloadsW,
     minHeight: minDownloadsH,
     ...(dlRect ? { x: dlRect.x, y: dlRect.y } : {}),

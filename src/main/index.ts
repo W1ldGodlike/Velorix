@@ -100,6 +100,12 @@ import type {
 import { loadSettings, saveSettings } from './settings-store'
 import { loadTrustedHashes, resolveTrustedHashesPath } from './trusted-hashes-store'
 import { resolvePreloadOutFile } from './preload-resolve'
+import {
+  defaultMainEditorSize,
+  displayMatchingRestoreRect,
+  logicalScaleFactor,
+  mainEditorMinLogicalSize
+} from './window-hidpi'
 import { boundsFromBrowserWindow, rectifyBoundsForRestore } from './window-bounds'
 import { getAppAboutInfo } from './about-info'
 import {
@@ -1329,12 +1335,21 @@ function buildApplicationMenu(): void {
 function createWindow(): void {
   const savedMain = cachedSettings.windowBounds?.main
   const rect = savedMain ? rectifyBoundsForRestore(savedMain) : null
+  const mainDisp = displayMatchingRestoreRect(rect)
+  const mainScale = logicalScaleFactor(mainDisp)
+  const mainMin = mainEditorMinLogicalSize(mainScale)
+  const mainDefault = defaultMainEditorSize(
+    mainDisp.workAreaSize.width,
+    mainDisp.workAreaSize.height,
+    mainMin.minWidth,
+    mainMin.minHeight
+  )
 
   const mainWindow = new BrowserWindow({
-    width: rect?.width ?? 1920,
-    height: rect?.height ?? 1080,
-    minWidth: 400,
-    minHeight: 320,
+    width: rect?.width ?? mainDefault.width,
+    height: rect?.height ?? mainDefault.height,
+    minWidth: mainMin.minWidth,
+    minHeight: mainMin.minHeight,
     ...(rect ? { x: rect.x, y: rect.y } : {}),
     show: false,
     autoHideMenuBar: false,

@@ -8,6 +8,12 @@ import { grantMediaPath, isGrantedMediaPath } from './media-protocol'
 import { resolvePreloadOutFile } from './preload-resolve'
 import type { StoredWindowRect } from './settings-store'
 import { boundsFromBrowserWindow, rectifyBoundsForRestore } from './window-bounds'
+import {
+  defaultInspectorWindowSize,
+  displayMatchingRestoreRect,
+  inspectorWindowMinLogicalSize,
+  logicalScaleFactor
+} from './window-hidpi'
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
 
 /** Стартовый путь для `inspectorBootstrap`; не одноразовый из-за двойного mount в React StrictMode. */
@@ -96,12 +102,21 @@ export function focusOrCreateInspectorWindow(requestedMediaPath?: unknown): void
 
   const saved = inspectorHooks.getSavedInspectorBounds?.()
   const rect = saved ? rectifyBoundsForRestore(saved) : null
+  const inspDisp = displayMatchingRestoreRect(rect)
+  const inspScale = logicalScaleFactor(inspDisp)
+  const inspMin = inspectorWindowMinLogicalSize(inspScale)
+  const inspDefault = defaultInspectorWindowSize(
+    inspDisp.workAreaSize.width,
+    inspDisp.workAreaSize.height,
+    inspMin.minWidth,
+    inspMin.minHeight
+  )
 
   inspectorWindow = new BrowserWindow({
-    width: rect?.width ?? 920,
-    height: rect?.height ?? 720,
-    minWidth: 440,
-    minHeight: 400,
+    width: rect?.width ?? inspDefault.width,
+    height: rect?.height ?? inspDefault.height,
+    minWidth: inspMin.minWidth,
+    minHeight: inspMin.minHeight,
     ...(rect ? { x: rect.x, y: rect.y } : {}),
     show: false,
     title: 'FluxAlloy — инспектор',
