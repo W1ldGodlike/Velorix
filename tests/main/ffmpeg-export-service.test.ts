@@ -14,6 +14,7 @@ import {
   parseFfmpegExportCrf,
   parseFfmpegExportFps,
   parseFfmpegExportScalePreset,
+  parseFfmpegExportTrim,
   parseFfmpegExportUserPresetSnapshot,
   parseFfmpegExportUserPresetsList,
   parseFfmpegExportVideoBitrate,
@@ -87,6 +88,15 @@ describe('ffmpeg export pure helpers', () => {
     expect(resolveExportSegmentDurationSec({ inSec: 2, outSec: 7 }, true, 20)).toBe(5)
     expect(resolveExportSegmentDurationSec(undefined, false, 12)).toBe(12)
     expect(resolveExportSegmentDurationSec(undefined, false, null)).toBe(0)
+  })
+
+  it('валидирует trim payload из renderer IPC', () => {
+    expect(parseFfmpegExportTrim({ inSec: 2, outSec: 7 })).toEqual({ inSec: 2, outSec: 7 })
+    expect(parseFfmpegExportTrim({ inSec: -1, outSec: 7 })).toBeUndefined()
+    expect(parseFfmpegExportTrim({ inSec: 7, outSec: 7 })).toBeUndefined()
+    expect(parseFfmpegExportTrim({ inSec: 8, outSec: 7 })).toBeUndefined()
+    expect(parseFfmpegExportTrim({ inSec: Number.NaN, outSec: 7 })).toBeUndefined()
+    expect(parseFfmpegExportTrim({ inSec: '2', outSec: 7 })).toBeUndefined()
   })
 
   it('parseFfmpegExportUserPresetSnapshot и список пресетов §7.2', () => {

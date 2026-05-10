@@ -62,13 +62,13 @@ import {
   parseFfmpegExportEncodePreset,
   parseFfmpegExportFps,
   parseFfmpegExportScalePreset,
+  parseFfmpegExportTrim,
   parseFfmpegExportVideoTransform,
   parseFfmpegExportUserPresetSnapshot,
   parseFfmpegExportUserPresetsList,
   parseFfmpegExportVideoBitrate,
   ensureFfmpegExportExtension,
   runFfmpegExportJob,
-  type MediaExportTrimPayload,
   type MediaExportStartResult,
   type FfmpegExportProgressPayload
 } from './ffmpeg-export-service'
@@ -369,20 +369,6 @@ function isMainWindowUiPanelSender(event: IpcMainInvokeEvent): boolean {
     return true
   }
   return isInspectorWindow(BrowserWindow.fromWebContents(event.sender))
-}
-
-function parseExportTrim(raw: unknown): MediaExportTrimPayload | undefined {
-  if (!raw || typeof raw !== 'object') {
-    return undefined
-  }
-  const o = raw as Record<string, unknown>
-  if (typeof o['inSec'] !== 'number' || typeof o['outSec'] !== 'number') {
-    return undefined
-  }
-  if (!Number.isFinite(o['inSec']) || !Number.isFinite(o['outSec'])) {
-    return undefined
-  }
-  return { inSec: o['inSec'], outSec: o['outSec'] }
 }
 
 function resolveEffectiveTheme(pref: AppTheme): ResolvedAppTheme {
@@ -1970,7 +1956,7 @@ app.whenReady().then(() => {
     const pd = (raw as { probeDurationSec?: unknown }).probeDurationSec
     const probeDurationSec = typeof pd === 'number' && Number.isFinite(pd) && pd > 0 ? pd : null
 
-    const trim = parseExportTrim((raw as { trim?: unknown }).trim)
+    const trim = parseFfmpegExportTrim((raw as { trim?: unknown }).trim)
 
     const encodePresetRaw = (raw as { encodePreset?: unknown }).encodePreset
     const encodePreset =

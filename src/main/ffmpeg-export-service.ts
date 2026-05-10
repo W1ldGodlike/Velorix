@@ -161,6 +161,26 @@ export function parseFfmpegExportCropPreset(raw: unknown): FfmpegExportCropPrese
   return 'none'
 }
 
+/** §7.2 — IPC/renderer trim payload: только конечные неотрицательные маркеры In < Out. */
+export function parseFfmpegExportTrim(raw: unknown): MediaExportTrimPayload | undefined {
+  if (!raw || typeof raw !== 'object') {
+    return undefined
+  }
+  const o = raw as Record<string, unknown>
+  if (typeof o['inSec'] !== 'number' || typeof o['outSec'] !== 'number') {
+    return undefined
+  }
+  const inSec = o['inSec']
+  const outSec = o['outSec']
+  if (!Number.isFinite(inSec) || !Number.isFinite(outSec)) {
+    return undefined
+  }
+  if (inSec < 0 || outSec <= inSec) {
+    return undefined
+  }
+  return { inSec, outSec }
+}
+
 /** §7.2 — разбор снимка пользовательского пресета из IPC/renderer (белые списки). */
 export function parseFfmpegExportUserPresetSnapshot(
   raw: unknown
