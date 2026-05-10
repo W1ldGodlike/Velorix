@@ -186,3 +186,4 @@
 - 2026-05-10 15:03:12 [SDK]: §1.1/v0 — под waveform: линейка времени видимого окна (`timeline-ruler` + деления/playhead); строка **Видео/Аудио/Позиция** из ffprobe + оценка кадра по fps из `detail`; HiDPI @media для ruler/facts; Vitest на шаг делений; спринт/§1.1 обновлены.
 - 2026-05-10 15:04:17 [SDK]: §1.1/§4.C — второй проход DPI редактора: `@120dpi`/`@168dpi` в `main.css` для **PreviewTransport**, zoom/scrub/waveform/ruler/media facts/marker/InOut и `.app-preview-probe`; спринт вычищен от дубликатов (7 пунктов).
 - 2026-05-10 15:06:20 [SDK]: §6.1/§4.A — окно загрузок: второй DPI-проход в inline CSS (`buildDownloadsHtml`): @120dpi/@168dpi для URL-band, queue toolbar/таблица/прогресс/иконы строк, журнал/история, rail (summary, selects, checkbox-pill).
+- 2026-05-10 15:07:28 [SDK]: §1.1/v0 — клик по `app-timeline-ruler-track` и клавиатура (Home/End/стрелки) → seek в окне zoom; `cursor` + `focus-visible` в `main.css`; чеклист §1.1/спринт.

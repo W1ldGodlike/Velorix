@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type RefObject } from 'react'
+import { useEffect, useMemo, useState, type KeyboardEvent, type RefObject } from 'react'
 
 import type { MediaProbeSuccess } from '../../../shared/ffprobe-contract'
 import { buildTimelineRulerTicks, pickTimelineRulerStepSec } from '../../../shared/timeline-ruler'
@@ -240,6 +240,46 @@ export default function VideoTimeline({
     v.currentTime = Math.min(Math.max(next, 0), Math.max(0, duration - 0.02))
   }
 
+  function seekFromRulerPointer(clientX: number, trackEl: Element): void {
+    if (!Number.isFinite(duration) || duration <= 0 || windowLenSec <= 0) {
+      return
+    }
+    const rect = trackEl.getBoundingClientRect()
+    const w = rect.width
+    if (!(w > 0)) {
+      return
+    }
+    const frac = (clientX - rect.left) / w
+    seek(Math.min(1, Math.max(0, frac)))
+  }
+
+  function handleRulerKeyDown(e: KeyboardEvent<HTMLDivElement>): void {
+    if (!(duration > 0) || !(windowLenSec > 0)) {
+      return
+    }
+    const stepSec = Math.max(windowLenSec / 80, 1 / 60)
+    const v = videoRef.current
+    if (e.key === 'Home') {
+      e.preventDefault()
+      seek(0)
+      return
+    }
+    if (e.key === 'End') {
+      e.preventDefault()
+      seek(1)
+      return
+    }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      if (!v) {
+        return
+      }
+      e.preventDefault()
+      const dir = e.key === 'ArrowLeft' ? -1 : 1
+      const next = v.currentTime + dir * stepSec
+      v.currentTime = Math.min(Math.max(next, 0), Math.max(0, duration - 0.02))
+    }
+  }
+
   function handleTimelineZoomIn(): void {
     if (!Number.isFinite(duration) || duration <= 0) {
       return
@@ -391,8 +431,28 @@ export default function VideoTimeline({
       />
 
       {duration > 0 ? (
-        <div className="app-timeline-ruler" aria-hidden>
-          <div className="app-timeline-ruler-track">
+        <div
+          className="app-timeline-ruler"
+          aria-label="Линейка времени окна воспроизведения: клик или стрелки для перехода"
+        >
+          <div
+            className="app-timeline-ruler-track"
+            tabIndex={0}
+            role="slider"
+            aria-valuemin={0}
+            aria-valuemax={1000}
+            aria-valuenow={Math.round(Math.min(1, Math.max(0, ratio)) * 1000)}
+            aria-valuetext={`${formatTime(current)} в окне ${formatTime(winStartEff)} — ${formatTime(Math.min(duration, winStartEff + windowLenSec))}`}
+            onPointerDown={(ev) => {
+              if (ev.button !== 0) {
+                return
+              }
+              ev.preventDefault()
+              ev.currentTarget.focus()
+              seekFromRulerPointer(ev.clientX, ev.currentTarget)
+            }}
+            onKeyDown={handleRulerKeyDown}
+          >
             {rulerTicks.map((t) => (
               <span
                 key={`ruler-tick-${String(t)}`}
