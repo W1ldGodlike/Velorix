@@ -970,12 +970,32 @@ ${emitDownloadsTopbarClusterHtml(18)}
         <div class="bottom-panels">
           <details class="history-panel details-chev" id="historyDetails"${openAttr('history', false)}>
             <summary>История загрузок</summary>
+            <p id="downloadsHistorySectionHint" class="sr-only">
+              Завершённые загрузки из userData §6; обновление и очистка трогают файл истории, фильтр «Исход» — только отображение таблицы.
+            </p>
             <div class="history-actions">
-              <button type="button" class="cmd" id="refreshHistoryBtn">Обновить</button>
-              <button type="button" class="cmd cmd-warn" id="clearHistoryBtn">Очистить историю</button>
+              <button
+                type="button"
+                class="cmd"
+                id="refreshHistoryBtn"
+                aria-describedby="downloadsHistorySectionHint"
+              >
+                Обновить
+              </button>
+              <button
+                type="button"
+                class="cmd cmd-warn"
+                id="clearHistoryBtn"
+                aria-describedby="downloadsHistorySectionHint"
+              >
+                Очистить историю
+              </button>
               <span class="hist-inline-field">
                 <label class="hist-inline" for="historyOutcomeFilter">Исход</label>
-                <select id="historyOutcomeFilter" aria-describedby="historyFilterHint">
+                <select
+                  id="historyOutcomeFilter"
+                  aria-describedby="downloadsHistorySectionHint historyFilterHint"
+                >
                   <option value="all">Все</option>
                   <option value="success">Успех</option>
                   <option value="error">Ошибка</option>
@@ -993,12 +1013,32 @@ ${emitDownloadsTopbarClusterHtml(18)}
           <div class="log-panel">
             <details class="details-chev" id="logDetails"${openAttr('log', true)}>
               <summary>Журнал операций</summary>
+              <p id="downloadsLogSectionHint" class="sr-only">
+                Потоковый вывод stdout и stderr yt-dlp; «Очистить вид» убирает только текст в окне, «Сохранить лог» — запись в файл по выбору.
+              </p>
               <div class="history-actions">
-                <button type="button" class="cmd" id="saveLogBtn">Сохранить лог…</button>
-                <button type="button" class="cmd" id="clearLogBtn" title="Очистить только текст на экране (файл не трогаем)">Очистить вид</button>
+                <button type="button" class="cmd" id="saveLogBtn" aria-describedby="downloadsLogSectionHint">
+                  Сохранить лог…
+                </button>
+                <button
+                  type="button"
+                  class="cmd"
+                  id="clearLogBtn"
+                  title="Очистить только текст на экране (файл не трогаем)"
+                  aria-describedby="downloadsLogSectionHint"
+                >
+                  Очистить вид
+                </button>
                 <span class="queue-summary log-meta" id="logMeta"></span>
               </div>
-              <pre id="logPre" role="log" aria-live="polite" aria-relevant="additions" aria-label="Вывод stdout и stderr yt-dlp"></pre>
+              <pre
+                id="logPre"
+                role="log"
+                aria-live="polite"
+                aria-relevant="additions"
+                aria-label="Вывод stdout и stderr yt-dlp"
+                aria-describedby="downloadsLogSectionHint"
+              ></pre>
             </details>
           </div>
         </div>

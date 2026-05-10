@@ -37,8 +37,8 @@
 
 - [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; `queue.json` без duplicate id; журнал out/err + truncate; дальше — редкие шаблоны логов по полю.
 - [~] §6.3: argv whitelist + справочник + превью draft/override `-o`; при необходимости редкие поля.
-- [~] §6.1/§4.A: окно загрузок — **`@120dpi`/`@168dpi`**; **URL/captions/`#logPre` log**; вкладки **`aria-current`**; **добавить/старт** → **`aria-describedby=urlsHint`**; **тулбар очереди** — **`dlQueueToolbarHint` + `aria-describedby`**; **правый rail** — **секционные `opts-hint` + `aria-describedby` на `settings-body`** (Формат/Метаданные/Сохранение/Сеть/Эксперт); фильтры/cookies/справочник — как ранее; SVG/focus; дальше — ручная матрица Win 125–200 %.
-- [~] §1.1/§4.A/§9: редактор — HiDPR/topbar/SVG/focus; **`aria-current`**; **быстрая yt-dlp** / **превью ffmpeg** / **MediaProbe** hints; **правый rail FFmpeg** — **`app-settings-section-hint`** + **`aria-describedby`** на **grid/stack** (Видео/Формат/Аудио/Пресеты/Вывод); seek/снап; **`ffmpegSettingsRailOpen`**; дальше — multi-monitor DPI, Dolby/side_data §9.
+- [~] §6.1/§4.A: окно загрузок — HiDPR/**a11y** как в спринте ранее + **нижние панели** (**`sr-only`** **`downloadsHistorySectionHint` / `downloadsLogSectionHint`**, связь с кнопками и **`#logPre`**); дальше — ручная матрица Win 125–200 %.
+- [~] §1.1/§4.A/§9: редактор — HiDPR/topbar/SVG/focus; **`aria-current`**; **`video` `aria-label`** по имени файла (`basenameForAriaLabel`); **быстрая yt-dlp** / **rail FFmpeg** / **MediaProbe** hints; seek/снап; **`ffmpegSettingsRailOpen`**; дальше — multi-monitor DPI, Dolby/side_data §9.
 - [~] §7.2: crop/rotate/flip; дальше расширенные фильтры и HW encode.
 - [~] §9/§21: расширенные ffprobe (Dolby/side_data и др.); новые IPC через `ipc-channels`, при необходимости логи по окнам; точечные Vitest.
 
@@ -85,7 +85,7 @@
 - [~] Сформировать отдельное окно менеджера загрузок в едином стиле: data HTML ближе к v0 (компактнее layout, таблица v0-колонки, log/history, rail); живая очередь `downloads/queue.json` §4.1; HiDPI: базовый `dppx` + `window-hidpi` мин.* + второй проход `@120dpi`/`@168dpi` в inline CSS окна (URL-band/table/rail/log/history); финальная матрица — после ручных прогонов Win 125–200 %.
 - [~] Реализовать прогрессивное раскрытие сложных параметров: `details` для **быстрой yt-dlp-полосы** (`app-url-bar`/`app-url-summary`, кольцо фокуса на summary) + **rail FFmpeg** (**`app-settings-section-hint`** у секций Видео/Формат/Аудио/Пресеты/Вывод) + экспертных argv/справочника/лога и **превью команды ffmpeg** (`exportCommandPreview` в `mainWindowUiPanels`); общая система панелей — дальше.
 - [~] Базовые токены темы есть; тёмная палитра главного окна приближена к v0-референсу.
-- [~] Довести палитру, типографику, отступы, радиусы и focus-состояния на всех экранах: главный renderer и downloads (токены `--fa-*`/`focus-ring`) сближены; **редактор: focus-ring на полосе быстрого yt-dlp — `app-url-summary`, `app-url-input`, `app-btn` в теле полосы**; **окно загрузок: кольцо фокуса на сворачиваемых `summary` (история, журнал, hints) + rail**; второе окно загрузок — тема синхронна; инспектор: topbar-хром как редактор + `probe*` секции синхронны с главным через `mergeMainWindowUiPanels`.
+- [~] Довести палитру, типографику, отступы, радиусы и focus-состояния на всех экранах: главный renderer и downloads (токены `--fa-*`/`focus-ring`) сближены; **редактор: focus-ring на полосе быстрого yt-dlp — `app-url-summary`, `app-url-input`, `app-btn` в теле полосы**; **`<video>` предпросмотра — `aria-label` с basename пути**; **окно загрузок: кольцо фокуса на сворачиваемых `summary` (история, журнал, hints) + rail** + **контекстные `aria-describedby` у нижних панелей**; второе окно загрузок — тема синхронна; инспектор: topbar-хром как редактор + `probe*` секции синхронны с главным через `mergeMainWindowUiPanels`.
 - [ ] Убрать все литералы интерфейса в локализацию.
 - [ ] Проверить масштабирование 100/125/150/200%.
 

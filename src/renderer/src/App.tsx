@@ -196,6 +196,12 @@ function clipboardLooksLikeDownloadsPayload(text: string): boolean {
   })
 }
 
+function basenameForAriaLabel(absPath: string): string {
+  const n = absPath.replace(/\\/g, '/')
+  const i = n.lastIndexOf('/')
+  return i >= 0 ? n.slice(i + 1) : n
+}
+
 function domTargetIsTextField(target: EventTarget | null): boolean {
   if (!target || !(target instanceof HTMLElement)) {
     return false
@@ -1264,6 +1270,7 @@ function App(): JSX.Element {
                   className="app-preview-video"
                   controls
                   src={preview.mediaUrl}
+                  aria-label={`Предпросмотр: ${basenameForAriaLabel(preview.path)}`}
                 />
                 <PreviewTransport
                   key={preview.mediaUrl}
