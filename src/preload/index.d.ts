@@ -103,6 +103,9 @@ export interface FluxAlloyApi {
     openWindow: (initial?: string | { text?: string } | null) => Promise<void>
     addLines: (text: string) => Promise<number>
     getSnapshot: () => Promise<unknown[]>
+    clearQueue: () => Promise<void>
+    clearFinished: () => Promise<number>
+    removeRow: (id: number) => Promise<void>
     onSnapshot: (listener: (rows: unknown[]) => void) => () => void
     startQueue: () => Promise<{ ok: true } | { ok: false; error: string }>
     startRow: (id: number) => Promise<{ ok: true } | { ok: false; error: string }>

@@ -2299,6 +2299,34 @@ function App(): JSX.Element {
                 >
                   Остановить
                 </button>
+                <button
+                  type="button"
+                  className="app-btn"
+                  disabled={downloadsRows.length === 0}
+                  onClick={() => {
+                    void window.fluxalloy.downloads.clearFinished().then((removed) => {
+                      setStatusHint(
+                        removed > 0
+                          ? `Убрано завершённых строк: ${removed}`
+                          : 'Завершённых строк нет.'
+                      )
+                    })
+                  }}
+                >
+                  Убрать готовые
+                </button>
+                <button
+                  type="button"
+                  className="app-btn app-btn-warn"
+                  disabled={downloadsRows.length === 0}
+                  onClick={() => {
+                    void window.fluxalloy.downloads.clearQueue().then(() => {
+                      setStatusHint('Очередь очищена.')
+                    })
+                  }}
+                >
+                  Очистить очередь
+                </button>
               </div>
             </div>
             <div className="app-downloads-overview" aria-label="Сводка очереди загрузок">
@@ -2448,6 +2476,15 @@ function App(): JSX.Element {
                                   </button>
                                 </>
                               ) : null}
+                              <button
+                                type="button"
+                                className="app-btn app-btn-compact app-btn-warn"
+                                onClick={() => {
+                                  void window.fluxalloy.downloads.removeRow(row.id)
+                                }}
+                              >
+                                Удалить
+                              </button>
                             </div>
                           </td>
                         </tr>

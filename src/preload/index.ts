@@ -152,6 +152,9 @@ const fluxalloy = {
       ipcRenderer.invoke(mw.openDownloadsWindow, initial ?? null),
     addLines: (text: string): Promise<number> => ipcRenderer.invoke(d.addLines, text),
     getSnapshot: (): Promise<unknown[]> => ipcRenderer.invoke(d.getSnapshot),
+    clearQueue: (): Promise<void> => ipcRenderer.invoke(d.clear),
+    clearFinished: (): Promise<number> => ipcRenderer.invoke(d.clearFinished),
+    removeRow: (id: number): Promise<void> => ipcRenderer.invoke(d.remove, id),
     onSnapshot: (listener: (rows: unknown[]) => void): (() => void) => {
       const handler = (_event: unknown, rows: unknown): void => {
         listener(Array.isArray(rows) ? rows : [])
