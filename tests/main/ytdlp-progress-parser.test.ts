@@ -80,6 +80,34 @@ describe('parseYtdlpDownloadProgressLine', () => {
   it('возвращает null если ни процента, ни скорости нет', () => {
     expect(parseYtdlpDownloadProgressLine('[download] Resuming download at byte 0')).toBeNull()
   })
+
+  it('парсит вариант (frag N/M) без процентов; со строкой с % отдаёт процент/скорость', () => {
+    expect(parseYtdlpDownloadProgressLine('[download] (frag 12/120)')).toEqual({
+      percent: null,
+      speed: 'фрагмент 12/120',
+      eta: null
+    })
+    const withPct = parseYtdlpDownloadProgressLine(
+      '[download] 10.0% of ~ 5.00MiB at 1.00MiB/s ETA 00:01 (frag 12/120)'
+    )
+    expect(withPct?.percent).toBe('10.0%')
+    expect(withPct?.speed).toBe('1.00MiB/s')
+  })
+
+  it('парсит Sleeping … seconds и Waiting for reconnect', () => {
+    expect(parseYtdlpDownloadProgressLine('[download] Sleeping 6.00 seconds ...')).toEqual({
+      percent: null,
+      speed: 'пауза 6.00 с',
+      eta: null
+    })
+    expect(
+      parseYtdlpDownloadProgressLine('[download] Waiting for reconnect after forced IP bind...')
+    ).toEqual({
+      percent: null,
+      speed: 'ожидание переподключения',
+      eta: null
+    })
+  })
 })
 
 describe('formatYtdlpProgressCell', () => {
@@ -224,10 +252,14 @@ describe('classifyYtdlpQueueFailureKind', () => {
       'transient_network'
     )
     expect(classifyYtdlpQueueFailureKind(null, 'Broken pipe')).toBe('transient_network')
+    expect(classifyYtdlpQueueFailureKind(null, '502 Bad Gateway')).toBe('transient_network')
   })
 
   it('likely_source_block для приватного видео', () => {
     expect(classifyYtdlpQueueFailureKind('Private video', null)).toBe('likely_source_block')
+    expect(classifyYtdlpQueueFailureKind('Not available in your country', null)).toBe(
+      'likely_source_block'
+    )
   })
 
   it('unknown если нет явных маркеров', () => {

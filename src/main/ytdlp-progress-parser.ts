@@ -87,6 +87,34 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
     }
   }
 
+  /** Вариант «(frag 12/120)» без процентов в той же строке — иначе ниже разберём `%` + скорость. */
+  const fragParenMatch =
+    !/\d+(?:\.\d+)?%/.test(t) && t.match(/\(\s*frag\s+(\d+)\s*\/\s*(\d+)\s*\)/i)
+  if (fragParenMatch) {
+    const a = fragParenMatch[1]
+    const b = fragParenMatch[2]
+    if (a !== undefined && b !== undefined) {
+      return {
+        percent: null,
+        speed: `фрагмент ${a}/${b}`,
+        eta: null
+      }
+    }
+  }
+
+  /** Rate-limit / антибот: пауза перед повтором (типичная строка `[download] Sleeping …`). */
+  const sleepingMatch = t.match(/\[download\]\s+Sleeping\s+([\d.]+)\s+seconds/i)
+  if (sleepingMatch) {
+    const sec = sleepingMatch[1]
+    if (sec !== undefined) {
+      return { percent: null, speed: `пауза ${sec} с`, eta: null }
+    }
+  }
+
+  if (/\[download\]\s+Waiting\s+for\s+reconnect/i.test(t)) {
+    return { percent: null, speed: 'ожидание переподключения', eta: null }
+  }
+
   const pctMatch = t.match(/(\d+(?:\.\d+)?)%/)
   const percent = pctMatch ? `${pctMatch[1]}%` : null
 
@@ -206,7 +234,10 @@ const YTDLP_QUEUE_RETRY_SKIP_MARKERS = [
   'http error 404',
   'sign in to confirm your age',
   'login required',
-  'blocked it on copyright'
+  'blocked it on copyright',
+  'not available in your country',
+  'geo restricted',
+  'geo-blocked'
 ] as const
 
 /**
@@ -241,7 +272,11 @@ const YTDLP_QUEUE_RETRY_KEEP_TRYING_MARKERS = [
   'certificate verify failed',
   'ssl: ',
   'errno 110',
-  'errno 113'
+  'errno 113',
+  'bad gateway',
+  'gateway timeout',
+  'service unavailable',
+  'connection lost'
 ] as const
 
 function classifyYtdlpQueueFailureKindFromText(

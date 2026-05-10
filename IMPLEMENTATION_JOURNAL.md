@@ -123,3 +123,4 @@
 - 2026-05-10 03:31:03 [SDK]: §18 — сессионный `logs/session.log` (дубликат строк с main), архив прошлого запуска в `logs/sessions/session-*.log` + prune; Support ZIP и меню «Открыть session.log».
 - 2026-05-10 03:32:59 [SDK]: §7.2/§21 — `buildFfmpegExportArgv` учитывает контейнер (MKV без `-movflags +faststart`, MP4/MOV — с faststart); preview и `runFfmpegExportJob` пробрасывают `container`; Vitest на mkv/mp4 хвост argv и preview.
 - 2026-05-10 03:34:52 [SDK]: §6.4 — `extractYtdlpOutputPath`: строки FFmpeg PP (`…; Destination:`, общий `[PP] Destination:`), EmbedThumbnail (`exe: Adding thumbnail to`), `Adding metadata to`, Concat Moving/to и Concatenate…Destination; Vitest.
+- 2026-05-10 03:36:04 [SDK]: §6.4 — прогресс: `(frag N/M)` без `%`, Sleeping/Waiting for reconnect; маркеры retry: гео/bad gateway/service unavailable/connection lost; Vitest.
