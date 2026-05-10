@@ -38,7 +38,7 @@
 - [~] §6.1/§6.4: yt-dlp — очередь, лог, история, авто-preview, профили повтора, маркеры stderr + классификация + коды 2/100/101, пауза SIGSTOP/SIGCONT, прогресс total/playlist/fragment; дальше новые форматы строк по логам и доп. коды выхода из апстрима.
 - [~] §6.3: экспертный argv + whitelist/chёрный список + справочник с `<optgroup>` + превью argv с реальным каталогом загрузки и первым URL из очереди; дальше тонкая подстройка превью (override каталога без перечитывания settings и т.п.).
 - [~] §7: превью, таймлайн, экспорт MKV/MOV/MP4, снимок кадра, ffprobe под превью; отдельное окно инспектора §9 — позже.
-- [~] §7.2/§20: системные пресеты libx264, базовые параметры экспорта и live preview команды ffmpeg; дальше пользовательские пресеты, маркеры In/Out в preview и продвинутые параметры (crop/trim/rotate/filters/HW).
+- [~] §7.2/§20: системные пресеты libx264, базовые параметры экспорта и live preview команды ffmpeg c маркерами In/Out + probeDurationSec (повторяет логику spawn); дальше пользовательские пресеты и продвинутые параметры (crop/rotate/filters/HW), live preview ещё нужно довести до формата сохранения.
 - [~] §17/§18: диагностические папки, Support ZIP, логи процессов; дальше политика сессионных логов и ротация.
 - [~] §21: строгий TS и shared-контракты IPC + pure-хелперы для live preview ffmpeg; новые каналы — по мере новых фич.
 
@@ -316,7 +316,7 @@
 - [ ] Metadata.
 - [ ] Hardware acceleration.
 - [ ] Advanced args.
-- [~] Live preview команды ffmpeg: pure helper в `src/shared/ffmpeg-export-argv.ts`, сворачиваемый блок в App.tsx с копированием; маркеры In/Out из таймлайна в превью пока не подмешиваются.
+- [~] Live preview команды ffmpeg: pure helpers в `src/shared/ffmpeg-export-argv.ts` (`buildFfmpegExportPreviewCommand` + `shouldApplyFfmpegExportTrim`), сворачиваемый блок в App.tsx с копированием; маркеры In/Out + probeDurationSec уже подмешиваются и совпадают с тем, что ушло бы в spawn — дальше: пользовательские пресеты в preview и сложные фильтры/параметры по мере готовности §7.2.
 - [~] Безопасная сборка аргументов без shell injection: ffmpeg-экспорт идёт через `buildFfmpegExportArgv` (массив токенов, без shell); валидация значений в main `parse*`-хелперах.
 
 ### §7.3 Пакетная обработка

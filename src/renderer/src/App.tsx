@@ -321,6 +321,18 @@ function App(): JSX.Element {
   const videoRef = useRef<HTMLVideoElement>(null)
   /** Последний диапазон In/Out с таймлайна для IPC экспорта. */
   const trimSnapshotRef = useRef<{ inSec: number; outSec: number } | null>(null)
+  /**
+   * Состояние таймлайна для preview команды ffmpeg.
+   * `path` хранится рядом, чтобы при смене источника `trimRange` ниже выводился как `null`
+   * без synchronous `setState` в `useEffect` — таймлайн сам пришлёт новый диапазон, когда
+   * у нового файла появится длительность (см. `VideoTimeline.markerGeometry`).
+   */
+  const [trimState, setTrimState] = useState<{
+    path: string | null
+    range: { inSec: number; outSec: number } | null
+  }>({ path: null, range: null })
+  const currentSourcePath = preview?.path ?? null
+  const trimRange = trimState.path === currentSourcePath ? trimState.range : null
 
   const applyPreview = useCallback((payload: PreviewOpenedPayload): void => {
     setProbeInfo(null)
@@ -328,13 +340,27 @@ function App(): JSX.Element {
     setPreview(payload)
   }, [])
 
-  const onTrimRangeSnapshot = useCallback((range: { inSec: number; outSec: number }) => {
-    trimSnapshotRef.current = range
-  }, [])
+  const onTrimRangeSnapshot = useCallback(
+    (range: { inSec: number; outSec: number }) => {
+      trimSnapshotRef.current = range
+      setTrimState((prev) => {
+        if (
+          prev.path === currentSourcePath &&
+          prev.range !== null &&
+          Math.abs(prev.range.inSec - range.inSec) < 1e-3 &&
+          Math.abs(prev.range.outSec - range.outSec) < 1e-3
+        ) {
+          return prev
+        }
+        return { path: currentSourcePath, range: { inSec: range.inSec, outSec: range.outSec } }
+      })
+    },
+    [currentSourcePath]
+  )
 
   useEffect(() => {
     trimSnapshotRef.current = null
-  }, [preview?.path])
+  }, [currentSourcePath])
 
   const applyTheme = useCallback((value: Theme) => {
     document.documentElement.dataset['theme'] = value
@@ -727,12 +753,12 @@ function App(): JSX.Element {
   }
 
   /**
-   * §7.2 — live preview команды ffmpeg для текущих параметров toolbar.
-   * Сборка argv лежит в `src/shared/ffmpeg-export-argv.ts` и используется и runner,
-   * и этот блок UI; маркеры in/out из таймлайна сейчас не подмешиваем (timeline пишет в ref,
-   * чтобы не дёргать рендер во время scrub) — это TODO §7.2.
+   * §7.2 — live preview команды ffmpeg для текущих параметров toolbar и таймлайна.
+   * Сборка argv и решение про `-ss/-t` лежат в `src/shared/ffmpeg-export-argv.ts`
+   * (`buildFfmpegExportPreviewCommand` + `shouldApplyFfmpegExportTrim`),
+   * чтобы превью совпадало с тем, что пошло бы в реальный spawn `runFfmpegExportJob`.
    */
-  const exportPreviewCommand = useMemo<string>(() => {
+  const exportPreview = useMemo(() => {
     const sourcePath = preview?.path ?? null
     let outputPath: string | null = null
     if (sourcePath !== null) {
@@ -748,8 +774,10 @@ function App(): JSX.Element {
       fps: exportFps,
       scalePreset: exportScalePreset,
       inputPath: sourcePath,
-      outputPath
-    }).command
+      outputPath,
+      trim: trimRange,
+      probeDurationSec: probeInfo?.durationSec ?? null
+    })
   }, [
     preview?.path,
     exportEncodePreset,
@@ -759,8 +787,26 @@ function App(): JSX.Element {
     exportAudioMode,
     exportAudioBitrate,
     exportFps,
-    exportScalePreset
+    exportScalePreset,
+    trimRange,
+    probeInfo?.durationSec
   ])
+
+  const exportPreviewCommand = exportPreview.command
+
+  function exportPreviewHint(): string {
+    if (!preview) {
+      return 'Источник не выбран — в превью используются плейсхолдеры <input>/<output>.'
+    }
+    if (exportPreview.appliedTrim && trimRange !== null) {
+      const span = Math.max(0, trimRange.outSec - trimRange.inSec)
+      return `Маркеры In/Out подставлены: -ss ${trimRange.inSec.toFixed(2)} -t ${span.toFixed(2)}.`
+    }
+    if (trimRange !== null && probeInfo?.durationSec) {
+      return 'Маркеры покрывают почти весь файл — ffmpeg запустится без -ss/-t.'
+    }
+    return 'Маркеры In/Out появятся, как только таймлайн сообщит диапазон.'
+  }
 
   async function handleCopyExportPreview(): Promise<void> {
     const r = await window.fluxalloy.clipboard.writeText(exportPreviewCommand)
@@ -1144,11 +1190,7 @@ function App(): JSX.Element {
             >
               Копировать
             </button>
-            <span className="app-export-preview-hint">
-              {preview
-                ? 'Без маркеров In/Out: они подставятся при экспорте.'
-                : 'Источник не выбран — в превью используются плейсхолдеры <input>/<output>.'}
-            </span>
+            <span className="app-export-preview-hint">{exportPreviewHint()}</span>
           </div>
         </div>
       </details>

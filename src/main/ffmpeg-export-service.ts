@@ -8,7 +8,7 @@ import type {
   FfmpegExportScalePresetId,
   MediaExportTrimPayload
 } from '../shared/ffmpeg-export-contract'
-import { buildFfmpegExportArgv } from '../shared/ffmpeg-export-argv'
+import { buildFfmpegExportArgv, shouldApplyFfmpegExportTrim } from '../shared/ffmpeg-export-argv'
 
 import { logExternalProcessLine } from './external-process-log'
 
@@ -28,7 +28,8 @@ export {
   buildFfmpegExportPreviewCommand,
   formatFfmpegArgvForPreview,
   resolveFfmpegExportEncodeParams as resolveExportEncodeParams,
-  resolveFfmpegExportScaleFilter
+  resolveFfmpegExportScaleFilter,
+  shouldApplyFfmpegExportTrim
 } from '../shared/ffmpeg-export-argv'
 
 export function parseFfmpegExportEncodePreset(raw: unknown): FfmpegExportEncodePresetId {
@@ -158,31 +159,6 @@ export function parseFfmpegTimeSeconds(line: string): number | null {
   return h * 3600 + min * 60 + sec
 }
 
-function shouldApplyTrim(
-  trim: MediaExportTrimPayload | undefined,
-  probeDurationSec: number | null | undefined
-): trim is MediaExportTrimPayload {
-  if (!trim || !Number.isFinite(trim.inSec) || !Number.isFinite(trim.outSec)) {
-    return false
-  }
-  const span = trim.outSec - trim.inSec
-  if (span <= 0.05) {
-    return false
-  }
-  if (
-    probeDurationSec !== null &&
-    probeDurationSec !== undefined &&
-    Number.isFinite(probeDurationSec) &&
-    probeDurationSec > 0.5
-  ) {
-    // Почти весь файл — кодируем без -ss/-t, чтобы не резать по ключевым кадрам отдельно.
-    if (trim.inSec < 0.08 && Math.abs(span - probeDurationSec) < 0.35) {
-      return false
-    }
-  }
-  return true
-}
-
 export function resolveExportSegmentDurationSec(
   trim: MediaExportTrimPayload | undefined,
   applyTrim: boolean,
@@ -224,7 +200,7 @@ export function runFfmpegExportJob(params: {
   signal: AbortSignal
   onProgress?: (p: FfmpegExportProgressPayload) => void
 }): Promise<{ ok: true } | { ok: false; error: string }> {
-  const applyTrim = shouldApplyTrim(params.trim, params.probeDurationSec)
+  const applyTrim = shouldApplyFfmpegExportTrim(params.trim ?? null, params.probeDurationSec)
   const encodePreset = params.encodePreset ?? 'balance'
   const crf = parseFfmpegExportCrf(params.crf)
   const videoBitrate = parseFfmpegExportVideoBitrate(params.videoBitrate)

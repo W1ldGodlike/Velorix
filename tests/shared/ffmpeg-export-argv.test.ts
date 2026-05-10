@@ -5,7 +5,8 @@ import {
   buildFfmpegExportPreviewCommand,
   formatFfmpegArgvForPreview,
   resolveFfmpegExportEncodeParams,
-  resolveFfmpegExportScaleFilter
+  resolveFfmpegExportScaleFilter,
+  shouldApplyFfmpegExportTrim
 } from '../../src/shared/ffmpeg-export-argv'
 
 describe('shared ffmpeg export argv', () => {
@@ -156,6 +157,7 @@ describe('shared ffmpeg export argv', () => {
     })
     expect(withTrim.argv).toContain('-ss')
     expect(withTrim.argv).toContain('-t')
+    expect(withTrim.appliedTrim).toBe(true)
 
     const tooShort = buildFfmpegExportPreviewCommand({
       encodePreset: 'balance',
@@ -171,6 +173,7 @@ describe('shared ffmpeg export argv', () => {
     })
     expect(tooShort.argv).not.toContain('-ss')
     expect(tooShort.argv).not.toContain('-t')
+    expect(tooShort.appliedTrim).toBe(false)
 
     const explicitOff = buildFfmpegExportPreviewCommand({
       encodePreset: 'balance',
@@ -187,5 +190,59 @@ describe('shared ffmpeg export argv', () => {
     })
     expect(explicitOff.argv).not.toContain('-ss')
     expect(explicitOff.argv).not.toContain('-t')
+    expect(explicitOff.appliedTrim).toBe(false)
+  })
+
+  it('shouldApplyFfmpegExportTrim фильтрует вырожденные и почти полные диапазоны', () => {
+    // Базовый диапазон без длительности — применяем.
+    expect(shouldApplyFfmpegExportTrim({ inSec: 1, outSec: 4 }, null)).toBe(true)
+    // Слишком короткий — нет.
+    expect(shouldApplyFfmpegExportTrim({ inSec: 2, outSec: 2.01 }, null)).toBe(false)
+    // Маркеры покрывают весь файл (с допуском) — нет.
+    expect(shouldApplyFfmpegExportTrim({ inSec: 0, outSec: 19.9 }, 20)).toBe(false)
+    // Сдвинутый In > 0.08 при близкой длине — применяем (ffmpeg реально режет).
+    expect(shouldApplyFfmpegExportTrim({ inSec: 0.5, outSec: 19.9 }, 20)).toBe(true)
+    // Без маркеров — нет.
+    expect(shouldApplyFfmpegExportTrim(null, 20)).toBe(false)
+    // NaN маркеры — нет, без падения.
+    expect(shouldApplyFfmpegExportTrim({ inSec: Number.NaN, outSec: 5 }, null)).toBe(false)
+  })
+
+  it('buildFfmpegExportPreviewCommand с probeDurationSec повторяет логику main-сервиса', () => {
+    // Маркеры почти на весь файл — preview должен пропустить -ss/-t, как и spawn.
+    const fullClip = buildFfmpegExportPreviewCommand({
+      encodePreset: 'balance',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      inputPath: '/a.mp4',
+      outputPath: '/a-export.mp4',
+      trim: { inSec: 0, outSec: 19.9 },
+      probeDurationSec: 20
+    })
+    expect(fullClip.argv).not.toContain('-ss')
+    expect(fullClip.appliedTrim).toBe(false)
+
+    // Реальный фрагмент в середине файла — -ss/-t появляются.
+    const midClip = buildFfmpegExportPreviewCommand({
+      encodePreset: 'balance',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      inputPath: '/a.mp4',
+      outputPath: '/a-export.mp4',
+      trim: { inSec: 5, outSec: 12 },
+      probeDurationSec: 20
+    })
+    expect(midClip.argv).toContain('-ss')
+    expect(midClip.argv[midClip.argv.indexOf('-ss') + 1]).toBe('5')
+    expect(midClip.argv[midClip.argv.indexOf('-t') + 1]).toBe('7')
+    expect(midClip.appliedTrim).toBe(true)
   })
 })

@@ -13,6 +13,38 @@ import type {
   MediaExportTrimPayload
 } from './ffmpeg-export-contract'
 
+/**
+ * §7.2 — решает, нужно ли подставлять `-ss/-t` для пары маркеров.
+ *
+ * Используется и main-сервисом (фактический spawn ffmpeg), и live preview команды,
+ * чтобы показанные argv совпадали с тем, что реально пошло бы в ffmpeg при экспорте.
+ * Маркеры игнорируются, если диапазон вырожден (≤0.05 с) или почти полностью покрывает
+ * длительность — тогда быстрее закодировать без `-ss/-t` и без отдельного seek по ключевым кадрам.
+ */
+export function shouldApplyFfmpegExportTrim(
+  trim: MediaExportTrimPayload | undefined | null,
+  probeDurationSec: number | null | undefined
+): trim is MediaExportTrimPayload {
+  if (!trim || !Number.isFinite(trim.inSec) || !Number.isFinite(trim.outSec)) {
+    return false
+  }
+  const span = trim.outSec - trim.inSec
+  if (span <= 0.05) {
+    return false
+  }
+  if (
+    probeDurationSec !== null &&
+    probeDurationSec !== undefined &&
+    Number.isFinite(probeDurationSec) &&
+    probeDurationSec > 0.5
+  ) {
+    if (trim.inSec < 0.08 && Math.abs(span - probeDurationSec) < 0.35) {
+      return false
+    }
+  }
+  return true
+}
+
 /** CRF и `-preset` x264 для системного пресета §7.2 (только белый список). */
 export function resolveFfmpegExportEncodeParams(preset: FfmpegExportEncodePresetId): {
   crf: string
@@ -134,7 +166,9 @@ export interface FfmpegExportPreviewInput {
   outputPath?: string | null
   /** Маркеры in/out для отображения `-ss`/`-t` в превью. */
   trim?: MediaExportTrimPayload | null
-  /** Если маркеры покрывают почти всю длительность — preview опускает `-ss/-t`. */
+  /** Длительность исходника из ffprobe; нужна, чтобы preview совпадал с фактическим spawn (см. `shouldApplyFfmpegExportTrim`). */
+  probeDurationSec?: number | null
+  /** Принудительно отключить `-ss/-t` в превью. По умолчанию решение берётся из `shouldApplyFfmpegExportTrim`. */
   applyTrim?: boolean
 }
 
@@ -142,6 +176,8 @@ export interface FfmpegExportPreviewResult {
   argv: string[]
   /** Готовая строка для UI: `ffmpeg <argv>`. */
   command: string
+  /** Совпадает с `applyTrim`, который реально пошёл в argv; UI использует для подсказок. */
+  appliedTrim: boolean
 }
 
 /**
@@ -161,14 +197,14 @@ export function buildFfmpegExportPreviewCommand(
     typeof input.outputPath === 'string' && input.outputPath.trim().length > 0
       ? input.outputPath.trim()
       : '<output>'
-  const trim =
-    input.trim &&
-    Number.isFinite(input.trim.inSec) &&
-    Number.isFinite(input.trim.outSec) &&
-    input.trim.outSec - input.trim.inSec > 0.05
-      ? input.trim
-      : undefined
-  const applyTrim = trim !== undefined && (input.applyTrim ?? true)
+  const probeDurationSec =
+    typeof input.probeDurationSec === 'number' && Number.isFinite(input.probeDurationSec)
+      ? input.probeDurationSec
+      : null
+  const trim = input.trim ?? undefined
+  // По умолчанию повторяем логику main-сервиса; явный applyTrim=false уважаем (UI может выключить превью маркеров).
+  const computedApply = shouldApplyFfmpegExportTrim(trim ?? null, probeDurationSec)
+  const applyTrim = input.applyTrim === false ? false : computedApply
 
   const argv = buildFfmpegExportArgv({
     inputPath,
@@ -186,6 +222,7 @@ export function buildFfmpegExportPreviewCommand(
 
   return {
     argv,
-    command: `ffmpeg ${formatFfmpegArgvForPreview(argv)}`
+    command: `ffmpeg ${formatFfmpegArgvForPreview(argv)}`,
+    appliedTrim: applyTrim
   }
 }
