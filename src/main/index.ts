@@ -755,6 +755,13 @@ function persistMainWindowUiPanelsMerge(raw: unknown): AppSettings {
     }
   }
   saveSettings(settingsPath(), cachedSettings)
+  const snapshot = cachedSettings.mainWindowUiPanels
+  /** Синхронизация между главным окном и инспектором §9 без повторного `settings-get`. */
+  for (const w of BrowserWindow.getAllWindows()) {
+    if (!w.isDestroyed()) {
+      w.webContents.send(mw.mainWindowUiPanelsChanged, snapshot ?? {})
+    }
+  }
   return { ...cachedSettings }
 }
 

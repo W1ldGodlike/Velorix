@@ -140,6 +140,9 @@ export interface FluxAlloyApi {
   onOpenEnginePaths: (listener: () => void) => () => void
   onEnginePathsChanged: (listener: () => void) => () => void
   onOpenAbout: (listener: () => void) => () => void
+  onMainWindowUiPanelsChanged: (
+    listener: (panels: MainWindowUiPanelState | undefined) => void
+  ) => () => void
 }
 
 declare global {

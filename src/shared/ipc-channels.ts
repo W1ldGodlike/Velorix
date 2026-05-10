@@ -57,7 +57,9 @@ export const mainWindowIpc = {
   themeChanged: 'fluxalloy:theme-changed',
   openEnginePaths: 'fluxalloy:open-engine-paths',
   enginePathsChanged: 'fluxalloy:engine-paths-changed',
-  openAbout: 'fluxalloy:open-about'
+  openAbout: 'fluxalloy:open-about',
+  /** Main → все окна с главным preload: актуальный снимок `mainWindowUiPanels` после merge §4.1. */
+  mainWindowUiPanelsChanged: 'fluxalloy:main-window-ui-panels-changed'
 } as const
 
 /** Окно yt-dlp: invoke/handle + push (`queueSnapshot`, `log`). */

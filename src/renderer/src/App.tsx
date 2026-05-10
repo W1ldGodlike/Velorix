@@ -497,6 +497,7 @@ function App(): JSX.Element {
 
   useEffect(() => {
     let cleanupTheme: (() => void) | undefined
+    let cleanupUiPanels: (() => void) | undefined
     void (async () => {
       const loaded = await window.fluxalloy.settings.get()
       applyTheme(loaded.effectiveTheme)
@@ -509,10 +510,14 @@ function App(): JSX.Element {
       cleanupTheme = window.fluxalloy.onThemeChanged((next) => {
         applyTheme(next)
       })
+      cleanupUiPanels = window.fluxalloy.onMainWindowUiPanelsChanged((panels) => {
+        setMainUiPanels({ ...MAIN_PANEL_DEFAULTS, ...(panels ?? {}) })
+      })
     })().catch(console.error)
 
     return (): void => {
       cleanupTheme?.()
+      cleanupUiPanels?.()
     }
   }, [applyTheme, hydrateExportFieldsFromSettings])
 

@@ -74,6 +74,7 @@ export function InspectorStandaloneApp(): JSX.Element {
   useEffect(() => {
     document.title = 'FluxAlloy — инспектор'
     let cleanupTheme: (() => void) | undefined
+    let cleanupUiPanels: (() => void) | undefined
     void window.fluxalloy.settings
       .get()
       .then((loaded) => {
@@ -81,6 +82,9 @@ export function InspectorStandaloneApp(): JSX.Element {
         setProbeUiPanels(probePanelsFromSettings(loaded.mainWindowUiPanels))
         cleanupTheme = window.fluxalloy.onThemeChanged((next) => {
           applyTheme(next)
+        })
+        cleanupUiPanels = window.fluxalloy.onMainWindowUiPanelsChanged((panels) => {
+          setProbeUiPanels(probePanelsFromSettings(panels))
         })
       })
       .catch(console.error)
@@ -93,6 +97,7 @@ export function InspectorStandaloneApp(): JSX.Element {
 
     return (): void => {
       cleanupTheme?.()
+      cleanupUiPanels?.()
     }
   }, [applyTheme])
 

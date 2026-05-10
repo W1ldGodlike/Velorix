@@ -272,6 +272,25 @@ const fluxalloy = {
     return (): void => {
       ipcRenderer.removeListener(channel, handler)
     }
+  },
+  onMainWindowUiPanelsChanged: (
+    listener: (panels: MainWindowUiPanelState | undefined) => void
+  ): (() => void) => {
+    const channel = mw.mainWindowUiPanelsChanged
+    const handler = (_: unknown, raw: unknown): void => {
+      if (raw === undefined || raw === null) {
+        listener(undefined)
+        return
+      }
+      if (typeof raw !== 'object') {
+        return
+      }
+      listener(raw as MainWindowUiPanelState)
+    }
+    ipcRenderer.on(channel, handler)
+    return (): void => {
+      ipcRenderer.removeListener(channel, handler)
+    }
   }
 }
 

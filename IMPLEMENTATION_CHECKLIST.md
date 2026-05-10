@@ -37,7 +37,7 @@
 
 - [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; DnD текста/URL на окно (кроме полей ввода формы) + поле URL; прогресс + `extractYtdlpOutputPath`; классификация stderr; эвристики format/size из `[info]`/merger расширены; дальше — ещё редкие строки по логам.
 - [~] §6.3: argv whitelist + справочник + превью с draft/override `-o`; после выбора каталога загрузки / вставки флага из справочника / «Шаблон по умолчанию» превью пересчитывается; при необходимости ещё редкие поля.
-- [~] §1.1/§4.A/§6/§9: загрузки lucide/layout/тема/HiDPI (+ `window-hidpi`); главное окно — топбар/FFmpeg как раньше; **инспектор §9**: `app-topbar` как у редактора, persist раскрытия блоков ffprobe через те же ключи `mainWindowUiPanels.probe*`, большие области таблицы/JSON по `vh`, `focus-visible` у `summary`; дальше — ручная матрица DPI, углублённые метаданные ffprobe.
+- [~] §1.1/§4.A/§6/§9: загрузки lucide/layout/тема/HiDPI (+ `window-hidpi`); **раскрытие секций**: после `mergeMainWindowUiPanels` main шлёт `mainWindowUiPanelsChanged` всем окнам — редактор и §9 синхронны live; инспектор — `app-topbar`, `probe*`, CSS; дальше — DPI-матрица, метаданные ffprobe, rail v0-пилюли-донастройка.
 - [~] §7.2: crop/rotate/flip готовы через whitelist `-vf`; настройки перенесены из toolbar в боковую панель; дальше расширенные filters и HW encode.
 - [~] §9: опционально Dolby Vision/`side_data` и прочие расширенные метаданные ffprobe (базовые color\_\* потока уже в таблице).
 - [~] §17/§18: диагностика, Support ZIP, `session.log`; при необходимости отдельные логи по окнам или политика объёма mid-session.
@@ -182,7 +182,7 @@
 - [x] `settings.json` для темы.
 - [~] Последний открытый локальный файл (`lastOpenedSourcePath`) + мягкий restore превью при старте + геометрия main/downloads в `settings.json`; без полного session.json.
 - [x] Сохранять размеры/позиции окон.
-- [~] Сохранять раскрытые панели: главное окно + отдельное окно инспектора §9 (те же `mainWindowUiPanels.probe*`) + окно yt-dlp (`downloadsWindowUiPanels`); остальные секции FFmpeg только в редакторе.
+- [~] Сохранять раскрытые панели: главное окно + окно §9 (**push** снимка `mainWindowUiPanels` после сохранения) + yt-dlp (`downloadsWindowUiPanels`); FFmpeg-секции только в редакторе, `probe*` — shared с инспектором.
 - [~] Сохранять выбранные папки (каталог yt-dlp, последняя папка ffmpeg export и snapshot; прочие диалоги — позже).
 - [~] Сохранять состояние очередей: yt-dlp живой `queue.json` §6 (атомарная запись, гидратация при старте main, `will-quit` flush); полный `session.json` и прочие очереди — позже.
 - [ ] Сохранять `session.json`.
