@@ -2544,7 +2544,7 @@ function App(): JSX.Element {
                                   })
                                 }}
                               >
-                                {row.status.startsWith('Ошибка') ? 'Retry' : 'Start'}
+                                {row.status.startsWith('Ошибка') ? 'Повтор' : 'Старт'}
                               </button>
                               {row.outputPath ? (
                                 <>
@@ -3084,7 +3084,7 @@ function App(): JSX.Element {
             </details>
             <details className="app-downloads-log-panel" open>
               <summary>
-                Live log
+                Живой лог
                 <span>
                   {downloadsLogTargetRowId !== null ? `#${downloadsLogTargetRowId}` : '—'}
                 </span>
