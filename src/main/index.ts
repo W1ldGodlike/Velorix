@@ -1533,7 +1533,8 @@ app.whenReady().then(() => {
         downloadsWindowUiPanels: { ...prev, ...patch }
       }
       saveSettings(settingsPath(), cachedSettings)
-    }
+    },
+    getAppTheme: (): AppTheme => cachedSettings.theme
   })
   configureDownloadsQueueRunnerHooks({
     openDownloadedFileInHandler: (absoluteFile) => openDownloadedFileInMainHandler(absoluteFile)

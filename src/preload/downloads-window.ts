@@ -6,9 +6,9 @@ import type {
   YtdlpDownloadOptionsPayload,
   YtdlpGetCliOptionsParams
 } from '../shared/ytdlp-download-contract'
-import type { DownloadsWindowUiPanelState } from '../shared/settings-contract'
+import type { AppTheme, DownloadsWindowUiPanelState } from '../shared/settings-contract'
 import type { YtdlpDownloadHistoryEntry } from '../shared/ytdlp-history-contract'
-import { downloadsIpc as d } from '../shared/ipc-channels'
+import { downloadsIpc as d, mainWindowIpc as mw } from '../shared/ipc-channels'
 
 function isDownloadsLogPayload(raw: unknown): raw is DownloadsLogPayload {
   if (!raw || typeof raw !== 'object') {
@@ -156,6 +156,19 @@ contextBridge.exposeInMainWorld('fluxalloyDownloads', {
     patch: Partial<DownloadsWindowUiPanelState>
   ): Promise<{ ok: true } | { ok: false; error: string }> =>
     ipcRenderer.invoke(d.mergeUiPanels, patch),
+
+  /** §1.1 — broadcast темы из main (`persistAndBroadcast`): то же событие, что у renderer главного окна. */
+  onThemeChanged: (listener: (theme: AppTheme) => void): (() => void) => {
+    const handler = (_event: unknown, raw: unknown): void => {
+      if (raw === 'light' || raw === 'dark') {
+        listener(raw)
+      }
+    }
+    ipcRenderer.on(mw.themeChanged, handler)
+    return (): void => {
+      ipcRenderer.removeListener(mw.themeChanged, handler)
+    }
+  },
 
   /** IPC-мост во главное окно / инспектор (строгая проверка отправителя в main). */
   bridgeOpenInspector: (

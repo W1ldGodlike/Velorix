@@ -2,7 +2,7 @@ import { writeFileSync } from 'fs'
 import { BrowserWindow, app, dialog, ipcMain, shell, type WebContents } from 'electron'
 
 import { resolveAppPaths } from './app-paths'
-import type { DownloadsWindowUiPanelState } from '../shared/settings-contract'
+import type { AppTheme, DownloadsWindowUiPanelState } from '../shared/settings-contract'
 import type { StoredWindowRect } from './settings-store'
 import { boundsFromBrowserWindow, rectifyBoundsForRestore } from './window-bounds'
 import {
@@ -93,6 +93,8 @@ interface DownloadsWindowBoundsHooks {
   getDownloadsWindowUiPanelsSnapshot?: () => DownloadsWindowUiPanelState | undefined
   /** §4.1 — сохранить частичное состояние раскрытых секций в `settings.json`. */
   mergeDownloadsWindowUiPanelsPatch?: (patch: Partial<DownloadsWindowUiPanelState>) => void
+  /** Текущая тема приложения — начальное `data-theme` и синхрон с меню главного окна. */
+  getAppTheme?: () => AppTheme
 }
 
 let downloadsBoundsHooks: DownloadsWindowBoundsHooks = {}
@@ -237,19 +239,24 @@ function sanitizeDownloadsUiPanelPatch(raw: unknown): Partial<DownloadsWindowUiP
   return out
 }
 
-function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
+function buildDownloadsHtml(
+  panelState?: DownloadsWindowUiPanelState,
+  appTheme: AppTheme = 'dark'
+): string {
   const openAttr = (key: keyof DownloadsWindowUiPanelState, defaultOpen: boolean): string => {
     const v = panelState?.[key]
     const isOpen = typeof v === 'boolean' ? v : defaultOpen
     return isOpen ? ' open' : ''
   }
+  const dataThemeAttr = appTheme === 'light' ? 'light' : 'dark'
   return `<!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="${dataThemeAttr}">
 <head>
   <meta charset="UTF-8" />
   <title>FluxAlloy — менеджер загрузок</title>
   <style>
-    :root {
+    html[data-theme='dark'],
+    html:not([data-theme]) {
       color-scheme: dark;
       /* Синхрон с html[data-theme=dark] в src/renderer/src/assets/base.css */
       --fa-bg: #020407;
@@ -265,11 +272,38 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
       --fa-danger: #ef4444;
       --fa-success: #22c55e;
       --fa-focus-ring: rgba(47, 140, 255, 0.45);
-      /* Локальные алиасы прежней разметки окна загрузок */
       --bg: var(--fa-bg);
       --surface: var(--fa-surface);
       --surface-2: var(--fa-surface-elevated);
       --surface-3: #111823;
+      --border: var(--fa-border-subtle);
+      --border-2: var(--fa-border);
+      --text: var(--fa-text-primary);
+      --muted: var(--fa-text-secondary);
+      --dim: var(--fa-text-muted);
+      --blue: var(--fa-accent);
+      --green: var(--fa-success);
+      --red: var(--fa-danger);
+    }
+    html[data-theme='light'] {
+      color-scheme: light;
+      --fa-bg: #f3f4f6;
+      --fa-surface: #e8eaef;
+      --fa-surface-elevated: #ffffff;
+      --fa-border: #cfd2d9;
+      --fa-border-subtle: #dfe1e8;
+      --fa-text-primary: #1f2229;
+      --fa-text-secondary: #4b5260;
+      --fa-text-muted: #717784;
+      --fa-accent: #2f6feb;
+      --fa-accent-contrast: #ffffff;
+      --fa-danger: #c43333;
+      --fa-success: #29875f;
+      --fa-focus-ring: rgba(47, 111, 235, 0.4);
+      --bg: var(--fa-bg);
+      --surface: var(--fa-surface);
+      --surface-2: var(--fa-surface-elevated);
+      --surface-3: #f0f2f5;
       --border: var(--fa-border-subtle);
       --border-2: var(--fa-border);
       --text: var(--fa-text-primary);
@@ -1778,6 +1812,13 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
       }
       wireDownloadsTopbarBridges();
 
+      function applyDownloadsTheme(t) {
+        document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
+      }
+      if (api && typeof api.onThemeChanged === 'function') {
+        api.onThemeChanged(applyDownloadsTheme);
+      }
+
       api.getSnapshot().then(onQueueSnapshot);
 
       api.onSnapshot(onQueueSnapshot);
@@ -2458,7 +2499,10 @@ export function focusOrCreateDownloadsWindow(mergeText?: string | null): void {
   }
 
   const dataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(
-    buildDownloadsHtml(downloadsBoundsHooks.getDownloadsWindowUiPanelsSnapshot?.())
+    buildDownloadsHtml(
+      downloadsBoundsHooks.getDownloadsWindowUiPanelsSnapshot?.(),
+      downloadsBoundsHooks.getAppTheme?.() ?? 'dark'
+    )
   )}`
 
   if (downloadsWindow && !downloadsWindow.isDestroyed()) {
