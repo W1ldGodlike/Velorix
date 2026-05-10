@@ -2,6 +2,10 @@
 
 Источник требований: **[`FLUXALLOY_TZ.md`](FLUXALLOY_TZ.md)**. ТЗ не редактировать без явного согласования. Состояние по §, спринту и TODO — **в этом файле**; хронологию решений, проверок окружения и длинные заметки — в **[`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md)**.
 
+## Готовность полного итога
+
+- **Оценка: ~38%**. Рабочее ядро Electron/React, preview/ffmpeg base, расширенный yt-dlp workspace, ffprobe-инспектор, диагностика и тесты уже есть; крупно не закрыты терминал/CLI, сценарии/планировщик, локализация, hardware encode, batch/утилиты, полная упаковочная матрица и ручной DPI/e2e smoke.
+
 ## Легенда
 
 - `[x]` — сделано и проверено в текущей Electron/TypeScript-ветке.
@@ -19,13 +23,15 @@
 - [x] Есть `src/main`, `src/preload`, `src/renderer`.
 - [x] Renderer изолирован: `contextIsolation: true`, `nodeIntegration: false`.
 - [x] Есть базовая тёмная/светлая тема и режим **как в системе** (`theme: system` + `nativeTheme`), сохранение в `userData/settings.json`, меню `Вид -> Тема`.
-- [~] Есть главное окно 1920x1080 (FHD) по умолчанию, тулбар, **базовый** видеопредпросмотр (`fluxmedia://` allowlist), DnD/«Открыть», статусбар.
+- [~] Есть главное окно 1920x1080 (FHD) по умолчанию и единый workspace `Редактор` / `Загрузки`; редактор содержит toolbar, видеопредпросмотр (`fluxmedia://` allowlist), DnD/«Открыть», транспорт, timeline/waveform и статусбар.
 - [~] Есть `Data/`, `Help/`, `FLUXALLOY_TZ.md`, `IMPLEMENTATION_CHECKLIST.md`, [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md), упаковка `Data/`, `Help/`, ТЗ через `extraResources` (журнал в установщик пока не включаем — только для разработки).
 - [x] Windows: `electron-builder` с режимом sign по умолчанию; после перезагрузки проверены `build:unpack`/`winCodeSign`.
-- [~] Есть запуск `ffmpeg` для экспорта и снимка кадра; полноценный пайплайн обработки/пресетов/очередей ещё впереди. Движки можно **скачать кнопкой** в UI (Windows) в `userData/bin`, есть проверка `--version` после загрузки.
+- [~] Есть ffmpeg export MP4/MKV/MOV, trim In/Out, crop/rotate/flip/scale/FPS/CRF/bitrate, пользовательские пресеты и snapshot PNG/JPEG; batch, HW encode и расширенные фильтры ещё впереди. Движки можно **скачать кнопкой** в UI (Windows) в `userData/bin`, есть проверка `--version` после загрузки.
 - [~] Автозагрузка движков **Windows x64** (yt-dlp GitHub + ffmpeg zip gyan.dev), SHA256 опционально через `Data/trusted_hashes.json`; в установщике есть пустой `resources/bin` (`extraResources`), бинарники — подкладка/`userData/bin`.
 - [ ] Нет локализации `locales/**`.
-- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; есть покрытие чистых парсеров и сервисов (`ytdlp-extra-args`, `ytdlp-progress-parser` + постпроцессоры yt-dlp §6.4, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options` + превью каталога §6.3, `ytdlp-download-output`, `ytdlp-download-queue-persist`, `ytdlp-commands-hints`, `ytdlp-os-pause-support`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-frame-snapshot-service`, `external-process-log`, `support-bundle`, `ipc-channels`, `engine-contract`, `ffmpeg-export-argv`, `ffprobe-summary-export`, `ffprobe-chapters`, `ffprobe-timecode`, `ffprobe-disposition`, `ffprobe-video-fps`, `ffprobe-side-data`, `timeline-ruler`, `waveform-peaks`, `video-frame-snap`).
+- [~] Основная вкладка `Загрузки` в React уже закрывает очередь, старт/stop/retry/pause, настройки yt-dlp, каталог/cookies/network, live log, историю и open file/folder; pop-out окно оставлено вторичным режимом для редких settings.
+- [~] ffprobe-инспектор есть под превью и отдельным окном: дорожки/главы/raw JSON, TXT/HTML export, Dolby/HDR side_data summary, контекстные действия.
+- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; по последней зелёной проверке `npm run check` выполняет **29 test files / 244 tests**. Покрыты чистые парсеры и сервисы (`ytdlp-extra-args`, `ytdlp-progress-parser` + постпроцессоры yt-dlp §6.4, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options` + превью каталога §6.3, `ytdlp-download-output`, `ytdlp-download-queue-persist`, `ytdlp-commands-hints`, `ytdlp-os-pause-support`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-frame-snapshot-service`, `external-process-log`, `support-bundle`, `ipc-channels`, `engine-contract`, `ffmpeg-export-argv`, `ffprobe-summary-export`, `ffprobe-chapters`, `ffprobe-timecode`, `ffprobe-disposition`, `ffprobe-video-fps`, `ffprobe-side-data`, `timeline-ruler`, `waveform-peaks`, `video-frame-snap`, `lucide-downloads-icons`, `window-hidpi`).
 
 ## Журнал решений и проверок
 
@@ -35,12 +41,11 @@
 
 Правило для агента: этот блок — рабочий навигатор ближайшего спринта. После каждой крупной итерации обновлять его: отмечать сделанное, переводить частичное в `[~]`, убирать устаревшее только если оно отражено ниже по §, и добавлять 3–7 следующих конкретных пунктов. Не оставлять блок полностью закрытым. Для UI/UX-сверки по v0 использовать [`docs/UX_REFERENCE_V0.md`](docs/UX_REFERENCE_V0.md).
 
-- [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; `queue.json` без duplicate id; журнал out/err + truncate; retry-счётчики, размеры `of ~ …` и post-processing формат (`ExtractAudio`/remux/convert) попадают в таблицу; дальше — редкие шаблоны логов по полю.
-- [~] §6.3: argv whitelist + справочник + превью draft/override `-o`; при необходимости редкие поля.
-- [~] §6.1/§4.A: вкладка `Загрузки` — React workspace подключён к живой очереди; добавлены URL-band, queue table, summary cards, status filter chips, progress bars, file/folder actions, удаление строк/очистка готовых/очистка очереди, pause/resume активной yt-dlp строки, встроенный rail основных настроек yt-dlp, network fields, управление каталогом загрузок и cookies-файлом, live log, история с действиями и pop-out; дальше — перенос редких settings во вкладку и ручная матрица Win 125–200 %.
-- [~] §1.1/§4.A/§9: редактор + **инспектор** — HiDPR/topbar/SVG/focus; **`AboutDialog`** / **`IconCircleHelp`**; **`video` `aria-label`**; **`PreviewProbeBody`** + превью ffmpeg; **rail FFmpeg** + **быстрая yt-dlp** (`quickYtdlpUrlHint` → кнопки); seek/снап; waveform ограничен по длительности и размеру файла; **Dolby/HDR side_data** попадает в сведения видеодорожки; дальше — multi-monitor DPI и редкие ffprobe-поля.
-- [~] §7.2: trim/crop/rotate/flip; trim IPC валидируется и экспортный `-ss/-t` совпадает с preview; пользовательские пресеты FFmpeg именуются через app-modal без `prompt()`; дальше расширенные фильтры и HW encode.
-- [~] §9/§21: расширенные ffprobe (**Dolby Vision/HDR `side_data_list` summary** в деталях видеодорожки); новые IPC через `ipc-channels`, при необходимости логи по окнам; точечные Vitest.
+- [~] §6.1/§6.4: yt-dlp workspace почти основной: очередь/лог/история/retry/pause/settings/catalog/cookies/network встроены; дальше — редкие settings, редкие шаблоны логов и ручная DPI-матрица.
+- [~] §6.3: argv whitelist + справочник + preview команды есть; дальше — удобство экспертных токенов и редкие поля.
+- [~] §1.1/§4.A/§9: редактор/инспектор/ffprobe хорошо продвинуты; дальше — multi-monitor DPI, help links, локализация строк и редкие ffprobe-поля.
+- [~] §7.2: trim/crop/rotate/flip/scale/FPS/bitrate/presets есть; дальше — расширенные фильтры, HW encode, batch и сценарий download→encode без ручного шага.
+- [ ] §8/§10/§11/§15/§16: терминал/CLI, планировщик, конструктор сценариев, база знаний viewer и аппаратное ускорение — крупные незакрытые блоки полного итога.
 
 ---
 
@@ -62,7 +67,7 @@
 2. [~] Управление зависимостями: Windows-загрузка и опциональный SHA256; bundled `bin`/macOS/Linux — дальше.
 3. [~] Главное окно и глобальные элементы: меню/превью частично; сессии, закрытие, Mini Player — дальше.
 4. [~] Главное окно обработки: файл/DnD, таймлайн (scrub + in/out), ffprobe-сводка, экспорт MP4/MKV/MOV и snapshot; пресеты/расширенный ffmpeg/batch — дальше.
-5. [~] Окно менеджера yt-dlp: очередь, каталог, настройки argv, лог, история, retry/error handling и авто-preview; полноценные сценарии/терминал — дальше.
+5. [~] Менеджер yt-dlp: основная вкладка `Загрузки` + pop-out; очередь, каталог, cookies, network, настройки argv, live log, история, retry/error handling, pause/resume и авто-preview есть; полноценные сценарии/терминал — дальше.
 6. [ ] Терминал и CLI с IntelliSense.
 7. [ ] Инспектор, планировщик, конструктор сценариев.
 8. [ ] Очистка кэша, история, статистика, утилиты.
@@ -74,7 +79,7 @@
 - [x] Назначение продукта зафиксировано: графический комбайн yt-dlp + ffmpeg.
 - [x] Целевые платформы зафиксированы: Windows приоритет, macOS, Linux.
 - [x] Лицензия есть в `LICENSE`.
-- [ ] UI ещё не соответствует целевой глубине продукта; есть только каркас.
+- [~] UI уже не каркас: есть рабочий editor/downloads workspace и v0-подобные rail/table/log/history паттерны; до целевой глубины продукта не хватает локализации, базы знаний, терминала/сценариев, HW/batch и ручной DPI-полировки.
 - [~] Держать основной UX как единый workspace с вкладками `Редактор` / `Загрузки`; логика очереди и обработки остаётся разделённой по сервисам, pop-out окна — вторичный режим.
 
 ### §1.1 UI и UX
@@ -146,9 +151,9 @@
 ### §4.A Разделение ролей окон
 
 - [~] Главное окно существует и сфокусировано на preview/ffmpeg обработке; верхний toolbar сокращён до основных действий, FFmpeg-настройки вынесены в правую сворачиваемую панель.
-- [~] Главное окно стало единым workspace: `Редактор` остаётся ffmpeg/preview центром, `Загрузки` — основная вкладка yt-dlp; pop-out окно загрузок пока сохраняет полный log/history/settings rail.
+- [~] Главное окно стало единым workspace: `Редактор` остаётся ffmpeg/preview центром, `Загрузки` — основная вкладка yt-dlp; pop-out окно загрузок остаётся вторичным режимом для редких настроек и расширенной HTML-панели.
 - [~] Пункт меню «Менеджер загрузок (yt-dlp)…» + IPC открытия pop-out; главный topbar переключает встроенную вкладку `Загрузки`.
-- [~] Отдельное BrowserWindow под менеджер: HTML + очередь/лог/история/settings yt-dlp §6; v0-компоновка: table + **под ней** вертикальный блок история→журнал + правый settings rail; persist раскрытия секций rail/log/history (**автораскрытие журнала при старте строки не перетирает** сохранённое «свёрнут» в `settings`); без React.
+- [~] Отдельное BrowserWindow под менеджер: HTML + очередь/лог/история/settings yt-dlp §6; v0-компоновка: table + **под ней** вертикальный блок история→журнал + правый settings rail; persist раскрытия секций rail/log/history (**автораскрытие журнала при старте строки не перетирает** сохранённое «свёрнут» в `settings`); без React, вторичный pop-out.
 
 ### §4.B Единая зона источника
 
@@ -157,7 +162,7 @@
 - [ ] Drag-and-Drop папки, если применимо.
 - [~] Поле URL + «Из буфера» + глобальный Ctrl/Cmd+V (вне текстовых полей) отправляет текст в окно загрузок; дальше — сценарии без ручного окна.
 - [x] Открытое второе окно принимает URL/текст, добавляет строки в очередь и запускает yt-dlp через main.
-- [~] Опция: одиночная загрузка в рабочую папку и открыть в обработке (есть авто-open в preview после успеха; полноценная цепочка download→ffmpeg — позже).
+- [~] Опция: одиночная загрузка в рабочую папку и открыть в обработке (есть авто-open в preview после успеха из вкладки/pop-out; полноценная цепочка download→ffmpeg — позже).
 
 ### §4.C Прочее
 
@@ -241,16 +246,16 @@
 
 ### §6.1 Основная панель
 
-- [~] Отдельное окно загрузок (data HTML + свой preload IPC).
+- [~] Основной менеджер загрузок — вкладка `Загрузки` в React workspace; отдельное окно (data HTML + свой preload IPC) оставлено вторичным pop-out режимом.
 - [x] Многострочное поле URL.
 - [x] Добавление распознанных строк в простую очередь (таблица в том же документе).
 - [x] Drag-and-Drop URL/текста на поле ввода и на свободную область окна загрузок (не перехватываем drop на `textarea`/`select`/текстовых `input`).
-- [~] Вставка из главного окна (меню, поле URL, Ctrl+V) → merge в очередь.
-- [~] Таблица: имя (хост+путь), ссылка; колонки Формат/Размер/Прогресс/Скорость/ETA; **Прогресс** — полоска + числовой % (v0), зелёный 100% при «Готово»; `progress` суммарная строка; icon-only действия (shared lucide); `queue.json` §4.1 с дедупликацией id при restore; format/size из `[info]` и post-processing строк yt-dlp (`ExtractAudio`, remux, convert); дальше — редкие шаблоны логов.
+- [~] Вставка из главного окна (быстрая URL-полоса, поле вкладки, clipboard action, Ctrl+V в pop-out) → merge в очередь.
+- [~] Таблица: имя (хост+путь), ссылка; колонки Формат/Размер/Прогресс/Скорость/ETA; **Прогресс** — полоска + числовой % (v0), зелёный 100% при «Готово»; `progress` суммарная строка; действия старт/retry/pause/delete/file/folder; `queue.json` §4.1 с дедупликацией id при restore; format/size из `[info]` и post-processing строк yt-dlp (`ExtractAudio`, remux, convert); дальше — редкие шаблоны логов.
 - [~] Старт всей очереди (последовательно, только «Ожидание»).
 - [x] Старт отдельной строки.
-- [~] Отмена текущего yt-dlp (SIGKILL процессу spawn).
-- [~] Пауза/продолжение где возможно: SIGSTOP/SIGCONT на POSIX; Windows показывает недоступность.
+- [x] Отмена текущего yt-dlp (SIGKILL процессу spawn) из вкладки и pop-out.
+- [~] Пауза/продолжение где возможно: SIGSTOP/SIGCONT на POSIX; Windows показывает недоступность; UI есть во вкладке и pop-out.
 - [x] Удаление строки.
 - [x] Reorder (вверх/вниз).
 
@@ -261,17 +266,17 @@
 - [~] Аудио-only (`-x --audio-format best`; ffmpeg должен быть доступен yt-dlp; без выбора кодека).
 - [x] Субтитры (пресет §6.2: выкл. / `--write-subs` / `--write-auto-subs`; опционально `--sub-langs` без пробелов; persist в settings).
 - [~] Плейлист/одиночный ролик (`--yes-playlist` / по умолчанию `--no-playlist`).
-- [~] Cookies / профиль браузера: файл Netscape (--cookies) + whitelist `--cookies-from-browser` (Chrome/Edge/Firefox); строка профиля/контейнера yt-dlp в UI — позже.
+- [~] Cookies / профиль браузера: файл Netscape (`--cookies`) + whitelist `--cookies-from-browser` (Chrome/Edge/Firefox) доступны во вкладке и pop-out; строка профиля/контейнера yt-dlp в UI — позже.
 - [x] `--impersonate`: whitelist chrome / edge / firefox (`ytdlpImpersonate` в settings, без версионирования строкой из UI); дубль `--impersonate` в доп. argv запрещён.
 - [x] Шаблон имени `-o` (относительно каталога загрузки, проверка выхода из каталога, `%(ext)s`; `ytdlpFilenameTemplate` в settings).
-- [x] Каталог загрузки (выбор папки в окне yt-dlp + `ytdlpDownloadDirectory` в `settings.json`; по умолчанию `userData/downloads/ytdlp`).
-- [x] Открыть текущий каталог загрузки из окна yt-dlp.
+- [x] Каталог загрузки (выбор папки во вкладке/pop-out + `ytdlpDownloadDirectory` в `settings.json`; по умолчанию `userData/downloads/ytdlp`).
+- [x] Открыть текущий каталог загрузки из вкладки/pop-out.
 - [x] Ограничения скорости/ретраи (`--limit-rate`, `--retries`, `--fragment-retries`); профили **повтора строки очереди** при ненулевом exit (`off`/`light`/`normal`/`persistent`).
 - [x] Дополнительные параметры в сворачиваемых секциях: экспертные argv/preview/справочник по категориям §6.3 (`optgroup`, карта токенов в main, опциональный `category` в JSON).
 
 ### §6.3 Экспертный режим
 
-- [~] Live preview команды yt-dlp (`commandPreview`: реальный каталог `-o` из userData или override только для превью, первый URL очереди или `https://example.com/`; черновик формы до «Сохранить параметры»; пересчёт превью при смене каталога загрузки через диалог, вставке токена из справочника и сбросе шаблона; заглушки `<downloadDir>`/`<url>` только без контекста превью).
+- [~] Live preview команды yt-dlp (`commandPreview`: реальный каталог `-o` из userData или override только для превью, первый URL очереди или `https://example.com/`; черновик формы до сохранения; во вкладке есть компактный preview, в pop-out — экспертный блок со справочником токенов; заглушки `<downloadDir>`/`<url>` только без контекста превью).
 - [~] Поле дополнительных аргументов (`ytdlpExtraArgsLine` в settings).
 - [x] Подсказки из `Data/ytdlp_commands.json` (группы в UI; при необходимости категория в JSON переопределяет встроенную карту в main).
 - [~] Безопасная сборка аргументов без shell (`parseExtraYtdlpArgsLine`, spawn-массив §21).
@@ -279,12 +284,12 @@
 ### §6.4 Прогресс, лог, комбинированный режим
 
 - [~] Парсинг прогресса yt-dlp: процент + скорость + ETA + размер `of …`/`of ~ …` + `fragment X of Y` + `(frag N/M)` без процентов в строке + `Total progress:` + `Downloading video|item X of Y` + вариант `N of M videos` + `Sleeping … seconds` / `Waiting for reconnect` / прочие `[download] Waiting for …` / `Resuming download at byte …` / `Retrying (N/M)` и `Retrying fragment X (N/M)`; прочие редкие строки — по мере заметок.
-- [~] Лог stdout/stderr: IPC `fluxalloy-downloads-log` + нижняя панель v0-layout (строки **out/err**, счётчик размера, «Очистить вид», обрезка ~240 KiB через DOM) + сохранение видимого текста через save dialog.
+- [~] Лог stdout/stderr: IPC `fluxalloy-downloads-log` fan-out в главное окно и pop-out; вкладка `Загрузки` показывает live log, очистку и сохранение видимого текста; pop-out сохраняет v0-layout со счётчиком размера и обрезкой DOM.
 - [x] «Скачать и открыть»: готовый файл можно открыть/показать в папке или отправить в обработчик FluxAlloy из очереди и истории.
 - [x] «Скачать и сразу обработать» (настройка §6.4: после успеха yt-dlp авто-открытие в главном preview, если известен безопасный путь в каталоге загрузок; неуспех авто-открытия пишется в лог строки).
 - [~] Обработка ошибок: приоритет текста `ERROR:`; иначе последняя строка stderr; явное завершение по сигналу ОС; `--retries`/`--fragment-retries` yt-dlp + повторы очереди §6.4 (в т.ч. профиль `persistent`) + ручной retry строки; пропуск повторов очереди по тексту (`private video`, HTTP 403/404, DRM, «нет форматов»/unsupported URL, завершённый live/premiere и т.п.) с приоритетом транзиентных сетевых маркеров (408/502/503/504/500/429/таймаут/broken pipe/premature close/signature extraction/rate limit exceeded и т.д.); `classifyYtdlpQueueFailureKind` (+ коды **2** параметры, **100** перезапуск, **101** лимит загрузок, см. апстрим yt-dlp) и суффиксы в статусе строки; код **1** пока только общая ошибка — без отдельной эвристики.
-- [x] Пауза/продолжить активный yt-dlp: POSIX SIGSTOP/SIGCONT + IPC + кнопка в окне загрузок; Windows — явный отказ (без Job suspend).
-- [x] История загрузок (файл `downloads/history.json`, атомарная запись temp+rename после yt-dlp, IPC, UI, фильтр по исходу, повтор URL в очередь, открытие файла/папки при наличии `outputPath`).
+- [x] Пауза/продолжить активный yt-dlp: POSIX SIGSTOP/SIGCONT + IPC + кнопка во вкладке/pop-out; Windows — явный отказ (без Job suspend).
+- [x] История загрузок (файл `downloads/history.json`, атомарная запись temp+rename после yt-dlp, IPC, UI во вкладке/pop-out, фильтр по исходу в pop-out, открытие файла/папки при наличии `outputPath`).
 
 ## §7. Главное окно: обработка (ffmpeg)
 
