@@ -35,6 +35,7 @@ interface FfprobeJson {
     channel_layout?: string
     avg_frame_rate?: string
     r_frame_rate?: string
+    bit_rate?: string
     tags?: Record<string, string | number | undefined>
   }>
 }
@@ -174,7 +175,10 @@ function buildTrackRows(streams: FfprobeJson['streams']): MediaProbeTrackRow[] {
           : '?',
       detail: buildTrackDetail(stream),
       language: tagString(stream.tags, 'language'),
-      titleTag: tagString(stream.tags, 'title')
+      titleTag: tagString(stream.tags, 'title'),
+      streamBitrateKbps: formatBitrateKbps(
+        typeof stream.bit_rate === 'string' ? stream.bit_rate : undefined
+      )
     })
   })
   rows.sort((a, b) => a.index - b.index)

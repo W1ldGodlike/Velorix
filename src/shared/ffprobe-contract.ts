@@ -10,6 +10,8 @@ export interface MediaProbeTrackRow {
   language: string | null
   /** `tags.title` дорожки (не путать с главами контейнера). */
   titleTag: string | null
+  /** Средний битрейт дорожки из `stream.bit_rate`, кбит/с; `null`, если ffprobe не дал. */
+  streamBitrateKbps: number | null
 }
 
 /** Глава контейнера §9 (ffprobe `-show_chapters`). */

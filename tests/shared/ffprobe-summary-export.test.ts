@@ -24,7 +24,8 @@ const sampleProbe: MediaProbeSuccess = {
       codec: 'h264',
       detail: '1920x1080, 24 fps',
       language: null,
-      titleTag: null
+      titleTag: null,
+      streamBitrateKbps: null
     },
     {
       index: 1,
@@ -32,7 +33,8 @@ const sampleProbe: MediaProbeSuccess = {
       codec: 'aac',
       detail: 'stereo, 48000 Hz',
       language: 'eng',
-      titleTag: 'Commentary'
+      titleTag: 'Commentary',
+      streamBitrateKbps: 192
     }
   ],
   chapters: [],
@@ -63,7 +65,8 @@ describe('ffprobe-summary-export', () => {
     expect(t).toContain('h264')
     expect(t).toContain('aac')
     expect(t).toContain('Дорожек: 2')
-    expect(t).toContain('Язык\tЗаголовок\tСведения')
+    expect(t).toContain('Битрейт\tЯзык\tЗаголовок\tСведения')
+    expect(t).toContain('192 kb/s')
     expect(t).toContain('Видео\t')
     expect(t).toContain('eng')
     expect(t).toContain('Commentary')
@@ -89,7 +92,8 @@ describe('ffprobe-summary-export', () => {
           codec: 'x',
           detail: '<script>x</script>',
           language: null,
-          titleTag: null
+          titleTag: null,
+          streamBitrateKbps: null
         }
       ]
     }
