@@ -85,6 +85,11 @@ export interface FluxAlloyApi {
   downloads: {
     openWindow: (initial?: string | { text?: string } | null) => Promise<void>
   }
+  inspector: {
+    openWindow: (absoluteMediaPath?: string | null) => Promise<void>
+    bootstrap: () => Promise<{ initialMediaPath: string | null }>
+    onTargetMediaPath: (listener: (absolutePath: string) => void) => () => void
+  }
   clipboard: {
     readText: () => Promise<string>
     writeText: (text: string) => Promise<{ ok: true } | { ok: false }>

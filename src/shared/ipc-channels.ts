@@ -38,6 +38,11 @@ export const mainWindowIpc = {
   diagnosticsOpenMainLog: 'fluxalloy:diagnostics-open-main-log',
   diagnosticsCreateSupportZip: 'fluxalloy:diagnostics-create-support-zip',
   openDownloadsWindow: 'fluxalloy:open-downloads-window',
+  /** §9 — отдельное окно инспектора ffprobe (`#inspector`). */
+  openInspectorWindow: 'fluxalloy:open-inspector-window',
+  inspectorBootstrap: 'fluxalloy:inspector-bootstrap',
+  /** Main → renderer окна инспектора: проанализировать указанный путь. */
+  inspectorTargetMediaPath: 'fluxalloy:inspector-target-media-path',
   exportStart: 'fluxalloy:export-start',
   exportCancel: 'fluxalloy:export-cancel',
   exportOpenOutput: 'fluxalloy:export-open-output',

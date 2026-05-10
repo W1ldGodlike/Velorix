@@ -701,3 +701,30 @@
   flex-wrap: wrap;
   gap: 0.45rem;
 }
+
+/* §9 §363 — отдельное окно инспектора (`#inspector`). */
+.inspector-standalone-main {
+  overflow: auto;
+  padding: 10px 14px 14px;
+}
+
+.inspector-standalone-hint {
+  margin: 0 0 12px;
+  opacity: 0.85;
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.inspector-standalone-probe {
+  padding-top: 6px;
+}
+
+.inspector-standalone-path {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--fa-border-subtle);
+  font-family: ui-monospace, Consolas, Menlo, monospace;
+  font-size: 0.75rem;
+  opacity: 0.88;
+  word-break: break-all;
+}

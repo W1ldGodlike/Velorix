@@ -101,6 +101,25 @@ const fluxalloy = {
     openWindow: (initial?: string | { text?: string } | null): Promise<void> =>
       ipcRenderer.invoke(mw.openDownloadsWindow, initial ?? null)
   },
+  /** §9 §363 — отдельное окно инспектора (тот же preload, что главное окно). */
+  inspector: {
+    openWindow: (absoluteMediaPath?: string | null): Promise<void> =>
+      ipcRenderer.invoke(mw.openInspectorWindow, absoluteMediaPath ?? null),
+    bootstrap: (): Promise<{ initialMediaPath: string | null }> =>
+      ipcRenderer.invoke(mw.inspectorBootstrap),
+    onTargetMediaPath: (listener: (absolutePath: string) => void): (() => void) => {
+      const ch = mw.inspectorTargetMediaPath
+      const handler = (_event: unknown, raw: unknown): void => {
+        if (typeof raw === 'string' && raw.length > 0) {
+          listener(raw)
+        }
+      }
+      ipcRenderer.on(ch, handler)
+      return (): void => {
+        ipcRenderer.removeListener(ch, handler)
+      }
+    }
+  },
   clipboard: {
     readText: (): Promise<string> => ipcRenderer.invoke(mw.clipboardReadText),
     writeText: (text: string): Promise<{ ok: true } | { ok: false }> =>

@@ -19,6 +19,11 @@ import {
   registerDownloadsWindowIpcHandlers
 } from './downloads-window'
 import {
+  configureInspectorWindowHooks,
+  focusOrCreateInspectorWindow,
+  registerInspectorWindowIpcHandlers
+} from './inspector-window'
+import {
   isDiagnosticsFolderId,
   listDiagnosticsFolders,
   openDiagnosticsFolder,
@@ -1105,6 +1110,13 @@ function buildApplicationMenu(): void {
       label: 'Инструменты',
       submenu: [
         {
+          label: 'Инспектор медиа (ffprobe)…',
+          click: (): void => {
+            focusOrCreateInspectorWindow(undefined)
+          }
+        },
+        { type: 'separator' },
+        {
           label: 'Открыть папку…',
           submenu: buildDiagnosticsFolderSubmenu()
         },
@@ -1407,8 +1419,21 @@ app.whenReady().then(() => {
   configureDownloadsQueueRunnerHooks({
     openDownloadedFileInHandler: (absoluteFile) => openDownloadedFileInMainHandler(absoluteFile)
   })
+  configureInspectorWindowHooks({
+    getSavedInspectorBounds: () => cachedSettings.windowBounds?.inspector,
+    persistInspectorBounds: (r) => patchWindowBounds({ inspector: r }),
+    getDefaultInspectorMediaPath: (): string | undefined => {
+      const saved = cachedSettings.lastOpenedSourcePath
+      if (typeof saved !== 'string' || saved.trim().length === 0) {
+        return undefined
+      }
+      const abs = resolve(normalize(saved.trim()))
+      return existsSync(abs) ? abs : undefined
+    }
+  })
   registerFluxMediaProtocol()
   registerDownloadsWindowIpcHandlers()
+  registerInspectorWindowIpcHandlers()
 
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)

@@ -19,6 +19,7 @@ export interface StoredWindowRect {
 export interface WindowBoundsConfig {
   main?: StoredWindowRect
   downloads?: StoredWindowRect
+  inspector?: StoredWindowRect
 }
 
 export interface AppSettings {
@@ -28,7 +29,7 @@ export interface AppSettings {
   lastOpenedSourcePath?: string
   /** §3: полные пути к exe движков; имеют приоритет над bundled и userData/bin. */
   engineExecutablePaths?: EnginePathOverrides
-  /** §4.1: последние размеры/позиции отдельных окон (main + менеджер загрузок). */
+  /** §4.1: последние размеры/позиции окон (main, менеджер загрузок, инспектор §9). */
   windowBounds?: WindowBoundsConfig
   /** §6.2: абсолютный каталог для `-o` yt-dlp; если нет — `userData/downloads/ytdlp`. */
   ytdlpDownloadDirectory?: string

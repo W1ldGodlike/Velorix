@@ -38,7 +38,8 @@ function parseWindowBoundsConfig(raw: unknown): WindowBoundsConfig | undefined {
   const o = raw as Record<string, unknown>
   const main = parseStoredWindowRect(o['main'])
   const downloads = parseStoredWindowRect(o['downloads'])
-  if (!main && !downloads) {
+  const inspector = parseStoredWindowRect(o['inspector'])
+  if (!main && !downloads && !inspector) {
     return undefined
   }
   const cfg: WindowBoundsConfig = {}
@@ -47,6 +48,9 @@ function parseWindowBoundsConfig(raw: unknown): WindowBoundsConfig | undefined {
   }
   if (downloads) {
     cfg.downloads = downloads
+  }
+  if (inspector) {
+    cfg.inspector = inspector
   }
   return cfg
 }

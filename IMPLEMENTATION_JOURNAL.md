@@ -141,3 +141,4 @@
 - 2026-05-10 11:16:20 [SDK]: §9 — битрейт дорожки из `stream.bit_rate` (`streamBitrateKbps`), колонка и ПКМ; сводка TXT/HTML; §367 JSON блок отмечен готовым в чеклисте.
 - 2026-05-10 11:19:50 [SDK]: §9 — `dispositionSummary` из `stream.disposition` (`ffprobe-disposition`), колонка/TSV/сводка/ПКМ; Vitest.
 - 2026-05-10 11:22:13 [SDK]: §9 — видео `pix_fmt`/SAR/DAR из ffprobe в дорожках, колонки UI/ПКМ/TSV и TXT/HTML сводка; Vitest.
+- 2026-05-10 11:28:40 [SDK]: §9 §363 — отдельное окно инспектора `#inspector`: `inspector-window.ts`, IPC (`openInspectorWindow`, bootstrap, push пути), `windowBounds.inspector`, меню «Инструменты», `MediaProbePanel` + toolbar «Инспектор…».

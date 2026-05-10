@@ -4,6 +4,7 @@ import './assets/main.css'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
+import { InspectorStandaloneApp } from './InspectorStandaloneApp'
 
 // Renderer bootstrap intentionally small.
 // Здесь только React и CSS: вся работа с Electron/FS/процессами идёт через preload API,
@@ -50,8 +51,10 @@ window.addEventListener('unhandledrejection', (event) => {
   safeLog('error', 'window.unhandledrejection', describeError(event.reason, 'unknown rejection'))
 })
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>
+const rootEl = document.getElementById('root')!
+const isInspectorSurface =
+  typeof window !== 'undefined' && window.location.hash.replace(/^#\/?/, '') === 'inspector'
+
+createRoot(rootEl).render(
+  <StrictMode>{isInspectorSurface ? <InspectorStandaloneApp /> : <App />}</StrictMode>
 )
