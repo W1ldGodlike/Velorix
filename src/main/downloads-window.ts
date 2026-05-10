@@ -188,281 +188,386 @@ function buildDownloadsHtml(): string {
   <meta charset="UTF-8" />
   <title>FluxAlloy — менеджер загрузок</title>
   <style>
-    :root { color-scheme: dark; }
-    body { font-family: system-ui, Segoe UI, sans-serif; margin: 0; padding: 14px 16px 18px;
-      background: #1e1e1e; color: #e8e8ec; line-height: 1.45; font-size: 13px; }
-    h1 { font-size: 1.05rem; font-weight: 600; margin: 0 0 10px; }
-    .hint { opacity: 0.82; font-size: 12px; margin: 0 0 10px; }
+    :root {
+      color-scheme: dark;
+      --bg: #020407;
+      --surface: #070a0f;
+      --surface-2: #0d1219;
+      --surface-3: #111823;
+      --border: #151c27;
+      --border-2: #202936;
+      --text: #e8edf5;
+      --muted: #9aa7b7;
+      --dim: #5f6b7a;
+      --blue: #2f8cff;
+      --green: #22c55e;
+      --red: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+    body {
+      font-family: system-ui, Segoe UI, sans-serif; margin: 0; background: var(--bg); color: var(--text);
+      line-height: 1.45; font-size: 12px;
+    }
+    .dl-shell { height: 100%; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
+    .dl-topbar {
+      min-height: 42px; display: grid; grid-template-columns: minmax(13rem, auto) 1fr auto; align-items: center;
+      gap: 0.75rem; padding: 0.35rem 0.65rem; background: color-mix(in srgb, var(--bg) 86%, #111827 14%);
+      border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .brand { display: inline-flex; align-items: center; gap: 0.45rem; min-width: 0; }
+    .brand-mark {
+      display: inline-grid; place-items: center; width: 1.25rem; height: 1.25rem; border-radius: 6px;
+      color: var(--blue); background: color-mix(in srgb, var(--blue) 15%, transparent); font-size: 0.8rem;
+    }
+    h1 { font-size: 0.86rem; font-weight: 700; margin: 0; letter-spacing: 0.01em; }
+    .brand-version { color: var(--dim); font-size: 0.68rem; font-family: ui-monospace, Consolas, Menlo, monospace; }
+    .workspace-tabs { justify-self: center; display: inline-flex; align-items: center; gap: 0.15rem; }
+    .workspace-tab {
+      min-height: 2rem; padding: 0 0.75rem; border: none; border-bottom: 2px solid transparent; background: transparent;
+      color: var(--dim); cursor: default; font-size: 0.78rem; font-weight: 600;
+    }
+    .workspace-tab.active { color: var(--text); border-bottom-color: var(--blue); }
+    .topbar-meta { justify-self: end; color: var(--dim); font-family: ui-monospace, Consolas, Menlo, monospace; font-size: 0.68rem; }
+    .dl-main {
+      flex: 1; min-height: 0; min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) 288px;
+      overflow: hidden;
+    }
+    .dl-workspace { min-width: 0; min-height: 0; display: flex; flex-direction: column; border-right: 1px solid var(--border); }
+    .dl-input-band {
+      display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.75rem; padding: 0.7rem 0.75rem;
+      border-bottom: 1px solid var(--border); background: var(--surface);
+    }
+    .input-label { display: block; margin: 0 0 0.3rem; color: var(--muted); font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+    .hint { color: var(--dim); font-size: 0.7rem; margin: 0.28rem 0 0; }
     textarea {
-      width: 100%; min-height: 120px; box-sizing: border-box; resize: vertical;
-      border-radius: 8px; border: 1px solid #3f3f46; background: #252526; color: #ececec;
-      padding: 8px 10px; font-family: inherit; font-size: 12px;
+      width: 100%; min-height: 76px; box-sizing: border-box; resize: vertical; border-radius: 6px;
+      border: 1px solid var(--border-2); background: color-mix(in srgb, var(--bg) 66%, var(--surface-2));
+      color: var(--text); padding: 0.55rem 0.65rem; font-family: inherit; font-size: 0.78rem;
     }
-    textarea.drag {
-      outline: 2px dashed #0078d4;
-      outline-offset: 2px;
+    textarea.drag { outline: 2px dashed var(--blue); outline-offset: 2px; }
+    .input-actions { display: flex; flex-direction: column; gap: 0.45rem; min-width: 11.5rem; justify-content: end; }
+    .queue-toolbar {
+      display: flex; gap: 0.45rem; flex-wrap: wrap; align-items: center; padding: 0.48rem 0.75rem;
+      border-bottom: 1px solid var(--border); background: color-mix(in srgb, var(--surface) 94%, transparent);
     }
-    .row { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 14px; align-items: center; }
-    .row label.inline-filter { display: inline-flex; align-items: center; gap: 6px; color: #c9c9cf; font-size: 11px; }
-    .row label.inline-filter select {
-      border-radius: 8px; border: 1px solid #56565d; background: #252526; color: #ececec;
-      padding: 5px 8px; font-size: 12px;
+    label.inline-filter { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--muted); font-size: 0.72rem; }
+    label.inline-filter select, .history-actions select {
+      border-radius: 6px; border: 1px solid var(--border-2); background: var(--surface-2); color: var(--text);
+      padding: 0.32rem 0.45rem; font-size: 0.74rem;
     }
-    .queue-summary { margin-left: auto; color: #b9b9c0; font-size: 11px; font-variant-numeric: tabular-nums; }
+    .queue-summary { margin-left: auto; color: var(--dim); font-size: 0.68rem; font-variant-numeric: tabular-nums; }
     button.cmd {
-      border-radius: 8px; border: 1px solid #56565d; background: #2d2d30; color: #ececec;
-      padding: 6px 11px; font-size: 12px; cursor: pointer;
+      border-radius: 6px; border: 1px solid var(--border-2); background: var(--surface-2); color: var(--text);
+      padding: 0.38rem 0.7rem; font-size: 0.76rem; cursor: pointer; min-height: 30px;
     }
-    button.cmd:hover { filter: brightness(1.06); }
-    button.cmd-primary {
-      border-color: color-mix(in srgb, #0078d4 65%, #56565d);
-      background: color-mix(in srgb, #0078d4 28%, #2d2d30);
+    button.cmd:hover { background: var(--surface-3); }
+    button.cmd:disabled { opacity: 0.45; cursor: not-allowed; }
+    button.cmd-primary { border-color: transparent; background: var(--blue); color: white; }
+    button.cmd-warn { border-color: color-mix(in srgb, var(--red) 45%, var(--border-2)); color: color-mix(in srgb, var(--red) 80%, white); }
+    .queue-table-wrap { flex: 1; min-height: 0; overflow: auto; background: var(--bg); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.74rem; table-layout: fixed; }
+    th, td { border-bottom: 1px solid var(--border); padding: 0.45rem 0.55rem; text-align: left; vertical-align: top; word-break: break-word; }
+    th { position: sticky; top: 0; z-index: 1; color: var(--muted); background: var(--surface); font-weight: 700; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; }
+    th:nth-child(1), td:nth-child(1) { width: 2.3rem; }
+    th:nth-child(3), td:nth-child(3) { width: 12rem; }
+    th:nth-child(4), td:nth-child(4) { width: 10rem; }
+    th:nth-child(5), td:nth-child(5) { width: 12.8rem; }
+    td.num { color: var(--dim); font-variant-numeric: tabular-nums; }
+    .queue-title { color: var(--text); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .queue-url { margin-top: 0.14rem; color: var(--dim); font-size: 0.68rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    td.prog { font-variant-numeric: tabular-nums; color: var(--muted); white-space: normal; word-break: break-word; font-size: 0.68rem; line-height: 1.35; }
+    .progress-track { height: 4px; border-radius: 999px; background: var(--border-2); overflow: hidden; margin: 0.2rem 0 0.18rem; }
+    .progress-fill { height: 100%; border-radius: inherit; background: var(--blue); }
+    .status-pill { display: inline-flex; align-items: center; gap: 0.34rem; color: var(--muted); }
+    .status-dot { width: 0.45rem; height: 0.45rem; border-radius: 999px; background: var(--dim); flex-shrink: 0; }
+    .status-running .status-dot { background: var(--blue); }
+    .status-done .status-dot { background: var(--green); }
+    .status-error .status-dot { background: var(--red); }
+    .status-cancelled .status-dot { background: var(--dim); }
+    td.act { white-space: nowrap; width: 12.8rem; }
+    td.act button, .icon-btn {
+      width: 24px; height: 24px; display: inline-grid; place-items: center; margin-right: 0.15rem; border: none;
+      border-radius: 5px; background: transparent; color: var(--muted); cursor: pointer; padding: 0; font-size: 0.78rem;
     }
-    button.cmd-warn {
-      border-color: color-mix(in srgb, #c95454 55%, #56565d);
-      background: color-mix(in srgb, #c95454 15%, #2d2d30);
+    td.act button:hover, .icon-btn:hover { background: var(--surface-2); color: var(--text); text-decoration: none; }
+    .bottom-panels { flex-shrink: 0; min-height: 170px; max-height: 34vh; display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--border); background: var(--surface); overflow: hidden; }
+    .log-panel, .history-panel { min-height: 0; overflow: auto; padding: 0; border: none; margin: 0; }
+    .log-panel { border-left: 1px solid var(--border); }
+    .log-panel summary, .history-panel summary {
+      cursor: pointer; font-weight: 700; font-size: 0.68rem; padding: 0.45rem 0.65rem; margin: 0;
+      user-select: none; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em;
     }
-    table { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
-    th, td { border-bottom: 1px solid #3f3f46; padding: 6px 8px; text-align: left; vertical-align: top; word-break: break-word; }
-    th { color: #b9b9c0; font-weight: 500; font-size: 11px; }
-    th:nth-child(1), td:nth-child(1) { width: 2rem; }
-    th:nth-child(4), td:nth-child(4) { max-width: 20rem; }
-    th:nth-child(5), td:nth-child(5) { width: 6.5rem; white-space: nowrap; }
-    th:nth-child(6), td:nth-child(6) { width: 8.5rem; }
-    td.num { color: #9d9da2; font-variant-numeric: tabular-nums; }
-    td.prog { font-variant-numeric: tabular-nums; color: #b9d79f; white-space: normal; word-break: break-word; font-size: 11px; line-height: 1.35; }
-    td.act { white-space: nowrap; width: 6.5rem; }
-    td.act button {
-      border: none; background: transparent; color: #9dc3ff; cursor: pointer; padding: 2px 5px; font-size: 13px;
-    }
-    td.act button:hover { text-decoration: underline; }
-    .log-panel { margin-top: 14px; border-top: 1px solid #3f3f46; padding-top: 10px; }
-    .log-panel summary { cursor: pointer; font-weight: 600; font-size: 12px; margin-bottom: 6px; user-select: none; color: #c9c9cf; }
     .log-panel pre {
-      margin: 0; max-height: 240px; overflow: auto; white-space: pre-wrap; word-break: break-word;
-      font-family: ui-monospace, Consolas, Menlo, monospace; font-size: 11px; line-height: 1.35;
-      background: #18181b; color: #d4d4d8; padding: 8px 10px; border-radius: 8px; border: 1px solid #3f3f46;
+      margin: 0 0.65rem 0.65rem; max-height: 230px; overflow: auto; white-space: pre-wrap; word-break: break-word;
+      font-family: ui-monospace, Consolas, Menlo, monospace; font-size: 0.68rem; line-height: 1.35;
+      background: var(--bg); color: var(--muted); padding: 0.55rem 0.65rem; border-radius: 6px; border: 1px solid var(--border);
     }
-    .out-dir-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 6px 0 10px; font-size: 12px; }
+    .settings-rail { min-width: 0; min-height: 0; overflow: auto; background: var(--surface); }
+    .rail-head { padding: 0.7rem 0.75rem; border-bottom: 1px solid var(--border); }
+    .rail-title { margin: 0; color: var(--text); font-size: 0.86rem; font-weight: 700; }
+    .rail-subtitle { margin: 0.1rem 0 0; color: var(--dim); font-size: 0.68rem; line-height: 1.35; }
+    .settings-section { border-bottom: 1px solid var(--border); }
+    .settings-section > summary {
+      cursor: pointer; list-style: none; padding: 0.55rem 0.75rem; color: var(--muted); font-size: 0.68rem;
+      font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; user-select: none;
+    }
+    .settings-section > summary::-webkit-details-marker { display: none; }
+    .settings-section > summary::before { content: '▸'; display: inline-block; margin-right: 0.45rem; color: var(--dim); transition: transform 0.12s ease; }
+    .settings-section[open] > summary::before { transform: rotate(90deg); }
+    .settings-body { padding: 0 0.75rem 0.75rem; }
+    .out-dir-row { display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; margin: 0.35rem 0 0.65rem; font-size: 0.74rem; }
     .out-dir-row .out-path {
-      flex: 1; min-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-      font-family: ui-monospace, Consolas, Menlo, monospace; font-size: 11px; opacity: 0.9;
+      flex: 1 1 100%; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      font-family: ui-monospace, Consolas, Menlo, monospace; font-size: 0.68rem; color: var(--muted);
     }
-    .opts-panel {
-      margin: 10px 0 12px; padding: 10px 12px; border-radius: 8px; border: 1px solid #3f3f46; background: #252526;
-      font-size: 12px;
+    .opts-panel { font-size: 0.74rem; }
+    .opts-panel label { display: block; margin: 0.5rem 0 0.25rem; color: var(--muted); font-weight: 700; font-size: 0.68rem; }
+    .opts-panel input[type=text], .opts-panel select, .hint-select {
+      width: 100%; min-width: 0; margin-bottom: 0.35rem; padding: 0.42rem 0.5rem; border-radius: 6px;
+      border: 1px solid var(--border-2); background: color-mix(in srgb, var(--bg) 66%, var(--surface-2));
+      color: var(--text); font-size: 0.72rem;
     }
-    .opts-panel label { display: block; margin-bottom: 4px; color: #c9c9cf; font-weight: 500; font-size: 11px; }
-    .opts-panel input[type=text] {
-      width: 100%; box-sizing: border-box; margin-bottom: 8px; padding: 6px 8px;
-      border-radius: 6px; border: 1px solid #3f3f46; background: #1e1e1e; color: #ececec; font-family: ui-monospace, Consolas, monospace; font-size: 11px;
-    }
-    .opts-panel select {
-      width: 100%; max-width: 28rem; margin-bottom: 8px; padding: 6px 8px; border-radius: 6px;
-      border: 1px solid #3f3f46; background: #1e1e1e; color: #ececec; font-size: 12px;
-    }
-    .opts-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 4px; }
-    .opts-check-row { display: flex; flex-direction: column; gap: 6px; margin: 8px 0 6px; }
-    .opts-check-row label.chk {
-      display: flex; align-items: flex-start; gap: 8px; font-weight: 400; color: #dcdcdc;
-      cursor: pointer; margin-bottom: 0; line-height: 1.35;
-    }
-    .opts-check-row input[type=checkbox] { margin-top: 3px; flex-shrink: 0; accent-color: #0078d4; }
-    .opts-check-muted { opacity: 0.75; }
-    .opts-preview-label { display: block; margin: 8px 0 4px; font-size: 11px; color: #b9b9c0; font-weight: 500; }
-    .expert-panel {
-      margin: 10px 0 8px; padding: 8px 10px; border-radius: 8px; border: 1px solid #3f3f46;
-      background: color-mix(in srgb, #1e1e1e 72%, #252526);
-    }
-    .expert-panel summary {
-      cursor: pointer; font-weight: 600; font-size: 12px; color: #c9c9cf; user-select: none;
-    }
-    .expert-panel[open] summary { margin-bottom: 8px; }
+    .opts-panel input[type=text] { font-family: ui-monospace, Consolas, Menlo, monospace; }
+    .opts-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; margin-top: 0.45rem; }
+    .opts-check-row { display: flex; flex-direction: column; gap: 0.45rem; margin: 0.55rem 0; }
+    .opts-check-row label.chk { display: flex; align-items: center; gap: 0.5rem; font-weight: 400; color: var(--text); cursor: pointer; margin: 0; line-height: 1.35; }
+    .opts-check-row input[type=checkbox] { appearance: none; width: 32px; height: 18px; border-radius: 999px; border: 1px solid var(--border-2); background: var(--surface-3); position: relative; flex-shrink: 0; }
+    .opts-check-row input[type=checkbox]::after { content: ''; position: absolute; width: 12px; height: 12px; top: 2px; left: 2px; border-radius: 999px; background: var(--dim); transition: transform 0.12s ease, background 0.12s ease; }
+    .opts-check-row input[type=checkbox]:checked { background: color-mix(in srgb, var(--blue) 55%, var(--surface-3)); border-color: transparent; }
+    .opts-check-row input[type=checkbox]:checked::after { transform: translateX(14px); background: white; }
+    .opts-check-muted { color: var(--dim); font-size: 0.68rem; }
+    .opts-preview-label { display: block; margin: 0.5rem 0 0.25rem; font-size: 0.68rem; color: var(--muted); font-weight: 700; }
+    .expert-panel, .hints-panel { margin: 0.55rem 0; padding: 0; border: none; background: transparent; }
+    .expert-panel summary, .hints-panel summary { cursor: pointer; font-weight: 700; font-size: 0.72rem; color: var(--muted); user-select: none; margin-bottom: 0.45rem; }
     textarea#extraArgsInput {
-      width: 100%; box-sizing: border-box; min-height: 52px; margin-bottom: 6px; padding: 6px 8px;
-      border-radius: 6px; border: 1px solid #3f3f46; background: #1e1e1e; color: #ececec;
-      font-family: ui-monospace, Consolas, Menlo, monospace; font-size: 11px; resize: vertical;
+      width: 100%; min-height: 52px; margin-bottom: 0.4rem; padding: 0.45rem 0.5rem; border-radius: 6px;
+      border: 1px solid var(--border-2); background: var(--bg); color: var(--text);
+      font-family: ui-monospace, Consolas, Menlo, monospace; font-size: 0.68rem; resize: vertical;
     }
-    .opts-warn { color: #f0a8a8; margin: 4px 0 8px; line-height: 1.35; }
+    .opts-warn { color: color-mix(in srgb, var(--red) 82%, white); margin: 0.35rem 0; line-height: 1.35; }
     .args-preview {
-      margin: 0 0 8px; padding: 8px 10px; border-radius: 6px; border: 1px solid #3f3f46;
-      background: #18181b; color: #c9e79f; font-family: ui-monospace, Consolas, Menlo, monospace;
-      font-size: 11px; white-space: pre-wrap; word-break: break-word; max-height: 120px; overflow: auto;
+      margin: 0 0 0.5rem; padding: 0.5rem 0.6rem; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--bg); color: color-mix(in srgb, var(--green) 78%, white); font-family: ui-monospace, Consolas, Menlo, monospace;
+      font-size: 0.68rem; white-space: pre-wrap; word-break: break-word; max-height: 120px; overflow: auto;
     }
-    .hints-panel { margin: 6px 0 10px; }
-    .hints-panel summary { cursor: pointer; font-weight: 600; font-size: 12px; color: #c9c9cf; margin-bottom: 6px; user-select: none; }
-    .hint-select {
-      width: 100%; max-width: 28rem; padding: 6px 8px; border-radius: 6px;
-      border: 1px solid #3f3f46; background: #1e1e1e; color: #ececec; font-size: 11px;
-    }
-    #hintSummary { min-height: 2.5em; margin-top: 6px; }
-    .opts-hint { font-size: 11px; opacity: 0.75; margin: 0 0 8px; line-height: 1.35; }
-    .note { margin-top: 12px; font-size: 11px; opacity: 0.72; }
-    .history-panel { margin-top: 14px; border-top: 1px solid #3f3f46; padding-top: 10px; }
-    .history-panel summary { cursor: pointer; font-weight: 600; font-size: 12px; margin-bottom: 6px; user-select: none; color: #c9c9cf; }
-    .history-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 8px; }
-    .history-actions label { display: inline-flex; align-items: center; gap: 6px; color: #c9c9cf; font-size: 11px; }
-    .history-actions select {
-      border-radius: 8px; border: 1px solid #56565d; background: #252526; color: #ececec;
-      padding: 5px 8px; font-size: 12px;
-    }
-    table.history-table { font-size: 11px; }
+    #hintSummary { min-height: 2.5em; margin-top: 0.4rem; }
+    .opts-hint { font-size: 0.68rem; color: var(--dim); margin: 0 0 0.5rem; line-height: 1.35; }
+    .note { display: none; }
+    .history-actions { display: flex; gap: 0.45rem; flex-wrap: wrap; align-items: center; padding: 0 0.65rem 0.55rem; }
+    .history-actions label { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--muted); font-size: 0.7rem; }
+    table.history-table { font-size: 0.68rem; }
     table.history-table th:nth-child(1), table.history-table td:nth-child(1) { width: 10.5rem; white-space: nowrap; }
     table.history-table th:nth-child(4), table.history-table td:nth-child(4) { width: 5.5rem; }
     table.history-table th:nth-child(5), table.history-table td:nth-child(5) { width: 3rem; text-align: right; }
-    table.history-table th:nth-child(7), table.history-table td:nth-child(7) { width: 5.5rem; text-align: right; }
-    td.h-out-ok { color: #b9d79f; }
-    td.h-out-err { color: #f0a8a8; }
-    td.h-out-can { color: #9dc3ff; }
+    table.history-table th:nth-child(7), table.history-table td:nth-child(7) { width: 7rem; text-align: right; }
+    td.h-out-ok { color: var(--green); }
+    td.h-out-err { color: var(--red); }
+    td.h-out-can { color: var(--blue); }
+    @media (max-width: 960px) {
+      .dl-main { grid-template-columns: 1fr; }
+      .settings-rail { display: none; }
+      .bottom-panels { grid-template-columns: 1fr; max-height: 44vh; }
+      .log-panel { border-left: none; border-top: 1px solid var(--border); }
+    }
   </style>
 </head>
 <body>
-  <h1>Менеджер загрузок (yt-dlp)</h1>
-  <p class="hint">Ссылки по строкам или перетащите текст/URL сюда. Имена файлов задаёт yt-dlp (%(title)s …). Очередь последовательная §6.</p>
-  <div class="out-dir-row">
-    <span>Каталог загрузок:</span>
-    <span id="outDirText" class="out-path" title="">…</span>
-    <button type="button" class="cmd" id="openOutBtn" title="Открыть текущий каталог загрузок в проводнике">Открыть</button>
-    <button type="button" class="cmd" id="pickOutBtn">Выбрать…</button>
-    <button type="button" class="cmd" id="resetOutBtn" title="Использовать каталог по умолчанию в userData">По умолчанию</button>
-  </div>
-  <div class="opts-panel">
-    <p class="opts-hint">Параметры сохраняются в userData/settings.json. Шаблон задаёт относительный путь внутри каталога загрузки; обязателен %(ext)s.</p>
-    <label for="tmplInput">Шаблон имени (-o)</label>
-    <input type="text" id="tmplInput" spellcheck="false" autocomplete="off" />
-    <label for="fmtPreset">Формат / качество (-f)</label>
-    <select id="fmtPreset"></select>
-    <div class="opts-check-row">
-      <label class="chk"><input type="checkbox" id="chkPlaylist" /> Весь плейлист <span class="opts-check-muted">(--yes-playlist)</span></label>
-      <label class="chk"><input type="checkbox" id="chkAudioOnly" /> Только аудио <span class="opts-check-muted">(-x --audio-format best; нужен ffmpeg)</span></label>
-    </div>
-    <label for="subPreset">Субтитры §6.2</label>
-    <select id="subPreset">
-      <option value="none">Не скачивать</option>
-      <option value="manual">Ручные дорожки (--write-subs)</option>
-      <option value="manual_auto">Ручные + автосгенерированные (--write-auto-subs)</option>
-    </select>
-    <label for="subLangsInput">Языки субтитров (--sub-langs, без пробелов)</label>
-    <input type="text" id="subLangsInput" spellcheck="false" autocomplete="off" placeholder="Пусто = все; пример: ru,en или all" />
-    <p class="opts-hint">Фильтр языков учитывается только если включены субтитры; произвольные флаги — в «Доп. аргументы».</p>
-    <label for="cookiesBrowserSelect">Cookies §6.2</label>
-    <select id="cookiesBrowserSelect">
-      <option value="none">Не использовать</option>
-      <option value="chrome">Из браузера: Chrome</option>
-      <option value="edge">Из браузера: Edge</option>
-      <option value="firefox">Из браузера: Firefox</option>
-    </select>
-    <p class="opts-hint">Файл cookies имеет приоритет: если он задан и доступен, флаг cookies-from-browser не передаётся.</p>
-    <div class="out-dir-row">
-      <span>Файл cookies (Netscape):</span>
-      <span id="cookiesPathText" class="out-path" title="">—</span>
-      <button type="button" class="cmd" id="pickCookiesBtn">Выбрать…</button>
-      <button type="button" class="cmd" id="clearCookiesBtn" title="Убрать файл из настроек">Очистить</button>
-    </div>
-    <p class="opts-hint opts-warn" id="cookiesWarn" hidden></p>
-    <label for="impersonateSelect">Импersonate клиента (TLS/JA3 и заголовки; §6.2)</label>
-    <select id="impersonateSelect">
-      <option value="none">Выключено</option>
-      <option value="chrome">chrome</option>
-      <option value="edge">edge</option>
-      <option value="firefox">firefox</option>
-    </select>
-    <p class="opts-hint">Список целей ограничен chrome / edge / firefox — см. документацию yt-dlp для поддерживаемых сборкой клиентов; флаг impersonate в «Доп. аргументы» недопустим.</p>
-    <label for="rateLimitInput">Ограничение скорости (--limit-rate)</label>
-    <input type="text" id="rateLimitInput" spellcheck="false" autocomplete="off" placeholder="Пусто = без лимита; пример: 500K или 2M" />
-    <label for="retriesInput">Повторы при ошибках (--retries)</label>
-    <input type="text" id="retriesInput" inputmode="numeric" spellcheck="false" autocomplete="off" placeholder="Пусто = дефолт yt-dlp; 0–99" />
-    <label for="fragmentRetriesInput">Повторы фрагментов (--fragment-retries)</label>
-    <input type="text" id="fragmentRetriesInput" inputmode="numeric" spellcheck="false" autocomplete="off" placeholder="Пусто = дефолт yt-dlp; 0–99" />
-    <p class="opts-hint">Лимит скорости, ретраи и ретраи фрагментов вынесены из «Доп. аргументов», чтобы не смешивать их с произвольным argv и не конфликтовать с настройками FluxAlloy.</p>
-    <label for="queueRetrySelect">Повтор строки при сбое (очередь) §6.4</label>
-    <select id="queueRetrySelect" aria-label="Профиль повторов очереди при ошибке">
-      <option value="off">Выключено</option>
-      <option value="light">Лёгкий (1 повтор, 2.5 с)</option>
-      <option value="normal">Обычный (2 повтора: 3 с + 8 с)</option>
-      <option value="persistent">Устойчивый (3 повтора: 5 с + 15 с + 45 с)</option>
-    </select>
-    <p class="opts-hint">Отдельно от <code>--retries</code> yt-dlp: после ненулевого кода процесса FluxAlloy делает паузу и запускает ту же ссылку снова (без повторного добавления в таблицу).</p>
-    <div class="opts-check-row">
-      <label class="chk"><input type="checkbox" id="chkOpenInHandlerOnComplete" /> После успешной загрузки открыть файл в обработчике FluxAlloy <span class="opts-check-muted">(§6.4)</span></label>
-    </div>
-    <p class="opts-hint">Работает при известном пути к файлу (парсинг вывода yt-dlp); для очереди каждая завершённая строка может переключить превью главного окна.</p>
-    <details class="expert-panel" id="expertArgsDetails">
-      <summary>Экспертные аргументы и превью argv §6.3</summary>
-      <label for="extraArgsInput">Дополнительные аргументы (через пробел, без shell)</label>
-      <textarea id="extraArgsInput" rows="2" spellcheck="false" autocomplete="off" placeholder="Например: --write-sub --sub-lang ru"></textarea>
-      <p class="opts-hint opts-warn" id="extraArgsWarn" hidden></p>
-      <label for="previewOutDirOverride">Другой каталог для превью <code>-o</code> (не в settings.json)</label>
-      <input type="text" id="previewOutDirOverride" spellcheck="false" autocomplete="off" placeholder="Пусто — брать «Каталог загрузок» выше; только строка превью argv" />
-      <p class="opts-hint">Абсолютный путь; не влияет на реальный spawn yt-dlp и не перечитывает settings — только подстановка в превью.</p>
-      <span class="opts-preview-label">Превью argv</span>
-      <pre class="args-preview" id="argsPreview"></pre>
-      <details class="hints-panel" id="hintsPanel">
-        <summary>Справочник флагов по категориям (Data/ytdlp_commands.json)</summary>
-        <select id="hintInsert" class="hint-select" aria-label="Вставить флаг из справочника">
-          <option value="">Выберите флаг — он добавится в «Доп. аргументы»…</option>
-        </select>
-        <p class="opts-hint" id="hintSummary"></p>
-      </details>
-    </details>
-    <div class="opts-actions">
-      <button type="button" class="cmd cmd-primary" id="applyOptsBtn">Сохранить параметры</button>
-      <button type="button" class="cmd" id="tmplReset">Шаблон по умолчанию</button>
-    </div>
-  </div>
-  <textarea id="urls" placeholder="https://…"></textarea>
-  <div class="row">
-    <button type="button" class="cmd cmd-primary" id="startBtn" title="Скачать все строки со статусом «Ожидание»">Старт очереди</button>
-    <button type="button" class="cmd" id="pauseYtdlpBtn" title="Приостановить загрузку (POSIX); на Windows недоступно">Пауза</button>
-    <button type="button" class="cmd cmd-warn" id="cancelBtn" title="Отменить текущую загрузку yt-dlp">Отмена загрузки</button>
-    <button type="button" class="cmd" id="addBtn">Добавить в очередь</button>
-    <button type="button" class="cmd" id="clearBtn">Очистить очередь</button>
-    <button type="button" class="cmd" id="clearFinishedBtn">Убрать завершённые</button>
-    <label class="inline-filter">Статус
-      <select id="queueStatusFilter">
-        <option value="all">Все</option>
-        <option value="waiting">Ожидание</option>
-        <option value="running">В работе</option>
-        <option value="done">Готово</option>
-        <option value="error">Ошибки</option>
-        <option value="cancelled">Отменено</option>
-      </select>
-    </label>
-    <span class="queue-summary" id="queueSummary">Всего: 0</span>
-  </div>
-  <table>
-    <thead><tr><th>№</th><th>Имя</th><th>Ссылка</th><th>Прогресс</th><th>Статус</th><th></th></tr></thead>
-    <tbody id="queueBody"></tbody>
-  </table>
-  <details class="history-panel" id="historyDetails">
-    <summary>История загрузок §6.4 (файл userData/downloads/history.json)</summary>
-    <div class="history-actions">
-      <button type="button" class="cmd" id="refreshHistoryBtn">Обновить</button>
-      <button type="button" class="cmd cmd-warn" id="clearHistoryBtn">Очистить историю</button>
-      <label>Исход
-        <select id="historyOutcomeFilter">
-          <option value="all">Все</option>
-          <option value="success">Успех</option>
-          <option value="error">Ошибка</option>
-          <option value="cancelled">Отмена</option>
-        </select>
-      </label>
-    </div>
-    <table class="history-table">
-      <thead><tr><th>Завершено</th><th>Имя</th><th>Ссылка</th><th>Исход</th><th>Код</th><th>Статус</th><th></th></tr></thead>
-      <tbody id="historyBody"></tbody>
-    </table>
-  </details>
-  <div class="log-panel">
-    <details id="logDetails">
-      <summary>Лог yt-dlp (stdout / stderr)</summary>
-      <div class="history-actions">
-        <button type="button" class="cmd" id="saveLogBtn">Сохранить лог…</button>
+  <div class="dl-shell">
+    <header class="dl-topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden>◇</span>
+        <h1>FluxAlloy</h1>
+        <span class="brand-version">yt-dlp</span>
       </div>
-      <pre id="logPre"></pre>
-    </details>
+      <nav class="workspace-tabs" aria-label="Рабочие вкладки">
+        <button type="button" class="workspace-tab" disabled title="Редактор находится в главном окне">Редактор</button>
+        <button type="button" class="workspace-tab active">Загрузки</button>
+      </nav>
+      <div class="topbar-meta">ffmpeg / yt-dlp queue</div>
+    </header>
+    <main class="dl-main">
+      <section class="dl-workspace" aria-label="Очередь загрузок">
+        <div class="dl-input-band">
+          <div>
+            <label class="input-label" for="urls">Введите URL (каждый с новой строки)</label>
+            <textarea id="urls" placeholder="https://…"></textarea>
+            <p class="hint">Ссылки по строкам или DnD текста/URL. Очередь последовательная §6.</p>
+          </div>
+          <div class="input-actions">
+            <button type="button" class="cmd cmd-primary" id="addBtn">Добавить в очередь</button>
+            <button type="button" class="cmd" id="startBtn" title="Скачать все строки со статусом «Ожидание»">Начать загрузку</button>
+          </div>
+        </div>
+        <div class="queue-toolbar">
+          <button type="button" class="cmd" id="pauseYtdlpBtn" title="Приостановить загрузку (POSIX); на Windows недоступно">Пауза</button>
+          <button type="button" class="cmd cmd-warn" id="cancelBtn" title="Отменить текущую загрузку yt-dlp">Отмена</button>
+          <button type="button" class="cmd" id="clearBtn">Очистить очередь</button>
+          <button type="button" class="cmd" id="clearFinishedBtn">Убрать завершённые</button>
+          <label class="inline-filter">Статус
+            <select id="queueStatusFilter">
+              <option value="all">Все</option>
+              <option value="waiting">Ожидание</option>
+              <option value="running">В работе</option>
+              <option value="done">Готово</option>
+              <option value="error">Ошибки</option>
+              <option value="cancelled">Отменено</option>
+            </select>
+          </label>
+          <span class="queue-summary" id="queueSummary">Всего: 0</span>
+        </div>
+        <div class="queue-table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Название</th><th>Прогресс</th><th>Статус</th><th>Действия</th></tr></thead>
+            <tbody id="queueBody"></tbody>
+          </table>
+        </div>
+        <div class="bottom-panels">
+          <details class="history-panel" id="historyDetails">
+            <summary>История загрузок</summary>
+            <div class="history-actions">
+              <button type="button" class="cmd" id="refreshHistoryBtn">Обновить</button>
+              <button type="button" class="cmd cmd-warn" id="clearHistoryBtn">Очистить историю</button>
+              <label>Исход
+                <select id="historyOutcomeFilter">
+                  <option value="all">Все</option>
+                  <option value="success">Успех</option>
+                  <option value="error">Ошибка</option>
+                  <option value="cancelled">Отмена</option>
+                </select>
+              </label>
+            </div>
+            <table class="history-table">
+              <thead><tr><th>Завершено</th><th>Имя</th><th>Ссылка</th><th>Исход</th><th>Код</th><th>Статус</th><th></th></tr></thead>
+              <tbody id="historyBody"></tbody>
+            </table>
+          </details>
+          <div class="log-panel">
+            <details id="logDetails" open>
+              <summary>Журнал операций</summary>
+              <div class="history-actions">
+                <button type="button" class="cmd" id="saveLogBtn">Сохранить лог…</button>
+              </div>
+              <pre id="logPre"></pre>
+            </details>
+          </div>
+        </div>
+      </section>
+      <aside class="settings-rail" aria-label="Настройки загрузки">
+        <div class="rail-head">
+          <h2 class="rail-title">Настройки загрузки</h2>
+          <p class="rail-subtitle">Секции повторяют v0-подход: формат, метаданные, сохранение, сеть.</p>
+        </div>
+        <div class="opts-panel">
+          <details class="settings-section" open>
+            <summary>Формат</summary>
+            <div class="settings-body">
+              <p class="opts-hint">Параметры сохраняются в userData/settings.json. Шаблон обязан содержать %(ext)s.</p>
+              <label for="fmtPreset">Формат / качество (-f)</label>
+              <select id="fmtPreset"></select>
+              <div class="opts-check-row">
+                <label class="chk"><input type="checkbox" id="chkPlaylist" /> Весь плейлист <span class="opts-check-muted">--yes-playlist</span></label>
+                <label class="chk"><input type="checkbox" id="chkAudioOnly" /> Только аудио <span class="opts-check-muted">-x --audio-format best</span></label>
+              </div>
+              <label for="subPreset">Субтитры §6.2</label>
+              <select id="subPreset">
+                <option value="none">Не скачивать</option>
+                <option value="manual">Ручные дорожки (--write-subs)</option>
+                <option value="manual_auto">Ручные + автосгенерированные (--write-auto-subs)</option>
+              </select>
+              <label for="subLangsInput">Языки субтитров</label>
+              <input type="text" id="subLangsInput" spellcheck="false" autocomplete="off" placeholder="ru,en или all" />
+            </div>
+          </details>
+          <details class="settings-section" open>
+            <summary>Метаданные</summary>
+            <div class="settings-body">
+              <label for="cookiesBrowserSelect">Cookies §6.2</label>
+              <select id="cookiesBrowserSelect">
+                <option value="none">Не использовать</option>
+                <option value="chrome">Из браузера: Chrome</option>
+                <option value="edge">Из браузера: Edge</option>
+                <option value="firefox">Из браузера: Firefox</option>
+              </select>
+              <div class="out-dir-row">
+                <span>Файл cookies:</span>
+                <span id="cookiesPathText" class="out-path" title="">—</span>
+                <button type="button" class="cmd" id="pickCookiesBtn">Выбрать…</button>
+                <button type="button" class="cmd" id="clearCookiesBtn" title="Убрать файл из настроек">Очистить</button>
+              </div>
+              <p class="opts-hint opts-warn" id="cookiesWarn" hidden></p>
+              <label for="impersonateSelect">Impersonate клиента</label>
+              <select id="impersonateSelect">
+                <option value="none">Выключено</option>
+                <option value="chrome">chrome</option>
+                <option value="edge">edge</option>
+                <option value="firefox">firefox</option>
+              </select>
+              <div class="opts-check-row">
+                <label class="chk"><input type="checkbox" id="chkOpenInHandlerOnComplete" /> Открывать результат в обработчике <span class="opts-check-muted">§6.4</span></label>
+              </div>
+            </div>
+          </details>
+          <details class="settings-section" open>
+            <summary>Сохранение</summary>
+            <div class="settings-body">
+              <div class="out-dir-row">
+                <span>Каталог загрузок:</span>
+                <span id="outDirText" class="out-path" title="">…</span>
+                <button type="button" class="cmd" id="openOutBtn" title="Открыть текущий каталог загрузок в проводнике">Открыть</button>
+                <button type="button" class="cmd" id="pickOutBtn">Выбрать…</button>
+                <button type="button" class="cmd" id="resetOutBtn" title="Использовать каталог по умолчанию в userData">По умолчанию</button>
+              </div>
+              <label for="tmplInput">Шаблон имени (-o)</label>
+              <input type="text" id="tmplInput" spellcheck="false" autocomplete="off" />
+              <div class="opts-actions">
+                <button type="button" class="cmd cmd-primary" id="applyOptsBtn">Сохранить параметры</button>
+                <button type="button" class="cmd" id="tmplReset">Шаблон по умолчанию</button>
+              </div>
+            </div>
+          </details>
+          <details class="settings-section">
+            <summary>Сеть</summary>
+            <div class="settings-body">
+              <label for="rateLimitInput">Ограничение скорости (--limit-rate)</label>
+              <input type="text" id="rateLimitInput" spellcheck="false" autocomplete="off" placeholder="500K или 2M" />
+              <label for="retriesInput">Повторы при ошибках (--retries)</label>
+              <input type="text" id="retriesInput" inputmode="numeric" spellcheck="false" autocomplete="off" placeholder="0–99" />
+              <label for="fragmentRetriesInput">Повторы фрагментов (--fragment-retries)</label>
+              <input type="text" id="fragmentRetriesInput" inputmode="numeric" spellcheck="false" autocomplete="off" placeholder="0–99" />
+              <label for="queueRetrySelect">Повтор строки при сбое</label>
+              <select id="queueRetrySelect" aria-label="Профиль повторов очереди при ошибке">
+                <option value="off">Выключено</option>
+                <option value="light">Лёгкий (1 повтор, 2.5 с)</option>
+                <option value="normal">Обычный (2 повтора: 3 с + 8 с)</option>
+                <option value="persistent">Устойчивый (3 повтора: 5 с + 15 с + 45 с)</option>
+              </select>
+            </div>
+          </details>
+          <details class="settings-section" id="expertArgsDetails">
+            <summary>Экспертные argv</summary>
+            <div class="settings-body">
+              <label for="extraArgsInput">Дополнительные аргументы (без shell)</label>
+              <textarea id="extraArgsInput" rows="2" spellcheck="false" autocomplete="off" placeholder="Например: --write-sub --sub-lang ru"></textarea>
+              <p class="opts-hint opts-warn" id="extraArgsWarn" hidden></p>
+              <label for="previewOutDirOverride">Другой каталог для превью -o</label>
+              <input type="text" id="previewOutDirOverride" spellcheck="false" autocomplete="off" placeholder="Только строка превью argv" />
+              <span class="opts-preview-label">Превью argv</span>
+              <pre class="args-preview" id="argsPreview"></pre>
+              <details class="hints-panel" id="hintsPanel">
+                <summary>Справочник флагов</summary>
+                <select id="hintInsert" class="hint-select" aria-label="Вставить флаг из справочника">
+                  <option value="">Выберите флаг — он добавится в «Доп. аргументы»…</option>
+                </select>
+                <p class="opts-hint" id="hintSummary"></p>
+              </details>
+            </div>
+          </details>
+        </div>
+      </aside>
+    </main>
+    <p class="note">Отдельный preload IPC только для этого окна. yt-dlp запускается из main через spawn без shell.</p>
   </div>
-  <p class="note">Отдельный preload IPC только для этого окна. yt-dlp запускается из main через spawn без shell.</p>
   <script>
     (function () {
       var api = window.fluxalloyDownloads;
@@ -928,6 +1033,56 @@ function buildDownloadsHtml(): string {
         return true;
       }
 
+      function statusClass(status) {
+        if (status === 'Загрузка…' || status.indexOf('Пауза перед повтором') === 0) return 'status-running';
+        if (status === 'Готово') return 'status-done';
+        if (status === 'Отменено') return 'status-cancelled';
+        if (status.indexOf('Ошибка') === 0) return 'status-error';
+        return 'status-waiting';
+      }
+
+      function parseProgressPercent(text) {
+        var m = String(text || '').match(/(\\d+(?:[.,]\\d+)?)\\s*%/);
+        if (!m) return null;
+        var n = Number(m[1].replace(',', '.'));
+        if (!isFinite(n)) return null;
+        return Math.max(0, Math.min(100, n));
+      }
+
+      function tdProgress(text) {
+        var td = document.createElement('td');
+        td.className = 'prog';
+        var raw = text || '—';
+        var pct = parseProgressPercent(raw);
+        if (pct !== null) {
+          var track = document.createElement('div');
+          track.className = 'progress-track';
+          var fill = document.createElement('div');
+          fill.className = 'progress-fill';
+          fill.style.width = pct + '%';
+          track.appendChild(fill);
+          td.appendChild(track);
+        }
+        var label = document.createElement('div');
+        label.textContent = raw;
+        td.appendChild(label);
+        return td;
+      }
+
+      function tdStatus(status) {
+        var td = document.createElement('td');
+        var pill = document.createElement('span');
+        pill.className = 'status-pill ' + statusClass(status || '');
+        var dot = document.createElement('span');
+        dot.className = 'status-dot';
+        var label = document.createElement('span');
+        label.textContent = status || '—';
+        pill.appendChild(dot);
+        pill.appendChild(label);
+        td.appendChild(pill);
+        return td;
+      }
+
       function updateQueueSummary(rows) {
         if (!queueSummary) return;
         var total = rows.length;
@@ -964,7 +1119,7 @@ function buildDownloadsHtml(): string {
         if (rows.length === 0) {
           var tr0 = document.createElement('tr');
           var td0 = document.createElement('td');
-          td0.colSpan = 6;
+          td0.colSpan = 5;
           td0.style.opacity = '0.7';
           td0.textContent = lastQueueRows.length === 0 ? 'Очередь пуста' : 'Нет строк с таким статусом';
           tr0.appendChild(td0);
@@ -980,21 +1135,29 @@ function buildDownloadsHtml(): string {
             return td;
           }
           tr.appendChild(tdText('num', String(i + 1)));
-          tr.appendChild(tdText('', r.shortLabel || '—'));
-          var tdUrl = document.createElement('td');
-          tdUrl.title = r.url;
-          tdUrl.textContent = r.url.length > 96 ? r.url.slice(0, 94) + '…' : r.url;
-          tr.appendChild(tdUrl);
-          tr.appendChild(tdText('prog', r.progress || '—'));
-          tr.appendChild(tdText('', r.status || '—'));
+          var tdTitle = document.createElement('td');
+          var name = document.createElement('div');
+          name.className = 'queue-title';
+          name.textContent = r.shortLabel || '—';
+          var url = document.createElement('div');
+          url.className = 'queue-url';
+          url.title = r.url;
+          url.textContent = r.url.length > 120 ? r.url.slice(0, 118) + '…' : r.url;
+          tdTitle.appendChild(name);
+          tdTitle.appendChild(url);
+          tr.appendChild(tdTitle);
+          tr.appendChild(tdProgress(r.progress || '—'));
+          tr.appendChild(tdStatus(r.status || '—'));
           var tdAct = document.createElement('td');
           tdAct.className = 'act';
           function mk(act, title, label, id) {
             var b = document.createElement('button');
             b.type = 'button';
+            b.className = 'icon-btn';
             b.setAttribute('data-act', act);
             b.setAttribute('data-id', String(id));
             b.title = title;
+            b.setAttribute('aria-label', title);
             b.textContent = label;
             tdAct.appendChild(b);
           }
@@ -1004,13 +1167,13 @@ function buildDownloadsHtml(): string {
             mk('retry', 'Сбросить статус и скачать эту строку заново', '↻', r.id);
           }
           if (typeof r.outputPath === 'string' && r.outputPath) {
-            mk('open-handler', 'Открыть скачанный файл в FluxAlloy', 'В обработчик', r.id);
-            mk('open-file', 'Открыть скачанный файл', 'Файл', r.id);
-            mk('open-folder', 'Показать файл в папке', 'Папка', r.id);
+            mk('open-handler', 'Открыть скачанный файл в FluxAlloy', '↗', r.id);
+            mk('open-file', 'Открыть скачанный файл', 'F', r.id);
+            mk('open-folder', 'Показать файл в папке', 'D', r.id);
           }
           mk('up', 'Вверх', '↑', r.id);
           mk('dn', 'Вниз', '↓', r.id);
-          mk('rm', 'Удалить', '✕', r.id);
+          mk('rm', 'Удалить', '×', r.id);
           tr.appendChild(tdAct);
           body.appendChild(tr);
         });
