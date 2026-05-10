@@ -812,6 +812,9 @@ function buildDownloadsHtml(
     .settings-rail .opts-panel select:focus-visible,
     .settings-rail .hint-select:focus-visible,
     .settings-section > summary:focus-visible,
+    .history-panel.details-chev > summary:focus-visible,
+    .log-panel details.details-chev > summary:focus-visible,
+    .hints-panel.details-chev > summary:focus-visible,
     button.workspace-tab:focus-visible:not(:disabled) {
       outline: 2px solid var(--fa-focus-ring);
       outline-offset: 2px;

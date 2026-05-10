@@ -37,7 +37,7 @@
 
 - [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; `queue.json` без duplicate id; журнал out/err + truncate; дальше — редкие шаблоны логов по полю.
 - [~] §6.3: argv whitelist + справочник + превью draft/override `-o`; при необходимости редкие поля.
-- [~] §6.1/§4.A: окно загрузок — второй DPI inline CSS `@120dpi`/`@168dpi` (URL-band, таблица, журнал/history, rail); топбар-кластер lucide: `film` + **`download` (фокус поля URL)** + `home`/редактор + `settings` + `circleHelp`; **вкладки центра topbar: `home` + `download`** (как глифы в главном окне); базовые `scaleFactor`/min*`window-hidpi`; дальше — ручная проверка 125–200 % Win.
+- [~] §6.1/§4.A: окно загрузок — второй DPI inline CSS `@120dpi`/`@168dpi` (URL-band, таблица, журнал/history, rail); **`focus-visible` на `<summary>` истории / журнала / блока hints** (равно rail-секциям); топбар-кластер lucide: `film` + **`download` (фокус поля URL)** + `home`/редактор + `settings` + `circleHelp`; **вкладки центра topbar: `home` + `download`** (как глифы в главном окне); базовые `scaleFactor`/min*`window-hidpi`; дальше — ручная проверка 125–200 % Win.
 - [~] §1.1/§4.A/§9: редактор — HiDPI + топбар **ffmpeg•yt-dlp**; **снимок/экспорт/отмена/облако + sun/moon (`EDITOR_TOPBAR_ACTION_ICONS` / `EDITOR_THEME_ICONS`)**; seek/снап; **сворачиваемый rail FFmpeg** (persist `ffmpegSettingsRailOpen`); дальше — multi-monitor DPI, Dolby/side_data §9.
 - [~] §7.2: crop/rotate/flip; дальше расширенные фильтры и HW encode.
 - [~] §9: опционально Dolby Vision/`side_data` и прочие расширенные метаданные ffprobe.
@@ -86,7 +86,7 @@
 - [~] Сформировать отдельное окно менеджера загрузок в едином стиле: data HTML ближе к v0 (компактнее layout, таблица v0-колонки, log/history, rail); живая очередь `downloads/queue.json` §4.1; HiDPI: базовый `dppx` + `window-hidpi` мин.* + второй проход `@120dpi`/`@168dpi` в inline CSS окна (URL-band/table/rail/log/history); финальная матрица — после ручных прогонов Win 125–200 %.
 - [~] Реализовать прогрессивное раскрытие сложных параметров: `details` для экспертных argv/справочника/лога и **превью команды ffmpeg** в главном окне (`exportCommandPreview` в `mainWindowUiPanels`); общая система панелей — дальше.
 - [~] Базовые токены темы есть; тёмная палитра главного окна приближена к v0-референсу.
-- [~] Довести палитру, типографику, отступы, радиусы и focus-состояния на всех экранах: главный renderer и downloads (токены `--fa-*`/`focus-ring`) сближены; второе окно загрузок — тема синхронна; инспектор: topbar-хром как редактор + `probe*` секции синхронны с главным через `mergeMainWindowUiPanels`.
+- [~] Довести палитру, типографику, отступы, радиусы и focus-состояния на всех экранах: главный renderer и downloads (токены `--fa-*`/`focus-ring`) сближены; **окно загрузок: кольцо фокуса на сворачиваемых `summary` (история, журнал, hints) + rail**; второе окно загрузок — тема синхронна; инспектор: topbar-хром как редактор + `probe*` секции синхронны с главным через `mergeMainWindowUiPanels`.
 - [ ] Убрать все литералы интерфейса в локализацию.
 - [ ] Проверить масштабирование 100/125/150/200%.
 
