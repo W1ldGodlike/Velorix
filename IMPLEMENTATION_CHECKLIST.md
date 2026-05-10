@@ -37,8 +37,8 @@
 
 - [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; `queue.json` без duplicate id; журнал out/err + truncate; дальше — редкие шаблоны логов по полю.
 - [~] §6.3: argv whitelist + справочник + превью draft/override `-o`; при необходимости редкие поля.
-- [~] §6.1/§4.A: окно загрузок — `@120dpi`/`@168dpi`: URL-band, таблица, журнал/history, rail; **SVG табов / `.dl-topbar-ico` / действий строки `td.act .icon-btn` — 17–20px по зонам**; **`focus-visible`** на нужных `<summary>`; lucide-топбар + вкладки; дальше — ручная матрица Win 125–200 %.
-- [~] §1.1/§4.A/§9: редактор — HiDPR в `main.css`: **topbar** 21–22px SVG; **«Загрузки»** **17–18px**; **`app-workspace-tab:focus-visible`** (как downloads `workspace-tab`); **инспектор: `inspector-topbar-mark-icon` SVG 14×15px** HiDPR; transport/zoom/rail/FAB SVG уже; **ffmpeg•yt-dlp**; seek/снап; **`ffmpegSettingsRailOpen`**; дальше — multi-monitor DPI, Dolby/side_data §9.
+- [~] §6.1/§4.A: окно загрузок — `@120dpi`/`@168dpi`: layout + **URL `#urls`** с **`aria-describedby`** к подсказке; **`caption.sr-only`** у очереди; активная вкладка **`aria-current="page"`** (зеркало главного окна **«Редактор»**); SVG/focus уже; дальше — ручная матрица Win 125–200 %.
+- [~] §1.1/§4.A/§9: редактор — HiDPR/topbar/SVG/focus как раньше; **вкладка «Редактор»** **`aria-current="page"`** в паре к downloads **«Загрузки»**; **ffmpeg•yt-dlp**; seek/снап; **`ffmpegSettingsRailOpen`**; дальше — multi-monitor DPI, Dolby/side_data §9.
 - [~] §7.2: crop/rotate/flip; дальше расширенные фильтры и HW encode.
 - [~] §9/§21: расширенные ffprobe (Dolby/side_data и др.); новые IPC через `ipc-channels`, при необходимости логи по окнам; точечные Vitest.
 

@@ -563,6 +563,18 @@ function buildDownloadsHtml(
     }
     .input-label { display: block; margin: 0 0 0.3rem; color: var(--muted); font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
     .hint { color: var(--dim); font-size: 0.7rem; margin: 0.28rem 0 0; }
+    /* Подпись таблицы / подсказки для скринридеров без смены вёрстки окна загрузок §6 */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+      border: 0;
+    }
     textarea {
       width: 100%; min-height: 64px; box-sizing: border-box; resize: vertical; border-radius: 6px;
       border: 1px solid var(--border-2); background: color-mix(in srgb, var(--bg) 66%, var(--surface-2));
@@ -864,7 +876,7 @@ function buildDownloadsHtml(
       </div>
       <nav class="workspace-tabs" aria-label="Рабочие вкладки">
         <button type="button" class="workspace-tab" disabled title="Редактор находится в главном окне"><span class="workspace-tab-glyph" aria-hidden="true">${emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS.home, 16)}</span>Редактор</button>
-        <button type="button" class="workspace-tab active"><span class="workspace-tab-glyph" aria-hidden="true">${emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS.download, 16)}</span>Загрузки</button>
+        <button type="button" class="workspace-tab active" aria-current="page"><span class="workspace-tab-glyph" aria-hidden="true">${emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS.download, 16)}</span>Загрузки</button>
       </nav>
       <div class="topbar-right">
         <span class="topbar-meta">ffmpeg / yt-dlp queue</span>
@@ -876,8 +888,8 @@ ${emitDownloadsTopbarClusterHtml(18)}
         <div class="dl-input-band">
           <div>
             <label class="input-label" for="urls">Введите URL (каждый с новой строки)</label>
-            <textarea id="urls" placeholder="https://…"></textarea>
-            <p class="hint">Ссылки по строкам или DnD текста/URL. Очередь последовательная §6.</p>
+            <textarea id="urls" placeholder="https://…" aria-describedby="urlsHint"></textarea>
+            <p class="hint" id="urlsHint">Ссылки по строкам или DnD текста/URL. Очередь последовательная §6.</p>
           </div>
           <div class="input-actions">
             <button type="button" class="cmd cmd-primary" id="addBtn">Добавить в очередь</button>
@@ -903,6 +915,7 @@ ${emitDownloadsTopbarClusterHtml(18)}
         </div>
         <div class="queue-table-wrap">
           <table class="queue-table">
+            <caption class="sr-only">Очередь загрузок yt-dlp</caption>
             <thead><tr><th>#</th><th>Название</th><th>Формат</th><th>Размер</th><th>Прогресс</th><th>Скорость</th><th>ETA</th><th>Статус</th><th>Действия</th></tr></thead>
             <tbody id="queueBody"></tbody>
           </table>

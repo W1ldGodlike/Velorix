@@ -1012,7 +1012,11 @@ function App(): JSX.Element {
           <span className="app-topbar-version">desktop</span>
         </div>
         <nav className="app-workspace-tabs" aria-label="Рабочие вкладки">
-          <button type="button" className="app-workspace-tab app-workspace-tab-active">
+          <button
+            type="button"
+            className="app-workspace-tab app-workspace-tab-active"
+            aria-current="page"
+          >
             Редактор
           </button>
           <button
