@@ -38,7 +38,7 @@
 - [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; `queue.json` без duplicate id; журнал out/err + truncate; дальше — редкие шаблоны логов по полю.
 - [~] §6.3: argv whitelist + справочник + превью draft/override `-o`; при необходимости редкие поля.
 - [~] §6.1/§4.A: окно загрузок — HiDPR/**a11y** как в спринте ранее + **нижние панели** (**`sr-only`** **`downloadsHistorySectionHint` / `downloadsLogSectionHint`**, связь с кнопками и **`#logPre`**); дальше — ручная матрица Win 125–200 %.
-- [~] §1.1/§4.A/§9: редактор — HiDPR/topbar/SVG/focus; **`aria-current`**; **`video` `aria-label`** (`basenameForAriaLabel`); **`PreviewProbeBody`** — **`role=region`**, **`probePanelOverviewHint`** (визуально скрыт); **кнопка «Копировать»** у превью ffmpeg → **`aria-describedby=exportCommandPreviewHint`**; быстрая yt-dlp / rail / seek/снап; дальше — multi-monitor DPI, Dolby/side_data §9.
+- [~] §1.1/§4.A/§9: редактор + **инспектор** — HiDPR/topbar/SVG/focus; **`IconCircleHelp`** в тулбаре инспектора → **`AboutDialog`** (общий с главным окном); **`aria-current`**; **`video` `aria-label`**; **`PreviewProbeBody`** region + ffmpeg copy **`aria-describedby`**; быстрая yt-dlp / rail / seek/снап; дальше — multi-monitor DPI, Dolby/side_data §9.
 - [~] §7.2: crop/rotate/flip; дальше расширенные фильтры и HW encode.
 - [~] §9/§21: расширенные ffprobe (Dolby/side_data и др.); новые IPC через `ipc-channels`, при необходимости логи по окнам; точечные Vitest.
 
@@ -174,7 +174,7 @@
 - [ ] Статусбар: текущий кодировщик CPU/NVENC/AMF/QSV/etc.
 - [ ] Статусбар: tooltip GPU/драйвер/лимиты.
 - [ ] Все строки UI вынести в локализацию.
-- [~] Добавить единый набор иконок: топбар редактора (folder + **rotate-ccw/cw + scissors v0** + **снимок/экспорт/отмена/облако (`EDITOR_TOPBAR_ACTION_ICONS`)** + **sun/moon (`EDITOR_THEME_ICONS`)**, `circle-help`/загрузки из shared) + **окно загрузок: `download` в кластере топбара** (ввод URL) + **вкладки «Редактор/Загрузки» с `home`/`download` из shared** + транспорт под превью + столбец действий очереди/истории yt-dlp + **тулбар окна инспектора §9** (`app-icon-btn`, shared strokes); содержимое панелей инспектора — при необходимости дальнейшее выравнивание.
+- [~] Добавить единый набор иконок: топбар редактора (folder + **rotate-ccw/cw + scissors v0** + **снимок/экспорт/отмена/облако (`EDITOR_TOPBAR_ACTION_ICONS`)** + **sun/moon (`EDITOR_THEME_ICONS`)**, `circle-help`/загрузки из shared) + **окно загрузок** + **вкладки** + транспорт + очередь yt-dlp + **инспектор §9**: `folder-open`/`refreshCw`/`circle-help`/тема — **общий `IconCircleHelp` из shared**, **диалог «О программе» — общий компонент `AboutDialog`**; при необходимости дальнейшее выравнивание панелей.
 
 ### §4.1 Запоминание настроек
 

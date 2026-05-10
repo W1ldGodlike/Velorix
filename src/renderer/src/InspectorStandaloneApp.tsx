@@ -1,9 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { JSX } from 'react'
 
+import type { AppAboutInfo } from '../../shared/about-contract'
 import type { MediaProbeSuccess } from '../../shared/ffprobe-contract'
 import type { MainWindowUiPanelState, ResolvedAppTheme } from '../../shared/settings-contract'
+import { AboutDialog } from './components/AboutDialog'
 import {
+  IconCircleHelp,
   IconFilm,
   IconFolderOpen,
   IconMoon,
@@ -48,6 +51,8 @@ export function InspectorStandaloneApp(): JSX.Element {
   const [probeInfo, setProbeInfo] = useState<MediaProbeSuccess | null>(null)
   const [probeError, setProbeError] = useState<string | null>(null)
   const [statusHint, setStatusHint] = useState<string | null>(null)
+  const [aboutOpen, setAboutOpen] = useState(false)
+  const [aboutInfo, setAboutInfo] = useState<AppAboutInfo | null>(null)
   const [probeUiPanels, setProbeUiPanels] = useState<ProbeInspectorUiState>(PROBE_UI_DEFAULTS)
 
   const applyTheme = useCallback((value: ResolvedAppTheme) => {
@@ -204,6 +209,20 @@ export function InspectorStandaloneApp(): JSX.Element {
             type="button"
             className="app-icon-btn"
             onClick={() => {
+              void window.fluxalloy.about.getInfo().then((info) => {
+                setAboutInfo(info)
+                setAboutOpen(true)
+              })
+            }}
+            title="О программе и быстрые действия диагностики"
+          >
+            <IconCircleHelp title="О программе" />
+            <span className="app-visually-hidden">О программе</span>
+          </button>
+          <button
+            type="button"
+            className="app-icon-btn"
+            onClick={() => {
               void toggleTheme()
             }}
             title="Переключить тему (синхронно с главным окном)"
@@ -268,6 +287,17 @@ export function InspectorStandaloneApp(): JSX.Element {
         {statusHint ? <span className="app-statusbar-sep" aria-hidden /> : null}
         <Versions />
       </footer>
+
+      <AboutDialog
+        open={aboutOpen}
+        aboutInfo={aboutInfo}
+        onClose={() => {
+          setAboutOpen(false)
+        }}
+        onDiagnosticStatus={(message) => {
+          setStatusHint(message)
+        }}
+      />
     </div>
   )
 }
