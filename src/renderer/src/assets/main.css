@@ -515,6 +515,63 @@
   overflow: auto;
 }
 
+.app-downloads-settings-stack {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.app-downloads-switch-grid,
+.app-downloads-select-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.65rem;
+}
+
+.app-downloads-template-input {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.app-downloads-command-preview {
+  border-radius: 8px;
+  border: 1px solid var(--fa-border-subtle);
+  background: color-mix(in srgb, var(--fa-bg) 64%, var(--fa-surface-elevated));
+}
+
+.app-downloads-command-preview summary {
+  cursor: pointer;
+  padding: 0.55rem 0.65rem;
+  color: var(--fa-text-secondary);
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.app-downloads-command-preview summary:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 2px;
+}
+
+.app-downloads-command-preview pre {
+  margin: 0;
+  max-height: 7rem;
+  overflow: auto;
+  padding: 0 0.65rem 0.65rem;
+  color: var(--fa-text-muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.62rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.app-downloads-warning {
+  margin: 0;
+  color: var(--fa-danger);
+  font-size: 0.68rem;
+  line-height: 1.35;
+}
+
 .app-downloads-band {
   display: flex;
   align-items: flex-start;

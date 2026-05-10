@@ -40,6 +40,11 @@ import type {
   SaveTextDialogPayload,
   SaveTextDialogResult
 } from '../shared/save-text-dialog-contract'
+import type {
+  YtdlpDownloadOptionsPatch,
+  YtdlpDownloadOptionsPayload,
+  YtdlpGetCliOptionsParams
+} from '../shared/ytdlp-download-contract'
 
 /** Данные для привязки `<video>` к локальному файлу через allowlist-схему `fluxmedia://`. */
 export type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
@@ -105,6 +110,12 @@ export interface FluxAlloyApi {
     openQueueOutput: (
       id: number,
       mode: 'file' | 'folder'
+    ) => Promise<{ ok: true } | { ok: false; error: string }>
+    getCliOptions: (
+      params?: YtdlpGetCliOptionsParams
+    ) => Promise<{ ok: true; payload: YtdlpDownloadOptionsPayload } | { ok: false; error: string }>
+    setCliOptions: (
+      patch: YtdlpDownloadOptionsPatch
     ) => Promise<{ ok: true } | { ok: false; error: string }>
   }
   inspector: {

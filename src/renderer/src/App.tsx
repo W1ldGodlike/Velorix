@@ -44,6 +44,15 @@ import { buildFfmpegExportPreviewCommand } from '../../shared/ffmpeg-export-argv
 import type { FfmpegSnapshotFormatId } from '../../shared/ffmpeg-snapshot-contract'
 import type { RestoredSourceInfo } from '../../shared/preview-dialog-contract'
 import type { MediaProbeSuccess } from '../../shared/ffprobe-contract'
+import type {
+  YtdlpCookiesBrowserId,
+  YtdlpDownloadOptionsPatch,
+  YtdlpDownloadOptionsPayload,
+  YtdlpFormatPresetId,
+  YtdlpImpersonateId,
+  YtdlpQueueRetryProfileId,
+  YtdlpSubtitlePresetId
+} from '../../shared/ytdlp-download-contract'
 import { PreviewProbeBody } from './components/MediaProbePanel'
 type Theme = ResolvedAppTheme
 
@@ -396,6 +405,8 @@ function App(): JSX.Element {
   const [downloadsUrl, setDownloadsUrl] = useState('')
   const [downloadsRows, setDownloadsRows] = useState<DownloadsQueueRowView[]>([])
   const [downloadsStatusFilter, setDownloadsStatusFilter] = useState<DownloadsStatusFilter>('all')
+  const [downloadsOptions, setDownloadsOptions] = useState<YtdlpDownloadOptionsPayload | null>(null)
+  const [downloadsOptionsBusy, setDownloadsOptionsBusy] = useState(false)
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
   const [topbarEngineVersionsLine, setTopbarEngineVersionsLine] = useState('')
   const [exportBusy, setExportBusy] = useState(false)
@@ -446,6 +457,32 @@ function App(): JSX.Element {
   const visibleDownloadsRows = useMemo(
     () => downloadsRows.filter((row) => downloadsRowMatchesStatus(row, downloadsStatusFilter)),
     [downloadsRows, downloadsStatusFilter]
+  )
+
+  const refreshDownloadsOptions = useCallback(async (): Promise<void> => {
+    const res = await window.fluxalloy.downloads.getCliOptions()
+    if (res.ok) {
+      setDownloadsOptions(res.payload)
+      return
+    }
+    setStatusHint(res.error)
+  }, [])
+
+  const applyDownloadsOptionsPatch = useCallback(
+    async (patch: YtdlpDownloadOptionsPatch): Promise<void> => {
+      setDownloadsOptionsBusy(true)
+      try {
+        const res = await window.fluxalloy.downloads.setCliOptions(patch)
+        if (!res.ok) {
+          setStatusHint(res.error)
+          return
+        }
+        await refreshDownloadsOptions()
+      } finally {
+        setDownloadsOptionsBusy(false)
+      }
+    },
+    [refreshDownloadsOptions]
   )
 
   const applyPreview = useCallback((payload: PreviewOpenedPayload): void => {
@@ -509,6 +546,23 @@ function App(): JSX.Element {
     return () => {
       mounted = false
       unsubscribe()
+    }
+  }, [])
+
+  useEffect(() => {
+    let mounted = true
+    void window.fluxalloy.downloads.getCliOptions().then((res) => {
+      if (!mounted) {
+        return
+      }
+      if (res.ok) {
+        setDownloadsOptions(res.payload)
+        return
+      }
+      setStatusHint(res.error)
+    })
+    return () => {
+      mounted = false
     }
   }, [])
 
@@ -2358,11 +2412,218 @@ function App(): JSX.Element {
             </div>
           </section>
           <aside className="app-downloads-rail" aria-label="Настройки загрузок">
-            <h3 className="app-settings-title">Что показывает вкладка</h3>
+            <h3 className="app-settings-title">Настройки yt-dlp</h3>
             <p className="app-settings-subtitle">
-              Живая очередь берётся из того же сервиса, что и pop-out: строки можно стартовать,
-              повторять после ошибок, открывать готовый файл или папку результата.
+              Основные параметры сохраняются в `settings.json` и используются той же очередью, что
+              pop-out окно. Сложные поля пока остаются в pop-out.
             </p>
+            {downloadsOptions ? (
+              <div className="app-downloads-settings-stack">
+                <label className="app-field">
+                  <span>Формат / качество</span>
+                  <select
+                    className="app-control"
+                    value={downloadsOptions.formatPreset}
+                    disabled={downloadsOptionsBusy || downloadsOptions.audioOnly}
+                    aria-describedby="downloadsFormatHint"
+                    onChange={(e) => {
+                      void applyDownloadsOptionsPatch({
+                        formatPreset: e.target.value as YtdlpFormatPresetId
+                      })
+                    }}
+                  >
+                    {downloadsOptions.formatPresetChoices.map((choice) => (
+                      <option key={choice.id} value={choice.id}>
+                        {choice.label}
+                      </option>
+                    ))}
+                  </select>
+                  <span id="downloadsFormatHint" className="app-field-help">
+                    Пресет `-f`; при «Только аудио» формат видео не применяется.
+                  </span>
+                </label>
+                <div className="app-downloads-switch-grid">
+                  <div className="app-field app-field-switch">
+                    <span>Весь плейлист</span>
+                    <button
+                      type="button"
+                      className={`app-pill-switch${downloadsOptions.downloadPlaylist ? ' app-pill-switch-on' : ''}`}
+                      role="switch"
+                      aria-checked={downloadsOptions.downloadPlaylist}
+                      disabled={downloadsOptionsBusy}
+                      onClick={() => {
+                        void applyDownloadsOptionsPatch({
+                          downloadPlaylist: !downloadsOptions.downloadPlaylist
+                        })
+                      }}
+                    >
+                      <span className="app-pill-switch-knob" aria-hidden />
+                      <span className="app-pill-switch-text">
+                        {downloadsOptions.downloadPlaylist ? 'Вкл' : 'Выкл'}
+                      </span>
+                    </button>
+                    <span className="app-field-help">`--yes-playlist` вместо одного видео.</span>
+                  </div>
+                  <div className="app-field app-field-switch">
+                    <span>Только аудио</span>
+                    <button
+                      type="button"
+                      className={`app-pill-switch${downloadsOptions.audioOnly ? ' app-pill-switch-on' : ''}`}
+                      role="switch"
+                      aria-checked={downloadsOptions.audioOnly}
+                      disabled={downloadsOptionsBusy}
+                      onClick={() => {
+                        void applyDownloadsOptionsPatch({ audioOnly: !downloadsOptions.audioOnly })
+                      }}
+                    >
+                      <span className="app-pill-switch-knob" aria-hidden />
+                      <span className="app-pill-switch-text">
+                        {downloadsOptions.audioOnly ? 'Вкл' : 'Выкл'}
+                      </span>
+                    </button>
+                    <span className="app-field-help">`-x`, если нужен звук без видеодорожки.</span>
+                  </div>
+                  <div className="app-field app-field-switch">
+                    <span>Открыть после успеха</span>
+                    <button
+                      type="button"
+                      className={`app-pill-switch${downloadsOptions.openInHandlerOnComplete ? ' app-pill-switch-on' : ''}`}
+                      role="switch"
+                      aria-checked={downloadsOptions.openInHandlerOnComplete}
+                      disabled={downloadsOptionsBusy}
+                      onClick={() => {
+                        void applyDownloadsOptionsPatch({
+                          openInHandlerOnComplete: !downloadsOptions.openInHandlerOnComplete
+                        })
+                      }}
+                    >
+                      <span className="app-pill-switch-knob" aria-hidden />
+                      <span className="app-pill-switch-text">
+                        {downloadsOptions.openInHandlerOnComplete ? 'Вкл' : 'Выкл'}
+                      </span>
+                    </button>
+                    <span className="app-field-help">Готовый файл сразу попадёт в редактор.</span>
+                  </div>
+                </div>
+                <label className="app-field">
+                  <span>Субтитры</span>
+                  <select
+                    className="app-control"
+                    value={downloadsOptions.subtitlePreset}
+                    disabled={downloadsOptionsBusy}
+                    onChange={(e) => {
+                      void applyDownloadsOptionsPatch({
+                        subtitlePreset: e.target.value as YtdlpSubtitlePresetId
+                      })
+                    }}
+                  >
+                    <option value="none">Не скачивать</option>
+                    <option value="manual">Ручные дорожки</option>
+                    <option value="manual_auto">Ручные + авто</option>
+                  </select>
+                  <span className="app-field-help">
+                    Для языков и редких флагов пока используйте pop-out.
+                  </span>
+                </label>
+                <div className="app-downloads-select-grid">
+                  <label className="app-field">
+                    <span>Cookies</span>
+                    <select
+                      className="app-control"
+                      value={downloadsOptions.cookiesBrowserChoice}
+                      disabled={downloadsOptionsBusy}
+                      onChange={(e) => {
+                        void applyDownloadsOptionsPatch({
+                          cookiesBrowser: e.target.value as 'none' | YtdlpCookiesBrowserId
+                        })
+                      }}
+                    >
+                      <option value="none">Не использовать</option>
+                      <option value="chrome">Chrome</option>
+                      <option value="edge">Edge</option>
+                      <option value="firefox">Firefox</option>
+                    </select>
+                  </label>
+                  <label className="app-field">
+                    <span>Impersonate</span>
+                    <select
+                      className="app-control"
+                      value={downloadsOptions.impersonateChoice}
+                      disabled={downloadsOptionsBusy}
+                      onChange={(e) => {
+                        void applyDownloadsOptionsPatch({
+                          impersonate: e.target.value as 'none' | YtdlpImpersonateId
+                        })
+                      }}
+                    >
+                      <option value="none">Выключено</option>
+                      <option value="chrome">chrome</option>
+                      <option value="edge">edge</option>
+                      <option value="firefox">firefox</option>
+                    </select>
+                  </label>
+                </div>
+                <label className="app-field">
+                  <span>Повтор строки очереди</span>
+                  <select
+                    className="app-control"
+                    value={downloadsOptions.queueRetryProfile}
+                    disabled={downloadsOptionsBusy}
+                    onChange={(e) => {
+                      void applyDownloadsOptionsPatch({
+                        queueRetryProfile: e.target.value as YtdlpQueueRetryProfileId
+                      })
+                    }}
+                  >
+                    {downloadsOptions.queueRetryProfileChoices.map((choice) => (
+                      <option key={choice.id} value={choice.id}>
+                        {choice.label}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="app-field-help">
+                    Повторяет всю строку очереди при ненулевом exit code.
+                  </span>
+                </label>
+                <label className="app-field">
+                  <span>Шаблон имени</span>
+                  <input
+                    className="app-control app-downloads-template-input"
+                    value={downloadsOptions.filenameTemplate}
+                    disabled={downloadsOptionsBusy}
+                    spellCheck={false}
+                    onChange={(e) => {
+                      setDownloadsOptions({ ...downloadsOptions, filenameTemplate: e.target.value })
+                    }}
+                    onBlur={(e) => {
+                      void applyDownloadsOptionsPatch({ filenameTemplate: e.target.value })
+                    }}
+                  />
+                  <span className="app-field-help">
+                    Нужен `%(ext)s`; путь наружу через `..` запрещён.
+                  </span>
+                </label>
+                <details className="app-downloads-command-preview">
+                  <summary>Превью команды</summary>
+                  <pre>{downloadsOptions.commandPreview}</pre>
+                </details>
+                {downloadsOptions.cookiesWarning ? (
+                  <p className="app-downloads-warning">{downloadsOptions.cookiesWarning}</p>
+                ) : null}
+              </div>
+            ) : (
+              <p className="app-settings-subtitle">Загружаю настройки yt-dlp…</p>
+            )}
+            <button
+              type="button"
+              className="app-btn"
+              disabled={downloadsOptionsBusy}
+              onClick={() => {
+                void refreshDownloadsOptions()
+              }}
+            >
+              Обновить настройки
+            </button>
             <button
               type="button"
               className="app-btn"

@@ -41,6 +41,11 @@ import type {
   SaveTextDialogPayload,
   SaveTextDialogResult
 } from '../shared/save-text-dialog-contract'
+import type {
+  YtdlpDownloadOptionsPatch,
+  YtdlpDownloadOptionsPayload,
+  YtdlpGetCliOptionsParams
+} from '../shared/ytdlp-download-contract'
 import { downloadsIpc as d, mainWindowIpc as mw } from '../shared/ipc-channels'
 
 type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
@@ -167,7 +172,15 @@ const fluxalloy = {
       id: number,
       mode: 'file' | 'folder'
     ): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.openQueueOutput, id, mode)
+      ipcRenderer.invoke(d.openQueueOutput, id, mode),
+    getCliOptions: (
+      params?: YtdlpGetCliOptionsParams
+    ): Promise<{ ok: true; payload: YtdlpDownloadOptionsPayload } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(d.getCliOptions, params),
+    setCliOptions: (
+      patch: YtdlpDownloadOptionsPatch
+    ): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(d.setCliOptions, patch)
   },
   /** §9 §363 — отдельное окно инспектора (тот же preload, что главное окно). */
   inspector: {
