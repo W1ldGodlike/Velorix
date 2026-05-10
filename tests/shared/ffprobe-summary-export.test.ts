@@ -18,8 +18,22 @@ const sampleProbe: MediaProbeSuccess = {
   formatLongName: 'QuickTime / MOV',
   bitrateKbps: 4500,
   tracks: [
-    { index: 0, kind: 'video', codec: 'h264', detail: '1920x1080, 24 fps' },
-    { index: 1, kind: 'audio', codec: 'aac', detail: 'stereo, 48000 Hz' }
+    {
+      index: 0,
+      kind: 'video',
+      codec: 'h264',
+      detail: '1920x1080, 24 fps',
+      language: null,
+      titleTag: null
+    },
+    {
+      index: 1,
+      kind: 'audio',
+      codec: 'aac',
+      detail: 'stereo, 48000 Hz',
+      language: 'eng',
+      titleTag: 'Commentary'
+    }
   ],
   chapters: [],
   rawJson: '{}'
@@ -49,7 +63,10 @@ describe('ffprobe-summary-export', () => {
     expect(t).toContain('h264')
     expect(t).toContain('aac')
     expect(t).toContain('Дорожек: 2')
+    expect(t).toContain('Язык\tЗаголовок\tСведения')
     expect(t).toContain('Видео\t')
+    expect(t).toContain('eng')
+    expect(t).toContain('Commentary')
   })
 
   it('formatProbeSummaryPlainText и HTML включают главы', () => {
@@ -65,7 +82,16 @@ describe('ffprobe-summary-export', () => {
   it('formatProbeSummaryHtmlDocument экранирует detail и содержит таблицу', () => {
     const dirty: MediaProbeSuccess = {
       ...sampleProbe,
-      tracks: [{ index: 0, kind: 'video', codec: 'x', detail: '<script>x</script>' }]
+      tracks: [
+        {
+          index: 0,
+          kind: 'video',
+          codec: 'x',
+          detail: '<script>x</script>',
+          language: null,
+          titleTag: null
+        }
+      ]
     }
     const h = formatProbeSummaryHtmlDocument(dirty)
     expect(h).toContain('&lt;script&gt;')

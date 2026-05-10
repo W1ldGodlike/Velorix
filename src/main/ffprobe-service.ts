@@ -172,7 +172,9 @@ function buildTrackRows(streams: FfprobeJson['streams']): MediaProbeTrackRow[] {
         typeof stream.codec_name === 'string' && stream.codec_name.trim() !== ''
           ? stream.codec_name
           : '?',
-      detail: buildTrackDetail(stream)
+      detail: buildTrackDetail(stream),
+      language: tagString(stream.tags, 'language'),
+      titleTag: tagString(stream.tags, 'title')
     })
   })
   rows.sort((a, b) => a.index - b.index)

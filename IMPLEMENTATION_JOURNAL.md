@@ -137,3 +137,4 @@
 - 2026-05-10 11:09:18 [SDK]: §9 — экспорт сводки инспектора TXT/HTML (`ffprobe-summary-export`), UI + фильтр HTML в диалоге сохранения; Vitest.
 - 2026-05-10 11:11:25 [SDK]: §9 — главы: `-show_chapters`, `chapters` в `MediaProbeSuccess`, парсер `ffprobe-chapters`, таблица в превью и блок в TXT/HTML сводке; Vitest.
 - 2026-05-10 11:13:22 [SDK]: §9 — контекстное меню строк дорожек/глав: портал, копирование TSV/полей в буфер (preload clipboard).
+- 2026-05-10 11:15:02 [SDK]: §9 — таблица дорожек: `language`/`titleTag` из ffprobe tags, колонки в UI и TXT/HTML сводке; расширен TSV и ПКМ.

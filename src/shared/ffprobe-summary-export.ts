@@ -108,10 +108,12 @@ export function formatProbeSummaryPlainText(info: MediaProbeSuccess): string {
   ].filter((x): x is string => x !== null)
 
   if (info.tracks.length > 0) {
-    lines.push('#\tТип\tКодек\tСведения', '-'.repeat(64))
+    lines.push('#\tТип\tКодек\tЯзык\tЗаголовок\tСведения', '-'.repeat(72))
     for (const row of info.tracks) {
+      const lang = row.language ?? ''
+      const title = row.titleTag ?? ''
       lines.push(
-        `${row.index}\t${trackKindRu(row.kind)}\t${row.codec}\t${row.detail.replace(/\r?\n/g, ' ')}`
+        `${row.index}\t${trackKindRu(row.kind)}\t${row.codec}\t${lang.replace(/\t/g, ' ')}\t${title.replace(/\t/g, ' ')}\t${row.detail.replace(/\r?\n/g, ' ')}`
       )
     }
   }
@@ -137,7 +139,7 @@ export function formatProbeSummaryHtmlDocument(info: MediaProbeSuccess): string 
   const rows = info.tracks
     .map(
       (row) =>
-        `<tr><td>${row.index}</td><td>${escapeHtml(trackKindRu(row.kind))}</td><td class="mono">${escapeHtml(row.codec)}</td><td>${escapeHtml(row.detail)}</td></tr>`
+        `<tr><td>${row.index}</td><td>${escapeHtml(trackKindRu(row.kind))}</td><td class="mono">${escapeHtml(row.codec)}</td><td>${escapeHtml(row.language ?? '—')}</td><td>${escapeHtml(row.titleTag ?? '—')}</td><td>${escapeHtml(row.detail)}</td></tr>`
     )
     .join('\n')
 
@@ -195,9 +197,9 @@ ${metaParts.join('\n')}
   </ul>
   <h2>Дорожки (${info.tracks.length})</h2>
   <table>
-    <thead><tr><th>#</th><th>Тип</th><th>Кодек</th><th>Сведения</th></tr></thead>
+    <thead><tr><th>#</th><th>Тип</th><th>Кодек</th><th>Язык</th><th>Заголовок</th><th>Сведения</th></tr></thead>
     <tbody>
-${rows || '<tr><td colspan="4">Нет дорожек</td></tr>'}
+${rows || '<tr><td colspan="6">Нет дорожек</td></tr>'}
     </tbody>
   </table>
 ${chaptersSection}

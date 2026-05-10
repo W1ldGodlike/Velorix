@@ -137,7 +137,7 @@ type ProbeTableContextMenu =
 function clampProbeTableMenuPosition(clientX: number, clientY: number): { x: number; y: number } {
   const margin = 8
   const estW = 260
-  const estH = 168
+  const estH = 220
   const x = Math.min(Math.max(margin, clientX), Math.max(margin, window.innerWidth - estW - margin))
   const y = Math.min(
     Math.max(margin, clientY),
@@ -147,7 +147,9 @@ function clampProbeTableMenuPosition(clientX: number, clientY: number): { x: num
 }
 
 function formatProbeTrackRowTsv(row: MediaProbeTrackRow): string {
-  return `${row.index}\t${trackKindRu(row.kind)}\t${row.codec}\t${row.detail}`
+  const lang = row.language ?? ''
+  const title = row.titleTag ?? ''
+  return `${row.index}\t${trackKindRu(row.kind)}\t${row.codec}\t${lang}\t${title}\t${row.detail}`
 }
 
 function formatProbeChapterRowTsv(ch: MediaProbeChapterRow): string {
@@ -374,6 +376,8 @@ function PreviewProbeBody({
                     <th scope="col">#</th>
                     <th scope="col">Тип</th>
                     <th scope="col">Кодек</th>
+                    <th scope="col">Язык</th>
+                    <th scope="col">Заголовок</th>
                     <th scope="col">Сведения</th>
                   </tr>
                 </thead>
@@ -390,6 +394,8 @@ function PreviewProbeBody({
                       <td>{row.index}</td>
                       <td>{trackKindRu(row.kind)}</td>
                       <td className="app-probe-table-mono">{row.codec}</td>
+                      <td>{row.language ?? '—'}</td>
+                      <td>{row.titleTag ?? '—'}</td>
                       <td>{row.detail}</td>
                     </tr>
                   ))}
@@ -502,6 +508,28 @@ function PreviewProbeBody({
                   >
                     Копировать сведения
                   </button>
+                  {probeTableMenu.row.language ? (
+                    <button
+                      type="button"
+                      className="app-probe-context-menu-item"
+                      onClick={() => {
+                        void copyProbeCellAndDismiss(probeTableMenu.row.language ?? '')
+                      }}
+                    >
+                      Копировать язык
+                    </button>
+                  ) : null}
+                  {probeTableMenu.row.titleTag ? (
+                    <button
+                      type="button"
+                      className="app-probe-context-menu-item"
+                      onClick={() => {
+                        void copyProbeCellAndDismiss(probeTableMenu.row.titleTag ?? '')
+                      }}
+                    >
+                      Копировать заголовок дорожки
+                    </button>
+                  ) : null}
                 </>
               ) : (
                 <>

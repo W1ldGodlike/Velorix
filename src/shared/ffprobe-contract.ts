@@ -6,6 +6,10 @@ export interface MediaProbeTrackRow {
   codec: string
   /** Одна строка: разрешение, fps, каналы, язык и т.д. */
   detail: string
+  /** `tags.language`, если ffprobe отдал тег. */
+  language: string | null
+  /** `tags.title` дорожки (не путать с главами контейнера). */
+  titleTag: string | null
 }
 
 /** Глава контейнера §9 (ffprobe `-show_chapters`). */
