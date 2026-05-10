@@ -125,6 +125,20 @@ export function IconFilm({
   )
 }
 
+export function IconCircleHelp({
+  title = 'О программе',
+  size = 20
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(DOWNLOADS_TOPBAR_CLUSTER_ICONS.circleHelp)}
+    </SvgBase>
+  )
+}
+
 export function IconImage({
   title = 'Снимок кадра',
   size = 20

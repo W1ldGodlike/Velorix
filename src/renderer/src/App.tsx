@@ -5,6 +5,7 @@ import VideoTimeline from './components/VideoTimeline'
 import Versions from './components/Versions'
 import {
   IconBan,
+  IconCircleHelp,
   IconCloudDownload,
   IconDownload,
   IconFilm,
@@ -1017,6 +1018,20 @@ function App(): JSX.Element {
           >
             <IconSettings />
             <span className="app-visually-hidden">Пути к движкам</span>
+          </button>
+          <button
+            type="button"
+            className="app-icon-btn"
+            onClick={() => {
+              void window.fluxalloy.about.getInfo().then((info) => {
+                setAboutInfo(info)
+                setAboutOpen(true)
+              })
+            }}
+            title="О программе и диагностика"
+          >
+            <IconCircleHelp />
+            <span className="app-visually-hidden">О программе</span>
           </button>
           <button
             type="button"
