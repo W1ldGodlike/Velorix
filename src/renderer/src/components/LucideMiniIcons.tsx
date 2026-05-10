@@ -1,6 +1,44 @@
 import type { JSX, ReactNode } from 'react'
 
+import {
+  DOWNLOADS_TOPBAR_CLUSTER_ICONS,
+  QUEUE_ROW_ACTION_ICONS,
+  type StrokePrim
+} from '../../../shared/lucide-downloads-icons'
+
 /** Единые 24×24 lucide-подобные stroke-иконки для topbar (MIT paths lucide-icons). */
+
+function renderStrokeParts(parts: readonly StrokePrim[]): JSX.Element[] {
+  return parts.map((p, i): JSX.Element => {
+    switch (p.tag) {
+      case 'path':
+        return <path key={i} d={p.attr.d} />
+      case 'polyline':
+        return <polyline key={i} points={p.attr.points} />
+      case 'polygon':
+        return <polygon key={i} points={p.attr.points} />
+      case 'line':
+        return <line key={i} x1={p.attr.x1} y1={p.attr.y1} x2={p.attr.x2} y2={p.attr.y2} />
+      case 'rect':
+        return (
+          <rect
+            key={i}
+            x={p.attr.x}
+            y={p.attr.y}
+            width={p.attr.width}
+            height={p.attr.height}
+            rx={p.attr.rx}
+          />
+        )
+      case 'circle':
+        return <circle key={i} cx={p.attr.cx} cy={p.attr.cy} r={p.attr.r} />
+      default: {
+        const _e: never = p
+        return _e
+      }
+    }
+  })
+}
 
 function SvgBase({
   title,
@@ -40,7 +78,7 @@ export function IconFolderOpen({
 }): JSX.Element {
   return (
     <SvgBase title={title} size={size}>
-      <path d="m6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2h3.93a2 2 0 0 1 1.66.89l.82 1.24a2 2 0 0 0 1.66.89H18a2 2 0 0 1 2 2v2" />
+      {renderStrokeParts(QUEUE_ROW_ACTION_ICONS.folder)}
     </SvgBase>
   )
 }
@@ -54,9 +92,7 @@ export function IconDownload({
 }): JSX.Element {
   return (
     <SvgBase title={title} size={size}>
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-      <polyline points="7 10 12 15 17 10" />
-      <line x1="12" x2="12" y1="15" y2="3" />
+      {renderStrokeParts(DOWNLOADS_TOPBAR_CLUSTER_ICONS.download)}
     </SvgBase>
   )
 }
@@ -70,14 +106,7 @@ export function IconFilm({
 }): JSX.Element {
   return (
     <SvgBase title={title} size={size}>
-      <rect width="18" height="18" x="3" y="3" rx="2" />
-      <path d="M7 3v18" />
-      <path d="M3 7.5h4" />
-      <path d="M3 12h18" />
-      <path d="M3 16.5h4" />
-      <path d="M17 3v18" />
-      <path d="M17 7.5h4" />
-      <path d="M17 16.5h4" />
+      {renderStrokeParts(DOWNLOADS_TOPBAR_CLUSTER_ICONS.film)}
     </SvgBase>
   )
 }
@@ -148,8 +177,7 @@ export function IconSettings({
 }): JSX.Element {
   return (
     <SvgBase title={title} size={size}>
-      <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
-      <circle cx="12" cy="12" r="3" />
+      {renderStrokeParts(DOWNLOADS_TOPBAR_CLUSTER_ICONS.settings)}
     </SvgBase>
   )
 }

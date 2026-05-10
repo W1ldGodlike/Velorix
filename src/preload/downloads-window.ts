@@ -155,5 +155,20 @@ contextBridge.exposeInMainWorld('fluxalloyDownloads', {
   mergeUiPanels: (
     patch: Partial<DownloadsWindowUiPanelState>
   ): Promise<{ ok: true } | { ok: false; error: string }> =>
-    ipcRenderer.invoke(d.mergeUiPanels, patch)
+    ipcRenderer.invoke(d.mergeUiPanels, patch),
+
+  /** IPC-мост во главное окно / инспектор (строгая проверка отправителя в main). */
+  bridgeOpenInspector: (
+    mediaPath?: string | null
+  ): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke(d.bridgeOpenInspector, mediaPath ?? null),
+
+  bridgeFocusMainEditor: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke(d.bridgeFocusMainEditor),
+
+  bridgeOpenEnginePaths: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke(d.bridgeOpenEnginePaths),
+
+  bridgeOpenAbout: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke(d.bridgeOpenAbout)
 })

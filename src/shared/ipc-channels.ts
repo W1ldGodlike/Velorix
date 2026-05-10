@@ -93,7 +93,12 @@ export const downloadsIpc = {
   pauseYtdlp: 'fluxalloy-downloads-pause-ytdlp',
   resumeYtdlp: 'fluxalloy-downloads-resume-ytdlp',
   /** §4.1 — частичное сохранение раскрытых секций окна загрузок. */
-  mergeUiPanels: 'fluxalloy-downloads-merge-ui-panels'
+  mergeUiPanels: 'fluxalloy-downloads-merge-ui-panels',
+  /** Мост во главное окно / инспектор без доступа preload загрузок к каналам renderer. */
+  bridgeOpenInspector: 'fluxalloy-downloads-bridge-open-inspector',
+  bridgeFocusMainEditor: 'fluxalloy-downloads-bridge-focus-main',
+  bridgeOpenEnginePaths: 'fluxalloy-downloads-bridge-open-engine-paths',
+  bridgeOpenAbout: 'fluxalloy-downloads-bridge-open-about'
 } as const
 
 export type MainWindowIpcChannel = (typeof mainWindowIpc)[keyof typeof mainWindowIpc]

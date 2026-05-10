@@ -53,7 +53,12 @@ import {
   hydrateDownloadsQueueFromDisk,
   schedulePersistDownloadsQueueDebounced
 } from './ytdlp-download-queue-persist'
-import { downloadsIpc as d } from '../shared/ipc-channels'
+import { downloadsIpc as d, mainWindowIpc as mw } from '../shared/ipc-channels'
+import {
+  emitDownloadsQueueRowIcoBootstrapJs,
+  emitDownloadsTopbarClusterHtml
+} from '../shared/lucide-downloads-icons'
+import { focusOrCreateInspectorWindow, isInspectorWindow } from './inspector-window'
 
 /** Совпадает с preload подпиской на снимок очереди. */
 export const DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL = d.queueSnapshot
@@ -120,6 +125,22 @@ export function isDownloadsWindow(win: BrowserWindow | null | undefined): boolea
     !win.isDestroyed() &&
     win.id === downloadsWindow.id
   )
+}
+
+/** Главное окно редактора — любое живое окно кроме менеджера загрузок и инспектора §9. */
+function resolveMainEditorWindow(): BrowserWindow | null {
+  const wins = BrowserWindow.getAllWindows()
+  for (let i = 0; i < wins.length; i++) {
+    const win = wins[i]
+    if (win === undefined || win.isDestroyed()) {
+      continue
+    }
+    if (isDownloadsWindow(win) || isInspectorWindow(win)) {
+      continue
+    }
+    return win
+  }
+  return null
 }
 
 type DownloadOutputOpenMode = 'file' | 'folder'
@@ -268,7 +289,40 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
       color: var(--dim); cursor: default; font-size: 0.74rem; font-weight: 600;
     }
     .workspace-tab.active { color: var(--text); border-bottom-color: var(--blue); }
-    .topbar-meta { justify-self: end; color: var(--dim); font-family: ui-monospace, Consolas, Menlo, monospace; font-size: 0.68rem; }
+    .topbar-right {
+      justify-self: end;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      min-width: 0;
+    }
+    .topbar-meta {
+      color: var(--dim);
+      font-family: ui-monospace, Consolas, Menlo, monospace;
+      font-size: 0.68rem;
+      white-space: nowrap;
+    }
+    .topbar-cluster {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.12rem;
+      flex-shrink: 0;
+    }
+    button.dl-topbar-ico {
+      width: 2rem;
+      height: 2rem;
+      min-width: 2rem;
+      padding: 0;
+      border-radius: 8px;
+      border: 1px solid var(--border-2);
+      background: color-mix(in srgb, var(--surface-2) 92%, transparent);
+      color: var(--muted);
+    }
+    button.dl-topbar-ico:hover {
+      background: var(--surface-3);
+      color: var(--text);
+      border-color: var(--border-2);
+    }
     .dl-main {
       flex: 1; min-height: 0; min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(258px, 276px);
       overflow: hidden;
@@ -354,6 +408,27 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
     .log-panel summary, .history-panel summary {
       cursor: pointer; font-weight: 700; font-size: 0.64rem; padding: 0.36rem 0.55rem; margin: 0;
       user-select: none; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em;
+      list-style: none;
+    }
+    .history-panel.details-chev > summary::-webkit-details-marker,
+    .log-panel details.details-chev > summary::-webkit-details-marker,
+    .hints-panel.details-chev > summary::-webkit-details-marker {
+      display: none;
+    }
+    .history-panel.details-chev > summary::before,
+    .log-panel details.details-chev > summary::before,
+    .hints-panel.details-chev > summary::before {
+      content: '▸';
+      display: inline-block;
+      margin-right: 0.45rem;
+      color: var(--dim);
+      font-size: 0.65rem;
+      transition: transform 0.12s ease;
+    }
+    .history-panel.details-chev[open] > summary::before,
+    .log-panel details.details-chev[open] > summary::before,
+    .hints-panel.details-chev[open] > summary::before {
+      transform: rotate(90deg);
     }
     .log-panel pre {
       margin: 0 0.55rem 0.52rem; max-height: 200px; overflow: auto; white-space: pre-wrap; word-break: break-word;
@@ -423,7 +498,8 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
     td.h-out-ok { color: var(--green); }
     td.h-out-err { color: var(--red); }
     td.h-out-can { color: var(--blue); }
-    textarea:focus-visible, button.cmd:focus-visible, td.act button.icon-btn:focus-visible {
+    textarea:focus-visible, button.cmd:focus-visible, td.act button.icon-btn:focus-visible,
+    button.dl-topbar-ico:focus-visible {
       outline: 1px solid color-mix(in srgb, var(--blue) 65%, transparent);
       outline-offset: 1px;
     }
@@ -447,7 +523,10 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
         <button type="button" class="workspace-tab" disabled title="Редактор находится в главном окне">Редактор</button>
         <button type="button" class="workspace-tab active">Загрузки</button>
       </nav>
-      <div class="topbar-meta">ffmpeg / yt-dlp queue</div>
+      <div class="topbar-right">
+        <span class="topbar-meta">ffmpeg / yt-dlp queue</span>
+${emitDownloadsTopbarClusterHtml(18)}
+      </div>
     </header>
     <main class="dl-main">
       <section class="dl-workspace" aria-label="Очередь загрузок">
@@ -486,7 +565,7 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
           </table>
         </div>
         <div class="bottom-panels">
-          <details class="history-panel" id="historyDetails"${openAttr('history', false)}>
+          <details class="history-panel details-chev" id="historyDetails"${openAttr('history', false)}>
             <summary>История загрузок</summary>
             <div class="history-actions">
               <button type="button" class="cmd" id="refreshHistoryBtn">Обновить</button>
@@ -506,7 +585,7 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
             </table>
           </details>
           <div class="log-panel">
-            <details id="logDetails"${openAttr('log', true)}>
+            <details class="details-chev" id="logDetails"${openAttr('log', true)}>
               <summary>Журнал операций</summary>
               <div class="history-actions">
                 <button type="button" class="cmd" id="saveLogBtn">Сохранить лог…</button>
@@ -617,7 +696,7 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
               <input type="text" id="previewOutDirOverride" spellcheck="false" autocomplete="off" placeholder="Только строка превью argv" />
               <span class="opts-preview-label">Превью argv</span>
               <pre class="args-preview" id="argsPreview"></pre>
-              <details class="hints-panel" id="hintsPanel"${openAttr('hints', false)}>
+              <details class="hints-panel details-chev" id="hintsPanel"${openAttr('hints', false)}>
                 <summary>Справочник флагов</summary>
                 <select id="hintInsert" class="hint-select" aria-label="Вставить флаг из справочника">
                   <option value="">Выберите флаг — он добавится в «Доп. аргументы»…</option>
@@ -769,7 +848,7 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
         return status === 'Загрузка…' || (typeof status === 'string' && status.indexOf('Пауза перед повтором') === 0);
       }
 
-      /** Lucide-подобные мини-иконки для столбца действий (stroke, 24 viewBox → 14px). */
+      /** §6/v0 — stroke-иконки очереди: единый источник путей lucide-downloads-icons (shared). */
       var SVG_NS = 'http://www.w3.org/2000/svg';
       function svgEl(tag, attrs) {
         var n = document.createElementNS(SVG_NS, tag);
@@ -782,8 +861,8 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
       }
       function svgIcon(paths) {
         var svg = svgEl('svg', {
-          width: '14',
-          height: '14',
+          width: '16',
+          height: '16',
           viewBox: '0 0 24 24',
           fill: 'none',
           stroke: 'currentColor',
@@ -797,72 +876,7 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
         });
         return svg;
       }
-      var RowIco = {
-        play: function () {
-          return svgIcon([{ tag: 'polygon', attr: { points: '6 4 20 12 6 20 6 4' } }]);
-        },
-        pause: function () {
-          return svgIcon([
-            { tag: 'rect', attr: { x: '7', y: '5', width: '3.5', height: '14', rx: '1' } },
-            { tag: 'rect', attr: { x: '14.5', y: '5', width: '3.5', height: '14', rx: '1' } }
-          ]);
-        },
-        retry: function () {
-          return svgIcon([
-            { tag: 'path', attr: { d: 'M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8' } },
-            { tag: 'path', attr: { d: 'M21 3v5h-5' } },
-            { tag: 'path', attr: { d: 'M3 12a9 9 0 0 1 9 9c2.52 0 4.93-1 6.74-2.74L3 16' } },
-            { tag: 'path', attr: { d: 'M8 16H3v5' } }
-          ]);
-        },
-        plus: function () {
-          return svgIcon([
-            { tag: 'path', attr: { d: 'M12 5v14' } },
-            { tag: 'path', attr: { d: 'M5 12h14' } }
-          ]);
-        },
-        outbound: function () {
-          return svgIcon([
-            { tag: 'path', attr: { d: 'M15 3h6v6' } },
-            { tag: 'path', attr: { d: 'M10 14 21 3' } },
-            { tag: 'path', attr: { d: 'M18 13v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6' } }
-          ]);
-        },
-        file: function () {
-          return svgIcon([
-            { tag: 'path', attr: { d: 'M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z' } },
-            { tag: 'path', attr: { d: 'M14 2v4a2 2 0 0 0 2 2h4' } }
-          ]);
-        },
-        folder: function () {
-          return svgIcon([
-            {
-              tag: 'path',
-              attr: {
-                d: 'm6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2h3.93a2 2 0 0 1 1.66.89l.82 1.24a2 2 0 0 0 1.66.89H18a2 2 0 0 1 2 2v2'
-              }
-            }
-          ]);
-        },
-        chevUp: function () {
-          return svgIcon([{ tag: 'path', attr: { d: 'm18 15-6-6-6 6' } }]);
-        },
-        chevDown: function () {
-          return svgIcon([{ tag: 'path', attr: { d: 'm6 9 6 6 6-6' } }]);
-        },
-        trash: function () {
-          return svgIcon([
-            { tag: 'path', attr: { d: 'M3 6h18' } },
-            { tag: 'path', attr: { d: 'M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6' } },
-            { tag: 'path', attr: { d: 'M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2' } }
-          ]);
-        },
-        stop: function () {
-          return svgIcon([
-            { tag: 'rect', attr: { x: '7', y: '7', width: '10', height: '10', rx: '2' } }
-          ]);
-        }
-      };
+${emitDownloadsQueueRowIcoBootstrapJs()}
 
       function renderHistoryEntries(raw) {
         if (!historyBody) return;
@@ -1719,6 +1733,23 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
       wireDetailsUiPersist('expertArgsDetails', 'expert');
       wireDetailsUiPersist('hintsPanel', 'hints');
 
+      function wireDownloadsTopbarBridges() {
+        var pairs = [
+          ['dlTopFilm', function () { api.bridgeOpenInspector(null); }],
+          ['dlTopHome', function () { api.bridgeFocusMainEditor(); }],
+          ['dlTopEngines', function () { api.bridgeOpenEnginePaths(); }],
+          ['dlTopHelp', function () { api.bridgeOpenAbout(); }]
+        ];
+        pairs.forEach(function (pair) {
+          var el = document.getElementById(pair[0]);
+          if (!el) return;
+          el.addEventListener('click', function () {
+            pair[1]();
+          });
+        });
+      }
+      wireDownloadsTopbarBridges();
+
       api.getSnapshot().then(onQueueSnapshot);
 
       api.onSnapshot(onQueueSnapshot);
@@ -2333,6 +2364,59 @@ export function registerDownloadsWindowIpcHandlers(): void {
       return { ok: true }
     }
   )
+
+  ipcMain.handle(
+    d.bridgeOpenInspector,
+    (event, raw: unknown): { ok: true } | { ok: false; error: string } => {
+      if (!isDownloadsSender(event.sender)) {
+        return { ok: false, error: 'Недопустимый отправитель' }
+      }
+      const p = typeof raw === 'string' && raw.trim().length > 0 ? raw : undefined
+      focusOrCreateInspectorWindow(p)
+      return { ok: true }
+    }
+  )
+
+  ipcMain.handle(d.bridgeFocusMainEditor, (event): { ok: true } | { ok: false; error: string } => {
+    if (!isDownloadsSender(event.sender)) {
+      return { ok: false, error: 'Недопустимый отправитель' }
+    }
+    const w = resolveMainEditorWindow()
+    if (!w || w.isDestroyed()) {
+      return { ok: false, error: 'Главное окно редактора не найдено.' }
+    }
+    w.show()
+    w.focus()
+    return { ok: true }
+  })
+
+  ipcMain.handle(d.bridgeOpenEnginePaths, (event): { ok: true } | { ok: false; error: string } => {
+    if (!isDownloadsSender(event.sender)) {
+      return { ok: false, error: 'Недопустимый отправитель' }
+    }
+    const w = resolveMainEditorWindow()
+    if (!w || w.isDestroyed()) {
+      return { ok: false, error: 'Главное окно редактора не найдено.' }
+    }
+    w.webContents.send(mw.openEnginePaths)
+    w.show()
+    w.focus()
+    return { ok: true }
+  })
+
+  ipcMain.handle(d.bridgeOpenAbout, (event): { ok: true } | { ok: false; error: string } => {
+    if (!isDownloadsSender(event.sender)) {
+      return { ok: false, error: 'Недопустимый отправитель' }
+    }
+    const w = resolveMainEditorWindow()
+    if (!w || w.isDestroyed()) {
+      return { ok: false, error: 'Главное окно редактора не найдено.' }
+    }
+    w.webContents.send(mw.openAbout)
+    w.show()
+    w.focus()
+    return { ok: true }
+  })
 }
 
 /**
