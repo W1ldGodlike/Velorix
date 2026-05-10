@@ -1548,6 +1548,7 @@ async function ensurePreviewPlayableMedia(absoluteFile: string): Promise<string>
     )
     await runFfmpegPreviewProxy(ffmpeg, absoluteFile, output, true)
   }
+  logInfo('preview', `mp4 preview proxy ready: ${output}`)
   return output
 }
 

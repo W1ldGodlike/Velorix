@@ -2631,11 +2631,16 @@ function App(): JSX.Element {
                                     type="button"
                                     className="app-btn app-btn-compact"
                                     onClick={() => {
+                                      setStatusHint(
+                                        'Готовлю файл для редактора… если это MKV/WebM, будет создан MP4 preview.'
+                                      )
                                       void window.fluxalloy.downloads
                                         .openQueueOutputInHandler(row.id)
                                         .then((res) => {
                                           if (!res.ok) {
                                             setStatusHint(res.error)
+                                          } else {
+                                            setStatusHint('Файл открыт в редакторе')
                                           }
                                         })
                                     }}
@@ -3143,11 +3148,16 @@ function App(): JSX.Element {
                             type="button"
                             className="app-btn app-btn-compact"
                             onClick={() => {
+                              setStatusHint(
+                                'Готовлю файл для редактора… если это MKV/WebM, будет создан MP4 preview.'
+                              )
                               void window.fluxalloy.downloads
                                 .openHistoryOutputInHandler(entry.id)
                                 .then((res) => {
                                   if (!res.ok) {
                                     setStatusHint(res.error)
+                                  } else {
+                                    setStatusHint('Файл открыт в редакторе')
                                   }
                                 })
                             }}
