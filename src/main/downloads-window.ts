@@ -1209,6 +1209,40 @@ function buildDownloadsHtml(): string {
         if (txt) api.addLines(txt);
       });
 
+      /** §6.1 — сброс ссылки/текста на таблицу, заголовок и т.д.: в очередь, без перехвата drop на полях ввода настроек. */
+      function extractDroppedQueueText(dt) {
+        if (!dt) return '';
+        var plain = dt.getData('text/plain');
+        if (plain && plain.trim()) return plain;
+        var uriList = dt.getData('text/uri-list');
+        if (uriList && uriList.trim()) return uriList;
+        return '';
+      }
+      function isQueueDropExcludedTarget(el) {
+        if (!el || !el.closest) return false;
+        var node = el.closest('textarea, select, input');
+        if (!node) return false;
+        if (node.tagName === 'TEXTAREA' || node.tagName === 'SELECT') return true;
+        var type = (node.type || '').toLowerCase();
+        return (
+          type === 'text' ||
+          type === 'search' ||
+          type === 'url' ||
+          type === 'password' ||
+          type === ''
+        );
+      }
+      document.body.addEventListener('dragover', function (e) {
+        if (isQueueDropExcludedTarget(e.target)) return;
+        e.preventDefault();
+      });
+      document.body.addEventListener('drop', function (e) {
+        if (isQueueDropExcludedTarget(e.target)) return;
+        e.preventDefault();
+        var txt = extractDroppedQueueText(e.dataTransfer);
+        if (txt) api.addLines(txt);
+      });
+
       function onQueueSnapshot(rows) {
         renderRows(rows);
         scheduleHistoryRefresh();
