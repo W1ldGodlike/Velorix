@@ -202,6 +202,20 @@ describe('parseYtdlpQueueFormatHint', () => {
     )
   })
 
+  it('добавляет формат из post-processing строк yt-dlp', () => {
+    expect(parseYtdlpQueueFormatHint('[ExtractAudio] Destination: C:\\Downloads\\audio.m4a')).toBe(
+      'аудио → m4a'
+    )
+    expect(
+      parseYtdlpQueueFormatHint('[VideoRemuxer] Remuxing video from mkv into "C:\\out\\final.mp4"')
+    ).toBe('remux → mp4')
+    expect(
+      parseYtdlpQueueFormatHint(
+        '[FFmpegVideoConvertor] Convert video from webm to mp4; Destination: /tmp/clip.mp4'
+      )
+    ).toBe('convert → mp4')
+  })
+
   it('возвращает null для прочих строк', () => {
     expect(parseYtdlpQueueFormatHint('[download] 50%')).toBeNull()
   })

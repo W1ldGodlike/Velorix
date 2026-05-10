@@ -222,6 +222,22 @@ function normalizeYtdlpApproxSizeToken(raw: string): string | null {
   return null
 }
 
+function ytdlpOutputExtension(rawPath: string): string | null {
+  const path = unquoteYtdlpPath(rawPath)
+  const base = path.replace(/^.*[/\\]/, '')
+  const dot = base.lastIndexOf('.')
+  if (dot < 1 || dot >= base.length - 1) {
+    return null
+  }
+  const ext = base.slice(dot + 1).toLowerCase()
+  return /^[a-z0-9]{1,12}$/.test(ext) ? ext : null
+}
+
+function ytdlpFormatHintFromOutputPath(prefix: string, rawPath: string): string | null {
+  const ext = ytdlpOutputExtension(rawPath)
+  return ext === null ? null : truncateYtdlpQueueCellSnippet(`${prefix} → ${ext}`)
+}
+
 /**
  * §6/v0 — краткая подпись целевого формата из строк yt-dlp `[info] … Downloading N format(s): …`.
  */
@@ -247,7 +263,8 @@ export function parseYtdlpInfoFormatSnippet(line: string): string | null {
 }
 
 /**
- * §6/v0 — подпись колонки «Формат»: `[info]` (см. `parseYtdlpInfoFormatSnippet`) плюс типичные строки слияния контейнера.
+ * §6/v0 — подпись колонки «Формат»: `[info]` (см. `parseYtdlpInfoFormatSnippet`)
+ * плюс типичные строки post-processing (`merge`, audio extract, remux/convert).
  */
 export function parseYtdlpQueueFormatHint(line: string): string | null {
   const fromInfo = parseYtdlpInfoFormatSnippet(line)
@@ -257,25 +274,31 @@ export function parseYtdlpQueueFormatHint(line: string): string | null {
   const t = line.trimEnd()
   const mm = t.match(/^\[(?:Merger|ffmpeg)]\s+Merging formats into\s+(.+)$/i)
   const tail = mm?.[1]
-  if (!tail) {
-    return null
+  if (tail) {
+    return ytdlpFormatHintFromOutputPath('слияние', tail)
   }
-  let path = tail.trim()
-  if (path.length >= 2 && path.startsWith('"') && path.endsWith('"')) {
-    path = path.slice(1, -1)
-  } else if (path.length >= 2 && path.startsWith("'") && path.endsWith("'")) {
-    path = path.slice(1, -1)
+
+  const extractAudio = t.match(/^\[ExtractAudio]\s+Destination:\s+(.+)$/i)
+  const audioPath = extractAudio?.[1]
+  if (audioPath) {
+    return ytdlpFormatHintFromOutputPath('аудио', audioPath)
   }
-  const base = path.replace(/^.*[/\\]/, '')
-  const dot = base.lastIndexOf('.')
-  if (dot < 1 || dot >= base.length - 1) {
-    return null
+
+  const remux = t.match(/^\[(?:VideoRemuxer|FFmpegVideoRemuxer)]\s+.+?\s+into\s+(.+)$/i)
+  const remuxPath = remux?.[1]
+  if (remuxPath) {
+    return ytdlpFormatHintFromOutputPath('remux', remuxPath)
   }
-  const ext = base.slice(dot + 1).toLowerCase()
-  if (!/^[a-z0-9]{1,12}$/.test(ext)) {
-    return null
+
+  const convert = t.match(
+    /^\[(?:FFmpegVideoConvertor|VideoConvertor)]\s+.+;\s+Destination:\s+(.+)$/i
+  )
+  const convertPath = convert?.[1]
+  if (convertPath) {
+    return ytdlpFormatHintFromOutputPath('convert', convertPath)
   }
-  return truncateYtdlpQueueCellSnippet(`слияние → ${ext}`)
+
+  return null
 }
 
 /**
