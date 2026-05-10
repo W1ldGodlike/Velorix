@@ -2795,6 +2795,66 @@ function App(): JSX.Element {
                     Повторяет всю строку очереди при ненулевом exit code.
                   </span>
                 </label>
+                <div className="app-downloads-select-grid">
+                  <label className="app-field">
+                    <span>Limit rate</span>
+                    <input
+                      className="app-control"
+                      value={downloadsOptions.rateLimit}
+                      disabled={downloadsOptionsBusy}
+                      placeholder="500K или 2M"
+                      spellCheck={false}
+                      onChange={(e) => {
+                        setDownloadsOptions({ ...downloadsOptions, rateLimit: e.target.value })
+                      }}
+                      onBlur={(e) => {
+                        void applyDownloadsOptionsPatch({ rateLimit: e.target.value })
+                      }}
+                    />
+                    <span className="app-field-help">
+                      Ограничение скорости одним безопасным токеном.
+                    </span>
+                  </label>
+                  <label className="app-field">
+                    <span>Retries</span>
+                    <input
+                      className="app-control"
+                      value={downloadsOptions.retriesLine}
+                      disabled={downloadsOptionsBusy}
+                      inputMode="numeric"
+                      placeholder="0–99"
+                      spellCheck={false}
+                      onChange={(e) => {
+                        setDownloadsOptions({ ...downloadsOptions, retriesLine: e.target.value })
+                      }}
+                      onBlur={(e) => {
+                        void applyDownloadsOptionsPatch({ retriesLine: e.target.value })
+                      }}
+                    />
+                    <span className="app-field-help">Повторы самого yt-dlp (`--retries`).</span>
+                  </label>
+                  <label className="app-field">
+                    <span>Fragment retries</span>
+                    <input
+                      className="app-control"
+                      value={downloadsOptions.fragmentRetriesLine}
+                      disabled={downloadsOptionsBusy}
+                      inputMode="numeric"
+                      placeholder="0–99"
+                      spellCheck={false}
+                      onChange={(e) => {
+                        setDownloadsOptions({
+                          ...downloadsOptions,
+                          fragmentRetriesLine: e.target.value
+                        })
+                      }}
+                      onBlur={(e) => {
+                        void applyDownloadsOptionsPatch({ fragmentRetriesLine: e.target.value })
+                      }}
+                    />
+                    <span className="app-field-help">Повторы фрагментов HLS/DASH.</span>
+                  </label>
+                </div>
                 <label className="app-field">
                   <span>Шаблон имени</span>
                   <input
