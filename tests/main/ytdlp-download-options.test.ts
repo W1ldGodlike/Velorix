@@ -24,6 +24,7 @@ vi.mock('@electron-toolkit/utils', () => ({
 import {
   buildYtdlpCommandPreviewContext,
   buildYtdlpRunOptionsSnapshot,
+  normalizeYtdlpPreviewOutputDirectory,
   payloadFromSnapshot,
   resolveSafeYtdlpOutputPattern,
   sanitizeYtdlpPreviewUrl,
@@ -117,6 +118,23 @@ describe('sanitizeYtdlpPreviewUrl §6.3', () => {
   })
 })
 
+describe('normalizeYtdlpPreviewOutputDirectory §6.3', () => {
+  it('принимает абсолютный путь после trim', () => {
+    const base = mkdtempSync(join(tmpdir(), 'flux-ytdlp-norm-'))
+    try {
+      expect(normalizeYtdlpPreviewOutputDirectory(`  ${base}  `)).toBeTruthy()
+    } finally {
+      rmSync(base, { recursive: true, force: true })
+    }
+  })
+
+  it('отвергает относительные и пустые строки', () => {
+    expect(normalizeYtdlpPreviewOutputDirectory('')).toBeNull()
+    expect(normalizeYtdlpPreviewOutputDirectory('relative/path')).toBeNull()
+    expect(normalizeYtdlpPreviewOutputDirectory('Z:x')).toBeNull()
+  })
+})
+
 describe('payloadFromSnapshot §6.3 превью argv', () => {
   it('без контекста сохраняет плейсхолдеры', () => {
     const snap = buildYtdlpRunOptionsSnapshot({ theme: 'dark' })
@@ -148,6 +166,32 @@ describe('payloadFromSnapshot §6.3 превью argv', () => {
       expect(p.commandPreview).not.toContain('<url>')
     } finally {
       rmSync(base, { recursive: true, force: true })
+    }
+  })
+
+  it('outputDirectoryOverride подменяет корень превью `-o` независимо от userDataRoot', () => {
+    const userBase = mkdtempSync(join(tmpdir(), 'flux-ytdlp-ud-'))
+    const overrideDir = mkdtempSync(join(tmpdir(), 'flux-ytdlp-override-'))
+    try {
+      const snap = buildYtdlpRunOptionsSnapshot({ theme: 'dark' })
+      const p = payloadFromSnapshot(
+        snap,
+        buildYtdlpCommandPreviewContext({
+          userDataRoot: userBase,
+          sampleUrl: 'https://clips.example/video',
+          outputDirectoryOverride: overrideDir
+        })
+      )
+      const unify = (s: string): string =>
+        s
+          .replace(/\\/g, '/')
+          .replace(/\/{2,}/g, '/')
+          .toLowerCase()
+      expect(unify(p.commandPreview)).toContain(unify(overrideDir))
+      expect(unify(p.commandPreview)).not.toContain(unify(join(userBase, 'downloads', 'ytdlp')))
+    } finally {
+      rmSync(userBase, { recursive: true, force: true })
+      rmSync(overrideDir, { recursive: true, force: true })
     }
   })
 

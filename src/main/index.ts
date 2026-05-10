@@ -90,6 +90,7 @@ import {
 import {
   buildYtdlpCommandPreviewContext,
   buildYtdlpRunOptionsSnapshot,
+  normalizeYtdlpPreviewOutputDirectory,
   parseYtdlpSubtitlePreset,
   payloadFromSnapshot,
   validateFilenameTemplate,
@@ -100,6 +101,7 @@ import {
   validateYtdlpSubLangs,
   type YtdlpDownloadOptionsPatch
 } from './ytdlp-download-options'
+import type { YtdlpGetCliOptionsParams } from '../shared/ytdlp-download-contract'
 import { parseExtraYtdlpArgsLine } from './ytdlp-extra-args'
 import { refreshYtdlpRunOptionsSnapshot } from './ytdlp-run-options-sync'
 import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
@@ -448,11 +450,15 @@ function persistClearYtdlpCookiesFile(): void {
   refreshYtdlpRunOptionsSnapshot(cachedSettings)
 }
 
-/** §6.2 — шаблон `-o` и белый список `-f`; синхронно обновляет снимок для downloads-queue-runner. */
-function persistYtdlpDownloadCliOptionsPatch(
+/**
+ * §6.2 — слияние патча CLI yt-dlp с базовыми настройками без записи на диск;
+ * используется при сохранении и для черновика превью argv §6.3.
+ */
+function mergeYtdlpDownloadCliPatchOntoSettings(
+  base: AppSettings,
   patch: YtdlpDownloadOptionsPatch
-): { ok: true } | { ok: false; error: string } {
-  const merged: AppSettings = { ...cachedSettings }
+): { ok: true; settings: AppSettings } | { ok: false; error: string } {
+  const merged: AppSettings = { ...base }
   if (patch.filenameTemplate !== undefined) {
     const ft = patch.filenameTemplate
     if (ft.trim() === '') {
@@ -582,7 +588,37 @@ function persistYtdlpDownloadCliOptionsPatch(
       delete merged.ytdlpOpenInHandlerOnComplete
     }
   }
-  cachedSettings = merged
+  return { ok: true, settings: merged }
+}
+
+function parseYtdlpGetCliOptionsParams(raw: unknown): YtdlpGetCliOptionsParams | undefined {
+  if (raw === undefined || raw === null) {
+    return undefined
+  }
+  if (typeof raw !== 'object') {
+    return undefined
+  }
+  const o = raw as Record<string, unknown>
+  const out: YtdlpGetCliOptionsParams = {}
+  if (typeof o['previewOutputDirectory'] === 'string') {
+    out.previewOutputDirectory = o['previewOutputDirectory']
+  }
+  const dr = o['draft']
+  if (dr !== undefined && dr !== null && typeof dr === 'object') {
+    out.draft = dr as YtdlpDownloadOptionsPatch
+  }
+  return Object.keys(out).length > 0 ? out : undefined
+}
+
+/** §6.2 — шаблон `-o` и белый список `-f`; синхронно обновляет снимок для downloads-queue-runner. */
+function persistYtdlpDownloadCliOptionsPatch(
+  patch: YtdlpDownloadOptionsPatch
+): { ok: true } | { ok: false; error: string } {
+  const merged = mergeYtdlpDownloadCliPatchOntoSettings(cachedSettings, patch)
+  if (!merged.ok) {
+    return merged
+  }
+  cachedSettings = merged.settings
   saveSettings(settingsPath(), cachedSettings)
   refreshYtdlpRunOptionsSnapshot(cachedSettings)
   return { ok: true }
@@ -1224,18 +1260,39 @@ app.whenReady().then(() => {
     clearYtdlpCookiesFile: (): void => {
       persistClearYtdlpCookiesFile()
     },
-    getYtdlpDownloadCliOptions: () => {
+    getYtdlpDownloadCliOptions: (raw?: unknown) => {
       const paths = resolveAppPaths()
       const rows = getDownloadsQueueSnapshot()
       const hit = rows.find((r) => r.url.trim().length > 0)
-      const previewParams: { userDataRoot: string; sampleUrl?: string } = {
+      const previewParams: {
+        userDataRoot: string
+        sampleUrl?: string
+        outputDirectoryOverride?: string | null
+      } = {
         userDataRoot: paths.userData
       }
       if (hit !== undefined) {
         previewParams.sampleUrl = hit.url
       }
+      const req = parseYtdlpGetCliOptionsParams(raw)
+      if (
+        req?.previewOutputDirectory !== undefined &&
+        req.previewOutputDirectory.trim().length > 0
+      ) {
+        const n = normalizeYtdlpPreviewOutputDirectory(req.previewOutputDirectory)
+        if (n !== null) {
+          previewParams.outputDirectoryOverride = n
+        }
+      }
+      let settings = cachedSettings
+      if (req?.draft) {
+        const merged = mergeYtdlpDownloadCliPatchOntoSettings(cachedSettings, req.draft)
+        if (merged.ok) {
+          settings = merged.settings
+        }
+      }
       return payloadFromSnapshot(
-        buildYtdlpRunOptionsSnapshot(cachedSettings),
+        buildYtdlpRunOptionsSnapshot(settings),
         buildYtdlpCommandPreviewContext(previewParams)
       )
     },

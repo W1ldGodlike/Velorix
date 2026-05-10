@@ -25,7 +25,7 @@
 - [~] Есть запуск `ffmpeg` для экспорта и снимка кадра; полноценный пайплайн обработки/пресетов/очередей ещё впереди. Движки можно **скачать кнопкой** в UI (Windows) в `userData/bin`, есть проверка `--version` после загрузки.
 - [~] Автозагрузка движков **Windows x64** (yt-dlp GitHub + ffmpeg zip gyan.dev), SHA256 опционально через `Data/trusted_hashes.json`; в установщике есть пустой `resources/bin` (`extraResources`), бинарники — подкладка/`userData/bin`.
 - [ ] Нет локализации `locales/**`.
-- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; есть покрытие чистых парсеров и сервисов (`ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options`, `ytdlp-download-output`, `ytdlp-commands-hints`, `ytdlp-os-pause-support`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-frame-snapshot-service`, `external-process-log`, `support-bundle`, `ipc-channels`, `engine-contract`, `ffmpeg-export-argv`).
+- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; есть покрытие чистых парсеров и сервисов (`ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options` + превью каталога §6.3, `ytdlp-download-output`, `ytdlp-commands-hints`, `ytdlp-os-pause-support`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-frame-snapshot-service`, `external-process-log`, `support-bundle`, `ipc-channels`, `engine-contract`, `ffmpeg-export-argv`).
 
 ## Журнал решений и проверок
 
@@ -36,7 +36,7 @@
 Правило для агента: этот блок — рабочий навигатор ближайшего спринта. После каждой крупной итерации обновлять его: отмечать сделанное, переводить частичное в `[~]`, убирать устаревшее только если оно отражено ниже по §, и добавлять 3–7 следующих конкретных пунктов. Не оставлять блок полностью закрытым.
 
 - [~] §6.1/§6.4: yt-dlp — очередь, лог, история, авто-preview, профили повтора, маркеры stderr + классификация + коды 2/100/101, пауза SIGSTOP/SIGCONT, прогресс total/playlist/fragment; дальше новые форматы строк по логам и доп. коды выхода из апстрима.
-- [~] §6.3: экспертный argv + whitelist/chёрный список + справочник с `<optgroup>` + превью argv с реальным каталогом загрузки и первым URL из очереди; дальше тонкая подстройка превью (override каталога без перечитывания settings и т.п.).
+- [~] §6.3: экспертный argv + whitelist + справочник `<optgroup>` + превью argv (реальный каталог/первый URL из очереди); добавлены черновик полей формы и отдельный override каталога только для строки превью без записи в settings; дальше — при необходимости расширить overlay под редкие поля.
 - [~] §7: превью, таймлайн, экспорт MKV/MOV/MP4, снимок кадра, ffprobe под превью; отдельное окно инспектора §9 — позже.
 - [~] §7.2/§20: системные пресеты libx264, базовые параметры экспорта и live preview команды ffmpeg c маркерами In/Out + probeDurationSec (повторяет логику spawn); дальше пользовательские пресеты и продвинутые параметры (crop/rotate/filters/HW), live preview ещё нужно довести до формата сохранения.
 - [~] §17/§18: диагностические папки, Support ZIP, логи процессов; дальше политика сессионных логов и ротация.
@@ -270,7 +270,7 @@
 
 ### §6.3 Экспертный режим
 
-- [~] Live preview команды yt-dlp (`commandPreview`: реальный каталог `-o` из userData, первый URL очереди или `https://example.com/`; заглушки `<downloadDir>`/`<url>` только без контекста превью).
+- [~] Live preview команды yt-dlp (`commandPreview`: реальный каталог `-o` из userData или override только для превью, первый URL очереди или `https://example.com/`; черновик формы до «Сохранить параметры»; заглушки `<downloadDir>`/`<url>` только без контекста превью).
 - [~] Поле дополнительных аргументов (`ytdlpExtraArgsLine` в settings).
 - [x] Подсказки из `Data/ytdlp_commands.json` (группы в UI; при необходимости категория в JSON переопределяет встроенную карту в main).
 - [~] Безопасная сборка аргументов без shell (`parseExtraYtdlpArgsLine`, spawn-массив §21).

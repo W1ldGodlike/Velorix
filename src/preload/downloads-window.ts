@@ -3,7 +3,8 @@ import { contextBridge, ipcRenderer } from 'electron'
 import type { DownloadsLogPayload } from '../shared/downloads-log-contract'
 import type {
   YtdlpDownloadOptionsPatch,
-  YtdlpDownloadOptionsPayload
+  YtdlpDownloadOptionsPayload,
+  YtdlpGetCliOptionsParams
 } from '../shared/ytdlp-download-contract'
 import type { YtdlpDownloadHistoryEntry } from '../shared/ytdlp-history-contract'
 import { downloadsIpc as d } from '../shared/ipc-channels'
@@ -103,9 +104,10 @@ contextBridge.exposeInMainWorld('fluxalloyDownloads', {
 
   clearCookiesFile: (): Promise<void> => ipcRenderer.invoke(d.clearCookiesFile),
 
-  getCliOptions: (): Promise<
-    { ok: true; payload: YtdlpDownloadOptionsPayload } | { ok: false; error: string }
-  > => ipcRenderer.invoke(d.getCliOptions),
+  getCliOptions: (
+    params?: YtdlpGetCliOptionsParams
+  ): Promise<{ ok: true; payload: YtdlpDownloadOptionsPayload } | { ok: false; error: string }> =>
+    ipcRenderer.invoke(d.getCliOptions, params),
 
   setCliOptions: (
     patch: YtdlpDownloadOptionsPatch

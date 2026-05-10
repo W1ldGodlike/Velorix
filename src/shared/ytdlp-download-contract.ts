@@ -59,6 +59,14 @@ export interface YtdlpDownloadOptionsPayload {
   openInHandlerOnComplete: boolean
 }
 
+/**
+ * Запрос превью argv §6.3: опционально другой каталог `-o` и черновик полей формы без записи в settings.json.
+ */
+export interface YtdlpGetCliOptionsParams {
+  previewOutputDirectory?: string
+  draft?: YtdlpDownloadOptionsPatch
+}
+
 export interface YtdlpDownloadOptionsPatch {
   filenameTemplate?: string
   formatPreset?: YtdlpFormatPresetId

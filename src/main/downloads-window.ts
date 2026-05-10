@@ -69,8 +69,8 @@ interface DownloadsWindowBoundsHooks {
     { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
   >
   clearYtdlpCookiesFile?: () => void
-  /** §6.2 — шаблон `-o` и пресет `-f`; persisted в `settings.json` из index.ts. */
-  getYtdlpDownloadCliOptions?: () => YtdlpDownloadOptionsPayload
+  /** §6.2 — шаблон `-o` и пресет `-f`; persisted в `settings.json` из index.ts; raw — опции превью argv §6.3. */
+  getYtdlpDownloadCliOptions?: (raw?: unknown) => YtdlpDownloadOptionsPayload
   applyYtdlpDownloadCliPatch?: (
     patch: YtdlpDownloadOptionsPatch
   ) => { ok: true } | { ok: false; error: string }
@@ -381,6 +381,9 @@ function buildDownloadsHtml(): string {
       <label for="extraArgsInput">Дополнительные аргументы (через пробел, без shell)</label>
       <textarea id="extraArgsInput" rows="2" spellcheck="false" autocomplete="off" placeholder="Например: --write-sub --sub-lang ru"></textarea>
       <p class="opts-hint opts-warn" id="extraArgsWarn" hidden></p>
+      <label for="previewOutDirOverride">Другой каталог для превью <code>-o</code> (не в settings.json)</label>
+      <input type="text" id="previewOutDirOverride" spellcheck="false" autocomplete="off" placeholder="Пусто — брать «Каталог загрузок» выше; только строка превью argv" />
+      <p class="opts-hint">Абсолютный путь; не влияет на реальный spawn yt-dlp и не перечитывает settings — только подстановка в превью.</p>
       <span class="opts-preview-label">Превью argv</span>
       <pre class="args-preview" id="argsPreview"></pre>
       <details class="hints-panel" id="hintsPanel">
@@ -486,6 +489,7 @@ function buildDownloadsHtml(): string {
       var queueRetrySelect = document.getElementById('queueRetrySelect');
       var chkOpenInHandlerOnComplete = document.getElementById('chkOpenInHandlerOnComplete');
       var extraArgsInput = document.getElementById('extraArgsInput');
+      var previewOutDirOverride = document.getElementById('previewOutDirOverride');
       var argsPreview = document.getElementById('argsPreview');
       var extraArgsWarn = document.getElementById('extraArgsWarn');
       var hintInsert = document.getElementById('hintInsert');
@@ -497,6 +501,68 @@ function buildDownloadsHtml(): string {
       var historyRefreshTimer = null;
       var lastHistoryEntries = [];
       var lastQueueRows = [];
+      /** После первого полного заполнения формы из main — черновик для превью argv совпадает с полями UI. */
+      var cliFormHydrated = false;
+
+      function collectDraftCliPatch() {
+        return {
+          filenameTemplate: tmplInput ? tmplInput.value : '',
+          formatPreset: fmtPreset ? fmtPreset.value : 'default',
+          downloadPlaylist: !!(chkPlaylist && chkPlaylist.checked),
+          audioOnly: !!(chkAudioOnly && chkAudioOnly.checked),
+          subtitlePreset: subPreset ? subPreset.value : 'none',
+          subLangs: subLangsInput ? subLangsInput.value : '',
+          cookiesBrowser: cookiesBrowserSelect ? cookiesBrowserSelect.value : 'none',
+          impersonate: impersonateSelect ? impersonateSelect.value : 'none',
+          rateLimit: rateLimitInput ? rateLimitInput.value : '',
+          retriesLine: retriesInput ? retriesInput.value : '',
+          fragmentRetriesLine: fragmentRetriesInput ? fragmentRetriesInput.value : '',
+          queueRetryProfile: queueRetrySelect ? queueRetrySelect.value : 'off',
+          openInHandlerOnComplete: !!(chkOpenInHandlerOnComplete && chkOpenInHandlerOnComplete.checked),
+          extraArgsLine: extraArgsInput ? extraArgsInput.value : ''
+        };
+      }
+
+      function buildCliPreviewRequest() {
+        var req = {};
+        if (previewOutDirOverride && previewOutDirOverride.value.trim()) {
+          req.previewOutputDirectory = previewOutDirOverride.value.trim();
+        }
+        if (cliFormHydrated) {
+          req.draft = collectDraftCliPatch();
+        }
+        return Object.keys(req).length ? req : undefined;
+      }
+
+      function refreshPreviewOnly() {
+        api.getCliOptions(buildCliPreviewRequest()).then(function (r) {
+          if (!r || r.ok !== true || !r.payload) return;
+          var p = r.payload;
+          if (argsPreview && typeof p.commandPreview === 'string') {
+            argsPreview.textContent = p.commandPreview;
+          }
+          if (extraArgsWarn) {
+            if (p.extraArgsParseWarning) {
+              extraArgsWarn.textContent = p.extraArgsParseWarning;
+              extraArgsWarn.hidden = false;
+            } else {
+              extraArgsWarn.textContent = '';
+              extraArgsWarn.hidden = true;
+            }
+          }
+        });
+      }
+
+      var cliPreviewTimer = null;
+      function schedulePreviewRefresh() {
+        if (cliPreviewTimer !== null) {
+          clearTimeout(cliPreviewTimer);
+        }
+        cliPreviewTimer = setTimeout(function () {
+          cliPreviewTimer = null;
+          refreshPreviewOnly();
+        }, 400);
+      }
 
       function formatHistoryWhen(ms) {
         try {
@@ -774,6 +840,8 @@ function buildDownloadsHtml(): string {
             }
           }
           fillHintSelect(p.commandHints);
+          cliFormHydrated = true;
+          refreshPreviewOnly();
         });
       }
 
@@ -1137,22 +1205,21 @@ function buildDownloadsHtml(): string {
         if (txt) api.addLines(txt);
       });
 
-      var cliOptsRefreshTimer = null;
-      function scheduleCliOptsRefresh() {
-        if (cliOptsRefreshTimer !== null) {
-          clearTimeout(cliOptsRefreshTimer);
-        }
-        cliOptsRefreshTimer = setTimeout(function () {
-          cliOptsRefreshTimer = null;
-          refreshCliOpts();
-        }, 400);
-      }
-
       function onQueueSnapshot(rows) {
         renderRows(rows);
         scheduleHistoryRefresh();
-        scheduleCliOptsRefresh();
+        schedulePreviewRefresh();
         refreshPauseBtn();
+      }
+
+      var optsPanelRoot = document.querySelector('.opts-panel');
+      if (optsPanelRoot) {
+        optsPanelRoot.addEventListener('change', function () {
+          schedulePreviewRefresh();
+        });
+        optsPanelRoot.addEventListener('input', function () {
+          schedulePreviewRefresh();
+        });
       }
 
       api.getSnapshot().then(onQueueSnapshot);
@@ -1229,7 +1296,10 @@ export function registerDownloadsWindowIpcHandlers(): void {
 
   ipcMain.handle(
     d.getCliOptions,
-    (event): { ok: true; payload: YtdlpDownloadOptionsPayload } | { ok: false; error: string } => {
+    (
+      event,
+      raw?: unknown
+    ): { ok: true; payload: YtdlpDownloadOptionsPayload } | { ok: false; error: string } => {
       if (!isDownloadsSender(event.sender)) {
         return { ok: false, error: 'Недопустимый отправитель' }
       }
@@ -1237,7 +1307,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
       if (!fn) {
         return { ok: false, error: 'Опции yt-dlp не подключены' }
       }
-      return { ok: true, payload: fn() }
+      return { ok: true, payload: fn(raw) }
     }
   )
 
