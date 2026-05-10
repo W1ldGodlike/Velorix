@@ -205,3 +205,4 @@
 - 2026-05-10 15:30:36 [SDK]: §1.1/v0 доступность topbar — **`app-workspace-tab:focus-visible`** (`--fa-focus-ring`); HiDPR марк **инспектора** `IconFilm` — **14×15px** `@120dpi`/`@168dpi`; спринт §1.1; `npm run check` ок.
 - 2026-05-10 15:32:01 [SDK]: §6 downloads layout / §1.1 — окно загрузок: **`#urls`** `aria-describedby`→`urlsHint`, **`caption.sr-only`** у таблицы очереди; **Загрузки** `aria-current="page"`; главное окно — **Редактор** `aria-current`; спринт; `npm run check` ок.
 - 2026-05-10 15:33:27 [SDK]: §6/v0 нижняя зона — **caption.sr-only** для **истории**; **`#logPre`**: **`role=log`**, **`aria-live=polite`**, **`aria-relevant=additions`**, `aria-label`; спринт §6; `npm run check` ок.
+- 2026-05-10 15:34:32 [SDK]: §4.A/§1.1 — **`MediaProbePanel`**: **`caption.app-visually-hidden`** у таблиц **дорожек** и **глав** (ffprobe); спринт §1.1; `npm run check` ок.

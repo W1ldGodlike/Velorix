@@ -322,6 +322,9 @@ export function PreviewProbeBody({
             <summary className="app-probe-summary">Дорожки ({probeInfo.tracks.length})</summary>
             <div className="app-probe-table-wrap">
               <table className="app-probe-table">
+                <caption className="app-visually-hidden">
+                  Дорожки медиафайла по данным ffprobe
+                </caption>
                 <thead>
                   <tr>
                     <th scope="col">#</th>
@@ -405,6 +408,9 @@ export function PreviewProbeBody({
             <summary className="app-probe-summary">Главы ({probeInfo.chapters.length})</summary>
             <div className="app-probe-table-wrap">
               <table className="app-probe-table">
+                <caption className="app-visually-hidden">
+                  Главы медиафайла по данным ffprobe
+                </caption>
                 <thead>
                   <tr>
                     <th scope="col">id</th>
