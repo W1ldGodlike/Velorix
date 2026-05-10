@@ -8,6 +8,7 @@ import type {
   FfmpegExportScalePresetId,
   MediaExportTrimPayload
 } from '../shared/ffmpeg-export-contract'
+import { buildFfmpegExportArgv } from '../shared/ffmpeg-export-argv'
 
 import { logExternalProcessLine } from './external-process-log'
 
@@ -21,6 +22,14 @@ export type {
   MediaExportStartResult,
   MediaExportTrimPayload
 } from '../shared/ffmpeg-export-contract'
+
+export {
+  buildFfmpegExportArgv,
+  buildFfmpegExportPreviewCommand,
+  formatFfmpegArgvForPreview,
+  resolveFfmpegExportEncodeParams as resolveExportEncodeParams,
+  resolveFfmpegExportScaleFilter
+} from '../shared/ffmpeg-export-argv'
 
 export function parseFfmpegExportEncodePreset(raw: unknown): FfmpegExportEncodePresetId {
   if (raw === 'balance' || raw === 'smaller' || raw === 'quality') {
@@ -128,34 +137,6 @@ export function parseFfmpegExportScalePreset(raw: unknown): FfmpegExportScalePre
   return 'source'
 }
 
-function scaleFilterForPreset(preset: FfmpegExportScalePresetId): string | null {
-  switch (preset) {
-    case '480p':
-      return 'scale=-2:480'
-    case '720p':
-      return 'scale=-2:720'
-    case '1080p':
-      return 'scale=-2:1080'
-    default:
-      return null
-  }
-}
-
-/** CRF и `-preset` x264 для выбранного пресета (аудио пока фиксированное AAC §7.1). */
-export function resolveExportEncodeParams(preset: FfmpegExportEncodePresetId): {
-  crf: string
-  x264preset: string
-} {
-  switch (preset) {
-    case 'smaller':
-      return { crf: '28', x264preset: 'fast' }
-    case 'quality':
-      return { crf: '18', x264preset: 'medium' }
-    default:
-      return { crf: '23', x264preset: 'fast' }
-  }
-}
-
 /** Поле `speed=` в строках прогресса ffmpeg (`-stats`). */
 export function parseFfmpegSpeedToken(line: string): string | null {
   const m = line.match(/\bspeed=\s*(\S+)/)
@@ -221,54 +202,6 @@ export function resolveExportSegmentDurationSec(
   return 0
 }
 
-function buildEncodeArgs(
-  inputPath: string,
-  outputPath: string,
-  trim: MediaExportTrimPayload | undefined,
-  applyTrim: boolean,
-  encodePreset: FfmpegExportEncodePresetId,
-  crfOverride: number | null,
-  videoBitrate: string | null,
-  audioMode: FfmpegExportAudioModeId,
-  audioBitrate: string,
-  fps: number | null,
-  scalePreset: FfmpegExportScalePresetId
-): string[] {
-  const enc = resolveExportEncodeParams(encodePreset)
-  const crf = crfOverride === null ? enc.crf : String(crfOverride)
-  const filters: string[] = []
-  const scale = scaleFilterForPreset(scalePreset)
-  if (scale !== null) {
-    filters.push(scale)
-  }
-  if (fps !== null) {
-    filters.push(`fps=${fps}`)
-  }
-  const args = ['-y', '-hide_banner', '-loglevel', 'info', '-stats']
-  if (applyTrim && trim) {
-    args.push('-ss', String(trim.inSec), '-i', inputPath, '-t', String(trim.outSec - trim.inSec))
-  } else {
-    args.push('-i', inputPath)
-  }
-  args.push('-c:v', 'libx264', '-preset', enc.x264preset)
-  if (videoBitrate === null) {
-    args.push('-crf', crf)
-  } else {
-    args.push('-b:v', videoBitrate)
-  }
-  args.push('-pix_fmt', 'yuv420p')
-  if (filters.length > 0) {
-    args.push('-vf', filters.join(','))
-  }
-  if (audioMode === 'none') {
-    args.push('-an')
-  } else {
-    args.push('-c:a', 'aac', '-b:a', audioBitrate)
-  }
-  args.push('-movflags', '+faststart', outputPath)
-  return args
-}
-
 /**
  * Один проход ffmpeg без shell: только массив аргументов §7 / §21.
  * Прогресс — по полю `time=` в stderr относительно длительности сегмента
@@ -304,10 +237,10 @@ export function runFfmpegExportJob(params: {
     applyTrim,
     params.probeDurationSec
   )
-  const args = buildEncodeArgs(
-    params.inputPath,
-    params.outputPath,
-    params.trim,
+  const args = buildFfmpegExportArgv({
+    inputPath: params.inputPath,
+    outputPath: params.outputPath,
+    ...(params.trim !== undefined ? { trim: params.trim } : {}),
     applyTrim,
     encodePreset,
     crf,
@@ -316,7 +249,7 @@ export function runFfmpegExportJob(params: {
     audioBitrate,
     fps,
     scalePreset
-  )
+  })
 
   return new Promise((resolve) => {
     const child = spawn(params.ffmpegPath, args, {

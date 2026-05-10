@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { JSX } from 'react'
 
 import VideoTimeline from './components/VideoTimeline'
@@ -11,6 +11,7 @@ import type {
   FfmpegExportEncodePresetId,
   FfmpegExportScalePresetId
 } from '../../shared/ffmpeg-export-contract'
+import { buildFfmpegExportPreviewCommand } from '../../shared/ffmpeg-export-argv'
 import type { FfmpegSnapshotFormatId } from '../../shared/ffmpeg-snapshot-contract'
 import type { RestoredSourceInfo } from '../../shared/preview-dialog-contract'
 
@@ -725,6 +726,47 @@ function App(): JSX.Element {
     setStatusHint(res.ok ? 'Путь кадра скопирован' : 'Не удалось скопировать путь кадра')
   }
 
+  /**
+   * §7.2 — live preview команды ffmpeg для текущих параметров toolbar.
+   * Сборка argv лежит в `src/shared/ffmpeg-export-argv.ts` и используется и runner,
+   * и этот блок UI; маркеры in/out из таймлайна сейчас не подмешиваем (timeline пишет в ref,
+   * чтобы не дёргать рендер во время scrub) — это TODO §7.2.
+   */
+  const exportPreviewCommand = useMemo<string>(() => {
+    const sourcePath = preview?.path ?? null
+    let outputPath: string | null = null
+    if (sourcePath !== null) {
+      const stem = sourcePath.replace(/\.[^.]+$/, '')
+      outputPath = `${stem}-export.${exportContainer}`
+    }
+    return buildFfmpegExportPreviewCommand({
+      encodePreset: exportEncodePreset,
+      crf: exportCrf,
+      videoBitrate: exportVideoBitrate,
+      audioMode: exportAudioMode,
+      audioBitrate: exportAudioBitrate,
+      fps: exportFps,
+      scalePreset: exportScalePreset,
+      inputPath: sourcePath,
+      outputPath
+    }).command
+  }, [
+    preview?.path,
+    exportEncodePreset,
+    exportContainer,
+    exportCrf,
+    exportVideoBitrate,
+    exportAudioMode,
+    exportAudioBitrate,
+    exportFps,
+    exportScalePreset
+  ])
+
+  async function handleCopyExportPreview(): Promise<void> {
+    const r = await window.fluxalloy.clipboard.writeText(exportPreviewCommand)
+    setStatusHint(r.ok ? 'Команда ffmpeg скопирована' : 'Не удалось скопировать команду ffmpeg')
+  }
+
   async function handlePreviewDrop(files: FileList | null): Promise<void> {
     const file = files?.[0]
     if (!file) {
@@ -1084,6 +1126,32 @@ function App(): JSX.Element {
           Тема: {theme === 'dark' ? 'тёмная' : 'светлая'}
         </button>
       </header>
+
+      <details className="app-export-preview">
+        <summary className="app-export-preview-summary">Превью команды ffmpeg (§7.2)</summary>
+        <div className="app-export-preview-body">
+          <pre className="app-export-preview-pre" aria-label="Команда ffmpeg">
+            {exportPreviewCommand}
+          </pre>
+          <div className="app-export-preview-actions">
+            <button
+              type="button"
+              className="app-btn app-btn-compact"
+              onClick={() => {
+                void handleCopyExportPreview()
+              }}
+              title="Скопировать строку команды ffmpeg в буфер"
+            >
+              Копировать
+            </button>
+            <span className="app-export-preview-hint">
+              {preview
+                ? 'Без маркеров In/Out: они подставятся при экспорте.'
+                : 'Источник не выбран — в превью используются плейсхолдеры <input>/<output>.'}
+            </span>
+          </div>
+        </div>
+      </details>
 
       <div className="app-url-bar" aria-label="Ссылка для будущего yt-dlp">
         <input

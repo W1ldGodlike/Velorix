@@ -67,6 +67,75 @@
   flex-shrink: 0;
 }
 
+/* §7.2 — превью команды ffmpeg в виде сворачиваемого блока. */
+.app-export-preview {
+  border-bottom: 1px solid var(--fa-border-subtle);
+  background: color-mix(in srgb, var(--fa-surface-elevated) 70%, transparent);
+  flex-shrink: 0;
+}
+
+.app-export-preview-summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--fa-text-secondary);
+  user-select: none;
+}
+
+.app-export-preview-summary::-webkit-details-marker {
+  display: none;
+}
+
+.app-export-preview-summary::before {
+  content: '▸';
+  display: inline-block;
+  margin-right: 0.4rem;
+  font-size: 0.65rem;
+  opacity: 0.75;
+  transition: transform 0.12s ease;
+}
+
+.app-export-preview[open] .app-export-preview-summary::before {
+  transform: rotate(90deg);
+}
+
+.app-export-preview-body {
+  padding: 0.25rem 0.85rem 0.55rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.app-export-preview-pre {
+  margin: 0;
+  padding: 0.5rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid var(--fa-border-subtle);
+  background: color-mix(in srgb, var(--fa-bg) 88%, transparent);
+  color: var(--fa-text-secondary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 8rem;
+  overflow: auto;
+}
+
+.app-export-preview-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.app-export-preview-hint {
+  font-size: 0.7rem;
+  color: var(--fa-text-muted);
+}
+
 .app-url-input {
   flex: 1;
   min-width: 8rem;

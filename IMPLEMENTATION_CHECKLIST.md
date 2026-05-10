@@ -25,7 +25,7 @@
 - [~] Есть запуск `ffmpeg` для экспорта и снимка кадра; полноценный пайплайн обработки/пресетов/очередей ещё впереди. Движки можно **скачать кнопкой** в UI (Windows) в `userData/bin`, есть проверка `--version` после загрузки.
 - [~] Автозагрузка движков **Windows x64** (yt-dlp GitHub + ffmpeg zip gyan.dev), SHA256 опционально через `Data/trusted_hashes.json`; в установщике есть пустой `resources/bin` (`extraResources`), бинарники — подкладка/`userData/bin`.
 - [ ] Нет локализации `locales/**`.
-- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; есть покрытие чистых парсеров и сервисов (`ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options`, `ytdlp-download-output`, `ytdlp-commands-hints`, `ytdlp-os-pause-support`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-frame-snapshot-service`, `external-process-log`, `support-bundle`, `ipc-channels`, `engine-contract`).
+- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; есть покрытие чистых парсеров и сервисов (`ytdlp-extra-args`, `ytdlp-progress-parser`, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options`, `ytdlp-download-output`, `ytdlp-commands-hints`, `ytdlp-os-pause-support`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-frame-snapshot-service`, `external-process-log`, `support-bundle`, `ipc-channels`, `engine-contract`, `ffmpeg-export-argv`).
 
 ## Журнал решений и проверок
 
@@ -38,9 +38,9 @@
 - [~] §6.1/§6.4: yt-dlp — очередь, лог, история, авто-preview, профили повтора, маркеры stderr + классификация + коды 2/100/101, пауза SIGSTOP/SIGCONT, прогресс total/playlist/fragment; дальше новые форматы строк по логам и доп. коды выхода из апстрима.
 - [~] §6.3: экспертный argv + whitelist/chёрный список + справочник с `<optgroup>` + превью argv с реальным каталогом загрузки и первым URL из очереди; дальше тонкая подстройка превью (override каталога без перечитывания settings и т.п.).
 - [~] §7: превью, таймлайн, экспорт MKV/MOV/MP4, снимок кадра, ffprobe под превью; отдельное окно инспектора §9 — позже.
-- [~] §7.2/§20: системные пресеты libx264 и базовые параметры экспорта; дальше пользовательские пресеты и превью строки ffmpeg.
+- [~] §7.2/§20: системные пресеты libx264, базовые параметры экспорта и live preview команды ffmpeg; дальше пользовательские пресеты, маркеры In/Out в preview и продвинутые параметры (crop/trim/rotate/filters/HW).
 - [~] §17/§18: диагностические папки, Support ZIP, логи процессов; дальше политика сессионных логов и ротация.
-- [~] §21: строгий TS и shared-контракты IPC; новые каналы — по мере новых фич.
+- [~] §21: строгий TS и shared-контракты IPC + pure-хелперы для live preview ffmpeg; новые каналы — по мере новых фич.
 
 ---
 
@@ -316,8 +316,8 @@
 - [ ] Metadata.
 - [ ] Hardware acceleration.
 - [ ] Advanced args.
-- [ ] Live preview команды ffmpeg.
-- [ ] Безопасная сборка аргументов без shell injection.
+- [~] Live preview команды ffmpeg: pure helper в `src/shared/ffmpeg-export-argv.ts`, сворачиваемый блок в App.tsx с копированием; маркеры In/Out из таймлайна в превью пока не подмешиваются.
+- [~] Безопасная сборка аргументов без shell injection: ffmpeg-экспорт идёт через `buildFfmpegExportArgv` (массив токенов, без shell); валидация значений в main `parse*`-хелперах.
 
 ### §7.3 Пакетная обработка
 
@@ -495,7 +495,7 @@
 - [x] IPC contracts: `ipc-channels.ts`; перечисленные `src/shared/*-contract.ts` (в т.ч. ffprobe, settings, engine, about, preview-dialog, ffmpeg export, yt-dlp окно/лог/история, диагностика, engine-download, snapshot) — главный preload импортирует типы из `src/shared`, не из `main`; дальше — новые домены по мере IPC.
 - [ ] Вынести сервисы main (упорядочить без дублирования с текущими модулями).
 - [~] Вынести модели shared: часть IPC/доменов уже в `src/shared/*-contract.ts`; остальное по мере выноса сервисов.
-- [~] Unit tests для чистых модулей: `tests/main/*` — перечисленные парсеры/сервисы; `tests/shared/ipc-channels` — уникальность строк каналов; `tests/shared/engine-contract` — порядок/уникальность `ENGINE_IDS`. Дальше — расширять `src/shared/*` контрактами под остальные IPC и точечные тесты при появлении runtime-констант.
+- [~] Unit tests для чистых модулей: `tests/main/*` — перечисленные парсеры/сервисы; `tests/shared/ipc-channels` — уникальность строк каналов; `tests/shared/engine-contract` — порядок/уникальность `ENGINE_IDS`; `tests/shared/ffmpeg-export-argv` — pure builder и preview placeholders. Дальше — расширять `src/shared/*` контрактами под остальные IPC и точечные тесты при появлении runtime-констант.
 - [x] Выбрать Vitest/Jest: Vitest подключён (`npm run test`/`test:watch`, `tsconfig.tests.json`).
 - [ ] Добавить e2e smoke позже.
 - [~] Комментарии на русском для публичных API и сложной логики: базовые комментарии добавлены; дальше писать чуть развёрнутее, чтобы следующему проходу агента было понятно «зачем» и «где границы», не только «что делает строка».
