@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { JSX } from 'react'
+import { createPortal } from 'react-dom'
 
 import VideoTimeline from './components/VideoTimeline'
 import Versions from './components/Versions'
@@ -126,6 +127,34 @@ type MediaProbeSuccess = Extract<
 >
 
 type MediaProbeTrackRow = MediaProbeSuccess['tracks'][number]
+type MediaProbeChapterRow = MediaProbeSuccess['chapters'][number]
+
+type ProbeTableContextMenu =
+  | null
+  | { variant: 'track'; x: number; y: number; row: MediaProbeTrackRow }
+  | { variant: 'chapter'; x: number; y: number; row: MediaProbeChapterRow }
+
+function clampProbeTableMenuPosition(clientX: number, clientY: number): { x: number; y: number } {
+  const margin = 8
+  const estW = 260
+  const estH = 168
+  const x = Math.min(Math.max(margin, clientX), Math.max(margin, window.innerWidth - estW - margin))
+  const y = Math.min(
+    Math.max(margin, clientY),
+    Math.max(margin, window.innerHeight - estH - margin)
+  )
+  return { x, y }
+}
+
+function formatProbeTrackRowTsv(row: MediaProbeTrackRow): string {
+  return `${row.index}\t${trackKindRu(row.kind)}\t${row.codec}\t${row.detail}`
+}
+
+function formatProbeChapterRowTsv(ch: MediaProbeChapterRow): string {
+  const dur = formatChapterDurationSec(ch.endSec, ch.startSec)
+  const title = ch.title ?? ''
+  return `${ch.index}\t${formatProbeChapterTimecode(ch.startSec)}\t${formatProbeChapterTimecode(ch.endSec)}\t${dur}\t${title}`
+}
 
 function formatChapterDurationSec(endSec: number, startSec: number): string {
   const dur = endSec - startSec
@@ -192,6 +221,8 @@ function PreviewProbeBody({
   mediaPathForDefaultSave?: string
 }): JSX.Element {
   const [probeToolbarTip, setProbeToolbarTip] = useState<string | null>(null)
+  const [probeTableMenu, setProbeTableMenu] = useState<ProbeTableContextMenu>(null)
+  const probeTableMenuRef = useRef<HTMLDivElement | null>(null)
   const bitrateLabel = formatBitrateLine(probeInfo.bitrateKbps)
   const formatTooltip =
     probeInfo.formatLongName && probeInfo.formatName !== probeInfo.formatLongName
@@ -261,132 +292,246 @@ function PreviewProbeBody({
     window.setTimeout(() => setProbeToolbarTip(null), 2800)
   }
 
+  useEffect(() => {
+    if (!probeTableMenu) {
+      return
+    }
+    const close = (): void => setProbeTableMenu(null)
+    const onPointerDown = (ev: PointerEvent): void => {
+      const root = probeTableMenuRef.current
+      if (root && ev.target instanceof Node && root.contains(ev.target)) {
+        return
+      }
+      close()
+    }
+    const onKey = (ev: KeyboardEvent): void => {
+      if (ev.key === 'Escape') {
+        close()
+      }
+    }
+    window.addEventListener('pointerdown', onPointerDown, true)
+    window.addEventListener('keydown', onKey, true)
+    return (): void => {
+      window.removeEventListener('pointerdown', onPointerDown, true)
+      window.removeEventListener('keydown', onKey, true)
+    }
+  }, [probeTableMenu])
+
+  async function copyProbeCellAndDismiss(text: string): Promise<void> {
+    const r = await window.fluxalloy.clipboard.writeText(text)
+    setProbeToolbarTip(r.ok ? 'Скопировано в буфер' : 'Не удалось скопировать')
+    setProbeTableMenu(null)
+    window.setTimeout(() => setProbeToolbarTip(null), 2200)
+  }
+
   return (
-    <div className="app-preview-probe-stack">
-      <div className="app-preview-probe-summary-line">
-        <span title={formatTooltip}>
-          {formatProbeDuration(probeInfo.durationSec)}
-          {probeInfo.video
-            ? ` · ${probeInfo.video.width}×${probeInfo.video.height} · ${probeInfo.video.codec}`
-            : ''}
-          {probeInfo.audioCodec ? ` · аудио ${probeInfo.audioCodec}` : ''}
-          {probeInfo.formatName ? ` · ${probeInfo.formatName}` : ''}
-          {bitrateLabel ? ` · ${bitrateLabel}` : ''}
-        </span>
-      </div>
-      {probeToolbarTip ? (
-        <div className="app-probe-copy-tip app-probe-tip-global">{probeToolbarTip}</div>
-      ) : null}
-      <details className="app-probe-details">
-        <summary className="app-probe-summary">Экспорт сводки (TXT / HTML)</summary>
-        <div className="app-probe-json-toolbar">
-          <button
-            type="button"
-            className="app-btn app-btn-compact"
-            onClick={() => {
-              void handleSaveSummaryTxt()
-            }}
-          >
-            Сохранить сводку TXT…
-          </button>
-          <button
-            type="button"
-            className="app-btn app-btn-compact"
-            onClick={() => {
-              void handleSaveSummaryHtml()
-            }}
-          >
-            Сохранить сводку HTML…
-          </button>
+    <>
+      <div className="app-preview-probe-stack">
+        <div className="app-preview-probe-summary-line">
+          <span title={formatTooltip}>
+            {formatProbeDuration(probeInfo.durationSec)}
+            {probeInfo.video
+              ? ` · ${probeInfo.video.width}×${probeInfo.video.height} · ${probeInfo.video.codec}`
+              : ''}
+            {probeInfo.audioCodec ? ` · аудио ${probeInfo.audioCodec}` : ''}
+            {probeInfo.formatName ? ` · ${probeInfo.formatName}` : ''}
+            {bitrateLabel ? ` · ${bitrateLabel}` : ''}
+          </span>
         </div>
-      </details>
-      {probeInfo.tracks.length > 0 ? (
+        {probeToolbarTip ? (
+          <div className="app-probe-copy-tip app-probe-tip-global">{probeToolbarTip}</div>
+        ) : null}
         <details className="app-probe-details">
-          <summary className="app-probe-summary">Дорожки ({probeInfo.tracks.length})</summary>
-          <div className="app-probe-table-wrap">
-            <table className="app-probe-table">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Тип</th>
-                  <th scope="col">Кодек</th>
-                  <th scope="col">Сведения</th>
-                </tr>
-              </thead>
-              <tbody>
-                {probeInfo.tracks.map((row) => (
-                  <tr key={`track-${row.index}`}>
-                    <td>{row.index}</td>
-                    <td>{trackKindRu(row.kind)}</td>
-                    <td className="app-probe-table-mono">{row.codec}</td>
-                    <td>{row.detail}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </details>
-      ) : null}
-      {probeInfo.chapters.length > 0 ? (
-        <details className="app-probe-details">
-          <summary className="app-probe-summary">Главы ({probeInfo.chapters.length})</summary>
-          <div className="app-probe-table-wrap">
-            <table className="app-probe-table">
-              <thead>
-                <tr>
-                  <th scope="col">id</th>
-                  <th scope="col">Начало</th>
-                  <th scope="col">Конец</th>
-                  <th scope="col">Длительность</th>
-                  <th scope="col">Заголовок</th>
-                </tr>
-              </thead>
-              <tbody>
-                {probeInfo.chapters.map((ch) => (
-                  <tr key={`chapter-${ch.index}-${ch.startSec}`}>
-                    <td>{ch.index}</td>
-                    <td className="app-probe-table-mono">
-                      {formatProbeChapterTimecode(ch.startSec)}
-                    </td>
-                    <td className="app-probe-table-mono">
-                      {formatProbeChapterTimecode(ch.endSec)}
-                    </td>
-                    <td>{formatChapterDurationSec(ch.endSec, ch.startSec)}</td>
-                    <td>{ch.title ?? '—'}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </details>
-      ) : null}
-      {probeInfo.rawJson.length > 0 ? (
-        <details className="app-probe-details">
-          <summary className="app-probe-summary">JSON ffprobe</summary>
+          <summary className="app-probe-summary">Экспорт сводки (TXT / HTML)</summary>
           <div className="app-probe-json-toolbar">
             <button
               type="button"
               className="app-btn app-btn-compact"
               onClick={() => {
-                void handleCopyProbeJson()
+                void handleSaveSummaryTxt()
               }}
             >
-              Копировать JSON
+              Сохранить сводку TXT…
             </button>
             <button
               type="button"
               className="app-btn app-btn-compact"
               onClick={() => {
-                void handleSaveProbeJson()
+                void handleSaveSummaryHtml()
               }}
             >
-              Сохранить JSON…
+              Сохранить сводку HTML…
             </button>
           </div>
-          <pre className="app-probe-json-pre">{formatProbeJsonForDisplay(probeInfo.rawJson)}</pre>
         </details>
-      ) : null}
-    </div>
+        {probeInfo.tracks.length > 0 ? (
+          <details className="app-probe-details">
+            <summary className="app-probe-summary">Дорожки ({probeInfo.tracks.length})</summary>
+            <div className="app-probe-table-wrap">
+              <table className="app-probe-table">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Тип</th>
+                    <th scope="col">Кодек</th>
+                    <th scope="col">Сведения</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {probeInfo.tracks.map((row) => (
+                    <tr
+                      key={`track-${row.index}`}
+                      onContextMenu={(e) => {
+                        e.preventDefault()
+                        const p = clampProbeTableMenuPosition(e.clientX, e.clientY)
+                        setProbeTableMenu({ variant: 'track', x: p.x, y: p.y, row })
+                      }}
+                    >
+                      <td>{row.index}</td>
+                      <td>{trackKindRu(row.kind)}</td>
+                      <td className="app-probe-table-mono">{row.codec}</td>
+                      <td>{row.detail}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </details>
+        ) : null}
+        {probeInfo.chapters.length > 0 ? (
+          <details className="app-probe-details">
+            <summary className="app-probe-summary">Главы ({probeInfo.chapters.length})</summary>
+            <div className="app-probe-table-wrap">
+              <table className="app-probe-table">
+                <thead>
+                  <tr>
+                    <th scope="col">id</th>
+                    <th scope="col">Начало</th>
+                    <th scope="col">Конец</th>
+                    <th scope="col">Длительность</th>
+                    <th scope="col">Заголовок</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {probeInfo.chapters.map((ch) => (
+                    <tr
+                      key={`chapter-${ch.index}-${ch.startSec}`}
+                      onContextMenu={(e) => {
+                        e.preventDefault()
+                        const p = clampProbeTableMenuPosition(e.clientX, e.clientY)
+                        setProbeTableMenu({ variant: 'chapter', x: p.x, y: p.y, row: ch })
+                      }}
+                    >
+                      <td>{ch.index}</td>
+                      <td className="app-probe-table-mono">
+                        {formatProbeChapterTimecode(ch.startSec)}
+                      </td>
+                      <td className="app-probe-table-mono">
+                        {formatProbeChapterTimecode(ch.endSec)}
+                      </td>
+                      <td>{formatChapterDurationSec(ch.endSec, ch.startSec)}</td>
+                      <td>{ch.title ?? '—'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </details>
+        ) : null}
+        {probeInfo.rawJson.length > 0 ? (
+          <details className="app-probe-details">
+            <summary className="app-probe-summary">JSON ffprobe</summary>
+            <div className="app-probe-json-toolbar">
+              <button
+                type="button"
+                className="app-btn app-btn-compact"
+                onClick={() => {
+                  void handleCopyProbeJson()
+                }}
+              >
+                Копировать JSON
+              </button>
+              <button
+                type="button"
+                className="app-btn app-btn-compact"
+                onClick={() => {
+                  void handleSaveProbeJson()
+                }}
+              >
+                Сохранить JSON…
+              </button>
+            </div>
+            <pre className="app-probe-json-pre">{formatProbeJsonForDisplay(probeInfo.rawJson)}</pre>
+          </details>
+        ) : null}
+      </div>
+      {probeTableMenu
+        ? createPortal(
+            <div
+              ref={probeTableMenuRef}
+              role="menu"
+              className="app-probe-context-menu"
+              style={{ left: probeTableMenu.x, top: probeTableMenu.y }}
+            >
+              {probeTableMenu.variant === 'track' ? (
+                <>
+                  <button
+                    type="button"
+                    className="app-probe-context-menu-item"
+                    onClick={() => {
+                      void copyProbeCellAndDismiss(formatProbeTrackRowTsv(probeTableMenu.row))
+                    }}
+                  >
+                    Копировать строку (табуляция)
+                  </button>
+                  <button
+                    type="button"
+                    className="app-probe-context-menu-item"
+                    onClick={() => {
+                      void copyProbeCellAndDismiss(probeTableMenu.row.codec)
+                    }}
+                  >
+                    Копировать кодек
+                  </button>
+                  <button
+                    type="button"
+                    className="app-probe-context-menu-item"
+                    onClick={() => {
+                      void copyProbeCellAndDismiss(probeTableMenu.row.detail)
+                    }}
+                  >
+                    Копировать сведения
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    className="app-probe-context-menu-item"
+                    onClick={() => {
+                      void copyProbeCellAndDismiss(formatProbeChapterRowTsv(probeTableMenu.row))
+                    }}
+                  >
+                    Копировать строку (табуляция)
+                  </button>
+                  {probeTableMenu.row.title ? (
+                    <button
+                      type="button"
+                      className="app-probe-context-menu-item"
+                      onClick={() => {
+                        void copyProbeCellAndDismiss(probeTableMenu.row.title ?? '')
+                      }}
+                    >
+                      Копировать заголовок
+                    </button>
+                  ) : null}
+                </>
+              )}
+            </div>,
+            document.body
+          )
+        : null}
+    </>
   )
 }
 

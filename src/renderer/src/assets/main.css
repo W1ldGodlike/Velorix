@@ -418,6 +418,35 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
+.app-probe-context-menu {
+  position: fixed;
+  z-index: 12000;
+  min-width: 13rem;
+  padding: 0.2rem 0;
+  background: var(--fa-surface);
+  border: 1px solid var(--fa-border-subtle);
+  border-radius: 6px;
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--fa-bg) 55%, transparent);
+}
+
+.app-probe-context-menu-item {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0.38rem 0.65rem;
+  border: none;
+  background: transparent;
+  color: var(--fa-text);
+  font: inherit;
+  font-size: 0.72rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.app-probe-context-menu-item:hover {
+  background: color-mix(in srgb, var(--fa-surface) 82%, var(--fa-accent, #4c8bf5) 18%);
+}
+
 .app-probe-json-toolbar {
   display: flex;
   align-items: center;
