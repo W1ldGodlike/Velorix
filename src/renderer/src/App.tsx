@@ -1790,7 +1790,11 @@ function App(): JSX.Element {
                 >
                   <summary className="app-export-preview-summary">Превью команды ffmpeg</summary>
                   <div className="app-export-preview-body">
-                    <pre className="app-export-preview-pre" aria-label="Команда ffmpeg">
+                    <pre
+                      className="app-export-preview-pre"
+                      aria-label="Команда ffmpeg"
+                      aria-describedby="exportCommandPreviewHint"
+                    >
                       {exportPreviewCommand}
                     </pre>
                     <div className="app-export-preview-actions">
@@ -1804,7 +1808,9 @@ function App(): JSX.Element {
                       >
                         Копировать
                       </button>
-                      <span className="app-export-preview-hint">{exportPreviewHint()}</span>
+                      <span id="exportCommandPreviewHint" className="app-export-preview-hint">
+                        {exportPreviewHint()}
+                      </span>
                     </div>
                   </div>
                 </details>
