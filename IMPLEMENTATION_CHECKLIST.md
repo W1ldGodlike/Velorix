@@ -37,7 +37,7 @@
 
 - [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; `queue.json` без duplicate id; журнал out/err + truncate; дальше — редкие шаблоны логов по полю.
 - [~] §6.3: argv whitelist + справочник + превью draft/override `-o`; при необходимости редкие поля.
-- [~] §6.1/§4.A: окно загрузок — `@120dpi`/`@168dpi`; **a11y** URL + captions + **`#logPre` `role=log`/`aria-live`**; **`aria-current`** вкладок; фильтры очереди/истории — **`for` + `sr-only` подсказки**; **cookies/каталог** — **`role=group`/`aria-labelledby`**; **справочник argv** — **`label for=hintInsert`**; SVG/focus; дальше — ручная матрица Win 125–200 %.
+- [~] §6.1/§4.A: окно загрузок — **`@120dpi`/`@168dpi`**; **URL/captions/`#logPre` log**; вкладки **`aria-current`**; **добавить/старт** → **`aria-describedby=urlsHint`**; **тулбар очереди** — **`dlQueueToolbarHint` + `aria-describedby`**; **правый rail** — **секционные `opts-hint` + `aria-describedby` на `settings-body`** (Формат/Метаданные/Сохранение/Сеть/Эксперт); фильтры/cookies/справочник — как ранее; SVG/focus; дальше — ручная матрица Win 125–200 %.
 - [~] §1.1/§4.A/§9: редактор — HiDPR/topbar/SVG/focus; **`aria-current`**; **быстрая yt-dlp** / **превью ffmpeg** / **MediaProbe** hints; **правый rail FFmpeg** — **`app-settings-section-hint`** + **`aria-describedby`** на **grid/stack** (Видео/Формат/Аудио/Пресеты/Вывод); seek/снап; **`ffmpegSettingsRailOpen`**; дальше — multi-monitor DPI, Dolby/side_data §9.
 - [~] §7.2: crop/rotate/flip; дальше расширенные фильтры и HW encode.
 - [~] §9/§21: расширенные ffprobe (Dolby/side_data и др.); новые IPC через `ipc-channels`, при необходимости логи по окнам; точечные Vitest.

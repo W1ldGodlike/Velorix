@@ -904,15 +904,45 @@ ${emitDownloadsTopbarClusterHtml(18)}
             <p class="hint" id="urlsHint">Ссылки по строкам или DnD текста/URL. Очередь последовательная §6.</p>
           </div>
           <div class="input-actions">
-            <button type="button" class="cmd cmd-primary" id="addBtn">Добавить в очередь</button>
-            <button type="button" class="cmd" id="startBtn" title="Скачать все строки со статусом «Ожидание»">Начать загрузку</button>
+            <button type="button" class="cmd cmd-primary" id="addBtn" aria-describedby="urlsHint">
+              Добавить в очередь
+            </button>
+            <button
+              type="button"
+              class="cmd"
+              id="startBtn"
+              title="Скачать все строки со статусом «Ожидание»"
+              aria-describedby="urlsHint"
+            >
+              Начать загрузку
+            </button>
           </div>
         </div>
         <div class="queue-toolbar">
-          <button type="button" class="cmd" id="pauseYtdlpBtn" title="Приостановить загрузку (POSIX); на Windows недоступно">Пауза</button>
-          <button type="button" class="cmd cmd-warn" id="cancelBtn" title="Отменить текущую загрузку yt-dlp">Отмена</button>
-          <button type="button" class="cmd" id="clearBtn">Очистить очередь</button>
-          <button type="button" class="cmd" id="clearFinishedBtn">Убрать завершённые</button>
+          <button
+            type="button"
+            class="cmd"
+            id="pauseYtdlpBtn"
+            title="Приостановить загрузку (POSIX); на Windows недоступно"
+            aria-describedby="dlQueueToolbarHint"
+          >
+            Пауза
+          </button>
+          <button
+            type="button"
+            class="cmd cmd-warn"
+            id="cancelBtn"
+            title="Отменить текущую загрузку yt-dlp"
+            aria-describedby="dlQueueToolbarHint"
+          >
+            Отмена
+          </button>
+          <button type="button" class="cmd" id="clearBtn" aria-describedby="dlQueueToolbarHint">
+            Очистить очередь
+          </button>
+          <button type="button" class="cmd" id="clearFinishedBtn" aria-describedby="dlQueueToolbarHint">
+            Убрать завершённые
+          </button>
           <span class="inline-filter-field">
             <label class="inline-filter" for="queueStatusFilter">Статус</label>
             <select id="queueStatusFilter" aria-describedby="queueFilterHint">
@@ -925,6 +955,9 @@ ${emitDownloadsTopbarClusterHtml(18)}
             </select>
           </span>
           <span id="queueFilterHint" class="sr-only">Фильтр только для отображения таблицы; порядок очереди в main не меняется.</span>
+          <span id="dlQueueToolbarHint" class="sr-only">
+            Управление активной yt-dlp-задачей и содержимым очереди §6; пауза возможна только на платформах без ограничения yt-dlp.
+          </span>
           <span class="queue-summary" id="queueSummary">Всего: 0</span>
         </div>
         <div class="queue-table-wrap">
@@ -978,8 +1011,10 @@ ${emitDownloadsTopbarClusterHtml(18)}
         <div class="opts-panel">
           <details class="settings-section" id="dlRailFormat"${openAttr('format', true)}>
             <summary>Формат</summary>
-            <div class="settings-body">
-              <p class="opts-hint">Параметры сохраняются в userData/settings.json. Шаблон обязан содержать %(ext)s.</p>
+            <div class="settings-body" aria-describedby="dlRailFormatSectionHint">
+              <p id="dlRailFormatSectionHint" class="opts-hint">
+                Пресеты -f/-x, субтитры и сохранённые опции yt-dlp (userData/settings.json); шаблон -o ниже должен содержать %(ext)s.
+              </p>
               <label for="fmtPreset">Формат / качество (-f)</label>
               <select id="fmtPreset"></select>
               <div class="opts-check-row">
@@ -998,7 +1033,10 @@ ${emitDownloadsTopbarClusterHtml(18)}
           </details>
           <details class="settings-section" id="dlRailMeta"${openAttr('metadata', true)}>
             <summary>Метаданные</summary>
-            <div class="settings-body">
+            <div class="settings-body" aria-describedby="dlRailMetaSectionHint">
+              <p id="dlRailMetaSectionHint" class="opts-hint">
+                Cookies из браузера или файла Netscape, маскировка User-Agent §6 и опция автозапуска результата в обработчике FluxAlloy §6.4.
+              </p>
               <label for="cookiesBrowserSelect">Cookies §6.2</label>
               <select id="cookiesBrowserSelect">
                 <option value="none">Не использовать</option>
@@ -1027,7 +1065,10 @@ ${emitDownloadsTopbarClusterHtml(18)}
           </details>
           <details class="settings-section" id="dlRailSave"${openAttr('saving', true)}>
             <summary>Сохранение</summary>
-            <div class="settings-body">
+            <div class="settings-body" aria-describedby="dlRailSaveSectionHint">
+              <p id="dlRailSaveSectionHint" class="opts-hint">
+                Целевой каталог yt-dlp, шаблон имени (-o); кнопка «Сохранить параметры» записывает настройки в userData/settings.json §6.
+              </p>
               <div class="out-dir-row" role="group" aria-labelledby="dlOutDirLabel">
                 <span id="dlOutDirLabel" class="out-dir-label">Каталог загрузок:</span>
                 <span id="outDirText" class="out-path" title="">…</span>
@@ -1045,7 +1086,10 @@ ${emitDownloadsTopbarClusterHtml(18)}
           </details>
           <details class="settings-section" id="dlRailNet"${openAttr('network', false)}>
             <summary>Сеть</summary>
-            <div class="settings-body">
+            <div class="settings-body" aria-describedby="dlRailNetSectionHint">
+              <p id="dlRailNetSectionHint" class="opts-hint">
+                Ограничение скорости скачивания, параметры yt-dlp и профиль автоповтора строки очереди при ошибке §6.4.
+              </p>
               <label for="rateLimitInput">Ограничение скорости (--limit-rate)</label>
               <input type="text" id="rateLimitInput" spellcheck="false" autocomplete="off" placeholder="500K или 2M" />
               <label for="retriesInput">Повторы при ошибках (--retries)</label>
@@ -1063,7 +1107,10 @@ ${emitDownloadsTopbarClusterHtml(18)}
           </details>
           <details class="settings-section" id="expertArgsDetails"${openAttr('expert', false)}>
             <summary>Экспертные argv</summary>
-            <div class="settings-body">
+            <div class="settings-body" aria-describedby="dlRailExpertSectionHint">
+              <p id="dlRailExpertSectionHint" class="opts-hint">
+                Белый список аргументов §6.3: правки здесь добавляются к финальной командной строке yt-dlp; ниже живое превью argv.
+              </p>
               <label for="extraArgsInput">Дополнительные аргументы (без shell)</label>
               <textarea id="extraArgsInput" rows="2" spellcheck="false" autocomplete="off" placeholder="Например: --write-sub --sub-lang ru"></textarea>
               <p class="opts-hint opts-warn" id="extraArgsWarn" hidden></p>
