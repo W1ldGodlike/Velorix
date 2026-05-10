@@ -78,7 +78,7 @@ describe('parseYtdlpDownloadProgressLine', () => {
   })
 
   it('возвращает null если ни процента, ни скорости нет', () => {
-    expect(parseYtdlpDownloadProgressLine('[download] Resuming download at byte 0')).toBeNull()
+    expect(parseYtdlpDownloadProgressLine('[download] Unable to rename file')).toBeNull()
   })
 
   it('парсит вариант (frag N/M) без процентов; со строкой с % отдаёт процент/скорость', () => {
@@ -113,6 +113,14 @@ describe('parseYtdlpDownloadProgressLine', () => {
     expect(parseYtdlpDownloadProgressLine('[download] Waiting for available formats...')).toEqual({
       percent: null,
       speed: 'ожидание',
+      eta: null
+    })
+  })
+
+  it('парсит Resuming download at byte …', () => {
+    expect(parseYtdlpDownloadProgressLine('[download] Resuming download at byte 1048576')).toEqual({
+      percent: null,
+      speed: 'продолжение загрузки',
       eta: null
     })
   })
@@ -246,6 +254,14 @@ describe('shouldSkipYtdlpQueueRetriesAfterFailure', () => {
     expect(shouldSkipYtdlpQueueRetriesAfterFailure('Video is DRM protected', null)).toBe(true)
   })
 
+  it('true если yt-dlp не нашёл форматов или URL не поддерживается', () => {
+    expect(shouldSkipYtdlpQueueRetriesAfterFailure('No video formats found', null)).toBe(true)
+    expect(
+      shouldSkipYtdlpQueueRetriesAfterFailure(null, 'ERROR: requested format is not available')
+    ).toBe(true)
+    expect(shouldSkipYtdlpQueueRetriesAfterFailure(null, 'Unsupported URL: foo')).toBe(true)
+  })
+
   it('транзиент имеет приоритет: не skip даже при наличии «video unavailable» в stderr', () => {
     expect(
       shouldSkipYtdlpQueueRetriesAfterFailure(
@@ -291,6 +307,9 @@ describe('classifyYtdlpQueueFailureKind', () => {
       'likely_source_block'
     )
     expect(classifyYtdlpQueueFailureKind('DRM protected video', null)).toBe('likely_source_block')
+    expect(classifyYtdlpQueueFailureKind('No video formats found', null)).toBe(
+      'likely_source_block'
+    )
   })
 
   it('unknown если нет явных маркеров', () => {
@@ -370,6 +389,9 @@ describe('extractYtdlpOutputPath', () => {
     )
     expect(extractYtdlpOutputPath('[Metadata] Writing metadata to /home/u/final.m4a')).toBe(
       '/home/u/final.m4a'
+    )
+    expect(extractYtdlpOutputPath('[download] Writing metadata to: D:\\Media\\clip.mp4')).toBe(
+      'D:\\Media\\clip.mp4'
     )
   })
 

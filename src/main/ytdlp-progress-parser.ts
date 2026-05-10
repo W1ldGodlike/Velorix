@@ -123,6 +123,11 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
     return { percent: null, speed: 'ожидание', eta: null }
   }
 
+  /** Продолжение частично скачанного файла — без процентов в строке §6.4. */
+  if (/\[download\]\s+Resuming download at byte\s+\d+/i.test(t)) {
+    return { percent: null, speed: 'продолжение загрузки', eta: null }
+  }
+
   const pctMatch = t.match(/(\d+(?:\.\d+)?)%/)
   const percent = pctMatch ? `${pctMatch[1]}%` : null
 
@@ -249,7 +254,10 @@ const YTDLP_QUEUE_RETRY_SKIP_MARKERS = [
   'not available in your country',
   'geo restricted',
   'geo-blocked',
-  'drm protected'
+  'drm protected',
+  'requested format is not available',
+  'no video formats found',
+  'unsupported url'
 ] as const
 
 /**
@@ -443,6 +451,12 @@ export function extractYtdlpOutputPath(line: string): string | null {
   const metaWrite = t.match(/^\[Metadata]\s+Writing metadata to\s+(.+)$/i)
   if (metaWrite) {
     const cap = metaWrite[1]
+    return cap !== undefined ? unquoteYtdlpPath(cap) : null
+  }
+  /** Запись тегов в медиа та же по смыслу, что `[Metadata]`, но префикс `[download]` в части сборок. */
+  const downloadMetaWrite = t.match(/^\[download]\s+Writing metadata to:\s+(.+)$/i)
+  if (downloadMetaWrite) {
+    const cap = downloadMetaWrite[1]
     return cap !== undefined ? unquoteYtdlpPath(cap) : null
   }
   /** FFmpegVideoConvertor и др.: «…; Destination: путь» (см. FFmpeg PP в yt-dlp). */

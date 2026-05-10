@@ -131,3 +131,4 @@
 - 2026-05-10 10:57:13 [SDK]: §6.4 — прогресс «Waiting for …», маркеры transient (408/premature close) и skip live/premiere; `extractYtdlpOutputPath`: VideoRemuxer `into`, `→ Destination`; Vitest.
 - 2026-05-10 10:58:31 [SDK]: §6.4 — `extractYtdlpOutputPath`: ASCII `-> Destination`, SubtitlesConvertor `->`/`into`; классификация: transient signature/rate limit, skip DRM protected; Vitest.
 - 2026-05-10 10:59:54 [SDK]: §6.3 — окно yt-dlp: превью argv после выбора/сброса каталога загрузки, вставки флага из справочника, «Шаблон по умолчанию» (`schedulePreviewRefresh`).
+- 2026-05-10 11:01:25 [SDK]: §6.4 — прогресс `Resuming download at byte…`; skip повторов: нет форматов / unsupported URL / requested format…; `extractYtdlpOutputPath`: `[download] Writing metadata to:`; Vitest.
