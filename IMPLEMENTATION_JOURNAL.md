@@ -202,3 +202,4 @@
 - 2026-05-10 15:26:38 [SDK]: §6/v0 topbar — окно загрузок: `.dl-topbar-ico svg` **19px / 20px** на @120dpi / @168dpi + `display: block` у глифа; спринт §6; `npm run check` ок.
 - 2026-05-10 15:27:59 [SDK]: §1.1/§6/v0 HiDPR stroke-icons — главный `main.css`: **topbar-кластер** SVG **21×22px** + вкладка **«Загрузки»** **17×18px**; downloads: **`td.act .icon-btn svg` 17×18px** @120/@168 + `display: block`; спринт; `npm run check` ок.
 - 2026-05-10 15:29:17 [SDK]: §1.1/v0 — под превью: HiDPR **транспорт** + **zoom таймлайна** SVG **21×22px**, **`app-ffmpeg-rail-restore`** / **`app-settings-rail-collapse-btn`** **20×21px** в `@120dpi`/`@168dpi`; `display: block` для глифов; спринт §1.1; `npm run check` ок.
+- 2026-05-10 15:30:36 [SDK]: §1.1/v0 доступность topbar — **`app-workspace-tab:focus-visible`** (`--fa-focus-ring`); HiDPR марк **инспектора** `IconFilm` — **14×15px** `@120dpi`/`@168dpi`; спринт §1.1; `npm run check` ок.

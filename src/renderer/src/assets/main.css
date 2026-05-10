@@ -88,6 +88,12 @@
   border-bottom-color: var(--fa-accent);
 }
 
+.app-workspace-tab:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 .app-workspace-tab-glyph {
   display: inline-flex;
   vertical-align: middle;
@@ -1429,6 +1435,11 @@
     height: 17px;
   }
 
+  .inspector-topbar-mark-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+
   .app-toolbar {
     min-height: 56px;
     padding: 0.68rem 0.88rem;
@@ -1582,6 +1593,11 @@
   .app-workspace-tab-glyph svg {
     width: 18px;
     height: 18px;
+  }
+
+  .inspector-topbar-mark-icon svg {
+    width: 15px;
+    height: 15px;
   }
 
   .app-toolbar {
