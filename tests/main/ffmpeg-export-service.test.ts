@@ -96,7 +96,8 @@ describe('ffmpeg export pure helpers', () => {
       audioMode: 'none',
       audioBitrate: '192k',
       fps: 30,
-      scalePreset: '720p'
+      scalePreset: '720p',
+      videoTransform: 'hflip'
     })
     expect(snap).toMatchObject({
       encodePreset: 'quality',
@@ -106,7 +107,8 @@ describe('ffmpeg export pure helpers', () => {
       audioMode: 'none',
       audioBitrate: '192k',
       fps: 30,
-      scalePreset: '720p'
+      scalePreset: '720p',
+      videoTransform: 'hflip'
     })
     const list = parseFfmpegExportUserPresetsList([
       { id: 'ab-cd_1', label: 'Тест', snapshot: snap },
@@ -126,11 +128,13 @@ describe('ffmpeg export pure helpers', () => {
       audioMode: 'aac',
       audioBitrate: '128k',
       fps: null,
-      scalePreset: 'source'
+      scalePreset: 'source',
+      videoTransform: 'none'
     })
     expect(next.ffmpegExportCrf).toBeUndefined()
     expect(next.ffmpegExportAudioMode).toBeUndefined()
     expect(next.ffmpegExportAudioBitrate).toBe('128k')
     expect(next.ffmpegExportScalePreset).toBeUndefined()
+    expect(next.ffmpegExportVideoTransform).toBeUndefined()
   })
 })

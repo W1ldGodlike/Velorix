@@ -59,6 +59,7 @@ import {
   parseFfmpegExportEncodePreset,
   parseFfmpegExportFps,
   parseFfmpegExportScalePreset,
+  parseFfmpegExportVideoTransform,
   parseFfmpegExportUserPresetSnapshot,
   parseFfmpegExportUserPresetsList,
   parseFfmpegExportVideoBitrate,
@@ -770,6 +771,19 @@ function persistFfmpegExportScalePreset(raw: unknown): AppSettings {
     delete next.ffmpegExportScalePreset
   } else {
     next.ffmpegExportScalePreset = value
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistFfmpegExportVideoTransform(raw: unknown): AppSettings {
+  const value = parseFfmpegExportVideoTransform(raw)
+  const next = { ...cachedSettings }
+  if (value === 'none') {
+    delete next.ffmpegExportVideoTransform
+  } else {
+    next.ffmpegExportVideoTransform = value
   }
   cachedSettings = next
   saveSettings(settingsPath(), cachedSettings)
@@ -1494,6 +1508,11 @@ app.whenReady().then(() => {
   )
 
   ipcMain.handle(
+    mw.settingsSetFfmpegExportVideoTransform,
+    (_, raw: unknown): AppSettings => persistFfmpegExportVideoTransform(raw)
+  )
+
+  ipcMain.handle(
     mw.settingsSetFfmpegSnapshotFormat,
     (_, raw: unknown): AppSettings => persistFfmpegSnapshotFormat(raw)
   )
@@ -1802,6 +1821,11 @@ app.whenReady().then(() => {
       scalePresetRaw !== undefined && scalePresetRaw !== null
         ? parseFfmpegExportScalePreset(scalePresetRaw)
         : parseFfmpegExportScalePreset(cachedSettings.ffmpegExportScalePreset)
+    const videoTransformRaw = (raw as { videoTransform?: unknown }).videoTransform
+    const exportVideoTransform =
+      videoTransformRaw !== undefined && videoTransformRaw !== null
+        ? parseFfmpegExportVideoTransform(videoTransformRaw)
+        : parseFfmpegExportVideoTransform(cachedSettings.ffmpegExportVideoTransform)
 
     const paths = resolveAppPaths()
     const ffmpeg = resolveEngineExecutablePath(
@@ -1859,6 +1883,7 @@ app.whenReady().then(() => {
         audioBitrate: exportAudioBitrate,
         fps: exportFps,
         scalePreset: exportScalePreset,
+        videoTransform: exportVideoTransform,
         signal: ac.signal,
         onProgress: pushProgress
       })

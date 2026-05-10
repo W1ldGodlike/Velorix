@@ -6,6 +6,7 @@ import {
   formatFfmpegArgvForPreview,
   resolveFfmpegExportEncodeParams,
   resolveFfmpegExportScaleFilter,
+  resolveFfmpegExportVideoTransformFilters,
   shouldApplyFfmpegExportTrim
 } from '../../src/shared/ffmpeg-export-argv'
 
@@ -20,6 +21,32 @@ describe('shared ffmpeg export argv', () => {
     expect(resolveFfmpegExportScaleFilter('source')).toBeNull()
     expect(resolveFfmpegExportScaleFilter('480p')).toBe('scale=-2:480')
     expect(resolveFfmpegExportScaleFilter('1080p')).toBe('scale=-2:1080')
+  })
+
+  it('whitelist videoTransform — только известные фрагменты -vf', () => {
+    expect(resolveFfmpegExportVideoTransformFilters('none')).toEqual([])
+    expect(resolveFfmpegExportVideoTransformFilters('cw90')).toEqual(['transpose=1'])
+    expect(resolveFfmpegExportVideoTransformFilters('ccw90')).toEqual(['transpose=2'])
+    expect(resolveFfmpegExportVideoTransformFilters('r180')).toEqual(['transpose=1', 'transpose=1'])
+    expect(resolveFfmpegExportVideoTransformFilters('hflip')).toEqual(['hflip'])
+    expect(resolveFfmpegExportVideoTransformFilters('vflip')).toEqual(['vflip'])
+  })
+
+  it('трансформ идёт в -vf перед scale и fps §7.2', () => {
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: 30,
+      scalePreset: '720p',
+      videoTransform: 'cw90'
+    })
+    expect(argv[argv.indexOf('-vf') + 1]).toBe('transpose=1,scale=-2:720,fps=30')
   })
 
   it('собирает базовый argv для CRF mode без trim/scale/fps', () => {

@@ -9,6 +9,7 @@ import type {
   FfmpegExportScalePresetId,
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
+  FfmpegExportVideoTransformId,
   MediaExportTrimPayload
 } from '../shared/ffmpeg-export-contract'
 import { buildFfmpegExportArgv, shouldApplyFfmpegExportTrim } from '../shared/ffmpeg-export-argv'
@@ -23,6 +24,7 @@ export type {
   FfmpegExportScalePresetId,
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
+  FfmpegExportVideoTransformId,
   MediaExportRequestPayload,
   MediaExportStartResult,
   MediaExportTrimPayload
@@ -143,6 +145,13 @@ export function parseFfmpegExportScalePreset(raw: unknown): FfmpegExportScalePre
   return 'source'
 }
 
+export function parseFfmpegExportVideoTransform(raw: unknown): FfmpegExportVideoTransformId {
+  if (raw === 'cw90' || raw === 'ccw90' || raw === 'r180' || raw === 'hflip' || raw === 'vflip') {
+    return raw
+  }
+  return 'none'
+}
+
 /** §7.2 — разбор снимка пользовательского пресета из IPC/renderer (белые списки). */
 export function parseFfmpegExportUserPresetSnapshot(
   raw: unknown
@@ -159,6 +168,7 @@ export function parseFfmpegExportUserPresetSnapshot(
   const audioBitrate = parseFfmpegExportAudioBitrate(o['audioBitrate']) ?? '192k'
   const fps = parseFfmpegExportFps(o['fps'])
   const scalePreset = parseFfmpegExportScalePreset(o['scalePreset'])
+  const videoTransform = parseFfmpegExportVideoTransform(o['videoTransform'])
   return {
     encodePreset,
     container,
@@ -167,7 +177,8 @@ export function parseFfmpegExportUserPresetSnapshot(
     audioMode,
     audioBitrate,
     fps,
-    scalePreset
+    scalePreset,
+    videoTransform
   }
 }
 
@@ -236,6 +247,11 @@ export function mergeFfmpegExportSnapshotIntoAppSettings(
     delete next.ffmpegExportScalePreset
   } else {
     next.ffmpegExportScalePreset = snapshot.scalePreset
+  }
+  if (snapshot.videoTransform === 'none') {
+    delete next.ffmpegExportVideoTransform
+  } else {
+    next.ffmpegExportVideoTransform = snapshot.videoTransform
   }
   return next
 }
@@ -321,6 +337,7 @@ export function runFfmpegExportJob(params: {
   audioBitrate?: string | null
   fps?: number | null
   scalePreset?: FfmpegExportScalePresetId | null
+  videoTransform?: FfmpegExportVideoTransformId | null
   signal: AbortSignal
   onProgress?: (p: FfmpegExportProgressPayload) => void
 }): Promise<{ ok: true } | { ok: false; error: string }> {
@@ -332,6 +349,7 @@ export function runFfmpegExportJob(params: {
   const audioBitrate = parseFfmpegExportAudioBitrate(params.audioBitrate) ?? '192k'
   const fps = parseFfmpegExportFps(params.fps)
   const scalePreset = parseFfmpegExportScalePreset(params.scalePreset)
+  const videoTransform = parseFfmpegExportVideoTransform(params.videoTransform)
   const container = parseFfmpegExportContainer(params.container ?? 'mp4')
   const segmentDur = resolveExportSegmentDurationSec(
     params.trim,
@@ -350,7 +368,8 @@ export function runFfmpegExportJob(params: {
     audioMode,
     audioBitrate,
     fps,
-    scalePreset
+    scalePreset,
+    videoTransform
   })
 
   return new Promise((resolve) => {

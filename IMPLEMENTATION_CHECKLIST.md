@@ -37,7 +37,7 @@
 
 - [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; DnD текста/URL на окно (кроме полей ввода формы) + поле URL; прогресс + `extractYtdlpOutputPath`; классификация stderr; дальше — редкие строки по логам.
 - [~] §6.3: argv whitelist + справочник + превью с draft/override `-o`; после выбора каталога загрузки / вставки флага из справочника / «Шаблон по умолчанию» превью пересчитывается; при необходимости ещё редкие поля.
-- [~] §7 / §7.2: экспорт/snapshot/ffprobe/preview; пользовательские пресеты ffmpeg; дальше crop/rotate/filters/HW.
+- [~] §7.2: crop и расширенные filters; затем HW encode; экспорт/preview/пресеты с rotate+flip готовы.
 - [~] §9: опционально Dolby Vision/`side_data` и прочие расширенные метаданные ffprobe (базовые color_* потока уже в таблице).
 - [~] §17/§18: диагностика, Support ZIP, `session.log`; при необходимости отдельные логи по окнам или политика объёма mid-session.
 - [~] §21: новые IPC — только через `ipc-channels` + shared-контракты; точечные Vitest на парсеры/argv.
@@ -309,7 +309,7 @@
 - [~] Resolution/scale: persisted preset source/480p/720p/1080p с сохранением пропорций.
 - [ ] Crop.
 - [ ] Trim.
-- [ ] Rotate/flip.
+- [x] Rotate/flip: whitelist −vf transpose/hflip/vflip до scale/fps; toolbar + settings + пользовательские пресеты §7.2.
 - [ ] Filters.
 - [ ] Audio filters.
 - [ ] Subtitles.

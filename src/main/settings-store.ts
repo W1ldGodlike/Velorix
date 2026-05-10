@@ -3,7 +3,10 @@ import { dirname, isAbsolute, normalize } from 'path'
 
 import { ENGINE_IDS, type EnginePathOverrides } from '../shared/engine-contract'
 import type { AppSettings, StoredWindowRect, WindowBoundsConfig } from '../shared/settings-contract'
-import { parseFfmpegExportUserPresetsList } from './ffmpeg-export-service'
+import {
+  parseFfmpegExportUserPresetsList,
+  parseFfmpegExportVideoTransform
+} from './ffmpeg-export-service'
 import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
 
 export type {
@@ -308,6 +311,9 @@ export function loadSettings(filePath: string): AppSettings {
     const ffmpegExportScalePreset = parseFfmpegExportScalePresetStored(
       parsed.ffmpegExportScalePreset
     )
+    const ffmpegExportVideoTransform = parseFfmpegExportVideoTransform(
+      parsed.ffmpegExportVideoTransform
+    )
     const ffmpegExportDirectory = parseFfmpegExportDirectoryStored(parsed.ffmpegExportDirectory)
     const ffmpegSnapshotDirectory = parseFfmpegSnapshotDirectoryStored(
       parsed.ffmpegSnapshotDirectory
@@ -365,6 +371,9 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (ffmpegExportScalePreset !== undefined && ffmpegExportScalePreset !== 'source') {
       base.ffmpegExportScalePreset = ffmpegExportScalePreset
+    }
+    if (ffmpegExportVideoTransform !== 'none') {
+      base.ffmpegExportVideoTransform = ffmpegExportVideoTransform
     }
     if (ffmpegExportDirectory !== undefined) {
       base.ffmpegExportDirectory = ffmpegExportDirectory

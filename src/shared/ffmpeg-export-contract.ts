@@ -13,6 +13,8 @@ export interface MediaExportTrimPayload {
 export type FfmpegExportEncodePresetId = 'balance' | 'smaller' | 'quality'
 export type FfmpegExportContainerId = 'mp4' | 'mkv' | 'mov'
 export type FfmpegExportScalePresetId = 'source' | '480p' | '720p' | '1080p'
+/** §7.2 — безопасные повороты/зеркала через whitelist `-vf` (до scale/fps). */
+export type FfmpegExportVideoTransformId = 'none' | 'cw90' | 'ccw90' | 'r180' | 'hflip' | 'vflip'
 export type FfmpegExportAudioModeId = 'aac' | 'none'
 
 /**
@@ -28,6 +30,7 @@ export interface FfmpegExportUserPresetSnapshot {
   audioBitrate: string
   fps: number | null
   scalePreset: FfmpegExportScalePresetId
+  videoTransform: FfmpegExportVideoTransformId
 }
 
 /** §7.2 — именованный пользовательский пресет (до нескольких штук в settings). */
@@ -57,6 +60,8 @@ export interface MediaExportRequestPayload {
   fps?: number | null
   /** Масштабирование с сохранением пропорций; `source` — без `scale`. */
   scalePreset?: FfmpegExportScalePresetId | null
+  /** Поворот/зеркало до масштабирования и fps; `none` — без трансформа. */
+  videoTransform?: FfmpegExportVideoTransformId | null
 }
 
 export type MediaExportStartResult =

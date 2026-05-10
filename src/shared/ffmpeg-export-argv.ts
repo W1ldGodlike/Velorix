@@ -11,6 +11,7 @@ import type {
   FfmpegExportContainerId,
   FfmpegExportEncodePresetId,
   FfmpegExportScalePresetId,
+  FfmpegExportVideoTransformId,
   MediaExportTrimPayload
 } from './ffmpeg-export-contract'
 
@@ -75,6 +76,29 @@ export function resolveFfmpegExportScaleFilter(preset: FfmpegExportScalePresetId
   }
 }
 
+/**
+ * §7.2 — фрагменты `-vf` для поворота/зеркала (строго whitelist), до `scale` и `fps`.
+ * `transpose`: 1 = по часовой 90°, 2 = против часовой 90°; дважды 1 = 180°.
+ */
+export function resolveFfmpegExportVideoTransformFilters(
+  id: FfmpegExportVideoTransformId
+): string[] {
+  switch (id) {
+    case 'cw90':
+      return ['transpose=1']
+    case 'ccw90':
+      return ['transpose=2']
+    case 'r180':
+      return ['transpose=1', 'transpose=1']
+    case 'hflip':
+      return ['hflip']
+    case 'vflip':
+      return ['vflip']
+    default:
+      return []
+  }
+}
+
 export interface FfmpegExportArgvParams {
   inputPath: string
   outputPath: string
@@ -94,6 +118,8 @@ export interface FfmpegExportArgvParams {
   /** Если `null` — частота кадров оставляется исходной. */
   fps: number | null
   scalePreset: FfmpegExportScalePresetId
+  /** До масштабирования и fps; по умолчанию без трансформа. */
+  videoTransform?: FfmpegExportVideoTransformId
 }
 
 /** Полный argv ffmpeg без пути к exe; используется и runner, и preview UI. */
@@ -102,6 +128,8 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
   const enc = resolveFfmpegExportEncodeParams(params.encodePreset)
   const crf = params.crf === null ? enc.crf : String(params.crf)
   const filters: string[] = []
+  const transform = resolveFfmpegExportVideoTransformFilters(params.videoTransform ?? 'none')
+  filters.push(...transform)
   const scale = resolveFfmpegExportScaleFilter(params.scalePreset)
   if (scale !== null) {
     filters.push(scale)
@@ -171,6 +199,7 @@ export interface FfmpegExportPreviewInput {
   audioBitrate: string
   fps: number | null
   scalePreset: FfmpegExportScalePresetId
+  videoTransform?: FfmpegExportVideoTransformId
   /** Если задан — используется как input в превью; иначе подставляется `<input>`. */
   inputPath?: string | null
   /** Если задан — используется как output в превью; иначе подставляется `<output>`. */
@@ -229,7 +258,8 @@ export function buildFfmpegExportPreviewCommand(
     audioMode: input.audioMode,
     audioBitrate: input.audioBitrate,
     fps: input.fps,
-    scalePreset: input.scalePreset
+    scalePreset: input.scalePreset,
+    ...(input.videoTransform !== undefined ? { videoTransform: input.videoTransform } : {})
   })
 
   return {
