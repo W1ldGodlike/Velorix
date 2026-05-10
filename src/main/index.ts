@@ -1,4 +1,4 @@
-import { existsSync, statSync } from 'fs'
+import { existsSync, statSync, writeFileSync } from 'fs'
 import { basename, dirname, isAbsolute, join, normalize, resolve } from 'path'
 import { BrowserWindow, Menu, app, clipboard, dialog, ipcMain, shell } from 'electron'
 import type { IpcMainEvent } from 'electron'
@@ -114,6 +114,7 @@ import type {
   DiagnosticsOpenMainLogResult,
   DiagnosticsSupportZipResult
 } from '../shared/diagnostics-contract'
+import type { SaveTextDialogResult } from '../shared/save-text-dialog-contract'
 
 /** Кастомная схема для локального видеопревью; привилегии обязаны зарегистрироваться до `app.whenReady`. */
 attachProcessErrorHandlers()
@@ -135,6 +136,39 @@ function parseDownloadsOpenPayload(raw: unknown): string | null {
     }
   }
   return null
+}
+
+/** Совпадает с лимитом буфера обмена в main: защита от огромных строк из renderer. */
+const SAVE_TEXT_DIALOG_MAX_CHARS = 24 * 1024 * 1024
+
+function parseSaveTextDialogPayload(
+  raw: unknown
+):
+  | { ok: true; title: string; defaultFileName: string; content: string }
+  | { ok: false; error: string } {
+  if (!raw || typeof raw !== 'object') {
+    return { ok: false, error: 'Некорректные данные запроса' }
+  }
+  const o = raw as Record<string, unknown>
+  const titleRaw = typeof o['title'] === 'string' ? o['title'].trim() : ''
+  const title = titleRaw.length > 0 ? titleRaw : 'Сохранить файл'
+  const fnRaw = typeof o['defaultFileName'] === 'string' ? o['defaultFileName'].trim() : ''
+  const baseFromPayload = basename(fnRaw.replace(/\\/g, '/'))
+  let safeName =
+    baseFromPayload.length > 0 && baseFromPayload !== '.' && baseFromPayload !== '..'
+      ? baseFromPayload
+      : 'fluxalloy-export.json'
+  if (!/\.[a-z0-9]+$/i.test(safeName)) {
+    safeName = `${safeName}.json`
+  }
+  if (typeof o['content'] !== 'string') {
+    return { ok: false, error: 'Некорректное содержимое файла' }
+  }
+  const content = o['content']
+  if (content.length > SAVE_TEXT_DIALOG_MAX_CHARS) {
+    return { ok: false, error: 'Слишком большой текст для сохранения' }
+  }
+  return { ok: true, title, defaultFileName: safeName, content }
 }
 
 /**
@@ -1596,6 +1630,40 @@ app.whenReady().then(() => {
     clipboard.writeText(raw)
     return { ok: true }
   })
+
+  ipcMain.handle(
+    mw.saveTextWithDialog,
+    async (event, raw: unknown): Promise<SaveTextDialogResult> => {
+      const parsed = parseSaveTextDialogPayload(raw)
+      if (!parsed.ok) {
+        return { ok: false, error: parsed.error }
+      }
+      const win = BrowserWindow.fromWebContents(event.sender)
+      const parent = win && !win.isDestroyed() ? win : undefined
+      const saveOpts = {
+        title: parsed.title,
+        defaultPath: parsed.defaultFileName,
+        filters: [
+          { name: 'JSON', extensions: ['json'] },
+          { name: 'Текстовые файлы', extensions: ['txt', 'log'] },
+          { name: 'Все файлы', extensions: ['*'] }
+        ]
+      }
+      const res = parent
+        ? await dialog.showSaveDialog(parent, saveOpts)
+        : await dialog.showSaveDialog(saveOpts)
+      if (res.canceled || typeof res.filePath !== 'string' || res.filePath.trim().length === 0) {
+        return { ok: false, cancelled: true }
+      }
+      try {
+        writeFileSync(res.filePath, parsed.content, 'utf8')
+        return { ok: true, path: res.filePath }
+      } catch (error: unknown) {
+        logError('saveTextWithDialog', 'write failed', error)
+        return { ok: false, error: 'Не удалось записать файл' }
+      }
+    }
+  )
 
   ipcMain.handle(mw.appAboutInfo, () => getAppAboutInfo())
 

@@ -171,8 +171,24 @@ function formatProbeJsonForDisplay(raw: string): string {
   }
 }
 
-function PreviewProbeBody({ probeInfo }: { probeInfo: MediaProbeSuccess }): JSX.Element {
-  const [copyTip, setCopyTip] = useState<string | null>(null)
+function ffprobeJsonDefaultFileName(mediaPath: string | undefined): string {
+  if (!mediaPath || mediaPath.trim().length === 0) {
+    return 'fluxalloy-ffprobe.json'
+  }
+  const name = mediaPath.replace(/^.*[/\\]/, '').trim()
+  const stem = name.replace(/\.[^./\\]+$/, '')
+  const base = stem.length > 0 ? stem : name
+  return `${base.length > 0 ? base : 'media'}-ffprobe.json`
+}
+
+function PreviewProbeBody({
+  probeInfo,
+  mediaPathForDefaultSave
+}: {
+  probeInfo: MediaProbeSuccess
+  mediaPathForDefaultSave?: string
+}): JSX.Element {
+  const [jsonToolbarTip, setJsonToolbarTip] = useState<string | null>(null)
   const bitrateLabel = formatBitrateLine(probeInfo.bitrateKbps)
   const formatTooltip =
     probeInfo.formatLongName && probeInfo.formatName !== probeInfo.formatLongName
@@ -182,10 +198,30 @@ function PreviewProbeBody({ probeInfo }: { probeInfo: MediaProbeSuccess }): JSX.
   async function handleCopyProbeJson(): Promise<void> {
     const text = formatProbeJsonForDisplay(probeInfo.rawJson)
     const r = await window.fluxalloy.clipboard.writeText(text)
-    setCopyTip(r.ok ? 'Скопировано в буфер' : 'Не удалось скопировать')
+    setJsonToolbarTip(r.ok ? 'Скопировано в буфер' : 'Не удалось скопировать')
     window.setTimeout(() => {
-      setCopyTip(null)
+      setJsonToolbarTip(null)
     }, 2200)
+  }
+
+  async function handleSaveProbeJson(): Promise<void> {
+    const text = formatProbeJsonForDisplay(probeInfo.rawJson)
+    const defaultFileName = ffprobeJsonDefaultFileName(mediaPathForDefaultSave)
+    const r = await window.fluxalloy.saveTextWithDialog({
+      title: 'Сохранить JSON ffprobe',
+      defaultFileName,
+      content: text
+    })
+    if (r.ok) {
+      setJsonToolbarTip(`Сохранено: ${r.path}`)
+    } else if ('cancelled' in r && r.cancelled) {
+      // пользователь закрыл диалог — без сообщения
+    } else if ('error' in r) {
+      setJsonToolbarTip(r.error)
+    }
+    window.setTimeout(() => {
+      setJsonToolbarTip(null)
+    }, 2800)
   }
 
   return (
@@ -241,7 +277,16 @@ function PreviewProbeBody({ probeInfo }: { probeInfo: MediaProbeSuccess }): JSX.
             >
               Копировать JSON
             </button>
-            {copyTip ? <span className="app-probe-copy-tip">{copyTip}</span> : null}
+            <button
+              type="button"
+              className="app-btn app-btn-compact"
+              onClick={() => {
+                void handleSaveProbeJson()
+              }}
+            >
+              Сохранить JSON…
+            </button>
+            {jsonToolbarTip ? <span className="app-probe-copy-tip">{jsonToolbarTip}</span> : null}
           </div>
           <pre className="app-probe-json-pre">{formatProbeJsonForDisplay(probeInfo.rawJson)}</pre>
         </details>
@@ -1479,7 +1524,10 @@ function App(): JSX.Element {
                     {probeError ? (
                       <span className="app-preview-probe-error">{probeError}</span>
                     ) : probeInfo ? (
-                      <PreviewProbeBody probeInfo={probeInfo} />
+                      <PreviewProbeBody
+                        probeInfo={probeInfo}
+                        mediaPathForDefaultSave={preview.path}
+                      />
                     ) : null}
                   </div>
                 )}

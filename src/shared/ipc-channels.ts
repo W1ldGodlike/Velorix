@@ -31,6 +31,7 @@ export const mainWindowIpc = {
   mediaProbe: 'fluxalloy:media-probe',
   clipboardReadText: 'fluxalloy:clipboard-read-text',
   clipboardWriteText: 'fluxalloy:clipboard-write-text',
+  saveTextWithDialog: 'fluxalloy:save-text-with-dialog',
   appAboutInfo: 'fluxalloy:app-about-info',
   diagnosticsListFolders: 'fluxalloy:diagnostics-list-folders',
   diagnosticsOpenFolder: 'fluxalloy:diagnostics-open-folder',

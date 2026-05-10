@@ -38,6 +38,7 @@
 - [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; DnD текста/URL на окно (кроме полей ввода формы) + поле URL; прогресс + `extractYtdlpOutputPath`; классификация stderr; дальше — редкие строки по логам.
 - [~] §6.3: argv whitelist + справочник + превью с draft/override `-o`; после выбора каталога загрузки / вставки флага из справочника / «Шаблон по умолчанию» превью пересчитывается; при необходимости ещё редкие поля.
 - [~] §7 / §7.2: экспорт/snapshot/ffprobe/preview; пользовательские пресеты ffmpeg; дальше crop/rotate/filters/HW.
+- [~] §9: инспектор под превью — таблица дорожек/главы/отдельное окно позже; сохранение TXT/HTML позже.
 - [~] §17/§18: диагностика, Support ZIP, `session.log`; при необходимости отдельные логи по окнам или политика объёма mid-session.
 - [~] §21: новые IPC — только через `ipc-channels` + shared-контракты; точечные Vitest на парсеры/argv.
 
@@ -364,7 +365,7 @@
 - [~] Таблица дорожек (базовая под превью; без отдельного окна и расширенных колонок).
 - [ ] Главы.
 - [~] JSON ffprobe: сворачиваемый блок под превью (не отдельная вкладка).
-- [~] Копирование JSON (форматированный текст в буфер); сохранение в файл — позже.
+- [x] Копирование JSON (форматированный текст в буфер); сохранение в файл через IPC/main (`save-text-dialog-contract`).
 - [ ] Сохранение TXT/HTML.
 - [ ] Контекстные действия из таблиц.
 
@@ -491,7 +492,7 @@
 
 - [~] Есть структура main/preload/renderer.
 - [x] Включить/проверить strict TypeScript политику: базовый `@electron-toolkit/tsconfig` уже с `strict`; дополнительно явно включены `noImplicitAny`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `noPropertyAccessFromIndexSignature` и `useUnknownInCatchVariables` в `tsconfig.node.json`, `tsconfig.web.json`, `tsconfig.tests.json`.
-- [x] IPC contracts: `ipc-channels.ts`; перечисленные `src/shared/*-contract.ts` (в т.ч. ffprobe, settings, engine, about, preview-dialog, ffmpeg export, yt-dlp окно/лог/история, диагностика, engine-download, snapshot) — главный preload импортирует типы из `src/shared`, не из `main`; дальше — новые домены по мере IPC.
+- [x] IPC contracts: `ipc-channels.ts`; перечисленные `src/shared/*-contract.ts` (в т.ч. ffprobe, save-text-dialog, settings, engine, about, preview-dialog, ffmpeg export, yt-dlp окно/лог/история, диагностика, engine-download, snapshot) — главный preload импортирует типы из `src/shared`, не из `main`; дальше — новые домены по мере IPC.
 - [ ] Вынести сервисы main (упорядочить без дублирования с текущими модулями).
 - [~] Вынести модели shared: часть IPC/доменов уже в `src/shared/*-contract.ts`; остальное по мере выноса сервисов.
 - [~] Unit tests для чистых модулей: `tests/main/*` — перечисленные парсеры/сервисы; `tests/shared/ipc-channels` — уникальность строк каналов; `tests/shared/engine-contract` — порядок/уникальность `ENGINE_IDS`; `tests/shared/ffmpeg-export-argv` — pure builder и preview placeholders. Дальше — расширять `src/shared/*` контрактами под остальные IPC и точечные тесты при появлении runtime-констант.

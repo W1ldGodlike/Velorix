@@ -29,6 +29,10 @@ import type {
 import type { MediaProbeResult } from '../shared/ffprobe-contract'
 import type { PreviewDialogResult, RestoredSourceInfo } from '../shared/preview-dialog-contract'
 import type { AppSettings, AppTheme } from '../shared/settings-contract'
+import type {
+  SaveTextDialogPayload,
+  SaveTextDialogResult
+} from '../shared/save-text-dialog-contract'
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
 
 type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
@@ -102,6 +106,9 @@ const fluxalloy = {
     writeText: (text: string): Promise<{ ok: true } | { ok: false }> =>
       ipcRenderer.invoke(mw.clipboardWriteText, text)
   },
+  /** §9 — диалог «Сохранить как» в main (JSON ffprobe и др. текст без Node в renderer). */
+  saveTextWithDialog: (payload: SaveTextDialogPayload): Promise<SaveTextDialogResult> =>
+    ipcRenderer.invoke(mw.saveTextWithDialog, payload),
   about: {
     getInfo: (): Promise<AppAboutInfo> => ipcRenderer.invoke(mw.appAboutInfo)
   },

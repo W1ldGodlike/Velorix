@@ -28,6 +28,10 @@ import type {
 import type { MediaProbeResult } from '../shared/ffprobe-contract'
 import type { PreviewDialogResult, RestoredSourceInfo } from '../shared/preview-dialog-contract'
 import type { AppSettings, AppTheme } from '../shared/settings-contract'
+import type {
+  SaveTextDialogPayload,
+  SaveTextDialogResult
+} from '../shared/save-text-dialog-contract'
 
 /** Данные для привязки `<video>` к локальному файлу через allowlist-схему `fluxmedia://`. */
 export type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
@@ -85,6 +89,7 @@ export interface FluxAlloyApi {
     readText: () => Promise<string>
     writeText: (text: string) => Promise<{ ok: true } | { ok: false }>
   }
+  saveTextWithDialog: (payload: SaveTextDialogPayload) => Promise<SaveTextDialogResult>
   about: {
     getInfo: () => Promise<AppAboutInfo>
   }
