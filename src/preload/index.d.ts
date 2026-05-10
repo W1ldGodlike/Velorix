@@ -113,6 +113,10 @@ export interface FluxAlloyApi {
       { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
     >
     clearOutputDirectory: () => Promise<void>
+    pickCookiesFile: () => Promise<
+      { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
+    >
+    clearCookiesFile: () => Promise<void>
     onSnapshot: (listener: (rows: unknown[]) => void) => () => void
     startQueue: () => Promise<{ ok: true } | { ok: false; error: string }>
     startRow: (id: number) => Promise<{ ok: true } | { ok: false; error: string }>

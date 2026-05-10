@@ -181,6 +181,10 @@ const fluxalloy = {
       { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
     > => ipcRenderer.invoke(d.pickOutputDir),
     clearOutputDirectory: (): Promise<void> => ipcRenderer.invoke(d.clearOutputDir),
+    pickCookiesFile: (): Promise<
+      { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
+    > => ipcRenderer.invoke(d.pickCookiesFile),
+    clearCookiesFile: (): Promise<void> => ipcRenderer.invoke(d.clearCookiesFile),
     onSnapshot: (listener: (rows: unknown[]) => void): (() => void) => {
       const handler = (_event: unknown, rows: unknown): void => {
         listener(Array.isArray(rows) ? rows : [])

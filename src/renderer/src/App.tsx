@@ -2725,6 +2725,54 @@ function App(): JSX.Element {
                     </select>
                   </label>
                 </div>
+                <div
+                  className="app-downloads-output-dir"
+                  role="group"
+                  aria-label="Файл cookies yt-dlp"
+                >
+                  <span className="app-field-help">Файл cookies Netscape</span>
+                  <strong title={downloadsOptions.cookiesFilePathStored}>
+                    {downloadsOptions.cookiesFilePathStored || 'Файл не выбран'}
+                  </strong>
+                  <span className="app-field-help">
+                    Файл имеет приоритет над cookies из браузера; используйте только доверенные
+                    exports.
+                  </span>
+                  <div className="app-downloads-history-actions">
+                    <button
+                      type="button"
+                      className="app-btn app-btn-compact"
+                      disabled={downloadsOptionsBusy}
+                      onClick={() => {
+                        void window.fluxalloy.downloads.pickCookiesFile().then((res) => {
+                          if (res.ok) {
+                            void refreshDownloadsOptions()
+                            return
+                          }
+                          if ('error' in res) {
+                            setStatusHint(res.error)
+                          }
+                        })
+                      }}
+                    >
+                      Выбрать
+                    </button>
+                    <button
+                      type="button"
+                      className="app-btn app-btn-compact"
+                      disabled={
+                        downloadsOptionsBusy || downloadsOptions.cookiesFilePathStored.length === 0
+                      }
+                      onClick={() => {
+                        void window.fluxalloy.downloads.clearCookiesFile().then(() => {
+                          void refreshDownloadsOptions()
+                        })
+                      }}
+                    >
+                      Очистить
+                    </button>
+                  </div>
+                </div>
                 <label className="app-field">
                   <span>Повтор строки очереди</span>
                   <select
