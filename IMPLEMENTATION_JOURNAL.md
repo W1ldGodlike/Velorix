@@ -193,3 +193,4 @@
 - 2026-05-10 15:15:58 [SDK]: §6/§4.A/v0 единые иконки — окно загрузок: в топбар-кластер добавлена lucide **`download`** (`dlTopUrl`) → скролл + фокус `#urls`; порядок: film → download → home → engines → help; Vitest на HTML; чеклист §4.A/§4.
 - 2026-05-10 15:17:27 [SDK]: §6/§4.A/v0 — вкладки «Редактор/Загрузки» в topbar окна загрузок: inline SVG **home**/**download** из shared (`emitInlineStrokeSvg`); стили `.workspace-tab-glyph`; чеклист §4.A/§4; `npm run check` ок.
 - 2026-05-10 15:18:35 [SDK]: §4.A/v0 единые иконки — `EDITOR_TOPBAR_ACTION_ICONS` (снимок, save, ban, cloud-download): данные в `lucide-downloads-icons.ts`, `LucideMiniIcons` через `renderStrokeParts`; Vitest сериализации; чеклист §4/спринт §1.1; `npm run check` ок.
+- 2026-05-10 15:19:48 [SDK]: §4.A/v0 единые иконки — **`EDITOR_THEME_ICONS`** (sun/moon) в shared, `IconSun`/`IconMoon` через `renderStrokeParts`; Vitest; чеклист §4/спринт §1.1 (`sun/moon` перенесены из «позже»); `npm run check` ок.

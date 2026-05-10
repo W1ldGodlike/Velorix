@@ -256,6 +256,24 @@ export const EDITOR_TOPBAR_ACTION_ICONS = {
   ] as const satisfies readonly StrokePrim[]
 } as const
 
+/** Переключатель темы в топбаре редактора/инспектора (общий источник путей). */
+export const EDITOR_THEME_ICONS = {
+  sun: [
+    { tag: 'circle', attr: { cx: '12', cy: '12', r: '4' } },
+    { tag: 'path', attr: { d: 'M12 2v2' } },
+    { tag: 'path', attr: { d: 'M12 20v2' } },
+    { tag: 'path', attr: { d: 'm4.93 4.93 1.41 1.41' } },
+    { tag: 'path', attr: { d: 'm17.66 17.66 1.41 1.41' } },
+    { tag: 'path', attr: { d: 'M2 12h2' } },
+    { tag: 'path', attr: { d: 'M20 12h2' } },
+    { tag: 'path', attr: { d: 'm6.34 17.66-1.41 1.41' } },
+    { tag: 'path', attr: { d: 'm19.07 4.93-1.41 1.41' } }
+  ] as const satisfies readonly StrokePrim[],
+  moon: [
+    { tag: 'path', attr: { d: 'M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z' } }
+  ] as const satisfies readonly StrokePrim[]
+} as const
+
 function emitPrimEl(p: StrokePrim): string {
   switch (p.tag) {
     case 'path':

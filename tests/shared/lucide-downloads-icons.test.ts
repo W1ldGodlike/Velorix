@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   DOWNLOADS_TOPBAR_CLUSTER_ICONS,
   EDITOR_TIMELINE_ICONS,
+  EDITOR_THEME_ICONS,
   EDITOR_TOPBAR_ACTION_ICONS,
   EDITOR_TRANSPORT_ICONS,
   QUEUE_ROW_ACTION_ICONS,
@@ -49,5 +50,10 @@ describe('lucide-downloads-icons', () => {
     expect(emitInlineStrokeSvg(EDITOR_TOPBAR_ACTION_ICONS.image, 20)).toContain('rect')
     expect(emitInlineStrokeSvg(EDITOR_TOPBAR_ACTION_ICONS.ban, 20)).toContain('circle')
     expect(emitInlineStrokeSvg(EDITOR_TOPBAR_ACTION_ICONS.cloudDownload, 20)).toContain('path d=')
+  })
+
+  it('EDITOR_THEME_ICONS (sun/moon) сериализуются в stroke SVG', () => {
+    expect(emitInlineStrokeSvg(EDITOR_THEME_ICONS.sun, 20)).toContain('circle')
+    expect(emitInlineStrokeSvg(EDITOR_THEME_ICONS.moon, 20)).toContain('path d=')
   })
 })
