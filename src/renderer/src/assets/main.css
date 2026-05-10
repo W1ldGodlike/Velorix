@@ -265,6 +265,12 @@
   transform: rotate(90deg);
 }
 
+.app-url-summary:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 .app-url-body {
   display: flex;
   align-items: center;

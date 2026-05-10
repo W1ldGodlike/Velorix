@@ -195,3 +195,4 @@
 - 2026-05-10 15:18:35 [SDK]: §4.A/v0 единые иконки — `EDITOR_TOPBAR_ACTION_ICONS` (снимок, save, ban, cloud-download): данные в `lucide-downloads-icons.ts`, `LucideMiniIcons` через `renderStrokeParts`; Vitest сериализации; чеклист §4/спринт §1.1; `npm run check` ок.
 - 2026-05-10 15:19:48 [SDK]: §4.A/v0 единые иконки — **`EDITOR_THEME_ICONS`** (sun/moon) в shared, `IconSun`/`IconMoon` через `renderStrokeParts`; Vitest; чеклист §4/спринт §1.1 (`sun/moon` перенесены из «позже»); `npm run check` ок.
 - 2026-05-10 15:20:52 [SDK]: §6/§1.1/v0 — окно загрузок: **`focus-visible`** на сворачиваемых **история / журнал / hints** (`<summary>`), тот же `--fa-focus-ring`, что у rail; чеклист §1.1/спринт §6; `npm run check` ок.
+- 2026-05-10 15:22:02 [SDK]: §1.1/v0 раскрываемые секции — главное окно: **`app-url-summary:focus-visible`** (`--fa-focus-ring`), как у превью argv/`app-settings-summary`; чеклист §1.1/спринт; `npm run check` ок.
