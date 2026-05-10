@@ -41,7 +41,7 @@ import type {
   SaveTextDialogPayload,
   SaveTextDialogResult
 } from '../shared/save-text-dialog-contract'
-import { mainWindowIpc as mw } from '../shared/ipc-channels'
+import { downloadsIpc as d, mainWindowIpc as mw } from '../shared/ipc-channels'
 
 type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
 
@@ -143,7 +143,31 @@ const fluxalloy = {
   },
   downloads: {
     openWindow: (initial?: string | { text?: string } | null): Promise<void> =>
-      ipcRenderer.invoke(mw.openDownloadsWindow, initial ?? null)
+      ipcRenderer.invoke(mw.openDownloadsWindow, initial ?? null),
+    addLines: (text: string): Promise<number> => ipcRenderer.invoke(d.addLines, text),
+    getSnapshot: (): Promise<unknown[]> => ipcRenderer.invoke(d.getSnapshot),
+    onSnapshot: (listener: (rows: unknown[]) => void): (() => void) => {
+      const handler = (_event: unknown, rows: unknown): void => {
+        listener(Array.isArray(rows) ? rows : [])
+      }
+      ipcRenderer.on(d.queueSnapshot, handler)
+      return (): void => {
+        ipcRenderer.removeListener(d.queueSnapshot, handler)
+      }
+    },
+    startQueue: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(d.startQueue),
+    startRow: (id: number): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(d.startRow, id),
+    retryRow: (id: number): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(d.retryRow, id),
+    cancelQueue: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(d.cancelRun),
+    openQueueOutput: (
+      id: number,
+      mode: 'file' | 'folder'
+    ): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(d.openQueueOutput, id, mode)
   },
   /** §9 §363 — отдельное окно инспектора (тот же preload, что главное окно). */
   inspector: {

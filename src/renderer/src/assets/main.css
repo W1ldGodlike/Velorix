@@ -484,6 +484,151 @@
   grid-template-columns: minmax(0, 1fr);
 }
 
+/* §1.1/v0 — основная вкладка «Загрузки» внутри единого workspace; pop-out остаётся вторичным. */
+.app-downloads-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+  align-items: stretch;
+  overflow: hidden;
+}
+
+.app-downloads-main,
+.app-downloads-rail {
+  min-width: 0;
+  min-height: 0;
+  border-radius: 8px;
+  border: 1px solid var(--fa-border-subtle);
+  background: color-mix(in srgb, var(--fa-surface) 96%, transparent);
+  overflow: hidden;
+}
+
+.app-downloads-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.app-downloads-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 0.8rem;
+  overflow: auto;
+}
+
+.app-downloads-band {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding: 0.75rem 0.85rem;
+  border-bottom: 1px solid var(--fa-border-subtle);
+}
+
+.app-downloads-title {
+  margin: 0;
+  color: var(--fa-text-primary);
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.app-downloads-hint {
+  margin: 0.15rem 0 0;
+  color: var(--fa-text-muted);
+  font-size: 0.68rem;
+  line-height: 1.35;
+}
+
+.app-downloads-actions,
+.app-downloads-url-actions,
+.app-downloads-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.app-downloads-url-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.65rem;
+  padding: 0.75rem 0.85rem;
+  border-bottom: 1px solid var(--fa-border-subtle);
+}
+
+.app-downloads-url-input {
+  min-width: 0;
+  min-height: 4.6rem;
+  resize: vertical;
+  border-radius: 8px;
+  border: 1px solid var(--fa-border);
+  background: var(--fa-surface);
+  color: var(--fa-text-primary);
+  padding: 0.55rem 0.65rem;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.app-downloads-url-input:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 2px;
+}
+
+.app-downloads-table-wrap {
+  min-height: 0;
+  overflow: auto;
+}
+
+.app-downloads-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.74rem;
+}
+
+.app-downloads-table th,
+.app-downloads-table td {
+  padding: 0.5rem 0.55rem;
+  border-bottom: 1px solid var(--fa-border-subtle);
+  vertical-align: top;
+  text-align: left;
+}
+
+.app-downloads-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--fa-surface);
+  color: var(--fa-text-muted);
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.app-downloads-row-title {
+  color: var(--fa-text-primary);
+  font-weight: 700;
+}
+
+.app-downloads-row-url {
+  margin-top: 0.18rem;
+  max-width: 34rem;
+  color: var(--fa-text-muted);
+  font-size: 0.68rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.app-downloads-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--fa-text-secondary);
+}
+
+.app-downloads-empty {
+  padding: 2rem 1rem !important;
+  text-align: center !important;
+  color: var(--fa-text-muted);
+}
+
 /* Превью: зона Drag-and-Drop §4.B + живой `<video>` §7 + таймлайн. */
 .app-preview {
   flex: 1;

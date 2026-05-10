@@ -95,6 +95,17 @@ export interface FluxAlloyApi {
   }
   downloads: {
     openWindow: (initial?: string | { text?: string } | null) => Promise<void>
+    addLines: (text: string) => Promise<number>
+    getSnapshot: () => Promise<unknown[]>
+    onSnapshot: (listener: (rows: unknown[]) => void) => () => void
+    startQueue: () => Promise<{ ok: true } | { ok: false; error: string }>
+    startRow: (id: number) => Promise<{ ok: true } | { ok: false; error: string }>
+    retryRow: (id: number) => Promise<{ ok: true } | { ok: false; error: string }>
+    cancelQueue: () => Promise<{ ok: true } | { ok: false; error: string }>
+    openQueueOutput: (
+      id: number,
+      mode: 'file' | 'folder'
+    ) => Promise<{ ok: true } | { ok: false; error: string }>
   }
   inspector: {
     openWindow: (absoluteMediaPath?: string | null) => Promise<void>

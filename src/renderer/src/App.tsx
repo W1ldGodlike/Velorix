@@ -49,11 +49,24 @@ type Theme = ResolvedAppTheme
 
 type PreviewOpenedPayload = RestoredSourceInfo
 type EngineSummary = 'checking' | 'ready' | 'missing' | 'error'
+type WorkspaceTab = 'editor' | 'downloads'
 type ExportPresetNameDialog = {
   mode: 'create' | 'rename'
   value: string
   error: string | null
 } | null
+type DownloadsQueueRowView = {
+  id: number
+  url: string
+  shortLabel: string
+  progress: string
+  status: string
+  outputPath?: string
+  queueFmt?: string
+  queueSize?: string
+  queueSpeed?: string
+  queueEta?: string
+}
 
 type EnginesSnapshot = Awaited<ReturnType<typeof window.fluxalloy.engines.getStatus>>
 
@@ -253,7 +266,34 @@ function engineSummaryText(summary: EngineSummary): string {
   }
 }
 
+function sanitizeDownloadsRows(raw: unknown[]): DownloadsQueueRowView[] {
+  return raw.flatMap((item): DownloadsQueueRowView[] => {
+    if (!item || typeof item !== 'object') {
+      return []
+    }
+    const o = item as Record<string, unknown>
+    if (typeof o['id'] !== 'number' || typeof o['url'] !== 'string') {
+      return []
+    }
+    return [
+      {
+        id: o['id'],
+        url: o['url'],
+        shortLabel: typeof o['shortLabel'] === 'string' ? o['shortLabel'] : o['url'],
+        progress: typeof o['progress'] === 'string' ? o['progress'] : '—',
+        status: typeof o['status'] === 'string' ? o['status'] : '—',
+        ...(typeof o['outputPath'] === 'string' ? { outputPath: o['outputPath'] } : {}),
+        ...(typeof o['queueFmt'] === 'string' ? { queueFmt: o['queueFmt'] } : {}),
+        ...(typeof o['queueSize'] === 'string' ? { queueSize: o['queueSize'] } : {}),
+        ...(typeof o['queueSpeed'] === 'string' ? { queueSpeed: o['queueSpeed'] } : {}),
+        ...(typeof o['queueEta'] === 'string' ? { queueEta: o['queueEta'] } : {})
+      }
+    ]
+  })
+}
+
 function App(): JSX.Element {
+  const [workspaceTab, setWorkspaceTab] = useState<WorkspaceTab>('editor')
   const [theme, setTheme] = useState<Theme>('dark')
   const [engineSummary, setEngineSummary] = useState<EngineSummary>('checking')
   const [enginesOfferDownload, setEnginesOfferDownload] = useState(false)
@@ -274,6 +314,7 @@ function App(): JSX.Element {
   const [probeInfo, setProbeInfo] = useState<MediaProbeSuccess | null>(null)
   const [probeError, setProbeError] = useState<string | null>(null)
   const [downloadsUrl, setDownloadsUrl] = useState('')
+  const [downloadsRows, setDownloadsRows] = useState<DownloadsQueueRowView[]>([])
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
   const [topbarEngineVersionsLine, setTopbarEngineVersionsLine] = useState('')
   const [exportBusy, setExportBusy] = useState(false)
@@ -325,7 +366,31 @@ function App(): JSX.Element {
     setProbeInfo(null)
     setProbeError(null)
     setPreview(payload)
+    setWorkspaceTab('editor')
   }, [])
+
+  const handleAddDownloadsFromMain = useCallback(
+    async (startImmediately: boolean): Promise<void> => {
+      const text = downloadsUrl.trim()
+      if (text.length === 0) {
+        setWorkspaceTab('downloads')
+        return
+      }
+      const added = await window.fluxalloy.downloads.addLines(text)
+      setWorkspaceTab('downloads')
+      setStatusHint(added > 0 ? `Добавлено URL: ${added}` : 'Не нашёл URL для очереди.')
+      if (added > 0) {
+        setDownloadsUrl('')
+      }
+      if (startImmediately && added > 0) {
+        const res = await window.fluxalloy.downloads.startQueue()
+        if (!res.ok) {
+          setStatusHint(res.error)
+        }
+      }
+    },
+    [downloadsUrl]
+  )
 
   const onTrimRangeSnapshot = useCallback(
     (range: { inSec: number; outSec: number }) => {
@@ -344,6 +409,22 @@ function App(): JSX.Element {
     },
     [currentSourcePath]
   )
+
+  useEffect(() => {
+    let mounted = true
+    void window.fluxalloy.downloads.getSnapshot().then((rows) => {
+      if (mounted) {
+        setDownloadsRows(sanitizeDownloadsRows(rows))
+      }
+    })
+    const unsubscribe = window.fluxalloy.downloads.onSnapshot((rows) => {
+      setDownloadsRows(sanitizeDownloadsRows(rows))
+    })
+    return () => {
+      mounted = false
+      unsubscribe()
+    }
+  }, [])
 
   useEffect(() => {
     trimSnapshotRef.current = null
@@ -1049,18 +1130,22 @@ function App(): JSX.Element {
         <nav className="app-workspace-tabs" aria-label="Рабочие вкладки">
           <button
             type="button"
-            className="app-workspace-tab app-workspace-tab-active"
-            aria-current="page"
+            className={`app-workspace-tab${workspaceTab === 'editor' ? ' app-workspace-tab-active' : ''}`}
+            aria-current={workspaceTab === 'editor' ? 'page' : undefined}
+            onClick={() => {
+              setWorkspaceTab('editor')
+            }}
           >
             Редактор
           </button>
           <button
             type="button"
-            className="app-workspace-tab"
+            className={`app-workspace-tab${workspaceTab === 'downloads' ? ' app-workspace-tab-active' : ''}`}
+            aria-current={workspaceTab === 'downloads' ? 'page' : undefined}
             onClick={() => {
-              void window.fluxalloy.downloads.openWindow(downloadsUrl || null)
+              setWorkspaceTab('downloads')
             }}
-            title="Открыть менеджер загрузок yt-dlp"
+            title="Перейти во вкладку загрузок yt-dlp"
           >
             <span aria-hidden className="app-workspace-tab-glyph">
               <IconDownload title="" size={16} />
@@ -1223,679 +1308,502 @@ function App(): JSX.Element {
         </div>
       </header>
 
-      <details
-        className="app-url-bar"
-        aria-label="Быстрая загрузка yt-dlp"
-        open={panelOpen('quickYtdlp')}
-        onToggle={(e) => {
-          persistPanelToggle('quickYtdlp', e.currentTarget.open)
-        }}
-      >
-        <summary className="app-url-summary">Быстрая загрузка yt-dlp</summary>
-        <div className="app-url-body">
-          <div className="app-url-field">
-            <input
-              className="app-url-input"
-              type="url"
-              inputMode="url"
-              placeholder="URL или список URL — передать в менеджер загрузок"
-              aria-describedby="quickYtdlpUrlHint"
-              value={downloadsUrl}
-              onChange={(e) => {
-                setDownloadsUrl(e.target.value)
-              }}
-            />
-            <p id="quickYtdlpUrlHint" className="app-url-hint">
-              Ссылка открывается во вкладке «Загрузки»; несколько URL — по строкам уже в окне
-              менеджера yt-dlp §6.
-            </p>
-          </div>
-          <button
-            type="button"
-            className="app-btn"
-            aria-describedby="quickYtdlpUrlHint"
-            onClick={() => {
-              void window.fluxalloy.downloads.openWindow(downloadsUrl || null)
-            }}
-          >
-            Открыть окно
-          </button>
-          <button
-            type="button"
-            className="app-btn"
-            aria-describedby="quickYtdlpUrlHint"
-            onClick={() => {
-              void window.fluxalloy.clipboard.readText().then((t) => {
-                setDownloadsUrl(t.trim())
-              })
-            }}
-            title="Вставить текст из буфера обмена в поле URL"
-          >
-            Из буфера
-          </button>
-        </div>
-      </details>
-
-      <main
-        className={`app-main app-workbench${panelOpen('ffmpegSettingsRailOpen') ? '' : ' app-workbench-ffmpeg-collapsed'}`}
-      >
-        <section
-          className="app-preview"
-          aria-label="Область предпросмотра"
-          onDragOver={(event) => {
-            event.preventDefault()
-            event.stopPropagation()
-          }}
-          onDrop={(event) => {
-            event.preventDefault()
-            event.stopPropagation()
-            void handlePreviewDrop(event.dataTransfer.files)
+      {workspaceTab === 'editor' ? (
+        <details
+          className="app-url-bar"
+          aria-label="Быстрая загрузка yt-dlp"
+          open={panelOpen('quickYtdlp')}
+          onToggle={(e) => {
+            persistPanelToggle('quickYtdlp', e.currentTarget.open)
           }}
         >
-          {preview ? (
-            <>
-              <div className="app-preview-stack" ref={previewStackRef}>
-                <video
-                  key={preview.mediaUrl}
-                  ref={videoRef}
-                  className="app-preview-video"
-                  controls
-                  src={preview.mediaUrl}
-                  aria-label={`Предпросмотр: ${basenameForAriaLabel(preview.path)}`}
-                />
-                <PreviewTransport
-                  key={preview.mediaUrl}
-                  mediaKey={preview.mediaUrl}
-                  videoRef={videoRef}
-                  fullscreenRootRef={previewStackRef}
-                  disabled={exportBusy || snapshotBusy}
-                />
-                <VideoTimeline
-                  key={preview.mediaUrl}
-                  mediaKey={preview.mediaUrl}
-                  mediaUrl={preview.mediaUrl}
-                  probe={probeInfo}
-                  videoRef={videoRef}
-                  onTrimRangeChange={onTrimRangeSnapshot}
-                />
-                {(probeInfo || probeError) && (
-                  <div className="app-preview-probe" aria-live="polite">
-                    {probeError ? (
-                      <span className="app-preview-probe-error">{probeError}</span>
-                    ) : probeInfo ? (
-                      <PreviewProbeBody
-                        probeInfo={probeInfo}
-                        mediaPathForDefaultSave={preview.path}
-                        probeSectionOpen={{
-                          exportSummary: panelOpen('probeExportSummary'),
-                          tracks: panelOpen('probeTracks'),
-                          chapters: panelOpen('probeChapters'),
-                          rawJson: panelOpen('probeRawJson')
-                        }}
-                        onProbeSectionToggle={(key, nextOpen) => {
-                          const m = {
-                            exportSummary: 'probeExportSummary',
-                            tracks: 'probeTracks',
-                            chapters: 'probeChapters',
-                            rawJson: 'probeRawJson'
-                          } as const
-                          persistPanelToggle(m[key], nextOpen)
-                        }}
-                      />
-                    ) : null}
-                  </div>
-                )}
-                <footer className="app-preview-caption" title={preview.path}>
-                  {preview.name}
-                </footer>
-              </div>
-            </>
-          ) : (
-            <div className="app-preview-placeholder">
-              Нет источника — перетащите видеофайл сюда или «Открыть…» в меню «Файл» / кнопка
-              сверху.
-              <p className="app-preview-hint">
-                Локальный файл стримится через защищённую схему fluxmedia — только после выбора или
-                DnD по пути из Electron.
+          <summary className="app-url-summary">Быстрая загрузка yt-dlp</summary>
+          <div className="app-url-body">
+            <div className="app-url-field">
+              <input
+                className="app-url-input"
+                type="url"
+                inputMode="url"
+                placeholder="URL или список URL — передать в менеджер загрузок"
+                aria-describedby="quickYtdlpUrlHint"
+                value={downloadsUrl}
+                onChange={(e) => {
+                  setDownloadsUrl(e.target.value)
+                }}
+              />
+              <p id="quickYtdlpUrlHint" className="app-url-hint">
+                Ссылка добавляется во вкладку «Загрузки»; несколько URL — по строкам.
               </p>
             </div>
-          )}
-          {!panelOpen('ffmpegSettingsRailOpen') ? (
             <button
               type="button"
-              className="app-ffmpeg-rail-restore app-icon-btn"
+              className="app-btn"
+              aria-describedby="quickYtdlpUrlHint"
               onClick={() => {
-                persistPanelToggle('ffmpegSettingsRailOpen', true)
+                void handleAddDownloadsFromMain(false)
               }}
-              title="Показать настройки FFmpeg"
             >
-              <IconChevronLeft title="" size={18} />
-              <span className="app-ffmpeg-rail-restore-text">FFmpeg</span>
-              <span className="app-visually-hidden">Развернуть панель настроек FFmpeg</span>
+              Во вкладку
             </button>
-          ) : null}
-        </section>
-        {panelOpen('ffmpegSettingsRailOpen') ? (
-          <aside className="app-settings-panel" aria-label="Настройки FFmpeg">
-            <div className="app-settings-panel-head">
-              <div>
-                <h2 className="app-settings-title">Настройки FFmpeg</h2>
-                <p className="app-settings-subtitle">
-                  Секции можно сворачивать, как в референсе v0.
+            <button
+              type="button"
+              className="app-btn"
+              aria-describedby="quickYtdlpUrlHint"
+              onClick={() => {
+                void window.fluxalloy.clipboard.readText().then((t) => {
+                  setDownloadsUrl(t.trim())
+                })
+              }}
+              title="Вставить текст из буфера обмена в поле URL"
+            >
+              Из буфера
+            </button>
+          </div>
+        </details>
+      ) : null}
+
+      {workspaceTab === 'editor' ? (
+        <main
+          className={`app-main app-workbench${panelOpen('ffmpegSettingsRailOpen') ? '' : ' app-workbench-ffmpeg-collapsed'}`}
+        >
+          <section
+            className="app-preview"
+            aria-label="Область предпросмотра"
+            onDragOver={(event) => {
+              event.preventDefault()
+              event.stopPropagation()
+            }}
+            onDrop={(event) => {
+              event.preventDefault()
+              event.stopPropagation()
+              void handlePreviewDrop(event.dataTransfer.files)
+            }}
+          >
+            {preview ? (
+              <>
+                <div className="app-preview-stack" ref={previewStackRef}>
+                  <video
+                    key={preview.mediaUrl}
+                    ref={videoRef}
+                    className="app-preview-video"
+                    controls
+                    src={preview.mediaUrl}
+                    aria-label={`Предпросмотр: ${basenameForAriaLabel(preview.path)}`}
+                  />
+                  <PreviewTransport
+                    key={preview.mediaUrl}
+                    mediaKey={preview.mediaUrl}
+                    videoRef={videoRef}
+                    fullscreenRootRef={previewStackRef}
+                    disabled={exportBusy || snapshotBusy}
+                  />
+                  <VideoTimeline
+                    key={preview.mediaUrl}
+                    mediaKey={preview.mediaUrl}
+                    mediaUrl={preview.mediaUrl}
+                    probe={probeInfo}
+                    videoRef={videoRef}
+                    onTrimRangeChange={onTrimRangeSnapshot}
+                  />
+                  {(probeInfo || probeError) && (
+                    <div className="app-preview-probe" aria-live="polite">
+                      {probeError ? (
+                        <span className="app-preview-probe-error">{probeError}</span>
+                      ) : probeInfo ? (
+                        <PreviewProbeBody
+                          probeInfo={probeInfo}
+                          mediaPathForDefaultSave={preview.path}
+                          probeSectionOpen={{
+                            exportSummary: panelOpen('probeExportSummary'),
+                            tracks: panelOpen('probeTracks'),
+                            chapters: panelOpen('probeChapters'),
+                            rawJson: panelOpen('probeRawJson')
+                          }}
+                          onProbeSectionToggle={(key, nextOpen) => {
+                            const m = {
+                              exportSummary: 'probeExportSummary',
+                              tracks: 'probeTracks',
+                              chapters: 'probeChapters',
+                              rawJson: 'probeRawJson'
+                            } as const
+                            persistPanelToggle(m[key], nextOpen)
+                          }}
+                        />
+                      ) : null}
+                    </div>
+                  )}
+                  <footer className="app-preview-caption" title={preview.path}>
+                    {preview.name}
+                  </footer>
+                </div>
+              </>
+            ) : (
+              <div className="app-preview-placeholder">
+                Нет источника — перетащите видеофайл сюда или «Открыть…» в меню «Файл» / кнопка
+                сверху.
+                <p className="app-preview-hint">
+                  Локальный файл стримится через защищённую схему fluxmedia — только после выбора
+                  или DnD по пути из Electron.
                 </p>
               </div>
-              <div className="app-settings-panel-head-trailing">
-                <button
-                  type="button"
-                  className="app-icon-btn app-settings-rail-collapse-btn"
-                  onClick={() => {
-                    persistPanelToggle('ffmpegSettingsRailOpen', false)
-                  }}
-                  title="Свернуть панель (больше места для превью и таймлайна)"
-                >
-                  <IconChevronRight title="" size={18} />
-                  <span className="app-visually-hidden">Свернуть панель настроек FFmpeg</span>
-                </button>
-                <span className="app-settings-badge">{exportContainer.toUpperCase()}</span>
-              </div>
-            </div>
-
-            <details
-              className="app-settings-section"
-              open={panelOpen('ffmpegVideo')}
-              onToggle={(e) => {
-                persistPanelToggle('ffmpegVideo', e.currentTarget.open)
-              }}
-            >
-              <summary className="app-settings-summary">Видео</summary>
-              <p id="ffmpegVideoSectionHint" className="app-settings-section-hint">
-                Кодек, контейнер, CRF и видеобитрейт итогового файла экспорта §7.
-              </p>
-              <div className="app-settings-grid" aria-describedby="ffmpegVideoSectionHint">
-                <label className="app-field">
-                  <span>Кодек / пресет</span>
-                  <select
-                    className="app-control"
-                    aria-label="Пресет кодирования экспорта MP4"
-                    value={exportEncodePreset}
-                    disabled={exportBusy || snapshotBusy}
-                    onChange={(e) => {
-                      bumpManualExportEdit()
-                      const v = e.target.value as FfmpegExportEncodePresetId
-                      setExportEncodePreset(v)
-                      void window.fluxalloy.settings
-                        .setFfmpegExportEncodePreset(v)
-                        .catch(console.error)
-                    }}
-                  >
-                    {EXPORT_ENCODE_PRESETS.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="app-field">
-                  <span>Контейнер</span>
-                  <select
-                    className="app-control"
-                    aria-label="Контейнер экспорта"
-                    value={exportContainer}
-                    disabled={exportBusy || snapshotBusy}
-                    onChange={(e) => {
-                      bumpManualExportEdit()
-                      const v = e.target.value as FfmpegExportContainerId
-                      setExportContainer(v)
-                      void window.fluxalloy.settings
-                        .setFfmpegExportContainer(v)
-                        .catch(console.error)
-                    }}
-                  >
-                    {EXPORT_CONTAINERS.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="app-field">
-                  <span>CRF</span>
-                  <select
-                    className="app-control"
-                    aria-label="CRF экспорта"
-                    value={exportCrf === null ? 'preset' : String(exportCrf)}
-                    disabled={exportBusy || snapshotBusy}
-                    onChange={(e) => {
-                      bumpManualExportEdit()
-                      const raw = e.target.value
-                      const next = raw === 'preset' ? null : Number(raw)
-                      setExportCrf(next)
-                      void window.fluxalloy.settings.setFfmpegExportCrf(next).catch(console.error)
-                    }}
-                  >
-                    <option value="preset">CRF пресета</option>
-                    {EXPORT_CRF_OPTIONS.map((v) => (
-                      <option key={v} value={v}>
-                        CRF {v}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="app-field">
-                  <span>Bitrate</span>
-                  <select
-                    className="app-control"
-                    aria-label="Video bitrate экспорта"
-                    value={exportVideoBitrate === null ? 'crf' : exportVideoBitrate}
-                    disabled={exportBusy || snapshotBusy}
-                    onChange={(e) => {
-                      bumpManualExportEdit()
-                      const raw = e.target.value
-                      const next = raw === 'crf' ? null : raw
-                      setExportVideoBitrate(next)
-                      void window.fluxalloy.settings
-                        .setFfmpegExportVideoBitrate(next)
-                        .catch(console.error)
-                    }}
-                  >
-                    <option value="crf">Видео CRF</option>
-                    {EXPORT_VIDEO_BITRATES.map((v) => (
-                      <option key={v} value={v}>
-                        Video {v}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-            </details>
-
-            <details
-              className="app-settings-section"
-              open={panelOpen('ffmpegFormat')}
-              onToggle={(e) => {
-                persistPanelToggle('ffmpegFormat', e.currentTarget.open)
-              }}
-            >
-              <summary className="app-settings-summary">Формат</summary>
-              <p id="ffmpegFormatSectionHint" className="app-settings-section-hint">
-                Масштаб, FPS, поворот/зеркало и кадрирование относительно исходного кадра.
-              </p>
-              <div className="app-settings-grid" aria-describedby="ffmpegFormatSectionHint">
-                <label className="app-field">
-                  <span>Разрешение</span>
-                  <select
-                    className="app-control"
-                    aria-label="Размер экспорта"
-                    value={exportScalePreset}
-                    disabled={exportBusy || snapshotBusy}
-                    onChange={(e) => {
-                      bumpManualExportEdit()
-                      const v = e.target.value as FfmpegExportScalePresetId
-                      setExportScalePreset(v)
-                      void window.fluxalloy.settings
-                        .setFfmpegExportScalePreset(v)
-                        .catch(console.error)
-                    }}
-                  >
-                    {EXPORT_SCALE_PRESETS.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="app-field">
-                  <span>FPS</span>
-                  <select
-                    className="app-control"
-                    aria-label="FPS экспорта"
-                    value={exportFps === null ? 'source' : String(exportFps)}
-                    disabled={exportBusy || snapshotBusy}
-                    onChange={(e) => {
-                      bumpManualExportEdit()
-                      const raw = e.target.value
-                      const next = raw === 'source' ? null : Number(raw)
-                      setExportFps(next)
-                      void window.fluxalloy.settings.setFfmpegExportFps(next).catch(console.error)
-                    }}
-                  >
-                    <option value="source">FPS исходный</option>
-                    {EXPORT_FPS_OPTIONS.map((v) => (
-                      <option key={v} value={v}>
-                        {v} fps
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="app-field">
-                  <span>Поворот</span>
-                  <select
-                    className="app-control"
-                    aria-label="Поворот или зеркало экспорта"
-                    value={exportVideoTransform}
-                    disabled={exportBusy || snapshotBusy}
-                    onChange={(e) => {
-                      bumpManualExportEdit()
-                      const v = e.target.value as FfmpegExportVideoTransformId
-                      setExportVideoTransform(v)
-                      void window.fluxalloy.settings
-                        .setFfmpegExportVideoTransform(v)
-                        .catch(console.error)
-                    }}
-                  >
-                    {EXPORT_VIDEO_TRANSFORMS.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="app-field">
-                  <span>Crop</span>
-                  <select
-                    className="app-control"
-                    aria-label="Crop экспорта"
-                    value={exportCropPreset}
-                    disabled={exportBusy || snapshotBusy}
-                    onChange={(e) => {
-                      bumpManualExportEdit()
-                      const v = e.target.value as FfmpegExportCropPresetId
-                      setExportCropPreset(v)
-                      void window.fluxalloy.settings
-                        .setFfmpegExportCropPreset(v)
-                        .catch(console.error)
-                    }}
-                  >
-                    {EXPORT_CROP_PRESETS.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-            </details>
-
-            <details
-              className="app-settings-section"
-              open={panelOpen('ffmpegAudio')}
-              onToggle={(e) => {
-                persistPanelToggle('ffmpegAudio', e.currentTarget.open)
-              }}
-            >
-              <summary className="app-settings-summary">Аудио и кадр</summary>
-              <p id="ffmpegAudioSectionHint" className="app-settings-section-hint">
-                Аудиодорожка экспорта и параметры сохранения снимка кадра §7.
-              </p>
-              <div className="app-settings-grid" aria-describedby="ffmpegAudioSectionHint">
-                <label className="app-field">
-                  <span>Аудио</span>
-                  <select
-                    className="app-control"
-                    aria-label="Режим аудио экспорта"
-                    value={exportAudioMode}
-                    disabled={exportBusy || snapshotBusy}
-                    onChange={(e) => {
-                      bumpManualExportEdit()
-                      const v = e.target.value === 'none' ? 'none' : 'aac'
-                      setExportAudioMode(v)
-                      void window.fluxalloy.settings
-                        .setFfmpegExportAudioMode(v)
-                        .catch(console.error)
-                    }}
-                  >
-                    {EXPORT_AUDIO_MODES.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="app-field">
-                  <span>AAC bitrate</span>
-                  <select
-                    className="app-control"
-                    aria-label="Аудио bitrate экспорта"
-                    value={exportAudioBitrate}
-                    disabled={exportBusy || snapshotBusy || exportAudioMode === 'none'}
-                    onChange={(e) => {
-                      bumpManualExportEdit()
-                      const v = e.target.value
-                      setExportAudioBitrate(v)
-                      void window.fluxalloy.settings
-                        .setFfmpegExportAudioBitrate(v)
-                        .catch(console.error)
-                    }}
-                  >
-                    {EXPORT_AUDIO_BITRATES.map((v) => (
-                      <option key={v} value={v}>
-                        AAC {v}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="app-field">
-                  <span>Формат кадра</span>
-                  <select
-                    className="app-control"
-                    aria-label="Формат снимка кадра"
-                    value={snapshotFormat}
-                    disabled={exportBusy || snapshotBusy}
-                    onChange={(e) => {
-                      const v = e.target.value === 'jpg' ? 'jpg' : 'png'
-                      setSnapshotFormat(v)
-                      void window.fluxalloy.settings.setFfmpegSnapshotFormat(v).catch(console.error)
-                    }}
-                  >
-                    {SNAPSHOT_FORMATS.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-              {lastSnapshotPath ? (
-                <div className="app-settings-actions">
-                  <button
-                    type="button"
-                    className="app-btn app-btn-compact"
-                    disabled={exportBusy || snapshotBusy}
-                    aria-describedby="ffmpegAudioSectionHint"
-                    onClick={() => {
-                      void handleOpenLastSnapshot('file')
-                    }}
-                  >
-                    Файл кадра
-                  </button>
-                  <button
-                    type="button"
-                    className="app-btn app-btn-compact"
-                    disabled={exportBusy || snapshotBusy}
-                    aria-describedby="ffmpegAudioSectionHint"
-                    onClick={() => {
-                      void handleOpenLastSnapshot('folder')
-                    }}
-                  >
-                    Папка
-                  </button>
-                  <button
-                    type="button"
-                    className="app-btn app-btn-compact"
-                    disabled={exportBusy || snapshotBusy}
-                    aria-describedby="ffmpegAudioSectionHint"
-                    onClick={() => {
-                      void handleCopyLastSnapshotPath()
-                    }}
-                  >
-                    Копировать
-                  </button>
+            )}
+            {!panelOpen('ffmpegSettingsRailOpen') ? (
+              <button
+                type="button"
+                className="app-ffmpeg-rail-restore app-icon-btn"
+                onClick={() => {
+                  persistPanelToggle('ffmpegSettingsRailOpen', true)
+                }}
+                title="Показать настройки FFmpeg"
+              >
+                <IconChevronLeft title="" size={18} />
+                <span className="app-ffmpeg-rail-restore-text">FFmpeg</span>
+                <span className="app-visually-hidden">Развернуть панель настроек FFmpeg</span>
+              </button>
+            ) : null}
+          </section>
+          {panelOpen('ffmpegSettingsRailOpen') ? (
+            <aside className="app-settings-panel" aria-label="Настройки FFmpeg">
+              <div className="app-settings-panel-head">
+                <div>
+                  <h2 className="app-settings-title">Настройки FFmpeg</h2>
+                  <p className="app-settings-subtitle">
+                    Секции можно сворачивать, как в референсе v0.
+                  </p>
                 </div>
-              ) : null}
-            </details>
-
-            <details
-              className="app-settings-section"
-              open={panelOpen('ffmpegPresets')}
-              onToggle={(e) => {
-                persistPanelToggle('ffmpegPresets', e.currentTarget.open)
-              }}
-            >
-              <summary className="app-settings-summary">Пресеты</summary>
-              <p id="ffmpegPresetsSectionHint" className="app-settings-section-hint">
-                Сохранённые снимки настроек экспорта; кнопки меняют список пресетов в настройках.
-              </p>
-              <div className="app-settings-stack" aria-describedby="ffmpegPresetsSectionHint">
-                <label className="app-field">
-                  <span>Пользовательский пресет</span>
-                  <select
-                    className="app-control"
-                    aria-label="Пользовательский пресет экспорта"
-                    value={selectedUserPresetId ?? ''}
-                    disabled={exportBusy || snapshotBusy}
-                    onChange={(e) => {
-                      const v = e.target.value
-                      if (v === '') {
-                        setSelectedUserPresetId(null)
-                        return
-                      }
-                      const preset = exportUserPresets.find((p) => p.id === v)
-                      if (!preset) {
-                        return
-                      }
-                      void window.fluxalloy.settings
-                        .applyFfmpegExportSnapshot(preset.snapshot)
-                        .then((s) => {
-                          hydrateExportFieldsFromSettings(s)
-                          setSelectedUserPresetId(v)
-                        })
-                        .catch(console.error)
-                    }}
-                  >
-                    <option value="">Пресет: —</option>
-                    {exportUserPresets.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <div className="app-settings-actions">
+                <div className="app-settings-panel-head-trailing">
                   <button
                     type="button"
-                    className="app-btn app-btn-compact"
-                    disabled={exportBusy || snapshotBusy}
-                    aria-describedby="ffmpegPresetsSectionHint"
+                    className="app-icon-btn app-settings-rail-collapse-btn"
                     onClick={() => {
-                      handleSaveExportUserPreset()
+                      persistPanelToggle('ffmpegSettingsRailOpen', false)
                     }}
+                    title="Свернуть панель (больше места для превью и таймлайна)"
                   >
-                    + Пресет
+                    <IconChevronRight title="" size={18} />
+                    <span className="app-visually-hidden">Свернуть панель настроек FFmpeg</span>
                   </button>
-                  <button
-                    type="button"
-                    className="app-btn app-btn-compact"
-                    disabled={exportBusy || snapshotBusy || !selectedUserPresetId}
-                    aria-describedby="ffmpegPresetsSectionHint"
-                    onClick={() => {
-                      handleRenameExportUserPreset()
-                    }}
-                  >
-                    Имя
-                  </button>
-                  <button
-                    type="button"
-                    className="app-btn app-btn-compact"
-                    disabled={exportBusy || snapshotBusy || !selectedUserPresetId}
-                    aria-describedby="ffmpegPresetsSectionHint"
-                    onClick={() => {
-                      handleOverwriteExportUserPreset()
-                    }}
-                  >
-                    Обновить
-                  </button>
-                  <button
-                    type="button"
-                    className="app-btn app-btn-compact"
-                    disabled={exportBusy || snapshotBusy || !selectedUserPresetId}
-                    aria-describedby="ffmpegPresetsSectionHint"
-                    onClick={() => {
-                      handleDeleteExportUserPreset()
-                    }}
-                  >
-                    Удалить
-                  </button>
+                  <span className="app-settings-badge">{exportContainer.toUpperCase()}</span>
                 </div>
               </div>
-            </details>
 
-            <details
-              className="app-settings-section"
-              open={panelOpen('ffmpegOutput')}
-              onToggle={(e) => {
-                persistPanelToggle('ffmpegOutput', e.currentTarget.open)
-              }}
-            >
-              <summary className="app-settings-summary">Вывод</summary>
-              <p id="ffmpegOutputSectionHint" className="app-settings-section-hint">
-                Превью argv, экспорт через диалог «Сохранить» и быстрые действия над последним
-                файлом.
-              </p>
-              <div className="app-settings-stack" aria-describedby="ffmpegOutputSectionHint">
-                <details
-                  className="app-export-preview app-export-preview-nested"
-                  open={panelOpen('exportCommandPreview')}
-                  onToggle={(e) => {
-                    persistPanelToggle('exportCommandPreview', e.currentTarget.open)
-                  }}
-                >
-                  <summary className="app-export-preview-summary">Превью команды ffmpeg</summary>
-                  <div className="app-export-preview-body">
-                    <pre
-                      className="app-export-preview-pre"
-                      aria-label="Команда ffmpeg"
-                      aria-describedby="exportCommandPreviewHint"
+              <details
+                className="app-settings-section"
+                open={panelOpen('ffmpegVideo')}
+                onToggle={(e) => {
+                  persistPanelToggle('ffmpegVideo', e.currentTarget.open)
+                }}
+              >
+                <summary className="app-settings-summary">Видео</summary>
+                <p id="ffmpegVideoSectionHint" className="app-settings-section-hint">
+                  Кодек, контейнер, CRF и видеобитрейт итогового файла экспорта §7.
+                </p>
+                <div className="app-settings-grid" aria-describedby="ffmpegVideoSectionHint">
+                  <label className="app-field">
+                    <span>Кодек / пресет</span>
+                    <select
+                      className="app-control"
+                      aria-label="Пресет кодирования экспорта MP4"
+                      value={exportEncodePreset}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const v = e.target.value as FfmpegExportEncodePresetId
+                        setExportEncodePreset(v)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportEncodePreset(v)
+                          .catch(console.error)
+                      }}
                     >
-                      {exportPreviewCommand}
-                    </pre>
-                    <div className="app-export-preview-actions">
-                      <button
-                        type="button"
-                        className="app-btn app-btn-compact"
-                        onClick={() => {
-                          void handleCopyExportPreview()
-                        }}
-                        title="Скопировать строку команды ffmpeg в буфер"
-                        aria-describedby="exportCommandPreviewHint"
-                      >
-                        Копировать
-                      </button>
-                      <span id="exportCommandPreviewHint" className="app-export-preview-hint">
-                        {exportPreviewHint()}
-                      </span>
-                    </div>
-                  </div>
-                </details>
-                {lastExportPath ? (
+                      {EXPORT_ENCODE_PRESETS.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="app-field">
+                    <span>Контейнер</span>
+                    <select
+                      className="app-control"
+                      aria-label="Контейнер экспорта"
+                      value={exportContainer}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const v = e.target.value as FfmpegExportContainerId
+                        setExportContainer(v)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportContainer(v)
+                          .catch(console.error)
+                      }}
+                    >
+                      {EXPORT_CONTAINERS.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="app-field">
+                    <span>CRF</span>
+                    <select
+                      className="app-control"
+                      aria-label="CRF экспорта"
+                      value={exportCrf === null ? 'preset' : String(exportCrf)}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const raw = e.target.value
+                        const next = raw === 'preset' ? null : Number(raw)
+                        setExportCrf(next)
+                        void window.fluxalloy.settings.setFfmpegExportCrf(next).catch(console.error)
+                      }}
+                    >
+                      <option value="preset">CRF пресета</option>
+                      {EXPORT_CRF_OPTIONS.map((v) => (
+                        <option key={v} value={v}>
+                          CRF {v}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="app-field">
+                    <span>Bitrate</span>
+                    <select
+                      className="app-control"
+                      aria-label="Video bitrate экспорта"
+                      value={exportVideoBitrate === null ? 'crf' : exportVideoBitrate}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const raw = e.target.value
+                        const next = raw === 'crf' ? null : raw
+                        setExportVideoBitrate(next)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportVideoBitrate(next)
+                          .catch(console.error)
+                      }}
+                    >
+                      <option value="crf">Видео CRF</option>
+                      {EXPORT_VIDEO_BITRATES.map((v) => (
+                        <option key={v} value={v}>
+                          Video {v}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+              </details>
+
+              <details
+                className="app-settings-section"
+                open={panelOpen('ffmpegFormat')}
+                onToggle={(e) => {
+                  persistPanelToggle('ffmpegFormat', e.currentTarget.open)
+                }}
+              >
+                <summary className="app-settings-summary">Формат</summary>
+                <p id="ffmpegFormatSectionHint" className="app-settings-section-hint">
+                  Масштаб, FPS, поворот/зеркало и кадрирование относительно исходного кадра.
+                </p>
+                <div className="app-settings-grid" aria-describedby="ffmpegFormatSectionHint">
+                  <label className="app-field">
+                    <span>Разрешение</span>
+                    <select
+                      className="app-control"
+                      aria-label="Размер экспорта"
+                      value={exportScalePreset}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const v = e.target.value as FfmpegExportScalePresetId
+                        setExportScalePreset(v)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportScalePreset(v)
+                          .catch(console.error)
+                      }}
+                    >
+                      {EXPORT_SCALE_PRESETS.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="app-field">
+                    <span>FPS</span>
+                    <select
+                      className="app-control"
+                      aria-label="FPS экспорта"
+                      value={exportFps === null ? 'source' : String(exportFps)}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const raw = e.target.value
+                        const next = raw === 'source' ? null : Number(raw)
+                        setExportFps(next)
+                        void window.fluxalloy.settings.setFfmpegExportFps(next).catch(console.error)
+                      }}
+                    >
+                      <option value="source">FPS исходный</option>
+                      {EXPORT_FPS_OPTIONS.map((v) => (
+                        <option key={v} value={v}>
+                          {v} fps
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="app-field">
+                    <span>Поворот</span>
+                    <select
+                      className="app-control"
+                      aria-label="Поворот или зеркало экспорта"
+                      value={exportVideoTransform}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const v = e.target.value as FfmpegExportVideoTransformId
+                        setExportVideoTransform(v)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportVideoTransform(v)
+                          .catch(console.error)
+                      }}
+                    >
+                      {EXPORT_VIDEO_TRANSFORMS.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="app-field">
+                    <span>Crop</span>
+                    <select
+                      className="app-control"
+                      aria-label="Crop экспорта"
+                      value={exportCropPreset}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const v = e.target.value as FfmpegExportCropPresetId
+                        setExportCropPreset(v)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportCropPreset(v)
+                          .catch(console.error)
+                      }}
+                    >
+                      {EXPORT_CROP_PRESETS.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+              </details>
+
+              <details
+                className="app-settings-section"
+                open={panelOpen('ffmpegAudio')}
+                onToggle={(e) => {
+                  persistPanelToggle('ffmpegAudio', e.currentTarget.open)
+                }}
+              >
+                <summary className="app-settings-summary">Аудио и кадр</summary>
+                <p id="ffmpegAudioSectionHint" className="app-settings-section-hint">
+                  Аудиодорожка экспорта и параметры сохранения снимка кадра §7.
+                </p>
+                <div className="app-settings-grid" aria-describedby="ffmpegAudioSectionHint">
+                  <label className="app-field">
+                    <span>Аудио</span>
+                    <select
+                      className="app-control"
+                      aria-label="Режим аудио экспорта"
+                      value={exportAudioMode}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const v = e.target.value === 'none' ? 'none' : 'aac'
+                        setExportAudioMode(v)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportAudioMode(v)
+                          .catch(console.error)
+                      }}
+                    >
+                      {EXPORT_AUDIO_MODES.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="app-field">
+                    <span>AAC bitrate</span>
+                    <select
+                      className="app-control"
+                      aria-label="Аудио bitrate экспорта"
+                      value={exportAudioBitrate}
+                      disabled={exportBusy || snapshotBusy || exportAudioMode === 'none'}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const v = e.target.value
+                        setExportAudioBitrate(v)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportAudioBitrate(v)
+                          .catch(console.error)
+                      }}
+                    >
+                      {EXPORT_AUDIO_BITRATES.map((v) => (
+                        <option key={v} value={v}>
+                          AAC {v}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="app-field">
+                    <span>Формат кадра</span>
+                    <select
+                      className="app-control"
+                      aria-label="Формат снимка кадра"
+                      value={snapshotFormat}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        const v = e.target.value === 'jpg' ? 'jpg' : 'png'
+                        setSnapshotFormat(v)
+                        void window.fluxalloy.settings
+                          .setFfmpegSnapshotFormat(v)
+                          .catch(console.error)
+                      }}
+                    >
+                      {SNAPSHOT_FORMATS.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+                {lastSnapshotPath ? (
                   <div className="app-settings-actions">
                     <button
                       type="button"
                       className="app-btn app-btn-compact"
                       disabled={exportBusy || snapshotBusy}
-                      aria-describedby="ffmpegOutputSectionHint"
+                      aria-describedby="ffmpegAudioSectionHint"
                       onClick={() => {
-                        void handleOpenLastExport('file')
+                        void handleOpenLastSnapshot('file')
                       }}
                     >
-                      Файл
+                      Файл кадра
                     </button>
                     <button
                       type="button"
                       className="app-btn app-btn-compact"
                       disabled={exportBusy || snapshotBusy}
-                      aria-describedby="ffmpegOutputSectionHint"
+                      aria-describedby="ffmpegAudioSectionHint"
                       onClick={() => {
-                        void handleOpenLastExport('folder')
+                        void handleOpenLastSnapshot('folder')
                       }}
                     >
                       Папка
@@ -1904,31 +1812,386 @@ function App(): JSX.Element {
                       type="button"
                       className="app-btn app-btn-compact"
                       disabled={exportBusy || snapshotBusy}
-                      aria-describedby="ffmpegOutputSectionHint"
+                      aria-describedby="ffmpegAudioSectionHint"
                       onClick={() => {
-                        void handleOpenLastExport('preview')
+                        void handleCopyLastSnapshotPath()
                       }}
                     >
-                      В превью
+                      Копировать
                     </button>
+                  </div>
+                ) : null}
+              </details>
+
+              <details
+                className="app-settings-section"
+                open={panelOpen('ffmpegPresets')}
+                onToggle={(e) => {
+                  persistPanelToggle('ffmpegPresets', e.currentTarget.open)
+                }}
+              >
+                <summary className="app-settings-summary">Пресеты</summary>
+                <p id="ffmpegPresetsSectionHint" className="app-settings-section-hint">
+                  Сохранённые снимки настроек экспорта; кнопки меняют список пресетов в настройках.
+                </p>
+                <div className="app-settings-stack" aria-describedby="ffmpegPresetsSectionHint">
+                  <label className="app-field">
+                    <span>Пользовательский пресет</span>
+                    <select
+                      className="app-control"
+                      aria-label="Пользовательский пресет экспорта"
+                      value={selectedUserPresetId ?? ''}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        const v = e.target.value
+                        if (v === '') {
+                          setSelectedUserPresetId(null)
+                          return
+                        }
+                        const preset = exportUserPresets.find((p) => p.id === v)
+                        if (!preset) {
+                          return
+                        }
+                        void window.fluxalloy.settings
+                          .applyFfmpegExportSnapshot(preset.snapshot)
+                          .then((s) => {
+                            hydrateExportFieldsFromSettings(s)
+                            setSelectedUserPresetId(v)
+                          })
+                          .catch(console.error)
+                      }}
+                    >
+                      <option value="">Пресет: —</option>
+                      {exportUserPresets.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <div className="app-settings-actions">
                     <button
                       type="button"
                       className="app-btn app-btn-compact"
                       disabled={exportBusy || snapshotBusy}
-                      aria-describedby="ffmpegOutputSectionHint"
+                      aria-describedby="ffmpegPresetsSectionHint"
                       onClick={() => {
-                        void handleCopyLastExportPath()
+                        handleSaveExportUserPreset()
                       }}
                     >
-                      Копировать путь
+                      + Пресет
+                    </button>
+                    <button
+                      type="button"
+                      className="app-btn app-btn-compact"
+                      disabled={exportBusy || snapshotBusy || !selectedUserPresetId}
+                      aria-describedby="ffmpegPresetsSectionHint"
+                      onClick={() => {
+                        handleRenameExportUserPreset()
+                      }}
+                    >
+                      Имя
+                    </button>
+                    <button
+                      type="button"
+                      className="app-btn app-btn-compact"
+                      disabled={exportBusy || snapshotBusy || !selectedUserPresetId}
+                      aria-describedby="ffmpegPresetsSectionHint"
+                      onClick={() => {
+                        handleOverwriteExportUserPreset()
+                      }}
+                    >
+                      Обновить
+                    </button>
+                    <button
+                      type="button"
+                      className="app-btn app-btn-compact"
+                      disabled={exportBusy || snapshotBusy || !selectedUserPresetId}
+                      aria-describedby="ffmpegPresetsSectionHint"
+                      onClick={() => {
+                        handleDeleteExportUserPreset()
+                      }}
+                    >
+                      Удалить
                     </button>
                   </div>
-                ) : null}
+                </div>
+              </details>
+
+              <details
+                className="app-settings-section"
+                open={panelOpen('ffmpegOutput')}
+                onToggle={(e) => {
+                  persistPanelToggle('ffmpegOutput', e.currentTarget.open)
+                }}
+              >
+                <summary className="app-settings-summary">Вывод</summary>
+                <p id="ffmpegOutputSectionHint" className="app-settings-section-hint">
+                  Превью argv, экспорт через диалог «Сохранить» и быстрые действия над последним
+                  файлом.
+                </p>
+                <div className="app-settings-stack" aria-describedby="ffmpegOutputSectionHint">
+                  <details
+                    className="app-export-preview app-export-preview-nested"
+                    open={panelOpen('exportCommandPreview')}
+                    onToggle={(e) => {
+                      persistPanelToggle('exportCommandPreview', e.currentTarget.open)
+                    }}
+                  >
+                    <summary className="app-export-preview-summary">Превью команды ffmpeg</summary>
+                    <div className="app-export-preview-body">
+                      <pre
+                        className="app-export-preview-pre"
+                        aria-label="Команда ffmpeg"
+                        aria-describedby="exportCommandPreviewHint"
+                      >
+                        {exportPreviewCommand}
+                      </pre>
+                      <div className="app-export-preview-actions">
+                        <button
+                          type="button"
+                          className="app-btn app-btn-compact"
+                          onClick={() => {
+                            void handleCopyExportPreview()
+                          }}
+                          title="Скопировать строку команды ffmpeg в буфер"
+                          aria-describedby="exportCommandPreviewHint"
+                        >
+                          Копировать
+                        </button>
+                        <span id="exportCommandPreviewHint" className="app-export-preview-hint">
+                          {exportPreviewHint()}
+                        </span>
+                      </div>
+                    </div>
+                  </details>
+                  {lastExportPath ? (
+                    <div className="app-settings-actions">
+                      <button
+                        type="button"
+                        className="app-btn app-btn-compact"
+                        disabled={exportBusy || snapshotBusy}
+                        aria-describedby="ffmpegOutputSectionHint"
+                        onClick={() => {
+                          void handleOpenLastExport('file')
+                        }}
+                      >
+                        Файл
+                      </button>
+                      <button
+                        type="button"
+                        className="app-btn app-btn-compact"
+                        disabled={exportBusy || snapshotBusy}
+                        aria-describedby="ffmpegOutputSectionHint"
+                        onClick={() => {
+                          void handleOpenLastExport('folder')
+                        }}
+                      >
+                        Папка
+                      </button>
+                      <button
+                        type="button"
+                        className="app-btn app-btn-compact"
+                        disabled={exportBusy || snapshotBusy}
+                        aria-describedby="ffmpegOutputSectionHint"
+                        onClick={() => {
+                          void handleOpenLastExport('preview')
+                        }}
+                      >
+                        В превью
+                      </button>
+                      <button
+                        type="button"
+                        className="app-btn app-btn-compact"
+                        disabled={exportBusy || snapshotBusy}
+                        aria-describedby="ffmpegOutputSectionHint"
+                        onClick={() => {
+                          void handleCopyLastExportPath()
+                        }}
+                      >
+                        Копировать путь
+                      </button>
+                    </div>
+                  ) : null}
+                </div>
+              </details>
+            </aside>
+          ) : null}
+        </main>
+      ) : (
+        <main className="app-main app-downloads-workspace" aria-label="Вкладка загрузок">
+          <section className="app-downloads-main">
+            <div className="app-downloads-band">
+              <div className="app-downloads-band-copy">
+                <h2 className="app-downloads-title">Загрузки</h2>
+                <p className="app-downloads-hint">
+                  Основная вкладка очереди yt-dlp. Полное старое окно пока доступно как pop-out,
+                  пока переносим rail/log/history в React workspace.
+                </p>
               </div>
-            </details>
+              <div className="app-downloads-actions">
+                <button
+                  type="button"
+                  className="app-btn"
+                  onClick={() => {
+                    void window.fluxalloy.clipboard.readText().then((t) => {
+                      setDownloadsUrl(t.trim())
+                    })
+                  }}
+                >
+                  Из буфера
+                </button>
+                <button
+                  type="button"
+                  className="app-btn"
+                  onClick={() => {
+                    void window.fluxalloy.downloads.openWindow(downloadsUrl || null)
+                  }}
+                >
+                  Pop-out
+                </button>
+              </div>
+            </div>
+            <div className="app-downloads-url-row">
+              <textarea
+                className="app-downloads-url-input"
+                value={downloadsUrl}
+                placeholder="URL или несколько URL по строкам"
+                aria-label="URL для добавления в очередь загрузок"
+                onChange={(e) => {
+                  setDownloadsUrl(e.target.value)
+                }}
+              />
+              <div className="app-downloads-url-actions">
+                <button
+                  type="button"
+                  className="app-btn app-btn-primary"
+                  onClick={() => {
+                    void handleAddDownloadsFromMain(false)
+                  }}
+                >
+                  Добавить
+                </button>
+                <button
+                  type="button"
+                  className="app-btn"
+                  onClick={() => {
+                    void handleAddDownloadsFromMain(true)
+                  }}
+                >
+                  Добавить и начать
+                </button>
+                <button
+                  type="button"
+                  className="app-btn"
+                  onClick={() => {
+                    void window.fluxalloy.downloads.startQueue().then((res) => {
+                      if (!res.ok) {
+                        setStatusHint(res.error)
+                      }
+                    })
+                  }}
+                >
+                  Начать очередь
+                </button>
+              </div>
+            </div>
+            <div className="app-downloads-table-wrap">
+              <table className="app-downloads-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Название / URL</th>
+                    <th>Формат</th>
+                    <th>Размер</th>
+                    <th>Прогресс</th>
+                    <th>Скорость</th>
+                    <th>ETA</th>
+                    <th>Статус</th>
+                    <th>Действия</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {downloadsRows.length === 0 ? (
+                    <tr>
+                      <td colSpan={9} className="app-downloads-empty">
+                        Очередь пуста. Добавьте URL сверху или из быстрых действий редактора.
+                      </td>
+                    </tr>
+                  ) : (
+                    downloadsRows.map((row) => (
+                      <tr key={row.id}>
+                        <td className="app-downloads-mono">{row.id}</td>
+                        <td>
+                          <div className="app-downloads-row-title">{row.shortLabel}</div>
+                          <div className="app-downloads-row-url">{row.url}</div>
+                        </td>
+                        <td className="app-downloads-mono">{row.queueFmt ?? '—'}</td>
+                        <td className="app-downloads-mono">{row.queueSize ?? '—'}</td>
+                        <td className="app-downloads-mono">{row.progress}</td>
+                        <td className="app-downloads-mono">{row.queueSpeed ?? '—'}</td>
+                        <td className="app-downloads-mono">{row.queueEta ?? '—'}</td>
+                        <td>{row.status}</td>
+                        <td>
+                          <div className="app-downloads-row-actions">
+                            <button
+                              type="button"
+                              className="app-btn app-btn-compact"
+                              onClick={() => {
+                                const fn = row.status.startsWith('Ошибка')
+                                  ? window.fluxalloy.downloads.retryRow
+                                  : window.fluxalloy.downloads.startRow
+                                void fn(row.id).then((res) => {
+                                  if (!res.ok) {
+                                    setStatusHint(res.error)
+                                  }
+                                })
+                              }}
+                            >
+                              {row.status.startsWith('Ошибка') ? 'Retry' : 'Start'}
+                            </button>
+                            {row.outputPath ? (
+                              <button
+                                type="button"
+                                className="app-btn app-btn-compact"
+                                onClick={() => {
+                                  void window.fluxalloy.downloads.openQueueOutput(row.id, 'folder')
+                                }}
+                              >
+                                Папка
+                              </button>
+                            ) : null}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <aside className="app-downloads-rail" aria-label="Настройки загрузок">
+            <h3 className="app-settings-title">Downloads rail</h3>
+            <p className="app-settings-subtitle">
+              Следующий шаг переноса: встроить сюда настройки `Формат / Метаданные / Сохранение /
+              Сеть`, журнал операций и историю из pop-out окна.
+            </p>
+            <button
+              type="button"
+              className="app-btn"
+              onClick={() => {
+                void window.fluxalloy.downloads.cancelQueue().then((res) => {
+                  if (!res.ok) {
+                    setStatusHint(res.error)
+                  }
+                })
+              }}
+            >
+              Остановить текущую
+            </button>
           </aside>
-        ) : null}
-      </main>
+        </main>
+      )}
 
       <footer className="app-statusbar">
         <span>{engineSummaryText(engineSummary)}</span>
