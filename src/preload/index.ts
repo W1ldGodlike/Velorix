@@ -45,6 +45,34 @@ import { mainWindowIpc as mw } from '../shared/ipc-channels'
 
 type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
 
+const MAIN_UI_PANEL_KEYS = [
+  'quickYtdlp',
+  'ffmpegVideo',
+  'ffmpegFormat',
+  'ffmpegAudio',
+  'ffmpegPresets',
+  'ffmpegOutput',
+  'exportCommandPreview',
+  'probeExportSummary',
+  'probeTracks',
+  'probeChapters',
+  'probeRawJson'
+] as const satisfies ReadonlyArray<keyof MainWindowUiPanelState>
+
+function sanitizeMainWindowUiPanelState(raw: unknown): MainWindowUiPanelState | undefined {
+  if (!raw || typeof raw !== 'object') {
+    return undefined
+  }
+  const src = raw as Record<string, unknown>
+  const out: MainWindowUiPanelState = {}
+  for (const key of MAIN_UI_PANEL_KEYS) {
+    if (typeof src[key] === 'boolean') {
+      out[key] = src[key]
+    }
+  }
+  return Object.keys(out).length > 0 ? out : undefined
+}
+
 // Единственная публичная поверхность приложения в renderer.
 // Всё, что требует Node/Electron прав (FS, процессы, реальные пути), остаётся в main и
 // прокидывается сюда маленькими методами. Это упрощает аудит безопасности и не даёт UI
@@ -282,10 +310,10 @@ const fluxalloy = {
         listener(undefined)
         return
       }
-      if (typeof raw !== 'object') {
-        return
+      const panels = sanitizeMainWindowUiPanelState(raw)
+      if (panels !== undefined) {
+        listener(panels)
       }
-      listener(raw as MainWindowUiPanelState)
     }
     ipcRenderer.on(channel, handler)
     return (): void => {

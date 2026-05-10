@@ -96,15 +96,31 @@ export function sanitizePersistedQueuePayload(raw: unknown): DownloadsQueueRow[]
   if (!Array.isArray(arr)) {
     return []
   }
-  const out: DownloadsQueueRow[] = []
+  const parsedRows: DownloadsQueueRow[] = []
   for (const item of arr) {
     const row = parsePersistedDownloadsQueueRow(item)
     if (row) {
-      out.push(row)
+      parsedRows.push(row)
     }
-    if (out.length >= YTDLP_DOWNLOAD_QUEUE_MAX_ROWS) {
+    if (parsedRows.length >= YTDLP_DOWNLOAD_QUEUE_MAX_ROWS) {
       break
     }
+  }
+
+  const usedIds = new Set<number>()
+  let nextId = parsedRows.reduce((m, row) => Math.max(m, row.id), 0) + 1
+  const out: DownloadsQueueRow[] = []
+  for (const row of parsedRows) {
+    const uniqueRow = { ...row }
+    if (usedIds.has(uniqueRow.id)) {
+      while (usedIds.has(nextId)) {
+        nextId += 1
+      }
+      uniqueRow.id = nextId
+      nextId += 1
+    }
+    usedIds.add(uniqueRow.id)
+    out.push(uniqueRow)
   }
   return out
 }

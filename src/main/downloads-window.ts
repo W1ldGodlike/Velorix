@@ -2002,16 +2002,20 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
 
       function wireDownloadsTopbarBridges() {
         var pairs = [
-          ['dlTopFilm', function () { api.bridgeOpenInspector(null); }],
-          ['dlTopHome', function () { api.bridgeFocusMainEditor(); }],
-          ['dlTopEngines', function () { api.bridgeOpenEnginePaths(); }],
-          ['dlTopHelp', function () { api.bridgeOpenAbout(); }]
+          ['dlTopFilm', function () { return api.bridgeOpenInspector(null); }],
+          ['dlTopHome', function () { return api.bridgeFocusMainEditor(); }],
+          ['dlTopEngines', function () { return api.bridgeOpenEnginePaths(); }],
+          ['dlTopHelp', function () { return api.bridgeOpenAbout(); }]
         ];
         pairs.forEach(function (pair) {
           var el = document.getElementById(pair[0]);
           if (!el) return;
           el.addEventListener('click', function () {
-            pair[1]();
+            Promise.resolve(pair[1]()).then(function (res) {
+              if (res && res.ok === false && res.error) window.alert(res.error);
+            }).catch(function (err) {
+              window.alert(err && err.message ? err.message : String(err));
+            });
           });
         });
       }

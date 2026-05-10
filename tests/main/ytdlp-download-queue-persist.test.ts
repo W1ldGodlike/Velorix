@@ -83,6 +83,38 @@ describe('sanitizePersistedQueuePayload', () => {
       })
     ).toHaveLength(1)
   })
+
+  it('перенумеровывает дубли id при восстановлении очереди', () => {
+    const rows = sanitizePersistedQueuePayload({
+      schema: YTDLP_DOWNLOAD_QUEUE_PERSIST_SCHEMA,
+      rows: [
+        {
+          id: 7,
+          url: 'https://x.test/a',
+          shortLabel: 'a',
+          progress: '—',
+          status: 'Ожидание'
+        },
+        {
+          id: 7,
+          url: 'https://x.test/b',
+          shortLabel: 'b',
+          progress: '—',
+          status: 'Ожидание'
+        },
+        {
+          id: 8,
+          url: 'https://x.test/c',
+          shortLabel: 'c',
+          progress: '—',
+          status: 'Ожидание'
+        }
+      ]
+    })
+
+    expect(rows.map((row) => row.id)).toEqual([7, 9, 8])
+    expect(new Set(rows.map((row) => row.id)).size).toBe(rows.length)
+  })
 })
 
 describe('replaceDownloadsQueueState nextId', () => {

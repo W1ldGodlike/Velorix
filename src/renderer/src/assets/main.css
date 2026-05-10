@@ -778,6 +778,8 @@
   position: fixed;
   z-index: 12000;
   min-width: 13rem;
+  max-height: min(26rem, calc(100vh - 1rem));
+  overflow: auto;
   padding: 0.2rem 0;
   background: var(--fa-surface);
   border: 1px solid var(--fa-border-subtle);
@@ -799,7 +801,9 @@
   cursor: pointer;
 }
 
-.app-probe-context-menu-item:hover {
+.app-probe-context-menu-item:hover,
+.app-probe-context-menu-item:focus-visible {
+  outline: none;
   background: color-mix(in srgb, var(--fa-surface) 82%, var(--fa-accent, #4c8bf5) 18%);
 }
 

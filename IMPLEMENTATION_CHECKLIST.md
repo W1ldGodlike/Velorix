@@ -25,7 +25,7 @@
 - [~] Есть запуск `ffmpeg` для экспорта и снимка кадра; полноценный пайплайн обработки/пресетов/очередей ещё впереди. Движки можно **скачать кнопкой** в UI (Windows) в `userData/bin`, есть проверка `--version` после загрузки.
 - [~] Автозагрузка движков **Windows x64** (yt-dlp GitHub + ffmpeg zip gyan.dev), SHA256 опционально через `Data/trusted_hashes.json`; в установщике есть пустой `resources/bin` (`extraResources`), бинарники — подкладка/`userData/bin`.
 - [ ] Нет локализации `locales/**`.
-- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; есть покрытие чистых парсеров и сервисов (`ytdlp-extra-args`, `ytdlp-progress-parser` + постпроцессоры yt-dlp §6.4, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options` + превью каталога §6.3, `ytdlp-download-output`, `ytdlp-commands-hints`, `ytdlp-os-pause-support`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-frame-snapshot-service`, `external-process-log`, `support-bundle`, `ipc-channels`, `engine-contract`, `ffmpeg-export-argv`, `ffprobe-summary-export`, `ffprobe-chapters`, `ffprobe-timecode`, `ffprobe-disposition`).
+- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; есть покрытие чистых парсеров и сервисов (`ytdlp-extra-args`, `ytdlp-progress-parser` + постпроцессоры yt-dlp §6.4, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options` + превью каталога §6.3, `ytdlp-download-output`, `ytdlp-download-queue-persist`, `ytdlp-commands-hints`, `ytdlp-os-pause-support`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-frame-snapshot-service`, `external-process-log`, `support-bundle`, `ipc-channels`, `engine-contract`, `ffmpeg-export-argv`, `ffprobe-summary-export`, `ffprobe-chapters`, `ffprobe-timecode`, `ffprobe-disposition`).
 
 ## Журнал решений и проверок
 
@@ -35,13 +35,13 @@
 
 Правило для агента: этот блок — рабочий навигатор ближайшего спринта. После каждой крупной итерации обновлять его: отмечать сделанное, переводить частичное в `[~]`, убирать устаревшее только если оно отражено ниже по §, и добавлять 3–7 следующих конкретных пунктов. Не оставлять блок полностью закрытым. Для UI/UX-сверки по v0 использовать [`docs/UX_REFERENCE_V0.md`](docs/UX_REFERENCE_V0.md).
 
-- [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; **журнал** — out/err раскраска, счётчик, очистка вида, truncate ~240 KiB; дальше — редкие шаблоны логов yt-dlp по полю.
+- [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; `queue.json` восстанавливается без duplicate id; **журнал** — out/err раскраска, счётчик, очистка вида, truncate ~240 KiB; дальше — редкие шаблоны логов yt-dlp по полю.
 - [~] §6.3: argv whitelist + справочник + превью с draft/override `-o`; после выбора каталога загрузки / вставки флага из справочника / «Шаблон по умолчанию» превью пересчитывается; при необходимости ещё редкие поля.
-- [~] §1.1/§4.A/§6/§9: загрузки lucide/layout/тема/HiDPI; live-панели; инспектор `app-topbar`/`probe*`; rail pill; очередь bar+%; **журнал** v0 нижняя зона; дальше — DPI-матрица 100–200%, ffprobe §9, редкие строки прогресса §6.4.
+- [~] §1.1/§4.A/§6/§9: загрузки lucide/layout/тема/HiDPI; live-панели; инспектор `app-topbar`/`probe*`; rail pill; очередь bar+%; ffprobe context menu доступен с клавиатуры; дальше — DPI-матрица 100–200%, ffprobe §9, редкие строки прогресса §6.4.
 - [~] §7.2: crop/rotate/flip готовы через whitelist `-vf`; настройки перенесены из toolbar в боковую панель; дальше расширенные filters и HW encode.
 - [~] §9: опционально Dolby Vision/`side_data` и прочие расширенные метаданные ffprobe (базовые color\_\* потока уже в таблице).
 - [~] §17/§18: диагностика, Support ZIP, `session.log`; при необходимости отдельные логи по окнам или политика объёма mid-session.
-- [~] §21: новые IPC — только через `ipc-channels` + shared-контракты; точечные Vitest на парсеры/argv.
+- [~] §21: новые IPC — только через `ipc-channels` + shared-контракты; `mainWindowUiPanels` sender-проверка + preload whitelist; точечные Vitest на парсеры/argv.
 
 ---
 
@@ -182,11 +182,11 @@
 - [x] `settings.json` для темы.
 - [~] Последний открытый локальный файл (`lastOpenedSourcePath`) + мягкий restore превью при старте + геометрия main/downloads в `settings.json`; без полного session.json.
 - [x] Сохранять размеры/позиции окон.
-- [~] Сохранять раскрытые панели: главное окно + окно §9 (**push** снимка `mainWindowUiPanels` после сохранения) + yt-dlp (`downloadsWindowUiPanels`); FFmpeg-секции только в редакторе, `probe*` — shared с инспектором.
+- [~] Сохранять раскрытые панели: главное окно + окно §9 (**push** снимка `mainWindowUiPanels` после сохранения; IPC только main/inspector + preload whitelist) + yt-dlp (`downloadsWindowUiPanels`); FFmpeg-секции только в редакторе, `probe*` — shared с инспектором.
 - [~] Сохранять выбранные папки (каталог yt-dlp, последняя папка ffmpeg export и snapshot; прочие диалоги — позже).
-- [~] Сохранять состояние очередей: yt-dlp живой `queue.json` §6 (атомарная запись, гидратация при старте main, `will-quit` flush); полный `session.json` и прочие очереди — позже.
+- [~] Сохранять состояние очередей: yt-dlp живой `queue.json` §6 (атомарная запись, гидратация при старте main, дедупликация id, `will-quit` flush); полный `session.json` и прочие очереди — позже.
 - [ ] Сохранять `session.json`.
-- [~] Восстанавливать состояние после перезапуска: очередь yt-dlp восстанавливается из `queue.json`; полное восстановление сессии редактор/preview/`session.json` — позже.
+- [~] Восстанавливать состояние после перезапуска: очередь yt-dlp восстанавливается из `queue.json` без active-status и duplicate id; полное восстановление сессии редактор/preview/`session.json` — позже.
 
 ### §4.2 Подтверждение закрытия
 
@@ -246,7 +246,7 @@
 - [x] Добавление распознанных строк в простую очередь (таблица в том же документе).
 - [x] Drag-and-Drop URL/текста на поле ввода и на свободную область окна загрузок (не перехватываем drop на `textarea`/`select`/текстовых `input`).
 - [~] Вставка из главного окна (меню, поле URL, Ctrl+V) → merge в очередь.
-- [~] Таблица: имя (хост+путь), ссылка; колонки Формат/Размер/Прогресс/Скорость/ETA; **Прогресс** — полоска + числовой % (v0), зелёный 100% при «Готово»; `progress` суммарная строка; icon-only действия (shared lucide); `queue.json` §4.1; format/size из `[info]`; дальше — редкие шаблоны логов.
+- [~] Таблица: имя (хост+путь), ссылка; колонки Формат/Размер/Прогресс/Скорость/ETA; **Прогресс** — полоска + числовой % (v0), зелёный 100% при «Готово»; `progress` суммарная строка; icon-only действия (shared lucide); `queue.json` §4.1 с дедупликацией id при restore; format/size из `[info]`; дальше — редкие шаблоны логов.
 - [~] Старт всей очереди (последовательно, только «Ожидание»).
 - [x] Старт отдельной строки.
 - [~] Отмена текущего yt-dlp (SIGKILL процессу spawn).

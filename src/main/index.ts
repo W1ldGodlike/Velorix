@@ -1,7 +1,7 @@
 import { existsSync, statSync, writeFileSync } from 'fs'
 import { basename, dirname, isAbsolute, join, normalize, resolve } from 'path'
 import { BrowserWindow, Menu, app, clipboard, dialog, ipcMain, nativeTheme, shell } from 'electron'
-import type { IpcMainEvent } from 'electron'
+import type { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
@@ -362,6 +362,13 @@ function rememberFfmpegSnapshotDirectory(outputPath: string): void {
 
 function isMainWindowSender(event: IpcMainEvent): boolean {
   return mainWindowWebContentsId !== null && event.sender.id === mainWindowWebContentsId
+}
+
+function isMainWindowUiPanelSender(event: IpcMainInvokeEvent): boolean {
+  if (mainWindowWebContentsId !== null && event.sender.id === mainWindowWebContentsId) {
+    return true
+  }
+  return isInspectorWindow(BrowserWindow.fromWebContents(event.sender))
 }
 
 function parseExportTrim(raw: unknown): MediaExportTrimPayload | undefined {
@@ -1710,7 +1717,10 @@ app.whenReady().then(() => {
     return persistEnginePathOverridesPatch(patch as EnginePathOverridesPatch)
   })
 
-  ipcMain.handle(mw.settingsMergeMainWindowUiPanels, (_, raw: unknown): AppSettings => {
+  ipcMain.handle(mw.settingsMergeMainWindowUiPanels, (event, raw: unknown): AppSettings => {
+    if (!isMainWindowUiPanelSender(event)) {
+      return { ...cachedSettings }
+    }
     return persistMainWindowUiPanelsMerge(raw)
   })
 

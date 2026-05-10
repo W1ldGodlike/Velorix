@@ -24,13 +24,18 @@ type ProbeTableContextMenu =
 function clampProbeTableMenuPosition(clientX: number, clientY: number): { x: number; y: number } {
   const margin = 8
   const estW = 260
-  const estH = 420
+  const estH = Math.min(420, Math.max(180, window.innerHeight - margin * 2))
   const x = Math.min(Math.max(margin, clientX), Math.max(margin, window.innerWidth - estW - margin))
   const y = Math.min(
     Math.max(margin, clientY),
     Math.max(margin, window.innerHeight - estH - margin)
   )
   return { x, y }
+}
+
+function keyboardProbeMenuPosition(el: HTMLElement): { x: number; y: number } {
+  const rect = el.getBoundingClientRect()
+  return clampProbeTableMenuPosition(rect.left + 24, rect.top + 24)
 }
 
 function formatProbeTrackRowTsv(row: MediaProbeTrackRow): string {
@@ -229,6 +234,10 @@ export function PreviewProbeBody({
       return
     }
     const close = (): void => setProbeTableMenu(null)
+    window.setTimeout(() => {
+      const first = probeTableMenuRef.current?.querySelector<HTMLButtonElement>('button')
+      first?.focus()
+    }, 0)
     const onPointerDown = (ev: PointerEvent): void => {
       const root = probeTableMenuRef.current
       if (root && ev.target instanceof Node && root.contains(ev.target)) {
@@ -336,10 +345,23 @@ export function PreviewProbeBody({
                   {probeInfo.tracks.map((row) => (
                     <tr
                       key={`track-${row.index}`}
+                      tabIndex={0}
+                      title="ПКМ, Enter или Shift+F10 — действия с дорожкой"
                       onContextMenu={(e) => {
                         e.preventDefault()
                         const p = clampProbeTableMenuPosition(e.clientX, e.clientY)
                         setProbeTableMenu({ variant: 'track', x: p.x, y: p.y, row })
+                      }}
+                      onKeyDown={(e) => {
+                        if (
+                          e.key === 'Enter' ||
+                          e.key === 'ContextMenu' ||
+                          (e.shiftKey && e.key === 'F10')
+                        ) {
+                          e.preventDefault()
+                          const p = keyboardProbeMenuPosition(e.currentTarget)
+                          setProbeTableMenu({ variant: 'track', x: p.x, y: p.y, row })
+                        }
                       }}
                     >
                       <td>{row.index}</td>
@@ -396,10 +418,23 @@ export function PreviewProbeBody({
                   {probeInfo.chapters.map((ch) => (
                     <tr
                       key={`chapter-${ch.index}-${ch.startSec}`}
+                      tabIndex={0}
+                      title="ПКМ, Enter или Shift+F10 — действия с главой"
                       onContextMenu={(e) => {
                         e.preventDefault()
                         const p = clampProbeTableMenuPosition(e.clientX, e.clientY)
                         setProbeTableMenu({ variant: 'chapter', x: p.x, y: p.y, row: ch })
+                      }}
+                      onKeyDown={(e) => {
+                        if (
+                          e.key === 'Enter' ||
+                          e.key === 'ContextMenu' ||
+                          (e.shiftKey && e.key === 'F10')
+                        ) {
+                          e.preventDefault()
+                          const p = keyboardProbeMenuPosition(e.currentTarget)
+                          setProbeTableMenu({ variant: 'chapter', x: p.x, y: p.y, row: ch })
+                        }
                       }}
                     >
                       <td>{ch.index}</td>
@@ -455,7 +490,8 @@ export function PreviewProbeBody({
         ? createPortal(
             <div
               ref={probeTableMenuRef}
-              role="menu"
+              role="group"
+              aria-label="Действия со строкой ffprobe"
               className="app-probe-context-menu"
               style={{ left: probeTableMenu.x, top: probeTableMenu.y }}
             >
