@@ -1264,8 +1264,8 @@ function createWindow(): void {
   const rect = savedMain ? rectifyBoundsForRestore(savedMain) : null
 
   const mainWindow = new BrowserWindow({
-    width: rect?.width ?? 1200,
-    height: rect?.height ?? 800,
+    width: rect?.width ?? 1920,
+    height: rect?.height ?? 1080,
     minWidth: 400,
     minHeight: 320,
     ...(rect ? { x: rect.x, y: rect.y } : {}),
