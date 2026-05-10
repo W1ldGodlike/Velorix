@@ -282,7 +282,11 @@ const MAIN_UI_PANEL_KEYS = [
   'ffmpegFormat',
   'ffmpegAudio',
   'ffmpegPresets',
-  'ffmpegOutput'
+  'ffmpegOutput',
+  'probeExportSummary',
+  'probeTracks',
+  'probeChapters',
+  'probeRawJson'
 ] as const satisfies ReadonlyArray<keyof MainWindowUiPanelState>
 
 function parseMainWindowUiPanels(raw: unknown): MainWindowUiPanelState | undefined {

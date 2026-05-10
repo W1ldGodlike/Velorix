@@ -709,7 +709,11 @@ function sanitizeMainWindowUiPanelPatch(raw: unknown): Partial<MainWindowUiPanel
     'ffmpegFormat',
     'ffmpegAudio',
     'ffmpegPresets',
-    'ffmpegOutput'
+    'ffmpegOutput',
+    'probeExportSummary',
+    'probeTracks',
+    'probeChapters',
+    'probeRawJson'
   ]
   const o = raw as Record<string, unknown>
   const out: Partial<MainWindowUiPanelState> = {}

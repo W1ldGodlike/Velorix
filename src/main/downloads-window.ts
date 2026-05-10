@@ -402,7 +402,7 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
     table.history-table th:nth-child(1), table.history-table td:nth-child(1) { width: 10.5rem; white-space: nowrap; }
     table.history-table th:nth-child(4), table.history-table td:nth-child(4) { width: 5.5rem; }
     table.history-table th:nth-child(5), table.history-table td:nth-child(5) { width: 3rem; text-align: right; }
-    table.history-table th:nth-child(7), table.history-table td:nth-child(7) { width: 7rem; text-align: right; }
+    table.history-table th:nth-child(7), table.history-table td:nth-child(7) { min-width: 10rem; width: 10rem; text-align: right; }
     td.h-out-ok { color: var(--green); }
     td.h-out-err { color: var(--red); }
     td.h-out-can { color: var(--blue); }
@@ -744,6 +744,105 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
         return 'Ошибка';
       }
 
+      function isRowDownloading(status) {
+        return status === 'Загрузка…' || (typeof status === 'string' && status.indexOf('Пауза перед повтором') === 0);
+      }
+
+      /** Lucide-подобные мини-иконки для столбца действий (stroke, 24 viewBox → 14px). */
+      var SVG_NS = 'http://www.w3.org/2000/svg';
+      function svgEl(tag, attrs) {
+        var n = document.createElementNS(SVG_NS, tag);
+        if (attrs) {
+          Object.keys(attrs).forEach(function (k) {
+            n.setAttribute(k, attrs[k]);
+          });
+        }
+        return n;
+      }
+      function svgIcon(paths) {
+        var svg = svgEl('svg', {
+          width: '14',
+          height: '14',
+          viewBox: '0 0 24 24',
+          fill: 'none',
+          stroke: 'currentColor',
+          'stroke-width': '2',
+          'stroke-linecap': 'round',
+          'stroke-linejoin': 'round'
+        });
+        paths.forEach(function (p) {
+          var el = svgEl(p.tag, p.attr);
+          svg.appendChild(el);
+        });
+        return svg;
+      }
+      var RowIco = {
+        play: function () {
+          return svgIcon([{ tag: 'polygon', attr: { points: '6 4 20 12 6 20 6 4' } }]);
+        },
+        pause: function () {
+          return svgIcon([
+            { tag: 'rect', attr: { x: '7', y: '5', width: '3.5', height: '14', rx: '1' } },
+            { tag: 'rect', attr: { x: '14.5', y: '5', width: '3.5', height: '14', rx: '1' } }
+          ]);
+        },
+        retry: function () {
+          return svgIcon([
+            { tag: 'path', attr: { d: 'M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8' } },
+            { tag: 'path', attr: { d: 'M21 3v5h-5' } },
+            { tag: 'path', attr: { d: 'M3 12a9 9 0 0 1 9 9c2.52 0 4.93-1 6.74-2.74L3 16' } },
+            { tag: 'path', attr: { d: 'M8 16H3v5' } }
+          ]);
+        },
+        plus: function () {
+          return svgIcon([
+            { tag: 'path', attr: { d: 'M12 5v14' } },
+            { tag: 'path', attr: { d: 'M5 12h14' } }
+          ]);
+        },
+        outbound: function () {
+          return svgIcon([
+            { tag: 'path', attr: { d: 'M15 3h6v6' } },
+            { tag: 'path', attr: { d: 'M10 14 21 3' } },
+            { tag: 'path', attr: { d: 'M18 13v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6' } }
+          ]);
+        },
+        file: function () {
+          return svgIcon([
+            { tag: 'path', attr: { d: 'M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z' } },
+            { tag: 'path', attr: { d: 'M14 2v4a2 2 0 0 0 2 2h4' } }
+          ]);
+        },
+        folder: function () {
+          return svgIcon([
+            {
+              tag: 'path',
+              attr: {
+                d: 'm6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2h3.93a2 2 0 0 1 1.66.89l.82 1.24a2 2 0 0 0 1.66.89H18a2 2 0 0 1 2 2v2'
+              }
+            }
+          ]);
+        },
+        chevUp: function () {
+          return svgIcon([{ tag: 'path', attr: { d: 'm18 15-6-6-6 6' } }]);
+        },
+        chevDown: function () {
+          return svgIcon([{ tag: 'path', attr: { d: 'm6 9 6 6 6-6' } }]);
+        },
+        trash: function () {
+          return svgIcon([
+            { tag: 'path', attr: { d: 'M3 6h18' } },
+            { tag: 'path', attr: { d: 'M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6' } },
+            { tag: 'path', attr: { d: 'M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2' } }
+          ]);
+        },
+        stop: function () {
+          return svgIcon([
+            { tag: 'rect', attr: { x: '7', y: '7', width: '10', height: '10', rx: '2' } }
+          ]);
+        }
+      };
+
       function renderHistoryEntries(raw) {
         if (!historyBody) return;
         lastHistoryEntries = Array.isArray(raw) ? raw : [];
@@ -789,36 +888,50 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
           tr.appendChild(td('', st.length > 120 ? st.slice(0, 118) + '…' : (st || '—')));
           var tdAction = document.createElement('td');
           tdAction.className = 'act';
+          var histWrap = document.createElement('div');
+          histWrap.className = 'act-icons';
+          function mkHistIcon(title, attrs, iconFn, btnClass) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'icon-btn' + (btnClass ? ' ' + btnClass : '');
+            b.title = title;
+            b.setAttribute('aria-label', title);
+            Object.keys(attrs).forEach(function (ak) {
+              b.setAttribute(ak, attrs[ak]);
+            });
+            b.appendChild(iconFn());
+            histWrap.appendChild(b);
+          }
           if (u) {
-            var retry = document.createElement('button');
-            retry.type = 'button';
-            retry.textContent = 'В очередь';
-            retry.title = 'Добавить этот URL в очередь повторно';
-            retry.setAttribute('data-history-url', u);
-            tdAction.appendChild(retry);
+            mkHistIcon(
+              'Добавить этот URL в очередь повторно',
+              { 'data-history-url': u },
+              RowIco.plus,
+              ''
+            );
           }
           if (typeof e.outputPath === 'string' && e.outputPath) {
-            var openHandler = document.createElement('button');
-            openHandler.type = 'button';
-            openHandler.textContent = 'В обработчик';
-            openHandler.title = 'Открыть скачанный файл в FluxAlloy';
-            openHandler.setAttribute('data-history-handler', typeof e.id === 'string' ? e.id : '');
-            tdAction.appendChild(openHandler);
-            var openFile = document.createElement('button');
-            openFile.type = 'button';
-            openFile.textContent = 'Файл';
-            openFile.title = 'Открыть скачанный файл';
-            openFile.setAttribute('data-history-open', 'file');
-            openFile.setAttribute('data-history-id', typeof e.id === 'string' ? e.id : '');
-            tdAction.appendChild(openFile);
-            var openFolder = document.createElement('button');
-            openFolder.type = 'button';
-            openFolder.textContent = 'Папка';
-            openFolder.title = 'Показать файл в папке';
-            openFolder.setAttribute('data-history-open', 'folder');
-            openFolder.setAttribute('data-history-id', typeof e.id === 'string' ? e.id : '');
-            tdAction.appendChild(openFolder);
+            var hid = typeof e.id === 'string' ? e.id : '';
+            mkHistIcon(
+              'Открыть скачанный файл в FluxAlloy',
+              { 'data-history-handler': hid },
+              RowIco.outbound,
+              ''
+            );
+            mkHistIcon(
+              'Открыть скачанный файл',
+              { 'data-history-open': 'file', 'data-history-id': hid },
+              RowIco.file,
+              ''
+            );
+            mkHistIcon(
+              'Показать файл в папке',
+              { 'data-history-open': 'folder', 'data-history-id': hid },
+              RowIco.folder,
+              ''
+            );
           }
+          tdAction.appendChild(histWrap);
           tr.appendChild(tdAction);
           historyBody.appendChild(tr);
         });
@@ -1063,99 +1176,6 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
         if (status === 'Ожидание' || status === 'Загрузка…') return false;
         return !(typeof status === 'string' && status.indexOf('Пауза перед повтором') === 0);
       }
-
-      function isRowDownloading(status) {
-        return status === 'Загрузка…' || (typeof status === 'string' && status.indexOf('Пауза перед повтором') === 0);
-      }
-
-      /** Lucide-подобные мини-иконки для столбца действий (stroke, 24 viewBox → 14px). */
-      var SVG_NS = 'http://www.w3.org/2000/svg';
-      function svgEl(tag, attrs) {
-        var n = document.createElementNS(SVG_NS, tag);
-        if (attrs) {
-          Object.keys(attrs).forEach(function (k) {
-            n.setAttribute(k, attrs[k]);
-          });
-        }
-        return n;
-      }
-      function svgIcon(paths) {
-        var svg = svgEl('svg', {
-          width: '14',
-          height: '14',
-          viewBox: '0 0 24 24',
-          fill: 'none',
-          stroke: 'currentColor',
-          'stroke-width': '2',
-          'stroke-linecap': 'round',
-          'stroke-linejoin': 'round'
-        });
-        paths.forEach(function (p) {
-          var el = svgEl(p.tag, p.attr);
-          svg.appendChild(el);
-        });
-        return svg;
-      }
-      var RowIco = {
-        play: function () {
-          return svgIcon([{ tag: 'polygon', attr: { points: '6 4 20 12 6 20 6 4' } }]);
-        },
-        pause: function () {
-          return svgIcon([
-            { tag: 'rect', attr: { x: '7', y: '5', width: '3.5', height: '14', rx: '1' } },
-            { tag: 'rect', attr: { x: '14.5', y: '5', width: '3.5', height: '14', rx: '1' } }
-          ]);
-        },
-        retry: function () {
-          return svgIcon([
-            { tag: 'path', attr: { d: 'M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8' } },
-            { tag: 'path', attr: { d: 'M21 3v5h-5' } },
-            { tag: 'path', attr: { d: 'M3 12a9 9 0 0 1 9 9c2.52 0 4.93-1 6.74-2.74L3 16' } },
-            { tag: 'path', attr: { d: 'M8 16H3v5' } }
-          ]);
-        },
-        outbound: function () {
-          return svgIcon([
-            { tag: 'path', attr: { d: 'M15 3h6v6' } },
-            { tag: 'path', attr: { d: 'M10 14 21 3' } },
-            { tag: 'path', attr: { d: 'M18 13v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6' } }
-          ]);
-        },
-        file: function () {
-          return svgIcon([
-            { tag: 'path', attr: { d: 'M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z' } },
-            { tag: 'path', attr: { d: 'M14 2v4a2 2 0 0 0 2 2h4' } }
-          ]);
-        },
-        folder: function () {
-          return svgIcon([
-            {
-              tag: 'path',
-              attr: {
-                d: 'm6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2h3.93a2 2 0 0 1 1.66.89l.82 1.24a2 2 0 0 0 1.66.89H18a2 2 0 0 1 2 2v2'
-              }
-            }
-          ]);
-        },
-        chevUp: function () {
-          return svgIcon([{ tag: 'path', attr: { d: 'm18 15-6-6-6 6' } }]);
-        },
-        chevDown: function () {
-          return svgIcon([{ tag: 'path', attr: { d: 'm6 9 6 6 6-6' } }]);
-        },
-        trash: function () {
-          return svgIcon([
-            { tag: 'path', attr: { d: 'M3 6h18' } },
-            { tag: 'path', attr: { d: 'M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6' } },
-            { tag: 'path', attr: { d: 'M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2' } }
-          ]);
-        },
-        stop: function () {
-          return svgIcon([
-            { tag: 'rect', attr: { x: '7', y: '7', width: '10', height: '10', rx: '2' } }
-          ]);
-        }
-      };
 
       function queueRowMatchesFilter(row, filter) {
         var status = typeof row.status === 'string' ? row.status : '';

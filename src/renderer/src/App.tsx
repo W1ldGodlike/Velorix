@@ -92,7 +92,11 @@ const MAIN_PANEL_DEFAULTS: Required<MainWindowUiPanelState> = {
   ffmpegFormat: true,
   ffmpegAudio: false,
   ffmpegPresets: false,
-  ffmpegOutput: true
+  ffmpegOutput: true,
+  probeExportSummary: false,
+  probeTracks: false,
+  probeChapters: false,
+  probeRawJson: false
 }
 
 function engineLabel(id: EngineId): string {
@@ -1109,6 +1113,21 @@ function App(): JSX.Element {
                       <PreviewProbeBody
                         probeInfo={probeInfo}
                         mediaPathForDefaultSave={preview.path}
+                        probeSectionOpen={{
+                          exportSummary: panelOpen('probeExportSummary'),
+                          tracks: panelOpen('probeTracks'),
+                          chapters: panelOpen('probeChapters'),
+                          rawJson: panelOpen('probeRawJson')
+                        }}
+                        onProbeSectionToggle={(key, nextOpen) => {
+                          const m = {
+                            exportSummary: 'probeExportSummary',
+                            tracks: 'probeTracks',
+                            chapters: 'probeChapters',
+                            rawJson: 'probeRawJson'
+                          } as const
+                          persistPanelToggle(m[key], nextOpen)
+                        }}
                       />
                     ) : null}
                   </div>

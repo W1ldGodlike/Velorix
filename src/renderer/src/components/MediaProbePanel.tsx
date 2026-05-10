@@ -111,14 +111,47 @@ function formatProbeJsonForDisplay(raw: string): string {
   }
 }
 
+/** Ключи `details` под превью; в главном окне мапятся на `MainWindowUiPanelState` через `App.tsx`. */
+export type PreviewProbeSectionKey = 'exportSummary' | 'tracks' | 'chapters' | 'rawJson'
+
+const PREVIEW_PROBE_SECTION_DEFAULTS: Record<PreviewProbeSectionKey, boolean> = {
+  exportSummary: false,
+  tracks: false,
+  chapters: false,
+  rawJson: false
+}
+
 /** Таблица дорожек, главы и JSON §9 — используется в превью и в отдельном окне инспектора. */
 export function PreviewProbeBody({
   probeInfo,
-  mediaPathForDefaultSave
+  mediaPathForDefaultSave,
+  probeSectionOpen,
+  onProbeSectionToggle
 }: {
   probeInfo: MediaProbeSuccess
   mediaPathForDefaultSave?: string
+  probeSectionOpen?: Partial<Record<PreviewProbeSectionKey, boolean>>
+  onProbeSectionToggle?: (key: PreviewProbeSectionKey, open: boolean) => void
 }): JSX.Element {
+  const persistedProbeSections = typeof onProbeSectionToggle === 'function'
+  const [localProbeSections, setLocalProbeSections] = useState(PREVIEW_PROBE_SECTION_DEFAULTS)
+
+  function sectionOpen(key: PreviewProbeSectionKey): boolean {
+    if (persistedProbeSections) {
+      const v = probeSectionOpen?.[key]
+      return typeof v === 'boolean' ? v : PREVIEW_PROBE_SECTION_DEFAULTS[key]
+    }
+    return localProbeSections[key]
+  }
+
+  function persistOrLocalSectionToggle(key: PreviewProbeSectionKey, open: boolean): void {
+    if (persistedProbeSections && onProbeSectionToggle) {
+      onProbeSectionToggle(key, open)
+    } else {
+      setLocalProbeSections((prev) => ({ ...prev, [key]: open }))
+    }
+  }
+
   const [probeToolbarTip, setProbeToolbarTip] = useState<string | null>(null)
   const [probeTableMenu, setProbeTableMenu] = useState<ProbeTableContextMenu>(null)
   const probeTableMenuRef = useRef<HTMLDivElement | null>(null)
@@ -240,7 +273,13 @@ export function PreviewProbeBody({
         {probeToolbarTip ? (
           <div className="app-probe-copy-tip app-probe-tip-global">{probeToolbarTip}</div>
         ) : null}
-        <details className="app-probe-details">
+        <details
+          className="app-probe-details"
+          open={sectionOpen('exportSummary')}
+          onToggle={(e) => {
+            persistOrLocalSectionToggle('exportSummary', e.currentTarget.open)
+          }}
+        >
           <summary className="app-probe-summary">Экспорт сводки (TXT / HTML)</summary>
           <div className="app-probe-json-toolbar">
             <button
@@ -264,7 +303,13 @@ export function PreviewProbeBody({
           </div>
         </details>
         {probeInfo.tracks.length > 0 ? (
-          <details className="app-probe-details">
+          <details
+            className="app-probe-details"
+            open={sectionOpen('tracks')}
+            onToggle={(e) => {
+              persistOrLocalSectionToggle('tracks', e.currentTarget.open)
+            }}
+          >
             <summary className="app-probe-summary">Дорожки ({probeInfo.tracks.length})</summary>
             <div className="app-probe-table-wrap">
               <table className="app-probe-table">
@@ -328,7 +373,13 @@ export function PreviewProbeBody({
           </details>
         ) : null}
         {probeInfo.chapters.length > 0 ? (
-          <details className="app-probe-details">
+          <details
+            className="app-probe-details"
+            open={sectionOpen('chapters')}
+            onToggle={(e) => {
+              persistOrLocalSectionToggle('chapters', e.currentTarget.open)
+            }}
+          >
             <summary className="app-probe-summary">Главы ({probeInfo.chapters.length})</summary>
             <div className="app-probe-table-wrap">
               <table className="app-probe-table">
@@ -368,7 +419,13 @@ export function PreviewProbeBody({
           </details>
         ) : null}
         {probeInfo.rawJson.length > 0 ? (
-          <details className="app-probe-details">
+          <details
+            className="app-probe-details"
+            open={sectionOpen('rawJson')}
+            onToggle={(e) => {
+              persistOrLocalSectionToggle('rawJson', e.currentTarget.open)
+            }}
+          >
             <summary className="app-probe-summary">JSON ffprobe</summary>
             <div className="app-probe-json-toolbar">
               <button

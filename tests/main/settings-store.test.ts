@@ -141,6 +141,8 @@ describe('settings-store yt-dlp fields', () => {
         mainWindowUiPanels: {
           quickYtdlp: true,
           ffmpegVideo: false,
+          probeTracks: true,
+          probeBad: false,
           unknownKey: true,
           bad: 'x'
         },
@@ -155,7 +157,7 @@ describe('settings-store yt-dlp fields', () => {
 
     expect(loadSettings(file)).toMatchObject({
       theme: 'dark',
-      mainWindowUiPanels: { quickYtdlp: true, ffmpegVideo: false },
+      mainWindowUiPanels: { quickYtdlp: true, ffmpegVideo: false, probeTracks: true },
       downloadsWindowUiPanels: { log: false, format: true }
     })
   })

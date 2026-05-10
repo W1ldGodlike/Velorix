@@ -37,6 +37,11 @@ export interface MainWindowUiPanelState {
   ffmpegAudio?: boolean
   ffmpegPresets?: boolean
   ffmpegOutput?: boolean
+  /** §4.1 / §9 — раскрытие `details` инспектора под превью. */
+  probeExportSummary?: boolean
+  probeTracks?: boolean
+  probeChapters?: boolean
+  probeRawJson?: boolean
 }
 
 /** §4.1 / v0 — раскрытие секций окна загрузок (data HTML + `details`). */
