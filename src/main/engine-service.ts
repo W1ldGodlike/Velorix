@@ -62,12 +62,16 @@ export function resolveEngineExecutablePath(
   return firstExistingPath(candidatePaths(paths, id, overrides))
 }
 
-function readVersion(executablePath: string): Promise<string> {
+function versionArgs(id: EngineId): string[] {
+  return id === 'yt-dlp' ? ['--version'] : ['-version']
+}
+
+function readVersion(id: EngineId, executablePath: string): Promise<string> {
   return new Promise((resolve, reject) => {
     // Внешние процессы запускаем только через execFile/args array: без shell и без конкатенации команд.
     const child = execFile(
       executablePath,
-      ['--version'],
+      versionArgs(id),
       { timeout: 5000, windowsHide: true },
       (error, stdout, stderr) => {
         if (error) {
@@ -107,7 +111,7 @@ async function checkEngine(
   }
 
   try {
-    const version = await readVersion(foundPath)
+    const version = await readVersion(id, foundPath)
 
     return {
       id,

@@ -10,6 +10,14 @@ For a Windows release build, place checked runtime binaries here before packagin
 
 Do not commit the binaries. They are intentionally ignored by `.gitignore`.
 
+For local Windows development, run:
+
+```powershell
+npm run engines:prepare:win
+```
+
+`npm run dev` runs the same check automatically before starting Electron.
+
 Runtime resolution order is:
 
 1. Manual path override from settings.
