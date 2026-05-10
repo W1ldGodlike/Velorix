@@ -37,7 +37,7 @@
 
 - [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; `queue.json` без duplicate id; журнал out/err + truncate; дальше — редкие шаблоны логов по полю.
 - [~] §6.3: argv whitelist + справочник + превью draft/override `-o`; при необходимости редкие поля.
-- [~] §6.1/§4.A: окно загрузок — `@120dpi`/`@168dpi`; **a11y полосы URL + caption очереди/истории** + **`#logPre` как `role=log` / `aria-live`**; **`aria-current`** вкладок с главным; SVG/focus уже; дальше — ручная матрица Win 125–200 %.
+- [~] §6.1/§4.A: окно загрузок — `@120dpi`/`@168dpi`; **a11y** URL + captions + **`#logPre` `role=log`/`aria-live`**; **`aria-current`** вкладок; фильтры очереди/истории — **`for` + `sr-only` подсказки**; **cookies/каталог** — **`role=group`/`aria-labelledby`**; **справочник argv** — **`label for=hintInsert`**; SVG/focus; дальше — ручная матрица Win 125–200 %.
 - [~] §1.1/§4.A/§9: редактор — HiDPR/topbar/SVG/focus; **`aria-current`** **«Редактор»**; **`.app-url-hint`** + **`aria-describedby`** (быстрая yt-dlp); **превью ffmpeg** → **`#exportCommandPreviewHint`**; **MediaProbePanel**: captions + **экспорт сводки / JSON ffprobe** — **`app-probe-toolbar-hint`**, **`aria-describedby`** на кнопках, **`aria-label`** на **pre** JSON; **ffmpeg•yt-dlp**; seek/снап; **`ffmpegSettingsRailOpen`**; дальше — multi-monitor DPI, Dolby/side_data §9.
 - [~] §7.2: crop/rotate/flip; дальше расширенные фильтры и HW encode.
 - [~] §9/§21: расширенные ffprobe (Dolby/side_data и др.); новые IPC через `ipc-channels`, при необходимости логи по окнам; точечные Vitest.

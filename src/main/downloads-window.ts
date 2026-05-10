@@ -372,8 +372,8 @@ function buildDownloadsHtml(
         gap: 0.42rem;
         padding: 0.38rem 0.68rem;
       }
-      label.inline-filter { font-size: 0.736rem; }
-      label.inline-filter select, .history-actions select {
+      .inline-filter-field label.inline-filter { font-size: 0.736rem; }
+      .inline-filter-field select, .hist-inline-field select, .history-actions select {
         padding: 0.34rem 0.48rem;
         font-size: 0.758rem;
       }
@@ -447,7 +447,7 @@ function buildDownloadsHtml(
       .opts-check-row input[type=checkbox]::after { width: 12px; height: 12px; top: 2.5px; left: 2.5px; }
       .opts-check-row input[type=checkbox]:checked::after { transform: translateX(14px); }
       .args-preview { font-size: 0.704rem; }
-      label.hist-inline { font-size: 0.718rem; }
+      .hist-inline-field label.hist-inline { font-size: 0.718rem; }
     }
     @media (-webkit-min-device-pixel-ratio: 1.75), (min-resolution: 168dpi) {
       body { font-size: 12.5px; }
@@ -587,8 +587,13 @@ function buildDownloadsHtml(
       display: flex; gap: 0.38rem; flex-wrap: wrap; align-items: center; padding: 0.34rem 0.62rem;
       border-bottom: 1px solid var(--border); background: color-mix(in srgb, var(--surface) 94%, transparent);
     }
-    label.inline-filter { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--muted); font-size: 0.72rem; }
-    label.inline-filter select, .history-actions select {
+    .inline-filter-field {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    label.inline-filter { color: var(--muted); font-size: 0.72rem; }
+    .inline-filter-field select, .hist-inline-field select, .history-actions select {
       border-radius: 6px; border: 1px solid var(--border-2); background: var(--surface-2); color: var(--text);
       padding: 0.32rem 0.45rem; font-size: 0.74rem;
     }
@@ -773,6 +778,7 @@ function buildDownloadsHtml(
     .settings-section[open] > summary::before { transform: rotate(90deg); }
     .settings-body { padding: 0 0.62rem 0.58rem; }
     .out-dir-row { display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; margin: 0.35rem 0 0.65rem; font-size: 0.74rem; }
+    .out-dir-row .out-dir-label { font-weight: 700; color: var(--muted); }
     .out-dir-row .out-path {
       flex: 1 1 100%; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
       font-family: ui-monospace, Consolas, Menlo, monospace; font-size: 0.68rem; color: var(--muted);
@@ -829,7 +835,12 @@ function buildDownloadsHtml(
     .opts-hint { font-size: 0.68rem; color: var(--dim); margin: 0 0 0.5rem; line-height: 1.35; }
     .note { display: none; }
     .history-actions { display: flex; gap: 0.45rem; flex-wrap: wrap; align-items: center; padding: 0 0.65rem 0.55rem; }
-    .history-actions label.hist-inline { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--muted); font-size: 0.7rem; }
+    .hist-inline-field {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    label.hist-inline { color: var(--muted); font-size: 0.7rem; }
     table.history-table { font-size: 0.64rem; }
     table.history-table th, table.history-table td { padding: 0.28rem 0.38rem; }
     table.history-table th:nth-child(1), table.history-table td:nth-child(1) { width: 10.5rem; white-space: nowrap; }
@@ -847,8 +858,9 @@ function buildDownloadsHtml(
     .opts-panel input[type=text]:focus-visible,
     #extraArgsInput:focus-visible,
     .opts-check-row input[type=checkbox]:focus-visible,
-    label.inline-filter select:focus-visible,
-    .history-actions select:focus-visible,
+      .inline-filter-field select:focus-visible,
+      .hist-inline-field select:focus-visible,
+      .history-actions select:focus-visible,
     .settings-rail .opts-panel select:focus-visible,
     .settings-rail .hint-select:focus-visible,
     .settings-section > summary:focus-visible,
@@ -901,8 +913,9 @@ ${emitDownloadsTopbarClusterHtml(18)}
           <button type="button" class="cmd cmd-warn" id="cancelBtn" title="Отменить текущую загрузку yt-dlp">Отмена</button>
           <button type="button" class="cmd" id="clearBtn">Очистить очередь</button>
           <button type="button" class="cmd" id="clearFinishedBtn">Убрать завершённые</button>
-          <label class="inline-filter">Статус
-            <select id="queueStatusFilter">
+          <span class="inline-filter-field">
+            <label class="inline-filter" for="queueStatusFilter">Статус</label>
+            <select id="queueStatusFilter" aria-describedby="queueFilterHint">
               <option value="all">Все</option>
               <option value="waiting">Ожидание</option>
               <option value="running">В работе</option>
@@ -910,7 +923,8 @@ ${emitDownloadsTopbarClusterHtml(18)}
               <option value="error">Ошибки</option>
               <option value="cancelled">Отменено</option>
             </select>
-          </label>
+          </span>
+          <span id="queueFilterHint" class="sr-only">Фильтр только для отображения таблицы; порядок очереди в main не меняется.</span>
           <span class="queue-summary" id="queueSummary">Всего: 0</span>
         </div>
         <div class="queue-table-wrap">
@@ -926,14 +940,16 @@ ${emitDownloadsTopbarClusterHtml(18)}
             <div class="history-actions">
               <button type="button" class="cmd" id="refreshHistoryBtn">Обновить</button>
               <button type="button" class="cmd cmd-warn" id="clearHistoryBtn">Очистить историю</button>
-              <label class="hist-inline">Исход
-                <select id="historyOutcomeFilter">
+              <span class="hist-inline-field">
+                <label class="hist-inline" for="historyOutcomeFilter">Исход</label>
+                <select id="historyOutcomeFilter" aria-describedby="historyFilterHint">
                   <option value="all">Все</option>
                   <option value="success">Успех</option>
                   <option value="error">Ошибка</option>
                   <option value="cancelled">Отмена</option>
                 </select>
-              </label>
+              </span>
+              <span id="historyFilterHint" class="sr-only">Фильтр только для отображения таблицы истории.</span>
             </div>
             <table class="history-table">
               <caption class="sr-only">История завершённых загрузок</caption>
@@ -990,8 +1006,8 @@ ${emitDownloadsTopbarClusterHtml(18)}
                 <option value="edge">Из браузера: Edge</option>
                 <option value="firefox">Из браузера: Firefox</option>
               </select>
-              <div class="out-dir-row">
-                <span>Файл cookies:</span>
+              <div class="out-dir-row" role="group" aria-labelledby="dlCookiesPathLabel">
+                <span id="dlCookiesPathLabel" class="out-dir-label">Файл cookies:</span>
                 <span id="cookiesPathText" class="out-path" title="">—</span>
                 <button type="button" class="cmd" id="pickCookiesBtn">Выбрать…</button>
                 <button type="button" class="cmd" id="clearCookiesBtn" title="Убрать файл из настроек">Очистить</button>
@@ -1012,8 +1028,8 @@ ${emitDownloadsTopbarClusterHtml(18)}
           <details class="settings-section" id="dlRailSave"${openAttr('saving', true)}>
             <summary>Сохранение</summary>
             <div class="settings-body">
-              <div class="out-dir-row">
-                <span>Каталог загрузок:</span>
+              <div class="out-dir-row" role="group" aria-labelledby="dlOutDirLabel">
+                <span id="dlOutDirLabel" class="out-dir-label">Каталог загрузок:</span>
                 <span id="outDirText" class="out-path" title="">…</span>
                 <button type="button" class="cmd" id="openOutBtn" title="Открыть текущий каталог загрузок в проводнике">Открыть</button>
                 <button type="button" class="cmd" id="pickOutBtn">Выбрать…</button>
@@ -1037,7 +1053,7 @@ ${emitDownloadsTopbarClusterHtml(18)}
               <label for="fragmentRetriesInput">Повторы фрагментов (--fragment-retries)</label>
               <input type="text" id="fragmentRetriesInput" inputmode="numeric" spellcheck="false" autocomplete="off" placeholder="0–99" />
               <label for="queueRetrySelect">Повтор строки при сбое</label>
-              <select id="queueRetrySelect" aria-label="Профиль повторов очереди при ошибке">
+              <select id="queueRetrySelect">
                 <option value="off">Выключено</option>
                 <option value="light">Лёгкий (1 повтор, 2.5 с)</option>
                 <option value="normal">Обычный (2 повтора: 3 с + 8 с)</option>
@@ -1057,7 +1073,8 @@ ${emitDownloadsTopbarClusterHtml(18)}
               <pre class="args-preview" id="argsPreview"></pre>
               <details class="hints-panel details-chev" id="hintsPanel"${openAttr('hints', false)}>
                 <summary>Справочник флагов</summary>
-                <select id="hintInsert" class="hint-select" aria-label="Вставить флаг из справочника">
+                <label class="opts-preview-label" for="hintInsert">Вставить флаг из справочника</label>
+                <select id="hintInsert" class="hint-select">
                   <option value="">Выберите флаг — он добавится в «Доп. аргументы»…</option>
                 </select>
                 <p class="opts-hint" id="hintSummary"></p>
