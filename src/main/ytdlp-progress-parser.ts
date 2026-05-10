@@ -390,5 +390,35 @@ export function extractYtdlpOutputPath(line: string): string | null {
     const cap = metaWrite[1]
     return cap !== undefined ? unquoteYtdlpPath(cap) : null
   }
+  /** FFmpegVideoConvertor и др.: «…; Destination: путь» (см. FFmpeg PP в yt-dlp). */
+  const semiDestination = t.match(/^\[[^\]]+\]\s+.+;\s+Destination:\s+(.+)$/i)
+  if (semiDestination) {
+    const cap = semiDestination[1]
+    return cap !== undefined ? unquoteYtdlpPath(cap) : null
+  }
+  /** Любой PP с `Destination:` сразу после тега (не только download/ExtractAudio/ffmpeg). */
+  const genericPpDestination = t.match(/^\[[^\]]+\]\s+Destination:\s+(.+)$/i)
+  if (genericPpDestination) {
+    const cap = genericPpDestination[1]
+    return cap !== undefined ? unquoteYtdlpPath(cap) : null
+  }
+  /** EmbedThumbnailPP: `[EmbedThumbnail] ffmpeg: Adding thumbnail to "…"` и аналоги. */
+  const embedThumbnail = t.match(/^\[[^\]]+\]\s+[^:]+:\s+Adding thumbnail to\s+"(.+)"$/i)
+  if (embedThumbnail) {
+    const cap = embedThumbnail[1]
+    return cap !== undefined ? unquoteYtdlpPath(cap) : null
+  }
+  /** FFmpegMetadataPP до записи: `Adding metadata to "…"`. */
+  const addingMetadata = t.match(/^\[[^\]]+\]\s+Adding metadata to\s+"(.+)"$/i)
+  if (addingMetadata) {
+    const cap = addingMetadata[1]
+    return cap !== undefined ? unquoteYtdlpPath(cap) : null
+  }
+  /** FFmpegConcatPP: выходной файл при переименовании одного фрагмента в итоговое имя. */
+  const movingTo = t.match(/^\[[^\]]+\]\s+Moving\s+"(.+?)"\s+to\s+"(.+)"$/i)
+  if (movingTo) {
+    const cap = movingTo[2]
+    return cap !== undefined ? unquoteYtdlpPath(cap) : null
+  }
   return null
 }

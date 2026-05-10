@@ -309,4 +309,27 @@ describe('extractYtdlpOutputPath', () => {
       '/home/u/final.m4a'
     )
   })
+
+  it('извлекает путь из строк FFmpeg PP (Destination после «;», thumbnail, metadata run, concat)', () => {
+    expect(
+      extractYtdlpOutputPath(
+        '[FFmpegVideoConvertor] Convert video from webm to mp4; Destination: C:\\out\\clip.mp4'
+      )
+    ).toBe('C:\\out\\clip.mp4')
+    expect(extractYtdlpOutputPath('[FFmpegVideoConvertor] Destination: D:\\only.mp4')).toBe(
+      'D:\\only.mp4'
+    )
+    expect(
+      extractYtdlpOutputPath('[Concat] Concatenating 3 files; Destination: C:\\merged.mp4')
+    ).toBe('C:\\merged.mp4')
+    expect(extractYtdlpOutputPath('[Concat] Moving "C:\\part.ts" to "C:\\final.mp4"')).toBe(
+      'C:\\final.mp4'
+    )
+    expect(
+      extractYtdlpOutputPath('[EmbedThumbnail] ffmpeg: Adding thumbnail to "C:\\Media\\song.m4a"')
+    ).toBe('C:\\Media\\song.m4a')
+    expect(extractYtdlpOutputPath('[Metadata] Adding metadata to "/home/u/track.mkv"')).toBe(
+      '/home/u/track.mkv'
+    )
+  })
 })
