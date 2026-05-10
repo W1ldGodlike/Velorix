@@ -27,6 +27,7 @@ export const mainWindowIpc = {
   enginesStatus: 'fluxalloy:engines-status',
   enginesShouldOfferDownload: 'fluxalloy:engines-should-offer-download',
   enginesDownload: 'fluxalloy:engines-download',
+  enginesClearUserBin: 'fluxalloy:engines-clear-user-bin',
   enginesProgress: 'fluxalloy:engines-progress',
   openVideoDialog: 'fluxalloy:open-video-dialog',
   previewGrantPath: 'fluxalloy:preview-grant-path',

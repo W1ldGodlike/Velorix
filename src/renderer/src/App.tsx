@@ -1175,6 +1175,25 @@ function App(): JSX.Element {
     }
   }
 
+  async function handleClearDownloadedEngines(): Promise<void> {
+    setStatusHint('Удаляю скачанные движки из userData/bin…')
+    try {
+      const res = await window.fluxalloy.engines.clearUserBin()
+      if (!res.ok) {
+        setStatusHint(`Ошибка: ${res.error}`)
+        return
+      }
+      await refreshEngineUi()
+      setStatusHint(
+        res.removed > 0
+          ? `Удалено скачанных движков: ${res.removed}`
+          : 'Скачанных движков в userData/bin не было'
+      )
+    } catch (error) {
+      setStatusHint(error instanceof Error ? error.message : 'Не удалось удалить скачанные движки')
+    }
+  }
+
   async function handleSaveEnginePaths(): Promise<void> {
     await window.fluxalloy.settings.setEngineExecutablePaths({
       ffmpeg: enginePathsDraft.ffmpeg.trim() || null,
@@ -3383,6 +3402,17 @@ function App(): JSX.Element {
               ))}
             </div>
             <div className="app-modal-footer">
+              <button
+                type="button"
+                className="app-btn app-btn-danger"
+                disabled={engineDownloadBusy}
+                title="Удалить только скачанные копии из userData/bin. Встроенные resources/bin и ручные пути не трогаются."
+                onClick={() => {
+                  void handleClearDownloadedEngines()
+                }}
+              >
+                Удалить скачанные
+              </button>
               <button
                 type="button"
                 className="app-btn"

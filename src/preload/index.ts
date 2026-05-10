@@ -323,6 +323,8 @@ const fluxalloy = {
     shouldOfferDownload: (): Promise<boolean> => ipcRenderer.invoke(mw.enginesShouldOfferDownload),
     download: (): Promise<{ ok: true } | { ok: false; error: string }> =>
       ipcRenderer.invoke(mw.enginesDownload),
+    clearUserBin: (): Promise<{ ok: true; removed: number } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(mw.enginesClearUserBin),
     onDownloadProgress: (listener: (progress: EngineDownloadProgress) => void): (() => void) => {
       const channel = mw.enginesProgress
       const handler = (_event: unknown, raw: unknown): void => {

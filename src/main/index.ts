@@ -1,4 +1,4 @@
-import { existsSync, statSync, writeFileSync } from 'fs'
+import { existsSync, rmSync, statSync, writeFileSync } from 'fs'
 import { basename, dirname, isAbsolute, join, normalize, resolve } from 'path'
 import { BrowserWindow, Menu, app, clipboard, dialog, ipcMain, nativeTheme, shell } from 'electron'
 import type { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
@@ -1762,6 +1762,30 @@ app.whenReady().then(() => {
         })
         buildApplicationMenu()
         return { ok: true }
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : String(error)
+        return { ok: false, error: msg }
+      }
+    }
+  )
+
+  ipcMain.handle(
+    mw.enginesClearUserBin,
+    async (): Promise<{ ok: true; removed: number } | { ok: false; error: string }> => {
+      const paths = resolveAppPaths()
+      const suffix = process.platform === 'win32' ? '.exe' : ''
+      let removed = 0
+      try {
+        for (const id of ENGINE_IDS) {
+          const target = join(paths.userBin, `${id}${suffix}`)
+          if (existsSync(target)) {
+            rmSync(target, { force: true })
+            removed += 1
+          }
+        }
+        rmSync(join(paths.userBin, '.cache'), { recursive: true, force: true })
+        buildApplicationMenu()
+        return { ok: true, removed }
       } catch (error) {
         const msg = error instanceof Error ? error.message : String(error)
         return { ok: false, error: msg }

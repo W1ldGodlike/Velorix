@@ -181,6 +181,7 @@ export interface FluxAlloyApi {
     getStatus: () => Promise<EnginesStatusSnapshot>
     shouldOfferDownload: () => Promise<boolean>
     download: () => Promise<{ ok: true } | { ok: false; error: string }>
+    clearUserBin: () => Promise<{ ok: true; removed: number } | { ok: false; error: string }>
     onDownloadProgress: (listener: (progress: EngineDownloadProgress) => void) => () => void
   }
   export: {

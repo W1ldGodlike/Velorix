@@ -462,6 +462,16 @@
   filter: brightness(1.05);
 }
 
+.app-btn-danger {
+  border-color: color-mix(in srgb, var(--fa-danger) 55%, var(--fa-border));
+  background: color-mix(in srgb, var(--fa-danger) 12%, var(--fa-surface-elevated));
+  color: var(--fa-danger);
+}
+
+.app-btn-danger:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--fa-danger) 18%, var(--fa-surface));
+}
+
 .app-main {
   flex: 1;
   min-height: 0;
