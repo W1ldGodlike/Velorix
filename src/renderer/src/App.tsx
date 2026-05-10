@@ -476,6 +476,7 @@ function App(): JSX.Element {
   /** Подстрочное сообщение статусбара: прогресс загрузки движков, ошибки DnD и т.п. */
   const [statusHint, setStatusHint] = useState<string | null>(null)
   const [preview, setPreview] = useState<PreviewOpenedPayload | null>(null)
+  const [previewBlobUrl, setPreviewBlobUrl] = useState<string | null>(null)
   const [probeInfo, setProbeInfo] = useState<MediaProbeSuccess | null>(null)
   const [probeError, setProbeError] = useState<string | null>(null)
   const [downloadsUrl, setDownloadsUrl] = useState('')
@@ -537,6 +538,7 @@ function App(): JSX.Element {
     range: { inSec: number; outSec: number } | null
   }>({ path: null, range: null })
   const currentSourcePath = preview?.path ?? null
+  const previewPlaybackUrl = previewBlobUrl ?? preview?.mediaUrl ?? null
   const trimRange = trimState.path === currentSourcePath ? trimState.range : null
   const downloadsStats = useMemo(() => summarizeDownloadsRows(downloadsRows), [downloadsRows])
   const visibleDownloadsRows = useMemo(
@@ -608,6 +610,81 @@ function App(): JSX.Element {
     setPreview(payload)
     setWorkspaceTab('editor')
   }, [])
+
+  const handlePreviewVideoError = useCallback(
+    (video: HTMLVideoElement): void => {
+      if (!preview) {
+        return
+      }
+      const mediaError = video.error
+      const code = mediaError?.code ?? 0
+      const detail =
+        code === 1
+          ? 'загрузка отменена'
+          : code === 2
+            ? 'сетевая ошибка'
+            : code === 3
+              ? 'ошибка декодирования'
+              : code === 4
+                ? 'формат не поддерживается'
+                : 'неизвестная ошибка'
+      window.fluxalloy.log.send({
+        level: 'error',
+        scope: 'preview/video',
+        message: `video element error code=${code} detail=${detail} path=${preview.path} mediaUrl=${preview.mediaUrl} playbackUrl=${previewBlobUrl ?? preview.mediaUrl}`
+      })
+      if (previewBlobUrl) {
+        setStatusHint(`Видео не удалось воспроизвести: ${detail}`)
+        return
+      }
+
+      setStatusHint('Видео не открылось напрямую, пробую безопасный blob-fallback…')
+      void fetch(preview.mediaUrl)
+        .then(async (response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`)
+          }
+          const blob = await response.blob()
+          const blobUrl = URL.createObjectURL(blob)
+          setPreviewBlobUrl((current) => {
+            if (current) {
+              URL.revokeObjectURL(current)
+            }
+            return blobUrl
+          })
+          setStatusHint('Видео переключено на blob-fallback для предпросмотра.')
+          window.fluxalloy.log.send({
+            level: 'info',
+            scope: 'preview/video',
+            message: `blob fallback ready size=${blob.size} type=${blob.type || 'unknown'} path=${preview.path}`
+          })
+        })
+        .catch((error: unknown) => {
+          const message = error instanceof Error ? error.message : String(error)
+          setStatusHint(`Видео не удалось воспроизвести: ${detail}; fallback тоже не сработал.`)
+          window.fluxalloy.log.send({
+            level: 'error',
+            scope: 'preview/video',
+            message: `blob fallback failed error=${message} path=${preview.path} mediaUrl=${preview.mediaUrl}`
+          })
+        })
+    },
+    [preview, previewBlobUrl]
+  )
+
+  const handlePreviewVideoLoaded = useCallback(
+    (video: HTMLVideoElement): void => {
+      if (!preview) {
+        return
+      }
+      window.fluxalloy.log.send({
+        level: 'info',
+        scope: 'preview/video',
+        message: `video metadata loaded duration=${video.duration || 0} size=${video.videoWidth}x${video.videoHeight} path=${preview.path} playbackUrl=${previewBlobUrl ?? preview.mediaUrl}`
+      })
+    },
+    [preview, previewBlobUrl]
+  )
 
   const handleAddDownloadsFromMain = useCallback(
     async (startImmediately: boolean): Promise<void> => {
@@ -1013,6 +1090,15 @@ function App(): JSX.Element {
       cancelled = true
     }
   }, [applyPreview])
+
+  useEffect(() => {
+    setPreviewBlobUrl((current) => {
+      if (current) {
+        URL.revokeObjectURL(current)
+      }
+      return null
+    })
+  }, [preview?.mediaUrl])
 
   useEffect(() => {
     const path = preview?.path
@@ -1686,44 +1772,30 @@ function App(): JSX.Element {
               <>
                 <div className="app-preview-stack" ref={previewStackRef}>
                   <video
-                    key={preview.mediaUrl}
+                    key={previewPlaybackUrl ?? preview.mediaUrl}
                     ref={videoRef}
                     className="app-preview-video"
                     controls
-                    src={preview.mediaUrl}
+                    src={previewPlaybackUrl ?? preview.mediaUrl}
                     aria-label={`Предпросмотр: ${basenameForAriaLabel(preview.path)}`}
+                    onLoadedMetadata={(event) => {
+                      handlePreviewVideoLoaded(event.currentTarget)
+                    }}
                     onError={(event) => {
-                      const mediaError = event.currentTarget.error
-                      const code = mediaError?.code ?? 0
-                      const detail =
-                        code === 1
-                          ? 'загрузка отменена'
-                          : code === 2
-                            ? 'сетевая ошибка'
-                            : code === 3
-                              ? 'ошибка декодирования'
-                              : code === 4
-                                ? 'формат не поддерживается'
-                                : 'неизвестная ошибка'
-                      setStatusHint(`Видео не удалось воспроизвести: ${detail}`)
-                      window.fluxalloy.log.send({
-                        level: 'error',
-                        scope: 'preview/video',
-                        message: `video element error code=${code} detail=${detail} path=${preview.path} mediaUrl=${preview.mediaUrl}`
-                      })
+                      handlePreviewVideoError(event.currentTarget)
                     }}
                   />
                   <PreviewTransport
-                    key={preview.mediaUrl}
-                    mediaKey={preview.mediaUrl}
+                    key={previewPlaybackUrl ?? preview.mediaUrl}
+                    mediaKey={previewPlaybackUrl ?? preview.mediaUrl}
                     videoRef={videoRef}
                     fullscreenRootRef={previewStackRef}
                     disabled={exportBusy || snapshotBusy}
                   />
                   <VideoTimeline
-                    key={preview.mediaUrl}
-                    mediaKey={preview.mediaUrl}
-                    mediaUrl={preview.mediaUrl}
+                    key={previewPlaybackUrl ?? preview.mediaUrl}
+                    mediaKey={previewPlaybackUrl ?? preview.mediaUrl}
+                    mediaUrl={previewPlaybackUrl ?? preview.mediaUrl}
                     probe={probeInfo}
                     videoRef={videoRef}
                     onTrimRangeChange={onTrimRangeSnapshot}

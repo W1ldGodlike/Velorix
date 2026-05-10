@@ -1,4 +1,6 @@
+import { randomBytes } from 'crypto'
 import { createReadStream, existsSync, realpathSync, statSync } from 'fs'
+import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'http'
 import { extname, normalize, resolve } from 'path'
 import { Readable } from 'stream'
 
@@ -11,6 +13,9 @@ import { protocol } from 'electron'
  * любой файл по угадыванию пути. Поэтому `fluxmedia://` принимает только зарегистрированные ключи.
  */
 const allowedMediaPaths = new Set<string>()
+const allowedMediaTokens = new Map<string, string>()
+let localMediaServer: Server | null = null
+let localMediaServerPort: number | null = null
 
 const MEDIA_MIME_BY_EXT: Record<string, string> = {
   '.aac': 'audio/aac',
@@ -76,6 +81,11 @@ export function grantMediaPath(filePath: string): string | null {
     return null
   }
   allowedMediaPaths.add(key)
+  if (localMediaServerPort !== null) {
+    const token = randomBytes(18).toString('hex')
+    allowedMediaTokens.set(token, key)
+    return `http://127.0.0.1:${localMediaServerPort}/media/${token}`
+  }
   return `fluxmedia://local/?p=${encodeURIComponent(key)}`
 }
 
@@ -158,7 +168,95 @@ function streamResponse(filePath: string, request: Request): Response {
   })
 }
 
+function sendHttpMedia(filePath: string, req: IncomingMessage, res: ServerResponse): void {
+  const st = statSync(filePath)
+  const size = st.size
+  const mime = mediaMimeType(filePath)
+  const rawRange = Array.isArray(req.headers.range) ? req.headers.range[0] : (req.headers.range ?? null)
+  const range = parseRangeHeader(rawRange, size)
+  const baseHeaders = {
+    'Accept-Ranges': 'bytes',
+    'Access-Control-Allow-Origin': '*',
+    'Content-Type': mime
+  }
+
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, {
+      ...baseHeaders,
+      'Access-Control-Allow-Headers': 'Range',
+      'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS'
+    })
+    res.end()
+    return
+  }
+
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
+    res.writeHead(405, baseHeaders)
+    res.end('Method Not Allowed')
+    return
+  }
+
+  if (range) {
+    const len = range.end - range.start + 1
+    res.writeHead(206, {
+      ...baseHeaders,
+      'Content-Length': String(len),
+      'Content-Range': `bytes ${range.start}-${range.end}/${size}`
+    })
+    if (req.method === 'HEAD') {
+      res.end()
+      return
+    }
+    createReadStream(filePath, range).pipe(res)
+    return
+  }
+
+  res.writeHead(200, {
+    ...baseHeaders,
+    'Content-Length': String(size)
+  })
+  if (req.method === 'HEAD') {
+    res.end()
+    return
+  }
+  createReadStream(filePath).pipe(res)
+}
+
+function startLocalMediaServer(): void {
+  if (localMediaServer) {
+    return
+  }
+  localMediaServer = createServer((req, res) => {
+    try {
+      const url = new URL(req.url ?? '/', 'http://127.0.0.1')
+      if (!url.pathname.startsWith('/media/')) {
+        res.writeHead(404, { 'Access-Control-Allow-Origin': '*' })
+        res.end('Not Found')
+        return
+      }
+      const token = decodeURIComponent(url.pathname.slice('/media/'.length))
+      const filePath = allowedMediaTokens.get(token)
+      if (!filePath || !allowedMediaPaths.has(filePath)) {
+        res.writeHead(403, { 'Access-Control-Allow-Origin': '*' })
+        res.end('Forbidden')
+        return
+      }
+      sendHttpMedia(filePath, req, res)
+    } catch (error) {
+      res.writeHead(500, { 'Access-Control-Allow-Origin': '*' })
+      res.end(error instanceof Error ? error.message : String(error))
+    }
+  })
+  localMediaServer.listen(0, '127.0.0.1', () => {
+    const address = localMediaServer?.address()
+    if (address && typeof address === 'object') {
+      localMediaServerPort = address.port
+    }
+  })
+}
+
 export function registerFluxMediaProtocol(): void {
+  startLocalMediaServer()
   protocol.handle('fluxmedia', async (request) => {
     let url: URL
     try {

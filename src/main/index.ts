@@ -1442,7 +1442,7 @@ function createWindow(): void {
 
 function isLikelyBrowserPlayableMedia(filePath: string): boolean {
   const ext = extname(filePath).toLowerCase()
-  return ['.webm', '.ogg', '.ogv', '.mp3', '.wav', '.flac'].includes(ext)
+  return ['.mp4', '.m4v', '.webm', '.ogg', '.ogv', '.mp3', '.wav', '.flac'].includes(ext)
 }
 
 const previewProxyJobs = new Map<string, Promise<string>>()
