@@ -84,10 +84,6 @@ const EXPORT_CONTAINERS: Array<{ id: FfmpegExportContainerId; label: string }> =
 
 const EXPORT_CRF_OPTIONS = [18, 20, 23, 26, 28, 30]
 const EXPORT_VIDEO_BITRATES = ['1000k', '2500k', '5000k', '8000k', '12000k', '20000k']
-const EXPORT_AUDIO_MODES: Array<{ id: FfmpegExportAudioModeId; label: string }> = [
-  { id: 'aac', label: 'AAC audio' },
-  { id: 'none', label: 'Без аудио' }
-]
 const EXPORT_AUDIO_BITRATES = ['96k', '128k', '160k', '192k', '256k', '320k']
 const EXPORT_FPS_OPTIONS = [24, 25, 30, 50, 60]
 const EXPORT_SCALE_PRESETS: Array<{ id: FfmpegExportScalePresetId; label: string }> = [
@@ -1715,29 +1711,34 @@ function App(): JSX.Element {
                   Аудиодорожка экспорта и параметры сохранения снимка кадра §7.
                 </p>
                 <div className="app-settings-grid" aria-describedby="ffmpegAudioSectionHint">
-                  <label className="app-field">
-                    <span>Аудио</span>
-                    <select
-                      className="app-control"
-                      aria-label="Режим аудио экспорта"
-                      value={exportAudioMode}
+                  <div className="app-field app-field-switch">
+                    <span>Без аудио</span>
+                    <button
+                      type="button"
+                      className={`app-pill-switch${exportAudioMode === 'none' ? ' app-pill-switch-on' : ''}`}
+                      role="switch"
+                      aria-checked={exportAudioMode === 'none'}
+                      aria-describedby="ffmpegAudioSectionHint ffmpegAudioModeHint"
                       disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
+                      onClick={() => {
                         bumpManualExportEdit()
-                        const v = e.target.value === 'none' ? 'none' : 'aac'
+                        const v: FfmpegExportAudioModeId =
+                          exportAudioMode === 'none' ? 'aac' : 'none'
                         setExportAudioMode(v)
                         void window.fluxalloy.settings
                           .setFfmpegExportAudioMode(v)
                           .catch(console.error)
                       }}
                     >
-                      {EXPORT_AUDIO_MODES.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+                      <span className="app-pill-switch-knob" aria-hidden />
+                      <span className="app-pill-switch-text">
+                        {exportAudioMode === 'none' ? 'Вкл' : 'Выкл'}
+                      </span>
+                    </button>
+                    <span id="ffmpegAudioModeHint" className="app-field-help">
+                      Включите, если нужен немой файл или звук будет добавлен позже.
+                    </span>
+                  </div>
                   <label className="app-field">
                     <span>AAC bitrate</span>
                     <select
