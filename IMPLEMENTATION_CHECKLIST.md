@@ -37,7 +37,7 @@
 
 - [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; `queue.json` без duplicate id; журнал out/err + truncate; дальше — редкие шаблоны логов по полю.
 - [~] §6.3: argv whitelist + справочник + превью draft/override `-o`; при необходимости редкие поля.
-- [~] §6.1/§4.A: окно загрузок — HiDPR/**a11y** как в спринте ранее + **нижние панели** (**`sr-only`** **`downloadsHistorySectionHint` / `downloadsLogSectionHint`**, связь с кнопками и **`#logPre`**); дальше — ручная матрица Win 125–200 %.
+- [~] §6.1/§4.A: окно загрузок — HiDPR/**a11y**: URL/очередь/нижние панели + **правый rail** — ключевые **`input`/`select`/`textarea`/`pre argsPreview`/чекбоксы/кнопки «Сохранение» и cookies** связаны секционными **`opts-hint` id** через **`aria-describedby`**; дальше — ручная матрица Win 125–200 %.
 - [~] §1.1/§4.A/§9: редактор + **инспектор** — HiDPR/topbar/SVG/focus; **`AboutDialog`** / **`IconCircleHelp`**; **`video` `aria-label`**; **`PreviewProbeBody`** + превью ffmpeg; **rail FFmpeg** — секционные hints + **`aria-describedby`** у **компактных действий** (последний снимок / пресеты / последний экспорт); быстрая yt-dlp / seek/снап; дальше — multi-monitor DPI, Dolby/side_data §9.
 - [~] §7.2: crop/rotate/flip; дальше расширенные фильтры и HW encode.
 - [~] §9/§21: расширенные ffprobe (Dolby/side_data и др.); новые IPC через `ipc-channels`, при необходимости логи по окнам; точечные Vitest.

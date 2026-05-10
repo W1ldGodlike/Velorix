@@ -1056,19 +1056,19 @@ ${emitDownloadsTopbarClusterHtml(18)}
                 Пресеты -f/-x, субтитры и сохранённые опции yt-dlp (userData/settings.json); шаблон -o ниже должен содержать %(ext)s.
               </p>
               <label for="fmtPreset">Формат / качество (-f)</label>
-              <select id="fmtPreset"></select>
+              <select id="fmtPreset" aria-describedby="dlRailFormatSectionHint"></select>
               <div class="opts-check-row">
-                <label class="chk"><span class="chk-text">Весь плейлист <span class="opts-check-muted">--yes-playlist</span></span><input type="checkbox" id="chkPlaylist" /></label>
-                <label class="chk"><span class="chk-text">Только аудио <span class="opts-check-muted">-x --audio-format best</span></span><input type="checkbox" id="chkAudioOnly" /></label>
+                <label class="chk"><span class="chk-text">Весь плейлист <span class="opts-check-muted">--yes-playlist</span></span><input type="checkbox" id="chkPlaylist" aria-describedby="dlRailFormatSectionHint" /></label>
+                <label class="chk"><span class="chk-text">Только аудио <span class="opts-check-muted">-x --audio-format best</span></span><input type="checkbox" id="chkAudioOnly" aria-describedby="dlRailFormatSectionHint" /></label>
               </div>
               <label for="subPreset">Субтитры §6.2</label>
-              <select id="subPreset">
+              <select id="subPreset" aria-describedby="dlRailFormatSectionHint">
                 <option value="none">Не скачивать</option>
                 <option value="manual">Ручные дорожки (--write-subs)</option>
                 <option value="manual_auto">Ручные + автосгенерированные (--write-auto-subs)</option>
               </select>
               <label for="subLangsInput">Языки субтитров</label>
-              <input type="text" id="subLangsInput" spellcheck="false" autocomplete="off" placeholder="ru,en или all" />
+              <input type="text" id="subLangsInput" spellcheck="false" autocomplete="off" placeholder="ru,en или all" aria-describedby="dlRailFormatSectionHint" />
             </div>
           </details>
           <details class="settings-section" id="dlRailMeta"${openAttr('metadata', true)}>
@@ -1078,7 +1078,7 @@ ${emitDownloadsTopbarClusterHtml(18)}
                 Cookies из браузера или файла Netscape, маскировка User-Agent §6 и опция автозапуска результата в обработчике FluxAlloy §6.4.
               </p>
               <label for="cookiesBrowserSelect">Cookies §6.2</label>
-              <select id="cookiesBrowserSelect">
+              <select id="cookiesBrowserSelect" aria-describedby="dlRailMetaSectionHint">
                 <option value="none">Не использовать</option>
                 <option value="chrome">Из браузера: Chrome</option>
                 <option value="edge">Из браузера: Edge</option>
@@ -1087,19 +1087,19 @@ ${emitDownloadsTopbarClusterHtml(18)}
               <div class="out-dir-row" role="group" aria-labelledby="dlCookiesPathLabel">
                 <span id="dlCookiesPathLabel" class="out-dir-label">Файл cookies:</span>
                 <span id="cookiesPathText" class="out-path" title="">—</span>
-                <button type="button" class="cmd" id="pickCookiesBtn">Выбрать…</button>
-                <button type="button" class="cmd" id="clearCookiesBtn" title="Убрать файл из настроек">Очистить</button>
+                <button type="button" class="cmd" id="pickCookiesBtn" aria-describedby="dlRailMetaSectionHint">Выбрать…</button>
+                <button type="button" class="cmd" id="clearCookiesBtn" title="Убрать файл из настроек" aria-describedby="dlRailMetaSectionHint">Очистить</button>
               </div>
               <p class="opts-hint opts-warn" id="cookiesWarn" hidden></p>
               <label for="impersonateSelect">Impersonate клиента</label>
-              <select id="impersonateSelect">
+              <select id="impersonateSelect" aria-describedby="dlRailMetaSectionHint">
                 <option value="none">Выключено</option>
                 <option value="chrome">chrome</option>
                 <option value="edge">edge</option>
                 <option value="firefox">firefox</option>
               </select>
               <div class="opts-check-row">
-                <label class="chk"><span class="chk-text">Открывать результат в обработчике <span class="opts-check-muted">§6.4</span></span><input type="checkbox" id="chkOpenInHandlerOnComplete" /></label>
+                <label class="chk"><span class="chk-text">Открывать результат в обработчике <span class="opts-check-muted">§6.4</span></span><input type="checkbox" id="chkOpenInHandlerOnComplete" aria-describedby="dlRailMetaSectionHint" /></label>
               </div>
             </div>
           </details>
@@ -1112,15 +1112,15 @@ ${emitDownloadsTopbarClusterHtml(18)}
               <div class="out-dir-row" role="group" aria-labelledby="dlOutDirLabel">
                 <span id="dlOutDirLabel" class="out-dir-label">Каталог загрузок:</span>
                 <span id="outDirText" class="out-path" title="">…</span>
-                <button type="button" class="cmd" id="openOutBtn" title="Открыть текущий каталог загрузок в проводнике">Открыть</button>
-                <button type="button" class="cmd" id="pickOutBtn">Выбрать…</button>
-                <button type="button" class="cmd" id="resetOutBtn" title="Использовать каталог по умолчанию в userData">По умолчанию</button>
+                <button type="button" class="cmd" id="openOutBtn" title="Открыть текущий каталог загрузок в проводнике" aria-describedby="dlRailSaveSectionHint">Открыть</button>
+                <button type="button" class="cmd" id="pickOutBtn" aria-describedby="dlRailSaveSectionHint">Выбрать…</button>
+                <button type="button" class="cmd" id="resetOutBtn" title="Использовать каталог по умолчанию в userData" aria-describedby="dlRailSaveSectionHint">По умолчанию</button>
               </div>
               <label for="tmplInput">Шаблон имени (-o)</label>
-              <input type="text" id="tmplInput" spellcheck="false" autocomplete="off" />
+              <input type="text" id="tmplInput" spellcheck="false" autocomplete="off" aria-describedby="dlRailSaveSectionHint" />
               <div class="opts-actions">
-                <button type="button" class="cmd cmd-primary" id="applyOptsBtn">Сохранить параметры</button>
-                <button type="button" class="cmd" id="tmplReset">Шаблон по умолчанию</button>
+                <button type="button" class="cmd cmd-primary" id="applyOptsBtn" aria-describedby="dlRailSaveSectionHint">Сохранить параметры</button>
+                <button type="button" class="cmd" id="tmplReset" aria-describedby="dlRailSaveSectionHint">Шаблон по умолчанию</button>
               </div>
             </div>
           </details>
@@ -1131,13 +1131,13 @@ ${emitDownloadsTopbarClusterHtml(18)}
                 Ограничение скорости скачивания, параметры yt-dlp и профиль автоповтора строки очереди при ошибке §6.4.
               </p>
               <label for="rateLimitInput">Ограничение скорости (--limit-rate)</label>
-              <input type="text" id="rateLimitInput" spellcheck="false" autocomplete="off" placeholder="500K или 2M" />
+              <input type="text" id="rateLimitInput" spellcheck="false" autocomplete="off" placeholder="500K или 2M" aria-describedby="dlRailNetSectionHint" />
               <label for="retriesInput">Повторы при ошибках (--retries)</label>
-              <input type="text" id="retriesInput" inputmode="numeric" spellcheck="false" autocomplete="off" placeholder="0–99" />
+              <input type="text" id="retriesInput" inputmode="numeric" spellcheck="false" autocomplete="off" placeholder="0–99" aria-describedby="dlRailNetSectionHint" />
               <label for="fragmentRetriesInput">Повторы фрагментов (--fragment-retries)</label>
-              <input type="text" id="fragmentRetriesInput" inputmode="numeric" spellcheck="false" autocomplete="off" placeholder="0–99" />
+              <input type="text" id="fragmentRetriesInput" inputmode="numeric" spellcheck="false" autocomplete="off" placeholder="0–99" aria-describedby="dlRailNetSectionHint" />
               <label for="queueRetrySelect">Повтор строки при сбое</label>
-              <select id="queueRetrySelect">
+              <select id="queueRetrySelect" aria-describedby="dlRailNetSectionHint">
                 <option value="off">Выключено</option>
                 <option value="light">Лёгкий (1 повтор, 2.5 с)</option>
                 <option value="normal">Обычный (2 повтора: 3 с + 8 с)</option>
@@ -1152,16 +1152,16 @@ ${emitDownloadsTopbarClusterHtml(18)}
                 Белый список аргументов §6.3: правки здесь добавляются к финальной командной строке yt-dlp; ниже живое превью argv.
               </p>
               <label for="extraArgsInput">Дополнительные аргументы (без shell)</label>
-              <textarea id="extraArgsInput" rows="2" spellcheck="false" autocomplete="off" placeholder="Например: --write-sub --sub-lang ru"></textarea>
+              <textarea id="extraArgsInput" rows="2" spellcheck="false" autocomplete="off" placeholder="Например: --write-sub --sub-lang ru" aria-describedby="dlRailExpertSectionHint"></textarea>
               <p class="opts-hint opts-warn" id="extraArgsWarn" hidden></p>
               <label for="previewOutDirOverride">Другой каталог для превью -o</label>
-              <input type="text" id="previewOutDirOverride" spellcheck="false" autocomplete="off" placeholder="Только строка превью argv" />
+              <input type="text" id="previewOutDirOverride" spellcheck="false" autocomplete="off" placeholder="Только строка превью argv" aria-describedby="dlRailExpertSectionHint" />
               <span class="opts-preview-label">Превью argv</span>
-              <pre class="args-preview" id="argsPreview"></pre>
+              <pre class="args-preview" id="argsPreview" aria-label="Превью argv yt-dlp" aria-describedby="dlRailExpertSectionHint"></pre>
               <details class="hints-panel details-chev" id="hintsPanel"${openAttr('hints', false)}>
                 <summary>Справочник флагов</summary>
                 <label class="opts-preview-label" for="hintInsert">Вставить флаг из справочника</label>
-                <select id="hintInsert" class="hint-select">
+                <select id="hintInsert" class="hint-select" aria-describedby="dlRailExpertSectionHint">
                   <option value="">Выберите флаг — он добавится в «Доп. аргументы»…</option>
                 </select>
                 <p class="opts-hint" id="hintSummary"></p>
