@@ -726,6 +726,7 @@ function sanitizeMainWindowUiPanelPatch(raw: unknown): Partial<MainWindowUiPanel
     return {}
   }
   const keys: (keyof MainWindowUiPanelState)[] = [
+    'ffmpegSettingsRailOpen',
     'quickYtdlp',
     'ffmpegVideo',
     'ffmpegFormat',

@@ -35,6 +35,8 @@ export interface WindowBoundsConfig {
  * Не заданные ключи при отображении трактуются как дефолты в renderer.
  */
 export interface MainWindowUiPanelState {
+  /** §4.1 / v0 — видимость правой колонки «Настройки FFmpeg»; `false` — только превью (больше места под таймлайн). */
+  ffmpegSettingsRailOpen?: boolean
   quickYtdlp?: boolean
   ffmpegVideo?: boolean
   ffmpegFormat?: boolean

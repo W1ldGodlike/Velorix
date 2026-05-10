@@ -280,6 +280,7 @@ function parseFfmpegExportScalePresetStored(
 }
 
 const MAIN_UI_PANEL_KEYS = [
+  'ffmpegSettingsRailOpen',
   'quickYtdlp',
   'ffmpegVideo',
   'ffmpegFormat',

@@ -38,7 +38,7 @@
 - [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; `queue.json` без duplicate id; журнал out/err + truncate; дальше — редкие шаблоны логов по полю.
 - [~] §6.3: argv whitelist + справочник + превью draft/override `-o`; при необходимости редкие поля.
 - [~] §6.1/§4.A: окно загрузок — второй DPI inline CSS `@120dpi`/`@168dpi` (URL-band, таблица, журнал/history, rail); базовые `scaleFactor`/min*`window-hidpi`; дальше — ручная проверка 125–200 % Win.
-- [~] §1.1/§4.A/§9: редактор — HiDPI + топбар **ffmpeg•yt-dlp**; seek + **снап** через `videoFpsApprox` (дробь ffprobe или `nb_frames`/длительность) и fallback по строке дорожки; дальше — multi-monitor DPI, Dolby/side_data §9.
+- [~] §1.1/§4.A/§9: редактор — HiDPI + топбар **ffmpeg•yt-dlp**; seek/снап; **сворачиваемый rail FFmpeg** (persist `ffmpegSettingsRailOpen`); дальше — multi-monitor DPI, Dolby/side_data §9.
 - [~] §7.2: crop/rotate/flip; дальше расширенные фильтры и HW encode.
 - [~] §9: опционально Dolby Vision/`side_data` и прочие расширенные метаданные ffprobe.
 - [~] §21/§17: новые IPC через `ipc-channels` + shared-контракты; при необходимости логи по окнам; точечные Vitest.
@@ -82,7 +82,7 @@
 
 - [~] Построить главное окно вокруг крупного предпросмотра: базовая зона preview есть, финальная компоновка панелей — дальше.
 - [~] Таймлайн под превью (базовый range + синхрон с `<video>`); **масштаб окна scrub (×1…×8)**, **waveform** (≤~180 s) и **линейка времени** по видимому окну (`timeline-ruler`), клик/клавиатура → seek в окне zoom; **снап к кадру** по `probe.videoFpsApprox` (`resolveVideoFpsApprox`: avg/r-дробь, иначе `nb_frames`/duration) или по regex в `detail` дорожки; сводки §9 дополняются строкой FPS; транспорт v0; HiDPI в `main.css`; §7.1 controls сохранены; дальше — ручная матрица DPI и редкие контейнеры без fps/`nb_frames`.
-- [~] Сделать панели настроек кодирования сбоку/снизу, сворачиваемые: FFmpeg-панель справа + persist раскрытия секций в `settings.json`; полировка и инспектор — дальше.
+- [~] Панели кодирования справа: **сворачиваемые секции** + **целиком rail FFmpeg** (`ffmpegSettingsRailOpen` в `mainWindowUiPanels`); persist в `settings.json`; полировка и инспектор — дальше.
 - [~] Сформировать отдельное окно менеджера загрузок в едином стиле: data HTML ближе к v0 (компактнее layout, таблица v0-колонки, log/history, rail); живая очередь `downloads/queue.json` §4.1; HiDPI: базовый `dppx` + `window-hidpi` мин.* + второй проход `@120dpi`/`@168dpi` в inline CSS окна (URL-band/table/rail/log/history); финальная матрица — после ручных прогонов Win 125–200 %.
 - [~] Реализовать прогрессивное раскрытие сложных параметров: `details` для экспертных argv/справочника/лога и **превью команды ffmpeg** в главном окне (`exportCommandPreview` в `mainWindowUiPanels`); общая система панелей — дальше.
 - [~] Базовые токены темы есть; тёмная палитра главного окна приближена к v0-референсу.
@@ -182,7 +182,7 @@
 - [x] `settings.json` для темы.
 - [~] Последний открытый локальный файл (`lastOpenedSourcePath`) + мягкий restore превью при старте + геометрия main/downloads в `settings.json`; без полного session.json.
 - [x] Сохранять размеры/позиции окон.
-- [~] Сохранять раскрытые панели: главное окно + окно §9 (**push** снимка `mainWindowUiPanels` после сохранения; IPC только main/inspector + preload whitelist) + yt-dlp (`downloadsWindowUiPanels`); FFmpeg-секции только в редакторе, `probe*` — shared с инспектором.
+- [~] Сохранять раскрытые панели: главное окно + окно §9 (**push** снимка `mainWindowUiPanels` после сохранения; IPC только main/inspector + preload whitelist) + yt-dlp (`downloadsWindowUiPanels`); FFmpeg-секции только в редакторе (`ffmpegSettingsRailOpen` + секции §7), `probe*` — shared с инспектором.
 - [~] Сохранять выбранные папки (каталог yt-dlp, последняя папка ffmpeg export и snapshot; прочие диалоги — позже).
 - [~] Сохранять состояние очередей: yt-dlp живой `queue.json` §6 (атомарная запись, гидратация при старте main, дедупликация id, `will-quit` flush); полный `session.json` и прочие очереди — позже.
 - [ ] Сохранять `session.json`.

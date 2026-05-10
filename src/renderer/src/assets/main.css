@@ -432,6 +432,11 @@
   grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
   align-items: stretch;
   overflow: hidden;
+  position: relative;
+}
+
+.app-workbench-ffmpeg-collapsed {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 /* Превью: зона Drag-and-Drop §4.B + живой `<video>` §7 + таймлайн. */
@@ -470,6 +475,40 @@
   gap: 0.75rem;
   padding: 0.7rem 0.8rem;
   border-bottom: 1px solid var(--fa-border-subtle);
+}
+
+.app-settings-panel-head-trailing {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-shrink: 0;
+}
+
+.app-settings-rail-collapse-btn {
+  flex-shrink: 0;
+}
+
+.app-ffmpeg-rail-restore {
+  position: absolute;
+  right: 0.55rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  flex-direction: column;
+  min-height: auto !important;
+  padding: 0.38rem 0.35rem !important;
+  gap: 0.12rem;
+}
+
+.app-ffmpeg-rail-restore-text {
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fa-text-muted);
+  line-height: 1;
+  max-width: 3.2rem;
+  text-align: center;
 }
 
 .app-settings-title {
@@ -1439,6 +1478,15 @@
     padding: 0.34rem 0.68rem;
     font-size: 0.736rem;
   }
+
+  .app-ffmpeg-rail-restore {
+    right: 0.62rem;
+    padding: 0.42rem 0.38rem !important;
+  }
+
+  .app-ffmpeg-rail-restore-text {
+    font-size: 0.62rem;
+  }
 }
 
 @media (-webkit-min-device-pixel-ratio: 1.75), (min-resolution: 168dpi) {
@@ -1521,5 +1569,14 @@
   .app-preview-probe {
     font-size: 0.752rem;
     padding: 0.36rem 0.72rem;
+  }
+
+  .app-ffmpeg-rail-restore {
+    right: 0.68rem;
+    padding: 0.46rem 0.4rem !important;
+  }
+
+  .app-ffmpeg-rail-restore-text {
+    font-size: 0.648rem;
   }
 }
