@@ -431,3 +431,88 @@ export function IconScissors({
     </SvgBase>
   )
 }
+
+/** §6 — reorder / file / folder / trash / retry (те же пути, что data HTML `RowIco`). */
+export function IconQueueChevronUp({
+  title = 'Выше',
+  size = 18
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(QUEUE_ROW_ACTION_ICONS.chevUp)}
+    </SvgBase>
+  )
+}
+
+export function IconQueueChevronDown({
+  title = 'Ниже',
+  size = 18
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(QUEUE_ROW_ACTION_ICONS.chevDown)}
+    </SvgBase>
+  )
+}
+
+export function IconQueueRetry({
+  title = 'Повтор',
+  size = 18
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(QUEUE_ROW_ACTION_ICONS.retry)}
+    </SvgBase>
+  )
+}
+
+export function IconQueueFile({
+  title = 'Открыть файл',
+  size = 18
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(QUEUE_ROW_ACTION_ICONS.file)}
+    </SvgBase>
+  )
+}
+
+export function IconQueueOutbound({
+  title = 'Открыть в редакторе',
+  size = 18
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(QUEUE_ROW_ACTION_ICONS.outbound)}
+    </SvgBase>
+  )
+}
+
+export function IconQueueTrash({
+  title = 'Удалить из очереди',
+  size = 18
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(QUEUE_ROW_ACTION_ICONS.trash)}
+    </SvgBase>
+  )
+}

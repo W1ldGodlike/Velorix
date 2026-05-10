@@ -830,6 +830,18 @@
   font-size: 0.68rem;
 }
 
+.app-downloads-row-actions .app-icon-btn {
+  box-sizing: border-box;
+  min-width: 26px;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+}
+
+.app-downloads-row-actions .app-icon-btn > svg {
+  display: block;
+}
+
 .app-downloads-url-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;

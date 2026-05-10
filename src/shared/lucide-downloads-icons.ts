@@ -97,6 +97,11 @@ export const QUEUE_ROW_ACTION_ICONS = {
   ] as const satisfies readonly StrokePrim[],
   stop: [
     { tag: 'rect', attr: { x: '6', y: '6', width: '12', height: '12', rx: '2' } }
+  ] as const satisfies readonly StrokePrim[],
+  /** lucide `x` — отмена/закрыть (v0 row actions). */
+  x: [
+    { tag: 'line', attr: { x1: '18', y1: '6', x2: '6', y2: '18' } },
+    { tag: 'line', attr: { x1: '6', y1: '6', x2: '18', y2: '18' } }
   ] as const satisfies readonly StrokePrim[]
 } as const
 
@@ -114,7 +119,8 @@ const QUEUE_ROW_ICO_KEY_ORDER: QueueRowActionIconKey[] = [
   'chevUp',
   'chevDown',
   'trash',
-  'stop'
+  'stop',
+  'x'
 ]
 
 /** Топбар окна загрузок + те же глифы доступны главному renderer через `LucideMiniIcons`. */

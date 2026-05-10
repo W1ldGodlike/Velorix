@@ -16,6 +16,14 @@ import {
   IconFolderOpen,
   IconImage,
   IconMoon,
+  IconPauseUi,
+  IconPlay,
+  IconQueueChevronDown,
+  IconQueueChevronUp,
+  IconQueueFile,
+  IconQueueOutbound,
+  IconQueueRetry,
+  IconQueueTrash,
   IconRotateCcw,
   IconRotateCw,
   IconSave,
@@ -2696,7 +2704,7 @@ function App(): JSX.Element {
                             <div className="app-downloads-row-actions">
                               <button
                                 type="button"
-                                className="app-btn app-btn-compact"
+                                className="app-icon-btn"
                                 aria-label={`Поднять строку ${row.id} выше`}
                                 onClick={() => {
                                   void window.fluxalloy.downloads
@@ -2708,11 +2716,11 @@ function App(): JSX.Element {
                                     })
                                 }}
                               >
-                                ↑
+                                <IconQueueChevronUp title="" size={18} />
                               </button>
                               <button
                                 type="button"
-                                className="app-btn app-btn-compact"
+                                className="app-icon-btn"
                                 aria-label={`Опустить строку ${row.id} ниже`}
                                 onClick={() => {
                                   void window.fluxalloy.downloads.moveRow(row.id, 1).then((res) => {
@@ -2722,11 +2730,16 @@ function App(): JSX.Element {
                                   })
                                 }}
                               >
-                                ↓
+                                <IconQueueChevronDown title="" size={18} />
                               </button>
                               <button
                                 type="button"
-                                className="app-btn app-btn-compact"
+                                className="app-icon-btn app-icon-btn-primary"
+                                aria-label={
+                                  row.status.startsWith('Ошибка')
+                                    ? `Повторить загрузку строки ${row.id}`
+                                    : `Старт строки ${row.id}`
+                                }
                                 onClick={() => {
                                   const fn = row.status.startsWith('Ошибка')
                                     ? window.fluxalloy.downloads.retryRow
@@ -2738,13 +2751,18 @@ function App(): JSX.Element {
                                   })
                                 }}
                               >
-                                {row.status.startsWith('Ошибка') ? 'Повтор' : 'Старт'}
+                                {row.status.startsWith('Ошибка') ? (
+                                  <IconQueueRetry title="" size={18} />
+                                ) : (
+                                  <IconPlay title="" size={18} />
+                                )}
                               </button>
                               {row.outputPath ? (
                                 <>
                                   <button
                                     type="button"
-                                    className="app-btn app-btn-compact"
+                                    className="app-icon-btn"
+                                    aria-label={`Открыть файл строки ${row.id}`}
                                     onClick={() => {
                                       void window.fluxalloy.downloads
                                         .openQueueOutput(row.id, 'file')
@@ -2755,11 +2773,12 @@ function App(): JSX.Element {
                                         })
                                     }}
                                   >
-                                    Файл
+                                    <IconQueueFile title="" size={18} />
                                   </button>
                                   <button
                                     type="button"
-                                    className="app-btn app-btn-compact"
+                                    className="app-icon-btn"
+                                    aria-label={`Открыть папку строки ${row.id}`}
                                     onClick={() => {
                                       void window.fluxalloy.downloads
                                         .openQueueOutput(row.id, 'folder')
@@ -2770,11 +2789,12 @@ function App(): JSX.Element {
                                         })
                                     }}
                                   >
-                                    Папка
+                                    <IconFolderOpen title="" size={18} />
                                   </button>
                                   <button
                                     type="button"
-                                    className="app-btn app-btn-compact"
+                                    className="app-icon-btn"
+                                    aria-label={`Открыть в редакторе вывод строки ${row.id}`}
                                     onClick={() => {
                                       setStatusHint(
                                         'Готовлю файл для редактора… при необходимости будет создан WebM preview.'
@@ -2790,14 +2810,19 @@ function App(): JSX.Element {
                                         })
                                     }}
                                   >
-                                    В редактор
+                                    <IconQueueOutbound title="" size={18} />
                                   </button>
                                 </>
                               ) : null}
                               {row.isActiveRunner && row.ytdlpPauseSupported ? (
                                 <button
                                   type="button"
-                                  className="app-btn app-btn-compact"
+                                  className="app-icon-btn"
+                                  aria-label={
+                                    row.ytdlpPaused
+                                      ? `Продолжить yt-dlp для строки ${row.id}`
+                                      : `Пауза yt-dlp для строки ${row.id}`
+                                  }
                                   onClick={() => {
                                     const fn = row.ytdlpPaused
                                       ? window.fluxalloy.downloads.resumeYtdlp
@@ -2809,12 +2834,17 @@ function App(): JSX.Element {
                                     })
                                   }}
                                 >
-                                  {row.ytdlpPaused ? 'Продолжить' : 'Пауза'}
+                                  {row.ytdlpPaused ? (
+                                    <IconPlay title="" size={18} />
+                                  ) : (
+                                    <IconPauseUi title="" size={18} />
+                                  )}
                                 </button>
                               ) : null}
                               <button
                                 type="button"
-                                className="app-btn app-btn-compact app-btn-warn"
+                                className="app-icon-btn app-icon-btn-warn"
+                                aria-label={`Удалить строку ${row.id} из очереди`}
                                 onClick={() => {
                                   void window.fluxalloy.downloads.removeRow(row.id).then((res) => {
                                     if (!res.ok) {
@@ -2823,7 +2853,7 @@ function App(): JSX.Element {
                                   })
                                 }}
                               >
-                                Удалить
+                                <IconQueueTrash title="" size={18} />
                               </button>
                             </div>
                           </td>

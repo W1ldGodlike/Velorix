@@ -56,4 +56,9 @@ describe('lucide-downloads-icons', () => {
     expect(emitInlineStrokeSvg(EDITOR_THEME_ICONS.sun, 20)).toContain('circle')
     expect(emitInlineStrokeSvg(EDITOR_THEME_ICONS.moon, 20)).toContain('path d=')
   })
+
+  it('QUEUE_ROW_ACTION_ICONS.x (lucide close) попадает в bootstrap RowIco', () => {
+    expect(emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.x, 20)).toContain('<line')
+    expect(emitDownloadsQueueRowIcoBootstrapJs()).toContain('x:')
+  })
 })
