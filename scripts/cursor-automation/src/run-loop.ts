@@ -11,6 +11,11 @@ import {
   promptsDirDefault,
   stopFlagPath
 } from './paths.js'
+import {
+  readBooleanSetting,
+  readIntegerSetting,
+  SDK_AUTOMATION_SETTINGS
+} from './sdk-settings.js'
 
 function readStdinIfNotTty(): Promise<string | null> {
   if (process.stdin.isTTY) {
@@ -44,11 +49,10 @@ function parseArgs(argv: string[]): {
   promptsDir: string
 } {
   let once = false
-  let maxSteps = Number.parseInt(process.env.MAX_STEPS ?? '5', 10)
-  if (!Number.isFinite(maxSteps) || maxSteps < 1) {
-    maxSteps = 5
-  }
-  let verbose = process.env.VERBOSE === '1' || process.env.VERBOSE === 'true'
+  let maxSteps = readIntegerSetting(process.env.MAX_STEPS, SDK_AUTOMATION_SETTINGS.defaultMaxSteps, {
+    min: 1
+  })
+  let verbose = readBooleanSetting(process.env.VERBOSE, SDK_AUTOMATION_SETTINGS.defaultVerbose)
   let promptsDir =
     process.env.PROMPTS_DIR && process.env.PROMPTS_DIR.trim() !== ''
       ? process.env.PROMPTS_DIR
@@ -83,15 +87,17 @@ function parseArgs(argv: string[]): {
 
 Переменные окружения:
   CURSOR_API_KEY       обязательна
-  MAX_STEPS            число итераций (по умолчанию 5)
-  LOOP_STEP_RETRY_MAX  число попыток одной итерации при временных SDK/transport-сбоях на цепочке send → stream → wait (по умолчанию 10)
-  LOOP_STEP_RETRY_BASE_MS  базовая пауза перед повтором, мс, растёт экспоненциально (по умолчанию 2000)
-  LOOP_RETRY_RUN_ERROR по умолчанию включено: после wait() при status=error снова отправляется тот же шаг (та же итерация). Выключить: 0|false|no|off
+  MAX_STEPS            число итераций (по умолчанию ${SDK_AUTOMATION_SETTINGS.defaultMaxSteps})
+  LOOP_STEP_RETRY_MAX  число попыток одной итерации при временных SDK/transport-сбоях на цепочке send → stream → wait (по умолчанию ${SDK_AUTOMATION_SETTINGS.defaultStepRetryMaxAttempts})
+  LOOP_STEP_RETRY_BASE_MS  базовая пауза перед повтором, мс, растёт экспоненциально (по умолчанию ${SDK_AUTOMATION_SETTINGS.defaultStepRetryBaseDelayMs})
+  LOOP_RETRY_RUN_ERROR повторять любой status=error той же итерацией. По умолчанию 0; включить: 1|true|yes|on
   LOOP_RUN_ERROR_RETRY_MAX  макс. попыток на одну итерацию при status=error (по умолчанию как LOOP_STEP_RETRY_MAX)
   LOOP_RUN_ERROR_RETRY_BASE_MS  базовая пауза между такими повторами (по умолчанию как LOOP_STEP_RETRY_BASE_MS)
-  VERBOSE=1            стрим текста assistant в stdout
+  STEP_DELAY_MS        пауза между итерациями цикла (мс, по умолчанию ${SDK_AUTOMATION_SETTINGS.defaultStepDelayMs})
+  SETTING_SOURCES_ALL=1  local.settingSources: ['all'] в SDK (обычно не нужно)
+  VERBOSE=1            стрим текста assistant в stdout (также yes/on)
   PROMPTS_DIR          каталог с initial.txt и continue.txt
-  CURSOR_MODEL          ID модели (по умолчанию default)
+  CURSOR_MODEL          ID модели (по умолчанию ${SDK_AUTOMATION_SETTINGS.defaultModelId})
 
 Примеры:
   npm run loop
@@ -119,31 +125,31 @@ function sleep(ms: number): Promise<void> {
 }
 
 function readStepRetryLimits(): { maxAttempts: number; baseDelayMs: number } {
-  const maxAttemptsRaw = Number.parseInt(process.env.LOOP_STEP_RETRY_MAX ?? '10', 10)
-  const maxAttempts =
-    Number.isFinite(maxAttemptsRaw) && maxAttemptsRaw >= 1
-      ? Math.min(100, Math.floor(maxAttemptsRaw))
-      : 10
-
-  const baseDelayMsRaw = Number.parseInt(process.env.LOOP_STEP_RETRY_BASE_MS ?? '2000', 10)
-  const baseDelayMs =
-    Number.isFinite(baseDelayMsRaw) && baseDelayMsRaw >= 200 ? baseDelayMsRaw : 2000
+  const maxAttempts = readIntegerSetting(
+    process.env.LOOP_STEP_RETRY_MAX,
+    SDK_AUTOMATION_SETTINGS.defaultStepRetryMaxAttempts,
+    { min: 1, max: SDK_AUTOMATION_SETTINGS.maxRetryAttemptsCap }
+  )
+  const baseDelayMs = readIntegerSetting(
+    process.env.LOOP_STEP_RETRY_BASE_MS,
+    SDK_AUTOMATION_SETTINGS.defaultStepRetryBaseDelayMs,
+    { min: SDK_AUTOMATION_SETTINGS.minRetryBaseDelayMs }
+  )
 
   return { maxAttempts, baseDelayMs }
 }
 
-/** Повтор при любом `status=error` после wait включён по умолчанию; выключается через `LOOP_RETRY_RUN_ERROR=0`. */
+/** Полный повтор любого `status=error` включается только явно: `LOOP_RETRY_RUN_ERROR=1`. */
 function readLoopRetryRunErrorEnabled(): boolean {
-  const v = process.env.LOOP_RETRY_RUN_ERROR?.trim().toLowerCase()
-  if (v === undefined || v === '') {
-    return true
-  }
-  return !['0', 'false', 'no', 'off'].includes(v)
+  return readBooleanSetting(
+    process.env.LOOP_RETRY_RUN_ERROR,
+    SDK_AUTOMATION_SETTINGS.retryAnyRunErrorDefault
+  )
 }
 
 /**
- * Повторы после wait() при status=error: по умолчанию любые; при LOOP_RETRY_RUN_ERROR=0 —
- * только эвристика «очень короткий run» (см. isLikelyTransientRunError).
+ * Повторы после wait() при status=error: по умолчанию только эвристика «очень короткий run»
+ * (см. isLikelyTransientRunError); любой error-run повторяется только с LOOP_RETRY_RUN_ERROR=1.
  */
 function readRunErrorRetryConfig(stepRetry: { maxAttempts: number; baseDelayMs: number }): {
   retryAnyRunError: boolean
@@ -152,19 +158,15 @@ function readRunErrorRetryConfig(stepRetry: { maxAttempts: number; baseDelayMs: 
 } {
   const retryAnyRunError = readLoopRetryRunErrorEnabled()
 
-  const maxRaw = Number.parseInt(
-    process.env.LOOP_RUN_ERROR_RETRY_MAX ?? String(stepRetry.maxAttempts),
-    10
+  const maxAttempts = readIntegerSetting(process.env.LOOP_RUN_ERROR_RETRY_MAX, stepRetry.maxAttempts, {
+    min: 1,
+    max: SDK_AUTOMATION_SETTINGS.maxRetryAttemptsCap
+  })
+  const baseDelayMs = readIntegerSetting(
+    process.env.LOOP_RUN_ERROR_RETRY_BASE_MS,
+    stepRetry.baseDelayMs,
+    { min: SDK_AUTOMATION_SETTINGS.minRetryBaseDelayMs }
   )
-  const maxAttempts =
-    Number.isFinite(maxRaw) && maxRaw >= 1 ? Math.min(100, Math.floor(maxRaw)) : stepRetry.maxAttempts
-
-  const baseRaw = Number.parseInt(
-    process.env.LOOP_RUN_ERROR_RETRY_BASE_MS ?? String(stepRetry.baseDelayMs),
-    10
-  )
-  const baseDelayMs =
-    Number.isFinite(baseRaw) && baseRaw >= 200 ? baseRaw : stepRetry.baseDelayMs
 
   return { retryAnyRunError, maxAttempts, baseDelayMs }
 }
@@ -218,7 +220,10 @@ async function runWithConnectionRetries<T>(
         console.error(`${describe}: исчерпано ${maxAttempts} попыток. Последняя ошибка: ${msg}`)
         throw error
       }
-      const delayMs = Math.min(60_000, Math.round(baseDelayMs * Math.pow(2, attempt)))
+      const delayMs = Math.min(
+        SDK_AUTOMATION_SETTINGS.maxRetryDelayMs,
+        Math.round(baseDelayMs * Math.pow(2, attempt))
+      )
       attempt++
       const msg = error instanceof Error ? error.message : String(error)
       console.error(
@@ -240,7 +245,7 @@ function isLikelyTransientRunError(result: AgentRunResultLike): boolean {
     result.status === 'error' &&
     typeof result.durationMs === 'number' &&
     result.durationMs > 0 &&
-    result.durationMs < 5000
+    result.durationMs < SDK_AUTOMATION_SETTINGS.transientRunErrorMaxDurationMs
   )
 }
 
@@ -280,7 +285,10 @@ async function runStepWithRetries<T extends AgentRunResultLike>(
       return result
     }
 
-    const delayMs = Math.min(60_000, Math.round(baseDelayMs * Math.pow(2, attempt)))
+    const delayMs = Math.min(
+      SDK_AUTOMATION_SETTINGS.maxRetryDelayMs,
+      Math.round(baseDelayMs * Math.pow(2, attempt))
+    )
     console.error(
       `${describe}: run ${result.id} status=error${detail}, повтор ${attempt + 1}/${maxAttempts} через ${delayMs} мс.`
     )
@@ -293,7 +301,7 @@ async function runStepWithRetries<T extends AgentRunResultLike>(
 function ensureStopFlagFile(): void {
   if (!existsSync(stopFlagPath)) {
     // STOP локальный и игнорируется Git, поэтому создаём явный переключатель при запуске.
-    writeFileSync(stopFlagPath, '0\n', 'utf-8')
+    writeFileSync(stopFlagPath, SDK_AUTOMATION_SETTINGS.defaultStopFlagValue, 'utf-8')
   }
 }
 
@@ -304,7 +312,7 @@ function shouldStopByFlag(): boolean {
 
   const value = readFileSync(stopFlagPath, 'utf-8').trim()
   // Совместимость со старым пустым STOP: пустой файл тоже останавливает цикл.
-  return value === '' || value === '1' || value.toLowerCase() === 'true'
+  return value === '' || readBooleanSetting(value, false)
 }
 
 async function streamVerboseAssistantText(run: { stream(): AsyncIterable<unknown> }): Promise<void> {
@@ -378,7 +386,9 @@ async function main(): Promise<number> {
 
   ensureStopFlagFile()
 
-  const modelId = (process.env.CURSOR_MODEL ?? 'default').trim() || 'default'
+  const modelId =
+    (process.env.CURSOR_MODEL ?? SDK_AUTOMATION_SETTINGS.defaultModelId).trim() ||
+    SDK_AUTOMATION_SETTINGS.defaultModelId
 
   const initialDisk = loadPrompt('initial.txt', opts.promptsDir)
   const continueDisk = loadPrompt('continue.txt', opts.promptsDir)
@@ -391,7 +401,12 @@ async function main(): Promise<number> {
     model: { id: modelId },
     local: {
       cwd: projectRoot,
-      ...(process.env.SETTING_SOURCES_ALL === '1' ? { settingSources: ['all'] } : {})
+      ...(readBooleanSetting(
+        process.env.SETTING_SOURCES_ALL,
+        SDK_AUTOMATION_SETTINGS.settingSourcesAllDefault
+      )
+        ? { settingSources: ['all'] }
+        : {})
     }
   }
 
@@ -399,7 +414,7 @@ async function main(): Promise<number> {
   const runErrorRetry = readRunErrorRetryConfig(stepRetry)
   if (opts.verbose && runErrorRetry.retryAnyRunError) {
     console.error(
-      `Повторы при status=error: до ${runErrorRetry.maxAttempts} отправок того же шага (отключить: LOOP_RETRY_RUN_ERROR=0).`
+      `Повторы любого status=error: до ${runErrorRetry.maxAttempts} отправок того же шага.`
     )
   }
 
@@ -485,7 +500,11 @@ async function main(): Promise<number> {
 
       console.error(`  Статус: ${result.status} (run ${result.id})`)
 
-      await sleep(Number.parseInt(process.env.STEP_DELAY_MS ?? '400', 10) || 400)
+      await sleep(
+        readIntegerSetting(process.env.STEP_DELAY_MS, SDK_AUTOMATION_SETTINGS.defaultStepDelayMs, {
+          min: SDK_AUTOMATION_SETTINGS.minStepDelayMs
+        })
+      )
 
       if (result.status === 'error') {
 

@@ -32,7 +32,8 @@ npm run agent:loop
 npm run agent:loop -- --max-steps 8 --verbose
 ```
 
-Можно без переменной в терминале: создайте рядом файл **`.env`** (он игнорируется Git):
+Основные дефолты и комментарии к каждой настройке лежат в **`src/sdk-settings.ts`**.
+Файл **`.env`** (он игнорируется Git) используйте для секрета и локальных override-значений:
 
 ```dotenv
 CURSOR_API_KEY=crsr_...
@@ -76,22 +77,22 @@ MAX_STEPS=8
 - cmd: `type my.txt | npm run once`
 - PowerShell: `Get-Content my.txt -Raw | npm run once`
 
-## Переменные окружения
+## Настройки и override
 
-| Переменная | Назначение |
-|------------|------------|
-| `CURSOR_API_KEY` | Обязательна |
-| `MAX_STEPS` | Число итераций (если не задан `--max-steps`) |
-| `CURSOR_MODEL` | По умолчанию `default`; `auto` в SDK невалиден |
-| `VERBOSE=1` | Печать assistant/thinking из стрима |
-| `PROMPTS_DIR` | Альтернативный каталог с `initial.txt` / `continue.txt` |
-| `STEP_DELAY_MS` | Пауза между итерациями (мс), по умолчанию `400` |
-| `LOOP_STEP_RETRY_MAX` | Повторы при retryable SDK/transport-сбое на цепочке `send` → опционально `stream` → `wait` одной итерации (по умолчанию `10`) |
-| `LOOP_STEP_RETRY_BASE_MS` | Базовая пауза для таких повторов, экспоненциально до 60 с (по умолчанию `2000`) |
-| `LOOP_RETRY_RUN_ERROR` | Повтор **любого** `status=error` после `wait()` той же итерацией — **по умолчанию вкл.**; выключить: `0` / `false` / `no` / `off` |
-| `LOOP_RUN_ERROR_RETRY_MAX` | Макс. попыток на итерацию при `status=error` (по умолчанию как `LOOP_STEP_RETRY_MAX`) |
-| `LOOP_RUN_ERROR_RETRY_BASE_MS` | Пауза между такими попытками (по умолчанию как `LOOP_STEP_RETRY_BASE_MS`). Если полный повтор при `error` выключен — срабатывает только эвристика короткого run |
-| `SETTING_SOURCES_ALL=1` | Прокинуть `local.settingSources: ['all']` (см. SDK; по умолчанию не нужно) |
+Все дефолты — в `src/sdk-settings.ts`. Переменные ниже только переопределяют их для конкретной машины/запуска:
+
+- `CURSOR_API_KEY` — обязательный секрет; хранить только в `.env` или переменной терминала.
+- `MAX_STEPS` — число итераций, если не задан `--max-steps`.
+- `CURSOR_MODEL` — модель SDK; по умолчанию `default`, `auto` здесь не используем.
+- `VERBOSE` — печать assistant/thinking из стрима: `1`, `true`, `yes`, `on`.
+- `PROMPTS_DIR` — альтернативный каталог с `initial.txt` / `continue.txt`.
+- `STEP_DELAY_MS` — пауза между итерациями.
+- `LOOP_STEP_RETRY_MAX` — повторы при retryable SDK/transport-сбое на цепочке `send` → опционально `stream` → `wait`.
+- `LOOP_STEP_RETRY_BASE_MS` — базовая пауза для transport retry, дальше экспоненциально до лимита из `src/sdk-settings.ts`.
+- `LOOP_RETRY_RUN_ERROR` — `1` включает повтор **любого** `status=error` той же итерацией; по умолчанию выключено, остаётся только эвристика короткого run.
+- `LOOP_RUN_ERROR_RETRY_MAX` — макс. попыток на итерацию при `status=error`.
+- `LOOP_RUN_ERROR_RETRY_BASE_MS` — пауза между такими попытками.
+- `SETTING_SOURCES_ALL` — `1` прокидывает `local.settingSources: ['all']`; обычно не нужно.
 
 ## Коды выхода
 

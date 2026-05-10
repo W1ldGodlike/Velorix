@@ -112,7 +112,7 @@
 - [ ] Добавить локализацию `locales/ru/*.json`, `locales/en/*.json`.
 - [ ] Добавить смену языка без перезапуска.
 - [~] `.cursor/rules/` обновлены под Electron/TS.
-- [~] Вспомогательный пакет `scripts/cursor-automation`: цикл `@cursor/sdk` по промптам до `MAX_STEPS` (см. README там; не IDE-чат); локальный `STOP=0/1`; retry SDK/transport и по умолчанию повтор той же итерации при `status=error` (`LOOP_RETRY_RUN_ERROR=0` отключает).
+- [~] Вспомогательный пакет `scripts/cursor-automation`: цикл `@cursor/sdk` по промптам до `MAX_STEPS` (см. README там; не IDE-чат); единый комментированный конфиг `src/sdk-settings.ts`; локальный `STOP=0/1`; retry SDK/transport + быстрых transient error-run, полный повтор любого `status=error` только через `LOOP_RETRY_RUN_ERROR=1`.
 
 ### §2.3 Устаревший стек
 
