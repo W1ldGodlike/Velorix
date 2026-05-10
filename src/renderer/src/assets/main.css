@@ -718,6 +718,22 @@
   min-height: 1.05rem;
 }
 
+.app-preview-transport .app-icon-btn > svg {
+  display: block;
+}
+
+.app-timeline-zoom-ico.app-icon-btn > svg {
+  display: block;
+}
+
+.app-ffmpeg-rail-restore svg {
+  display: block;
+}
+
+.app-settings-rail-collapse-btn > svg {
+  display: block;
+}
+
 .app-timeline-stack {
   display: flex;
   flex-direction: column;
@@ -1460,6 +1476,26 @@
     height: 2.05rem;
   }
 
+  .app-preview-transport .app-icon-btn > svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .app-timeline-zoom-ico.app-icon-btn > svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .app-ffmpeg-rail-restore svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .app-settings-rail-collapse-btn > svg {
+    width: 20px;
+    height: 20px;
+  }
+
   .app-timeline-stack {
     gap: 0.4rem;
   }
@@ -1566,6 +1602,26 @@
   .app-preview-transport .app-icon-btn {
     min-width: 2.2rem;
     height: 2.2rem;
+  }
+
+  .app-preview-transport .app-icon-btn > svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .app-timeline-zoom-ico.app-icon-btn > svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .app-ffmpeg-rail-restore svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .app-settings-rail-collapse-btn > svg {
+    width: 21px;
+    height: 21px;
   }
 
   .app-preview-transport-volume-range {

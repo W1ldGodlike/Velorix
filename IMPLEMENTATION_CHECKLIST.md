@@ -38,7 +38,7 @@
 - [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; `queue.json` без duplicate id; журнал out/err + truncate; дальше — редкие шаблоны логов по полю.
 - [~] §6.3: argv whitelist + справочник + превью draft/override `-o`; при необходимости редкие поля.
 - [~] §6.1/§4.A: окно загрузок — `@120dpi`/`@168dpi`: URL-band, таблица, журнал/history, rail; **SVG табов / `.dl-topbar-ico` / действий строки `td.act .icon-btn` — 17–20px по зонам**; **`focus-visible`** на нужных `<summary>`; lucide-топбар + вкладки; дальше — ручная матрица Win 125–200 %.
-- [~] §1.1/§4.A/§9: редактор — HiDPR в `main.css`: **stroke в `app-topbar-actions` — 21px / 22px**, глиф **«Загрузки»** — **17px / 18px** (+ быстрая yt-dlp-полоса уже); топбар **ffmpeg•yt-dlp**; **снимок/экспорт/иконки** через shared lucide; seek/снап; **`ffmpegSettingsRailOpen`**; дальше — multi-monitor DPI, Dolby/side_data §9.
+- [~] §1.1/§4.A/§9: редактор — HiDPR в `main.css`: **topbar** 21–22px SVG; **«Загрузки»** **17–18px**; **`app-preview-transport` + zoom таймлайна — 21×22px**; **FAB/collapse FFmpeg rail — 20×21px** (+ yt-dlp-полоса); **ffmpeg•yt-dlp** в топбаре; shared lucide; seek/снап; **`ffmpegSettingsRailOpen`**; дальше — multi-monitor DPI, Dolby/side_data §9.
 - [~] §7.2: crop/rotate/flip; дальше расширенные фильтры и HW encode.
 - [~] §9/§21: расширенные ffprobe (Dolby/side_data и др.); новые IPC через `ipc-channels`, при необходимости логи по окнам; точечные Vitest.
 
