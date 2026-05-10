@@ -115,6 +115,14 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
     return { percent: null, speed: 'ожидание переподключения', eta: null }
   }
 
+  /** Некоторые версии пишут общее «ожидание …» без явного reconnect/sleep. */
+  if (
+    /\[download\]\s+Waiting\s+for\s+/i.test(t) &&
+    !/\[download\]\s+Waiting\s+for\s+reconnect/i.test(t)
+  ) {
+    return { percent: null, speed: 'ожидание', eta: null }
+  }
+
   const pctMatch = t.match(/(\d+(?:\.\d+)?)%/)
   const percent = pctMatch ? `${pctMatch[1]}%` : null
 
@@ -224,6 +232,9 @@ export function formatYtdlpQueueFailureStatus(
  * Консервативно: только явные подстроки в нижнем регистре; транзиентные сетевые ошибки не матчим.
  */
 const YTDLP_QUEUE_RETRY_SKIP_MARKERS = [
+  'live stream has ended',
+  'premiere will begin',
+  'scheduled stream',
   'private video',
   'members only',
   'video unavailable',
@@ -247,6 +258,8 @@ const YTDLP_QUEUE_RETRY_SKIP_MARKERS = [
 const YTDLP_QUEUE_RETRY_KEEP_TRYING_MARKERS = [
   'unable to download webpage',
   'unable to download video',
+  'premature close',
+  'connection prematurely closed',
   'connection timed out',
   'connection reset',
   'connection reset by peer',
@@ -267,6 +280,8 @@ const YTDLP_QUEUE_RETRY_KEEP_TRYING_MARKERS = [
   'http error 503',
   'http error 504',
   'http error 429',
+  'http error 408',
+  'request timeout',
   'too many requests',
   'got server http error',
   'certificate verify failed',
@@ -453,6 +468,18 @@ export function extractYtdlpOutputPath(line: string): string | null {
   const movingTo = t.match(/^\[[^\]]+\]\s+Moving\s+"(.+?)"\s+to\s+"(.+)"$/i)
   if (movingTo) {
     const cap = movingTo[2]
+    return cap !== undefined ? unquoteYtdlpPath(cap) : null
+  }
+  /** VideoRemuxer / FFmpegVideoRemuxer — итоговый контейнер после remux §6.4. */
+  const remuxInto = t.match(/^\[(?:VideoRemuxer|FFmpegVideoRemuxer)]\s+.+?\s+into\s+(.+)$/i)
+  if (remuxInto) {
+    const cap = remuxInto[1]
+    return cap !== undefined ? unquoteYtdlpPath(cap) : null
+  }
+  /** ConvertFormatPP и др.: «… → Destination: …» в одной строке без префикса PP в начале. */
+  const arrowDestination = t.match(/^\[[^\]]+\]\s+.+?\s+→\s+Destination:\s+(.+)$/i)
+  if (arrowDestination) {
+    const cap = arrowDestination[1]
     return cap !== undefined ? unquoteYtdlpPath(cap) : null
   }
   return null

@@ -108,6 +108,14 @@ describe('parseYtdlpDownloadProgressLine', () => {
       eta: null
     })
   })
+
+  it('парсит прочие «Waiting for …» без reconnect', () => {
+    expect(parseYtdlpDownloadProgressLine('[download] Waiting for available formats...')).toEqual({
+      percent: null,
+      speed: 'ожидание',
+      eta: null
+    })
+  })
 })
 
 describe('formatYtdlpProgressCell', () => {
@@ -223,7 +231,15 @@ describe('shouldSkipYtdlpQueueRetriesAfterFailure', () => {
     expect(
       shouldSkipYtdlpQueueRetriesAfterFailure('Unable to download webpage', 'Connection timed out')
     ).toBe(false)
+    expect(shouldSkipYtdlpQueueRetriesAfterFailure('Premature close', 'HTTP Error 408')).toBe(false)
     expect(shouldSkipYtdlpQueueRetriesAfterFailure(null, null)).toBe(false)
+  })
+
+  it('true для завершённого стрима / премьеры без транзиентного маркера', () => {
+    expect(shouldSkipYtdlpQueueRetriesAfterFailure('Live stream has ended', null)).toBe(true)
+    expect(shouldSkipYtdlpQueueRetriesAfterFailure(null, 'Premiere will begin in 10 minutes')).toBe(
+      true
+    )
   })
 
   it('транзиент имеет приоритет: не skip даже при наличии «video unavailable» в stderr', () => {
@@ -253,6 +269,12 @@ describe('classifyYtdlpQueueFailureKind', () => {
     )
     expect(classifyYtdlpQueueFailureKind(null, 'Broken pipe')).toBe('transient_network')
     expect(classifyYtdlpQueueFailureKind(null, '502 Bad Gateway')).toBe('transient_network')
+    expect(classifyYtdlpQueueFailureKind('HTTP Error 408: Request Timeout', null)).toBe(
+      'transient_network'
+    )
+    expect(classifyYtdlpQueueFailureKind(null, 'Connection prematurely closed')).toBe(
+      'transient_network'
+    )
   })
 
   it('likely_source_block для приватного видео', () => {
@@ -363,5 +385,14 @@ describe('extractYtdlpOutputPath', () => {
     expect(extractYtdlpOutputPath('[Metadata] Adding metadata to "/home/u/track.mkv"')).toBe(
       '/home/u/track.mkv'
     )
+  })
+
+  it('извлекает путь из VideoRemuxer (into …) и стрелочного Destination', () => {
+    expect(
+      extractYtdlpOutputPath('[VideoRemuxer] Remuxing video from mkv into "C:\\out\\final.mp4"')
+    ).toBe('C:\\out\\final.mp4')
+    expect(
+      extractYtdlpOutputPath('[FFmpegVideoRemuxer] Remux format → Destination: /tmp/final.mkv')
+    ).toBe('/tmp/final.mkv')
   })
 })

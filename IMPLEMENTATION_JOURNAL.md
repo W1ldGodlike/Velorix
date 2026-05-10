@@ -128,3 +128,4 @@
 - 2026-05-10 03:41:34 [SDK]: §7.1 — `runFfmpegExportJob`: фильтр строк для IPC прогресса (`isFfmpegExportProgressStatusLine`), сброс хвоста stderr на `close`; Vitest.
 - 2026-05-10 03:42:42 [SDK]: §7.2 — пользовательские пресеты: кнопки «Имя…» (переименование) и «Обновить пресет» (перезапись снимка из тулбара в выбранный слот).
 - 2026-05-10 10:55:39 [SDK]: §4.5/§17/§18 — «О программе»: папка логов, main.log, Support ZIP через IPC; результат диалога ZIP различает отмену и ошибку.
+- 2026-05-10 10:57:13 [SDK]: §6.4 — прогресс «Waiting for …», маркеры transient (408/premature close) и skip live/premiere; `extractYtdlpOutputPath`: VideoRemuxer `into`, `→ Destination`; Vitest.
