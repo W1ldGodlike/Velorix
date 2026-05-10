@@ -247,12 +247,12 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
     html, body { width: 100%; height: 100%; overflow: hidden; }
     body {
       font-family: system-ui, Segoe UI, sans-serif; margin: 0; background: var(--bg); color: var(--text);
-      line-height: 1.45; font-size: 12px;
+      line-height: 1.42; font-size: 11.5px;
     }
     .dl-shell { height: 100%; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
     .dl-topbar {
-      min-height: 42px; display: grid; grid-template-columns: minmax(13rem, auto) 1fr auto; align-items: center;
-      gap: 0.75rem; padding: 0.35rem 0.65rem; background: color-mix(in srgb, var(--bg) 86%, #111827 14%);
+      min-height: 54px; display: grid; grid-template-columns: minmax(12rem, auto) 1fr auto; align-items: center;
+      gap: 0.55rem; padding: 0.4rem 0.72rem; background: color-mix(in srgb, var(--bg) 86%, #111827 14%);
       border-bottom: 1px solid var(--border); flex-shrink: 0;
     }
     .brand { display: inline-flex; align-items: center; gap: 0.45rem; min-width: 0; }
@@ -260,35 +260,36 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
       display: inline-grid; place-items: center; width: 1.25rem; height: 1.25rem; border-radius: 6px;
       color: var(--blue); background: color-mix(in srgb, var(--blue) 15%, transparent); font-size: 0.8rem;
     }
-    h1 { font-size: 0.86rem; font-weight: 700; margin: 0; letter-spacing: 0.01em; }
+    h1 { font-size: 0.84rem; font-weight: 700; margin: 0; letter-spacing: 0.01em; }
     .brand-version { color: var(--dim); font-size: 0.68rem; font-family: ui-monospace, Consolas, Menlo, monospace; }
     .workspace-tabs { justify-self: center; display: inline-flex; align-items: center; gap: 0.15rem; }
     .workspace-tab {
-      min-height: 2rem; padding: 0 0.75rem; border: none; border-bottom: 2px solid transparent; background: transparent;
-      color: var(--dim); cursor: default; font-size: 0.78rem; font-weight: 600;
+      min-height: 1.95rem; padding: 0 0.62rem; border: none; border-bottom: 2px solid transparent; background: transparent;
+      color: var(--dim); cursor: default; font-size: 0.74rem; font-weight: 600;
     }
     .workspace-tab.active { color: var(--text); border-bottom-color: var(--blue); }
     .topbar-meta { justify-self: end; color: var(--dim); font-family: ui-monospace, Consolas, Menlo, monospace; font-size: 0.68rem; }
     .dl-main {
-      flex: 1; min-height: 0; min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) 288px;
+      flex: 1; min-height: 0; min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(258px, 276px);
       overflow: hidden;
     }
     .dl-workspace { min-width: 0; min-height: 0; display: flex; flex-direction: column; border-right: 1px solid var(--border); }
     .dl-input-band {
-      display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.75rem; padding: 0.7rem 0.75rem;
+      display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.55rem; padding: 0.52rem 0.62rem;
       border-bottom: 1px solid var(--border); background: var(--surface);
     }
     .input-label { display: block; margin: 0 0 0.3rem; color: var(--muted); font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
     .hint { color: var(--dim); font-size: 0.7rem; margin: 0.28rem 0 0; }
     textarea {
-      width: 100%; min-height: 76px; box-sizing: border-box; resize: vertical; border-radius: 6px;
+      width: 100%; min-height: 64px; box-sizing: border-box; resize: vertical; border-radius: 6px;
       border: 1px solid var(--border-2); background: color-mix(in srgb, var(--bg) 66%, var(--surface-2));
-      color: var(--text); padding: 0.55rem 0.65rem; font-family: inherit; font-size: 0.78rem;
+      color: var(--text); padding: 0.42rem 0.55rem; font-family: ui-monospace, Consolas, Menlo, monospace; font-size: 0.72rem;
+      line-height: 1.38;
     }
     textarea.drag { outline: 2px dashed var(--blue); outline-offset: 2px; }
-    .input-actions { display: flex; flex-direction: column; gap: 0.45rem; min-width: 11.5rem; justify-content: end; }
+    .input-actions { display: flex; flex-direction: column; gap: 0.36rem; min-width: 10.75rem; justify-content: end; }
     .queue-toolbar {
-      display: flex; gap: 0.45rem; flex-wrap: wrap; align-items: center; padding: 0.48rem 0.75rem;
+      display: flex; gap: 0.38rem; flex-wrap: wrap; align-items: center; padding: 0.34rem 0.62rem;
       border-bottom: 1px solid var(--border); background: color-mix(in srgb, var(--surface) 94%, transparent);
     }
     label.inline-filter { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--muted); font-size: 0.72rem; }
@@ -299,16 +300,16 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
     .queue-summary { margin-left: auto; color: var(--dim); font-size: 0.68rem; font-variant-numeric: tabular-nums; }
     button.cmd {
       border-radius: 6px; border: 1px solid var(--border-2); background: var(--surface-2); color: var(--text);
-      padding: 0.38rem 0.7rem; font-size: 0.76rem; cursor: pointer; min-height: 30px;
+      padding: 0.32rem 0.6rem; font-size: 0.72rem; cursor: pointer; min-height: 28px;
     }
     button.cmd:hover { background: var(--surface-3); }
     button.cmd:disabled { opacity: 0.45; cursor: not-allowed; }
     button.cmd-primary { border-color: transparent; background: var(--blue); color: white; }
     button.cmd-warn { border-color: color-mix(in srgb, var(--red) 45%, var(--border-2)); color: color-mix(in srgb, var(--red) 80%, white); }
     .queue-table-wrap { flex: 1; min-height: 0; overflow: auto; background: var(--bg); }
-    table { width: 100%; border-collapse: collapse; font-size: 0.74rem; table-layout: fixed; }
-    th, td { border-bottom: 1px solid var(--border); padding: 0.45rem 0.55rem; text-align: left; vertical-align: top; word-break: break-word; }
-    th { position: sticky; top: 0; z-index: 1; color: var(--muted); background: var(--surface); font-weight: 700; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.7rem; table-layout: fixed; }
+    th, td { border-bottom: 1px solid var(--border); padding: 0.28rem 0.4rem; text-align: left; vertical-align: top; word-break: break-word; }
+    th { position: sticky; top: 0; z-index: 1; color: var(--muted); background: var(--surface); font-weight: 700; font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.06em; line-height: 1.28; }
     table.queue-table th:nth-child(1), table.queue-table td:nth-child(1) { width: 2.1rem; }
     table.queue-table th:nth-child(2), table.queue-table td:nth-child(2) { width: 24%; }
     table.queue-table th:nth-child(3), table.queue-table td:nth-child(3) { width: 8.5%; }
@@ -320,12 +321,12 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
     table.queue-table th:nth-child(9), table.queue-table td:nth-child(9) { width: 13rem; min-width: 9.5rem; }
     td.num { color: var(--dim); font-variant-numeric: tabular-nums; }
     .queue-title { color: var(--text); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .queue-url { margin-top: 0.14rem; color: var(--dim); font-size: 0.68rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .queue-url { margin-top: 0.08rem; color: var(--dim); font-size: 0.64rem; font-family: ui-monospace, Consolas, Menlo, monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     td.prog { font-variant-numeric: tabular-nums; color: var(--muted); white-space: normal; word-break: break-word; font-size: 0.68rem; line-height: 1.35; }
     td.queue-col-fmt, td.queue-col-size, td.queue-col-spd, td.queue-col-eta {
       font-variant-numeric: tabular-nums; font-size: 0.65rem; color: var(--muted);
     }
-    .progress-track { height: 4px; border-radius: 999px; background: var(--border-2); overflow: hidden; margin: 0.2rem 0 0.18rem; }
+    .progress-track { height: 3px; border-radius: 999px; background: var(--border-2); overflow: hidden; margin: 0.14rem 0 0.12rem; }
     .progress-fill { height: 100%; border-radius: inherit; background: var(--blue); }
     .status-pill { display: inline-flex; align-items: center; gap: 0.34rem; color: var(--muted); }
     .status-dot { width: 0.45rem; height: 0.45rem; border-radius: 999px; background: var(--dim); flex-shrink: 0; }
@@ -333,13 +334,13 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
     .status-done .status-dot { background: var(--green); }
     .status-error .status-dot { background: var(--red); }
     .status-cancelled .status-dot { background: var(--dim); }
-    td.act { vertical-align: middle; min-width: 9.5rem; max-width: 16rem; }
+    td.act { vertical-align: middle; min-width: 8.75rem; max-width: 15rem; }
     .act-icons {
       display: inline-flex; flex-wrap: wrap; gap: 0.14rem; align-items: center;
       justify-content: flex-end;
     }
     td.act button.icon-btn, .icon-btn {
-      width: 26px; height: 26px; display: inline-grid; place-items: center; margin: 0; border: none;
+      width: 24px; height: 24px; display: inline-grid; place-items: center; margin: 0; border: none;
       border-radius: 5px; background: transparent; color: var(--muted); cursor: pointer; padding: 0;
       flex-shrink: 0;
     }
@@ -347,31 +348,32 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
     td.act button.icon-btn:disabled { opacity: 0.35; cursor: not-allowed; }
     td.act button.icon-btn-warn { color: color-mix(in srgb, var(--red) 88%, white); }
     td.act button.icon-btn-warn:hover { background: color-mix(in srgb, var(--red) 12%, var(--surface-2)); color: var(--red); }
-    .bottom-panels { flex-shrink: 0; min-height: 170px; max-height: 34vh; display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--border); background: var(--surface); overflow: hidden; }
+    .bottom-panels { flex-shrink: 0; min-height: 136px; max-height: 32vh; display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--border); background: var(--surface); overflow: hidden; }
     .log-panel, .history-panel { min-height: 0; overflow: auto; padding: 0; border: none; margin: 0; }
     .log-panel { border-left: 1px solid var(--border); }
     .log-panel summary, .history-panel summary {
-      cursor: pointer; font-weight: 700; font-size: 0.68rem; padding: 0.45rem 0.65rem; margin: 0;
+      cursor: pointer; font-weight: 700; font-size: 0.64rem; padding: 0.36rem 0.55rem; margin: 0;
       user-select: none; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em;
     }
     .log-panel pre {
-      margin: 0 0.65rem 0.65rem; max-height: 230px; overflow: auto; white-space: pre-wrap; word-break: break-word;
-      font-family: ui-monospace, Consolas, Menlo, monospace; font-size: 0.68rem; line-height: 1.35;
-      background: var(--bg); color: var(--muted); padding: 0.55rem 0.65rem; border-radius: 6px; border: 1px solid var(--border);
+      margin: 0 0.55rem 0.52rem; max-height: 200px; overflow: auto; white-space: pre-wrap; word-break: break-word;
+      font-family: ui-monospace, Consolas, Menlo, monospace; font-size: 0.64rem; line-height: 1.32;
+      background: var(--bg); color: var(--muted); padding: 0.45rem 0.52rem; border-radius: 5px; border: 1px solid var(--border);
     }
     .settings-rail { min-width: 0; min-height: 0; overflow: auto; background: var(--surface); }
-    .rail-head { padding: 0.7rem 0.75rem; border-bottom: 1px solid var(--border); }
-    .rail-title { margin: 0; color: var(--text); font-size: 0.86rem; font-weight: 700; }
+    .rail-head { padding: 0.5rem 0.62rem; border-bottom: 1px solid var(--border); }
+    .rail-title { margin: 0; color: var(--text); font-size: 0.82rem; font-weight: 700; }
     .rail-subtitle { margin: 0.1rem 0 0; color: var(--dim); font-size: 0.68rem; line-height: 1.35; }
     .settings-section { border-bottom: 1px solid var(--border); }
     .settings-section > summary {
-      cursor: pointer; list-style: none; padding: 0.55rem 0.75rem; color: var(--muted); font-size: 0.68rem;
+      cursor: pointer; list-style: none; padding: 0.42rem 0.62rem; color: var(--muted); font-size: 0.64rem;
       font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; user-select: none;
+      line-height: 1.3;
     }
     .settings-section > summary::-webkit-details-marker { display: none; }
     .settings-section > summary::before { content: '▸'; display: inline-block; margin-right: 0.45rem; color: var(--dim); transition: transform 0.12s ease; }
     .settings-section[open] > summary::before { transform: rotate(90deg); }
-    .settings-body { padding: 0 0.75rem 0.75rem; }
+    .settings-body { padding: 0 0.62rem 0.58rem; }
     .out-dir-row { display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; margin: 0.35rem 0 0.65rem; font-size: 0.74rem; }
     .out-dir-row .out-path {
       flex: 1 1 100%; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
@@ -412,7 +414,8 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
     .note { display: none; }
     .history-actions { display: flex; gap: 0.45rem; flex-wrap: wrap; align-items: center; padding: 0 0.65rem 0.55rem; }
     .history-actions label { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--muted); font-size: 0.7rem; }
-    table.history-table { font-size: 0.68rem; }
+    table.history-table { font-size: 0.64rem; }
+    table.history-table th, table.history-table td { padding: 0.28rem 0.38rem; }
     table.history-table th:nth-child(1), table.history-table td:nth-child(1) { width: 10.5rem; white-space: nowrap; }
     table.history-table th:nth-child(4), table.history-table td:nth-child(4) { width: 5.5rem; }
     table.history-table th:nth-child(5), table.history-table td:nth-child(5) { width: 3rem; text-align: right; }
@@ -420,10 +423,14 @@ function buildDownloadsHtml(panelState?: DownloadsWindowUiPanelState): string {
     td.h-out-ok { color: var(--green); }
     td.h-out-err { color: var(--red); }
     td.h-out-can { color: var(--blue); }
+    textarea:focus-visible, button.cmd:focus-visible, td.act button.icon-btn:focus-visible {
+      outline: 1px solid color-mix(in srgb, var(--blue) 65%, transparent);
+      outline-offset: 1px;
+    }
     @media (max-width: 960px) {
       .dl-main { grid-template-columns: 1fr; }
       .settings-rail { display: none; }
-      .bottom-panels { grid-template-columns: 1fr; max-height: 44vh; }
+      .bottom-panels { grid-template-columns: 1fr; max-height: 40vh; }
       .log-panel { border-left: none; border-top: 1px solid var(--border); }
     }
   </style>
