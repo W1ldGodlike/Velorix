@@ -69,6 +69,14 @@ describe('parseYtdlpDownloadProgressLine', () => {
     })
   })
 
+  it('парсит вариант «N of M videos» без слова video/item', () => {
+    expect(parseYtdlpDownloadProgressLine('[download] Downloading 3 of 10 videos')).toEqual({
+      percent: null,
+      speed: 'плейлист 3/10',
+      eta: null
+    })
+  })
+
   it('возвращает null если ни процента, ни скорости нет', () => {
     expect(parseYtdlpDownloadProgressLine('[download] Resuming download at byte 0')).toBeNull()
   })
@@ -212,6 +220,10 @@ describe('classifyYtdlpQueueFailureKind', () => {
     expect(classifyYtdlpQueueFailureKind('Got server HTTP error: HTTP Error 503', null)).toBe(
       'transient_network'
     )
+    expect(classifyYtdlpQueueFailureKind('HTTP Error 504: Gateway Timeout', null)).toBe(
+      'transient_network'
+    )
+    expect(classifyYtdlpQueueFailureKind(null, 'Broken pipe')).toBe('transient_network')
   })
 
   it('likely_source_block для приватного видео', () => {
@@ -269,5 +281,17 @@ describe('extractYtdlpOutputPath', () => {
 
   it('возвращает null для обычных строк прогресса', () => {
     expect(extractYtdlpOutputPath('[download] 50% of 1MiB at 1MiB/s')).toBeNull()
+  })
+
+  it('извлекает путь из записи превью и субтитров', () => {
+    expect(extractYtdlpOutputPath('[download] Writing thumbnail to: D:\\out\\thumb.webp')).toBe(
+      'D:\\out\\thumb.webp'
+    )
+    expect(extractYtdlpOutputPath('[download] Writing video subtitles to: /tmp/sub.en.srt')).toBe(
+      '/tmp/sub.en.srt'
+    )
+    expect(extractYtdlpOutputPath('[download] Writing subtitles to: "/tmp/spaced sub.srt"')).toBe(
+      '/tmp/spaced sub.srt'
+    )
   })
 })

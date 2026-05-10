@@ -60,6 +60,20 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
     }
   }
 
+  /** Вариант без слова video/item: «… 3 of 10 videos …» (разные версии/локали yt-dlp). */
+  const playlistVideosOnlyMatch = t.match(/\b(\d+)\s+of\s+(\d+)\s+videos?\b/i)
+  if (playlistVideosOnlyMatch && !/\bfragment\b/i.test(t)) {
+    const a = playlistVideosOnlyMatch[1]
+    const b = playlistVideosOnlyMatch[2]
+    if (a !== undefined && b !== undefined) {
+      return {
+        percent: null,
+        speed: `плейлист ${a}/${b}`,
+        eta: null
+      }
+    }
+  }
+
   const fragMatch = t.match(/\bfragment\s+(\d+)\s+of\s+(\d+)\b/i)
   if (fragMatch) {
     const a = fragMatch[1]
@@ -204,16 +218,23 @@ const YTDLP_QUEUE_RETRY_KEEP_TRYING_MARKERS = [
   'unable to download video',
   'connection timed out',
   'connection reset',
+  'connection reset by peer',
   'connection refused',
+  'connection aborted',
+  'broken pipe',
   'timed out',
+  'read timed out',
   'temporary failure',
   'temporary error',
   'network is unreachable',
   'no route to host',
   'name or service not known',
   'failed to resolve',
-  'http error 503',
+  'remote end closed connection',
+  'http error 500',
   'http error 502',
+  'http error 503',
+  'http error 504',
   'http error 429',
   'too many requests',
   'got server http error',
@@ -334,6 +355,22 @@ export function extractYtdlpOutputPath(line: string): string | null {
   const moving = t.match(/^\[MoveFiles]\s+Moving file\s+.+?\s+to\s+(.+)$/i)
   if (moving) {
     const cap = moving[1]
+    return cap !== undefined ? unquoteYtdlpPath(cap) : null
+  }
+  /** Постобработка: превью и субтитры пишутся отдельными строками §6.4. */
+  const thumb = t.match(/^\[download]\s+Writing thumbnail to:\s+(.+)$/i)
+  if (thumb) {
+    const cap = thumb[1]
+    return cap !== undefined ? unquoteYtdlpPath(cap) : null
+  }
+  const subs = t.match(/^\[download]\s+Writing video subtitles to:\s+(.+)$/i)
+  if (subs) {
+    const cap = subs[1]
+    return cap !== undefined ? unquoteYtdlpPath(cap) : null
+  }
+  const subsAlt = t.match(/^\[download]\s+Writing subtitles to:\s+(.+)$/i)
+  if (subsAlt) {
+    const cap = subsAlt[1]
     return cap !== undefined ? unquoteYtdlpPath(cap) : null
   }
   return null
