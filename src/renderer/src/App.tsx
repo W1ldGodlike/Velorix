@@ -137,7 +137,7 @@ type ProbeTableContextMenu =
 function clampProbeTableMenuPosition(clientX: number, clientY: number): { x: number; y: number } {
   const margin = 8
   const estW = 260
-  const estH = 220
+  const estH = 248
   const x = Math.min(Math.max(margin, clientX), Math.max(margin, window.innerWidth - estW - margin))
   const y = Math.min(
     Math.max(margin, clientY),
@@ -150,7 +150,8 @@ function formatProbeTrackRowTsv(row: MediaProbeTrackRow): string {
   const lang = row.language ?? ''
   const title = row.titleTag ?? ''
   const br = formatBitrateLine(row.streamBitrateKbps) ?? ''
-  return `${row.index}\t${trackKindRu(row.kind)}\t${row.codec}\t${br}\t${lang}\t${title}\t${row.detail}`
+  const disp = row.dispositionSummary.replace(/\t/g, ' ')
+  return `${row.index}\t${trackKindRu(row.kind)}\t${row.codec}\t${br}\t${disp}\t${lang}\t${title}\t${row.detail}`
 }
 
 function formatProbeChapterRowTsv(ch: MediaProbeChapterRow): string {
@@ -378,6 +379,7 @@ function PreviewProbeBody({
                     <th scope="col">Тип</th>
                     <th scope="col">Кодек</th>
                     <th scope="col">Битрейт</th>
+                    <th scope="col">Disposition</th>
                     <th scope="col">Язык</th>
                     <th scope="col">Заголовок</th>
                     <th scope="col">Сведения</th>
@@ -398,6 +400,13 @@ function PreviewProbeBody({
                       <td className="app-probe-table-mono">{row.codec}</td>
                       <td title={formatBitrateLine(row.streamBitrateKbps) ?? undefined}>
                         {formatBitrateLine(row.streamBitrateKbps) ?? '—'}
+                      </td>
+                      <td
+                        title={
+                          row.dispositionSummary.trim() !== '' ? row.dispositionSummary : undefined
+                        }
+                      >
+                        {row.dispositionSummary.trim() !== '' ? row.dispositionSummary : '—'}
                       </td>
                       <td>{row.language ?? '—'}</td>
                       <td>{row.titleTag ?? '—'}</td>
@@ -515,6 +524,17 @@ function PreviewProbeBody({
                       }}
                     >
                       Копировать битрейт
+                    </button>
+                  ) : null}
+                  {probeTableMenu.row.dispositionSummary.trim() !== '' ? (
+                    <button
+                      type="button"
+                      className="app-probe-context-menu-item"
+                      onClick={() => {
+                        void copyProbeCellAndDismiss(probeTableMenu.row.dispositionSummary)
+                      }}
+                    >
+                      Копировать disposition
                     </button>
                   ) : null}
                   <button

@@ -3,6 +3,7 @@ import { execFile } from 'child_process'
 import type { AppPaths } from './app-paths'
 import { resolveEngineExecutablePath, type EnginePathOverrides } from './engine-service'
 import { logExternalProcessLine } from './external-process-log'
+import { formatFfprobeDispositionSummary } from '../shared/ffprobe-disposition'
 import { buildChapterRowsFromFfprobeJson } from '../shared/ffprobe-chapters'
 import type {
   MediaProbeResult,
@@ -36,6 +37,7 @@ interface FfprobeJson {
     avg_frame_rate?: string
     r_frame_rate?: string
     bit_rate?: string
+    disposition?: Record<string, unknown>
     tags?: Record<string, string | number | undefined>
   }>
 }
@@ -178,7 +180,8 @@ function buildTrackRows(streams: FfprobeJson['streams']): MediaProbeTrackRow[] {
       titleTag: tagString(stream.tags, 'title'),
       streamBitrateKbps: formatBitrateKbps(
         typeof stream.bit_rate === 'string' ? stream.bit_rate : undefined
-      )
+      ),
+      dispositionSummary: formatFfprobeDispositionSummary(stream.disposition)
     })
   })
   rows.sort((a, b) => a.index - b.index)
