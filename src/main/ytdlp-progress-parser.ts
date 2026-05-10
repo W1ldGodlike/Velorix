@@ -183,24 +183,115 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
   return parts
 }
 
+function isYtdlpInfoLine(t: string): boolean {
+  return /^\[[iI][nN][fF][oO]\]/.test(t)
+}
+
+function truncateYtdlpQueueCellSnippet(s: string): string {
+  if (s.length === 0) {
+    return s
+  }
+  return s.length <= 56 ? s : `${s.slice(0, 54)}…`
+}
+
+function normalizeYtdlpApproxSizeToken(raw: string): string | null {
+  const collapsed = raw
+    .trim()
+    .replace(/^~+/, '')
+    .replace(/[,;.]+$/, '')
+    .replace(/,/g, '')
+    .replace(/\s+/g, '')
+  if (/^[\d.]+[KMGT]?iB$/i.test(collapsed) || /^[\d.]+[KMGT]?B$/i.test(collapsed)) {
+    return collapsed
+  }
+  return null
+}
+
 /**
  * §6/v0 — краткая подпись целевого формата из строк yt-dlp `[info] … Downloading N format(s): …`.
  */
 export function parseYtdlpInfoFormatSnippet(line: string): string | null {
   const t = line.trimEnd()
-  if (!t.startsWith('[info]')) {
+  if (!isYtdlpInfoLine(t)) {
     return null
   }
-  const m = t.match(/Downloading\s+\d+\s+format\(s\):\s*(.+)$/i)
-  const cap = m?.[1]
-  if (!cap) {
+  const m1 = t.match(/Downloading\s+\d+\s+format\(s\):\s*(.+)$/i)
+  const cap1 = m1?.[1]
+  if (cap1) {
+    const s = cap1.trim()
+    if (s.length > 0) {
+      return truncateYtdlpQueueCellSnippet(s)
+    }
+  }
+  const m2 = t.match(/\bDownloading\s+video\s+in\s+format\s+(\d+(?:\+\d+)*)\b/i)
+  const id = m2?.[1]
+  if (id && id.length > 0) {
+    return truncateYtdlpQueueCellSnippet(id.trim())
+  }
+  return null
+}
+
+/**
+ * §6/v0 — подпись колонки «Формат»: `[info]` (см. `parseYtdlpInfoFormatSnippet`) плюс типичные строки слияния контейнера.
+ */
+export function parseYtdlpQueueFormatHint(line: string): string | null {
+  const fromInfo = parseYtdlpInfoFormatSnippet(line)
+  if (fromInfo) {
+    return fromInfo
+  }
+  const t = line.trimEnd()
+  const mm = t.match(/^\[(?:Merger|ffmpeg)]\s+Merging formats into\s+(.+)$/i)
+  const tail = mm?.[1]
+  if (!tail) {
     return null
   }
-  const s = cap.trim()
-  if (s.length === 0) {
+  let path = tail.trim()
+  if (path.length >= 2 && path.startsWith('"') && path.endsWith('"')) {
+    path = path.slice(1, -1)
+  } else if (path.length >= 2 && path.startsWith("'") && path.endsWith("'")) {
+    path = path.slice(1, -1)
+  }
+  const base = path.replace(/^.*[/\\]/, '')
+  const dot = base.lastIndexOf('.')
+  if (dot < 1 || dot >= base.length - 1) {
     return null
   }
-  return s.length <= 56 ? s : `${s.slice(0, 54)}…`
+  const ext = base.slice(dot + 1).toLowerCase()
+  if (!/^[a-z0-9]{1,12}$/.test(ext)) {
+    return null
+  }
+  return truncateYtdlpQueueCellSnippet(`слияние → ${ext}`)
+}
+
+/**
+ * §6/v0 — приблизительный размер из `[info] … Filesize …` до появления `% of …` в `[download]`.
+ * Не перезаписывает уже выставленный из прогресса `queueSize` (см. runner).
+ */
+export function parseYtdlpInfoQueueSizeHint(line: string): string | null {
+  const t = line.trimEnd()
+  if (!isYtdlpInfoLine(t)) {
+    return null
+  }
+  const patterns: RegExp[] = [
+    /\bApproximate\s+filesize\b[:\s]+(\S+)/i,
+    /\bFilesize\s+approx(?:imate)?[:\s]+(\S+)/i,
+    /\bEstimated\s+filesize\b[:\s]+(\S+)/i,
+    /\bTotal\s+estimated\s+download\s+size\b[:\s]+(\S+)/i,
+    /\bFilesize\s+is\s+(\S+)/i,
+    /\bFilesize\b[:\s]+(\S+)/i
+  ]
+  for (const re of patterns) {
+    const m = t.match(re)
+    const tok = m?.[1]
+    if (tok === undefined) {
+      continue
+    }
+    const norm = normalizeYtdlpApproxSizeToken(tok)
+    if (norm) {
+      return norm
+    }
+  }
+  return null
 }
 
 /** Компактная подпись для ячейки: «42.1% · 1.2MiB/s · ETA 00:15». */

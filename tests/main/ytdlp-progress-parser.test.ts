@@ -8,6 +8,8 @@ import {
   formatYtdlpQueueFailureStatus,
   parseYtdlpDownloadProgressLine,
   parseYtdlpInfoFormatSnippet,
+  parseYtdlpInfoQueueSizeHint,
+  parseYtdlpQueueFormatHint,
   shouldSkipQueueRetriesForFailureKind,
   shouldSkipYtdlpQueueRetriesAfterFailure
 } from '../../src/main/ytdlp-progress-parser'
@@ -144,9 +146,54 @@ describe('parseYtdlpInfoFormatSnippet', () => {
     )
   })
 
-  it('возвращает null без шаблона format(s)', () => {
+  it('принимает регистронезависимый префикс [info]', () => {
+    expect(parseYtdlpInfoFormatSnippet('[INFO] x: Downloading 1 format(s): 398+251')).toBe(
+      '398+251'
+    )
+  })
+
+  it('ловит шаблон «Downloading video in format …»', () => {
+    expect(parseYtdlpInfoFormatSnippet('[info] x: Downloading video in format 137')).toBe('137')
+    expect(parseYtdlpInfoFormatSnippet('[info] x: Downloading video in format 398+251')).toBe(
+      '398+251'
+    )
+  })
+
+  it('возвращает null без подходящего шаблона', () => {
     expect(parseYtdlpInfoFormatSnippet('[info] Sleeping 5 seconds')).toBeNull()
     expect(parseYtdlpInfoFormatSnippet('[download] blah')).toBeNull()
+  })
+})
+
+describe('parseYtdlpQueueFormatHint', () => {
+  it('повторяет подсказки из [info] и добавляет слияние контейнера', () => {
+    expect(parseYtdlpQueueFormatHint('[info] x: Downloading 1 format(s): 398+251')).toBe('398+251')
+    expect(
+      parseYtdlpQueueFormatHint('[Merger] Merging formats into "C:\\Downloads\\final.mkv"')
+    ).toBe('слияние → mkv')
+    expect(parseYtdlpQueueFormatHint('[ffmpeg] Merging formats into /tmp/out.webm')).toBe(
+      'слияние → webm'
+    )
+  })
+
+  it('возвращает null для прочих строк', () => {
+    expect(parseYtdlpQueueFormatHint('[download] 50%')).toBeNull()
+  })
+})
+
+describe('parseYtdlpInfoQueueSizeHint', () => {
+  it('достаёт размер из типичных полей Filesize в [info]', () => {
+    expect(parseYtdlpInfoQueueSizeHint('[info] x: Filesize approx 12.34MiB')).toBe('12.34MiB')
+    expect(parseYtdlpInfoQueueSizeHint('[info] x: Approximate filesize: 1,234.5KiB')).toBe(
+      '1234.5KiB'
+    )
+    expect(parseYtdlpInfoQueueSizeHint('[info] x: Estimated filesize: 10MiB')).toBe('10MiB')
+    expect(parseYtdlpInfoQueueSizeHint('[info] x: Filesize is 2.5MiB')).toBe('2.5MiB')
+  })
+
+  it('не срабатывает вне [info] и для неразмерных токенов', () => {
+    expect(parseYtdlpInfoQueueSizeHint('[download] Filesize: 10MiB')).toBeNull()
+    expect(parseYtdlpInfoQueueSizeHint('[info] x: Filesize: unknown')).toBeNull()
   })
 })
 

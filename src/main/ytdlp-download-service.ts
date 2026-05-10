@@ -23,6 +23,8 @@ export {
   formatYtdlpQueueFailureStatus,
   parseYtdlpDownloadProgressLine,
   parseYtdlpInfoFormatSnippet,
+  parseYtdlpInfoQueueSizeHint,
+  parseYtdlpQueueFormatHint,
   shouldSkipQueueRetriesForFailureKind,
   shouldSkipYtdlpQueueRetriesAfterFailure,
   type YtdlpDownloadProgressParts,

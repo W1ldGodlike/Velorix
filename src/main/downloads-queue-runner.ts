@@ -16,7 +16,8 @@ import {
   formatYtdlpProgressCell,
   formatYtdlpQueueFailureStatus,
   parseYtdlpDownloadProgressLine,
-  parseYtdlpInfoFormatSnippet,
+  parseYtdlpInfoQueueSizeHint,
+  parseYtdlpQueueFormatHint,
   runYtdlpOnce,
   shouldSkipQueueRetriesForFailureKind
 } from './ytdlp-download-service'
@@ -172,13 +173,24 @@ async function runYtdlpForWaitingRow(
     notifySnapshot()
   }
 
-  const applyInfoFormatLine = (line: string): void => {
-    const fmt = parseYtdlpInfoFormatSnippet(line)
-    if (!fmt) {
-      return
+  const applyYtDlpQueueCellHints = (line: string): void => {
+    let changed = false
+    const fmt = parseYtdlpQueueFormatHint(line)
+    if (fmt) {
+      updateDownloadsRow(rowId, { queueFmt: fmt })
+      changed = true
     }
-    updateDownloadsRow(rowId, { queueFmt: fmt })
-    notifySnapshot()
+    const sz = parseYtdlpInfoQueueSizeHint(line)
+    if (sz) {
+      const snapRow = getDownloadsQueueRowById(rowId)
+      if ((snapRow?.queueSize?.trim() ?? '').length === 0) {
+        updateDownloadsRow(rowId, { queueSize: sz })
+        changed = true
+      }
+    }
+    if (changed) {
+      notifySnapshot()
+    }
   }
 
   const noteErrorLine = (line: string): void => {
@@ -255,7 +267,7 @@ async function runYtdlpForWaitingRow(
               emitDownloadsLog({ kind: 'line', rowId, stream: 'stdout', text: line })
               noteErrorLine(line)
               noteOutputPathLine(line)
-              applyInfoFormatLine(line)
+              applyYtDlpQueueCellHints(line)
               applyProgressLine(line)
             },
             onStderrLine: (line) => {
@@ -263,7 +275,7 @@ async function runYtdlpForWaitingRow(
               emitDownloadsLog({ kind: 'line', rowId, stream: 'stderr', text: line })
               noteErrorLine(line)
               noteOutputPathLine(line)
-              applyInfoFormatLine(line)
+              applyYtDlpQueueCellHints(line)
               applyProgressLine(line)
             }
           },
