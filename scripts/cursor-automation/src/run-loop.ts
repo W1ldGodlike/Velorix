@@ -1,6 +1,6 @@
 import 'dotenv/config'
 
-import { existsSync, readFileSync } from 'fs'
+import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { join } from 'path'
 
 import { Agent, CursorAgentError, type AgentOptions } from '@cursor/sdk'
@@ -113,6 +113,13 @@ function sleep(ms: number): Promise<void> {
   })
 }
 
+function ensureStopFlagFile(): void {
+  if (!existsSync(stopFlagPath)) {
+    // STOP локальный и игнорируется Git, поэтому создаём явный переключатель при запуске.
+    writeFileSync(stopFlagPath, '0\n', 'utf-8')
+  }
+}
+
 function shouldStopByFlag(): boolean {
   if (!existsSync(stopFlagPath)) {
     return false
@@ -191,6 +198,8 @@ async function main(): Promise<number> {
     )
     return 1
   }
+
+  ensureStopFlagFile()
 
   const modelId = (process.env.CURSOR_MODEL ?? 'default').trim() || 'default'
 
