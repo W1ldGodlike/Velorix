@@ -130,12 +130,27 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
     return { percent: null, speed: 'продолжение загрузки', eta: null }
   }
 
+  /** Повторы внутри yt-dlp после сетевых/HTTP ошибок: полезно видеть счётчик без чтения raw-лога. */
+  const retryingMatch = t.match(/\bRetrying(?:\s+fragment\s+(\d+))?\s*\((\d+)\s*\/\s*(\d+)\)/i)
+  if (retryingMatch) {
+    const frag = retryingMatch[1]
+    const a = retryingMatch[2]
+    const b = retryingMatch[3]
+    if (a !== undefined && b !== undefined) {
+      return {
+        percent: null,
+        speed: frag !== undefined ? `повтор фрагмента ${frag} · ${a}/${b}` : `повтор ${a}/${b}`,
+        eta: null
+      }
+    }
+  }
+
   const pctMatch = t.match(/(\d+(?:\.\d+)?)%/)
   const percent = pctMatch ? `${pctMatch[1]}%` : null
 
   let sizeTotal: string | null = null
   if (percent !== null && /\d+(?:\.\d+)?%\s+of\s+/i.test(t)) {
-    const ofSm = t.match(/\b\d+(?:\.\d+)?%\s+of\s+(\S+)/i)
+    const ofSm = t.match(/\b\d+(?:\.\d+)?%\s+of\s+~?\s*(\S+)/i)
     const rawTok = ofSm?.[1]
     if (rawTok !== undefined) {
       const raw = rawTok.replace(/^~+/, '').replace(/[,;.]+$/, '')

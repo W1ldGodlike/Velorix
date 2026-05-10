@@ -37,6 +37,13 @@ describe('parseYtdlpDownloadProgressLine', () => {
     })
   })
 
+  it('парсит размер с отдельным символом приблизительности "~"', () => {
+    const r = parseYtdlpDownloadProgressLine(
+      '[download]  10.0% of ~ 5.00MiB at 1.00MiB/s ETA 00:01'
+    )
+    expect(r?.sizeTotal).toBe('5.00MiB')
+  })
+
   it('парсит финальную строку «in X at Y» без процента', () => {
     const r = parseYtdlpDownloadProgressLine('[download] 100% of 12.34MiB in 00:10 at 1.20MiB/s')
     expect(r).not.toBeNull()
@@ -134,6 +141,25 @@ describe('parseYtdlpDownloadProgressLine', () => {
     expect(parseYtdlpDownloadProgressLine('[download] Resuming download at byte 1048576')).toEqual({
       percent: null,
       speed: 'продолжение загрузки',
+      eta: null
+    })
+  })
+
+  it('парсит retry-счётчик yt-dlp', () => {
+    expect(
+      parseYtdlpDownloadProgressLine(
+        '[download] Got server HTTP error: HTTP Error 503. Retrying (2/10)...'
+      )
+    ).toEqual({
+      percent: null,
+      speed: 'повтор 2/10',
+      eta: null
+    })
+    expect(
+      parseYtdlpDownloadProgressLine('[download] Got error: timeout. Retrying fragment 7 (3/10)...')
+    ).toEqual({
+      percent: null,
+      speed: 'повтор фрагмента 7 · 3/10',
       eta: null
     })
   })

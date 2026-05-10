@@ -35,7 +35,7 @@
 
 Правило для агента: этот блок — рабочий навигатор ближайшего спринта. После каждой крупной итерации обновлять его: отмечать сделанное, переводить частичное в `[~]`, убирать устаревшее только если оно отражено ниже по §, и добавлять 3–7 следующих конкретных пунктов. Не оставлять блок полностью закрытым. Для UI/UX-сверки по v0 использовать [`docs/UX_REFERENCE_V0.md`](docs/UX_REFERENCE_V0.md).
 
-- [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; `queue.json` без duplicate id; журнал out/err + truncate; дальше — редкие шаблоны логов по полю.
+- [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; `queue.json` без duplicate id; журнал out/err + truncate; retry-счётчики и размеры `of ~ …` попадают в таблицу; дальше — редкие шаблоны логов по полю.
 - [~] §6.3: argv whitelist + справочник + превью draft/override `-o`; при необходимости редкие поля.
 - [~] §6.1/§4.A: окно загрузок — HiDPR/**a11y** (секционные hints + **`aria-describedby`** у полей/rail/нижних панелей); **persist секций**: автопоказ журнала при новой строке подавляет async `toggle` и **не перезаписывает** сохранённое `log: false`; дальше — ручная матрица Win 125–200 %.
 - [~] §1.1/§4.A/§9: редактор + **инспектор** — HiDPR/topbar/SVG/focus; **`AboutDialog`** / **`IconCircleHelp`**; **`video` `aria-label`**; **`PreviewProbeBody`** + превью ffmpeg; **rail FFmpeg** + **быстрая yt-dlp** (`quickYtdlpUrlHint` → кнопки); seek/снап; waveform ограничен по длительности и размеру файла; дальше — multi-monitor DPI, Dolby/side_data §9.
@@ -277,7 +277,7 @@
 
 ### §6.4 Прогресс, лог, комбинированный режим
 
-- [~] Парсинг прогресса yt-dlp: процент + скорость + ETA + `fragment X of Y` + `(frag N/M)` без процентов в строке + `Total progress:` + `Downloading video|item X of Y` + вариант `N of M videos` + `Sleeping … seconds` / `Waiting for reconnect` / прочие `[download] Waiting for …` / `Resuming download at byte …`; прочие редкие строки — по мере заметок.
+- [~] Парсинг прогресса yt-dlp: процент + скорость + ETA + размер `of …`/`of ~ …` + `fragment X of Y` + `(frag N/M)` без процентов в строке + `Total progress:` + `Downloading video|item X of Y` + вариант `N of M videos` + `Sleeping … seconds` / `Waiting for reconnect` / прочие `[download] Waiting for …` / `Resuming download at byte …` / `Retrying (N/M)` и `Retrying fragment X (N/M)`; прочие редкие строки — по мере заметок.
 - [~] Лог stdout/stderr: IPC `fluxalloy-downloads-log` + нижняя панель v0-layout (строки **out/err**, счётчик размера, «Очистить вид», обрезка ~240 KiB через DOM) + сохранение видимого текста через save dialog.
 - [x] «Скачать и открыть»: готовый файл можно открыть/показать в папке или отправить в обработчик FluxAlloy из очереди и истории.
 - [x] «Скачать и сразу обработать» (настройка §6.4: после успеха yt-dlp авто-открытие в главном preview, если известен безопасный путь в каталоге загрузок; неуспех авто-открытия пишется в лог строки).
