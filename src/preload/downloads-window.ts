@@ -46,7 +46,7 @@ contextBridge.exposeInMainWorld('fluxalloyDownloads', {
     ipcRenderer.invoke(d.clearFinished),
   removeRow: (id: number): Promise<{ ok: true } | { ok: false; error: string }> =>
     ipcRenderer.invoke(d.remove, id),
-  moveRow: (id: number, direction: number): Promise<void> =>
+  moveRow: (id: number, direction: number): Promise<{ ok: true } | { ok: false; error: string }> =>
     ipcRenderer.invoke(d.move, id, direction),
 
   getSnapshot: (): Promise<unknown[]> => ipcRenderer.invoke(d.getSnapshot),

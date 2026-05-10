@@ -2047,8 +2047,11 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
             if (res && res.ok === false && res.error) window.alert(res.error);
           });
         }
-        else if (act === 'up') api.moveRow(id, -1);
-        else if (act === 'dn') api.moveRow(id, 1);
+        else if (act === 'up' || act === 'dn') {
+          api.moveRow(id, act === 'up' ? -1 : 1).then(function (res) {
+            if (res && res.ok === false && res.error) window.alert(res.error);
+          });
+        }
         else if (act === 'retry') {
           api.retryRow(id).then(function (res) {
             if (res && res.ok === false && res.error) {
@@ -2868,17 +2871,20 @@ export function registerDownloadsWindowIpcHandlers(): void {
 
   ipcMain.handle(d.move, (event, id: unknown, direction: unknown) => {
     if (!isDownloadsOrMainSender(event.sender)) {
-      return
+      return { ok: false, error: 'Недопустимый отправитель' }
     }
     if (typeof id !== 'number' || !Number.isFinite(id)) {
-      return
+      return { ok: false, error: 'Некорректный идентификатор строки' }
     }
     const delta = direction === -1 || direction === 1 ? direction : 0
     if (delta === 0) {
-      return
+      return { ok: false, error: 'Некорректное направление перемещения' }
     }
-    moveDownloadsQueueRow(id, delta)
+    if (!moveDownloadsQueueRow(id, delta)) {
+      return { ok: false, error: 'Строку нельзя переместить в этом направлении' }
+    }
     broadcastDownloadsSnapshot()
+    return { ok: true }
   })
 
   ipcMain.handle(
@@ -2888,11 +2894,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
         return { ok: false, error: 'Недопустимый отправитель' }
       }
 
-      void startDownloadsSequential().catch((err: unknown) => {
-        logError('downloads-queue', 'startDownloadsSequential failed', err)
-      })
-
-      return { ok: true }
+      return startDownloadsSequential()
     }
   )
 

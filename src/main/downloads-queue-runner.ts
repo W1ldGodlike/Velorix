@@ -419,24 +419,34 @@ async function runYtdlpForWaitingRow(
 /**
  * Последовательно обрабатывает строки со статусом «Ожидание». Отмена — через cancelDownloadsRunner().
  */
-export async function startDownloadsSequential(): Promise<void> {
+export function startDownloadsSequential(): { ok: true } | { ok: false; error: string } {
   if (sequentialBusy) {
-    return
+    return {
+      ok: false,
+      error: 'Уже выполняется загрузка. Отмените текущую или дождитесь окончания.'
+    }
+  }
+  if (!findFirstWaitingRow()) {
+    return { ok: false, error: 'В очереди нет строк со статусом «Ожидание».' }
   }
   sequentialBusy = true
 
   const paths = resolveAppPaths()
   const outputDir = resolveYtdlpOutputDirectory(paths.userData)
 
-  try {
+  void (async (): Promise<void> => {
     let row: DownloadsQueueRow | undefined
-    while ((row = findFirstWaitingRow())) {
-      await runYtdlpForWaitingRow(paths, outputDir, row.id)
+    try {
+      while ((row = findFirstWaitingRow())) {
+        await runYtdlpForWaitingRow(paths, outputDir, row.id)
+      }
+    } finally {
+      sequentialBusy = false
+      notifySnapshot()
     }
-  } finally {
-    sequentialBusy = false
-    notifySnapshot()
-  }
+  })()
+
+  return { ok: true }
 }
 
 /**
