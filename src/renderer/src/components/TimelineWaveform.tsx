@@ -1,0 +1,227 @@
+import { useEffect, useRef, useState } from 'react'
+
+import { computeWaveformPeakEnvelopeMono } from '../../../shared/waveform-peaks'
+
+/** Декодируем waveform только для коротких клипов — полный буфер `decodeAudioData` тяжёлый для длинных роликов. */
+export const WAVEFORM_MAX_DURATION_SEC = 180
+
+const PEAK_BUCKETS = 400
+
+interface TimelineWaveformProps {
+  /** `fluxmedia://…` после grant; синхронизируется по `mediaKey`. */
+  mediaUrl: string
+  mediaKey: string
+  durationSec: number
+  /** Видимый отрезок таймлайна (глобальные секунды). */
+  windowStartSec: number
+  windowLenSec: number
+}
+
+/** Микширование каналов до моно средним — стабильная огибающая без псевдослучайных высот маркерами v0. */
+function mergeChannelsToMono(decoded: AudioBuffer): Float32Array {
+  const len = decoded.length
+  const chCount = decoded.numberOfChannels
+  if (chCount <= 1) {
+    return decoded.getChannelData(0)
+  }
+  const out = new Float32Array(len)
+  for (let i = 0; i < len; i++) {
+    let sum = 0
+    for (let c = 0; c < chCount; c++) {
+      sum += decoded.getChannelData(c)[i] ?? 0
+    }
+    out[i] = sum / chCount
+  }
+  return out
+}
+
+/** Загружает огибающую из аудиотрека медиафайла; при ошибке показывает подсказку вместо графики. */
+export default function TimelineWaveform({
+  mediaUrl,
+  mediaKey,
+  durationSec,
+  windowStartSec,
+  windowLenSec
+}: TimelineWaveformProps): React.JSX.Element {
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [peaks, setPeaks] = useState<readonly number[] | null>(null)
+  const [hint, setHint] = useState<string | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    const ac = new AbortController()
+
+    void (async (): Promise<void> => {
+      /** Не синхронно в теле effect: сброс перед новым decode / ветками «слишком длинный». */
+      await Promise.resolve()
+      if (cancelled) {
+        return
+      }
+      setPeaks(null)
+      setHint(null)
+
+      if (durationSec <= 0 || durationSec > WAVEFORM_MAX_DURATION_SEC) {
+        return
+      }
+
+      const ACtx =
+        window.AudioContext ??
+        (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
+      if (!ACtx) {
+        if (!cancelled) {
+          setHint('Web Audio недоступен в этом контексте.')
+        }
+        return
+      }
+      try {
+        const res = await fetch(mediaUrl, { signal: ac.signal })
+        if (!res.ok) {
+          throw new Error(`Ответ медиа: ${res.status}`)
+        }
+        const buf = await res.arrayBuffer()
+        if (cancelled) {
+          return
+        }
+
+        const ctx = new ACtx()
+        try {
+          const copy = buf.slice(0)
+          const decoded = await ctx.decodeAudioData(copy)
+          if (cancelled) {
+            return
+          }
+
+          const mono = mergeChannelsToMono(decoded)
+          const envelope = computeWaveformPeakEnvelopeMono(mono, PEAK_BUCKETS)
+          setPeaks(envelope)
+
+          if (!cancelled && decoded.duration > durationSec + 1.25) {
+            setHint(`Аудио ~${decoded.duration.toFixed(1)}s (видео ${durationSec.toFixed(1)}s).`)
+          }
+        } finally {
+          void ctx.close().catch(() => {})
+        }
+      } catch {
+        if (!cancelled && !ac.signal.aborted) {
+          setHint(
+            'Не удалось построить waveform (формат без доступного аудио или ошибка декодера).'
+          )
+        }
+      }
+    })()
+
+    return (): void => {
+      cancelled = true
+      ac.abort()
+    }
+  }, [durationSec, mediaKey, mediaUrl])
+
+  /** Отрисовка и resize под Retina/container. */
+  useEffect(() => {
+    if (peaks === null || peaks.length === 0) {
+      return
+    }
+
+    function paint(): void {
+      const wrap = wrapRef.current
+      const cv = canvasRef.current
+      const pks = peaks
+      if (!wrap || !cv || pks === null || pks.length === 0) {
+        return
+      }
+      const w = wrap.clientWidth
+      const cssH = 36
+      if (w <= 0 || !Number.isFinite(windowLenSec) || windowLenSec <= 0) {
+        return
+      }
+      const dpr = window.devicePixelRatio > 1 ? window.devicePixelRatio : 1
+      cv.style.width = '100%'
+      cv.style.height = `${cssH}px`
+      cv.width = Math.max(64, Math.floor(w * dpr))
+      cv.height = Math.floor(cssH * dpr)
+
+      const g = cv.getContext('2d')
+      if (!g) {
+        return
+      }
+
+      const styles = window.getComputedStyle(wrap)
+      const accent = styles.getPropertyValue('--fa-accent').trim() || '#38bdf8'
+      const muted = styles.getPropertyValue('--fa-border-subtle').trim() || '#374151'
+
+      g.clearRect(0, 0, cv.width, cv.height)
+
+      const padY = cv.height * 0.06
+      g.fillStyle = muted
+      g.globalAlpha = 0.42
+      g.fillRect(0, padY, cv.width, cv.height - padY * 2)
+      g.globalAlpha = 1
+
+      const buckets = pks.length
+      const absStartSec = durationSec <= 0 ? 0 : (windowStartSec / durationSec) * buckets
+      const absEndSec =
+        durationSec <= 0
+          ? buckets
+          : Math.min(buckets, ((windowStartSec + windowLenSec) / durationSec) * buckets)
+      const bi0 = Math.max(0, Math.floor(absStartSec))
+      const bi1 = Math.min(buckets, Math.ceil(absEndSec))
+      const span = Math.max(1, bi1 - bi0)
+
+      const barPx = cv.width / Math.max(1, Math.floor(span))
+      for (let x = 0; x < cv.width; x++) {
+        const t = bi0 + (x / Math.max(cv.width - 1, 1)) * span
+        const idx = Math.min(buckets - 1, Math.max(0, Math.floor(t)))
+        const h = pks[idx] ?? 0
+        const barH = h * (cv.height - padY * 4)
+        g.fillStyle = accent
+        g.fillRect(x + 0.15, cv.height / 2 - barH / 2, Math.max(barPx, 1.1), Math.max(barH, 1.2))
+      }
+    }
+
+    const ro = new ResizeObserver(() => {
+      paint()
+    })
+
+    paint()
+    const wrap0 = wrapRef.current
+    if (wrap0) {
+      ro.observe(wrap0)
+    }
+
+    window.addEventListener('resize', paint)
+
+    return (): void => {
+      ro.disconnect()
+      window.removeEventListener('resize', paint)
+    }
+  }, [peaks, durationSec, windowLenSec, windowStartSec])
+
+  if (durationSec > WAVEFORM_MAX_DURATION_SEC) {
+    return (
+      <div className="app-timeline-waveform" aria-label="Waveform недоступен">
+        <p className="app-timeline-waveform-hint">
+          Длинный клип (&gt; {WAVEFORM_MAX_DURATION_SEC}s) — waveform не строится (защита памяти).
+        </p>
+      </div>
+    )
+  }
+
+  if (durationSec <= 0) {
+    return <div className="app-timeline-waveform app-timeline-waveform-empty" aria-hidden />
+  }
+
+  return (
+    <div className="app-timeline-waveform" ref={wrapRef} aria-label="Waveform огибающая">
+      {peaks !== null && peaks.length > 0 ? (
+        <canvas ref={canvasRef} className="app-timeline-waveform-canvas" />
+      ) : null}
+      {peaks === null ? (
+        <div className="app-timeline-waveform-hint">{hint ?? 'Waveform…'}</div>
+      ) : null}
+      {peaks !== null && peaks.length > 0 && hint ? (
+        <div className="app-timeline-waveform-subhint">{hint}</div>
+      ) : null}
+    </div>
+  )
+}

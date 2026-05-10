@@ -194,6 +194,21 @@ export const EDITOR_TRANSPORT_ICONS = {
   ] as const satisfies readonly StrokePrim[]
 } as const
 
+/** Полоска таймлайна: масштаб времени как в `docs/UX_REFERENCE_V0.md` (zoom-in / zoom-out). */
+export const EDITOR_TIMELINE_ICONS = {
+  zoomIn: [
+    { tag: 'circle', attr: { cx: '11', cy: '11', r: '8' } },
+    { tag: 'line', attr: { x1: '21', y1: '21', x2: '16.65', y2: '16.65' } },
+    { tag: 'line', attr: { x1: '11', y1: '8', x2: '11', y2: '14' } },
+    { tag: 'line', attr: { x1: '8', y1: '11', x2: '14', y2: '11' } }
+  ] as const satisfies readonly StrokePrim[],
+  zoomOut: [
+    { tag: 'circle', attr: { cx: '11', cy: '11', r: '8' } },
+    { tag: 'line', attr: { x1: '21', y1: '21', x2: '16.65', y2: '16.65' } },
+    { tag: 'line', attr: { x1: '8', y1: '11', x2: '14', y2: '11' } }
+  ] as const satisfies readonly StrokePrim[]
+} as const
+
 /** Быстрые действия v0-топбара: поворот / crop-блиц (см. FFmpeg-панель). */
 export const EDITOR_TOPBAR_TOOLS_ICONS = {
   rotateCcw: [

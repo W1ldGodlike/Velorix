@@ -142,6 +142,45 @@ function formatEngineVersionsLine(snapshot: EnginesSnapshot): string {
   return parts.join(' · ')
 }
 
+/** Короткая подпись для топбара v0 (`ffmpeg 6.x • yt-dlp 2024.x`) рядом с icon-кластером. */
+function shortEngineVersionSnippet(id: EngineId, raw: string | null): string {
+  if (!raw || raw.trim().length === 0) {
+    return '—'
+  }
+  const line = raw.split(/\r?\n/)[0]?.trim() ?? raw.trim()
+  if (id === 'ffmpeg') {
+    const mm = /ffmpeg\s+version\s+([^\s,]+)/i.exec(line)
+    if (mm?.[1]) {
+      return mm[1]
+    }
+  }
+  if (id === 'yt-dlp') {
+    const mm = /\byt-dlp\s+([^\s]+)/i.exec(line)
+    if (mm?.[1]) {
+      return mm[1]
+    }
+    const headToken = line.split(/\s+/)[0]
+    if (headToken && /^[\d.]+$/.test(headToken)) {
+      return headToken
+    }
+  }
+  return line.length > 20 ? `${line.slice(0, 18)}…` : line
+}
+
+function formatTopbarEngineVersionsLine(snapshot: EnginesSnapshot): string {
+  const ffmpeg = snapshot.engines.ffmpeg
+  const ytdlp = snapshot.engines['yt-dlp']
+  const fv =
+    ffmpeg.state === 'ready' && ffmpeg.version
+      ? shortEngineVersionSnippet('ffmpeg', ffmpeg.version)
+      : '—'
+  const yv =
+    ytdlp.state === 'ready' && ytdlp.version
+      ? shortEngineVersionSnippet('yt-dlp', ytdlp.version)
+      : '—'
+  return `ffmpeg ${fv} • yt-dlp ${yv}`
+}
+
 function clipboardLooksLikeDownloadsPayload(text: string): boolean {
   const t = text.trim()
   if (t.length < 12) {
@@ -221,6 +260,7 @@ function App(): JSX.Element {
   const [probeError, setProbeError] = useState<string | null>(null)
   const [downloadsUrl, setDownloadsUrl] = useState('')
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
+  const [topbarEngineVersionsLine, setTopbarEngineVersionsLine] = useState('')
   const [exportBusy, setExportBusy] = useState(false)
   const [exportCancelBusy, setExportCancelBusy] = useState(false)
   const [exportEncodePreset, setExportEncodePreset] =
@@ -523,11 +563,13 @@ function App(): JSX.Element {
       const snapshot = await window.fluxalloy.engines.getStatus()
       setEngineSummary(summarizeEngines(snapshot.engines))
       setEngineVersionsLine(formatEngineVersionsLine(snapshot))
+      setTopbarEngineVersionsLine(formatTopbarEngineVersionsLine(snapshot))
       const need = await window.fluxalloy.engines.shouldOfferDownload()
       setEnginesOfferDownload(need)
     } catch {
       setEngineSummary('error')
       setEngineVersionsLine('')
+      setTopbarEngineVersionsLine('')
     }
   }, [])
 
@@ -984,151 +1026,158 @@ function App(): JSX.Element {
             Загрузки
           </button>
         </nav>
-        <div className="app-topbar-actions">
-          <button
-            type="button"
-            className="app-icon-btn"
-            onClick={() => {
-              void handleOpenToolbar()
-            }}
-            title="Открыть локальный видеофайл"
-          >
-            <IconFolderOpen />
-            <span className="app-visually-hidden">Открыть</span>
-          </button>
-          <button
-            type="button"
-            className="app-icon-btn"
-            disabled={exportBusy || snapshotBusy}
-            onClick={() => {
-              cycleVideoTransformTopbar(-1)
-            }}
-            title="Поворот против часовой: none → 90° CCW → 180° → 90° CW (экспорт §7.2)"
-          >
-            <IconRotateCcw />
-            <span className="app-visually-hidden">Поворот CCW</span>
-          </button>
-          <button
-            type="button"
-            className="app-icon-btn"
-            disabled={exportBusy || snapshotBusy}
-            onClick={() => {
-              cycleVideoTransformTopbar(1)
-            }}
-            title="Поворот по часовой: none → 90° CW → 180° → 90° CCW (экспорт §7.2)"
-          >
-            <IconRotateCw />
-            <span className="app-visually-hidden">Поворот CW</span>
-          </button>
-          <button
-            type="button"
-            className="app-icon-btn"
-            disabled={exportBusy || snapshotBusy}
-            onClick={() => {
-              cycleCropPresetTopbar()
-            }}
-            title="Crop: none → 1:1 → 16:9 → 4:3 (экспорт §7.2)"
-          >
-            <IconScissors />
-            <span className="app-visually-hidden">Crop</span>
-          </button>
-          <button
-            type="button"
-            className="app-icon-btn"
-            onClick={() => {
-              void window.fluxalloy.inspector.openWindow(preview?.path ?? null)
-            }}
-            title="Отдельное окно инспектора ffprobe (§9). Если файл открыт в превью — сразу подставится его путь."
-          >
-            <IconFilm />
-            <span className="app-visually-hidden">Инспектор</span>
-          </button>
-          <button
-            type="button"
-            className="app-icon-btn"
-            disabled={!preview || exportBusy || snapshotBusy}
-            onClick={() => {
-              void handleSnapshot()
-            }}
-            title="Сохранить текущий кадр превью в PNG или JPEG (ffmpeg)"
-          >
-            <IconImage />
-            <span className="app-visually-hidden">{snapshotBusy ? 'Кадр…' : 'Кадр'}</span>
-          </button>
-          <button
-            type="button"
-            className="app-icon-btn app-icon-btn-primary"
-            disabled={!preview || exportBusy || snapshotBusy}
-            onClick={() => {
-              void handleExport()
-            }}
-            title="Сохранить фрагмент In–Out или весь файл (libx264/aac), нужен ffmpeg"
-          >
-            <IconSave />
-            <span className="app-visually-hidden">{exportBusy ? 'Экспорт…' : 'Экспорт'}</span>
-          </button>
-          {exportBusy ? (
+        <div className="app-topbar-trailing">
+          {topbarEngineVersionsLine.length > 0 ? (
+            <p className="app-topbar-engine-short" title={engineVersionsLine}>
+              {topbarEngineVersionsLine}
+            </p>
+          ) : null}
+          <div className="app-topbar-actions">
             <button
               type="button"
-              className="app-icon-btn app-icon-btn-warn"
-              disabled={exportCancelBusy}
+              className="app-icon-btn"
               onClick={() => {
-                void handleCancelExport()
+                void handleOpenToolbar()
               }}
-              title="Остановить текущий ffmpeg export"
+              title="Открыть локальный видеофайл"
             >
-              <IconBan title={exportCancelBusy ? 'Отмена…' : 'Отменить экспорт'} />
+              <IconFolderOpen />
+              <span className="app-visually-hidden">Открыть</span>
             </button>
-          ) : null}
-          {enginesOfferDownload ? (
             <button
               type="button"
-              className="app-icon-btn app-icon-btn-warn"
-              disabled={engineDownloadBusy}
+              className="app-icon-btn"
+              disabled={exportBusy || snapshotBusy}
               onClick={() => {
-                void handleEnginesDownload()
+                cycleVideoTransformTopbar(-1)
               }}
-              title="Скачать yt-dlp и FFmpeg в папку приложения пользователя"
+              title="Поворот против часовой: none → 90° CCW → 180° → 90° CW (экспорт §7.2)"
             >
-              <IconCloudDownload title={engineDownloadBusy ? 'Загрузка…' : 'Скачать движки'} />
+              <IconRotateCcw />
+              <span className="app-visually-hidden">Поворот CCW</span>
             </button>
-          ) : null}
-          <button
-            type="button"
-            className="app-icon-btn"
-            onClick={() => {
-              setEnginePathsOpen(true)
-            }}
-            title="Задать исполняемые файлы ffmpeg, ffprobe и yt-dlp вручную"
-          >
-            <IconSettings />
-            <span className="app-visually-hidden">Пути к движкам</span>
-          </button>
-          <button
-            type="button"
-            className="app-icon-btn"
-            onClick={() => {
-              void window.fluxalloy.about.getInfo().then((info) => {
-                setAboutInfo(info)
-                setAboutOpen(true)
-              })
-            }}
-            title="О программе и диагностика"
-          >
-            <IconCircleHelp />
-            <span className="app-visually-hidden">О программе</span>
-          </button>
-          <button
-            type="button"
-            className="app-icon-btn"
-            onClick={toggleTheme}
-            title="Переключить тёмную/светлую тему"
-          >
-            {theme === 'dark' ? <IconSun /> : <IconMoon />}
-            <span className="app-visually-hidden">
-              {theme === 'dark' ? 'Светлая тема' : 'Тёмная тема'}
-            </span>
-          </button>
+            <button
+              type="button"
+              className="app-icon-btn"
+              disabled={exportBusy || snapshotBusy}
+              onClick={() => {
+                cycleVideoTransformTopbar(1)
+              }}
+              title="Поворот по часовой: none → 90° CW → 180° → 90° CCW (экспорт §7.2)"
+            >
+              <IconRotateCw />
+              <span className="app-visually-hidden">Поворот CW</span>
+            </button>
+            <button
+              type="button"
+              className="app-icon-btn"
+              disabled={exportBusy || snapshotBusy}
+              onClick={() => {
+                cycleCropPresetTopbar()
+              }}
+              title="Crop: none → 1:1 → 16:9 → 4:3 (экспорт §7.2)"
+            >
+              <IconScissors />
+              <span className="app-visually-hidden">Crop</span>
+            </button>
+            <button
+              type="button"
+              className="app-icon-btn"
+              onClick={() => {
+                void window.fluxalloy.inspector.openWindow(preview?.path ?? null)
+              }}
+              title="Отдельное окно инспектора ffprobe (§9). Если файл открыт в превью — сразу подставится его путь."
+            >
+              <IconFilm />
+              <span className="app-visually-hidden">Инспектор</span>
+            </button>
+            <button
+              type="button"
+              className="app-icon-btn"
+              disabled={!preview || exportBusy || snapshotBusy}
+              onClick={() => {
+                void handleSnapshot()
+              }}
+              title="Сохранить текущий кадр превью в PNG или JPEG (ffmpeg)"
+            >
+              <IconImage />
+              <span className="app-visually-hidden">{snapshotBusy ? 'Кадр…' : 'Кадр'}</span>
+            </button>
+            <button
+              type="button"
+              className="app-icon-btn app-icon-btn-primary"
+              disabled={!preview || exportBusy || snapshotBusy}
+              onClick={() => {
+                void handleExport()
+              }}
+              title="Сохранить фрагмент In–Out или весь файл (libx264/aac), нужен ffmpeg"
+            >
+              <IconSave />
+              <span className="app-visually-hidden">{exportBusy ? 'Экспорт…' : 'Экспорт'}</span>
+            </button>
+            {exportBusy ? (
+              <button
+                type="button"
+                className="app-icon-btn app-icon-btn-warn"
+                disabled={exportCancelBusy}
+                onClick={() => {
+                  void handleCancelExport()
+                }}
+                title="Остановить текущий ffmpeg export"
+              >
+                <IconBan title={exportCancelBusy ? 'Отмена…' : 'Отменить экспорт'} />
+              </button>
+            ) : null}
+            {enginesOfferDownload ? (
+              <button
+                type="button"
+                className="app-icon-btn app-icon-btn-warn"
+                disabled={engineDownloadBusy}
+                onClick={() => {
+                  void handleEnginesDownload()
+                }}
+                title="Скачать yt-dlp и FFmpeg в папку приложения пользователя"
+              >
+                <IconCloudDownload title={engineDownloadBusy ? 'Загрузка…' : 'Скачать движки'} />
+              </button>
+            ) : null}
+            <button
+              type="button"
+              className="app-icon-btn"
+              onClick={() => {
+                setEnginePathsOpen(true)
+              }}
+              title="Задать исполняемые файлы ffmpeg, ffprobe и yt-dlp вручную"
+            >
+              <IconSettings />
+              <span className="app-visually-hidden">Пути к движкам</span>
+            </button>
+            <button
+              type="button"
+              className="app-icon-btn"
+              onClick={() => {
+                void window.fluxalloy.about.getInfo().then((info) => {
+                  setAboutInfo(info)
+                  setAboutOpen(true)
+                })
+              }}
+              title="О программе и диагностика"
+            >
+              <IconCircleHelp />
+              <span className="app-visually-hidden">О программе</span>
+            </button>
+            <button
+              type="button"
+              className="app-icon-btn"
+              onClick={toggleTheme}
+              title="Переключить тёмную/светлую тему"
+            >
+              {theme === 'dark' ? <IconSun /> : <IconMoon />}
+              <span className="app-visually-hidden">
+                {theme === 'dark' ? 'Светлая тема' : 'Тёмная тема'}
+              </span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -1210,6 +1259,7 @@ function App(): JSX.Element {
                 <VideoTimeline
                   key={preview.mediaUrl}
                   mediaKey={preview.mediaUrl}
+                  mediaUrl={preview.mediaUrl}
                   videoRef={videoRef}
                   onTrimRangeChange={onTrimRangeSnapshot}
                 />

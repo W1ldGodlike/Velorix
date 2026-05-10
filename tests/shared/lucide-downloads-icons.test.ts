@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import {
   DOWNLOADS_TOPBAR_CLUSTER_ICONS,
+  EDITOR_TIMELINE_ICONS,
   EDITOR_TRANSPORT_ICONS,
   QUEUE_ROW_ACTION_ICONS,
   emitDownloadsQueueRowIcoBootstrapJs,
@@ -33,5 +34,11 @@ describe('lucide-downloads-icons', () => {
   it('иконки транспорта редактора (v0 §Editor layout) сериализуются в stroke SVG', () => {
     expect(emitInlineStrokeSvg(EDITOR_TRANSPORT_ICONS.skipBack, 20)).toContain('polygon points=')
     expect(emitInlineStrokeSvg(EDITOR_TRANSPORT_ICONS.volume2, 20)).toContain('path d=')
+  })
+
+  it('иконки zoom таймлайна (v0) содержат circle и ручку лупы', () => {
+    const z = emitInlineStrokeSvg(EDITOR_TIMELINE_ICONS.zoomIn, 20)
+    expect(z).toContain('circle')
+    expect(z).toContain('line')
   })
 })

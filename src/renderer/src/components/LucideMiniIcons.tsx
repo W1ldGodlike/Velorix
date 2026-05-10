@@ -2,6 +2,7 @@ import type { JSX, ReactNode } from 'react'
 
 import {
   DOWNLOADS_TOPBAR_CLUSTER_ICONS,
+  EDITOR_TIMELINE_ICONS,
   EDITOR_TOPBAR_TOOLS_ICONS,
   EDITOR_TRANSPORT_ICONS,
   QUEUE_ROW_ACTION_ICONS,
@@ -123,6 +124,34 @@ export function IconFilm({
   return (
     <SvgBase title={title} size={size}>
       {renderStrokeParts(DOWNLOADS_TOPBAR_CLUSTER_ICONS.film)}
+    </SvgBase>
+  )
+}
+
+export function IconZoomOut({
+  title = 'Уменьшить масштаб таймлайна',
+  size = 20
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(EDITOR_TIMELINE_ICONS.zoomOut)}
+    </SvgBase>
+  )
+}
+
+export function IconZoomIn({
+  title = 'Увеличить масштаб таймлайна',
+  size = 20
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(EDITOR_TIMELINE_ICONS.zoomIn)}
     </SvgBase>
   )
 }

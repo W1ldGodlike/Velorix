@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useState, type RefObject } from 'react'
 
+import { IconZoomIn, IconZoomOut } from './LucideMiniIcons'
+import TimelineWaveform from './TimelineWaveform'
+
 const MIN_TRIM_GAP_SEC = 0.05
+
+const TIMELINE_ZOOM_MAX = 8
 
 function formatTime(sec: number): string {
   if (!Number.isFinite(sec) || sec < 0) {
@@ -49,6 +54,8 @@ interface TrimMarks {
 interface VideoTimelineProps {
   /** Совпадает с `key` у `<video>`, чтобы переподписаться при смене источника. */
   mediaKey: string
+  /** `fluxmedia://…` для побочной декодирования waveform без Node API в renderer (§1.1 v0). */
+  mediaUrl: string
   videoRef: RefObject<HTMLVideoElement | null>
   /** Снимок актуальных маркеров для экспорта §7.1 (родитель держит только ref на последнее значение). */
   onTrimRangeChange?: (range: { inSec: number; outSec: number }) => void
@@ -56,12 +63,18 @@ interface VideoTimelineProps {
 
 export default function VideoTimeline({
   mediaKey,
+  mediaUrl,
   videoRef,
   onTrimRangeChange
 }: VideoTimelineProps): React.JSX.Element {
   const [duration, setDuration] = useState(0)
   const [current, setCurrent] = useState(0)
   const [trim, setTrim] = useState<TrimMarks>({ inSec: 0, outSec: null })
+
+  /** Масштаб по горизонтали §1.1/v0: 1 = весь файл, выше — крупнее участок времени под ползунком scrub. */
+  const [timelineZoomMul, setTimelineZoomMul] = useState(1)
+  /** Левый край окна времени при zoom>1 (секунды от начала файла). */
+  const [timelineWindowStartSec, setTimelineWindowStartSec] = useState(0)
 
   useEffect(() => {
     const el = videoRef.current
@@ -90,6 +103,10 @@ export default function VideoTimeline({
     }
   }, [mediaKey, videoRef])
 
+  const windowLenSec = duration > 0 && timelineZoomMul > 0 ? duration / timelineZoomMul : 0
+  const maxWinStart = Math.max(0, duration - windowLenSec)
+  const winStartEff = timelineZoomMul <= 1 ? 0 : Math.min(timelineWindowStartSec, maxWinStart)
+
   useEffect(() => {
     if (!Number.isFinite(duration) || duration <= 0) {
       return
@@ -113,6 +130,8 @@ export default function VideoTimeline({
 
   const effectiveOut = trim.outSec ?? duration
 
+  /** `mediaKey` совпадает с `key` на `<VideoTimeline>` в `App.tsx`: смена источника перемонтирует блок. */
+
   const markerGeometry = useMemo(() => {
     if (!Number.isFinite(duration) || duration <= 0) {
       return null
@@ -129,15 +148,87 @@ export default function VideoTimeline({
     }
   }, [markerGeometry, onTrimRangeChange])
 
-  const ratio = duration > 0 ? Math.min(1, Math.max(0, current / duration)) : 0
+  const markerZoomOverlay = useMemo(() => {
+    if (markerGeometry === null || duration <= 0 || windowLenSec <= 0) {
+      return null
+    }
+    const winEnd = winStartEff + windowLenSec
+    const segStart = Math.max(markerGeometry.inSec, winStartEff)
+    const segEnd = Math.min(markerGeometry.outSec, winEnd)
+    if (segEnd - segStart <= 1 / 960) {
+      return null
+    }
+    return {
+      leftPct: ((segStart - winStartEff) / windowLenSec) * 100,
+      widthPct: ((segEnd - segStart) / windowLenSec) * 100
+    }
+  }, [markerGeometry, duration, windowLenSec, winStartEff])
+
+  const markersDisjointZoomWindow =
+    markerGeometry !== null &&
+    duration > 0 &&
+    windowLenSec > 0 &&
+    markerZoomOverlay === null &&
+    (markerGeometry.outSec <= winStartEff || markerGeometry.inSec >= winStartEff + windowLenSec)
+
+  const zoomedRatio =
+    duration <= 0 || windowLenSec <= 0 ? 0 : (current - winStartEff) / windowLenSec
+  const ratio = Math.min(1, Math.max(0, zoomedRatio))
 
   function seek(fraction: number): void {
     const v = videoRef.current
     if (!v || !Number.isFinite(duration) || duration <= 0) {
       return
     }
-    const next = Math.min(duration * fraction, Math.max(0, duration - 0.02))
-    v.currentTime = next
+    const next = winStartEff + fraction * windowLenSec
+    v.currentTime = Math.min(Math.max(next, 0), Math.max(0, duration - 0.02))
+  }
+
+  function handleTimelineZoomIn(): void {
+    if (!Number.isFinite(duration) || duration <= 0) {
+      return
+    }
+    const next = timelineZoomMul * 2
+    if (next > TIMELINE_ZOOM_MAX || next === timelineZoomMul) {
+      return
+    }
+    const curLen = duration / timelineZoomMul
+    const wsEff =
+      timelineZoomMul <= 1 ? 0 : Math.min(timelineWindowStartSec, Math.max(0, duration - curLen))
+    const vc = videoRef.current
+    const centerSec = ((): number => {
+      const t = vc && Number.isFinite(vc.currentTime) ? vc.currentTime : NaN
+      const lo = wsEff
+      const hi = wsEff + curLen
+      if (Number.isFinite(t) && t >= lo && t <= hi) {
+        return t
+      }
+      return wsEff + curLen / 2
+    })()
+    const newLen = duration / next
+    let ns = centerSec - newLen / 2
+    ns = Math.max(0, Math.min(ns, duration - newLen))
+    setTimelineZoomMul(next)
+    setTimelineWindowStartSec(ns)
+  }
+
+  function handleTimelineZoomOut(): void {
+    if (!Number.isFinite(duration) || duration <= 0) {
+      return
+    }
+    const next = timelineZoomMul / 2
+    if (next < 1 || next === timelineZoomMul) {
+      return
+    }
+    const curLen = duration / timelineZoomMul
+    const wsEff =
+      timelineZoomMul <= 1 ? 0 : Math.min(timelineWindowStartSec, Math.max(0, duration - curLen))
+    const centerSec = wsEff + curLen / 2
+    const newLen = duration / next
+    let ns = centerSec - newLen / 2
+    ns = Math.max(0, Math.min(ns, duration - newLen))
+    setTimelineZoomMul(next)
+    setTimelineWindowStartSec(next === 1 ? 0 : ns)
   }
 
   function captureInFromPlayhead(): void {
@@ -183,6 +274,47 @@ export default function VideoTimeline({
 
   return (
     <div className="app-timeline-stack">
+      <div className="app-timeline-zoom-row" aria-label="Масштаб временной шкалы">
+        <div className="app-timeline-zoom-cluster">
+          <button
+            type="button"
+            className="app-icon-btn app-timeline-zoom-ico"
+            disabled={duration <= 0 || timelineZoomMul <= 1}
+            onClick={handleTimelineZoomOut}
+            title="Отдалить шкалу (показать больший интервал времени)"
+          >
+            <IconZoomOut />
+            <span className="app-visually-hidden">Zoom out timeline</span>
+          </button>
+          <button
+            type="button"
+            className="app-icon-btn app-timeline-zoom-ico"
+            disabled={duration <= 0 || timelineZoomMul >= TIMELINE_ZOOM_MAX}
+            onClick={handleTimelineZoomIn}
+            title="Приблизить шкалу под точную позицию"
+          >
+            <IconZoomIn />
+            <span className="app-visually-hidden">Zoom in timeline</span>
+          </button>
+        </div>
+        <span
+          className="app-timeline-zoom-readout"
+          title="Видимый диапазон scrub и полоски маркеров"
+        >
+          Масштаб ×{timelineZoomMul} · {formatTime(winStartEff)} —{' '}
+          {formatTime(Math.min(duration, winStartEff + windowLenSec))}
+        </span>
+      </div>
+
+      <TimelineWaveform
+        key={mediaKey}
+        mediaKey={mediaKey}
+        mediaUrl={mediaUrl}
+        durationSec={duration}
+        windowStartSec={winStartEff}
+        windowLenSec={windowLenSec}
+      />
+
       <div className="app-timeline" aria-label="Позиция воспроизведения">
         <span className="app-timeline-time">{formatTime(current)}</span>
         <input
@@ -192,7 +324,7 @@ export default function VideoTimeline({
           max={1}
           step={0.0001}
           value={ratio}
-          aria-valuetext={`${formatTime(current)} из ${formatTime(duration)}`}
+          aria-valuetext={`${formatTime(current)} из ${formatTime(duration)} (окно воспроизведения под масштабом ×${timelineZoomMul})`}
           onChange={(e) => {
             seek(Number(e.target.value))
           }}
@@ -200,17 +332,25 @@ export default function VideoTimeline({
         <span className="app-timeline-time">{formatTime(duration)}</span>
       </div>
 
-      {markerGeometry ? (
+      {markerZoomOverlay ? (
         <div className="app-timeline-marker-strip" aria-hidden>
           <div className="app-timeline-marker-track">
             <div
               className="app-timeline-marker-selection"
               style={{
-                left: `${markerGeometry.leftPct}%`,
-                width: `${markerGeometry.widthPct}%`
+                left: `${markerZoomOverlay.leftPct}%`,
+                width: `${markerZoomOverlay.widthPct}%`
               }}
             />
           </div>
+        </div>
+      ) : markersDisjointZoomWindow ? (
+        <div
+          className="app-timeline-marker-strip"
+          aria-hidden
+          title="In–Out вне текущего окна шкалы — уменьшите масштаб (zoom out)."
+        >
+          <div className="app-timeline-marker-track app-timeline-marker-track-idle" />
         </div>
       ) : null}
 
@@ -223,6 +363,19 @@ export default function VideoTimeline({
           <strong>{formatTime(displayOut)}</strong>
         </span>
         <div className="app-timeline-io-actions">
+          <button
+            type="button"
+            className="app-btn app-btn-compact app-timeline-export-jump"
+            disabled={duration <= 0}
+            onClick={() => {
+              document
+                .querySelector('.app-settings-panel')
+                ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+            }}
+            title="Прокрутить к панели экспорта FFmpeg (маркеры In/Out и превью команды)"
+          >
+            Обрезать → экспорт
+          </button>
           <button
             type="button"
             className="app-btn app-btn-compact"
