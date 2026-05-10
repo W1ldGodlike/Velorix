@@ -1,4 +1,5 @@
 Перед работой снова прочитай `scripts/cursor-automation/prompts/agent-contract.txt`.
+Сразу после контракта снова прочитай `docs/UX_REFERENCE_V0.md`: пока в чек-листе есть незакрытые v0/UI-пункты (`§1.1/§4.A/§6`, downloads layout, единые иконки, раскрытые секции), сначала продолжай именно их, а уже потом остальные разделы проекта.
 Продолжай по тем же правилам, что в первой итерации: следующий блок по IMPLEMENTATION_CHECKLIST.md и IMPLEMENTATION_JOURNAL.md, крупными шагами, `npm run check`, короткая запись в журнале при необходимости, один коммит если изменения состоятельны.
 ВАЖНО: timestamp для IMPLEMENTATION_JOURNAL.md не придумывать. Перед записью в журнал обязательно выполни `Get-Date -Format "yyyy-MM-dd HH:mm:ss"` (или эквивалент в текущей shell) и используй ровно это локальное время.
 ВАЖНО: ты SDK-агент. Все новые записи в IMPLEMENTATION_JOURNAL.md должны быть формата `- YYYY-MM-DD HH:mm:ss [SDK]: ...`. Не ставь `[Assistant]`.
