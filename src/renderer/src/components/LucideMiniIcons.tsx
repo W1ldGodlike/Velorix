@@ -83,6 +83,20 @@ export function IconFolderOpen({
   )
 }
 
+export function IconRefreshCw({
+  title = 'Обновить',
+  size = 20
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(QUEUE_ROW_ACTION_ICONS.refreshCw)}
+    </SvgBase>
+  )
+}
+
 export function IconDownload({
   title = 'Загрузки',
   size = 20

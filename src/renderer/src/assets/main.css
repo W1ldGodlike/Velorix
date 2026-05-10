@@ -1035,6 +1035,13 @@
 }
 
 /* §9 §363 — отдельное окно инспектора (`#inspector`). */
+/* §9 — марка тулбара в стиле главного окна / окна загрузок (lucide film). */
+.inspector-toolbar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+}
+
 .inspector-standalone-main {
   overflow: auto;
   padding: 10px 14px 14px;

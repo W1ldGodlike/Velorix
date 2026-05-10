@@ -2,6 +2,13 @@ import { useCallback, useEffect, useState } from 'react'
 import type { JSX } from 'react'
 
 import type { MediaProbeSuccess } from '../../shared/ffprobe-contract'
+import {
+  IconFilm,
+  IconFolderOpen,
+  IconMoon,
+  IconRefreshCw,
+  IconSun
+} from './components/LucideMiniIcons'
 import { PreviewProbeBody } from './components/MediaProbePanel'
 import Versions from './components/Versions'
 
@@ -110,36 +117,44 @@ export function InspectorStandaloneApp(): JSX.Element {
   return (
     <div className="app-shell">
       <header className="app-toolbar">
-        <div className="app-toolbar-brand">Инспектор</div>
+        <div className="app-toolbar-brand inspector-toolbar-brand">
+          <IconFilm title="" size={18} />
+          <span>Инспектор</span>
+        </div>
         <button
           type="button"
-          className="app-btn app-btn-primary"
+          className="app-icon-btn app-icon-btn-primary"
           onClick={() => {
             void handleOpenDialog()
           }}
           title="Выбрать локальный медиафайл (тот же allowlist, что и превью)"
         >
-          Открыть…
+          <IconFolderOpen title="Открыть файл…" />
+          <span className="app-visually-hidden">Открыть файл…</span>
         </button>
         <button
           type="button"
-          className="app-btn"
+          className="app-icon-btn"
           disabled={!mediaPath}
           onClick={() => {
             setProbeRefreshNonce((n) => n + 1)
           }}
           title="Повторно запустить ffprobe для текущего файла"
         >
-          Обновить ffprobe
+          <IconRefreshCw title={!mediaPath ? 'Нет файла для обновления' : 'Обновить ffprobe'} />
+          <span className="app-visually-hidden">Обновить ffprobe</span>
         </button>
         <div className="app-toolbar-spacer" aria-hidden />
         <button
           type="button"
-          className="app-btn"
+          className="app-icon-btn"
           onClick={toggleTheme}
           title="Переключить тему (синхронно с главным окном)"
         >
-          Тема
+          {theme === 'dark' ? <IconSun title="Светлая тема" /> : <IconMoon title="Тёмная тема" />}
+          <span className="app-visually-hidden">
+            {theme === 'dark' ? 'Светлая тема' : 'Тёмная тема'}
+          </span>
         </button>
       </header>
 

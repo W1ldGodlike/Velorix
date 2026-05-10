@@ -56,6 +56,13 @@ export const QUEUE_ROW_ACTION_ICONS = {
     { tag: 'path', attr: { d: 'M3 12a9 9 0 0 1 9-9c2.52 0 4.93 1 6.74 2.74L3 16' } },
     { tag: 'path', attr: { d: 'M8 16H3v5' } }
   ] as const satisfies readonly StrokePrim[],
+  /** refresh-cw — повторное чтение (окно инспектора §9). */
+  refreshCw: [
+    { tag: 'path', attr: { d: 'M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8' } },
+    { tag: 'path', attr: { d: 'M3 3v5h5' } },
+    { tag: 'path', attr: { d: 'M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16' } },
+    { tag: 'path', attr: { d: 'M16 16h5v5' } }
+  ] as const satisfies readonly StrokePrim[],
   plus: [
     { tag: 'path', attr: { d: 'M5 12h14' } },
     { tag: 'path', attr: { d: 'M12 5v14' } }
@@ -99,6 +106,7 @@ const QUEUE_ROW_ICO_KEY_ORDER: QueueRowActionIconKey[] = [
   'play',
   'pause',
   'retry',
+  'refreshCw',
   'plus',
   'outbound',
   'file',
