@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState, type RefObject } from 'react'
 
+import type { MediaProbeSuccess } from '../../../shared/ffprobe-contract'
+import { buildTimelineRulerTicks, pickTimelineRulerStepSec } from '../../../shared/timeline-ruler'
 import { IconZoomIn, IconZoomOut } from './LucideMiniIcons'
 import TimelineWaveform from './TimelineWaveform'
 
@@ -20,6 +22,57 @@ function formatTime(sec: number): string {
 
 function minEffectiveGap(duration: number): number {
   return Math.min(MIN_TRIM_GAP_SEC, Math.max(duration * 0.002, 1 / 60))
+}
+
+function approxVideoFpsFromProbe(probe: MediaProbeSuccess | null): number | null {
+  if (!probe) {
+    return null
+  }
+  const row = probe.tracks.find((t) => t.kind === 'video')
+  if (!row) {
+    return null
+  }
+  const mm = /(\d+(?:\.\d+)?)\s*fps\b/i.exec(row.detail)
+  if (!mm?.[1]) {
+    return null
+  }
+  const v = Number(mm[1])
+  if (!Number.isFinite(v) || v <= 0 || v >= 1000) {
+    return null
+  }
+  return v
+}
+
+function formatProbeVideoFact(probe: MediaProbeSuccess | null): string {
+  if (!probe?.video) {
+    return '—'
+  }
+  return `${probe.video.width}×${probe.video.height} ${probe.video.codec}`
+}
+
+function formatProbeAudioFact(probe: MediaProbeSuccess | null): string {
+  if (!probe) {
+    return '—'
+  }
+  if (probe.audioCodec && probe.audioCodec.trim().length > 0) {
+    return probe.audioCodec
+  }
+  const row = probe.tracks.find((t) => t.kind === 'audio')
+  return row?.codec ?? '—'
+}
+
+function formatProbePositionLine(
+  currentSec: number,
+  durationSec: number,
+  fps: number | null
+): string {
+  const base = `${formatTime(currentSec)} / ${formatTime(durationSec)}`
+  if (fps !== null && durationSec > 0 && Number.isFinite(currentSec)) {
+    const f = Math.floor(currentSec * fps)
+    const fMax = Math.max(0, Math.floor(durationSec * fps))
+    return `${base} · кадр ~${Math.min(Math.max(f, 0), fMax)}`
+  }
+  return base
 }
 
 function clampTrimRange(
@@ -57,6 +110,8 @@ interface VideoTimelineProps {
   /** `fluxmedia://…` для побочной декодирования waveform без Node API в renderer (§1.1 v0). */
   mediaUrl: string
   videoRef: RefObject<HTMLVideoElement | null>
+  /** Сводка ffprobe для строки «Видео / Аудио / Позиция» (`docs/UX_REFERENCE_V0.md`). */
+  probe?: MediaProbeSuccess | null
   /** Снимок актуальных маркеров для экспорта §7.1 (родитель держит только ref на последнее значение). */
   onTrimRangeChange?: (range: { inSec: number; outSec: number }) => void
 }
@@ -65,6 +120,7 @@ export default function VideoTimeline({
   mediaKey,
   mediaUrl,
   videoRef,
+  probe = null,
   onTrimRangeChange
 }: VideoTimelineProps): React.JSX.Element {
   const [duration, setDuration] = useState(0)
@@ -272,6 +328,25 @@ export default function VideoTimeline({
   const displayIn = markerGeometry?.inSec ?? trim.inSec
   const displayOut = markerGeometry?.outSec ?? effectiveOut
 
+  const rulerTicks = useMemo(() => {
+    if (!(duration > 0) || !(windowLenSec > 0)) {
+      return []
+    }
+    const winEnd = Math.min(duration, winStartEff + windowLenSec)
+    const step = pickTimelineRulerStepSec(windowLenSec)
+    return [...buildTimelineRulerTicks(winStartEff, winEnd, step)]
+  }, [duration, windowLenSec, winStartEff])
+
+  const fpsProbeHint = approxVideoFpsFromProbe(probe)
+
+  const rulerPlayheadPct = useMemo((): number | null => {
+    if (!(duration > 0) || !(windowLenSec > 0)) {
+      return null
+    }
+    const pct = ((current - winStartEff) / windowLenSec) * 100
+    return Number.isFinite(pct) ? pct : null
+  }, [current, duration, windowLenSec, winStartEff])
+
   return (
     <div className="app-timeline-stack">
       <div className="app-timeline-zoom-row" aria-label="Масштаб временной шкалы">
@@ -314,6 +389,42 @@ export default function VideoTimeline({
         windowStartSec={winStartEff}
         windowLenSec={windowLenSec}
       />
+
+      {duration > 0 ? (
+        <div className="app-timeline-ruler" aria-hidden>
+          <div className="app-timeline-ruler-track">
+            {rulerTicks.map((t) => (
+              <span
+                key={`ruler-tick-${String(t)}`}
+                className="app-timeline-ruler-tick"
+                style={{ left: `${((t - winStartEff) / windowLenSec) * 100}%` }}
+              >
+                <span className="app-timeline-ruler-label">{formatTime(t)}</span>
+              </span>
+            ))}
+            {rulerPlayheadPct !== null && rulerPlayheadPct >= -1 && rulerPlayheadPct <= 101 ? (
+              <span
+                className="app-timeline-ruler-playhead"
+                style={{ left: `${Math.min(100, Math.max(0, rulerPlayheadPct))}%` }}
+              />
+            ) : null}
+          </div>
+        </div>
+      ) : null}
+
+      {duration > 0 ? (
+        <div className="app-timeline-media-facts" aria-label="Сводка медиа по ffprobe и позиция">
+          <span title="Первый видеопоток ffprobe">
+            <strong>Видео:</strong> {formatProbeVideoFact(probe)}
+          </span>
+          <span title="Первая аудиодорожка ffprobe">
+            <strong>Аудио:</strong> {formatProbeAudioFact(probe)}
+          </span>
+          <span title="Текущее время; номер кадра — оценка по fps из строки дорожки">
+            <strong>Позиция:</strong> {formatProbePositionLine(current, duration, fpsProbeHint)}
+          </span>
+        </div>
+      ) : null}
 
       <div className="app-timeline" aria-label="Позиция воспроизведения">
         <span className="app-timeline-time">{formatTime(current)}</span>

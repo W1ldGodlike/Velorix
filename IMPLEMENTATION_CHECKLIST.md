@@ -25,7 +25,7 @@
 - [~] Есть запуск `ffmpeg` для экспорта и снимка кадра; полноценный пайплайн обработки/пресетов/очередей ещё впереди. Движки можно **скачать кнопкой** в UI (Windows) в `userData/bin`, есть проверка `--version` после загрузки.
 - [~] Автозагрузка движков **Windows x64** (yt-dlp GitHub + ffmpeg zip gyan.dev), SHA256 опционально через `Data/trusted_hashes.json`; в установщике есть пустой `resources/bin` (`extraResources`), бинарники — подкладка/`userData/bin`.
 - [ ] Нет локализации `locales/**`.
-- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; есть покрытие чистых парсеров и сервисов (`ytdlp-extra-args`, `ytdlp-progress-parser` + постпроцессоры yt-dlp §6.4, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options` + превью каталога §6.3, `ytdlp-download-output`, `ytdlp-download-queue-persist`, `ytdlp-commands-hints`, `ytdlp-os-pause-support`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-frame-snapshot-service`, `external-process-log`, `support-bundle`, `ipc-channels`, `engine-contract`, `ffmpeg-export-argv`, `ffprobe-summary-export`, `ffprobe-chapters`, `ffprobe-timecode`, `ffprobe-disposition`).
+- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; есть покрытие чистых парсеров и сервисов (`ytdlp-extra-args`, `ytdlp-progress-parser` + постпроцессоры yt-dlp §6.4, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options` + превью каталога §6.3, `ytdlp-download-output`, `ytdlp-download-queue-persist`, `ytdlp-commands-hints`, `ytdlp-os-pause-support`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-frame-snapshot-service`, `external-process-log`, `support-bundle`, `ipc-channels`, `engine-contract`, `ffmpeg-export-argv`, `ffprobe-summary-export`, `ffprobe-chapters`, `ffprobe-timecode`, `ffprobe-disposition`, `timeline-ruler`, `waveform-peaks`).
 
 ## Журнал решений и проверок
 
@@ -37,7 +37,7 @@
 
 - [~] §6.1/§6.4: yt-dlp — очередь/лог/история/retry/пауза; `queue.json` восстанавливается без duplicate id; **журнал** — out/err раскраска, счётчик, очистка вида, truncate ~240 KiB; дальше — редкие шаблоны логов yt-dlp по полю.
 - [~] §6.3: argv whitelist + справочник + превью с draft/override `-o`; после выбора каталога загрузки / вставки флага из справочника / «Шаблон по умолчанию» превью пересчитывается; при необходимости ещё редкие поля.
-- [~] §1.1/§4.A/§6/§9: загрузки lucide/layout/тема/HiDPI; live-панели; инспектор `app-topbar`/`probe*`; редактор: **полоска транспорта v0** под `<video>` + rotate/scissors в топбаре + **компактная строка ffmpeg•yt-dlp**; таймлайн **zoom (×1…×8) + waveform** по аудио (ограничение ~180 s клипа для decode); rail pill; очередь bar+%; ffprobe context menu с клавиатуры; дальше — матрица DPI, ffprobe §9, редкие строки §6.4.
+- [~] §1.1/§4.A/§6/§9: загрузки lucide/layout/тема/HiDPI; live-панели; инспектор `app-topbar`/`probe*`; редактор: транспорт v0 + топбар **ffmpeg•yt-dlp**; таймлайн zoom/waveform + **линейка времени** (деления видимого окна, `timeline-ruler`) + **Видео/Аудио/Позиция** из ffprobe; rail pill; очередь bar+%; дальше — **матрица DPI** таймлайна, ffprobe §9, редкие логи §6.4.
 - [~] §7.2: crop/rotate/flip готовы через whitelist `-vf`; настройки перенесены из toolbar в боковую панель; дальше расширенные filters и HW encode.
 - [~] §9: опционально Dolby Vision/`side_data` и прочие расширенные метаданные ffprobe (базовые color\_\* потока уже в таблице).
 - [~] §17/§18: диагностика, Support ZIP, `session.log`; при необходимости отдельные логи по окнам или политика объёма mid-session.
@@ -81,7 +81,7 @@
 ### §1.1 UI и UX
 
 - [~] Построить главное окно вокруг крупного предпросмотра: базовая зона preview есть, финальная компоновка панелей — дальше.
-- [~] Таймлайн под превью (базовый range + синхрон с `<video>`); **масштаб окна scrub (×1…×8)** и **waveform** по декодированному аудио (клипы до ~180 s, детерминированные пики); под превью — **транспорт v0** (skip/±5 с/play-pause/fullscreen/громкость, общие lucide-пути): нативные controls §7.1 сохранены; «центральный элемент» в смысле ТЗ — дальше (in/out polish на HiDPI/тонкая линейка).
+- [~] Таймлайн под превью (базовый range + синхрон с `<video>`); **масштаб окна scrub (×1…×8)**, **waveform** (≤~180 s) и **линейка времени** по видимому окну (`pickTimelineRulerStepSec`/`buildTimelineRulerTicks`); строка **«Видео / Аудио / Позиция»** из ffprobe при открытом источнике; под превью — **транспорт v0**; нативные controls §7.1 сохранены; дальше — in/out polish при 125–200 % DPI и субкадр.
 - [~] Сделать панели настроек кодирования сбоку/снизу, сворачиваемые: FFmpeg-панель справа + persist раскрытия секций в `settings.json`; полировка и инспектор — дальше.
 - [~] Сформировать отдельное окно менеджера загрузок в едином стиле: data HTML ближе к v0 (компактнее layout, таблица v0-колонки, log/history, rail); живая очередь `downloads/queue.json` §4.1; плотность под HiDPI — первый проход (`dppx` CSS + мин. окно по `scaleFactor`); финальная матрица DPI — после ручных прогонов.
 - [~] Реализовать прогрессивное раскрытие сложных параметров: `details` для экспертных argv/справочника/лога и **превью команды ffmpeg** в главном окне (`exportCommandPreview` в `mainWindowUiPanels`); общая система панелей — дальше.

@@ -1260,6 +1260,7 @@ function App(): JSX.Element {
                   key={preview.mediaUrl}
                   mediaKey={preview.mediaUrl}
                   mediaUrl={preview.mediaUrl}
+                  probe={probeInfo}
                   videoRef={videoRef}
                   onTrimRangeChange={onTrimRangeSnapshot}
                 />
