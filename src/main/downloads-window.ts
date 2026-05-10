@@ -345,6 +345,10 @@ function buildDownloadsHtml(
         min-width: 2.05rem;
         border-radius: 8px;
       }
+      .dl-topbar-ico svg {
+        width: 19px;
+        height: 19px;
+      }
       .topbar-meta { font-size: 0.698rem; }
       .workspace-tab {
         min-height: 2.2rem;
@@ -449,6 +453,10 @@ function buildDownloadsHtml(
         height: 2.125rem;
         min-width: 2.125rem;
       }
+      .dl-topbar-ico svg {
+        width: 20px;
+        height: 20px;
+      }
       .topbar-meta { font-size: 0.72rem; }
       .workspace-tab {
         min-height: 2.28rem;
@@ -535,6 +543,7 @@ function buildDownloadsHtml(
       color: var(--fa-text-primary);
       border-color: var(--fa-border);
     }
+    button.dl-topbar-ico svg { display: block; }
     .dl-main {
       flex: 1; min-height: 0; min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(258px, 276px);
       overflow: hidden;
