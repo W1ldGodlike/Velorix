@@ -39,7 +39,7 @@
 - [~] §6.3: argv whitelist + справочник + превью draft/override `-o`; при необходимости редкие поля.
 - [~] §6.1/§4.A: окно загрузок — HiDPR/**a11y** (секционные hints + **`aria-describedby`** у полей/rail/нижних панелей); **persist секций**: автопоказ журнала при новой строке подавляет async `toggle` и **не перезаписывает** сохранённое `log: false`; дальше — ручная матрица Win 125–200 %.
 - [~] §1.1/§4.A/§9: редактор + **инспектор** — HiDPR/topbar/SVG/focus; **`AboutDialog`** / **`IconCircleHelp`**; **`video` `aria-label`**; **`PreviewProbeBody`** + превью ffmpeg; **rail FFmpeg** + **быстрая yt-dlp** (`quickYtdlpUrlHint` → кнопки); seek/снап; waveform ограничен по длительности и размеру файла; **Dolby/HDR side_data** попадает в сведения видеодорожки; дальше — multi-monitor DPI и редкие ffprobe-поля.
-- [~] §7.2: trim/crop/rotate/flip; trim IPC валидируется и экспортный `-ss/-t` совпадает с preview; дальше расширенные фильтры и HW encode.
+- [~] §7.2: trim/crop/rotate/flip; trim IPC валидируется и экспортный `-ss/-t` совпадает с preview; пользовательские пресеты FFmpeg именуются через app-modal без `prompt()`; дальше расширенные фильтры и HW encode.
 - [~] §9/§21: расширенные ffprobe (**Dolby Vision/HDR `side_data_list` summary** в деталях видеодорожки); новые IPC через `ipc-channels`, при необходимости логи по окнам; точечные Vitest.
 
 ---
@@ -316,7 +316,7 @@
 - [ ] Metadata.
 - [ ] Hardware acceleration.
 - [ ] Advanced args.
-- [~] Live preview команды ffmpeg: pure helpers в `src/shared/ffmpeg-export-argv.ts` (`buildFfmpegExportPreviewCommand` + `shouldApplyFfmpegExportTrim`), сворачиваемый блок в App.tsx с копированием; маркеры In/Out + probeDurationSec + выбранный контейнер/crop/rotate/flip §7.2 подмешиваются и совпадают с spawn (в т.ч. без `-movflags` для MKV); пользовательские пресеты (persist в settings, переименование/обновление снимка/удаление в тулбаре); дальше сложные фильтры/HW и т.п.
+- [~] Live preview команды ffmpeg: pure helpers в `src/shared/ffmpeg-export-argv.ts` (`buildFfmpegExportPreviewCommand` + `shouldApplyFfmpegExportTrim`), сворачиваемый блок в App.tsx с копированием; маркеры In/Out + probeDurationSec + выбранный контейнер/crop/rotate/flip §7.2 подмешиваются и совпадают с spawn (в т.ч. без `-movflags` для MKV); пользовательские пресеты (persist в settings, переименование/обновление снимка/удаление в тулбаре, имя через app-modal без браузерного `prompt()`); дальше сложные фильтры/HW и т.п.
 - [~] Безопасная сборка аргументов без shell injection: ffmpeg-экспорт идёт через `buildFfmpegExportArgv` (массив токенов, без shell); валидация значений в main `parse*`-хелперах.
 
 ### §7.3 Пакетная обработка

@@ -1326,6 +1326,12 @@
   color: var(--fa-text-secondary);
 }
 
+.app-modal-error {
+  margin-top: 0.65rem;
+  margin-bottom: 0;
+  color: var(--fa-danger);
+}
+
 .app-engine-path-rows {
   display: flex;
   flex-direction: column;

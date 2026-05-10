@@ -49,6 +49,11 @@ type Theme = ResolvedAppTheme
 
 type PreviewOpenedPayload = RestoredSourceInfo
 type EngineSummary = 'checking' | 'ready' | 'missing' | 'error'
+type ExportPresetNameDialog = {
+  mode: 'create' | 'rename'
+  value: string
+  error: string | null
+} | null
 
 type EnginesSnapshot = Awaited<ReturnType<typeof window.fluxalloy.engines.getStatus>>
 
@@ -290,6 +295,7 @@ function App(): JSX.Element {
   const [exportUserPresets, setExportUserPresets] = useState<FfmpegExportUserPreset[]>([])
   /** Выбранный в `<select>` пользовательский пресет; ручные правки тулбара сбрасывают выбор. */
   const [selectedUserPresetId, setSelectedUserPresetId] = useState<string | null>(null)
+  const [exportPresetNameDialog, setExportPresetNameDialog] = useState<ExportPresetNameDialog>(null)
   const [lastExportPath, setLastExportPath] = useState<string | null>(null)
   const [lastSnapshotPath, setLastSnapshotPath] = useState<string | null>(null)
   const [snapshotFormat, setSnapshotFormat] = useState<FfmpegSnapshotFormatId>('png')
@@ -490,29 +496,12 @@ function App(): JSX.Element {
   ])
 
   const handleSaveExportUserPreset = useCallback(() => {
-    const label = window.prompt('Имя пользовательского пресета', 'Мой пресет')
-    if (label === null) {
+    if (exportUserPresets.length >= 8) {
+      setStatusHint('Не более 8 пользовательских пресетов.')
       return
     }
-    const t = label.trim()
-    if (t.length === 0) {
-      return
-    }
-    const snap = buildCurrentExportSnapshot()
-    const id = crypto.randomUUID()
-    const next = [...exportUserPresets, { id, label: t.slice(0, 64), snapshot: snap }]
-    if (next.length > 8) {
-      window.alert('Не более 8 пользовательских пресетов.')
-      return
-    }
-    void window.fluxalloy.settings
-      .setFfmpegExportUserPresets(next)
-      .then((s) => {
-        setExportUserPresets(s.ffmpegExportUserPresets ?? [])
-        setSelectedUserPresetId(id)
-      })
-      .catch(console.error)
-  }, [buildCurrentExportSnapshot, exportUserPresets])
+    setExportPresetNameDialog({ mode: 'create', value: 'Мой пресет', error: null })
+  }, [exportUserPresets.length])
 
   const handleDeleteExportUserPreset = useCallback(() => {
     if (!selectedUserPresetId) {
@@ -536,24 +525,59 @@ function App(): JSX.Element {
     if (!current) {
       return
     }
-    const label = window.prompt('Новое имя пресета', current.label)
-    if (label === null) {
+    setExportPresetNameDialog({ mode: 'rename', value: current.label, error: null })
+  }, [exportUserPresets, selectedUserPresetId])
+
+  const handleSubmitExportPresetName = useCallback(() => {
+    if (!exportPresetNameDialog) {
       return
     }
-    const t = label.trim()
-    if (t.length === 0) {
+    const label = exportPresetNameDialog.value.trim()
+    if (label.length === 0) {
+      setExportPresetNameDialog((prev) =>
+        prev === null ? null : { ...prev, error: 'Введите имя пресета.' }
+      )
+      return
+    }
+    const safeLabel = label.slice(0, 64)
+    if (exportPresetNameDialog.mode === 'create') {
+      if (exportUserPresets.length >= 8) {
+        setExportPresetNameDialog((prev) =>
+          prev === null ? null : { ...prev, error: 'Не более 8 пользовательских пресетов.' }
+        )
+        return
+      }
+      const id = crypto.randomUUID()
+      const next = [
+        ...exportUserPresets,
+        { id, label: safeLabel, snapshot: buildCurrentExportSnapshot() }
+      ]
+      void window.fluxalloy.settings
+        .setFfmpegExportUserPresets(next)
+        .then((s) => {
+          setExportUserPresets(s.ffmpegExportUserPresets ?? [])
+          setSelectedUserPresetId(id)
+          setExportPresetNameDialog(null)
+        })
+        .catch(console.error)
+      return
+    }
+
+    if (!selectedUserPresetId) {
+      setExportPresetNameDialog(null)
       return
     }
     const next = exportUserPresets.map((p) =>
-      p.id === selectedUserPresetId ? { ...p, label: t.slice(0, 64) } : p
+      p.id === selectedUserPresetId ? { ...p, label: safeLabel } : p
     )
     void window.fluxalloy.settings
       .setFfmpegExportUserPresets(next)
       .then((s) => {
         setExportUserPresets(s.ffmpegExportUserPresets ?? [])
+        setExportPresetNameDialog(null)
       })
       .catch(console.error)
-  }, [exportUserPresets, selectedUserPresetId])
+  }, [buildCurrentExportSnapshot, exportPresetNameDialog, exportUserPresets, selectedUserPresetId])
 
   const handleOverwriteExportUserPreset = useCallback(() => {
     if (!selectedUserPresetId) {
@@ -1936,6 +1960,79 @@ function App(): JSX.Element {
           setStatusHint(message)
         }}
       />
+
+      {exportPresetNameDialog ? (
+        <div
+          className="app-modal-backdrop"
+          role="presentation"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) {
+              setExportPresetNameDialog(null)
+            }
+          }}
+        >
+          <form
+            className="app-modal app-modal-narrow"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="export-preset-name-title"
+            aria-describedby="export-preset-name-hint"
+            onMouseDown={(e) => {
+              e.stopPropagation()
+            }}
+            onSubmit={(e) => {
+              e.preventDefault()
+              handleSubmitExportPresetName()
+            }}
+          >
+            <h2 id="export-preset-name-title" className="app-modal-title">
+              {exportPresetNameDialog.mode === 'create' ? 'Новый пресет экспорта' : 'Имя пресета'}
+            </h2>
+            <p id="export-preset-name-hint" className="app-modal-hint">
+              Имя хранится только в настройках FluxAlloy и помогает быстро возвращаться к набору
+              FFmpeg-параметров.
+            </p>
+            <label className="app-engine-path-row">
+              <span className="app-engine-path-label">Имя</span>
+              <input
+                className="app-engine-path-input"
+                type="text"
+                maxLength={64}
+                autoFocus
+                value={exportPresetNameDialog.value}
+                aria-invalid={exportPresetNameDialog.error !== null}
+                aria-describedby={
+                  exportPresetNameDialog.error ? 'export-preset-name-error' : undefined
+                }
+                onChange={(e) => {
+                  setExportPresetNameDialog((prev) =>
+                    prev === null ? null : { ...prev, value: e.target.value, error: null }
+                  )
+                }}
+              />
+            </label>
+            {exportPresetNameDialog.error ? (
+              <p id="export-preset-name-error" className="app-modal-hint app-modal-error">
+                {exportPresetNameDialog.error}
+              </p>
+            ) : null}
+            <div className="app-modal-footer">
+              <button
+                type="button"
+                className="app-btn"
+                onClick={() => {
+                  setExportPresetNameDialog(null)
+                }}
+              >
+                Отмена
+              </button>
+              <button type="submit" className="app-btn app-btn-primary">
+                Сохранить
+              </button>
+            </div>
+          </form>
+        </div>
+      ) : null}
 
       {enginePathsOpen ? (
         <div
