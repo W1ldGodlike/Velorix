@@ -2533,6 +2533,36 @@ function App(): JSX.Element {
                               <button
                                 type="button"
                                 className="app-btn app-btn-compact"
+                                aria-label={`Поднять строку ${row.id} выше`}
+                                onClick={() => {
+                                  void window.fluxalloy.downloads
+                                    .moveRow(row.id, -1)
+                                    .then((res) => {
+                                      if (!res.ok) {
+                                        setStatusHint(res.error)
+                                      }
+                                    })
+                                }}
+                              >
+                                ↑
+                              </button>
+                              <button
+                                type="button"
+                                className="app-btn app-btn-compact"
+                                aria-label={`Опустить строку ${row.id} ниже`}
+                                onClick={() => {
+                                  void window.fluxalloy.downloads.moveRow(row.id, 1).then((res) => {
+                                    if (!res.ok) {
+                                      setStatusHint(res.error)
+                                    }
+                                  })
+                                }}
+                              >
+                                ↓
+                              </button>
+                              <button
+                                type="button"
+                                className="app-btn app-btn-compact"
                                 onClick={() => {
                                   const fn = row.status.startsWith('Ошибка')
                                     ? window.fluxalloy.downloads.retryRow
@@ -2577,6 +2607,21 @@ function App(): JSX.Element {
                                     }}
                                   >
                                     Папка
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="app-btn app-btn-compact"
+                                    onClick={() => {
+                                      void window.fluxalloy.downloads
+                                        .openQueueOutputInHandler(row.id)
+                                        .then((res) => {
+                                          if (!res.ok) {
+                                            setStatusHint(res.error)
+                                          }
+                                        })
+                                    }}
+                                  >
+                                    В редактор
                                   </button>
                                 </>
                               ) : null}
@@ -3074,6 +3119,21 @@ function App(): JSX.Element {
                             }}
                           >
                             Папка
+                          </button>
+                          <button
+                            type="button"
+                            className="app-btn app-btn-compact"
+                            onClick={() => {
+                              void window.fluxalloy.downloads
+                                .openHistoryOutputInHandler(entry.id)
+                                .then((res) => {
+                                  if (!res.ok) {
+                                    setStatusHint(res.error)
+                                  }
+                                })
+                            }}
+                          >
+                            В редактор
                           </button>
                         </div>
                       ) : null}

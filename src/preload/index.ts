@@ -177,6 +177,11 @@ const fluxalloy = {
       ipcRenderer.invoke(d.clearFinished),
     removeRow: (id: number): Promise<{ ok: true } | { ok: false; error: string }> =>
       ipcRenderer.invoke(d.remove, id),
+    moveRow: (
+      id: number,
+      direction: -1 | 1
+    ): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(d.move, id, direction),
     getOutputDirectory: (): Promise<{ path: string; isDefault: boolean }> =>
       ipcRenderer.invoke(d.getOutputDir),
     openOutputDirectory: (): Promise<{ ok: true } | { ok: false; error: string }> =>
@@ -222,6 +227,8 @@ const fluxalloy = {
       mode: 'file' | 'folder'
     ): Promise<{ ok: true } | { ok: false; error: string }> =>
       ipcRenderer.invoke(d.openQueueOutput, id, mode),
+    openQueueOutputInHandler: (id: number): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(d.openQueueOutputInHandler, id),
     getCliOptions: (
       params?: YtdlpGetCliOptionsParams
     ): Promise<{ ok: true; payload: YtdlpDownloadOptionsPayload } | { ok: false; error: string }> =>
@@ -238,6 +245,10 @@ const fluxalloy = {
       mode: 'file' | 'folder'
     ): Promise<{ ok: true } | { ok: false; error: string }> =>
       ipcRenderer.invoke(d.openHistoryOutput, id, mode),
+    openHistoryOutputInHandler: (
+      id: string
+    ): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(d.openHistoryOutputInHandler, id),
     saveVisibleLog: (
       text: string
     ): Promise<{ ok: true; path: string } | { ok: false; error: string }> =>

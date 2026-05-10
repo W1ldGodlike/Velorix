@@ -107,6 +107,7 @@ export interface FluxAlloyApi {
     clearQueue: () => Promise<{ ok: true } | { ok: false; error: string }>
     clearFinished: () => Promise<{ ok: true; removed: number } | { ok: false; error: string }>
     removeRow: (id: number) => Promise<{ ok: true } | { ok: false; error: string }>
+    moveRow: (id: number, direction: -1 | 1) => Promise<{ ok: true } | { ok: false; error: string }>
     getOutputDirectory: () => Promise<{ path: string; isDefault: boolean }>
     openOutputDirectory: () => Promise<{ ok: true } | { ok: false; error: string }>
     pickOutputDirectory: () => Promise<
@@ -133,6 +134,7 @@ export interface FluxAlloyApi {
       id: number,
       mode: 'file' | 'folder'
     ) => Promise<{ ok: true } | { ok: false; error: string }>
+    openQueueOutputInHandler: (id: number) => Promise<{ ok: true } | { ok: false; error: string }>
     getCliOptions: (
       params?: YtdlpGetCliOptionsParams
     ) => Promise<{ ok: true; payload: YtdlpDownloadOptionsPayload } | { ok: false; error: string }>
@@ -145,6 +147,7 @@ export interface FluxAlloyApi {
       id: string,
       mode: 'file' | 'folder'
     ) => Promise<{ ok: true } | { ok: false; error: string }>
+    openHistoryOutputInHandler: (id: string) => Promise<{ ok: true } | { ok: false; error: string }>
     saveVisibleLog: (
       text: string
     ) => Promise<{ ok: true; path: string } | { ok: false; error: string }>

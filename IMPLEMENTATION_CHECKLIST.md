@@ -41,7 +41,7 @@
 
 Правило для агента: этот блок — рабочий навигатор ближайшего спринта. После каждой крупной итерации обновлять его: отмечать сделанное, переводить частичное в `[~]`, убирать устаревшее только если оно отражено ниже по §, и добавлять 3–7 следующих конкретных пунктов. Не оставлять блок полностью закрытым. Для UI/UX-сверки по v0 использовать [`docs/UX_REFERENCE_V0.md`](docs/UX_REFERENCE_V0.md).
 
-- [~] §6.1/§6.4: yt-dlp workspace почти основной: очередь/лог/история/retry/pause/settings/catalog/cookies/network встроены; snapshot очереди рассылается во вкладку и pop-out; основные mutating IPC и `startQueue`/`moveRow` возвращают явный `{ok,error}`, без тихих no-op; дальше — редкие settings, редкие шаблоны логов и ручная DPI-матрица.
+- [~] §6.1/§6.4: yt-dlp workspace почти основной: очередь/лог/история/retry/pause/settings/catalog/cookies/network встроены; snapshot очереди рассылается во вкладку и pop-out; основные mutating IPC и `startQueue`/`moveRow` возвращают явный `{ok,error}`, без тихих no-op; во вкладке есть перестановка ↑/↓ и «В редактор» для готовых строк/истории; дальше — редкие settings, редкие шаблоны логов и ручная DPI-матрица.
 - [~] §6.3: argv whitelist + справочник + preview команды есть; дальше — удобство экспертных токенов и редкие поля.
 - [~] §1.1/§4.A/§9: редактор/инспектор/ffprobe хорошо продвинуты; binary controls уже через общий `PillSwitch`, быстрые labels editor/downloads русифицированы; дальше — multi-monitor DPI, help links, локализация строк и редкие ffprobe-поля.
 - [~] §7.2: trim/crop/rotate/flip/scale/FPS/bitrate/presets есть; дальше — расширенные фильтры, HW encode, batch и сценарий download→encode без ручного шага.
