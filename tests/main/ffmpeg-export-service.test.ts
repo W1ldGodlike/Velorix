@@ -4,6 +4,7 @@ import type { AppSettings } from '../../src/shared/settings-contract'
 import {
   ensureFfmpegExportExtension,
   inferFfmpegExportContainerFromPath,
+  isFfmpegExportProgressStatusLine,
   mergeFfmpegExportSnapshotIntoAppSettings,
   parseFfmpegExportAudioBitrate,
   parseFfmpegExportAudioMode,
@@ -31,6 +32,16 @@ describe('ffmpeg export pure helpers', () => {
     expect(parseFfmpegSpeedToken('time=00:00:01.00 speed=1.25x')).toBe('1.25x')
     expect(parseFfmpegSpeedToken('time=00:00:01.00 speed=N/A')).toBe('N/A')
     expect(parseFfmpegSpeedToken('no speed')).toBeNull()
+  })
+
+  it('§7.1 — фильтр строк статусбара: статистика и ошибки, не баннер сборки', () => {
+    expect(
+      isFfmpegExportProgressStatusLine(
+        'frame=  123 fps= 30 q=28.0 size=    1024kB time=00:01:02.50 bitrate= 500.0kbits/s speed=1.2x'
+      )
+    ).toBe(true)
+    expect(isFfmpegExportProgressStatusLine('ffmpeg version 6.0')).toBe(false)
+    expect(isFfmpegExportProgressStatusLine('[error] something failed')).toBe(true)
   })
 
   it('выбирает безопасный encode preset и параметры libx264', () => {

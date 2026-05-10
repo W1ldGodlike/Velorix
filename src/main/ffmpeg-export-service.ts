@@ -261,6 +261,26 @@ export function parseFfmpegTimeSeconds(line: string): number | null {
   return h * 3600 + min * 60 + sec
 }
 
+/**
+ * §7.1 — показывать в статусбаре только строки статистики `-stats` или явные ошибки;
+ * отфильтровываем баннер версии, конфиг-декларации и прочий шум без `time=`/`frame=`.
+ */
+export function isFfmpegExportProgressStatusLine(line: string): boolean {
+  const t = line.trim()
+  if (t.length === 0) {
+    return false
+  }
+  if (/\[(?:error|fatal)\]/i.test(t)) {
+    return true
+  }
+  if (/\berror while\b|\bfailed to\b|\binvalid\b|\bcannot\b/i.test(t)) {
+    return true
+  }
+  return /\b(?:frame=\s*\d|fps=\s*[\d.]+|L?size=\s*|time=\s*\d|bitrate=\s*|speed=\s*[\d.N/A]+)/i.test(
+    t
+  )
+}
+
 export function resolveExportSegmentDurationSec(
   trim: MediaExportTrimPayload | undefined,
   applyTrim: boolean,
@@ -354,6 +374,9 @@ export function runFfmpegExportJob(params: {
       if (spd !== null) {
         lastSpeed = spd
       }
+      if (!isFfmpegExportProgressStatusLine(trimmed)) {
+        return
+      }
       const t = parseFfmpegTimeSeconds(trimmed)
       let pct = -1
       if (t !== null && segmentDur > 0.05) {
@@ -391,6 +414,10 @@ export function runFfmpegExportJob(params: {
 
     child.on('close', (code) => {
       logExternalProcessLine('ffmpeg-export', 'lifecycle', `closed exitCode=${code ?? '?'}`)
+      if (stderrTail.trim().length > 0) {
+        emitLine(stderrTail)
+        stderrTail = ''
+      }
       if (params.signal.aborted) {
         resolve({ ok: false, error: 'Экспорт отменён' })
         return
