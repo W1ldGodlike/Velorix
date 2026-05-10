@@ -734,6 +734,12 @@
   transform: rotate(90deg);
 }
 
+.app-probe-summary:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 .app-probe-table-wrap {
   max-height: 11rem;
   overflow: auto;
@@ -1063,6 +1069,22 @@
   gap: 0.42rem;
 }
 
+.inspector-topbar-spacer {
+  min-width: 0;
+}
+
+.inspector-topbar-mark-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 0;
+}
+
+.inspector-topbar-mark-icon svg {
+  display: block;
+}
+
 .inspector-standalone-main {
   overflow: auto;
   padding: 10px 14px 14px;
@@ -1077,6 +1099,14 @@
 
 .inspector-standalone-probe {
   padding-top: 6px;
+}
+
+.inspector-standalone-probe .app-probe-table-wrap {
+  max-height: min(42vh, 24rem);
+}
+
+.inspector-standalone-probe .app-probe-json-pre {
+  max-height: min(48vh, 28rem);
 }
 
 .inspector-standalone-path {
