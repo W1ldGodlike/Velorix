@@ -189,6 +189,11 @@ export function runYtdlpOnce(
   return new Promise((resolve, reject) => {
     const child = spawn(ytDlp, args, {
       cwd: outputDir,
+      env: {
+        ...process.env,
+        PYTHONIOENCODING: 'utf-8',
+        PYTHONUTF8: '1'
+      },
       windowsHide: true,
       stdio: ['ignore', 'pipe', 'pipe']
     })

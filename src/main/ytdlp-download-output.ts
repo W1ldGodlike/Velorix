@@ -1,5 +1,5 @@
-import { existsSync, statSync } from 'fs'
-import { isAbsolute, join, normalize, relative, resolve } from 'path'
+import { existsSync, readdirSync, statSync } from 'fs'
+import { basename, extname, isAbsolute, join, normalize, relative, resolve } from 'path'
 
 /** Абсолютный override из `settings.json`; `null` — каталог по умолчанию §6.2. */
 let overrideAbsolute: string | null = null
@@ -30,6 +30,82 @@ export function resolveYtdlpOutputDirectory(userDataRoot: string): string {
   return join(userDataRoot, 'downloads', 'ytdlp')
 }
 
+const MEDIA_OUTPUT_EXTENSIONS = new Set([
+  '.3gp',
+  '.aac',
+  '.flac',
+  '.m4a',
+  '.m4v',
+  '.mkv',
+  '.mov',
+  '.mp3',
+  '.mp4',
+  '.ogg',
+  '.opus',
+  '.wav',
+  '.webm'
+])
+
+function isInsideDirectory(root: string, candidate: string): boolean {
+  const rel = relative(root, candidate)
+  return rel !== '' && !rel.startsWith('..') && !isAbsolute(rel)
+}
+
+function extractBracketedMediaId(rawPath: string): string | null {
+  const name = basename(rawPath)
+  const matches = [...name.matchAll(/\[([A-Za-z0-9_-]{6,128})]/g)]
+  const last = matches.at(-1)
+  const id = last?.[1]
+  return id && id.trim().length > 0 ? id : null
+}
+
+function resolveExistingSiblingByMediaId(outDir: string, rawPath: string): string | null {
+  const mediaId = extractBracketedMediaId(rawPath)
+  if (!mediaId) {
+    return null
+  }
+  const candidates: Array<{ path: string; mtimeMs: number; size: number }> = []
+
+  function visit(dir: string, depth: number): void {
+    if (depth > 2) {
+      return
+    }
+    let entries: import('fs').Dirent[]
+    try {
+      entries = readdirSync(dir, { withFileTypes: true })
+    } catch {
+      return
+    }
+    for (const entry of entries) {
+      const full = join(dir, entry.name)
+      if (entry.isDirectory()) {
+        visit(full, depth + 1)
+        continue
+      }
+      if (!entry.isFile() || !entry.name.includes(`[${mediaId}]`)) {
+        continue
+      }
+      const ext = extname(entry.name).toLowerCase()
+      if (!MEDIA_OUTPUT_EXTENSIONS.has(ext)) {
+        continue
+      }
+      try {
+        const st = statSync(full)
+        if (!st.isFile()) {
+          continue
+        }
+        candidates.push({ path: full, mtimeMs: st.mtimeMs, size: st.size })
+      } catch {
+        /* ignore vanished files */
+      }
+    }
+  }
+
+  visit(outDir, 0)
+  const best = candidates.sort((a, b) => b.mtimeMs - a.mtimeMs || b.size - a.size)[0]
+  return best?.path ?? null
+}
+
 /**
  * §6.4 — путь к выходному файлу допустим для действий «Открыть» / «В обработчик»:
  * только абсолютный файл внутри текущего каталога загрузок yt-dlp и реально существует на диске.
@@ -46,13 +122,15 @@ export function resolveAllowedYtdlpDownloadOutputFile(
   }
   const outDir = resolve(resolveYtdlpOutputDirectory(userDataRoot))
   const file = resolve(raw.trim())
-  const rel = relative(outDir, file)
-  if (rel === '' || rel.startsWith('..') || isAbsolute(rel)) {
+  if (!isInsideDirectory(outDir, file)) {
     return null
   }
   try {
-    return existsSync(file) && statSync(file).isFile() ? file : null
+    if (existsSync(file) && statSync(file).isFile()) {
+      return file
+    }
   } catch {
-    return null
+    /* fall through to best-effort lookup below */
   }
+  return resolveExistingSiblingByMediaId(outDir, file)
 }

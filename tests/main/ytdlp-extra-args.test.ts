@@ -117,9 +117,9 @@ describe('buildYtdlpSpawnArgvTokens', () => {
     url: 'https://example.com/v'
   }
 
-  it('всегда добавляет --newline и --no-color', () => {
+  it('всегда добавляет стабильный вывод строк, цветов и UTF-8', () => {
     const args = buildYtdlpSpawnArgvTokens(base)
-    expect(args.slice(0, 2)).toEqual(['--newline', '--no-color'])
+    expect(args.slice(0, 4)).toEqual(['--newline', '--no-color', '--encoding', 'utf-8'])
   })
 
   it('кладёт --no-playlist если downloadPlaylist=false', () => {

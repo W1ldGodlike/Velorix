@@ -42,4 +42,27 @@ describe('resolveAllowedYtdlpDownloadOutputFile', () => {
     expect(resolveAllowedYtdlpDownloadOutputFile(file, root)).toBe(file)
     rmSync(root, { recursive: true, force: true })
   })
+
+  it('находит финальный файл по media id, если yt-dlp сообщил удалённый промежуточный путь', () => {
+    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-merge-'))
+    const outDir = join(root, 'downloads', 'ytdlp')
+    mkdirSync(outDir, { recursive: true })
+    const finalFile = join(outDir, 'Rimworld. нормальное имя [dCoZhhCIhXo].mkv')
+    writeFileSync(finalFile, 'x')
+    const staleMojibakePath = join(outDir, 'Rimworld. я┐╜я┐╜ [dCoZhhCIhXo].f299.mp4')
+
+    expect(resolveAllowedYtdlpDownloadOutputFile(staleMojibakePath, root)).toBe(finalFile)
+    rmSync(root, { recursive: true, force: true })
+  })
+
+  it('не ищет fallback по media id для пути вне каталога загрузок', () => {
+    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-merge-outside-'))
+    const outDir = join(root, 'downloads', 'ytdlp')
+    mkdirSync(outDir, { recursive: true })
+    writeFileSync(join(outDir, 'clip [dCoZhhCIhXo].mkv'), 'x')
+    const outside = join(root, 'outside [dCoZhhCIhXo].mp4')
+
+    expect(resolveAllowedYtdlpDownloadOutputFile(outside, root)).toBeNull()
+    rmSync(root, { recursive: true, force: true })
+  })
 })

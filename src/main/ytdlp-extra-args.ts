@@ -185,7 +185,7 @@ export function buildYtdlpSpawnArgvTokens(params: {
   outputPattern: string
   url: string
 }): string[] {
-  const args: string[] = ['--newline', '--no-color']
+  const args: string[] = ['--newline', '--no-color', '--encoding', 'utf-8']
   args.push(params.downloadPlaylist ? '--yes-playlist' : '--no-playlist')
   const cf = params.cookiesFile?.trim()
   if (cf) {
