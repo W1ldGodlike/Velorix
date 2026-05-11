@@ -2,6 +2,8 @@ appId: com.fluxalloy.app
 productName: FluxAlloy
 directories:
   buildResources: build
+  # Явно фиксируем выход (дефолт electron-builder тоже `dist`) — см. docs/RELEASE.md про `win-unpacked`.
+  output: dist
 files:
   # В пакет кладём только собранный Electron output и runtime-ресурсы; исходники/конфиги остаются вне installer.
   - '!**/.vscode/*'
