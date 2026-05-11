@@ -404,6 +404,42 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· --write-auto-sub',
     summary: 'Только авто-субтитры без видео (--write-auto-sub --skip-download); поможет проверить транскрипт; допишите URL.',
     fullLine: 'yt-dlp --write-auto-sub --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --write-description',
+    summary: 'Описание ролика в отдельный .description файл без видео (--write-description --skip-download); допишите URL.',
+    fullLine: 'yt-dlp --write-description --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --write-url-link',
+    summary: 'Файл-ярлык на страницу без видео (--write-url-link --skip-download); допишите URL.',
+    fullLine: 'yt-dlp --write-url-link --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --check-formats',
+    summary: 'Проверка доступности выбранных форматов без полного скачивания (--check-formats); допишите URL.',
+    fullLine: 'yt-dlp --check-formats '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· cookies firefox',
+    summary: 'Сухой прогон с cookies из Firefox (--cookies-from-browser); допишите URL (альтернатива Chrome/Edge).',
+    fullLine: 'yt-dlp --skip-download --cookies-from-browser firefox '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print has_drm',
+    summary: 'Флаг DRM/шифрования без скачивания (--skip-download --print has_drm); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print has_drm '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· playable_in_embed',
+    summary: 'Поле embed-ограничений без скачивания (--skip-download --print playable_in_embed); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print playable_in_embed '
   }
 ]
 
@@ -630,6 +666,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· v:0 max_br',
     summary: 'Поток v:0: bit_rate + max_bit_rate (средний vs пиковый битрейт, VBR-диагностика); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=bit_rate,max_bit_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format filename',
+    summary: 'Имя входа, которое видит demuxer (format.filename); сверка пути/редиректов; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format=filename -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 rotate tag',
+    summary: 'Устаревший тег rotate у видео (QuickTime и др.); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream_tags=rotate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:0 layout+br',
+    summary: 'Поток a:0: channel_layout + bit_rate (расклад каналов и битрейт дорожки); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=channel_layout,bit_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffmpeg',
