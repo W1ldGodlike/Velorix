@@ -13,6 +13,8 @@ const script = join(rootDir, 'prepare-engines-win.mjs')
 if (process.argv.includes('--help')) {
   console.log(`engines:prepare:win:force — то же, что prepare-engines-win с FLUXALLOY_ENGINES_FORCE=1.
 
+После загрузки: npm run engines:doctor  (verify + SHA + версии)
+
 Подробности: npm run engines:prepare:win -- --help`)
   process.exit(0)
 }

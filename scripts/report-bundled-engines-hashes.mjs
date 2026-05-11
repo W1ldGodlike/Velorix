@@ -53,6 +53,8 @@ async function printVersionLines() {
 function printHelp() {
   console.log(`report-bundled-engines-hashes — SHA256 для bin/*.exe (trusted_hashes).
 
+Обычно вместе с verify: npm run engines:doctor  (verify + этот скрипт + --versions)
+
 Флаги:
   --json       JSON-фрагмент windows-x64 (yt-dlp.exe, ffmpeg.exe, ffprobe.exe)
   --versions   первая строка --version / -version для каждого exe

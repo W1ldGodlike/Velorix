@@ -45,7 +45,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: bin
-          key: ${{ runner.os }}-flux-engines-${{ hashFiles('scripts/prepare-engines-win.mjs', 'scripts/engines-exe-version-line.mjs', 'scripts/verify-bundled-engines-hashes.mjs', 'scripts/report-bundled-engines-hashes.mjs', 'Data/trusted_hashes.json') }}
+          key: ${{ runner.os }}-flux-engines-${{ hashFiles('scripts/prepare-engines-win.mjs', 'scripts/run-prepare-engines-force.mjs', 'scripts/engines-exe-version-line.mjs', 'scripts/verify-bundled-engines-hashes.mjs', 'scripts/report-bundled-engines-hashes.mjs', 'Data/trusted_hashes.json') }}
           restore-keys: |
             ${{ runner.os }}-flux-engines-
 

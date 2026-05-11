@@ -81,6 +81,8 @@ async function logCiEngineHeadlines() {
 function printHelp() {
   console.log(`verify-bundled-engines-hashes — проверка bin/*.exe и опционально SHA256 (Data/trusted_hashes.json).
 
+Комплексно (verify + SHA в лог + версии): npm run engines:doctor  (см. docs/RELEASE.md)
+
 Переменные:
   FLUXALLOY_ENGINES_STRICT=1     обязательны непустые exe-хеши в windows-x64
   FLUXALLOY_LOG_ENGINE_VERSIONS=1   печать первой строки версии каждого exe
