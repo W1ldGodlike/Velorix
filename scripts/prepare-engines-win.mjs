@@ -265,6 +265,9 @@ async function main() {
   }
 
   await mkdir(binDir, { recursive: true })
+  if (process.env.FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS) {
+    log(`FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS=${engineDownloadTimeoutMs()} ms`)
+  }
   const trusted = await loadTrustedHashes()
   await ensureYtDlp(trusted)
   await ensureFfmpeg(trusted)

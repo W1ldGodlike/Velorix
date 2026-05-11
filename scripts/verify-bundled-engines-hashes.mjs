@@ -6,15 +6,13 @@
  * `windows-x64["yt-dlp.exe"]`, `["ffmpeg.exe"]`, `["ffprobe.exe"]` и совпадение с диском.
  * Без strict пустые поля = проверка пропускается (dev), но файлы после prepare должны существовать.
  */
-import { execFile } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { createReadStream } from 'node:fs'
 import { readFile, stat } from 'node:fs/promises'
 import { join, dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { promisify } from 'node:util'
 
-const execFileAsync = promisify(execFile)
+import { tryFirstVersionLineFromWinEngineExe } from './engines-exe-version-line.mjs'
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const binDir = join(rootDir, 'bin')
@@ -70,17 +68,11 @@ async function logCiEngineHeadlines() {
   }
   for (const { file } of EXE_KEYS) {
     const full = join(binDir, file)
-    const args = file === 'yt-dlp.exe' ? ['--version'] : ['-version']
-    try {
-      const { stdout } = await execFileAsync(full, args, {
-        timeout: 12_000,
-        windowsHide: true,
-        maxBuffer: 512 * 1024
-      })
-      const line = stdout.split(/\r?\n/).find((l) => l.trim())?.trim() ?? ''
-      log(`CI version ${file}: ${line}`)
-    } catch (e) {
-      log(`CI version ${file}: ошибка запуска — ${e instanceof Error ? e.message : String(e)}`)
+    const r = await tryFirstVersionLineFromWinEngineExe(full, file)
+    if (r.ok) {
+      log(`CI version ${file}: ${r.line}`)
+    } else {
+      log(`CI version ${file}: ошибка запуска — ${r.error}`)
     }
   }
 }

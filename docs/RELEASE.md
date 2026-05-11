@@ -107,6 +107,13 @@ npm run build:win
 
 `npm run build:win` формирует NSIS, portable и zip (`electron-builder`: `nsis`, `portable`, `zip`).
 
+Локально без авто-поиска сертификата подписи (часто быстрее, если CSC не настроен):
+
+```powershell
+$env:CSC_IDENTITY_AUTO_DISCOVERY = 'false'
+npm run build:win
+```
+
 Перед публикацией вручную проверить:
 
 - первый запуск на чистом профиле `userData`;
