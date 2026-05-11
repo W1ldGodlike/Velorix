@@ -69,6 +69,10 @@ interface FfprobeJson {
     /** FourCC / тег кодека в контейнере (`avc1`, `hvc1` …). */
     codec_tag_string?: string
     bit_rate?: string
+    /** Для аудио: float planar, s16 и т.п. */
+    sample_fmt?: string
+    /** PCM/WAV: бит на сэмпл. */
+    bits_per_sample?: number
     disposition?: Record<string, unknown>
     tags?: Record<string, string | number | undefined>
     side_data_list?: unknown
@@ -271,6 +275,22 @@ function buildTrackDetail(stream: NonNullable<FfprobeJson['streams']>[number]): 
     }
     if (typeof stream.channel_layout === 'string' && stream.channel_layout.trim() !== '') {
       parts.push(stream.channel_layout.trim())
+    }
+    const aProfile = ffprobeScalarDisplay(
+      typeof stream.profile === 'string' ? stream.profile : undefined
+    )
+    if (aProfile) {
+      parts.push(aProfile)
+    }
+    const sampleFmt = ffprobeScalarDisplay(
+      typeof stream.sample_fmt === 'string' ? stream.sample_fmt : undefined
+    )
+    if (sampleFmt) {
+      parts.push(sampleFmt)
+    }
+    const bitsPerSample = stream.bits_per_sample
+    if (typeof bitsPerSample === 'number' && Number.isFinite(bitsPerSample) && bitsPerSample > 0) {
+      parts.push(`${Math.trunc(bitsPerSample)}-bit PCM`)
     }
   } else if (ct === 'subtitle') {
     const lang = tagString(stream.tags, 'language')
