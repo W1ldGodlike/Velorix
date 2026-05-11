@@ -305,16 +305,25 @@ function readHints(fileName: string, fallbackTool: EngineId): TerminalCommandHin
       if (!row || typeof row !== 'object') {
         continue
       }
-      const src = row as { token?: unknown; summary?: unknown; tool?: unknown }
+      const src = row as { token?: unknown; summary?: unknown; tool?: unknown; fullLine?: unknown }
       const tool = TERMINAL_ALLOWED_TOOLS.includes(src.tool as TerminalToolId)
         ? (src.tool as TerminalToolId)
         : fallbackTool
       if (typeof src.token === 'string' && src.token.trim().length > 0) {
-        out.push({
-          token: src.token.trim().slice(0, 160),
-          summary: typeof src.summary === 'string' ? src.summary.trim().slice(0, 600) : '',
-          tool
-        })
+        const token = src.token.trim().slice(0, 160)
+        const summary = typeof src.summary === 'string' ? src.summary.trim().slice(0, 600) : ''
+        let fullLine: string | undefined
+        if (typeof src.fullLine === 'string') {
+          const fl = src.fullLine.trim()
+          if (fl.length > 0) {
+            fullLine = fl.length > MAX_LINE_CHARS ? fl.slice(0, MAX_LINE_CHARS) : fl
+          }
+        }
+        const entry: TerminalCommandHintEntry = { token, summary, tool }
+        if (fullLine !== undefined) {
+          entry.fullLine = fullLine
+        }
+        out.push(entry)
       }
     }
     return out

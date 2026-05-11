@@ -97,6 +97,8 @@ import type { YtdlpDownloadHistoryEntry } from '../../shared/ytdlp-history-contr
 import type { DownloadsLogPayload } from '../../shared/downloads-log-contract'
 import {
   TERMINAL_CURRENT_FILE_PLACEHOLDER,
+  TERMINAL_SCENARIO_HINTS_DOWNLOADS,
+  TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA,
   type TerminalCommandHintEntry,
   type TerminalRunResult
 } from '../../shared/terminal-contract'
@@ -859,12 +861,22 @@ function App(): JSX.Element {
     const mediaInPreview = Boolean(
       ext && (TERMINAL_HINT_VIDEO_EXTS.has(ext) || TERMINAL_HINT_AUDIO_EXTS.has(ext))
     )
-    const filtered = terminalHints.filter((hint) => {
+    const scenarioPrefix: TerminalCommandHintEntry[] = [
+      ...(workspaceTab === 'downloads' ? TERMINAL_SCENARIO_HINTS_DOWNLOADS : []),
+      ...(workspaceTab === 'editor' || workspaceTab === 'terminal'
+        ? mediaInPreview
+          ? TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA
+          : []
+        : [])
+    ]
+    const merged = [...scenarioPrefix, ...terminalHints]
+    const filtered = merged.filter((hint) => {
       if (q === '') return true
       return (
         hint.tool.toLowerCase().includes(q) ||
         hint.token.toLowerCase().includes(q) ||
-        hint.summary.toLowerCase().includes(q)
+        hint.summary.toLowerCase().includes(q) ||
+        (hint.fullLine !== undefined && hint.fullLine.toLowerCase().includes(q))
       )
     })
     const sorted = [...filtered].sort((a, b) => {
@@ -3552,10 +3564,16 @@ function App(): JSX.Element {
                 <div className="app-terminal-hint-list">
                   {visibleTerminalHints.map((hint) => (
                     <button
-                      key={`${hint.tool}:${hint.token}`}
+                      key={`${hint.tool}:${hint.token}:${hint.fullLine ?? ''}`}
                       type="button"
                       className="app-terminal-hint"
-                      onClick={() => appendTerminalToken(hint.token)}
+                      onClick={() => {
+                        if (hint.fullLine !== undefined && hint.fullLine.length > 0) {
+                          setTerminalLine(hint.fullLine)
+                        } else {
+                          appendTerminalToken(hint.token)
+                        }
+                      }}
                       title={hint.summary}
                     >
                       <code>{hint.token}</code>
