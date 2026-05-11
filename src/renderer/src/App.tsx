@@ -58,6 +58,7 @@ import type {
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
+  FfmpegExportVideoHueId,
   FfmpegExportVideoBlurId,
   FfmpegExportVideoLut3dId,
   FfmpegExportVideoVignetteId,
@@ -254,6 +255,12 @@ const EXPORT_VIDEO_EQ_PRESETS: Array<{ id: FfmpegExportVideoEqPresetId; label: s
   { id: 'cool', label: 'Холоднее' },
   { id: 'vivid', label: 'Насыщенно' },
   { id: 'flat', label: 'Мягко/flat' }
+]
+const EXPORT_VIDEO_HUE_OPTIONS: Array<{ id: FfmpegExportVideoHueId; label: string }> = [
+  { id: 'off', label: 'Оттенок: выкл.' },
+  { id: 'warmShift', label: 'Сдвиг теплее' },
+  { id: 'coolShift', label: 'Сдвиг холоднее' },
+  { id: 'satBoost', label: 'Насыщенность +' }
 ]
 const EXPORT_VIDEO_GRAIN_OPTIONS: Array<{ id: FfmpegExportVideoGrainId; label: string }> = [
   { id: 'off', label: 'Зерно: выкл.' },
@@ -676,6 +683,8 @@ function App(): JSX.Element {
   /** §7.2 — пресет `eq=` цветокоррекции. */
   const [exportVideoEqPreset, setExportVideoEqPreset] =
     useState<FfmpegExportVideoEqPresetId>('off')
+  /** §7.2 — пресет `hue` сразу после `eq`, до зерна. */
+  const [exportVideoHue, setExportVideoHue] = useState<FfmpegExportVideoHueId>('off')
   /** §7.2 — пресет `noise` (зернистость после eq, до scale). */
   const [exportVideoGrain, setExportVideoGrain] = useState<FfmpegExportVideoGrainId>('off')
   const [exportVideoVignette, setExportVideoVignette] = useState<FfmpegExportVideoVignetteId>('off')
@@ -1124,6 +1133,10 @@ function App(): JSX.Element {
     setExportVideoEqPreset(
       eq === 'warm' || eq === 'cool' || eq === 'vivid' || eq === 'flat' ? eq : 'off'
     )
+    const hu = loaded.ffmpegExportVideoHue
+    setExportVideoHue(
+      hu === 'warmShift' || hu === 'coolShift' || hu === 'satBoost' ? hu : 'off'
+    )
     const gr = loaded.ffmpegExportVideoGrain
     setExportVideoGrain(gr === 'light' || gr === 'medium' || gr === 'strong' ? gr : 'off')
     const vg = loaded.ffmpegExportVideoVignette
@@ -1221,6 +1234,7 @@ function App(): JSX.Element {
       ...(exportVideoLut3d !== 'off' ? { videoLut3d: exportVideoLut3d } : {}),
       ...(exportVideoSharpen !== 'off' ? { videoSharpen: exportVideoSharpen } : {}),
       ...(exportVideoEqPreset !== 'off' ? { videoEqPreset: exportVideoEqPreset } : {}),
+      ...(exportVideoHue !== 'off' ? { videoHue: exportVideoHue } : {}),
       ...(exportVideoGrain !== 'off' ? { videoGrain: exportVideoGrain } : {}),
       ...(exportVideoVignette !== 'off' ? { videoVignette: exportVideoVignette } : {}),
       ...(exportVideoBlur !== 'off' ? { videoBlur: exportVideoBlur } : {}),
@@ -1247,6 +1261,7 @@ function App(): JSX.Element {
     exportVideoLut3d,
     exportVideoSharpen,
     exportVideoEqPreset,
+    exportVideoHue,
     exportVideoGrain,
     exportVideoVignette,
     exportVideoBlur,
@@ -1706,6 +1721,7 @@ function App(): JSX.Element {
         videoLut3d: exportVideoLut3d,
         videoSharpen: exportVideoSharpen,
         videoEqPreset: exportVideoEqPreset,
+        videoHue: exportVideoHue,
         videoGrain: exportVideoGrain,
         videoVignette: exportVideoVignette,
         videoBlur: exportVideoBlur,
@@ -1817,6 +1833,7 @@ function App(): JSX.Element {
         : {}),
       videoSharpen: exportVideoSharpen,
       videoEqPreset: exportVideoEqPreset,
+      videoHue: exportVideoHue,
       videoGrain: exportVideoGrain,
       videoVignette: exportVideoVignette,
       videoBlur: exportVideoBlur,
@@ -1848,6 +1865,7 @@ function App(): JSX.Element {
     lutCubePathForPreview,
     exportVideoSharpen,
     exportVideoEqPreset,
+    exportVideoHue,
     exportVideoGrain,
     exportVideoVignette,
     exportVideoBlur,
@@ -2532,6 +2550,31 @@ function App(): JSX.Element {
                     </span>
                   </label>
                   <label className="app-field">
+                    <span>Оттенок</span>
+                    <select
+                      className="app-control"
+                      aria-label="Пресет hue после eq"
+                      aria-describedby="ffmpegVideoHueHint"
+                      value={exportVideoHue}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const v = e.target.value as FfmpegExportVideoHueId
+                        setExportVideoHue(v)
+                        void window.fluxalloy.settings.setFfmpegExportVideoHue(v).catch(console.error)
+                      }}
+                    >
+                      {EXPORT_VIDEO_HUE_OPTIONS.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                    <span id="ffmpegVideoHueHint" className="app-field-help">
+                      `hue` сразу после `eq` и до зерна §7.2.
+                    </span>
+                  </label>
+                  <label className="app-field">
                     <span>Зерно</span>
                     <select
                       className="app-control"
@@ -2553,7 +2596,7 @@ function App(): JSX.Element {
                       ))}
                     </select>
                     <span id="ffmpegVideoGrainHint" className="app-field-help">
-                      `noise` после `eq` и до `scale`/`fps` §7.2.
+                      `noise` после `eq`/`hue` и до `scale`/`fps` §7.2.
                     </span>
                   </label>
                   <label className="app-field">

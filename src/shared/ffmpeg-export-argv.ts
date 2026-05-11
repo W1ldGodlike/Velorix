@@ -18,6 +18,7 @@ import type {
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
+  FfmpegExportVideoHueId,
   FfmpegExportVideoBlurId,
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoVignetteId,
@@ -253,6 +254,20 @@ export function resolveFfmpegExportVideoEqFilter(
   }
 }
 
+/** §7.2 — пресет `hue` (сдвиг фазы / насыщенности); `off` → `null`; только whitelist. */
+export function resolveFfmpegExportVideoHueFilter(id: FfmpegExportVideoHueId): string | null {
+  switch (id) {
+    case 'warmShift':
+      return 'hue=h=-11:s=1.03'
+    case 'coolShift':
+      return 'hue=h=13:s=1.03'
+    case 'satBoost':
+      return 'hue=h=0:s=1.16'
+    default:
+      return null
+  }
+}
+
 /**
  * §7.2 — пресет `noise` (лёгкая зернистость); `off` → `null`.
  * `alls` — сила по всем компонентам; `allf=u` — равномерный шум (без отдельных «паттернов»).
@@ -396,6 +411,8 @@ export interface FfmpegExportArgvParams {
   videoLut3dCubeAbsPath?: string | null
   /** §7.2 — `eq=...` цветокор-пресет; `off` или undefined — без фильтра. */
   videoEqPreset?: FfmpegExportVideoEqPresetId
+  /** §7.2 — `hue` после `eq`; `off` или undefined — без фильтра. */
+  videoHue?: FfmpegExportVideoHueId
   /** §7.2 — `noise` зернистость; `off` или undefined — без фильтра. */
   videoGrain?: FfmpegExportVideoGrainId
   /** §7.2 — `vignette`; `off` или undefined — без фильтра. */
@@ -447,6 +464,10 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
   const eq = resolveFfmpegExportVideoEqFilter(params.videoEqPreset ?? 'off')
   if (eq !== null) {
     filters.push(eq)
+  }
+  const hue = resolveFfmpegExportVideoHueFilter(params.videoHue ?? 'off')
+  if (hue !== null) {
+    filters.push(hue)
   }
   const grain = resolveFfmpegExportVideoGrainFilter(params.videoGrain ?? 'off')
   if (grain !== null) {
@@ -613,6 +634,7 @@ export interface FfmpegExportPreviewInput {
   /** §7.2 — как в `buildFfmpegExportArgv`: путь к `.cube` с main (`resolveFfmpegExportLutCubeAbsPath`). */
   videoLut3dCubeAbsPath?: string | null
   videoEqPreset?: FfmpegExportVideoEqPresetId
+  videoHue?: FfmpegExportVideoHueId
   videoGrain?: FfmpegExportVideoGrainId
   videoVignette?: FfmpegExportVideoVignetteId
   videoBlur?: FfmpegExportVideoBlurId
@@ -693,6 +715,7 @@ export function buildFfmpegExportPreviewCommand(
       : {}),
     ...(input.videoSharpen !== undefined ? { videoSharpen: input.videoSharpen } : {}),
     ...(input.videoEqPreset !== undefined ? { videoEqPreset: input.videoEqPreset } : {}),
+    ...(input.videoHue !== undefined ? { videoHue: input.videoHue } : {}),
     ...(input.videoGrain !== undefined ? { videoGrain: input.videoGrain } : {}),
     ...(input.videoVignette !== undefined ? { videoVignette: input.videoVignette } : {}),
     ...(input.videoBlur !== undefined ? { videoBlur: input.videoBlur } : {}),

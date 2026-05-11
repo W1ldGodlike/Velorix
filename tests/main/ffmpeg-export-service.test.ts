@@ -325,6 +325,24 @@ describe('ffmpeg export pure helpers', () => {
     )
     expect(blur.ffmpegExportVideoBlur).toBe('medium')
 
+    const hue = mergeFfmpegExportSnapshotIntoAppSettings(
+      { theme: 'dark' },
+      {
+        encodePreset: 'balance',
+        container: 'mp4',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'aac',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        videoTransform: 'none',
+        cropPreset: 'none',
+        videoHue: 'coolShift'
+      }
+    )
+    expect(hue.ffmpegExportVideoHue).toBe('coolShift')
+
     const lut = mergeFfmpegExportSnapshotIntoAppSettings(
       { theme: 'dark' },
       {

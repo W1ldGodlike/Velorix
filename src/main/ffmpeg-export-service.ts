@@ -19,6 +19,7 @@ import type {
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
+  FfmpegExportVideoHueId,
   FfmpegExportVideoBlurId,
   FfmpegExportVideoLut3dId,
   FfmpegExportVideoSharpenId,
@@ -50,6 +51,7 @@ export type {
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
+  FfmpegExportVideoHueId,
   FfmpegExportVideoBlurId,
   FfmpegExportVideoLut3dId,
   FfmpegExportVideoSharpenId,
@@ -72,6 +74,7 @@ export {
   resolveFfmpegExportVideoDenoiseFilter,
   resolveFfmpegExportVideoEqFilter,
   resolveFfmpegExportVideoGrainFilter,
+  resolveFfmpegExportVideoHueFilter,
   resolveFfmpegExportVideoBlurFilter,
   resolveFfmpegExportVideoSharpenFilter,
   resolveFfmpegExportVideoVignetteFilter,
@@ -284,6 +287,14 @@ export function parseFfmpegExportVideoBlur(raw: unknown): FfmpegExportVideoBlurI
   return 'off'
 }
 
+/** §7.2 — пресет `hue` после `eq`; только whitelist, иначе `off`. */
+export function parseFfmpegExportVideoHue(raw: unknown): FfmpegExportVideoHueId {
+  if (raw === 'warmShift' || raw === 'coolShift' || raw === 'satBoost') {
+    return raw
+  }
+  return 'off'
+}
+
 /** §7.2 — пресет нормализации громкости (`loudnorm`/`dynaudnorm`); иначе `off`. */
 export function parseFfmpegExportAudioNormalize(raw: unknown): FfmpegExportAudioNormalizeId {
   if (raw === 'loudnorm' || raw === 'dynaudnorm') {
@@ -349,6 +360,7 @@ export function parseFfmpegExportUserPresetSnapshot(
   const videoLut3d = parseFfmpegExportVideoLut3d(o['videoLut3d'])
   const videoSharpen = parseFfmpegExportVideoSharpen(o['videoSharpen'])
   const videoEqPreset = parseFfmpegExportVideoEqPreset(o['videoEqPreset'])
+  const videoHue = parseFfmpegExportVideoHue(o['videoHue'])
   const videoGrain = parseFfmpegExportVideoGrain(o['videoGrain'])
   const videoVignette = parseFfmpegExportVideoVignette(o['videoVignette'])
   const videoBlur = parseFfmpegExportVideoBlur(o['videoBlur'])
@@ -374,6 +386,7 @@ export function parseFfmpegExportUserPresetSnapshot(
     ...(videoLut3d !== 'off' ? { videoLut3d } : {}),
     ...(videoSharpen !== 'off' ? { videoSharpen } : {}),
     ...(videoEqPreset !== 'off' ? { videoEqPreset } : {}),
+    ...(videoHue !== 'off' ? { videoHue } : {}),
     ...(videoGrain !== 'off' ? { videoGrain } : {}),
     ...(videoVignette !== 'off' ? { videoVignette } : {}),
     ...(videoBlur !== 'off' ? { videoBlur } : {}),
@@ -527,6 +540,15 @@ export function mergeFfmpegExportSnapshotIntoAppSettings(
     next.ffmpegExportVideoEqPreset = snapshot.videoEqPreset
   } else {
     delete next.ffmpegExportVideoEqPreset
+  }
+  if (
+    snapshot.videoHue === 'warmShift' ||
+    snapshot.videoHue === 'coolShift' ||
+    snapshot.videoHue === 'satBoost'
+  ) {
+    next.ffmpegExportVideoHue = snapshot.videoHue
+  } else {
+    delete next.ffmpegExportVideoHue
   }
   if (
     snapshot.videoGrain === 'light' ||
@@ -761,6 +783,8 @@ export async function runFfmpegExportJob(params: {
   videoSharpen?: FfmpegExportVideoSharpenId | null
   /** §7.2 — `eq=...` цветокор-пресет; `off`/null — без фильтра. */
   videoEqPreset?: FfmpegExportVideoEqPresetId | null
+  /** §7.2 — `hue` после `eq`; `off`/null — без фильтра. */
+  videoHue?: FfmpegExportVideoHueId | null
   /** §7.2 — `noise` зернистость; `off`/null — без фильтра. */
   videoGrain?: FfmpegExportVideoGrainId | null
   /** §7.2 — `vignette`; `off`/null — без фильтра. */
@@ -803,6 +827,7 @@ export async function runFfmpegExportJob(params: {
     (lutRoot !== null ? resolveFfmpegExportLutCubeAbsPath(lutRoot, videoLut3dId) : null)
   const videoSharpen = parseFfmpegExportVideoSharpen(params.videoSharpen)
   const videoEqPreset = parseFfmpegExportVideoEqPreset(params.videoEqPreset)
+  const videoHue = parseFfmpegExportVideoHue(params.videoHue)
   const videoGrain = parseFfmpegExportVideoGrain(params.videoGrain)
   const videoVignette = parseFfmpegExportVideoVignette(params.videoVignette)
   const videoBlur = parseFfmpegExportVideoBlur(params.videoBlur)
@@ -843,6 +868,7 @@ export async function runFfmpegExportJob(params: {
     ...(videoLut3dCubeAbsPath !== null ? { videoLut3dCubeAbsPath } : {}),
     ...(videoSharpen !== 'off' ? { videoSharpen } : {}),
     ...(videoEqPreset !== 'off' ? { videoEqPreset } : {}),
+    ...(videoHue !== 'off' ? { videoHue } : {}),
     ...(videoGrain !== 'off' ? { videoGrain } : {}),
     ...(videoVignette !== 'off' ? { videoVignette } : {}),
     ...(videoBlur !== 'off' ? { videoBlur } : {}),

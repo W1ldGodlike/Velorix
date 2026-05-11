@@ -14,6 +14,7 @@ import type {
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
+  FfmpegExportVideoHueId,
   FfmpegExportVideoBlurId,
   FfmpegExportVideoLut3dId,
   FfmpegExportVideoVignetteId,
@@ -39,6 +40,7 @@ import {
   parseFfmpegExportVideoDenoise,
   parseFfmpegExportVideoEqPreset,
   parseFfmpegExportVideoGrain,
+  parseFfmpegExportVideoHue,
   parseFfmpegExportVideoBlur,
   parseFfmpegExportVideoLut3d,
   parseFfmpegExportVideoVignette,
@@ -68,6 +70,7 @@ export type ResolvedFfmpegExportJobOptions = {
   videoLut3d: FfmpegExportVideoLut3dId
   videoSharpen: FfmpegExportVideoSharpenId | null
   videoEqPreset: FfmpegExportVideoEqPresetId | null
+  videoHue: FfmpegExportVideoHueId | null
   videoGrain: FfmpegExportVideoGrainId | null
   videoVignette: FfmpegExportVideoVignetteId | null
   videoBlur: FfmpegExportVideoBlurId | null
@@ -186,6 +189,11 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
     videoEqPresetRaw !== undefined && videoEqPresetRaw !== null
       ? parseFfmpegExportVideoEqPreset(videoEqPresetRaw)
       : parseFfmpegExportVideoEqPreset(settings.ffmpegExportVideoEqPreset)
+  const videoHueRaw = raw['videoHue']
+  const videoHue =
+    videoHueRaw !== undefined && videoHueRaw !== null
+      ? parseFfmpegExportVideoHue(videoHueRaw)
+      : parseFfmpegExportVideoHue(settings.ffmpegExportVideoHue)
   const videoGrainRaw = raw['videoGrain']
   const videoGrain =
     videoGrainRaw !== undefined && videoGrainRaw !== null
@@ -228,6 +236,7 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
     videoLut3d,
     videoSharpen,
     videoEqPreset,
+    videoHue,
     videoGrain,
     videoVignette,
     videoBlur,

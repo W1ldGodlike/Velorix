@@ -13,6 +13,7 @@ import type {
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
+  FfmpegExportVideoHueId,
   FfmpegExportVideoBlurId,
   FfmpegExportVideoLut3dId,
   FfmpegExportVideoVignetteId,
@@ -157,6 +158,8 @@ export interface AppSettings {
   ffmpegExportVideoSharpen?: FfmpegExportVideoSharpenId
   /** §7.2: пресет `eq=...` (`off` по умолчанию = не пишем поле). */
   ffmpegExportVideoEqPreset?: FfmpegExportVideoEqPresetId
+  /** §7.2: пресет `hue` после `eq` (`off` по умолчанию = не пишем поле). */
+  ffmpegExportVideoHue?: FfmpegExportVideoHueId
   /** §7.2: пресет `noise` — зернистость (`off` по умолчанию = не пишем поле). */
   ffmpegExportVideoGrain?: FfmpegExportVideoGrainId
   /** §7.2: пресет `vignette` (`off` по умолчанию = не пишем поле). */

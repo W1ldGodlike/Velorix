@@ -47,6 +47,11 @@ export type FfmpegExportVideoVignetteId = 'off' | 'light' | 'medium' | 'strong'
  */
 export type FfmpegExportVideoBlurId = 'off' | 'light' | 'medium' | 'strong'
 /**
+ * §7.2 — пресеты `hue=h=…:s=…` (сдвиг оттенка / буст насыщенности), только whitelist; `off` — без фильтра.
+ * В `-vf` вставляется сразу после `eq` и до зерна.
+ */
+export type FfmpegExportVideoHueId = 'off' | 'warmShift' | 'coolShift' | 'satBoost'
+/**
  * §7.2 — bundled 3D LUT для `lut3d=file=…` (whitelist; `.cube` в `resources/luts/`, путь подставляет main).
  */
 export type FfmpegExportVideoLut3dId = 'off' | 'film-warm' | 'film-cool' | 'punch'
@@ -109,6 +114,8 @@ export interface FfmpegExportUserPresetSnapshot {
   videoLut3d?: FfmpegExportVideoLut3dId
   /** §7.2 — `eq=...` цветокор-пресет; `off` совпадает с поведением до правки. */
   videoEqPreset?: FfmpegExportVideoEqPresetId
+  /** §7.2 — `hue` после `eq`; `off` совпадает с поведением до правки. */
+  videoHue?: FfmpegExportVideoHueId
   /** §7.2 — `noise` зернистость; `off` совпадает с поведением до правки. */
   videoGrain?: FfmpegExportVideoGrainId
   /** §7.2 — `vignette`; `off` совпадает с поведением до правки. */
@@ -170,6 +177,8 @@ export interface MediaExportRequestPayload {
   videoLut3d?: FfmpegExportVideoLut3dId | null
   /** §7.2 — `eq=...` цветокор-пресет; `off` совпадает с текущим поведением. */
   videoEqPreset?: FfmpegExportVideoEqPresetId | null
+  /** §7.2 — `hue` после `eq`; `off` совпадает с текущим поведением. */
+  videoHue?: FfmpegExportVideoHueId | null
   /** §7.2 — `noise` зернистость; `off` совпадает с текущим поведением. */
   videoGrain?: FfmpegExportVideoGrainId | null
   /** §7.2 — `vignette`; `off` совпадает с текущим поведением. */
