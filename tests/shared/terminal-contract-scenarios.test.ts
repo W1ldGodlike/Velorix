@@ -119,6 +119,10 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --flat-playlist --simulate ')
     expect(lines).toContain('yt-dlp --skip-download --print filepath ')
     expect(lines).toContain('yt-dlp --skip-download --print epoch ')
+    expect(lines).toContain('yt-dlp -6 -F ')
+    expect(lines).toContain('yt-dlp --flat-playlist --print url ')
+    expect(lines).toContain('yt-dlp --write-pages --skip-download ')
+    expect(lines).toContain('yt-dlp --skip-download --print heatmap ')
   })
 
   it('preview: есть JSON-сводка и show_error для текущего превью', () => {
@@ -242,5 +246,10 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(
       lines.some((l) => l.includes('select_streams a:2') && l.includes('codec_name,sample_rate,channels'))
     ).toBe(true)
+    expect(lines.some((l) => l.includes('format=format_long_name'))).toBe(true)
+    expect(
+      lines.some((l) => l.includes('select_streams v:0') && l.includes('stream=chroma_location'))
+    ).toBe(true)
+    expect(lines.some((l) => l.includes('-frames:v 1 -f null -'))).toBe(true)
   })
 })

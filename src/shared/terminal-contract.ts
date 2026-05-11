@@ -572,6 +572,30 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· --print epoch',
     summary: 'Unix epoch времени публикации (если есть) без скачивания (--skip-download --print epoch); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print epoch '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -6 -F',
+    summary: 'Список форматов через IPv6 (-6 -F); если v4 глушится провайдером; допишите URL.',
+    fullLine: 'yt-dlp -6 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· flat-playlist print url',
+    summary: 'Плоский плейлист: URL каждого элемента без глубокого извлечения (--flat-playlist --print url); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --flat-playlist --print url '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --write-pages',
+    summary: 'Сохранить сырые страницы extractor в .dump (--write-pages --skip-download); диагностика HTML/403; допишите URL.',
+    fullLine: 'yt-dlp --write-pages --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print heatmap',
+    summary: 'Данные heatmap просмотров (если отдаёт площадка, напр. YouTube) без скачивания (--skip-download --print heatmap); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print heatmap '
   }
 ]
 
@@ -888,6 +912,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· decode smoke',
     summary: 'Быстрый прогон декодера первых 10 с в null muxer (-t 10); нагрузка на CPU/GPU.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -t 10 -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· 1 frame null',
+    summary: 'Декод ровно одного кадра в null muxer (-frames:v 1); быстрее smoke на длинных файлах.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -frames:v 1 -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format long_name',
+    summary: 'Человекочитаемое имя контейнера (format.format_long_name); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format=format_long_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 chroma_loc',
+    summary: 'Поток v:0: chroma_location (сэмплинг цветности 4:2:0 и т.п.); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=chroma_location -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   }
 ]
 
