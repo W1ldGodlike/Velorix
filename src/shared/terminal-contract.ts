@@ -38,6 +38,18 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· -J',
     summary: 'Полный JSON метаданных (-J) без скачивания; допишите URL (диагностика, Support ZIP).',
     fullLine: 'yt-dlp -J '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -v --skip-download',
+    summary: 'Подробный лог без скачивания (-v --skip-download); допишите URL (ошибки extractor, geo, DRM).',
+    fullLine: 'yt-dlp -v --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --simulate',
+    summary: 'Сухой прогон без файлов (--simulate); допишите URL (проверка доступности и форматов).',
+    fullLine: 'yt-dlp --simulate '
   }
 ]
 
@@ -60,6 +72,12 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· chapters',
     summary: 'Главы и метаданные контейнера (-show_chapters -show_format); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -show_chapters -show_format ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 compact',
+    summary: 'Поток v:0: width/height/r_frame_rate/pix_fmt (default=nw=1); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=width,height,r_frame_rate,pix_fmt -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffmpeg',
