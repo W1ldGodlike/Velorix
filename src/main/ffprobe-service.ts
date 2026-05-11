@@ -263,6 +263,13 @@ function buildTrackDetail(
     if (chroma) {
       parts.push(`chroma ${chroma}`)
     }
+    const pixFmt = ffprobeScalarDisplay(typeof stream.pix_fmt === 'string' ? stream.pix_fmt : undefined)
+    if (pixFmt !== null) {
+      const pixNorm = pixFmt.replace(/\s+/g, '').toLowerCase()
+      if (pixNorm !== 'yuv420p' && pixNorm !== 'yuvj420p') {
+        parts.push(pixFmt)
+      }
+    }
     const bitsRaw = stream.bits_per_raw_sample
     if (typeof bitsRaw === 'number' && Number.isFinite(bitsRaw) && bitsRaw > 0) {
       parts.push(`${Math.trunc(bitsRaw)}-bit`)
@@ -385,6 +392,12 @@ function buildTrackDetail(
       parts.push(streamDur)
     }
   } else {
+    const otherCodec = ffprobeScalarDisplay(
+      typeof stream.codec_name === 'string' ? stream.codec_name : undefined
+    )
+    if (otherCodec) {
+      parts.push(otherCodec)
+    }
     const fn = tagString(stream.tags, 'filename')
     if (fn) {
       parts.push(fn)

@@ -87,6 +87,56 @@ describe('ffprobe-service buildTrackRows', () => {
     expect(row?.detail).toContain('TC 01:00:00:00')
   })
 
+  it('video detail добавляет pix_fmt, если не тривиальный yuv420p/yuvj420p', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'hevc',
+          width: 3840,
+          height: 2160,
+          pix_fmt: 'yuv420p10le'
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toContain('yuv420p10le')
+  })
+
+  it('video detail не дублирует стандартный pix_fmt yuv420p', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 1280,
+          height: 720,
+          pix_fmt: 'yuv420p'
+        }
+      ],
+      null
+    )
+    expect(row?.detail).not.toMatch(/\byuv420p\b/)
+  })
+
+  it('attachment/detail для прочих потоков включает codec_name перед filename', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 2,
+          codec_type: 'attachment',
+          codec_name: 'mjpeg',
+          tags: { filename: 'cover.jpg', mimetype: 'image/jpeg' }
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toMatch(/^mjpeg/)
+    expect(row?.detail).toContain('cover.jpg')
+  })
+
   it('encoder в detail обрезается при длинной строке', () => {
     const long = `${'A'.repeat(70)}tail`
     const [row] = buildTrackRows(
