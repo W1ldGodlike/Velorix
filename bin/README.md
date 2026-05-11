@@ -29,9 +29,11 @@ npm run engines:report-hashes -- --versions
 
 GitHub Actions caches `bin/` between runs; the cache key hashes engine bootstrap/verify scripts and `trusted_hashes.json` (see `.github/workflows/ci.yml` for the exact `hashFiles` list).
 
+Unpack smoke output (`electron-builder --dir`): **`dist/win-unpacked/`** after `npm run pack:dir` or `npm run check:release` (see `docs/RELEASE.md` §1 and §4).
+
 Full Windows release artifacts (see `docs/RELEASE.md`): `npm run release:win` or `npm run release:win:force` from repo root.
 
-`npm run dev` runs the same check automatically before starting Electron.
+`npm run dev` runs **`engines:prepare:win`** via npm **`predev`** before starting Electron (not **`engines:doctor`** — run manually if needed).
 
 Runtime resolution order is:
 

@@ -1,4 +1,9 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+/**
+ * §19 Windows bootstrap: скачивает `bin/yt-dlp.exe`, `bin/ffmpeg.exe`, `bin/ffprobe.exe`.
+ * SHA256 — из `Data/trusted_hashes.json` (непустые поля). См. `docs/RELEASE.md`.
+ * Env: `FLUXALLOY_ENGINES_FORCE`, `FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS`.
+ */
 import { createHash } from 'node:crypto'
 import { createReadStream, createWriteStream, existsSync } from 'node:fs'
 import { mkdir, readdir, rm, stat } from 'node:fs/promises'

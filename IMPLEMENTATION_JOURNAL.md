@@ -318,3 +318,4 @@
 - [J-301] 2026-05-11 23:02:25 [SDK]: §19/§3 — RELEASE §1: `build` без prepare/doctor; README `predev` vs doctor; спринт §19 короче с явными next; `engine-download.ts` — таймаут в шапке. `npm run check` ок.
 - [J-302] 2026-05-11 23:03:12 [SDK]: §19 — CI `on: workflow_dispatch`; RELEASE §5 + README «Релиз»; спринт. `npm run check` ок.
 - [J-303] 2026-05-11 23:04:34 [SDK]: §19 — `electron-builder.yml`: явный `directories.output: dist`; RELEASE §4 + README про `dist/win-unpacked/` и необходимость `bin/`; спринт. `npm run check` ок.
+- [J-304] 2026-05-11 23:05:33 [SDK]: §19 — RELEASE §1/§5: `check:release`/`ci` и `dist/win-unpacked/`; bin README (`predev` vs doctor, smoke path); шапка `prepare-engines-win.mjs`; спринт. `npm run check` ок.

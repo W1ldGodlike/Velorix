@@ -19,6 +19,8 @@ npm run audit:moderate
 npm run check:release
 ```
 
+После успешного завершения шага `pack:dir` в корне репозитория появится распакованное приложение **`dist/win-unpacked/`** для быстрого ручного smoke (см. §4).
+
 `npm run check` включает:
 
 - ESLint;
@@ -149,4 +151,6 @@ git status
 После push убедиться, что GitHub Actions `ci` зелёный. Тот же workflow можно запустить вручную: **Actions → `ci` → Run workflow** (`workflow_dispatch`).
 
 Workflow `ci` на Windows: `actions/checkout` с `fetch-depth: 1`; `permissions: contents: read`; `concurrency` с `cancel-in-progress` для ветки; на job заданы **`FLUXALLOY_TRUSTED_HASHES_STRICT_UNKNOWN=1`** и **`FLUXALLOY_TRUSTED_HASHES_REQUIRE_SHA256_HEX=1`** (строгая проверка `Data/trusted_hashes.json` внутри `npm run check`); кэш **`%LOCALAPPDATA%\electron\Cache`** и **`%LOCALAPPDATA%\electron-builder\Cache`** (по `package-lock.json`); кэш `bin/`; `engines:prepare:win`; **`npm run engines:doctor`** (verify + SHA256-строки в лог + `--versions`; в verify при `GITHUB_ACTIONS` или `FLUXALLOY_LOG_ENGINE_VERSIONS` — первая строка версии каждого exe); `npm run build`; `npm run pack:dir` (`electron-builder --dir`) — проверка конфигурации упаковки без полного NSIS/portable/zip.
+
+На runner после `pack:dir` появляется **`dist/win-unpacked/`** (см. §4); workflow **не** загружает эту папку в Artifacts — только проверка успешности шагов.
 
