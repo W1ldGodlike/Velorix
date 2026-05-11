@@ -54,6 +54,13 @@ describe('createSupportBundleZip', () => {
       nodeVersion: '3',
       platform: 'win32',
       arch: 'x64',
+      appLocale: 'en-US',
+      systemLocale: 'en-US',
+      processId: 4242,
+      currentWorkingDirectory: root,
+      execBasename: 'electron.exe',
+      packaged: false,
+      primaryDisplayLine: '1920×1080@1.00 work 1920×1040',
       userData: root,
       resources: root,
       logFile,
@@ -69,6 +76,8 @@ describe('createSupportBundleZip', () => {
     expect(zip.includes(Buffer.from('logs/session.log'))).toBe(true)
     expect(zip.includes(Buffer.from('session hello'))).toBe(true)
     expect(zip.includes(Buffer.from('sessionLogFile:'))).toBe(true)
+    expect(zip.includes(Buffer.from('primaryDisplay: 1920×1080@1.00 work 1920×1040'))).toBe(true)
+    expect(zip.includes(Buffer.from('packaged: no'))).toBe(true)
   })
 })
 

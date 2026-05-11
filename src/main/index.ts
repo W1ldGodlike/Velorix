@@ -2,7 +2,17 @@ import { execFile } from 'child_process'
 import { createHash } from 'crypto'
 import { existsSync, mkdirSync, rmSync, statSync, writeFileSync } from 'fs'
 import { basename, dirname, extname, isAbsolute, join, normalize, resolve } from 'path'
-import { BrowserWindow, Menu, app, clipboard, dialog, ipcMain, nativeTheme, shell } from 'electron'
+import {
+  BrowserWindow,
+  Menu,
+  app,
+  clipboard,
+  dialog,
+  ipcMain,
+  nativeTheme,
+  screen,
+  shell
+} from 'electron'
 import type { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -1127,6 +1137,30 @@ function getCrashDumpsPathSafe(): string | null {
 
 function supportBundleRuntimeInfo(): SupportBundleRuntimeInfo {
   const paths = resolveAppPaths()
+  let appLocale = '?'
+  let systemLocale = '?'
+  try {
+    appLocale = app.getLocale()
+  } catch {
+    /* ignore */
+  }
+  try {
+    systemLocale =
+      typeof app.getSystemLocale === 'function' ? app.getSystemLocale() : app.getLocale()
+  } catch {
+    systemLocale = appLocale
+  }
+
+  let primaryDisplayLine = '-'
+  try {
+    const d = screen.getPrimaryDisplay()
+    const { width: bw, height: bh } = d.bounds
+    const { width: ww, height: wh } = d.workAreaSize
+    primaryDisplayLine = `${bw}×${bh}@${d.scaleFactor.toFixed(2)} work ${ww}×${wh}`
+  } catch {
+    /* headless / до ready */
+  }
+
   return {
     appVersion: app.getVersion(),
     electronVersion: process.versions.electron ?? '?',
@@ -1134,6 +1168,13 @@ function supportBundleRuntimeInfo(): SupportBundleRuntimeInfo {
     nodeVersion: process.versions.node ?? '?',
     platform: process.platform,
     arch: process.arch,
+    appLocale,
+    systemLocale,
+    processId: process.pid,
+    currentWorkingDirectory: process.cwd(),
+    execBasename: basename(process.execPath),
+    packaged: app.isPackaged,
+    primaryDisplayLine,
     userData: paths.userData,
     resources: paths.resources,
     logFile: getMainLogFilePath(),

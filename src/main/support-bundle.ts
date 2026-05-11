@@ -17,6 +17,17 @@ export interface SupportBundleRuntimeInfo {
   nodeVersion: string
   platform: string
   arch: string
+  /** `app.getLocale()` — для отчётов о локализации UI. */
+  appLocale: string
+  /** `app.getSystemLocale()` при наличии, иначе совпадает с appLocale. */
+  systemLocale: string
+  processId: number
+  currentWorkingDirectory: string
+  /** Basename `process.execPath` (без полного пути к exe). */
+  execBasename: string
+  packaged: boolean
+  /** Кратко: размеры экрана, workArea, scaleFactor (§1.1 DPI / §9 диагностика). */
+  primaryDisplayLine: string
   userData: string
   resources: string
   logFile: string | null
@@ -235,6 +246,13 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
     `Chrome ${info.chromeVersion}`,
     `Node ${info.nodeVersion}`,
     `${info.platform}/${info.arch}`,
+    `appLocale: ${info.appLocale}`,
+    `systemLocale: ${info.systemLocale}`,
+    `pid: ${info.processId}`,
+    `cwd: ${info.currentWorkingDirectory}`,
+    `exec: ${info.execBasename}`,
+    `packaged: ${info.packaged ? 'yes' : 'no'}`,
+    `primaryDisplay: ${info.primaryDisplayLine}`,
     '',
     `userData: ${info.userData}`,
     `resources: ${info.resources}`,
