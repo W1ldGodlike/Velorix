@@ -40,6 +40,12 @@ npm run build:mac
 npm run build:linux
 ```
 
+## Секреты и .env
+
+- `scripts/cursor-automation/.env` содержит **CURSOR_API_KEY** и **не должен попадать в Git**.
+- Для примера используйте `scripts/cursor-automation/.env.example`.
+- В CI есть базовый guard: `node scripts/check-no-secrets.mjs` (проверяет только tracked файлы).
+
 ## Зависимости приложения (движки)
 
 FluxAlloy работает поверх внешних движков:

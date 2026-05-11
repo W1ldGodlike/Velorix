@@ -27,3 +27,10 @@ yarn.lock
 
 # Временные файлы сообщений коммитов (PowerShell не поддерживает heredoc, ред-сценарий через --file).
 .git-commit-msg.tmp
+
+# Локальные секреты (Cursor SDK automation и прочее).
+.env
+**/.env
+**/.env.*
+!.env.example
+!**/.env.example
