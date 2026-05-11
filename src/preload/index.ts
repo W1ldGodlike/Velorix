@@ -16,6 +16,7 @@ import type {
   FfmpegExportEncodePresetId,
   FfmpegExportScalePresetId,
   FfmpegExportProgressPayload,
+  FfmpegExportSubtitleModeId,
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
   FfmpegExportVideoTransformId,
@@ -160,6 +161,14 @@ const fluxalloy = {
       ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoTransform, transform),
     setFfmpegExportCropPreset: (crop: FfmpegExportCropPresetId): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportCropPreset, crop),
+    setFfmpegExportAudioGainDb: (gainDb: number | null): Promise<AppSettings> =>
+      ipcRenderer.invoke(mw.settingsSetFfmpegExportAudioGainDb, gainDb),
+    setFfmpegExportStripMetadata: (enabled: boolean): Promise<AppSettings> =>
+      ipcRenderer.invoke(mw.settingsSetFfmpegExportStripMetadata, enabled),
+    setFfmpegExportStripChapters: (enabled: boolean): Promise<AppSettings> =>
+      ipcRenderer.invoke(mw.settingsSetFfmpegExportStripChapters, enabled),
+    setFfmpegExportSubtitleMode: (mode: FfmpegExportSubtitleModeId): Promise<AppSettings> =>
+      ipcRenderer.invoke(mw.settingsSetFfmpegExportSubtitleMode, mode),
     setFfmpegExportUserPresets: (presets: FfmpegExportUserPreset[]): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportUserPresets, presets),
     applyFfmpegExportSnapshot: (snapshot: FfmpegExportUserPresetSnapshot): Promise<AppSettings> =>

@@ -4,9 +4,11 @@ import {
   buildFfmpegExportArgv,
   buildFfmpegExportPreviewCommand,
   formatFfmpegArgvForPreview,
+  normalizeFfmpegExportAudioGainDb,
   resolveFfmpegExportEncodeParams,
   resolveFfmpegExportCropFilter,
   resolveFfmpegExportScaleFilter,
+  resolveFfmpegExportSubtitleCopyCodec,
   resolveFfmpegExportVideoTransformFilters,
   shouldApplyFfmpegExportTrim
 } from '../../src/shared/ffmpeg-export-argv'
@@ -377,6 +379,202 @@ describe('shared ffmpeg export argv', () => {
     expect(argv[argv.indexOf('-pass') + 1]).toBe('2')
     expect(argv).toContain('-c:a')
     expect(argv.at(-1)).toBe('C:/out/file.mp4')
+  })
+
+  it('normalizeFfmpegExportAudioGainDb принимает только целые в диапазоне −24…+24 и режет нули', () => {
+    expect(normalizeFfmpegExportAudioGainDb(null)).toBeNull()
+    expect(normalizeFfmpegExportAudioGainDb(undefined)).toBeNull()
+    expect(normalizeFfmpegExportAudioGainDb('')).toBeNull()
+    expect(normalizeFfmpegExportAudioGainDb('abc')).toBeNull()
+    expect(normalizeFfmpegExportAudioGainDb(0)).toBeNull()
+    expect(normalizeFfmpegExportAudioGainDb(25)).toBeNull()
+    expect(normalizeFfmpegExportAudioGainDb(-25)).toBeNull()
+    expect(normalizeFfmpegExportAudioGainDb(3.5)).toBeNull()
+    expect(normalizeFfmpegExportAudioGainDb(3)).toBe(3)
+    expect(normalizeFfmpegExportAudioGainDb('-6')).toBe(-6)
+    expect(normalizeFfmpegExportAudioGainDb(24)).toBe(24)
+    expect(normalizeFfmpegExportAudioGainDb(-24)).toBe(-24)
+  })
+
+  it('resolveFfmpegExportSubtitleCopyCodec даёт copy только для MKV; иначе mov_text', () => {
+    expect(resolveFfmpegExportSubtitleCopyCodec('mkv')).toBe('copy')
+    expect(resolveFfmpegExportSubtitleCopyCodec('mp4')).toBe('mov_text')
+    expect(resolveFfmpegExportSubtitleCopyCodec('mov')).toBe('mov_text')
+  })
+
+  it('audioGainDb добавляет -filter:a volume только при aac и ненулевом сдвиге', () => {
+    const withGain = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      audioGainDb: -3
+    })
+    expect(withGain).toContain('-filter:a')
+    expect(withGain[withGain.indexOf('-filter:a') + 1]).toBe('volume=-3dB')
+
+    const zeroGain = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      audioGainDb: 0
+    })
+    expect(zeroGain).not.toContain('-filter:a')
+
+    const audioOff = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'none',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      audioGainDb: 6
+    })
+    expect(audioOff).toContain('-an')
+    expect(audioOff).not.toContain('-filter:a')
+  })
+
+  it('stripMetadata/stripChapters добавляют -map_metadata/-map_chapters перед -c:v', () => {
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      stripMetadata: true,
+      stripChapters: true
+    })
+    const codecIdx = argv.indexOf('-c:v')
+    const metaIdx = argv.indexOf('-map_metadata')
+    const chapIdx = argv.indexOf('-map_chapters')
+    expect(metaIdx).toBeGreaterThanOrEqual(0)
+    expect(chapIdx).toBeGreaterThanOrEqual(0)
+    expect(metaIdx).toBeLessThan(codecIdx)
+    expect(chapIdx).toBeLessThan(codecIdx)
+    expect(argv[metaIdx + 1]).toBe('-1')
+    expect(argv[chapIdx + 1]).toBe('-1')
+  })
+
+  it('subtitleMode=copy маппит дорожки и подбирает codec под контейнер', () => {
+    const mkv = buildFfmpegExportArgv({
+      inputPath: 'in.mkv',
+      outputPath: 'out.mkv',
+      container: 'mkv',
+      applyTrim: false,
+      encodePreset: 'balance',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      subtitleMode: 'copy'
+    })
+    expect(mkv).toContain('-c:s')
+    expect(mkv[mkv.indexOf('-c:s') + 1]).toBe('copy')
+    expect(mkv).toContain('-map')
+    // как минимум 3 -map (video/audio/sub) перед -c:s
+    const subIdx = mkv.indexOf('-c:s')
+    const beforeSub = mkv.slice(0, subIdx)
+    expect(beforeSub.filter((t) => t === '-map').length).toBe(3)
+
+    const mp4 = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      container: 'mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      subtitleMode: 'copy'
+    })
+    expect(mp4[mp4.indexOf('-c:s') + 1]).toBe('mov_text')
+  })
+
+  it('subtitleMode=drop (по умолчанию) не меняет argv для базовой ветки', () => {
+    const baseline = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source'
+    })
+    const dropped = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      subtitleMode: 'drop'
+    })
+    expect(dropped).toEqual(baseline)
+  })
+
+  it('buildFfmpegExportPreviewCommand пробрасывает gain/strip/subtitle в обе строки twoPass', () => {
+    const result = buildFfmpegExportPreviewCommand({
+      encodePreset: 'balance',
+      container: 'mp4',
+      crf: null,
+      videoBitrate: '5000k',
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      inputPath: '/a.mp4',
+      outputPath: '/a-out.mp4',
+      twoPass: true,
+      audioGainDb: 6,
+      stripMetadata: true,
+      stripChapters: true,
+      subtitleMode: 'copy'
+    })
+    expect(result.pass1Command).toBeDefined()
+    // В первом проходе нет аудио — gain и subtitle map игнорируются, но strip остаётся.
+    expect(result.pass1Command).toContain('-map_metadata')
+    expect(result.pass1Command).toContain('-map_chapters')
+    expect(result.pass1Command).not.toContain('-filter:a')
+    expect(result.pass1Command).not.toContain('-c:s')
+    // Второй проход — полный набор фильтров аудио и subtitle copy.
+    expect(result.command).toContain('-filter:a')
+    expect(result.command).toContain('volume=6dB')
+    expect(result.command).toContain('-c:s')
+    expect(result.command).toContain('mov_text')
   })
 
   it('buildFfmpegExportPreviewCommand даёт две строки при twoPass+birate', () => {

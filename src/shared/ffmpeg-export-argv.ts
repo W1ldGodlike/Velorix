@@ -12,8 +12,13 @@ import type {
   FfmpegExportCropPresetId,
   FfmpegExportEncodePresetId,
   FfmpegExportScalePresetId,
+  FfmpegExportSubtitleModeId,
   FfmpegExportVideoTransformId,
   MediaExportTrimPayload
+} from './ffmpeg-export-contract'
+import {
+  FFMPEG_EXPORT_AUDIO_GAIN_DB_MAX,
+  FFMPEG_EXPORT_AUDIO_GAIN_DB_MIN
 } from './ffmpeg-export-contract'
 
 /**
@@ -101,6 +106,46 @@ export function resolveFfmpegExportVideoTransformFilters(
 }
 
 /**
+ * §7.2 — целочисленный сдвиг громкости в дБ для `-filter:a volume`.
+ *
+ * `null`/`0`/нечисловое значение → фильтр не нужен (без `-filter:a`).
+ * Дробные доли не поддерживаем сознательно: UI ограничен пресетами по 3 дБ,
+ * чтобы пользователь не пересылал в spawn неконтролируемые строки.
+ */
+export function normalizeFfmpegExportAudioGainDb(value: unknown): number | null {
+  if (value === null || value === undefined) {
+    return null
+  }
+  const n =
+    typeof value === 'number'
+      ? value
+      : typeof value === 'string' && value.trim() !== ''
+        ? Number(value.trim())
+        : NaN
+  if (!Number.isInteger(n) || n < FFMPEG_EXPORT_AUDIO_GAIN_DB_MIN || n > FFMPEG_EXPORT_AUDIO_GAIN_DB_MAX) {
+    return null
+  }
+  if (n === 0) {
+    return null
+  }
+  return n
+}
+
+/**
+ * §7.2 — кодек субтитров для контейнера при `subtitleMode='copy'`.
+ *
+ * MKV принимает большинство форматов через `-c:s copy`. Для MP4/MOV ffmpeg позволяет
+ * хранить только `mov_text`, поэтому при копировании в эти контейнеры приходится
+ * перепаковывать в текстовые субтитры; bitmap-субы при этом не пройдут — это известный
+ * лимит контейнера, не нашего кода.
+ */
+export function resolveFfmpegExportSubtitleCopyCodec(
+  container: FfmpegExportContainerId
+): 'copy' | 'mov_text' {
+  return container === 'mkv' ? 'copy' : 'mov_text'
+}
+
+/**
  * §7.2 — crop-пресеты через безопасный whitelist выражений ffmpeg.
  * Порядок в `-vf`: transform → crop → scale → fps.
  */
@@ -145,6 +190,20 @@ export interface FfmpegExportArgvParams {
    * Проход 1: `-an`, вывод в `nullDevice`; проход 2: обычный звук и `outputPath`.
    */
   twoPass?: { pass: 1 | 2; passlogfile: string; nullDevice: string }
+  /**
+   * §7.2 — сдвиг громкости в дБ. `null`/`0` — без `-filter:a`. При `audioMode='none'`
+   * параметр игнорируется (нет звука, фильтр некуда применять).
+   */
+  audioGainDb?: number | null
+  /** §7.2 — добавить `-map_metadata -1` (удалить metadata глобально). */
+  stripMetadata?: boolean
+  /** §7.2 — добавить `-map_chapters -1` (удалить главы). */
+  stripChapters?: boolean
+  /**
+   * §7.2 — поведение субтитров. По умолчанию `drop` — argv не меняется (как было до правки).
+   * `copy` добавляет `-c:s copy` (MKV) или `-c:s mov_text` (MP4/MOV) и явно маппит дорожки.
+   */
+  subtitleMode?: FfmpegExportSubtitleModeId
 }
 
 /** Полный argv ffmpeg без пути к exe; используется и runner, и preview UI. */
@@ -179,6 +238,13 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
   } else {
     args.push('-i', params.inputPath)
   }
+  if (params.stripMetadata === true) {
+    args.push('-map_metadata', '-1')
+  }
+  if (params.stripChapters === true) {
+    args.push('-map_chapters', '-1')
+  }
+
   args.push('-c:v', 'libx264', '-preset', enc.x264preset)
 
   const tp = params.twoPass
@@ -207,11 +273,28 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
     return args
   }
 
+  const gainDb =
+    params.audioMode === 'none' ? null : normalizeFfmpegExportAudioGainDb(params.audioGainDb)
   if (params.audioMode === 'none') {
     args.push('-an')
   } else {
     args.push('-c:a', 'aac', '-b:a', params.audioBitrate)
+    if (gainDb !== null) {
+      // -filter:a применяется только к аудио потоку; -af применяется и к input filter chain,
+      // но фактически в нашем шаблоне они эквивалентны. Используем явное :a, чтобы было видно,
+      // что фильтр привязан к аудио и не задевает -vf.
+      args.push('-filter:a', `volume=${gainDb}dB`)
+    }
   }
+
+  // §7.2 — субтитры. По умолчанию (`drop` / undefined) argv не трогаем: ffmpeg сам решает
+  // по дефолтному mapping, обычно не таскает subs из MKV в MP4. При `copy` явно маппим и
+  // подбираем кодек контейнера, чтобы не ломать стандартный путь через -c:v / -c:a.
+  if (params.subtitleMode === 'copy') {
+    const subCodec = resolveFfmpegExportSubtitleCopyCodec(container)
+    args.push('-map', '0:v?', '-map', '0:a?', '-map', '0:s?', '-c:s', subCodec)
+  }
+
   /** `-movflags +faststart` относится к MP4/MOV; для MKV (Matroska) эти флаги не применяются. */
   if (container === 'mkv') {
     args.push(params.outputPath)
@@ -264,6 +347,11 @@ export interface FfmpegExportPreviewInput {
   twoPassPasslogPlaceholder?: string | null
   /** Плейсхолдер вывода 1-го прохода (строго текст для UI). */
   twoPassDiscardPlaceholder?: string | null
+  /** §7.2 — те же доп. поля, что и в реальном spawn (см. `buildFfmpegExportArgv`). */
+  audioGainDb?: number | null
+  stripMetadata?: boolean
+  stripChapters?: boolean
+  subtitleMode?: FfmpegExportSubtitleModeId
 }
 
 export interface FfmpegExportPreviewResult {
@@ -328,7 +416,11 @@ export function buildFfmpegExportPreviewCommand(
     fps: input.fps,
     scalePreset: input.scalePreset,
     ...(input.videoTransform !== undefined ? { videoTransform: input.videoTransform } : {}),
-    ...(input.cropPreset !== undefined ? { cropPreset: input.cropPreset } : {})
+    ...(input.cropPreset !== undefined ? { cropPreset: input.cropPreset } : {}),
+    ...(input.audioGainDb !== undefined ? { audioGainDb: input.audioGainDb } : {}),
+    ...(input.stripMetadata === true ? { stripMetadata: true } : {}),
+    ...(input.stripChapters === true ? { stripChapters: true } : {}),
+    ...(input.subtitleMode !== undefined ? { subtitleMode: input.subtitleMode } : {})
   }
 
   let pass1Command: string | undefined

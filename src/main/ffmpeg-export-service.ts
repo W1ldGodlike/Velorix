@@ -11,12 +11,17 @@ import type {
   FfmpegExportEncodePresetId,
   FfmpegExportProgressPayload,
   FfmpegExportScalePresetId,
+  FfmpegExportSubtitleModeId,
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
   FfmpegExportVideoTransformId,
   MediaExportTrimPayload
 } from '../shared/ffmpeg-export-contract'
-import { buildFfmpegExportArgv, shouldApplyFfmpegExportTrim } from '../shared/ffmpeg-export-argv'
+import {
+  buildFfmpegExportArgv,
+  normalizeFfmpegExportAudioGainDb,
+  shouldApplyFfmpegExportTrim
+} from '../shared/ffmpeg-export-argv'
 
 import { logExternalProcessLine } from './external-process-log'
 
@@ -27,6 +32,7 @@ export type {
   FfmpegExportEncodePresetId,
   FfmpegExportProgressPayload,
   FfmpegExportScalePresetId,
+  FfmpegExportSubtitleModeId,
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
   FfmpegExportVideoTransformId,
@@ -39,8 +45,10 @@ export {
   buildFfmpegExportArgv,
   buildFfmpegExportPreviewCommand,
   formatFfmpegArgvForPreview,
+  normalizeFfmpegExportAudioGainDb,
   resolveFfmpegExportEncodeParams as resolveExportEncodeParams,
   resolveFfmpegExportScaleFilter,
+  resolveFfmpegExportSubtitleCopyCodec,
   shouldApplyFfmpegExportTrim
 } from '../shared/ffmpeg-export-argv'
 
@@ -169,6 +177,32 @@ export function parseFfmpegExportTwoPass(raw: unknown): boolean {
   return raw === true
 }
 
+/**
+ * §7.2 — режим субтитров. По умолчанию `drop`: argv не меняется, поведение совпадает с
+ * прежней веткой (ffmpeg сам решает по дефолтному mapping). `copy` валидируется отдельно,
+ * чтобы случайные строки в `settings.json` не попадали в spawn.
+ */
+export function parseFfmpegExportSubtitleMode(raw: unknown): FfmpegExportSubtitleModeId {
+  if (raw === 'copy') {
+    return 'copy'
+  }
+  return 'drop'
+}
+
+/** §7.2 — strip-флаги; только явный `true` ставит `-map_metadata -1` / `-map_chapters -1`. */
+export function parseFfmpegExportStripFlag(raw: unknown): boolean {
+  return raw === true
+}
+
+/**
+ * §7.2 — целочисленный сдвиг громкости в дБ; `null` при пустом/некорректном/нулевом значении.
+ * Дополнительная гарантия по сравнению с `normalizeFfmpegExportAudioGainDb`: явно
+ * фиксируем сигнатуру, чтобы main мог использовать тот же helper для persist и для spawn.
+ */
+export function parseFfmpegExportAudioGainDb(raw: unknown): number | null {
+  return normalizeFfmpegExportAudioGainDb(raw)
+}
+
 /** §7.2 — IPC/renderer trim payload: только конечные неотрицательные маркеры In < Out. */
 export function parseFfmpegExportTrim(raw: unknown): MediaExportTrimPayload | undefined {
   if (!raw || typeof raw !== 'object') {
@@ -208,6 +242,10 @@ export function parseFfmpegExportUserPresetSnapshot(
   const videoTransform = parseFfmpegExportVideoTransform(o['videoTransform'])
   const cropPreset = parseFfmpegExportCropPreset(o['cropPreset'])
   const twoPass = o['twoPass'] === true
+  const audioGainDb = parseFfmpegExportAudioGainDb(o['audioGainDb'])
+  const stripMetadata = parseFfmpegExportStripFlag(o['stripMetadata'])
+  const stripChapters = parseFfmpegExportStripFlag(o['stripChapters'])
+  const subtitleMode = parseFfmpegExportSubtitleMode(o['subtitleMode'])
   return {
     encodePreset,
     container,
@@ -219,7 +257,11 @@ export function parseFfmpegExportUserPresetSnapshot(
     scalePreset,
     videoTransform,
     cropPreset,
-    ...(twoPass ? { twoPass: true as const } : {})
+    ...(twoPass ? { twoPass: true as const } : {}),
+    ...(audioGainDb !== null ? { audioGainDb } : {}),
+    ...(stripMetadata ? { stripMetadata: true } : {}),
+    ...(stripChapters ? { stripChapters: true } : {}),
+    ...(subtitleMode === 'copy' ? { subtitleMode: 'copy' as const } : {})
   }
 }
 
@@ -303,6 +345,26 @@ export function mergeFfmpegExportSnapshotIntoAppSettings(
     next.ffmpegExportTwoPass = true
   } else {
     delete next.ffmpegExportTwoPass
+  }
+  if (typeof snapshot.audioGainDb === 'number' && snapshot.audioGainDb !== 0) {
+    next.ffmpegExportAudioGainDb = snapshot.audioGainDb
+  } else {
+    delete next.ffmpegExportAudioGainDb
+  }
+  if (snapshot.stripMetadata === true) {
+    next.ffmpegExportStripMetadata = true
+  } else {
+    delete next.ffmpegExportStripMetadata
+  }
+  if (snapshot.stripChapters === true) {
+    next.ffmpegExportStripChapters = true
+  } else {
+    delete next.ffmpegExportStripChapters
+  }
+  if (snapshot.subtitleMode === 'copy') {
+    next.ffmpegExportSubtitleMode = 'copy'
+  } else {
+    delete next.ffmpegExportSubtitleMode
   }
   return next
 }
@@ -483,6 +545,14 @@ export async function runFfmpegExportJob(params: {
   cropPreset?: FfmpegExportCropPresetId | null
   /** §7.2 / v0 — двухпроход без CRF и только с bitrate. */
   twoPass?: boolean | null
+  /** §7.2 — целое значение в дБ; `null`/`0` = без `-filter:a volume`. */
+  audioGainDb?: number | null
+  /** §7.2 — удалить контейнерные метаданные. */
+  stripMetadata?: boolean | null
+  /** §7.2 — удалить главы. */
+  stripChapters?: boolean | null
+  /** §7.2 — режим субтитров (`copy` или `drop`). */
+  subtitleMode?: FfmpegExportSubtitleModeId | null
   signal: AbortSignal
   onProgress?: (p: FfmpegExportProgressPayload) => void
 }): Promise<{ ok: true } | { ok: false; error: string }> {
@@ -498,6 +568,10 @@ export async function runFfmpegExportJob(params: {
   const cropPreset = parseFfmpegExportCropPreset(params.cropPreset)
   const container = parseFfmpegExportContainer(params.container ?? 'mp4')
   const wantTwoPass = params.twoPass === true
+  const audioGainDb = parseFfmpegExportAudioGainDb(params.audioGainDb)
+  const stripMetadata = parseFfmpegExportStripFlag(params.stripMetadata)
+  const stripChapters = parseFfmpegExportStripFlag(params.stripChapters)
+  const subtitleMode = parseFfmpegExportSubtitleMode(params.subtitleMode)
   if (wantTwoPass && videoBitrate === null) {
     return {
       ok: false,
@@ -524,7 +598,11 @@ export async function runFfmpegExportJob(params: {
     fps,
     scalePreset,
     videoTransform,
-    cropPreset
+    cropPreset,
+    ...(audioGainDb !== null ? { audioGainDb } : {}),
+    ...(stripMetadata ? { stripMetadata: true } : {}),
+    ...(stripChapters ? { stripChapters: true } : {}),
+    ...(subtitleMode === 'copy' ? { subtitleMode: 'copy' as const } : {})
   }
 
   if (!wantTwoPass) {

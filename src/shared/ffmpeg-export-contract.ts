@@ -18,6 +18,22 @@ export type FfmpegExportVideoTransformId = 'none' | 'cw90' | 'ccw90' | 'r180' | 
 /** §7.2 — crop только через предустановленные выражения, без пользовательской строки `-vf`. */
 export type FfmpegExportCropPresetId = 'none' | 'center-square' | 'center-16-9' | 'center-4-3'
 export type FfmpegExportAudioModeId = 'aac' | 'none'
+/**
+ * §7.2 — режим обработки субтитров на экспорте.
+ * `drop` — текущая базовая ветка ffmpeg (без явного `-c:s`, дорожки не маппятся в выход).
+ * `copy` — пробрасываем дорожки субтитров: для MKV `-c:s copy`, для MP4/MOV
+ * приходится перепаковывать в `mov_text` (поддерживается только текстовые субы; ffmpeg
+ * упадёт, если источник — bitmap-субы. На стороне UI это даём, но пользователь решает сам).
+ */
+export type FfmpegExportSubtitleModeId = 'drop' | 'copy'
+
+/**
+ * §7.2 — целочисленный сдвиг громкости аудиодорожки (`-filter:a volume=NdB`).
+ * `null`/`0` — фильтр не добавляется (без переусиления). Границы умышленно узкие
+ * (−24…+24 дБ), чтобы UI не позволял случайно отправить буфер в клиппинг далеко за пределами.
+ */
+export const FFMPEG_EXPORT_AUDIO_GAIN_DB_MIN = -24
+export const FFMPEG_EXPORT_AUDIO_GAIN_DB_MAX = 24
 
 /**
  * §7.2 — сохранённый снимок параметров экспорта для пользовательского пресета.
@@ -36,6 +52,14 @@ export interface FfmpegExportUserPresetSnapshot {
   cropPreset: FfmpegExportCropPresetId
   /** Двухпроходный libx264; фактический запуск только при ненулевом `videoBitrate`. */
   twoPass?: boolean
+  /** §7.2 — целое значение в дБ; 0/null = без `-filter:a volume`. */
+  audioGainDb?: number | null
+  /** §7.2 — удалить контейнерные метаданные (`-map_metadata -1`). */
+  stripMetadata?: boolean
+  /** §7.2 — удалить chapter markers (`-map_chapters -1`). */
+  stripChapters?: boolean
+  /** §7.2 — поведение субтитров на выходе; по умолчанию совпадает с поведением до правки. */
+  subtitleMode?: FfmpegExportSubtitleModeId
 }
 
 /** §7.2 — именованный пользовательский пресет (до нескольких штук в settings). */
@@ -71,6 +95,14 @@ export interface MediaExportRequestPayload {
   cropPreset?: FfmpegExportCropPresetId | null
   /** Двухпроходный libx264; в main отклоняется без валидного video bitrate. */
   twoPass?: boolean
+  /** §7.2 — сдвиг громкости звука в дБ (`-filter:a volume=NdB`); 0/null — без фильтра. */
+  audioGainDb?: number | null
+  /** §7.2 — удалить контейнерные метаданные (`-map_metadata -1`). */
+  stripMetadata?: boolean | null
+  /** §7.2 — удалить chapter markers (`-map_chapters -1`). */
+  stripChapters?: boolean | null
+  /** §7.2 — поведение субтитров; `drop` (по умолчанию) совпадает с текущим, `copy` — `-c:s copy`/`mov_text`. */
+  subtitleMode?: FfmpegExportSubtitleModeId | null
 }
 
 export type MediaExportStartResult =

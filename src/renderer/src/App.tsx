@@ -50,6 +50,7 @@ import type {
   FfmpegExportCropPresetId,
   FfmpegExportEncodePresetId,
   FfmpegExportScalePresetId,
+  FfmpegExportSubtitleModeId,
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
   FfmpegExportVideoTransformId
@@ -193,6 +194,26 @@ const EXPORT_CROP_PRESETS: Array<{ id: FfmpegExportCropPresetId; label: string }
   { id: 'center-square', label: 'Обрезка 1:1' },
   { id: 'center-16-9', label: 'Обрезка 16:9' },
   { id: 'center-4-3', label: 'Обрезка 4:3' }
+]
+/**
+ * §7.2 — пресеты сдвига громкости звука для `-filter:a volume=NdB`. Значение `0`
+ * выключает фильтр (см. `normalizeFfmpegExportAudioGainDb`); остальные ступени
+ * выбраны с шагом в 3 дБ, чтобы UI не отдавал произвольную строку в spawn.
+ */
+const EXPORT_AUDIO_GAIN_OPTIONS: Array<{ value: number; label: string }> = [
+  { value: -12, label: '−12 дБ' },
+  { value: -9, label: '−9 дБ' },
+  { value: -6, label: '−6 дБ' },
+  { value: -3, label: '−3 дБ' },
+  { value: 0, label: '0 дБ (выкл.)' },
+  { value: 3, label: '+3 дБ' },
+  { value: 6, label: '+6 дБ' },
+  { value: 9, label: '+9 дБ' },
+  { value: 12, label: '+12 дБ' }
+]
+const EXPORT_SUBTITLE_MODES: Array<{ id: FfmpegExportSubtitleModeId; label: string }> = [
+  { id: 'drop', label: 'Не сохранять' },
+  { id: 'copy', label: 'Сохранить (copy/mov_text)' }
 ]
 const SNAPSHOT_FORMATS: Array<{ id: FfmpegSnapshotFormatId; label: string }> = [
   { id: 'png', label: 'Кадр PNG' },
@@ -569,6 +590,14 @@ function App(): JSX.Element {
   const [exportScalePreset, setExportScalePreset] = useState<FfmpegExportScalePresetId>('source')
   /** §7.2 / v0 — двухпроходный libx264 только вместе с выбранным видеобитрейтом. */
   const [exportTwoPass, setExportTwoPass] = useState(false)
+  /** §7.2 — сдвиг громкости в дБ (`-filter:a volume`); `0` означает «без фильтра». */
+  const [exportAudioGainDb, setExportAudioGainDb] = useState<number>(0)
+  /** §7.2 — добавить `-map_metadata -1` (очистить контейнерные tag-ы). */
+  const [exportStripMetadata, setExportStripMetadata] = useState(false)
+  /** §7.2 — добавить `-map_chapters -1` (очистить главы). */
+  const [exportStripChapters, setExportStripChapters] = useState(false)
+  /** §7.2 — режим субтитров: `drop` (по умолчанию) или `copy` (`-c:s copy`/`mov_text`). */
+  const [exportSubtitleMode, setExportSubtitleMode] = useState<FfmpegExportSubtitleModeId>('drop')
   /** §7.2 — сохранённые пользователем наборы параметров тулбара (preview/spawn используют те же поля). */
   const [exportUserPresets, setExportUserPresets] = useState<FfmpegExportUserPreset[]>([])
   /** Выбранный в `<select>` пользовательский пресет; ручные правки тулбара сбрасывают выбор. */
@@ -975,6 +1004,20 @@ function App(): JSX.Element {
     } else {
       setExportScalePreset('source')
     }
+    if (
+      typeof loaded.ffmpegExportAudioGainDb === 'number' &&
+      Number.isInteger(loaded.ffmpegExportAudioGainDb) &&
+      loaded.ffmpegExportAudioGainDb >= -24 &&
+      loaded.ffmpegExportAudioGainDb <= 24 &&
+      loaded.ffmpegExportAudioGainDb !== 0
+    ) {
+      setExportAudioGainDb(loaded.ffmpegExportAudioGainDb)
+    } else {
+      setExportAudioGainDb(0)
+    }
+    setExportStripMetadata(loaded.ffmpegExportStripMetadata === true)
+    setExportStripChapters(loaded.ffmpegExportStripChapters === true)
+    setExportSubtitleMode(loaded.ffmpegExportSubtitleMode === 'copy' ? 'copy' : 'drop')
   }, [])
 
   const bumpManualExportEdit = useCallback(() => {
@@ -1038,7 +1081,11 @@ function App(): JSX.Element {
       scalePreset: exportScalePreset,
       videoTransform: exportVideoTransform,
       cropPreset: exportCropPreset,
-      ...(exportTwoPass ? { twoPass: true as const } : {})
+      ...(exportTwoPass ? { twoPass: true as const } : {}),
+      ...(exportAudioGainDb !== 0 ? { audioGainDb: exportAudioGainDb } : {}),
+      ...(exportStripMetadata ? { stripMetadata: true } : {}),
+      ...(exportStripChapters ? { stripChapters: true } : {}),
+      ...(exportSubtitleMode === 'copy' ? { subtitleMode: 'copy' as const } : {})
     }
   }, [
     exportEncodePreset,
@@ -1051,7 +1098,11 @@ function App(): JSX.Element {
     exportScalePreset,
     exportVideoTransform,
     exportCropPreset,
-    exportTwoPass
+    exportTwoPass,
+    exportAudioGainDb,
+    exportStripMetadata,
+    exportStripChapters,
+    exportSubtitleMode
   ])
 
   const handleSaveExportUserPreset = useCallback(() => {
@@ -1497,7 +1548,11 @@ function App(): JSX.Element {
         scalePreset: exportScalePreset,
         videoTransform: exportVideoTransform,
         cropPreset: exportCropPreset,
-        twoPass: exportTwoPass
+        twoPass: exportTwoPass,
+        audioGainDb: exportAudioGainDb === 0 ? null : exportAudioGainDb,
+        stripMetadata: exportStripMetadata,
+        stripChapters: exportStripChapters,
+        subtitleMode: exportSubtitleMode
       })
       if (res.ok) {
         const savedName = res.path.split(/[\\/]/).pop() || res.path
@@ -1594,6 +1649,10 @@ function App(): JSX.Element {
       videoTransform: exportVideoTransform,
       cropPreset: exportCropPreset,
       twoPass: exportTwoPass && exportVideoBitrate !== null,
+      audioGainDb: exportAudioGainDb === 0 ? null : exportAudioGainDb,
+      stripMetadata: exportStripMetadata,
+      stripChapters: exportStripChapters,
+      subtitleMode: exportSubtitleMode,
       inputPath: sourcePath,
       outputPath,
       trim: trimRange,
@@ -1612,6 +1671,10 @@ function App(): JSX.Element {
     exportVideoTransform,
     exportCropPreset,
     exportTwoPass,
+    exportAudioGainDb,
+    exportStripMetadata,
+    exportStripChapters,
+    exportSubtitleMode,
     trimRange,
     probeInfo?.durationSec
   ])
@@ -2349,6 +2412,34 @@ function App(): JSX.Element {
                     </select>
                   </label>
                   <label className="app-field">
+                    <span>Громкость аудио</span>
+                    <select
+                      className="app-control"
+                      aria-label="Сдвиг громкости аудио в дБ"
+                      aria-describedby="ffmpegAudioGainHint"
+                      value={String(exportAudioGainDb)}
+                      disabled={exportBusy || snapshotBusy || exportAudioMode === 'none'}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const parsed = Number(e.target.value)
+                        const v = Number.isFinite(parsed) ? Math.trunc(parsed) : 0
+                        setExportAudioGainDb(v)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportAudioGainDb(v === 0 ? null : v)
+                          .catch(console.error)
+                      }}
+                    >
+                      {EXPORT_AUDIO_GAIN_OPTIONS.map((p) => (
+                        <option key={p.value} value={String(p.value)}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                    <span id="ffmpegAudioGainHint" className="app-field-help">
+                      Применяется как `-filter:a volume=NdB`; при «Без аудио» игнорируется.
+                    </span>
+                  </label>
+                  <label className="app-field">
                     <span>Формат кадра</span>
                     <select
                       className="app-control"
@@ -2369,6 +2460,75 @@ function App(): JSX.Element {
                         </option>
                       ))}
                     </select>
+                  </label>
+                  <div className="app-field app-field-switch">
+                    <span>Удалить метаданные</span>
+                    <PillSwitch
+                      label="Удалить контейнерные метаданные"
+                      checked={exportStripMetadata}
+                      describedBy="ffmpegAudioSectionHint ffmpegStripMetadataHint"
+                      disabled={exportBusy || snapshotBusy}
+                      onToggle={() => {
+                        bumpManualExportEdit()
+                        const next = !exportStripMetadata
+                        setExportStripMetadata(next)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportStripMetadata(next)
+                          .catch(console.error)
+                      }}
+                    />
+                    <span id="ffmpegStripMetadataHint" className="app-field-help">
+                      Добавляет `-map_metadata -1`: убирает title/artist и подобные теги из выхода.
+                    </span>
+                  </div>
+                  <div className="app-field app-field-switch">
+                    <span>Удалить главы</span>
+                    <PillSwitch
+                      label="Удалить chapter markers"
+                      checked={exportStripChapters}
+                      describedBy="ffmpegAudioSectionHint ffmpegStripChaptersHint"
+                      disabled={exportBusy || snapshotBusy}
+                      onToggle={() => {
+                        bumpManualExportEdit()
+                        const next = !exportStripChapters
+                        setExportStripChapters(next)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportStripChapters(next)
+                          .catch(console.error)
+                      }}
+                    />
+                    <span id="ffmpegStripChaptersHint" className="app-field-help">
+                      Добавляет `-map_chapters -1`: глав в выходном файле не будет.
+                    </span>
+                  </div>
+                  <label className="app-field">
+                    <span>Субтитры</span>
+                    <select
+                      className="app-control"
+                      aria-label="Поведение субтитров на экспорте"
+                      aria-describedby="ffmpegSubtitleModeHint"
+                      value={exportSubtitleMode}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const v: FfmpegExportSubtitleModeId =
+                          e.target.value === 'copy' ? 'copy' : 'drop'
+                        setExportSubtitleMode(v)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportSubtitleMode(v)
+                          .catch(console.error)
+                      }}
+                    >
+                      {EXPORT_SUBTITLE_MODES.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                    <span id="ffmpegSubtitleModeHint" className="app-field-help">
+                      «Не сохранять» — ffmpeg сам решает (обычно дропает). «Сохранить» — для MKV
+                      `-c:s copy`, для MP4/MOV `-c:s mov_text` (только текстовые субтитры).
+                    </span>
                   </label>
                 </div>
                 {lastSnapshotPath ? (

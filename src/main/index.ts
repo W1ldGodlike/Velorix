@@ -60,11 +60,14 @@ import {
   parseFfmpegExportContainer,
   parseFfmpegExportCropPreset,
   parseFfmpegExportAudioBitrate,
+  parseFfmpegExportAudioGainDb,
   parseFfmpegExportAudioMode,
   parseFfmpegExportCrf,
   parseFfmpegExportEncodePreset,
   parseFfmpegExportFps,
   parseFfmpegExportScalePreset,
+  parseFfmpegExportStripFlag,
+  parseFfmpegExportSubtitleMode,
   parseFfmpegExportTrim,
   parseFfmpegExportVideoTransform,
   parseFfmpegExportUserPresetSnapshot,
@@ -861,6 +864,56 @@ function persistFfmpegExportTwoPass(raw: unknown): AppSettings {
     next.ffmpegExportTwoPass = true
   } else {
     delete next.ffmpegExportTwoPass
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistFfmpegExportAudioGainDb(raw: unknown): AppSettings {
+  const value = parseFfmpegExportAudioGainDb(raw)
+  const next = { ...cachedSettings }
+  if (value === null) {
+    delete next.ffmpegExportAudioGainDb
+  } else {
+    next.ffmpegExportAudioGainDb = value
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistFfmpegExportStripMetadata(raw: unknown): AppSettings {
+  const next = { ...cachedSettings }
+  if (parseFfmpegExportStripFlag(raw)) {
+    next.ffmpegExportStripMetadata = true
+  } else {
+    delete next.ffmpegExportStripMetadata
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistFfmpegExportStripChapters(raw: unknown): AppSettings {
+  const next = { ...cachedSettings }
+  if (parseFfmpegExportStripFlag(raw)) {
+    next.ffmpegExportStripChapters = true
+  } else {
+    delete next.ffmpegExportStripChapters
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistFfmpegExportSubtitleMode(raw: unknown): AppSettings {
+  const value = parseFfmpegExportSubtitleMode(raw)
+  const next = { ...cachedSettings }
+  if (value === 'copy') {
+    next.ffmpegExportSubtitleMode = 'copy'
+  } else {
+    delete next.ffmpegExportSubtitleMode
   }
   cachedSettings = next
   saveSettings(settingsPath(), cachedSettings)
@@ -1858,6 +1911,26 @@ app.whenReady().then(() => {
   )
 
   ipcMain.handle(
+    mw.settingsSetFfmpegExportAudioGainDb,
+    (_, raw: unknown): AppSettings => persistFfmpegExportAudioGainDb(raw)
+  )
+
+  ipcMain.handle(
+    mw.settingsSetFfmpegExportStripMetadata,
+    (_, raw: unknown): AppSettings => persistFfmpegExportStripMetadata(raw)
+  )
+
+  ipcMain.handle(
+    mw.settingsSetFfmpegExportStripChapters,
+    (_, raw: unknown): AppSettings => persistFfmpegExportStripChapters(raw)
+  )
+
+  ipcMain.handle(
+    mw.settingsSetFfmpegExportSubtitleMode,
+    (_, raw: unknown): AppSettings => persistFfmpegExportSubtitleMode(raw)
+  )
+
+  ipcMain.handle(
     mw.settingsSetFfmpegSnapshotFormat,
     (_, raw: unknown): AppSettings => persistFfmpegSnapshotFormat(raw)
   )
@@ -2234,6 +2307,26 @@ app.whenReady().then(() => {
       exportTwoPassRaw !== undefined && exportTwoPassRaw !== null
         ? parseFfmpegExportTwoPass(exportTwoPassRaw)
         : parseFfmpegExportTwoPass(cachedSettings.ffmpegExportTwoPass)
+    const exportAudioGainRaw = (raw as { audioGainDb?: unknown }).audioGainDb
+    const exportAudioGainDb =
+      exportAudioGainRaw !== undefined
+        ? parseFfmpegExportAudioGainDb(exportAudioGainRaw)
+        : parseFfmpegExportAudioGainDb(cachedSettings.ffmpegExportAudioGainDb)
+    const exportStripMetadataRaw = (raw as { stripMetadata?: unknown }).stripMetadata
+    const exportStripMetadata =
+      exportStripMetadataRaw !== undefined
+        ? parseFfmpegExportStripFlag(exportStripMetadataRaw)
+        : parseFfmpegExportStripFlag(cachedSettings.ffmpegExportStripMetadata)
+    const exportStripChaptersRaw = (raw as { stripChapters?: unknown }).stripChapters
+    const exportStripChapters =
+      exportStripChaptersRaw !== undefined
+        ? parseFfmpegExportStripFlag(exportStripChaptersRaw)
+        : parseFfmpegExportStripFlag(cachedSettings.ffmpegExportStripChapters)
+    const exportSubtitleModeRaw = (raw as { subtitleMode?: unknown }).subtitleMode
+    const exportSubtitleMode =
+      exportSubtitleModeRaw !== undefined && exportSubtitleModeRaw !== null
+        ? parseFfmpegExportSubtitleMode(exportSubtitleModeRaw)
+        : parseFfmpegExportSubtitleMode(cachedSettings.ffmpegExportSubtitleMode)
 
     const paths = resolveAppPaths()
     const ffmpeg = resolveEngineExecutablePath(
@@ -2294,6 +2387,10 @@ app.whenReady().then(() => {
         videoTransform: exportVideoTransform,
         cropPreset: exportCropPreset,
         twoPass: exportTwoPass,
+        audioGainDb: exportAudioGainDb,
+        stripMetadata: exportStripMetadata,
+        stripChapters: exportStripChapters,
+        subtitleMode: exportSubtitleMode,
         signal: ac.signal,
         onProgress: pushProgress
       })

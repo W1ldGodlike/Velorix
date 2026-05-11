@@ -6,6 +6,7 @@
 import type { EnginePathOverrides } from './engine-contract'
 import type {
   FfmpegExportCropPresetId,
+  FfmpegExportSubtitleModeId,
   FfmpegExportUserPreset,
   FfmpegExportVideoTransformId
 } from './ffmpeg-export-contract'
@@ -127,6 +128,14 @@ export interface AppSettings {
   ffmpegExportVideoTransform?: FfmpegExportVideoTransformId
   /** §7.2: crop экспортируемого видео (whitelist пресетов, без произвольного `-vf`). */
   ffmpegExportCropPreset?: FfmpegExportCropPresetId
+  /** §7.2: целочисленный сдвиг громкости в дБ (`-filter:a volume=NdB`); 0/нет — без фильтра. */
+  ffmpegExportAudioGainDb?: number
+  /** §7.2: удалить контейнерные метаданные (`-map_metadata -1`). */
+  ffmpegExportStripMetadata?: boolean
+  /** §7.2: удалить chapter markers (`-map_chapters -1`). */
+  ffmpegExportStripChapters?: boolean
+  /** §7.2: поведение субтитров на экспорте (`drop` по умолчанию = не пишем поле). */
+  ffmpegExportSubtitleMode?: FfmpegExportSubtitleModeId
   /** §7.2: пользовательские пресеты экспорта (имя + снимок параметров тулбара). */
   ffmpegExportUserPresets?: FfmpegExportUserPreset[]
   /** §7: последняя папка успешного ffmpeg export; используется только как defaultPath save dialog. */

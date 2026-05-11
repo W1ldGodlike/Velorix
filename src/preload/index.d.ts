@@ -15,6 +15,7 @@ import type {
   FfmpegExportEncodePresetId,
   FfmpegExportScalePresetId,
   FfmpegExportProgressPayload,
+  FfmpegExportSubtitleModeId,
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
   FfmpegExportVideoTransformId,
@@ -77,6 +78,10 @@ export interface FluxAlloyApi {
     setFfmpegExportScalePreset: (scale: FfmpegExportScalePresetId) => Promise<AppSettings>
     setFfmpegExportVideoTransform: (transform: FfmpegExportVideoTransformId) => Promise<AppSettings>
     setFfmpegExportCropPreset: (crop: FfmpegExportCropPresetId) => Promise<AppSettings>
+    setFfmpegExportAudioGainDb: (gainDb: number | null) => Promise<AppSettings>
+    setFfmpegExportStripMetadata: (enabled: boolean) => Promise<AppSettings>
+    setFfmpegExportStripChapters: (enabled: boolean) => Promise<AppSettings>
+    setFfmpegExportSubtitleMode: (mode: FfmpegExportSubtitleModeId) => Promise<AppSettings>
     setFfmpegExportUserPresets: (presets: FfmpegExportUserPreset[]) => Promise<AppSettings>
     applyFfmpegExportSnapshot: (snapshot: FfmpegExportUserPresetSnapshot) => Promise<AppSettings>
     setFfmpegSnapshotFormat: (format: FfmpegSnapshotFormatId) => Promise<AppSettings>

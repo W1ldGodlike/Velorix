@@ -4,7 +4,7 @@
 
 ## Готовность полного итога
 
-- **Оценка: ~38%**. Рабочее ядро Electron/React, preview/ffmpeg base, расширенный yt-dlp workspace, ffprobe-инспектор, диагностика и тесты уже есть; крупно не закрыты терминал/CLI, сценарии/планировщик, локализация, hardware encode, batch/утилиты, полная упаковочная матрица и ручной DPI/e2e smoke.
+- **Оценка: ~41%**. Рабочее ядро Electron/React, preview/ffmpeg base, расширенный yt-dlp workspace, ffprobe-инспектор, диагностика, CI/release guardrails и тесты уже есть; крупно не закрыты терминал/CLI, сценарии/планировщик, локализация, hardware encode, batch/утилиты, ручной packaged smoke и кроссплатформенная упаковочная матрица.
 
 ## Легенда
 
@@ -18,7 +18,7 @@
 - [x] Удалён старый `.NET` / WinUI слой; текущий проект — Electron + React + TypeScript.
 - [x] Инициализирован локальный Git-репозиторий, первый коммит: `4f14f86 Initialize FluxAlloy Electron project`.
 - [x] Установлены Node.js `24.15.0`, npm `11.12.1`, Git `2.54.0`.
-- [x] `npm install` выполнен; `npm run check`, `npm run build`, `npm run build:unpack`, `npm run build:win` проходят.
+- [x] `npm install` выполнен; `npm run check` (lint/typecheck/tests/trusted-hashes/journal/secrets), `npm run build`, `npm run build:unpack`, `npm run build:win` проходят; для релиза добавлены `check:release` / `release:win*`.
 - [x] Есть `package.json`, `electron-vite`, `electron-builder`, ESLint, Prettier, TypeScript-конфиги.
 - [x] Есть `src/main`, `src/preload`, `src/renderer`.
 - [x] Renderer изолирован: `contextIsolation: true`, `nodeIntegration: false`.
@@ -31,7 +31,7 @@
 - [ ] Нет локализации `locales/**`.
 - [~] Основная вкладка `Загрузки` в React уже закрывает очередь, старт/stop/retry/pause, настройки yt-dlp, каталог/cookies/network, live log, историю и open file/folder; open file/folder/«В редактор» учитывают финальный файл после merge и Windows UTF-8 stdout; pop-out окно оставлено вторичным режимом для редких settings.
 - [~] ffprobe-инспектор есть под превью и отдельным окном: дорожки/главы/raw JSON, TXT/HTML export, Dolby/HDR side_data summary, контекстные действия.
-- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; по последней зелёной проверке `npm run check` выполняет **29 test files / 250 tests**. Покрыты чистые парсеры и сервисы (`ytdlp-extra-args`, `ytdlp-progress-parser` + постпроцессоры yt-dlp §6.4, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options` + превью каталога §6.3, `ytdlp-download-output`, `ytdlp-download-queue-persist`, `ytdlp-commands-hints`, `ytdlp-os-pause-support`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-frame-snapshot-service`, `external-process-log`, `support-bundle`, `ipc-channels`, `engine-contract`, `ffmpeg-export-argv`, `ffprobe-summary-export`, `ffprobe-chapters`, `ffprobe-timecode`, `ffprobe-disposition`, `ffprobe-video-fps`, `ffprobe-side-data`, `timeline-ruler`, `waveform-peaks`, `video-frame-snap`, `lucide-downloads-icons`, `window-hidpi`).
+- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; по последней зелёной проверке `npm run check` выполняет **30 test files / 273 tests** + валидаторы `trusted_hashes`, нумерации журнала и secrets guard. Покрыты чистые парсеры и сервисы (`ytdlp-extra-args`, `ytdlp-progress-parser` + постпроцессоры yt-dlp §6.4, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options` + превью каталога §6.3, `ytdlp-download-output`, `ytdlp-download-queue-persist`, `ytdlp-commands-hints`, `ytdlp-os-pause-support`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-frame-snapshot-service`, `external-process-log`, `support-bundle`, `ipc-channels`, `engine-contract`, `ffmpeg-export-argv` (+ §7.2 audio-gain/strip/subtitle), `external-url`, `ffprobe-summary-export`, `ffprobe-chapters`, `ffprobe-timecode`, `ffprobe-disposition`, `ffprobe-video-fps`, `ffprobe-side-data`, `timeline-ruler`, `waveform-peaks`, `video-frame-snap`, `lucide-downloads-icons`, `window-hidpi`).
 
 ## Журнал решений и проверок
 
@@ -43,7 +43,7 @@
 
 - [~] §19/§3/§17: release/security — CI и локальные сценарии выровнены (strict `trusted_hashes` в Actions, shallow+caches, **`workflow_dispatch`**, prepare→`engines:doctor`→build→`pack:dir` → артефакт **`dist/win-unpacked/`**, `check:release`/`release:win*`, таймауты, NSIS+portable+zip, README/RELEASE/bin README (`predev` vs doctor, `win-unpacked`)/`electron-builder`/`--help`). **Дальше вручную:** непустые SHA в `trusted_hashes.json`, при необходимости `FLUXALLOY_ENGINES_STRICT` в CI, смоук NSIS/portable/zip, подпись Windows.
 - [~] §6.1/§6.4: downloads core — очередь, история, лог, retry, pause, output resolving, preview proxy и React-вкладка есть; дальше — устойчивость редких yt-dlp логов, сценарий download→encode и уменьшение дубляжа embedded/pop-out.
-- [~] §7.2/§7.3/§7.4: обработка — trim/crop/rotate/flip/scale/FPS/bitrate/presets/2-pass есть; дальше — filters/audio filters/subtitles/metadata, HW encode, batch и связка download→encode.
+- [~] §7.2/§7.3/§7.4: обработка — trim/crop/rotate/flip/scale/FPS/bitrate/presets/2-pass + audio gain `-filter:a volume`, strip metadata/chapters и subtitle copy/mov_text есть; дальше — расширенные видео-/аудио-фильтры, HW encode, batch и связка download→encode.
 - [~] §9/§18: ffprobe/диагностика — inspector, TXT/HTML/JSON export, logs, Support ZIP есть; дальше — редкие ffprobe-поля, crash/e2e smoke и расширение диагностического отчёта.
 - [ ] §8/§10/§11/§15/§16: терминал/CLI, планировщик, сценарии, база знаний viewer, аппаратное ускорение — крупные продуктовые блоки полного итога.
 - [ ] §1.1/§2.2/§5: локализация, выбранный подход к состоянию renderer, контрасты/focus/token audit и ручная DPI/multi-monitor матрица.
@@ -80,17 +80,17 @@
 - [x] Назначение продукта зафиксировано: графический комбайн yt-dlp + ffmpeg.
 - [x] Целевые платформы зафиксированы: Windows приоритет, macOS, Linux.
 - [x] Лицензия есть в `LICENSE`.
-- [~] UI уже не каркас: есть рабочий editor/downloads workspace и v0-подобные rail/table/log/history паттерны; до целевой глубины продукта не хватает локализации, базы знаний, терминала/сценариев, HW/batch и ручной DPI-полировки.
+- [~] UI уже не каркас: есть рабочий editor/downloads workspace и инженерные rail/table/log/history паттерны (v0 используется только как ориентир для нужных UI-правок); до целевой глубины продукта не хватает локализации, базы знаний, терминала/сценариев, HW/batch и ручной DPI-полировки.
 - [~] Держать основной UX как единый workspace с вкладками `Редактор` / `Загрузки`; логика очереди и обработки остаётся разделённой по сервисам, pop-out окна — вторичный режим.
 
 ### §1.1 UI и UX
 
 - [~] Построить главное окно вокруг крупного предпросмотра: базовая зона preview есть, финальная компоновка панелей — дальше.
-- [~] Таймлайн под превью (базовый range + синхрон с `<video>`); **масштаб окна scrub (×1…×8)**, **waveform** (≤~180 s и ≤96 MiB ответа) и **линейка времени** по видимому окну (`timeline-ruler`), клик/клавиатура → seek в окне zoom; **снап к кадру** по `probe.videoFpsApprox` (`resolveVideoFpsApprox`: avg/r-дробь, иначе `nb_frames`/duration) или по regex в `detail` дорожки; сводки §9 дополняются строкой FPS; транспорт v0; HiDPI в `main.css`; §7.1 controls сохранены; дальше — ручная матрица DPI и редкие контейнеры без fps/`nb_frames`.
+- [~] Таймлайн под превью (базовый range + синхрон с `<video>`); **масштаб окна scrub (×1…×8)**, **waveform** (≤~180 s и ≤96 MiB ответа) и **линейка времени** по видимому окну (`timeline-ruler`), клик/клавиатура → seek в окне zoom; **снап к кадру** по `probe.videoFpsApprox` (`resolveVideoFpsApprox`: avg/r-дробь, иначе `nb_frames`/duration) или по regex в `detail` дорожки; сводки §9 дополняются строкой FPS; transport strip и HiDPI в `main.css`; §7.1 controls сохранены; дальше — ручная матрица DPI и редкие контейнеры без fps/`nb_frames`.
 - [~] Панели кодирования справа: **сворачиваемые секции** + **целиком rail FFmpeg** (`ffmpegSettingsRailOpen` в `mainWindowUiPanels`); persist в `settings.json`; полировка и инспектор — дальше.
-- [~] Сформировать вкладку `Загрузки` в едином workspace: React слой уже показывает URL-band + живую queue table через общий snapshot broadcast + summary cards + filter chips + progress bars + управление строками/очисткой + pause/resume + встроенный rail основных yt-dlp настроек/network/каталога/cookies + pop-out; **«История» и «Живой лог» v0-под строкой таблицы**; при **узкой ширине** rail **не скрывается**, а уходит **под** журнал (`@media (max-width: 1100px)`), якорь **`#downloads-ytdlp-settings-rail`** и кнопка **«К настройкам»**; ошибки действий показываются в статусе вместо тихого no-op; pop-out — редкие/длинные settings; дальше — ручная DPI-матрица.
+- [~] Сформировать вкладку `Загрузки` в едином workspace: React слой уже показывает URL-band + живую queue table через общий snapshot broadcast + summary cards + filter chips + progress bars + управление строками/очисткой + pause/resume + встроенный rail основных yt-dlp настроек/network/каталога/cookies + pop-out; **«История» и «Живой лог» под строкой таблицы**; при **узкой ширине** rail **не скрывается**, а уходит **под** журнал (`@media (max-width: 1100px)`), якорь **`#downloads-ytdlp-settings-rail`** и кнопка **«К настройкам»**; ошибки действий показываются в статусе вместо тихого no-op; pop-out — редкие/длинные settings; дальше — ручная DPI-матрица.
 - [~] Реализовать прогрессивное раскрытие сложных параметров: `details` для **быстрой yt-dlp-полосы** (**`app-url-summary`**, **`quickYtdlpUrlHint`**: поле URL + **кнопки «Во вкладку» / «Из буфера»** через **`aria-describedby`**) + **rail FFmpeg** (секционные hints + **`aria-describedby`** на компактные кнопки) + **превью команды ffmpeg** (`exportCommandPreview`); общая система панелей — дальше.
-- [~] Базовые токены темы есть; тёмная палитра главного окна приближена к v0-референсу.
+- [~] Базовые токены темы есть; тёмная палитра главного окна приведена к компактному инженерному стилю, v0-референс больше не является центром спринта.
 - [~] Бинарные настройки переводить в **pill switch** с русской подсказкой, а не в select из двух вариантов: общий React `PillSwitch` применён к `Без аудио`, `Весь плейлист`, `Только аудио`, `Открыть после успеха`; **2-pass libx264** во вкладке редактора (rail «Формат», только с видеобитрейтом) + двойной spawn/main + превью двух команд; дальше — HW encode и прочие бинарные настройки по тому же паттерну.
 - [~] Довести палитру, типографику, отступы, радиусы и focus-состояния на всех экранах: главный renderer и downloads (токены `--fa-*`/`focus-ring`) сближены; **редактор: focus-ring на полосе быстрого yt-dlp — `app-url-summary`, `app-url-input`, `app-btn` в теле полосы**; **`<video>` предпросмотра — `aria-label` с basename пути**; **окно загрузок: кольцо фокуса на сворачиваемых `summary` (история, журнал, hints) + rail** + **контекстные `aria-describedby` у нижних панелей**; второе окно загрузок — тема синхронна; инспектор: topbar-хром как редактор + `probe*` секции синхронны с главным через `mergeMainWindowUiPanels`.
 - [ ] Убрать все литералы интерфейса в локализацию; быстрые editor/downloads labels и action labels вкладки `Загрузки` уже подчистить на русском, но `locales/**` ещё нет.
@@ -118,7 +118,7 @@
 - [ ] Добавить локализацию `locales/ru/*.json`, `locales/en/*.json`.
 - [ ] Добавить смену языка без перезапуска.
 - [~] `.cursor/rules/` обновлены под Electron/TS.
-- [~] Вспомогательный пакет `scripts/cursor-automation`: цикл `@cursor/sdk` по промптам до `MAX_STEPS` (см. README там; не IDE-чат); единый комментированный конфиг `src/sdk-settings.ts`; локальный `STOP=0/1`; retry SDK/transport + быстрых transient error-run, полный повтор любого `status=error` только через `LOOP_RETRY_RUN_ERROR=1`.
+- [~] Вспомогательный пакет `scripts/cursor-automation`: цикл `@cursor/sdk` по промптам до `MAX_STEPS` (см. README там; не IDE-чат); единый комментированный конфиг `src/sdk-settings.ts`; локальный `STOP=0/1`; retry SDK/transport + быстрых transient error-run, полный повтор любого `status=error` только через `LOOP_RETRY_RUN_ERROR=1`; `continue.txt` теперь работает как чат-команда `+` (не перечитывает весь контекст без причины), журнал требует `J-NNN` и проверяется `check:journal`.
 
 ### §2.3 Устаревший стек
 
@@ -137,9 +137,9 @@
 - [x] Реализовать IPC: загрузка движков + прогресс (`fluxalloy:engines-download`, `fluxalloy:engines-progress`).
 - [x] Реализовать IPC/UI: удалить скачанные движки из `userData/bin` без трогания bundled `resources/bin` и ручных путей.
 - [x] Добавить dev/release bootstrap `npm run engines:prepare:win`: скачивает `yt-dlp.exe`, `ffmpeg.exe`, `ffprobe.exe` в проектный `bin/`; `npm run dev` запускает проверку автоматически через `predev`.
-- [~] Первый запуск: кнопка «Скачать движки» при отсутствии бинарников; отдельное модальное окно ТЗ — не сделано.
+- [~] Первый запуск/отсутствующие движки: вместо отдельной ТЗ-модалки используется текущая политика bundled-first + статусбар/действия UI — при отсутствии бинарников предлагается скачать Windows-движки в `userData/bin`, а dev/release path наполняет `bin/` через `engines:prepare:win`; для macOS/Linux авто-загрузчика пока нет, но ручные override и bundled path остаются общей моделью.
 - [x] Скачивание `yt-dlp` (GitHub `latest` для Win `.exe`).
-- [~] Скачивание/обновление `ffmpeg`/`ffprobe` в `userData/bin`: текущий код берёт zip gyan.dev essentials; целевое — список зеркал (GitHub build mirror + gyan.dev fallback), bundled `resources/bin` является основным релизным путём.
+- [~] Скачивание/обновление `ffmpeg`/`ffprobe` в `userData/bin`: Windows-загрузчик использует список зеркал (BtbN GitHub GPL build + fallback gyan.dev essentials); bundled `resources/bin` является основным релизным путём.
 - [x] Прогресс загрузки в статусбар (проценты по `Content-Length` где есть).
 - [~] SHA256: проверка при **непустых** полях в `trusted_hashes.json` (zip FFmpeg, `yt-dlp.exe`, опционально готовые `ffmpeg.exe`/`ffprobe.exe` в `windows-x64`); `npm run engines:verify-bundled` (входит в `engines:doctor`) + strict-режим для релиза; пустые поля = пропуск (dev).
 - [x] `Data/trusted_hashes.json` с `schema` и веткой `windows-x64`.
@@ -183,7 +183,7 @@
 - [ ] Статусбар: текущий кодировщик CPU/NVENC/AMF/QSV/etc.
 - [ ] Статусбар: tooltip GPU/драйвер/лимиты.
 - [ ] Все строки UI вынести в локализацию.
-- [~] Добавить единый набор иконок: топбар редактора (folder + **rotate-ccw/cw + scissors v0** + **снимок/экспорт/отмена/облако (`EDITOR_TOPBAR_ACTION_ICONS`)** + **sun/moon (`EDITOR_THEME_ICONS`)**, `circle-help`/загрузки из shared) + **окно загрузок** + **вкладки** + транспорт + очередь yt-dlp + **вкладка «Загрузки»**: `clipboard`/`popOutWindow`, **URL-band**, **нижние панели** (`refreshCw`/`save`/`x`/`trash`/`file`/`folder`/`outbound`) + **инспектор §9**: `folder-open`/`refreshCw`/`circle-help`/тема — **общий `IconCircleHelp` из shared**, **диалог «О программе» — общий компонент `AboutDialog`**; при необходимости дальнейшее выравнивание панелей.
+- [~] Добавить единый набор иконок: топбар редактора (folder + **rotate-ccw/cw + scissors** + **снимок/экспорт/отмена/облако (`EDITOR_TOPBAR_ACTION_ICONS`)** + **sun/moon (`EDITOR_THEME_ICONS`)**, `circle-help`/загрузки из shared) + **окно загрузок** + **вкладки** + транспорт + очередь yt-dlp + **вкладка «Загрузки»**: `clipboard`/`popOutWindow`, **URL-band**, **нижние панели** (`refreshCw`/`save`/`x`/`trash`/`file`/`folder`/`outbound`) + **инспектор §9**: `folder-open`/`refreshCw`/`circle-help`/тема — **общий `IconCircleHelp` из shared**, **диалог «О программе» — общий компонент `AboutDialog`**; при необходимости дальнейшее выравнивание панелей.
 
 ### §4.1 Запоминание настроек
 
@@ -249,12 +249,12 @@
 
 ### §6.1 Основная панель
 
-- [~] Основной менеджер загрузок — вкладка `Загрузки` в React workspace; отдельное окно (data HTML + свой preload IPC) оставлено вторичным pop-out режимом; **встроенная вкладка совпадает с v0: таблица очереди, под ней «История»→«Живой лог», справа настройки (rail)**.
+- [~] Основной менеджер загрузок — вкладка `Загрузки` в React workspace; отдельное окно (data HTML + свой preload IPC) оставлено вторичным pop-out режимом; встроенная вкладка: таблица очереди, под ней «История»→«Живой лог», справа/снизу настройки (rail).
 - [x] Многострочное поле URL.
 - [x] Добавление распознанных строк в простую очередь (таблица в том же документе).
 - [x] Drag-and-Drop URL/текста на поле ввода и на свободную область окна загрузок (не перехватываем drop на `textarea`/`select`/текстовых `input`).
 - [~] Вставка из главного окна (быстрая URL-полоса, поле вкладки, clipboard action, Ctrl+V в pop-out) → merge в очередь.
-- [~] Таблица: имя (хост+путь), ссылка; колонки Формат/Размер/Прогресс/Скорость/**Осталось**; **Прогресс** — полоска + числовой % (v0), зелёный 100% при «Готово»; `progress` суммарная строка; действия старт/retry/pause/delete/file/folder — **во встроенной React-вкладке icon-only** (`app-icon-btn` + те же пути SVG, что `RowIco` в data HTML); `queue.json` §4.1 с дедупликацией id при restore; format/size из `[info]` и post-processing строк yt-dlp (`ExtractAudio`, remux, convert); дальше — редкие шаблоны логов.
+- [~] Таблица: имя (хост+путь/ранний title/path basename), ссылка; колонки Формат/Размер/Прогресс/Скорость/**Осталось**; **Прогресс** — полоска + числовой %, зелёный 100% при «Готово»; `progress` суммарная строка; действия старт/retry/pause/delete/file/folder — **во встроенной React-вкладке icon-only** (`app-icon-btn` + те же пути SVG, что `RowIco` в data HTML); `queue.json` §4.1 с дедупликацией id при restore; format/size/title из `[info]`, progress и post-processing строк yt-dlp (`ExtractAudio`, remux, convert); дальше — редкие шаблоны логов.
 - [~] Старт всей очереди (последовательно, только «Ожидание»).
 - [x] Старт отдельной строки.
 - [x] Отмена текущего yt-dlp (SIGKILL процессу spawn) из вкладки и pop-out.
@@ -287,7 +287,7 @@
 ### §6.4 Прогресс, лог, комбинированный режим
 
 - [~] Парсинг прогресса yt-dlp: процент + скорость + оставшееся время (в UI «Осталось»; в сыром логе yt-dlp по-прежнему токен `ETA`) + размер `of …`/`of ~ …` + `fragment X of Y` + `(frag N/M)` без процентов в строке + `Total progress:` + `Downloading video|item X of Y` + вариант `N of M videos` + `Sleeping … seconds` / `Waiting for reconnect` / прочие `[download] Waiting for …` / `Resuming download at byte …` / `Retrying (N/M)` и `Retrying fragment X (N/M)`; прочие редкие строки — по мере заметок.
-- [~] Лог stdout/stderr: IPC `fluxalloy-downloads-log` fan-out в главное окно и pop-out; вкладка `Загрузки` показывает live log, очистку и сохранение видимого текста; pop-out сохраняет v0-layout со счётчиком размера и обрезкой DOM.
+- [~] Лог stdout/stderr: IPC `fluxalloy-downloads-log` fan-out в главное окно и pop-out; вкладка `Загрузки` показывает live log, очистку и сохранение видимого текста; pop-out сохраняет compact-layout со счётчиком размера и обрезкой DOM.
 - [x] «Скачать и открыть»: готовый файл можно открыть/показать в папке или отправить в обработчик FluxAlloy из очереди и истории.
 - [x] «Скачать и сразу обработать» (настройка §6.4: после успеха yt-dlp авто-открытие в главном preview, если известен безопасный путь в каталоге загрузок; неуспех авто-открытия пишется в лог строки).
 - [~] Обработка ошибок: приоритет текста `ERROR:`; иначе последняя строка stderr; явное завершение по сигналу ОС; `--retries`/`--fragment-retries` yt-dlp + повторы очереди §6.4 (в т.ч. профиль `persistent`) + ручной retry строки; пропуск повторов очереди по тексту (`private video`, HTTP 403/404, DRM, «нет форматов»/unsupported URL, завершённый live/premiere и т.п.) с приоритетом транзиентных сетевых маркеров (408/502/503/504/500/429/таймаут/broken pipe/premature close/signature extraction/rate limit exceeded и т.д.); `classifyYtdlpQueueFailureKind` (+ коды **2** параметры, **100** перезапуск, **101** лимит загрузок, см. апстрим yt-dlp) и суффиксы в статусе строки; код **1** пока только общая ошибка — без отдельной эвристики.
@@ -312,7 +312,7 @@
 - [~] Пресеты обработки (три встроенных пресета libx264 в тулбаре + `ffmpegExportEncodePreset` в settings).
 - [~] Контейнер/формат: toolbar + settings поддерживают MP4/MKV/MOV, save dialog добавляет расширение по умолчанию; расширенная панель — позже.
 - [ ] Видео кодек.
-- [~] Аудио кодек: AAC или без аудио; выбор другого кодека — позже.
+- [~] Аудио кодек: AAC или без аудио; **громкость аудио** через `-filter:a volume=NdB` (`ffmpegExportAudioGainDb`, шаг 3 дБ, диапазон −24…+24); выбор другого кодека — позже.
 - [~] Bitrate/CRF/quality: persisted CRF override, video bitrate mode и AAC bitrate в toolbar/settings; **опционально 2-pass при bitrate** (`ffmpegExportTwoPass`); расширенная quality-панель — позже.
 - [~] FPS: persisted preset source/24/25/30/50/60 для экспорта.
 - [~] Resolution/scale: persisted preset source/480p/720p/1080p с сохранением пропорций.
@@ -320,9 +320,9 @@
 - [x] Trim: маркеры In/Out из таймлайна подставляются в экспорт `-ss/-t`, preview команды совпадает со spawn, IPC payload валидируется.
 - [x] Rotate/flip: whitelist −vf transpose/hflip/vflip до scale/fps; toolbar + settings + пользовательские пресеты §7.2.
 - [ ] Filters.
-- [ ] Audio filters.
-- [ ] Subtitles.
-- [ ] Metadata.
+- [~] Audio filters: только `-filter:a volume=NdB` (по пресетам в `EXPORT_AUDIO_GAIN_OPTIONS`); полная audio filter chain — позже.
+- [~] Subtitles: §7.2 — pill/select «Не сохранять» / «Сохранить»; `copy` добавляет `-map 0:v?/0:a?/0:s?` + `-c:s copy` (MKV) или `-c:s mov_text` (MP4/MOV). Burn-in/выбор языка/конкретной дорожки — позже.
+- [~] Metadata: §7.2 — pill «Удалить метаданные» (`-map_metadata -1`) и «Удалить главы» (`-map_chapters -1`). Точечная правка тегов — позже.
 - [ ] Hardware acceleration.
 - [ ] Advanced args.
 - [~] Live preview команды ffmpeg: pure helpers в `src/shared/ffmpeg-export-argv.ts` (`buildFfmpegExportPreviewCommand` + `shouldApplyFfmpegExportTrim`), сворачиваемый блок в App.tsx с копированием; маркеры In/Out + probeDurationSec + выбранный контейнер/crop/rotate/flip §7.2 подмешиваются и совпадают с spawn (в т.ч. без `-movflags` для MKV); пользовательские пресеты (persist в settings, переименование/обновление снимка/удаление в тулбаре, имя через app-modal без браузерного `prompt()`); дальше сложные фильтры/HW и т.п.
@@ -450,11 +450,11 @@
 
 ## §17. Дополнительные утилиты
 
-- [~] Меню утилит: подменю «Инструменты → Открыть папку…» с whitelist каталогов (`diagnostics-paths`); `enabled` пересчитывается при фокусе окна и после изменения путей.
+- [~] Меню утилит: подменю «Инструменты → Открыть папку…» с whitelist каталогов (`diagnostics-paths`); `enabled` пересчитывается при фокусе окна и после изменения путей; внешние ссылки из renderer/data-окон проходят `openAllowedExternalUrl`/`installExternalNavigationGuard` (`http(s)` only, без `file:`/`javascript:`).
 - [ ] Извлечь кадры.
 - [ ] Конвертер/служебные операции по ТЗ.
 - [~] Открыть папки ресурсов/логов: меню + IPC `fluxalloy:diagnostics-open-folder` (userData, logs, ytdlpDownloads, userBin, bundledBin, resources); в «О программе» — кнопки папки логов, main.log и Support ZIP (`fluxalloy:diagnostics-open-main-log`, `fluxalloy:diagnostics-create-support-zip`); отдельное окно настроек — позже.
-- [ ] Диагностические команды.
+- [ ] Диагностические команды/утилиты обслуживания (очистка cache/temp, отчёты по размерам).
 
 ## §18. Логирование и диагностика
 
@@ -473,10 +473,10 @@
 ## §19. Система установки и дистрибуция
 
 - [x] `electron-builder.yml` есть.
-- [x] `npm run build:win` проходит.
+- [x] `npm run build:win` проходит (последняя проверка до добавления portable/zip целей; для новых целей нужен ручной smoke).
 - [x] `npm run build:unpack` проходит.
 - [~] `Data/`, `Help/`, `FLUXALLOY_TZ.md` добавлены в `extraResources`.
-- [~] `bin/` в `extraResources`: bundled-first каталог с `README.md`; готовые бинарники подкладываются локально/CI через `npm run engines:prepare:win` перед сборкой (в Git не хранятся), скачивание в `userData/bin` остаётся fallback/update; release checklist и лицензии bundled engines — `docs/RELEASE.md` / `docs/BUNDLED_ENGINES_LICENSES.md`; GitHub Actions после `check` гоняет prepare + **`engines:doctor`** (без `FLUXALLOY_ENGINES_STRICT`, пока хеши в репо пустые); локально **`check:release`** / **`release:win*`** после prepare тоже через `engines:doctor`.
+- [~] `bin/` в `extraResources`: bundled-first каталог с `README.md`; готовые бинарники подкладываются локально/CI через `npm run engines:prepare:win` перед сборкой (в Git не хранятся), скачивание в `userData/bin` остаётся fallback/update; release checklist и лицензии bundled engines — `docs/RELEASE.md` / `docs/BUNDLED_ENGINES_LICENSES.md`; GitHub Actions после `check` гоняет prepare + **`engines:doctor`** со строгой проверкой структуры `trusted_hashes` и логом версий; локально **`check:release`** / **`release:win*`** после prepare тоже через `engines:doctor` (`FLUXALLOY_ENGINES_STRICT=1` — ручной релизный gate для непустых exe-хешей).
 - [ ] Настроить нормальную иконку приложения вместо placeholder/default.
 - [ ] Windows NSIS: проверить installer вручную.
 - [~] Windows portable/zip: в `electron-builder.yml` цели `portable` и `zip` рядом с NSIS; ручной smoke — позже.
@@ -508,7 +508,7 @@
 - [x] Выбрать Vitest/Jest: Vitest подключён (`npm run test`/`test:watch`, `tsconfig.tests.json`).
 - [ ] Добавить e2e smoke позже.
 - [~] Комментарии на русском для публичных API и сложной логики: базовые комментарии добавлены; дальше писать чуть развёрнутее, чтобы следующему проходу агента было понятно «зачем» и «где границы», не только «что делает строка».
-- [ ] Не использовать shell string для внешних процессов; только args arrays.
+- [~] Не использовать shell string для runtime внешних процессов: ffmpeg/ffprobe/yt-dlp идут через `spawn`/`execFile` с argv-массивами; остаётся периодически аудировать новые сервисы/скрипты и терминальный §8.
 
 ## §22. Ожидаемый результат
 
