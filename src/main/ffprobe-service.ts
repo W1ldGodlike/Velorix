@@ -10,6 +10,7 @@ import {
   extractFfprobeDisplayMatrixRotation,
   summarizeFfprobeSideDataList
 } from '../shared/ffprobe-side-data'
+import { formatFfprobeStreamDurationDetail } from '../shared/ffprobe-stream-duration-detail'
 import { formatFfprobeStreamStartTime } from '../shared/ffprobe-stream-start-time'
 import type {
   MediaProbeResult,
@@ -71,6 +72,8 @@ interface FfprobeJson {
     codec_tag_string?: string
     /** Секунды от начала контейнера (строка float ffprobe). */
     start_time?: string
+    /** Длительность дорожки (секунды строкой); может отличаться от `format.duration`. */
+    duration?: string
     bit_rate?: string
     /** Для аудио: float planar, s16 и т.п. */
     sample_fmt?: string
@@ -159,9 +162,13 @@ function mapCodecType(raw: string | undefined): MediaProbeTrackRow['kind'] {
   }
 }
 
-function buildTrackDetail(stream: NonNullable<FfprobeJson['streams']>[number]): string {
+function buildTrackDetail(
+  stream: NonNullable<FfprobeJson['streams']>[number],
+  containerDurationSec: number | null
+): string {
   const parts: string[] = []
   const ct = stream.codec_type
+  const streamDur = formatFfprobeStreamDurationDetail(stream.duration, containerDurationSec)
 
   if (ct === 'video') {
     const w = stream.width
@@ -196,6 +203,9 @@ function buildTrackDetail(stream: NonNullable<FfprobeJson['streams']>[number]): 
     const vStart = formatFfprobeStreamStartTime(stream.start_time)
     if (vStart) {
       parts.push(vStart)
+    }
+    if (streamDur) {
+      parts.push(streamDur)
     }
     const nbFramesRaw = stream.nb_frames
     const nbFramesParsed =
@@ -297,6 +307,9 @@ function buildTrackDetail(stream: NonNullable<FfprobeJson['streams']>[number]): 
     if (aStart) {
       parts.push(aStart)
     }
+    if (streamDur) {
+      parts.push(streamDur)
+    }
     const aProfile = ffprobeScalarDisplay(
       typeof stream.profile === 'string' ? stream.profile : undefined
     )
@@ -332,7 +345,18 @@ function buildTrackDetail(stream: NonNullable<FfprobeJson['streams']>[number]): 
     if (subStart) {
       parts.push(subStart)
     }
+    if (streamDur) {
+      parts.push(streamDur)
+    }
   } else {
+    const fn = tagString(stream.tags, 'filename')
+    if (fn) {
+      parts.push(fn)
+    }
+    const mimetype = tagString(stream.tags, 'mimetype')
+    if (mimetype) {
+      parts.push(mimetype)
+    }
     const lang = tagString(stream.tags, 'language')
     const title = tagString(stream.tags, 'title')
     if (lang) {
@@ -341,12 +365,18 @@ function buildTrackDetail(stream: NonNullable<FfprobeJson['streams']>[number]): 
     if (title) {
       parts.push(title)
     }
+    if (streamDur) {
+      parts.push(streamDur)
+    }
   }
 
   return parts.length > 0 ? parts.join(' · ') : '—'
 }
 
-function buildTrackRows(streams: FfprobeJson['streams']): MediaProbeTrackRow[] {
+function buildTrackRows(
+  streams: FfprobeJson['streams'],
+  containerDurationSec: number | null
+): MediaProbeTrackRow[] {
   const list = streams ?? []
   const rows: MediaProbeTrackRow[] = []
   list.forEach((stream, i) => {
@@ -360,7 +390,7 @@ function buildTrackRows(streams: FfprobeJson['streams']): MediaProbeTrackRow[] {
         typeof stream.codec_name === 'string' && stream.codec_name.trim() !== ''
           ? stream.codec_name
           : '?',
-      detail: buildTrackDetail(stream),
+      detail: buildTrackDetail(stream, containerDurationSec),
       language: tagString(stream.tags, 'language'),
       titleTag: tagString(stream.tags, 'title'),
       streamBitrateKbps: formatBitrateKbps(
@@ -501,7 +531,7 @@ export async function probeMediaFile(
         : null,
     formatLongName: formatLong,
     bitrateKbps: formatBitrateKbps(parsed.format?.bit_rate),
-    tracks: buildTrackRows(parsed.streams),
+    tracks: buildTrackRows(parsed.streams, durationSecResolved),
     chapters: buildChapterRowsFromFfprobeJson(parsed.chapters),
     rawJson
   }
