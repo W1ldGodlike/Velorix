@@ -160,6 +160,21 @@ export function IconFilm({
   )
 }
 
+/** §6 rail — «По умолчанию» для каталога (тот же `home`, что топбар pop-out). */
+export function IconHome({
+  title = 'Каталог по умолчанию',
+  size = 18
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(DOWNLOADS_TOPBAR_CLUSTER_ICONS.home)}
+    </SvgBase>
+  )
+}
+
 export function IconZoomOut({
   title = 'Уменьшить масштаб таймлайна',
   size = 20

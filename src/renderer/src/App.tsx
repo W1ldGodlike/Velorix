@@ -15,6 +15,7 @@ import {
   IconDownload,
   IconFilm,
   IconFolderOpen,
+  IconHome,
   IconImage,
   IconMoon,
   IconPauseUi,
@@ -3441,7 +3442,7 @@ function App(): JSX.Element {
                       <div className="app-downloads-history-actions">
                         <button
                           type="button"
-                          className="app-btn app-btn-compact"
+                          className="app-btn app-btn-compact app-btn-icon-leading"
                           disabled={downloadsOptionsBusy}
                           onClick={() => {
                             void window.fluxalloy.downloads.pickCookiesFile().then((res) => {
@@ -3455,11 +3456,12 @@ function App(): JSX.Element {
                             })
                           }}
                         >
+                          <IconQueueFile title="" size={14} />
                           Выбрать
                         </button>
                         <button
                           type="button"
-                          className="app-btn app-btn-compact"
+                          className="app-btn app-btn-compact app-btn-icon-leading"
                           disabled={
                             downloadsOptionsBusy ||
                             downloadsOptions.cookiesFilePathStored.length === 0
@@ -3474,6 +3476,7 @@ function App(): JSX.Element {
                             })
                           }}
                         >
+                          <IconQueueX title="" size={14} />
                           Очистить
                         </button>
                       </div>
@@ -3504,7 +3507,7 @@ function App(): JSX.Element {
                       <div className="app-downloads-history-actions">
                         <button
                           type="button"
-                          className="app-btn app-btn-compact"
+                          className="app-btn app-btn-compact app-btn-icon-leading"
                           onClick={() => {
                             void window.fluxalloy.downloads.openOutputDirectory().then((res) => {
                               if (!res.ok) {
@@ -3513,11 +3516,12 @@ function App(): JSX.Element {
                             })
                           }}
                         >
+                          <IconFolderOpen title="" size={14} />
                           Открыть
                         </button>
                         <button
                           type="button"
-                          className="app-btn app-btn-compact"
+                          className="app-btn app-btn-compact app-btn-icon-leading"
                           onClick={() => {
                             void window.fluxalloy.downloads.pickOutputDirectory().then((res) => {
                               if (res.ok) {
@@ -3530,11 +3534,12 @@ function App(): JSX.Element {
                             })
                           }}
                         >
+                          <IconQueuePlus title="" size={14} />
                           Выбрать
                         </button>
                         <button
                           type="button"
-                          className="app-btn app-btn-compact"
+                          className="app-btn app-btn-compact app-btn-icon-leading"
                           onClick={() => {
                             void window.fluxalloy.downloads.clearOutputDirectory().then((res) => {
                               if (!res.ok) {
@@ -3545,6 +3550,7 @@ function App(): JSX.Element {
                             })
                           }}
                         >
+                          <IconHome title="" size={14} />
                           По умолчанию
                         </button>
                       </div>
@@ -3769,17 +3775,18 @@ function App(): JSX.Element {
             <div className="app-downloads-rail-footer">
               <button
                 type="button"
-                className="app-btn"
+                className="app-btn app-btn-icon-leading"
                 disabled={downloadsOptionsBusy}
                 onClick={() => {
                   void refreshDownloadsOptions()
                 }}
               >
+                <IconRefreshCw title="" size={16} />
                 Обновить настройки
               </button>
               <button
                 type="button"
-                className="app-btn"
+                className="app-btn app-btn-warn app-btn-icon-leading"
                 onClick={() => {
                   void window.fluxalloy.downloads.cancelQueue().then((res) => {
                     if (!res.ok) {
@@ -3788,6 +3795,7 @@ function App(): JSX.Element {
                   })
                 }}
               >
+                <IconBan title="" size={16} />
                 Остановить текущую
               </button>
             </div>
