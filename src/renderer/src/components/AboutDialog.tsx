@@ -1,6 +1,11 @@
 import type { JSX } from 'react'
 
 import type { AppAboutInfo } from '../../../shared/about-contract'
+import {
+  FFPROBE_DOC_ALL,
+  YTDLP_DOC_FORMAT_SELECTION,
+  YTDLP_DOC_README
+} from '../../../shared/external-doc-urls'
 
 /** Модальное окно §4.5 — переиспользуется главным окном и инспектором §9 (единые стили/`app-modal-*`). */
 export function AboutDialog({
@@ -71,48 +76,63 @@ export function AboutDialog({
           <p className="app-modal-hint">Загрузка…</p>
         )}
         <div className="app-modal-footer app-modal-footer-split">
-          <div className="app-about-diagnostics">
-            <button
-              type="button"
-              className="app-btn app-btn-compact"
-              onClick={() => {
-                void window.fluxalloy.diagnostics.openFolder('logs').then((r) => {
-                  if (!r.ok) {
-                    pushStatus(`Папка логов: ${r.error}`)
-                  }
-                })
-              }}
-            >
-              Папка логов
-            </button>
-            <button
-              type="button"
-              className="app-btn app-btn-compact"
-              onClick={() => {
-                void window.fluxalloy.diagnostics.openMainLog().then((r) => {
-                  if (!r.ok) {
-                    pushStatus(`main.log: ${r.error}`)
-                  }
-                })
-              }}
-            >
-              main.log
-            </button>
-            <button
-              type="button"
-              className="app-btn app-btn-compact"
-              onClick={() => {
-                void window.fluxalloy.diagnostics.createSupportZip().then((r) => {
-                  if (r.ok) {
-                    pushStatus('Support ZIP сохранён')
-                  } else if ('error' in r) {
-                    pushStatus(`Support ZIP: ${r.error}`)
-                  }
-                })
-              }}
-            >
-              Support ZIP…
-            </button>
+          <div className="app-about-footer-left">
+            <div className="app-about-diagnostics">
+              <button
+                type="button"
+                className="app-btn app-btn-compact"
+                onClick={() => {
+                  void window.fluxalloy.diagnostics.openFolder('logs').then((r) => {
+                    if (!r.ok) {
+                      pushStatus(`Папка логов: ${r.error}`)
+                    }
+                  })
+                }}
+              >
+                Папка логов
+              </button>
+              <button
+                type="button"
+                className="app-btn app-btn-compact"
+                onClick={() => {
+                  void window.fluxalloy.diagnostics.openMainLog().then((r) => {
+                    if (!r.ok) {
+                      pushStatus(`main.log: ${r.error}`)
+                    }
+                  })
+                }}
+              >
+                main.log
+              </button>
+              <button
+                type="button"
+                className="app-btn app-btn-compact"
+                onClick={() => {
+                  void window.fluxalloy.diagnostics.createSupportZip().then((r) => {
+                    if (r.ok) {
+                      pushStatus('Support ZIP сохранён')
+                    } else if ('error' in r) {
+                      pushStatus(`Support ZIP: ${r.error}`)
+                    }
+                  })
+                }}
+              >
+                Support ZIP…
+              </button>
+            </div>
+            <p className="app-doc-inline-links app-about-doc-links">
+              <a href={YTDLP_DOC_README} target="_blank" rel="noreferrer">
+                yt-dlp README
+              </a>
+              {' · '}
+              <a href={YTDLP_DOC_FORMAT_SELECTION} target="_blank" rel="noreferrer">
+                Выбор формата
+              </a>
+              {' · '}
+              <a href={FFPROBE_DOC_ALL} target="_blank" rel="noreferrer">
+                ffprobe
+              </a>
+            </p>
           </div>
           <button type="button" className="app-btn app-btn-primary" onClick={onClose}>
             Закрыть

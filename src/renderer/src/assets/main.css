@@ -2098,10 +2098,48 @@
   flex-wrap: wrap;
 }
 
+.app-about-footer-left {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
 .app-about-diagnostics {
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
+}
+
+.app-doc-inline-links {
+  margin: 0;
+  max-width: 100%;
+  font-size: 0.68rem;
+  line-height: 1.45;
+  color: var(--fa-text-muted);
+}
+
+.app-doc-inline-links a {
+  color: color-mix(in srgb, var(--fa-accent) 78%, var(--fa-text-secondary));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.app-doc-inline-links a:hover {
+  filter: brightness(1.06);
+}
+
+.app-preview-probe-doc-links {
+  padding: 0 0 0.15rem;
+}
+
+.app-url-bar-doc-links {
+  margin-top: 0.15rem;
+}
+
+.app-downloads-doc-links {
+  padding: 0.05rem 0 0.35rem;
 }
 
 /* §9 §363 — отдельное окно инспектора (`#inspector`). */

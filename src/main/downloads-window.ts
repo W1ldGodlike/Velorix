@@ -72,6 +72,7 @@ import {
   downloadsWindowMinLogicalSize,
   logicalScaleFactor
 } from './window-hidpi'
+import { YTDLP_DOC_FORMAT_SELECTION, YTDLP_DOC_README } from '../shared/external-doc-urls'
 
 /** Совпадает с preload подпиской на снимок очереди. */
 export const DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL = d.queueSnapshot
@@ -1188,6 +1189,9 @@ ${emitDownloadsTopbarClusterHtml(18)}
             <div class="settings-body" aria-describedby="dlRailExpertSectionHint">
               <p id="dlRailExpertSectionHint" class="opts-hint">
                 Белый список аргументов §6.3: правки здесь добавляются к финальной командной строке yt-dlp; ниже живое превью argv.
+                То же поле argv — во вкладке «Загрузки» главного окна. Онлайн:
+                <a href="${YTDLP_DOC_README}" target="_blank" rel="noreferrer">README</a> ·
+                <a href="${YTDLP_DOC_FORMAT_SELECTION}" target="_blank" rel="noreferrer">форматы</a>.
               </p>
               <label for="extraArgsInput">Дополнительные аргументы (без shell)</label>
               <textarea id="extraArgsInput" rows="2" spellcheck="false" autocomplete="off" placeholder="Например: --write-sub --sub-lang ru" aria-describedby="dlRailExpertSectionHint"></textarea>
@@ -3157,6 +3161,11 @@ export function focusOrCreateDownloadsWindow(mergeText?: string | null): void {
 
   downloadsWindow.on('closed', () => {
     downloadsWindow = null
+  })
+
+  downloadsWindow.webContents.setWindowOpenHandler((details) => {
+    void shell.openExternal(details.url)
+    return { action: 'deny' }
   })
 
   void downloadsWindow.loadURL(dataUrl)

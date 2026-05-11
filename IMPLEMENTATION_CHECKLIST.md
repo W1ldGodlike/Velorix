@@ -43,7 +43,7 @@
 
 - [~] §6.1/§6.4: v0-компоновка вкладки «Загрузки» — центр таблица, **история+живой лог под таблицей**, rail — настройки; **действия строк — icon-only (lucide shared)**; **раскрытие История/Живой лог** сохраняется через тот же `downloadsWindowUiPanels`, что и pop-out (`mergeUiPanels`, только жест `toggle`); очередь/retry/pause/settings встроены; snapshot во вкладку и pop-out; **прогресс / лог / скорость MB/s / подпись строки** (из `[info] …: Downloading …` и пути вывода), **React-rail** + **синк** `downloadsWindowUiPanelsChanged`; **высоты** таблицы/истории/лога — `min()`+`vh`; дальше — **DPI-матрица**.
 - [~] §6.3: argv whitelist + справочник + preview команды есть; во вкладке «Загрузки» rail — поле argv + вставка токена из справочника; дальше — редкие поля и polish.
-- [~] §1.1/§4.A/§9: редактор/инспектор/ffprobe хорошо продвинуты; binary controls через `PillSwitch` (в т.ч. 2-pass libx264 в секции «Формат» при видеобитрейте); быстрые labels русифицированы; дальше — multi-monitor DPI, help links, локализация и редкие ffprobe-поля.
+- [~] §1.1/§4.A/§9: редактор/инспектор/ffprobe хорошо продвинуты; binary controls через `PillSwitch` (в т.ч. 2-pass libx264 в секции «Формат» при видеобитрейте); быстрые labels русифицированы; **help links** — `external-doc-urls.ts` + ссылки в быстрой полосе yt-dlp, rail «Эксперт», сводке ffprobe, «О программе», pop-out argv; дальше — multi-monitor DPI, локализация и редкие ffprobe-поля.
 - [~] §7.2: trim/crop/rotate/flip/scale/FPS/bitrate/presets есть; дальше — расширенные фильтры, HW encode, batch и сценарий download→encode без ручного шага.
 - [ ] §8/§10/§11/§15/§16: терминал/CLI, планировщик, конструктор сценариев, база знаний viewer и аппаратное ускорение — крупные незакрытые блоки полного итога.
 

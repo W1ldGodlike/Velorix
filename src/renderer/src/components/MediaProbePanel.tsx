@@ -15,6 +15,7 @@ import {
   formatProbeSummaryPlainText
 } from '../../../shared/ffprobe-summary-export'
 import { formatProbeChapterTimecode } from '../../../shared/ffprobe-timecode'
+import { FFPROBE_DOC_ALL } from '../../../shared/external-doc-urls'
 
 type ProbeTableContextMenu =
   | null
@@ -288,6 +289,11 @@ export function PreviewProbeBody({
             {bitrateLabel ? ` · ${bitrateLabel}` : ''}
           </span>
         </div>
+        <p className="app-doc-inline-links app-preview-probe-doc-links">
+          <a href={FFPROBE_DOC_ALL} target="_blank" rel="noreferrer">
+            Документация ffprobe (все опции)
+          </a>
+        </p>
         {probeToolbarTip ? (
           <div className="app-probe-copy-tip app-probe-tip-global">{probeToolbarTip}</div>
         ) : null}

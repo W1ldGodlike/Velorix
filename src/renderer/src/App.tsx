@@ -50,6 +50,12 @@ import type {
   ResolvedAppTheme
 } from '../../shared/settings-contract'
 import { buildFfmpegExportPreviewCommand } from '../../shared/ffmpeg-export-argv'
+import {
+  YTDLP_DOC_FORMAT_SELECTION,
+  YTDLP_DOC_OUTPUT_TEMPLATE,
+  YTDLP_DOC_POSTPROCESS,
+  YTDLP_DOC_README
+} from '../../shared/external-doc-urls'
 import type { FfmpegSnapshotFormatId } from '../../shared/ffmpeg-snapshot-contract'
 import type { RestoredSourceInfo } from '../../shared/preview-dialog-contract'
 import type { MediaProbeSuccess } from '../../shared/ffprobe-contract'
@@ -1845,6 +1851,19 @@ function App(): JSX.Element {
               <p id="quickYtdlpUrlHint" className="app-url-hint">
                 Ссылка добавляется во вкладку «Загрузки»; несколько URL — по строкам.
               </p>
+              <p className="app-doc-inline-links app-url-bar-doc-links">
+                <a href={YTDLP_DOC_README} target="_blank" rel="noreferrer">
+                  yt-dlp README
+                </a>
+                {' · '}
+                <a href={YTDLP_DOC_FORMAT_SELECTION} target="_blank" rel="noreferrer">
+                  Форматы
+                </a>
+                {' · '}
+                <a href={YTDLP_DOC_OUTPUT_TEMPLATE} target="_blank" rel="noreferrer">
+                  Шаблон -o
+                </a>
+              </p>
             </div>
             <button
               type="button"
@@ -3634,6 +3653,23 @@ function App(): JSX.Element {
                         Полный список с описаниями — в pop-out «Менеджер загрузок».
                       </span>
                     </label>
+                    <p className="app-doc-inline-links app-downloads-doc-links">
+                      <a href={YTDLP_DOC_README} target="_blank" rel="noreferrer">
+                        README
+                      </a>
+                      {' · '}
+                      <a href={YTDLP_DOC_FORMAT_SELECTION} target="_blank" rel="noreferrer">
+                        Форматы
+                      </a>
+                      {' · '}
+                      <a href={YTDLP_DOC_OUTPUT_TEMPLATE} target="_blank" rel="noreferrer">
+                        Шаблон вывода
+                      </a>
+                      {' · '}
+                      <a href={YTDLP_DOC_POSTPROCESS} target="_blank" rel="noreferrer">
+                        Постобработка
+                      </a>
+                    </p>
                     <span className="app-field-help">Превью команды (чтение)</span>
                     <div className="app-downloads-command-preview app-downloads-command-preview--flat">
                       <pre>{downloadsOptions.commandPreview}</pre>
