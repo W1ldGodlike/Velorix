@@ -285,3 +285,4 @@
 - 2026-05-11 21:29:44 [SDK]: §6.3 pop-out справочник токенов — добавлены поиск + полный кликабельный список (группы по category) для вставки в `extraArgsInput` с авто-обновлением превью; `npm run check` ок.
 - 2026-05-11 21:31:22 [SDK]: §6.3 pop-out polish — клик по токену в длинном справочнике фокусирует и прокручивает `extraArgsInput` перед обновлением превью; `npm run check` ок.
 - 2026-05-11 21:32:59 [SDK]: §6.3 pop-out preview — `schedulePreviewRefresh()` на input/change для полей rail (tmpl/-f/sub/cookies/impersonate/network/extraArgs/previewOutDirOverride), чтобы превью argv обновлялось без «Сохранить параметры»; `npm run check` ок.
+- 2026-05-11 21:35:24 [SDK]: §1.1/§4.C DPI 150% — расширен `@144dpi` блок в `main.css` для editor: `app-url-summary`, transport strip и базовые размеры waveform/ruler; `npm run check` ок.

@@ -43,7 +43,7 @@
 
 - [~] §6.1/§6.4: вкладка «Загрузки» v0 — таблица / rail / **история→лог**; **pop-out** — `emitInlineStrokeSvg` + **`cmd-icon-leading`** + **pill rail** (плейлист/аудио/открыть после успеха); **DPI-матрица 125/150/175/200%**: `@120/@144/@168/@192`.
 - [~] §6.3: argv + whitelist + preview; pop-out **узкий ≤960px**: rail **под** очередью + scroll + **«К настройкам»** (`#dl-ytdlp-settings-rail`); **справочник токенов**: поиск + кликабельный список; **live preview при редактировании полей**; редкие поля.
-- [~] §1.1/§4.A/§9: редактор + ffprobe; `PillSwitch` + help links; дальше multi-monitor DPI и локализация.
+- [~] §1.1/§4.A/§9: редактор + ffprobe; `PillSwitch` + help links; **DPI 150%**: transport/timeline в `main.css`; дальше multi-monitor DPI и локализация.
 - [~] §7.2: базовый экспорт; фильтры / HW / batch / download→encode — позже.
 - [ ] §8/§10/§11/§15/§16: терминал, планировщик, сценарии, база знаний, HW — дальние блоки полного итога.
 
