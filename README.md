@@ -11,7 +11,7 @@
 
 1. Установите [Node.js](https://nodejs.org/) LTS (подходит 20.x, 22.x или 24.x).
 2. В корне репозитория: `npm install` (postinstall подтянет **electron-builder** native deps).
-3. Проверка: `npm run check` — **ESLint** + **TypeScript** без emit.
+3. Проверка: `npm run check` — **ESLint**, **TypeScript** (main/web/tests), **Vitest**, `trusted_hashes.json`, нумерация журнала, guard секретов (см. `docs/RELEASE.md` §1).
 4. Разработка: `npm run dev`.
 5. Рекомендуемые расширения VS Code / Cursor перечислены в [`.vscode/extensions.json`](./.vscode/extensions.json); для форматирования и ESLint см. [`.vscode/settings.json`](./.vscode/settings.json).
 
@@ -31,9 +31,9 @@
 ```bash
 npm install
 npm run dev
-npm run check        # lint + typecheck
+npm run check            # см. выше + trusted_hashes + journal + secrets
 npm run engines:doctor   # Windows: verify bin + SHA + версии (см. docs/RELEASE.md)
-npm run check:release
+npm run check:release    # полный предрелизный прогон Windows: см. docs/RELEASE.md §1 (prepare → doctor → build → pack:dir → audit)
 npm run agent:once   # один прогон Cursor SDK automation
 npm run agent:loop   # цикл; число продолжений: -- --max-steps N или MAX_STEPS в .env
 npm run build

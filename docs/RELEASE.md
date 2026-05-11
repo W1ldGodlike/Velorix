@@ -91,7 +91,7 @@ npm run engines:prepare:win:force
 
 ## 4. Сборки
 
-Один проход под полные Windows-артефакты (подготовка `bin/`, verify, vite build, затем `electron-builder --win` без лишнего второго `prepare` от lifecycle `prebuild:win`):
+Один проход под полные Windows-артефакты (подготовка `bin/`, **`engines:doctor`**, vite build, затем `electron-builder --win` без лишнего второго `prepare` от lifecycle `prebuild:win`):
 
 ```powershell
 npm run release:win
@@ -110,7 +110,7 @@ npm run build:unpack
 npm run build:win
 ```
 
-`npm run build:win` формирует NSIS, portable и zip (`electron-builder`: `nsis`, `portable`, `zip`).
+`npm run build:win` формирует NSIS, portable и zip (`electron-builder`: `nsis`, `portable`, `zip`). Перед скриптом npm выполняет **`prebuild:win`** → `engines:prepare:win`. Команды **`release:win`** / **`release:win:force`** вызывают `npm run build` (не `build:win`), поэтому после уже сделанного prepare **`prebuild:win` не срабатывает повторно**.
 
 Локально без авто-поиска сертификата подписи (часто быстрее, если CSC не настроен):
 

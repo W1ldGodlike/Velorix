@@ -271,6 +271,8 @@ npm:
   npm run engines:prepare:win
   npm run engines:prepare:win:force
 
+После загрузки: npm run engines:doctor  (verify + SHA256 в лог + первая строка --version каждого exe)
+
 Справка: npm run engines:prepare:win -- --help`)
 }
 
