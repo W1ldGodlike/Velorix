@@ -71,7 +71,7 @@ npm run engines:doctor   # по желанию: наличие exe, SHA256 в л
 
 ## Релиз
 
-- Release checklist: [`docs/RELEASE.md`](./docs/RELEASE.md).
+- Release checklist: [`docs/RELEASE.md`](./docs/RELEASE.md) (в т.ч. ручной запуск workflow **`ci`** на GitHub Actions).
 - Лицензии и источники bundled движков: [`docs/BUNDLED_ENGINES_LICENSES.md`](./docs/BUNDLED_ENGINES_LICENSES.md).
 - Полная цепочка Windows (prepare → **`engines:doctor`** → build → `electron-builder --win`): `npm run release:win` или `npm run release:win:force`.
 
