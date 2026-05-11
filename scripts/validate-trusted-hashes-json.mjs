@@ -50,6 +50,8 @@ function isSha256Hex(s) {
 function printHelp() {
   console.log(`validate-trusted-hashes-json — структурная проверка Data/trusted_hashes.json
 
+Рядом по смыслу перед упаковкой: npm run engines:doctor  (файлы в bin/ и SHA256 содержимого; этот скрипт — только JSON).
+
 Переменные:
   FLUXALLOY_TRUSTED_HASHES_STRICT_UNKNOWN=1       ошибка при неизвестных ключах (по умолчанию — только предупреждение в stderr)
   FLUXALLOY_TRUSTED_HASHES_REQUIRE_SHA256_HEX=1  непустые хеши — ровно 64 hex (windows-x64 + YtDlpSha256/FfmpegSha256)

@@ -62,6 +62,7 @@ FluxAlloy работает поверх внешних движков:
 
 ```powershell
 npm run engines:prepare:win
+npm run engines:doctor   # по желанию: наличие exe, SHA256 в лог, первая строка версии (см. docs/RELEASE.md)
 ```
 
 ## Архитектура и точки входа
@@ -72,7 +73,7 @@ npm run engines:prepare:win
 
 - Release checklist: [`docs/RELEASE.md`](./docs/RELEASE.md).
 - Лицензии и источники bundled движков: [`docs/BUNDLED_ENGINES_LICENSES.md`](./docs/BUNDLED_ENGINES_LICENSES.md).
-- Полная цепочка Windows (prepare → verify → build → `electron-builder --win`): `npm run release:win` или `npm run release:win:force`.
+- Полная цепочка Windows (prepare → **`engines:doctor`** → build → `electron-builder --win`): `npm run release:win` или `npm run release:win:force`.
 
 ## Горячие клавиши (базовые)
 

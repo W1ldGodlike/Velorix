@@ -20,9 +20,9 @@ extraResources:
     to: Help
   - from: Data
     to: Data
-  # Bundled-first политика: перед релизной сборкой сюда кладутся проверенные
-  # ffmpeg/ffprobe/yt-dlp; бинарники не коммитятся, но путь `resources/bin`
-  # в установке уже есть (§3/§19).
+  # Bundled-first политика: перед релизной сборкой в проектный `bin/` — `npm run engines:prepare:win`
+  # (или :force), затем проверка `npm run engines:doctor`; бинарники не коммитятся, но путь
+  # `resources/bin` в установке уже есть (§3/§19).
   - from: bin
     to: bin
 win:

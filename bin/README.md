@@ -27,7 +27,7 @@ npm run engines:report-hashes -- --versions
 
 Таймаут загрузки движков по сети (мс): `FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS` (см. `docs/RELEASE.md`).
 
-GitHub Actions caches `bin/` between runs (keyed on `prepare-engines-win.mjs` and `trusted_hashes.json`).
+GitHub Actions caches `bin/` between runs; the cache key hashes engine bootstrap/verify scripts and `trusted_hashes.json` (see `.github/workflows/ci.yml` for the exact `hashFiles` list).
 
 Full Windows release artifacts (see `docs/RELEASE.md`): `npm run release:win` or `npm run release:win:force` from repo root.
 
