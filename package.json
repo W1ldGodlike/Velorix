@@ -1,13 +1,31 @@
 {
   "name": "fluxalloy",
   "version": "0.1.0",
-  "description": "FluxAlloy — ffmpeg / yt-dlp desktop shell (Electron + React + TS). See FLUXALLOY_TZ.md",
+  "description": "FluxAlloy — desktop app for yt-dlp + ffmpeg workflows, built with Electron, React and TypeScript.",
   "main": "./out/main/index.js",
   "private": true,
+  "license": "UNLICENSED",
+  "author": "W1ldGodlike",
+  "homepage": "https://github.com/W1ldGodlike/FluxAlloy#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/W1ldGodlike/FluxAlloy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/W1ldGodlike/FluxAlloy/issues"
+  },
+  "keywords": [
+    "electron",
+    "react",
+    "typescript",
+    "ffmpeg",
+    "ffprobe",
+    "yt-dlp",
+    "video"
+  ],
   "engines": {
     "node": ">=20.19.0"
   },
-  "author": "FluxAlloy",
   "type": "module",
   "scripts": {
     "format": "prettier --write .",
