@@ -40,9 +40,42 @@ npm run build:mac
 npm run build:linux
 ```
 
+## Зависимости приложения (движки)
+
+FluxAlloy работает поверх внешних движков:
+
+- **yt-dlp**
+- **ffmpeg** / **ffprobe**
+
+Политика проекта: **bundled-first** — в релизе должны лежать проверенные бинарники в `resources/bin`,
+а `userData/bin` используется как fallback/update (см. [`bin/README.md`](./bin/README.md)).
+
+Для разработки на Windows движки можно подтянуть автоматически:
+
+```powershell
+npm run engines:prepare:win
+```
+
 ## Архитектура и точки входа
 
 Описание слоёв (main / preload / renderer), IPC, Cursor SDK automation и таблица **точек входа**: [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md). Документ следует обновлять при смене контрактов IPC или способа сборки.
+
+## Горячие клавиши (базовые)
+
+- **CmdOrCtrl+O**: открыть файл в редактор.
+- **CmdOrCtrl+Shift+Y**: открыть pop-out менеджер загрузок yt-dlp.
+- **CmdOrCtrl+Shift+V**: вставить URL из буфера в менеджер загрузок.
+- **CmdOrCtrl+V** (когда фокус не в текстовом поле): если в буфере список URL — открыть менеджер загрузок.
+
+## Логи и диагностика
+
+- **`main.log`**, **`session.log`**: `userData/logs/` (в Windows это обычно `%AppData%\\FluxAlloy\\logs\\`).
+- В UI: **«О программе» → Папка логов / main.log / Support ZIP…**.
+- **Support ZIP**: архив с `diagnostics.txt` и логами для отладки.
+
+## Сброс настроек
+
+Удалите файл `userData/settings.json` (в Windows обычно `%AppData%\\FluxAlloy\\settings.json`), затем перезапустите приложение.
 
 ## Полезное
 
