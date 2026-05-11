@@ -8,13 +8,21 @@ describe('groupYtdlpCommandHintsByCategory §6.3', () => {
     expect(groupYtdlpCommandHintsByCategory([])).toEqual([])
   })
 
-  it('группирует по категории и сортирует категории (ru)', () => {
+  it('группирует по категории и сортирует неизвестные категории по ru', () => {
     const g = groupYtdlpCommandHintsByCategory([
       { token: '--b', summary: '', category: 'Бета' },
       { token: '--a', summary: '', category: 'Альфа' }
     ])
     expect(g.map(([c]) => c)).toEqual(['Альфа', 'Бета'])
     expect(g[0]?.[1].map((h) => h.token)).toEqual(['--a'])
+  })
+
+  it('известные категории §6.3 — порядок как в main, не по алфавиту', () => {
+    const g = groupYtdlpCommandHintsByCategory([
+      { token: '-f', summary: '', category: 'Форматы и кодеки' },
+      { token: '--help', summary: '', category: 'Справка' }
+    ])
+    expect(g.map(([c]) => c)).toEqual(['Справка', 'Форматы и кодеки'])
   })
 
   it('пустая категория → «Прочее»', () => {

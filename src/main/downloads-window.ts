@@ -76,7 +76,13 @@ import {
   downloadsWindowMinLogicalSize,
   logicalScaleFactor
 } from './window-hidpi'
-import { YTDLP_DOC_FORMAT_SELECTION, YTDLP_DOC_README } from '../shared/external-doc-urls'
+import {
+  YTDLP_DOC_FORMAT_SELECTION,
+  YTDLP_DOC_OUTPUT_TEMPLATE,
+  YTDLP_DOC_POSTPROCESS,
+  YTDLP_DOC_README
+} from '../shared/external-doc-urls'
+import { YTDLP_HINT_CATEGORY_ORDER } from '../shared/ytdlp-hint-category-order'
 
 /** Совпадает с preload подпиской на снимок очереди. */
 export const DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL = d.queueSnapshot
@@ -294,6 +300,7 @@ function buildDownloadsHtml(
   panelState?: DownloadsWindowUiPanelState,
   appTheme: ResolvedAppTheme = 'dark'
 ): string {
+  const ytdlpHintCatOrderJson = JSON.stringify([...YTDLP_HINT_CATEGORY_ORDER])
   const openAttr = (key: keyof DownloadsWindowUiPanelState, defaultOpen: boolean): string => {
     const v = panelState?.[key]
     const isOpen = typeof v === 'boolean' ? v : defaultOpen
@@ -1463,9 +1470,11 @@ ${emitDownloadsTopbarClusterHtml(18)}
             <div class="settings-body" aria-describedby="dlRailExpertSectionHint">
               <p id="dlRailExpertSectionHint" class="opts-hint">
                 Белый список аргументов §6.3: правки здесь добавляются к финальной командной строке yt-dlp; ниже живое превью argv.
-                То же поле argv — во вкладке «Загрузки» главного окна. Онлайн:
+                То же поле argv — во вкладке «Загрузки» главного окна.                 Онлайн:
                 <a href="${YTDLP_DOC_README}" target="_blank" rel="noreferrer">README</a> ·
-                <a href="${YTDLP_DOC_FORMAT_SELECTION}" target="_blank" rel="noreferrer">форматы</a>.
+                <a href="${YTDLP_DOC_FORMAT_SELECTION}" target="_blank" rel="noreferrer">форматы</a> ·
+                <a href="${YTDLP_DOC_OUTPUT_TEMPLATE}" target="_blank" rel="noreferrer">шаблон вывода</a> ·
+                <a href="${YTDLP_DOC_POSTPROCESS}" target="_blank" rel="noreferrer">постобработка</a>.
               </p>
               <label for="extraArgsInput">Дополнительные аргументы (без shell)</label>
               <textarea id="extraArgsInput" rows="2" spellcheck="false" autocomplete="off" placeholder="Например: --write-sub --sub-lang ru" aria-describedby="dlRailExpertSectionHint"></textarea>
@@ -1482,10 +1491,10 @@ ${emitDownloadsTopbarClusterHtml(18)}
                 </select>
                 <p class="opts-hint" id="hintSummary"></p>
                 <div class="hints-search">
-                  <label class="opts-preview-label" for="hintFilter">Поиск по токенам</label>
-                  <input type="text" id="hintFilter" spellcheck="false" autocomplete="off" placeholder="Например: --cookies или --sub" aria-describedby="dlRailExpertSectionHint" />
+                  <label class="opts-preview-label" for="hintFilter">Поиск по токенам и описаниям</label>
+                  <input type="text" id="hintFilter" spellcheck="false" autocomplete="off" placeholder="Например: --cookies или --sub" aria-describedby="dlRailExpertSectionHint" aria-label="Поиск по токенам и описаниям справочника argv" />
                 </div>
-                <div class="hint-list" id="hintList" role="list" aria-label="Полный справочник флагов"></div>
+                <div class="hint-list" id="hintList" role="list" aria-label="Справочник флагов с описаниями"></div>
               </details>
             </div>
           </details>
@@ -1496,6 +1505,17 @@ ${emitDownloadsTopbarClusterHtml(18)}
   </div>
   <script>
     (function () {
+      var _ytdlpHintCatOrder = ${ytdlpHintCatOrderJson};
+      function _ytdlpCatRank(c) {
+        var i = _ytdlpHintCatOrder.indexOf(c);
+        return i === -1 ? _ytdlpHintCatOrder.length - 1 : i;
+      }
+      function _ytdlpCmpCat(a, b) {
+        var ra = _ytdlpCatRank(a);
+        var rb = _ytdlpCatRank(b);
+        if (ra !== rb) return ra - rb;
+        return a.localeCompare(b, 'ru');
+      }
       var api = window.fluxalloyDownloads;
       var addBtn = document.getElementById('addBtn');
       var clearBtn = document.getElementById('clearBtn');
@@ -1966,7 +1986,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
           hintList.appendChild(none);
           return;
         }
-        Array.from(byCat.keys()).sort(function (a, b) { return a.localeCompare(b); }).forEach(function (cat) {
+        Array.from(byCat.keys()).sort(_ytdlpCmpCat).forEach(function (cat) {
           var head = document.createElement('div');
           head.className = 'hint-cat';
           head.textContent = cat;

@@ -5,21 +5,9 @@ import { app } from 'electron'
 import { is } from '@electron-toolkit/utils'
 
 import type { YtdlpCommandHintEntry } from '../shared/ytdlp-download-contract'
+import { categorySortRank } from '../shared/ytdlp-hint-category-order'
 
 export type { YtdlpCommandHintEntry } from '../shared/ytdlp-download-contract'
-
-/** Порядок групп в выпадающем списке §6.3 (неизвестные категории идут перед «Прочее»). */
-const YTDLP_HINT_CATEGORY_ORDER: readonly string[] = [
-  'Справка',
-  'Форматы и кодеки',
-  'Сеть и HTTP',
-  'Доступ и cookies',
-  'Загрузка: режим и файлы',
-  'Плейлист и фильтры',
-  'Субтитры, обложки и метаданные',
-  'Вывод и лог',
-  'Прочее'
-]
 
 /**
  * Базовая классификация токенов справочника §6.3.
@@ -79,11 +67,6 @@ const YTDLP_HINT_TOKEN_CATEGORY: Readonly<Record<string, string>> = {
   '--newline': 'Вывод и лог',
   '--progress': 'Вывод и лог',
   '--no-warnings': 'Вывод и лог'
-}
-
-function categorySortRank(category: string): number {
-  const idx = YTDLP_HINT_CATEGORY_ORDER.indexOf(category)
-  return idx === -1 ? YTDLP_HINT_CATEGORY_ORDER.length - 1 : idx
 }
 
 /** Сортировка для UI: сначала порядок группы, затем токен. Экспорт для unit-тестов. */

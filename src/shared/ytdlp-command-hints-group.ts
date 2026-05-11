@@ -1,8 +1,9 @@
 import type { YtdlpCommandHintEntry } from './ytdlp-download-contract'
+import { compareYtdlpHintCategoryKeys } from './ytdlp-hint-category-order'
 
 /**
  * §6.3 — группировка подсказок argv для UI (вкладка «Загрузки» и pop-out):
- * категории по `localeCompare('ru')`, внутри группы — порядок следования в `hints`.
+ * категории по фиксированному порядку §6.3 (`compareYtdlpHintCategoryKeys`), внутри группы — порядок в `hints`.
  */
 export function groupYtdlpCommandHintsByCategory(
   hints: readonly YtdlpCommandHintEntry[] | undefined,
@@ -21,5 +22,5 @@ export function groupYtdlpCommandHintsByCategory(
     list.push(h)
     m.set(cat, list)
   }
-  return [...m.entries()].sort(([a], [b]) => a.localeCompare(b, 'ru'))
+  return [...m.entries()].sort(([a], [b]) => compareYtdlpHintCategoryKeys(a, b))
 }
