@@ -102,6 +102,10 @@ import {
   type TerminalCommandHintEntry,
   type TerminalRunResult
 } from '../../shared/terminal-contract'
+import {
+  applyTerminalInlinePick,
+  filterTerminalInlineSuggestions
+} from '../../shared/terminal-inline-suggest'
 import { PreviewProbeBody } from './components/MediaProbePanel'
 type Theme = ResolvedAppTheme
 
@@ -124,7 +128,18 @@ const TERMINAL_HINT_VIDEO_EXTS = new Set([
   'webm',
   'wmv'
 ])
-const TERMINAL_HINT_AUDIO_EXTS = new Set(['aac', 'aiff', 'alac', 'flac', 'm4a', 'mp3', 'ogg', 'opus', 'wav', 'wma'])
+const TERMINAL_HINT_AUDIO_EXTS = new Set([
+  'aac',
+  'aiff',
+  'alac',
+  'flac',
+  'm4a',
+  'mp3',
+  'ogg',
+  'opus',
+  'wav',
+  'wma'
+])
 
 type WorkspaceTab = 'editor' | 'downloads' | 'terminal'
 
@@ -356,12 +371,11 @@ const EXPORT_VIDEO_BLUR_OPTIONS: Array<{ id: FfmpegExportVideoBlurId; label: str
   { id: 'medium', label: 'Среднее (gblur σ=2.5)' },
   { id: 'strong', label: 'Сильное (gblur σ=5)' }
 ]
-const EXPORT_AUDIO_NORMALIZE_OPTIONS: Array<{ id: FfmpegExportAudioNormalizeId; label: string }> =
-  [
-    { id: 'off', label: 'Нормализация: выкл.' },
-    { id: 'loudnorm', label: 'EBU R128 (loudnorm)' },
-    { id: 'dynaudnorm', label: 'Динамическая (dynaudnorm)' }
-  ]
+const EXPORT_AUDIO_NORMALIZE_OPTIONS: Array<{ id: FfmpegExportAudioNormalizeId; label: string }> = [
+  { id: 'off', label: 'Нормализация: выкл.' },
+  { id: 'loudnorm', label: 'EBU R128 (loudnorm)' },
+  { id: 'dynaudnorm', label: 'Динамическая (dynaudnorm)' }
+]
 const SNAPSHOT_FORMATS: Array<{ id: FfmpegSnapshotFormatId; label: string }> = [
   { id: 'png', label: 'Кадр PNG' },
   { id: 'jpg', label: 'Кадр JPEG' }
@@ -724,6 +738,9 @@ function App(): JSX.Element {
   const [terminalHints, setTerminalHints] = useState<TerminalCommandHintEntry[]>([])
   const [terminalHintFilter, setTerminalHintFilter] = useState('')
   const [terminalHistory, setTerminalHistory] = useState<TerminalHistoryEntry[]>([])
+  const [terminalSuggestFocus, setTerminalSuggestFocus] = useState(false)
+  const [terminalSuggestIndex, setTerminalSuggestIndex] = useState(0)
+  const terminalSuggestBlurTimeoutRef = useRef<number | undefined>(undefined)
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
   const [topbarEngineVersionsLine, setTopbarEngineVersionsLine] = useState('')
   const [exportBusy, setExportBusy] = useState(false)
@@ -767,8 +784,7 @@ function App(): JSX.Element {
   /** §7.2 — пресет `unsharp` контурной резкости. */
   const [exportVideoSharpen, setExportVideoSharpen] = useState<FfmpegExportVideoSharpenId>('off')
   /** §7.2 — пресет `eq=` цветокоррекции. */
-  const [exportVideoEqPreset, setExportVideoEqPreset] =
-    useState<FfmpegExportVideoEqPresetId>('off')
+  const [exportVideoEqPreset, setExportVideoEqPreset] = useState<FfmpegExportVideoEqPresetId>('off')
   /** §7.2 — пресет `hue` сразу после `eq`, до зерна. */
   const [exportVideoHue, setExportVideoHue] = useState<FfmpegExportVideoHueId>('off')
   /** §7.2 — пресет `noise` (зернистость после eq, до scale). */
@@ -855,8 +871,7 @@ function App(): JSX.Element {
     [downloadsOptions?.commandHints, downloadsExpertHintFilter]
   )
 
-  const visibleTerminalHints = useMemo(() => {
-    const q = terminalHintFilter.trim().toLowerCase()
+  const terminalMergedSortedHints = useMemo(() => {
     const ext = previewPathExtensionLower(currentSourcePath)
     const mediaInPreview = Boolean(
       ext && (TERMINAL_HINT_VIDEO_EXTS.has(ext) || TERMINAL_HINT_AUDIO_EXTS.has(ext))
@@ -870,7 +885,19 @@ function App(): JSX.Element {
         : [])
     ]
     const merged = [...scenarioPrefix, ...terminalHints]
-    const filtered = merged.filter((hint) => {
+    return [...merged].sort((a, b) => {
+      const ra = terminalHintToolRank(a.tool, workspaceTab, mediaInPreview)
+      const rb = terminalHintToolRank(b.tool, workspaceTab, mediaInPreview)
+      if (ra !== rb) {
+        return ra - rb
+      }
+      return a.tool.localeCompare(b.tool) || a.token.localeCompare(b.token, 'ru')
+    })
+  }, [terminalHints, currentSourcePath, workspaceTab])
+
+  const visibleTerminalHints = useMemo(() => {
+    const q = terminalHintFilter.trim().toLowerCase()
+    const filtered = terminalMergedSortedHints.filter((hint) => {
       if (q === '') return true
       return (
         hint.tool.toLowerCase().includes(q) ||
@@ -879,22 +906,36 @@ function App(): JSX.Element {
         (hint.fullLine !== undefined && hint.fullLine.toLowerCase().includes(q))
       )
     })
-    const sorted = [...filtered].sort((a, b) => {
-      const ra = terminalHintToolRank(a.tool, workspaceTab, mediaInPreview)
-      const rb = terminalHintToolRank(b.tool, workspaceTab, mediaInPreview)
-      if (ra !== rb) {
-        return ra - rb
-      }
-      return a.tool.localeCompare(b.tool) || a.token.localeCompare(b.token, 'ru')
-    })
-    return sorted.slice(0, 36)
-  }, [terminalHintFilter, terminalHints, currentSourcePath, workspaceTab])
+    return filtered.slice(0, 36)
+  }, [terminalHintFilter, terminalMergedSortedHints])
+
+  const terminalInlineSuggestions = useMemo(
+    () =>
+      filterTerminalInlineSuggestions({
+        line: terminalLine,
+        hints: terminalMergedSortedHints,
+        max: 14
+      }),
+    [terminalLine, terminalMergedSortedHints]
+  )
+
+  const terminalSuggestActiveIndex = useMemo(() => {
+    const len = terminalInlineSuggestions.length
+    if (len === 0) {
+      return 0
+    }
+    return Math.min(terminalSuggestIndex, len - 1)
+  }, [terminalInlineSuggestions, terminalSuggestIndex])
 
   const appendTerminalToken = useCallback((token: string) => {
     setTerminalLine((line) => {
       const trimmed = line.trimEnd()
       return trimmed ? `${trimmed} ${token}` : token
     })
+  }, [])
+
+  const applyTerminalSuggest = useCallback((hint: TerminalCommandHintEntry) => {
+    setTerminalLine((prev) => applyTerminalInlinePick({ line: prev, hint }))
   }, [])
 
   const runTerminalLine = useCallback(async (): Promise<void> => {
@@ -1299,9 +1340,7 @@ function App(): JSX.Element {
       eq === 'warm' || eq === 'cool' || eq === 'vivid' || eq === 'flat' ? eq : 'off'
     )
     const hu = loaded.ffmpegExportVideoHue
-    setExportVideoHue(
-      hu === 'warmShift' || hu === 'coolShift' || hu === 'satBoost' ? hu : 'off'
-    )
+    setExportVideoHue(hu === 'warmShift' || hu === 'coolShift' || hu === 'satBoost' ? hu : 'off')
     const gr = loaded.ffmpegExportVideoGrain
     setExportVideoGrain(gr === 'light' || gr === 'medium' || gr === 'strong' ? gr : 'off')
     const vg = loaded.ffmpegExportVideoVignette
@@ -1311,9 +1350,7 @@ function App(): JSX.Element {
     const an = loaded.ffmpegExportAudioNormalize
     setExportAudioNormalize(an === 'loudnorm' || an === 'dynaudnorm' ? an : 'off')
     const lut = loaded.ffmpegExportVideoLut3d
-    setExportVideoLut3d(
-      lut === 'film-warm' || lut === 'film-cool' || lut === 'punch' ? lut : 'off'
-    )
+    setExportVideoLut3d(lut === 'film-warm' || lut === 'film-cool' || lut === 'punch' ? lut : 'off')
   }, [])
 
   useEffect(() => {
@@ -2626,8 +2663,8 @@ function App(): JSX.Element {
                       ))}
                     </select>
                     <span id="ffmpegVideoDeinterlaceHint" className="app-field-help">
-                      `yadif` после crop и до `hqdn3d` §7.2; режим «Поле» удваивает частоту кадров для
-                      чересстрочного входа.
+                      `yadif` после crop и до `hqdn3d` §7.2; режим «Поле» удваивает частоту кадров
+                      для чересстрочного входа.
                     </span>
                   </label>
                   <label className="app-field">
@@ -2723,7 +2760,9 @@ function App(): JSX.Element {
                         bumpManualExportEdit()
                         const v = e.target.value as FfmpegExportVideoLut3dId
                         setExportVideoLut3d(v)
-                        void window.fluxalloy.settings.setFfmpegExportVideoLut3d(v).catch(console.error)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportVideoLut3d(v)
+                          .catch(console.error)
                       }}
                     >
                       {EXPORT_VIDEO_LUT3D_OPTIONS.map((p) => (
@@ -2733,7 +2772,8 @@ function App(): JSX.Element {
                       ))}
                     </select>
                     <span id="ffmpegVideoLut3dHint" className="app-field-help">
-                      `lut3d` после `deband` и до `unsharp` (bundled `.cube` в `resources/luts/`) §7.2.
+                      `lut3d` после `deband` и до `unsharp` (bundled `.cube` в `resources/luts/`)
+                      §7.2.
                     </span>
                   </label>
                   <label className="app-field">
@@ -2802,7 +2842,9 @@ function App(): JSX.Element {
                         bumpManualExportEdit()
                         const v = e.target.value as FfmpegExportVideoHueId
                         setExportVideoHue(v)
-                        void window.fluxalloy.settings.setFfmpegExportVideoHue(v).catch(console.error)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportVideoHue(v)
+                          .catch(console.error)
                       }}
                     >
                       {EXPORT_VIDEO_HUE_OPTIONS.map((p) => (
@@ -2827,7 +2869,9 @@ function App(): JSX.Element {
                         bumpManualExportEdit()
                         const v = e.target.value as FfmpegExportVideoGrainId
                         setExportVideoGrain(v)
-                        void window.fluxalloy.settings.setFfmpegExportVideoGrain(v).catch(console.error)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportVideoGrain(v)
+                          .catch(console.error)
                       }}
                     >
                       {EXPORT_VIDEO_GRAIN_OPTIONS.map((p) => (
@@ -2879,7 +2923,9 @@ function App(): JSX.Element {
                         bumpManualExportEdit()
                         const v = e.target.value as FfmpegExportVideoBlurId
                         setExportVideoBlur(v)
-                        void window.fluxalloy.settings.setFfmpegExportVideoBlur(v).catch(console.error)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportVideoBlur(v)
+                          .catch(console.error)
                       }}
                     >
                       {EXPORT_VIDEO_BLUR_OPTIONS.map((p) => (
@@ -3473,54 +3519,136 @@ function App(): JSX.Element {
                 <h2 className="app-downloads-title">Терминал</h2>
                 <p className="app-downloads-hint">
                   Разрешены только префиксы ffmpeg, ffprobe и yt-dlp. Команда разбирается как argv,
-                  запускается через main без shell, а PATH дополняется папкой выбранного движка. В argv
-                  можно токен <code>{TERMINAL_CURRENT_FILE_PLACEHOLDER}</code> — подставится путь
-                  текущего превью редактора (только если файл уже открыт через диалог или DnD).
+                  запускается через main без shell, а PATH дополняется папкой выбранного движка. В
+                  argv можно токен <code>{TERMINAL_CURRENT_FILE_PLACEHOLDER}</code> — подставится
+                  путь текущего превью редактора (только если файл уже открыт через диалог или DnD).
+                  В строке ввода — компактный IntelliSense: стрелки вверх/вниз и Tab по выпадающему
+                  списку (до 14 подсказок из той же базы, что и справа).
                 </p>
               </div>
             </div>
-            <div className="app-terminal-command-row">
-              <input
-                className="app-control app-terminal-input"
-                value={terminalLine}
-                spellCheck={false}
-                autoComplete="off"
-                placeholder="ffprobe -version"
-                aria-label="Команда CLI"
-                disabled={terminalBusy}
-                onChange={(e) => {
-                  setTerminalLine(e.target.value)
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault()
-                    void runTerminalLine()
+            <div className="app-terminal-command-stack">
+              <div className="app-terminal-command-row">
+                <input
+                  className="app-control app-terminal-input"
+                  value={terminalLine}
+                  spellCheck={false}
+                  autoComplete="off"
+                  placeholder="ffprobe -version"
+                  aria-label="Команда CLI"
+                  aria-expanded={terminalInlineSuggestions.length > 0 && terminalSuggestFocus}
+                  aria-controls="terminal-inline-suggest-list"
+                  aria-autocomplete="list"
+                  disabled={terminalBusy}
+                  onChange={(e) => {
+                    setTerminalLine(e.target.value)
+                  }}
+                  onFocus={() => {
+                    window.clearTimeout(terminalSuggestBlurTimeoutRef.current)
+                    setTerminalSuggestFocus(true)
+                  }}
+                  onBlur={() => {
+                    terminalSuggestBlurTimeoutRef.current = window.setTimeout(() => {
+                      setTerminalSuggestFocus(false)
+                    }, 160)
+                  }}
+                  onKeyDown={(e) => {
+                    const list = terminalInlineSuggestions
+                    if (list.length > 0) {
+                      if (e.key === 'ArrowDown') {
+                        e.preventDefault()
+                        setTerminalSuggestIndex((i) => Math.min(list.length - 1, i + 1))
+                        return
+                      }
+                      if (e.key === 'ArrowUp') {
+                        e.preventDefault()
+                        setTerminalSuggestIndex((i) => Math.max(0, i - 1))
+                        return
+                      }
+                      if (e.key === 'Tab') {
+                        e.preventDefault()
+                        const h = list[terminalSuggestActiveIndex]
+                        if (h) {
+                          applyTerminalSuggest(h)
+                        }
+                        return
+                      }
+                      if (e.key === 'Escape') {
+                        e.preventDefault()
+                        window.clearTimeout(terminalSuggestBlurTimeoutRef.current)
+                        setTerminalSuggestFocus(false)
+                        return
+                      }
+                    }
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      void runTerminalLine()
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  className="app-btn"
+                  disabled={terminalBusy || !currentSourcePath}
+                  title={
+                    currentSourcePath
+                      ? `Вставить токен «${TERMINAL_CURRENT_FILE_PLACEHOLDER}» (путь текущего превью)`
+                      : 'Сначала откройте файл в редакторе'
                   }
-                }}
-              />
-              <button
-                type="button"
-                className="app-btn"
-                disabled={terminalBusy || !currentSourcePath}
-                title={
-                  currentSourcePath
-                    ? `Вставить токен «${TERMINAL_CURRENT_FILE_PLACEHOLDER}» (путь текущего превью)`
-                    : 'Сначала откройте файл в редакторе'
-                }
-                onClick={() => appendTerminalToken(TERMINAL_CURRENT_FILE_PLACEHOLDER)}
-              >
-                Превью-файл
-              </button>
-              <button
-                type="button"
-                className="app-btn app-btn-primary"
-                disabled={terminalBusy || terminalLine.trim().length === 0}
-                onClick={() => {
-                  void runTerminalLine()
-                }}
-              >
-                {terminalBusy ? 'Выполняю…' : 'Выполнить'}
-              </button>
+                  onClick={() => appendTerminalToken(TERMINAL_CURRENT_FILE_PLACEHOLDER)}
+                >
+                  Превью-файл
+                </button>
+                <button
+                  type="button"
+                  className="app-btn app-btn-primary"
+                  disabled={terminalBusy || terminalLine.trim().length === 0}
+                  onClick={() => {
+                    void runTerminalLine()
+                  }}
+                >
+                  {terminalBusy ? 'Выполняю…' : 'Выполнить'}
+                </button>
+              </div>
+              {terminalInlineSuggestions.length > 0 && terminalSuggestFocus ? (
+                <div
+                  id="terminal-inline-suggest-list"
+                  className="app-terminal-suggest"
+                  role="listbox"
+                  aria-label="Подсказки argv"
+                  onMouseDown={(ev) => {
+                    ev.preventDefault()
+                  }}
+                >
+                  {terminalInlineSuggestions.map((hint, idx) => (
+                    <button
+                      key={`inline:${hint.tool}:${hint.token}:${hint.fullLine ?? ''}:${idx}`}
+                      type="button"
+                      role="option"
+                      aria-selected={idx === terminalSuggestActiveIndex}
+                      className={`app-terminal-suggest-item${
+                        idx === terminalSuggestActiveIndex
+                          ? ' app-terminal-suggest-item-active'
+                          : ''
+                      }`}
+                      onMouseEnter={() => {
+                        setTerminalSuggestIndex(idx)
+                      }}
+                      onClick={() => {
+                        applyTerminalSuggest(hint)
+                      }}
+                    >
+                      <code>
+                        {hint.fullLine !== undefined && hint.fullLine.length > 0
+                          ? hint.fullLine.trimEnd()
+                          : hint.token}
+                      </code>
+                      <span>{hint.tool}</span>
+                      <small>{hint.summary}</small>
+                    </button>
+                  ))}
+                </div>
+              ) : null}
             </div>
             <div className="app-terminal-layout">
               <section className="app-terminal-history" aria-label="История команд терминала">
@@ -4259,9 +4387,7 @@ function App(): JSX.Element {
                         label="Авто-экспорт после открытия"
                         checked={downloadsOptions.autoExportAfterOpenInHandler}
                         describedBy="downloadsAutoExportAfterOpenHint"
-                        disabled={
-                          downloadsOptionsBusy || !downloadsOptions.openInHandlerOnComplete
-                        }
+                        disabled={downloadsOptionsBusy || !downloadsOptions.openInHandlerOnComplete}
                         onToggle={() => {
                           void applyDownloadsOptionsPatch({
                             autoExportAfterOpenInHandler:
