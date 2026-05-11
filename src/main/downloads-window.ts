@@ -1956,6 +1956,10 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
               if (!extraArgsInput) return;
               var cur = extraArgsInput.value.trim();
               extraArgsInput.value = cur ? cur + ' ' + row.token : row.token;
+              try {
+                extraArgsInput.focus();
+                extraArgsInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              } catch (e) {}
               schedulePreviewRefresh();
             });
             item.appendChild(btn);
