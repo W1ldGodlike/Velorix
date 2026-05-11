@@ -190,6 +190,16 @@ function buildTrackDetail(stream: NonNullable<FfprobeJson['streams']>[number]): 
         fps >= 100 ? fps.toFixed(0) : Number.isInteger(fps) ? String(fps) : fps.toFixed(3)
       parts.push(`${label} fps`)
     }
+    const nbFramesRaw = stream.nb_frames
+    const nbFramesParsed =
+      typeof nbFramesRaw === 'string' && nbFramesRaw.trim() !== ''
+        ? Number.parseInt(nbFramesRaw.replace(/\s+/g, ''), 10)
+        : typeof nbFramesRaw === 'number' && Number.isFinite(nbFramesRaw)
+          ? Math.trunc(nbFramesRaw)
+          : NaN
+    if (Number.isFinite(nbFramesParsed) && nbFramesParsed > 0) {
+      parts.push(`${nbFramesParsed} frm`)
+    }
     const sideData = summarizeFfprobeSideDataList(stream.side_data_list)
     if (sideData !== null) {
       parts.push(sideData)
@@ -300,6 +310,12 @@ function buildTrackDetail(stream: NonNullable<FfprobeJson['streams']>[number]): 
     }
     if (title) {
       parts.push(title)
+    }
+    const subFourcc = ffprobeScalarDisplay(
+      typeof stream.codec_tag_string === 'string' ? stream.codec_tag_string : undefined
+    )
+    if (subFourcc) {
+      parts.push(subFourcc)
     }
   } else {
     const lang = tagString(stream.tags, 'language')
