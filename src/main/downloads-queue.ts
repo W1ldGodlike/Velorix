@@ -129,7 +129,10 @@ export function updateDownloadsRow(
   }
   type MetaKey = 'queueFmt' | 'queueSize' | 'queueSpeed' | 'queueEta'
   const applyMeta = (key: MetaKey, v: string | null | undefined): void => {
-    if (v === null || v === undefined) {
+    if (v === undefined) {
+      return
+    }
+    if (v === null) {
       delete row[key]
       return
     }

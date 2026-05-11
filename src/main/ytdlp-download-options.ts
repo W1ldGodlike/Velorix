@@ -91,7 +91,8 @@ export function buildYtdlpCommandPreviewContext(params: {
 }
 
 /** Шаблон по умолчанию совпадает с тем, что раньше был захардкожен в `runYtdlpOnce`. */
-export const YTDLP_DEFAULT_FILENAME_TEMPLATE = '%(title)s [%(id)s].%(ext)s'
+/** Без суффикса `[id]` в имени файла — он выглядел как артефакт; `%(id)s` при необходимости вручную в шаблоне. */
+export const YTDLP_DEFAULT_FILENAME_TEMPLATE = '%(title)s.%(ext)s'
 
 export interface YtdlpRunOptionsSnapshot {
   filenameTemplate: string

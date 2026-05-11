@@ -11,6 +11,7 @@ import {
   parseYtdlpInfoFormatSnippet,
   parseYtdlpInfoQueueSizeHint,
   parseYtdlpQueueFormatHint,
+  displayLabelFromYtdlpOutputPath,
   parseYtdlpProgressPercentNumber,
   parseYtdlpSpeedToBytesPerSec,
   shouldSkipQueueRetriesForFailureKind,
@@ -263,9 +264,22 @@ describe('parseYtdlpSpeedToBytesPerSec', () => {
 })
 
 describe('formatTorrentStyleSpeedFromBps', () => {
-  it('форматирует в MiB/s и KiB/s', () => {
-    expect(formatTorrentStyleSpeedFromBps(1.5 * 1024 ** 2)).toBe('1.5 MiB/s')
-    expect(formatTorrentStyleSpeedFromBps(800 * 1024)).toBe('800 KiB/s')
+  it('форматирует в MB/s и KB/s (×1000)', () => {
+    expect(formatTorrentStyleSpeedFromBps(2 * 1_000_000)).toBe('2.0 MB/s')
+    expect(formatTorrentStyleSpeedFromBps(850_000)).toBe('850 KB/s')
+  })
+})
+
+describe('displayLabelFromYtdlpOutputPath', () => {
+  it('убирает суффикс [id] из basename', () => {
+    expect(
+      displayLabelFromYtdlpOutputPath('C:\\dl\\My Video [L_DypYRwPJs].mp4')
+    ).toBe('My Video')
+  })
+
+  it('возвращает null для пустого или короткого', () => {
+    expect(displayLabelFromYtdlpOutputPath('')).toBeNull()
+    expect(displayLabelFromYtdlpOutputPath('C:\\x')).toBeNull()
   })
 })
 

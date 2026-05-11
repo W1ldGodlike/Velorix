@@ -5,12 +5,14 @@ import { getEnginePathOverridesSnapshot } from './engine-path-sync'
 import {
   findFirstWaitingRow,
   getDownloadsQueueRowById,
+  shortUrlLabel,
   updateDownloadsRow,
   type DownloadsQueueRow
 } from './downloads-queue'
 import { emitDownloadsLog } from './downloads-log-ipc'
 import {
   classifyYtdlpQueueFailureKind,
+  displayLabelFromYtdlpOutputPath,
   extractYtdlpErrorSummary,
   extractYtdlpOutputPath,
   formatTorrentStyleSpeedFromBps,
@@ -316,7 +318,19 @@ async function runYtdlpForWaitingRow(
       return
     }
     lastOutputPath = p
-    updateDownloadsRow(rowId, { outputPath: p })
+    const snapRow = getDownloadsQueueRowById(rowId)
+    const nice = displayLabelFromYtdlpOutputPath(p)
+    const url = snapRow?.url ?? ''
+    const curShort = snapRow?.shortLabel ?? ''
+    const patch: Parameters<typeof updateDownloadsRow>[1] = { outputPath: p }
+    if (
+      nice &&
+      url.length > 0 &&
+      (curShort === shortUrlLabel(url) || curShort.length < Math.min(nice.length, 14))
+    ) {
+      patch.shortLabel = nice
+    }
+    updateDownloadsRow(rowId, patch)
     notifySnapshot()
   }
 

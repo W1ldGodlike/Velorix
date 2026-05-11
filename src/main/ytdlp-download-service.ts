@@ -18,6 +18,7 @@ import {
 export {
   classifyYtdlpQueueFailureKind,
   extractYtdlpErrorSummary,
+  displayLabelFromYtdlpOutputPath,
   extractYtdlpOutputPath,
   formatTorrentStyleSpeedFromBps,
   formatYtdlpProgressCell,

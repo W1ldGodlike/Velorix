@@ -51,5 +51,5 @@
   {"token":"--write-thumbnail","summary":"Сохранить обложку как отдельный файл (.jpg/webp по сайту).","examples":["yt-dlp --write-thumbnail URL"],"docUrl":"https://github.com/yt-dlp/yt-dlp#thumbnail-options","tool":"yt-dlp"},
   {"token":"--dateafter","summary":"Отфильтровать элементы позже указанной даты (совместимо с ключами фильтра).","examples":["yt-dlp --dateafter 20240101 URL"],"docUrl":"https://github.com/yt-dlp/yt-dlp#video-selection","tool":"yt-dlp"},
   {"token":"-a","summary":"Ярлык для текстового файла со списком URL (батч загрузки).","examples":["yt-dlp -a urls.txt"],"docUrl":"https://github.com/yt-dlp/yt-dlp#youtube-dl-tutorial","tool":"yt-dlp"},
-  {"token":"-o","summary":"Шаблон выходного пути %(title)s, %(ext)s и т.д.","examples":["yt-dlp -o \"%(title)s [%(id)s].%(ext)s\" URL"],"docUrl":"https://github.com/yt-dlp/yt-dlp#output-template","tool":"yt-dlp"}
+  {"token":"-o","summary":"Шаблон выходного пути %(title)s, %(ext)s и т.д.","examples":["yt-dlp -o \"%(title)s.%(ext)s\" URL"],"docUrl":"https://github.com/yt-dlp/yt-dlp#output-template","tool":"yt-dlp"}
 ]

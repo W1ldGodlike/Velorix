@@ -55,6 +55,21 @@ describe('downloads queue output path', () => {
     expect(reset!.outputPath).toBeUndefined()
   })
 
+  it('частичный patch не затирает queue* поля, если их не передали', () => {
+    appendUrlsFromMultilineBlock('https://example.com/x')
+    const row = getDownloadsQueueSnapshot()[0]
+    expect(row).toBeDefined()
+    updateDownloadsRow(row!.id, {
+      queueSpeed: '3.2 MB/s',
+      queueEta: '00:01',
+      progress: '50%'
+    })
+    updateDownloadsRow(row!.id, { status: 'Готово', progress: '100%' })
+    const r = getDownloadsQueueSnapshot()[0]
+    expect(r?.queueSpeed).toBe('3.2 MB/s')
+    expect(r?.queueEta).toBe('00:01')
+  })
+
   it('очищает вспомогательные поля таблицы v0 при retry', () => {
     appendUrlsFromMultilineBlock('https://example.com/x')
     const row = getDownloadsQueueSnapshot()[0]

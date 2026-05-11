@@ -396,24 +396,48 @@ export function parseYtdlpSpeedToBytesPerSec(raw: string): number | null {
 }
 
 /**
- * Отображение скорости «как в торрент-клиенте»: стабильная единица (MiB/s или KiB/s), без скачков KiB↔MiB.
+ * Скорость в стиле типичного торрент-клиента: **MB/s** и **KB/s** (десятичные ×1000), без «MiB».
  */
 export function formatTorrentStyleSpeedFromBps(bytesPerSec: number): string {
   const bps = Math.max(0, bytesPerSec)
-  if (bps >= 1024 ** 2) {
-    const v = bps / 1024 ** 2
+  if (bps >= 1_000_000) {
+    const v = bps / 1_000_000
     const s = v >= 100 ? v.toFixed(0) : v.toFixed(1)
-    return `${s} MiB/s`
+    return `${s} MB/s`
   }
-  if (bps >= 1024) {
-    const v = bps / 1024
+  if (bps >= 1000) {
+    const v = bps / 1000
     const s = v >= 100 ? v.toFixed(0) : v.toFixed(1)
-    return `${s} KiB/s`
+    return `${s} KB/s`
   }
   if (bps > 0) {
     return `${Math.round(bps)} B/s`
   }
   return '0 B/s'
+}
+
+/**
+ * Подпись строки очереди из финального пути yt-dlp: basename без расширения и без хвоста ` [video_id]`.
+ */
+export function displayLabelFromYtdlpOutputPath(rawPath: string): string | null {
+  const t = rawPath.trim()
+  if (t.length === 0) {
+    return null
+  }
+  const normalized = t.replace(/[/\\]+$/, '')
+  const sep = normalized.includes('\\') ? '\\' : '/'
+  const parts = normalized.split(sep)
+  const base = parts[parts.length - 1] ?? ''
+  if (base.length < 2) {
+    return null
+  }
+  const dot = base.lastIndexOf('.')
+  const stem = dot > 0 ? base.slice(0, dot) : base
+  const cleaned = stem.replace(/\s+\[[A-Za-z0-9_-]{6,32}\]\s*$/, '').trim()
+  if (cleaned.length < 2) {
+    return null
+  }
+  return cleaned.length > 200 ? `${cleaned.slice(0, 198)}…` : cleaned
 }
 
 /** Компактная подпись для ячейки: «42.1% · 1.2 MiB/s · Осталось 00:15». */
