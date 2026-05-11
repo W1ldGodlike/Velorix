@@ -81,6 +81,31 @@ function sanitizeMainWindowUiPanelState(raw: unknown): MainWindowUiPanelState | 
   return Object.keys(out).length > 0 ? out : undefined
 }
 
+const DOWNLOADS_WINDOW_UI_PANEL_KEYS: (keyof DownloadsWindowUiPanelState)[] = [
+  'history',
+  'log',
+  'format',
+  'metadata',
+  'saving',
+  'network',
+  'expert',
+  'hints'
+]
+
+function sanitizeDownloadsWindowUiPanelState(raw: unknown): DownloadsWindowUiPanelState {
+  if (!raw || typeof raw !== 'object') {
+    return {}
+  }
+  const src = raw as Record<string, unknown>
+  const out: DownloadsWindowUiPanelState = {}
+  for (const key of DOWNLOADS_WINDOW_UI_PANEL_KEYS) {
+    if (typeof src[key] === 'boolean') {
+      out[key] = src[key]
+    }
+  }
+  return out
+}
+
 function isDownloadsLogPayload(raw: unknown): raw is DownloadsLogPayload {
   if (!raw || typeof raw !== 'object') {
     return false
@@ -271,7 +296,20 @@ const fluxalloy = {
     mergeUiPanels: (
       patch: Partial<DownloadsWindowUiPanelState>
     ): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.mergeUiPanels, patch)
+      ipcRenderer.invoke(d.mergeUiPanels, patch),
+    /** Main → renderer: полный снимок панелей после merge (вкладка «Загрузки» и pop-out). */
+    onDownloadsWindowUiPanelsChanged: (
+      listener: (panels: DownloadsWindowUiPanelState) => void
+    ): (() => void) => {
+      const channel = mw.downloadsWindowUiPanelsChanged
+      const handler = (_: unknown, raw: unknown): void => {
+        listener(sanitizeDownloadsWindowUiPanelState(raw))
+      }
+      ipcRenderer.on(channel, handler)
+      return (): void => {
+        ipcRenderer.removeListener(channel, handler)
+      }
+    }
   },
   /** §9 §363 — отдельное окно инспектора (тот же preload, что главное окно). */
   inspector: {

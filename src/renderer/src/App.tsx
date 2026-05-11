@@ -649,6 +649,21 @@ function App(): JSX.Element {
     [persistDownloadsWindowUiPanels]
   )
 
+  const hydrateDownloadsWindowUiPanelsFromSnapshot = useCallback(
+    (dwp: DownloadsWindowUiPanelState | undefined): void => {
+      setDownloadsEmbeddedHistoryOpen(downloadsPanelOpenFromSettings(dwp?.history))
+      setDownloadsEmbeddedLogOpen(downloadsPanelOpenFromSettings(dwp?.log))
+      setDownloadsRailPanels({
+        format: downloadsRailSectionOpen(dwp, 'format', DOWNLOADS_RAIL_PANEL_DEFAULTS.format),
+        metadata: downloadsRailSectionOpen(dwp, 'metadata', DOWNLOADS_RAIL_PANEL_DEFAULTS.metadata),
+        saving: downloadsRailSectionOpen(dwp, 'saving', DOWNLOADS_RAIL_PANEL_DEFAULTS.saving),
+        network: downloadsRailSectionOpen(dwp, 'network', DOWNLOADS_RAIL_PANEL_DEFAULTS.network),
+        expert: downloadsRailSectionOpen(dwp, 'expert', DOWNLOADS_RAIL_PANEL_DEFAULTS.expert)
+      })
+    },
+    []
+  )
+
   const handleDownloadsLogPayload = useCallback((payload: DownloadsLogPayload): void => {
     if (payload.kind === 'reset') {
       setDownloadsLogTargetRowId(payload.rowId)
@@ -1133,16 +1148,7 @@ function App(): JSX.Element {
       applyTheme(loaded.effectiveTheme)
       hydrateExportFieldsFromSettings(loaded)
       setMainUiPanels({ ...MAIN_PANEL_DEFAULTS, ...(loaded.mainWindowUiPanels ?? {}) })
-      const dwp = loaded.downloadsWindowUiPanels
-      setDownloadsEmbeddedHistoryOpen(downloadsPanelOpenFromSettings(dwp?.history))
-      setDownloadsEmbeddedLogOpen(downloadsPanelOpenFromSettings(dwp?.log))
-      setDownloadsRailPanels({
-        format: downloadsRailSectionOpen(dwp, 'format', DOWNLOADS_RAIL_PANEL_DEFAULTS.format),
-        metadata: downloadsRailSectionOpen(dwp, 'metadata', DOWNLOADS_RAIL_PANEL_DEFAULTS.metadata),
-        saving: downloadsRailSectionOpen(dwp, 'saving', DOWNLOADS_RAIL_PANEL_DEFAULTS.saving),
-        network: downloadsRailSectionOpen(dwp, 'network', DOWNLOADS_RAIL_PANEL_DEFAULTS.network),
-        expert: downloadsRailSectionOpen(dwp, 'expert', DOWNLOADS_RAIL_PANEL_DEFAULTS.expert)
-      })
+      hydrateDownloadsWindowUiPanelsFromSnapshot(loaded.downloadsWindowUiPanels)
       setExportUserPresets(loaded.ffmpegExportUserPresets ?? [])
       if (loaded.ffmpegSnapshotFormat === 'jpg') {
         setSnapshotFormat('jpg')
@@ -1159,7 +1165,14 @@ function App(): JSX.Element {
       cleanupTheme?.()
       cleanupUiPanels?.()
     }
-  }, [applyTheme, hydrateExportFieldsFromSettings])
+  }, [applyTheme, hydrateDownloadsWindowUiPanelsFromSnapshot, hydrateExportFieldsFromSettings])
+
+  useEffect(() => {
+    const off = window.fluxalloy.downloads.onDownloadsWindowUiPanelsChanged((panels) => {
+      hydrateDownloadsWindowUiPanelsFromSnapshot(panels)
+    })
+    return off
+  }, [hydrateDownloadsWindowUiPanelsFromSnapshot])
 
   useEffect(() => {
     let cancelled = false

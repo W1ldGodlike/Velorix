@@ -157,6 +157,9 @@ export interface FluxAlloyApi {
     mergeUiPanels: (
       patch: Partial<DownloadsWindowUiPanelState>
     ) => Promise<{ ok: true } | { ok: false; error: string }>
+    onDownloadsWindowUiPanelsChanged: (
+      listener: (panels: DownloadsWindowUiPanelState) => void
+    ) => () => void
   }
   inspector: {
     openWindow: (absoluteMediaPath?: string | null) => Promise<void>
