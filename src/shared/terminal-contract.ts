@@ -122,6 +122,24 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· --print channel_id',
     summary: 'Идентификатор канала без скачивания (--skip-download --print channel_id); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print channel_id '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print thumbnail',
+    summary: 'URL превью/thumbnail без скачивания (--skip-download --print thumbnail); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print thumbnail '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print view_count',
+    summary: 'Счётчик просмотров без скачивания (--skip-download --print view_count); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print view_count '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print upload_date',
+    summary: 'Дата публикации YYYYMMDD без скачивания (--skip-download --print upload_date); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print upload_date '
   }
 ]
 
@@ -156,6 +174,12 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· v:0 color',
     summary: 'Поток v:0: color_space / color_primaries / color_transfer (HDR/SDR-диагностика); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=color_space,color_primaries,color_transfer -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 bitrate+fps',
+    summary: 'Поток v:0: bit_rate + avg_frame_rate (сравнение с r_frame_rate из компактного шаблона); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=bit_rate,avg_frame_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
