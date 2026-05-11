@@ -124,6 +124,8 @@ const TERMINAL_HINT_VIDEO_EXTS = new Set([
 ])
 const TERMINAL_HINT_AUDIO_EXTS = new Set(['aac', 'aiff', 'alac', 'flac', 'm4a', 'mp3', 'ogg', 'opus', 'wav', 'wma'])
 
+type WorkspaceTab = 'editor' | 'downloads' | 'terminal'
+
 function previewPathExtensionLower(path: string | null): string | null {
   if (typeof path !== 'string' || path.trim().length === 0) {
     return null
@@ -136,7 +138,14 @@ function previewPathExtensionLower(path: string | null): string | null {
   return base.slice(dot + 1).toLowerCase()
 }
 
-function terminalHintToolRank(tool: TerminalCommandHintEntry['tool'], mediaInPreview: boolean): number {
+function terminalHintToolRank(
+  tool: TerminalCommandHintEntry['tool'],
+  workspaceTab: WorkspaceTab,
+  mediaInPreview: boolean
+): number {
+  if (workspaceTab === 'downloads') {
+    return tool === 'yt-dlp' ? 0 : tool === 'ffmpeg' ? 1 : 2
+  }
   if (mediaInPreview) {
     return tool === 'ffprobe' ? 0 : tool === 'ffmpeg' ? 1 : 2
   }
@@ -145,7 +154,6 @@ function terminalHintToolRank(tool: TerminalCommandHintEntry['tool'], mediaInPre
 
 type PreviewOpenedPayload = RestoredSourceInfo
 type EngineSummary = 'checking' | 'ready' | 'missing' | 'error'
-type WorkspaceTab = 'editor' | 'downloads' | 'terminal'
 type ExportPresetNameDialog = {
   mode: 'create' | 'rename'
   value: string
@@ -860,15 +868,15 @@ function App(): JSX.Element {
       )
     })
     const sorted = [...filtered].sort((a, b) => {
-      const ra = terminalHintToolRank(a.tool, mediaInPreview)
-      const rb = terminalHintToolRank(b.tool, mediaInPreview)
+      const ra = terminalHintToolRank(a.tool, workspaceTab, mediaInPreview)
+      const rb = terminalHintToolRank(b.tool, workspaceTab, mediaInPreview)
       if (ra !== rb) {
         return ra - rb
       }
       return a.tool.localeCompare(b.tool) || a.token.localeCompare(b.token, 'ru')
     })
     return sorted.slice(0, 36)
-  }, [terminalHintFilter, terminalHints, currentSourcePath])
+  }, [terminalHintFilter, terminalHints, currentSourcePath, workspaceTab])
 
   const appendTerminalToken = useCallback((token: string) => {
     setTerminalLine((line) => {
