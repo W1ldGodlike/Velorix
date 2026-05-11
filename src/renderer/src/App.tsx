@@ -27,6 +27,8 @@ import {
   IconQueueOutbound,
   IconQueueRetry,
   IconQueueTrash,
+  IconQueueX,
+  IconRefreshCw,
   IconRotateCcw,
   IconRotateCw,
   IconSave,
@@ -3069,17 +3071,18 @@ function App(): JSX.Element {
                   <div className="app-downloads-history-actions">
                     <button
                       type="button"
-                      className="app-btn app-btn-compact"
+                      className="app-btn app-btn-compact app-btn-icon-leading"
                       disabled={downloadsHistoryBusy}
                       onClick={() => {
                         void refreshDownloadsHistory()
                       }}
                     >
+                      <IconRefreshCw title="" size={14} />
                       Обновить
                     </button>
                     <button
                       type="button"
-                      className="app-btn app-btn-compact app-btn-warn"
+                      className="app-btn app-btn-compact app-btn-warn app-btn-icon-leading"
                       disabled={downloadsHistoryBusy || downloadsHistory.length === 0}
                       onClick={() => {
                         void window.fluxalloy.downloads.clearHistory().then((res) => {
@@ -3091,6 +3094,7 @@ function App(): JSX.Element {
                         })
                       }}
                     >
+                      <IconQueueTrash title="" size={14} />
                       Очистить
                     </button>
                   </div>
@@ -3123,7 +3127,7 @@ function App(): JSX.Element {
                             <div className="app-downloads-history-actions">
                               <button
                                 type="button"
-                                className="app-btn app-btn-compact"
+                                className="app-btn app-btn-compact app-btn-icon-leading"
                                 onClick={() => {
                                   void window.fluxalloy.downloads
                                     .openHistoryOutput(entry.id, 'file')
@@ -3134,11 +3138,12 @@ function App(): JSX.Element {
                                     })
                                 }}
                               >
+                                <IconQueueFile title="" size={14} />
                                 Файл
                               </button>
                               <button
                                 type="button"
-                                className="app-btn app-btn-compact"
+                                className="app-btn app-btn-compact app-btn-icon-leading"
                                 onClick={() => {
                                   void window.fluxalloy.downloads
                                     .openHistoryOutput(entry.id, 'folder')
@@ -3149,11 +3154,12 @@ function App(): JSX.Element {
                                     })
                                 }}
                               >
+                                <IconFolderOpen title="" size={14} />
                                 Папка
                               </button>
                               <button
                                 type="button"
-                                className="app-btn app-btn-compact"
+                                className="app-btn app-btn-compact app-btn-icon-leading"
                                 onClick={() => {
                                   setStatusHint(
                                     'Готовлю файл для редактора… при необходимости будет создан WebM preview.'
@@ -3169,7 +3175,7 @@ function App(): JSX.Element {
                                     })
                                 }}
                               >
-                                В редактор
+                                <IconQueueOutbound title="" size={14} />В редактор
                               </button>
                             </div>
                           ) : null}
@@ -3196,18 +3202,19 @@ function App(): JSX.Element {
                   <div className="app-downloads-log-actions">
                     <button
                       type="button"
-                      className="app-btn app-btn-compact"
+                      className="app-btn app-btn-compact app-btn-icon-leading"
                       disabled={downloadsLogLines.length === 0}
                       onClick={() => {
                         setDownloadsLogLines([])
                         setDownloadsLogTargetRowId(null)
                       }}
                     >
+                      <IconQueueX title="" size={14} />
                       Очистить
                     </button>
                     <button
                       type="button"
-                      className="app-btn app-btn-compact"
+                      className="app-btn app-btn-compact app-btn-icon-leading"
                       disabled={downloadsLogLines.length === 0}
                       onClick={() => {
                         const text = formatDownloadsLogText(downloadsLogLines)
@@ -3218,6 +3225,7 @@ function App(): JSX.Element {
                         })
                       }}
                     >
+                      <IconSave title="" size={14} />
                       Сохранить
                     </button>
                   </div>

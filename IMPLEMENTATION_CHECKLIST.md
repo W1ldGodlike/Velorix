@@ -41,7 +41,7 @@
 
 Правило для агента: этот блок — рабочий навигатор ближайшего спринта. После каждой крупной итерации обновлять его: отмечать сделанное, переводить частичное в `[~]`, убирать устаревшее только если оно отражено ниже по §, и добавлять 3–7 следующих конкретных пунктов. Не оставлять блок полностью закрытым. Для UI/UX-сверки по v0 использовать [`docs/UX_REFERENCE_V0.md`](docs/UX_REFERENCE_V0.md).
 
-- [~] §6.1/§6.4: вкладка «Загрузки» v0 — таблица / rail / история→лог; **прогресс: полоска + `%` справа**; **URL-band**: `plus`/`play`/`ban`/`trash` + `clipboard`/`popOutWindow`; HiDPI **120 / 168 / 192**; **узкая ширина**: rail под колонкой, **`#downloads-ytdlp-settings-rail`** + **«К настройкам»** (`scrollIntoView`); **осталось: ручная DPI-матрица 100–200%**.
+- [~] §6.1/§6.4: вкладка «Загрузки» v0 — таблица / rail / **история→лог** (иконки **refresh/trash/file/folder/outbound/save/x** на compact-кнопках); **прогресс: bar+%**; **URL-band**; HiDPI **120/168/192**; узкая ширина + **«К настройкам»**; **осталось: ручная DPI-матрица 100–200%**.
 - [~] §6.3: argv + whitelist + preview; polish редких полей и длинного справочника в pop-out.
 - [~] §1.1/§4.A/§9: редактор + ffprobe; `PillSwitch` + help links; дальше multi-monitor DPI и локализация.
 - [~] §7.2: базовый экспорт; фильтры / HW / batch / download→encode — позже.
@@ -182,7 +182,7 @@
 - [ ] Статусбар: текущий кодировщик CPU/NVENC/AMF/QSV/etc.
 - [ ] Статусбар: tooltip GPU/драйвер/лимиты.
 - [ ] Все строки UI вынести в локализацию.
-- [~] Добавить единый набор иконок: топбар редактора (folder + **rotate-ccw/cw + scissors v0** + **снимок/экспорт/отмена/облако (`EDITOR_TOPBAR_ACTION_ICONS`)** + **sun/moon (`EDITOR_THEME_ICONS`)**, `circle-help`/загрузки из shared) + **окно загрузок** + **вкладки** + транспорт + очередь yt-dlp + **вкладка «Загрузки»**: `clipboard` / `popOutWindow` + **URL-band** (`plus`/`play`/`ban`/`trash` из **`QUEUE_ROW_ACTION_ICONS`**) + **инспектор §9**: `folder-open`/`refreshCw`/`circle-help`/тема — **общий `IconCircleHelp` из shared**, **диалог «О программе» — общий компонент `AboutDialog`**; при необходимости дальнейшее выравнивание панелей.
+- [~] Добавить единый набор иконок: топбар редактора (folder + **rotate-ccw/cw + scissors v0** + **снимок/экспорт/отмена/облако (`EDITOR_TOPBAR_ACTION_ICONS`)** + **sun/moon (`EDITOR_THEME_ICONS`)**, `circle-help`/загрузки из shared) + **окно загрузок** + **вкладки** + транспорт + очередь yt-dlp + **вкладка «Загрузки»**: `clipboard`/`popOutWindow`, **URL-band**, **нижние панели** (`refreshCw`/`save`/`x`/`trash`/`file`/`folder`/`outbound`) + **инспектор §9**: `folder-open`/`refreshCw`/`circle-help`/тема — **общий `IconCircleHelp` из shared**, **диалог «О программе» — общий компонент `AboutDialog`**; при необходимости дальнейшее выравнивание панелей.
 
 ### §4.1 Запоминание настроек
 

@@ -561,3 +561,18 @@ export function IconQueueTrash({
     </SvgBase>
   )
 }
+
+/** §6 — очистить вид лога (lucide `x`, тот же путь, что `RowIco.x`). */
+export function IconQueueX({
+  title = 'Очистить',
+  size = 18
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(QUEUE_ROW_ACTION_ICONS.x)}
+    </SvgBase>
+  )
+}

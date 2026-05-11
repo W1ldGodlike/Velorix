@@ -276,3 +276,4 @@
 - [J-259] 2026-05-11 21:10:18 [SDK]: §4/§6 единые иконки — `DOWNLOADS_TOPBAR_CLUSTER_ICONS.clipboard`/`popOutWindow`, `IconClipboardPaste`/`IconPopOutWindow`, кнопки «Из буфера»/«Pop-out» на вкладке; Vitest; чеклист §4.C/спринт; `npm run check` ок.
 - [J-260] 2026-05-11 21:12:08 [SDK]: §6/§4 — URL-band вкладки «Загрузки»: `IconQueuePlus`/`IconPlay`/`IconBan`/`IconQueueTrash` + `app-btn-icon-leading` на всех действиях очереди; Vitest `plus`; спринт; `npm run check` ок.
 - [J-261] 2026-05-11 21:14:43 [SDK]: §6.1/v0 узкая ширина — `#downloads-ytdlp-settings-rail`, `matchMedia(1100px)`, кнопка «К настройкам»+`scrollIntoView`, `overflow-y` на workspace; чеклист §1.1/спринт; `npm run check` ок.
+- [J-262] 2026-05-11 21:16:31 [SDK]: §6/§4 — «История»/«Живой лог» вкладки: `IconRefreshCw`, `IconQueueTrash`/`IconQueueX`, карточки `file`/`folder`/`outbound`, лог `IconSave`; `IconQueueX` в `LucideMiniIcons`; спринт; `npm run check` ок.
