@@ -176,6 +176,24 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· --print language',
     summary: 'Язык по умолчанию без скачивания (--skip-download --print language); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print language '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print extractor',
+    summary: 'Имя extractor без скачивания (--skip-download --print extractor); допишите URL (диагностика маршрута yt-dlp).',
+    fullLine: 'yt-dlp --skip-download --print extractor '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print playlist_id',
+    summary: 'Идентификатор плейлиста без скачивания (--skip-download --print playlist_id); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --skip-download --print playlist_id '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --geo-bypass -F',
+    summary: 'Обход гео-блока + список форматов (--geo-bypass -F); допишите URL (региональные ограничения).',
+    fullLine: 'yt-dlp --geo-bypass -F '
   }
 ]
 
@@ -282,6 +300,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· s:0 tags',
     summary: 'Поток s:0: теги title + language субтитров (stream_tags); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream_tags=title,language -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:1 compact',
+    summary: 'Вторая аудиодорожка a:1: codec_name/sample_rate/channels (мультиязык/комментарии); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:1 -show_entries stream=codec_name,sample_rate,channels -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 stream tags',
+    summary: 'Поток v:0: stream_tags handler_name + encoder (отличие от тегов контейнера); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream_tags=handler_name,encoder -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffmpeg',

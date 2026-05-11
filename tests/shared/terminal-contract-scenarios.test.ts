@@ -49,6 +49,9 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --skip-download --print description ')
     expect(lines).toContain('yt-dlp --skip-download --print categories ')
     expect(lines).toContain('yt-dlp --skip-download --print language ')
+    expect(lines).toContain('yt-dlp --skip-download --print extractor ')
+    expect(lines).toContain('yt-dlp --skip-download --print playlist_id ')
+    expect(lines).toContain('yt-dlp --geo-bypass -F ')
   })
 
   it('preview: есть JSON-сводка и show_error для текущего превью', () => {
@@ -67,5 +70,15 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines.some((l) => l.includes('select_streams s:0') && l.includes('stream_tags=title,language'))).toBe(
       true
     )
+    expect(lines.some((l) => l.includes('select_streams a:1') && l.includes('codec_name,sample_rate,channels'))).toBe(
+      true
+    )
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams v:0') &&
+          l.includes('stream_tags=handler_name,encoder')
+      )
+    ).toBe(true)
   })
 })
