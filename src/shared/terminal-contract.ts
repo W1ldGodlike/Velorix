@@ -596,6 +596,36 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· --print heatmap',
     summary: 'Данные heatmap просмотров (если отдаёт площадка, напр. YouTube) без скачивания (--skip-download --print heatmap); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print heatmap '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· limit-rate 1M',
+    summary: 'Ограничить скорость загрузки (~1 MiB/s) для диагностики CDN/таймаутов; при необходимости измените суффикс; допишите URL.',
+    fullLine: 'yt-dlp --limit-rate 1M '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· retries 10',
+    summary: 'Повторы HTTP и фрагментов для нестабильной сети (--retries 10 --fragment-retries 10); допишите URL и остальные ключи.',
+    fullLine: 'yt-dlp --retries 10 --fragment-retries 10 '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· socket-timeout 30',
+    summary: 'Таймаут сокета 30 с против зависаний (--socket-timeout 30); допишите URL.',
+    fullLine: 'yt-dlp --socket-timeout 30 '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· force-ipv4 -F',
+    summary: 'Список форматов только через IPv4 (--force-ipv4 -F); если -6 не подходит; допишите URL.',
+    fullLine: 'yt-dlp --force-ipv4 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-part -F',
+    summary: 'Без временных .part (--no-part -F); диск/NAS; допишите URL.',
+    fullLine: 'yt-dlp --no-part -F '
   }
 ]
 
@@ -930,6 +960,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· v:0 chroma_loc',
     summary: 'Поток v:0: chroma_location (сэмплинг цветности 4:2:0 и т.п.); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=chroma_location -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· programs compact',
+    summary: 'MPEG-TS/M3U8: список программ demuxer (-show_programs compact); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_programs -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 side_data',
+    summary: 'Поток v:0: side_data_list (Display Matrix, HDR metadata и т.п., компактно); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=side_data_list -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· chapters csv',
+    summary: 'Таблица глав построчно (-show_chapters -of csv); без лишнего текста; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_chapters -of csv=p=0 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   }
 ]
 

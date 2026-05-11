@@ -123,6 +123,11 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --flat-playlist --print url ')
     expect(lines).toContain('yt-dlp --write-pages --skip-download ')
     expect(lines).toContain('yt-dlp --skip-download --print heatmap ')
+    expect(lines).toContain('yt-dlp --limit-rate 1M ')
+    expect(lines).toContain('yt-dlp --retries 10 --fragment-retries 10 ')
+    expect(lines).toContain('yt-dlp --socket-timeout 30 ')
+    expect(lines).toContain('yt-dlp --force-ipv4 -F ')
+    expect(lines).toContain('yt-dlp --no-part -F ')
   })
 
   it('preview: есть JSON-сводка и show_error для текущего превью', () => {
@@ -250,6 +255,11 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(
       lines.some((l) => l.includes('select_streams v:0') && l.includes('stream=chroma_location'))
     ).toBe(true)
+    expect(lines.some((l) => l.includes('-show_programs') && l.includes('-of compact'))).toBe(true)
+    expect(
+      lines.some((l) => l.includes('select_streams v:0') && l.includes('stream=side_data_list'))
+    ).toBe(true)
+    expect(lines.some((l) => l.includes('-show_chapters') && l.includes('-of csv'))).toBe(true)
     expect(lines.some((l) => l.includes('-frames:v 1 -f null -'))).toBe(true)
   })
 })
