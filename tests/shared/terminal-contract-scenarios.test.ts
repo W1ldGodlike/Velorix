@@ -132,6 +132,16 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --merge-output-format mkv ')
     expect(lines).toContain('yt-dlp --format-sort +res:720 -F ')
     expect(lines).toContain('yt-dlp --playlist-end 10 -J ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country US -F ')
+    expect(lines).toContain('yt-dlp --extractor-retries 5 ')
+    expect(lines).toContain('yt-dlp --http-chunk-size 10M ')
+    expect(lines).toContain('yt-dlp --no-overwrites -F ')
+    expect(lines).toContain('yt-dlp --windows-filenames -F ')
+    expect(lines).toContain('yt-dlp --newline -F ')
+    expect(lines).toContain('yt-dlp --skip-unavailable-fragments ')
+    expect(lines).toContain('yt-dlp --download-archive archive.txt ')
+    expect(lines).toContain('yt-dlp --break-on-reject -F ')
+    expect(lines).toContain('yt-dlp --trim-file-names 80 -F ')
   })
 
   it('preview: есть JSON-сводка и show_error для текущего превью', () => {
@@ -283,5 +293,13 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
           l.includes('select_streams v:0') && l.includes('stream=bits_per_raw_sample')
       )
     ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams v:1') && l.includes('stream=codec_name,width,height')
+      )
+    ).toBe(true)
+    expect(lines.some((l) => l.includes('show_entries format=size,duration'))).toBe(true)
+    expect(lines.some((l) => l.includes('-t 5 -c copy -f null -'))).toBe(true)
   })
 })

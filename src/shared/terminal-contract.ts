@@ -674,6 +674,66 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· playlist-end 10 -J',
     summary: 'Первые 10 элементов плейлиста в JSON (--playlist-end 10 -J); допишите URL плейлиста.',
     fullLine: 'yt-dlp --playlist-end 10 -J '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo-country US -F',
+    summary: 'Обход гео через страну-подсказку (--geo-bypass-country US -F); при необходимости замените ISO-код; допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country US -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· extractor-retries 5',
+    summary: 'Повторы на этапе extractor против 403/таймаутов страницы (--extractor-retries 5); допишите URL и остальные ключи.',
+    fullLine: 'yt-dlp --extractor-retries 5 '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· http-chunk 10M',
+    summary: 'Размер HTTP-чанка 10 MiB (--http-chunk-size 10M); иногда стабилизирует медленные CDN; допишите URL.',
+    fullLine: 'yt-dlp --http-chunk-size 10M '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-overwrites -F',
+    summary: 'Не перезаписывать уже скачанные файлы (--no-overwrites -F); допишите URL.',
+    fullLine: 'yt-dlp --no-overwrites -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· win filenames -F',
+    summary: 'Имена файлов без зарезервированных символов Windows (--windows-filenames -F); допишите URL и -o при необходимости.',
+    fullLine: 'yt-dlp --windows-filenames -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· newline -F',
+    summary: 'Прогресс с переводом строки (--newline -F); удобнее парсить логи/пайпы; допишите URL.',
+    fullLine: 'yt-dlp --newline -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· skip-unavail frags',
+    summary: 'DASH/HLS: пропускать недоступные фрагменты вместо фатала (--skip-unavailable-fragments); допишите URL.',
+    fullLine: 'yt-dlp --skip-unavailable-fragments '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· download-archive',
+    summary: 'Журнал скачанных id в archive.txt (--download-archive archive.txt); поменяйте имя файла под свою папку; допишите URL.',
+    fullLine: 'yt-dlp --download-archive archive.txt '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· break-on-reject -F',
+    summary: 'Остановиться при отклонённом формате (--break-on-reject -F); диагностика -f; допишите URL.',
+    fullLine: 'yt-dlp --break-on-reject -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· trim-names 80 -F',
+    summary: 'Обрезка длины имён файлов (--trim-file-names 80 -F); длинные заголовки; допишите URL.',
+    fullLine: 'yt-dlp --trim-file-names 80 -F '
   }
 ]
 
@@ -1044,6 +1104,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· v:0 bit depth',
     summary: 'Поток v:0: bits_per_raw_sample (глубина сырого сэмпла, 8/10/12-bit и т.д.); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=bits_per_raw_sample -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:1 compact',
+    summary: 'Вторая видеодорожка v:1 (мультиangle/редкие контейнеры): codec_name/width/height; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:1 -show_entries stream=codec_name,width,height -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format size+dur',
+    summary: 'Контейнер: size + duration (сверка с битрейтом и дорожками); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format=size,duration -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· remux 5s null',
+    summary: 'Копирование потоков первых 5 с в null muxer (-t 5 -c copy); быстрая проверка контейнера без перекодирования.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -t 5 -c copy -f null -`
   }
 ]
 
