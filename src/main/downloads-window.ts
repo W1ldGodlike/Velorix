@@ -980,10 +980,34 @@ function buildDownloadsHtml(
       outline: 2px solid var(--fa-focus-ring);
       outline-offset: 2px;
     }
+    /* §6.1/v0: как вкладка «Загрузки» ~1100px — rail не исчезает, уходит под очередь с max-height + scroll. */
     @media (max-width: 960px) {
-      .dl-main { grid-template-columns: 1fr; }
-      .settings-rail { display: none; }
-      .bottom-panels { max-height: 44vh; }
+      .dl-main {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: minmax(0, 1fr) auto;
+        gap: 0;
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        align-content: start;
+      }
+      .dl-workspace {
+        border-right: none;
+        min-height: 0;
+      }
+      .settings-rail {
+        display: flex;
+        flex-direction: column;
+        max-height: min(42vh, 24rem);
+        min-height: 10rem;
+        flex-shrink: 0;
+        overflow: auto;
+        border-top: 1px solid var(--border);
+        scroll-margin-top: 0.5rem;
+      }
+      .bottom-panels {
+        max-height: min(34vh, 15rem);
+      }
     }
   </style>
 </head>
@@ -1010,7 +1034,7 @@ ${emitDownloadsTopbarClusterHtml(18)}
           <div>
             <label class="input-label" for="urls">Введите URL (каждый с новой строки)</label>
             <textarea id="urls" placeholder="https://…" aria-describedby="urlsHint"></textarea>
-            <p class="hint" id="urlsHint">Ссылки по строкам или DnD текста/URL. Очередь последовательная §6.</p>
+            <p class="hint" id="urlsHint">Ссылки по строкам или DnD текста/URL. Очередь последовательная §6. Если окно узкое (примерно до 960px), панель настроек yt-dlp переносится под очередь — в тулбаре есть «К настройкам».</p>
           </div>
           <div class="input-actions">
             <button type="button" class="cmd cmd-primary cmd-icon-leading" id="addBtn" aria-describedby="urlsHint">
@@ -1074,6 +1098,17 @@ ${emitDownloadsTopbarClusterHtml(18)}
             Управление активной yt-dlp-задачей и содержимым очереди §6; пауза возможна только на платформах без ограничения yt-dlp.
           </span>
           <span class="queue-summary" id="queueSummary">Всего: 0</span>
+          <button
+            type="button"
+            class="cmd cmd-icon-leading"
+            id="scrollToRailBtn"
+            hidden
+            title="Прокрутить к панели настроек yt-dlp"
+            aria-controls="dl-ytdlp-settings-rail"
+          >
+            <span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS.settings, 14)}</span>
+            К настройкам
+          </button>
         </div>
         <div class="queue-table-wrap">
           <table class="queue-table">
@@ -1162,7 +1197,7 @@ ${emitDownloadsTopbarClusterHtml(18)}
           </div>
         </div>
       </section>
-      <aside class="settings-rail" aria-label="Настройки загрузки">
+      <aside class="settings-rail" id="dl-ytdlp-settings-rail" aria-label="Настройки загрузки">
         <div class="rail-head">
           <h2 class="rail-title">Настройки загрузки</h2>
           <p class="rail-subtitle">Секции повторяют v0-подход: формат, метаданные, сохранение, сеть.</p>
@@ -1324,6 +1359,7 @@ ${emitDownloadsTopbarClusterHtml(18)}
       var body = document.getElementById('queueBody');
       var queueStatusFilter = document.getElementById('queueStatusFilter');
       var queueSummary = document.getElementById('queueSummary');
+      var scrollToRailBtn = document.getElementById('scrollToRailBtn');
       var outDirText = document.getElementById('outDirText');
       var openOutBtn = document.getElementById('openOutBtn');
       var pickOutBtn = document.getElementById('pickOutBtn');
@@ -1357,6 +1393,23 @@ ${emitDownloadsTopbarClusterHtml(18)}
       var refreshHistoryBtn = document.getElementById('refreshHistoryBtn');
       var clearHistoryBtn = document.getElementById('clearHistoryBtn');
       var historyOutcomeFilter = document.getElementById('historyOutcomeFilter');
+      var narrowPopoutMq = window.matchMedia('(max-width: 960px)');
+      function syncScrollToRailBtn() {
+        if (!scrollToRailBtn) return;
+        scrollToRailBtn.hidden = !narrowPopoutMq.matches;
+      }
+      function onScrollToRailClick() {
+        var rail = document.getElementById('dl-ytdlp-settings-rail');
+        if (rail) {
+          rail.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+      if (scrollToRailBtn) {
+        scrollToRailBtn.addEventListener('click', onScrollToRailClick);
+      }
+      narrowPopoutMq.addEventListener('change', syncScrollToRailBtn);
+      window.addEventListener('resize', syncScrollToRailBtn);
+      syncScrollToRailBtn();
       var historyRefreshTimer = null;
       var lastHistoryEntries = [];
       var lastQueueRows = [];
