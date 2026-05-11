@@ -314,6 +314,36 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· --print age_limit',
     summary: 'Возрастной лимит ролика без скачивания (--skip-download --print age_limit); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print age_limit '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print like_count',
+    summary: 'Счётчик лайков без скачивания (--skip-download --print like_count); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print like_count '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print comment_count',
+    summary: 'Число комментариев без скачивания (--skip-download --print comment_count); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print comment_count '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print aspect_ratio',
+    summary: 'Соотношение сторон выбранного формата без скачивания (--skip-download --print aspect_ratio); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print aspect_ratio '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --playlist-items 1 -F',
+    summary: 'Только первый элемент плейлиста + список форматов (--playlist-items 1 -F); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --playlist-items 1 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· youtube:web -F',
+    summary: 'YouTube: принудительно web-клиент extractor-args (обход части ограничений) + -F; допишите URL.',
+    fullLine: 'yt-dlp --extractor-args youtube:player_client=web -F '
   }
 ]
 
@@ -492,6 +522,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· v:0 count_frames',
     summary: 'Точный пересчёт кадров v:0 (-count_frames nb_read_frames); медленно, но даёт реальный счёт; плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -count_frames -select_streams v:0 -show_entries stream=nb_read_frames -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:0 disposition',
+    summary: 'Поток a:0: disposition (default/forced/comment и т.д.); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=disposition -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 pix+cs',
+    summary: 'Поток v:0: pix_fmt + color_space + color_range (SDR/HDR контекст без отдельного color_transfer); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=pix_fmt,color_space,color_range -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffmpeg',
