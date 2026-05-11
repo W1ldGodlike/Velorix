@@ -938,6 +938,54 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· force-ipv6 -F',
     summary: 'Список форматов через IPv6 (--force-ipv6 -F); обход части IPv4/NAT; допишите URL.',
     fullLine: 'yt-dlp --force-ipv6 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· dateafter -F',
+    summary: 'Только записи после YYYYMMDD (--dateafter 20240101 -F); фильтр плейлиста; допишите URL.',
+    fullLine: 'yt-dlp --dateafter 20240101 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· max-downloads',
+    summary: 'Лимит скачиваний за прогон (--max-downloads 5); удобно для частичных плейлистов; допишите URL.',
+    fullLine: 'yt-dlp --max-downloads 5 '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· match-title -F',
+    summary: 'Фильтр элементов плейлиста по подстроке заголовка (--match-title trailer -F); регистр по yt-dlp; допишите URL.',
+    fullLine: 'yt-dlp --match-title trailer -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· write-link',
+    summary: 'Записать ярлык .url рядом с медиа без скачивания (--write-link --skip-download); допишите URL.',
+    fullLine: 'yt-dlp --write-link --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· sponsorblock-mark',
+    summary: 'Сохранить SponsorBlock-главы для всех категорий (--sponsorblock-mark all); допишите URL.',
+    fullLine: 'yt-dlp --sponsorblock-mark all '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· extract-audio mp3',
+    summary: 'После скачивания извлечь аудиодорожку в MP3 (--extract-audio --audio-format mp3); допишите URL.',
+    fullLine: 'yt-dlp --extract-audio --audio-format mp3 '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· audio-quality 192K',
+    summary: 'Целевое качество аудио при извлечении (--audio-quality 192K --extract-audio); допишите URL.',
+    fullLine: 'yt-dlp --audio-quality 192K --extract-audio '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print n_entries',
+    summary: 'Число записей плейлиста без скачивания (--skip-download --print n_entries); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print n_entries '
   }
 ]
 
@@ -1398,6 +1446,36 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· video decode 2s',
     summary: 'Декод только видео первых 2 с (-an -sn); без аудио/субтитров; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -an -sn -t 2 -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format pretty',
+    summary: 'format-секция в человекочитаемом виде (-pretty -show_format); единицы и время форматированы; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -pretty -show_format ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format flat',
+    summary: 'Плоский ключ-значение вывод format (-of flat -show_format); удобно для grep/awk; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -of flat -show_format ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 packets 5',
+    summary: 'Первые 5 пакетов v:0 (-show_packets -read_intervals %+#5 compact); таймстемпы/размеры; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_packets -read_intervals %+#5 -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 frames 5',
+    summary: 'Первые 5 кадров v:0 (-show_frames -read_intervals %+#5 compact); тип/размер/PTS; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_frames -read_intervals %+#5 -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· loudnorm summary',
+    summary: 'Замер интегральной громкости -af loudnorm=print_format=summary за 60 с; -vn -sn; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af loudnorm=print_format=summary -t 60 -vn -sn -f null -`
   }
 ]
 

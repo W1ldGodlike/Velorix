@@ -379,5 +379,40 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --skip-download --print season_number ')
     expect(lines).toContain('yt-dlp --remux-video mkv ')
     expect(lines).toContain('yt-dlp --force-ipv6 -F ')
+    expect(lines).toContain('yt-dlp --dateafter 20240101 -F ')
+    expect(lines).toContain('yt-dlp --max-downloads 5 ')
+    expect(lines).toContain('yt-dlp --match-title trailer -F ')
+    expect(lines).toContain('yt-dlp --write-link --skip-download ')
+    expect(lines).toContain('yt-dlp --sponsorblock-mark all ')
+    expect(lines).toContain('yt-dlp --extract-audio --audio-format mp3 ')
+    expect(lines).toContain('yt-dlp --audio-quality 192K --extract-audio ')
+    expect(lines).toContain('yt-dlp --skip-download --print n_entries ')
+  })
+
+  it('preview: pretty/flat/packets/frames + loudnorm summary', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(lines.some((l) => l.includes('-pretty') && l.includes('-show_format'))).toBe(true)
+    expect(lines.some((l) => l.includes('-of flat') && l.includes('-show_format'))).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams v:0') &&
+          l.includes('-show_packets') &&
+          l.includes('-read_intervals %+#5')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams v:0') &&
+          l.includes('-show_frames') &&
+          l.includes('-read_intervals %+#5')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) => l.includes('-af loudnorm=print_format=summary') && l.includes('-vn -sn -f null -')
+      )
+    ).toBe(true)
   })
 })
