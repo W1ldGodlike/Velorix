@@ -58,6 +58,10 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --skip-download --print resolution ')
     expect(lines).toContain('yt-dlp --skip-download --print vcodec ')
     expect(lines).toContain('yt-dlp --skip-download --print acodec ')
+    expect(lines).toContain('yt-dlp --list-extractors')
+    expect(lines).toContain('yt-dlp --version')
+    expect(lines).toContain('yt-dlp -4 -F ')
+    expect(lines).toContain('yt-dlp --no-cache-dir -F ')
   })
 
   it('preview: есть JSON-сводка и show_error для текущего превью', () => {

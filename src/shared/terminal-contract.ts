@@ -230,6 +230,30 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· --print acodec',
     summary: 'Аудиокодек выбранного формата без скачивания (--skip-download --print acodec); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print acodec '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --list-extractors',
+    summary: 'Список имён extractors без URL (диагностика сборки yt-dlp и маршрутизации сайтов).',
+    fullLine: 'yt-dlp --list-extractors'
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --version',
+    summary: 'Версия yt-dlp и зависимостей без URL (сверка с bundled/обновлениями).',
+    fullLine: 'yt-dlp --version'
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -4 -F',
+    summary: 'Список форматов через IPv4 (-4 -F); обходит часть проблем v6/маршрутизации; допишите URL.',
+    fullLine: 'yt-dlp -4 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --no-cache-dir -F',
+    summary: 'Список форматов без кэша extractors (--no-cache-dir -F); при подозрении на битый кэш; допишите URL.',
+    fullLine: 'yt-dlp --no-cache-dir -F '
   }
 ]
 
