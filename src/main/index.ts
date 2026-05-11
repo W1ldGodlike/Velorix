@@ -15,6 +15,7 @@ import {
   configureDownloadsQueueRunnerHooks,
   isDownloadsRunnerBusy
 } from './downloads-queue-runner'
+import { emitDownloadsLog } from './downloads-log-ipc'
 import { getDownloadsQueueSnapshot } from './downloads-queue'
 import {
   configureDownloadsWindowBoundsHooks,
@@ -83,6 +84,10 @@ import {
   type MediaExportStartResult,
   type FfmpegExportProgressPayload
 } from './ffmpeg-export-service'
+import {
+  pickUniqueAutoExportOutputPath,
+  resolveFfmpegExportJobOptionsFromAppSettings
+} from './ffmpeg-export-resolve-from-settings'
 import { probeMediaFile } from './ffprobe-service'
 import type { EngineDownloadProgress } from './engine-download'
 import { setEnginePathOverridesSnapshot } from './engine-path-sync'
@@ -669,6 +674,15 @@ function mergeYtdlpDownloadCliPatchOntoSettings(
       merged.ytdlpOpenInHandlerOnComplete = true
     } else {
       delete merged.ytdlpOpenInHandlerOnComplete
+      delete merged.ytdlpAutoExportAfterOpenInHandler
+    }
+  }
+  if (patch.autoExportAfterOpenInHandler !== undefined) {
+    if (patch.autoExportAfterOpenInHandler) {
+      merged.ytdlpAutoExportAfterOpenInHandler = true
+      merged.ytdlpOpenInHandlerOnComplete = true
+    } else {
+      delete merged.ytdlpAutoExportAfterOpenInHandler
     }
   }
   return { ok: true, settings: merged }
@@ -1866,8 +1880,105 @@ app.whenReady().then(() => {
     },
     getAppTheme: (): ResolvedAppTheme => resolveEffectiveTheme(cachedSettings.theme)
   })
+  function scheduleAutoExportAfterSuccessfulYtdlpOpen(
+    absoluteInput: string,
+    rowId: number
+  ): void {
+    void (async () => {
+      if (cachedSettings.ytdlpAutoExportAfterOpenInHandler !== true) {
+        return
+      }
+      if (activeExportAbort !== null) {
+        emitDownloadsLog({
+          kind: 'line',
+          rowId,
+          stream: 'stderr',
+          text: '[FluxAlloy] Авто-экспорт пропущен: уже выполняется другой экспорт.'
+        })
+        return
+      }
+      const paths = resolveAppPaths()
+      const ffmpeg = resolveEngineExecutablePath(
+        paths,
+        'ffmpeg',
+        cachedSettings.engineExecutablePaths
+      )
+      if (!ffmpeg) {
+        emitDownloadsLog({
+          kind: 'line',
+          rowId,
+          stream: 'stderr',
+          text: '[FluxAlloy] Авто-экспорт не запущен: ffmpeg не найден.'
+        })
+        return
+      }
+      const exportOpts = resolveFfmpegExportJobOptionsFromAppSettings(cachedSettings, undefined)
+      const outPath = pickUniqueAutoExportOutputPath(absoluteInput, exportOpts.container)
+      const targetWin =
+        mainWindowWebContentsId === null
+          ? null
+          : BrowserWindow.getAllWindows().find((w) => w.webContents.id === mainWindowWebContentsId)
+      if (!targetWin || targetWin.isDestroyed()) {
+        emitDownloadsLog({
+          kind: 'line',
+          rowId,
+          stream: 'stderr',
+          text: '[FluxAlloy] Авто-экспорт пропущен: главное окно недоступно.'
+        })
+        return
+      }
+      const ac = new AbortController()
+      activeExportAbort = ac
+      const pushProgress = (p: FfmpegExportProgressPayload): void => {
+        if (!targetWin.isDestroyed()) {
+          targetWin.webContents.send(mw.exportProgress, p)
+        }
+      }
+      try {
+        pushProgress({ percent: -1, message: 'Авто-экспорт после загрузки…' })
+        const result = await runFfmpegExportJob({
+          ffmpegPath: ffmpeg,
+          inputPath: absoluteInput,
+          outputPath: outPath,
+          probeDurationSec: null,
+          ...exportOpts,
+          signal: ac.signal,
+          onProgress: pushProgress
+        })
+        if (result.ok) {
+          rememberExportOutputPath(outPath)
+          rememberFfmpegExportDirectory(outPath)
+          emitDownloadsLog({
+            kind: 'line',
+            rowId,
+            stream: 'stderr',
+            text: `[FluxAlloy] Авто-экспорт завершён: ${outPath}`
+          })
+          return
+        }
+        if (result.error === 'Экспорт отменён') {
+          emitDownloadsLog({
+            kind: 'line',
+            rowId,
+            stream: 'stderr',
+            text: '[FluxAlloy] Авто-экспорт отменён.'
+          })
+          return
+        }
+        emitDownloadsLog({
+          kind: 'line',
+          rowId,
+          stream: 'stderr',
+          text: `[FluxAlloy] Авто-экспорт не удался: ${result.error}`
+        })
+      } finally {
+        activeExportAbort = null
+      }
+    })()
+  }
   configureDownloadsQueueRunnerHooks({
-    openDownloadedFileInHandler: (absoluteFile) => openDownloadedFileInMainHandler(absoluteFile)
+    openDownloadedFileInHandler: (absoluteFile) => openDownloadedFileInMainHandler(absoluteFile),
+    afterDownloadOpenedInMainHandler: scheduleAutoExportAfterSuccessfulYtdlpOpen
   })
   configureInspectorWindowHooks({
     getSavedInspectorBounds: () => cachedSettings.windowBounds?.inspector,
@@ -2327,102 +2438,8 @@ app.whenReady().then(() => {
     const probeDurationSec = typeof pd === 'number' && Number.isFinite(pd) && pd > 0 ? pd : null
 
     const trim = parseFfmpegExportTrim((raw as { trim?: unknown }).trim)
-
-    const encodePresetRaw = (raw as { encodePreset?: unknown }).encodePreset
-    const encodePreset =
-      encodePresetRaw !== undefined && encodePresetRaw !== null
-        ? parseFfmpegExportEncodePreset(encodePresetRaw)
-        : parseFfmpegExportEncodePreset(cachedSettings.ffmpegExportEncodePreset)
-    const containerRaw = (raw as { container?: unknown }).container
-    const exportContainer =
-      containerRaw !== undefined && containerRaw !== null
-        ? parseFfmpegExportContainer(containerRaw)
-        : parseFfmpegExportContainer(cachedSettings.ffmpegExportContainer)
-    const crfRaw = (raw as { crf?: unknown }).crf
-    const exportCrf =
-      crfRaw !== undefined && crfRaw !== null
-        ? parseFfmpegExportCrf(crfRaw)
-        : parseFfmpegExportCrf(cachedSettings.ffmpegExportCrf)
-    const videoBitrateRaw = (raw as { videoBitrate?: unknown }).videoBitrate
-    const exportVideoBitrate =
-      videoBitrateRaw !== undefined && videoBitrateRaw !== null
-        ? parseFfmpegExportVideoBitrate(videoBitrateRaw)
-        : parseFfmpegExportVideoBitrate(cachedSettings.ffmpegExportVideoBitrate)
-    const audioModeRaw = (raw as { audioMode?: unknown }).audioMode
-    const exportAudioMode =
-      audioModeRaw !== undefined && audioModeRaw !== null
-        ? parseFfmpegExportAudioMode(audioModeRaw)
-        : parseFfmpegExportAudioMode(cachedSettings.ffmpegExportAudioMode)
-    const audioBitrateRaw = (raw as { audioBitrate?: unknown }).audioBitrate
-    const exportAudioBitrate =
-      audioBitrateRaw !== undefined && audioBitrateRaw !== null
-        ? parseFfmpegExportAudioBitrate(audioBitrateRaw)
-        : parseFfmpegExportAudioBitrate(cachedSettings.ffmpegExportAudioBitrate)
-    const fpsRaw = (raw as { fps?: unknown }).fps
-    const exportFps =
-      fpsRaw !== undefined && fpsRaw !== null
-        ? parseFfmpegExportFps(fpsRaw)
-        : parseFfmpegExportFps(cachedSettings.ffmpegExportFps)
-    const scalePresetRaw = (raw as { scalePreset?: unknown }).scalePreset
-    const exportScalePreset =
-      scalePresetRaw !== undefined && scalePresetRaw !== null
-        ? parseFfmpegExportScalePreset(scalePresetRaw)
-        : parseFfmpegExportScalePreset(cachedSettings.ffmpegExportScalePreset)
-    const videoTransformRaw = (raw as { videoTransform?: unknown }).videoTransform
-    const exportVideoTransform =
-      videoTransformRaw !== undefined && videoTransformRaw !== null
-        ? parseFfmpegExportVideoTransform(videoTransformRaw)
-        : parseFfmpegExportVideoTransform(cachedSettings.ffmpegExportVideoTransform)
-    const cropPresetRaw = (raw as { cropPreset?: unknown }).cropPreset
-    const exportCropPreset =
-      cropPresetRaw !== undefined && cropPresetRaw !== null
-        ? parseFfmpegExportCropPreset(cropPresetRaw)
-        : parseFfmpegExportCropPreset(cachedSettings.ffmpegExportCropPreset)
-    const exportTwoPassRaw = (raw as { twoPass?: unknown }).twoPass
-    const exportTwoPass =
-      exportTwoPassRaw !== undefined && exportTwoPassRaw !== null
-        ? parseFfmpegExportTwoPass(exportTwoPassRaw)
-        : parseFfmpegExportTwoPass(cachedSettings.ffmpegExportTwoPass)
-    const exportAudioGainRaw = (raw as { audioGainDb?: unknown }).audioGainDb
-    const exportAudioGainDb =
-      exportAudioGainRaw !== undefined
-        ? parseFfmpegExportAudioGainDb(exportAudioGainRaw)
-        : parseFfmpegExportAudioGainDb(cachedSettings.ffmpegExportAudioGainDb)
-    const exportStripMetadataRaw = (raw as { stripMetadata?: unknown }).stripMetadata
-    const exportStripMetadata =
-      exportStripMetadataRaw !== undefined
-        ? parseFfmpegExportStripFlag(exportStripMetadataRaw)
-        : parseFfmpegExportStripFlag(cachedSettings.ffmpegExportStripMetadata)
-    const exportStripChaptersRaw = (raw as { stripChapters?: unknown }).stripChapters
-    const exportStripChapters =
-      exportStripChaptersRaw !== undefined
-        ? parseFfmpegExportStripFlag(exportStripChaptersRaw)
-        : parseFfmpegExportStripFlag(cachedSettings.ffmpegExportStripChapters)
-    const exportSubtitleModeRaw = (raw as { subtitleMode?: unknown }).subtitleMode
-    const exportSubtitleMode =
-      exportSubtitleModeRaw !== undefined && exportSubtitleModeRaw !== null
-        ? parseFfmpegExportSubtitleMode(exportSubtitleModeRaw)
-        : parseFfmpegExportSubtitleMode(cachedSettings.ffmpegExportSubtitleMode)
-    const exportVideoDenoiseRaw = (raw as { videoDenoise?: unknown }).videoDenoise
-    const exportVideoDenoise =
-      exportVideoDenoiseRaw !== undefined && exportVideoDenoiseRaw !== null
-        ? parseFfmpegExportVideoDenoise(exportVideoDenoiseRaw)
-        : parseFfmpegExportVideoDenoise(cachedSettings.ffmpegExportVideoDenoise)
-    const exportVideoSharpenRaw = (raw as { videoSharpen?: unknown }).videoSharpen
-    const exportVideoSharpen =
-      exportVideoSharpenRaw !== undefined && exportVideoSharpenRaw !== null
-        ? parseFfmpegExportVideoSharpen(exportVideoSharpenRaw)
-        : parseFfmpegExportVideoSharpen(cachedSettings.ffmpegExportVideoSharpen)
-    const exportVideoEqPresetRaw = (raw as { videoEqPreset?: unknown }).videoEqPreset
-    const exportVideoEqPreset =
-      exportVideoEqPresetRaw !== undefined && exportVideoEqPresetRaw !== null
-        ? parseFfmpegExportVideoEqPreset(exportVideoEqPresetRaw)
-        : parseFfmpegExportVideoEqPreset(cachedSettings.ffmpegExportVideoEqPreset)
-    const exportAudioNormalizeRaw = (raw as { audioNormalize?: unknown }).audioNormalize
-    const exportAudioNormalize =
-      exportAudioNormalizeRaw !== undefined && exportAudioNormalizeRaw !== null
-        ? parseFfmpegExportAudioNormalize(exportAudioNormalizeRaw)
-        : parseFfmpegExportAudioNormalize(cachedSettings.ffmpegExportAudioNormalize)
+    const exportOpts = resolveFfmpegExportJobOptionsFromAppSettings(cachedSettings, raw)
+    const exportContainer = exportOpts.container
 
     const paths = resolveAppPaths()
     const ffmpeg = resolveEngineExecutablePath(
@@ -2472,25 +2489,7 @@ app.whenReady().then(() => {
         outputPath: outPath,
         ...(trim !== undefined ? { trim } : {}),
         probeDurationSec,
-        encodePreset,
-        container: exportContainer,
-        crf: exportCrf,
-        videoBitrate: exportVideoBitrate,
-        audioMode: exportAudioMode,
-        audioBitrate: exportAudioBitrate,
-        fps: exportFps,
-        scalePreset: exportScalePreset,
-        videoTransform: exportVideoTransform,
-        cropPreset: exportCropPreset,
-        twoPass: exportTwoPass,
-        audioGainDb: exportAudioGainDb,
-        stripMetadata: exportStripMetadata,
-        stripChapters: exportStripChapters,
-        subtitleMode: exportSubtitleMode,
-        videoDenoise: exportVideoDenoise,
-        videoSharpen: exportVideoSharpen,
-        videoEqPreset: exportVideoEqPreset,
-        audioNormalize: exportAudioNormalize,
+        ...exportOpts,
         signal: ac.signal,
         onProgress: pushProgress
       })

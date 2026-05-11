@@ -1377,7 +1377,7 @@ ${emitDownloadsTopbarClusterHtml(18)}
             <summary>Метаданные</summary>
             <div class="settings-body" aria-describedby="dlRailMetaSectionHint">
               <p id="dlRailMetaSectionHint" class="opts-hint">
-                Cookies из браузера или файла Netscape, маскировка User-Agent §6 и опция автозапуска результата в обработчике FluxAlloy §6.4.
+                Cookies из браузера или файла Netscape, маскировка User-Agent §6; автозапуск в обработчик §6.4 и опционально ffmpeg-экспорт §7.2 в соседний файл.
               </p>
               <label for="cookiesBrowserSelect">Cookies §6.2</label>
               <select id="cookiesBrowserSelect" aria-describedby="dlRailMetaSectionHint">
@@ -1403,6 +1403,13 @@ ${emitDownloadsTopbarClusterHtml(18)}
               <div class="opts-pill-field" style="margin-top:0.45rem">
                 <span class="opts-pill-label">Открывать результат в обработчике <span class="opts-check-muted">§6.4</span></span>
                 <button type="button" class="pill-switch" id="pillOpenInHandler" role="switch" aria-checked="false" aria-label="Открывать результат в обработчике после успеха" aria-describedby="dlRailMetaSectionHint">
+                  <span class="pill-switch-knob" aria-hidden="true"></span>
+                  <span class="pill-switch-text">Выкл</span>
+                </button>
+              </div>
+              <div class="opts-pill-field" style="margin-top:0.35rem">
+                <span class="opts-pill-label">Затем авто-экспорт <span class="opts-check-muted">§6.4→§7.2</span></span>
+                <button type="button" class="pill-switch" id="pillAutoExportAfterOpen" role="switch" aria-checked="false" aria-label="После авто-открытия запустить экспорт в файл рядом с загрузкой" aria-describedby="dlRailMetaSectionHint">
                   <span class="pill-switch-knob" aria-hidden="true"></span>
                   <span class="pill-switch-text">Выкл</span>
                 </button>
@@ -1524,6 +1531,7 @@ ${emitDownloadsTopbarClusterHtml(18)}
       var fragmentRetriesInput = document.getElementById('fragmentRetriesInput');
       var queueRetrySelect = document.getElementById('queueRetrySelect');
       var pillOpenInHandler = document.getElementById('pillOpenInHandler');
+      var pillAutoExportAfterOpen = document.getElementById('pillAutoExportAfterOpen');
       var extraArgsInput = document.getElementById('extraArgsInput');
       var previewOutDirOverride = document.getElementById('previewOutDirOverride');
       var argsPreview = document.getElementById('argsPreview');
@@ -1580,6 +1588,15 @@ ${emitDownloadsTopbarClusterHtml(18)}
         fmtPreset.disabled = pillIsOn(pillAudioOnly);
       }
 
+      function syncAutoExportPillLocked() {
+        if (!pillAutoExportAfterOpen) return;
+        var openOn = !!(pillOpenInHandler && pillIsOn(pillOpenInHandler));
+        pillAutoExportAfterOpen.disabled = !openOn;
+        if (!openOn && pillIsOn(pillAutoExportAfterOpen)) {
+          pillSet(pillAutoExportAfterOpen, false);
+        }
+      }
+
       function collectDraftCliPatch() {
         return {
           filenameTemplate: tmplInput ? tmplInput.value : '',
@@ -1595,6 +1612,7 @@ ${emitDownloadsTopbarClusterHtml(18)}
           fragmentRetriesLine: fragmentRetriesInput ? fragmentRetriesInput.value : '',
           queueRetryProfile: queueRetrySelect ? queueRetrySelect.value : 'off',
           openInHandlerOnComplete: pillIsOn(pillOpenInHandler),
+          autoExportAfterOpenInHandler: pillIsOn(pillAutoExportAfterOpen),
           extraArgsLine: extraArgsInput ? extraArgsInput.value : ''
         };
       }
@@ -1656,6 +1674,14 @@ ${emitDownloadsTopbarClusterHtml(18)}
       if (pillOpenInHandler) {
         pillOpenInHandler.addEventListener('click', function () {
           pillToggle(pillOpenInHandler);
+          syncAutoExportPillLocked();
+          schedulePreviewRefresh();
+        });
+      }
+      if (pillAutoExportAfterOpen) {
+        pillAutoExportAfterOpen.addEventListener('click', function () {
+          if (pillAutoExportAfterOpen.disabled) return;
+          pillToggle(pillAutoExportAfterOpen);
           schedulePreviewRefresh();
         });
       }
@@ -2041,6 +2067,10 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
           if (pillOpenInHandler && typeof p.openInHandlerOnComplete === 'boolean') {
             pillSet(pillOpenInHandler, p.openInHandlerOnComplete);
           }
+          if (pillAutoExportAfterOpen && typeof p.autoExportAfterOpenInHandler === 'boolean') {
+            pillSet(pillAutoExportAfterOpen, p.autoExportAfterOpenInHandler);
+          }
+          syncAutoExportPillLocked();
           if (!fmtPreset) return;
           fmtPreset.replaceChildren();
           (p.formatPresetChoices || []).forEach(function (c) {
@@ -2644,6 +2674,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
             fragmentRetriesLine: fragmentRetriesInput ? fragmentRetriesInput.value : '',
             queueRetryProfile: queueRetrySelect ? queueRetrySelect.value : 'off',
             openInHandlerOnComplete: pillIsOn(pillOpenInHandler),
+            autoExportAfterOpenInHandler: pillIsOn(pillAutoExportAfterOpen),
             extraArgsLine: extraArgsInput ? extraArgsInput.value : ''
           }).then(function (res) {
             if (res && res.ok === false && res.error) window.alert(res.error);
@@ -3043,6 +3074,12 @@ export function registerDownloadsWindowIpcHandlers(): void {
         }
         patch.openInHandlerOnComplete = o['openInHandlerOnComplete']
       }
+      if (Object.prototype.hasOwnProperty.call(o, 'autoExportAfterOpenInHandler')) {
+        if (typeof o['autoExportAfterOpenInHandler'] !== 'boolean') {
+          return { ok: false, error: 'Флаг авто-экспорта после открытия должен быть boolean' }
+        }
+        patch.autoExportAfterOpenInHandler = o['autoExportAfterOpenInHandler']
+      }
       if (
         patch.filenameTemplate === undefined &&
         patch.formatPreset === undefined &&
@@ -3057,7 +3094,8 @@ export function registerDownloadsWindowIpcHandlers(): void {
         patch.fragmentRetriesLine === undefined &&
         patch.extraArgsLine === undefined &&
         patch.queueRetryProfile === undefined &&
-        patch.openInHandlerOnComplete === undefined
+        patch.openInHandlerOnComplete === undefined &&
+        patch.autoExportAfterOpenInHandler === undefined
       ) {
         return { ok: false, error: 'Нечего сохранять' }
       }

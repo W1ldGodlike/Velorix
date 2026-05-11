@@ -57,6 +57,8 @@ export interface YtdlpDownloadOptionsPayload {
   queueRetryProfileChoices: Array<{ id: YtdlpQueueRetryProfileId; label: string }>
   /** §6.4 — после успеха yt-dlp открыть результат в preview главного окна без ручного «В обработчик». */
   openInHandlerOnComplete: boolean
+  /** §6.4 — после успешного авто-открытия запустить экспорт §7.2 в `…-export` рядом с файлом. */
+  autoExportAfterOpenInHandler: boolean
 }
 
 /**
@@ -86,4 +88,6 @@ export interface YtdlpDownloadOptionsPatch {
   queueRetryProfile?: YtdlpQueueRetryProfileId
   /** §6.4 — авто-открытие скачанного файла в обработчике после успешной строки очереди. */
   openInHandlerOnComplete?: boolean
+  /** §6.4 — авто-экспорт после успешного авто-открытия (только вместе с `openInHandlerOnComplete`). */
+  autoExportAfterOpenInHandler?: boolean
 }

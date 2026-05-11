@@ -139,6 +139,8 @@ export interface YtdlpRunOptionsSnapshot {
   queueRetryProfile: YtdlpQueueRetryProfileId
   /** §6.4 — после успешной загрузки открыть файл в главном окне (runner). */
   openInHandlerOnComplete: boolean
+  /** §6.4 — после успешного авто-открытия запустить ffmpeg-экспорт (runner + main). */
+  autoExportAfterOpenInHandler: boolean
 }
 
 export function parseYtdlpFormatPreset(raw: unknown): YtdlpFormatPresetId {
@@ -454,6 +456,7 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
 
   const queueRetryProfile = parseYtdlpQueueRetryProfile(settings.ytdlpQueueRetryProfile)
   const openInHandlerOnComplete = settings.ytdlpOpenInHandlerOnComplete === true
+  const autoExportAfterOpenInHandler = settings.ytdlpAutoExportAfterOpenInHandler === true
 
   return {
     filenameTemplate,
@@ -480,7 +483,8 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
     fragmentRetries,
     fragmentRetriesLine,
     queueRetryProfile,
-    openInHandlerOnComplete
+    openInHandlerOnComplete,
+    autoExportAfterOpenInHandler
   }
 }
 
@@ -556,6 +560,7 @@ export function payloadFromSnapshot(
       { id: 'normal', label: 'Обычный (2 повтора: 3 с + 8 с)' },
       { id: 'persistent', label: 'Устойчивый (3 повтора: 5 с + 15 с + 45 с)' }
     ],
-    openInHandlerOnComplete: snap.openInHandlerOnComplete
+    openInHandlerOnComplete: snap.openInHandlerOnComplete,
+    autoExportAfterOpenInHandler: snap.autoExportAfterOpenInHandler
   }
 }

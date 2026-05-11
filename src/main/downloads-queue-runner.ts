@@ -54,13 +54,20 @@ type OpenDownloadedInMainHandlerFn = (
 /** Из index.ts: то же открытие в preview, что кнопка «В обработчик» в окне загрузок. */
 let openDownloadedFileInMainHandlerHook: OpenDownloadedInMainHandlerFn | null = null
 
+type AfterDownloadOpenedInMainHandlerFn = (absoluteFile: string, rowId: number) => void
+
+/** §6.4 → §7.2: после успешного авто-открытия (например авто-экспорт). */
+let afterDownloadOpenedInMainHandlerHook: AfterDownloadOpenedInMainHandlerFn | null = null
+
 /**
  * Регистрируется при старте приложения: без hook авто-открытие §6.4 после успеха yt-dlp отключено.
  */
 export function configureDownloadsQueueRunnerHooks(hooks: {
   openDownloadedFileInHandler?: OpenDownloadedInMainHandlerFn
+  afterDownloadOpenedInMainHandler?: AfterDownloadOpenedInMainHandlerFn | null
 }): void {
   openDownloadedFileInMainHandlerHook = hooks.openDownloadedFileInHandler ?? null
+  afterDownloadOpenedInMainHandlerHook = hooks.afterDownloadOpenedInMainHandler ?? null
 }
 
 /** Вызывается из downloads-window: обновить UI после изменений очереди/прогресса. */
@@ -497,6 +504,11 @@ async function runYtdlpForWaitingRow(
                 stream: 'stderr',
                 text: `[FluxAlloy] Авто-открытие в обработчике не удалось: ${openResult.error}`
               })
+            } else if (
+              cliOpen.autoExportAfterOpenInHandler &&
+              afterDownloadOpenedInMainHandlerHook
+            ) {
+              afterDownloadOpenedInMainHandlerHook(safe, rowId)
             }
           }
         }

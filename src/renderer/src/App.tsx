@@ -3611,6 +3611,27 @@ function App(): JSX.Element {
                         Готовый файл сразу попадёт в редактор.
                       </span>
                     </div>
+                    <div className="app-field app-field-switch">
+                      <span>Авто-экспорт после открытия</span>
+                      <PillSwitch
+                        label="Авто-экспорт после открытия"
+                        checked={downloadsOptions.autoExportAfterOpenInHandler}
+                        describedBy="downloadsAutoExportAfterOpenHint"
+                        disabled={
+                          downloadsOptionsBusy || !downloadsOptions.openInHandlerOnComplete
+                        }
+                        onToggle={() => {
+                          void applyDownloadsOptionsPatch({
+                            autoExportAfterOpenInHandler:
+                              !downloadsOptions.autoExportAfterOpenInHandler
+                          })
+                        }}
+                      />
+                      <span id="downloadsAutoExportAfterOpenHint" className="app-field-help">
+                        После успешного открытия — ffmpeg в файл <code>…-export</code> рядом с
+                        загрузкой (параметры панели экспорта).
+                      </span>
+                    </div>
                     <div className="app-downloads-select-grid">
                       <label className="app-field">
                         <span>Cookies браузера</span>

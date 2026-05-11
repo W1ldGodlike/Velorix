@@ -471,6 +471,9 @@ export function loadSettings(filePath: string): AppSettings {
     if (parsed.ytdlpOpenInHandlerOnComplete === true) {
       base.ytdlpOpenInHandlerOnComplete = true
     }
+    if (parsed.ytdlpAutoExportAfterOpenInHandler === true) {
+      base.ytdlpAutoExportAfterOpenInHandler = true
+    }
     if (ytdlpSubtitlePreset !== undefined) {
       base.ytdlpSubtitlePreset = ytdlpSubtitlePreset
     }

@@ -110,6 +110,8 @@ export interface AppSettings {
   ytdlpQueueRetryProfile?: 'off' | 'light' | 'normal' | 'persistent'
   /** §6.4: после успешной загрузки автоматически открыть файл в главном окне обработки (preview). */
   ytdlpOpenInHandlerOnComplete?: boolean
+  /** §6.4: после успешного авто-открытия в обработчике запустить ffmpeg-экспорт в соседний файл (параметры §7.2). */
+  ytdlpAutoExportAfterOpenInHandler?: boolean
   /** §7.2: системный пресет экспорта MP4 (libx264 CRF + `-preset`). */
   ffmpegExportEncodePreset?: string
   /** §7.2: контейнер экспорта по умолчанию. */

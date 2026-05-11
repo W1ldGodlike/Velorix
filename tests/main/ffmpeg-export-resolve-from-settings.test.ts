@@ -1,0 +1,36 @@
+import { closeSync, existsSync, mkdtempSync, openSync, rmSync, unlinkSync } from 'fs'
+import { join } from 'path'
+import { tmpdir } from 'os'
+import { describe, expect, it } from 'vitest'
+
+import { pickUniqueAutoExportOutputPath } from '../../src/main/ffmpeg-export-resolve-from-settings'
+
+describe('pickUniqueAutoExportOutputPath', () => {
+  it('возвращает …-export.ext если файла ещё нет', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'fa-autoexp-'))
+    try {
+      const input = join(dir, 'clip.webm')
+      closeSync(openSync(input, 'w'))
+      const out = pickUniqueAutoExportOutputPath(input, 'mp4')
+      expect(out).toBe(join(dir, 'clip-export.mp4'))
+      expect(existsSync(out)).toBe(false)
+    } finally {
+      rmSync(dir, { recursive: true, force: true })
+    }
+  })
+
+  it('добавляет суффикс при коллизии', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'fa-autoexp2-'))
+    try {
+      const input = join(dir, 'a.mkv')
+      closeSync(openSync(input, 'w'))
+      const first = join(dir, 'a-export.mkv')
+      closeSync(openSync(first, 'w'))
+      const out = pickUniqueAutoExportOutputPath(input, 'mkv')
+      expect(out).toBe(join(dir, 'a-export-1.mkv'))
+      unlinkSync(first)
+    } finally {
+      rmSync(dir, { recursive: true, force: true })
+    }
+  })
+})
