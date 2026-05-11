@@ -67,6 +67,11 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --ignore-errors --flat-playlist -J ')
     expect(lines).toContain('yt-dlp --write-info-json --skip-download ')
     expect(lines).toContain('yt-dlp --no-warnings -F ')
+    expect(lines).toContain('yt-dlp --skip-download --print fps ')
+    expect(lines).toContain('yt-dlp --skip-download --print is_live ')
+    expect(lines).toContain('yt-dlp --skip-download --print live_status ')
+    expect(lines).toContain('yt-dlp --skip-download --print availability ')
+    expect(lines).toContain('yt-dlp --skip-download --print age_limit ')
   })
 
   it('preview: есть JSON-сводка и show_error для текущего превью', () => {
@@ -106,5 +111,12 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       lines.some((l) => l.includes('select_streams a:0') && l.includes('codec_name,profile,bit_rate'))
     ).toBe(true)
     expect(lines.some((l) => l.includes('refs,has_b_frames'))).toBe(true)
+    expect(lines.some((l) => l.includes('stream=index,codec_type,disposition'))).toBe(true)
+    expect(lines.some((l) => l.includes('format=nb_streams,nb_programs,format_name'))).toBe(true)
+    expect(
+      lines.some(
+        (l) => l.includes('-count_frames') && l.includes('select_streams v:0') && l.includes('nb_read_frames')
+      )
+    ).toBe(true)
   })
 })

@@ -284,6 +284,36 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· --no-warnings -F',
     summary: 'Список форматов без предупреждений в stderr (--no-warnings -F); допишите URL (чище лог).',
     fullLine: 'yt-dlp --no-warnings -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print fps',
+    summary: 'Кадры в секунду выбранного формата без скачивания (--skip-download --print fps); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print fps '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print is_live',
+    summary: 'Флаг прямого эфира true/false без скачивания (--skip-download --print is_live); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print is_live '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print live_status',
+    summary: 'Статус трансляции (is_live / was_live / not_live / upcoming) без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print live_status '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print availability',
+    summary: 'Доступность (public / unlisted / premium / needs_auth) без скачивания; допишите URL (диагностика 403/нужен логин).',
+    fullLine: 'yt-dlp --skip-download --print availability '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print age_limit',
+    summary: 'Возрастной лимит ролика без скачивания (--skip-download --print age_limit); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print age_limit '
   }
 ]
 
@@ -444,6 +474,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· v:0 refs+B',
     summary: 'Поток v:0: refs + has_b_frames (сложность GOP/B-кадры); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=refs,has_b_frames -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· streams disp',
+    summary: 'Все дорожки: index/codec_type/disposition (default/forced/captions/attached_pic); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries stream=index,codec_type,disposition -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format nb',
+    summary: 'Контейнер: nb_streams + nb_programs + format_name (число потоков и программ); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format=nb_streams,nb_programs,format_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 count_frames',
+    summary: 'Точный пересчёт кадров v:0 (-count_frames nb_read_frames); медленно, но даёт реальный счёт; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -count_frames -select_streams v:0 -show_entries stream=nb_read_frames -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffmpeg',
