@@ -92,6 +92,18 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· --print duration_string',
     summary: 'Только длительность HH:MM:SS без скачивания (--skip-download --print duration_string); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print duration_string '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print uploader',
+    summary: 'Имя автора/uploader без скачивания (--skip-download --print uploader); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print uploader '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print id',
+    summary: 'Идентификатор ролика на площадке без скачивания (--skip-download --print id); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print id '
   }
 ]
 
@@ -126,6 +138,12 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· a:0 compact',
     summary: 'Поток a:0: codec_name/sample_rate/channels (default=nw=1); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=codec_name,sample_rate,channels -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:0 language',
+    summary: 'Тег языка первой аудиодорожки (stream_tags=language); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream_tags=language -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',

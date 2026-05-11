@@ -35,6 +35,8 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
     expect(lines).toContain('yt-dlp --skip-download --print title ')
     expect(lines).toContain('yt-dlp --skip-download --print duration_string ')
+    expect(lines).toContain('yt-dlp --skip-download --print uploader ')
+    expect(lines).toContain('yt-dlp --skip-download --print id ')
   })
 
   it('preview: есть JSON-сводка и show_error для текущего превью', () => {
@@ -43,5 +45,6 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       lines.some((l) => l.includes('-of json') && l.includes('-show_format') && l.includes('-show_streams'))
     ).toBe(true)
     expect(lines.some((l) => l.includes('-show_error'))).toBe(true)
+    expect(lines.some((l) => l.includes('stream_tags=language'))).toBe(true)
   })
 })
