@@ -62,6 +62,11 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --version')
     expect(lines).toContain('yt-dlp -4 -F ')
     expect(lines).toContain('yt-dlp --no-cache-dir -F ')
+    expect(lines).toContain('yt-dlp --skip-download --print tags ')
+    expect(lines).toContain('yt-dlp --skip-download --print filesize_approx ')
+    expect(lines).toContain('yt-dlp --ignore-errors --flat-playlist -J ')
+    expect(lines).toContain('yt-dlp --write-info-json --skip-download ')
+    expect(lines).toContain('yt-dlp --no-warnings -F ')
   })
 
   it('preview: есть JSON-сводка и show_error для текущего превью', () => {
@@ -96,5 +101,10 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       lines.some((l) => l.includes('select_streams s:1') && l.includes('codec_name,codec_tag_string'))
     ).toBe(true)
     expect(lines.some((l) => l.includes('stream_tags=filename,mimetype'))).toBe(true)
+    expect(lines.some((l) => l.includes('codec_name,profile,level'))).toBe(true)
+    expect(
+      lines.some((l) => l.includes('select_streams a:0') && l.includes('codec_name,profile,bit_rate'))
+    ).toBe(true)
+    expect(lines.some((l) => l.includes('refs,has_b_frames'))).toBe(true)
   })
 })

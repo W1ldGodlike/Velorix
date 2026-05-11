@@ -254,6 +254,36 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· --no-cache-dir -F',
     summary: 'Список форматов без кэша extractors (--no-cache-dir -F); при подозрении на битый кэш; допишите URL.',
     fullLine: 'yt-dlp --no-cache-dir -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print tags',
+    summary: 'Сводка тегов/метаданных без скачивания (--skip-download --print tags); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print tags '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print filesize_approx',
+    summary: 'Оценка размера выбранного формата без скачивания (--skip-download --print filesize_approx); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print filesize_approx '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --ignore-errors -J',
+    summary: 'Плоский плейлист + JSON с пропуском битых элементов (--ignore-errors --flat-playlist -J); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --ignore-errors --flat-playlist -J '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --write-info-json',
+    summary: 'Записать .info.json рядом с выходом без видео (--write-info-json --skip-download); допишите URL (трассировка для Support ZIP).',
+    fullLine: 'yt-dlp --write-info-json --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --no-warnings -F',
+    summary: 'Список форматов без предупреждений в stderr (--no-warnings -F); допишите URL (чище лог).',
+    fullLine: 'yt-dlp --no-warnings -F '
   }
 ]
 
@@ -396,6 +426,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· s:1 compact',
     summary: 'Вторая дорожка субтитров s:1: codec_name/codec_tag_string (несколько языков); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:1 -show_entries stream=codec_name,codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 profile',
+    summary: 'Поток v:0: codec_name + profile + level (кодек/профиль для транскодинга); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=codec_name,profile,level -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:0 profile+br',
+    summary: 'Поток a:0: codec_name + profile + bit_rate (качество/битрейт дорожки); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=codec_name,profile,bit_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 refs+B',
+    summary: 'Поток v:0: refs + has_b_frames (сложность GOP/B-кадры); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=refs,has_b_frames -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffmpeg',
