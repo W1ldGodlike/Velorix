@@ -548,6 +548,30 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· --write-comments',
     summary: 'Комментарии в JSON без видео (--write-comments --skip-download); допишите URL (если поддерживается площадкой).',
     fullLine: 'yt-dlp --write-comments --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -g bestaudio',
+    summary: 'Прямая ссылка только на лучший аудиоформат (-g -f bestaudio/best); без видео; допишите URL.',
+    fullLine: 'yt-dlp -g -f bestaudio/best '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· flat-playlist simulate',
+    summary: 'Быстрая симуляция плейлиста без глубокого извлечения (--flat-playlist --simulate); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --flat-playlist --simulate '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print filepath',
+    summary: 'Шаблон выходного пути по текущим -o без скачивания (--skip-download --print filepath); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print filepath '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print epoch',
+    summary: 'Unix epoch времени публикации (если есть) без скачивания (--skip-download --print epoch); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print epoch '
   }
 ]
 
@@ -840,6 +864,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· d:0 data',
     summary: 'Первая data-дорожка d:0 (timed metadata и т.п.): codec_name/codec_tag_string; плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams d:0 -show_entries stream=codec_name,codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 FourCC',
+    summary: 'Поток v:0: codec_tag_string (FourCC/бренд сырого кодека); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format probe_score',
+    summary: 'probe_score контейнера (уверенность demuxer); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format=probe_score -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:2 compact',
+    summary: 'Третья аудиодорожка a:2: codec_name/sample_rate/channels; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:2 -show_entries stream=codec_name,sample_rate,channels -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffmpeg',

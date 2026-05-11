@@ -113,6 +113,14 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --write-comments --skip-download ')
   })
 
+  it('downloads: доп. сценарии — audio URL, flat simulate, print filepath/epoch', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp -g -f bestaudio/best ')
+    expect(lines).toContain('yt-dlp --flat-playlist --simulate ')
+    expect(lines).toContain('yt-dlp --skip-download --print filepath ')
+    expect(lines).toContain('yt-dlp --skip-download --print epoch ')
+  })
+
   it('preview: есть JSON-сводка и show_error для текущего превью', () => {
     const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
     expect(
@@ -226,6 +234,13 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     ).toBe(true)
     expect(
       lines.some((l) => l.includes('select_streams d:0') && l.includes('stream=codec_name,codec_tag_string'))
+    ).toBe(true)
+    expect(
+      lines.some((l) => l.includes('select_streams v:0') && l.includes('stream=codec_tag_string'))
+    ).toBe(true)
+    expect(lines.some((l) => l.includes('format=probe_score'))).toBe(true)
+    expect(
+      lines.some((l) => l.includes('select_streams a:2') && l.includes('codec_name,sample_rate,channels'))
     ).toBe(true)
   })
 })
