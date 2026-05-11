@@ -17,6 +17,13 @@ export type FfmpegExportScalePresetId = 'source' | '480p' | '720p' | '1080p'
 export type FfmpegExportVideoTransformId = 'none' | 'cw90' | 'ccw90' | 'r180' | 'hflip' | 'vflip'
 /** §7.2 — crop только через предустановленные выражения, без пользовательской строки `-vf`. */
 export type FfmpegExportCropPresetId = 'none' | 'center-square' | 'center-16-9' | 'center-4-3'
+/**
+ * §7.2 — пресеты `hqdn3d` denoise. Параметры подобраны от мягкого временного шумоподавления
+ * к более агрессивному; кастомных строк фильтра не принимаем, только белый список.
+ */
+export type FfmpegExportVideoDenoiseId = 'off' | 'light' | 'medium' | 'strong'
+/** §7.2 — пресеты `unsharp` (контурная резкость), от лёгкой к выраженной. */
+export type FfmpegExportVideoSharpenId = 'off' | 'light' | 'medium' | 'strong'
 export type FfmpegExportAudioModeId = 'aac' | 'none'
 /**
  * §7.2 — режим обработки субтитров на экспорте.
@@ -60,6 +67,10 @@ export interface FfmpegExportUserPresetSnapshot {
   stripChapters?: boolean
   /** §7.2 — поведение субтитров на выходе; по умолчанию совпадает с поведением до правки. */
   subtitleMode?: FfmpegExportSubtitleModeId
+  /** §7.2 — `hqdn3d` denoise; `off` совпадает с поведением до правки. */
+  videoDenoise?: FfmpegExportVideoDenoiseId
+  /** §7.2 — `unsharp` контурная резкость; `off` совпадает с поведением до правки. */
+  videoSharpen?: FfmpegExportVideoSharpenId
 }
 
 /** §7.2 — именованный пользовательский пресет (до нескольких штук в settings). */
@@ -103,6 +114,10 @@ export interface MediaExportRequestPayload {
   stripChapters?: boolean | null
   /** §7.2 — поведение субтитров; `drop` (по умолчанию) совпадает с текущим, `copy` — `-c:s copy`/`mov_text`. */
   subtitleMode?: FfmpegExportSubtitleModeId | null
+  /** §7.2 — `hqdn3d` denoise; `off` совпадает с текущим поведением. */
+  videoDenoise?: FfmpegExportVideoDenoiseId | null
+  /** §7.2 — `unsharp` контурная резкость; `off` совпадает с текущим поведением. */
+  videoSharpen?: FfmpegExportVideoSharpenId | null
 }
 
 export type MediaExportStartResult =

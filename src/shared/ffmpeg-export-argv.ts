@@ -13,6 +13,8 @@ import type {
   FfmpegExportEncodePresetId,
   FfmpegExportScalePresetId,
   FfmpegExportSubtitleModeId,
+  FfmpegExportVideoDenoiseId,
+  FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId,
   MediaExportTrimPayload
 } from './ffmpeg-export-contract'
@@ -146,6 +148,49 @@ export function resolveFfmpegExportSubtitleCopyCodec(
 }
 
 /**
+ * §7.2 — фрагмент `hqdn3d` для пресета шумоподавления; `off` → `null`.
+ *
+ * Параметры (luma_spatial : chroma_spatial : luma_tmp : chroma_tmp) подобраны от
+ * мягкого временного денойза к выраженному; пользовательские строки фильтра
+ * сознательно не принимаем — только белый список, чтобы spawn не получал произвольный `-vf`.
+ */
+export function resolveFfmpegExportVideoDenoiseFilter(
+  id: FfmpegExportVideoDenoiseId
+): string | null {
+  switch (id) {
+    case 'light':
+      return 'hqdn3d=1.5:1.5:6:6'
+    case 'medium':
+      return 'hqdn3d=3:3:6:6'
+    case 'strong':
+      return 'hqdn3d=5:5:10:10'
+    default:
+      return null
+  }
+}
+
+/**
+ * §7.2 — фрагмент `unsharp` для пресета резкости; `off` → `null`.
+ *
+ * Шаблон unsharp: `lx:ly:la:cx:cy:ca` (luma size + amount, chroma size + amount).
+ * Лёгкая ступень умышленно даёт амплитуду ~0.6, чтобы не «звенели» края.
+ */
+export function resolveFfmpegExportVideoSharpenFilter(
+  id: FfmpegExportVideoSharpenId
+): string | null {
+  switch (id) {
+    case 'light':
+      return 'unsharp=5:5:0.6:5:5:0.0'
+    case 'medium':
+      return 'unsharp=5:5:1.0:5:5:0.0'
+    case 'strong':
+      return 'unsharp=7:7:1.5:7:7:0.0'
+    default:
+      return null
+  }
+}
+
+/**
  * §7.2 — crop-пресеты через безопасный whitelist выражений ffmpeg.
  * Порядок в `-vf`: transform → crop → scale → fps.
  */
@@ -204,6 +249,10 @@ export interface FfmpegExportArgvParams {
    * `copy` добавляет `-c:s copy` (MKV) или `-c:s mov_text` (MP4/MOV) и явно маппит дорожки.
    */
   subtitleMode?: FfmpegExportSubtitleModeId
+  /** §7.2 — `hqdn3d` denoise; `off` или undefined — без фильтра. */
+  videoDenoise?: FfmpegExportVideoDenoiseId
+  /** §7.2 — `unsharp` контурная резкость; `off` или undefined — без фильтра. */
+  videoSharpen?: FfmpegExportVideoSharpenId
 }
 
 /** Полный argv ffmpeg без пути к exe; используется и runner, и preview UI. */
@@ -217,6 +266,16 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
   const crop = resolveFfmpegExportCropFilter(params.cropPreset ?? 'none')
   if (crop !== null) {
     filters.push(crop)
+  }
+  // §7.2 — порядок: денойз раньше резкости и масштаба, чтобы шум не «выпиливался» резкостью
+  // и не дублировался при последующем `scale`. Это согласовано с обычной киноpipe-семантикой.
+  const denoise = resolveFfmpegExportVideoDenoiseFilter(params.videoDenoise ?? 'off')
+  if (denoise !== null) {
+    filters.push(denoise)
+  }
+  const sharpen = resolveFfmpegExportVideoSharpenFilter(params.videoSharpen ?? 'off')
+  if (sharpen !== null) {
+    filters.push(sharpen)
   }
   const scale = resolveFfmpegExportScaleFilter(params.scalePreset)
   if (scale !== null) {
@@ -352,6 +411,8 @@ export interface FfmpegExportPreviewInput {
   stripMetadata?: boolean
   stripChapters?: boolean
   subtitleMode?: FfmpegExportSubtitleModeId
+  videoDenoise?: FfmpegExportVideoDenoiseId
+  videoSharpen?: FfmpegExportVideoSharpenId
 }
 
 export interface FfmpegExportPreviewResult {
@@ -420,7 +481,9 @@ export function buildFfmpegExportPreviewCommand(
     ...(input.audioGainDb !== undefined ? { audioGainDb: input.audioGainDb } : {}),
     ...(input.stripMetadata === true ? { stripMetadata: true } : {}),
     ...(input.stripChapters === true ? { stripChapters: true } : {}),
-    ...(input.subtitleMode !== undefined ? { subtitleMode: input.subtitleMode } : {})
+    ...(input.subtitleMode !== undefined ? { subtitleMode: input.subtitleMode } : {}),
+    ...(input.videoDenoise !== undefined ? { videoDenoise: input.videoDenoise } : {}),
+    ...(input.videoSharpen !== undefined ? { videoSharpen: input.videoSharpen } : {})
   }
 
   let pass1Command: string | undefined

@@ -14,6 +14,8 @@ import type {
   FfmpegExportSubtitleModeId,
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
+  FfmpegExportVideoDenoiseId,
+  FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId,
   MediaExportTrimPayload
 } from '../shared/ffmpeg-export-contract'
@@ -35,6 +37,8 @@ export type {
   FfmpegExportSubtitleModeId,
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
+  FfmpegExportVideoDenoiseId,
+  FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId,
   MediaExportRequestPayload,
   MediaExportStartResult,
@@ -49,6 +53,8 @@ export {
   resolveFfmpegExportEncodeParams as resolveExportEncodeParams,
   resolveFfmpegExportScaleFilter,
   resolveFfmpegExportSubtitleCopyCodec,
+  resolveFfmpegExportVideoDenoiseFilter,
+  resolveFfmpegExportVideoSharpenFilter,
   shouldApplyFfmpegExportTrim
 } from '../shared/ffmpeg-export-argv'
 
@@ -194,6 +200,22 @@ export function parseFfmpegExportStripFlag(raw: unknown): boolean {
   return raw === true
 }
 
+/** §7.2 — пресет `hqdn3d`; по умолчанию `off`. */
+export function parseFfmpegExportVideoDenoise(raw: unknown): FfmpegExportVideoDenoiseId {
+  if (raw === 'light' || raw === 'medium' || raw === 'strong') {
+    return raw
+  }
+  return 'off'
+}
+
+/** §7.2 — пресет `unsharp`; по умолчанию `off`. */
+export function parseFfmpegExportVideoSharpen(raw: unknown): FfmpegExportVideoSharpenId {
+  if (raw === 'light' || raw === 'medium' || raw === 'strong') {
+    return raw
+  }
+  return 'off'
+}
+
 /**
  * §7.2 — целочисленный сдвиг громкости в дБ; `null` при пустом/некорректном/нулевом значении.
  * Дополнительная гарантия по сравнению с `normalizeFfmpegExportAudioGainDb`: явно
@@ -246,6 +268,8 @@ export function parseFfmpegExportUserPresetSnapshot(
   const stripMetadata = parseFfmpegExportStripFlag(o['stripMetadata'])
   const stripChapters = parseFfmpegExportStripFlag(o['stripChapters'])
   const subtitleMode = parseFfmpegExportSubtitleMode(o['subtitleMode'])
+  const videoDenoise = parseFfmpegExportVideoDenoise(o['videoDenoise'])
+  const videoSharpen = parseFfmpegExportVideoSharpen(o['videoSharpen'])
   return {
     encodePreset,
     container,
@@ -261,7 +285,9 @@ export function parseFfmpegExportUserPresetSnapshot(
     ...(audioGainDb !== null ? { audioGainDb } : {}),
     ...(stripMetadata ? { stripMetadata: true } : {}),
     ...(stripChapters ? { stripChapters: true } : {}),
-    ...(subtitleMode === 'copy' ? { subtitleMode: 'copy' as const } : {})
+    ...(subtitleMode === 'copy' ? { subtitleMode: 'copy' as const } : {}),
+    ...(videoDenoise !== 'off' ? { videoDenoise } : {}),
+    ...(videoSharpen !== 'off' ? { videoSharpen } : {})
   }
 }
 
@@ -365,6 +391,24 @@ export function mergeFfmpegExportSnapshotIntoAppSettings(
     next.ffmpegExportSubtitleMode = 'copy'
   } else {
     delete next.ffmpegExportSubtitleMode
+  }
+  if (
+    snapshot.videoDenoise === 'light' ||
+    snapshot.videoDenoise === 'medium' ||
+    snapshot.videoDenoise === 'strong'
+  ) {
+    next.ffmpegExportVideoDenoise = snapshot.videoDenoise
+  } else {
+    delete next.ffmpegExportVideoDenoise
+  }
+  if (
+    snapshot.videoSharpen === 'light' ||
+    snapshot.videoSharpen === 'medium' ||
+    snapshot.videoSharpen === 'strong'
+  ) {
+    next.ffmpegExportVideoSharpen = snapshot.videoSharpen
+  } else {
+    delete next.ffmpegExportVideoSharpen
   }
   return next
 }
@@ -553,6 +597,10 @@ export async function runFfmpegExportJob(params: {
   stripChapters?: boolean | null
   /** §7.2 — режим субтитров (`copy` или `drop`). */
   subtitleMode?: FfmpegExportSubtitleModeId | null
+  /** §7.2 — `hqdn3d` denoise; `off`/null — без фильтра. */
+  videoDenoise?: FfmpegExportVideoDenoiseId | null
+  /** §7.2 — `unsharp` контурная резкость; `off`/null — без фильтра. */
+  videoSharpen?: FfmpegExportVideoSharpenId | null
   signal: AbortSignal
   onProgress?: (p: FfmpegExportProgressPayload) => void
 }): Promise<{ ok: true } | { ok: false; error: string }> {
@@ -572,6 +620,8 @@ export async function runFfmpegExportJob(params: {
   const stripMetadata = parseFfmpegExportStripFlag(params.stripMetadata)
   const stripChapters = parseFfmpegExportStripFlag(params.stripChapters)
   const subtitleMode = parseFfmpegExportSubtitleMode(params.subtitleMode)
+  const videoDenoise = parseFfmpegExportVideoDenoise(params.videoDenoise)
+  const videoSharpen = parseFfmpegExportVideoSharpen(params.videoSharpen)
   if (wantTwoPass && videoBitrate === null) {
     return {
       ok: false,
@@ -602,7 +652,9 @@ export async function runFfmpegExportJob(params: {
     ...(audioGainDb !== null ? { audioGainDb } : {}),
     ...(stripMetadata ? { stripMetadata: true } : {}),
     ...(stripChapters ? { stripChapters: true } : {}),
-    ...(subtitleMode === 'copy' ? { subtitleMode: 'copy' as const } : {})
+    ...(subtitleMode === 'copy' ? { subtitleMode: 'copy' as const } : {}),
+    ...(videoDenoise !== 'off' ? { videoDenoise } : {}),
+    ...(videoSharpen !== 'off' ? { videoSharpen } : {})
   }
 
   if (!wantTwoPass) {

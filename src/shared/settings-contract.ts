@@ -8,6 +8,8 @@ import type {
   FfmpegExportCropPresetId,
   FfmpegExportSubtitleModeId,
   FfmpegExportUserPreset,
+  FfmpegExportVideoDenoiseId,
+  FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId
 } from './ffmpeg-export-contract'
 
@@ -136,6 +138,10 @@ export interface AppSettings {
   ffmpegExportStripChapters?: boolean
   /** §7.2: поведение субтитров на экспорте (`drop` по умолчанию = не пишем поле). */
   ffmpegExportSubtitleMode?: FfmpegExportSubtitleModeId
+  /** §7.2: пресет `hqdn3d` (`off` по умолчанию = не пишем поле). */
+  ffmpegExportVideoDenoise?: FfmpegExportVideoDenoiseId
+  /** §7.2: пресет `unsharp` (`off` по умолчанию = не пишем поле). */
+  ffmpegExportVideoSharpen?: FfmpegExportVideoSharpenId
   /** §7.2: пользовательские пресеты экспорта (имя + снимок параметров тулбара). */
   ffmpegExportUserPresets?: FfmpegExportUserPreset[]
   /** §7: последняя папка успешного ffmpeg export; используется только как defaultPath save dialog. */

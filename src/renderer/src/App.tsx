@@ -53,6 +53,8 @@ import type {
   FfmpegExportSubtitleModeId,
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
+  FfmpegExportVideoDenoiseId,
+  FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId
 } from '../../shared/ffmpeg-export-contract'
 import type {
@@ -214,6 +216,18 @@ const EXPORT_AUDIO_GAIN_OPTIONS: Array<{ value: number; label: string }> = [
 const EXPORT_SUBTITLE_MODES: Array<{ id: FfmpegExportSubtitleModeId; label: string }> = [
   { id: 'drop', label: 'Не сохранять' },
   { id: 'copy', label: 'Сохранить (copy/mov_text)' }
+]
+const EXPORT_VIDEO_DENOISE_OPTIONS: Array<{ id: FfmpegExportVideoDenoiseId; label: string }> = [
+  { id: 'off', label: 'Шумоподавление: выкл.' },
+  { id: 'light', label: 'Лёгкое (hqdn3d=1.5)' },
+  { id: 'medium', label: 'Среднее (hqdn3d=3)' },
+  { id: 'strong', label: 'Сильное (hqdn3d=5)' }
+]
+const EXPORT_VIDEO_SHARPEN_OPTIONS: Array<{ id: FfmpegExportVideoSharpenId; label: string }> = [
+  { id: 'off', label: 'Резкость: выкл.' },
+  { id: 'light', label: 'Лёгкая (unsharp 0.6)' },
+  { id: 'medium', label: 'Средняя (unsharp 1.0)' },
+  { id: 'strong', label: 'Сильная (unsharp 1.5)' }
 ]
 const SNAPSHOT_FORMATS: Array<{ id: FfmpegSnapshotFormatId; label: string }> = [
   { id: 'png', label: 'Кадр PNG' },
@@ -598,6 +612,10 @@ function App(): JSX.Element {
   const [exportStripChapters, setExportStripChapters] = useState(false)
   /** §7.2 — режим субтитров: `drop` (по умолчанию) или `copy` (`-c:s copy`/`mov_text`). */
   const [exportSubtitleMode, setExportSubtitleMode] = useState<FfmpegExportSubtitleModeId>('drop')
+  /** §7.2 — пресет `hqdn3d` denoise. */
+  const [exportVideoDenoise, setExportVideoDenoise] = useState<FfmpegExportVideoDenoiseId>('off')
+  /** §7.2 — пресет `unsharp` контурной резкости. */
+  const [exportVideoSharpen, setExportVideoSharpen] = useState<FfmpegExportVideoSharpenId>('off')
   /** §7.2 — сохранённые пользователем наборы параметров тулбара (preview/spawn используют те же поля). */
   const [exportUserPresets, setExportUserPresets] = useState<FfmpegExportUserPreset[]>([])
   /** Выбранный в `<select>` пользовательский пресет; ручные правки тулбара сбрасывают выбор. */
@@ -1018,6 +1036,10 @@ function App(): JSX.Element {
     setExportStripMetadata(loaded.ffmpegExportStripMetadata === true)
     setExportStripChapters(loaded.ffmpegExportStripChapters === true)
     setExportSubtitleMode(loaded.ffmpegExportSubtitleMode === 'copy' ? 'copy' : 'drop')
+    const dn = loaded.ffmpegExportVideoDenoise
+    setExportVideoDenoise(dn === 'light' || dn === 'medium' || dn === 'strong' ? dn : 'off')
+    const sh = loaded.ffmpegExportVideoSharpen
+    setExportVideoSharpen(sh === 'light' || sh === 'medium' || sh === 'strong' ? sh : 'off')
   }, [])
 
   const bumpManualExportEdit = useCallback(() => {
@@ -1085,7 +1107,9 @@ function App(): JSX.Element {
       ...(exportAudioGainDb !== 0 ? { audioGainDb: exportAudioGainDb } : {}),
       ...(exportStripMetadata ? { stripMetadata: true } : {}),
       ...(exportStripChapters ? { stripChapters: true } : {}),
-      ...(exportSubtitleMode === 'copy' ? { subtitleMode: 'copy' as const } : {})
+      ...(exportSubtitleMode === 'copy' ? { subtitleMode: 'copy' as const } : {}),
+      ...(exportVideoDenoise !== 'off' ? { videoDenoise: exportVideoDenoise } : {}),
+      ...(exportVideoSharpen !== 'off' ? { videoSharpen: exportVideoSharpen } : {})
     }
   }, [
     exportEncodePreset,
@@ -1102,7 +1126,9 @@ function App(): JSX.Element {
     exportAudioGainDb,
     exportStripMetadata,
     exportStripChapters,
-    exportSubtitleMode
+    exportSubtitleMode,
+    exportVideoDenoise,
+    exportVideoSharpen
   ])
 
   const handleSaveExportUserPreset = useCallback(() => {
@@ -1552,7 +1578,9 @@ function App(): JSX.Element {
         audioGainDb: exportAudioGainDb === 0 ? null : exportAudioGainDb,
         stripMetadata: exportStripMetadata,
         stripChapters: exportStripChapters,
-        subtitleMode: exportSubtitleMode
+        subtitleMode: exportSubtitleMode,
+        videoDenoise: exportVideoDenoise,
+        videoSharpen: exportVideoSharpen
       })
       if (res.ok) {
         const savedName = res.path.split(/[\\/]/).pop() || res.path
@@ -1653,6 +1681,8 @@ function App(): JSX.Element {
       stripMetadata: exportStripMetadata,
       stripChapters: exportStripChapters,
       subtitleMode: exportSubtitleMode,
+      videoDenoise: exportVideoDenoise,
+      videoSharpen: exportVideoSharpen,
       inputPath: sourcePath,
       outputPath,
       trim: trimRange,
@@ -1675,6 +1705,8 @@ function App(): JSX.Element {
     exportStripMetadata,
     exportStripChapters,
     exportSubtitleMode,
+    exportVideoDenoise,
+    exportVideoSharpen,
     trimRange,
     probeInfo?.durationSec
   ])
@@ -2220,6 +2252,60 @@ function App(): JSX.Element {
                         </option>
                       ))}
                     </select>
+                  </label>
+                  <label className="app-field">
+                    <span>Шумоподавление</span>
+                    <select
+                      className="app-control"
+                      aria-label="Пресет hqdn3d denoise"
+                      aria-describedby="ffmpegVideoDenoiseHint"
+                      value={exportVideoDenoise}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const v = e.target.value as FfmpegExportVideoDenoiseId
+                        setExportVideoDenoise(v)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportVideoDenoise(v)
+                          .catch(console.error)
+                      }}
+                    >
+                      {EXPORT_VIDEO_DENOISE_OPTIONS.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                    <span id="ffmpegVideoDenoiseHint" className="app-field-help">
+                      `hqdn3d` применяется до `unsharp` и масштаба §7.2.
+                    </span>
+                  </label>
+                  <label className="app-field">
+                    <span>Резкость</span>
+                    <select
+                      className="app-control"
+                      aria-label="Пресет unsharp"
+                      aria-describedby="ffmpegVideoSharpenHint"
+                      value={exportVideoSharpen}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const v = e.target.value as FfmpegExportVideoSharpenId
+                        setExportVideoSharpen(v)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportVideoSharpen(v)
+                          .catch(console.error)
+                      }}
+                    >
+                      {EXPORT_VIDEO_SHARPEN_OPTIONS.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                    <span id="ffmpegVideoSharpenHint" className="app-field-help">
+                      `unsharp` применяется после `hqdn3d` и до `scale`/`fps`.
+                    </span>
                   </label>
                 </div>
               </details>

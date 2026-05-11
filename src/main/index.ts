@@ -69,6 +69,8 @@ import {
   parseFfmpegExportStripFlag,
   parseFfmpegExportSubtitleMode,
   parseFfmpegExportTrim,
+  parseFfmpegExportVideoDenoise,
+  parseFfmpegExportVideoSharpen,
   parseFfmpegExportVideoTransform,
   parseFfmpegExportUserPresetSnapshot,
   parseFfmpegExportUserPresetsList,
@@ -914,6 +916,32 @@ function persistFfmpegExportSubtitleMode(raw: unknown): AppSettings {
     next.ffmpegExportSubtitleMode = 'copy'
   } else {
     delete next.ffmpegExportSubtitleMode
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistFfmpegExportVideoDenoise(raw: unknown): AppSettings {
+  const value = parseFfmpegExportVideoDenoise(raw)
+  const next = { ...cachedSettings }
+  if (value === 'off') {
+    delete next.ffmpegExportVideoDenoise
+  } else {
+    next.ffmpegExportVideoDenoise = value
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistFfmpegExportVideoSharpen(raw: unknown): AppSettings {
+  const value = parseFfmpegExportVideoSharpen(raw)
+  const next = { ...cachedSettings }
+  if (value === 'off') {
+    delete next.ffmpegExportVideoSharpen
+  } else {
+    next.ffmpegExportVideoSharpen = value
   }
   cachedSettings = next
   saveSettings(settingsPath(), cachedSettings)
@@ -1931,6 +1959,16 @@ app.whenReady().then(() => {
   )
 
   ipcMain.handle(
+    mw.settingsSetFfmpegExportVideoDenoise,
+    (_, raw: unknown): AppSettings => persistFfmpegExportVideoDenoise(raw)
+  )
+
+  ipcMain.handle(
+    mw.settingsSetFfmpegExportVideoSharpen,
+    (_, raw: unknown): AppSettings => persistFfmpegExportVideoSharpen(raw)
+  )
+
+  ipcMain.handle(
     mw.settingsSetFfmpegSnapshotFormat,
     (_, raw: unknown): AppSettings => persistFfmpegSnapshotFormat(raw)
   )
@@ -2327,6 +2365,16 @@ app.whenReady().then(() => {
       exportSubtitleModeRaw !== undefined && exportSubtitleModeRaw !== null
         ? parseFfmpegExportSubtitleMode(exportSubtitleModeRaw)
         : parseFfmpegExportSubtitleMode(cachedSettings.ffmpegExportSubtitleMode)
+    const exportVideoDenoiseRaw = (raw as { videoDenoise?: unknown }).videoDenoise
+    const exportVideoDenoise =
+      exportVideoDenoiseRaw !== undefined && exportVideoDenoiseRaw !== null
+        ? parseFfmpegExportVideoDenoise(exportVideoDenoiseRaw)
+        : parseFfmpegExportVideoDenoise(cachedSettings.ffmpegExportVideoDenoise)
+    const exportVideoSharpenRaw = (raw as { videoSharpen?: unknown }).videoSharpen
+    const exportVideoSharpen =
+      exportVideoSharpenRaw !== undefined && exportVideoSharpenRaw !== null
+        ? parseFfmpegExportVideoSharpen(exportVideoSharpenRaw)
+        : parseFfmpegExportVideoSharpen(cachedSettings.ffmpegExportVideoSharpen)
 
     const paths = resolveAppPaths()
     const ffmpeg = resolveEngineExecutablePath(
@@ -2391,6 +2439,8 @@ app.whenReady().then(() => {
         stripMetadata: exportStripMetadata,
         stripChapters: exportStripChapters,
         subtitleMode: exportSubtitleMode,
+        videoDenoise: exportVideoDenoise,
+        videoSharpen: exportVideoSharpen,
         signal: ac.signal,
         onProgress: pushProgress
       })

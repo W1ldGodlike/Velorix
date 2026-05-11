@@ -9,6 +9,8 @@ import {
   resolveFfmpegExportCropFilter,
   resolveFfmpegExportScaleFilter,
   resolveFfmpegExportSubtitleCopyCodec,
+  resolveFfmpegExportVideoDenoiseFilter,
+  resolveFfmpegExportVideoSharpenFilter,
   resolveFfmpegExportVideoTransformFilters,
   shouldApplyFfmpegExportTrim
 } from '../../src/shared/ffmpeg-export-argv'
@@ -575,6 +577,93 @@ describe('shared ffmpeg export argv', () => {
     expect(result.command).toContain('volume=6dB')
     expect(result.command).toContain('-c:s')
     expect(result.command).toContain('mov_text')
+  })
+
+  it('resolveFfmpegExportVideoDenoiseFilter/Sharpen дают только белый список', () => {
+    expect(resolveFfmpegExportVideoDenoiseFilter('off')).toBeNull()
+    expect(resolveFfmpegExportVideoDenoiseFilter('light')).toBe('hqdn3d=1.5:1.5:6:6')
+    expect(resolveFfmpegExportVideoDenoiseFilter('medium')).toBe('hqdn3d=3:3:6:6')
+    expect(resolveFfmpegExportVideoDenoiseFilter('strong')).toBe('hqdn3d=5:5:10:10')
+    expect(resolveFfmpegExportVideoSharpenFilter('off')).toBeNull()
+    expect(resolveFfmpegExportVideoSharpenFilter('light')).toBe('unsharp=5:5:0.6:5:5:0.0')
+    expect(resolveFfmpegExportVideoSharpenFilter('medium')).toBe('unsharp=5:5:1.0:5:5:0.0')
+    expect(resolveFfmpegExportVideoSharpenFilter('strong')).toBe('unsharp=7:7:1.5:7:7:0.0')
+  })
+
+  it('denoise и sharpen встают между crop и scale, перед fps', () => {
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: 30,
+      scalePreset: '720p',
+      videoTransform: 'cw90',
+      cropPreset: 'center-square',
+      videoDenoise: 'medium',
+      videoSharpen: 'light'
+    })
+    const vf = argv[argv.indexOf('-vf') + 1] ?? ''
+    expect(vf).toBe(
+      'transpose=1,crop=min(iw\\,ih):min(iw\\,ih),hqdn3d=3:3:6:6,unsharp=5:5:0.6:5:5:0.0,scale=-2:720,fps=30'
+    )
+  })
+
+  it('off-пресеты denoise/sharpen не меняют baseline argv', () => {
+    const baseline = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source'
+    })
+    const explicit = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      videoDenoise: 'off',
+      videoSharpen: 'off'
+    })
+    expect(explicit).toEqual(baseline)
+  })
+
+  it('buildFfmpegExportPreviewCommand пробрасывает denoise/sharpen в обе строки twoPass', () => {
+    const result = buildFfmpegExportPreviewCommand({
+      encodePreset: 'balance',
+      container: 'mp4',
+      crf: null,
+      videoBitrate: '5000k',
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      inputPath: '/a.mp4',
+      outputPath: '/a-out.mp4',
+      twoPass: true,
+      videoDenoise: 'strong',
+      videoSharpen: 'medium'
+    })
+    expect(result.pass1Command).toBeDefined()
+    expect(result.pass1Command).toContain('hqdn3d=5:5:10:10')
+    expect(result.pass1Command).toContain('unsharp=5:5:1.0:5:5:0.0')
+    expect(result.command).toContain('hqdn3d=5:5:10:10')
+    expect(result.command).toContain('unsharp=5:5:1.0:5:5:0.0')
   })
 
   it('buildFfmpegExportPreviewCommand даёт две строки при twoPass+birate', () => {
