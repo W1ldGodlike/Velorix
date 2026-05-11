@@ -136,6 +136,17 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
     return { percent: null, speed: 'ожидание переподключения', eta: null }
   }
 
+  /** Подготовка HLS/DASH без числового процента — чтобы колонка не «замирала» на пустом §6.4. */
+  if (/\[download\]\s+Downloading\s+m3u8\s+information/i.test(t)) {
+    return { percent: null, speed: 'манифест HLS', eta: null }
+  }
+  if (/\[download\]\s+Downloading\s+.*\bplayer\s+api\s+json\b/i.test(t)) {
+    return { percent: null, speed: 'метаданные плеера', eta: null }
+  }
+  if (/\[download\]\s+Downloading\s+webpage\b/i.test(t)) {
+    return { percent: null, speed: 'страница', eta: null }
+  }
+
   /** Некоторые версии пишут общее «ожидание …» без явного reconnect/sleep. */
   if (
     /\[download\]\s+Waiting\s+for\s+/i.test(t) &&
@@ -566,7 +577,19 @@ const YTDLP_QUEUE_RETRY_SKIP_MARKERS = [
   'drm protected',
   'requested format is not available',
   'no video formats found',
-  'unsupported url'
+  'unsupported url',
+  'no space left on device',
+  'errno 28',
+  'disk is full',
+  'ffmpeg: not found',
+  'ffprobe: not found',
+  'unable to locate ffmpeg',
+  'the downloaded file is empty',
+  'file is smaller than min filesize',
+  'account has been terminated',
+  'video has been taken down',
+  'copyright takedown',
+  'blocked by uploader'
 ] as const
 
 /**
@@ -599,9 +622,15 @@ const YTDLP_QUEUE_RETRY_KEEP_TRYING_MARKERS = [
   'http error 504',
   'http error 429',
   'http error 408',
+  'http error 520',
+  'http error 521',
+  'http error 522',
+  'http error 523',
   'request timeout',
   'too many requests',
   'got server http error',
+  'eof occurred in violation of protocol',
+  'ssl handshake',
   'certificate verify failed',
   'ssl: ',
   'errno 110',

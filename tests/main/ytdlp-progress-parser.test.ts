@@ -182,6 +182,26 @@ describe('parseYtdlpDownloadProgressLine', () => {
       eta: null
     })
   })
+
+  it('парсит подготовительные строки m3u8 / player API / webpage без процентов', () => {
+    expect(parseYtdlpDownloadProgressLine('[download] Downloading m3u8 information')).toEqual({
+      percent: null,
+      speed: 'манифест HLS',
+      eta: null
+    })
+    expect(
+      parseYtdlpDownloadProgressLine('[download] Downloading android player API JSON')
+    ).toEqual({
+      percent: null,
+      speed: 'метаданные плеера',
+      eta: null
+    })
+    expect(parseYtdlpDownloadProgressLine('[download] Downloading webpage')).toEqual({
+      percent: null,
+      speed: 'страница',
+      eta: null
+    })
+  })
 })
 
 describe('parseYtdlpInfoDownloadingTitlePrefix', () => {
@@ -446,6 +466,13 @@ describe('shouldSkipYtdlpQueueRetriesAfterFailure', () => {
     expect(shouldSkipYtdlpQueueRetriesAfterFailure('Video is DRM protected', null)).toBe(true)
   })
 
+  it('true для нехватки места и отсутствия ffmpeg (повтор той же команды бессмысленен)', () => {
+    expect(shouldSkipYtdlpQueueRetriesAfterFailure(null, 'OSError: [Errno 28] No space left on device')).toBe(
+      true
+    )
+    expect(shouldSkipYtdlpQueueRetriesAfterFailure('ffmpeg: not found', null)).toBe(true)
+  })
+
   it('true если yt-dlp не нашёл форматов или URL не поддерживается', () => {
     expect(shouldSkipYtdlpQueueRetriesAfterFailure('No video formats found', null)).toBe(true)
     expect(
@@ -491,6 +518,12 @@ describe('classifyYtdlpQueueFailureKind', () => {
       'transient_network'
     )
     expect(classifyYtdlpQueueFailureKind(null, 'Rate limit exceeded')).toBe('transient_network')
+    expect(classifyYtdlpQueueFailureKind('HTTP Error 521: Web Server Is Down', null)).toBe(
+      'transient_network'
+    )
+    expect(classifyYtdlpQueueFailureKind(null, 'EOF occurred in violation of protocol')).toBe(
+      'transient_network'
+    )
   })
 
   it('likely_source_block для приватного видео', () => {
@@ -509,6 +542,12 @@ describe('classifyYtdlpQueueFailureKind', () => {
     )
     expect(classifyYtdlpQueueFailureKind('DRM protected video', null)).toBe('likely_source_block')
     expect(classifyYtdlpQueueFailureKind('No video formats found', null)).toBe(
+      'likely_source_block'
+    )
+    expect(classifyYtdlpQueueFailureKind(null, 'ERROR: No space left on device')).toBe(
+      'likely_source_block'
+    )
+    expect(classifyYtdlpQueueFailureKind('The downloaded file is empty', null)).toBe(
       'likely_source_block'
     )
   })
