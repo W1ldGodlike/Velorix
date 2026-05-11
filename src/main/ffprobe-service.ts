@@ -6,7 +6,10 @@ import { logExternalProcessLine } from './external-process-log'
 import { formatFfprobeDispositionSummary } from '../shared/ffprobe-disposition'
 import { buildChapterRowsFromFfprobeJson } from '../shared/ffprobe-chapters'
 import { parseFfprobeRationalFps, resolveVideoFpsApprox } from '../shared/ffprobe-video-fps'
-import { summarizeFfprobeSideDataList } from '../shared/ffprobe-side-data'
+import {
+  extractFfprobeDisplayMatrixRotation,
+  summarizeFfprobeSideDataList
+} from '../shared/ffprobe-side-data'
 import type {
   MediaProbeResult,
   MediaProbeSuccess,
@@ -98,6 +101,23 @@ function ffprobeScalarDisplay(raw: string | undefined): string | null {
   return t
 }
 
+/** SAR 1:1 и варианты не дублируем в компактной строке detail. */
+function isSquarePixelSar(raw: string): boolean {
+  const t = raw.replace(/\s+/g, '').toLowerCase()
+  return t === '1:1' || t === '1/1' || t === '1'
+}
+
+function parseTagRotateDegrees(raw: string | null): number | null {
+  if (raw === null) {
+    return null
+  }
+  const n = Number.parseFloat(raw.trim().replace(',', '.'))
+  if (!Number.isFinite(n) || n === 0) {
+    return null
+  }
+  return Math.trunc(n)
+}
+
 function tagString(
   tags: Record<string, string | number | undefined> | undefined,
   key: string
@@ -142,6 +162,22 @@ function buildTrackDetail(stream: NonNullable<FfprobeJson['streams']>[number]): 
     const haveWh = typeof w === 'number' && typeof h === 'number'
     if (haveWh) {
       parts.push(`${w}×${h}`)
+    }
+    const sarShown = ffprobeScalarDisplay(stream.sample_aspect_ratio)
+    if (sarShown !== null && !isSquarePixelSar(sarShown)) {
+      parts.push(`SAR ${sarShown}`)
+    }
+    const darShown = ffprobeScalarDisplay(stream.display_aspect_ratio)
+    if (darShown !== null) {
+      parts.push(`DAR ${darShown}`)
+    }
+    const matrixDeg = extractFfprobeDisplayMatrixRotation(stream.side_data_list)
+    const tagRotDeg = parseTagRotateDegrees(tagString(stream.tags, 'rotate'))
+    if (matrixDeg !== null && matrixDeg !== 0) {
+      const label = Number.isInteger(matrixDeg) ? String(matrixDeg) : matrixDeg.toFixed(2)
+      parts.push(`matrix ${label}°`)
+    } else if (tagRotDeg !== null) {
+      parts.push(`rot ${tagRotDeg}°`)
     }
     const fps =
       parseFfprobeRationalFps(stream.avg_frame_rate) ?? parseFfprobeRationalFps(stream.r_frame_rate)

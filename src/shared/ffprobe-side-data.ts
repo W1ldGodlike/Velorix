@@ -90,6 +90,35 @@ function summarizeSideDataItem(raw: unknown): string | null {
   return shortSideDataType(type)
 }
 
+/**
+ * Угол поворота из `Display Matrix` в `side_data_list` (ffprobe), если есть.
+ * Тег `rotate` обрабатывается отдельно в `ffprobe-service` — здесь только matrix.
+ */
+export function extractFfprobeDisplayMatrixRotation(sideDataList: unknown): number | null {
+  if (!Array.isArray(sideDataList)) {
+    return null
+  }
+  for (const item of sideDataList) {
+    const o = recordFromUnknown(item)
+    if (o === null) {
+      continue
+    }
+    const type = scalarToken(o, 'side_data_type')
+    if (type === null || !/display\s*matrix/i.test(type)) {
+      continue
+    }
+    const rot = o['rotation']
+    if (typeof rot === 'number' && Number.isFinite(rot)) {
+      return rot
+    }
+    if (typeof rot === 'string') {
+      const n = Number.parseFloat(rot.trim().replace(',', '.'))
+      return Number.isFinite(n) ? n : null
+    }
+  }
+  return null
+}
+
 export function summarizeFfprobeSideDataList(raw: unknown): string | null {
   if (!Array.isArray(raw)) {
     return null

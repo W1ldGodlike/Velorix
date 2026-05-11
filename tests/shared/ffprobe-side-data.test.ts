@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest'
 
-import { summarizeFfprobeSideDataList } from '../../src/shared/ffprobe-side-data'
+import {
+  extractFfprobeDisplayMatrixRotation,
+  summarizeFfprobeSideDataList
+} from '../../src/shared/ffprobe-side-data'
 
 describe('ffprobe-side-data', () => {
   it('возвращает null без массива side_data_list', () => {
@@ -37,6 +40,23 @@ describe('ffprobe-side-data', () => {
         }
       ])
     ).toBe('HDR mastering 0.005000-1000.000000 cd/m2 · HDR CLL 1000/400 nits')
+  })
+
+  it('extractFfprobeDisplayMatrixRotation: первый Display Matrix с полем rotation', () => {
+    expect(
+      extractFfprobeDisplayMatrixRotation([
+        { side_data_type: 'Display Matrix', rotation: -90 },
+        { side_data_type: 'Display Matrix', rotation: 0 }
+      ])
+    ).toBe(-90)
+    expect(
+      extractFfprobeDisplayMatrixRotation([{ side_data_type: 'Display Matrix', rotation: '270' }])
+    ).toBe(270)
+    expect(extractFfprobeDisplayMatrixRotation(undefined)).toBeNull()
+    expect(extractFfprobeDisplayMatrixRotation([])).toBeNull()
+    expect(
+      extractFfprobeDisplayMatrixRotation([{ side_data_type: 'DOVI configuration record' }])
+    ).toBeNull()
   })
 
   it('дедуплицирует и ограничивает неизвестные типы', () => {
