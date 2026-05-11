@@ -18,6 +18,8 @@ jobs:
         with:
           path: bin
           key: ${{ runner.os }}-flux-engines-${{ hashFiles('scripts/prepare-engines-win.mjs', 'Data/trusted_hashes.json') }}
+          restore-keys: |
+            ${{ runner.os }}-flux-engines-
 
       - name: Setup Node
         uses: actions/setup-node@v4

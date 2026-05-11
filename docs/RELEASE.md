@@ -72,6 +72,14 @@ npm run engines:report-hashes -- --json
 
 ## 4. Сборки
 
+Один проход под полные Windows-артефакты (подготовка `bin/`, verify, vite build, затем `electron-builder --win` без лишнего второго `prepare` от lifecycle `prebuild:win`):
+
+```powershell
+npm run release:win
+```
+
+Отдельные шаги:
+
 ```powershell
 npm run build:unpack
 npm run build:win

@@ -297,3 +297,4 @@
 - [J-280] 2026-05-11 22:37:55 [SDK]: §19/§3 — `engines:verify-bundled` + `FLUXALLOY_ENGINES_STRICT`, поля `ffmpeg.exe`/`ffprobe.exe` в `trusted_hashes`, проверки в prepare/engine-download; CI: prepare+verify перед build; win target portable+NSIS; docs RELEASE/licenses; чеклист. `npm run check` ок.
 - [J-281] 2026-05-11 22:39:25 [SDK]: §19/§3 — `engines:report-hashes` (+ `--json`), `check:release` с prepare+verify перед build, win target `zip` в electron-builder; RELEASE/чеклист спринта. `npm run check` ок.
 - [J-282] 2026-05-11 22:41:05 [SDK]: §19/§3 — CI: кэш `bin/`, шаг `pack:dir`; `npm run pack:dir`; исправлен невалидный корневой `zip:` в electron-builder (zip в `win.target`); bin README + RELEASE; чеклист спринта. `npm run check` ок.
+- [J-283] 2026-05-11 22:42:21 [SDK]: §19/§3 — `npm run release:win` (prepare+verify+build+`electron-builder --win` без дубля prebuild), CI `restore-keys` для кэша движков, RELEASE/bin README, спринт. `npm run check` ок.
