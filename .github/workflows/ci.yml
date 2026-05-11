@@ -8,10 +8,16 @@ on:
 jobs:
   check:
     runs-on: windows-latest
-    timeout-minutes: 25
+    timeout-minutes: 35
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Cache Windows engines (bin/)
+        uses: actions/cache@v4
+        with:
+          path: bin
+          key: ${{ runner.os }}-flux-engines-${{ hashFiles('scripts/prepare-engines-win.mjs', 'Data/trusted_hashes.json') }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -33,4 +39,7 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Packaging smoke (electron-builder --dir)
+        run: npm run pack:dir
 

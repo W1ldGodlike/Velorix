@@ -16,6 +16,14 @@ For local Windows development, run:
 npm run engines:prepare:win
 ```
 
+After prepare, print SHA256 for `trusted_hashes.json` (see `docs/RELEASE.md`):
+
+```powershell
+npm run engines:report-hashes
+```
+
+GitHub Actions caches `bin/` between runs (keyed on `prepare-engines-win.mjs` and `trusted_hashes.json`).
+
 `npm run dev` runs the same check automatically before starting Electron.
 
 Runtime resolution order is:

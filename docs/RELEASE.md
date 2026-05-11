@@ -104,3 +104,5 @@ git status
 
 После push убедиться, что GitHub Actions `ci` зелёный.
 
+Workflow `ci` на Windows: кэш `bin/`, `engines:prepare:win`, `engines:verify-bundled`, `npm run build`, затем `npm run pack:dir` (`electron-builder --dir`) — проверка конфигурации упаковки без полного NSIS/portable/zip.
+
