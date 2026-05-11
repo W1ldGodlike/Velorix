@@ -1,4 +1,5 @@
 import { execFileSync } from 'node:child_process'
+import { readFileSync } from 'node:fs'
 
 /**
  * Минимальная защита от случайного коммита секретов (в т.ч. Cursor SDK key).
@@ -11,7 +12,7 @@ const files = filesRaw.split('\0').filter(Boolean)
 const patterns = [
   // Cursor SDK key
   { id: 'CURSOR_API_KEY', re: /\bCURSOR_API_KEY\s*=\s*\S+/g },
-  { id: 'crsr_token', re: /\bcrsr_[A-Za-z0-9_]+\b/g },
+  { id: 'cursor_sdk_token', re: new RegExp('\\bcrsr_' + '[A-Za-z0-9_]+\\b', 'g') },
 
   // Generic suspects
   { id: 'AWS_access_key_id', re: /\bAKIA[0-9A-Z]{16}\b/g },
@@ -28,7 +29,7 @@ for (const f of files) {
 
   let text = ''
   try {
-    text = execFileSync('git', ['show', `:${f}`], { encoding: 'utf8' })
+    text = readFileSync(f, 'utf8')
   } catch {
     // binary or missing in index; ignore
     continue

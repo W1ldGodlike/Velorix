@@ -6,7 +6,11 @@ vi.mock('electron', () => ({
   }
 }))
 
-import { isAllowedExternalUrl, openAllowedExternalUrl } from '../../src/main/external-url'
+import {
+  isAllowedExternalUrl,
+  openAllowedExternalUrl,
+  shouldAllowElectronWindowNavigation
+} from '../../src/main/external-url'
 import { shell } from 'electron'
 
 describe('external-url guard', () => {
@@ -24,6 +28,33 @@ describe('external-url guard', () => {
 
     openAllowedExternalUrl('https://example.com/')
     expect(shell.openExternal).toHaveBeenCalledWith('https://example.com/')
+  })
+
+  it('разрешает только внутреннюю навигацию текущего Electron-окна', () => {
+    expect(
+      shouldAllowElectronWindowNavigation(
+        'http://localhost:5173/#inspector',
+        'http://localhost:5173/'
+      )
+    ).toBe(true)
+    expect(
+      shouldAllowElectronWindowNavigation(
+        'file:///C:/app/renderer/index.html#inspector',
+        'file:///C:/app/renderer/index.html'
+      )
+    ).toBe(true)
+    expect(
+      shouldAllowElectronWindowNavigation(
+        'file:///C:/Users/user/secret.txt',
+        'file:///C:/app/renderer/index.html'
+      )
+    ).toBe(false)
+    expect(
+      shouldAllowElectronWindowNavigation(
+        'https://example.com/',
+        'file:///C:/app/renderer/index.html'
+      )
+    ).toBe(false)
   })
 })
 

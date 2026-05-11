@@ -5,7 +5,7 @@ import { BrowserWindow, ipcMain } from 'electron'
 import { is } from '@electron-toolkit/utils'
 
 import { grantMediaPath, isGrantedMediaPath } from './media-protocol'
-import { openAllowedExternalUrl } from './external-url'
+import { installExternalNavigationGuard, openAllowedExternalUrl } from './external-url'
 import { resolvePreloadOutFile } from './preload-resolve'
 import type { StoredWindowRect } from './settings-store'
 import { boundsFromBrowserWindow, rectifyBoundsForRestore } from './window-bounds'
@@ -165,6 +165,7 @@ export function focusOrCreateInspectorWindow(requestedMediaPath?: unknown): void
     openAllowedExternalUrl(details.url)
     return { action: 'deny' }
   })
+  installExternalNavigationGuard(inspectorWindow.webContents)
 
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     const base = process.env['ELECTRON_RENDERER_URL'].replace(/\/$/, '')

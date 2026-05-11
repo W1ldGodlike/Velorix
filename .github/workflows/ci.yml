@@ -22,9 +22,6 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Check (lint + typecheck + tests)
+      - name: Check (lint + typecheck + tests + secrets)
         run: npm run check
-
-      - name: Secrets guard (tracked files)
-        run: node scripts/check-no-secrets.mjs
 

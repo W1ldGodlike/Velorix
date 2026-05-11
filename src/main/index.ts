@@ -8,7 +8,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
 import { resolveAppPaths } from './app-paths'
-import { openAllowedExternalUrl } from './external-url'
+import { installExternalNavigationGuard, openAllowedExternalUrl } from './external-url'
 import { downloadEnginesWindows, isAnyEngineMissing } from './engine-download'
 import {
   cancelDownloadsRunner,
@@ -1470,6 +1470,7 @@ function createWindow(): void {
     openAllowedExternalUrl(details.url)
     return { action: 'deny' }
   })
+  installExternalNavigationGuard(mainWindow.webContents)
 
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])

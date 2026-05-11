@@ -12,7 +12,8 @@
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",
-    "check": "npm run lint && npm run typecheck && npm run test",
+    "check": "npm run lint && npm run typecheck && npm run test && npm run check:secrets",
+    "check:secrets": "node scripts/check-no-secrets.mjs",
     "test": "vitest run --reporter=default",
     "test:watch": "vitest",
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",

@@ -69,7 +69,7 @@ import {
   emitInlineStrokeSvg
 } from '../shared/lucide-downloads-icons'
 import { focusOrCreateInspectorWindow, isInspectorWindow } from './inspector-window'
-import { openAllowedExternalUrl } from './external-url'
+import { installExternalNavigationGuard, openAllowedExternalUrl } from './external-url'
 import {
   defaultDownloadsWindowLogicalSize,
   displayMatchingRestoreRect,
@@ -3601,6 +3601,7 @@ export function focusOrCreateDownloadsWindow(mergeText?: string | null): void {
     openAllowedExternalUrl(details.url)
     return { action: 'deny' }
   })
+  installExternalNavigationGuard(downloadsWindow.webContents)
 
   void downloadsWindow.loadURL(dataUrl)
   downloadsWindow.once('ready-to-show', () => {
