@@ -303,3 +303,4 @@
 - [J-286] 2026-05-11 22:45:25 [SDK]: §19/§17 — CI `permissions: contents: read`; `engines:verify-bundled` при `GITHUB_ACTIONS` логирует первую строку версии каждого exe; RELEASE/спринт. `npm run check` ок.
 - [J-287] 2026-05-11 22:47:09 [SDK]: §3/§19 — `FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS`+`AbortSignal.timeout` в prepare и `engine-download`; `engines:report-hashes --versions`; `FLUXALLOY_LOG_ENGINE_VERSIONS` в verify; RELEASE/bin README/спринт. `npm run check` ок.
 - [J-288] 2026-05-11 22:48:27 [SDK]: §19/§3 — `engines-exe-version-line.mjs` (общий `--version` для report/verify), лог timeout в prepare при env, RELEASE `CSC_IDENTITY_AUTO_DISCOVERY`, BUNDLED_LICENSES пункт про timeout; спринт. `npm run check` ок.
+- [J-289] 2026-05-11 22:49:27 [SDK]: §19 — CI кэш bin: расширен `hashFiles` (verify/report/version-line); `--help` в verify/report; README релиз, RELEASE справка; спринт. `npm run check` ок.

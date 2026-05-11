@@ -68,6 +68,8 @@ npm run engines:report-hashes -- --json --versions
 
 Локально повторить вывод версий из verify: `FLUXALLOY_LOG_ENGINE_VERSIONS=1` и `npm run engines:verify-bundled`.
 
+Справка по флагам: `npm run engines:verify-bundled -- --help`, `npm run engines:report-hashes -- --help`.
+
 Таймаут HTTP при скачивании движков (`prepare-engines-win` и загрузка в main из UI): переменная **`FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS`** (миллисекунды; по умолчанию 600000).
 
 Принудительно обновить движки в `bin/` (игнорировать «уже есть»), например после смены upstream `latest` или подозрения на битый кэш:

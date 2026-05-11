@@ -5,6 +5,7 @@
  * Режим строгого релиза: `FLUXALLOY_ENGINES_STRICT=1` — обязательны непустые хеши
  * `windows-x64["yt-dlp.exe"]`, `["ffmpeg.exe"]`, `["ffprobe.exe"]` и совпадение с диском.
  * Без strict пустые поля = проверка пропускается (dev), но файлы после prepare должны существовать.
+ * Флаги: `--help`.
  */
 import { createHash } from 'node:crypto'
 import { createReadStream } from 'node:fs'
@@ -77,7 +78,21 @@ async function logCiEngineHeadlines() {
   }
 }
 
+function printHelp() {
+  console.log(`verify-bundled-engines-hashes — проверка bin/*.exe и опционально SHA256 (Data/trusted_hashes.json).
+
+Переменные:
+  FLUXALLOY_ENGINES_STRICT=1     обязательны непустые exe-хеши в windows-x64
+  FLUXALLOY_LOG_ENGINE_VERSIONS=1   печать первой строки версии каждого exe
+  GITHUB_ACTIONS=true (в CI)    то же, что лог версий`)
+}
+
 async function main() {
+  if (process.argv.includes('--help')) {
+    printHelp()
+    return
+  }
+
   if (!isWindows()) {
     log('Windows-only verify skipped on this platform')
     return

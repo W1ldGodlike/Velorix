@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /**
  * Печать SHA256 для `bin/*.exe` (§19): удобно заполнить `Data/trusted_hashes.json` после `engines:prepare:win`.
- * Флаги: `--json` — фрагмент для вставки в `windows-x64` (только exe-ключи); `--versions` — первая строка `--version`/`-version` для каждого exe.
+ * Флаги: `--json` — фрагмент для вставки в `windows-x64` (только exe-ключи); `--versions` — первая строка `--version`/`-version` для каждого exe; `--help`.
  */
 import { createHash } from 'node:crypto'
 import { createReadStream } from 'node:fs'
@@ -50,8 +50,21 @@ async function printVersionLines() {
   }
 }
 
+function printHelp() {
+  console.log(`report-bundled-engines-hashes — SHA256 для bin/*.exe (trusted_hashes).
+
+Флаги:
+  --json       JSON-фрагмент windows-x64 (yt-dlp.exe, ffmpeg.exe, ffprobe.exe)
+  --versions   первая строка --version / -version для каждого exe
+  --help       это сообщение`)
+}
+
 async function main() {
   const argv = process.argv
+  if (argv.includes('--help')) {
+    printHelp()
+    return
+  }
   const jsonOut = argv.includes('--json')
   const versionsOut = argv.includes('--versions')
 
