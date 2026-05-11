@@ -806,6 +806,78 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· print title NA',
     summary: 'Печать title с плейсхолдером NA вместо пустого поля (--output-na-placeholder NA --skip-download --print title); допишите URL.',
     fullLine: 'yt-dlp --output-na-placeholder NA --skip-download --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· referer YT -F',
+    summary: 'HTTP Referer для обхода hotlink/CDN-ограничений (--referer https://www.youtube.com/ -F); замените домен под сайт; допишите URL.',
+    fullLine: 'yt-dlp --referer https://www.youtube.com/ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· header Accept-Lang -F',
+    summary: 'Произвольный заголовок без пробелов в значении (--add-header Accept-Language:en-US -F); при сложных значениях соберите argv вручную; допишите URL.',
+    fullLine: 'yt-dlp --add-header Accept-Language:en-US -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· proxy localhost -F',
+    summary: 'HTTP(S)-прокси (--proxy http://127.0.0.1:8080 -F); замените хост/порт; допишите URL.',
+    fullLine: 'yt-dlp --proxy http://127.0.0.1:8080 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· impersonate chrome -F',
+    summary: 'TLS/HTTP fingerprint как у Chrome (--impersonate chrome -F); помогает против антибота; допишите URL.',
+    fullLine: 'yt-dlp --impersonate chrome -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· match-filter dur -F',
+    summary: 'Отбор по длительности без пробелов в выражении (--match-filter duration<600 -F); подстройте порог; допишите URL.',
+    fullLine: 'yt-dlp --match-filter duration<600 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· batch-file urls.txt',
+    summary: 'Пакет из файла со списком URL (--batch-file urls.txt); создайте urls.txt рядом с cwd или укажите полный путь без пробелов.',
+    fullLine: 'yt-dlp --batch-file urls.txt '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· load-info-json',
+    summary: 'Повторная обработка из сохранённого JSON (--load-info-json video.info.json); путь без пробелов; допишите -f/-o при необходимости.',
+    fullLine: 'yt-dlp --load-info-json video.info.json '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· yes-playlist -J',
+    summary: 'Явно скачать/разобрать весь плейлист (--yes-playlist -J); когда URL похож на один ролик, но это плейлист; допишите URL.',
+    fullLine: 'yt-dlp --yes-playlist -J '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-config -F',
+    summary: 'Игнорировать пользовательские конфиги yt-dlp (--no-config -F); воспроизводимая диагностика; допишите URL.',
+    fullLine: 'yt-dlp --no-config -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· cookies file -F',
+    summary: 'Файл cookies Netscape (--cookies cookies.txt -F); путь без пробелов; допишите URL.',
+    fullLine: 'yt-dlp --cookies cookies.txt -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· sleep-interval',
+    summary: 'Пауза между запросами в секундах (--sleep-interval 2); снижает нагрузку на сайт; допишите URL.',
+    fullLine: 'yt-dlp --sleep-interval 2 '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· age-limit -F',
+    summary: 'Пропуск контента старше возрастного рейтинга (--age-limit 18 -F); подстройте порог; допишите URL.',
+    fullLine: 'yt-dlp --age-limit 18 -F '
   }
 ]
 
@@ -1218,6 +1290,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· decode ignore_err',
     summary: 'Короткий декод с игнором ошибок потока (-err_detect ignore_err -t 2); битые кадры/TS; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -err_detect ignore_err -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -t 2 -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format artist+album',
+    summary: 'Теги контейнера artist + album (аудиофайлы/мультимедиа); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=artist,album -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 avg_fps',
+    summary: 'Поток v:0: только avg_frame_rate (сверка с r_frame_rate в других шаблонах); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=avg_frame_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· audio decode 3s',
+    summary: 'Декод только аудио первых 3 с (-vn -sn); быстрее полного smoke на видеофайлах; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vn -sn -t 3 -f null -`
   }
 ]
 

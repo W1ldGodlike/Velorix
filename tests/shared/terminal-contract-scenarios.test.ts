@@ -311,6 +311,16 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines.some((l) => l.includes('-err_detect ignore_err') && l.includes('-t 2 -f null -'))).toBe(
       true
     )
+    expect(lines.some((l) => l.includes('format_tags=artist,album'))).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams v:0') &&
+          l.includes('stream=avg_frame_rate') &&
+          !l.includes('bit_rate')
+      )
+    ).toBe(true)
+    expect(lines.some((l) => l.includes('-vn -sn -t 3 -f null -'))).toBe(true)
   })
 
   it('downloads: сетевые/выводные флаги yt-dlp (smoke по fullLine)', () => {
@@ -327,5 +337,17 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --wait-for-video 10 ')
     expect(lines).toContain('yt-dlp --skip-playlist-after-errors 5 ')
     expect(lines).toContain('yt-dlp --output-na-placeholder NA --skip-download --print title ')
+    expect(lines).toContain('yt-dlp --referer https://www.youtube.com/ -F ')
+    expect(lines).toContain('yt-dlp --add-header Accept-Language:en-US -F ')
+    expect(lines).toContain('yt-dlp --proxy http://127.0.0.1:8080 -F ')
+    expect(lines).toContain('yt-dlp --impersonate chrome -F ')
+    expect(lines).toContain('yt-dlp --match-filter duration<600 -F ')
+    expect(lines).toContain('yt-dlp --batch-file urls.txt ')
+    expect(lines).toContain('yt-dlp --load-info-json video.info.json ')
+    expect(lines).toContain('yt-dlp --yes-playlist -J ')
+    expect(lines).toContain('yt-dlp --no-config -F ')
+    expect(lines).toContain('yt-dlp --cookies cookies.txt -F ')
+    expect(lines).toContain('yt-dlp --sleep-interval 2 ')
+    expect(lines).toContain('yt-dlp --age-limit 18 -F ')
   })
 })
