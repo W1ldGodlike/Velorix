@@ -33,6 +33,7 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
 
   it('downloads: есть --print шаблоны для title и duration_string', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --dump-single-json ')
     expect(lines).toContain('yt-dlp --skip-download --print title ')
     expect(lines).toContain('yt-dlp --skip-download --print duration_string ')
     expect(lines).toContain('yt-dlp --skip-download --print uploader ')
@@ -90,5 +91,6 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(
       lines.some((l) => l.includes('select_streams s:1') && l.includes('codec_name,codec_tag_string'))
     ).toBe(true)
+    expect(lines.some((l) => l.includes('stream_tags=filename,mimetype'))).toBe(true)
   })
 })
