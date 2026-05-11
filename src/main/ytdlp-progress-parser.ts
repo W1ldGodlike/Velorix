@@ -260,6 +260,25 @@ function ytdlpFormatHintFromOutputPath(prefix: string, rawPath: string): string 
 /**
  * §6/v0 — краткая подпись целевого формата из строк yt-dlp `[info] … Downloading N format(s): …`.
  */
+/**
+ * §6/v0 — фрагмент до `: Downloading N format(s)` в `[info]` для колонки «Название» (не сырой id ролика YouTube).
+ */
+export function parseYtdlpInfoDownloadingTitlePrefix(line: string): string | null {
+  const t = line.trimEnd()
+  if (!isYtdlpInfoLine(t)) {
+    return null
+  }
+  const m = t.match(/^\[info\]\s+(.+?):\s+Downloading\s+\d+\s+format(?:\(s\))?/i)
+  const raw = m?.[1]?.trim()
+  if (!raw || raw.length < 2) {
+    return null
+  }
+  if (/^[A-Za-z0-9_-]{11}$/.test(raw)) {
+    return null
+  }
+  return raw.length > 240 ? `${raw.slice(0, 238)}…` : raw
+}
+
 export function parseYtdlpInfoFormatSnippet(line: string): string | null {
   const t = line.trimEnd()
   if (!isYtdlpInfoLine(t)) {

@@ -67,7 +67,7 @@
   - size;
   - progress bar + percent;
   - speed;
-  - ETA;
+  - оставшееся время (колонка «Осталось»);
   - status with dot;
   - icon-only actions.
 - Row actions:

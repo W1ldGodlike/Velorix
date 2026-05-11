@@ -19,6 +19,7 @@ import {
   formatYtdlpProgressCell,
   formatYtdlpQueueFailureStatus,
   parseYtdlpDownloadProgressLine,
+  parseYtdlpInfoDownloadingTitlePrefix,
   parseYtdlpInfoQueueSizeHint,
   parseYtdlpQueueFormatHint,
   parseYtdlpProgressPercentNumber,
@@ -285,6 +286,22 @@ async function runYtdlpForWaitingRow(
     emitDownloadsLog({ kind: 'line', rowId, stream, text: line })
   }
 
+  const applyQueueTitleHint = (line: string): void => {
+    const title = parseYtdlpInfoDownloadingTitlePrefix(line)
+    if (!title) {
+      return
+    }
+    const row = getDownloadsQueueRowById(rowId)
+    if (!row) {
+      return
+    }
+    if (row.shortLabel !== shortUrlLabel(row.url)) {
+      return
+    }
+    updateDownloadsRow(rowId, { shortLabel: title })
+    notifySnapshot()
+  }
+
   const applyYtDlpQueueCellHints = (line: string): void => {
     let changed = false
     const fmt = parseYtdlpQueueFormatHint(line)
@@ -400,6 +417,7 @@ async function runYtdlpForWaitingRow(
               noteErrorLine(line)
               noteOutputPathLine(line)
               applyYtDlpQueueCellHints(line)
+              applyQueueTitleHint(line)
               applyProgressLine(line)
             },
             onStderrLine: (line) => {
@@ -408,6 +426,7 @@ async function runYtdlpForWaitingRow(
               noteErrorLine(line)
               noteOutputPathLine(line)
               applyYtDlpQueueCellHints(line)
+              applyQueueTitleHint(line)
               applyProgressLine(line)
             }
           },

@@ -24,6 +24,7 @@ export {
   formatYtdlpProgressCell,
   formatYtdlpQueueFailureStatus,
   parseYtdlpDownloadProgressLine,
+  parseYtdlpInfoDownloadingTitlePrefix,
   parseYtdlpInfoFormatSnippet,
   parseYtdlpInfoQueueSizeHint,
   parseYtdlpQueueFormatHint,

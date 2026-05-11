@@ -8,6 +8,7 @@ import {
   formatYtdlpProgressCell,
   formatYtdlpQueueFailureStatus,
   parseYtdlpDownloadProgressLine,
+  parseYtdlpInfoDownloadingTitlePrefix,
   parseYtdlpInfoFormatSnippet,
   parseYtdlpInfoQueueSizeHint,
   parseYtdlpQueueFormatHint,
@@ -166,6 +167,26 @@ describe('parseYtdlpDownloadProgressLine', () => {
       speed: 'повтор фрагмента 7 · 3/10',
       eta: null
     })
+  })
+})
+
+describe('parseYtdlpInfoDownloadingTitlePrefix', () => {
+  it('достаёт человекочитаемый префикс до Downloading format', () => {
+    expect(
+      parseYtdlpInfoDownloadingTitlePrefix(
+        '[info] Как сделать пирог: Downloading 1 format(s): 398+251'
+      )
+    ).toBe('Как сделать пирог')
+  })
+
+  it('не принимает одиночный id YouTube из 11 символов', () => {
+    expect(
+      parseYtdlpInfoDownloadingTitlePrefix('[info] dQw4w9WgXcQ: Downloading 1 format(s): 251')
+    ).toBeNull()
+  })
+
+  it('возвращает null вне [info]', () => {
+    expect(parseYtdlpInfoDownloadingTitlePrefix('[download] x')).toBeNull()
   })
 })
 
