@@ -45,6 +45,12 @@ function isWindows() {
   return process.platform === 'win32'
 }
 
+/** Принудительно перекачать/пересобрать `bin/*.exe`, даже если файлы уже есть (см. `run-prepare-engines-force.mjs`). */
+function enginesForce() {
+  const v = process.env.FLUXALLOY_ENGINES_FORCE
+  return v === '1' || (typeof v === 'string' && v.trim().toLowerCase() === 'true')
+}
+
 async function fileExistsNonEmpty(path) {
   try {
     const s = await stat(path)
@@ -171,6 +177,10 @@ function readVersion(exePath, args) {
 
 async function ensureYtDlp(trusted) {
   const target = join(binDir, 'yt-dlp.exe')
+  if (enginesForce() && (await fileExistsNonEmpty(target))) {
+    log('FLUXALLOY_ENGINES_FORCE: удаляю yt-dlp.exe перед повторной загрузкой')
+    await rm(target, { force: true })
+  }
   if (await fileExistsNonEmpty(target)) {
     log('yt-dlp.exe already exists')
     return
@@ -184,6 +194,13 @@ async function ensureYtDlp(trusted) {
 async function ensureFfmpeg(trusted) {
   const ffmpegTarget = join(binDir, 'ffmpeg.exe')
   const ffprobeTarget = join(binDir, 'ffprobe.exe')
+  if (enginesForce()) {
+    if ((await fileExistsNonEmpty(ffmpegTarget)) || (await fileExistsNonEmpty(ffprobeTarget))) {
+      log('FLUXALLOY_ENGINES_FORCE: удаляю ffmpeg.exe / ffprobe.exe перед повторной загрузкой')
+      await rm(ffmpegTarget, { force: true })
+      await rm(ffprobeTarget, { force: true })
+    }
+  }
   if ((await fileExistsNonEmpty(ffmpegTarget)) && (await fileExistsNonEmpty(ffprobeTarget))) {
     log('ffmpeg.exe and ffprobe.exe already exist')
     return

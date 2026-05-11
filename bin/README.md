@@ -16,6 +16,8 @@ For local Windows development, run:
 npm run engines:prepare:win
 ```
 
+Force re-download (ignore existing exe): `npm run engines:prepare:win:force` (see `docs/RELEASE.md`).
+
 After prepare, print SHA256 for `trusted_hashes.json` (see `docs/RELEASE.md`):
 
 ```powershell
