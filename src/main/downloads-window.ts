@@ -871,6 +871,60 @@ function buildDownloadsHtml(
     .opts-check-row input[type=checkbox]:checked { background: color-mix(in srgb, var(--blue) 55%, var(--surface-3)); border-color: transparent; }
     .opts-check-row input[type=checkbox]:checked::after { transform: translateX(14px); background: white; }
     .opts-check-muted { color: var(--dim); font-size: 0.68rem; }
+    /* §6.3 / v0: те же pill-кнопки, что PillSwitch на вкладке «Загрузки» (без native checkbox). */
+    .opts-pill-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.55rem 0.75rem;
+      margin: 0.5rem 0 0.45rem;
+    }
+    .opts-pill-field { display: flex; flex-direction: column; gap: 0.24rem; min-width: 0; }
+    .opts-pill-label {
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+    button.pill-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      width: fit-content;
+      min-height: 1.72rem;
+      padding: 0 0.5rem 0 0.18rem;
+      border-radius: 999px;
+      border: 1px solid var(--fa-border-subtle);
+      background: var(--fa-surface-elevated);
+      color: var(--fa-text-muted);
+      cursor: pointer;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-family: inherit;
+    }
+    button.pill-switch.pill-switch-on {
+      border-color: transparent;
+      background: color-mix(in srgb, var(--fa-accent) 55%, var(--fa-surface-elevated));
+      color: var(--fa-accent-contrast);
+    }
+    button.pill-switch:disabled { opacity: 0.45; cursor: not-allowed; }
+    button.pill-switch:focus-visible {
+      outline: 2px solid var(--fa-focus-ring);
+      outline-offset: 2px;
+    }
+    button.pill-switch .pill-switch-knob {
+      width: 1.16rem;
+      height: 1.16rem;
+      border-radius: 999px;
+      background: var(--fa-text-muted);
+      transition: transform 0.12s ease, background 0.12s ease;
+    }
+    button.pill-switch.pill-switch-on .pill-switch-knob {
+      transform: translateX(0.8rem);
+      background: #fff;
+    }
+    button.pill-switch .pill-switch-text { min-width: 2rem; text-align: center; }
     .opts-preview-label { display: block; margin: 0.5rem 0 0.25rem; font-size: 0.68rem; color: var(--muted); font-weight: 700; }
     .expert-panel, .hints-panel { margin: 0.55rem 0; padding: 0; border: none; background: transparent; }
     .expert-panel summary, .hints-panel summary { cursor: pointer; font-weight: 700; font-size: 0.72rem; color: var(--muted); user-select: none; margin-bottom: 0.45rem; }
@@ -912,6 +966,7 @@ function buildDownloadsHtml(
     .opts-panel input[type=text]:focus-visible,
     #extraArgsInput:focus-visible,
     .opts-check-row input[type=checkbox]:focus-visible,
+    button.pill-switch:focus-visible,
       .inline-filter-field select:focus-visible,
       .hist-inline-field select:focus-visible,
       .history-actions select:focus-visible,
@@ -1121,9 +1176,21 @@ ${emitDownloadsTopbarClusterHtml(18)}
               </p>
               <label for="fmtPreset">Формат / качество (-f)</label>
               <select id="fmtPreset" aria-describedby="dlRailFormatSectionHint"></select>
-              <div class="opts-check-row">
-                <label class="chk"><span class="chk-text">Весь плейлист <span class="opts-check-muted">--yes-playlist</span></span><input type="checkbox" id="chkPlaylist" aria-describedby="dlRailFormatSectionHint" /></label>
-                <label class="chk"><span class="chk-text">Только аудио <span class="opts-check-muted">-x --audio-format best</span></span><input type="checkbox" id="chkAudioOnly" aria-describedby="dlRailFormatSectionHint" /></label>
+              <div class="opts-pill-grid" role="group" aria-label="Плейлист и аудио">
+                <div class="opts-pill-field">
+                  <span class="opts-pill-label">Весь плейлист <span class="opts-check-muted">--yes-playlist</span></span>
+                  <button type="button" class="pill-switch" id="pillPlaylist" role="switch" aria-checked="false" aria-label="Весь плейлист" aria-describedby="dlRailFormatSectionHint">
+                    <span class="pill-switch-knob" aria-hidden="true"></span>
+                    <span class="pill-switch-text">Выкл</span>
+                  </button>
+                </div>
+                <div class="opts-pill-field">
+                  <span class="opts-pill-label">Только аудио <span class="opts-check-muted">-x --audio-format best</span></span>
+                  <button type="button" class="pill-switch" id="pillAudioOnly" role="switch" aria-checked="false" aria-label="Только аудио" aria-describedby="dlRailFormatSectionHint">
+                    <span class="pill-switch-knob" aria-hidden="true"></span>
+                    <span class="pill-switch-text">Выкл</span>
+                  </button>
+                </div>
               </div>
               <label for="subPreset">Субтитры §6.2</label>
               <select id="subPreset" aria-describedby="dlRailFormatSectionHint">
@@ -1162,8 +1229,12 @@ ${emitDownloadsTopbarClusterHtml(18)}
                 <option value="edge">edge</option>
                 <option value="firefox">firefox</option>
               </select>
-              <div class="opts-check-row">
-                <label class="chk"><span class="chk-text">Открывать результат в обработчике <span class="opts-check-muted">§6.4</span></span><input type="checkbox" id="chkOpenInHandlerOnComplete" aria-describedby="dlRailMetaSectionHint" /></label>
+              <div class="opts-pill-field" style="margin-top:0.45rem">
+                <span class="opts-pill-label">Открывать результат в обработчике <span class="opts-check-muted">§6.4</span></span>
+                <button type="button" class="pill-switch" id="pillOpenInHandler" role="switch" aria-checked="false" aria-label="Открывать результат в обработчике после успеха" aria-describedby="dlRailMetaSectionHint">
+                  <span class="pill-switch-knob" aria-hidden="true"></span>
+                  <span class="pill-switch-text">Выкл</span>
+                </button>
               </div>
             </div>
           </details>
@@ -1261,8 +1332,8 @@ ${emitDownloadsTopbarClusterHtml(18)}
       var fmtPreset = document.getElementById('fmtPreset');
       var applyOptsBtn = document.getElementById('applyOptsBtn');
       var tmplReset = document.getElementById('tmplReset');
-      var chkPlaylist = document.getElementById('chkPlaylist');
-      var chkAudioOnly = document.getElementById('chkAudioOnly');
+      var pillPlaylist = document.getElementById('pillPlaylist');
+      var pillAudioOnly = document.getElementById('pillAudioOnly');
       var subPreset = document.getElementById('subPreset');
       var subLangsInput = document.getElementById('subLangsInput');
       var cookiesBrowserSelect = document.getElementById('cookiesBrowserSelect');
@@ -1275,7 +1346,7 @@ ${emitDownloadsTopbarClusterHtml(18)}
       var retriesInput = document.getElementById('retriesInput');
       var fragmentRetriesInput = document.getElementById('fragmentRetriesInput');
       var queueRetrySelect = document.getElementById('queueRetrySelect');
-      var chkOpenInHandlerOnComplete = document.getElementById('chkOpenInHandlerOnComplete');
+      var pillOpenInHandler = document.getElementById('pillOpenInHandler');
       var extraArgsInput = document.getElementById('extraArgsInput');
       var previewOutDirOverride = document.getElementById('previewOutDirOverride');
       var argsPreview = document.getElementById('argsPreview');
@@ -1295,12 +1366,30 @@ ${emitDownloadsTopbarClusterHtml(18)}
       var suppressDetailsUiPersist = false;
       var suppressDetailsUiPersistTimer = null;
 
+      function pillIsOn(btn) {
+        return !!(btn && btn.getAttribute('aria-checked') === 'true');
+      }
+      function pillSet(btn, on) {
+        if (!btn) return;
+        btn.setAttribute('aria-checked', on ? 'true' : 'false');
+        btn.classList.toggle('pill-switch-on', on);
+        var txt = btn.querySelector('.pill-switch-text');
+        if (txt) txt.textContent = on ? 'Вкл' : 'Выкл';
+      }
+      function pillToggle(btn) {
+        pillSet(btn, !pillIsOn(btn));
+      }
+      function syncFmtPresetAudioLock() {
+        if (!fmtPreset || !pillAudioOnly) return;
+        fmtPreset.disabled = pillIsOn(pillAudioOnly);
+      }
+
       function collectDraftCliPatch() {
         return {
           filenameTemplate: tmplInput ? tmplInput.value : '',
           formatPreset: fmtPreset ? fmtPreset.value : 'default',
-          downloadPlaylist: !!(chkPlaylist && chkPlaylist.checked),
-          audioOnly: !!(chkAudioOnly && chkAudioOnly.checked),
+          downloadPlaylist: pillIsOn(pillPlaylist),
+          audioOnly: pillIsOn(pillAudioOnly),
           subtitlePreset: subPreset ? subPreset.value : 'none',
           subLangs: subLangsInput ? subLangsInput.value : '',
           cookiesBrowser: cookiesBrowserSelect ? cookiesBrowserSelect.value : 'none',
@@ -1309,7 +1398,7 @@ ${emitDownloadsTopbarClusterHtml(18)}
           retriesLine: retriesInput ? retriesInput.value : '',
           fragmentRetriesLine: fragmentRetriesInput ? fragmentRetriesInput.value : '',
           queueRetryProfile: queueRetrySelect ? queueRetrySelect.value : 'off',
-          openInHandlerOnComplete: !!(chkOpenInHandlerOnComplete && chkOpenInHandlerOnComplete.checked),
+          openInHandlerOnComplete: pillIsOn(pillOpenInHandler),
           extraArgsLine: extraArgsInput ? extraArgsInput.value : ''
         };
       }
@@ -1353,6 +1442,26 @@ ${emitDownloadsTopbarClusterHtml(18)}
           cliPreviewTimer = null;
           refreshPreviewOnly();
         }, 400);
+      }
+
+      if (pillPlaylist) {
+        pillPlaylist.addEventListener('click', function () {
+          pillToggle(pillPlaylist);
+          schedulePreviewRefresh();
+        });
+      }
+      if (pillAudioOnly) {
+        pillAudioOnly.addEventListener('click', function () {
+          pillToggle(pillAudioOnly);
+          syncFmtPresetAudioLock();
+          schedulePreviewRefresh();
+        });
+      }
+      if (pillOpenInHandler) {
+        pillOpenInHandler.addEventListener('click', function () {
+          pillToggle(pillOpenInHandler);
+          schedulePreviewRefresh();
+        });
       }
 
       function formatHistoryWhen(ms) {
@@ -1603,11 +1712,11 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
           if (!r || r.ok !== true || !r.payload) return;
           var p = r.payload;
           if (tmplInput) tmplInput.value = p.filenameTemplate || '';
-          if (chkPlaylist && typeof p.downloadPlaylist === 'boolean') {
-            chkPlaylist.checked = p.downloadPlaylist;
+          if (pillPlaylist && typeof p.downloadPlaylist === 'boolean') {
+            pillSet(pillPlaylist, p.downloadPlaylist);
           }
-          if (chkAudioOnly && typeof p.audioOnly === 'boolean') {
-            chkAudioOnly.checked = p.audioOnly;
+          if (pillAudioOnly && typeof p.audioOnly === 'boolean') {
+            pillSet(pillAudioOnly, p.audioOnly);
           }
           if (subPreset && typeof p.subtitlePreset === 'string') {
             subPreset.value = p.subtitlePreset === 'manual' || p.subtitlePreset === 'manual_auto'
@@ -1655,8 +1764,8 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
             queueRetrySelect.value =
               qv === 'light' || qv === 'normal' || qv === 'persistent' ? qv : 'off';
           }
-          if (chkOpenInHandlerOnComplete && typeof p.openInHandlerOnComplete === 'boolean') {
-            chkOpenInHandlerOnComplete.checked = p.openInHandlerOnComplete;
+          if (pillOpenInHandler && typeof p.openInHandlerOnComplete === 'boolean') {
+            pillSet(pillOpenInHandler, p.openInHandlerOnComplete);
           }
           if (!fmtPreset) return;
           fmtPreset.replaceChildren();
@@ -1667,6 +1776,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
             fmtPreset.appendChild(o);
           });
           fmtPreset.value = p.formatPreset || 'default';
+          syncFmtPresetAudioLock();
           if (extraArgsInput && typeof p.extraArgsLine === 'string') {
             extraArgsInput.value = p.extraArgsLine;
           }
@@ -2249,8 +2359,8 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
           api.setCliOptions({
             filenameTemplate: tmplInput.value,
             formatPreset: fmtPreset.value,
-            downloadPlaylist: !!(chkPlaylist && chkPlaylist.checked),
-            audioOnly: !!(chkAudioOnly && chkAudioOnly.checked),
+            downloadPlaylist: pillIsOn(pillPlaylist),
+            audioOnly: pillIsOn(pillAudioOnly),
             subtitlePreset: subPreset ? subPreset.value : 'none',
             subLangs: subLangsInput ? subLangsInput.value : '',
             cookiesBrowser: cookiesBrowserSelect ? cookiesBrowserSelect.value : 'none',
@@ -2259,7 +2369,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
             retriesLine: retriesInput ? retriesInput.value : '',
             fragmentRetriesLine: fragmentRetriesInput ? fragmentRetriesInput.value : '',
             queueRetryProfile: queueRetrySelect ? queueRetrySelect.value : 'off',
-            openInHandlerOnComplete: !!(chkOpenInHandlerOnComplete && chkOpenInHandlerOnComplete.checked),
+            openInHandlerOnComplete: pillIsOn(pillOpenInHandler),
             extraArgsLine: extraArgsInput ? extraArgsInput.value : ''
           }).then(function (res) {
             if (res && res.ok === false && res.error) window.alert(res.error);
