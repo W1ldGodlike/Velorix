@@ -62,6 +62,24 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· --flat-playlist -J',
     summary: 'Плейлист «плоско» + JSON (-J) без глубокого извлечения каждого ролика; допишите URL плейлиста.',
     fullLine: 'yt-dlp --flat-playlist -J '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --no-playlist -F',
+    summary: 'Только один ролик из URL-плейлиста (--no-playlist -F); список форматов без разворачивания всего плейлиста.',
+    fullLine: 'yt-dlp --no-playlist -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --flat-playlist -F',
+    summary: 'Плоский список элементов плейлиста + форматы по каждому (--flat-playlist -F); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --flat-playlist -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --list-thumbnails',
+    summary: 'Доступные превью/thumbnail URL без скачивания (--list-thumbnails); допишите URL.',
+    fullLine: 'yt-dlp --list-thumbnails '
   }
 ]
 
@@ -102,6 +120,12 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· s:0 compact',
     summary: 'Поток s:0: codec_name/codec_tag_string (default=nw=1); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=codec_name,codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· streams compact',
+    summary: 'Все дорожки одной строкой: index/codec_type/codec_name (compact); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries stream=index,codec_type,codec_name -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffmpeg',
