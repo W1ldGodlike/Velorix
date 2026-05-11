@@ -284,3 +284,4 @@
 - 2026-05-11 21:26:49 [SDK]: DPI-матрица 100–200%: добавлены `@144dpi` для embedded downloads в `main.css`, и `@144/@192` для pop-out (`downloads-window.ts`); `npm run check` ок.
 - 2026-05-11 21:29:44 [SDK]: §6.3 pop-out справочник токенов — добавлены поиск + полный кликабельный список (группы по category) для вставки в `extraArgsInput` с авто-обновлением превью; `npm run check` ок.
 - 2026-05-11 21:31:22 [SDK]: §6.3 pop-out polish — клик по токену в длинном справочнике фокусирует и прокручивает `extraArgsInput` перед обновлением превью; `npm run check` ок.
+- 2026-05-11 21:32:59 [SDK]: §6.3 pop-out preview — `schedulePreviewRefresh()` на input/change для полей rail (tmpl/-f/sub/cookies/impersonate/network/extraArgs/previewOutDirOverride), чтобы превью argv обновлялось без «Сохранить параметры»; `npm run check` ок.

@@ -2661,6 +2661,31 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
         });
       }
 
+      function attachPreviewRefreshOnInput(el) {
+        if (!el || !el.addEventListener) return;
+        el.addEventListener('input', function () {
+          schedulePreviewRefresh();
+        });
+      }
+      function attachPreviewRefreshOnChange(el) {
+        if (!el || !el.addEventListener) return;
+        el.addEventListener('change', function () {
+          schedulePreviewRefresh();
+        });
+      }
+      attachPreviewRefreshOnInput(tmplInput);
+      attachPreviewRefreshOnChange(fmtPreset);
+      attachPreviewRefreshOnChange(subPreset);
+      attachPreviewRefreshOnInput(subLangsInput);
+      attachPreviewRefreshOnChange(cookiesBrowserSelect);
+      attachPreviewRefreshOnChange(impersonateSelect);
+      attachPreviewRefreshOnInput(rateLimitInput);
+      attachPreviewRefreshOnInput(retriesInput);
+      attachPreviewRefreshOnInput(fragmentRetriesInput);
+      attachPreviewRefreshOnChange(queueRetrySelect);
+      attachPreviewRefreshOnInput(extraArgsInput);
+      attachPreviewRefreshOnInput(previewOutDirOverride);
+
       if (hintInsert && extraArgsInput) {
         hintInsert.addEventListener('change', function () {
           var opt = hintInsert.selectedOptions && hintInsert.selectedOptions[0];
