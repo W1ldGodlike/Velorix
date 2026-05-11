@@ -56,6 +56,15 @@ interface FfprobeJson {
     field_order?: string
     chroma_location?: string
     bits_per_raw_sample?: string | number
+    /** Размер кодируемого кадра; иногда отличается от `width`/`height` (crop/padding). */
+    coded_width?: number
+    coded_height?: number
+    /** H.264/HEVC: число опорных кадров. */
+    refs?: number
+    /** Число буферизуемых B-кадров (ffprobe legacy). */
+    has_b_frames?: number
+    /** FourCC / тег кодека в контейнере (`avc1`, `hvc1` …). */
+    codec_tag_string?: string
     bit_rate?: string
     disposition?: Record<string, unknown>
     tags?: Record<string, string | number | undefined>
@@ -130,7 +139,8 @@ function buildTrackDetail(stream: NonNullable<FfprobeJson['streams']>[number]): 
   if (ct === 'video') {
     const w = stream.width
     const h = stream.height
-    if (typeof w === 'number' && typeof h === 'number') {
+    const haveWh = typeof w === 'number' && typeof h === 'number'
+    if (haveWh) {
       parts.push(`${w}×${h}`)
     }
     const fps =
@@ -180,6 +190,34 @@ function buildTrackDetail(stream: NonNullable<FfprobeJson['streams']>[number]): 
       if (bitsS) {
         parts.push(`${bitsS}-bit`)
       }
+    }
+    const cw = stream.coded_width
+    const ch = stream.coded_height
+    if (
+      haveWh &&
+      typeof cw === 'number' &&
+      typeof ch === 'number' &&
+      Number.isFinite(cw) &&
+      Number.isFinite(ch) &&
+      cw > 0 &&
+      ch > 0 &&
+      (cw !== w || ch !== h)
+    ) {
+      parts.push(`coded ${cw}×${ch}`)
+    }
+    const refsN = stream.refs
+    if (typeof refsN === 'number' && Number.isFinite(refsN) && refsN > 0) {
+      parts.push(`${refsN} ref`)
+    }
+    const bFrames = stream.has_b_frames
+    if (typeof bFrames === 'number' && Number.isFinite(bFrames) && bFrames > 0) {
+      parts.push(`B${bFrames}`)
+    }
+    const fourcc = ffprobeScalarDisplay(
+      typeof stream.codec_tag_string === 'string' ? stream.codec_tag_string : undefined
+    )
+    if (fourcc) {
+      parts.push(fourcc)
     }
   } else if (ct === 'audio') {
     const ch = stream.channels
