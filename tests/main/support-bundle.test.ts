@@ -47,6 +47,9 @@ describe('createSupportBundleZip', () => {
     const sessionLog = join(root, 'session.log')
     writeFileSync(sessionLog, 'session hello', 'utf-8')
 
+    const terminalCli = join(root, 'terminal-cli.log')
+    writeFileSync(terminalCli, 'stderr block', 'utf-8')
+
     createSupportBundleZip(out, {
       appVersion: '0.1.0',
       electronVersion: '1',
@@ -66,6 +69,7 @@ describe('createSupportBundleZip', () => {
       logFile,
       logBackupFile: null,
       sessionLogFile: sessionLog,
+      terminalCliLogFile: terminalCli,
       crashDumps: null
     })
 
@@ -75,7 +79,10 @@ describe('createSupportBundleZip', () => {
     expect(zip.includes(Buffer.from('hello log'))).toBe(true)
     expect(zip.includes(Buffer.from('logs/session.log'))).toBe(true)
     expect(zip.includes(Buffer.from('session hello'))).toBe(true)
+    expect(zip.includes(Buffer.from('logs/terminal-cli.log'))).toBe(true)
+    expect(zip.includes(Buffer.from('stderr block'))).toBe(true)
     expect(zip.includes(Buffer.from('sessionLogFile:'))).toBe(true)
+    expect(zip.includes(Buffer.from('terminalCliLogFile:'))).toBe(true)
     expect(zip.includes(Buffer.from('primaryDisplay: 1920×1080@1.00 work 1920×1040'))).toBe(true)
     expect(zip.includes(Buffer.from('packaged: no'))).toBe(true)
   })

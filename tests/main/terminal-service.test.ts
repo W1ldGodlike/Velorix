@@ -1,3 +1,6 @@
+import { readFileSync, mkdtempSync, rmSync } from 'fs'
+import { tmpdir } from 'os'
+import { join } from 'path'
 import { describe, expect, it, vi } from 'vitest'
 
 vi.mock('electron', () => ({
@@ -11,8 +14,25 @@ vi.mock('@electron-toolkit/utils', () => ({
   is: { dev: true }
 }))
 
-import { resolveTerminalCurrentFileArgs } from '../../src/main/terminal-service'
+import {
+  appendTerminalCliSessionLog,
+  resolveTerminalCliSessionLogPath,
+  resolveTerminalCurrentFileArgs
+} from '../../src/main/terminal-service'
 import { TERMINAL_CURRENT_FILE_PLACEHOLDER } from '../../src/shared/terminal-contract'
+
+describe('appendTerminalCliSessionLog', () => {
+  it('создаёт logs/terminal-cli.log под userData', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'fluxalloy-term-cli-'))
+    try {
+      appendTerminalCliSessionLog({ userData: dir, block: 'probe-run\n' })
+      const p = resolveTerminalCliSessionLogPath(dir)
+      expect(readFileSync(p, 'utf8')).toContain('probe-run')
+    } finally {
+      rmSync(dir, { recursive: true, force: true })
+    }
+  })
+})
 
 describe('resolveTerminalCurrentFileArgs', () => {
   it('без плейсхолдера не меняет argv', () => {

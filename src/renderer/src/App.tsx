@@ -103,6 +103,46 @@ import {
 import { PreviewProbeBody } from './components/MediaProbePanel'
 type Theme = ResolvedAppTheme
 
+/** §8 — расширенный порядок подсказок терминала при открытом медиа в превью. */
+const TERMINAL_HINT_VIDEO_EXTS = new Set([
+  '3gp',
+  'asf',
+  'avi',
+  'flv',
+  'm2ts',
+  'm4v',
+  'mkv',
+  'mov',
+  'mp4',
+  'mpeg',
+  'mpg',
+  'mts',
+  'ogv',
+  'ts',
+  'webm',
+  'wmv'
+])
+const TERMINAL_HINT_AUDIO_EXTS = new Set(['aac', 'aiff', 'alac', 'flac', 'm4a', 'mp3', 'ogg', 'opus', 'wav', 'wma'])
+
+function previewPathExtensionLower(path: string | null): string | null {
+  if (typeof path !== 'string' || path.trim().length === 0) {
+    return null
+  }
+  const base = path.replace(/\\/g, '/').split('/').pop() ?? ''
+  const dot = base.lastIndexOf('.')
+  if (dot <= 0 || dot >= base.length - 1) {
+    return null
+  }
+  return base.slice(dot + 1).toLowerCase()
+}
+
+function terminalHintToolRank(tool: TerminalCommandHintEntry['tool'], mediaInPreview: boolean): number {
+  if (mediaInPreview) {
+    return tool === 'ffprobe' ? 0 : tool === 'ffmpeg' ? 1 : 2
+  }
+  return tool === 'ffmpeg' ? 0 : tool === 'ffprobe' ? 1 : 2
+}
+
 type PreviewOpenedPayload = RestoredSourceInfo
 type EngineSummary = 'checking' | 'ready' | 'missing' | 'error'
 type WorkspaceTab = 'editor' | 'downloads' | 'terminal'
@@ -807,17 +847,28 @@ function App(): JSX.Element {
 
   const visibleTerminalHints = useMemo(() => {
     const q = terminalHintFilter.trim().toLowerCase()
-    return terminalHints
-      .filter((hint) => {
-        if (q === '') return true
-        return (
-          hint.tool.toLowerCase().includes(q) ||
-          hint.token.toLowerCase().includes(q) ||
-          hint.summary.toLowerCase().includes(q)
-        )
-      })
-      .slice(0, 36)
-  }, [terminalHintFilter, terminalHints])
+    const ext = previewPathExtensionLower(currentSourcePath)
+    const mediaInPreview = Boolean(
+      ext && (TERMINAL_HINT_VIDEO_EXTS.has(ext) || TERMINAL_HINT_AUDIO_EXTS.has(ext))
+    )
+    const filtered = terminalHints.filter((hint) => {
+      if (q === '') return true
+      return (
+        hint.tool.toLowerCase().includes(q) ||
+        hint.token.toLowerCase().includes(q) ||
+        hint.summary.toLowerCase().includes(q)
+      )
+    })
+    const sorted = [...filtered].sort((a, b) => {
+      const ra = terminalHintToolRank(a.tool, mediaInPreview)
+      const rb = terminalHintToolRank(b.tool, mediaInPreview)
+      if (ra !== rb) {
+        return ra - rb
+      }
+      return a.tool.localeCompare(b.tool) || a.token.localeCompare(b.token, 'ru')
+    })
+    return sorted.slice(0, 36)
+  }, [terminalHintFilter, terminalHints, currentSourcePath])
 
   const appendTerminalToken = useCallback((token: string) => {
     setTerminalLine((line) => {

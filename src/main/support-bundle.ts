@@ -34,6 +34,8 @@ export interface SupportBundleRuntimeInfo {
   logBackupFile: string | null
   /** §18 — лог текущей сессии (`session.log`), дублирует строки с `main.log`. */
   sessionLogFile: string | null
+  /** §8 — последние прогонки вкладки «Терминал» (stderr и блокировки). */
+  terminalCliLogFile: string | null
   crashDumps: string | null
 }
 
@@ -259,6 +261,7 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
     `logFile: ${info.logFile ?? '-'}`,
     `logBackupFile: ${info.logBackupFile ?? '-'}`,
     `sessionLogFile: ${info.sessionLogFile ?? '-'}`,
+    `terminalCliLogFile: ${info.terminalCliLogFile ?? '-'}`,
     `crashDumps: ${info.crashDumps ?? '-'}`
   ].join('\n')
 }
@@ -271,6 +274,7 @@ export function createSupportBundleZip(targetFile: string, info: SupportBundleRu
   pushFile(entries, 'logs/main.log', info.logFile)
   pushFile(entries, 'logs/main.log.1', info.logBackupFile)
   pushFile(entries, 'logs/session.log', info.sessionLogFile)
+  pushFile(entries, 'logs/terminal-cli.log', info.terminalCliLogFile)
   pushCrashDumps(entries, info.crashDumps)
   writeFileSync(targetFile, buildStoredZipBuffer(entries))
 }

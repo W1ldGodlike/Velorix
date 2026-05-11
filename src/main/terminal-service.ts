@@ -1,5 +1,12 @@
 import { execFile } from 'child_process'
-import { existsSync, readFileSync } from 'fs'
+import {
+  appendFileSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  statSync,
+  writeFileSync
+} from 'fs'
 import { app } from 'electron'
 import { is } from '@electron-toolkit/utils'
 import { dirname, join, normalize, resolve } from 'path'
@@ -23,6 +30,42 @@ const TERMINAL_ALLOWED_TOOLS: readonly TerminalToolId[] = ['ffmpeg', 'ffprobe', 
 const MAX_LINE_CHARS = 2000
 const MAX_TOKENS = 64
 const MAX_OUTPUT_CHARS = 64_000
+const TERMINAL_CLI_LOG_MAX_BYTES = 512 * 1024
+const TERMINAL_CLI_LOG_KEEP_BYTES = 400 * 1024
+const TERMINAL_CLI_LOG_STDERR_CAP = 12_000
+
+/** Путь к журналу прогонов вкладки «Терминал» (`logs/` внутри userData). */
+export function resolveTerminalCliSessionLogPath(userData: string): string {
+  return join(userData, 'logs', 'terminal-cli.log')
+}
+
+/** §8 — журнал прогонов вкладки «Терминал» для Support ZIP (stderr и блокировки). */
+export function appendTerminalCliSessionLog(params: {
+  userData: string
+  block: string
+}): void {
+  const { userData, block } = params
+  try {
+    const dir = join(userData, 'logs')
+    mkdirSync(dir, { recursive: true })
+    const file = resolveTerminalCliSessionLogPath(userData)
+    if (existsSync(file)) {
+      const st = statSync(file)
+      if (st.size > TERMINAL_CLI_LOG_MAX_BYTES) {
+        const raw = readFileSync(file)
+        const head = Buffer.from(
+          '[FluxAlloy] truncated older terminal-cli.log entries\n\n',
+          'utf8'
+        )
+        const tail = raw.subarray(Math.max(0, raw.length - TERMINAL_CLI_LOG_KEEP_BYTES))
+        writeFileSync(file, Buffer.concat([head, tail]))
+      }
+    }
+    appendFileSync(file, block, 'utf8')
+  } catch {
+    /* Support / диагностика не должны ломать CLI */
+  }
+}
 
 function terminalTokenHasDangerChars(token: string): boolean {
   for (let i = 0; i < token.length; i++) {
@@ -125,16 +168,26 @@ function trimOutput(text: string): string {
   return text.length <= MAX_OUTPUT_CHARS ? text : `${text.slice(0, MAX_OUTPUT_CHARS)}\n… truncated …`
 }
 
+function terminalCliLogIsoStamp(): string {
+  return new Date().toISOString()
+}
+
 export function runTerminalCommand(params: {
   paths: AppPaths
   overrides?: EnginePathOverrides | undefined
   line: unknown
   currentFilePath?: string | null
 }): Promise<TerminalRunResult> {
+  const ud = params.paths.userData
   const parsed = parseTerminalCommandLine(params.line)
   if (!parsed.ok) {
     if (typeof params.line === 'string' && params.line.trim().length > 0) {
-      logWarn('terminal', `blocked: ${parsed.error}`, params.line.trim().slice(0, 400))
+      const brief = params.line.trim().slice(0, 400)
+      logWarn('terminal', `blocked: ${parsed.error}`, brief)
+      appendTerminalCliSessionLog({
+        userData: ud,
+        block: `\n=== ${terminalCliLogIsoStamp()} BLOCKED ===\n${brief}\n${parsed.error}\n`
+      })
     }
     return Promise.resolve(parsed)
   }
@@ -145,7 +198,12 @@ export function runTerminalCommand(params: {
   })
   if (!sub.ok) {
     if (typeof params.line === 'string' && params.line.trim().length > 0) {
-      logWarn('terminal', `blocked: ${sub.error}`, params.line.trim().slice(0, 400))
+      const brief = params.line.trim().slice(0, 400)
+      logWarn('terminal', `blocked: ${sub.error}`, brief)
+      appendTerminalCliSessionLog({
+        userData: ud,
+        block: `\n=== ${terminalCliLogIsoStamp()} BLOCKED ===\n${brief}\n${sub.error}\n`
+      })
     }
     return Promise.resolve(sub)
   }
@@ -153,6 +211,10 @@ export function runTerminalCommand(params: {
   const executablePath = resolveEngineExecutablePath(params.paths, parsed.tool, params.overrides)
   if (!executablePath) {
     logWarn('terminal', `blocked: движок ${parsed.tool} не найден`)
+    appendTerminalCliSessionLog({
+      userData: ud,
+      block: `\n=== ${terminalCliLogIsoStamp()} BLOCKED ===\n${parsed.tool} …\nДвижок ${parsed.tool} не найден в настройках/bin.\n`
+    })
     return Promise.resolve({
       ok: false,
       error: `Движок ${parsed.tool} не найден в настройках/bin.`
@@ -191,6 +253,15 @@ export function runTerminalCommand(params: {
             trimOutput(stderr).slice(0, 600)
           )
         }
+        const errTail = trimOutput(stderr)
+        const errForLog =
+          errTail.length > TERMINAL_CLI_LOG_STDERR_CAP
+            ? `${errTail.slice(0, TERMINAL_CLI_LOG_STDERR_CAP)}\n… stderr truncated …\n`
+            : errTail
+        appendTerminalCliSessionLog({
+          userData: ud,
+          block: `\n=== ${terminalCliLogIsoStamp()} code=${code ?? 'n/a'} tool=${parsed.tool} ${elapsedMs}ms ===\nargv: ${argvBrief}\nstderr:\n${errForLog.trim() ? errForLog : '(empty)'}\n`
+        })
         resolve({
           ok: true,
           tool: parsed.tool,

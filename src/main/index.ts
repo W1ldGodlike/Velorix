@@ -108,7 +108,11 @@ import {
   resolveFfmpegExportJobOptionsFromAppSettings
 } from './ffmpeg-export-resolve-from-settings'
 import { probeMediaFile } from './ffprobe-service'
-import { getTerminalCommandHints, runTerminalCommand } from './terminal-service'
+import {
+  getTerminalCommandHints,
+  resolveTerminalCliSessionLogPath,
+  runTerminalCommand
+} from './terminal-service'
 import type { EngineDownloadProgress } from './engine-download'
 import { setEnginePathOverridesSnapshot } from './engine-path-sync'
 import {
@@ -1295,6 +1299,7 @@ function supportBundleRuntimeInfo(): SupportBundleRuntimeInfo {
     logFile: getMainLogFilePath(),
     logBackupFile: getMainLogBackupFilePath(),
     sessionLogFile: getSessionLogFilePath(),
+    terminalCliLogFile: resolveTerminalCliSessionLogPath(paths.userData),
     crashDumps: getCrashDumpsPathSafe()
   }
 }
