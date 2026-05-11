@@ -45,6 +45,7 @@
     "engines:prepare:win:force": "node scripts/run-prepare-engines-force.mjs",
     "engines:verify-bundled": "node scripts/verify-bundled-engines-hashes.mjs",
     "engines:report-hashes": "node scripts/report-bundled-engines-hashes.mjs",
+    "engines:doctor": "npm run engines:verify-bundled && npm run engines:report-hashes -- --versions",
     "predev": "npm run engines:prepare:win",
     "start": "electron-vite preview",
     "dev": "electron-vite dev",

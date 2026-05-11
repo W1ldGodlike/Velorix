@@ -68,7 +68,9 @@ npm run engines:report-hashes -- --json --versions
 
 Локально повторить вывод версий из verify: `FLUXALLOY_LOG_ENGINE_VERSIONS=1` и `npm run engines:verify-bundled`.
 
-Справка по флагам: `npm run engines:verify-bundled -- --help`, `npm run engines:report-hashes -- --help`.
+Справка по флагам: `npm run engines:verify-bundled -- --help`, `npm run engines:report-hashes -- --help`, `npm run engines:prepare:win -- --help`.
+
+Быстрая проверка `bin/` после prepare: `npm run engines:doctor` (verify + вывод версий).
 
 Таймаут HTTP при скачивании движков (`prepare-engines-win` и загрузка в main из UI): переменная **`FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS`** (миллисекунды; по умолчанию 600000).
 
@@ -141,5 +143,5 @@ git status
 
 После push убедиться, что GitHub Actions `ci` зелёный.
 
-Workflow `ci` на Windows: `permissions: contents: read`; `concurrency` с `cancel-in-progress` для ветки; кэш `bin/`; `engines:prepare:win`; `engines:verify-bundled` (печать версий при `GITHUB_ACTIONS` или `FLUXALLOY_LOG_ENGINE_VERSIONS`); `npm run build`; `npm run pack:dir` (`electron-builder --dir`) — проверка конфигурации упаковки без полного NSIS/portable/zip.
+Workflow `ci` на Windows: `actions/checkout` с `fetch-depth: 1`; `permissions: contents: read`; `concurrency` с `cancel-in-progress` для ветки; кэш `bin/`; `engines:prepare:win`; `engines:verify-bundled` (печать версий при `GITHUB_ACTIONS` или `FLUXALLOY_LOG_ENGINE_VERSIONS`); `npm run build`; `npm run pack:dir` (`electron-builder --dir`) — проверка конфигурации упаковки без полного NSIS/portable/zip.
 

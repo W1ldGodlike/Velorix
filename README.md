@@ -32,6 +32,7 @@
 npm install
 npm run dev
 npm run check        # lint + typecheck
+npm run engines:doctor   # Windows: verify bin + версии движков (см. docs/RELEASE.md)
 npm run check:release
 npm run agent:once   # один прогон Cursor SDK automation
 npm run agent:loop   # цикл; число продолжений: -- --max-steps N или MAX_STEPS в .env

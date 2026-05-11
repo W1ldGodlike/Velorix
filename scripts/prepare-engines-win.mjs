@@ -258,7 +258,26 @@ async function ensureFfmpeg(trusted) {
   throw lastError ?? new Error('No FFmpeg source succeeded')
 }
 
+function printPrepareHelp() {
+  console.log(`prepare-engines-win — загрузка yt-dlp.exe и ffmpeg/ffprobe в bin/ (только Windows).
+
+Переменные окружения:
+  FLUXALLOY_ENGINES_FORCE=1               удалить существующие exe и скачать заново
+  FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS    таймаут HTTP в мс (по умолчанию 600000)
+
+npm:
+  npm run engines:prepare:win
+  npm run engines:prepare:win:force
+
+Справка: npm run engines:prepare:win -- --help`)
+}
+
 async function main() {
+  if (process.argv.includes('--help')) {
+    printPrepareHelp()
+    return
+  }
+
   if (!isWindows()) {
     log('Windows-only engine bootstrap skipped on this platform')
     return
