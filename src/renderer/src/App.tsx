@@ -95,7 +95,11 @@ import type {
 import { groupYtdlpCommandHintsByCategory } from '../../shared/ytdlp-command-hints-group'
 import type { YtdlpDownloadHistoryEntry } from '../../shared/ytdlp-history-contract'
 import type { DownloadsLogPayload } from '../../shared/downloads-log-contract'
-import type { TerminalCommandHintEntry, TerminalRunResult } from '../../shared/terminal-contract'
+import {
+  TERMINAL_CURRENT_FILE_PLACEHOLDER,
+  type TerminalCommandHintEntry,
+  type TerminalRunResult
+} from '../../shared/terminal-contract'
 import { PreviewProbeBody } from './components/MediaProbePanel'
 type Theme = ResolvedAppTheme
 
@@ -829,7 +833,10 @@ function App(): JSX.Element {
     }
     setTerminalBusy(true)
     try {
-      const result = await window.fluxalloy.terminal.run({ line })
+      const result = await window.fluxalloy.terminal.run({
+        line,
+        currentFilePath: currentSourcePath
+      })
       setTerminalHistory((rows) =>
         [{ id: terminalHistoryNextIdRef.current++, line, result }, ...rows].slice(0, 20)
       )
@@ -837,7 +844,7 @@ function App(): JSX.Element {
     } finally {
       setTerminalBusy(false)
     }
-  }, [terminalBusy, terminalLine])
+  }, [terminalBusy, terminalLine, currentSourcePath])
 
   const appendDownloadsExtraArgsToken = useCallback(
     (token: string) => {
@@ -3395,7 +3402,9 @@ function App(): JSX.Element {
                 <h2 className="app-downloads-title">Терминал</h2>
                 <p className="app-downloads-hint">
                   Разрешены только префиксы ffmpeg, ffprobe и yt-dlp. Команда разбирается как argv,
-                  запускается через main без shell, а PATH дополняется папкой выбранного движка.
+                  запускается через main без shell, а PATH дополняется папкой выбранного движка. В argv
+                  можно токен <code>{TERMINAL_CURRENT_FILE_PLACEHOLDER}</code> — подставится путь
+                  текущего превью редактора (только если файл уже открыт через диалог или DnD).
                 </p>
               </div>
             </div>
@@ -3418,6 +3427,19 @@ function App(): JSX.Element {
                   }
                 }}
               />
+              <button
+                type="button"
+                className="app-btn"
+                disabled={terminalBusy || !currentSourcePath}
+                title={
+                  currentSourcePath
+                    ? `Вставить токен «${TERMINAL_CURRENT_FILE_PLACEHOLDER}» (путь текущего превью)`
+                    : 'Сначала откройте файл в редакторе'
+                }
+                onClick={() => appendTerminalToken(TERMINAL_CURRENT_FILE_PLACEHOLDER)}
+              >
+                Превью-файл
+              </button>
               <button
                 type="button"
                 className="app-btn app-btn-primary"

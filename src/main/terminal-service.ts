@@ -2,7 +2,7 @@ import { execFile } from 'child_process'
 import { existsSync, readFileSync } from 'fs'
 import { app } from 'electron'
 import { is } from '@electron-toolkit/utils'
-import { dirname, join } from 'path'
+import { dirname, join, normalize, resolve } from 'path'
 
 import type { AppPaths } from './app-paths'
 import {
@@ -10,10 +10,13 @@ import {
   type EngineId,
   type EnginePathOverrides
 } from './engine-service'
-import type {
-  TerminalCommandHintEntry,
-  TerminalRunResult,
-  TerminalToolId
+import { logInfo, logWarn } from './logger-service'
+import { isGrantedMediaPath } from './media-protocol'
+import {
+  TERMINAL_CURRENT_FILE_PLACEHOLDER,
+  type TerminalCommandHintEntry,
+  type TerminalRunResult,
+  type TerminalToolId
 } from '../shared/terminal-contract'
 
 const TERMINAL_ALLOWED_TOOLS: readonly TerminalToolId[] = ['ffmpeg', 'ffprobe', 'yt-dlp']
@@ -29,6 +32,21 @@ function terminalTokenHasDangerChars(token: string): boolean {
     }
   }
   return /[;|&$\u0060<>]/.test(token)
+}
+
+function validateTerminalArgTokens(args: string[]): { ok: true } | { ok: false; error: string } {
+  for (const token of args) {
+    if (token.length > 500) {
+      return { ok: false, error: 'Один из argv-токенов слишком длинный.' }
+    }
+    if (token.startsWith('@')) {
+      return { ok: false, error: 'Аргументы вида @файл запрещены.' }
+    }
+    if (terminalTokenHasDangerChars(token)) {
+      return { ok: false, error: 'Запрещены shell-символы (; | & ` $ < >) и управляющие символы.' }
+    }
+  }
+  return { ok: true }
 }
 
 function parseTerminalCommandLine(
@@ -62,18 +80,45 @@ function parseTerminalCommandLine(
     return { ok: false, error: 'Разрешены только префиксы ffmpeg, ffprobe и yt-dlp.' }
   }
   const args = tokens.slice(1)
-  for (const token of args) {
-    if (token.length > 500) {
-      return { ok: false, error: 'Один из argv-токенов слишком длинный.' }
-    }
-    if (token.startsWith('@')) {
-      return { ok: false, error: 'Аргументы вида @файл запрещены.' }
-    }
-    if (terminalTokenHasDangerChars(token)) {
-      return { ok: false, error: 'Запрещены shell-символы (; | & ` $ < >) и управляющие символы.' }
-    }
+  const v = validateTerminalArgTokens(args)
+  if (!v.ok) {
+    return v
   }
   return { ok: true, tool, args }
+}
+
+/**
+ * Подстановка `TERMINAL_CURRENT_FILE_PLACEHOLDER` в argv; `grantPath` в проде — `isGrantedMediaPath`.
+ * Экспорт для Vitest.
+ */
+export function resolveTerminalCurrentFileArgs(params: {
+  args: string[]
+  currentFilePath: string | null | undefined
+  grantPath: (abs: string) => boolean
+}): { ok: true; args: string[] } | { ok: false; error: string } {
+  const { args, currentFilePath, grantPath } = params
+  if (!args.some((a) => a === TERMINAL_CURRENT_FILE_PLACEHOLDER)) {
+    return { ok: true, args }
+  }
+  if (typeof currentFilePath !== 'string' || currentFilePath.trim().length === 0) {
+    return {
+      ok: false,
+      error: 'Токен __CURRENT_FILE__ требует открытый файл в превью редактора.'
+    }
+  }
+  const abs = resolve(normalize(currentFilePath.trim()))
+  if (!grantPath(abs)) {
+    return {
+      ok: false,
+      error: 'Текущий файл превью не разрешён для подстановки в CLI (откройте его через диалог или DnD).'
+    }
+  }
+  const next = args.map((a) => (a === TERMINAL_CURRENT_FILE_PLACEHOLDER ? abs : a))
+  const v2 = validateTerminalArgTokens(next)
+  if (!v2.ok) {
+    return v2
+  }
+  return { ok: true, args: next }
 }
 
 function trimOutput(text: string): string {
@@ -84,13 +129,30 @@ export function runTerminalCommand(params: {
   paths: AppPaths
   overrides?: EnginePathOverrides | undefined
   line: unknown
+  currentFilePath?: string | null
 }): Promise<TerminalRunResult> {
   const parsed = parseTerminalCommandLine(params.line)
   if (!parsed.ok) {
+    if (typeof params.line === 'string' && params.line.trim().length > 0) {
+      logWarn('terminal', `blocked: ${parsed.error}`, params.line.trim().slice(0, 400))
+    }
     return Promise.resolve(parsed)
   }
+  const sub = resolveTerminalCurrentFileArgs({
+    args: parsed.args,
+    currentFilePath: params.currentFilePath,
+    grantPath: isGrantedMediaPath
+  })
+  if (!sub.ok) {
+    if (typeof params.line === 'string' && params.line.trim().length > 0) {
+      logWarn('terminal', `blocked: ${sub.error}`, params.line.trim().slice(0, 400))
+    }
+    return Promise.resolve(sub)
+  }
+  const argv = sub.args
   const executablePath = resolveEngineExecutablePath(params.paths, parsed.tool, params.overrides)
   if (!executablePath) {
+    logWarn('terminal', `blocked: движок ${parsed.tool} не найден`)
     return Promise.resolve({
       ok: false,
       error: `Движок ${parsed.tool} не найден в настройках/bin.`
@@ -100,7 +162,7 @@ export function runTerminalCommand(params: {
   return new Promise((resolve) => {
     execFile(
       executablePath,
-      parsed.args,
+      argv,
       {
         windowsHide: true,
         timeout: 120_000,
@@ -117,14 +179,26 @@ export function runTerminalCommand(params: {
             : error
               ? 1
               : 0
+        const elapsedMs = Date.now() - started
+        const argvBrief = JSON.stringify([parsed.tool, ...argv]).slice(0, 520)
+        if (code === 0) {
+          logInfo('terminal', `run ok tool=${parsed.tool} code=0 ${elapsedMs}ms`, argvBrief)
+        } else {
+          logWarn(
+            'terminal',
+            `run tool=${parsed.tool} code=${code ?? 'n/a'} ${elapsedMs}ms`,
+            argvBrief,
+            trimOutput(stderr).slice(0, 600)
+          )
+        }
         resolve({
           ok: true,
           tool: parsed.tool,
-          args: parsed.args,
+          args: argv,
           code,
           stdout: trimOutput(stdout),
           stderr: trimOutput(stderr),
-          elapsedMs: Date.now() - started
+          elapsedMs
         })
       }
     )

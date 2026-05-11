@@ -2522,10 +2522,17 @@ app.whenReady().then(() => {
       raw && typeof raw === 'object' && typeof (raw as { line?: unknown }).line === 'string'
         ? (raw as { line: string }).line
         : ''
+    const currentRaw =
+      raw && typeof raw === 'object' && 'currentFilePath' in raw
+        ? (raw as { currentFilePath?: unknown }).currentFilePath
+        : undefined
+    const currentFilePath =
+      typeof currentRaw === 'string' ? currentRaw : currentRaw === null ? null : undefined
     return runTerminalCommand({
       paths: resolveAppPaths(),
       overrides: cachedSettings.engineExecutablePaths,
-      line
+      line,
+      ...(currentFilePath !== undefined ? { currentFilePath } : {})
     })
   })
 
