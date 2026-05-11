@@ -24,6 +24,8 @@ export type FfmpegExportCropPresetId = 'none' | 'center-square' | 'center-16-9' 
 export type FfmpegExportVideoDenoiseId = 'off' | 'light' | 'medium' | 'strong'
 /** §7.2 — пресеты `unsharp` (контурная резкость), от лёгкой к выраженной. */
 export type FfmpegExportVideoSharpenId = 'off' | 'light' | 'medium' | 'strong'
+/** §7.2 — пресеты `deband` (сглаживание полос 8-bit / градиентов), только whitelist. */
+export type FfmpegExportVideoDebandId = 'off' | 'light' | 'medium' | 'strong'
 /**
  * §7.2 — пресеты `eq=...`: коррекция контраста/насыщенности через белый список,
  * чтобы UI не отдавал произвольную строку фильтра в spawn.
@@ -82,6 +84,8 @@ export interface FfmpegExportUserPresetSnapshot {
   videoDenoise?: FfmpegExportVideoDenoiseId
   /** §7.2 — `unsharp` контурная резкость; `off` совпадает с поведением до правки. */
   videoSharpen?: FfmpegExportVideoSharpenId
+  /** §7.2 — `deband`; `off` совпадает с поведением до правки. */
+  videoDeband?: FfmpegExportVideoDebandId
   /** §7.2 — `eq=...` цветокор-пресет; `off` совпадает с поведением до правки. */
   videoEqPreset?: FfmpegExportVideoEqPresetId
   /** §7.2 — `loudnorm`/`dynaudnorm`; `off` совпадает с поведением до правки. */
@@ -133,6 +137,8 @@ export interface MediaExportRequestPayload {
   videoDenoise?: FfmpegExportVideoDenoiseId | null
   /** §7.2 — `unsharp` контурная резкость; `off` совпадает с текущим поведением. */
   videoSharpen?: FfmpegExportVideoSharpenId | null
+  /** §7.2 — `deband`; `off` совпадает с текущим поведением. */
+  videoDeband?: FfmpegExportVideoDebandId | null
   /** §7.2 — `eq=...` цветокор-пресет; `off` совпадает с текущим поведением. */
   videoEqPreset?: FfmpegExportVideoEqPresetId | null
   /** §7.2 — `loudnorm`/`dynaudnorm`; `off` совпадает с текущим поведением. */

@@ -19,6 +19,7 @@ import type {
   FfmpegExportSubtitleModeId,
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
+  FfmpegExportVideoDebandId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoSharpenId,
@@ -87,6 +88,7 @@ export interface FluxAlloyApi {
     setFfmpegExportStripChapters: (enabled: boolean) => Promise<AppSettings>
     setFfmpegExportSubtitleMode: (mode: FfmpegExportSubtitleModeId) => Promise<AppSettings>
     setFfmpegExportVideoDenoise: (preset: FfmpegExportVideoDenoiseId) => Promise<AppSettings>
+    setFfmpegExportVideoDeband: (preset: FfmpegExportVideoDebandId) => Promise<AppSettings>
     setFfmpegExportVideoSharpen: (preset: FfmpegExportVideoSharpenId) => Promise<AppSettings>
     setFfmpegExportVideoEqPreset: (preset: FfmpegExportVideoEqPresetId) => Promise<AppSettings>
     setFfmpegExportAudioNormalize: (preset: FfmpegExportAudioNormalizeId) => Promise<AppSettings>

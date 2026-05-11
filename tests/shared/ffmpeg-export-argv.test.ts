@@ -10,6 +10,7 @@ import {
   resolveFfmpegExportCropFilter,
   resolveFfmpegExportScaleFilter,
   resolveFfmpegExportSubtitleCopyCodec,
+  resolveFfmpegExportVideoDebandFilter,
   resolveFfmpegExportVideoDenoiseFilter,
   resolveFfmpegExportVideoEqFilter,
   resolveFfmpegExportVideoSharpenFilter,
@@ -592,6 +593,13 @@ describe('shared ffmpeg export argv', () => {
     expect(resolveFfmpegExportVideoSharpenFilter('strong')).toBe('unsharp=7:7:1.5:7:7:0.0')
   })
 
+  it('resolveFfmpegExportVideoDebandFilter — только whitelist deband', () => {
+    expect(resolveFfmpegExportVideoDebandFilter('off')).toBeNull()
+    expect(resolveFfmpegExportVideoDebandFilter('light')).toBe('deband=range=12')
+    expect(resolveFfmpegExportVideoDebandFilter('medium')).toBe('deband=range=20')
+    expect(resolveFfmpegExportVideoDebandFilter('strong')).toBe('deband=range=28')
+  })
+
   it('resolveFfmpegExportVideoEqFilter/AudioNormalize дают только белый список', () => {
     expect(resolveFfmpegExportVideoEqFilter('off')).toBeNull()
     expect(resolveFfmpegExportVideoEqFilter('warm')).toBe('eq=contrast=1.05:saturation=1.10')
@@ -620,12 +628,13 @@ describe('shared ffmpeg export argv', () => {
       videoTransform: 'cw90',
       cropPreset: 'center-square',
       videoDenoise: 'medium',
+      videoDeband: 'light',
       videoSharpen: 'light',
       videoEqPreset: 'vivid'
     })
     const vf = argv[argv.indexOf('-vf') + 1] ?? ''
     expect(vf).toBe(
-      'transpose=1,crop=min(iw\\,ih):min(iw\\,ih),hqdn3d=3:3:6:6,unsharp=5:5:0.6:5:5:0.0,eq=contrast=1.10:saturation=1.20,scale=-2:720,fps=30'
+      'transpose=1,crop=min(iw\\,ih):min(iw\\,ih),hqdn3d=3:3:6:6,deband=range=12,unsharp=5:5:0.6:5:5:0.0,eq=contrast=1.10:saturation=1.20,scale=-2:720,fps=30'
     )
   })
 

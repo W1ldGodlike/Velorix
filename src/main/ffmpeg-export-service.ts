@@ -15,6 +15,7 @@ import type {
   FfmpegExportSubtitleModeId,
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
+  FfmpegExportVideoDebandId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoSharpenId,
@@ -40,6 +41,7 @@ export type {
   FfmpegExportSubtitleModeId,
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
+  FfmpegExportVideoDebandId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoSharpenId,
@@ -222,6 +224,14 @@ export function parseFfmpegExportVideoSharpen(raw: unknown): FfmpegExportVideoSh
   return 'off'
 }
 
+/** §7.2 — пресет `deband`; только whitelist, иначе `off`. */
+export function parseFfmpegExportVideoDeband(raw: unknown): FfmpegExportVideoDebandId {
+  if (raw === 'light' || raw === 'medium' || raw === 'strong') {
+    return raw
+  }
+  return 'off'
+}
+
 /** §7.2 — пресет `eq=` (цветокор); только whitelist, иначе `off`. */
 export function parseFfmpegExportVideoEqPreset(raw: unknown): FfmpegExportVideoEqPresetId {
   if (raw === 'warm' || raw === 'cool' || raw === 'vivid' || raw === 'flat') {
@@ -291,6 +301,7 @@ export function parseFfmpegExportUserPresetSnapshot(
   const stripChapters = parseFfmpegExportStripFlag(o['stripChapters'])
   const subtitleMode = parseFfmpegExportSubtitleMode(o['subtitleMode'])
   const videoDenoise = parseFfmpegExportVideoDenoise(o['videoDenoise'])
+  const videoDeband = parseFfmpegExportVideoDeband(o['videoDeband'])
   const videoSharpen = parseFfmpegExportVideoSharpen(o['videoSharpen'])
   const videoEqPreset = parseFfmpegExportVideoEqPreset(o['videoEqPreset'])
   const audioNormalize = parseFfmpegExportAudioNormalize(o['audioNormalize'])
@@ -311,6 +322,7 @@ export function parseFfmpegExportUserPresetSnapshot(
     ...(stripChapters ? { stripChapters: true } : {}),
     ...(subtitleMode === 'copy' ? { subtitleMode: 'copy' as const } : {}),
     ...(videoDenoise !== 'off' ? { videoDenoise } : {}),
+    ...(videoDeband !== 'off' ? { videoDeband } : {}),
     ...(videoSharpen !== 'off' ? { videoSharpen } : {}),
     ...(videoEqPreset !== 'off' ? { videoEqPreset } : {}),
     ...(audioNormalize !== 'off' ? { audioNormalize } : {})
@@ -426,6 +438,15 @@ export function mergeFfmpegExportSnapshotIntoAppSettings(
     next.ffmpegExportVideoDenoise = snapshot.videoDenoise
   } else {
     delete next.ffmpegExportVideoDenoise
+  }
+  if (
+    snapshot.videoDeband === 'light' ||
+    snapshot.videoDeband === 'medium' ||
+    snapshot.videoDeband === 'strong'
+  ) {
+    next.ffmpegExportVideoDeband = snapshot.videoDeband
+  } else {
+    delete next.ffmpegExportVideoDeband
   }
   if (
     snapshot.videoSharpen === 'light' ||
@@ -640,6 +661,8 @@ export async function runFfmpegExportJob(params: {
   subtitleMode?: FfmpegExportSubtitleModeId | null
   /** §7.2 — `hqdn3d` denoise; `off`/null — без фильтра. */
   videoDenoise?: FfmpegExportVideoDenoiseId | null
+  /** §7.2 — `deband`; `off`/null — без фильтра. */
+  videoDeband?: FfmpegExportVideoDebandId | null
   /** §7.2 — `unsharp` контурная резкость; `off`/null — без фильтра. */
   videoSharpen?: FfmpegExportVideoSharpenId | null
   /** §7.2 — `eq=...` цветокор-пресет; `off`/null — без фильтра. */
@@ -666,6 +689,7 @@ export async function runFfmpegExportJob(params: {
   const stripChapters = parseFfmpegExportStripFlag(params.stripChapters)
   const subtitleMode = parseFfmpegExportSubtitleMode(params.subtitleMode)
   const videoDenoise = parseFfmpegExportVideoDenoise(params.videoDenoise)
+  const videoDeband = parseFfmpegExportVideoDeband(params.videoDeband)
   const videoSharpen = parseFfmpegExportVideoSharpen(params.videoSharpen)
   const videoEqPreset = parseFfmpegExportVideoEqPreset(params.videoEqPreset)
   const audioNormalize = parseFfmpegExportAudioNormalize(params.audioNormalize)
@@ -701,6 +725,7 @@ export async function runFfmpegExportJob(params: {
     ...(stripChapters ? { stripChapters: true } : {}),
     ...(subtitleMode === 'copy' ? { subtitleMode: 'copy' as const } : {}),
     ...(videoDenoise !== 'off' ? { videoDenoise } : {}),
+    ...(videoDeband !== 'off' ? { videoDeband } : {}),
     ...(videoSharpen !== 'off' ? { videoSharpen } : {}),
     ...(videoEqPreset !== 'off' ? { videoEqPreset } : {}),
     ...(audioNormalize !== 'off' ? { audioNormalize } : {})

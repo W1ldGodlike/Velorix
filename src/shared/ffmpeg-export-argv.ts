@@ -14,6 +14,7 @@ import type {
   FfmpegExportEncodePresetId,
   FfmpegExportScalePresetId,
   FfmpegExportSubtitleModeId,
+  FfmpegExportVideoDebandId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoSharpenId,
@@ -193,6 +194,25 @@ export function resolveFfmpegExportVideoSharpenFilter(
 }
 
 /**
+ * §7.2 — пресет `deband` (сглаживание полос/ступеней); `off` → `null`.
+ * Параметр `range` — радиус поиска полосы в пикселях (см. `ffmpeg -h filter=deband`).
+ */
+export function resolveFfmpegExportVideoDebandFilter(
+  id: FfmpegExportVideoDebandId
+): string | null {
+  switch (id) {
+    case 'light':
+      return 'deband=range=12'
+    case 'medium':
+      return 'deband=range=20'
+    case 'strong':
+      return 'deband=range=28'
+    default:
+      return null
+  }
+}
+
+/**
  * §7.2 — пресет `eq=` (контраст/насыщенность); whitelist выражений ffmpeg.
  *
  * Значения подобраны умеренно (контраст в окрестности 1.0, насыщенность в 0.85…1.2),
@@ -301,6 +321,8 @@ export interface FfmpegExportArgvParams {
   videoDenoise?: FfmpegExportVideoDenoiseId
   /** §7.2 — `unsharp` контурная резкость; `off` или undefined — без фильтра. */
   videoSharpen?: FfmpegExportVideoSharpenId
+  /** §7.2 — `deband`; `off` или undefined — без фильтра. */
+  videoDeband?: FfmpegExportVideoDebandId
   /** §7.2 — `eq=...` цветокор-пресет; `off` или undefined — без фильтра. */
   videoEqPreset?: FfmpegExportVideoEqPresetId
   /**
@@ -328,6 +350,11 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
   const denoise = resolveFfmpegExportVideoDenoiseFilter(params.videoDenoise ?? 'off')
   if (denoise !== null) {
     filters.push(denoise)
+  }
+  // §7.2 — после шумоподавления и до резкости: убираем ступени до усиления контуров unsharp.
+  const deband = resolveFfmpegExportVideoDebandFilter(params.videoDeband ?? 'off')
+  if (deband !== null) {
+    filters.push(deband)
   }
   const sharpen = resolveFfmpegExportVideoSharpenFilter(params.videoSharpen ?? 'off')
   if (sharpen !== null) {
@@ -488,6 +515,7 @@ export interface FfmpegExportPreviewInput {
   subtitleMode?: FfmpegExportSubtitleModeId
   videoDenoise?: FfmpegExportVideoDenoiseId
   videoSharpen?: FfmpegExportVideoSharpenId
+  videoDeband?: FfmpegExportVideoDebandId
   videoEqPreset?: FfmpegExportVideoEqPresetId
   audioNormalize?: FfmpegExportAudioNormalizeId
 }
@@ -560,6 +588,7 @@ export function buildFfmpegExportPreviewCommand(
     ...(input.stripChapters === true ? { stripChapters: true } : {}),
     ...(input.subtitleMode !== undefined ? { subtitleMode: input.subtitleMode } : {}),
     ...(input.videoDenoise !== undefined ? { videoDenoise: input.videoDenoise } : {}),
+    ...(input.videoDeband !== undefined ? { videoDeband: input.videoDeband } : {}),
     ...(input.videoSharpen !== undefined ? { videoSharpen: input.videoSharpen } : {}),
     ...(input.videoEqPreset !== undefined ? { videoEqPreset: input.videoEqPreset } : {}),
     ...(input.audioNormalize !== undefined ? { audioNormalize: input.audioNormalize } : {})

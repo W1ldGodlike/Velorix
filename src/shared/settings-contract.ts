@@ -9,6 +9,7 @@ import type {
   FfmpegExportCropPresetId,
   FfmpegExportSubtitleModeId,
   FfmpegExportUserPreset,
+  FfmpegExportVideoDebandId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoSharpenId,
@@ -144,6 +145,8 @@ export interface AppSettings {
   ffmpegExportSubtitleMode?: FfmpegExportSubtitleModeId
   /** §7.2: пресет `hqdn3d` (`off` по умолчанию = не пишем поле). */
   ffmpegExportVideoDenoise?: FfmpegExportVideoDenoiseId
+  /** §7.2: пресет `deband` (`off` по умолчанию = не пишем поле). */
+  ffmpegExportVideoDeband?: FfmpegExportVideoDebandId
   /** §7.2: пресет `unsharp` (`off` по умолчанию = не пишем поле). */
   ffmpegExportVideoSharpen?: FfmpegExportVideoSharpenId
   /** §7.2: пресет `eq=...` (`off` по умолчанию = не пишем поле). */

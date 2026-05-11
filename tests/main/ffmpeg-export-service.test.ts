@@ -150,6 +150,21 @@ describe('ffmpeg export pure helpers', () => {
         twoPass: true
       })
     ).toMatchObject({ twoPass: true })
+    expect(
+      parseFfmpegExportUserPresetSnapshot({
+        encodePreset: 'balance',
+        container: 'mp4',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'aac',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        videoTransform: 'none',
+        cropPreset: 'none',
+        videoDeband: 'medium'
+      })
+    ).toMatchObject({ videoDeband: 'medium' })
   })
 
   it('mergeFfmpegExportSnapshotIntoAppSettings повторяет правила delete для дефолтов', () => {
@@ -189,6 +204,24 @@ describe('ffmpeg export pure helpers', () => {
       }
     )
     expect(withTp.ffmpegExportTwoPass).toBe(true)
+
+    const deb = mergeFfmpegExportSnapshotIntoAppSettings(
+      { theme: 'dark' },
+      {
+        encodePreset: 'balance',
+        container: 'mp4',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'aac',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        videoTransform: 'none',
+        cropPreset: 'none',
+        videoDeband: 'strong'
+      }
+    )
+    expect(deb.ffmpegExportVideoDeband).toBe('strong')
 
     const off = mergeFfmpegExportSnapshotIntoAppSettings(withTp, {
       encodePreset: 'balance',

@@ -10,6 +10,7 @@ import type {
   FfmpegExportEncodePresetId,
   FfmpegExportScalePresetId,
   FfmpegExportSubtitleModeId,
+  FfmpegExportVideoDebandId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoSharpenId,
@@ -30,6 +31,7 @@ import {
   parseFfmpegExportSubtitleMode,
   parseFfmpegExportTwoPass,
   parseFfmpegExportVideoBitrate,
+  parseFfmpegExportVideoDeband,
   parseFfmpegExportVideoDenoise,
   parseFfmpegExportVideoEqPreset,
   parseFfmpegExportVideoSharpen,
@@ -54,6 +56,7 @@ export type ResolvedFfmpegExportJobOptions = {
   stripChapters: boolean | null
   subtitleMode: FfmpegExportSubtitleModeId | null
   videoDenoise: FfmpegExportVideoDenoiseId | null
+  videoDeband: FfmpegExportVideoDebandId | null
   videoSharpen: FfmpegExportVideoSharpenId | null
   videoEqPreset: FfmpegExportVideoEqPresetId | null
   audioNormalize: FfmpegExportAudioNormalizeId | null
@@ -151,6 +154,11 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
     videoDenoiseRaw !== undefined && videoDenoiseRaw !== null
       ? parseFfmpegExportVideoDenoise(videoDenoiseRaw)
       : parseFfmpegExportVideoDenoise(settings.ffmpegExportVideoDenoise)
+  const videoDebandRaw = raw['videoDeband']
+  const videoDeband =
+    videoDebandRaw !== undefined && videoDebandRaw !== null
+      ? parseFfmpegExportVideoDeband(videoDebandRaw)
+      : parseFfmpegExportVideoDeband(settings.ffmpegExportVideoDeband)
   const videoSharpenRaw = raw['videoSharpen']
   const videoSharpen =
     videoSharpenRaw !== undefined && videoSharpenRaw !== null
@@ -184,6 +192,7 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
     stripChapters,
     subtitleMode,
     videoDenoise,
+    videoDeband,
     videoSharpen,
     videoEqPreset,
     audioNormalize

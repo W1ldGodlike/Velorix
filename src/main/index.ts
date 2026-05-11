@@ -81,6 +81,7 @@ import {
   parseFfmpegExportStripFlag,
   parseFfmpegExportSubtitleMode,
   parseFfmpegExportTrim,
+  parseFfmpegExportVideoDeband,
   parseFfmpegExportVideoDenoise,
   parseFfmpegExportVideoEqPreset,
   parseFfmpegExportVideoSharpen,
@@ -955,6 +956,19 @@ function persistFfmpegExportVideoDenoise(raw: unknown): AppSettings {
     delete next.ffmpegExportVideoDenoise
   } else {
     next.ffmpegExportVideoDenoise = value
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistFfmpegExportVideoDeband(raw: unknown): AppSettings {
+  const value = parseFfmpegExportVideoDeband(raw)
+  const next = { ...cachedSettings }
+  if (value === 'off') {
+    delete next.ffmpegExportVideoDeband
+  } else {
+    next.ffmpegExportVideoDeband = value
   }
   cachedSettings = next
   saveSettings(settingsPath(), cachedSettings)
@@ -2141,6 +2155,11 @@ app.whenReady().then(() => {
   ipcMain.handle(
     mw.settingsSetFfmpegExportVideoDenoise,
     (_, raw: unknown): AppSettings => persistFfmpegExportVideoDenoise(raw)
+  )
+
+  ipcMain.handle(
+    mw.settingsSetFfmpegExportVideoDeband,
+    (_, raw: unknown): AppSettings => persistFfmpegExportVideoDeband(raw)
   )
 
   ipcMain.handle(

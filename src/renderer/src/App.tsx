@@ -54,6 +54,7 @@ import type {
   FfmpegExportSubtitleModeId,
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
+  FfmpegExportVideoDebandId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoSharpenId,
@@ -230,6 +231,12 @@ const EXPORT_VIDEO_SHARPEN_OPTIONS: Array<{ id: FfmpegExportVideoSharpenId; labe
   { id: 'light', label: 'Лёгкая (unsharp 0.6)' },
   { id: 'medium', label: 'Средняя (unsharp 1.0)' },
   { id: 'strong', label: 'Сильная (unsharp 1.5)' }
+]
+const EXPORT_VIDEO_DEBAND_OPTIONS: Array<{ id: FfmpegExportVideoDebandId; label: string }> = [
+  { id: 'off', label: 'Deband: выкл.' },
+  { id: 'light', label: 'Лёгкий (range=12)' },
+  { id: 'medium', label: 'Средний (range=20)' },
+  { id: 'strong', label: 'Сильный (range=28)' }
 ]
 const EXPORT_VIDEO_EQ_PRESETS: Array<{ id: FfmpegExportVideoEqPresetId; label: string }> = [
   { id: 'off', label: 'Цвет: выкл.' },
@@ -630,6 +637,8 @@ function App(): JSX.Element {
   const [exportSubtitleMode, setExportSubtitleMode] = useState<FfmpegExportSubtitleModeId>('drop')
   /** §7.2 — пресет `hqdn3d` denoise. */
   const [exportVideoDenoise, setExportVideoDenoise] = useState<FfmpegExportVideoDenoiseId>('off')
+  /** §7.2 — пресет `deband` (полосы/ступени). */
+  const [exportVideoDeband, setExportVideoDeband] = useState<FfmpegExportVideoDebandId>('off')
   /** §7.2 — пресет `unsharp` контурной резкости. */
   const [exportVideoSharpen, setExportVideoSharpen] = useState<FfmpegExportVideoSharpenId>('off')
   /** §7.2 — пресет `eq=` цветокоррекции. */
@@ -1071,6 +1080,8 @@ function App(): JSX.Element {
     setExportSubtitleMode(loaded.ffmpegExportSubtitleMode === 'copy' ? 'copy' : 'drop')
     const dn = loaded.ffmpegExportVideoDenoise
     setExportVideoDenoise(dn === 'light' || dn === 'medium' || dn === 'strong' ? dn : 'off')
+    const db = loaded.ffmpegExportVideoDeband
+    setExportVideoDeband(db === 'light' || db === 'medium' || db === 'strong' ? db : 'off')
     const sh = loaded.ffmpegExportVideoSharpen
     setExportVideoSharpen(sh === 'light' || sh === 'medium' || sh === 'strong' ? sh : 'off')
     const eq = loaded.ffmpegExportVideoEqPreset
@@ -1148,6 +1159,7 @@ function App(): JSX.Element {
       ...(exportStripChapters ? { stripChapters: true } : {}),
       ...(exportSubtitleMode === 'copy' ? { subtitleMode: 'copy' as const } : {}),
       ...(exportVideoDenoise !== 'off' ? { videoDenoise: exportVideoDenoise } : {}),
+      ...(exportVideoDeband !== 'off' ? { videoDeband: exportVideoDeband } : {}),
       ...(exportVideoSharpen !== 'off' ? { videoSharpen: exportVideoSharpen } : {}),
       ...(exportVideoEqPreset !== 'off' ? { videoEqPreset: exportVideoEqPreset } : {}),
       ...(exportAudioNormalize !== 'off' ? { audioNormalize: exportAudioNormalize } : {})
@@ -1169,6 +1181,7 @@ function App(): JSX.Element {
     exportStripChapters,
     exportSubtitleMode,
     exportVideoDenoise,
+    exportVideoDeband,
     exportVideoSharpen,
     exportVideoEqPreset,
     exportAudioNormalize
@@ -1623,6 +1636,7 @@ function App(): JSX.Element {
         stripChapters: exportStripChapters,
         subtitleMode: exportSubtitleMode,
         videoDenoise: exportVideoDenoise,
+        videoDeband: exportVideoDeband,
         videoSharpen: exportVideoSharpen,
         videoEqPreset: exportVideoEqPreset,
         audioNormalize: exportAudioNormalize
@@ -1727,6 +1741,7 @@ function App(): JSX.Element {
       stripChapters: exportStripChapters,
       subtitleMode: exportSubtitleMode,
       videoDenoise: exportVideoDenoise,
+      videoDeband: exportVideoDeband,
       videoSharpen: exportVideoSharpen,
       videoEqPreset: exportVideoEqPreset,
       audioNormalize: exportAudioNormalize,
@@ -1753,6 +1768,7 @@ function App(): JSX.Element {
     exportStripChapters,
     exportSubtitleMode,
     exportVideoDenoise,
+    exportVideoDeband,
     exportVideoSharpen,
     exportVideoEqPreset,
     exportAudioNormalize,
@@ -2326,7 +2342,34 @@ function App(): JSX.Element {
                       ))}
                     </select>
                     <span id="ffmpegVideoDenoiseHint" className="app-field-help">
-                      `hqdn3d` применяется до `unsharp` и масштаба §7.2.
+                      `hqdn3d` до `deband`/`unsharp` и масштаба §7.2.
+                    </span>
+                  </label>
+                  <label className="app-field">
+                    <span>Deband</span>
+                    <select
+                      className="app-control"
+                      aria-label="Пресет deband"
+                      aria-describedby="ffmpegVideoDebandHint"
+                      value={exportVideoDeband}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const v = e.target.value as FfmpegExportVideoDebandId
+                        setExportVideoDeband(v)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportVideoDeband(v)
+                          .catch(console.error)
+                      }}
+                    >
+                      {EXPORT_VIDEO_DEBAND_OPTIONS.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                    <span id="ffmpegVideoDebandHint" className="app-field-help">
+                      `deband` между `hqdn3d` и `unsharp` (полосы/градиенты) §7.2.
                     </span>
                   </label>
                   <label className="app-field">
@@ -2353,7 +2396,7 @@ function App(): JSX.Element {
                       ))}
                     </select>
                     <span id="ffmpegVideoSharpenHint" className="app-field-help">
-                      `unsharp` применяется после `hqdn3d` и до `scale`/`fps`.
+                      `unsharp` после `deband` и до `eq`/`scale`/`fps`.
                     </span>
                   </label>
                   <label className="app-field">
