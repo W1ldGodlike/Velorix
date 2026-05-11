@@ -57,6 +57,7 @@ import type {
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
+  FfmpegExportVideoGrainId,
   FfmpegExportVideoLut3dId,
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId
@@ -251,6 +252,12 @@ const EXPORT_VIDEO_EQ_PRESETS: Array<{ id: FfmpegExportVideoEqPresetId; label: s
   { id: 'cool', label: 'Холоднее' },
   { id: 'vivid', label: 'Насыщенно' },
   { id: 'flat', label: 'Мягко/flat' }
+]
+const EXPORT_VIDEO_GRAIN_OPTIONS: Array<{ id: FfmpegExportVideoGrainId; label: string }> = [
+  { id: 'off', label: 'Зерно: выкл.' },
+  { id: 'light', label: 'Лёгкое (noise 2)' },
+  { id: 'medium', label: 'Среднее (noise 5)' },
+  { id: 'strong', label: 'Сильное (noise 9)' }
 ]
 const EXPORT_AUDIO_NORMALIZE_OPTIONS: Array<{ id: FfmpegExportAudioNormalizeId; label: string }> =
   [
@@ -655,6 +662,8 @@ function App(): JSX.Element {
   /** §7.2 — пресет `eq=` цветокоррекции. */
   const [exportVideoEqPreset, setExportVideoEqPreset] =
     useState<FfmpegExportVideoEqPresetId>('off')
+  /** §7.2 — пресет `noise` (зернистость после eq, до scale). */
+  const [exportVideoGrain, setExportVideoGrain] = useState<FfmpegExportVideoGrainId>('off')
   /** §7.2 — нормализация громкости через whitelist фильтров. */
   const [exportAudioNormalize, setExportAudioNormalize] =
     useState<FfmpegExportAudioNormalizeId>('off')
@@ -1099,6 +1108,8 @@ function App(): JSX.Element {
     setExportVideoEqPreset(
       eq === 'warm' || eq === 'cool' || eq === 'vivid' || eq === 'flat' ? eq : 'off'
     )
+    const gr = loaded.ffmpegExportVideoGrain
+    setExportVideoGrain(gr === 'light' || gr === 'medium' || gr === 'strong' ? gr : 'off')
     const an = loaded.ffmpegExportAudioNormalize
     setExportAudioNormalize(an === 'loudnorm' || an === 'dynaudnorm' ? an : 'off')
     const lut = loaded.ffmpegExportVideoLut3d
@@ -1190,6 +1201,7 @@ function App(): JSX.Element {
       ...(exportVideoLut3d !== 'off' ? { videoLut3d: exportVideoLut3d } : {}),
       ...(exportVideoSharpen !== 'off' ? { videoSharpen: exportVideoSharpen } : {}),
       ...(exportVideoEqPreset !== 'off' ? { videoEqPreset: exportVideoEqPreset } : {}),
+      ...(exportVideoGrain !== 'off' ? { videoGrain: exportVideoGrain } : {}),
       ...(exportAudioNormalize !== 'off' ? { audioNormalize: exportAudioNormalize } : {})
     }
   }, [
@@ -1213,6 +1225,7 @@ function App(): JSX.Element {
     exportVideoLut3d,
     exportVideoSharpen,
     exportVideoEqPreset,
+    exportVideoGrain,
     exportAudioNormalize
   ])
 
@@ -1669,6 +1682,7 @@ function App(): JSX.Element {
         videoLut3d: exportVideoLut3d,
         videoSharpen: exportVideoSharpen,
         videoEqPreset: exportVideoEqPreset,
+        videoGrain: exportVideoGrain,
         audioNormalize: exportAudioNormalize
       })
       if (res.ok) {
@@ -1777,6 +1791,7 @@ function App(): JSX.Element {
         : {}),
       videoSharpen: exportVideoSharpen,
       videoEqPreset: exportVideoEqPreset,
+      videoGrain: exportVideoGrain,
       audioNormalize: exportAudioNormalize,
       inputPath: sourcePath,
       outputPath,
@@ -1805,6 +1820,7 @@ function App(): JSX.Element {
     lutCubePathForPreview,
     exportVideoSharpen,
     exportVideoEqPreset,
+    exportVideoGrain,
     exportAudioNormalize,
     trimRange,
     probeInfo?.durationSec
@@ -2483,6 +2499,31 @@ function App(): JSX.Element {
                     </select>
                     <span id="ffmpegVideoEqHint" className="app-field-help">
                       `eq` применяется после резкости и до масштаба; только preset whitelist.
+                    </span>
+                  </label>
+                  <label className="app-field">
+                    <span>Зерно</span>
+                    <select
+                      className="app-control"
+                      aria-label="Пресет noise зернистости"
+                      aria-describedby="ffmpegVideoGrainHint"
+                      value={exportVideoGrain}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const v = e.target.value as FfmpegExportVideoGrainId
+                        setExportVideoGrain(v)
+                        void window.fluxalloy.settings.setFfmpegExportVideoGrain(v).catch(console.error)
+                      }}
+                    >
+                      {EXPORT_VIDEO_GRAIN_OPTIONS.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                    <span id="ffmpegVideoGrainHint" className="app-field-help">
+                      `noise` после `eq` и до `scale`/`fps` §7.2.
                     </span>
                   </label>
                 </div>

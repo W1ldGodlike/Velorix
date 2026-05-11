@@ -85,6 +85,7 @@ import {
   parseFfmpegExportVideoDeband,
   parseFfmpegExportVideoDenoise,
   parseFfmpegExportVideoEqPreset,
+  parseFfmpegExportVideoGrain,
   parseFfmpegExportVideoLut3d,
   parseFfmpegExportVideoSharpen,
   parseFfmpegExportVideoTransform,
@@ -1010,6 +1011,19 @@ function persistFfmpegExportVideoEqPreset(raw: unknown): AppSettings {
     delete next.ffmpegExportVideoEqPreset
   } else {
     next.ffmpegExportVideoEqPreset = value
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistFfmpegExportVideoGrain(raw: unknown): AppSettings {
+  const value = parseFfmpegExportVideoGrain(raw)
+  const next = { ...cachedSettings }
+  if (value === 'off') {
+    delete next.ffmpegExportVideoGrain
+  } else {
+    next.ffmpegExportVideoGrain = value
   }
   cachedSettings = next
   saveSettings(settingsPath(), cachedSettings)
@@ -2191,6 +2205,11 @@ app.whenReady().then(() => {
   ipcMain.handle(
     mw.settingsSetFfmpegExportVideoEqPreset,
     (_, raw: unknown): AppSettings => persistFfmpegExportVideoEqPreset(raw)
+  )
+
+  ipcMain.handle(
+    mw.settingsSetFfmpegExportVideoGrain,
+    (_, raw: unknown): AppSettings => persistFfmpegExportVideoGrain(raw)
   )
 
   ipcMain.handle(

@@ -32,6 +32,11 @@ export type FfmpegExportVideoDebandId = 'off' | 'light' | 'medium' | 'strong'
  */
 export type FfmpegExportVideoEqPresetId = 'off' | 'warm' | 'cool' | 'vivid' | 'flat'
 /**
+ * §7.2 — пресеты `noise` (лёгкая зернистость кадра), только whitelist; `off` — без фильтра.
+ * Вставляется после `eq` и до `scale`/`fps` (как следующий шаг pipe §7.2).
+ */
+export type FfmpegExportVideoGrainId = 'off' | 'light' | 'medium' | 'strong'
+/**
  * §7.2 — bundled 3D LUT для `lut3d=file=…` (whitelist; `.cube` в `resources/luts/`, путь подставляет main).
  */
 export type FfmpegExportVideoLut3dId = 'off' | 'film-warm' | 'film-cool' | 'punch'
@@ -94,6 +99,8 @@ export interface FfmpegExportUserPresetSnapshot {
   videoLut3d?: FfmpegExportVideoLut3dId
   /** §7.2 — `eq=...` цветокор-пресет; `off` совпадает с поведением до правки. */
   videoEqPreset?: FfmpegExportVideoEqPresetId
+  /** §7.2 — `noise` зернистость; `off` совпадает с поведением до правки. */
+  videoGrain?: FfmpegExportVideoGrainId
   /** §7.2 — `loudnorm`/`dynaudnorm`; `off` совпадает с поведением до правки. */
   audioNormalize?: FfmpegExportAudioNormalizeId
 }
@@ -149,6 +156,8 @@ export interface MediaExportRequestPayload {
   videoLut3d?: FfmpegExportVideoLut3dId | null
   /** §7.2 — `eq=...` цветокор-пресет; `off` совпадает с текущим поведением. */
   videoEqPreset?: FfmpegExportVideoEqPresetId | null
+  /** §7.2 — `noise` зернистость; `off` совпадает с текущим поведением. */
+  videoGrain?: FfmpegExportVideoGrainId | null
   /** §7.2 — `loudnorm`/`dynaudnorm`; `off` совпадает с текущим поведением. */
   audioNormalize?: FfmpegExportAudioNormalizeId | null
 }

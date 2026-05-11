@@ -27,6 +27,7 @@ export const mainWindowIpc = {
   settingsSetFfmpegExportVideoLut3d: 'fluxalloy:settings-set-ffmpeg-export-video-lut3d',
   settingsSetFfmpegExportVideoSharpen: 'fluxalloy:settings-set-ffmpeg-export-video-sharpen',
   settingsSetFfmpegExportVideoEqPreset: 'fluxalloy:settings-set-ffmpeg-export-video-eq-preset',
+  settingsSetFfmpegExportVideoGrain: 'fluxalloy:settings-set-ffmpeg-export-video-grain',
   settingsSetFfmpegExportAudioNormalize: 'fluxalloy:settings-set-ffmpeg-export-audio-normalize',
   settingsSetFfmpegExportUserPresets: 'fluxalloy:settings-set-ffmpeg-export-user-presets',
   settingsApplyFfmpegExportSnapshot: 'fluxalloy:settings-apply-ffmpeg-export-snapshot',

@@ -19,6 +19,7 @@ import {
   parseFfmpegExportUserPresetSnapshot,
   parseFfmpegExportUserPresetsList,
   parseFfmpegExportVideoBitrate,
+  parseFfmpegExportVideoGrain,
   parseFfmpegSpeedToken,
   parseFfmpegTimeSeconds,
   resolveExportEncodeParams,
@@ -180,6 +181,26 @@ describe('ffmpeg export pure helpers', () => {
         videoLut3d: 'punch'
       })
     ).toMatchObject({ videoLut3d: 'punch' })
+    expect(
+      parseFfmpegExportUserPresetSnapshot({
+        encodePreset: 'balance',
+        container: 'mp4',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'aac',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        videoTransform: 'none',
+        cropPreset: 'none',
+        videoGrain: 'light'
+      })
+    ).toMatchObject({ videoGrain: 'light' })
+  })
+
+  it('parseFfmpegExportVideoGrain — whitelist', () => {
+    expect(parseFfmpegExportVideoGrain('light')).toBe('light')
+    expect(parseFfmpegExportVideoGrain('bogus')).toBe('off')
   })
 
   it('mergeFfmpegExportSnapshotIntoAppSettings повторяет правила delete для дефолтов', () => {
@@ -237,6 +258,24 @@ describe('ffmpeg export pure helpers', () => {
       }
     )
     expect(deb.ffmpegExportVideoDeband).toBe('strong')
+
+    const grain = mergeFfmpegExportSnapshotIntoAppSettings(
+      { theme: 'dark' },
+      {
+        encodePreset: 'balance',
+        container: 'mp4',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'aac',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        videoTransform: 'none',
+        cropPreset: 'none',
+        videoGrain: 'medium'
+      }
+    )
+    expect(grain.ffmpegExportVideoGrain).toBe('medium')
 
     const lut = mergeFfmpegExportSnapshotIntoAppSettings(
       { theme: 'dark' },

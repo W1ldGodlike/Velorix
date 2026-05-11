@@ -18,6 +18,7 @@ import type {
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
+  FfmpegExportVideoGrainId,
   FfmpegExportVideoLut3dId,
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId,
@@ -46,6 +47,7 @@ export type {
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
+  FfmpegExportVideoGrainId,
   FfmpegExportVideoLut3dId,
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId,
@@ -65,6 +67,7 @@ export {
   resolveFfmpegExportSubtitleCopyCodec,
   resolveFfmpegExportVideoDenoiseFilter,
   resolveFfmpegExportVideoEqFilter,
+  resolveFfmpegExportVideoGrainFilter,
   resolveFfmpegExportVideoSharpenFilter,
   shouldApplyFfmpegExportTrim
 } from '../shared/ffmpeg-export-argv'
@@ -251,6 +254,14 @@ export function parseFfmpegExportVideoEqPreset(raw: unknown): FfmpegExportVideoE
   return 'off'
 }
 
+/** §7.2 — пресет `noise` (зернистость); только whitelist, иначе `off`. */
+export function parseFfmpegExportVideoGrain(raw: unknown): FfmpegExportVideoGrainId {
+  if (raw === 'light' || raw === 'medium' || raw === 'strong') {
+    return raw
+  }
+  return 'off'
+}
+
 /** §7.2 — пресет нормализации громкости (`loudnorm`/`dynaudnorm`); иначе `off`. */
 export function parseFfmpegExportAudioNormalize(raw: unknown): FfmpegExportAudioNormalizeId {
   if (raw === 'loudnorm' || raw === 'dynaudnorm') {
@@ -316,6 +327,7 @@ export function parseFfmpegExportUserPresetSnapshot(
   const videoLut3d = parseFfmpegExportVideoLut3d(o['videoLut3d'])
   const videoSharpen = parseFfmpegExportVideoSharpen(o['videoSharpen'])
   const videoEqPreset = parseFfmpegExportVideoEqPreset(o['videoEqPreset'])
+  const videoGrain = parseFfmpegExportVideoGrain(o['videoGrain'])
   const audioNormalize = parseFfmpegExportAudioNormalize(o['audioNormalize'])
   return {
     encodePreset,
@@ -338,6 +350,7 @@ export function parseFfmpegExportUserPresetSnapshot(
     ...(videoLut3d !== 'off' ? { videoLut3d } : {}),
     ...(videoSharpen !== 'off' ? { videoSharpen } : {}),
     ...(videoEqPreset !== 'off' ? { videoEqPreset } : {}),
+    ...(videoGrain !== 'off' ? { videoGrain } : {}),
     ...(audioNormalize !== 'off' ? { audioNormalize } : {})
   }
 }
@@ -488,6 +501,15 @@ export function mergeFfmpegExportSnapshotIntoAppSettings(
     next.ffmpegExportVideoEqPreset = snapshot.videoEqPreset
   } else {
     delete next.ffmpegExportVideoEqPreset
+  }
+  if (
+    snapshot.videoGrain === 'light' ||
+    snapshot.videoGrain === 'medium' ||
+    snapshot.videoGrain === 'strong'
+  ) {
+    next.ffmpegExportVideoGrain = snapshot.videoGrain
+  } else {
+    delete next.ffmpegExportVideoGrain
   }
   if (snapshot.audioNormalize === 'loudnorm' || snapshot.audioNormalize === 'dynaudnorm') {
     next.ffmpegExportAudioNormalize = snapshot.audioNormalize
@@ -695,6 +717,8 @@ export async function runFfmpegExportJob(params: {
   videoSharpen?: FfmpegExportVideoSharpenId | null
   /** §7.2 — `eq=...` цветокор-пресет; `off`/null — без фильтра. */
   videoEqPreset?: FfmpegExportVideoEqPresetId | null
+  /** §7.2 — `noise` зернистость; `off`/null — без фильтра. */
+  videoGrain?: FfmpegExportVideoGrainId | null
   /** §7.2 — `loudnorm`/`dynaudnorm`; `off`/null — без фильтра. */
   audioNormalize?: FfmpegExportAudioNormalizeId | null
   signal: AbortSignal
@@ -731,6 +755,7 @@ export async function runFfmpegExportJob(params: {
     (lutRoot !== null ? resolveFfmpegExportLutCubeAbsPath(lutRoot, videoLut3dId) : null)
   const videoSharpen = parseFfmpegExportVideoSharpen(params.videoSharpen)
   const videoEqPreset = parseFfmpegExportVideoEqPreset(params.videoEqPreset)
+  const videoGrain = parseFfmpegExportVideoGrain(params.videoGrain)
   const audioNormalize = parseFfmpegExportAudioNormalize(params.audioNormalize)
   if (wantTwoPass && videoBitrate === null) {
     return {
@@ -768,6 +793,7 @@ export async function runFfmpegExportJob(params: {
     ...(videoLut3dCubeAbsPath !== null ? { videoLut3dCubeAbsPath } : {}),
     ...(videoSharpen !== 'off' ? { videoSharpen } : {}),
     ...(videoEqPreset !== 'off' ? { videoEqPreset } : {}),
+    ...(videoGrain !== 'off' ? { videoGrain } : {}),
     ...(audioNormalize !== 'off' ? { audioNormalize } : {})
   }
 

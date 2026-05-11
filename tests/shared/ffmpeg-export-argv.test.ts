@@ -15,6 +15,7 @@ import {
   resolveFfmpegExportVideoDebandFilter,
   resolveFfmpegExportVideoDenoiseFilter,
   resolveFfmpegExportVideoEqFilter,
+  resolveFfmpegExportVideoGrainFilter,
   resolveFfmpegExportVideoSharpenFilter,
   resolveFfmpegExportVideoTransformFilters,
   shouldApplyFfmpegExportTrim
@@ -623,6 +624,13 @@ describe('shared ffmpeg export argv', () => {
     expect(resolveFfmpegExportAudioNormalizeFilter('dynaudnorm')).toBe('dynaudnorm=f=200:g=15')
   })
 
+  it('resolveFfmpegExportVideoGrainFilter — только whitelist noise', () => {
+    expect(resolveFfmpegExportVideoGrainFilter('off')).toBeNull()
+    expect(resolveFfmpegExportVideoGrainFilter('light')).toBe('noise=alls=2:allf=u')
+    expect(resolveFfmpegExportVideoGrainFilter('medium')).toBe('noise=alls=5:allf=u')
+    expect(resolveFfmpegExportVideoGrainFilter('strong')).toBe('noise=alls=9:allf=u')
+  })
+
   it('denoise и sharpen встают между crop и scale, перед fps', () => {
     const argv = buildFfmpegExportArgv({
       inputPath: 'in.mp4',
@@ -641,11 +649,12 @@ describe('shared ffmpeg export argv', () => {
       videoDeband: 'light',
       videoLut3dCubeAbsPath: 'D:/l/f.cube',
       videoSharpen: 'light',
-      videoEqPreset: 'vivid'
+      videoEqPreset: 'vivid',
+      videoGrain: 'medium'
     })
     const vf = argv[argv.indexOf('-vf') + 1] ?? ''
     expect(vf).toBe(
-      "transpose=1,crop=min(iw\\,ih):min(iw\\,ih),hqdn3d=3:3:6:6,deband=range=12,lut3d=file='D\\:/l/f.cube':interp=trilinear,unsharp=5:5:0.6:5:5:0.0,eq=contrast=1.10:saturation=1.20,scale=-2:720,fps=30"
+      "transpose=1,crop=min(iw\\,ih):min(iw\\,ih),hqdn3d=3:3:6:6,deband=range=12,lut3d=file='D\\:/l/f.cube':interp=trilinear,unsharp=5:5:0.6:5:5:0.0,eq=contrast=1.10:saturation=1.20,noise=alls=5:allf=u,scale=-2:720,fps=30"
     )
   })
 

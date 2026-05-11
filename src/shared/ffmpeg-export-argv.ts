@@ -17,6 +17,7 @@ import type {
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
+  FfmpegExportVideoGrainId,
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId,
   MediaExportTrimPayload
@@ -251,6 +252,25 @@ export function resolveFfmpegExportVideoEqFilter(
 }
 
 /**
+ * §7.2 — пресет `noise` (лёгкая зернистость); `off` → `null`.
+ * `alls` — сила по всем компонентам; `allf=u` — равномерный шум (без отдельных «паттернов»).
+ */
+export function resolveFfmpegExportVideoGrainFilter(
+  id: FfmpegExportVideoGrainId
+): string | null {
+  switch (id) {
+    case 'light':
+      return 'noise=alls=2:allf=u'
+    case 'medium':
+      return 'noise=alls=5:allf=u'
+    case 'strong':
+      return 'noise=alls=9:allf=u'
+    default:
+      return null
+  }
+}
+
+/**
  * §7.2 — пресет нормализации громкости. Подбор параметров:
  * - `loudnorm=I=-16:LRA=11:TP=-1.5` — типовая цель EBU R128 для подкастов/видео,
  *   single-pass (двухпроходный анализ — отдельный сценарий, не делаем здесь).
@@ -344,6 +364,8 @@ export interface FfmpegExportArgvParams {
   videoLut3dCubeAbsPath?: string | null
   /** §7.2 — `eq=...` цветокор-пресет; `off` или undefined — без фильтра. */
   videoEqPreset?: FfmpegExportVideoEqPresetId
+  /** §7.2 — `noise` зернистость; `off` или undefined — без фильтра. */
+  videoGrain?: FfmpegExportVideoGrainId
   /**
    * §7.2 — `loudnorm`/`dynaudnorm`; `off` или undefined — без нормализации.
    * При `audioMode='none'` или в первом проходе двухпроходного режима игнорируется
@@ -385,11 +407,14 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
   if (sharpen !== null) {
     filters.push(sharpen)
   }
-  // §7.2 — `eq` после sharpen и до `scale`, чтобы фильтры цвета работали уже по
-  // отфильтрованной картинке, а scale не перекрывал коррекцию насыщенности.
+  // §7.2 — `eq` после sharpen и до зерна/`scale`, чтобы цветокор шёл по уже отфильтрованной картинке.
   const eq = resolveFfmpegExportVideoEqFilter(params.videoEqPreset ?? 'off')
   if (eq !== null) {
     filters.push(eq)
+  }
+  const grain = resolveFfmpegExportVideoGrainFilter(params.videoGrain ?? 'off')
+  if (grain !== null) {
+    filters.push(grain)
   }
   const scale = resolveFfmpegExportScaleFilter(params.scalePreset)
   if (scale !== null) {
@@ -544,6 +569,7 @@ export interface FfmpegExportPreviewInput {
   /** §7.2 — как в `buildFfmpegExportArgv`: путь к `.cube` с main (`resolveFfmpegExportLutCubeAbsPath`). */
   videoLut3dCubeAbsPath?: string | null
   videoEqPreset?: FfmpegExportVideoEqPresetId
+  videoGrain?: FfmpegExportVideoGrainId
   audioNormalize?: FfmpegExportAudioNormalizeId
 }
 
@@ -621,6 +647,7 @@ export function buildFfmpegExportPreviewCommand(
       : {}),
     ...(input.videoSharpen !== undefined ? { videoSharpen: input.videoSharpen } : {}),
     ...(input.videoEqPreset !== undefined ? { videoEqPreset: input.videoEqPreset } : {}),
+    ...(input.videoGrain !== undefined ? { videoGrain: input.videoGrain } : {}),
     ...(input.audioNormalize !== undefined ? { audioNormalize: input.audioNormalize } : {})
   }
 
