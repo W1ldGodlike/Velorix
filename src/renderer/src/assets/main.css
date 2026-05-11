@@ -1048,9 +1048,18 @@
   gap: 0.22rem;
 }
 
+/* v0: одна строка — дорожка тянется, проценты справа табличными цифрами. */
+.app-downloads-progress-bar-row {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.42rem;
+}
+
 .app-downloads-progress-track {
   display: block;
-  width: 100%;
+  flex: 1;
+  min-width: 2.25rem;
   height: 0.28rem;
   overflow: hidden;
   border-radius: 999px;
@@ -1063,6 +1072,30 @@
   border-radius: inherit;
   background: var(--fa-accent);
   transition: width 0.85s ease-out;
+}
+
+.app-downloads-progress-fill--complete {
+  background: var(--fa-success);
+}
+
+.app-downloads-progress-pct {
+  flex: 0 0 auto;
+  min-width: 2.35rem;
+  color: var(--fa-text-secondary);
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.app-downloads-progress-fallback {
+  display: block;
+  max-width: 14rem;
+  overflow: hidden;
+  color: var(--fa-text-muted);
+  font-size: 0.66rem;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .app-downloads-status {
@@ -2699,5 +2732,32 @@
 
   .app-downloads-extra-args {
     font-size: 0.756rem;
+  }
+}
+
+/* §4.C / §6 — ~200 % (devicePixelRatio 2): вкладка «Загрузки» без дублирования всего 168dpi-блока. */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .app-downloads-progress-track {
+    height: 0.36rem;
+  }
+
+  .app-downloads-progress-pct {
+    font-size: 0.7rem;
+  }
+
+  .app-downloads-url-actions .app-btn {
+    min-height: 34px;
+    font-size: 0.84rem;
+  }
+
+  .app-downloads-row-actions .app-icon-btn {
+    min-width: 29px;
+    width: 29px;
+    height: 29px;
+  }
+
+  .app-downloads-row-actions .app-icon-btn > svg {
+    width: 19px;
+    height: 19px;
   }
 }

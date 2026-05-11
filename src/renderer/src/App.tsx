@@ -2650,7 +2650,7 @@ function App(): JSX.Element {
                 </button>
                 <button
                   type="button"
-                  className="app-btn"
+                  className="app-btn app-btn-primary"
                   onClick={() => {
                     void window.fluxalloy.downloads.startQueue().then((res) => {
                       if (!res.ok) {
@@ -2781,6 +2781,13 @@ function App(): JSX.Element {
                     ) : (
                       visibleDownloadsRows.map((row) => {
                         const progressPercent = parseDownloadsProgressPercent(row.progress)
+                        const isDoneRow = downloadsRowMatchesStatus(row, 'done')
+                        const showProgressBar = isDoneRow || progressPercent !== null
+                        const barPercent = isDoneRow
+                          ? 100
+                          : progressPercent === null
+                            ? 0
+                            : Math.min(100, Math.max(0, progressPercent))
                         const statusTone = downloadsStatusTone(row)
                         return (
                           <tr key={row.id}>
@@ -2793,15 +2800,29 @@ function App(): JSX.Element {
                             <td className="app-downloads-mono">{row.queueSize ?? '—'}</td>
                             <td className="app-downloads-mono">
                               <div className="app-downloads-progress">
-                                <span>{row.progress}</span>
-                                {progressPercent !== null ? (
-                                  <span className="app-downloads-progress-track" aria-hidden>
-                                    <span
-                                      className="app-downloads-progress-fill"
-                                      style={{ width: `${progressPercent}%` }}
-                                    />
+                                {showProgressBar ? (
+                                  <div className="app-downloads-progress-bar-row">
+                                    <span className="app-downloads-progress-track" aria-hidden>
+                                      <span
+                                        className={
+                                          isDoneRow
+                                            ? 'app-downloads-progress-fill app-downloads-progress-fill--complete'
+                                            : 'app-downloads-progress-fill'
+                                        }
+                                        style={{ width: `${barPercent}%` }}
+                                      />
+                                    </span>
+                                    <span className="app-downloads-progress-pct">
+                                      {Math.round(barPercent)}%
+                                    </span>
+                                  </div>
+                                ) : row.progress ? (
+                                  <span className="app-downloads-progress-fallback" title={row.progress}>
+                                    {row.progress}
                                   </span>
-                                ) : null}
+                                ) : (
+                                  '—'
+                                )}
                               </div>
                             </td>
                             <td className="app-downloads-mono">{row.queueSpeed ?? '—'}</td>
