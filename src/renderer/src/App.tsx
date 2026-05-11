@@ -57,6 +57,7 @@ import type {
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
+  FfmpegExportVideoLut3dId,
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId
 } from '../../shared/ffmpeg-export-contract'
@@ -237,6 +238,12 @@ const EXPORT_VIDEO_DEBAND_OPTIONS: Array<{ id: FfmpegExportVideoDebandId; label:
   { id: 'light', label: 'Лёгкий (range=12)' },
   { id: 'medium', label: 'Средний (range=20)' },
   { id: 'strong', label: 'Сильный (range=28)' }
+]
+const EXPORT_VIDEO_LUT3D_OPTIONS: Array<{ id: FfmpegExportVideoLut3dId; label: string }> = [
+  { id: 'off', label: '3D LUT: выкл.' },
+  { id: 'film-warm', label: 'Кино теплее (lut3d)' },
+  { id: 'film-cool', label: 'Кино холоднее (lut3d)' },
+  { id: 'punch', label: 'Контраст (lut3d)' }
 ]
 const EXPORT_VIDEO_EQ_PRESETS: Array<{ id: FfmpegExportVideoEqPresetId; label: string }> = [
   { id: 'off', label: 'Цвет: выкл.' },
@@ -639,6 +646,10 @@ function App(): JSX.Element {
   const [exportVideoDenoise, setExportVideoDenoise] = useState<FfmpegExportVideoDenoiseId>('off')
   /** §7.2 — пресет `deband` (полосы/ступени). */
   const [exportVideoDeband, setExportVideoDeband] = useState<FfmpegExportVideoDebandId>('off')
+  /** §7.2 — bundled `lut3d` (между deband и unsharp). */
+  const [exportVideoLut3d, setExportVideoLut3d] = useState<FfmpegExportVideoLut3dId>('off')
+  /** Абсолютный путь к `.cube` для превью argv (main `resolveFfmpegExportLutCubeAbsPath`). */
+  const [lutCubePathForPreview, setLutCubePathForPreview] = useState<string | null>(null)
   /** §7.2 — пресет `unsharp` контурной резкости. */
   const [exportVideoSharpen, setExportVideoSharpen] = useState<FfmpegExportVideoSharpenId>('off')
   /** §7.2 — пресет `eq=` цветокоррекции. */
@@ -1090,7 +1101,23 @@ function App(): JSX.Element {
     )
     const an = loaded.ffmpegExportAudioNormalize
     setExportAudioNormalize(an === 'loudnorm' || an === 'dynaudnorm' ? an : 'off')
+    const lut = loaded.ffmpegExportVideoLut3d
+    setExportVideoLut3d(
+      lut === 'film-warm' || lut === 'film-cool' || lut === 'punch' ? lut : 'off'
+    )
   }, [])
+
+  useEffect(() => {
+    let cancelled = false
+    void window.fluxalloy.export.resolveBundledLutCubePath(exportVideoLut3d).then((p) => {
+      if (!cancelled) {
+        setLutCubePathForPreview(p)
+      }
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [exportVideoLut3d])
 
   const bumpManualExportEdit = useCallback(() => {
     setSelectedUserPresetId(null)
@@ -1160,6 +1187,7 @@ function App(): JSX.Element {
       ...(exportSubtitleMode === 'copy' ? { subtitleMode: 'copy' as const } : {}),
       ...(exportVideoDenoise !== 'off' ? { videoDenoise: exportVideoDenoise } : {}),
       ...(exportVideoDeband !== 'off' ? { videoDeband: exportVideoDeband } : {}),
+      ...(exportVideoLut3d !== 'off' ? { videoLut3d: exportVideoLut3d } : {}),
       ...(exportVideoSharpen !== 'off' ? { videoSharpen: exportVideoSharpen } : {}),
       ...(exportVideoEqPreset !== 'off' ? { videoEqPreset: exportVideoEqPreset } : {}),
       ...(exportAudioNormalize !== 'off' ? { audioNormalize: exportAudioNormalize } : {})
@@ -1182,6 +1210,7 @@ function App(): JSX.Element {
     exportSubtitleMode,
     exportVideoDenoise,
     exportVideoDeband,
+    exportVideoLut3d,
     exportVideoSharpen,
     exportVideoEqPreset,
     exportAudioNormalize
@@ -1637,6 +1666,7 @@ function App(): JSX.Element {
         subtitleMode: exportSubtitleMode,
         videoDenoise: exportVideoDenoise,
         videoDeband: exportVideoDeband,
+        videoLut3d: exportVideoLut3d,
         videoSharpen: exportVideoSharpen,
         videoEqPreset: exportVideoEqPreset,
         audioNormalize: exportAudioNormalize
@@ -1742,6 +1772,9 @@ function App(): JSX.Element {
       subtitleMode: exportSubtitleMode,
       videoDenoise: exportVideoDenoise,
       videoDeband: exportVideoDeband,
+      ...(lutCubePathForPreview !== null && lutCubePathForPreview.trim() !== ''
+        ? { videoLut3dCubeAbsPath: lutCubePathForPreview.trim() }
+        : {}),
       videoSharpen: exportVideoSharpen,
       videoEqPreset: exportVideoEqPreset,
       audioNormalize: exportAudioNormalize,
@@ -1769,6 +1802,7 @@ function App(): JSX.Element {
     exportSubtitleMode,
     exportVideoDenoise,
     exportVideoDeband,
+    lutCubePathForPreview,
     exportVideoSharpen,
     exportVideoEqPreset,
     exportAudioNormalize,
@@ -2373,6 +2407,31 @@ function App(): JSX.Element {
                     </span>
                   </label>
                   <label className="app-field">
+                    <span>3D LUT</span>
+                    <select
+                      className="app-control"
+                      aria-label="Пресет lut3d"
+                      aria-describedby="ffmpegVideoLut3dHint"
+                      value={exportVideoLut3d}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const v = e.target.value as FfmpegExportVideoLut3dId
+                        setExportVideoLut3d(v)
+                        void window.fluxalloy.settings.setFfmpegExportVideoLut3d(v).catch(console.error)
+                      }}
+                    >
+                      {EXPORT_VIDEO_LUT3D_OPTIONS.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                    <span id="ffmpegVideoLut3dHint" className="app-field-help">
+                      `lut3d` после `deband` и до `unsharp` (bundled `.cube` в `resources/luts/`) §7.2.
+                    </span>
+                  </label>
+                  <label className="app-field">
                     <span>Резкость</span>
                     <select
                       className="app-control"
@@ -2396,7 +2455,7 @@ function App(): JSX.Element {
                       ))}
                     </select>
                     <span id="ffmpegVideoSharpenHint" className="app-field-help">
-                      `unsharp` после `deband` и до `eq`/`scale`/`fps`.
+                      `unsharp` после `deband`/`lut3d` и до `eq`/`scale`/`fps`.
                     </span>
                   </label>
                   <label className="app-field">

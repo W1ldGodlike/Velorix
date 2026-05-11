@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest'
 
 import {
   buildFfmpegExportArgv,
+  buildFfmpegExportLut3dFilter,
   buildFfmpegExportPreviewCommand,
+  escapeFilePathForFfmpegFilter,
   formatFfmpegArgvForPreview,
   normalizeFfmpegExportAudioGainDb,
   resolveFfmpegExportAudioNormalizeFilter,
@@ -600,6 +602,14 @@ describe('shared ffmpeg export argv', () => {
     expect(resolveFfmpegExportVideoDebandFilter('strong')).toBe('deband=range=28')
   })
 
+  it('escapeFilePathForFfmpegFilter / buildFfmpegExportLut3dFilter', () => {
+    expect(escapeFilePathForFfmpegFilter('C:/tmp/t.cube')).toBe('C\\:/tmp/t.cube')
+    expect(escapeFilePathForFfmpegFilter("/var/l/a'b.cube")).toBe("/var/l/a\\'b.cube")
+    expect(buildFfmpegExportLut3dFilter('D:/luts/film-warm.cube')).toBe(
+      "lut3d=file='D\\:/luts/film-warm.cube':interp=trilinear"
+    )
+  })
+
   it('resolveFfmpegExportVideoEqFilter/AudioNormalize дают только белый список', () => {
     expect(resolveFfmpegExportVideoEqFilter('off')).toBeNull()
     expect(resolveFfmpegExportVideoEqFilter('warm')).toBe('eq=contrast=1.05:saturation=1.10')
@@ -629,12 +639,13 @@ describe('shared ffmpeg export argv', () => {
       cropPreset: 'center-square',
       videoDenoise: 'medium',
       videoDeband: 'light',
+      videoLut3dCubeAbsPath: 'D:/l/f.cube',
       videoSharpen: 'light',
       videoEqPreset: 'vivid'
     })
     const vf = argv[argv.indexOf('-vf') + 1] ?? ''
     expect(vf).toBe(
-      'transpose=1,crop=min(iw\\,ih):min(iw\\,ih),hqdn3d=3:3:6:6,deband=range=12,unsharp=5:5:0.6:5:5:0.0,eq=contrast=1.10:saturation=1.20,scale=-2:720,fps=30'
+      "transpose=1,crop=min(iw\\,ih):min(iw\\,ih),hqdn3d=3:3:6:6,deband=range=12,lut3d=file='D\\:/l/f.cube':interp=trilinear,unsharp=5:5:0.6:5:5:0.0,eq=contrast=1.10:saturation=1.20,scale=-2:720,fps=30"
     )
   })
 

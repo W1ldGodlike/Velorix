@@ -12,6 +12,7 @@ import type {
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
+  FfmpegExportVideoLut3dId,
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId
 } from './ffmpeg-export-contract'
@@ -147,6 +148,8 @@ export interface AppSettings {
   ffmpegExportVideoDenoise?: FfmpegExportVideoDenoiseId
   /** §7.2: пресет `deband` (`off` по умолчанию = не пишем поле). */
   ffmpegExportVideoDeband?: FfmpegExportVideoDebandId
+  /** §7.2: bundled `lut3d` (`off` по умолчанию = не пишем поле). */
+  ffmpegExportVideoLut3d?: FfmpegExportVideoLut3dId
   /** §7.2: пресет `unsharp` (`off` по умолчанию = не пишем поле). */
   ffmpegExportVideoSharpen?: FfmpegExportVideoSharpenId
   /** §7.2: пресет `eq=...` (`off` по умолчанию = не пишем поле). */

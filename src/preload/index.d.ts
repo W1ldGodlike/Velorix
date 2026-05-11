@@ -22,6 +22,7 @@ import type {
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
+  FfmpegExportVideoLut3dId,
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId,
   MediaExportRequestPayload,
@@ -89,6 +90,7 @@ export interface FluxAlloyApi {
     setFfmpegExportSubtitleMode: (mode: FfmpegExportSubtitleModeId) => Promise<AppSettings>
     setFfmpegExportVideoDenoise: (preset: FfmpegExportVideoDenoiseId) => Promise<AppSettings>
     setFfmpegExportVideoDeband: (preset: FfmpegExportVideoDebandId) => Promise<AppSettings>
+    setFfmpegExportVideoLut3d: (preset: FfmpegExportVideoLut3dId) => Promise<AppSettings>
     setFfmpegExportVideoSharpen: (preset: FfmpegExportVideoSharpenId) => Promise<AppSettings>
     setFfmpegExportVideoEqPreset: (preset: FfmpegExportVideoEqPresetId) => Promise<AppSettings>
     setFfmpegExportAudioNormalize: (preset: FfmpegExportAudioNormalizeId) => Promise<AppSettings>
@@ -209,6 +211,7 @@ export interface FluxAlloyApi {
   }
   export: {
     start: (payload: MediaExportRequestPayload) => Promise<MediaExportStartResult>
+    resolveBundledLutCubePath: (preset: FfmpegExportVideoLut3dId) => Promise<string | null>
     cancel: () => Promise<{ ok: true } | { ok: false; error: string }>
     openOutput: (
       path: string,

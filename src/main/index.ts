@@ -18,6 +18,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
 import { resolveAppPaths } from './app-paths'
+import { resolveFfmpegExportLutCubeAbsPath } from './ffmpeg-export-lut-path'
 import { installExternalNavigationGuard, openAllowedExternalUrl } from './external-url'
 import { downloadEnginesWindows, isAnyEngineMissing } from './engine-download'
 import {
@@ -84,6 +85,7 @@ import {
   parseFfmpegExportVideoDeband,
   parseFfmpegExportVideoDenoise,
   parseFfmpegExportVideoEqPreset,
+  parseFfmpegExportVideoLut3d,
   parseFfmpegExportVideoSharpen,
   parseFfmpegExportVideoTransform,
   parseFfmpegExportUserPresetSnapshot,
@@ -969,6 +971,19 @@ function persistFfmpegExportVideoDeband(raw: unknown): AppSettings {
     delete next.ffmpegExportVideoDeband
   } else {
     next.ffmpegExportVideoDeband = value
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistFfmpegExportVideoLut3d(raw: unknown): AppSettings {
+  const value = parseFfmpegExportVideoLut3d(raw)
+  const next = { ...cachedSettings }
+  if (value === 'off') {
+    delete next.ffmpegExportVideoLut3d
+  } else {
+    next.ffmpegExportVideoLut3d = value
   }
   cachedSettings = next
   saveSettings(settingsPath(), cachedSettings)
@@ -1997,6 +2012,7 @@ app.whenReady().then(() => {
           outputPath: outPath,
           probeDurationSec: null,
           ...exportOpts,
+          lutResourcesRoot: paths.resources,
           signal: ac.signal,
           onProgress: pushProgress
         })
@@ -2160,6 +2176,11 @@ app.whenReady().then(() => {
   ipcMain.handle(
     mw.settingsSetFfmpegExportVideoDeband,
     (_, raw: unknown): AppSettings => persistFfmpegExportVideoDeband(raw)
+  )
+
+  ipcMain.handle(
+    mw.settingsSetFfmpegExportVideoLut3d,
+    (_, raw: unknown): AppSettings => persistFfmpegExportVideoLut3d(raw)
   )
 
   ipcMain.handle(
@@ -2472,6 +2493,12 @@ app.whenReady().then(() => {
     focusOrCreateDownloadsWindow(payload ?? undefined)
   })
 
+  ipcMain.handle(mw.exportResolveBundledLutCubePath, (_event, raw: unknown): string | null => {
+    const id = parseFfmpegExportVideoLut3d(raw)
+    const paths = resolveAppPaths()
+    return resolveFfmpegExportLutCubeAbsPath(paths.resources, id)
+  })
+
   ipcMain.handle(mw.exportStart, async (event, raw: unknown): Promise<MediaExportStartResult> => {
     if (activeExportAbort !== null) {
       return { ok: false, error: 'Уже выполняется экспорт' }
@@ -2550,6 +2577,7 @@ app.whenReady().then(() => {
         ...(trim !== undefined ? { trim } : {}),
         probeDurationSec,
         ...exportOpts,
+        lutResourcesRoot: paths.resources,
         signal: ac.signal,
         onProgress: pushProgress
       })

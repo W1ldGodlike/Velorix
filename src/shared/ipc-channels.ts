@@ -24,6 +24,7 @@ export const mainWindowIpc = {
   settingsSetFfmpegExportSubtitleMode: 'fluxalloy:settings-set-ffmpeg-export-subtitle-mode',
   settingsSetFfmpegExportVideoDenoise: 'fluxalloy:settings-set-ffmpeg-export-video-denoise',
   settingsSetFfmpegExportVideoDeband: 'fluxalloy:settings-set-ffmpeg-export-video-deband',
+  settingsSetFfmpegExportVideoLut3d: 'fluxalloy:settings-set-ffmpeg-export-video-lut3d',
   settingsSetFfmpegExportVideoSharpen: 'fluxalloy:settings-set-ffmpeg-export-video-sharpen',
   settingsSetFfmpegExportVideoEqPreset: 'fluxalloy:settings-set-ffmpeg-export-video-eq-preset',
   settingsSetFfmpegExportAudioNormalize: 'fluxalloy:settings-set-ffmpeg-export-audio-normalize',
@@ -59,6 +60,7 @@ export const mainWindowIpc = {
   /** Main → renderer окна инспектора: проанализировать указанный путь. */
   inspectorTargetMediaPath: 'fluxalloy:inspector-target-media-path',
   exportStart: 'fluxalloy:export-start',
+  exportResolveBundledLutCubePath: 'fluxalloy:export-resolve-bundled-lut-cube-path',
   exportCancel: 'fluxalloy:export-cancel',
   exportOpenOutput: 'fluxalloy:export-open-output',
   exportProgress: 'fluxalloy:export-progress',

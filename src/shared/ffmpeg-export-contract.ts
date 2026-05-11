@@ -31,6 +31,10 @@ export type FfmpegExportVideoDebandId = 'off' | 'light' | 'medium' | 'strong'
  * чтобы UI не отдавал произвольную строку фильтра в spawn.
  */
 export type FfmpegExportVideoEqPresetId = 'off' | 'warm' | 'cool' | 'vivid' | 'flat'
+/**
+ * §7.2 — bundled 3D LUT для `lut3d=file=…` (whitelist; `.cube` в `resources/luts/`, путь подставляет main).
+ */
+export type FfmpegExportVideoLut3dId = 'off' | 'film-warm' | 'film-cool' | 'punch'
 export type FfmpegExportAudioModeId = 'aac' | 'none'
 /**
  * §7.2 — пресеты нормализации громкости. `loudnorm` — однопроходный EBU R128,
@@ -86,6 +90,8 @@ export interface FfmpegExportUserPresetSnapshot {
   videoSharpen?: FfmpegExportVideoSharpenId
   /** §7.2 — `deband`; `off` совпадает с поведением до правки. */
   videoDeband?: FfmpegExportVideoDebandId
+  /** §7.2 — `lut3d` из bundled `.cube`; `off` = не пишем поле. */
+  videoLut3d?: FfmpegExportVideoLut3dId
   /** §7.2 — `eq=...` цветокор-пресет; `off` совпадает с поведением до правки. */
   videoEqPreset?: FfmpegExportVideoEqPresetId
   /** §7.2 — `loudnorm`/`dynaudnorm`; `off` совпадает с поведением до правки. */
@@ -139,6 +145,8 @@ export interface MediaExportRequestPayload {
   videoSharpen?: FfmpegExportVideoSharpenId | null
   /** §7.2 — `deband`; `off` совпадает с текущим поведением. */
   videoDeband?: FfmpegExportVideoDebandId | null
+  /** §7.2 — bundled `lut3d`; `off` совпадает с текущим поведением. */
+  videoLut3d?: FfmpegExportVideoLut3dId | null
   /** §7.2 — `eq=...` цветокор-пресет; `off` совпадает с текущим поведением. */
   videoEqPreset?: FfmpegExportVideoEqPresetId | null
   /** §7.2 — `loudnorm`/`dynaudnorm`; `off` совпадает с текущим поведением. */

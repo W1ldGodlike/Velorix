@@ -165,6 +165,21 @@ describe('ffmpeg export pure helpers', () => {
         videoDeband: 'medium'
       })
     ).toMatchObject({ videoDeband: 'medium' })
+    expect(
+      parseFfmpegExportUserPresetSnapshot({
+        encodePreset: 'balance',
+        container: 'mp4',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'aac',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        videoTransform: 'none',
+        cropPreset: 'none',
+        videoLut3d: 'punch'
+      })
+    ).toMatchObject({ videoLut3d: 'punch' })
   })
 
   it('mergeFfmpegExportSnapshotIntoAppSettings повторяет правила delete для дефолтов', () => {
@@ -222,6 +237,38 @@ describe('ffmpeg export pure helpers', () => {
       }
     )
     expect(deb.ffmpegExportVideoDeband).toBe('strong')
+
+    const lut = mergeFfmpegExportSnapshotIntoAppSettings(
+      { theme: 'dark' },
+      {
+        encodePreset: 'balance',
+        container: 'mp4',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'aac',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        videoTransform: 'none',
+        cropPreset: 'none',
+        videoLut3d: 'film-warm'
+      }
+    )
+    expect(lut.ffmpegExportVideoLut3d).toBe('film-warm')
+
+    const lutOff = mergeFfmpegExportSnapshotIntoAppSettings(lut, {
+      encodePreset: 'balance',
+      container: 'mp4',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      videoTransform: 'none',
+      cropPreset: 'none'
+    })
+    expect(lutOff.ffmpegExportVideoLut3d).toBeUndefined()
 
     const off = mergeFfmpegExportSnapshotIntoAppSettings(withTp, {
       encodePreset: 'balance',

@@ -18,6 +18,7 @@ import type {
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
+  FfmpegExportVideoLut3dId,
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId,
   MediaExportTrimPayload
@@ -29,6 +30,7 @@ import {
 } from '../shared/ffmpeg-export-argv'
 
 import { logExternalProcessLine } from './external-process-log'
+import { resolveFfmpegExportLutCubeAbsPath } from './ffmpeg-export-lut-path'
 
 export type {
   FfmpegExportAudioModeId,
@@ -44,6 +46,7 @@ export type {
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
+  FfmpegExportVideoLut3dId,
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId,
   MediaExportRequestPayload,
@@ -232,6 +235,14 @@ export function parseFfmpegExportVideoDeband(raw: unknown): FfmpegExportVideoDeb
   return 'off'
 }
 
+/** §7.2 — bundled `lut3d`; только whitelist, иначе `off`. */
+export function parseFfmpegExportVideoLut3d(raw: unknown): FfmpegExportVideoLut3dId {
+  if (raw === 'film-warm' || raw === 'film-cool' || raw === 'punch') {
+    return raw
+  }
+  return 'off'
+}
+
 /** §7.2 — пресет `eq=` (цветокор); только whitelist, иначе `off`. */
 export function parseFfmpegExportVideoEqPreset(raw: unknown): FfmpegExportVideoEqPresetId {
   if (raw === 'warm' || raw === 'cool' || raw === 'vivid' || raw === 'flat') {
@@ -302,6 +313,7 @@ export function parseFfmpegExportUserPresetSnapshot(
   const subtitleMode = parseFfmpegExportSubtitleMode(o['subtitleMode'])
   const videoDenoise = parseFfmpegExportVideoDenoise(o['videoDenoise'])
   const videoDeband = parseFfmpegExportVideoDeband(o['videoDeband'])
+  const videoLut3d = parseFfmpegExportVideoLut3d(o['videoLut3d'])
   const videoSharpen = parseFfmpegExportVideoSharpen(o['videoSharpen'])
   const videoEqPreset = parseFfmpegExportVideoEqPreset(o['videoEqPreset'])
   const audioNormalize = parseFfmpegExportAudioNormalize(o['audioNormalize'])
@@ -323,6 +335,7 @@ export function parseFfmpegExportUserPresetSnapshot(
     ...(subtitleMode === 'copy' ? { subtitleMode: 'copy' as const } : {}),
     ...(videoDenoise !== 'off' ? { videoDenoise } : {}),
     ...(videoDeband !== 'off' ? { videoDeband } : {}),
+    ...(videoLut3d !== 'off' ? { videoLut3d } : {}),
     ...(videoSharpen !== 'off' ? { videoSharpen } : {}),
     ...(videoEqPreset !== 'off' ? { videoEqPreset } : {}),
     ...(audioNormalize !== 'off' ? { audioNormalize } : {})
@@ -447,6 +460,15 @@ export function mergeFfmpegExportSnapshotIntoAppSettings(
     next.ffmpegExportVideoDeband = snapshot.videoDeband
   } else {
     delete next.ffmpegExportVideoDeband
+  }
+  if (
+    snapshot.videoLut3d === 'film-warm' ||
+    snapshot.videoLut3d === 'film-cool' ||
+    snapshot.videoLut3d === 'punch'
+  ) {
+    next.ffmpegExportVideoLut3d = snapshot.videoLut3d
+  } else {
+    delete next.ffmpegExportVideoLut3d
   }
   if (
     snapshot.videoSharpen === 'light' ||
@@ -663,6 +685,12 @@ export async function runFfmpegExportJob(params: {
   videoDenoise?: FfmpegExportVideoDenoiseId | null
   /** §7.2 — `deband`; `off`/null — без фильтра. */
   videoDeband?: FfmpegExportVideoDebandId | null
+  /** §7.2 — bundled пресет `lut3d`; вместе с `lutResourcesRoot` даёт путь к `.cube`. */
+  videoLut3d?: FfmpegExportVideoLut3dId | null
+  /** §7.2 — корень `resources/` (dev: app root, prod: `process.resourcesPath`) для `resources/luts/*.cube`. */
+  lutResourcesRoot?: string | null
+  /** §7.2 — явный путь к `.cube` (тесты / override); иначе вычисляется из `videoLut3d` + `lutResourcesRoot`. */
+  videoLut3dCubeAbsPath?: string | null
   /** §7.2 — `unsharp` контурная резкость; `off`/null — без фильтра. */
   videoSharpen?: FfmpegExportVideoSharpenId | null
   /** §7.2 — `eq=...` цветокор-пресет; `off`/null — без фильтра. */
@@ -690,6 +718,17 @@ export async function runFfmpegExportJob(params: {
   const subtitleMode = parseFfmpegExportSubtitleMode(params.subtitleMode)
   const videoDenoise = parseFfmpegExportVideoDenoise(params.videoDenoise)
   const videoDeband = parseFfmpegExportVideoDeband(params.videoDeband)
+  const explicitLut =
+    typeof params.videoLut3dCubeAbsPath === 'string' && params.videoLut3dCubeAbsPath.trim() !== ''
+      ? params.videoLut3dCubeAbsPath.trim()
+      : null
+  const lutRootRaw = params.lutResourcesRoot
+  const lutRoot =
+    typeof lutRootRaw === 'string' && lutRootRaw.trim() !== '' ? lutRootRaw.trim() : null
+  const videoLut3dId = parseFfmpegExportVideoLut3d(params.videoLut3d)
+  const videoLut3dCubeAbsPath =
+    explicitLut ??
+    (lutRoot !== null ? resolveFfmpegExportLutCubeAbsPath(lutRoot, videoLut3dId) : null)
   const videoSharpen = parseFfmpegExportVideoSharpen(params.videoSharpen)
   const videoEqPreset = parseFfmpegExportVideoEqPreset(params.videoEqPreset)
   const audioNormalize = parseFfmpegExportAudioNormalize(params.audioNormalize)
@@ -726,6 +765,7 @@ export async function runFfmpegExportJob(params: {
     ...(subtitleMode === 'copy' ? { subtitleMode: 'copy' as const } : {}),
     ...(videoDenoise !== 'off' ? { videoDenoise } : {}),
     ...(videoDeband !== 'off' ? { videoDeband } : {}),
+    ...(videoLut3dCubeAbsPath !== null ? { videoLut3dCubeAbsPath } : {}),
     ...(videoSharpen !== 'off' ? { videoSharpen } : {}),
     ...(videoEqPreset !== 'off' ? { videoEqPreset } : {}),
     ...(audioNormalize !== 'off' ? { audioNormalize } : {})

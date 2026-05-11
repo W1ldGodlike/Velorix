@@ -23,6 +23,7 @@ import type {
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
+  FfmpegExportVideoLut3dId,
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId,
   MediaExportRequestPayload,
@@ -178,6 +179,8 @@ const fluxalloy = {
       ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoDenoise, preset),
     setFfmpegExportVideoDeband: (preset: FfmpegExportVideoDebandId): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoDeband, preset),
+    setFfmpegExportVideoLut3d: (preset: FfmpegExportVideoLut3dId): Promise<AppSettings> =>
+      ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoLut3d, preset),
     setFfmpegExportVideoSharpen: (preset: FfmpegExportVideoSharpenId): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoSharpen, preset),
     setFfmpegExportVideoEqPreset: (
@@ -414,6 +417,8 @@ const fluxalloy = {
   export: {
     start: (payload: MediaExportRequestPayload): Promise<MediaExportStartResult> =>
       ipcRenderer.invoke(mw.exportStart, payload),
+    resolveBundledLutCubePath: (preset: FfmpegExportVideoLut3dId): Promise<string | null> =>
+      ipcRenderer.invoke(mw.exportResolveBundledLutCubePath, preset),
     cancel: (): Promise<{ ok: true } | { ok: false; error: string }> =>
       ipcRenderer.invoke(mw.exportCancel),
     openOutput: (

@@ -13,6 +13,7 @@ import type {
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
+  FfmpegExportVideoLut3dId,
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId
 } from '../shared/ffmpeg-export-contract'
@@ -34,6 +35,7 @@ import {
   parseFfmpegExportVideoDeband,
   parseFfmpegExportVideoDenoise,
   parseFfmpegExportVideoEqPreset,
+  parseFfmpegExportVideoLut3d,
   parseFfmpegExportVideoSharpen,
   parseFfmpegExportVideoTransform
 } from './ffmpeg-export-service'
@@ -57,6 +59,7 @@ export type ResolvedFfmpegExportJobOptions = {
   subtitleMode: FfmpegExportSubtitleModeId | null
   videoDenoise: FfmpegExportVideoDenoiseId | null
   videoDeband: FfmpegExportVideoDebandId | null
+  videoLut3d: FfmpegExportVideoLut3dId
   videoSharpen: FfmpegExportVideoSharpenId | null
   videoEqPreset: FfmpegExportVideoEqPresetId | null
   audioNormalize: FfmpegExportAudioNormalizeId | null
@@ -159,6 +162,11 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
     videoDebandRaw !== undefined && videoDebandRaw !== null
       ? parseFfmpegExportVideoDeband(videoDebandRaw)
       : parseFfmpegExportVideoDeband(settings.ffmpegExportVideoDeband)
+  const videoLut3dRaw = raw['videoLut3d']
+  const videoLut3d =
+    videoLut3dRaw !== undefined && videoLut3dRaw !== null
+      ? parseFfmpegExportVideoLut3d(videoLut3dRaw)
+      : parseFfmpegExportVideoLut3d(settings.ffmpegExportVideoLut3d)
   const videoSharpenRaw = raw['videoSharpen']
   const videoSharpen =
     videoSharpenRaw !== undefined && videoSharpenRaw !== null
@@ -193,6 +201,7 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
     subtitleMode,
     videoDenoise,
     videoDeband,
+    videoLut3d,
     videoSharpen,
     videoEqPreset,
     audioNormalize
