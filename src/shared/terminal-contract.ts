@@ -80,6 +80,18 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· --list-thumbnails',
     summary: 'Доступные превью/thumbnail URL без скачивания (--list-thumbnails); допишите URL.',
     fullLine: 'yt-dlp --list-thumbnails '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print title',
+    summary: 'Только заголовок ролика без скачивания (--skip-download --print title); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print duration_string',
+    summary: 'Только длительность HH:MM:SS без скачивания (--skip-download --print duration_string); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print duration_string '
   }
 ]
 
@@ -126,6 +138,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· streams compact',
     summary: 'Все дорожки одной строкой: index/codec_type/codec_name (compact); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -show_entries stream=index,codec_type,codec_name -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format JSON',
+    summary: 'format+streams ffprobe в виде JSON (-of json); удобно скопировать в Support ZIP или jq.',
+    fullLine: `ffprobe -hide_banner -of json -show_format -show_streams ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· show_error',
+    summary: 'Только ошибки контейнера/потока (-v error -show_error); пусто = файл читается без проблем.',
+    fullLine: `ffprobe -hide_banner -v error -show_error ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffmpeg',

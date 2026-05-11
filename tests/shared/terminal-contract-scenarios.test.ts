@@ -30,4 +30,18 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       expect(n, h.token).toBe(1)
     }
   })
+
+  it('downloads: есть --print шаблоны для title и duration_string', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --skip-download --print title ')
+    expect(lines).toContain('yt-dlp --skip-download --print duration_string ')
+  })
+
+  it('preview: есть JSON-сводка и show_error для текущего превью', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some((l) => l.includes('-of json') && l.includes('-show_format') && l.includes('-show_streams'))
+    ).toBe(true)
+    expect(lines.some((l) => l.includes('-show_error'))).toBe(true)
+  })
 })
