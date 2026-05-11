@@ -440,6 +440,42 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· playable_in_embed',
     summary: 'Поле embed-ограничений без скачивания (--skip-download --print playable_in_embed); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print playable_in_embed '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print channel_url',
+    summary: 'URL канала/плейлиста без скачивания (--skip-download --print channel_url); допишите URL ролика.',
+    fullLine: 'yt-dlp --skip-download --print channel_url '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print uploader_id',
+    summary: 'Идентификатор автора на площадке без скачивания (--skip-download --print uploader_id); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print uploader_id '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print was_live',
+    summary: 'Был ли эфир live/stream без скачивания (--skip-download --print was_live); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print was_live '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print media_type',
+    summary: 'Тип медиа (video/audio и т.п.) без скачивания (--skip-download --print media_type); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print media_type '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print release_year',
+    summary: 'Год публикации (если есть) без скачивания (--skip-download --print release_year); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print release_year '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --no-check-certificates -F',
+    summary: 'Список форматов при сбоях проверки SSL (--no-check-certificates -F); только для диагностики, снижает безопасность.',
+    fullLine: 'yt-dlp --no-check-certificates -F '
   }
 ]
 
@@ -684,6 +720,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· a:0 layout+br',
     summary: 'Поток a:0: channel_layout + bit_rate (расклад каналов и битрейт дорожки); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=channel_layout,bit_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format bit_rate',
+    summary: 'Сводный bit_rate контейнера (format.bit_rate vs сумма дорожек); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format=bit_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:0 tags title',
+    summary: 'Поток a:0: stream_tags title + handler_name (название дорожки/обработчик); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream_tags=title,handler_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 r_frame_rate',
+    summary: 'Только r_frame_rate видео v:0 (сравнение с avg_frame_rate в других шаблонах); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=r_frame_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffmpeg',
