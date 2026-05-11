@@ -145,6 +145,23 @@ function tagString(
   return null
 }
 
+const FFPROBE_DETAIL_ENCODER_MAX = 64
+
+/** Компактная строка `tags.encoder` для колонки «Сведения» (отдельной колонки нет). */
+function formatFfprobeTagEncoderBrief(
+  tags: Record<string, string | number | undefined> | undefined
+): string | null {
+  const raw = tagString(tags, 'encoder')
+  if (raw === null) {
+    return null
+  }
+  const collapsed = raw.replace(/\s+/g, ' ').trim()
+  if (collapsed.length <= FFPROBE_DETAIL_ENCODER_MAX) {
+    return collapsed
+  }
+  return `${collapsed.slice(0, FFPROBE_DETAIL_ENCODER_MAX - 1)}…`
+}
+
 function mapCodecType(raw: string | undefined): MediaProbeTrackRow['kind'] {
   switch (raw) {
     case 'video':
@@ -283,6 +300,10 @@ function buildTrackDetail(
     if (fourcc) {
       parts.push(fourcc)
     }
+    const vEnc = formatFfprobeTagEncoderBrief(stream.tags)
+    if (vEnc) {
+      parts.push(vEnc)
+    }
   } else if (ct === 'audio') {
     const ch = stream.channels
     if (typeof ch === 'number') {
@@ -329,6 +350,10 @@ function buildTrackDetail(
     if (aFourcc) {
       parts.push(aFourcc)
     }
+    const aEnc = formatFfprobeTagEncoderBrief(stream.tags)
+    if (aEnc) {
+      parts.push(aEnc)
+    }
   } else if (ct === 'subtitle') {
     const lang = tagString(stream.tags, 'language')
     const title = tagString(stream.tags, 'title')
@@ -343,6 +368,10 @@ function buildTrackDetail(
     )
     if (subFourcc) {
       parts.push(subFourcc)
+    }
+    const subEnc = formatFfprobeTagEncoderBrief(stream.tags)
+    if (subEnc) {
+      parts.push(subEnc)
     }
     const subStart = formatFfprobeStreamStartTime(stream.start_time)
     if (subStart) {

@@ -36,4 +36,57 @@ describe('ffprobe-service buildTrackRows', () => {
     )
     expect(row?.detail).not.toMatch(/\bN\/A\b/i)
   })
+
+  it('video/audio/subtitle detail включает tags.encoder, если ffprobe отдал', () => {
+    const rows = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 1280,
+          height: 720,
+          tags: { encoder: 'Lavc59.37.100 libx264' }
+        },
+        {
+          index: 1,
+          codec_type: 'audio',
+          codec_name: 'aac',
+          channels: 2,
+          sample_rate: '48000',
+          tags: { encoder: 'Lavc59.37.100 aac' }
+        },
+        {
+          index: 2,
+          codec_type: 'subtitle',
+          codec_name: 'subrip',
+          tags: { encoder: 'SRT Writer' }
+        }
+      ],
+      null
+    )
+    expect(rows[0]?.detail).toContain('Lavc59.37.100 libx264')
+    expect(rows[1]?.detail).toContain('Lavc59.37.100 aac')
+    expect(rows[2]?.detail).toContain('SRT Writer')
+  })
+
+  it('encoder в detail обрезается при длинной строке', () => {
+    const long = `${'A'.repeat(70)}tail`
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 640,
+          height: 360,
+          tags: { encoder: long }
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toContain('…')
+    expect(row?.detail).not.toContain('tail')
+    expect((row?.detail.length ?? 0)).toBeLessThan(long.length + 80)
+  })
 })
