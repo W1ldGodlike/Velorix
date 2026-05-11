@@ -344,6 +344,36 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· youtube:web -F',
     summary: 'YouTube: принудительно web-клиент extractor-args (обход части ограничений) + -F; допишите URL.',
     fullLine: 'yt-dlp --extractor-args youtube:player_client=web -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· cookies edge',
+    summary: 'Сухой прогон с cookies из Edge (--cookies-from-browser); допишите URL (альтернатива Chrome).',
+    fullLine: 'yt-dlp --skip-download --cookies-from-browser edge '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print duration',
+    summary: 'Длительность в секундах (число) без скачивания (--skip-download --print duration); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print duration '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print width',
+    summary: 'Ширина выбранного формата в пикселях без скачивания (--skip-download --print width); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print width '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print height',
+    summary: 'Высота выбранного формата в пикселях без скачивания (--skip-download --print height); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print height '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print tbr',
+    summary: 'Сводный битрейт выбранного формата (kbps) без скачивания (--skip-download --print tbr); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print tbr '
   }
 ]
 
@@ -534,6 +564,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· v:0 pix+cs',
     summary: 'Поток v:0: pix_fmt + color_space + color_range (SDR/HDR контекст без отдельного color_transfer); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=pix_fmt,color_space,color_range -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 coded+display',
+    summary: 'Поток v:0: coded_width/height vs width/height (анаморф/масштаб хранения vs отображения); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=coded_width,coded_height,width,height -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format created',
+    summary: 'Тег контейнера creation_time (когда записан файл/поток метаданных); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=creation_time -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· s:0 disposition',
+    summary: 'Поток s:0: disposition (default/forced/hearing_impaired и т.д.); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=disposition -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffmpeg',

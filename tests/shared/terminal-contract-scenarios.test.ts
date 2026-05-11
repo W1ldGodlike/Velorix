@@ -77,6 +77,11 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --skip-download --print aspect_ratio ')
     expect(lines).toContain('yt-dlp --playlist-items 1 -F ')
     expect(lines).toContain('yt-dlp --extractor-args youtube:player_client=web -F ')
+    expect(lines).toContain('yt-dlp --skip-download --cookies-from-browser edge ')
+    expect(lines).toContain('yt-dlp --skip-download --print duration ')
+    expect(lines).toContain('yt-dlp --skip-download --print width ')
+    expect(lines).toContain('yt-dlp --skip-download --print height ')
+    expect(lines).toContain('yt-dlp --skip-download --print tbr ')
   })
 
   it('preview: есть JSON-сводка и show_error для текущего превью', () => {
@@ -129,6 +134,17 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
         (l) =>
           l.includes('select_streams v:0') && l.includes('pix_fmt,color_space,color_range')
       )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams v:0') &&
+          l.includes('coded_width,coded_height,width,height')
+      )
+    ).toBe(true)
+    expect(lines.some((l) => l.includes('format_tags=creation_time'))).toBe(true)
+    expect(
+      lines.some((l) => l.includes('select_streams s:0') && l.includes('stream=disposition'))
     ).toBe(true)
   })
 })
