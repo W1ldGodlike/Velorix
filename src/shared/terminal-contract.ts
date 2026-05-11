@@ -158,6 +158,24 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· --print filename',
     summary: 'Имя выходного файла по текущим -o без скачивания (--skip-download --print filename); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print filename '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print description',
+    summary: 'Текст описания ролика без скачивания (--skip-download --print description); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print description '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print categories',
+    summary: 'Категории/тематики без скачивания (--skip-download --print categories); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print categories '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print language',
+    summary: 'Язык по умолчанию без скачивания (--skip-download --print language); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print language '
   }
 ]
 
@@ -252,6 +270,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· format tags',
     summary: 'Теги контейнера: title + encoder (-show_entries format_tags); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -show_entries format_tags=title,encoder -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 field+range',
+    summary: 'Поток v:0: field_order + color_range (чересстрочность / full range); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=field_order,color_range -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· s:0 tags',
+    summary: 'Поток s:0: теги title + language субтитров (stream_tags); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream_tags=title,language -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffmpeg',
