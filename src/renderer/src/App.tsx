@@ -547,6 +547,8 @@ function App(): JSX.Element {
   const [downloadsRailPanels, setDownloadsRailPanels] = useState<DownloadsRailPanelsState>(
     DOWNLOADS_RAIL_PANEL_DEFAULTS
   )
+  /** Совпадает с `max-width: 1100px` в `main.css` для вкладки «Загрузки». */
+  const [downloadsNarrowLayout, setDownloadsNarrowLayout] = useState(false)
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
   const [topbarEngineVersionsLine, setTopbarEngineVersionsLine] = useState('')
   const [exportBusy, setExportBusy] = useState(false)
@@ -578,6 +580,8 @@ function App(): JSX.Element {
   const videoRef = useRef<HTMLVideoElement>(null)
   /** Стек видео+транспорт+таймлайн: цель fullscreen по референсу v0. */
   const previewStackRef = useRef<HTMLDivElement>(null)
+  /** §6 / узкая ширина: `scrollIntoView` к панели настроек yt-dlp под очередью. */
+  const downloadsSettingsRailRef = useRef<HTMLElement | null>(null)
   const downloadsLogNextIdRef = useRef(1)
   /** Последний диапазон In/Out с таймлайна для IPC экспорта, привязанный к текущему файлу. */
   const trimSnapshotRef = useRef<{
@@ -1314,6 +1318,21 @@ function App(): JSX.Element {
     document.addEventListener('keydown', onKeyDown)
     return (): void => {
       document.removeEventListener('keydown', onKeyDown)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') {
+      return
+    }
+    const mql = window.matchMedia('(max-width: 1100px)')
+    const sync = (): void => {
+      setDownloadsNarrowLayout(mql.matches)
+    }
+    sync()
+    mql.addEventListener('change', sync)
+    return (): void => {
+      mql.removeEventListener('change', sync)
     }
   }, [])
 
@@ -2596,8 +2615,9 @@ function App(): JSX.Element {
                 <p className="app-downloads-hint">
                   Эта вкладка — основной рабочий стол yt-dlp (очередь по центру, журнал и история
                   под таблицей, настройки справа как в v0; при ширине окна примерно до 1100px панель
-                  настроек переносится под журнал с прокруткой, поля не теряются). Pop-out —
-                  дублирующее окно с тем же IPC и длинным справочником токенов в одном списке.
+                  настроек переносится под журнал с прокруткой, поля не теряются — сверху есть
+                  кнопка «К настройкам», чтобы сразу прокрутить к панели). Pop-out — дублирующее
+                  окно с тем же IPC и длинным справочником токенов в одном списке.
                 </p>
               </div>
               <div className="app-downloads-actions">
@@ -2623,6 +2643,20 @@ function App(): JSX.Element {
                   <IconPopOutWindow title="" size={17} />
                   Pop-out
                 </button>
+                {downloadsNarrowLayout ? (
+                  <button
+                    type="button"
+                    className="app-btn app-btn-icon-leading"
+                    onClick={() => {
+                      downloadsSettingsRailRef.current?.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                      })
+                    }}
+                  >
+                    <IconSettings title="" size={17} />К настройкам
+                  </button>
+                ) : null}
               </div>
             </div>
             <div className="app-downloads-url-row">
@@ -2829,7 +2863,10 @@ function App(): JSX.Element {
                                     </span>
                                   </div>
                                 ) : row.progress ? (
-                                  <span className="app-downloads-progress-fallback" title={row.progress}>
+                                  <span
+                                    className="app-downloads-progress-fallback"
+                                    title={row.progress}
+                                  >
                                     {row.progress}
                                   </span>
                                 ) : (
@@ -3195,7 +3232,12 @@ function App(): JSX.Element {
               </div>
             </div>
           </section>
-          <aside className="app-downloads-rail" aria-label="Настройки загрузок">
+          <aside
+            ref={downloadsSettingsRailRef}
+            id="downloads-ytdlp-settings-rail"
+            className="app-downloads-rail"
+            aria-label="Настройки загрузок"
+          >
             <h3 className="app-settings-title">Настройки yt-dlp</h3>
             <p className="app-settings-subtitle">
               Секции и раскрытие совпадают с pop-out: те же ключи в `downloadsWindowUiPanels`. Доп.

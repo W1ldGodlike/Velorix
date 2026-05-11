@@ -1147,6 +1147,9 @@
     grid-template-rows: minmax(0, 1fr) auto;
     gap: 0.55rem;
     min-height: 0;
+    /* Вертикальная прокрутка всей вкладки: `scrollIntoView` к `#downloads-ytdlp-settings-rail` из шапки. */
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   .app-downloads-main {
@@ -1160,6 +1163,7 @@
     flex-shrink: 0;
     overflow: auto;
     border-top: 1px solid var(--fa-border-subtle);
+    scroll-margin-top: 0.45rem;
   }
 
   .app-downloads-overview {
