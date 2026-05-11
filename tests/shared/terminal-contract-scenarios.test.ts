@@ -387,6 +387,14 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --extract-audio --audio-format mp3 ')
     expect(lines).toContain('yt-dlp --audio-quality 192K --extract-audio ')
     expect(lines).toContain('yt-dlp --skip-download --print n_entries ')
+    expect(lines).toContain('yt-dlp --embed-chapters ')
+    expect(lines).toContain('yt-dlp --mark-watched --skip-download ')
+    expect(lines).toContain('yt-dlp --write-all-thumbnails --skip-download ')
+    expect(lines).toContain('yt-dlp --no-check-formats -F ')
+    expect(lines).toContain('yt-dlp --playlist-reverse -J ')
+    expect(lines).toContain('yt-dlp --playlist-random -J ')
+    expect(lines).toContain('yt-dlp --user-agent curl/8.5.0 -F ')
+    expect(lines).toContain('yt-dlp --throttled-rate 100K -F ')
   })
 
   it('preview: pretty/flat/packets/frames + loudnorm summary', () => {
@@ -414,5 +422,16 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
         (l) => l.includes('-af loudnorm=print_format=summary') && l.includes('-vn -sn -f null -')
       )
     ).toBe(true)
+  })
+
+  it('preview: program_version, a:0 packets, seek decode', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(lines.some((l) => l.includes('-show_program_version'))).toBe(true)
+    expect(
+      lines.some(
+        (l) => l.includes('select_streams a:0') && l.includes('-show_packets') && l.includes('%+#3')
+      )
+    ).toBe(true)
+    expect(lines.some((l) => l.includes('-ss 10 -i ') && l.includes('-t 2 -f null -'))).toBe(true)
   })
 })

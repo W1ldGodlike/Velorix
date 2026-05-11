@@ -986,6 +986,54 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· print n_entries',
     summary: 'Число записей плейлиста без скачивания (--skip-download --print n_entries); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print n_entries '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· embed-chapters',
+    summary: 'Вшить главы в файл после скачивания (--embed-chapters); допишите URL и -f/-o.',
+    fullLine: 'yt-dlp --embed-chapters '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· mark-watched',
+    summary: 'Отметить как просмотренное без скачивания (--mark-watched --skip-download); допишите URL (YouTube и др.).',
+    fullLine: 'yt-dlp --mark-watched --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· write-all-thumbnails',
+    summary: 'Сохранить все превью без видео (--write-all-thumbnails --skip-download); допишите URL.',
+    fullLine: 'yt-dlp --write-all-thumbnails --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-check-formats -F',
+    summary: 'Список форматов без проверки URL каждого (--no-check-formats -F); быстрее, но менее надёжно; допишите URL.',
+    fullLine: 'yt-dlp --no-check-formats -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· playlist-reverse -J',
+    summary: 'Плейлист в обратном порядке + JSON (--playlist-reverse -J); допишите URL.',
+    fullLine: 'yt-dlp --playlist-reverse -J '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· playlist-random -J',
+    summary: 'Случайный порядок элементов плейлиста + JSON (--playlist-random -J); допишите URL.',
+    fullLine: 'yt-dlp --playlist-random -J '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· user-agent curl -F',
+    summary: 'Подменить User-Agent (--user-agent curl/8.5.0 -F); CDN/WAF; допишите URL.',
+    fullLine: 'yt-dlp --user-agent curl/8.5.0 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· throttled-rate -F',
+    summary: 'Лимит скорости после детекта throttling (--throttled-rate 100K -F); допишите URL.',
+    fullLine: 'yt-dlp --throttled-rate 100K -F '
   }
 ]
 
@@ -1470,6 +1518,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· v:0 frames 5',
     summary: 'Первые 5 кадров v:0 (-show_frames -read_intervals %+#5 compact); тип/размер/PTS; плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_frames -read_intervals %+#5 -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· program version',
+    summary: 'Версия ffprobe + быстрый разбор файла (-show_program_version); сверка сборки; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_program_version ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:0 packets 3',
+    summary: 'Первые 3 аудиопакета a:0 (PTS/размер compact); рваный TS; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:0 -show_packets -read_intervals %+#3 -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· seek decode 2s',
+    summary: 'Smoke-декод с середины (-ss 10 -t 2); EOF/индекс в длинных MP4; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -ss 10 -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -t 2 -f null -`
   },
   {
     tool: 'ffmpeg',
