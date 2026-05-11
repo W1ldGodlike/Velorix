@@ -194,6 +194,36 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· --geo-bypass -F',
     summary: 'Обход гео-блока + список форматов (--geo-bypass -F); допишите URL (региональные ограничения).',
     fullLine: 'yt-dlp --geo-bypass -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print format_id',
+    summary: 'Идентификатор выбранного формата без скачивания (--skip-download --print format_id); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print format_id '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print ext',
+    summary: 'Расширение контейнера выбранного формата без скачивания (--skip-download --print ext); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print ext '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print resolution',
+    summary: 'Строка разрешения выбранного формата без скачивания (--skip-download --print resolution); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print resolution '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print vcodec',
+    summary: 'Видеокодек выбранного формата без скачивания (--skip-download --print vcodec); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print vcodec '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print acodec',
+    summary: 'Аудиокодек выбранного формата без скачивания (--skip-download --print acodec); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print acodec '
   }
 ]
 
@@ -312,6 +342,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· v:0 stream tags',
     summary: 'Поток v:0: stream_tags handler_name + encoder (отличие от тегов контейнера); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream_tags=handler_name,encoder -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 frames+dur',
+    summary: 'Поток v:0: nb_frames + duration (оценка кадров/длительности дорожки); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=nb_frames,duration -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format start+dur',
+    summary: 'Контейнер: start_time + duration format-уровня (смещение начала vs дорожки); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format=start_time,duration -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· s:1 compact',
+    summary: 'Вторая дорожка субтитров s:1: codec_name/codec_tag_string (несколько языков); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:1 -show_entries stream=codec_name,codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffmpeg',
