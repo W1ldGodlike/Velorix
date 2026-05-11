@@ -2577,6 +2577,69 @@
   }
 }
 
+@media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) {
+  .app-topbar {
+    min-height: 65px;
+  }
+
+  .app-toolbar {
+    min-height: 57px;
+  }
+
+  .app-downloads-band {
+    padding: 0.7rem 0.9rem;
+  }
+
+  .app-downloads-hint {
+    font-size: 0.72rem;
+  }
+
+  .app-downloads-url-row {
+    padding: 0.8rem 0.9rem;
+  }
+
+  .app-downloads-url-input {
+    min-height: 4.9rem;
+    padding: 0.6rem 0.7rem;
+    font-size: 0.84rem;
+  }
+
+  .app-downloads-table {
+    font-size: 0.774rem;
+  }
+
+  .app-downloads-table th,
+  .app-downloads-table td {
+    padding: 0.54rem 0.6rem;
+  }
+
+  .app-downloads-row-actions .app-icon-btn {
+    min-width: 28px;
+    width: 28px;
+    height: 28px;
+  }
+
+  .app-downloads-row-actions .app-icon-btn > svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .app-downloads-history-panel summary,
+  .app-downloads-log-panel summary {
+    padding: 0.6rem 0.7rem;
+    font-size: 0.72rem;
+  }
+
+  .app-downloads-rail-summary {
+    font-size: 0.764rem;
+  }
+
+  .app-filter-chip {
+    min-height: 1.82rem;
+    font-size: 0.72rem;
+  }
+}
+
 @media (-webkit-min-device-pixel-ratio: 1.75), (min-resolution: 168dpi) {
   .app-topbar {
     min-height: 66px;

@@ -491,6 +491,48 @@ function buildDownloadsHtml(
       .args-preview { font-size: 0.704rem; }
       .hist-inline-field label.hist-inline { font-size: 0.718rem; }
     }
+    @media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) {
+      body { font-size: 12.25px; }
+      .dl-topbar {
+        min-height: 65px;
+        padding: 0.5rem 0.8rem;
+        gap: 0.64rem;
+      }
+      button.dl-topbar-ico {
+        width: 2.08rem;
+        height: 2.08rem;
+        min-width: 2.08rem;
+      }
+      .dl-topbar-ico svg {
+        width: 19.5px;
+        height: 19.5px;
+      }
+      .topbar-meta { font-size: 0.71rem; }
+      .workspace-tab {
+        min-height: 2.24rem;
+        font-size: 0.77rem;
+      }
+      .workspace-tab-glyph svg {
+        width: 17.5px;
+        height: 17.5px;
+      }
+      .dl-main { grid-template-columns: minmax(0, 1fr) minmax(270px, 298px); }
+      .dl-input-band {
+        padding: 0.6rem 0.7rem;
+        gap: 0.64rem;
+      }
+      textarea { min-height: 72px; font-size: 0.756rem; padding: 0.48rem 0.6rem; }
+      textarea#extraArgsInput { min-height: 58px; font-size: 0.714rem; }
+      .input-actions { gap: 0.42rem; min-width: 11.25rem; }
+      button.cmd { min-height: 30px; font-size: 0.756rem; padding: 0.36rem 0.64rem; }
+      table.queue-table { font-size: 0.72rem; }
+      .progress-track { height: 4.5px; }
+      td.act button.icon-btn, .icon-btn { width: 25px; height: 25px; }
+      td.act button.icon-btn svg { width: 17px; height: 17px; }
+      .rail-title { font-size: 0.858rem; }
+      .args-preview { font-size: 0.714rem; }
+      .hist-inline-field label.hist-inline { font-size: 0.726rem; }
+    }
     @media (-webkit-min-device-pixel-ratio: 1.75), (min-resolution: 168dpi) {
       body { font-size: 12.5px; }
       .dl-topbar { min-height: 66px; padding: 0.52rem 0.82rem; gap: 0.65rem; }
@@ -531,6 +573,37 @@ function buildDownloadsHtml(
       .opts-check-row input[type=checkbox]:checked::after { transform: translateX(15px); }
       .bottom-panels { min-height: 182px; }
       .log-panel pre#logPre { font-size: 0.686rem; }
+    }
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      body { font-size: 13px; }
+      .dl-topbar { min-height: 68px; padding: 0.56rem 0.86rem; gap: 0.7rem; }
+      button.dl-topbar-ico {
+        width: 2.18rem;
+        height: 2.18rem;
+        min-width: 2.18rem;
+      }
+      .dl-topbar-ico svg {
+        width: 21px;
+        height: 21px;
+      }
+      .topbar-meta { font-size: 0.75rem; }
+      .workspace-tab {
+        min-height: 2.34rem;
+        font-size: 0.8rem;
+      }
+      .workspace-tab-glyph svg {
+        width: 19px;
+        height: 19px;
+      }
+      .dl-main { grid-template-columns: minmax(0, 1fr) minmax(286px, 316px); }
+      textarea { min-height: 78px; font-size: 0.788rem; padding: 0.52rem 0.64rem; }
+      textarea#extraArgsInput { min-height: 62px; }
+      button.cmd { min-height: 31px; font-size: 0.78rem; }
+      table.queue-table { font-size: 0.76rem; }
+      td.act button.icon-btn, .icon-btn { width: 27px; height: 27px; }
+      td.act button.icon-btn svg { width: 19px; height: 19px; }
+      .progress-track { height: 5.5px; }
+      .rail-title { font-size: 0.89rem; }
     }
     .dl-shell { height: 100%; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
     .dl-topbar {
