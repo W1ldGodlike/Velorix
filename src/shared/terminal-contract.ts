@@ -140,6 +140,24 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· --print upload_date',
     summary: 'Дата публикации YYYYMMDD без скачивания (--skip-download --print upload_date); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print upload_date '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print playlist_title',
+    summary: 'Заголовок плейлиста без скачивания (--skip-download --print playlist_title); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --skip-download --print playlist_title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print playlist_count',
+    summary: 'Число элементов в плейлисте без скачивания (--skip-download --print playlist_count); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print playlist_count '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print filename',
+    summary: 'Имя выходного файла по текущим -o без скачивания (--skip-download --print filename); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print filename '
   }
 ]
 
@@ -183,6 +201,12 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
+    token: '· v:0 sar+dar',
+    summary: 'Поток v:0: sample_aspect_ratio + display_aspect_ratio (анаморф/не-квадратные пиксели); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=sample_aspect_ratio,display_aspect_ratio -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
     token: '· a:0 compact',
     summary: 'Поток a:0: codec_name/sample_rate/channels (default=nw=1); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=codec_name,sample_rate,channels -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
@@ -222,6 +246,12 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· show_error',
     summary: 'Только ошибки контейнера/потока (-v error -show_error); пусто = файл читается без проблем.',
     fullLine: `ffprobe -hide_banner -v error -show_error ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format tags',
+    summary: 'Теги контейнера: title + encoder (-show_entries format_tags); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=title,encoder -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffmpeg',
