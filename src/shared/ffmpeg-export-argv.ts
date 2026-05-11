@@ -19,6 +19,7 @@ import type {
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
   FfmpegExportVideoSharpenId,
+  FfmpegExportVideoVignetteId,
   FfmpegExportVideoTransformId,
   MediaExportTrimPayload
 } from './ffmpeg-export-contract'
@@ -270,6 +271,22 @@ export function resolveFfmpegExportVideoGrainFilter(
   }
 }
 
+/** §7.2 — пресет `vignette` (затемнение к краям); `off` → `null`. */
+export function resolveFfmpegExportVideoVignetteFilter(
+  id: FfmpegExportVideoVignetteId
+): string | null {
+  switch (id) {
+    case 'light':
+      return 'vignette=angle=PI/3'
+    case 'medium':
+      return 'vignette=angle=PI/5'
+    case 'strong':
+      return 'vignette=angle=PI/10'
+    default:
+      return null
+  }
+}
+
 /**
  * §7.2 — пресет нормализации громкости. Подбор параметров:
  * - `loudnorm=I=-16:LRA=11:TP=-1.5` — типовая цель EBU R128 для подкастов/видео,
@@ -366,6 +383,8 @@ export interface FfmpegExportArgvParams {
   videoEqPreset?: FfmpegExportVideoEqPresetId
   /** §7.2 — `noise` зернистость; `off` или undefined — без фильтра. */
   videoGrain?: FfmpegExportVideoGrainId
+  /** §7.2 — `vignette`; `off` или undefined — без фильтра. */
+  videoVignette?: FfmpegExportVideoVignetteId
   /**
    * §7.2 — `loudnorm`/`dynaudnorm`; `off` или undefined — без нормализации.
    * При `audioMode='none'` или в первом проходе двухпроходного режима игнорируется
@@ -415,6 +434,10 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
   const grain = resolveFfmpegExportVideoGrainFilter(params.videoGrain ?? 'off')
   if (grain !== null) {
     filters.push(grain)
+  }
+  const vignette = resolveFfmpegExportVideoVignetteFilter(params.videoVignette ?? 'off')
+  if (vignette !== null) {
+    filters.push(vignette)
   }
   const scale = resolveFfmpegExportScaleFilter(params.scalePreset)
   if (scale !== null) {
@@ -570,6 +593,7 @@ export interface FfmpegExportPreviewInput {
   videoLut3dCubeAbsPath?: string | null
   videoEqPreset?: FfmpegExportVideoEqPresetId
   videoGrain?: FfmpegExportVideoGrainId
+  videoVignette?: FfmpegExportVideoVignetteId
   audioNormalize?: FfmpegExportAudioNormalizeId
 }
 
@@ -648,6 +672,7 @@ export function buildFfmpegExportPreviewCommand(
     ...(input.videoSharpen !== undefined ? { videoSharpen: input.videoSharpen } : {}),
     ...(input.videoEqPreset !== undefined ? { videoEqPreset: input.videoEqPreset } : {}),
     ...(input.videoGrain !== undefined ? { videoGrain: input.videoGrain } : {}),
+    ...(input.videoVignette !== undefined ? { videoVignette: input.videoVignette } : {}),
     ...(input.audioNormalize !== undefined ? { audioNormalize: input.audioNormalize } : {})
   }
 

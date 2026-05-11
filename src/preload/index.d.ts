@@ -24,6 +24,7 @@ import type {
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
   FfmpegExportVideoLut3dId,
+  FfmpegExportVideoVignetteId,
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId,
   MediaExportRequestPayload,
@@ -95,6 +96,7 @@ export interface FluxAlloyApi {
     setFfmpegExportVideoSharpen: (preset: FfmpegExportVideoSharpenId) => Promise<AppSettings>
     setFfmpegExportVideoEqPreset: (preset: FfmpegExportVideoEqPresetId) => Promise<AppSettings>
     setFfmpegExportVideoGrain: (preset: FfmpegExportVideoGrainId) => Promise<AppSettings>
+    setFfmpegExportVideoVignette: (preset: FfmpegExportVideoVignetteId) => Promise<AppSettings>
     setFfmpegExportAudioNormalize: (preset: FfmpegExportAudioNormalizeId) => Promise<AppSettings>
     setFfmpegExportUserPresets: (presets: FfmpegExportUserPreset[]) => Promise<AppSettings>
     applyFfmpegExportSnapshot: (snapshot: FfmpegExportUserPresetSnapshot) => Promise<AppSettings>

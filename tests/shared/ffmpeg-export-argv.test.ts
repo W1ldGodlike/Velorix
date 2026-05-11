@@ -17,6 +17,7 @@ import {
   resolveFfmpegExportVideoEqFilter,
   resolveFfmpegExportVideoGrainFilter,
   resolveFfmpegExportVideoSharpenFilter,
+  resolveFfmpegExportVideoVignetteFilter,
   resolveFfmpegExportVideoTransformFilters,
   shouldApplyFfmpegExportTrim
 } from '../../src/shared/ffmpeg-export-argv'
@@ -631,6 +632,13 @@ describe('shared ffmpeg export argv', () => {
     expect(resolveFfmpegExportVideoGrainFilter('strong')).toBe('noise=alls=9:allf=u')
   })
 
+  it('resolveFfmpegExportVideoVignetteFilter — только whitelist vignette', () => {
+    expect(resolveFfmpegExportVideoVignetteFilter('off')).toBeNull()
+    expect(resolveFfmpegExportVideoVignetteFilter('light')).toBe('vignette=angle=PI/3')
+    expect(resolveFfmpegExportVideoVignetteFilter('medium')).toBe('vignette=angle=PI/5')
+    expect(resolveFfmpegExportVideoVignetteFilter('strong')).toBe('vignette=angle=PI/10')
+  })
+
   it('denoise и sharpen встают между crop и scale, перед fps', () => {
     const argv = buildFfmpegExportArgv({
       inputPath: 'in.mp4',
@@ -650,11 +658,12 @@ describe('shared ffmpeg export argv', () => {
       videoLut3dCubeAbsPath: 'D:/l/f.cube',
       videoSharpen: 'light',
       videoEqPreset: 'vivid',
-      videoGrain: 'medium'
+      videoGrain: 'medium',
+      videoVignette: 'strong'
     })
     const vf = argv[argv.indexOf('-vf') + 1] ?? ''
     expect(vf).toBe(
-      "transpose=1,crop=min(iw\\,ih):min(iw\\,ih),hqdn3d=3:3:6:6,deband=range=12,lut3d=file='D\\:/l/f.cube':interp=trilinear,unsharp=5:5:0.6:5:5:0.0,eq=contrast=1.10:saturation=1.20,noise=alls=5:allf=u,scale=-2:720,fps=30"
+      "transpose=1,crop=min(iw\\,ih):min(iw\\,ih),hqdn3d=3:3:6:6,deband=range=12,lut3d=file='D\\:/l/f.cube':interp=trilinear,unsharp=5:5:0.6:5:5:0.0,eq=contrast=1.10:saturation=1.20,noise=alls=5:allf=u,vignette=angle=PI/10,scale=-2:720,fps=30"
     )
   })
 

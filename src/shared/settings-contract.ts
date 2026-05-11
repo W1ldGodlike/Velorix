@@ -14,6 +14,7 @@ import type {
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
   FfmpegExportVideoLut3dId,
+  FfmpegExportVideoVignetteId,
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId
 } from './ffmpeg-export-contract'
@@ -157,6 +158,8 @@ export interface AppSettings {
   ffmpegExportVideoEqPreset?: FfmpegExportVideoEqPresetId
   /** §7.2: пресет `noise` — зернистость (`off` по умолчанию = не пишем поле). */
   ffmpegExportVideoGrain?: FfmpegExportVideoGrainId
+  /** §7.2: пресет `vignette` (`off` по умолчанию = не пишем поле). */
+  ffmpegExportVideoVignette?: FfmpegExportVideoVignetteId
   /** §7.2: пресет аудио-нормализации (`off` по умолчанию = не пишем поле). */
   ffmpegExportAudioNormalize?: FfmpegExportAudioNormalizeId
   /** §7.2: пользовательские пресеты экспорта (имя + снимок параметров тулбара). */

@@ -59,6 +59,7 @@ import type {
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
   FfmpegExportVideoLut3dId,
+  FfmpegExportVideoVignetteId,
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId
 } from '../../shared/ffmpeg-export-contract'
@@ -258,6 +259,12 @@ const EXPORT_VIDEO_GRAIN_OPTIONS: Array<{ id: FfmpegExportVideoGrainId; label: s
   { id: 'light', label: 'Лёгкое (noise 2)' },
   { id: 'medium', label: 'Среднее (noise 5)' },
   { id: 'strong', label: 'Сильное (noise 9)' }
+]
+const EXPORT_VIDEO_VIGNETTE_OPTIONS: Array<{ id: FfmpegExportVideoVignetteId; label: string }> = [
+  { id: 'off', label: 'Виньетка: выкл.' },
+  { id: 'light', label: 'Лёгкая (PI/3)' },
+  { id: 'medium', label: 'Средняя (PI/5)' },
+  { id: 'strong', label: 'Сильная (PI/10)' }
 ]
 const EXPORT_AUDIO_NORMALIZE_OPTIONS: Array<{ id: FfmpegExportAudioNormalizeId; label: string }> =
   [
@@ -664,6 +671,7 @@ function App(): JSX.Element {
     useState<FfmpegExportVideoEqPresetId>('off')
   /** §7.2 — пресет `noise` (зернистость после eq, до scale). */
   const [exportVideoGrain, setExportVideoGrain] = useState<FfmpegExportVideoGrainId>('off')
+  const [exportVideoVignette, setExportVideoVignette] = useState<FfmpegExportVideoVignetteId>('off')
   /** §7.2 — нормализация громкости через whitelist фильтров. */
   const [exportAudioNormalize, setExportAudioNormalize] =
     useState<FfmpegExportAudioNormalizeId>('off')
@@ -1110,6 +1118,8 @@ function App(): JSX.Element {
     )
     const gr = loaded.ffmpegExportVideoGrain
     setExportVideoGrain(gr === 'light' || gr === 'medium' || gr === 'strong' ? gr : 'off')
+    const vg = loaded.ffmpegExportVideoVignette
+    setExportVideoVignette(vg === 'light' || vg === 'medium' || vg === 'strong' ? vg : 'off')
     const an = loaded.ffmpegExportAudioNormalize
     setExportAudioNormalize(an === 'loudnorm' || an === 'dynaudnorm' ? an : 'off')
     const lut = loaded.ffmpegExportVideoLut3d
@@ -1202,6 +1212,7 @@ function App(): JSX.Element {
       ...(exportVideoSharpen !== 'off' ? { videoSharpen: exportVideoSharpen } : {}),
       ...(exportVideoEqPreset !== 'off' ? { videoEqPreset: exportVideoEqPreset } : {}),
       ...(exportVideoGrain !== 'off' ? { videoGrain: exportVideoGrain } : {}),
+      ...(exportVideoVignette !== 'off' ? { videoVignette: exportVideoVignette } : {}),
       ...(exportAudioNormalize !== 'off' ? { audioNormalize: exportAudioNormalize } : {})
     }
   }, [
@@ -1226,6 +1237,7 @@ function App(): JSX.Element {
     exportVideoSharpen,
     exportVideoEqPreset,
     exportVideoGrain,
+    exportVideoVignette,
     exportAudioNormalize
   ])
 
@@ -1683,6 +1695,7 @@ function App(): JSX.Element {
         videoSharpen: exportVideoSharpen,
         videoEqPreset: exportVideoEqPreset,
         videoGrain: exportVideoGrain,
+        videoVignette: exportVideoVignette,
         audioNormalize: exportAudioNormalize
       })
       if (res.ok) {
@@ -1792,6 +1805,7 @@ function App(): JSX.Element {
       videoSharpen: exportVideoSharpen,
       videoEqPreset: exportVideoEqPreset,
       videoGrain: exportVideoGrain,
+      videoVignette: exportVideoVignette,
       audioNormalize: exportAudioNormalize,
       inputPath: sourcePath,
       outputPath,
@@ -1821,6 +1835,7 @@ function App(): JSX.Element {
     exportVideoSharpen,
     exportVideoEqPreset,
     exportVideoGrain,
+    exportVideoVignette,
     exportAudioNormalize,
     trimRange,
     probeInfo?.durationSec
@@ -2524,6 +2539,33 @@ function App(): JSX.Element {
                     </select>
                     <span id="ffmpegVideoGrainHint" className="app-field-help">
                       `noise` после `eq` и до `scale`/`fps` §7.2.
+                    </span>
+                  </label>
+                  <label className="app-field">
+                    <span>Виньетка</span>
+                    <select
+                      className="app-control"
+                      aria-label="Пресет vignette к краям кадра"
+                      aria-describedby="ffmpegVideoVignetteHint"
+                      value={exportVideoVignette}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const v = e.target.value as FfmpegExportVideoVignetteId
+                        setExportVideoVignette(v)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportVideoVignette(v)
+                          .catch(console.error)
+                      }}
+                    >
+                      {EXPORT_VIDEO_VIGNETTE_OPTIONS.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                    <span id="ffmpegVideoVignetteHint" className="app-field-help">
+                      `vignette` после зерна и до `scale`/`fps` §7.2.
                     </span>
                   </label>
                 </div>

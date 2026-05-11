@@ -20,6 +20,7 @@ import {
   parseFfmpegExportUserPresetsList,
   parseFfmpegExportVideoBitrate,
   parseFfmpegExportVideoGrain,
+  parseFfmpegExportVideoVignette,
   parseFfmpegSpeedToken,
   parseFfmpegTimeSeconds,
   resolveExportEncodeParams,
@@ -203,6 +204,11 @@ describe('ffmpeg export pure helpers', () => {
     expect(parseFfmpegExportVideoGrain('bogus')).toBe('off')
   })
 
+  it('parseFfmpegExportVideoVignette — whitelist', () => {
+    expect(parseFfmpegExportVideoVignette('medium')).toBe('medium')
+    expect(parseFfmpegExportVideoVignette('bogus')).toBe('off')
+  })
+
   it('mergeFfmpegExportSnapshotIntoAppSettings повторяет правила delete для дефолтов', () => {
     const base: AppSettings = { theme: 'dark', ffmpegExportCrf: 40, ffmpegExportAudioMode: 'none' }
     const next = mergeFfmpegExportSnapshotIntoAppSettings(base, {
@@ -276,6 +282,24 @@ describe('ffmpeg export pure helpers', () => {
       }
     )
     expect(grain.ffmpegExportVideoGrain).toBe('medium')
+
+    const vignette = mergeFfmpegExportSnapshotIntoAppSettings(
+      { theme: 'dark' },
+      {
+        encodePreset: 'balance',
+        container: 'mp4',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'aac',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        videoTransform: 'none',
+        cropPreset: 'none',
+        videoVignette: 'light'
+      }
+    )
+    expect(vignette.ffmpegExportVideoVignette).toBe('light')
 
     const lut = mergeFfmpegExportSnapshotIntoAppSettings(
       { theme: 'dark' },
