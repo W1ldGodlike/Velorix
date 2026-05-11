@@ -8,6 +8,7 @@
   },
   "scripts": {
     "loop": "tsx src/run-loop.ts",
+    "loop:cheap": "tsx src/run-loop.ts --max-steps 300 --session-steps 1",
     "once": "tsx src/run-loop.ts --once",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },

@@ -8,12 +8,14 @@
 
 import type {
   FfmpegExportAudioModeId,
+  FfmpegExportAudioNormalizeId,
   FfmpegExportContainerId,
   FfmpegExportCropPresetId,
   FfmpegExportEncodePresetId,
   FfmpegExportScalePresetId,
   FfmpegExportSubtitleModeId,
   FfmpegExportVideoDenoiseId,
+  FfmpegExportVideoEqPresetId,
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId,
   MediaExportTrimPayload
@@ -191,6 +193,52 @@ export function resolveFfmpegExportVideoSharpenFilter(
 }
 
 /**
+ * §7.2 — пресет `eq=` (контраст/насыщенность); whitelist выражений ffmpeg.
+ *
+ * Значения подобраны умеренно (контраст в окрестности 1.0, насыщенность в 0.85…1.2),
+ * чтобы пресет не вызывал клиппинг или явное искажение цвета. Произвольные значения
+ * пользователь задавать не может — это сознательное упрощение §7.2.
+ */
+export function resolveFfmpegExportVideoEqFilter(
+  id: FfmpegExportVideoEqPresetId
+): string | null {
+  switch (id) {
+    case 'warm':
+      return 'eq=contrast=1.05:saturation=1.10'
+    case 'cool':
+      return 'eq=contrast=1.00:saturation=0.92'
+    case 'vivid':
+      return 'eq=contrast=1.10:saturation=1.20'
+    case 'flat':
+      return 'eq=contrast=0.95:saturation=0.85'
+    default:
+      return null
+  }
+}
+
+/**
+ * §7.2 — пресет нормализации громкости. Подбор параметров:
+ * - `loudnorm=I=-16:LRA=11:TP=-1.5` — типовая цель EBU R128 для подкастов/видео,
+ *   single-pass (двухпроходный анализ — отдельный сценарий, не делаем здесь).
+ * - `dynaudnorm=f=200:g=15` — динамическая нормализация по окну 200 ms, окно gain 15.
+ *
+ * Кастомные строки в spawn не отдаём — только whitelist. Применяется только при
+ * включённом аудио (`audioMode='aac'`) и только во втором/одиночном проходе.
+ */
+export function resolveFfmpegExportAudioNormalizeFilter(
+  id: FfmpegExportAudioNormalizeId
+): string | null {
+  switch (id) {
+    case 'loudnorm':
+      return 'loudnorm=I=-16:LRA=11:TP=-1.5'
+    case 'dynaudnorm':
+      return 'dynaudnorm=f=200:g=15'
+    default:
+      return null
+  }
+}
+
+/**
  * §7.2 — crop-пресеты через безопасный whitelist выражений ffmpeg.
  * Порядок в `-vf`: transform → crop → scale → fps.
  */
@@ -253,6 +301,14 @@ export interface FfmpegExportArgvParams {
   videoDenoise?: FfmpegExportVideoDenoiseId
   /** §7.2 — `unsharp` контурная резкость; `off` или undefined — без фильтра. */
   videoSharpen?: FfmpegExportVideoSharpenId
+  /** §7.2 — `eq=...` цветокор-пресет; `off` или undefined — без фильтра. */
+  videoEqPreset?: FfmpegExportVideoEqPresetId
+  /**
+   * §7.2 — `loudnorm`/`dynaudnorm`; `off` или undefined — без нормализации.
+   * При `audioMode='none'` или в первом проходе двухпроходного режима игнорируется
+   * (там нет аудио, фильтр не применяется).
+   */
+  audioNormalize?: FfmpegExportAudioNormalizeId
 }
 
 /** Полный argv ffmpeg без пути к exe; используется и runner, и preview UI. */
@@ -276,6 +332,12 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
   const sharpen = resolveFfmpegExportVideoSharpenFilter(params.videoSharpen ?? 'off')
   if (sharpen !== null) {
     filters.push(sharpen)
+  }
+  // §7.2 — `eq` после sharpen и до `scale`, чтобы фильтры цвета работали уже по
+  // отфильтрованной картинке, а scale не перекрывал коррекцию насыщенности.
+  const eq = resolveFfmpegExportVideoEqFilter(params.videoEqPreset ?? 'off')
+  if (eq !== null) {
+    filters.push(eq)
   }
   const scale = resolveFfmpegExportScaleFilter(params.scalePreset)
   if (scale !== null) {
@@ -334,15 +396,28 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
 
   const gainDb =
     params.audioMode === 'none' ? null : normalizeFfmpegExportAudioGainDb(params.audioGainDb)
+  const normalizeFilter =
+    params.audioMode === 'none'
+      ? null
+      : resolveFfmpegExportAudioNormalizeFilter(params.audioNormalize ?? 'off')
   if (params.audioMode === 'none') {
     args.push('-an')
   } else {
     args.push('-c:a', 'aac', '-b:a', params.audioBitrate)
+    // -filter:a применяется только к аудио потоку; -af применяется и к input filter chain,
+    // но фактически в нашем шаблоне они эквивалентны. Используем явное :a, чтобы было видно,
+    // что фильтр привязан к аудио и не задевает -vf. Громкость идёт первой, нормализация
+    // последней: loudnorm/dynaudnorm всё равно выровняют итог, но volume в начале даёт
+    // более предсказуемое поведение, чем post-normalize gain (который бы «уплыл» сразу).
+    const audioFilters: string[] = []
     if (gainDb !== null) {
-      // -filter:a применяется только к аудио потоку; -af применяется и к input filter chain,
-      // но фактически в нашем шаблоне они эквивалентны. Используем явное :a, чтобы было видно,
-      // что фильтр привязан к аудио и не задевает -vf.
-      args.push('-filter:a', `volume=${gainDb}dB`)
+      audioFilters.push(`volume=${gainDb}dB`)
+    }
+    if (normalizeFilter !== null) {
+      audioFilters.push(normalizeFilter)
+    }
+    if (audioFilters.length > 0) {
+      args.push('-filter:a', audioFilters.join(','))
     }
   }
 
@@ -413,6 +488,8 @@ export interface FfmpegExportPreviewInput {
   subtitleMode?: FfmpegExportSubtitleModeId
   videoDenoise?: FfmpegExportVideoDenoiseId
   videoSharpen?: FfmpegExportVideoSharpenId
+  videoEqPreset?: FfmpegExportVideoEqPresetId
+  audioNormalize?: FfmpegExportAudioNormalizeId
 }
 
 export interface FfmpegExportPreviewResult {
@@ -483,7 +560,9 @@ export function buildFfmpegExportPreviewCommand(
     ...(input.stripChapters === true ? { stripChapters: true } : {}),
     ...(input.subtitleMode !== undefined ? { subtitleMode: input.subtitleMode } : {}),
     ...(input.videoDenoise !== undefined ? { videoDenoise: input.videoDenoise } : {}),
-    ...(input.videoSharpen !== undefined ? { videoSharpen: input.videoSharpen } : {})
+    ...(input.videoSharpen !== undefined ? { videoSharpen: input.videoSharpen } : {}),
+    ...(input.videoEqPreset !== undefined ? { videoEqPreset: input.videoEqPreset } : {}),
+    ...(input.audioNormalize !== undefined ? { audioNormalize: input.audioNormalize } : {})
   }
 
   let pass1Command: string | undefined

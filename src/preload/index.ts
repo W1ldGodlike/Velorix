@@ -11,6 +11,7 @@ import type { EngineDownloadProgress } from '../shared/engine-download-contract'
 import type { FfmpegSnapshotFormatId } from '../shared/ffmpeg-snapshot-contract'
 import type {
   FfmpegExportAudioModeId,
+  FfmpegExportAudioNormalizeId,
   FfmpegExportContainerId,
   FfmpegExportCropPresetId,
   FfmpegExportEncodePresetId,
@@ -20,6 +21,7 @@ import type {
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
   FfmpegExportVideoDenoiseId,
+  FfmpegExportVideoEqPresetId,
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId,
   MediaExportRequestPayload,
@@ -175,6 +177,12 @@ const fluxalloy = {
       ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoDenoise, preset),
     setFfmpegExportVideoSharpen: (preset: FfmpegExportVideoSharpenId): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoSharpen, preset),
+    setFfmpegExportVideoEqPreset: (
+      preset: FfmpegExportVideoEqPresetId
+    ): Promise<AppSettings> => ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoEqPreset, preset),
+    setFfmpegExportAudioNormalize: (
+      preset: FfmpegExportAudioNormalizeId
+    ): Promise<AppSettings> => ipcRenderer.invoke(mw.settingsSetFfmpegExportAudioNormalize, preset),
     setFfmpegExportUserPresets: (presets: FfmpegExportUserPreset[]): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportUserPresets, presets),
     applyFfmpegExportSnapshot: (snapshot: FfmpegExportUserPresetSnapshot): Promise<AppSettings> =>

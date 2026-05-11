@@ -45,6 +45,7 @@ function loadPrompt(fileName: string, promptDir: string): string {
 function parseArgs(argv: string[]): {
   once: boolean
   maxSteps: number
+  sessionMaxSteps: number
   verbose: boolean
   promptsDir: string
 } {
@@ -52,6 +53,11 @@ function parseArgs(argv: string[]): {
   let maxSteps = readIntegerSetting(process.env.MAX_STEPS, SDK_AUTOMATION_SETTINGS.defaultMaxSteps, {
     min: 1
   })
+  let sessionMaxSteps = readIntegerSetting(
+    process.env.SDK_SESSION_STEPS,
+    SDK_AUTOMATION_SETTINGS.defaultSessionMaxSteps,
+    { min: 1 }
+  )
   let verbose = readBooleanSetting(process.env.VERBOSE, SDK_AUTOMATION_SETTINGS.defaultVerbose)
   let promptsDir =
     process.env.PROMPTS_DIR && process.env.PROMPTS_DIR.trim() !== ''
@@ -75,6 +81,17 @@ function parseArgs(argv: string[]): {
       }
       maxSteps = n
       i++
+    } else if (a === '--session-steps') {
+      const raw = argv[i + 1]
+      if (!raw) {
+        throw new Error(`Ожидалось число после ${a}`)
+      }
+      const n = Number.parseInt(raw, 10)
+      if (!Number.isFinite(n) || n < 1) {
+        throw new Error(`Некорректное число шагов SDK-сессии: ${raw}`)
+      }
+      sessionMaxSteps = n
+      i++
     } else if (a === '--prompts-dir') {
       const dir = argv[i + 1]
       if (!dir) {
@@ -88,6 +105,7 @@ function parseArgs(argv: string[]): {
 Переменные окружения:
   CURSOR_API_KEY       обязательна
   MAX_STEPS            число итераций (по умолчанию ${SDK_AUTOMATION_SETTINGS.defaultMaxSteps})
+  SDK_SESSION_STEPS    сколько итераций держать в одном Agent.create (по умолчанию ${SDK_AUTOMATION_SETTINGS.defaultSessionMaxSteps})
   LOOP_STEP_RETRY_MAX  число попыток одной итерации при временных SDK/transport-сбоях на цепочке send → stream → wait (по умолчанию ${SDK_AUTOMATION_SETTINGS.defaultStepRetryMaxAttempts})
   LOOP_STEP_RETRY_BASE_MS  базовая пауза перед повтором, мс, растёт экспоненциально (по умолчанию ${SDK_AUTOMATION_SETTINGS.defaultStepRetryBaseDelayMs})
   LOOP_RETRY_RUN_ERROR повторять любой status=error той же итерацией. По умолчанию 0; включить: 1|true|yes|on
@@ -96,13 +114,17 @@ function parseArgs(argv: string[]): {
   STEP_DELAY_MS        пауза между итерациями цикла (мс, по умолчанию ${SDK_AUTOMATION_SETTINGS.defaultStepDelayMs})
   SETTING_SOURCES_ALL=1  local.settingSources: ['all'] в SDK (обычно не нужно)
   VERBOSE=1            стрим текста assistant в stdout (также yes/on)
+  VERBOSE_MAX_CHARS    лимит stream-лога при VERBOSE=1 (по умолчанию ${SDK_AUTOMATION_SETTINGS.defaultVerboseMaxChars})
+  SDK_ALLOW_VERBOSE_LONG_LOOP=1  разрешить --verbose при MAX_STEPS > ${SDK_AUTOMATION_SETTINGS.verboseLongLoopMaxSteps}
   PROMPTS_DIR          каталог с initial.txt и continue.txt
   CURSOR_MODEL          ID модели (по умолчанию ${SDK_AUTOMATION_SETTINGS.defaultModelId})
 
 Примеры:
   npm run loop
+  npm run loop:cheap
   npm run once
   npm run loop -- --max-steps 10 --verbose
+  npm run loop -- --max-steps 300 --session-steps 1
 
 Стоп между итерациями:
   создать файл ${stopFlagPath} со значением 1
@@ -115,7 +137,7 @@ function parseArgs(argv: string[]): {
     }
   }
 
-  return { once, maxSteps, verbose, promptsDir }
+  return { once, maxSteps, sessionMaxSteps, verbose, promptsDir }
 }
 
 function sleep(ms: number): Promise<void> {
@@ -315,7 +337,71 @@ function shouldStopByFlag(): boolean {
   return value === '' || readBooleanSetting(value, false)
 }
 
+function shouldAllowVerboseLongLoop(): boolean {
+  return readBooleanSetting(process.env.SDK_ALLOW_VERBOSE_LONG_LOOP, false)
+}
+
+function normalizeVerboseMode(opts: { verbose: boolean; maxSteps: number }): boolean {
+  if (!opts.verbose) {
+    return false
+  }
+  if (opts.maxSteps <= SDK_AUTOMATION_SETTINGS.verboseLongLoopMaxSteps) {
+    return true
+  }
+  if (shouldAllowVerboseLongLoop()) {
+    return true
+  }
+  console.error(
+    `VERBOSE отключён для long-loop ${opts.maxSteps} шагов: лимит ${SDK_AUTOMATION_SETTINGS.verboseLongLoopMaxSteps}. ` +
+      'Если реально нужен полный stream/thinking лог, задайте SDK_ALLOW_VERBOSE_LONG_LOOP=1.'
+  )
+  return false
+}
+
+function warnIfExpensiveSessionConfig(opts: { maxSteps: number; sessionMaxSteps: number }): void {
+  if (
+    opts.maxSteps > SDK_AUTOMATION_SETTINGS.verboseLongLoopMaxSteps &&
+    opts.sessionMaxSteps >= SDK_AUTOMATION_SETTINGS.sessionStepsLongLoopWarnAt
+  ) {
+    console.error(
+      `ВНИМАНИЕ: --session-steps ${opts.sessionMaxSteps} на long-loop ${opts.maxSteps} может резко увеличить Cache Read. ` +
+        'Для минимума токенов используйте --session-steps 1.'
+    )
+  }
+}
+
+function verboseMaxChars(): number {
+  return readIntegerSetting(
+    process.env.VERBOSE_MAX_CHARS,
+    SDK_AUTOMATION_SETTINGS.defaultVerboseMaxChars,
+    { min: 1000 }
+  )
+}
+
 async function streamVerboseAssistantText(run: { stream(): AsyncIterable<unknown> }): Promise<void> {
+  const maxChars = verboseMaxChars()
+  let written = 0
+  let truncated = false
+
+  function writeLimited(text: string, stream: NodeJS.WriteStream): void {
+    if (truncated) {
+      return
+    }
+    const remaining = maxChars - written
+    if (remaining <= 0) {
+      truncated = true
+      stream.write(`\n[verbose truncated after ${maxChars} chars]\n`)
+      return
+    }
+    const chunk = text.length > remaining ? text.slice(0, remaining) : text
+    written += chunk.length
+    stream.write(chunk)
+    if (text.length > remaining) {
+      truncated = true
+      stream.write(`\n[verbose truncated after ${maxChars} chars]\n`)
+    }
+  }
+
   for await (const msg of run.stream()) {
     if (
       typeof msg === 'object' &&
@@ -333,15 +419,7 @@ async function streamVerboseAssistantText(run: { stream(): AsyncIterable<unknown
       for (const block of content) {
         const t = block.text
         if (block.type === 'text' && typeof t === 'string') {
-          await new Promise<void>((resolve, reject): void => {
-            process.stdout.write(t, (err) => {
-              if (err) {
-                reject(err)
-              } else {
-                resolve()
-              }
-            })
-          })
+          writeLimited(t, process.stdout)
         }
       }
     }
@@ -356,11 +434,37 @@ async function streamVerboseAssistantText(run: { stream(): AsyncIterable<unknown
       mType === 'thinking' &&
       typeof (msg as { text?: unknown }).text === 'string'
     ) {
-      process.stderr.write(`\n[thinking] ${(msg as { text: string }).text}\n`)
+      writeLimited(`\n[thinking] ${(msg as { text: string }).text}\n`, process.stderr)
     }
   }
 
   console.log('')
+}
+
+function buildSessionRestartPrompt(args: {
+  continuePrompt: string
+  completedSteps: number
+  maxSteps: number
+  sessionIndex: number
+  sessionMaxSteps: number
+}): string {
+  return [
+    'Новая короткая SDK-сессия FluxAlloy long-loop.',
+    '',
+    `Глобальный прогресс: уже завершено ${args.completedSteps}/${args.maxSteps}; эта SDK-сессия рассчитана максимум на ${args.sessionMaxSteps} итерации; номер сессии ${args.sessionIndex}.`,
+    '',
+    'Причина новой сессии: экономия tokens/cache-read. Не пытайся восстановить старый conversation context.',
+    'Работай как после команды `+`, но с компактным handoff:',
+    '- не перечитывай весь проект, весь чеклист, весь журнал, ТЗ или v0 без причины;',
+    '- если не уверен, что брать дальше: прочитай только `## Ближайший TODO спринта` и связанный тематический §;',
+    '- перед записью журнала прочитай только хвост `IMPLEMENTATION_JOURNAL.md`, возьми следующий `J-NNN`, время — только из `Get-Date`;',
+    '- перед правками смотри `git status`; не трогай `.env`/секреты; коммит — один логичный на успешную итерацию;',
+    '- делай максимум связной работы за итерацию, но не раздувай контекст лишними чтениями и логами.',
+    '',
+    'Далее применяй обычный continue-промпт:',
+    '',
+    args.continuePrompt
+  ].join('\n')
 }
 
 async function main(): Promise<number> {
@@ -375,6 +479,8 @@ async function main(): Promise<number> {
   }
 
   const stdinPrompt = await readStdinIfNotTty()
+  opts = { ...opts, verbose: normalizeVerboseMode(opts) }
+  warnIfExpensiveSessionConfig(opts)
 
   const apiKey = process.env.CURSOR_API_KEY?.trim()
   if (!apiKey) {
@@ -454,72 +560,106 @@ async function main(): Promise<number> {
 
   }
 
-  const agent = await runWithConnectionRetries(
-    'Agent.create',
-    stepRetry.maxAttempts,
-    stepRetry.baseDelayMs,
-    () => Agent.create(baseAgentOptions)
-  )
-
   try {
+    let completedSteps = 0
+    let sessionIndex = 0
 
-    for (let step = 0; step < opts.maxSteps; step++) {
+    while (completedSteps < opts.maxSteps) {
       if (shouldStopByFlag()) {
 
-        console.error(`STOP=1 (${stopFlagPath}) — выход перед шагом ${step + 1}.`)
+        console.error(`STOP=1 (${stopFlagPath}) — выход перед шагом ${completedSteps + 1}.`)
 
         return 0
       }
 
-      console.error(`Итерация ${step + 1}/${opts.maxSteps}…`)
+      sessionIndex++
+      const sessionRemaining = opts.maxSteps - completedSteps
+      const sessionSteps = Math.min(opts.sessionMaxSteps, sessionRemaining)
+      console.error(
+        `SDK-сессия ${sessionIndex}: Agent.create на ${sessionSteps} итерац. (завершено ${completedSteps}/${opts.maxSteps})`
+      )
 
-      const promptText = step === 0 ? (stdinPrompt ?? initialDisk) : continueDisk
+      const agent = await runWithConnectionRetries(
+        `Agent.create (сессия ${sessionIndex})`,
+        stepRetry.maxAttempts,
+        stepRetry.baseDelayMs,
+        () => Agent.create(baseAgentOptions)
+      )
 
-      const result = await runStepWithRetries(
-        `Итерация ${step + 1}/${opts.maxSteps}`,
-        runErrorRetry.maxAttempts,
-        runErrorRetry.baseDelayMs,
-        { retryAnyRunError: runErrorRetry.retryAnyRunError },
-        async () =>
-          await runWithConnectionRetries(
-            `Итерация ${step + 1}/${opts.maxSteps} send+wait`,
-            stepRetry.maxAttempts,
-            stepRetry.baseDelayMs,
-            async () => {
-              const run = await agent.send(promptText)
-              console.error(`  Run id: ${run.id}`)
+      try {
+        for (let stepInSession = 0; stepInSession < sessionSteps; stepInSession++) {
+          if (shouldStopByFlag()) {
+            console.error(`STOP=1 (${stopFlagPath}) — выход перед шагом ${completedSteps + 1}.`)
+            return 0
+          }
 
-              if (opts.verbose && run.supports('stream')) {
-                await streamVerboseAssistantText(run)
-              }
-
-              return await run.wait()
-            }
+          const globalStep = completedSteps + 1
+          console.error(
+            `Итерация ${globalStep}/${opts.maxSteps} (сессия ${sessionIndex}, шаг ${stepInSession + 1}/${sessionSteps})…`
           )
-      )
 
-      console.error(`  Статус: ${result.status} (run ${result.id})`)
+          const promptText =
+            globalStep === 1
+              ? (stdinPrompt ?? initialDisk)
+              : stepInSession === 0
+                ? buildSessionRestartPrompt({
+                    continuePrompt: continueDisk,
+                    completedSteps,
+                    maxSteps: opts.maxSteps,
+                    sessionIndex,
+                    sessionMaxSteps: sessionSteps
+                  })
+                : continueDisk
 
-      await sleep(
-        readIntegerSetting(process.env.STEP_DELAY_MS, SDK_AUTOMATION_SETTINGS.defaultStepDelayMs, {
-          min: SDK_AUTOMATION_SETTINGS.minStepDelayMs
-        })
-      )
+          const result = await runStepWithRetries(
+            `Итерация ${globalStep}/${opts.maxSteps}`,
+            runErrorRetry.maxAttempts,
+            runErrorRetry.baseDelayMs,
+            { retryAnyRunError: runErrorRetry.retryAnyRunError },
+            async () =>
+              await runWithConnectionRetries(
+                `Итерация ${globalStep}/${opts.maxSteps} send+wait`,
+                stepRetry.maxAttempts,
+                stepRetry.baseDelayMs,
+                async () => {
+                  const run = await agent.send(promptText)
+                  console.error(`  Run id: ${run.id}`)
 
-      if (result.status === 'error') {
+                  if (opts.verbose && run.supports('stream')) {
+                    await streamVerboseAssistantText(run)
+                  }
 
-        console.error('Агент завершил шаг с error — прекращаем цикл.')
+                  return await run.wait()
+                }
+              )
+          )
 
-        return 2
+          console.error(`  Статус: ${result.status} (run ${result.id})`)
+          completedSteps++
+
+          await sleep(
+            readIntegerSetting(
+              process.env.STEP_DELAY_MS,
+              SDK_AUTOMATION_SETTINGS.defaultStepDelayMs,
+              {
+                min: SDK_AUTOMATION_SETTINGS.minStepDelayMs
+              }
+            )
+          )
+
+          if (result.status === 'error') {
+            console.error('Агент завершил шаг с error — прекращаем цикл.')
+            return 2
+          }
+
+          if (result.status === 'cancelled') {
+            console.error('Отменено — прекращаем цикл.')
+            return 130
+          }
+        }
+      } finally {
+        await agent[Symbol.asyncDispose]()
       }
-
-      if (result.status === 'cancelled') {
-
-        console.error('Отменено — прекращаем цикл.')
-
-        return 130
-      }
-
     }
 
     console.error(`Достигнут лимит итераций (${opts.maxSteps}).`)
@@ -534,8 +674,6 @@ async function main(): Promise<number> {
       return 1
     }
     throw e
-  } finally {
-    await agent[Symbol.asyncDispose]()
   }
 
 

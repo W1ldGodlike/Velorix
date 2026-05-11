@@ -6,6 +6,7 @@ import { join } from 'path'
 import type { AppSettings } from '../shared/settings-contract'
 import type {
   FfmpegExportAudioModeId,
+  FfmpegExportAudioNormalizeId,
   FfmpegExportContainerId,
   FfmpegExportCropPresetId,
   FfmpegExportEncodePresetId,
@@ -15,6 +16,7 @@ import type {
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
   FfmpegExportVideoDenoiseId,
+  FfmpegExportVideoEqPresetId,
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId,
   MediaExportTrimPayload
@@ -29,6 +31,7 @@ import { logExternalProcessLine } from './external-process-log'
 
 export type {
   FfmpegExportAudioModeId,
+  FfmpegExportAudioNormalizeId,
   FfmpegExportContainerId,
   FfmpegExportCropPresetId,
   FfmpegExportEncodePresetId,
@@ -38,6 +41,7 @@ export type {
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
   FfmpegExportVideoDenoiseId,
+  FfmpegExportVideoEqPresetId,
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId,
   MediaExportRequestPayload,
@@ -50,10 +54,12 @@ export {
   buildFfmpegExportPreviewCommand,
   formatFfmpegArgvForPreview,
   normalizeFfmpegExportAudioGainDb,
+  resolveFfmpegExportAudioNormalizeFilter,
   resolveFfmpegExportEncodeParams as resolveExportEncodeParams,
   resolveFfmpegExportScaleFilter,
   resolveFfmpegExportSubtitleCopyCodec,
   resolveFfmpegExportVideoDenoiseFilter,
+  resolveFfmpegExportVideoEqFilter,
   resolveFfmpegExportVideoSharpenFilter,
   shouldApplyFfmpegExportTrim
 } from '../shared/ffmpeg-export-argv'
@@ -216,6 +222,22 @@ export function parseFfmpegExportVideoSharpen(raw: unknown): FfmpegExportVideoSh
   return 'off'
 }
 
+/** §7.2 — пресет `eq=` (цветокор); только whitelist, иначе `off`. */
+export function parseFfmpegExportVideoEqPreset(raw: unknown): FfmpegExportVideoEqPresetId {
+  if (raw === 'warm' || raw === 'cool' || raw === 'vivid' || raw === 'flat') {
+    return raw
+  }
+  return 'off'
+}
+
+/** §7.2 — пресет нормализации громкости (`loudnorm`/`dynaudnorm`); иначе `off`. */
+export function parseFfmpegExportAudioNormalize(raw: unknown): FfmpegExportAudioNormalizeId {
+  if (raw === 'loudnorm' || raw === 'dynaudnorm') {
+    return raw
+  }
+  return 'off'
+}
+
 /**
  * §7.2 — целочисленный сдвиг громкости в дБ; `null` при пустом/некорректном/нулевом значении.
  * Дополнительная гарантия по сравнению с `normalizeFfmpegExportAudioGainDb`: явно
@@ -270,6 +292,8 @@ export function parseFfmpegExportUserPresetSnapshot(
   const subtitleMode = parseFfmpegExportSubtitleMode(o['subtitleMode'])
   const videoDenoise = parseFfmpegExportVideoDenoise(o['videoDenoise'])
   const videoSharpen = parseFfmpegExportVideoSharpen(o['videoSharpen'])
+  const videoEqPreset = parseFfmpegExportVideoEqPreset(o['videoEqPreset'])
+  const audioNormalize = parseFfmpegExportAudioNormalize(o['audioNormalize'])
   return {
     encodePreset,
     container,
@@ -287,7 +311,9 @@ export function parseFfmpegExportUserPresetSnapshot(
     ...(stripChapters ? { stripChapters: true } : {}),
     ...(subtitleMode === 'copy' ? { subtitleMode: 'copy' as const } : {}),
     ...(videoDenoise !== 'off' ? { videoDenoise } : {}),
-    ...(videoSharpen !== 'off' ? { videoSharpen } : {})
+    ...(videoSharpen !== 'off' ? { videoSharpen } : {}),
+    ...(videoEqPreset !== 'off' ? { videoEqPreset } : {}),
+    ...(audioNormalize !== 'off' ? { audioNormalize } : {})
   }
 }
 
@@ -409,6 +435,21 @@ export function mergeFfmpegExportSnapshotIntoAppSettings(
     next.ffmpegExportVideoSharpen = snapshot.videoSharpen
   } else {
     delete next.ffmpegExportVideoSharpen
+  }
+  if (
+    snapshot.videoEqPreset === 'warm' ||
+    snapshot.videoEqPreset === 'cool' ||
+    snapshot.videoEqPreset === 'vivid' ||
+    snapshot.videoEqPreset === 'flat'
+  ) {
+    next.ffmpegExportVideoEqPreset = snapshot.videoEqPreset
+  } else {
+    delete next.ffmpegExportVideoEqPreset
+  }
+  if (snapshot.audioNormalize === 'loudnorm' || snapshot.audioNormalize === 'dynaudnorm') {
+    next.ffmpegExportAudioNormalize = snapshot.audioNormalize
+  } else {
+    delete next.ffmpegExportAudioNormalize
   }
   return next
 }
@@ -601,6 +642,10 @@ export async function runFfmpegExportJob(params: {
   videoDenoise?: FfmpegExportVideoDenoiseId | null
   /** §7.2 — `unsharp` контурная резкость; `off`/null — без фильтра. */
   videoSharpen?: FfmpegExportVideoSharpenId | null
+  /** §7.2 — `eq=...` цветокор-пресет; `off`/null — без фильтра. */
+  videoEqPreset?: FfmpegExportVideoEqPresetId | null
+  /** §7.2 — `loudnorm`/`dynaudnorm`; `off`/null — без фильтра. */
+  audioNormalize?: FfmpegExportAudioNormalizeId | null
   signal: AbortSignal
   onProgress?: (p: FfmpegExportProgressPayload) => void
 }): Promise<{ ok: true } | { ok: false; error: string }> {
@@ -622,6 +667,8 @@ export async function runFfmpegExportJob(params: {
   const subtitleMode = parseFfmpegExportSubtitleMode(params.subtitleMode)
   const videoDenoise = parseFfmpegExportVideoDenoise(params.videoDenoise)
   const videoSharpen = parseFfmpegExportVideoSharpen(params.videoSharpen)
+  const videoEqPreset = parseFfmpegExportVideoEqPreset(params.videoEqPreset)
+  const audioNormalize = parseFfmpegExportAudioNormalize(params.audioNormalize)
   if (wantTwoPass && videoBitrate === null) {
     return {
       ok: false,
@@ -654,7 +701,9 @@ export async function runFfmpegExportJob(params: {
     ...(stripChapters ? { stripChapters: true } : {}),
     ...(subtitleMode === 'copy' ? { subtitleMode: 'copy' as const } : {}),
     ...(videoDenoise !== 'off' ? { videoDenoise } : {}),
-    ...(videoSharpen !== 'off' ? { videoSharpen } : {})
+    ...(videoSharpen !== 'off' ? { videoSharpen } : {}),
+    ...(videoEqPreset !== 'off' ? { videoEqPreset } : {}),
+    ...(audioNormalize !== 'off' ? { audioNormalize } : {})
   }
 
   if (!wantTwoPass) {

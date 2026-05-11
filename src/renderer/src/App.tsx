@@ -46,6 +46,7 @@ import type { EngineId } from '../../shared/engine-contract'
 import { ENGINE_IDS } from '../../shared/engine-contract'
 import type {
   FfmpegExportAudioModeId,
+  FfmpegExportAudioNormalizeId,
   FfmpegExportContainerId,
   FfmpegExportCropPresetId,
   FfmpegExportEncodePresetId,
@@ -54,6 +55,7 @@ import type {
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
   FfmpegExportVideoDenoiseId,
+  FfmpegExportVideoEqPresetId,
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId
 } from '../../shared/ffmpeg-export-contract'
@@ -229,6 +231,19 @@ const EXPORT_VIDEO_SHARPEN_OPTIONS: Array<{ id: FfmpegExportVideoSharpenId; labe
   { id: 'medium', label: 'Средняя (unsharp 1.0)' },
   { id: 'strong', label: 'Сильная (unsharp 1.5)' }
 ]
+const EXPORT_VIDEO_EQ_PRESETS: Array<{ id: FfmpegExportVideoEqPresetId; label: string }> = [
+  { id: 'off', label: 'Цвет: выкл.' },
+  { id: 'warm', label: 'Теплее' },
+  { id: 'cool', label: 'Холоднее' },
+  { id: 'vivid', label: 'Насыщенно' },
+  { id: 'flat', label: 'Мягко/flat' }
+]
+const EXPORT_AUDIO_NORMALIZE_OPTIONS: Array<{ id: FfmpegExportAudioNormalizeId; label: string }> =
+  [
+    { id: 'off', label: 'Нормализация: выкл.' },
+    { id: 'loudnorm', label: 'EBU R128 (loudnorm)' },
+    { id: 'dynaudnorm', label: 'Динамическая (dynaudnorm)' }
+  ]
 const SNAPSHOT_FORMATS: Array<{ id: FfmpegSnapshotFormatId; label: string }> = [
   { id: 'png', label: 'Кадр PNG' },
   { id: 'jpg', label: 'Кадр JPEG' }
@@ -616,6 +631,12 @@ function App(): JSX.Element {
   const [exportVideoDenoise, setExportVideoDenoise] = useState<FfmpegExportVideoDenoiseId>('off')
   /** §7.2 — пресет `unsharp` контурной резкости. */
   const [exportVideoSharpen, setExportVideoSharpen] = useState<FfmpegExportVideoSharpenId>('off')
+  /** §7.2 — пресет `eq=` цветокоррекции. */
+  const [exportVideoEqPreset, setExportVideoEqPreset] =
+    useState<FfmpegExportVideoEqPresetId>('off')
+  /** §7.2 — нормализация громкости через whitelist фильтров. */
+  const [exportAudioNormalize, setExportAudioNormalize] =
+    useState<FfmpegExportAudioNormalizeId>('off')
   /** §7.2 — сохранённые пользователем наборы параметров тулбара (preview/spawn используют те же поля). */
   const [exportUserPresets, setExportUserPresets] = useState<FfmpegExportUserPreset[]>([])
   /** Выбранный в `<select>` пользовательский пресет; ручные правки тулбара сбрасывают выбор. */
@@ -1040,6 +1061,12 @@ function App(): JSX.Element {
     setExportVideoDenoise(dn === 'light' || dn === 'medium' || dn === 'strong' ? dn : 'off')
     const sh = loaded.ffmpegExportVideoSharpen
     setExportVideoSharpen(sh === 'light' || sh === 'medium' || sh === 'strong' ? sh : 'off')
+    const eq = loaded.ffmpegExportVideoEqPreset
+    setExportVideoEqPreset(
+      eq === 'warm' || eq === 'cool' || eq === 'vivid' || eq === 'flat' ? eq : 'off'
+    )
+    const an = loaded.ffmpegExportAudioNormalize
+    setExportAudioNormalize(an === 'loudnorm' || an === 'dynaudnorm' ? an : 'off')
   }, [])
 
   const bumpManualExportEdit = useCallback(() => {
@@ -1109,7 +1136,9 @@ function App(): JSX.Element {
       ...(exportStripChapters ? { stripChapters: true } : {}),
       ...(exportSubtitleMode === 'copy' ? { subtitleMode: 'copy' as const } : {}),
       ...(exportVideoDenoise !== 'off' ? { videoDenoise: exportVideoDenoise } : {}),
-      ...(exportVideoSharpen !== 'off' ? { videoSharpen: exportVideoSharpen } : {})
+      ...(exportVideoSharpen !== 'off' ? { videoSharpen: exportVideoSharpen } : {}),
+      ...(exportVideoEqPreset !== 'off' ? { videoEqPreset: exportVideoEqPreset } : {}),
+      ...(exportAudioNormalize !== 'off' ? { audioNormalize: exportAudioNormalize } : {})
     }
   }, [
     exportEncodePreset,
@@ -1128,7 +1157,9 @@ function App(): JSX.Element {
     exportStripChapters,
     exportSubtitleMode,
     exportVideoDenoise,
-    exportVideoSharpen
+    exportVideoSharpen,
+    exportVideoEqPreset,
+    exportAudioNormalize
   ])
 
   const handleSaveExportUserPreset = useCallback(() => {
@@ -1580,7 +1611,9 @@ function App(): JSX.Element {
         stripChapters: exportStripChapters,
         subtitleMode: exportSubtitleMode,
         videoDenoise: exportVideoDenoise,
-        videoSharpen: exportVideoSharpen
+        videoSharpen: exportVideoSharpen,
+        videoEqPreset: exportVideoEqPreset,
+        audioNormalize: exportAudioNormalize
       })
       if (res.ok) {
         const savedName = res.path.split(/[\\/]/).pop() || res.path
@@ -1683,6 +1716,8 @@ function App(): JSX.Element {
       subtitleMode: exportSubtitleMode,
       videoDenoise: exportVideoDenoise,
       videoSharpen: exportVideoSharpen,
+      videoEqPreset: exportVideoEqPreset,
+      audioNormalize: exportAudioNormalize,
       inputPath: sourcePath,
       outputPath,
       trim: trimRange,
@@ -1707,6 +1742,8 @@ function App(): JSX.Element {
     exportSubtitleMode,
     exportVideoDenoise,
     exportVideoSharpen,
+    exportVideoEqPreset,
+    exportAudioNormalize,
     trimRange,
     probeInfo?.durationSec
   ])
@@ -2307,6 +2344,33 @@ function App(): JSX.Element {
                       `unsharp` применяется после `hqdn3d` и до `scale`/`fps`.
                     </span>
                   </label>
+                  <label className="app-field">
+                    <span>Цвет</span>
+                    <select
+                      className="app-control"
+                      aria-label="Пресет eq цветокоррекции"
+                      aria-describedby="ffmpegVideoEqHint"
+                      value={exportVideoEqPreset}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const v = e.target.value as FfmpegExportVideoEqPresetId
+                        setExportVideoEqPreset(v)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportVideoEqPreset(v)
+                          .catch(console.error)
+                      }}
+                    >
+                      {EXPORT_VIDEO_EQ_PRESETS.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                    <span id="ffmpegVideoEqHint" className="app-field-help">
+                      `eq` применяется после резкости и до масштаба; только preset whitelist.
+                    </span>
+                  </label>
                 </div>
               </details>
 
@@ -2523,6 +2587,33 @@ function App(): JSX.Element {
                     </select>
                     <span id="ffmpegAudioGainHint" className="app-field-help">
                       Применяется как `-filter:a volume=NdB`; при «Без аудио» игнорируется.
+                    </span>
+                  </label>
+                  <label className="app-field">
+                    <span>Нормализация</span>
+                    <select
+                      className="app-control"
+                      aria-label="Нормализация громкости аудио"
+                      aria-describedby="ffmpegAudioNormalizeHint"
+                      value={exportAudioNormalize}
+                      disabled={exportBusy || snapshotBusy || exportAudioMode === 'none'}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const v = e.target.value as FfmpegExportAudioNormalizeId
+                        setExportAudioNormalize(v)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportAudioNormalize(v)
+                          .catch(console.error)
+                      }}
+                    >
+                      {EXPORT_AUDIO_NORMALIZE_OPTIONS.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                    <span id="ffmpegAudioNormalizeHint" className="app-field-help">
+                      Склеивается с volume в один `-filter:a`: сначала gain, потом normalize.
                     </span>
                   </label>
                   <label className="app-field">

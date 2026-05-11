@@ -5,11 +5,13 @@ import {
   buildFfmpegExportPreviewCommand,
   formatFfmpegArgvForPreview,
   normalizeFfmpegExportAudioGainDb,
+  resolveFfmpegExportAudioNormalizeFilter,
   resolveFfmpegExportEncodeParams,
   resolveFfmpegExportCropFilter,
   resolveFfmpegExportScaleFilter,
   resolveFfmpegExportSubtitleCopyCodec,
   resolveFfmpegExportVideoDenoiseFilter,
+  resolveFfmpegExportVideoEqFilter,
   resolveFfmpegExportVideoSharpenFilter,
   resolveFfmpegExportVideoTransformFilters,
   shouldApplyFfmpegExportTrim
@@ -590,6 +592,19 @@ describe('shared ffmpeg export argv', () => {
     expect(resolveFfmpegExportVideoSharpenFilter('strong')).toBe('unsharp=7:7:1.5:7:7:0.0')
   })
 
+  it('resolveFfmpegExportVideoEqFilter/AudioNormalize дают только белый список', () => {
+    expect(resolveFfmpegExportVideoEqFilter('off')).toBeNull()
+    expect(resolveFfmpegExportVideoEqFilter('warm')).toBe('eq=contrast=1.05:saturation=1.10')
+    expect(resolveFfmpegExportVideoEqFilter('cool')).toBe('eq=contrast=1.00:saturation=0.92')
+    expect(resolveFfmpegExportVideoEqFilter('vivid')).toBe('eq=contrast=1.10:saturation=1.20')
+    expect(resolveFfmpegExportVideoEqFilter('flat')).toBe('eq=contrast=0.95:saturation=0.85')
+    expect(resolveFfmpegExportAudioNormalizeFilter('off')).toBeNull()
+    expect(resolveFfmpegExportAudioNormalizeFilter('loudnorm')).toBe(
+      'loudnorm=I=-16:LRA=11:TP=-1.5'
+    )
+    expect(resolveFfmpegExportAudioNormalizeFilter('dynaudnorm')).toBe('dynaudnorm=f=200:g=15')
+  })
+
   it('denoise и sharpen встают между crop и scale, перед fps', () => {
     const argv = buildFfmpegExportArgv({
       inputPath: 'in.mp4',
@@ -605,12 +620,50 @@ describe('shared ffmpeg export argv', () => {
       videoTransform: 'cw90',
       cropPreset: 'center-square',
       videoDenoise: 'medium',
-      videoSharpen: 'light'
+      videoSharpen: 'light',
+      videoEqPreset: 'vivid'
     })
     const vf = argv[argv.indexOf('-vf') + 1] ?? ''
     expect(vf).toBe(
-      'transpose=1,crop=min(iw\\,ih):min(iw\\,ih),hqdn3d=3:3:6:6,unsharp=5:5:0.6:5:5:0.0,scale=-2:720,fps=30'
+      'transpose=1,crop=min(iw\\,ih):min(iw\\,ih),hqdn3d=3:3:6:6,unsharp=5:5:0.6:5:5:0.0,eq=contrast=1.10:saturation=1.20,scale=-2:720,fps=30'
     )
+  })
+
+  it('audioNormalize склеивается с gain в один -filter:a и выключается без аудио', () => {
+    const withNormalize = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      audioGainDb: 3,
+      audioNormalize: 'loudnorm'
+    })
+    expect(withNormalize).toContain('-filter:a')
+    expect(withNormalize[withNormalize.indexOf('-filter:a') + 1]).toBe(
+      'volume=3dB,loudnorm=I=-16:LRA=11:TP=-1.5'
+    )
+
+    const audioOff = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'none',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      audioNormalize: 'dynaudnorm'
+    })
+    expect(audioOff).toContain('-an')
+    expect(audioOff).not.toContain('-filter:a')
   })
 
   it('off-пресеты denoise/sharpen не меняют baseline argv', () => {

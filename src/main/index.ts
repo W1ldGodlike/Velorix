@@ -57,6 +57,7 @@ import {
 } from './ffmpeg-frame-snapshot-service'
 import {
   mergeFfmpegExportSnapshotIntoAppSettings,
+  parseFfmpegExportAudioNormalize,
   parseFfmpegExportContainer,
   parseFfmpegExportCropPreset,
   parseFfmpegExportAudioBitrate,
@@ -70,6 +71,7 @@ import {
   parseFfmpegExportSubtitleMode,
   parseFfmpegExportTrim,
   parseFfmpegExportVideoDenoise,
+  parseFfmpegExportVideoEqPreset,
   parseFfmpegExportVideoSharpen,
   parseFfmpegExportVideoTransform,
   parseFfmpegExportUserPresetSnapshot,
@@ -942,6 +944,32 @@ function persistFfmpegExportVideoSharpen(raw: unknown): AppSettings {
     delete next.ffmpegExportVideoSharpen
   } else {
     next.ffmpegExportVideoSharpen = value
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistFfmpegExportVideoEqPreset(raw: unknown): AppSettings {
+  const value = parseFfmpegExportVideoEqPreset(raw)
+  const next = { ...cachedSettings }
+  if (value === 'off') {
+    delete next.ffmpegExportVideoEqPreset
+  } else {
+    next.ffmpegExportVideoEqPreset = value
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistFfmpegExportAudioNormalize(raw: unknown): AppSettings {
+  const value = parseFfmpegExportAudioNormalize(raw)
+  const next = { ...cachedSettings }
+  if (value === 'off') {
+    delete next.ffmpegExportAudioNormalize
+  } else {
+    next.ffmpegExportAudioNormalize = value
   }
   cachedSettings = next
   saveSettings(settingsPath(), cachedSettings)
@@ -1969,6 +1997,16 @@ app.whenReady().then(() => {
   )
 
   ipcMain.handle(
+    mw.settingsSetFfmpegExportVideoEqPreset,
+    (_, raw: unknown): AppSettings => persistFfmpegExportVideoEqPreset(raw)
+  )
+
+  ipcMain.handle(
+    mw.settingsSetFfmpegExportAudioNormalize,
+    (_, raw: unknown): AppSettings => persistFfmpegExportAudioNormalize(raw)
+  )
+
+  ipcMain.handle(
     mw.settingsSetFfmpegSnapshotFormat,
     (_, raw: unknown): AppSettings => persistFfmpegSnapshotFormat(raw)
   )
@@ -2375,6 +2413,16 @@ app.whenReady().then(() => {
       exportVideoSharpenRaw !== undefined && exportVideoSharpenRaw !== null
         ? parseFfmpegExportVideoSharpen(exportVideoSharpenRaw)
         : parseFfmpegExportVideoSharpen(cachedSettings.ffmpegExportVideoSharpen)
+    const exportVideoEqPresetRaw = (raw as { videoEqPreset?: unknown }).videoEqPreset
+    const exportVideoEqPreset =
+      exportVideoEqPresetRaw !== undefined && exportVideoEqPresetRaw !== null
+        ? parseFfmpegExportVideoEqPreset(exportVideoEqPresetRaw)
+        : parseFfmpegExportVideoEqPreset(cachedSettings.ffmpegExportVideoEqPreset)
+    const exportAudioNormalizeRaw = (raw as { audioNormalize?: unknown }).audioNormalize
+    const exportAudioNormalize =
+      exportAudioNormalizeRaw !== undefined && exportAudioNormalizeRaw !== null
+        ? parseFfmpegExportAudioNormalize(exportAudioNormalizeRaw)
+        : parseFfmpegExportAudioNormalize(cachedSettings.ffmpegExportAudioNormalize)
 
     const paths = resolveAppPaths()
     const ffmpeg = resolveEngineExecutablePath(
@@ -2441,6 +2489,8 @@ app.whenReady().then(() => {
         subtitleMode: exportSubtitleMode,
         videoDenoise: exportVideoDenoise,
         videoSharpen: exportVideoSharpen,
+        videoEqPreset: exportVideoEqPreset,
+        audioNormalize: exportAudioNormalize,
         signal: ac.signal,
         onProgress: pushProgress
       })

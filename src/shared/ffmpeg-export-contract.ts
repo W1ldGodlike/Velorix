@@ -24,7 +24,18 @@ export type FfmpegExportCropPresetId = 'none' | 'center-square' | 'center-16-9' 
 export type FfmpegExportVideoDenoiseId = 'off' | 'light' | 'medium' | 'strong'
 /** §7.2 — пресеты `unsharp` (контурная резкость), от лёгкой к выраженной. */
 export type FfmpegExportVideoSharpenId = 'off' | 'light' | 'medium' | 'strong'
+/**
+ * §7.2 — пресеты `eq=...`: коррекция контраста/насыщенности через белый список,
+ * чтобы UI не отдавал произвольную строку фильтра в spawn.
+ */
+export type FfmpegExportVideoEqPresetId = 'off' | 'warm' | 'cool' | 'vivid' | 'flat'
 export type FfmpegExportAudioModeId = 'aac' | 'none'
+/**
+ * §7.2 — пресеты нормализации громкости. `loudnorm` — однопроходный EBU R128,
+ * `dynaudnorm` — динамическая нормализация. Включаются только в одиночном проходе:
+ * для двухпроходного режима первый проход не имеет аудио (используется только видео).
+ */
+export type FfmpegExportAudioNormalizeId = 'off' | 'loudnorm' | 'dynaudnorm'
 /**
  * §7.2 — режим обработки субтитров на экспорте.
  * `drop` — текущая базовая ветка ffmpeg (без явного `-c:s`, дорожки не маппятся в выход).
@@ -71,6 +82,10 @@ export interface FfmpegExportUserPresetSnapshot {
   videoDenoise?: FfmpegExportVideoDenoiseId
   /** §7.2 — `unsharp` контурная резкость; `off` совпадает с поведением до правки. */
   videoSharpen?: FfmpegExportVideoSharpenId
+  /** §7.2 — `eq=...` цветокор-пресет; `off` совпадает с поведением до правки. */
+  videoEqPreset?: FfmpegExportVideoEqPresetId
+  /** §7.2 — `loudnorm`/`dynaudnorm`; `off` совпадает с поведением до правки. */
+  audioNormalize?: FfmpegExportAudioNormalizeId
 }
 
 /** §7.2 — именованный пользовательский пресет (до нескольких штук в settings). */
@@ -118,6 +133,10 @@ export interface MediaExportRequestPayload {
   videoDenoise?: FfmpegExportVideoDenoiseId | null
   /** §7.2 — `unsharp` контурная резкость; `off` совпадает с текущим поведением. */
   videoSharpen?: FfmpegExportVideoSharpenId | null
+  /** §7.2 — `eq=...` цветокор-пресет; `off` совпадает с текущим поведением. */
+  videoEqPreset?: FfmpegExportVideoEqPresetId | null
+  /** §7.2 — `loudnorm`/`dynaudnorm`; `off` совпадает с текущим поведением. */
+  audioNormalize?: FfmpegExportAudioNormalizeId | null
 }
 
 export type MediaExportStartResult =

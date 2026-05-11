@@ -12,8 +12,26 @@ export const SDK_AUTOMATION_SETTINGS = {
   /** Сколько шагов делает `npm run loop`, если не передан `--max-steps` и нет `MAX_STEPS`. */
   defaultMaxSteps: 5,
 
+  /**
+   * Сколько итераций держать в одном `Agent.create(...)`.
+   *
+   * Длинный один Agent удобен как чат `+`, но conversation/cache context быстро раздувается:
+   * на 200/300 шагах это превращается в миллионы cache-read tokens на каждый следующий run.
+   * Поэтому long loop режется на короткие SDK-сессии, сохраняя общий MAX_STEPS.
+   */
+  defaultSessionMaxSteps: 1,
+
   /** Печатать stream assistant/thinking по умолчанию; обычно выключено, чтобы лог был компактнее. */
   defaultVerbose: false,
+
+  /** Максимум символов stream-лога при VERBOSE=1; дальше вывод режется до конца run. */
+  defaultVerboseMaxChars: 8000,
+
+  /** На длинных циклах verbose раздувает terminal logs; выше лимита он выключается без явного override. */
+  verboseLongLoopMaxSteps: 20,
+
+  /** На длинных циклах предупреждаем о дорогом cache-read, если сессия держит слишком много шагов. */
+  sessionStepsLongLoopWarnAt: 4,
 
   /** Пауза между успешными итерациями цикла, мс. */
   defaultStepDelayMs: 400,

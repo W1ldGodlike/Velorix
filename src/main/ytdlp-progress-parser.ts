@@ -150,17 +150,27 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
   }
 
   /** Повторы внутри yt-dlp после сетевых/HTTP ошибок: полезно видеть счётчик без чтения raw-лога. */
-  const retryingMatch = t.match(/\bRetrying(?:\s+fragment\s+(\d+))?\s*\((\d+)\s*\/\s*(\d+)\)/i)
+  const retryingMatch = t.match(
+    /\bRetrying(?:\s+fragment\s+(\d+))?\s*\((?:(\d+)\s*\/\s*(\d+)|attempt\s+(\d+)\s+of\s+(\d+))\)/i
+  )
   if (retryingMatch) {
     const frag = retryingMatch[1]
-    const a = retryingMatch[2]
-    const b = retryingMatch[3]
+    const a = retryingMatch[2] ?? retryingMatch[4]
+    const b = retryingMatch[3] ?? retryingMatch[5]
     if (a !== undefined && b !== undefined) {
       return {
         percent: null,
         speed: frag !== undefined ? `повтор фрагмента ${frag} · ${a}/${b}` : `повтор ${a}/${b}`,
         eta: null
       }
+    }
+  }
+
+  const retryingInMatch = t.match(/\bRetrying\s+in\s+([\d.]+)\s+seconds/i)
+  if (retryingInMatch) {
+    const sec = retryingInMatch[1]
+    if (sec !== undefined) {
+      return { percent: null, speed: `повтор через ${sec} с`, eta: null }
     }
   }
 
@@ -538,14 +548,19 @@ const YTDLP_QUEUE_RETRY_SKIP_MARKERS = [
   'members only',
   'video unavailable',
   'this video is not available',
+  'this video may be inappropriate',
   'video has been removed',
   'is no longer available',
   'http error 403',
   'http error 404',
   'sign in to confirm your age',
+  "sign in to confirm you're not a bot",
+  'sign in to confirm you are not a bot',
   'login required',
+  'requires login',
   'blocked it on copyright',
   'not available in your country',
+  'not available from your location',
   'geo restricted',
   'geo-blocked',
   'drm protected',
@@ -720,6 +735,21 @@ export function extractYtdlpOutputPath(line: string): string | null {
   if (moving) {
     const cap = moving[1]
     return cap !== undefined ? unquoteYtdlpPath(cap) : null
+  }
+  const fixup = t.match(
+    /^\[(?:FixupM3u8|FixupM4a|FixupStretched|FixupTimestamp|FixupDuration|FFmpegFixupM3u8)]\s+.+?(?:in|of)\s+(.+)$/i
+  )
+  if (fixup) {
+    const cap = fixup[1]
+    if (cap === undefined) {
+      return null
+    }
+    const quotedTail = cap.match(/"([^"]+)"\s*$/)
+    if (quotedTail?.[1]) {
+      return quotedTail[1]
+    }
+    const pathTail = cap.match(/\b(?:in|of)\s+((?:[A-Za-z]:)?[/\\].+|\.\.?[/\\].+)$/i)
+    return pathTail?.[1] ?? unquoteYtdlpPath(cap)
   }
   /** Постобработка: превью и субтитры пишутся отдельными строками §6.4. */
   const thumb = t.match(/^\[download]\s+Writing thumbnail to:\s+(.+)$/i)

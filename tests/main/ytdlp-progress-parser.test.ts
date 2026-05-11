@@ -167,6 +167,20 @@ describe('parseYtdlpDownloadProgressLine', () => {
       speed: 'повтор фрагмента 7 · 3/10',
       eta: null
     })
+    expect(
+      parseYtdlpDownloadProgressLine('[download] Got error: timeout. Retrying (attempt 4 of 10)...')
+    ).toEqual({
+      percent: null,
+      speed: 'повтор 4/10',
+      eta: null
+    })
+    expect(
+      parseYtdlpDownloadProgressLine('[download] Retrying in 5.00 seconds...')
+    ).toEqual({
+      percent: null,
+      speed: 'повтор через 5.00 с',
+      eta: null
+    })
   })
 })
 
@@ -484,6 +498,15 @@ describe('classifyYtdlpQueueFailureKind', () => {
     expect(classifyYtdlpQueueFailureKind('Not available in your country', null)).toBe(
       'likely_source_block'
     )
+    expect(classifyYtdlpQueueFailureKind('Not available from your location', null)).toBe(
+      'likely_source_block'
+    )
+    expect(classifyYtdlpQueueFailureKind("Sign in to confirm you're not a bot", null)).toBe(
+      'likely_source_block'
+    )
+    expect(classifyYtdlpQueueFailureKind('This video may be inappropriate for some users', null)).toBe(
+      'likely_source_block'
+    )
     expect(classifyYtdlpQueueFailureKind('DRM protected video', null)).toBe('likely_source_block')
     expect(classifyYtdlpQueueFailureKind('No video formats found', null)).toBe(
       'likely_source_block'
@@ -606,6 +629,15 @@ describe('extractYtdlpOutputPath', () => {
     expect(
       extractYtdlpOutputPath('[FFmpegVideoRemuxer] Remux format -> Destination: /tmp/ascii.mkv')
     ).toBe('/tmp/ascii.mkv')
+  })
+
+  it('извлекает путь из fixup-постпроцессоров yt-dlp', () => {
+    expect(
+      extractYtdlpOutputPath('[FixupM3u8] Fixing MPEG-TS in MP4 container of "C:\\out\\hls.mp4"')
+    ).toBe('C:\\out\\hls.mp4')
+    expect(
+      extractYtdlpOutputPath('[FixupTimestamp] Fixing frame timestamp in /tmp/final.mkv')
+    ).toBe('/tmp/final.mkv')
   })
 
   it('извлекает путь из SubtitlesConvertor (стрелка или into)', () => {

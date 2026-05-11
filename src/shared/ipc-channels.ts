@@ -24,6 +24,8 @@ export const mainWindowIpc = {
   settingsSetFfmpegExportSubtitleMode: 'fluxalloy:settings-set-ffmpeg-export-subtitle-mode',
   settingsSetFfmpegExportVideoDenoise: 'fluxalloy:settings-set-ffmpeg-export-video-denoise',
   settingsSetFfmpegExportVideoSharpen: 'fluxalloy:settings-set-ffmpeg-export-video-sharpen',
+  settingsSetFfmpegExportVideoEqPreset: 'fluxalloy:settings-set-ffmpeg-export-video-eq-preset',
+  settingsSetFfmpegExportAudioNormalize: 'fluxalloy:settings-set-ffmpeg-export-audio-normalize',
   settingsSetFfmpegExportUserPresets: 'fluxalloy:settings-set-ffmpeg-export-user-presets',
   settingsApplyFfmpegExportSnapshot: 'fluxalloy:settings-apply-ffmpeg-export-snapshot',
   settingsSetFfmpegSnapshotFormat: 'fluxalloy:settings-set-ffmpeg-snapshot-format',

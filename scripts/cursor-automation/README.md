@@ -22,6 +22,7 @@ npm run once
 # Цикл из нескольких «продолжай работу по чеклисту»
 npm run loop
 npm run loop -- --max-steps 8 --verbose
+npm run loop -- --max-steps 200 --session-steps 1
 ```
 
 Из корня репозитория можно использовать алиасы:
@@ -29,7 +30,9 @@ npm run loop -- --max-steps 8 --verbose
 ```bash
 npm run agent:once
 npm run agent:loop
+npm run agent:loop:cheap
 npm run agent:loop -- --max-steps 8 --verbose
+npm run agent:loop -- --max-steps 200 --session-steps 1
 ```
 
 Основные дефолты и комментарии к каждой настройке лежат в **`src/sdk-settings.ts`**.
@@ -39,7 +42,7 @@ npm run agent:loop -- --max-steps 8 --verbose
 CURSOR_API_KEY=crsr_...
 ```
 
-Промпты по умолчанию: каталог **`prompts/`** (`initial.txt`, `continue.txt`). Общие правила поведения — **`prompts/agent-contract.txt`**; именно туда добавляйте нюансы, которые агент должен соблюдать всегда. `continue.txt` намеренно похож на команду `+` в живом чате: агент использует уже накопленный контекст текущего `Agent` и читает чеклист/журнал только точечно, когда нужно выбрать следующий блок или записать новый `J-NNN`. Свой текст — через `PROMPTS_DIR` или правка файлов.
+Промпты по умолчанию: каталог **`prompts/`** (`initial.txt`, `continue.txt`). Общие правила поведения — **`prompts/agent-contract.txt`**; именно туда добавляйте нюансы, которые агент должен соблюдать всегда. `continue.txt` намеренно похож на команду `+` в живом чате: агент читает чеклист/журнал только точечно, когда нужно выбрать следующий блок или записать новый `J-NNN`. Для длинных запусков runner сам пересоздаёт `Agent` короткими сессиями и даёт компактный handoff, чтобы не тащить огромный accumulated conversation/cache context. Свой текст — через `PROMPTS_DIR` или правка файлов.
 
 ## Журнал и нумерация
 
@@ -54,18 +57,22 @@ CURSOR_API_KEY=crsr_...
 ## Число продолжений
 
 По умолчанию цикл делает **5 итераций**: первый промпт из `initial.txt`, затем до 4 продолжений из `continue.txt`.
+При этом long-loop режется на короткие SDK-сессии: по умолчанию **1 итерация на один `Agent.create(...)`**, затем `dispose` и новая сессия с компактным handoff. Это нужно, чтобы `MAX_STEPS=200/300` не превращал каждый следующий run в многомиллионный `Cache Read`.
 
 Способы задать число:
 
 ```powershell
 # Разово из корня репозитория:
+npm run agent:loop:cheap
 npm run agent:loop -- --max-steps 8
+npm run agent:loop -- --max-steps 300 --session-steps 1
 
 # Разово из scripts/cursor-automation:
 npm run loop -- --max-steps 8
 
 # Постоянно в scripts/cursor-automation\.env:
 MAX_STEPS=8
+SDK_SESSION_STEPS=1
 ```
 
 ## Стоп без убийства процесса
@@ -91,8 +98,11 @@ MAX_STEPS=8
 
 - `CURSOR_API_KEY` — обязательный секрет; хранить только в `.env` или переменной терминала.
 - `MAX_STEPS` — число итераций, если не задан `--max-steps`.
+- `SDK_SESSION_STEPS` — сколько итераций держать в одном `Agent.create(...)`; по умолчанию `1`, для минимального cache-read держите `1`, для более «памятного» агента можно временно поднять до `2–3`.
 - `CURSOR_MODEL` — модель SDK; по умолчанию `default`, `auto` здесь не используем.
-- `VERBOSE` — печать assistant/thinking из стрима: `1`, `true`, `yes`, `on`.
+- `VERBOSE` — печать assistant/thinking из стрима: `1`, `true`, `yes`, `on`; на long-loop больше 20 шагов runner сам выключит verbose, чтобы не раздувать terminal logs.
+- `SDK_ALLOW_VERBOSE_LONG_LOOP` — `1` разрешает verbose на long-loop, если он действительно нужен для диагностики.
+- `VERBOSE_MAX_CHARS` — лимит stream-лога при `VERBOSE=1`; по умолчанию `8000`.
 - `PROMPTS_DIR` — альтернативный каталог с `initial.txt` / `continue.txt`.
 - `STEP_DELAY_MS` — пауза между итерациями.
 - `LOOP_STEP_RETRY_MAX` — повторы при retryable SDK/transport-сбое на цепочке `send` → опционально `stream` → `wait`.
@@ -111,3 +121,7 @@ MAX_STEPS=8
 - `64` — ошибка CLI-аргументов  
 
 Ограничения: нужен действующий SDK/локальный рантайм Cursor, сеть для API; стоимость и квоты — по вашему плану Cursor.
+
+## Экономные проверки
+
+Для SDK-итераций используйте корневой `npm run check:quiet`: он запускает тот же набор проверок, что и `npm run check`, но на успехе печатает только короткие summary-строки. Полный stdout/stderr показывается только при падении конкретного шага. Это снижает token/cache cost, потому что длинный successful test output не попадает в контекст агента.
