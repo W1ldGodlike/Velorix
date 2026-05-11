@@ -374,6 +374,36 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· --print tbr',
     summary: 'Сводный битрейт выбранного формата (kbps) без скачивания (--skip-download --print tbr); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print tbr '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print abr',
+    summary: 'Аудио-битрейт выбранного формата (kbps) без скачивания (--skip-download --print abr); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print abr '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print vbr',
+    summary: 'Видео-битрейт выбранного формата (kbps) без скачивания (--skip-download --print vbr); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print vbr '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print asr',
+    summary: 'Частота дискретизации аудио (Hz) без скачивания (--skip-download --print asr); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print asr '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --write-thumbnail',
+    summary: 'Только миниатюра без видео (--write-thumbnail --skip-download); файл .jpg/.webp рядом; допишите URL.',
+    fullLine: 'yt-dlp --write-thumbnail --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --write-auto-sub',
+    summary: 'Только авто-субтитры без видео (--write-auto-sub --skip-download); поможет проверить транскрипт; допишите URL.',
+    fullLine: 'yt-dlp --write-auto-sub --skip-download '
   }
 ]
 
@@ -582,6 +612,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· s:0 disposition',
     summary: 'Поток s:0: disposition (default/forced/hearing_impaired и т.д.); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=disposition -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 time_base',
+    summary: 'Поток v:0: time_base + start_pts (точка отсчёта таймстемпов); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=time_base,start_pts -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:0 time_base',
+    summary: 'Поток a:0: time_base + start_pts (точка отсчёта аудио); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=time_base,start_pts -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 max_br',
+    summary: 'Поток v:0: bit_rate + max_bit_rate (средний vs пиковый битрейт, VBR-диагностика); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=bit_rate,max_bit_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffmpeg',

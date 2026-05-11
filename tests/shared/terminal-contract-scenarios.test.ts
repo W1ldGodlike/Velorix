@@ -82,6 +82,11 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --skip-download --print width ')
     expect(lines).toContain('yt-dlp --skip-download --print height ')
     expect(lines).toContain('yt-dlp --skip-download --print tbr ')
+    expect(lines).toContain('yt-dlp --skip-download --print abr ')
+    expect(lines).toContain('yt-dlp --skip-download --print vbr ')
+    expect(lines).toContain('yt-dlp --skip-download --print asr ')
+    expect(lines).toContain('yt-dlp --write-thumbnail --skip-download ')
+    expect(lines).toContain('yt-dlp --write-auto-sub --skip-download ')
   })
 
   it('preview: есть JSON-сводка и show_error для текущего превью', () => {
@@ -145,6 +150,21 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines.some((l) => l.includes('format_tags=creation_time'))).toBe(true)
     expect(
       lines.some((l) => l.includes('select_streams s:0') && l.includes('stream=disposition'))
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) => l.includes('select_streams v:0') && l.includes('stream=time_base,start_pts')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) => l.includes('select_streams a:0') && l.includes('stream=time_base,start_pts')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) => l.includes('select_streams v:0') && l.includes('stream=bit_rate,max_bit_rate')
+      )
     ).toBe(true)
   })
 })
