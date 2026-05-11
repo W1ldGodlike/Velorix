@@ -174,6 +174,25 @@ describe('ffprobe-service buildTrackRows', () => {
     expect(row?.detail).toContain('full range')
   })
 
+  it('video detail: SDR wide — primaries/space не bt709 → компактная склейка', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 1920,
+          height: 1080,
+          color_transfer: 'bt709',
+          color_primaries: 'bt2020',
+          color_space: 'bt2020nc'
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toContain('bt2020·bt2020nc')
+  })
+
   it('encoder в detail обрезается при длинной строке', () => {
     const long = `${'A'.repeat(70)}tail`
     const [row] = buildTrackRows(

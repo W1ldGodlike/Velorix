@@ -14,7 +14,8 @@ import { formatFfprobeStreamDurationDetail } from '../shared/ffprobe-stream-dura
 import { formatFfprobeStreamStartTime } from '../shared/ffprobe-stream-start-time'
 import {
   formatFfprobeVideoFullRangeBrief,
-  formatFfprobeVideoHdrColorBrief
+  formatFfprobeVideoHdrColorBrief,
+  formatFfprobeVideoSdGamutBrief
 } from '../shared/ffprobe-video-color-brief'
 import type {
   MediaProbeResult,
@@ -274,6 +275,10 @@ function buildTrackDetail(
     const fullRangeBrief = formatFfprobeVideoFullRangeBrief(stream)
     if (fullRangeBrief) {
       parts.push(fullRangeBrief)
+    }
+    const sdGamutBrief = formatFfprobeVideoSdGamutBrief(stream)
+    if (sdGamutBrief) {
+      parts.push(sdGamutBrief)
     }
     const pixFmt = ffprobeScalarDisplay(typeof stream.pix_fmt === 'string' ? stream.pix_fmt : undefined)
     if (pixFmt !== null) {

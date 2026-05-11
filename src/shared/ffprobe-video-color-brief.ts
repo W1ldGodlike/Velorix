@@ -53,3 +53,31 @@ export function formatFfprobeVideoFullRangeBrief(stream: {
   }
   return null
 }
+
+/**
+ * Не-HDR: компактно подсветить нестандартные `color_primaries` / `color_space` (всё кроме типичного bt709).
+ * Полные значения остаются в колонках таблицы; здесь — короткая склейка для «Сведения».
+ */
+export function formatFfprobeVideoSdGamutBrief(stream: {
+  color_transfer?: string
+  color_trc?: string
+  color_primaries?: string
+  color_space?: string
+}): string | null {
+  if (formatFfprobeVideoHdrColorBrief(stream) !== null) {
+    return null
+  }
+  const prim = ffprobeColorTokenNorm(stream.color_primaries)
+  const space = ffprobeColorTokenNorm(stream.color_space)
+  const parts: string[] = []
+  if (prim && prim !== 'bt709') {
+    parts.push(prim)
+  }
+  if (space && space !== 'bt709' && space !== prim) {
+    parts.push(space)
+  }
+  if (parts.length === 0) {
+    return null
+  }
+  return parts.join('·')
+}
