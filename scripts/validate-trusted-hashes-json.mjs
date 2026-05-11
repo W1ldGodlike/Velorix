@@ -5,6 +5,7 @@
  * известные legacy-поля и `schema`, предупреждения по неизвестным ключам.
  *
  * `FLUXALLOY_TRUSTED_HASHES_STRICT_UNKNOWN=1` — неизвестные ключи в корне или в windows-x64 → exit 1.
+ * `FLUXALLOY_TRUSTED_HASHES_REQUIRE_SHA256_HEX=1` — непустые значения в windows-x64 и в YtDlpSha256/FfmpegSha256 должны быть 64-символьным hex.
  */
 import { readFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
@@ -37,11 +38,21 @@ function strictUnknown() {
   return v === '1' || (typeof v === 'string' && v.trim().toLowerCase() === 'true')
 }
 
+function requireSha256Hex() {
+  const v = process.env['FLUXALLOY_TRUSTED_HASHES_REQUIRE_SHA256_HEX']
+  return v === '1' || (typeof v === 'string' && v.trim().toLowerCase() === 'true')
+}
+
+function isSha256Hex(s) {
+  return /^[a-fA-F0-9]{64}$/.test(String(s).trim())
+}
+
 function printHelp() {
   console.log(`validate-trusted-hashes-json — структурная проверка Data/trusted_hashes.json
 
 Переменные:
-  FLUXALLOY_TRUSTED_HASHES_STRICT_UNKNOWN=1   ошибка при неизвестных ключах (по умолчанию — только предупреждение в stderr)
+  FLUXALLOY_TRUSTED_HASHES_STRICT_UNKNOWN=1       ошибка при неизвестных ключах (по умолчанию — только предупреждение в stderr)
+  FLUXALLOY_TRUSTED_HASHES_REQUIRE_SHA256_HEX=1  непустые хеши — ровно 64 hex (windows-x64 + YtDlpSha256/FfmpegSha256)
 
 Флаги: --help`)
 }
@@ -94,6 +105,22 @@ async function main() {
     }
   }
 
+  for (const k of ['YtDlpSha256', 'FfmpegSha256']) {
+    const v = data[k]
+    if (
+      requireSha256Hex() &&
+      typeof v === 'string' &&
+      v.trim() !== '' &&
+      !isSha256Hex(v)
+    ) {
+      console.error(
+        `[trusted-hashes] поле ${k}: непустое значение должно быть 64-символьным hex SHA256`
+      )
+      process.exitCode = 1
+      return
+    }
+  }
+
   let unknownCount = 0
   for (const k of Object.keys(data)) {
     if (!KNOWN_ROOT.has(k)) {
@@ -128,6 +155,13 @@ async function main() {
         } else {
           console.warn(msg)
         }
+      }
+      if (requireSha256Hex() && v.trim() !== '' && !isSha256Hex(v)) {
+        console.error(
+          `[trusted-hashes] windows-x64["${k}"]: непустое значение должно быть 64-символьным hex SHA256`
+        )
+        process.exitCode = 1
+        return
       }
     }
   }

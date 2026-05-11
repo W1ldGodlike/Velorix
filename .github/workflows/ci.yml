@@ -16,6 +16,9 @@ jobs:
   check:
     runs-on: windows-latest
     timeout-minutes: 35
+    env:
+      FLUXALLOY_TRUSTED_HASHES_STRICT_UNKNOWN: '1'
+      FLUXALLOY_TRUSTED_HASHES_REQUIRE_SHA256_HEX: '1'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
