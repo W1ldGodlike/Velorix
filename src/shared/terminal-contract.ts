@@ -1034,6 +1034,78 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· throttled-rate -F',
     summary: 'Лимит скорости после детекта throttling (--throttled-rate 100K -F); допишите URL.',
     fullLine: 'yt-dlp --throttled-rate 100K -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· embed-subs',
+    summary: 'Вшить субтитры в контейнер после скачивания (--embed-subs; обычно вместе с --write-subs); допишите URL и -f.',
+    fullLine: 'yt-dlp --embed-subs '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· convert-subs srt',
+    summary: 'Конвертировать субтитры в SRT постпроцессором (--convert-subs srt); допишите URL.',
+    fullLine: 'yt-dlp --convert-subs srt '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -o title.ext',
+    summary: 'Шаблон имени без пробелов (-o %(title)s.%(ext)s); допишите URL (при необходимости смените шаблон вручную).',
+    fullLine: 'yt-dlp -o %(title)s.%(ext)s '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· split-chapters',
+    summary: 'Разрезать выход по главам (--split-chapters; нужен ffmpeg); допишите URL.',
+    fullLine: 'yt-dlp --split-chapters '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· remove-chapters sponsor',
+    summary: 'Вырезать главы категории sponsor из финального файла (--remove-chapters sponsor); допишите URL.',
+    fullLine: 'yt-dlp --remove-chapters sponsor '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· write-playlist-meta',
+    summary: 'Сохранить метаданные плейлиста рядом с файлами (--write-playlist-metafiles); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --write-playlist-metafiles '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· force-overwrites',
+    summary: 'Перезаписывать существующие файлы без вопросов (--force-overwrites); допишите URL.',
+    fullLine: 'yt-dlp --force-overwrites '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-continue',
+    summary: 'Не продолжать частичные загрузки с .part (--no-continue; начать заново); допишите URL.',
+    fullLine: 'yt-dlp --no-continue '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· recode mp4',
+    summary: 'Перекодировать итог в MP4 постпроцессором (--recode-video mp4); допишите URL и формат источника.',
+    fullLine: 'yt-dlp --recode-video mp4 '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· download-section clip',
+    summary: 'Скачать только фрагмент времени (--download-sections *0:00-2:00; правый конец правьте вручную); допишите URL.',
+    fullLine: 'yt-dlp --download-sections *0:00-2:00 '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· break-match-filters',
+    summary: 'Прервать весь прогон при первом несовпадении --match-filter (--break-match-filters); допишите URL и фильтр.',
+    fullLine: 'yt-dlp --break-match-filters '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-post-overwrites',
+    summary: 'Не перезаписывать уже смерженные постпроцессингом файлы (--no-post-overwrites); допишите URL.',
+    fullLine: 'yt-dlp --no-post-overwrites '
   }
 ]
 

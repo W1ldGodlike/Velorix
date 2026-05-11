@@ -395,6 +395,18 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --playlist-random -J ')
     expect(lines).toContain('yt-dlp --user-agent curl/8.5.0 -F ')
     expect(lines).toContain('yt-dlp --throttled-rate 100K -F ')
+    expect(lines).toContain('yt-dlp --embed-subs ')
+    expect(lines).toContain('yt-dlp --convert-subs srt ')
+    expect(lines).toContain('yt-dlp -o %(title)s.%(ext)s ')
+    expect(lines).toContain('yt-dlp --split-chapters ')
+    expect(lines).toContain('yt-dlp --remove-chapters sponsor ')
+    expect(lines).toContain('yt-dlp --write-playlist-metafiles ')
+    expect(lines).toContain('yt-dlp --force-overwrites ')
+    expect(lines).toContain('yt-dlp --no-continue ')
+    expect(lines).toContain('yt-dlp --recode-video mp4 ')
+    expect(lines).toContain('yt-dlp --download-sections *0:00-2:00 ')
+    expect(lines).toContain('yt-dlp --break-match-filters ')
+    expect(lines).toContain('yt-dlp --no-post-overwrites ')
   })
 
   it('preview: pretty/flat/packets/frames + loudnorm summary', () => {
