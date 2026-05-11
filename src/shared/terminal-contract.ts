@@ -50,6 +50,12 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· --simulate',
     summary: 'Сухой прогон без файлов (--simulate); допишите URL (проверка доступности и форматов).',
     fullLine: 'yt-dlp --simulate '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --list-subs',
+    summary: 'Список субтитров на странице без скачивания (--list-subs); допишите URL.',
+    fullLine: 'yt-dlp --list-subs '
   }
 ]
 
@@ -78,6 +84,12 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· v:0 compact',
     summary: 'Поток v:0: width/height/r_frame_rate/pix_fmt (default=nw=1); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=width,height,r_frame_rate,pix_fmt -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:0 compact',
+    summary: 'Поток a:0: codec_name/sample_rate/channels (default=nw=1); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=codec_name,sample_rate,channels -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffmpeg',
