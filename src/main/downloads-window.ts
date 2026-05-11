@@ -1001,6 +1001,68 @@ function buildDownloadsHtml(
     .opts-preview-label { display: block; margin: 0.5rem 0 0.25rem; font-size: 0.68rem; color: var(--muted); font-weight: 700; }
     .expert-panel, .hints-panel { margin: 0.55rem 0; padding: 0; border: none; background: transparent; }
     .expert-panel summary, .hints-panel summary { cursor: pointer; font-weight: 700; font-size: 0.72rem; color: var(--muted); user-select: none; margin-bottom: 0.45rem; }
+    .hints-search {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.35rem;
+      margin: 0.5rem 0 0.6rem;
+    }
+    .hints-search input[type=text] {
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid var(--border-2);
+      background: var(--surface-2);
+      color: var(--text);
+      padding: 0.36rem 0.55rem;
+      font-size: 0.72rem;
+      font-family: ui-monospace, Consolas, Menlo, monospace;
+    }
+    .hint-list {
+      margin: 0.45rem 0 0;
+      padding: 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--bg) 72%, var(--surface));
+      max-height: 220px;
+      overflow: auto;
+    }
+    .hint-cat {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      padding: 0.4rem 0.55rem;
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: color-mix(in srgb, var(--surface) 86%, transparent);
+      border-bottom: 1px solid var(--border);
+    }
+    .hint-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.18rem;
+      padding: 0.42rem 0.55rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .hint-item:last-child { border-bottom: none; }
+    button.hint-token {
+      all: unset;
+      cursor: pointer;
+      color: var(--text);
+      font-family: ui-monospace, Consolas, Menlo, monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+    button.hint-token:hover { color: var(--blue); text-decoration: underline; }
+    button.hint-token:focus-visible {
+      outline: 2px solid var(--fa-focus-ring);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+    .hint-desc { color: var(--dim); font-size: 0.66rem; line-height: 1.35; }
     textarea#extraArgsInput {
       width: 100%; min-height: 52px; margin-bottom: 0.4rem; padding: 0.45rem 0.5rem; border-radius: 6px;
       border: 1px solid var(--border-2); background: var(--bg); color: var(--text);
@@ -1411,6 +1473,11 @@ ${emitDownloadsTopbarClusterHtml(18)}
                   <option value="">Выберите флаг — он добавится в «Доп. аргументы»…</option>
                 </select>
                 <p class="opts-hint" id="hintSummary"></p>
+                <div class="hints-search">
+                  <label class="opts-preview-label" for="hintFilter">Поиск по токенам</label>
+                  <input type="text" id="hintFilter" spellcheck="false" autocomplete="off" placeholder="Например: --cookies или --sub" aria-describedby="dlRailExpertSectionHint" />
+                </div>
+                <div class="hint-list" id="hintList" role="list" aria-label="Полный справочник флагов"></div>
               </details>
             </div>
           </details>
@@ -1462,6 +1529,8 @@ ${emitDownloadsTopbarClusterHtml(18)}
       var extraArgsWarn = document.getElementById('extraArgsWarn');
       var hintInsert = document.getElementById('hintInsert');
       var hintSummary = document.getElementById('hintSummary');
+      var hintFilter = document.getElementById('hintFilter');
+      var hintList = document.getElementById('hintList');
       var historyBody = document.getElementById('historyBody');
       var refreshHistoryBtn = document.getElementById('refreshHistoryBtn');
       var clearHistoryBtn = document.getElementById('clearHistoryBtn');
@@ -1809,6 +1878,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
       function fillHintSelect(hints) {
         if (!hintInsert) return;
         var list = Array.isArray(hints) ? hints : [];
+        lastCommandHints = list;
         hintInsert.replaceChildren();
         var ph = document.createElement('option');
         ph.value = '';
@@ -1830,6 +1900,79 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
           o.textContent = h.token;
           o.title = typeof h.summary === 'string' ? h.summary : '';
           if (og) og.appendChild(o);
+        });
+        renderHintList();
+      }
+
+      var lastCommandHints = [];
+      function renderHintList() {
+        if (!hintList) return;
+        var raw = Array.isArray(lastCommandHints) ? lastCommandHints : [];
+        var q = hintFilter && typeof hintFilter.value === 'string' ? hintFilter.value.trim().toLowerCase() : '';
+        hintList.replaceChildren();
+        if (raw.length === 0) {
+          var empty = document.createElement('div');
+          empty.className = 'hint-item';
+          empty.style.opacity = '0.7';
+          empty.textContent = 'Справочник недоступен.';
+          hintList.appendChild(empty);
+          return;
+        }
+        var byCat = new Map();
+        raw.forEach(function (h) {
+          if (!h || typeof h.token !== 'string') return;
+          var token = h.token;
+          var summary = typeof h.summary === 'string' ? h.summary : '';
+          if (q) {
+            var hay = (token + ' ' + summary).toLowerCase();
+            if (hay.indexOf(q) === -1) return;
+          }
+          var cat = typeof h.category === 'string' && h.category.length ? h.category : 'Прочее';
+          if (!byCat.has(cat)) byCat.set(cat, []);
+          byCat.get(cat).push({ token: token, summary: summary });
+        });
+        if (byCat.size === 0) {
+          var none = document.createElement('div');
+          none.className = 'hint-item';
+          none.style.opacity = '0.7';
+          none.textContent = 'Нет совпадений.';
+          hintList.appendChild(none);
+          return;
+        }
+        Array.from(byCat.keys()).sort(function (a, b) { return a.localeCompare(b); }).forEach(function (cat) {
+          var head = document.createElement('div');
+          head.className = 'hint-cat';
+          head.textContent = cat;
+          hintList.appendChild(head);
+          byCat.get(cat).forEach(function (row) {
+            var item = document.createElement('div');
+            item.className = 'hint-item';
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'hint-token';
+            btn.textContent = row.token;
+            btn.title = row.summary || row.token;
+            btn.addEventListener('click', function () {
+              if (!extraArgsInput) return;
+              var cur = extraArgsInput.value.trim();
+              extraArgsInput.value = cur ? cur + ' ' + row.token : row.token;
+              schedulePreviewRefresh();
+            });
+            item.appendChild(btn);
+            if (row.summary) {
+              var desc = document.createElement('div');
+              desc.className = 'hint-desc';
+              desc.textContent = row.summary.length > 420 ? row.summary.slice(0, 418) + '…' : row.summary;
+              item.appendChild(desc);
+            }
+            hintList.appendChild(item);
+          });
+        });
+      }
+
+      if (hintFilter) {
+        hintFilter.addEventListener('input', function () {
+          renderHintList();
         });
       }
 
