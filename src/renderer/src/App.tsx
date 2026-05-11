@@ -54,6 +54,7 @@ import type { FfmpegSnapshotFormatId } from '../../shared/ffmpeg-snapshot-contra
 import type { RestoredSourceInfo } from '../../shared/preview-dialog-contract'
 import type { MediaProbeSuccess } from '../../shared/ffprobe-contract'
 import type {
+  YtdlpCommandHintEntry,
   YtdlpCookiesBrowserId,
   YtdlpDownloadOptionsPatch,
   YtdlpDownloadOptionsPayload,
@@ -523,6 +524,7 @@ function App(): JSX.Element {
   const [downloadsStatusFilter, setDownloadsStatusFilter] = useState<DownloadsStatusFilter>('all')
   const [downloadsOptions, setDownloadsOptions] = useState<YtdlpDownloadOptionsPayload | null>(null)
   const [downloadsOptionsBusy, setDownloadsOptionsBusy] = useState(false)
+  const [downloadsExpertHintPickerSeq, setDownloadsExpertHintPickerSeq] = useState(0)
   const [downloadsHistory, setDownloadsHistory] = useState<YtdlpDownloadHistoryEntry[]>([])
   const [downloadsHistoryBusy, setDownloadsHistoryBusy] = useState(false)
   const [downloadsLogLines, setDownloadsLogLines] = useState<DownloadsLogLineView[]>([])
@@ -533,8 +535,9 @@ function App(): JSX.Element {
   } | null>(null)
   const [downloadsEmbeddedHistoryOpen, setDownloadsEmbeddedHistoryOpen] = useState(true)
   const [downloadsEmbeddedLogOpen, setDownloadsEmbeddedLogOpen] = useState(true)
-  const [downloadsRailPanels, setDownloadsRailPanels] =
-    useState<DownloadsRailPanelsState>(DOWNLOADS_RAIL_PANEL_DEFAULTS)
+  const [downloadsRailPanels, setDownloadsRailPanels] = useState<DownloadsRailPanelsState>(
+    DOWNLOADS_RAIL_PANEL_DEFAULTS
+  )
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
   const [topbarEngineVersionsLine, setTopbarEngineVersionsLine] = useState('')
   const [exportBusy, setExportBusy] = useState(false)
@@ -616,6 +619,18 @@ function App(): JSX.Element {
     },
     [refreshDownloadsOptions]
   )
+
+  const ytdlpCommandHintsByCategory = useMemo(() => {
+    const hints = downloadsOptions?.commandHints
+    if (!hints?.length) return [] as Array<[string, YtdlpCommandHintEntry[]]>
+    const m = new Map<string, YtdlpCommandHintEntry[]>()
+    for (const h of hints) {
+      const list = m.get(h.category) ?? []
+      list.push(h)
+      m.set(h.category, list)
+    }
+    return [...m.entries()].sort(([a], [b]) => a.localeCompare(b, 'ru'))
+  }, [downloadsOptions?.commandHints])
 
   const refreshDownloadsHistory = useCallback(async (): Promise<void> => {
     setDownloadsHistoryBusy(true)
@@ -1633,7 +1648,7 @@ function App(): JSX.Element {
             }}
           >
             Редактор
-        </button>
+          </button>
           <button
             type="button"
             className={`app-workspace-tab${workspaceTab === 'downloads' ? ' app-workspace-tab-active' : ''}`}
@@ -1647,7 +1662,7 @@ function App(): JSX.Element {
               <IconDownload title="" size={16} />
             </span>
             Загрузки
-        </button>
+          </button>
         </nav>
         <div className="app-topbar-trailing">
           {topbarEngineVersionsLine.length > 0 ? (
@@ -1666,7 +1681,7 @@ function App(): JSX.Element {
             >
               <IconFolderOpen />
               <span className="app-visually-hidden">Открыть</span>
-        </button>
+            </button>
             <button
               type="button"
               className="app-icon-btn"
@@ -1940,14 +1955,14 @@ function App(): JSX.Element {
                 </div>
               </>
             ) : (
-          <div className="app-preview-placeholder">
+              <div className="app-preview-placeholder">
                 Нет источника — перетащите видеофайл сюда или «Открыть…» в меню «Файл» / кнопка
                 сверху.
                 <p className="app-preview-hint">
                   Локальный файл стримится через защищённую схему fluxmedia — только после выбора
                   или DnD по пути из Electron.
                 </p>
-          </div>
+              </div>
             )}
             {!panelOpen('ffmpegSettingsRailOpen') ? (
               <button
@@ -1963,7 +1978,7 @@ function App(): JSX.Element {
                 <span className="app-visually-hidden">Развернуть панель настроек FFmpeg</span>
               </button>
             ) : null}
-        </section>
+          </section>
           {panelOpen('ffmpegSettingsRailOpen') ? (
             <aside className="app-settings-panel" aria-label="Настройки FFmpeg">
               <div className="app-settings-panel-head">
@@ -2549,7 +2564,7 @@ function App(): JSX.Element {
               </details>
             </aside>
           ) : null}
-      </main>
+        </main>
       ) : (
         <main className="app-main app-downloads-workspace" aria-label="Вкладка загрузок">
           <section className="app-downloads-main">
@@ -2557,9 +2572,9 @@ function App(): JSX.Element {
               <div className="app-downloads-band-copy">
                 <h2 className="app-downloads-title">Загрузки</h2>
                 <p className="app-downloads-hint">
-                  Эта вкладка — основной рабочий стол yt-dlp (очередь по центру, журнал и история под
-                  таблицей, настройки справа как в v0). Расширенное pop-out окно — для экспертных
-                  параметров.
+                  Эта вкладка — основной рабочий стол yt-dlp (очередь по центру, журнал и история
+                  под таблицей, настройки справа как в v0). Pop-out — дублирующее окно с тем же IPC
+                  и длинным справочником токенов в одном списке.
                 </p>
               </div>
               <div className="app-downloads-actions">
@@ -2717,232 +2732,236 @@ function App(): JSX.Element {
             </div>
             <div className="app-downloads-table-zone">
               <div className="app-downloads-table-wrap">
-              <table className="app-downloads-table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Название / URL</th>
-                    <th>Формат</th>
-                    <th>Размер</th>
-                    <th>Прогресс</th>
-                    <th>Скорость</th>
-                    <th>Осталось</th>
-                    <th>Статус</th>
-                    <th>Действия</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {downloadsRows.length === 0 ? (
+                <table className="app-downloads-table">
+                  <thead>
                     <tr>
-                      <td colSpan={9} className="app-downloads-empty">
-                        Очередь пуста. Добавьте URL сверху или из быстрых действий редактора.
-                      </td>
+                      <th>#</th>
+                      <th>Название / URL</th>
+                      <th>Формат</th>
+                      <th>Размер</th>
+                      <th>Прогресс</th>
+                      <th>Скорость</th>
+                      <th>Осталось</th>
+                      <th>Статус</th>
+                      <th>Действия</th>
                     </tr>
-                  ) : visibleDownloadsRows.length === 0 ? (
-                    <tr>
-                      <td colSpan={9} className="app-downloads-empty">
-                        В этом фильтре строк нет. Переключите статус выше или добавьте новые URL.
-                      </td>
-                    </tr>
-                  ) : (
-                    visibleDownloadsRows.map((row) => {
-                      const progressPercent = parseDownloadsProgressPercent(row.progress)
-                      const statusTone = downloadsStatusTone(row)
-                      return (
-                        <tr key={row.id}>
-                          <td className="app-downloads-mono">{row.id}</td>
-                          <td>
-                            <div className="app-downloads-row-title">{row.shortLabel}</div>
-                            <div className="app-downloads-row-url">{row.url}</div>
-                          </td>
-                          <td className="app-downloads-mono">{row.queueFmt ?? '—'}</td>
-                          <td className="app-downloads-mono">{row.queueSize ?? '—'}</td>
-                          <td className="app-downloads-mono">
-                            <div className="app-downloads-progress">
-                              <span>{row.progress}</span>
-                              {progressPercent !== null ? (
-                                <span className="app-downloads-progress-track" aria-hidden>
-                                  <span
-                                    className="app-downloads-progress-fill"
-                                    style={{ width: `${progressPercent}%` }}
-                                  />
-                                </span>
-                              ) : null}
-                            </div>
-                          </td>
-                          <td className="app-downloads-mono">{row.queueSpeed ?? '—'}</td>
-                          <td className="app-downloads-mono">{row.queueEta ?? '—'}</td>
-                          <td>
-                            <span
-                              className={`app-downloads-status app-downloads-status-${statusTone}`}
-                            >
-                              <span className="app-downloads-status-dot" aria-hidden />
-                              {row.status}
-                            </span>
-                          </td>
-                          <td>
-                            <div className="app-downloads-row-actions">
-                              <button
-                                type="button"
-                                className="app-icon-btn"
-                                aria-label={`Поднять строку ${row.id} выше`}
-                                onClick={() => {
-                                  void window.fluxalloy.downloads
-                                    .moveRow(row.id, -1)
-                                    .then((res) => {
-                                      if (!res.ok) {
-                                        setStatusHint(res.error)
-                                      }
-                                    })
-                                }}
+                  </thead>
+                  <tbody>
+                    {downloadsRows.length === 0 ? (
+                      <tr>
+                        <td colSpan={9} className="app-downloads-empty">
+                          Очередь пуста. Добавьте URL сверху или из быстрых действий редактора.
+                        </td>
+                      </tr>
+                    ) : visibleDownloadsRows.length === 0 ? (
+                      <tr>
+                        <td colSpan={9} className="app-downloads-empty">
+                          В этом фильтре строк нет. Переключите статус выше или добавьте новые URL.
+                        </td>
+                      </tr>
+                    ) : (
+                      visibleDownloadsRows.map((row) => {
+                        const progressPercent = parseDownloadsProgressPercent(row.progress)
+                        const statusTone = downloadsStatusTone(row)
+                        return (
+                          <tr key={row.id}>
+                            <td className="app-downloads-mono">{row.id}</td>
+                            <td>
+                              <div className="app-downloads-row-title">{row.shortLabel}</div>
+                              <div className="app-downloads-row-url">{row.url}</div>
+                            </td>
+                            <td className="app-downloads-mono">{row.queueFmt ?? '—'}</td>
+                            <td className="app-downloads-mono">{row.queueSize ?? '—'}</td>
+                            <td className="app-downloads-mono">
+                              <div className="app-downloads-progress">
+                                <span>{row.progress}</span>
+                                {progressPercent !== null ? (
+                                  <span className="app-downloads-progress-track" aria-hidden>
+                                    <span
+                                      className="app-downloads-progress-fill"
+                                      style={{ width: `${progressPercent}%` }}
+                                    />
+                                  </span>
+                                ) : null}
+                              </div>
+                            </td>
+                            <td className="app-downloads-mono">{row.queueSpeed ?? '—'}</td>
+                            <td className="app-downloads-mono">{row.queueEta ?? '—'}</td>
+                            <td>
+                              <span
+                                className={`app-downloads-status app-downloads-status-${statusTone}`}
                               >
-                                <IconQueueChevronUp title="" size={18} />
-                              </button>
-                              <button
-                                type="button"
-                                className="app-icon-btn"
-                                aria-label={`Опустить строку ${row.id} ниже`}
-                                onClick={() => {
-                                  void window.fluxalloy.downloads.moveRow(row.id, 1).then((res) => {
-                                    if (!res.ok) {
-                                      setStatusHint(res.error)
-                                    }
-                                  })
-                                }}
-                              >
-                                <IconQueueChevronDown title="" size={18} />
-                              </button>
-                              <button
-                                type="button"
-                                className="app-icon-btn app-icon-btn-primary"
-                                aria-label={
-                                  row.status.startsWith('Ошибка')
-                                    ? `Повторить загрузку строки ${row.id}`
-                                    : `Старт строки ${row.id}`
-                                }
-                                onClick={() => {
-                                  const fn = row.status.startsWith('Ошибка')
-                                    ? window.fluxalloy.downloads.retryRow
-                                    : window.fluxalloy.downloads.startRow
-                                  void fn(row.id).then((res) => {
-                                    if (!res.ok) {
-                                      setStatusHint(res.error)
-                                    }
-                                  })
-                                }}
-                              >
-                                {row.status.startsWith('Ошибка') ? (
-                                  <IconQueueRetry title="" size={18} />
-                                ) : (
-                                  <IconPlay title="" size={18} />
-                                )}
-                              </button>
-                              {row.outputPath ? (
-                                <>
-                                  <button
-                                    type="button"
-                                    className="app-icon-btn"
-                                    aria-label={`Открыть файл строки ${row.id}`}
-                                    onClick={() => {
-                                      void window.fluxalloy.downloads
-                                        .openQueueOutput(row.id, 'file')
-                                        .then((res) => {
-                                          if (!res.ok) {
-                                            setStatusHint(res.error)
-                                          }
-                                        })
-                                    }}
-                                  >
-                                    <IconQueueFile title="" size={18} />
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="app-icon-btn"
-                                    aria-label={`Открыть папку строки ${row.id}`}
-                                    onClick={() => {
-                                      void window.fluxalloy.downloads
-                                        .openQueueOutput(row.id, 'folder')
-                                        .then((res) => {
-                                          if (!res.ok) {
-                                            setStatusHint(res.error)
-                                          }
-                                        })
-                                    }}
-                                  >
-                                    <IconFolderOpen title="" size={18} />
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="app-icon-btn"
-                                    aria-label={`Открыть в редакторе вывод строки ${row.id}`}
-                                    onClick={() => {
-                                      setStatusHint(
-                                        'Готовлю файл для редактора… при необходимости будет создан WebM preview.'
-                                      )
-                                      void window.fluxalloy.downloads
-                                        .openQueueOutputInHandler(row.id)
-                                        .then((res) => {
-                                          if (!res.ok) {
-                                            setStatusHint(res.error)
-                                          } else {
-                                            setStatusHint('Файл открыт в редакторе')
-                                          }
-                                        })
-                                    }}
-                                  >
-                                    <IconQueueOutbound title="" size={18} />
-                                  </button>
-                                </>
-                              ) : null}
-                              {row.isActiveRunner && row.ytdlpPauseSupported ? (
+                                <span className="app-downloads-status-dot" aria-hidden />
+                                {row.status}
+                              </span>
+                            </td>
+                            <td>
+                              <div className="app-downloads-row-actions">
                                 <button
                                   type="button"
                                   className="app-icon-btn"
+                                  aria-label={`Поднять строку ${row.id} выше`}
+                                  onClick={() => {
+                                    void window.fluxalloy.downloads
+                                      .moveRow(row.id, -1)
+                                      .then((res) => {
+                                        if (!res.ok) {
+                                          setStatusHint(res.error)
+                                        }
+                                      })
+                                  }}
+                                >
+                                  <IconQueueChevronUp title="" size={18} />
+                                </button>
+                                <button
+                                  type="button"
+                                  className="app-icon-btn"
+                                  aria-label={`Опустить строку ${row.id} ниже`}
+                                  onClick={() => {
+                                    void window.fluxalloy.downloads
+                                      .moveRow(row.id, 1)
+                                      .then((res) => {
+                                        if (!res.ok) {
+                                          setStatusHint(res.error)
+                                        }
+                                      })
+                                  }}
+                                >
+                                  <IconQueueChevronDown title="" size={18} />
+                                </button>
+                                <button
+                                  type="button"
+                                  className="app-icon-btn app-icon-btn-primary"
                                   aria-label={
-                                    row.ytdlpPaused
-                                      ? `Продолжить yt-dlp для строки ${row.id}`
-                                      : `Пауза yt-dlp для строки ${row.id}`
+                                    row.status.startsWith('Ошибка')
+                                      ? `Повторить загрузку строки ${row.id}`
+                                      : `Старт строки ${row.id}`
                                   }
                                   onClick={() => {
-                                    const fn = row.ytdlpPaused
-                                      ? window.fluxalloy.downloads.resumeYtdlp
-                                      : window.fluxalloy.downloads.pauseYtdlp
-                                    void fn().then((res) => {
+                                    const fn = row.status.startsWith('Ошибка')
+                                      ? window.fluxalloy.downloads.retryRow
+                                      : window.fluxalloy.downloads.startRow
+                                    void fn(row.id).then((res) => {
                                       if (!res.ok) {
                                         setStatusHint(res.error)
                                       }
                                     })
                                   }}
                                 >
-                                  {row.ytdlpPaused ? (
-                                    <IconPlay title="" size={18} />
+                                  {row.status.startsWith('Ошибка') ? (
+                                    <IconQueueRetry title="" size={18} />
                                   ) : (
-                                    <IconPauseUi title="" size={18} />
+                                    <IconPlay title="" size={18} />
                                   )}
                                 </button>
-                              ) : null}
-                              <button
-                                type="button"
-                                className="app-icon-btn app-icon-btn-warn"
-                                aria-label={`Удалить строку ${row.id} из очереди`}
-                                onClick={() => {
-                                  void window.fluxalloy.downloads.removeRow(row.id).then((res) => {
-                                    if (!res.ok) {
-                                      setStatusHint(res.error)
+                                {row.outputPath ? (
+                                  <>
+                                    <button
+                                      type="button"
+                                      className="app-icon-btn"
+                                      aria-label={`Открыть файл строки ${row.id}`}
+                                      onClick={() => {
+                                        void window.fluxalloy.downloads
+                                          .openQueueOutput(row.id, 'file')
+                                          .then((res) => {
+                                            if (!res.ok) {
+                                              setStatusHint(res.error)
+                                            }
+                                          })
+                                      }}
+                                    >
+                                      <IconQueueFile title="" size={18} />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className="app-icon-btn"
+                                      aria-label={`Открыть папку строки ${row.id}`}
+                                      onClick={() => {
+                                        void window.fluxalloy.downloads
+                                          .openQueueOutput(row.id, 'folder')
+                                          .then((res) => {
+                                            if (!res.ok) {
+                                              setStatusHint(res.error)
+                                            }
+                                          })
+                                      }}
+                                    >
+                                      <IconFolderOpen title="" size={18} />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className="app-icon-btn"
+                                      aria-label={`Открыть в редакторе вывод строки ${row.id}`}
+                                      onClick={() => {
+                                        setStatusHint(
+                                          'Готовлю файл для редактора… при необходимости будет создан WebM preview.'
+                                        )
+                                        void window.fluxalloy.downloads
+                                          .openQueueOutputInHandler(row.id)
+                                          .then((res) => {
+                                            if (!res.ok) {
+                                              setStatusHint(res.error)
+                                            } else {
+                                              setStatusHint('Файл открыт в редакторе')
+                                            }
+                                          })
+                                      }}
+                                    >
+                                      <IconQueueOutbound title="" size={18} />
+                                    </button>
+                                  </>
+                                ) : null}
+                                {row.isActiveRunner && row.ytdlpPauseSupported ? (
+                                  <button
+                                    type="button"
+                                    className="app-icon-btn"
+                                    aria-label={
+                                      row.ytdlpPaused
+                                        ? `Продолжить yt-dlp для строки ${row.id}`
+                                        : `Пауза yt-dlp для строки ${row.id}`
                                     }
-                                  })
-                                }}
-                              >
-                                <IconQueueTrash title="" size={18} />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      )
-                    })
-                  )}
-                </tbody>
-              </table>
+                                    onClick={() => {
+                                      const fn = row.ytdlpPaused
+                                        ? window.fluxalloy.downloads.resumeYtdlp
+                                        : window.fluxalloy.downloads.pauseYtdlp
+                                      void fn().then((res) => {
+                                        if (!res.ok) {
+                                          setStatusHint(res.error)
+                                        }
+                                      })
+                                    }}
+                                  >
+                                    {row.ytdlpPaused ? (
+                                      <IconPlay title="" size={18} />
+                                    ) : (
+                                      <IconPauseUi title="" size={18} />
+                                    )}
+                                  </button>
+                                ) : null}
+                                <button
+                                  type="button"
+                                  className="app-icon-btn app-icon-btn-warn"
+                                  aria-label={`Удалить строку ${row.id} из очереди`}
+                                  onClick={() => {
+                                    void window.fluxalloy.downloads
+                                      .removeRow(row.id)
+                                      .then((res) => {
+                                        if (!res.ok) {
+                                          setStatusHint(res.error)
+                                        }
+                                      })
+                                  }}
+                                >
+                                  <IconQueueTrash title="" size={18} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        )
+                      })
+                    )}
+                  </tbody>
+                </table>
               </div>
               <div className="app-downloads-lower-stack">
                 <details
@@ -2989,7 +3008,8 @@ function App(): JSX.Element {
                   <div className="app-downloads-history-list">
                     {downloadsHistory.length === 0 ? (
                       <p className="app-downloads-history-empty">
-                        История пока пуста. После завершения строк здесь появятся последние результаты.
+                        История пока пуста. После завершения строк здесь появятся последние
+                        результаты.
                       </p>
                     ) : (
                       downloadsHistory.slice(0, 8).map((entry) => (
@@ -3126,8 +3146,9 @@ function App(): JSX.Element {
           <aside className="app-downloads-rail" aria-label="Настройки загрузок">
             <h3 className="app-settings-title">Настройки yt-dlp</h3>
             <p className="app-settings-subtitle">
-              Секции и раскрытие совпадают с pop-out: те же ключи в `downloadsWindowUiPanels`.
-              Редактирование доп. argv и справочник — в отдельном окне менеджера загрузок.
+              Секции и раскрытие совпадают с pop-out: те же ключи в `downloadsWindowUiPanels`. Доп.
+              argv и превью команды — здесь; полный optgroup‑справочник как в pop-out — в отдельном
+              окне менеджера загрузок.
             </p>
             {downloadsOptions ? (
               <div className="app-downloads-settings-stack">
@@ -3222,7 +3243,9 @@ function App(): JSX.Element {
                       <input
                         className="app-control app-downloads-template-input"
                         value={downloadsOptions.subLangsLine}
-                        disabled={downloadsOptionsBusy || downloadsOptions.subtitlePreset === 'none'}
+                        disabled={
+                          downloadsOptionsBusy || downloadsOptions.subtitlePreset === 'none'
+                        }
                         spellCheck={false}
                         placeholder="ru,en или all"
                         onChange={(e) => {
@@ -3550,10 +3573,67 @@ function App(): JSX.Element {
                 >
                   <summary className="app-downloads-rail-summary">Эксперт и превью</summary>
                   <div className="app-downloads-rail-section-body">
-                    <p className="app-field-help">
-                      Дополнительные argv и справочник токенов — только в pop-out окне менеджера
-                      загрузок.
-                    </p>
+                    <label className="app-field">
+                      <span>Дополнительные argv</span>
+                      <textarea
+                        className="app-control app-downloads-extra-args"
+                        rows={3}
+                        spellCheck={false}
+                        autoComplete="off"
+                        value={downloadsOptions.extraArgsLine}
+                        disabled={downloadsOptionsBusy}
+                        onChange={(e) => {
+                          setDownloadsOptions({
+                            ...downloadsOptions,
+                            extraArgsLine: e.target.value
+                          })
+                        }}
+                        onBlur={(e) => {
+                          void applyDownloadsOptionsPatch({ extraArgsLine: e.target.value })
+                        }}
+                      />
+                      <span className="app-field-help">
+                        Без shell: токены как в справочнике; небезопасное отсекает парсер main.
+                      </span>
+                    </label>
+                    {downloadsOptions.extraArgsParseWarning ? (
+                      <p className="app-downloads-warning" role="alert">
+                        {downloadsOptions.extraArgsParseWarning}
+                      </p>
+                    ) : null}
+                    <label className="app-field">
+                      <span>Вставить токен из справочника</span>
+                      <select
+                        key={downloadsExpertHintPickerSeq}
+                        className="app-control app-downloads-expert-hint-select"
+                        aria-label="Добавить токен в дополнительные argv"
+                        disabled={downloadsOptionsBusy}
+                        defaultValue=""
+                        onChange={(e) => {
+                          const token = e.target.value
+                          if (!token) return
+                          const cur = downloadsOptions.extraArgsLine.trim()
+                          const next = cur ? `${cur} ${token}` : token
+                          setDownloadsOptions({ ...downloadsOptions, extraArgsLine: next })
+                          setDownloadsExpertHintPickerSeq((s) => s + 1)
+                          void applyDownloadsOptionsPatch({ extraArgsLine: next })
+                        }}
+                      >
+                        <option value="">Выберите…</option>
+                        {ytdlpCommandHintsByCategory.map(([cat, rows]) => (
+                          <optgroup key={cat} label={cat}>
+                            {rows.map((h) => (
+                              <option key={h.token} value={h.token} title={h.summary}>
+                                {h.token}
+                              </option>
+                            ))}
+                          </optgroup>
+                        ))}
+                      </select>
+                      <span className="app-field-help">
+                        Полный список с описаниями — в pop-out «Менеджер загрузок».
+                      </span>
+                    </label>
                     <span className="app-field-help">Превью команды (чтение)</span>
                     <div className="app-downloads-command-preview app-downloads-command-preview--flat">
                       <pre>{downloadsOptions.commandPreview}</pre>

@@ -527,7 +527,9 @@
 
 .app-downloads-table-zone .app-downloads-table-wrap {
   flex: 1;
-  min-height: 0;
+  min-height: min(22rem, 30vh);
+  min-width: 0;
+  overflow: auto;
 }
 
 .app-downloads-lower-stack {
@@ -541,11 +543,11 @@
 }
 
 .app-downloads-lower-stack .app-downloads-history-list {
-  max-height: 11rem;
+  max-height: min(11rem, 34vh);
 }
 
 .app-downloads-lower-stack .app-downloads-log-pre {
-  max-height: 10rem;
+  max-height: min(10rem, 30vh);
 }
 
 .app-downloads-rail {
@@ -621,6 +623,18 @@
 
 .app-downloads-command-preview--flat pre {
   padding-top: 0.55rem;
+}
+
+.app-downloads-extra-args {
+  min-height: 3.25rem;
+  resize: vertical;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  line-height: 1.38;
+}
+
+.app-downloads-expert-hint-select {
+  font-size: 0.72rem;
 }
 
 .app-downloads-switch-grid,
