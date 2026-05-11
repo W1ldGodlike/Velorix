@@ -476,6 +476,42 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· --no-check-certificates -F',
     summary: 'Список форматов при сбоях проверки SSL (--no-check-certificates -F); только для диагностики, снижает безопасность.',
     fullLine: 'yt-dlp --no-check-certificates -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print filesize',
+    summary: 'Размер файла выбранного формата (байты, если известен) без скачивания (--skip-download --print filesize); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print filesize '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print format_note',
+    summary: 'Поле format_note выбранного формата без скачивания (--skip-download --print format_note); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print format_note '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print subtitles',
+    summary: 'Словарь субтитров из метаданных без скачивания (--skip-download --print subtitles); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print subtitles '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· automatic_captions',
+    summary: 'Авто-субтитры/ASR из метаданных без скачивания (--skip-download --print automatic_captions); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print automatic_captions '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print chapters',
+    summary: 'Главы из метаданных без скачивания (--skip-download --print chapters); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print chapters '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· flat-playlist title',
+    summary: 'Плоский плейлист: заголовок каждого элемента без глубокого извлечения (--flat-playlist --skip-download --print title); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --flat-playlist --skip-download --print title '
   }
 ]
 
@@ -738,6 +774,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· v:0 r_frame_rate',
     summary: 'Только r_frame_rate видео v:0 (сравнение с avg_frame_rate в других шаблонах); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=r_frame_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format brands',
+    summary: 'Теги контейнера major_brand + compatible_brands (MP4/MOV family); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=major_brand,compatible_brands -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· s:2 compact',
+    summary: 'Третья дорожка субтитров s:2: codec_name/codec_tag_string; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:2 -show_entries stream=codec_name,codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 cc+avc',
+    summary: 'Поток v:0: closed_captions + is_avc (CEA-608/708 vs AVC elementary); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=closed_captions,is_avc -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffmpeg',

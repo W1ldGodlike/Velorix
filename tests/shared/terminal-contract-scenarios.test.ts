@@ -99,6 +99,12 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --skip-download --print media_type ')
     expect(lines).toContain('yt-dlp --skip-download --print release_year ')
     expect(lines).toContain('yt-dlp --no-check-certificates -F ')
+    expect(lines).toContain('yt-dlp --skip-download --print filesize ')
+    expect(lines).toContain('yt-dlp --skip-download --print format_note ')
+    expect(lines).toContain('yt-dlp --skip-download --print subtitles ')
+    expect(lines).toContain('yt-dlp --skip-download --print automatic_captions ')
+    expect(lines).toContain('yt-dlp --skip-download --print chapters ')
+    expect(lines).toContain('yt-dlp --flat-playlist --skip-download --print title ')
   })
 
   it('preview: есть JSON-сводка и show_error для текущего превью', () => {
@@ -199,6 +205,15 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       lines.some(
         (l) => l.includes('select_streams v:0') && l.includes('stream=r_frame_rate')
       )
+    ).toBe(true)
+    expect(
+      lines.some((l) => l.includes('format_tags=major_brand,compatible_brands'))
+    ).toBe(true)
+    expect(
+      lines.some((l) => l.includes('select_streams s:2') && l.includes('codec_name,codec_tag_string'))
+    ).toBe(true)
+    expect(
+      lines.some((l) => l.includes('select_streams v:0') && l.includes('stream=closed_captions,is_avc'))
     ).toBe(true)
   })
 })
