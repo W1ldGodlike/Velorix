@@ -315,3 +315,4 @@
 - [J-298] 2026-05-11 22:59:23 [SDK]: §19 — README «Команды»/первичная настройка: актуальный `npm run check`; prepare `--help` → `engines:doctor`; RELEASE §4: `prebuild:win` vs `release:win`; спринт. `npm run check` ок.
 - [J-299] 2026-05-11 23:00:18 [SDK]: §19 — `--help` у force/verify/report → `engines:doctor`; CI кэш `bin/`: +`run-prepare-engines-force.mjs`; RELEASE §2 справка; чеклист SHA256/спринт. `npm run check` ок.
 - [J-300] 2026-05-11 23:01:18 [SDK]: §19 — README движки/релиз, `electron-builder.yml` комментарий extraResources/bin, `validate-trusted-hashes --help` vs doctor, bin README про CI cache, спринт. `npm run check` ок.
+- [J-301] 2026-05-11 23:02:25 [SDK]: §19/§3 — RELEASE §1: `build` без prepare/doctor; README `predev` vs doctor; спринт §19 короче с явными next; `engine-download.ts` — таймаут в шапке. `npm run check` ок.

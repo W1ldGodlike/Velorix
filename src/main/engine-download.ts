@@ -3,6 +3,7 @@
  *
  * Серверная часть: скачивает yt-dlp и архив FFmpeg, опционально сверяет SHA256 по JSON,
  * раскладывает `ffmpeg.exe`/`ffprobe.exe` в `userData/bin`. На других ОС загрузчик пока явно отклоняется.
+ * Таймаут HTTP: `FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS` (см. `docs/RELEASE.md`).
  */
 
 import { createHash } from 'node:crypto'

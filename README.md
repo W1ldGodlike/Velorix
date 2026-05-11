@@ -12,7 +12,7 @@
 1. Установите [Node.js](https://nodejs.org/) LTS (подходит 20.x, 22.x или 24.x).
 2. В корне репозитория: `npm install` (postinstall подтянет **electron-builder** native deps).
 3. Проверка: `npm run check` — **ESLint**, **TypeScript** (main/web/tests), **Vitest**, `trusted_hashes.json`, нумерация журнала, guard секретов (см. `docs/RELEASE.md` §1).
-4. Разработка: `npm run dev`.
+4. Разработка: `npm run dev` (lifecycle **`predev`** → `engines:prepare:win` для `bin/`; отдельно **`engines:doctor`** не вызывается — при необходимости вручную).
 5. Рекомендуемые расширения VS Code / Cursor перечислены в [`.vscode/extensions.json`](./.vscode/extensions.json); для форматирования и ESLint см. [`.vscode/settings.json`](./.vscode/settings.json).
 
 ### Windows / PowerShell: «выполнение сценариев отключено» для `npm.ps1`
