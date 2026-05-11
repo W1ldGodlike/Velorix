@@ -104,6 +104,24 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· --print id',
     summary: 'Идентификатор ролика на площадке без скачивания (--skip-download --print id); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print id '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print webpage_url',
+    summary: 'Канонический URL страницы без скачивания (--skip-download --print webpage_url); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print webpage_url '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print channel',
+    summary: 'Имя канала/площадки без скачивания (--skip-download --print channel); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print channel '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print channel_id',
+    summary: 'Идентификатор канала без скачивания (--skip-download --print channel_id); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print channel_id '
   }
 ]
 
@@ -135,6 +153,12 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
+    token: '· v:0 color',
+    summary: 'Поток v:0: color_space / color_primaries / color_transfer (HDR/SDR-диагностика); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=color_space,color_primaries,color_transfer -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
     token: '· a:0 compact',
     summary: 'Поток a:0: codec_name/sample_rate/channels (default=nw=1); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=codec_name,sample_rate,channels -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
@@ -144,6 +168,12 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· a:0 language',
     summary: 'Тег языка первой аудиодорожки (stream_tags=language); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream_tags=language -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:0 pcm',
+    summary: 'Поток a:0: bits_per_sample + sample_fmt (PCM/глубина); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=bits_per_sample,sample_fmt -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
