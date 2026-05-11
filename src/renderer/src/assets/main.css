@@ -2368,6 +2368,147 @@
   .app-ffmpeg-rail-restore-text {
     font-size: 0.62rem;
   }
+
+  /* Вкладка «Загрузки» (React workspace): плотность как у v0 под 125 % Windows — без смены глобального rem. */
+  .app-downloads-band {
+    padding: 0.68rem 0.9rem;
+  }
+
+  .app-downloads-title {
+    font-size: 1rem;
+  }
+
+  .app-downloads-hint {
+    font-size: 0.704rem;
+  }
+
+  .app-downloads-url-row {
+    padding: 0.78rem 0.9rem;
+  }
+
+  .app-downloads-url-input {
+    min-height: 4.75rem;
+    padding: 0.58rem 0.68rem;
+    font-size: 0.824rem;
+  }
+
+  .app-downloads-overview {
+    padding: 0.72rem 0.9rem 0;
+  }
+
+  .app-downloads-stat {
+    padding: 0.6rem 0.68rem;
+  }
+
+  .app-downloads-stat-label {
+    font-size: 0.638rem;
+  }
+
+  .app-downloads-stat strong {
+    font-size: 1.22rem;
+  }
+
+  .app-downloads-filterbar {
+    padding: 0.68rem 0.9rem;
+  }
+
+  .app-downloads-table {
+    font-size: 0.756rem;
+  }
+
+  .app-downloads-table th,
+  .app-downloads-table td {
+    padding: 0.52rem 0.58rem;
+  }
+
+  .app-downloads-table th {
+    font-size: 0.668rem;
+  }
+
+  .app-downloads-row-url {
+    font-size: 0.696rem;
+  }
+
+  .app-downloads-progress-track {
+    height: 0.32rem;
+  }
+
+  .app-downloads-row-actions .app-icon-btn {
+    min-width: 27px;
+    width: 27px;
+    height: 27px;
+  }
+
+  .app-downloads-row-actions .app-icon-btn > svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .app-downloads-status-dot {
+    width: 0.52rem;
+    height: 0.52rem;
+  }
+
+  .app-downloads-lower-stack {
+    gap: 0.58rem;
+    padding: 0.58rem 0.9rem 0.78rem;
+  }
+
+  .app-downloads-history-panel summary,
+  .app-downloads-log-panel summary {
+    padding: 0.58rem 0.68rem;
+    font-size: 0.704rem;
+  }
+
+  .app-downloads-history-list,
+  .app-downloads-log-pre {
+    font-size: 0.648rem;
+  }
+
+  .app-downloads-rail {
+    padding: 0.85rem;
+    gap: 0.88rem;
+  }
+
+  .app-downloads-rail-summary {
+    padding: 0.56rem 0.68rem;
+    font-size: 0.748rem;
+  }
+
+  .app-downloads-rail-section-body {
+    gap: 0.68rem;
+    padding: 0 0.68rem 0.68rem;
+  }
+
+  .app-downloads-extra-args {
+    min-height: 3.4rem;
+    font-size: 0.744rem;
+  }
+
+  .app-downloads-expert-hint-select {
+    font-size: 0.744rem;
+  }
+
+  .app-downloads-command-preview summary {
+    font-size: 0.704rem;
+  }
+
+  .app-downloads-command-preview pre {
+    font-size: 0.644rem;
+  }
+
+  .app-downloads-output-dir strong {
+    font-size: 0.684rem;
+  }
+
+  .app-downloads-warning {
+    font-size: 0.704rem;
+  }
+
+  .app-filter-chip {
+    min-height: 1.78rem;
+    font-size: 0.704rem;
+  }
 }
 
 @media (-webkit-min-device-pixel-ratio: 1.75), (min-resolution: 168dpi) {
@@ -2512,5 +2653,51 @@
 
   .app-settings-section-hint {
     font-size: 0.658rem;
+  }
+
+  /* Вкладка «Загрузки» под ~175 %+: чуть крупнее stroke-иконки строк и полоска прогресса. */
+  .app-downloads-title {
+    font-size: 1.02rem;
+  }
+
+  .app-downloads-url-input {
+    min-height: 4.95rem;
+    font-size: 0.848rem;
+  }
+
+  .app-downloads-table {
+    font-size: 0.772rem;
+  }
+
+  .app-downloads-table th {
+    font-size: 0.678rem;
+  }
+
+  .app-downloads-progress-track {
+    height: 0.34rem;
+  }
+
+  .app-downloads-row-actions .app-icon-btn {
+    min-width: 28px;
+    width: 28px;
+    height: 28px;
+  }
+
+  .app-downloads-row-actions .app-icon-btn > svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .app-downloads-status-dot {
+    width: 0.54rem;
+    height: 0.54rem;
+  }
+
+  .app-downloads-rail-summary {
+    font-size: 0.764rem;
+  }
+
+  .app-downloads-extra-args {
+    font-size: 0.756rem;
   }
 }
