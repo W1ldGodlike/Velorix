@@ -734,6 +734,78 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· trim-names 80 -F',
     summary: 'Обрезка длины имён файлов (--trim-file-names 80 -F); длинные заголовки; допишите URL.',
     fullLine: 'yt-dlp --trim-file-names 80 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-mtime',
+    summary: 'Не выставлять время файла из метаданных ролика (--no-mtime); допишите URL и остальные ключи.',
+    fullLine: 'yt-dlp --no-mtime '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· continue',
+    summary: 'Докачка частично скачанного (.part) при повторном запуске (--continue); допишите URL и -o.',
+    fullLine: 'yt-dlp --continue '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· abort-on-error',
+    summary: 'Остановить весь запуск при первой фатальной ошибке (--abort-on-error); допишите URL и плейлист при необходимости.',
+    fullLine: 'yt-dlp --abort-on-error '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· playlist slice -J',
+    summary: 'Фрагмент плейлиста в JSON (элементы 5–15, --playlist-start/--playlist-end с -J); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --playlist-start 5 --playlist-end 15 -J '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· max-size -F',
+    summary: 'Показать только форматы до ~512 MiB (--max-filesize 512M -F); подстройте лимит; допишите URL.',
+    fullLine: 'yt-dlp --max-filesize 512M -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· restrict-names -F',
+    summary: 'Только ASCII в именах файлов (--restrict-filenames -F); допишите URL и -o при необходимости.',
+    fullLine: 'yt-dlp --restrict-filenames -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· color never -F',
+    summary: 'Без ANSI-цветов в выводе (--color never -F); удобнее логи/пайпы; допишите URL.',
+    fullLine: 'yt-dlp --color never -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· embed-metadata',
+    summary: 'Вшить метаданные в контейнер после скачивания (--embed-metadata); допишите URL и -f/-o.',
+    fullLine: 'yt-dlp --embed-metadata '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· embed-thumbnail',
+    summary: 'Вшить обложку в файл после скачивания (--embed-thumbnail); допишите URL и формат.',
+    fullLine: 'yt-dlp --embed-thumbnail '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· wait-for-video',
+    summary: 'Ждать появления трансляции до N минут (--wait-for-video 10); допишите URL стрима.',
+    fullLine: 'yt-dlp --wait-for-video 10 '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· skip-pl-errors',
+    summary: 'Пропустить до N ошибок подряд в плейлисте (--skip-playlist-after-errors 5); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --skip-playlist-after-errors 5 '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print title NA',
+    summary: 'Печать title с плейсхолдером NA вместо пустого поля (--output-na-placeholder NA --skip-download --print title); допишите URL.',
+    fullLine: 'yt-dlp --output-na-placeholder NA --skip-download --print title '
   }
 ]
 
@@ -1118,10 +1190,34 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     fullLine: `ffprobe -hide_banner -show_entries format=size,duration -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
+    tool: 'ffprobe',
+    token: '· s:1 codec+lang',
+    summary: 'Вторая дорожка субтитров s:1: codec_name + stream_tags language; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:1 -show_entries stream=codec_name:stream_tags=language -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:1 disposition',
+    summary: 'Вторая аудиодорожка a:1: disposition (forced/default и т.д.); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:1 -show_entries stream=disposition -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format tags lang',
+    summary: 'Тег языка контейнера format_tags language (если есть); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=language -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
     tool: 'ffmpeg',
     token: '· remux 5s null',
     summary: 'Копирование потоков первых 5 с в null muxer (-t 5 -c copy); быстрая проверка контейнера без перекодирования.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -t 5 -c copy -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· decode ignore_err',
+    summary: 'Короткий декод с игнором ошибок потока (-err_detect ignore_err -t 2); битые кадры/TS; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -err_detect ignore_err -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -t 2 -f null -`
   }
 ]
 

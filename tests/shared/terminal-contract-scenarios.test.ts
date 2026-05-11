@@ -301,5 +301,31 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     ).toBe(true)
     expect(lines.some((l) => l.includes('show_entries format=size,duration'))).toBe(true)
     expect(lines.some((l) => l.includes('-t 5 -c copy -f null -'))).toBe(true)
+    expect(lines.some((l) => l.includes('select_streams s:1') && l.includes('stream_tags=language'))).toBe(
+      true
+    )
+    expect(
+      lines.some((l) => l.includes('select_streams a:1') && l.includes('stream=disposition'))
+    ).toBe(true)
+    expect(lines.some((l) => l.includes('format_tags=language'))).toBe(true)
+    expect(lines.some((l) => l.includes('-err_detect ignore_err') && l.includes('-t 2 -f null -'))).toBe(
+      true
+    )
+  })
+
+  it('downloads: сетевые/выводные флаги yt-dlp (smoke по fullLine)', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --no-mtime ')
+    expect(lines).toContain('yt-dlp --continue ')
+    expect(lines).toContain('yt-dlp --abort-on-error ')
+    expect(lines).toContain('yt-dlp --playlist-start 5 --playlist-end 15 -J ')
+    expect(lines).toContain('yt-dlp --max-filesize 512M -F ')
+    expect(lines).toContain('yt-dlp --restrict-filenames -F ')
+    expect(lines).toContain('yt-dlp --color never -F ')
+    expect(lines).toContain('yt-dlp --embed-metadata ')
+    expect(lines).toContain('yt-dlp --embed-thumbnail ')
+    expect(lines).toContain('yt-dlp --wait-for-video 10 ')
+    expect(lines).toContain('yt-dlp --skip-playlist-after-errors 5 ')
+    expect(lines).toContain('yt-dlp --output-na-placeholder NA --skip-download --print title ')
   })
 })
