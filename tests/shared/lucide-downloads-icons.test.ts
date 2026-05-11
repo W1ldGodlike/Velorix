@@ -61,4 +61,9 @@ describe('lucide-downloads-icons', () => {
     expect(emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.x, 20)).toContain('<line')
     expect(emitDownloadsQueueRowIcoBootstrapJs()).toContain('x:')
   })
+
+  it('DOWNLOADS_TOPBAR_CLUSTER_ICONS.clipboard / popOutWindow сериализуются для вкладки «Загрузки»', () => {
+    expect(emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS.clipboard, 18)).toContain('<rect')
+    expect(emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS.popOutWindow, 18)).toContain('<path')
+  })
 })

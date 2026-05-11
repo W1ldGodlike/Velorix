@@ -157,6 +157,22 @@ export const DOWNLOADS_TOPBAR_CLUSTER_ICONS = {
     { tag: 'path', attr: { d: 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4' } },
     { tag: 'polyline', attr: { points: '7 10 12 15 17 10' } },
     { tag: 'line', attr: { x1: '12', y1: '15', x2: '12', y2: '3' } }
+  ] as const satisfies readonly StrokePrim[],
+  /** lucide `clipboard` — вкладка «Загрузки» (из буфера), тот же набор stroke, что в React. */
+  clipboard: [
+    { tag: 'rect', attr: { x: '8', y: '2', width: '8', height: '4', rx: '1' } },
+    {
+      tag: 'path',
+      attr: {
+        d: 'M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2'
+      }
+    }
+  ] as const satisfies readonly StrokePrim[],
+  /** Отдельное окно менеджера: те же штрихи, что `outbound` в очереди (external-link). */
+  popOutWindow: [
+    { tag: 'path', attr: { d: 'M15 3h6v6' } },
+    { tag: 'path', attr: { d: 'M10 14 21 3' } },
+    { tag: 'path', attr: { d: 'M18 13v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6' } }
   ] as const satisfies readonly StrokePrim[]
 } as const
 

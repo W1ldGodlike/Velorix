@@ -451,6 +451,16 @@
   border-color: transparent;
 }
 
+/* §6 — текстовые кнопки с lucide-глифом слева (вкладка «Загрузки», тот же stroke-stack). */
+.app-btn-icon-leading {
+  gap: 0.42rem;
+}
+
+.app-btn-icon-leading svg {
+  flex-shrink: 0;
+  opacity: 0.92;
+}
+
 /* Вторичный акцент: привлекает внимание к обязательной загрузке движков §3 без крика как у primary CTA */
 .app-btn-warn {
   border-color: color-mix(in srgb, var(--fa-accent) 55%, var(--fa-border));

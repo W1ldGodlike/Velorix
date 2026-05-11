@@ -10,6 +10,7 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconCircleHelp,
+  IconClipboardPaste,
   IconCloudDownload,
   IconDownload,
   IconFilm,
@@ -18,6 +19,7 @@ import {
   IconMoon,
   IconPauseUi,
   IconPlay,
+  IconPopOutWindow,
   IconQueueChevronDown,
   IconQueueChevronUp,
   IconQueueFile,
@@ -2600,22 +2602,24 @@ function App(): JSX.Element {
               <div className="app-downloads-actions">
                 <button
                   type="button"
-                  className="app-btn"
+                  className="app-btn app-btn-icon-leading"
                   onClick={() => {
                     void window.fluxalloy.clipboard.readText().then((t) => {
                       setDownloadsUrl(t.trim())
                     })
                   }}
                 >
+                  <IconClipboardPaste title="" size={17} />
                   Из буфера
                 </button>
                 <button
                   type="button"
-                  className="app-btn"
+                  className="app-btn app-btn-icon-leading"
                   onClick={() => {
                     void window.fluxalloy.downloads.openWindow(downloadsUrl || null)
                   }}
                 >
+                  <IconPopOutWindow title="" size={17} />
                   Pop-out
                 </button>
               </div>

@@ -273,3 +273,4 @@
 - [J-256] 2026-05-11 21:04:12 [SDK]: §6/§4.C — встроенная вкладка «Загрузки»: HiDPI `@120dpi`/`@168dpi` в `main.css` (URL-band, сводка/фильтр, таблица, нижние панели, rail, icon-only SVG); спринт §6.1; `npm run check` ок.
 - [J-257] 2026-05-11 21:06:42 [SDK]: §6.1/v0 — колонка прогресса: полоска + явный `%` (fallback текст без парсящегося %); «Начать загрузку» — primary; HiDPI `@192dpi` для вкладки; спринт; `npm run check` ок.
 - [J-258] 2026-05-11 21:08:13 [SDK]: §6.1/v0 — `@media (max-width:1100px)`: rail загрузок не скрывается, сетка `1fr`+`auto`, rail под колонкой с `max-height`+scroll; подсказка в UI; чеклист §1.1/спринт; `npm run check` ок.
+- [J-259] 2026-05-11 21:10:18 [SDK]: §4/§6 единые иконки — `DOWNLOADS_TOPBAR_CLUSTER_ICONS.clipboard`/`popOutWindow`, `IconClipboardPaste`/`IconPopOutWindow`, кнопки «Из буфера»/«Pop-out» на вкладке; Vitest; чеклист §4.C/спринт; `npm run check` ок.

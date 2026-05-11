@@ -116,6 +116,36 @@ export function IconDownload({
   )
 }
 
+/** §6 / v0 — «Из буфера» на вкладке загрузок (общий stroke с `DOWNLOADS_TOPBAR_CLUSTER_ICONS.clipboard`). */
+export function IconClipboardPaste({
+  title = 'Вставить из буфера',
+  size = 18
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(DOWNLOADS_TOPBAR_CLUSTER_ICONS.clipboard)}
+    </SvgBase>
+  )
+}
+
+/** §6 — отдельное окно yt-dlp (pop-out), тот же глиф, что external-link в очереди. */
+export function IconPopOutWindow({
+  title = 'Открыть отдельное окно загрузок',
+  size = 18
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(DOWNLOADS_TOPBAR_CLUSTER_ICONS.popOutWindow)}
+    </SvgBase>
+  )
+}
+
 export function IconFilm({
   title = 'Инспектор',
   size = 20
