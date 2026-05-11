@@ -76,7 +76,6 @@ import type { FfmpegSnapshotFormatId } from '../../shared/ffmpeg-snapshot-contra
 import type { RestoredSourceInfo } from '../../shared/preview-dialog-contract'
 import type { MediaProbeSuccess } from '../../shared/ffprobe-contract'
 import type {
-  YtdlpCommandHintEntry,
   YtdlpCookiesBrowserId,
   YtdlpDownloadOptionsPatch,
   YtdlpDownloadOptionsPayload,
@@ -85,6 +84,7 @@ import type {
   YtdlpQueueRetryProfileId,
   YtdlpSubtitlePresetId
 } from '../../shared/ytdlp-download-contract'
+import { groupYtdlpCommandHintsByCategory } from '../../shared/ytdlp-command-hints-group'
 import type { YtdlpDownloadHistoryEntry } from '../../shared/ytdlp-history-contract'
 import type { DownloadsLogPayload } from '../../shared/downloads-log-contract'
 import { PreviewProbeBody } from './components/MediaProbePanel'
@@ -585,6 +585,7 @@ function App(): JSX.Element {
   const [downloadsOptions, setDownloadsOptions] = useState<YtdlpDownloadOptionsPayload | null>(null)
   const [downloadsOptionsBusy, setDownloadsOptionsBusy] = useState(false)
   const [downloadsExpertHintPickerSeq, setDownloadsExpertHintPickerSeq] = useState(0)
+  const [downloadsExpertHintFilter, setDownloadsExpertHintFilter] = useState('')
   const [downloadsHistory, setDownloadsHistory] = useState<YtdlpDownloadHistoryEntry[]>([])
   const [downloadsHistoryBusy, setDownloadsHistoryBusy] = useState(false)
   const [downloadsLogLines, setDownloadsLogLines] = useState<DownloadsLogLineView[]>([])
@@ -702,17 +703,28 @@ function App(): JSX.Element {
     [refreshDownloadsOptions]
   )
 
-  const ytdlpCommandHintsByCategory = useMemo(() => {
-    const hints = downloadsOptions?.commandHints
-    if (!hints?.length) return [] as Array<[string, YtdlpCommandHintEntry[]]>
-    const m = new Map<string, YtdlpCommandHintEntry[]>()
-    for (const h of hints) {
-      const list = m.get(h.category) ?? []
-      list.push(h)
-      m.set(h.category, list)
-    }
-    return [...m.entries()].sort(([a], [b]) => a.localeCompare(b, 'ru'))
-  }, [downloadsOptions?.commandHints])
+  const ytdlpCommandHintsByCategory = useMemo(
+    () => groupYtdlpCommandHintsByCategory(downloadsOptions?.commandHints),
+    [downloadsOptions?.commandHints]
+  )
+
+  const ytdlpCommandHintsFilteredByCategory = useMemo(
+    () =>
+      groupYtdlpCommandHintsByCategory(downloadsOptions?.commandHints, downloadsExpertHintFilter),
+    [downloadsOptions?.commandHints, downloadsExpertHintFilter]
+  )
+
+  const appendDownloadsExtraArgsToken = useCallback(
+    (token: string) => {
+      if (!downloadsOptions) return
+      const cur = downloadsOptions.extraArgsLine.trim()
+      const next = cur ? `${cur} ${token}` : token
+      setDownloadsOptions({ ...downloadsOptions, extraArgsLine: next })
+      setDownloadsExpertHintPickerSeq((s) => s + 1)
+      void applyDownloadsOptionsPatch({ extraArgsLine: next })
+    },
+    [downloadsOptions, applyDownloadsOptionsPatch]
+  )
 
   const refreshDownloadsHistory = useCallback(async (): Promise<void> => {
     setDownloadsHistoryBusy(true)
@@ -3473,8 +3485,8 @@ function App(): JSX.Element {
             <h3 className="app-settings-title">Настройки yt-dlp</h3>
             <p className="app-settings-subtitle">
               Секции и раскрытие совпадают с pop-out: те же ключи в `downloadsWindowUiPanels`. Доп.
-              argv и превью команды — здесь; полный optgroup‑справочник как в pop-out — в отдельном
-              окне менеджера загрузок.
+              argv, превью команды и справочник токенов (поиск + описания) — здесь; отдельное окно
+              менеджера — для очереди и полноэкранной работы с загрузками.
             </p>
             {downloadsOptions ? (
               <div className="app-downloads-settings-stack">
@@ -3964,28 +3976,85 @@ function App(): JSX.Element {
                         onChange={(e) => {
                           const token = e.target.value
                           if (!token) return
-                          const cur = downloadsOptions.extraArgsLine.trim()
-                          const next = cur ? `${cur} ${token}` : token
-                          setDownloadsOptions({ ...downloadsOptions, extraArgsLine: next })
-                          setDownloadsExpertHintPickerSeq((s) => s + 1)
-                          void applyDownloadsOptionsPatch({ extraArgsLine: next })
+                          appendDownloadsExtraArgsToken(token)
                         }}
                       >
                         <option value="">Выберите…</option>
                         {ytdlpCommandHintsByCategory.map(([cat, rows]) => (
                           <optgroup key={cat} label={cat}>
                             {rows.map((h) => (
-                              <option key={h.token} value={h.token} title={h.summary}>
+                              <option key={`${cat}:${h.token}`} value={h.token} title={h.summary}>
                                 {h.token}
                               </option>
                             ))}
                           </optgroup>
                         ))}
                       </select>
-                      <span className="app-field-help">
-                        Полный список с описаниями — в pop-out «Менеджер загрузок».
-                      </span>
                     </label>
+                    <label className="app-field">
+                      <span>Поиск по справочнику argv</span>
+                      <input
+                        type="text"
+                        className="app-control app-downloads-hint-filter"
+                        spellCheck={false}
+                        autoComplete="off"
+                        placeholder="Например: --cookies или --sub"
+                        aria-label="Поиск по токенам и описаниям справочника argv"
+                        disabled={downloadsOptionsBusy}
+                        value={downloadsExpertHintFilter}
+                        onChange={(e) => setDownloadsExpertHintFilter(e.target.value)}
+                      />
+                    </label>
+                    <div
+                      className="app-downloads-hint-list"
+                      role="list"
+                      aria-label="Справочник флагов с описаниями"
+                    >
+                      {!downloadsOptions.commandHints?.length ? (
+                        <div className="app-downloads-hint-item app-downloads-hint-item--muted">
+                          Справочник недоступен.
+                        </div>
+                      ) : ytdlpCommandHintsFilteredByCategory.length === 0 ? (
+                        <div className="app-downloads-hint-item app-downloads-hint-item--muted">
+                          Нет совпадений.
+                        </div>
+                      ) : (
+                        ytdlpCommandHintsFilteredByCategory.map(([cat, rows]) => (
+                          <div key={cat}>
+                            <div className="app-downloads-hint-cat" role="presentation">
+                              {cat}
+                            </div>
+                            {rows.map((h) => (
+                              <div
+                                key={`${cat}:${h.token}`}
+                                className="app-downloads-hint-item"
+                                role="listitem"
+                              >
+                                <button
+                                  type="button"
+                                  className="app-downloads-hint-token"
+                                  title={h.summary || h.token}
+                                  disabled={downloadsOptionsBusy}
+                                  onClick={() => appendDownloadsExtraArgsToken(h.token)}
+                                >
+                                  {h.token}
+                                </button>
+                                {h.summary ? (
+                                  <div className="app-downloads-hint-desc">
+                                    {h.summary.length > 420
+                                      ? `${h.summary.slice(0, 418)}…`
+                                      : h.summary}
+                                  </div>
+                                ) : null}
+                              </div>
+                            ))}
+                          </div>
+                        ))
+                      )}
+                    </div>
+                    <span className="app-field-help">
+                      Те же подсказки, что в pop-out; клик по токену добавляет его в argv.
+                    </span>
                     <p className="app-doc-inline-links app-downloads-doc-links">
                       <a href={YTDLP_DOC_README} target="_blank" rel="noreferrer">
                         README
