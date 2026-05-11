@@ -2,6 +2,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { JSX, SyntheticEvent } from 'react'
 
 import { AboutDialog } from './components/AboutDialog'
+import { DownloadsHistoryPanel } from './components/downloads/DownloadsHistoryPanel'
+import {
+  DownloadsLogPanel,
+  type DownloadsLogLineView
+} from './components/downloads/DownloadsLogPanel'
 import VideoTimeline from './components/VideoTimeline'
 import PreviewTransport from './components/PreviewTransport'
 import Versions from './components/Versions'
@@ -112,13 +117,6 @@ type DownloadsQueueStats = {
   cancelled: number
   pending: number
 }
-type DownloadsLogLineView = {
-  id: number
-  rowId: number
-  stream: 'stdout' | 'stderr'
-  text: string
-}
-
 type EnginesSnapshot = Awaited<ReturnType<typeof window.fluxalloy.engines.getStatus>>
 
 type PillSwitchProps = {
@@ -3056,188 +3054,76 @@ function App(): JSX.Element {
                 </table>
               </div>
               <div className="app-downloads-lower-stack">
-                <details
-                  className="app-downloads-history-panel"
+                <DownloadsHistoryPanel
                   open={downloadsEmbeddedHistoryOpen}
-                  onToggle={(event) => {
-                    const next = event.currentTarget.open
+                  busy={downloadsHistoryBusy}
+                  entries={downloadsHistory}
+                  onToggle={(next) => {
                     setDownloadsEmbeddedHistoryOpen(next)
                     persistDownloadsWindowUiPanels({ history: next })
                   }}
-                >
-                  <summary>
-                    История
-                    <span>{downloadsHistory.length}</span>
-                  </summary>
-                  <div className="app-downloads-history-actions">
-                    <button
-                      type="button"
-                      className="app-btn app-btn-compact app-btn-icon-leading"
-                      disabled={downloadsHistoryBusy}
-                      onClick={() => {
-                        void refreshDownloadsHistory()
-                      }}
-                    >
-                      <IconRefreshCw title="" size={14} />
-                      Обновить
-                    </button>
-                    <button
-                      type="button"
-                      className="app-btn app-btn-compact app-btn-warn app-btn-icon-leading"
-                      disabled={downloadsHistoryBusy || downloadsHistory.length === 0}
-                      onClick={() => {
-                        void window.fluxalloy.downloads.clearHistory().then((res) => {
-                          if (!res.ok) {
-                            setStatusHint(res.error)
-                            return
-                          }
-                          setDownloadsHistory([])
-                        })
-                      }}
-                    >
-                      <IconQueueTrash title="" size={14} />
-                      Очистить
-                    </button>
-                  </div>
-                  <div className="app-downloads-history-list">
-                    {downloadsHistory.length === 0 ? (
-                      <p className="app-downloads-history-empty">
-                        История пока пуста. После завершения строк здесь появятся последние
-                        результаты.
-                      </p>
-                    ) : (
-                      downloadsHistory.slice(0, 8).map((entry) => (
-                        <article key={entry.id} className="app-downloads-history-card">
-                          <div className="app-downloads-history-head">
-                            <strong>{entry.shortLabel}</strong>
-                            <span
-                              className={`app-downloads-history-outcome app-downloads-history-${entry.outcome}`}
-                            >
-                              {downloadsHistoryOutcomeLabel(entry.outcome)}
-                            </span>
-                          </div>
-                          <p title={entry.url}>{entry.url}</p>
-                          <div className="app-downloads-history-meta">
-                            <span>{formatDownloadsHistoryTime(entry.finishedAt)}</span>
-                            <span>{entry.status}</span>
-                          </div>
-                          {entry.errorHint ? (
-                            <p className="app-downloads-warning">{entry.errorHint}</p>
-                          ) : null}
-                          {entry.outputPath ? (
-                            <div className="app-downloads-history-actions">
-                              <button
-                                type="button"
-                                className="app-btn app-btn-compact app-btn-icon-leading"
-                                onClick={() => {
-                                  void window.fluxalloy.downloads
-                                    .openHistoryOutput(entry.id, 'file')
-                                    .then((res) => {
-                                      if (!res.ok) {
-                                        setStatusHint(res.error)
-                                      }
-                                    })
-                                }}
-                              >
-                                <IconQueueFile title="" size={14} />
-                                Файл
-                              </button>
-                              <button
-                                type="button"
-                                className="app-btn app-btn-compact app-btn-icon-leading"
-                                onClick={() => {
-                                  void window.fluxalloy.downloads
-                                    .openHistoryOutput(entry.id, 'folder')
-                                    .then((res) => {
-                                      if (!res.ok) {
-                                        setStatusHint(res.error)
-                                      }
-                                    })
-                                }}
-                              >
-                                <IconFolderOpen title="" size={14} />
-                                Папка
-                              </button>
-                              <button
-                                type="button"
-                                className="app-btn app-btn-compact app-btn-icon-leading"
-                                onClick={() => {
-                                  setStatusHint(
-                                    'Готовлю файл для редактора… при необходимости будет создан WebM preview.'
-                                  )
-                                  void window.fluxalloy.downloads
-                                    .openHistoryOutputInHandler(entry.id)
-                                    .then((res) => {
-                                      if (!res.ok) {
-                                        setStatusHint(res.error)
-                                      } else {
-                                        setStatusHint('Файл открыт в редакторе')
-                                      }
-                                    })
-                                }}
-                              >
-                                <IconQueueOutbound title="" size={14} />В редактор
-                              </button>
-                            </div>
-                          ) : null}
-                        </article>
-                      ))
-                    )}
-                  </div>
-                </details>
-                <details
-                  className="app-downloads-log-panel"
+                  onRefresh={() => {
+                    void refreshDownloadsHistory()
+                  }}
+                  onClear={() => {
+                    void window.fluxalloy.downloads.clearHistory().then((res) => {
+                      if (!res.ok) {
+                        setStatusHint(res.error)
+                        return
+                      }
+                      setDownloadsHistory([])
+                    })
+                  }}
+                  formatTimeLabel={formatDownloadsHistoryTime}
+                  outcomeLabel={downloadsHistoryOutcomeLabel}
+                  onOpenFile={(id) => {
+                    void window.fluxalloy.downloads.openHistoryOutput(id, 'file').then((res) => {
+                      if (!res.ok) {
+                        setStatusHint(res.error)
+                      }
+                    })
+                  }}
+                  onOpenFolder={(id) => {
+                    void window.fluxalloy.downloads.openHistoryOutput(id, 'folder').then((res) => {
+                      if (!res.ok) {
+                        setStatusHint(res.error)
+                      }
+                    })
+                  }}
+                  onOpenInHandler={(id) => {
+                    setStatusHint(
+                      'Готовлю файл для редактора… при необходимости будет создан WebM preview.'
+                    )
+                    void window.fluxalloy.downloads.openHistoryOutputInHandler(id).then((res) => {
+                      if (!res.ok) {
+                        setStatusHint(res.error)
+                      } else {
+                        setStatusHint('Файл открыт в редакторе')
+                      }
+                    })
+                  }}
+                />
+                <DownloadsLogPanel
                   open={downloadsEmbeddedLogOpen}
-                  onToggle={(event) => {
-                    const next = event.currentTarget.open
+                  targetRowId={downloadsLogTargetRowId}
+                  lines={downloadsLogLines}
+                  onToggle={(next) => {
                     setDownloadsEmbeddedLogOpen(next)
                     persistDownloadsWindowUiPanels({ log: next })
                   }}
-                >
-                  <summary>
-                    Живой лог
-                    <span>
-                      {downloadsLogTargetRowId !== null ? `#${downloadsLogTargetRowId}` : '—'}
-                    </span>
-                  </summary>
-                  <div className="app-downloads-log-actions">
-                    <button
-                      type="button"
-                      className="app-btn app-btn-compact app-btn-icon-leading"
-                      disabled={downloadsLogLines.length === 0}
-                      onClick={() => {
-                        setDownloadsLogLines([])
-                        setDownloadsLogTargetRowId(null)
-                      }}
-                    >
-                      <IconQueueX title="" size={14} />
-                      Очистить
-                    </button>
-                    <button
-                      type="button"
-                      className="app-btn app-btn-compact app-btn-icon-leading"
-                      disabled={downloadsLogLines.length === 0}
-                      onClick={() => {
-                        const text = formatDownloadsLogText(downloadsLogLines)
-                        void window.fluxalloy.downloads.saveVisibleLog(text).then((res) => {
-                          if (!res.ok && res.error !== 'Сохранение отменено') {
-                            setStatusHint(res.error)
-                          }
-                        })
-                      }}
-                    >
-                      <IconSave title="" size={14} />
-                      Сохранить
-                    </button>
-                  </div>
-                  <pre className="app-downloads-log-pre" aria-live="polite">
-                    {downloadsLogLines.length === 0
-                      ? 'Лог появится после запуска строки yt-dlp.'
-                      : downloadsLogLines
-                          .map((line) => `[${line.rowId}] ${line.stream}: ${line.text}`)
-                          .join('\n')}
-                  </pre>
-                </details>
+                  onClear={() => {
+                    setDownloadsLogLines([])
+                    setDownloadsLogTargetRowId(null)
+                  }}
+                  onSave={() => {
+                    const text = formatDownloadsLogText(downloadsLogLines)
+                    void window.fluxalloy.downloads.saveVisibleLog(text).then((res) => {
+                      if (!res.ok && res.error !== 'Сохранение отменено') {
+                        setStatusHint(res.error)
+                      }
+                    })
+                  }}
+                />
               </div>
             </div>
           </section>
