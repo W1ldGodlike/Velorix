@@ -22,6 +22,7 @@ npm run check:release
 - ESLint;
 - TypeScript для main/web/tests;
 - Vitest;
+- `npm run check:trusted-hashes` — структура `Data/trusted_hashes.json`;
 - `scripts/check-no-secrets.mjs` по tracked-файлам.
 
 ## 2. Runtime-движки
@@ -68,7 +69,7 @@ npm run engines:report-hashes -- --json --versions
 
 Локально повторить вывод версий из verify: `FLUXALLOY_LOG_ENGINE_VERSIONS=1` и `npm run engines:verify-bundled`.
 
-Справка по флагам: `npm run engines:verify-bundled -- --help`, `npm run engines:report-hashes -- --help`, `npm run engines:prepare:win -- --help`.
+Справка по флагам: `npm run engines:verify-bundled -- --help`, `npm run engines:report-hashes -- --help`, `npm run engines:prepare:win -- --help`, `npm run check:trusted-hashes -- --help`.
 
 Быстрая проверка `bin/` после prepare: `npm run engines:doctor` (verify + SHA256-строки + вывод версий).
 

@@ -30,7 +30,8 @@
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",
-    "check": "npm run lint && npm run typecheck && npm run test && npm run check:journal && npm run check:secrets",
+    "check": "npm run lint && npm run typecheck && npm run test && npm run check:trusted-hashes && npm run check:journal && npm run check:secrets",
+    "check:trusted-hashes": "node scripts/validate-trusted-hashes-json.mjs",
     "check:journal": "node scripts/check-journal-numbering.mjs",
     "check:secrets": "node scripts/check-no-secrets.mjs",
     "check:release": "npm run check && npm run engines:prepare:win && npm run engines:verify-bundled && npm run build && npm run pack:dir && npm run audit:moderate",
