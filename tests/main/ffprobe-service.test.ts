@@ -137,6 +137,24 @@ describe('ffprobe-service buildTrackRows', () => {
     expect(row?.detail).toContain('cover.jpg')
   })
 
+  it('video detail включает компактную HDR-метку из color_transfer/color_primaries', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'hevc',
+          width: 3840,
+          height: 2160,
+          color_transfer: 'smpte2084',
+          color_primaries: 'bt2020'
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toContain('PQ·bt2020')
+  })
+
   it('encoder в detail обрезается при длинной строке', () => {
     const long = `${'A'.repeat(70)}tail`
     const [row] = buildTrackRows(

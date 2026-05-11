@@ -12,6 +12,7 @@ import {
 } from '../shared/ffprobe-side-data'
 import { formatFfprobeStreamDurationDetail } from '../shared/ffprobe-stream-duration-detail'
 import { formatFfprobeStreamStartTime } from '../shared/ffprobe-stream-start-time'
+import { formatFfprobeVideoHdrColorBrief } from '../shared/ffprobe-video-color-brief'
 import type {
   MediaProbeResult,
   MediaProbeSuccess,
@@ -262,6 +263,10 @@ function buildTrackDetail(
     )
     if (chroma) {
       parts.push(`chroma ${chroma}`)
+    }
+    const hdrBrief = formatFfprobeVideoHdrColorBrief(stream)
+    if (hdrBrief) {
+      parts.push(hdrBrief)
     }
     const pixFmt = ffprobeScalarDisplay(typeof stream.pix_fmt === 'string' ? stream.pix_fmt : undefined)
     if (pixFmt !== null) {
