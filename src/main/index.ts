@@ -8,6 +8,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
 import { resolveAppPaths } from './app-paths'
+import { openAllowedExternalUrl } from './external-url'
 import { downloadEnginesWindows, isAnyEngineMissing } from './engine-download'
 import {
   cancelDownloadsRunner,
@@ -1466,7 +1467,7 @@ function createWindow(): void {
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     // Внешние ссылки не открываем внутри Electron-окна: так renderer не получает незапланированную навигацию.
-    shell.openExternal(details.url)
+    openAllowedExternalUrl(details.url)
     return { action: 'deny' }
   })
 

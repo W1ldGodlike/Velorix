@@ -1,10 +1,11 @@
 import { existsSync } from 'fs'
 import { join, normalize, resolve } from 'path'
 
-import { BrowserWindow, ipcMain, shell } from 'electron'
+import { BrowserWindow, ipcMain } from 'electron'
 import { is } from '@electron-toolkit/utils'
 
 import { grantMediaPath, isGrantedMediaPath } from './media-protocol'
+import { openAllowedExternalUrl } from './external-url'
 import { resolvePreloadOutFile } from './preload-resolve'
 import type { StoredWindowRect } from './settings-store'
 import { boundsFromBrowserWindow, rectifyBoundsForRestore } from './window-bounds'
@@ -161,7 +162,7 @@ export function focusOrCreateInspectorWindow(requestedMediaPath?: unknown): void
   })
 
   inspectorWindow.webContents.setWindowOpenHandler((details) => {
-    void shell.openExternal(details.url)
+    openAllowedExternalUrl(details.url)
     return { action: 'deny' }
   })
 
