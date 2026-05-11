@@ -48,6 +48,14 @@ interface FfprobeJson {
     color_transfer?: string
     color_trc?: string
     color_range?: string
+    /** H.264/HEVC и др.: baseline/main/high … */
+    profile?: string
+    /** Уровень кодека (часто целое вроде `41` у H.264). */
+    level?: string | number
+    /** progressive / tt / tb / tff / bff … */
+    field_order?: string
+    chroma_location?: string
+    bits_per_raw_sample?: string | number
     bit_rate?: string
     disposition?: Record<string, unknown>
     tags?: Record<string, string | number | undefined>
@@ -135,6 +143,43 @@ function buildTrackDetail(stream: NonNullable<FfprobeJson['streams']>[number]): 
     const sideData = summarizeFfprobeSideDataList(stream.side_data_list)
     if (sideData !== null) {
       parts.push(sideData)
+    }
+    const profile = ffprobeScalarDisplay(
+      typeof stream.profile === 'string' ? stream.profile : undefined
+    )
+    if (profile) {
+      parts.push(profile)
+    }
+    const levelRaw = stream.level
+    const levelStr =
+      typeof levelRaw === 'number' && Number.isFinite(levelRaw)
+        ? String(Math.trunc(levelRaw))
+        : typeof levelRaw === 'string'
+          ? levelRaw.trim()
+          : ''
+    if (levelStr !== '' && !/^n\/a$/i.test(levelStr)) {
+      parts.push(`level ${levelStr}`)
+    }
+    const fieldOrder = ffprobeScalarDisplay(
+      typeof stream.field_order === 'string' ? stream.field_order : undefined
+    )
+    if (fieldOrder) {
+      parts.push(fieldOrder)
+    }
+    const chroma = ffprobeScalarDisplay(
+      typeof stream.chroma_location === 'string' ? stream.chroma_location : undefined
+    )
+    if (chroma) {
+      parts.push(`chroma ${chroma}`)
+    }
+    const bitsRaw = stream.bits_per_raw_sample
+    if (typeof bitsRaw === 'number' && Number.isFinite(bitsRaw) && bitsRaw > 0) {
+      parts.push(`${Math.trunc(bitsRaw)}-bit`)
+    } else {
+      const bitsS = ffprobeScalarDisplay(typeof bitsRaw === 'string' ? bitsRaw : undefined)
+      if (bitsS) {
+        parts.push(`${bitsS}-bit`)
+      }
     }
   } else if (ct === 'audio') {
     const ch = stream.channels
