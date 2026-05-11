@@ -41,7 +41,7 @@
 
 Правило для агента: этот блок — рабочий навигатор ближайшего спринта. После каждой крупной итерации обновлять его: отмечать сделанное, переводить частичное в `[~]`, убирать устаревшее только если оно отражено ниже по §, и добавлять 3–7 следующих конкретных пунктов. Не оставлять блок полностью закрытым. Работать крупными блоками; отчёт пользователю — максимально краткий. `docs/UX_REFERENCE_V0.md` использовать только как ориентир для нужных UI-правок, но не держать спринт вокруг v0.
 
-- [~] §19/§3/§17: release/security hardening — CI, secrets guard, external navigation guard, release checklist и bundled engines licenses есть; дальше — Windows installer smoke, SHA256 для релизных движков, подпись/portable roadmap.
+- [~] §19/§3/§17: release/security hardening — CI (prepare+`engines:verify-bundled`+build), secrets guard, external navigation guard, release docs, portable+NSIS в electron-builder, опциональные SHA256 exe в `trusted_hashes`; дальше — ручной installer/portable smoke, заполнение хешей под `FLUXALLOY_ENGINES_STRICT`, подпись.
 - [~] §6.1/§6.4: downloads core — очередь, история, лог, retry, pause, output resolving, preview proxy и React-вкладка есть; дальше — устойчивость редких yt-dlp логов, сценарий download→encode и уменьшение дубляжа embedded/pop-out.
 - [~] §7.2/§7.3/§7.4: обработка — trim/crop/rotate/flip/scale/FPS/bitrate/presets/2-pass есть; дальше — filters/audio filters/subtitles/metadata, HW encode, batch и связка download→encode.
 - [~] §9/§18: ffprobe/диагностика — inspector, TXT/HTML/JSON export, logs, Support ZIP есть; дальше — редкие ffprobe-поля, crash/e2e smoke и расширение диагностического отчёта.
@@ -141,7 +141,7 @@
 - [x] Скачивание `yt-dlp` (GitHub `latest` для Win `.exe`).
 - [~] Скачивание/обновление `ffmpeg`/`ffprobe` в `userData/bin`: текущий код берёт zip gyan.dev essentials; целевое — список зеркал (GitHub build mirror + gyan.dev fallback), bundled `resources/bin` является основным релизным путём.
 - [x] Прогресс загрузки в статусбар (проценты по `Content-Length` где есть).
-- [~] SHA256: проверка при **непустых** полях в `trusted_hashes.json`; пустые поля = пропуск (dev).
+- [~] SHA256: проверка при **непустых** полях в `trusted_hashes.json` (zip FFmpeg, `yt-dlp.exe`, опционально готовые `ffmpeg.exe`/`ffprobe.exe` в `windows-x64`); `npm run engines:verify-bundled` + strict-режим для релиза; пустые поля = пропуск (dev).
 - [x] `Data/trusted_hashes.json` с `schema` и веткой `windows-x64`.
 - [x] Формат `trusted_hashes.json` для Win-x64 + совместимость с плоскими полями.
 - [~] Редактирование доверенных хешей без перекомпиляции: через `extraResources`/копию `Data/trusted_hashes.json`; авто-обновление файла из сети не делалось.
@@ -476,10 +476,10 @@
 - [x] `npm run build:win` проходит.
 - [x] `npm run build:unpack` проходит.
 - [~] `Data/`, `Help/`, `FLUXALLOY_TZ.md` добавлены в `extraResources`.
-- [~] `bin/` в `extraResources`: bundled-first каталог с `README.md`; готовые бинарники подкладываются локально/CI через `npm run engines:prepare:win` перед сборкой (в Git не хранятся), скачивание в `userData/bin` остаётся fallback/update; release checklist и лицензии bundled engines — `docs/RELEASE.md` / `docs/BUNDLED_ENGINES_LICENSES.md`.
+- [~] `bin/` в `extraResources`: bundled-first каталог с `README.md`; готовые бинарники подкладываются локально/CI через `npm run engines:prepare:win` перед сборкой (в Git не хранятся), скачивание в `userData/bin` остаётся fallback/update; release checklist и лицензии bundled engines — `docs/RELEASE.md` / `docs/BUNDLED_ENGINES_LICENSES.md`; GitHub Actions после `check` гоняет prepare + `engines:verify-bundled` (без strict, пока хеши в репо пустые).
 - [ ] Настроить нормальную иконку приложения вместо placeholder/default.
 - [ ] Windows NSIS: проверить installer вручную.
-- [ ] Windows portable/zip target.
+- [~] Windows portable: в `electron-builder.yml` цель `portable` рядом с NSIS (`artifactName` portable); ручной smoke portable — позже.
 - [ ] macOS dmg/zip.
 - [ ] Linux AppImage/deb/tar.
 - [ ] Подпись Windows — отдельное решение.
@@ -517,7 +517,7 @@
 - [x] `npm run build:win` проходит.
 - [x] `npm run dev`: после перезагрузки PATH подхватывает Node/npm без ручной правки сессии (проверено вызовом `node`/`npm` из PowerShell).
 - [ ] Рабочий Windows installer с реальными ресурсами.
-- [ ] Рабочий portable/zip.
+- [~] Рабочий portable/zip (сборка portable в конфиге; приёмка — позже).
 - [ ] macOS артефакты.
 - [ ] Linux артефакты.
 - [x] Версия в «О программе» (вместе с Electron/Chromium/Node).

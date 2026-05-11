@@ -27,8 +27,13 @@ extraResources:
     to: bin
 win:
   executableName: FluxAlloy
+  target:
+    - nsis
+    - portable
   # Значение по умолчанию electron-builder: подпись/правка exe при упаковке. После перезагрузки и
   # выдачи `SeCreateSymbolicLinkPrivilege` / Developer Mode распаковка winCodeSign снова должна проходить.
+portable:
+  artifactName: ${name}-${version}-portable.${ext}
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}

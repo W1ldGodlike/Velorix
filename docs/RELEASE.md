@@ -34,6 +34,21 @@ npm run engines:prepare:win
 
 Перед релизом записать источник, версию и SHA256 в `Data/trusted_hashes.json` и/или во внутренние release notes. Пустой hash допустим для dev, но не для релиза, который нужно воспроизводимо проверять.
 
+После `npm run engines:prepare:win`:
+
+```powershell
+npm run engines:verify-bundled
+```
+
+Скрипт проверяет наличие непустых `bin/yt-dlp.exe`, `bin/ffmpeg.exe`, `bin/ffprobe.exe` и, если в `windows-x64` заданы непустые строки, сверяет SHA256. Жёсткий режим (все три **exe**-хеша в JSON обязательны и должны совпасть):
+
+```powershell
+$env:FLUXALLOY_ENGINES_STRICT = '1'
+npm run engines:verify-bundled
+```
+
+В `windows-x64` можно задавать хеши архивов FFmpeg (как раньше) и отдельно `ffmpeg.exe` / `ffprobe.exe` для проверки уже извлечённых бинарников (bootstrap, CI, загрузка в `userData/bin` из main).
+
 ## 3. Лицензии движков
 
 См. [`BUNDLED_ENGINES_LICENSES.md`](./BUNDLED_ENGINES_LICENSES.md).
@@ -46,6 +61,8 @@ npm run engines:prepare:win
 npm run build:unpack
 npm run build:win
 ```
+
+`npm run build:win` формирует установщик NSIS и portable-сборку (`electron-builder`, цели `nsis` + `portable`).
 
 Перед публикацией вручную проверить:
 

@@ -2,6 +2,8 @@
   "schema": 2,
   "windows-x64": {
     "yt-dlp.exe": "",
+    "ffmpeg.exe": "",
+    "ffprobe.exe": "",
     "ffmpeg-master-latest-win64-gpl.zip": "",
     "ffmpeg-release-essentials.zip": ""
   },

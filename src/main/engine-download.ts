@@ -26,7 +26,12 @@ import type { AppPaths } from './app-paths'
 import { ENGINE_IDS, type EnginePathOverrides } from './engine-service'
 import { ENGINE_SOURCES_WINDOWS } from './engine-sources'
 import type { TrustedHashesFile } from './trusted-hashes-store'
-import { trustedHashForFfmpegZipWin, trustedHashForYtDlpWin } from './trusted-hashes-store'
+import {
+  trustedHashForBundledFfmpegExeWin,
+  trustedHashForBundledFfprobeExeWin,
+  trustedHashForFfmpegZipWin,
+  trustedHashForYtDlpWin
+} from './trusted-hashes-store'
 import type { EngineDownloadProgress } from '../shared/engine-download-contract'
 
 export type {
@@ -221,8 +226,13 @@ export async function downloadEnginesWindows(
     throw new Error('В архиве FFmpeg не найдены ffmpeg.exe / ffprobe.exe')
   }
 
-  copyFileSync(ffmpegFound, join(paths.userBin, 'ffmpeg.exe'))
-  copyFileSync(ffprobeFound, join(paths.userBin, 'ffprobe.exe'))
+  const ffmpegUser = join(paths.userBin, 'ffmpeg.exe')
+  const ffprobeUser = join(paths.userBin, 'ffprobe.exe')
+  copyFileSync(ffmpegFound, ffmpegUser)
+  copyFileSync(ffprobeFound, ffprobeUser)
+
+  await assertSha256Optional(ffmpegUser, trustedHashForBundledFfmpegExeWin(trusted))
+  await assertSha256Optional(ffprobeUser, trustedHashForBundledFfprobeExeWin(trusted))
 
   rmSync(extractDir, { recursive: true, force: true })
   try {

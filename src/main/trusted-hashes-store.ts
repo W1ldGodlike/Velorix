@@ -12,6 +12,12 @@ import { is } from '@electron-toolkit/utils'
  */
 export interface TrustedHashesWindows {
   'yt-dlp.exe'?: string
+  /**
+   * SHA256 готовых `ffmpeg.exe` / `ffprobe.exe` в `bin/` или `userData/bin` после распаковки.
+   * Используется для релизной верификации (`scripts/verify-bundled-engines-hashes.mjs`, UI-загрузка в main).
+   */
+  'ffmpeg.exe'?: string
+  'ffprobe.exe'?: string
   /** Хеш архива GitHub BtbN перед распаковкой. */
   'ffmpeg-master-latest-win64-gpl.zip'?: string
   /** Хеш архива с gyan.dev перед распаковкой. */
@@ -60,6 +66,26 @@ export function trustedHashForYtDlpWin(file: TrustedHashesFile): string | undefi
   const legacy = file.YtDlpSha256
   if (typeof legacy === 'string' && legacy.trim() !== '') {
     return legacy.trim()
+  }
+  return undefined
+}
+
+/** Непустой SHA256 для уже извлечённого `ffmpeg.exe`, если задан в JSON. */
+export function trustedHashForBundledFfmpegExeWin(file: TrustedHashesFile): string | undefined {
+  const w = file['windows-x64']
+  const nested = w?.['ffmpeg.exe']
+  if (typeof nested === 'string' && nested.trim() !== '') {
+    return nested.trim()
+  }
+  return undefined
+}
+
+/** Непустой SHA256 для уже извлечённого `ffprobe.exe`, если задан в JSON. */
+export function trustedHashForBundledFfprobeExeWin(file: TrustedHashesFile): string | undefined {
+  const w = file['windows-x64']
+  const nested = w?.['ffprobe.exe']
+  if (typeof nested === 'string' && nested.trim() !== '') {
+    return nested.trim()
   }
   return undefined
 }

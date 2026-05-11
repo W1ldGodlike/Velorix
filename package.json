@@ -42,6 +42,7 @@
     "typecheck:tests": "tsc --noEmit -p tsconfig.tests.json",
     "typecheck": "npm run typecheck:node && npm run typecheck:web && npm run typecheck:tests",
     "engines:prepare:win": "node scripts/prepare-engines-win.mjs",
+    "engines:verify-bundled": "node scripts/verify-bundled-engines-hashes.mjs",
     "predev": "npm run engines:prepare:win",
     "start": "electron-vite preview",
     "dev": "electron-vite dev",

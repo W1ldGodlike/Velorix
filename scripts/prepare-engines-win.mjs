@@ -216,6 +216,13 @@ async function ensureFfmpeg(trusted) {
         await fs.copyFile(ffmpegFound, ffmpegTarget)
         await fs.copyFile(ffprobeFound, ffprobeTarget)
       })
+      const wx = trusted['windows-x64']
+      const exeFfmpeg =
+        wx && typeof wx['ffmpeg.exe'] === 'string' ? wx['ffmpeg.exe'].trim() : undefined
+      const exeFfprobe =
+        wx && typeof wx['ffprobe.exe'] === 'string' ? wx['ffprobe.exe'].trim() : undefined
+      await assertSha256Optional(ffmpegTarget, exeFfmpeg || undefined)
+      await assertSha256Optional(ffprobeTarget, exeFfprobe || undefined)
       return
     } catch (error) {
       lastError = error
