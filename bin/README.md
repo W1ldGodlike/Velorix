@@ -26,7 +26,7 @@ npm run engines:report-hashes
 
 GitHub Actions caches `bin/` between runs (keyed on `prepare-engines-win.mjs` and `trusted_hashes.json`).
 
-Full Windows release artifacts (see `docs/RELEASE.md`): `npm run release:win` from repo root.
+Full Windows release artifacts (see `docs/RELEASE.md`): `npm run release:win` or `npm run release:win:force` from repo root.
 
 `npm run dev` runs the same check automatically before starting Electron.
 

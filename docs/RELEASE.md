@@ -86,6 +86,12 @@ npm run engines:prepare:win:force
 npm run release:win
 ```
 
+С перекачкой движков в `bin/` (игнорировать кэшированные exe):
+
+```powershell
+npm run release:win:force
+```
+
 Отдельные шаги:
 
 ```powershell
@@ -120,5 +126,5 @@ git status
 
 После push убедиться, что GitHub Actions `ci` зелёный.
 
-Workflow `ci` на Windows: кэш `bin/`, `engines:prepare:win`, `engines:verify-bundled`, `npm run build`, затем `npm run pack:dir` (`electron-builder --dir`) — проверка конфигурации упаковки без полного NSIS/portable/zip.
+Workflow `ci` на Windows: `concurrency` с `cancel-in-progress` для ветки; кэш `bin/`; `engines:prepare:win`; `engines:verify-bundled`; `npm run build`; `npm run pack:dir` (`electron-builder --dir`) — проверка конфигурации упаковки без полного NSIS/portable/zip.
 
