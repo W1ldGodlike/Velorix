@@ -306,3 +306,4 @@
 - [J-289] 2026-05-11 22:49:27 [SDK]: §19 — CI кэш bin: расширен `hashFiles` (verify/report/version-line); `--help` в verify/report; README релиз, RELEASE справка; спринт. `npm run check` ок.
 - [J-290] 2026-05-11 22:50:35 [SDK]: §19/§3 — `engines:doctor`; `--help` у prepare/run-prepare-force; CI `fetch-depth: 1`; README/RELEASE/bin README; спринт §19 короче. `npm run check` ок.
 - [J-291] 2026-05-11 22:51:38 [SDK]: §19 — CI: кэш `electron` и `electron-builder` Cache по lockfile; prepare `--help` — строка про `trusted_hashes`; RELEASE/спринт. `npm run check` ок.
+- [J-292] 2026-05-11 22:52:42 [SDK]: §19 — `check:release` включает `pack:dir`; `engines:doctor` = verify + SHA + версии; README/RELEASE/bin README/спринт. `npm run check` ок.

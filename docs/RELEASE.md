@@ -11,7 +11,7 @@ npm run build
 npm run audit:moderate
 ```
 
-Полный предрелизный прогон на Windows (включает подготовку `bin/` и `engines:verify-bundled` перед сборкой):
+Полный предрелизный прогон на Windows (подготовка `bin/`, `engines:verify-bundled`, `build`, smoke `electron-builder --dir`, затем `npm audit`):
 
 ```powershell
 npm run check:release
@@ -70,7 +70,7 @@ npm run engines:report-hashes -- --json --versions
 
 Справка по флагам: `npm run engines:verify-bundled -- --help`, `npm run engines:report-hashes -- --help`, `npm run engines:prepare:win -- --help`.
 
-Быстрая проверка `bin/` после prepare: `npm run engines:doctor` (verify + вывод версий).
+Быстрая проверка `bin/` после prepare: `npm run engines:doctor` (verify + SHA256-строки + вывод версий).
 
 Таймаут HTTP при скачивании движков (`prepare-engines-win` и загрузка в main из UI): переменная **`FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS`** (миллисекунды; по умолчанию 600000).
 
