@@ -95,12 +95,13 @@ import type {
 import { groupYtdlpCommandHintsByCategory } from '../../shared/ytdlp-command-hints-group'
 import type { YtdlpDownloadHistoryEntry } from '../../shared/ytdlp-history-contract'
 import type { DownloadsLogPayload } from '../../shared/downloads-log-contract'
+import type { TerminalCommandHintEntry, TerminalRunResult } from '../../shared/terminal-contract'
 import { PreviewProbeBody } from './components/MediaProbePanel'
 type Theme = ResolvedAppTheme
 
 type PreviewOpenedPayload = RestoredSourceInfo
 type EngineSummary = 'checking' | 'ready' | 'missing' | 'error'
-type WorkspaceTab = 'editor' | 'downloads'
+type WorkspaceTab = 'editor' | 'downloads' | 'terminal'
 type ExportPresetNameDialog = {
   mode: 'create' | 'rename'
   value: string
@@ -129,6 +130,11 @@ type DownloadsQueueStats = {
   error: number
   cancelled: number
   pending: number
+}
+type TerminalHistoryEntry = {
+  id: number
+  line: string
+  result: TerminalRunResult
 }
 type EnginesSnapshot = Awaited<ReturnType<typeof window.fluxalloy.engines.getStatus>>
 
@@ -659,6 +665,11 @@ function App(): JSX.Element {
   )
   /** Совпадает с `max-width: 1100px` в `main.css` для вкладки «Загрузки». */
   const [downloadsNarrowLayout, setDownloadsNarrowLayout] = useState(false)
+  const [terminalLine, setTerminalLine] = useState('ffmpeg -version')
+  const [terminalBusy, setTerminalBusy] = useState(false)
+  const [terminalHints, setTerminalHints] = useState<TerminalCommandHintEntry[]>([])
+  const [terminalHintFilter, setTerminalHintFilter] = useState('')
+  const [terminalHistory, setTerminalHistory] = useState<TerminalHistoryEntry[]>([])
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
   const [topbarEngineVersionsLine, setTopbarEngineVersionsLine] = useState('')
   const [exportBusy, setExportBusy] = useState(false)
@@ -728,6 +739,7 @@ function App(): JSX.Element {
   /** §6 / узкая ширина: `scrollIntoView` к панели настроек yt-dlp под очередью. */
   const downloadsSettingsRailRef = useRef<HTMLElement | null>(null)
   const downloadsLogNextIdRef = useRef(1)
+  const terminalHistoryNextIdRef = useRef(1)
   /** Последний диапазон In/Out с таймлайна для IPC экспорта, привязанный к текущему файлу. */
   const trimSnapshotRef = useRef<{
     path: string | null
@@ -788,6 +800,44 @@ function App(): JSX.Element {
       groupYtdlpCommandHintsByCategory(downloadsOptions?.commandHints, downloadsExpertHintFilter),
     [downloadsOptions?.commandHints, downloadsExpertHintFilter]
   )
+
+  const visibleTerminalHints = useMemo(() => {
+    const q = terminalHintFilter.trim().toLowerCase()
+    return terminalHints
+      .filter((hint) => {
+        if (q === '') return true
+        return (
+          hint.tool.toLowerCase().includes(q) ||
+          hint.token.toLowerCase().includes(q) ||
+          hint.summary.toLowerCase().includes(q)
+        )
+      })
+      .slice(0, 36)
+  }, [terminalHintFilter, terminalHints])
+
+  const appendTerminalToken = useCallback((token: string) => {
+    setTerminalLine((line) => {
+      const trimmed = line.trimEnd()
+      return trimmed ? `${trimmed} ${token}` : token
+    })
+  }, [])
+
+  const runTerminalLine = useCallback(async (): Promise<void> => {
+    const line = terminalLine.trim()
+    if (!line || terminalBusy) {
+      return
+    }
+    setTerminalBusy(true)
+    try {
+      const result = await window.fluxalloy.terminal.run({ line })
+      setTerminalHistory((rows) =>
+        [{ id: terminalHistoryNextIdRef.current++, line, result }, ...rows].slice(0, 20)
+      )
+      setStatusHint(result.ok ? `CLI: код ${result.code ?? 'n/a'}` : `CLI: ${result.error}`)
+    } finally {
+      setTerminalBusy(false)
+    }
+  }, [terminalBusy, terminalLine])
 
   const appendDownloadsExtraArgsToken = useCallback(
     (token: string) => {
@@ -1051,6 +1101,18 @@ function App(): JSX.Element {
     void window.fluxalloy.downloads.getOutputDirectory().then((dir) => {
       setDownloadsOutputDirectory(dir)
     })
+  }, [])
+
+  useEffect(() => {
+    let mounted = true
+    void window.fluxalloy.terminal.getHints().then((hints) => {
+      if (mounted) {
+        setTerminalHints(hints)
+      }
+    })
+    return () => {
+      mounted = false
+    }
   }, [])
 
   useEffect(() => {
@@ -1984,6 +2046,17 @@ function App(): JSX.Element {
               <IconDownload title="" size={16} />
             </span>
             Загрузки
+          </button>
+          <button
+            type="button"
+            className={`app-workspace-tab${workspaceTab === 'terminal' ? ' app-workspace-tab-active' : ''}`}
+            aria-current={workspaceTab === 'terminal' ? 'page' : undefined}
+            onClick={() => {
+              setWorkspaceTab('terminal')
+            }}
+            title="Безопасный CLI для ffmpeg, ffprobe и yt-dlp"
+          >
+            Терминал
           </button>
         </nav>
         <div className="app-topbar-trailing">
@@ -3313,6 +3386,106 @@ function App(): JSX.Element {
               </details>
             </aside>
           ) : null}
+        </main>
+      ) : workspaceTab === 'terminal' ? (
+        <main className="app-main app-terminal-workspace" aria-label="Терминал CLI">
+          <section className="app-terminal-panel">
+            <div className="app-downloads-band">
+              <div className="app-downloads-band-copy">
+                <h2 className="app-downloads-title">Терминал</h2>
+                <p className="app-downloads-hint">
+                  Разрешены только префиксы ffmpeg, ffprobe и yt-dlp. Команда разбирается как argv,
+                  запускается через main без shell, а PATH дополняется папкой выбранного движка.
+                </p>
+              </div>
+            </div>
+            <div className="app-terminal-command-row">
+              <input
+                className="app-control app-terminal-input"
+                value={terminalLine}
+                spellCheck={false}
+                autoComplete="off"
+                placeholder="ffprobe -version"
+                aria-label="Команда CLI"
+                disabled={terminalBusy}
+                onChange={(e) => {
+                  setTerminalLine(e.target.value)
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    void runTerminalLine()
+                  }
+                }}
+              />
+              <button
+                type="button"
+                className="app-btn app-btn-primary"
+                disabled={terminalBusy || terminalLine.trim().length === 0}
+                onClick={() => {
+                  void runTerminalLine()
+                }}
+              >
+                {terminalBusy ? 'Выполняю…' : 'Выполнить'}
+              </button>
+            </div>
+            <div className="app-terminal-layout">
+              <section className="app-terminal-history" aria-label="История команд терминала">
+                {terminalHistory.length === 0 ? (
+                  <p className="app-downloads-empty">История этой сессии пока пуста.</p>
+                ) : (
+                  terminalHistory.map((entry) => (
+                    <article key={entry.id} className="app-terminal-entry">
+                      <div className="app-terminal-entry-head">
+                        <code>{entry.line}</code>
+                        <span>
+                          {entry.result.ok
+                            ? `code ${entry.result.code ?? 'n/a'} · ${entry.result.elapsedMs} ms`
+                            : 'blocked'}
+                        </span>
+                      </div>
+                      {entry.result.ok ? (
+                        <pre className="app-terminal-output">
+                          {[entry.result.stdout, entry.result.stderr].filter(Boolean).join('\n')}
+                        </pre>
+                      ) : (
+                        <p className="app-downloads-warning">{entry.result.error}</p>
+                      )}
+                    </article>
+                  ))
+                )}
+              </section>
+              <aside className="app-terminal-hints" aria-label="Подсказки CLI">
+                <label className="app-field">
+                  <span>Поиск подсказок</span>
+                  <input
+                    className="app-control"
+                    value={terminalHintFilter}
+                    spellCheck={false}
+                    placeholder="--help, -i, crop"
+                    onChange={(e) => {
+                      setTerminalHintFilter(e.target.value)
+                    }}
+                  />
+                </label>
+                <div className="app-terminal-hint-list">
+                  {visibleTerminalHints.map((hint) => (
+                    <button
+                      key={`${hint.tool}:${hint.token}`}
+                      type="button"
+                      className="app-terminal-hint"
+                      onClick={() => appendTerminalToken(hint.token)}
+                      title={hint.summary}
+                    >
+                      <code>{hint.token}</code>
+                      <span>{hint.tool}</span>
+                      <small>{hint.summary}</small>
+                    </button>
+                  ))}
+                </div>
+              </aside>
+            </div>
+          </section>
         </main>
       ) : (
         <main className="app-main app-downloads-workspace" aria-label="Вкладка загрузок">

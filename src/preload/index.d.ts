@@ -61,6 +61,11 @@ import type {
 } from '../shared/ytdlp-download-contract'
 import type { YtdlpDownloadHistoryEntry } from '../shared/ytdlp-history-contract'
 import type { DownloadsLogPayload } from '../shared/downloads-log-contract'
+import type {
+  TerminalCommandHintEntry,
+  TerminalRunRequest,
+  TerminalRunResult
+} from '../shared/terminal-contract'
 
 /** Данные для привязки `<video>` к локальному файлу через allowlist-схему `fluxmedia://`. */
 export type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
@@ -200,6 +205,10 @@ export interface FluxAlloyApi {
   clipboard: {
     readText: () => Promise<string>
     writeText: (text: string) => Promise<{ ok: true } | { ok: false }>
+  }
+  terminal: {
+    getHints: () => Promise<TerminalCommandHintEntry[]>
+    run: (payload: TerminalRunRequest) => Promise<TerminalRunResult>
   }
   saveTextWithDialog: (payload: SaveTextDialogPayload) => Promise<SaveTextDialogResult>
   about: {

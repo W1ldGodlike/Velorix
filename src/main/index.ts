@@ -108,6 +108,7 @@ import {
   resolveFfmpegExportJobOptionsFromAppSettings
 } from './ffmpeg-export-resolve-from-settings'
 import { probeMediaFile } from './ffprobe-service'
+import { getTerminalCommandHints, runTerminalCommand } from './terminal-service'
 import type { EngineDownloadProgress } from './engine-download'
 import { setEnginePathOverridesSnapshot } from './engine-path-sync'
 import {
@@ -172,6 +173,7 @@ import type {
   DiagnosticsSupportZipResult
 } from '../shared/diagnostics-contract'
 import type { SaveTextDialogResult } from '../shared/save-text-dialog-contract'
+import type { TerminalCommandHintEntry, TerminalRunResult } from '../shared/terminal-contract'
 
 /** Кастомная схема для локального видеопревью; привилегии обязаны зарегистрироваться до `app.whenReady`. */
 attachProcessErrorHandlers()
@@ -2511,6 +2513,20 @@ app.whenReady().then(() => {
       }
     }
     return probeMediaFile(resolveAppPaths(), abs, cachedSettings.engineExecutablePaths)
+  })
+
+  ipcMain.handle(mw.terminalHints, (): TerminalCommandHintEntry[] => getTerminalCommandHints())
+
+  ipcMain.handle(mw.terminalRun, async (_, raw: unknown): Promise<TerminalRunResult> => {
+    const line =
+      raw && typeof raw === 'object' && typeof (raw as { line?: unknown }).line === 'string'
+        ? (raw as { line: string }).line
+        : ''
+    return runTerminalCommand({
+      paths: resolveAppPaths(),
+      overrides: cachedSettings.engineExecutablePaths,
+      line
+    })
   })
 
   ipcMain.handle(mw.clipboardReadText, () => clipboard.readText())

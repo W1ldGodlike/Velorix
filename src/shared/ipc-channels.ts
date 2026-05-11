@@ -52,6 +52,8 @@ export const mainWindowIpc = {
   persistLastSource: 'fluxalloy:persist-last-source',
   restoreLastSource: 'fluxalloy:restore-last-source',
   mediaProbe: 'fluxalloy:media-probe',
+  terminalHints: 'fluxalloy:terminal-hints',
+  terminalRun: 'fluxalloy:terminal-run',
   clipboardReadText: 'fluxalloy:clipboard-read-text',
   clipboardWriteText: 'fluxalloy:clipboard-write-text',
   saveTextWithDialog: 'fluxalloy:save-text-with-dialog',

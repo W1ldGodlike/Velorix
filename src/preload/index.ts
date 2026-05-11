@@ -62,6 +62,11 @@ import type {
 } from '../shared/ytdlp-download-contract'
 import type { YtdlpDownloadHistoryEntry } from '../shared/ytdlp-history-contract'
 import type { DownloadsLogPayload } from '../shared/downloads-log-contract'
+import type {
+  TerminalCommandHintEntry,
+  TerminalRunRequest,
+  TerminalRunResult
+} from '../shared/terminal-contract'
 import { downloadsIpc as d, mainWindowIpc as mw } from '../shared/ipc-channels'
 
 type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
@@ -385,6 +390,11 @@ const fluxalloy = {
     readText: (): Promise<string> => ipcRenderer.invoke(mw.clipboardReadText),
     writeText: (text: string): Promise<{ ok: true } | { ok: false }> =>
       ipcRenderer.invoke(mw.clipboardWriteText, text)
+  },
+  terminal: {
+    getHints: (): Promise<TerminalCommandHintEntry[]> => ipcRenderer.invoke(mw.terminalHints),
+    run: (payload: TerminalRunRequest): Promise<TerminalRunResult> =>
+      ipcRenderer.invoke(mw.terminalRun, payload)
   },
   /** §9 — диалог «Сохранить как» в main (JSON ffprobe и др. текст без Node в renderer). */
   saveTextWithDialog: (payload: SaveTextDialogPayload): Promise<SaveTextDialogResult> =>
