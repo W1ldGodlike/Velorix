@@ -17,6 +17,7 @@ import {
   formatFfprobeVideoHdrColorBrief,
   formatFfprobeVideoSdGamutBrief
 } from '../shared/ffprobe-video-color-brief'
+import { formatFfprobeCreationTimeBrief } from '../shared/ffprobe-creation-time-brief'
 import type {
   MediaProbeResult,
   MediaProbeSuccess,
@@ -332,6 +333,10 @@ function buildTrackDetail(
     if (timecode) {
       parts.push(`TC ${timecode}`)
     }
+    const vCreated = formatFfprobeCreationTimeBrief(stream.tags)
+    if (vCreated) {
+      parts.push(vCreated)
+    }
   } else if (ct === 'audio') {
     const ch = stream.channels
     if (typeof ch === 'number') {
@@ -377,6 +382,10 @@ function buildTrackDetail(
     )
     if (aFourcc) {
       parts.push(aFourcc)
+    }
+    const aCreated = formatFfprobeCreationTimeBrief(stream.tags)
+    if (aCreated) {
+      parts.push(aCreated)
     }
     const aEnc = formatFfprobeTagEncoderBrief(stream.tags)
     if (aEnc) {

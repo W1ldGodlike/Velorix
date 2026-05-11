@@ -193,6 +193,32 @@ describe('ffprobe-service buildTrackRows', () => {
     expect(row?.detail).toContain('bt2020·bt2020nc')
   })
 
+  it('video/audio detail включает tags.creation_time как created YYYY-MM-DD', () => {
+    const rows = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 1280,
+          height: 720,
+          tags: { creation_time: '2022-11-07T10:00:00.000000Z' }
+        },
+        {
+          index: 1,
+          codec_type: 'audio',
+          codec_name: 'aac',
+          channels: 2,
+          sample_rate: '48000',
+          tags: { creation_time: '2022-11-07T12:00:00.000000Z' }
+        }
+      ],
+      null
+    )
+    expect(rows[0]?.detail).toContain('created 2022-11-07')
+    expect(rows[1]?.detail).toContain('created 2022-11-07')
+  })
+
   it('encoder в detail обрезается при длинной строке', () => {
     const long = `${'A'.repeat(70)}tail`
     const [row] = buildTrackRows(
