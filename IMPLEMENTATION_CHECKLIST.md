@@ -41,7 +41,7 @@
 
 Правило для агента: этот блок — рабочий навигатор ближайшего спринта. После каждой крупной итерации обновлять его: отмечать сделанное, переводить частичное в `[~]`, убирать устаревшее только если оно отражено ниже по §, и добавлять 3–7 следующих конкретных пунктов. Не оставлять блок полностью закрытым. Работать крупными блоками; отчёт пользователю — максимально краткий. `docs/UX_REFERENCE_V0.md` использовать только как ориентир для нужных UI-правок, но не держать спринт вокруг v0.
 
-- [~] §19/§3/§17: release/security — CI (строгий `trusted_hashes` + hex SHA256 при непустых через env job, shallow checkout, кэш Electron/electron-builder/`bin/`, prepare→**`engines:doctor`**→build→`pack:dir`, `permissions`+concurrency), `check:trusted-hashes`, `release:win*`/`check:release`, env таймауты, NSIS+portable+zip, CSC в RELEASE; дальше — ручной smoke, подпись.
+- [~] §19/§3/§17: release/security — CI и локальные **`check:release`** / **`release:win*`**: после prepare — **`engines:doctor`**; CI ещё: строгий `trusted_hashes` + hex SHA256 через env job, shallow checkout, кэш Electron/electron-builder/`bin/`, build→`pack:dir`, `permissions`+concurrency; `check:trusted-hashes`, env таймауты, NSIS+portable+zip, CSC в RELEASE; дальше — ручной smoke, подпись.
 - [~] §6.1/§6.4: downloads core — очередь, история, лог, retry, pause, output resolving, preview proxy и React-вкладка есть; дальше — устойчивость редких yt-dlp логов, сценарий download→encode и уменьшение дубляжа embedded/pop-out.
 - [~] §7.2/§7.3/§7.4: обработка — trim/crop/rotate/flip/scale/FPS/bitrate/presets/2-pass есть; дальше — filters/audio filters/subtitles/metadata, HW encode, batch и связка download→encode.
 - [~] §9/§18: ffprobe/диагностика — inspector, TXT/HTML/JSON export, logs, Support ZIP есть; дальше — редкие ffprobe-поля, crash/e2e smoke и расширение диагностического отчёта.
@@ -476,7 +476,7 @@
 - [x] `npm run build:win` проходит.
 - [x] `npm run build:unpack` проходит.
 - [~] `Data/`, `Help/`, `FLUXALLOY_TZ.md` добавлены в `extraResources`.
-- [~] `bin/` в `extraResources`: bundled-first каталог с `README.md`; готовые бинарники подкладываются локально/CI через `npm run engines:prepare:win` перед сборкой (в Git не хранятся), скачивание в `userData/bin` остаётся fallback/update; release checklist и лицензии bundled engines — `docs/RELEASE.md` / `docs/BUNDLED_ENGINES_LICENSES.md`; GitHub Actions после `check` гоняет prepare + `engines:verify-bundled` (без strict, пока хеши в репо пустые).
+- [~] `bin/` в `extraResources`: bundled-first каталог с `README.md`; готовые бинарники подкладываются локально/CI через `npm run engines:prepare:win` перед сборкой (в Git не хранятся), скачивание в `userData/bin` остаётся fallback/update; release checklist и лицензии bundled engines — `docs/RELEASE.md` / `docs/BUNDLED_ENGINES_LICENSES.md`; GitHub Actions после `check` гоняет prepare + **`engines:doctor`** (без `FLUXALLOY_ENGINES_STRICT`, пока хеши в репо пустые); локально **`check:release`** / **`release:win*`** после prepare тоже через `engines:doctor`.
 - [ ] Настроить нормальную иконку приложения вместо placeholder/default.
 - [ ] Windows NSIS: проверить installer вручную.
 - [~] Windows portable/zip: в `electron-builder.yml` цели `portable` и `zip` рядом с NSIS; ручной smoke — позже.

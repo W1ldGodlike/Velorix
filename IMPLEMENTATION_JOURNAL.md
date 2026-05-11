@@ -311,3 +311,4 @@
 - [J-294] 2026-05-11 22:55:05 [SDK]: §3/§19 — validate `trusted_hashes`: schema, legacy-строки, неизвестные ключи (warn / `FLUXALLOY_TRUSTED_HASHES_STRICT_UNKNOWN`); RELEASE/спринт. `npm run check` ок.
 - [J-295] 2026-05-11 22:56:22 [SDK]: §3/§19 — validate: `FLUXALLOY_TRUSTED_HASHES_REQUIRE_SHA256_HEX` для непустых хешей; CI job env strict+hex; RELEASE §1/§5, спринт. `npm run check` ок.
 - [J-296] 2026-05-11 22:57:27 [SDK]: §19 — CI после prepare: `engines:doctor` вместо только `engines:verify-bundled` (SHA+версии в лог); RELEASE §5, спринт. `npm run check` ок.
+- [J-297] 2026-05-11 22:58:21 [SDK]: §19 — `check:release` и `release:win*` после prepare: `engines:doctor` (паритет с CI); RELEASE §2/чеклист §19/спринт, BUNDLED_ENGINES_LICENSES. `npm run check` ок.

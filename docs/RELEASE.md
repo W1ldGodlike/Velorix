@@ -11,7 +11,7 @@ npm run build
 npm run audit:moderate
 ```
 
-Полный предрелизный прогон на Windows (подготовка `bin/`, `engines:verify-bundled`, `build`, smoke `electron-builder --dir`, затем `npm audit`):
+Полный предрелизный прогон на Windows (подготовка `bin/`, **`engines:doctor`** — тот же набор, что после prepare в CI: verify + SHA + версии, `build`, smoke `electron-builder --dir`, затем `npm audit`):
 
 ```powershell
 npm run check:release
@@ -65,7 +65,7 @@ npm run engines:report-hashes -- --versions
 npm run engines:report-hashes -- --json --versions
 ```
 
-Второй вариант выводит JSON с ключами `yt-dlp.exe`, `ffmpeg.exe`, `ffprobe.exe` — вручную перенесите значения в `Data/trusted_hashes.json` → `windows-x64`. Флаг `--versions` печатает первую строку версии каждого exe (как в CI для `engines:verify-bundled`).
+Второй вариант выводит JSON с ключами `yt-dlp.exe`, `ffmpeg.exe`, `ffprobe.exe` — вручную перенесите значения в `Data/trusted_hashes.json` → `windows-x64`. Флаг `--versions` печатает первую строку версии каждого exe (как второй проход в `engines:doctor` и лог `engines:verify-bundled` в CI при `GITHUB_ACTIONS`).
 
 Локально повторить вывод версий из verify: `FLUXALLOY_LOG_ENGINE_VERSIONS=1` и `npm run engines:verify-bundled`.
 
