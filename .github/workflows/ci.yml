@@ -22,6 +22,22 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Cache Electron (npm postinstall / vite)
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.LOCALAPPDATA }}\electron\Cache
+          key: ${{ runner.os }}-electron-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-electron-
+
+      - name: Cache electron-builder (winCodeSign и др.)
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.LOCALAPPDATA }}\electron-builder\Cache
+          key: ${{ runner.os }}-electron-builder-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-electron-builder-
+
       - name: Cache Windows engines (bin/)
         uses: actions/cache@v4
         with:

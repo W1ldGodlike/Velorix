@@ -261,6 +261,8 @@ async function ensureFfmpeg(trusted) {
 function printPrepareHelp() {
   console.log(`prepare-engines-win — загрузка yt-dlp.exe и ffmpeg/ffprobe в bin/ (только Windows).
 
+SHA256 (опционально): Data/trusted_hashes.json (см. docs/RELEASE.md).
+
 Переменные окружения:
   FLUXALLOY_ENGINES_FORCE=1               удалить существующие exe и скачать заново
   FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS    таймаут HTTP в мс (по умолчанию 600000)

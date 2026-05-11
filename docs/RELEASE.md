@@ -143,5 +143,5 @@ git status
 
 После push убедиться, что GitHub Actions `ci` зелёный.
 
-Workflow `ci` на Windows: `actions/checkout` с `fetch-depth: 1`; `permissions: contents: read`; `concurrency` с `cancel-in-progress` для ветки; кэш `bin/`; `engines:prepare:win`; `engines:verify-bundled` (печать версий при `GITHUB_ACTIONS` или `FLUXALLOY_LOG_ENGINE_VERSIONS`); `npm run build`; `npm run pack:dir` (`electron-builder --dir`) — проверка конфигурации упаковки без полного NSIS/portable/zip.
+Workflow `ci` на Windows: `actions/checkout` с `fetch-depth: 1`; `permissions: contents: read`; `concurrency` с `cancel-in-progress` для ветки; кэш **`%LOCALAPPDATA%\electron\Cache`** и **`%LOCALAPPDATA%\electron-builder\Cache`** (по `package-lock.json`); кэш `bin/`; `engines:prepare:win`; `engines:verify-bundled` (печать версий при `GITHUB_ACTIONS` или `FLUXALLOY_LOG_ENGINE_VERSIONS`); `npm run build`; `npm run pack:dir` (`electron-builder --dir`) — проверка конфигурации упаковки без полного NSIS/portable/zip.
 
