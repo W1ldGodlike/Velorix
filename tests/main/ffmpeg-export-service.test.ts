@@ -22,6 +22,7 @@ import {
   parseFfmpegExportVideoGrain,
   parseFfmpegExportVideoVignette,
   parseFfmpegExportVideoBlur,
+  parseFfmpegExportVideoDeinterlace,
   parseFfmpegSpeedToken,
   parseFfmpegTimeSeconds,
   resolveExportEncodeParams,
@@ -198,6 +199,21 @@ describe('ffmpeg export pure helpers', () => {
         videoGrain: 'light'
       })
     ).toMatchObject({ videoGrain: 'light' })
+    expect(
+      parseFfmpegExportUserPresetSnapshot({
+        encodePreset: 'balance',
+        container: 'mp4',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'aac',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        videoTransform: 'none',
+        cropPreset: 'none',
+        videoDeinterlace: 'field'
+      })
+    ).toMatchObject({ videoDeinterlace: 'field' })
   })
 
   it('parseFfmpegExportVideoGrain — whitelist', () => {
@@ -213,6 +229,12 @@ describe('ffmpeg export pure helpers', () => {
   it('parseFfmpegExportVideoBlur — whitelist', () => {
     expect(parseFfmpegExportVideoBlur('strong')).toBe('strong')
     expect(parseFfmpegExportVideoBlur('bogus')).toBe('off')
+  })
+
+  it('parseFfmpegExportVideoDeinterlace — whitelist', () => {
+    expect(parseFfmpegExportVideoDeinterlace('frame')).toBe('frame')
+    expect(parseFfmpegExportVideoDeinterlace('field')).toBe('field')
+    expect(parseFfmpegExportVideoDeinterlace('bogus')).toBe('off')
   })
 
   it('mergeFfmpegExportSnapshotIntoAppSettings повторяет правила delete для дефолтов', () => {
@@ -324,6 +346,24 @@ describe('ffmpeg export pure helpers', () => {
       }
     )
     expect(blur.ffmpegExportVideoBlur).toBe('medium')
+
+    const deint = mergeFfmpegExportSnapshotIntoAppSettings(
+      { theme: 'dark' },
+      {
+        encodePreset: 'balance',
+        container: 'mp4',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'aac',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        videoTransform: 'none',
+        cropPreset: 'none',
+        videoDeinterlace: 'frame'
+      }
+    )
+    expect(deint.ffmpegExportVideoDeinterlace).toBe('frame')
 
     const hue = mergeFfmpegExportSnapshotIntoAppSettings(
       { theme: 'dark' },

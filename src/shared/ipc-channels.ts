@@ -30,6 +30,8 @@ export const mainWindowIpc = {
   settingsSetFfmpegExportVideoGrain: 'fluxalloy:settings-set-ffmpeg-export-video-grain',
   settingsSetFfmpegExportVideoVignette: 'fluxalloy:settings-set-ffmpeg-export-video-vignette',
   settingsSetFfmpegExportVideoBlur: 'fluxalloy:settings-set-ffmpeg-export-video-blur',
+  settingsSetFfmpegExportVideoDeinterlace:
+    'fluxalloy:settings-set-ffmpeg-export-video-deinterlace',
   settingsSetFfmpegExportVideoHue: 'fluxalloy:settings-set-ffmpeg-export-video-hue',
   settingsSetFfmpegExportAudioNormalize: 'fluxalloy:settings-set-ffmpeg-export-audio-normalize',
   settingsSetFfmpegExportUserPresets: 'fluxalloy:settings-set-ffmpeg-export-user-presets',

@@ -89,6 +89,7 @@ import {
   parseFfmpegExportVideoLut3d,
   parseFfmpegExportVideoVignette,
   parseFfmpegExportVideoBlur,
+  parseFfmpegExportVideoDeinterlace,
   parseFfmpegExportVideoHue,
   parseFfmpegExportVideoSharpen,
   parseFfmpegExportVideoTransform,
@@ -1053,6 +1054,19 @@ function persistFfmpegExportVideoBlur(raw: unknown): AppSettings {
     delete next.ffmpegExportVideoBlur
   } else {
     next.ffmpegExportVideoBlur = value
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistFfmpegExportVideoDeinterlace(raw: unknown): AppSettings {
+  const value = parseFfmpegExportVideoDeinterlace(raw)
+  const next = { ...cachedSettings }
+  if (value === 'off') {
+    delete next.ffmpegExportVideoDeinterlace
+  } else {
+    next.ffmpegExportVideoDeinterlace = value
   }
   cachedSettings = next
   saveSettings(settingsPath(), cachedSettings)
@@ -2261,6 +2275,11 @@ app.whenReady().then(() => {
   ipcMain.handle(
     mw.settingsSetFfmpegExportVideoBlur,
     (_, raw: unknown): AppSettings => persistFfmpegExportVideoBlur(raw)
+  )
+
+  ipcMain.handle(
+    mw.settingsSetFfmpegExportVideoDeinterlace,
+    (_, raw: unknown): AppSettings => persistFfmpegExportVideoDeinterlace(raw)
   )
 
   ipcMain.handle(

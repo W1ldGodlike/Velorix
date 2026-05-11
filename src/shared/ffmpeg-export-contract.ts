@@ -47,6 +47,11 @@ export type FfmpegExportVideoVignetteId = 'off' | 'light' | 'medium' | 'strong'
  */
 export type FfmpegExportVideoBlurId = 'off' | 'light' | 'medium' | 'strong'
 /**
+ * §7.2 — деинтерлейс `yadif` (только whitelist; без пользовательских `-vf`).
+ * `frame` — `mode=send_frame` (по умолчанию в ffmpeg); `field` — `mode=send_field` (удвоение кадровой частоты для чересстрочного входа).
+ */
+export type FfmpegExportVideoDeinterlaceId = 'off' | 'frame' | 'field'
+/**
  * §7.2 — пресеты `hue=h=…:s=…` (сдвиг оттенка / буст насыщенности), только whitelist; `off` — без фильтра.
  * В `-vf` вставляется сразу после `eq` и до зерна.
  */
@@ -122,6 +127,8 @@ export interface FfmpegExportUserPresetSnapshot {
   videoVignette?: FfmpegExportVideoVignetteId
   /** §7.2 — `gblur`; `off` совпадает с поведением до правки. */
   videoBlur?: FfmpegExportVideoBlurId
+  /** §7.2 — `yadif` после crop и до denoise; `off` совпадает с поведением до правки. */
+  videoDeinterlace?: FfmpegExportVideoDeinterlaceId
   /** §7.2 — `loudnorm`/`dynaudnorm`; `off` совпадает с поведением до правки. */
   audioNormalize?: FfmpegExportAudioNormalizeId
 }
@@ -185,6 +192,8 @@ export interface MediaExportRequestPayload {
   videoVignette?: FfmpegExportVideoVignetteId | null
   /** §7.2 — `gblur`; `off` совпадает с текущим поведением. */
   videoBlur?: FfmpegExportVideoBlurId | null
+  /** §7.2 — `yadif` деинтерлейс; `off` совпадает с текущим поведением. */
+  videoDeinterlace?: FfmpegExportVideoDeinterlaceId | null
   /** §7.2 — `loudnorm`/`dynaudnorm`; `off` совпадает с текущим поведением. */
   audioNormalize?: FfmpegExportAudioNormalizeId | null
 }

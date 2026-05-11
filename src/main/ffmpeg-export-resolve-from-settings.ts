@@ -11,6 +11,7 @@ import type {
   FfmpegExportScalePresetId,
   FfmpegExportSubtitleModeId,
   FfmpegExportVideoDebandId,
+  FfmpegExportVideoDeinterlaceId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
@@ -37,6 +38,7 @@ import {
   parseFfmpegExportTwoPass,
   parseFfmpegExportVideoBitrate,
   parseFfmpegExportVideoDeband,
+  parseFfmpegExportVideoDeinterlace,
   parseFfmpegExportVideoDenoise,
   parseFfmpegExportVideoEqPreset,
   parseFfmpegExportVideoGrain,
@@ -74,6 +76,7 @@ export type ResolvedFfmpegExportJobOptions = {
   videoGrain: FfmpegExportVideoGrainId | null
   videoVignette: FfmpegExportVideoVignetteId | null
   videoBlur: FfmpegExportVideoBlurId | null
+  videoDeinterlace: FfmpegExportVideoDeinterlaceId | null
   audioNormalize: FfmpegExportAudioNormalizeId | null
 }
 
@@ -209,6 +212,11 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
     videoBlurRaw !== undefined && videoBlurRaw !== null
       ? parseFfmpegExportVideoBlur(videoBlurRaw)
       : parseFfmpegExportVideoBlur(settings.ffmpegExportVideoBlur)
+  const videoDeinterlaceRaw = raw['videoDeinterlace']
+  const videoDeinterlace =
+    videoDeinterlaceRaw !== undefined && videoDeinterlaceRaw !== null
+      ? parseFfmpegExportVideoDeinterlace(videoDeinterlaceRaw)
+      : parseFfmpegExportVideoDeinterlace(settings.ffmpegExportVideoDeinterlace)
   const audioNormalizeRaw = raw['audioNormalize']
   const audioNormalize =
     audioNormalizeRaw !== undefined && audioNormalizeRaw !== null
@@ -240,6 +248,7 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
     videoGrain,
     videoVignette,
     videoBlur,
+    videoDeinterlace,
     audioNormalize
   }
 }

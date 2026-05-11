@@ -13,6 +13,7 @@ import {
   resolveFfmpegExportScaleFilter,
   resolveFfmpegExportSubtitleCopyCodec,
   resolveFfmpegExportVideoDebandFilter,
+  resolveFfmpegExportVideoDeinterlaceFilter,
   resolveFfmpegExportVideoDenoiseFilter,
   resolveFfmpegExportVideoEqFilter,
   resolveFfmpegExportVideoGrainFilter,
@@ -648,6 +649,12 @@ describe('shared ffmpeg export argv', () => {
     expect(resolveFfmpegExportVideoBlurFilter('strong')).toBe('gblur=sigma=5')
   })
 
+  it('resolveFfmpegExportVideoDeinterlaceFilter — только whitelist yadif', () => {
+    expect(resolveFfmpegExportVideoDeinterlaceFilter('off')).toBeNull()
+    expect(resolveFfmpegExportVideoDeinterlaceFilter('frame')).toBe('yadif')
+    expect(resolveFfmpegExportVideoDeinterlaceFilter('field')).toBe('yadif=mode=send_field')
+  })
+
   it('resolveFfmpegExportVideoHueFilter — только whitelist hue', () => {
     expect(resolveFfmpegExportVideoHueFilter('off')).toBeNull()
     expect(resolveFfmpegExportVideoHueFilter('warmShift')).toBe('hue=h=-11:s=1.03')
@@ -669,6 +676,7 @@ describe('shared ffmpeg export argv', () => {
       scalePreset: '720p',
       videoTransform: 'cw90',
       cropPreset: 'center-square',
+      videoDeinterlace: 'frame',
       videoDenoise: 'medium',
       videoDeband: 'light',
       videoLut3dCubeAbsPath: 'D:/l/f.cube',
@@ -681,7 +689,7 @@ describe('shared ffmpeg export argv', () => {
     })
     const vf = argv[argv.indexOf('-vf') + 1] ?? ''
     expect(vf).toBe(
-      "transpose=1,crop=min(iw\\,ih):min(iw\\,ih),hqdn3d=3:3:6:6,deband=range=12,lut3d=file='D\\:/l/f.cube':interp=trilinear,unsharp=5:5:0.6:5:5:0.0,eq=contrast=1.10:saturation=1.20,hue=h=-11:s=1.03,noise=alls=5:allf=u,vignette=angle=PI/10,gblur=sigma=2.5,scale=-2:720,fps=30"
+      "transpose=1,crop=min(iw\\,ih):min(iw\\,ih),yadif,hqdn3d=3:3:6:6,deband=range=12,lut3d=file='D\\:/l/f.cube':interp=trilinear,unsharp=5:5:0.6:5:5:0.0,eq=contrast=1.10:saturation=1.20,hue=h=-11:s=1.03,noise=alls=5:allf=u,vignette=angle=PI/10,gblur=sigma=2.5,scale=-2:720,fps=30"
     )
   })
 

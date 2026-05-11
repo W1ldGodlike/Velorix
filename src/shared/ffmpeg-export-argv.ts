@@ -15,6 +15,7 @@ import type {
   FfmpegExportScalePresetId,
   FfmpegExportSubtitleModeId,
   FfmpegExportVideoDebandId,
+  FfmpegExportVideoDeinterlaceId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
@@ -356,6 +357,20 @@ export function resolveFfmpegExportCropFilter(id: FfmpegExportCropPresetId): str
   }
 }
 
+/** §7.2 — whitelist `yadif`; `off` → `null`. */
+export function resolveFfmpegExportVideoDeinterlaceFilter(
+  id: FfmpegExportVideoDeinterlaceId
+): string | null {
+  switch (id) {
+    case 'frame':
+      return 'yadif'
+    case 'field':
+      return 'yadif=mode=send_field'
+    default:
+      return null
+  }
+}
+
 export interface FfmpegExportArgvParams {
   inputPath: string
   outputPath: string
@@ -419,6 +434,8 @@ export interface FfmpegExportArgvParams {
   videoVignette?: FfmpegExportVideoVignetteId
   /** §7.2 — `gblur`; `off` или undefined — без фильтра. */
   videoBlur?: FfmpegExportVideoBlurId
+  /** §7.2 — `yadif` после crop и до denoise; `off` или undefined — без фильтра. */
+  videoDeinterlace?: FfmpegExportVideoDeinterlaceId
   /**
    * §7.2 — `loudnorm`/`dynaudnorm`; `off` или undefined — без нормализации.
    * При `audioMode='none'` или в первом проходе двухпроходного режима игнорируется
@@ -438,6 +455,10 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
   const crop = resolveFfmpegExportCropFilter(params.cropPreset ?? 'none')
   if (crop !== null) {
     filters.push(crop)
+  }
+  const deint = resolveFfmpegExportVideoDeinterlaceFilter(params.videoDeinterlace ?? 'off')
+  if (deint !== null) {
+    filters.push(deint)
   }
   // §7.2 — порядок: денойз раньше резкости и масштаба, чтобы шум не «выпиливался» резкостью
   // и не дублировался при последующем `scale`. Это согласовано с обычной киноpipe-семантикой.
@@ -638,6 +659,7 @@ export interface FfmpegExportPreviewInput {
   videoGrain?: FfmpegExportVideoGrainId
   videoVignette?: FfmpegExportVideoVignetteId
   videoBlur?: FfmpegExportVideoBlurId
+  videoDeinterlace?: FfmpegExportVideoDeinterlaceId
   audioNormalize?: FfmpegExportAudioNormalizeId
 }
 
@@ -719,6 +741,7 @@ export function buildFfmpegExportPreviewCommand(
     ...(input.videoGrain !== undefined ? { videoGrain: input.videoGrain } : {}),
     ...(input.videoVignette !== undefined ? { videoVignette: input.videoVignette } : {}),
     ...(input.videoBlur !== undefined ? { videoBlur: input.videoBlur } : {}),
+    ...(input.videoDeinterlace !== undefined ? { videoDeinterlace: input.videoDeinterlace } : {}),
     ...(input.audioNormalize !== undefined ? { audioNormalize: input.audioNormalize } : {})
   }
 

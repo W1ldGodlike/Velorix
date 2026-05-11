@@ -20,6 +20,7 @@ import type {
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
   FfmpegExportVideoDebandId,
+  FfmpegExportVideoDeinterlaceId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
@@ -101,6 +102,9 @@ export interface FluxAlloyApi {
     setFfmpegExportVideoGrain: (preset: FfmpegExportVideoGrainId) => Promise<AppSettings>
     setFfmpegExportVideoVignette: (preset: FfmpegExportVideoVignetteId) => Promise<AppSettings>
     setFfmpegExportVideoBlur: (preset: FfmpegExportVideoBlurId) => Promise<AppSettings>
+    setFfmpegExportVideoDeinterlace: (
+      preset: FfmpegExportVideoDeinterlaceId
+    ) => Promise<AppSettings>
     setFfmpegExportAudioNormalize: (preset: FfmpegExportAudioNormalizeId) => Promise<AppSettings>
     setFfmpegExportUserPresets: (presets: FfmpegExportUserPreset[]) => Promise<AppSettings>
     applyFfmpegExportSnapshot: (snapshot: FfmpegExportUserPresetSnapshot) => Promise<AppSettings>

@@ -16,6 +16,7 @@ import type {
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
   FfmpegExportVideoDebandId,
+  FfmpegExportVideoDeinterlaceId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
@@ -48,6 +49,7 @@ export type {
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
   FfmpegExportVideoDebandId,
+  FfmpegExportVideoDeinterlaceId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
@@ -72,6 +74,7 @@ export {
   resolveFfmpegExportScaleFilter,
   resolveFfmpegExportSubtitleCopyCodec,
   resolveFfmpegExportVideoDenoiseFilter,
+  resolveFfmpegExportVideoDeinterlaceFilter,
   resolveFfmpegExportVideoEqFilter,
   resolveFfmpegExportVideoGrainFilter,
   resolveFfmpegExportVideoHueFilter,
@@ -287,6 +290,14 @@ export function parseFfmpegExportVideoBlur(raw: unknown): FfmpegExportVideoBlurI
   return 'off'
 }
 
+/** §7.2 — деинтерлейс `yadif`; только whitelist, иначе `off`. */
+export function parseFfmpegExportVideoDeinterlace(raw: unknown): FfmpegExportVideoDeinterlaceId {
+  if (raw === 'frame' || raw === 'field') {
+    return raw
+  }
+  return 'off'
+}
+
 /** §7.2 — пресет `hue` после `eq`; только whitelist, иначе `off`. */
 export function parseFfmpegExportVideoHue(raw: unknown): FfmpegExportVideoHueId {
   if (raw === 'warmShift' || raw === 'coolShift' || raw === 'satBoost') {
@@ -364,6 +375,7 @@ export function parseFfmpegExportUserPresetSnapshot(
   const videoGrain = parseFfmpegExportVideoGrain(o['videoGrain'])
   const videoVignette = parseFfmpegExportVideoVignette(o['videoVignette'])
   const videoBlur = parseFfmpegExportVideoBlur(o['videoBlur'])
+  const videoDeinterlace = parseFfmpegExportVideoDeinterlace(o['videoDeinterlace'])
   const audioNormalize = parseFfmpegExportAudioNormalize(o['audioNormalize'])
   return {
     encodePreset,
@@ -390,6 +402,7 @@ export function parseFfmpegExportUserPresetSnapshot(
     ...(videoGrain !== 'off' ? { videoGrain } : {}),
     ...(videoVignette !== 'off' ? { videoVignette } : {}),
     ...(videoBlur !== 'off' ? { videoBlur } : {}),
+    ...(videoDeinterlace !== 'off' ? { videoDeinterlace } : {}),
     ...(audioNormalize !== 'off' ? { audioNormalize } : {})
   }
 }
@@ -576,6 +589,11 @@ export function mergeFfmpegExportSnapshotIntoAppSettings(
     next.ffmpegExportVideoBlur = snapshot.videoBlur
   } else {
     delete next.ffmpegExportVideoBlur
+  }
+  if (snapshot.videoDeinterlace === 'frame' || snapshot.videoDeinterlace === 'field') {
+    next.ffmpegExportVideoDeinterlace = snapshot.videoDeinterlace
+  } else {
+    delete next.ffmpegExportVideoDeinterlace
   }
   if (snapshot.audioNormalize === 'loudnorm' || snapshot.audioNormalize === 'dynaudnorm') {
     next.ffmpegExportAudioNormalize = snapshot.audioNormalize
@@ -791,6 +809,8 @@ export async function runFfmpegExportJob(params: {
   videoVignette?: FfmpegExportVideoVignetteId | null
   /** §7.2 — `gblur`; `off`/null — без фильтра. */
   videoBlur?: FfmpegExportVideoBlurId | null
+  /** §7.2 — `yadif`; `off`/null — без фильтра. */
+  videoDeinterlace?: FfmpegExportVideoDeinterlaceId | null
   /** §7.2 — `loudnorm`/`dynaudnorm`; `off`/null — без фильтра. */
   audioNormalize?: FfmpegExportAudioNormalizeId | null
   signal: AbortSignal
@@ -831,6 +851,7 @@ export async function runFfmpegExportJob(params: {
   const videoGrain = parseFfmpegExportVideoGrain(params.videoGrain)
   const videoVignette = parseFfmpegExportVideoVignette(params.videoVignette)
   const videoBlur = parseFfmpegExportVideoBlur(params.videoBlur)
+  const videoDeinterlace = parseFfmpegExportVideoDeinterlace(params.videoDeinterlace)
   const audioNormalize = parseFfmpegExportAudioNormalize(params.audioNormalize)
   if (wantTwoPass && videoBitrate === null) {
     return {
@@ -872,6 +893,7 @@ export async function runFfmpegExportJob(params: {
     ...(videoGrain !== 'off' ? { videoGrain } : {}),
     ...(videoVignette !== 'off' ? { videoVignette } : {}),
     ...(videoBlur !== 'off' ? { videoBlur } : {}),
+    ...(videoDeinterlace !== 'off' ? { videoDeinterlace } : {}),
     ...(audioNormalize !== 'off' ? { audioNormalize } : {})
   }
 

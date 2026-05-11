@@ -15,6 +15,7 @@ import type {
   FfmpegExportVideoGrainId,
   FfmpegExportVideoHueId,
   FfmpegExportVideoBlurId,
+  FfmpegExportVideoDeinterlaceId,
   FfmpegExportVideoLut3dId,
   FfmpegExportVideoVignetteId,
   FfmpegExportVideoSharpenId,
@@ -166,6 +167,8 @@ export interface AppSettings {
   ffmpegExportVideoVignette?: FfmpegExportVideoVignetteId
   /** §7.2: пресет `gblur` (`off` по умолчанию = не пишем поле). */
   ffmpegExportVideoBlur?: FfmpegExportVideoBlurId
+  /** §7.2: деинтерлейс `yadif` (`off` по умолчанию = не пишем поле). */
+  ffmpegExportVideoDeinterlace?: FfmpegExportVideoDeinterlaceId
   /** §7.2: пресет аудио-нормализации (`off` по умолчанию = не пишем поле). */
   ffmpegExportAudioNormalize?: FfmpegExportAudioNormalizeId
   /** §7.2: пользовательские пресеты экспорта (имя + снимок параметров тулбара). */

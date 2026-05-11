@@ -55,6 +55,7 @@ import type {
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
   FfmpegExportVideoDebandId,
+  FfmpegExportVideoDeinterlaceId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
@@ -224,6 +225,14 @@ const EXPORT_AUDIO_GAIN_OPTIONS: Array<{ value: number; label: string }> = [
 const EXPORT_SUBTITLE_MODES: Array<{ id: FfmpegExportSubtitleModeId; label: string }> = [
   { id: 'drop', label: 'Не сохранять' },
   { id: 'copy', label: 'Сохранить (copy/mov_text)' }
+]
+const EXPORT_VIDEO_DEINTERLACE_OPTIONS: Array<{
+  id: FfmpegExportVideoDeinterlaceId
+  label: string
+}> = [
+  { id: 'off', label: 'Деинтерлейс: выкл.' },
+  { id: 'frame', label: 'Кадр (yadif send_frame)' },
+  { id: 'field', label: 'Поле (yadif send_field, 2×)' }
 ]
 const EXPORT_VIDEO_DENOISE_OPTIONS: Array<{ id: FfmpegExportVideoDenoiseId; label: string }> = [
   { id: 'off', label: 'Шумоподавление: выкл.' },
@@ -670,6 +679,9 @@ function App(): JSX.Element {
   const [exportStripChapters, setExportStripChapters] = useState(false)
   /** §7.2 — режим субтитров: `drop` (по умолчанию) или `copy` (`-c:s copy`/`mov_text`). */
   const [exportSubtitleMode, setExportSubtitleMode] = useState<FfmpegExportSubtitleModeId>('drop')
+  /** §7.2 — `yadif` после crop и до hqdn3d. */
+  const [exportVideoDeinterlace, setExportVideoDeinterlace] =
+    useState<FfmpegExportVideoDeinterlaceId>('off')
   /** §7.2 — пресет `hqdn3d` denoise. */
   const [exportVideoDenoise, setExportVideoDenoise] = useState<FfmpegExportVideoDenoiseId>('off')
   /** §7.2 — пресет `deband` (полосы/ступени). */
@@ -1123,6 +1135,8 @@ function App(): JSX.Element {
     setExportStripMetadata(loaded.ffmpegExportStripMetadata === true)
     setExportStripChapters(loaded.ffmpegExportStripChapters === true)
     setExportSubtitleMode(loaded.ffmpegExportSubtitleMode === 'copy' ? 'copy' : 'drop')
+    const deint = loaded.ffmpegExportVideoDeinterlace
+    setExportVideoDeinterlace(deint === 'frame' || deint === 'field' ? deint : 'off')
     const dn = loaded.ffmpegExportVideoDenoise
     setExportVideoDenoise(dn === 'light' || dn === 'medium' || dn === 'strong' ? dn : 'off')
     const db = loaded.ffmpegExportVideoDeband
@@ -1229,6 +1243,7 @@ function App(): JSX.Element {
       ...(exportStripMetadata ? { stripMetadata: true } : {}),
       ...(exportStripChapters ? { stripChapters: true } : {}),
       ...(exportSubtitleMode === 'copy' ? { subtitleMode: 'copy' as const } : {}),
+      ...(exportVideoDeinterlace !== 'off' ? { videoDeinterlace: exportVideoDeinterlace } : {}),
       ...(exportVideoDenoise !== 'off' ? { videoDenoise: exportVideoDenoise } : {}),
       ...(exportVideoDeband !== 'off' ? { videoDeband: exportVideoDeband } : {}),
       ...(exportVideoLut3d !== 'off' ? { videoLut3d: exportVideoLut3d } : {}),
@@ -1256,6 +1271,7 @@ function App(): JSX.Element {
     exportStripMetadata,
     exportStripChapters,
     exportSubtitleMode,
+    exportVideoDeinterlace,
     exportVideoDenoise,
     exportVideoDeband,
     exportVideoLut3d,
@@ -1716,6 +1732,7 @@ function App(): JSX.Element {
         stripMetadata: exportStripMetadata,
         stripChapters: exportStripChapters,
         subtitleMode: exportSubtitleMode,
+        videoDeinterlace: exportVideoDeinterlace,
         videoDenoise: exportVideoDenoise,
         videoDeband: exportVideoDeband,
         videoLut3d: exportVideoLut3d,
@@ -1826,6 +1843,7 @@ function App(): JSX.Element {
       stripMetadata: exportStripMetadata,
       stripChapters: exportStripChapters,
       subtitleMode: exportSubtitleMode,
+      videoDeinterlace: exportVideoDeinterlace,
       videoDenoise: exportVideoDenoise,
       videoDeband: exportVideoDeband,
       ...(lutCubePathForPreview !== null && lutCubePathForPreview.trim() !== ''
@@ -1860,6 +1878,7 @@ function App(): JSX.Element {
     exportStripMetadata,
     exportStripChapters,
     exportSubtitleMode,
+    exportVideoDeinterlace,
     exportVideoDenoise,
     exportVideoDeband,
     lutCubePathForPreview,
@@ -2415,6 +2434,34 @@ function App(): JSX.Element {
                         </option>
                       ))}
                     </select>
+                  </label>
+                  <label className="app-field">
+                    <span>Деинтерлейс</span>
+                    <select
+                      className="app-control"
+                      aria-label="Пресет yadif деинтерлейса"
+                      aria-describedby="ffmpegVideoDeinterlaceHint"
+                      value={exportVideoDeinterlace}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const v = e.target.value as FfmpegExportVideoDeinterlaceId
+                        setExportVideoDeinterlace(v)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportVideoDeinterlace(v)
+                          .catch(console.error)
+                      }}
+                    >
+                      {EXPORT_VIDEO_DEINTERLACE_OPTIONS.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                    <span id="ffmpegVideoDeinterlaceHint" className="app-field-help">
+                      `yadif` после crop и до `hqdn3d` §7.2; режим «Поле» удваивает частоту кадров для
+                      чересстрочного входа.
+                    </span>
                   </label>
                   <label className="app-field">
                     <span>Шумоподавление</span>
