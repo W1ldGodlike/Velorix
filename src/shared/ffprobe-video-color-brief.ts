@@ -33,3 +33,23 @@ export function formatFfprobeVideoHdrColorBrief(stream: {
 
   return null
 }
+
+/**
+ * Компактная подсказка по диапазону яркости (JPEG/full swing) в «Сведения», только для не-HDR:
+ * колонка `color_range` в таблице остаётся источником полного значения.
+ */
+export function formatFfprobeVideoFullRangeBrief(stream: {
+  color_range?: string
+  color_transfer?: string
+  color_trc?: string
+  color_primaries?: string
+}): string | null {
+  if (formatFfprobeVideoHdrColorBrief(stream) !== null) {
+    return null
+  }
+  const r = ffprobeColorTokenNorm(stream.color_range)
+  if (r === 'pc' || r === 'jpeg') {
+    return 'full range'
+  }
+  return null
+}

@@ -155,6 +155,25 @@ describe('ffprobe-service buildTrackRows', () => {
     expect(row?.detail).toContain('PQ·bt2020')
   })
 
+  it('video detail: SDR color_range pc → «full range» в сводке', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 1280,
+          height: 720,
+          color_transfer: 'bt709',
+          color_primaries: 'bt709',
+          color_range: 'pc'
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toContain('full range')
+  })
+
   it('encoder в detail обрезается при длинной строке', () => {
     const long = `${'A'.repeat(70)}tail`
     const [row] = buildTrackRows(
