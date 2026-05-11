@@ -88,6 +88,7 @@ import {
   parseFfmpegExportVideoGrain,
   parseFfmpegExportVideoLut3d,
   parseFfmpegExportVideoVignette,
+  parseFfmpegExportVideoBlur,
   parseFfmpegExportVideoSharpen,
   parseFfmpegExportVideoTransform,
   parseFfmpegExportUserPresetSnapshot,
@@ -1038,6 +1039,19 @@ function persistFfmpegExportVideoVignette(raw: unknown): AppSettings {
     delete next.ffmpegExportVideoVignette
   } else {
     next.ffmpegExportVideoVignette = value
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistFfmpegExportVideoBlur(raw: unknown): AppSettings {
+  const value = parseFfmpegExportVideoBlur(raw)
+  const next = { ...cachedSettings }
+  if (value === 'off') {
+    delete next.ffmpegExportVideoBlur
+  } else {
+    next.ffmpegExportVideoBlur = value
   }
   cachedSettings = next
   saveSettings(settingsPath(), cachedSettings)
@@ -2228,6 +2242,11 @@ app.whenReady().then(() => {
   ipcMain.handle(
     mw.settingsSetFfmpegExportVideoVignette,
     (_, raw: unknown): AppSettings => persistFfmpegExportVideoVignette(raw)
+  )
+
+  ipcMain.handle(
+    mw.settingsSetFfmpegExportVideoBlur,
+    (_, raw: unknown): AppSettings => persistFfmpegExportVideoBlur(raw)
   )
 
   ipcMain.handle(

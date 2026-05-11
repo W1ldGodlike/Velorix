@@ -13,6 +13,7 @@ import type {
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
+  FfmpegExportVideoBlurId,
   FfmpegExportVideoLut3dId,
   FfmpegExportVideoVignetteId,
   FfmpegExportVideoSharpenId,
@@ -160,6 +161,8 @@ export interface AppSettings {
   ffmpegExportVideoGrain?: FfmpegExportVideoGrainId
   /** §7.2: пресет `vignette` (`off` по умолчанию = не пишем поле). */
   ffmpegExportVideoVignette?: FfmpegExportVideoVignetteId
+  /** §7.2: пресет `gblur` (`off` по умолчанию = не пишем поле). */
+  ffmpegExportVideoBlur?: FfmpegExportVideoBlurId
   /** §7.2: пресет аудио-нормализации (`off` по умолчанию = не пишем поле). */
   ffmpegExportAudioNormalize?: FfmpegExportAudioNormalizeId
   /** §7.2: пользовательские пресеты экспорта (имя + снимок параметров тулбара). */

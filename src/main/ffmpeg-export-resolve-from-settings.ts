@@ -14,6 +14,7 @@ import type {
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
+  FfmpegExportVideoBlurId,
   FfmpegExportVideoLut3dId,
   FfmpegExportVideoVignetteId,
   FfmpegExportVideoSharpenId,
@@ -38,6 +39,7 @@ import {
   parseFfmpegExportVideoDenoise,
   parseFfmpegExportVideoEqPreset,
   parseFfmpegExportVideoGrain,
+  parseFfmpegExportVideoBlur,
   parseFfmpegExportVideoLut3d,
   parseFfmpegExportVideoVignette,
   parseFfmpegExportVideoSharpen,
@@ -68,6 +70,7 @@ export type ResolvedFfmpegExportJobOptions = {
   videoEqPreset: FfmpegExportVideoEqPresetId | null
   videoGrain: FfmpegExportVideoGrainId | null
   videoVignette: FfmpegExportVideoVignetteId | null
+  videoBlur: FfmpegExportVideoBlurId | null
   audioNormalize: FfmpegExportAudioNormalizeId | null
 }
 
@@ -193,6 +196,11 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
     videoVignetteRaw !== undefined && videoVignetteRaw !== null
       ? parseFfmpegExportVideoVignette(videoVignetteRaw)
       : parseFfmpegExportVideoVignette(settings.ffmpegExportVideoVignette)
+  const videoBlurRaw = raw['videoBlur']
+  const videoBlur =
+    videoBlurRaw !== undefined && videoBlurRaw !== null
+      ? parseFfmpegExportVideoBlur(videoBlurRaw)
+      : parseFfmpegExportVideoBlur(settings.ffmpegExportVideoBlur)
   const audioNormalizeRaw = raw['audioNormalize']
   const audioNormalize =
     audioNormalizeRaw !== undefined && audioNormalizeRaw !== null
@@ -222,6 +230,7 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
     videoEqPreset,
     videoGrain,
     videoVignette,
+    videoBlur,
     audioNormalize
   }
 }

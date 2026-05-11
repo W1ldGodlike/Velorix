@@ -42,6 +42,11 @@ export type FfmpegExportVideoGrainId = 'off' | 'light' | 'medium' | 'strong'
  */
 export type FfmpegExportVideoVignetteId = 'off' | 'light' | 'medium' | 'strong'
 /**
+ * §7.2 — пресеты `gblur` (лёгкое размытие кадра), только whitelist; `off` — без фильтра.
+ * Вставляется после `vignette` и до `scale`/`fps`.
+ */
+export type FfmpegExportVideoBlurId = 'off' | 'light' | 'medium' | 'strong'
+/**
  * §7.2 — bundled 3D LUT для `lut3d=file=…` (whitelist; `.cube` в `resources/luts/`, путь подставляет main).
  */
 export type FfmpegExportVideoLut3dId = 'off' | 'film-warm' | 'film-cool' | 'punch'
@@ -108,6 +113,8 @@ export interface FfmpegExportUserPresetSnapshot {
   videoGrain?: FfmpegExportVideoGrainId
   /** §7.2 — `vignette`; `off` совпадает с поведением до правки. */
   videoVignette?: FfmpegExportVideoVignetteId
+  /** §7.2 — `gblur`; `off` совпадает с поведением до правки. */
+  videoBlur?: FfmpegExportVideoBlurId
   /** §7.2 — `loudnorm`/`dynaudnorm`; `off` совпадает с поведением до правки. */
   audioNormalize?: FfmpegExportAudioNormalizeId
 }
@@ -167,6 +174,8 @@ export interface MediaExportRequestPayload {
   videoGrain?: FfmpegExportVideoGrainId | null
   /** §7.2 — `vignette`; `off` совпадает с текущим поведением. */
   videoVignette?: FfmpegExportVideoVignetteId | null
+  /** §7.2 — `gblur`; `off` совпадает с текущим поведением. */
+  videoBlur?: FfmpegExportVideoBlurId | null
   /** §7.2 — `loudnorm`/`dynaudnorm`; `off` совпадает с текущим поведением. */
   audioNormalize?: FfmpegExportAudioNormalizeId | null
 }

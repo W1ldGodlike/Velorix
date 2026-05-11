@@ -18,6 +18,7 @@ import type {
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
+  FfmpegExportVideoBlurId,
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoVignetteId,
   FfmpegExportVideoTransformId,
@@ -287,6 +288,20 @@ export function resolveFfmpegExportVideoVignetteFilter(
   }
 }
 
+/** §7.2 — пресет `gblur` (Gaussian blur); `off` → `null`. */
+export function resolveFfmpegExportVideoBlurFilter(id: FfmpegExportVideoBlurId): string | null {
+  switch (id) {
+    case 'light':
+      return 'gblur=sigma=1'
+    case 'medium':
+      return 'gblur=sigma=2.5'
+    case 'strong':
+      return 'gblur=sigma=5'
+    default:
+      return null
+  }
+}
+
 /**
  * §7.2 — пресет нормализации громкости. Подбор параметров:
  * - `loudnorm=I=-16:LRA=11:TP=-1.5` — типовая цель EBU R128 для подкастов/видео,
@@ -385,6 +400,8 @@ export interface FfmpegExportArgvParams {
   videoGrain?: FfmpegExportVideoGrainId
   /** §7.2 — `vignette`; `off` или undefined — без фильтра. */
   videoVignette?: FfmpegExportVideoVignetteId
+  /** §7.2 — `gblur`; `off` или undefined — без фильтра. */
+  videoBlur?: FfmpegExportVideoBlurId
   /**
    * §7.2 — `loudnorm`/`dynaudnorm`; `off` или undefined — без нормализации.
    * При `audioMode='none'` или в первом проходе двухпроходного режима игнорируется
@@ -438,6 +455,10 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
   const vignette = resolveFfmpegExportVideoVignetteFilter(params.videoVignette ?? 'off')
   if (vignette !== null) {
     filters.push(vignette)
+  }
+  const blur = resolveFfmpegExportVideoBlurFilter(params.videoBlur ?? 'off')
+  if (blur !== null) {
+    filters.push(blur)
   }
   const scale = resolveFfmpegExportScaleFilter(params.scalePreset)
   if (scale !== null) {
@@ -594,6 +615,7 @@ export interface FfmpegExportPreviewInput {
   videoEqPreset?: FfmpegExportVideoEqPresetId
   videoGrain?: FfmpegExportVideoGrainId
   videoVignette?: FfmpegExportVideoVignetteId
+  videoBlur?: FfmpegExportVideoBlurId
   audioNormalize?: FfmpegExportAudioNormalizeId
 }
 
@@ -673,6 +695,7 @@ export function buildFfmpegExportPreviewCommand(
     ...(input.videoEqPreset !== undefined ? { videoEqPreset: input.videoEqPreset } : {}),
     ...(input.videoGrain !== undefined ? { videoGrain: input.videoGrain } : {}),
     ...(input.videoVignette !== undefined ? { videoVignette: input.videoVignette } : {}),
+    ...(input.videoBlur !== undefined ? { videoBlur: input.videoBlur } : {}),
     ...(input.audioNormalize !== undefined ? { audioNormalize: input.audioNormalize } : {})
   }
 

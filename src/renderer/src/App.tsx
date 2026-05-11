@@ -58,6 +58,7 @@ import type {
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
+  FfmpegExportVideoBlurId,
   FfmpegExportVideoLut3dId,
   FfmpegExportVideoVignetteId,
   FfmpegExportVideoSharpenId,
@@ -265,6 +266,12 @@ const EXPORT_VIDEO_VIGNETTE_OPTIONS: Array<{ id: FfmpegExportVideoVignetteId; la
   { id: 'light', label: 'Лёгкая (PI/3)' },
   { id: 'medium', label: 'Средняя (PI/5)' },
   { id: 'strong', label: 'Сильная (PI/10)' }
+]
+const EXPORT_VIDEO_BLUR_OPTIONS: Array<{ id: FfmpegExportVideoBlurId; label: string }> = [
+  { id: 'off', label: 'Размытие: выкл.' },
+  { id: 'light', label: 'Лёгкое (gblur σ=1)' },
+  { id: 'medium', label: 'Среднее (gblur σ=2.5)' },
+  { id: 'strong', label: 'Сильное (gblur σ=5)' }
 ]
 const EXPORT_AUDIO_NORMALIZE_OPTIONS: Array<{ id: FfmpegExportAudioNormalizeId; label: string }> =
   [
@@ -672,6 +679,7 @@ function App(): JSX.Element {
   /** §7.2 — пресет `noise` (зернистость после eq, до scale). */
   const [exportVideoGrain, setExportVideoGrain] = useState<FfmpegExportVideoGrainId>('off')
   const [exportVideoVignette, setExportVideoVignette] = useState<FfmpegExportVideoVignetteId>('off')
+  const [exportVideoBlur, setExportVideoBlur] = useState<FfmpegExportVideoBlurId>('off')
   /** §7.2 — нормализация громкости через whitelist фильтров. */
   const [exportAudioNormalize, setExportAudioNormalize] =
     useState<FfmpegExportAudioNormalizeId>('off')
@@ -1120,6 +1128,8 @@ function App(): JSX.Element {
     setExportVideoGrain(gr === 'light' || gr === 'medium' || gr === 'strong' ? gr : 'off')
     const vg = loaded.ffmpegExportVideoVignette
     setExportVideoVignette(vg === 'light' || vg === 'medium' || vg === 'strong' ? vg : 'off')
+    const bl = loaded.ffmpegExportVideoBlur
+    setExportVideoBlur(bl === 'light' || bl === 'medium' || bl === 'strong' ? bl : 'off')
     const an = loaded.ffmpegExportAudioNormalize
     setExportAudioNormalize(an === 'loudnorm' || an === 'dynaudnorm' ? an : 'off')
     const lut = loaded.ffmpegExportVideoLut3d
@@ -1213,6 +1223,7 @@ function App(): JSX.Element {
       ...(exportVideoEqPreset !== 'off' ? { videoEqPreset: exportVideoEqPreset } : {}),
       ...(exportVideoGrain !== 'off' ? { videoGrain: exportVideoGrain } : {}),
       ...(exportVideoVignette !== 'off' ? { videoVignette: exportVideoVignette } : {}),
+      ...(exportVideoBlur !== 'off' ? { videoBlur: exportVideoBlur } : {}),
       ...(exportAudioNormalize !== 'off' ? { audioNormalize: exportAudioNormalize } : {})
     }
   }, [
@@ -1238,6 +1249,7 @@ function App(): JSX.Element {
     exportVideoEqPreset,
     exportVideoGrain,
     exportVideoVignette,
+    exportVideoBlur,
     exportAudioNormalize
   ])
 
@@ -1696,6 +1708,7 @@ function App(): JSX.Element {
         videoEqPreset: exportVideoEqPreset,
         videoGrain: exportVideoGrain,
         videoVignette: exportVideoVignette,
+        videoBlur: exportVideoBlur,
         audioNormalize: exportAudioNormalize
       })
       if (res.ok) {
@@ -1806,6 +1819,7 @@ function App(): JSX.Element {
       videoEqPreset: exportVideoEqPreset,
       videoGrain: exportVideoGrain,
       videoVignette: exportVideoVignette,
+      videoBlur: exportVideoBlur,
       audioNormalize: exportAudioNormalize,
       inputPath: sourcePath,
       outputPath,
@@ -1836,6 +1850,7 @@ function App(): JSX.Element {
     exportVideoEqPreset,
     exportVideoGrain,
     exportVideoVignette,
+    exportVideoBlur,
     exportAudioNormalize,
     trimRange,
     probeInfo?.durationSec
@@ -2566,6 +2581,31 @@ function App(): JSX.Element {
                     </select>
                     <span id="ffmpegVideoVignetteHint" className="app-field-help">
                       `vignette` после зерна и до `scale`/`fps` §7.2.
+                    </span>
+                  </label>
+                  <label className="app-field">
+                    <span>Размытие</span>
+                    <select
+                      className="app-control"
+                      aria-label="Пресет gblur размытия кадра"
+                      aria-describedby="ffmpegVideoBlurHint"
+                      value={exportVideoBlur}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const v = e.target.value as FfmpegExportVideoBlurId
+                        setExportVideoBlur(v)
+                        void window.fluxalloy.settings.setFfmpegExportVideoBlur(v).catch(console.error)
+                      }}
+                    >
+                      {EXPORT_VIDEO_BLUR_OPTIONS.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                    <span id="ffmpegVideoBlurHint" className="app-field-help">
+                      `gblur` после виньетки и до `scale`/`fps` §7.2.
                     </span>
                   </label>
                 </div>

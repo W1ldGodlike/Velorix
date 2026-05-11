@@ -24,6 +24,7 @@ import type {
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
+  FfmpegExportVideoBlurId,
   FfmpegExportVideoLut3dId,
   FfmpegExportVideoVignetteId,
   FfmpegExportVideoSharpenId,
@@ -194,6 +195,8 @@ const fluxalloy = {
       preset: FfmpegExportVideoVignetteId
     ): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoVignette, preset),
+    setFfmpegExportVideoBlur: (preset: FfmpegExportVideoBlurId): Promise<AppSettings> =>
+      ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoBlur, preset),
     setFfmpegExportAudioNormalize: (
       preset: FfmpegExportAudioNormalizeId
     ): Promise<AppSettings> => ipcRenderer.invoke(mw.settingsSetFfmpegExportAudioNormalize, preset),
