@@ -32,6 +32,7 @@
 npm install
 npm run dev
 npm run check        # lint + typecheck
+npm run check:release
 npm run agent:once   # один прогон Cursor SDK automation
 npm run agent:loop   # цикл; число продолжений: -- --max-steps N или MAX_STEPS в .env
 npm run build
@@ -65,6 +66,11 @@ npm run engines:prepare:win
 ## Архитектура и точки входа
 
 Описание слоёв (main / preload / renderer), IPC, Cursor SDK automation и таблица **точек входа**: [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md). Документ следует обновлять при смене контрактов IPC или способа сборки.
+
+## Релиз
+
+- Release checklist: [`docs/RELEASE.md`](./docs/RELEASE.md).
+- Лицензии и источники bundled движков: [`docs/BUNDLED_ENGINES_LICENSES.md`](./docs/BUNDLED_ENGINES_LICENSES.md).
 
 ## Горячие клавиши (базовые)
 

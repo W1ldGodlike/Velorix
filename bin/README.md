@@ -25,3 +25,5 @@ Runtime resolution order is:
 3. Downloaded/updated `userData/bin`.
 
 Keep a note of the source, version, license variant, and SHA256 used for each released binary.
+
+Release/license notes: `docs/BUNDLED_ENGINES_LICENSES.md`.

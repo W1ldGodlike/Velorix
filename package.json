@@ -32,6 +32,8 @@
     "lint": "eslint --cache .",
     "check": "npm run lint && npm run typecheck && npm run test && npm run check:secrets",
     "check:secrets": "node scripts/check-no-secrets.mjs",
+    "check:release": "npm run check && npm run build && npm run audit:moderate",
+    "audit:moderate": "npm audit --audit-level=moderate",
     "test": "vitest run --reporter=default",
     "test:watch": "vitest",
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
