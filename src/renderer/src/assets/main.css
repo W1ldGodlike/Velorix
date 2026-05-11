@@ -997,6 +997,7 @@
   height: 100%;
   border-radius: inherit;
   background: var(--fa-accent);
+  transition: width 0.85s ease-out;
 }
 
 .app-downloads-status {

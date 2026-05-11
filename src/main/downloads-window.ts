@@ -684,7 +684,7 @@ function buildDownloadsHtml(
     .prog-pct.prog-pct-done { color: color-mix(in srgb, var(--green) 90%, white); }
     .prog-head { font-size: 0.62rem; line-height: 1.32; color: var(--muted); word-break: break-word; }
     .progress-track { height: 4px; border-radius: 999px; background: var(--border-2); overflow: hidden; margin: 0.14rem 0 0.12rem; }
-    .progress-fill { height: 100%; border-radius: inherit; background: var(--blue); transition: width 0.16s ease; }
+    .progress-fill { height: 100%; border-radius: inherit; background: var(--blue); transition: width 0.85s ease-out; }
     .progress-fill-done { background: var(--green); }
     .status-pill { display: inline-flex; align-items: center; gap: 0.34rem; color: var(--muted); }
     .status-dot { width: 0.45rem; height: 0.45rem; border-radius: 999px; background: var(--dim); flex-shrink: 0; }
@@ -1001,7 +1001,7 @@ ${emitDownloadsTopbarClusterHtml(18)}
         <div class="queue-table-wrap">
           <table class="queue-table">
             <caption class="sr-only">Очередь загрузок yt-dlp</caption>
-            <thead><tr><th>#</th><th>Название</th><th>Формат</th><th>Размер</th><th>Прогресс</th><th>Скорость</th><th>ETA</th><th>Статус</th><th>Действия</th></tr></thead>
+            <thead><tr><th>#</th><th>Название</th><th>Формат</th><th>Размер</th><th>Прогресс</th><th>Скорость</th><th>Осталось</th><th>Статус</th><th>Действия</th></tr></thead>
             <tbody id="queueBody"></tbody>
           </table>
         </div>

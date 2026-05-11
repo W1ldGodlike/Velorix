@@ -4,12 +4,15 @@ import {
   classifyYtdlpQueueFailureKind,
   extractYtdlpErrorSummary,
   extractYtdlpOutputPath,
+  formatTorrentStyleSpeedFromBps,
   formatYtdlpProgressCell,
   formatYtdlpQueueFailureStatus,
   parseYtdlpDownloadProgressLine,
   parseYtdlpInfoFormatSnippet,
   parseYtdlpInfoQueueSizeHint,
   parseYtdlpQueueFormatHint,
+  parseYtdlpProgressPercentNumber,
+  parseYtdlpSpeedToBytesPerSec,
   shouldSkipQueueRetriesForFailureKind,
   shouldSkipYtdlpQueueRetriesAfterFailure
 } from '../../src/main/ytdlp-progress-parser'
@@ -237,10 +240,39 @@ describe('parseYtdlpInfoQueueSizeHint', () => {
   })
 })
 
+describe('parseYtdlpProgressPercentNumber', () => {
+  it('достаёт число только из чистого «NN%»', () => {
+    expect(parseYtdlpProgressPercentNumber('42.1%')).toBeCloseTo(42.1, 5)
+    expect(parseYtdlpProgressPercentNumber('100%')).toBe(100)
+    expect(parseYtdlpProgressPercentNumber(null)).toBeNull()
+    expect(parseYtdlpProgressPercentNumber('3 of 10')).toBeNull()
+  })
+})
+
+describe('parseYtdlpSpeedToBytesPerSec', () => {
+  it('парсит KiB/s и MiB/s', () => {
+    expect(parseYtdlpSpeedToBytesPerSec('999.36KiB/s')).toBeCloseTo(999.36 * 1024, 1)
+    expect(parseYtdlpSpeedToBytesPerSec('1.20MiB/s')).toBeCloseTo(1.2 * 1024 ** 2, 1)
+  })
+
+  it('возвращает null для статуса и Unknown', () => {
+    expect(parseYtdlpSpeedToBytesPerSec('')).toBeNull()
+    expect(parseYtdlpSpeedToBytesPerSec('Unknown')).toBeNull()
+    expect(parseYtdlpSpeedToBytesPerSec('fragment 3 of 10')).toBeNull()
+  })
+})
+
+describe('formatTorrentStyleSpeedFromBps', () => {
+  it('форматирует в MiB/s и KiB/s', () => {
+    expect(formatTorrentStyleSpeedFromBps(1.5 * 1024 ** 2)).toBe('1.5 MiB/s')
+    expect(formatTorrentStyleSpeedFromBps(800 * 1024)).toBe('800 KiB/s')
+  })
+})
+
 describe('formatYtdlpProgressCell', () => {
   it('собирает все три поля', () => {
     expect(formatYtdlpProgressCell({ percent: '42%', speed: '1MiB/s', eta: '00:10' })).toBe(
-      '42% · 1MiB/s · ETA 00:10'
+      '42% · 1MiB/s · Осталось 00:10'
     )
   })
 

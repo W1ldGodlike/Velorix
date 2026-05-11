@@ -41,7 +41,7 @@
 
 Правило для агента: этот блок — рабочий навигатор ближайшего спринта. После каждой крупной итерации обновлять его: отмечать сделанное, переводить частичное в `[~]`, убирать устаревшее только если оно отражено ниже по §, и добавлять 3–7 следующих конкретных пунктов. Не оставлять блок полностью закрытым. Для UI/UX-сверки по v0 использовать [`docs/UX_REFERENCE_V0.md`](docs/UX_REFERENCE_V0.md).
 
-- [~] §6.1/§6.4: v0-компоновка вкладки «Загрузки» — центр таблица, **история+живой лог под таблицей**, rail — настройки; **действия строк — icon-only (lucide shared)**; **раскрытие История/Живой лог** сохраняется через тот же `downloadsWindowUiPanels`, что и pop-out (`mergeUiPanels`, только жест `toggle`); очередь/retry/pause/settings встроены; snapshot во вкладку и pop-out; дальше — **rail collapsible секции v0 → те же ключи format/metadata/saving/network**, полировка высот, DPI-матрица.
+- [~] §6.1/§6.4: v0-компоновка вкладки «Загрузки» — центр таблица, **история+живой лог под таблицей**, rail — настройки; **действия строк — icon-only (lucide shared)**; **раскрытие История/Живой лог** сохраняется через тот же `downloadsWindowUiPanels`, что и pop-out (`mergeUiPanels`, только жест `toggle`); очередь/retry/pause/settings встроены; snapshot во вкладку и pop-out; **прогресс очереди и строки `%` в живом логе** — редкие обновления (≈1 с / шаг 0,1%), без лишнего дёрганья полосы; дальше — **rail collapsible секции v0 → те же ключи format/metadata/saving/network**, полировка высот, DPI-матрица.
 - [~] §6.3: argv whitelist + справочник + preview команды есть; дальше — удобство экспертных токенов и редкие поля.
 - [~] §1.1/§4.A/§9: редактор/инспектор/ffprobe хорошо продвинуты; binary controls через `PillSwitch` (в т.ч. 2-pass libx264 в секции «Формат» при видеобитрейте); быстрые labels русифицированы; дальше — multi-monitor DPI, help links, локализация и редкие ffprobe-поля.
 - [~] §7.2: trim/crop/rotate/flip/scale/FPS/bitrate/presets есть; дальше — расширенные фильтры, HW encode, batch и сценарий download→encode без ручного шага.
@@ -253,7 +253,7 @@
 - [x] Добавление распознанных строк в простую очередь (таблица в том же документе).
 - [x] Drag-and-Drop URL/текста на поле ввода и на свободную область окна загрузок (не перехватываем drop на `textarea`/`select`/текстовых `input`).
 - [~] Вставка из главного окна (быстрая URL-полоса, поле вкладки, clipboard action, Ctrl+V в pop-out) → merge в очередь.
-- [~] Таблица: имя (хост+путь), ссылка; колонки Формат/Размер/Прогресс/Скорость/ETA; **Прогресс** — полоска + числовой % (v0), зелёный 100% при «Готово»; `progress` суммарная строка; действия старт/retry/pause/delete/file/folder — **во встроенной React-вкладке icon-only** (`app-icon-btn` + те же пути SVG, что `RowIco` в data HTML); `queue.json` §4.1 с дедупликацией id при restore; format/size из `[info]` и post-processing строк yt-dlp (`ExtractAudio`, remux, convert); дальше — редкие шаблоны логов.
+- [~] Таблица: имя (хост+путь), ссылка; колонки Формат/Размер/Прогресс/Скорость/**Осталось**; **Прогресс** — полоска + числовой % (v0), зелёный 100% при «Готово»; `progress` суммарная строка; действия старт/retry/pause/delete/file/folder — **во встроенной React-вкладке icon-only** (`app-icon-btn` + те же пути SVG, что `RowIco` в data HTML); `queue.json` §4.1 с дедупликацией id при restore; format/size из `[info]` и post-processing строк yt-dlp (`ExtractAudio`, remux, convert); дальше — редкие шаблоны логов.
 - [~] Старт всей очереди (последовательно, только «Ожидание»).
 - [x] Старт отдельной строки.
 - [x] Отмена текущего yt-dlp (SIGKILL процессу spawn) из вкладки и pop-out.
@@ -285,7 +285,7 @@
 
 ### §6.4 Прогресс, лог, комбинированный режим
 
-- [~] Парсинг прогресса yt-dlp: процент + скорость + ETA + размер `of …`/`of ~ …` + `fragment X of Y` + `(frag N/M)` без процентов в строке + `Total progress:` + `Downloading video|item X of Y` + вариант `N of M videos` + `Sleeping … seconds` / `Waiting for reconnect` / прочие `[download] Waiting for …` / `Resuming download at byte …` / `Retrying (N/M)` и `Retrying fragment X (N/M)`; прочие редкие строки — по мере заметок.
+- [~] Парсинг прогресса yt-dlp: процент + скорость + оставшееся время (в UI «Осталось»; в сыром логе yt-dlp по-прежнему токен `ETA`) + размер `of …`/`of ~ …` + `fragment X of Y` + `(frag N/M)` без процентов в строке + `Total progress:` + `Downloading video|item X of Y` + вариант `N of M videos` + `Sleeping … seconds` / `Waiting for reconnect` / прочие `[download] Waiting for …` / `Resuming download at byte …` / `Retrying (N/M)` и `Retrying fragment X (N/M)`; прочие редкие строки — по мере заметок.
 - [~] Лог stdout/stderr: IPC `fluxalloy-downloads-log` fan-out в главное окно и pop-out; вкладка `Загрузки` показывает live log, очистку и сохранение видимого текста; pop-out сохраняет v0-layout со счётчиком размера и обрезкой DOM.
 - [x] «Скачать и открыть»: готовый файл можно открыть/показать в папке или отправить в обработчик FluxAlloy из очереди и истории.
 - [x] «Скачать и сразу обработать» (настройка §6.4: после успеха yt-dlp авто-открытие в главном preview, если известен безопасный путь в каталоге загрузок; неуспех авто-открытия пишется в лог строки).

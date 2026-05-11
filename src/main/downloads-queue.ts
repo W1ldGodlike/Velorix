@@ -8,7 +8,7 @@ export interface DownloadsQueueRow {
   url: string
   /** Короткая подпись для таблицы (хост + путь). */
   shortLabel: string
-  /** Прогресс yt-dlp: процент / скорость / ETA из stderr §6.1 или «—». */
+  /** Прогресс yt-dlp: процент / скорость / оставшееся время из stderr §6.1 или «—». */
   progress: string
   /** Человекочитаемый статус строки очереди. */
   status: string
@@ -20,7 +20,7 @@ export interface DownloadsQueueRow {
   queueSize?: string
   /** §6/v0 — скорость или вспомогательная строка фрагмента/плейлиста. */
   queueSpeed?: string
-  /** §6/v0 — ETA из строки yt-dlp. */
+  /** §6/v0 — оставшееся время из строки yt-dlp (колонка «Осталось»). */
   queueEta?: string
 }
 

@@ -1578,7 +1578,7 @@ function App(): JSX.Element {
             }}
           >
             Редактор
-          </button>
+        </button>
           <button
             type="button"
             className={`app-workspace-tab${workspaceTab === 'downloads' ? ' app-workspace-tab-active' : ''}`}
@@ -1592,7 +1592,7 @@ function App(): JSX.Element {
               <IconDownload title="" size={16} />
             </span>
             Загрузки
-          </button>
+        </button>
         </nav>
         <div className="app-topbar-trailing">
           {topbarEngineVersionsLine.length > 0 ? (
@@ -1611,7 +1611,7 @@ function App(): JSX.Element {
             >
               <IconFolderOpen />
               <span className="app-visually-hidden">Открыть</span>
-            </button>
+        </button>
             <button
               type="button"
               className="app-icon-btn"
@@ -1885,14 +1885,14 @@ function App(): JSX.Element {
                 </div>
               </>
             ) : (
-              <div className="app-preview-placeholder">
+          <div className="app-preview-placeholder">
                 Нет источника — перетащите видеофайл сюда или «Открыть…» в меню «Файл» / кнопка
                 сверху.
                 <p className="app-preview-hint">
                   Локальный файл стримится через защищённую схему fluxmedia — только после выбора
                   или DnD по пути из Electron.
                 </p>
-              </div>
+          </div>
             )}
             {!panelOpen('ffmpegSettingsRailOpen') ? (
               <button
@@ -1908,7 +1908,7 @@ function App(): JSX.Element {
                 <span className="app-visually-hidden">Развернуть панель настроек FFmpeg</span>
               </button>
             ) : null}
-          </section>
+        </section>
           {panelOpen('ffmpegSettingsRailOpen') ? (
             <aside className="app-settings-panel" aria-label="Настройки FFmpeg">
               <div className="app-settings-panel-head">
@@ -2494,7 +2494,7 @@ function App(): JSX.Element {
               </details>
             </aside>
           ) : null}
-        </main>
+      </main>
       ) : (
         <main className="app-main app-downloads-workspace" aria-label="Вкладка загрузок">
           <section className="app-downloads-main">
@@ -2671,7 +2671,7 @@ function App(): JSX.Element {
                     <th>Размер</th>
                     <th>Прогресс</th>
                     <th>Скорость</th>
-                    <th>ETA</th>
+                    <th>Осталось</th>
                     <th>Статус</th>
                     <th>Действия</th>
                   </tr>

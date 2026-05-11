@@ -16,6 +16,25 @@ export interface YtdlpDownloadProgressParts {
 }
 
 /**
+ * Число 0–100 из поля `percent` парсера, только если это строка вида «NN%» / «NN.N%».
+ * Для плейлиста/фрагмента и т.п. (`percent: null`) — `null`.
+ */
+export function parseYtdlpProgressPercentNumber(percent: string | null): number | null {
+  if (percent === null) {
+    return null
+  }
+  const m = percent.trim().match(/^(\d+(?:\.\d+)?)%$/)
+  if (!m?.[1]) {
+    return null
+  }
+  const n = Number(m[1])
+  if (!Number.isFinite(n)) {
+    return null
+  }
+  return Math.max(0, Math.min(100, n))
+}
+
+/**
  * Классификация ошибки очереди §6.4: текст stderr + стабильные коды выхода yt-dlp
  * (см. обсуждение кодов в репозитории yt-dlp, напр. #4262: 2 / 100 / 101).
  */
@@ -332,7 +351,72 @@ export function parseYtdlpInfoQueueSizeHint(line: string): string | null {
   return null
 }
 
-/** Компактная подпись для ячейки: «42.1% · 1.2MiB/s · ETA 00:15». */
+const SPEED_TOKEN_RE =
+  /^([\d.,]+)\s*(KiB|MiB|GiB|TiB|KB|MB|GB|TB|B)\/s$/i
+
+/**
+ * Разбор скорости yt-dlp вида `1.20MiB/s`, `999.36KiB/s`, `Unknown B/s` → байт/с.
+ * Строки статуса («фрагмент», «плейлист») не матчатся и дают `null`.
+ */
+export function parseYtdlpSpeedToBytesPerSec(raw: string): number | null {
+  const collapsed = raw.trim().replace(/\s+/g, '')
+  if (collapsed.length === 0 || /^unknown/i.test(collapsed)) {
+    return null
+  }
+  const m = collapsed.match(SPEED_TOKEN_RE)
+  if (!m) {
+    return null
+  }
+  const numRaw = m[1]
+  const unit = m[2]
+  if (numRaw === undefined || unit === undefined) {
+    return null
+  }
+  const n = Number(numRaw.replace(',', '.'))
+  if (!Number.isFinite(n) || n < 0) {
+    return null
+  }
+  const u = unit.toUpperCase()
+  const scale =
+    u === 'B'
+      ? 1
+      : u === 'KIB' || u === 'KB'
+        ? 1024
+        : u === 'MIB' || u === 'MB'
+          ? 1024 ** 2
+          : u === 'GIB' || u === 'GB'
+            ? 1024 ** 3
+            : u === 'TIB' || u === 'TB'
+              ? 1024 ** 4
+              : null
+  if (scale === null) {
+    return null
+  }
+  return n * scale
+}
+
+/**
+ * Отображение скорости «как в торрент-клиенте»: стабильная единица (MiB/s или KiB/s), без скачков KiB↔MiB.
+ */
+export function formatTorrentStyleSpeedFromBps(bytesPerSec: number): string {
+  const bps = Math.max(0, bytesPerSec)
+  if (bps >= 1024 ** 2) {
+    const v = bps / 1024 ** 2
+    const s = v >= 100 ? v.toFixed(0) : v.toFixed(1)
+    return `${s} MiB/s`
+  }
+  if (bps >= 1024) {
+    const v = bps / 1024
+    const s = v >= 100 ? v.toFixed(0) : v.toFixed(1)
+    return `${s} KiB/s`
+  }
+  if (bps > 0) {
+    return `${Math.round(bps)} B/s`
+  }
+  return '0 B/s'
+}
+
+/** Компактная подпись для ячейки: «42.1% · 1.2 MiB/s · Осталось 00:15». */
 export function formatYtdlpProgressCell(parts: YtdlpDownloadProgressParts): string {
   const bits: string[] = []
   if (parts.percent) {
@@ -344,7 +428,7 @@ export function formatYtdlpProgressCell(parts: YtdlpDownloadProgressParts): stri
   }
   const et = parts.eta?.trim() ?? ''
   if (et.length > 0 && !/^unknown$/i.test(et)) {
-    bits.push(`ETA ${et}`)
+    bits.push(`Осталось ${et}`)
   }
   return bits.join(' · ')
 }

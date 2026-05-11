@@ -13,18 +13,29 @@ import {
   classifyYtdlpQueueFailureKind,
   extractYtdlpErrorSummary,
   extractYtdlpOutputPath,
+  formatTorrentStyleSpeedFromBps,
   formatYtdlpProgressCell,
   formatYtdlpQueueFailureStatus,
   parseYtdlpDownloadProgressLine,
   parseYtdlpInfoQueueSizeHint,
   parseYtdlpQueueFormatHint,
+  parseYtdlpProgressPercentNumber,
+  parseYtdlpSpeedToBytesPerSec,
   runYtdlpOnce,
-  shouldSkipQueueRetriesForFailureKind
+  shouldSkipQueueRetriesForFailureKind,
+  type YtdlpDownloadProgressParts
 } from './ytdlp-download-service'
 import { resolveYtdlpOutputDirectory } from './ytdlp-download-output'
 import { appendYtdlpDownloadHistoryEntry, outcomeFromQueueStatus } from './ytdlp-download-history'
 import { resolveYtdlpQueueRetryPlan } from './ytdlp-queue-retry'
 import { getYtdlpRunOptionsSnapshot } from './ytdlp-run-options-sync'
+
+/** Реже дергать таблицу/IPC: полоса и подпись прогресса обновляются не чаще этого интервала. */
+const DOWNLOADS_PROGRESS_UI_MIN_INTERVAL_MS = 1000
+/** В лог UI: строки `[download] … NN%` — не чаще чем на этот шаг по проценту (плюс «тишина» ниже). */
+const DOWNLOADS_PROGRESS_LOG_MIN_PERCENT_STEP = 0.1
+/** …или раз в столько мс, если процент почти не двигается (чтобы лог не «замер»). */
+const DOWNLOADS_PROGRESS_LOG_MAX_SILENCE_MS = 2500
 
 let activeAbort: AbortController | null = null
 /** Строка очереди, для которой сейчас крутится yt-dlp (лог паузы §6.4). */
@@ -132,6 +143,95 @@ async function runYtdlpForWaitingRow(
   let lastErrorSummary: string | null = null
   let lastOutputPath: string | null = snap.outputPath ?? null
   let lastStderrLine: string | null = null
+  /** Сэмплирование лога по числовому % (меньше спама в панели лога). */
+  let lastYtDlpProgressLogPercent: number | null = null
+  let lastYtDlpProgressLogEmittedAtMs = 0
+
+  let progressFlushTimer: ReturnType<typeof setTimeout> | null = null
+  let latestProgressParsed: YtdlpDownloadProgressParts | null = null
+  let latestSizeFromProgress: string | undefined
+  let smoothedSpeedBps: number | null = null
+  let lastProgressFlushMs = 0
+
+  const clearProgressFlushTimer = (): void => {
+    if (progressFlushTimer !== null) {
+      clearTimeout(progressFlushTimer)
+      progressFlushTimer = null
+    }
+  }
+
+  const flushProgressUiNow = (): void => {
+    const parsed = latestProgressParsed
+    if (!parsed) {
+      return
+    }
+    const rawSpeed = parsed.speed?.trim() ?? ''
+    const bpsSample = parseYtdlpSpeedToBytesPerSec(rawSpeed)
+    let displaySpeed: string | null = null
+    if (bpsSample !== null) {
+      smoothedSpeedBps =
+        smoothedSpeedBps === null ? bpsSample : smoothedSpeedBps * 0.78 + bpsSample * 0.22
+      displaySpeed = formatTorrentStyleSpeedFromBps(smoothedSpeedBps)
+    } else if (rawSpeed.length > 0 && !/^unknown(\s+speed)?$/i.test(rawSpeed)) {
+      smoothedSpeedBps = null
+      displaySpeed = rawSpeed
+    } else {
+      smoothedSpeedBps = null
+    }
+
+    const partsForCell: YtdlpDownloadProgressParts = {
+      percent: parsed.percent,
+      speed: displaySpeed !== null && displaySpeed.length > 0 ? displaySpeed : null,
+      eta: parsed.eta
+    }
+    const cell = formatYtdlpProgressCell(partsForCell)
+    if (cell.length === 0) {
+      return
+    }
+    lastProgressCell = cell
+    const patch: {
+      progress: string
+      queueSize?: string
+      queueSpeed?: string
+      queueEta?: string
+    } = { progress: cell }
+    const st = (latestSizeFromProgress ?? parsed.sizeTotal)?.trim() ?? ''
+    if (st.length > 0) {
+      patch.queueSize = st
+    }
+    if (displaySpeed !== null && displaySpeed.length > 0) {
+      patch.queueSpeed = displaySpeed
+    }
+    const et = parsed.eta?.trim() ?? ''
+    if (et.length > 0 && !/^unknown$/i.test(et)) {
+      patch.queueEta = et
+    }
+    updateDownloadsRow(rowId, patch)
+    notifySnapshot()
+    lastProgressFlushMs = Date.now()
+  }
+
+  const scheduleProgressFlush = (): void => {
+    const now = Date.now()
+    const due = DOWNLOADS_PROGRESS_UI_MIN_INTERVAL_MS - (now - lastProgressFlushMs)
+    if (due <= 0) {
+      clearProgressFlushTimer()
+      flushProgressUiNow()
+      return
+    }
+    if (progressFlushTimer !== null) {
+      return
+    }
+    progressFlushTimer = setTimeout(() => {
+      progressFlushTimer = null
+      flushProgressUiNow()
+    }, due)
+  }
+
+  const flushPendingProgressUI = (): void => {
+    clearProgressFlushTimer()
+    flushProgressUiNow()
+  }
 
   const rememberStderrLine = (line: string): void => {
     const t = line.trimEnd()
@@ -146,31 +246,41 @@ async function runYtdlpForWaitingRow(
     if (!parsed) {
       return
     }
-    const cell = formatYtdlpProgressCell(parsed)
-    if (cell.length === 0) {
+    const cellProbe = formatYtdlpProgressCell(parsed)
+    if (cellProbe.length === 0) {
       return
     }
-    lastProgressCell = cell
-    const patch: {
-      progress: string
-      queueSize?: string
-      queueSpeed?: string
-      queueEta?: string
-    } = { progress: cell }
-    const st = parsed.sizeTotal?.trim() ?? ''
-    if (st.length > 0) {
-      patch.queueSize = st
+    latestProgressParsed = parsed
+    const st0 = parsed.sizeTotal?.trim() ?? ''
+    if (st0.length > 0) {
+      latestSizeFromProgress = st0
     }
-    const spd = parsed.speed?.trim() ?? ''
-    if (spd.length > 0 && !/^unknown(\s+speed)?$/i.test(spd)) {
-      patch.queueSpeed = spd
+    scheduleProgressFlush()
+  }
+
+  const emitStreamLineForDownloadsLog = (stream: 'stdout' | 'stderr', line: string): void => {
+    const parsed = parseYtdlpDownloadProgressLine(line)
+    if (!parsed) {
+      emitDownloadsLog({ kind: 'line', rowId, stream, text: line })
+      return
     }
-    const et = parsed.eta?.trim() ?? ''
-    if (et.length > 0 && !/^unknown$/i.test(et)) {
-      patch.queueEta = et
+    const p = parseYtdlpProgressPercentNumber(parsed.percent)
+    if (p === null) {
+      emitDownloadsLog({ kind: 'line', rowId, stream, text: line })
+      return
     }
-    updateDownloadsRow(rowId, patch)
-    notifySnapshot()
+    const now = Date.now()
+    const silent = now - lastYtDlpProgressLogEmittedAtMs
+    const stepOk =
+      lastYtDlpProgressLogPercent === null ||
+      Math.abs(p - lastYtDlpProgressLogPercent) >= DOWNLOADS_PROGRESS_LOG_MIN_PERCENT_STEP ||
+      silent >= DOWNLOADS_PROGRESS_LOG_MAX_SILENCE_MS
+    if (!stepOk) {
+      return
+    }
+    lastYtDlpProgressLogPercent = p
+    lastYtDlpProgressLogEmittedAtMs = now
+    emitDownloadsLog({ kind: 'line', rowId, stream, text: line })
   }
 
   const applyYtDlpQueueCellHints = (line: string): void => {
@@ -219,6 +329,7 @@ async function runYtdlpForWaitingRow(
       lastStderrLine = null
       lastErrorSummary = null
       if (runIndex > 0) {
+        flushPendingProgressUI()
         const delayMs = retryPlan.delaysMs[runIndex - 1] ?? 2000
         const sec = Math.round(delayMs / 100) / 10
         emitDownloadsLog({
@@ -235,12 +346,19 @@ async function runYtdlpForWaitingRow(
         try {
           await delayWithAbort(delayMs, signal)
         } catch {
+          flushPendingProgressUI()
           updateDownloadsRow(rowId, {
             status: 'Отменено',
             progress: lastProgressCell ?? '—'
           })
           break
         }
+        clearProgressFlushTimer()
+        latestProgressParsed = null
+        latestSizeFromProgress = undefined
+        smoothedSpeedBps = null
+        lastYtDlpProgressLogPercent = null
+        lastYtDlpProgressLogEmittedAtMs = 0
         updateDownloadsRow(rowId, {
           status: 'Загрузка…',
           progress: '…',
@@ -264,7 +382,7 @@ async function runYtdlpForWaitingRow(
               shouldRecordHistory = true
             },
             onStdoutLine: (line) => {
-              emitDownloadsLog({ kind: 'line', rowId, stream: 'stdout', text: line })
+              emitStreamLineForDownloadsLog('stdout', line)
               noteErrorLine(line)
               noteOutputPathLine(line)
               applyYtDlpQueueCellHints(line)
@@ -272,7 +390,7 @@ async function runYtdlpForWaitingRow(
             },
             onStderrLine: (line) => {
               rememberStderrLine(line)
-              emitDownloadsLog({ kind: 'line', rowId, stream: 'stderr', text: line })
+              emitStreamLineForDownloadsLog('stderr', line)
               noteErrorLine(line)
               noteOutputPathLine(line)
               applyYtDlpQueueCellHints(line)
@@ -299,6 +417,7 @@ async function runYtdlpForWaitingRow(
       } catch (e) {
         const aborted = isAbort(e)
         const msg = e instanceof Error ? e.message : String(e)
+        flushPendingProgressUI()
         updateDownloadsRow(rowId, {
           status: aborted ? 'Отменено' : `Ошибка: ${msg.slice(0, 140)}`,
           progress: lastProgressCell ?? '—'
@@ -310,6 +429,7 @@ async function runYtdlpForWaitingRow(
       finalExitCode = result.exitCode
 
       if (result.exitCode === 0) {
+        flushPendingProgressUI()
         updateDownloadsRow(rowId, {
           status: 'Готово',
           progress: lastProgressCell ?? '100%'
@@ -366,6 +486,7 @@ async function runYtdlpForWaitingRow(
           stream: 'stderr',
           text: '[FluxAlloy] Дальнейшие повторы очереди отменены: ошибка или код выхода не подразумевают повтор той же команды.'
         })
+        flushPendingProgressUI()
         updateDownloadsRow(rowId, {
           status: formatYtdlpQueueFailureStatus(
             code,
@@ -380,6 +501,7 @@ async function runYtdlpForWaitingRow(
       }
 
       if (runIndex >= maxRuns - 1) {
+        flushPendingProgressUI()
         updateDownloadsRow(rowId, {
           status: formatYtdlpQueueFailureStatus(
             code,
@@ -394,6 +516,7 @@ async function runYtdlpForWaitingRow(
       }
     }
   } finally {
+    clearProgressFlushTimer()
     if (shouldRecordHistory) {
       const finalRow = getDownloadsQueueRowById(rowId)
       if (finalRow) {
