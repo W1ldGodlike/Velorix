@@ -323,6 +323,12 @@ function buildTrackDetail(
     if (typeof bitsPerSample === 'number' && Number.isFinite(bitsPerSample) && bitsPerSample > 0) {
       parts.push(`${Math.trunc(bitsPerSample)}-bit PCM`)
     }
+    const aFourcc = ffprobeScalarDisplay(
+      typeof stream.codec_tag_string === 'string' ? stream.codec_tag_string : undefined
+    )
+    if (aFourcc) {
+      parts.push(aFourcc)
+    }
   } else if (ct === 'subtitle') {
     const lang = tagString(stream.tags, 'language')
     const title = tagString(stream.tags, 'title')
@@ -370,7 +376,7 @@ function buildTrackDetail(
   return parts.length > 0 ? parts.join(' · ') : '—'
 }
 
-function buildTrackRows(
+export function buildTrackRows(
   streams: FfprobeJson['streams'],
   containerDurationSec: number | null
 ): MediaProbeTrackRow[] {
