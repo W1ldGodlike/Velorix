@@ -56,6 +56,7 @@ import type {
   FfmpegExportUserPresetSnapshot,
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDeinterlaceId,
+  FfmpegExportVideoHisteqId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
@@ -251,6 +252,12 @@ const EXPORT_VIDEO_DEBAND_OPTIONS: Array<{ id: FfmpegExportVideoDebandId; label:
   { id: 'light', label: 'Лёгкий (range=12)' },
   { id: 'medium', label: 'Средний (range=20)' },
   { id: 'strong', label: 'Сильный (range=28)' }
+]
+const EXPORT_VIDEO_HISTEQ_OPTIONS: Array<{ id: FfmpegExportVideoHisteqId; label: string }> = [
+  { id: 'off', label: 'Histeq: выкл.' },
+  { id: 'light', label: 'Лёгкая (strength 0.14)' },
+  { id: 'medium', label: 'Средняя (strength 0.26)' },
+  { id: 'strong', label: 'Сильная (strength 0.40)' }
 ]
 const EXPORT_VIDEO_LUT3D_OPTIONS: Array<{ id: FfmpegExportVideoLut3dId; label: string }> = [
   { id: 'off', label: '3D LUT: выкл.' },
@@ -686,6 +693,8 @@ function App(): JSX.Element {
   const [exportVideoDenoise, setExportVideoDenoise] = useState<FfmpegExportVideoDenoiseId>('off')
   /** §7.2 — пресет `deband` (полосы/ступени). */
   const [exportVideoDeband, setExportVideoDeband] = useState<FfmpegExportVideoDebandId>('off')
+  /** §7.2 — `histeq` после deband и до lut3d. */
+  const [exportVideoHisteq, setExportVideoHisteq] = useState<FfmpegExportVideoHisteqId>('off')
   /** §7.2 — bundled `lut3d` (между deband и unsharp). */
   const [exportVideoLut3d, setExportVideoLut3d] = useState<FfmpegExportVideoLut3dId>('off')
   /** Абсолютный путь к `.cube` для превью argv (main `resolveFfmpegExportLutCubeAbsPath`). */
@@ -1141,6 +1150,8 @@ function App(): JSX.Element {
     setExportVideoDenoise(dn === 'light' || dn === 'medium' || dn === 'strong' ? dn : 'off')
     const db = loaded.ffmpegExportVideoDeband
     setExportVideoDeband(db === 'light' || db === 'medium' || db === 'strong' ? db : 'off')
+    const hi = loaded.ffmpegExportVideoHisteq
+    setExportVideoHisteq(hi === 'light' || hi === 'medium' || hi === 'strong' ? hi : 'off')
     const sh = loaded.ffmpegExportVideoSharpen
     setExportVideoSharpen(sh === 'light' || sh === 'medium' || sh === 'strong' ? sh : 'off')
     const eq = loaded.ffmpegExportVideoEqPreset
@@ -1246,6 +1257,7 @@ function App(): JSX.Element {
       ...(exportVideoDeinterlace !== 'off' ? { videoDeinterlace: exportVideoDeinterlace } : {}),
       ...(exportVideoDenoise !== 'off' ? { videoDenoise: exportVideoDenoise } : {}),
       ...(exportVideoDeband !== 'off' ? { videoDeband: exportVideoDeband } : {}),
+      ...(exportVideoHisteq !== 'off' ? { videoHisteq: exportVideoHisteq } : {}),
       ...(exportVideoLut3d !== 'off' ? { videoLut3d: exportVideoLut3d } : {}),
       ...(exportVideoSharpen !== 'off' ? { videoSharpen: exportVideoSharpen } : {}),
       ...(exportVideoEqPreset !== 'off' ? { videoEqPreset: exportVideoEqPreset } : {}),
@@ -1274,6 +1286,7 @@ function App(): JSX.Element {
     exportVideoDeinterlace,
     exportVideoDenoise,
     exportVideoDeband,
+    exportVideoHisteq,
     exportVideoLut3d,
     exportVideoSharpen,
     exportVideoEqPreset,
@@ -1735,6 +1748,7 @@ function App(): JSX.Element {
         videoDeinterlace: exportVideoDeinterlace,
         videoDenoise: exportVideoDenoise,
         videoDeband: exportVideoDeband,
+        videoHisteq: exportVideoHisteq,
         videoLut3d: exportVideoLut3d,
         videoSharpen: exportVideoSharpen,
         videoEqPreset: exportVideoEqPreset,
@@ -1846,6 +1860,7 @@ function App(): JSX.Element {
       videoDeinterlace: exportVideoDeinterlace,
       videoDenoise: exportVideoDenoise,
       videoDeband: exportVideoDeband,
+      videoHisteq: exportVideoHisteq,
       ...(lutCubePathForPreview !== null && lutCubePathForPreview.trim() !== ''
         ? { videoLut3dCubeAbsPath: lutCubePathForPreview.trim() }
         : {}),
@@ -1881,6 +1896,7 @@ function App(): JSX.Element {
     exportVideoDeinterlace,
     exportVideoDenoise,
     exportVideoDeband,
+    exportVideoHisteq,
     lutCubePathForPreview,
     exportVideoSharpen,
     exportVideoEqPreset,
@@ -2515,6 +2531,33 @@ function App(): JSX.Element {
                     </select>
                     <span id="ffmpegVideoDebandHint" className="app-field-help">
                       `deband` между `hqdn3d` и `unsharp` (полосы/градиенты) §7.2.
+                    </span>
+                  </label>
+                  <label className="app-field">
+                    <span>Histeq</span>
+                    <select
+                      className="app-control"
+                      aria-label="Пресет histeq выравнивания гистограммы"
+                      aria-describedby="ffmpegVideoHisteqHint"
+                      value={exportVideoHisteq}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const v = e.target.value as FfmpegExportVideoHisteqId
+                        setExportVideoHisteq(v)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportVideoHisteq(v)
+                          .catch(console.error)
+                      }}
+                    >
+                      {EXPORT_VIDEO_HISTEQ_OPTIONS.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                    <span id="ffmpegVideoHisteqHint" className="app-field-help">
+                      `histeq` после `deband` и до `lut3d` §7.2.
                     </span>
                   </label>
                   <label className="app-field">

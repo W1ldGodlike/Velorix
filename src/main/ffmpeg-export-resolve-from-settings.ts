@@ -12,6 +12,7 @@ import type {
   FfmpegExportSubtitleModeId,
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDeinterlaceId,
+  FfmpegExportVideoHisteqId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
@@ -39,6 +40,7 @@ import {
   parseFfmpegExportVideoBitrate,
   parseFfmpegExportVideoDeband,
   parseFfmpegExportVideoDeinterlace,
+  parseFfmpegExportVideoHisteq,
   parseFfmpegExportVideoDenoise,
   parseFfmpegExportVideoEqPreset,
   parseFfmpegExportVideoGrain,
@@ -69,6 +71,7 @@ export type ResolvedFfmpegExportJobOptions = {
   subtitleMode: FfmpegExportSubtitleModeId | null
   videoDenoise: FfmpegExportVideoDenoiseId | null
   videoDeband: FfmpegExportVideoDebandId | null
+  videoHisteq: FfmpegExportVideoHisteqId | null
   videoLut3d: FfmpegExportVideoLut3dId
   videoSharpen: FfmpegExportVideoSharpenId | null
   videoEqPreset: FfmpegExportVideoEqPresetId | null
@@ -177,6 +180,11 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
     videoDebandRaw !== undefined && videoDebandRaw !== null
       ? parseFfmpegExportVideoDeband(videoDebandRaw)
       : parseFfmpegExportVideoDeband(settings.ffmpegExportVideoDeband)
+  const videoHisteqRaw = raw['videoHisteq']
+  const videoHisteq =
+    videoHisteqRaw !== undefined && videoHisteqRaw !== null
+      ? parseFfmpegExportVideoHisteq(videoHisteqRaw)
+      : parseFfmpegExportVideoHisteq(settings.ffmpegExportVideoHisteq)
   const videoLut3dRaw = raw['videoLut3d']
   const videoLut3d =
     videoLut3dRaw !== undefined && videoLut3dRaw !== null
@@ -241,6 +249,7 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
     subtitleMode,
     videoDenoise,
     videoDeband,
+    videoHisteq,
     videoLut3d,
     videoSharpen,
     videoEqPreset,

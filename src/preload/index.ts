@@ -22,6 +22,7 @@ import type {
   FfmpegExportUserPresetSnapshot,
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDeinterlaceId,
+  FfmpegExportVideoHisteqId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
@@ -184,6 +185,8 @@ const fluxalloy = {
       ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoDenoise, preset),
     setFfmpegExportVideoDeband: (preset: FfmpegExportVideoDebandId): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoDeband, preset),
+    setFfmpegExportVideoHisteq: (preset: FfmpegExportVideoHisteqId): Promise<AppSettings> =>
+      ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoHisteq, preset),
     setFfmpegExportVideoLut3d: (preset: FfmpegExportVideoLut3dId): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoLut3d, preset),
     setFfmpegExportVideoSharpen: (preset: FfmpegExportVideoSharpenId): Promise<AppSettings> =>

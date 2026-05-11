@@ -10,6 +10,7 @@ import type {
   FfmpegExportSubtitleModeId,
   FfmpegExportUserPreset,
   FfmpegExportVideoDebandId,
+  FfmpegExportVideoHisteqId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
@@ -153,6 +154,8 @@ export interface AppSettings {
   ffmpegExportVideoDenoise?: FfmpegExportVideoDenoiseId
   /** §7.2: пресет `deband` (`off` по умолчанию = не пишем поле). */
   ffmpegExportVideoDeband?: FfmpegExportVideoDebandId
+  /** §7.2: пресет `histeq` (`off` по умолчанию = не пишем поле). */
+  ffmpegExportVideoHisteq?: FfmpegExportVideoHisteqId
   /** §7.2: bundled `lut3d` (`off` по умолчанию = не пишем поле). */
   ffmpegExportVideoLut3d?: FfmpegExportVideoLut3dId
   /** §7.2: пресет `unsharp` (`off` по умолчанию = не пишем поле). */

@@ -16,6 +16,7 @@ import type {
   FfmpegExportSubtitleModeId,
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDeinterlaceId,
+  FfmpegExportVideoHisteqId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
@@ -212,6 +213,25 @@ export function resolveFfmpegExportVideoDebandFilter(
       return 'deband=range=20'
     case 'strong':
       return 'deband=range=28'
+    default:
+      return null
+  }
+}
+
+/**
+ * §7.2 — пресет `histeq` (глобальное выравнивание гистограммы); `off` → `null`.
+ * Параметр `strength` — доля эквализации (0…1); только whitelist.
+ */
+export function resolveFfmpegExportVideoHisteqFilter(
+  id: FfmpegExportVideoHisteqId
+): string | null {
+  switch (id) {
+    case 'light':
+      return 'histeq=strength=0.14'
+    case 'medium':
+      return 'histeq=strength=0.26'
+    case 'strong':
+      return 'histeq=strength=0.40'
     default:
       return null
   }
@@ -419,6 +439,8 @@ export interface FfmpegExportArgvParams {
   videoSharpen?: FfmpegExportVideoSharpenId
   /** §7.2 — `deband`; `off` или undefined — без фильтра. */
   videoDeband?: FfmpegExportVideoDebandId
+  /** §7.2 — `histeq` после deband и до lut3d; `off` или undefined — без фильтра. */
+  videoHisteq?: FfmpegExportVideoHisteqId
   /**
    * §7.2 — абсолютный путь к bundled `.cube` для `lut3d`; не задан или пустой — без фильтра.
    * Подставляет main после `existsSync` в `resources/luts/`.
@@ -470,6 +492,10 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
   const deband = resolveFfmpegExportVideoDebandFilter(params.videoDeband ?? 'off')
   if (deband !== null) {
     filters.push(deband)
+  }
+  const histeq = resolveFfmpegExportVideoHisteqFilter(params.videoHisteq ?? 'off')
+  if (histeq !== null) {
+    filters.push(histeq)
   }
   const lutPathRaw = params.videoLut3dCubeAbsPath
   const lutPath =
@@ -652,6 +678,7 @@ export interface FfmpegExportPreviewInput {
   videoDenoise?: FfmpegExportVideoDenoiseId
   videoSharpen?: FfmpegExportVideoSharpenId
   videoDeband?: FfmpegExportVideoDebandId
+  videoHisteq?: FfmpegExportVideoHisteqId
   /** §7.2 — как в `buildFfmpegExportArgv`: путь к `.cube` с main (`resolveFfmpegExportLutCubeAbsPath`). */
   videoLut3dCubeAbsPath?: string | null
   videoEqPreset?: FfmpegExportVideoEqPresetId
@@ -732,6 +759,7 @@ export function buildFfmpegExportPreviewCommand(
     ...(input.subtitleMode !== undefined ? { subtitleMode: input.subtitleMode } : {}),
     ...(input.videoDenoise !== undefined ? { videoDenoise: input.videoDenoise } : {}),
     ...(input.videoDeband !== undefined ? { videoDeband: input.videoDeband } : {}),
+    ...(input.videoHisteq !== undefined ? { videoHisteq: input.videoHisteq } : {}),
     ...(typeof input.videoLut3dCubeAbsPath === 'string' && input.videoLut3dCubeAbsPath.trim() !== ''
       ? { videoLut3dCubeAbsPath: input.videoLut3dCubeAbsPath.trim() }
       : {}),

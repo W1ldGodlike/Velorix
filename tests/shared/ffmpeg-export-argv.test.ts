@@ -14,6 +14,7 @@ import {
   resolveFfmpegExportSubtitleCopyCodec,
   resolveFfmpegExportVideoDebandFilter,
   resolveFfmpegExportVideoDeinterlaceFilter,
+  resolveFfmpegExportVideoHisteqFilter,
   resolveFfmpegExportVideoDenoiseFilter,
   resolveFfmpegExportVideoEqFilter,
   resolveFfmpegExportVideoGrainFilter,
@@ -655,6 +656,13 @@ describe('shared ffmpeg export argv', () => {
     expect(resolveFfmpegExportVideoDeinterlaceFilter('field')).toBe('yadif=mode=send_field')
   })
 
+  it('resolveFfmpegExportVideoHisteqFilter — только whitelist histeq', () => {
+    expect(resolveFfmpegExportVideoHisteqFilter('off')).toBeNull()
+    expect(resolveFfmpegExportVideoHisteqFilter('light')).toBe('histeq=strength=0.14')
+    expect(resolveFfmpegExportVideoHisteqFilter('medium')).toBe('histeq=strength=0.26')
+    expect(resolveFfmpegExportVideoHisteqFilter('strong')).toBe('histeq=strength=0.40')
+  })
+
   it('resolveFfmpegExportVideoHueFilter — только whitelist hue', () => {
     expect(resolveFfmpegExportVideoHueFilter('off')).toBeNull()
     expect(resolveFfmpegExportVideoHueFilter('warmShift')).toBe('hue=h=-11:s=1.03')
@@ -679,6 +687,7 @@ describe('shared ffmpeg export argv', () => {
       videoDeinterlace: 'frame',
       videoDenoise: 'medium',
       videoDeband: 'light',
+      videoHisteq: 'medium',
       videoLut3dCubeAbsPath: 'D:/l/f.cube',
       videoSharpen: 'light',
       videoEqPreset: 'vivid',
@@ -689,7 +698,7 @@ describe('shared ffmpeg export argv', () => {
     })
     const vf = argv[argv.indexOf('-vf') + 1] ?? ''
     expect(vf).toBe(
-      "transpose=1,crop=min(iw\\,ih):min(iw\\,ih),yadif,hqdn3d=3:3:6:6,deband=range=12,lut3d=file='D\\:/l/f.cube':interp=trilinear,unsharp=5:5:0.6:5:5:0.0,eq=contrast=1.10:saturation=1.20,hue=h=-11:s=1.03,noise=alls=5:allf=u,vignette=angle=PI/10,gblur=sigma=2.5,scale=-2:720,fps=30"
+      "transpose=1,crop=min(iw\\,ih):min(iw\\,ih),yadif,hqdn3d=3:3:6:6,deband=range=12,histeq=strength=0.26,lut3d=file='D\\:/l/f.cube':interp=trilinear,unsharp=5:5:0.6:5:5:0.0,eq=contrast=1.10:saturation=1.20,hue=h=-11:s=1.03,noise=alls=5:allf=u,vignette=angle=PI/10,gblur=sigma=2.5,scale=-2:720,fps=30"
     )
   })
 

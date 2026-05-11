@@ -27,6 +27,11 @@ export type FfmpegExportVideoSharpenId = 'off' | 'light' | 'medium' | 'strong'
 /** §7.2 — пресеты `deband` (сглаживание полос 8-bit / градиентов), только whitelist. */
 export type FfmpegExportVideoDebandId = 'off' | 'light' | 'medium' | 'strong'
 /**
+ * §7.2 — пресеты `histeq` (глобальное выравнивание гистограммы яркости), только whitelist; `off` — без фильтра.
+ * В `-vf` вставляется после `deband` и до `lut3d`.
+ */
+export type FfmpegExportVideoHisteqId = 'off' | 'light' | 'medium' | 'strong'
+/**
  * §7.2 — пресеты `eq=...`: коррекция контраста/насыщенности через белый список,
  * чтобы UI не отдавал произвольную строку фильтра в spawn.
  */
@@ -115,6 +120,8 @@ export interface FfmpegExportUserPresetSnapshot {
   videoSharpen?: FfmpegExportVideoSharpenId
   /** §7.2 — `deband`; `off` совпадает с поведением до правки. */
   videoDeband?: FfmpegExportVideoDebandId
+  /** §7.2 — `histeq` после deband и до lut3d; `off` = не пишем поле. */
+  videoHisteq?: FfmpegExportVideoHisteqId
   /** §7.2 — `lut3d` из bundled `.cube`; `off` = не пишем поле. */
   videoLut3d?: FfmpegExportVideoLut3dId
   /** §7.2 — `eq=...` цветокор-пресет; `off` совпадает с поведением до правки. */
@@ -180,6 +187,8 @@ export interface MediaExportRequestPayload {
   videoSharpen?: FfmpegExportVideoSharpenId | null
   /** §7.2 — `deband`; `off` совпадает с текущим поведением. */
   videoDeband?: FfmpegExportVideoDebandId | null
+  /** §7.2 — `histeq`; `off` совпадает с текущим поведением. */
+  videoHisteq?: FfmpegExportVideoHisteqId | null
   /** §7.2 — bundled `lut3d`; `off` совпадает с текущим поведением. */
   videoLut3d?: FfmpegExportVideoLut3dId | null
   /** §7.2 — `eq=...` цветокор-пресет; `off` совпадает с текущим поведением. */

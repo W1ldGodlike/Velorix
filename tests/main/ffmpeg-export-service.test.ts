@@ -23,6 +23,7 @@ import {
   parseFfmpegExportVideoVignette,
   parseFfmpegExportVideoBlur,
   parseFfmpegExportVideoDeinterlace,
+  parseFfmpegExportVideoHisteq,
   parseFfmpegSpeedToken,
   parseFfmpegTimeSeconds,
   resolveExportEncodeParams,
@@ -214,6 +215,21 @@ describe('ffmpeg export pure helpers', () => {
         videoDeinterlace: 'field'
       })
     ).toMatchObject({ videoDeinterlace: 'field' })
+    expect(
+      parseFfmpegExportUserPresetSnapshot({
+        encodePreset: 'balance',
+        container: 'mp4',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'aac',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        videoTransform: 'none',
+        cropPreset: 'none',
+        videoHisteq: 'strong'
+      })
+    ).toMatchObject({ videoHisteq: 'strong' })
   })
 
   it('parseFfmpegExportVideoGrain — whitelist', () => {
@@ -229,6 +245,11 @@ describe('ffmpeg export pure helpers', () => {
   it('parseFfmpegExportVideoBlur — whitelist', () => {
     expect(parseFfmpegExportVideoBlur('strong')).toBe('strong')
     expect(parseFfmpegExportVideoBlur('bogus')).toBe('off')
+  })
+
+  it('parseFfmpegExportVideoHisteq — whitelist', () => {
+    expect(parseFfmpegExportVideoHisteq('light')).toBe('light')
+    expect(parseFfmpegExportVideoHisteq('bogus')).toBe('off')
   })
 
   it('parseFfmpegExportVideoDeinterlace — whitelist', () => {
@@ -346,6 +367,24 @@ describe('ffmpeg export pure helpers', () => {
       }
     )
     expect(blur.ffmpegExportVideoBlur).toBe('medium')
+
+    const histeq = mergeFfmpegExportSnapshotIntoAppSettings(
+      { theme: 'dark' },
+      {
+        encodePreset: 'balance',
+        container: 'mp4',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'aac',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        videoTransform: 'none',
+        cropPreset: 'none',
+        videoHisteq: 'light'
+      }
+    )
+    expect(histeq.ffmpegExportVideoHisteq).toBe('light')
 
     const deint = mergeFfmpegExportSnapshotIntoAppSettings(
       { theme: 'dark' },

@@ -17,6 +17,7 @@ import type {
   FfmpegExportUserPresetSnapshot,
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDeinterlaceId,
+  FfmpegExportVideoHisteqId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
@@ -50,6 +51,7 @@ export type {
   FfmpegExportUserPresetSnapshot,
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDeinterlaceId,
+  FfmpegExportVideoHisteqId,
   FfmpegExportVideoDenoiseId,
   FfmpegExportVideoEqPresetId,
   FfmpegExportVideoGrainId,
@@ -75,6 +77,7 @@ export {
   resolveFfmpegExportSubtitleCopyCodec,
   resolveFfmpegExportVideoDenoiseFilter,
   resolveFfmpegExportVideoDeinterlaceFilter,
+  resolveFfmpegExportVideoHisteqFilter,
   resolveFfmpegExportVideoEqFilter,
   resolveFfmpegExportVideoGrainFilter,
   resolveFfmpegExportVideoHueFilter,
@@ -250,6 +253,14 @@ export function parseFfmpegExportVideoDeband(raw: unknown): FfmpegExportVideoDeb
   return 'off'
 }
 
+/** §7.2 — пресет `histeq`; только whitelist, иначе `off`. */
+export function parseFfmpegExportVideoHisteq(raw: unknown): FfmpegExportVideoHisteqId {
+  if (raw === 'light' || raw === 'medium' || raw === 'strong') {
+    return raw
+  }
+  return 'off'
+}
+
 /** §7.2 — bundled `lut3d`; только whitelist, иначе `off`. */
 export function parseFfmpegExportVideoLut3d(raw: unknown): FfmpegExportVideoLut3dId {
   if (raw === 'film-warm' || raw === 'film-cool' || raw === 'punch') {
@@ -368,6 +379,7 @@ export function parseFfmpegExportUserPresetSnapshot(
   const subtitleMode = parseFfmpegExportSubtitleMode(o['subtitleMode'])
   const videoDenoise = parseFfmpegExportVideoDenoise(o['videoDenoise'])
   const videoDeband = parseFfmpegExportVideoDeband(o['videoDeband'])
+  const videoHisteq = parseFfmpegExportVideoHisteq(o['videoHisteq'])
   const videoLut3d = parseFfmpegExportVideoLut3d(o['videoLut3d'])
   const videoSharpen = parseFfmpegExportVideoSharpen(o['videoSharpen'])
   const videoEqPreset = parseFfmpegExportVideoEqPreset(o['videoEqPreset'])
@@ -395,6 +407,7 @@ export function parseFfmpegExportUserPresetSnapshot(
     ...(subtitleMode === 'copy' ? { subtitleMode: 'copy' as const } : {}),
     ...(videoDenoise !== 'off' ? { videoDenoise } : {}),
     ...(videoDeband !== 'off' ? { videoDeband } : {}),
+    ...(videoHisteq !== 'off' ? { videoHisteq } : {}),
     ...(videoLut3d !== 'off' ? { videoLut3d } : {}),
     ...(videoSharpen !== 'off' ? { videoSharpen } : {}),
     ...(videoEqPreset !== 'off' ? { videoEqPreset } : {}),
@@ -525,6 +538,15 @@ export function mergeFfmpegExportSnapshotIntoAppSettings(
     next.ffmpegExportVideoDeband = snapshot.videoDeband
   } else {
     delete next.ffmpegExportVideoDeband
+  }
+  if (
+    snapshot.videoHisteq === 'light' ||
+    snapshot.videoHisteq === 'medium' ||
+    snapshot.videoHisteq === 'strong'
+  ) {
+    next.ffmpegExportVideoHisteq = snapshot.videoHisteq
+  } else {
+    delete next.ffmpegExportVideoHisteq
   }
   if (
     snapshot.videoLut3d === 'film-warm' ||
@@ -791,6 +813,8 @@ export async function runFfmpegExportJob(params: {
   videoDenoise?: FfmpegExportVideoDenoiseId | null
   /** §7.2 — `deband`; `off`/null — без фильтра. */
   videoDeband?: FfmpegExportVideoDebandId | null
+  /** §7.2 — `histeq`; `off`/null — без фильтра. */
+  videoHisteq?: FfmpegExportVideoHisteqId | null
   /** §7.2 — bundled пресет `lut3d`; вместе с `lutResourcesRoot` даёт путь к `.cube`. */
   videoLut3d?: FfmpegExportVideoLut3dId | null
   /** §7.2 — корень `resources/` (dev: app root, prod: `process.resourcesPath`) для `resources/luts/*.cube`. */
@@ -834,6 +858,7 @@ export async function runFfmpegExportJob(params: {
   const subtitleMode = parseFfmpegExportSubtitleMode(params.subtitleMode)
   const videoDenoise = parseFfmpegExportVideoDenoise(params.videoDenoise)
   const videoDeband = parseFfmpegExportVideoDeband(params.videoDeband)
+  const videoHisteq = parseFfmpegExportVideoHisteq(params.videoHisteq)
   const explicitLut =
     typeof params.videoLut3dCubeAbsPath === 'string' && params.videoLut3dCubeAbsPath.trim() !== ''
       ? params.videoLut3dCubeAbsPath.trim()
@@ -886,6 +911,7 @@ export async function runFfmpegExportJob(params: {
     ...(subtitleMode === 'copy' ? { subtitleMode: 'copy' as const } : {}),
     ...(videoDenoise !== 'off' ? { videoDenoise } : {}),
     ...(videoDeband !== 'off' ? { videoDeband } : {}),
+    ...(videoHisteq !== 'off' ? { videoHisteq } : {}),
     ...(videoLut3dCubeAbsPath !== null ? { videoLut3dCubeAbsPath } : {}),
     ...(videoSharpen !== 'off' ? { videoSharpen } : {}),
     ...(videoEqPreset !== 'off' ? { videoEqPreset } : {}),
