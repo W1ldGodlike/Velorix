@@ -106,10 +106,18 @@ function trustedHashFor(file, source) {
   return undefined
 }
 
+/** Таймаут HTTP-загрузки движков (мс); переопределение через env для медленных зеркал/CI. */
+function engineDownloadTimeoutMs() {
+  const raw = process.env.FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS
+  const n = raw != null ? Number.parseInt(String(raw).trim(), 10) : Number.NaN
+  return Number.isFinite(n) && n > 0 ? n : 600_000
+}
+
 async function downloadToFile(url, destPath) {
   const response = await fetch(url, {
     redirect: 'follow',
-    headers: { 'User-Agent': 'FluxAlloy/0.1.0 (prepare-engines-win)', Accept: '*/*' }
+    headers: { 'User-Agent': 'FluxAlloy/0.1.0 (prepare-engines-win)', Accept: '*/*' },
+    signal: AbortSignal.timeout(engineDownloadTimeoutMs())
   })
   if (!response.ok) {
     throw new Error(`HTTP ${response.status} ${response.statusText}`)

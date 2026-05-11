@@ -53,9 +53,19 @@ async function fileNonEmpty(path) {
   }
 }
 
-/** В CI пишем первую строку `--version`/`-version` в лог — проще отлаживать «что реально в bin/». */
+function shouldLogEngineVersions() {
+  const ga = process.env.GITHUB_ACTIONS
+  const flag = process.env.FLUXALLOY_LOG_ENGINE_VERSIONS
+  return (
+    ga === 'true' ||
+    flag === '1' ||
+    (typeof flag === 'string' && flag.trim().toLowerCase() === 'true')
+  )
+}
+
+/** В CI или при `FLUXALLOY_LOG_ENGINE_VERSIONS` — первая строка `--version`/`-version` в лог. */
 async function logCiEngineHeadlines() {
-  if (process.env.GITHUB_ACTIONS !== 'true') {
+  if (!shouldLogEngineVersions()) {
     return
   }
   for (const { file } of EXE_KEYS) {

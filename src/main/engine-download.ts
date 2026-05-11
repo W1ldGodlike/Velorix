@@ -65,6 +65,13 @@ async function assertSha256Optional(filePath: string, expected: string | undefin
   }
 }
 
+/** Таймаут загрузки движков (мс), общий с `prepare-engines-win.mjs` (`FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS`). */
+function engineDownloadFetchTimeoutMs(): number {
+  const raw = process.env['FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS']
+  const n = raw != null ? Number.parseInt(String(raw).trim(), 10) : Number.NaN
+  return Number.isFinite(n) && n > 0 ? n : 600_000
+}
+
 async function downloadToFile(
   url: string,
   destPath: string,
@@ -72,7 +79,8 @@ async function downloadToFile(
 ): Promise<void> {
   const response = await fetch(url, {
     redirect: 'follow',
-    headers: { 'User-Agent': userAgent(), Accept: '*/*' }
+    headers: { 'User-Agent': userAgent(), Accept: '*/*' },
+    signal: AbortSignal.timeout(engineDownloadFetchTimeoutMs())
   })
   if (!response.ok) {
     throw new Error(`Загрузка не удалась: HTTP ${response.status} ${response.statusText}`)

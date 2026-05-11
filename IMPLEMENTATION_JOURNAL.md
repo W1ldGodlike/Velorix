@@ -301,3 +301,4 @@
 - [J-284] 2026-05-11 22:43:30 [SDK]: §3/§19 — `FLUXALLOY_ENGINES_FORCE` в `prepare-engines-win`, `engines:prepare:win:force`, RELEASE/bin README/чеклист. `npm run check` ок.
 - [J-285] 2026-05-11 22:44:20 [SDK]: §19 — `release:win:force`, CI `concurrency`+cancel-in-progress; RELEASE §4/§5, bin README, спринт. `npm run check` ок.
 - [J-286] 2026-05-11 22:45:25 [SDK]: §19/§17 — CI `permissions: contents: read`; `engines:verify-bundled` при `GITHUB_ACTIONS` логирует первую строку версии каждого exe; RELEASE/спринт. `npm run check` ок.
+- [J-287] 2026-05-11 22:47:09 [SDK]: §3/§19 — `FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS`+`AbortSignal.timeout` в prepare и `engine-download`; `engines:report-hashes --versions`; `FLUXALLOY_LOG_ENGINE_VERSIONS` в verify; RELEASE/bin README/спринт. `npm run check` ок.

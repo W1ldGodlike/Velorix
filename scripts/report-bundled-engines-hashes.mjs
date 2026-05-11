@@ -1,13 +1,17 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /**
  * Печать SHA256 для `bin/*.exe` (§19): удобно заполнить `Data/trusted_hashes.json` после `engines:prepare:win`.
- * Флаги: `--json` — фрагмент для вставки в `windows-x64` (только exe-ключи).
+ * Флаги: `--json` — фрагмент для вставки в `windows-x64` (только exe-ключи); `--versions` — первая строка `--version`/`-version` для каждого exe.
  */
+import { execFile } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { createReadStream } from 'node:fs'
 import { stat } from 'node:fs/promises'
 import { join, dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { promisify } from 'node:util'
+
+const execFileAsync = promisify(execFile)
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const binDir = join(rootDir, 'bin')
@@ -36,8 +40,28 @@ async function sha256File(path) {
   })
 }
 
+async function printVersionLines() {
+  for (const { name } of FILES) {
+    const full = join(binDir, name)
+    const args = name === 'yt-dlp.exe' ? ['--version'] : ['-version']
+    try {
+      const { stdout } = await execFileAsync(full, args, {
+        timeout: 12_000,
+        windowsHide: true,
+        maxBuffer: 512 * 1024
+      })
+      const line = stdout.split(/\r?\n/).find((l) => l.trim())?.trim() ?? ''
+      log(`version ${name}: ${line}`)
+    } catch (e) {
+      log(`version ${name}: ошибка — ${e instanceof Error ? e.message : String(e)}`)
+    }
+  }
+}
+
 async function main() {
-  const jsonOut = process.argv.includes('--json')
+  const argv = process.argv
+  const jsonOut = argv.includes('--json')
+  const versionsOut = argv.includes('--versions')
 
   if (!isWindows()) {
     log('Windows-only: на других ОС bin/*.exe не считаем')
@@ -65,13 +89,21 @@ async function main() {
       obj[key] = hex
     }
     console.log(JSON.stringify(obj, null, 2))
-    return
+  } else if (!versionsOut) {
+    for (const { name, hex } of rows) {
+      console.log(`${name}\t${hex}`)
+    }
   }
 
-  for (const { name, hex } of rows) {
-    console.log(`${name}\t${hex}`)
+  if (versionsOut) {
+    await printVersionLines()
   }
-  log('Для JSON-фрагмента под windows-x64: npm run engines:report-hashes -- --json')
+
+  if (!jsonOut && !versionsOut) {
+    log('Для JSON: npm run engines:report-hashes -- --json; для версий: -- --versions')
+  } else if (!versionsOut && jsonOut) {
+    log('Добавить версии: npm run engines:report-hashes -- --json --versions')
+  }
 }
 
 main().catch((error) => {

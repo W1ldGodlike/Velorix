@@ -60,9 +60,15 @@ npm run engines:verify-bundled
 ```powershell
 npm run engines:report-hashes
 npm run engines:report-hashes -- --json
+npm run engines:report-hashes -- --versions
+npm run engines:report-hashes -- --json --versions
 ```
 
-Второй вариант выводит JSON с ключами `yt-dlp.exe`, `ffmpeg.exe`, `ffprobe.exe` — вручную перенесите значения в `Data/trusted_hashes.json` → `windows-x64`.
+Второй вариант выводит JSON с ключами `yt-dlp.exe`, `ffmpeg.exe`, `ffprobe.exe` — вручную перенесите значения в `Data/trusted_hashes.json` → `windows-x64`. Флаг `--versions` печатает первую строку версии каждого exe (как в CI для `engines:verify-bundled`).
+
+Локально повторить вывод версий из verify: `FLUXALLOY_LOG_ENGINE_VERSIONS=1` и `npm run engines:verify-bundled`.
+
+Таймаут HTTP при скачивании движков (`prepare-engines-win` и загрузка в main из UI): переменная **`FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS`** (миллисекунды; по умолчанию 600000).
 
 Принудительно обновить движки в `bin/` (игнорировать «уже есть»), например после смены upstream `latest` или подозрения на битый кэш:
 
@@ -126,5 +132,5 @@ git status
 
 После push убедиться, что GitHub Actions `ci` зелёный.
 
-Workflow `ci` на Windows: `permissions: contents: read`; `concurrency` с `cancel-in-progress` для ветки; кэш `bin/`; `engines:prepare:win`; `engines:verify-bundled` (в GitHub Actions дополнительно печатает первую строку версии каждого exe); `npm run build`; `npm run pack:dir` (`electron-builder --dir`) — проверка конфигурации упаковки без полного NSIS/portable/zip.
+Workflow `ci` на Windows: `permissions: contents: read`; `concurrency` с `cancel-in-progress` для ветки; кэш `bin/`; `engines:prepare:win`; `engines:verify-bundled` (печать версий при `GITHUB_ACTIONS` или `FLUXALLOY_LOG_ENGINE_VERSIONS`); `npm run build`; `npm run pack:dir` (`electron-builder --dir`) — проверка конфигурации упаковки без полного NSIS/portable/zip.
 

@@ -22,7 +22,10 @@ After prepare, print SHA256 for `trusted_hashes.json` (see `docs/RELEASE.md`):
 
 ```powershell
 npm run engines:report-hashes
+npm run engines:report-hashes -- --versions
 ```
+
+Таймаут загрузки движков по сети (мс): `FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS` (см. `docs/RELEASE.md`).
 
 GitHub Actions caches `bin/` between runs (keyed on `prepare-engines-win.mjs` and `trusted_hashes.json`).
 
