@@ -126,5 +126,5 @@ git status
 
 После push убедиться, что GitHub Actions `ci` зелёный.
 
-Workflow `ci` на Windows: `concurrency` с `cancel-in-progress` для ветки; кэш `bin/`; `engines:prepare:win`; `engines:verify-bundled`; `npm run build`; `npm run pack:dir` (`electron-builder --dir`) — проверка конфигурации упаковки без полного NSIS/portable/zip.
+Workflow `ci` на Windows: `permissions: contents: read`; `concurrency` с `cancel-in-progress` для ветки; кэш `bin/`; `engines:prepare:win`; `engines:verify-bundled` (в GitHub Actions дополнительно печатает первую строку версии каждого exe); `npm run build`; `npm run pack:dir` (`electron-builder --dir`) — проверка конфигурации упаковки без полного NSIS/portable/zip.
 
