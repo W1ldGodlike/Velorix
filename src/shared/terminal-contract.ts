@@ -626,6 +626,54 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· no-part -F',
     summary: 'Без временных .part (--no-part -F); диск/NAS; допишите URL.',
     fullLine: 'yt-dlp --no-part -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· concurrent-frags 4',
+    summary: 'Параллельная подкачка фрагментов DASH/HLS (--concurrent-fragments 4); допишите URL и остальные ключи.',
+    fullLine: 'yt-dlp --concurrent-fragments 4 '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· merge mkv',
+    summary: 'Слияние потоков в контейнер MKV при мультиплексировании (--merge-output-format mkv); допишите URL и -f …',
+    fullLine: 'yt-dlp --merge-output-format mkv '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· prefer-free -F',
+    summary: 'Список форматов с приоритетом свободных кодеков (--prefer-free-formats -F); допишите URL.',
+    fullLine: 'yt-dlp --prefer-free-formats -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· format-sort 720p -F',
+    summary: 'Сортировка форматов: сначала около 720p (--format-sort +res:720 -F); при необходимости поменяйте res; допишите URL.',
+    fullLine: 'yt-dlp --format-sort +res:720 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· hls-native -F',
+    summary: 'HLS: нативный загрузчик вместо ffmpeg где возможно (--hls-prefer-native -F); допишите URL.',
+    fullLine: 'yt-dlp --hls-prefer-native -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· live-from-start',
+    summary: 'Прямой эфир: начать с начала буфера (--live-from-start); допишите URL трансляции и прочие ключи.',
+    fullLine: 'yt-dlp --live-from-start '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· sleep-requests 1',
+    summary: 'Пауза 1 с между HTTP-запросами (--sleep-requests 1); снижение 429/банов; допишите URL.',
+    fullLine: 'yt-dlp --sleep-requests 1 '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· playlist-end 10 -J',
+    summary: 'Первые 10 элементов плейлиста в JSON (--playlist-end 10 -J); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --playlist-end 10 -J '
   }
 ]
 
@@ -978,6 +1026,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· chapters csv',
     summary: 'Таблица глав построчно (-show_chapters -of csv); без лишнего текста; плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -show_chapters -of csv=p=0 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 stream dur',
+    summary: 'Поток v:0: start_time + duration дорожки (сверка с format и смещениями); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=start_time,duration -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:0 stream dur',
+    summary: 'Поток a:0: start_time + duration дорожки (рассинхрон с видео); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=start_time,duration -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 bit depth',
+    summary: 'Поток v:0: bits_per_raw_sample (глубина сырого сэмпла, 8/10/12-bit и т.д.); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=bits_per_raw_sample -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   }
 ]
 

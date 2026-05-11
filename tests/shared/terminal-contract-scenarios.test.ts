@@ -128,6 +128,10 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --socket-timeout 30 ')
     expect(lines).toContain('yt-dlp --force-ipv4 -F ')
     expect(lines).toContain('yt-dlp --no-part -F ')
+    expect(lines).toContain('yt-dlp --concurrent-fragments 4 ')
+    expect(lines).toContain('yt-dlp --merge-output-format mkv ')
+    expect(lines).toContain('yt-dlp --format-sort +res:720 -F ')
+    expect(lines).toContain('yt-dlp --playlist-end 10 -J ')
   })
 
   it('preview: есть JSON-сводка и show_error для текущего превью', () => {
@@ -261,5 +265,23 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     ).toBe(true)
     expect(lines.some((l) => l.includes('-show_chapters') && l.includes('-of csv'))).toBe(true)
     expect(lines.some((l) => l.includes('-frames:v 1 -f null -'))).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams v:0') && l.includes('stream=start_time,duration')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams a:0') && l.includes('stream=start_time,duration')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams v:0') && l.includes('stream=bits_per_raw_sample')
+      )
+    ).toBe(true)
   })
 })
