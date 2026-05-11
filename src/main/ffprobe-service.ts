@@ -10,6 +10,7 @@ import {
   extractFfprobeDisplayMatrixRotation,
   summarizeFfprobeSideDataList
 } from '../shared/ffprobe-side-data'
+import { formatFfprobeStreamStartTime } from '../shared/ffprobe-stream-start-time'
 import type {
   MediaProbeResult,
   MediaProbeSuccess,
@@ -68,6 +69,8 @@ interface FfprobeJson {
     has_b_frames?: number
     /** FourCC / тег кодека в контейнере (`avc1`, `hvc1` …). */
     codec_tag_string?: string
+    /** Секунды от начала контейнера (строка float ffprobe). */
+    start_time?: string
     bit_rate?: string
     /** Для аудио: float planar, s16 и т.п. */
     sample_fmt?: string
@@ -190,6 +193,10 @@ function buildTrackDetail(stream: NonNullable<FfprobeJson['streams']>[number]): 
         fps >= 100 ? fps.toFixed(0) : Number.isInteger(fps) ? String(fps) : fps.toFixed(3)
       parts.push(`${label} fps`)
     }
+    const vStart = formatFfprobeStreamStartTime(stream.start_time)
+    if (vStart) {
+      parts.push(vStart)
+    }
     const nbFramesRaw = stream.nb_frames
     const nbFramesParsed =
       typeof nbFramesRaw === 'string' && nbFramesRaw.trim() !== ''
@@ -286,6 +293,10 @@ function buildTrackDetail(stream: NonNullable<FfprobeJson['streams']>[number]): 
     if (typeof stream.channel_layout === 'string' && stream.channel_layout.trim() !== '') {
       parts.push(stream.channel_layout.trim())
     }
+    const aStart = formatFfprobeStreamStartTime(stream.start_time)
+    if (aStart) {
+      parts.push(aStart)
+    }
     const aProfile = ffprobeScalarDisplay(
       typeof stream.profile === 'string' ? stream.profile : undefined
     )
@@ -316,6 +327,10 @@ function buildTrackDetail(stream: NonNullable<FfprobeJson['streams']>[number]): 
     )
     if (subFourcc) {
       parts.push(subFourcc)
+    }
+    const subStart = formatFfprobeStreamStartTime(stream.start_time)
+    if (subStart) {
+      parts.push(subStart)
     }
   } else {
     const lang = tagString(stream.tags, 'language')
