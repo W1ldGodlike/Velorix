@@ -878,6 +878,66 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· age-limit -F',
     summary: 'Пропуск контента старше возрастного рейтинга (--age-limit 18 -F); подстройте порог; допишите URL.',
     fullLine: 'yt-dlp --age-limit 18 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· lazy-playlist -J',
+    summary: 'Плейлист без глубокого извлечения до скачивания (--lazy-playlist -J); быстрее на длинных списках; допишите URL.',
+    fullLine: 'yt-dlp --lazy-playlist -J '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print season_number',
+    summary: 'Номер сезона из метаданных без скачивания (--skip-download --print season_number); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print season_number '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print episode_number',
+    summary: 'Номер эпизода без скачивания (--skip-download --print episode_number); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print episode_number '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print track',
+    summary: 'Название трека (аудио) без скачивания (--skip-download --print track); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print track '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print artists',
+    summary: 'Исполнители без скачивания (--skip-download --print artists); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print artists '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print album',
+    summary: 'Альбом без скачивания (--skip-download --print album); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print album '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· remux-video mkv',
+    summary: 'После скачивания принудительный remux в MKV (--remux-video mkv); допишите URL и -f/-o.',
+    fullLine: 'yt-dlp --remux-video mkv '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· sub-format srt -F',
+    summary: 'Предпочесть субтитры в SRT при выборе форматов (--sub-format srt -F); допишите URL.',
+    fullLine: 'yt-dlp --sub-format srt -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· convert-thumbnails jpg',
+    summary: 'Конвертировать обложку в JPEG при скачивании (--convert-thumbnails jpg); допишите URL и ключи вывода.',
+    fullLine: 'yt-dlp --convert-thumbnails jpg '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· force-ipv6 -F',
+    summary: 'Список форматов через IPv6 (--force-ipv6 -F); обход части IPv4/NAT; допишите URL.',
+    fullLine: 'yt-dlp --force-ipv6 -F '
   }
 ]
 
@@ -1308,6 +1368,36 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· audio decode 3s',
     summary: 'Декод только аудио первых 3 с (-vn -sn); быстрее полного smoke на видеофайлах; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vn -sn -t 3 -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 codec long',
+    summary: 'Поток v:0: codec_long_name (человекочитаемое имя кодека); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=codec_long_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format encoder tag',
+    summary: 'Тег контейнера encoder (format_tags.encoder); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=encoder -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:3 compact',
+    summary: 'Четвёртая аудиодорожка a:3: codec_name/sample_rate/channels; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:3 -show_entries stream=codec_name,sample_rate,channels -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· s:3 compact',
+    summary: 'Четвёртая дорожка субтитров s:3: codec_name/codec_tag_string; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:3 -show_entries stream=codec_name,codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· video decode 2s',
+    summary: 'Декод только видео первых 2 с (-an -sn); без аудио/субтитров; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -an -sn -t 2 -f null -`
   }
 ]
 

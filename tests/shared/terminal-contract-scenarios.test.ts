@@ -321,6 +321,32 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
     expect(lines.some((l) => l.includes('-vn -sn -t 3 -f null -'))).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams v:0') &&
+          l.includes('stream=codec_long_name') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+    expect(lines.some((l) => l.includes('format_tags=encoder') && l.includes('default=nw=1:nk=1'))).toBe(
+      true
+    )
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams a:3') &&
+          l.includes('stream=codec_name,sample_rate,channels')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams s:3') &&
+          l.includes('stream=codec_name,codec_tag_string')
+      )
+    ).toBe(true)
+    expect(lines.some((l) => l.includes('-an -sn -t 2 -f null -'))).toBe(true)
   })
 
   it('downloads: сетевые/выводные флаги yt-dlp (smoke по fullLine)', () => {
@@ -349,5 +375,9 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --cookies cookies.txt -F ')
     expect(lines).toContain('yt-dlp --sleep-interval 2 ')
     expect(lines).toContain('yt-dlp --age-limit 18 -F ')
+    expect(lines).toContain('yt-dlp --lazy-playlist -J ')
+    expect(lines).toContain('yt-dlp --skip-download --print season_number ')
+    expect(lines).toContain('yt-dlp --remux-video mkv ')
+    expect(lines).toContain('yt-dlp --force-ipv6 -F ')
   })
 })
