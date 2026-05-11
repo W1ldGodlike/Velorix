@@ -11,6 +11,12 @@ npm run build
 npm run audit:moderate
 ```
 
+Полный предрелизный прогон на Windows (включает подготовку `bin/` и `engines:verify-bundled` перед сборкой):
+
+```powershell
+npm run check:release
+```
+
 `npm run check` включает:
 
 - ESLint;
@@ -49,6 +55,15 @@ npm run engines:verify-bundled
 
 В `windows-x64` можно задавать хеши архивов FFmpeg (как раньше) и отдельно `ffmpeg.exe` / `ffprobe.exe` для проверки уже извлечённых бинарников (bootstrap, CI, загрузка в `userData/bin` из main).
 
+Заполнить три exe-хеша после свежего `engines:prepare:win`:
+
+```powershell
+npm run engines:report-hashes
+npm run engines:report-hashes -- --json
+```
+
+Второй вариант выводит JSON с ключами `yt-dlp.exe`, `ffmpeg.exe`, `ffprobe.exe` — вручную перенесите значения в `Data/trusted_hashes.json` → `windows-x64`.
+
 ## 3. Лицензии движков
 
 См. [`BUNDLED_ENGINES_LICENSES.md`](./BUNDLED_ENGINES_LICENSES.md).
@@ -62,7 +77,7 @@ npm run build:unpack
 npm run build:win
 ```
 
-`npm run build:win` формирует установщик NSIS и portable-сборку (`electron-builder`, цели `nsis` + `portable`).
+`npm run build:win` формирует NSIS, portable и zip (`electron-builder`: `nsis`, `portable`, `zip`).
 
 Перед публикацией вручную проверить:
 

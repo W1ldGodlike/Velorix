@@ -41,7 +41,7 @@
 
 Правило для агента: этот блок — рабочий навигатор ближайшего спринта. После каждой крупной итерации обновлять его: отмечать сделанное, переводить частичное в `[~]`, убирать устаревшее только если оно отражено ниже по §, и добавлять 3–7 следующих конкретных пунктов. Не оставлять блок полностью закрытым. Работать крупными блоками; отчёт пользователю — максимально краткий. `docs/UX_REFERENCE_V0.md` использовать только как ориентир для нужных UI-правок, но не держать спринт вокруг v0.
 
-- [~] §19/§3/§17: release/security hardening — CI (prepare+`engines:verify-bundled`+build), secrets guard, external navigation guard, release docs, portable+NSIS в electron-builder, опциональные SHA256 exe в `trusted_hashes`; дальше — ручной installer/portable smoke, заполнение хешей под `FLUXALLOY_ENGINES_STRICT`, подпись.
+- [~] §19/§3/§17: release/security hardening — CI, `check:release` (prepare+verify+build+audit), `engines:report-hashes`, NSIS+portable+zip, strict SHA по желанию; дальше — ручной smoke артефактов, заполнить exe-хеши в JSON под релиз, подпись.
 - [~] §6.1/§6.4: downloads core — очередь, история, лог, retry, pause, output resolving, preview proxy и React-вкладка есть; дальше — устойчивость редких yt-dlp логов, сценарий download→encode и уменьшение дубляжа embedded/pop-out.
 - [~] §7.2/§7.3/§7.4: обработка — trim/crop/rotate/flip/scale/FPS/bitrate/presets/2-pass есть; дальше — filters/audio filters/subtitles/metadata, HW encode, batch и связка download→encode.
 - [~] §9/§18: ffprobe/диагностика — inspector, TXT/HTML/JSON export, logs, Support ZIP есть; дальше — редкие ffprobe-поля, crash/e2e smoke и расширение диагностического отчёта.
@@ -479,7 +479,7 @@
 - [~] `bin/` в `extraResources`: bundled-first каталог с `README.md`; готовые бинарники подкладываются локально/CI через `npm run engines:prepare:win` перед сборкой (в Git не хранятся), скачивание в `userData/bin` остаётся fallback/update; release checklist и лицензии bundled engines — `docs/RELEASE.md` / `docs/BUNDLED_ENGINES_LICENSES.md`; GitHub Actions после `check` гоняет prepare + `engines:verify-bundled` (без strict, пока хеши в репо пустые).
 - [ ] Настроить нормальную иконку приложения вместо placeholder/default.
 - [ ] Windows NSIS: проверить installer вручную.
-- [~] Windows portable: в `electron-builder.yml` цель `portable` рядом с NSIS (`artifactName` portable); ручной smoke portable — позже.
+- [~] Windows portable/zip: в `electron-builder.yml` цели `portable` и `zip` рядом с NSIS; ручной smoke — позже.
 - [ ] macOS dmg/zip.
 - [ ] Linux AppImage/deb/tar.
 - [ ] Подпись Windows — отдельное решение.
@@ -517,7 +517,7 @@
 - [x] `npm run build:win` проходит.
 - [x] `npm run dev`: после перезагрузки PATH подхватывает Node/npm без ручной правки сессии (проверено вызовом `node`/`npm` из PowerShell).
 - [ ] Рабочий Windows installer с реальными ресурсами.
-- [~] Рабочий portable/zip (сборка portable в конфиге; приёмка — позже).
+- [~] Рабочий portable/zip (NSIS + portable + zip в конфиге; приёмка — позже).
 - [ ] macOS артефакты.
 - [ ] Linux артефакты.
 - [x] Версия в «О программе» (вместе с Electron/Chromium/Node).
