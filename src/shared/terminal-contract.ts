@@ -32,6 +32,12 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· cookies chrome',
     summary: 'Сухой прогон с cookies из Chrome (--cookies-from-browser); допишите URL.',
     fullLine: 'yt-dlp --skip-download --cookies-from-browser chrome '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -J',
+    summary: 'Полный JSON метаданных (-J) без скачивания; допишите URL (диагностика, Support ZIP).',
+    fullLine: 'yt-dlp -J '
   }
 ]
 
@@ -48,6 +54,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· duration',
     summary: 'Кратко: duration / size / bit_rate из format.',
     fullLine: `ffprobe -hide_banner -show_entries format=duration,size,bit_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· chapters',
+    summary: 'Главы и метаданные контейнера (-show_chapters -show_format); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_chapters -show_format ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· decode smoke',
+    summary: 'Быстрый прогон декодера первых 10 с в null muxer (-t 10); нагрузка на CPU/GPU.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -t 10 -f null -`
   }
 ]
 
