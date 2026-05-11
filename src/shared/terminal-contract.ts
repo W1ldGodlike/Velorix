@@ -512,6 +512,42 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· flat-playlist title',
     summary: 'Плоский плейлист: заголовок каждого элемента без глубокого извлечения (--flat-playlist --skip-download --print title); допишите URL плейлиста.',
     fullLine: 'yt-dlp --flat-playlist --skip-download --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print original_url',
+    summary: 'Исходный URL запроса без скачивания (--skip-download --print original_url); сверка редиректов; допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print original_url '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print webpage_url_domain',
+    summary: 'Домен страницы без скачивания (--skip-download --print webpage_url_domain); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print webpage_url_domain '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· flat-playlist print id',
+    summary: 'Плоский плейлист: id каждого элемента без глубокого извлечения (--flat-playlist --skip-download --print id); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --flat-playlist --skip-download --print id '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print playlist_index',
+    summary: 'Индекс ролика в плейлисте без скачивания (--skip-download --print playlist_index); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print playlist_index '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --write-sub',
+    summary: 'Субтитры в файлы без видео (--write-sub --skip-download); допишите URL.',
+    fullLine: 'yt-dlp --write-sub --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --write-comments',
+    summary: 'Комментарии в JSON без видео (--write-comments --skip-download); допишите URL (если поддерживается площадкой).',
+    fullLine: 'yt-dlp --write-comments --skip-download '
   }
 ]
 
@@ -792,6 +828,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· v:0 cc+avc',
     summary: 'Поток v:0: closed_captions + is_avc (CEA-608/708 vs AVC elementary); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=closed_captions,is_avc -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· t:0 attachment',
+    summary: 'Первая вложенная дорожка t:0 (шрифты/обложки MKV): codec_name + codec_tag_string; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams t:0 -show_entries stream=codec_name,codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· d:0 data',
+    summary: 'Первая data-дорожка d:0 (timed metadata и т.п.): codec_name/codec_tag_string; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams d:0 -show_entries stream=codec_name,codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffmpeg',

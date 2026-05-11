@@ -105,6 +105,12 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --skip-download --print automatic_captions ')
     expect(lines).toContain('yt-dlp --skip-download --print chapters ')
     expect(lines).toContain('yt-dlp --flat-playlist --skip-download --print title ')
+    expect(lines).toContain('yt-dlp --skip-download --print original_url ')
+    expect(lines).toContain('yt-dlp --skip-download --print webpage_url_domain ')
+    expect(lines).toContain('yt-dlp --flat-playlist --skip-download --print id ')
+    expect(lines).toContain('yt-dlp --skip-download --print playlist_index ')
+    expect(lines).toContain('yt-dlp --write-sub --skip-download ')
+    expect(lines).toContain('yt-dlp --write-comments --skip-download ')
   })
 
   it('preview: есть JSON-сводка и show_error для текущего превью', () => {
@@ -214,6 +220,12 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     ).toBe(true)
     expect(
       lines.some((l) => l.includes('select_streams v:0') && l.includes('stream=closed_captions,is_avc'))
+    ).toBe(true)
+    expect(
+      lines.some((l) => l.includes('select_streams t:0') && l.includes('stream=codec_name,codec_tag_string'))
+    ).toBe(true)
+    expect(
+      lines.some((l) => l.includes('select_streams d:0') && l.includes('stream=codec_name,codec_tag_string'))
     ).toBe(true)
   })
 })
