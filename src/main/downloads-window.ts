@@ -61,6 +61,9 @@ import {
 import { downloadsIpc as d, mainWindowIpc as mw } from '../shared/ipc-channels'
 import {
   DOWNLOADS_TOPBAR_CLUSTER_ICONS,
+  EDITOR_TOPBAR_ACTION_ICONS,
+  EDITOR_TOPBAR_TOOLS_ICONS,
+  QUEUE_ROW_ACTION_ICONS,
   emitDownloadsQueueRowIcoBootstrapJs,
   emitDownloadsTopbarClusterHtml,
   emitInlineStrokeSvg
@@ -641,6 +644,18 @@ function buildDownloadsHtml(
       border-radius: 6px; border: 1px solid var(--border-2); background: var(--surface-2); color: var(--text);
       padding: 0.32rem 0.6rem; font-size: 0.72rem; cursor: pointer; min-height: 28px;
     }
+    button.cmd.cmd-icon-leading {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    button.cmd.cmd-icon-leading .cmd-ico {
+      display: inline-flex;
+      flex-shrink: 0;
+      line-height: 0;
+      color: inherit;
+    }
+    button.cmd.cmd-icon-leading .cmd-ico svg { display: block; }
     button.cmd:hover { background: var(--surface-3); }
     button.cmd:disabled { opacity: 0.45; cursor: not-allowed; }
     button.cmd-primary {
@@ -943,16 +958,18 @@ ${emitDownloadsTopbarClusterHtml(18)}
             <p class="hint" id="urlsHint">Ссылки по строкам или DnD текста/URL. Очередь последовательная §6.</p>
           </div>
           <div class="input-actions">
-            <button type="button" class="cmd cmd-primary" id="addBtn" aria-describedby="urlsHint">
+            <button type="button" class="cmd cmd-primary cmd-icon-leading" id="addBtn" aria-describedby="urlsHint">
+              <span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.plus, 15)}</span>
               Добавить в очередь
             </button>
             <button
               type="button"
-              class="cmd"
+              class="cmd cmd-icon-leading"
               id="startBtn"
               title="Скачать все строки со статусом «Ожидание»"
               aria-describedby="urlsHint"
             >
+              <span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.play, 15)}</span>
               Начать загрузку
             </button>
           </div>
@@ -960,26 +977,30 @@ ${emitDownloadsTopbarClusterHtml(18)}
         <div class="queue-toolbar">
           <button
             type="button"
-            class="cmd"
+            class="cmd cmd-icon-leading"
             id="pauseYtdlpBtn"
             title="Приостановить загрузку (POSIX); на Windows недоступно"
             aria-describedby="dlQueueToolbarHint"
           >
+            <span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.pause, 14)}</span>
             Пауза
           </button>
           <button
             type="button"
-            class="cmd cmd-warn"
+            class="cmd cmd-warn cmd-icon-leading"
             id="cancelBtn"
             title="Отменить текущую загрузку yt-dlp"
             aria-describedby="dlQueueToolbarHint"
           >
+            <span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(EDITOR_TOPBAR_ACTION_ICONS.ban, 14)}</span>
             Отмена
           </button>
-          <button type="button" class="cmd" id="clearBtn" aria-describedby="dlQueueToolbarHint">
+          <button type="button" class="cmd cmd-icon-leading" id="clearBtn" aria-describedby="dlQueueToolbarHint">
+            <span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.trash, 14)}</span>
             Очистить очередь
           </button>
-          <button type="button" class="cmd" id="clearFinishedBtn" aria-describedby="dlQueueToolbarHint">
+          <button type="button" class="cmd cmd-icon-leading" id="clearFinishedBtn" aria-describedby="dlQueueToolbarHint">
+            <span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.trash, 14)}</span>
             Убрать завершённые
           </button>
           <span class="inline-filter-field">
@@ -1015,18 +1036,20 @@ ${emitDownloadsTopbarClusterHtml(18)}
             <div class="history-actions">
               <button
                 type="button"
-                class="cmd"
+                class="cmd cmd-icon-leading"
                 id="refreshHistoryBtn"
                 aria-describedby="downloadsHistorySectionHint"
               >
+                <span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.refreshCw, 14)}</span>
                 Обновить
               </button>
               <button
                 type="button"
-                class="cmd cmd-warn"
+                class="cmd cmd-warn cmd-icon-leading"
                 id="clearHistoryBtn"
                 aria-describedby="downloadsHistorySectionHint"
               >
+                <span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.trash, 14)}</span>
                 Очистить историю
               </button>
               <span class="hist-inline-field">
@@ -1056,16 +1079,18 @@ ${emitDownloadsTopbarClusterHtml(18)}
                 Потоковый вывод stdout и stderr yt-dlp; «Очистить вид» убирает только текст в окне, «Сохранить лог» — запись в файл по выбору.
               </p>
               <div class="history-actions">
-                <button type="button" class="cmd" id="saveLogBtn" aria-describedby="downloadsLogSectionHint">
+                <button type="button" class="cmd cmd-icon-leading" id="saveLogBtn" aria-describedby="downloadsLogSectionHint">
+                  <span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(EDITOR_TOPBAR_ACTION_ICONS.save, 14)}</span>
                   Сохранить лог…
                 </button>
                 <button
                   type="button"
-                  class="cmd"
+                  class="cmd cmd-icon-leading"
                   id="clearLogBtn"
                   title="Очистить только текст на экране (файл не трогаем)"
                   aria-describedby="downloadsLogSectionHint"
                 >
+                  <span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.x, 14)}</span>
                   Очистить вид
                 </button>
                 <span class="queue-summary log-meta" id="logMeta"></span>
@@ -1126,8 +1151,8 @@ ${emitDownloadsTopbarClusterHtml(18)}
               <div class="out-dir-row" role="group" aria-labelledby="dlCookiesPathLabel">
                 <span id="dlCookiesPathLabel" class="out-dir-label">Файл cookies:</span>
                 <span id="cookiesPathText" class="out-path" title="">—</span>
-                <button type="button" class="cmd" id="pickCookiesBtn" aria-describedby="dlRailMetaSectionHint">Выбрать…</button>
-                <button type="button" class="cmd" id="clearCookiesBtn" title="Убрать файл из настроек" aria-describedby="dlRailMetaSectionHint">Очистить</button>
+                <button type="button" class="cmd cmd-icon-leading" id="pickCookiesBtn" aria-describedby="dlRailMetaSectionHint"><span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.file, 14)}</span>Выбрать…</button>
+                <button type="button" class="cmd cmd-icon-leading" id="clearCookiesBtn" title="Убрать файл из настроек" aria-describedby="dlRailMetaSectionHint"><span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.x, 14)}</span>Очистить</button>
               </div>
               <p class="opts-hint opts-warn" id="cookiesWarn" hidden></p>
               <label for="impersonateSelect">Impersonate клиента</label>
@@ -1151,15 +1176,15 @@ ${emitDownloadsTopbarClusterHtml(18)}
               <div class="out-dir-row" role="group" aria-labelledby="dlOutDirLabel">
                 <span id="dlOutDirLabel" class="out-dir-label">Каталог загрузок:</span>
                 <span id="outDirText" class="out-path" title="">…</span>
-                <button type="button" class="cmd" id="openOutBtn" title="Открыть текущий каталог загрузок в проводнике" aria-describedby="dlRailSaveSectionHint">Открыть</button>
-                <button type="button" class="cmd" id="pickOutBtn" aria-describedby="dlRailSaveSectionHint">Выбрать…</button>
-                <button type="button" class="cmd" id="resetOutBtn" title="Использовать каталог по умолчанию в userData" aria-describedby="dlRailSaveSectionHint">По умолчанию</button>
+                <button type="button" class="cmd cmd-icon-leading" id="openOutBtn" title="Открыть текущий каталог загрузок в проводнике" aria-describedby="dlRailSaveSectionHint"><span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.folder, 14)}</span>Открыть</button>
+                <button type="button" class="cmd cmd-icon-leading" id="pickOutBtn" aria-describedby="dlRailSaveSectionHint"><span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.plus, 14)}</span>Выбрать…</button>
+                <button type="button" class="cmd cmd-icon-leading" id="resetOutBtn" title="Использовать каталог по умолчанию в userData" aria-describedby="dlRailSaveSectionHint"><span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS.home, 14)}</span>По умолчанию</button>
               </div>
               <label for="tmplInput">Шаблон имени (-o)</label>
               <input type="text" id="tmplInput" spellcheck="false" autocomplete="off" aria-describedby="dlRailSaveSectionHint" />
               <div class="opts-actions">
-                <button type="button" class="cmd cmd-primary" id="applyOptsBtn" aria-describedby="dlRailSaveSectionHint">Сохранить параметры</button>
-                <button type="button" class="cmd" id="tmplReset" aria-describedby="dlRailSaveSectionHint">Шаблон по умолчанию</button>
+                <button type="button" class="cmd cmd-primary cmd-icon-leading" id="applyOptsBtn" aria-describedby="dlRailSaveSectionHint"><span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(EDITOR_TOPBAR_ACTION_ICONS.save, 14)}</span>Сохранить параметры</button>
+                <button type="button" class="cmd cmd-icon-leading" id="tmplReset" aria-describedby="dlRailSaveSectionHint"><span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(EDITOR_TOPBAR_TOOLS_ICONS.rotateCcw, 14)}</span>Шаблон по умолчанию</button>
               </div>
             </div>
           </details>
