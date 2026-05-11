@@ -5,7 +5,7 @@ import { resolveEngineExecutablePath, type EnginePathOverrides } from './engine-
 import { logExternalProcessLine } from './external-process-log'
 import { formatFfprobeDispositionSummary } from '../shared/ffprobe-disposition'
 import { buildChapterRowsFromFfprobeJson } from '../shared/ffprobe-chapters'
-import { parseFfprobeRationalFps, resolveVideoFpsApprox } from '../shared/ffprobe-video-fps'
+import { formatFfprobeVideoFpsDetail, resolveVideoFpsApprox } from '../shared/ffprobe-video-fps'
 import {
   extractFfprobeDisplayMatrixRotation,
   summarizeFfprobeSideDataList
@@ -193,12 +193,9 @@ function buildTrackDetail(
     } else if (tagRotDeg !== null) {
       parts.push(`rot ${tagRotDeg}°`)
     }
-    const fps =
-      parseFfprobeRationalFps(stream.avg_frame_rate) ?? parseFfprobeRationalFps(stream.r_frame_rate)
-    if (fps !== null) {
-      const label =
-        fps >= 100 ? fps.toFixed(0) : Number.isInteger(fps) ? String(fps) : fps.toFixed(3)
-      parts.push(`${label} fps`)
+    const fpsLine = formatFfprobeVideoFpsDetail(stream.avg_frame_rate, stream.r_frame_rate)
+    if (fpsLine !== null) {
+      parts.push(fpsLine)
     }
     const vStart = formatFfprobeStreamStartTime(stream.start_time)
     if (vStart) {

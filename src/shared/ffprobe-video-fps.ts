@@ -1,4 +1,8 @@
 /** Парсинг ffprobe `avg_frame_rate` / `r_frame_rate` вида `24000/1001`, `30/1`, отсекая `0/0`. */
+function formatFfprobeFpsNumber(fps: number): string {
+  return fps >= 100 ? fps.toFixed(0) : Number.isInteger(fps) ? String(fps) : fps.toFixed(3)
+}
+
 export function parseFfprobeRationalFps(rate: string | undefined): number | null {
   if (!rate || rate === '0/0') {
     return null
@@ -48,4 +52,33 @@ export function resolveVideoFpsApprox(params: {
     return fromRate
   }
   return inferVideoFpsFromNbFrames(params.nbFrames, params.durationSec)
+}
+
+const FPS_AVG_R_DIFF_EPS = 0.05
+
+/**
+ * Строка для компактной сводки дорожки §9: одно значение `23.976 fps` или оба
+ * `23.976 / 29.970 fps`, если avg и r заметно различаются (VFR, телесин и т.п.).
+ */
+export function formatFfprobeVideoFpsDetail(
+  avgFrameRate: string | undefined,
+  rFrameRate: string | undefined
+): string | null {
+  const avgFps = parseFfprobeRationalFps(avgFrameRate)
+  const rFps = parseFfprobeRationalFps(rFrameRate)
+  if (avgFps === null && rFps === null) {
+    return null
+  }
+  if (
+    avgFps !== null &&
+    rFps !== null &&
+    Math.abs(avgFps - rFps) > FPS_AVG_R_DIFF_EPS
+  ) {
+    return `${formatFfprobeFpsNumber(avgFps)} / ${formatFfprobeFpsNumber(rFps)} fps`
+  }
+  const pick = avgFps ?? rFps
+  if (pick === null) {
+    return null
+  }
+  return `${formatFfprobeFpsNumber(pick)} fps`
 }
