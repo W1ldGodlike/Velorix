@@ -22,7 +22,7 @@ npm run check:release
 - ESLint;
 - TypeScript для main/web/tests;
 - Vitest;
-- `npm run check:trusted-hashes` — структура `Data/trusted_hashes.json`;
+- `npm run check:trusted-hashes` — структура `Data/trusted_hashes.json` (неизвестные ключи — предупреждение; при **`FLUXALLOY_TRUSTED_HASHES_STRICT_UNKNOWN=1`** — ошибка);
 - `scripts/check-no-secrets.mjs` по tracked-файлам.
 
 ## 2. Runtime-движки

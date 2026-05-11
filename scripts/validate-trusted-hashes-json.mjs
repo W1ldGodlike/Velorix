@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /**
  * Проверка структуры `Data/trusted_hashes.json` (§3/§19): валидный JSON, корневой объект,
- * секция `windows-x64` — только объект со строковыми значениями (пустая строка допустима).
+ * секция `windows-x64` — только объект со строковыми значениями (пустая строка допустима),
+ * известные legacy-поля и `schema`, предупреждения по неизвестным ключам.
+ *
+ * `FLUXALLOY_TRUSTED_HASHES_STRICT_UNKNOWN=1` — неизвестные ключи в корне или в windows-x64 → exit 1.
  */
 import { readFile } from 'node:fs/promises'
 import { dirname, join, resolve } from 'node:path'
@@ -10,8 +13,35 @@ import { fileURLToPath } from 'node:url'
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const trustedPath = join(rootDir, 'Data', 'trusted_hashes.json')
 
+const KNOWN_ROOT = new Set([
+  'schema',
+  'windows-x64',
+  'YtDlpSha256',
+  'FfmpegSha256',
+  'YtDlpVersion',
+  'FfmpegVersion'
+])
+
+const KNOWN_WX = new Set([
+  'yt-dlp.exe',
+  'ffmpeg.exe',
+  'ffprobe.exe',
+  'ffmpeg-master-latest-win64-gpl.zip',
+  'ffmpeg-release-essentials.zip'
+])
+
+const LEGACY_STRING_KEYS = ['YtDlpSha256', 'FfmpegSha256', 'YtDlpVersion', 'FfmpegVersion']
+
+function strictUnknown() {
+  const v = process.env['FLUXALLOY_TRUSTED_HASHES_STRICT_UNKNOWN']
+  return v === '1' || (typeof v === 'string' && v.trim().toLowerCase() === 'true')
+}
+
 function printHelp() {
   console.log(`validate-trusted-hashes-json — структурная проверка Data/trusted_hashes.json
+
+Переменные:
+  FLUXALLOY_TRUSTED_HASHES_STRICT_UNKNOWN=1   ошибка при неизвестных ключах (по умолчанию — только предупреждение в stderr)
 
 Флаги: --help`)
 }
@@ -48,6 +78,35 @@ async function main() {
     return
   }
 
+  if (data.schema !== undefined && data.schema !== null) {
+    if (typeof data.schema !== 'number' || !Number.isFinite(data.schema)) {
+      console.error('[trusted-hashes] поле schema должно быть конечным числом, если задано')
+      process.exitCode = 1
+      return
+    }
+  }
+
+  for (const k of LEGACY_STRING_KEYS) {
+    if (data[k] !== undefined && data[k] !== null && typeof data[k] !== 'string') {
+      console.error(`[trusted-hashes] поле ${k} должно быть строкой, если задано`)
+      process.exitCode = 1
+      return
+    }
+  }
+
+  let unknownCount = 0
+  for (const k of Object.keys(data)) {
+    if (!KNOWN_ROOT.has(k)) {
+      const msg = `[trusted-hashes] неизвестный корневой ключ: "${k}"`
+      if (strictUnknown()) {
+        console.error(msg)
+        unknownCount += 1
+      } else {
+        console.warn(msg)
+      }
+    }
+  }
+
   const wx = data['windows-x64']
   if (wx !== undefined && wx !== null) {
     if (typeof wx !== 'object' || Array.isArray(wx)) {
@@ -61,7 +120,21 @@ async function main() {
         process.exitCode = 1
         return
       }
+      if (!KNOWN_WX.has(k)) {
+        const msg = `[trusted-hashes] неизвестный ключ windows-x64["${k}"]`
+        if (strictUnknown()) {
+          console.error(msg)
+          unknownCount += 1
+        } else {
+          console.warn(msg)
+        }
+      }
     }
+  }
+
+  if (strictUnknown() && unknownCount > 0) {
+    process.exitCode = 1
+    return
   }
 
   console.log('[trusted-hashes] OK')

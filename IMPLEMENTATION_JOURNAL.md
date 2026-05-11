@@ -308,3 +308,4 @@
 - [J-291] 2026-05-11 22:51:38 [SDK]: §19 — CI: кэш `electron` и `electron-builder` Cache по lockfile; prepare `--help` — строка про `trusted_hashes`; RELEASE/спринт. `npm run check` ок.
 - [J-292] 2026-05-11 22:52:42 [SDK]: §19 — `check:release` включает `pack:dir`; `engines:doctor` = verify + SHA + версии; README/RELEASE/bin README/спринт. `npm run check` ок.
 - [J-293] 2026-05-11 22:53:56 [SDK]: §3/§19 — `scripts/validate-trusted-hashes-json.mjs` + `npm run check:trusted-hashes` в `check` (`--help`); RELEASE/спринт. `npm run check` ок.
+- [J-294] 2026-05-11 22:55:05 [SDK]: §3/§19 — validate `trusted_hashes`: schema, legacy-строки, неизвестные ключи (warn / `FLUXALLOY_TRUSTED_HASHES_STRICT_UNKNOWN`); RELEASE/спринт. `npm run check` ок.
