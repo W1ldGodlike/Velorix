@@ -491,6 +491,21 @@ export function IconQueueChevronDown({
   )
 }
 
+/** §6 — добавить URL в очередь (lucide `plus`, тот же путь, что `RowIco.plus` в pop-out). */
+export function IconQueuePlus({
+  title = 'Добавить',
+  size = 18
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title} size={size}>
+      {renderStrokeParts(QUEUE_ROW_ACTION_ICONS.plus)}
+    </SvgBase>
+  )
+}
+
 export function IconQueueRetry({
   title = 'Повтор',
   size = 18

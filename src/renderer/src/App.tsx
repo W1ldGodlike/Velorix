@@ -21,6 +21,7 @@ import {
   IconPlay,
   IconPopOutWindow,
   IconQueueChevronDown,
+  IconQueuePlus,
   IconQueueChevronUp,
   IconQueueFile,
   IconQueueOutbound,
@@ -2637,25 +2638,27 @@ function App(): JSX.Element {
               <div className="app-downloads-url-actions">
                 <button
                   type="button"
-                  className="app-btn app-btn-primary"
+                  className="app-btn app-btn-primary app-btn-icon-leading"
                   onClick={() => {
                     void handleAddDownloadsFromMain(false)
                   }}
                 >
+                  <IconQueuePlus title="" size={17} />
                   Добавить в очередь
                 </button>
                 <button
                   type="button"
-                  className="app-btn"
+                  className="app-btn app-btn-icon-leading"
                   onClick={() => {
                     void handleAddDownloadsFromMain(true)
                   }}
                 >
+                  <IconQueuePlus title="" size={17} />
                   Добавить и начать
                 </button>
                 <button
                   type="button"
-                  className="app-btn app-btn-primary"
+                  className="app-btn app-btn-primary app-btn-icon-leading"
                   onClick={() => {
                     void window.fluxalloy.downloads.startQueue().then((res) => {
                       if (!res.ok) {
@@ -2664,11 +2667,12 @@ function App(): JSX.Element {
                     })
                   }}
                 >
+                  <IconPlay title="" size={17} />
                   Начать загрузку
                 </button>
                 <button
                   type="button"
-                  className="app-btn app-btn-warn"
+                  className="app-btn app-btn-warn app-btn-icon-leading"
                   onClick={() => {
                     void window.fluxalloy.downloads.cancelQueue().then((res) => {
                       if (!res.ok) {
@@ -2677,11 +2681,12 @@ function App(): JSX.Element {
                     })
                   }}
                 >
+                  <IconBan title="" size={17} />
                   Остановить
                 </button>
                 <button
                   type="button"
-                  className="app-btn"
+                  className="app-btn app-btn-icon-leading"
                   disabled={downloadsRows.length === 0}
                   onClick={() => {
                     void window.fluxalloy.downloads.clearFinished().then((res) => {
@@ -2697,11 +2702,12 @@ function App(): JSX.Element {
                     })
                   }}
                 >
+                  <IconQueueTrash title="" size={17} />
                   Убрать готовые
                 </button>
                 <button
                   type="button"
-                  className="app-btn app-btn-warn"
+                  className="app-btn app-btn-warn app-btn-icon-leading"
                   disabled={downloadsRows.length === 0}
                   onClick={() => {
                     void window.fluxalloy.downloads.clearQueue().then((res) => {
@@ -2713,6 +2719,7 @@ function App(): JSX.Element {
                     })
                   }}
                 >
+                  <IconQueueTrash title="" size={17} />
                   Очистить очередь
                 </button>
               </div>

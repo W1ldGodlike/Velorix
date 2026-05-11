@@ -66,4 +66,8 @@ describe('lucide-downloads-icons', () => {
     expect(emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS.clipboard, 18)).toContain('<rect')
     expect(emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS.popOutWindow, 18)).toContain('<path')
   })
+
+  it('QUEUE_ROW_ACTION_ICONS.plus — кнопки «Добавить…» на вкладке загрузок', () => {
+    expect(emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.plus, 17)).toContain('<path')
+  })
 })
