@@ -70,6 +70,23 @@ describe('ffprobe-service buildTrackRows', () => {
     expect(rows[2]?.detail).toContain('SRT Writer')
   })
 
+  it('video detail включает tags.timecode как TC …, если ffprobe отдал', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 1920,
+          height: 1080,
+          tags: { timecode: '01:00:00:00' }
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toContain('TC 01:00:00:00')
+  })
+
   it('encoder в detail обрезается при длинной строке', () => {
     const long = `${'A'.repeat(70)}tail`
     const [row] = buildTrackRows(

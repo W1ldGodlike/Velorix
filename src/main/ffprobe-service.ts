@@ -304,6 +304,10 @@ function buildTrackDetail(
     if (vEnc) {
       parts.push(vEnc)
     }
+    const timecode = tagString(stream.tags, 'timecode')
+    if (timecode) {
+      parts.push(`TC ${timecode}`)
+    }
   } else if (ct === 'audio') {
     const ch = stream.channels
     if (typeof ch === 'number') {
