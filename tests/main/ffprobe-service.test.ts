@@ -436,4 +436,40 @@ describe('ffprobe-service buildTrackRows', () => {
 
     expect(row?.detail).not.toMatch(/\bpts\b/)
   })
+
+  it('audio detail включает ReplayGain track/album из тегов (нижний/верхний регистр ключей)', () => {
+    const [lower] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'audio',
+          codec_name: 'flac',
+          channels: 2,
+          sample_rate: '44100',
+          tags: {
+            replaygain_track_gain: '-1.23 dB',
+            replaygain_album_gain: '-2.00 dB'
+          }
+        }
+      ],
+      null
+    )
+    expect(lower?.detail).toContain('RG tr -1.23 dB')
+    expect(lower?.detail).toContain('RG al -2.00 dB')
+
+    const [upper] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'audio',
+          codec_name: 'vorbis',
+          channels: 2,
+          sample_rate: '48000',
+          tags: { REPLAYGAIN_TRACK_GAIN: '+0.50 dB' }
+        }
+      ],
+      null
+    )
+    expect(upper?.detail).toContain('RG tr +0.50 dB')
+  })
 })

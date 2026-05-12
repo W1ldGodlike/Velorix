@@ -209,6 +209,35 @@ function tagString(
   return null
 }
 
+/** Первый непустой тег: точные ключи, затем то же имя без учёта регистра (Matroska vs Vorbis). */
+function tagStringFirstMatch(
+  tags: Record<string, string | number | undefined> | undefined,
+  keyOptions: readonly string[]
+): string | null {
+  if (!tags) {
+    return null
+  }
+  for (const key of keyOptions) {
+    const v = tagString(tags, key)
+    if (v !== null) {
+      return v
+    }
+  }
+  const want = new Set(keyOptions.map((k) => k.toLowerCase()))
+  for (const [k, raw] of Object.entries(tags)) {
+    if (!want.has(k.toLowerCase())) {
+      continue
+    }
+    if (typeof raw === 'string' && raw.trim() !== '') {
+      return raw.trim()
+    }
+    if (typeof raw === 'number' && Number.isFinite(raw)) {
+      return String(raw)
+    }
+  }
+  return null
+}
+
 const FFPROBE_DETAIL_ENCODER_MAX = 64
 
 function collapseFfprobeDetailSnippet(raw: string): string {
@@ -217,6 +246,20 @@ function collapseFfprobeDetailSnippet(raw: string): string {
     return collapsed
   }
   return `${collapsed.slice(0, FFPROBE_DETAIL_ENCODER_MAX - 1)}…`
+}
+
+function appendFfprobeReplayGainAudioDetail(
+  parts: string[],
+  tags: Record<string, string | number | undefined> | undefined
+): void {
+  const track = tagStringFirstMatch(tags, ['replaygain_track_gain', 'REPLAYGAIN_TRACK_GAIN'])
+  const album = tagStringFirstMatch(tags, ['replaygain_album_gain', 'REPLAYGAIN_ALBUM_GAIN'])
+  if (track !== null) {
+    parts.push(`RG tr ${collapseFfprobeDetailSnippet(track)}`)
+  }
+  if (album !== null) {
+    parts.push(`RG al ${collapseFfprobeDetailSnippet(album)}`)
+  }
 }
 
 /** Компактная строка `tags.encoder` для колонки «Сведения» (отдельной колонки нет). */
@@ -447,6 +490,7 @@ function buildTrackDetail(
     if (typeof stream.channel_layout === 'string' && stream.channel_layout.trim() !== '') {
       parts.push(stream.channel_layout.trim())
     }
+    appendFfprobeReplayGainAudioDetail(parts, stream.tags)
     const aStart = formatFfprobeStreamStartTime(stream.start_time)
     if (aStart) {
       parts.push(aStart)
