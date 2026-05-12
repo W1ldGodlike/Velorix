@@ -17,7 +17,8 @@ import {
   formatTerminalExitLine,
   formatTerminalIntroTail,
   formatTerminalPreviewTooltip,
-  uiText
+  uiText,
+  uiTextVars
 } from './locales/ui-text'
 import {
   IconBan,
@@ -285,13 +286,6 @@ const EXPORT_CRF_OPTIONS = [18, 20, 23, 26, 28, 30]
 const EXPORT_VIDEO_BITRATES = ['1000k', '2500k', '5000k', '8000k', '12000k', '20000k']
 const EXPORT_AUDIO_BITRATES = ['96k', '128k', '160k', '192k', '256k', '320k']
 const EXPORT_FPS_OPTIONS = [24, 25, 30, 50, 60]
-const DOWNLOADS_STATUS_FILTERS: Array<{ id: DownloadsStatusFilter; label: string }> = [
-  { id: 'all', label: 'Все' },
-  { id: 'running', label: 'В работе' },
-  { id: 'done', label: 'Готово' },
-  { id: 'error', label: 'Ошибки' },
-  { id: 'cancelled', label: 'Отмена' }
-]
 const EXPORT_SCALE_PRESETS: Array<{ id: FfmpegExportScalePresetId; label: string }> = [
   { id: 'source', label: 'Размер исходный' },
   { id: '480p', label: '480p' },
@@ -825,6 +819,16 @@ function App(): JSX.Element {
         ? downloadsHistory
         : downloadsHistory.filter((entry) => entry.outcome === downloadsHistoryOutcomeFilter),
     [downloadsHistory, downloadsHistoryOutcomeFilter]
+  )
+  const downloadsStatusFilterChips = useMemo(
+    (): Array<{ id: DownloadsStatusFilter; label: string }> => [
+      { id: 'all', label: uiText('downloadsQueueFilterAll') },
+      { id: 'running', label: uiText('downloadsQueueFilterRunning') },
+      { id: 'done', label: uiText('downloadsQueueFilterDone') },
+      { id: 'error', label: uiText('downloadsQueueFilterError') },
+      { id: 'cancelled', label: uiText('downloadsQueueFilterCancelled') }
+    ],
+    []
   )
   const refreshDownloadsOptions = useCallback(async (): Promise<void> => {
     const res = await window.fluxalloy.downloads.getCliOptions()
@@ -2263,7 +2267,7 @@ function App(): JSX.Element {
           <span className="app-topbar-title">FluxAlloy</span>
           <span className="app-topbar-version">desktop</span>
         </div>
-        <nav className="app-workspace-tabs" aria-label="Рабочие вкладки">
+        <nav className="app-workspace-tabs" aria-label={uiText('workspaceTabsAria')}>
           <button
             type="button"
             className={`app-workspace-tab${workspaceTab === 'editor' ? ' app-workspace-tab-active' : ''}`}
@@ -2272,7 +2276,7 @@ function App(): JSX.Element {
               setWorkspaceTab('editor')
             }}
           >
-            Редактор
+            {uiText('workspaceTabEditor')}
           </button>
           <button
             type="button"
@@ -2281,12 +2285,12 @@ function App(): JSX.Element {
             onClick={() => {
               setWorkspaceTab('downloads')
             }}
-            title="Перейти во вкладку загрузок yt-dlp"
+            title={uiText('workspaceTabDownloadsTooltip')}
           >
             <span aria-hidden className="app-workspace-tab-glyph">
               <IconDownload title="" size={16} />
             </span>
-            Загрузки
+            {uiText('workspaceTabDownloads')}
           </button>
           <button
             type="button"
@@ -2295,9 +2299,9 @@ function App(): JSX.Element {
             onClick={() => {
               setWorkspaceTab('terminal')
             }}
-            title="Безопасный CLI для ffmpeg, ffprobe и yt-dlp"
+            title={uiText('workspaceTabTerminalTooltip')}
           >
-            Терминал
+            {uiText('workspaceTabTerminal')}
           </button>
         </nav>
         <div className="app-topbar-trailing">
@@ -2470,20 +2474,20 @@ function App(): JSX.Element {
       {workspaceTab === 'editor' ? (
         <details
           className="app-url-bar"
-          aria-label="Быстрая загрузка yt-dlp"
+          aria-label={uiText('quickYtdlpAria')}
           open={panelOpen('quickYtdlp')}
           onToggle={(e) => {
             persistMainWindowUiPanelToggle('quickYtdlp', e.currentTarget.open)
           }}
         >
-          <summary className="app-url-summary">Быстрая загрузка yt-dlp</summary>
+          <summary className="app-url-summary">{uiText('quickYtdlpSummary')}</summary>
           <div className="app-url-body">
             <div className="app-url-field">
               <input
                 className="app-url-input"
                 type="url"
                 inputMode="url"
-                placeholder="URL или список URL — передать в менеджер загрузок"
+                placeholder={uiText('quickYtdlpPlaceholder')}
                 aria-describedby="quickYtdlpUrlHint"
                 value={downloadsUrl}
                 onChange={(e) => {
@@ -2491,7 +2495,7 @@ function App(): JSX.Element {
                 }}
               />
               <p id="quickYtdlpUrlHint" className="app-url-hint">
-                Ссылка добавляется во вкладку «Загрузки»; несколько URL — по строкам.
+                {uiText('quickYtdlpHint')}
               </p>
               <p className="app-doc-inline-links app-url-bar-doc-links">
                 <a href={YTDLP_DOC_README} target="_blank" rel="noreferrer">
@@ -2499,11 +2503,11 @@ function App(): JSX.Element {
                 </a>
                 {' · '}
                 <a href={YTDLP_DOC_FORMAT_SELECTION} target="_blank" rel="noreferrer">
-                  Форматы
+                  {uiText('quickYtdlpDocFormats')}
                 </a>
                 {' · '}
                 <a href={YTDLP_DOC_OUTPUT_TEMPLATE} target="_blank" rel="noreferrer">
-                  Шаблон -o
+                  {uiText('quickYtdlpDocOutputTemplate')}
                 </a>
               </p>
             </div>
@@ -2515,7 +2519,7 @@ function App(): JSX.Element {
                 void handleAddDownloadsFromMain(false)
               }}
             >
-              Во вкладку
+              {uiText('quickYtdlpToDownloadsTab')}
             </button>
             <button
               type="button"
@@ -2526,9 +2530,9 @@ function App(): JSX.Element {
                   setDownloadsUrl(t.trim())
                 })
               }}
-              title="Вставить текст из буфера обмена в поле URL"
+              title={uiText('quickYtdlpPasteClipboardTitle')}
             >
-              Из буфера
+              {uiText('downloadsFromClipboard')}
             </button>
           </div>
         </details>
@@ -4153,18 +4157,12 @@ function App(): JSX.Element {
           </section>
         </main>
       ) : (
-        <main className="app-main app-downloads-workspace" aria-label="Вкладка загрузок">
+        <main className="app-main app-downloads-workspace" aria-label={uiText('downloadsMainAria')}>
           <section className="app-downloads-main">
             <div className="app-downloads-band">
               <div className="app-downloads-band-copy">
-                <h2 className="app-downloads-title">Загрузки</h2>
-                <p className="app-downloads-hint">
-                  Эта вкладка — основной рабочий стол yt-dlp (очередь по центру, журнал и история
-                  под таблицей, настройки справа как в v0; при ширине окна примерно до 1100px панель
-                  настроек переносится под журнал с прокруткой, поля не теряются — сверху есть
-                  кнопка «К настройкам», чтобы сразу прокрутить к панели). Pop-out — дублирующее
-                  окно с тем же IPC и длинным справочником токенов в одном списке.
-                </p>
+                <h2 className="app-downloads-title">{uiText('downloadsPageTitle')}</h2>
+                <p className="app-downloads-hint">{uiText('downloadsPageHint')}</p>
               </div>
               <div className="app-downloads-actions">
                 <button
@@ -4177,7 +4175,7 @@ function App(): JSX.Element {
                   }}
                 >
                   <IconClipboardPaste title="" size={17} />
-                  Из буфера
+                  {uiText('downloadsFromClipboard')}
                 </button>
                 <button
                   type="button"
@@ -4187,7 +4185,7 @@ function App(): JSX.Element {
                   }}
                 >
                   <IconPopOutWindow title="" size={17} />
-                  Pop-out
+                  {uiText('downloadsPopOut')}
                 </button>
                 {downloadsNarrowLayout ? (
                   <button
@@ -4200,7 +4198,8 @@ function App(): JSX.Element {
                       })
                     }}
                   >
-                    <IconSettings title="" size={17} />К настройкам
+                    <IconSettings title="" size={17} />
+                    {uiText('downloadsScrollToSettings')}
                   </button>
                 ) : null}
               </div>
@@ -4209,8 +4208,8 @@ function App(): JSX.Element {
               <textarea
                 className="app-downloads-url-input"
                 value={downloadsUrl}
-                placeholder="URL или несколько URL по строкам"
-                aria-label="URL для добавления в очередь загрузок"
+                placeholder={uiText('downloadsUrlPlaceholder')}
+                aria-label={uiText('downloadsUrlAria')}
                 onChange={(e) => {
                   setDownloadsUrl(e.target.value)
                 }}
@@ -4224,7 +4223,7 @@ function App(): JSX.Element {
                   }}
                 >
                   <IconQueuePlus title="" size={17} />
-                  Добавить в очередь
+                  {uiText('downloadsAddToQueue')}
                 </button>
                 <button
                   type="button"
@@ -4234,7 +4233,7 @@ function App(): JSX.Element {
                   }}
                 >
                   <IconQueuePlus title="" size={17} />
-                  Добавить и начать
+                  {uiText('downloadsAddAndStart')}
                 </button>
                 <button
                   type="button"
@@ -4248,7 +4247,7 @@ function App(): JSX.Element {
                   }}
                 >
                   <IconPlay title="" size={17} />
-                  Начать загрузку
+                  {uiText('downloadsStartQueue')}
                 </button>
                 <button
                   type="button"
@@ -4262,7 +4261,7 @@ function App(): JSX.Element {
                   }}
                 >
                   <IconBan title="" size={17} />
-                  Остановить
+                  {uiText('downloadsStopQueue')}
                 </button>
                 <button
                   type="button"
@@ -4276,14 +4275,14 @@ function App(): JSX.Element {
                       }
                       setStatusHint(
                         res.removed > 0
-                          ? `Убрано завершённых строк: ${res.removed}`
-                          : 'Завершённых строк нет.'
+                          ? uiTextVars('downloadsFinishedRemovedTemplate', { n: res.removed })
+                          : uiText('downloadsNoFinishedRowsHint')
                       )
                     })
                   }}
                 >
                   <IconQueueTrash title="" size={17} />
-                  Убрать готовые
+                  {uiText('downloadsRemoveFinished')}
                 </button>
                 <button
                   type="button"
@@ -4295,39 +4294,43 @@ function App(): JSX.Element {
                         setStatusHint(res.error)
                         return
                       }
-                      setStatusHint('Очередь очищена.')
+                      setStatusHint(uiText('downloadsQueueClearedHint'))
                     })
                   }}
                 >
                   <IconQueueTrash title="" size={17} />
-                  Очистить очередь
+                  {uiText('downloadsClearQueue')}
                 </button>
               </div>
             </div>
-            <div className="app-downloads-overview" aria-label="Сводка очереди загрузок">
+            <div className="app-downloads-overview" aria-label={uiText('downloadsOverviewAria')}>
               <div className="app-downloads-stat">
-                <span className="app-downloads-stat-label">Всего</span>
+                <span className="app-downloads-stat-label">{uiText('downloadsStatTotal')}</span>
                 <strong>{downloadsStats.total}</strong>
               </div>
               <div className="app-downloads-stat">
-                <span className="app-downloads-stat-label">В работе</span>
+                <span className="app-downloads-stat-label">
+                  {uiText('downloadsQueueFilterRunning')}
+                </span>
                 <strong>{downloadsStats.running}</strong>
               </div>
               <div className="app-downloads-stat">
-                <span className="app-downloads-stat-label">Готово</span>
+                <span className="app-downloads-stat-label">{uiText('downloadsQueueFilterDone')}</span>
                 <strong>{downloadsStats.done}</strong>
               </div>
               <div className="app-downloads-stat">
-                <span className="app-downloads-stat-label">Ошибки</span>
+                <span className="app-downloads-stat-label">
+                  {uiText('downloadsQueueFilterError')}
+                </span>
                 <strong>{downloadsStats.error}</strong>
               </div>
               <div className="app-downloads-stat">
-                <span className="app-downloads-stat-label">Ожидает</span>
+                <span className="app-downloads-stat-label">{uiText('downloadsStatPending')}</span>
                 <strong>{downloadsStats.pending}</strong>
               </div>
             </div>
-            <div className="app-downloads-filterbar" aria-label="Фильтр очереди по статусу">
-              {DOWNLOADS_STATUS_FILTERS.map((filter) => (
+            <div className="app-downloads-filterbar" aria-label={uiText('downloadsFilterBarAria')}>
+              {downloadsStatusFilterChips.map((filter) => (
                 <button
                   key={filter.id}
                   type="button"
@@ -4346,28 +4349,28 @@ function App(): JSX.Element {
                 <table className="app-downloads-table">
                   <thead>
                     <tr>
-                      <th>#</th>
-                      <th>Название / URL</th>
-                      <th>Формат</th>
-                      <th>Размер</th>
-                      <th>Прогресс</th>
-                      <th>Скорость</th>
-                      <th>Осталось</th>
-                      <th>Статус</th>
-                      <th>Действия</th>
+                      <th>{uiText('downloadsTableColNum')}</th>
+                      <th>{uiText('downloadsTableColTitleUrl')}</th>
+                      <th>{uiText('downloadsTableColFormat')}</th>
+                      <th>{uiText('downloadsTableColSize')}</th>
+                      <th>{uiText('downloadsTableColProgress')}</th>
+                      <th>{uiText('downloadsTableColSpeed')}</th>
+                      <th>{uiText('downloadsTableColEta')}</th>
+                      <th>{uiText('downloadsTableColStatus')}</th>
+                      <th>{uiText('downloadsTableColActions')}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {downloadsRows.length === 0 ? (
                       <tr>
                         <td colSpan={9} className="app-downloads-empty">
-                          Очередь пуста. Добавьте URL сверху или из быстрых действий редактора.
+                          {uiText('downloadsEmptyQueue')}
                         </td>
                       </tr>
                     ) : visibleDownloadsRows.length === 0 ? (
                       <tr>
                         <td colSpan={9} className="app-downloads-empty">
-                          В этом фильтре строк нет. Переключите статус выше или добавьте новые URL.
+                          {uiText('downloadsEmptyFilter')}
                         </td>
                       </tr>
                     ) : (
@@ -4435,7 +4438,9 @@ function App(): JSX.Element {
                                 <button
                                   type="button"
                                   className="app-icon-btn"
-                                  aria-label={`Поднять строку ${row.id} выше`}
+                                  aria-label={uiTextVars('downloadsQueueAriaMoveUp', {
+                                    id: row.id
+                                  })}
                                   onClick={() => {
                                     void window.fluxalloy.downloads
                                       .moveRow(row.id, -1)
@@ -4451,7 +4456,9 @@ function App(): JSX.Element {
                                 <button
                                   type="button"
                                   className="app-icon-btn"
-                                  aria-label={`Опустить строку ${row.id} ниже`}
+                                  aria-label={uiTextVars('downloadsQueueAriaMoveDown', {
+                                    id: row.id
+                                  })}
                                   onClick={() => {
                                     void window.fluxalloy.downloads
                                       .moveRow(row.id, 1)
@@ -4469,8 +4476,8 @@ function App(): JSX.Element {
                                   className="app-icon-btn app-icon-btn-primary"
                                   aria-label={
                                     row.status.startsWith('Ошибка')
-                                      ? `Повторить загрузку строки ${row.id}`
-                                      : `Старт строки ${row.id}`
+                                      ? uiTextVars('downloadsQueueAriaRetryRow', { id: row.id })
+                                      : uiTextVars('downloadsQueueAriaStartRow', { id: row.id })
                                   }
                                   onClick={() => {
                                     const fn = row.status.startsWith('Ошибка')
@@ -4494,7 +4501,9 @@ function App(): JSX.Element {
                                     <button
                                       type="button"
                                       className="app-icon-btn"
-                                      aria-label={`Открыть файл строки ${row.id}`}
+                                      aria-label={uiTextVars('downloadsQueueAriaOpenFile', {
+                                        id: row.id
+                                      })}
                                       onClick={() => {
                                         void window.fluxalloy.downloads
                                           .openQueueOutput(row.id, 'file')
@@ -4510,7 +4519,9 @@ function App(): JSX.Element {
                                     <button
                                       type="button"
                                       className="app-icon-btn"
-                                      aria-label={`Открыть папку строки ${row.id}`}
+                                      aria-label={uiTextVars('downloadsQueueAriaOpenFolder', {
+                                        id: row.id
+                                      })}
                                       onClick={() => {
                                         void window.fluxalloy.downloads
                                           .openQueueOutput(row.id, 'folder')
@@ -4526,18 +4537,18 @@ function App(): JSX.Element {
                                     <button
                                       type="button"
                                       className="app-icon-btn"
-                                      aria-label={`Открыть в редакторе вывод строки ${row.id}`}
+                                      aria-label={uiTextVars('downloadsQueueAriaOpenInEditor', {
+                                        id: row.id
+                                      })}
                                       onClick={() => {
-                                        setStatusHint(
-                                          'Готовлю файл для редактора… при необходимости будет создан WebM preview.'
-                                        )
+                                        setStatusHint(uiText('downloadsHistoryOpenHandlerPreparing'))
                                         void window.fluxalloy.downloads
                                           .openQueueOutputInHandler(row.id)
                                           .then((res) => {
                                             if (!res.ok) {
                                               setStatusHint(res.error)
                                             } else {
-                                              setStatusHint('Файл открыт в редакторе')
+                                              setStatusHint(uiText('downloadsHistoryOpenHandlerDone'))
                                             }
                                           })
                                       }}
@@ -4552,8 +4563,10 @@ function App(): JSX.Element {
                                     className="app-icon-btn"
                                     aria-label={
                                       row.ytdlpPaused
-                                        ? `Продолжить yt-dlp для строки ${row.id}`
-                                        : `Пауза yt-dlp для строки ${row.id}`
+                                        ? uiTextVars('downloadsQueueAriaResumeYtdlp', {
+                                            id: row.id
+                                          })
+                                        : uiTextVars('downloadsQueueAriaPauseYtdlp', { id: row.id })
                                     }
                                     onClick={() => {
                                       const fn = row.ytdlpPaused
@@ -4576,7 +4589,9 @@ function App(): JSX.Element {
                                 <button
                                   type="button"
                                   className="app-icon-btn app-icon-btn-warn"
-                                  aria-label={`Удалить строку ${row.id} из очереди`}
+                                  aria-label={uiTextVars('downloadsQueueAriaRemoveRow', {
+                                    id: row.id
+                                  })}
                                   onClick={() => {
                                     void window.fluxalloy.downloads
                                       .removeRow(row.id)

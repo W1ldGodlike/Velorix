@@ -133,7 +133,72 @@ const UI_TEXT = {
     downloadsHistoryOpenHandlerDone: 'Файл открыт в редакторе',
     downloadsLogTitle: 'Живой лог',
     downloadsLogSave: 'Сохранить',
-    downloadsLogEmpty: 'Лог появится после запуска строки yt-dlp.'
+    downloadsLogEmpty: 'Лог появится после запуска строки yt-dlp.',
+    workspaceTabsAria: 'Рабочие вкладки',
+    workspaceTabEditor: 'Редактор',
+    workspaceTabDownloads: 'Загрузки',
+    workspaceTabTerminal: 'Терминал',
+    workspaceTabDownloadsTooltip: 'Перейти во вкладку загрузок yt-dlp',
+    workspaceTabTerminalTooltip: 'Безопасный CLI для ffmpeg, ffprobe и yt-dlp',
+    downloadsMainAria: 'Вкладка загрузок',
+    downloadsPageTitle: 'Загрузки',
+    downloadsPageHint:
+      'Эта вкладка — основной рабочий стол yt-dlp (очередь по центру, журнал и история под таблицей, настройки справа как в v0; при ширине окна примерно до 1100px панель настроек переносится под журнал с прокруткой, поля не теряются — сверху есть кнопка «К настройкам», чтобы сразу прокрутить к панели). Pop-out — дублирующее окно с тем же IPC и длинным справочником токенов в одном списке.',
+    downloadsFromClipboard: 'Из буфера',
+    downloadsPopOut: 'Pop-out',
+    downloadsScrollToSettings: 'К настройкам',
+    downloadsUrlPlaceholder: 'URL или несколько URL по строкам',
+    downloadsUrlAria: 'URL для добавления в очередь загрузок',
+    downloadsAddToQueue: 'Добавить в очередь',
+    downloadsAddAndStart: 'Добавить и начать',
+    downloadsStartQueue: 'Начать загрузку',
+    downloadsStopQueue: 'Остановить',
+    downloadsRemoveFinished: 'Убрать готовые',
+    downloadsClearQueue: 'Очистить очередь',
+    downloadsQueueClearedHint: 'Очередь очищена.',
+    downloadsFinishedRemovedTemplate: 'Убрано завершённых строк: {n}',
+    downloadsNoFinishedRowsHint: 'Завершённых строк нет.',
+    downloadsOverviewAria: 'Сводка очереди загрузок',
+    downloadsStatTotal: 'Всего',
+    downloadsStatPending: 'Ожидает',
+    downloadsFilterBarAria: 'Фильтр очереди по статусу',
+    downloadsQueueFilterAll: 'Все',
+    downloadsQueueFilterRunning: 'В работе',
+    downloadsQueueFilterDone: 'Готово',
+    downloadsQueueFilterError: 'Ошибки',
+    downloadsQueueFilterCancelled: 'Отмена',
+    downloadsTableColNum: '#',
+    downloadsTableColTitleUrl: 'Название / URL',
+    downloadsTableColFormat: 'Формат',
+    downloadsTableColSize: 'Размер',
+    downloadsTableColProgress: 'Прогресс',
+    downloadsTableColSpeed: 'Скорость',
+    downloadsTableColEta: 'Осталось',
+    downloadsTableColStatus: 'Статус',
+    downloadsTableColActions: 'Действия',
+    downloadsEmptyQueue:
+      'Очередь пуста. Добавьте URL сверху или из быстрых действий редактора.',
+    downloadsEmptyFilter:
+      'В этом фильтре строк нет. Переключите статус выше или добавьте новые URL.',
+    downloadsQueueAriaMoveUp: 'Поднять строку {id} выше',
+    downloadsQueueAriaMoveDown: 'Опустить строку {id} ниже',
+    downloadsQueueAriaRetryRow: 'Повторить загрузку строки {id}',
+    downloadsQueueAriaStartRow: 'Старт строки {id}',
+    downloadsQueueAriaOpenFile: 'Открыть файл строки {id}',
+    downloadsQueueAriaOpenFolder: 'Открыть папку строки {id}',
+    downloadsQueueAriaOpenInEditor: 'Открыть в редакторе вывод строки {id}',
+    downloadsQueueAriaResumeYtdlp: 'Продолжить yt-dlp для строки {id}',
+    downloadsQueueAriaPauseYtdlp: 'Пауза yt-dlp для строки {id}',
+    downloadsQueueAriaRemoveRow: 'Удалить строку {id} из очереди',
+    quickYtdlpAria: 'Быстрая загрузка yt-dlp',
+    quickYtdlpSummary: 'Быстрая загрузка yt-dlp',
+    quickYtdlpPlaceholder: 'URL или список URL — передать в менеджер загрузок',
+    quickYtdlpHint:
+      'Ссылка добавляется во вкладку «Загрузки»; несколько URL — по строкам.',
+    quickYtdlpToDownloadsTab: 'Во вкладку',
+    quickYtdlpDocFormats: 'Форматы',
+    quickYtdlpDocOutputTemplate: 'Шаблон -o',
+    quickYtdlpPasteClipboardTitle: 'Вставить текст из буфера обмена в поле URL'
   },
   en: {
     aboutTitle: 'About',
@@ -264,7 +329,72 @@ const UI_TEXT = {
     downloadsHistoryOpenHandlerDone: 'File opened in the editor',
     downloadsLogTitle: 'Live log',
     downloadsLogSave: 'Save',
-    downloadsLogEmpty: 'The log will appear after you start a yt-dlp queue row.'
+    downloadsLogEmpty: 'The log will appear after you start a yt-dlp queue row.',
+    workspaceTabsAria: 'Workspace tabs',
+    workspaceTabEditor: 'Editor',
+    workspaceTabDownloads: 'Downloads',
+    workspaceTabTerminal: 'Terminal',
+    workspaceTabDownloadsTooltip: 'Open the yt-dlp downloads tab',
+    workspaceTabTerminalTooltip: 'Safe CLI for ffmpeg, ffprobe, and yt-dlp',
+    downloadsMainAria: 'Downloads tab',
+    downloadsPageTitle: 'Downloads',
+    downloadsPageHint:
+      'This tab is the main yt-dlp desk (queue in the center, log and history under the table, settings on the right like v0; below ~1100px width the settings rail moves under the log with scrolling — fields stay reachable via “Scroll to settings” at the top). Pop-out is a second window with the same IPC and the full token reference list.',
+    downloadsFromClipboard: 'From clipboard',
+    downloadsPopOut: 'Pop-out',
+    downloadsScrollToSettings: 'Scroll to settings',
+    downloadsUrlPlaceholder: 'One URL per line, or multiple URLs',
+    downloadsUrlAria: 'URLs to append to the download queue',
+    downloadsAddToQueue: 'Add to queue',
+    downloadsAddAndStart: 'Add and start',
+    downloadsStartQueue: 'Start downloads',
+    downloadsStopQueue: 'Stop',
+    downloadsRemoveFinished: 'Remove finished',
+    downloadsClearQueue: 'Clear queue',
+    downloadsQueueClearedHint: 'Queue cleared.',
+    downloadsFinishedRemovedTemplate: 'Removed finished rows: {n}',
+    downloadsNoFinishedRowsHint: 'No finished rows to remove.',
+    downloadsOverviewAria: 'Download queue summary',
+    downloadsStatTotal: 'Total',
+    downloadsStatPending: 'Pending',
+    downloadsFilterBarAria: 'Queue status filter',
+    downloadsQueueFilterAll: 'All',
+    downloadsQueueFilterRunning: 'Running',
+    downloadsQueueFilterDone: 'Done',
+    downloadsQueueFilterError: 'Errors',
+    downloadsQueueFilterCancelled: 'Cancelled',
+    downloadsTableColNum: '#',
+    downloadsTableColTitleUrl: 'Title / URL',
+    downloadsTableColFormat: 'Format',
+    downloadsTableColSize: 'Size',
+    downloadsTableColProgress: 'Progress',
+    downloadsTableColSpeed: 'Speed',
+    downloadsTableColEta: 'ETA',
+    downloadsTableColStatus: 'Status',
+    downloadsTableColActions: 'Actions',
+    downloadsEmptyQueue:
+      'Queue is empty. Add URLs above or use quick actions from the editor.',
+    downloadsEmptyFilter:
+      'No rows match this filter. Change the status chips above or add new URLs.',
+    downloadsQueueAriaMoveUp: 'Move row {id} up',
+    downloadsQueueAriaMoveDown: 'Move row {id} down',
+    downloadsQueueAriaRetryRow: 'Retry download for row {id}',
+    downloadsQueueAriaStartRow: 'Start row {id}',
+    downloadsQueueAriaOpenFile: 'Open file for row {id}',
+    downloadsQueueAriaOpenFolder: 'Open folder for row {id}',
+    downloadsQueueAriaOpenInEditor: 'Open row {id} output in the editor',
+    downloadsQueueAriaResumeYtdlp: 'Resume yt-dlp for row {id}',
+    downloadsQueueAriaPauseYtdlp: 'Pause yt-dlp for row {id}',
+    downloadsQueueAriaRemoveRow: 'Remove row {id} from the queue',
+    quickYtdlpAria: 'Quick yt-dlp download',
+    quickYtdlpSummary: 'Quick yt-dlp download',
+    quickYtdlpPlaceholder: 'URL or list of URLs for the download manager',
+    quickYtdlpHint:
+      'Adds to the Downloads tab; enter multiple URLs as separate lines.',
+    quickYtdlpToDownloadsTab: 'Send to tab',
+    quickYtdlpDocFormats: 'Formats',
+    quickYtdlpDocOutputTemplate: '-o template',
+    quickYtdlpPasteClipboardTitle: 'Paste clipboard text into the URL field'
   }
 } as const
 
@@ -281,6 +411,14 @@ const activeUiLocale = getUiLocale()
 
 export function uiText(key: UiTextKey): string {
   return UI_TEXT[activeUiLocale][key]
+}
+
+export function uiTextVars(key: UiTextKey, vars: Record<string, string | number>): string {
+  let s = uiText(key)
+  for (const [k, v] of Object.entries(vars)) {
+    s = s.split(`{${k}}`).join(String(v))
+  }
+  return s
 }
 
 export type TerminalIntroTailVars = {
