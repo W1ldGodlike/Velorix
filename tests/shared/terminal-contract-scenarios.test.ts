@@ -557,4 +557,35 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: HLS/subs/throttle/disk guards + single-entry JSON', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --no-playlist -J ')
+    expect(lines).toContain('yt-dlp --hls-use-mpegts -F ')
+    expect(lines).toContain('yt-dlp --write-subs --skip-download ')
+    expect(lines).toContain('yt-dlp --max-sleep-interval 10 -F ')
+    expect(lines).toContain('yt-dlp --retry-sleep 5 -F ')
+    expect(lines).toContain('yt-dlp --min-filesize 100K -F ')
+    expect(lines).toContain('yt-dlp --file-access-retries 5 -F ')
+  })
+
+  it('preview: a:0 bits_per_raw_sample, v:0 index+codec_name', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams a:0') &&
+          l.includes('bits_per_raw_sample') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams v:0') &&
+          l.includes('stream=index,codec_name') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+  })
 })

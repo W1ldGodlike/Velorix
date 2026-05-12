@@ -1358,6 +1358,48 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· --print is_private',
     summary: 'Признак приватного/ограниченного ролика без скачивания (--skip-download --print is_private); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print is_private '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-playlist -J',
+    summary: 'JSON метаданных только для одного ролика из URL-плейлиста (--no-playlist -J); допишите URL.',
+    fullLine: 'yt-dlp --no-playlist -J '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· hls-use-mpegts -F',
+    summary: 'HLS: сохранять как MPEG-TS сегменты (--hls-use-mpegts -F) при проблемах с фрагментами; допишите URL.',
+    fullLine: 'yt-dlp --hls-use-mpegts -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· write-subs skip',
+    summary: 'Скачать ручные субтитры без видео (--write-subs --skip-download); допишите URL.',
+    fullLine: 'yt-dlp --write-subs --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· max-sleep-interval -F',
+    summary: 'Верхняя граница пауз между HTTP-запросами (--max-sleep-interval 10 -F); подстройте секунды; допишите URL.',
+    fullLine: 'yt-dlp --max-sleep-interval 10 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· retry-sleep -F',
+    summary: 'Пауза между повторными попытками загрузки (--retry-sleep 5 -F); допишите URL.',
+    fullLine: 'yt-dlp --retry-sleep 5 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· min-filesize -F',
+    summary: 'Пропускать форматы меньше порога (--min-filesize 100K -F); поменяйте размер при необходимости; допишите URL.',
+    fullLine: 'yt-dlp --min-filesize 100K -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· file-access-retries -F',
+    summary: 'Повторы при ошибках чтения/записи на диске (--file-access-retries 5 -F); допишите URL.',
+    fullLine: 'yt-dlp --file-access-retries 5 -F '
   }
 ]
 
@@ -1944,6 +1986,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· acopy null 3s',
     summary: 'Remux только аудио в null muxer (-vn -sn -acodec copy -t 3); проверка дорожки без видеодекода; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vn -sn -acodec copy -t 3 -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:0 pcm depth',
+    summary: 'Поток a:0: bits_per_raw_sample (глубина PCM/lossless) при наличии; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=bits_per_raw_sample -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 index codec',
+    summary: 'Поток v:0: index + codec_name (порядок дорожек в контейнере); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=index,codec_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   }
 ]
 
