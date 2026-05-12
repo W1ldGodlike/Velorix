@@ -1220,4 +1220,31 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: trim-filenames / hls-split-discontinuity / dynamic-mpd-buffer / no-write-pages / socket 120', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --trim-filenames 180 -F ')
+    expect(lines).toContain('yt-dlp --hls-split-discontinuity -F ')
+    expect(lines).toContain('yt-dlp --dynamic-mpd-buffer-size 100 -F ')
+    expect(lines).toContain('yt-dlp --no-write-pages -F ')
+    expect(lines).toContain('yt-dlp --socket-timeout 120 -F ')
+  })
+
+  it('preview: v:0 ticks_per_frame / ffmpeg treble 3s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-select_streams v:0') &&
+          l.includes('stream=ticks_per_frame') &&
+          l.includes('default=nw=1:nk=1') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) => l.includes('-af treble=g=1') && l.includes('-t 3') && l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })

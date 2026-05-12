@@ -2564,6 +2564,36 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· verbose -F',
     summary: 'Подробный лог yt-dlp при списке форматов (--verbose -F); диагностика extractor; допишите URL.',
     fullLine: 'yt-dlp --verbose -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· trim-filenames -F',
+    summary: 'Обрезать слишком длинные имена файлов (--trim-filenames 180 -F); NAS/Windows MAX_PATH; допишите URL.',
+    fullLine: 'yt-dlp --trim-filenames 180 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· hls-split-discontinuity -F',
+    summary: 'HLS: резать плейлист по discontinuity (--hls-split-discontinuity -F); стабильнее TS-сегменты; допишите URL.',
+    fullLine: 'yt-dlp --hls-split-discontinuity -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· dynamic-mpd-buffer -F',
+    summary: 'DASH: буфер динамического MPD в секундах (--dynamic-mpd-buffer-size 100 -F); живые манифесты; допишите URL.',
+    fullLine: 'yt-dlp --dynamic-mpd-buffer-size 100 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-write-pages -F',
+    summary: 'Не сохранять сырые HTML-страницы extractor (--no-write-pages -F); чище диск при -F; допишите URL.',
+    fullLine: 'yt-dlp --no-write-pages -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· socket-timeout 120 -F',
+    summary: 'Таймаут сокета 120 с (--socket-timeout 120 -F); очень медленные CDN/прокси; допишите URL.',
+    fullLine: 'yt-dlp --socket-timeout 120 -F '
   }
 ]
 
@@ -3456,6 +3486,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· silenceremove 60s',
     summary: 'Обрезка ведущей тишины в первых 60 с (-af silenceremove=…); проверка цепочки af на речи/музыке; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af silenceremove=start_periods=1:start_duration=0.5:start_threshold=-50dB:detection=peak:stop_periods=-1 -t 60 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 ticks/frame',
+    summary: 'Поток v:0: ticks_per_frame (квант времени кадра vs time_base); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=ticks_per_frame -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· treble 3s',
+    summary: 'Лёгкий EQ treble первых 3 с (-af treble=g=1); smoke цепочки аудиофильтра; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af treble=g=1 -t 3 -vn -sn -f null -`
   }
 ]
 
