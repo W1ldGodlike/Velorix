@@ -4334,6 +4334,72 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· print-to-file show',
     summary: 'Записать show (название шоу/сериала, если extractor отдаёт) в flux-ytdlp-show.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file show flux-ytdlp-show.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file album_artists',
+    summary: 'Записать album_artists (альбомные исполнители VA/feat., если extractor отдаёт) в flux-ytdlp-albumartists.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file album_artists flux-ytdlp-albumartists.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file cast',
+    summary: 'Записать cast (актерский состав, если extractor отдаёт) в flux-ytdlp-cast.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file cast flux-ytdlp-cast.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file network',
+    summary: 'Записать network (телесеть/студия вещания, если extractor отдаёт) в flux-ytdlp-network.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file network flux-ytdlp-network.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· limit-rate 500K -F',
+    summary: 'Список форматов с ограничением скорости 500 KiB/s (--limit-rate 500K -F); меньше нагрузки на канал при -F; допишите URL.',
+    fullLine: 'yt-dlp --limit-rate 500K -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo SV -F',
+    summary: 'Гео-обход через Сальвадор (--geo-bypass-country SV -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country SV -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo HN -F',
+    summary: 'Гео-обход через Гондурас (--geo-bypass-country HN -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country HN -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo NI -F',
+    summary: 'Гео-обход через Никарагуа (--geo-bypass-country NI -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country NI -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo GT -F',
+    summary: 'Гео-обход через Гватемалу (--geo-bypass-country GT -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country GT -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo BZ -F',
+    summary: 'Гео-обход через Белиз (--geo-bypass-country BZ -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country BZ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo DO -F',
+    summary: 'Гео-обход через Доминиканскую Республику (--geo-bypass-country DO -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country DO -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo HT -F',
+    summary: 'Гео-обход через Гаити (--geo-bypass-country HT -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country HT -F '
   }
 ]
 
@@ -5580,6 +5646,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· speechnorm 4s',
     summary: 'Лёгкая нормализация речи/подкаста первых 4 с (-af speechnorm=peak=0.25); smoke динамики диалога; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af speechnorm=peak=0.25 -t 4 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format BPM+key',
+    summary: 'Теги контейнера BPM + initial_key (если записаны каталогизатором); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=BPM,initial_key -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· bs2b 4s',
+    summary: 'Лёгкий межканальный кроссфид bs2b первых 4 с (-af bs2b=profile=j2); smoke стерео-обработки; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af bs2b=profile=j2 -t 4 -vn -sn -f null -`
   }
 ]
 

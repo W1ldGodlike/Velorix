@@ -2160,4 +2160,38 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: geo SV/HN/NI/GT/BZ/DO/HT + limit-rate 500K + print-to-file album_artists/cast/network', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --geo-bypass-country SV -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country HN -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country NI -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country GT -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country BZ -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country DO -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country HT -F ')
+    expect(lines).toContain('yt-dlp --limit-rate 500K -F ')
+    expect(lines).toContain('yt-dlp --print-to-file album_artists flux-ytdlp-albumartists.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file cast flux-ytdlp-cast.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file network flux-ytdlp-network.txt --skip-download ')
+  })
+
+  it('preview: ffprobe format BPM+key + ffmpeg bs2b 4s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=BPM,initial_key') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af bs2b=profile=j2') &&
+          l.includes('-t 4') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })
