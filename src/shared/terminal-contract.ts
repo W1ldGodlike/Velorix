@@ -2750,6 +2750,30 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· flat-pl skip print dur',
     summary: 'Плоский плейлист: длительность каждого элемента без глубокого извлечения (--flat-playlist --skip-download --print duration); допишите URL плейлиста.',
     fullLine: 'yt-dlp --flat-playlist --skip-download --print duration '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· list extr descr',
+    summary: 'Имена и краткие описания extractors без URL (--list-extractor-descriptions); справка по поддерживаемым сайтам.',
+    fullLine: 'yt-dlp --list-extractor-descriptions'
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print traffic -F',
+    summary: 'Печать HTTP/TLS трафика в stderr (--print-traffic -F); тяжёлый лог, только диагностика; допишите URL.',
+    fullLine: 'yt-dlp --print-traffic -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· audio vorbis',
+    summary: 'Извлечь аудио в Ogg Vorbis (--extract-audio --audio-format vorbis); допишите URL и шаблон -o при необходимости.',
+    fullLine: 'yt-dlp --extract-audio --audio-format vorbis '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file id',
+    summary: 'Записать id ролика в flux-ytdlp-id.txt без скачивания (--print-to-file id …); допишите URL.',
+    fullLine: 'yt-dlp --print-to-file id flux-ytdlp-id.txt --skip-download '
   }
 ]
 
@@ -3696,6 +3720,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· v:0 intra_only',
     summary: 'Поток v:0: is_intra_only (все-I GOP / редкие кодеки); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=is_intra_only -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format composer',
+    summary: 'Теги контейнера composer + conductor (классика/метаданные каталога); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=composer,conductor -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· agate 5s',
+    summary: 'Шумовой гейт первых 5 с (-af agate=…); проверка динамики/тишины в af-цепочке; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af agate=threshold=0.005:ratio=2:attack=20:release=200 -t 5 -vn -sn -f null -`
   },
   {
     tool: 'ffmpeg',

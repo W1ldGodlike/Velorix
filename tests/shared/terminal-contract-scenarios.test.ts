@@ -1349,4 +1349,31 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       true
     )
   })
+
+  it('downloads: list-extractor-descriptions / print-traffic / vorbis / print-to-file id', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --list-extractor-descriptions')
+    expect(lines).toContain('yt-dlp --print-traffic -F ')
+    expect(lines).toContain('yt-dlp --extract-audio --audio-format vorbis ')
+    expect(lines).toContain('yt-dlp --print-to-file id flux-ytdlp-id.txt --skip-download ')
+  })
+
+  it('preview: format composer+conductor / ffmpeg agate 5s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=composer,conductor') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af agate=threshold=0.005') &&
+          l.includes('-t 5') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })
