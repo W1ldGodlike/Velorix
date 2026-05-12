@@ -1592,6 +1592,66 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· flat print extractor',
     summary: 'Плоский плейлист: имя extractor каждого элемента без глубокого извлечения (--flat-playlist --skip-download --print extractor); допишите URL плейлиста.',
     fullLine: 'yt-dlp --flat-playlist --skip-download --print extractor '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-remote-playlist -J',
+    summary: 'JSON плейлиста без разрешения внешних ссылок на другие плейлисты (--no-remote-playlist -J); меньше сетевых обходов; допишите URL.',
+    fullLine: 'yt-dlp --no-remote-playlist -J '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo-bypass JP -F',
+    summary: 'Гео-обход с кодом страны JP (--geo-bypass-country JP -F); региональные ограничения; допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country JP -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo-bypass CA -F',
+    summary: 'Гео-обход с кодом страны CA (--geo-bypass-country CA -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country CA -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print thumbnails',
+    summary: 'Словарь URL превью/thumbnail без скачивания (--skip-download --print thumbnails); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print thumbnails '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· player_client=web_safari -F',
+    summary: 'YouTube: web_safari в extractor-args (--extractor-args youtube:player_client=web_safari -F); Safari-подобный web-клиент; допишите URL.',
+    fullLine: 'yt-dlp --extractor-args youtube:player_client=web_safari -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print playlist_channel',
+    summary: 'Имя канала плейлиста без скачивания (--skip-download --print playlist_channel); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --skip-download --print playlist_channel '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print playlist_channel_id',
+    summary: 'Идентификатор канала плейлиста без скачивания (--skip-download --print playlist_channel_id); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --skip-download --print playlist_channel_id '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print playlist_uploader',
+    summary: 'Автор/uploader плейлиста без скачивания (--skip-download --print playlist_uploader); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --skip-download --print playlist_uploader '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print playlist_uploader_id',
+    summary: 'ID автора плейлиста без скачивания (--skip-download --print playlist_uploader_id); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --skip-download --print playlist_uploader_id '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· flat print _type',
+    summary: 'Плоский плейлист: тип записи video/playlist/… (--flat-playlist --skip-download --print _type); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --flat-playlist --skip-download --print _type '
   }
 ]
 
@@ -2250,6 +2310,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· silencedetect 30s',
     summary: 'Поиск тишины в первых 30 с (-af silencedetect=noise=-50dB:d=0.3); stderr: silence_start/end; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af silencedetect=noise=-50dB:d=0.3 -t 30 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 disposition',
+    summary: 'Первая видеодорожка v:0: disposition (default/forced/attached_pic и т.д.); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=disposition -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:1 bit_rate',
+    summary: 'Вторая аудиодорожка a:1: bit_rate (мультиязык, комментарии); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:1 -show_entries stream=bit_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· astats 5s',
+    summary: 'Краткая статистика аудио первых 5 с (-af astats=metadata=1:reset=1); RMS/peak в stderr; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af astats=metadata=1:reset=1 -t 5 -vn -sn -f null -`
   }
 ]
 

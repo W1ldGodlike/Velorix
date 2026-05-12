@@ -712,4 +712,41 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       lines.some((l) => l.includes('-af silencedetect=noise=-50dB:d=0.3') && l.includes('-vn -sn'))
     ).toBe(true)
   })
+
+  it('downloads: no-remote-playlist + geo JP/CA + thumbnails + web_safari + playlist_* + flat _type', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --no-remote-playlist -J ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country JP -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country CA -F ')
+    expect(lines).toContain('yt-dlp --skip-download --print thumbnails ')
+    expect(lines).toContain('yt-dlp --extractor-args youtube:player_client=web_safari -F ')
+    expect(lines).toContain('yt-dlp --skip-download --print playlist_channel ')
+    expect(lines).toContain('yt-dlp --skip-download --print playlist_channel_id ')
+    expect(lines).toContain('yt-dlp --skip-download --print playlist_uploader ')
+    expect(lines).toContain('yt-dlp --skip-download --print playlist_uploader_id ')
+    expect(lines).toContain('yt-dlp --flat-playlist --skip-download --print _type ')
+  })
+
+  it('preview: v:0 disposition, a:1 bit_rate, astats', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams v:0') &&
+          l.includes('stream=disposition') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams a:1') &&
+          l.includes('stream=bit_rate') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+    expect(
+      lines.some((l) => l.includes('-af astats=metadata=1:reset=1') && l.includes('-t 5') && l.includes('-vn -sn'))
+    ).toBe(true)
+  })
 })
