@@ -2300,6 +2300,90 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· geo UA -F',
     summary: 'Гео-обход с кодом страны UA (--geo-bypass-country UA -F); допишите URL.',
     fullLine: 'yt-dlp --geo-bypass-country UA -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo PH -F',
+    summary: 'Гео-обход с кодом страны PH (--geo-bypass-country PH -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country PH -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo ID -F',
+    summary: 'Гео-обход с кодом страны ID (--geo-bypass-country ID -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country ID -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo PK -F',
+    summary: 'Гео-обход с кодом страны PK (--geo-bypass-country PK -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country PK -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo BD -F',
+    summary: 'Гео-обход с кодом страны BD (--geo-bypass-country BD -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country BD -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo EG -F',
+    summary: 'Гео-обход с кодом страны EG (--geo-bypass-country EG -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country EG -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo CL -F',
+    summary: 'Гео-обход с кодом страны CL (--geo-bypass-country CL -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country CL -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo PE -F',
+    summary: 'Гео-обход с кодом страны PE (--geo-bypass-country PE -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country PE -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo KE -F',
+    summary: 'Гео-обход с кодом страны KE (--geo-bypass-country KE -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country KE -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo CO -F',
+    summary: 'Гео-обход с кодом страны CO (--geo-bypass-country CO -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country CO -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo NG -F',
+    summary: 'Гео-обход с кодом страны NG (--geo-bypass-country NG -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country NG -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· extractor-args generic noplaylist -F',
+    summary: 'Generic extractor: не разворачивать плейлист (--extractor-args generic:noplaylist -F); допишите URL.',
+    fullLine: 'yt-dlp --extractor-args generic:noplaylist -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· skip-pl-err 10 -F',
+    summary: 'Пропустить до 10 ошибок подряд в плейлисте (--skip-playlist-after-errors 10 -F); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --skip-playlist-after-errors 10 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· retries 15 -F',
+    summary: 'Больше повторов HTTP (--retries 15 -F); нестабильные CDN; допишите URL.',
+    fullLine: 'yt-dlp --retries 15 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· fragment-retries 15 -F',
+    summary: 'Повторы для обрывов фрагментов HLS/DASH (--fragment-retries 15 -F); допишите URL.',
+    fullLine: 'yt-dlp --fragment-retries 15 -F '
   }
 ]
 
@@ -3150,6 +3234,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· aresample 44k1 3s',
     summary: 'Аудио ресэмпл в 44.1 kHz первые 3 с (-af aresample=44100); проверка SRC цепочки; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af aresample=44100 -t 3 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format minor_version',
+    summary: 'Тег контейнера minor_version (версия isom/brand в MP4/MOV); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=minor_version -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· afftdn 3s',
+    summary: 'Лёгкое FFT-шумоподавление первых 3 с (-af afftdn=nf=-25); проверка аудиофильтра; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af afftdn=nf=-25 -t 3 -vn -sn -f null -`
   }
 ]
 

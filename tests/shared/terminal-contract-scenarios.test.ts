@@ -1099,4 +1099,39 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: geo PH..NG / extractor-args generic:noplaylist / retries+frag+skip-pl-err', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --geo-bypass-country PH -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country ID -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country PK -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country BD -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country EG -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country CL -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country PE -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country KE -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country CO -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country NG -F ')
+    expect(lines).toContain('yt-dlp --extractor-args generic:noplaylist -F ')
+    expect(lines).toContain('yt-dlp --skip-playlist-after-errors 10 -F ')
+    expect(lines).toContain('yt-dlp --retries 15 -F ')
+    expect(lines).toContain('yt-dlp --fragment-retries 15 -F ')
+  })
+
+  it('preview: format_tags minor_version / ffmpeg afftdn 3s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=minor_version') &&
+          l.includes('default=nw=1:nk=1') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) => l.includes('-af afftdn=nf=-25') && l.includes('-t 3') && l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })
