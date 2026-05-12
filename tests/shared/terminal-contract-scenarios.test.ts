@@ -407,6 +407,16 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --download-sections *0:00-2:00 ')
     expect(lines).toContain('yt-dlp --break-match-filters ')
     expect(lines).toContain('yt-dlp --no-post-overwrites ')
+    expect(lines).toContain('yt-dlp --add-metadata ')
+    expect(lines).toContain('yt-dlp --hls-prefer-ffmpeg -F ')
+    expect(lines).toContain('yt-dlp --ffmpeg-location ffmpeg ')
+    expect(lines).toContain('yt-dlp --paths home:ytdl-out ')
+    expect(lines).toContain('yt-dlp --no-download-archive ')
+    expect(lines).toContain('yt-dlp --encoding utf-8 ')
+    expect(lines).toContain('yt-dlp --break-per-input -F ')
+    expect(lines).toContain('yt-dlp --check-all-formats -F ')
+    expect(lines).toContain('yt-dlp --socket-timeout 60 ')
+    expect(lines).toContain('yt-dlp --xattrs ')
   })
 
   it('preview: pretty/flat/packets/frames + loudnorm summary', () => {
@@ -445,5 +455,26 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
     expect(lines.some((l) => l.includes('-ss 10 -i ') && l.includes('-t 2 -f null -'))).toBe(true)
+  })
+
+  it('preview: format comment/synopsis, s:0 timebase, v:0 extradata_size', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(lines.some((l) => l.includes('format_tags=comment,synopsis'))).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams s:0') &&
+          l.includes('codec_time_base') &&
+          l.includes('time_base')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams v:0') &&
+          l.includes('extradata_size') &&
+          l.includes('initial_padding')
+      )
+    ).toBe(true)
   })
 })

@@ -1106,6 +1106,66 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· no-post-overwrites',
     summary: 'Не перезаписывать уже смерженные постпроцессингом файлы (--no-post-overwrites); допишите URL.',
     fullLine: 'yt-dlp --no-post-overwrites '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· add-metadata',
+    summary: 'Записать в файл базовые теги из метаданных площадки (--add-metadata); допишите URL и -f/-o.',
+    fullLine: 'yt-dlp --add-metadata '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· hls-prefer-ffmpeg -F',
+    summary: 'HLS: тянуть через ffmpeg вместо нативного загрузчика (--hls-prefer-ffmpeg -F); обход части CDN-глюков; допишите URL.',
+    fullLine: 'yt-dlp --hls-prefer-ffmpeg -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· ffmpeg-location',
+    summary: 'Явный ffmpeg для постпроцессоров/мержа (--ffmpeg-location ffmpeg); при необходимости замените на полный путь без пробелов; допишите URL.',
+    fullLine: 'yt-dlp --ffmpeg-location ffmpeg '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· paths home',
+    summary: 'Переопределить подпапку типа home для вывода (--paths home:ytdl-out); поменяйте ytdl-out под свою структуру; допишите URL.',
+    fullLine: 'yt-dlp --paths home:ytdl-out '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-download-archive',
+    summary: 'Игнорировать журнал archive.txt даже если он в конфиге (--no-download-archive); допишите URL.',
+    fullLine: 'yt-dlp --no-download-archive '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· encoding utf-8',
+    summary: 'Принудительно UTF-8 для вывода yt-dlp (--encoding utf-8); кириллица/юникод в консоли Windows; допишите URL.',
+    fullLine: 'yt-dlp --encoding utf-8 '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· break-per-input -F',
+    summary: 'Плейлист: не прерывать весь прогон при ошибке одного URL (--break-per-input -F); допишите URL.',
+    fullLine: 'yt-dlp --break-per-input -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· check-all-formats -F',
+    summary: 'Проверить каждый формат по URL (--check-all-formats -F); медленно, зато без сюрпризов при скачивании; допишите URL.',
+    fullLine: 'yt-dlp --check-all-formats -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· socket-timeout 60',
+    summary: 'Таймаут сокета 60 с (--socket-timeout 60); медленные CDN/прокси; допишите URL.',
+    fullLine: 'yt-dlp --socket-timeout 60 '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· xattrs',
+    summary: 'Записать метаданные в xattr файла где поддерживается ОС (--xattrs); допишите URL.',
+    fullLine: 'yt-dlp --xattrs '
   }
 ]
 
@@ -1614,6 +1674,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· loudnorm summary',
     summary: 'Замер интегральной громкости -af loudnorm=print_format=summary за 60 с; -vn -sn; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af loudnorm=print_format=summary -t 60 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format comment',
+    summary: 'Теги контейнера comment + synopsis (описание/сводка из метаданных); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=comment,synopsis -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· s:0 timebase',
+    summary: 'Поток s:0: codec_time_base + time_base (таймбаза субтитров vs видео); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=codec_time_base,time_base -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 extradata',
+    summary: 'Поток v:0: extradata_size (размер декодер-заголовков) + initial_padding; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=extradata_size,initial_padding -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   }
 ]
 
