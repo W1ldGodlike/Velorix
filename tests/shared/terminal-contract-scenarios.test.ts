@@ -1929,4 +1929,37 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: geo IO/PN/AQ/GS/PM + print-to-file rel/mts/upts/aspect/epsort', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --geo-bypass-country IO -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country PN -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country AQ -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country GS -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country PM -F ')
+    expect(lines).toContain('yt-dlp --print-to-file release_date flux-ytdlp-reldate.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file modified_timestamp flux-ytdlp-mts.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file upload_timestamp flux-ytdlp-upts.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file aspect_ratio flux-ytdlp-aspect.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file episode_sort flux-ytdlp-epsort.txt --skip-download ')
+  })
+
+  it('preview: ffprobe format encoder+WMFSDKVersion + ffmpeg afade in 3s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=encoder,WMFSDKVersion') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af afade=t=in:st=0:d=0.6') &&
+          l.includes('-t 3') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })

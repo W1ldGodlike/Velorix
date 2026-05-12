@@ -3794,6 +3794,66 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· geo HM -F',
     summary: 'Гео-обход через остров Херд и острова Макдональд (--geo-bypass-country HM -F); допишите URL.',
     fullLine: 'yt-dlp --geo-bypass-country HM -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo IO -F',
+    summary: 'Гео-обход через Британскую территорию в Индийском океане (--geo-bypass-country IO -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country IO -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo PN -F',
+    summary: 'Гео-обход через Питкэрн (--geo-bypass-country PN -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country PN -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo AQ -F',
+    summary: 'Гео-обход через Антарктиду (--geo-bypass-country AQ -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country AQ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo GS -F',
+    summary: 'Гео-обход через Южную Георгию и Южные Сандвичевы острова (--geo-bypass-country GS -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country GS -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo PM -F',
+    summary: 'Гео-обход через Сен-Пьер и Микелон (--geo-bypass-country PM -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country PM -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file reldate',
+    summary: 'Записать release_date (YYYYMMDD) в flux-ytdlp-reldate.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file release_date flux-ytdlp-reldate.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file mts',
+    summary: 'Записать modified_timestamp (Unix, если extractor отдаёт) в flux-ytdlp-mts.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file modified_timestamp flux-ytdlp-mts.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file upts',
+    summary: 'Записать upload_timestamp (Unix загрузки на площадку) в flux-ytdlp-upts.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file upload_timestamp flux-ytdlp-upts.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file aspect',
+    summary: 'Записать aspect_ratio (строка площадки) в flux-ytdlp-aspect.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file aspect_ratio flux-ytdlp-aspect.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file epsort',
+    summary: 'Записать episode_sort (сортировка эпизода в сериалах) в flux-ytdlp-epsort.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file episode_sort flux-ytdlp-epsort.txt --skip-download '
   }
 ]
 
@@ -4968,6 +5028,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· chorus 4s',
     summary: 'Лёгкий хорус первых 4 с (-af chorus); smoke задержек/модуляции в af; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af chorus=0.5:0.9:50:0.4:0.25:2 -t 4 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format WM/ASFT',
+    summary: 'Теги контейнера encoder + WMFSDKVersion (часто у WMV/ASF); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=encoder,WMFSDKVersion -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· afade in 3s',
+    summary: 'Плавное нарастание громкости первых 3 с (-af afade=t=in:st=0:d=0.6); smoke afade без кавычек; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af afade=t=in:st=0:d=0.6 -t 3 -vn -sn -f null -`
   }
 ]
 
