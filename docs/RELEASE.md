@@ -141,6 +141,10 @@ npm run build:win
 
 Репозиторий: `https://github.com/W1ldGodlike/FluxAlloy`.
 
+**Настройки репозитория (разово):** *Settings → Actions → General* — разрешить **Actions** (например *Allow all actions and reusable workflows* или политика организации); для PR из форков при необходимости включить одобрение первого запуска (*Fork pull request workflows*). Обновления npm и GitHub Actions для зависимостей CI приходят через **Dependabot** (`.github/dependabot.yml`).
+
+**Письма «Run failed / No jobs were run»:** это не обязательно падение `npm run check`. Статус *No jobs were run* значит, что workflow стартовал, но **ни один job не был поставлен в очередь** (например несовпадение триггера, политика форка или редкие граничные случаи GitHub). Смотреть в UI: есть ли job **`check`** и какое **Event** (*push* / *pull_request* / *workflow_dispatch*).
+
 Перед push:
 
 ```powershell

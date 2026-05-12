@@ -481,6 +481,7 @@
 - [x] `npm run build:unpack` проходит.
 - [~] `Data/`, `Help/`, `FLUXALLOY_TZ.md` добавлены в `extraResources`.
 - [~] `bin/` в `extraResources`: bundled-first каталог с `README.md`; готовые бинарники подкладываются локально/CI через `npm run engines:prepare:win` перед сборкой (в Git не хранятся), скачивание в `userData/bin` остаётся fallback/update; release checklist и лицензии bundled engines — `docs/RELEASE.md` / `docs/BUNDLED_ENGINES_LICENSES.md`; GitHub Actions после `check` гоняет prepare + **`engines:doctor`** со строгой проверкой структуры `trusted_hashes` и логом версий; локально **`check:release`** / **`release:win*`** после prepare тоже через `engines:doctor` (`FLUXALLOY_ENGINES_STRICT=1` — ручной релизный gate для непустых exe-хешей).
+- [x] Dependabot: `.github/dependabot.yml` (npm weekly, GitHub Actions monthly); разовые настройки Actions и расшифровка писем CI — `docs/RELEASE.md` §5.
 - [ ] Настроить нормальную иконку приложения вместо placeholder/default.
 - [ ] Windows NSIS: проверить installer вручную.
 - [~] Windows portable/zip: в `electron-builder.yml` цели `portable` и `zip` рядом с NSIS; после `pack:dir`/`check:release` — автопроверка дерева `dist/win-unpacked` (`verify:win-unpacked`: exe + `resources/bin` + extraResources); полный интерактивный smoke — позже.
