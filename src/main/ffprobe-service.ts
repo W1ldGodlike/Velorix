@@ -153,6 +153,14 @@ function tagString(
 
 const FFPROBE_DETAIL_ENCODER_MAX = 64
 
+function collapseFfprobeDetailSnippet(raw: string): string {
+  const collapsed = raw.replace(/\s+/g, ' ').trim()
+  if (collapsed.length <= FFPROBE_DETAIL_ENCODER_MAX) {
+    return collapsed
+  }
+  return `${collapsed.slice(0, FFPROBE_DETAIL_ENCODER_MAX - 1)}…`
+}
+
 /** Компактная строка `tags.encoder` для колонки «Сведения» (отдельной колонки нет). */
 function formatFfprobeTagEncoderBrief(
   tags: Record<string, string | number | undefined> | undefined
@@ -161,11 +169,7 @@ function formatFfprobeTagEncoderBrief(
   if (raw === null) {
     return null
   }
-  const collapsed = raw.replace(/\s+/g, ' ').trim()
-  if (collapsed.length <= FFPROBE_DETAIL_ENCODER_MAX) {
-    return collapsed
-  }
-  return `${collapsed.slice(0, FFPROBE_DETAIL_ENCODER_MAX - 1)}…`
+  return collapseFfprobeDetailSnippet(raw)
 }
 
 function mapCodecType(raw: string | undefined): MediaProbeTrackRow['kind'] {
@@ -399,6 +403,14 @@ function buildTrackDetail(
     }
     if (title) {
       parts.push(title)
+    }
+    const handlerRaw = tagString(stream.tags, 'handler_name')
+    if (handlerRaw !== null) {
+      const titleNorm = title?.trim().toLowerCase() ?? ''
+      const handlerNorm = handlerRaw.trim().toLowerCase()
+      if (handlerNorm === '' || handlerNorm !== titleNorm) {
+        parts.push(collapseFfprobeDetailSnippet(handlerRaw))
+      }
     }
     const subFourcc = ffprobeScalarDisplay(
       typeof stream.codec_tag_string === 'string' ? stream.codec_tag_string : undefined

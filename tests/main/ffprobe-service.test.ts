@@ -193,6 +193,37 @@ describe('ffprobe-service buildTrackRows', () => {
     expect(row?.detail).toContain('bt2020·bt2020nc')
   })
 
+  it('subtitle detail включает tags.handler_name, если отличается от title', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'subtitle',
+          codec_name: 'mov_text',
+          tags: { title: 'SDH', handler_name: 'SubtitleHandler' }
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toContain('SDH')
+    expect(row?.detail).toContain('SubtitleHandler')
+  })
+
+  it('subtitle detail не дублирует tags.handler_name, если совпадает с title', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'subtitle',
+          codec_name: 'mov_text',
+          tags: { title: 'English', handler_name: 'English' }
+        }
+      ],
+      null
+    )
+    expect((row?.detail.match(/English/g) ?? []).length).toBe(1)
+  })
+
   it('video/audio/subtitle detail включает tags.creation_time как created YYYY-MM-DD', () => {
     const rows = buildTrackRows(
       [
