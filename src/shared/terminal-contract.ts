@@ -2930,6 +2930,66 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· extract-audio wma',
     summary: 'Извлечь аудио в WMA (--extract-audio --audio-format wma); допишите URL и шаблон -o при необходимости.',
     fullLine: 'yt-dlp --extract-audio --audio-format wma '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-abort-on-error -F',
+    summary: 'Плейлист: продолжать после ошибки отдельного URL (--no-abort-on-error -F); допишите URL.',
+    fullLine: 'yt-dlp --no-abort-on-error -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-restrict-filenames -F',
+    summary: 'Не ограничивать имена файлов ASCII (--no-restrict-filenames -F); кириллица в -o; допишите URL.',
+    fullLine: 'yt-dlp --no-restrict-filenames -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo PR',
+    summary: 'Гео-обход с кодом страны PR (--geo-bypass-country PR -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country PR -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo GU',
+    summary: 'Гео-обход с кодом страны GU (--geo-bypass-country GU -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country GU -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo VI',
+    summary: 'Гео-обход с кодом страны VI (--geo-bypass-country VI -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country VI -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo AS',
+    summary: 'Гео-обход с кодом страны AS (--geo-bypass-country AS -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country AS -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo MP',
+    summary: 'Гео-обход с кодом страны MP (--geo-bypass-country MP -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country MP -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo UM',
+    summary: 'Гео-обход с кодом страны UM (--geo-bypass-country UM -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country UM -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file description',
+    summary: 'Записать поле description в flux-ytdlp-desc.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file description flux-ytdlp-desc.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file filename field',
+    summary: 'Записать шаблон filename (поле метаданных) в flux-ytdlp-fn.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file filename flux-ytdlp-fn.txt --skip-download '
   }
 ]
 
@@ -3948,6 +4008,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· flanger 4s',
     summary: 'Лёгкий flanger первых 4 с (-af flanger); smoke стерео-модуляции; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af flanger -t 4 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format isrc',
+    summary: 'Тег контейнера isrc (ISRC релиза); каталогизация аудио; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=isrc -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· deesser 4s',
+    summary: 'Де-эссер первых 4 с (-af deesser); диагностика свистящих согласных; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af deesser=i=0.5 -t 4 -vn -sn -f null -`
   }
 ]
 

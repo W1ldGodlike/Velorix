@@ -1489,4 +1489,37 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       lines.some((l) => l.includes('-af flanger') && l.includes('-t 4') && l.includes('-vn -sn'))
     ).toBe(true)
   })
+
+  it('downloads: no-abort-on-error + no-restrict-filenames + geo PR GU VI AS MP UM + print-to-file desc+fn', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --no-abort-on-error -F ')
+    expect(lines).toContain('yt-dlp --no-restrict-filenames -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country PR -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country GU -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country VI -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country AS -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country MP -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country UM -F ')
+    expect(lines).toContain('yt-dlp --print-to-file description flux-ytdlp-desc.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file filename flux-ytdlp-fn.txt --skip-download ')
+  })
+
+  it('preview: format isrc + ffmpeg deesser 4s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=isrc') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af deesser=i=0.5') &&
+          l.includes('-t 4') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })
