@@ -86,6 +86,64 @@ function summarizeContentLight(o: Record<string, unknown>): string {
   return 'HDR content light'
 }
 
+function summarizeAfd(o: Record<string, unknown>): string {
+  const value = scalarToken(o, 'active_format') ?? scalarToken(o, 'afd')
+  return value !== null ? `AFD ${value}` : 'AFD'
+}
+
+function summarizeReplayGain(o: Record<string, unknown>): string {
+  const track = scalarToken(o, 'track_gain') ?? scalarToken(o, 'album_gain')
+  return track !== null ? `Replay gain ${track}` : 'Replay gain'
+}
+
+function summarizeSmpteTimecode(o: Record<string, unknown>): string {
+  const value = scalarToken(o, 'timecode') ?? scalarToken(o, 'tc')
+  return value !== null ? `SMPTE TC ${value}` : 'SMPTE TC'
+}
+
+function formatCompactBitrate(raw: string | null): string | null {
+  if (raw === null) {
+    return null
+  }
+  const n = Number(raw.replace(',', '.'))
+  if (!Number.isFinite(n) || n <= 0) {
+    return null
+  }
+  if (n >= 1_000_000) {
+    const mb = n / 1_000_000
+    return `${mb >= 10 ? mb.toFixed(0) : mb.toFixed(1)} Mb/s`
+  }
+  if (n >= 1000) {
+    const kb = n / 1000
+    return `${kb >= 10 ? kb.toFixed(0) : kb.toFixed(1)} kb/s`
+  }
+  return `${Math.trunc(n)} b/s`
+}
+
+function summarizeCpb(o: Record<string, unknown>): string {
+  const max = formatCompactBitrate(
+    scalarToken(o, 'max_bitrate') ?? scalarToken(o, 'max_bit_rate')
+  )
+  const avg = formatCompactBitrate(
+    scalarToken(o, 'avg_bitrate') ?? scalarToken(o, 'avg_bit_rate')
+  )
+  if (max !== null) {
+    return `CPB max ${max}`
+  }
+  return avg !== null ? `CPB avg ${avg}` : 'CPB'
+}
+
+function summarizeGopTimecode(o: Record<string, unknown>): string {
+  const value = scalarToken(o, 'timecode') ?? scalarToken(o, 'tc')
+  return value !== null ? `GOP TC ${value}` : 'GOP TC'
+}
+
+function summarizeProducerReferenceTime(o: Record<string, unknown>): string {
+  const value =
+    scalarToken(o, 'wallclock') ?? scalarToken(o, 'wallclock_time') ?? scalarToken(o, 'pts')
+  return value !== null ? `PRFT ${value}` : 'PRFT'
+}
+
 function summarizeSideDataItem(raw: unknown): string | null {
   const o = recordFromUnknown(raw)
   if (o === null) {
@@ -105,6 +163,10 @@ function summarizeSideDataItem(raw: unknown): string | null {
   if (low.includes('content light')) {
     return summarizeContentLight(o)
   }
+  if (low.includes('display matrix')) {
+    // Rotation from Display Matrix is shown separately as `matrix N°`.
+    return null
+  }
   if (low.includes('ambient viewing')) {
     return 'HDR ambient viewing'
   }
@@ -119,6 +181,33 @@ function summarizeSideDataItem(raw: unknown): string | null {
       parseAtscAudioServiceType(o, 'service_type') ??
       parseAtscAudioServiceType(o, 'audio_service_type')
     return svc !== null ? `ATSC svc ${svc}` : 'ATSC audio svc'
+  }
+  if (low.includes('active format') || low === 'afd') {
+    return summarizeAfd(o)
+  }
+  if (low.includes('closed captions') || low.includes('eia-608') || low.includes('eia-708')) {
+    return 'CC'
+  }
+  if (low.includes('replay gain')) {
+    return summarizeReplayGain(o)
+  }
+  if (low.includes('skip samples')) {
+    return 'Skip samples'
+  }
+  if (low.includes('smpte') && (low.includes('timecode') || low.includes('12m') || low.includes('12-m'))) {
+    return summarizeSmpteTimecode(o)
+  }
+  if (low.includes('gop') && low.includes('timecode')) {
+    return summarizeGopTimecode(o)
+  }
+  if (low.includes('producer reference time')) {
+    return summarizeProducerReferenceTime(o)
+  }
+  if (low.includes('film grain')) {
+    return low.includes('av1') ? 'AV1 film grain' : 'Film grain'
+  }
+  if (low.includes('cpb')) {
+    return summarizeCpb(o)
   }
   return shortSideDataType(type)
 }
