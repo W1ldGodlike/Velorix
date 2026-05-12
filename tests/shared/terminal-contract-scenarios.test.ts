@@ -1962,4 +1962,43 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: geo FK/EH/DJ/KG/TJ/NP/LA/KH/BN + print-to-file chverify/private/composers/creators/trknum', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --geo-bypass-country FK -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country EH -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country DJ -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country KG -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country TJ -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country NP -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country LA -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country KH -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country BN -F ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file channel_is_verified flux-ytdlp-chverify.txt --skip-download '
+    )
+    expect(lines).toContain('yt-dlp --print-to-file is_private flux-ytdlp-private.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file composers flux-ytdlp-composers.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file creators flux-ytdlp-creators.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file track_number flux-ytdlp-trknum.txt --skip-download ')
+  })
+
+  it('preview: ffprobe format encoding_tool + ffmpeg afade out 3s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=encoding_tool') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af afade=t=out:st=1.2:d=0.6') &&
+          l.includes('-t 3') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })

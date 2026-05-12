@@ -3854,6 +3854,90 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· print-to-file epsort',
     summary: 'Записать episode_sort (сортировка эпизода в сериалах) в flux-ytdlp-epsort.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file episode_sort flux-ytdlp-epsort.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo FK -F',
+    summary: 'Гео-обход через Фолклендские острова (--geo-bypass-country FK -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country FK -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo EH -F',
+    summary: 'Гео-обход через Западную Сахару (--geo-bypass-country EH -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country EH -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo DJ -F',
+    summary: 'Гео-обход через Джибути (--geo-bypass-country DJ -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country DJ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo KG -F',
+    summary: 'Гео-обход через Киргизию (--geo-bypass-country KG -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country KG -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo TJ -F',
+    summary: 'Гео-обход через Таджикистан (--geo-bypass-country TJ -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country TJ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo NP -F',
+    summary: 'Гео-обход через Непал (--geo-bypass-country NP -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country NP -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo LA -F',
+    summary: 'Гео-обход через Лаос (--geo-bypass-country LA -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country LA -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo KH -F',
+    summary: 'Гео-обход через Камбоджу (--geo-bypass-country KH -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country KH -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo BN -F',
+    summary: 'Гео-обход через Бруней (--geo-bypass-country BN -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country BN -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file chverify',
+    summary: 'Записать channel_is_verified (флаг верификации канала) в flux-ytdlp-chverify.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file channel_is_verified flux-ytdlp-chverify.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file private',
+    summary: 'Записать is_private (признак приватного/ограниченного ролика) в flux-ytdlp-private.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file is_private flux-ytdlp-private.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file composers',
+    summary: 'Записать composers (если extractor отдаёт) в flux-ytdlp-composers.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file composers flux-ytdlp-composers.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file creators',
+    summary: 'Записать creators (если extractor отдаёт) в flux-ytdlp-creators.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file creators flux-ytdlp-creators.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file trknum',
+    summary: 'Записать track_number (номер трека в каталоге) в flux-ytdlp-trknum.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file track_number flux-ytdlp-trknum.txt --skip-download '
   }
 ]
 
@@ -5040,6 +5124,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· afade in 3s',
     summary: 'Плавное нарастание громкости первых 3 с (-af afade=t=in:st=0:d=0.6); smoke afade без кавычек; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af afade=t=in:st=0:d=0.6 -t 3 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format enc_tool',
+    summary: 'Тег контейнера encoding_tool (Mux/QuickTime authoring, если записан); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=encoding_tool -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· afade out 3s',
+    summary: 'Плавное затухание громкости в хвосте первых 3 с (-af afade=t=out:st=1.2:d=0.6); smoke afade out; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af afade=t=out:st=1.2:d=0.6 -t 3 -vn -sn -f null -`
   }
 ]
 
