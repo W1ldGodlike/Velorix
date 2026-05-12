@@ -105,6 +105,7 @@ import {
 import {
   applyTerminalInlinePick,
   DEFAULT_TERMINAL_INLINE_SUGGEST_MAX,
+  DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP,
   filterTerminalInlineSuggestions,
   stepTerminalSuggestIndex
 } from '../../shared/terminal-inline-suggest'
@@ -3529,8 +3530,8 @@ function App(): JSX.Element {
                   запускается через main без shell, а PATH дополняется папкой выбранного движка. В
                   argv можно токен <code>{TERMINAL_CURRENT_FILE_PLACEHOLDER}</code> — подставится
                   путь текущего превью редактора (только если файл уже открыт через диалог или DnD).
-                  В строке ввода — компактный IntelliSense: стрелки вверх/вниз, Home/End и Tab по
-                  выпадающему списку (до {DEFAULT_TERMINAL_INLINE_SUGGEST_MAX} подсказок из той же базы,
+                  В строке ввода — компактный IntelliSense: стрелки вверх/вниз, Home/End, PgUp/PgDn
+                  (шаг {DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP}) и Tab по выпадающему списку (до {DEFAULT_TERMINAL_INLINE_SUGGEST_MAX} подсказок из той же базы,
                   что и справа). В журнале вывода каждая строка
                   с кнопкой «Копир.» при наведении (копирует ровно эту строку).
                 </p>
@@ -3582,6 +3583,20 @@ function App(): JSX.Element {
                       if (e.key === 'End') {
                         e.preventDefault()
                         setTerminalSuggestIndex((i) => stepTerminalSuggestIndex(i, list.length, 'end'))
+                        return
+                      }
+                      if (e.key === 'PageDown') {
+                        e.preventDefault()
+                        setTerminalSuggestIndex((i) =>
+                          stepTerminalSuggestIndex(i, list.length, 'pageDown')
+                        )
+                        return
+                      }
+                      if (e.key === 'PageUp') {
+                        e.preventDefault()
+                        setTerminalSuggestIndex((i) =>
+                          stepTerminalSuggestIndex(i, list.length, 'pageUp')
+                        )
                         return
                       }
                       if (e.key === 'Tab') {

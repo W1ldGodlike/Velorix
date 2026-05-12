@@ -4,6 +4,7 @@ import type { TerminalCommandHintEntry } from '../../src/shared/terminal-contrac
 import {
   applyTerminalInlinePick,
   DEFAULT_TERMINAL_INLINE_SUGGEST_MAX,
+  DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP,
   filterTerminalInlineSuggestions,
   normalizeTerminalHintToken,
   stepTerminalSuggestIndex
@@ -83,6 +84,20 @@ describe('stepTerminalSuggestIndex', () => {
 
   it('empty list yields 0', () => {
     expect(stepTerminalSuggestIndex(3, 0, 'down')).toBe(0)
+  })
+
+  it('pageDown jumps by pageSize capped to list length', () => {
+    expect(stepTerminalSuggestIndex(0, 12, 'pageDown', DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP)).toBe(5)
+    expect(stepTerminalSuggestIndex(10, 12, 'pageDown', DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP)).toBe(11)
+  })
+
+  it('pageUp jumps backward', () => {
+    expect(stepTerminalSuggestIndex(7, 12, 'pageUp', DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP)).toBe(2)
+    expect(stepTerminalSuggestIndex(2, 12, 'pageUp', DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP)).toBe(0)
+  })
+
+  it('pageDown uses DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP when omitted', () => {
+    expect(stepTerminalSuggestIndex(0, 12, 'pageDown')).toBe(5)
   })
 })
 

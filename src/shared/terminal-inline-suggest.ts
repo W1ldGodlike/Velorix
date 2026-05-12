@@ -3,14 +3,18 @@ import type { TerminalCommandHintEntry, TerminalToolId } from './terminal-contra
 /** §8 — максимум строк в компактном IntelliSense под полем argv (терминал). */
 export const DEFAULT_TERMINAL_INLINE_SUGGEST_MAX = 14
 
+/** §8 — шаг PgUp/PgDn в списке подсказок (не больше длины списка). */
+export const DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP = 5
+
 /**
  * Навигация по индексу подсказки: при смене фильтра `prevIndex` может быть больше длины списка —
- * сначала приводим к последнему допустимому, затем шаг/Home/End.
+ * сначала приводим к последнему допустимому, затем шаг/Home/End/PageUp/PageDown.
  */
 export function stepTerminalSuggestIndex(
   prevIndex: number,
   listLength: number,
-  step: 'up' | 'down' | 'home' | 'end'
+  step: 'up' | 'down' | 'home' | 'end' | 'pageUp' | 'pageDown',
+  pageSize: number = DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP
 ): number {
   if (listLength <= 0) {
     return 0
@@ -22,6 +26,13 @@ export function stepTerminalSuggestIndex(
   }
   if (step === 'end') {
     return last
+  }
+  const jump = Math.max(1, Math.min(pageSize, listLength))
+  if (step === 'pageDown') {
+    return Math.min(last, cur + jump)
+  }
+  if (step === 'pageUp') {
+    return Math.max(0, cur - jump)
   }
   if (step === 'down') {
     return Math.min(last, cur + 1)
