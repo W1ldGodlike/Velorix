@@ -2385,6 +2385,17 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --geo-bypass-country PG -F ')
   })
 
+  it('downloads: print-to-file extractor_key/uploader_url/thumbnail', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file extractor_key flux-ytdlp-extractor-key.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file uploader_url flux-ytdlp-uploader-url.txt --skip-download '
+    )
+    expect(lines).toContain('yt-dlp --print-to-file thumbnail flux-ytdlp-thumb-url.txt --skip-download ')
+  })
+
   it('preview: ffprobe format cat+barcode + ffmpeg aresample async 4s', () => {
     const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
     expect(

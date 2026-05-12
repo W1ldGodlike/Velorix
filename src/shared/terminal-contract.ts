@@ -4823,6 +4823,24 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
+    token: '· -to file extractor_key',
+    summary: 'Записать extractor_key (ключ экстрактора yt-dlp) в flux-ytdlp-extractor-key.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file extractor_key flux-ytdlp-extractor-key.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -to file uploader_url',
+    summary: 'Записать uploader_url (канонический URL канала/автора, если есть) в flux-ytdlp-uploader-url.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file uploader_url flux-ytdlp-uploader-url.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -to file thumbnail',
+    summary: 'Записать thumbnail (основной URL обложки) в flux-ytdlp-thumb-url.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file thumbnail flux-ytdlp-thumb-url.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
     token: '· --update-to stable',
     summary: 'Обновить yt-dlp до канала stable (--update-to stable); URL не нужен.',
     fullLine: 'yt-dlp --update-to stable'
