@@ -467,7 +467,7 @@
 - [~] Логи renderer: `window.fluxalloy.log.send` через IPC `fluxalloy:log-renderer` + перехват `error`/`unhandledrejection` в `main.tsx`; канал закреплён за main window, ограничен token bucket и чистит control chars.
 - [x] Логи внешних процессов stdout/stderr: yt-dlp, ffmpeg export/snapshot, ffprobe через общий sanitizer без полного argv.
 - [~] Ротация по размеру: один backup `main.log.1` при превышении 1 MiB.
-- [~] Prune старых диагностических файлов: на старте чистятся crash dumps старше 30 дней, последние 20 сохраняются; архивы `logs/sessions/session-*.log` — не старше ~90 суток и не более ~25 файлов.
+- [~] Prune старых диагностических файлов: на старте чистятся crash dumps старше 30 дней, последние 20 сохраняются; архивы `logs/sessions/session-*.log` — не старше ~90 суток и не более ~25 файлов; `diagnostics.txt` в Support ZIP теперь включает сводку размеров ключевых каталогов (`logs`, crash dumps, `preview-cache`, `downloads/ytdlp`).
 - [~] Crash handler: `process.on('uncaughtException'|'unhandledRejection')` регистрируется на старте main до `app.whenReady`; после ready показывает диалог ошибки с деталями.
 - [x] Диалог ошибки: кратко + детали.
 - [x] Копировать детали.

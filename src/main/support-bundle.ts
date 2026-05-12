@@ -52,6 +52,12 @@ interface ZipEntryInput {
   mtime?: Date
 }
 
+interface DirectoryUsageStats {
+  files: number
+  directories: number
+  bytes: number
+}
+
 const MAX_BUNDLE_FILE_BYTES = 512 * 1024
 const MAX_CRASH_DUMP_FILES = 8
 
@@ -206,6 +212,61 @@ function pushCrashDumps(entries: ZipEntryInput[], crashDir: string | null): void
   }
 }
 
+function collectDirectoryUsage(path: string | null): DirectoryUsageStats | null {
+  if (!path || !existsSync(path)) {
+    return null
+  }
+  try {
+    const root = statSync(path)
+    if (!root.isDirectory()) {
+      return null
+    }
+    const acc: DirectoryUsageStats = { files: 0, directories: 0, bytes: 0 }
+    const stack = [path]
+    while (stack.length > 0) {
+      const dir = stack.pop()
+      if (!dir) {
+        continue
+      }
+      let entries: string[] = []
+      try {
+        entries = readdirSync(dir)
+      } catch {
+        continue
+      }
+      for (const entry of entries) {
+        const child = join(dir, entry)
+        let st: Stats
+        try {
+          st = statSync(child)
+        } catch {
+          continue
+        }
+        if (st.isDirectory()) {
+          acc.directories += 1
+          stack.push(child)
+          continue
+        }
+        if (!st.isFile()) {
+          continue
+        }
+        acc.files += 1
+        acc.bytes += st.size
+      }
+    }
+    return acc
+  } catch {
+    return null
+  }
+}
+
+function formatDirectoryUsageLine(label: string, usage: DirectoryUsageStats | null): string {
+  if (!usage) {
+    return `${label}: -`
+  }
+  return `${label}: ${usage.files} files, ${usage.directories} dirs, ${usage.bytes} bytes`
+}
+
 export function pruneOldDiagnosticFiles(options: DiagnosticsPruneOptions): number {
   const dir = options.directory
   if (!dir || !existsSync(dir)) {
@@ -242,6 +303,10 @@ export function pruneOldDiagnosticFiles(options: DiagnosticsPruneOptions): numbe
 }
 
 function diagnosticsText(info: SupportBundleRuntimeInfo): string {
+  const logsUsage = collectDirectoryUsage(info.logFile ? dirname(info.logFile) : null)
+  const crashUsage = collectDirectoryUsage(info.crashDumps)
+  const previewCacheUsage = collectDirectoryUsage(join(info.userData, 'preview-cache'))
+  const ytdlpDownloadsUsage = collectDirectoryUsage(join(info.userData, 'downloads', 'ytdlp'))
   return [
     `FluxAlloy ${info.appVersion}`,
     `Electron ${info.electronVersion}`,
@@ -262,7 +327,13 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
     `logBackupFile: ${info.logBackupFile ?? '-'}`,
     `sessionLogFile: ${info.sessionLogFile ?? '-'}`,
     `terminalCliLogFile: ${info.terminalCliLogFile ?? '-'}`,
-    `crashDumps: ${info.crashDumps ?? '-'}`
+    `crashDumps: ${info.crashDumps ?? '-'}`,
+    '',
+    'directoryUsage:',
+    `  ${formatDirectoryUsageLine('logs', logsUsage)}`,
+    `  ${formatDirectoryUsageLine('crashDumps', crashUsage)}`,
+    `  ${formatDirectoryUsageLine('preview-cache', previewCacheUsage)}`,
+    `  ${formatDirectoryUsageLine('downloads/ytdlp', ytdlpDownloadsUsage)}`
   ].join('\n')
 }
 
