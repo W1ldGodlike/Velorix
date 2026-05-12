@@ -68,6 +68,10 @@ import type {
   TerminalRunRequest,
   TerminalRunResult
 } from '../shared/terminal-contract'
+import type {
+  KnowledgeArticleListResult,
+  KnowledgeArticleResult
+} from '../shared/knowledge-contract'
 import { downloadsIpc as d, mainWindowIpc as mw } from '../shared/ipc-channels'
 
 type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
@@ -398,6 +402,12 @@ const fluxalloy = {
     getHints: (): Promise<TerminalCommandHintEntry[]> => ipcRenderer.invoke(mw.terminalHints),
     run: (payload: TerminalRunRequest): Promise<TerminalRunResult> =>
       ipcRenderer.invoke(mw.terminalRun, payload)
+  },
+  knowledge: {
+    listArticles: (): Promise<KnowledgeArticleListResult> =>
+      ipcRenderer.invoke(mw.knowledgeListArticles),
+    readArticle: (slug: string): Promise<KnowledgeArticleResult> =>
+      ipcRenderer.invoke(mw.knowledgeReadArticle, slug)
   },
   /** §9 — диалог «Сохранить как» в main (JSON ffprobe и др. текст без Node в renderer). */
   saveTextWithDialog: (payload: SaveTextDialogPayload): Promise<SaveTextDialogResult> =>

@@ -67,6 +67,10 @@ import type {
   TerminalRunRequest,
   TerminalRunResult
 } from '../shared/terminal-contract'
+import type {
+  KnowledgeArticleListResult,
+  KnowledgeArticleResult
+} from '../shared/knowledge-contract'
 
 /** Данные для привязки `<video>` к локальному файлу через allowlist-схему `fluxmedia://`. */
 export type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
@@ -211,6 +215,10 @@ export interface FluxAlloyApi {
   terminal: {
     getHints: () => Promise<TerminalCommandHintEntry[]>
     run: (payload: TerminalRunRequest) => Promise<TerminalRunResult>
+  }
+  knowledge: {
+    listArticles: () => Promise<KnowledgeArticleListResult>
+    readArticle: (slug: string) => Promise<KnowledgeArticleResult>
   }
   saveTextWithDialog: (payload: SaveTextDialogPayload) => Promise<SaveTextDialogResult>
   about: {

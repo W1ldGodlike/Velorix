@@ -18,6 +18,11 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
 import { resolveAppPaths } from './app-paths'
+import {
+  buildKnowledgeHelpDirCandidates,
+  listKnowledgeArticles,
+  readKnowledgeArticle
+} from './knowledge-service'
 import { resolveFfmpegExportLutCubeAbsPath } from './ffmpeg-export-lut-path'
 import { installExternalNavigationGuard, openAllowedExternalUrl } from './external-url'
 import { downloadEnginesWindows, isAnyEngineMissing } from './engine-download'
@@ -2629,6 +2634,22 @@ app.whenReady().then(() => {
   )
 
   ipcMain.handle(mw.appAboutInfo, () => getAppAboutInfo())
+
+  const knowledgeHelpDirCandidates = (): string[] =>
+    buildKnowledgeHelpDirCandidates({
+      cwd: process.cwd(),
+      appPath: app.getAppPath(),
+      resourcesPath: process.resourcesPath,
+      isPackaged: app.isPackaged
+    })
+
+  ipcMain.handle(mw.knowledgeListArticles, () => {
+    return listKnowledgeArticles(knowledgeHelpDirCandidates())
+  })
+
+  ipcMain.handle(mw.knowledgeReadArticle, (_event, raw: unknown) => {
+    return readKnowledgeArticle(knowledgeHelpDirCandidates(), raw)
+  })
 
   ipcMain.handle(mw.diagnosticsListFolders, (): DiagnosticsFolderEntry[] => {
     return listDiagnosticsFolders()

@@ -2430,6 +2430,17 @@ button.app-downloads-hint-token:disabled {
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.35);
 }
 
+.app-modal-wide {
+  width: min(980px, 100%);
+}
+
+.app-modal-header-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
 .app-modal-title {
   margin: 0 0 0.35rem;
   font-size: 1.05rem;
@@ -2447,6 +2458,115 @@ button.app-downloads-hint-token:disabled {
   margin-top: 0.65rem;
   margin-bottom: 0;
   color: var(--fa-danger);
+}
+
+.app-input {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 34px;
+  padding: 0 0.55rem;
+  border-radius: 8px;
+  border: 1px solid var(--fa-border);
+  background: var(--fa-surface);
+  color: var(--fa-text-primary);
+  font-size: 0.8rem;
+}
+
+.app-error-text {
+  color: var(--fa-danger);
+}
+
+.app-knowledge-dialog {
+  overflow: hidden;
+}
+
+.app-knowledge-grid {
+  display: grid;
+  grid-template-columns: minmax(190px, 260px) minmax(0, 1fr);
+  gap: 0.85rem;
+  min-height: min(58vh, 520px);
+}
+
+.app-knowledge-sidebar,
+.app-knowledge-article {
+  min-height: 0;
+  border: 1px solid var(--fa-border-subtle);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--fa-surface) 86%, transparent);
+}
+
+.app-knowledge-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.65rem;
+}
+
+.app-knowledge-search {
+  flex-shrink: 0;
+}
+
+.app-knowledge-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  overflow: auto;
+}
+
+.app-knowledge-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  width: 100%;
+  padding: 0.5rem 0.55rem;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--fa-text-primary);
+  text-align: left;
+  cursor: pointer;
+}
+
+.app-knowledge-item:hover,
+.app-knowledge-item-active {
+  border-color: color-mix(in srgb, var(--fa-accent) 55%, var(--fa-border));
+  background: color-mix(in srgb, var(--fa-accent) 12%, transparent);
+}
+
+.app-knowledge-item span {
+  color: var(--fa-text-muted);
+  font-size: 0.72rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.app-knowledge-article {
+  overflow: auto;
+  padding: 0.8rem 0.9rem;
+}
+
+.app-knowledge-article h3 {
+  margin: 0 0 0.65rem;
+  font-size: 1rem;
+}
+
+.app-knowledge-markdown {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--fa-text-secondary);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+@media (max-width: 760px) {
+  .app-knowledge-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .app-knowledge-sidebar {
+    max-height: 180px;
+  }
 }
 
 .app-engine-path-rows {

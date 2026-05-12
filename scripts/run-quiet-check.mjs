@@ -10,6 +10,7 @@ const steps = [
   ['test', ['run', 'test']],
   ['trusted-hashes', ['run', 'check:trusted-hashes']],
   ['journal', ['run', 'check:journal']],
+  ['checklist', ['run', 'check:checklist']],
   ['secrets', ['run', 'check:secrets']]
 ]
 

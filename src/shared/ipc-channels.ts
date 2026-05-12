@@ -55,6 +55,8 @@ export const mainWindowIpc = {
   mediaProbe: 'fluxalloy:media-probe',
   terminalHints: 'fluxalloy:terminal-hints',
   terminalRun: 'fluxalloy:terminal-run',
+  knowledgeListArticles: 'fluxalloy:knowledge-list-articles',
+  knowledgeReadArticle: 'fluxalloy:knowledge-read-article',
   clipboardReadText: 'fluxalloy:clipboard-read-text',
   clipboardWriteText: 'fluxalloy:clipboard-write-text',
   saveTextWithDialog: 'fluxalloy:save-text-with-dialog',

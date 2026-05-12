@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { JSX, SyntheticEvent } from 'react'
 
 import { AboutDialog } from './components/AboutDialog'
+import { KnowledgeDialog } from './components/KnowledgeDialog'
 import { DownloadsHistoryPanel } from './components/downloads/DownloadsHistoryPanel'
 import {
   DownloadsLogPanel,
@@ -664,6 +665,7 @@ function App(): JSX.Element {
   const [enginesOfferDownload, setEnginesOfferDownload] = useState(false)
   const [engineDownloadBusy, setEngineDownloadBusy] = useState(false)
   const [enginePathsOpen, setEnginePathsOpen] = useState(false)
+  const [knowledgeOpen, setKnowledgeOpen] = useState(false)
   const [aboutOpen, setAboutOpen] = useState(false)
   const [aboutInfo, setAboutInfo] = useState<Awaited<
     ReturnType<typeof window.fluxalloy.about.getInfo>
@@ -2294,6 +2296,17 @@ function App(): JSX.Element {
             >
               <IconSettings />
               <span className="app-visually-hidden">Пути к движкам</span>
+            </button>
+            <button
+              type="button"
+              className="app-icon-btn"
+              onClick={() => {
+                setKnowledgeOpen(true)
+              }}
+              title="Открыть базу знаний"
+            >
+              <IconCircleHelp />
+              <span className="app-visually-hidden">База знаний</span>
             </button>
             <button
               type="button"
@@ -5053,6 +5066,16 @@ function App(): JSX.Element {
           setAboutOpen(false)
         }}
         onDiagnosticStatus={(message) => {
+          setStatusHint(message)
+        }}
+      />
+
+      <KnowledgeDialog
+        open={knowledgeOpen}
+        onClose={() => {
+          setKnowledgeOpen(false)
+        }}
+        onStatus={(message) => {
           setStatusHint(message)
         }}
       />
