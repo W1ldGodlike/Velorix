@@ -880,4 +880,41 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: print-to-file / file-urls / source-address / annotations / storyboards / sponsorblock chapter / concat-playlist / fixup / use-extractors / default-search', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --print-to-file title flux-ytdlp-title.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --enable-file-urls -F ')
+    expect(lines).toContain('yt-dlp --source-address 198.51.100.2 -F ')
+    expect(lines).toContain('yt-dlp --skip-download --print annotations ')
+    expect(lines).toContain('yt-dlp --skip-download --print storyboards ')
+    expect(lines).toContain('yt-dlp --sponsorblock-mark all --sponsorblock-chapter-title %(category)s ')
+    expect(lines).toContain('yt-dlp --concat-playlist never -F ')
+    expect(lines).toContain('yt-dlp --fixup warn -F ')
+    expect(lines).toContain('yt-dlp --use-extractors youtube -F ')
+    expect(lines).toContain('yt-dlp --default-search auto: -F ')
+  })
+
+  it('preview: cropdetect / freezedetect / signalstats', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-vf cropdetect=limit=24:round=16:reset=0') &&
+          l.includes('-t 30') &&
+          l.includes('-an -sn')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-vf freezedetect=n=-60dB:d=2') &&
+          l.includes('-t 45') &&
+          l.includes('-an -sn')
+      )
+    ).toBe(true)
+    expect(lines.some((l) => l.includes('-vf signalstats') && l.includes('-t 8') && l.includes('-an -sn'))).toBe(
+      true
+    )
+  })
 })

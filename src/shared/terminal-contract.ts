@@ -1904,6 +1904,66 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· no-embed-thumbnail',
     summary: 'Не встраивать обложку в контейнер (--no-embed-thumbnail); противоположность --embed-thumbnail; допишите URL.',
     fullLine: 'yt-dlp --no-embed-thumbnail '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file title',
+    summary: 'Записать поле title в рядом лежащий текстовый файл без скачивания (--print-to-file title flux-ytdlp-title.txt --skip-download); допишите URL.',
+    fullLine: 'yt-dlp --print-to-file title flux-ytdlp-title.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· enable-file-urls -F',
+    summary: 'Разрешить file:// URL в аргументах (--enable-file-urls -F); только для доверенных путей; допишите URL.',
+    fullLine: 'yt-dlp --enable-file-urls -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· source-address -F',
+    summary: 'Исходящий IP через bind (--source-address 198.51.100.2 -F, TEST-NET-2); допишите URL.',
+    fullLine: 'yt-dlp --source-address 198.51.100.2 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print annotations',
+    summary: 'Сырые аннотации метаданных без скачивания (--skip-download --print annotations); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print annotations '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print storyboards',
+    summary: 'Доски storyboard (если отдаёт площадка) без скачивания (--skip-download --print storyboards); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print storyboards '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· sponsorblock chapter title',
+    summary: 'SponsorBlock: главы + шаблон заголовка сегмента (--sponsorblock-mark all --sponsorblock-chapter-title %(category)s); допишите URL.',
+    fullLine: 'yt-dlp --sponsorblock-mark all --sponsorblock-chapter-title %(category)s '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· concat-playlist never -F',
+    summary: 'Политика склейки плейлиста в один поток (--concat-playlist never -F); допишите URL.',
+    fullLine: 'yt-dlp --concat-playlist never -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· fixup warn -F',
+    summary: 'Политика пост-ремонта контейнера (--fixup warn -F); допишите URL.',
+    fullLine: 'yt-dlp --fixup warn -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· use-extractors youtube -F',
+    summary: 'Ограничить набор экстракторов (--use-extractors youtube -F); допишите URL.',
+    fullLine: 'yt-dlp --use-extractors youtube -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· default-search auto -F',
+    summary: 'Поиск по умолчанию, если ввод не похож на URL (--default-search auto: -F); допишите запрос.',
+    fullLine: 'yt-dlp --default-search auto: -F '
   }
 ]
 
@@ -2634,6 +2694,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· blackdetect 30s',
     summary: 'Поиск чёрных интервалов в первых 30 с (-vf blackdetect=d=0.1:pix_th=0.01); black_start/end в stderr; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf blackdetect=d=0.1:pix_th=0.01 -t 30 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· cropdetect 30s',
+    summary: 'Оценка обрезки чёрных полей первых 30 с (-vf cropdetect=limit=24:round=16:reset=0); crop-параметры в stderr; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf cropdetect=limit=24:round=16:reset=0 -t 30 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· freezedetect 45s',
+    summary: 'Поиск залипших кадров первых 45 с (-vf freezedetect=n=-60dB:d=2); freeze_start/end в stderr; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf freezedetect=n=-60dB:d=2 -t 45 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· signalstats 8s',
+    summary: 'Статистика уровней/шума первых 8 с (-vf signalstats); YUV-средние/отклонения в stderr; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf signalstats -t 8 -an -sn -f null -`
   }
 ]
 
