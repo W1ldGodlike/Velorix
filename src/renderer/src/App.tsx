@@ -108,7 +108,7 @@ import type {
   ProcessingHistoryFilter,
   ProcessingHistoryWeeklySummary
 } from '../../shared/processing-history-contract'
-import type { DownloadsLogPayload } from '../../shared/downloads-log-contract'
+import { DOWNLOADS_VISIBLE_LOG_SAVE_CANCELLED, type DownloadsLogPayload } from '../../shared/downloads-log-contract'
 import {
   TERMINAL_CURRENT_FILE_PLACEHOLDER,
   TERMINAL_SCENARIO_HINTS_DOWNLOADS,
@@ -260,150 +260,17 @@ function PillSwitch({
       onClick={onToggle}
     >
       <span className="app-pill-switch-knob" aria-hidden />
-      <span className="app-pill-switch-text">{checked ? 'Вкл' : 'Выкл'}</span>
+      <span className="app-pill-switch-text">
+        {checked ? uiText('editorPillSwitchOn') : uiText('editorPillSwitchOff')}
+      </span>
     </button>
   )
 }
-
-const EXPORT_ENCODE_PRESETS: Array<{ id: FfmpegExportEncodePresetId; label: string }> = [
-  { id: 'balance', label: 'Баланс' },
-  { id: 'smaller', label: 'Меньше размер' },
-  { id: 'quality', label: 'Качество' }
-]
-
-const EXPORT_VIDEO_CODECS: Array<{ id: FfmpegExportVideoCodecId; label: string }> = [
-  { id: 'libx264', label: 'H.264 (libx264)' },
-  { id: 'libx265', label: 'H.265 (libx265)' }
-]
-
-const EXPORT_CONTAINERS: Array<{ id: FfmpegExportContainerId; label: string }> = [
-  { id: 'mp4', label: 'MP4' },
-  { id: 'mkv', label: 'MKV' },
-  { id: 'mov', label: 'MOV' }
-]
 
 const EXPORT_CRF_OPTIONS = [18, 20, 23, 26, 28, 30]
 const EXPORT_VIDEO_BITRATES = ['1000k', '2500k', '5000k', '8000k', '12000k', '20000k']
 const EXPORT_AUDIO_BITRATES = ['96k', '128k', '160k', '192k', '256k', '320k']
 const EXPORT_FPS_OPTIONS = [24, 25, 30, 50, 60]
-const EXPORT_SCALE_PRESETS: Array<{ id: FfmpegExportScalePresetId; label: string }> = [
-  { id: 'source', label: 'Размер исходный' },
-  { id: '480p', label: '480p' },
-  { id: '720p', label: '720p' },
-  { id: '1080p', label: '1080p' }
-]
-const EXPORT_VIDEO_TRANSFORMS: Array<{ id: FfmpegExportVideoTransformId; label: string }> = [
-  { id: 'none', label: 'Поворот: нет' },
-  { id: 'cw90', label: '↻ 90°' },
-  { id: 'ccw90', label: '↺ 90°' },
-  { id: 'r180', label: '180°' },
-  { id: 'hflip', label: 'Зеркало H' },
-  { id: 'vflip', label: 'Зеркало V' }
-]
-const EXPORT_CROP_PRESETS: Array<{ id: FfmpegExportCropPresetId; label: string }> = [
-  { id: 'none', label: 'Обрезка: нет' },
-  { id: 'center-square', label: 'Обрезка 1:1' },
-  { id: 'center-16-9', label: 'Обрезка 16:9' },
-  { id: 'center-4-3', label: 'Обрезка 4:3' }
-]
-/**
- * §7.2 — пресеты сдвига громкости звука для `-filter:a volume=NdB`. Значение `0`
- * выключает фильтр (см. `normalizeFfmpegExportAudioGainDb`); остальные ступени
- * выбраны с шагом в 3 дБ, чтобы UI не отдавал произвольную строку в spawn.
- */
-const EXPORT_AUDIO_GAIN_OPTIONS: Array<{ value: number; label: string }> = [
-  { value: -12, label: '−12 дБ' },
-  { value: -9, label: '−9 дБ' },
-  { value: -6, label: '−6 дБ' },
-  { value: -3, label: '−3 дБ' },
-  { value: 0, label: '0 дБ (выкл.)' },
-  { value: 3, label: '+3 дБ' },
-  { value: 6, label: '+6 дБ' },
-  { value: 9, label: '+9 дБ' },
-  { value: 12, label: '+12 дБ' }
-]
-const EXPORT_SUBTITLE_MODES: Array<{ id: FfmpegExportSubtitleModeId; label: string }> = [
-  { id: 'drop', label: 'Не сохранять' },
-  { id: 'copy', label: 'Сохранить (copy/mov_text)' }
-]
-const EXPORT_VIDEO_DEINTERLACE_OPTIONS: Array<{
-  id: FfmpegExportVideoDeinterlaceId
-  label: string
-}> = [
-  { id: 'off', label: 'Деинтерлейс: выкл.' },
-  { id: 'frame', label: 'Кадр (yadif send_frame)' },
-  { id: 'field', label: 'Поле (yadif send_field, 2×)' }
-]
-const EXPORT_VIDEO_DENOISE_OPTIONS: Array<{ id: FfmpegExportVideoDenoiseId; label: string }> = [
-  { id: 'off', label: 'Шумоподавление: выкл.' },
-  { id: 'light', label: 'Лёгкое (hqdn3d=1.5)' },
-  { id: 'medium', label: 'Среднее (hqdn3d=3)' },
-  { id: 'strong', label: 'Сильное (hqdn3d=5)' }
-]
-const EXPORT_VIDEO_SHARPEN_OPTIONS: Array<{ id: FfmpegExportVideoSharpenId; label: string }> = [
-  { id: 'off', label: 'Резкость: выкл.' },
-  { id: 'light', label: 'Лёгкая (unsharp 0.6)' },
-  { id: 'medium', label: 'Средняя (unsharp 1.0)' },
-  { id: 'strong', label: 'Сильная (unsharp 1.5)' }
-]
-const EXPORT_VIDEO_DEBAND_OPTIONS: Array<{ id: FfmpegExportVideoDebandId; label: string }> = [
-  { id: 'off', label: 'Deband: выкл.' },
-  { id: 'light', label: 'Лёгкий (range=12)' },
-  { id: 'medium', label: 'Средний (range=20)' },
-  { id: 'strong', label: 'Сильный (range=28)' }
-]
-const EXPORT_VIDEO_HISTEQ_OPTIONS: Array<{ id: FfmpegExportVideoHisteqId; label: string }> = [
-  { id: 'off', label: 'Histeq: выкл.' },
-  { id: 'light', label: 'Лёгкая (strength 0.14)' },
-  { id: 'medium', label: 'Средняя (strength 0.26)' },
-  { id: 'strong', label: 'Сильная (strength 0.40)' }
-]
-const EXPORT_VIDEO_LUT3D_OPTIONS: Array<{ id: FfmpegExportVideoLut3dId; label: string }> = [
-  { id: 'off', label: '3D LUT: выкл.' },
-  { id: 'film-warm', label: 'Кино теплее (lut3d)' },
-  { id: 'film-cool', label: 'Кино холоднее (lut3d)' },
-  { id: 'punch', label: 'Контраст (lut3d)' }
-]
-const EXPORT_VIDEO_EQ_PRESETS: Array<{ id: FfmpegExportVideoEqPresetId; label: string }> = [
-  { id: 'off', label: 'Цвет: выкл.' },
-  { id: 'warm', label: 'Теплее' },
-  { id: 'cool', label: 'Холоднее' },
-  { id: 'vivid', label: 'Насыщенно' },
-  { id: 'flat', label: 'Мягко/flat' }
-]
-const EXPORT_VIDEO_HUE_OPTIONS: Array<{ id: FfmpegExportVideoHueId; label: string }> = [
-  { id: 'off', label: 'Оттенок: выкл.' },
-  { id: 'warmShift', label: 'Сдвиг теплее' },
-  { id: 'coolShift', label: 'Сдвиг холоднее' },
-  { id: 'satBoost', label: 'Насыщенность +' }
-]
-const EXPORT_VIDEO_GRAIN_OPTIONS: Array<{ id: FfmpegExportVideoGrainId; label: string }> = [
-  { id: 'off', label: 'Зерно: выкл.' },
-  { id: 'light', label: 'Лёгкое (noise 2)' },
-  { id: 'medium', label: 'Среднее (noise 5)' },
-  { id: 'strong', label: 'Сильное (noise 9)' }
-]
-const EXPORT_VIDEO_VIGNETTE_OPTIONS: Array<{ id: FfmpegExportVideoVignetteId; label: string }> = [
-  { id: 'off', label: 'Виньетка: выкл.' },
-  { id: 'light', label: 'Лёгкая (PI/3)' },
-  { id: 'medium', label: 'Средняя (PI/5)' },
-  { id: 'strong', label: 'Сильная (PI/10)' }
-]
-const EXPORT_VIDEO_BLUR_OPTIONS: Array<{ id: FfmpegExportVideoBlurId; label: string }> = [
-  { id: 'off', label: 'Размытие: выкл.' },
-  { id: 'light', label: 'Лёгкое (gblur σ=1)' },
-  { id: 'medium', label: 'Среднее (gblur σ=2.5)' },
-  { id: 'strong', label: 'Сильное (gblur σ=5)' }
-]
-const EXPORT_AUDIO_NORMALIZE_OPTIONS: Array<{ id: FfmpegExportAudioNormalizeId; label: string }> = [
-  { id: 'off', label: 'Нормализация: выкл.' },
-  { id: 'loudnorm', label: 'EBU R128 (loudnorm)' },
-  { id: 'dynaudnorm', label: 'Динамическая (dynaudnorm)' }
-]
-const SNAPSHOT_FORMATS: Array<{ id: FfmpegSnapshotFormatId; label: string }> = [
-  { id: 'png', label: 'Кадр PNG' },
-  { id: 'jpg', label: 'Кадр JPEG' }
-]
 
 function engineLabel(id: EngineId): string {
   switch (id) {
@@ -828,6 +695,135 @@ function App(): JSX.Element {
       { id: 'error', label: uiText('downloadsQueueFilterError') },
       { id: 'cancelled', label: uiText('downloadsQueueFilterCancelled') }
     ],
+    []
+  )
+  const ffmpegExportSelectOptions = useMemo(
+    () => ({
+      encodePresets: [
+        { id: 'balance', label: uiText('editorExportEncodeBalance') },
+        { id: 'smaller', label: uiText('editorExportEncodeSmaller') },
+        { id: 'quality', label: uiText('editorExportEncodeQuality') }
+      ] as Array<{ id: FfmpegExportEncodePresetId; label: string }>,
+      videoCodecs: [
+        { id: 'libx264', label: uiText('editorExportCodecH264') },
+        { id: 'libx265', label: uiText('editorExportCodecH265') }
+      ] as Array<{ id: FfmpegExportVideoCodecId; label: string }>,
+      containers: [
+        { id: 'mp4', label: uiText('editorExportContainerMp4') },
+        { id: 'mkv', label: uiText('editorExportContainerMkv') },
+        { id: 'mov', label: uiText('editorExportContainerMov') }
+      ] as Array<{ id: FfmpegExportContainerId; label: string }>,
+      scalePresets: [
+        { id: 'source', label: uiText('editorExportScaleSource') },
+        { id: '480p', label: uiText('editorExportScale480p') },
+        { id: '720p', label: uiText('editorExportScale720p') },
+        { id: '1080p', label: uiText('editorExportScale1080p') }
+      ] as Array<{ id: FfmpegExportScalePresetId; label: string }>,
+      videoTransforms: [
+        { id: 'none', label: uiText('editorExportTransformNone') },
+        { id: 'cw90', label: uiText('editorExportTransformCw90') },
+        { id: 'ccw90', label: uiText('editorExportTransformCcw90') },
+        { id: 'r180', label: uiText('editorExportTransformR180') },
+        { id: 'hflip', label: uiText('editorExportTransformHflip') },
+        { id: 'vflip', label: uiText('editorExportTransformVflip') }
+      ] as Array<{ id: FfmpegExportVideoTransformId; label: string }>,
+      cropPresets: [
+        { id: 'none', label: uiText('editorExportCropNone') },
+        { id: 'center-square', label: uiText('editorExportCropCenterSquare') },
+        { id: 'center-16-9', label: uiText('editorExportCropCenter169') },
+        { id: 'center-4-3', label: uiText('editorExportCropCenter43') }
+      ] as Array<{ id: FfmpegExportCropPresetId; label: string }>,
+      audioGainOptions: [
+        { value: -12, label: uiText('editorExportAudioGainM12') },
+        { value: -9, label: uiText('editorExportAudioGainM9') },
+        { value: -6, label: uiText('editorExportAudioGainM6') },
+        { value: -3, label: uiText('editorExportAudioGainM3') },
+        { value: 0, label: uiText('editorExportAudioGain0') },
+        { value: 3, label: uiText('editorExportAudioGainP3') },
+        { value: 6, label: uiText('editorExportAudioGainP6') },
+        { value: 9, label: uiText('editorExportAudioGainP9') },
+        { value: 12, label: uiText('editorExportAudioGainP12') }
+      ],
+      subtitleModes: [
+        { id: 'drop', label: uiText('editorExportSubtitleDrop') },
+        { id: 'copy', label: uiText('editorExportSubtitleCopy') }
+      ] as Array<{ id: FfmpegExportSubtitleModeId; label: string }>,
+      videoDeinterlace: [
+        { id: 'off', label: uiText('editorExportDeinterlaceOff') },
+        { id: 'frame', label: uiText('editorExportDeinterlaceFrame') },
+        { id: 'field', label: uiText('editorExportDeinterlaceField') }
+      ] as Array<{ id: FfmpegExportVideoDeinterlaceId; label: string }>,
+      videoDenoise: [
+        { id: 'off', label: uiText('editorExportDenoiseOff') },
+        { id: 'light', label: uiText('editorExportDenoiseLight') },
+        { id: 'medium', label: uiText('editorExportDenoiseMedium') },
+        { id: 'strong', label: uiText('editorExportDenoiseStrong') }
+      ] as Array<{ id: FfmpegExportVideoDenoiseId; label: string }>,
+      videoSharpen: [
+        { id: 'off', label: uiText('editorExportSharpenOff') },
+        { id: 'light', label: uiText('editorExportSharpenLight') },
+        { id: 'medium', label: uiText('editorExportSharpenMedium') },
+        { id: 'strong', label: uiText('editorExportSharpenStrong') }
+      ] as Array<{ id: FfmpegExportVideoSharpenId; label: string }>,
+      videoDeband: [
+        { id: 'off', label: uiText('editorExportDebandOff') },
+        { id: 'light', label: uiText('editorExportDebandLight') },
+        { id: 'medium', label: uiText('editorExportDebandMedium') },
+        { id: 'strong', label: uiText('editorExportDebandStrong') }
+      ] as Array<{ id: FfmpegExportVideoDebandId; label: string }>,
+      videoHisteq: [
+        { id: 'off', label: uiText('editorExportHisteqOff') },
+        { id: 'light', label: uiText('editorExportHisteqLight') },
+        { id: 'medium', label: uiText('editorExportHisteqMedium') },
+        { id: 'strong', label: uiText('editorExportHisteqStrong') }
+      ] as Array<{ id: FfmpegExportVideoHisteqId; label: string }>,
+      videoLut3d: [
+        { id: 'off', label: uiText('editorExportLut3dOff') },
+        { id: 'film-warm', label: uiText('editorExportLut3dFilmWarm') },
+        { id: 'film-cool', label: uiText('editorExportLut3dFilmCool') },
+        { id: 'punch', label: uiText('editorExportLut3dPunch') }
+      ] as Array<{ id: FfmpegExportVideoLut3dId; label: string }>,
+      videoEq: [
+        { id: 'off', label: uiText('editorExportEqOff') },
+        { id: 'warm', label: uiText('editorExportEqWarm') },
+        { id: 'cool', label: uiText('editorExportEqCool') },
+        { id: 'vivid', label: uiText('editorExportEqVivid') },
+        { id: 'flat', label: uiText('editorExportEqFlat') }
+      ] as Array<{ id: FfmpegExportVideoEqPresetId; label: string }>,
+      videoHue: [
+        { id: 'off', label: uiText('editorExportHueOff') },
+        { id: 'warmShift', label: uiText('editorExportHueWarmShift') },
+        { id: 'coolShift', label: uiText('editorExportHueCoolShift') },
+        { id: 'satBoost', label: uiText('editorExportHueSatBoost') }
+      ] as Array<{ id: FfmpegExportVideoHueId; label: string }>,
+      videoGrain: [
+        { id: 'off', label: uiText('editorExportGrainOff') },
+        { id: 'light', label: uiText('editorExportGrainLight') },
+        { id: 'medium', label: uiText('editorExportGrainMedium') },
+        { id: 'strong', label: uiText('editorExportGrainStrong') }
+      ] as Array<{ id: FfmpegExportVideoGrainId; label: string }>,
+      videoVignette: [
+        { id: 'off', label: uiText('editorExportVignetteOff') },
+        { id: 'light', label: uiText('editorExportVignetteLight') },
+        { id: 'medium', label: uiText('editorExportVignetteMedium') },
+        { id: 'strong', label: uiText('editorExportVignetteStrong') }
+      ] as Array<{ id: FfmpegExportVideoVignetteId; label: string }>,
+      videoBlur: [
+        { id: 'off', label: uiText('editorExportBlurOff') },
+        { id: 'light', label: uiText('editorExportBlurLight') },
+        { id: 'medium', label: uiText('editorExportBlurMedium') },
+        { id: 'strong', label: uiText('editorExportBlurStrong') }
+      ] as Array<{ id: FfmpegExportVideoBlurId; label: string }>,
+      audioNormalize: [
+        { id: 'off', label: uiText('editorExportAudioNormOff') },
+        { id: 'loudnorm', label: uiText('editorExportAudioNormLoudnorm') },
+        { id: 'dynaudnorm', label: uiText('editorExportAudioNormDynaudnorm') }
+      ] as Array<{ id: FfmpegExportAudioNormalizeId; label: string }>,
+      snapshotFormats: [
+        { id: 'png', label: uiText('editorExportSnapshotPng') },
+        { id: 'jpg', label: uiText('editorExportSnapshotJpg') }
+      ] as Array<{ id: FfmpegSnapshotFormatId; label: string }>
+    }),
     []
   )
   const refreshDownloadsOptions = useCallback(async (): Promise<void> => {
@@ -1596,10 +1592,10 @@ function App(): JSX.Element {
 
   const handleSaveExportUserPreset = useCallback(() => {
     if (exportUserPresets.length >= 8) {
-      setStatusHint('Не более 8 пользовательских пресетов.')
+      setStatusHint(uiText('editorExportUserPresetsMaxStatus'))
       return
     }
-    setExportPresetNameDialog({ mode: 'create', value: 'Мой пресет', error: null })
+    setExportPresetNameDialog({ mode: 'create', value: uiText('editorExportPresetDefaultName'), error: null })
   }, [exportUserPresets.length])
 
   const handleDeleteExportUserPreset = useCallback(() => {
@@ -1634,7 +1630,7 @@ function App(): JSX.Element {
     const label = exportPresetNameDialog.value.trim()
     if (label.length === 0) {
       setExportPresetNameDialog((prev) =>
-        prev === null ? null : { ...prev, error: 'Введите имя пресета.' }
+        prev === null ? null : { ...prev, error: uiText('editorExportPresetErrorEmpty') }
       )
       return
     }
@@ -1642,7 +1638,7 @@ function App(): JSX.Element {
     if (exportPresetNameDialog.mode === 'create') {
       if (exportUserPresets.length >= 8) {
         setExportPresetNameDialog((prev) =>
-          prev === null ? null : { ...prev, error: 'Не более 8 пользовательских пресетов.' }
+          prev === null ? null : { ...prev, error: uiText('editorExportPresetErrorMax') }
         )
         return
       }
@@ -2722,7 +2718,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      {EXPORT_VIDEO_CODECS.map((p) => (
+                      {ffmpegExportSelectOptions.videoCodecs.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.label}
                         </option>
@@ -2745,7 +2741,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      {EXPORT_ENCODE_PRESETS.map((p) => (
+                      {ffmpegExportSelectOptions.encodePresets.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.label}
                         </option>
@@ -2768,7 +2764,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      {EXPORT_CONTAINERS.map((p) => (
+                      {ffmpegExportSelectOptions.containers.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.label}
                         </option>
@@ -2846,7 +2842,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      {EXPORT_VIDEO_DEINTERLACE_OPTIONS.map((p) => (
+                      {ffmpegExportSelectOptions.videoDeinterlace.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.label}
                         </option>
@@ -2873,7 +2869,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      {EXPORT_VIDEO_DENOISE_OPTIONS.map((p) => (
+                      {ffmpegExportSelectOptions.videoDenoise.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.label}
                         </option>
@@ -2900,7 +2896,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      {EXPORT_VIDEO_DEBAND_OPTIONS.map((p) => (
+                      {ffmpegExportSelectOptions.videoDeband.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.label}
                         </option>
@@ -2927,7 +2923,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      {EXPORT_VIDEO_HISTEQ_OPTIONS.map((p) => (
+                      {ffmpegExportSelectOptions.videoHisteq.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.label}
                         </option>
@@ -2954,7 +2950,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      {EXPORT_VIDEO_LUT3D_OPTIONS.map((p) => (
+                      {ffmpegExportSelectOptions.videoLut3d.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.label}
                         </option>
@@ -2981,7 +2977,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      {EXPORT_VIDEO_SHARPEN_OPTIONS.map((p) => (
+                      {ffmpegExportSelectOptions.videoSharpen.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.label}
                         </option>
@@ -3008,7 +3004,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      {EXPORT_VIDEO_EQ_PRESETS.map((p) => (
+                      {ffmpegExportSelectOptions.videoEq.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.label}
                         </option>
@@ -3035,7 +3031,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      {EXPORT_VIDEO_HUE_OPTIONS.map((p) => (
+                      {ffmpegExportSelectOptions.videoHue.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.label}
                         </option>
@@ -3062,7 +3058,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      {EXPORT_VIDEO_GRAIN_OPTIONS.map((p) => (
+                      {ffmpegExportSelectOptions.videoGrain.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.label}
                         </option>
@@ -3089,7 +3085,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      {EXPORT_VIDEO_VIGNETTE_OPTIONS.map((p) => (
+                      {ffmpegExportSelectOptions.videoVignette.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.label}
                         </option>
@@ -3116,7 +3112,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      {EXPORT_VIDEO_BLUR_OPTIONS.map((p) => (
+                      {ffmpegExportSelectOptions.videoBlur.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.label}
                         </option>
@@ -3159,7 +3155,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      {EXPORT_SCALE_PRESETS.map((p) => (
+                      {ffmpegExportSelectOptions.scalePresets.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.label}
                         </option>
@@ -3233,7 +3229,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      {EXPORT_VIDEO_TRANSFORMS.map((p) => (
+                      {ffmpegExportSelectOptions.videoTransforms.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.label}
                         </option>
@@ -3256,7 +3252,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      {EXPORT_CROP_PRESETS.map((p) => (
+                      {ffmpegExportSelectOptions.cropPresets.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.label}
                         </option>
@@ -3340,7 +3336,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      {EXPORT_AUDIO_GAIN_OPTIONS.map((p) => (
+                      {ffmpegExportSelectOptions.audioGainOptions.map((p) => (
                         <option key={p.value} value={String(p.value)}>
                           {p.label}
                         </option>
@@ -3367,7 +3363,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      {EXPORT_AUDIO_NORMALIZE_OPTIONS.map((p) => (
+                      {ffmpegExportSelectOptions.audioNormalize.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.label}
                         </option>
@@ -3392,7 +3388,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      {SNAPSHOT_FORMATS.map((p) => (
+                      {ffmpegExportSelectOptions.snapshotFormats.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.label}
                         </option>
@@ -3457,7 +3453,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      {EXPORT_SUBTITLE_MODES.map((p) => (
+                      {ffmpegExportSelectOptions.subtitleModes.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.label}
                         </option>
@@ -4720,7 +4716,7 @@ function App(): JSX.Element {
                   onSave={() => {
                     const text = formatDownloadsLogText(downloadsLogLines)
                     void window.fluxalloy.downloads.saveVisibleLog(text).then((res) => {
-                      if (!res.ok && res.error !== 'Сохранение отменено') {
+                      if (!res.ok && res.error !== DOWNLOADS_VISIBLE_LOG_SAVE_CANCELLED) {
                         setStatusHint(res.error)
                       }
                     })
@@ -5458,14 +5454,15 @@ function App(): JSX.Element {
             }}
           >
             <h2 id="export-preset-name-title" className="app-modal-title">
-              {exportPresetNameDialog.mode === 'create' ? 'Новый пресет экспорта' : 'Имя пресета'}
+              {exportPresetNameDialog.mode === 'create'
+                ? uiText('editorExportPresetDialogTitleCreate')
+                : uiText('editorExportPresetDialogTitleRename')}
             </h2>
             <p id="export-preset-name-hint" className="app-modal-hint">
-              Имя хранится только в настройках FluxAlloy и помогает быстро возвращаться к набору
-              FFmpeg-параметров.
+              {uiText('editorExportPresetDialogHint')}
             </p>
             <label className="app-engine-path-row">
-              <span className="app-engine-path-label">Имя</span>
+              <span className="app-engine-path-label">{uiText('editorExportPresetNameLabel')}</span>
               <input
                 className="app-engine-path-input"
                 type="text"
@@ -5496,10 +5493,10 @@ function App(): JSX.Element {
                   setExportPresetNameDialog(null)
                 }}
               >
-                Отмена
+                {uiText('appDialogCancel')}
               </button>
               <button type="submit" className="app-btn app-btn-primary">
-                Сохранить
+                {uiText('appDialogSave')}
               </button>
             </div>
           </form>
@@ -5526,12 +5523,9 @@ function App(): JSX.Element {
             }}
           >
             <h2 id="engine-paths-title" className="app-modal-title">
-              Пути к движкам
+              {uiText('editorEnginePathsDialogTitle')}
             </h2>
-            <p className="app-modal-hint">
-              Полный путь к каждому исполняемому файлу имеет приоритет над встроенным каталогом и
-              загрузкой в userData/bin. Оставьте поле пустым и сохраните — сброс на авто-поиск.
-            </p>
+            <p className="app-modal-hint">{uiText('editorEnginePathsDialogHint')}</p>
             <div className="app-engine-path-rows">
               {ENGINE_IDS.map((id) => (
                 <div key={id} className="app-engine-path-row">
@@ -5543,7 +5537,7 @@ function App(): JSX.Element {
                     className="app-engine-path-input"
                     type="text"
                     spellCheck={false}
-                    placeholder="Авто"
+                    placeholder={uiText('editorEnginePathPlaceholderAuto')}
                     value={enginePathsDraft[id]}
                     onChange={(e) => {
                       setEnginePathsDraft((prev) => ({ ...prev, [id]: e.target.value }))
@@ -5557,7 +5551,7 @@ function App(): JSX.Element {
                         void handlePickEngine(id)
                       }}
                     >
-                      Выбрать…
+                      {uiText('editorEnginePathBrowse')}
                     </button>
                     <button
                       type="button"
@@ -5566,7 +5560,7 @@ function App(): JSX.Element {
                         setEnginePathsDraft((prev) => ({ ...prev, [id]: '' }))
                       }}
                     >
-                      Сбросить
+                      {uiText('editorEnginePathClear')}
                     </button>
                   </div>
                 </div>
@@ -5577,12 +5571,12 @@ function App(): JSX.Element {
                 type="button"
                 className="app-btn app-btn-danger"
                 disabled={engineDownloadBusy}
-                title="Удалить только скачанные копии из userData/bin. Встроенные resources/bin и ручные пути не трогаются."
+                title={uiText('editorEnginePathsRemoveDownloadedTooltip')}
                 onClick={() => {
                   void handleClearDownloadedEngines()
                 }}
               >
-                Удалить скачанные
+                {uiText('editorEnginePathsRemoveDownloaded')}
               </button>
               <button
                 type="button"
@@ -5591,7 +5585,7 @@ function App(): JSX.Element {
                   setEnginePathsOpen(false)
                 }}
               >
-                Отмена
+                {uiText('appDialogCancel')}
               </button>
               <button
                 type="button"
@@ -5600,7 +5594,7 @@ function App(): JSX.Element {
                   void handleSaveEnginePaths()
                 }}
               >
-                Сохранить
+                {uiText('appDialogSave')}
               </button>
             </div>
           </div>

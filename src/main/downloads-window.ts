@@ -28,6 +28,7 @@ import {
   setDownloadsLogSink,
   type DownloadsLogPayload
 } from './downloads-log-ipc'
+import { DOWNLOADS_VISIBLE_LOG_SAVE_CANCELLED } from '../shared/downloads-log-contract'
 import { resolvePreloadOutFile } from './preload-resolve'
 import {
   isYtdlpDownloadDirectoryDefault,
@@ -2231,7 +2232,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
             return;
           }
           api.saveVisibleLog(text).then(function (res) {
-            if (res && res.ok === false && res.error && res.error !== 'Сохранение отменено') {
+            if (res && res.ok === false && res.error && res.error !== ${JSON.stringify(DOWNLOADS_VISIBLE_LOG_SAVE_CANCELLED)}) {
               window.alert(res.error);
             }
           });
@@ -3289,7 +3290,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
         ]
       })
       if (pick.canceled || !pick.filePath) {
-        return { ok: false, error: 'Сохранение отменено' }
+        return { ok: false, error: DOWNLOADS_VISIBLE_LOG_SAVE_CANCELLED }
       }
       try {
         writeFileSync(pick.filePath, text, 'utf-8')
