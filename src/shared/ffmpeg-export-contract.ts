@@ -3,6 +3,8 @@
  * Используются в preload/renderer и в main-сервисе; парсеры и runner остаются в `ffmpeg-export-service`.
  */
 
+import type { DownloadsWindowUiLocale } from './downloads-window-ui-locale'
+
 /** Диапазон экспорта по маркерам §7.1 (секунды на шкале исходника). */
 export interface MediaExportTrimPayload {
   inSec: number
@@ -153,6 +155,8 @@ export interface FfmpegExportUserPreset {
 
 export interface MediaExportRequestPayload {
   inputPath: string
+  /** Локаль UI рендерера: статусы истории обработки и прогресс. */
+  uiLocale?: DownloadsWindowUiLocale
   trim?: MediaExportTrimPayload
   probeDurationSec?: number | null
   /** Если не задан — в main берётся из `settings.json`. */

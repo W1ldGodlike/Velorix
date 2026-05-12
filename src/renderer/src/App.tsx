@@ -18,6 +18,7 @@ import {
   formatTerminalIntroTail,
   formatTerminalPreviewTooltip,
   formatDownloadsQueueRowStatus,
+  getUiLocale,
   uiText,
   uiTextVars
 } from './locales/ui-text'
@@ -99,6 +100,7 @@ import type {
   YtdlpQueueRetryProfileId,
   YtdlpSubtitlePresetId
 } from '../../shared/ytdlp-download-contract'
+import type { DownloadsWindowUiLocale } from '../../shared/downloads-window-ui-locale'
 import { groupYtdlpCommandHintsByCategory } from '../../shared/ytdlp-command-hints-group'
 import type {
   YtdlpDownloadHistoryEntry,
@@ -850,13 +852,15 @@ function App(): JSX.Element {
     []
   )
   const refreshDownloadsOptions = useCallback(async (): Promise<void> => {
-    const res = await window.fluxalloy.downloads.getCliOptions()
+    const res = await window.fluxalloy.downloads.getCliOptions({
+      uiLocale: getUiLocale() as DownloadsWindowUiLocale
+    })
     if (res.ok) {
       setDownloadsOptions(res.payload)
       return
     }
     setStatusHint(res.error)
-  }, [])
+  }, [getUiLocale])
 
   const applyDownloadsOptionsPatch = useCallback(
     async (patch: YtdlpDownloadOptionsPatch): Promise<void> => {
@@ -875,15 +879,22 @@ function App(): JSX.Element {
     [refreshDownloadsOptions]
   )
 
+  const downloadsHintUiLocale = getUiLocale() as DownloadsWindowUiLocale
+
   const ytdlpCommandHintsByCategory = useMemo(
-    () => groupYtdlpCommandHintsByCategory(downloadsOptions?.commandHints),
-    [downloadsOptions?.commandHints]
+    () =>
+      groupYtdlpCommandHintsByCategory(downloadsOptions?.commandHints, undefined, downloadsHintUiLocale),
+    [downloadsOptions?.commandHints, downloadsHintUiLocale]
   )
 
   const ytdlpCommandHintsFilteredByCategory = useMemo(
     () =>
-      groupYtdlpCommandHintsByCategory(downloadsOptions?.commandHints, downloadsExpertHintFilter),
-    [downloadsOptions?.commandHints, downloadsExpertHintFilter]
+      groupYtdlpCommandHintsByCategory(
+        downloadsOptions?.commandHints,
+        downloadsExpertHintFilter,
+        downloadsHintUiLocale
+      ),
+    [downloadsOptions?.commandHints, downloadsExpertHintFilter, downloadsHintUiLocale]
   )
 
   const terminalMergedSortedHints = useMemo(() => {
@@ -1315,20 +1326,22 @@ function App(): JSX.Element {
 
   useEffect(() => {
     let mounted = true
-    void window.fluxalloy.downloads.getCliOptions().then((res) => {
-      if (!mounted) {
-        return
-      }
-      if (res.ok) {
-        setDownloadsOptions(res.payload)
-        return
-      }
-      setStatusHint(res.error)
-    })
+    void window.fluxalloy.downloads
+      .getCliOptions({ uiLocale: getUiLocale() as DownloadsWindowUiLocale })
+      .then((res) => {
+        if (!mounted) {
+          return
+        }
+        if (res.ok) {
+          setDownloadsOptions(res.payload)
+          return
+        }
+        setStatusHint(res.error)
+      })
     return () => {
       mounted = false
     }
-  }, [])
+  }, [getUiLocale])
 
   useEffect(() => {
     let mounted = true
@@ -1877,7 +1890,7 @@ function App(): JSX.Element {
         if (!clipboardLooksLikeDownloadsPayload(raw)) {
           return
         }
-        void window.fluxalloy.downloads.openWindow(raw.trim())
+        void window.fluxalloy.downloads.openWindow({ text: raw.trim(), uiLocale: getUiLocale() })
       })
     }
 
@@ -2020,7 +2033,8 @@ function App(): JSX.Element {
     try {
       const res = await window.fluxalloy.preview.snapshotFrame({
         inputPath: preview.path,
-        timeSec
+        timeSec,
+        uiLocale: getUiLocale()
       })
       void refreshProcessingHistory()
       if (res.ok) {
@@ -2053,6 +2067,7 @@ function App(): JSX.Element {
         trimSnapshotRef.current?.path === preview.path ? trimSnapshotRef.current.range : null
       const res = await window.fluxalloy.export.start({
         inputPath: preview.path,
+        uiLocale: getUiLocale(),
         ...(trimSnap != null ? { trim: trimSnap } : {}),
         probeDurationSec: probeInfo?.durationSec ?? null,
         encodePreset: exportEncodePreset,
@@ -4225,7 +4240,10 @@ function App(): JSX.Element {
                   type="button"
                   className="app-btn app-btn-icon-leading"
                   onClick={() => {
-                    void window.fluxalloy.downloads.openWindow(downloadsUrl || null)
+                    void window.fluxalloy.downloads.openWindow({
+                      ...(downloadsUrl.trim().length > 0 ? { text: downloadsUrl } : {}),
+                      uiLocale: getUiLocale()
+                    })
                   }}
                 >
                   <IconPopOutWindow title="" size={17} />

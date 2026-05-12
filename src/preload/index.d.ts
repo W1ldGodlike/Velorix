@@ -147,6 +147,7 @@ export interface FluxAlloyApi {
     snapshotFrame: (payload: {
       inputPath: string
       timeSec: number
+      uiLocale?: 'ru' | 'en'
     }) => Promise<
       { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
     >
@@ -157,7 +158,7 @@ export interface FluxAlloyApi {
     restoreLastSource: () => Promise<RestoredSourceInfo | null>
   }
   downloads: {
-    openWindow: (initial?: string | { text?: string } | null) => Promise<void>
+    openWindow: (initial?: string | { text?: string; uiLocale?: 'ru' | 'en' } | null) => Promise<void>
     addLines: (text: string) => Promise<{ ok: true; added: number } | { ok: false; error: string }>
     getSnapshot: () => Promise<unknown[]>
     clearQueue: () => Promise<{ ok: true } | { ok: false; error: string }>

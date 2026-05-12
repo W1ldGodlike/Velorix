@@ -24,6 +24,7 @@ import {
   readKnowledgeArticle
 } from './knowledge-service'
 import { resolveFfmpegExportLutCubeAbsPath } from './ffmpeg-export-lut-path'
+import { getYtdlpCliValidationCopy } from '../shared/ytdlp-cli-validation-locale'
 import { installExternalNavigationGuard, openAllowedExternalUrl } from './external-url'
 import { downloadEnginesWindows, isAnyEngineMissing } from './engine-download'
 import {
@@ -196,27 +197,72 @@ import type {
 } from '../shared/diagnostics-contract'
 import type { SaveTextDialogResult } from '../shared/save-text-dialog-contract'
 import type { TerminalCommandHintEntry, TerminalRunResult } from '../shared/terminal-contract'
+import {
+  autoExportProgressMessage,
+  fluxLogAutoExportCancelled,
+  fluxLogAutoExportFfmpegMissing,
+  fluxLogAutoExportSkippedBusy,
+  fluxLogAutoExportSkippedMainWindow,
+  formatFluxLogAutoExportDone,
+  formatFluxLogAutoExportFailed
+} from '../shared/downloads-flux-log-locale'
+import {
+  exportProgressLaunchingFfmpeg,
+  processingHistoryAutoExportCancelled,
+  processingHistoryAutoExportFailed,
+  processingHistoryAutoExportSuccess,
+  processingHistoryFfmpegExportCancelled,
+  processingHistoryFfmpegExportFailed,
+  processingHistoryFfmpegExportSuccess,
+  processingHistorySnapshotFailed,
+  processingHistorySnapshotSuccess
+} from '../shared/processing-history-status-locale'
+import {
+  downloadsWindowUiLocaleFromSystemLocale,
+  parseDownloadsWindowUiLocale,
+  type DownloadsWindowUiLocale
+} from '../shared/downloads-window-ui-locale'
 
 /** Кастомная схема для локального видеопревью; привилегии обязаны зарегистрироваться до `app.whenReady`. */
 attachProcessErrorHandlers()
 registerFluxMediaPrivileges()
 
-function parseDownloadsOpenPayload(raw: unknown): string | null {
+function mainDownloadsUiLocale(): DownloadsWindowUiLocale {
+  try {
+    return downloadsWindowUiLocaleFromSystemLocale(app.getLocale())
+  } catch {
+    return 'ru'
+  }
+}
+
+function parseDownloadsOpenRequest(raw: unknown): {
+  mergeText: string | null
+  uiLocale?: DownloadsWindowUiLocale
+} {
   if (raw === null || raw === undefined) {
-    return null
+    return { mergeText: null }
   }
   if (typeof raw === 'string') {
     const t = raw.trim()
-    return t.length > 0 ? t : null
+    return { mergeText: t.length > 0 ? t : null }
   }
-  if (typeof raw === 'object' && raw !== null && 'text' in raw) {
-    const v = (raw as { text?: unknown }).text
-    if (typeof v === 'string') {
-      const t = v.trim()
-      return t.length > 0 ? t : null
+  if (typeof raw === 'object' && raw !== null) {
+    const o = raw as Record<string, unknown>
+    let mergeText: string | null = null
+    if (typeof o['text'] === 'string') {
+      const t = o['text'].trim()
+      if (t.length > 0) {
+        mergeText = t
+      }
     }
+    const parsed = parseDownloadsWindowUiLocale(o['uiLocale'])
+    const out: { mergeText: string | null; uiLocale?: DownloadsWindowUiLocale } = { mergeText }
+    if (parsed !== undefined) {
+      out.uiLocale = parsed
+    }
+    return out
   }
-  return null
+  return { mergeText: null }
 }
 
 /** Совпадает с лимитом буфера обмена в main: защита от огромных строк из renderer. */
@@ -548,7 +594,7 @@ function persistYtdlpDownloadDirectory(abs: string | null): void {
 function persistYtdlpCookiesFileFromPicker(
   absPath: string
 ): { ok: true } | { ok: false; error: string } {
-  const v = validateYtdlpCookiesFilePath(absPath)
+  const v = validateYtdlpCookiesFilePath(absPath, mainDownloadsUiLocale())
   if (!v.ok) {
     return v
   }
@@ -557,7 +603,7 @@ function persistYtdlpCookiesFileFromPicker(
   delete merged.ytdlpCookiesBrowser
   cachedSettings = merged
   saveSettings(settingsPath(), cachedSettings)
-  refreshYtdlpRunOptionsSnapshot(cachedSettings)
+  refreshYtdlpRunOptionsSnapshot(cachedSettings, mainDownloadsUiLocale())
   return { ok: true }
 }
 
@@ -566,7 +612,7 @@ function persistClearYtdlpCookiesFile(): void {
   delete merged.ytdlpCookiesFile
   cachedSettings = merged
   saveSettings(settingsPath(), cachedSettings)
-  refreshYtdlpRunOptionsSnapshot(cachedSettings)
+  refreshYtdlpRunOptionsSnapshot(cachedSettings, mainDownloadsUiLocale())
 }
 
 /**
@@ -575,18 +621,20 @@ function persistClearYtdlpCookiesFile(): void {
  */
 function mergeYtdlpDownloadCliPatchOntoSettings(
   base: AppSettings,
-  patch: YtdlpDownloadOptionsPatch
+  patch: YtdlpDownloadOptionsPatch,
+  uiLocale: DownloadsWindowUiLocale = 'ru'
 ): { ok: true; settings: AppSettings } | { ok: false; error: string } {
+  const M = getYtdlpCliValidationCopy(uiLocale)
   const merged: AppSettings = { ...base }
   if (patch.filenameTemplate !== undefined) {
     if (typeof patch.filenameTemplate !== 'string') {
-      return { ok: false, error: 'Шаблон имени файла должен быть строкой.' }
+      return { ok: false, error: M.patchFilenameTemplateMustBeString }
     }
     const ft = patch.filenameTemplate
     if (ft.trim() === '') {
       delete merged.ytdlpFilenameTemplate
     } else {
-      const v = validateFilenameTemplate(ft)
+      const v = validateFilenameTemplate(ft, uiLocale)
       if (!v.ok) {
         return v
       }
@@ -620,9 +668,9 @@ function mergeYtdlpDownloadCliPatchOntoSettings(
   }
   if (patch.subLangs !== undefined) {
     if (typeof patch.subLangs !== 'string') {
-      return { ok: false, error: 'Языки субтитров должны быть строкой.' }
+      return { ok: false, error: M.patchSubLangsMustBeString }
     }
-    const sv = validateYtdlpSubLangs(patch.subLangs)
+    const sv = validateYtdlpSubLangs(patch.subLangs, uiLocale)
     if (!sv.ok) {
       return sv
     }
@@ -643,9 +691,9 @@ function mergeYtdlpDownloadCliPatchOntoSettings(
   }
   if (patch.cookiesBrowserProfile !== undefined) {
     if (typeof patch.cookiesBrowserProfile !== 'string') {
-      return { ok: false, error: 'Профиль cookies браузера должен быть строкой.' }
+      return { ok: false, error: M.patchCookiesBrowserProfileMustBeString }
     }
-    const pv = validateYtdlpCookiesBrowserProfile(patch.cookiesBrowserProfile)
+    const pv = validateYtdlpCookiesBrowserProfile(patch.cookiesBrowserProfile, uiLocale)
     if (!pv.ok) {
       return pv
     }
@@ -664,9 +712,9 @@ function mergeYtdlpDownloadCliPatchOntoSettings(
   }
   if (patch.rateLimit !== undefined) {
     if (typeof patch.rateLimit !== 'string') {
-      return { ok: false, error: 'Ограничение скорости должно быть строкой.' }
+      return { ok: false, error: M.patchRateLimitMustBeString }
     }
-    const rv = validateYtdlpRateLimit(patch.rateLimit)
+    const rv = validateYtdlpRateLimit(patch.rateLimit, uiLocale)
     if (!rv.ok) {
       return rv
     }
@@ -678,9 +726,9 @@ function mergeYtdlpDownloadCliPatchOntoSettings(
   }
   if (patch.retriesLine !== undefined) {
     if (typeof patch.retriesLine !== 'string') {
-      return { ok: false, error: 'Количество повторов должно быть строкой.' }
+      return { ok: false, error: M.patchRetriesLineMustBeString }
     }
-    const rt = validateYtdlpRetriesLine(patch.retriesLine)
+    const rt = validateYtdlpRetriesLine(patch.retriesLine, uiLocale)
     if (!rt.ok) {
       return rt
     }
@@ -692,9 +740,9 @@ function mergeYtdlpDownloadCliPatchOntoSettings(
   }
   if (patch.fragmentRetriesLine !== undefined) {
     if (typeof patch.fragmentRetriesLine !== 'string') {
-      return { ok: false, error: 'Количество повторов фрагментов должно быть строкой.' }
+      return { ok: false, error: M.patchFragmentRetriesLineMustBeString }
     }
-    const frt = validateYtdlpFragmentRetriesLine(patch.fragmentRetriesLine)
+    const frt = validateYtdlpFragmentRetriesLine(patch.fragmentRetriesLine, uiLocale)
     if (!frt.ok) {
       return frt
     }
@@ -706,13 +754,13 @@ function mergeYtdlpDownloadCliPatchOntoSettings(
   }
   if (patch.extraArgsLine !== undefined) {
     if (typeof patch.extraArgsLine !== 'string') {
-      return { ok: false, error: 'Дополнительные аргументы должны быть строкой.' }
+      return { ok: false, error: M.patchExtraArgsLineMustBeString }
     }
     const trimmed = patch.extraArgsLine.trim()
     if (trimmed === '') {
       delete merged.ytdlpExtraArgsLine
     } else {
-      const pe = parseExtraYtdlpArgsLine(trimmed)
+      const pe = parseExtraYtdlpArgsLine(trimmed, uiLocale)
       if (!pe.ok) {
         return pe
       }
@@ -762,20 +810,26 @@ function parseYtdlpGetCliOptionsParams(raw: unknown): YtdlpGetCliOptionsParams |
   if (dr !== undefined && dr !== null && typeof dr === 'object') {
     out.draft = dr as YtdlpDownloadOptionsPatch
   }
+  const parsedUi = parseDownloadsWindowUiLocale(o['uiLocale'])
+  if (parsedUi !== undefined) {
+    out.uiLocale = parsedUi
+  }
   return Object.keys(out).length > 0 ? out : undefined
 }
 
 /** §6.2 — шаблон `-o` и белый список `-f`; синхронно обновляет снимок для downloads-queue-runner. */
 function persistYtdlpDownloadCliOptionsPatch(
-  patch: YtdlpDownloadOptionsPatch
+  patch: YtdlpDownloadOptionsPatch,
+  uiLocale?: DownloadsWindowUiLocale
 ): { ok: true } | { ok: false; error: string } {
-  const merged = mergeYtdlpDownloadCliPatchOntoSettings(cachedSettings, patch)
+  const loc = uiLocale ?? mainDownloadsUiLocale()
+  const merged = mergeYtdlpDownloadCliPatchOntoSettings(cachedSettings, patch, loc)
   if (!merged.ok) {
     return merged
   }
   cachedSettings = merged.settings
   saveSettings(settingsPath(), cachedSettings)
-  refreshYtdlpRunOptionsSnapshot(cachedSettings)
+  refreshYtdlpRunOptionsSnapshot(cachedSettings, mainDownloadsUiLocale())
   return { ok: true }
 }
 
@@ -1976,7 +2030,7 @@ app.whenReady().then(() => {
   cachedSettings = loadSettings(settingsPath())
   refreshEnginePathOverridesSnapshot()
   syncYtdlpDownloadDirectoryFromSettings(cachedSettings.ytdlpDownloadDirectory)
-  refreshYtdlpRunOptionsSnapshot(cachedSettings)
+  refreshYtdlpRunOptionsSnapshot(cachedSettings, mainDownloadsUiLocale())
   nativeTheme.on('updated', () => {
     if (cachedSettings.theme !== 'system') {
       return
@@ -1996,16 +2050,17 @@ app.whenReady().then(() => {
       patchWindowBounds({ downloads: r })
     },
     pickYtdlpOutputDirectory: async (win: BrowserWindow) => {
+      const Y = getYtdlpCliValidationCopy(mainDownloadsUiLocale())
       const result = await dialog.showOpenDialog(win, {
         properties: ['openDirectory', 'createDirectory'],
-        title: 'Каталог загрузок yt-dlp'
+        title: Y.dialogYtdlpOutputDirTitle
       })
       if (result.canceled || result.filePaths.length === 0 || !result.filePaths[0]) {
         return { ok: false, cancelled: true }
       }
       const picked = normalize(result.filePaths[0])
       if (!isAbsolute(picked)) {
-        return { ok: false, error: 'Нужен абсолютный путь к каталогу' }
+        return { ok: false, error: Y.pickerOutputDirNeedAbsolute }
       }
       persistYtdlpDownloadDirectory(picked)
       return {
@@ -2017,12 +2072,13 @@ app.whenReady().then(() => {
       persistYtdlpDownloadDirectory(null)
     },
     pickYtdlpCookiesFile: async (win: BrowserWindow) => {
+      const Y = getYtdlpCliValidationCopy(mainDownloadsUiLocale())
       const result = await dialog.showOpenDialog(win, {
         properties: ['openFile'],
-        title: 'Файл cookies для yt-dlp (формат Netscape)',
+        title: Y.dialogYtdlpCookiesFileTitle,
         filters: [
-          { name: 'Текстовые файлы', extensions: ['txt'] },
-          { name: 'Все файлы', extensions: ['*'] }
+          { name: Y.dialogFilterTextFiles, extensions: ['txt'] },
+          { name: Y.dialogFilterAllFiles, extensions: ['*'] }
         ]
       })
       if (result.canceled || result.filePaths.length === 0 || !result.filePaths[0]) {
@@ -2030,7 +2086,7 @@ app.whenReady().then(() => {
       }
       const picked = normalize(result.filePaths[0])
       if (!isAbsolute(picked)) {
-        return { ok: false, error: 'Нужен абсолютный путь к файлу' }
+        return { ok: false, error: Y.pickerCookiesNeedAbsoluteFile }
       }
       const saved = persistYtdlpCookiesFileFromPicker(picked)
       if (!saved.ok) {
@@ -2041,7 +2097,9 @@ app.whenReady().then(() => {
     clearYtdlpCookiesFile: (): void => {
       persistClearYtdlpCookiesFile()
     },
-    getYtdlpDownloadCliOptions: (raw?: unknown) => {
+    getYtdlpDownloadCliOptions: (raw?: unknown, ipcUiLocale?: DownloadsWindowUiLocale) => {
+      const req = parseYtdlpGetCliOptionsParams(raw)
+      const loc = req?.uiLocale ?? ipcUiLocale ?? mainDownloadsUiLocale()
       const paths = resolveAppPaths()
       const rows = getDownloadsQueueSnapshot()
       const hit = rows.find((r) => r.url.trim().length > 0)
@@ -2055,7 +2113,6 @@ app.whenReady().then(() => {
       if (hit !== undefined) {
         previewParams.sampleUrl = hit.url
       }
-      const req = parseYtdlpGetCliOptionsParams(raw)
       if (
         req?.previewOutputDirectory !== undefined &&
         req.previewOutputDirectory.trim().length > 0
@@ -2067,17 +2124,19 @@ app.whenReady().then(() => {
       }
       let settings = cachedSettings
       if (req?.draft) {
-        const merged = mergeYtdlpDownloadCliPatchOntoSettings(cachedSettings, req.draft)
+        const merged = mergeYtdlpDownloadCliPatchOntoSettings(cachedSettings, req.draft, loc)
         if (merged.ok) {
           settings = merged.settings
         }
       }
       return payloadFromSnapshot(
-        buildYtdlpRunOptionsSnapshot(settings),
-        buildYtdlpCommandPreviewContext(previewParams)
+        buildYtdlpRunOptionsSnapshot(settings, loc),
+        buildYtdlpCommandPreviewContext(previewParams),
+        loc
       )
     },
-    applyYtdlpDownloadCliPatch: (patch) => persistYtdlpDownloadCliOptionsPatch(patch),
+    applyYtdlpDownloadCliPatch: (patch, uiLocale?: DownloadsWindowUiLocale) =>
+      persistYtdlpDownloadCliOptionsPatch(patch, uiLocale),
     openDownloadedFileInHandler: (absoluteFile) => openDownloadedFileInMainHandler(absoluteFile),
     getDownloadsWindowUiPanelsSnapshot: () => cachedSettings.downloadsWindowUiPanels,
     mergeDownloadsWindowUiPanelsPatch: (patch) => {
@@ -2089,10 +2148,12 @@ app.whenReady().then(() => {
       saveSettings(settingsPath(), cachedSettings)
       broadcastDownloadsWindowUiPanelsSnapshot()
     },
-    getAppTheme: (): ResolvedAppTheme => resolveEffectiveTheme(cachedSettings.theme)
+    getAppTheme: (): ResolvedAppTheme => resolveEffectiveTheme(cachedSettings.theme),
+    getDownloadsUiLocale: (): DownloadsWindowUiLocale => mainDownloadsUiLocale()
   })
   function scheduleAutoExportAfterSuccessfulYtdlpOpen(absoluteInput: string, rowId: number): void {
     void (async () => {
+      const loc = mainDownloadsUiLocale()
       if (cachedSettings.ytdlpAutoExportAfterOpenInHandler !== true) {
         return
       }
@@ -2101,7 +2162,7 @@ app.whenReady().then(() => {
           kind: 'line',
           rowId,
           stream: 'stderr',
-          text: '[FluxAlloy] Авто-экспорт пропущен: уже выполняется другой экспорт.'
+          text: fluxLogAutoExportSkippedBusy(loc)
         })
         return
       }
@@ -2116,7 +2177,7 @@ app.whenReady().then(() => {
           kind: 'line',
           rowId,
           stream: 'stderr',
-          text: '[FluxAlloy] Авто-экспорт не запущен: ffmpeg не найден.'
+          text: fluxLogAutoExportFfmpegMissing(loc)
         })
         return
       }
@@ -2131,7 +2192,7 @@ app.whenReady().then(() => {
           kind: 'line',
           rowId,
           stream: 'stderr',
-          text: '[FluxAlloy] Авто-экспорт пропущен: главное окно недоступно.'
+          text: fluxLogAutoExportSkippedMainWindow(loc)
         })
         return
       }
@@ -2144,7 +2205,7 @@ app.whenReady().then(() => {
         }
       }
       try {
-        pushProgress({ percent: -1, message: 'Авто-экспорт после загрузки…' })
+        pushProgress({ percent: -1, message: autoExportProgressMessage(loc) })
         const result = await runFfmpegExportJob({
           ffmpegPath: ffmpeg,
           inputPath: absoluteInput,
@@ -2165,14 +2226,14 @@ app.whenReady().then(() => {
             inputPath: absoluteInput,
             outputPath: outPath,
             outcome: 'success',
-            status: 'Авто-экспорт завершён',
+            status: processingHistoryAutoExportSuccess(loc),
             errorHint: null
           })
           emitDownloadsLog({
             kind: 'line',
             rowId,
             stream: 'stderr',
-            text: `[FluxAlloy] Авто-экспорт завершён: ${outPath}`
+            text: formatFluxLogAutoExportDone(loc, outPath)
           })
           return
         }
@@ -2184,14 +2245,14 @@ app.whenReady().then(() => {
             inputPath: absoluteInput,
             outputPath: outPath,
             outcome: 'cancelled',
-            status: 'Авто-экспорт отменён',
+            status: processingHistoryAutoExportCancelled(loc),
             errorHint: null
           })
           emitDownloadsLog({
             kind: 'line',
             rowId,
             stream: 'stderr',
-            text: '[FluxAlloy] Авто-экспорт отменён.'
+            text: fluxLogAutoExportCancelled(loc)
           })
           return
         }
@@ -2202,14 +2263,14 @@ app.whenReady().then(() => {
           inputPath: absoluteInput,
           outputPath: outPath,
           outcome: 'error',
-          status: 'Авто-экспорт не удался',
+          status: processingHistoryAutoExportFailed(loc),
           errorHint: result.error
         })
         emitDownloadsLog({
           kind: 'line',
           rowId,
           stream: 'stderr',
-          text: `[FluxAlloy] Авто-экспорт не удался: ${result.error}`
+          text: formatFluxLogAutoExportFailed(loc, result.error)
         })
       } finally {
         activeExportAbort = null
@@ -2821,8 +2882,8 @@ app.whenReady().then(() => {
   )
 
   ipcMain.handle(mw.openDownloadsWindow, (_, raw: unknown) => {
-    const payload = parseDownloadsOpenPayload(raw)
-    focusOrCreateDownloadsWindow(payload ?? undefined)
+    const req = parseDownloadsOpenRequest(raw)
+    focusOrCreateDownloadsWindow(req.mergeText, req.uiLocale)
   })
 
   ipcMain.handle(mw.exportResolveBundledLutCubePath, (_event, raw: unknown): string | null => {
@@ -2838,6 +2899,9 @@ app.whenReady().then(() => {
     if (!raw || typeof raw !== 'object') {
       return { ok: false, error: 'Некорректный запрос' }
     }
+    const exportUiLocale =
+      parseDownloadsWindowUiLocale((raw as { uiLocale?: unknown }).uiLocale) ??
+      mainDownloadsUiLocale()
     const inputRaw = (raw as { inputPath?: unknown }).inputPath
     if (typeof inputRaw !== 'string' || inputRaw.trim().length === 0) {
       return { ok: false, error: 'Не указан входной файл' }
@@ -2902,7 +2966,7 @@ app.whenReady().then(() => {
     }
 
     try {
-      pushProgress({ percent: -1, message: 'Запуск ffmpeg…' })
+      pushProgress({ percent: -1, message: exportProgressLaunchingFfmpeg(exportUiLocale) })
       const result = await runFfmpegExportJob({
         ffmpegPath: ffmpeg,
         inputPath: abs,
@@ -2924,7 +2988,7 @@ app.whenReady().then(() => {
           inputPath: abs,
           outputPath: outPath,
           outcome: 'success',
-          status: 'Экспорт завершён',
+          status: processingHistoryFfmpegExportSuccess(exportUiLocale),
           errorHint: null
         })
         return { ok: true, path: outPath }
@@ -2937,7 +3001,7 @@ app.whenReady().then(() => {
           inputPath: abs,
           outputPath: outPath,
           outcome: 'cancelled',
-          status: 'Экспорт отменён',
+          status: processingHistoryFfmpegExportCancelled(exportUiLocale),
           errorHint: null
         })
         return { ok: false, cancelled: true }
@@ -2949,7 +3013,7 @@ app.whenReady().then(() => {
         inputPath: abs,
         outputPath: outPath,
         outcome: 'error',
-        status: 'Экспорт не удался',
+        status: processingHistoryFfmpegExportFailed(exportUiLocale),
         errorHint: result.error
       })
       return { ok: false, error: result.error }
@@ -2995,6 +3059,9 @@ app.whenReady().then(() => {
       if (!raw || typeof raw !== 'object') {
         return { ok: false, error: 'Некорректный запрос' }
       }
+      const snapUiLocale =
+        parseDownloadsWindowUiLocale((raw as { uiLocale?: unknown }).uiLocale) ??
+        mainDownloadsUiLocale()
       const inputRaw = (raw as { inputPath?: unknown }).inputPath
       const timeRaw = (raw as { timeSec?: unknown }).timeSec
       if (typeof inputRaw !== 'string' || inputRaw.trim().length === 0) {
@@ -3053,7 +3120,7 @@ app.whenReady().then(() => {
           inputPath: abs,
           outputPath: outPath,
           outcome: 'success',
-          status: 'Кадр сохранён',
+          status: processingHistorySnapshotSuccess(snapUiLocale),
           errorHint: null
         })
         return { ok: true, path: outPath }
@@ -3065,7 +3132,7 @@ app.whenReady().then(() => {
         inputPath: abs,
         outputPath: outPath,
         outcome: 'error',
-        status: 'Сохранение кадра не удалось',
+        status: processingHistorySnapshotFailed(snapUiLocale),
         errorHint: result.error
       })
       return result
