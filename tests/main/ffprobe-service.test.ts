@@ -330,6 +330,57 @@ describe('ffprobe-service buildTrackRows', () => {
     expect(row?.detail).toContain('max 320 kb/s')
   })
 
+  it('video detail: ненулевой closed_captions → CEA-608/708', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 1280,
+          height: 720,
+          closed_captions: 1
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toContain('CEA-608/708')
+  })
+
+  it('video detail: H.264 + is_avc=0 → Annex-B', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 1920,
+          height: 1080,
+          is_avc: 0
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toContain('Annex-B')
+  })
+
+  it('video detail: H.264 + is_avc=1 — без Annex-B', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 1920,
+          height: 1080,
+          is_avc: 1
+        }
+      ],
+      null
+    )
+    expect(row?.detail).not.toContain('Annex-B')
+  })
+
   it('video/audio/subtitle detail показывает ненулевой start_pts с time_base', () => {
     const rows = buildTrackRows(
       [

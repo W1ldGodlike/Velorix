@@ -76,6 +76,10 @@ interface FfprobeJson {
     has_b_frames?: number
     /** FourCC / тег кодека в контейнере (`avc1`, `hvc1` …). */
     codec_tag_string?: string
+    /** Ненулевое значение — встроенные CEA-608/708 в видеопотоке (трансляции и т.п.). */
+    closed_captions?: string | number
+    /** H.264: `1` — length-prefixed AVC, `0` — Annex B (NAL с start codes). */
+    is_avc?: string | number
     /** Секунды от начала контейнера (строка float ffprobe). */
     start_time?: string
     /** Таймбаза потока; вместе с `start_pts` помогает диагностировать сдвиги timestamp. */
@@ -103,6 +107,21 @@ function parsePositiveNumber(raw: string | undefined): number | null {
   }
   const n = Number.parseFloat(raw)
   return Number.isFinite(n) && n > 0 ? n : null
+}
+
+function parseFfprobeOptionalInt(raw: string | number | undefined): number | null {
+  if (typeof raw === 'number' && Number.isFinite(raw)) {
+    return Math.trunc(raw)
+  }
+  if (typeof raw === 'string') {
+    const t = raw.trim()
+    if (t === '' || /^n\/a$/i.test(t)) {
+      return null
+    }
+    const n = Number.parseInt(t, 10)
+    return Number.isFinite(n) ? n : null
+  }
+  return null
 }
 
 /** Битрейт контейнера из ffprobe (`bit_rate` в бит/с) → килобиты/с для UI. */
@@ -382,6 +401,15 @@ function buildTrackDetail(
     const bFrames = stream.has_b_frames
     if (typeof bFrames === 'number' && Number.isFinite(bFrames) && bFrames > 0) {
       parts.push(`B${bFrames}`)
+    }
+    const ccVal = parseFfprobeOptionalInt(stream.closed_captions)
+    if (ccVal !== null && ccVal !== 0) {
+      parts.push('CEA-608/708')
+    }
+    const avcVal = parseFfprobeOptionalInt(stream.is_avc)
+    const codecNameLower = (typeof stream.codec_name === 'string' ? stream.codec_name : '').toLowerCase()
+    if (codecNameLower.includes('h264') && avcVal === 0) {
+      parts.push('Annex-B')
     }
     const fourcc = ffprobeScalarDisplay(
       typeof stream.codec_tag_string === 'string' ? stream.codec_tag_string : undefined
