@@ -1178,6 +1178,60 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· compat no-unavail',
     summary: 'Совместимость: не подменять недоступные ролики YouTube заглушкой (--compat-options no-youtube-unavailable-videos -F); допишите URL.',
     fullLine: 'yt-dlp --compat-options no-youtube-unavailable-videos -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --rm-cache-dir',
+    summary: 'Сбросить кэш extractors yt-dlp (--rm-cache-dir); URL не нужен; помогает при «битом» кэше/неверных форматах.',
+    fullLine: 'yt-dlp --rm-cache-dir'
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· cache-dir -F',
+    summary: 'Альтернативный путь кэша extractors (--cache-dir cache -F); путь без пробелов; допишите URL.',
+    fullLine: 'yt-dlp --cache-dir cache -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· keep-fragments -F',
+    summary: 'Не удалять промежуточные фрагменты после мержа (--keep-fragments -F); диагностика DASH/HLS; допишите URL.',
+    fullLine: 'yt-dlp --keep-fragments -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· buffer-size 16K -F',
+    summary: 'Размер буфера чтения для медленных CDN (--buffer-size 16K -F); подстройте при необходимости; допишите URL.',
+    fullLine: 'yt-dlp --buffer-size 16K -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· abort-unavail-frag',
+    summary: 'Прервать загрузку при первом недоступном фрагменте (--abort-on-unavailable-fragments); жёсткий режим; допишите URL.',
+    fullLine: 'yt-dlp --abort-on-unavailable-fragments '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· sub-langs en,ru -F',
+    summary: 'Выбор языков субтитров без кавычек (--sub-langs en.*,ru.* -F); пары язык/регион регуляркой; допишите URL.',
+    fullLine: 'yt-dlp --sub-langs en.*,ru.* -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print release_date',
+    summary: 'Дата релиза YYYYMMDD без скачивания (--skip-download --print release_date); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print release_date '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print album_artist',
+    summary: 'Исполнитель альбома без скачивания (--skip-download --print album_artist); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print album_artist '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print track_number',
+    summary: 'Номер трека внутри альбома без скачивания (--skip-download --print track_number); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print track_number '
   }
 ]
 
@@ -1710,6 +1764,42 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· s:0 bit_rate',
     summary: 'Первая дорожка субтитров s:0: bit_rate (если задан в контейнере); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=bit_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format duration_ts',
+    summary: 'Контейнер: duration_ts (длительность в единицах time_base); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format=duration_ts -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format copyright',
+    summary: 'Тег контейнера copyright (format_tags=copyright); кто и когда задал; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=copyright -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 BPS+DURATION',
+    summary: 'MKV-статистика v:0: stream_tags BPS + DURATION (битрейт/длительность дорожки, если записаны mkvtoolnix); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream_tags=BPS,DURATION -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· s:0 tag duration',
+    summary: 'Поток s:0: stream_tags duration (длительность субтитров, если записана в контейнере); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream_tags=duration -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format probe_size',
+    summary: 'Сколько байт ушло на probe demuxer (-show_entries format=probe_size); диагностика «глубины» анализа; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format=probe_size -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· scale 320 null',
+    summary: 'Smoke-перекодировка масштаба 320:-1 за 1 c в null muxer (-vf scale=320:-1 -t 1); проверка фильтр-цепочки; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf scale=320:-1 -t 1 -f null -`
   }
 ]
 

@@ -419,6 +419,15 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --xattrs ')
     expect(lines).toContain('yt-dlp -U ')
     expect(lines).toContain('yt-dlp --compat-options no-youtube-unavailable-videos -F ')
+    expect(lines).toContain('yt-dlp --rm-cache-dir')
+    expect(lines).toContain('yt-dlp --cache-dir cache -F ')
+    expect(lines).toContain('yt-dlp --keep-fragments -F ')
+    expect(lines).toContain('yt-dlp --buffer-size 16K -F ')
+    expect(lines).toContain('yt-dlp --abort-on-unavailable-fragments ')
+    expect(lines).toContain('yt-dlp --sub-langs en.*,ru.* -F ')
+    expect(lines).toContain('yt-dlp --skip-download --print release_date ')
+    expect(lines).toContain('yt-dlp --skip-download --print album_artist ')
+    expect(lines).toContain('yt-dlp --skip-download --print track_number ')
   })
 
   it('preview: pretty/flat/packets/frames + loudnorm summary', () => {
@@ -485,6 +494,27 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
           l.includes('stream=bit_rate') &&
           l.includes('-of default=nw=1:nk=1')
       )
+    ).toBe(true)
+    expect(lines.some((l) => l.includes('show_entries format=duration_ts'))).toBe(true)
+    expect(lines.some((l) => l.includes('format_tags=copyright'))).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams v:0') &&
+          l.includes('stream_tags=BPS,DURATION')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams s:0') &&
+          l.includes('stream_tags=duration') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+    expect(lines.some((l) => l.includes('show_entries format=probe_size'))).toBe(true)
+    expect(
+      lines.some((l) => l.includes('-vf scale=320:-1') && l.includes('-t 1 -f null -'))
     ).toBe(true)
   })
 })
