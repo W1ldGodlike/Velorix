@@ -276,4 +276,57 @@ describe('ffprobe-service buildTrackRows', () => {
     expect(row?.detail).not.toContain('tail')
     expect((row?.detail.length ?? 0)).toBeLessThan(long.length + 80)
   })
+
+  it('video detail: max_bit_rate заметно выше bit_rate → «max … Mb/s»', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 1920,
+          height: 1080,
+          bit_rate: '5000000',
+          max_bit_rate: '12000000'
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toContain('max 12.00 Mb/s')
+  })
+
+  it('video detail: max_bit_rate≈bit_rate — не дублируем пик в сводке', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 1280,
+          height: 720,
+          bit_rate: '5000000',
+          max_bit_rate: '5050000'
+        }
+      ],
+      null
+    )
+    expect(row?.detail).not.toMatch(/\bmax\b/i)
+  })
+
+  it('audio detail: только max_bit_rate — показываем пик', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 1,
+          codec_type: 'audio',
+          codec_name: 'aac',
+          channels: 2,
+          sample_rate: '48000',
+          max_bit_rate: '320000'
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toContain('max 320 kb/s')
+  })
 })

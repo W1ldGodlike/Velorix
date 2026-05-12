@@ -81,6 +81,8 @@ interface FfprobeJson {
     /** Длительность дорожки (секунды строкой); может отличаться от `format.duration`. */
     duration?: string
     bit_rate?: string
+    /** Пиковый/макс. битрейт потока (ffprobe), если отличается от `bit_rate`. */
+    max_bit_rate?: string
     /** Для аудио: float planar, s16 и т.п. */
     sample_fmt?: string
     /** PCM/WAV: бит на сэмпл. */
@@ -103,6 +105,39 @@ function parsePositiveNumber(raw: string | undefined): number | null {
 function formatBitrateKbps(bitRateBitsPerSec: string | undefined): number | null {
   const bps = parsePositiveNumber(bitRateBitsPerSec)
   return bps === null ? null : bps / 1000
+}
+
+/** Метка битрейта для колонки «Сведения» (как в `MediaProbePanel.formatBitrateLine`). */
+function formatBitrateDetailLabel(kbps: number | null): string | null {
+  if (kbps === null || !Number.isFinite(kbps)) {
+    return null
+  }
+  if (kbps >= 10_000) {
+    return `${(kbps / 1000).toFixed(2)} Mb/s`
+  }
+  return `${Math.round(kbps)} kb/s`
+}
+
+/**
+ * Добавляет `max …` в detail только если пиковый битрейт заметно выше среднего
+ * (колонка таблицы уже показывает номинальный `bit_rate`).
+ */
+function appendMaxBitrateDetailIfNotable(
+  parts: string[],
+  bitRate: string | undefined,
+  maxBitRate: string | undefined
+): void {
+  const brKbps = formatBitrateKbps(typeof bitRate === 'string' ? bitRate : undefined)
+  const maxKbps = formatBitrateKbps(typeof maxBitRate === 'string' ? maxBitRate : undefined)
+  const maxLab = formatBitrateDetailLabel(maxKbps)
+  if (maxLab === null || maxKbps === null) {
+    return
+  }
+  const nominal = brKbps !== null && Number.isFinite(brKbps) && brKbps > 0 ? brKbps : null
+  const threshold = nominal !== null ? Math.max(50, nominal * 0.03) : 0
+  if (nominal === null || maxKbps - nominal > threshold) {
+    parts.push(`max ${maxLab}`)
+  }
 }
 
 /** Строки полей ffprobe вроде ratio/pix_fmt: пусто и `N/A` не показываем. */
@@ -329,6 +364,7 @@ function buildTrackDetail(
     if (fourcc) {
       parts.push(fourcc)
     }
+    appendMaxBitrateDetailIfNotable(parts, stream.bit_rate, stream.max_bit_rate)
     const vEnc = formatFfprobeTagEncoderBrief(stream.tags)
     if (vEnc) {
       parts.push(vEnc)
@@ -387,6 +423,7 @@ function buildTrackDetail(
     if (aFourcc) {
       parts.push(aFourcc)
     }
+    appendMaxBitrateDetailIfNotable(parts, stream.bit_rate, stream.max_bit_rate)
     const aCreated = formatFfprobeCreationTimeBrief(stream.tags)
     if (aCreated) {
       parts.push(aCreated)
