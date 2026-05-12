@@ -2384,6 +2384,66 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· fragment-retries 15 -F',
     summary: 'Повторы для обрывов фрагментов HLS/DASH (--fragment-retries 15 -F); допишите URL.',
     fullLine: 'yt-dlp --fragment-retries 15 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· bidi-workaround -F',
+    summary: 'Обход багов RTL/BiDi в именах/метаданных (--bidi-workaround -F); допишите URL.',
+    fullLine: 'yt-dlp --bidi-workaround -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· daterange wide -F',
+    summary: 'Ограничить по дате загрузки/релиза (--daterange 20000101-20991231 -F); подстройте диапазон; допишите URL.',
+    fullLine: 'yt-dlp --daterange 20000101-20991231 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· playlist-start 2 -F',
+    summary: 'Плейлист начиная со 2-го элемента (--playlist-start 2 -F); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --playlist-start 2 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo SK -F',
+    summary: 'Гео-обход с кодом страны SK (--geo-bypass-country SK -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country SK -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo SI -F',
+    summary: 'Гео-обход с кодом страны SI (--geo-bypass-country SI -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country SI -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo LU -F',
+    summary: 'Гео-обход с кодом страны LU (--geo-bypass-country LU -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country LU -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo MT -F',
+    summary: 'Гео-обход с кодом страны MT (--geo-bypass-country MT -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country MT -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo CY -F',
+    summary: 'Гео-обход с кодом страны CY (--geo-bypass-country CY -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country CY -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo BA -F',
+    summary: 'Гео-обход с кодом страны BA (--geo-bypass-country BA -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country BA -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo RS -F',
+    summary: 'Гео-обход с кодом страны RS (--geo-bypass-country RS -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country RS -F '
   }
 ]
 
@@ -3246,6 +3306,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· afftdn 3s',
     summary: 'Лёгкое FFT-шумоподавление первых 3 с (-af afftdn=nf=-25); проверка аудиофильтра; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af afftdn=nf=-25 -t 3 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format desc+kw',
+    summary: 'Теги контейнера description + keywords (каталогизация/SEO в MP4/MKV и др.); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=description,keywords -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format location tag',
+    summary: 'Тег контейнера location (GPS/URI в format metadata); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=location -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· acompressor 5s',
+    summary: 'Лёгкая компрессия аудио первых 5 с (-af acompressor=threshold=-20dB:ratio=4:attack=5:release=100); плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af acompressor=threshold=-20dB:ratio=4:attack=5:release=100 -t 5 -vn -sn -f null -`
   }
 ]
 

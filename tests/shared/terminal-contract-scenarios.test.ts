@@ -1134,4 +1134,46 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: bidi-workaround / daterange / playlist-start 2 / geo SK..RS', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --bidi-workaround -F ')
+    expect(lines).toContain('yt-dlp --daterange 20000101-20991231 -F ')
+    expect(lines).toContain('yt-dlp --playlist-start 2 -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country SK -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country SI -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country LU -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country MT -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country CY -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country BA -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country RS -F ')
+  })
+
+  it('preview: format desc+keywords / format location / ffmpeg acompressor 5s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=description,keywords') &&
+          l.includes('default=nw=1:nk=1') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=location') &&
+          l.includes('default=nw=1:nk=1') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af acompressor=threshold=-20dB:ratio=4:attack=5:release=100') &&
+          l.includes('-t 5') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })
