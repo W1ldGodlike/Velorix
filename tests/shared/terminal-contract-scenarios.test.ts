@@ -782,4 +782,39 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: quiet / no-cookies / compat 2025 / break-on-existing / mtime / check-formats-threshold / no-sponsorblock / allow-dynamic-mpd', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --quiet -F ')
+    expect(lines).toContain('yt-dlp --no-cookies -F ')
+    expect(lines).toContain('yt-dlp --compat-options 2025 -F ')
+    expect(lines).toContain('yt-dlp --break-on-existing -F ')
+    expect(lines).toContain('yt-dlp --mtime ')
+    expect(lines).toContain('yt-dlp --check-formats-threshold 1.5 -F ')
+    expect(lines).toContain('yt-dlp --no-sponsorblock -F ')
+    expect(lines).toContain('yt-dlp --allow-dynamic-mpd -F ')
+  })
+
+  it('preview: a:0/s:0 codec_long_name + aphasemeter', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams a:0') &&
+          l.includes('stream=codec_long_name') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams s:0') &&
+          l.includes('stream=codec_long_name') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+    expect(
+      lines.some((l) => l.includes('-af aphasemeter=video=0') && l.includes('-t 10') && l.includes('-vn -sn'))
+    ).toBe(true)
+  })
 })

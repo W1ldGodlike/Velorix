@@ -1718,6 +1718,54 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· audio-multistreams -F',
     summary: 'Список форматов с учётом нескольких аудиопотоков (--audio-multistreams -F); мультиязык; допишите URL.',
     fullLine: 'yt-dlp --audio-multistreams -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· quiet -F',
+    summary: 'Минимум служебного вывода при списке форматов (--quiet -F); допишите URL.',
+    fullLine: 'yt-dlp --quiet -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-cookies -F',
+    summary: 'Игнорировать cookies из браузера/файла (--no-cookies -F); изолированный прогон; допишите URL.',
+    fullLine: 'yt-dlp --no-cookies -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· compat-options 2025 -F',
+    summary: 'Совместимость с поведением yt-dlp 2025 (--compat-options 2025 -F); допишите URL.',
+    fullLine: 'yt-dlp --compat-options 2025 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· break-on-existing -F',
+    summary: 'Остановиться, если целевой файл уже существует (--break-on-existing -F); допишите URL и шаблон -o при необходимости.',
+    fullLine: 'yt-dlp --break-on-existing -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· mtime',
+    summary: 'Выставлять время файла по Last-Modified с сервера (--mtime); противоположность --no-mtime; допишите URL.',
+    fullLine: 'yt-dlp --mtime '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· check-formats-threshold -F',
+    summary: 'Порог для --check-formats (доля битрейта, здесь 1.5) + список форматов; допишите URL.',
+    fullLine: 'yt-dlp --check-formats-threshold 1.5 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-sponsorblock -F',
+    summary: 'Не обращаться к SponsorBlock API (--no-sponsorblock -F); чистый список форматов; допишите URL.',
+    fullLine: 'yt-dlp --no-sponsorblock -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· allow-dynamic-mpd -F',
+    summary: 'Разрешить «живые» DASH MPD с обновлением манифеста (--allow-dynamic-mpd -F); допишите URL.',
+    fullLine: 'yt-dlp --allow-dynamic-mpd -F '
   }
 ]
 
@@ -2406,6 +2454,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· ebur128 12s',
     summary: 'EBU R128 громкость первых 12 с (-af ebur128=framelog=verbose); Integrated/LRA/TP в stderr; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af ebur128=framelog=verbose -t 12 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:0 codec long',
+    summary: 'Поток a:0: codec_long_name (человекочитаемое имя кодека); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=codec_long_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· s:0 codec long',
+    summary: 'Поток s:0: codec_long_name (тип субтитров в контейнере); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=codec_long_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· aphasemeter 10s',
+    summary: 'Стерео-фаза первых 10 с (-af aphasemeter=video=0); предупреждения о моно/фазе в stderr; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af aphasemeter=video=0 -t 10 -vn -sn -f null -`
   }
 ]
 
