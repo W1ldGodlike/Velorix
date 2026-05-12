@@ -2024,6 +2024,66 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· xfwd -F',
     summary: 'Добавить X-Forwarded-For/-Proto к HTTP (--xfwd -F); за reverse-proxy/интроспекцию; допишите URL.',
     fullLine: 'yt-dlp --xfwd -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-cookies-browser -F',
+    summary: 'Явно отключить cookies из браузера (--no-cookies-from-browser -F); если мешают профили/переменные; допишите URL.',
+    fullLine: 'yt-dlp --no-cookies-from-browser -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· downloader-args ffmpeg -F',
+    summary: 'Доп. аргументы встроенному ffmpeg-downloader (--downloader-args ffmpeg:-nostdin -F); допишите URL.',
+    fullLine: 'yt-dlp --downloader-args ffmpeg:-nostdin -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· include-ads -F',
+    summary: 'Не вырезать рекламные вставки в плейлистах (--include-ads -F); допишите URL.',
+    fullLine: 'yt-dlp --include-ads -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· twofactor code',
+    summary: 'TV Provider/2FA: одноразовый код (--twofactor 123456); замените на актуальный TOTP; допишите URL.',
+    fullLine: 'yt-dlp --twofactor 123456 '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· video-password',
+    summary: 'Пароль возрастного/закрытого видео (--video-password PASSWORD); замените PASSWORD на реальный; допишите URL.',
+    fullLine: 'yt-dlp --video-password PASSWORD '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· ap-mso Rogers -F',
+    summary: 'Adobe Pass MSO id для TV Everywhere (--ap-mso Rogers -F); подставьте своего провайдера; допишите URL.',
+    fullLine: 'yt-dlp --ap-mso Rogers -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· ap-username -F',
+    summary: 'Логин TV Everywhere (--ap-username user@example.com -F); замените на свой аккаунт; допишите URL.',
+    fullLine: 'yt-dlp --ap-username user@example.com -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· concurrent-downloads 2 -F',
+    summary: 'Параллельные загрузки фрагментов/потоков (--concurrent-downloads 2 -F); подстройте число; допишите URL.',
+    fullLine: 'yt-dlp --concurrent-downloads 2 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo NZ -F',
+    summary: 'Гео-обход с кодом страны NZ (--geo-bypass-country NZ -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country NZ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo ZA -F',
+    summary: 'Гео-обход с кодом страны ZA (--geo-bypass-country ZA -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country ZA -F '
   }
 ]
 
@@ -2790,6 +2850,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· a:1 stream dur',
     summary: 'Вторая аудиодорожка a:1: start_time + duration (мультиязык, сдвиг); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:1 -show_entries stream=start_time,duration -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· s:1 pts tb',
+    summary: 'Вторая дорожка субтитров s:1: time_base + start_pts (смещение таймстемпов); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:1 -show_entries stream=time_base,start_pts -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:1 pts tb',
+    summary: 'Вторая аудиодорожка a:1: time_base + start_pts (сдвиг vs контейнер); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:1 -show_entries stream=time_base,start_pts -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· dynaudnorm 5s',
+    summary: 'Лёгкая динамическая нормализация громкости первых 5 с (-af dynaudnorm); проверка аудиофильтра; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af dynaudnorm=g=31:f=250:r=0.9 -t 5 -vn -sn -f null -`
   },
   {
     tool: 'ffmpeg',

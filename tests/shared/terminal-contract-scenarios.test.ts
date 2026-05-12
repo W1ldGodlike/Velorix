@@ -895,6 +895,20 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --xfwd -F ')
   })
 
+  it('downloads: TV auth helpers / downloader-args / include-ads / geo NZ ZA', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --no-cookies-from-browser -F ')
+    expect(lines).toContain('yt-dlp --downloader-args ffmpeg:-nostdin -F ')
+    expect(lines).toContain('yt-dlp --include-ads -F ')
+    expect(lines).toContain('yt-dlp --twofactor 123456 ')
+    expect(lines).toContain('yt-dlp --video-password PASSWORD ')
+    expect(lines).toContain('yt-dlp --ap-mso Rogers -F ')
+    expect(lines).toContain('yt-dlp --ap-username user@example.com -F ')
+    expect(lines).toContain('yt-dlp --concurrent-downloads 2 -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country NZ -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country ZA -F ')
+  })
+
   it('downloads: print-to-file / file-urls / source-address / annotations / storyboards / sponsorblock chapter / concat-playlist / fixup / use-extractors / default-search', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
     expect(lines).toContain('yt-dlp --print-to-file title flux-ytdlp-title.txt --skip-download ')
@@ -909,7 +923,7 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --default-search auto: -F ')
   })
 
-  it('preview: chapters json / s:0+a:1 stream duration / highpass', () => {
+  it('preview: chapters json / s:0+a:1 stream duration / pts time_base / dynaudnorm / highpass', () => {
     const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
     expect(lines.some((l) => l.includes('-show_chapters -of json=c=1'))).toBe(true)
     expect(
@@ -918,6 +932,25 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(
       lines.some((l) => l.includes('-select_streams a:1') && l.includes('stream=start_time,duration'))
     ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-select_streams s:1') &&
+          l.includes('time_base') &&
+          l.includes('start_pts') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-select_streams a:1') &&
+          l.includes('time_base') &&
+          l.includes('start_pts') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+    expect(lines.some((l) => l.includes('-af dynaudnorm') && l.includes('-t 5'))).toBe(true)
     expect(lines.some((l) => l.includes('-af highpass=f=200') && l.includes('-t 5'))).toBe(true)
   })
 
