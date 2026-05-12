@@ -59,6 +59,8 @@ export interface MainWindowUiPanelState {
   ffmpegOutput?: boolean
   /** §4.1 / v0 — блок превью argv ffmpeg в секции «Вывод». */
   exportCommandPreview?: boolean
+  /** §13 — журнал завершённых обработок FFmpeg в правой панели главного окна. */
+  processingHistory?: boolean
   /** §4.1 / §9 — раскрытие `details` инспектора под превью. */
   probeExportSummary?: boolean
   probeTracks?: boolean

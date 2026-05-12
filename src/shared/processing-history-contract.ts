@@ -1,0 +1,33 @@
+export type ProcessingHistoryKind = 'ffmpegExport' | 'ffmpegSnapshot' | 'autoExport'
+export type ProcessingHistoryOutcome = 'success' | 'error' | 'cancelled'
+
+export interface ProcessingHistoryEntry {
+  id: string
+  kind: ProcessingHistoryKind
+  startedAt: number
+  finishedAt: number
+  inputPath: string
+  outputPath: string | null
+  outcome: ProcessingHistoryOutcome
+  status: string
+  errorHint: string | null
+}
+
+export interface ProcessingHistoryFilter {
+  kind?: ProcessingHistoryKind
+  outcome?: ProcessingHistoryOutcome
+  query?: string
+}
+
+export interface ProcessingHistoryWeeklySummary {
+  since: number
+  until: number
+  total: number
+  success: number
+  error: number
+  cancelled: number
+  ffmpegExport: number
+  ffmpegSnapshot: number
+  autoExport: number
+  totalDurationMs: number
+}

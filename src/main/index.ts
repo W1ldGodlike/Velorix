@@ -117,7 +117,15 @@ import {
   pickUniqueAutoExportOutputPath,
   resolveFfmpegExportJobOptionsFromAppSettings
 } from './ffmpeg-export-resolve-from-settings'
+import {
+  appendProcessingHistoryEntry,
+  clearProcessingHistory,
+  findProcessingHistoryEntryById,
+  getProcessingHistoryWeeklySummary,
+  readProcessingHistoryNewestFirst
+} from './processing-history'
 import { probeMediaFile } from './ffprobe-service'
+import type { ProcessingHistoryFilter } from '../shared/processing-history-contract'
 import {
   getTerminalCommandHints,
   resolveTerminalCliSessionLogPath,
@@ -2129,6 +2137,7 @@ app.whenReady().then(() => {
       }
       const ac = new AbortController()
       activeExportAbort = ac
+      const startedAt = Date.now()
       const pushProgress = (p: FfmpegExportProgressPayload): void => {
         if (!targetWin.isDestroyed()) {
           targetWin.webContents.send(mw.exportProgress, p)
@@ -2149,6 +2158,16 @@ app.whenReady().then(() => {
         if (result.ok) {
           rememberExportOutputPath(outPath)
           rememberFfmpegExportDirectory(outPath)
+          appendProcessingHistoryEntry(paths.userData, {
+            kind: 'autoExport',
+            startedAt,
+            finishedAt: Date.now(),
+            inputPath: absoluteInput,
+            outputPath: outPath,
+            outcome: 'success',
+            status: 'Авто-экспорт завершён',
+            errorHint: null
+          })
           emitDownloadsLog({
             kind: 'line',
             rowId,
@@ -2158,6 +2177,16 @@ app.whenReady().then(() => {
           return
         }
         if (result.error === 'Экспорт отменён') {
+          appendProcessingHistoryEntry(paths.userData, {
+            kind: 'autoExport',
+            startedAt,
+            finishedAt: Date.now(),
+            inputPath: absoluteInput,
+            outputPath: outPath,
+            outcome: 'cancelled',
+            status: 'Авто-экспорт отменён',
+            errorHint: null
+          })
           emitDownloadsLog({
             kind: 'line',
             rowId,
@@ -2166,6 +2195,16 @@ app.whenReady().then(() => {
           })
           return
         }
+        appendProcessingHistoryEntry(paths.userData, {
+          kind: 'autoExport',
+          startedAt,
+          finishedAt: Date.now(),
+          inputPath: absoluteInput,
+          outputPath: outPath,
+          outcome: 'error',
+          status: 'Авто-экспорт не удался',
+          errorHint: result.error
+        })
         emitDownloadsLog({
           kind: 'line',
           rowId,
@@ -2697,12 +2736,75 @@ app.whenReady().then(() => {
     const request =
       raw && typeof raw === 'object' ? (raw as { targets?: unknown }).targets : undefined
     const targets = Array.isArray(request)
-      ? request.filter((id): id is 'previewCache' | 'ytdlpPartials' => {
-          return id === 'previewCache' || id === 'ytdlpPartials'
+      ? request.filter((id): id is 'previewCache' | 'ytdlpPartials' | 'ffmpegTemp' => {
+          return id === 'previewCache' || id === 'ytdlpPartials' || id === 'ffmpegTemp'
         })
       : undefined
     return cleanDiagnosticsMaintenance(resolveAppPaths(), targets ? { targets } : undefined)
   })
+
+  ipcMain.handle(mw.processingHistoryGet, (_event, raw: unknown) => {
+    const filter: ProcessingHistoryFilter = {}
+    const limit =
+      raw && typeof raw === 'object' && typeof (raw as { limit?: unknown }).limit === 'number'
+        ? (raw as { limit: number }).limit
+        : 100
+    if (raw && typeof raw === 'object') {
+      const src = raw as { kind?: unknown; outcome?: unknown; query?: unknown }
+      if (
+        src.kind === 'ffmpegExport' ||
+        src.kind === 'ffmpegSnapshot' ||
+        src.kind === 'autoExport'
+      ) {
+        filter.kind = src.kind
+      }
+      if (src.outcome === 'success' || src.outcome === 'error' || src.outcome === 'cancelled') {
+        filter.outcome = src.outcome
+      }
+      if (typeof src.query === 'string') {
+        filter.query = src.query
+      }
+    }
+    return readProcessingHistoryNewestFirst(resolveAppPaths().userData, filter, limit)
+  })
+
+  ipcMain.handle(mw.processingHistoryWeeklySummary, () => {
+    return getProcessingHistoryWeeklySummary(resolveAppPaths().userData)
+  })
+
+  ipcMain.handle(mw.processingHistoryClear, (): { ok: true } | { ok: false; error: string } => {
+    try {
+      clearProcessingHistory(resolveAppPaths().userData)
+      return { ok: true }
+    } catch (error) {
+      return { ok: false, error: error instanceof Error ? error.message : String(error) }
+    }
+  })
+
+  ipcMain.handle(
+    mw.processingHistoryOpenOutput,
+    async (
+      _event,
+      raw: unknown
+    ): Promise<{ ok: true; path: string } | { ok: false; error: string }> => {
+      if (!raw || typeof raw !== 'object') {
+        return { ok: false, error: 'Некорректный запрос' }
+      }
+      const payload = raw as { id?: unknown; mode?: unknown }
+      if (typeof payload.id !== 'string') {
+        return { ok: false, error: 'Не указана запись истории' }
+      }
+      if (!isExportOutputOpenMode(payload.mode)) {
+        return { ok: false, error: 'Некорректное действие' }
+      }
+      const entry = findProcessingHistoryEntryById(resolveAppPaths().userData, payload.id)
+      if (!entry?.outputPath) {
+        return { ok: false, error: 'У записи нет файла результата' }
+      }
+      rememberExportOutputPath(entry.outputPath)
+      return openExportOutputPath(entry.outputPath, payload.mode)
+    }
+  )
 
   ipcMain.handle(mw.openDownloadsWindow, (_, raw: unknown) => {
     const payload = parseDownloadsOpenPayload(raw)
@@ -2779,6 +2881,7 @@ app.whenReady().then(() => {
     const outPath = ensureFfmpegExportExtension(pick.filePath, exportContainer)
     const ac = new AbortController()
     activeExportAbort = ac
+    const startedAt = Date.now()
 
     const pushProgress = (p: FfmpegExportProgressPayload): void => {
       win.webContents.send(mw.exportProgress, p)
@@ -2800,11 +2903,41 @@ app.whenReady().then(() => {
       if (result.ok) {
         rememberExportOutputPath(outPath)
         rememberFfmpegExportDirectory(outPath)
+        appendProcessingHistoryEntry(paths.userData, {
+          kind: 'ffmpegExport',
+          startedAt,
+          finishedAt: Date.now(),
+          inputPath: abs,
+          outputPath: outPath,
+          outcome: 'success',
+          status: 'Экспорт завершён',
+          errorHint: null
+        })
         return { ok: true, path: outPath }
       }
       if (result.error === 'Экспорт отменён') {
+        appendProcessingHistoryEntry(paths.userData, {
+          kind: 'ffmpegExport',
+          startedAt,
+          finishedAt: Date.now(),
+          inputPath: abs,
+          outputPath: outPath,
+          outcome: 'cancelled',
+          status: 'Экспорт отменён',
+          errorHint: null
+        })
         return { ok: false, cancelled: true }
       }
+      appendProcessingHistoryEntry(paths.userData, {
+        kind: 'ffmpegExport',
+        startedAt,
+        finishedAt: Date.now(),
+        inputPath: abs,
+        outputPath: outPath,
+        outcome: 'error',
+        status: 'Экспорт не удался',
+        errorHint: result.error
+      })
       return { ok: false, error: result.error }
     } finally {
       activeExportAbort = null
@@ -2889,6 +3022,7 @@ app.whenReady().then(() => {
       }
 
       const outPath = ensureFfmpegSnapshotExtension(pick.filePath, snapshotFormat)
+      const startedAt = Date.now()
       const result = await runFfmpegSnapshotFrame({
         ffmpegPath: ffmpeg,
         inputPath: abs,
@@ -2898,8 +3032,28 @@ app.whenReady().then(() => {
       if (result.ok) {
         rememberExportOutputPath(outPath)
         rememberFfmpegSnapshotDirectory(outPath)
+        appendProcessingHistoryEntry(paths.userData, {
+          kind: 'ffmpegSnapshot',
+          startedAt,
+          finishedAt: Date.now(),
+          inputPath: abs,
+          outputPath: outPath,
+          outcome: 'success',
+          status: 'Кадр сохранён',
+          errorHint: null
+        })
         return { ok: true, path: outPath }
       }
+      appendProcessingHistoryEntry(paths.userData, {
+        kind: 'ffmpegSnapshot',
+        startedAt,
+        finishedAt: Date.now(),
+        inputPath: abs,
+        outputPath: outPath,
+        outcome: 'error',
+        status: 'Сохранение кадра не удалось',
+        errorHint: result.error
+      })
       return result
     }
   )

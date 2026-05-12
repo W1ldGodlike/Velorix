@@ -308,6 +308,7 @@ const MAIN_UI_PANEL_KEYS = [
   'ffmpegPresets',
   'ffmpegOutput',
   'exportCommandPreview',
+  'processingHistory',
   'probeExportSummary',
   'probeTracks',
   'probeChapters',

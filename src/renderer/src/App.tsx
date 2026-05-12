@@ -4,6 +4,7 @@ import type { JSX, SyntheticEvent } from 'react'
 import { AboutDialog } from './components/AboutDialog'
 import { KnowledgeDialog } from './components/KnowledgeDialog'
 import { DownloadsHistoryPanel } from './components/downloads/DownloadsHistoryPanel'
+import { ProcessingHistoryPanel } from './components/ProcessingHistoryPanel'
 import {
   DownloadsLogPanel,
   type DownloadsLogLineView
@@ -101,6 +102,11 @@ import type {
 } from '../../shared/ytdlp-download-contract'
 import { groupYtdlpCommandHintsByCategory } from '../../shared/ytdlp-command-hints-group'
 import type { YtdlpDownloadHistoryEntry } from '../../shared/ytdlp-history-contract'
+import type {
+  ProcessingHistoryEntry,
+  ProcessingHistoryFilter,
+  ProcessingHistoryWeeklySummary
+} from '../../shared/processing-history-contract'
 import type { DownloadsLogPayload } from '../../shared/downloads-log-contract'
 import {
   TERMINAL_CURRENT_FILE_PLACEHOLDER,
@@ -663,6 +669,41 @@ function downloadsHistoryOutcomeLabel(outcome: YtdlpDownloadHistoryEntry['outcom
   return 'Ошибка'
 }
 
+function processingHistoryKindLabel(kind: ProcessingHistoryEntry['kind']): string {
+  if (kind === 'ffmpegSnapshot') {
+    return 'Кадр'
+  }
+  if (kind === 'autoExport') {
+    return 'Авто-экспорт'
+  }
+  return 'Экспорт'
+}
+
+function processingHistoryOutcomeLabel(outcome: ProcessingHistoryEntry['outcome']): string {
+  if (outcome === 'success') {
+    return 'Готово'
+  }
+  if (outcome === 'cancelled') {
+    return 'Отмена'
+  }
+  return 'Ошибка'
+}
+
+function formatDurationLabel(ms: number): string {
+  if (!Number.isFinite(ms) || ms <= 0) {
+    return '0с'
+  }
+  const totalSec = Math.round(ms / 1000)
+  const min = Math.floor(totalSec / 60)
+  const sec = totalSec % 60
+  if (min <= 0) {
+    return `${sec}с`
+  }
+  const h = Math.floor(min / 60)
+  const m = min % 60
+  return h > 0 ? `${h}ч ${m}м` : `${m}м ${sec}с`
+}
+
 function formatDownloadsLogText(lines: DownloadsLogLineView[]): string {
   return lines.map((line) => `[${line.rowId}] ${line.stream}: ${line.text}`).join('\n')
 }
@@ -700,6 +741,11 @@ function App(): JSX.Element {
   const [downloadsExpertHintFilter, setDownloadsExpertHintFilter] = useState('')
   const [downloadsHistory, setDownloadsHistory] = useState<YtdlpDownloadHistoryEntry[]>([])
   const [downloadsHistoryBusy, setDownloadsHistoryBusy] = useState(false)
+  const [processingHistory, setProcessingHistory] = useState<ProcessingHistoryEntry[]>([])
+  const [processingHistoryBusy, setProcessingHistoryBusy] = useState(false)
+  const [processingHistoryFilter, setProcessingHistoryFilter] = useState<ProcessingHistoryFilter>({})
+  const [processingHistoryWeeklySummary, setProcessingHistoryWeeklySummary] =
+    useState<ProcessingHistoryWeeklySummary | null>(null)
   const [downloadsLogLines, setDownloadsLogLines] = useState<DownloadsLogLineView[]>([])
   const [downloadsLogTargetRowId, setDownloadsLogTargetRowId] = useState<number | null>(null)
   const [downloadsOutputDirectory, setDownloadsOutputDirectory] = useState<{
@@ -1045,6 +1091,48 @@ function App(): JSX.Element {
     }
   }, [])
 
+  const refreshProcessingHistory = useCallback(
+    async (filter: ProcessingHistoryFilter = processingHistoryFilter): Promise<void> => {
+      setProcessingHistoryBusy(true)
+      try {
+        const [rows, summary] = await Promise.all([
+          window.fluxalloy.processingHistory.get({ ...filter, limit: 100 }),
+          window.fluxalloy.processingHistory.weeklySummary()
+        ])
+        setProcessingHistory(rows)
+        setProcessingHistoryWeeklySummary(summary)
+      } finally {
+        setProcessingHistoryBusy(false)
+      }
+    },
+    [processingHistoryFilter]
+  )
+
+  const applyProcessingHistoryFilter = useCallback((next: ProcessingHistoryFilter): void => {
+    setProcessingHistoryFilter(next)
+    void refreshProcessingHistory(next)
+  }, [refreshProcessingHistory])
+
+  const exportVisibleProcessingHistory = useCallback(async (): Promise<void> => {
+    const payload = {
+      schema: 1,
+      exportedAt: Date.now(),
+      filter: processingHistoryFilter,
+      weeklySummary: processingHistoryWeeklySummary,
+      entries: processingHistory
+    }
+    const res = await window.fluxalloy.saveTextWithDialog({
+      title: 'Экспорт истории обработок',
+      defaultFileName: 'fluxalloy-processing-history.json',
+      content: JSON.stringify(payload, null, 2)
+    })
+    if (res.ok) {
+      setStatusHint('История обработок сохранена')
+    } else if ('error' in res) {
+      setStatusHint(res.error)
+    }
+  }, [processingHistory, processingHistoryFilter, processingHistoryWeeklySummary])
+
   const handleDownloadsRailSectionToggle = useCallback(
     (key: DownloadsRailPanelKey) => {
       return (e: SyntheticEvent<HTMLDetailsElement>): void => {
@@ -1243,6 +1331,22 @@ function App(): JSX.Element {
     void window.fluxalloy.downloads.getHistory().then((rows) => {
       if (mounted) {
         setDownloadsHistory(rows)
+      }
+    })
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  useEffect(() => {
+    let mounted = true
+    void Promise.all([
+      window.fluxalloy.processingHistory.get({ limit: 100 }),
+      window.fluxalloy.processingHistory.weeklySummary()
+    ]).then(([rows, summary]) => {
+      if (mounted) {
+        setProcessingHistory(rows)
+        setProcessingHistoryWeeklySummary(summary)
       }
     })
     return () => {
@@ -1908,6 +2012,7 @@ function App(): JSX.Element {
         inputPath: preview.path,
         timeSec
       })
+      void refreshProcessingHistory()
       if (res.ok) {
         const savedName = res.path.split(/[\\/]/).pop() || res.path
         setLastSnapshotPath(res.path)
@@ -1970,6 +2075,7 @@ function App(): JSX.Element {
         videoBlur: exportVideoBlur,
         audioNormalize: exportAudioNormalize
       })
+      void refreshProcessingHistory()
       if (res.ok) {
         const savedName = res.path.split(/[\\/]/).pop() || res.path
         setLastExportPath(res.path)
@@ -3592,6 +3698,48 @@ function App(): JSX.Element {
                   ) : null}
                 </div>
               </details>
+              <ProcessingHistoryPanel
+                open={panelOpen('processingHistory')}
+                busy={processingHistoryBusy}
+                entries={processingHistory}
+                filter={processingHistoryFilter}
+                weeklySummary={processingHistoryWeeklySummary}
+                onToggle={(nextOpen) => {
+                  persistMainWindowUiPanelToggle('processingHistory', nextOpen)
+                }}
+                onFilterChange={applyProcessingHistoryFilter}
+                onRefresh={() => {
+                  void refreshProcessingHistory()
+                }}
+                onClear={() => {
+                  void window.fluxalloy.processingHistory.clear().then((res) => {
+                    if (!res.ok) {
+                      setStatusHint(res.error)
+                      return
+                    }
+                    setProcessingHistory([])
+                    void window.fluxalloy.processingHistory.weeklySummary().then(
+                      setProcessingHistoryWeeklySummary
+                    )
+                  })
+                }}
+                onExportVisible={() => {
+                  void exportVisibleProcessingHistory()
+                }}
+                onOpenOutput={(id, mode) => {
+                  void window.fluxalloy.processingHistory.openOutput(id, mode).then((res) => {
+                    if (!res.ok) {
+                      setStatusHint(res.error)
+                    } else if (mode === 'preview') {
+                      setStatusHint('Результат обработки открыт в превью')
+                    }
+                  })
+                }}
+                formatTimeLabel={formatDownloadsHistoryTime}
+                formatDurationLabel={formatDurationLabel}
+                kindLabel={processingHistoryKindLabel}
+                outcomeLabel={processingHistoryOutcomeLabel}
+              />
             </aside>
           ) : null}
         </main>

@@ -1685,6 +1685,52 @@ button.app-downloads-hint-token:disabled {
   line-height: 1.35;
 }
 
+.app-processing-history-count {
+  float: right;
+  color: var(--fa-text-muted);
+  font-size: 0.66rem;
+}
+
+.app-processing-history-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0 0.8rem 0.55rem;
+}
+
+.app-processing-history-summary span {
+  border-radius: 999px;
+  border: 1px solid var(--fa-border-subtle);
+  padding: 0.18rem 0.45rem;
+  background: color-mix(in srgb, var(--fa-surface-elevated) 80%, var(--fa-bg));
+  color: var(--fa-text-secondary);
+  font-size: 0.62rem;
+  font-weight: 700;
+}
+
+.app-processing-history-controls,
+.app-processing-history-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  padding: 0 0.8rem 0.55rem;
+}
+
+.app-processing-history-controls .app-control {
+  flex: 1 1 7.5rem;
+  min-width: 0;
+}
+
+.app-processing-history-list {
+  display: flex;
+  max-height: 20rem;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.55rem;
+  overflow: auto;
+  padding: 0 0.8rem 0.8rem;
+}
+
 .app-field-switch {
   align-items: flex-start;
 }

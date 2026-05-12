@@ -64,6 +64,11 @@ import type {
   YtdlpGetCliOptionsParams
 } from '../shared/ytdlp-download-contract'
 import type { YtdlpDownloadHistoryEntry } from '../shared/ytdlp-history-contract'
+import type {
+  ProcessingHistoryEntry,
+  ProcessingHistoryFilter,
+  ProcessingHistoryWeeklySummary
+} from '../shared/processing-history-contract'
 import type { DownloadsLogPayload } from '../shared/downloads-log-contract'
 import type {
   TerminalCommandHintEntry,
@@ -259,6 +264,15 @@ export interface FluxAlloyApi {
       mode: 'file' | 'folder' | 'preview'
     ) => Promise<{ ok: true; path: string } | { ok: false; error: string }>
     onProgress: (listener: (progress: FfmpegExportProgressPayload) => void) => () => void
+  }
+  processingHistory: {
+    get: (filter?: ProcessingHistoryFilter & { limit?: number }) => Promise<ProcessingHistoryEntry[]>
+    weeklySummary: () => Promise<ProcessingHistoryWeeklySummary>
+    clear: () => Promise<{ ok: true } | { ok: false; error: string }>
+    openOutput: (
+      id: string,
+      mode: 'file' | 'folder' | 'preview'
+    ) => Promise<{ ok: true; path: string } | { ok: false; error: string }>
   }
   onPreviewOpened: (listener: (payload: PreviewOpenedPayload) => void) => () => void
   onThemeChanged: (listener: (theme: ResolvedAppTheme) => void) => () => void

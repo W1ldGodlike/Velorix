@@ -142,6 +142,7 @@ describe('settings-store yt-dlp fields', () => {
           ffmpegSettingsRailOpen: false,
           quickYtdlp: true,
           ffmpegVideo: false,
+          processingHistory: true,
           probeTracks: true,
           probeBad: false,
           unknownKey: true,
@@ -162,6 +163,7 @@ describe('settings-store yt-dlp fields', () => {
         ffmpegSettingsRailOpen: false,
         quickYtdlp: true,
         ffmpegVideo: false,
+        processingHistory: true,
         probeTracks: true
       },
       downloadsWindowUiPanels: { log: false, format: true }

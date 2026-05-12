@@ -65,6 +65,11 @@ import type {
   YtdlpGetCliOptionsParams
 } from '../shared/ytdlp-download-contract'
 import type { YtdlpDownloadHistoryEntry } from '../shared/ytdlp-history-contract'
+import type {
+  ProcessingHistoryEntry,
+  ProcessingHistoryFilter,
+  ProcessingHistoryWeeklySummary
+} from '../shared/processing-history-contract'
 import type { DownloadsLogPayload } from '../shared/downloads-log-contract'
 import type {
   TerminalCommandHintEntry,
@@ -88,6 +93,7 @@ const MAIN_UI_PANEL_KEYS = [
   'ffmpegPresets',
   'ffmpegOutput',
   'exportCommandPreview',
+  'processingHistory',
   'probeExportSummary',
   'probeTracks',
   'probeChapters',
@@ -490,6 +496,20 @@ const fluxalloy = {
         ipcRenderer.removeListener(channel, handler)
       }
     }
+  },
+  processingHistory: {
+    get: (
+      filter?: ProcessingHistoryFilter & { limit?: number }
+    ): Promise<ProcessingHistoryEntry[]> => ipcRenderer.invoke(mw.processingHistoryGet, filter ?? {}),
+    weeklySummary: (): Promise<ProcessingHistoryWeeklySummary> =>
+      ipcRenderer.invoke(mw.processingHistoryWeeklySummary),
+    clear: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(mw.processingHistoryClear),
+    openOutput: (
+      id: string,
+      mode: 'file' | 'folder' | 'preview'
+    ): Promise<{ ok: true; path: string } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(mw.processingHistoryOpenOutput, { id, mode })
   },
   onPreviewOpened: (listener: (payload: PreviewOpenedPayload) => void): (() => void) => {
     const channel = mw.previewOpened

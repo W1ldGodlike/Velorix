@@ -12,6 +12,7 @@ export const MAIN_WINDOW_UI_PANEL_DEFAULTS: Required<MainWindowUiPanelState> = {
   ffmpegPresets: false,
   ffmpegOutput: true,
   exportCommandPreview: true,
+  processingHistory: false,
   probeExportSummary: false,
   probeTracks: false,
   probeChapters: false,
