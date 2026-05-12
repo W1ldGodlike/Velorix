@@ -2,14 +2,10 @@ import { useEffect, useMemo, useState } from 'react'
 import type { JSX } from 'react'
 
 import type { KnowledgeArticleListItem } from '../../../shared/knowledge-contract'
+import { parseKnowledgeMarkdown } from '../../../shared/knowledge-markdown'
 
-function markdownPreview(markdown: string): string {
-  return markdown
-    .replace(/\r\n/g, '\n')
-    .split('\n')
-    .map((line) => line.replace(/\t/g, '  '))
-    .join('\n')
-}
+import { KnowledgeMarkdownBody } from './KnowledgeMarkdownBody'
+import { uiText } from '../locales/ui-text'
 
 export function KnowledgeDialog({
   open,
@@ -23,7 +19,7 @@ export function KnowledgeDialog({
   const [articles, setArticles] = useState<KnowledgeArticleListItem[]>([])
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null)
   const [filter, setFilter] = useState('')
-  const [markdown, setMarkdown] = useState('')
+  const [markdownSource, setMarkdownSource] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -71,12 +67,24 @@ export function KnowledgeDialog({
         onStatus?.(res.error)
         return
       }
-      setMarkdown(markdownPreview(res.markdown))
+      setMarkdownSource(res.markdown)
     })
     return () => {
       disposed = true
     }
   }, [onStatus, open, selectedSlug])
+
+  const selected = useMemo(
+    () => articles.find((article) => article.slug === selectedSlug) ?? null,
+    [articles, selectedSlug]
+  )
+
+  const mdBlocks = useMemo(() => {
+    if (!selected) {
+      return []
+    }
+    return parseKnowledgeMarkdown(markdownSource, { articleTitle: selected.title })
+  }, [markdownSource, selected])
 
   const visibleArticles = useMemo(() => {
     const q = filter.trim().toLowerCase()
@@ -91,8 +99,6 @@ export function KnowledgeDialog({
   if (!open) {
     return null
   }
-
-  const selected = articles.find((article) => article.slug === selectedSlug) ?? null
 
   return (
     <div
@@ -116,23 +122,21 @@ export function KnowledgeDialog({
         <div className="app-modal-header-row">
           <div>
             <h2 id="knowledge-title" className="app-modal-title">
-              База знаний
+              {uiText('knowledgeTitle')}
             </h2>
-            <p className="app-modal-hint">
-              Локальные статьи из <code>Help/*.md</code>, доступны без браузера и внешних ссылок.
-            </p>
+            <p className="app-modal-hint">{uiText('knowledgeHint')}</p>
           </div>
           <button type="button" className="app-btn" onClick={onClose}>
-            Закрыть
+            {uiText('closeButton')}
           </button>
         </div>
 
         <div className="app-knowledge-grid">
-          <aside className="app-knowledge-sidebar" aria-label="Оглавление справки">
+          <aside className="app-knowledge-sidebar" aria-label={uiText('knowledgeTocAria')}>
             <input
               className="app-input app-knowledge-search"
               value={filter}
-              placeholder="Поиск по статьям"
+              placeholder={uiText('knowledgeSearchPlaceholder')}
               onChange={(e) => {
                 setFilter(e.target.value)
               }}
@@ -159,12 +163,18 @@ export function KnowledgeDialog({
           </aside>
 
           <article className="app-knowledge-article">
-            {loading ? <p className="app-modal-hint">Загрузка…</p> : null}
+            {loading ? <p className="app-modal-hint">{uiText('loading')}</p> : null}
             {error ? <p className="app-modal-hint app-error-text">{error}</p> : null}
             {!loading && !error && selected ? (
               <>
                 <h3>{selected.title}</h3>
-                <pre className="app-knowledge-markdown">{markdown}</pre>
+                <KnowledgeMarkdownBody
+                  blocks={mdBlocks}
+                  onOpenSlug={(slug) => {
+                    setSelectedSlug(slug)
+                    setFilter('')
+                  }}
+                />
               </>
             ) : null}
           </article>

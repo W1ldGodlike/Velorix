@@ -31,7 +31,7 @@
 - [ ] Нет локализации `locales/**`.
 - [~] Основная вкладка `Загрузки` в React уже закрывает очередь, старт/stop/retry/pause, настройки yt-dlp, каталог/cookies/network, live log, историю и open file/folder; open file/folder/«В редактор» учитывают финальный файл после merge и Windows UTF-8 stdout; pop-out окно оставлено вторичным режимом для редких settings.
 - [~] ffprobe-инспектор есть под превью и отдельным окном: дорожки/главы/raw JSON, TXT/HTML export, Dolby/HDR side_data summary, контекстные действия.
-- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; по последней зелёной проверке `npm run check:quiet` выполняет **43 test files / 543 tests** + валидаторы `trusted_hashes`, нумерации журнала и secrets guard. Покрыты чистые парсеры и сервисы (`ytdlp-extra-args`, `ytdlp-progress-parser` + retry/fixup-постпроцессоры yt-dlp §6.4, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options` + превью каталога §6.3, `ytdlp-download-output`, `ytdlp-download-queue-persist`, `ytdlp-commands-hints`, `ytdlp-os-pause-support`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-export-resolve-from-settings`, `ffmpeg-frame-snapshot-service`, `external-process-log`, `support-bundle`, `ipc-channels`, `engine-contract`, `ffmpeg-export-argv` (+ §7.2 audio/video filters), `external-url`, `ffprobe-summary-export`, `ffprobe-chapters`, `ffprobe-timecode`, `ffprobe-disposition`, `ffprobe-video-fps`, `ffprobe-side-data`, `ffprobe-stream-duration-detail`, `ffprobe-service`, `knowledge-service`, `timeline-ruler`, `waveform-peaks`, `video-frame-snap`, `lucide-downloads-icons`, `window-hidpi`, `terminal-contract-scenarios`, `terminal-inline-suggest`).
+- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; по последней зелёной проверке `npm run check:quiet` выполняет **44 test files / 547 tests** + валидаторы `trusted_hashes`, нумерации журнала и secrets guard. Покрыты чистые парсеры и сервисы (`ytdlp-extra-args`, `ytdlp-progress-parser` + retry/fixup-постпроцессоры yt-dlp §6.4, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options` + превью каталога §6.3, `ytdlp-download-output`, `ytdlp-download-queue-persist`, `ytdlp-commands-hints`, `ytdlp-os-pause-support`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-export-resolve-from-settings`, `ffmpeg-frame-snapshot-service`, `external-process-log`, `support-bundle`, `ipc-channels`, `engine-contract`, `ffmpeg-export-argv` (+ §7.2 audio/video filters), `external-url`, `ffprobe-summary-export`, `ffprobe-chapters`, `ffprobe-timecode`, `ffprobe-disposition`, `ffprobe-video-fps`, `ffprobe-side-data`, `ffprobe-stream-duration-detail`, `ffprobe-service`, `knowledge-service`, `timeline-ruler`, `waveform-peaks`, `video-frame-snap`, `lucide-downloads-icons`, `window-hidpi`, `terminal-contract-scenarios`, `terminal-inline-suggest`).
 
 ## Журнал решений и проверок
 
@@ -45,7 +45,7 @@
 - [~] §6/§7: downloads→processing — batch-режим, HW encode и оставшиеся расхождения embedded/pop-out.
 - [~] §8: terminal/CLI — polish подсказок, сценариев и UX выполнения команд без расширения TODO-архива.
 - [~] §9/§18: ffprobe/diagnostics — crash/e2e smoke и точечные редкие поля по мере нахождения.
-- [~] §15: knowledge viewer — markdown rendering, ссылки из подсказок и политика EN/fallback.
+- [~] §15: knowledge viewer — довести статьи/tooltips; EN контент или fallback.
 - [~] §1.1/§2.2/§5: локализация, состояние UI, contrast/focus audit и DPI/multi-monitor smoke.
 
 ---
@@ -428,13 +428,13 @@
 
 ## §15. База знаний и подсказки
 
-- [~] Файлы `Help/*.md` есть.
-- [ ] Viewer внутри приложения.
-- [ ] Оглавление.
-- [ ] Поиск.
-- [ ] Открытие статей из подсказок.
+- [x] Файлы `Help/*.md` есть.
+- [~] Viewer внутри приложения (markdown body, внутренние `.md` и внешние `https`).
+- [x] Оглавление.
+- [x] Поиск.
+- [ ] Открытие статей из подсказок (inline help вне Knowledge).
 - [ ] Tooltips на ключевых контролах.
-- [ ] EN-локализация статей или политика fallback.
+- [~] EN-локализация статей или политика fallback (chrome окна EN/RU, статьи RU-first).
 
 ## §16. Аппаратное ускорение
 

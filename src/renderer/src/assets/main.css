@@ -2549,14 +2549,118 @@ button.app-downloads-hint-token:disabled {
   font-size: 1rem;
 }
 
-.app-knowledge-markdown {
+.app-knowledge-body {
   margin: 0;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
   color: var(--fa-text-secondary);
-  font-size: 0.8rem;
-  line-height: 1.5;
+  font-size: 0.84rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.app-knowledge-body .app-knowledge-h {
+  margin: 0.85rem 0 0.45rem;
+  font-weight: 650;
+  color: var(--fa-text-primary);
+  line-height: 1.25;
+}
+
+.app-knowledge-body .app-knowledge-h:first-child {
+  margin-top: 0;
+}
+
+.app-knowledge-h1 {
+  font-size: 1.05rem;
+}
+
+.app-knowledge-h2 {
+  font-size: 0.95rem;
+}
+
+.app-knowledge-h3 {
+  font-size: 0.88rem;
+}
+
+.app-knowledge-p {
+  margin: 0 0 0.55rem;
+}
+
+.app-knowledge-ul,
+.app-knowledge-ol {
+  margin: 0 0 0.65rem;
+  padding-left: 1.25rem;
+}
+
+.app-knowledge-li {
+  margin: 0.2rem 0;
+}
+
+.app-knowledge-code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78em;
+  padding: 0.08rem 0.28rem;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--fa-surface) 70%, var(--fa-border-subtle));
+  color: var(--fa-text-primary);
+}
+
+.app-knowledge-pre {
+  margin: 0 0 0.65rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid var(--fa-border-subtle);
+  background: color-mix(in srgb, var(--fa-surface) 92%, var(--fa-border));
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.76rem;
+  line-height: 1.45;
+  overflow: auto;
+  white-space: pre;
+}
+
+.app-knowledge-pre code {
+  font-size: inherit;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.app-knowledge-pre-lang {
+  font-size: 0.68rem;
+  color: var(--fa-text-muted);
+  margin-bottom: 0.35rem;
+}
+
+.app-knowledge-a {
+  color: var(--fa-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.app-knowledge-a:hover {
+  color: color-mix(in srgb, var(--fa-accent) 88%, var(--fa-text-primary));
+}
+
+.app-knowledge-link {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--fa-accent);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-align: left;
+}
+
+.app-knowledge-link:hover {
+  color: color-mix(in srgb, var(--fa-accent) 88%, var(--fa-text-primary));
+}
+
+.app-knowledge-link-denied {
+  color: var(--fa-text-muted);
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in srgb, var(--fa-danger) 55%, transparent);
 }
 
 @media (max-width: 760px) {
