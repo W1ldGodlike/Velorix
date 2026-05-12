@@ -11,6 +11,8 @@ import type {
   DiagnosticsMaintenanceTarget,
   DiagnosticsMaintenanceTargetId
 } from '../shared/diagnostics-contract'
+import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import { getMainApplicationStrings } from '../shared/main-application-locale'
 
 interface UsageStats {
   files: number
@@ -247,14 +249,18 @@ export function getDiagnosticsMaintenanceSnapshot(paths: AppPaths): DiagnosticsM
 
 export function cleanDiagnosticsMaintenance(
   paths: AppPaths,
-  request?: DiagnosticsCleanMaintenanceRequest
+  request?: DiagnosticsCleanMaintenanceRequest,
+  locale: DownloadsWindowUiLocale = 'ru'
 ): DiagnosticsCleanMaintenanceResult {
   const requested = new Set<DiagnosticsMaintenanceTargetId>(
     request?.targets !== undefined ? request.targets : defaultTargets
   )
   const specs = targetSpecs(paths).filter((spec) => requested.has(spec.id))
   if (specs.length === 0) {
-    return { ok: false, error: 'Не выбраны категории обслуживания' }
+    return {
+      ok: false,
+      error: getMainApplicationStrings(locale).diagnosticsMaintenanceNoTargets
+    }
   }
 
   const totals: CleanStats = { removedFiles: 0, removedDirectories: 0, removedBytes: 0 }

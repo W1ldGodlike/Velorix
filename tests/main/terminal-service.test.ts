@@ -102,7 +102,8 @@ describe('runTerminalCommand', () => {
         userBin: 'C:\\app\\userData\\bin'
       },
       line: 'FFMPEG -version',
-      currentFilePath: null
+      currentFilePath: null,
+      locale: 'ru'
     })
     expect(result.ok).toBe(true)
     if (result.ok) {

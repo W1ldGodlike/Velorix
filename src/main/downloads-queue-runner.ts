@@ -32,6 +32,17 @@ import { resolveYtdlpOutputDirectory } from './ytdlp-download-output'
 import { appendYtdlpDownloadHistoryEntry, outcomeFromQueueStatus } from './ytdlp-download-history'
 import { resolveYtdlpQueueRetryPlan } from './ytdlp-queue-retry'
 import { getYtdlpRunOptionsSnapshot } from './ytdlp-run-options-sync'
+import { getDownloadsWindowIpcStrings } from '../shared/downloads-window-ipc-locale'
+import {
+  downloadsRunnerAbortMessage,
+  fluxLogAutoOpenSkippedBadPath,
+  fluxLogAutoOpenSkippedNoHandler,
+  fluxLogQueueRetriesCancelled,
+  formatFluxLogAttemptExitCode,
+  formatFluxLogAutoOpenFailed,
+  formatFluxLogQueueRetryDelay
+} from '../shared/downloads-flux-log-locale'
+import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
 import {
   isYtdlpQueueStatusWaiting,
   YTDLP_QUEUE_STATUS_CANCELLED,
@@ -99,17 +110,21 @@ function isAbort(e: unknown): boolean {
   return e instanceof Error && e.name === 'AbortError'
 }
 
-function abortErr(): Error {
-  const e = new Error('Отменено')
+function abortErr(locale: DownloadsWindowUiLocale): Error {
+  const e = new Error(downloadsRunnerAbortMessage(locale))
   e.name = 'AbortError'
   return e
 }
 
 /** Пауза между повторами §6.4; отмена — тем же `AbortSignal`, что и у текущей загрузки. */
-function delayWithAbort(ms: number, signal: AbortSignal): Promise<void> {
+function delayWithAbort(
+  ms: number,
+  signal: AbortSignal,
+  locale: DownloadsWindowUiLocale
+): Promise<void> {
   return new Promise((resolve, reject) => {
     if (signal.aborted) {
-      reject(abortErr())
+      reject(abortErr(locale))
       return
     }
     const timer = setTimeout(() => {
@@ -119,7 +134,7 @@ function delayWithAbort(ms: number, signal: AbortSignal): Promise<void> {
     const onAbort = (): void => {
       clearTimeout(timer)
       signal.removeEventListener('abort', onAbort)
-      reject(abortErr())
+      reject(abortErr(locale))
     }
     signal.addEventListener('abort', onAbort, { once: true })
   })
@@ -128,7 +143,8 @@ function delayWithAbort(ms: number, signal: AbortSignal): Promise<void> {
 async function runYtdlpForWaitingRow(
   paths: AppPaths,
   outputDir: string,
-  rowId: number
+  rowId: number,
+  locale: DownloadsWindowUiLocale
 ): Promise<void> {
   const snap = getDownloadsQueueRowById(rowId)
   if (!snap || !isYtdlpQueueStatusWaiting(snap.status)) {
@@ -382,7 +398,7 @@ async function runYtdlpForWaitingRow(
           kind: 'line',
           rowId,
           stream: 'stderr',
-          text: `[FluxAlloy] Повтор ${runIndex}/${retryPlan.extraAttempts} через ${sec} с…`
+          text: formatFluxLogQueueRetryDelay(locale, runIndex, retryPlan.extraAttempts, sec)
         })
         updateDownloadsRow(rowId, {
           status: `${YTDLP_QUEUE_STATUS_RETRY_PAUSE_PREFIX} (${runIndex}/${retryPlan.extraAttempts})…`,
@@ -390,7 +406,7 @@ async function runYtdlpForWaitingRow(
         })
         notifySnapshot()
         try {
-          await delayWithAbort(delayMs, signal)
+          await delayWithAbort(delayMs, signal, locale)
         } catch {
           flushPendingProgressUI()
           updateDownloadsRow(rowId, {
@@ -461,7 +477,8 @@ async function runYtdlpForWaitingRow(
             retries: cli.retries,
             fragmentRetries: cli.fragmentRetries,
             extraArgs: cli.extraArgs
-          }
+          },
+          locale
         )
       } catch (e) {
         const aborted = isAbort(e)
@@ -495,14 +512,14 @@ async function runYtdlpForWaitingRow(
               kind: 'line',
               rowId,
               stream: 'stderr',
-              text: '[FluxAlloy] Авто-открытие в обработчике пропущено: обработчик не подключён.'
+              text: fluxLogAutoOpenSkippedNoHandler(locale)
             })
           } else if (!safe) {
             emitDownloadsLog({
               kind: 'line',
               rowId,
               stream: 'stderr',
-              text: '[FluxAlloy] Авто-открытие в обработчике пропущено: путь результата неизвестен или вне каталога загрузок.'
+              text: fluxLogAutoOpenSkippedBadPath(locale)
             })
           } else {
             const openResult = await openDownloadedFileInMainHandlerHook(safe)
@@ -511,7 +528,7 @@ async function runYtdlpForWaitingRow(
                 kind: 'line',
                 rowId,
                 stream: 'stderr',
-                text: `[FluxAlloy] Авто-открытие в обработчике не удалось: ${openResult.error}`
+                text: formatFluxLogAutoOpenFailed(locale, openResult.error)
               })
             } else if (
               cliOpen.autoExportAfterOpenInHandler &&
@@ -530,7 +547,7 @@ async function runYtdlpForWaitingRow(
         kind: 'line',
         rowId,
         stream: 'stderr',
-        text: `[FluxAlloy] Попытка ${runIndex + 1}/${maxRuns} завершилась с кодом ${code ?? '?'}.`
+        text: formatFluxLogAttemptExitCode(locale, runIndex + 1, maxRuns, code)
       })
 
       if (runIndex < maxRuns - 1 && shouldSkipQueueRetriesForFailureKind(failureKind)) {
@@ -538,7 +555,7 @@ async function runYtdlpForWaitingRow(
           kind: 'line',
           rowId,
           stream: 'stderr',
-          text: '[FluxAlloy] Дальнейшие повторы очереди отменены: ошибка или код выхода не подразумевают повтор той же команды.'
+          text: fluxLogQueueRetriesCancelled(locale)
         })
         flushPendingProgressUI()
         updateDownloadsRow(rowId, {
@@ -596,15 +613,18 @@ async function runYtdlpForWaitingRow(
 /**
  * Последовательно обрабатывает строки со статусом «Ожидание». Отмена — через cancelDownloadsRunner().
  */
-export function startDownloadsSequential(): { ok: true } | { ok: false; error: string } {
+export function startDownloadsSequential(
+  locale: DownloadsWindowUiLocale = 'ru'
+): { ok: true } | { ok: false; error: string } {
+  const P = getDownloadsWindowIpcStrings(locale)
   if (sequentialBusy) {
     return {
       ok: false,
-      error: 'Уже выполняется загрузка. Отмените текущую или дождитесь окончания.'
+      error: P.downloadAlreadyRunning
     }
   }
   if (!findFirstWaitingRow()) {
-    return { ok: false, error: 'В очереди нет строк со статусом «Ожидание».' }
+    return { ok: false, error: P.noWaitingRowsInQueue }
   }
   sequentialBusy = true
 
@@ -615,7 +635,7 @@ export function startDownloadsSequential(): { ok: true } | { ok: false; error: s
     let row: DownloadsQueueRow | undefined
     try {
       while ((row = findFirstWaitingRow())) {
-        await runYtdlpForWaitingRow(paths, outputDir, row.id)
+        await runYtdlpForWaitingRow(paths, outputDir, row.id, locale)
       }
     } finally {
       sequentialBusy = false
@@ -631,20 +651,22 @@ export function startDownloadsSequential(): { ok: true } | { ok: false; error: s
  * Пока yt-dlp последовательный, занятость runner общая с «Старт очереди».
  */
 export async function startDownloadSingleRow(
-  rowId: number
+  rowId: number,
+  locale: DownloadsWindowUiLocale = 'ru'
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  const P = getDownloadsWindowIpcStrings(locale)
   if (sequentialBusy) {
     return {
       ok: false,
-      error: 'Уже выполняется загрузка. Отмените текущую или дождитесь окончания.'
+      error: P.downloadAlreadyRunning
     }
   }
   const snap = getDownloadsQueueRowById(rowId)
   if (!snap) {
-    return { ok: false, error: 'Строка не найдена' }
+    return { ok: false, error: P.rowNotFound }
   }
   if (!isYtdlpQueueStatusWaiting(snap.status)) {
-    return { ok: false, error: 'Старт доступен только для строк со статусом «Ожидание».' }
+    return { ok: false, error: P.startRowOnlyWaiting }
   }
 
   sequentialBusy = true
@@ -652,7 +674,7 @@ export async function startDownloadSingleRow(
   const outputDir = resolveYtdlpOutputDirectory(paths.userData)
 
   try {
-    await runYtdlpForWaitingRow(paths, outputDir, rowId)
+    await runYtdlpForWaitingRow(paths, outputDir, rowId, locale)
   } finally {
     sequentialBusy = false
     notifySnapshot()

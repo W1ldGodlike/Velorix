@@ -1352,7 +1352,7 @@ function setTheme(pref: AppTheme): AppSettingsView {
  * при фокусе окна и после операций с путями, поэтому `enabled` не застывает на весь запуск.
  */
 function buildDiagnosticsFolderSubmenu(): Electron.MenuItemConstructorOptions[] {
-  const entries = listDiagnosticsFolders()
+  const entries = listDiagnosticsFolders(mainDownloadsUiLocale())
   return entries.map((entry: DiagnosticsFolderEntry) => ({
     label: entry.label,
     enabled: entry.exists,
@@ -2695,12 +2695,22 @@ app.whenReady().then(() => {
         error: P.mediaProbeNotGranted
       }
     }
-    return probeMediaFile(resolveAppPaths(), abs, cachedSettings.engineExecutablePaths)
+    return probeMediaFile(
+      resolveAppPaths(),
+      abs,
+      cachedSettings.engineExecutablePaths,
+      mainDownloadsUiLocale()
+    )
   })
 
   ipcMain.handle(mw.terminalHints, (): TerminalCommandHintEntry[] => getTerminalCommandHints())
 
   ipcMain.handle(mw.terminalRun, async (_, raw: unknown): Promise<TerminalRunResult> => {
+    const loc =
+      raw && typeof raw === 'object'
+        ? (parseDownloadsWindowUiLocale((raw as { uiLocale?: unknown }).uiLocale) ??
+          mainDownloadsUiLocale())
+        : mainDownloadsUiLocale()
     const line =
       raw && typeof raw === 'object' && typeof (raw as { line?: unknown }).line === 'string'
         ? (raw as { line: string }).line
@@ -2715,6 +2725,7 @@ app.whenReady().then(() => {
       paths: resolveAppPaths(),
       overrides: cachedSettings.engineExecutablePaths,
       line,
+      locale: loc,
       ...(currentFilePath !== undefined ? { currentFilePath } : {})
     })
   })
@@ -2780,15 +2791,15 @@ app.whenReady().then(() => {
     })
 
   ipcMain.handle(mw.knowledgeListArticles, () => {
-    return listKnowledgeArticles(knowledgeHelpDirCandidates())
+    return listKnowledgeArticles(knowledgeHelpDirCandidates(), mainDownloadsUiLocale())
   })
 
   ipcMain.handle(mw.knowledgeReadArticle, (_event, raw: unknown) => {
-    return readKnowledgeArticle(knowledgeHelpDirCandidates(), raw)
+    return readKnowledgeArticle(knowledgeHelpDirCandidates(), raw, mainDownloadsUiLocale())
   })
 
   ipcMain.handle(mw.diagnosticsListFolders, (): DiagnosticsFolderEntry[] => {
-    return listDiagnosticsFolders()
+    return listDiagnosticsFolders(mainDownloadsUiLocale())
   })
 
   ipcMain.handle(
@@ -2836,7 +2847,11 @@ app.whenReady().then(() => {
           return id === 'previewCache' || id === 'ytdlpPartials' || id === 'ffmpegTemp'
         })
       : undefined
-    return cleanDiagnosticsMaintenance(resolveAppPaths(), targets ? { targets } : undefined)
+    return cleanDiagnosticsMaintenance(
+      resolveAppPaths(),
+      targets ? { targets } : undefined,
+      mainDownloadsUiLocale()
+    )
   })
 
   ipcMain.handle(mw.processingHistoryGet, (_event, raw: unknown) => {

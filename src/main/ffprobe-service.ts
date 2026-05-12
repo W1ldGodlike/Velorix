@@ -24,6 +24,8 @@ import type {
   MediaProbeSuccess,
   MediaProbeTrackRow
 } from '../shared/ffprobe-contract'
+import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import { getMainApplicationStrings } from '../shared/main-application-locale'
 
 export type {
   MediaProbeResult,
@@ -877,11 +879,13 @@ function runFfprobeJson(ffprobePath: string, mediaPath: string): Promise<string>
 export async function probeMediaFile(
   paths: AppPaths,
   absoluteMediaPath: string,
-  engineOverrides?: EnginePathOverrides
+  engineOverrides?: EnginePathOverrides,
+  locale: DownloadsWindowUiLocale = 'ru'
 ): Promise<MediaProbeResult> {
+  const S = getMainApplicationStrings(locale)
   const ffprobe = resolveEngineExecutablePath(paths, 'ffprobe', engineOverrides)
   if (!ffprobe) {
-    return { ok: false, error: 'ffprobe не найден — установите движки через «Скачать движки».' }
+    return { ok: false, error: S.ffprobeNotFound }
   }
 
   let rawJson: string
@@ -890,7 +894,7 @@ export async function probeMediaFile(
   } catch (error) {
     return {
       ok: false,
-      error: error instanceof Error ? error.message : 'Ошибка ffprobe'
+      error: error instanceof Error ? error.message : S.ffprobeRunFailed
     }
   }
 
@@ -898,7 +902,7 @@ export async function probeMediaFile(
   try {
     parsed = JSON.parse(rawJson) as FfprobeJson
   } catch {
-    return { ok: false, error: 'Некорректный JSON ffprobe' }
+    return { ok: false, error: S.ffprobeInvalidJson }
   }
 
   const durRaw = parsed.format?.duration

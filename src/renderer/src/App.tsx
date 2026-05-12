@@ -1041,7 +1041,8 @@ function App(): JSX.Element {
     try {
       const result = await window.fluxalloy.terminal.run({
         line,
-        currentFilePath: currentSourcePath
+        currentFilePath: currentSourcePath,
+        uiLocale: getUiLocale() as DownloadsWindowUiLocale
       })
       setTerminalHistory((rows) =>
         [{ id: terminalHistoryNextIdRef.current++, line, result }, ...rows].slice(0, 20)

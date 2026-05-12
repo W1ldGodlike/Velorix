@@ -11,6 +11,8 @@ import { app } from 'electron'
 import { is } from '@electron-toolkit/utils'
 import { dirname, join, normalize, resolve } from 'path'
 
+import { downloadsWindowUiLocaleFromSystemLocale } from '../shared/downloads-window-ui-locale'
+
 import type { AppPaths } from './app-paths'
 import {
   resolveEngineExecutablePath,
@@ -19,6 +21,11 @@ import {
 } from './engine-service'
 import { logInfo, logWarn } from './logger-service'
 import { isGrantedMediaPath } from './media-protocol'
+import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import {
+  formatTerminalEngineMissingInSettings,
+  getMainApplicationStrings
+} from '../shared/main-application-locale'
 import {
   TERMINAL_CURRENT_FILE_PLACEHOLDER,
   type TerminalCommandHintEntry,
@@ -53,10 +60,8 @@ export function appendTerminalCliSessionLog(params: {
       const st = statSync(file)
       if (st.size > TERMINAL_CLI_LOG_MAX_BYTES) {
         const raw = readFileSync(file)
-        const head = Buffer.from(
-          '[FluxAlloy] truncated older terminal-cli.log entries\n\n',
-          'utf8'
-        )
+        const loc = downloadsWindowUiLocaleFromSystemLocale(app.getLocale())
+        const head = Buffer.from(getMainApplicationStrings(loc).terminalLogTruncatedOlder, 'utf8')
         const tail = raw.subarray(Math.max(0, raw.length - TERMINAL_CLI_LOG_KEEP_BYTES))
         writeFileSync(file, Buffer.concat([head, tail]))
       }
@@ -77,54 +82,66 @@ function terminalTokenHasDangerChars(token: string): boolean {
   return /[;|&$\u0060<>]/.test(token)
 }
 
-function validateTerminalArgTokens(args: string[]): { ok: true } | { ok: false; error: string } {
+type MainAppCopy = ReturnType<typeof getMainApplicationStrings>
+
+function validateTerminalArgTokens(
+  args: string[],
+  S: MainAppCopy
+): { ok: true } | { ok: false; error: string } {
   for (const token of args) {
     if (token.length > 500) {
-      return { ok: false, error: 'Один из argv-токенов слишком длинный.' }
+      return { ok: false, error: S.terminalArgvTokenTooLong }
     }
     if (token.startsWith('@')) {
-      return { ok: false, error: 'Аргументы вида @файл запрещены.' }
+      return { ok: false, error: S.terminalAtFileDisallowed }
     }
     if (terminalTokenHasDangerChars(token)) {
-      return { ok: false, error: 'Запрещены shell-символы (; | & ` $ < >) и управляющие символы.' }
+      return { ok: false, error: S.terminalDangerChars }
     }
   }
   return { ok: true }
 }
 
 function parseTerminalCommandLine(
-  raw: unknown
+  raw: unknown,
+  S: MainAppCopy
 ): { ok: true; tool: TerminalToolId; args: string[] } | { ok: false; error: string } {
   if (typeof raw !== 'string') {
-    return { ok: false, error: 'Команда должна быть строкой.' }
+    return { ok: false, error: S.terminalCommandMustBeString }
   }
   const line = raw.trim()
   if (line.length === 0) {
-    return { ok: false, error: 'Введите команду.' }
+    return { ok: false, error: S.terminalEnterCommand }
   }
   if (line.length > MAX_LINE_CHARS) {
-    return { ok: false, error: `Команда длиннее ${MAX_LINE_CHARS} символов.` }
+    return {
+      ok: false,
+      error: S.terminalCommandTooLong.replace(/\{max\}/g, String(MAX_LINE_CHARS))
+    }
   }
   if (/["']/.test(line)) {
     return {
       ok: false,
-      error: 'Кавычки и shell-строки не поддерживаются: вводите argv-токены через пробел.'
+      error: S.terminalQuotesDisallowed
     }
   }
   const tokens = line.split(/\s+/).filter(Boolean)
   if (tokens.length === 0) {
-    return { ok: false, error: 'Введите команду.' }
+    return { ok: false, error: S.terminalEnterCommand }
   }
   if (tokens.length > MAX_TOKENS) {
-    return { ok: false, error: `Слишком много аргументов (макс. ${MAX_TOKENS}).` }
+    return {
+      ok: false,
+      error: S.terminalTooManyArgs.replace(/\{max\}/g, String(MAX_TOKENS))
+    }
   }
   const toolToken = tokens[0] ?? ''
   const tool = toolToken.toLowerCase() as TerminalToolId
   if (!TERMINAL_ALLOWED_TOOLS.includes(tool)) {
-    return { ok: false, error: 'Разрешены только префиксы ffmpeg, ffprobe и yt-dlp.' }
+    return { ok: false, error: S.terminalAllowedToolsOnly }
   }
   const args = tokens.slice(1)
-  const v = validateTerminalArgTokens(args)
+  const v = validateTerminalArgTokens(args, S)
   if (!v.ok) {
     return v
   }
@@ -139,26 +156,28 @@ export function resolveTerminalCurrentFileArgs(params: {
   args: string[]
   currentFilePath: string | null | undefined
   grantPath: (abs: string) => boolean
+  strings?: MainAppCopy
 }): { ok: true; args: string[] } | { ok: false; error: string } {
   const { args, currentFilePath, grantPath } = params
+  const S = params.strings ?? getMainApplicationStrings('ru')
   if (!args.some((a) => a === TERMINAL_CURRENT_FILE_PLACEHOLDER)) {
     return { ok: true, args }
   }
   if (typeof currentFilePath !== 'string' || currentFilePath.trim().length === 0) {
     return {
       ok: false,
-      error: 'Токен __CURRENT_FILE__ требует открытый файл в превью редактора.'
+      error: S.terminalCurrentFileNeedsPreview
     }
   }
   const abs = resolve(normalize(currentFilePath.trim()))
   if (!grantPath(abs)) {
     return {
       ok: false,
-      error: 'Текущий файл превью не разрешён для подстановки в CLI (откройте его через диалог или DnD).'
+      error: S.terminalCurrentFileNotGranted
     }
   }
   const next = args.map((a) => (a === TERMINAL_CURRENT_FILE_PLACEHOLDER ? abs : a))
-  const v2 = validateTerminalArgTokens(next)
+  const v2 = validateTerminalArgTokens(next, S)
   if (!v2.ok) {
     return v2
   }
@@ -178,9 +197,11 @@ export function runTerminalCommand(params: {
   overrides?: EnginePathOverrides | undefined
   line: unknown
   currentFilePath?: string | null
+  locale: DownloadsWindowUiLocale
 }): Promise<TerminalRunResult> {
   const ud = params.paths.userData
-  const parsed = parseTerminalCommandLine(params.line)
+  const S = getMainApplicationStrings(params.locale)
+  const parsed = parseTerminalCommandLine(params.line, S)
   if (!parsed.ok) {
     if (typeof params.line === 'string' && params.line.trim().length > 0) {
       const brief = params.line.trim().slice(0, 400)
@@ -195,7 +216,8 @@ export function runTerminalCommand(params: {
   const sub = resolveTerminalCurrentFileArgs({
     args: parsed.args,
     currentFilePath: params.currentFilePath,
-    grantPath: isGrantedMediaPath
+    grantPath: isGrantedMediaPath,
+    strings: S
   })
   if (!sub.ok) {
     if (typeof params.line === 'string' && params.line.trim().length > 0) {
@@ -211,14 +233,16 @@ export function runTerminalCommand(params: {
   const argv = sub.args
   const executablePath = resolveEngineExecutablePath(params.paths, parsed.tool, params.overrides)
   if (!executablePath) {
-    logWarn('terminal', `blocked: движок ${parsed.tool} не найден`)
+    logWarn('terminal', `blocked: engine ${parsed.tool} not found`)
+    const toolLine = S.terminalBlockedLogToolLine.replace(/\{tool\}/g, parsed.tool)
+    const miss = formatTerminalEngineMissingInSettings(params.locale, parsed.tool)
     appendTerminalCliSessionLog({
       userData: ud,
-      block: `\n=== ${terminalCliLogIsoStamp()} BLOCKED ===\n${parsed.tool} …\nДвижок ${parsed.tool} не найден в настройках/bin.\n`
+      block: `\n=== ${terminalCliLogIsoStamp()} BLOCKED ===\n${toolLine}\n${miss}\n`
     })
     return Promise.resolve({
       ok: false,
-      error: `Движок ${parsed.tool} не найден в настройках/bin.`
+      error: formatTerminalEngineMissingInSettings(params.locale, parsed.tool)
     })
   }
   const started = Date.now()

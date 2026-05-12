@@ -6,6 +6,8 @@ import { shell } from 'electron'
 import { resolveAppPaths } from './app-paths'
 import { resolveYtdlpOutputDirectory } from './ytdlp-download-output'
 import type { DiagnosticsFolderEntry, DiagnosticsFolderId } from '../shared/diagnostics-contract'
+import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import { getMainApplicationStrings } from '../shared/main-application-locale'
 
 export type { DiagnosticsFolderEntry, DiagnosticsFolderId } from '../shared/diagnostics-contract'
 
@@ -57,14 +59,27 @@ function resolveDiagnosticsFolderPath(id: DiagnosticsFolderId): string {
   }
 }
 
-const DIAGNOSTICS_FOLDER_LABELS: Record<DiagnosticsFolderId, string> = {
-  userData: 'Папка настроек (userData)',
-  resources: 'Папка ресурсов приложения',
-  bundledBin: 'Папка bin в поставке',
-  userBin: 'Папка bin в userData',
-  logs: 'Папка логов',
-  ytdlpDownloads: 'Каталог загрузок yt-dlp',
-  systemTemp: 'Системная временная папка'
+function diagnosticsFolderLabel(
+  id: DiagnosticsFolderId,
+  locale: DownloadsWindowUiLocale
+): string {
+  const s = getMainApplicationStrings(locale)
+  switch (id) {
+    case 'userData':
+      return s.diagFolderUserData
+    case 'resources':
+      return s.diagFolderResources
+    case 'bundledBin':
+      return s.diagFolderBundledBin
+    case 'userBin':
+      return s.diagFolderUserBin
+    case 'logs':
+      return s.diagFolderLogs
+    case 'ytdlpDownloads':
+      return s.diagFolderYtdlpDownloads
+    case 'systemTemp':
+      return s.diagFolderSystemTemp
+  }
 }
 
 const DIAGNOSTICS_FOLDER_ORDER: DiagnosticsFolderId[] = [
@@ -78,12 +93,12 @@ const DIAGNOSTICS_FOLDER_ORDER: DiagnosticsFolderId[] = [
 ]
 
 /** Снимок диагностических каталогов для построения меню «Инструменты». */
-export function listDiagnosticsFolders(): DiagnosticsFolderEntry[] {
+export function listDiagnosticsFolders(locale: DownloadsWindowUiLocale): DiagnosticsFolderEntry[] {
   return DIAGNOSTICS_FOLDER_ORDER.map((id) => {
     const path = resolveDiagnosticsFolderPath(id)
     return {
       id,
-      label: DIAGNOSTICS_FOLDER_LABELS[id],
+      label: diagnosticsFolderLabel(id, locale),
       path,
       exists: existsSync(path)
     }

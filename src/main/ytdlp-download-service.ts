@@ -4,13 +4,17 @@ import { mkdirSync } from 'fs'
 import type { AppPaths } from './app-paths'
 import { resolveEngineExecutablePath, type EnginePathOverrides } from './engine-service'
 import { logExternalProcessLine } from './external-process-log'
+import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import { getMainApplicationStrings } from '../shared/main-application-locale'
 import { isYtdlpOsPauseSupported } from './ytdlp-os-pause-support'
 import { buildYtdlpSpawnArgvTokens } from './ytdlp-extra-args'
+import { downloadsRunnerAbortMessage } from '../shared/downloads-flux-log-locale'
 import {
   resolveSafeYtdlpOutputPattern,
   YTDLP_DEFAULT_FILENAME_TEMPLATE,
   type YtdlpRunOptionsSnapshot
 } from './ytdlp-download-options'
+import { getDownloadsWindowIpcStrings } from '../shared/downloads-window-ipc-locale'
 
 // Чистые парсеры stdout/stderr вынесены в отдельный модуль (без electron),
 // чтобы покрываться юнит-тестами вне Electron-runtime. Здесь — только реэкспорт
@@ -36,8 +40,8 @@ export {
   type YtdlpQueueFailureKind
 } from './ytdlp-progress-parser'
 
-function abortErr(): Error {
-  const e = new Error('Отменено')
+function abortErr(locale: DownloadsWindowUiLocale): Error {
+  const e = new Error(downloadsRunnerAbortMessage(locale))
   e.name = 'AbortError'
   return e
 }
@@ -63,19 +67,22 @@ export function getActiveYtdlpPauseState(): {
 /**
  * Пауза/возобновление на уровне ОС: Windows не поддерживает доставку SIGSTOP дочерним процессам как в POSIX.
  */
-export function pauseActiveYtdlpProcess(): { ok: true } | { ok: false; error: string } {
+export function pauseActiveYtdlpProcess(
+  locale: DownloadsWindowUiLocale = 'ru'
+): { ok: true } | { ok: false; error: string } {
+  const P = getDownloadsWindowIpcStrings(locale)
   if (!isYtdlpOsPauseSupported()) {
     return {
       ok: false,
-      error: 'Пауза процесса yt-dlp в этом ОС не поддерживается (нужны SIGSTOP/SIGCONT).'
+      error: P.pauseOsUnsupported
     }
   }
   const ch = activeYtdlpChild
   if (!ch || ch.killed) {
-    return { ok: false, error: 'Нет активной загрузки yt-dlp.' }
+    return { ok: false, error: P.noActiveYtdlpDownload }
   }
   if (activeYtdlpPaused) {
-    return { ok: false, error: 'Загрузка уже приостановлена.' }
+    return { ok: false, error: P.ytdlpAlreadyPaused }
   }
   try {
     ch.kill('SIGSTOP')
@@ -86,19 +93,22 @@ export function pauseActiveYtdlpProcess(): { ok: true } | { ok: false; error: st
   }
 }
 
-export function resumeActiveYtdlpProcess(): { ok: true } | { ok: false; error: string } {
+export function resumeActiveYtdlpProcess(
+  locale: DownloadsWindowUiLocale = 'ru'
+): { ok: true } | { ok: false; error: string } {
+  const P = getDownloadsWindowIpcStrings(locale)
   if (!isYtdlpOsPauseSupported()) {
     return {
       ok: false,
-      error: 'Пауза процесса yt-dlp в этом ОС не поддерживается (нужны SIGSTOP/SIGCONT).'
+      error: P.pauseOsUnsupported
     }
   }
   const ch = activeYtdlpChild
   if (!ch || ch.killed) {
-    return { ok: false, error: 'Нет активной загрузки yt-dlp.' }
+    return { ok: false, error: P.noActiveYtdlpDownload }
   }
   if (!activeYtdlpPaused) {
-    return { ok: false, error: 'Загрузка не на паузе.' }
+    return { ok: false, error: P.ytdlpNotPaused }
   }
   try {
     ch.kill('SIGCONT')
@@ -144,11 +154,13 @@ export function runYtdlpOnce(
     | 'retries'
     | 'fragmentRetries'
     | 'extraArgs'
-  >
+  >,
+  locale: DownloadsWindowUiLocale = 'ru'
 ): Promise<{ exitCode: number | null; signal: NodeJS.Signals | null }> {
+  const S = getMainApplicationStrings(locale)
   const ytDlp = resolveEngineExecutablePath(paths, 'yt-dlp', engineOverrides)
   if (!ytDlp) {
-    return Promise.reject(new Error('yt-dlp не найден — скачайте движки из главного окна'))
+    return Promise.reject(new Error(S.ytdlpEngineNotFound))
   }
 
   mkdirSync(outputDir, { recursive: true })
@@ -156,11 +168,7 @@ export function runYtdlpOnce(
   const tmpl = cli?.filenameTemplate?.trim() || YTDLP_DEFAULT_FILENAME_TEMPLATE
   const outPattern = resolveSafeYtdlpOutputPattern(outputDir, tmpl)
   if (!outPattern) {
-    return Promise.reject(
-      new Error(
-        'Некорректный шаблон имени файла (-o): проверьте %(ext)s, отсутствие «..» и выход за каталог загрузки.'
-      )
-    )
+    return Promise.reject(new Error(S.ytdlpInvalidFilenameTemplate))
   }
 
   const downloadPlaylist = cli?.downloadPlaylist === true
@@ -231,7 +239,7 @@ export function runYtdlpOnce(
 
     if (signal.aborted) {
       onAbort()
-      reject(abortErr())
+      reject(abortErr(locale))
       return
     }
 
@@ -287,7 +295,7 @@ export function runYtdlpOnce(
         `closed exitCode=${exitCode ?? '?'} signal=${killSignal ?? '-'}`
       )
       if (signal.aborted) {
-        reject(abortErr())
+        reject(abortErr(locale))
         return
       }
       resolve({ exitCode, signal: killSignal })

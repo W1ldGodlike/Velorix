@@ -1,4 +1,5 @@
 import type { EngineId } from './engine-contract'
+import type { DownloadsWindowUiLocale } from './downloads-window-ui-locale'
 
 /** argv-токен: main подставляет абсолютный путь текущего превью (`isGrantedMediaPath`). */
 export const TERMINAL_CURRENT_FILE_PLACEHOLDER = '__CURRENT_FILE__'
@@ -6283,6 +6284,8 @@ export type TerminalRunRequest = {
   line: string
   /** Путь открытого в редакторе файла; подставляется вместо `TERMINAL_CURRENT_FILE_PLACEHOLDER` в argv. */
   currentFilePath?: string | null
+  /** Локаль UI для текстов ошибок валидации (main). */
+  uiLocale?: DownloadsWindowUiLocale
 }
 
 export type TerminalRunResult =

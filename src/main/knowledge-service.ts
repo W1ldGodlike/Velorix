@@ -6,6 +6,8 @@ import type {
   KnowledgeArticleListResult,
   KnowledgeArticleResult
 } from '../shared/knowledge-contract'
+import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import { getMainApplicationStrings } from '../shared/main-application-locale'
 
 const HELP_FILE_RE = /^[a-z0-9][a-z0-9-]*\.md$/i
 const MAX_ARTICLE_BYTES = 256 * 1024
@@ -88,11 +90,12 @@ export function buildKnowledgeHelpDirCandidates(opts: {
 }
 
 export function listKnowledgeArticles(
-  helpDirCandidates: readonly string[]
+  helpDirCandidates: readonly string[],
+  locale: DownloadsWindowUiLocale = 'ru'
 ): KnowledgeArticleListResult {
   const helpDir = resolveHelpDir(helpDirCandidates)
   if (helpDir === null) {
-    return { ok: false, error: 'Каталог Help не найден' }
+    return { ok: false, error: getMainApplicationStrings(locale).knowledgeHelpNotFound }
   }
   const articles: KnowledgeArticleListItem[] = []
   for (const fileName of readdirSync(helpDir)
@@ -113,16 +116,17 @@ export function listKnowledgeArticles(
 
 export function readKnowledgeArticle(
   helpDirCandidates: readonly string[],
-  raw: unknown
+  raw: unknown,
+  locale: DownloadsWindowUiLocale = 'ru'
 ): KnowledgeArticleResult {
   const { slug: rawSlug, preferredUiLocale } = parseReadArticleRequest(raw)
   const fileName = safeHelpFileName(rawSlug)
   if (fileName === null) {
-    return { ok: false, error: 'Некорректная статья справки' }
+    return { ok: false, error: getMainApplicationStrings(locale).knowledgeInvalidArticle }
   }
   const helpDir = resolveHelpDir(helpDirCandidates)
   if (helpDir === null) {
-    return { ok: false, error: 'Каталог Help не найден' }
+    return { ok: false, error: getMainApplicationStrings(locale).knowledgeHelpNotFound }
   }
 
   let markdown: string | null = null
@@ -145,7 +149,7 @@ export function readKnowledgeArticle(
   }
 
   if (markdown === null) {
-    return { ok: false, error: 'Статья справки не найдена' }
+    return { ok: false, error: getMainApplicationStrings(locale).knowledgeArticleNotFound }
   }
   return {
     ok: true,

@@ -95,6 +95,36 @@ export type MainApplicationStrings = {
   filterExecutables: string
   ipcInvalidRequest: string
   ipcNoActiveWindow: string
+  diagFolderUserData: string
+  diagFolderResources: string
+  diagFolderBundledBin: string
+  diagFolderUserBin: string
+  diagFolderLogs: string
+  diagFolderYtdlpDownloads: string
+  diagFolderSystemTemp: string
+  diagnosticsMaintenanceNoTargets: string
+  knowledgeHelpNotFound: string
+  knowledgeInvalidArticle: string
+  knowledgeArticleNotFound: string
+  ffprobeNotFound: string
+  ffprobeRunFailed: string
+  ffprobeInvalidJson: string
+  ytdlpEngineNotFound: string
+  ytdlpInvalidFilenameTemplate: string
+  terminalArgvTokenTooLong: string
+  terminalAtFileDisallowed: string
+  terminalDangerChars: string
+  terminalCommandMustBeString: string
+  terminalEnterCommand: string
+  terminalCommandTooLong: string
+  terminalQuotesDisallowed: string
+  terminalTooManyArgs: string
+  terminalAllowedToolsOnly: string
+  terminalCurrentFileNeedsPreview: string
+  terminalCurrentFileNotGranted: string
+  terminalEngineMissingInSettings: string
+  terminalBlockedLogToolLine: string
+  terminalLogTruncatedOlder: string
 }
 
 const RU: MainApplicationStrings = {
@@ -194,7 +224,40 @@ const RU: MainApplicationStrings = {
   openVideoDialogNoWindow: 'Нет активного окна',
   filterExecutables: 'Исполняемые файлы',
   ipcInvalidRequest: 'Некорректный запрос',
-  ipcNoActiveWindow: 'Нет активного окна'
+  ipcNoActiveWindow: 'Нет активного окна',
+  diagFolderUserData: 'Папка настроек (userData)',
+  diagFolderResources: 'Папка ресурсов приложения',
+  diagFolderBundledBin: 'Папка bin в поставке',
+  diagFolderUserBin: 'Папка bin в userData',
+  diagFolderLogs: 'Папка логов',
+  diagFolderYtdlpDownloads: 'Каталог загрузок yt-dlp',
+  diagFolderSystemTemp: 'Системная временная папка',
+  diagnosticsMaintenanceNoTargets: 'Не выбраны категории обслуживания',
+  knowledgeHelpNotFound: 'Каталог Help не найден',
+  knowledgeInvalidArticle: 'Некорректная статья справки',
+  knowledgeArticleNotFound: 'Статья справки не найдена',
+  ffprobeNotFound: 'ffprobe не найден — установите движки через «Скачать движки».',
+  ffprobeRunFailed: 'Ошибка ffprobe',
+  ffprobeInvalidJson: 'Некорректный JSON ffprobe',
+  ytdlpEngineNotFound: 'yt-dlp не найден — скачайте движки из главного окна',
+  ytdlpInvalidFilenameTemplate:
+    'Некорректный шаблон имени файла (-o): проверьте %(ext)s, отсутствие «..» и выход за каталог загрузки.',
+  terminalArgvTokenTooLong: 'Один из argv-токенов слишком длинный.',
+  terminalAtFileDisallowed: 'Аргументы вида @файл запрещены.',
+  terminalDangerChars: 'Запрещены shell-символы (; | & ` $ < >) и управляющие символы.',
+  terminalCommandMustBeString: 'Команда должна быть строкой.',
+  terminalEnterCommand: 'Введите команду.',
+  terminalCommandTooLong: 'Команда длиннее {max} символов.',
+  terminalQuotesDisallowed:
+    'Кавычки и shell-строки не поддерживаются: вводите argv-токены через пробел.',
+  terminalTooManyArgs: 'Слишком много аргументов (макс. {max}).',
+  terminalAllowedToolsOnly: 'Разрешены только префиксы ffmpeg, ffprobe и yt-dlp.',
+  terminalCurrentFileNeedsPreview: 'Токен __CURRENT_FILE__ требует открытый файл в превью редактора.',
+  terminalCurrentFileNotGranted:
+    'Текущий файл превью не разрешён для подстановки в CLI (откройте его через диалог или DnD).',
+  terminalEngineMissingInSettings: 'Движок {tool} не найден в настройках/bin.',
+  terminalBlockedLogToolLine: '{tool} …',
+  terminalLogTruncatedOlder: '[FluxAlloy] truncated older terminal-cli.log entries\n\n'
 }
 
 const EN: MainApplicationStrings = {
@@ -293,11 +356,52 @@ const EN: MainApplicationStrings = {
   openVideoDialogNoWindow: 'No active window',
   filterExecutables: 'Executables',
   ipcInvalidRequest: 'Invalid request',
-  ipcNoActiveWindow: 'No active window'
+  ipcNoActiveWindow: 'No active window',
+  diagFolderUserData: 'Settings folder (userData)',
+  diagFolderResources: 'Application resources folder',
+  diagFolderBundledBin: 'Bundled bin folder',
+  diagFolderUserBin: 'UserData bin folder',
+  diagFolderLogs: 'Logs folder',
+  diagFolderYtdlpDownloads: 'yt-dlp downloads directory',
+  diagFolderSystemTemp: 'System temporary folder',
+  diagnosticsMaintenanceNoTargets: 'No maintenance categories selected',
+  knowledgeHelpNotFound: 'Help folder not found',
+  knowledgeInvalidArticle: 'Invalid help article',
+  knowledgeArticleNotFound: 'Help article not found',
+  ffprobeNotFound: 'ffprobe not found — install engines from the main window.',
+  ffprobeRunFailed: 'ffprobe error',
+  ffprobeInvalidJson: 'Invalid ffprobe JSON',
+  ytdlpEngineNotFound: 'yt-dlp not found — download engines from the main window.',
+  ytdlpInvalidFilenameTemplate:
+    'Invalid output filename template (-o): ensure %(ext)s is present, no «..», and paths stay inside the download directory.',
+  terminalArgvTokenTooLong: 'One of the argv tokens is too long.',
+  terminalAtFileDisallowed: '@file-style arguments are not allowed.',
+  terminalDangerChars: 'Shell metacharacters (; | & ` $ < >) and control characters are not allowed.',
+  terminalCommandMustBeString: 'The command must be a string.',
+  terminalEnterCommand: 'Enter a command.',
+  terminalCommandTooLong: 'Command is longer than {max} characters.',
+  terminalQuotesDisallowed:
+    'Quotes and shell strings are not supported: enter argv tokens separated by spaces.',
+  terminalTooManyArgs: 'Too many arguments (max {max}).',
+  terminalAllowedToolsOnly: 'Only ffmpeg, ffprobe, and yt-dlp prefixes are allowed.',
+  terminalCurrentFileNeedsPreview:
+    'The __CURRENT_FILE__ token requires an open file in the editor preview.',
+  terminalCurrentFileNotGranted:
+    'The current preview file is not allowed for CLI substitution (open it via the dialog or drag-and-drop).',
+  terminalEngineMissingInSettings: 'Engine {tool} was not found in settings/bin.',
+  terminalBlockedLogToolLine: '{tool} …',
+  terminalLogTruncatedOlder: '[FluxAlloy] truncated older terminal-cli.log entries\n\n'
 }
 
 export function getMainApplicationStrings(locale: DownloadsWindowUiLocale): MainApplicationStrings {
   return locale === 'en' ? EN : RU
+}
+
+export function formatTerminalEngineMissingInSettings(
+  locale: DownloadsWindowUiLocale,
+  tool: string
+): string {
+  return getMainApplicationStrings(locale).terminalEngineMissingInSettings.replace(/\{tool\}/g, tool)
 }
 
 export function formatPickEngineExecutableTitle(
