@@ -647,64 +647,7 @@ function downloadsStatusTone(row: DownloadsQueueRowView): string {
   return 'pending'
 }
 
-function formatDownloadsHistoryTime(ms: number): string {
-  if (!Number.isFinite(ms) || ms <= 0) {
-    return '—'
-  }
-  return new Date(ms).toLocaleString('ru-RU', {
-    day: '2-digit',
-    month: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
-}
-
-function downloadsHistoryOutcomeLabel(outcome: YtdlpDownloadHistoryEntry['outcome']): string {
-  if (outcome === 'success') {
-    return 'Готово'
-  }
-  if (outcome === 'cancelled') {
-    return 'Отмена'
-  }
-  return 'Ошибка'
-}
-
 type DownloadsHistoryOutcomeFilter = 'all' | YtdlpDownloadHistoryEntry['outcome']
-
-function processingHistoryKindLabel(kind: ProcessingHistoryEntry['kind']): string {
-  if (kind === 'ffmpegSnapshot') {
-    return 'Кадр'
-  }
-  if (kind === 'autoExport') {
-    return 'Авто-экспорт'
-  }
-  return 'Экспорт'
-}
-
-function processingHistoryOutcomeLabel(outcome: ProcessingHistoryEntry['outcome']): string {
-  if (outcome === 'success') {
-    return 'Готово'
-  }
-  if (outcome === 'cancelled') {
-    return 'Отмена'
-  }
-  return 'Ошибка'
-}
-
-function formatDurationLabel(ms: number): string {
-  if (!Number.isFinite(ms) || ms <= 0) {
-    return '0с'
-  }
-  const totalSec = Math.round(ms / 1000)
-  const min = Math.floor(totalSec / 60)
-  const sec = totalSec % 60
-  if (min <= 0) {
-    return `${sec}с`
-  }
-  const h = Math.floor(min / 60)
-  const m = min % 60
-  return h > 0 ? `${h}ч ${m}м` : `${m}м ${sec}с`
-}
 
 function formatDownloadsLogText(lines: DownloadsLogLineView[]): string {
   return lines.map((line) => `[${line.rowId}] ${line.stream}: ${line.text}`).join('\n')
@@ -1140,12 +1083,12 @@ function App(): JSX.Element {
       entries: processingHistory
     }
     const res = await window.fluxalloy.saveTextWithDialog({
-      title: 'Экспорт истории обработок',
+      title: uiText('processingHistoryExportDialogTitle'),
       defaultFileName: 'fluxalloy-processing-history.json',
       content: JSON.stringify(payload, null, 2)
     })
     if (res.ok) {
-      setStatusHint('История обработок сохранена')
+      setStatusHint(uiText('processingHistoryExportSaved'))
     } else if ('error' in res) {
       setStatusHint(res.error)
     }
@@ -1159,12 +1102,12 @@ function App(): JSX.Element {
       entries: visibleDownloadsHistory
     }
     const res = await window.fluxalloy.saveTextWithDialog({
-      title: 'Экспорт истории загрузок',
+      title: uiText('downloadsHistoryExportDialogTitle'),
       defaultFileName: 'fluxalloy-downloads-history.json',
       content: JSON.stringify(payload, null, 2)
     })
     if (res.ok) {
-      setStatusHint('История загрузок сохранена')
+      setStatusHint(uiText('downloadsHistoryExportSaved'))
     } else if ('error' in res) {
       setStatusHint(res.error)
     }
@@ -3770,20 +3713,16 @@ function App(): JSX.Element {
                     if (!res.ok) {
                       setStatusHint(res.error)
                     } else if (mode === 'preview') {
-                      setStatusHint('Результат обработки открыт в превью')
+                      setStatusHint(uiText('processingHistoryOpenOutputPreviewDone'))
                     }
                   })
                 }}
                 onOpenInputInHandler={(id) => {
-                  setStatusHint('Открываю исходник из истории…')
+                  setStatusHint(uiText('processingHistoryOpenInputBusy'))
                   void window.fluxalloy.processingHistory.openInputInHandler(id).then((res) => {
-                    setStatusHint(res.ok ? 'Исходник открыт в редакторе' : res.error)
+                    setStatusHint(res.ok ? uiText('processingHistoryOpenInputDone') : res.error)
                   })
                 }}
-                formatTimeLabel={formatDownloadsHistoryTime}
-                formatDurationLabel={formatDurationLabel}
-                kindLabel={processingHistoryKindLabel}
-                outcomeLabel={processingHistoryOutcomeLabel}
               />
             </aside>
           ) : null}
@@ -4695,8 +4634,6 @@ function App(): JSX.Element {
                   onExportVisible={() => {
                     void exportVisibleDownloadsHistory()
                   }}
-                  formatTimeLabel={formatDownloadsHistoryTime}
-                  outcomeLabel={downloadsHistoryOutcomeLabel}
                   onRepeat={(url) => {
                     void window.fluxalloy.downloads.addLines(url).then((res) => {
                       if (!res.ok) {
@@ -4705,7 +4642,9 @@ function App(): JSX.Element {
                       }
                       setWorkspaceTab('downloads')
                       setStatusHint(
-                        res.added > 0 ? 'URL из истории добавлен в очередь' : 'URL не добавлен'
+                        res.added > 0
+                          ? uiText('downloadsHistoryRepeatQueued')
+                          : uiText('downloadsHistoryRepeatNotAdded')
                       )
                     })
                   }}
@@ -4724,14 +4663,12 @@ function App(): JSX.Element {
                     })
                   }}
                   onOpenInHandler={(id) => {
-                    setStatusHint(
-                      'Готовлю файл для редактора… при необходимости будет создан WebM preview.'
-                    )
+                    setStatusHint(uiText('downloadsHistoryOpenHandlerPreparing'))
                     void window.fluxalloy.downloads.openHistoryOutputInHandler(id).then((res) => {
                       if (!res.ok) {
                         setStatusHint(res.error)
                       } else {
-                        setStatusHint('Файл открыт в редакторе')
+                        setStatusHint(uiText('downloadsHistoryOpenHandlerDone'))
                       }
                     })
                   }}

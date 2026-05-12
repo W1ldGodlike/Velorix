@@ -1,3 +1,6 @@
+import type { ProcessingHistoryKind, ProcessingHistoryOutcome } from '../../../shared/processing-history-contract'
+import type { YtdlpDownloadHistoryOutcome } from '../../../shared/ytdlp-history-contract'
+
 type UiLocale = 'ru' | 'en'
 
 const UI_TEXT = {
@@ -65,7 +68,69 @@ const UI_TEXT = {
     terminalCopyLineButton: 'Копир.',
     terminalHintsPanelAria: 'Подсказки CLI',
     terminalHintsSearchLabel: 'Поиск подсказок',
-    terminalHintsSearchPlaceholder: '--help, -i, crop'
+    terminalHintsSearchPlaceholder: '--help, -i, crop',
+    processingOutcomeSuccess: 'Готово',
+    processingOutcomeError: 'Ошибка',
+    processingOutcomeCancelled: 'Отмена',
+    processingHistoryTitle: 'История обработок',
+    processingHistorySectionHint:
+      'Последние ffmpeg export, снимки кадров и авто-экспорт после загрузки.',
+    processingHistoryWeeklyAria: 'Недельная сводка обработок',
+    processingHistory7dPrefix: '7 дней:',
+    processingHistoryChipOk: 'OK',
+    processingHistoryChipErrors: 'Ошибки',
+    processingHistoryChipCancelled: 'Отмена',
+    processingHistoryChipTime: 'Время',
+    processingHistoryKindAll: 'Все типы',
+    processingHistoryKindExport: 'Экспорт',
+    processingHistoryKindSnapshot: 'Кадры',
+    processingHistoryKindAutoExport: 'Авто-экспорт',
+    processingHistoryOutcomeAll: 'Все исходы',
+    processingHistoryKindFilterAria: 'Тип обработки',
+    processingHistoryOutcomeFilterAria: 'Исход обработки',
+    processingHistoryQueryPlaceholder: 'Файл, статус, ошибка',
+    processingHistoryQueryAria: 'Поиск по истории обработок',
+    processingHistoryRefresh: 'Обновить',
+    processingHistoryClear: 'Очистить',
+    processingHistoryExportJson: 'Экспорт JSON',
+    processingHistoryEmpty:
+      'История пока пуста. Завершите экспорт или сохраните кадр, и запись появится здесь.',
+    processingHistoryRepeat: 'Повторить',
+    processingHistoryOpenFile: 'Файл',
+    processingHistoryOpenFolder: 'Папка',
+    processingHistoryOpenPreview: 'В превью',
+    processingHistoryExportDialogTitle: 'Экспорт истории обработок',
+    processingHistoryExportSaved: 'История обработок сохранена',
+    processingHistoryOpenInputBusy: 'Открываю исходник из истории…',
+    processingHistoryOpenInputDone: 'Исходник открыт в редакторе',
+    processingHistoryOpenOutputPreviewDone: 'Результат обработки открыт в превью',
+    downloadsHistoryTitle: 'История',
+    downloadsHistoryWeeklyAria: 'Недельная сводка загрузок',
+    downloadsHistory7dPrefix: '7 дней:',
+    downloadsHistoryChipOk: 'OK',
+    downloadsHistoryChipErrors: 'Ошибки',
+    downloadsHistoryChipCancelled: 'Отмена',
+    downloadsHistoryOutcomeFilterLabel: 'Исход',
+    downloadsHistoryFilterAll: 'Все',
+    downloadsHistoryFilterSuccess: 'Успех',
+    downloadsHistoryFilterError: 'Ошибка',
+    downloadsHistoryFilterCancelled: 'Отмена',
+    downloadsHistoryRefresh: 'Обновить',
+    downloadsHistoryClear: 'Очистить',
+    downloadsHistoryExportJson: 'Экспорт JSON',
+    downloadsHistoryEmpty:
+      'История пока пуста. После завершения строк здесь появятся последние результаты.',
+    downloadsHistoryRepeat: 'Повторить',
+    downloadsHistoryOpenFile: 'Файл',
+    downloadsHistoryOpenFolder: 'Папка',
+    downloadsHistoryOpenInEditor: 'В редактор',
+    downloadsHistoryExportDialogTitle: 'Экспорт истории загрузок',
+    downloadsHistoryExportSaved: 'История загрузок сохранена',
+    downloadsHistoryRepeatQueued: 'URL из истории добавлен в очередь',
+    downloadsHistoryRepeatNotAdded: 'URL не добавлен',
+    downloadsHistoryOpenHandlerPreparing:
+      'Готовлю файл для редактора… при необходимости будет создан WebM preview.',
+    downloadsHistoryOpenHandlerDone: 'Файл открыт в редакторе'
   },
   en: {
     aboutTitle: 'About',
@@ -131,7 +196,69 @@ const UI_TEXT = {
     terminalCopyLineButton: 'Copy',
     terminalHintsPanelAria: 'CLI hints',
     terminalHintsSearchLabel: 'Filter hints',
-    terminalHintsSearchPlaceholder: '--help, -i, crop'
+    terminalHintsSearchPlaceholder: '--help, -i, crop',
+    processingOutcomeSuccess: 'Done',
+    processingOutcomeError: 'Error',
+    processingOutcomeCancelled: 'Cancelled',
+    processingHistoryTitle: 'Processing history',
+    processingHistorySectionHint:
+      'Recent ffmpeg exports, frame snapshots, and post-download auto-exports.',
+    processingHistoryWeeklyAria: 'Seven-day processing summary',
+    processingHistory7dPrefix: '7 days:',
+    processingHistoryChipOk: 'OK',
+    processingHistoryChipErrors: 'Errors',
+    processingHistoryChipCancelled: 'Cancelled',
+    processingHistoryChipTime: 'Time',
+    processingHistoryKindAll: 'All types',
+    processingHistoryKindExport: 'Export',
+    processingHistoryKindSnapshot: 'Frames',
+    processingHistoryKindAutoExport: 'Auto export',
+    processingHistoryOutcomeAll: 'All outcomes',
+    processingHistoryKindFilterAria: 'Processing type',
+    processingHistoryOutcomeFilterAria: 'Outcome',
+    processingHistoryQueryPlaceholder: 'File, status, error',
+    processingHistoryQueryAria: 'Search processing history',
+    processingHistoryRefresh: 'Refresh',
+    processingHistoryClear: 'Clear',
+    processingHistoryExportJson: 'Export JSON',
+    processingHistoryEmpty:
+      'No entries yet. Finish an export or save a frame to see it listed here.',
+    processingHistoryRepeat: 'Retry',
+    processingHistoryOpenFile: 'File',
+    processingHistoryOpenFolder: 'Folder',
+    processingHistoryOpenPreview: 'Open in preview',
+    processingHistoryExportDialogTitle: 'Export processing history',
+    processingHistoryExportSaved: 'Processing history saved',
+    processingHistoryOpenInputBusy: 'Opening source from history…',
+    processingHistoryOpenInputDone: 'Source opened in the editor',
+    processingHistoryOpenOutputPreviewDone: 'Output opened in preview',
+    downloadsHistoryTitle: 'History',
+    downloadsHistoryWeeklyAria: 'Seven-day downloads summary',
+    downloadsHistory7dPrefix: '7 days:',
+    downloadsHistoryChipOk: 'OK',
+    downloadsHistoryChipErrors: 'Errors',
+    downloadsHistoryChipCancelled: 'Cancelled',
+    downloadsHistoryOutcomeFilterLabel: 'Outcome',
+    downloadsHistoryFilterAll: 'All',
+    downloadsHistoryFilterSuccess: 'Success',
+    downloadsHistoryFilterError: 'Error',
+    downloadsHistoryFilterCancelled: 'Cancelled',
+    downloadsHistoryRefresh: 'Refresh',
+    downloadsHistoryClear: 'Clear',
+    downloadsHistoryExportJson: 'Export JSON',
+    downloadsHistoryEmpty:
+      'No entries yet. Finished queue rows will appear here as they complete.',
+    downloadsHistoryRepeat: 'Retry',
+    downloadsHistoryOpenFile: 'File',
+    downloadsHistoryOpenFolder: 'Folder',
+    downloadsHistoryOpenInEditor: 'Open in editor',
+    downloadsHistoryExportDialogTitle: 'Export download history',
+    downloadsHistoryExportSaved: 'Download history saved',
+    downloadsHistoryRepeatQueued: 'URL from history added to the queue',
+    downloadsHistoryRepeatNotAdded: 'URL was not added',
+    downloadsHistoryOpenHandlerPreparing:
+      'Preparing file for the editor… a WebM preview may be created if needed.',
+    downloadsHistoryOpenHandlerDone: 'File opened in the editor'
   }
 } as const
 
@@ -197,4 +324,60 @@ export function formatMaintenanceSummary(bytes: string, details?: string): strin
       ? UI_TEXT[activeUiLocale].maintenanceSummaryWithDetailsTemplate
       : UI_TEXT[activeUiLocale].maintenanceSummaryTemplate
   return template.replace(/\{bytes\}/g, bytes).replace(/\{details\}/g, details ?? '')
+}
+
+export function formatDownloadsHistoryTime(ms: number): string {
+  if (!Number.isFinite(ms) || ms <= 0) {
+    return '—'
+  }
+  const loc = activeUiLocale === 'en' ? 'en-US' : 'ru-RU'
+  return new Date(ms).toLocaleString(loc, {
+    day: '2-digit',
+    month: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
+
+export function formatProcessingDurationLabel(ms: number): string {
+  const en = activeUiLocale === 'en'
+  if (!Number.isFinite(ms) || ms <= 0) {
+    return en ? '0s' : '0с'
+  }
+  const totalSec = Math.round(ms / 1000)
+  const min = Math.floor(totalSec / 60)
+  const sec = totalSec % 60
+  if (min <= 0) {
+    return en ? `${sec}s` : `${sec}с`
+  }
+  const h = Math.floor(min / 60)
+  const m = min % 60
+  if (en) {
+    return h > 0 ? `${h}h ${m}m` : `${m}m ${sec}s`
+  }
+  return h > 0 ? `${h}ч ${m}м` : `${m}м ${sec}с`
+}
+
+export function formatDownloadsHistoryOutcomeLabel(outcome: YtdlpDownloadHistoryOutcome): string {
+  if (outcome === 'success') {
+    return uiText('processingOutcomeSuccess')
+  }
+  if (outcome === 'cancelled') {
+    return uiText('processingOutcomeCancelled')
+  }
+  return uiText('processingOutcomeError')
+}
+
+export function formatProcessingHistoryOutcomeLabel(outcome: ProcessingHistoryOutcome): string {
+  return formatDownloadsHistoryOutcomeLabel(outcome)
+}
+
+export function formatProcessingHistoryKindLabel(kind: ProcessingHistoryKind): string {
+  if (kind === 'ffmpegSnapshot') {
+    return uiText('processingHistoryKindSnapshot')
+  }
+  if (kind === 'autoExport') {
+    return uiText('processingHistoryKindAutoExport')
+  }
+  return uiText('processingHistoryKindExport')
 }

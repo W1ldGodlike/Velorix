@@ -542,3 +542,4 @@
 - [J-525] 2026-05-12 23:43:00 [Assistant]: §13 — встроенная история загрузок получила фильтр по outcome (all/success/error/cancelled) и JSON-экспорт видимых записей через общий `saveTextWithDialog`.
 - [J-526] 2026-05-12 23:45:00 [Assistant]: §13 — «Повторить» в истории обработок теперь доступно и для записей без `outputPath`; встроенная история загрузок показывает chips-сводку за 7 дней по исходам.
 - [J-527] 2026-05-12 23:49:00 [Assistant]: §13 — недельная сводка загрузок перенесена в main `ytdlp-download-history` (`getHistoryWeeklySummary`) и отдана через preload; тест покрывает 7-day outcome summary.
+- [J-528] 2026-05-12 23:58:00 [Assistant]: §1.1 — `ui-text` RU/EN для встроенных панелей истории загрузок и истории обработок; форматтеры `formatDownloadsHistoryTime`, `formatProcessingDurationLabel`, outcome/kind labels в `locales/ui-text.ts`; `App.tsx` — локализованные title/hint save dialog и status для repeat/open handler/processing history.

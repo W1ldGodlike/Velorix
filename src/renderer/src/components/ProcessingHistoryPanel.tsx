@@ -7,20 +7,13 @@ import type {
   ProcessingHistoryOutcome,
   ProcessingHistoryWeeklySummary
 } from '../../../shared/processing-history-contract'
-
-const kindOptions: Array<{ value: '' | ProcessingHistoryKind; label: string }> = [
-  { value: '', label: 'Все типы' },
-  { value: 'ffmpegExport', label: 'Экспорт' },
-  { value: 'ffmpegSnapshot', label: 'Кадры' },
-  { value: 'autoExport', label: 'Авто-экспорт' }
-]
-
-const outcomeOptions: Array<{ value: '' | ProcessingHistoryOutcome; label: string }> = [
-  { value: '', label: 'Все исходы' },
-  { value: 'success', label: 'Готово' },
-  { value: 'error', label: 'Ошибка' },
-  { value: 'cancelled', label: 'Отмена' }
-]
+import {
+  formatProcessingDurationLabel,
+  formatProcessingHistoryKindLabel,
+  formatProcessingHistoryOutcomeLabel,
+  formatDownloadsHistoryTime,
+  uiText
+} from '../locales/ui-text'
 
 function mergeFilter(
   current: ProcessingHistoryFilter,
@@ -67,11 +60,7 @@ export function ProcessingHistoryPanel({
   onClear,
   onExportVisible,
   onOpenOutput,
-  onOpenInputInHandler,
-  formatTimeLabel,
-  formatDurationLabel,
-  kindLabel,
-  outcomeLabel
+  onOpenInputInHandler
 }: {
   open: boolean
   busy: boolean
@@ -85,11 +74,20 @@ export function ProcessingHistoryPanel({
   onExportVisible: () => void
   onOpenOutput: (id: string, mode: 'file' | 'folder' | 'preview') => void
   onOpenInputInHandler: (id: string) => void
-  formatTimeLabel: (ms: number) => string
-  formatDurationLabel: (ms: number) => string
-  kindLabel: (kind: ProcessingHistoryEntry['kind']) => string
-  outcomeLabel: (outcome: ProcessingHistoryEntry['outcome']) => string
 }): JSX.Element {
+  const kindOptions: Array<{ value: '' | ProcessingHistoryKind; label: string }> = [
+    { value: '', label: uiText('processingHistoryKindAll') },
+    { value: 'ffmpegExport', label: uiText('processingHistoryKindExport') },
+    { value: 'ffmpegSnapshot', label: uiText('processingHistoryKindSnapshot') },
+    { value: 'autoExport', label: uiText('processingHistoryKindAutoExport') }
+  ]
+  const outcomeOptions: Array<{ value: '' | ProcessingHistoryOutcome; label: string }> = [
+    { value: '', label: uiText('processingHistoryOutcomeAll') },
+    { value: 'success', label: uiText('processingOutcomeSuccess') },
+    { value: 'error', label: uiText('processingOutcomeError') },
+    { value: 'cancelled', label: uiText('processingOutcomeCancelled') }
+  ]
+
   return (
     <details
       className="app-settings-section app-processing-history-panel"
@@ -99,18 +97,33 @@ export function ProcessingHistoryPanel({
       }}
     >
       <summary className="app-settings-summary">
-        История обработок <span className="app-processing-history-count">{entries.length}</span>
+        {uiText('processingHistoryTitle')}{' '}
+        <span className="app-processing-history-count">{entries.length}</span>
       </summary>
       <p id="processingHistorySectionHint" className="app-settings-section-hint">
-        Последние ffmpeg export, снимки кадров и авто-экспорт после загрузки.
+        {uiText('processingHistorySectionHint')}
       </p>
       {weeklySummary ? (
-        <div className="app-processing-history-summary" aria-label="Недельная сводка обработок">
-          <span>7 дней: {weeklySummary.total}</span>
-          <span>OK {weeklySummary.success}</span>
-          <span>Ошибки {weeklySummary.error}</span>
-          <span>Отмена {weeklySummary.cancelled}</span>
-          <span>Время {formatDurationLabel(weeklySummary.totalDurationMs)}</span>
+        <div
+          className="app-processing-history-summary"
+          aria-label={uiText('processingHistoryWeeklyAria')}
+        >
+          <span>
+            {uiText('processingHistory7dPrefix')} {weeklySummary.total}
+          </span>
+          <span>
+            {uiText('processingHistoryChipOk')} {weeklySummary.success}
+          </span>
+          <span>
+            {uiText('processingHistoryChipErrors')} {weeklySummary.error}
+          </span>
+          <span>
+            {uiText('processingHistoryChipCancelled')} {weeklySummary.cancelled}
+          </span>
+          <span>
+            {uiText('processingHistoryChipTime')}{' '}
+            {formatProcessingDurationLabel(weeklySummary.totalDurationMs)}
+          </span>
         </div>
       ) : null}
       <div
@@ -119,7 +132,7 @@ export function ProcessingHistoryPanel({
       >
         <select
           className="app-control"
-          aria-label="Тип обработки"
+          aria-label={uiText('processingHistoryKindFilterAria')}
           value={filter.kind ?? ''}
           disabled={busy}
           onChange={(event) => {
@@ -135,7 +148,7 @@ export function ProcessingHistoryPanel({
         </select>
         <select
           className="app-control"
-          aria-label="Исход обработки"
+          aria-label={uiText('processingHistoryOutcomeFilterAria')}
           value={filter.outcome ?? ''}
           disabled={busy}
           onChange={(event) => {
@@ -153,8 +166,8 @@ export function ProcessingHistoryPanel({
           className="app-control"
           value={filter.query ?? ''}
           disabled={busy}
-          placeholder="Файл, статус, ошибка"
-          aria-label="Поиск по истории обработок"
+          placeholder={uiText('processingHistoryQueryPlaceholder')}
+          aria-label={uiText('processingHistoryQueryAria')}
           onChange={(event) => {
             onFilterChange(mergeFilter(filter, { query: event.currentTarget.value }))
           }}
@@ -167,7 +180,7 @@ export function ProcessingHistoryPanel({
           disabled={busy}
           onClick={onRefresh}
         >
-          Обновить
+          {uiText('processingHistoryRefresh')}
         </button>
         <button
           type="button"
@@ -175,7 +188,7 @@ export function ProcessingHistoryPanel({
           disabled={busy || entries.length === 0}
           onClick={onClear}
         >
-          Очистить
+          {uiText('processingHistoryClear')}
         </button>
         <button
           type="button"
@@ -183,14 +196,12 @@ export function ProcessingHistoryPanel({
           disabled={busy || entries.length === 0}
           onClick={onExportVisible}
         >
-          Экспорт JSON
+          {uiText('processingHistoryExportJson')}
         </button>
       </div>
       <div className="app-processing-history-list">
         {entries.length === 0 ? (
-          <p className="app-downloads-history-empty">
-            История пока пуста. Завершите экспорт или сохраните кадр, и запись появится здесь.
-          </p>
+          <p className="app-downloads-history-empty">{uiText('processingHistoryEmpty')}</p>
         ) : (
           entries.slice(0, 10).map((entry) => (
             <article key={entry.id} className="app-downloads-history-card">
@@ -201,13 +212,13 @@ export function ProcessingHistoryPanel({
                 <span
                   className={`app-downloads-history-outcome app-downloads-history-${entry.outcome}`}
                 >
-                  {outcomeLabel(entry.outcome)}
+                  {formatProcessingHistoryOutcomeLabel(entry.outcome)}
                 </span>
               </div>
               <p title={entry.inputPath}>{entry.inputPath}</p>
               <div className="app-downloads-history-meta">
-                <span>{formatTimeLabel(entry.finishedAt)}</span>
-                <span>{kindLabel(entry.kind)}</span>
+                <span>{formatDownloadsHistoryTime(entry.finishedAt)}</span>
+                <span>{formatProcessingHistoryKindLabel(entry.kind)}</span>
               </div>
               <div className="app-downloads-history-meta">
                 <span>{entry.status}</span>
@@ -219,7 +230,7 @@ export function ProcessingHistoryPanel({
                   className="app-btn app-btn-compact"
                   onClick={() => onOpenInputInHandler(entry.id)}
                 >
-                  Повторить
+                  {uiText('processingHistoryRepeat')}
                 </button>
               </div>
               {entry.outputPath ? (
@@ -229,21 +240,21 @@ export function ProcessingHistoryPanel({
                     className="app-btn app-btn-compact"
                     onClick={() => onOpenOutput(entry.id, 'file')}
                   >
-                    Файл
+                    {uiText('processingHistoryOpenFile')}
                   </button>
                   <button
                     type="button"
                     className="app-btn app-btn-compact"
                     onClick={() => onOpenOutput(entry.id, 'folder')}
                   >
-                    Папка
+                    {uiText('processingHistoryOpenFolder')}
                   </button>
                   <button
                     type="button"
                     className="app-btn app-btn-compact"
                     onClick={() => onOpenOutput(entry.id, 'preview')}
                   >
-                    В превью
+                    {uiText('processingHistoryOpenPreview')}
                   </button>
                 </div>
               ) : null}

@@ -1,6 +1,11 @@
 import type { JSX } from 'react'
 
 import type { YtdlpDownloadHistoryEntry } from '../../../../shared/ytdlp-history-contract'
+import {
+  formatDownloadsHistoryOutcomeLabel,
+  formatDownloadsHistoryTime,
+  uiText
+} from '../../locales/ui-text'
 
 export function DownloadsHistoryPanel({
   open,
@@ -14,8 +19,6 @@ export function DownloadsHistoryPanel({
   onRefresh,
   onClear,
   onExportVisible,
-  formatTimeLabel,
-  outcomeLabel,
   onRepeat,
   onOpenFile,
   onOpenFolder,
@@ -37,8 +40,6 @@ export function DownloadsHistoryPanel({
   onRefresh: () => void
   onClear: () => void
   onExportVisible: () => void
-  formatTimeLabel: (ms: number) => string
-  outcomeLabel: (outcome: YtdlpDownloadHistoryEntry['outcome']) => string
   onRepeat: (url: string) => void
   onOpenFile: (id: string) => void
   onOpenFolder: (id: string) => void
@@ -53,20 +54,31 @@ export function DownloadsHistoryPanel({
       }}
     >
       <summary>
-        История
+        {uiText('downloadsHistoryTitle')}
         <span>
           {entries.length}/{totalEntries}
         </span>
       </summary>
-      <div className="app-processing-history-summary" aria-label="Недельная сводка загрузок">
-        <span>7 дней: {weeklySummary.total}</span>
-        <span>OK {weeklySummary.success}</span>
-        <span>Ошибки {weeklySummary.error}</span>
-        <span>Отмена {weeklySummary.cancelled}</span>
+      <div
+        className="app-processing-history-summary"
+        aria-label={uiText('downloadsHistoryWeeklyAria')}
+      >
+        <span>
+          {uiText('downloadsHistory7dPrefix')} {weeklySummary.total}
+        </span>
+        <span>
+          {uiText('downloadsHistoryChipOk')} {weeklySummary.success}
+        </span>
+        <span>
+          {uiText('downloadsHistoryChipErrors')} {weeklySummary.error}
+        </span>
+        <span>
+          {uiText('downloadsHistoryChipCancelled')} {weeklySummary.cancelled}
+        </span>
       </div>
       <div className="app-downloads-history-actions">
         <label className="app-downloads-history-filter">
-          <span>Исход</span>
+          <span>{uiText('downloadsHistoryOutcomeFilterLabel')}</span>
           <select
             className="app-control"
             value={outcomeFilter}
@@ -75,10 +87,10 @@ export function DownloadsHistoryPanel({
               onOutcomeFilterChange(event.currentTarget.value as typeof outcomeFilter)
             }}
           >
-            <option value="all">Все</option>
-            <option value="success">Успех</option>
-            <option value="error">Ошибка</option>
-            <option value="cancelled">Отмена</option>
+            <option value="all">{uiText('downloadsHistoryFilterAll')}</option>
+            <option value="success">{uiText('downloadsHistoryFilterSuccess')}</option>
+            <option value="error">{uiText('downloadsHistoryFilterError')}</option>
+            <option value="cancelled">{uiText('downloadsHistoryFilterCancelled')}</option>
           </select>
         </label>
         <button
@@ -87,7 +99,7 @@ export function DownloadsHistoryPanel({
           disabled={busy}
           onClick={onRefresh}
         >
-          Обновить
+          {uiText('downloadsHistoryRefresh')}
         </button>
         <button
           type="button"
@@ -95,7 +107,7 @@ export function DownloadsHistoryPanel({
           disabled={busy || entries.length === 0}
           onClick={onClear}
         >
-          Очистить
+          {uiText('downloadsHistoryClear')}
         </button>
         <button
           type="button"
@@ -103,14 +115,12 @@ export function DownloadsHistoryPanel({
           disabled={busy || entries.length === 0}
           onClick={onExportVisible}
         >
-          Экспорт JSON
+          {uiText('downloadsHistoryExportJson')}
         </button>
       </div>
       <div className="app-downloads-history-list">
         {entries.length === 0 ? (
-          <p className="app-downloads-history-empty">
-            История пока пуста. После завершения строк здесь появятся последние результаты.
-          </p>
+          <p className="app-downloads-history-empty">{uiText('downloadsHistoryEmpty')}</p>
         ) : (
           entries.slice(0, 8).map((entry) => (
             <article key={entry.id} className="app-downloads-history-card">
@@ -119,12 +129,12 @@ export function DownloadsHistoryPanel({
                 <span
                   className={`app-downloads-history-outcome app-downloads-history-${entry.outcome}`}
                 >
-                  {outcomeLabel(entry.outcome)}
+                  {formatDownloadsHistoryOutcomeLabel(entry.outcome)}
                 </span>
               </div>
               <p title={entry.url}>{entry.url}</p>
               <div className="app-downloads-history-meta">
-                <span>{formatTimeLabel(entry.finishedAt)}</span>
+                <span>{formatDownloadsHistoryTime(entry.finishedAt)}</span>
                 <span>{entry.status}</span>
               </div>
               {entry.errorHint ? <p className="app-downloads-warning">{entry.errorHint}</p> : null}
@@ -135,7 +145,7 @@ export function DownloadsHistoryPanel({
                   disabled={busy}
                   onClick={() => onRepeat(entry.url)}
                 >
-                  Повторить
+                  {uiText('downloadsHistoryRepeat')}
                 </button>
               </div>
               {entry.outputPath ? (
@@ -145,21 +155,21 @@ export function DownloadsHistoryPanel({
                     className="app-btn app-btn-compact app-btn-icon-leading"
                     onClick={() => onOpenFile(entry.id)}
                   >
-                    Файл
+                    {uiText('downloadsHistoryOpenFile')}
                   </button>
                   <button
                     type="button"
                     className="app-btn app-btn-compact app-btn-icon-leading"
                     onClick={() => onOpenFolder(entry.id)}
                   >
-                    Папка
+                    {uiText('downloadsHistoryOpenFolder')}
                   </button>
                   <button
                     type="button"
                     className="app-btn app-btn-compact app-btn-icon-leading"
                     onClick={() => onOpenInHandler(entry.id)}
                   >
-                    В редактор
+                    {uiText('downloadsHistoryOpenInEditor')}
                   </button>
                 </div>
               ) : null}
