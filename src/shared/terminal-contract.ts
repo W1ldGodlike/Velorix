@@ -2594,6 +2594,54 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· socket-timeout 120 -F',
     summary: 'Таймаут сокета 120 с (--socket-timeout 120 -F); очень медленные CDN/прокси; допишите URL.',
     fullLine: 'yt-dlp --socket-timeout 120 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -S 1080 av1 -F',
+    summary: 'Сортировка форматов: приоритет ~1080p и AV1 (-S +res:1080,+codec:av01 -F); подстройте res/codec; допишите URL.',
+    fullLine: 'yt-dlp -S +res:1080,+codec:av01 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -S br5M 720p -F',
+    summary: 'Сортировка: битрейт ~5 Mbit/s и около 720p (-S +br:5000000,+res:720 -F); диагностика выбора -f; допишите URL.',
+    fullLine: 'yt-dlp -S +br:5000000,+res:720 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· hide-progress -F',
+    summary: 'Список форматов без прогресс-бара (--hide-progress -F); чище лог в терминале; допишите URL.',
+    fullLine: 'yt-dlp --hide-progress -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· playlist last -F',
+    summary: 'Только последний элемент плейлиста + -F (--playlist-items -1 -F); хвост плейлиста без полного разбора; допишите URL.',
+    fullLine: 'yt-dlp --playlist-items -1 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print genres',
+    summary: 'Жанры/теги без скачивания (--skip-download --print genres); музыка/каталоги; допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print genres '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print cast',
+    summary: 'Участники/акты без скачивания (--skip-download --print cast); если отдаёт площадка; допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print cast '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· playlist mid slice -F',
+    summary: 'Фрагмент плейлиста: только элементы 2…4 (--playlist-items 2:4 -F); середина без начала/конца; допишите URL плейлиста.',
+    fullLine: 'yt-dlp --playlist-items 2:4 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· ppa FFmpeg threads -F',
+    summary: 'Передать ffmpeg в postprocessor один поток (--ppa FFmpeg:-threads:1 -F); без кавычек в argv; допишите URL.',
+    fullLine: 'yt-dlp --ppa FFmpeg:-threads:1 -F '
   }
 ]
 
@@ -3498,6 +3546,30 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· treble 3s',
     summary: 'Лёгкий EQ treble первых 3 с (-af treble=g=1); smoke цепочки аудиофильтра; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af treble=g=1 -t 3 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format software tag',
+    summary: 'Тег контейнера software (кодировщик/пакер контейнера); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=software -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format ep meta',
+    summary: 'Теги сериала в контейнере (episode_sort, season_number, episode_id); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=episode_sort,season_number,episode_id -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· volume +3dB 2s',
+    summary: 'Усиление аудио +3 dB первые 2 с (-af volume=3dB); smoke громкости без перекодирования видео; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af volume=3dB -t 2 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· lowpass 3.5k 3s',
+    summary: 'НЧ-фильтр первых 3 с (-af lowpass=f=3500); проверка аудио-цепочки; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af lowpass=f=3500 -t 3 -vn -sn -f null -`
   }
 ]
 

@@ -1247,4 +1247,44 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: -S sort / hide-progress / playlist slice / print genres+cast / --ppa', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp -S +res:1080,+codec:av01 -F ')
+    expect(lines).toContain('yt-dlp -S +br:5000000,+res:720 -F ')
+    expect(lines).toContain('yt-dlp --hide-progress -F ')
+    expect(lines).toContain('yt-dlp --playlist-items -1 -F ')
+    expect(lines).toContain('yt-dlp --playlist-items 2:4 -F ')
+    expect(lines).toContain('yt-dlp --skip-download --print genres ')
+    expect(lines).toContain('yt-dlp --skip-download --print cast ')
+    expect(lines).toContain('yt-dlp --ppa FFmpeg:-threads:1 -F ')
+  })
+
+  it('preview: format software+episode tags / ffmpeg volume+lowpass', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=software') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=episode_sort,season_number,episode_id') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) => l.includes('-af volume=3dB') && l.includes('-t 2') && l.includes('-vn -sn')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) => l.includes('-af lowpass=f=3500') && l.includes('-t 3') && l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })
