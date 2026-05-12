@@ -329,4 +329,60 @@ describe('ffprobe-service buildTrackRows', () => {
     )
     expect(row?.detail).toContain('max 320 kb/s')
   })
+
+  it('video/audio/subtitle detail показывает ненулевой start_pts с time_base', () => {
+    const rows = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 1920,
+          height: 1080,
+          start_pts: 90000,
+          time_base: '1/90000'
+        },
+        {
+          index: 1,
+          codec_type: 'audio',
+          codec_name: 'aac',
+          channels: 2,
+          sample_rate: '48000',
+          start_pts: '1024',
+          time_base: '1/48000'
+        },
+        {
+          index: 2,
+          codec_type: 'subtitle',
+          codec_name: 'mov_text',
+          start_pts: '2000',
+          time_base: '1/1000'
+        }
+      ],
+      null
+    )
+
+    expect(rows[0]?.detail).toContain('pts 90000@1/90000')
+    expect(rows[1]?.detail).toContain('pts 1024@1/48000')
+    expect(rows[2]?.detail).toContain('pts 2000@1/1000')
+  })
+
+  it('video detail не показывает тривиальный start_pts=0', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 1280,
+          height: 720,
+          start_pts: 0,
+          time_base: '1/90000'
+        }
+      ],
+      null
+    )
+
+    expect(row?.detail).not.toMatch(/\bpts\b/)
+  })
 })

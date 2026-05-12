@@ -78,6 +78,10 @@ interface FfprobeJson {
     codec_tag_string?: string
     /** Секунды от начала контейнера (строка float ffprobe). */
     start_time?: string
+    /** Таймбаза потока; вместе с `start_pts` помогает диагностировать сдвиги timestamp. */
+    time_base?: string
+    /** Начальный PTS в единицах `time_base`; показываем только нетривиальные значения. */
+    start_pts?: string | number
     /** Длительность дорожки (секунды строкой); может отличаться от `format.duration`. */
     duration?: string
     bit_rate?: string
@@ -207,6 +211,23 @@ function formatFfprobeTagEncoderBrief(
   return collapseFfprobeDetailSnippet(raw)
 }
 
+function formatFfprobeStartPtsDetail(
+  startPts: string | number | undefined,
+  timeBase: string | undefined
+): string | null {
+  const pts =
+    typeof startPts === 'number' && Number.isFinite(startPts)
+      ? String(Math.trunc(startPts))
+      : typeof startPts === 'string'
+        ? startPts.trim()
+        : ''
+  if (pts === '' || /^n\/a$/i.test(pts) || pts === '0') {
+    return null
+  }
+  const tb = ffprobeScalarDisplay(timeBase)
+  return tb === null ? `pts ${pts}` : `pts ${pts}@${tb}`
+}
+
 function mapCodecType(raw: string | undefined): MediaProbeTrackRow['kind'] {
   switch (raw) {
     case 'video':
@@ -262,6 +283,10 @@ function buildTrackDetail(
     const vStart = formatFfprobeStreamStartTime(stream.start_time)
     if (vStart) {
       parts.push(vStart)
+    }
+    const vStartPts = formatFfprobeStartPtsDetail(stream.start_pts, stream.time_base)
+    if (vStartPts) {
+      parts.push(vStartPts)
     }
     if (streamDur) {
       parts.push(streamDur)
@@ -398,6 +423,10 @@ function buildTrackDetail(
     if (aStart) {
       parts.push(aStart)
     }
+    const aStartPts = formatFfprobeStartPtsDetail(stream.start_pts, stream.time_base)
+    if (aStartPts) {
+      parts.push(aStartPts)
+    }
     if (streamDur) {
       parts.push(streamDur)
     }
@@ -466,6 +495,10 @@ function buildTrackDetail(
     const subStart = formatFfprobeStreamStartTime(stream.start_time)
     if (subStart) {
       parts.push(subStart)
+    }
+    const subStartPts = formatFfprobeStartPtsDetail(stream.start_pts, stream.time_base)
+    if (subStartPts) {
+      parts.push(subStartPts)
     }
     if (streamDur) {
       parts.push(streamDur)
