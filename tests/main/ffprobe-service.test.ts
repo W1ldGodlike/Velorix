@@ -258,6 +258,38 @@ describe('ffprobe-service buildTrackRows', () => {
     expect(row?.detail).toContain('cover.jpg')
   })
 
+  it('attachment/detail: start_time, exdata, codec_tag, nb_frames, encoder', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 1,
+          codec_type: 'attachment',
+          codec_name: 'mjpeg',
+          start_time: '0.042',
+          time_base: '1/90000',
+          start_pts: 3780,
+          nb_frames: '1',
+          extradata_size: 16,
+          codec_tag: 0x64736d,
+          bit_rate: '8000',
+          max_bit_rate: '64000',
+          tags: {
+            filename: 'thumb.jpg',
+            encoder: 'Lavc thumbnailer'
+          }
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toContain('start +42ms')
+    expect(row?.detail).toContain('pts 3780@1/90000')
+    expect(row?.detail).toContain('exdata 16 B')
+    expect(row?.detail).toContain('tag 0x64736d')
+    expect(row?.detail).toContain('1 frm')
+    expect(row?.detail).toMatch(/max\b/)
+    expect(row?.detail).toContain('Lavc thumbnailer')
+  })
+
   it('video detail включает компактную HDR-метку из color_transfer/color_primaries', () => {
     const [row] = buildTrackRows(
       [

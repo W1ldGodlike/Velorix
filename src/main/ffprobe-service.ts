@@ -735,8 +735,41 @@ function buildTrackDetail(
     if (title) {
       parts.push(title)
     }
+    const oFourcc = ffprobeContainerFourccDisplay(
+      typeof stream.codec_tag_string === 'string' ? stream.codec_tag_string : undefined
+    )
+    if (oFourcc) {
+      parts.push(oFourcc)
+    } else {
+      const oTagHex = formatFfprobeCodecTagHexDetail(stream.codec_tag)
+      if (oTagHex) {
+        parts.push(oTagHex)
+      }
+    }
+    const oEx = parseFfprobeOptionalInt(stream.extradata_size)
+    if (oEx !== null && oEx > 0) {
+      parts.push(`exdata ${oEx} B`)
+    }
+    appendMaxBitrateDetailIfNotable(parts, stream.bit_rate, stream.max_bit_rate)
+    const oStart = formatFfprobeStreamStartTime(stream.start_time)
+    if (oStart) {
+      parts.push(oStart)
+    }
+    const oStartPts = formatFfprobeStartPtsDetail(stream.start_pts, stream.time_base)
+    if (oStartPts) {
+      parts.push(oStartPts)
+    }
     if (streamDur) {
       parts.push(streamDur)
+    }
+    appendFfprobeNbFramesDetail(parts, stream.nb_frames)
+    const oEnc = formatFfprobeTagEncoderBrief(stream.tags)
+    if (oEnc) {
+      parts.push(oEnc)
+    }
+    const oCreated = formatFfprobeCreationTimeBrief(stream.tags)
+    if (oCreated) {
+      parts.push(oCreated)
     }
   }
 
