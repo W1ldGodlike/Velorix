@@ -4562,6 +4562,96 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· geo-bypass TT -F',
     summary: 'Гео-обход через Тринидад и Тобаго (--geo-bypass-country TT -F); допишите URL.',
     fullLine: 'yt-dlp --geo-bypass-country TT -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -to file audio_channels',
+    summary: 'Записать audio_channels в flux-ytdlp-achs.txt без скачивания (--print-to-file audio_channels …); допишите URL.',
+    fullLine: 'yt-dlp --print-to-file audio_channels flux-ytdlp-achs.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -to file chapter',
+    summary: 'Записать chapter (название текущей главы) в flux-ytdlp-chapter.txt без скачивания (--print-to-file chapter …); допишите URL.',
+    fullLine: 'yt-dlp --print-to-file chapter flux-ytdlp-chapter.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -to file chapter_id',
+    summary: 'Записать chapter_id в flux-ytdlp-chapid.txt без скачивания (--print-to-file chapter_id …); допишите URL.',
+    fullLine: 'yt-dlp --print-to-file chapter_id flux-ytdlp-chapid.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -to file chapter_number',
+    summary: 'Записать chapter_number в flux-ytdlp-chapnum.txt без скачивания (--print-to-file chapter_number …); допишите URL.',
+    fullLine: 'yt-dlp --print-to-file chapter_number flux-ytdlp-chapnum.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -to file start_time',
+    summary: 'Записать start_time (секунды начала фрагмента) в flux-ytdlp-stt.txt без скачивания (--print-to-file start_time …); допишите URL.',
+    fullLine: 'yt-dlp --print-to-file start_time flux-ytdlp-stt.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -to file end_time',
+    summary: 'Записать end_time (секунды окончания фрагмента) в flux-ytdlp-end.txt без скачивания (--print-to-file end_time …); допишите URL.',
+    fullLine: 'yt-dlp --print-to-file end_time flux-ytdlp-end.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -to file quality',
+    summary: 'Записать quality (оценка формата yt-dlp) в flux-ytdlp-quality.txt без скачивания (--print-to-file quality …); допишите URL.',
+    fullLine: 'yt-dlp --print-to-file quality flux-ytdlp-quality.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -to file formats_table',
+    summary: 'Записать formats_table (то, что показывает -F) в flux-ytdlp-ftbl.txt без скачивания (--print-to-file formats_table …); допишите URL.',
+    fullLine: 'yt-dlp --print-to-file formats_table flux-ytdlp-ftbl.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo AF -F',
+    summary: 'Гео-обход через Афганистан (--geo-bypass-country AF -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country AF -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo AO -F',
+    summary: 'Гео-обход через Анголу (--geo-bypass-country AO -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country AO -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo HK -F',
+    summary: 'Гео-обход через Гонконг (--geo-bypass-country HK -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country HK -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo IL -F',
+    summary: 'Гео-обход через Израиль (--geo-bypass-country IL -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country IL -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo KW -F',
+    summary: 'Гео-обход через Кувейт (--geo-bypass-country KW -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country KW -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --clean-info-json -F',
+    summary: 'Чистить .info.json от приватных URL/токенов перед записью (--clean-info-json -F); допишите URL.',
+    fullLine: 'yt-dlp --clean-info-json -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --update-to stable',
+    summary: 'Обновить yt-dlp до канала stable (--update-to stable); URL не нужен.',
+    fullLine: 'yt-dlp --update-to stable'
   }
 ]
 
@@ -5868,6 +5958,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· extrastereo 4s',
     summary: 'Лёгкое расширение стереобазы первых 4 с (-af extrastereo=m=1.2); smoke ширины/pan; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af extrastereo=m=1.2 -t 4 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format podcast+url',
+    summary: 'Теги контейнера podcast + podcasturl (RSS-источник аудио-подкаста); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=podcast,podcasturl -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· acrusher 4s',
+    summary: 'Лёгкий bit-crush первых 4 с (-af acrusher=level_in=0.8:level_out=0.8:bits=8:mode=log); smoke зернистости; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af acrusher=level_in=0.8:level_out=0.8:bits=8:mode=log -t 4 -vn -sn -f null -`
   }
 ]
 

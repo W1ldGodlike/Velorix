@@ -2316,4 +2316,46 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: print-to-file audio_channels/chapter*/start_time/end_time/quality/formats_table', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --print-to-file audio_channels flux-ytdlp-achs.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file chapter flux-ytdlp-chapter.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file chapter_id flux-ytdlp-chapid.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file chapter_number flux-ytdlp-chapnum.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file start_time flux-ytdlp-stt.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file end_time flux-ytdlp-end.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file quality flux-ytdlp-quality.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file formats_table flux-ytdlp-ftbl.txt --skip-download ')
+  })
+
+  it('downloads: geo AF/AO/HK/IL/KW -F + --clean-info-json -F + --update-to stable', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --geo-bypass-country AF -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country AO -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country HK -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country IL -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country KW -F ')
+    expect(lines).toContain('yt-dlp --clean-info-json -F ')
+    expect(lines).toContain('yt-dlp --update-to stable')
+  })
+
+  it('preview: ffprobe format podcast+podcasturl + ffmpeg acrusher 4s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=podcast,podcasturl') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af acrusher=level_in=0.8:level_out=0.8:bits=8:mode=log') &&
+          l.includes('-t 4') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })
