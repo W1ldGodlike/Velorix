@@ -381,6 +381,93 @@ describe('ffprobe-service buildTrackRows', () => {
     expect(row?.detail).not.toContain('Annex-B')
   })
 
+  it('video detail: ticks_per_frame>1 → «tpf N»', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'mpeg2video',
+          width: 720,
+          height: 576,
+          ticks_per_frame: 2
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toContain('tpf 2')
+  })
+
+  it('video detail: ticks_per_frame=1 — без «tpf»', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 1280,
+          height: 720,
+          ticks_per_frame: 1
+        }
+      ],
+      null
+    )
+    expect(row?.detail).not.toMatch(/\btpf\b/)
+  })
+
+  it('video detail: bits_per_coded_sample → «bpc …-bit» (отдельно от coded WxH)', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 1280,
+          height: 720,
+          coded_width: 1920,
+          coded_height: 1080,
+          bits_per_coded_sample: 8
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toContain('bpc 8-bit')
+    expect(row?.detail).toContain('coded 1920×1080')
+  })
+
+  it('audio detail: bits_per_coded_sample → «bpc …-bit»', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'audio',
+          codec_name: 'pcm_s16le',
+          channels: 2,
+          sample_rate: '48000',
+          bits_per_coded_sample: 16
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toContain('bpc 16-bit')
+  })
+
+  it('audio detail без bits_per_coded_sample — без «bpc»', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'audio',
+          codec_name: 'aac',
+          channels: 2,
+          sample_rate: '44100'
+        }
+      ],
+      null
+    )
+    expect(row?.detail).not.toMatch(/\bbpc\b/)
+  })
+
   it('video/audio/subtitle detail показывает ненулевой start_pts с time_base', () => {
     const rows = buildTrackRows(
       [

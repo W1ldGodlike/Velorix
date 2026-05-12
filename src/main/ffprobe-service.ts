@@ -67,6 +67,8 @@ interface FfprobeJson {
     field_order?: string
     chroma_location?: string
     bits_per_raw_sample?: string | number
+    /** Глубина закодированного сэмпла (PCM/AAC и др.); отдельно от `bits_per_raw_sample` у видео. */
+    bits_per_coded_sample?: string | number
     /** Размер кодируемого кадра; иногда отличается от `width`/`height` (crop/padding). */
     coded_width?: number
     coded_height?: number
@@ -80,6 +82,8 @@ interface FfprobeJson {
     closed_captions?: string | number
     /** H.264: `1` — length-prefixed AVC, `0` — Annex B (NAL с start codes). */
     is_avc?: string | number
+    /** Тиков на кадр таймбазы потока; >1 — нетривиально для fps/seek. */
+    ticks_per_frame?: string | number
     /** Секунды от начала контейнера (строка float ffprobe). */
     start_time?: string
     /** Таймбаза потока; вместе с `start_pts` помогает диагностировать сдвиги timestamp. */
@@ -350,6 +354,10 @@ function buildTrackDetail(
     if (fpsLine !== null) {
       parts.push(fpsLine)
     }
+    const tpf = parseFfprobeOptionalInt(stream.ticks_per_frame)
+    if (tpf !== null && tpf > 1) {
+      parts.push(`tpf ${tpf}`)
+    }
     const vStart = formatFfprobeStreamStartTime(stream.start_time)
     if (vStart) {
       parts.push(vStart)
@@ -429,6 +437,17 @@ function buildTrackDetail(
       const bitsS = ffprobeScalarDisplay(typeof bitsRaw === 'string' ? bitsRaw : undefined)
       if (bitsS) {
         parts.push(`${bitsS}-bit`)
+      }
+    }
+    const bitsCodedRaw = stream.bits_per_coded_sample
+    if (typeof bitsCodedRaw === 'number' && Number.isFinite(bitsCodedRaw) && bitsCodedRaw > 0) {
+      parts.push(`bpc ${Math.trunc(bitsCodedRaw)}-bit`)
+    } else {
+      const bitsCodedS = ffprobeScalarDisplay(
+        typeof bitsCodedRaw === 'string' ? bitsCodedRaw : undefined
+      )
+      if (bitsCodedS) {
+        parts.push(`bpc ${bitsCodedS}-bit`)
       }
     }
     const cw = stream.coded_width
@@ -521,6 +540,17 @@ function buildTrackDetail(
     )
     if (sampleFmt) {
       parts.push(sampleFmt)
+    }
+    const aBitsCodedRaw = stream.bits_per_coded_sample
+    if (typeof aBitsCodedRaw === 'number' && Number.isFinite(aBitsCodedRaw) && aBitsCodedRaw > 0) {
+      parts.push(`bpc ${Math.trunc(aBitsCodedRaw)}-bit`)
+    } else {
+      const aBitsCodedS = ffprobeScalarDisplay(
+        typeof aBitsCodedRaw === 'string' ? aBitsCodedRaw : undefined
+      )
+      if (aBitsCodedS) {
+        parts.push(`bpc ${aBitsCodedS}-bit`)
+      }
     }
     const bitsPerSample = stream.bits_per_sample
     if (typeof bitsPerSample === 'number' && Number.isFinite(bitsPerSample) && bitsPerSample > 0) {
