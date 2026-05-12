@@ -3740,6 +3740,60 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· xattr-fsize -F',
     summary: 'Писать ожидаемый размер файла в xattr где поддерживается ОС (--xattr-set-filesize -F); допишите URL.',
     fullLine: 'yt-dlp --xattr-set-filesize -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file epoch',
+    summary: 'Записать epoch (время публикации в UNIX, если extractor отдаёт) в flux-ytdlp-epoch.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file epoch flux-ytdlp-epoch.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file reqsubs',
+    summary: 'Записать requested_subtitles (JSON выбранных субтитров) в flux-ytdlp-reqsubs.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file requested_subtitles flux-ytdlp-reqsubs.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file plch',
+    summary: 'Записать playlist_channel (имя канала плейлиста) в flux-ytdlp-plch.txt без скачивания; допишите URL плейлиста.',
+    fullLine: 'yt-dlp --print-to-file playlist_channel flux-ytdlp-plch.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file nent',
+    summary: 'Записать n_entries (число элементов плейлиста) в flux-ytdlp-nent.txt без скачивания; допишите URL плейлиста.',
+    fullLine: 'yt-dlp --print-to-file n_entries flux-ytdlp-nent.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file dislikes',
+    summary: 'Записать dislike_count в flux-ytdlp-dislikes.txt без скачивания (часто NA); допишите URL.',
+    fullLine: 'yt-dlp --print-to-file dislike_count flux-ytdlp-dislikes.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-pl-metafiles -F',
+    summary: 'Не писать .info.json/.description рядом с плейлистом (--no-playlist-metafiles -F); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --no-playlist-metafiles -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo BV -F',
+    summary: 'Гео-обход через остров Буве (--geo-bypass-country BV -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country BV -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo TF -F',
+    summary: 'Гео-обход через Французские Южные и Антарктические территории (--geo-bypass-country TF -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country TF -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo HM -F',
+    summary: 'Гео-обход через остров Херд и острова Макдональд (--geo-bypass-country HM -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country HM -F '
   }
 ]
 
@@ -4902,6 +4956,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· apulsator 3s',
     summary: 'Лёгкий стерео-пульсатор первых 3 с (-af apulsator); smoke периодического pan/af; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af apulsator=mode=sine:hz=1:width=2 -t 3 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· d:1 codec',
+    summary: 'Вторая data-дорожка d:1: codec_name + codec_tag_string (таймкоды/метаданные в контейнере); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams d:1 -show_entries stream=codec_name,codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· chorus 4s',
+    summary: 'Лёгкий хорус первых 4 с (-af chorus); smoke задержек/модуляции в af; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af chorus=0.5:0.9:50:0.4:0.25:2 -t 4 -vn -sn -f null -`
   }
 ]
 

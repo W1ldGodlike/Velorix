@@ -1896,4 +1896,37 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: print-to-file epoch/reqsubs/plch/nent/dislikes + no-pl-metafiles + geo BV/TF/HM -F', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --print-to-file epoch flux-ytdlp-epoch.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file requested_subtitles flux-ytdlp-reqsubs.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file playlist_channel flux-ytdlp-plch.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file n_entries flux-ytdlp-nent.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file dislike_count flux-ytdlp-dislikes.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --no-playlist-metafiles -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country BV -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country TF -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country HM -F ')
+  })
+
+  it('preview: ffprobe d:1 codec+tag + ffmpeg chorus 4s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-select_streams d:1') &&
+          l.includes('stream=codec_name,codec_tag_string') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af chorus=0.5:0.9:50:0.4:0.25:2') &&
+          l.includes('-t 4') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })
