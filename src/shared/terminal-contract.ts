@@ -4448,6 +4448,42 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· print-to-file webpage_url_scheme',
     summary: 'Записать webpage_url_scheme (http/https страницы) в flux-ytdlp-wuscheme.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file webpage_url_scheme flux-ytdlp-wuscheme.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file playlist',
+    summary: 'Записать поле playlist (имя элемента плейлиста, если extractor отдаёт) в flux-ytdlp-playlist.txt без скачивания; допишите URL плейлиста.',
+    fullLine: 'yt-dlp --print-to-file playlist flux-ytdlp-playlist.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file annotations',
+    summary: 'Записать annotations (если extractor отдаёт) в flux-ytdlp-annotations.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file annotations flux-ytdlp-annotations.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file storyboards',
+    summary: 'Записать storyboards (доски превью, если extractor отдаёт) в flux-ytdlp-storyboards.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file storyboards flux-ytdlp-storyboards.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file playlist_webpage_url',
+    summary: 'Записать playlist_webpage_url в flux-ytdlp-plwpurl.txt без скачивания; допишите URL плейлиста.',
+    fullLine: 'yt-dlp --print-to-file playlist_webpage_url flux-ytdlp-plwpurl.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· retries 20 -F',
+    summary: 'Список форматов с увеличенным числом повторов HTTP (--retries 20 -F); нестабильные CDN; допишите URL.',
+    fullLine: 'yt-dlp --retries 20 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· fragment-retries 20 -F',
+    summary: 'Список форматов с повторами для фрагментов DASH/HLS (--fragment-retries 20 -F); допишите URL.',
+    fullLine: 'yt-dlp --fragment-retries 20 -F '
   }
 ]
 
@@ -5718,6 +5754,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· bass 4s',
     summary: 'Лёгкий низкочастотный акцент первых 4 с (-af bass=g=2:f=120); smoke EQ bass без кавычек; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af bass=g=2:f=120 -t 4 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· s:0 index+codec',
+    summary: 'Первая субтитровая дорожка s:0: index + codec_name (порядок и тип в контейнере); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=index,codec_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· superequalizer 4s',
+    summary: 'Лёгкий 10-полосный superequalizer (полоса 3 +4 dB) первых 4 с; smoke графического EQ; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af superequalizer=3b=4 -t 4 -vn -sn -f null -`
   }
 ]
 

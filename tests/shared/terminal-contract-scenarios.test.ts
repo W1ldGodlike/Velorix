@@ -2227,4 +2227,34 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: print-to-file playlist/annotations/storyboards/plwpurl + retries/fragment-retries 20 -F', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --print-to-file playlist flux-ytdlp-playlist.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file annotations flux-ytdlp-annotations.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file storyboards flux-ytdlp-storyboards.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file playlist_webpage_url flux-ytdlp-plwpurl.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --retries 20 -F ')
+    expect(lines).toContain('yt-dlp --fragment-retries 20 -F ')
+  })
+
+  it('preview: ffprobe s:0 index+codec + ffmpeg superequalizer 4s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams s:0') &&
+          l.includes('stream=index,codec_name') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af superequalizer=3b=4') &&
+          l.includes('-t 4') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })
