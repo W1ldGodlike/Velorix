@@ -367,7 +367,7 @@
 - [x] Подстановка текущего файла/превью.
 - [x] История команд.
 - [x] Логирование команд и результата.
-- [~] IntelliSense в строке argv (v1): до 14 подсказок из merge JSON+сценариев, Tab/Enter/↑↓/Shift+Tab/Home/End/PgUp/PgDn (шаг 5), Escape, навигация при сужении списка (clamp stale-индекса), полный список до 240: фильтр + клавиатура (↑↓/Home/End/PgUp/PgDn/Enter) и подсветка активной строки, `shared/terminal-inline-suggest` + Vitest.
+- [~] IntelliSense в строке argv (v1): до 14 подсказок из merge JSON+сценариев, Tab/Enter/↑↓/Shift+Tab/Home/End/PgUp/PgDn (шаг 5), Escape, навигация при сужении списка (clamp stale-индекса), полный список до 240: фильтр + клавиатура (↑↓/Home/End/PgUp/PgDn/Enter, Escape — сброс фильтра) и подсветка активной строки, `shared/terminal-inline-suggest` + Vitest.
 
 ## §9. Инспектор видеофайлов
 

@@ -3602,7 +3602,8 @@ function App(): JSX.Element {
                   есть полный выпадающий список (до {TERMINAL_HINT_DROPDOWN_MAX} пунктов по
                   категориям инструментов): в поле фильтра списка — стрелки вверх/вниз, Home/End,
                   PgUp/PgDn (шаг {DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP}), Enter — вставить
-                  выделенную подсказку в argv. В журнале вывода каждая строка
+                  выделенную подсказку в argv, Escape — сбросить фильтр (или убрать фокус, если
+                  фильтр уже пуст). В журнале вывода каждая строка
                   с кнопкой «Копир.» при наведении (копирует ровно эту строку).
                 </p>
               </div>
@@ -3748,6 +3749,16 @@ function App(): JSX.Element {
                   onKeyDown={(e) => {
                     const list = terminalDropdownDisplayList
                     const n = list.length
+                    if (e.key === 'Escape') {
+                      e.preventDefault()
+                      if (terminalDropdownFilter.trim().length > 0) {
+                        setTerminalDropdownFilter('')
+                        setTerminalDropdownListIndex(0)
+                      } else {
+                        e.currentTarget.blur()
+                      }
+                      return
+                    }
                     if (n === 0) {
                       return
                     }
