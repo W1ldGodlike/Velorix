@@ -1232,6 +1232,84 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· --print track_number',
     summary: 'Номер трека внутри альбома без скачивания (--skip-download --print track_number); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print track_number '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· cookies brave',
+    summary: 'Сухой прогон с cookies Brave (--skip-download --cookies-from-browser brave); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --cookies-from-browser brave '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print series',
+    summary: 'Название серии/шоу без скачивания (--skip-download --print series); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print series '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print season',
+    summary: 'Сезон (строка площадки) без скачивания (--skip-download --print season); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print season '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print episode',
+    summary: 'Эпизод (строка площадки) без скачивания (--skip-download --print episode); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print episode '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print display_id',
+    summary: 'Короткий display_id без скачивания (--skip-download --print display_id); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print display_id '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print webpage_url_basename',
+    summary: 'Последний сегмент пути страницы без скачивания (--skip-download --print webpage_url_basename); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print webpage_url_basename '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print fulltitle',
+    summary: 'Полный заголовок с плейлистом/серией без скачивания (--skip-download --print fulltitle); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print fulltitle '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· sponsorblock-remove',
+    summary: 'Вырезать сегменты sponsor из файла постпроцессором (--sponsorblock-remove sponsor); допишите URL и -f.',
+    fullLine: 'yt-dlp --sponsorblock-remove sponsor '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· downloader native -F',
+    summary: 'Нативный загрузчик фрагментов (--downloader native -F); обход части ffmpeg-глюков; допишите URL.',
+    fullLine: 'yt-dlp --downloader native -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· legacy-server-connect -F',
+    summary: 'TLS legacy renegotiation (--legacy-server-connect -F) для старых CDN; допишите URL.',
+    fullLine: 'yt-dlp --legacy-server-connect -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-call-home -F',
+    summary: 'Не слать update-проверку yt-dlp (--no-call-home -F); допишите URL.',
+    fullLine: 'yt-dlp --no-call-home -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· datebefore -F',
+    summary: 'Только ролики не новее даты (--datebefore 20991231 -F; поменяйте дату YYYYMMDD); допишите URL.',
+    fullLine: 'yt-dlp --datebefore 20991231 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· embed-info-json',
+    summary: 'Встроить .info.json в контейнер после скачивания (--embed-info-json); допишите URL и -f/-o.',
+    fullLine: 'yt-dlp --embed-info-json '
   }
 ]
 
