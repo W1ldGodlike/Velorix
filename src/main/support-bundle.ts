@@ -10,6 +10,8 @@ import {
 } from 'fs'
 import { basename, dirname, join } from 'path'
 
+import { getDiagnosticsMaintenanceSnapshot } from './diagnostics-maintenance'
+
 export interface SupportBundleRuntimeInfo {
   appVersion: string
   electronVersion: string
@@ -307,6 +309,13 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
   const crashUsage = collectDirectoryUsage(info.crashDumps)
   const previewCacheUsage = collectDirectoryUsage(join(info.userData, 'preview-cache'))
   const ytdlpDownloadsUsage = collectDirectoryUsage(join(info.userData, 'downloads', 'ytdlp'))
+  const maintenance = getDiagnosticsMaintenanceSnapshot({
+    appRoot: info.resources,
+    resources: info.resources,
+    userData: info.userData,
+    bundledBin: join(info.resources, 'bin'),
+    userBin: join(info.userData, 'bin')
+  })
   return [
     `FluxAlloy ${info.appVersion}`,
     `Electron ${info.electronVersion}`,
@@ -333,7 +342,15 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
     `  ${formatDirectoryUsageLine('logs', logsUsage)}`,
     `  ${formatDirectoryUsageLine('crashDumps', crashUsage)}`,
     `  ${formatDirectoryUsageLine('preview-cache', previewCacheUsage)}`,
-    `  ${formatDirectoryUsageLine('downloads/ytdlp', ytdlpDownloadsUsage)}`
+    `  ${formatDirectoryUsageLine('downloads/ytdlp', ytdlpDownloadsUsage)}`,
+    '',
+    'maintenanceTargets:',
+    `  total: ${maintenance.totalBytes} bytes`,
+    `  cleanable: ${maintenance.cleanableBytes} bytes`,
+    ...maintenance.targets.map(
+      (target) =>
+        `  ${target.id}: ${target.files} files, ${target.directories} dirs, ${target.bytes} bytes`
+    )
   ].join('\n')
 }
 

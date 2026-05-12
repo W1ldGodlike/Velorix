@@ -31,7 +31,7 @@
 - [ ] Нет локализации `locales/**`.
 - [~] Основная вкладка `Загрузки` в React уже закрывает очередь, старт/stop/retry/pause, настройки yt-dlp, каталог/cookies/network, live log, историю и open file/folder; open file/folder/«В редактор» учитывают финальный файл после merge и Windows UTF-8 stdout; pop-out окно оставлено вторичным режимом для редких settings.
 - [~] ffprobe-инспектор есть под превью и отдельным окном: дорожки/главы/raw JSON, TXT/HTML export, Dolby/HDR side_data summary, контекстные действия.
-- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; по последней зелёной проверке `npm run check:quiet` выполняет **47 test files / 562 tests** + валидаторы `trusted_hashes`, нумерации журнала и secrets guard. Покрыты чистые парсеры и сервисы (`ytdlp-extra-args`, `ytdlp-progress-parser` + retry/fixup-постпроцессоры yt-dlp §6.4, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options` + превью каталога §6.3, `ytdlp-download-output`, `ytdlp-download-queue-persist`, `ytdlp-commands-hints`, `ytdlp-os-pause-support`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-export-resolve-from-settings`, `ffmpeg-frame-snapshot-service`, `external-process-log`, `support-bundle`, `ipc-channels`, `engine-contract`, `ffmpeg-export-argv` (+ §7.2 audio/video filters), `external-url`, `ffprobe-summary-export`, `ffprobe-chapters`, `ffprobe-timecode`, `ffprobe-disposition`, `ffprobe-video-fps`, `ffprobe-side-data`, `ffprobe-stream-duration-detail`, `ffprobe-service`, `ffprobe-probe-media.integration`, `ffprobe-probe-media-json-mock`, `diagnostics-maintenance`, `knowledge-service`, `timeline-ruler`, `waveform-peaks`, `video-frame-snap`, `lucide-downloads-icons`, `window-hidpi`, `terminal-contract-scenarios`, `terminal-inline-suggest`).
+- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; по последней зелёной проверке `npm run check:quiet` выполняет **47 test files / 564 tests** + валидаторы `trusted_hashes`, нумерации журнала и secrets guard. Покрыты чистые парсеры и сервисы (`ytdlp-extra-args`, `ytdlp-progress-parser` + retry/fixup-постпроцессоры yt-dlp §6.4, `ytdlp-queue-retry`, `ytdlp-download-history`, `ytdlp-download-options` + превью каталога §6.3, `ytdlp-download-output`, `ytdlp-download-queue-persist`, `ytdlp-commands-hints`, `ytdlp-os-pause-support`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-export-resolve-from-settings`, `ffmpeg-frame-snapshot-service`, `external-process-log`, `support-bundle`, `ipc-channels`, `engine-contract`, `ffmpeg-export-argv` (+ §7.2 audio/video filters), `external-url`, `ffprobe-summary-export`, `ffprobe-chapters`, `ffprobe-timecode`, `ffprobe-disposition`, `ffprobe-video-fps`, `ffprobe-side-data`, `ffprobe-stream-duration-detail`, `ffprobe-service`, `ffprobe-probe-media.integration`, `ffprobe-probe-media-json-mock`, `diagnostics-maintenance`, `knowledge-service`, `timeline-ruler`, `waveform-peaks`, `video-frame-snap`, `lucide-downloads-icons`, `window-hidpi`, `terminal-contract-scenarios`, `terminal-inline-suggest`).
 
 ## Журнал решений и проверок
 
@@ -404,11 +404,11 @@
 
 ## §12. Очистка кэша и обслуживание
 
-- [~] Категории кэша: `preview-cache` и частичные файлы yt-dlp (`.part`, `.ytdl`, `.temp`, `.tmp`, `.frag`) в `diagnostics-maintenance`.
-- [x] Подсчёт размеров: IPC/preload `diagnostics.maintenanceSnapshot()` + кнопка «Размер временных» в «О программе».
-- [~] Выборочная очистка: сервис принимает target ids; UI пока запускает безопасный стандартный набор.
-- [ ] Подтверждение опасных действий.
-- [~] Очистка временных файлов загрузки/обработки: `diagnostics.cleanMaintenance()` удаляет `preview-cache` и только частичные yt-dlp файлы, готовые медиа не трогает.
+- [~] Категории кэша: `preview-cache`, частичные файлы yt-dlp (`.part`, `.ytdl`, `.temp`, `.tmp`, `.frag`) и старые orphan `fa-x264tw-*` в `diagnostics-maintenance`.
+- [x] Подсчёт размеров: IPC/preload `diagnostics.maintenanceSnapshot()` + кнопка «Размер временных» в «О программе» показывает total и разбивку `preview-cache`/`.part`/ffmpeg temp.
+- [x] Выборочная очистка: сервис принимает target ids; UI даёт отдельные двухшаговые кнопки для общего набора, `preview-cache`, частичных yt-dlp файлов и старых ffmpeg temp.
+- [x] Подтверждение опасных действий: очистка временного в «О программе» требует второго клика («Подтвердить очистку») и показывает статус-предупреждение.
+- [~] Очистка временных файлов загрузки/обработки: `diagnostics.cleanMaintenance()` удаляет `preview-cache`, частичные yt-dlp файлы и старые `fa-x264tw-*`; готовые медиа и свежие temp не трогает.
 
 ## §13. История и статистика
 
@@ -458,8 +458,8 @@
 - [~] Меню утилит: подменю «Инструменты → Открыть папку…» с whitelist каталогов (`diagnostics-paths`); `enabled` пересчитывается при фокусе окна и после изменения путей; внешние ссылки из renderer/data-окон проходят `openAllowedExternalUrl`/`installExternalNavigationGuard` (`http(s)` only, без `file:`/`javascript:`).
 - [ ] Извлечь кадры.
 - [ ] Конвертер/служебные операции по ТЗ.
-- [~] Открыть папки ресурсов/логов: меню + IPC `fluxalloy:diagnostics-open-folder` (userData, logs, ytdlpDownloads, userBin, bundledBin, resources); в «О программе» — кнопки папки логов, main.log, Support ZIP, размер временных и очистка временного; отдельное окно настроек — позже.
-- [~] Диагностические команды/утилиты обслуживания: IPC/preload для `maintenanceSnapshot`/`cleanMaintenance`, тесты `diagnostics-maintenance`; дальше — отдельное окно настроек/подтверждение.
+- [~] Открыть папки ресурсов/логов: меню + IPC `fluxalloy:diagnostics-open-folder` (userData, logs, ytdlpDownloads, systemTemp, userBin, bundledBin, resources); в «О программе» — кнопки папки логов, main.log, Support ZIP, размер временных и двухшаговая очистка по категориям; отдельное окно настроек — позже.
+- [~] Диагностические команды/утилиты обслуживания: IPC/preload для `maintenanceSnapshot`/`cleanMaintenance`, тесты `diagnostics-maintenance`; дальше — отдельное окно настроек и расширение категорий.
 
 ## §18. Логирование и диагностика
 
@@ -468,7 +468,7 @@
 - [~] Логи renderer: `window.fluxalloy.log.send` через IPC `fluxalloy:log-renderer` + перехват `error`/`unhandledrejection` в `main.tsx`; канал закреплён за main window, ограничен token bucket и чистит control chars.
 - [x] Логи внешних процессов stdout/stderr: yt-dlp, ffmpeg export/snapshot, ffprobe через общий sanitizer без полного argv.
 - [~] Ротация по размеру: один backup `main.log.1` при превышении 1 MiB.
-- [~] Prune старых диагностических файлов: на старте чистятся crash dumps старше 30 дней, последние 20 сохраняются; архивы `logs/sessions/session-*.log` — не старше ~90 суток и не более ~25 файлов; `diagnostics.txt` в Support ZIP теперь включает сводку размеров ключевых каталогов (`logs`, crash dumps, `preview-cache`, `downloads/ytdlp`).
+- [~] Prune старых диагностических файлов: на старте чистятся crash dumps старше 30 дней, последние 20 сохраняются; архивы `logs/sessions/session-*.log` — не старше ~90 суток и не более ~25 файлов; `diagnostics.txt` в Support ZIP включает usage ключевых каталогов и `maintenanceTargets` (`previewCache`, `ytdlpPartials`, `ffmpegTemp`).
 - [~] Crash handler: `process.on('uncaughtException'|'unhandledRejection')` регистрируется на старте main до `app.whenReady`; после ready показывает диалог ошибки с деталями.
 - [x] Диалог ошибки: кратко + детали.
 - [x] Копировать детали.

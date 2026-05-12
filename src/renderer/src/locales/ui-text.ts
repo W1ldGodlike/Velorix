@@ -11,8 +11,15 @@ const UI_TEXT = {
     supportZipButton: 'Support ZIP…',
     maintenanceSummaryButton: 'Размер временных',
     maintenanceCleanButton: 'Очистить временное',
+    maintenanceCleanPreviewButton: 'Очистить preview',
+    maintenanceCleanPartialsButton: 'Очистить .part',
+    maintenanceCleanFfmpegTempButton: 'Очистить ffmpeg temp',
+    maintenanceConfirmButton: 'Подтвердить очистку',
+    maintenanceConfirmHintTemplate:
+      '{label}: удаляются только временные данные. Нажмите «Подтвердить очистку» ещё раз.',
     maintenanceCleanDoneTemplate: 'Очищено: {files} файлов, {bytes}',
     maintenanceSummaryTemplate: 'Временное: {bytes}',
+    maintenanceSummaryWithDetailsTemplate: 'Временное: {bytes} ({details})',
     formatSelectionDoc: 'Выбор формата',
     closeButton: 'Закрыть',
     versionsAriaLabel: 'Версии среды',
@@ -70,8 +77,15 @@ const UI_TEXT = {
     supportZipButton: 'Support ZIP…',
     maintenanceSummaryButton: 'Temp size',
     maintenanceCleanButton: 'Clean temp',
+    maintenanceCleanPreviewButton: 'Clean preview',
+    maintenanceCleanPartialsButton: 'Clean .part',
+    maintenanceCleanFfmpegTempButton: 'Clean ffmpeg temp',
+    maintenanceConfirmButton: 'Confirm cleanup',
+    maintenanceConfirmHintTemplate:
+      '{label}: only temporary data will be removed. Click “Confirm cleanup” once more.',
     maintenanceCleanDoneTemplate: 'Cleaned: {files} files, {bytes}',
     maintenanceSummaryTemplate: 'Temporary data: {bytes}',
+    maintenanceSummaryWithDetailsTemplate: 'Temporary data: {bytes} ({details})',
     formatSelectionDoc: 'Format selection',
     closeButton: 'Close',
     versionsAriaLabel: 'Runtime versions',
@@ -173,6 +187,14 @@ export function formatMaintenanceCleanDone(files: number, bytes: string): string
     .replace(/\{bytes\}/g, bytes)
 }
 
-export function formatMaintenanceSummary(bytes: string): string {
-  return UI_TEXT[activeUiLocale].maintenanceSummaryTemplate.replace(/\{bytes\}/g, bytes)
+export function formatMaintenanceConfirmHint(label: string): string {
+  return UI_TEXT[activeUiLocale].maintenanceConfirmHintTemplate.replace(/\{label\}/g, label)
+}
+
+export function formatMaintenanceSummary(bytes: string, details?: string): string {
+  const template =
+    details && details.trim().length > 0
+      ? UI_TEXT[activeUiLocale].maintenanceSummaryWithDetailsTemplate
+      : UI_TEXT[activeUiLocale].maintenanceSummaryTemplate
+  return template.replace(/\{bytes\}/g, bytes).replace(/\{details\}/g, details ?? '')
 }

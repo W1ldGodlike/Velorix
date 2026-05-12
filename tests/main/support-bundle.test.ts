@@ -1,4 +1,12 @@
-import { existsSync, mkdtempSync, readFileSync, rmSync, utimesSync, writeFileSync } from 'fs'
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  utimesSync,
+  writeFileSync
+} from 'fs'
 import { tmpdir } from 'os'
 import { join } from 'path'
 import { afterEach, describe, expect, it } from 'vitest'
@@ -49,6 +57,12 @@ describe('createSupportBundleZip', () => {
 
     const terminalCli = join(root, 'terminal-cli.log')
     writeFileSync(terminalCli, 'stderr block', 'utf-8')
+    const previewCache = join(root, 'preview-cache')
+    const ytdlpDownloads = join(root, 'downloads', 'ytdlp')
+    mkdirSync(previewCache, { recursive: true })
+    mkdirSync(ytdlpDownloads, { recursive: true })
+    writeFileSync(join(previewCache, 'thumb.bin'), 'preview', 'utf-8')
+    writeFileSync(join(ytdlpDownloads, 'video.mp4.part'), 'partial', 'utf-8')
 
     createSupportBundleZip(out, {
       appVersion: '0.1.0',
@@ -85,6 +99,9 @@ describe('createSupportBundleZip', () => {
     expect(zip.includes(Buffer.from('terminalCliLogFile:'))).toBe(true)
     expect(zip.includes(Buffer.from('primaryDisplay: 1920×1080@1.00 work 1920×1040'))).toBe(true)
     expect(zip.includes(Buffer.from('packaged: no'))).toBe(true)
+    expect(zip.includes(Buffer.from('maintenanceTargets:'))).toBe(true)
+    expect(zip.includes(Buffer.from('previewCache: 1 files'))).toBe(true)
+    expect(zip.includes(Buffer.from('ytdlpPartials: 1 files'))).toBe(true)
   })
 })
 

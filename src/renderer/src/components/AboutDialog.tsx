@@ -1,12 +1,23 @@
-import type { JSX } from 'react'
+import { useState, type JSX } from 'react'
 
 import type { AppAboutInfo } from '../../../shared/about-contract'
+import type {
+  DiagnosticsMaintenanceSnapshot,
+  DiagnosticsMaintenanceTargetId
+} from '../../../shared/diagnostics-contract'
 import {
   FFPROBE_DOC_ALL,
   YTDLP_DOC_FORMAT_SELECTION,
   YTDLP_DOC_README
 } from '../../../shared/external-doc-urls'
-import { formatMaintenanceCleanDone, formatMaintenanceSummary, uiText } from '../locales/ui-text'
+import {
+  formatMaintenanceCleanDone,
+  formatMaintenanceConfirmHint,
+  formatMaintenanceSummary,
+  uiText
+} from '../locales/ui-text'
+
+type MaintenanceCleanChoice = 'all' | DiagnosticsMaintenanceTargetId
 
 function formatBytes(bytes: number): string {
   if (!Number.isFinite(bytes) || bytes <= 0) {
@@ -22,6 +33,21 @@ function formatBytes(bytes: number): string {
   return `${value >= 10 || unitIndex === 0 ? value.toFixed(0) : value.toFixed(1)} ${units[unitIndex]}`
 }
 
+function formatMaintenanceSnapshot(snapshot: DiagnosticsMaintenanceSnapshot): string {
+  const details = snapshot.targets
+    .map((target) => {
+      const label =
+        target.id === 'previewCache'
+          ? 'preview-cache'
+          : target.id === 'ffmpegTemp'
+            ? 'ffmpeg temp'
+            : 'yt-dlp .part'
+      return `${label} ${formatBytes(target.bytes)}`
+    })
+    .join(', ')
+  return formatMaintenanceSummary(formatBytes(snapshot.cleanableBytes), details)
+}
+
 /** Модальное окно §4.5 — переиспользуется главным окном и инспектором §9 (единые стили/`app-modal-*`). */
 export function AboutDialog({
   open,
@@ -34,12 +60,44 @@ export function AboutDialog({
   onClose: () => void
   onDiagnosticStatus?: (message: string) => void
 }): JSX.Element | null {
+  const [maintenanceConfirm, setMaintenanceConfirm] = useState<MaintenanceCleanChoice | null>(null)
+
   if (!open) {
     return null
   }
 
   function pushStatus(text: string): void {
     onDiagnosticStatus?.(text)
+  }
+
+  function maintenanceLabel(choice: MaintenanceCleanChoice): string {
+    switch (choice) {
+      case 'previewCache':
+        return uiText('maintenanceCleanPreviewButton')
+      case 'ytdlpPartials':
+        return uiText('maintenanceCleanPartialsButton')
+      case 'ffmpegTemp':
+        return uiText('maintenanceCleanFfmpegTempButton')
+      case 'all':
+        return uiText('maintenanceCleanButton')
+    }
+  }
+
+  function handleCleanMaintenance(choice: MaintenanceCleanChoice): void {
+    if (maintenanceConfirm !== choice) {
+      setMaintenanceConfirm(choice)
+      pushStatus(formatMaintenanceConfirmHint(maintenanceLabel(choice)))
+      return
+    }
+    const request = choice === 'all' ? undefined : { targets: [choice] }
+    void window.fluxalloy.diagnostics.cleanMaintenance(request).then((r) => {
+      setMaintenanceConfirm(null)
+      if (r.ok) {
+        pushStatus(formatMaintenanceCleanDone(r.removedFiles, formatBytes(r.removedBytes)))
+      } else {
+        pushStatus(`${maintenanceLabel(choice)}: ${r.error}`)
+      }
+    })
   }
 
   return (
@@ -138,8 +196,9 @@ export function AboutDialog({
                 type="button"
                 className="app-btn app-btn-compact"
                 onClick={() => {
+                  setMaintenanceConfirm(null)
                   void window.fluxalloy.diagnostics.maintenanceSnapshot().then((snapshot) => {
-                    pushStatus(formatMaintenanceSummary(formatBytes(snapshot.cleanableBytes)))
+                    pushStatus(formatMaintenanceSnapshot(snapshot))
                   })
                 }}
               >
@@ -147,20 +206,55 @@ export function AboutDialog({
               </button>
               <button
                 type="button"
-                className="app-btn app-btn-compact"
+                className={`app-btn app-btn-compact${maintenanceConfirm === 'all' ? ' app-btn-danger' : ''}`}
                 onClick={() => {
-                  void window.fluxalloy.diagnostics.cleanMaintenance().then((r) => {
-                    if (r.ok) {
-                      pushStatus(
-                        formatMaintenanceCleanDone(r.removedFiles, formatBytes(r.removedBytes))
-                      )
-                    } else {
-                      pushStatus(`${uiText('maintenanceCleanButton')}: ${r.error}`)
-                    }
-                  })
+                  handleCleanMaintenance('all')
                 }}
               >
-                {uiText('maintenanceCleanButton')}
+                {uiText(
+                  maintenanceConfirm === 'all'
+                    ? 'maintenanceConfirmButton'
+                    : 'maintenanceCleanButton'
+                )}
+              </button>
+              <button
+                type="button"
+                className={`app-btn app-btn-compact${maintenanceConfirm === 'previewCache' ? ' app-btn-danger' : ''}`}
+                onClick={() => {
+                  handleCleanMaintenance('previewCache')
+                }}
+              >
+                {uiText(
+                  maintenanceConfirm === 'previewCache'
+                    ? 'maintenanceConfirmButton'
+                    : 'maintenanceCleanPreviewButton'
+                )}
+              </button>
+              <button
+                type="button"
+                className={`app-btn app-btn-compact${maintenanceConfirm === 'ytdlpPartials' ? ' app-btn-danger' : ''}`}
+                onClick={() => {
+                  handleCleanMaintenance('ytdlpPartials')
+                }}
+              >
+                {uiText(
+                  maintenanceConfirm === 'ytdlpPartials'
+                    ? 'maintenanceConfirmButton'
+                    : 'maintenanceCleanPartialsButton'
+                )}
+              </button>
+              <button
+                type="button"
+                className={`app-btn app-btn-compact${maintenanceConfirm === 'ffmpegTemp' ? ' app-btn-danger' : ''}`}
+                onClick={() => {
+                  handleCleanMaintenance('ffmpegTemp')
+                }}
+              >
+                {uiText(
+                  maintenanceConfirm === 'ffmpegTemp'
+                    ? 'maintenanceConfirmButton'
+                    : 'maintenanceCleanFfmpegTempButton'
+                )}
               </button>
             </div>
             <p className="app-doc-inline-links app-about-doc-links">

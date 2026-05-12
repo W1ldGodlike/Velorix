@@ -7,6 +7,7 @@ export type DiagnosticsFolderId =
   | 'userBin'
   | 'logs'
   | 'ytdlpDownloads'
+  | 'systemTemp'
 
 export interface DiagnosticsFolderEntry {
   id: DiagnosticsFolderId
@@ -30,7 +31,7 @@ export type DiagnosticsSupportZipResult =
   | { ok: false; cancelled: true }
   | { ok: false; error: string }
 
-export type DiagnosticsMaintenanceTargetId = 'previewCache' | 'ytdlpPartials'
+export type DiagnosticsMaintenanceTargetId = 'previewCache' | 'ytdlpPartials' | 'ffmpegTemp'
 
 export interface DiagnosticsMaintenanceTarget {
   id: DiagnosticsMaintenanceTargetId

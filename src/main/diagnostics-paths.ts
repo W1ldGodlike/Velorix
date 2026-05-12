@@ -1,4 +1,5 @@
 import { existsSync, mkdirSync } from 'fs'
+import { tmpdir } from 'os'
 import { join } from 'path'
 import { shell } from 'electron'
 
@@ -51,6 +52,8 @@ function resolveDiagnosticsFolderPath(id: DiagnosticsFolderId): string {
       return ensureLogsDirectoryExists(paths.userData)
     case 'ytdlpDownloads':
       return resolveYtdlpOutputDirectory(paths.userData)
+    case 'systemTemp':
+      return tmpdir()
   }
 }
 
@@ -60,13 +63,15 @@ const DIAGNOSTICS_FOLDER_LABELS: Record<DiagnosticsFolderId, string> = {
   bundledBin: 'Папка bin в поставке',
   userBin: 'Папка bin в userData',
   logs: 'Папка логов',
-  ytdlpDownloads: 'Каталог загрузок yt-dlp'
+  ytdlpDownloads: 'Каталог загрузок yt-dlp',
+  systemTemp: 'Системная временная папка'
 }
 
 const DIAGNOSTICS_FOLDER_ORDER: DiagnosticsFolderId[] = [
   'userData',
   'logs',
   'ytdlpDownloads',
+  'systemTemp',
   'userBin',
   'bundledBin',
   'resources'
@@ -92,7 +97,8 @@ export function isDiagnosticsFolderId(raw: unknown): raw is DiagnosticsFolderId 
     raw === 'bundledBin' ||
     raw === 'userBin' ||
     raw === 'logs' ||
-    raw === 'ytdlpDownloads'
+    raw === 'ytdlpDownloads' ||
+    raw === 'systemTemp'
   )
 }
 
