@@ -662,6 +662,35 @@ describe('ffprobe-service buildTrackRows', () => {
     expect(row?.detail).toContain('bpc 16-bit')
   })
 
+  it('audio detail включает language/title/handler_name без дубля handler=title', () => {
+    const rows = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'audio',
+          codec_name: 'aac',
+          channels: 2,
+          sample_rate: '48000',
+          tags: { language: 'eng', title: 'Director commentary', handler_name: 'SoundHandler' }
+        },
+        {
+          index: 1,
+          codec_type: 'audio',
+          codec_name: 'aac',
+          channels: 2,
+          sample_rate: '48000',
+          tags: { title: 'English', handler_name: 'English' }
+        }
+      ],
+      null
+    )
+
+    expect(rows[0]?.detail).toContain('eng')
+    expect(rows[0]?.detail).toContain('Director commentary')
+    expect(rows[0]?.detail).toContain('SoundHandler')
+    expect((rows[1]?.detail.match(/English/g) ?? []).length).toBe(1)
+  })
+
   it('audio detail без bits_per_coded_sample — без «bpc»', () => {
     const [row] = buildTrackRows(
       [

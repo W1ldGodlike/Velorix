@@ -588,6 +588,22 @@ function buildTrackDetail(
     if (typeof stream.channel_layout === 'string' && stream.channel_layout.trim() !== '') {
       parts.push(stream.channel_layout.trim())
     }
+    const aLang = tagString(stream.tags, 'language')
+    const aTitle = tagString(stream.tags, 'title')
+    if (aLang) {
+      parts.push(aLang)
+    }
+    if (aTitle) {
+      parts.push(collapseFfprobeDetailSnippet(aTitle))
+    }
+    const aHandlerRaw = tagString(stream.tags, 'handler_name')
+    if (aHandlerRaw !== null) {
+      const titleNorm = aTitle?.trim().toLowerCase() ?? ''
+      const handlerNorm = aHandlerRaw.trim().toLowerCase()
+      if (handlerNorm === '' || handlerNorm !== titleNorm) {
+        parts.push(collapseFfprobeDetailSnippet(aHandlerRaw))
+      }
+    }
     appendFfprobeReplayGainAudioDetail(parts, stream.tags)
     const aStart = formatFfprobeStreamStartTime(stream.start_time)
     if (aStart) {
