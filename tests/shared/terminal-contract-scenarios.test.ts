@@ -2040,4 +2040,42 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: geo TD/NE/ML/SN/LY/SO/ER/SS/YE/MR + print-to-file lyrics/disc_number/publisher/mood', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --geo-bypass-country TD -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country NE -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country ML -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country SN -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country LY -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country SO -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country ER -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country SS -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country YE -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country MR -F ')
+    expect(lines).toContain('yt-dlp --print-to-file lyrics flux-ytdlp-lyrics.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file disc_number flux-ytdlp-discnum.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file publisher flux-ytdlp-publisher.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file mood flux-ytdlp-mood.txt --skip-download ')
+  })
+
+  it('preview: ffprobe v:1 codec long + ffmpeg alimiter 3s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams v:1') &&
+          l.includes('codec_long_name') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af alimiter=limit=0.8') &&
+          l.includes('-t 3') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })

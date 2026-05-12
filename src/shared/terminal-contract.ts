@@ -4034,6 +4034,90 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· print-to-file comment',
     summary: 'Записать comment (комментарий/uploader comment) в flux-ytdlp-comment.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file comment flux-ytdlp-comment.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo TD -F',
+    summary: 'Гео-обход через Чад (--geo-bypass-country TD -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country TD -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo NE -F',
+    summary: 'Гео-обход через Нигер (--geo-bypass-country NE -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country NE -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo ML -F',
+    summary: 'Гео-обход через Мали (--geo-bypass-country ML -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country ML -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo SN -F',
+    summary: 'Гео-обход через Сенегал (--geo-bypass-country SN -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country SN -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo LY -F',
+    summary: 'Гео-обход через Ливию (--geo-bypass-country LY -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country LY -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo SO -F',
+    summary: 'Гео-обход через Сомали (--geo-bypass-country SO -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country SO -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo ER -F',
+    summary: 'Гео-обход через Эритрею (--geo-bypass-country ER -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country ER -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo SS -F',
+    summary: 'Гео-обход через Южный Судан (--geo-bypass-country SS -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country SS -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo YE -F',
+    summary: 'Гео-обход через Йемен (--geo-bypass-country YE -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country YE -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo MR -F',
+    summary: 'Гео-обход через Мавританию (--geo-bypass-country MR -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country MR -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file lyrics',
+    summary: 'Записать lyrics (текст песни, если extractor отдаёт) в flux-ytdlp-lyrics.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file lyrics flux-ytdlp-lyrics.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file disc_number',
+    summary: 'Записать disc_number (номер диска в каталоге) в flux-ytdlp-discnum.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file disc_number flux-ytdlp-discnum.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file publisher',
+    summary: 'Записать publisher (издатель/лейбл, если есть) в flux-ytdlp-publisher.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file publisher flux-ytdlp-publisher.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file mood',
+    summary: 'Записать mood (настроение/тег настроения, если extractor отдаёт) в flux-ytdlp-mood.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file mood flux-ytdlp-mood.txt --skip-download '
   }
 ]
 
@@ -5244,6 +5328,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· atempo 0.95 3s',
     summary: 'Лёгкое замедление темпа первых 3 с (-af atempo=0.95); smoke atempo без кавычек; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af atempo=0.95 -t 3 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:1 codec long',
+    summary: 'Вторая видеодорожка v:1: codec_name + codec_long_name (мультикамера/доп. поток); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:1 -show_entries stream=codec_name,codec_long_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· alimiter 3s',
+    summary: 'Мягкий лимитер пиков первых 3 с (-af alimiter=limit=0.8); smoke динамики/af без кавычек; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af alimiter=limit=0.8 -t 3 -vn -sn -f null -`
   }
 ]
 
