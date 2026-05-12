@@ -2774,6 +2774,66 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· print-to-file id',
     summary: 'Записать id ролика в flux-ytdlp-id.txt без скачивания (--print-to-file id …); допишите URL.',
     fullLine: 'yt-dlp --print-to-file id flux-ytdlp-id.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --no-update -F',
+    summary: 'Запретить yt-dlp self-update даже если он включён (--no-update -F); фиксируем bundled-версию; допишите URL.',
+    fullLine: 'yt-dlp --no-update -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --no-color -F',
+    summary: 'Лог без ANSI-цвета (--no-color -F); удобнее парсить или для CI; допишите URL.',
+    fullLine: 'yt-dlp --no-color -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --color always -F',
+    summary: 'Принудительно ANSI-цвет в логе (--color always -F); даже когда stdout не TTY; допишите URL.',
+    fullLine: 'yt-dlp --color always -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· allow-unplayable -F',
+    summary: 'Разрешить «недостижимые» форматы в листинге (--allow-unplayable-formats -F); диагностика DRM/недоступного; допишите URL.',
+    fullLine: 'yt-dlp --allow-unplayable-formats -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· audio alac',
+    summary: 'Извлечь аудио в Apple Lossless (--extract-audio --audio-format alac); допишите URL и -o при необходимости.',
+    fullLine: 'yt-dlp --extract-audio --audio-format alac '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· audio ac3',
+    summary: 'Извлечь аудио в Dolby Digital AC-3 (--extract-audio --audio-format ac3); допишите URL.',
+    fullLine: 'yt-dlp --extract-audio --audio-format ac3 '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· audio q0',
+    summary: 'Извлечь аудио с максимальным качеством постпроцессора (--audio-quality 0 --extract-audio); допишите URL и -f при необходимости.',
+    fullLine: 'yt-dlp --audio-quality 0 --extract-audio '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· ppa ffmpeg threads 1',
+    summary: 'Аргументы постпроцессора ffmpeg (--postprocessor-args ffmpeg:-threads 1 -F); ограничить нагрузку при mux; допишите URL.',
+    fullLine: 'yt-dlp --postprocessor-args ffmpeg:-threads 1 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo TW',
+    summary: 'Гео-обход с кодом страны TW (--geo-bypass-country TW -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country TW -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo MD',
+    summary: 'Гео-обход с кодом страны MD (--geo-bypass-country MD -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country MD -F '
   }
 ]
 
@@ -3738,6 +3798,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· adeclick 5s',
     summary: 'Клик-редактор первых 5 с (-af adeclick); диагностика щёлчков/дефектов записи; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af adeclick -t 5 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format performer',
+    summary: 'Тег контейнера performer (format_tags=performer); исполнитель/артист в каталогизации; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=performer -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 alpha_mode',
+    summary: 'Поток v:0: stream_tags alpha_mode (VP9/AV1 альфа-канал в WebM/MKV); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream_tags=alpha_mode -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· extrastereo 3s',
+    summary: 'Усиление стерео-разницы первых 3 с (-af extrastereo); проверка ширины стерео-цепочки; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af extrastereo -t 3 -vn -sn -f null -`
   }
 ]
 

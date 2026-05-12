@@ -1376,4 +1376,45 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: no-update / no-color / color always / allow-unplayable / audio alac+ac3+q0 / ppa threads / geo TW+MD', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --no-update -F ')
+    expect(lines).toContain('yt-dlp --no-color -F ')
+    expect(lines).toContain('yt-dlp --color always -F ')
+    expect(lines).toContain('yt-dlp --allow-unplayable-formats -F ')
+    expect(lines).toContain('yt-dlp --extract-audio --audio-format alac ')
+    expect(lines).toContain('yt-dlp --extract-audio --audio-format ac3 ')
+    expect(lines).toContain('yt-dlp --audio-quality 0 --extract-audio ')
+    expect(lines).toContain('yt-dlp --postprocessor-args ffmpeg:-threads 1 -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country TW -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country MD -F ')
+  })
+
+  it('preview: format performer / v:0 alpha_mode / ffmpeg extrastereo 3s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=performer') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-select_streams v:0') &&
+          l.includes('stream_tags=alpha_mode') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af extrastereo') &&
+          l.includes('-t 3') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })
