@@ -1826,6 +1826,84 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· geo-bypass NL -F',
     summary: 'Гео-обход с кодом страны NL (--geo-bypass-country NL -F); допишите URL.',
     fullLine: 'yt-dlp --geo-bypass-country NL -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· force-keyframes-at-cuts',
+    summary: 'Принудительные ключевые кадры на границах нарезки/склейки (--force-keyframes-at-cuts); для ffmpeg postprocessor; допишите URL и -f …',
+    fullLine: 'yt-dlp --force-keyframes-at-cuts '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-hls-use-mpegts -F',
+    summary: 'Отключить MPEG-TS для HLS (--no-hls-use-mpegts -F); противоположность --hls-use-mpegts; допишите URL.',
+    fullLine: 'yt-dlp --no-hls-use-mpegts -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· compat no-direct-merge -F',
+    summary: 'Не сливать потоки напрямую в mkv/webm (--compat-options no-direct-merge -F); диагностика merge/ffmpeg; допишите URL.',
+    fullLine: 'yt-dlp --compat-options no-direct-merge -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo-bypass ES -F',
+    summary: 'Гео-обход с кодом страны ES (--geo-bypass-country ES -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country ES -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo-bypass PL -F',
+    summary: 'Гео-обход с кодом страны PL (--geo-bypass-country PL -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country PL -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo-bypass SE -F',
+    summary: 'Гео-обход с кодом страны SE (--geo-bypass-country SE -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country SE -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-embed-metadata',
+    summary: 'Не встраивать метаданные в выходной файл (--no-embed-metadata); противоположность --embed-metadata; допишите URL.',
+    fullLine: 'yt-dlp --no-embed-metadata '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· playlist-items range -F',
+    summary: 'Только элементы плейлиста 1…10 (--playlist-items 1:10 -F); без полного разбора хвоста; допишите URL плейлиста.',
+    fullLine: 'yt-dlp --playlist-items 1:10 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· merge webm',
+    summary: 'Слияние потоков в WebM при мультиплексировании (--merge-output-format webm); допишите URL и -f …',
+    fullLine: 'yt-dlp --merge-output-format webm '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· ignore-no-formats-error -F',
+    summary: 'Не падать, если форматов нет (--ignore-no-formats-error -F); диагностика гео/DRM/возраста; допишите URL.',
+    fullLine: 'yt-dlp --ignore-no-formats-error -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-write-thumbnail -F',
+    summary: 'Не сохранять thumbnail даже если шаблон подразумевает (--no-write-thumbnail -F); допишите URL.',
+    fullLine: 'yt-dlp --no-write-thumbnail -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· extract-audio aac',
+    summary: 'Извлечь аудио в AAC (--extract-audio --audio-format aac); допишите URL.',
+    fullLine: 'yt-dlp --extract-audio --audio-format aac '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-embed-thumbnail',
+    summary: 'Не встраивать обложку в контейнер (--no-embed-thumbnail); противоположность --embed-thumbnail; допишите URL.',
+    fullLine: 'yt-dlp --no-embed-thumbnail '
   }
 ]
 
@@ -2544,6 +2622,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· idet 5s',
     summary: 'Детектор чересстрочности первых 5 с (-vf idet -t 5); TFF/BFF/progressive в stderr; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -t 5 -vf idet -an -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format publisher+encby',
+    summary: 'Теги контейнера publisher + encoded_by (каталогизация/студия); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=publisher,encoded_by -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· blackdetect 30s',
+    summary: 'Поиск чёрных интервалов в первых 30 с (-vf blackdetect=d=0.1:pix_th=0.01); black_start/end в stderr; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf blackdetect=d=0.1:pix_th=0.01 -t 30 -an -sn -f null -`
   }
 ]
 

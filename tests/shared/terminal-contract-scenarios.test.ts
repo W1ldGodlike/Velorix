@@ -844,4 +844,40 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     ).toBe(true)
     expect(lines.some((l) => l.includes('-vf idet') && l.includes('-t 5') && l.includes('-an -sn'))).toBe(true)
   })
+
+  it('downloads: force-keyframes / no-hls-use-mpegts / compat no-direct-merge / geo ES–SE / no-embed-meta / playlist range / merge webm / ignore-no-formats / no-write-thumb / extract aac / no-embed-thumb', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --force-keyframes-at-cuts ')
+    expect(lines).toContain('yt-dlp --no-hls-use-mpegts -F ')
+    expect(lines).toContain('yt-dlp --compat-options no-direct-merge -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country ES -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country PL -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country SE -F ')
+    expect(lines).toContain('yt-dlp --no-embed-metadata ')
+    expect(lines).toContain('yt-dlp --playlist-items 1:10 -F ')
+    expect(lines).toContain('yt-dlp --merge-output-format webm ')
+    expect(lines).toContain('yt-dlp --ignore-no-formats-error -F ')
+    expect(lines).toContain('yt-dlp --no-write-thumbnail -F ')
+    expect(lines).toContain('yt-dlp --extract-audio --audio-format aac ')
+    expect(lines).toContain('yt-dlp --no-embed-thumbnail ')
+  })
+
+  it('preview: format publisher+encoded_by + blackdetect 30s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=publisher,encoded_by') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-vf blackdetect=d=0.1:pix_th=0.01') &&
+          l.includes('-t 30') &&
+          l.includes('-an -sn')
+      )
+    ).toBe(true)
+  })
 })
