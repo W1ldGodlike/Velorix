@@ -69,6 +69,17 @@ describe('ffprobe-side-data', () => {
         { side_data_type: 'Audio Service Type' }
       ])
     ).toBe('ATSC svc 4 · ATSC audio svc')
+    expect(
+      summarizeFfprobeSideDataList([
+        { side_data_type: 'Audio Service Type', service_type: '7' },
+        { side_data_type: 'Audio Service Type', service_type: 'main' }
+      ])
+    ).toBe('ATSC svc 7 · ATSC audio svc')
+    expect(
+      summarizeFfprobeSideDataList([
+        { side_data_type: 'Audio Service Type', audio_service_type: 2 }
+      ])
+    ).toBe('ATSC svc 2')
   })
 
   it('дедуплицирует и ограничивает неизвестные типы', () => {

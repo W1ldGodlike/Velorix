@@ -31,6 +31,26 @@ function shortSideDataType(raw: string): string {
   return raw.trim().replace(/\s+/g, ' ').slice(0, 64)
 }
 
+function parseAtscAudioServiceType(
+  o: Record<string, unknown>,
+  key: string
+): number | null {
+  const raw = o[key]
+  if (typeof raw === 'number' && Number.isFinite(raw)) {
+    const n = Math.trunc(raw)
+    return n >= 0 && n <= 63 ? n : null
+  }
+  if (typeof raw === 'string') {
+    const t = raw.trim()
+    if (!/^\d{1,2}$/.test(t)) {
+      return null
+    }
+    const n = Number.parseInt(t, 10)
+    return n >= 0 && n <= 63 ? n : null
+  }
+  return null
+}
+
 function summarizeDolbyVision(o: Record<string, unknown>): string {
   const profile = scalarToken(o, 'dv_profile')
   const level = scalarToken(o, 'dv_level')
@@ -95,7 +115,9 @@ function summarizeSideDataItem(raw: unknown): string | null {
     return '3D'
   }
   if (low.includes('audio service type')) {
-    const svc = scalarToken(o, 'service_type')
+    const svc =
+      parseAtscAudioServiceType(o, 'service_type') ??
+      parseAtscAudioServiceType(o, 'audio_service_type')
     return svc !== null ? `ATSC svc ${svc}` : 'ATSC audio svc'
   }
   return shortSideDataType(type)
