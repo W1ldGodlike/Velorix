@@ -1659,4 +1659,45 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: print-to-file playlist/uploader/rating/availability/age + geo AW/CW/SX/TC/VG', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --print-to-file playlist_index flux-ytdlp-plidx.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file playlist_autonumber flux-ytdlp-plauto.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file playlist_count flux-ytdlp-plcount.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file playlist_uploader_id flux-ytdlp-plupid.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file uploader_id flux-ytdlp-upid.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file average_rating flux-ytdlp-rating.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file availability flux-ytdlp-avail.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file age_limit flux-ytdlp-age.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country AW -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country CW -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country SX -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country TC -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country VG -F ')
+  })
+
+  it('preview: ffprobe album_artist + track/disc + ffmpeg dynaudnorm 4s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=album_artist') && l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=track,disc') && l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af dynaudnorm=f=150:g=15') &&
+          l.includes('-t 4') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })

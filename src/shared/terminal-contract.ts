@@ -3248,6 +3248,84 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· geo DM -F',
     summary: 'Гео-обход через Доминику (--geo-bypass-country DM -F); допишите URL.',
     fullLine: 'yt-dlp --geo-bypass-country DM -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file plidx',
+    summary: 'Записать индекс в плейлисте (playlist_index) в flux-ytdlp-plidx.txt без скачивания; допишите URL плейлиста.',
+    fullLine: 'yt-dlp --print-to-file playlist_index flux-ytdlp-plidx.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file plauto',
+    summary: 'Записать авто-нумерацию плейлиста (playlist_autonumber) в flux-ytdlp-plauto.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file playlist_autonumber flux-ytdlp-plauto.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file plcount',
+    summary: 'Записать число элементов плейлиста (playlist_count) в flux-ytdlp-plcount.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file playlist_count flux-ytdlp-plcount.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file plupid',
+    summary: 'Записать playlist_uploader_id в flux-ytdlp-plupid.txt без скачивания; допишите URL плейлиста.',
+    fullLine: 'yt-dlp --print-to-file playlist_uploader_id flux-ytdlp-plupid.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file upid',
+    summary: 'Записать uploader_id в flux-ytdlp-upid.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file uploader_id flux-ytdlp-upid.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file rating',
+    summary: 'Записать average_rating в flux-ytdlp-rating.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file average_rating flux-ytdlp-rating.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file avail',
+    summary: 'Записать availability (public/private/unlisted и т.п.) в flux-ytdlp-avail.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file availability flux-ytdlp-avail.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file age',
+    summary: 'Записать age_limit в flux-ytdlp-age.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file age_limit flux-ytdlp-age.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo AW -F',
+    summary: 'Гео-обход через Арубу (--geo-bypass-country AW -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country AW -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo CW -F',
+    summary: 'Гео-обход через Кюрасао (--geo-bypass-country CW -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country CW -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo SX -F',
+    summary: 'Гео-обход через Синт-Мартен (--geo-bypass-country SX -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country SX -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo TC -F',
+    summary: 'Гео-обход через острова Тёркс и Кайкос (--geo-bypass-country TC -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country TC -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo VG -F',
+    summary: 'Гео-обход через Виргинские острова (Великобритания) (--geo-bypass-country VG -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country VG -F '
   }
 ]
 
@@ -4326,6 +4404,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· compand 4s',
     summary: 'Лёгкий компандер первых 4 с (-af compand); smoke динамической обработки; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af compand=attacks=0.02:decays=0.1:points=-80/-80|-25/-25|0/-10:gain=2 -t 4 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format album_artist',
+    summary: 'Тег контейнера album_artist (альбомный исполнитель vs artist); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=album_artist -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format track+disc',
+    summary: 'Теги контейнера track + disc (номер трека/диска в каталоге); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=track,disc -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· dynaudnorm 4s',
+    summary: 'Лёгкая динамическая нормализация громкости первых 4 с (-af dynaudnorm); smoke loudness chain; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af dynaudnorm=f=150:g=15 -t 4 -vn -sn -f null -`
   }
 ]
 
