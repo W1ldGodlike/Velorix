@@ -1700,4 +1700,42 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: print-to-file domain/original/abr/vbr/filesize/format_note/plup + geo AG/MS/AI/GP/BQ + max-dls/pl-random/force-over', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --print-to-file webpage_url_domain flux-ytdlp-wudom.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file original_url flux-ytdlp-ourl.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file abr flux-ytdlp-abr.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file vbr flux-ytdlp-vbr.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file filesize flux-ytdlp-fszb.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file format_note flux-ytdlp-fnote.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file playlist_uploader flux-ytdlp-plup.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country AG -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country MS -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country AI -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country GP -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country BQ -F ')
+    expect(lines).toContain('yt-dlp --max-downloads 5 -F ')
+    expect(lines).toContain('yt-dlp --playlist-random -F ')
+    expect(lines).toContain('yt-dlp --force-overwrites -F ')
+  })
+
+  it('preview: ffprobe lyrics+synopsis + ffmpeg asoftclip 4s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=lyrics,synopsis') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af asoftclip') &&
+          l.includes('-t 4') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })

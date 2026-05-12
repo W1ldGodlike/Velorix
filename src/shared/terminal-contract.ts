@@ -3326,6 +3326,96 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· geo VG -F',
     summary: 'Гео-обход через Виргинские острова (Великобритания) (--geo-bypass-country VG -F); допишите URL.',
     fullLine: 'yt-dlp --geo-bypass-country VG -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file wudom',
+    summary: 'Записать webpage_url_domain в flux-ytdlp-wudom.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file webpage_url_domain flux-ytdlp-wudom.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file ourl',
+    summary: 'Записать original_url (исходный запрос до редиректов) в flux-ytdlp-ourl.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file original_url flux-ytdlp-ourl.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file abr',
+    summary: 'Записать abr выбранного формата (аудио kbps) в flux-ytdlp-abr.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file abr flux-ytdlp-abr.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file vbr',
+    summary: 'Записать vbr выбранного формата (видео kbps) в flux-ytdlp-vbr.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file vbr flux-ytdlp-vbr.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file fsz',
+    summary: 'Записать filesize (байты, если известен) в flux-ytdlp-fszb.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file filesize flux-ytdlp-fszb.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file fnote',
+    summary: 'Записать format_note выбранного формата в flux-ytdlp-fnote.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file format_note flux-ytdlp-fnote.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file plup',
+    summary: 'Записать playlist_uploader (имя автора плейлиста) в flux-ytdlp-plup.txt без скачивания; допишите URL плейлиста.',
+    fullLine: 'yt-dlp --print-to-file playlist_uploader flux-ytdlp-plup.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo AG -F',
+    summary: 'Гео-обход через Антигуа и Барбуду (--geo-bypass-country AG -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country AG -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo MS -F',
+    summary: 'Гео-обход через Монтсеррат (--geo-bypass-country MS -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country MS -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo AI -F',
+    summary: 'Гео-обход через Ангилью (--geo-bypass-country AI -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country AI -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo GP -F',
+    summary: 'Гео-обход через Гваделупу (--geo-bypass-country GP -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country GP -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo BQ -F',
+    summary: 'Гео-обход через Bonaire/Sint Eustatius/Saba (--geo-bypass-country BQ -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country BQ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· max-dls -F',
+    summary: 'Остановка после N загрузок из плейлиста (--max-downloads 5 -F); подстройте число; допишите URL.',
+    fullLine: 'yt-dlp --max-downloads 5 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· pl-random -F',
+    summary: 'Случайный порядок элементов плейлиста перед -F (--playlist-random -F); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --playlist-random -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· force-over -F',
+    summary: 'Перезапись существующих файлов без вопросов (--force-overwrites -F); допишите URL.',
+    fullLine: 'yt-dlp --force-overwrites -F '
   }
 ]
 
@@ -4422,6 +4512,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· dynaudnorm 4s',
     summary: 'Лёгкая динамическая нормализация громкости первых 4 с (-af dynaudnorm); smoke loudness chain; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af dynaudnorm=f=150:g=15 -t 4 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format lyrics',
+    summary: 'Теги контейнера lyrics + synopsis (подкасты/аудиокниги/расширенные метаданные); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=lyrics,synopsis -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· asoftclip 4s',
+    summary: 'Мягкий клиппер первых 4 с (-af asoftclip); smoke ограничения пиков без жёсткого лимитера; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af asoftclip -t 4 -vn -sn -f null -`
   }
 ]
 
