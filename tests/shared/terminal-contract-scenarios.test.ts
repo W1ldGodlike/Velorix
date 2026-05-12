@@ -1417,4 +1417,41 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: print-to-file pageurl+durstr+uploader+churl + geo BY+AL+MK', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --print-to-file webpage_url flux-ytdlp-pageurl.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file duration_string flux-ytdlp-durstr.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file uploader flux-ytdlp-uploader.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file channel_url flux-ytdlp-churl.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country BY -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country AL -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country MK -F ')
+  })
+
+  it('preview: purchase_date / sort meta / ffmpeg aphaser 4s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=purchase_date') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=sort_artist,sort_album,sort_title') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af aphaser=in_gain=0.4') &&
+          l.includes('-t 4') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })

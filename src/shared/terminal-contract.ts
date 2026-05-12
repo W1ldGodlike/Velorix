@@ -2834,6 +2834,48 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· geo MD',
     summary: 'Гео-обход с кодом страны MD (--geo-bypass-country MD -F); допишите URL.',
     fullLine: 'yt-dlp --geo-bypass-country MD -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file pageurl',
+    summary: 'Записать webpage_url в flux-ytdlp-pageurl.txt без скачивания (--print-to-file …); допишите URL.',
+    fullLine: 'yt-dlp --print-to-file webpage_url flux-ytdlp-pageurl.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file durstr',
+    summary: 'Записать duration_string в flux-ytdlp-durstr.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file duration_string flux-ytdlp-durstr.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file uploader',
+    summary: 'Записать uploader в flux-ytdlp-uploader.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file uploader flux-ytdlp-uploader.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file churl',
+    summary: 'Записать channel_url в flux-ytdlp-churl.txt без скачивания; допишите URL ролика.',
+    fullLine: 'yt-dlp --print-to-file channel_url flux-ytdlp-churl.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo BY',
+    summary: 'Гео-обход с кодом страны BY (--geo-bypass-country BY -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country BY -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo AL',
+    summary: 'Гео-обход с кодом страны AL (--geo-bypass-country AL -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country AL -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo MK',
+    summary: 'Гео-обход с кодом страны MK (--geo-bypass-country MK -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country MK -F '
   }
 ]
 
@@ -3816,6 +3858,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· extrastereo 3s',
     summary: 'Усиление стерео-разницы первых 3 с (-af extrastereo); проверка ширины стерео-цепочки; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af extrastereo -t 3 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format purchase_date',
+    summary: 'Тег контейнера purchase_date (iTunes Store и др.); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=purchase_date -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format sort meta',
+    summary: 'Теги сортировки каталога (sort_artist, sort_album, sort_title) в format_tags; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=sort_artist,sort_album,sort_title -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· aphaser 4s',
+    summary: 'Лёгкий фазовый эффект первых 4 с (-af aphaser); smoke цепочки stereo af; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af aphaser=in_gain=0.4:out_gain=0.74 -t 4 -vn -sn -f null -`
   }
 ]
 
