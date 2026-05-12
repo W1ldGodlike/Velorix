@@ -4649,6 +4649,54 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
+    token: '· -to file format',
+    summary: 'Записать человекочитаемую строку выбранного формата (format) в flux-ytdlp-fmtline.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file format flux-ytdlp-fmtline.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -to file language_preference',
+    summary: 'Записать language_preference (предпочтение языка субтитров/аудио, если extractor отдаёт) в flux-ytdlp-langpref.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file language_preference flux-ytdlp-langpref.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -to file autonumber',
+    summary: 'Записать autonumber (порядковый номер в плейлисте для шаблона -o) в flux-ytdlp-anum.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file autonumber flux-ytdlp-anum.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo OM -F',
+    summary: 'Гео-обход через Оман (--geo-bypass-country OM -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country OM -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo QA -F',
+    summary: 'Гео-обход через Катар (--geo-bypass-country QA -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country QA -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo BH -F',
+    summary: 'Гео-обход через Бахрейн (--geo-bypass-country BH -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country BH -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo AE -F',
+    summary: 'Гео-обход через ОАЭ (--geo-bypass-country AE -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country AE -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo SA -F',
+    summary: 'Гео-обход через Саудовскую Аравию (--geo-bypass-country SA -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country SA -F '
+  },
+  {
+    tool: 'yt-dlp',
     token: '· --update-to stable',
     summary: 'Обновить yt-dlp до канала stable (--update-to stable); URL не нужен.',
     fullLine: 'yt-dlp --update-to stable'
@@ -5970,6 +6018,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· acrusher 4s',
     summary: 'Лёгкий bit-crush первых 4 с (-af acrusher=level_in=0.8:level_out=0.8:bits=8:mode=log); smoke зернистости; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af acrusher=level_in=0.8:level_out=0.8:bits=8:mode=log -t 4 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· d:2 codec',
+    summary: 'Третья data-дорожка d:2: codec_name + codec_tag_string (доп. таймкоды/метаданные); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams d:2 -show_entries stream=codec_name,codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· pan stereo 4s',
+    summary: 'Лёгкий стерео-mix через pan первых 4 с (c0/c1 кросс-фейд 0.6/0.4); smoke pan без кавычек; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af pan=stereo|c0=0.6*c0+0.4*c1|c1=0.4*c0+0.6*c1 -t 4 -vn -sn -f null -`
   }
 ]
 
