@@ -2194,4 +2194,37 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: geo BR/VE/EC/PY/CU/GY/SR + print-to-file webpage_url_scheme', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --geo-bypass-country BR -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country VE -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country EC -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country PY -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country CU -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country GY -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country SR -F ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file webpage_url_scheme flux-ytdlp-wuscheme.txt --skip-download '
+    )
+  })
+
+  it('preview: ffprobe format artist+album + ffmpeg bass 4s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=artist,album') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af bass=g=2:f=120') &&
+          l.includes('-t 4') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })

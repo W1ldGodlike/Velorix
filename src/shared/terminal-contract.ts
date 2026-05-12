@@ -4400,6 +4400,54 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· geo HT -F',
     summary: 'Гео-обход через Гаити (--geo-bypass-country HT -F); допишите URL.',
     fullLine: 'yt-dlp --geo-bypass-country HT -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo BR -F',
+    summary: 'Гео-обход через Бразилию (--geo-bypass-country BR -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country BR -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo VE -F',
+    summary: 'Гео-обход через Венесуэлу (--geo-bypass-country VE -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country VE -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo EC -F',
+    summary: 'Гео-обход через Эквадор (--geo-bypass-country EC -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country EC -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo PY -F',
+    summary: 'Гео-обход через Парагвай (--geo-bypass-country PY -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country PY -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo CU -F',
+    summary: 'Гео-обход через Кубу (--geo-bypass-country CU -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country CU -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo GY -F',
+    summary: 'Гео-обход через Гайану (--geo-bypass-country GY -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country GY -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo SR -F',
+    summary: 'Гео-обход через Суринам (--geo-bypass-country SR -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country SR -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file webpage_url_scheme',
+    summary: 'Записать webpage_url_scheme (http/https страницы) в flux-ytdlp-wuscheme.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file webpage_url_scheme flux-ytdlp-wuscheme.txt --skip-download '
   }
 ]
 
@@ -5658,6 +5706,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· bs2b 4s',
     summary: 'Лёгкий межканальный кроссфид bs2b первых 4 с (-af bs2b=profile=j2); smoke стерео-обработки; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af bs2b=profile=j2 -t 4 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format artist+album',
+    summary: 'Теги контейнера artist + album (часто у музыкальных релизов/клипов); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=artist,album -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· bass 4s',
+    summary: 'Лёгкий низкочастотный акцент первых 4 с (-af bass=g=2:f=120); smoke EQ bass без кавычек; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af bass=g=2:f=120 -t 4 -vn -sn -f null -`
   }
 ]
 
