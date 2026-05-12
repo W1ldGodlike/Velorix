@@ -1554,4 +1554,35 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: print-to-file likes+duration+subs+chid+plid+heatmap + lazy-pl + no-continue -F', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --print-to-file like_count flux-ytdlp-likes.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file duration flux-ytdlp-duration.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file subtitles flux-ytdlp-subs.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file channel_id flux-ytdlp-chid.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file playlist_id flux-ytdlp-plid.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file heatmap flux-ytdlp-heatmap.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --lazy-playlist -F ')
+    expect(lines).toContain('yt-dlp --no-continue -F ')
+  })
+
+  it('preview: format part+compilation + ffmpeg crystalizer 4s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=part,compilation') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af crystalizer=i=1.2') &&
+          l.includes('-t 4') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })

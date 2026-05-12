@@ -3038,6 +3038,54 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· print-to-file vcodec',
     summary: 'Записать выбранный/лучший видеокодек (vcodec) в flux-ytdlp-vcodec.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file vcodec flux-ytdlp-vcodec.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file likes',
+    summary: 'Записать like_count в flux-ytdlp-likes.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file like_count flux-ytdlp-likes.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file duration num',
+    summary: 'Записать duration (секунды, число) в flux-ytdlp-duration.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file duration flux-ytdlp-duration.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file subtitles',
+    summary: 'Записать поле subtitles (словари дорожек) в flux-ytdlp-subs.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file subtitles flux-ytdlp-subs.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file chid',
+    summary: 'Записать channel_id в flux-ytdlp-chid.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file channel_id flux-ytdlp-chid.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file plid',
+    summary: 'Записать playlist_id в flux-ytdlp-plid.txt без скачивания; допишите URL плейлиста.',
+    fullLine: 'yt-dlp --print-to-file playlist_id flux-ytdlp-plid.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file heatmap',
+    summary: 'Записать heatmap (если extractor отдаёт, напр. YouTube) в flux-ytdlp-heatmap.txt; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file heatmap flux-ytdlp-heatmap.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· lazy-pl -F',
+    summary: 'Ленивый плейлист вместе с листингом форматов (--lazy-playlist -F); не разворачивает все элементы заранее; допишите URL.',
+    fullLine: 'yt-dlp --lazy-playlist -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-continue -F',
+    summary: 'Листинг форматов без дозагрузки частичных .part (--no-continue -F); при скачивании начать заново; допишите URL.',
+    fullLine: 'yt-dlp --no-continue -F '
   }
 ]
 
@@ -4080,6 +4128,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· vibrato 4s',
     summary: 'Лёгкая вибрато-модуляция первых 4 с (-af vibrato); smoke цепочки stereo af; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af vibrato=f=6.5:d=0.5 -t 4 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format part+comp',
+    summary: 'Теги контейнера part + compilation (iTunes/мультидисковые сборники); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=part,compilation -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· crystalizer 4s',
+    summary: 'Психоакустический crystalizer первых 4 с (-af crystalizer); лёгкий smoke audio FX; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af crystalizer=i=1.2 -t 4 -vn -sn -f null -`
   }
 ]
 
