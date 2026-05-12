@@ -1766,6 +1766,66 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· allow-dynamic-mpd -F',
     summary: 'Разрешить «живые» DASH MPD с обновлением манифеста (--allow-dynamic-mpd -F); допишите URL.',
     fullLine: 'yt-dlp --allow-dynamic-mpd -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· console-title -F',
+    summary: 'Заголовок окна консоли с прогрессом (--console-title -F); допишите URL.',
+    fullLine: 'yt-dlp --console-title -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-external-downloader -F',
+    summary: 'Только встроенный загрузчик, без внешних обёрток (--no-external-downloader -F); допишите URL.',
+    fullLine: 'yt-dlp --no-external-downloader -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· clean-infojson',
+    summary: 'Удалить временный .info.json после успешной загрузки (--clean-infojson); обычно вместе с --write-info-json; допишите URL и ключи вывода.',
+    fullLine: 'yt-dlp --clean-infojson '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-write-info-json -F',
+    summary: 'Не записывать .info.json рядом с выходом (--no-write-info-json -F); допишите URL.',
+    fullLine: 'yt-dlp --no-write-info-json -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· ext-downloader-args -F',
+    summary: 'Доп. аргументы внешнему downloader без кавычек (--external-downloader-args ffmpeg_i:-nostdin -F); допишите URL при использовании внешнего downloader.',
+    fullLine: 'yt-dlp --external-downloader-args ffmpeg_i:-nostdin -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· flat-print urls',
+    summary: 'Плоский плейлист: все URL элементов без скачивания (--flat-playlist --print urls --skip-download); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --flat-playlist --print urls --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· progress-template -F',
+    summary: 'Свой шаблон строки прогресса (--progress-template predownload:Preparing %(info.title)s -F); допишите URL.',
+    fullLine: 'yt-dlp --progress-template predownload:Preparing %(info.title)s -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· sleep-subtitles -F',
+    summary: 'Пауза перед скачиванием субтитров (--sleep-subtitles 5 -F); допишите URL.',
+    fullLine: 'yt-dlp --sleep-subtitles 5 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· sub-format best -F',
+    summary: 'Предпочесть лучший доступный формат субтитров (--sub-format best -F); допишите URL.',
+    fullLine: 'yt-dlp --sub-format best -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo-bypass NL -F',
+    summary: 'Гео-обход с кодом страны NL (--geo-bypass-country NL -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country NL -F '
   }
 ]
 
@@ -2472,6 +2532,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· aphasemeter 10s',
     summary: 'Стерео-фаза первых 10 с (-af aphasemeter=video=0); предупреждения о моно/фазе в stderr; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af aphasemeter=video=0 -t 10 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:1 stream encoder',
+    summary: 'Поток a:1: stream_tags encoder (если записан в контейнере); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:1 -show_entries stream_tags=encoder -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· idet 5s',
+    summary: 'Детектор чересстрочности первых 5 с (-vf idet -t 5); TFF/BFF/progressive в stderr; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -t 5 -vf idet -an -sn -f null -`
   }
 ]
 

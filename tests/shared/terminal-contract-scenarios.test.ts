@@ -795,6 +795,20 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --allow-dynamic-mpd -F ')
   })
 
+  it('downloads: console-title / no-external-downloader / clean-infojson / no-write-info-json / ext-downloader-args / flat urls / progress-template / sleep-subtitles / sub-format best / geo NL', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --console-title -F ')
+    expect(lines).toContain('yt-dlp --no-external-downloader -F ')
+    expect(lines).toContain('yt-dlp --clean-infojson ')
+    expect(lines).toContain('yt-dlp --no-write-info-json -F ')
+    expect(lines).toContain('yt-dlp --external-downloader-args ffmpeg_i:-nostdin -F ')
+    expect(lines).toContain('yt-dlp --flat-playlist --print urls --skip-download ')
+    expect(lines).toContain('yt-dlp --progress-template predownload:Preparing %(info.title)s -F ')
+    expect(lines).toContain('yt-dlp --sleep-subtitles 5 -F ')
+    expect(lines).toContain('yt-dlp --sub-format best -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country NL -F ')
+  })
+
   it('preview: a:0/s:0 codec_long_name + aphasemeter', () => {
     const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
     expect(
@@ -816,5 +830,18 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(
       lines.some((l) => l.includes('-af aphasemeter=video=0') && l.includes('-t 10') && l.includes('-vn -sn'))
     ).toBe(true)
+  })
+
+  it('preview: a:1 stream_tags encoder + idet 5s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams a:1') &&
+          l.includes('stream_tags=encoder') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+    expect(lines.some((l) => l.includes('-vf idet') && l.includes('-t 5') && l.includes('-an -sn'))).toBe(true)
   })
 })
