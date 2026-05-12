@@ -1442,6 +1442,54 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· print location',
     summary: 'Гео/локация из метаданных без скачивания (--skip-download --print location); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print location '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· player_client=android -F',
+    summary: 'YouTube: клиент Android в extractor-args (--extractor-args youtube:player_client=android -F); обход части web-ограничений; допишите URL.',
+    fullLine: 'yt-dlp --extractor-args youtube:player_client=android -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· player_client=tv_embedded -F',
+    summary: 'YouTube: встроенный TV-клиент (--extractor-args youtube:player_client=tv_embedded -F); допишите URL.',
+    fullLine: 'yt-dlp --extractor-args youtube:player_client=tv_embedded -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· player_client=ios -F',
+    summary: 'YouTube: iOS-клиент в extractor-args (--extractor-args youtube:player_client=ios -F); допишите URL.',
+    fullLine: 'yt-dlp --extractor-args youtube:player_client=ios -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print alternate_title',
+    summary: 'Альтернативный заголовок без скачивания (--skip-download --print alternate_title); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print alternate_title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print extractor_key',
+    summary: 'Внутренний ключ extractor без скачивания (--skip-download --print extractor_key); сверка с `--print extractor`; допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print extractor_key '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· flat print webpage_url',
+    summary: 'Плоский плейлист: URL страницы каждого элемента без глубокого извлечения (--flat-playlist --skip-download --print webpage_url); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --flat-playlist --skip-download --print webpage_url '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo-bypass DE -F',
+    summary: 'Гео-обход с кодом страны DE (--geo-bypass-country DE -F); поменяйте ISO-код при необходимости; допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country DE -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print channel_is_verified',
+    summary: 'Флаг верифицированного канала без скачивания (--skip-download --print channel_is_verified); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print channel_is_verified '
   }
 ]
 
@@ -2052,6 +2100,30 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· s:2 disposition',
     summary: 'Третья дорожка субтитров s:2: disposition (forced/default/hearing_impaired и т.д.); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:2 -show_entries stream=disposition -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:2 disposition',
+    summary: 'Третья аудиодорожка a:2: disposition (default/forced и т.д.); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:2 -show_entries stream=disposition -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:1 profile level',
+    summary: 'Вторая видеодорожка v:1: profile + level (редкие мультиangle/дубли); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:1 -show_entries stream=profile,level -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· s:1 stream dur',
+    summary: 'Вторая дорожка субтитров s:1: start_time + duration дорожки; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:1 -show_entries stream=start_time,duration -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· map v:0 copy 2s',
+    summary: 'Remux только первой видеодорожки без перекодирования (-map 0:v:0 -c:v copy); без аудио/субтитров; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -t 2 -map 0:v:0 -c:v copy -an -sn -f null -`
   }
 ]
 

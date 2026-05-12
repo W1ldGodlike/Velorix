@@ -619,4 +619,47 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: YouTube player clients + extractor metadata (smoke)', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --extractor-args youtube:player_client=android -F ')
+    expect(lines).toContain('yt-dlp --extractor-args youtube:player_client=tv_embedded -F ')
+    expect(lines).toContain('yt-dlp --extractor-args youtube:player_client=ios -F ')
+    expect(lines).toContain('yt-dlp --skip-download --print alternate_title ')
+    expect(lines).toContain('yt-dlp --skip-download --print extractor_key ')
+    expect(lines).toContain('yt-dlp --flat-playlist --skip-download --print webpage_url ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country DE -F ')
+    expect(lines).toContain('yt-dlp --skip-download --print channel_is_verified ')
+  })
+
+  it('preview: a:2 disposition, v:1 profile+level, s:1 stream duration, map v:0 copy', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams a:2') &&
+          l.includes('stream=disposition') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams v:1') &&
+          l.includes('stream=profile,level') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams s:1') &&
+          l.includes('stream=start_time,duration') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+    expect(lines.some((l) => l.includes('-map 0:v:0 -c:v copy') && l.includes('-an -sn -f null -'))).toBe(
+      true
+    )
+  })
 })
