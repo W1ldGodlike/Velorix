@@ -1532,6 +1532,66 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· print requested_subtitles',
     summary: 'Запрошенные субтитры без скачивания (--skip-download --print requested_subtitles); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print requested_subtitles '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· cookies safari',
+    summary: 'Сухой прогон с cookies Safari (--skip-download --cookies-from-browser safari); macOS/Windows — по наличию профиля; допишите URL.',
+    fullLine: 'yt-dlp --skip-download --cookies-from-browser safari '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· player_client=web_creator -F',
+    summary: 'YouTube: web_creator в extractor-args (--extractor-args youtube:player_client=web_creator -F); Studio/ограниченные кейсы; допишите URL.',
+    fullLine: 'yt-dlp --extractor-args youtube:player_client=web_creator -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· player_client=web_embedded -F',
+    summary: 'YouTube: web_embedded в extractor-args (--extractor-args youtube:player_client=web_embedded -F); встраиваемый плеер; допишите URL.',
+    fullLine: 'yt-dlp --extractor-args youtube:player_client=web_embedded -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo-bypass GB -F',
+    summary: 'Гео-обход с кодом страны GB (--geo-bypass-country GB -F); поменяйте ISO-код при необходимости; допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country GB -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print formats',
+    summary: 'Словарь доступных форматов без скачивания (--skip-download --print formats); тяжёлый вывод — для диагностики; допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print formats '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· simulate merge best',
+    summary: 'Сухой прогон выбора слияния видео+аудио (--simulate -f bestvideo+bestaudio/best); без файлов; допишите URL.',
+    fullLine: 'yt-dlp --simulate -f bestvideo+bestaudio/best '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· multi-streams -F',
+    summary: 'Список форматов с учётом multi-stream (--multi-streams -F); DASH/HLS с раздельными потоками; допишите URL.',
+    fullLine: 'yt-dlp --multi-streams -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· compat-options 2024 -F',
+    summary: 'Совместимость «как в 2024+» (--compat-options 2024 -F); задел под будущие изменения yt-dlp; допишите URL.',
+    fullLine: 'yt-dlp --compat-options 2024 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-playlist print title',
+    summary: 'Только один ролик из URL-плейлиста + заголовок без скачивания (--no-playlist --skip-download --print title); допишите URL.',
+    fullLine: 'yt-dlp --no-playlist --skip-download --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· flat print extractor',
+    summary: 'Плоский плейлист: имя extractor каждого элемента без глубокого извлечения (--flat-playlist --skip-download --print extractor); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --flat-playlist --skip-download --print extractor '
   }
 ]
 
@@ -2178,6 +2238,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· volumedetect 10s',
     summary: 'Замер громкости первых 10 с (-af volumedetect -vn -sn); mean_volume/max_volume в stderr; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af volumedetect -t 10 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format genre+date',
+    summary: 'Теги контейнера genre + date (каталогизация/камера); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=genre,date -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· silencedetect 30s',
+    summary: 'Поиск тишины в первых 30 с (-af silencedetect=noise=-50dB:d=0.3); stderr: silence_start/end; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af silencedetect=noise=-50dB:d=0.3 -t 30 -vn -sn -f null -`
   }
 ]
 

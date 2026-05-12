@@ -688,4 +688,28 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       true
     )
   })
+
+  it('downloads: safari + web_creator/web_embedded + GB + formats + simulate merge + multi-streams + compat 2024', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --skip-download --cookies-from-browser safari ')
+    expect(lines).toContain('yt-dlp --extractor-args youtube:player_client=web_creator -F ')
+    expect(lines).toContain('yt-dlp --extractor-args youtube:player_client=web_embedded -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country GB -F ')
+    expect(lines).toContain('yt-dlp --skip-download --print formats ')
+    expect(lines).toContain('yt-dlp --simulate -f bestvideo+bestaudio/best ')
+    expect(lines).toContain('yt-dlp --multi-streams -F ')
+    expect(lines).toContain('yt-dlp --compat-options 2024 -F ')
+    expect(lines).toContain('yt-dlp --no-playlist --skip-download --print title ')
+    expect(lines).toContain('yt-dlp --flat-playlist --skip-download --print extractor ')
+  })
+
+  it('preview: format genre+date, silencedetect', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some((l) => l.includes('format_tags=genre,date') && l.includes('default=nw=1:nk=1'))
+    ).toBe(true)
+    expect(
+      lines.some((l) => l.includes('-af silencedetect=noise=-50dB:d=0.3') && l.includes('-vn -sn'))
+    ).toBe(true)
+  })
 })
