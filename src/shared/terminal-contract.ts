@@ -4238,6 +4238,102 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· print-to-file director',
     summary: 'Записать director (режиссёр/автор видео, если extractor отдаёт) в flux-ytdlp-director.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file director flux-ytdlp-director.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-build-paths -F',
+    summary: 'Не строить выходные пути до фактического скачивания (--no-build-paths -F); меньше лишних mkdir при -F; допишите URL.',
+    fullLine: 'yt-dlp --no-build-paths -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo BJ -F',
+    summary: 'Гео-обход через Бенин (--geo-bypass-country BJ -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country BJ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo TG -F',
+    summary: 'Гео-обход через Того (--geo-bypass-country TG -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country TG -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo BF -F',
+    summary: 'Гео-обход через Буркина-Фасо (--geo-bypass-country BF -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country BF -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo CI -F',
+    summary: 'Гео-обход через Кот-д\'Ивуар (--geo-bypass-country CI -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country CI -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo LR -F',
+    summary: 'Гео-обход через Либерию (--geo-bypass-country LR -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country LR -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo SL -F',
+    summary: 'Гео-обход через Сьерра-Леоне (--geo-bypass-country SL -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country SL -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo GN -F',
+    summary: 'Гео-обход через Гвинею (--geo-bypass-country GN -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country GN -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo GW -F',
+    summary: 'Гео-обход через Гвинею-Бисау (--geo-bypass-country GW -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country GW -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file arranger',
+    summary: 'Записать arranger (аранжировка, если есть) в flux-ytdlp-arranger.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file arranger flux-ytdlp-arranger.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file remixer',
+    summary: 'Записать remixer (ремиксёр, если extractor отдаёт) в flux-ytdlp-remixer.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file remixer flux-ytdlp-remixer.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file engineer',
+    summary: 'Записать engineer (звукорежиссёр/инженер, если есть) в flux-ytdlp-engineer.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file engineer flux-ytdlp-engineer.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file lyricist',
+    summary: 'Записать lyricist (автор текста, если есть) в flux-ytdlp-lyricist.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file lyricist flux-ytdlp-lyricist.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file grouping',
+    summary: 'Записать grouping (iTunes/Music grouping) в flux-ytdlp-grouping.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file grouping flux-ytdlp-grouping.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file compilation',
+    summary: 'Записать compilation (признак сборника, если extractor отдаёт) в flux-ytdlp-compilation.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file compilation flux-ytdlp-compilation.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file show',
+    summary: 'Записать show (название шоу/сериала, если extractor отдаёт) в flux-ytdlp-show.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file show flux-ytdlp-show.txt --skip-download '
   }
 ]
 
@@ -5472,6 +5568,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· stereotools 3s',
     summary: 'Лёгкая стерео-коррекция первых 3 с (-af stereotools=mlev=0.05:phlev=0.05); smoke ширины/фазы; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af stereotools=mlev=0.05:phlev=0.05 -t 3 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format gapless+compilation',
+    summary: 'Теги контейнера gapless_playback + compilation (часто у AAC/ALAC из iTunes); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=gapless_playback,compilation -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· speechnorm 4s',
+    summary: 'Лёгкая нормализация речи/подкаста первых 4 с (-af speechnorm=peak=0.25); smoke динамики диалога; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af speechnorm=peak=0.25 -t 4 -vn -sn -f null -`
   }
 ]
 

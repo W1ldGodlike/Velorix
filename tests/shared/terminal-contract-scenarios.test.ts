@@ -2121,4 +2121,43 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: geo BJ/TG/BF/CI/LR/SL/GN/GW + no-build-paths + print-to-file arranger…show', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --no-build-paths -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country BJ -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country TG -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country BF -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country CI -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country LR -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country SL -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country GN -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country GW -F ')
+    expect(lines).toContain('yt-dlp --print-to-file arranger flux-ytdlp-arranger.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file remixer flux-ytdlp-remixer.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file engineer flux-ytdlp-engineer.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file lyricist flux-ytdlp-lyricist.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file grouping flux-ytdlp-grouping.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file compilation flux-ytdlp-compilation.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file show flux-ytdlp-show.txt --skip-download ')
+  })
+
+  it('preview: ffprobe gapless+compilation + ffmpeg speechnorm 4s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=gapless_playback,compilation') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af speechnorm=peak=0.25') &&
+          l.includes('-t 4') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })
