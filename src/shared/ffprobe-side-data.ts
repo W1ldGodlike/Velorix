@@ -4,6 +4,7 @@
  * ffprobe отдаёт side data как loosely typed JSON, поэтому этот модуль остаётся чистым
  * и консервативным: показываем только короткие подписи Dolby Vision/HDR и несколько
  * безопасных неизвестных типов, без попытки интерпретировать все поля стандарта.
+ * Stereo 3D и ATSC Audio Service Type дают короткие подписи для видео и аудио.
  */
 
 function recordFromUnknown(raw: unknown): Record<string, unknown> | null {
@@ -89,6 +90,13 @@ function summarizeSideDataItem(raw: unknown): string | null {
   }
   if (low.includes('spherical')) {
     return '360°'
+  }
+  if (low.includes('stereo') && low.includes('3d')) {
+    return '3D'
+  }
+  if (low.includes('audio service type')) {
+    const svc = scalarToken(o, 'service_type')
+    return svc !== null ? `ATSC svc ${svc}` : 'ATSC audio svc'
   }
   return shortSideDataType(type)
 }

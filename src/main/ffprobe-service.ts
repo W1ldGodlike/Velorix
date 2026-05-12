@@ -630,6 +630,10 @@ function buildTrackDetail(
       parts.push(streamDur)
     }
     appendFfprobeNbFramesDetail(parts, stream.nb_frames)
+    const audioSide = summarizeFfprobeSideDataList(stream.side_data_list)
+    if (audioSide !== null) {
+      parts.push(audioSide)
+    }
     const aProfile = ffprobeScalarDisplay(
       typeof stream.profile === 'string' ? stream.profile : undefined
     )

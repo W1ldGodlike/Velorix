@@ -882,6 +882,27 @@ describe('ffprobe-service buildTrackRows', () => {
     expect(pkOnly?.detail).not.toMatch(/\bRG tr\b/)
   })
 
+  it('audio detail: side_data_list Stereo 3D / Audio Service Type в сводке', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'audio',
+          codec_name: 'ac3',
+          channels: 2,
+          sample_rate: '48000',
+          side_data_list: [
+            { side_data_type: 'Stereo 3D' },
+            { side_data_type: 'Audio Service Type', service_type: 1 }
+          ]
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toContain('3D')
+    expect(row?.detail).toContain('ATSC svc 1')
+  })
+
   it('video detail: side_data Spherical Mapping → компактное «360°»', () => {
     const [row] = buildTrackRows(
       [

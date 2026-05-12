@@ -59,6 +59,18 @@ describe('ffprobe-side-data', () => {
     ).toBeNull()
   })
 
+  it('Stereo 3D и Audio Service Type — короткие подписи', () => {
+    expect(
+      summarizeFfprobeSideDataList([{ side_data_type: 'Stereo 3D', stereo_mode: 'side_by_side' }])
+    ).toBe('3D')
+    expect(
+      summarizeFfprobeSideDataList([
+        { side_data_type: 'Audio Service Type', service_type: 4 },
+        { side_data_type: 'Audio Service Type' }
+      ])
+    ).toBe('ATSC svc 4 · ATSC audio svc')
+  })
+
   it('дедуплицирует и ограничивает неизвестные типы', () => {
     expect(
       summarizeFfprobeSideDataList([
