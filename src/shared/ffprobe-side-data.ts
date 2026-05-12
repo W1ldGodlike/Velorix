@@ -87,6 +87,9 @@ function summarizeSideDataItem(raw: unknown): string | null {
   if (low.includes('ambient viewing')) {
     return 'HDR ambient viewing'
   }
+  if (low.includes('spherical')) {
+    return '360°'
+  }
   return shortSideDataType(type)
 }
 

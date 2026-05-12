@@ -596,4 +596,22 @@ describe('ffprobe-service buildTrackRows', () => {
     expect(pkOnly?.detail).toContain('RG al pk 1.000000')
     expect(pkOnly?.detail).not.toMatch(/\bRG tr\b/)
   })
+
+  it('video detail: side_data Spherical Mapping → компактное «360°»', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 3840,
+          height: 1920,
+          side_data_list: [{ side_data_type: 'Spherical Mapping' }]
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toContain('360°')
+    expect(row?.detail).not.toContain('Spherical Mapping')
+  })
 })

@@ -69,6 +69,6 @@ describe('ffprobe-side-data', () => {
         { side_data_type: 'B' },
         { side_data_type: 'C' }
       ])
-    ).toBe('Spherical Mapping · HDR ambient viewing · A · B')
+    ).toBe('360° · HDR ambient viewing · A · B')
   })
 })
