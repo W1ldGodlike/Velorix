@@ -2714,6 +2714,42 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· geo GL -F',
     summary: 'Гео-обход через Гренландию (--geo-bypass-country GL -F); допишите URL.',
     fullLine: 'yt-dlp --geo-bypass-country GL -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· check-all-urls -F',
+    summary: 'Проверить все HTTP-URL фрагментов перед загрузкой (--check-all-urls -F); диагностика 403/410 на HLS/DASH; допишите URL.',
+    fullLine: 'yt-dlp --check-all-urls -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-windows-filenames -F',
+    summary: 'Отключить санитизацию имён под Windows (--no-windows-filenames -F); как в POSIX-шаблонах -o; допишите URL.',
+    fullLine: 'yt-dlp --no-windows-filenames -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· replace-meta title -F',
+    summary: 'Замена в метаданных до имени файла (--replace-in-metadata title,_,- — подчёркивание → дефис); допишите URL.',
+    fullLine: 'yt-dlp --replace-in-metadata title,_,- -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-playlist simulate',
+    summary: 'Сухой прогон одного ролика из URL-плейлиста (--no-playlist --simulate); без файлов; допишите URL.',
+    fullLine: 'yt-dlp --no-playlist --simulate '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print dislike_count',
+    summary: 'Счётчик дизлайков без скачивания (--skip-download --print dislike_count; часто NA); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print dislike_count '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· flat-pl skip print dur',
+    summary: 'Плоский плейлист: длительность каждого элемента без глубокого извлечения (--flat-playlist --skip-download --print duration); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --flat-playlist --skip-download --print duration '
   }
 ]
 
@@ -3654,6 +3690,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· bandpass hp+lp 4s',
     summary: 'Полосовой проход 200–3000 Hz первых 4 с (-af highpass=f=200,lowpass=f=3000); smoke цепочки из двух af; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af highpass=f=200,lowpass=f=3000 -t 4 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 intra_only',
+    summary: 'Поток v:0: is_intra_only (все-I GOP / редкие кодеки); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=is_intra_only -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· adeclick 5s',
+    summary: 'Клик-редактор первых 5 с (-af adeclick); диагностика щёлчков/дефектов записи; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af adeclick -t 5 -vn -sn -f null -`
   }
 ]
 

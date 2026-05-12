@@ -1324,4 +1324,29 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: check-all-urls / no-windows-filenames / replace-meta / no-playlist simulate / dislike / flat+duration', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --check-all-urls -F ')
+    expect(lines).toContain('yt-dlp --no-windows-filenames -F ')
+    expect(lines).toContain('yt-dlp --replace-in-metadata title,_,- -F ')
+    expect(lines).toContain('yt-dlp --no-playlist --simulate ')
+    expect(lines).toContain('yt-dlp --skip-download --print dislike_count ')
+    expect(lines).toContain('yt-dlp --flat-playlist --skip-download --print duration ')
+  })
+
+  it('preview: v:0 is_intra_only / ffmpeg adeclick 5s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-select_streams v:0') &&
+          l.includes('stream=is_intra_only') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(lines.some((l) => l.includes('-af adeclick') && l.includes('-t 5') && l.includes('-vn -sn'))).toBe(
+      true
+    )
+  })
 })
