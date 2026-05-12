@@ -130,7 +130,10 @@ const UI_TEXT = {
     downloadsHistoryRepeatNotAdded: 'URL не добавлен',
     downloadsHistoryOpenHandlerPreparing:
       'Готовлю файл для редактора… при необходимости будет создан WebM preview.',
-    downloadsHistoryOpenHandlerDone: 'Файл открыт в редакторе'
+    downloadsHistoryOpenHandlerDone: 'Файл открыт в редакторе',
+    downloadsLogTitle: 'Живой лог',
+    downloadsLogSave: 'Сохранить',
+    downloadsLogEmpty: 'Лог появится после запуска строки yt-dlp.'
   },
   en: {
     aboutTitle: 'About',
@@ -258,7 +261,10 @@ const UI_TEXT = {
     downloadsHistoryRepeatNotAdded: 'URL was not added',
     downloadsHistoryOpenHandlerPreparing:
       'Preparing file for the editor… a WebM preview may be created if needed.',
-    downloadsHistoryOpenHandlerDone: 'File opened in the editor'
+    downloadsHistoryOpenHandlerDone: 'File opened in the editor',
+    downloadsLogTitle: 'Live log',
+    downloadsLogSave: 'Save',
+    downloadsLogEmpty: 'The log will appear after you start a yt-dlp queue row.'
   }
 } as const
 

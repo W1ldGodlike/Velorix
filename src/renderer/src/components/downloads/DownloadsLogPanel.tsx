@@ -1,5 +1,7 @@
 import type { JSX } from 'react'
 
+import { uiText } from '../../locales/ui-text'
+
 export type DownloadsLogLineView = {
   id: number
   rowId: number
@@ -31,7 +33,7 @@ export function DownloadsLogPanel({
       }}
     >
       <summary>
-        Живой лог
+        {uiText('downloadsLogTitle')}
         <span>{targetRowId !== null ? `#${targetRowId}` : '—'}</span>
       </summary>
       <div className="app-downloads-log-actions">
@@ -41,7 +43,7 @@ export function DownloadsLogPanel({
           disabled={lines.length === 0}
           onClick={onClear}
         >
-          Очистить
+          {uiText('downloadsHistoryClear')}
         </button>
         <button
           type="button"
@@ -49,12 +51,12 @@ export function DownloadsLogPanel({
           disabled={lines.length === 0}
           onClick={onSave}
         >
-          Сохранить
+          {uiText('downloadsLogSave')}
         </button>
       </div>
       <pre className="app-downloads-log-pre" aria-live="polite">
         {lines.length === 0
-          ? 'Лог появится после запуска строки yt-dlp.'
+          ? uiText('downloadsLogEmpty')
           : lines.map((line) => `[${line.rowId}] ${line.stream}: ${line.text}`).join('\n')}
       </pre>
     </details>
