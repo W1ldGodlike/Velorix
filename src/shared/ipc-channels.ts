@@ -65,6 +65,8 @@ export const mainWindowIpc = {
   diagnosticsOpenFolder: 'fluxalloy:diagnostics-open-folder',
   diagnosticsOpenMainLog: 'fluxalloy:diagnostics-open-main-log',
   diagnosticsCreateSupportZip: 'fluxalloy:diagnostics-create-support-zip',
+  diagnosticsMaintenanceSnapshot: 'fluxalloy:diagnostics-maintenance-snapshot',
+  diagnosticsCleanMaintenance: 'fluxalloy:diagnostics-clean-maintenance',
   openDownloadsWindow: 'fluxalloy:open-downloads-window',
   /** §9 — отдельное окно инспектора ffprobe (`#inspector`). */
   openInspectorWindow: 'fluxalloy:open-inspector-window',

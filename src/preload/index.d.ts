@@ -3,6 +3,9 @@ import type { ElectronAPI } from '@electron-toolkit/preload'
 import type {
   DiagnosticsFolderEntry,
   DiagnosticsFolderId,
+  DiagnosticsCleanMaintenanceRequest,
+  DiagnosticsCleanMaintenanceResult,
+  DiagnosticsMaintenanceSnapshot,
   DiagnosticsOpenMainLogResult,
   DiagnosticsSupportZipResult
 } from '../shared/diagnostics-contract'
@@ -232,6 +235,10 @@ export interface FluxAlloyApi {
     ) => Promise<{ ok: true; path: string } | { ok: false; error: string }>
     openMainLog: () => Promise<DiagnosticsOpenMainLogResult>
     createSupportZip: () => Promise<DiagnosticsSupportZipResult>
+    maintenanceSnapshot: () => Promise<DiagnosticsMaintenanceSnapshot>
+    cleanMaintenance: (
+      request?: DiagnosticsCleanMaintenanceRequest
+    ) => Promise<DiagnosticsCleanMaintenanceResult>
   }
   log: {
     send: (entry: { level: 'info' | 'warn' | 'error'; scope?: string; message: string }) => void

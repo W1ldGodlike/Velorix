@@ -52,6 +52,10 @@ import {
   type DiagnosticsFolderEntry
 } from './diagnostics-paths'
 import {
+  cleanDiagnosticsMaintenance,
+  getDiagnosticsMaintenanceSnapshot
+} from './diagnostics-maintenance'
+import {
   attachProcessErrorHandlers,
   getMainLogBackupFilePath,
   getMainLogFilePath,
@@ -2079,10 +2083,7 @@ app.whenReady().then(() => {
     },
     getAppTheme: (): ResolvedAppTheme => resolveEffectiveTheme(cachedSettings.theme)
   })
-  function scheduleAutoExportAfterSuccessfulYtdlpOpen(
-    absoluteInput: string,
-    rowId: number
-  ): void {
+  function scheduleAutoExportAfterSuccessfulYtdlpOpen(absoluteInput: string, rowId: number): void {
     void (async () => {
       if (cachedSettings.ytdlpAutoExportAfterOpenInHandler !== true) {
         return
@@ -2687,6 +2688,21 @@ app.whenReady().then(() => {
       return { ok: false, error: out.message }
     }
   )
+
+  ipcMain.handle(mw.diagnosticsMaintenanceSnapshot, () => {
+    return getDiagnosticsMaintenanceSnapshot(resolveAppPaths())
+  })
+
+  ipcMain.handle(mw.diagnosticsCleanMaintenance, (_event, raw: unknown) => {
+    const request =
+      raw && typeof raw === 'object' ? (raw as { targets?: unknown }).targets : undefined
+    const targets = Array.isArray(request)
+      ? request.filter((id): id is 'previewCache' | 'ytdlpPartials' => {
+          return id === 'previewCache' || id === 'ytdlpPartials'
+        })
+      : undefined
+    return cleanDiagnosticsMaintenance(resolveAppPaths(), targets ? { targets } : undefined)
+  })
 
   ipcMain.handle(mw.openDownloadsWindow, (_, raw: unknown) => {
     const payload = parseDownloadsOpenPayload(raw)

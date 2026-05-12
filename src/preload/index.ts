@@ -4,6 +4,9 @@ import { electronAPI } from '@electron-toolkit/preload'
 import type {
   DiagnosticsFolderEntry,
   DiagnosticsFolderId,
+  DiagnosticsCleanMaintenanceRequest,
+  DiagnosticsCleanMaintenanceResult,
+  DiagnosticsMaintenanceSnapshot,
   DiagnosticsOpenMainLogResult,
   DiagnosticsSupportZipResult
 } from '../shared/diagnostics-contract'
@@ -204,16 +207,13 @@ const fluxalloy = {
       ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoLut3d, preset),
     setFfmpegExportVideoSharpen: (preset: FfmpegExportVideoSharpenId): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoSharpen, preset),
-    setFfmpegExportVideoEqPreset: (
-      preset: FfmpegExportVideoEqPresetId
-    ): Promise<AppSettings> => ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoEqPreset, preset),
+    setFfmpegExportVideoEqPreset: (preset: FfmpegExportVideoEqPresetId): Promise<AppSettings> =>
+      ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoEqPreset, preset),
     setFfmpegExportVideoHue: (preset: FfmpegExportVideoHueId): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoHue, preset),
     setFfmpegExportVideoGrain: (preset: FfmpegExportVideoGrainId): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoGrain, preset),
-    setFfmpegExportVideoVignette: (
-      preset: FfmpegExportVideoVignetteId
-    ): Promise<AppSettings> =>
+    setFfmpegExportVideoVignette: (preset: FfmpegExportVideoVignetteId): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoVignette, preset),
     setFfmpegExportVideoBlur: (preset: FfmpegExportVideoBlurId): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoBlur, preset),
@@ -221,9 +221,8 @@ const fluxalloy = {
       preset: FfmpegExportVideoDeinterlaceId
     ): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoDeinterlace, preset),
-    setFfmpegExportAudioNormalize: (
-      preset: FfmpegExportAudioNormalizeId
-    ): Promise<AppSettings> => ipcRenderer.invoke(mw.settingsSetFfmpegExportAudioNormalize, preset),
+    setFfmpegExportAudioNormalize: (preset: FfmpegExportAudioNormalizeId): Promise<AppSettings> =>
+      ipcRenderer.invoke(mw.settingsSetFfmpegExportAudioNormalize, preset),
     setFfmpegExportUserPresets: (presets: FfmpegExportUserPreset[]): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportUserPresets, presets),
     applyFfmpegExportSnapshot: (snapshot: FfmpegExportUserPresetSnapshot): Promise<AppSettings> =>
@@ -428,7 +427,13 @@ const fluxalloy = {
       ipcRenderer.invoke(mw.diagnosticsOpenMainLog),
     /** §4.5 — диалог сохранения ZIP в main (как пункт меню «Собрать Support ZIP…»). */
     createSupportZip: (): Promise<DiagnosticsSupportZipResult> =>
-      ipcRenderer.invoke(mw.diagnosticsCreateSupportZip)
+      ipcRenderer.invoke(mw.diagnosticsCreateSupportZip),
+    maintenanceSnapshot: (): Promise<DiagnosticsMaintenanceSnapshot> =>
+      ipcRenderer.invoke(mw.diagnosticsMaintenanceSnapshot),
+    cleanMaintenance: (
+      request?: DiagnosticsCleanMaintenanceRequest
+    ): Promise<DiagnosticsCleanMaintenanceResult> =>
+      ipcRenderer.invoke(mw.diagnosticsCleanMaintenance, request ?? {})
   },
   log: {
     /**

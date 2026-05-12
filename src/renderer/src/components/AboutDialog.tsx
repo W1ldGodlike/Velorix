@@ -6,7 +6,21 @@ import {
   YTDLP_DOC_FORMAT_SELECTION,
   YTDLP_DOC_README
 } from '../../../shared/external-doc-urls'
-import { uiText } from '../locales/ui-text'
+import { formatMaintenanceCleanDone, formatMaintenanceSummary, uiText } from '../locales/ui-text'
+
+function formatBytes(bytes: number): string {
+  if (!Number.isFinite(bytes) || bytes <= 0) {
+    return '0 B'
+  }
+  const units = ['B', 'KiB', 'MiB', 'GiB']
+  let value = bytes
+  let unitIndex = 0
+  while (value >= 1024 && unitIndex < units.length - 1) {
+    value /= 1024
+    unitIndex += 1
+  }
+  return `${value >= 10 || unitIndex === 0 ? value.toFixed(0) : value.toFixed(1)} ${units[unitIndex]}`
+}
 
 /** Модальное окно §4.5 — переиспользуется главным окном и инспектором §9 (единые стили/`app-modal-*`). */
 export function AboutDialog({
@@ -119,6 +133,34 @@ export function AboutDialog({
                 }}
               >
                 {uiText('supportZipButton')}
+              </button>
+              <button
+                type="button"
+                className="app-btn app-btn-compact"
+                onClick={() => {
+                  void window.fluxalloy.diagnostics.maintenanceSnapshot().then((snapshot) => {
+                    pushStatus(formatMaintenanceSummary(formatBytes(snapshot.cleanableBytes)))
+                  })
+                }}
+              >
+                {uiText('maintenanceSummaryButton')}
+              </button>
+              <button
+                type="button"
+                className="app-btn app-btn-compact"
+                onClick={() => {
+                  void window.fluxalloy.diagnostics.cleanMaintenance().then((r) => {
+                    if (r.ok) {
+                      pushStatus(
+                        formatMaintenanceCleanDone(r.removedFiles, formatBytes(r.removedBytes))
+                      )
+                    } else {
+                      pushStatus(`${uiText('maintenanceCleanButton')}: ${r.error}`)
+                    }
+                  })
+                }}
+              >
+                {uiText('maintenanceCleanButton')}
               </button>
             </div>
             <p className="app-doc-inline-links app-about-doc-links">

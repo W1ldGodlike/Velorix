@@ -29,3 +29,36 @@ export type DiagnosticsSupportZipResult =
   | { ok: true; path: string }
   | { ok: false; cancelled: true }
   | { ok: false; error: string }
+
+export type DiagnosticsMaintenanceTargetId = 'previewCache' | 'ytdlpPartials'
+
+export interface DiagnosticsMaintenanceTarget {
+  id: DiagnosticsMaintenanceTargetId
+  label: string
+  path: string
+  exists: boolean
+  cleanable: boolean
+  files: number
+  directories: number
+  bytes: number
+}
+
+export interface DiagnosticsMaintenanceSnapshot {
+  targets: DiagnosticsMaintenanceTarget[]
+  totalBytes: number
+  cleanableBytes: number
+}
+
+export interface DiagnosticsCleanMaintenanceRequest {
+  targets?: DiagnosticsMaintenanceTargetId[]
+}
+
+export type DiagnosticsCleanMaintenanceResult =
+  | {
+      ok: true
+      removedFiles: number
+      removedDirectories: number
+      removedBytes: number
+      targets: DiagnosticsMaintenanceTarget[]
+    }
+  | { ok: false; error: string }

@@ -9,6 +9,10 @@ const UI_TEXT = {
     logsFolderButton: 'Папка логов',
     supportZipSaved: 'Support ZIP сохранён',
     supportZipButton: 'Support ZIP…',
+    maintenanceSummaryButton: 'Размер временных',
+    maintenanceCleanButton: 'Очистить временное',
+    maintenanceCleanDoneTemplate: 'Очищено: {files} файлов, {bytes}',
+    maintenanceSummaryTemplate: 'Временное: {bytes}',
     formatSelectionDoc: 'Выбор формата',
     closeButton: 'Закрыть',
     versionsAriaLabel: 'Версии среды',
@@ -35,8 +39,7 @@ const UI_TEXT = {
     terminalCommandInputAriaLabel: 'Команда CLI',
     terminalCommandPlaceholder: 'ffprobe -version',
     terminalPreviewFileButton: 'Превью-файл',
-    terminalPreviewFileTooltipOpen:
-      'Вставить токен «{token}» (путь текущего превью)',
+    terminalPreviewFileTooltipOpen: 'Вставить токен «{token}» (путь текущего превью)',
     terminalPreviewFileTooltipNeedFile: 'Сначала откройте файл в редакторе',
     terminalRunButton: 'Выполнить',
     terminalRunningButton: 'Выполняю…',
@@ -65,6 +68,10 @@ const UI_TEXT = {
     logsFolderButton: 'Logs folder',
     supportZipSaved: 'Support ZIP saved',
     supportZipButton: 'Support ZIP…',
+    maintenanceSummaryButton: 'Temp size',
+    maintenanceCleanButton: 'Clean temp',
+    maintenanceCleanDoneTemplate: 'Cleaned: {files} files, {bytes}',
+    maintenanceSummaryTemplate: 'Temporary data: {bytes}',
     formatSelectionDoc: 'Format selection',
     closeButton: 'Close',
     versionsAriaLabel: 'Runtime versions',
@@ -136,7 +143,8 @@ export type TerminalIntroTailVars = {
 }
 
 export function formatTerminalIntroTail(vars: TerminalIntroTailVars): string {
-  return UI_TEXT[activeUiLocale].terminalIntroTailTemplate.replace(/\{pageStep\}/g, String(vars.pageStep))
+  return UI_TEXT[activeUiLocale].terminalIntroTailTemplate
+    .replace(/\{pageStep\}/g, String(vars.pageStep))
     .replace(/\{maxInline\}/g, String(vars.maxInline))
     .replace(/\{maxDd\}/g, String(vars.maxDd))
 }
@@ -157,4 +165,14 @@ export function formatTerminalCopyLineAria(lineNumber1Based: number): string {
     /\{n\}/g,
     String(lineNumber1Based)
   )
+}
+
+export function formatMaintenanceCleanDone(files: number, bytes: string): string {
+  return UI_TEXT[activeUiLocale].maintenanceCleanDoneTemplate
+    .replace(/\{files\}/g, String(files))
+    .replace(/\{bytes\}/g, bytes)
+}
+
+export function formatMaintenanceSummary(bytes: string): string {
+  return UI_TEXT[activeUiLocale].maintenanceSummaryTemplate.replace(/\{bytes\}/g, bytes)
 }

@@ -1,0 +1,197 @@
+import { existsSync, readdirSync, rmSync, statSync } from 'fs'
+import { basename, join } from 'path'
+
+import type { AppPaths } from './app-paths'
+import { resolveYtdlpOutputDirectory } from './ytdlp-download-output'
+import type {
+  DiagnosticsCleanMaintenanceRequest,
+  DiagnosticsCleanMaintenanceResult,
+  DiagnosticsMaintenanceSnapshot,
+  DiagnosticsMaintenanceTarget,
+  DiagnosticsMaintenanceTargetId
+} from '../shared/diagnostics-contract'
+
+interface UsageStats {
+  files: number
+  directories: number
+  bytes: number
+}
+
+interface CleanStats {
+  removedFiles: number
+  removedDirectories: number
+  removedBytes: number
+}
+
+interface TargetSpec {
+  id: DiagnosticsMaintenanceTargetId
+  label: string
+  path: string
+  fileFilter?: (name: string) => boolean
+}
+
+const emptyUsage: UsageStats = { files: 0, directories: 0, bytes: 0 }
+
+function isYtdlpTransientFile(name: string): boolean {
+  const lower = name.toLowerCase()
+  const base = basename(lower)
+  return (
+    lower.endsWith('.part') ||
+    lower.endsWith('.ytdl') ||
+    lower.endsWith('.temp') ||
+    lower.endsWith('.tmp') ||
+    lower.endsWith('.frag') ||
+    base === 'archive.part'
+  )
+}
+
+function targetSpecs(paths: AppPaths): TargetSpec[] {
+  return [
+    {
+      id: 'previewCache',
+      label: 'Preview cache',
+      path: join(paths.userData, 'preview-cache')
+    },
+    {
+      id: 'ytdlpPartials',
+      label: 'yt-dlp partial files',
+      path: resolveYtdlpOutputDirectory(paths.userData),
+      fileFilter: isYtdlpTransientFile
+    }
+  ]
+}
+
+function collectUsage(root: string, fileFilter?: (name: string) => boolean): UsageStats {
+  if (!existsSync(root)) {
+    return emptyUsage
+  }
+  const acc: UsageStats = { ...emptyUsage }
+  function visit(dir: string): void {
+    let entries: import('fs').Dirent[]
+    try {
+      entries = readdirSync(dir, { withFileTypes: true })
+    } catch {
+      return
+    }
+    for (const entry of entries) {
+      const full = join(dir, entry.name)
+      if (entry.isDirectory()) {
+        acc.directories += 1
+        visit(full)
+        continue
+      }
+      if (!entry.isFile() || (fileFilter && !fileFilter(entry.name))) {
+        continue
+      }
+      try {
+        acc.files += 1
+        acc.bytes += statSync(full).size
+      } catch {
+        /* vanished between readdir/stat */
+      }
+    }
+  }
+  visit(root)
+  return acc
+}
+
+function cleanTarget(spec: TargetSpec): CleanStats {
+  const stats: CleanStats = { removedFiles: 0, removedDirectories: 0, removedBytes: 0 }
+  if (!existsSync(spec.path)) {
+    return stats
+  }
+  function visit(dir: string): boolean {
+    let entries: import('fs').Dirent[]
+    try {
+      entries = readdirSync(dir, { withFileTypes: true })
+    } catch {
+      return false
+    }
+
+    for (const entry of entries) {
+      const full = join(dir, entry.name)
+      if (entry.isDirectory()) {
+        const emptyAfterClean = visit(full)
+        if (emptyAfterClean) {
+          try {
+            rmSync(full, { recursive: false })
+            stats.removedDirectories += 1
+          } catch {
+            /* non-empty or locked directory */
+          }
+        }
+        continue
+      }
+      if (!entry.isFile() || (spec.fileFilter && !spec.fileFilter(entry.name))) {
+        continue
+      }
+      try {
+        const size = statSync(full).size
+        rmSync(full, { force: true })
+        stats.removedFiles += 1
+        stats.removedBytes += size
+      } catch {
+        /* one locked file must not abort cleanup */
+      }
+    }
+
+    try {
+      return readdirSync(dir).length === 0
+    } catch {
+      return false
+    }
+  }
+
+  visit(spec.path)
+  return stats
+}
+
+function toTarget(spec: TargetSpec): DiagnosticsMaintenanceTarget {
+  const usage = collectUsage(spec.path, spec.fileFilter)
+  return {
+    id: spec.id,
+    label: spec.label,
+    path: spec.path,
+    exists: existsSync(spec.path),
+    cleanable: true,
+    files: usage.files,
+    directories: usage.directories,
+    bytes: usage.bytes
+  }
+}
+
+export function getDiagnosticsMaintenanceSnapshot(paths: AppPaths): DiagnosticsMaintenanceSnapshot {
+  const targets = targetSpecs(paths).map(toTarget)
+  const totalBytes = targets.reduce((sum, target) => sum + target.bytes, 0)
+  const cleanableBytes = targets
+    .filter((target) => target.cleanable)
+    .reduce((sum, target) => sum + target.bytes, 0)
+  return { targets, totalBytes, cleanableBytes }
+}
+
+export function cleanDiagnosticsMaintenance(
+  paths: AppPaths,
+  request?: DiagnosticsCleanMaintenanceRequest
+): DiagnosticsCleanMaintenanceResult {
+  const requested = new Set<DiagnosticsMaintenanceTargetId>(
+    request?.targets !== undefined ? request.targets : ['previewCache', 'ytdlpPartials']
+  )
+  const specs = targetSpecs(paths).filter((spec) => requested.has(spec.id))
+  if (specs.length === 0) {
+    return { ok: false, error: 'Не выбраны категории обслуживания' }
+  }
+
+  const totals: CleanStats = { removedFiles: 0, removedDirectories: 0, removedBytes: 0 }
+  for (const spec of specs) {
+    const next = cleanTarget(spec)
+    totals.removedFiles += next.removedFiles
+    totals.removedDirectories += next.removedDirectories
+    totals.removedBytes += next.removedBytes
+  }
+
+  return {
+    ok: true,
+    ...totals,
+    targets: targetSpecs(paths).map(toTarget)
+  }
+}
