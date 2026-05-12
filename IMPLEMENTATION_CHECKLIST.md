@@ -41,7 +41,7 @@
 
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый; подробности фиксировать ниже в тематических § и в `IMPLEMENTATION_JOURNAL.md`.
 
-- [~] §19/§3/§17: release/security — ручной packaged smoke, непустые SHA, строгий CI режим и подпись Windows.
+- [~] §19/§3/§17: release/security — CI/check:release + `verify:win-unpacked`, непустые SHA, строгий JSON, подпись Win; интерактивный smoke вручную.
 - [~] §6/§7: downloads→processing — batch-режим, HW encode и оставшиеся расхождения embedded/pop-out.
 - [~] §8: terminal/CLI — polish подсказок, сценариев и UX выполнения команд без расширения TODO-архива.
 - [~] §9/§18: ffprobe/diagnostics — crash/e2e smoke и точечные редкие поля по мере нахождения.
@@ -482,7 +482,7 @@
 - [~] `bin/` в `extraResources`: bundled-first каталог с `README.md`; готовые бинарники подкладываются локально/CI через `npm run engines:prepare:win` перед сборкой (в Git не хранятся), скачивание в `userData/bin` остаётся fallback/update; release checklist и лицензии bundled engines — `docs/RELEASE.md` / `docs/BUNDLED_ENGINES_LICENSES.md`; GitHub Actions после `check` гоняет prepare + **`engines:doctor`** со строгой проверкой структуры `trusted_hashes` и логом версий; локально **`check:release`** / **`release:win*`** после prepare тоже через `engines:doctor` (`FLUXALLOY_ENGINES_STRICT=1` — ручной релизный gate для непустых exe-хешей).
 - [ ] Настроить нормальную иконку приложения вместо placeholder/default.
 - [ ] Windows NSIS: проверить installer вручную.
-- [~] Windows portable/zip: в `electron-builder.yml` цели `portable` и `zip` рядом с NSIS; ручной smoke — позже.
+- [~] Windows portable/zip: в `electron-builder.yml` цели `portable` и `zip` рядом с NSIS; после `pack:dir`/`check:release` — автопроверка дерева `dist/win-unpacked` (`verify:win-unpacked`: exe + `resources/bin` + extraResources); полный интерактивный smoke — позже.
 - [ ] macOS dmg/zip.
 - [ ] Linux AppImage/deb/tar.
 - [ ] Подпись Windows — отдельное решение.
@@ -524,5 +524,5 @@
 - [ ] macOS артефакты.
 - [ ] Linux артефакты.
 - [x] Версия в «О программе» (вместе с Electron/Chromium/Node).
-- [~] Приёмочный сценарий: открыть файл -> preview -> экспорт/отмена -> открыть файл/показать в папке/вернуть в preview/скопировать путь; ручной e2e smoke в packaged-сборке ещё нужен.
+- [~] Приёмочный сценарий: открыть файл -> preview -> экспорт/отмена -> открыть файл/показать в папке/вернуть в preview/скопировать путь; интерактивный e2e в packaged — позже; автоматическая проверка дерева `win-unpacked` после `pack:dir` — в CI и `check:release`.
 - [~] Приёмочный сценарий: URL -> yt-dlp -> открыть/показать файл / авто-в обработчик (флаг) -> дальше экспорт ffmpeg; полный headless «скачал и перекодировал» — позже.

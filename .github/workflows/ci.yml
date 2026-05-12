@@ -74,3 +74,6 @@ jobs:
       - name: Packaging smoke (electron-builder --dir)
         run: npm run pack:dir
 
+      - name: Verify win-unpacked layout (exe + bundled engines + extraResources)
+        run: npm run verify:win-unpacked
+
