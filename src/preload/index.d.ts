@@ -69,7 +69,8 @@ import type {
 } from '../shared/terminal-contract'
 import type {
   KnowledgeArticleListResult,
-  KnowledgeArticleResult
+  KnowledgeArticleResult,
+  KnowledgeReadArticleRequest
 } from '../shared/knowledge-contract'
 
 /** Данные для привязки `<video>` к локальному файлу через allowlist-схему `fluxmedia://`. */
@@ -218,7 +219,7 @@ export interface FluxAlloyApi {
   }
   knowledge: {
     listArticles: () => Promise<KnowledgeArticleListResult>
-    readArticle: (slug: string) => Promise<KnowledgeArticleResult>
+    readArticle: (req: KnowledgeReadArticleRequest) => Promise<KnowledgeArticleResult>
   }
   saveTextWithDialog: (payload: SaveTextDialogPayload) => Promise<SaveTextDialogResult>
   about: {

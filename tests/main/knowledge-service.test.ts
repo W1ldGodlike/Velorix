@@ -76,4 +76,45 @@ describe('knowledge-service', () => {
       })
     })
   })
+
+  it('readKnowledgeArticle с preferredUiLocale=en берёт Help/en/*.md при наличии', () => {
+    withHelpDir((help) => {
+      mkdirSync(join(help, 'en'))
+      writeFileSync(join(help, 'demo.md'), '# RU Title\n\nru', 'utf8')
+      writeFileSync(join(help, 'en', 'demo.md'), '# EN Title\n\nen body', 'utf8')
+
+      expect(readKnowledgeArticle([help], { slug: 'demo', preferredUiLocale: 'en' })).toEqual({
+        ok: true,
+        article: { slug: 'demo', fileName: 'en/demo.md', title: 'EN Title' },
+        markdown: '# EN Title\n\nen body'
+      })
+    })
+  })
+
+  it('readKnowledgeArticle en UI без en-файла падает обратно на корень Help', () => {
+    withHelpDir((help) => {
+      mkdirSync(join(help, 'en'))
+      writeFileSync(join(help, 'only-ru.md'), '# Ru\n\nx', 'utf8')
+
+      expect(readKnowledgeArticle([help], { slug: 'only-ru', preferredUiLocale: 'en' })).toEqual({
+        ok: true,
+        article: { slug: 'only-ru', fileName: 'only-ru.md', title: 'Ru' },
+        markdown: '# Ru\n\nx'
+      })
+    })
+  })
+
+  it('readKnowledgeArticle не читает en без preferredUiLocale=en', () => {
+    withHelpDir((help) => {
+      mkdirSync(join(help, 'en'))
+      writeFileSync(join(help, 'x.md'), '# Root\n\nroot', 'utf8')
+      writeFileSync(join(help, 'en', 'x.md'), '# Enonly\n\nen', 'utf8')
+
+      expect(readKnowledgeArticle([help], 'x')).toEqual({
+        ok: true,
+        article: { slug: 'x', fileName: 'x.md', title: 'Root' },
+        markdown: '# Root\n\nroot'
+      })
+    })
+  })
 })

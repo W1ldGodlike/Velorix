@@ -9,6 +9,24 @@ import type {
 
 const HELP_FILE_RE = /^[a-z0-9][a-z0-9-]*\.md$/i
 const MAX_ARTICLE_BYTES = 256 * 1024
+const HELP_EN_SUBDIR = 'en'
+
+function parseReadArticleRequest(raw: unknown): {
+  slug: unknown
+  preferredUiLocale?: 'ru' | 'en'
+} {
+  if (typeof raw === 'string') {
+    return { slug: raw }
+  }
+  if (raw !== null && typeof raw === 'object' && 'slug' in raw) {
+    const rec = raw as Record<string, unknown>
+    const loc = rec['preferredUiLocale']
+    const preferredUiLocale = loc === 'en' || loc === 'ru' ? loc : undefined
+    const slug = rec['slug']
+    return preferredUiLocale !== undefined ? { slug, preferredUiLocale } : { slug }
+  }
+  return { slug: raw }
+}
 
 function titleFromMarkdown(fileName: string, markdown: string): string {
   const firstHeading = markdown
@@ -69,13 +87,17 @@ export function buildKnowledgeHelpDirCandidates(opts: {
     : [join(opts.cwd, 'Help'), join(opts.appPath, 'Help'), join(opts.resourcesPath, 'Help')]
 }
 
-export function listKnowledgeArticles(helpDirCandidates: readonly string[]): KnowledgeArticleListResult {
+export function listKnowledgeArticles(
+  helpDirCandidates: readonly string[]
+): KnowledgeArticleListResult {
   const helpDir = resolveHelpDir(helpDirCandidates)
   if (helpDir === null) {
     return { ok: false, error: 'Каталог Help не найден' }
   }
   const articles: KnowledgeArticleListItem[] = []
-  for (const fileName of readdirSync(helpDir).filter((f) => HELP_FILE_RE.test(f)).sort()) {
+  for (const fileName of readdirSync(helpDir)
+    .filter((f) => HELP_FILE_RE.test(f))
+    .sort()) {
     const markdown = readHelpMarkdown(helpDir, fileName)
     if (markdown === null) {
       continue
@@ -91,8 +113,9 @@ export function listKnowledgeArticles(helpDirCandidates: readonly string[]): Kno
 
 export function readKnowledgeArticle(
   helpDirCandidates: readonly string[],
-  rawSlug: unknown
+  raw: unknown
 ): KnowledgeArticleResult {
+  const { slug: rawSlug, preferredUiLocale } = parseReadArticleRequest(raw)
   const fileName = safeHelpFileName(rawSlug)
   if (fileName === null) {
     return { ok: false, error: 'Некорректная статья справки' }
@@ -101,7 +124,26 @@ export function readKnowledgeArticle(
   if (helpDir === null) {
     return { ok: false, error: 'Каталог Help не найден' }
   }
-  const markdown = readHelpMarkdown(helpDir, fileName)
+
+  let markdown: string | null = null
+  let resolvedFileName = fileName
+
+  if (preferredUiLocale === 'en') {
+    const enDir = normalize(join(helpDir, HELP_EN_SUBDIR))
+    const enRoot = normalize(helpDir)
+    if (enDir.startsWith(enRoot) && existsSync(enDir) && statSync(enDir).isDirectory()) {
+      markdown = readHelpMarkdown(enDir, fileName)
+      if (markdown !== null) {
+        resolvedFileName = `${HELP_EN_SUBDIR}/${fileName}`
+      }
+    }
+  }
+
+  if (markdown === null) {
+    markdown = readHelpMarkdown(helpDir, fileName)
+    resolvedFileName = fileName
+  }
+
   if (markdown === null) {
     return { ok: false, error: 'Статья справки не найдена' }
   }
@@ -109,8 +151,8 @@ export function readKnowledgeArticle(
     ok: true,
     article: {
       slug: basename(fileName, '.md'),
-      fileName,
-      title: titleFromMarkdown(fileName, markdown)
+      fileName: resolvedFileName,
+      title: titleFromMarkdown(resolvedFileName, markdown)
     },
     markdown
   }

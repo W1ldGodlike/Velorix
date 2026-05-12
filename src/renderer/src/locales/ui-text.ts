@@ -14,7 +14,7 @@ const UI_TEXT = {
     versionsAriaLabel: 'Версии среды',
     knowledgeTitle: 'База знаний',
     knowledgeHint:
-      'Локальные статьи из Help/*.md. Тексты пока на русском; интерфейс окна следует языку системы (EN/RU). Внешние https-ссылки открываются в браузере; ссылки на другие .md — внутри приложения.',
+      'Локальные статьи из Help/*.md; при интерфейсе EN, если есть пара Help/en/*.md, подставляется английский текст (иначе RU). Внешние https-ссылки открываются в браузере; ссылки на другие .md — внутри приложения.',
     knowledgeSearchPlaceholder: 'Поиск по статьям',
     knowledgeSearchTooltip:
       'Фильтр списка статей по заголовку, имени файла или slug (без учёта регистра).',
@@ -25,7 +25,7 @@ const UI_TEXT = {
     terminalKnowledgeDeepLinkTooltip:
       'Открыть статью с подсказками ffmpeg / yt-dlp для вкладки «Терминал».',
     knowledgeMdInternalLinkTooltip: 'Открыть связанную статью в этом окне.',
-    knowledgeMdExternalLinkTooltip: 'Открыть ссылку в браузере (новая вкладка).',
+    knowledgeMdExternalLinkTooltip: 'Открыть ссылку в браузере (новая вкладка).'
   },
   en: {
     aboutTitle: 'About',
@@ -40,7 +40,7 @@ const UI_TEXT = {
     versionsAriaLabel: 'Runtime versions',
     knowledgeTitle: 'Knowledge base',
     knowledgeHint:
-      'Local Help/*.md articles. Article text is RU-first; this dialog chrome follows your UI locale (EN/RU). External https links open in the browser; links to other .md files stay inside the app.',
+      'Local Help/*.md articles. With EN UI chrome, matching Help/en/*.md replaces article body when present (otherwise RU). External https links open in the browser; links to other .md files stay inside the app.',
     knowledgeSearchPlaceholder: 'Search articles',
     knowledgeSearchTooltip:
       'Filter the article list by title, file name, or slug (case-insensitive).',
@@ -51,20 +51,20 @@ const UI_TEXT = {
     terminalKnowledgeDeepLinkTooltip:
       'Open the ffmpeg / yt-dlp hints article for the Terminal tab.',
     knowledgeMdInternalLinkTooltip: 'Open the linked article here.',
-    knowledgeMdExternalLinkTooltip: 'Open link in the browser (new tab).',
+    knowledgeMdExternalLinkTooltip: 'Open link in the browser (new tab).'
   }
 } as const
 
 type UiTextKey = keyof (typeof UI_TEXT)['ru']
 
-function resolveUiLocale(): UiLocale {
+export function getUiLocale(): UiLocale {
   if (typeof navigator !== 'undefined' && navigator.language.toLowerCase().startsWith('en')) {
     return 'en'
   }
   return 'ru'
 }
 
-const activeUiLocale = resolveUiLocale()
+const activeUiLocale = getUiLocale()
 
 export function uiText(key: UiTextKey): string {
   return UI_TEXT[activeUiLocale][key]

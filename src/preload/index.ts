@@ -70,7 +70,8 @@ import type {
 } from '../shared/terminal-contract'
 import type {
   KnowledgeArticleListResult,
-  KnowledgeArticleResult
+  KnowledgeArticleResult,
+  KnowledgeReadArticleRequest
 } from '../shared/knowledge-contract'
 import { downloadsIpc as d, mainWindowIpc as mw } from '../shared/ipc-channels'
 
@@ -406,8 +407,8 @@ const fluxalloy = {
   knowledge: {
     listArticles: (): Promise<KnowledgeArticleListResult> =>
       ipcRenderer.invoke(mw.knowledgeListArticles),
-    readArticle: (slug: string): Promise<KnowledgeArticleResult> =>
-      ipcRenderer.invoke(mw.knowledgeReadArticle, slug)
+    readArticle: (req: KnowledgeReadArticleRequest): Promise<KnowledgeArticleResult> =>
+      ipcRenderer.invoke(mw.knowledgeReadArticle, req)
   },
   /** §9 — диалог «Сохранить как» в main (JSON ffprobe и др. текст без Node в renderer). */
   saveTextWithDialog: (payload: SaveTextDialogPayload): Promise<SaveTextDialogResult> =>

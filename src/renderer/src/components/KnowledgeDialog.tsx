@@ -5,7 +5,7 @@ import type { KnowledgeArticleListItem } from '../../../shared/knowledge-contrac
 import { parseKnowledgeMarkdown } from '../../../shared/knowledge-markdown'
 
 import { KnowledgeMarkdownBody } from './KnowledgeMarkdownBody'
-import { uiText } from '../locales/ui-text'
+import { getUiLocale, uiText } from '../locales/ui-text'
 
 export function KnowledgeDialog({
   open,
@@ -23,6 +23,7 @@ export function KnowledgeDialog({
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null)
   const [filter, setFilter] = useState('')
   const [markdownSource, setMarkdownSource] = useState('')
+  const [readArticleMeta, setReadArticleMeta] = useState<KnowledgeArticleListItem | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -47,9 +48,8 @@ export function KnowledgeDialog({
       setArticles(res.articles)
       const first = res.articles[0]?.slug ?? null
       const want = initialSlug?.trim()
-      const resolved =
-        want && res.articles.some((a) => a.slug === want) ? want : null
-      setSelectedSlug((current) => (resolved !== null ? resolved : current ?? first))
+      const resolved = want && res.articles.some((a) => a.slug === want) ? want : null
+      setSelectedSlug((current) => (resolved !== null ? resolved : (current ?? first)))
     })
     return () => {
       disposed = true
@@ -64,17 +64,23 @@ export function KnowledgeDialog({
     void Promise.resolve().then(async () => {
       setLoading(true)
       setError(null)
-      const res = await window.fluxalloy.knowledge.readArticle(selectedSlug)
+      setReadArticleMeta(null)
+      const res = await window.fluxalloy.knowledge.readArticle({
+        slug: selectedSlug,
+        preferredUiLocale: getUiLocale()
+      })
       if (disposed) {
         return
       }
       setLoading(false)
       if (!res.ok) {
+        setReadArticleMeta(null)
         setError(res.error)
         onStatus?.(res.error)
         return
       }
       setMarkdownSource(res.markdown)
+      setReadArticleMeta(res.article)
     })
     return () => {
       disposed = true
@@ -86,12 +92,22 @@ export function KnowledgeDialog({
     [articles, selectedSlug]
   )
 
+  const articlePane = useMemo(() => {
+    if (!open) {
+      return null
+    }
+    if (readArticleMeta && readArticleMeta.slug === selectedSlug) {
+      return readArticleMeta
+    }
+    return selected
+  }, [open, readArticleMeta, selected, selectedSlug])
+
   const mdBlocks = useMemo(() => {
-    if (!selected) {
+    if (!articlePane) {
       return []
     }
-    return parseKnowledgeMarkdown(markdownSource, { articleTitle: selected.title })
-  }, [markdownSource, selected])
+    return parseKnowledgeMarkdown(markdownSource, { articleTitle: articlePane.title })
+  }, [articlePane, markdownSource])
 
   const visibleArticles = useMemo(() => {
     const q = filter.trim().toLowerCase()
@@ -179,9 +195,9 @@ export function KnowledgeDialog({
           <article className="app-knowledge-article">
             {loading ? <p className="app-modal-hint">{uiText('loading')}</p> : null}
             {error ? <p className="app-modal-hint app-error-text">{error}</p> : null}
-            {!loading && !error && selected ? (
+            {!loading && !error && articlePane ? (
               <>
-                <h3>{selected.title}</h3>
+                <h3>{articlePane.title}</h3>
                 <KnowledgeMarkdownBody
                   blocks={mdBlocks}
                   onOpenSlug={(slug) => {
