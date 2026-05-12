@@ -4715,14 +4715,10 @@ function App(): JSX.Element {
             ref={downloadsSettingsRailRef}
             id="downloads-ytdlp-settings-rail"
             className="app-downloads-rail"
-            aria-label="Настройки загрузок"
+            aria-label={uiText('downloadsRailAria')}
           >
-            <h3 className="app-settings-title">Настройки yt-dlp</h3>
-            <p className="app-settings-subtitle">
-              Секции и раскрытие совпадают с pop-out: те же ключи в `downloadsWindowUiPanels`. Доп.
-              argv, превью команды и справочник токенов (поиск + описания) — здесь; отдельное окно
-              менеджера — для очереди и полноэкранной работы с загрузками.
-            </p>
+            <h3 className="app-settings-title">{uiText('downloadsRailTitle')}</h3>
+            <p className="app-settings-subtitle">{uiText('downloadsRailSubtitle')}</p>
             {downloadsOptions ? (
               <div className="app-downloads-settings-stack">
                 <details
@@ -4730,10 +4726,12 @@ function App(): JSX.Element {
                   open={downloadsRailPanels.format}
                   onToggle={handleDownloadsRailSectionToggle('format')}
                 >
-                  <summary className="app-downloads-rail-summary">Формат</summary>
+                  <summary className="app-downloads-rail-summary">
+                    {uiText('downloadsRailFormatSummary')}
+                  </summary>
                   <div className="app-downloads-rail-section-body">
                     <label className="app-field">
-                      <span>Формат / качество</span>
+                      <span>{uiText('downloadsRailFormatQualityLabel')}</span>
                       <select
                         className="app-control"
                         value={downloadsOptions.formatPreset}
@@ -4752,14 +4750,14 @@ function App(): JSX.Element {
                         ))}
                       </select>
                       <span id="downloadsFormatHint" className="app-field-help">
-                        Пресет `-f`; при «Только аудио» формат видео не применяется.
+                        {uiText('downloadsFormatHint')}
                       </span>
                     </label>
                     <div className="app-downloads-switch-grid">
                       <div className="app-field app-field-switch">
-                        <span>Весь плейлист</span>
+                        <span>{uiText('downloadsPlaylistSpan')}</span>
                         <PillSwitch
-                          label="Весь плейлист"
+                          label={uiText('downloadsPlaylistPillLabel')}
                           checked={downloadsOptions.downloadPlaylist}
                           describedBy="downloadsPlaylistHint"
                           disabled={downloadsOptionsBusy}
@@ -4770,13 +4768,13 @@ function App(): JSX.Element {
                           }}
                         />
                         <span id="downloadsPlaylistHint" className="app-field-help">
-                          `--yes-playlist` вместо одного видео.
+                          {uiText('downloadsPlaylistHint')}
                         </span>
                       </div>
                       <div className="app-field app-field-switch">
-                        <span>Только аудио</span>
+                        <span>{uiText('downloadsAudioOnlySpan')}</span>
                         <PillSwitch
-                          label="Только аудио"
+                          label={uiText('downloadsAudioOnlyPillLabel')}
                           checked={downloadsOptions.audioOnly}
                           describedBy="downloadsAudioOnlyHint"
                           disabled={downloadsOptionsBusy}
@@ -4787,12 +4785,12 @@ function App(): JSX.Element {
                           }}
                         />
                         <span id="downloadsAudioOnlyHint" className="app-field-help">
-                          `-x`, если нужен звук без видеодорожки.
+                          {uiText('downloadsAudioOnlyHint')}
                         </span>
                       </div>
                     </div>
                     <label className="app-field">
-                      <span>Субтитры</span>
+                      <span>{uiText('downloadsSubtitlesLabel')}</span>
                       <select
                         className="app-control"
                         value={downloadsOptions.subtitlePreset}
@@ -4803,16 +4801,14 @@ function App(): JSX.Element {
                           })
                         }}
                       >
-                        <option value="none">Не скачивать</option>
-                        <option value="manual">Ручные дорожки</option>
-                        <option value="manual_auto">Ручные + авто</option>
+                        <option value="none">{uiText('downloadsSubPresetNone')}</option>
+                        <option value="manual">{uiText('downloadsSubPresetManual')}</option>
+                        <option value="manual_auto">{uiText('downloadsSubPresetManualAuto')}</option>
                       </select>
-                      <span className="app-field-help">
-                        Один токен `--sub-langs` без пробелов (например ru,en или all).
-                      </span>
+                      <span className="app-field-help">{uiText('downloadsSubLangsHelp')}</span>
                     </label>
                     <label className="app-field">
-                      <span>Языки субтитров</span>
+                      <span>{uiText('downloadsSubLangsLabel')}</span>
                       <input
                         className="app-control app-downloads-template-input"
                         value={downloadsOptions.subLangsLine}
@@ -4820,7 +4816,7 @@ function App(): JSX.Element {
                           downloadsOptionsBusy || downloadsOptions.subtitlePreset === 'none'
                         }
                         spellCheck={false}
-                        placeholder="ru,en или all"
+                        placeholder={uiText('downloadsSubLangsPlaceholder')}
                         onChange={(e) => {
                           setDownloadsOptions({
                             ...downloadsOptions,
@@ -4839,12 +4835,14 @@ function App(): JSX.Element {
                   open={downloadsRailPanels.metadata}
                   onToggle={handleDownloadsRailSectionToggle('metadata')}
                 >
-                  <summary className="app-downloads-rail-summary">Метаданные</summary>
+                  <summary className="app-downloads-rail-summary">
+                    {uiText('downloadsRailMetadataSummary')}
+                  </summary>
                   <div className="app-downloads-rail-section-body">
                     <div className="app-field app-field-switch">
-                      <span>Открыть после успеха</span>
+                      <span>{uiText('downloadsOpenAfterSuccessSpan')}</span>
                       <PillSwitch
-                        label="Открыть после успеха"
+                        label={uiText('downloadsOpenAfterSuccessPillLabel')}
                         checked={downloadsOptions.openInHandlerOnComplete}
                         describedBy="downloadsOpenAfterSuccessHint"
                         disabled={downloadsOptionsBusy}
@@ -4855,13 +4853,13 @@ function App(): JSX.Element {
                         }}
                       />
                       <span id="downloadsOpenAfterSuccessHint" className="app-field-help">
-                        Готовый файл сразу попадёт в редактор.
+                        {uiText('downloadsOpenAfterSuccessHint')}
                       </span>
                     </div>
                     <div className="app-field app-field-switch">
-                      <span>Авто-экспорт после открытия</span>
+                      <span>{uiText('downloadsAutoExportSpan')}</span>
                       <PillSwitch
-                        label="Авто-экспорт после открытия"
+                        label={uiText('downloadsAutoExportPillLabel')}
                         checked={downloadsOptions.autoExportAfterOpenInHandler}
                         describedBy="downloadsAutoExportAfterOpenHint"
                         disabled={downloadsOptionsBusy || !downloadsOptions.openInHandlerOnComplete}
@@ -4873,13 +4871,12 @@ function App(): JSX.Element {
                         }}
                       />
                       <span id="downloadsAutoExportAfterOpenHint" className="app-field-help">
-                        После успешного открытия — ffmpeg в файл <code>…-export</code> рядом с
-                        загрузкой (параметры панели экспорта).
+                        {uiText('downloadsAutoExportHint')}
                       </span>
                     </div>
                     <div className="app-downloads-select-grid">
                       <label className="app-field">
-                        <span>Cookies браузера</span>
+                        <span>{uiText('downloadsCookiesBrowserLabel')}</span>
                         <select
                           className="app-control"
                           value={downloadsOptions.cookiesBrowserChoice}
@@ -4890,14 +4887,14 @@ function App(): JSX.Element {
                             })
                           }}
                         >
-                          <option value="none">Не использовать</option>
+                          <option value="none">{uiText('downloadsCookiesBrowserNone')}</option>
                           <option value="chrome">Chrome</option>
                           <option value="edge">Edge</option>
                           <option value="firefox">Firefox</option>
                         </select>
                       </label>
                       <label className="app-field">
-                        <span>Подмена клиента</span>
+                        <span>{uiText('downloadsImpersonateLabel')}</span>
                         <select
                           className="app-control"
                           value={downloadsOptions.impersonateChoice}
@@ -4908,7 +4905,7 @@ function App(): JSX.Element {
                             })
                           }}
                         >
-                          <option value="none">Выключено</option>
+                          <option value="none">{uiText('downloadsImpersonateOff')}</option>
                           <option value="chrome">chrome</option>
                           <option value="edge">edge</option>
                           <option value="firefox">firefox</option>
@@ -4916,14 +4913,14 @@ function App(): JSX.Element {
                       </label>
                     </div>
                     <label className="app-field">
-                      <span>Профиль / контейнер (cookies из браузера)</span>
+                      <span>{uiText('downloadsCookiesProfileLabel')}</span>
                       <input
                         className="app-control app-downloads-template-input"
                         value={downloadsOptions.cookiesBrowserProfileLine}
                         disabled={downloadsOptionsBusy}
                         spellCheck={false}
                         autoComplete="off"
-                        placeholder="например Default или Profile 1"
+                        placeholder={uiText('downloadsCookiesProfilePlaceholder')}
                         aria-describedby="downloadsCookiesProfileHint"
                         onChange={(e) => {
                           setDownloadsOptions({
@@ -4938,22 +4935,21 @@ function App(): JSX.Element {
                         }}
                       />
                       <span id="downloadsCookiesProfileHint" className="app-field-help">
-                        Суффикс yt-dlp после двоеточия: <code>--cookies-from-browser</code>{' '}
-                        <code>chrome:…</code> (без префикса браузера в поле).
+                        {uiText('downloadsCookiesProfileHint')}
                       </span>
                     </label>
                     <div
                       className="app-downloads-output-dir"
                       role="group"
-                      aria-label="Файл cookies yt-dlp"
+                      aria-label={uiText('downloadsCookiesFileGroupAria')}
                     >
-                      <span className="app-field-help">Файл cookies Netscape</span>
+                      <span className="app-field-help">{uiText('downloadsCookiesNetscapeHelp')}</span>
                       <strong title={downloadsOptions.cookiesFilePathStored}>
-                        {downloadsOptions.cookiesFilePathStored || 'Файл не выбран'}
+                        {downloadsOptions.cookiesFilePathStored ||
+                          uiText('downloadsCookiesFileNotSelected')}
                       </strong>
                       <span className="app-field-help">
-                        Файл имеет приоритет над cookies из браузера; используйте только доверенный
-                        экспорт cookies.
+                        {uiText('downloadsCookiesFilePriorityHelp')}
                       </span>
                       <div className="app-downloads-history-actions">
                         <button
@@ -4973,7 +4969,7 @@ function App(): JSX.Element {
                           }}
                         >
                           <IconQueueFile title="" size={14} />
-                          Выбрать
+                          {uiText('downloadsRailPick')}
                         </button>
                         <button
                           type="button"
@@ -4993,7 +4989,7 @@ function App(): JSX.Element {
                           }}
                         >
                           <IconQueueX title="" size={14} />
-                          Очистить
+                          {uiText('downloadsHistoryClear')}
                         </button>
                       </div>
                     </div>
@@ -5004,21 +5000,23 @@ function App(): JSX.Element {
                   open={downloadsRailPanels.saving}
                   onToggle={handleDownloadsRailSectionToggle('saving')}
                 >
-                  <summary className="app-downloads-rail-summary">Сохранение</summary>
+                  <summary className="app-downloads-rail-summary">
+                    {uiText('downloadsRailSavingSummary')}
+                  </summary>
                   <div className="app-downloads-rail-section-body">
                     <div
                       className="app-downloads-output-dir"
                       role="group"
-                      aria-label="Каталог загрузок yt-dlp"
+                      aria-label={uiText('downloadsOutputDirAria')}
                     >
-                      <span className="app-field-help">Каталог загрузок</span>
+                      <span className="app-field-help">{uiText('downloadsOutputDirLabel')}</span>
                       <strong title={downloadsOutputDirectory?.path ?? ''}>
-                        {downloadsOutputDirectory?.path ?? 'Загружаю путь…'}
+                        {downloadsOutputDirectory?.path ?? uiText('downloadsOutputPathLoading')}
                       </strong>
                       <span className="app-field-help">
                         {downloadsOutputDirectory?.isDefault
-                          ? 'Используется каталог по умолчанию в userData.'
-                          : 'Используется выбранный пользователем каталог.'}
+                          ? uiText('downloadsOutputUseDefaultUserdata')
+                          : uiText('downloadsOutputUseCustom')}
                       </span>
                       <div className="app-downloads-history-actions">
                         <button
@@ -5033,7 +5031,7 @@ function App(): JSX.Element {
                           }}
                         >
                           <IconFolderOpen title="" size={14} />
-                          Открыть
+                          {uiText('downloadsRailOpenFolder')}
                         </button>
                         <button
                           type="button"
@@ -5051,7 +5049,7 @@ function App(): JSX.Element {
                           }}
                         >
                           <IconQueuePlus title="" size={14} />
-                          Выбрать
+                          {uiText('downloadsRailPick')}
                         </button>
                         <button
                           type="button"
@@ -5067,12 +5065,12 @@ function App(): JSX.Element {
                           }}
                         >
                           <IconHome title="" size={14} />
-                          По умолчанию
+                          {uiText('downloadsOutputDefaultButton')}
                         </button>
                       </div>
                     </div>
                     <label className="app-field">
-                      <span>Шаблон имени</span>
+                      <span>{uiText('downloadsFilenameTemplateLabel')}</span>
                       <input
                         className="app-control app-downloads-template-input"
                         value={downloadsOptions.filenameTemplate}
@@ -5089,7 +5087,7 @@ function App(): JSX.Element {
                         }}
                       />
                       <span className="app-field-help">
-                        Нужен `%(ext)s`; путь наружу через `..` запрещён.
+                        {uiText('downloadsFilenameTemplateHelp')}
                       </span>
                     </label>
                   </div>
@@ -5099,10 +5097,12 @@ function App(): JSX.Element {
                   open={downloadsRailPanels.network}
                   onToggle={handleDownloadsRailSectionToggle('network')}
                 >
-                  <summary className="app-downloads-rail-summary">Сеть</summary>
+                  <summary className="app-downloads-rail-summary">
+                    {uiText('downloadsRailNetworkSummary')}
+                  </summary>
                   <div className="app-downloads-rail-section-body">
                     <label className="app-field">
-                      <span>Повтор строки очереди</span>
+                      <span>{uiText('downloadsQueueRetryLabel')}</span>
                       <select
                         className="app-control"
                         value={downloadsOptions.queueRetryProfile}
@@ -5119,18 +5119,16 @@ function App(): JSX.Element {
                           </option>
                         ))}
                       </select>
-                      <span className="app-field-help">
-                        Повторяет всю строку очереди при ненулевом exit code.
-                      </span>
+                      <span className="app-field-help">{uiText('downloadsQueueRetryHelp')}</span>
                     </label>
                     <div className="app-downloads-select-grid">
                       <label className="app-field">
-                        <span>Лимит скорости</span>
+                        <span>{uiText('downloadsRateLimitLabel')}</span>
                         <input
                           className="app-control"
                           value={downloadsOptions.rateLimit}
                           disabled={downloadsOptionsBusy}
-                          placeholder="500K или 2M"
+                          placeholder={uiText('downloadsRateLimitPlaceholder')}
                           spellCheck={false}
                           onChange={(e) => {
                             setDownloadsOptions({ ...downloadsOptions, rateLimit: e.target.value })
@@ -5139,18 +5137,16 @@ function App(): JSX.Element {
                             void applyDownloadsOptionsPatch({ rateLimit: e.target.value })
                           }}
                         />
-                        <span className="app-field-help">
-                          Ограничение скорости одним безопасным токеном.
-                        </span>
+                        <span className="app-field-help">{uiText('downloadsRateLimitHelp')}</span>
                       </label>
                       <label className="app-field">
-                        <span>Повторы yt-dlp</span>
+                        <span>{uiText('downloadsYtdlpRetriesLabel')}</span>
                         <input
                           className="app-control"
                           value={downloadsOptions.retriesLine}
                           disabled={downloadsOptionsBusy}
                           inputMode="numeric"
-                          placeholder="0–99"
+                          placeholder={uiText('downloadsYtdlpRetriesPlaceholder')}
                           spellCheck={false}
                           onChange={(e) => {
                             setDownloadsOptions({
@@ -5162,16 +5158,16 @@ function App(): JSX.Element {
                             void applyDownloadsOptionsPatch({ retriesLine: e.target.value })
                           }}
                         />
-                        <span className="app-field-help">Повторы самого yt-dlp (`--retries`).</span>
+                        <span className="app-field-help">{uiText('downloadsYtdlpRetriesHelp')}</span>
                       </label>
                       <label className="app-field">
-                        <span>Повторы фрагментов</span>
+                        <span>{uiText('downloadsFragmentRetriesLabel')}</span>
                         <input
                           className="app-control"
                           value={downloadsOptions.fragmentRetriesLine}
                           disabled={downloadsOptionsBusy}
                           inputMode="numeric"
-                          placeholder="0–99"
+                          placeholder={uiText('downloadsFragmentRetriesPlaceholder')}
                           spellCheck={false}
                           onChange={(e) => {
                             setDownloadsOptions({
@@ -5185,7 +5181,9 @@ function App(): JSX.Element {
                             })
                           }}
                         />
-                        <span className="app-field-help">Повторы фрагментов HLS/DASH.</span>
+                        <span className="app-field-help">
+                          {uiText('downloadsFragmentRetriesHelp')}
+                        </span>
                       </label>
                     </div>
                   </div>
@@ -5195,10 +5193,12 @@ function App(): JSX.Element {
                   open={downloadsRailPanels.expert}
                   onToggle={handleDownloadsRailSectionToggle('expert')}
                 >
-                  <summary className="app-downloads-rail-summary">Эксперт и превью</summary>
+                  <summary className="app-downloads-rail-summary">
+                    {uiText('downloadsRailExpertSummary')}
+                  </summary>
                   <div className="app-downloads-rail-section-body">
                     <label className="app-field">
-                      <span>Дополнительные argv</span>
+                      <span>{uiText('downloadsExtraArgsLabel')}</span>
                       <textarea
                         className="app-control app-downloads-extra-args"
                         rows={3}
@@ -5216,9 +5216,7 @@ function App(): JSX.Element {
                           void applyDownloadsOptionsPatch({ extraArgsLine: e.target.value })
                         }}
                       />
-                      <span className="app-field-help">
-                        Без shell: токены как в справочнике; небезопасное отсекает парсер main.
-                      </span>
+                      <span className="app-field-help">{uiText('downloadsExtraArgsHelp')}</span>
                     </label>
                     {downloadsOptions.extraArgsParseWarning ? (
                       <p className="app-downloads-warning" role="alert">
@@ -5226,11 +5224,11 @@ function App(): JSX.Element {
                       </p>
                     ) : null}
                     <label className="app-field">
-                      <span>Вставить токен из справочника</span>
+                      <span>{uiText('downloadsInsertTokenLabel')}</span>
                       <select
                         key={downloadsExpertHintPickerSeq}
                         className="app-control app-downloads-expert-hint-select"
-                        aria-label="Добавить токен в дополнительные argv"
+                        aria-label={uiText('downloadsInsertTokenAria')}
                         disabled={downloadsOptionsBusy}
                         defaultValue=""
                         onChange={(e) => {
@@ -5239,7 +5237,7 @@ function App(): JSX.Element {
                           appendDownloadsExtraArgsToken(token)
                         }}
                       >
-                        <option value="">Выберите…</option>
+                        <option value="">{uiText('downloadsHintPickerPlaceholder')}</option>
                         {ytdlpCommandHintsByCategory.map(([cat, rows]) => (
                           <optgroup key={cat} label={cat}>
                             {rows.map((h) => (
@@ -5252,14 +5250,14 @@ function App(): JSX.Element {
                       </select>
                     </label>
                     <label className="app-field">
-                      <span>Поиск по справочнику argv</span>
+                      <span>{uiText('downloadsHintSearchLabel')}</span>
                       <input
                         type="text"
                         className="app-control app-downloads-hint-filter"
                         spellCheck={false}
                         autoComplete="off"
-                        placeholder="Например: --cookies или --sub"
-                        aria-label="Поиск по токенам и описаниям справочника argv"
+                        placeholder={uiText('downloadsHintSearchPlaceholder')}
+                        aria-label={uiText('downloadsHintSearchAria')}
                         disabled={downloadsOptionsBusy}
                         value={downloadsExpertHintFilter}
                         onChange={(e) => setDownloadsExpertHintFilter(e.target.value)}
@@ -5268,15 +5266,15 @@ function App(): JSX.Element {
                     <div
                       className="app-downloads-hint-list"
                       role="list"
-                      aria-label="Справочник флагов с описаниями"
+                      aria-label={uiText('downloadsHintListAria')}
                     >
                       {!downloadsOptions.commandHints?.length ? (
                         <div className="app-downloads-hint-item app-downloads-hint-item--muted">
-                          Справочник недоступен.
+                          {uiText('downloadsHintsUnavailable')}
                         </div>
                       ) : ytdlpCommandHintsFilteredByCategory.length === 0 ? (
                         <div className="app-downloads-hint-item app-downloads-hint-item--muted">
-                          Нет совпадений.
+                          {uiText('downloadsHintsNoMatches')}
                         </div>
                       ) : (
                         ytdlpCommandHintsFilteredByCategory.map(([cat, rows]) => (
@@ -5312,27 +5310,25 @@ function App(): JSX.Element {
                         ))
                       )}
                     </div>
-                    <span className="app-field-help">
-                      Те же подсказки, что в pop-out; клик по токену добавляет его в argv.
-                    </span>
+                    <span className="app-field-help">{uiText('downloadsHintsSameAsPopoutHelp')}</span>
                     <p className="app-doc-inline-links app-downloads-doc-links">
                       <a href={YTDLP_DOC_README} target="_blank" rel="noreferrer">
-                        README
+                        {uiText('downloadsRailDocReadme')}
                       </a>
                       {' · '}
                       <a href={YTDLP_DOC_FORMAT_SELECTION} target="_blank" rel="noreferrer">
-                        Форматы
+                        {uiText('quickYtdlpDocFormats')}
                       </a>
                       {' · '}
                       <a href={YTDLP_DOC_OUTPUT_TEMPLATE} target="_blank" rel="noreferrer">
-                        Шаблон вывода
+                        {uiText('downloadsRailDocOutput')}
                       </a>
                       {' · '}
                       <a href={YTDLP_DOC_POSTPROCESS} target="_blank" rel="noreferrer">
-                        Постобработка
+                        {uiText('downloadsRailDocPostprocess')}
                       </a>
                     </p>
-                    <span className="app-field-help">Превью команды (чтение)</span>
+                    <span className="app-field-help">{uiText('downloadsCommandPreviewHelp')}</span>
                     <div className="app-downloads-command-preview app-downloads-command-preview--flat">
                       <pre>{downloadsOptions.commandPreview}</pre>
                     </div>
@@ -5343,7 +5339,7 @@ function App(): JSX.Element {
                 ) : null}
               </div>
             ) : (
-              <p className="app-settings-subtitle">Загружаю настройки yt-dlp…</p>
+              <p className="app-settings-subtitle">{uiText('downloadsOptionsLoading')}</p>
             )}
             <div className="app-downloads-rail-footer">
               <button
@@ -5355,7 +5351,7 @@ function App(): JSX.Element {
                 }}
               >
                 <IconRefreshCw title="" size={16} />
-                Обновить настройки
+                {uiText('downloadsRailRefreshOptions')}
               </button>
               <button
                 type="button"
@@ -5369,7 +5365,7 @@ function App(): JSX.Element {
                 }}
               >
                 <IconBan title="" size={16} />
-                Остановить текущую
+                {uiText('downloadsRailStopCurrentRow')}
               </button>
             </div>
           </aside>
