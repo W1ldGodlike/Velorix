@@ -2642,6 +2642,78 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· ppa FFmpeg threads -F',
     summary: 'Передать ffmpeg в postprocessor один поток (--ppa FFmpeg:-threads:1 -F); без кавычек в argv; допишите URL.',
     fullLine: 'yt-dlp --ppa FFmpeg:-threads:1 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· yes-playlist -F',
+    summary: 'Явно развернуть плейлист и показать форматы (--yes-playlist -F); когда URL выглядит как один ролик, но это плейлист; допишите URL.',
+    fullLine: 'yt-dlp --yes-playlist -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo AD -F',
+    summary: 'Гео-обход через Андорру (--geo-bypass-country AD -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country AD -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo MC -F',
+    summary: 'Гео-обход через Монако (--geo-bypass-country MC -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country MC -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo LI -F',
+    summary: 'Гео-обход через Лихтенштейн (--geo-bypass-country LI -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country LI -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo SM -F',
+    summary: 'Гео-обход через Сан-Марино (--geo-bypass-country SM -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country SM -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo VA -F',
+    summary: 'Гео-обход через Ватикан (--geo-bypass-country VA -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country VA -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo GI -F',
+    summary: 'Гео-обход через Гибралтар (--geo-bypass-country GI -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country GI -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo JE -F',
+    summary: 'Гео-обход через Джерси (--geo-bypass-country JE -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country JE -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo GG -F',
+    summary: 'Гео-обход через Гернси (--geo-bypass-country GG -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country GG -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo IM -F',
+    summary: 'Гео-обход через Остров Мэн (--geo-bypass-country IM -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country IM -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo FO -F',
+    summary: 'Гео-обход через Фарерские острова (--geo-bypass-country FO -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country FO -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo GL -F',
+    summary: 'Гео-обход через Гренландию (--geo-bypass-country GL -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country GL -F '
   }
 ]
 
@@ -3570,6 +3642,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· lowpass 3.5k 3s',
     summary: 'НЧ-фильтр первых 3 с (-af lowpass=f=3500); проверка аудио-цепочки; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af lowpass=f=3500 -t 3 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:0 tb+fps',
+    summary: 'Поток a:0: time_base + avg_frame_rate + r_frame_rate (тактовая сетка и дробь FPS у аудио-потока); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=time_base,avg_frame_rate,r_frame_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· bandpass hp+lp 4s',
+    summary: 'Полосовой проход 200–3000 Hz первых 4 с (-af highpass=f=200,lowpass=f=3000); smoke цепочки из двух af; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af highpass=f=200,lowpass=f=3000 -t 4 -vn -sn -f null -`
   }
 ]
 
