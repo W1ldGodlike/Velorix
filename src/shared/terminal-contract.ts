@@ -2084,6 +2084,66 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· geo ZA -F',
     summary: 'Гео-обход с кодом страны ZA (--geo-bypass-country ZA -F); допишите URL.',
     fullLine: 'yt-dlp --geo-bypass-country ZA -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· ap-password',
+    summary: 'Пароль TV Everywhere / Adobe Pass (--ap-password PASSWORD); замените PASSWORD на реальный; допишите URL.',
+    fullLine: 'yt-dlp --ap-password PASSWORD '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· client-cert pem',
+    summary: 'Клиентский TLS-сертификат (--client-certificate client.pem); положите PEM рядом с рабочим каталогом или укажите абсолютный путь без кавычек; допишите URL.',
+    fullLine: 'yt-dlp --client-certificate client.pem '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo-verify-proxy -F',
+    summary: 'Прокси только для гео-проверки (--geo-verification-proxy … -F); замените хост/порт при необходимости; допишите URL.',
+    fullLine: 'yt-dlp --geo-verification-proxy http://127.0.0.1:8888 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo AT -F',
+    summary: 'Гео-обход с кодом страны AT (--geo-bypass-country AT -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country AT -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo DK -F',
+    summary: 'Гео-обход с кодом страны DK (--geo-bypass-country DK -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country DK -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo FI -F',
+    summary: 'Гео-обход с кодом страны FI (--geo-bypass-country FI -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country FI -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo GR -F',
+    summary: 'Гео-обход с кодом страны GR (--geo-bypass-country GR -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country GR -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo PT -F',
+    summary: 'Гео-обход с кодом страны PT (--geo-bypass-country PT -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country PT -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo BE -F',
+    summary: 'Гео-обход с кодом страны BE (--geo-bypass-country BE -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country BE -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo IE -F',
+    summary: 'Гео-обход с кодом страны IE (--geo-bypass-country IE -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country IE -F '
   }
 ]
 
@@ -2874,6 +2934,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· highpass 5s',
     summary: 'ВЧ-срез первых 5 с (-af highpass=f=200); проверка аудио-цепочки/тишины в низах; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af highpass=f=200 -t 5 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 location tag',
+    summary: 'Поток v:0: stream_tags location (GPS/локация в MOV/др.); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream_tags=location -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:0 sample_fmt',
+    summary: 'Поток a:0: только sample_fmt (s16/fltp и т.д.); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=sample_fmt -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· genpts remux 2s',
+    summary: 'Короткий remux с генерацией PTS (-fflags +genpts -c copy -t 2); битые/рваные таймстемпы TS/MKV; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -fflags +genpts -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -t 2 -c copy -f null -`
   }
 ]
 

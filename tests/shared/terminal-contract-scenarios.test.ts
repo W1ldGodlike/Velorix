@@ -976,4 +976,39 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       true
     )
   })
+
+  it('downloads: ap-password / client-cert / geo-verification-proxy / geo AT..IE', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --ap-password PASSWORD ')
+    expect(lines).toContain('yt-dlp --client-certificate client.pem ')
+    expect(lines).toContain('yt-dlp --geo-verification-proxy http://127.0.0.1:8888 -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country AT -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country DK -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country FI -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country GR -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country PT -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country BE -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country IE -F ')
+  })
+
+  it('preview: v:0 location / a:0 sample_fmt / ffmpeg genpts remux', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-select_streams v:0') &&
+          l.includes('stream_tags=location') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-select_streams a:0') &&
+          l.includes('stream=sample_fmt') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+    expect(lines.some((l) => l.includes('-fflags +genpts') && l.includes('-c copy') && l.includes('-t 2'))).toBe(true)
+  })
 })
