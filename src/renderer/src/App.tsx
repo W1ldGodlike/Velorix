@@ -71,7 +71,6 @@ import type {
 import type {
   AppSettings,
   DownloadsWindowUiPanelState,
-  MainWindowUiPanelState,
   ResolvedAppTheme
 } from '../../shared/settings-contract'
 import { buildFfmpegExportPreviewCommand } from '../../shared/ffmpeg-export-argv'
@@ -111,6 +110,7 @@ import {
   stepTerminalSuggestIndex
 } from '../../shared/terminal-inline-suggest'
 import { PreviewProbeBody } from './components/MediaProbePanel'
+import { useMainWindowUiPanels } from './use-main-window-ui-panels'
 type Theme = ResolvedAppTheme
 
 /** §8 — расширенный порядок подсказок терминала при открытом медиа в превью. */
@@ -389,22 +389,6 @@ const SNAPSHOT_FORMATS: Array<{ id: FfmpegSnapshotFormatId; label: string }> = [
   { id: 'png', label: 'Кадр PNG' },
   { id: 'jpg', label: 'Кадр JPEG' }
 ]
-
-/** §4.1 / v0 — дефолты раскрытых секций FFmpeg, если в settings ещё не сохранено. */
-const MAIN_PANEL_DEFAULTS: Required<MainWindowUiPanelState> = {
-  ffmpegSettingsRailOpen: true,
-  quickYtdlp: false,
-  ffmpegVideo: true,
-  ffmpegFormat: true,
-  ffmpegAudio: false,
-  ffmpegPresets: false,
-  ffmpegOutput: true,
-  exportCommandPreview: true,
-  probeExportSummary: false,
-  probeTracks: false,
-  probeChapters: false,
-  probeRawJson: false
-}
 
 function engineLabel(id: EngineId): string {
   switch (id) {
@@ -766,7 +750,8 @@ function App(): JSX.Element {
   const [exportVideoTransform, setExportVideoTransform] =
     useState<FfmpegExportVideoTransformId>('none')
   const [exportCropPreset, setExportCropPreset] = useState<FfmpegExportCropPresetId>('none')
-  const [mainUiPanels, setMainUiPanels] = useState<MainWindowUiPanelState>(MAIN_PANEL_DEFAULTS)
+  const { panelOpen, hydrateMainWindowUiPanels, persistMainWindowUiPanelToggle } =
+    useMainWindowUiPanels()
   const [exportScalePreset, setExportScalePreset] = useState<FfmpegExportScalePresetId>('source')
   /** §7.2 / v0 — двухпроходный libx264 только вместе с выбранным видеобитрейтом. */
   const [exportTwoPass, setExportTwoPass] = useState(false)
@@ -1417,21 +1402,6 @@ function App(): JSX.Element {
     void window.fluxalloy.settings.setFfmpegExportCropPreset(next).catch(console.error)
   }, [bumpManualExportEdit, exportBusy, exportCropPreset, snapshotBusy])
 
-  type MainPanelKey = keyof typeof MAIN_PANEL_DEFAULTS
-
-  const panelOpen = useCallback(
-    (key: MainPanelKey): boolean => {
-      const v = mainUiPanels[key]
-      return typeof v === 'boolean' ? v : MAIN_PANEL_DEFAULTS[key]
-    },
-    [mainUiPanels]
-  )
-
-  const persistPanelToggle = useCallback((key: MainPanelKey, nextOpen: boolean): void => {
-    setMainUiPanels((p) => ({ ...p, [key]: nextOpen }))
-    void window.fluxalloy.settings.mergeMainWindowUiPanels({ [key]: nextOpen }).catch(console.error)
-  }, [])
-
   const buildCurrentExportSnapshot = useCallback((): FfmpegExportUserPresetSnapshot => {
     return {
       encodePreset: exportEncodePreset,
@@ -1616,7 +1586,7 @@ function App(): JSX.Element {
       const loaded = await window.fluxalloy.settings.get()
       applyTheme(loaded.effectiveTheme)
       hydrateExportFieldsFromSettings(loaded)
-      setMainUiPanels({ ...MAIN_PANEL_DEFAULTS, ...(loaded.mainWindowUiPanels ?? {}) })
+      hydrateMainWindowUiPanels(loaded.mainWindowUiPanels)
       hydrateDownloadsWindowUiPanelsFromSnapshot(loaded.downloadsWindowUiPanels)
       setExportUserPresets(loaded.ffmpegExportUserPresets ?? [])
       if (loaded.ffmpegSnapshotFormat === 'jpg') {
@@ -1626,7 +1596,7 @@ function App(): JSX.Element {
         applyTheme(next)
       })
       cleanupUiPanels = window.fluxalloy.onMainWindowUiPanelsChanged((panels) => {
-        setMainUiPanels({ ...MAIN_PANEL_DEFAULTS, ...(panels ?? {}) })
+        hydrateMainWindowUiPanels(panels)
       })
     })().catch(console.error)
 
@@ -1634,7 +1604,12 @@ function App(): JSX.Element {
       cleanupTheme?.()
       cleanupUiPanels?.()
     }
-  }, [applyTheme, hydrateDownloadsWindowUiPanelsFromSnapshot, hydrateExportFieldsFromSettings])
+  }, [
+    applyTheme,
+    hydrateDownloadsWindowUiPanelsFromSnapshot,
+    hydrateExportFieldsFromSettings,
+    hydrateMainWindowUiPanels
+  ])
 
   useEffect(() => {
     const off = window.fluxalloy.downloads.onDownloadsWindowUiPanelsChanged((panels) => {
@@ -2360,7 +2335,7 @@ function App(): JSX.Element {
           aria-label="Быстрая загрузка yt-dlp"
           open={panelOpen('quickYtdlp')}
           onToggle={(e) => {
-            persistPanelToggle('quickYtdlp', e.currentTarget.open)
+            persistMainWindowUiPanelToggle('quickYtdlp', e.currentTarget.open)
           }}
         >
           <summary className="app-url-summary">Быстрая загрузка yt-dlp</summary>
@@ -2491,7 +2466,7 @@ function App(): JSX.Element {
                               chapters: 'probeChapters',
                               rawJson: 'probeRawJson'
                             } as const
-                            persistPanelToggle(m[key], nextOpen)
+                            persistMainWindowUiPanelToggle(m[key], nextOpen)
                           }}
                         />
                       ) : null}
@@ -2517,7 +2492,7 @@ function App(): JSX.Element {
                 type="button"
                 className="app-ffmpeg-rail-restore app-icon-btn"
                 onClick={() => {
-                  persistPanelToggle('ffmpegSettingsRailOpen', true)
+                  persistMainWindowUiPanelToggle('ffmpegSettingsRailOpen', true)
                 }}
                 title="Показать настройки FFmpeg"
               >
@@ -2541,7 +2516,7 @@ function App(): JSX.Element {
                     type="button"
                     className="app-icon-btn app-settings-rail-collapse-btn"
                     onClick={() => {
-                      persistPanelToggle('ffmpegSettingsRailOpen', false)
+                      persistMainWindowUiPanelToggle('ffmpegSettingsRailOpen', false)
                     }}
                     title="Свернуть панель (больше места для превью и таймлайна)"
                   >
@@ -2556,7 +2531,7 @@ function App(): JSX.Element {
                 className="app-settings-section"
                 open={panelOpen('ffmpegVideo')}
                 onToggle={(e) => {
-                  persistPanelToggle('ffmpegVideo', e.currentTarget.open)
+                  persistMainWindowUiPanelToggle('ffmpegVideo', e.currentTarget.open)
                 }}
               >
                 <summary className="app-settings-summary">Видео</summary>
@@ -2999,7 +2974,7 @@ function App(): JSX.Element {
                 className="app-settings-section"
                 open={panelOpen('ffmpegFormat')}
                 onToggle={(e) => {
-                  persistPanelToggle('ffmpegFormat', e.currentTarget.open)
+                  persistMainWindowUiPanelToggle('ffmpegFormat', e.currentTarget.open)
                 }}
               >
                 <summary className="app-settings-summary">Формат</summary>
@@ -3135,7 +3110,7 @@ function App(): JSX.Element {
                 className="app-settings-section"
                 open={panelOpen('ffmpegAudio')}
                 onToggle={(e) => {
-                  persistPanelToggle('ffmpegAudio', e.currentTarget.open)
+                  persistMainWindowUiPanelToggle('ffmpegAudio', e.currentTarget.open)
                 }}
               >
                 <summary className="app-settings-summary">Аудио и кадр</summary>
@@ -3377,7 +3352,7 @@ function App(): JSX.Element {
                 className="app-settings-section"
                 open={panelOpen('ffmpegPresets')}
                 onToggle={(e) => {
-                  persistPanelToggle('ffmpegPresets', e.currentTarget.open)
+                  persistMainWindowUiPanelToggle('ffmpegPresets', e.currentTarget.open)
                 }}
               >
                 <summary className="app-settings-summary">Пресеты</summary>
@@ -3472,7 +3447,7 @@ function App(): JSX.Element {
                 className="app-settings-section"
                 open={panelOpen('ffmpegOutput')}
                 onToggle={(e) => {
-                  persistPanelToggle('ffmpegOutput', e.currentTarget.open)
+                  persistMainWindowUiPanelToggle('ffmpegOutput', e.currentTarget.open)
                 }}
               >
                 <summary className="app-settings-summary">Вывод</summary>
@@ -3485,7 +3460,7 @@ function App(): JSX.Element {
                     className="app-export-preview app-export-preview-nested"
                     open={panelOpen('exportCommandPreview')}
                     onToggle={(e) => {
-                      persistPanelToggle('exportCommandPreview', e.currentTarget.open)
+                      persistMainWindowUiPanelToggle('exportCommandPreview', e.currentTarget.open)
                     }}
                   >
                     <summary className="app-export-preview-summary">Превью команды ffmpeg</summary>
