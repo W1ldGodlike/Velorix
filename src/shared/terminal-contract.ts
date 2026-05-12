@@ -3506,6 +3506,132 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· abort-on-err -F',
     summary: 'Остановка при первой фатальной ошибке (--abort-on-error -F); допишите URL плейлиста при необходимости.',
     fullLine: 'yt-dlp --abort-on-error -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file series',
+    summary: 'Записать series (шоу) в flux-ytdlp-series.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file series flux-ytdlp-series.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file snum',
+    summary: 'Записать season_number в flux-ytdlp-snum.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file season_number flux-ytdlp-snum.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file epnum',
+    summary: 'Записать episode_number в flux-ytdlp-epnum.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file episode_number flux-ytdlp-epnum.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file epstr',
+    summary: 'Записать episode (строка площадки) в flux-ytdlp-epstr.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file episode flux-ytdlp-epstr.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file epid',
+    summary: 'Записать episode_id в flux-ytdlp-epid.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file episode_id flux-ytdlp-epid.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file sid',
+    summary: 'Записать season_id в flux-ytdlp-sid.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file season_id flux-ytdlp-sid.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file plchid',
+    summary: 'Записать playlist_channel_id в flux-ytdlp-plchid.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file playlist_channel_id flux-ytdlp-plchid.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file asr',
+    summary: 'Записать asr (Hz дискретизации аудио) в flux-ytdlp-asr.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file asr flux-ytdlp-asr.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file drm',
+    summary: 'Записать has_drm в flux-ytdlp-drm.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file has_drm flux-ytdlp-drm.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file embed',
+    summary: 'Записать playable_in_embed в flux-ytdlp-embed.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file playable_in_embed flux-ytdlp-embed.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file waslive',
+    summary: 'Записать was_live в flux-ytdlp-waslive.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file was_live flux-ytdlp-waslive.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file mtype',
+    summary: 'Записать media_type в flux-ytdlp-mtype.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file media_type flux-ytdlp-mtype.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo PF -F',
+    summary: 'Гео-обход через Французскую Полинезию (--geo-bypass-country PF -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country PF -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo NC -F',
+    summary: 'Гео-обход через Новую Каледонию (--geo-bypass-country NC -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country NC -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo FJ -F',
+    summary: 'Гео-обход через Фиджи (--geo-bypass-country FJ -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country FJ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo VU -F',
+    summary: 'Гео-обход через Вануату (--geo-bypass-country VU -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country VU -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo SB -F',
+    summary: 'Гео-обход через Соломоновы острова (--geo-bypass-country SB -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country SB -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo FM -F',
+    summary: 'Гео-обход через Федеративные Штаты Микронезии (--geo-bypass-country FM -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country FM -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo MH -F',
+    summary: 'Гео-обход через Маршалловы острова (--geo-bypass-country MH -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country MH -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo PW -F',
+    summary: 'Гео-обход через Палау (--geo-bypass-country PW -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country PW -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-brk-reject -F',
+    summary: 'Не останавливаться на отклонённом формате (--no-break-on-reject -F); допишите URL.',
+    fullLine: 'yt-dlp --no-break-on-reject -F '
   }
 ]
 
@@ -4626,6 +4752,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· aecho 4s',
     summary: 'Лёгкое эхо первых 4 с (-af aecho); smoke задержек/смешивания в af; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af aecho=0.8:0.9:40:0.3 -t 4 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· s:1 disposition',
+    summary: 'Вторая дорожка субтитров s:1: disposition (forced/default/hearing_impaired и т.д.); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:1 -show_entries stream=disposition -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· tremolo 4s',
+    summary: 'Лёгкая амплитудная модуляция первых 4 с (-af tremolo); smoke периодического af; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af tremolo=f=6:d=0.5 -t 4 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· bandpass 4s',
+    summary: 'Узкополосный bandpass первых 4 с (-af bandpass); smoke частотной фильтрации; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af bandpass=f=1000:width_type=h:width=200 -t 4 -vn -sn -f null -`
   }
 ]
 

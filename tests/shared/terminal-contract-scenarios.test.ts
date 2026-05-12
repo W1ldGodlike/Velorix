@@ -1777,4 +1777,57 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: print-to-file series/snum/epnum/epstr/epid/sid/plchid/asr/drm/embed/waslive/mtype + geo PF/NC/FJ/VU/SB/FM/MH/PW + no-brk-reject -F', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --print-to-file series flux-ytdlp-series.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file season_number flux-ytdlp-snum.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file episode_number flux-ytdlp-epnum.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file episode flux-ytdlp-epstr.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file episode_id flux-ytdlp-epid.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file season_id flux-ytdlp-sid.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file playlist_channel_id flux-ytdlp-plchid.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file asr flux-ytdlp-asr.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file has_drm flux-ytdlp-drm.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file playable_in_embed flux-ytdlp-embed.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file was_live flux-ytdlp-waslive.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file media_type flux-ytdlp-mtype.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country PF -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country NC -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country FJ -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country VU -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country SB -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country FM -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country MH -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country PW -F ')
+    expect(lines).toContain('yt-dlp --no-break-on-reject -F ')
+  })
+
+  it('preview: ffprobe s:1 disposition + ffmpeg tremolo/bandpass 4s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-select_streams s:1') &&
+          l.includes('stream=disposition') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af tremolo=f=6:d=0.5') &&
+          l.includes('-t 4') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af bandpass=f=1000:width_type=h:width=200') &&
+          l.includes('-t 4') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })
