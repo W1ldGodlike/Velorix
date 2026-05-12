@@ -272,6 +272,21 @@ const EXPORT_VIDEO_BITRATES = ['1000k', '2500k', '5000k', '8000k', '12000k', '20
 const EXPORT_AUDIO_BITRATES = ['96k', '128k', '160k', '192k', '256k', '320k']
 const EXPORT_FPS_OPTIONS = [24, 25, 30, 50, 60]
 
+function previewVideoMediaErrorDetailLabel(code: number): string {
+  switch (code) {
+    case 1:
+      return uiText('statusVideoMediaErrAborted')
+    case 2:
+      return uiText('statusVideoMediaErrNetwork')
+    case 3:
+      return uiText('statusVideoMediaErrDecode')
+    case 4:
+      return uiText('statusVideoMediaErrSrcNotSupported')
+    default:
+      return uiText('statusVideoMediaErrUnknown')
+  }
+}
+
 function engineLabel(id: EngineId): string {
   switch (id) {
     case 'ffmpeg':
@@ -1012,7 +1027,11 @@ function App(): JSX.Element {
       setTerminalHistory((rows) =>
         [{ id: terminalHistoryNextIdRef.current++, line, result }, ...rows].slice(0, 20)
       )
-      setStatusHint(result.ok ? `CLI: код ${result.code ?? 'n/a'}` : `CLI: ${result.error}`)
+      setStatusHint(
+        result.ok
+          ? uiTextVars('statusTerminalCliExitOk', { code: String(result.code ?? 'n/a') })
+          : uiTextVars('statusTerminalCliFailed', { error: result.error })
+      )
     } finally {
       setTerminalBusy(false)
     }
@@ -1020,7 +1039,9 @@ function App(): JSX.Element {
 
   const copyTerminalOutputLine = useCallback(async (line: string): Promise<void> => {
     const r = await window.fluxalloy.clipboard.writeText(line)
-    setStatusHint(r.ok ? 'Строка вывода скопирована' : 'Не удалось скопировать строку')
+    setStatusHint(
+      r.ok ? uiText('statusTerminalOutputLineCopied') : uiText('statusTerminalOutputLineCopyFailed')
+    )
   }, [])
 
   const appendDownloadsExtraArgsToken = useCallback(
@@ -1159,27 +1180,18 @@ function App(): JSX.Element {
       }
       const mediaError = video.error
       const code = mediaError?.code ?? 0
-      const detail =
-        code === 1
-          ? 'загрузка отменена'
-          : code === 2
-            ? 'сетевая ошибка'
-            : code === 3
-              ? 'ошибка декодирования'
-              : code === 4
-                ? 'формат не поддерживается'
-                : 'неизвестная ошибка'
+      const detail = previewVideoMediaErrorDetailLabel(code)
       window.fluxalloy.log.send({
         level: 'error',
         scope: 'preview/video',
         message: `video element error code=${code} detail=${detail} path=${preview.path} mediaUrl=${preview.mediaUrl} playbackUrl=${previewBlobUrl ?? preview.mediaUrl}`
       })
       if (previewBlobUrl) {
-        setStatusHint(`Видео не удалось воспроизвести: ${detail}`)
+        setStatusHint(uiTextVars('statusVideoPlayFailed', { detail }))
         return
       }
 
-      setStatusHint('Видео не открылось напрямую, пробую безопасный blob-fallback…')
+      setStatusHint(uiText('statusVideoDirectOpenFailedBlobTrying'))
       void fetch(preview.mediaUrl)
         .then(async (response) => {
           if (!response.ok) {
@@ -1193,7 +1205,7 @@ function App(): JSX.Element {
             }
             return blobUrl
           })
-          setStatusHint('Видео переключено на blob-fallback для предпросмотра.')
+          setStatusHint(uiText('statusVideoBlobFallbackActive'))
           window.fluxalloy.log.send({
             level: 'info',
             scope: 'preview/video',
@@ -1202,7 +1214,7 @@ function App(): JSX.Element {
         })
         .catch((error: unknown) => {
           const message = error instanceof Error ? error.message : String(error)
-          setStatusHint(`Видео не удалось воспроизвести: ${detail}; fallback тоже не сработал.`)
+          setStatusHint(uiTextVars('statusVideoPlayFailedAfterFallback', { detail }))
           window.fluxalloy.log.send({
             level: 'error',
             scope: 'preview/video',
@@ -1241,7 +1253,11 @@ function App(): JSX.Element {
         return
       }
       const added = addRes.added
-      setStatusHint(added > 0 ? `Добавлено URL: ${added}` : 'Не нашёл URL для очереди.')
+      setStatusHint(
+        added > 0
+          ? uiTextVars('statusDownloadsUrlsAdded', { n: String(added) })
+          : uiText('statusDownloadsQueueNoUrlsParsed')
+      )
       if (added > 0) {
         setDownloadsUrl('')
       }
@@ -1895,7 +1911,7 @@ function App(): JSX.Element {
       const pct =
         typeof p.percent === 'number' && p.percent >= 0 ? `${Math.round(p.percent)}% · ` : ''
       const spd = typeof p.speed === 'string' && p.speed.trim() !== '' ? `${p.speed.trim()} · ` : ''
-      setStatusHint(`Экспорт · ${pct}${spd}${p.message}`)
+      setStatusHint(uiTextVars('statusExportProgress', { tail: `${pct}${spd}${p.message}` }))
     })
 
     const offMenuPreview = window.fluxalloy.onPreviewOpened((payload) => {
@@ -1927,39 +1943,41 @@ function App(): JSX.Element {
 
   async function handleEnginesDownload(): Promise<void> {
     setEngineDownloadBusy(true)
-    setStatusHint('Подготовка загрузки…')
+    setStatusHint(uiText('statusEnginesDownloadPreparing'))
     try {
       const res = await window.fluxalloy.engines.download()
       if (!res.ok) {
-        setStatusHint(`Ошибка: ${res.error}`)
+        setStatusHint(uiTextVars('statusErrorWithDetail', { detail: res.error }))
         return
       }
 
       await refreshEngineUi()
-      setStatusHint('Движки загружены')
+      setStatusHint(uiText('statusEnginesDownloadedOk'))
     } catch (error) {
-      setStatusHint(error instanceof Error ? error.message : 'Ошибка загрузки')
+      setStatusHint(error instanceof Error ? error.message : uiText('statusEnginesDownloadFailedGeneric'))
     } finally {
       setEngineDownloadBusy(false)
     }
   }
 
   async function handleClearDownloadedEngines(): Promise<void> {
-    setStatusHint('Удаляю скачанные движки из userData/bin…')
+    setStatusHint(uiText('statusEnginesClearingUserBin'))
     try {
       const res = await window.fluxalloy.engines.clearUserBin()
       if (!res.ok) {
-        setStatusHint(`Ошибка: ${res.error}`)
+        setStatusHint(uiTextVars('statusErrorWithDetail', { detail: res.error }))
         return
       }
       await refreshEngineUi()
       setStatusHint(
         res.removed > 0
-          ? `Удалено скачанных движков: ${res.removed}`
-          : 'Скачанных движков в userData/bin не было'
+          ? uiTextVars('statusEnginesUserBinRemovedCount', { n: String(res.removed) })
+          : uiText('statusEnginesUserBinNothingRemoved')
       )
     } catch (error) {
-      setStatusHint(error instanceof Error ? error.message : 'Не удалось удалить скачанные движки')
+      setStatusHint(
+        error instanceof Error ? error.message : uiText('statusEnginesClearUserBinFailedGeneric')
+      )
     }
   }
 
@@ -1971,7 +1989,7 @@ function App(): JSX.Element {
     })
     await refreshEngineUi()
     setEnginePathsOpen(false)
-    setStatusHint('Пути к движкам сохранены')
+    setStatusHint(uiText('statusEnginePathsSaved'))
   }
 
   async function handlePickEngine(id: EngineId): Promise<void> {
@@ -1990,7 +2008,7 @@ function App(): JSX.Element {
     const timeSec = el && Number.isFinite(el.currentTime) ? Math.max(0, el.currentTime) : 0
     setLastSnapshotPath(null)
     setSnapshotBusy(true)
-    setStatusHint('Снимок кадра…')
+    setStatusHint(uiText('statusSnapshotInProgress'))
     try {
       const res = await window.fluxalloy.preview.snapshotFrame({
         inputPath: preview.path,
@@ -2000,16 +2018,16 @@ function App(): JSX.Element {
       if (res.ok) {
         const savedName = res.path.split(/[\\/]/).pop() || res.path
         setLastSnapshotPath(res.path)
-        setStatusHint(`Кадр сохранён: ${savedName}`)
+        setStatusHint(uiTextVars('statusSnapshotSaved', { name: savedName }))
       } else if ('cancelled' in res && res.cancelled) {
         setStatusHint(null)
       } else if ('error' in res) {
-        setStatusHint(`Кадр: ${res.error}`)
+        setStatusHint(uiTextVars('statusSnapshotFailedWithDetail', { detail: res.error }))
       } else {
-        setStatusHint('Кадр: ошибка')
+        setStatusHint(uiText('statusSnapshotFailedGeneric'))
       }
     } catch (e) {
-      setStatusHint(e instanceof Error ? e.message : 'Ошибка снимка')
+      setStatusHint(e instanceof Error ? e.message : uiText('statusSnapshotExceptionGeneric'))
     } finally {
       setSnapshotBusy(false)
     }
@@ -2021,7 +2039,7 @@ function App(): JSX.Element {
     }
     setExportBusy(true)
     setLastExportPath(null)
-    setStatusHint('Подготовка экспорта…')
+    setStatusHint(uiText('statusExportPreparing'))
     try {
       const trimSnap =
         trimSnapshotRef.current?.path === preview.path ? trimSnapshotRef.current.range : null
@@ -2062,16 +2080,16 @@ function App(): JSX.Element {
       if (res.ok) {
         const savedName = res.path.split(/[\\/]/).pop() || res.path
         setLastExportPath(res.path)
-        setStatusHint(`Экспорт завершён: ${savedName}`)
+        setStatusHint(uiTextVars('statusExportSaved', { name: savedName }))
       } else if ('cancelled' in res && res.cancelled) {
-        setStatusHint('Экспорт отменён')
+        setStatusHint(uiText('statusExportCancelled'))
       } else if ('error' in res) {
-        setStatusHint(`Экспорт: ${res.error}`)
+        setStatusHint(uiTextVars('statusExportFailedWithDetail', { detail: res.error }))
       } else {
-        setStatusHint('Экспорт: ошибка')
+        setStatusHint(uiText('statusExportFailedGeneric'))
       }
     } catch (e) {
-      setStatusHint(e instanceof Error ? e.message : 'Ошибка экспорта')
+      setStatusHint(e instanceof Error ? e.message : uiText('statusExportExceptionGeneric'))
     } finally {
       setExportBusy(false)
       setExportCancelBusy(false)
@@ -2083,11 +2101,11 @@ function App(): JSX.Element {
       return
     }
     setExportCancelBusy(true)
-    setStatusHint('Отмена экспорта…')
+    setStatusHint(uiText('statusExportCancelling'))
     const res = await window.fluxalloy.export.cancel()
     if (!res.ok) {
       setExportCancelBusy(false)
-      setStatusHint(`Экспорт: ${res.error}`)
+      setStatusHint(uiTextVars('statusExportFailedWithDetail', { detail: res.error }))
     }
   }
 
@@ -2097,9 +2115,9 @@ function App(): JSX.Element {
     }
     const res = await window.fluxalloy.export.openOutput(lastExportPath, mode)
     if (!res.ok) {
-      setStatusHint(`Экспорт: ${res.error}`)
+      setStatusHint(uiTextVars('statusExportFailedWithDetail', { detail: res.error }))
     } else if (mode === 'preview') {
-      setStatusHint('Экспорт открыт в превью')
+      setStatusHint(uiText('statusExportOpenedInPreview'))
     }
   }
 
@@ -2108,7 +2126,7 @@ function App(): JSX.Element {
       return
     }
     const res = await window.fluxalloy.clipboard.writeText(lastExportPath)
-    setStatusHint(res.ok ? 'Путь экспорта скопирован' : 'Не удалось скопировать путь экспорта')
+    setStatusHint(res.ok ? uiText('statusExportPathCopied') : uiText('statusExportPathCopyFailed'))
   }
 
   async function handleOpenLastSnapshot(mode: 'file' | 'folder'): Promise<void> {
@@ -2117,7 +2135,7 @@ function App(): JSX.Element {
     }
     const res = await window.fluxalloy.export.openOutput(lastSnapshotPath, mode)
     if (!res.ok) {
-      setStatusHint(`Кадр: ${res.error}`)
+      setStatusHint(uiTextVars('statusSnapshotFailedWithDetail', { detail: res.error }))
     }
   }
 
@@ -2126,7 +2144,9 @@ function App(): JSX.Element {
       return
     }
     const res = await window.fluxalloy.clipboard.writeText(lastSnapshotPath)
-    setStatusHint(res.ok ? 'Путь кадра скопирован' : 'Не удалось скопировать путь кадра')
+    setStatusHint(
+      res.ok ? uiText('statusSnapshotPathCopied') : uiText('statusSnapshotPathCopyFailed')
+    )
   }
 
   /**
@@ -2239,7 +2259,9 @@ function App(): JSX.Element {
       ? `${exportPreview.pass1Command}\n\n${exportPreviewCommand}`
       : exportPreviewCommand
     const r = await window.fluxalloy.clipboard.writeText(text)
-    setStatusHint(r.ok ? 'Команда ffmpeg скопирована' : 'Не удалось скопировать команду ffmpeg')
+    setStatusHint(
+      r.ok ? uiText('statusFfmpegCommandCopied') : uiText('statusFfmpegCommandCopyFailed')
+    )
   }
 
   async function handlePreviewDrop(files: FileList | null): Promise<void> {
@@ -2250,7 +2272,7 @@ function App(): JSX.Element {
     const absolutePath = window.fluxalloy.preview.getPathForFile(file)
     const granted = await window.fluxalloy.preview.grantPath(absolutePath)
     if (!granted.ok) {
-      setStatusHint(`DnD: ${granted.error}`)
+      setStatusHint(uiTextVars('statusDndGrantFailed', { error: granted.error }))
       return
     }
     applyPreview(granted)
