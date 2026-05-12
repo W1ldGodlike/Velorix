@@ -65,4 +65,52 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
       cleanup()
     }
   })
+
+  it('ok:false при пустом stdout (JSON.parse падает)', async () => {
+    execFileMock.mockImplementation((_cmd, _args, _opts, cb) => {
+      queueMicrotask(() => {
+        ;(cb as (err: Error | null, stdout: string, stderr: string) => void)(null, '', '')
+      })
+    })
+    const { paths, cleanup } = tmpAppPaths()
+    const probeName = process.platform === 'win32' ? 'ffprobe.exe' : 'ffprobe'
+    writeFileSync(join(paths.bundledBin, probeName), '')
+    try {
+      const media = join(paths.appRoot, 'empty.mp4')
+      writeFileSync(media, '')
+      const r = await probeMediaFile(paths, media)
+      expect(r.ok).toBe(false)
+      if (!r.ok) {
+        expect(r.error).toBe('Некорректный JSON ffprobe')
+      }
+    } finally {
+      cleanup()
+    }
+  })
+
+  it('ok:false при error из execFile с приоритетом stderr', async () => {
+    execFileMock.mockImplementation((_cmd, _args, _opts, cb) => {
+      queueMicrotask(() => {
+        ;(cb as (err: Error | null, stdout: string, stderr: string) => void)(
+          new Error('spawn failed'),
+          '',
+          'Invalid data found when processing input'
+        )
+      })
+    })
+    const { paths, cleanup } = tmpAppPaths()
+    const probeName = process.platform === 'win32' ? 'ffprobe.exe' : 'ffprobe'
+    writeFileSync(join(paths.bundledBin, probeName), '')
+    try {
+      const media = join(paths.appRoot, 'bad.mp4')
+      writeFileSync(media, '')
+      const r = await probeMediaFile(paths, media)
+      expect(r.ok).toBe(false)
+      if (!r.ok) {
+        expect(r.error).toBe('Invalid data found when processing input')
+      }
+    } finally {
+      cleanup()
+    }
+  })
 })
