@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { uiText } from '../locales/ui-text'
 
 function Versions(): React.JSX.Element {
   // Версии Electron/Chromium/Node оставляем в статусбаре как быстрый диагностический минимум.
@@ -6,7 +7,7 @@ function Versions(): React.JSX.Element {
   const [versions] = useState(window.electron.process.versions)
 
   return (
-    <ul className="versions-inline" aria-label="Версии среды">
+    <ul className="versions-inline" aria-label={uiText('versionsAriaLabel')}>
       <li>Electron {versions['electron']}</li>
       <li>Chromium {versions['chrome']}</li>
       <li>Node {versions['node']}</li>

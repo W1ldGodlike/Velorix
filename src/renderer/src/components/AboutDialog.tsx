@@ -6,6 +6,7 @@ import {
   YTDLP_DOC_FORMAT_SELECTION,
   YTDLP_DOC_README
 } from '../../../shared/external-doc-urls'
+import { uiText } from '../locales/ui-text'
 
 /** Модальное окно §4.5 — переиспользуется главным окном и инспектором §9 (единые стили/`app-modal-*`). */
 export function AboutDialog({
@@ -47,16 +48,16 @@ export function AboutDialog({
         }}
       >
         <h2 id="about-title" className="app-modal-title">
-          О программе
+          {uiText('aboutTitle')}
         </h2>
         {aboutInfo ? (
           <dl className="app-about-dl">
             <div className="app-about-row">
-              <dt>Приложение</dt>
+              <dt>{uiText('appLabel')}</dt>
               <dd>{aboutInfo.appName}</dd>
             </div>
             <div className="app-about-row">
-              <dt>Версия</dt>
+              <dt>{uiText('versionLabel')}</dt>
               <dd className="app-about-mono">{aboutInfo.appVersion}</dd>
             </div>
             <div className="app-about-row">
@@ -73,7 +74,7 @@ export function AboutDialog({
             </div>
           </dl>
         ) : (
-          <p className="app-modal-hint">Загрузка…</p>
+          <p className="app-modal-hint">{uiText('loading')}</p>
         )}
         <div className="app-modal-footer app-modal-footer-split">
           <div className="app-about-footer-left">
@@ -84,12 +85,12 @@ export function AboutDialog({
                 onClick={() => {
                   void window.fluxalloy.diagnostics.openFolder('logs').then((r) => {
                     if (!r.ok) {
-                      pushStatus(`Папка логов: ${r.error}`)
+                      pushStatus(`${uiText('logsFolderButton')}: ${r.error}`)
                     }
                   })
                 }}
               >
-                Папка логов
+                {uiText('logsFolderButton')}
               </button>
               <button
                 type="button"
@@ -110,14 +111,14 @@ export function AboutDialog({
                 onClick={() => {
                   void window.fluxalloy.diagnostics.createSupportZip().then((r) => {
                     if (r.ok) {
-                      pushStatus('Support ZIP сохранён')
+                      pushStatus(uiText('supportZipSaved'))
                     } else if ('error' in r) {
-                      pushStatus(`Support ZIP: ${r.error}`)
+                      pushStatus(`${uiText('supportZipButton')}: ${r.error}`)
                     }
                   })
                 }}
               >
-                Support ZIP…
+                {uiText('supportZipButton')}
               </button>
             </div>
             <p className="app-doc-inline-links app-about-doc-links">
@@ -126,7 +127,7 @@ export function AboutDialog({
               </a>
               {' · '}
               <a href={YTDLP_DOC_FORMAT_SELECTION} target="_blank" rel="noreferrer">
-                Выбор формата
+                {uiText('formatSelectionDoc')}
               </a>
               {' · '}
               <a href={FFPROBE_DOC_ALL} target="_blank" rel="noreferrer">
@@ -135,7 +136,7 @@ export function AboutDialog({
             </p>
           </div>
           <button type="button" className="app-btn app-btn-primary" onClick={onClose}>
-            Закрыть
+            {uiText('closeButton')}
           </button>
         </div>
       </div>
