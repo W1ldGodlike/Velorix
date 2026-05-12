@@ -1310,6 +1310,54 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· embed-info-json',
     summary: 'Встроить .info.json в контейнер после скачивания (--embed-info-json); допишите URL и -f/-o.',
     fullLine: 'yt-dlp --embed-info-json '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· netrc -F',
+    summary: 'Учётные данные из ~/.netrc (--netrc -F); для сайтов с логином; допишите URL.',
+    fullLine: 'yt-dlp --netrc -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· force-generic -F',
+    summary: 'Форс generic-extractor (--force-generic-extractor -F) при сбое распознавания; допишите URL.',
+    fullLine: 'yt-dlp --force-generic-extractor -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print follower_count',
+    summary: 'Число подписчиков канала без скачивания (--skip-download --print channel_follower_count); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print channel_follower_count '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print average_rating',
+    summary: 'Средний рейтинг/оценка без скачивания (--skip-download --print average_rating); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print average_rating '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· write-all-urls',
+    summary: 'Список всех извлечённых URL в лог (--write-all-urls --skip-download); допишите URL.',
+    fullLine: 'yt-dlp --write-all-urls --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· dump-pages',
+    summary: 'Сырой дамп страниц extractor в файлы (--dump-pages --skip-download); диагностика HTML/API; допишите URL.',
+    fullLine: 'yt-dlp --dump-pages --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-progress -F',
+    summary: 'Без прогресс-бара в консоли (--no-progress -F); чище логи в длинных списках; допишите URL.',
+    fullLine: 'yt-dlp --no-progress -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print is_private',
+    summary: 'Признак приватного/ограниченного ролика без скачивания (--skip-download --print is_private); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print is_private '
   }
 ]
 
@@ -1878,6 +1926,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· scale 320 null',
     summary: 'Smoke-перекодировка масштаба 320:-1 за 1 c в null muxer (-vf scale=320:-1 -t 1); проверка фильтр-цепочки; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf scale=320:-1 -t 1 -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 stream created',
+    summary: 'Поток v:0: stream_tags creation_time (отличается от format при ремуксе); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream_tags=creation_time -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format handler_name',
+    summary: 'Тег контейнера handler_name (format_tags.handler_name, часто QuickTime/MOV); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=handler_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· acopy null 3s',
+    summary: 'Remux только аудио в null muxer (-vn -sn -acodec copy -t 3); проверка дорожки без видеодекода; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vn -sn -acodec copy -t 3 -f null -`
   }
 ]
 

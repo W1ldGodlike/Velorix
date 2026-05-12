@@ -441,6 +441,14 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --no-call-home -F ')
     expect(lines).toContain('yt-dlp --datebefore 20991231 -F ')
     expect(lines).toContain('yt-dlp --embed-info-json ')
+    expect(lines).toContain('yt-dlp --netrc -F ')
+    expect(lines).toContain('yt-dlp --force-generic-extractor -F ')
+    expect(lines).toContain('yt-dlp --skip-download --print channel_follower_count ')
+    expect(lines).toContain('yt-dlp --skip-download --print average_rating ')
+    expect(lines).toContain('yt-dlp --write-all-urls --skip-download ')
+    expect(lines).toContain('yt-dlp --dump-pages --skip-download ')
+    expect(lines).toContain('yt-dlp --no-progress -F ')
+    expect(lines).toContain('yt-dlp --skip-download --print is_private ')
   })
 
   it('preview: pretty/flat/packets/frames + loudnorm summary', () => {
@@ -528,6 +536,25 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines.some((l) => l.includes('show_entries format=probe_size'))).toBe(true)
     expect(
       lines.some((l) => l.includes('-vf scale=320:-1') && l.includes('-t 1 -f null -'))
+    ).toBe(true)
+  })
+
+  it('preview: v:0 stream creation_time, format handler_name, acodec copy null', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams v:0') &&
+          l.includes('stream_tags=creation_time') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+    expect(lines.some((l) => l.includes('format_tags=handler_name'))).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-acodec copy') && l.includes('-vn -sn') && l.includes('-t 3 -f null -')
+      )
     ).toBe(true)
   })
 })
