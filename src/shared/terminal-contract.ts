@@ -4517,6 +4517,48 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
+    token: '· print-to-file audio_ext',
+    summary: 'Записать audio_ext выбранного формата (m4a/webm/opus/…) в flux-ytdlp-audext.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file audio_ext flux-ytdlp-audext.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file video_ext',
+    summary: 'Записать video_ext выбранного формата (mp4/webm/none/…) в flux-ytdlp-vidext.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file video_ext flux-ytdlp-vidext.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file player_url',
+    summary: 'Записать player_url (embed/плеер URL, если extractor отдаёт) в flux-ytdlp-playerurl.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file player_url flux-ytdlp-playerurl.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· concurrent-fragments 4 -F',
+    summary: 'Список форматов с параллельной подкачкой фрагментов DASH/HLS (--concurrent-fragments 4 -F); допишите URL.',
+    fullLine: 'yt-dlp --concurrent-fragments 4 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo RE -F',
+    summary: 'Гео-обход через Реюньон (--geo-bypass-country RE -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country RE -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo MU -F',
+    summary: 'Гео-обход через Маврикий (--geo-bypass-country MU -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country MU -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo SC -F',
+    summary: 'Гео-обход через Сейшелы (--geo-bypass-country SC -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country SC -F '
+  },
+  {
+    tool: 'yt-dlp',
     token: '· geo-bypass TT -F',
     summary: 'Гео-обход через Тринидад и Тобаго (--geo-bypass-country TT -F); допишите URL.',
     fullLine: 'yt-dlp --geo-bypass-country TT -F '
@@ -5814,6 +5856,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· lowshelf 4s',
     summary: 'Лёгкий низкочастотный шельф первых 4 с (-af lowshelf=g=2:f=200); smoke EQ low-shelf; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af lowshelf=g=2:f=200 -t 4 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format genre+date',
+    summary: 'Теги контейнера genre + date (каталогизация музыки/релизов); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=genre,date -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· extrastereo 4s',
+    summary: 'Лёгкое расширение стереобазы первых 4 с (-af extrastereo=m=1.2); smoke ширины/pan; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af extrastereo=m=1.2 -t 4 -vn -sn -f null -`
   }
 ]
 

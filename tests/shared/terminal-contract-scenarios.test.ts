@@ -2268,6 +2268,17 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --geo-bypass-country TT -F ')
   })
 
+  it('downloads: print-to-file audio_ext/video_ext/player_url + concurrent-fragments 4 -F + geo RE/MU/SC -F', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --print-to-file audio_ext flux-ytdlp-audext.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file video_ext flux-ytdlp-vidext.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file player_url flux-ytdlp-playerurl.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --concurrent-fragments 4 -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country RE -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country MU -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country SC -F ')
+  })
+
   it('preview: ffprobe format show+epsort + ffmpeg lowshelf 4s', () => {
     const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
     expect(
@@ -2281,6 +2292,25 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       lines.some(
         (l) =>
           l.includes('-af lowshelf=g=2:f=200') &&
+          l.includes('-t 4') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
+
+  it('preview: ffprobe format genre+date + ffmpeg extrastereo 4s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=genre,date') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af extrastereo=m=1.2') &&
           l.includes('-t 4') &&
           l.includes('-vn -sn')
       )
