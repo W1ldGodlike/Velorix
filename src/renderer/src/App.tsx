@@ -715,6 +715,8 @@ function App(): JSX.Element {
   const [terminalSuggestFocus, setTerminalSuggestFocus] = useState(false)
   const [terminalSuggestIndex, setTerminalSuggestIndex] = useState(0)
   const [terminalDropdownFilter, setTerminalDropdownFilter] = useState('')
+  const [terminalDropdownListIndex, setTerminalDropdownListIndex] = useState(0)
+  const terminalDropdownListRef = useRef<HTMLDivElement | null>(null)
   const terminalSuggestBlurTimeoutRef = useRef<number | undefined>(undefined)
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
   const [topbarEngineVersionsLine, setTopbarEngineVersionsLine] = useState('')
@@ -931,6 +933,35 @@ function App(): JSX.Element {
     }
     return byTool
   }, [terminalDropdownVisibleHints])
+
+  /** Порядок как в UI: ffmpeg → ffprobe → yt-dlp (для клавиатуры полного списка). */
+  const terminalDropdownDisplayList = useMemo(() => {
+    const order: TerminalCommandHintEntry['tool'][] = ['ffmpeg', 'ffprobe', 'yt-dlp']
+    const out: TerminalCommandHintEntry[] = []
+    for (const tool of order) {
+      out.push(...terminalDropdownHintsByTool[tool])
+    }
+    return out
+  }, [terminalDropdownHintsByTool])
+
+  const terminalDropdownActiveIndex = useMemo(() => {
+    const len = terminalDropdownDisplayList.length
+    if (len <= 0) {
+      return 0
+    }
+    return Math.min(terminalDropdownListIndex, len - 1)
+  }, [terminalDropdownDisplayList, terminalDropdownListIndex])
+
+  useEffect(() => {
+    const root = terminalDropdownListRef.current
+    if (!root || terminalDropdownDisplayList.length === 0) {
+      return
+    }
+    const el = root.querySelector<HTMLElement>(
+      `[data-terminal-dd-idx="${terminalDropdownActiveIndex}"]`
+    )
+    el?.scrollIntoView({ block: 'nearest' })
+  }, [terminalDropdownActiveIndex, terminalDropdownDisplayList])
 
   const terminalSuggestActiveIndex = useMemo(() => {
     const len = terminalInlineSuggestions.length
@@ -3569,7 +3600,9 @@ function App(): JSX.Element {
                   Tab и Enter — подставить активную подсказку (до{' '}
                   {DEFAULT_TERMINAL_INLINE_SUGGEST_MAX} подсказок из той же базы, что и справа). Рядом
                   есть полный выпадающий список (до {TERMINAL_HINT_DROPDOWN_MAX} пунктов по
-                  категориям инструментов). В журнале вывода каждая строка
+                  категориям инструментов): в поле фильтра списка — стрелки вверх/вниз, Home/End,
+                  PgUp/PgDn (шаг {DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP}), Enter — вставить
+                  выделенную подсказку в argv. В журнале вывода каждая строка
                   с кнопкой «Копир.» при наведении (копирует ровно эту строку).
                 </p>
               </div>
@@ -3710,32 +3743,102 @@ function App(): JSX.Element {
                   disabled={terminalBusy}
                   onChange={(e) => {
                     setTerminalDropdownFilter(e.target.value)
+                    setTerminalDropdownListIndex(0)
+                  }}
+                  onKeyDown={(e) => {
+                    const list = terminalDropdownDisplayList
+                    const n = list.length
+                    if (n === 0) {
+                      return
+                    }
+                    if (e.key === 'ArrowDown') {
+                      e.preventDefault()
+                      setTerminalDropdownListIndex((i) => stepTerminalSuggestIndex(i, n, 'down'))
+                      return
+                    }
+                    if (e.key === 'ArrowUp') {
+                      e.preventDefault()
+                      setTerminalDropdownListIndex((i) => stepTerminalSuggestIndex(i, n, 'up'))
+                      return
+                    }
+                    if (e.key === 'Home') {
+                      e.preventDefault()
+                      setTerminalDropdownListIndex((i) => stepTerminalSuggestIndex(i, n, 'home'))
+                      return
+                    }
+                    if (e.key === 'End') {
+                      e.preventDefault()
+                      setTerminalDropdownListIndex((i) => stepTerminalSuggestIndex(i, n, 'end'))
+                      return
+                    }
+                    if (e.key === 'PageDown') {
+                      e.preventDefault()
+                      setTerminalDropdownListIndex((i) =>
+                        stepTerminalSuggestIndex(i, n, 'pageDown')
+                      )
+                      return
+                    }
+                    if (e.key === 'PageUp') {
+                      e.preventDefault()
+                      setTerminalDropdownListIndex((i) => stepTerminalSuggestIndex(i, n, 'pageUp'))
+                      return
+                    }
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault()
+                      const h = list[terminalDropdownActiveIndex]
+                      if (h) {
+                        pickTerminalDropdownHint(h)
+                      }
+                    }
                   }}
                 />
-                <div className="app-terminal-dropdown-list" role="listbox" aria-label="Полный список CLI подсказок">
-                  {(Object.keys(terminalDropdownHintsByTool) as TerminalCommandHintEntry['tool'][]).map(
-                    (tool) =>
-                      terminalDropdownHintsByTool[tool].length > 0 ? (
+                <div
+                  ref={terminalDropdownListRef}
+                  className="app-terminal-dropdown-list"
+                  role="listbox"
+                  aria-label="Полный список CLI подсказок"
+                >
+                  {(() => {
+                    let flatIdx = 0
+                    const tools: TerminalCommandHintEntry['tool'][] = ['ffmpeg', 'ffprobe', 'yt-dlp']
+                    return tools.map((tool) => {
+                      const hints = terminalDropdownHintsByTool[tool]
+                      if (hints.length === 0) {
+                        return null
+                      }
+                      return (
                         <section key={tool} className="app-terminal-dropdown-group">
                           <h3>{tool}</h3>
-                          {terminalDropdownHintsByTool[tool].map((hint, idx) => (
-                            <button
-                              key={`${tool}:${hint.token}:${hint.fullLine ?? ''}:${idx}`}
-                              type="button"
-                              className="app-terminal-dropdown-item"
-                              title={hint.summary}
-                              disabled={terminalBusy}
-                              onClick={() => {
-                                pickTerminalDropdownHint(hint)
-                              }}
-                            >
-                              <code>{(hint.fullLine?.trim() || hint.token).trim()}</code>
-                              <small>{hint.summary}</small>
-                            </button>
-                          ))}
+                          {hints.map((hint, rowIdx) => {
+                            const ddIdx = flatIdx
+                            flatIdx += 1
+                            const active = ddIdx === terminalDropdownActiveIndex
+                            return (
+                              <button
+                                key={`${tool}:${hint.token}:${hint.fullLine ?? ''}:${rowIdx}`}
+                                type="button"
+                                className={`app-terminal-dropdown-item${
+                                  active ? ' app-terminal-dropdown-item-active' : ''
+                                }`}
+                                data-terminal-dd-idx={ddIdx}
+                                title={hint.summary}
+                                disabled={terminalBusy}
+                                onMouseEnter={() => {
+                                  setTerminalDropdownListIndex(ddIdx)
+                                }}
+                                onClick={() => {
+                                  pickTerminalDropdownHint(hint)
+                                }}
+                              >
+                                <code>{(hint.fullLine?.trim() || hint.token).trim()}</code>
+                                <small>{hint.summary}</small>
+                              </button>
+                            )
+                          })}
                         </section>
-                      ) : null
-                  )}
+                      )
+                    })
+                  })()}
                   {terminalDropdownVisibleHints.length === 0 ? (
                     <p className="app-downloads-empty">Ничего не найдено по фильтру.</p>
                   ) : null}

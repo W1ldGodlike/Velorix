@@ -224,6 +224,11 @@
   background: color-mix(in srgb, var(--fa-accent) 9%, transparent);
 }
 
+.app-terminal-dropdown-item-active {
+  border-color: var(--fa-accent);
+  background: color-mix(in srgb, var(--fa-accent) 10%, transparent);
+}
+
 .app-terminal-dropdown-item small {
   color: var(--fa-text-muted);
   font-size: 0.7rem;
