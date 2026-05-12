@@ -118,7 +118,8 @@ function parseTerminalCommandLine(
   if (tokens.length > MAX_TOKENS) {
     return { ok: false, error: `Слишком много аргументов (макс. ${MAX_TOKENS}).` }
   }
-  const tool = tokens[0] as TerminalToolId
+  const toolToken = tokens[0] ?? ''
+  const tool = toolToken.toLowerCase() as TerminalToolId
   if (!TERMINAL_ALLOWED_TOOLS.includes(tool)) {
     return { ok: false, error: 'Разрешены только префиксы ffmpeg, ffprobe и yt-dlp.' }
   }

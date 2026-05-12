@@ -14,8 +14,20 @@ vi.mock('@electron-toolkit/utils', () => ({
   is: { dev: true }
 }))
 
+const { execFileMock } = vi.hoisted(() => ({
+  execFileMock: vi.fn()
+}))
+vi.mock('child_process', () => ({
+  execFile: execFileMock
+}))
+
+vi.mock('../../src/main/engine-service', () => ({
+  resolveEngineExecutablePath: () => 'C:\\tools\\ffmpeg.exe'
+}))
+
 import {
   appendTerminalCliSessionLog,
+  runTerminalCommand,
   resolveTerminalCliSessionLogPath,
   resolveTerminalCurrentFileArgs
 } from '../../src/main/terminal-service'
@@ -75,5 +87,29 @@ describe('resolveTerminalCurrentFileArgs', () => {
       grantPath: () => false
     })
     expect(r.ok).toBe(false)
+  })
+})
+
+describe('runTerminalCommand', () => {
+  it('принимает tool-префикс в любом регистре', async () => {
+    execFileMock.mockImplementation((_path, _argv, _opts, cb) => cb(null, 'ok', ''))
+    const result = await runTerminalCommand({
+      paths: {
+        appRoot: 'C:\\app',
+        resources: 'C:\\app',
+        userData: 'C:\\app\\userData',
+        bundledBin: 'C:\\app\\bin',
+        userBin: 'C:\\app\\userData\\bin'
+      },
+      line: 'FFMPEG -version',
+      currentFilePath: null
+    })
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.tool).toBe('ffmpeg')
+      expect(result.args).toEqual(['-version'])
+      expect(result.code).toBe(0)
+    }
+    expect(execFileMock).toHaveBeenCalledTimes(1)
   })
 })
