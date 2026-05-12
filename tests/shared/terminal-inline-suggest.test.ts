@@ -3,8 +3,10 @@ import { describe, expect, it } from 'vitest'
 import type { TerminalCommandHintEntry } from '../../src/shared/terminal-contract'
 import {
   applyTerminalInlinePick,
+  DEFAULT_TERMINAL_INLINE_SUGGEST_MAX,
   filterTerminalInlineSuggestions,
-  normalizeTerminalHintToken
+  normalizeTerminalHintToken,
+  stepTerminalSuggestIndex
 } from '../../src/shared/terminal-inline-suggest'
 
 const SAMPLE: TerminalCommandHintEntry[] = [
@@ -22,6 +24,16 @@ describe('normalizeTerminalHintToken', () => {
 })
 
 describe('filterTerminalInlineSuggestions', () => {
+  it('uses DEFAULT_TERMINAL_INLINE_SUGGEST_MAX when max omitted', () => {
+    const many: TerminalCommandHintEntry[] = Array.from({ length: 40 }, (_, i) => ({
+      tool: 'ffmpeg',
+      token: `-x${i}`,
+      summary: ''
+    }))
+    const r = filterTerminalInlineSuggestions({ line: 'ffmpeg ', hints: many })
+    expect(r.length).toBe(DEFAULT_TERMINAL_INLINE_SUGGEST_MAX)
+  })
+
   it('returns [] for empty / whitespace line', () => {
     expect(filterTerminalInlineSuggestions({ line: '', hints: SAMPLE })).toEqual([])
     expect(filterTerminalInlineSuggestions({ line: '  ', hints: SAMPLE })).toEqual([])
@@ -52,6 +64,25 @@ describe('filterTerminalInlineSuggestions', () => {
   it('matches fullLine prefix for scenarios', () => {
     const r = filterTerminalInlineSuggestions({ line: 'yt-dlp -', hints: SAMPLE, max: 20 })
     expect(r.some((h) => h.fullLine?.startsWith('yt-dlp -F'))).toBe(true)
+  })
+})
+
+describe('stepTerminalSuggestIndex', () => {
+  it('clamps stale index before stepping up', () => {
+    expect(stepTerminalSuggestIndex(99, 3, 'up')).toBe(1)
+  })
+
+  it('clamps stale index before stepping down', () => {
+    expect(stepTerminalSuggestIndex(99, 5, 'down')).toBe(4)
+  })
+
+  it('home/end with stale index', () => {
+    expect(stepTerminalSuggestIndex(50, 4, 'home')).toBe(0)
+    expect(stepTerminalSuggestIndex(50, 4, 'end')).toBe(3)
+  })
+
+  it('empty list yields 0', () => {
+    expect(stepTerminalSuggestIndex(3, 0, 'down')).toBe(0)
   })
 })
 

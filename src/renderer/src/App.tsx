@@ -104,7 +104,9 @@ import {
 } from '../../shared/terminal-contract'
 import {
   applyTerminalInlinePick,
-  filterTerminalInlineSuggestions
+  DEFAULT_TERMINAL_INLINE_SUGGEST_MAX,
+  filterTerminalInlineSuggestions,
+  stepTerminalSuggestIndex
 } from '../../shared/terminal-inline-suggest'
 import { PreviewProbeBody } from './components/MediaProbePanel'
 type Theme = ResolvedAppTheme
@@ -914,7 +916,7 @@ function App(): JSX.Element {
       filterTerminalInlineSuggestions({
         line: terminalLine,
         hints: terminalMergedSortedHints,
-        max: 14
+        max: DEFAULT_TERMINAL_INLINE_SUGGEST_MAX
       }),
     [terminalLine, terminalMergedSortedHints]
   )
@@ -3527,8 +3529,9 @@ function App(): JSX.Element {
                   запускается через main без shell, а PATH дополняется папкой выбранного движка. В
                   argv можно токен <code>{TERMINAL_CURRENT_FILE_PLACEHOLDER}</code> — подставится
                   путь текущего превью редактора (только если файл уже открыт через диалог или DnD).
-                  В строке ввода — компактный IntelliSense: стрелки вверх/вниз и Tab по выпадающему
-                  списку (до 14 подсказок из той же базы, что и справа). В журнале вывода каждая строка
+                  В строке ввода — компактный IntelliSense: стрелки вверх/вниз, Home/End и Tab по
+                  выпадающему списку (до {DEFAULT_TERMINAL_INLINE_SUGGEST_MAX} подсказок из той же базы,
+                  что и справа). В журнале вывода каждая строка
                   с кнопкой «Копир.» при наведении (копирует ровно эту строку).
                 </p>
               </div>
@@ -3563,12 +3566,22 @@ function App(): JSX.Element {
                     if (list.length > 0) {
                       if (e.key === 'ArrowDown') {
                         e.preventDefault()
-                        setTerminalSuggestIndex((i) => Math.min(list.length - 1, i + 1))
+                        setTerminalSuggestIndex((i) => stepTerminalSuggestIndex(i, list.length, 'down'))
                         return
                       }
                       if (e.key === 'ArrowUp') {
                         e.preventDefault()
-                        setTerminalSuggestIndex((i) => Math.max(0, i - 1))
+                        setTerminalSuggestIndex((i) => stepTerminalSuggestIndex(i, list.length, 'up'))
+                        return
+                      }
+                      if (e.key === 'Home') {
+                        e.preventDefault()
+                        setTerminalSuggestIndex((i) => stepTerminalSuggestIndex(i, list.length, 'home'))
+                        return
+                      }
+                      if (e.key === 'End') {
+                        e.preventDefault()
+                        setTerminalSuggestIndex((i) => stepTerminalSuggestIndex(i, list.length, 'end'))
                         return
                       }
                       if (e.key === 'Tab') {

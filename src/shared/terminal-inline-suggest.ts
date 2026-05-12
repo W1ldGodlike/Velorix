@@ -1,5 +1,34 @@
 import type { TerminalCommandHintEntry, TerminalToolId } from './terminal-contract'
 
+/** §8 — максимум строк в компактном IntelliSense под полем argv (терминал). */
+export const DEFAULT_TERMINAL_INLINE_SUGGEST_MAX = 14
+
+/**
+ * Навигация по индексу подсказки: при смене фильтра `prevIndex` может быть больше длины списка —
+ * сначала приводим к последнему допустимому, затем шаг/Home/End.
+ */
+export function stepTerminalSuggestIndex(
+  prevIndex: number,
+  listLength: number,
+  step: 'up' | 'down' | 'home' | 'end'
+): number {
+  if (listLength <= 0) {
+    return 0
+  }
+  const last = listLength - 1
+  const cur = Math.min(prevIndex, last)
+  if (step === 'home') {
+    return 0
+  }
+  if (step === 'end') {
+    return last
+  }
+  if (step === 'down') {
+    return Math.min(last, cur + 1)
+  }
+  return Math.max(0, cur - 1)
+}
+
 const TERMINAL_TOOLS: readonly TerminalToolId[] = ['ffmpeg', 'ffprobe', 'yt-dlp']
 
 function isTerminalToolId(value: string): value is TerminalToolId {
@@ -52,7 +81,7 @@ export function filterTerminalInlineSuggestions(params: {
   hints: readonly TerminalCommandHintEntry[]
   max?: number
 }): TerminalCommandHintEntry[] {
-  const max = params.max ?? 14
+  const max = params.max ?? DEFAULT_TERMINAL_INLINE_SUGGEST_MAX
   const hints = params.hints
   const raw = params.line
   const endsWithSpace = /\s$/.test(raw)
