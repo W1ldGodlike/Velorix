@@ -435,7 +435,38 @@ const UI_TEXT = {
       '«Не сохранять» — ffmpeg сам решает (обычно дропает). «Сохранить» — для MKV `-c:s copy`, для MP4/MOV `-c:s mov_text` (только текстовые субтитры).',
     editorSnapshotLastFile: 'Файл кадра',
     editorSnapshotLastFolder: 'Папка',
-    editorCopy: 'Копировать'
+    editorCopy: 'Копировать',
+    editorFfmpegSectionPresets: 'Пресеты',
+    editorFfmpegSectionPresetsHint:
+      'Сохранённые снимки настроек экспорта; кнопки меняют список пресетов в настройках.',
+    editorFieldUserPreset: 'Пользовательский пресет',
+    editorAriaUserPreset: 'Пользовательский пресет экспорта',
+    editorUserPresetPlaceholder: 'Пресет: —',
+    editorPresetAdd: '+ Пресет',
+    editorPresetRename: 'Имя',
+    editorPresetOverwrite: 'Обновить',
+    editorPresetDelete: 'Удалить',
+    editorFfmpegSectionOutput: 'Вывод',
+    editorFfmpegSectionOutputHint:
+      'Превью argv, экспорт через диалог «Сохранить» и быстрые действия над последним файлом.',
+    editorExportCommandPreviewSummary: 'Превью команды ffmpeg',
+    editorAriaExportFfmpegCommand: 'Команда ffmpeg',
+    editorCopyFfmpegCommandTitle: 'Скопировать строку команды ffmpeg в буфер',
+    editorExportLastFile: 'Файл',
+    editorExportLastFolder: 'Папка',
+    editorCopyExportPath: 'Копировать путь',
+    editorExportPreviewPass1: '# Проход 1',
+    editorExportPreviewPass2: '# Проход 2',
+    editorExportPreviewHintNoSource:
+      'Источник не выбран — в превью используются плейсхолдеры <input>/<output>.',
+    editorExportPreviewHintTwoPass:
+      'Двухпроход: исходящий файл формирует только вторая команда; для passlog см. временный каталог в main.',
+    editorExportPreviewHintTrimAppliedTemplate:
+      'Маркеры In/Out подставлены: -ss {in} -t {t}.',
+    editorExportPreviewHintTrimFull:
+      'Маркеры покрывают почти весь файл — ffmpeg запустится без -ss/-t.',
+    editorExportPreviewHintTrimWaiting:
+      'Маркеры In/Out появятся, как только таймлайн сообщит диапазон.'
   },
   en: {
     aboutTitle: 'About',
@@ -863,7 +894,37 @@ const UI_TEXT = {
       '“Drop” lets ffmpeg decide (usually drops). “Copy” uses `-c:s copy` on MKV and `-c:s mov_text` on MP4/MOV (text subs only).',
     editorSnapshotLastFile: 'Snapshot file',
     editorSnapshotLastFolder: 'Folder',
-    editorCopy: 'Copy'
+    editorCopy: 'Copy',
+    editorFfmpegSectionPresets: 'Presets',
+    editorFfmpegSectionPresetsHint:
+      'Saved export setting snapshots; buttons update the preset list in settings.',
+    editorFieldUserPreset: 'User preset',
+    editorAriaUserPreset: 'User export preset',
+    editorUserPresetPlaceholder: 'Preset: —',
+    editorPresetAdd: '+ Preset',
+    editorPresetRename: 'Rename',
+    editorPresetOverwrite: 'Overwrite',
+    editorPresetDelete: 'Delete',
+    editorFfmpegSectionOutput: 'Output',
+    editorFfmpegSectionOutputHint:
+      'Argv preview, export via Save dialog, and quick actions on the last file.',
+    editorExportCommandPreviewSummary: 'ffmpeg command preview',
+    editorAriaExportFfmpegCommand: 'ffmpeg command',
+    editorCopyFfmpegCommandTitle: 'Copy the ffmpeg command line to the clipboard',
+    editorExportLastFile: 'File',
+    editorExportLastFolder: 'Folder',
+    editorCopyExportPath: 'Copy path',
+    editorExportPreviewPass1: '# Pass 1',
+    editorExportPreviewPass2: '# Pass 2',
+    editorExportPreviewHintNoSource:
+      'No source selected — preview uses <input>/<output> placeholders.',
+    editorExportPreviewHintTwoPass:
+      'Two-pass: only the second pass writes the output file; see main for passlog temp paths.',
+    editorExportPreviewHintTrimAppliedTemplate: 'In/Out markers applied: -ss {in} -t {t}.',
+    editorExportPreviewHintTrimFull:
+      'Markers cover almost the entire file — ffmpeg runs without -ss/-t.',
+    editorExportPreviewHintTrimWaiting:
+      'In/Out markers appear once the timeline reports a range.'
   }
 } as const
 

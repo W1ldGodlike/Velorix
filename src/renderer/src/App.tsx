@@ -2220,19 +2220,22 @@ function App(): JSX.Element {
 
   function exportPreviewHint(): string {
     if (!preview) {
-      return 'Источник не выбран — в превью используются плейсхолдеры <input>/<output>.'
+      return uiText('editorExportPreviewHintNoSource')
     }
     if (exportPreview.pass1Command) {
-      return 'Двухпроход: исходящий файл формирует только вторая команда; для passlog см. временный каталог в main.'
+      return uiText('editorExportPreviewHintTwoPass')
     }
     if (exportPreview.appliedTrim && trimRange !== null) {
       const span = Math.max(0, trimRange.outSec - trimRange.inSec)
-      return `Маркеры In/Out подставлены: -ss ${trimRange.inSec.toFixed(2)} -t ${span.toFixed(2)}.`
+      return uiTextVars('editorExportPreviewHintTrimAppliedTemplate', {
+        in: trimRange.inSec.toFixed(2),
+        t: span.toFixed(2)
+      })
     }
     if (trimRange !== null && probeInfo?.durationSec) {
-      return 'Маркеры покрывают почти весь файл — ffmpeg запустится без -ss/-t.'
+      return uiText('editorExportPreviewHintTrimFull')
     }
-    return 'Маркеры In/Out появятся, как только таймлайн сообщит диапазон.'
+    return uiText('editorExportPreviewHintTrimWaiting')
   }
 
   async function handleCopyExportPreview(): Promise<void> {
@@ -3511,16 +3514,16 @@ function App(): JSX.Element {
                   persistMainWindowUiPanelToggle('ffmpegPresets', e.currentTarget.open)
                 }}
               >
-                <summary className="app-settings-summary">Пресеты</summary>
+                <summary className="app-settings-summary">{uiText('editorFfmpegSectionPresets')}</summary>
                 <p id="ffmpegPresetsSectionHint" className="app-settings-section-hint">
-                  Сохранённые снимки настроек экспорта; кнопки меняют список пресетов в настройках.
+                  {uiText('editorFfmpegSectionPresetsHint')}
                 </p>
                 <div className="app-settings-stack" aria-describedby="ffmpegPresetsSectionHint">
                   <label className="app-field">
-                    <span>Пользовательский пресет</span>
+                    <span>{uiText('editorFieldUserPreset')}</span>
                     <select
                       className="app-control"
-                      aria-label="Пользовательский пресет экспорта"
+                      aria-label={uiText('editorAriaUserPreset')}
                       value={selectedUserPresetId ?? ''}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -3542,7 +3545,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      <option value="">Пресет: —</option>
+                      <option value="">{uiText('editorUserPresetPlaceholder')}</option>
                       {exportUserPresets.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.label}
@@ -3560,7 +3563,7 @@ function App(): JSX.Element {
                         handleSaveExportUserPreset()
                       }}
                     >
-                      + Пресет
+                      {uiText('editorPresetAdd')}
                     </button>
                     <button
                       type="button"
@@ -3571,7 +3574,7 @@ function App(): JSX.Element {
                         handleRenameExportUserPreset()
                       }}
                     >
-                      Имя
+                      {uiText('editorPresetRename')}
                     </button>
                     <button
                       type="button"
@@ -3582,7 +3585,7 @@ function App(): JSX.Element {
                         handleOverwriteExportUserPreset()
                       }}
                     >
-                      Обновить
+                      {uiText('editorPresetOverwrite')}
                     </button>
                     <button
                       type="button"
@@ -3593,7 +3596,7 @@ function App(): JSX.Element {
                         handleDeleteExportUserPreset()
                       }}
                     >
-                      Удалить
+                      {uiText('editorPresetDelete')}
                     </button>
                   </div>
                 </div>
@@ -3606,10 +3609,9 @@ function App(): JSX.Element {
                   persistMainWindowUiPanelToggle('ffmpegOutput', e.currentTarget.open)
                 }}
               >
-                <summary className="app-settings-summary">Вывод</summary>
+                <summary className="app-settings-summary">{uiText('editorFfmpegSectionOutput')}</summary>
                 <p id="ffmpegOutputSectionHint" className="app-settings-section-hint">
-                  Превью argv, экспорт через диалог «Сохранить» и быстрые действия над последним
-                  файлом.
+                  {uiText('editorFfmpegSectionOutputHint')}
                 </p>
                 <div className="app-settings-stack" aria-describedby="ffmpegOutputSectionHint">
                   <details
@@ -3619,15 +3621,17 @@ function App(): JSX.Element {
                       persistMainWindowUiPanelToggle('exportCommandPreview', e.currentTarget.open)
                     }}
                   >
-                    <summary className="app-export-preview-summary">Превью команды ffmpeg</summary>
+                    <summary className="app-export-preview-summary">
+                      {uiText('editorExportCommandPreviewSummary')}
+                    </summary>
                     <div className="app-export-preview-body">
                       <pre
                         className="app-export-preview-pre"
-                        aria-label="Команда ffmpeg"
+                        aria-label={uiText('editorAriaExportFfmpegCommand')}
                         aria-describedby="exportCommandPreviewHint"
                       >
                         {exportPreview.pass1Command
-                          ? `# Проход 1\n${exportPreview.pass1Command}\n\n# Проход 2\n${exportPreviewCommand}`
+                          ? `${uiText('editorExportPreviewPass1')}\n${exportPreview.pass1Command}\n\n${uiText('editorExportPreviewPass2')}\n${exportPreviewCommand}`
                           : exportPreviewCommand}
                       </pre>
                       <div className="app-export-preview-actions">
@@ -3637,10 +3641,10 @@ function App(): JSX.Element {
                           onClick={() => {
                             void handleCopyExportPreview()
                           }}
-                          title="Скопировать строку команды ffmpeg в буфер"
+                          title={uiText('editorCopyFfmpegCommandTitle')}
                           aria-describedby="exportCommandPreviewHint"
                         >
-                          Копировать
+                          {uiText('editorCopy')}
                         </button>
                         <span id="exportCommandPreviewHint" className="app-export-preview-hint">
                           {exportPreviewHint()}
@@ -3659,7 +3663,7 @@ function App(): JSX.Element {
                           void handleOpenLastExport('file')
                         }}
                       >
-                        Файл
+                        {uiText('editorExportLastFile')}
                       </button>
                       <button
                         type="button"
@@ -3670,7 +3674,7 @@ function App(): JSX.Element {
                           void handleOpenLastExport('folder')
                         }}
                       >
-                        Папка
+                        {uiText('editorExportLastFolder')}
                       </button>
                       <button
                         type="button"
@@ -3681,7 +3685,7 @@ function App(): JSX.Element {
                           void handleOpenLastExport('preview')
                         }}
                       >
-                        В превью
+                        {uiText('processingHistoryOpenPreview')}
                       </button>
                       <button
                         type="button"
@@ -3692,7 +3696,7 @@ function App(): JSX.Element {
                           void handleCopyLastExportPath()
                         }}
                       >
-                        Копировать путь
+                        {uiText('editorCopyExportPath')}
                       </button>
                     </div>
                   ) : null}
