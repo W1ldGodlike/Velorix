@@ -662,6 +662,35 @@ describe('ffprobe-service buildTrackRows', () => {
     expect(row?.detail).toContain('bpc 16-bit')
   })
 
+  it('video detail включает language/title/handler_name без дубля handler=title', () => {
+    const rows = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 1920,
+          height: 1080,
+          tags: { language: 'rus', title: 'Main feature', handler_name: 'VideoHandler' }
+        },
+        {
+          index: 1,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 1280,
+          height: 720,
+          tags: { title: 'Angles', handler_name: 'Angles' }
+        }
+      ],
+      null
+    )
+
+    expect(rows[0]?.detail).toContain('rus')
+    expect(rows[0]?.detail).toContain('Main feature')
+    expect(rows[0]?.detail).toContain('VideoHandler')
+    expect((rows[1]?.detail.match(/Angles/g) ?? []).length).toBe(1)
+  })
+
   it('audio detail включает language/title/handler_name без дубля handler=title', () => {
     const rows = buildTrackRows(
       [

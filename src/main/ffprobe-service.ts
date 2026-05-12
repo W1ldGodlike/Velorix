@@ -559,6 +559,22 @@ function buildTrackDetail(
       parts.push(`pad ${vInitialPadding} smp`)
     }
     appendMaxBitrateDetailIfNotable(parts, stream.bit_rate, stream.max_bit_rate)
+    const vLang = tagString(stream.tags, 'language')
+    const vTitle = tagString(stream.tags, 'title')
+    if (vLang) {
+      parts.push(vLang)
+    }
+    if (vTitle) {
+      parts.push(collapseFfprobeDetailSnippet(vTitle))
+    }
+    const vHandlerRaw = tagString(stream.tags, 'handler_name')
+    if (vHandlerRaw !== null) {
+      const titleNorm = vTitle?.trim().toLowerCase() ?? ''
+      const handlerNorm = vHandlerRaw.trim().toLowerCase()
+      if (handlerNorm === '' || handlerNorm !== titleNorm) {
+        parts.push(collapseFfprobeDetailSnippet(vHandlerRaw))
+      }
+    }
     const vEnc = formatFfprobeTagEncoderBrief(stream.tags)
     if (vEnc) {
       parts.push(vEnc)
