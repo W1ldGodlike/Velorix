@@ -300,6 +300,21 @@ function collapseFfprobeDetailSnippet(raw: string): string {
   return `${collapsed.slice(0, FFPROBE_DETAIL_ENCODER_MAX - 1)}…`
 }
 
+function appendFfprobeNbFramesDetail(
+  parts: string[],
+  nbFramesRaw: string | number | undefined
+): void {
+  const nbFramesParsed =
+    typeof nbFramesRaw === 'string' && nbFramesRaw.trim() !== ''
+      ? Number.parseInt(nbFramesRaw.replace(/\s+/g, ''), 10)
+      : typeof nbFramesRaw === 'number' && Number.isFinite(nbFramesRaw)
+        ? Math.trunc(nbFramesRaw)
+        : NaN
+  if (Number.isFinite(nbFramesParsed) && nbFramesParsed > 0) {
+    parts.push(`${nbFramesParsed} frm`)
+  }
+}
+
 function appendFfprobeReplayGainAudioDetail(
   parts: string[],
   tags: Record<string, string | number | undefined> | undefined
@@ -417,16 +432,7 @@ function buildTrackDetail(
     if (streamDur) {
       parts.push(streamDur)
     }
-    const nbFramesRaw = stream.nb_frames
-    const nbFramesParsed =
-      typeof nbFramesRaw === 'string' && nbFramesRaw.trim() !== ''
-        ? Number.parseInt(nbFramesRaw.replace(/\s+/g, ''), 10)
-        : typeof nbFramesRaw === 'number' && Number.isFinite(nbFramesRaw)
-          ? Math.trunc(nbFramesRaw)
-          : NaN
-    if (Number.isFinite(nbFramesParsed) && nbFramesParsed > 0) {
-      parts.push(`${nbFramesParsed} frm`)
-    }
+    appendFfprobeNbFramesDetail(parts, stream.nb_frames)
     const sideData = summarizeFfprobeSideDataList(stream.side_data_list)
     if (sideData !== null) {
       parts.push(sideData)
@@ -594,6 +600,7 @@ function buildTrackDetail(
     if (streamDur) {
       parts.push(streamDur)
     }
+    appendFfprobeNbFramesDetail(parts, stream.nb_frames)
     const aProfile = ffprobeScalarDisplay(
       typeof stream.profile === 'string' ? stream.profile : undefined
     )
@@ -704,6 +711,7 @@ function buildTrackDetail(
     if (streamDur) {
       parts.push(streamDur)
     }
+    appendFfprobeNbFramesDetail(parts, stream.nb_frames)
   } else {
     const otherCodec = ffprobeScalarDisplay(
       typeof stream.codec_name === 'string' ? stream.codec_name : undefined

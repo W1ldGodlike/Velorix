@@ -73,6 +73,39 @@ describe('ffprobe-service buildTrackRows', () => {
     expect(row?.detail).toContain('exdata 42 B')
   })
 
+  it('video/audio/subtitle detail: nb_frames как N frm при положительном значении', () => {
+    const rows = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 640,
+          height: 360,
+          nb_frames: '1200'
+        },
+        {
+          index: 1,
+          codec_type: 'audio',
+          codec_name: 'aac',
+          channels: 2,
+          sample_rate: '48000',
+          nb_frames: '2304000'
+        },
+        {
+          index: 2,
+          codec_type: 'subtitle',
+          codec_name: 'subrip',
+          nb_frames: '42'
+        }
+      ],
+      null
+    )
+    expect(rows[0]?.detail).toContain('1200 frm')
+    expect(rows[1]?.detail).toContain('2304000 frm')
+    expect(rows[2]?.detail).toContain('42 frm')
+  })
+
   it('audio/video/subtitle detail: initial_padding показывает priming samples', () => {
     const rows = buildTrackRows(
       [
