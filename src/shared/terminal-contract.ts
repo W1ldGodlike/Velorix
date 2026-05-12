@@ -1490,6 +1490,48 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· --print channel_is_verified',
     summary: 'Флаг верифицированного канала без скачивания (--skip-download --print channel_is_verified); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print channel_is_verified '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· cookies opera',
+    summary: 'Сухой прогон с cookies Opera (--skip-download --cookies-from-browser opera); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --cookies-from-browser opera '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· cookies chromium',
+    summary: 'Сухой прогон с cookies Chromium (--skip-download --cookies-from-browser chromium); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --cookies-from-browser chromium '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· cookies vivaldi',
+    summary: 'Сухой прогон с cookies Vivaldi (--skip-download --cookies-from-browser vivaldi); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --cookies-from-browser vivaldi '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo-bypass FR -F',
+    summary: 'Гео-обход с кодом страны FR (--geo-bypass-country FR -F); поменяйте ISO-код при необходимости; допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country FR -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· player_client=mweb -F',
+    summary: 'YouTube: мобильный web-клиент mweb в extractor-args (--extractor-args youtube:player_client=mweb -F); допишите URL.',
+    fullLine: 'yt-dlp --extractor-args youtube:player_client=mweb -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print requested_formats',
+    summary: 'Список запрошенных/выбранных форматов без скачивания (--skip-download --print requested_formats); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print requested_formats '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print requested_subtitles',
+    summary: 'Запрошенные субтитры без скачивания (--skip-download --print requested_subtitles); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print requested_subtitles '
   }
 ]
 
@@ -2124,6 +2166,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· map v:0 copy 2s',
     summary: 'Remux только первой видеодорожки без перекодирования (-map 0:v:0 -c:v copy); без аудио/субтитров; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -t 2 -map 0:v:0 -c:v copy -an -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· s:0 pts+tb',
+    summary: 'Поток s:0: time_base + start_pts (смещение субтитров vs видео); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=time_base,start_pts -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· volumedetect 10s',
+    summary: 'Замер громкости первых 10 с (-af volumedetect -vn -sn); mean_volume/max_volume в stderr; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af volumedetect -t 10 -vn -sn -f null -`
   }
 ]
 
