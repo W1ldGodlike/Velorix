@@ -81,4 +81,26 @@ Para with **bold** and \`code\` and [x](other.md).
     expect(hrs).toHaveLength(2)
     expect(blocks.filter((b) => b.kind === 'paragraph').length).toBeGreaterThanOrEqual(2)
   })
+
+  it('parses + unordered markers and indented list continuations', () => {
+    const md = normalizeKnowledgeMarkdownSource(`+ One
+    continued here
++ Two
+
+1. Alpha
+    beta tail
+2. Gamma
+`)
+    const blocks = parseKnowledgeMarkdown(md)
+    const ul = blocks.find((b) => b.kind === 'ul')
+    expect(ul?.kind).toBe('ul')
+    if (ul?.kind === 'ul') {
+      expect(ul.items).toHaveLength(2)
+    }
+    const ol = blocks.find((b) => b.kind === 'ol')
+    expect(ol?.kind).toBe('ol')
+    if (ol?.kind === 'ol') {
+      expect(ol.items).toHaveLength(2)
+    }
+  })
 })

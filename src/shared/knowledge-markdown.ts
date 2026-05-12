@@ -1,4 +1,4 @@
-/** Подмножество CommonMark для статей `Help/*.md` (без таблиц/HTML). */
+/** Подмножество CommonMark для статей `Help/*.md` (без таблиц/HTML): списки `-`/`+`/`*`, нумерация, перенос строки пункта при отступе ≥4 пробела или таб. */
 
 export type MdInline =
   | { kind: 'text'; text: string }
@@ -193,6 +193,38 @@ function listMarkerBody(line: string, re: RegExp): string | null {
   return m?.[1]?.trim() ?? null
 }
 
+/** Продолжение пункта списка: строка с табом или ≥4 пробелов до текста (CommonMark-подобно). */
+function listContinuationBody(raw: string): string | null {
+  const m = raw.match(/^(\t| {4,})(.*)$/)
+  if (!m) {
+    return null
+  }
+  const body = (m[2] ?? '').trim()
+  return body.length > 0 ? body : null
+}
+
+function breaksListContinuation(trimmed: string): boolean {
+  if (trimmed.length === 0) {
+    return true
+  }
+  if (trimmed.startsWith('```')) {
+    return true
+  }
+  if (/^#{1,3}\s/.test(trimmed)) {
+    return true
+  }
+  if (/^>/.test(trimmed)) {
+    return true
+  }
+  if (/^[-*+]\s+/.test(trimmed) || /^\d+\.\s+/.test(trimmed)) {
+    return true
+  }
+  if (isKnowledgeThematicBreak(trimmed)) {
+    return true
+  }
+  return false
+}
+
 export function parseKnowledgeMarkdown(
   raw: string,
   opts?: { articleTitle?: string }
@@ -273,30 +305,46 @@ export function parseKnowledgeMarkdown(
       continue
     }
 
-    if (/^[-*]\s+/.test(trimmed)) {
-      const items: MdInline[][] = []
+    if (/^[-*+]\s+/.test(trimmed)) {
+      const itemTexts: string[] = []
       while (i < lines.length) {
-        const L = (lines[i] ?? '').trim()
+        const rawL = lines[i] ?? ''
+        const L = rawL.trim()
         if (L.length === 0) {
           break
         }
-        const body = listMarkerBody(L, /^[-*]\s+(.*)$/)
+        const body = listMarkerBody(L, /^[-*+]\s+(.*)$/)
         if (body === null) {
           break
         }
-        items.push(parseInlines(body))
+        itemTexts.push(body)
         i += 1
+        while (i < lines.length) {
+          const rawC = lines[i] ?? ''
+          const cTrim = rawC.trim()
+          if (breaksListContinuation(cTrim)) {
+            break
+          }
+          const cont = listContinuationBody(rawC)
+          if (cont === null) {
+            break
+          }
+          const prev = itemTexts[itemTexts.length - 1] ?? ''
+          itemTexts[itemTexts.length - 1] = `${prev} ${cont}`.replace(/\s+/g, ' ').trim()
+          i += 1
+        }
       }
-      if (items.length > 0) {
-        blocks.push({ kind: 'ul', items })
+      if (itemTexts.length > 0) {
+        blocks.push({ kind: 'ul', items: itemTexts.map((t) => parseInlines(t)) })
       }
       continue
     }
 
     if (/^\d+\.\s+/.test(trimmed)) {
-      const items: MdInline[][] = []
+      const itemTexts: string[] = []
       while (i < lines.length) {
-        const L = (lines[i] ?? '').trim()
+        const rawL = lines[i] ?? ''
+        const L = rawL.trim()
         if (L.length === 0) {
           break
         }
@@ -304,11 +352,25 @@ export function parseKnowledgeMarkdown(
         if (body === null) {
           break
         }
-        items.push(parseInlines(body))
+        itemTexts.push(body)
         i += 1
+        while (i < lines.length) {
+          const rawC = lines[i] ?? ''
+          const cTrim = rawC.trim()
+          if (breaksListContinuation(cTrim)) {
+            break
+          }
+          const cont = listContinuationBody(rawC)
+          if (cont === null) {
+            break
+          }
+          const prev = itemTexts[itemTexts.length - 1] ?? ''
+          itemTexts[itemTexts.length - 1] = `${prev} ${cont}`.replace(/\s+/g, ' ').trim()
+          i += 1
+        }
       }
-      if (items.length > 0) {
-        blocks.push({ kind: 'ol', items })
+      if (itemTexts.length > 0) {
+        blocks.push({ kind: 'ol', items: itemTexts.map((t) => parseInlines(t)) })
       }
       continue
     }
@@ -329,7 +391,7 @@ export function parseKnowledgeMarkdown(
       if (/^>/.test(T)) {
         break
       }
-      if (/^[-*]\s+/.test(T)) {
+      if (/^[-*+]\s+/.test(T)) {
         break
       }
       if (/^\d+\.\s+/.test(T)) {
