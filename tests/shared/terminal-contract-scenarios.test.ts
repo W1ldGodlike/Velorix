@@ -727,6 +727,21 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --flat-playlist --skip-download --print _type ')
   })
 
+  it('downloads: merge mp4 / keep-video / ext-downloader / parse-metadata / geo AU–IT / playlist URL / multistream flags', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --merge-output-format mp4 ')
+    expect(lines).toContain('yt-dlp --no-keep-video ')
+    expect(lines).toContain('yt-dlp --external-downloader ffmpeg ')
+    expect(lines).toContain('yt-dlp --parse-metadata title:%(title)s ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country AU -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country BR -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country IT -F ')
+    expect(lines).toContain('yt-dlp --skip-download --print playlist_webpage_url ')
+    expect(lines).toContain('yt-dlp --skip-download --print webpage_url_scheme ')
+    expect(lines).toContain('yt-dlp --video-multistreams -F ')
+    expect(lines).toContain('yt-dlp --audio-multistreams -F ')
+  })
+
   it('preview: v:0 disposition, a:1 bit_rate, astats', () => {
     const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
     expect(
@@ -747,6 +762,24 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     ).toBe(true)
     expect(
       lines.some((l) => l.includes('-af astats=metadata=1:reset=1') && l.includes('-t 5') && l.includes('-vn -sn'))
+    ).toBe(true)
+  })
+
+  it('preview: a:0 stream_tags encoder, ebur128', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams a:0') &&
+          l.includes('stream_tags=encoder') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af ebur128=framelog=verbose') && l.includes('-t 12') && l.includes('-vn -sn')
+      )
     ).toBe(true)
   })
 })

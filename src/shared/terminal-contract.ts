@@ -1652,6 +1652,72 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· flat print _type',
     summary: 'Плоский плейлист: тип записи video/playlist/… (--flat-playlist --skip-download --print _type); допишите URL плейлиста.',
     fullLine: 'yt-dlp --flat-playlist --skip-download --print _type '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· merge mp4',
+    summary: 'Слияние потоков в MP4 при мультиплексировании (--merge-output-format mp4); допишите URL и -f …',
+    fullLine: 'yt-dlp --merge-output-format mp4 '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-keep-video',
+    summary: 'После извлечения аудио не оставлять исходное видео (--no-keep-video); допишите URL и --extract-audio при необходимости.',
+    fullLine: 'yt-dlp --no-keep-video '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· ext-downloader ffmpeg',
+    summary: 'Тянуть фрагменты через внешний ffmpeg (--external-downloader ffmpeg); обход части нативных загрузчиков; допишите URL.',
+    fullLine: 'yt-dlp --external-downloader ffmpeg '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· parse-metadata title',
+    summary: 'Постобработка метаданных: перезапись title из шаблона (--parse-metadata title:%(title)s); допишите URL.',
+    fullLine: 'yt-dlp --parse-metadata title:%(title)s '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo-bypass AU -F',
+    summary: 'Гео-обход с кодом страны AU (--geo-bypass-country AU -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country AU -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo-bypass BR -F',
+    summary: 'Гео-обход с кодом страны BR (--geo-bypass-country BR -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country BR -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo-bypass IT -F',
+    summary: 'Гео-обход с кодом страны IT (--geo-bypass-country IT -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country IT -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print playlist_webpage_url',
+    summary: 'URL страницы плейлиста без скачивания (--skip-download --print playlist_webpage_url); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print playlist_webpage_url '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print webpage_url_scheme',
+    summary: 'Схема URL страницы (http/https) без скачивания (--skip-download --print webpage_url_scheme); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print webpage_url_scheme '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· video-multistreams -F',
+    summary: 'Список форматов с учётом нескольких видеопотоков (--video-multistreams -F); редкие мульти-angle; допишите URL.',
+    fullLine: 'yt-dlp --video-multistreams -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· audio-multistreams -F',
+    summary: 'Список форматов с учётом нескольких аудиопотоков (--audio-multistreams -F); мультиязык; допишите URL.',
+    fullLine: 'yt-dlp --audio-multistreams -F '
   }
 ]
 
@@ -2328,6 +2394,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· astats 5s',
     summary: 'Краткая статистика аудио первых 5 с (-af astats=metadata=1:reset=1); RMS/peak в stderr; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af astats=metadata=1:reset=1 -t 5 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:0 stream encoder',
+    summary: 'Поток a:0: stream_tags encoder (кодировщик дорожки, если записан); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream_tags=encoder -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ebur128 12s',
+    summary: 'EBU R128 громкость первых 12 с (-af ebur128=framelog=verbose); Integrated/LRA/TP в stderr; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af ebur128=framelog=verbose -t 12 -vn -sn -f null -`
   }
 ]
 
