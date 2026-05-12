@@ -1011,4 +1011,44 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     ).toBe(true)
     expect(lines.some((l) => l.includes('-fflags +genpts') && l.includes('-c copy') && l.includes('-t 2'))).toBe(true)
   })
+
+  it('downloads: client-cert-key / impersonate firefox+edge / geo CZ..IS / convert-thumbnails png', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --client-certificate-key key.pem ')
+    expect(lines).toContain('yt-dlp --impersonate firefox -F ')
+    expect(lines).toContain('yt-dlp --impersonate edge -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country CZ -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country HU -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country RO -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country BG -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country HR -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country LV -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country LT -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country EE -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country IS -F ')
+    expect(lines).toContain('yt-dlp --convert-thumbnails png ')
+  })
+
+  it('preview: format lyrics / a:1 layout+sfmt / scenedetect', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=lyrics') &&
+          l.includes('default=nw=1:nk=1') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-select_streams a:1') &&
+          l.includes('channel_layout,sample_fmt') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+    expect(
+      lines.some((l) => l.includes('-vf scenedetect=scene=0.3') && l.includes('-t 20') && l.includes('-an -sn'))
+    ).toBe(true)
+  })
 })

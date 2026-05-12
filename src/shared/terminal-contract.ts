@@ -2144,6 +2144,84 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· geo IE -F',
     summary: 'Гео-обход с кодом страны IE (--geo-bypass-country IE -F); допишите URL.',
     fullLine: 'yt-dlp --geo-bypass-country IE -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· client-cert-key pem',
+    summary: 'Приватный ключ к клиентскому TLS-сертификату (--client-certificate-key key.pem); положите PEM рядом с рабочим каталогом или укажите путь без кавычек; допишите URL.',
+    fullLine: 'yt-dlp --client-certificate-key key.pem '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· impersonate firefox -F',
+    summary: 'TLS/HTTP fingerprint как у Firefox (--impersonate firefox -F); допишите URL.',
+    fullLine: 'yt-dlp --impersonate firefox -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· impersonate edge -F',
+    summary: 'TLS/HTTP fingerprint как у Edge (--impersonate edge -F); допишите URL.',
+    fullLine: 'yt-dlp --impersonate edge -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo CZ -F',
+    summary: 'Гео-обход с кодом страны CZ (--geo-bypass-country CZ -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country CZ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo HU -F',
+    summary: 'Гео-обход с кодом страны HU (--geo-bypass-country HU -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country HU -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo RO -F',
+    summary: 'Гео-обход с кодом страны RO (--geo-bypass-country RO -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country RO -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo BG -F',
+    summary: 'Гео-обход с кодом страны BG (--geo-bypass-country BG -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country BG -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo HR -F',
+    summary: 'Гео-обход с кодом страны HR (--geo-bypass-country HR -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country HR -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo LV -F',
+    summary: 'Гео-обход с кодом страны LV (--geo-bypass-country LV -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country LV -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo LT -F',
+    summary: 'Гео-обход с кодом страны LT (--geo-bypass-country LT -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country LT -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo EE -F',
+    summary: 'Гео-обход с кодом страны EE (--geo-bypass-country EE -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country EE -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo IS -F',
+    summary: 'Гео-обход с кодом страны IS (--geo-bypass-country IS -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country IS -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· convert-thumbnails png',
+    summary: 'Конвертировать обложку в PNG при скачивании (--convert-thumbnails png); допишите URL и ключи вывода.',
+    fullLine: 'yt-dlp --convert-thumbnails png '
   }
 ]
 
@@ -2946,6 +3024,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· a:0 sample_fmt',
     summary: 'Поток a:0: только sample_fmt (s16/fltp и т.д.); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=sample_fmt -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format lyrics tag',
+    summary: 'Тег контейнера lyrics (текстовые вставки в MP3/M4A и др.); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=lyrics -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:1 layout+sfmt',
+    summary: 'Поток a:1: channel_layout + sample_fmt (мультиязык, разрядность PCM); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:1 -show_entries stream=channel_layout,sample_fmt -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· scenedetect 20s',
+    summary: 'Детектор смен сцен первых 20 с (-vf scenedetect=scene=0.3); scene_score в stderr; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf scenedetect=scene=0.3 -t 20 -an -sn -f null -`
   },
   {
     tool: 'ffmpeg',
