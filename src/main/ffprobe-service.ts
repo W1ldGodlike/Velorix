@@ -410,6 +410,10 @@ function buildTrackDetail(
     if (subEnc) {
       parts.push(subEnc)
     }
+    const subCreated = formatFfprobeCreationTimeBrief(stream.tags)
+    if (subCreated) {
+      parts.push(subCreated)
+    }
     const subStart = formatFfprobeStreamStartTime(stream.start_time)
     if (subStart) {
       parts.push(subStart)

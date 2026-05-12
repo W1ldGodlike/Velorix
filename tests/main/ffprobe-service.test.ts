@@ -193,7 +193,7 @@ describe('ffprobe-service buildTrackRows', () => {
     expect(row?.detail).toContain('bt2020·bt2020nc')
   })
 
-  it('video/audio detail включает tags.creation_time как created YYYY-MM-DD', () => {
+  it('video/audio/subtitle detail включает tags.creation_time как created YYYY-MM-DD', () => {
     const rows = buildTrackRows(
       [
         {
@@ -211,12 +211,19 @@ describe('ffprobe-service buildTrackRows', () => {
           channels: 2,
           sample_rate: '48000',
           tags: { creation_time: '2022-11-07T12:00:00.000000Z' }
+        },
+        {
+          index: 2,
+          codec_type: 'subtitle',
+          codec_name: 'mov_text',
+          tags: { creation_time: '2022-11-07T14:00:00.000000Z' }
         }
       ],
       null
     )
     expect(rows[0]?.detail).toContain('created 2022-11-07')
     expect(rows[1]?.detail).toContain('created 2022-11-07')
+    expect(rows[2]?.detail).toContain('created 2022-11-07')
   })
 
   it('encoder в detail обрезается при длинной строке', () => {
