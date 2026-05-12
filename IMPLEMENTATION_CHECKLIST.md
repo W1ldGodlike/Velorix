@@ -43,7 +43,7 @@
 
 - [~] §19/§3/§17: release/security — CI/check:release + `verify:win-unpacked`, непустые SHA, строгий JSON, подпись Win; интерактивный smoke вручную.
 - [~] §6/§7: downloads→processing — batch-режим, HW encode и оставшиеся расхождения embedded/pop-out.
-- [~] §8: terminal/CLI — polish подсказок, сценариев и UX выполнения команд без расширения TODO-архива.
+- [~] §8: terminal/CLI — polish подсказок/сценариев + RU/EN chrome вкладки «Терминал» (`ui-text`); UX argv/выполнения без раздувания TODO-архива.
 - [~] §9/§18: ffprobe/diagnostics — crash/e2e smoke и точечные редкие поля по мере нахождения.
 - [~] §15: knowledge — deep-link из «Терминала»; tooltips; EN-тела через `Help/en/` + fallback.
 - [~] §1.1/§2.2/§5: локализация, состояние UI, contrast/focus audit и DPI/multi-monitor smoke.
@@ -93,7 +93,7 @@
 - [~] Базовые токены темы есть; тёмная палитра главного окна приведена к компактному инженерному стилю, v0-референс больше не является центром спринта.
 - [~] Бинарные настройки переводить в **pill switch** с русской подсказкой, а не в select из двух вариантов: общий React `PillSwitch` применён к `Без аудио`, `Весь плейлист`, `Только аудио`, `Открыть после успеха`; **2-pass libx264** во вкладке редактора (rail «Формат», только с видеобитрейтом) + двойной spawn/main + превью двух команд; дальше — HW encode и прочие бинарные настройки по тому же паттерну.
 - [~] Довести палитру, типографику, отступы, радиусы и focus-состояния на всех экранах: главный renderer и downloads (токены `--fa-*`/`focus-ring`) сближены; **редактор: focus-ring на полосе быстрого yt-dlp — `app-url-summary`, `app-url-input`, `app-btn` в теле полосы**; **`<video>` предпросмотра — `aria-label` с basename пути**; **окно загрузок: кольцо фокуса на сворачиваемых `summary` (история, журнал, hints) + rail** + **контекстные `aria-describedby` у нижних панелей**; второе окно загрузок — тема синхронна; инспектор: topbar-хром как редактор + `probe*` секции синхронны с главным через `mergeMainWindowUiPanels`.
-- [~] Убрать все литералы интерфейса в локализацию; добавлен стартовый renderer-слой `src/renderer/src/locales/ui-text.ts` (`ru/en`) и переведены `AboutDialog`/`Versions`; дальше — поэтапно вынести оставшиеся editor/downloads/inspector строки и завести `locales/**` JSON-структуру.
+- [~] Убрать все литералы интерфейса в локализацию; добавлен стартовый renderer-слой `src/renderer/src/locales/ui-text.ts` (`ru/en`) и переведены `AboutDialog`/`Versions`/вкладка «Терминал» (workspace); дальше — поэтапно вынести оставшиеся editor/downloads/inspector строки и завести `locales/**` JSON-структуру.
 - [ ] Проверить масштабирование 100/125/150/200%.
 
 ## §2. Среда, инструменты и проект
@@ -368,6 +368,7 @@
 - [x] История команд.
 - [x] Логирование команд и результата.
 - [~] IntelliSense в строке argv (v1): до 14 подсказок из merge JSON+сценариев, Tab/Enter/↑↓/Shift+Tab/Home/End/PgUp/PgDn (шаг 5), Escape, навигация при сужении списка (clamp stale-индекса), полный список до 240: фильтр + клавиатура (↑↓/Home/End/PgUp/PgDn/Enter, Escape — сброс фильтра) и подсветка активной строки, `shared/terminal-inline-suggest` + Vitest.
+- [~] Вкладка «Терминал»: подписи, help-intro (lead + `<code>` токен + tail с числами), кнопки, плейсхолдеры, aria, история/копирование строк — через `ui-text` (ru/en по `navigator`) и форматтеры `formatTerminalIntroTail` / `formatTerminalExitLine` / `formatTerminalCopyLineAria`.
 
 ## §9. Инспектор видеофайлов
 
@@ -434,7 +435,7 @@
 - [x] Поиск.
 - [~] Открытие статей из подсказок (inline help вне Knowledge): deep-link в `KnowledgeDialog` (`initialSlug`); первая точка — вкладка «Терминал» → `ffmpeg-terminal-hints`.
 - [~] Tooltips на ключевых контролах (база знаний: топбар, диалог поиск/закрыть/TOC, markdown внутр./внешние ссылки; deep-link из «Терминала»).
-- [~] EN: при `preferredUiLocale=en` читается `Help/en/{slug}.md` при наличии, иначе корень `Help/*.md` (chrome EN/RU через `ui-text`); добавлены EN-тела `start`, `extract-frames`, `processing-url-combo`; остальные статьи — постепенный перенос в `Help/en/`.
+- [~] EN: при `preferredUiLocale=en` читается `Help/en/{slug}.md` при наличии, иначе корень `Help/*.md` (chrome EN/RU через `ui-text`); пары `Help`/`Help/en` для основных статей; дальше — точечные правки тел и новые slug’и.
 
 ## §16. Аппаратное ускорение
 

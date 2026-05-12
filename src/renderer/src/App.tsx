@@ -11,7 +11,13 @@ import {
 import VideoTimeline from './components/VideoTimeline'
 import PreviewTransport from './components/PreviewTransport'
 import Versions from './components/Versions'
-import { uiText } from './locales/ui-text'
+import {
+  formatTerminalCopyLineAria,
+  formatTerminalExitLine,
+  formatTerminalIntroTail,
+  formatTerminalPreviewTooltip,
+  uiText
+} from './locales/ui-text'
 import {
   IconBan,
   IconChevronLeft,
@@ -3590,26 +3596,22 @@ function App(): JSX.Element {
           ) : null}
         </main>
       ) : workspaceTab === 'terminal' ? (
-        <main className="app-main app-terminal-workspace" aria-label="Терминал CLI">
+        <main
+          className="app-main app-terminal-workspace"
+          aria-label={uiText('terminalWorkspaceAriaLabel')}
+        >
           <section className="app-terminal-panel">
             <div className="app-downloads-band">
               <div className="app-downloads-band-copy">
-                <h2 className="app-downloads-title">Терминал</h2>
+                <h2 className="app-downloads-title">{uiText('terminalTitle')}</h2>
                 <p className="app-downloads-hint">
-                  Разрешены только префиксы ffmpeg, ffprobe и yt-dlp. Команда разбирается как argv,
-                  запускается через main без shell, а PATH дополняется папкой выбранного движка. В
-                  argv можно токен <code>{TERMINAL_CURRENT_FILE_PLACEHOLDER}</code> — подставится
-                  путь текущего превью редактора (только если файл уже открыт через диалог или DnD).
-                  В строке ввода — компактный IntelliSense: стрелки вверх/вниз, Home/End, PgUp/PgDn
-                  (шаг {DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP}), Shift+Tab — предыдущая позиция в списке,
-                  Tab и Enter — подставить активную подсказку (до{' '}
-                  {DEFAULT_TERMINAL_INLINE_SUGGEST_MAX} подсказок из той же базы, что и справа). Рядом
-                  есть полный выпадающий список (до {TERMINAL_HINT_DROPDOWN_MAX} пунктов по
-                  категориям инструментов): в поле фильтра списка — стрелки вверх/вниз, Home/End,
-                  PgUp/PgDn (шаг {DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP}), Enter — вставить
-                  выделенную подсказку в argv, Escape — сбросить фильтр (или убрать фокус, если
-                  фильтр уже пуст). В журнале вывода каждая строка
-                  с кнопкой «Копир.» при наведении (копирует ровно эту строку).{' '}
+                  {uiText('terminalIntroLead')}
+                  <code>{TERMINAL_CURRENT_FILE_PLACEHOLDER}</code>
+                  {formatTerminalIntroTail({
+                    pageStep: DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP,
+                    maxInline: DEFAULT_TERMINAL_INLINE_SUGGEST_MAX,
+                    maxDd: TERMINAL_HINT_DROPDOWN_MAX
+                  })}
                   <button
                     type="button"
                     className="app-knowledge-link"
@@ -3631,8 +3633,8 @@ function App(): JSX.Element {
                   value={terminalLine}
                   spellCheck={false}
                   autoComplete="off"
-                  placeholder="ffprobe -version"
-                  aria-label="Команда CLI"
+                  placeholder={uiText('terminalCommandPlaceholder')}
+                  aria-label={uiText('terminalCommandInputAriaLabel')}
                   aria-expanded={terminalInlineSuggestions.length > 0 && terminalSuggestFocus}
                   aria-controls="terminal-inline-suggest-list"
                   aria-autocomplete="list"
@@ -3732,12 +3734,12 @@ function App(): JSX.Element {
                   disabled={terminalBusy || !currentSourcePath}
                   title={
                     currentSourcePath
-                      ? `Вставить токен «${TERMINAL_CURRENT_FILE_PLACEHOLDER}» (путь текущего превью)`
-                      : 'Сначала откройте файл в редакторе'
+                      ? formatTerminalPreviewTooltip(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+                      : uiText('terminalPreviewFileTooltipNeedFile')
                   }
                   onClick={() => appendTerminalToken(TERMINAL_CURRENT_FILE_PLACEHOLDER)}
                 >
-                  Превью-файл
+                  {uiText('terminalPreviewFileButton')}
                 </button>
                 <button
                   type="button"
@@ -3747,15 +3749,15 @@ function App(): JSX.Element {
                     void runTerminalLine()
                   }}
                 >
-                  {terminalBusy ? 'Выполняю…' : 'Выполнить'}
+                  {terminalBusy ? uiText('terminalRunningButton') : uiText('terminalRunButton')}
                 </button>
               </div>
               <div className="app-field app-terminal-dropdown">
-                <span>Вставить подсказку из полного списка</span>
+                <span>{uiText('terminalDropdownInsertLabel')}</span>
                 <input
                   className="app-control app-downloads-hint-filter"
-                  aria-label="Фильтр полного списка подсказок терминала"
-                  placeholder="Поиск по токену, summary или fullLine"
+                  aria-label={uiText('terminalDropdownFilterAria')}
+                  placeholder={uiText('terminalDropdownFilterPlaceholder')}
                   value={terminalDropdownFilter}
                   disabled={terminalBusy}
                   onChange={(e) => {
@@ -3823,7 +3825,7 @@ function App(): JSX.Element {
                   ref={terminalDropdownListRef}
                   className="app-terminal-dropdown-list"
                   role="listbox"
-                  aria-label="Полный список CLI подсказок"
+                  aria-label={uiText('terminalDropdownListAria')}
                 >
                   {(() => {
                     let flatIdx = 0
@@ -3867,7 +3869,7 @@ function App(): JSX.Element {
                     })
                   })()}
                   {terminalDropdownVisibleHints.length === 0 ? (
-                    <p className="app-downloads-empty">Ничего не найдено по фильтру.</p>
+                    <p className="app-downloads-empty">{uiText('terminalDropdownEmpty')}</p>
                   ) : null}
                 </div>
               </div>
@@ -3876,7 +3878,7 @@ function App(): JSX.Element {
                   id="terminal-inline-suggest-list"
                   className="app-terminal-suggest"
                   role="listbox"
-                  aria-label="Подсказки argv"
+                  aria-label={uiText('terminalInlineSuggestAria')}
                   onMouseDown={(ev) => {
                     ev.preventDefault()
                   }}
@@ -3912,9 +3914,9 @@ function App(): JSX.Element {
               ) : null}
             </div>
             <div className="app-terminal-layout">
-              <section className="app-terminal-history" aria-label="История команд терминала">
+              <section className="app-terminal-history" aria-label={uiText('terminalHistoryAria')}>
                 {terminalHistory.length === 0 ? (
-                  <p className="app-downloads-empty">История этой сессии пока пуста.</p>
+                  <p className="app-downloads-empty">{uiText('terminalHistoryEmpty')}</p>
                 ) : (
                   terminalHistory.map((entry) => {
                     const lines = (() => {
@@ -3932,8 +3934,8 @@ function App(): JSX.Element {
                           <code>{entry.line}</code>
                           <span>
                             {entry.result.ok
-                              ? `code ${entry.result.code ?? 'n/a'} · ${entry.result.elapsedMs} ms`
-                              : 'blocked'}
+                              ? formatTerminalExitLine(entry.result.code, entry.result.elapsedMs)
+                              : uiText('terminalBlocked')}
                           </span>
                         </div>
                         {entry.result.ok ? (
@@ -3949,13 +3951,13 @@ function App(): JSX.Element {
                                 <button
                                   type="button"
                                   className="app-terminal-output-line-copy"
-                                  title="Копировать эту строку"
-                                  aria-label={`Копировать строку ${lineIdx + 1}`}
+                                  title={uiText('terminalCopyLineTitle')}
+                                  aria-label={formatTerminalCopyLineAria(lineIdx + 1)}
                                   onClick={() => {
                                     void copyTerminalOutputLine(line)
                                   }}
                                 >
-                                  Копир.
+                                  {uiText('terminalCopyLineButton')}
                                 </button>
                               </div>
                             ))}
@@ -3968,14 +3970,14 @@ function App(): JSX.Element {
                   })
                 )}
               </section>
-              <aside className="app-terminal-hints" aria-label="Подсказки CLI">
+              <aside className="app-terminal-hints" aria-label={uiText('terminalHintsPanelAria')}>
                 <label className="app-field">
-                  <span>Поиск подсказок</span>
+                  <span>{uiText('terminalHintsSearchLabel')}</span>
                   <input
                     className="app-control"
                     value={terminalHintFilter}
                     spellCheck={false}
-                    placeholder="--help, -i, crop"
+                    placeholder={uiText('terminalHintsSearchPlaceholder')}
                     onChange={(e) => {
                       setTerminalHintFilter(e.target.value)
                     }}
