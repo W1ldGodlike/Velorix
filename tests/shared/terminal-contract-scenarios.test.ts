@@ -1983,6 +1983,45 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --print-to-file track_number flux-ytdlp-trknum.txt --skip-download ')
   })
 
+  it('downloads: geo MM/BT/MV/MZ/ZW/BW/NA/LS/MW/SZ + print-to-file genre/album_type/license/track/album_artist/comment', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --geo-bypass-country MM -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country BT -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country MV -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country MZ -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country ZW -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country BW -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country NA -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country LS -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country MW -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country SZ -F ')
+    expect(lines).toContain('yt-dlp --print-to-file genre flux-ytdlp-genre.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file album_type flux-ytdlp-albumtype.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file license flux-ytdlp-license.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file track flux-ytdlp-track.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file album_artist flux-ytdlp-albumartist.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file comment flux-ytdlp-comment.txt --skip-download ')
+  })
+
+  it('preview: ffprobe format probe_score + ffmpeg atempo 0.95 3s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format=probe_score') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af atempo=0.95') &&
+          l.includes('-t 3') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
+
   it('preview: ffprobe format encoding_tool + ffmpeg afade out 3s', () => {
     const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
     expect(

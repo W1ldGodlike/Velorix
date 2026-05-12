@@ -3938,6 +3938,102 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· print-to-file trknum',
     summary: 'Записать track_number (номер трека в каталоге) в flux-ytdlp-trknum.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file track_number flux-ytdlp-trknum.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo MM -F',
+    summary: 'Гео-обход через Мьянму (--geo-bypass-country MM -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country MM -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo BT -F',
+    summary: 'Гео-обход через Бутан (--geo-bypass-country BT -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country BT -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo MV -F',
+    summary: 'Гео-обход через Мальдивы (--geo-bypass-country MV -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country MV -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo MZ -F',
+    summary: 'Гео-обход через Мозамбик (--geo-bypass-country MZ -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country MZ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo ZW -F',
+    summary: 'Гео-обход через Зимбабве (--geo-bypass-country ZW -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country ZW -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo BW -F',
+    summary: 'Гео-обход через Ботсвану (--geo-bypass-country BW -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country BW -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo NA -F',
+    summary: 'Гео-обход через Намибию (--geo-bypass-country NA -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country NA -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo LS -F',
+    summary: 'Гео-обход через Лесото (--geo-bypass-country LS -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country LS -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo MW -F',
+    summary: 'Гео-обход через Малави (--geo-bypass-country MW -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country MW -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo SZ -F',
+    summary: 'Гео-обход через Эсватини (--geo-bypass-country SZ -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country SZ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file genre',
+    summary: 'Записать genre (жанр, если extractor отдаёт) в flux-ytdlp-genre.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file genre flux-ytdlp-genre.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file album_type',
+    summary: 'Записать album_type (тип релиза: album/single и т.п.) в flux-ytdlp-albumtype.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file album_type flux-ytdlp-albumtype.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file license',
+    summary: 'Записать license (лицензия/CC и т.п., если есть) в flux-ytdlp-license.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file license flux-ytdlp-license.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file track',
+    summary: 'Записать track (номер трека как строка каталога) в flux-ytdlp-track.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file track flux-ytdlp-track.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file album_artist',
+    summary: 'Записать album_artist (альбомный исполнитель) в flux-ytdlp-albumartist.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file album_artist flux-ytdlp-albumartist.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file comment',
+    summary: 'Записать comment (комментарий/uploader comment) в flux-ytdlp-comment.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file comment flux-ytdlp-comment.txt --skip-download '
   }
 ]
 
@@ -5136,6 +5232,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· afade out 3s',
     summary: 'Плавное затухание громкости в хвосте первых 3 с (-af afade=t=out:st=1.2:d=0.6); smoke afade out; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af afade=t=out:st=1.2:d=0.6 -t 3 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format probe_score',
+    summary: 'Контейнер: probe_score (уверенность ffprobe в формате); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format=probe_score -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· atempo 0.95 3s',
+    summary: 'Лёгкое замедление темпа первых 3 с (-af atempo=0.95); smoke atempo без кавычек; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af atempo=0.95 -t 3 -vn -sn -f null -`
   }
 ]
 
