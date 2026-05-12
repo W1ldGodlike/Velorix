@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  isKnowledgeThematicBreak,
   knowledgeInternalSlugFromHref,
   normalizeKnowledgeMarkdownSource,
   parseKnowledgeMarkdown
@@ -16,6 +17,17 @@ describe('knowledgeInternalSlugFromHref', () => {
     expect(knowledgeInternalSlugFromHref('https://a/b')).toBe(null)
     expect(knowledgeInternalSlugFromHref('javascript:alert(1)')).toBe(null)
     expect(knowledgeInternalSlugFromHref('file:///tmp/x.md')).toBe(null)
+  })
+})
+
+describe('isKnowledgeThematicBreak', () => {
+  it('detects hr lines', () => {
+    expect(isKnowledgeThematicBreak('---')).toBe(true)
+    expect(isKnowledgeThematicBreak('- - -')).toBe(true)
+    expect(isKnowledgeThematicBreak('* * *')).toBe(true)
+    expect(isKnowledgeThematicBreak('___')).toBe(true)
+    expect(isKnowledgeThematicBreak('- item')).toBe(false)
+    expect(isKnowledgeThematicBreak('--')).toBe(false)
   })
 })
 
@@ -60,5 +72,13 @@ Para with **bold** and \`code\` and [x](other.md).
       expect(bq.children.some((c) => c.kind === 'strong')).toBe(true)
     }
     expect(blocks.some((b) => b.kind === 'paragraph')).toBe(true)
+  })
+
+  it('parses thematic breaks between blocks', () => {
+    const md = 'Before\n\n---\n\nAfter\n* * *\nEnd'
+    const blocks = parseKnowledgeMarkdown(md)
+    const hrs = blocks.filter((b) => b.kind === 'hr')
+    expect(hrs).toHaveLength(2)
+    expect(blocks.filter((b) => b.kind === 'paragraph').length).toBeGreaterThanOrEqual(2)
   })
 })

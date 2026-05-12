@@ -429,7 +429,7 @@
 ## §15. База знаний и подсказки
 
 - [x] Файлы `Help/*.md` есть.
-- [~] Viewer внутри приложения (markdown body: blockquote/`>`, внутренние `.md` и внешние `https`).
+- [~] Viewer внутри приложения (markdown body: blockquote/`>`, `---`/thematic break, внутренние `.md` и внешние `https`).
 - [x] Оглавление.
 - [x] Поиск.
 - [ ] Открытие статей из подсказок (inline help вне Knowledge).

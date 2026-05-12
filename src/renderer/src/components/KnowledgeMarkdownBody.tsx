@@ -80,6 +80,9 @@ function renderBlock(block: MdBlock, idx: number, onOpenSlug: (slug: string) => 
       </blockquote>
     )
   }
+  if (block.kind === 'hr') {
+    return <hr key={p} className="app-knowledge-hr" />
+  }
   if (block.kind === 'ul') {
     return (
       <ul key={p} className="app-knowledge-ul">

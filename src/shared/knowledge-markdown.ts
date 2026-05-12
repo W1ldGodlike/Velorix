@@ -11,6 +11,7 @@ export type MdBlock =
   | { kind: 'heading'; level: 1 | 2 | 3; children: MdInline[] }
   | { kind: 'paragraph'; children: MdInline[] }
   | { kind: 'blockquote'; children: MdInline[] }
+  | { kind: 'hr' }
   | { kind: 'ul'; items: MdInline[][] }
   | { kind: 'ol'; items: MdInline[][] }
   | { kind: 'pre'; language: string | null; code: string }
@@ -19,6 +20,18 @@ const SLUG_RE = /^[a-z0-9][a-z0-9-]*$/i
 
 export function normalizeKnowledgeMarkdownSource(raw: string): string {
   return raw.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
+}
+
+/** Строка целиком — thematic break (CommonMark-подобно: `---`, `* * *`, `___` и варианты с пробелами). */
+export function isKnowledgeThematicBreak(trimmed: string): boolean {
+  if (trimmed.length < 3) {
+    return false
+  }
+  return (
+    /^(?:\*[ \t]*){3,}$/.test(trimmed) ||
+    /^(?:-[ \t]*){3,}$/.test(trimmed) ||
+    /^(?:_[ \t]*){3,}$/.test(trimmed)
+  )
 }
 
 /** Безопасные внутренние ссылки вида `foo.md` / `./foo.md` → slug; иначе `null`. */
@@ -199,6 +212,12 @@ export function parseKnowledgeMarkdown(
       continue
     }
 
+    if (isKnowledgeThematicBreak(trimmed)) {
+      blocks.push({ kind: 'hr' })
+      i += 1
+      continue
+    }
+
     if (trimmed.startsWith('```')) {
       const fence = trimmed.slice(0, 3)
       const langPart = trimmed.slice(3).trim()
@@ -314,6 +333,9 @@ export function parseKnowledgeMarkdown(
         break
       }
       if (/^\d+\.\s+/.test(T)) {
+        break
+      }
+      if (isKnowledgeThematicBreak(T)) {
         break
       }
       paraLines.push(L.trimEnd())
