@@ -3692,6 +3692,54 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· prog-delta -F',
     summary: 'Реже обновлять строку прогресса (--progress-delta 5 -F); меньше шума в логе при -F/длинных списках; допишите URL.',
     fullLine: 'yt-dlp --progress-delta 5 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file formats',
+    summary: 'Записать список форматов (JSON/текст extractor) в flux-ytdlp-formats.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file formats flux-ytdlp-formats.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file url',
+    summary: 'Записать прямой URL выбранного формата в flux-ytdlp-url.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file url flux-ytdlp-url.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file thumbs',
+    summary: 'Записать словарь thumbnails (URL превью разных размеров) в flux-ytdlp-thumbs.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file thumbnails flux-ytdlp-thumbs.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file locmeta',
+    summary: 'Записать поле location (гео/локация из метаданных площадки) в flux-ytdlp-locmeta.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file location flux-ytdlp-locmeta.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo AX -F',
+    summary: 'Гео-обход через Аландские острова (--geo-bypass-country AX -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country AX -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo SJ -F',
+    summary: 'Гео-обход через Шпицберген и Ян-Майен (--geo-bypass-country SJ -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country SJ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo SH -F',
+    summary: 'Гео-обход через остров Святой Елены (--geo-bypass-country SH -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country SH -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· xattr-fsize -F',
+    summary: 'Писать ожидаемый размер файла в xattr где поддерживается ОС (--xattr-set-filesize -F); допишите URL.',
+    fullLine: 'yt-dlp --xattr-set-filesize -F '
   }
 ]
 
@@ -4842,6 +4890,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· highshelf 3s',
     summary: 'Лёгкий highshelf EQ первых 3 с (-af highshelf); smoke параметрического af; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af highshelf=f=8000:width_type=o:width=2:g=-6 -t 3 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:1 WxH',
+    summary: 'Вторая видеодорожка v:1: codec_name + width + height (мультикамера/доп. угол); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:1 -show_entries stream=codec_name,width,height -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· apulsator 3s',
+    summary: 'Лёгкий стерео-пульсатор первых 3 с (-af apulsator); smoke периодического pan/af; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af apulsator=mode=sine:hz=1:width=2 -t 3 -vn -sn -f null -`
   }
 ]
 

@@ -1845,6 +1845,18 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --progress-delta 5 -F ')
   })
 
+  it('downloads: print-to-file formats/url/thumbnails/location + geo AX/SJ/SH + xattr-set-filesize -F', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --print-to-file formats flux-ytdlp-formats.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file url flux-ytdlp-url.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file thumbnails flux-ytdlp-thumbs.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file location flux-ytdlp-locmeta.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country AX -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country SJ -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country SH -F ')
+    expect(lines).toContain('yt-dlp --xattr-set-filesize -F ')
+  })
+
   it('preview: ffprobe a:1 codec+channels+layout + ffmpeg highshelf 3s', () => {
     const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
     expect(
@@ -1859,6 +1871,26 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       lines.some(
         (l) =>
           l.includes('-af highshelf=f=8000:width_type=o:width=2:g=-6') &&
+          l.includes('-t 3') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
+
+  it('preview: ffprobe v:1 WxH + ffmpeg apulsator 3s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-select_streams v:1') &&
+          l.includes('stream=codec_name,width,height') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af apulsator=mode=sine:hz=1:width=2') &&
           l.includes('-t 3') &&
           l.includes('-vn -sn')
       )
