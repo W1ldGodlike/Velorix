@@ -4739,6 +4739,42 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
+    token: '· -to file modified_date',
+    summary: 'Записать modified_date (YYYYMMDD правки метаданных, если extractor отдаёт) в flux-ytdlp-mdate.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file modified_date flux-ytdlp-mdate.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -to file live_title',
+    summary: 'Записать live_title (заголовок live-трансляции, если есть) в flux-ytdlp-livetitle.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file live_title flux-ytdlp-livetitle.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· http-chunk-size 1M -F',
+    summary: 'Меньший HTTP-чанк 1 MiB (--http-chunk-size 1M -F); тонкая подстройка скорости/стабильности CDN; допишите URL.',
+    fullLine: 'yt-dlp --http-chunk-size 1M -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo CV -F',
+    summary: 'Гео-обход через Кабо-Верде (--geo-bypass-country CV -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country CV -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo GM -F',
+    summary: 'Гео-обход через Гамбию (--geo-bypass-country GM -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country GM -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo KM -F',
+    summary: 'Гео-обход через Коморы (--geo-bypass-country KM -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country KM -F '
+  },
+  {
+    tool: 'yt-dlp',
     token: '· --update-to stable',
     summary: 'Обновить yt-dlp до канала stable (--update-to stable); URL не нужен.',
     fullLine: 'yt-dlp --update-to stable'
@@ -6084,6 +6120,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· s:4 compact',
     summary: 'Пятая дорожка субтитров s:4: codec_name + codec_tag_string; плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:4 -show_entries stream=codec_name,codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format cat+barcode',
+    summary: 'Теги контейнера catalog_number + barcode (музыкальные каталоги/UPC); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=catalog_number,barcode -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· aresample async 4s',
+    summary: 'Лёгкая компенсация рассинхрона через aresample=async=1 первых 4 с; smoke цепочки resampler; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af aresample=async=1:first_pts=0 -t 4 -vn -sn -f null -`
   },
   {
     tool: 'ffmpeg',

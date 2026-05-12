@@ -2363,7 +2363,17 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --geo-bypass-country TM -F ')
   })
 
-  it('preview: ffprobe format podcast+podcasturl + ffmpeg acrusher 4s', () => {
+  it('downloads: print-to-file modified_date/live_title + http-chunk 1M -F + geo CV/GM/KM', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --print-to-file modified_date flux-ytdlp-mdate.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file live_title flux-ytdlp-livetitle.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --http-chunk-size 1M -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country CV -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country GM -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country KM -F ')
+  })
+
+  it('preview: ffprobe format cat+barcode + ffmpeg aresample async 4s', () => {
     const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
     expect(
       lines.some(
