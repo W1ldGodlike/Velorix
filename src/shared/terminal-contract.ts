@@ -3632,6 +3632,66 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· no-brk-reject -F',
     summary: 'Не останавливаться на отклонённом формате (--no-break-on-reject -F); допишите URL.',
     fullLine: 'yt-dlp --no-break-on-reject -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file otype',
+    summary: 'Записать тип объекта (_type: video/playlist и т.п.) в flux-ytdlp-otype.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file _type flux-ytdlp-otype.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file plurl',
+    summary: 'Записать playlist_url в flux-ytdlp-plurl.txt без скачивания; допишите URL плейлиста.',
+    fullLine: 'yt-dlp --print-to-file playlist_url flux-ytdlp-plurl.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file manurl',
+    summary: 'Записать manifest_url (HLS/DASH и др.) в flux-ytdlp-manurl.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file manifest_url flux-ytdlp-manurl.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file sarfix',
+    summary: 'Записать stretched_ratio (анаморф/растяжение, если extractor отдаёт) в flux-ytdlp-sarfix.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file stretched_ratio flux-ytdlp-sarfix.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file reqf',
+    summary: 'Записать requested_formats (JSON выбранных потоков) в flux-ytdlp-reqf.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file requested_formats flux-ytdlp-reqf.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo NR -F',
+    summary: 'Гео-обход через Науру (--geo-bypass-country NR -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country NR -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo TV -F',
+    summary: 'Гео-обход через Тувалу (--geo-bypass-country TV -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country TV -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo KI -F',
+    summary: 'Гео-обход через Кирибати (--geo-bypass-country KI -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country KI -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo WF -F',
+    summary: 'Гео-обход через Уоллис и Футуна (--geo-bypass-country WF -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country WF -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· prog-delta -F',
+    summary: 'Реже обновлять строку прогресса (--progress-delta 5 -F); меньше шума в логе при -F/длинных списках; допишите URL.',
+    fullLine: 'yt-dlp --progress-delta 5 -F '
   }
 ]
 
@@ -4770,6 +4830,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· bandpass 4s',
     summary: 'Узкополосный bandpass первых 4 с (-af bandpass); smoke частотной фильтрации; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af bandpass=f=1000:width_type=h:width=200 -t 4 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:1 codec+ch',
+    summary: 'Вторая аудиодорожка a:1: codec_name + channels + channel_layout (мультиязык/комментарии); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:1 -show_entries stream=codec_name,channels,channel_layout -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· highshelf 3s',
+    summary: 'Лёгкий highshelf EQ первых 3 с (-af highshelf); smoke параметрического af; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af highshelf=f=8000:width_type=o:width=2:g=-6 -t 3 -vn -sn -f null -`
   }
 ]
 

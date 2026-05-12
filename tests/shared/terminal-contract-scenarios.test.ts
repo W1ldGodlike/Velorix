@@ -1830,4 +1830,38 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: print-to-file _type/plurl/manurl/sarfix/reqf + geo NR/TV/KI/WF + progress-delta -F', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --print-to-file _type flux-ytdlp-otype.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file playlist_url flux-ytdlp-plurl.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file manifest_url flux-ytdlp-manurl.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file stretched_ratio flux-ytdlp-sarfix.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file requested_formats flux-ytdlp-reqf.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country NR -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country TV -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country KI -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country WF -F ')
+    expect(lines).toContain('yt-dlp --progress-delta 5 -F ')
+  })
+
+  it('preview: ffprobe a:1 codec+channels+layout + ffmpeg highshelf 3s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-select_streams a:1') &&
+          l.includes('stream=codec_name,channels,channel_layout') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af highshelf=f=8000:width_type=o:width=2:g=-6') &&
+          l.includes('-t 3') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })
