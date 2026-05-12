@@ -1454,4 +1454,39 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: print-to-file views+channel+extractor+pltitle+uploaddate + geo ME+PS+TL + wma', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --print-to-file view_count flux-ytdlp-views.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file channel flux-ytdlp-channel.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file extractor flux-ytdlp-extractor.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file playlist_title flux-ytdlp-pltitle.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file upload_date flux-ytdlp-update.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country ME -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country PS -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country TL -F ')
+    expect(lines).toContain('yt-dlp --extract-audio --audio-format wma ')
+  })
+
+  it('preview: format service tags + a:0 bits_per_coded_sample + ffmpeg flanger 4s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=service_provider,service_name') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-select_streams a:0') &&
+          l.includes('stream=bits_per_coded_sample') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some((l) => l.includes('-af flanger') && l.includes('-t 4') && l.includes('-vn -sn'))
+    ).toBe(true)
+  })
 })

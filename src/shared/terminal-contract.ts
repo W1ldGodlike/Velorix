@@ -2876,6 +2876,60 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· geo MK',
     summary: 'Гео-обход с кодом страны MK (--geo-bypass-country MK -F); допишите URL.',
     fullLine: 'yt-dlp --geo-bypass-country MK -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file views',
+    summary: 'Записать view_count в flux-ytdlp-views.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file view_count flux-ytdlp-views.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file channel name',
+    summary: 'Записать имя канала (поле channel) в flux-ytdlp-channel.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file channel flux-ytdlp-channel.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file extractor',
+    summary: 'Записать имя extractor в flux-ytdlp-extractor.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file extractor flux-ytdlp-extractor.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file pltitle',
+    summary: 'Записать playlist_title в flux-ytdlp-pltitle.txt без скачивания; допишите URL плейлиста.',
+    fullLine: 'yt-dlp --print-to-file playlist_title flux-ytdlp-pltitle.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file uploaddate',
+    summary: 'Записать upload_date в flux-ytdlp-update.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file upload_date flux-ytdlp-update.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo ME',
+    summary: 'Гео-обход с кодом страны ME (--geo-bypass-country ME -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country ME -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo PS',
+    summary: 'Гео-обход с кодом страны PS (--geo-bypass-country PS -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country PS -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo TL',
+    summary: 'Гео-обход с кодом страны TL (--geo-bypass-country TL -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country TL -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· extract-audio wma',
+    summary: 'Извлечь аудио в WMA (--extract-audio --audio-format wma); допишите URL и шаблон -o при необходимости.',
+    fullLine: 'yt-dlp --extract-audio --audio-format wma '
   }
 ]
 
@@ -3876,6 +3930,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· aphaser 4s',
     summary: 'Лёгкий фазовый эффект первых 4 с (-af aphaser); smoke цепочки stereo af; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af aphaser=in_gain=0.4:out_gain=0.74 -t 4 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format service',
+    summary: 'Теги service_provider + service_name контейнера (IPTV/OFFAIR и др.); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=service_provider,service_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:0 bpc_sample',
+    summary: 'Поток a:0: bits_per_coded_sample (глубина закодированного PCM при наличии); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=bits_per_coded_sample -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· flanger 4s',
+    summary: 'Лёгкий flanger первых 4 с (-af flanger); smoke стерео-модуляции; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af flanger -t 4 -vn -sn -f null -`
   }
 ]
 
