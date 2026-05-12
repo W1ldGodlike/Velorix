@@ -115,6 +115,41 @@ describe('shared ffmpeg export argv', () => {
     ])
   })
 
+  it('libx265: -c:v libx265 и -tag:v hvc1 для MP4/MOV; без тега для MKV', () => {
+    const mp4 = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      videoCodec: 'libx265',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mp4'
+    })
+    const i = mp4.indexOf('-c:v')
+    expect(mp4.slice(i, i + 6)).toEqual(['-c:v', 'libx265', '-preset', 'fast', '-tag:v', 'hvc1'])
+    const mkv = buildFfmpegExportArgv({
+      inputPath: 'in.mkv',
+      outputPath: 'out.mkv',
+      applyTrim: false,
+      encodePreset: 'balance',
+      videoCodec: 'libx265',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mkv'
+    })
+    expect(mkv.includes('hvc1')).toBe(false)
+    expect(mkv[mkv.indexOf('-c:v') + 1]).toBe('libx265')
+  })
+
   it('подставляет trim, override CRF, scale, fps и audio-none', () => {
     const argv = buildFfmpegExportArgv({
       inputPath: '/src/clip.mov',

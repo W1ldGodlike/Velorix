@@ -19,6 +19,7 @@ import type {
   FfmpegExportSubtitleModeId,
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
+  FfmpegExportVideoCodecId,
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDeinterlaceId,
   FfmpegExportVideoHisteqId,
@@ -85,6 +86,7 @@ export interface FluxAlloyApi {
     setEngineExecutablePaths: (patch: EnginePathOverridesPatch) => Promise<AppSettings>
     pickEngineExecutable: (engineId: EngineId) => Promise<string | null>
     setFfmpegExportEncodePreset: (preset: FfmpegExportEncodePresetId) => Promise<AppSettings>
+    setFfmpegExportVideoCodec: (codec: FfmpegExportVideoCodecId) => Promise<AppSettings>
     setFfmpegExportContainer: (container: FfmpegExportContainerId) => Promise<AppSettings>
     setFfmpegExportCrf: (crf: number | null) => Promise<AppSettings>
     setFfmpegExportVideoBitrate: (bitrate: string | null) => Promise<AppSettings>

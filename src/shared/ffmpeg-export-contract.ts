@@ -11,6 +11,8 @@ export interface MediaExportTrimPayload {
 
 /** Первые системные пресеты libx264 §7.2 — только белый список, без произвольных аргументов. */
 export type FfmpegExportEncodePresetId = 'balance' | 'smaller' | 'quality'
+/** §7.2 — видеокодек перекодирования; только whitelist (spawn без произвольного `-c:v`). */
+export type FfmpegExportVideoCodecId = 'libx264' | 'libx265'
 export type FfmpegExportContainerId = 'mp4' | 'mkv' | 'mov'
 export type FfmpegExportScalePresetId = 'source' | '480p' | '720p' | '1080p'
 /** §7.2 — безопасные повороты/зеркала через whitelist `-vf` (до scale/fps). */
@@ -95,6 +97,8 @@ export const FFMPEG_EXPORT_AUDIO_GAIN_DB_MAX = 24
  */
 export interface FfmpegExportUserPresetSnapshot {
   encodePreset: FfmpegExportEncodePresetId
+  /** §7.2 — по умолчанию H.264; поле можно не сериализовать, если `libx264`. */
+  videoCodec?: FfmpegExportVideoCodecId
   container: FfmpegExportContainerId
   crf: number | null
   videoBitrate: string | null
@@ -104,7 +108,7 @@ export interface FfmpegExportUserPresetSnapshot {
   scalePreset: FfmpegExportScalePresetId
   videoTransform: FfmpegExportVideoTransformId
   cropPreset: FfmpegExportCropPresetId
-  /** Двухпроходный libx264; фактический запуск только при ненулевом `videoBitrate`. */
+  /** Двухпроходный libx264; только при `videoCodec` по умолчанию и ненулевом `videoBitrate`. */
   twoPass?: boolean
   /** §7.2 — целое значение в дБ; 0/null = без `-filter:a volume`. */
   audioGainDb?: number | null
@@ -153,9 +157,11 @@ export interface MediaExportRequestPayload {
   probeDurationSec?: number | null
   /** Если не задан — в main берётся из `settings.json`. */
   encodePreset?: FfmpegExportEncodePresetId
+  /** Если не задан — в main берётся из `settings.json` (по умолчанию libx264). */
+  videoCodec?: FfmpegExportVideoCodecId | null
   /** Если не задан — в main берётся из `settings.json`. */
   container?: FfmpegExportContainerId
-  /** CRF libx264 0..51; если не задан — берётся из пресета/settings. */
+  /** CRF H.264/H.265 0..51; если не задан — берётся из пресета/settings. */
   crf?: number | null
   /** Video bitrate (`2500k`, `8000k`); если задан — используется вместо CRF. */
   videoBitrate?: string | null
@@ -171,7 +177,7 @@ export interface MediaExportRequestPayload {
   videoTransform?: FfmpegExportVideoTransformId | null
   /** Crop после поворота/зеркала и до scale/fps; только whitelist пресетов. */
   cropPreset?: FfmpegExportCropPresetId | null
-  /** Двухпроходный libx264; в main отклоняется без валидного video bitrate. */
+  /** Двухпроходный libx264; в main игнорируется без валидного video bitrate или при H.265. */
   twoPass?: boolean
   /** §7.2 — сдвиг громкости звука в дБ (`-filter:a volume=NdB`); 0/null — без фильтра. */
   audioGainDb?: number | null

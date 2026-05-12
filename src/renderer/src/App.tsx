@@ -54,6 +54,7 @@ import type {
   FfmpegExportSubtitleModeId,
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
+  FfmpegExportVideoCodecId,
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDeinterlaceId,
   FfmpegExportVideoHisteqId,
@@ -246,6 +247,11 @@ const EXPORT_ENCODE_PRESETS: Array<{ id: FfmpegExportEncodePresetId; label: stri
   { id: 'balance', label: 'Баланс' },
   { id: 'smaller', label: 'Меньше размер' },
   { id: 'quality', label: 'Качество' }
+]
+
+const EXPORT_VIDEO_CODECS: Array<{ id: FfmpegExportVideoCodecId; label: string }> = [
+  { id: 'libx264', label: 'H.264 (libx264)' },
+  { id: 'libx265', label: 'H.265 (libx265)' }
 ]
 
 const EXPORT_CONTAINERS: Array<{ id: FfmpegExportContainerId; label: string }> = [
@@ -750,6 +756,7 @@ function App(): JSX.Element {
   const [exportCancelBusy, setExportCancelBusy] = useState(false)
   const [exportEncodePreset, setExportEncodePreset] =
     useState<FfmpegExportEncodePresetId>('balance')
+  const [exportVideoCodec, setExportVideoCodec] = useState<FfmpegExportVideoCodecId>('libx264')
   const [exportContainer, setExportContainer] = useState<FfmpegExportContainerId>('mp4')
   const [exportCrf, setExportCrf] = useState<number | null>(null)
   const [exportVideoBitrate, setExportVideoBitrate] = useState<string | null>(null)
@@ -1281,7 +1288,10 @@ function App(): JSX.Element {
     const bitrateOk =
       typeof loaded.ffmpegExportVideoBitrate === 'string' &&
       EXPORT_VIDEO_BITRATES.includes(loaded.ffmpegExportVideoBitrate)
-    setExportTwoPass(loaded.ffmpegExportTwoPass === true && bitrateOk)
+    const vcodec: FfmpegExportVideoCodecId =
+      loaded.ffmpegExportVideoCodec === 'libx265' ? 'libx265' : 'libx264'
+    setExportVideoCodec(vcodec)
+    setExportTwoPass(loaded.ffmpegExportTwoPass === true && bitrateOk && vcodec === 'libx264')
     if (
       typeof loaded.ffmpegExportAudioBitrate === 'string' &&
       EXPORT_AUDIO_BITRATES.includes(loaded.ffmpegExportAudioBitrate)
@@ -1425,6 +1435,7 @@ function App(): JSX.Element {
   const buildCurrentExportSnapshot = useCallback((): FfmpegExportUserPresetSnapshot => {
     return {
       encodePreset: exportEncodePreset,
+      ...(exportVideoCodec !== 'libx264' ? { videoCodec: exportVideoCodec } : {}),
       container: exportContainer,
       crf: exportCrf,
       videoBitrate: exportVideoBitrate,
@@ -1434,7 +1445,7 @@ function App(): JSX.Element {
       scalePreset: exportScalePreset,
       videoTransform: exportVideoTransform,
       cropPreset: exportCropPreset,
-      ...(exportTwoPass ? { twoPass: true as const } : {}),
+      ...(exportTwoPass && exportVideoCodec === 'libx264' ? { twoPass: true as const } : {}),
       ...(exportAudioGainDb !== 0 ? { audioGainDb: exportAudioGainDb } : {}),
       ...(exportStripMetadata ? { stripMetadata: true } : {}),
       ...(exportStripChapters ? { stripChapters: true } : {}),
@@ -1454,6 +1465,7 @@ function App(): JSX.Element {
     }
   }, [
     exportEncodePreset,
+    exportVideoCodec,
     exportContainer,
     exportCrf,
     exportVideoBitrate,
@@ -1916,6 +1928,7 @@ function App(): JSX.Element {
         ...(trimSnap != null ? { trim: trimSnap } : {}),
         probeDurationSec: probeInfo?.durationSec ?? null,
         encodePreset: exportEncodePreset,
+        videoCodec: exportVideoCodec,
         container: exportContainer,
         crf: exportCrf,
         videoBitrate: exportVideoBitrate,
@@ -1925,7 +1938,8 @@ function App(): JSX.Element {
         scalePreset: exportScalePreset,
         videoTransform: exportVideoTransform,
         cropPreset: exportCropPreset,
-        twoPass: exportTwoPass,
+        twoPass:
+          exportTwoPass && exportVideoBitrate !== null && exportVideoCodec === 'libx264',
         audioGainDb: exportAudioGainDb === 0 ? null : exportAudioGainDb,
         stripMetadata: exportStripMetadata,
         stripChapters: exportStripChapters,
@@ -2028,6 +2042,7 @@ function App(): JSX.Element {
     }
     return buildFfmpegExportPreviewCommand({
       encodePreset: exportEncodePreset,
+      videoCodec: exportVideoCodec,
       container: exportContainer,
       crf: exportCrf,
       videoBitrate: exportVideoBitrate,
@@ -2037,7 +2052,8 @@ function App(): JSX.Element {
       scalePreset: exportScalePreset,
       videoTransform: exportVideoTransform,
       cropPreset: exportCropPreset,
-      twoPass: exportTwoPass && exportVideoBitrate !== null,
+      twoPass:
+        exportTwoPass && exportVideoBitrate !== null && exportVideoCodec === 'libx264',
       audioGainDb: exportAudioGainDb === 0 ? null : exportAudioGainDb,
       stripMetadata: exportStripMetadata,
       stripChapters: exportStripChapters,
@@ -2064,6 +2080,7 @@ function App(): JSX.Element {
   }, [
     preview?.path,
     exportEncodePreset,
+    exportVideoCodec,
     exportContainer,
     exportCrf,
     exportVideoBitrate,
@@ -2548,10 +2565,39 @@ function App(): JSX.Element {
                 </p>
                 <div className="app-settings-grid" aria-describedby="ffmpegVideoSectionHint">
                   <label className="app-field">
-                    <span>Кодек / пресет</span>
+                    <span>Видеокодек</span>
                     <select
                       className="app-control"
-                      aria-label="Пресет кодирования экспорта MP4"
+                      aria-label="Видеокодек экспорта"
+                      value={exportVideoCodec}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const v = e.target.value as FfmpegExportVideoCodecId
+                        setExportVideoCodec(v)
+                        if (v === 'libx265' && exportTwoPass) {
+                          setExportTwoPass(false)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportTwoPass(false)
+                            .catch(console.error)
+                        }
+                        void window.fluxalloy.settings
+                          .setFfmpegExportVideoCodec(v)
+                          .catch(console.error)
+                      }}
+                    >
+                      {EXPORT_VIDEO_CODECS.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="app-field">
+                    <span>Пресет скорости / CRF по умолчанию</span>
+                    <select
+                      className="app-control"
+                      aria-label="Пресет скорости кодирования экспорта (libx264/libx265 -preset)"
                       value={exportEncodePreset}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -3013,7 +3059,12 @@ function App(): JSX.Element {
                       label="Двухпроходное кодирование libx264"
                       checked={exportTwoPass && exportVideoBitrate !== null}
                       describedBy="ffmpegFormatSectionHint ffmpegTwoPassUiHint"
-                      disabled={exportBusy || snapshotBusy || exportVideoBitrate === null}
+                      disabled={
+                        exportBusy ||
+                        snapshotBusy ||
+                        exportVideoBitrate === null ||
+                        exportVideoCodec !== 'libx264'
+                      }
                       onToggle={() => {
                         if (exportVideoBitrate === null) {
                           return
@@ -3027,8 +3078,8 @@ function App(): JSX.Element {
                       }}
                     />
                     <span id="ffmpegTwoPassUiHint" className="app-field-help">
-                      Требуется выбранный видеобитрейт («Видео» выше): CRF не поддерживает этот
-                      режим.
+                      Только H.264 (libx264) и выбранный видеобитрейт («Видео» выше); CRF и H.265
+                      не поддерживают этот режим.
                     </span>
                   </div>
                   <label className="app-field">

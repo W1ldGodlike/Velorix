@@ -97,6 +97,7 @@ import {
   parseFfmpegExportUserPresetSnapshot,
   parseFfmpegExportUserPresetsList,
   parseFfmpegExportVideoBitrate,
+  parseFfmpegExportVideoCodec,
   parseFfmpegExportTwoPass,
   ensureFfmpegExportExtension,
   runFfmpegExportJob,
@@ -851,6 +852,23 @@ function broadcastDownloadsWindowUiPanelsSnapshot(): void {
 function persistFfmpegExportEncodePreset(raw: unknown): AppSettings {
   const id = parseFfmpegExportEncodePreset(raw)
   cachedSettings = { ...cachedSettings, ffmpegExportEncodePreset: id }
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+/** §7.2 — видеокодек экспорта (libx264 по умолчанию — ключ удаляем). */
+function persistFfmpegExportVideoCodec(raw: unknown): AppSettings {
+  const id = parseFfmpegExportVideoCodec(raw)
+  const next = { ...cachedSettings }
+  if (id === 'libx264') {
+    delete next.ffmpegExportVideoCodec
+  } else {
+    next.ffmpegExportVideoCodec = 'libx265'
+    if (next.ffmpegExportTwoPass === true) {
+      delete next.ffmpegExportTwoPass
+    }
+  }
+  cachedSettings = next
   saveSettings(settingsPath(), cachedSettings)
   return { ...cachedSettings }
 }
@@ -2202,6 +2220,11 @@ app.whenReady().then(() => {
   ipcMain.handle(
     mw.settingsSetFfmpegExportEncodePreset,
     (_, raw: unknown): AppSettings => persistFfmpegExportEncodePreset(raw)
+  )
+
+  ipcMain.handle(
+    mw.settingsSetFfmpegExportVideoCodec,
+    (_, raw: unknown): AppSettings => persistFfmpegExportVideoCodec(raw)
   )
 
   ipcMain.handle(

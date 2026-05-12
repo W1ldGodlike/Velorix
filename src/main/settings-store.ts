@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs'
 import { dirname, isAbsolute, normalize } from 'path'
 
 import { ENGINE_IDS, type EnginePathOverrides } from '../shared/engine-contract'
+import type { FfmpegExportVideoCodecId } from '../shared/ffmpeg-export-contract'
 import type {
   AppSettings,
   AppTheme,
@@ -224,6 +225,13 @@ function parseFfmpegExportEncodePresetStored(raw: unknown): string | undefined {
   return undefined
 }
 
+function parseFfmpegExportVideoCodecStored(raw: unknown): FfmpegExportVideoCodecId | undefined {
+  if (raw === 'libx265') {
+    return 'libx265'
+  }
+  return undefined
+}
+
 function parseFfmpegExportContainerStored(raw: unknown): 'mp4' | 'mkv' | 'mov' | undefined {
   if (raw === 'mp4' || raw === 'mkv' || raw === 'mov') {
     return raw
@@ -381,6 +389,7 @@ export function loadSettings(filePath: string): AppSettings {
     const ffmpegExportEncodePreset = parseFfmpegExportEncodePresetStored(
       parsed.ffmpegExportEncodePreset
     )
+    const ffmpegExportVideoCodec = parseFfmpegExportVideoCodecStored(parsed.ffmpegExportVideoCodec)
     const ffmpegExportContainer = parseFfmpegExportContainerStored(parsed.ffmpegExportContainer)
     const ffmpegExportCrf = parseFfmpegExportCrfStored(parsed.ffmpegExportCrf)
     const ffmpegExportVideoBitrate = parseFfmpegExportVideoBitrateStored(
@@ -437,6 +446,9 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (ffmpegExportEncodePreset !== undefined) {
       base.ffmpegExportEncodePreset = ffmpegExportEncodePreset
+    }
+    if (ffmpegExportVideoCodec !== undefined) {
+      base.ffmpegExportVideoCodec = ffmpegExportVideoCodec
     }
     if (ffmpegExportContainer !== undefined) {
       base.ffmpegExportContainer = ffmpegExportContainer

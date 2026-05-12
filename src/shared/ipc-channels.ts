@@ -8,6 +8,7 @@ export const mainWindowIpc = {
   settingsGet: 'fluxalloy:settings-get',
   settingsSetTheme: 'fluxalloy:settings-set-theme',
   settingsSetFfmpegExportEncodePreset: 'fluxalloy:settings-set-ffmpeg-export-encode-preset',
+  settingsSetFfmpegExportVideoCodec: 'fluxalloy:settings-set-ffmpeg-export-video-codec',
   settingsSetFfmpegExportContainer: 'fluxalloy:settings-set-ffmpeg-export-container',
   settingsSetFfmpegExportCrf: 'fluxalloy:settings-set-ffmpeg-export-crf',
   settingsSetFfmpegExportAudioBitrate: 'fluxalloy:settings-set-ffmpeg-export-audio-bitrate',

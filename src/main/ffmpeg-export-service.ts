@@ -15,6 +15,7 @@ import type {
   FfmpegExportSubtitleModeId,
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
+  FfmpegExportVideoCodecId,
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDeinterlaceId,
   FfmpegExportVideoHisteqId,
@@ -49,6 +50,7 @@ export type {
   FfmpegExportSubtitleModeId,
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
+  FfmpegExportVideoCodecId,
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDeinterlaceId,
   FfmpegExportVideoHisteqId,
@@ -92,6 +94,14 @@ export function parseFfmpegExportEncodePreset(raw: unknown): FfmpegExportEncodeP
     return raw
   }
   return 'balance'
+}
+
+/** §7.2 — видеокодек экспорта; только whitelist. */
+export function parseFfmpegExportVideoCodec(raw: unknown): FfmpegExportVideoCodecId {
+  if (raw === 'libx265') {
+    return 'libx265'
+  }
+  return 'libx264'
 }
 
 export function parseFfmpegExportContainer(raw: unknown): FfmpegExportContainerId {
@@ -363,6 +373,7 @@ export function parseFfmpegExportUserPresetSnapshot(
   }
   const o = raw as Record<string, unknown>
   const encodePreset = parseFfmpegExportEncodePreset(o['encodePreset'])
+  const videoCodec = parseFfmpegExportVideoCodec(o['videoCodec'])
   const container = parseFfmpegExportContainer(o['container'])
   const crf = parseFfmpegExportCrf(o['crf'])
   const videoBitrate = parseFfmpegExportVideoBitrate(o['videoBitrate'])
@@ -391,6 +402,7 @@ export function parseFfmpegExportUserPresetSnapshot(
   const audioNormalize = parseFfmpegExportAudioNormalize(o['audioNormalize'])
   return {
     encodePreset,
+    ...(videoCodec !== 'libx264' ? { videoCodec } : {}),
     container,
     crf,
     videoBitrate,
@@ -400,7 +412,7 @@ export function parseFfmpegExportUserPresetSnapshot(
     scalePreset,
     videoTransform,
     cropPreset,
-    ...(twoPass ? { twoPass: true as const } : {}),
+    ...(twoPass && videoCodec === 'libx264' ? { twoPass: true as const } : {}),
     ...(audioGainDb !== null ? { audioGainDb } : {}),
     ...(stripMetadata ? { stripMetadata: true } : {}),
     ...(stripChapters ? { stripChapters: true } : {}),
@@ -459,6 +471,11 @@ export function mergeFfmpegExportSnapshotIntoAppSettings(
 ): AppSettings {
   const next: AppSettings = { ...base }
   next.ffmpegExportEncodePreset = snapshot.encodePreset
+  if (parseFfmpegExportVideoCodec(snapshot.videoCodec) === 'libx265') {
+    next.ffmpegExportVideoCodec = 'libx265'
+  } else {
+    delete next.ffmpegExportVideoCodec
+  }
   next.ffmpegExportContainer = snapshot.container
   if (snapshot.crf === null) {
     delete next.ffmpegExportCrf
@@ -496,7 +513,12 @@ export function mergeFfmpegExportSnapshotIntoAppSettings(
   } else {
     next.ffmpegExportCropPreset = snapshot.cropPreset
   }
-  if (snapshot.twoPass === true) {
+  const snapCodec = parseFfmpegExportVideoCodec(snapshot.videoCodec)
+  if (
+    snapshot.twoPass === true &&
+    snapCodec === 'libx264' &&
+    snapshot.videoBitrate !== null
+  ) {
     next.ffmpegExportTwoPass = true
   } else {
     delete next.ffmpegExportTwoPass
@@ -789,6 +811,8 @@ export async function runFfmpegExportJob(params: {
   trim?: MediaExportTrimPayload
   probeDurationSec?: number | null
   encodePreset?: FfmpegExportEncodePresetId
+  /** §7.2 — по умолчанию libx264. */
+  videoCodec?: FfmpegExportVideoCodecId | null
   /** Контейнер сохранения §7.2 — влияет на хвост argv (MKV без `-movflags`). */
   container?: FfmpegExportContainerId | null
   crf?: number | null
@@ -842,6 +866,7 @@ export async function runFfmpegExportJob(params: {
 }): Promise<{ ok: true } | { ok: false; error: string }> {
   const applyTrim = shouldApplyFfmpegExportTrim(params.trim ?? null, params.probeDurationSec)
   const encodePreset = params.encodePreset ?? 'balance'
+  const videoCodec = parseFfmpegExportVideoCodec(params.videoCodec)
   const crf = parseFfmpegExportCrf(params.crf)
   const videoBitrate = parseFfmpegExportVideoBitrate(params.videoBitrate)
   const audioMode = parseFfmpegExportAudioMode(params.audioMode)
@@ -851,7 +876,8 @@ export async function runFfmpegExportJob(params: {
   const videoTransform = parseFfmpegExportVideoTransform(params.videoTransform)
   const cropPreset = parseFfmpegExportCropPreset(params.cropPreset)
   const container = parseFfmpegExportContainer(params.container ?? 'mp4')
-  const wantTwoPass = params.twoPass === true
+  const wantTwoPass =
+    params.twoPass === true && videoBitrate !== null && videoCodec === 'libx264'
   const audioGainDb = parseFfmpegExportAudioGainDb(params.audioGainDb)
   const stripMetadata = parseFfmpegExportStripFlag(params.stripMetadata)
   const stripChapters = parseFfmpegExportStripFlag(params.stripChapters)
@@ -878,10 +904,16 @@ export async function runFfmpegExportJob(params: {
   const videoBlur = parseFfmpegExportVideoBlur(params.videoBlur)
   const videoDeinterlace = parseFfmpegExportVideoDeinterlace(params.videoDeinterlace)
   const audioNormalize = parseFfmpegExportAudioNormalize(params.audioNormalize)
-  if (wantTwoPass && videoBitrate === null) {
+  if (params.twoPass === true && videoBitrate === null) {
     return {
       ok: false,
       error: 'Двухпроходное кодирование доступно только с выбранным видеобитрейтом, не с CRF.'
+    }
+  }
+  if (params.twoPass === true && videoCodec !== 'libx264') {
+    return {
+      ok: false,
+      error: 'Двухпроходное кодирование поддержано только для H.264 (libx264).'
     }
   }
   const segmentDur = resolveExportSegmentDurationSec(
@@ -905,6 +937,7 @@ export async function runFfmpegExportJob(params: {
     scalePreset,
     videoTransform,
     cropPreset,
+    ...(videoCodec !== 'libx264' ? { videoCodec } : {}),
     ...(audioGainDb !== null ? { audioGainDb } : {}),
     ...(stripMetadata ? { stripMetadata: true } : {}),
     ...(stripChapters ? { stripChapters: true } : {}),

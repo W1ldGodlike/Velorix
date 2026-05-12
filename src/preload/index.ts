@@ -20,6 +20,7 @@ import type {
   FfmpegExportSubtitleModeId,
   FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
+  FfmpegExportVideoCodecId,
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDeinterlaceId,
   FfmpegExportVideoHisteqId,
@@ -156,6 +157,8 @@ const fluxalloy = {
       ipcRenderer.invoke(mw.pickEngineExecutable, engineId),
     setFfmpegExportEncodePreset: (preset: FfmpegExportEncodePresetId): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportEncodePreset, preset),
+    setFfmpegExportVideoCodec: (codec: FfmpegExportVideoCodecId): Promise<AppSettings> =>
+      ipcRenderer.invoke(mw.settingsSetFfmpegExportVideoCodec, codec),
     setFfmpegExportContainer: (container: FfmpegExportContainerId): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportContainer, container),
     setFfmpegExportCrf: (crf: number | null): Promise<AppSettings> =>

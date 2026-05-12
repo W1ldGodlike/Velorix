@@ -14,6 +14,7 @@ import type {
   FfmpegExportEncodePresetId,
   FfmpegExportScalePresetId,
   FfmpegExportSubtitleModeId,
+  FfmpegExportVideoCodecId,
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDeinterlaceId,
   FfmpegExportVideoHisteqId,
@@ -400,6 +401,8 @@ export interface FfmpegExportArgvParams {
   trim?: MediaExportTrimPayload
   applyTrim: boolean
   encodePreset: FfmpegExportEncodePresetId
+  /** §7.2 — по умолчанию `libx264`. */
+  videoCodec?: FfmpegExportVideoCodecId
   /** Если `null` — берётся CRF из системного пресета §7.2. */
   crf: number | null
   /** Если непусто — заменяет CRF mode на bitrate mode (`-b:v`). */
@@ -555,7 +558,11 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
     args.push('-map_chapters', '-1')
   }
 
-  args.push('-c:v', 'libx264', '-preset', enc.x264preset)
+  const vcodec: FfmpegExportVideoCodecId = params.videoCodec ?? 'libx264'
+  args.push('-c:v', vcodec, '-preset', enc.x264preset)
+  if (vcodec === 'libx265' && (container === 'mp4' || container === 'mov')) {
+    args.push('-tag:v', 'hvc1')
+  }
 
   const tp = params.twoPass
   if (tp) {
@@ -644,6 +651,8 @@ export function formatFfmpegArgvForPreview(tokens: ReadonlyArray<string>): strin
 
 export interface FfmpegExportPreviewInput {
   encodePreset: FfmpegExportEncodePresetId
+  /** §7.2 — по умолчанию libx264. */
+  videoCodec?: FfmpegExportVideoCodecId
   /** Совпадает с выбором контейнера в toolbar §7.2; по умолчанию mp4. */
   container?: FfmpegExportContainerId
   crf: number | null
@@ -736,7 +745,8 @@ export function buildFfmpegExportPreviewCommand(
     input.twoPassDiscardPlaceholder.trim() !== ''
       ? input.twoPassDiscardPlaceholder.trim()
       : '<discard>'
-  const useTwoPass = input.twoPass === true && input.videoBitrate !== null
+  const vcodec: FfmpegExportVideoCodecId = input.videoCodec ?? 'libx264'
+  const useTwoPass = input.twoPass === true && input.videoBitrate !== null && vcodec === 'libx264'
 
   const baseArgvParams = {
     inputPath,
@@ -745,6 +755,7 @@ export function buildFfmpegExportPreviewCommand(
     applyTrim,
     ...(input.container !== undefined ? { container: input.container } : {}),
     encodePreset: input.encodePreset,
+    ...(vcodec !== 'libx264' ? { videoCodec: vcodec } : {}),
     crf: input.crf,
     videoBitrate: input.videoBitrate,
     audioMode: input.audioMode,

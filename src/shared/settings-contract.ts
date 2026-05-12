@@ -9,6 +9,7 @@ import type {
   FfmpegExportCropPresetId,
   FfmpegExportSubtitleModeId,
   FfmpegExportUserPreset,
+  FfmpegExportVideoCodecId,
   FfmpegExportVideoDebandId,
   FfmpegExportVideoHisteqId,
   FfmpegExportVideoDenoiseId,
@@ -122,8 +123,10 @@ export interface AppSettings {
   ytdlpOpenInHandlerOnComplete?: boolean
   /** §6.4: после успешного авто-открытия в обработчике запустить ffmpeg-экспорт в соседний файл (параметры §7.2). */
   ytdlpAutoExportAfterOpenInHandler?: boolean
-  /** §7.2: системный пресет экспорта MP4 (libx264 CRF + `-preset`). */
+  /** §7.2: системный пресет экспорта (CRF/preset для libx264/libx265). */
   ffmpegExportEncodePreset?: string
+  /** §7.2: видеокодек экспорта (`libx264` по умолчанию — поле можно не писать). */
+  ffmpegExportVideoCodec?: FfmpegExportVideoCodecId
   /** §7.2: контейнер экспорта по умолчанию. */
   ffmpegExportContainer?: 'mp4' | 'mkv' | 'mov'
   /** §7.2: явный CRF libx264 0..51; если отсутствует — CRF берётся из пресета. */

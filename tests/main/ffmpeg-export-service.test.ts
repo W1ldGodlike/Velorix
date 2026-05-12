@@ -155,6 +155,22 @@ describe('ffmpeg export pure helpers', () => {
         twoPass: true
       })
     ).toMatchObject({ twoPass: true })
+    const hevcTwo = parseFfmpegExportUserPresetSnapshot({
+      encodePreset: 'balance',
+      videoCodec: 'libx265',
+      container: 'mp4',
+      crf: null,
+      videoBitrate: '2500k',
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      videoTransform: 'none',
+      cropPreset: 'none',
+      twoPass: true
+    })
+    expect(hevcTwo).toMatchObject({ videoCodec: 'libx265' })
+    expect(hevcTwo?.twoPass).toBeUndefined()
     expect(
       parseFfmpegExportUserPresetSnapshot({
         encodePreset: 'balance',

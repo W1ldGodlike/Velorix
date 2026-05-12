@@ -10,6 +10,7 @@ import type {
   FfmpegExportEncodePresetId,
   FfmpegExportScalePresetId,
   FfmpegExportSubtitleModeId,
+  FfmpegExportVideoCodecId,
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDeinterlaceId,
   FfmpegExportVideoHisteqId,
@@ -38,6 +39,7 @@ import {
   parseFfmpegExportSubtitleMode,
   parseFfmpegExportTwoPass,
   parseFfmpegExportVideoBitrate,
+  parseFfmpegExportVideoCodec,
   parseFfmpegExportVideoDeband,
   parseFfmpegExportVideoDeinterlace,
   parseFfmpegExportVideoHisteq,
@@ -55,6 +57,7 @@ import {
 /** Параметры `runFfmpegExportJob`, кроме путей, ffmpeg, trim, probe, signal, onProgress. */
 export type ResolvedFfmpegExportJobOptions = {
   encodePreset: FfmpegExportEncodePresetId
+  videoCodec: FfmpegExportVideoCodecId
   container: FfmpegExportContainerId
   crf: number | null
   videoBitrate: string | null
@@ -100,6 +103,11 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
     encodePresetRaw !== undefined && encodePresetRaw !== null
       ? parseFfmpegExportEncodePreset(encodePresetRaw)
       : parseFfmpegExportEncodePreset(settings.ffmpegExportEncodePreset)
+  const videoCodecRaw = raw['videoCodec']
+  const videoCodec =
+    videoCodecRaw !== undefined && videoCodecRaw !== null
+      ? parseFfmpegExportVideoCodec(videoCodecRaw)
+      : parseFfmpegExportVideoCodec(settings.ffmpegExportVideoCodec)
   const containerRaw = raw['container']
   const container =
     containerRaw !== undefined && containerRaw !== null
@@ -148,8 +156,8 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
   const twoPassRaw = raw['twoPass']
   const twoPass =
     twoPassRaw !== undefined && twoPassRaw !== null
-      ? parseFfmpegExportTwoPass(twoPassRaw)
-      : parseFfmpegExportTwoPass(settings.ffmpegExportTwoPass)
+      ? parseFfmpegExportTwoPass(twoPassRaw) && videoCodec === 'libx264'
+      : parseFfmpegExportTwoPass(settings.ffmpegExportTwoPass) && videoCodec === 'libx264'
   const audioGainRaw = raw['audioGainDb']
   const audioGainDb =
     audioGainRaw !== undefined
@@ -233,6 +241,7 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
 
   return {
     encodePreset,
+    videoCodec,
     container,
     crf,
     videoBitrate,
