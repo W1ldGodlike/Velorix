@@ -12,6 +12,14 @@ function terminalLineAllowsQuotes(line: string): boolean {
 }
 
 describe('TERMINAL_SCENARIO_HINTS_*', () => {
+  it('downloads: без дублей fullLine и с базовым объёмом набора', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => (h.fullLine ?? '').trim())
+    const nonEmpty = lines.filter((line) => line.length > 0)
+    const unique = new Set(nonEmpty)
+    expect(nonEmpty.length).toBeGreaterThanOrEqual(805)
+    expect(unique.size).toBe(nonEmpty.length)
+  })
+
   it('downloads: fullLine без кавычек и с префиксом yt-dlp', () => {
     for (const h of TERMINAL_SCENARIO_HINTS_DOWNLOADS) {
       expect(h.tool).toBe('yt-dlp')
@@ -2195,7 +2203,7 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     ).toBe(true)
   })
 
-  it('downloads: geo BR/VE/EC/PY/CU/GY/SR + print-to-file webpage_url_scheme', () => {
+  it('downloads: geo BR/VE/EC/PY/CU/GY/SR/XK + print-to-file webpage_url_scheme', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
     expect(lines).toContain('yt-dlp --geo-bypass-country BR -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country VE -F ')
@@ -2204,6 +2212,7 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --geo-bypass-country CU -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country GY -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country SR -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country XK -F ')
     expect(lines).toContain(
       'yt-dlp --print-to-file webpage_url_scheme flux-ytdlp-wuscheme.txt --skip-download '
     )

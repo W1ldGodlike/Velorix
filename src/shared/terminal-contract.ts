@@ -4403,9 +4403,9 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· geo BR -F',
-    summary: 'Гео-обход через Бразилию (--geo-bypass-country BR -F); допишите URL.',
-    fullLine: 'yt-dlp --geo-bypass-country BR -F '
+    token: '· geo XK -F',
+    summary: 'Гео-обход через Косово (--geo-bypass-country XK -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country XK -F '
   },
   {
     tool: 'yt-dlp',
