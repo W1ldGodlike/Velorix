@@ -2444,6 +2444,126 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· geo RS -F',
     summary: 'Гео-обход с кодом страны RS (--geo-bypass-country RS -F); допишите URL.',
     fullLine: 'yt-dlp --geo-bypass-country RS -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo MN -F',
+    summary: 'Гео-обход с кодом страны MN (--geo-bypass-country MN -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country MN -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo KZ -F',
+    summary: 'Гео-обход с кодом страны KZ (--geo-bypass-country KZ -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country KZ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo GE -F',
+    summary: 'Гео-обход с кодом страны GE (--geo-bypass-country GE -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country GE -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo AM -F',
+    summary: 'Гео-обход с кодом страны AM (--geo-bypass-country AM -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country AM -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo AZ -F',
+    summary: 'Гео-обход с кодом страны AZ (--geo-bypass-country AZ -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country AZ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo IQ -F',
+    summary: 'Гео-обход с кодом страны IQ (--geo-bypass-country IQ -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country IQ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo LK -F',
+    summary: 'Гео-обход с кодом страны LK (--geo-bypass-country LK -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country LK -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo TN -F',
+    summary: 'Гео-обход с кодом страны TN (--geo-bypass-country TN -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country TN -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo MA -F',
+    summary: 'Гео-обход с кодом страны MA (--geo-bypass-country MA -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country MA -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo DZ -F',
+    summary: 'Гео-обход с кодом страны DZ (--geo-bypass-country DZ -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country DZ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo GH -F',
+    summary: 'Гео-обход с кодом страны GH (--geo-bypass-country GH -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country GH -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo ET -F',
+    summary: 'Гео-обход с кодом страны ET (--geo-bypass-country ET -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country ET -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo UY -F',
+    summary: 'Гео-обход с кодом страны UY (--geo-bypass-country UY -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country UY -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo BO -F',
+    summary: 'Гео-обход с кодом страны BO (--geo-bypass-country BO -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country BO -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo CR -F',
+    summary: 'Гео-обход с кодом страны CR (--geo-bypass-country CR -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country CR -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo PA -F',
+    summary: 'Гео-обход с кодом страны PA (--geo-bypass-country PA -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country PA -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· downloader ffmpeg -F',
+    summary: 'Явно качать через встроенный ffmpeg-даунлоадер (--downloader ffmpeg -F); HLS/DASH; допишите URL.',
+    fullLine: 'yt-dlp --downloader ffmpeg -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· downloader aria2c -F',
+    summary: 'Внешний aria2c как даунлоадер (--downloader aria2c -F; нужен aria2c в PATH); допишите URL.',
+    fullLine: 'yt-dlp --downloader aria2c -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-wait-for-video -F',
+    summary: 'Не ждать появления трансляции (--no-wait-for-video -F); быстрый -F для стримов; допишите URL.',
+    fullLine: 'yt-dlp --no-wait-for-video -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· verbose -F',
+    summary: 'Подробный лог yt-dlp при списке форматов (--verbose -F); диагностика extractor; допишите URL.',
+    fullLine: 'yt-dlp --verbose -F '
   }
 ]
 
@@ -3324,6 +3444,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· acompressor 5s',
     summary: 'Лёгкая компрессия аудио первых 5 с (-af acompressor=threshold=-20dB:ratio=4:attack=5:release=100); плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af acompressor=threshold=-20dB:ratio=4:attack=5:release=100 -t 5 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:2 codec+size+prof',
+    summary: 'Вторая видеодорожка v:2: codec_name/width/height/profile/level (мульти-угол/редкие контейнеры); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:2 -show_entries stream=codec_name,width,height,profile,level -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· silenceremove 60s',
+    summary: 'Обрезка ведущей тишины в первых 60 с (-af silenceremove=…); проверка цепочки af на речи/музыке; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af silenceremove=start_periods=1:start_duration=0.5:start_threshold=-50dB:detection=peak:stop_periods=-1 -t 60 -vn -sn -f null -`
   }
 ]
 

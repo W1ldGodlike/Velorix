@@ -1176,4 +1176,48 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: geo MN..PA / downloader ffmpeg|aria2c / no-wait / verbose -F', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --geo-bypass-country MN -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country KZ -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country GE -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country AM -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country AZ -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country IQ -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country LK -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country TN -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country MA -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country DZ -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country GH -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country ET -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country UY -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country BO -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country CR -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country PA -F ')
+    expect(lines).toContain('yt-dlp --downloader ffmpeg -F ')
+    expect(lines).toContain('yt-dlp --downloader aria2c -F ')
+    expect(lines).toContain('yt-dlp --no-wait-for-video -F ')
+    expect(lines).toContain('yt-dlp --verbose -F ')
+  })
+
+  it('preview: ffprobe v:2 / ffmpeg silenceremove 60s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams v:2') &&
+          l.includes('stream=codec_name,width,height,profile,level') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af silenceremove=start_periods=1:start_duration=0.5:start_threshold=-50dB') &&
+          l.includes('-t 60') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })
