@@ -3416,6 +3416,96 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· force-over -F',
     summary: 'Перезапись существующих файлов без вопросов (--force-overwrites -F); допишите URL.',
     fullLine: 'yt-dlp --force-overwrites -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file fulltitle',
+    summary: 'Записать fulltitle в flux-ytdlp-fulltitle.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file fulltitle flux-ytdlp-fulltitle.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file alttitle',
+    summary: 'Записать alt_title в flux-ytdlp-alttitle.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file alt_title flux-ytdlp-alttitle.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file artist',
+    summary: 'Записать artist в flux-ytdlp-artist.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file artist flux-ytdlp-artist.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file album',
+    summary: 'Записать album в flux-ytdlp-album.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file album flux-ytdlp-album.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file relyear',
+    summary: 'Записать release_year в flux-ytdlp-relyear.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file release_year flux-ytdlp-relyear.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file is_live',
+    summary: 'Записать is_live в flux-ytdlp-islive.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file is_live flux-ytdlp-islive.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file live_stat',
+    summary: 'Записать live_status в flux-ytdlp-livestat.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file live_status flux-ytdlp-livestat.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file chfol',
+    summary: 'Записать channel_follower_count в flux-ytdlp-chfol.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file channel_follower_count flux-ytdlp-chfol.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo CK -F',
+    summary: 'Гео-обход через Острова Кука (--geo-bypass-country CK -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country CK -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo NU -F',
+    summary: 'Гео-обход через Ниуэ (--geo-bypass-country NU -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country NU -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo TK -F',
+    summary: 'Гео-обход через Токелау (--geo-bypass-country TK -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country TK -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo TO -F',
+    summary: 'Гео-обход через Тонга (--geo-bypass-country TO -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country TO -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo WS -F',
+    summary: 'Гео-обход через Самоа (--geo-bypass-country WS -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country WS -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· skip-unavail -F',
+    summary: 'DASH/HLS: пропускать недоступные фрагменты вместо фатала (--skip-unavailable-fragments -F); допишите URL.',
+    fullLine: 'yt-dlp --skip-unavailable-fragments -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· abort-on-err -F',
+    summary: 'Остановка при первой фатальной ошибке (--abort-on-error -F); допишите URL плейлиста при необходимости.',
+    fullLine: 'yt-dlp --abort-on-error -F '
   }
 ]
 
@@ -4524,6 +4614,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· asoftclip 4s',
     summary: 'Мягкий клиппер первых 4 с (-af asoftclip); smoke ограничения пиков без жёсткого лимитера; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af asoftclip -t 4 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:0 chans',
+    summary: 'Поток a:0: channels + channel_layout (карта каналов vs число); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=channels,channel_layout -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· aecho 4s',
+    summary: 'Лёгкое эхо первых 4 с (-af aecho); smoke задержек/смешивания в af; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af aecho=0.8:0.9:40:0.3 -t 4 -vn -sn -f null -`
   }
 ]
 

@@ -1738,4 +1738,43 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: print-to-file fulltitle/alt_title/artist/album/relyear/is_live/live_status/chfol + geo CK/NU/TK/TO/WS + skip-unavail/abort -F', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --print-to-file fulltitle flux-ytdlp-fulltitle.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file alt_title flux-ytdlp-alttitle.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file artist flux-ytdlp-artist.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file album flux-ytdlp-album.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file release_year flux-ytdlp-relyear.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file is_live flux-ytdlp-islive.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file live_status flux-ytdlp-livestat.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file channel_follower_count flux-ytdlp-chfol.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country CK -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country NU -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country TK -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country TO -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country WS -F ')
+    expect(lines).toContain('yt-dlp --skip-unavailable-fragments -F ')
+    expect(lines).toContain('yt-dlp --abort-on-error -F ')
+  })
+
+  it('preview: ffprobe a:0 channels+channel_layout + ffmpeg aecho 4s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-select_streams a:0') &&
+          l.includes('stream=channels,channel_layout') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af aecho=0.8:0.9:40:0.3') &&
+          l.includes('-t 4') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })
