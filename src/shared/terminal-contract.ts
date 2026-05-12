@@ -4484,6 +4484,42 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· fragment-retries 20 -F',
     summary: 'Список форматов с повторами для фрагментов DASH/HLS (--fragment-retries 20 -F); допишите URL.',
     fullLine: 'yt-dlp --fragment-retries 20 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file timestamp',
+    summary: 'Записать timestamp (Unix-время публикации, если extractor отдаёт) в flux-ytdlp-ts.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file timestamp flux-ytdlp-ts.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file extractor_key',
+    summary: 'Записать extractor_key (внутренний ключ extractor) в flux-ytdlp-extkey.txt без скачивания; полезно для диагностики; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file extractor_key flux-ytdlp-extkey.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file track_id',
+    summary: 'Записать track_id (идентификатор трека у extractor, если отдаёт) в flux-ytdlp-trackid.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file track_id flux-ytdlp-trackid.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file album_id',
+    summary: 'Записать album_id (идентификатор альбома, если extractor отдаёт) в flux-ytdlp-albumid.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file album_id flux-ytdlp-albumid.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file dynamic_range',
+    summary: 'Записать dynamic_range (SDR/HDR/Dolby Vision, если extractor отдаёт) в flux-ytdlp-dynrange.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file dynamic_range flux-ytdlp-dynrange.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo-bypass TT -F',
+    summary: 'Гео-обход через Тринидад и Тобаго (--geo-bypass-country TT -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country TT -F '
   }
 ]
 
@@ -5766,6 +5802,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· superequalizer 4s',
     summary: 'Лёгкий 10-полосный superequalizer (полоса 3 +4 dB) первых 4 с; smoke графического EQ; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af superequalizer=3b=4 -t 4 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format show+epsort',
+    summary: 'Теги контейнера show + episode_sort (TV-каталоги/сериалы); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=show,episode_sort -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· lowshelf 4s',
+    summary: 'Лёгкий низкочастотный шельф первых 4 с (-af lowshelf=g=2:f=200); smoke EQ low-shelf; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af lowshelf=g=2:f=200 -t 4 -vn -sn -f null -`
   }
 ]
 

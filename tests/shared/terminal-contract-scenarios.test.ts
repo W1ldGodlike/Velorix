@@ -2257,4 +2257,33 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: print-to-file timestamp/extractor_key/track_id/album_id/dynamic_range + geo TT -F', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --print-to-file timestamp flux-ytdlp-ts.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file extractor_key flux-ytdlp-extkey.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file track_id flux-ytdlp-trackid.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file album_id flux-ytdlp-albumid.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file dynamic_range flux-ytdlp-dynrange.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country TT -F ')
+  })
+
+  it('preview: ffprobe format show+epsort + ffmpeg lowshelf 4s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=show,episode_sort') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af lowshelf=g=2:f=200') &&
+          l.includes('-t 4') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })
