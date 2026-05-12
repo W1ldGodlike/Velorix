@@ -1964,6 +1964,66 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· default-search auto -F',
     summary: 'Поиск по умолчанию, если ввод не похож на URL (--default-search auto: -F); допишите запрос.',
     fullLine: 'yt-dlp --default-search auto: -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· ignore-dynamic-mpd -F',
+    summary: 'Игнорировать обновляемые «живые» DASH MPD (--ignore-dynamic-mpd -F); стабильнее на коротком окне; допишите URL.',
+    fullLine: 'yt-dlp --ignore-dynamic-mpd -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· sponsorblock-api -F',
+    summary: 'Кастомный HTTP API SponsorBlock (--sponsorblock-api https://sponsor.ajay.app -F); при сбоях дефолтного сервера; допишите URL.',
+    fullLine: 'yt-dlp --sponsorblock-api https://sponsor.ajay.app -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· config-locations -F',
+    summary: 'Доп. файл конфигурации рядом с задачей (--config-locations yt-dlp.conf -F); создайте yt-dlp.conf при необходимости; допишите URL.',
+    fullLine: 'yt-dlp --config-locations yt-dlp.conf -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo MX -F',
+    summary: 'Гео-обход с кодом страны MX (--geo-bypass-country MX -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country MX -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo KR -F',
+    summary: 'Гео-обход с кодом страны KR (--geo-bypass-country KR -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country KR -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo IN -F',
+    summary: 'Гео-обход с кодом страны IN (--geo-bypass-country IN -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country IN -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo TR -F',
+    summary: 'Гео-обход с кодом страны TR (--geo-bypass-country TR -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country TR -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo NO -F',
+    summary: 'Гео-обход с кодом страны NO (--geo-bypass-country NO -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country NO -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo CH -F',
+    summary: 'Гео-обход с кодом страны CH (--geo-bypass-country CH -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country CH -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· xfwd -F',
+    summary: 'Добавить X-Forwarded-For/-Proto к HTTP (--xfwd -F); за reverse-proxy/интроспекцию; допишите URL.',
+    fullLine: 'yt-dlp --xfwd -F '
   }
 ]
 
@@ -2712,6 +2772,30 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· signalstats 8s',
     summary: 'Статистика уровней/шума первых 8 с (-vf signalstats); YUV-средние/отклонения в stderr; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf signalstats -t 8 -an -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· chapters json',
+    summary: 'Главы контейнера одним JSON (--show-chapters -of json=c=1); длительности/титры сегментов; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_chapters -of json=c=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· s:0 stream dur',
+    summary: 'Первая дорожка субтитров s:0: start_time + duration (смещение/длина vs видео); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=start_time,duration -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:1 stream dur',
+    summary: 'Вторая аудиодорожка a:1: start_time + duration (мультиязык, сдвиг); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:1 -show_entries stream=start_time,duration -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· highpass 5s',
+    summary: 'ВЧ-срез первых 5 с (-af highpass=f=200); проверка аудио-цепочки/тишины в низах; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af highpass=f=200 -t 5 -vn -sn -f null -`
   }
 ]
 

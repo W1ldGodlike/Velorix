@@ -881,6 +881,20 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     ).toBe(true)
   })
 
+  it('downloads: ignore-dynamic-mpd / sponsorblock-api / config-locations / geo MX..CH / xfwd', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --ignore-dynamic-mpd -F ')
+    expect(lines).toContain('yt-dlp --sponsorblock-api https://sponsor.ajay.app -F ')
+    expect(lines).toContain('yt-dlp --config-locations yt-dlp.conf -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country MX -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country KR -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country IN -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country TR -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country NO -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country CH -F ')
+    expect(lines).toContain('yt-dlp --xfwd -F ')
+  })
+
   it('downloads: print-to-file / file-urls / source-address / annotations / storyboards / sponsorblock chapter / concat-playlist / fixup / use-extractors / default-search', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
     expect(lines).toContain('yt-dlp --print-to-file title flux-ytdlp-title.txt --skip-download ')
@@ -893,6 +907,18 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --fixup warn -F ')
     expect(lines).toContain('yt-dlp --use-extractors youtube -F ')
     expect(lines).toContain('yt-dlp --default-search auto: -F ')
+  })
+
+  it('preview: chapters json / s:0+a:1 stream duration / highpass', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(lines.some((l) => l.includes('-show_chapters -of json=c=1'))).toBe(true)
+    expect(
+      lines.some((l) => l.includes('-select_streams s:0') && l.includes('stream=start_time,duration'))
+    ).toBe(true)
+    expect(
+      lines.some((l) => l.includes('-select_streams a:1') && l.includes('stream=start_time,duration'))
+    ).toBe(true)
+    expect(lines.some((l) => l.includes('-af highpass=f=200') && l.includes('-t 5'))).toBe(true)
   })
 
   it('preview: cropdetect / freezedetect / signalstats', () => {
