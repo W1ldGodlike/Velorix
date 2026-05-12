@@ -417,6 +417,8 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --check-all-formats -F ')
     expect(lines).toContain('yt-dlp --socket-timeout 60 ')
     expect(lines).toContain('yt-dlp --xattrs ')
+    expect(lines).toContain('yt-dlp -U ')
+    expect(lines).toContain('yt-dlp --compat-options no-youtube-unavailable-videos -F ')
   })
 
   it('preview: pretty/flat/packets/frames + loudnorm summary', () => {
@@ -474,6 +476,14 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
           l.includes('select_streams v:0') &&
           l.includes('extradata_size') &&
           l.includes('initial_padding')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams s:0') &&
+          l.includes('stream=bit_rate') &&
+          l.includes('-of default=nw=1:nk=1')
       )
     ).toBe(true)
   })

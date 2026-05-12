@@ -1166,6 +1166,18 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· xattrs',
     summary: 'Записать метаданные в xattr файла где поддерживается ОС (--xattrs); допишите URL.',
     fullLine: 'yt-dlp --xattrs '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -U update',
+    summary: 'Обновить yt-dlp до последней стабильной сборки (-U); URL не нужен; закройте процессы, если бинарь залочен.',
+    fullLine: 'yt-dlp -U '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· compat no-unavail',
+    summary: 'Совместимость: не подменять недоступные ролики YouTube заглушкой (--compat-options no-youtube-unavailable-videos -F); допишите URL.',
+    fullLine: 'yt-dlp --compat-options no-youtube-unavailable-videos -F '
   }
 ]
 
@@ -1692,6 +1704,12 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· v:0 extradata',
     summary: 'Поток v:0: extradata_size (размер декодер-заголовков) + initial_padding; плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=extradata_size,initial_padding -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· s:0 bit_rate',
+    summary: 'Первая дорожка субтитров s:0: bit_rate (если задан в контейнере); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=bit_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   }
 ]
 
