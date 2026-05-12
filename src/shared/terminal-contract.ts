@@ -4118,6 +4118,126 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· print-to-file mood',
     summary: 'Записать mood (настроение/тег настроения, если extractor отдаёт) в flux-ytdlp-mood.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file mood flux-ytdlp-mood.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo CM -F',
+    summary: 'Гео-обход через Камерун (--geo-bypass-country CM -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country CM -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo GA -F',
+    summary: 'Гео-обход через Габон (--geo-bypass-country GA -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country GA -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo CG -F',
+    summary: 'Гео-обход через Республику Конго (--geo-bypass-country CG -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country CG -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo CD -F',
+    summary: 'Гео-обход через ДР Конго (--geo-bypass-country CD -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country CD -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo CF -F',
+    summary: 'Гео-обход через ЦАР (--geo-bypass-country CF -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country CF -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo GQ -F',
+    summary: 'Гео-обход через Экваториальную Гвинею (--geo-bypass-country GQ -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country GQ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo ST -F',
+    summary: 'Гео-обход через Сан-Томе и Принсипи (--geo-bypass-country ST -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country ST -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo BI -F',
+    summary: 'Гео-обход через Бурунди (--geo-bypass-country BI -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country BI -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo RW -F',
+    summary: 'Гео-обход через Руанду (--geo-bypass-country RW -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country RW -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo UG -F',
+    summary: 'Гео-обход через Уганду (--geo-bypass-country UG -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country UG -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo TZ -F',
+    summary: 'Гео-обход через Танзанию (--geo-bypass-country TZ -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country TZ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo ZM -F',
+    summary: 'Гео-обход через Замбию (--geo-bypass-country ZM -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country ZM -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file artist_sort',
+    summary: 'Записать artist_sort (сортировочное имя исполнителя) в flux-ytdlp-artistsort.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file artist_sort flux-ytdlp-artistsort.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file album_sort',
+    summary: 'Записать album_sort (сортировочное имя альбома) в flux-ytdlp-albumsort.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file album_sort flux-ytdlp-albumsort.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file conductor',
+    summary: 'Записать conductor (дирижёр, если есть) в flux-ytdlp-conductor.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file conductor flux-ytdlp-conductor.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file performers',
+    summary: 'Записать performers (список исполнителей, если extractor отдаёт) в flux-ytdlp-performers.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file performers flux-ytdlp-performers.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file copyright',
+    summary: 'Записать copyright (строка правообладателя) в flux-ytdlp-copy.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file copyright flux-ytdlp-copy.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file uploader_url',
+    summary: 'Записать uploader_url (канонический URL страницы автора) в flux-ytdlp-upurl.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file uploader_url flux-ytdlp-upurl.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file producer',
+    summary: 'Записать producer (поле producer, если есть) в flux-ytdlp-producer.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file producer flux-ytdlp-producer.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file director',
+    summary: 'Записать director (режиссёр/автор видео, если extractor отдаёт) в flux-ytdlp-director.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file director flux-ytdlp-director.txt --skip-download '
   }
 ]
 
@@ -5340,6 +5460,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· alimiter 3s',
     summary: 'Мягкий лимитер пиков первых 3 с (-af alimiter=limit=0.8); smoke динамики/af без кавычек; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af alimiter=limit=0.8 -t 3 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format MP4 brands',
+    summary: 'Теги контейнера major_brand + minor_version + compatible_brands (часто у MP4/MOV); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=major_brand,minor_version,compatible_brands -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· stereotools 3s',
+    summary: 'Лёгкая стерео-коррекция первых 3 с (-af stereotools=mlev=0.05:phlev=0.05); smoke ширины/фазы; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af stereotools=mlev=0.05:phlev=0.05 -t 3 -vn -sn -f null -`
   }
 ]
 

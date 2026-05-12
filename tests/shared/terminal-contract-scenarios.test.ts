@@ -2078,4 +2078,47 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: geo CM/GA/CG/CD/CF/GQ/ST/BI/RW/UG/TZ/ZM + print-to-file artist_sort…director', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --geo-bypass-country CM -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country GA -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country CG -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country CD -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country CF -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country GQ -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country ST -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country BI -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country RW -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country UG -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country TZ -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country ZM -F ')
+    expect(lines).toContain('yt-dlp --print-to-file artist_sort flux-ytdlp-artistsort.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file album_sort flux-ytdlp-albumsort.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file conductor flux-ytdlp-conductor.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file performers flux-ytdlp-performers.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file copyright flux-ytdlp-copy.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file uploader_url flux-ytdlp-upurl.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file producer flux-ytdlp-producer.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file director flux-ytdlp-director.txt --skip-download ')
+  })
+
+  it('preview: ffprobe format MP4 brands + ffmpeg stereotools 3s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=major_brand,minor_version,compatible_brands') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af stereotools=mlev=0.05:phlev=0.05') &&
+          l.includes('-t 3') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })
