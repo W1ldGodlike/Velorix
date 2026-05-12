@@ -10,11 +10,14 @@ import { uiText } from '../locales/ui-text'
 export function KnowledgeDialog({
   open,
   onClose,
-  onStatus
+  onStatus,
+  initialSlug = null
 }: {
   open: boolean
   onClose: () => void
   onStatus?: (message: string) => void
+  /** Если задан и есть в списке статей — выбрать при открытии вместо первой в TOC. */
+  initialSlug?: string | null
 }): JSX.Element | null {
   const [articles, setArticles] = useState<KnowledgeArticleListItem[]>([])
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null)
@@ -42,12 +45,16 @@ export function KnowledgeDialog({
         return
       }
       setArticles(res.articles)
-      setSelectedSlug((current) => current ?? res.articles[0]?.slug ?? null)
+      const first = res.articles[0]?.slug ?? null
+      const want = initialSlug?.trim()
+      const resolved =
+        want && res.articles.some((a) => a.slug === want) ? want : null
+      setSelectedSlug((current) => (resolved !== null ? resolved : current ?? first))
     })
     return () => {
       disposed = true
     }
-  }, [onStatus, open])
+  }, [initialSlug, onStatus, open])
 
   useEffect(() => {
     if (!open || selectedSlug === null) {

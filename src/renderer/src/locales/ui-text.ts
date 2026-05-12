@@ -17,6 +17,7 @@ const UI_TEXT = {
       'Локальные статьи из Help/*.md. Тексты пока на русском; интерфейс окна следует языку системы (EN/RU). Внешние https-ссылки открываются в браузере; ссылки на другие .md — внутри приложения.',
     knowledgeSearchPlaceholder: 'Поиск по статьям',
     knowledgeTocAria: 'Оглавление справки',
+    knowledgeArticleTerminalHintsLink: 'База знаний: подсказки терминала (ffmpeg / yt-dlp)',
   },
   en: {
     aboutTitle: 'About',
@@ -33,7 +34,8 @@ const UI_TEXT = {
     knowledgeHint:
       'Local Help/*.md articles. Article text is RU-first; this dialog chrome follows your UI locale (EN/RU). External https links open in the browser; links to other .md files stay inside the app.',
     knowledgeSearchPlaceholder: 'Search articles',
-    knowledgeTocAria: 'Help table of contents'
+    knowledgeTocAria: 'Help table of contents',
+    knowledgeArticleTerminalHintsLink: 'Knowledge: terminal hints (ffmpeg / yt-dlp)',
   }
 } as const
 

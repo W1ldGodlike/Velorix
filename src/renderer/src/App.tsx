@@ -11,6 +11,7 @@ import {
 import VideoTimeline from './components/VideoTimeline'
 import PreviewTransport from './components/PreviewTransport'
 import Versions from './components/Versions'
+import { uiText } from './locales/ui-text'
 import {
   IconBan,
   IconChevronLeft,
@@ -150,6 +151,8 @@ const TERMINAL_HINT_AUDIO_EXTS = new Set([
 ])
 /** §8 — лимит элементов в полном выпадающем списке подсказок терминала. */
 const TERMINAL_HINT_DROPDOWN_MAX = 240
+/** §15 — slug `Help/ffmpeg-terminal-hints.md` для deep-link из подсказок UI. */
+const KNOWLEDGE_SLUG_FFMPEG_TERMINAL_HINTS = 'ffmpeg-terminal-hints'
 
 type WorkspaceTab = 'editor' | 'downloads' | 'terminal'
 
@@ -666,6 +669,7 @@ function App(): JSX.Element {
   const [engineDownloadBusy, setEngineDownloadBusy] = useState(false)
   const [enginePathsOpen, setEnginePathsOpen] = useState(false)
   const [knowledgeOpen, setKnowledgeOpen] = useState(false)
+  const [knowledgeInitialSlug, setKnowledgeInitialSlug] = useState<string | null>(null)
   const [aboutOpen, setAboutOpen] = useState(false)
   const [aboutInfo, setAboutInfo] = useState<Awaited<
     ReturnType<typeof window.fluxalloy.about.getInfo>
@@ -2332,6 +2336,7 @@ function App(): JSX.Element {
               type="button"
               className="app-icon-btn"
               onClick={() => {
+                setKnowledgeInitialSlug(null)
                 setKnowledgeOpen(true)
               }}
               title="Открыть базу знаний"
@@ -3604,7 +3609,17 @@ function App(): JSX.Element {
                   PgUp/PgDn (шаг {DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP}), Enter — вставить
                   выделенную подсказку в argv, Escape — сбросить фильтр (или убрать фокус, если
                   фильтр уже пуст). В журнале вывода каждая строка
-                  с кнопкой «Копир.» при наведении (копирует ровно эту строку).
+                  с кнопкой «Копир.» при наведении (копирует ровно эту строку).{' '}
+                  <button
+                    type="button"
+                    className="app-knowledge-link"
+                    onClick={() => {
+                      setKnowledgeInitialSlug(KNOWLEDGE_SLUG_FFMPEG_TERMINAL_HINTS)
+                      setKnowledgeOpen(true)
+                    }}
+                  >
+                    {uiText('knowledgeArticleTerminalHintsLink')}
+                  </button>
                 </p>
               </div>
             </div>
@@ -5206,8 +5221,10 @@ function App(): JSX.Element {
 
       <KnowledgeDialog
         open={knowledgeOpen}
+        initialSlug={knowledgeInitialSlug}
         onClose={() => {
           setKnowledgeOpen(false)
+          setKnowledgeInitialSlug(null)
         }}
         onStatus={(message) => {
           setStatusHint(message)
