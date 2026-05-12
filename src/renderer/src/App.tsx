@@ -144,6 +144,8 @@ const TERMINAL_HINT_AUDIO_EXTS = new Set([
   'wav',
   'wma'
 ])
+/** §8 — лимит элементов в полном выпадающем списке подсказок терминала. */
+const TERMINAL_HINT_DROPDOWN_MAX = 240
 
 type WorkspaceTab = 'editor' | 'downloads' | 'terminal'
 
@@ -733,6 +735,7 @@ function App(): JSX.Element {
   const [terminalHistory, setTerminalHistory] = useState<TerminalHistoryEntry[]>([])
   const [terminalSuggestFocus, setTerminalSuggestFocus] = useState(false)
   const [terminalSuggestIndex, setTerminalSuggestIndex] = useState(0)
+  const [terminalHintPickerSeq, setTerminalHintPickerSeq] = useState(0)
   const terminalSuggestBlurTimeoutRef = useRef<number | undefined>(undefined)
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
   const [topbarEngineVersionsLine, setTopbarEngineVersionsLine] = useState('')
@@ -913,6 +916,28 @@ function App(): JSX.Element {
       }),
     [terminalLine, terminalMergedSortedHints]
   )
+  const terminalDropdownHints = useMemo(
+    () => terminalMergedSortedHints.slice(0, TERMINAL_HINT_DROPDOWN_MAX),
+    [terminalMergedSortedHints]
+  )
+  const terminalDropdownHintsByTool = useMemo(() => {
+    const byTool: Record<
+      TerminalCommandHintEntry['tool'],
+      Array<{ idx: number; hint: TerminalCommandHintEntry }>
+    > = {
+      ffmpeg: [],
+      ffprobe: [],
+      'yt-dlp': []
+    }
+    for (let idx = 0; idx < terminalDropdownHints.length; idx += 1) {
+      const hint = terminalDropdownHints[idx]
+      if (!hint) {
+        continue
+      }
+      byTool[hint.tool].push({ idx, hint })
+    }
+    return byTool
+  }, [terminalDropdownHints])
 
   const terminalSuggestActiveIndex = useMemo(() => {
     const len = terminalInlineSuggestions.length
@@ -932,6 +957,21 @@ function App(): JSX.Element {
   const applyTerminalSuggest = useCallback((hint: TerminalCommandHintEntry) => {
     setTerminalLine((prev) => applyTerminalInlinePick({ line: prev, hint }))
   }, [])
+  const pickTerminalDropdownHint = useCallback(
+    (hintIndexRaw: string) => {
+      const hintIndex = Number.parseInt(hintIndexRaw, 10)
+      if (!Number.isFinite(hintIndex)) {
+        return
+      }
+      const hint = terminalDropdownHints[hintIndex]
+      if (!hint) {
+        return
+      }
+      applyTerminalSuggest(hint)
+      setTerminalHintPickerSeq((seq) => seq + 1)
+    },
+    [applyTerminalSuggest, terminalDropdownHints]
+  )
 
   const runTerminalLine = useCallback(async (): Promise<void> => {
     const line = terminalLine.trim()
@@ -3557,8 +3597,10 @@ function App(): JSX.Element {
                   argv можно токен <code>{TERMINAL_CURRENT_FILE_PLACEHOLDER}</code> — подставится
                   путь текущего превью редактора (только если файл уже открыт через диалог или DnD).
                   В строке ввода — компактный IntelliSense: стрелки вверх/вниз, Home/End, PgUp/PgDn
-                  (шаг {DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP}) и Tab по выпадающему списку (до {DEFAULT_TERMINAL_INLINE_SUGGEST_MAX} подсказок из той же базы,
-                  что и справа). В журнале вывода каждая строка
+                  (шаг {DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP}) и Tab по выпадающему списку (до{' '}
+                  {DEFAULT_TERMINAL_INLINE_SUGGEST_MAX} подсказок из той же базы, что и справа). Рядом
+                  есть полный выпадающий список (до {TERMINAL_HINT_DROPDOWN_MAX} пунктов по
+                  категориям инструментов). В журнале вывода каждая строка
                   с кнопкой «Копир.» при наведении (копирует ровно эту строку).
                 </p>
               </div>
@@ -3670,6 +3712,39 @@ function App(): JSX.Element {
                   {terminalBusy ? 'Выполняю…' : 'Выполнить'}
                 </button>
               </div>
+              <label className="app-field">
+                <span>Вставить подсказку из полного списка</span>
+                <select
+                  key={terminalHintPickerSeq}
+                  className="app-control app-downloads-expert-hint-select"
+                  aria-label="Вставить подсказку в argv терминала"
+                  disabled={terminalBusy}
+                  defaultValue=""
+                  onChange={(e) => {
+                    pickTerminalDropdownHint(e.target.value)
+                  }}
+                >
+                  <option value="">Выберите…</option>
+                  {(Object.keys(terminalDropdownHintsByTool) as TerminalCommandHintEntry['tool'][]).map(
+                    (tool) =>
+                      terminalDropdownHintsByTool[tool].length > 0 ? (
+                        <optgroup key={tool} label={tool}>
+                          {terminalDropdownHintsByTool[tool].map(({ idx, hint }) => {
+                            return (
+                              <option
+                                key={`${tool}:${hint.token}:${hint.fullLine ?? ''}:${idx}`}
+                                value={String(idx)}
+                                title={hint.summary}
+                              >
+                                {(hint.fullLine?.trim() || hint.token).trim()}
+                              </option>
+                            )
+                          })}
+                        </optgroup>
+                      ) : null
+                  )}
+                </select>
+              </label>
               {terminalInlineSuggestions.length > 0 && terminalSuggestFocus ? (
                 <div
                   id="terminal-inline-suggest-list"
