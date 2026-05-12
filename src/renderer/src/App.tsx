@@ -530,13 +530,13 @@ function summarizeEngines(
 function engineSummaryText(summary: EngineSummary): string {
   switch (summary) {
     case 'ready':
-      return 'Движки: готовы'
+      return uiText('enginesSummaryReady')
     case 'missing':
-      return 'Движки: не найдены'
+      return uiText('enginesSummaryMissing')
     case 'error':
-      return 'Движки: ошибка проверки'
+      return uiText('enginesSummaryError')
     case 'checking':
-      return 'Движки: проверка…'
+      return uiText('enginesSummaryChecking')
   }
 }
 
@@ -2317,10 +2317,10 @@ function App(): JSX.Element {
               onClick={() => {
                 void handleOpenToolbar()
               }}
-              title="Открыть локальный видеофайл"
+              title={uiText('topbarOpenFileTitle')}
             >
               <IconFolderOpen />
-              <span className="app-visually-hidden">Открыть</span>
+              <span className="app-visually-hidden">{uiText('topbarOpenFileLabel')}</span>
             </button>
             <button
               type="button"
@@ -2329,10 +2329,10 @@ function App(): JSX.Element {
               onClick={() => {
                 cycleVideoTransformTopbar(-1)
               }}
-              title="Поворот против часовой: none → 90° CCW → 180° → 90° CW (экспорт §7.2)"
+              title={uiText('topbarRotateCcwTitle')}
             >
               <IconRotateCcw />
-              <span className="app-visually-hidden">Поворот CCW</span>
+              <span className="app-visually-hidden">{uiText('topbarRotateCcwLabel')}</span>
             </button>
             <button
               type="button"
@@ -2341,10 +2341,10 @@ function App(): JSX.Element {
               onClick={() => {
                 cycleVideoTransformTopbar(1)
               }}
-              title="Поворот по часовой: none → 90° CW → 180° → 90° CCW (экспорт §7.2)"
+              title={uiText('topbarRotateCwTitle')}
             >
               <IconRotateCw />
-              <span className="app-visually-hidden">Поворот CW</span>
+              <span className="app-visually-hidden">{uiText('topbarRotateCwLabel')}</span>
             </button>
             <button
               type="button"
@@ -2353,10 +2353,10 @@ function App(): JSX.Element {
               onClick={() => {
                 cycleCropPresetTopbar()
               }}
-              title="Обрезка: нет → 1:1 → 16:9 → 4:3 (экспорт §7.2)"
+              title={uiText('topbarCropCycleTitle')}
             >
               <IconScissors />
-              <span className="app-visually-hidden">Обрезка</span>
+              <span className="app-visually-hidden">{uiText('topbarCropLabel')}</span>
             </button>
             <button
               type="button"
@@ -2364,10 +2364,10 @@ function App(): JSX.Element {
               onClick={() => {
                 void window.fluxalloy.inspector.openWindow(preview?.path ?? null)
               }}
-              title="Отдельное окно инспектора ffprobe (§9). Если файл открыт в превью — сразу подставится его путь."
+              title={uiText('topbarInspectorTitle')}
             >
               <IconFilm />
-              <span className="app-visually-hidden">Инспектор</span>
+              <span className="app-visually-hidden">{uiText('topbarInspectorLabel')}</span>
             </button>
             <button
               type="button"
@@ -2376,10 +2376,12 @@ function App(): JSX.Element {
               onClick={() => {
                 void handleSnapshot()
               }}
-              title="Сохранить текущий кадр превью в PNG или JPEG (ffmpeg)"
+              title={uiText('topbarSnapshotTitle')}
             >
               <IconImage />
-              <span className="app-visually-hidden">{snapshotBusy ? 'Кадр…' : 'Кадр'}</span>
+              <span className="app-visually-hidden">
+                {snapshotBusy ? uiText('topbarSnapshotBusyLabel') : uiText('topbarSnapshotLabel')}
+              </span>
             </button>
             <button
               type="button"
@@ -2388,10 +2390,12 @@ function App(): JSX.Element {
               onClick={() => {
                 void handleExport()
               }}
-              title="Сохранить фрагмент In–Out или весь файл (libx264/aac), нужен ffmpeg"
+              title={uiText('topbarExportTitle')}
             >
               <IconSave />
-              <span className="app-visually-hidden">{exportBusy ? 'Экспорт…' : 'Экспорт'}</span>
+              <span className="app-visually-hidden">
+                {exportBusy ? uiText('topbarExportBusyLabel') : uiText('topbarExportLabel')}
+              </span>
             </button>
             {exportBusy ? (
               <button
@@ -2401,9 +2405,15 @@ function App(): JSX.Element {
                 onClick={() => {
                   void handleCancelExport()
                 }}
-                title="Остановить текущий ffmpeg export"
+                title={uiText('topbarExportCancelTitle')}
               >
-                <IconBan title={exportCancelBusy ? 'Отмена…' : 'Отменить экспорт'} />
+                <IconBan
+                  title={
+                    exportCancelBusy
+                      ? uiText('topbarExportCancelBusy')
+                      : uiText('topbarExportCancelReady')
+                  }
+                />
               </button>
             ) : null}
             {enginesOfferDownload ? (
@@ -2414,9 +2424,15 @@ function App(): JSX.Element {
                 onClick={() => {
                   void handleEnginesDownload()
                 }}
-                title="Скачать yt-dlp и FFmpeg в папку приложения пользователя"
+                title={uiText('topbarEnginesDownloadTitle')}
               >
-                <IconCloudDownload title={engineDownloadBusy ? 'Загрузка…' : 'Скачать движки'} />
+                <IconCloudDownload
+                  title={
+                    engineDownloadBusy
+                      ? uiText('topbarEnginesDownloadBusy')
+                      : uiText('topbarEnginesDownloadReady')
+                  }
+                />
               </button>
             ) : null}
             <button
@@ -2425,10 +2441,10 @@ function App(): JSX.Element {
               onClick={() => {
                 setEnginePathsOpen(true)
               }}
-              title="Задать исполняемые файлы ffmpeg, ffprobe и yt-dlp вручную"
+              title={uiText('topbarEnginePathsTitle')}
             >
               <IconSettings />
-              <span className="app-visually-hidden">Пути к движкам</span>
+              <span className="app-visually-hidden">{uiText('topbarEnginePathsLabel')}</span>
             </button>
             <button
               type="button"
@@ -2440,7 +2456,7 @@ function App(): JSX.Element {
               title={uiText('knowledgeTopbarTooltip')}
             >
               <IconCircleHelp />
-              <span className="app-visually-hidden">База знаний</span>
+              <span className="app-visually-hidden">{uiText('topbarKnowledgeLabel')}</span>
             </button>
             <button
               type="button"
@@ -2451,20 +2467,20 @@ function App(): JSX.Element {
                   setAboutOpen(true)
                 })
               }}
-              title="О программе и диагностика"
+              title={uiText('topbarAboutTitle')}
             >
               <IconCircleHelp />
-              <span className="app-visually-hidden">О программе</span>
+              <span className="app-visually-hidden">{uiText('topbarAboutLabel')}</span>
             </button>
             <button
               type="button"
               className="app-icon-btn"
               onClick={toggleTheme}
-              title="Переключить тёмную/светлую тему"
+              title={uiText('topbarThemeToggleTitle')}
             >
               {theme === 'dark' ? <IconSun /> : <IconMoon />}
               <span className="app-visually-hidden">
-                {theme === 'dark' ? 'Светлая тема' : 'Тёмная тема'}
+                {theme === 'dark' ? uiText('topbarThemeUseLight') : uiText('topbarThemeUseDark')}
               </span>
             </button>
           </div>
@@ -2544,7 +2560,7 @@ function App(): JSX.Element {
         >
           <section
             className="app-preview"
-            aria-label="Область предпросмотра"
+            aria-label={uiText('editorPreviewDropzoneAria')}
             onDragOver={(event) => {
               event.preventDefault()
               event.stopPropagation()
@@ -2564,7 +2580,9 @@ function App(): JSX.Element {
                     className="app-preview-video"
                     controls
                     src={previewPlaybackUrl ?? preview.mediaUrl}
-                    aria-label={`Предпросмотр: ${basenameForAriaLabel(preview.path)}`}
+                    aria-label={uiTextVars('editorPreviewVideoAriaTemplate', {
+                      name: basenameForAriaLabel(preview.path)
+                    })}
                     onLoadedMetadata={(event) => {
                       handlePreviewVideoLoaded(event.currentTarget)
                     }}
@@ -2621,12 +2639,8 @@ function App(): JSX.Element {
               </>
             ) : (
               <div className="app-preview-placeholder">
-                Нет источника — перетащите видеофайл сюда или «Открыть…» в меню «Файл» / кнопка
-                сверху.
-                <p className="app-preview-hint">
-                  Локальный файл стримится через защищённую схему fluxmedia — только после выбора
-                  или DnD по пути из Electron.
-                </p>
+                {uiText('editorPreviewEmptyLead')}
+                <p className="app-preview-hint">{uiText('editorPreviewEmptyHint')}</p>
               </div>
             )}
             {!panelOpen('ffmpegSettingsRailOpen') ? (
@@ -2636,22 +2650,22 @@ function App(): JSX.Element {
                 onClick={() => {
                   persistMainWindowUiPanelToggle('ffmpegSettingsRailOpen', true)
                 }}
-                title="Показать настройки FFmpeg"
+                title={uiText('editorFfmpegRailShowTitle')}
               >
                 <IconChevronLeft title="" size={18} />
-                <span className="app-ffmpeg-rail-restore-text">FFmpeg</span>
-                <span className="app-visually-hidden">Развернуть панель настроек FFmpeg</span>
+                <span className="app-ffmpeg-rail-restore-text">
+                  {uiText('editorFfmpegRailRestoreLabel')}
+                </span>
+                <span className="app-visually-hidden">{uiText('editorFfmpegRailShowHidden')}</span>
               </button>
             ) : null}
           </section>
           {panelOpen('ffmpegSettingsRailOpen') ? (
-            <aside className="app-settings-panel" aria-label="Настройки FFmpeg">
+            <aside className="app-settings-panel" aria-label={uiText('editorFfmpegSettingsAria')}>
               <div className="app-settings-panel-head">
                 <div>
-                  <h2 className="app-settings-title">Настройки FFmpeg</h2>
-                  <p className="app-settings-subtitle">
-                    Секции можно сворачивать, как в референсе v0.
-                  </p>
+                  <h2 className="app-settings-title">{uiText('editorFfmpegSettingsTitle')}</h2>
+                  <p className="app-settings-subtitle">{uiText('editorFfmpegSettingsSubtitle')}</p>
                 </div>
                 <div className="app-settings-panel-head-trailing">
                   <button
@@ -2660,10 +2674,12 @@ function App(): JSX.Element {
                     onClick={() => {
                       persistMainWindowUiPanelToggle('ffmpegSettingsRailOpen', false)
                     }}
-                    title="Свернуть панель (больше места для превью и таймлайна)"
+                    title={uiText('editorFfmpegRailCollapseTitle')}
                   >
                     <IconChevronRight title="" size={18} />
-                    <span className="app-visually-hidden">Свернуть панель настроек FFmpeg</span>
+                    <span className="app-visually-hidden">
+                      {uiText('editorFfmpegRailCollapseHidden')}
+                    </span>
                   </button>
                   <span className="app-settings-badge">{exportContainer.toUpperCase()}</span>
                 </div>
@@ -2676,16 +2692,16 @@ function App(): JSX.Element {
                   persistMainWindowUiPanelToggle('ffmpegVideo', e.currentTarget.open)
                 }}
               >
-                <summary className="app-settings-summary">Видео</summary>
+                <summary className="app-settings-summary">{uiText('editorFfmpegSectionVideo')}</summary>
                 <p id="ffmpegVideoSectionHint" className="app-settings-section-hint">
-                  Кодек, контейнер, CRF и видеобитрейт итогового файла экспорта §7.
+                  {uiText('editorFfmpegSectionVideoHint')}
                 </p>
                 <div className="app-settings-grid" aria-describedby="ffmpegVideoSectionHint">
                   <label className="app-field">
-                    <span>Видеокодек</span>
+                    <span>{uiText('editorFieldVideoCodec')}</span>
                     <select
                       className="app-control"
-                      aria-label="Видеокодек экспорта"
+                      aria-label={uiText('editorAriaVideoCodecExport')}
                       value={exportVideoCodec}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -2711,10 +2727,10 @@ function App(): JSX.Element {
                     </select>
                   </label>
                   <label className="app-field">
-                    <span>Пресет скорости / CRF по умолчанию</span>
+                    <span>{uiText('editorFieldEncodePreset')}</span>
                     <select
                       className="app-control"
-                      aria-label="Пресет скорости кодирования экспорта (libx264/libx265 -preset)"
+                      aria-label={uiText('editorAriaEncodePresetExport')}
                       value={exportEncodePreset}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -2734,10 +2750,10 @@ function App(): JSX.Element {
                     </select>
                   </label>
                   <label className="app-field">
-                    <span>Контейнер</span>
+                    <span>{uiText('editorFieldContainer')}</span>
                     <select
                       className="app-control"
-                      aria-label="Контейнер экспорта"
+                      aria-label={uiText('editorAriaContainerExport')}
                       value={exportContainer}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -2757,10 +2773,10 @@ function App(): JSX.Element {
                     </select>
                   </label>
                   <label className="app-field">
-                    <span>CRF</span>
+                    <span>{uiText('editorFieldCrf')}</span>
                     <select
                       className="app-control"
-                      aria-label="CRF экспорта"
+                      aria-label={uiText('editorAriaCrfExport')}
                       value={exportCrf === null ? 'preset' : String(exportCrf)}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -2771,7 +2787,7 @@ function App(): JSX.Element {
                         void window.fluxalloy.settings.setFfmpegExportCrf(next).catch(console.error)
                       }}
                     >
-                      <option value="preset">CRF пресета</option>
+                      <option value="preset">{uiText('editorCrfOptionPreset')}</option>
                       {EXPORT_CRF_OPTIONS.map((v) => (
                         <option key={v} value={v}>
                           CRF {v}
@@ -2780,10 +2796,10 @@ function App(): JSX.Element {
                     </select>
                   </label>
                   <label className="app-field">
-                    <span>Bitrate</span>
+                    <span>{uiText('editorFieldVideoBitrate')}</span>
                     <select
                       className="app-control"
-                      aria-label="Video bitrate экспорта"
+                      aria-label={uiText('editorAriaVideoBitrateExport')}
                       value={exportVideoBitrate === null ? 'crf' : exportVideoBitrate}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -2802,7 +2818,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      <option value="crf">Видео CRF</option>
+                      <option value="crf">{uiText('editorVideoBitrateOptionCrf')}</option>
                       {EXPORT_VIDEO_BITRATES.map((v) => (
                         <option key={v} value={v}>
                           Video {v}
