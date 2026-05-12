@@ -735,7 +735,7 @@ function App(): JSX.Element {
   const [terminalHistory, setTerminalHistory] = useState<TerminalHistoryEntry[]>([])
   const [terminalSuggestFocus, setTerminalSuggestFocus] = useState(false)
   const [terminalSuggestIndex, setTerminalSuggestIndex] = useState(0)
-  const [terminalHintPickerSeq, setTerminalHintPickerSeq] = useState(0)
+  const [terminalDropdownFilter, setTerminalDropdownFilter] = useState('')
   const terminalSuggestBlurTimeoutRef = useRef<number | undefined>(undefined)
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
   const [topbarEngineVersionsLine, setTopbarEngineVersionsLine] = useState('')
@@ -920,24 +920,38 @@ function App(): JSX.Element {
     () => terminalMergedSortedHints.slice(0, TERMINAL_HINT_DROPDOWN_MAX),
     [terminalMergedSortedHints]
   )
+  const terminalDropdownVisibleHints = useMemo(() => {
+    const q = terminalDropdownFilter.trim().toLowerCase()
+    if (q.length === 0) {
+      return terminalDropdownHints
+    }
+    return terminalDropdownHints.filter((hint) => {
+      return (
+        hint.tool.toLowerCase().includes(q) ||
+        hint.token.toLowerCase().includes(q) ||
+        hint.summary.toLowerCase().includes(q) ||
+        (hint.fullLine !== undefined && hint.fullLine.toLowerCase().includes(q))
+      )
+    })
+  }, [terminalDropdownFilter, terminalDropdownHints])
   const terminalDropdownHintsByTool = useMemo(() => {
     const byTool: Record<
       TerminalCommandHintEntry['tool'],
-      Array<{ idx: number; hint: TerminalCommandHintEntry }>
+      TerminalCommandHintEntry[]
     > = {
       ffmpeg: [],
       ffprobe: [],
       'yt-dlp': []
     }
-    for (let idx = 0; idx < terminalDropdownHints.length; idx += 1) {
-      const hint = terminalDropdownHints[idx]
+    for (let idx = 0; idx < terminalDropdownVisibleHints.length; idx += 1) {
+      const hint = terminalDropdownVisibleHints[idx]
       if (!hint) {
         continue
       }
-      byTool[hint.tool].push({ idx, hint })
+      byTool[hint.tool].push(hint)
     }
     return byTool
-  }, [terminalDropdownHints])
+  }, [terminalDropdownVisibleHints])
 
   const terminalSuggestActiveIndex = useMemo(() => {
     const len = terminalInlineSuggestions.length
@@ -958,19 +972,10 @@ function App(): JSX.Element {
     setTerminalLine((prev) => applyTerminalInlinePick({ line: prev, hint }))
   }, [])
   const pickTerminalDropdownHint = useCallback(
-    (hintIndexRaw: string) => {
-      const hintIndex = Number.parseInt(hintIndexRaw, 10)
-      if (!Number.isFinite(hintIndex)) {
-        return
-      }
-      const hint = terminalDropdownHints[hintIndex]
-      if (!hint) {
-        return
-      }
+    (hint: TerminalCommandHintEntry) => {
       applyTerminalSuggest(hint)
-      setTerminalHintPickerSeq((seq) => seq + 1)
     },
-    [applyTerminalSuggest, terminalDropdownHints]
+    [applyTerminalSuggest]
   )
 
   const runTerminalLine = useCallback(async (): Promise<void> => {
@@ -3712,39 +3717,47 @@ function App(): JSX.Element {
                   {terminalBusy ? 'Выполняю…' : 'Выполнить'}
                 </button>
               </div>
-              <label className="app-field">
+              <div className="app-field app-terminal-dropdown">
                 <span>Вставить подсказку из полного списка</span>
-                <select
-                  key={terminalHintPickerSeq}
-                  className="app-control app-downloads-expert-hint-select"
-                  aria-label="Вставить подсказку в argv терминала"
+                <input
+                  className="app-control app-downloads-hint-filter"
+                  aria-label="Фильтр полного списка подсказок терминала"
+                  placeholder="Поиск по токену, summary или fullLine"
+                  value={terminalDropdownFilter}
                   disabled={terminalBusy}
-                  defaultValue=""
                   onChange={(e) => {
-                    pickTerminalDropdownHint(e.target.value)
+                    setTerminalDropdownFilter(e.target.value)
                   }}
-                >
-                  <option value="">Выберите…</option>
+                />
+                <div className="app-terminal-dropdown-list" role="listbox" aria-label="Полный список CLI подсказок">
                   {(Object.keys(terminalDropdownHintsByTool) as TerminalCommandHintEntry['tool'][]).map(
                     (tool) =>
                       terminalDropdownHintsByTool[tool].length > 0 ? (
-                        <optgroup key={tool} label={tool}>
-                          {terminalDropdownHintsByTool[tool].map(({ idx, hint }) => {
-                            return (
-                              <option
-                                key={`${tool}:${hint.token}:${hint.fullLine ?? ''}:${idx}`}
-                                value={String(idx)}
-                                title={hint.summary}
-                              >
-                                {(hint.fullLine?.trim() || hint.token).trim()}
-                              </option>
-                            )
-                          })}
-                        </optgroup>
+                        <section key={tool} className="app-terminal-dropdown-group">
+                          <h3>{tool}</h3>
+                          {terminalDropdownHintsByTool[tool].map((hint, idx) => (
+                            <button
+                              key={`${tool}:${hint.token}:${hint.fullLine ?? ''}:${idx}`}
+                              type="button"
+                              className="app-terminal-dropdown-item"
+                              title={hint.summary}
+                              disabled={terminalBusy}
+                              onClick={() => {
+                                pickTerminalDropdownHint(hint)
+                              }}
+                            >
+                              <code>{(hint.fullLine?.trim() || hint.token).trim()}</code>
+                              <small>{hint.summary}</small>
+                            </button>
+                          ))}
+                        </section>
                       ) : null
                   )}
-                </select>
-              </label>
+                  {terminalDropdownVisibleHints.length === 0 ? (
+                    <p className="app-downloads-empty">Ничего не найдено по фильтру.</p>
+                  ) : null}
+                </div>
+              </div>
               {terminalInlineSuggestions.length > 0 && terminalSuggestFocus ? (
                 <div
                   id="terminal-inline-suggest-list"
