@@ -281,6 +281,26 @@ describe('ffprobe-service buildTrackRows', () => {
     expect(row?.detail).toContain('bt2020·bt2020nc')
   })
 
+  it('video detail: SDR — нетипичный color_transfer в сводке, если не дублирует gamut', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 720,
+          height: 576,
+          color_primaries: 'bt470bg',
+          color_space: 'bt470bg',
+          color_transfer: 'smpte170m'
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toContain('bt470bg')
+    expect(row?.detail).toContain('smpte170m')
+  })
+
   it('subtitle detail включает tags.handler_name, если отличается от title', () => {
     const [row] = buildTrackRows(
       [

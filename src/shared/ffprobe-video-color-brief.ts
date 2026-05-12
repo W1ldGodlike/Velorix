@@ -81,3 +81,29 @@ export function formatFfprobeVideoSdGamutBrief(stream: {
   }
   return parts.join('·')
 }
+
+/**
+ * SDR: нетипичный `color_transfer` / `color_trc` (не bt709), если он ещё не отражён
+ * в `formatFfprobeVideoSdGamutBrief` как primaries/space (избегаем дубля «smpte170m»).
+ */
+export function formatFfprobeVideoSdrTransferBrief(stream: {
+  color_transfer?: string
+  color_trc?: string
+  color_primaries?: string
+  color_space?: string
+}): string | null {
+  if (formatFfprobeVideoHdrColorBrief(stream) !== null) {
+    return null
+  }
+  const transfer =
+    ffprobeColorTokenNorm(stream.color_transfer) ?? ffprobeColorTokenNorm(stream.color_trc)
+  if (!transfer || transfer === 'bt709') {
+    return null
+  }
+  const prim = ffprobeColorTokenNorm(stream.color_primaries)
+  const space = ffprobeColorTokenNorm(stream.color_space)
+  if (transfer === prim || transfer === space) {
+    return null
+  }
+  return transfer
+}

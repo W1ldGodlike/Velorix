@@ -3,7 +3,8 @@ import { describe, expect, it } from 'vitest'
 import {
   formatFfprobeVideoFullRangeBrief,
   formatFfprobeVideoHdrColorBrief,
-  formatFfprobeVideoSdGamutBrief
+  formatFfprobeVideoSdGamutBrief,
+  formatFfprobeVideoSdrTransferBrief
 } from '../../src/shared/ffprobe-video-color-brief'
 
 describe('formatFfprobeVideoHdrColorBrief', () => {
@@ -119,5 +120,46 @@ describe('formatFfprobeVideoSdGamutBrief', () => {
         color_primaries: 'bt2020'
       })
     ).toBeNull()
+  })
+})
+
+describe('formatFfprobeVideoSdrTransferBrief', () => {
+  it('показывает нетипичный transfer при bt709 gamut', () => {
+    expect(
+      formatFfprobeVideoSdrTransferBrief({
+        color_primaries: 'bt709',
+        color_space: 'bt709',
+        color_transfer: 'smpte170m'
+      })
+    ).toBe('smpte170m')
+  })
+
+  it('null, если transfer уже совпал с primaries/space (sd gamut)', () => {
+    expect(
+      formatFfprobeVideoSdrTransferBrief({
+        color_primaries: 'bt709',
+        color_space: 'smpte170m',
+        color_transfer: 'smpte170m'
+      })
+    ).toBeNull()
+  })
+
+  it('null при HDR', () => {
+    expect(
+      formatFfprobeVideoSdrTransferBrief({
+        color_transfer: 'smpte2084',
+        color_primaries: 'bt2020'
+      })
+    ).toBeNull()
+  })
+
+  it('fallback color_trc', () => {
+    expect(
+      formatFfprobeVideoSdrTransferBrief({
+        color_primaries: 'bt709',
+        color_space: 'bt709',
+        color_trc: 'gamma28'
+      })
+    ).toBe('gamma28')
   })
 })
