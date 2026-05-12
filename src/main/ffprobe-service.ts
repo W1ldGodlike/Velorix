@@ -300,6 +300,33 @@ function collapseFfprobeDetailSnippet(raw: string): string {
   return `${collapsed.slice(0, FFPROBE_DETAIL_ENCODER_MAX - 1)}…`
 }
 
+/**
+ * Единая выкладка `tags.language`/`title`/`handler_name` в detail дорожки:
+ * язык как есть, title с collapse, handler_name с collapse и без дубля при
+ * совпадении с title (без учёта регистра/окружающих пробелов).
+ */
+function appendTrackTagsLangTitleHandler(
+  parts: string[],
+  tags: Record<string, string | number | undefined> | undefined
+): void {
+  const lang = tagString(tags, 'language')
+  const title = tagString(tags, 'title')
+  if (lang) {
+    parts.push(lang)
+  }
+  if (title) {
+    parts.push(collapseFfprobeDetailSnippet(title))
+  }
+  const handlerRaw = tagString(tags, 'handler_name')
+  if (handlerRaw !== null) {
+    const titleNorm = title?.trim().toLowerCase() ?? ''
+    const handlerNorm = handlerRaw.trim().toLowerCase()
+    if (handlerNorm === '' || handlerNorm !== titleNorm) {
+      parts.push(collapseFfprobeDetailSnippet(handlerRaw))
+    }
+  }
+}
+
 function appendFfprobeNbFramesDetail(
   parts: string[],
   nbFramesRaw: string | number | undefined
@@ -559,22 +586,7 @@ function buildTrackDetail(
       parts.push(`pad ${vInitialPadding} smp`)
     }
     appendMaxBitrateDetailIfNotable(parts, stream.bit_rate, stream.max_bit_rate)
-    const vLang = tagString(stream.tags, 'language')
-    const vTitle = tagString(stream.tags, 'title')
-    if (vLang) {
-      parts.push(vLang)
-    }
-    if (vTitle) {
-      parts.push(collapseFfprobeDetailSnippet(vTitle))
-    }
-    const vHandlerRaw = tagString(stream.tags, 'handler_name')
-    if (vHandlerRaw !== null) {
-      const titleNorm = vTitle?.trim().toLowerCase() ?? ''
-      const handlerNorm = vHandlerRaw.trim().toLowerCase()
-      if (handlerNorm === '' || handlerNorm !== titleNorm) {
-        parts.push(collapseFfprobeDetailSnippet(vHandlerRaw))
-      }
-    }
+    appendTrackTagsLangTitleHandler(parts, stream.tags)
     const vEnc = formatFfprobeTagEncoderBrief(stream.tags)
     if (vEnc) {
       parts.push(vEnc)
@@ -604,22 +616,7 @@ function buildTrackDetail(
     if (typeof stream.channel_layout === 'string' && stream.channel_layout.trim() !== '') {
       parts.push(stream.channel_layout.trim())
     }
-    const aLang = tagString(stream.tags, 'language')
-    const aTitle = tagString(stream.tags, 'title')
-    if (aLang) {
-      parts.push(aLang)
-    }
-    if (aTitle) {
-      parts.push(collapseFfprobeDetailSnippet(aTitle))
-    }
-    const aHandlerRaw = tagString(stream.tags, 'handler_name')
-    if (aHandlerRaw !== null) {
-      const titleNorm = aTitle?.trim().toLowerCase() ?? ''
-      const handlerNorm = aHandlerRaw.trim().toLowerCase()
-      if (handlerNorm === '' || handlerNorm !== titleNorm) {
-        parts.push(collapseFfprobeDetailSnippet(aHandlerRaw))
-      }
-    }
+    appendTrackTagsLangTitleHandler(parts, stream.tags)
     appendFfprobeReplayGainAudioDetail(parts, stream.tags)
     const aStart = formatFfprobeStreamStartTime(stream.start_time)
     if (aStart) {
@@ -689,22 +686,7 @@ function buildTrackDetail(
       parts.push(aEnc)
     }
   } else if (ct === 'subtitle') {
-    const lang = tagString(stream.tags, 'language')
-    const title = tagString(stream.tags, 'title')
-    if (lang) {
-      parts.push(lang)
-    }
-    if (title) {
-      parts.push(title)
-    }
-    const handlerRaw = tagString(stream.tags, 'handler_name')
-    if (handlerRaw !== null) {
-      const titleNorm = title?.trim().toLowerCase() ?? ''
-      const handlerNorm = handlerRaw.trim().toLowerCase()
-      if (handlerNorm === '' || handlerNorm !== titleNorm) {
-        parts.push(collapseFfprobeDetailSnippet(handlerRaw))
-      }
-    }
+    appendTrackTagsLangTitleHandler(parts, stream.tags)
     const subFourcc = ffprobeContainerFourccDisplay(
       typeof stream.codec_tag_string === 'string' ? stream.codec_tag_string : undefined
     )

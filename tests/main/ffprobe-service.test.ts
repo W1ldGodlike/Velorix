@@ -434,6 +434,23 @@ describe('ffprobe-service buildTrackRows', () => {
     expect((row?.detail.match(/English/g) ?? []).length).toBe(1)
   })
 
+  it('subtitle detail обрезает длинный tags.title многоточием', () => {
+    const longTitle = `${'L'.repeat(70)}tail`
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'subtitle',
+          codec_name: 'mov_text',
+          tags: { title: longTitle }
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toContain('…')
+    expect(row?.detail).not.toContain('tail')
+  })
+
   it('video/audio/subtitle detail включает tags.creation_time как created YYYY-MM-DD', () => {
     const rows = buildTrackRows(
       [
