@@ -692,6 +692,7 @@ function buildTrackDetail(
     if (subInitialPadding !== null && subInitialPadding > 0) {
       parts.push(`pad ${subInitialPadding} smp`)
     }
+    appendMaxBitrateDetailIfNotable(parts, stream.bit_rate, stream.max_bit_rate)
     const subEnc = formatFfprobeTagEncoderBrief(stream.tags)
     if (subEnc) {
       parts.push(subEnc)
@@ -749,6 +750,10 @@ function buildTrackDetail(
     const oEx = parseFfprobeOptionalInt(stream.extradata_size)
     if (oEx !== null && oEx > 0) {
       parts.push(`exdata ${oEx} B`)
+    }
+    const oInitialPadding = parseFfprobeOptionalInt(stream.initial_padding)
+    if (oInitialPadding !== null && oInitialPadding > 0) {
+      parts.push(`pad ${oInitialPadding} smp`)
     }
     appendMaxBitrateDetailIfNotable(parts, stream.bit_rate, stream.max_bit_rate)
     const oStart = formatFfprobeStreamStartTime(stream.start_time)

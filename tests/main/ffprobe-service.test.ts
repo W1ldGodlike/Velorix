@@ -290,6 +290,43 @@ describe('ffprobe-service buildTrackRows', () => {
     expect(row?.detail).toContain('Lavc thumbnailer')
   })
 
+  it('attachment/detail: initial_padding как pad N smp', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'attachment',
+          codec_name: 'png',
+          extradata_size: 8,
+          initial_padding: 3,
+          tags: { filename: 'art.png' }
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toContain('exdata 8 B')
+    expect(row?.detail).toContain('pad 3 smp')
+    expect(row?.detail).toContain('art.png')
+  })
+
+  it('subtitle detail: заметный max_bit_rate над bit_rate → max … в сводке', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 3,
+          codec_type: 'subtitle',
+          codec_name: 'subrip',
+          bit_rate: '2000',
+          max_bit_rate: '96000',
+          tags: { language: 'en' }
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toContain('en')
+    expect(row?.detail).toMatch(/max\b/)
+  })
+
   it('video detail включает компактную HDR-метку из color_transfer/color_primaries', () => {
     const [row] = buildTrackRows(
       [
