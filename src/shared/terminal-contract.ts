@@ -4775,6 +4775,54 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
+    token: '· -to file section_start',
+    summary: 'Записать section_start (начало клипа по URL-фрагменту/t=, если extractor отдаёт) в flux-ytdlp-segstart.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file section_start flux-ytdlp-segstart.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -to file section_end',
+    summary: 'Записать section_end (конец клипа по URL-фрагменту, если есть) в flux-ytdlp-segend.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file section_end flux-ytdlp-segend.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -to file played_count',
+    summary: 'Записать played_count (оценка числа воспроизведений, если сайт отдаёт) в flux-ytdlp-playcnt.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file played_count flux-ytdlp-playcnt.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -to file referrer',
+    summary: 'Записать referrer (HTTP Referer страницы, если есть) в flux-ytdlp-refurl.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file referrer flux-ytdlp-refurl.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· playlist-reverse -F',
+    summary: 'Плейлист в обратном порядке вместе со списком форматов (--playlist-reverse -F); допишите URL плейлиста.',
+    fullLine: 'yt-dlp --playlist-reverse -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo YT -F',
+    summary: 'Гео-обход через Майотту (--geo-bypass-country YT -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country YT -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo MG -F',
+    summary: 'Гео-обход через Мадагаскар (--geo-bypass-country MG -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country MG -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo PG -F',
+    summary: 'Гео-обход через Папуа — Новую Гвинею (--geo-bypass-country PG -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country PG -F '
+  },
+  {
+    tool: 'yt-dlp',
     token: '· --update-to stable',
     summary: 'Обновить yt-dlp до канала stable (--update-to stable); URL не нужен.',
     fullLine: 'yt-dlp --update-to stable'
@@ -6138,6 +6186,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· acompressor 4s',
     summary: 'Лёгкий компрессор первых 4 с (-af acompressor=threshold=0.08:ratio=3:attack=5:release=50); smoke динамики; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af acompressor=threshold=0.08:ratio=3:attack=5:release=50 -t 4 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:2 WxH+fps',
+    summary: 'Третий видеопоток v:2: width + height + r_frame_rate (мульти-видео/альтернативные потоки); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:2 -show_entries stream=width,height,r_frame_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· acontrast 3s',
+    summary: 'Лёгкий аудио-контраст первых 3 с (-af acontrast=25); smoke динамики без кавычек; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af acontrast=25 -t 3 -vn -sn -f null -`
   }
 ]
 

@@ -2373,6 +2373,18 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --geo-bypass-country KM -F ')
   })
 
+  it('downloads: print-to-file section_start/section_end/played_count/referrer + playlist-reverse -F + geo YT/MG/PG', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --print-to-file section_start flux-ytdlp-segstart.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file section_end flux-ytdlp-segend.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file played_count flux-ytdlp-playcnt.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file referrer flux-ytdlp-refurl.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --playlist-reverse -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country YT -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country MG -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country PG -F ')
+  })
+
   it('preview: ffprobe format cat+barcode + ffmpeg aresample async 4s', () => {
     const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
     expect(
@@ -2435,6 +2447,26 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
         (l) =>
           l.includes('-af acompressor=threshold=0.08:ratio=3:attack=5:release=50') &&
           l.includes('-t 4') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
+
+  it('preview: ffprobe v:2 WxH+fps + ffmpeg acontrast 3s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-select_streams v:2') &&
+          l.includes('stream=width,height,r_frame_rate') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af acontrast=25') &&
+          l.includes('-t 3') &&
           l.includes('-vn -sn')
       )
     ).toBe(true)
