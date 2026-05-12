@@ -2827,10 +2827,10 @@ function App(): JSX.Element {
                     </select>
                   </label>
                   <label className="app-field">
-                    <span>Деинтерлейс</span>
+                    <span>{uiText('editorFieldDeinterlace')}</span>
                     <select
                       className="app-control"
-                      aria-label="Пресет yadif деинтерлейса"
+                      aria-label={uiText('editorAriaDeinterlace')}
                       aria-describedby="ffmpegVideoDeinterlaceHint"
                       value={exportVideoDeinterlace}
                       disabled={exportBusy || snapshotBusy}
@@ -2850,15 +2850,14 @@ function App(): JSX.Element {
                       ))}
                     </select>
                     <span id="ffmpegVideoDeinterlaceHint" className="app-field-help">
-                      `yadif` после crop и до `hqdn3d` §7.2; режим «Поле» удваивает частоту кадров
-                      для чересстрочного входа.
+                      {uiText('editorHintDeinterlace')}
                     </span>
                   </label>
                   <label className="app-field">
-                    <span>Шумоподавление</span>
+                    <span>{uiText('editorFieldDenoise')}</span>
                     <select
                       className="app-control"
-                      aria-label="Пресет hqdn3d denoise"
+                      aria-label={uiText('editorAriaDenoise')}
                       aria-describedby="ffmpegVideoDenoiseHint"
                       value={exportVideoDenoise}
                       disabled={exportBusy || snapshotBusy}
@@ -2878,14 +2877,14 @@ function App(): JSX.Element {
                       ))}
                     </select>
                     <span id="ffmpegVideoDenoiseHint" className="app-field-help">
-                      `hqdn3d` до `deband`/`unsharp` и масштаба §7.2.
+                      {uiText('editorHintDenoise')}
                     </span>
                   </label>
                   <label className="app-field">
-                    <span>Deband</span>
+                    <span>{uiText('editorFieldDeband')}</span>
                     <select
                       className="app-control"
-                      aria-label="Пресет deband"
+                      aria-label={uiText('editorAriaDeband')}
                       aria-describedby="ffmpegVideoDebandHint"
                       value={exportVideoDeband}
                       disabled={exportBusy || snapshotBusy}
@@ -2905,14 +2904,14 @@ function App(): JSX.Element {
                       ))}
                     </select>
                     <span id="ffmpegVideoDebandHint" className="app-field-help">
-                      `deband` между `hqdn3d` и `unsharp` (полосы/градиенты) §7.2.
+                      {uiText('editorHintDeband')}
                     </span>
                   </label>
                   <label className="app-field">
-                    <span>Histeq</span>
+                    <span>{uiText('editorFieldHisteq')}</span>
                     <select
                       className="app-control"
-                      aria-label="Пресет histeq выравнивания гистограммы"
+                      aria-label={uiText('editorAriaHisteq')}
                       aria-describedby="ffmpegVideoHisteqHint"
                       value={exportVideoHisteq}
                       disabled={exportBusy || snapshotBusy}
@@ -2932,14 +2931,14 @@ function App(): JSX.Element {
                       ))}
                     </select>
                     <span id="ffmpegVideoHisteqHint" className="app-field-help">
-                      `histeq` после `deband` и до `lut3d` §7.2.
+                      {uiText('editorHintHisteq')}
                     </span>
                   </label>
                   <label className="app-field">
-                    <span>3D LUT</span>
+                    <span>{uiText('editorFieldLut3d')}</span>
                     <select
                       className="app-control"
-                      aria-label="Пресет lut3d"
+                      aria-label={uiText('editorAriaLut3d')}
                       aria-describedby="ffmpegVideoLut3dHint"
                       value={exportVideoLut3d}
                       disabled={exportBusy || snapshotBusy}
@@ -2959,15 +2958,14 @@ function App(): JSX.Element {
                       ))}
                     </select>
                     <span id="ffmpegVideoLut3dHint" className="app-field-help">
-                      `lut3d` после `deband` и до `unsharp` (bundled `.cube` в `resources/luts/`)
-                      §7.2.
+                      {uiText('editorHintLut3d')}
                     </span>
                   </label>
                   <label className="app-field">
-                    <span>Резкость</span>
+                    <span>{uiText('editorFieldSharpen')}</span>
                     <select
                       className="app-control"
-                      aria-label="Пресет unsharp"
+                      aria-label={uiText('editorAriaSharpen')}
                       aria-describedby="ffmpegVideoSharpenHint"
                       value={exportVideoSharpen}
                       disabled={exportBusy || snapshotBusy}
@@ -2987,14 +2985,14 @@ function App(): JSX.Element {
                       ))}
                     </select>
                     <span id="ffmpegVideoSharpenHint" className="app-field-help">
-                      `unsharp` после `deband`/`lut3d` и до `eq`/`scale`/`fps`.
+                      {uiText('editorHintSharpen')}
                     </span>
                   </label>
                   <label className="app-field">
-                    <span>Цвет</span>
+                    <span>{uiText('editorFieldEq')}</span>
                     <select
                       className="app-control"
-                      aria-label="Пресет eq цветокоррекции"
+                      aria-label={uiText('editorAriaEq')}
                       aria-describedby="ffmpegVideoEqHint"
                       value={exportVideoEqPreset}
                       disabled={exportBusy || snapshotBusy}
@@ -3014,14 +3012,14 @@ function App(): JSX.Element {
                       ))}
                     </select>
                     <span id="ffmpegVideoEqHint" className="app-field-help">
-                      `eq` применяется после резкости и до масштаба; только preset whitelist.
+                      {uiText('editorHintEq')}
                     </span>
                   </label>
                   <label className="app-field">
-                    <span>Оттенок</span>
+                    <span>{uiText('editorFieldHue')}</span>
                     <select
                       className="app-control"
-                      aria-label="Пресет hue после eq"
+                      aria-label={uiText('editorAriaHue')}
                       aria-describedby="ffmpegVideoHueHint"
                       value={exportVideoHue}
                       disabled={exportBusy || snapshotBusy}
@@ -3041,14 +3039,14 @@ function App(): JSX.Element {
                       ))}
                     </select>
                     <span id="ffmpegVideoHueHint" className="app-field-help">
-                      `hue` сразу после `eq` и до зерна §7.2.
+                      {uiText('editorHintHue')}
                     </span>
                   </label>
                   <label className="app-field">
-                    <span>Зерно</span>
+                    <span>{uiText('editorFieldGrain')}</span>
                     <select
                       className="app-control"
-                      aria-label="Пресет noise зернистости"
+                      aria-label={uiText('editorAriaGrain')}
                       aria-describedby="ffmpegVideoGrainHint"
                       value={exportVideoGrain}
                       disabled={exportBusy || snapshotBusy}
@@ -3068,14 +3066,14 @@ function App(): JSX.Element {
                       ))}
                     </select>
                     <span id="ffmpegVideoGrainHint" className="app-field-help">
-                      `noise` после `eq`/`hue` и до `scale`/`fps` §7.2.
+                      {uiText('editorHintGrain')}
                     </span>
                   </label>
                   <label className="app-field">
-                    <span>Виньетка</span>
+                    <span>{uiText('editorFieldVignette')}</span>
                     <select
                       className="app-control"
-                      aria-label="Пресет vignette к краям кадра"
+                      aria-label={uiText('editorAriaVignette')}
                       aria-describedby="ffmpegVideoVignetteHint"
                       value={exportVideoVignette}
                       disabled={exportBusy || snapshotBusy}
@@ -3095,14 +3093,14 @@ function App(): JSX.Element {
                       ))}
                     </select>
                     <span id="ffmpegVideoVignetteHint" className="app-field-help">
-                      `vignette` после зерна и до `scale`/`fps` §7.2.
+                      {uiText('editorHintVignette')}
                     </span>
                   </label>
                   <label className="app-field">
-                    <span>Размытие</span>
+                    <span>{uiText('editorFieldBlur')}</span>
                     <select
                       className="app-control"
-                      aria-label="Пресет gblur размытия кадра"
+                      aria-label={uiText('editorAriaBlur')}
                       aria-describedby="ffmpegVideoBlurHint"
                       value={exportVideoBlur}
                       disabled={exportBusy || snapshotBusy}
@@ -3122,7 +3120,7 @@ function App(): JSX.Element {
                       ))}
                     </select>
                     <span id="ffmpegVideoBlurHint" className="app-field-help">
-                      `gblur` после виньетки и до `scale`/`fps` §7.2.
+                      {uiText('editorHintBlur')}
                     </span>
                   </label>
                 </div>
@@ -3135,16 +3133,18 @@ function App(): JSX.Element {
                   persistMainWindowUiPanelToggle('ffmpegFormat', e.currentTarget.open)
                 }}
               >
-                <summary className="app-settings-summary">Формат</summary>
+                <summary className="app-settings-summary">
+                  {uiText('editorFfmpegSectionFrameLayout')}
+                </summary>
                 <p id="ffmpegFormatSectionHint" className="app-settings-section-hint">
-                  Масштаб, FPS, поворот/зеркало и кадрирование относительно исходного кадра.
+                  {uiText('editorFfmpegSectionFrameLayoutHint')}
                 </p>
                 <div className="app-settings-grid" aria-describedby="ffmpegFormatSectionHint">
                   <label className="app-field">
-                    <span>Разрешение</span>
+                    <span>{uiText('editorFieldResolution')}</span>
                     <select
                       className="app-control"
-                      aria-label="Размер экспорта"
+                      aria-label={uiText('editorAriaResolutionExport')}
                       value={exportScalePreset}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -3164,10 +3164,10 @@ function App(): JSX.Element {
                     </select>
                   </label>
                   <label className="app-field">
-                    <span>FPS</span>
+                    <span>{uiText('editorFieldFps')}</span>
                     <select
                       className="app-control"
-                      aria-label="FPS экспорта"
+                      aria-label={uiText('editorAriaFpsExport')}
                       value={exportFps === null ? 'source' : String(exportFps)}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -3178,7 +3178,7 @@ function App(): JSX.Element {
                         void window.fluxalloy.settings.setFfmpegExportFps(next).catch(console.error)
                       }}
                     >
-                      <option value="source">FPS исходный</option>
+                      <option value="source">{uiText('editorFpsOptionSource')}</option>
                       {EXPORT_FPS_OPTIONS.map((v) => (
                         <option key={v} value={v}>
                           {v} fps
@@ -3187,9 +3187,9 @@ function App(): JSX.Element {
                     </select>
                   </label>
                   <div className="app-field app-field-switch">
-                    <span>2-pass libx264</span>
+                    <span>{uiText('editorTwoPassSpan')}</span>
                     <PillSwitch
-                      label="Двухпроходное кодирование libx264"
+                      label={uiText('editorTwoPassPillLabel')}
                       checked={exportTwoPass && exportVideoBitrate !== null}
                       describedBy="ffmpegFormatSectionHint ffmpegTwoPassUiHint"
                       disabled={
@@ -3211,15 +3211,14 @@ function App(): JSX.Element {
                       }}
                     />
                     <span id="ffmpegTwoPassUiHint" className="app-field-help">
-                      Только H.264 (libx264) и выбранный видеобитрейт («Видео» выше); CRF и H.265 не
-                      поддерживают этот режим.
+                      {uiText('editorTwoPassHint')}
                     </span>
                   </div>
                   <label className="app-field">
-                    <span>Поворот</span>
+                    <span>{uiText('editorFieldRotation')}</span>
                     <select
                       className="app-control"
-                      aria-label="Поворот или зеркало экспорта"
+                      aria-label={uiText('editorAriaRotationExport')}
                       value={exportVideoTransform}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -3239,10 +3238,10 @@ function App(): JSX.Element {
                     </select>
                   </label>
                   <label className="app-field">
-                    <span>Обрезка</span>
+                    <span>{uiText('editorFieldCrop')}</span>
                     <select
                       className="app-control"
-                      aria-label="Обрезка экспорта"
+                      aria-label={uiText('editorAriaCropExport')}
                       value={exportCropPreset}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -3271,15 +3270,15 @@ function App(): JSX.Element {
                   persistMainWindowUiPanelToggle('ffmpegAudio', e.currentTarget.open)
                 }}
               >
-                <summary className="app-settings-summary">Аудио и кадр</summary>
+                <summary className="app-settings-summary">{uiText('editorFfmpegSectionAudio')}</summary>
                 <p id="ffmpegAudioSectionHint" className="app-settings-section-hint">
-                  Аудиодорожка экспорта и параметры сохранения снимка кадра §7.
+                  {uiText('editorFfmpegSectionAudioHint')}
                 </p>
                 <div className="app-settings-grid" aria-describedby="ffmpegAudioSectionHint">
                   <div className="app-field app-field-switch">
-                    <span>Без аудио</span>
+                    <span>{uiText('editorNoAudioSpan')}</span>
                     <PillSwitch
-                      label="Без аудио"
+                      label={uiText('editorNoAudioPillLabel')}
                       checked={exportAudioMode === 'none'}
                       describedBy="ffmpegAudioSectionHint ffmpegAudioModeHint"
                       disabled={exportBusy || snapshotBusy}
@@ -3294,14 +3293,14 @@ function App(): JSX.Element {
                       }}
                     />
                     <span id="ffmpegAudioModeHint" className="app-field-help">
-                      Включите, если нужен немой файл или звук будет добавлен позже.
+                      {uiText('editorNoAudioHint')}
                     </span>
                   </div>
                   <label className="app-field">
-                    <span>Битрейт AAC</span>
+                    <span>{uiText('editorFieldAacBitrate')}</span>
                     <select
                       className="app-control"
-                      aria-label="Аудио bitrate экспорта"
+                      aria-label={uiText('editorAriaAacBitrate')}
                       value={exportAudioBitrate}
                       disabled={exportBusy || snapshotBusy || exportAudioMode === 'none'}
                       onChange={(e) => {
@@ -3321,10 +3320,10 @@ function App(): JSX.Element {
                     </select>
                   </label>
                   <label className="app-field">
-                    <span>Громкость аудио</span>
+                    <span>{uiText('editorFieldAudioGain')}</span>
                     <select
                       className="app-control"
-                      aria-label="Сдвиг громкости аудио в дБ"
+                      aria-label={uiText('editorAriaAudioGain')}
                       aria-describedby="ffmpegAudioGainHint"
                       value={String(exportAudioGainDb)}
                       disabled={exportBusy || snapshotBusy || exportAudioMode === 'none'}
@@ -3345,14 +3344,14 @@ function App(): JSX.Element {
                       ))}
                     </select>
                     <span id="ffmpegAudioGainHint" className="app-field-help">
-                      Применяется как `-filter:a volume=NdB`; при «Без аудио» игнорируется.
+                      {uiText('editorHintAudioGain')}
                     </span>
                   </label>
                   <label className="app-field">
-                    <span>Нормализация</span>
+                    <span>{uiText('editorFieldAudioNormalize')}</span>
                     <select
                       className="app-control"
-                      aria-label="Нормализация громкости аудио"
+                      aria-label={uiText('editorAriaAudioNormalize')}
                       aria-describedby="ffmpegAudioNormalizeHint"
                       value={exportAudioNormalize}
                       disabled={exportBusy || snapshotBusy || exportAudioMode === 'none'}
@@ -3372,14 +3371,14 @@ function App(): JSX.Element {
                       ))}
                     </select>
                     <span id="ffmpegAudioNormalizeHint" className="app-field-help">
-                      Склеивается с volume в один `-filter:a`: сначала gain, потом normalize.
+                      {uiText('editorHintAudioNormalize')}
                     </span>
                   </label>
                   <label className="app-field">
-                    <span>Формат кадра</span>
+                    <span>{uiText('editorFieldSnapshotFormat')}</span>
                     <select
                       className="app-control"
-                      aria-label="Формат снимка кадра"
+                      aria-label={uiText('editorAriaSnapshotFormat')}
                       value={snapshotFormat}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -3398,9 +3397,9 @@ function App(): JSX.Element {
                     </select>
                   </label>
                   <div className="app-field app-field-switch">
-                    <span>Удалить метаданные</span>
+                    <span>{uiText('editorStripMetadataSpan')}</span>
                     <PillSwitch
-                      label="Удалить контейнерные метаданные"
+                      label={uiText('editorStripMetadataPillLabel')}
                       checked={exportStripMetadata}
                       describedBy="ffmpegAudioSectionHint ffmpegStripMetadataHint"
                       disabled={exportBusy || snapshotBusy}
@@ -3414,13 +3413,13 @@ function App(): JSX.Element {
                       }}
                     />
                     <span id="ffmpegStripMetadataHint" className="app-field-help">
-                      Добавляет `-map_metadata -1`: убирает title/artist и подобные теги из выхода.
+                      {uiText('editorStripMetadataHint')}
                     </span>
                   </div>
                   <div className="app-field app-field-switch">
-                    <span>Удалить главы</span>
+                    <span>{uiText('editorStripChaptersSpan')}</span>
                     <PillSwitch
-                      label="Удалить chapter markers"
+                      label={uiText('editorStripChaptersPillLabel')}
                       checked={exportStripChapters}
                       describedBy="ffmpegAudioSectionHint ffmpegStripChaptersHint"
                       disabled={exportBusy || snapshotBusy}
@@ -3434,14 +3433,14 @@ function App(): JSX.Element {
                       }}
                     />
                     <span id="ffmpegStripChaptersHint" className="app-field-help">
-                      Добавляет `-map_chapters -1`: глав в выходном файле не будет.
+                      {uiText('editorStripChaptersHint')}
                     </span>
                   </div>
                   <label className="app-field">
-                    <span>Субтитры</span>
+                    <span>{uiText('editorFieldExportSubtitles')}</span>
                     <select
                       className="app-control"
-                      aria-label="Поведение субтитров на экспорте"
+                      aria-label={uiText('editorAriaExportSubtitles')}
                       aria-describedby="ffmpegSubtitleModeHint"
                       value={exportSubtitleMode}
                       disabled={exportBusy || snapshotBusy}
@@ -3462,8 +3461,7 @@ function App(): JSX.Element {
                       ))}
                     </select>
                     <span id="ffmpegSubtitleModeHint" className="app-field-help">
-                      «Не сохранять» — ffmpeg сам решает (обычно дропает). «Сохранить» — для MKV
-                      `-c:s copy`, для MP4/MOV `-c:s mov_text` (только текстовые субтитры).
+                      {uiText('editorHintExportSubtitles')}
                     </span>
                   </label>
                 </div>
@@ -3478,7 +3476,7 @@ function App(): JSX.Element {
                         void handleOpenLastSnapshot('file')
                       }}
                     >
-                      Файл кадра
+                      {uiText('editorSnapshotLastFile')}
                     </button>
                     <button
                       type="button"
@@ -3489,7 +3487,7 @@ function App(): JSX.Element {
                         void handleOpenLastSnapshot('folder')
                       }}
                     >
-                      Папка
+                      {uiText('editorSnapshotLastFolder')}
                     </button>
                     <button
                       type="button"
@@ -3500,7 +3498,7 @@ function App(): JSX.Element {
                         void handleCopyLastSnapshotPath()
                       }}
                     >
-                      Копировать
+                      {uiText('editorCopy')}
                     </button>
                   </div>
                 ) : null}
