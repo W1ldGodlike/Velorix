@@ -2990,6 +2990,54 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· print-to-file filename field',
     summary: 'Записать шаблон filename (поле метаданных) в flux-ytdlp-fn.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file filename flux-ytdlp-fn.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-prefer-free -F',
+    summary: 'Список форматов без приоритета «свободных» кодеков (--no-prefer-free-formats -F); контраст к --prefer-free-formats; допишите URL.',
+    fullLine: 'yt-dlp --no-prefer-free-formats -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file categories',
+    summary: 'Записать поле categories в flux-ytdlp-categories.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file categories flux-ytdlp-categories.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file tags',
+    summary: 'Записать поле tags в flux-ytdlp-tags.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file tags flux-ytdlp-tags.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file language',
+    summary: 'Записать поле language в flux-ytdlp-language.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file language flux-ytdlp-language.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file autocap',
+    summary: 'Записать automatic_captions в flux-ytdlp-autocap.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file automatic_captions flux-ytdlp-autocap.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file chapters',
+    summary: 'Записать поле chapters в flux-ytdlp-chapters.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file chapters flux-ytdlp-chapters.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file acodec',
+    summary: 'Записать выбранный/лучший аудиокодек (acodec) в flux-ytdlp-acodec.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file acodec flux-ytdlp-acodec.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file vcodec',
+    summary: 'Записать выбранный/лучший видеокодек (vcodec) в flux-ytdlp-vcodec.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file vcodec flux-ytdlp-vcodec.txt --skip-download '
   }
 ]
 
@@ -4020,6 +4068,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· deesser 4s',
     summary: 'Де-эссер первых 4 с (-af deesser); диагностика свистящих согласных; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af deesser=i=0.5 -t 4 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· s:0 encoder',
+    summary: 'Поток первых субтитров: stream_tags encoder (mux/authoring tool); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream_tags=encoder -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· vibrato 4s',
+    summary: 'Лёгкая вибрато-модуляция первых 4 с (-af vibrato); smoke цепочки stereo af; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af vibrato=f=6.5:d=0.5 -t 4 -vn -sn -f null -`
   }
 ]
 

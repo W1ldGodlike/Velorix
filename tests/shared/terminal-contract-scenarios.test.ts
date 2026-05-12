@@ -1522,4 +1522,36 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: no-prefer-free + print-to-file categories/tags/language/autocap/chapters/acodec/vcodec', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --no-prefer-free-formats -F ')
+    expect(lines).toContain('yt-dlp --print-to-file categories flux-ytdlp-categories.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file tags flux-ytdlp-tags.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file language flux-ytdlp-language.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file automatic_captions flux-ytdlp-autocap.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file chapters flux-ytdlp-chapters.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file acodec flux-ytdlp-acodec.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file vcodec flux-ytdlp-vcodec.txt --skip-download ')
+  })
+
+  it('preview: ffprobe s:0 encoder + ffmpeg vibrato 4s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-select_streams s:0') &&
+          l.includes('stream_tags=encoder') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af vibrato=f=6.5:d=0.5') &&
+          l.includes('-t 4') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })
