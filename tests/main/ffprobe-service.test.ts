@@ -471,5 +471,42 @@ describe('ffprobe-service buildTrackRows', () => {
       null
     )
     expect(upper?.detail).toContain('RG tr +0.50 dB')
+
+    const [peaks] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'audio',
+          codec_name: 'flac',
+          channels: 2,
+          sample_rate: '44100',
+          tags: {
+            replaygain_track_gain: '-1.00 dB',
+            REPLAYGAIN_TRACK_PEAK: '0.912345',
+            replaygain_album_peak: '0.98'
+          }
+        }
+      ],
+      null
+    )
+    expect(peaks?.detail).toContain('RG tr -1.00 dB')
+    expect(peaks?.detail).toContain('RG tr pk 0.912345')
+    expect(peaks?.detail).toContain('RG al pk 0.98')
+
+    const [pkOnly] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'audio',
+          codec_name: 'mp3',
+          channels: 2,
+          sample_rate: '44100',
+          tags: { replaygain_album_peak: '1.000000' }
+        }
+      ],
+      null
+    )
+    expect(pkOnly?.detail).toContain('RG al pk 1.000000')
+    expect(pkOnly?.detail).not.toMatch(/\bRG tr\b/)
   })
 })

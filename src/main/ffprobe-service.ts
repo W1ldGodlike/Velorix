@@ -254,11 +254,19 @@ function appendFfprobeReplayGainAudioDetail(
 ): void {
   const track = tagStringFirstMatch(tags, ['replaygain_track_gain', 'REPLAYGAIN_TRACK_GAIN'])
   const album = tagStringFirstMatch(tags, ['replaygain_album_gain', 'REPLAYGAIN_ALBUM_GAIN'])
+  const trackPk = tagStringFirstMatch(tags, ['replaygain_track_peak', 'REPLAYGAIN_TRACK_PEAK'])
+  const albumPk = tagStringFirstMatch(tags, ['replaygain_album_peak', 'REPLAYGAIN_ALBUM_PEAK'])
   if (track !== null) {
     parts.push(`RG tr ${collapseFfprobeDetailSnippet(track)}`)
   }
+  if (trackPk !== null) {
+    parts.push(`RG tr pk ${collapseFfprobeDetailSnippet(trackPk)}`)
+  }
   if (album !== null) {
     parts.push(`RG al ${collapseFfprobeDetailSnippet(album)}`)
+  }
+  if (albumPk !== null) {
+    parts.push(`RG al pk ${collapseFfprobeDetailSnippet(albumPk)}`)
   }
 }
 
