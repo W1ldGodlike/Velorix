@@ -70,7 +70,6 @@ import type {
 } from '../../shared/ffmpeg-export-contract'
 import type {
   AppSettings,
-  DownloadsWindowUiPanelState,
   ResolvedAppTheme
 } from '../../shared/settings-contract'
 import { buildFfmpegExportPreviewCommand } from '../../shared/ffmpeg-export-argv'
@@ -110,6 +109,10 @@ import {
   stepTerminalSuggestIndex
 } from '../../shared/terminal-inline-suggest'
 import { PreviewProbeBody } from './components/MediaProbePanel'
+import {
+  useDownloadsWindowUiPanels,
+  type DownloadsRailPanelKey
+} from './use-downloads-window-ui-panels'
 import { useMainWindowUiPanels } from './use-main-window-ui-panels'
 type Theme = ResolvedAppTheme
 
@@ -654,36 +657,6 @@ function formatDownloadsLogText(lines: DownloadsLogLineView[]): string {
   return lines.map((line) => `[${line.rowId}] ${line.stream}: ${line.text}`).join('\n')
 }
 
-/**
- * §4.A/§6: в `downloadsWindowUiPanels` пишется только явный boolean; без ключа —
- * как «раскрыто» (совпадает с default pop-out через `openAttr`).
- */
-function downloadsPanelOpenFromSettings(saved: boolean | undefined): boolean {
-  return saved !== false
-}
-
-/** Как `openAttr` в `downloads-window.ts`: без ключа в settings — `defaultOpen`. */
-function downloadsRailSectionOpen(
-  saved: DownloadsWindowUiPanelState | undefined,
-  key: keyof DownloadsWindowUiPanelState,
-  defaultOpen: boolean
-): boolean {
-  const v = saved?.[key]
-  return typeof v === 'boolean' ? v : defaultOpen
-}
-
-type DownloadsRailPanelKey = 'format' | 'metadata' | 'saving' | 'network' | 'expert'
-
-type DownloadsRailPanelsState = Record<DownloadsRailPanelKey, boolean>
-
-const DOWNLOADS_RAIL_PANEL_DEFAULTS: DownloadsRailPanelsState = {
-  format: true,
-  metadata: true,
-  saving: true,
-  network: false,
-  expert: false
-}
-
 function App(): JSX.Element {
   const [workspaceTab, setWorkspaceTab] = useState<WorkspaceTab>('editor')
   const [theme, setTheme] = useState<Theme>('dark')
@@ -721,11 +694,15 @@ function App(): JSX.Element {
     path: string
     isDefault: boolean
   } | null>(null)
-  const [downloadsEmbeddedHistoryOpen, setDownloadsEmbeddedHistoryOpen] = useState(true)
-  const [downloadsEmbeddedLogOpen, setDownloadsEmbeddedLogOpen] = useState(true)
-  const [downloadsRailPanels, setDownloadsRailPanels] = useState<DownloadsRailPanelsState>(
-    DOWNLOADS_RAIL_PANEL_DEFAULTS
-  )
+  const {
+    downloadsEmbeddedHistoryOpen,
+    downloadsEmbeddedLogOpen,
+    downloadsRailPanels,
+    hydrateDownloadsWindowUiPanels,
+    persistDownloadsEmbeddedHistoryOpen,
+    persistDownloadsEmbeddedLogOpen,
+    persistDownloadsRailPanelToggle
+  } = useDownloadsWindowUiPanels()
   /** Совпадает с `max-width: 1100px` в `main.css` для вкладки «Загрузки». */
   const [downloadsNarrowLayout, setDownloadsNarrowLayout] = useState(false)
   const [terminalLine, setTerminalLine] = useState('ffmpeg -version')
@@ -1025,41 +1002,14 @@ function App(): JSX.Element {
     }
   }, [])
 
-  const persistDownloadsWindowUiPanels = useCallback(
-    (patch: Partial<DownloadsWindowUiPanelState>): void => {
-      void window.fluxalloy.downloads.mergeUiPanels(patch).then((res) => {
-        if (!res.ok) {
-          console.error(res.error)
-        }
-      })
-    },
-    []
-  )
-
   const handleDownloadsRailSectionToggle = useCallback(
     (key: DownloadsRailPanelKey) => {
       return (e: SyntheticEvent<HTMLDetailsElement>): void => {
         const open = e.currentTarget.open
-        setDownloadsRailPanels((prev) => ({ ...prev, [key]: open }))
-        persistDownloadsWindowUiPanels({ [key]: open })
+        persistDownloadsRailPanelToggle(key, open)
       }
     },
-    [persistDownloadsWindowUiPanels]
-  )
-
-  const hydrateDownloadsWindowUiPanelsFromSnapshot = useCallback(
-    (dwp: DownloadsWindowUiPanelState | undefined): void => {
-      setDownloadsEmbeddedHistoryOpen(downloadsPanelOpenFromSettings(dwp?.history))
-      setDownloadsEmbeddedLogOpen(downloadsPanelOpenFromSettings(dwp?.log))
-      setDownloadsRailPanels({
-        format: downloadsRailSectionOpen(dwp, 'format', DOWNLOADS_RAIL_PANEL_DEFAULTS.format),
-        metadata: downloadsRailSectionOpen(dwp, 'metadata', DOWNLOADS_RAIL_PANEL_DEFAULTS.metadata),
-        saving: downloadsRailSectionOpen(dwp, 'saving', DOWNLOADS_RAIL_PANEL_DEFAULTS.saving),
-        network: downloadsRailSectionOpen(dwp, 'network', DOWNLOADS_RAIL_PANEL_DEFAULTS.network),
-        expert: downloadsRailSectionOpen(dwp, 'expert', DOWNLOADS_RAIL_PANEL_DEFAULTS.expert)
-      })
-    },
-    []
+    [persistDownloadsRailPanelToggle]
   )
 
   const handleDownloadsLogPayload = useCallback((payload: DownloadsLogPayload): void => {
@@ -1632,7 +1582,7 @@ function App(): JSX.Element {
       applyTheme(loaded.effectiveTheme)
       hydrateExportFieldsFromSettings(loaded)
       hydrateMainWindowUiPanels(loaded.mainWindowUiPanels)
-      hydrateDownloadsWindowUiPanelsFromSnapshot(loaded.downloadsWindowUiPanels)
+      hydrateDownloadsWindowUiPanels(loaded.downloadsWindowUiPanels)
       setExportUserPresets(loaded.ffmpegExportUserPresets ?? [])
       if (loaded.ffmpegSnapshotFormat === 'jpg') {
         setSnapshotFormat('jpg')
@@ -1651,17 +1601,17 @@ function App(): JSX.Element {
     }
   }, [
     applyTheme,
-    hydrateDownloadsWindowUiPanelsFromSnapshot,
+    hydrateDownloadsWindowUiPanels,
     hydrateExportFieldsFromSettings,
     hydrateMainWindowUiPanels
   ])
 
   useEffect(() => {
     const off = window.fluxalloy.downloads.onDownloadsWindowUiPanelsChanged((panels) => {
-      hydrateDownloadsWindowUiPanelsFromSnapshot(panels)
+      hydrateDownloadsWindowUiPanels(panels)
     })
     return off
-  }, [hydrateDownloadsWindowUiPanelsFromSnapshot])
+  }, [hydrateDownloadsWindowUiPanels])
 
   useEffect(() => {
     let cancelled = false
@@ -4345,8 +4295,7 @@ function App(): JSX.Element {
                   busy={downloadsHistoryBusy}
                   entries={downloadsHistory}
                   onToggle={(next) => {
-                    setDownloadsEmbeddedHistoryOpen(next)
-                    persistDownloadsWindowUiPanels({ history: next })
+                    persistDownloadsEmbeddedHistoryOpen(next)
                   }}
                   onRefresh={() => {
                     void refreshDownloadsHistory()
@@ -4394,8 +4343,7 @@ function App(): JSX.Element {
                   targetRowId={downloadsLogTargetRowId}
                   lines={downloadsLogLines}
                   onToggle={(next) => {
-                    setDownloadsEmbeddedLogOpen(next)
-                    persistDownloadsWindowUiPanels({ log: next })
+                    persistDownloadsEmbeddedLogOpen(next)
                   }}
                   onClear={() => {
                     setDownloadsLogLines([])
