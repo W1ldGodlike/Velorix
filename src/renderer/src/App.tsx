@@ -3565,7 +3565,8 @@ function App(): JSX.Element {
                   argv можно токен <code>{TERMINAL_CURRENT_FILE_PLACEHOLDER}</code> — подставится
                   путь текущего превью редактора (только если файл уже открыт через диалог или DnD).
                   В строке ввода — компактный IntelliSense: стрелки вверх/вниз, Home/End, PgUp/PgDn
-                  (шаг {DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP}), Tab и Enter по выпадающему списку (до{' '}
+                  (шаг {DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP}), Shift+Tab — предыдущая позиция в списке,
+                  Tab и Enter — подставить активную подсказку (до{' '}
                   {DEFAULT_TERMINAL_INLINE_SUGGEST_MAX} подсказок из той же базы, что и справа). Рядом
                   есть полный выпадающий список (до {TERMINAL_HINT_DROPDOWN_MAX} пунктов по
                   категориям инструментов). В журнале вывода каждая строка
@@ -3650,9 +3651,15 @@ function App(): JSX.Element {
                       }
                       if (e.key === 'Tab') {
                         e.preventDefault()
-                        const h = list[terminalSuggestActiveIndex]
-                        if (h) {
-                          applyTerminalSuggest(h)
+                        if (e.shiftKey) {
+                          setTerminalSuggestIndex((i) =>
+                            stepTerminalSuggestIndex(i, list.length, 'up')
+                          )
+                        } else {
+                          const h = list[terminalSuggestActiveIndex]
+                          if (h) {
+                            applyTerminalSuggest(h)
+                          }
                         }
                         return
                       }
