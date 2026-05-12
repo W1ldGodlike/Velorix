@@ -78,6 +78,10 @@ interface FfprobeJson {
     has_b_frames?: number
     /** FourCC / тег кодека в контейнере (`avc1`, `hvc1` …). */
     codec_tag_string?: string
+    /** Числовой тег кодека (`0x31637661`); полезен, если `codec_tag_string` пуст/невалиден. */
+    codec_tag?: string | number
+    /** Размер extradata потока (ffprobe), байты. */
+    extradata_size?: string | number
     /** Ненулевое значение — встроенные CEA-608/708 в видеопотоке (трансляции и т.п.). */
     closed_captions?: string | number
     /** H.264: `1` — length-prefixed AVC, `0` — Annex B (NAL с start codes). */
@@ -124,6 +128,47 @@ function parseFfprobeOptionalInt(raw: string | number | undefined): number | nul
     }
     const n = Number.parseInt(t, 10)
     return Number.isFinite(n) ? n : null
+  }
+  return null
+}
+
+/** FourCC из контейнера: скрываем `unknown` и «пустой» `[0][0][0][0]`. */
+function ffprobeContainerFourccDisplay(raw: string | undefined): string | null {
+  const t = ffprobeScalarDisplay(raw)
+  if (t === null) {
+    return null
+  }
+  const low = t.toLowerCase()
+  if (low === 'unknown') {
+    return null
+  }
+  if (/^\[0\]\[0\]\[0\]\[0\]$/.test(low)) {
+    return null
+  }
+  return t
+}
+
+/** Hex `codec_tag`, если строковый FourCC недоступен. */
+function formatFfprobeCodecTagHexDetail(codecTag: string | number | undefined): string | null {
+  if (typeof codecTag === 'number' && Number.isFinite(codecTag)) {
+    const u = Math.trunc(codecTag) >>> 0
+    if (u === 0) {
+      return null
+    }
+    return `tag 0x${u.toString(16)}`
+  }
+  if (typeof codecTag === 'string') {
+    const raw = codecTag.trim().replace(/\s+/g, '')
+    if (raw === '' || /^n\/a$/i.test(raw)) {
+      return null
+    }
+    if (/^0x[0-9a-f]+$/i.test(raw)) {
+      const n = Number.parseInt(raw.slice(2), 16)
+      if (!Number.isFinite(n) || n === 0) {
+        return null
+      }
+      return `tag ${raw.toLowerCase()}`
+    }
   }
   return null
 }
@@ -481,11 +526,20 @@ function buildTrackDetail(
     if (codecNameLower.includes('h264') && avcVal === 0) {
       parts.push('Annex-B')
     }
-    const fourcc = ffprobeScalarDisplay(
+    const fourcc = ffprobeContainerFourccDisplay(
       typeof stream.codec_tag_string === 'string' ? stream.codec_tag_string : undefined
     )
     if (fourcc) {
       parts.push(fourcc)
+    } else {
+      const tagHex = formatFfprobeCodecTagHexDetail(stream.codec_tag)
+      if (tagHex) {
+        parts.push(tagHex)
+      }
+    }
+    const vEx = parseFfprobeOptionalInt(stream.extradata_size)
+    if (vEx !== null && vEx > 0) {
+      parts.push(`exdata ${vEx} B`)
     }
     appendMaxBitrateDetailIfNotable(parts, stream.bit_rate, stream.max_bit_rate)
     const vEnc = formatFfprobeTagEncoderBrief(stream.tags)
@@ -556,11 +610,20 @@ function buildTrackDetail(
     if (typeof bitsPerSample === 'number' && Number.isFinite(bitsPerSample) && bitsPerSample > 0) {
       parts.push(`${Math.trunc(bitsPerSample)}-bit PCM`)
     }
-    const aFourcc = ffprobeScalarDisplay(
+    const aFourcc = ffprobeContainerFourccDisplay(
       typeof stream.codec_tag_string === 'string' ? stream.codec_tag_string : undefined
     )
     if (aFourcc) {
       parts.push(aFourcc)
+    } else {
+      const aTagHex = formatFfprobeCodecTagHexDetail(stream.codec_tag)
+      if (aTagHex) {
+        parts.push(aTagHex)
+      }
+    }
+    const aEx = parseFfprobeOptionalInt(stream.extradata_size)
+    if (aEx !== null && aEx > 0) {
+      parts.push(`exdata ${aEx} B`)
     }
     appendMaxBitrateDetailIfNotable(parts, stream.bit_rate, stream.max_bit_rate)
     const aCreated = formatFfprobeCreationTimeBrief(stream.tags)
@@ -588,11 +651,20 @@ function buildTrackDetail(
         parts.push(collapseFfprobeDetailSnippet(handlerRaw))
       }
     }
-    const subFourcc = ffprobeScalarDisplay(
+    const subFourcc = ffprobeContainerFourccDisplay(
       typeof stream.codec_tag_string === 'string' ? stream.codec_tag_string : undefined
     )
     if (subFourcc) {
       parts.push(subFourcc)
+    } else {
+      const subTagHex = formatFfprobeCodecTagHexDetail(stream.codec_tag)
+      if (subTagHex) {
+        parts.push(subTagHex)
+      }
+    }
+    const subEx = parseFfprobeOptionalInt(stream.extradata_size)
+    if (subEx !== null && subEx > 0) {
+      parts.push(`exdata ${subEx} B`)
     }
     const subEnc = formatFfprobeTagEncoderBrief(stream.tags)
     if (subEnc) {

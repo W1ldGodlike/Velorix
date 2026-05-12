@@ -37,6 +37,42 @@ describe('ffprobe-service buildTrackRows', () => {
     expect(row?.detail).not.toMatch(/\bN\/A\b/i)
   })
 
+  it('audio detail: при пустом FourCC показывает hex codec_tag', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'audio',
+          codec_name: 'aac',
+          channels: 2,
+          sample_rate: '48000',
+          codec_tag_string: '[0][0][0][0]',
+          codec_tag: '0x6134706d'
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toContain('tag 0x6134706d')
+    expect(row?.detail).not.toContain('[0][0][0][0]')
+  })
+
+  it('video detail: extradata_size как exdata N B', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 1280,
+          height: 720,
+          extradata_size: 42
+        }
+      ],
+      null
+    )
+    expect(row?.detail).toContain('exdata 42 B')
+  })
+
   it('video/audio/subtitle detail включает tags.encoder, если ffprobe отдал', () => {
     const rows = buildTrackRows(
       [
