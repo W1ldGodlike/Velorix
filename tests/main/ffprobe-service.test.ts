@@ -73,6 +73,58 @@ describe('ffprobe-service buildTrackRows', () => {
     expect(row?.detail).toContain('exdata 42 B')
   })
 
+  it('audio/video/subtitle detail: initial_padding показывает priming samples', () => {
+    const rows = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'audio',
+          codec_name: 'aac',
+          channels: 2,
+          sample_rate: '48000',
+          initial_padding: 1024
+        },
+        {
+          index: 1,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 1920,
+          height: 1080,
+          initial_padding: '2'
+        },
+        {
+          index: 2,
+          codec_type: 'subtitle',
+          codec_name: 'mov_text',
+          initial_padding: 1
+        }
+      ],
+      null
+    )
+
+    expect(rows[0]?.detail).toContain('pad 1024 smp')
+    expect(rows[1]?.detail).toContain('pad 2 smp')
+    expect(rows[2]?.detail).toContain('pad 1 smp')
+  })
+
+  it('audio detail: нулевой initial_padding не попадает в сводку', () => {
+    const [row] = buildTrackRows(
+      [
+        {
+          index: 0,
+          codec_type: 'audio',
+          codec_name: 'aac',
+          channels: 2,
+          sample_rate: '48000',
+          initial_padding: 0
+        }
+      ],
+      null
+    )
+
+    expect(row?.detail).not.toMatch(/\bpad\b/)
+  })
+
   it('video/audio/subtitle detail включает tags.encoder, если ffprobe отдал', () => {
     const rows = buildTrackRows(
       [

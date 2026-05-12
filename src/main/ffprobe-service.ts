@@ -82,6 +82,8 @@ interface FfprobeJson {
     codec_tag?: string | number
     /** Размер extradata потока (ffprobe), байты. */
     extradata_size?: string | number
+    /** Priming/padding samples reported by ffprobe; useful for audio sync diagnostics. */
+    initial_padding?: string | number
     /** Ненулевое значение — встроенные CEA-608/708 в видеопотоке (трансляции и т.п.). */
     closed_captions?: string | number
     /** H.264: `1` — length-prefixed AVC, `0` — Annex B (NAL с start codes). */
@@ -541,6 +543,10 @@ function buildTrackDetail(
     if (vEx !== null && vEx > 0) {
       parts.push(`exdata ${vEx} B`)
     }
+    const vInitialPadding = parseFfprobeOptionalInt(stream.initial_padding)
+    if (vInitialPadding !== null && vInitialPadding > 0) {
+      parts.push(`pad ${vInitialPadding} smp`)
+    }
     appendMaxBitrateDetailIfNotable(parts, stream.bit_rate, stream.max_bit_rate)
     const vEnc = formatFfprobeTagEncoderBrief(stream.tags)
     if (vEnc) {
@@ -625,6 +631,10 @@ function buildTrackDetail(
     if (aEx !== null && aEx > 0) {
       parts.push(`exdata ${aEx} B`)
     }
+    const aInitialPadding = parseFfprobeOptionalInt(stream.initial_padding)
+    if (aInitialPadding !== null && aInitialPadding > 0) {
+      parts.push(`pad ${aInitialPadding} smp`)
+    }
     appendMaxBitrateDetailIfNotable(parts, stream.bit_rate, stream.max_bit_rate)
     const aCreated = formatFfprobeCreationTimeBrief(stream.tags)
     if (aCreated) {
@@ -665,6 +675,10 @@ function buildTrackDetail(
     const subEx = parseFfprobeOptionalInt(stream.extradata_size)
     if (subEx !== null && subEx > 0) {
       parts.push(`exdata ${subEx} B`)
+    }
+    const subInitialPadding = parseFfprobeOptionalInt(stream.initial_padding)
+    if (subInitialPadding !== null && subInitialPadding > 0) {
+      parts.push(`pad ${subInitialPadding} smp`)
     }
     const subEnc = formatFfprobeTagEncoderBrief(stream.tags)
     if (subEnc) {
