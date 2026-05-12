@@ -2339,7 +2339,7 @@ function App(): JSX.Element {
                 setKnowledgeInitialSlug(null)
                 setKnowledgeOpen(true)
               }}
-              title="Открыть базу знаний"
+              title={uiText('knowledgeTopbarTooltip')}
             >
               <IconCircleHelp />
               <span className="app-visually-hidden">База знаний</span>
@@ -3613,6 +3613,7 @@ function App(): JSX.Element {
                   <button
                     type="button"
                     className="app-knowledge-link"
+                    title={uiText('terminalKnowledgeDeepLinkTooltip')}
                     onClick={() => {
                       setKnowledgeInitialSlug(KNOWLEDGE_SLUG_FFMPEG_TERMINAL_HINTS)
                       setKnowledgeOpen(true)

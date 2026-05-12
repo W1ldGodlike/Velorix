@@ -133,7 +133,12 @@ export function KnowledgeDialog({
             </h2>
             <p className="app-modal-hint">{uiText('knowledgeHint')}</p>
           </div>
-          <button type="button" className="app-btn" onClick={onClose}>
+          <button
+            type="button"
+            className="app-btn"
+            onClick={onClose}
+            title={uiText('knowledgeCloseTooltip')}
+          >
             {uiText('closeButton')}
           </button>
         </div>
@@ -144,6 +149,7 @@ export function KnowledgeDialog({
               className="app-input app-knowledge-search"
               value={filter}
               placeholder={uiText('knowledgeSearchPlaceholder')}
+              title={uiText('knowledgeSearchTooltip')}
               onChange={(e) => {
                 setFilter(e.target.value)
               }}
@@ -158,6 +164,7 @@ export function KnowledgeDialog({
                       ? 'app-knowledge-item app-knowledge-item-active'
                       : 'app-knowledge-item'
                   }
+                  title={`${article.fileName} · ${article.slug}`}
                   onClick={() => {
                     setSelectedSlug(article.slug)
                   }}

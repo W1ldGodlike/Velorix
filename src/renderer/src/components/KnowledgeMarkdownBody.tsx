@@ -3,6 +3,8 @@ import type { JSX } from 'react'
 import type { MdBlock, MdInline } from '../../../shared/knowledge-markdown'
 import { knowledgeInternalSlugFromHref } from '../../../shared/knowledge-markdown'
 
+import { uiText } from '../locales/ui-text'
+
 function renderInline(
   nodes: MdInline[],
   keyPrefix: string,
@@ -33,6 +35,7 @@ function renderInline(
           key={k}
           type="button"
           className="app-knowledge-link"
+          title={uiText('knowledgeMdInternalLinkTooltip')}
           onClick={() => {
             onOpenSlug(slug)
           }}
@@ -43,7 +46,14 @@ function renderInline(
     }
     if (/^https?:\/\//i.test(n.href.trim())) {
       return (
-        <a key={k} className="app-knowledge-a" href={n.href.trim()} target="_blank" rel="noreferrer noopener">
+        <a
+          key={k}
+          className="app-knowledge-a"
+          href={n.href.trim()}
+          target="_blank"
+          rel="noreferrer noopener"
+          title={uiText('knowledgeMdExternalLinkTooltip')}
+        >
           {renderInline(n.children, `${k}-a`, onOpenSlug)}
         </a>
       )

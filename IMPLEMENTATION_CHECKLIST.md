@@ -45,7 +45,7 @@
 - [~] §6/§7: downloads→processing — batch-режим, HW encode и оставшиеся расхождения embedded/pop-out.
 - [~] §8: terminal/CLI — polish подсказок, сценариев и UX выполнения команд без расширения TODO-архива.
 - [~] §9/§18: ffprobe/diagnostics — crash/e2e smoke и точечные редкие поля по мере нахождения.
-- [~] §15: knowledge — deep-link из «Терминала»; tooltips; EN статей/fallback.
+- [~] §15: knowledge — deep-link из «Терминала»; tooltips (топбар/диалог/md/терминал); EN статей/fallback.
 - [~] §1.1/§2.2/§5: локализация, состояние UI, contrast/focus audit и DPI/multi-monitor smoke.
 
 ---
@@ -433,7 +433,7 @@
 - [x] Оглавление.
 - [x] Поиск.
 - [~] Открытие статей из подсказок (inline help вне Knowledge): deep-link в `KnowledgeDialog` (`initialSlug`); первая точка — вкладка «Терминал» → `ffmpeg-terminal-hints`.
-- [ ] Tooltips на ключевых контролах.
+- [~] Tooltips на ключевых контролах (база знаний: топбар, диалог поиск/закрыть/TOC, markdown внутр./внешние ссылки; deep-link из «Терминала»).
 - [~] EN-локализация статей или политика fallback (chrome окна EN/RU, статьи RU-first).
 
 ## §16. Аппаратное ускорение
