@@ -10,6 +10,7 @@ export type MdInline =
 export type MdBlock =
   | { kind: 'heading'; level: 1 | 2 | 3; children: MdInline[] }
   | { kind: 'paragraph'; children: MdInline[] }
+  | { kind: 'blockquote'; children: MdInline[] }
   | { kind: 'ul'; items: MdInline[][] }
   | { kind: 'ol'; items: MdInline[][] }
   | { kind: 'pre'; language: string | null; code: string }
@@ -232,6 +233,27 @@ export function parseKnowledgeMarkdown(
       continue
     }
 
+    if (/^>/.test(trimmed)) {
+      const parts: string[] = []
+      while (i < lines.length) {
+        const T = (lines[i] ?? '').trim()
+        if (T.length === 0) {
+          break
+        }
+        if (!/^>/.test(T)) {
+          break
+        }
+        const stripped = T.replace(/^(?:>\s*)+/, '').trim()
+        parts.push(stripped)
+        i += 1
+      }
+      const text = parts.join(' ').replace(/\s+/g, ' ').trim()
+      if (text.length > 0) {
+        blocks.push({ kind: 'blockquote', children: parseInlines(text) })
+      }
+      continue
+    }
+
     if (/^[-*]\s+/.test(trimmed)) {
       const items: MdInline[][] = []
       while (i < lines.length) {
@@ -283,6 +305,9 @@ export function parseKnowledgeMarkdown(
         break
       }
       if (/^#{1,3}\s/.test(T)) {
+        break
+      }
+      if (/^>/.test(T)) {
         break
       }
       if (/^[-*]\s+/.test(T)) {

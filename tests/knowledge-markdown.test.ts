@@ -50,4 +50,15 @@ Para with **bold** and \`code\` and [x](other.md).
       expect(pre.code).toContain('line1')
     }
   })
+
+  it('parses blockquote lines into one block', () => {
+    const md = '> First line\n> Second **bit**\n\nAfter.'
+    const blocks = parseKnowledgeMarkdown(md)
+    const bq = blocks.find((b) => b.kind === 'blockquote')
+    expect(bq?.kind).toBe('blockquote')
+    if (bq?.kind === 'blockquote') {
+      expect(bq.children.some((c) => c.kind === 'strong')).toBe(true)
+    }
+    expect(blocks.some((b) => b.kind === 'paragraph')).toBe(true)
+  })
 })

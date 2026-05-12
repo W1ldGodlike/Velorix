@@ -73,6 +73,13 @@ function renderBlock(block: MdBlock, idx: number, onOpenSlug: (slug: string) => 
       </p>
     )
   }
+  if (block.kind === 'blockquote') {
+    return (
+      <blockquote key={p} className="app-knowledge-bq">
+        {renderInline(block.children, p, onOpenSlug)}
+      </blockquote>
+    )
+  }
   if (block.kind === 'ul') {
     return (
       <ul key={p} className="app-knowledge-ul">
