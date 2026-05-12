@@ -51,6 +51,7 @@ import { validateYtdlpCookiesBrowserProfile } from './ytdlp-extra-args'
 import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
 import {
   clearYtdlpDownloadHistory,
+  getYtdlpDownloadHistoryWeeklySummary,
   readYtdlpDownloadHistoryNewestFirst
 } from './ytdlp-download-history'
 import { logError } from './logger-service'
@@ -3243,6 +3244,13 @@ export function registerDownloadsWindowIpcHandlers(): void {
     }
     const paths = resolveAppPaths()
     return readYtdlpDownloadHistoryNewestFirst(paths.userData, 100)
+  })
+
+  ipcMain.handle(d.getHistoryWeeklySummary, (event) => {
+    if (!isDownloadsOrMainSender(event.sender)) {
+      return { since: 0, until: 0, total: 0, success: 0, error: 0, cancelled: 0 }
+    }
+    return getYtdlpDownloadHistoryWeeklySummary(resolveAppPaths().userData)
   })
 
   ipcMain.handle(d.clearHistory, (event): { ok: true } | { ok: false; error: string } => {

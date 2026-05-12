@@ -67,6 +67,7 @@ export function ProcessingHistoryPanel({
   onClear,
   onExportVisible,
   onOpenOutput,
+  onOpenInputInHandler,
   formatTimeLabel,
   formatDurationLabel,
   kindLabel,
@@ -83,6 +84,7 @@ export function ProcessingHistoryPanel({
   onClear: () => void
   onExportVisible: () => void
   onOpenOutput: (id: string, mode: 'file' | 'folder' | 'preview') => void
+  onOpenInputInHandler: (id: string) => void
   formatTimeLabel: (ms: number) => string
   formatDurationLabel: (ms: number) => string
   kindLabel: (kind: ProcessingHistoryEntry['kind']) => string
@@ -111,7 +113,10 @@ export function ProcessingHistoryPanel({
           <span>Время {formatDurationLabel(weeklySummary.totalDurationMs)}</span>
         </div>
       ) : null}
-      <div className="app-processing-history-controls" aria-describedby="processingHistorySectionHint">
+      <div
+        className="app-processing-history-controls"
+        aria-describedby="processingHistorySectionHint"
+      >
         <select
           className="app-control"
           aria-label="Тип обработки"
@@ -156,7 +161,12 @@ export function ProcessingHistoryPanel({
         />
       </div>
       <div className="app-processing-history-actions">
-        <button type="button" className="app-btn app-btn-compact" disabled={busy} onClick={onRefresh}>
+        <button
+          type="button"
+          className="app-btn app-btn-compact"
+          disabled={busy}
+          onClick={onRefresh}
+        >
           Обновить
         </button>
         <button
@@ -185,7 +195,9 @@ export function ProcessingHistoryPanel({
           entries.slice(0, 10).map((entry) => (
             <article key={entry.id} className="app-downloads-history-card">
               <div className="app-downloads-history-head">
-                <strong title={entry.outputPath ?? entry.inputPath}>{entry.outputPath ?? entry.inputPath}</strong>
+                <strong title={entry.outputPath ?? entry.inputPath}>
+                  {entry.outputPath ?? entry.inputPath}
+                </strong>
                 <span
                   className={`app-downloads-history-outcome app-downloads-history-${entry.outcome}`}
                 >
@@ -201,6 +213,15 @@ export function ProcessingHistoryPanel({
                 <span>{entry.status}</span>
               </div>
               {entry.errorHint ? <p className="app-downloads-warning">{entry.errorHint}</p> : null}
+              <div className="app-downloads-history-actions">
+                <button
+                  type="button"
+                  className="app-btn app-btn-compact"
+                  onClick={() => onOpenInputInHandler(entry.id)}
+                >
+                  Повторить
+                </button>
+              </div>
               {entry.outputPath ? (
                 <div className="app-downloads-history-actions">
                   <button

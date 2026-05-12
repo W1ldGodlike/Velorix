@@ -6,11 +6,17 @@ export function DownloadsHistoryPanel({
   open,
   busy,
   entries,
+  totalEntries,
+  outcomeFilter,
+  weeklySummary,
   onToggle,
+  onOutcomeFilterChange,
   onRefresh,
   onClear,
+  onExportVisible,
   formatTimeLabel,
   outcomeLabel,
+  onRepeat,
   onOpenFile,
   onOpenFolder,
   onOpenInHandler
@@ -18,11 +24,22 @@ export function DownloadsHistoryPanel({
   open: boolean
   busy: boolean
   entries: YtdlpDownloadHistoryEntry[]
+  totalEntries: number
+  outcomeFilter: 'all' | YtdlpDownloadHistoryEntry['outcome']
+  weeklySummary: {
+    total: number
+    success: number
+    error: number
+    cancelled: number
+  }
   onToggle: (nextOpen: boolean) => void
+  onOutcomeFilterChange: (next: 'all' | YtdlpDownloadHistoryEntry['outcome']) => void
   onRefresh: () => void
   onClear: () => void
+  onExportVisible: () => void
   formatTimeLabel: (ms: number) => string
   outcomeLabel: (outcome: YtdlpDownloadHistoryEntry['outcome']) => string
+  onRepeat: (url: string) => void
   onOpenFile: (id: string) => void
   onOpenFolder: (id: string) => void
   onOpenInHandler: (id: string) => void
@@ -37,9 +54,33 @@ export function DownloadsHistoryPanel({
     >
       <summary>
         История
-        <span>{entries.length}</span>
+        <span>
+          {entries.length}/{totalEntries}
+        </span>
       </summary>
+      <div className="app-processing-history-summary" aria-label="Недельная сводка загрузок">
+        <span>7 дней: {weeklySummary.total}</span>
+        <span>OK {weeklySummary.success}</span>
+        <span>Ошибки {weeklySummary.error}</span>
+        <span>Отмена {weeklySummary.cancelled}</span>
+      </div>
       <div className="app-downloads-history-actions">
+        <label className="app-downloads-history-filter">
+          <span>Исход</span>
+          <select
+            className="app-control"
+            value={outcomeFilter}
+            disabled={busy}
+            onChange={(event) => {
+              onOutcomeFilterChange(event.currentTarget.value as typeof outcomeFilter)
+            }}
+          >
+            <option value="all">Все</option>
+            <option value="success">Успех</option>
+            <option value="error">Ошибка</option>
+            <option value="cancelled">Отмена</option>
+          </select>
+        </label>
         <button
           type="button"
           className="app-btn app-btn-compact app-btn-icon-leading"
@@ -55,6 +96,14 @@ export function DownloadsHistoryPanel({
           onClick={onClear}
         >
           Очистить
+        </button>
+        <button
+          type="button"
+          className="app-btn app-btn-compact app-btn-icon-leading"
+          disabled={busy || entries.length === 0}
+          onClick={onExportVisible}
+        >
+          Экспорт JSON
         </button>
       </div>
       <div className="app-downloads-history-list">
@@ -79,6 +128,16 @@ export function DownloadsHistoryPanel({
                 <span>{entry.status}</span>
               </div>
               {entry.errorHint ? <p className="app-downloads-warning">{entry.errorHint}</p> : null}
+              <div className="app-downloads-history-actions">
+                <button
+                  type="button"
+                  className="app-btn app-btn-compact app-btn-icon-leading"
+                  disabled={busy}
+                  onClick={() => onRepeat(entry.url)}
+                >
+                  Повторить
+                </button>
+              </div>
               {entry.outputPath ? (
                 <div className="app-downloads-history-actions">
                   <button
@@ -111,4 +170,3 @@ export function DownloadsHistoryPanel({
     </details>
   )
 }
-

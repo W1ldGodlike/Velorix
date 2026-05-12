@@ -1104,6 +1104,21 @@ button.app-downloads-hint-token:disabled {
   padding: 0 0.65rem 0.55rem;
 }
 
+.app-downloads-history-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--fa-text-muted);
+  font-size: 0.66rem;
+  font-weight: 700;
+}
+
+.app-downloads-history-filter .app-control {
+  min-height: 28px;
+  padding: 0 0.45rem;
+  font-size: 0.68rem;
+}
+
 .app-downloads-history-list {
   display: flex;
   max-height: 18rem;

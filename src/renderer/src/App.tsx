@@ -77,10 +77,7 @@ import type {
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId
 } from '../../shared/ffmpeg-export-contract'
-import type {
-  AppSettings,
-  ResolvedAppTheme
-} from '../../shared/settings-contract'
+import type { AppSettings, ResolvedAppTheme } from '../../shared/settings-contract'
 import { buildFfmpegExportPreviewCommand } from '../../shared/ffmpeg-export-argv'
 import {
   YTDLP_DOC_FORMAT_SELECTION,
@@ -101,7 +98,10 @@ import type {
   YtdlpSubtitlePresetId
 } from '../../shared/ytdlp-download-contract'
 import { groupYtdlpCommandHintsByCategory } from '../../shared/ytdlp-command-hints-group'
-import type { YtdlpDownloadHistoryEntry } from '../../shared/ytdlp-history-contract'
+import type {
+  YtdlpDownloadHistoryEntry,
+  YtdlpDownloadHistoryWeeklySummary
+} from '../../shared/ytdlp-history-contract'
 import type {
   ProcessingHistoryEntry,
   ProcessingHistoryFilter,
@@ -669,6 +669,8 @@ function downloadsHistoryOutcomeLabel(outcome: YtdlpDownloadHistoryEntry['outcom
   return 'Ошибка'
 }
 
+type DownloadsHistoryOutcomeFilter = 'all' | YtdlpDownloadHistoryEntry['outcome']
+
 function processingHistoryKindLabel(kind: ProcessingHistoryEntry['kind']): string {
   if (kind === 'ffmpegSnapshot') {
     return 'Кадр'
@@ -741,9 +743,15 @@ function App(): JSX.Element {
   const [downloadsExpertHintFilter, setDownloadsExpertHintFilter] = useState('')
   const [downloadsHistory, setDownloadsHistory] = useState<YtdlpDownloadHistoryEntry[]>([])
   const [downloadsHistoryBusy, setDownloadsHistoryBusy] = useState(false)
+  const [downloadsHistoryOutcomeFilter, setDownloadsHistoryOutcomeFilter] =
+    useState<DownloadsHistoryOutcomeFilter>('all')
+  const [downloadsHistoryWeeklySummary, setDownloadsHistoryWeeklySummary] =
+    useState<YtdlpDownloadHistoryWeeklySummary | null>(null)
   const [processingHistory, setProcessingHistory] = useState<ProcessingHistoryEntry[]>([])
   const [processingHistoryBusy, setProcessingHistoryBusy] = useState(false)
-  const [processingHistoryFilter, setProcessingHistoryFilter] = useState<ProcessingHistoryFilter>({})
+  const [processingHistoryFilter, setProcessingHistoryFilter] = useState<ProcessingHistoryFilter>(
+    {}
+  )
   const [processingHistoryWeeklySummary, setProcessingHistoryWeeklySummary] =
     useState<ProcessingHistoryWeeklySummary | null>(null)
   const [downloadsLogLines, setDownloadsLogLines] = useState<DownloadsLogLineView[]>([])
@@ -868,7 +876,13 @@ function App(): JSX.Element {
     () => downloadsRows.filter((row) => downloadsRowMatchesStatus(row, downloadsStatusFilter)),
     [downloadsRows, downloadsStatusFilter]
   )
-
+  const visibleDownloadsHistory = useMemo(
+    () =>
+      downloadsHistoryOutcomeFilter === 'all'
+        ? downloadsHistory
+        : downloadsHistory.filter((entry) => entry.outcome === downloadsHistoryOutcomeFilter),
+    [downloadsHistory, downloadsHistoryOutcomeFilter]
+  )
   const refreshDownloadsOptions = useCallback(async (): Promise<void> => {
     const res = await window.fluxalloy.downloads.getCliOptions()
     if (res.ok) {
@@ -972,10 +986,7 @@ function App(): JSX.Element {
     })
   }, [terminalDropdownFilter, terminalDropdownHints])
   const terminalDropdownHintsByTool = useMemo(() => {
-    const byTool: Record<
-      TerminalCommandHintEntry['tool'],
-      TerminalCommandHintEntry[]
-    > = {
+    const byTool: Record<TerminalCommandHintEntry['tool'], TerminalCommandHintEntry[]> = {
       ffmpeg: [],
       ffprobe: [],
       'yt-dlp': []
@@ -1084,8 +1095,12 @@ function App(): JSX.Element {
   const refreshDownloadsHistory = useCallback(async (): Promise<void> => {
     setDownloadsHistoryBusy(true)
     try {
-      const rows = await window.fluxalloy.downloads.getHistory()
+      const [rows, summary] = await Promise.all([
+        window.fluxalloy.downloads.getHistory(),
+        window.fluxalloy.downloads.getHistoryWeeklySummary()
+      ])
       setDownloadsHistory(rows)
+      setDownloadsHistoryWeeklySummary(summary)
     } finally {
       setDownloadsHistoryBusy(false)
     }
@@ -1108,10 +1123,13 @@ function App(): JSX.Element {
     [processingHistoryFilter]
   )
 
-  const applyProcessingHistoryFilter = useCallback((next: ProcessingHistoryFilter): void => {
-    setProcessingHistoryFilter(next)
-    void refreshProcessingHistory(next)
-  }, [refreshProcessingHistory])
+  const applyProcessingHistoryFilter = useCallback(
+    (next: ProcessingHistoryFilter): void => {
+      setProcessingHistoryFilter(next)
+      void refreshProcessingHistory(next)
+    },
+    [refreshProcessingHistory]
+  )
 
   const exportVisibleProcessingHistory = useCallback(async (): Promise<void> => {
     const payload = {
@@ -1132,6 +1150,25 @@ function App(): JSX.Element {
       setStatusHint(res.error)
     }
   }, [processingHistory, processingHistoryFilter, processingHistoryWeeklySummary])
+
+  const exportVisibleDownloadsHistory = useCallback(async (): Promise<void> => {
+    const payload = {
+      schema: 1,
+      exportedAt: Date.now(),
+      outcomeFilter: downloadsHistoryOutcomeFilter,
+      entries: visibleDownloadsHistory
+    }
+    const res = await window.fluxalloy.saveTextWithDialog({
+      title: 'Экспорт истории загрузок',
+      defaultFileName: 'fluxalloy-downloads-history.json',
+      content: JSON.stringify(payload, null, 2)
+    })
+    if (res.ok) {
+      setStatusHint('История загрузок сохранена')
+    } else if ('error' in res) {
+      setStatusHint(res.error)
+    }
+  }, [downloadsHistoryOutcomeFilter, visibleDownloadsHistory])
 
   const handleDownloadsRailSectionToggle = useCallback(
     (key: DownloadsRailPanelKey) => {
@@ -1328,9 +1365,13 @@ function App(): JSX.Element {
 
   useEffect(() => {
     let mounted = true
-    void window.fluxalloy.downloads.getHistory().then((rows) => {
+    void Promise.all([
+      window.fluxalloy.downloads.getHistory(),
+      window.fluxalloy.downloads.getHistoryWeeklySummary()
+    ]).then(([rows, summary]) => {
       if (mounted) {
         setDownloadsHistory(rows)
+        setDownloadsHistoryWeeklySummary(summary)
       }
     })
     return () => {
@@ -2056,8 +2097,7 @@ function App(): JSX.Element {
         scalePreset: exportScalePreset,
         videoTransform: exportVideoTransform,
         cropPreset: exportCropPreset,
-        twoPass:
-          exportTwoPass && exportVideoBitrate !== null && exportVideoCodec === 'libx264',
+        twoPass: exportTwoPass && exportVideoBitrate !== null && exportVideoCodec === 'libx264',
         audioGainDb: exportAudioGainDb === 0 ? null : exportAudioGainDb,
         stripMetadata: exportStripMetadata,
         stripChapters: exportStripChapters,
@@ -2171,8 +2211,7 @@ function App(): JSX.Element {
       scalePreset: exportScalePreset,
       videoTransform: exportVideoTransform,
       cropPreset: exportCropPreset,
-      twoPass:
-        exportTwoPass && exportVideoBitrate !== null && exportVideoCodec === 'libx264',
+      twoPass: exportTwoPass && exportVideoBitrate !== null && exportVideoCodec === 'libx264',
       audioGainDb: exportAudioGainDb === 0 ? null : exportAudioGainDb,
       stripMetadata: exportStripMetadata,
       stripChapters: exportStripChapters,
@@ -3209,8 +3248,8 @@ function App(): JSX.Element {
                       }}
                     />
                     <span id="ffmpegTwoPassUiHint" className="app-field-help">
-                      Только H.264 (libx264) и выбранный видеобитрейт («Видео» выше); CRF и H.265
-                      не поддерживают этот режим.
+                      Только H.264 (libx264) и выбранный видеобитрейт («Видео» выше); CRF и H.265 не
+                      поддерживают этот режим.
                     </span>
                   </div>
                   <label className="app-field">
@@ -3718,9 +3757,9 @@ function App(): JSX.Element {
                       return
                     }
                     setProcessingHistory([])
-                    void window.fluxalloy.processingHistory.weeklySummary().then(
-                      setProcessingHistoryWeeklySummary
-                    )
+                    void window.fluxalloy.processingHistory
+                      .weeklySummary()
+                      .then(setProcessingHistoryWeeklySummary)
                   })
                 }}
                 onExportVisible={() => {
@@ -3733,6 +3772,12 @@ function App(): JSX.Element {
                     } else if (mode === 'preview') {
                       setStatusHint('Результат обработки открыт в превью')
                     }
+                  })
+                }}
+                onOpenInputInHandler={(id) => {
+                  setStatusHint('Открываю исходник из истории…')
+                  void window.fluxalloy.processingHistory.openInputInHandler(id).then((res) => {
+                    setStatusHint(res.ok ? 'Исходник открыт в редакторе' : res.error)
                   })
                 }}
                 formatTimeLabel={formatDownloadsHistoryTime}
@@ -3817,22 +3862,30 @@ function App(): JSX.Element {
                     if (list.length > 0) {
                       if (e.key === 'ArrowDown') {
                         e.preventDefault()
-                        setTerminalSuggestIndex((i) => stepTerminalSuggestIndex(i, list.length, 'down'))
+                        setTerminalSuggestIndex((i) =>
+                          stepTerminalSuggestIndex(i, list.length, 'down')
+                        )
                         return
                       }
                       if (e.key === 'ArrowUp') {
                         e.preventDefault()
-                        setTerminalSuggestIndex((i) => stepTerminalSuggestIndex(i, list.length, 'up'))
+                        setTerminalSuggestIndex((i) =>
+                          stepTerminalSuggestIndex(i, list.length, 'up')
+                        )
                         return
                       }
                       if (e.key === 'Home') {
                         e.preventDefault()
-                        setTerminalSuggestIndex((i) => stepTerminalSuggestIndex(i, list.length, 'home'))
+                        setTerminalSuggestIndex((i) =>
+                          stepTerminalSuggestIndex(i, list.length, 'home')
+                        )
                         return
                       }
                       if (e.key === 'End') {
                         e.preventDefault()
-                        setTerminalSuggestIndex((i) => stepTerminalSuggestIndex(i, list.length, 'end'))
+                        setTerminalSuggestIndex((i) =>
+                          stepTerminalSuggestIndex(i, list.length, 'end')
+                        )
                         return
                       }
                       if (e.key === 'PageDown') {
@@ -3977,7 +4030,11 @@ function App(): JSX.Element {
                 >
                   {(() => {
                     let flatIdx = 0
-                    const tools: TerminalCommandHintEntry['tool'][] = ['ffmpeg', 'ffprobe', 'yt-dlp']
+                    const tools: TerminalCommandHintEntry['tool'][] = [
+                      'ffmpeg',
+                      'ffprobe',
+                      'yt-dlp'
+                    ]
                     return tools.map((tool) => {
                       const hints = terminalDropdownHintsByTool[tool]
                       if (hints.length === 0) {
@@ -4606,10 +4663,23 @@ function App(): JSX.Element {
                 <DownloadsHistoryPanel
                   open={downloadsEmbeddedHistoryOpen}
                   busy={downloadsHistoryBusy}
-                  entries={downloadsHistory}
+                  entries={visibleDownloadsHistory}
+                  totalEntries={downloadsHistory.length}
+                  outcomeFilter={downloadsHistoryOutcomeFilter}
+                  weeklySummary={
+                    downloadsHistoryWeeklySummary ?? {
+                      since: 0,
+                      until: 0,
+                      total: 0,
+                      success: 0,
+                      error: 0,
+                      cancelled: 0
+                    }
+                  }
                   onToggle={(next) => {
                     persistDownloadsEmbeddedHistoryOpen(next)
                   }}
+                  onOutcomeFilterChange={setDownloadsHistoryOutcomeFilter}
                   onRefresh={() => {
                     void refreshDownloadsHistory()
                   }}
@@ -4622,8 +4692,23 @@ function App(): JSX.Element {
                       setDownloadsHistory([])
                     })
                   }}
+                  onExportVisible={() => {
+                    void exportVisibleDownloadsHistory()
+                  }}
                   formatTimeLabel={formatDownloadsHistoryTime}
                   outcomeLabel={downloadsHistoryOutcomeLabel}
+                  onRepeat={(url) => {
+                    void window.fluxalloy.downloads.addLines(url).then((res) => {
+                      if (!res.ok) {
+                        setStatusHint(res.error)
+                        return
+                      }
+                      setWorkspaceTab('downloads')
+                      setStatusHint(
+                        res.added > 0 ? 'URL из истории добавлен в очередь' : 'URL не добавлен'
+                      )
+                    })
+                  }}
                   onOpenFile={(id) => {
                     void window.fluxalloy.downloads.openHistoryOutput(id, 'file').then((res) => {
                       if (!res.ok) {

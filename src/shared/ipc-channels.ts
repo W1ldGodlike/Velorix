@@ -32,8 +32,7 @@ export const mainWindowIpc = {
   settingsSetFfmpegExportVideoGrain: 'fluxalloy:settings-set-ffmpeg-export-video-grain',
   settingsSetFfmpegExportVideoVignette: 'fluxalloy:settings-set-ffmpeg-export-video-vignette',
   settingsSetFfmpegExportVideoBlur: 'fluxalloy:settings-set-ffmpeg-export-video-blur',
-  settingsSetFfmpegExportVideoDeinterlace:
-    'fluxalloy:settings-set-ffmpeg-export-video-deinterlace',
+  settingsSetFfmpegExportVideoDeinterlace: 'fluxalloy:settings-set-ffmpeg-export-video-deinterlace',
   settingsSetFfmpegExportVideoHue: 'fluxalloy:settings-set-ffmpeg-export-video-hue',
   settingsSetFfmpegExportAudioNormalize: 'fluxalloy:settings-set-ffmpeg-export-audio-normalize',
   settingsSetFfmpegExportUserPresets: 'fluxalloy:settings-set-ffmpeg-export-user-presets',
@@ -71,6 +70,7 @@ export const mainWindowIpc = {
   processingHistoryWeeklySummary: 'fluxalloy:processing-history-weekly-summary',
   processingHistoryClear: 'fluxalloy:processing-history-clear',
   processingHistoryOpenOutput: 'fluxalloy:processing-history-open-output',
+  processingHistoryOpenInputInHandler: 'fluxalloy:processing-history-open-input-in-handler',
   openDownloadsWindow: 'fluxalloy:open-downloads-window',
   /** §9 — отдельное окно инспектора ffprobe (`#inspector`). */
   openInspectorWindow: 'fluxalloy:open-inspector-window',
@@ -112,6 +112,7 @@ export const downloadsIpc = {
   clear: 'fluxalloy-downloads-clear',
   clearFinished: 'fluxalloy-downloads-clear-finished',
   getHistory: 'fluxalloy-downloads-get-history',
+  getHistoryWeeklySummary: 'fluxalloy-downloads-get-history-weekly-summary',
   clearHistory: 'fluxalloy-downloads-clear-history',
   saveVisibleLog: 'fluxalloy-downloads-save-visible-log',
   openQueueOutput: 'fluxalloy-downloads-open-queue-output',

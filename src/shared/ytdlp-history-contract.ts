@@ -18,3 +18,12 @@ export interface YtdlpDownloadHistoryEntry {
   /** Best-effort путь готового файла, если yt-dlp сообщил его в stdout/stderr. */
   outputPath?: string | null
 }
+
+export interface YtdlpDownloadHistoryWeeklySummary {
+  since: number
+  until: number
+  total: number
+  success: number
+  error: number
+  cancelled: number
+}

@@ -6,6 +6,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import {
   appendYtdlpDownloadHistoryEntry,
   clearYtdlpDownloadHistory,
+  getYtdlpDownloadHistoryWeeklySummary,
   outcomeFromQueueStatus,
   readYtdlpDownloadHistoryNewestFirst,
   YTDLP_DOWNLOAD_HISTORY_SCHEMA
@@ -98,5 +99,50 @@ describe('ytdlp download history persistence', () => {
     }
     expect(raw).toEqual({ schema: YTDLP_DOWNLOAD_HISTORY_SCHEMA, entries: [] })
     expect(readYtdlpDownloadHistoryNewestFirst(root)).toEqual([])
+  })
+
+  it('считает недельную сводку по исходам загрузок', () => {
+    const root = makeTempRoot()
+    const now = 10_000_000_000
+    appendYtdlpDownloadHistoryEntry(root, {
+      id: 'old',
+      startedAt: now - 9 * 24 * 60 * 60 * 1000,
+      finishedAt: now - 9 * 24 * 60 * 60 * 1000 + 10,
+      url: 'https://example.com/old',
+      shortLabel: 'old',
+      outcome: 'success',
+      status: 'Готово',
+      exitCode: 0,
+      errorHint: null
+    })
+    appendYtdlpDownloadHistoryEntry(root, {
+      id: 'ok',
+      startedAt: now - 1000,
+      finishedAt: now - 500,
+      url: 'https://example.com/ok',
+      shortLabel: 'ok',
+      outcome: 'success',
+      status: 'Готово',
+      exitCode: 0,
+      errorHint: null
+    })
+    appendYtdlpDownloadHistoryEntry(root, {
+      id: 'fail',
+      startedAt: now - 300,
+      finishedAt: now - 100,
+      url: 'https://example.com/fail',
+      shortLabel: 'fail',
+      outcome: 'error',
+      status: 'Ошибка',
+      exitCode: 1,
+      errorHint: 'ERROR'
+    })
+
+    expect(getYtdlpDownloadHistoryWeeklySummary(root, now)).toMatchObject({
+      total: 2,
+      success: 1,
+      error: 1,
+      cancelled: 0
+    })
   })
 })

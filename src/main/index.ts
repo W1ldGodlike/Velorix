@@ -2806,6 +2806,20 @@ app.whenReady().then(() => {
     }
   )
 
+  ipcMain.handle(
+    mw.processingHistoryOpenInputInHandler,
+    async (_event, raw: unknown): Promise<{ ok: true } | { ok: false; error: string }> => {
+      if (typeof raw !== 'string') {
+        return { ok: false, error: 'Не указана запись истории' }
+      }
+      const entry = findProcessingHistoryEntryById(resolveAppPaths().userData, raw)
+      if (!entry) {
+        return { ok: false, error: 'Запись истории не найдена' }
+      }
+      return openDownloadedFileInMainHandler(entry.inputPath)
+    }
+  )
+
   ipcMain.handle(mw.openDownloadsWindow, (_, raw: unknown) => {
     const payload = parseDownloadsOpenPayload(raw)
     focusOrCreateDownloadsWindow(payload ?? undefined)

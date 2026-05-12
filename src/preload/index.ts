@@ -64,7 +64,10 @@ import type {
   YtdlpDownloadOptionsPayload,
   YtdlpGetCliOptionsParams
 } from '../shared/ytdlp-download-contract'
-import type { YtdlpDownloadHistoryEntry } from '../shared/ytdlp-history-contract'
+import type {
+  YtdlpDownloadHistoryEntry,
+  YtdlpDownloadHistoryWeeklySummary
+} from '../shared/ytdlp-history-contract'
 import type {
   ProcessingHistoryEntry,
   ProcessingHistoryFilter,
@@ -335,6 +338,8 @@ const fluxalloy = {
     ): Promise<{ ok: true } | { ok: false; error: string }> =>
       ipcRenderer.invoke(d.setCliOptions, patch),
     getHistory: (): Promise<YtdlpDownloadHistoryEntry[]> => ipcRenderer.invoke(d.getHistory),
+    getHistoryWeeklySummary: (): Promise<YtdlpDownloadHistoryWeeklySummary> =>
+      ipcRenderer.invoke(d.getHistoryWeeklySummary),
     clearHistory: (): Promise<{ ok: true } | { ok: false; error: string }> =>
       ipcRenderer.invoke(d.clearHistory),
     openHistoryOutput: (
@@ -500,7 +505,8 @@ const fluxalloy = {
   processingHistory: {
     get: (
       filter?: ProcessingHistoryFilter & { limit?: number }
-    ): Promise<ProcessingHistoryEntry[]> => ipcRenderer.invoke(mw.processingHistoryGet, filter ?? {}),
+    ): Promise<ProcessingHistoryEntry[]> =>
+      ipcRenderer.invoke(mw.processingHistoryGet, filter ?? {}),
     weeklySummary: (): Promise<ProcessingHistoryWeeklySummary> =>
       ipcRenderer.invoke(mw.processingHistoryWeeklySummary),
     clear: (): Promise<{ ok: true } | { ok: false; error: string }> =>
@@ -509,7 +515,9 @@ const fluxalloy = {
       id: string,
       mode: 'file' | 'folder' | 'preview'
     ): Promise<{ ok: true; path: string } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(mw.processingHistoryOpenOutput, { id, mode })
+      ipcRenderer.invoke(mw.processingHistoryOpenOutput, { id, mode }),
+    openInputInHandler: (id: string): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(mw.processingHistoryOpenInputInHandler, id)
   },
   onPreviewOpened: (listener: (payload: PreviewOpenedPayload) => void): (() => void) => {
     const channel = mw.previewOpened

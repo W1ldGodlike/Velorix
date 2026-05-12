@@ -4,12 +4,14 @@ import { dirname, join } from 'path'
 import { logError } from './logger-service'
 import type {
   YtdlpDownloadHistoryEntry,
-  YtdlpDownloadHistoryOutcome
+  YtdlpDownloadHistoryOutcome,
+  YtdlpDownloadHistoryWeeklySummary
 } from '../shared/ytdlp-history-contract'
 
 export type {
   YtdlpDownloadHistoryEntry,
-  YtdlpDownloadHistoryOutcome
+  YtdlpDownloadHistoryOutcome,
+  YtdlpDownloadHistoryWeeklySummary
 } from '../shared/ytdlp-history-contract'
 
 /**
@@ -215,6 +217,30 @@ export function readYtdlpDownloadHistoryNewestFirst(
   const all = loadRawEntries(userDataRoot)
   const tail = all.slice(-n)
   return tail.reverse()
+}
+
+export function getYtdlpDownloadHistoryWeeklySummary(
+  userDataRoot: string,
+  now = Date.now()
+): YtdlpDownloadHistoryWeeklySummary {
+  const until = Number.isFinite(now) && now > 0 ? now : Date.now()
+  const since = until - 7 * 24 * 60 * 60 * 1000
+  const summary: YtdlpDownloadHistoryWeeklySummary = {
+    since,
+    until,
+    total: 0,
+    success: 0,
+    error: 0,
+    cancelled: 0
+  }
+  for (const entry of loadRawEntries(userDataRoot)) {
+    if (entry.finishedAt < since || entry.finishedAt > until) {
+      continue
+    }
+    summary.total += 1
+    summary[entry.outcome] += 1
+  }
+  return summary
 }
 
 export function clearYtdlpDownloadHistory(userDataRoot: string): void {

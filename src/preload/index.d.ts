@@ -63,7 +63,10 @@ import type {
   YtdlpDownloadOptionsPayload,
   YtdlpGetCliOptionsParams
 } from '../shared/ytdlp-download-contract'
-import type { YtdlpDownloadHistoryEntry } from '../shared/ytdlp-history-contract'
+import type {
+  YtdlpDownloadHistoryEntry,
+  YtdlpDownloadHistoryWeeklySummary
+} from '../shared/ytdlp-history-contract'
 import type {
   ProcessingHistoryEntry,
   ProcessingHistoryFilter,
@@ -195,6 +198,7 @@ export interface FluxAlloyApi {
       patch: YtdlpDownloadOptionsPatch
     ) => Promise<{ ok: true } | { ok: false; error: string }>
     getHistory: () => Promise<YtdlpDownloadHistoryEntry[]>
+    getHistoryWeeklySummary: () => Promise<YtdlpDownloadHistoryWeeklySummary>
     clearHistory: () => Promise<{ ok: true } | { ok: false; error: string }>
     openHistoryOutput: (
       id: string,
@@ -266,13 +270,16 @@ export interface FluxAlloyApi {
     onProgress: (listener: (progress: FfmpegExportProgressPayload) => void) => () => void
   }
   processingHistory: {
-    get: (filter?: ProcessingHistoryFilter & { limit?: number }) => Promise<ProcessingHistoryEntry[]>
+    get: (
+      filter?: ProcessingHistoryFilter & { limit?: number }
+    ) => Promise<ProcessingHistoryEntry[]>
     weeklySummary: () => Promise<ProcessingHistoryWeeklySummary>
     clear: () => Promise<{ ok: true } | { ok: false; error: string }>
     openOutput: (
       id: string,
       mode: 'file' | 'folder' | 'preview'
     ) => Promise<{ ok: true; path: string } | { ok: false; error: string }>
+    openInputInHandler: (id: string) => Promise<{ ok: true } | { ok: false; error: string }>
   }
   onPreviewOpened: (listener: (payload: PreviewOpenedPayload) => void) => () => void
   onThemeChanged: (listener: (theme: ResolvedAppTheme) => void) => () => void
