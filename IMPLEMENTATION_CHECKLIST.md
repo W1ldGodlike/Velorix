@@ -434,7 +434,7 @@
 - [x] Поиск.
 - [~] Открытие статей из подсказок (inline help вне Knowledge): deep-link в `KnowledgeDialog` (`initialSlug`); первая точка — вкладка «Терминал» → `ffmpeg-terminal-hints`.
 - [~] Tooltips на ключевых контролах (база знаний: топбар, диалог поиск/закрыть/TOC, markdown внутр./внешние ссылки; deep-link из «Терминала»).
-- [~] EN: при `preferredUiLocale=en` читается `Help/en/{slug}.md` при наличии, иначе корень `Help/*.md` (chrome EN/RU через `ui-text`); остальные статьи — постепенный перенос в `Help/en/`.
+- [~] EN: при `preferredUiLocale=en` читается `Help/en/{slug}.md` при наличии, иначе корень `Help/*.md` (chrome EN/RU через `ui-text`); добавлены EN-тела `start`, `extract-frames`, `processing-url-combo`; остальные статьи — постепенный перенос в `Help/en/`.
 
 ## §16. Аппаратное ускорение
 
