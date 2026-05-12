@@ -4841,6 +4841,66 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
+    token: '· print-to-file keywords',
+    summary: 'Записать keywords (теги/SEO-ключи, если extractor отдаёт) в flux-ytdlp-keywords.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file keywords flux-ytdlp-keywords.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file plchurl',
+    summary: 'Записать playlist_channel_url (канонический URL вкладки/канала плейлиста, если есть) в flux-ytdlp-plchurl.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file playlist_channel_url flux-ytdlp-plchurl.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file starring',
+    summary: 'Записать starring (верхний актёрский блок, если extractor отдаёт) в flux-ytdlp-starring.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file starring flux-ytdlp-starring.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file title_sort',
+    summary: 'Записать title_sort (сортировочный заголовок каталога, если есть) в flux-ytdlp-titlesort.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file title_sort flux-ytdlp-titlesort.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file season',
+    summary: 'Записать season (название/метка сезона, если extractor отдаёт) в flux-ytdlp-season.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file season flux-ytdlp-season.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file section_number',
+    summary: 'Записать section_number (номер секции/части релиза, если extractor отдаёт) в flux-ytdlp-secnum.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file section_number flux-ytdlp-secnum.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file isrc',
+    summary: 'Записать isrc (ISRC трека/релиза, если площадка отдаёт) в flux-ytdlp-isrc.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file isrc flux-ytdlp-isrc.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file track_sort',
+    summary: 'Записать track_sort (сортировочный номер/имя трека, если extractor отдаёт) в flux-ytdlp-tracksort.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file track_sort flux-ytdlp-tracksort.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file alt_description',
+    summary: 'Записать alt_description (краткое/альтернативное описание, если extractor отдаёт) в flux-ytdlp-altdesc.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file alt_description flux-ytdlp-altdesc.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file view_count alt file',
+    summary: 'Записать view_count в отдельный flux-ytdlp-viewcount.txt без скачивания (дубль поля для кастомных сценариев рядом с другими txt); допишите URL.',
+    fullLine: 'yt-dlp --print-to-file view_count flux-ytdlp-viewcount.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
     token: '· --update-to stable',
     summary: 'Обновить yt-dlp до канала stable (--update-to stable); URL не нужен.',
     fullLine: 'yt-dlp --update-to stable'

@@ -2405,6 +2405,20 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --print-to-file thumbnail flux-ytdlp-thumb-url.txt --skip-download ')
   })
 
+  it('downloads: print-to-file keywords/plchurl/starring/title_sort/season/section_number/isrc/track_sort/alt_description/view_count', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --print-to-file keywords flux-ytdlp-keywords.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file playlist_channel_url flux-ytdlp-plchurl.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file starring flux-ytdlp-starring.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file title_sort flux-ytdlp-titlesort.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file season flux-ytdlp-season.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file section_number flux-ytdlp-secnum.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file isrc flux-ytdlp-isrc.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file track_sort flux-ytdlp-tracksort.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file alt_description flux-ytdlp-altdesc.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file view_count flux-ytdlp-viewcount.txt --skip-download ')
+  })
+
   it('preview: ffprobe format cat+barcode + ffmpeg aresample async 4s', () => {
     const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
     expect(
