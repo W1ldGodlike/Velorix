@@ -219,13 +219,68 @@
 .app-terminal-output {
   max-height: 18rem;
   margin: 0;
-  padding: 0.7rem;
+  padding: 0.45rem 0.55rem;
   overflow: auto;
-  white-space: pre-wrap;
-  word-break: break-word;
   border-radius: 10px;
   color: var(--fa-text-primary);
   background: color-mix(in srgb, #020617 64%, var(--fa-bg) 36%);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.app-terminal-output-line {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.35rem;
+  align-items: start;
+  padding: 0.12rem 0.25rem;
+  margin: 0 -0.15rem;
+  border-radius: 6px;
+}
+
+.app-terminal-output-line:hover,
+.app-terminal-output-line:focus-within {
+  background: color-mix(in srgb, var(--fa-accent) 12%, transparent);
+}
+
+.app-terminal-output-line-text {
+  min-width: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.app-terminal-output-line-copy {
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0.05rem 0.35rem;
+  font: inherit;
+  font-size: 0.68rem;
+  line-height: 1.2;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--fa-text-muted);
+  background: transparent;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+
+.app-terminal-output-line:hover .app-terminal-output-line-copy,
+.app-terminal-output-line:focus-within .app-terminal-output-line-copy {
+  opacity: 1;
+}
+
+.app-terminal-output-line-copy:hover {
+  color: var(--fa-accent);
+  border-color: color-mix(in srgb, var(--fa-accent) 35%, transparent);
+}
+
+.app-terminal-output-line-copy:focus-visible {
+  opacity: 1;
+  outline: 2px solid color-mix(in srgb, var(--fa-accent) 55%, transparent);
+  outline-offset: 1px;
 }
 
 .app-terminal-hint-list {

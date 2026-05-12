@@ -958,6 +958,11 @@ function App(): JSX.Element {
     }
   }, [terminalBusy, terminalLine, currentSourcePath])
 
+  const copyTerminalOutputLine = useCallback(async (line: string): Promise<void> => {
+    const r = await window.fluxalloy.clipboard.writeText(line)
+    setStatusHint(r.ok ? 'Строка вывода скопирована' : 'Не удалось скопировать строку')
+  }, [])
+
   const appendDownloadsExtraArgsToken = useCallback(
     (token: string) => {
       if (!downloadsOptions) return
@@ -3523,7 +3528,8 @@ function App(): JSX.Element {
                   argv можно токен <code>{TERMINAL_CURRENT_FILE_PLACEHOLDER}</code> — подставится
                   путь текущего превью редактора (только если файл уже открыт через диалог или DnD).
                   В строке ввода — компактный IntelliSense: стрелки вверх/вниз и Tab по выпадающему
-                  списку (до 14 подсказок из той же базы, что и справа).
+                  списку (до 14 подсказок из той же базы, что и справа). В журнале вывода каждая строка
+                  с кнопкой «Копир.» при наведении (копирует ровно эту строку).
                 </p>
               </div>
             </div>
@@ -3655,25 +3661,56 @@ function App(): JSX.Element {
                 {terminalHistory.length === 0 ? (
                   <p className="app-downloads-empty">История этой сессии пока пуста.</p>
                 ) : (
-                  terminalHistory.map((entry) => (
-                    <article key={entry.id} className="app-terminal-entry">
-                      <div className="app-terminal-entry-head">
-                        <code>{entry.line}</code>
-                        <span>
-                          {entry.result.ok
-                            ? `code ${entry.result.code ?? 'n/a'} · ${entry.result.elapsedMs} ms`
-                            : 'blocked'}
-                        </span>
-                      </div>
-                      {entry.result.ok ? (
-                        <pre className="app-terminal-output">
-                          {[entry.result.stdout, entry.result.stderr].filter(Boolean).join('\n')}
-                        </pre>
-                      ) : (
-                        <p className="app-downloads-warning">{entry.result.error}</p>
-                      )}
-                    </article>
-                  ))
+                  terminalHistory.map((entry) => {
+                    const lines = (() => {
+                      if (!entry.result.ok) {
+                        return [] as string[]
+                      }
+                      const blob = [entry.result.stdout, entry.result.stderr]
+                        .filter(Boolean)
+                        .join('\n')
+                      return blob.length > 0 ? blob.split(/\r?\n/) : ['']
+                    })()
+                    return (
+                      <article key={entry.id} className="app-terminal-entry">
+                        <div className="app-terminal-entry-head">
+                          <code>{entry.line}</code>
+                          <span>
+                            {entry.result.ok
+                              ? `code ${entry.result.code ?? 'n/a'} · ${entry.result.elapsedMs} ms`
+                              : 'blocked'}
+                          </span>
+                        </div>
+                        {entry.result.ok ? (
+                          <div className="app-terminal-output" role="log">
+                            {lines.map((line, lineIdx) => (
+                              <div
+                                key={`${entry.id}:${lineIdx}`}
+                                className="app-terminal-output-line"
+                              >
+                                <span className="app-terminal-output-line-text">
+                                  {line.length > 0 ? line : '\u00a0'}
+                                </span>
+                                <button
+                                  type="button"
+                                  className="app-terminal-output-line-copy"
+                                  title="Копировать эту строку"
+                                  aria-label={`Копировать строку ${lineIdx + 1}`}
+                                  onClick={() => {
+                                    void copyTerminalOutputLine(line)
+                                  }}
+                                >
+                                  Копир.
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="app-downloads-warning">{entry.result.error}</p>
+                        )}
+                      </article>
+                    )
+                  })
                 )}
               </section>
               <aside className="app-terminal-hints" aria-label="Подсказки CLI">
