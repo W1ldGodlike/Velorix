@@ -66,6 +66,25 @@ describe('filterTerminalInlineSuggestions', () => {
     const r = filterTerminalInlineSuggestions({ line: 'yt-dlp -', hints: SAMPLE, max: 20 })
     expect(r.some((h) => h.fullLine?.startsWith('yt-dlp -F'))).toBe(true)
   })
+
+  it('deduplicates decorated and plain tokens with same fullLine', () => {
+    const duplicates: TerminalCommandHintEntry[] = [
+      { tool: 'yt-dlp', token: '· -F', summary: 'decorated', fullLine: 'yt-dlp -F ' },
+      { tool: 'yt-dlp', token: '-F', summary: 'plain', fullLine: 'yt-dlp -F ' }
+    ]
+    const r = filterTerminalInlineSuggestions({ line: 'yt-dlp -', hints: duplicates, max: 20 })
+    expect(r).toHaveLength(1)
+    expect(r[0]?.fullLine).toBe('yt-dlp -F ')
+  })
+
+  it('keeps distinct fullLine variants even with same token', () => {
+    const variants: TerminalCommandHintEntry[] = [
+      { tool: 'yt-dlp', token: '-F', summary: 'formats', fullLine: 'yt-dlp -F ' },
+      { tool: 'yt-dlp', token: '-F', summary: 'formats+url', fullLine: 'yt-dlp -F -- ' }
+    ]
+    const r = filterTerminalInlineSuggestions({ line: 'yt-dlp -', hints: variants, max: 20 })
+    expect(r).toHaveLength(2)
+  })
 })
 
 describe('stepTerminalSuggestIndex', () => {

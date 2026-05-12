@@ -112,7 +112,9 @@ export function filterTerminalInlineSuggestions(params: {
       if (!pred(h)) {
         continue
       }
-      const key = `${h.tool}\0${h.token}\0${h.fullLine ?? ''}`
+      const normalizedToken = normalizeTerminalHintToken(h.token)
+      const normalizedFullLine = h.fullLine?.trim() ?? ''
+      const key = `${h.tool}\0${normalizedToken}\0${normalizedFullLine}`
       if (seen.has(key)) {
         continue
       }
