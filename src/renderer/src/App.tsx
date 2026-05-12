@@ -4503,6 +4503,33 @@ function App(): JSX.Element {
                         </select>
                       </label>
                     </div>
+                    <label className="app-field">
+                      <span>Профиль / контейнер (cookies из браузера)</span>
+                      <input
+                        className="app-control app-downloads-template-input"
+                        value={downloadsOptions.cookiesBrowserProfileLine}
+                        disabled={downloadsOptionsBusy}
+                        spellCheck={false}
+                        autoComplete="off"
+                        placeholder="например Default или Profile 1"
+                        aria-describedby="downloadsCookiesProfileHint"
+                        onChange={(e) => {
+                          setDownloadsOptions({
+                            ...downloadsOptions,
+                            cookiesBrowserProfileLine: e.target.value
+                          })
+                        }}
+                        onBlur={(e) => {
+                          void applyDownloadsOptionsPatch({
+                            cookiesBrowserProfile: e.target.value
+                          })
+                        }}
+                      />
+                      <span id="downloadsCookiesProfileHint" className="app-field-help">
+                        Суффикс yt-dlp после двоеточия: <code>--cookies-from-browser</code>{' '}
+                        <code>chrome:…</code> (без префикса браузера в поле).
+                      </span>
+                    </label>
                     <div
                       className="app-downloads-output-dir"
                       role="group"

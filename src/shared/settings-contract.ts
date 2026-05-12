@@ -104,6 +104,8 @@ export interface AppSettings {
   ytdlpCookiesFile?: string
   /** §6.2: `--cookies-from-browser` для ограниченного whitelist (если нет файла). */
   ytdlpCookiesBrowser?: 'chrome' | 'edge' | 'firefox'
+  /** §6.2: суффикс после двоеточия в `--cookies-from-browser BROWSER:…` (профиль/контейнер yt-dlp). */
+  ytdlpCookiesBrowserProfile?: string
   /** §6.2: клиент для `--impersonate` (ограниченный whitelist). */
   ytdlpImpersonate?: 'chrome' | 'edge' | 'firefox'
   /** §6.2: ограничение скорости `--limit-rate` одним безопасным токеном (`500K`, `2M`). */

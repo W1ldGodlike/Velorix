@@ -107,6 +107,7 @@ describe('buildYtdlpSpawnArgvTokens', () => {
     subLangs: '',
     cookiesFile: null,
     cookiesBrowser: null,
+    cookiesBrowserProfile: null,
     impersonateTarget: null,
     rateLimit: '',
     retries: null,
@@ -186,6 +187,17 @@ describe('buildYtdlpSpawnArgvTokens', () => {
     expect(args).toContain('-x')
     expect(args).toContain('--audio-format')
     expect(args).toContain('best')
+  })
+
+  it('cookies-from-browser с профилем — один токен browser:suffix', () => {
+    const args = buildYtdlpSpawnArgvTokens({
+      ...base,
+      cookiesBrowser: 'chrome',
+      cookiesBrowserProfile: 'Profile 1'
+    })
+    const i = args.indexOf('--cookies-from-browser')
+    expect(i).toBeGreaterThan(-1)
+    expect(args[i + 1]).toBe('chrome:Profile 1')
   })
 
   it('outputPattern и url всегда в конце через -o', () => {

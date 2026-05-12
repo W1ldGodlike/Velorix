@@ -47,6 +47,7 @@ import {
   type YtdlpDownloadOptionsPayload,
   type YtdlpDownloadOptionsPatch
 } from './ytdlp-download-options'
+import { validateYtdlpCookiesBrowserProfile } from './ytdlp-extra-args'
 import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
 import {
   clearYtdlpDownloadHistory,
@@ -1393,6 +1394,8 @@ ${emitDownloadsTopbarClusterHtml(18)}
                 <option value="edge">Из браузера: Edge</option>
                 <option value="firefox">Из браузера: Firefox</option>
               </select>
+              <label for="cookiesBrowserProfileInput">Профиль / контейнер</label>
+              <input type="text" id="cookiesBrowserProfileInput" spellcheck="false" autocomplete="off" placeholder="например Default или Profile 1" aria-describedby="dlRailMetaSectionHint" />
               <div class="out-dir-row" role="group" aria-labelledby="dlCookiesPathLabel">
                 <span id="dlCookiesPathLabel" class="out-dir-label">Файл cookies:</span>
                 <span id="cookiesPathText" class="out-path" title="">—</span>
@@ -1541,6 +1544,7 @@ ${emitDownloadsTopbarClusterHtml(18)}
       var subPreset = document.getElementById('subPreset');
       var subLangsInput = document.getElementById('subLangsInput');
       var cookiesBrowserSelect = document.getElementById('cookiesBrowserSelect');
+      var cookiesBrowserProfileInput = document.getElementById('cookiesBrowserProfileInput');
       var cookiesPathText = document.getElementById('cookiesPathText');
       var pickCookiesBtn = document.getElementById('pickCookiesBtn');
       var clearCookiesBtn = document.getElementById('clearCookiesBtn');
@@ -1626,6 +1630,7 @@ ${emitDownloadsTopbarClusterHtml(18)}
           subtitlePreset: subPreset ? subPreset.value : 'none',
           subLangs: subLangsInput ? subLangsInput.value : '',
           cookiesBrowser: cookiesBrowserSelect ? cookiesBrowserSelect.value : 'none',
+          cookiesBrowserProfile: cookiesBrowserProfileInput ? cookiesBrowserProfileInput.value : '',
           impersonate: impersonateSelect ? impersonateSelect.value : 'none',
           rateLimit: rateLimitInput ? rateLimitInput.value : '',
           retriesLine: retriesInput ? retriesInput.value : '',
@@ -2050,6 +2055,9 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
             var cb = p.cookiesBrowserChoice;
             cookiesBrowserSelect.value =
               cb === 'chrome' || cb === 'edge' || cb === 'firefox' ? cb : 'none';
+          }
+          if (cookiesBrowserProfileInput && typeof p.cookiesBrowserProfileLine === 'string') {
+            cookiesBrowserProfileInput.value = p.cookiesBrowserProfileLine;
           }
           if (cookiesPathText && typeof p.cookiesFilePathStored === 'string') {
             var cp = p.cookiesFilePathStored;
@@ -2688,6 +2696,9 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
             subtitlePreset: subPreset ? subPreset.value : 'none',
             subLangs: subLangsInput ? subLangsInput.value : '',
             cookiesBrowser: cookiesBrowserSelect ? cookiesBrowserSelect.value : 'none',
+            cookiesBrowserProfile: cookiesBrowserProfileInput
+              ? cookiesBrowserProfileInput.value
+              : '',
             impersonate: impersonateSelect ? impersonateSelect.value : 'none',
             rateLimit: rateLimitInput ? rateLimitInput.value : '',
             retriesLine: retriesInput ? retriesInput.value : '',
@@ -2730,6 +2741,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
       attachPreviewRefreshOnChange(subPreset);
       attachPreviewRefreshOnInput(subLangsInput);
       attachPreviewRefreshOnChange(cookiesBrowserSelect);
+      attachPreviewRefreshOnInput(cookiesBrowserProfileInput);
       attachPreviewRefreshOnChange(impersonateSelect);
       attachPreviewRefreshOnInput(rateLimitInput);
       attachPreviewRefreshOnInput(retriesInput);
@@ -3046,6 +3058,16 @@ export function registerDownloadsWindowIpcHandlers(): void {
           patch.cookiesBrowser = b
         }
       }
+      if (Object.prototype.hasOwnProperty.call(o, 'cookiesBrowserProfile')) {
+        if (typeof o['cookiesBrowserProfile'] !== 'string') {
+          return { ok: false, error: 'Профиль cookies браузера должен быть строкой' }
+        }
+        const pr = validateYtdlpCookiesBrowserProfile(o['cookiesBrowserProfile'])
+        if (!pr.ok) {
+          return { ok: false, error: pr.error }
+        }
+        patch.cookiesBrowserProfile = pr.value
+      }
       if (Object.prototype.hasOwnProperty.call(o, 'impersonate')) {
         if (typeof o['impersonate'] !== 'string') {
           return { ok: false, error: 'Поле impersonate должно быть строкой' }
@@ -3108,6 +3130,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
         patch.subtitlePreset === undefined &&
         patch.subLangs === undefined &&
         patch.cookiesBrowser === undefined &&
+        patch.cookiesBrowserProfile === undefined &&
         patch.impersonate === undefined &&
         patch.rateLimit === undefined &&
         patch.retriesLine === undefined &&

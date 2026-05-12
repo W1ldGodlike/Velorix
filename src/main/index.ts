@@ -168,7 +168,7 @@ import {
 } from './ytdlp-download-options'
 import type { YtdlpGetCliOptionsParams } from '../shared/ytdlp-download-contract'
 import type { MainWindowUiPanelState } from '../shared/settings-contract'
-import { parseExtraYtdlpArgsLine } from './ytdlp-extra-args'
+import { parseExtraYtdlpArgsLine, validateYtdlpCookiesBrowserProfile } from './ytdlp-extra-args'
 import { refreshYtdlpRunOptionsSnapshot } from './ytdlp-run-options-sync'
 import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
@@ -617,9 +617,24 @@ function mergeYtdlpDownloadCliPatchOntoSettings(
   if (patch.cookiesBrowser !== undefined) {
     if (patch.cookiesBrowser === 'none') {
       delete merged.ytdlpCookiesBrowser
+      delete merged.ytdlpCookiesBrowserProfile
     } else {
       merged.ytdlpCookiesBrowser = patch.cookiesBrowser
       delete merged.ytdlpCookiesFile
+    }
+  }
+  if (patch.cookiesBrowserProfile !== undefined) {
+    if (typeof patch.cookiesBrowserProfile !== 'string') {
+      return { ok: false, error: 'Профиль cookies браузера должен быть строкой.' }
+    }
+    const pv = validateYtdlpCookiesBrowserProfile(patch.cookiesBrowserProfile)
+    if (!pv.ok) {
+      return pv
+    }
+    if (pv.value === '') {
+      delete merged.ytdlpCookiesBrowserProfile
+    } else {
+      merged.ytdlpCookiesBrowserProfile = pv.value
     }
   }
   if (patch.impersonate !== undefined) {

@@ -16,6 +16,7 @@ import {
   parseFfmpegExportVideoTransform
 } from './ffmpeg-export-service'
 import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
+import { validateYtdlpCookiesBrowserProfile } from './ytdlp-extra-args'
 
 export type {
   AppSettings,
@@ -174,6 +175,17 @@ function parseYtdlpCookiesBrowserStored(raw: unknown): 'chrome' | 'edge' | 'fire
     return raw
   }
   return undefined
+}
+
+function parseYtdlpCookiesBrowserProfileStored(raw: unknown): string | undefined {
+  if (typeof raw !== 'string') {
+    return undefined
+  }
+  const v = validateYtdlpCookiesBrowserProfile(raw)
+  if (!v.ok || v.value.length === 0) {
+    return undefined
+  }
+  return v.value
 }
 
 function parseYtdlpImpersonateStored(raw: unknown): 'chrome' | 'edge' | 'firefox' | undefined {
@@ -396,6 +408,9 @@ export function loadSettings(filePath: string): AppSettings {
     const ytdlpSubLangs = parseYtdlpSubLangsStored(parsed.ytdlpSubLangs)
     const ytdlpCookiesFile = parseYtdlpCookiesFileStored(parsed.ytdlpCookiesFile)
     const ytdlpCookiesBrowser = parseYtdlpCookiesBrowserStored(parsed.ytdlpCookiesBrowser)
+    const ytdlpCookiesBrowserProfile = parseYtdlpCookiesBrowserProfileStored(
+      parsed.ytdlpCookiesBrowserProfile
+    )
     const ytdlpImpersonate = parseYtdlpImpersonateStored(parsed.ytdlpImpersonate)
     const ytdlpRateLimit = parseYtdlpRateLimitStored(parsed.ytdlpRateLimit)
     const ytdlpRetries = parseYtdlpRetriesStored(parsed.ytdlpRetries)
@@ -485,6 +500,9 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (ytdlpCookiesBrowser !== undefined) {
       base.ytdlpCookiesBrowser = ytdlpCookiesBrowser
+    }
+    if (ytdlpCookiesBrowserProfile !== undefined) {
+      base.ytdlpCookiesBrowserProfile = ytdlpCookiesBrowserProfile
     }
     if (ytdlpImpersonate !== undefined) {
       base.ytdlpImpersonate = ytdlpImpersonate

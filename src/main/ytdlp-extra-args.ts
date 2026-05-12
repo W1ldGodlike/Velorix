@@ -15,6 +15,41 @@ export type {
   YtdlpSubtitlePresetId
 } from '../shared/ytdlp-download-contract'
 
+const YTDLP_COOKIES_BROWSER_PROFILE_MAX_LEN = 200
+
+function cookiesBrowserProfileHasControlChars(s: string): boolean {
+  for (let i = 0; i < s.length; i++) {
+    const code = s.charCodeAt(i)
+    if ((code >= 0 && code < 32) || code === 127) {
+      return true
+    }
+  }
+  return false
+}
+
+/** §6.2 — суффикс `BROWSER:…` для `--cookies-from-browser` (один argv-токен после сборки). */
+export function validateYtdlpCookiesBrowserProfile(
+  raw: string
+): { ok: true; value: string } | { ok: false; error: string } {
+  const t = raw.trim()
+  if (t.length === 0) {
+    return { ok: true, value: '' }
+  }
+  if (t.length > YTDLP_COOKIES_BROWSER_PROFILE_MAX_LEN) {
+    return {
+      ok: false,
+      error: `Профиль браузера для cookies слишком длинный (макс. ${YTDLP_COOKIES_BROWSER_PROFILE_MAX_LEN} символов).`
+    }
+  }
+  if (cookiesBrowserProfileHasControlChars(t)) {
+    return {
+      ok: false,
+      error: 'Профиль браузера для cookies не должен содержать управляющие символы.'
+    }
+  }
+  return { ok: true, value: t }
+}
+
 /** ASCII control + классический shell-/Injection-мусор (без `\x..` в RegExp — см. eslint no-control-regex). */
 function tokenHasDangerChars(token: string): boolean {
   for (let i = 0; i < token.length; i++) {
@@ -170,8 +205,10 @@ export function buildYtdlpSpawnArgvTokens(params: {
   subLangs: string
   /** Файл Netscape cookies; приоритетнее `cookiesBrowser`. */
   cookiesFile: string | null
-  /** `--cookies-from-browser`, если файла нет. */
+  /** `--cookies-from-browser`, если файла нет; без суффикса профиля. */
   cookiesBrowser: YtdlpCookiesBrowserId | null
+  /** §6.2 — суффикс после `BROWSER:` (профиль/контейнер); только если `cookiesBrowser` задан. */
+  cookiesBrowserProfile: string | null
   /** §6.2 `--impersonate` только для whitelist-клиентов; поддержка зависит от сборки yt-dlp. */
   impersonateTarget: YtdlpImpersonateId | null
   /** §6.2 `--limit-rate`: уже проверенный один argv-токен вроде `500K`, `2M`; пусто — без лимита. */
@@ -191,7 +228,10 @@ export function buildYtdlpSpawnArgvTokens(params: {
   if (cf) {
     args.push('--cookies', cf)
   } else if (params.cookiesBrowser) {
-    args.push('--cookies-from-browser', params.cookiesBrowser)
+    const prof = (params.cookiesBrowserProfile ?? '').trim()
+    const spec =
+      prof.length > 0 ? `${params.cookiesBrowser}:${prof}` : params.cookiesBrowser
+    args.push('--cookies-from-browser', spec)
   }
   if (params.impersonateTarget) {
     args.push('--impersonate', params.impersonateTarget)

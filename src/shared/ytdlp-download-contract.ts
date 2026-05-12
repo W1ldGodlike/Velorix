@@ -47,6 +47,8 @@ export interface YtdlpDownloadOptionsPayload {
   /** Подсказки для поля доп. аргументов §6.3 (из `Data/ytdlp_commands.json`). */
   commandHints: YtdlpCommandHintEntry[]
   cookiesBrowserChoice: 'none' | YtdlpCookiesBrowserId
+  /** §6.2 — строка для поля «профиль/контейнер» (суффикс к `--cookies-from-browser`). */
+  cookiesBrowserProfileLine: string
   cookiesFilePathStored: string
   cookiesWarning: string | null
   impersonateChoice: 'none' | YtdlpImpersonateId
@@ -78,6 +80,8 @@ export interface YtdlpDownloadOptionsPatch {
   subLangs?: string
   /** §6.2 `none` или whitelist браузера; при сохранении отличного от «нет» сбрасывает файл cookies. */
   cookiesBrowser?: 'none' | YtdlpCookiesBrowserId
+  /** §6.2 — суффикс `BROWSER:…` для `--cookies-from-browser`; пустая строка удаляет сохранённое значение. */
+  cookiesBrowserProfile?: string
   /** §6.2 `--impersonate` только chrome / edge / firefox. */
   impersonate?: 'none' | YtdlpImpersonateId
   rateLimit?: string

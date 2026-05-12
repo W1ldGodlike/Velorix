@@ -138,6 +138,7 @@ export function runYtdlpOnce(
     | 'subLangs'
     | 'cookiesArgvFile'
     | 'cookiesArgvBrowser'
+    | 'cookiesArgvBrowserProfile'
     | 'impersonateTarget'
     | 'rateLimit'
     | 'retries'
@@ -168,6 +169,7 @@ export function runYtdlpOnce(
   const subLangs = cli?.subLangs ?? ''
   const cookiesFile = cli?.cookiesArgvFile ?? null
   const cookiesBrowser = cli?.cookiesArgvBrowser ?? null
+  const cookiesBrowserProfile = cli?.cookiesArgvBrowserProfile ?? null
   const impersonateTarget = cli?.impersonateTarget ?? null
   const rateLimit = cli?.rateLimit ?? ''
   const retries = cli?.retries ?? null
@@ -181,6 +183,7 @@ export function runYtdlpOnce(
     subLangs,
     cookiesFile,
     cookiesBrowser,
+    cookiesBrowserProfile,
     impersonateTarget,
     rateLimit,
     retries,

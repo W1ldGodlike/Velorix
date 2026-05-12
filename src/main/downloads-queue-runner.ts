@@ -447,6 +447,7 @@ async function runYtdlpForWaitingRow(
             subLangs: cli.subLangs,
             cookiesArgvFile: cli.cookiesArgvFile,
             cookiesArgvBrowser: cli.cookiesArgvBrowser,
+            cookiesArgvBrowserProfile: cli.cookiesArgvBrowserProfile,
             impersonateTarget: cli.impersonateTarget,
             rateLimit: cli.rateLimit,
             retries: cli.retries,

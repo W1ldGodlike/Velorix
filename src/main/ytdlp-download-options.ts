@@ -5,7 +5,8 @@ import type { AppSettings } from './settings-store'
 import {
   buildYtdlpSpawnArgvTokens,
   formatArgvTokensForPreview,
-  parseExtraYtdlpArgsLine
+  parseExtraYtdlpArgsLine,
+  validateYtdlpCookiesBrowserProfile
 } from './ytdlp-extra-args'
 import { getYtdlpCommandHints } from './ytdlp-commands-hints'
 import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
@@ -119,10 +120,14 @@ export interface YtdlpRunOptionsSnapshot {
   cookiesArgvFile: string | null
   /** §6.2 — только если нет рабочего файла cookies. */
   cookiesArgvBrowser: YtdlpCookiesBrowserId | null
+  /** §6.2 — валидированный суффикс после `BROWSER:`; только вместе с `cookiesArgvBrowser`. */
+  cookiesArgvBrowserProfile: string | null
   /** Путь из settings для подписи в UI (может быть битым). */
   cookiesFilePathStored: string
   /** Выбор в UI (может сосуществовать с файлом в JSON до сохранения). */
   cookiesBrowserChoice: 'none' | YtdlpCookiesBrowserId
+  /** Строка для поля «профиль/контейнер» в UI (из settings, после trim при успешной валидации). */
+  cookiesBrowserProfileLine: string
   cookiesWarning: string | null
   /** §6.2 — только whitelist; null если выключено. */
   impersonateTarget: YtdlpImpersonateId | null
@@ -428,6 +433,24 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
   const cookiesBrowserChoice: 'none' | YtdlpCookiesBrowserId =
     browserParsed !== undefined ? browserParsed : 'none'
 
+  const cookiesBrowserProfileLine =
+    typeof settings.ytdlpCookiesBrowserProfile === 'string'
+      ? settings.ytdlpCookiesBrowserProfile
+      : ''
+  const cookiesProfileParsed = validateYtdlpCookiesBrowserProfile(cookiesBrowserProfileLine)
+  let cookiesArgvBrowserProfile: string | null = null
+  if (
+    cookiesArgvBrowser !== null &&
+    cookiesProfileParsed.ok &&
+    cookiesProfileParsed.value.length > 0
+  ) {
+    cookiesArgvBrowserProfile = cookiesProfileParsed.value
+  }
+  if (!cookiesProfileParsed.ok && cookiesBrowserProfileLine.trim().length > 0) {
+    const w = cookiesProfileParsed.error
+    cookiesWarning = cookiesWarning ? `${cookiesWarning} ${w}` : w
+  }
+
   const impersonateParsed = parseYtdlpImpersonate(settings.ytdlpImpersonate)
   const impersonateTarget: YtdlpImpersonateId | null =
     impersonateParsed !== undefined ? impersonateParsed : null
@@ -472,8 +495,12 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
     extraArgsParseWarning,
     cookiesArgvFile,
     cookiesArgvBrowser,
+    cookiesArgvBrowserProfile,
     cookiesFilePathStored: cookiesFileStored,
     cookiesBrowserChoice,
+    cookiesBrowserProfileLine: cookiesProfileParsed.ok
+      ? cookiesProfileParsed.value
+      : cookiesBrowserProfileLine.trim().slice(0, 200),
     cookiesWarning,
     impersonateTarget,
     impersonateChoice,
@@ -517,6 +544,7 @@ export function payloadFromSnapshot(
     subLangs: snap.subLangs,
     cookiesFile: snap.cookiesArgvFile,
     cookiesBrowser: snap.cookiesArgvBrowser,
+    cookiesBrowserProfile: snap.cookiesArgvBrowserProfile,
     impersonateTarget: snap.impersonateTarget,
     rateLimit: snap.rateLimit,
     retries: snap.retries,
@@ -547,6 +575,7 @@ export function payloadFromSnapshot(
     extraArgsParseWarning: snap.extraArgsParseWarning,
     commandHints,
     cookiesBrowserChoice: snap.cookiesBrowserChoice,
+    cookiesBrowserProfileLine: snap.cookiesBrowserProfileLine,
     cookiesFilePathStored: snap.cookiesFilePathStored,
     cookiesWarning: snap.cookiesWarning,
     impersonateChoice: snap.impersonateChoice,
