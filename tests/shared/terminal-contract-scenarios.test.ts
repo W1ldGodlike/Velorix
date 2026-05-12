@@ -1585,4 +1585,43 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: no-playlist-reverse + print-to-file extra fields + geo BM/KY/JM/BB/BS -F', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --no-playlist-reverse -F ')
+    expect(lines).toContain('yt-dlp --print-to-file comment_count flux-ytdlp-ccount.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file webpage_url_basename flux-ytdlp-wubase.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file display_id flux-ytdlp-dispid.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file thumbnail flux-ytdlp-thumburl.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file release_timestamp flux-ytdlp-reltsepoch.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file filepath flux-ytdlp-fpath.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file resolution flux-ytdlp-res.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file format_id flux-ytdlp-fmtid.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file ext flux-ytdlp-ext.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country BM -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country KY -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country JM -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country BB -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country BS -F ')
+  })
+
+  it('preview: ffprobe v:0 codec_time_base+time_base + ffmpeg asetrate pitch 3s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-select_streams v:0') &&
+          l.includes('stream=codec_time_base,time_base') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af asetrate=44100*1.01,aresample=44100') &&
+          l.includes('-t 3') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })

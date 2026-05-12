@@ -3086,6 +3086,96 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· no-continue -F',
     summary: 'Листинг форматов без дозагрузки частичных .part (--no-continue -F); при скачивании начать заново; допишите URL.',
     fullLine: 'yt-dlp --no-continue -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-pl-reverse -F',
+    summary: 'Не переворачивать порядок плейлиста extractor (--no-playlist-reverse -F); совместимость с плейлистами; допишите URL.',
+    fullLine: 'yt-dlp --no-playlist-reverse -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file ccount',
+    summary: 'Записать comment_count в flux-ytdlp-ccount.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file comment_count flux-ytdlp-ccount.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file wubase',
+    summary: 'Записать webpage_url_basename в flux-ytdlp-wubase.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file webpage_url_basename flux-ytdlp-wubase.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file dispid',
+    summary: 'Записать display_id в flux-ytdlp-dispid.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file display_id flux-ytdlp-dispid.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file thumb field',
+    summary: 'Записать поле thumbnail (URL обложки) в flux-ytdlp-thumburl.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file thumbnail flux-ytdlp-thumburl.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file rel_ts',
+    summary: 'Записать release_timestamp (UNIX, если extractor отдаёт) в flux-ytdlp-reltsepoch.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file release_timestamp flux-ytdlp-reltsepoch.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file filepath',
+    summary: 'Записать filepath (после -o) в flux-ytdlp-fpath.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file filepath flux-ytdlp-fpath.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file resolution',
+    summary: 'Записать resolution (строка разрешения) в flux-ytdlp-res.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file resolution flux-ytdlp-res.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file format_id',
+    summary: 'Записать format_id в flux-ytdlp-fmtid.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file format_id flux-ytdlp-fmtid.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file ext',
+    summary: 'Записать ext (расширение выбранного формата) в flux-ytdlp-ext.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file ext flux-ytdlp-ext.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo BM -F',
+    summary: 'Гео-обход через Бермуды (--geo-bypass-country BM -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country BM -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo KY -F',
+    summary: 'Гео-обход через Каймановы острова (--geo-bypass-country KY -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country KY -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo JM -F',
+    summary: 'Гео-обход через Ямайку (--geo-bypass-country JM -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country JM -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo BB -F',
+    summary: 'Гео-обход через Барбадос (--geo-bypass-country BB -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country BB -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo BS -F',
+    summary: 'Гео-обход через Багамы (--geo-bypass-country BS -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country BS -F '
   }
 ]
 
@@ -4140,6 +4230,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· crystalizer 4s',
     summary: 'Психоакустический crystalizer первых 4 с (-af crystalizer); лёгкий smoke audio FX; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af crystalizer=i=1.2 -t 4 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 tb codec',
+    summary: 'Поток v:0: codec_time_base + time_base (таймбаза видео vs контейнер); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=codec_time_base,time_base -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· asetrate pitch 3s',
+    summary: 'Лёгкий resample-питч первых 3 с (-af asetrate=44100*1.01,aresample=44100); smoke цепочки asetrate→aresample; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af asetrate=44100*1.01,aresample=44100 -t 3 -vn -sn -f null -`
   }
 ]
 
