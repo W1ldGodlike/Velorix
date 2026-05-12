@@ -1051,4 +1051,52 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       lines.some((l) => l.includes('-vf scenedetect=scene=0.3') && l.includes('-t 20') && l.includes('-an -sn'))
     ).toBe(true)
   })
+
+  it('downloads: audio formats (opus/flac/wav/m4a) / no-mark-watched / no-write-* / geo MY..UA', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --extract-audio --audio-format opus ')
+    expect(lines).toContain('yt-dlp --extract-audio --audio-format flac ')
+    expect(lines).toContain('yt-dlp --extract-audio --audio-format wav ')
+    expect(lines).toContain('yt-dlp --extract-audio --audio-format m4a ')
+    expect(lines).toContain('yt-dlp --no-mark-watched -F ')
+    expect(lines).toContain('yt-dlp --no-write-comments -F ')
+    expect(lines).toContain('yt-dlp --no-write-description -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country MY -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country SG -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country TH -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country VN -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country AR -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country UA -F ')
+  })
+
+  it('preview: v:0 stereo_mode / a:0 duration_ts / format size+bit_rate+nb_streams / aresample', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-select_streams v:0') &&
+          l.includes('stream_tags=stereo_mode') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-select_streams a:0') &&
+          l.includes('stream=duration_ts') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format=size,bit_rate,nb_streams') && l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) => l.includes('-af aresample=44100') && l.includes('-t 3') && l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })

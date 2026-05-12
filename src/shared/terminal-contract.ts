@@ -2222,6 +2222,84 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· convert-thumbnails png',
     summary: 'Конвертировать обложку в PNG при скачивании (--convert-thumbnails png); допишите URL и ключи вывода.',
     fullLine: 'yt-dlp --convert-thumbnails png '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· audio opus',
+    summary: 'Извлечь аудио в Opus (--extract-audio --audio-format opus); допишите URL и ключи вывода.',
+    fullLine: 'yt-dlp --extract-audio --audio-format opus '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· audio flac',
+    summary: 'Извлечь аудио в FLAC без потерь (--extract-audio --audio-format flac); допишите URL и ключи вывода.',
+    fullLine: 'yt-dlp --extract-audio --audio-format flac '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· audio wav',
+    summary: 'Извлечь аудио в WAV (--extract-audio --audio-format wav); допишите URL и ключи вывода.',
+    fullLine: 'yt-dlp --extract-audio --audio-format wav '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· audio m4a',
+    summary: 'Извлечь аудио в M4A/AAC (--extract-audio --audio-format m4a); допишите URL и ключи вывода.',
+    fullLine: 'yt-dlp --extract-audio --audio-format m4a '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-mark-watched -F',
+    summary: 'Не отмечать видео просмотренным на платформе (--no-mark-watched -F); допишите URL.',
+    fullLine: 'yt-dlp --no-mark-watched -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-write-comments -F',
+    summary: 'Не сохранять JSON комментариев (--no-write-comments -F); допишите URL.',
+    fullLine: 'yt-dlp --no-write-comments -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· no-write-description -F',
+    summary: 'Не сохранять .description рядом с файлом (--no-write-description -F); допишите URL.',
+    fullLine: 'yt-dlp --no-write-description -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo MY -F',
+    summary: 'Гео-обход с кодом страны MY (--geo-bypass-country MY -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country MY -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo SG -F',
+    summary: 'Гео-обход с кодом страны SG (--geo-bypass-country SG -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country SG -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo TH -F',
+    summary: 'Гео-обход с кодом страны TH (--geo-bypass-country TH -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country TH -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo VN -F',
+    summary: 'Гео-обход с кодом страны VN (--geo-bypass-country VN -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country VN -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo AR -F',
+    summary: 'Гео-обход с кодом страны AR (--geo-bypass-country AR -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country AR -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo UA -F',
+    summary: 'Гео-обход с кодом страны UA (--geo-bypass-country UA -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country UA -F '
   }
 ]
 
@@ -3048,6 +3126,30 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· genpts remux 2s',
     summary: 'Короткий remux с генерацией PTS (-fflags +genpts -c copy -t 2); битые/рваные таймстемпы TS/MKV; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -fflags +genpts -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -t 2 -c copy -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 stereo_mode',
+    summary: 'Поток v:0: stream_tags stereo_mode (3D/стерео-метка в MKV/др.); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream_tags=stereo_mode -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:0 duration_ts',
+    summary: 'Поток a:0: длительность в тиках time_base (stream=duration_ts); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=duration_ts -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format size+br+nb',
+    summary: 'Контейнер: size + bit_rate + nb_streams (компактно); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format=size,bit_rate,nb_streams -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· aresample 44k1 3s',
+    summary: 'Аудио ресэмпл в 44.1 kHz первые 3 с (-af aresample=44100); проверка SRC цепочки; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af aresample=44100 -t 3 -vn -sn -f null -`
   }
 ]
 
