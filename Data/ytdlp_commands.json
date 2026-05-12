@@ -57,5 +57,14 @@
   {"token":"--match-filter","summary":"Фильтр по метаданным (длительность, заголовок и т.д.).","examples":["yt-dlp --match-filter \"duration > 60\" URL"],"docUrl":"https://github.com/yt-dlp/yt-dlp#video-selection","tool":"yt-dlp"},
   {"token":"--wait-for-video","summary":"Ждать появления ролика (premiere / ещё не вышел).","examples":["yt-dlp --wait-for-video 30 URL"],"docUrl":"https://github.com/yt-dlp/yt-dlp#video-selection","tool":"yt-dlp"},
   {"token":"--throttled-rate","summary":"Мягкий лимит средней скорости (K/M), отличный от --limit-rate.","examples":["yt-dlp --throttled-rate 800K URL"],"docUrl":"https://github.com/yt-dlp/yt-dlp#http-options","tool":"yt-dlp"},
-  {"token":"--check-formats","summary":"Проверить доступность выбранных форматов перед загрузкой.","examples":["yt-dlp --check-formats URL"],"docUrl":"https://github.com/yt-dlp/yt-dlp#format-selection","tool":"yt-dlp"}
+  {"token":"--check-formats","summary":"Проверить доступность выбранных форматов перед загрузкой.","examples":["yt-dlp --check-formats URL"],"docUrl":"https://github.com/yt-dlp/yt-dlp#format-selection","tool":"yt-dlp"},
+  {"token":"-J","summary":"Вывести полный JSON метаданных (эквивалент --dump-single-json).","examples":["yt-dlp -J URL"],"docUrl":"https://github.com/yt-dlp/yt-dlp#verbosity-simulation-options","tool":"yt-dlp"},
+  {"token":"--dump-single-json","summary":"Один JSON-объект метаданных без скачивания файла.","examples":["yt-dlp --dump-single-json URL"],"docUrl":"https://github.com/yt-dlp/yt-dlp#verbosity-simulation-options","tool":"yt-dlp"},
+  {"token":"--list-extractors","summary":"Показать список доступных extractor'ов yt-dlp.","examples":["yt-dlp --list-extractors"],"docUrl":"https://github.com/yt-dlp/yt-dlp#workarounds","tool":"yt-dlp"},
+  {"token":"--version","summary":"Показать версию yt-dlp.","examples":["yt-dlp --version"],"docUrl":"https://github.com/yt-dlp/yt-dlp#usage","tool":"yt-dlp"},
+  {"token":"--print","summary":"Вывести одно поле метаданных (title, duration, uploader и т.д.).","examples":["yt-dlp --skip-download --print title URL"],"docUrl":"https://github.com/yt-dlp/yt-dlp#verbosity-simulation-options","tool":"yt-dlp"},
+  {"token":"--print-to-file","summary":"Записать поле метаданных в отдельный файл без скачивания медиа.","examples":["yt-dlp --print-to-file title meta-title.txt --skip-download URL"],"docUrl":"https://github.com/yt-dlp/yt-dlp#verbosity-simulation-options","tool":"yt-dlp"},
+  {"token":"--force-ipv4","summary":"Форсировать IPv4 при сетевых проблемах или политике сети.","examples":["yt-dlp --force-ipv4 -F URL"],"docUrl":"https://github.com/yt-dlp/yt-dlp#network-options","tool":"yt-dlp"},
+  {"token":"--force-ipv6","summary":"Форсировать IPv6 для проверки доступности CDN/маршрута.","examples":["yt-dlp --force-ipv6 -F URL"],"docUrl":"https://github.com/yt-dlp/yt-dlp#network-options","tool":"yt-dlp"},
+  {"token":"--no-cache-dir","summary":"Отключить дисковый кэш yt-dlp для чистого диагностического прогона.","examples":["yt-dlp --no-cache-dir -F URL"],"docUrl":"https://github.com/yt-dlp/yt-dlp#filesystem-options","tool":"yt-dlp"}
 ]
