@@ -38,7 +38,7 @@ function parseAtscAudioServiceType(
   const raw = o[key]
   if (typeof raw === 'number' && Number.isFinite(raw)) {
     const n = Math.trunc(raw)
-    return n >= 0 && n <= 63 ? n : null
+    return n >= 0 && n <= 7 ? n : null
   }
   if (typeof raw === 'string') {
     const t = raw.trim()
@@ -46,7 +46,7 @@ function parseAtscAudioServiceType(
       return null
     }
     const n = Number.parseInt(t, 10)
-    return n >= 0 && n <= 63 ? n : null
+    return n >= 0 && n <= 7 ? n : null
   }
   return null
 }
