@@ -4697,6 +4697,48 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
+    token: '· -to file filename_sanitized',
+    summary: 'Записать filename_sanitized (имя файла по шаблону -o после санитизации) в flux-ytdlp-fnsan.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file filename_sanitized flux-ytdlp-fnsan.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· -to file requested_downloads',
+    summary: 'Записать requested_downloads (список запланированных загрузок после merge) в flux-ytdlp-reqdl.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file requested_downloads flux-ytdlp-reqdl.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· extractor-retries 5 -F',
+    summary: 'Повторы extractor вместе со списком форматов (--extractor-retries 5 -F); страница/403; допишите URL.',
+    fullLine: 'yt-dlp --extractor-retries 5 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo JO -F',
+    summary: 'Гео-обход через Иорданию (--geo-bypass-country JO -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country JO -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo LB -F',
+    summary: 'Гео-обход через Ливан (--geo-bypass-country LB -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country LB -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo UZ -F',
+    summary: 'Гео-обход через Узбекистан (--geo-bypass-country UZ -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country UZ -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo TM -F',
+    summary: 'Гео-обход через Туркменистан (--geo-bypass-country TM -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country TM -F '
+  },
+  {
+    tool: 'yt-dlp',
     token: '· --update-to stable',
     summary: 'Обновить yt-dlp до канала stable (--update-to stable); URL не нужен.',
     fullLine: 'yt-dlp --update-to stable'
@@ -6030,6 +6072,24 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· pan stereo 4s',
     summary: 'Лёгкий стерео-mix через pan первых 4 с (c0/c1 кросс-фейд 0.6/0.4); smoke pan без кавычек; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af pan=stereo|c0=0.6*c0+0.4*c1|c1=0.4*c0+0.6*c1 -t 4 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· a:4 codec',
+    summary: 'Пятая аудиодорожка a:4: codec_name + sample_rate + channels (мультиязык/комментарии); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:4 -show_entries stream=codec_name,sample_rate,channels -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· s:4 compact',
+    summary: 'Пятая дорожка субтитров s:4: codec_name + codec_tag_string; плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:4 -show_entries stream=codec_name,codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· acompressor 4s',
+    summary: 'Лёгкий компрессор первых 4 с (-af acompressor=threshold=0.08:ratio=3:attack=5:release=50); smoke динамики; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af acompressor=threshold=0.08:ratio=3:attack=5:release=50 -t 4 -vn -sn -f null -`
   }
 ]
 

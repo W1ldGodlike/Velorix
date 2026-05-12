@@ -2352,6 +2352,17 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --geo-bypass-country SA -F ')
   })
 
+  it('downloads: print-to-file filename_sanitized/requested_downloads + extractor-retries 5 -F + geo JO/LB/UZ/TM', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --print-to-file filename_sanitized flux-ytdlp-fnsan.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file requested_downloads flux-ytdlp-reqdl.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --extractor-retries 5 -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country JO -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country LB -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country UZ -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country TM -F ')
+  })
+
   it('preview: ffprobe format podcast+podcasturl + ffmpeg acrusher 4s', () => {
     const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
     expect(
@@ -2385,6 +2396,34 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       lines.some(
         (l) =>
           l.includes('-af pan=stereo|c0=0.6*c0+0.4*c1|c1=0.4*c0+0.6*c1') &&
+          l.includes('-t 4') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
+
+  it('preview: ffprobe a:4 + s:4 + ffmpeg acompressor 4s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-select_streams a:4') &&
+          l.includes('stream=codec_name,sample_rate,channels') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-select_streams s:4') &&
+          l.includes('stream=codec_name,codec_tag_string') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af acompressor=threshold=0.08:ratio=3:attack=5:release=50') &&
           l.includes('-t 4') &&
           l.includes('-vn -sn')
       )
