@@ -222,6 +222,11 @@ import {
   parseDownloadsWindowUiLocale,
   type DownloadsWindowUiLocale
 } from '../shared/downloads-window-ui-locale'
+import {
+  formatMainProcessErrorClipboardHeader,
+  formatPickEngineExecutableTitle,
+  getMainApplicationStrings
+} from '../shared/main-application-locale'
 
 /** Кастомная схема для локального видеопревью; привилегии обязаны зарегистрироваться до `app.whenReady`. */
 attachProcessErrorHandlers()
@@ -233,6 +238,10 @@ function mainDownloadsUiLocale(): DownloadsWindowUiLocale {
   } catch {
     return 'ru'
   }
+}
+
+function mainAppStr(): ReturnType<typeof getMainApplicationStrings> {
+  return getMainApplicationStrings(mainDownloadsUiLocale())
 }
 
 function parseDownloadsOpenRequest(raw: unknown): {
@@ -269,16 +278,18 @@ function parseDownloadsOpenRequest(raw: unknown): {
 const SAVE_TEXT_DIALOG_MAX_CHARS = 24 * 1024 * 1024
 
 function parseSaveTextDialogPayload(
-  raw: unknown
+  raw: unknown,
+  locale: DownloadsWindowUiLocale
 ):
   | { ok: true; title: string; defaultFileName: string; content: string }
   | { ok: false; error: string } {
+  const S = getMainApplicationStrings(locale)
   if (!raw || typeof raw !== 'object') {
-    return { ok: false, error: 'Некорректные данные запроса' }
+    return { ok: false, error: S.saveTextInvalidRequest }
   }
   const o = raw as Record<string, unknown>
   const titleRaw = typeof o['title'] === 'string' ? o['title'].trim() : ''
-  const title = titleRaw.length > 0 ? titleRaw : 'Сохранить файл'
+  const title = titleRaw.length > 0 ? titleRaw : S.saveFileDefaultTitle
   const fnRaw = typeof o['defaultFileName'] === 'string' ? o['defaultFileName'].trim() : ''
   const baseFromPayload = basename(fnRaw.replace(/\\/g, '/'))
   let safeName =
@@ -289,11 +300,11 @@ function parseSaveTextDialogPayload(
     safeName = `${safeName}.json`
   }
   if (typeof o['content'] !== 'string') {
-    return { ok: false, error: 'Некорректное содержимое файла' }
+    return { ok: false, error: S.saveTextInvalidContent }
   }
   const content = o['content']
   if (content.length > SAVE_TEXT_DIALOG_MAX_CHARS) {
-    return { ok: false, error: 'Слишком большой текст для сохранения' }
+    return { ok: false, error: S.saveTextTooLarge }
   }
   return { ok: true, title, defaultFileName: safeName, content }
 }
@@ -389,25 +400,26 @@ async function openExportOutputPath(
   rawPath: unknown,
   rawMode: unknown
 ): Promise<{ ok: true; path: string } | { ok: false; error: string }> {
+  const S = mainAppStr()
   if (typeof rawPath !== 'string' || rawPath.trim().length === 0) {
-    return { ok: false, error: 'Не указан файл экспорта' }
+    return { ok: false, error: S.exportOutputPathMissing }
   }
   if (!isExportOutputOpenMode(rawMode)) {
-    return { ok: false, error: 'Некорректное действие' }
+    return { ok: false, error: S.exportOutputBadMode }
   }
   const abs = resolve(normalize(rawPath.trim()))
   if (!grantedExportOutputPaths.has(abs)) {
-    return { ok: false, error: 'Нет доступа к этому результату экспорта' }
+    return { ok: false, error: S.exportOutputNotGranted }
   }
   if (!existsSync(abs)) {
-    return { ok: false, error: 'Файл экспорта не найден' }
+    return { ok: false, error: S.exportOutputFileNotFound }
   }
   try {
     if (!statSync(abs).isFile()) {
-      return { ok: false, error: 'Путь экспорта не является файлом' }
+      return { ok: false, error: S.exportOutputNotAFile }
     }
   } catch {
-    return { ok: false, error: 'Не удалось проверить файл экспорта' }
+    return { ok: false, error: S.exportOutputStatFailed }
   }
   if (rawMode === 'folder') {
     shell.showItemInFolder(abs)
@@ -1422,13 +1434,14 @@ function pruneDiagnosticsOnStartup(): void {
 
 /** §17/§18 — открыть main.log; результат для IPC «О программе» и для меню без дублирования логики. */
 async function openMainLogForUser(): Promise<{ ok: true } | { ok: false; error: string }> {
+  const S = mainAppStr()
   const file = getMainLogFilePath()
   if (!file) {
-    return { ok: false, error: 'Путь к журналу недоступен' }
+    return { ok: false, error: S.mainLogPathUnavailable }
   }
   if (!existsSync(file)) {
     logInfo('diagnostics', 'main.log does not exist yet')
-    return { ok: false, error: 'Файл main.log ещё не создан' }
+    return { ok: false, error: S.mainLogNotCreatedYet }
   }
   const result = await shell.openPath(file)
   if (result.length > 0) {
@@ -1466,9 +1479,10 @@ type SupportBundleDialogOutcome =
 async function createSupportBundleWithDialog(
   parent?: BrowserWindow
 ): Promise<SupportBundleDialogOutcome> {
+  const S = mainAppStr()
   const stamp = new Date().toISOString().replace(/[:.]/g, '-')
   const saveOptions = {
-    title: 'Собрать Support ZIP',
+    title: S.supportZipSaveTitle,
     defaultPath: `fluxalloy-support-${stamp}.zip`,
     filters: [{ name: 'ZIP', extensions: ['zip'] }]
   }
@@ -1487,8 +1501,8 @@ async function createSupportBundleWithDialog(
     const detail = err instanceof Error ? err.message : String(err)
     const messageOptions = {
       type: 'error',
-      title: 'Не удалось собрать Support ZIP',
-      message: 'Не удалось собрать диагностический архив.',
+      title: S.supportZipFailTitle,
+      message: S.supportZipFailMessage,
       detail
     } as const
     void (parent
@@ -1500,7 +1514,8 @@ async function createSupportBundleWithDialog(
 
 function formatProcessErrorDetails(
   kind: 'uncaughtException' | 'unhandledRejection',
-  reason: unknown
+  reason: unknown,
+  locale: DownloadsWindowUiLocale
 ): string {
   let serialized: string | null = null
   try {
@@ -1514,11 +1529,18 @@ function formatProcessErrorDetails(
       : typeof reason === 'string'
         ? reason
         : (serialized ?? String(reason))
+  const meta = formatMainProcessErrorClipboardHeader(
+    locale,
+    kind,
+    app.getVersion(),
+    process.platform,
+    process.arch
+  )
   return [
-    `Тип: ${kind}`,
-    `Время: ${new Date().toISOString()}`,
-    `Версия: ${app.getVersion()}`,
-    `Платформа: ${process.platform}/${process.arch}`,
+    meta.typeLine,
+    meta.timeLine,
+    meta.versionLine,
+    meta.platformLine,
     '',
     body ?? String(reason)
   ].join('\n')
@@ -1536,13 +1558,20 @@ async function showProcessErrorDialog(
   }
   processErrorDialogOpen = true
   const win = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0]
-  const detail = formatProcessErrorDetails(kind, reason)
+  const loc = mainDownloadsUiLocale()
+  const S = getMainApplicationStrings(loc)
+  const detail = formatProcessErrorDetails(kind, reason, loc)
   const messageBoxOptions: Electron.MessageBoxOptions = {
     type: 'error',
-    title: 'Ошибка FluxAlloy',
-    message: 'В приложении произошла ошибка.',
+    title: S.processErrorTitle,
+    message: S.processErrorMessage,
     detail,
-    buttons: ['Копировать детали', 'Открыть лог', 'Собрать Support ZIP', 'Закрыть'],
+    buttons: [
+      S.processErrorCopyDetails,
+      S.processErrorOpenLog,
+      S.processErrorSupportZip,
+      S.processErrorClose
+    ],
     defaultId: 3,
     cancelId: 3,
     noLink: true
@@ -1579,6 +1608,8 @@ function buildApplicationMenu(): void {
   const getMainUiWindow = (): BrowserWindow | undefined =>
     mainUiWindow && !mainUiWindow.isDestroyed() ? mainUiWindow : undefined
 
+  const m = mainAppStr()
+
   // Меню пересобирается после смены темы, чтобы radio-состояния оставались честными.
   const template: Electron.MenuItemConstructorOptions[] = []
 
@@ -1601,10 +1632,10 @@ function buildApplicationMenu(): void {
 
   template.push(
     {
-      label: 'Файл',
+      label: m.menuFile,
       submenu: [
         {
-          label: 'Открыть…',
+          label: m.menuOpen,
           accelerator: 'CmdOrCtrl+O',
           click: async (): Promise<void> => {
             const target = getMainUiWindow()
@@ -1621,7 +1652,7 @@ function buildApplicationMenu(): void {
           }
         },
         {
-          label: 'Менеджер загрузок (yt-dlp)…',
+          label: m.menuDownloadsManager,
           accelerator: 'CmdOrCtrl+Shift+Y',
           enabled: !auxiliaryFocused,
           click: (): void => {
@@ -1629,7 +1660,7 @@ function buildApplicationMenu(): void {
           }
         },
         {
-          label: 'Вставить URL из буфера в менеджер…',
+          label: m.menuPasteUrlDownloads,
           accelerator: 'CmdOrCtrl+Shift+V',
           enabled: !auxiliaryFocused,
           click: (): void => {
@@ -1642,10 +1673,10 @@ function buildApplicationMenu(): void {
       ]
     },
     {
-      label: 'Настройки',
+      label: m.menuSettings,
       submenu: [
         {
-          label: 'Пути к движкам…',
+          label: m.menuEnginePaths,
           click: (): void => {
             const target = getMainUiWindow()
             if (!target || target.isDestroyed()) {
@@ -1658,10 +1689,10 @@ function buildApplicationMenu(): void {
       ]
     },
     {
-      label: 'Инструменты',
+      label: m.menuTools,
       submenu: [
         {
-          label: 'Инспектор медиа (ffprobe)…',
+          label: m.menuInspector,
           enabled: !auxiliaryFocused,
           click: (): void => {
             focusOrCreateInspectorWindow(undefined)
@@ -1669,23 +1700,23 @@ function buildApplicationMenu(): void {
         },
         { type: 'separator' },
         {
-          label: 'Открыть папку…',
+          label: m.menuOpenFolder,
           submenu: buildDiagnosticsFolderSubmenu()
         },
         {
-          label: 'Открыть main.log',
+          label: m.menuOpenMainLog,
           click: (): void => {
             void openMainLogFile()
           }
         },
         {
-          label: 'Открыть session.log',
+          label: m.menuOpenSessionLog,
           click: (): void => {
             void openSessionLogFile()
           }
         },
         {
-          label: 'Собрать Support ZIP…',
+          label: m.menuSupportZip,
           click: (): void => {
             const target = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0]
             void createSupportBundleWithDialog(target && !target.isDestroyed() ? target : undefined)
@@ -1694,13 +1725,13 @@ function buildApplicationMenu(): void {
       ]
     },
     {
-      label: 'Вид',
+      label: m.menuView,
       submenu: [
         {
-          label: 'Тема',
+          label: m.menuTheme,
           submenu: [
             {
-              label: 'Как в системе',
+              label: m.menuThemeSystem,
               type: 'radio',
               checked: isSystem,
               click: (): void => {
@@ -1708,7 +1739,7 @@ function buildApplicationMenu(): void {
               }
             },
             {
-              label: 'Тёмная',
+              label: m.menuThemeDark,
               type: 'radio',
               checked: isDarkPref,
               click: (): void => {
@@ -1716,7 +1747,7 @@ function buildApplicationMenu(): void {
               }
             },
             {
-              label: 'Светлая',
+              label: m.menuThemeLight,
               type: 'radio',
               checked: isLightPref,
               click: (): void => {
@@ -1728,10 +1759,10 @@ function buildApplicationMenu(): void {
       ]
     },
     {
-      label: 'Справка',
+      label: m.menuHelp,
       submenu: [
         {
-          label: 'О программе FluxAlloy…',
+          label: m.menuAbout,
           click: (): void => {
             const target = getMainUiWindow()
             if (!target || target.isDestroyed()) {
@@ -1742,7 +1773,7 @@ function buildApplicationMenu(): void {
           }
         },
         {
-          label: 'Документация FluxAlloy (ТЗ)',
+          label: m.menuDocumentation,
           click: (): void => {
             const tzPath = technicalSpecPath()
             if (existsSync(tzPath)) {
@@ -1818,20 +1849,21 @@ function createWindow(): void {
       return
     }
     e.preventDefault()
+    const q = mainAppStr()
     const msg =
       exportBusy && downloadsBusy
-        ? 'Идёт экспорт видео и активная загрузка yt-dlp. Закрыть приложение и прервать задачи?'
+        ? q.quitConfirmBoth
         : exportBusy
-          ? 'Идёт экспорт видео. Закрыть приложение и прервать экспорт?'
-          : 'Идёт активная загрузка yt-dlp. Закрыть приложение и прервать загрузку?'
+          ? q.quitConfirmExport
+          : q.quitConfirmDownloads
 
     void dialog
       .showMessageBox(mainWindow, {
         type: 'warning',
-        buttons: ['Остаться', 'Закрыть и прервать'],
+        buttons: [q.quitStay, q.quitAbort],
         defaultId: 0,
         cancelId: 0,
-        title: 'FluxAlloy',
+        title: q.quitDialogTitle,
         message: msg,
         noLink: true
       })
@@ -1937,7 +1969,7 @@ async function createWebmPreviewProxy(
   logInfo('preview', `creating webm preview proxy for ${absoluteFile}`)
   await runFfmpegPreviewProxy(ffmpeg, absoluteFile, output)
   if (!isUsablePreviewCache(output)) {
-    throw new Error('WebM preview не был создан.')
+    throw new Error(getMainApplicationStrings(mainDownloadsUiLocale()).previewWebmNotCreated)
   }
   logInfo('preview', `webm preview proxy ready: ${output}`)
   return output
@@ -1951,9 +1983,7 @@ async function ensurePreviewPlayableMedia(absoluteFile: string): Promise<string>
   const paths = resolveAppPaths()
   const ffmpeg = resolveEngineExecutablePath(paths, 'ffmpeg', cachedSettings.engineExecutablePaths)
   if (!ffmpeg) {
-    throw new Error(
-      'Файл не поддерживается встроенным предпросмотром, а ffmpeg для WebM preview не найден.'
-    )
+    throw new Error(getMainApplicationStrings(mainDownloadsUiLocale()).previewFfmpegMissingForWebm)
   }
 
   const st = statSync(absoluteFile)
@@ -1985,6 +2015,7 @@ async function ensurePreviewPlayableMedia(absoluteFile: string): Promise<string>
 async function openDownloadedFileInMainHandler(
   absoluteFile: string
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  const H = mainAppStr()
   let previewFile: string
   try {
     previewFile = await ensurePreviewPlayableMedia(absoluteFile)
@@ -1993,17 +2024,17 @@ async function openDownloadedFileInMainHandler(
   }
   const mediaUrl = grantMediaPath(previewFile)
   if (!mediaUrl) {
-    return { ok: false, error: 'Нельзя открыть этот файл в предпросмотре.' }
+    return { ok: false, error: H.previewCannotOpenInPreview }
   }
   if (!grantMediaPath(absoluteFile)) {
-    return { ok: false, error: 'Нельзя открыть исходный файл в редакторе.' }
+    return { ok: false, error: H.previewCannotOpenSourceInEditor }
   }
   const target =
     mainWindowWebContentsId === null
       ? null
       : BrowserWindow.getAllWindows().find((w) => w.webContents.id === mainWindowWebContentsId)
   if (!target || target.isDestroyed()) {
-    return { ok: false, error: 'Главное окно FluxAlloy не найдено.' }
+    return { ok: false, error: H.previewMainWindowMissing }
   }
   persistLastOpenedSource(absoluteFile)
   target.show()
@@ -2498,21 +2529,22 @@ app.whenReady().then(() => {
       if (!win) {
         return null
       }
+      const I = mainAppStr()
       const id =
         engineId === 'ffmpeg' || engineId === 'ffprobe' || engineId === 'yt-dlp' ? engineId : null
       if (!id) {
         return null
       }
       const result = await dialog.showOpenDialog(win, {
-        title: `Выберите исполняемый файл: ${id}`,
+        title: formatPickEngineExecutableTitle(mainDownloadsUiLocale(), id),
         properties: ['openFile'],
         filters:
           process.platform === 'win32'
             ? [
-                { name: 'Исполняемые файлы', extensions: ['exe'] },
-                { name: 'Все файлы', extensions: ['*'] }
+                { name: I.filterExecutables, extensions: ['exe'] },
+                { name: I.exportFilterAll, extensions: ['*'] }
               ]
-            : [{ name: 'Все файлы', extensions: ['*'] }]
+            : [{ name: I.exportFilterAll, extensions: ['*'] }]
       })
       if (result.canceled || result.filePaths.length === 0) {
         return null
@@ -2575,7 +2607,7 @@ app.whenReady().then(() => {
   ipcMain.handle(mw.openVideoDialog, async (event) => {
     const win = BrowserWindow.fromWebContents(event.sender)
     if (!win) {
-      return { ok: false, error: 'Нет активного окна' }
+      return { ok: false, error: mainAppStr().openVideoDialogNoWindow }
     }
     const result = await openVideoWithDialog(win)
     if (result.ok) {
@@ -2585,8 +2617,9 @@ app.whenReady().then(() => {
   })
 
   ipcMain.handle(mw.previewGrantPath, async (_, rawPath: unknown) => {
+    const P = mainAppStr()
     if (typeof rawPath !== 'string' || rawPath.length === 0) {
-      return { ok: false, error: 'Пустой путь' }
+      return { ok: false, error: P.previewGrantEmptyPath }
     }
     let previewFile: string
     try {
@@ -2596,10 +2629,10 @@ app.whenReady().then(() => {
     }
     const mediaUrl = grantMediaPath(previewFile)
     if (!mediaUrl) {
-      return { ok: false, error: 'Не удалось открыть файл' }
+      return { ok: false, error: P.previewGrantOpenFailed }
     }
     if (!grantMediaPath(rawPath)) {
-      return { ok: false, error: 'Не удалось открыть исходный файл' }
+      return { ok: false, error: P.previewGrantSourceFailed }
     }
     persistLastOpenedSource(rawPath)
     return {
@@ -2651,14 +2684,15 @@ app.whenReady().then(() => {
   })
 
   ipcMain.handle(mw.mediaProbe, async (_, rawPath: unknown) => {
+    const P = mainAppStr()
     if (typeof rawPath !== 'string' || rawPath.trim().length === 0) {
-      return { ok: false as const, error: 'Не указан путь к медиафайлу' }
+      return { ok: false as const, error: P.mediaProbePathMissing }
     }
     const abs = resolve(normalize(rawPath.trim()))
     if (!isGrantedMediaPath(abs)) {
       return {
         ok: false as const,
-        error: 'Нет доступа к этому пути для анализа (сначала откройте файл в превью).'
+        error: P.mediaProbeNotGranted
       }
     }
     return probeMediaFile(resolveAppPaths(), abs, cachedSettings.engineExecutablePaths)
@@ -2702,20 +2736,21 @@ app.whenReady().then(() => {
   ipcMain.handle(
     mw.saveTextWithDialog,
     async (event, raw: unknown): Promise<SaveTextDialogResult> => {
-      const parsed = parseSaveTextDialogPayload(raw)
+      const parsed = parseSaveTextDialogPayload(raw, mainDownloadsUiLocale())
       if (!parsed.ok) {
         return { ok: false, error: parsed.error }
       }
       const win = BrowserWindow.fromWebContents(event.sender)
       const parent = win && !win.isDestroyed() ? win : undefined
+      const Sv = mainAppStr()
       const saveOpts = {
         title: parsed.title,
         defaultPath: parsed.defaultFileName,
         filters: [
-          { name: 'JSON', extensions: ['json'] },
-          { name: 'HTML', extensions: ['html', 'htm'] },
-          { name: 'Текстовые файлы', extensions: ['txt', 'log'] },
-          { name: 'Все файлы', extensions: ['*'] }
+          { name: Sv.saveDialogFilterJson, extensions: ['json'] },
+          { name: Sv.saveDialogFilterHtml, extensions: ['html', 'htm'] },
+          { name: Sv.saveDialogFilterText, extensions: ['txt', 'log'] },
+          { name: Sv.saveDialogFilterAll, extensions: ['*'] }
         ]
       }
       const res = parent
@@ -2729,7 +2764,7 @@ app.whenReady().then(() => {
         return { ok: true, path: res.filePath }
       } catch (error: unknown) {
         logError('saveTextWithDialog', 'write failed', error)
-        return { ok: false, error: 'Не удалось записать файл' }
+        return { ok: false, error: Sv.saveDialogWriteFailed }
       }
     }
   )
@@ -2763,7 +2798,7 @@ app.whenReady().then(() => {
       raw: unknown
     ): Promise<{ ok: true; path: string } | { ok: false; error: string }> => {
       if (!isDiagnosticsFolderId(raw)) {
-        return { ok: false, error: 'Неизвестный каталог' }
+        return { ok: false, error: mainAppStr().diagnosticsUnknownFolder }
       }
       return openDiagnosticsFolder(raw)
     }
@@ -2848,19 +2883,20 @@ app.whenReady().then(() => {
       _event,
       raw: unknown
     ): Promise<{ ok: true; path: string } | { ok: false; error: string }> => {
+      const H = mainAppStr()
       if (!raw || typeof raw !== 'object') {
-        return { ok: false, error: 'Некорректный запрос' }
+        return { ok: false, error: H.processingHistoryBadRequest }
       }
       const payload = raw as { id?: unknown; mode?: unknown }
       if (typeof payload.id !== 'string') {
-        return { ok: false, error: 'Не указана запись истории' }
+        return { ok: false, error: H.processingHistoryIdMissing }
       }
       if (!isExportOutputOpenMode(payload.mode)) {
-        return { ok: false, error: 'Некорректное действие' }
+        return { ok: false, error: H.processingHistoryBadAction }
       }
       const entry = findProcessingHistoryEntryById(resolveAppPaths().userData, payload.id)
       if (!entry?.outputPath) {
-        return { ok: false, error: 'У записи нет файла результата' }
+        return { ok: false, error: H.processingHistoryNoOutput }
       }
       rememberExportOutputPath(entry.outputPath)
       return openExportOutputPath(entry.outputPath, payload.mode)
@@ -2870,12 +2906,13 @@ app.whenReady().then(() => {
   ipcMain.handle(
     mw.processingHistoryOpenInputInHandler,
     async (_event, raw: unknown): Promise<{ ok: true } | { ok: false; error: string }> => {
+      const H = mainAppStr()
       if (typeof raw !== 'string') {
-        return { ok: false, error: 'Не указана запись истории' }
+        return { ok: false, error: H.processingHistoryIdMissing }
       }
       const entry = findProcessingHistoryEntryById(resolveAppPaths().userData, raw)
       if (!entry) {
-        return { ok: false, error: 'Запись истории не найдена' }
+        return { ok: false, error: H.processingHistoryEntryNotFound }
       }
       return openDownloadedFileInMainHandler(entry.inputPath)
     }
@@ -2893,27 +2930,29 @@ app.whenReady().then(() => {
   })
 
   ipcMain.handle(mw.exportStart, async (event, raw: unknown): Promise<MediaExportStartResult> => {
+    const base = mainAppStr()
     if (activeExportAbort !== null) {
-      return { ok: false, error: 'Уже выполняется экспорт' }
+      return { ok: false, error: base.exportAlreadyRunning }
     }
     if (!raw || typeof raw !== 'object') {
-      return { ok: false, error: 'Некорректный запрос' }
+      return { ok: false, error: base.exportInvalidRequest }
     }
     const exportUiLocale =
       parseDownloadsWindowUiLocale((raw as { uiLocale?: unknown }).uiLocale) ??
       mainDownloadsUiLocale()
+    const M = getMainApplicationStrings(exportUiLocale)
     const inputRaw = (raw as { inputPath?: unknown }).inputPath
     if (typeof inputRaw !== 'string' || inputRaw.trim().length === 0) {
-      return { ok: false, error: 'Не указан входной файл' }
+      return { ok: false, error: M.exportInputMissing }
     }
     const abs = resolve(normalize(inputRaw.trim()))
     if (!existsSync(abs)) {
-      return { ok: false, error: 'Файл не найден' }
+      return { ok: false, error: M.exportFileNotFound }
     }
     if (!isGrantedMediaPath(abs)) {
       return {
         ok: false,
-        error: 'Нет доступа к этому файлу — откройте его через превью.'
+        error: M.exportNotGrantedPath
       }
     }
 
@@ -2931,24 +2970,24 @@ app.whenReady().then(() => {
       cachedSettings.engineExecutablePaths
     )
     if (!ffmpeg) {
-      return { ok: false, error: 'ffmpeg не найден — установите движки.' }
+      return { ok: false, error: M.exportFfmpegMissing }
     }
 
     const win = BrowserWindow.fromWebContents(event.sender)
     if (!win) {
-      return { ok: false, error: 'Нет активного окна' }
+      return { ok: false, error: M.exportNoActiveWindow }
     }
 
     const stem = basename(abs).replace(/\.[^.]+$/, '')
     const defaultExportName = `${stem}-export.${exportContainer}`
     const pick = await dialog.showSaveDialog(win, {
-      title: 'Экспорт видео',
+      title: M.exportVideoDialogTitle,
       defaultPath: rememberedExportDefaultPath(defaultExportName),
       filters: [
-        { name: 'MP4', extensions: ['mp4'] },
-        { name: 'Matroska', extensions: ['mkv'] },
-        { name: 'QuickTime', extensions: ['mov'] },
-        { name: 'Все файлы', extensions: ['*'] }
+        { name: M.exportFilterMp4, extensions: ['mp4'] },
+        { name: M.exportFilterMkv, extensions: ['mkv'] },
+        { name: M.exportFilterMov, extensions: ['mov'] },
+        { name: M.exportFilterAll, extensions: ['*'] }
       ]
     })
 
@@ -3024,7 +3063,7 @@ app.whenReady().then(() => {
 
   ipcMain.handle(mw.exportCancel, (): { ok: true } | { ok: false; error: string } => {
     if (activeExportAbort === null) {
-      return { ok: false, error: 'Нет активного экспорта' }
+      return { ok: false, error: mainAppStr().exportCancelNoActive }
     }
     activeExportAbort.abort()
     return { ok: true }
@@ -3037,7 +3076,7 @@ app.whenReady().then(() => {
       raw: unknown
     ): Promise<{ ok: true; path: string } | { ok: false; error: string }> => {
       if (!raw || typeof raw !== 'object') {
-        return { ok: false, error: 'Некорректный запрос' }
+        return { ok: false, error: mainAppStr().exportOpenBadRequest }
       }
       const payload = raw as { path?: unknown; mode?: unknown }
       return openExportOutputPath(payload.path, payload.mode)
@@ -3054,25 +3093,26 @@ app.whenReady().then(() => {
     > => {
       const win = BrowserWindow.fromWebContents(event.sender)
       if (!win) {
-        return { ok: false, error: 'Нет активного окна' }
+        return { ok: false, error: mainAppStr().ipcNoActiveWindow }
       }
       if (!raw || typeof raw !== 'object') {
-        return { ok: false, error: 'Некорректный запрос' }
+        return { ok: false, error: mainAppStr().ipcInvalidRequest }
       }
       const snapUiLocale =
         parseDownloadsWindowUiLocale((raw as { uiLocale?: unknown }).uiLocale) ??
         mainDownloadsUiLocale()
+      const M = getMainApplicationStrings(snapUiLocale)
       const inputRaw = (raw as { inputPath?: unknown }).inputPath
       const timeRaw = (raw as { timeSec?: unknown }).timeSec
       if (typeof inputRaw !== 'string' || inputRaw.trim().length === 0) {
-        return { ok: false, error: 'Не указан входной файл' }
+        return { ok: false, error: M.exportInputMissing }
       }
       const abs = resolve(normalize(inputRaw.trim()))
       if (!existsSync(abs)) {
-        return { ok: false, error: 'Файл не найден' }
+        return { ok: false, error: M.exportFileNotFound }
       }
       if (!isGrantedMediaPath(abs)) {
-        return { ok: false, error: 'Нет доступа к файлу — откройте его через превью.' }
+        return { ok: false, error: M.exportNotGrantedPath }
       }
       const timeSec =
         typeof timeRaw === 'number' && Number.isFinite(timeRaw) ? Math.max(0, timeRaw) : 0
@@ -3084,17 +3124,17 @@ app.whenReady().then(() => {
         cachedSettings.engineExecutablePaths
       )
       if (!ffmpeg) {
-        return { ok: false, error: 'ffmpeg не найден — установите движки.' }
+        return { ok: false, error: M.exportFfmpegMissing }
       }
 
       const stem = basename(abs).replace(/\.[^.]+$/, '')
       const snapshotFormat = parseFfmpegSnapshotFormat(cachedSettings.ffmpegSnapshotFormat)
       const pick = await dialog.showSaveDialog(win, {
-        title: 'Сохранить кадр',
+        title: M.snapshotSaveDialogTitle,
         defaultPath: rememberedSnapshotDefaultPath(`${stem}-frame.${snapshotFormat}`),
         filters: [
-          { name: 'PNG', extensions: ['png'] },
-          { name: 'JPEG', extensions: ['jpg', 'jpeg'] }
+          { name: M.snapshotFilterPng, extensions: ['png'] },
+          { name: M.snapshotFilterJpeg, extensions: ['jpg', 'jpeg'] }
         ]
       })
 
