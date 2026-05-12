@@ -588,4 +588,35 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: playlist/timestamps/location prints', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --skip-download --print playlist ')
+    expect(lines).toContain('yt-dlp --skip-download --print playlist_autonumber ')
+    expect(lines).toContain('yt-dlp --skip-download --print modified_timestamp ')
+    expect(lines).toContain('yt-dlp --skip-download --print release_timestamp ')
+    expect(lines).toContain('yt-dlp --skip-download --print upload_timestamp ')
+    expect(lines).toContain('yt-dlp --skip-download --print stretched_ratio ')
+    expect(lines).toContain('yt-dlp --skip-download --print location ')
+  })
+
+  it('preview: v:0 profile+level, s:2 disposition', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams v:0') &&
+          l.includes('stream=profile,level') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams s:2') &&
+          l.includes('stream=disposition') &&
+          l.includes('default=nw=1:nk=1')
+      )
+    ).toBe(true)
+  })
 })

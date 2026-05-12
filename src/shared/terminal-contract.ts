@@ -1400,6 +1400,48 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· file-access-retries -F',
     summary: 'Повторы при ошибках чтения/записи на диске (--file-access-retries 5 -F); допишите URL.',
     fullLine: 'yt-dlp --file-access-retries 5 -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· --print playlist',
+    summary: 'Название плейлиста без скачивания (--skip-download --print playlist); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print playlist '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print playlist_autonumber',
+    summary: 'Автонумерация в шаблоне -o без скачивания (--skip-download --print playlist_autonumber); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print playlist_autonumber '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print modified_timestamp',
+    summary: 'Unix-время последнего изменения метаданных без скачивания (--skip-download --print modified_timestamp); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print modified_timestamp '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print release_timestamp',
+    summary: 'Unix-время релиза/премьеры без скачивания (--skip-download --print release_timestamp); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print release_timestamp '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print upload_timestamp',
+    summary: 'Unix-время загрузки на площадку без скачивания (--skip-download --print upload_timestamp); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print upload_timestamp '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print stretched_ratio',
+    summary: 'Соотношение сторон после растяжения (stretched_ratio) без скачивания (--skip-download --print stretched_ratio); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print stretched_ratio '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print location',
+    summary: 'Гео/локация из метаданных без скачивания (--skip-download --print location); допишите URL.',
+    fullLine: 'yt-dlp --skip-download --print location '
   }
 ]
 
@@ -1998,6 +2040,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· v:0 index codec',
     summary: 'Поток v:0: index + codec_name (порядок дорожек в контейнере); плейсхолдер = превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=index,codec_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· v:0 profile level',
+    summary: 'Поток v:0: profile + level (H.264/HEVC профиль и уровень); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=profile,level -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· s:2 disposition',
+    summary: 'Третья дорожка субтитров s:2: disposition (forced/default/hearing_impaired и т.д.); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:2 -show_entries stream=disposition -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   }
 ]
 
