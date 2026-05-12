@@ -1624,4 +1624,39 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
   })
+
+  it('downloads: print-to-file width/height/fps/tbr/filesize_approx/protocol + reject-title + geo LC/GD/VC/KN/DM', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
+    expect(lines).toContain('yt-dlp --print-to-file width flux-ytdlp-width.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file height flux-ytdlp-height.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file fps flux-ytdlp-fps.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file tbr flux-ytdlp-tbr.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file filesize_approx flux-ytdlp-fsize.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --print-to-file protocol flux-ytdlp-proto.txt --skip-download ')
+    expect(lines).toContain('yt-dlp --reject-title trailer -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country LC -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country GD -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country VC -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country KN -F ')
+    expect(lines).toContain('yt-dlp --geo-bypass-country DM -F ')
+  })
+
+  it('preview: ffprobe format copyright+encoded_by + ffmpeg compand 4s', () => {
+    const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('format_tags=copyright,encoded_by') &&
+          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('-af compand=attacks=0.02:decays=0.1:points=-80/-80|-25/-25|0/-10:gain=2') &&
+          l.includes('-t 4') &&
+          l.includes('-vn -sn')
+      )
+    ).toBe(true)
+  })
 })

@@ -3176,6 +3176,78 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
     token: '· geo BS -F',
     summary: 'Гео-обход через Багамы (--geo-bypass-country BS -F); допишите URL.',
     fullLine: 'yt-dlp --geo-bypass-country BS -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file width',
+    summary: 'Записать ширину выбранного формата (width) в flux-ytdlp-width.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file width flux-ytdlp-width.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file height',
+    summary: 'Записать высоту выбранного формата (height) в flux-ytdlp-height.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file height flux-ytdlp-height.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file fps',
+    summary: 'Записать fps выбранного формата в flux-ytdlp-fps.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file fps flux-ytdlp-fps.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file tbr',
+    summary: 'Записать суммарный битрейт (tbr, kbps) в flux-ytdlp-tbr.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file tbr flux-ytdlp-tbr.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file fsize',
+    summary: 'Записать filesize_approx в flux-ytdlp-fsize.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file filesize_approx flux-ytdlp-fsize.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· print-to-file protocol',
+    summary: 'Записать protocol выбранного формата (https/m3u8/…) в flux-ytdlp-proto.txt без скачивания; допишите URL.',
+    fullLine: 'yt-dlp --print-to-file protocol flux-ytdlp-proto.txt --skip-download '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· reject-title -F',
+    summary: 'Исключить элементы плейлиста по подстроке заголовка (--reject-title trailer -F); подстройте шаблон; допишите URL.',
+    fullLine: 'yt-dlp --reject-title trailer -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo LC -F',
+    summary: 'Гео-обход через Сент-Люсию (--geo-bypass-country LC -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country LC -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo GD -F',
+    summary: 'Гео-обход через Гренаду (--geo-bypass-country GD -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country GD -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo VC -F',
+    summary: 'Гео-обход через Сент-Винсент и Гренадины (--geo-bypass-country VC -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country VC -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo KN -F',
+    summary: 'Гео-обход через Сент-Китс и Невис (--geo-bypass-country KN -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country KN -F '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· geo DM -F',
+    summary: 'Гео-обход через Доминику (--geo-bypass-country DM -F); допишите URL.',
+    fullLine: 'yt-dlp --geo-bypass-country DM -F '
   }
 ]
 
@@ -4242,6 +4314,18 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· asetrate pitch 3s',
     summary: 'Лёгкий resample-питч первых 3 с (-af asetrate=44100*1.01,aresample=44100); smoke цепочки asetrate→aresample; плейсхолдер = превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af asetrate=44100*1.01,aresample=44100 -t 3 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· format copy enc',
+    summary: 'Теги контейнера copyright + encoded_by (право/кодировщик); плейсхолдер = превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=copyright,encoded_by -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· compand 4s',
+    summary: 'Лёгкий компандер первых 4 с (-af compand); smoke динамической обработки; плейсхолдер = превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af compand=attacks=0.02:decays=0.1:points=-80/-80|-25/-25|0/-10:gain=2 -t 4 -vn -sn -f null -`
   }
 ]
 
