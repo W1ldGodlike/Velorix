@@ -32,6 +32,14 @@ import { resolveYtdlpOutputDirectory } from './ytdlp-download-output'
 import { appendYtdlpDownloadHistoryEntry, outcomeFromQueueStatus } from './ytdlp-download-history'
 import { resolveYtdlpQueueRetryPlan } from './ytdlp-queue-retry'
 import { getYtdlpRunOptionsSnapshot } from './ytdlp-run-options-sync'
+import {
+  isYtdlpQueueStatusWaiting,
+  YTDLP_QUEUE_STATUS_CANCELLED,
+  YTDLP_QUEUE_STATUS_DONE,
+  YTDLP_QUEUE_STATUS_RUNNING,
+  YTDLP_QUEUE_STATUS_ERROR_PREFIX,
+  YTDLP_QUEUE_STATUS_RETRY_PAUSE_PREFIX
+} from '../shared/ytdlp-queue-status'
 
 /** Реже дергать таблицу/IPC: полоса и подпись прогресса обновляются не чаще этого интервала. */
 const DOWNLOADS_PROGRESS_UI_MIN_INTERVAL_MS = 1000
@@ -123,7 +131,7 @@ async function runYtdlpForWaitingRow(
   rowId: number
 ): Promise<void> {
   const snap = getDownloadsQueueRowById(rowId)
-  if (!snap || snap.status !== 'Ожидание') {
+  if (!snap || !isYtdlpQueueStatusWaiting(snap.status)) {
     return
   }
 
@@ -138,7 +146,7 @@ async function runYtdlpForWaitingRow(
   activeRunnerRowId = rowId
 
   updateDownloadsRow(rowId, {
-    status: 'Загрузка…',
+    status: YTDLP_QUEUE_STATUS_RUNNING,
     progress: '…',
     queueFmt: null,
     queueSize: null,
@@ -377,7 +385,7 @@ async function runYtdlpForWaitingRow(
           text: `[FluxAlloy] Повтор ${runIndex}/${retryPlan.extraAttempts} через ${sec} с…`
         })
         updateDownloadsRow(rowId, {
-          status: `Пауза перед повтором (${runIndex}/${retryPlan.extraAttempts})…`,
+          status: `${YTDLP_QUEUE_STATUS_RETRY_PAUSE_PREFIX} (${runIndex}/${retryPlan.extraAttempts})…`,
           progress: lastProgressCell ?? '—'
         })
         notifySnapshot()
@@ -386,7 +394,7 @@ async function runYtdlpForWaitingRow(
         } catch {
           flushPendingProgressUI()
           updateDownloadsRow(rowId, {
-            status: 'Отменено',
+            status: YTDLP_QUEUE_STATUS_CANCELLED,
             progress: lastProgressCell ?? '—'
           })
           break
@@ -398,7 +406,7 @@ async function runYtdlpForWaitingRow(
         lastYtDlpProgressLogPercent = null
         lastYtDlpProgressLogEmittedAtMs = 0
         updateDownloadsRow(rowId, {
-          status: 'Загрузка…',
+          status: YTDLP_QUEUE_STATUS_RUNNING,
           progress: '…',
           queueFmt: null,
           queueSize: null,
@@ -460,7 +468,7 @@ async function runYtdlpForWaitingRow(
         const msg = e instanceof Error ? e.message : String(e)
         flushPendingProgressUI()
         updateDownloadsRow(rowId, {
-          status: aborted ? 'Отменено' : `Ошибка: ${msg.slice(0, 140)}`,
+          status: aborted ? YTDLP_QUEUE_STATUS_CANCELLED : `${YTDLP_QUEUE_STATUS_ERROR_PREFIX}: ${msg.slice(0, 140)}`,
           progress: lastProgressCell ?? '—'
         })
         finalExitCode = null
@@ -472,7 +480,7 @@ async function runYtdlpForWaitingRow(
       if (result.exitCode === 0) {
         flushPendingProgressUI()
         updateDownloadsRow(rowId, {
-          status: 'Готово',
+          status: YTDLP_QUEUE_STATUS_DONE,
           progress: lastProgressCell ?? '100%'
         })
         const cliOpen = getYtdlpRunOptionsSnapshot()
@@ -635,7 +643,7 @@ export async function startDownloadSingleRow(
   if (!snap) {
     return { ok: false, error: 'Строка не найдена' }
   }
-  if (snap.status !== 'Ожидание') {
+  if (!isYtdlpQueueStatusWaiting(snap.status)) {
     return { ok: false, error: 'Старт доступен только для строк со статусом «Ожидание».' }
   }
 

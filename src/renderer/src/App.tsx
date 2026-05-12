@@ -17,6 +17,7 @@ import {
   formatTerminalExitLine,
   formatTerminalIntroTail,
   formatTerminalPreviewTooltip,
+  formatDownloadsQueueRowStatus,
   uiText,
   uiTextVars
 } from './locales/ui-text'
@@ -108,7 +109,14 @@ import type {
   ProcessingHistoryFilter,
   ProcessingHistoryWeeklySummary
 } from '../../shared/processing-history-contract'
-import { DOWNLOADS_VISIBLE_LOG_SAVE_CANCELLED, type DownloadsLogPayload } from '../../shared/downloads-log-contract'
+import type { DownloadsLogPayload } from '../../shared/downloads-log-contract'
+import { DOWNLOADS_VISIBLE_LOG_SAVE_CANCELLED } from '../../shared/downloads-log-contract'
+import {
+  isYtdlpQueueStatusCancelled,
+  isYtdlpQueueStatusDone,
+  isYtdlpQueueStatusErrorLike,
+  isYtdlpQueueStatusRunningLike
+} from '../../shared/ytdlp-queue-status'
 import {
   TERMINAL_CURRENT_FILE_PLACEHOLDER,
   TERMINAL_SCENARIO_HINTS_DOWNLOADS,
@@ -463,15 +471,15 @@ function downloadsRowMatchesStatus(
     return true
   }
   if (filter === 'running') {
-    return row.status === 'Загрузка…' || row.status.startsWith('Пауза перед повтором')
+    return isYtdlpQueueStatusRunningLike(row.status)
   }
   if (filter === 'done') {
-    return row.status === 'Готово'
+    return isYtdlpQueueStatusDone(row.status)
   }
   if (filter === 'error') {
-    return row.status.startsWith('Ошибка')
+    return isYtdlpQueueStatusErrorLike(row.status)
   }
-  return row.status === 'Отменено'
+  return isYtdlpQueueStatusCancelled(row.status)
 }
 
 function summarizeDownloadsRows(rows: DownloadsQueueRowView[]): DownloadsQueueStats {
@@ -4466,7 +4474,7 @@ function App(): JSX.Element {
                                 className={`app-downloads-status app-downloads-status-${statusTone}`}
                               >
                                 <span className="app-downloads-status-dot" aria-hidden />
-                                {row.status}
+                                {formatDownloadsQueueRowStatus(row.status)}
                               </span>
                             </td>
                             <td>
@@ -4511,12 +4519,12 @@ function App(): JSX.Element {
                                   type="button"
                                   className="app-icon-btn app-icon-btn-primary"
                                   aria-label={
-                                    row.status.startsWith('Ошибка')
+                                    isYtdlpQueueStatusErrorLike(row.status)
                                       ? uiTextVars('downloadsQueueAriaRetryRow', { id: row.id })
                                       : uiTextVars('downloadsQueueAriaStartRow', { id: row.id })
                                   }
                                   onClick={() => {
-                                    const fn = row.status.startsWith('Ошибка')
+                                    const fn = isYtdlpQueueStatusErrorLike(row.status)
                                       ? window.fluxalloy.downloads.retryRow
                                       : window.fluxalloy.downloads.startRow
                                     void fn(row.id).then((res) => {
@@ -4526,7 +4534,7 @@ function App(): JSX.Element {
                                     })
                                   }}
                                 >
-                                  {row.status.startsWith('Ошибка') ? (
+                                  {isYtdlpQueueStatusErrorLike(row.status) ? (
                                     <IconQueueRetry title="" size={18} />
                                   ) : (
                                     <IconPlay title="" size={18} />

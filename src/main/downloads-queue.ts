@@ -3,6 +3,12 @@
  * Живая очередь дополнительно пишется в `userData/downloads/queue.json` (см. `ytdlp-download-queue-persist.ts`).
  */
 
+import {
+  isYtdlpQueueStatusRunningLike,
+  isYtdlpQueueStatusWaiting,
+  YTDLP_QUEUE_STATUS_WAITING
+} from '../shared/ytdlp-queue-status'
+
 export interface DownloadsQueueRow {
   id: number
   url: string
@@ -87,17 +93,12 @@ export function clearDownloadsQueue(): void {
 
 export function clearFinishedDownloadsQueueRows(): number {
   const before = rows.length
-  rows = rows.filter(
-    (r) =>
-      r.status === 'Ожидание' ||
-      r.status === 'Загрузка…' ||
-      r.status.startsWith('Пауза перед повтором')
-  )
+  rows = rows.filter((r) => isYtdlpQueueStatusWaiting(r.status) || isYtdlpQueueStatusRunningLike(r.status))
   return before - rows.length
 }
 
 export function findFirstWaitingRow(): DownloadsQueueRow | undefined {
-  return rows.find((r) => r.status === 'Ожидание')
+  return rows.find((r) => isYtdlpQueueStatusWaiting(r.status))
 }
 
 /** Копия строки по id для main-сервисов (очередь мутируется только через этот модуль). */
@@ -155,7 +156,7 @@ export function resetDownloadsQueueRowForRetry(id: number): boolean {
   }
   row.shortLabel = shortUrlLabel(row.url)
   row.progress = '—'
-  row.status = 'Ожидание'
+  row.status = YTDLP_QUEUE_STATUS_WAITING
   delete row.outputPath
   delete row.queueFmt
   delete row.queueSize
@@ -207,7 +208,7 @@ export function appendUrlsFromMultilineBlock(raw: string): number {
         url,
         shortLabel: shortUrlLabel(url),
         progress: '—',
-        status: 'Ожидание'
+        status: YTDLP_QUEUE_STATUS_WAITING
       })
       n += 1
     }

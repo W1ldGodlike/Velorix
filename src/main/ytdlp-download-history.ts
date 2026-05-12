@@ -7,6 +7,7 @@ import type {
   YtdlpDownloadHistoryOutcome,
   YtdlpDownloadHistoryWeeklySummary
 } from '../shared/ytdlp-history-contract'
+import { YTDLP_QUEUE_STATUS_CANCELLED, YTDLP_QUEUE_STATUS_DONE } from '../shared/ytdlp-queue-status'
 
 export type {
   YtdlpDownloadHistoryEntry,
@@ -58,10 +59,10 @@ function writeHistoryFileAtomic(
 /** Маппинг финального статуса очереди на исход для истории §6.4. */
 export function outcomeFromQueueStatus(status: string): YtdlpDownloadHistoryOutcome {
   const t = status.trim()
-  if (t === 'Готово') {
+  if (t === YTDLP_QUEUE_STATUS_DONE) {
     return 'success'
   }
-  if (t === 'Отменено') {
+  if (t === YTDLP_QUEUE_STATUS_CANCELLED) {
     return 'cancelled'
   }
   return 'error'

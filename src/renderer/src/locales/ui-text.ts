@@ -1,5 +1,14 @@
 import type { ProcessingHistoryKind, ProcessingHistoryOutcome } from '../../../shared/processing-history-contract'
 import type { YtdlpDownloadHistoryOutcome } from '../../../shared/ytdlp-history-contract'
+import {
+  isYtdlpQueueStatusErrorLike,
+  parseYtdlpQueueRetryPauseCounts,
+  YTDLP_QUEUE_STATUS_CANCELLED,
+  YTDLP_QUEUE_STATUS_DONE,
+  YTDLP_QUEUE_STATUS_RUNNING,
+  YTDLP_QUEUE_STATUS_WAITING,
+  YTDLP_QUEUE_STATUS_RETRY_PAUSE_PREFIX
+} from '../../../shared/ytdlp-queue-status'
 
 type UiLocale = 'ru' | 'en'
 
@@ -587,6 +596,12 @@ const UI_TEXT = {
     statusFfmpegCommandCopied: 'Команда ffmpeg скопирована',
     statusFfmpegCommandCopyFailed: 'Не удалось скопировать команду ffmpeg',
     statusDndGrantFailed: 'DnD: {error}',
+    downloadsQueueRowStatusWaiting: 'Ожидание',
+    downloadsQueueRowStatusRunning: 'Загрузка…',
+    downloadsQueueRowStatusDone: 'Готово',
+    downloadsQueueRowStatusCancelled: 'Отменено',
+    downloadsQueueRowStatusRetryTemplate: 'Пауза перед повтором ({cur}/{max})…',
+    downloadsQueueRowStatusRetryUnknown: 'Пауза перед повтором',
     editorFfmpegSectionPresets: 'Пресеты',
     editorFfmpegSectionPresetsHint:
       'Сохранённые снимки настроек экспорта; кнопки меняют список пресетов в настройках.',
@@ -1197,6 +1212,12 @@ const UI_TEXT = {
     statusFfmpegCommandCopied: 'ffmpeg command copied',
     statusFfmpegCommandCopyFailed: 'Could not copy ffmpeg command',
     statusDndGrantFailed: 'DnD: {error}',
+    downloadsQueueRowStatusWaiting: 'Waiting',
+    downloadsQueueRowStatusRunning: 'Downloading…',
+    downloadsQueueRowStatusDone: 'Done',
+    downloadsQueueRowStatusCancelled: 'Cancelled',
+    downloadsQueueRowStatusRetryTemplate: 'Retry pause ({cur}/{max})…',
+    downloadsQueueRowStatusRetryUnknown: 'Retry pause',
     editorFfmpegSectionPresets: 'Presets',
     editorFfmpegSectionPresetsHint:
       'Saved export setting snapshots; buttons update the preset list in settings.',
@@ -1356,4 +1377,31 @@ export function formatProcessingHistoryKindLabel(kind: ProcessingHistoryKind): s
     return uiText('processingHistoryKindAutoExport')
   }
   return uiText('processingHistoryKindExport')
+}
+
+/** Localized label for a persisted yt-dlp queue row `status` string (§6). */
+export function formatDownloadsQueueRowStatus(status: string): string {
+  if (status === YTDLP_QUEUE_STATUS_WAITING) {
+    return uiText('downloadsQueueRowStatusWaiting')
+  }
+  if (status === YTDLP_QUEUE_STATUS_RUNNING) {
+    return uiText('downloadsQueueRowStatusRunning')
+  }
+  if (status === YTDLP_QUEUE_STATUS_DONE) {
+    return uiText('downloadsQueueRowStatusDone')
+  }
+  if (status === YTDLP_QUEUE_STATUS_CANCELLED) {
+    return uiText('downloadsQueueRowStatusCancelled')
+  }
+  const retry = parseYtdlpQueueRetryPauseCounts(status)
+  if (retry !== null) {
+    return uiTextVars('downloadsQueueRowStatusRetryTemplate', { cur: retry.cur, max: retry.max })
+  }
+  if (status.startsWith(YTDLP_QUEUE_STATUS_RETRY_PAUSE_PREFIX)) {
+    return uiText('downloadsQueueRowStatusRetryUnknown')
+  }
+  if (isYtdlpQueueStatusErrorLike(status)) {
+    return status
+  }
+  return status
 }

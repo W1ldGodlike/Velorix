@@ -4,6 +4,13 @@
 
 import type { DownloadsQueueRow } from './downloads-queue'
 import { lineLooksLikeUrl } from './downloads-queue'
+import {
+  isYtdlpQueueStatusRunningLike,
+  isYtdlpQueueStatusErrorLike,
+  YTDLP_QUEUE_STATUS_CANCELLED,
+  YTDLP_QUEUE_STATUS_DONE,
+  YTDLP_QUEUE_STATUS_WAITING
+} from '../shared/ytdlp-queue-status'
 
 /** Схема файла `userData/downloads/queue.json`. */
 export const YTDLP_DOWNLOAD_QUEUE_PERSIST_SCHEMA = 1
@@ -19,18 +26,18 @@ function clampStr(raw: unknown, max: number): string | undefined {
 
 function sanitizeStatusForRestore(raw: unknown): string {
   const t = typeof raw === 'string' ? raw.trim().slice(0, 240) : ''
-  if (t === 'Загрузка…' || t.startsWith('Пауза перед повтором')) {
-    return 'Ожидание'
+  if (isYtdlpQueueStatusRunningLike(t)) {
+    return YTDLP_QUEUE_STATUS_WAITING
   }
   if (
-    t === 'Ожидание' ||
-    t === 'Готово' ||
-    t === 'Отменено' ||
-    (t.length > 0 && t.startsWith('Ошибка'))
+    t === YTDLP_QUEUE_STATUS_WAITING ||
+    t === YTDLP_QUEUE_STATUS_DONE ||
+    t === YTDLP_QUEUE_STATUS_CANCELLED ||
+    (t.length > 0 && isYtdlpQueueStatusErrorLike(t))
   ) {
     return t
   }
-  return 'Ожидание'
+  return YTDLP_QUEUE_STATUS_WAITING
 }
 
 function shortUrlLabelFallback(url: string): string {

@@ -29,6 +29,15 @@ import {
   type DownloadsLogPayload
 } from './downloads-log-ipc'
 import { DOWNLOADS_VISIBLE_LOG_SAVE_CANCELLED } from '../shared/downloads-log-contract'
+import {
+  isYtdlpQueueStatusRunningLike,
+  YTDLP_QUEUE_STATUS_CANCELLED,
+  YTDLP_QUEUE_STATUS_DONE,
+  YTDLP_QUEUE_STATUS_ERROR_PREFIX,
+  YTDLP_QUEUE_STATUS_RUNNING,
+  YTDLP_QUEUE_STATUS_WAITING,
+  YTDLP_QUEUE_STATUS_RETRY_PAUSE_PREFIX
+} from '../shared/ytdlp-queue-status'
 import { resolvePreloadOutFile } from './preload-resolve'
 import {
   isYtdlpDownloadDirectoryDefault,
@@ -1511,6 +1520,12 @@ ${emitDownloadsTopbarClusterHtml(18)}
   <script>
     (function () {
       var _ytdlpHintCatOrder = ${ytdlpHintCatOrderJson};
+      var QS_WAITING = ${JSON.stringify(YTDLP_QUEUE_STATUS_WAITING)};
+      var QS_RUNNING = ${JSON.stringify(YTDLP_QUEUE_STATUS_RUNNING)};
+      var QS_RETRY = ${JSON.stringify(YTDLP_QUEUE_STATUS_RETRY_PAUSE_PREFIX)};
+      var QS_DONE = ${JSON.stringify(YTDLP_QUEUE_STATUS_DONE)};
+      var QS_CANCELLED = ${JSON.stringify(YTDLP_QUEUE_STATUS_CANCELLED)};
+      var QS_ERR = ${JSON.stringify(YTDLP_QUEUE_STATUS_ERROR_PREFIX)};
       function _ytdlpCatRank(c) {
         var i = _ytdlpHintCatOrder.indexOf(c);
         return i === -1 ? _ytdlpHintCatOrder.length - 1 : i;
@@ -1736,7 +1751,7 @@ ${emitDownloadsTopbarClusterHtml(18)}
       }
 
       function isRowDownloading(status) {
-        return status === 'Загрузка…' || (typeof status === 'string' && status.indexOf('Пауза перед повтором') === 0);
+        return status === QS_RUNNING || (typeof status === 'string' && status.indexOf(QS_RETRY) === 0);
       }
 
       /** §6/v0 — stroke-иконки очереди: единый источник путей lucide-downloads-icons (shared). */
@@ -2244,26 +2259,26 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
       }
 
       function rowCanRetry(status) {
-        if (status === 'Ожидание' || status === 'Загрузка…') return false;
-        return !(typeof status === 'string' && status.indexOf('Пауза перед повтором') === 0);
+        if (status === QS_WAITING || status === QS_RUNNING) return false;
+        return !(typeof status === 'string' && status.indexOf(QS_RETRY) === 0);
       }
 
       function queueRowMatchesFilter(row, filter) {
         var status = typeof row.status === 'string' ? row.status : '';
         if (filter === 'all') return true;
-        if (filter === 'waiting') return status === 'Ожидание';
-        if (filter === 'running') return status === 'Загрузка…' || status.indexOf('Пауза перед повтором') === 0;
-        if (filter === 'done') return status === 'Готово';
-        if (filter === 'cancelled') return status === 'Отменено';
-        if (filter === 'error') return status.indexOf('Ошибка') === 0;
+        if (filter === 'waiting') return status === QS_WAITING;
+        if (filter === 'running') return status === QS_RUNNING || status.indexOf(QS_RETRY) === 0;
+        if (filter === 'done') return status === QS_DONE;
+        if (filter === 'cancelled') return status === QS_CANCELLED;
+        if (filter === 'error') return status.indexOf(QS_ERR) === 0;
         return true;
       }
 
       function statusClass(status) {
-        if (status === 'Загрузка…' || status.indexOf('Пауза перед повтором') === 0) return 'status-running';
-        if (status === 'Готово') return 'status-done';
-        if (status === 'Отменено') return 'status-cancelled';
-        if (status.indexOf('Ошибка') === 0) return 'status-error';
+        if (status === QS_RUNNING || status.indexOf(QS_RETRY) === 0) return 'status-running';
+        if (status === QS_DONE) return 'status-done';
+        if (status === QS_CANCELLED) return 'status-cancelled';
+        if (status.indexOf(QS_ERR) === 0) return 'status-error';
         return 'status-waiting';
       }
 
@@ -2284,11 +2299,11 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
         var segs = raw === '—' ? [] : raw.split(' · ');
         var head = segs.length > 0 && segs[0] ? segs[0].trim() : raw;
         var pct = parseProgressPercent(head);
-        if (status === 'Готово') {
+        if (status === QS_DONE) {
           pct = 100;
         }
         var showBar = pct !== null && isFinite(pct);
-        if (status === 'Ожидание') {
+        if (status === QS_WAITING) {
           showBar = false;
         }
         var stack = document.createElement('div');
@@ -2299,7 +2314,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
           var track = document.createElement('div');
           track.className = 'progress-track';
           var fill = document.createElement('div');
-          var done = status === 'Готово';
+          var done = status === QS_DONE;
           fill.className = 'progress-fill' + (done ? ' progress-fill-done' : '');
           fill.style.width = Math.max(0, Math.min(100, pct)) + '%';
           track.appendChild(fill);
@@ -2392,11 +2407,11 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
         var cancelled = 0;
         rows.forEach(function (row) {
           var status = typeof row.status === 'string' ? row.status : '';
-          if (status === 'Ожидание') waiting += 1;
-          else if (status === 'Загрузка…' || status.indexOf('Пауза перед повтором') === 0) running += 1;
-          else if (status === 'Готово') done += 1;
-          else if (status === 'Отменено') cancelled += 1;
-          else if (status.indexOf('Ошибка') === 0) error += 1;
+          if (status === QS_WAITING) waiting += 1;
+          else if (status === QS_RUNNING || status.indexOf(QS_RETRY) === 0) running += 1;
+          else if (status === QS_DONE) done += 1;
+          else if (status === QS_CANCELLED) cancelled += 1;
+          else if (status.indexOf(QS_ERR) === 0) error += 1;
         });
         queueSummary.textContent =
           'Всего: ' + total +
@@ -2485,7 +2500,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
             var pFactory = r.ytdlpPaused ? RowIco.play : RowIco.pause;
             mkIcon('row-pause-toggle', pTitle, r.id, pFactory, '');
           }
-          if (st === 'Ожидание') {
+          if (st === QS_WAITING) {
             mkIcon('start', 'Скачать только эту строку', r.id, RowIco.play, '');
           } else if (rowCanRetry(st)) {
             mkIcon('retry', 'Сбросить статус и скачать эту строку заново', r.id, RowIco.retry, '');
@@ -3457,7 +3472,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
       if (!current) {
         return { ok: false, error: 'Строка не найдена' }
       }
-      if (current.status === 'Загрузка…' || current.status.startsWith('Пауза перед повтором')) {
+      if (isYtdlpQueueStatusRunningLike(current.status)) {
         return { ok: false, error: 'Нельзя повторить строку, пока она выполняется.' }
       }
       if (!resetDownloadsQueueRowForRetry(id)) {

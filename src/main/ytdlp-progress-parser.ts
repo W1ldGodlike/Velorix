@@ -6,6 +6,8 @@
  * `downloads-queue-runner`) импортируют функции отсюда.
  */
 
+import { YTDLP_QUEUE_STATUS_ERROR_PREFIX } from '../shared/ytdlp-queue-status'
+
 /** Поля прогресса из строк stderr/stdout yt-dlp с префиксом «[download]». */
 export interface YtdlpDownloadProgressParts {
   percent: string | null
@@ -528,10 +530,10 @@ export function formatYtdlpQueueFailureStatus(
 ): string {
   let base: string
   if (exitCode === null && signal) {
-    base = `Ошибка (сигнал ${signal})`
+    base = `${YTDLP_QUEUE_STATUS_ERROR_PREFIX} (сигнал ${signal})`
   } else {
     const code = exitCode ?? '?'
-    base = `Ошибка (код ${code})`
+    base = `${YTDLP_QUEUE_STATUS_ERROR_PREFIX} (код ${code})`
   }
 
   const primary = errorHint?.trim() ?? ''
