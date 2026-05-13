@@ -506,27 +506,6 @@ export default function VideoTimeline({
         </div>
       ) : null}
 
-      <div className="app-timeline" aria-label={uiText('videoTimelineScrubAria')}>
-        <span className="app-timeline-time">{formatTime(current)}</span>
-        <input
-          className="app-timeline-range"
-          type="range"
-          min={0}
-          max={1}
-          step={0.0001}
-          value={ratio}
-          aria-valuetext={uiTextVars('videoTimelineScrubValuetextTemplate', {
-            current: formatTime(current),
-            duration: formatTime(duration),
-            mul: timelineZoomMul
-          })}
-          onChange={(e) => {
-            seek(Number(e.target.value))
-          }}
-        />
-        <span className="app-timeline-time">{formatTime(duration)}</span>
-      </div>
-
       {markerZoomOverlay ? (
         <div className="app-timeline-marker-strip" aria-hidden>
           <div className="app-timeline-marker-track">

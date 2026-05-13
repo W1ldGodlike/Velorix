@@ -799,9 +799,6 @@ const UI_TEXT = {
       'Текущее время; номер кадра — оценка по к/с из строки дорожки',
     videoTimelinePositionLabel: 'Позиция:',
     videoTimelineFrameApproxSuffixTemplate: ' · кадр ~{frame}',
-    videoTimelineScrubAria: 'Позиция воспроизведения',
-    videoTimelineScrubValuetextTemplate:
-      '{current} из {duration} (окно воспроизведения под масштабом ×{mul})',
     videoTimelineMarkersOutsideWindowTitle:
       'Маркеры In–Out вне видимого окна шкалы — отдалите масштаб.',
     videoTimelineIoAria: 'Маркеры In / Out',
@@ -1634,9 +1631,6 @@ const UI_TEXT = {
       'Current time; frame index estimated from stream frame rate in the track row',
     videoTimelinePositionLabel: 'Position:',
     videoTimelineFrameApproxSuffixTemplate: ' · frame ~{frame}',
-    videoTimelineScrubAria: 'Playback position',
-    videoTimelineScrubValuetextTemplate:
-      '{current} of {duration} (playback window at scale ×{mul})',
     videoTimelineMarkersOutsideWindowTitle:
       'In/Out is outside the current window — zoom out.',
     videoTimelineIoAria: 'In / Out markers',

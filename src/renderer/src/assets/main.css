@@ -2068,36 +2068,6 @@ button.app-downloads-hint-token:disabled {
   font-weight: 600;
 }
 
-.app-timeline {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-shrink: 0;
-  padding: 0.35rem 0.6rem 0.2rem;
-}
-
-.app-timeline-time {
-  font-size: 0.72rem;
-  font-variant-numeric: tabular-nums;
-  color: var(--fa-text-muted);
-  min-width: 2.85rem;
-  flex-shrink: 0;
-}
-
-.app-timeline-time:first-of-type {
-  text-align: right;
-}
-
-.app-timeline-time:last-of-type {
-  text-align: left;
-}
-
-.app-timeline-range {
-  flex: 1;
-  accent-color: var(--fa-accent);
-  min-height: 1.25rem;
-}
-
 .app-timeline-marker-strip {
   padding: 0 0.6rem;
 }
@@ -3024,20 +2994,6 @@ button.app-downloads-hint-token:disabled {
     font-size: 0.598rem;
   }
 
-  .app-timeline {
-    gap: 0.52rem;
-    padding: 0.38rem 0.62rem 0.22rem;
-  }
-
-  .app-timeline-time {
-    font-size: 0.736rem;
-    min-width: 2.92rem;
-  }
-
-  .app-timeline-range {
-    min-height: 1.32rem;
-  }
-
   .app-timeline-marker-track {
     height: 7px;
   }
@@ -3398,15 +3354,6 @@ button.app-downloads-hint-token:disabled {
 
   .app-timeline-media-facts {
     font-size: 0.706rem;
-  }
-
-  .app-timeline-time {
-    font-size: 0.752rem;
-    min-width: 3rem;
-  }
-
-  .app-timeline-range {
-    min-height: 1.38rem;
   }
 
   .app-timeline-marker-track {
