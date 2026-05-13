@@ -5023,6 +5023,42 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
+    token: '· заголовок concurrent-fragments 3',
+    summary: 'Заголовок без скачивания с тремя параллельными фрагментами (--concurrent-fragments 3 --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --concurrent-fragments 3 --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок sleep-requests 0.5',
+    summary: 'Заголовок без скачивания с паузой 0,5 с между HTTP-запросами (--sleep-requests 0.5 --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --sleep-requests 0.5 --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок geo-bypass DE',
+    summary: 'Заголовок без скачивания с гео-обходом через регион DE (--geo-bypass-country DE --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --geo-bypass-country DE --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок impersonate chrome',
+    summary: 'Заголовок без скачивания с TLS-отпечатком Chrome (--impersonate chrome --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --impersonate chrome --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок и html страниц',
+    summary: 'Заголовок без скачивания с сохранением сырых страниц (--write-pages --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --write-pages --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок с ipv4-only',
+    summary: 'Заголовок без скачивания только по IPv4 (-4 --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp -4 --skip-download --print title '
+  },
+  {
+    tool: 'yt-dlp',
     token: '· обновить yt-dlp → stable',
     summary: 'Обновить yt-dlp до стабильной ветки (--update-to stable); ссылка в команде не нужна.',
     fullLine: 'yt-dlp --update-to stable'
@@ -7112,6 +7148,96 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· ffmpeg: paletteuse dummy 1с',
     summary: 'Квантование через palettegen+paletteuse первой секунды (256 цветов, однопроходный гиф-подобный путь); дымовая проверка palette*; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf palettegen=max_colors=128:reserve_transparent=0,paletteuse -t 1 -an -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· субтитры s:3 codec_name',
+    summary: 'Четвёртая дорожка субтитров s:3: только codec_name (поле ffprobe); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:3 -show_entries stream=codec_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· дорожка данных d:5',
+    summary: 'Шестая data-дорожка d:5: codec_name (поле ffprobe; редкие контейнеры с множеством data); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams d:5 -show_entries stream=codec_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· аудио a:7 index',
+    summary: 'Восьмая аудиодорожка a:7: index (поле ffprobe; редкие мультипотоковые релизы); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:7 -show_entries stream=index -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· видео v:0 первые 10 pict_type',
+    summary: 'Типы кадров I/B/P первых 10 кадров v:0 (-show_frames, поле pict_type, -read_intervals %+#10); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_frames -show_entries frame=pict_type -read_intervals %+#10 -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· контейнер tags=encoder,major_brand',
+    summary: 'Два тега контейнера encoder и major_brand (поля format_tags); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=encoder,major_brand -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: histeq 2с',
+    summary: 'Адаптивная эквализация гистограммы histeq первых 2 с; дымовая проверка histeq; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf histeq -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: deflicker 3с',
+    summary: 'Подавление мерцания deflicker первых 3 с (-vf deflicker=b=1); дымовая проверка deflicker; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf deflicker=b=1 -t 3 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: lagfun 2с',
+    summary: 'Шлейф кадров lagfun первых 2 с (-vf lagfun=decay=0.92); дымовая проверка lagfun; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf lagfun=decay=0.92 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: noise 2с',
+    summary: 'Псевдослучайный шум noise первых 2 с (-vf noise=alls=8:allf=t); дымовая проверка noise; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf noise=alls=8:allf=t -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: shufflepixels 2с',
+    summary: 'Перемешивание блоков shufflepixels первых 2 с (56×56, 3 кадра); дымовая проверка shufflepixels; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf shufflepixels=56:56:3 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: lenscorrection 2с',
+    summary: 'Лёгкая коррекция дисторсии lenscorrection первых 2 с (k1=-0.01,k2=-0.01); дымовая проверка lenscorrection; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf lenscorrection=cx=0.5:cy=0.5:k1=-0.01:k2=-0.01 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: fps=24000/1001 явно 2с',
+    summary: 'Явные 24000/1001 fps на выходе первых 2 с (-vf fps=24000/1001); дымовая проверка дробного fps; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf fps=24000/1001 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: tinterlace merge 2с',
+    summary: 'Чересстрочное слияние tinterlace=merge + fieldorder=tff первых 2 с; дымовая проверка tinterlace; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf tinterlace=merge,fieldorder=tff -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: pseudocolor 2с',
+    summary: 'Псевдоцветовая карта pseudocolor preset=rainbow первых 2 с; дымовая проверка pseudocolor; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf pseudocolor=preset=rainbow -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: colorhold 2с',
+    summary: 'Удержание узкого цветового диапазона colorhold первых 2 с (similarity=0.15); дымовая проверка colorhold; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf colorhold=similarity=0.15 -t 2 -an -sn -f null -`
   }
 ]
 
