@@ -1554,7 +1554,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео-обход gb -F',
+    token: '· гео-обход gb (Великобритания) -F',
     summary: 'Гео-обход с кодом страны GB (--geo-bypass-country GB -F); поменяйте ISO-код при необходимости; допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country GB -F '
   },
@@ -1602,13 +1602,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео-обход jp -F',
+    token: '· гео-обход jp (Япония) -F',
     summary: 'Гео-обход с кодом страны JP (--geo-bypass-country JP -F); региональные ограничения; допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country JP -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео-обход ca -F',
+    token: '· гео-обход ca (Канада) -F',
     summary: 'Гео-обход с кодом страны CA (--geo-bypass-country CA -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country CA -F '
   },
@@ -1680,19 +1680,19 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео-обход au -F',
+    token: '· гео-обход au (Австралия) -F',
     summary: 'Гео-обход с кодом страны AU (--geo-bypass-country AU -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country AU -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео-обход br -F',
+    token: '· гео-обход br (Бразилия) -F',
     summary: 'Гео-обход с кодом страны BR (--geo-bypass-country BR -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country BR -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео-обход it -F',
+    token: '· гео-обход it (Италия) -F',
     summary: 'Гео-обход с кодом страны IT (--geo-bypass-country IT -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country IT -F '
   },
@@ -1825,7 +1825,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео-обход nl -F',
+    token: '· гео-обход nl (Нидерланды) -F',
     summary: 'Гео-обход с кодом страны NL (--geo-bypass-country NL -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country NL -F '
   },
