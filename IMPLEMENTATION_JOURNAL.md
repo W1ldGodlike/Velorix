@@ -584,3 +584,4 @@
 - [J-567] 2026-05-14 14:00:00 [Assistant]: §8 — `token`: aria2→aria2, pem в скобках, avc/av1 в нижнем регистре, TV Everywhere с «—», HLS встроенный, принудительно IPv4/IPv6; `fullLine` без изменений.
 - [J-568] 2026-05-14 15:00:00 [Assistant]: §8 — `token`: mpd/ebu r128/tls нижний регистр, BiDi из токена, кросс-пан стерео, сводка версии ffprobe; `fullLine` без изменений.
 - [J-569] 2026-05-14 16:00:00 [Assistant]: §8 — `token`: youtube/hls/ts/html в нижнем регистре, cookie-браузеры, referer youtube, трассировка tls, ipv4/ipv6, api sponsorblock; `fullLine` без изменений.
+- [J-570] 2026-05-14 17:00:00 [Assistant]: §8 — `token`: tls-браузеры, sponsorblock, windows/win, accept-language, tv everywhere, mib; нижний регистр ISO в «гео»; `fullLine` без изменений.
