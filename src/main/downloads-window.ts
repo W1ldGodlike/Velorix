@@ -1,4 +1,4 @@
-import { writeFileSync } from 'fs'
+import { mkdirSync, writeFileSync } from 'fs'
 import { BrowserWindow, app, dialog, ipcMain, shell, type WebContents } from 'electron'
 
 import { resolveAppPaths } from './app-paths'
@@ -2529,17 +2529,32 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
               'icon-btn-warn'
             );
           }
-          if (dl && activeRun && r.ytdlpPauseSupported && r.ytdlpPauseChildActive) {
-            var pTitle = r.ytdlpPaused ? DL_I18N.rowResumeYtdlp : DL_I18N.rowPauseYtdlp;
-            var pFactory = r.ytdlpPaused ? RowIco.play : RowIco.pause;
-            mkIcon('row-pause-toggle', pTitle, r.id, pFactory, '');
+          if (dl && activeRun) {
+            var canPause = r.ytdlpPauseSupported && r.ytdlpPauseChildActive;
+            if (canPause) {
+              var pTitle = r.ytdlpPaused ? DL_I18N.rowResumeYtdlp : DL_I18N.rowPauseYtdlp;
+              var pFactory = r.ytdlpPaused ? RowIco.play : RowIco.pause;
+              mkIcon('row-pause-toggle', pTitle, r.id, pFactory, '');
+            } else {
+              var bPause = document.createElement('button');
+              bPause.type = 'button';
+              bPause.className = 'icon-btn';
+              bPause.disabled = true;
+              bPause.title = !r.ytdlpPauseSupported
+                ? DL_I18N.pauseUnsupportedWinTitle
+                : DL_I18N.rowPauseYtdlp;
+              bPause.setAttribute('aria-label', bPause.title);
+              bPause.appendChild(RowIco.pause());
+              wrap.appendChild(bPause);
+            }
           }
           if (st === QS_WAITING) {
             mkIcon('start', DL_I18N.rowStartThisLine, r.id, RowIco.play, '');
           } else if (rowCanRetry(st)) {
             mkIcon('retry', DL_I18N.rowRetryDownload, r.id, RowIco.retry, '');
           }
-          if (typeof r.outputPath === 'string' && r.outputPath) {
+          var outp = typeof r.outputPath === 'string' && r.outputPath;
+          if (outp) {
             mkIcon(
               'open-handler',
               DL_I18N.rowOpenInFlux,
@@ -2549,6 +2564,8 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
             );
             mkIcon('open-file', DL_I18N.rowOpenFile, r.id, RowIco.file, '');
             mkIcon('open-folder', DL_I18N.rowShowInFolder, r.id, RowIco.folder, '');
+          } else {
+            mkIcon('open-folder', DL_I18N.rowOpenDownloadFolder, r.id, RowIco.folder, '');
           }
           mkIcon('up', DL_I18N.rowMoveUp, r.id, RowIco.chevUp, '');
           mkIcon('dn', DL_I18N.rowMoveDown, r.id, RowIco.chevDown, '');
@@ -3379,7 +3396,27 @@ export function registerDownloadsWindowIpcHandlers(): void {
         return { ok: false, error: P.badOpenFileRequest }
       }
       const row = getDownloadsQueueRowById(id)
-      if (!row?.outputPath) {
+      if (!row) {
+        return { ok: false, error: P.rowNotFound }
+      }
+      if (modeRaw === 'folder' && (!row.outputPath || row.outputPath.trim().length === 0)) {
+        const paths = resolveAppPaths()
+        const dir = resolveYtdlpOutputDirectory(paths.userData)
+        try {
+          mkdirSync(dir, { recursive: true })
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err)
+          logError('downloads-window', 'mkdir download output dir failed', err)
+          return { ok: false, error: msg }
+        }
+        try {
+          const err = await shell.openPath(dir)
+          return err ? { ok: false, error: err } : { ok: true }
+        } catch (err) {
+          return { ok: false, error: err instanceof Error ? err.message : String(err) }
+        }
+      }
+      if (!row.outputPath) {
         return { ok: false, error: P.queueRowNoOutputPath }
       }
       return openDownloadOutputPath(row.outputPath, modeRaw, P)
@@ -3458,7 +3495,12 @@ export function registerDownloadsWindowIpcHandlers(): void {
     if (typeof id !== 'number' || !Number.isFinite(id)) {
       return { ok: false, error: P.invalidRowId }
     }
-    removeDownloadsQueueRow(id)
+    if (getActiveDownloadsRunnerRowId() === id) {
+      cancelDownloadsRunner()
+    }
+    if (!removeDownloadsQueueRow(id)) {
+      return { ok: false, error: P.rowNotFound }
+    }
     broadcastDownloadsSnapshot()
     return { ok: true }
   })

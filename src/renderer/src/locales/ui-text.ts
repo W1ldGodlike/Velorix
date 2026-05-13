@@ -227,6 +227,11 @@ const UI_TEXT = {
     downloadsQueueAriaStartRow: 'Старт строки {id}',
     downloadsQueueAriaOpenFile: 'Открыть файл строки {id}',
     downloadsQueueAriaOpenFolder: 'Открыть папку строки {id}',
+    downloadsQueueOpenDownloadDirTitle:
+      'Открыть папку загрузок yt-dlp (куда сохраняется файл; можно до окончания загрузки)',
+    downloadsQueuePauseUnsupportedOsTitle:
+      'Пауза yt-dlp недоступна в Windows (нужны SIGSTOP/SIGCONT на стороне ОС).',
+    downloadsQueuePauseWaitingProcessTitle: 'Пауза станет доступна сразу после запуска процесса yt-dlp',
     downloadsQueueAriaOpenInEditor: 'Открыть в редакторе вывод строки {id}',
     downloadsQueueAriaResumeYtdlp: 'Продолжить yt-dlp для строки {id}',
     downloadsQueueAriaPauseYtdlp: 'Пауза yt-dlp для строки {id}',
@@ -1066,6 +1071,11 @@ const UI_TEXT = {
     downloadsQueueAriaStartRow: 'Start row {id}',
     downloadsQueueAriaOpenFile: 'Open file for row {id}',
     downloadsQueueAriaOpenFolder: 'Open folder for row {id}',
+    downloadsQueueOpenDownloadDirTitle:
+      'Open yt-dlp download folder (destination from settings; works before the download finishes)',
+    downloadsQueuePauseUnsupportedOsTitle:
+      'Pausing yt-dlp is not available on Windows (OS-level SIGSTOP/SIGCONT).',
+    downloadsQueuePauseWaitingProcessTitle: 'Pause becomes available once the yt-dlp process has started',
     downloadsQueueAriaOpenInEditor: 'Open row {id} output in the editor',
     downloadsQueueAriaResumeYtdlp: 'Resume yt-dlp for row {id}',
     downloadsQueueAriaPauseYtdlp: 'Pause yt-dlp for row {id}',

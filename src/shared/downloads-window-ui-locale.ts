@@ -202,6 +202,8 @@ export type DownloadsWindowUiStrings = {
   rowOpenInFlux: string
   rowOpenFile: string
   rowShowInFolder: string
+  /** Папка назначения yt-dlp (-o), даже пока файл ещё не появился в очереди. */
+  rowOpenDownloadFolder: string
   rowMoveUp: string
   rowMoveDown: string
   rowRemoveFromQueue: string
@@ -412,6 +414,7 @@ const RU: DownloadsWindowUiStrings = {
   rowOpenInFlux: 'Открыть скачанный файл в FluxAlloy',
   rowOpenFile: 'Открыть скачанный файл',
   rowShowInFolder: 'Показать файл в папке',
+  rowOpenDownloadFolder: 'Открыть папку загрузок yt-dlp (куда сохраняется файл)',
   rowMoveUp: 'Переместить строку вверх в очереди',
   rowMoveDown: 'Переместить строку вниз в очереди',
   rowRemoveFromQueue: 'Удалить строку из очереди',
@@ -619,6 +622,7 @@ const EN: DownloadsWindowUiStrings = {
   rowOpenInFlux: 'Open downloaded file in FluxAlloy',
   rowOpenFile: 'Open downloaded file',
   rowShowInFolder: 'Show file in folder',
+  rowOpenDownloadFolder: 'Open yt-dlp download folder (where the file is saved)',
   rowMoveUp: 'Move row up in queue',
   rowMoveDown: 'Move row down in queue',
   rowRemoveFromQueue: 'Remove row from queue',
@@ -672,6 +676,7 @@ export function buildDownloadsWindowScriptI18nJson(locale: DownloadsWindowUiLoca
     rowOpenInFlux: s.rowOpenInFlux,
     rowOpenFile: s.rowOpenFile,
     rowShowInFolder: s.rowShowInFolder,
+    rowOpenDownloadFolder: s.rowOpenDownloadFolder,
     rowMoveUp: s.rowMoveUp,
     rowMoveDown: s.rowMoveDown,
     rowRemoveFromQueue: s.rowRemoveFromQueue,

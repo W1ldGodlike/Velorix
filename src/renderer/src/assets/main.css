@@ -740,6 +740,11 @@
   overflow: hidden;
 }
 
+.app-downloads-workspace > .app-downloads-main,
+.app-downloads-workspace > .app-downloads-rail {
+  min-height: 0;
+}
+
 .app-downloads-main,
 .app-downloads-rail {
   min-width: 0;
@@ -765,7 +770,7 @@
 
 .app-downloads-table-zone .app-downloads-table-wrap {
   flex: 1;
-  min-height: min(22rem, 30vh);
+  min-height: 0;
   min-width: 0;
   overflow: auto;
 }

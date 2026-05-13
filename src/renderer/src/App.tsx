@@ -226,6 +226,7 @@ type DownloadsQueueRowView = {
   queueEta?: string
   isActiveRunner?: boolean
   ytdlpPauseSupported?: boolean
+  ytdlpPauseChildActive?: boolean
   ytdlpPaused?: boolean
 }
 type DownloadsStatusFilter = 'all' | 'running' | 'done' | 'error' | 'cancelled'
@@ -461,6 +462,9 @@ function sanitizeDownloadsRows(raw: unknown[]): DownloadsQueueRowView[] {
           : {}),
         ...(typeof o['ytdlpPauseSupported'] === 'boolean'
           ? { ytdlpPauseSupported: o['ytdlpPauseSupported'] }
+          : {}),
+        ...(typeof o['ytdlpPauseChildActive'] === 'boolean'
+          ? { ytdlpPauseChildActive: o['ytdlpPauseChildActive'] }
           : {}),
         ...(typeof o['ytdlpPaused'] === 'boolean' ? { ytdlpPaused: o['ytdlpPaused'] } : {})
       }
@@ -4354,6 +4358,7 @@ function App(): JSX.Element {
                                   aria-label={uiTextVars('downloadsQueueAriaMoveUp', {
                                     id: row.id
                                   })}
+                                  title={uiTextVars('downloadsQueueAriaMoveUp', { id: row.id })}
                                   onClick={() => {
                                     void window.fluxalloy.downloads
                                       .moveRow(row.id, -1)
@@ -4372,6 +4377,7 @@ function App(): JSX.Element {
                                   aria-label={uiTextVars('downloadsQueueAriaMoveDown', {
                                     id: row.id
                                   })}
+                                  title={uiTextVars('downloadsQueueAriaMoveDown', { id: row.id })}
                                   onClick={() => {
                                     void window.fluxalloy.downloads
                                       .moveRow(row.id, 1)
@@ -4388,6 +4394,11 @@ function App(): JSX.Element {
                                   type="button"
                                   className="app-icon-btn app-icon-btn-primary"
                                   aria-label={
+                                    isYtdlpQueueStatusErrorLike(row.status)
+                                      ? uiTextVars('downloadsQueueAriaRetryRow', { id: row.id })
+                                      : uiTextVars('downloadsQueueAriaStartRow', { id: row.id })
+                                  }
+                                  title={
                                     isYtdlpQueueStatusErrorLike(row.status)
                                       ? uiTextVars('downloadsQueueAriaRetryRow', { id: row.id })
                                       : uiTextVars('downloadsQueueAriaStartRow', { id: row.id })
@@ -4417,6 +4428,7 @@ function App(): JSX.Element {
                                       aria-label={uiTextVars('downloadsQueueAriaOpenFile', {
                                         id: row.id
                                       })}
+                                      title={uiTextVars('downloadsQueueAriaOpenFile', { id: row.id })}
                                       onClick={() => {
                                         void window.fluxalloy.downloads
                                           .openQueueOutput(row.id, 'file')
@@ -4435,6 +4447,7 @@ function App(): JSX.Element {
                                       aria-label={uiTextVars('downloadsQueueAriaOpenFolder', {
                                         id: row.id
                                       })}
+                                      title={uiTextVars('downloadsQueueAriaOpenFolder', { id: row.id })}
                                       onClick={() => {
                                         void window.fluxalloy.downloads
                                           .openQueueOutput(row.id, 'folder')
@@ -4453,6 +4466,9 @@ function App(): JSX.Element {
                                       aria-label={uiTextVars('downloadsQueueAriaOpenInEditor', {
                                         id: row.id
                                       })}
+                                      title={uiTextVars('downloadsQueueAriaOpenInEditor', {
+                                        id: row.id
+                                      })}
                                       onClick={() => {
                                         setStatusHint(uiText('downloadsHistoryOpenHandlerPreparing'))
                                         void window.fluxalloy.downloads
@@ -4469,17 +4485,52 @@ function App(): JSX.Element {
                                       <IconQueueOutbound title="" size={18} />
                                     </button>
                                   </>
-                                ) : null}
-                                {row.isActiveRunner && row.ytdlpPauseSupported ? (
+                                ) : (
                                   <button
                                     type="button"
                                     className="app-icon-btn"
+                                    aria-label={uiText('downloadsQueueOpenDownloadDirTitle')}
+                                    title={uiText('downloadsQueueOpenDownloadDirTitle')}
+                                    onClick={() => {
+                                      void window.fluxalloy.downloads
+                                        .openQueueOutput(row.id, 'folder')
+                                        .then((res) => {
+                                          if (!res.ok) {
+                                            setStatusHint(res.error)
+                                          }
+                                        })
+                                    }}
+                                  >
+                                    <IconFolderOpen title="" size={18} />
+                                  </button>
+                                )}
+                                {row.isActiveRunner ? (
+                                  <button
+                                    type="button"
+                                    className="app-icon-btn"
+                                    disabled={
+                                      row.ytdlpPauseSupported !== true ||
+                                      row.ytdlpPauseChildActive !== true
+                                    }
                                     aria-label={
                                       row.ytdlpPaused
                                         ? uiTextVars('downloadsQueueAriaResumeYtdlp', {
                                             id: row.id
                                           })
                                         : uiTextVars('downloadsQueueAriaPauseYtdlp', { id: row.id })
+                                    }
+                                    title={
+                                      row.ytdlpPauseSupported !== true
+                                        ? uiText('downloadsQueuePauseUnsupportedOsTitle')
+                                        : row.ytdlpPauseChildActive !== true
+                                          ? uiText('downloadsQueuePauseWaitingProcessTitle')
+                                          : row.ytdlpPaused
+                                            ? uiTextVars('downloadsQueueAriaResumeYtdlp', {
+                                                id: row.id
+                                              })
+                                            : uiTextVars('downloadsQueueAriaPauseYtdlp', {
+                                                id: row.id
+                                              })
                                     }
                                     onClick={() => {
                                       const fn = row.ytdlpPaused
@@ -4505,6 +4556,7 @@ function App(): JSX.Element {
                                   aria-label={uiTextVars('downloadsQueueAriaRemoveRow', {
                                     id: row.id
                                   })}
+                                  title={uiTextVars('downloadsQueueAriaRemoveRow', { id: row.id })}
                                   onClick={() => {
                                     void window.fluxalloy.downloads
                                       .removeRow(row.id)
