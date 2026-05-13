@@ -408,7 +408,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· описание в .description',
+    token: '· описание в файле .description',
     summary: 'Описание ролика в отдельный файл .description без видео (--write-description --skip-download); допишите URL.',
     fullLine: 'yt-dlp --write-description --skip-download '
   },
@@ -1164,7 +1164,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· метаданные в xattr',
+    token: '· метаданные в расширенных атрибутах (xattr)',
     summary: 'Записать метаданные в xattr файла где поддерживается ОС (--xattrs); допишите URL.',
     fullLine: 'yt-dlp --xattrs '
   },
@@ -2821,7 +2821,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· постпроц.: mux, 1 поток -F',
+    token: '· постпроц.: мультиплекс (mux), 1 поток -F',
     summary: 'Аргументы постпроцессора для ffmpeg (--postprocessor-args ffmpeg:-threads 1 -F); ограничить нагрузку при слиянии потоков (мультиплексировании); допишите URL.',
     fullLine: 'yt-dlp --postprocessor-args ffmpeg:-threads 1 -F '
   },
@@ -3103,7 +3103,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: имя страницы (basename)',
+    token: '· в файл: последний сегмент URL страницы',
     summary: 'Записать webpage_url_basename в flux-ytdlp-wubase.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file webpage_url_basename flux-ytdlp-wubase.txt --skip-download '
   },
@@ -4795,7 +4795,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: заголовок Referer',
+    token: '· в файл: заголовок «Referer»',
     summary: 'Записать referrer (HTTP Referer страницы, если есть) в flux-ytdlp-refurl.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file referrer flux-ytdlp-refurl.txt --skip-download '
   },
@@ -5429,7 +5429,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· видео v:0 размер extradata',
+    token: '· видео v:0 размер доп. данных (extradata)',
     summary: 'Поток v:0: extradata_size (размер декодер-заголовков) и initial_padding; путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=extradata_size,initial_padding -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -6233,7 +6233,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: смешение pan-стерео 4с',
+    token: '· ffmpeg: смешение стерео (pan) 4с',
     summary: 'Лёгкое стереосмешивание через pan первых 4 с (каналы c0 и c1, кросс-фейд 0.6 и 0.4); дымовая проверка фильтра pan без кавычек в списке аргументов (argv); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af pan=stereo|c0=0.6*c0+0.4*c1|c1=0.4*c0+0.6*c1 -t 4 -vn -sn -f null -`
   },
@@ -6257,7 +6257,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: ресемпл с компенсацией async 4с',
+    token: '· ffmpeg: ресемпл с компенсацией рассинхрона 4с',
     summary: 'Лёгкая компенсация рассинхрона через aresample=async=1 первых 4 с; дымовая проверка цепочки ресемплера (aresample); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af aresample=async=1:first_pts=0 -t 4 -vn -sn -f null -`
   },
