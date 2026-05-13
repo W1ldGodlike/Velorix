@@ -20,6 +20,21 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(unique.size).toBe(nonEmpty.length)
   })
 
+  it('downloads + preview: RU summary — нет «допишите URL»; при flux-ytdlp есть глосс (поле …)', () => {
+    for (const h of TERMINAL_SCENARIO_HINTS_DOWNLOADS) {
+      expect(h.summary, h.token).not.toContain('допишите URL')
+      if (h.summary.includes('flux-ytdlp')) {
+        expect(h.summary, h.token).toContain('(поле ')
+      }
+    }
+    for (const h of TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA) {
+      expect(h.summary, h.token).not.toContain('допишите URL')
+      if (h.summary.includes('flux-ytdlp')) {
+        expect(h.summary, h.token).toContain('(поле ')
+      }
+    }
+  })
+
   it('downloads: fullLine без кавычек и с префиксом yt-dlp', () => {
     for (const h of TERMINAL_SCENARIO_HINTS_DOWNLOADS) {
       expect(h.tool).toBe('yt-dlp')
