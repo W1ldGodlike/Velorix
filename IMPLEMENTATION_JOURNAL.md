@@ -605,3 +605,4 @@
 - [J-588] 2026-05-14 21:10:00 [Assistant]: `IMPLEMENTATION_CHECKLIST.md` — §0: в пункте про журнал добавлены `check:journal` и явное упоминание дубликатов `J-NNN`.
 - [J-589] 2026-05-14 21:12:00 [Assistant]: §8 — `token`: оставшиеся гео ISO (Карибы, океания, Африка, Ближний Восток и др.) — подсказка в скобках; `fullLine` без изменений.
 - [J-590] 2026-05-14 21:15:00 [Assistant]: §8 — `token`: гео-обход gb/jp/ca/au/br/it/nl — страна в скобках; `fullLine` без изменений.
+- [J-591] 2026-05-14 21:25:00 [Assistant]: §8 — `TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA`: +22 сценария (ffprobe a:5–a:6, v:3, s:5–s:6, d:3, теги disc/track/lyricist/composer/encoded_by+muxing_app, side_data v:0/a:0; ffmpeg rubberband/firequalizer/acrossover/tilt/asubboost/aemphasis/apad/haas_effect/pan mono→stereo/silenceremove/map pcm/scale lanczos/fps telecine); дубликат `fullLine` probe_score заменён на `nb_chapters`. `npm run check:quiet` ок (**584 tests**).
