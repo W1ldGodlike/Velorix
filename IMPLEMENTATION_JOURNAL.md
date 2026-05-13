@@ -586,3 +586,4 @@
 - [J-569] 2026-05-14 16:00:00 [Assistant]: §8 — `token`: youtube/hls/ts/html в нижнем регистре, cookie-браузеры, referer youtube, трассировка tls, ipv4/ipv6, api sponsorblock; `fullLine` без изменений.
 - [J-570] 2026-05-14 17:00:00 [Assistant]: §8 — `token`: tls-браузеры, sponsorblock, windows/win, accept-language, tv everywhere, mib; нижний регистр ISO в «гео»; `fullLine` без изменений.
 - [J-571] 2026-05-14 18:00:00 [Assistant]: §8 — `token`: ua/utf-8/yt/ansi/wma/ascii, sar/dar/isrc/ts, wmf sdk/bpm, суффиксы k/m; `fullLine` без изменений.
+- [J-572] 2026-05-14 19:00:00 [Assistant]: §8 — `token`: ip, вч/нч в ffmpeg/ffprobe, икм, «название по»; `fullLine` без изменений.
