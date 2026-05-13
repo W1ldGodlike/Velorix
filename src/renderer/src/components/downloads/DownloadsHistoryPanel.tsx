@@ -19,10 +19,7 @@ export function DownloadsHistoryPanel({
   onRefresh,
   onClear,
   onExportVisible,
-  onRepeat,
-  onOpenFile,
-  onOpenFolder,
-  onOpenInHandler
+  onRepeat
 }: {
   open: boolean
   busy: boolean
@@ -41,9 +38,6 @@ export function DownloadsHistoryPanel({
   onClear: () => void
   onExportVisible: () => void
   onRepeat: (url: string) => void
-  onOpenFile: (id: string) => void
-  onOpenFolder: (id: string) => void
-  onOpenInHandler: (id: string) => void
 }): JSX.Element {
   return (
     <details
@@ -126,11 +120,21 @@ export function DownloadsHistoryPanel({
             <article key={entry.id} className="app-downloads-history-card">
               <div className="app-downloads-history-head">
                 <strong>{entry.shortLabel}</strong>
-                <span
-                  className={`app-downloads-history-outcome app-downloads-history-${entry.outcome}`}
-                >
-                  {formatDownloadsHistoryOutcomeLabel(entry.outcome)}
-                </span>
+                <div className="app-downloads-history-head-trailing">
+                  <span
+                    className={`app-downloads-history-outcome app-downloads-history-${entry.outcome}`}
+                  >
+                    {formatDownloadsHistoryOutcomeLabel(entry.outcome)}
+                  </span>
+                  <button
+                    type="button"
+                    className="app-btn app-btn-compact app-btn-icon-leading"
+                    disabled={busy}
+                    onClick={() => onRepeat(entry.url)}
+                  >
+                    {uiText('downloadsHistoryRepeat')}
+                  </button>
+                </div>
               </div>
               <p title={entry.url}>{entry.url}</p>
               <div className="app-downloads-history-meta">
@@ -138,41 +142,6 @@ export function DownloadsHistoryPanel({
                 <span>{entry.status}</span>
               </div>
               {entry.errorHint ? <p className="app-downloads-warning">{entry.errorHint}</p> : null}
-              <div className="app-downloads-history-actions">
-                <button
-                  type="button"
-                  className="app-btn app-btn-compact app-btn-icon-leading"
-                  disabled={busy}
-                  onClick={() => onRepeat(entry.url)}
-                >
-                  {uiText('downloadsHistoryRepeat')}
-                </button>
-              </div>
-              {entry.outputPath ? (
-                <div className="app-downloads-history-actions">
-                  <button
-                    type="button"
-                    className="app-btn app-btn-compact app-btn-icon-leading"
-                    onClick={() => onOpenFile(entry.id)}
-                  >
-                    {uiText('downloadsHistoryOpenFile')}
-                  </button>
-                  <button
-                    type="button"
-                    className="app-btn app-btn-compact app-btn-icon-leading"
-                    onClick={() => onOpenFolder(entry.id)}
-                  >
-                    {uiText('downloadsHistoryOpenFolder')}
-                  </button>
-                  <button
-                    type="button"
-                    className="app-btn app-btn-compact app-btn-icon-leading"
-                    onClick={() => onOpenInHandler(entry.id)}
-                  >
-                    {uiText('downloadsHistoryOpenInEditor')}
-                  </button>
-                </div>
-              ) : null}
             </article>
           ))
         )}

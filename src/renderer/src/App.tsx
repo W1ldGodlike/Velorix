@@ -4566,30 +4566,6 @@ function App(): JSX.Element {
                       )
                     })
                   }}
-                  onOpenFile={(id) => {
-                    void window.fluxalloy.downloads.openHistoryOutput(id, 'file').then((res) => {
-                      if (!res.ok) {
-                        setStatusHint(res.error)
-                      }
-                    })
-                  }}
-                  onOpenFolder={(id) => {
-                    void window.fluxalloy.downloads.openHistoryOutput(id, 'folder').then((res) => {
-                      if (!res.ok) {
-                        setStatusHint(res.error)
-                      }
-                    })
-                  }}
-                  onOpenInHandler={(id) => {
-                    setStatusHint(uiText('downloadsHistoryOpenHandlerPreparing'))
-                    void window.fluxalloy.downloads.openHistoryOutputInHandler(id).then((res) => {
-                      if (!res.ok) {
-                        setStatusHint(res.error)
-                      } else {
-                        setStatusHint(uiText('downloadsHistoryOpenHandlerDone'))
-                      }
-                    })
-                  }}
                 />
                 <DownloadsLogPanel
                   open={downloadsEmbeddedLogOpen}
