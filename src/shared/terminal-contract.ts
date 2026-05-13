@@ -5341,6 +5341,90 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
+    token: '· заголовок max-downloads 15',
+    summary: 'Заголовок без скачивания с лимитом пятнадцати загрузок за прогон (--max-downloads 15 --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --max-downloads 15 --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок sleep-requests 2',
+    summary: 'Заголовок без скачивания с паузой 2 с между HTTP-запросами (--sleep-requests 2 --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --sleep-requests 2 --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок concurrent-fragments 10',
+    summary: 'Заголовок без скачивания с десятью параллельными фрагментами DASH/HLS (--concurrent-fragments 10 --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --concurrent-fragments 10 --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок fragment-retries 12',
+    summary: 'Заголовок без скачивания с двенадцатью повторами на фрагмент (--fragment-retries 12 --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --fragment-retries 12 --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок socket-timeout 180',
+    summary: 'Заголовок без скачивания с таймаутом сокета 180 с (--socket-timeout 180 --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --socket-timeout 180 --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок retries 9',
+    summary: 'Заголовок без скачивания с девятью повторами HTTP (--retries 9 --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --retries 9 --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок limit-rate 900K print',
+    summary: 'Заголовок без скачивания с ограничением скорости 900K (--limit-rate 900K --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --limit-rate 900K --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок extractor-retries 6',
+    summary: 'Заголовок без скачивания с шестью повторами извлечения (--extractor-retries 6 --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --extractor-retries 6 --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок file-access-retries 8',
+    summary: 'Заголовок без скачивания с восемью повторами чтения и записи на диск (--file-access-retries 8 --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --file-access-retries 8 --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок geo-bypass SE print',
+    summary: 'Заголовок без скачивания с гео-обходом через регион SE (--geo-bypass-country SE --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --geo-bypass-country SE --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок geo-bypass NO print',
+    summary: 'Заголовок без скачивания с гео-обходом через регион NO (--geo-bypass-country NO --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --geo-bypass-country NO --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок geo-bypass PL print',
+    summary: 'Заголовок без скачивания с гео-обходом через регион PL (--geo-bypass-country PL --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --geo-bypass-country PL --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок geo-bypass KR print',
+    summary: 'Заголовок без скачивания с гео-обходом через регион KR (--geo-bypass-country KR --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --geo-bypass-country KR --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок geo-bypass MX print',
+    summary: 'Заголовок без скачивания с гео-обходом через регион MX (--geo-bypass-country MX --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --geo-bypass-country MX --print title '
+  },
+  {
+    tool: 'yt-dlp',
     token: '· обновить yt-dlp → stable',
     summary: 'Обновить yt-dlp до стабильной ветки (--update-to stable); ссылка в команде не нужна.',
     fullLine: 'yt-dlp --update-to stable'
@@ -8078,6 +8162,150 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· ffmpeg: asetrate 48k 3с',
     summary: 'Лёгкий resample-питч первых 3 с (-af asetrate=48000*1.03,aresample=48000); дымовая проверка asetrate; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af asetrate=48000*1.03,aresample=48000 -t 3 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· видео v:9 кратко',
+    summary: 'Десятый видеопоток v:9: ширина, высота и кодек (поля ffprobe); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:9 -show_entries stream=width,height,codec_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· данные d:10 кратко',
+    summary: 'Одиннадцатый поток данных d:10: тип и кодек (поля codec_type и codec_name); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams d:10 -show_entries stream=codec_type,codec_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· вложения t:5 кратко',
+    summary: 'Шестой поток вложений t:5: тип и кодек (поля codec_type и codec_name); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams t:5 -show_entries stream=codec_type,codec_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· субтитры s:10 disposition',
+    summary: 'Одиннадцатая дорожка субтитров s:10: disposition и кодек (поля disposition и codec_name); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:10 -show_entries stream=disposition,codec_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· контейнер vendor_id',
+    summary: 'Идентификатор вендора в контейнере (поле format_tags=vendor_id; часто у QuickTime и MOV); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=vendor_id -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· контейнер title synopsis',
+    summary: 'Теги контейнера title и synopsis (поля format_tags); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=title,synopsis -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· главы time_base',
+    summary: 'Все главы: time_base (-show_chapters -show_entries chapter=time_base -of compact); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -show_chapters -show_entries chapter=time_base -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· кадры v:0 interlaced 4',
+    summary: 'Первые четыре кадра v:0: признак interlaced_frame (-show_frames -read_intervals %+#4); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_frames -read_intervals %+#4 -show_entries frame=interlaced_frame -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· контейнер flags start_time',
+    summary: 'Поля format: flags и start_time (поля ffprobe; сверка флагов контейнера и старта); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format=flags,start_time -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· аудио a:3 side_data_list',
+    summary: 'Четвёртая аудиодорожка a:3: список side_data_list (поле stream_side_data_list); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:3 -show_entries stream_side_data_list -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· аудио a:10 каналы',
+    summary: 'Одиннадцатая аудиодорожка a:10: кодек и число каналов (поля codec_name и channels); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:10 -show_entries stream=codec_name,channels -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· пакет v:0 dts_time 1',
+    summary: 'Первый пакет v:0: dts_time (-show_packets -read_intervals %+#1 -show_entries packet=dts_time); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_packets -read_intervals %+#1 -show_entries packet=dts_time -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: inflate 2с',
+    summary: 'Морфологическое расширение inflate первых 2 с; дымовая проверка inflate; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf inflate -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: despill 2с',
+    summary: 'Подавление зелёного ореола despill=mix=0.12 первых 2 с; дымовая проверка despill; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf despill=mix=0.12 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: exposure 2с',
+    summary: 'Экспозиция exposure=0.4 первых 2 с; дымовая проверка exposure; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf exposure=0.4 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: vibrance 2с',
+    summary: 'Локальная насыщенность vibrance=intensity=0.08 первых 2 с; дымовая проверка vibrance; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf vibrance=intensity=0.08 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: hue s 0.75 2с',
+    summary: 'Повышение насыщенности hue=s=0.75 первых 2 с; дымовая проверка hue; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf hue=s=0.75 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: geq scale lum 2с',
+    summary: 'Линейное ослабление яркости geq=lum=lum(X,Y)*0.95:cb=cb(X,Y):cr=cr(X,Y) первых 2 с; дымовая проверка geq; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf geq=lum=lum(X,Y)*0.95:cb=cb(X,Y):cr=cr(X,Y) -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: sab 0.35 2с',
+    summary: 'Сглаживание sab=strength=0.35 первых 2 с; дымовая проверка sab; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf sab=strength=0.35 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: cropdetect 3с',
+    summary: 'Оценка обрезки cropdetect=limit=24:round=16 первых 3 с (чёрные поля в stderr); дымовая проверка cropdetect; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf cropdetect=limit=24:round=16 -t 3 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: fade in 2с',
+    summary: 'Затемнение на входе fade=t=in:st=0:d=0.5 первых 2 с; дымовая проверка fade; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf fade=t=in:st=0:d=0.5 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: acrossover 2k5 3с',
+    summary: 'Кроссовер спектра acrossover=split=2500 первых 3 с; дымовая проверка acrossover; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af acrossover=split=2500 -t 3 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: crystalizer 1.4 3с',
+    summary: 'Кристалайзер crystalizer=i=1.4 первых 3 с; дымовая проверка crystalizer; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af crystalizer=i=1.4 -t 3 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: acrusher 6bit 3с',
+    summary: 'Бит-круш acrusher=bits=6:mode=log первых 3 с; дымовая проверка acrusher; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af acrusher=bits=6:mode=log -t 3 -vn -sn -f null -`
   }
 ]
 
