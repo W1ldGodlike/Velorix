@@ -42,7 +42,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --dump-single-json',
+    token: '· JSON один URL (dump-single-json)',
     summary: 'Один JSON на ролик без скачивания (--dump-single-json, эквивалент -J для одного URL); допишите URL.',
     fullLine: 'yt-dlp --dump-single-json '
   },
@@ -54,67 +54,67 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --simulate',
+    token: '· сухой прогон (simulate)',
     summary: 'Сухой прогон без файлов (--simulate); допишите URL (проверка доступности и форматов).',
     fullLine: 'yt-dlp --simulate '
   },
   {
     tool: 'yt-dlp',
-    token: '· --list-subs',
+    token: '· список субтитров',
     summary: 'Список субтитров на странице без скачивания (--list-subs); допишите URL.',
     fullLine: 'yt-dlp --list-subs '
   },
   {
     tool: 'yt-dlp',
-    token: '· --flat-playlist -J',
+    token: '· плоский плейлист + JSON (-J)',
     summary: 'Плейлист «плоско» и JSON (-J) без глубокого извлечения каждого ролика; допишите URL плейлиста.',
     fullLine: 'yt-dlp --flat-playlist -J '
   },
   {
     tool: 'yt-dlp',
-    token: '· --no-playlist -F',
+    token: '· один ролик из плейлиста -F',
     summary: 'Только один ролик из URL-плейлиста (--no-playlist -F); список форматов без разворачивания всего плейлиста.',
     fullLine: 'yt-dlp --no-playlist -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· --flat-playlist -F',
+    token: '· плоский плейлист + форматы -F',
     summary: 'Плоский список элементов плейлиста и форматы по каждому (--flat-playlist -F); допишите URL плейлиста.',
     fullLine: 'yt-dlp --flat-playlist -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· --list-thumbnails',
+    token: '· список миниатюр (thumbnail)',
     summary: 'Доступные URL миниатюр (thumbnail) без скачивания (--list-thumbnails); допишите URL.',
     fullLine: 'yt-dlp --list-thumbnails '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print title',
+    token: '· вывод: title',
     summary: 'Только заголовок ролика без скачивания (--skip-download --print title); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print title '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print duration_string',
+    token: '· вывод: duration_string',
     summary: 'Только длительность HH:MM:SS без скачивания (--skip-download --print duration_string); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print duration_string '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print uploader',
+    token: '· вывод: uploader',
     summary: 'Имя автора (uploader) без скачивания (--skip-download --print uploader); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print uploader '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print id',
+    token: '· вывод: id',
     summary: 'Идентификатор ролика на площадке без скачивания (--skip-download --print id); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print id '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print webpage_url',
+    token: '· вывод: webpage_url',
     summary: 'Канонический URL страницы без скачивания (--skip-download --print webpage_url); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print webpage_url '
   },
@@ -126,31 +126,31 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print channel_id',
+    token: '· вывод: channel_id',
     summary: 'Идентификатор канала без скачивания (--skip-download --print channel_id); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print channel_id '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print thumbnail',
+    token: '· вывод: thumbnail',
     summary: 'URL миниатюры (thumbnail) без скачивания (--skip-download --print thumbnail); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print thumbnail '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print view_count',
+    token: '· вывод: view_count',
     summary: 'Счётчик просмотров без скачивания (--skip-download --print view_count); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print view_count '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print upload_date',
+    token: '· вывод: upload_date',
     summary: 'Дата публикации YYYYMMDD без скачивания (--skip-download --print upload_date); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print upload_date '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print playlist_title',
+    token: '· вывод: playlist_title',
     summary: 'Заголовок плейлиста без скачивания (--skip-download --print playlist_title); допишите URL плейлиста.',
     fullLine: 'yt-dlp --skip-download --print playlist_title '
   },
@@ -168,13 +168,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print description',
+    token: '· вывод: description',
     summary: 'Текст описания ролика без скачивания (--skip-download --print description); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print description '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print categories',
+    token: '· вывод: categories',
     summary: 'Категории и тематики без скачивания (--skip-download --print categories); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print categories '
   },
@@ -192,13 +192,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print playlist_id',
+    token: '· вывод: playlist_id',
     summary: 'Идентификатор плейлиста без скачивания (--skip-download --print playlist_id); допишите URL плейлиста.',
     fullLine: 'yt-dlp --skip-download --print playlist_id '
   },
   {
     tool: 'yt-dlp',
-    token: '· --geo-bypass -F',
+    token: '· гео-обход + список форматов -F',
     summary: 'Обход гео-блока и список форматов (--geo-bypass -F); допишите URL (региональные ограничения).',
     fullLine: 'yt-dlp --geo-bypass -F '
   },
@@ -210,37 +210,37 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print ext',
+    token: '· вывод: ext',
     summary: 'Расширение контейнера выбранного формата без скачивания (--skip-download --print ext); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print ext '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print resolution',
+    token: '· вывод: resolution',
     summary: 'Строка разрешения выбранного формата без скачивания (--skip-download --print resolution); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print resolution '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print vcodec',
+    token: '· вывод: vcodec',
     summary: 'Видеокодек выбранного формата без скачивания (--skip-download --print vcodec); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print vcodec '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print acodec',
+    token: '· вывод: acodec',
     summary: 'Аудиокодек выбранного формата без скачивания (--skip-download --print acodec); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print acodec '
   },
   {
     tool: 'yt-dlp',
-    token: '· --list-extractors',
+    token: '· список экстракторов',
     summary: 'Список имён модулей извлечения сайтов без URL (диагностика сборки yt-dlp и поддерживаемых площадок).',
     fullLine: 'yt-dlp --list-extractors'
   },
   {
     tool: 'yt-dlp',
-    token: '· --version',
+    token: '· версия yt-dlp',
     summary: 'Версия yt-dlp и зависимостей без URL (сверка с встроенной поставкой и обновлениями).',
     fullLine: 'yt-dlp --version'
   },
@@ -252,7 +252,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --no-cache-dir -F',
+    token: '· без кэша + -F',
     summary: 'Список форматов без кэша модулей извлечения (--no-cache-dir -F); при подозрении на битый кэш; допишите URL.',
     fullLine: 'yt-dlp --no-cache-dir -F '
   },
@@ -270,19 +270,19 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --ignore-errors -J',
+    token: '· плейлист: игнор ошибок + -J',
     summary: 'Плоский плейлист и JSON с пропуском битых элементов (--ignore-errors --flat-playlist -J); допишите URL плейлиста.',
     fullLine: 'yt-dlp --ignore-errors --flat-playlist -J '
   },
   {
     tool: 'yt-dlp',
-    token: '· --write-info-json',
+    token: '· запись .info.json',
     summary: 'Записать .info.json рядом с выходом без видео (--write-info-json --skip-download); допишите URL (трассировка для ZIP-архива поддержки).',
     fullLine: 'yt-dlp --write-info-json --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· --no-warnings -F',
+    token: '· без предупреждений + -F',
     summary: 'Список форматов без предупреждений в стандартном потоке ошибок (stderr) (--no-warnings -F); допишите URL (чище вывод).',
     fullLine: 'yt-dlp --no-warnings -F '
   },
@@ -294,49 +294,49 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print is_live',
+    token: '· вывод: is_live',
     summary: 'Признак прямого эфира без скачивания (--skip-download --print is_live); в метаданных — да или нет (true/false); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print is_live '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print live_status',
+    token: '· вывод: live_status',
     summary: 'Статус эфира без скачивания (--skip-download --print live_status): is_live (эфир сейчас), was_live (запись с эфира), not_live (не эфир), is_upcoming или upcoming (до начала эфира); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print live_status '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print availability',
+    token: '· вывод: availability',
     summary: 'Видимость ролика без скачивания (--skip-download --print availability): public (для всех), unlisted (только по ссылке), premium (ограниченный доступ), needs_auth (нужна авторизация); допишите URL (диагностика 403 и входа по логину).',
     fullLine: 'yt-dlp --skip-download --print availability '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print age_limit',
+    token: '· вывод: age_limit',
     summary: 'Возрастной лимит ролика без скачивания (--skip-download --print age_limit); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print age_limit '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print like_count',
+    token: '· вывод: like_count',
     summary: 'Счётчик лайков без скачивания (--skip-download --print like_count); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print like_count '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print comment_count',
+    token: '· вывод: comment_count',
     summary: 'Число комментариев без скачивания (--skip-download --print comment_count); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print comment_count '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print aspect_ratio',
+    token: '· вывод: aspect_ratio',
     summary: 'Соотношение сторон выбранного формата без скачивания (--skip-download --print aspect_ratio); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print aspect_ratio '
   },
   {
     tool: 'yt-dlp',
-    token: '· --playlist-items 1 -F',
+    token: '· плейлист: только 1-й + -F',
     summary: 'Только первый элемент плейлиста и список форматов (--playlist-items 1 -F); допишите URL плейлиста.',
     fullLine: 'yt-dlp --playlist-items 1 -F '
   },
@@ -354,25 +354,25 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print duration',
+    token: '· вывод: duration (сек)',
     summary: 'Длительность в секундах (число) без скачивания (--skip-download --print duration); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print duration '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print width',
+    token: '· вывод: width',
     summary: 'Ширина выбранного формата в пикселях без скачивания (--skip-download --print width); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print width '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print height',
+    token: '· вывод: height',
     summary: 'Высота выбранного формата в пикселях без скачивания (--skip-download --print height); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print height '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print tbr',
+    token: '· вывод: tbr',
     summary: 'Сводный битрейт выбранного формата (kbps) без скачивания (--skip-download --print tbr); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print tbr '
   },
@@ -396,31 +396,31 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --write-thumbnail',
+    token: '· только миниатюра',
     summary: 'Только миниатюра без видео (--write-thumbnail --skip-download); файл .jpg или .webp рядом; допишите URL.',
     fullLine: 'yt-dlp --write-thumbnail --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· --write-auto-sub',
+    token: '· только авто-субтитры',
     summary: 'Только авто-субтитры без видео (--write-auto-sub --skip-download); поможет проверить транскрипт; допишите URL.',
     fullLine: 'yt-dlp --write-auto-sub --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· --write-description',
+    token: '· описание в .description',
     summary: 'Описание ролика в отдельный файл .description без видео (--write-description --skip-download); допишите URL.',
     fullLine: 'yt-dlp --write-description --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· --write-url-link',
+    token: '· ярлык .url на страницу',
     summary: 'Файл-ярлык на страницу без видео (--write-url-link --skip-download); допишите URL.',
     fullLine: 'yt-dlp --write-url-link --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· --check-formats',
+    token: '· проверка форматов',
     summary: 'Проверка доступности выбранных форматов без полного скачивания (--check-formats); допишите URL.',
     fullLine: 'yt-dlp --check-formats '
   },
@@ -432,7 +432,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print has_drm',
+    token: '· вывод: has_drm',
     summary: 'Флаг DRM и шифрования без скачивания (--skip-download --print has_drm); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print has_drm '
   },
@@ -4943,13 +4943,13 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· v:0 битрейт и FPS',
+    token: '· видео v:0 битрейт и FPS',
     summary: 'Поток v:0: битрейт и средняя частота кадров (bit_rate, avg_frame_rate; сверка с r_frame_rate из компактного шаблона); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=bit_rate,avg_frame_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· v:0 SAR и DAR',
+    token: '· видео v:0 SAR и DAR',
     summary: 'Поток v:0: sample_aspect_ratio и display_aspect_ratio (анаморф и неквадратные пиксели); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=sample_aspect_ratio,display_aspect_ratio -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -4979,7 +4979,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· дорожки: compact-строка',
+    token: '· все дорожки (формат compact)',
     summary: 'Все дорожки одной строкой: индекс, тип и имя кодека (index, codec_type, codec_name; вывод -of compact); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_entries stream=index,codec_type,codec_name -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5009,7 +5009,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· v:0 поле и диапазон',
+    token: '· видео v:0 поле и диапазон',
     summary: 'Поток v:0: порядок полей кадра и диапазон яркости (field_order, color_range; чересстрочность и полный диапазон яркости — в терминах full range); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=field_order,color_range -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5033,7 +5033,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· v:0 кадры и длительность',
+    token: '· видео v:0 кадры и длительность',
     summary: 'Поток v:0: число кадров и длительность дорожки (nb_frames, duration); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=nb_frames,duration -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5057,13 +5057,13 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· a:0 профиль и битрейт',
+    token: '· аудио a:0 профиль и битрейт',
     summary: 'Поток a:0: кодек, профиль и битрейт (codec_name, profile, bit_rate); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=codec_name,profile,bit_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· v:0 refs и B-кадры',
+    token: '· видео v:0 refs и B-кадры',
     summary: 'Поток v:0: число опорных кадров и наличие B-кадров (refs, has_b_frames; сложность группы кадров GOP); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=refs,has_b_frames -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5093,13 +5093,13 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· v:0 пиксели и цвет',
+    token: '· видео v:0 пиксели и цвет',
     summary: 'Поток v:0: формат пикселей и цвет (pix_fmt, color_space, color_range; контекст SDR и HDR без отдельного color_transfer); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=pix_fmt,color_space,color_range -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· v:0 coded и отображение',
+    token: '· видео v:0 coded и отображение',
     summary: 'Поток v:0: coded_width, coded_height и width, height (размер хранения и отображения, анаморф); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=coded_width,coded_height,width,height -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5147,7 +5147,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· a:0 расклад и битрейт',
+    token: '· аудио a:0 расклад и битрейт',
     summary: 'Поток a:0: расклад каналов и битрейт (channel_layout, bit_rate); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=channel_layout,bit_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5183,7 +5183,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· v:0 субтитры и AVC',
+    token: '· видео v:0 субтитры и AVC',
     summary: 'Поток v:0: признаки субтитров и AVC (closed_captions, is_avc; стандарты CEA-608 и CEA-708 и элементарный поток AVC); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=closed_captions,is_avc -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5201,7 +5201,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· v:0 FourCC',
+    token: '· видео v:0 FourCC',
     summary: 'Поток v:0: codec_tag_string (четырёхбуквенный идентификатор FourCC — бренд сырого кодека); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5291,13 +5291,13 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· s:1 кодек и язык',
+    token: '· субтитры s:1 кодек и язык',
     summary: 'Вторая дорожка субтитров s:1: codec_name и stream_tags language; путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:1 -show_entries stream=codec_name:stream_tags=language -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· a:1 disposition',
+    token: '· аудио a:1 disposition',
     summary: 'Вторая аудиодорожка a:1: disposition (forced, default и т. д.); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:1 -show_entries stream=disposition -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5453,7 +5453,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· v:0 BPS и DURATION',
+    token: '· видео v:0 BPS и DURATION',
     summary: 'MKV-статистика v:0: stream_tags BPS и DURATION (битрейт и длительность дорожки, если записаны mkvtoolnix); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream_tags=BPS,DURATION -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5663,13 +5663,13 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· s:0 stream dur',
+    token: '· субтитры s:0 start+duration',
     summary: 'Первая дорожка субтитров s:0: start_time и duration (смещение и длительность относительно видео); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=start_time,duration -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· a:1 stream dur',
+    token: '· аудио a:1 start+duration',
     summary: 'Вторая аудиодорожка a:1: start_time и duration (мультиязык, сдвиг); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:1 -show_entries stream=start_time,duration -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5717,7 +5717,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· a:1 расклад и формат сэмпла',
+    token: '· аудио a:1 расклад и формат сэмпла',
     summary: 'Поток a:1: channel_layout и sample_fmt (мультиязык, разрядность сэмпла PCM); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:1 -show_entries stream=channel_layout,sample_fmt -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5789,7 +5789,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· v:2 кодек, размер, профиль',
+    token: '· видео v:2 кодек, размер и профиль',
     summary: 'Третья видеодорожка v:2: кодек, размеры, профиль и уровень (codec_name, width, height, profile, level; мультиракурс и редкие контейнеры); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:2 -show_entries stream=codec_name,width,height,profile,level -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5837,7 +5837,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· a:0 time_base и FPS',
+    token: '· аудио a:0 time_base и FPS',
     summary: 'Поток a:0: time_base и avg_frame_rate и r_frame_rate (тактовая сетка и дробь FPS у аудио-потока); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=time_base,avg_frame_rate,r_frame_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -6047,7 +6047,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· a:1 кодек и каналы',
+    token: '· аудио a:1 кодек и каналы',
     summary: 'Вторая аудиодорожка a:1: кодек, число каналов и расклад (codec_name, channels, channel_layout; мультиязык и комментарии); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:1 -show_entries stream=codec_name,channels,channel_layout -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -6179,7 +6179,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· s:0 индекс и кодек',
+    token: '· субтитры s:0 индекс и кодек',
     summary: 'Первая субтитровая дорожка s:0: index и codec_name (порядок и тип в контейнере); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=index,codec_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -6269,7 +6269,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· v:2 размер и FPS',
+    token: '· видео v:2 размер и FPS',
     summary: 'Третий видеопоток v:2: ширина, высота и частота кадров (width, height, r_frame_rate; несколько видеопотоков или альтернативы); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:2 -show_entries stream=width,height,r_frame_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
