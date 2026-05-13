@@ -30,6 +30,9 @@ import type {
   FfmpegExportVideoVignetteId,
   MediaExportTrimPayload
 } from '../shared/ffmpeg-export-contract'
+import { FFMPEG_EXPORT_CANCELLED_ERROR } from '../shared/ffmpeg-export-contract'
+import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import { getMainApplicationStrings } from '../shared/main-application-locale'
 import {
   buildFfmpegExportArgv,
   normalizeFfmpegExportAudioGainDb,
@@ -718,7 +721,9 @@ function runFfmpegExportOnce(params: {
   segmentDur: number
   onProgress?: (p: FfmpegExportProgressPayload) => void
   mapPercent?: (rawPercent: number) => number
+  uiLocale?: DownloadsWindowUiLocale
 }): Promise<{ ok: true } | { ok: false; error: string }> {
+  const locStrings = getMainApplicationStrings(params.uiLocale ?? 'ru')
   return new Promise((resolve) => {
     const child = spawn(params.ffmpegPath, params.args, {
       windowsHide: true,
@@ -773,7 +778,7 @@ function runFfmpegExportOnce(params: {
     child.on('error', (err) => {
       logExternalProcessLine('ffmpeg-export', 'lifecycle', `error ${err.message}`)
       if (params.signal.aborted || err.name === 'AbortError') {
-        resolve({ ok: false, error: 'Экспорт отменён' })
+        resolve({ ok: false, error: FFMPEG_EXPORT_CANCELLED_ERROR })
         return
       }
       resolve({ ok: false, error: err.message })
@@ -786,7 +791,7 @@ function runFfmpegExportOnce(params: {
         stderrTail = ''
       }
       if (params.signal.aborted) {
-        resolve({ ok: false, error: 'Экспорт отменён' })
+        resolve({ ok: false, error: FFMPEG_EXPORT_CANCELLED_ERROR })
         return
       }
       if (code === 0) {
@@ -794,7 +799,10 @@ function runFfmpegExportOnce(params: {
       } else {
         resolve({
           ok: false,
-          error: `ffmpeg завершился с кодом ${code ?? '?'}`
+          error: locStrings.exportFfmpegExitedWithCode.replace(
+            '{code}',
+            code === null || code === undefined ? '?' : String(code)
+          )
         })
       }
     })
@@ -863,7 +871,10 @@ export async function runFfmpegExportJob(params: {
   audioNormalize?: FfmpegExportAudioNormalizeId | null
   signal: AbortSignal
   onProgress?: (p: FfmpegExportProgressPayload) => void
+  uiLocale?: DownloadsWindowUiLocale
 }): Promise<{ ok: true } | { ok: false; error: string }> {
+  const uloc = params.uiLocale ?? 'ru'
+  const S = getMainApplicationStrings(uloc)
   const applyTrim = shouldApplyFfmpegExportTrim(params.trim ?? null, params.probeDurationSec)
   const encodePreset = params.encodePreset ?? 'balance'
   const videoCodec = parseFfmpegExportVideoCodec(params.videoCodec)
@@ -907,13 +918,13 @@ export async function runFfmpegExportJob(params: {
   if (params.twoPass === true && videoBitrate === null) {
     return {
       ok: false,
-      error: 'Двухпроходное кодирование доступно только с выбранным видеобитрейтом, не с CRF.'
+      error: S.exportTwoPassRequiresBitrate
     }
   }
   if (params.twoPass === true && videoCodec !== 'libx264') {
     return {
       ok: false,
-      error: 'Двухпроходное кодирование поддержано только для H.264 (libx264).'
+      error: S.exportTwoPassLibx264Only
     }
   }
   const segmentDur = resolveExportSegmentDurationSec(
@@ -963,6 +974,7 @@ export async function runFfmpegExportJob(params: {
       args,
       signal: params.signal,
       segmentDur,
+      uiLocale: uloc,
       ...(params.onProgress !== undefined ? { onProgress: params.onProgress } : {})
     })
   }
@@ -982,6 +994,7 @@ export async function runFfmpegExportJob(params: {
       args: argsPass1,
       signal: params.signal,
       segmentDur,
+      uiLocale: uloc,
       mapPercent: (p) => p * 0.5,
       ...(params.onProgress !== undefined ? { onProgress: params.onProgress } : {})
     })
@@ -989,10 +1002,10 @@ export async function runFfmpegExportJob(params: {
       return r1
     }
     if (params.signal.aborted) {
-      return { ok: false, error: 'Экспорт отменён' }
+      return { ok: false, error: FFMPEG_EXPORT_CANCELLED_ERROR }
     }
 
-    params.onProgress?.({ percent: 50, message: 'Второй проход libx264…' })
+    params.onProgress?.({ percent: 50, message: S.exportLibx264SecondPassProgress })
 
     const argsPass2 = buildFfmpegExportArgv({
       ...baseArgvParams,
@@ -1003,6 +1016,7 @@ export async function runFfmpegExportJob(params: {
       args: argsPass2,
       signal: params.signal,
       segmentDur,
+      uiLocale: uloc,
       mapPercent: (p) => 50 + p * 0.5,
       ...(params.onProgress !== undefined ? { onProgress: params.onProgress } : {})
     })

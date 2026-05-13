@@ -25,21 +25,29 @@ describe('inferVideoFpsFromNbFrames', () => {
 })
 
 describe('formatFfprobeVideoFpsDetail', () => {
-  it('одно значение при совпадении avg и r', () => {
+  it('одно значение при совпадении avg и r (en по умолчанию)', () => {
     expect(formatFfprobeVideoFpsDetail('24000/1001', '24000/1001')).toBe(
       `${(24000 / 1001).toFixed(3)} fps`
     )
     expect(formatFfprobeVideoFpsDetail('30/1', '30/1')).toBe('30 fps')
   })
 
-  it('два значения при заметном расхождении', () => {
+  it('два значения при заметном расхождении (en)', () => {
     expect(formatFfprobeVideoFpsDetail('24000/1001', '30000/1001')).toBe(
       `${(24000 / 1001).toFixed(3)} / ${(30000 / 1001).toFixed(3)} fps`
     )
     expect(formatFfprobeVideoFpsDetail('30/1', '60/1')).toBe('30 / 60 fps')
   })
 
-  it('fallback на одно поле', () => {
+  it('locale ru — суффикс к/с', () => {
+    expect(formatFfprobeVideoFpsDetail('30/1', '30/1', 'ru')).toBe('30 к/с')
+    expect(formatFfprobeVideoFpsDetail('30/1', '60/1', 'ru')).toBe('30 / 60 к/с')
+    expect(formatFfprobeVideoFpsDetail('24000/1001', '24000/1001', 'ru')).toBe(
+      `${(24000 / 1001).toFixed(3)} к/с`
+    )
+  })
+
+  it('fallback на одно поле (en)', () => {
     expect(formatFfprobeVideoFpsDetail('0/0', '25/1')).toBe('25 fps')
     expect(formatFfprobeVideoFpsDetail('25/1', '0/0')).toBe('25 fps')
     expect(formatFfprobeVideoFpsDetail(undefined, undefined)).toBe(null)

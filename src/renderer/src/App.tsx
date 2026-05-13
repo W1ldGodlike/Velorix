@@ -18,6 +18,8 @@ import {
   formatTerminalIntroTail,
   formatTerminalPreviewTooltip,
   formatDownloadsQueueRowStatus,
+  applyPersistedUiLocale,
+  setUiLocaleForSession,
   getUiLocale,
   uiText,
   uiTextVars
@@ -300,11 +302,11 @@ function previewVideoMediaErrorDetailLabel(code: number): string {
 function engineLabel(id: EngineId): string {
   switch (id) {
     case 'ffmpeg':
-      return 'ffmpeg'
+      return uiText('engineDisplayNameFfmpeg')
     case 'ffprobe':
-      return 'ffprobe'
+      return uiText('engineDisplayNameFfprobe')
     case 'yt-dlp':
-      return 'yt-dlp'
+      return uiText('engineDisplayNameYtdlp')
     default:
       return id
   }
@@ -315,17 +317,18 @@ type EnginePathsDraft = Record<EngineId, string>
 function formatEngineVersionsLine(snapshot: EnginesSnapshot): string {
   const parts = ENGINE_IDS.map((id) => {
     const e = snapshot.engines[id]
+    const name = engineLabel(id)
     if (e.state === 'ready' && e.version) {
-      const cut = e.version.length > 30 ? `${e.version.slice(0, 28)}…` : e.version
-      return `${id}: ${cut}`
+      const cut = e.version.length > 30 ? `${e.version.slice(0, 28)}${uiText('commonUnicodeEllipsis')}` : e.version
+      return `${name}: ${cut}`
     }
     if (e.state === 'missing') {
-      return `${id}: —`
+      return `${name}: ${uiText('uiPlaceholderDash')}`
     }
     if (e.state === 'error') {
-      return `${id}: !`
+      return `${name}: ${uiText('enginesVersionLineErrorMark')}`
     }
-    return `${id}: …`
+    return `${name}: ${uiText('commonUnicodeEllipsis')}`
   })
   return parts.join(' · ')
 }
@@ -333,7 +336,7 @@ function formatEngineVersionsLine(snapshot: EnginesSnapshot): string {
 /** Короткая подпись для топбара v0 (`ffmpeg 6.x • yt-dlp 2024.x`) рядом с icon-кластером. */
 function shortEngineVersionSnippet(id: EngineId, raw: string | null): string {
   if (!raw || raw.trim().length === 0) {
-    return '—'
+    return uiText('uiPlaceholderDash')
   }
   const line = raw.split(/\r?\n/)[0]?.trim() ?? raw.trim()
   if (id === 'ffmpeg') {
@@ -352,21 +355,22 @@ function shortEngineVersionSnippet(id: EngineId, raw: string | null): string {
       return headToken
     }
   }
-  return line.length > 20 ? `${line.slice(0, 18)}…` : line
+  return line.length > 20 ? `${line.slice(0, 18)}${uiText('commonUnicodeEllipsis')}` : line
 }
 
 function formatTopbarEngineVersionsLine(snapshot: EnginesSnapshot): string {
   const ffmpeg = snapshot.engines.ffmpeg
   const ytdlp = snapshot.engines['yt-dlp']
+  const dash = uiText('uiPlaceholderDash')
   const fv =
     ffmpeg.state === 'ready' && ffmpeg.version
       ? shortEngineVersionSnippet('ffmpeg', ffmpeg.version)
-      : '—'
+      : dash
   const yv =
     ytdlp.state === 'ready' && ytdlp.version
       ? shortEngineVersionSnippet('yt-dlp', ytdlp.version)
-      : '—'
-  return `ffmpeg ${fv} • yt-dlp ${yv}`
+      : dash
+  return uiTextVars('topbarEngineVersionsLineTemplate', { ffmpegVer: fv, ytdlpVer: yv })
 }
 
 function clipboardLooksLikeDownloadsPayload(text: string): boolean {
@@ -446,8 +450,8 @@ function sanitizeDownloadsRows(raw: unknown[]): DownloadsQueueRowView[] {
         id: o['id'],
         url: o['url'],
         shortLabel: typeof o['shortLabel'] === 'string' ? o['shortLabel'] : o['url'],
-        progress: typeof o['progress'] === 'string' ? o['progress'] : '—',
-        status: typeof o['status'] === 'string' ? o['status'] : '—',
+        progress: typeof o['progress'] === 'string' ? o['progress'] : uiText('uiPlaceholderDash'),
+        status: typeof o['status'] === 'string' ? o['status'] : uiText('uiPlaceholderDash'),
         ...(typeof o['outputPath'] === 'string' ? { outputPath: o['outputPath'] } : {}),
         ...(typeof o['queueFmt'] === 'string' ? { queueFmt: o['queueFmt'] } : {}),
         ...(typeof o['queueSize'] === 'string' ? { queueSize: o['queueSize'] } : {}),
@@ -546,6 +550,8 @@ function App(): JSX.Element {
   const [enginesOfferDownload, setEnginesOfferDownload] = useState(false)
   const [engineDownloadBusy, setEngineDownloadBusy] = useState(false)
   const [enginePathsOpen, setEnginePathsOpen] = useState(false)
+  /** Сброс дерева после `applyPersistedUiLocale` — строки из `ui-text` читают `getUiLocale()` из модуля. */
+  const [, setUiLocaleRenderTick] = useState(0)
   const [knowledgeOpen, setKnowledgeOpen] = useState(false)
   const [knowledgeInitialSlug, setKnowledgeInitialSlug] = useState<string | null>(null)
   const [aboutOpen, setAboutOpen] = useState(false)
@@ -1049,7 +1055,7 @@ function App(): JSX.Element {
       )
       setStatusHint(
         result.ok
-          ? uiTextVars('statusTerminalCliExitOk', { code: String(result.code ?? 'n/a') })
+          ? uiTextVars('statusTerminalCliExitOk', { code: String(result.code ?? uiText('commonNotApplicableShort')) })
           : uiTextVars('statusTerminalCliFailed', { error: result.error })
       )
     } finally {
@@ -1730,7 +1736,8 @@ function App(): JSX.Element {
 
   const refreshEngineUi = useCallback(async (): Promise<void> => {
     try {
-      const snapshot = await window.fluxalloy.engines.getStatus()
+      const loc = getUiLocale() as DownloadsWindowUiLocale
+      const snapshot = await window.fluxalloy.engines.getStatus(loc)
       setEngineSummary(summarizeEngines(snapshot.engines))
       setEngineVersionsLine(formatEngineVersionsLine(snapshot))
       setTopbarEngineVersionsLine(formatTopbarEngineVersionsLine(snapshot))
@@ -1748,6 +1755,11 @@ function App(): JSX.Element {
     let cleanupUiPanels: (() => void) | undefined
     void (async () => {
       const loaded = await window.fluxalloy.settings.get()
+      const { resolved, shouldPersist } = applyPersistedUiLocale(loaded)
+      setUiLocaleRenderTick((n) => n + 1)
+      if (shouldPersist) {
+        void window.fluxalloy.settings.setUiLocale(resolved)
+      }
       applyTheme(loaded.effectiveTheme)
       hydrateExportFieldsFromSettings(loaded)
       hydrateMainWindowUiPanels(loaded.mainWindowUiPanels)
@@ -1774,6 +1786,14 @@ function App(): JSX.Element {
     hydrateExportFieldsFromSettings,
     hydrateMainWindowUiPanels
   ])
+
+  useEffect(() => {
+    const off = window.fluxalloy.onUiLocaleChanged((loc) => {
+      setUiLocaleForSession(loc)
+      setUiLocaleRenderTick((n) => n + 1)
+    })
+    return off
+  }, [])
 
   useEffect(() => {
     const off = window.fluxalloy.downloads.onDownloadsWindowUiPanelsChanged((panels) => {
@@ -1956,8 +1976,19 @@ function App(): JSX.Element {
     }
   }
 
+  const handleUiLocaleToggle = useCallback((): void => {
+    const next: DownloadsWindowUiLocale = getUiLocale() === 'ru' ? 'en' : 'ru'
+    void window.fluxalloy.settings
+      .setUiLocale(next)
+      .then(() => {
+        setUiLocaleForSession(next)
+        setUiLocaleRenderTick((n) => n + 1)
+      })
+      .catch(console.error)
+  }, [])
+
   async function handleOpenToolbar(): Promise<void> {
-    const result = await window.fluxalloy.preview.openFileDialog()
+    const result = await window.fluxalloy.preview.openFileDialog(getUiLocale() as DownloadsWindowUiLocale)
     if (result.ok) {
       applyPreview(result)
     }
@@ -1967,7 +1998,7 @@ function App(): JSX.Element {
     setEngineDownloadBusy(true)
     setStatusHint(uiText('statusEnginesDownloadPreparing'))
     try {
-      const res = await window.fluxalloy.engines.download()
+      const res = await window.fluxalloy.engines.download(getUiLocale() as DownloadsWindowUiLocale)
       if (!res.ok) {
         setStatusHint(uiTextVars('statusErrorWithDetail', { detail: res.error }))
         return
@@ -2305,12 +2336,12 @@ function App(): JSX.Element {
   return (
     <div className="app-shell">
       <header className="app-topbar">
-        <div className="app-topbar-brand" aria-label="FluxAlloy">
+        <div className="app-topbar-brand" aria-label={uiText('topbarProductName')}>
           <span className="app-topbar-mark" aria-hidden>
             ◇
           </span>
-          <span className="app-topbar-title">FluxAlloy</span>
-          <span className="app-topbar-version">desktop</span>
+          <span className="app-topbar-title">{uiText('topbarProductName')}</span>
+          <span className="app-topbar-version">{uiText('topbarProductEdition')}</span>
         </div>
         <nav className="app-workspace-tabs" aria-label={uiText('workspaceTabsAria')}>
           <button
@@ -2519,6 +2550,23 @@ function App(): JSX.Element {
             </button>
             <button
               type="button"
+              className="app-icon-btn app-locale-badge"
+              onClick={handleUiLocaleToggle}
+              title={
+                getUiLocale() === 'ru'
+                  ? uiText('topbarUiLocaleSwitchToEnglishTitle')
+                  : uiText('topbarUiLocaleSwitchToRussianTitle')
+              }
+            >
+              <span aria-hidden>{getUiLocale() === 'ru' ? 'RU' : 'EN'}</span>
+              <span className="app-visually-hidden">
+                {getUiLocale() === 'ru'
+                  ? uiText('topbarUiLocaleVisuallyHiddenRu')
+                  : uiText('topbarUiLocaleVisuallyHiddenEn')}
+              </span>
+            </button>
+            <button
+              type="button"
               className="app-icon-btn"
               onClick={toggleTheme}
               title={uiText('topbarThemeToggleTitle')}
@@ -2560,7 +2608,7 @@ function App(): JSX.Element {
               </p>
               <p className="app-doc-inline-links app-url-bar-doc-links">
                 <a href={YTDLP_DOC_README} target="_blank" rel="noreferrer">
-                  yt-dlp README
+                  {uiText('docLinkYtDlpReadme')}
                 </a>
                 {' · '}
                 <a href={YTDLP_DOC_FORMAT_SELECTION} target="_blank" rel="noreferrer">
@@ -3226,7 +3274,7 @@ function App(): JSX.Element {
                       <option value="source">{uiText('editorFpsOptionSource')}</option>
                       {EXPORT_FPS_OPTIONS.map((v) => (
                         <option key={v} value={v}>
-                          {v} fps
+                          {uiTextVars('editorExportFpsOptionTemplate', { value: String(v) })}
                         </option>
                       ))}
                     </select>
@@ -4454,8 +4502,8 @@ function App(): JSX.Element {
                               <div className="app-downloads-row-title">{row.shortLabel}</div>
                               <div className="app-downloads-row-url">{row.url}</div>
                             </td>
-                            <td className="app-downloads-mono">{row.queueFmt ?? '—'}</td>
-                            <td className="app-downloads-mono">{row.queueSize ?? '—'}</td>
+                            <td className="app-downloads-mono">{row.queueFmt ?? uiText('uiPlaceholderDash')}</td>
+                            <td className="app-downloads-mono">{row.queueSize ?? uiText('uiPlaceholderDash')}</td>
                             <td className="app-downloads-mono">
                               <div className="app-downloads-progress">
                                 {showProgressBar ? (
@@ -4482,12 +4530,12 @@ function App(): JSX.Element {
                                     {row.progress}
                                   </span>
                                 ) : (
-                                  '—'
+                                  uiText('uiPlaceholderDash')
                                 )}
                               </div>
                             </td>
-                            <td className="app-downloads-mono">{row.queueSpeed ?? '—'}</td>
-                            <td className="app-downloads-mono">{row.queueEta ?? '—'}</td>
+                            <td className="app-downloads-mono">{row.queueSpeed ?? uiText('uiPlaceholderDash')}</td>
+                            <td className="app-downloads-mono">{row.queueEta ?? uiText('uiPlaceholderDash')}</td>
                             <td>
                               <span
                                 className={`app-downloads-status app-downloads-status-${statusTone}`}
@@ -4951,9 +4999,9 @@ function App(): JSX.Element {
                           }}
                         >
                           <option value="none">{uiText('downloadsCookiesBrowserNone')}</option>
-                          <option value="chrome">Chrome</option>
-                          <option value="edge">Edge</option>
-                          <option value="firefox">Firefox</option>
+                          <option value="chrome">{uiText('downloadsYtdlpBrowserPrettyChrome')}</option>
+                          <option value="edge">{uiText('downloadsYtdlpBrowserPrettyEdge')}</option>
+                          <option value="firefox">{uiText('downloadsYtdlpBrowserPrettyFirefox')}</option>
                         </select>
                       </label>
                       <label className="app-field">
@@ -4969,9 +5017,9 @@ function App(): JSX.Element {
                           }}
                         >
                           <option value="none">{uiText('downloadsImpersonateOff')}</option>
-                          <option value="chrome">chrome</option>
-                          <option value="edge">edge</option>
-                          <option value="firefox">firefox</option>
+                          <option value="chrome">{uiText('downloadsYtdlpBrowserTokenChrome')}</option>
+                          <option value="edge">{uiText('downloadsYtdlpBrowserTokenEdge')}</option>
+                          <option value="firefox">{uiText('downloadsYtdlpBrowserTokenFirefox')}</option>
                         </select>
                       </label>
                     </div>
@@ -5376,7 +5424,7 @@ function App(): JSX.Element {
                     <span className="app-field-help">{uiText('downloadsHintsSameAsPopoutHelp')}</span>
                     <p className="app-doc-inline-links app-downloads-doc-links">
                       <a href={YTDLP_DOC_README} target="_blank" rel="noreferrer">
-                        {uiText('downloadsRailDocReadme')}
+                        {uiText('docLinkYtDlpReadme')}
                       </a>
                       {' · '}
                       <a href={YTDLP_DOC_FORMAT_SELECTION} target="_blank" rel="noreferrer">

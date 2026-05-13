@@ -6,6 +6,7 @@
 /** Главное окно: invoke/handle + подписки на события из main. */
 export const mainWindowIpc = {
   settingsGet: 'fluxalloy:settings-get',
+  settingsSetUiLocale: 'fluxalloy:settings-set-ui-locale',
   settingsSetTheme: 'fluxalloy:settings-set-theme',
   settingsSetFfmpegExportEncodePreset: 'fluxalloy:settings-set-ffmpeg-export-encode-preset',
   settingsSetFfmpegExportVideoCodec: 'fluxalloy:settings-set-ffmpeg-export-video-codec',
@@ -86,6 +87,7 @@ export const mainWindowIpc = {
   logRenderer: 'fluxalloy:log-renderer',
   previewOpened: 'fluxalloy:preview-opened',
   themeChanged: 'fluxalloy:theme-changed',
+  uiLocaleChanged: 'fluxalloy:ui-locale-changed',
   openEnginePaths: 'fluxalloy:open-engine-paths',
   enginePathsChanged: 'fluxalloy:engine-paths-changed',
   openAbout: 'fluxalloy:open-about',

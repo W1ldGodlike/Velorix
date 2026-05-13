@@ -34,7 +34,7 @@ export function DownloadsLogPanel({
     >
       <summary>
         {uiText('downloadsLogTitle')}
-        <span>{targetRowId !== null ? `#${targetRowId}` : '—'}</span>
+        <span>{targetRowId !== null ? `#${targetRowId}` : uiText('uiPlaceholderDash')}</span>
       </summary>
       <div className="app-downloads-log-actions">
         <button

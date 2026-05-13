@@ -1,5 +1,6 @@
 import { useEffect, useState, type RefObject } from 'react'
 
+import { miniIconTitle, uiText, uiTextVars } from '../locales/ui-text'
 import {
   IconChevronLeft,
   IconChevronRight,
@@ -128,7 +129,11 @@ export default function PreviewTransport({
   }
 
   return (
-    <div className="app-preview-transport" role="toolbar" aria-label="Транспорт предпросмотра">
+    <div
+      className="app-preview-transport"
+      role="toolbar"
+      aria-label={uiText('previewTransportToolbarAria')}
+    >
       <div className="app-preview-transport-cluster">
         <button
           type="button"
@@ -137,10 +142,10 @@ export default function PreviewTransport({
           onClick={() => {
             seekToFraction(0)
           }}
-          title="В начало"
+          title={miniIconTitle('miniIconSkipBack')}
         >
           <IconSkipBack />
-          <span className="app-visually-hidden">В начало</span>
+          <span className="app-visually-hidden">{miniIconTitle('miniIconSkipBack')}</span>
         </button>
         <button
           type="button"
@@ -149,20 +154,22 @@ export default function PreviewTransport({
           onClick={() => {
             seek(-STEP_SEC)
           }}
-          title={`Минус ${STEP_SEC} с`}
+          title={uiTextVars('previewTransportMinusSecTitle', { sec: STEP_SEC })}
         >
           <IconChevronLeft />
-          <span className="app-visually-hidden">Назад</span>
+          <span className="app-visually-hidden">{miniIconTitle('miniIconChevronLeft')}</span>
         </button>
         <button
           type="button"
           className="app-icon-btn app-icon-btn-primary"
           disabled={disabled}
           onClick={togglePlayPause}
-          title={playing ? 'Пауза' : 'Воспроизведение'}
+          title={playing ? miniIconTitle('miniIconPauseUi') : miniIconTitle('miniIconPlay')}
         >
           {playing ? <IconPauseUi title="" /> : <IconPlay title="" />}
-          <span className="app-visually-hidden">{playing ? 'Пауза' : 'Воспроизведение'}</span>
+          <span className="app-visually-hidden">
+            {playing ? miniIconTitle('miniIconPauseUi') : miniIconTitle('miniIconPlay')}
+          </span>
         </button>
         <button
           type="button"
@@ -171,10 +178,10 @@ export default function PreviewTransport({
           onClick={() => {
             seek(STEP_SEC)
           }}
-          title={`Плюс ${STEP_SEC} с`}
+          title={uiTextVars('previewTransportPlusSecTitle', { sec: STEP_SEC })}
         >
           <IconChevronRight />
-          <span className="app-visually-hidden">Вперёд</span>
+          <span className="app-visually-hidden">{miniIconTitle('miniIconChevronRight')}</span>
         </button>
         <button
           type="button"
@@ -183,10 +190,10 @@ export default function PreviewTransport({
           onClick={() => {
             seekToFraction(1)
           }}
-          title="В конец"
+          title={miniIconTitle('miniIconSkipForward')}
         >
           <IconSkipForward />
-          <span className="app-visually-hidden">В конец</span>
+          <span className="app-visually-hidden">{miniIconTitle('miniIconSkipForward')}</span>
         </button>
       </div>
       <div className="app-preview-transport-end">
@@ -195,13 +202,15 @@ export default function PreviewTransport({
           className="app-icon-btn"
           disabled={disabled}
           onClick={toggleMute}
-          title={muted ? 'Включить звук' : 'Без звука'}
+          title={muted ? uiText('previewTransportUnmuteTitle') : miniIconTitle('miniIconVolumeX')}
         >
           {muted ? <IconVolumeX title="" /> : <IconVolume2 title="" />}
-          <span className="app-visually-hidden">{muted ? 'Включить звук' : 'Без звука'}</span>
+          <span className="app-visually-hidden">
+            {muted ? uiText('previewTransportUnmuteTitle') : miniIconTitle('miniIconVolumeX')}
+          </span>
         </button>
         <label className="app-preview-transport-volume">
-          <span className="app-visually-hidden">Громкость</span>
+          <span className="app-visually-hidden">{miniIconTitle('miniIconVolume2')}</span>
           <input
             className="app-preview-transport-volume-range"
             type="range"
@@ -233,10 +242,10 @@ export default function PreviewTransport({
           onClick={() => {
             void toggleFullscreen()
           }}
-          title="Развернуть область превью"
+          title={miniIconTitle('miniIconMaximize2')}
         >
           <IconMaximize2 />
-          <span className="app-visually-hidden">На весь экран</span>
+          <span className="app-visually-hidden">{miniIconTitle('miniIconMaximize2')}</span>
         </button>
       </div>
     </div>

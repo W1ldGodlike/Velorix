@@ -123,14 +123,29 @@ describe('ffprobe-side-data', () => {
       summarizeFfprobeSideDataList([
         { side_data_type: 'CPB properties', max_bitrate: '5000000' }
       ])
-    ).toBe('CPB max 5.0 Mb/s')
+    ).toBe('CPB max 5.0 Мбит/с')
     expect(
       summarizeFfprobeSideDataList([{ side_data_type: 'CPB properties', avg_bitrate: 768000 }])
-    ).toBe('CPB avg 768 kb/s')
+    ).toBe('CPB avg 768 кбит/с')
     expect(summarizeFfprobeSideDataList([{ side_data_type: 'CPB properties' }])).toBe('CPB')
     expect(
       summarizeFfprobeSideDataList([{ side_data_type: 'GOP timecode', timecode: '00:00:10:00' }])
     ).toBe('GOP TC 00:00:10:00')
+  })
+
+  it('CPB properties — locale en оставляет Mb/s и kb/s', () => {
+    expect(
+      summarizeFfprobeSideDataList(
+        [{ side_data_type: 'CPB properties', max_bitrate: '5000000' }],
+        'en'
+      )
+    ).toBe('CPB max 5.0 Mb/s')
+    expect(
+      summarizeFfprobeSideDataList(
+        [{ side_data_type: 'CPB properties', avg_bitrate: 768000 }],
+        'en'
+      )
+    ).toBe('CPB avg 768 kb/s')
   })
 
   it('Producer Reference Time / AV1 film grain — короткие подписи', () => {

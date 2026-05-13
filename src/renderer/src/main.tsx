@@ -5,6 +5,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
 import { InspectorStandaloneApp } from './InspectorStandaloneApp'
+import { uiText } from './locales/ui-text'
 
 // Renderer bootstrap intentionally small.
 // Здесь только React и CSS: вся работа с Electron/FS/процессами идёт через preload API,
@@ -43,12 +44,19 @@ window.addEventListener('error', (event) => {
   safeLog(
     'error',
     'window.error',
-    describeError(event.error, event.message || 'unknown window error')
+    describeError(
+      event.error,
+      event.message || uiText('rendererLogWindowErrorFallback')
+    )
   )
 })
 
 window.addEventListener('unhandledrejection', (event) => {
-  safeLog('error', 'window.unhandledrejection', describeError(event.reason, 'unknown rejection'))
+  safeLog(
+    'error',
+    'window.unhandledrejection',
+    describeError(event.reason, uiText('rendererLogUnhandledRejectionFallback'))
+  )
 })
 
 const rootEl = document.getElementById('root')!

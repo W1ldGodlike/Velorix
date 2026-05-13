@@ -80,16 +80,17 @@ describe('ffprobe-summary-export', () => {
     expect(t).toContain('FluxAlloy — сводка ffprobe')
     expect(t).toContain('1920×1080')
     expect(t).toContain('h264')
-    expect(t).toContain('FPS (оценка, видео): 24 fps')
+    expect(t).toContain('Частота кадров (оценка, видео): 24 к/с')
     expect(t).toContain('aac')
     expect(t).toContain('Дорожек: 2')
     expect(t).toContain(
-      'Pix_fmt\tSAR\tDAR\tЦв.простран.\tPrimaries\tTransfer\tДиапазон\tБитрейт\tDisposition\tЯзык\tЗаголовок\tСведения'
+      'Форм. пикс.\tSAR\tDAR\tЦв. пространство\tОсн. цвета\tПередача цвета\tДиапазон\tБитрейт\tСвойства дорожки\tЯзык\tЗаголовок\tСведения'
     )
     expect(t).toContain('yuv420p')
     expect(t).toContain('bt709')
     expect(t).toContain('\ttv\t')
-    expect(t).toContain('192 kb/s')
+    expect(t).toContain('192 кбит/с')
+    expect(t).toContain('Битрейт (оценка): 4500 кбит/с')
     expect(t).toContain('по умолчанию')
     expect(t).toContain('Видео\t')
     expect(t).toContain('eng')
@@ -115,6 +116,16 @@ describe('ffprobe-summary-export', () => {
     expect(formatProbeSummaryHtmlDocument(withBrokenChapter)).toContain(
       '<td class="mono">—</td><td>Broken</td>'
     )
+  })
+
+  it('formatProbeSummaryPlainText (en) uses English headings', () => {
+    const t = formatProbeSummaryPlainText(sampleProbe, 'en')
+    expect(t).toContain('FluxAlloy — ffprobe summary')
+    expect(t).toContain('Streams: 2')
+    expect(t).toContain('FPS (approx., video): 24 fps')
+    expect(t).toContain('\tVideo\t')
+    expect(t).toContain('192 kb/s')
+    expect(t).toContain('Bitrate (estimate): 4500 kb/s')
   })
 
   it('formatProbeSummaryHtmlDocument экранирует detail и содержит таблицу', () => {
@@ -144,6 +155,6 @@ describe('ffprobe-summary-export', () => {
     expect(h).toContain('&lt;script&gt;')
     expect(h).not.toContain('<script>x</script>')
     expect(h).toContain('<meta charset="utf-8" />')
-    expect(h).toContain('FPS (оценка, видео): 24 fps')
+    expect(h).toContain('Частота кадров (оценка, видео): 24 к/с')
   })
 })

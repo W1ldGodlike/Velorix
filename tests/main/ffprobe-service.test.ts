@@ -504,7 +504,7 @@ describe('ffprobe-service buildTrackRows', () => {
     expect((row?.detail.length ?? 0)).toBeLessThan(long.length + 80)
   })
 
-  it('video detail: max_bit_rate заметно выше bit_rate → «max … Mb/s»', () => {
+  it('video detail: max_bit_rate заметно выше bit_rate → «max … Мбит/с» (RU)', () => {
     const [row] = buildTrackRows(
       [
         {
@@ -519,7 +519,7 @@ describe('ffprobe-service buildTrackRows', () => {
       ],
       null
     )
-    expect(row?.detail).toContain('max 12.00 Mb/s')
+    expect(row?.detail).toContain('max 12.00 Мбит/с')
   })
 
   it('video detail: max_bit_rate≈bit_rate — не дублируем пик в сводке', () => {
@@ -554,7 +554,7 @@ describe('ffprobe-service buildTrackRows', () => {
       ],
       null
     )
-    expect(row?.detail).toContain('max 320 kb/s')
+    expect(row?.detail).toContain('max 320 кбит/с')
   })
 
   it('video detail: ненулевой closed_captions → CEA-608/708', () => {
@@ -999,7 +999,7 @@ describe('ffprobe-service buildTrackRows', () => {
       null
     )
 
-    expect(row?.detail).toContain('CPB max 15 Mb/s')
+    expect(row?.detail).toContain('CPB max 15 Мбит/с')
     expect(row?.detail).toContain('GOP TC 00:00:10:00')
   })
 

@@ -6,6 +6,8 @@
  * `downloads-queue-runner`) импортируют функции отсюда.
  */
 
+import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import { getYtdlpQueueProgressStrings } from '../shared/ytdlp-queue-progress-locale'
 import { YTDLP_QUEUE_STATUS_ERROR_PREFIX } from '../shared/ytdlp-queue-status'
 
 /** Поля прогресса из строк stderr/stdout yt-dlp с префиксом «[download]». */
@@ -52,7 +54,11 @@ export type YtdlpQueueFailureKind =
  * Разбор строки прогресса yt-dlp для колонки таблицы §6.1.
  * Не shell и не исполнение — только эвристика по тексту.
  */
-export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgressParts | null {
+export function parseYtdlpDownloadProgressLine(
+  line: string,
+  locale: DownloadsWindowUiLocale = 'ru'
+): YtdlpDownloadProgressParts | null {
+  const P = getYtdlpQueueProgressStrings(locale)
   const t = line.trimEnd()
   if (!t.includes('[download]')) {
     return null
@@ -77,7 +83,7 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
     if (a !== undefined && b !== undefined) {
       return {
         percent: null,
-        speed: `плейлист ${a}/${b}`,
+        speed: P.progressPlaylist.replace('{a}', a).replace('{b}', b),
         eta: null
       }
     }
@@ -91,7 +97,7 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
     if (a !== undefined && b !== undefined) {
       return {
         percent: null,
-        speed: `плейлист ${a}/${b}`,
+        speed: P.progressPlaylist.replace('{a}', a).replace('{b}', b),
         eta: null
       }
     }
@@ -104,7 +110,7 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
     if (a !== undefined && b !== undefined) {
       return {
         percent: null,
-        speed: `фрагмент ${a}/${b}`,
+        speed: P.progressFragment.replace('{a}', a).replace('{b}', b),
         eta: null
       }
     }
@@ -119,7 +125,7 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
     if (a !== undefined && b !== undefined) {
       return {
         percent: null,
-        speed: `фрагмент ${a}/${b}`,
+        speed: P.progressFragment.replace('{a}', a).replace('{b}', b),
         eta: null
       }
     }
@@ -130,23 +136,23 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
   if (sleepingMatch) {
     const sec = sleepingMatch[1]
     if (sec !== undefined) {
-      return { percent: null, speed: `пауза ${sec} с`, eta: null }
+      return { percent: null, speed: P.progressPauseSec.replace('{sec}', sec), eta: null }
     }
   }
 
   if (/\[download\]\s+Waiting\s+for\s+reconnect/i.test(t)) {
-    return { percent: null, speed: 'ожидание переподключения', eta: null }
+    return { percent: null, speed: P.progressWaitingReconnect, eta: null }
   }
 
   /** Подготовка HLS/DASH без числового процента — чтобы колонка не «замирала» на пустом §6.4. */
   if (/\[download\]\s+Downloading\s+m3u8\s+information/i.test(t)) {
-    return { percent: null, speed: 'манифест HLS', eta: null }
+    return { percent: null, speed: P.progressHlsManifest, eta: null }
   }
   if (/\[download\]\s+Downloading\s+.*\bplayer\s+api\s+json\b/i.test(t)) {
-    return { percent: null, speed: 'метаданные плеера', eta: null }
+    return { percent: null, speed: P.progressPlayerMetadata, eta: null }
   }
   if (/\[download\]\s+Downloading\s+webpage\b/i.test(t)) {
-    return { percent: null, speed: 'страница', eta: null }
+    return { percent: null, speed: P.progressWebpage, eta: null }
   }
 
   /** Некоторые версии пишут общее «ожидание …» без явного reconnect/sleep. */
@@ -154,12 +160,12 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
     /\[download\]\s+Waiting\s+for\s+/i.test(t) &&
     !/\[download\]\s+Waiting\s+for\s+reconnect/i.test(t)
   ) {
-    return { percent: null, speed: 'ожидание', eta: null }
+    return { percent: null, speed: P.progressWaiting, eta: null }
   }
 
   /** Продолжение частично скачанного файла — без процентов в строке §6.4. */
   if (/\[download\]\s+Resuming download at byte\s+\d+/i.test(t)) {
-    return { percent: null, speed: 'продолжение загрузки', eta: null }
+    return { percent: null, speed: P.progressResume, eta: null }
   }
 
   /** Повторы внутри yt-dlp после сетевых/HTTP ошибок: полезно видеть счётчик без чтения raw-лога. */
@@ -173,7 +179,10 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
     if (a !== undefined && b !== undefined) {
       return {
         percent: null,
-        speed: frag !== undefined ? `повтор фрагмента ${frag} · ${a}/${b}` : `повтор ${a}/${b}`,
+        speed:
+          frag !== undefined
+            ? P.progressRetryFragment.replace('{frag}', frag).replace('{a}', a).replace('{b}', b)
+            : P.progressRetry.replace('{a}', a).replace('{b}', b),
         eta: null
       }
     }
@@ -183,7 +192,7 @@ export function parseYtdlpDownloadProgressLine(line: string): YtdlpDownloadProgr
   if (retryingInMatch) {
     const sec = retryingInMatch[1]
     if (sec !== undefined) {
-      return { percent: null, speed: `повтор через ${sec} с`, eta: null }
+      return { percent: null, speed: P.progressRetryInSec.replace('{sec}', sec), eta: null }
     }
   }
 
@@ -327,7 +336,11 @@ export function parseYtdlpInfoFormatSnippet(line: string): string | null {
  * §6/v0 — подпись колонки «Формат»: `[info]` (см. `parseYtdlpInfoFormatSnippet`)
  * плюс типичные строки post-processing (`merge`, audio extract, remux/convert).
  */
-export function parseYtdlpQueueFormatHint(line: string): string | null {
+export function parseYtdlpQueueFormatHint(
+  line: string,
+  locale: DownloadsWindowUiLocale = 'ru'
+): string | null {
+  const P = getYtdlpQueueProgressStrings(locale)
   const fromInfo = parseYtdlpInfoFormatSnippet(line)
   if (fromInfo) {
     return fromInfo
@@ -336,19 +349,19 @@ export function parseYtdlpQueueFormatHint(line: string): string | null {
   const mm = t.match(/^\[(?:Merger|ffmpeg)]\s+Merging formats into\s+(.+)$/i)
   const tail = mm?.[1]
   if (tail) {
-    return ytdlpFormatHintFromOutputPath('слияние', tail)
+    return ytdlpFormatHintFromOutputPath(P.formatHintMerge, tail)
   }
 
   const extractAudio = t.match(/^\[ExtractAudio]\s+Destination:\s+(.+)$/i)
   const audioPath = extractAudio?.[1]
   if (audioPath) {
-    return ytdlpFormatHintFromOutputPath('аудио', audioPath)
+    return ytdlpFormatHintFromOutputPath(P.formatHintAudio, audioPath)
   }
 
   const remux = t.match(/^\[(?:VideoRemuxer|FFmpegVideoRemuxer)]\s+.+?\s+into\s+(.+)$/i)
   const remuxPath = remux?.[1]
   if (remuxPath) {
-    return ytdlpFormatHintFromOutputPath('remux', remuxPath)
+    return ytdlpFormatHintFromOutputPath(P.formatHintRemux, remuxPath)
   }
 
   const convert = t.match(
@@ -356,7 +369,7 @@ export function parseYtdlpQueueFormatHint(line: string): string | null {
   )
   const convertPath = convert?.[1]
   if (convertPath) {
-    return ytdlpFormatHintFromOutputPath('convert', convertPath)
+    return ytdlpFormatHintFromOutputPath(P.formatHintConvert, convertPath)
   }
 
   return null
@@ -483,7 +496,11 @@ export function displayLabelFromYtdlpOutputPath(rawPath: string): string | null 
 }
 
 /** Компактная подпись для ячейки: «42.1% · 1.2 MiB/s · Осталось 00:15». */
-export function formatYtdlpProgressCell(parts: YtdlpDownloadProgressParts): string {
+export function formatYtdlpProgressCell(
+  parts: YtdlpDownloadProgressParts,
+  locale: DownloadsWindowUiLocale = 'ru'
+): string {
+  const P = getYtdlpQueueProgressStrings(locale)
   const bits: string[] = []
   if (parts.percent) {
     bits.push(parts.percent)
@@ -494,23 +511,27 @@ export function formatYtdlpProgressCell(parts: YtdlpDownloadProgressParts): stri
   }
   const et = parts.eta?.trim() ?? ''
   if (et.length > 0 && !/^unknown$/i.test(et)) {
-    bits.push(`Осталось ${et}`)
+    bits.push(P.progressCellEta.replace('{eta}', et))
   }
   return bits.join(' · ')
 }
 
-function ytdlpQueueFailureKindSuffix(kind: YtdlpQueueFailureKind): string {
+function ytdlpQueueFailureKindSuffix(
+  kind: YtdlpQueueFailureKind,
+  locale: DownloadsWindowUiLocale
+): string {
+  const P = getYtdlpQueueProgressStrings(locale)
   switch (kind) {
     case 'transient_network':
-      return ' · вероятно сеть'
+      return P.failureKindTransientNetwork
     case 'likely_source_block':
-      return ' · отказ источника'
+      return P.failureKindSourceBlock
     case 'exit_bad_options':
-      return ' · ошибка параметров'
+      return P.failureKindBadOptions
     case 'exit_needs_restart':
-      return ' · нужен перезапуск yt-dlp'
+      return P.failureKindNeedsRestart
     case 'exit_download_limit':
-      return ' · лимит загрузок'
+      return P.failureKindDownloadLimit
     default:
       return ''
   }
@@ -526,14 +547,16 @@ export function formatYtdlpQueueFailureStatus(
   signal: NodeJS.Signals | null | undefined,
   errorHint: string | null | undefined,
   stderrFallback: string | null | undefined,
-  failureKind?: YtdlpQueueFailureKind
+  failureKind?: YtdlpQueueFailureKind,
+  locale: DownloadsWindowUiLocale = 'ru'
 ): string {
+  const P = getYtdlpQueueProgressStrings(locale)
   let base: string
   if (exitCode === null && signal) {
-    base = `${YTDLP_QUEUE_STATUS_ERROR_PREFIX} (сигнал ${signal})`
+    base = `${YTDLP_QUEUE_STATUS_ERROR_PREFIX} ${P.failureParensSignal.replace('{signal}', signal)}`
   } else {
     const code = exitCode ?? '?'
-    base = `${YTDLP_QUEUE_STATUS_ERROR_PREFIX} (код ${code})`
+    base = `${YTDLP_QUEUE_STATUS_ERROR_PREFIX} ${P.failureParensCode.replace('{code}', String(code))}`
   }
 
   const primary = errorHint?.trim() ?? ''
@@ -543,7 +566,7 @@ export function formatYtdlpQueueFailureStatus(
   const body = hint.length === 0 ? base : `${base}: ${hint}`
   const suf =
     failureKind !== undefined && failureKind !== 'unknown'
-      ? ytdlpQueueFailureKindSuffix(failureKind)
+      ? ytdlpQueueFailureKindSuffix(failureKind, locale)
       : ''
   const full = suf.length > 0 ? `${body}${suf}` : body
   return full.length > 200 ? `${full.slice(0, 199)}…` : full

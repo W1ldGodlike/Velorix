@@ -4,6 +4,8 @@ import { BrowserWindow, dialog } from 'electron'
 
 import { grantMediaPath } from './media-protocol'
 import type { PreviewDialogResult } from '../shared/preview-dialog-contract'
+import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import { getMainApplicationStrings } from '../shared/main-application-locale'
 
 export type { PreviewDialogResult } from '../shared/preview-dialog-contract'
 
@@ -12,14 +14,16 @@ export type { PreviewDialogResult } from '../shared/preview-dialog-contract'
  * `fluxmedia://`, чтобы `<video>` мог безопасно стримить файл и в dev (Vite), и в prod.
  */
 export async function openVideoWithDialog(
-  browserWindow: BrowserWindow
+  browserWindow: BrowserWindow,
+  locale: DownloadsWindowUiLocale = 'ru'
 ): Promise<PreviewDialogResult> {
+  const S = getMainApplicationStrings(locale)
   const { canceled, filePaths } = await dialog.showOpenDialog(browserWindow, {
-    title: 'Открыть видео',
+    title: S.openVideoDialogTitle,
     properties: ['openFile'],
     filters: [
       {
-        name: 'Видео',
+        name: S.openVideoDialogFilterVideo,
         extensions: ['mp4', 'mkv', 'webm', 'mov', 'avi', 'm4v', 'wmv', 'mpeg', 'mpg', 'ts']
       }
     ]
@@ -33,7 +37,7 @@ export async function openVideoWithDialog(
   }
   const mediaUrl = grantMediaPath(filePath)
   if (!mediaUrl) {
-    return { ok: false, error: 'Не удалось открыть файл (нет доступа или это не обычный файл)' }
+    return { ok: false, error: S.previewDialogGrantMediaFailed }
   }
   return { ok: true, path: filePath, mediaUrl, name: basename(filePath) }
 }

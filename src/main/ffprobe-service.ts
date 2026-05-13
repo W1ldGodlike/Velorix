@@ -26,6 +26,7 @@ import type {
 } from '../shared/ffprobe-contract'
 import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
+import { formatFfprobeBitrateLabelFromKbps } from '../shared/ffprobe-summary-export-locale'
 
 export type {
   MediaProbeResult,
@@ -184,29 +185,16 @@ function formatBitrateKbps(bitRateBitsPerSec: string | undefined): number | null
   return bps === null ? null : bps / 1000
 }
 
-/** Метка битрейта для колонки «Сведения» (как в `MediaProbePanel.formatBitrateLine`). */
-function formatBitrateDetailLabel(kbps: number | null): string | null {
-  if (kbps === null || !Number.isFinite(kbps)) {
-    return null
-  }
-  if (kbps >= 10_000) {
-    return `${(kbps / 1000).toFixed(2)} Mb/s`
-  }
-  return `${Math.round(kbps)} kb/s`
-}
-
-/**
- * Добавляет `max …` в detail только если пиковый битрейт заметно выше среднего
- * (колонка таблицы уже показывает номинальный `bit_rate`).
- */
+/** Метка битрейта для колонки «Сведения» (как в `MediaProbePanel` / экспорт сводки). */
 function appendMaxBitrateDetailIfNotable(
   parts: string[],
   bitRate: string | undefined,
-  maxBitRate: string | undefined
+  maxBitRate: string | undefined,
+  locale: DownloadsWindowUiLocale
 ): void {
   const brKbps = formatBitrateKbps(typeof bitRate === 'string' ? bitRate : undefined)
   const maxKbps = formatBitrateKbps(typeof maxBitRate === 'string' ? maxBitRate : undefined)
-  const maxLab = formatBitrateDetailLabel(maxKbps)
+  const maxLab = formatFfprobeBitrateLabelFromKbps(maxKbps, locale)
   if (maxLab === null || maxKbps === null) {
     return
   }
@@ -413,7 +401,9 @@ function mapCodecType(raw: string | undefined): MediaProbeTrackRow['kind'] {
 
 function buildTrackDetail(
   stream: NonNullable<FfprobeJson['streams']>[number],
-  containerDurationSec: number | null
+  containerDurationSec: number | null,
+  audioChannelsSuffixTemplate: string,
+  locale: DownloadsWindowUiLocale
 ): string {
   const parts: string[] = []
   const ct = stream.codec_type
@@ -442,7 +432,7 @@ function buildTrackDetail(
     } else if (tagRotDeg !== null) {
       parts.push(`rot ${tagRotDeg}°`)
     }
-    const fpsLine = formatFfprobeVideoFpsDetail(stream.avg_frame_rate, stream.r_frame_rate)
+    const fpsLine = formatFfprobeVideoFpsDetail(stream.avg_frame_rate, stream.r_frame_rate, locale)
     if (fpsLine !== null) {
       parts.push(fpsLine)
     }
@@ -462,7 +452,7 @@ function buildTrackDetail(
       parts.push(streamDur)
     }
     appendFfprobeNbFramesDetail(parts, stream.nb_frames)
-    const sideData = summarizeFfprobeSideDataList(stream.side_data_list)
+    const sideData = summarizeFfprobeSideDataList(stream.side_data_list, locale)
     if (sideData !== null) {
       parts.push(sideData)
     }
@@ -587,7 +577,7 @@ function buildTrackDetail(
     if (vInitialPadding !== null && vInitialPadding > 0) {
       parts.push(`pad ${vInitialPadding} smp`)
     }
-    appendMaxBitrateDetailIfNotable(parts, stream.bit_rate, stream.max_bit_rate)
+    appendMaxBitrateDetailIfNotable(parts, stream.bit_rate, stream.max_bit_rate, locale)
     appendTrackTagsLangTitleHandler(parts, stream.tags)
     const vEnc = formatFfprobeTagEncoderBrief(stream.tags)
     if (vEnc) {
@@ -604,7 +594,7 @@ function buildTrackDetail(
   } else if (ct === 'audio') {
     const ch = stream.channels
     if (typeof ch === 'number') {
-      parts.push(`${ch} кан.`)
+      parts.push(audioChannelsSuffixTemplate.replace('{n}', String(ch)))
     }
     const sr = parsePositiveNumber(stream.sample_rate)
     if (sr !== null) {
@@ -632,7 +622,7 @@ function buildTrackDetail(
       parts.push(streamDur)
     }
     appendFfprobeNbFramesDetail(parts, stream.nb_frames)
-    const audioSide = summarizeFfprobeSideDataList(stream.side_data_list)
+    const audioSide = summarizeFfprobeSideDataList(stream.side_data_list, locale)
     if (audioSide !== null) {
       parts.push(audioSide)
     }
@@ -682,7 +672,7 @@ function buildTrackDetail(
     if (aInitialPadding !== null && aInitialPadding > 0) {
       parts.push(`pad ${aInitialPadding} smp`)
     }
-    appendMaxBitrateDetailIfNotable(parts, stream.bit_rate, stream.max_bit_rate)
+    appendMaxBitrateDetailIfNotable(parts, stream.bit_rate, stream.max_bit_rate, locale)
     const aCreated = formatFfprobeCreationTimeBrief(stream.tags)
     if (aCreated) {
       parts.push(aCreated)
@@ -712,7 +702,7 @@ function buildTrackDetail(
     if (subInitialPadding !== null && subInitialPadding > 0) {
       parts.push(`pad ${subInitialPadding} smp`)
     }
-    appendMaxBitrateDetailIfNotable(parts, stream.bit_rate, stream.max_bit_rate)
+    appendMaxBitrateDetailIfNotable(parts, stream.bit_rate, stream.max_bit_rate, locale)
     const subEnc = formatFfprobeTagEncoderBrief(stream.tags)
     if (subEnc) {
       parts.push(subEnc)
@@ -775,7 +765,7 @@ function buildTrackDetail(
     if (oInitialPadding !== null && oInitialPadding > 0) {
       parts.push(`pad ${oInitialPadding} smp`)
     }
-    appendMaxBitrateDetailIfNotable(parts, stream.bit_rate, stream.max_bit_rate)
+    appendMaxBitrateDetailIfNotable(parts, stream.bit_rate, stream.max_bit_rate, locale)
     const oStart = formatFfprobeStreamStartTime(stream.start_time)
     if (oStart) {
       parts.push(oStart)
@@ -803,8 +793,10 @@ function buildTrackDetail(
 
 export function buildTrackRows(
   streams: FfprobeJson['streams'],
-  containerDurationSec: number | null
+  containerDurationSec: number | null,
+  uiLocale: DownloadsWindowUiLocale = 'ru'
 ): MediaProbeTrackRow[] {
+  const audioChSuffix = getMainApplicationStrings(uiLocale).ffprobeAudioChannelsSuffix
   const list = streams ?? []
   const rows: MediaProbeTrackRow[] = []
   list.forEach((stream, i) => {
@@ -818,7 +810,7 @@ export function buildTrackRows(
         typeof stream.codec_name === 'string' && stream.codec_name.trim() !== ''
           ? stream.codec_name
           : '?',
-      detail: buildTrackDetail(stream, containerDurationSec),
+      detail: buildTrackDetail(stream, containerDurationSec, audioChSuffix, uiLocale),
       language: tagString(stream.tags, 'language'),
       titleTag: tagString(stream.tags, 'title'),
       streamBitrateKbps: formatBitrateKbps(
@@ -961,7 +953,7 @@ export async function probeMediaFile(
         : null,
     formatLongName: formatLong,
     bitrateKbps: formatBitrateKbps(parsed.format?.bit_rate),
-    tracks: buildTrackRows(parsed.streams, durationSecResolved),
+    tracks: buildTrackRows(parsed.streams, durationSecResolved, locale),
     chapters: buildChapterRowsFromFfprobeJson(parsed.chapters),
     rawJson
   }

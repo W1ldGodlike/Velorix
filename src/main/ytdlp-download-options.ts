@@ -2,6 +2,12 @@ import { existsSync, statSync } from 'fs'
 import { isAbsolute, join, normalize, relative, resolve, sep } from 'path'
 
 import type { AppSettings } from './settings-store'
+import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import { getYtdlpCliValidationCopy } from '../shared/ytdlp-cli-validation-locale'
+import {
+  buildYtdlpFormatPresetChoices,
+  buildYtdlpQueueRetryProfileChoices
+} from '../shared/ytdlp-download-payload-locale'
 import {
   buildYtdlpSpawnArgvTokens,
   formatArgvTokensForPreview,
@@ -178,96 +184,106 @@ export function parseYtdlpImpersonate(raw: unknown): YtdlpImpersonateId | undefi
 
 /** Проверка перед сохранением пути и после диалога выбора файла §6.2. */
 export function validateYtdlpCookiesFilePath(
-  raw: string
+  raw: string,
+  uiLocale: DownloadsWindowUiLocale = 'ru'
 ): { ok: true; path: string } | { ok: false; error: string } {
+  const V = getYtdlpCliValidationCopy(uiLocale)
   const t = raw.trim()
   if (t.length === 0) {
-    return { ok: false, error: 'Путь к файлу cookies пуст.' }
+    return { ok: false, error: V.cookiesPickerPathEmpty }
   }
   if (t.length > 4096) {
-    return { ok: false, error: 'Путь слишком длинный.' }
+    return { ok: false, error: V.cookiesPickerPathTooLong }
   }
   const n = normalize(t)
   if (!isAbsolute(n)) {
-    return { ok: false, error: 'Нужен абсолютный путь к файлу cookies.' }
+    return { ok: false, error: V.cookiesPickerNeedAbsolute }
   }
   if (!existsSync(n)) {
-    return { ok: false, error: 'Файл cookies не найден.' }
+    return { ok: false, error: V.cookiesPickerFileNotFound }
   }
   try {
     if (!statSync(n).isFile()) {
-      return { ok: false, error: 'Указанный путь не является файлом.' }
+      return { ok: false, error: V.cookiesPickerNotAFile }
     }
   } catch {
-    return { ok: false, error: 'Не удалось прочитать файл cookies.' }
+    return { ok: false, error: V.cookiesPickerReadFailed }
   }
   return { ok: true, path: n }
 }
 
 /** Одна строка без пробелов — станет вторым токеном после `--sub-langs`. */
 export function validateYtdlpSubLangs(
-  raw: string
+  raw: string,
+  uiLocale: DownloadsWindowUiLocale = 'ru'
 ): { ok: true; value: string } | { ok: false; error: string } {
+  const V = getYtdlpCliValidationCopy(uiLocale)
   const t = raw.trim()
   if (t.length === 0) {
     return { ok: true, value: '' }
   }
   if (t.length > 160) {
-    return { ok: false, error: 'Строка --sub-langs слишком длинная (макс. 160 символов).' }
+    return { ok: false, error: V.subLangsTooLong }
   }
   if (!/^[a-zA-Z0-9.,*+\-_]+$/.test(t)) {
     return {
       ok: false,
-      error: 'Для --sub-langs допустимы только буквы, цифры и символы ,.*+-_'
+      error: V.subLangsInvalidCharset
     }
   }
   return { ok: true, value: t }
 }
 
 export function validateYtdlpRateLimit(
-  raw: string
+  raw: string,
+  uiLocale: DownloadsWindowUiLocale = 'ru'
 ): { ok: true; value: string } | { ok: false; error: string } {
+  const V = getYtdlpCliValidationCopy(uiLocale)
   const t = raw.trim()
   if (t.length === 0) {
     return { ok: true, value: '' }
   }
   if (t.length > 16) {
-    return { ok: false, error: 'Ограничение скорости слишком длинное.' }
+    return { ok: false, error: V.rateLimitTooLong }
   }
   if (!/^\d+(?:\.\d+)?[KMG]?$/i.test(t)) {
     return {
       ok: false,
-      error: 'Формат скорости: число и необязательный суффикс K/M/G, например 500K или 2M.'
+      error: V.rateLimitInvalidFormat
     }
   }
   return { ok: true, value: t.toUpperCase() }
 }
 
 export function validateYtdlpRetriesLine(
-  raw: string
+  raw: string,
+  uiLocale: DownloadsWindowUiLocale = 'ru'
 ): { ok: true; value: number | null; line: string } | { ok: false; error: string } {
+  const V = getYtdlpCliValidationCopy(uiLocale)
   const t = raw.trim()
   if (t.length === 0) {
     return { ok: true, value: null, line: '' }
   }
   if (!/^\d+$/.test(t)) {
-    return { ok: false, error: 'Количество повторов должно быть целым числом от 0 до 99.' }
+    return { ok: false, error: V.retriesMustBeInteger99 }
   }
   const n = Number(t)
   if (!Number.isInteger(n) || n < 0 || n > 99) {
-    return { ok: false, error: 'Количество повторов должно быть целым числом от 0 до 99.' }
+    return { ok: false, error: V.retriesMustBeInteger99 }
   }
   return { ok: true, value: n, line: String(n) }
 }
 
 export function validateYtdlpFragmentRetriesLine(
-  raw: string
+  raw: string,
+  uiLocale: DownloadsWindowUiLocale = 'ru'
 ): { ok: true; value: number | null; line: string } | { ok: false; error: string } {
-  const parsed = validateYtdlpRetriesLine(raw)
+  const V = getYtdlpCliValidationCopy(uiLocale)
+  const parsed = validateYtdlpRetriesLine(raw, uiLocale)
   if (parsed.ok) {
     return parsed
   }
-  return { ok: false, error: 'Количество повторов фрагментов должно быть целым числом от 0 до 99.' }
+  return { ok: false, error: V.fragmentRetriesMustBeInteger99 }
 }
 
 /** Строковые поля из JSON без семантической проверки шаблона — см. validateFilenameTemplate. */
@@ -325,25 +341,27 @@ export function resolveSafeYtdlpOutputPattern(outputDir: string, template: strin
 }
 
 export function validateFilenameTemplate(
-  template: string
+  template: string,
+  uiLocale: DownloadsWindowUiLocale = 'ru'
 ): { ok: true; value: string } | { ok: false; error: string } {
+  const V = getYtdlpCliValidationCopy(uiLocale)
   const t = template.trim()
   if (t.length === 0) {
-    return { ok: false, error: 'Шаблон имени не может быть пустым.' }
+    return { ok: false, error: V.filenameEmpty }
   }
   if (t.length > 480) {
-    return { ok: false, error: 'Шаблон слишком длинный (макс. 480 символов).' }
+    return { ok: false, error: V.filenameTooLong480 }
   }
   if (forbiddenTrajectory(t)) {
     return {
       ok: false,
-      error: 'Недопустимые символы или попытка выхода из каталога (.., абсолютный путь).'
+      error: V.filenameForbiddenTrajectory
     }
   }
   if (!t.includes('%(ext)s')) {
     return {
       ok: false,
-      error: 'Шаблон должен содержать %(ext)s — иначе yt-dlp не сможет подставить расширение.'
+      error: V.filenameMustContainExt
     }
   }
   return { ok: true, value: t }
@@ -367,13 +385,17 @@ export function formatPresetToExtraArgs(id: YtdlpFormatPresetId): string[] {
   return []
 }
 
-export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOptionsSnapshot {
+export function buildYtdlpRunOptionsSnapshot(
+  settings: AppSettings,
+  uiLocale: DownloadsWindowUiLocale = 'ru'
+): YtdlpRunOptionsSnapshot {
+  const V = getYtdlpCliValidationCopy(uiLocale)
   const preset = parseYtdlpFormatPreset(settings.ytdlpFormatPreset)
   const audioOnly = settings.ytdlpAudioOnly === true
   const subtitlePreset = parseYtdlpSubtitlePreset(settings.ytdlpSubtitlePreset)
   const subLangsStored =
     typeof settings.ytdlpSubLangs === 'string' ? settings.ytdlpSubLangs.trim() : ''
-  const subLangsParsed = validateYtdlpSubLangs(subLangsStored)
+  const subLangsParsed = validateYtdlpSubLangs(subLangsStored, uiLocale)
   const subLangs =
     subtitlePreset !== 'none' && subLangsParsed.ok && subLangsParsed.value.length > 0
       ? subLangsParsed.value
@@ -382,14 +404,14 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
   const stored = settings.ytdlpFilenameTemplate
   let filenameTemplate = YTDLP_DEFAULT_FILENAME_TEMPLATE
   if (typeof stored === 'string') {
-    const vt = validateFilenameTemplate(stored)
+    const vt = validateFilenameTemplate(stored, uiLocale)
     if (vt.ok) {
       filenameTemplate = vt.value
     }
   }
   const extraArgsLine =
     typeof settings.ytdlpExtraArgsLine === 'string' ? settings.ytdlpExtraArgsLine.trim() : ''
-  const parsedExtras = parseExtraYtdlpArgsLine(extraArgsLine)
+  const parsedExtras = parseExtraYtdlpArgsLine(extraArgsLine, uiLocale)
   const extraArgs = parsedExtras.ok ? parsedExtras.args : []
   const extraArgsParseWarning = parsedExtras.ok ? null : parsedExtras.error
 
@@ -402,25 +424,21 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
     const n = normalize(cookiesFileStored)
     if (!isAbsolute(n)) {
       cookiesFileBroken = true
-      cookiesWarning =
-        'Путь к cookies не абсолютный — выберите файл через «Выбрать…» или очистите поле.'
+      cookiesWarning = V.cookiesPathNotAbsolute
     } else if (!existsSync(n)) {
       cookiesFileBroken = true
-      cookiesWarning =
-        'Файл cookies не найден — исправьте путь или очистите; браузерный источник до исправления не используется.'
+      cookiesWarning = V.cookiesFileNotFound
     } else {
       try {
         if (!statSync(n).isFile()) {
           cookiesFileBroken = true
-          cookiesWarning =
-            'Путь cookies не указывает на обычный файл; браузерный источник до исправления не используется.'
+          cookiesWarning = V.cookiesPathNotFile
         } else {
           cookiesArgvFile = n
         }
       } catch {
         cookiesFileBroken = true
-        cookiesWarning =
-          'Не удалось проверить файл cookies; браузерный источник до исправления не используется.'
+        cookiesWarning = V.cookiesStatFailed
       }
     }
   }
@@ -437,7 +455,7 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
     typeof settings.ytdlpCookiesBrowserProfile === 'string'
       ? settings.ytdlpCookiesBrowserProfile
       : ''
-  const cookiesProfileParsed = validateYtdlpCookiesBrowserProfile(cookiesBrowserProfileLine)
+  const cookiesProfileParsed = validateYtdlpCookiesBrowserProfile(cookiesBrowserProfileLine, uiLocale)
   let cookiesArgvBrowserProfile: string | null = null
   if (
     cookiesArgvBrowser !== null &&
@@ -459,12 +477,13 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
 
   const rateLimitStored =
     typeof settings.ytdlpRateLimit === 'string' ? settings.ytdlpRateLimit.trim() : ''
-  const rateLimitParsed = validateYtdlpRateLimit(rateLimitStored)
+  const rateLimitParsed = validateYtdlpRateLimit(rateLimitStored, uiLocale)
   const rateLimit = rateLimitParsed.ok ? rateLimitParsed.value : ''
   const retriesParsed = validateYtdlpRetriesLine(
     typeof settings.ytdlpRetries === 'number' && Number.isInteger(settings.ytdlpRetries)
       ? String(settings.ytdlpRetries)
-      : ''
+      : '',
+    uiLocale
   )
   const retries = retriesParsed.ok ? retriesParsed.value : null
   const retriesLine = retriesParsed.ok ? retriesParsed.line : ''
@@ -472,7 +491,8 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
     typeof settings.ytdlpFragmentRetries === 'number' &&
       Number.isInteger(settings.ytdlpFragmentRetries)
       ? String(settings.ytdlpFragmentRetries)
-      : ''
+      : '',
+    uiLocale
   )
   const fragmentRetries = fragmentRetriesParsed.ok ? fragmentRetriesParsed.value : null
   const fragmentRetriesLine = fragmentRetriesParsed.ok ? fragmentRetriesParsed.line : ''
@@ -517,7 +537,8 @@ export function buildYtdlpRunOptionsSnapshot(settings: AppSettings): YtdlpRunOpt
 
 export function payloadFromSnapshot(
   snap: YtdlpRunOptionsSnapshot,
-  previewCtx?: YtdlpCommandPreviewContext
+  previewCtx?: YtdlpCommandPreviewContext,
+  uiLocale: DownloadsWindowUiLocale = 'ru'
 ): YtdlpDownloadOptionsPayload {
   let outputPattern: string
   let urlArg: string
@@ -555,17 +576,12 @@ export function payloadFromSnapshot(
     url: urlArg
   })
   const commandPreview = `yt-dlp ${formatArgvTokensForPreview(argv)}`
-  const commandHints = getYtdlpCommandHints()
+  const commandHints = getYtdlpCommandHints(uiLocale)
   return {
     filenameTemplate: snap.filenameTemplate,
     defaultFilenameTemplate: YTDLP_DEFAULT_FILENAME_TEMPLATE,
     formatPreset: snap.formatPreset,
-    formatPresetChoices: [
-      { id: 'editor_mp4', label: 'MP4 для редактора (H.264/AAC)' },
-      { id: 'default', label: 'По умолчанию (yt-dlp)' },
-      { id: 'merge_bv_ba', label: 'Лучшее видео + аудио (слить)' },
-      { id: 'best_single', label: 'Лучший один файл (-f best)' }
-    ],
+    formatPresetChoices: buildYtdlpFormatPresetChoices(uiLocale),
     downloadPlaylist: snap.downloadPlaylist,
     audioOnly: snap.audioOnly,
     subtitlePreset: snap.subtitlePreset,
@@ -583,12 +599,7 @@ export function payloadFromSnapshot(
     retriesLine: snap.retriesLine,
     fragmentRetriesLine: snap.fragmentRetriesLine,
     queueRetryProfile: snap.queueRetryProfile,
-    queueRetryProfileChoices: [
-      { id: 'off', label: 'Выключено' },
-      { id: 'light', label: 'Лёгкий (1 повтор, 2.5 с)' },
-      { id: 'normal', label: 'Обычный (2 повтора: 3 с + 8 с)' },
-      { id: 'persistent', label: 'Устойчивый (3 повтора: 5 с + 15 с + 45 с)' }
-    ],
+    queueRetryProfileChoices: buildYtdlpQueueRetryProfileChoices(uiLocale),
     openInHandlerOnComplete: snap.openInHandlerOnComplete,
     autoExportAfterOpenInHandler: snap.autoExportAfterOpenInHandler
   }

@@ -218,7 +218,7 @@ async function runYtdlpForWaitingRow(
       speed: displaySpeed !== null && displaySpeed.length > 0 ? displaySpeed : null,
       eta: parsed.eta
     }
-    const cell = formatYtdlpProgressCell(partsForCell)
+    const cell = formatYtdlpProgressCell(partsForCell, locale)
     if (cell.length === 0) {
       return
     }
@@ -276,11 +276,11 @@ async function runYtdlpForWaitingRow(
   }
 
   const applyProgressLine = (line: string): void => {
-    const parsed = parseYtdlpDownloadProgressLine(line)
+    const parsed = parseYtdlpDownloadProgressLine(line, locale)
     if (!parsed) {
       return
     }
-    const cellProbe = formatYtdlpProgressCell(parsed)
+    const cellProbe = formatYtdlpProgressCell(parsed, locale)
     if (cellProbe.length === 0) {
       return
     }
@@ -293,7 +293,7 @@ async function runYtdlpForWaitingRow(
   }
 
   const emitStreamLineForDownloadsLog = (stream: 'stdout' | 'stderr', line: string): void => {
-    const parsed = parseYtdlpDownloadProgressLine(line)
+    const parsed = parseYtdlpDownloadProgressLine(line, locale)
     if (!parsed) {
       emitDownloadsLog({ kind: 'line', rowId, stream, text: line })
       return
@@ -335,7 +335,7 @@ async function runYtdlpForWaitingRow(
 
   const applyYtDlpQueueCellHints = (line: string): void => {
     let changed = false
-    const fmt = parseYtdlpQueueFormatHint(line)
+    const fmt = parseYtdlpQueueFormatHint(line, locale)
     if (fmt) {
       updateDownloadsRow(rowId, { queueFmt: fmt })
       changed = true
@@ -564,7 +564,8 @@ async function runYtdlpForWaitingRow(
             result.signal,
             lastErrorSummary,
             lastStderrLine,
-            failureKind
+            failureKind,
+            locale
           ),
           progress: lastProgressCell ?? '—'
         })
@@ -579,7 +580,8 @@ async function runYtdlpForWaitingRow(
             result.signal,
             lastErrorSummary,
             lastStderrLine,
-            failureKind
+            failureKind,
+            locale
           ),
           progress: lastProgressCell ?? '—'
         })

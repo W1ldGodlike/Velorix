@@ -43,6 +43,9 @@ export type MainApplicationStrings = {
   menuThemeSystem: string
   menuThemeDark: string
   menuThemeLight: string
+  menuInterfaceLanguage: string
+  menuUiLangRussian: string
+  menuUiLangEnglish: string
   menuHelp: string
   menuAbout: string
   menuDocumentation: string
@@ -80,6 +83,11 @@ export type MainApplicationStrings = {
   exportFileNotFound: string
   exportNotGrantedPath: string
   exportFfmpegMissing: string
+  exportTwoPassRequiresBitrate: string
+  exportTwoPassLibx264Only: string
+  exportFfmpegExitedWithCode: string
+  exportLibx264SecondPassProgress: string
+  ffprobeAudioChannelsSuffix: string
   exportNoActiveWindow: string
   exportVideoDialogTitle: string
   exportFilterMp4: string
@@ -92,6 +100,22 @@ export type MainApplicationStrings = {
   exportCancelNoActive: string
   exportOpenBadRequest: string
   openVideoDialogNoWindow: string
+  openVideoDialogTitle: string
+  openVideoDialogFilterVideo: string
+  previewDialogGrantMediaFailed: string
+  engineDownloadHttpFailedTemplate: string
+  engineDownloadEmptyResponse: string
+  engineDownloadWindowsOnly: string
+  engineDownloadYtDlpProgress: string
+  engineDownloadFfmpegProgressTemplate: string
+  engineDownloadFfmpegSourceFallbackTemplate: string
+  engineDownloadFfmpegAllSourcesFailedTemplate: string
+  engineDownloadExtractFfmpeg: string
+  engineDownloadFfmpegZipMissingBinaries: string
+  engineDownloadDone: string
+  engineDownloadSha256MismatchTemplate: string
+  engineStatusMissingTemplate: string
+  engineStatusRunFailedGeneric: string
   filterExecutables: string
   ipcInvalidRequest: string
   ipcNoActiveWindow: string
@@ -140,14 +164,14 @@ const RU: MainApplicationStrings = {
   exportOutputStatFailed: 'Не удалось проверить файл экспорта',
   mainLogPathUnavailable: 'Путь к журналу недоступен',
   mainLogNotCreatedYet: 'Файл main.log ещё не создан',
-  supportZipSaveTitle: 'Собрать Support ZIP',
-  supportZipFailTitle: 'Не удалось собрать Support ZIP',
+  supportZipSaveTitle: 'Собрать архив поддержки (Support ZIP)',
+  supportZipFailTitle: 'Не удалось собрать архив поддержки (Support ZIP)',
   supportZipFailMessage: 'Не удалось собрать диагностический архив.',
   processErrorTitle: 'Ошибка FluxAlloy',
   processErrorMessage: 'В приложении произошла ошибка.',
-  processErrorCopyDetails: 'Копировать детали',
-  processErrorOpenLog: 'Открыть лог',
-  processErrorSupportZip: 'Собрать Support ZIP',
+  processErrorCopyDetails: 'Копировать подробности',
+  processErrorOpenLog: 'Открыть журнал',
+  processErrorSupportZip: 'Собрать архив поддержки (Support ZIP)',
   processErrorClose: 'Закрыть',
   processErrorMetaType: 'Тип',
   processErrorMetaTime: 'Время',
@@ -164,12 +188,15 @@ const RU: MainApplicationStrings = {
   menuOpenFolder: 'Открыть папку…',
   menuOpenMainLog: 'Открыть main.log',
   menuOpenSessionLog: 'Открыть session.log',
-  menuSupportZip: 'Собрать Support ZIP…',
+  menuSupportZip: 'Собрать архив поддержки…',
   menuView: 'Вид',
   menuTheme: 'Тема',
   menuThemeSystem: 'Как в системе',
   menuThemeDark: 'Тёмная',
   menuThemeLight: 'Светлая',
+  menuInterfaceLanguage: 'Язык интерфейса',
+  menuUiLangRussian: 'Русский',
+  menuUiLangEnglish: 'English',
   menuHelp: 'Справка',
   menuAbout: 'О программе FluxAlloy…',
   menuDocumentation: 'Документация FluxAlloy (ТЗ)',
@@ -180,9 +207,9 @@ const RU: MainApplicationStrings = {
   quitStay: 'Остаться',
   quitAbort: 'Закрыть и прервать',
   quitDialogTitle: 'FluxAlloy',
-  previewWebmNotCreated: 'WebM preview не был создан.',
+  previewWebmNotCreated: 'Превью WebM не было создано.',
   previewFfmpegMissingForWebm:
-    'Файл не поддерживается встроенным предпросмотром, а ffmpeg для WebM preview не найден.',
+    'Файл не поддерживается встроенным предпросмотром, а ffmpeg для превью WebM не найден.',
   previewCannotOpenInPreview: 'Нельзя открыть этот файл в предпросмотре.',
   previewCannotOpenSourceInEditor: 'Нельзя открыть исходный файл в редакторе.',
   previewMainWindowMissing: 'Главное окно FluxAlloy не найдено.',
@@ -210,6 +237,13 @@ const RU: MainApplicationStrings = {
   exportFileNotFound: 'Файл не найден',
   exportNotGrantedPath: 'Нет доступа к файлу — откройте его через превью.',
   exportFfmpegMissing: 'ffmpeg не найден — установите движки.',
+  exportTwoPassRequiresBitrate:
+    'Двухпроходное кодирование доступно только с выбранным видеобитрейтом, не с CRF.',
+  exportTwoPassLibx264Only:
+    'Двухпроходное кодирование поддержано только для H.264 (libx264).',
+  exportFfmpegExitedWithCode: 'ffmpeg завершился с кодом {code}',
+  exportLibx264SecondPassProgress: 'Второй проход libx264…',
+  ffprobeAudioChannelsSuffix: '{n} кан.',
   exportNoActiveWindow: 'Нет активного окна',
   exportVideoDialogTitle: 'Экспорт видео',
   exportFilterMp4: 'MP4',
@@ -222,6 +256,26 @@ const RU: MainApplicationStrings = {
   exportCancelNoActive: 'Нет активного экспорта',
   exportOpenBadRequest: 'Некорректный запрос',
   openVideoDialogNoWindow: 'Нет активного окна',
+  openVideoDialogTitle: 'Открыть видео',
+  openVideoDialogFilterVideo: 'Видео',
+  previewDialogGrantMediaFailed:
+    'Не удалось открыть файл (нет доступа или это не обычный файл)',
+  engineDownloadHttpFailedTemplate: 'Загрузка не удалась: HTTP {status} {statusText}',
+  engineDownloadEmptyResponse: 'Пустой ответ сервера',
+  engineDownloadWindowsOnly:
+    'Автозагрузка движков пока реализована только для Windows (см. ТЗ §3)',
+  engineDownloadYtDlpProgress: 'Скачивание yt-dlp (GitHub)…',
+  engineDownloadFfmpegProgressTemplate: 'Скачивание FFmpeg ({label})…',
+  engineDownloadFfmpegSourceFallbackTemplate:
+    'Источник FFmpeg {label} не сработал, пробую резервный…',
+  engineDownloadFfmpegAllSourcesFailedTemplate:
+    'Не удалось скачать FFmpeg ни из одного источника: {detail}',
+  engineDownloadExtractFfmpeg: 'Распаковка FFmpeg…',
+  engineDownloadFfmpegZipMissingBinaries: 'В архиве FFmpeg не найдены ffmpeg.exe / ffprobe.exe',
+  engineDownloadDone: 'Загрузка движков завершена',
+  engineDownloadSha256MismatchTemplate: 'SHA256 не совпал для {path}',
+  engineStatusMissingTemplate: 'Не найден {exe} (ручной путь / встроенный каталог / userData/bin)',
+  engineStatusRunFailedGeneric: 'Не удалось запустить движок',
   filterExecutables: 'Исполняемые файлы',
   ipcInvalidRequest: 'Некорректный запрос',
   ipcNoActiveWindow: 'Нет активного окна',
@@ -229,11 +283,11 @@ const RU: MainApplicationStrings = {
   diagFolderResources: 'Папка ресурсов приложения',
   diagFolderBundledBin: 'Папка bin в поставке',
   diagFolderUserBin: 'Папка bin в userData',
-  diagFolderLogs: 'Папка логов',
+  diagFolderLogs: 'Папка журналов',
   diagFolderYtdlpDownloads: 'Каталог загрузок yt-dlp',
   diagFolderSystemTemp: 'Системная временная папка',
   diagnosticsMaintenanceNoTargets: 'Не выбраны категории обслуживания',
-  knowledgeHelpNotFound: 'Каталог Help не найден',
+  knowledgeHelpNotFound: 'Каталог справки Help не найден',
   knowledgeInvalidArticle: 'Некорректная статья справки',
   knowledgeArticleNotFound: 'Статья справки не найдена',
   ffprobeNotFound: 'ffprobe не найден — установите движки через «Скачать движки».',
@@ -242,22 +296,23 @@ const RU: MainApplicationStrings = {
   ytdlpEngineNotFound: 'yt-dlp не найден — скачайте движки из главного окна',
   ytdlpInvalidFilenameTemplate:
     'Некорректный шаблон имени файла (-o): проверьте %(ext)s, отсутствие «..» и выход за каталог загрузки.',
-  terminalArgvTokenTooLong: 'Один из argv-токенов слишком длинный.',
+  terminalArgvTokenTooLong: 'Один из токенов argv слишком длинный.',
   terminalAtFileDisallowed: 'Аргументы вида @файл запрещены.',
-  terminalDangerChars: 'Запрещены shell-символы (; | & ` $ < >) и управляющие символы.',
+  terminalDangerChars:
+    'Запрещены символы оболочки (shell): ; | & ` $ < >, а также управляющие символы.',
   terminalCommandMustBeString: 'Команда должна быть строкой.',
   terminalEnterCommand: 'Введите команду.',
   terminalCommandTooLong: 'Команда длиннее {max} символов.',
   terminalQuotesDisallowed:
-    'Кавычки и shell-строки не поддерживаются: вводите argv-токены через пробел.',
+    'Кавычки и строки оболочки (shell) не поддерживаются: вводите токены argv через пробел.',
   terminalTooManyArgs: 'Слишком много аргументов (макс. {max}).',
   terminalAllowedToolsOnly: 'Разрешены только префиксы ffmpeg, ffprobe и yt-dlp.',
   terminalCurrentFileNeedsPreview: 'Токен __CURRENT_FILE__ требует открытый файл в превью редактора.',
   terminalCurrentFileNotGranted:
-    'Текущий файл превью не разрешён для подстановки в CLI (откройте его через диалог или DnD).',
-  terminalEngineMissingInSettings: 'Движок {tool} не найден в настройках/bin.',
+    'Текущий файл превью не разрешён для подстановки в команду (откройте через диалог или перетаскивание).',
+  terminalEngineMissingInSettings: 'Движок {tool} не найден в настройках или в каталоге bin.',
   terminalBlockedLogToolLine: '{tool} …',
-  terminalLogTruncatedOlder: '[FluxAlloy] truncated older terminal-cli.log entries\n\n'
+  terminalLogTruncatedOlder: '[FluxAlloy] усечены старые записи журнала terminal-cli.log\n\n'
 }
 
 const EN: MainApplicationStrings = {
@@ -303,6 +358,9 @@ const EN: MainApplicationStrings = {
   menuThemeSystem: 'Match system',
   menuThemeDark: 'Dark',
   menuThemeLight: 'Light',
+  menuInterfaceLanguage: 'Interface language',
+  menuUiLangRussian: 'Russian',
+  menuUiLangEnglish: 'English',
   menuHelp: 'Help',
   menuAbout: 'About FluxAlloy…',
   menuDocumentation: 'FluxAlloy documentation (spec)',
@@ -342,6 +400,12 @@ const EN: MainApplicationStrings = {
   exportFileNotFound: 'File not found',
   exportNotGrantedPath: 'No access to this file — open it via preview first.',
   exportFfmpegMissing: 'ffmpeg not found — install engines.',
+  exportTwoPassRequiresBitrate:
+    'Two-pass encoding is only available with a video bitrate, not with CRF.',
+  exportTwoPassLibx264Only: 'Two-pass encoding is only supported for H.264 (libx264).',
+  exportFfmpegExitedWithCode: 'ffmpeg exited with code {code}',
+  exportLibx264SecondPassProgress: 'libx264 second pass…',
+  ffprobeAudioChannelsSuffix: '{n} ch.',
   exportNoActiveWindow: 'No active window',
   exportVideoDialogTitle: 'Export video',
   exportFilterMp4: 'MP4',
@@ -354,6 +418,26 @@ const EN: MainApplicationStrings = {
   exportCancelNoActive: 'No active export',
   exportOpenBadRequest: 'Invalid request',
   openVideoDialogNoWindow: 'No active window',
+  openVideoDialogTitle: 'Open video',
+  openVideoDialogFilterVideo: 'Video',
+  previewDialogGrantMediaFailed:
+    'Could not open the file (no access or it is not a regular file)',
+  engineDownloadHttpFailedTemplate: 'Download failed: HTTP {status} {statusText}',
+  engineDownloadEmptyResponse: 'Empty server response',
+  engineDownloadWindowsOnly:
+    'Automatic engine download is only implemented on Windows for now (see spec §3)',
+  engineDownloadYtDlpProgress: 'Downloading yt-dlp (GitHub)…',
+  engineDownloadFfmpegProgressTemplate: 'Downloading FFmpeg ({label})…',
+  engineDownloadFfmpegSourceFallbackTemplate:
+    'FFmpeg source {label} failed, trying fallback…',
+  engineDownloadFfmpegAllSourcesFailedTemplate:
+    'Could not download FFmpeg from any source: {detail}',
+  engineDownloadExtractFfmpeg: 'Extracting FFmpeg…',
+  engineDownloadFfmpegZipMissingBinaries: 'ffmpeg.exe / ffprobe.exe not found in the FFmpeg archive',
+  engineDownloadDone: 'Engine download finished',
+  engineDownloadSha256MismatchTemplate: 'SHA256 mismatch for {path}',
+  engineStatusMissingTemplate: '{exe} not found (override/bundled/user bin)',
+  engineStatusRunFailedGeneric: 'Could not run engine',
   filterExecutables: 'Executables',
   ipcInvalidRequest: 'Invalid request',
   ipcNoActiveWindow: 'No active window',

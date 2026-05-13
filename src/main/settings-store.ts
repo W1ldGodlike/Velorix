@@ -18,6 +18,7 @@ import {
 } from './ffmpeg-export-service'
 import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
 import { validateYtdlpCookiesBrowserProfile } from './ytdlp-extra-args'
+import { parseDownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
 
 export type {
   AppSettings,
@@ -547,6 +548,10 @@ export function loadSettings(filePath: string): AppSettings {
     const downloadsWindowUiPanels = parseDownloadsWindowUiPanels(parsed.downloadsWindowUiPanels)
     if (downloadsWindowUiPanels !== undefined) {
       base.downloadsWindowUiPanels = downloadsWindowUiPanels
+    }
+    const uiLocale = parseDownloadsWindowUiLocale(parsed.uiLocale)
+    if (uiLocale !== undefined) {
+      base.uiLocale = uiLocale
     }
     return base
   } catch {

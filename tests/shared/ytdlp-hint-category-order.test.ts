@@ -8,6 +8,11 @@ describe('ytdlp-hint-category-order §6.3', () => {
     expect(compareYtdlpHintCategoryKeys('Справка', 'Форматы и кодеки')).toBeLessThan(0)
   })
 
+  it('en: Help sorts before Formats & codecs', () => {
+    expect(compareYtdlpHintCategoryKeys('Formats & codecs', 'Help', 'en')).toBeGreaterThan(0)
+    expect(compareYtdlpHintCategoryKeys('Help', 'Formats & codecs', 'en')).toBeLessThan(0)
+  })
+
   it('одинаковый rank неизвестных — по ru', () => {
     expect(compareYtdlpHintCategoryKeys('Бета', 'Альфа')).toBeGreaterThan(0)
   })

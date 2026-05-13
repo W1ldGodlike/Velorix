@@ -7,6 +7,11 @@
  * Stereo 3D и ATSC Audio Service Type дают короткие подписи для видео и аудио.
  */
 
+import {
+  type FfprobeSummaryLocale,
+  formatFfprobeBitrateLabelFromBps
+} from './ffprobe-summary-export-locale'
+
 function recordFromUnknown(raw: unknown): Record<string, unknown> | null {
   return raw !== null && typeof raw === 'object' && !Array.isArray(raw)
     ? (raw as Record<string, unknown>)
@@ -101,7 +106,7 @@ function summarizeSmpteTimecode(o: Record<string, unknown>): string {
   return value !== null ? `SMPTE TC ${value}` : 'SMPTE TC'
 }
 
-function formatCompactBitrate(raw: string | null): string | null {
+function formatCompactBitrate(raw: string | null, locale: FfprobeSummaryLocale): string | null {
   if (raw === null) {
     return null
   }
@@ -109,23 +114,17 @@ function formatCompactBitrate(raw: string | null): string | null {
   if (!Number.isFinite(n) || n <= 0) {
     return null
   }
-  if (n >= 1_000_000) {
-    const mb = n / 1_000_000
-    return `${mb >= 10 ? mb.toFixed(0) : mb.toFixed(1)} Mb/s`
-  }
-  if (n >= 1000) {
-    const kb = n / 1000
-    return `${kb >= 10 ? kb.toFixed(0) : kb.toFixed(1)} kb/s`
-  }
-  return `${Math.trunc(n)} b/s`
+  return formatFfprobeBitrateLabelFromBps(n, locale)
 }
 
-function summarizeCpb(o: Record<string, unknown>): string {
+function summarizeCpb(o: Record<string, unknown>, locale: FfprobeSummaryLocale): string {
   const max = formatCompactBitrate(
-    scalarToken(o, 'max_bitrate') ?? scalarToken(o, 'max_bit_rate')
+    scalarToken(o, 'max_bitrate') ?? scalarToken(o, 'max_bit_rate'),
+    locale
   )
   const avg = formatCompactBitrate(
-    scalarToken(o, 'avg_bitrate') ?? scalarToken(o, 'avg_bit_rate')
+    scalarToken(o, 'avg_bitrate') ?? scalarToken(o, 'avg_bit_rate'),
+    locale
   )
   if (max !== null) {
     return `CPB max ${max}`
@@ -144,7 +143,7 @@ function summarizeProducerReferenceTime(o: Record<string, unknown>): string {
   return value !== null ? `PRFT ${value}` : 'PRFT'
 }
 
-function summarizeSideDataItem(raw: unknown): string | null {
+function summarizeSideDataItem(raw: unknown, locale: FfprobeSummaryLocale): string | null {
   const o = recordFromUnknown(raw)
   if (o === null) {
     return null
@@ -207,7 +206,7 @@ function summarizeSideDataItem(raw: unknown): string | null {
     return low.includes('av1') ? 'AV1 film grain' : 'Film grain'
   }
   if (low.includes('cpb')) {
-    return summarizeCpb(o)
+    return summarizeCpb(o, locale)
   }
   return shortSideDataType(type)
 }
@@ -241,13 +240,16 @@ export function extractFfprobeDisplayMatrixRotation(sideDataList: unknown): numb
   return null
 }
 
-export function summarizeFfprobeSideDataList(raw: unknown): string | null {
+export function summarizeFfprobeSideDataList(
+  raw: unknown,
+  locale: FfprobeSummaryLocale = 'ru'
+): string | null {
   if (!Array.isArray(raw)) {
     return null
   }
   const out: string[] = []
   for (const item of raw) {
-    const label = summarizeSideDataItem(item)
+    const label = summarizeSideDataItem(item, locale)
     if (label === null || out.includes(label)) {
       continue
     }

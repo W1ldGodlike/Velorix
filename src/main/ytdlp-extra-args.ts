@@ -3,6 +3,8 @@
  * жёсткая фильтрация опасных символов и конфликтующих ключей с основным конвейером.
  */
 
+import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import { getYtdlpCliValidationCopy } from '../shared/ytdlp-cli-validation-locale'
 import type {
   YtdlpCookiesBrowserId,
   YtdlpImpersonateId,
@@ -29,8 +31,10 @@ function cookiesBrowserProfileHasControlChars(s: string): boolean {
 
 /** §6.2 — суффикс `BROWSER:…` для `--cookies-from-browser` (один argv-токен после сборки). */
 export function validateYtdlpCookiesBrowserProfile(
-  raw: string
+  raw: string,
+  uiLocale: DownloadsWindowUiLocale = 'ru'
 ): { ok: true; value: string } | { ok: false; error: string } {
+  const V = getYtdlpCliValidationCopy(uiLocale)
   const t = raw.trim()
   if (t.length === 0) {
     return { ok: true, value: '' }
@@ -38,13 +42,13 @@ export function validateYtdlpCookiesBrowserProfile(
   if (t.length > YTDLP_COOKIES_BROWSER_PROFILE_MAX_LEN) {
     return {
       ok: false,
-      error: `Профиль браузера для cookies слишком длинный (макс. ${YTDLP_COOKIES_BROWSER_PROFILE_MAX_LEN} символов).`
+      error: V.cookiesProfileTooLong(YTDLP_COOKIES_BROWSER_PROFILE_MAX_LEN)
     }
   }
   if (cookiesBrowserProfileHasControlChars(t)) {
     return {
       ok: false,
-      error: 'Профиль браузера для cookies не должен содержать управляющие символы.'
+      error: V.cookiesProfileControlChars
     }
   }
   return { ok: true, value: t }
@@ -91,15 +95,18 @@ function tokenIsShortOptionWithAttachedValue(token: string, option: string): boo
   return token.length > option.length && token.startsWith(option)
 }
 
-function tokenViolationReason(token: string): string | null {
+function tokenViolationReason(
+  token: string,
+  V: ReturnType<typeof getYtdlpCliValidationCopy>
+): string | null {
   if (token.length > MAX_TOKEN_CHARS) {
-    return `Токен длиннее ${MAX_TOKEN_CHARS} символов.`
+    return V.tokenTooLong(MAX_TOKEN_CHARS)
   }
   if (tokenHasDangerChars(token)) {
-    return 'Запрещены символы для shell (; | & ` кавычки и т.п.).'
+    return V.tokenDangerChars
   }
   if (token.startsWith('@')) {
-    return 'Аргументы вида @файл запрещены.'
+    return V.tokenAtFile
   }
   // `-P` — case-sensitive short option в yt-dlp. Python argparse принимает и glued-форму
   // `-Ptemp:/path`, поэтому ловим её до toLowerCase вместе с обычными `-P` / `-P=`.
@@ -108,7 +115,7 @@ function tokenViolationReason(token: string): string | null {
     token.startsWith('-P=') ||
     tokenIsShortOptionWithAttachedValue(token, '-P')
   ) {
-    return 'Каталоги вывода задаются настройками FluxAlloy; -P/--paths запрещены.'
+    return V.tokenPathsForbidden
   }
   const low = token.toLowerCase()
   if (
@@ -118,7 +125,7 @@ function tokenViolationReason(token: string): string | null {
     low.startsWith('--output=') ||
     tokenIsShortOptionWithAttachedValue(low, '-o')
   ) {
-    return 'Шаблон вывода задаётся полем выше; не дублируйте -o/--output.'
+    return V.tokenOutputDup
   }
   if (
     low === '-a' ||
@@ -126,32 +133,32 @@ function tokenViolationReason(token: string): string | null {
     low.startsWith('--batch-file=') ||
     tokenIsShortOptionWithAttachedValue(low, '-a')
   ) {
-    return 'Пакетные файлы (-a/--batch-file) здесь запрещены.'
+    return V.tokenBatchForbidden
   }
   if (low === '--cookies' || low.startsWith('--cookies=')) {
-    return 'Cookies задаются в блоке §6.2; не дублируйте --cookies.'
+    return V.tokenCookiesDup
   }
   if (low === '--cookies-from-browser' || low.startsWith('--cookies-from-browser=')) {
-    return 'Источник cookies задаётся в §6.2; не дублируйте --cookies-from-browser.'
+    return V.tokenCookiesFromBrowserDup
   }
   if (low === '--impersonate' || low.startsWith('--impersonate=')) {
-    return 'Импersonate задаётся в блоке §6.2; не дублируйте --impersonate.'
+    return V.tokenImpersonateDup
   }
   if (low === '--limit-rate' || low.startsWith('--limit-rate=')) {
-    return 'Ограничение скорости задаётся отдельным полем §6.2; не дублируйте --limit-rate.'
+    return V.tokenLimitRateDup
   }
   if (low === '-r' || tokenIsShortOptionWithAttachedValue(low, '-r')) {
-    return 'Ограничение скорости задаётся отдельным полем §6.2; не дублируйте -r.'
+    return V.tokenShortRDup
   }
   if (low === '--retries' || low.startsWith('--retries=')) {
-    return 'Количество повторов задаётся отдельным полем §6.2; не дублируйте --retries.'
+    return V.tokenRetriesDup
   }
   if (low === '--fragment-retries' || low.startsWith('--fragment-retries=')) {
-    return 'Повторы фрагментов задаются отдельным полем §6.4; не дублируйте --fragment-retries.'
+    return V.tokenFragmentRetriesDup
   }
   const forbidden = FORBIDDEN_RUNTIME_OPTIONS.find((opt) => tokenIsOption(low, opt))
   if (forbidden) {
-    return `Флаг ${forbidden} запрещён в доп. аргументах: он может запускать внешние команды, менять runtime-пути или подгружать конфигурацию.`
+    return V.forbiddenRuntimeFlag(forbidden)
   }
   return null
 }
@@ -161,21 +168,23 @@ function tokenViolationReason(token: string): string | null {
  * Не поддерживаем кавычки с пробелами — сознательно, чтобы не имитировать shell.
  */
 export function parseExtraYtdlpArgsLine(
-  raw: string
+  raw: string,
+  uiLocale: DownloadsWindowUiLocale = 'ru'
 ): { ok: true; args: string[] } | { ok: false; error: string } {
+  const V = getYtdlpCliValidationCopy(uiLocale)
   const line = raw.trim()
   if (line.length === 0) {
     return { ok: true, args: [] }
   }
   if (line.length > MAX_LINE_CHARS) {
-    return { ok: false, error: `Строка длиннее ${MAX_LINE_CHARS} символов.` }
+    return { ok: false, error: V.lineTooLong(MAX_LINE_CHARS) }
   }
   const parts = line.split(/\s+/).filter((s) => s.length > 0)
   if (parts.length > MAX_TOKENS) {
-    return { ok: false, error: `Слишком много аргументов (макс. ${MAX_TOKENS}).` }
+    return { ok: false, error: V.tooManyTokens(MAX_TOKENS) }
   }
   for (const p of parts) {
-    const why = tokenViolationReason(p)
+    const why = tokenViolationReason(p, V)
     if (why !== null) {
       return { ok: false, error: why }
     }

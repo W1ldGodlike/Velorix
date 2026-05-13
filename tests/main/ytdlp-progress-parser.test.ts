@@ -193,12 +193,12 @@ describe('parseYtdlpDownloadProgressLine', () => {
       parseYtdlpDownloadProgressLine('[download] Downloading android player API JSON')
     ).toEqual({
       percent: null,
-      speed: 'метаданные плеера',
+      speed: 'метаданные API плеера',
       eta: null
     })
     expect(parseYtdlpDownloadProgressLine('[download] Downloading webpage')).toEqual({
       percent: null,
-      speed: 'страница',
+      speed: 'веб-страница',
       eta: null
     })
   })
@@ -267,12 +267,12 @@ describe('parseYtdlpQueueFormatHint', () => {
     )
     expect(
       parseYtdlpQueueFormatHint('[VideoRemuxer] Remuxing video from mkv into "C:\\out\\final.mp4"')
-    ).toBe('remux → mp4')
+    ).toBe('перепаковка (remux) → mp4')
     expect(
       parseYtdlpQueueFormatHint(
         '[FFmpegVideoConvertor] Convert video from webm to mp4; Destination: /tmp/clip.mp4'
       )
-    ).toBe('convert → mp4')
+    ).toBe('перекодирование (convert) → mp4')
   })
 
   it('возвращает null для прочих строк', () => {
@@ -413,6 +413,32 @@ describe('formatYtdlpQueueFailureStatus', () => {
     expect(
       formatYtdlpQueueFailureStatus(101, null, 'max dl', null, 'exit_download_limit')
     ).toContain('лимит загрузок')
+  })
+
+  it('en: failure status and progress cell', () => {
+    expect(formatYtdlpQueueFailureStatus(null, 'SIGTERM', null, null, undefined, 'en')).toBe(
+      'Ошибка (signal SIGTERM)'
+    )
+    expect(
+      formatYtdlpQueueFailureStatus(1, null, 'x', null, 'likely_source_block', 'en')
+    ).toContain('source blocked')
+    expect(formatYtdlpProgressCell({ percent: '10%', speed: null, eta: '00:01' }, 'en')).toBe(
+      '10% · ETA 00:01'
+    )
+  })
+})
+
+describe('parseYtdlpDownloadProgressLine (en)', () => {
+  it('playlist / fragment / merge hint', () => {
+    expect(
+      parseYtdlpDownloadProgressLine('[download] Downloading item 3 of 25', 'en')?.speed
+    ).toBe('playlist 3/25')
+    expect(parseYtdlpDownloadProgressLine('[download] fragment 5 of 120', 'en')?.speed).toBe(
+      'fragment 5/120'
+    )
+    expect(
+      parseYtdlpQueueFormatHint('[Merger] Merging formats into "C:\\Downloads\\final.mkv"', 'en')
+    ).toContain('merge')
   })
 })
 

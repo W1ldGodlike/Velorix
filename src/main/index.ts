@@ -38,7 +38,8 @@ import {
   configureDownloadsWindowBoundsHooks,
   focusOrCreateDownloadsWindow,
   isDownloadsWindow,
-  registerDownloadsWindowIpcHandlers
+  registerDownloadsWindowIpcHandlers,
+  syncDownloadsPopoutHtmlToLocale
 } from './downloads-window'
 import {
   configureInspectorWindowHooks,
@@ -114,6 +115,7 @@ import {
   type MediaExportStartResult,
   type FfmpegExportProgressPayload
 } from './ffmpeg-export-service'
+import { FFMPEG_EXPORT_CANCELLED_ERROR } from '../shared/ffmpeg-export-contract'
 import {
   pickUniqueAutoExportOutputPath,
   resolveFfmpegExportJobOptionsFromAppSettings
@@ -234,6 +236,10 @@ registerFluxMediaPrivileges()
 
 function mainDownloadsUiLocale(): DownloadsWindowUiLocale {
   try {
+    const fromSettings = parseDownloadsWindowUiLocale(cachedSettings.uiLocale)
+    if (fromSettings !== undefined) {
+      return fromSettings
+    }
     return downloadsWindowUiLocaleFromSystemLocale(app.getLocale())
   } catch {
     return 'ru'
@@ -242,6 +248,10 @@ function mainDownloadsUiLocale(): DownloadsWindowUiLocale {
 
 function mainAppStr(): ReturnType<typeof getMainApplicationStrings> {
   return getMainApplicationStrings(mainDownloadsUiLocale())
+}
+
+function ipcDownloadsUiLocale(raw: unknown): DownloadsWindowUiLocale {
+  return raw === 'en' || raw === 'ru' ? raw : mainDownloadsUiLocale()
 }
 
 function parseDownloadsOpenRequest(raw: unknown): {
@@ -1343,6 +1353,23 @@ function setTheme(pref: AppTheme): AppSettingsView {
   return persistThemePreference(pref)
 }
 
+function persistUiLocale(raw: unknown): AppSettings {
+  const v = parseDownloadsWindowUiLocale(raw)
+  if (v === undefined) {
+    return cachedSettings
+  }
+  cachedSettings = { ...cachedSettings, uiLocale: v }
+  saveSettings(settingsPath(), cachedSettings)
+  buildApplicationMenu()
+  syncDownloadsPopoutHtmlToLocale(v)
+  for (const w of BrowserWindow.getAllWindows()) {
+    if (!w.isDestroyed()) {
+      w.webContents.send(mw.uiLocaleChanged, v)
+    }
+  }
+  return cachedSettings
+}
+
 /**
  * §17/§18 — пункты «Инструменты → Открыть папку…».
  *
@@ -1594,6 +1621,7 @@ function buildApplicationMenu(): void {
   const win = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0] ?? undefined
   const isMac = process.platform === 'darwin'
   const themePref = cachedSettings.theme
+  const uiLoc = mainDownloadsUiLocale()
   const isSystem = themePref === 'system'
   const isDarkPref = themePref === 'dark'
   const isLightPref = themePref === 'light'
@@ -1643,7 +1671,7 @@ function buildApplicationMenu(): void {
               return
             }
             target.focus()
-            const result = await openVideoWithDialog(target)
+            const result = await openVideoWithDialog(target, mainDownloadsUiLocale())
             if (!result.ok) {
               return
             }
@@ -1752,6 +1780,27 @@ function buildApplicationMenu(): void {
               checked: isLightPref,
               click: (): void => {
                 void setTheme('light')
+              }
+            }
+          ]
+        },
+        {
+          label: m.menuInterfaceLanguage,
+          submenu: [
+            {
+              label: m.menuUiLangRussian,
+              type: 'radio',
+              checked: uiLoc === 'ru',
+              click: (): void => {
+                void persistUiLocale('ru')
+              }
+            },
+            {
+              label: m.menuUiLangEnglish,
+              type: 'radio',
+              checked: uiLoc === 'en',
+              click: (): void => {
+                void persistUiLocale('en')
               }
             }
           ]
@@ -2245,7 +2294,8 @@ app.whenReady().then(() => {
           ...exportOpts,
           lutResourcesRoot: paths.resources,
           signal: ac.signal,
-          onProgress: pushProgress
+          onProgress: pushProgress,
+          uiLocale: loc
         })
         if (result.ok) {
           rememberExportOutputPath(outPath)
@@ -2268,7 +2318,7 @@ app.whenReady().then(() => {
           })
           return
         }
-        if (result.error === 'Экспорт отменён') {
+        if (result.error === FFMPEG_EXPORT_CANCELLED_ERROR) {
           appendProcessingHistoryEntry(paths.userData, {
             kind: 'autoExport',
             startedAt,
@@ -2343,6 +2393,8 @@ app.whenReady().then(() => {
       effectiveTheme: resolveEffectiveTheme(cachedSettings.theme)
     }
   })
+
+  ipcMain.handle(mw.settingsSetUiLocale, (_, raw: unknown): AppSettings => persistUiLocale(raw))
 
   ipcMain.handle(mw.settingsSetTheme, (_, theme: unknown): AppSettingsView => {
     let next: AppTheme = 'dark'
@@ -2553,8 +2605,12 @@ app.whenReady().then(() => {
     }
   )
 
-  ipcMain.handle(mw.enginesStatus, async (): Promise<EnginesStatusSnapshot> => {
-    return getEnginesStatus(resolveAppPaths(), cachedSettings.engineExecutablePaths)
+  ipcMain.handle(mw.enginesStatus, async (_event, raw?: unknown): Promise<EnginesStatusSnapshot> => {
+    return getEnginesStatus(
+      resolveAppPaths(),
+      cachedSettings.engineExecutablePaths,
+      ipcDownloadsUiLocale(raw)
+    )
   })
 
   ipcMain.handle(mw.enginesShouldOfferDownload, (): boolean => {
@@ -2563,14 +2619,20 @@ app.whenReady().then(() => {
 
   ipcMain.handle(
     mw.enginesDownload,
-    async (event): Promise<{ ok: true } | { ok: false; error: string }> => {
+    async (event, raw?: unknown): Promise<{ ok: true } | { ok: false; error: string }> => {
       const win = BrowserWindow.fromWebContents(event.sender)
       const paths = resolveAppPaths()
       const trusted = loadTrustedHashes(resolveTrustedHashesPath())
+      const loc = ipcDownloadsUiLocale(raw)
       try {
-        await downloadEnginesWindows(paths, trusted, (p: EngineDownloadProgress) => {
-          win?.webContents.send(mw.enginesProgress, p)
-        })
+        await downloadEnginesWindows(
+          paths,
+          trusted,
+          (p: EngineDownloadProgress) => {
+            win?.webContents.send(mw.enginesProgress, p)
+          },
+          loc
+        )
         buildApplicationMenu()
         return { ok: true }
       } catch (error) {
@@ -2604,12 +2666,12 @@ app.whenReady().then(() => {
     }
   )
 
-  ipcMain.handle(mw.openVideoDialog, async (event) => {
+  ipcMain.handle(mw.openVideoDialog, async (event, raw?: unknown) => {
     const win = BrowserWindow.fromWebContents(event.sender)
     if (!win) {
       return { ok: false, error: mainAppStr().openVideoDialogNoWindow }
     }
-    const result = await openVideoWithDialog(win)
+    const result = await openVideoWithDialog(win, ipcDownloadsUiLocale(raw))
     if (result.ok) {
       persistLastOpenedSource(result.path)
     }
@@ -3030,7 +3092,8 @@ app.whenReady().then(() => {
         ...exportOpts,
         lutResourcesRoot: paths.resources,
         signal: ac.signal,
-        onProgress: pushProgress
+        onProgress: pushProgress,
+        uiLocale: exportUiLocale
       })
       if (result.ok) {
         rememberExportOutputPath(outPath)
@@ -3047,7 +3110,7 @@ app.whenReady().then(() => {
         })
         return { ok: true, path: outPath }
       }
-      if (result.error === 'Экспорт отменён') {
+      if (result.error === FFMPEG_EXPORT_CANCELLED_ERROR) {
         appendProcessingHistoryEntry(paths.userData, {
           kind: 'ffmpegExport',
           startedAt,

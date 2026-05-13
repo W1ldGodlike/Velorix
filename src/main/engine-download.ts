@@ -33,6 +33,8 @@ import {
   trustedHashForFfmpegZipWin,
   trustedHashForYtDlpWin
 } from './trusted-hashes-store'
+import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import { getMainApplicationStrings } from '../shared/main-application-locale'
 import type { EngineDownloadProgress } from '../shared/engine-download-contract'
 
 export type {
@@ -56,13 +58,18 @@ async function sha256File(filePath: string): Promise<string> {
   })
 }
 
-async function assertSha256Optional(filePath: string, expected: string | undefined): Promise<void> {
+async function assertSha256Optional(
+  filePath: string,
+  expected: string | undefined,
+  locale: DownloadsWindowUiLocale
+): Promise<void> {
+  const S = getMainApplicationStrings(locale)
   if (expected === undefined || expected.trim() === '') {
     return
   }
   const hex = await sha256File(filePath)
   if (hex.toLowerCase() !== expected.trim().toLowerCase()) {
-    throw new Error(`SHA256 не совпал для ${filePath}`)
+    throw new Error(S.engineDownloadSha256MismatchTemplate.replace('{path}', filePath))
   }
 }
 
@@ -76,15 +83,21 @@ function engineDownloadFetchTimeoutMs(): number {
 async function downloadToFile(
   url: string,
   destPath: string,
-  onFraction: (f: number) => void
+  onFraction: (f: number) => void,
+  locale: DownloadsWindowUiLocale
 ): Promise<void> {
+  const S = getMainApplicationStrings(locale)
   const response = await fetch(url, {
     redirect: 'follow',
     headers: { 'User-Agent': userAgent(), Accept: '*/*' },
     signal: AbortSignal.timeout(engineDownloadFetchTimeoutMs())
   })
   if (!response.ok) {
-    throw new Error(`Загрузка не удалась: HTTP ${response.status} ${response.statusText}`)
+    throw new Error(
+      S.engineDownloadHttpFailedTemplate
+        .replace('{status}', String(response.status))
+        .replace('{statusText}', response.statusText)
+    )
   }
   const total = Number(response.headers.get('content-length') ?? 0)
 
@@ -92,7 +105,7 @@ async function downloadToFile(
 
   const rawBody = response.body
   if (!rawBody) {
-    throw new Error('Пустой ответ сервера')
+    throw new Error(S.engineDownloadEmptyResponse)
   }
 
   const webStream = rawBody as import('stream/web').ReadableStream<Uint8Array>
@@ -144,10 +157,12 @@ function findCaseInsensitiveExe(rootDir: string, fileName: string): string | nul
 export async function downloadEnginesWindows(
   paths: AppPaths,
   trusted: TrustedHashesFile,
-  onProgress: (p: EngineDownloadProgress) => void
+  onProgress: (p: EngineDownloadProgress) => void,
+  locale: DownloadsWindowUiLocale = 'ru'
 ): Promise<void> {
+  const S = getMainApplicationStrings(locale)
   if (process.platform !== 'win32') {
-    throw new Error('Автозагрузка движков пока реализована только для Windows (см. ТЗ §3)')
+    throw new Error(S.engineDownloadWindowsOnly)
   }
 
   mkdirSync(paths.userBin, { recursive: true })
@@ -157,19 +172,20 @@ export async function downloadEnginesWindows(
 
   onProgress({
     phase: 'yt-dlp',
-    message: 'Скачивание yt-dlp (GitHub)…',
+    message: S.engineDownloadYtDlpProgress,
     percent: 0
   })
 
   await downloadToFile(ENGINE_SOURCES_WINDOWS.ytDlpExeUrl, ytdlpTarget, (pct) =>
     onProgress({
       phase: 'yt-dlp',
-      message: 'Скачивание yt-dlp (GitHub)…',
+      message: S.engineDownloadYtDlpProgress,
       percent: pct < 0 ? -1 : pct
-    })
+    }),
+    locale
   )
 
-  await assertSha256Optional(ytdlpTarget, ytdlpHash)
+  await assertSha256Optional(ytdlpTarget, ytdlpHash, locale)
 
   const cacheRoot = join(paths.userBin, '.cache')
   mkdirSync(cacheRoot, { recursive: true })
@@ -185,21 +201,23 @@ export async function downloadEnginesWindows(
       continue
     }
     const sourceLabel = `${source.label} ${i + 1}/${ENGINE_SOURCES_WINDOWS.ffmpegZipSources.length}`
+    const ffmpegProgressMsg = S.engineDownloadFfmpegProgressTemplate.replace('{label}', sourceLabel)
     onProgress({
       phase: 'ffmpeg-zip',
-      message: `Скачивание FFmpeg (${sourceLabel})…`,
+      message: ffmpegProgressMsg,
       percent: 0
     })
     try {
       await downloadToFile(source.url, zipTemp, (pct) =>
         onProgress({
           phase: 'ffmpeg-zip',
-          message: `Скачивание FFmpeg (${sourceLabel})…`,
+          message: ffmpegProgressMsg,
           percent: pct < 0 ? -1 : pct
-        })
+        }),
+        locale
       )
       const zipHash = trustedHashForFfmpegZipWin(trusted, source.id)
-      await assertSha256Optional(zipTemp, zipHash)
+      await assertSha256Optional(zipTemp, zipHash, locale)
       ffmpegDownloaded = true
       break
     } catch (err) {
@@ -212,7 +230,7 @@ export async function downloadEnginesWindows(
       if (i + 1 < ENGINE_SOURCES_WINDOWS.ffmpegZipSources.length) {
         onProgress({
           phase: 'ffmpeg-zip',
-          message: `Источник FFmpeg ${source.label} не сработал, пробую резервный…`,
+          message: S.engineDownloadFfmpegSourceFallbackTemplate.replace('{label}', source.label),
           percent: -1
         })
       }
@@ -221,10 +239,10 @@ export async function downloadEnginesWindows(
 
   if (!ffmpegDownloaded) {
     const msg = lastFfmpegError instanceof Error ? lastFfmpegError.message : String(lastFfmpegError)
-    throw new Error(`Не удалось скачать FFmpeg ни из одного источника: ${msg}`)
+    throw new Error(S.engineDownloadFfmpegAllSourcesFailedTemplate.replace('{detail}', msg))
   }
 
-  onProgress({ phase: 'extract', message: 'Распаковка FFmpeg…', percent: -1 })
+  onProgress({ phase: 'extract', message: S.engineDownloadExtractFfmpeg, percent: -1 })
   await extract(zipTemp, { dir: extractDir })
 
   const ffmpegFound = findCaseInsensitiveExe(extractDir, 'ffmpeg.exe')
@@ -232,7 +250,7 @@ export async function downloadEnginesWindows(
 
   if (!ffmpegFound || !ffprobeFound) {
     rmSync(extractDir, { recursive: true, force: true })
-    throw new Error('В архиве FFmpeg не найдены ffmpeg.exe / ffprobe.exe')
+    throw new Error(S.engineDownloadFfmpegZipMissingBinaries)
   }
 
   const ffmpegUser = join(paths.userBin, 'ffmpeg.exe')
@@ -240,8 +258,8 @@ export async function downloadEnginesWindows(
   copyFileSync(ffmpegFound, ffmpegUser)
   copyFileSync(ffprobeFound, ffprobeUser)
 
-  await assertSha256Optional(ffmpegUser, trustedHashForBundledFfmpegExeWin(trusted))
-  await assertSha256Optional(ffprobeUser, trustedHashForBundledFfprobeExeWin(trusted))
+  await assertSha256Optional(ffmpegUser, trustedHashForBundledFfmpegExeWin(trusted), locale)
+  await assertSha256Optional(ffprobeUser, trustedHashForBundledFfprobeExeWin(trusted), locale)
 
   rmSync(extractDir, { recursive: true, force: true })
   try {
@@ -250,7 +268,7 @@ export async function downloadEnginesWindows(
     /* ignore lock / AV delays */
   }
 
-  onProgress({ phase: 'done', message: 'Загрузка движков завершена', percent: 100 })
+  onProgress({ phase: 'done', message: S.engineDownloadDone, percent: 100 })
 }
 
 function fileExistsNonEmpty(candidate: string): boolean {

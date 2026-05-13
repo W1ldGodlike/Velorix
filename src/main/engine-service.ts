@@ -3,6 +3,8 @@ import { execFile } from 'child_process'
 import { basename, join, normalize, resolve } from 'path'
 
 import type { AppPaths } from './app-paths'
+import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import { getMainApplicationStrings } from '../shared/main-application-locale'
 import {
   ENGINE_IDS,
   type EngineId,
@@ -91,8 +93,10 @@ function readVersion(id: EngineId, executablePath: string): Promise<string> {
 async function checkEngine(
   paths: AppPaths,
   id: EngineId,
-  overrides?: EnginePathOverrides
+  overrides: EnginePathOverrides | undefined,
+  locale: DownloadsWindowUiLocale
 ): Promise<EngineStatus> {
+  const S = getMainApplicationStrings(locale)
   const exe = executableName(id)
   const foundPath = firstExistingPath(candidatePaths(paths, id, overrides))
 
@@ -106,7 +110,7 @@ async function checkEngine(
       executableName: exe,
       path: null,
       version: null,
-      message: `Не найден ${exe} (override/bundled/user bin)`
+      message: S.engineStatusMissingTemplate.replace('{exe}', exe)
     }
   }
 
@@ -132,7 +136,7 @@ async function checkEngine(
       executableName: exe,
       path: foundPath,
       version: null,
-      message: error instanceof Error ? error.message : 'Не удалось запустить движок'
+      message: error instanceof Error ? error.message : S.engineStatusRunFailedGeneric
     }
   }
 }
@@ -145,10 +149,13 @@ async function checkEngine(
  */
 export async function getEnginesStatus(
   paths: AppPaths,
-  overrides?: EnginePathOverrides
+  overrides?: EnginePathOverrides,
+  locale: DownloadsWindowUiLocale = 'ru'
 ): Promise<EnginesStatusSnapshot> {
   // TODO(§3): после загрузчика хешей добавить сюда состояние `checking`/progress для длительных проверок.
-  const statuses = await Promise.all(ENGINE_IDS.map((id) => checkEngine(paths, id, overrides)))
+  const statuses = await Promise.all(
+    ENGINE_IDS.map((id) => checkEngine(paths, id, overrides, locale))
+  )
 
   return {
     checkedAt: new Date().toISOString(),

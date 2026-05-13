@@ -183,4 +183,18 @@ describe('settings-store yt-dlp fields', () => {
     writeFileSync(file, JSON.stringify({ theme: 'auto' }), 'utf-8')
     expect(loadSettings(file).theme).toBe('dark')
   })
+
+  it('загружает uiLocale: en', () => {
+    const root = makeTempRoot()
+    const file = join(root, 'settings.json')
+    writeFileSync(file, JSON.stringify({ theme: 'dark', uiLocale: 'en' }), 'utf-8')
+    expect(loadSettings(file).uiLocale).toBe('en')
+  })
+
+  it('отбрасывает невалидный uiLocale', () => {
+    const root = makeTempRoot()
+    const file = join(root, 'settings.json')
+    writeFileSync(file, JSON.stringify({ theme: 'dark', uiLocale: 'de' }), 'utf-8')
+    expect(loadSettings(file).uiLocale).toBeUndefined()
+  })
 })

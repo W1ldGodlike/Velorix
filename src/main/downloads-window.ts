@@ -94,7 +94,16 @@ import {
   YTDLP_DOC_POSTPROCESS,
   YTDLP_DOC_README
 } from '../shared/external-doc-urls'
-import { YTDLP_HINT_CATEGORY_ORDER } from '../shared/ytdlp-hint-category-order'
+import { getYtdlpHintCategoryOrder } from '../shared/ytdlp-hint-category-order'
+import {
+  buildDownloadsWindowScriptI18nJson,
+  getDownloadsWindowUiStrings,
+  type DownloadsWindowUiLocale
+} from '../shared/downloads-window-ui-locale'
+import {
+  getDownloadsWindowIpcStrings,
+  type DownloadsWindowIpcStrings
+} from '../shared/downloads-window-ipc-locale'
 
 /** Совпадает с preload подпиской на снимок очереди. */
 export const DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL = d.queueSnapshot
@@ -119,9 +128,13 @@ interface DownloadsWindowBoundsHooks {
   >
   clearYtdlpCookiesFile?: () => void
   /** §6.2 — шаблон `-o` и пресет `-f`; persisted в `settings.json` из index.ts; raw — опции превью argv §6.3. */
-  getYtdlpDownloadCliOptions?: (raw?: unknown) => YtdlpDownloadOptionsPayload
+  getYtdlpDownloadCliOptions?: (
+    raw?: unknown,
+    uiLocale?: DownloadsWindowUiLocale
+  ) => YtdlpDownloadOptionsPayload
   applyYtdlpDownloadCliPatch?: (
-    patch: YtdlpDownloadOptionsPatch
+    patch: YtdlpDownloadOptionsPatch,
+    uiLocale?: DownloadsWindowUiLocale
   ) => { ok: true } | { ok: false; error: string }
   /** §6.4 — открыть готовый файл из yt-dlp в основном обработчике/preview FluxAlloy. */
   openDownloadedFileInHandler?: (
@@ -133,6 +146,8 @@ interface DownloadsWindowBoundsHooks {
   mergeDownloadsWindowUiPanelsPatch?: (patch: Partial<DownloadsWindowUiPanelState>) => void
   /** Текущая тема приложения — начальное `data-theme` и синхрон с меню главного окна. */
   getAppTheme?: () => ResolvedAppTheme
+  /** UI locale when renderer does not pass `uiLocale` in `openDownloadsWindow`. */
+  getDownloadsUiLocale?: () => DownloadsWindowUiLocale
 }
 
 let downloadsBoundsHooks: DownloadsWindowBoundsHooks = {}
@@ -143,6 +158,20 @@ export function configureDownloadsWindowBoundsHooks(hooks: DownloadsWindowBounds
 }
 
 let downloadsWindow: BrowserWindow | null = null
+
+/** Locale last used when opening the pop-out; drives IPC copy for downloads-window sender. */
+let lastDownloadsWindowResolvedUiLocale: DownloadsWindowUiLocale = 'ru'
+
+function ipcUiLocale(sender: WebContents): DownloadsWindowUiLocale {
+  if (isDownloadsSender(sender)) {
+    return lastDownloadsWindowResolvedUiLocale
+  }
+  return downloadsBoundsHooks.getDownloadsUiLocale?.() ?? 'ru'
+}
+
+function ipcStr(sender: WebContents): DownloadsWindowIpcStrings {
+  return getDownloadsWindowIpcStrings(ipcUiLocale(sender))
+}
 
 let ipcRegistered = false
 
@@ -200,11 +229,12 @@ function resolveAllowedDownloadOutputPath(raw: unknown): string | null {
 
 async function openDownloadOutputPath(
   rawPath: unknown,
-  mode: DownloadOutputOpenMode
+  mode: DownloadOutputOpenMode,
+  ipc: DownloadsWindowIpcStrings
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const file = resolveAllowedDownloadOutputPath(rawPath)
   if (!file) {
-    return { ok: false, error: 'Файл не найден или находится вне каталога загрузок.' }
+    return { ok: false, error: ipc.fileOutsideDownloadDir }
   }
   try {
     if (mode === 'folder') {
@@ -219,15 +249,16 @@ async function openDownloadOutputPath(
 }
 
 async function openDownloadOutputInHandler(
-  rawPath: unknown
+  rawPath: unknown,
+  ipc: DownloadsWindowIpcStrings
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const file = resolveAllowedDownloadOutputPath(rawPath)
   if (!file) {
-    return { ok: false, error: 'Файл не найден или находится вне каталога загрузок.' }
+    return { ok: false, error: ipc.fileOutsideDownloadDir }
   }
   const fn = downloadsBoundsHooks.openDownloadedFileInHandler
   if (!fn) {
-    return { ok: false, error: 'Обработчик FluxAlloy не подключён.' }
+    return { ok: false, error: ipc.handlerNotConnected }
   }
   return fn(file)
 }
@@ -310,9 +341,13 @@ function sanitizeDownloadsUiPanelPatch(raw: unknown): Partial<DownloadsWindowUiP
 
 function buildDownloadsHtml(
   panelState?: DownloadsWindowUiPanelState,
-  appTheme: ResolvedAppTheme = 'dark'
+  appTheme: ResolvedAppTheme = 'dark',
+  uiLocale: DownloadsWindowUiLocale = 'ru'
 ): string {
-  const ytdlpHintCatOrderJson = JSON.stringify([...YTDLP_HINT_CATEGORY_ORDER])
+  const L = getDownloadsWindowUiStrings(uiLocale)
+  const dlScriptI18nJson = buildDownloadsWindowScriptI18nJson(uiLocale)
+  const dlLocaleCmpJson = JSON.stringify(uiLocale === 'en' ? 'en' : 'ru')
+  const ytdlpHintCatOrderJson = JSON.stringify([...getYtdlpHintCategoryOrder(uiLocale)])
   const openAttr = (key: keyof DownloadsWindowUiPanelState, defaultOpen: boolean): string => {
     const v = panelState?.[key]
     const isOpen = typeof v === 'boolean' ? v : defaultOpen
@@ -320,10 +355,10 @@ function buildDownloadsHtml(
   }
   const dataThemeAttr = appTheme === 'light' ? 'light' : 'dark'
   return `<!DOCTYPE html>
-<html lang="ru" data-theme="${dataThemeAttr}">
+<html lang="${L.htmlLang}" data-theme="${dataThemeAttr}">
 <head>
   <meta charset="UTF-8" />
-  <title>FluxAlloy — менеджер загрузок</title>
+  <title>${L.pageTitle}</title>
   <style>
     html[data-theme='dark'],
     html:not([data-theme]) {
@@ -1174,37 +1209,37 @@ function buildDownloadsHtml(
         <h1>FluxAlloy</h1>
         <span class="brand-version">yt-dlp</span>
       </div>
-      <nav class="workspace-tabs" aria-label="Рабочие вкладки">
-        <button type="button" class="workspace-tab" disabled title="Редактор находится в главном окне"><span class="workspace-tab-glyph" aria-hidden="true">${emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS.home, 16)}</span>Редактор</button>
-        <button type="button" class="workspace-tab active" aria-current="page"><span class="workspace-tab-glyph" aria-hidden="true">${emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS.download, 16)}</span>Загрузки</button>
+      <nav class="workspace-tabs" aria-label="${L.workspaceTabsAria}">
+        <button type="button" class="workspace-tab" disabled title="${L.editorTabDisabledTitle}"><span class="workspace-tab-glyph" aria-hidden="true">${emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS.home, 16)}</span>${L.editorTabLabel}</button>
+        <button type="button" class="workspace-tab active" aria-current="page"><span class="workspace-tab-glyph" aria-hidden="true">${emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS.download, 16)}</span>${L.downloadsTabLabel}</button>
       </nav>
       <div class="topbar-right">
         <span class="topbar-meta">ffmpeg / yt-dlp queue</span>
-${emitDownloadsTopbarClusterHtml(18)}
+${emitDownloadsTopbarClusterHtml(18, L.topbarCluster)}
       </div>
     </header>
     <main class="dl-main">
-      <section class="dl-workspace" aria-label="Очередь загрузок">
+      <section class="dl-workspace" aria-label="${L.queueSectionAria}">
         <div class="dl-input-band">
           <div>
-            <label class="input-label" for="urls">Введите URL (каждый с новой строки)</label>
+            <label class="input-label" for="urls">${L.urlsLabel}</label>
             <textarea id="urls" placeholder="https://…" aria-describedby="urlsHint"></textarea>
-            <p class="hint" id="urlsHint">Ссылки по строкам или DnD текста/URL. Очередь последовательная §6. Если окно узкое (примерно до 960px), панель настроек yt-dlp переносится под очередь — в тулбаре есть «К настройкам».</p>
+            <p class="hint" id="urlsHint">${L.urlsHint}</p>
           </div>
           <div class="input-actions">
             <button type="button" class="cmd cmd-primary cmd-icon-leading" id="addBtn" aria-describedby="urlsHint">
               <span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.plus, 15)}</span>
-              Добавить в очередь
+              ${L.addToQueue}
             </button>
             <button
               type="button"
               class="cmd cmd-icon-leading"
               id="startBtn"
-              title="Скачать все строки со статусом «Ожидание»"
+              title="${L.startAllTitle}"
               aria-describedby="urlsHint"
             >
               <span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.play, 15)}</span>
-              Начать загрузку
+              ${L.startAll}
             </button>
           </div>
         </div>
@@ -1213,70 +1248,70 @@ ${emitDownloadsTopbarClusterHtml(18)}
             type="button"
             class="cmd cmd-icon-leading"
             id="pauseYtdlpBtn"
-            title="Приостановить загрузку (POSIX); на Windows недоступно"
+            title="${L.pauseToolbarTitleDefault}"
             aria-describedby="dlQueueToolbarHint"
           >
             <span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.pause, 14)}</span>
-            Пауза
+            ${L.pauseLabel}
           </button>
           <button
             type="button"
             class="cmd cmd-warn cmd-icon-leading"
             id="cancelBtn"
-            title="Отменить текущую загрузку yt-dlp"
+            title="${L.cancelTitle}"
             aria-describedby="dlQueueToolbarHint"
           >
             <span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(EDITOR_TOPBAR_ACTION_ICONS.ban, 14)}</span>
-            Отмена
+            ${L.cancel}
           </button>
           <button type="button" class="cmd cmd-icon-leading" id="clearBtn" aria-describedby="dlQueueToolbarHint">
             <span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.trash, 14)}</span>
-            Очистить очередь
+            ${L.clearQueue}
           </button>
           <button type="button" class="cmd cmd-icon-leading" id="clearFinishedBtn" aria-describedby="dlQueueToolbarHint">
             <span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.trash, 14)}</span>
-            Убрать завершённые
+            ${L.clearFinished}
           </button>
           <span class="inline-filter-field">
-            <label class="inline-filter" for="queueStatusFilter">Статус</label>
+            <label class="inline-filter" for="queueStatusFilter">${L.statusFilterLabel}</label>
             <select id="queueStatusFilter" aria-describedby="queueFilterHint">
-              <option value="all">Все</option>
-              <option value="waiting">Ожидание</option>
-              <option value="running">В работе</option>
-              <option value="done">Готово</option>
-              <option value="error">Ошибки</option>
-              <option value="cancelled">Отменено</option>
+              <option value="all">${L.optQueueAll}</option>
+              <option value="waiting">${L.optQueueWaiting}</option>
+              <option value="running">${L.optQueueRunning}</option>
+              <option value="done">${L.optQueueDone}</option>
+              <option value="error">${L.optQueueError}</option>
+              <option value="cancelled">${L.optQueueCancelled}</option>
             </select>
           </span>
-          <span id="queueFilterHint" class="sr-only">Фильтр только для отображения таблицы; порядок очереди в main не меняется.</span>
+          <span id="queueFilterHint" class="sr-only">${L.queueFilterHint}</span>
           <span id="dlQueueToolbarHint" class="sr-only">
-            Управление активной yt-dlp-задачей и содержимым очереди §6; пауза возможна только на платформах без ограничения yt-dlp.
+            ${L.queueToolbarHint}
           </span>
-          <span class="queue-summary" id="queueSummary">Всего: 0</span>
+          <span class="queue-summary" id="queueSummary">${L.queueSummaryInitial}</span>
           <button
             type="button"
             class="cmd cmd-icon-leading"
             id="scrollToRailBtn"
             hidden
-            title="Прокрутить к панели настроек yt-dlp"
+            title="${L.scrollToSettingsTitle}"
             aria-controls="dl-ytdlp-settings-rail"
           >
             <span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS.settings, 14)}</span>
-            К настройкам
+            ${L.scrollToSettings}
           </button>
         </div>
         <div class="queue-table-wrap">
           <table class="queue-table">
-            <caption class="sr-only">Очередь загрузок yt-dlp</caption>
-            <thead><tr><th>#</th><th>Название</th><th>Формат</th><th>Размер</th><th>Прогресс</th><th>Скорость</th><th>Осталось</th><th>Статус</th><th>Действия</th></tr></thead>
+            <caption class="sr-only">${L.queueTableCaption}</caption>
+            <thead><tr><th>${L.thNum}</th><th>${L.thTitle}</th><th>${L.thFmt}</th><th>${L.thSize}</th><th>${L.thProg}</th><th>${L.thSpd}</th><th>${L.thEta}</th><th>${L.thStatus}</th><th>${L.thActions}</th></tr></thead>
             <tbody id="queueBody"></tbody>
           </table>
         </div>
         <div class="bottom-panels">
           <details class="history-panel details-chev" id="historyDetails"${openAttr('history', false)}>
-            <summary>История загрузок</summary>
+            <summary>${L.historySummary}</summary>
             <p id="downloadsHistorySectionHint" class="sr-only">
-              Завершённые загрузки из userData §6; обновление и очистка трогают файл истории, фильтр «Исход» — только отображение таблицы.
+              ${L.historySectionHint}
             </p>
             <div class="history-actions">
               <button
@@ -1286,7 +1321,7 @@ ${emitDownloadsTopbarClusterHtml(18)}
                 aria-describedby="downloadsHistorySectionHint"
               >
                 <span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.refreshCw, 14)}</span>
-                Обновить
+                ${L.refreshHistory}
               </button>
               <button
                 type="button"
@@ -1295,48 +1330,48 @@ ${emitDownloadsTopbarClusterHtml(18)}
                 aria-describedby="downloadsHistorySectionHint"
               >
                 <span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.trash, 14)}</span>
-                Очистить историю
+                ${L.clearHistory}
               </button>
               <span class="hist-inline-field">
-                <label class="hist-inline" for="historyOutcomeFilter">Исход</label>
+                <label class="hist-inline" for="historyOutcomeFilter">${L.historyOutcomeLabel}</label>
                 <select
                   id="historyOutcomeFilter"
                   aria-describedby="downloadsHistorySectionHint historyFilterHint"
                 >
-                  <option value="all">Все</option>
-                  <option value="success">Успех</option>
-                  <option value="error">Ошибка</option>
-                  <option value="cancelled">Отмена</option>
+                  <option value="all">${L.histOptAll}</option>
+                  <option value="success">${L.histOptSuccess}</option>
+                  <option value="error">${L.histOptError}</option>
+                  <option value="cancelled">${L.histOptCancelled}</option>
                 </select>
               </span>
-              <span id="historyFilterHint" class="sr-only">Фильтр только для отображения таблицы истории.</span>
+              <span id="historyFilterHint" class="sr-only">${L.historyFilterHint}</span>
             </div>
             <table class="history-table">
-              <caption class="sr-only">История завершённых загрузок</caption>
-              <thead><tr><th>Завершено</th><th>Имя</th><th>Ссылка</th><th>Исход</th><th>Код</th><th>Статус</th><th></th></tr></thead>
+              <caption class="sr-only">${L.historyTableCaption}</caption>
+              <thead><tr><th>${L.histThFinished}</th><th>${L.histThName}</th><th>${L.histThUrl}</th><th>${L.histThOutcome}</th><th>${L.histThCode}</th><th>${L.histThStatus}</th><th></th></tr></thead>
               <tbody id="historyBody"></tbody>
             </table>
           </details>
           <div class="log-panel">
             <details class="details-chev" id="logDetails"${openAttr('log', true)}>
-              <summary>Журнал операций</summary>
+              <summary>${L.logSummary}</summary>
               <p id="downloadsLogSectionHint" class="sr-only">
-                Потоковый вывод stdout и stderr yt-dlp; «Очистить вид» убирает только текст в окне, «Сохранить лог» — запись в файл по выбору.
+                ${L.logSectionHint}
               </p>
               <div class="history-actions">
                 <button type="button" class="cmd cmd-icon-leading" id="saveLogBtn" aria-describedby="downloadsLogSectionHint">
                   <span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(EDITOR_TOPBAR_ACTION_ICONS.save, 14)}</span>
-                  Сохранить лог…
+                  ${L.saveLog}
                 </button>
                 <button
                   type="button"
                   class="cmd cmd-icon-leading"
                   id="clearLogBtn"
-                  title="Очистить только текст на экране (файл не трогаем)"
+                  title="${L.clearLogViewTitle}"
                   aria-describedby="downloadsLogSectionHint"
                 >
                   <span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.x, 14)}</span>
-                  Очистить вид
+                  ${L.clearLogView}
                 </button>
                 <span class="queue-summary log-meta" id="logMeta"></span>
               </div>
@@ -1345,180 +1380,181 @@ ${emitDownloadsTopbarClusterHtml(18)}
                 role="log"
                 aria-live="polite"
                 aria-relevant="additions"
-                aria-label="Вывод stdout и stderr yt-dlp"
+                aria-label="${L.logPreAriaLabel}"
                 aria-describedby="downloadsLogSectionHint"
               ></pre>
             </details>
           </div>
         </div>
       </section>
-      <aside class="settings-rail" id="dl-ytdlp-settings-rail" aria-label="Настройки загрузки">
+      <aside class="settings-rail" id="dl-ytdlp-settings-rail" aria-label="${L.railAria}">
         <div class="rail-head">
-          <h2 class="rail-title">Настройки загрузки</h2>
-          <p class="rail-subtitle">Секции повторяют v0-подход: формат, метаданные, сохранение, сеть.</p>
+          <h2 class="rail-title">${L.railTitle}</h2>
+          <p class="rail-subtitle">${L.railSubtitle}</p>
         </div>
         <div class="opts-panel">
           <details class="settings-section" id="dlRailFormat"${openAttr('format', true)}>
-            <summary>Формат</summary>
+            <summary>${L.formatSummary}</summary>
             <div class="settings-body" aria-describedby="dlRailFormatSectionHint">
               <p id="dlRailFormatSectionHint" class="opts-hint">
-                Пресеты -f/-x, субтитры и сохранённые опции yt-dlp (userData/settings.json); шаблон -o ниже должен содержать %(ext)s.
+                ${L.formatSectionHint}
               </p>
-              <label for="fmtPreset">Формат / качество (-f)</label>
+              <label for="fmtPreset">${L.formatQualityLabel}</label>
               <select id="fmtPreset" aria-describedby="dlRailFormatSectionHint"></select>
-              <div class="opts-pill-grid" role="group" aria-label="Плейлист и аудио">
+              <div class="opts-pill-grid" role="group" aria-label="${L.playlistAudioGroupAria}">
                 <div class="opts-pill-field">
-                  <span class="opts-pill-label">Весь плейлист <span class="opts-check-muted">--yes-playlist</span></span>
-                  <button type="button" class="pill-switch" id="pillPlaylist" role="switch" aria-checked="false" aria-label="Весь плейлист" aria-describedby="dlRailFormatSectionHint">
+                  <span class="opts-pill-label">${L.wholePlaylistLabel} <span class="opts-check-muted">--yes-playlist</span></span>
+                  <button type="button" class="pill-switch" id="pillPlaylist" role="switch" aria-checked="false" aria-label="${L.wholePlaylistAria}" aria-describedby="dlRailFormatSectionHint">
                     <span class="pill-switch-knob" aria-hidden="true"></span>
-                    <span class="pill-switch-text">Выкл</span>
+                    <span class="pill-switch-text">${L.pillOff}</span>
                   </button>
                 </div>
                 <div class="opts-pill-field">
-                  <span class="opts-pill-label">Только аудио <span class="opts-check-muted">-x --audio-format best</span></span>
-                  <button type="button" class="pill-switch" id="pillAudioOnly" role="switch" aria-checked="false" aria-label="Только аудио" aria-describedby="dlRailFormatSectionHint">
+                  <span class="opts-pill-label">${L.audioOnlyLabel} <span class="opts-check-muted">-x --audio-format best</span></span>
+                  <button type="button" class="pill-switch" id="pillAudioOnly" role="switch" aria-checked="false" aria-label="${L.audioOnlyAria}" aria-describedby="dlRailFormatSectionHint">
                     <span class="pill-switch-knob" aria-hidden="true"></span>
-                    <span class="pill-switch-text">Выкл</span>
+                    <span class="pill-switch-text">${L.pillOff}</span>
                   </button>
                 </div>
               </div>
-              <label for="subPreset">Субтитры §6.2</label>
+              <label for="subPreset">${L.subtitlesLabel}</label>
               <select id="subPreset" aria-describedby="dlRailFormatSectionHint">
-                <option value="none">Не скачивать</option>
-                <option value="manual">Ручные дорожки (--write-subs)</option>
-                <option value="manual_auto">Ручные + автосгенерированные (--write-auto-subs)</option>
+                <option value="none">${L.subOptNone}</option>
+                <option value="manual">${L.subOptManual}</option>
+                <option value="manual_auto">${L.subOptManualAuto}</option>
               </select>
-              <label for="subLangsInput">Языки субтитров</label>
-              <input type="text" id="subLangsInput" spellcheck="false" autocomplete="off" placeholder="ru,en или all" aria-describedby="dlRailFormatSectionHint" />
+              <label for="subLangsInput">${L.subLangsLabel}</label>
+              <input type="text" id="subLangsInput" spellcheck="false" autocomplete="off" placeholder="${L.subLangsPlaceholder}" aria-describedby="dlRailFormatSectionHint" />
             </div>
           </details>
           <details class="settings-section" id="dlRailMeta"${openAttr('metadata', true)}>
-            <summary>Метаданные</summary>
+            <summary>${L.metadataSummary}</summary>
             <div class="settings-body" aria-describedby="dlRailMetaSectionHint">
               <p id="dlRailMetaSectionHint" class="opts-hint">
-                Cookies из браузера или файла Netscape, маскировка User-Agent §6; автозапуск в обработчик §6.4 и опционально ffmpeg-экспорт §7.2 в соседний файл.
+                ${L.metadataSectionHint}
               </p>
-              <label for="cookiesBrowserSelect">Cookies §6.2</label>
+              <label for="cookiesBrowserSelect">${L.cookiesLabel}</label>
               <select id="cookiesBrowserSelect" aria-describedby="dlRailMetaSectionHint">
-                <option value="none">Не использовать</option>
-                <option value="chrome">Из браузера: Chrome</option>
-                <option value="edge">Из браузера: Edge</option>
-                <option value="firefox">Из браузера: Firefox</option>
+                <option value="none">${L.cookiesNone}</option>
+                <option value="chrome">${L.cookiesChrome}</option>
+                <option value="edge">${L.cookiesEdge}</option>
+                <option value="firefox">${L.cookiesFirefox}</option>
               </select>
-              <label for="cookiesBrowserProfileInput">Профиль / контейнер</label>
-              <input type="text" id="cookiesBrowserProfileInput" spellcheck="false" autocomplete="off" placeholder="например Default или Profile 1" aria-describedby="dlRailMetaSectionHint" />
+              <label for="cookiesBrowserProfileInput">${L.cookiesProfileLabel}</label>
+              <input type="text" id="cookiesBrowserProfileInput" spellcheck="false" autocomplete="off" placeholder="${L.cookiesProfilePlaceholder}" aria-describedby="dlRailMetaSectionHint" />
               <div class="out-dir-row" role="group" aria-labelledby="dlCookiesPathLabel">
-                <span id="dlCookiesPathLabel" class="out-dir-label">Файл cookies:</span>
+                <span id="dlCookiesPathLabel" class="out-dir-label">${L.cookiesFileLabel}</span>
                 <span id="cookiesPathText" class="out-path" title="">—</span>
-                <button type="button" class="cmd cmd-icon-leading" id="pickCookiesBtn" aria-describedby="dlRailMetaSectionHint"><span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.file, 14)}</span>Выбрать…</button>
-                <button type="button" class="cmd cmd-icon-leading" id="clearCookiesBtn" title="Убрать файл из настроек" aria-describedby="dlRailMetaSectionHint"><span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.x, 14)}</span>Очистить</button>
+                <button type="button" class="cmd cmd-icon-leading" id="pickCookiesBtn" aria-describedby="dlRailMetaSectionHint"><span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.file, 14)}</span>${L.pickEllipsis}</button>
+                <button type="button" class="cmd cmd-icon-leading" id="clearCookiesBtn" title="${L.clearCookiesTitle}" aria-describedby="dlRailMetaSectionHint"><span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.x, 14)}</span>${L.clearCookies}</button>
               </div>
               <p class="opts-hint opts-warn" id="cookiesWarn" hidden></p>
-              <label for="impersonateSelect">Impersonate клиента</label>
+              <label for="impersonateSelect">${L.impersonateLabel}</label>
               <select id="impersonateSelect" aria-describedby="dlRailMetaSectionHint">
-                <option value="none">Выключено</option>
+                <option value="none">${L.impersonateOff}</option>
                 <option value="chrome">chrome</option>
                 <option value="edge">edge</option>
                 <option value="firefox">firefox</option>
               </select>
               <div class="opts-pill-field" style="margin-top:0.45rem">
-                <span class="opts-pill-label">Открывать результат в обработчике <span class="opts-check-muted">§6.4</span></span>
-                <button type="button" class="pill-switch" id="pillOpenInHandler" role="switch" aria-checked="false" aria-label="Открывать результат в обработчике после успеха" aria-describedby="dlRailMetaSectionHint">
+                <span class="opts-pill-label">${L.openInHandlerPillLabel} <span class="opts-check-muted">§6.4</span></span>
+                <button type="button" class="pill-switch" id="pillOpenInHandler" role="switch" aria-checked="false" aria-label="${L.openInHandlerAria}" aria-describedby="dlRailMetaSectionHint">
                   <span class="pill-switch-knob" aria-hidden="true"></span>
-                  <span class="pill-switch-text">Выкл</span>
+                  <span class="pill-switch-text">${L.pillOff}</span>
                 </button>
               </div>
               <div class="opts-pill-field" style="margin-top:0.35rem">
-                <span class="opts-pill-label">Затем авто-экспорт <span class="opts-check-muted">§6.4→§7.2</span></span>
-                <button type="button" class="pill-switch" id="pillAutoExportAfterOpen" role="switch" aria-checked="false" aria-label="После авто-открытия запустить экспорт в файл рядом с загрузкой" aria-describedby="dlRailMetaSectionHint">
+                <span class="opts-pill-label">${L.autoExportPillLabel} <span class="opts-check-muted">§6.4→§7.2</span></span>
+                <button type="button" class="pill-switch" id="pillAutoExportAfterOpen" role="switch" aria-checked="false" aria-label="${L.autoExportAria}" aria-describedby="dlRailMetaSectionHint">
                   <span class="pill-switch-knob" aria-hidden="true"></span>
-                  <span class="pill-switch-text">Выкл</span>
+                  <span class="pill-switch-text">${L.pillOff}</span>
                 </button>
               </div>
             </div>
           </details>
           <details class="settings-section" id="dlRailSave"${openAttr('saving', true)}>
-            <summary>Сохранение</summary>
+            <summary>${L.savingSummary}</summary>
             <div class="settings-body" aria-describedby="dlRailSaveSectionHint">
               <p id="dlRailSaveSectionHint" class="opts-hint">
-                Целевой каталог yt-dlp, шаблон имени (-o); кнопка «Сохранить параметры» записывает настройки в userData/settings.json §6.
+                ${L.savingSectionHint}
               </p>
               <div class="out-dir-row" role="group" aria-labelledby="dlOutDirLabel">
-                <span id="dlOutDirLabel" class="out-dir-label">Каталог загрузок:</span>
+                <span id="dlOutDirLabel" class="out-dir-label">${L.outDirLabel}</span>
                 <span id="outDirText" class="out-path" title="">…</span>
-                <button type="button" class="cmd cmd-icon-leading" id="openOutBtn" title="Открыть текущий каталог загрузок в проводнике" aria-describedby="dlRailSaveSectionHint"><span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.folder, 14)}</span>Открыть</button>
-                <button type="button" class="cmd cmd-icon-leading" id="pickOutBtn" aria-describedby="dlRailSaveSectionHint"><span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.plus, 14)}</span>Выбрать…</button>
-                <button type="button" class="cmd cmd-icon-leading" id="resetOutBtn" title="Использовать каталог по умолчанию в userData" aria-describedby="dlRailSaveSectionHint"><span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS.home, 14)}</span>По умолчанию</button>
+                <button type="button" class="cmd cmd-icon-leading" id="openOutBtn" title="${L.openOutTitle}" aria-describedby="dlRailSaveSectionHint"><span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.folder, 14)}</span>${L.openOut}</button>
+                <button type="button" class="cmd cmd-icon-leading" id="pickOutBtn" aria-describedby="dlRailSaveSectionHint"><span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.plus, 14)}</span>${L.pickOut}</button>
+                <button type="button" class="cmd cmd-icon-leading" id="resetOutBtn" title="${L.resetOutTitle}" aria-describedby="dlRailSaveSectionHint"><span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS.home, 14)}</span>${L.resetOut}</button>
               </div>
-              <label for="tmplInput">Шаблон имени (-o)</label>
+              <label for="tmplInput">${L.tmplLabel}</label>
               <input type="text" id="tmplInput" spellcheck="false" autocomplete="off" aria-describedby="dlRailSaveSectionHint" />
               <div class="opts-actions">
-                <button type="button" class="cmd cmd-primary cmd-icon-leading" id="applyOptsBtn" aria-describedby="dlRailSaveSectionHint"><span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(EDITOR_TOPBAR_ACTION_ICONS.save, 14)}</span>Сохранить параметры</button>
-                <button type="button" class="cmd cmd-icon-leading" id="tmplReset" aria-describedby="dlRailSaveSectionHint"><span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(EDITOR_TOPBAR_TOOLS_ICONS.rotateCcw, 14)}</span>Шаблон по умолчанию</button>
+                <button type="button" class="cmd cmd-primary cmd-icon-leading" id="applyOptsBtn" aria-describedby="dlRailSaveSectionHint"><span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(EDITOR_TOPBAR_ACTION_ICONS.save, 14)}</span>${L.applyOpts}</button>
+                <button type="button" class="cmd cmd-icon-leading" id="tmplReset" aria-describedby="dlRailSaveSectionHint"><span class="cmd-ico" aria-hidden="true">${emitInlineStrokeSvg(EDITOR_TOPBAR_TOOLS_ICONS.rotateCcw, 14)}</span>${L.tmplReset}</button>
               </div>
             </div>
           </details>
           <details class="settings-section" id="dlRailNet"${openAttr('network', false)}>
-            <summary>Сеть</summary>
+            <summary>${L.networkSummary}</summary>
             <div class="settings-body" aria-describedby="dlRailNetSectionHint">
               <p id="dlRailNetSectionHint" class="opts-hint">
-                Ограничение скорости скачивания, параметры yt-dlp и профиль автоповтора строки очереди при ошибке §6.4.
+                ${L.networkSectionHint}
               </p>
-              <label for="rateLimitInput">Ограничение скорости (--limit-rate)</label>
-              <input type="text" id="rateLimitInput" spellcheck="false" autocomplete="off" placeholder="500K или 2M" aria-describedby="dlRailNetSectionHint" />
-              <label for="retriesInput">Повторы при ошибках (--retries)</label>
-              <input type="text" id="retriesInput" inputmode="numeric" spellcheck="false" autocomplete="off" placeholder="0–99" aria-describedby="dlRailNetSectionHint" />
-              <label for="fragmentRetriesInput">Повторы фрагментов (--fragment-retries)</label>
-              <input type="text" id="fragmentRetriesInput" inputmode="numeric" spellcheck="false" autocomplete="off" placeholder="0–99" aria-describedby="dlRailNetSectionHint" />
-              <label for="queueRetrySelect">Повтор строки при сбое</label>
+              <label for="rateLimitInput">${L.rateLimitLabel}</label>
+              <input type="text" id="rateLimitInput" spellcheck="false" autocomplete="off" placeholder="${L.rateLimitPlaceholder}" aria-describedby="dlRailNetSectionHint" />
+              <label for="retriesInput">${L.retriesLabel}</label>
+              <input type="text" id="retriesInput" inputmode="numeric" spellcheck="false" autocomplete="off" placeholder="${L.retriesPlaceholder}" aria-describedby="dlRailNetSectionHint" />
+              <label for="fragmentRetriesInput">${L.fragmentRetriesLabel}</label>
+              <input type="text" id="fragmentRetriesInput" inputmode="numeric" spellcheck="false" autocomplete="off" placeholder="${L.retriesPlaceholder}" aria-describedby="dlRailNetSectionHint" />
+              <label for="queueRetrySelect">${L.queueRetryLabel}</label>
               <select id="queueRetrySelect" aria-describedby="dlRailNetSectionHint">
-                <option value="off">Выключено</option>
-                <option value="light">Лёгкий (1 повтор, 2.5 с)</option>
-                <option value="normal">Обычный (2 повтора: 3 с + 8 с)</option>
-                <option value="persistent">Устойчивый (3 повтора: 5 с + 15 с + 45 с)</option>
+                <option value="off">${L.queueRetryOff}</option>
+                <option value="light">${L.queueRetryLight}</option>
+                <option value="normal">${L.queueRetryNormal}</option>
+                <option value="persistent">${L.queueRetryPersistent}</option>
               </select>
             </div>
           </details>
           <details class="settings-section" id="expertArgsDetails"${openAttr('expert', false)}>
-            <summary>Экспертные argv</summary>
+            <summary>${L.expertSummary}</summary>
             <div class="settings-body" aria-describedby="dlRailExpertSectionHint">
               <p id="dlRailExpertSectionHint" class="opts-hint">
-                Белый список аргументов §6.3: правки здесь добавляются к финальной командной строке yt-dlp; ниже живое превью argv.
-                То же поле argv — во вкладке «Загрузки» главного окна.                 Онлайн:
+                ${L.expertSectionHintBeforeLinks}
                 <a href="${YTDLP_DOC_README}" target="_blank" rel="noreferrer">README</a> ·
-                <a href="${YTDLP_DOC_FORMAT_SELECTION}" target="_blank" rel="noreferrer">форматы</a> ·
-                <a href="${YTDLP_DOC_OUTPUT_TEMPLATE}" target="_blank" rel="noreferrer">шаблон вывода</a> ·
-                <a href="${YTDLP_DOC_POSTPROCESS}" target="_blank" rel="noreferrer">постобработка</a>.
+                <a href="${YTDLP_DOC_FORMAT_SELECTION}" target="_blank" rel="noreferrer">${L.docFormats}</a> ·
+                <a href="${YTDLP_DOC_OUTPUT_TEMPLATE}" target="_blank" rel="noreferrer">${L.docOutputTemplate}</a> ·
+                <a href="${YTDLP_DOC_POSTPROCESS}" target="_blank" rel="noreferrer">${L.docPostprocess}</a>${L.expertSectionHintAfterLinks}
               </p>
-              <label for="extraArgsInput">Дополнительные аргументы (без shell)</label>
-              <textarea id="extraArgsInput" rows="2" spellcheck="false" autocomplete="off" placeholder="Например: --write-sub --sub-lang ru" aria-describedby="dlRailExpertSectionHint"></textarea>
+              <label for="extraArgsInput">${L.extraArgsLabel}</label>
+              <textarea id="extraArgsInput" rows="2" spellcheck="false" autocomplete="off" placeholder="${L.extraArgsPlaceholder}" aria-describedby="dlRailExpertSectionHint"></textarea>
               <p class="opts-hint opts-warn" id="extraArgsWarn" hidden></p>
-              <label for="previewOutDirOverride">Другой каталог для превью -o</label>
-              <input type="text" id="previewOutDirOverride" spellcheck="false" autocomplete="off" placeholder="Только строка превью argv" aria-describedby="dlRailExpertSectionHint" />
-              <span class="opts-preview-label">Превью argv</span>
-              <pre class="args-preview" id="argsPreview" aria-label="Превью argv yt-dlp" aria-describedby="dlRailExpertSectionHint"></pre>
+              <label for="previewOutDirOverride">${L.previewOutDirLabel}</label>
+              <input type="text" id="previewOutDirOverride" spellcheck="false" autocomplete="off" placeholder="${L.previewOutDirPlaceholder}" aria-describedby="dlRailExpertSectionHint" />
+              <span class="opts-preview-label">${L.argsPreviewLabel}</span>
+              <pre class="args-preview" id="argsPreview" aria-label="${L.argsPreviewAria}" aria-describedby="dlRailExpertSectionHint"></pre>
               <details class="hints-panel details-chev" id="hintsPanel"${openAttr('hints', false)}>
-                <summary>Справочник флагов</summary>
-                <label class="opts-preview-label" for="hintInsert">Вставить флаг из справочника</label>
+                <summary>${L.hintsPanelSummary}</summary>
+                <label class="opts-preview-label" for="hintInsert">${L.hintInsertLabel}</label>
                 <select id="hintInsert" class="hint-select" aria-describedby="dlRailExpertSectionHint">
-                  <option value="">Выберите флаг — он добавится в «Доп. аргументы»…</option>
+                  <option value="">${L.hintInsertPlaceholder}</option>
                 </select>
                 <p class="opts-hint" id="hintSummary"></p>
                 <div class="hints-search">
-                  <label class="opts-preview-label" for="hintFilter">Поиск по токенам и описаниям</label>
-                  <input type="text" id="hintFilter" spellcheck="false" autocomplete="off" placeholder="Например: --cookies или --sub" aria-describedby="dlRailExpertSectionHint" aria-label="Поиск по токенам и описаниям справочника argv" />
+                  <label class="opts-preview-label" for="hintFilter">${L.hintFilterLabel}</label>
+                  <input type="text" id="hintFilter" spellcheck="false" autocomplete="off" placeholder="${L.hintFilterPlaceholder}" aria-describedby="dlRailExpertSectionHint" aria-label="${L.hintFilterAria}" />
                 </div>
-                <div class="hint-list" id="hintList" role="list" aria-label="Справочник флагов с описаниями"></div>
+                <div class="hint-list" id="hintList" role="list" aria-label="${L.hintListAria}"></div>
               </details>
             </div>
           </details>
         </div>
       </aside>
     </main>
-    <p class="note">Отдельный preload IPC только для этого окна. yt-dlp запускается из main через spawn без shell.</p>
+    <p class="note">${L.footerNote}</p>
   </div>
   <script>
     (function () {
+      var DL_I18N = ${dlScriptI18nJson};
+      var DL_LOCALE_CMP = ${dlLocaleCmpJson};
       var _ytdlpHintCatOrder = ${ytdlpHintCatOrderJson};
       var QS_WAITING = ${JSON.stringify(YTDLP_QUEUE_STATUS_WAITING)};
       var QS_RUNNING = ${JSON.stringify(YTDLP_QUEUE_STATUS_RUNNING)};
@@ -1534,7 +1570,7 @@ ${emitDownloadsTopbarClusterHtml(18)}
         var ra = _ytdlpCatRank(a);
         var rb = _ytdlpCatRank(b);
         if (ra !== rb) return ra - rb;
-        return a.localeCompare(b, 'ru');
+        return a.localeCompare(b, DL_LOCALE_CMP);
       }
       var api = window.fluxalloyDownloads;
       var addBtn = document.getElementById('addBtn');
@@ -1619,7 +1655,7 @@ ${emitDownloadsTopbarClusterHtml(18)}
         btn.setAttribute('aria-checked', on ? 'true' : 'false');
         btn.classList.toggle('pill-switch-on', on);
         var txt = btn.querySelector('.pill-switch-text');
-        if (txt) txt.textContent = on ? 'Вкл' : 'Выкл';
+        if (txt) txt.textContent = on ? DL_I18N.pillOn : DL_I18N.pillOff;
       }
       function pillToggle(btn) {
         pillSet(btn, !pillIsOn(btn));
@@ -1660,14 +1696,14 @@ ${emitDownloadsTopbarClusterHtml(18)}
       }
 
       function buildCliPreviewRequest() {
-        var req = {};
+        var req = { uiLocale: DL_LOCALE_CMP };
         if (previewOutDirOverride && previewOutDirOverride.value.trim()) {
           req.previewOutputDirectory = previewOutDirOverride.value.trim();
         }
         if (cliFormHydrated) {
           req.draft = collectDraftCliPatch();
         }
-        return Object.keys(req).length ? req : undefined;
+        return req;
       }
 
       function refreshPreviewOnly() {
@@ -1745,9 +1781,9 @@ ${emitDownloadsTopbarClusterHtml(18)}
       }
 
       function outcomeLabel(o) {
-        if (o === 'success') return 'Успех';
-        if (o === 'cancelled') return 'Отмена';
-        return 'Ошибка';
+        if (o === 'success') return DL_I18N.outcomeSuccess;
+        if (o === 'cancelled') return DL_I18N.outcomeCancelled;
+        return DL_I18N.outcomeError;
       }
 
       function isRowDownloading(status) {
@@ -1798,7 +1834,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
           var td0 = document.createElement('td');
           td0.colSpan = 7;
           td0.style.opacity = '0.7';
-          td0.textContent = lastHistoryEntries.length === 0 ? 'Записей пока нет' : 'Нет записей с таким исходом';
+          td0.textContent = lastHistoryEntries.length === 0 ? DL_I18N.historyEmpty : DL_I18N.historyNoMatchingFilter;
           tr0.appendChild(td0);
           historyBody.appendChild(tr0);
           return;
@@ -1845,7 +1881,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
           }
           if (u) {
             mkHistIcon(
-              'Добавить этот URL в очередь повторно',
+              DL_I18N.histReenqueueUrl,
               { 'data-history-url': u },
               RowIco.plus,
               ''
@@ -1854,19 +1890,19 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
           if (typeof e.outputPath === 'string' && e.outputPath) {
             var hid = typeof e.id === 'string' ? e.id : '';
             mkHistIcon(
-              'Открыть скачанный файл в FluxAlloy',
+              DL_I18N.histOpenInFlux,
               { 'data-history-handler': hid },
               RowIco.outbound,
               ''
             );
             mkHistIcon(
-              'Открыть скачанный файл',
+              DL_I18N.histOpenFile,
               { 'data-history-open': 'file', 'data-history-id': hid },
               RowIco.file,
               ''
             );
             mkHistIcon(
-              'Показать файл в папке',
+              DL_I18N.histShowInFolder,
               { 'data-history-open': 'folder', 'data-history-id': hid },
               RowIco.folder,
               ''
@@ -1904,7 +1940,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
       }
       if (clearHistoryBtn) {
         clearHistoryBtn.addEventListener('click', function () {
-          if (!window.confirm('Удалить все записи истории загрузок?')) return;
+          if (!window.confirm(DL_I18N.confirmClearHistory)) return;
           api.clearHistory().then(function (res) {
             if (res && res.ok === false && res.error) window.alert(res.error);
             refreshHistory();
@@ -1951,13 +1987,13 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
         hintInsert.replaceChildren();
         var ph = document.createElement('option');
         ph.value = '';
-        ph.textContent = list.length === 0 ? 'Справочник недоступен' : 'Выберите флаг — добавить в поле…';
+        ph.textContent = list.length === 0 ? DL_I18N.hintSelectEmpty : DL_I18N.hintSelectPlaceholder;
         hintInsert.appendChild(ph);
         var curCat = null;
         var og = null;
         list.forEach(function (h) {
           if (!h || typeof h.token !== 'string') return;
-          var cat = typeof h.category === 'string' && h.category.length ? h.category : 'Прочее';
+          var cat = typeof h.category === 'string' && h.category.length ? h.category : DL_I18N.hintCategoryFallback;
           if (cat !== curCat) {
             curCat = cat;
             og = document.createElement('optgroup');
@@ -1983,7 +2019,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
           var empty = document.createElement('div');
           empty.className = 'hint-item';
           empty.style.opacity = '0.7';
-          empty.textContent = 'Справочник недоступен.';
+          empty.textContent = DL_I18N.hintsCatalogUnavailable;
           hintList.appendChild(empty);
           return;
         }
@@ -1996,7 +2032,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
             var hay = (token + ' ' + summary).toLowerCase();
             if (hay.indexOf(q) === -1) return;
           }
-          var cat = typeof h.category === 'string' && h.category.length ? h.category : 'Прочее';
+          var cat = typeof h.category === 'string' && h.category.length ? h.category : DL_I18N.hintCategoryFallback;
           if (!byCat.has(cat)) byCat.set(cat, []);
           byCat.get(cat).push({ token: token, summary: summary });
         });
@@ -2004,7 +2040,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
           var none = document.createElement('div');
           none.className = 'hint-item';
           none.style.opacity = '0.7';
-          none.textContent = 'Нет совпадений.';
+          none.textContent = DL_I18N.hintsNoMatches;
           hintList.appendChild(none);
           return;
         }
@@ -2050,7 +2086,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
       }
 
       function refreshCliOpts() {
-        api.getCliOptions().then(function (r) {
+        api.getCliOptions({ uiLocale: DL_LOCALE_CMP }).then(function (r) {
           if (!r || r.ok !== true || !r.payload) return;
           var p = r.payload;
           if (tmplInput) tmplInput.value = p.filenameTemplate || '';
@@ -2177,7 +2213,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
         var lines = logPre.querySelectorAll('.log-line').length;
         var chars = logPre.textContent.length;
         var sz = chars >= 1024 ? (Math.round((chars / 1024) * 10) / 10) + ' KiB' : chars + ' B';
-        logMeta.textContent = lines + ' стр · ' + sz;
+        logMeta.textContent = lines + ' ' + DL_I18N.logLinesWord + ' · ' + sz;
       }
 
       function trimLogDom() {
@@ -2243,7 +2279,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
         saveLogBtn.addEventListener('click', function () {
           var text = getVisibleLogPlainText();
           if (!text.trim()) {
-            window.alert('Лог пуст — пока нечего сохранять.');
+            window.alert(DL_I18N.logEmptyAlert);
             return;
           }
           api.saveVisibleLog(text).then(function (res) {
@@ -2414,12 +2450,12 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
           else if (status.indexOf(QS_ERR) === 0) error += 1;
         });
         queueSummary.textContent =
-          'Всего: ' + total +
-          ' · ждёт: ' + waiting +
-          ' · в работе: ' + running +
-          ' · готово: ' + done +
-          ' · ошибок: ' + error +
-          ' · отменено: ' + cancelled;
+          DL_I18N.queueTotal + ' ' + total +
+          ' · ' + DL_I18N.queueWaiting + ' ' + waiting +
+          ' · ' + DL_I18N.queueRunning + ' ' + running +
+          ' · ' + DL_I18N.queueDone + ' ' + done +
+          ' · ' + DL_I18N.queueErrors + ' ' + error +
+          ' · ' + DL_I18N.queueCancelled + ' ' + cancelled;
       }
 
       function renderRows(rawRows) {
@@ -2435,7 +2471,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
           var td0 = document.createElement('td');
           td0.colSpan = 9;
           td0.style.opacity = '0.7';
-          td0.textContent = lastQueueRows.length === 0 ? 'Очередь пуста' : 'Нет строк с таким статусом';
+          td0.textContent = lastQueueRows.length === 0 ? DL_I18N.queueEmpty : DL_I18N.queueNoMatchingFilter;
           tr0.appendChild(td0);
           body.appendChild(tr0);
           return;
@@ -2487,38 +2523,36 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
           if (dl && activeRun) {
             mkIcon(
               'row-cancel',
-              'Отменить текущую загрузку yt-dlp (эта строка)',
+              DL_I18N.rowCancelYtdlp,
               r.id,
               RowIco.stop,
               'icon-btn-warn'
             );
           }
           if (dl && activeRun && r.ytdlpPauseSupported && r.ytdlpPauseChildActive) {
-            var pTitle = r.ytdlpPaused
-              ? 'Продолжить загрузку (SIGCONT)'
-              : 'Приостановить загрузку (SIGSTOP)';
+            var pTitle = r.ytdlpPaused ? DL_I18N.rowResumeYtdlp : DL_I18N.rowPauseYtdlp;
             var pFactory = r.ytdlpPaused ? RowIco.play : RowIco.pause;
             mkIcon('row-pause-toggle', pTitle, r.id, pFactory, '');
           }
           if (st === QS_WAITING) {
-            mkIcon('start', 'Скачать только эту строку', r.id, RowIco.play, '');
+            mkIcon('start', DL_I18N.rowStartThisLine, r.id, RowIco.play, '');
           } else if (rowCanRetry(st)) {
-            mkIcon('retry', 'Сбросить статус и скачать эту строку заново', r.id, RowIco.retry, '');
+            mkIcon('retry', DL_I18N.rowRetryDownload, r.id, RowIco.retry, '');
           }
           if (typeof r.outputPath === 'string' && r.outputPath) {
             mkIcon(
               'open-handler',
-              'Открыть скачанный файл в FluxAlloy',
+              DL_I18N.rowOpenInFlux,
               r.id,
               RowIco.outbound,
               ''
             );
-            mkIcon('open-file', 'Открыть скачанный файл', r.id, RowIco.file, '');
-            mkIcon('open-folder', 'Показать файл в папке', r.id, RowIco.folder, '');
+            mkIcon('open-file', DL_I18N.rowOpenFile, r.id, RowIco.file, '');
+            mkIcon('open-folder', DL_I18N.rowShowInFolder, r.id, RowIco.folder, '');
           }
-          mkIcon('up', 'Переместить строку вверх в очереди', r.id, RowIco.chevUp, '');
-          mkIcon('dn', 'Переместить строку вниз в очереди', r.id, RowIco.chevDown, '');
-          mkIcon('rm', 'Удалить строку из очереди', r.id, RowIco.trash, '');
+          mkIcon('up', DL_I18N.rowMoveUp, r.id, RowIco.chevUp, '');
+          mkIcon('dn', DL_I18N.rowMoveDown, r.id, RowIco.chevDown, '');
+          mkIcon('rm', DL_I18N.rowRemoveFromQueue, r.id, RowIco.trash, '');
           tdAct.appendChild(wrap);
           tr.appendChild(tdAct);
           body.appendChild(tr);
@@ -2626,21 +2660,20 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
           if (!pauseYtdlpBtn) return;
           if (!s.supported) {
             pauseYtdlpBtn.disabled = true;
-            pauseYtdlpBtn.textContent = 'Пауза';
-            pauseYtdlpBtn.title =
-              'Пауза процесса yt-dlp недоступна в Windows (нужны SIGSTOP/SIGCONT).';
+            pauseYtdlpBtn.textContent = DL_I18N.toolbarPause;
+            pauseYtdlpBtn.title = DL_I18N.pauseUnsupportedWinTitle;
             return;
           }
           pauseYtdlpBtn.disabled = !s.active;
           if (!s.active) {
-            pauseYtdlpBtn.textContent = 'Пауза';
-            pauseYtdlpBtn.title = 'Приостановить текущую загрузку yt-dlp (SIGSTOP)';
+            pauseYtdlpBtn.textContent = DL_I18N.toolbarPause;
+            pauseYtdlpBtn.title = DL_I18N.pauseTitleSigstop;
           } else if (s.paused) {
-            pauseYtdlpBtn.textContent = 'Продолжить';
-            pauseYtdlpBtn.title = 'Возобновить загрузку yt-dlp (SIGCONT)';
+            pauseYtdlpBtn.textContent = DL_I18N.pauseToolbarResume;
+            pauseYtdlpBtn.title = DL_I18N.resumeTitleSigcont;
           } else {
-            pauseYtdlpBtn.textContent = 'Пауза';
-            pauseYtdlpBtn.title = 'Приостановить текущую загрузку yt-dlp (SIGSTOP)';
+            pauseYtdlpBtn.textContent = DL_I18N.toolbarPause;
+            pauseYtdlpBtn.title = DL_I18N.pauseTitleSigstop;
           }
         });
       }
@@ -2732,7 +2765,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
       }
       if (tmplReset && tmplInput) {
         tmplReset.addEventListener('click', function () {
-          api.getCliOptions().then(function (r) {
+          api.getCliOptions({ uiLocale: DL_LOCALE_CMP }).then(function (r) {
             if (r && r.ok === true && r.payload && r.payload.defaultFilenameTemplate) {
               tmplInput.value = r.payload.defaultFilenameTemplate;
               schedulePreviewRefresh();
@@ -2954,11 +2987,12 @@ export function registerDownloadsWindowIpcHandlers(): void {
   ipcMain.handle(
     d.addLines,
     (event, text: unknown): { ok: true; added: number } | { ok: false; error: string } => {
+      const P = ipcStr(event.sender)
       if (!isDownloadsOrMainSender(event.sender)) {
-        return { ok: false, error: 'Недопустимый отправитель' }
+        return { ok: false, error: P.invalidSender }
       }
       if (typeof text !== 'string') {
-        return { ok: false, error: 'Некорректный текст URL' }
+        return { ok: false, error: P.invalidUrlText }
       }
       const n = appendUrlsFromMultilineBlock(text)
       broadcastDownloadsSnapshot()
@@ -2988,8 +3022,9 @@ export function registerDownloadsWindowIpcHandlers(): void {
   ipcMain.handle(
     d.openOutputDir,
     async (event): Promise<{ ok: true } | { ok: false; error: string }> => {
+      const P = ipcStr(event.sender)
       if (!isDownloadsOrMainSender(event.sender)) {
-        return { ok: false, error: 'Недопустимый отправитель' }
+        return { ok: false, error: P.invalidSender }
       }
       const paths = resolveAppPaths()
       const target = resolveYtdlpOutputDirectory(paths.userData)
@@ -3004,35 +3039,38 @@ export function registerDownloadsWindowIpcHandlers(): void {
       event,
       raw?: unknown
     ): { ok: true; payload: YtdlpDownloadOptionsPayload } | { ok: false; error: string } => {
+      const P = ipcStr(event.sender)
       if (!isDownloadsOrMainSender(event.sender)) {
-        return { ok: false, error: 'Недопустимый отправитель' }
+        return { ok: false, error: P.invalidSender }
       }
       const fn = downloadsBoundsHooks.getYtdlpDownloadCliOptions
       if (!fn) {
-        return { ok: false, error: 'Опции yt-dlp не подключены' }
+        return { ok: false, error: P.ytdlpOptionsNotConnected }
       }
-      return { ok: true, payload: fn(raw) }
+      return { ok: true, payload: fn(raw, ipcUiLocale(event.sender)) }
     }
   )
 
   ipcMain.handle(
     d.setCliOptions,
     (event, raw: unknown): { ok: true } | { ok: false; error: string } => {
+      const P = ipcStr(event.sender)
+      const loc = ipcUiLocale(event.sender)
       if (!isDownloadsOrMainSender(event.sender)) {
-        return { ok: false, error: 'Недопустимый отправитель' }
+        return { ok: false, error: P.invalidSender }
       }
       const fn = downloadsBoundsHooks.applyYtdlpDownloadCliPatch
       if (!fn) {
-        return { ok: false, error: 'Опции yt-dlp не подключены' }
+        return { ok: false, error: P.ytdlpOptionsNotConnected }
       }
       if (!raw || typeof raw !== 'object') {
-        return { ok: false, error: 'Некорректные данные' }
+        return { ok: false, error: P.invalidData }
       }
       const o = raw as Record<string, unknown>
       const patch: YtdlpDownloadOptionsPatch = {}
       if (Object.prototype.hasOwnProperty.call(o, 'filenameTemplate')) {
         if (typeof o['filenameTemplate'] !== 'string') {
-          return { ok: false, error: 'Шаблон имени должен быть строкой' }
+          return { ok: false, error: P.filenameTemplateMustBeString }
         }
         patch.filenameTemplate = o['filenameTemplate']
       }
@@ -3041,13 +3079,13 @@ export function registerDownloadsWindowIpcHandlers(): void {
       }
       if (Object.prototype.hasOwnProperty.call(o, 'downloadPlaylist')) {
         if (typeof o['downloadPlaylist'] !== 'boolean') {
-          return { ok: false, error: 'Поле плейлиста должно быть boolean' }
+          return { ok: false, error: P.playlistMustBeBoolean }
         }
         patch.downloadPlaylist = o['downloadPlaylist']
       }
       if (Object.prototype.hasOwnProperty.call(o, 'audioOnly')) {
         if (typeof o['audioOnly'] !== 'boolean') {
-          return { ok: false, error: 'Поле «только аудио» должно быть boolean' }
+          return { ok: false, error: P.audioOnlyMustBeBoolean }
         }
         patch.audioOnly = o['audioOnly']
       }
@@ -3056,13 +3094,13 @@ export function registerDownloadsWindowIpcHandlers(): void {
       }
       if (Object.prototype.hasOwnProperty.call(o, 'subLangs')) {
         if (typeof o['subLangs'] !== 'string') {
-          return { ok: false, error: 'Языки субтитров должны быть строкой' }
+          return { ok: false, error: P.subLangsMustBeString }
         }
         patch.subLangs = o['subLangs']
       }
       if (Object.prototype.hasOwnProperty.call(o, 'cookiesBrowser')) {
         if (typeof o['cookiesBrowser'] !== 'string') {
-          return { ok: false, error: 'Поле cookies браузера должно быть строкой' }
+          return { ok: false, error: P.cookiesBrowserMustBeString }
         }
         const cv = o['cookiesBrowser']
         if (cv === 'none') {
@@ -3070,16 +3108,16 @@ export function registerDownloadsWindowIpcHandlers(): void {
         } else {
           const b = parseYtdlpCookiesBrowser(cv)
           if (!b) {
-            return { ok: false, error: 'Недопустимое значение браузера для cookies' }
+            return { ok: false, error: P.invalidCookiesBrowserValue }
           }
           patch.cookiesBrowser = b
         }
       }
       if (Object.prototype.hasOwnProperty.call(o, 'cookiesBrowserProfile')) {
         if (typeof o['cookiesBrowserProfile'] !== 'string') {
-          return { ok: false, error: 'Профиль cookies браузера должен быть строкой' }
+          return { ok: false, error: P.cookiesBrowserProfileMustBeString }
         }
-        const pr = validateYtdlpCookiesBrowserProfile(o['cookiesBrowserProfile'])
+        const pr = validateYtdlpCookiesBrowserProfile(o['cookiesBrowserProfile'], loc)
         if (!pr.ok) {
           return { ok: false, error: pr.error }
         }
@@ -3087,7 +3125,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
       }
       if (Object.prototype.hasOwnProperty.call(o, 'impersonate')) {
         if (typeof o['impersonate'] !== 'string') {
-          return { ok: false, error: 'Поле impersonate должно быть строкой' }
+          return { ok: false, error: P.impersonateMustBeString }
         }
         const iv = o['impersonate']
         if (iv === 'none') {
@@ -3095,32 +3133,32 @@ export function registerDownloadsWindowIpcHandlers(): void {
         } else {
           const im = parseYtdlpImpersonate(iv)
           if (!im) {
-            return { ok: false, error: 'Недопустимое значение impersonate' }
+            return { ok: false, error: P.invalidImpersonateValue }
           }
           patch.impersonate = im
         }
       }
       if (Object.prototype.hasOwnProperty.call(o, 'rateLimit')) {
         if (typeof o['rateLimit'] !== 'string') {
-          return { ok: false, error: 'Ограничение скорости должно быть строкой' }
+          return { ok: false, error: P.rateLimitMustBeString }
         }
         patch.rateLimit = o['rateLimit']
       }
       if (Object.prototype.hasOwnProperty.call(o, 'retriesLine')) {
         if (typeof o['retriesLine'] !== 'string') {
-          return { ok: false, error: 'Количество повторов должно быть строкой' }
+          return { ok: false, error: P.retriesMustBeString }
         }
         patch.retriesLine = o['retriesLine']
       }
       if (Object.prototype.hasOwnProperty.call(o, 'fragmentRetriesLine')) {
         if (typeof o['fragmentRetriesLine'] !== 'string') {
-          return { ok: false, error: 'Количество повторов фрагментов должно быть строкой' }
+          return { ok: false, error: P.fragmentRetriesMustBeString }
         }
         patch.fragmentRetriesLine = o['fragmentRetriesLine']
       }
       if (Object.prototype.hasOwnProperty.call(o, 'extraArgsLine')) {
         if (typeof o['extraArgsLine'] !== 'string') {
-          return { ok: false, error: 'Доп. аргументы должны быть строкой' }
+          return { ok: false, error: P.extraArgsMustBeString }
         }
         patch.extraArgsLine = o['extraArgsLine']
       }
@@ -3129,13 +3167,13 @@ export function registerDownloadsWindowIpcHandlers(): void {
       }
       if (Object.prototype.hasOwnProperty.call(o, 'openInHandlerOnComplete')) {
         if (typeof o['openInHandlerOnComplete'] !== 'boolean') {
-          return { ok: false, error: 'Флаг авто-открытия в обработчике должен быть boolean' }
+          return { ok: false, error: P.openInHandlerFlagMustBeBoolean }
         }
         patch.openInHandlerOnComplete = o['openInHandlerOnComplete']
       }
       if (Object.prototype.hasOwnProperty.call(o, 'autoExportAfterOpenInHandler')) {
         if (typeof o['autoExportAfterOpenInHandler'] !== 'boolean') {
-          return { ok: false, error: 'Флаг авто-экспорта после открытия должен быть boolean' }
+          return { ok: false, error: P.autoExportFlagMustBeBoolean }
         }
         patch.autoExportAfterOpenInHandler = o['autoExportAfterOpenInHandler']
       }
@@ -3157,9 +3195,9 @@ export function registerDownloadsWindowIpcHandlers(): void {
         patch.openInHandlerOnComplete === undefined &&
         patch.autoExportAfterOpenInHandler === undefined
       ) {
-        return { ok: false, error: 'Нечего сохранять' }
+        return { ok: false, error: P.nothingToSave }
       }
-      return fn(patch)
+      return fn(patch, loc)
     }
   )
 
@@ -3170,28 +3208,30 @@ export function registerDownloadsWindowIpcHandlers(): void {
     ): Promise<
       { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
     > => {
+      const P = ipcStr(event.sender)
       if (!isDownloadsOrMainSender(event.sender)) {
-        return { ok: false, error: 'Недопустимый отправитель' }
+        return { ok: false, error: P.invalidSender }
       }
       const fn = downloadsBoundsHooks.pickYtdlpOutputDirectory
       if (!fn) {
-        return { ok: false, error: 'Выбор каталога не подключён' }
+        return { ok: false, error: P.pickDirectoryNotConnected }
       }
       const win = BrowserWindow.fromWebContents(event.sender)
       if (!win || win.isDestroyed()) {
-        return { ok: false, error: 'Нет окна' }
+        return { ok: false, error: P.noWindow }
       }
       return fn(win)
     }
   )
 
   ipcMain.handle(d.clearOutputDir, (event): { ok: true } | { ok: false; error: string } => {
+    const P = ipcStr(event.sender)
     if (!isDownloadsOrMainSender(event.sender)) {
-      return { ok: false, error: 'Недопустимый отправитель' }
+      return { ok: false, error: P.invalidSender }
     }
     const fn = downloadsBoundsHooks.clearYtdlpOutputDirectoryOverride
     if (!fn) {
-      return { ok: false, error: 'Сброс каталога не подключён' }
+      return { ok: false, error: P.clearDirectoryNotConnected }
     }
     fn()
     return { ok: true }
@@ -3204,36 +3244,39 @@ export function registerDownloadsWindowIpcHandlers(): void {
     ): Promise<
       { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
     > => {
+      const P = ipcStr(event.sender)
       if (!isDownloadsOrMainSender(event.sender)) {
-        return { ok: false, error: 'Недопустимый отправитель' }
+        return { ok: false, error: P.invalidSender }
       }
       const fn = downloadsBoundsHooks.pickYtdlpCookiesFile
       if (!fn) {
-        return { ok: false, error: 'Выбор файла cookies не подключён' }
+        return { ok: false, error: P.pickCookiesNotConnected }
       }
       const win = BrowserWindow.fromWebContents(event.sender)
       if (!win || win.isDestroyed()) {
-        return { ok: false, error: 'Нет окна' }
+        return { ok: false, error: P.noWindow }
       }
       return fn(win)
     }
   )
 
   ipcMain.handle(d.clearCookiesFile, (event): { ok: true } | { ok: false; error: string } => {
+    const P = ipcStr(event.sender)
     if (!isDownloadsOrMainSender(event.sender)) {
-      return { ok: false, error: 'Недопустимый отправитель' }
+      return { ok: false, error: P.invalidSender }
     }
     const fn = downloadsBoundsHooks.clearYtdlpCookiesFile
     if (!fn) {
-      return { ok: false, error: 'Сброс cookies-файла не подключён' }
+      return { ok: false, error: P.clearCookiesNotConnected }
     }
     fn()
     return { ok: true }
   })
 
   ipcMain.handle(d.clear, (event): { ok: true } | { ok: false; error: string } => {
+    const P = ipcStr(event.sender)
     if (!isDownloadsOrMainSender(event.sender)) {
-      return { ok: false, error: 'Недопустимый отправитель' }
+      return { ok: false, error: P.invalidSender }
     }
     cancelDownloadsRunner()
     clearDownloadsQueue()
@@ -3244,8 +3287,9 @@ export function registerDownloadsWindowIpcHandlers(): void {
   ipcMain.handle(
     d.clearFinished,
     (event): { ok: true; removed: number } | { ok: false; error: string } => {
+      const P = ipcStr(event.sender)
       if (!isDownloadsOrMainSender(event.sender)) {
-        return { ok: false, error: 'Недопустимый отправитель' }
+        return { ok: false, error: P.invalidSender }
       }
       const removed = clearFinishedDownloadsQueueRows()
       broadcastDownloadsSnapshot()
@@ -3270,8 +3314,9 @@ export function registerDownloadsWindowIpcHandlers(): void {
   })
 
   ipcMain.handle(d.clearHistory, (event): { ok: true } | { ok: false; error: string } => {
+    const P = ipcStr(event.sender)
     if (!isDownloadsOrMainSender(event.sender)) {
-      return { ok: false, error: 'Недопустимый отправитель' }
+      return { ok: false, error: P.invalidSender }
     }
     const paths = resolveAppPaths()
     clearYtdlpDownloadHistory(paths.userData)
@@ -3284,24 +3329,25 @@ export function registerDownloadsWindowIpcHandlers(): void {
       event,
       raw: unknown
     ): Promise<{ ok: true; path: string } | { ok: false; error: string }> => {
+      const P = ipcStr(event.sender)
       if (!isDownloadsOrMainSender(event.sender)) {
-        return { ok: false, error: 'Недопустимый отправитель' }
+        return { ok: false, error: P.invalidSender }
       }
       if (typeof raw !== 'string' || raw.trim().length === 0) {
-        return { ok: false, error: 'Лог пуст' }
+        return { ok: false, error: P.logEmpty }
       }
       const win = BrowserWindow.fromWebContents(event.sender)
       if (!win || win.isDestroyed()) {
-        return { ok: false, error: 'Нет окна' }
+        return { ok: false, error: P.noWindow }
       }
       const text = raw.length > 260_000 ? raw.slice(-260_000) : raw
       const stamp = new Date().toISOString().replace(/[:.]/g, '-')
       const pick = await dialog.showSaveDialog(win, {
-        title: 'Сохранить лог yt-dlp',
+        title: P.saveLogDialogTitle,
         defaultPath: `fluxalloy-ytdlp-${stamp}.log`,
         filters: [
-          { name: 'Log', extensions: ['log'] },
-          { name: 'Text', extensions: ['txt'] }
+          { name: P.saveLogFilterLog, extensions: ['log'] },
+          { name: P.saveLogFilterText, extensions: ['txt'] }
         ]
       })
       if (pick.canceled || !pick.filePath) {
@@ -3325,17 +3371,18 @@ export function registerDownloadsWindowIpcHandlers(): void {
       id: unknown,
       modeRaw: unknown
     ): Promise<{ ok: true } | { ok: false; error: string }> => {
+      const P = ipcStr(event.sender)
       if (!isDownloadsOrMainSender(event.sender)) {
-        return { ok: false, error: 'Недопустимый отправитель' }
+        return { ok: false, error: P.invalidSender }
       }
       if (typeof id !== 'number' || !Number.isFinite(id) || !isDownloadOutputOpenMode(modeRaw)) {
-        return { ok: false, error: 'Некорректный запрос открытия файла' }
+        return { ok: false, error: P.badOpenFileRequest }
       }
       const row = getDownloadsQueueRowById(id)
       if (!row?.outputPath) {
-        return { ok: false, error: 'У этой строки нет сохранённого пути к файлу.' }
+        return { ok: false, error: P.queueRowNoOutputPath }
       }
-      return openDownloadOutputPath(row.outputPath, modeRaw)
+      return openDownloadOutputPath(row.outputPath, modeRaw, P)
     }
   )
 
@@ -3346,66 +3393,70 @@ export function registerDownloadsWindowIpcHandlers(): void {
       id: unknown,
       modeRaw: unknown
     ): Promise<{ ok: true } | { ok: false; error: string }> => {
+      const P = ipcStr(event.sender)
       if (!isDownloadsOrMainSender(event.sender)) {
-        return { ok: false, error: 'Недопустимый отправитель' }
+        return { ok: false, error: P.invalidSender }
       }
       if (typeof id !== 'string' || id.length === 0 || !isDownloadOutputOpenMode(modeRaw)) {
-        return { ok: false, error: 'Некорректный запрос открытия файла' }
+        return { ok: false, error: P.badOpenHistoryRequest }
       }
       const paths = resolveAppPaths()
       const entry = readYtdlpDownloadHistoryNewestFirst(paths.userData, 500).find(
         (e) => e.id === id
       )
       if (!entry?.outputPath) {
-        return { ok: false, error: 'У этой записи истории нет сохранённого пути к файлу.' }
+        return { ok: false, error: P.historyEntryNoOutputPath }
       }
-      return openDownloadOutputPath(entry.outputPath, modeRaw)
+      return openDownloadOutputPath(entry.outputPath, modeRaw, P)
     }
   )
 
   ipcMain.handle(
     d.openQueueOutputInHandler,
     async (event, id: unknown): Promise<{ ok: true } | { ok: false; error: string }> => {
+      const P = ipcStr(event.sender)
       if (!isDownloadsOrMainSender(event.sender)) {
-        return { ok: false, error: 'Недопустимый отправитель' }
+        return { ok: false, error: P.invalidSender }
       }
       if (typeof id !== 'number' || !Number.isFinite(id)) {
-        return { ok: false, error: 'Некорректный идентификатор строки' }
+        return { ok: false, error: P.invalidRowId }
       }
       const row = getDownloadsQueueRowById(id)
       if (!row?.outputPath) {
-        return { ok: false, error: 'У этой строки нет сохранённого пути к файлу.' }
+        return { ok: false, error: P.queueRowNoOutputPath }
       }
-      return openDownloadOutputInHandler(row.outputPath)
+      return openDownloadOutputInHandler(row.outputPath, P)
     }
   )
 
   ipcMain.handle(
     d.openHistoryOutputInHandler,
     async (event, id: unknown): Promise<{ ok: true } | { ok: false; error: string }> => {
+      const P = ipcStr(event.sender)
       if (!isDownloadsOrMainSender(event.sender)) {
-        return { ok: false, error: 'Недопустимый отправитель' }
+        return { ok: false, error: P.invalidSender }
       }
       if (typeof id !== 'string' || id.length === 0) {
-        return { ok: false, error: 'Некорректный идентификатор истории' }
+        return { ok: false, error: P.invalidHistoryId }
       }
       const paths = resolveAppPaths()
       const entry = readYtdlpDownloadHistoryNewestFirst(paths.userData, 500).find(
         (e) => e.id === id
       )
       if (!entry?.outputPath) {
-        return { ok: false, error: 'У этой записи истории нет сохранённого пути к файлу.' }
+        return { ok: false, error: P.historyEntryNoOutputPath }
       }
-      return openDownloadOutputInHandler(entry.outputPath)
+      return openDownloadOutputInHandler(entry.outputPath, P)
     }
   )
 
   ipcMain.handle(d.remove, (event, id: unknown): { ok: true } | { ok: false; error: string } => {
+    const P = ipcStr(event.sender)
     if (!isDownloadsOrMainSender(event.sender)) {
-      return { ok: false, error: 'Недопустимый отправитель' }
+      return { ok: false, error: P.invalidSender }
     }
     if (typeof id !== 'number' || !Number.isFinite(id)) {
-      return { ok: false, error: 'Некорректный идентификатор строки' }
+      return { ok: false, error: P.invalidRowId }
     }
     removeDownloadsQueueRow(id)
     broadcastDownloadsSnapshot()
@@ -3413,18 +3464,19 @@ export function registerDownloadsWindowIpcHandlers(): void {
   })
 
   ipcMain.handle(d.move, (event, id: unknown, direction: unknown) => {
+    const P = ipcStr(event.sender)
     if (!isDownloadsOrMainSender(event.sender)) {
-      return { ok: false, error: 'Недопустимый отправитель' }
+      return { ok: false, error: P.invalidSender }
     }
     if (typeof id !== 'number' || !Number.isFinite(id)) {
-      return { ok: false, error: 'Некорректный идентификатор строки' }
+      return { ok: false, error: P.invalidRowId }
     }
     const delta = direction === -1 || direction === 1 ? direction : 0
     if (delta === 0) {
-      return { ok: false, error: 'Некорректное направление перемещения' }
+      return { ok: false, error: P.invalidMoveDirection }
     }
     if (!moveDownloadsQueueRow(id, delta)) {
-      return { ok: false, error: 'Строку нельзя переместить в этом направлении' }
+      return { ok: false, error: P.cannotMoveRowThatWay }
     }
     broadcastDownloadsSnapshot()
     return { ok: true }
@@ -3433,25 +3485,27 @@ export function registerDownloadsWindowIpcHandlers(): void {
   ipcMain.handle(
     d.startQueue,
     async (event): Promise<{ ok: true } | { ok: false; error: string }> => {
+      const P = ipcStr(event.sender)
       if (!isDownloadsOrMainSender(event.sender)) {
-        return { ok: false, error: 'Недопустимый отправитель' }
+        return { ok: false, error: P.invalidSender }
       }
 
-      return startDownloadsSequential()
+      return startDownloadsSequential(ipcUiLocale(event.sender))
     }
   )
 
   ipcMain.handle(
     d.startRow,
     async (event, id: unknown): Promise<{ ok: true } | { ok: false; error: string }> => {
+      const P = ipcStr(event.sender)
       if (!isDownloadsOrMainSender(event.sender)) {
-        return { ok: false, error: 'Недопустимый отправитель' }
+        return { ok: false, error: P.invalidSender }
       }
       if (typeof id !== 'number' || !Number.isFinite(id)) {
-        return { ok: false, error: 'Некорректный идентификатор строки' }
+        return { ok: false, error: P.invalidRowId }
       }
       try {
-        return await startDownloadSingleRow(id)
+        return await startDownloadSingleRow(id, ipcUiLocale(event.sender))
       } catch (err: unknown) {
         logError('downloads-queue', 'startDownloadSingleRow failed', err)
         return { ok: false, error: err instanceof Error ? err.message : String(err) }
@@ -3462,25 +3516,26 @@ export function registerDownloadsWindowIpcHandlers(): void {
   ipcMain.handle(
     d.retryRow,
     async (event, id: unknown): Promise<{ ok: true } | { ok: false; error: string }> => {
+      const P = ipcStr(event.sender)
       if (!isDownloadsOrMainSender(event.sender)) {
-        return { ok: false, error: 'Недопустимый отправитель' }
+        return { ok: false, error: P.invalidSender }
       }
       if (typeof id !== 'number' || !Number.isFinite(id)) {
-        return { ok: false, error: 'Некорректный идентификатор строки' }
+        return { ok: false, error: P.invalidRowId }
       }
       const current = getDownloadsQueueSnapshot().find((row) => row.id === id)
       if (!current) {
-        return { ok: false, error: 'Строка не найдена' }
+        return { ok: false, error: P.rowNotFound }
       }
       if (isYtdlpQueueStatusRunningLike(current.status)) {
-        return { ok: false, error: 'Нельзя повторить строку, пока она выполняется.' }
+        return { ok: false, error: P.cannotRetryWhileRunning }
       }
       if (!resetDownloadsQueueRowForRetry(id)) {
-        return { ok: false, error: 'Не удалось сбросить строку' }
+        return { ok: false, error: P.failedToResetRow }
       }
       broadcastDownloadsSnapshot()
       try {
-        return await startDownloadSingleRow(id)
+        return await startDownloadSingleRow(id, ipcUiLocale(event.sender))
       } catch (err: unknown) {
         logError('downloads-queue', 'retry row failed', err)
         return { ok: false, error: err instanceof Error ? err.message : String(err) }
@@ -3489,8 +3544,9 @@ export function registerDownloadsWindowIpcHandlers(): void {
   )
 
   ipcMain.handle(d.cancelRun, (event): { ok: true } | { ok: false; error: string } => {
+    const P = ipcStr(event.sender)
     if (!isDownloadsOrMainSender(event.sender)) {
-      return { ok: false, error: 'Недопустимый отправитель' }
+      return { ok: false, error: P.invalidSender }
     }
     cancelDownloadsRunner()
     broadcastDownloadsSnapshot()
@@ -3509,10 +3565,12 @@ export function registerDownloadsWindowIpcHandlers(): void {
   )
 
   ipcMain.handle(d.pauseYtdlp, (event): { ok: true } | { ok: false; error: string } => {
+    const P = ipcStr(event.sender)
+    const loc = ipcUiLocale(event.sender)
     if (!isDownloadsOrMainSender(event.sender)) {
-      return { ok: false, error: 'Недопустимый отправитель' }
+      return { ok: false, error: P.invalidSender }
     }
-    const res = pauseActiveYtdlpProcess()
+    const res = pauseActiveYtdlpProcess(loc)
     if (res.ok) {
       const rowId = getActiveDownloadsRunnerRowId()
       if (rowId !== null) {
@@ -3520,7 +3578,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
           kind: 'line',
           rowId,
           stream: 'stderr',
-          text: '[FluxAlloy] Процесс yt-dlp приостановлен (SIGSTOP).'
+          text: P.logYtdlpPausedSigstop
         })
       }
     }
@@ -3528,10 +3586,12 @@ export function registerDownloadsWindowIpcHandlers(): void {
   })
 
   ipcMain.handle(d.resumeYtdlp, (event): { ok: true } | { ok: false; error: string } => {
+    const P = ipcStr(event.sender)
+    const loc = ipcUiLocale(event.sender)
     if (!isDownloadsOrMainSender(event.sender)) {
-      return { ok: false, error: 'Недопустимый отправитель' }
+      return { ok: false, error: P.invalidSender }
     }
-    const res = resumeActiveYtdlpProcess()
+    const res = resumeActiveYtdlpProcess(loc)
     if (res.ok) {
       const rowId = getActiveDownloadsRunnerRowId()
       if (rowId !== null) {
@@ -3539,7 +3599,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
           kind: 'line',
           rowId,
           stream: 'stderr',
-          text: '[FluxAlloy] Процесс yt-dlp возобновлён (SIGCONT).'
+          text: P.logYtdlpResumedSigcont
         })
       }
     }
@@ -3549,8 +3609,9 @@ export function registerDownloadsWindowIpcHandlers(): void {
   ipcMain.handle(
     d.mergeUiPanels,
     (event, raw: unknown): { ok: true } | { ok: false; error: string } => {
+      const P = ipcStr(event.sender)
       if (!isDownloadsOrMainSender(event.sender)) {
-        return { ok: false, error: 'Недопустимый отправитель' }
+        return { ok: false, error: P.invalidSender }
       }
       const patch = sanitizeDownloadsUiPanelPatch(raw)
       if (Object.keys(patch).length === 0) {
@@ -3558,7 +3619,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
       }
       const fn = downloadsBoundsHooks.mergeDownloadsWindowUiPanelsPatch
       if (!fn) {
-        return { ok: false, error: 'Сохранение раскладки панелей не подключено.' }
+        return { ok: false, error: P.mergeUiPanelsNotConnected }
       }
       fn(patch)
       return { ok: true }
@@ -3568,8 +3629,9 @@ export function registerDownloadsWindowIpcHandlers(): void {
   ipcMain.handle(
     d.bridgeOpenInspector,
     (event, raw: unknown): { ok: true } | { ok: false; error: string } => {
+      const P = ipcStr(event.sender)
       if (!isDownloadsOrMainSender(event.sender)) {
-        return { ok: false, error: 'Недопустимый отправитель' }
+        return { ok: false, error: P.invalidSender }
       }
       const p = typeof raw === 'string' && raw.trim().length > 0 ? raw : undefined
       focusOrCreateInspectorWindow(p)
@@ -3578,12 +3640,13 @@ export function registerDownloadsWindowIpcHandlers(): void {
   )
 
   ipcMain.handle(d.bridgeFocusMainEditor, (event): { ok: true } | { ok: false; error: string } => {
+    const P = ipcStr(event.sender)
     if (!isDownloadsOrMainSender(event.sender)) {
-      return { ok: false, error: 'Недопустимый отправитель' }
+      return { ok: false, error: P.invalidSender }
     }
     const w = resolveMainEditorWindow()
     if (!w || w.isDestroyed()) {
-      return { ok: false, error: 'Главное окно редактора не найдено.' }
+      return { ok: false, error: P.mainWindowNotFound }
     }
     w.show()
     w.focus()
@@ -3591,12 +3654,13 @@ export function registerDownloadsWindowIpcHandlers(): void {
   })
 
   ipcMain.handle(d.bridgeOpenEnginePaths, (event): { ok: true } | { ok: false; error: string } => {
+    const P = ipcStr(event.sender)
     if (!isDownloadsOrMainSender(event.sender)) {
-      return { ok: false, error: 'Недопустимый отправитель' }
+      return { ok: false, error: P.invalidSender }
     }
     const w = resolveMainEditorWindow()
     if (!w || w.isDestroyed()) {
-      return { ok: false, error: 'Главное окно редактора не найдено.' }
+      return { ok: false, error: P.mainWindowNotFound }
     }
     w.webContents.send(mw.openEnginePaths)
     w.show()
@@ -3605,12 +3669,13 @@ export function registerDownloadsWindowIpcHandlers(): void {
   })
 
   ipcMain.handle(d.bridgeOpenAbout, (event): { ok: true } | { ok: false; error: string } => {
+    const P = ipcStr(event.sender)
     if (!isDownloadsOrMainSender(event.sender)) {
-      return { ok: false, error: 'Недопустимый отправитель' }
+      return { ok: false, error: P.invalidSender }
     }
     const w = resolveMainEditorWindow()
     if (!w || w.isDestroyed()) {
-      return { ok: false, error: 'Главное окно редактора не найдено.' }
+      return { ok: false, error: P.mainWindowNotFound }
     }
     w.webContents.send(mw.openAbout)
     w.show()
@@ -3620,28 +3685,66 @@ export function registerDownloadsWindowIpcHandlers(): void {
 }
 
 /**
+ * Обновить язык статического HTML pop-out загрузок: при открытом окне — `loadURL` с новой разметкой;
+ * при закрытом — только `lastDownloadsWindowResolvedUiLocale` для согласованности с `settings.json`.
+ */
+export function syncDownloadsPopoutHtmlToLocale(resolvedLocale: DownloadsWindowUiLocale): void {
+  if (!downloadsWindow || downloadsWindow.isDestroyed()) {
+    lastDownloadsWindowResolvedUiLocale = resolvedLocale
+    return
+  }
+  if (resolvedLocale === lastDownloadsWindowResolvedUiLocale) {
+    return
+  }
+  lastDownloadsWindowResolvedUiLocale = resolvedLocale
+  const winTitle = getDownloadsWindowUiStrings(resolvedLocale).windowTitle
+  downloadsWindow.setTitle(winTitle)
+  const dataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(
+    buildDownloadsHtml(
+      downloadsBoundsHooks.getDownloadsWindowUiPanelsSnapshot?.(),
+      downloadsBoundsHooks.getAppTheme?.() ?? 'dark',
+      resolvedLocale
+    )
+  )}`
+  void downloadsWindow.loadURL(dataUrl).catch((err: unknown) => {
+    logError('downloads-window', 'syncDownloadsPopoutHtmlToLocale loadURL failed', err)
+  })
+}
+
+/**
  * Открыть или сфокусировать окно менеджера загрузок.
  * Непустой `mergeText` добавляет распознанные URL-строки в очередь (как при вставке из буфера).
+ * `uiLocale` задаёт язык при первом создании; при повторном фокусе HTML пересобирается, если язык
+ * (явный аргумент или `getDownloadsUiLocale`) отличается от последнего загруженного в pop-out.
  */
-export function focusOrCreateDownloadsWindow(mergeText?: string | null): void {
+export function focusOrCreateDownloadsWindow(
+  mergeText?: string | null,
+  uiLocale?: DownloadsWindowUiLocale
+): void {
   const chunk = mergeText?.trim() ?? ''
   if (chunk.length > 0) {
     appendUrlsFromMultilineBlock(chunk)
   }
 
-  const dataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(
-    buildDownloadsHtml(
-      downloadsBoundsHooks.getDownloadsWindowUiPanelsSnapshot?.(),
-      downloadsBoundsHooks.getAppTheme?.() ?? 'dark'
-    )
-  )}`
+  const resolvedLocale = uiLocale ?? downloadsBoundsHooks.getDownloadsUiLocale?.() ?? 'ru'
 
   if (downloadsWindow && !downloadsWindow.isDestroyed()) {
     downloadsWindow.focus()
-
+    syncDownloadsPopoutHtmlToLocale(resolvedLocale)
     broadcastDownloadsSnapshot()
     return
   }
+
+  lastDownloadsWindowResolvedUiLocale = resolvedLocale
+  const winTitle = getDownloadsWindowUiStrings(resolvedLocale).windowTitle
+
+  const dataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(
+    buildDownloadsHtml(
+      downloadsBoundsHooks.getDownloadsWindowUiPanelsSnapshot?.(),
+      downloadsBoundsHooks.getAppTheme?.() ?? 'dark',
+      resolvedLocale
+    )
+  )}`
 
   const savedDl = downloadsBoundsHooks.getSavedDownloadsBounds?.()
   const dlRect = savedDl ? rectifyBoundsForRestore(savedDl) : null
@@ -3662,7 +3765,7 @@ export function focusOrCreateDownloadsWindow(mergeText?: string | null): void {
     minHeight: minDownloadsH,
     ...(dlRect ? { x: dlRect.x, y: dlRect.y } : {}),
     show: false,
-    title: 'FluxAlloy — загрузки',
+    title: winTitle,
     webPreferences: {
       contextIsolation: true,
       sandbox: true,

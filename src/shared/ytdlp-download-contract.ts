@@ -3,6 +3,8 @@
  * Реализация парсеров и сборки argv остаётся в main (`ytdlp-download-options`, `ytdlp-extra-args`).
  */
 
+import type { DownloadsWindowUiLocale } from './downloads-window-ui-locale'
+
 /** Белый список режимов субтитров §6.2 (без произвольных флагов в UI). */
 export type YtdlpSubtitlePresetId = 'none' | 'manual' | 'manual_auto'
 
@@ -69,6 +71,8 @@ export interface YtdlpDownloadOptionsPayload {
 export interface YtdlpGetCliOptionsParams {
   previewOutputDirectory?: string
   draft?: YtdlpDownloadOptionsPatch
+  /** Renderer-driven locale (e.g. `navigator.language`); overrides Electron app locale for hints. */
+  uiLocale?: DownloadsWindowUiLocale
 }
 
 export interface YtdlpDownloadOptionsPatch {

@@ -10,6 +10,7 @@ import {
   QUEUE_ROW_ACTION_ICONS,
   type StrokePrim
 } from '../../../shared/lucide-downloads-icons'
+import { miniIconTitle } from '../locales/ui-text'
 
 /** Единые 24×24 lucide-подобные stroke-иконки для topbar (MIT paths lucide-icons). */
 
@@ -75,42 +76,42 @@ function SvgBase({
 }
 
 export function IconFolderOpen({
-  title = 'Открыть файл',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconFolderOpen')} size={size}>
       {renderStrokeParts(QUEUE_ROW_ACTION_ICONS.folder)}
     </SvgBase>
   )
 }
 
 export function IconRefreshCw({
-  title = 'Обновить',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconRefreshCw')} size={size}>
       {renderStrokeParts(QUEUE_ROW_ACTION_ICONS.refreshCw)}
     </SvgBase>
   )
 }
 
 export function IconDownload({
-  title = 'Загрузки',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconDownload')} size={size}>
       {renderStrokeParts(DOWNLOADS_TOPBAR_CLUSTER_ICONS.download)}
     </SvgBase>
   )
@@ -118,14 +119,14 @@ export function IconDownload({
 
 /** §6 / v0 — «Из буфера» на вкладке загрузок (общий stroke с `DOWNLOADS_TOPBAR_CLUSTER_ICONS.clipboard`). */
 export function IconClipboardPaste({
-  title = 'Вставить из буфера',
+  title,
   size = 18
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconClipboardPaste')} size={size}>
       {renderStrokeParts(DOWNLOADS_TOPBAR_CLUSTER_ICONS.clipboard)}
     </SvgBase>
   )
@@ -133,28 +134,28 @@ export function IconClipboardPaste({
 
 /** §6 — отдельное окно yt-dlp (pop-out), тот же глиф, что external-link в очереди. */
 export function IconPopOutWindow({
-  title = 'Открыть отдельное окно загрузок',
+  title,
   size = 18
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconPopOutWindow')} size={size}>
       {renderStrokeParts(DOWNLOADS_TOPBAR_CLUSTER_ICONS.popOutWindow)}
     </SvgBase>
   )
 }
 
 export function IconFilm({
-  title = 'Инспектор',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconFilm')} size={size}>
       {renderStrokeParts(DOWNLOADS_TOPBAR_CLUSTER_ICONS.film)}
     </SvgBase>
   )
@@ -162,316 +163,316 @@ export function IconFilm({
 
 /** §6 rail — «По умолчанию» для каталога (тот же `home`, что топбар pop-out). */
 export function IconHome({
-  title = 'Каталог по умолчанию',
+  title,
   size = 18
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconHome')} size={size}>
       {renderStrokeParts(DOWNLOADS_TOPBAR_CLUSTER_ICONS.home)}
     </SvgBase>
   )
 }
 
 export function IconZoomOut({
-  title = 'Уменьшить масштаб таймлайна',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconZoomOut')} size={size}>
       {renderStrokeParts(EDITOR_TIMELINE_ICONS.zoomOut)}
     </SvgBase>
   )
 }
 
 export function IconZoomIn({
-  title = 'Увеличить масштаб таймлайна',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconZoomIn')} size={size}>
       {renderStrokeParts(EDITOR_TIMELINE_ICONS.zoomIn)}
     </SvgBase>
   )
 }
 
 export function IconCircleHelp({
-  title = 'О программе',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconCircleHelp')} size={size}>
       {renderStrokeParts(DOWNLOADS_TOPBAR_CLUSTER_ICONS.circleHelp)}
     </SvgBase>
   )
 }
 
 export function IconImage({
-  title = 'Снимок кадра',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconImage')} size={size}>
       {renderStrokeParts(EDITOR_TOPBAR_ACTION_ICONS.image)}
     </SvgBase>
   )
 }
 
 export function IconSave({
-  title = 'Экспорт',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconSave')} size={size}>
       {renderStrokeParts(EDITOR_TOPBAR_ACTION_ICONS.save)}
     </SvgBase>
   )
 }
 
-export function IconBan({ title = '', size = 20 }: { title?: string; size?: number }): JSX.Element {
+export function IconBan({ title, size = 20 }: { title?: string; size?: number }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? ''} size={size}>
       {renderStrokeParts(EDITOR_TOPBAR_ACTION_ICONS.ban)}
     </SvgBase>
   )
 }
 
 export function IconCloudDownload({
-  title = '',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? ''} size={size}>
       {renderStrokeParts(EDITOR_TOPBAR_ACTION_ICONS.cloudDownload)}
     </SvgBase>
   )
 }
 
 export function IconSettings({
-  title = 'Пути к движкам',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconSettings')} size={size}>
       {renderStrokeParts(DOWNLOADS_TOPBAR_CLUSTER_ICONS.settings)}
     </SvgBase>
   )
 }
 
 export function IconSun({
-  title = 'Светлая тема',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconSun')} size={size}>
       {renderStrokeParts(EDITOR_THEME_ICONS.sun)}
     </SvgBase>
   )
 }
 
 export function IconMoon({
-  title = 'Тёмная тема',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconMoon')} size={size}>
       {renderStrokeParts(EDITOR_THEME_ICONS.moon)}
     </SvgBase>
   )
 }
 
 export function IconSkipBack({
-  title = 'В начало',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconSkipBack')} size={size}>
       {renderStrokeParts(EDITOR_TRANSPORT_ICONS.skipBack)}
     </SvgBase>
   )
 }
 
 export function IconChevronLeft({
-  title = 'Назад на 5 сек',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconChevronLeft')} size={size}>
       {renderStrokeParts(EDITOR_TRANSPORT_ICONS.chevronLeft)}
     </SvgBase>
   )
 }
 
 export function IconChevronRight({
-  title = 'Вперёд на 5 сек',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconChevronRight')} size={size}>
       {renderStrokeParts(EDITOR_TRANSPORT_ICONS.chevronRight)}
     </SvgBase>
   )
 }
 
 export function IconSkipForward({
-  title = 'В конец',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconSkipForward')} size={size}>
       {renderStrokeParts(EDITOR_TRANSPORT_ICONS.skipForward)}
     </SvgBase>
   )
 }
 
 export function IconPlay({
-  title = 'Воспроизвести',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconPlay')} size={size}>
       {renderStrokeParts(EDITOR_TRANSPORT_ICONS.play)}
     </SvgBase>
   )
 }
 
 export function IconPauseUi({
-  title = 'Пауза',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconPauseUi')} size={size}>
       {renderStrokeParts(EDITOR_TRANSPORT_ICONS.pause)}
     </SvgBase>
   )
 }
 
 export function IconVolume2({
-  title = 'Громкость',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconVolume2')} size={size}>
       {renderStrokeParts(EDITOR_TRANSPORT_ICONS.volume2)}
     </SvgBase>
   )
 }
 
 export function IconVolumeX({
-  title = 'Без звука',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconVolumeX')} size={size}>
       {renderStrokeParts(EDITOR_TRANSPORT_ICONS.volumeX)}
     </SvgBase>
   )
 }
 
 export function IconMaximize2({
-  title = 'Полноэкранный предпросмотр',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconMaximize2')} size={size}>
       {renderStrokeParts(EDITOR_TRANSPORT_ICONS.maximize2)}
     </SvgBase>
   )
 }
 
 export function IconRotateCcw({
-  title = 'Шаг поворота против часовой (как FFmpeg §7.2)',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconRotateCcw')} size={size}>
       {renderStrokeParts(EDITOR_TOPBAR_TOOLS_ICONS.rotateCcw)}
     </SvgBase>
   )
 }
 
 export function IconRotateCw({
-  title = 'Шаг поворота по часовой (как FFmpeg §7.2)',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconRotateCw')} size={size}>
       {renderStrokeParts(EDITOR_TOPBAR_TOOLS_ICONS.rotateCw)}
     </SvgBase>
   )
 }
 
 export function IconScissors({
-  title = 'Следующий crop-пресет (§7.2)',
+  title,
   size = 20
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconScissors')} size={size}>
       {renderStrokeParts(EDITOR_TOPBAR_TOOLS_ICONS.scissors)}
     </SvgBase>
   )
@@ -479,28 +480,28 @@ export function IconScissors({
 
 /** §6 — reorder / file / folder / trash / retry (те же пути, что data HTML `RowIco`). */
 export function IconQueueChevronUp({
-  title = 'Выше',
+  title,
   size = 18
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconQueueChevronUp')} size={size}>
       {renderStrokeParts(QUEUE_ROW_ACTION_ICONS.chevUp)}
     </SvgBase>
   )
 }
 
 export function IconQueueChevronDown({
-  title = 'Ниже',
+  title,
   size = 18
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconQueueChevronDown')} size={size}>
       {renderStrokeParts(QUEUE_ROW_ACTION_ICONS.chevDown)}
     </SvgBase>
   )
@@ -508,70 +509,70 @@ export function IconQueueChevronDown({
 
 /** §6 — добавить URL в очередь (lucide `plus`, тот же путь, что `RowIco.plus` в pop-out). */
 export function IconQueuePlus({
-  title = 'Добавить',
+  title,
   size = 18
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconQueuePlus')} size={size}>
       {renderStrokeParts(QUEUE_ROW_ACTION_ICONS.plus)}
     </SvgBase>
   )
 }
 
 export function IconQueueRetry({
-  title = 'Повтор',
+  title,
   size = 18
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconQueueRetry')} size={size}>
       {renderStrokeParts(QUEUE_ROW_ACTION_ICONS.retry)}
     </SvgBase>
   )
 }
 
 export function IconQueueFile({
-  title = 'Открыть файл',
+  title,
   size = 18
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconQueueFile')} size={size}>
       {renderStrokeParts(QUEUE_ROW_ACTION_ICONS.file)}
     </SvgBase>
   )
 }
 
 export function IconQueueOutbound({
-  title = 'Открыть в редакторе',
+  title,
   size = 18
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconQueueOutbound')} size={size}>
       {renderStrokeParts(QUEUE_ROW_ACTION_ICONS.outbound)}
     </SvgBase>
   )
 }
 
 export function IconQueueTrash({
-  title = 'Удалить из очереди',
+  title,
   size = 18
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconQueueTrash')} size={size}>
       {renderStrokeParts(QUEUE_ROW_ACTION_ICONS.trash)}
     </SvgBase>
   )
@@ -579,14 +580,14 @@ export function IconQueueTrash({
 
 /** §6 — очистить вид лога (lucide `x`, тот же путь, что `RowIco.x`). */
 export function IconQueueX({
-  title = 'Очистить',
+  title,
   size = 18
 }: {
   title?: string
   size?: number
 }): JSX.Element {
   return (
-    <SvgBase title={title} size={size}>
+    <SvgBase title={title ?? miniIconTitle('miniIconQueueX')} size={size}>
       {renderStrokeParts(QUEUE_ROW_ACTION_ICONS.x)}
     </SvgBase>
   )

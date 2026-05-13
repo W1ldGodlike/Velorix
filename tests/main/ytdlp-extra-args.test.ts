@@ -92,6 +92,14 @@ describe('parseExtraYtdlpArgsLine', () => {
     expect(r.ok).toBe(false)
   })
 
+  it('returns English error text when uiLocale is en', () => {
+    const r = parseExtraYtdlpArgsLine('-o /tmp/x', 'en')
+    expect(r.ok).toBe(false)
+    if (!r.ok) {
+      expect(r.error).toContain('Output template')
+    }
+  })
+
   it('отвергает слишком длинную строку', () => {
     const big = '--x '.repeat(2000)
     const r = parseExtraYtdlpArgsLine(big)

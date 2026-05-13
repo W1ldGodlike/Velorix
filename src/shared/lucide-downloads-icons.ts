@@ -3,6 +3,8 @@
  * Пути взяты из lucide-icons (MIT); одна копия данных — меньше расхождений между React и inline SVG.
  */
 
+import type { DownloadsTopbarClusterCopy } from './downloads-window-ui-locale'
+
 export type StrokePrim =
   | { readonly tag: 'path'; readonly attr: { readonly d: string } }
   | { readonly tag: 'polyline'; readonly attr: { readonly points: string } }
@@ -335,14 +337,17 @@ export function emitDownloadsQueueRowIcoBootstrapJs(): string {
   return `      var RowIco = {\n${lines.join(',\n')}\n      };`
 }
 
-export function emitDownloadsTopbarClusterHtml(iconPx: number): string {
+export function emitDownloadsTopbarClusterHtml(
+  iconPx: number,
+  labels: DownloadsTopbarClusterCopy
+): string {
   const btn = (id: string, label: string, key: DownloadsTopbarClusterIconKey): string =>
     `<button type="button" class="icon-btn dl-topbar-ico" id="${id}" title="${escapeXmlAttr(label)}" aria-label="${escapeXmlAttr(label)}">${emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS[key], iconPx)}</button>`
-  return `      <div class="topbar-cluster" role="toolbar" aria-label="Действия">
-        ${btn('dlTopFilm', 'Инспектор ffprobe §9', 'film')}
-        ${btn('dlTopUrl', 'К полю URL (лента ввода §6)', 'download')}
-        ${btn('dlTopHome', 'Главное окно (редактор)', 'home')}
-        ${btn('dlTopEngines', 'Пути к движкам ffmpeg / yt-dlp / ffprobe', 'settings')}
-        ${btn('dlTopHelp', 'О программе', 'circleHelp')}
+  return `      <div class="topbar-cluster" role="toolbar" aria-label="${escapeXmlAttr(labels.toolbarAria)}">
+        ${btn('dlTopFilm', labels.inspector, 'film')}
+        ${btn('dlTopUrl', labels.focusUrl, 'download')}
+        ${btn('dlTopHome', labels.mainEditor, 'home')}
+        ${btn('dlTopEngines', labels.enginePaths, 'settings')}
+        ${btn('dlTopHelp', labels.about, 'circleHelp')}
       </div>`
 }

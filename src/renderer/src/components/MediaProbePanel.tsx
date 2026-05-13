@@ -16,6 +16,7 @@ import {
 } from '../../../shared/ffprobe-summary-export'
 import { formatProbeChapterTimecode } from '../../../shared/ffprobe-timecode'
 import { FFPROBE_DOC_ALL } from '../../../shared/external-doc-urls'
+import { getUiLocale, uiText, uiTextVars } from '../locales/ui-text'
 
 type ProbeTableContextMenu =
   | null
@@ -39,74 +40,14 @@ function keyboardProbeMenuPosition(el: HTMLElement): { x: number; y: number } {
   return clampProbeTableMenuPosition(rect.left + 24, rect.top + 24)
 }
 
-function formatProbeTrackRowTsv(row: MediaProbeTrackRow): string {
-  const lang = row.language ?? ''
-  const title = row.titleTag ?? ''
-  const br = formatBitrateLine(row.streamBitrateKbps) ?? ''
-  const disp = row.dispositionSummary.replace(/\t/g, ' ')
-  const pix = (row.pixelFormat ?? '').replace(/\t/g, ' ')
-  const sar = (row.sampleAspectRatio ?? '').replace(/\t/g, ' ')
-  const dar = (row.displayAspectRatio ?? '').replace(/\t/g, ' ')
-  const cs = (row.colorSpace ?? '').replace(/\t/g, ' ')
-  const cprim = (row.colorPrimaries ?? '').replace(/\t/g, ' ')
-  const ctr = (row.colorTransfer ?? '').replace(/\t/g, ' ')
-  const crng = (row.colorRange ?? '').replace(/\t/g, ' ')
-  return `${row.index}\t${trackKindRu(row.kind)}\t${row.codec}\t${pix}\t${sar}\t${dar}\t${cs}\t${cprim}\t${ctr}\t${crng}\t${br}\t${disp}\t${lang}\t${title}\t${row.detail}`
-}
-
-function formatProbeChapterRowTsv(ch: MediaProbeChapterRow): string {
-  const dur = formatChapterDurationSec(ch.endSec, ch.startSec)
-  const title = ch.title ?? ''
-  return `${ch.index}\t${formatProbeChapterTimecode(ch.startSec)}\t${formatProbeChapterTimecode(ch.endSec)}\t${dur}\t${title}`
-}
-
-function formatChapterDurationSec(endSec: number, startSec: number): string {
-  const dur = endSec - startSec
-  return Number.isFinite(dur) && dur >= 0 ? `${dur.toFixed(2)} с` : '—'
-}
-
-function formatProbeDuration(sec: number | null): string {
-  if (sec === null || !Number.isFinite(sec)) {
-    return 'длительность ?'
-  }
-  if (sec < 60) {
-    return `${sec.toFixed(1)} с`
-  }
-  const s = Math.floor(sec)
-  const h = Math.floor(s / 3600)
-  const m = Math.floor((s % 3600) / 60)
-  const r = s % 60
-  if (h > 0) {
-    return `${h}:${String(m).padStart(2, '0')}:${String(r).padStart(2, '0')} · ${Math.round(sec)} с`
-  }
-  return `${m}:${String(r).padStart(2, '0')} · ${Math.round(sec)} с`
-}
-
 function formatBitrateLine(kbps: number | null): string | null {
   if (kbps === null || !Number.isFinite(kbps)) {
     return null
   }
   if (kbps >= 10_000) {
-    return `${(kbps / 1000).toFixed(2)} Mb/s`
+    return uiTextVars('probeBitrateMbpsTemplate', { value: (kbps / 1000).toFixed(2) })
   }
-  return `${Math.round(kbps)} kb/s`
-}
-
-function trackKindRu(kind: MediaProbeTrackRow['kind']): string {
-  switch (kind) {
-    case 'video':
-      return 'Видео'
-    case 'audio':
-      return 'Аудио'
-    case 'subtitle':
-      return 'Субтитры'
-    case 'attachment':
-      return 'Вложение'
-    case 'data':
-      return 'Данные'
-    default:
-      return 'Прочее'
-  }
+  return uiTextVars('probeBitrateKbpsTemplate', { value: String(Math.round(kbps)) })
 }
 
 function formatProbeJsonForDisplay(raw: string): string {
@@ -158,6 +99,72 @@ export function PreviewProbeBody({
     }
   }
 
+  const dash = uiText('uiPlaceholderDash')
+
+  function trackKindLabel(kind: MediaProbeTrackRow['kind']): string {
+    switch (kind) {
+      case 'video':
+        return uiText('probeTrackKindVideo')
+      case 'audio':
+        return uiText('probeTrackKindAudio')
+      case 'subtitle':
+        return uiText('probeTrackKindSubtitle')
+      case 'attachment':
+        return uiText('probeTrackKindAttachment')
+      case 'data':
+        return uiText('probeTrackKindData')
+      default:
+        return uiText('probeTrackKindOther')
+    }
+  }
+
+  function formatProbeDuration(sec: number | null): string {
+    if (sec === null || !Number.isFinite(sec)) {
+      return uiText('probeDurationUnknown')
+    }
+    if (sec < 60) {
+      return uiTextVars('probeDurationSecShort', { sec: sec.toFixed(1) })
+    }
+    const s = Math.floor(sec)
+    const h = Math.floor(s / 3600)
+    const m = Math.floor((s % 3600) / 60)
+    const r = s % 60
+    if (h > 0) {
+      const clock = `${h}:${String(m).padStart(2, '0')}:${String(r).padStart(2, '0')}`
+      return uiTextVars('probeDurationClockApprox', { clock, total: Math.round(sec) })
+    }
+    const clock = `${m}:${String(r).padStart(2, '0')}`
+    return uiTextVars('probeDurationClockApprox', { clock, total: Math.round(sec) })
+  }
+
+  function formatChapterDurationSec(endSec: number, startSec: number): string {
+    const dur = endSec - startSec
+    return Number.isFinite(dur) && dur >= 0
+      ? uiTextVars('probeChapterDurationSecTemplate', { dur: dur.toFixed(2) })
+      : dash
+  }
+
+  function formatProbeTrackRowTsv(row: MediaProbeTrackRow): string {
+    const lang = row.language ?? ''
+    const title = row.titleTag ?? ''
+    const br = formatBitrateLine(row.streamBitrateKbps) ?? ''
+    const disp = row.dispositionSummary.replace(/\t/g, ' ')
+    const pix = (row.pixelFormat ?? '').replace(/\t/g, ' ')
+    const sar = (row.sampleAspectRatio ?? '').replace(/\t/g, ' ')
+    const dar = (row.displayAspectRatio ?? '').replace(/\t/g, ' ')
+    const cs = (row.colorSpace ?? '').replace(/\t/g, ' ')
+    const cprim = (row.colorPrimaries ?? '').replace(/\t/g, ' ')
+    const ctr = (row.colorTransfer ?? '').replace(/\t/g, ' ')
+    const crng = (row.colorRange ?? '').replace(/\t/g, ' ')
+    return `${row.index}\t${trackKindLabel(row.kind)}\t${row.codec}\t${pix}\t${sar}\t${dar}\t${cs}\t${cprim}\t${ctr}\t${crng}\t${br}\t${disp}\t${lang}\t${title}\t${row.detail}`
+  }
+
+  function formatProbeChapterRowTsv(ch: MediaProbeChapterRow): string {
+    const dur = formatChapterDurationSec(ch.endSec, ch.startSec)
+    const title = ch.title ?? ''
+    return `${ch.index}\t${formatProbeChapterTimecode(ch.startSec)}\t${formatProbeChapterTimecode(ch.endSec)}\t${dur}\t${title}`
+  }
+
   const [probeToolbarTip, setProbeToolbarTip] = useState<string | null>(null)
   const [probeTableMenu, setProbeTableMenu] = useState<ProbeTableContextMenu>(null)
   const probeTableMenuRef = useRef<HTMLDivElement | null>(null)
@@ -170,7 +177,7 @@ export function PreviewProbeBody({
   async function handleCopyProbeJson(): Promise<void> {
     const text = formatProbeJsonForDisplay(probeInfo.rawJson)
     const r = await window.fluxalloy.clipboard.writeText(text)
-    setProbeToolbarTip(r.ok ? 'Скопировано в буфер' : 'Не удалось скопировать')
+    setProbeToolbarTip(r.ok ? uiText('probeClipboardCopied') : uiText('probeClipboardCopyFailed'))
     window.setTimeout(() => {
       setProbeToolbarTip(null)
     }, 2200)
@@ -180,12 +187,12 @@ export function PreviewProbeBody({
     const text = formatProbeJsonForDisplay(probeInfo.rawJson)
     const defaultFileName = defaultFfprobeJsonFileName(mediaPathForDefaultSave)
     const r = await window.fluxalloy.saveTextWithDialog({
-      title: 'Сохранить JSON ffprobe',
+      title: uiText('probeSaveJsonDialogTitle'),
       defaultFileName,
       content: text
     })
     if (r.ok) {
-      setProbeToolbarTip(`Сохранено: ${r.path}`)
+      setProbeToolbarTip(uiTextVars('probeSavedPathTemplate', { path: r.path }))
     } else if ('cancelled' in r && r.cancelled) {
       // пользователь закрыл диалог — без сообщения
     } else if ('error' in r) {
@@ -197,14 +204,14 @@ export function PreviewProbeBody({
   }
 
   async function handleSaveSummaryTxt(): Promise<void> {
-    const text = formatProbeSummaryPlainText(probeInfo)
+    const text = formatProbeSummaryPlainText(probeInfo, getUiLocale())
     const r = await window.fluxalloy.saveTextWithDialog({
-      title: 'Сохранить сводку ffprobe (TXT)',
+      title: uiText('probeSaveSummaryTxtDialogTitle'),
       defaultFileName: defaultFfprobeSummaryTxtFileName(mediaPathForDefaultSave),
       content: text
     })
     if (r.ok) {
-      setProbeToolbarTip(`Сохранено: ${r.path}`)
+      setProbeToolbarTip(uiTextVars('probeSavedPathTemplate', { path: r.path }))
     } else if ('cancelled' in r && r.cancelled) {
       /* noop */
     } else if ('error' in r) {
@@ -214,14 +221,14 @@ export function PreviewProbeBody({
   }
 
   async function handleSaveSummaryHtml(): Promise<void> {
-    const html = formatProbeSummaryHtmlDocument(probeInfo)
+    const html = formatProbeSummaryHtmlDocument(probeInfo, getUiLocale())
     const r = await window.fluxalloy.saveTextWithDialog({
-      title: 'Сохранить сводку ffprobe (HTML)',
+      title: uiText('probeSaveSummaryHtmlDialogTitle'),
       defaultFileName: defaultFfprobeSummaryHtmlFileName(mediaPathForDefaultSave),
       content: html
     })
     if (r.ok) {
-      setProbeToolbarTip(`Сохранено: ${r.path}`)
+      setProbeToolbarTip(uiTextVars('probeSavedPathTemplate', { path: r.path }))
     } else if ('cancelled' in r && r.cancelled) {
       /* noop */
     } else if ('error' in r) {
@@ -261,7 +268,7 @@ export function PreviewProbeBody({
 
   async function copyProbeCellAndDismiss(text: string): Promise<void> {
     const r = await window.fluxalloy.clipboard.writeText(text)
-    setProbeToolbarTip(r.ok ? 'Скопировано в буфер' : 'Не удалось скопировать')
+    setProbeToolbarTip(r.ok ? uiText('probeClipboardCopied') : uiText('probeClipboardCopyFailed'))
     setProbeTableMenu(null)
     window.setTimeout(() => setProbeToolbarTip(null), 2200)
   }
@@ -271,12 +278,11 @@ export function PreviewProbeBody({
       <div
         className="app-preview-probe-stack"
         role="region"
-        aria-label="Расширенная сводка ffprobe"
+        aria-label={uiText('probePanelAriaLabel')}
         aria-describedby="probePanelOverviewHint"
       >
         <p id="probePanelOverviewHint" className="app-visually-hidden">
-          Раскрываемые блоки §9: экспорт текстовой/HTML сводки, таблицы дорожек и глав, сырой JSON
-          ffprobe; в таблицах доступны контекстное меню и копирование ячеек.
+          {uiText('probePanelOverviewHint')}
         </p>
         <div className="app-preview-probe-summary-line">
           <span title={formatTooltip}>
@@ -284,14 +290,16 @@ export function PreviewProbeBody({
             {probeInfo.video
               ? ` · ${probeInfo.video.width}×${probeInfo.video.height} · ${probeInfo.video.codec}`
               : ''}
-            {probeInfo.audioCodec ? ` · аудио ${probeInfo.audioCodec}` : ''}
+            {probeInfo.audioCodec
+              ? uiTextVars('probeSummaryAudioFragmentTemplate', { codec: probeInfo.audioCodec })
+              : ''}
             {probeInfo.formatName ? ` · ${probeInfo.formatName}` : ''}
             {bitrateLabel ? ` · ${bitrateLabel}` : ''}
           </span>
         </div>
         <p className="app-doc-inline-links app-preview-probe-doc-links">
           <a href={FFPROBE_DOC_ALL} target="_blank" rel="noreferrer">
-            Документация ffprobe (все опции)
+            {uiText('probeFfprobeDocLink')}
           </a>
         </p>
         {probeToolbarTip ? (
@@ -304,9 +312,9 @@ export function PreviewProbeBody({
             persistOrLocalSectionToggle('exportSummary', e.currentTarget.open)
           }}
         >
-          <summary className="app-probe-summary">Экспорт сводки (TXT / HTML)</summary>
+          <summary className="app-probe-summary">{uiText('probeSectionExportSummary')}</summary>
           <p id="probeExportSummaryHint" className="app-probe-toolbar-hint">
-            Текст или HTML со сводкой ffprobe («человеческое» оглавление и ключевые поля дорожек).
+            {uiText('probeSectionExportSummaryHint')}
           </p>
           <div className="app-probe-json-toolbar">
             <button
@@ -317,7 +325,7 @@ export function PreviewProbeBody({
                 void handleSaveSummaryTxt()
               }}
             >
-              Сохранить сводку TXT…
+              {uiText('probeSaveSummaryTxtButton')}
             </button>
             <button
               type="button"
@@ -327,7 +335,7 @@ export function PreviewProbeBody({
                 void handleSaveSummaryHtml()
               }}
             >
-              Сохранить сводку HTML…
+              {uiText('probeSaveSummaryHtmlButton')}
             </button>
           </div>
         </details>
@@ -339,29 +347,29 @@ export function PreviewProbeBody({
               persistOrLocalSectionToggle('tracks', e.currentTarget.open)
             }}
           >
-            <summary className="app-probe-summary">Дорожки ({probeInfo.tracks.length})</summary>
+            <summary className="app-probe-summary">
+              {uiTextVars('probeSectionTracksTemplate', { count: probeInfo.tracks.length })}
+            </summary>
             <div className="app-probe-table-wrap">
               <table className="app-probe-table">
-                <caption className="app-visually-hidden">
-                  Дорожки медиафайла по данным ffprobe
-                </caption>
+                <caption className="app-visually-hidden">{uiText('probeTracksCaption')}</caption>
                 <thead>
                   <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Тип</th>
-                    <th scope="col">Кодек</th>
-                    <th scope="col">Pix_fmt</th>
-                    <th scope="col">SAR</th>
-                    <th scope="col">DAR</th>
-                    <th scope="col">Цв.простран.</th>
-                    <th scope="col">Primaries</th>
-                    <th scope="col">Transfer</th>
-                    <th scope="col">Диапазон</th>
-                    <th scope="col">Битрейт</th>
-                    <th scope="col">Disposition</th>
-                    <th scope="col">Язык</th>
-                    <th scope="col">Заголовок</th>
-                    <th scope="col">Сведения</th>
+                    <th scope="col">{uiText('probeThIndex')}</th>
+                    <th scope="col">{uiText('probeThType')}</th>
+                    <th scope="col">{uiText('probeThCodec')}</th>
+                    <th scope="col">{uiText('probeThPixFmt')}</th>
+                    <th scope="col">{uiText('probeThSar')}</th>
+                    <th scope="col">{uiText('probeThDar')}</th>
+                    <th scope="col">{uiText('probeThColorSpace')}</th>
+                    <th scope="col">{uiText('probeThPrimaries')}</th>
+                    <th scope="col">{uiText('probeThTransfer')}</th>
+                    <th scope="col">{uiText('probeThRange')}</th>
+                    <th scope="col">{uiText('probeThBitrate')}</th>
+                    <th scope="col">{uiText('probeThDisposition')}</th>
+                    <th scope="col">{uiText('probeThLanguage')}</th>
+                    <th scope="col">{uiText('probeThTrackTitle')}</th>
+                    <th scope="col">{uiText('probeThDetails')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -369,7 +377,7 @@ export function PreviewProbeBody({
                     <tr
                       key={`track-${row.index}`}
                       tabIndex={0}
-                      title="ПКМ, Enter или Shift+F10 — действия с дорожкой"
+                      title={uiText('probeTrackRowMenuHint')}
                       onContextMenu={(e) => {
                         e.preventDefault()
                         const p = clampProbeTableMenuPosition(e.clientX, e.clientY)
@@ -388,27 +396,27 @@ export function PreviewProbeBody({
                       }}
                     >
                       <td>{row.index}</td>
-                      <td>{trackKindRu(row.kind)}</td>
+                      <td>{trackKindLabel(row.kind)}</td>
                       <td className="app-probe-table-mono">{row.codec}</td>
-                      <td className="app-probe-table-mono">{row.pixelFormat ?? '—'}</td>
-                      <td className="app-probe-table-mono">{row.sampleAspectRatio ?? '—'}</td>
-                      <td className="app-probe-table-mono">{row.displayAspectRatio ?? '—'}</td>
-                      <td className="app-probe-table-mono">{row.colorSpace ?? '—'}</td>
-                      <td className="app-probe-table-mono">{row.colorPrimaries ?? '—'}</td>
-                      <td className="app-probe-table-mono">{row.colorTransfer ?? '—'}</td>
-                      <td className="app-probe-table-mono">{row.colorRange ?? '—'}</td>
+                      <td className="app-probe-table-mono">{row.pixelFormat ?? dash}</td>
+                      <td className="app-probe-table-mono">{row.sampleAspectRatio ?? dash}</td>
+                      <td className="app-probe-table-mono">{row.displayAspectRatio ?? dash}</td>
+                      <td className="app-probe-table-mono">{row.colorSpace ?? dash}</td>
+                      <td className="app-probe-table-mono">{row.colorPrimaries ?? dash}</td>
+                      <td className="app-probe-table-mono">{row.colorTransfer ?? dash}</td>
+                      <td className="app-probe-table-mono">{row.colorRange ?? dash}</td>
                       <td title={formatBitrateLine(row.streamBitrateKbps) ?? undefined}>
-                        {formatBitrateLine(row.streamBitrateKbps) ?? '—'}
+                        {formatBitrateLine(row.streamBitrateKbps) ?? dash}
                       </td>
                       <td
                         title={
                           row.dispositionSummary.trim() !== '' ? row.dispositionSummary : undefined
                         }
                       >
-                        {row.dispositionSummary.trim() !== '' ? row.dispositionSummary : '—'}
+                        {row.dispositionSummary.trim() !== '' ? row.dispositionSummary : dash}
                       </td>
-                      <td>{row.language ?? '—'}</td>
-                      <td>{row.titleTag ?? '—'}</td>
+                      <td>{row.language ?? dash}</td>
+                      <td>{row.titleTag ?? dash}</td>
                       <td>{row.detail}</td>
                     </tr>
                   ))}
@@ -425,19 +433,19 @@ export function PreviewProbeBody({
               persistOrLocalSectionToggle('chapters', e.currentTarget.open)
             }}
           >
-            <summary className="app-probe-summary">Главы ({probeInfo.chapters.length})</summary>
+            <summary className="app-probe-summary">
+              {uiTextVars('probeSectionChaptersTemplate', { count: probeInfo.chapters.length })}
+            </summary>
             <div className="app-probe-table-wrap">
               <table className="app-probe-table">
-                <caption className="app-visually-hidden">
-                  Главы медиафайла по данным ffprobe
-                </caption>
+                <caption className="app-visually-hidden">{uiText('probeChaptersCaption')}</caption>
                 <thead>
                   <tr>
-                    <th scope="col">id</th>
-                    <th scope="col">Начало</th>
-                    <th scope="col">Конец</th>
-                    <th scope="col">Длительность</th>
-                    <th scope="col">Заголовок</th>
+                    <th scope="col">{uiText('probeThChapterId')}</th>
+                    <th scope="col">{uiText('probeThChapterStart')}</th>
+                    <th scope="col">{uiText('probeThChapterEnd')}</th>
+                    <th scope="col">{uiText('probeThChapterDuration')}</th>
+                    <th scope="col">{uiText('probeThChapterTitle')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -445,7 +453,7 @@ export function PreviewProbeBody({
                     <tr
                       key={`chapter-${ch.index}-${ch.startSec}`}
                       tabIndex={0}
-                      title="ПКМ, Enter или Shift+F10 — действия с главой"
+                      title={uiText('probeChapterRowMenuHint')}
                       onContextMenu={(e) => {
                         e.preventDefault()
                         const p = clampProbeTableMenuPosition(e.clientX, e.clientY)
@@ -471,7 +479,7 @@ export function PreviewProbeBody({
                         {formatProbeChapterTimecode(ch.endSec)}
                       </td>
                       <td>{formatChapterDurationSec(ch.endSec, ch.startSec)}</td>
-                      <td>{ch.title ?? '—'}</td>
+                      <td>{ch.title ?? dash}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -487,9 +495,9 @@ export function PreviewProbeBody({
               persistOrLocalSectionToggle('rawJson', e.currentTarget.open)
             }}
           >
-            <summary className="app-probe-summary">JSON ffprobe</summary>
+            <summary className="app-probe-summary">{uiText('probeSectionRawJson')}</summary>
             <p id="probeRawJsonHint" className="app-probe-toolbar-hint">
-              Вывод только для чтения; скопируйте или сохраните для поддержки или внешнего парсера.
+              {uiText('probeRawJsonHint')}
             </p>
             <div className="app-probe-json-toolbar">
               <button
@@ -500,7 +508,7 @@ export function PreviewProbeBody({
                   void handleCopyProbeJson()
                 }}
               >
-                Копировать JSON
+                {uiText('probeCopyJsonButton')}
               </button>
               <button
                 type="button"
@@ -510,12 +518,12 @@ export function PreviewProbeBody({
                   void handleSaveProbeJson()
                 }}
               >
-                Сохранить JSON…
+                {uiText('probeSaveJsonButton')}
               </button>
             </div>
             <pre
               className="app-probe-json-pre"
-              aria-label="Сырой JSON ffprobe"
+              aria-label={uiText('probeRawJsonPreAria')}
               aria-describedby="probeRawJsonHint"
             >
               {formatProbeJsonForDisplay(probeInfo.rawJson)}
@@ -528,7 +536,7 @@ export function PreviewProbeBody({
             <div
               ref={probeTableMenuRef}
               role="group"
-              aria-label="Действия со строкой ffprobe"
+              aria-label={uiText('probeContextMenuAria')}
               className="app-probe-context-menu"
               style={{ left: probeTableMenu.x, top: probeTableMenu.y }}
             >
@@ -541,7 +549,7 @@ export function PreviewProbeBody({
                       void copyProbeCellAndDismiss(formatProbeTrackRowTsv(probeTableMenu.row))
                     }}
                   >
-                    Копировать строку (табуляция)
+                    {uiText('probeCtxCopyRowTab')}
                   </button>
                   <button
                     type="button"
@@ -550,7 +558,7 @@ export function PreviewProbeBody({
                       void copyProbeCellAndDismiss(probeTableMenu.row.codec)
                     }}
                   >
-                    Копировать кодек
+                    {uiText('probeCtxCopyCodec')}
                   </button>
                   {probeTableMenu.row.pixelFormat ? (
                     <button
@@ -560,7 +568,7 @@ export function PreviewProbeBody({
                         void copyProbeCellAndDismiss(probeTableMenu.row.pixelFormat ?? '')
                       }}
                     >
-                      Копировать pix_fmt
+                      {uiText('probeCtxCopyPixFmt')}
                     </button>
                   ) : null}
                   {probeTableMenu.row.sampleAspectRatio ? (
@@ -571,7 +579,7 @@ export function PreviewProbeBody({
                         void copyProbeCellAndDismiss(probeTableMenu.row.sampleAspectRatio ?? '')
                       }}
                     >
-                      Копировать SAR
+                      {uiText('probeCtxCopySar')}
                     </button>
                   ) : null}
                   {probeTableMenu.row.displayAspectRatio ? (
@@ -582,7 +590,7 @@ export function PreviewProbeBody({
                         void copyProbeCellAndDismiss(probeTableMenu.row.displayAspectRatio ?? '')
                       }}
                     >
-                      Копировать DAR
+                      {uiText('probeCtxCopyDar')}
                     </button>
                   ) : null}
                   {probeTableMenu.row.colorSpace ? (
@@ -593,7 +601,7 @@ export function PreviewProbeBody({
                         void copyProbeCellAndDismiss(probeTableMenu.row.colorSpace ?? '')
                       }}
                     >
-                      Копировать color_space
+                      {uiText('probeCtxCopyColorSpace')}
                     </button>
                   ) : null}
                   {probeTableMenu.row.colorPrimaries ? (
@@ -604,7 +612,7 @@ export function PreviewProbeBody({
                         void copyProbeCellAndDismiss(probeTableMenu.row.colorPrimaries ?? '')
                       }}
                     >
-                      Копировать color_primaries
+                      {uiText('probeCtxCopyColorPrimaries')}
                     </button>
                   ) : null}
                   {probeTableMenu.row.colorTransfer ? (
@@ -615,7 +623,7 @@ export function PreviewProbeBody({
                         void copyProbeCellAndDismiss(probeTableMenu.row.colorTransfer ?? '')
                       }}
                     >
-                      Копировать color_transfer
+                      {uiText('probeCtxCopyColorTransfer')}
                     </button>
                   ) : null}
                   {probeTableMenu.row.colorRange ? (
@@ -626,7 +634,7 @@ export function PreviewProbeBody({
                         void copyProbeCellAndDismiss(probeTableMenu.row.colorRange ?? '')
                       }}
                     >
-                      Копировать color_range
+                      {uiText('probeCtxCopyColorRange')}
                     </button>
                   ) : null}
                   {formatBitrateLine(probeTableMenu.row.streamBitrateKbps) ? (
@@ -639,7 +647,7 @@ export function PreviewProbeBody({
                         )
                       }}
                     >
-                      Копировать битрейт
+                      {uiText('probeCtxCopyBitrate')}
                     </button>
                   ) : null}
                   {probeTableMenu.row.dispositionSummary.trim() !== '' ? (
@@ -650,7 +658,7 @@ export function PreviewProbeBody({
                         void copyProbeCellAndDismiss(probeTableMenu.row.dispositionSummary)
                       }}
                     >
-                      Копировать disposition
+                      {uiText('probeCtxCopyDisposition')}
                     </button>
                   ) : null}
                   <button
@@ -660,7 +668,7 @@ export function PreviewProbeBody({
                       void copyProbeCellAndDismiss(probeTableMenu.row.detail)
                     }}
                   >
-                    Копировать сведения
+                    {uiText('probeCtxCopyDetail')}
                   </button>
                   {probeTableMenu.row.language ? (
                     <button
@@ -670,7 +678,7 @@ export function PreviewProbeBody({
                         void copyProbeCellAndDismiss(probeTableMenu.row.language ?? '')
                       }}
                     >
-                      Копировать язык
+                      {uiText('probeCtxCopyLanguage')}
                     </button>
                   ) : null}
                   {probeTableMenu.row.titleTag ? (
@@ -681,7 +689,7 @@ export function PreviewProbeBody({
                         void copyProbeCellAndDismiss(probeTableMenu.row.titleTag ?? '')
                       }}
                     >
-                      Копировать заголовок дорожки
+                      {uiText('probeCtxCopyTrackTitle')}
                     </button>
                   ) : null}
                 </>
@@ -694,7 +702,7 @@ export function PreviewProbeBody({
                       void copyProbeCellAndDismiss(formatProbeChapterRowTsv(probeTableMenu.row))
                     }}
                   >
-                    Копировать строку (табуляция)
+                    {uiText('probeCtxCopyRowTab')}
                   </button>
                   {probeTableMenu.row.title ? (
                     <button
@@ -704,7 +712,7 @@ export function PreviewProbeBody({
                         void copyProbeCellAndDismiss(probeTableMenu.row.title ?? '')
                       }}
                     >
-                      Копировать заголовок
+                      {uiText('probeCtxCopyChapterTitle')}
                     </button>
                   ) : null}
                 </>

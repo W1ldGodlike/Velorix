@@ -14,38 +14,26 @@ import {
   formatMaintenanceCleanDone,
   formatMaintenanceConfirmHint,
   formatMaintenanceSummary,
-  uiText
+  formatUiBytes,
+  uiText,
+  uiTextVars
 } from '../locales/ui-text'
 
 type MaintenanceCleanChoice = 'all' | DiagnosticsMaintenanceTargetId
-
-function formatBytes(bytes: number): string {
-  if (!Number.isFinite(bytes) || bytes <= 0) {
-    return '0 B'
-  }
-  const units = ['B', 'KiB', 'MiB', 'GiB']
-  let value = bytes
-  let unitIndex = 0
-  while (value >= 1024 && unitIndex < units.length - 1) {
-    value /= 1024
-    unitIndex += 1
-  }
-  return `${value >= 10 || unitIndex === 0 ? value.toFixed(0) : value.toFixed(1)} ${units[unitIndex]}`
-}
 
 function formatMaintenanceSnapshot(snapshot: DiagnosticsMaintenanceSnapshot): string {
   const details = snapshot.targets
     .map((target) => {
       const label =
         target.id === 'previewCache'
-          ? 'preview-cache'
+          ? uiText('maintenanceSnapshotLabelPreviewCache')
           : target.id === 'ffmpegTemp'
-            ? 'ffmpeg temp'
-            : 'yt-dlp .part'
-      return `${label} ${formatBytes(target.bytes)}`
+            ? uiText('maintenanceSnapshotLabelFfmpegTemp')
+            : uiText('maintenanceSnapshotLabelYtdlpPartials')
+      return `${label} ${formatUiBytes(target.bytes)}`
     })
     .join(', ')
-  return formatMaintenanceSummary(formatBytes(snapshot.cleanableBytes), details)
+  return formatMaintenanceSummary(formatUiBytes(snapshot.cleanableBytes), details)
 }
 
 /** Модальное окно §4.5 — переиспользуется главным окном и инспектором §9 (единые стили/`app-modal-*`). */
@@ -93,9 +81,9 @@ export function AboutDialog({
     void window.fluxalloy.diagnostics.cleanMaintenance(request).then((r) => {
       setMaintenanceConfirm(null)
       if (r.ok) {
-        pushStatus(formatMaintenanceCleanDone(r.removedFiles, formatBytes(r.removedBytes)))
+        pushStatus(formatMaintenanceCleanDone(r.removedFiles, formatUiBytes(r.removedBytes)))
       } else {
-        pushStatus(`${maintenanceLabel(choice)}: ${r.error}`)
+        pushStatus(uiTextVars('aboutMaintenanceCleanErrorTemplate', { label: maintenanceLabel(choice), error: r.error }))
       }
     })
   }
@@ -133,15 +121,15 @@ export function AboutDialog({
               <dd className="app-about-mono">{aboutInfo.appVersion}</dd>
             </div>
             <div className="app-about-row">
-              <dt>Electron</dt>
+              <dt>{uiText('aboutRuntimeElectronLabel')}</dt>
               <dd className="app-about-mono">{aboutInfo.electronVersion}</dd>
             </div>
             <div className="app-about-row">
-              <dt>Chromium</dt>
+              <dt>{uiText('aboutRuntimeChromiumLabel')}</dt>
               <dd className="app-about-mono">{aboutInfo.chromeVersion}</dd>
             </div>
             <div className="app-about-row">
-              <dt>Node</dt>
+              <dt>{uiText('aboutRuntimeNodeLabel')}</dt>
               <dd className="app-about-mono">{aboutInfo.nodeVersion}</dd>
             </div>
           </dl>
@@ -157,7 +145,12 @@ export function AboutDialog({
                 onClick={() => {
                   void window.fluxalloy.diagnostics.openFolder('logs').then((r) => {
                     if (!r.ok) {
-                      pushStatus(`${uiText('logsFolderButton')}: ${r.error}`)
+                      pushStatus(
+                        uiTextVars('aboutMaintenanceCleanErrorTemplate', {
+                          label: uiText('logsFolderButton'),
+                          error: r.error
+                        })
+                      )
                     }
                   })
                 }}
@@ -170,12 +163,12 @@ export function AboutDialog({
                 onClick={() => {
                   void window.fluxalloy.diagnostics.openMainLog().then((r) => {
                     if (!r.ok) {
-                      pushStatus(`main.log: ${r.error}`)
+                      pushStatus(uiTextVars('aboutMainLogOpenErrorTemplate', { error: r.error }))
                     }
                   })
                 }}
               >
-                main.log
+                {uiText('aboutMainLogButton')}
               </button>
               <button
                 type="button"
@@ -185,7 +178,12 @@ export function AboutDialog({
                     if (r.ok) {
                       pushStatus(uiText('supportZipSaved'))
                     } else if ('error' in r) {
-                      pushStatus(`${uiText('supportZipButton')}: ${r.error}`)
+                      pushStatus(
+                        uiTextVars('aboutMaintenanceCleanErrorTemplate', {
+                          label: uiText('supportZipButton'),
+                          error: r.error
+                        })
+                      )
                     }
                   })
                 }}
@@ -259,7 +257,7 @@ export function AboutDialog({
             </div>
             <p className="app-doc-inline-links app-about-doc-links">
               <a href={YTDLP_DOC_README} target="_blank" rel="noreferrer">
-                yt-dlp README
+                {uiText('docLinkYtDlpReadme')}
               </a>
               {' · '}
               <a href={YTDLP_DOC_FORMAT_SELECTION} target="_blank" rel="noreferrer">
@@ -267,7 +265,7 @@ export function AboutDialog({
               </a>
               {' · '}
               <a href={FFPROBE_DOC_ALL} target="_blank" rel="noreferrer">
-                ffprobe
+                {uiText('docLinkFfprobeShort')}
               </a>
             </p>
           </div>

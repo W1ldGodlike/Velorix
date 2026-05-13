@@ -8,9 +8,15 @@ function Versions(): React.JSX.Element {
 
   return (
     <ul className="versions-inline" aria-label={uiText('versionsAriaLabel')}>
-      <li>Electron {versions['electron']}</li>
-      <li>Chromium {versions['chrome']}</li>
-      <li>Node {versions['node']}</li>
+      <li>
+        {uiText('aboutRuntimeElectronLabel')} {versions['electron']}
+      </li>
+      <li>
+        {uiText('aboutRuntimeChromiumLabel')} {versions['chrome']}
+      </li>
+      <li>
+        {uiText('aboutRuntimeNodeLabel')} {versions['node']}
+      </li>
     </ul>
   )
 }

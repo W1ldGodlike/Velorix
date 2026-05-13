@@ -38,6 +38,7 @@ import type {
   MediaExportRequestPayload,
   MediaExportStartResult
 } from '../shared/ffmpeg-export-contract'
+import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
 import type { AppAboutInfo } from '../shared/about-contract'
 import type {
   EngineId,
@@ -98,6 +99,7 @@ export interface FluxAlloyApi {
   // Имена IPC-каналов — `src/shared/ipc-channels.ts`; держать этот интерфейс синхронным с `src/preload/index.ts`.
   settings: {
     get: () => Promise<AppSettingsView>
+    setUiLocale: (locale: DownloadsWindowUiLocale) => Promise<AppSettings>
     setTheme: (theme: AppTheme) => Promise<AppSettingsView>
     setEngineExecutablePaths: (patch: EnginePathOverridesPatch) => Promise<AppSettings>
     pickEngineExecutable: (engineId: EngineId) => Promise<string | null>
@@ -137,7 +139,7 @@ export interface FluxAlloyApi {
     mergeMainWindowUiPanels: (patch: Partial<MainWindowUiPanelState>) => Promise<AppSettings>
   }
   preview: {
-    openFileDialog: () => Promise<PreviewDialogResult>
+    openFileDialog: (uiLocale?: DownloadsWindowUiLocale) => Promise<PreviewDialogResult>
     grantPath: (
       absolutePath: string
     ) => Promise<
@@ -254,9 +256,9 @@ export interface FluxAlloyApi {
     send: (entry: { level: 'info' | 'warn' | 'error'; scope?: string; message: string }) => void
   }
   engines: {
-    getStatus: () => Promise<EnginesStatusSnapshot>
+    getStatus: (uiLocale?: DownloadsWindowUiLocale) => Promise<EnginesStatusSnapshot>
     shouldOfferDownload: () => Promise<boolean>
-    download: () => Promise<{ ok: true } | { ok: false; error: string }>
+    download: (uiLocale?: DownloadsWindowUiLocale) => Promise<{ ok: true } | { ok: false; error: string }>
     clearUserBin: () => Promise<{ ok: true; removed: number } | { ok: false; error: string }>
     onDownloadProgress: (listener: (progress: EngineDownloadProgress) => void) => () => void
   }
@@ -284,6 +286,7 @@ export interface FluxAlloyApi {
   }
   onPreviewOpened: (listener: (payload: PreviewOpenedPayload) => void) => () => void
   onThemeChanged: (listener: (theme: ResolvedAppTheme) => void) => () => void
+  onUiLocaleChanged: (listener: (locale: DownloadsWindowUiLocale) => void) => () => void
   onOpenEnginePaths: (listener: () => void) => () => void
   onEnginePathsChanged: (listener: () => void) => () => void
   onOpenAbout: (listener: () => void) => () => void

@@ -4,6 +4,7 @@
  */
 
 import type { EnginePathOverrides } from './engine-contract'
+import type { DownloadsWindowUiLocale } from './downloads-window-ui-locale'
 import type {
   FfmpegExportAudioNormalizeId,
   FfmpegExportCropPresetId,
@@ -83,6 +84,8 @@ export interface DownloadsWindowUiPanelState {
 export interface AppSettings {
   /** Тема хранится в main; `system` синхронизируется с `nativeTheme.shouldUseDarkColors`. */
   theme: AppTheme
+  /** Язык интерфейса (main-меню, строки IPC, окно загрузок по умолчанию); при отсутствии — эвристика как в renderer. */
+  uiLocale?: DownloadsWindowUiLocale
   /** §4.1: последний успешно открытый локальный файл для мягкого восстановления сессии. */
   lastOpenedSourcePath?: string
   /** §3: полные пути к exe движков; имеют приоритет над bundled и userData/bin. */

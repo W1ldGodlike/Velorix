@@ -1,5 +1,13 @@
 import type { MediaProbeSuccess, MediaProbeTrackRow } from './ffprobe-contract'
+import {
+  type FfprobeSummaryLocale,
+  ffprobeSummaryFill,
+  ffprobeSummaryStrings,
+  formatFfprobeBitrateLabelFromKbps
+} from './ffprobe-summary-export-locale'
 import { formatProbeChapterTimecode } from './ffprobe-timecode'
+
+export type { FfprobeSummaryLocale } from './ffprobe-summary-export-locale'
 
 /** Общий stem для имён файлов экспорта ffprobe; без пути — префикс `fluxalloy`. */
 function stemFromMediaPath(mediaPath: string | undefined): string {
@@ -33,62 +41,61 @@ export function defaultFfprobeSummaryHtmlFileName(mediaPath: string | undefined)
   return `${stemFromMediaPath(mediaPath)}-ffprobe-summary.html`
 }
 
-function trackKindRu(kind: MediaProbeTrackRow['kind']): string {
+function trackKindLabel(kind: MediaProbeTrackRow['kind'], b: ReturnType<typeof ffprobeSummaryStrings>): string {
   switch (kind) {
     case 'video':
-      return 'Видео'
+      return b.trackKindVideo
     case 'audio':
-      return 'Аудио'
+      return b.trackKindAudio
     case 'subtitle':
-      return 'Субтитры'
+      return b.trackKindSubtitle
     case 'attachment':
-      return 'Вложение'
+      return b.trackKindAttachment
     case 'data':
-      return 'Данные'
+      return b.trackKindData
     default:
-      return 'Прочее'
+      return b.trackKindOther
   }
 }
 
-function formatProbeDurationLine(sec: number | null): string {
+function formatProbeDurationLine(sec: number | null, b: ReturnType<typeof ffprobeSummaryStrings>): string {
   if (sec === null || !Number.isFinite(sec)) {
-    return 'длительность ?'
+    return b.durationUnknown
   }
   if (sec < 60) {
-    return `${sec.toFixed(1)} с`
+    return `${sec.toFixed(1)}${b.numSecSuffix}`
   }
   const s = Math.floor(sec)
   const h = Math.floor(s / 3600)
   const m = Math.floor((s % 3600) / 60)
   const r = s % 60
-  if (h > 0) {
-    return `${h}:${String(m).padStart(2, '0')}:${String(r).padStart(2, '0')} (${Math.round(sec)} с)`
-  }
-  return `${m}:${String(r).padStart(2, '0')} (${Math.round(sec)} с)`
+  const clock =
+    h > 0
+      ? `${h}:${String(m).padStart(2, '0')}:${String(r).padStart(2, '0')}`
+      : `${m}:${String(r).padStart(2, '0')}`
+  return `${clock} (${Math.round(sec)}${b.numSecSuffix})`
 }
 
-function formatBitrateLine(kbps: number | null): string | null {
-  if (kbps === null || !Number.isFinite(kbps)) {
-    return null
-  }
-  if (kbps >= 10_000) {
-    return `${(kbps / 1000).toFixed(2)} Mb/s`
-  }
-  return `${Math.round(kbps)} kb/s`
-}
-
-/** Строка для сводки §9 / §1.1; согласована с подписью fps в дорожке ffprobe. */
-function formatVideoFpsApproxForSummary(fps: number | null): string | null {
+/** §9 — приблизительный FPS для текстовой/HTML сводки. */
+function formatVideoFpsApproxForSummary(
+  fps: number | null,
+  locale: FfprobeSummaryLocale
+): string | null {
   if (fps === null || !Number.isFinite(fps) || fps <= 0 || fps >= 1000) {
     return null
   }
   const core = fps >= 100 ? fps.toFixed(0) : Number.isInteger(fps) ? String(fps) : fps.toFixed(3)
-  return `${core} fps`
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.fpsApproxValueTemplate, { value: core })
 }
 
-function formatChapterDurationSec(endSec: number, startSec: number): string {
+function formatChapterDurationSec(
+  endSec: number,
+  startSec: number,
+  b: ReturnType<typeof ffprobeSummaryStrings>
+): string {
   const dur = endSec - startSec
-  return Number.isFinite(dur) && dur >= 0 ? `${dur.toFixed(2)} с` : '—'
+  return Number.isFinite(dur) && dur >= 0 ? `${dur.toFixed(2)}${b.numSecSuffix}` : b.dash
 }
 
 function escapeHtml(raw: string): string {
@@ -100,39 +107,40 @@ function escapeHtml(raw: string): string {
 }
 
 /** §9 — человекочитаемая сводка для сохранения в .txt (UTF-8 в main). */
-export function formatProbeSummaryPlainText(info: MediaProbeSuccess): string {
-  const bitrateLabel = formatBitrateLine(info.bitrateKbps)
+export function formatProbeSummaryPlainText(
+  info: MediaProbeSuccess,
+  locale: FfprobeSummaryLocale = 'ru'
+): string {
+  const b = ffprobeSummaryStrings(locale)
+  const bitrateLabel = formatFfprobeBitrateLabelFromKbps(info.bitrateKbps, locale)
   const fpsSummary =
-    info.video !== null ? formatVideoFpsApproxForSummary(info.videoFpsApprox) : null
+    info.video !== null ? formatVideoFpsApproxForSummary(info.videoFpsApprox, locale) : null
   const lines: string[] = [
-    'FluxAlloy — сводка ffprobe',
-    '========================',
+    b.plainDocTitle,
+    b.plainDivider,
     '',
-    `Длительность: ${formatProbeDurationLine(info.durationSec)}`,
+    `${b.durationPrefix}: ${formatProbeDurationLine(info.durationSec, b)}`,
     info.video
-      ? `Видео: ${info.video.width}×${info.video.height}, кодек ${info.video.codec}`
-      : 'Видео: нет',
-    fpsSummary ? `FPS (оценка, видео): ${fpsSummary}` : null,
-    info.audioCodec ? `Аудио: кодек ${info.audioCodec}` : 'Аудио: нет',
-    info.formatName ? `Формат: ${info.formatName}` : 'Формат: ?',
+      ? `${b.videoLabel}: ${info.video.width}×${info.video.height}${b.videoCodecInfix}${info.video.codec}`
+      : b.videoNone,
+    fpsSummary ? `${b.fpsApproxPrefix}${fpsSummary}` : null,
+    info.audioCodec ? `${b.audioCodecPrefix}${info.audioCodec}` : b.audioNone,
+    info.formatName ? `${b.formatPrefix}${info.formatName}` : b.formatUnknown,
     info.formatLongName && info.formatLongName !== info.formatName
-      ? `Описание формата: ${info.formatLongName}`
+      ? `${b.formatLongPrefix}${info.formatLongName}`
       : null,
-    bitrateLabel ? `Битрейт (оценка): ${bitrateLabel}` : null,
+    bitrateLabel ? `${b.bitrateEstPrefix}${bitrateLabel}` : null,
     '',
-    `Дорожек: ${info.tracks.length}`,
+    ffprobeSummaryFill(b.streamsCountTemplate, { count: info.tracks.length }),
     ''
   ].filter((x): x is string => x !== null)
 
   if (info.tracks.length > 0) {
-    lines.push(
-      '#\tТип\tКодек\tPix_fmt\tSAR\tDAR\tЦв.простран.\tPrimaries\tTransfer\tДиапазон\tБитрейт\tDisposition\tЯзык\tЗаголовок\tСведения',
-      '-'.repeat(120)
-    )
+    lines.push(b.txtTrackTableHeader, '-'.repeat(120))
     for (const row of info.tracks) {
       const lang = row.language ?? ''
       const title = row.titleTag ?? ''
-      const br = formatBitrateLine(row.streamBitrateKbps) ?? ''
+      const br = formatFfprobeBitrateLabelFromKbps(row.streamBitrateKbps, locale) ?? ''
       const disp = row.dispositionSummary.replace(/\t/g, ' ')
       const pix = (row.pixelFormat ?? '').replace(/\t/g, ' ')
       const sar = (row.sampleAspectRatio ?? '').replace(/\t/g, ' ')
@@ -142,46 +150,50 @@ export function formatProbeSummaryPlainText(info: MediaProbeSuccess): string {
       const ctr = (row.colorTransfer ?? '').replace(/\t/g, ' ')
       const crng = (row.colorRange ?? '').replace(/\t/g, ' ')
       lines.push(
-        `${row.index}\t${trackKindRu(row.kind)}\t${row.codec}\t${pix}\t${sar}\t${dar}\t${cs}\t${cprim}\t${ctr}\t${crng}\t${br}\t${disp}\t${lang.replace(/\t/g, ' ')}\t${title.replace(/\t/g, ' ')}\t${row.detail.replace(/\r?\n/g, ' ')}`
+        `${row.index}\t${trackKindLabel(row.kind, b)}\t${row.codec}\t${pix}\t${sar}\t${dar}\t${cs}\t${cprim}\t${ctr}\t${crng}\t${br}\t${disp}\t${lang.replace(/\t/g, ' ')}\t${title.replace(/\t/g, ' ')}\t${row.detail.replace(/\r?\n/g, ' ')}`
       )
     }
   }
 
   if (info.chapters.length > 0) {
-    lines.push('', `Главы: ${info.chapters.length}`, '')
-    lines.push('id\tНачало\tКонец\tДлит.\tЗаголовок', '-'.repeat(64))
+    lines.push('', ffprobeSummaryFill(b.chaptersCountTemplate, { count: info.chapters.length }), '')
+    lines.push(b.chapterTableHeaderTxt, '-'.repeat(64))
     for (const ch of info.chapters) {
       lines.push(
-        `${ch.index}\t${formatProbeChapterTimecode(ch.startSec)}\t${formatProbeChapterTimecode(ch.endSec)}\t${formatChapterDurationSec(ch.endSec, ch.startSec)}\t${(ch.title ?? '').replace(/\t/g, ' ')}`
+        `${ch.index}\t${formatProbeChapterTimecode(ch.startSec)}\t${formatProbeChapterTimecode(ch.endSec)}\t${formatChapterDurationSec(ch.endSec, ch.startSec, b)}\t${(ch.title ?? '').replace(/\t/g, ' ')}`
       )
     }
   }
 
-  lines.push('', '— FluxAlloy §9')
+  lines.push('', b.plainFooter)
   return lines.join('\n')
 }
 
 /** §9 — простой HTML-документ со таблицей дорожек (сохранение через main). */
-export function formatProbeSummaryHtmlDocument(info: MediaProbeSuccess): string {
-  const bitrateLabel = formatBitrateLine(info.bitrateKbps)
+export function formatProbeSummaryHtmlDocument(
+  info: MediaProbeSuccess,
+  locale: FfprobeSummaryLocale = 'ru'
+): string {
+  const b = ffprobeSummaryStrings(locale)
+  const bitrateLabel = formatFfprobeBitrateLabelFromKbps(info.bitrateKbps, locale)
   const rows = info.tracks
     .map(
       (row) =>
-        `<tr><td>${row.index}</td><td>${escapeHtml(trackKindRu(row.kind))}</td><td class="mono">${escapeHtml(row.codec)}</td><td class="mono">${escapeHtml(row.pixelFormat ?? '—')}</td><td class="mono">${escapeHtml(row.sampleAspectRatio ?? '—')}</td><td class="mono">${escapeHtml(row.displayAspectRatio ?? '—')}</td><td class="mono">${escapeHtml(row.colorSpace ?? '—')}</td><td class="mono">${escapeHtml(row.colorPrimaries ?? '—')}</td><td class="mono">${escapeHtml(row.colorTransfer ?? '—')}</td><td class="mono">${escapeHtml(row.colorRange ?? '—')}</td><td class="mono">${escapeHtml(formatBitrateLine(row.streamBitrateKbps) ?? '—')}</td><td>${escapeHtml(row.dispositionSummary.trim() !== '' ? row.dispositionSummary : '—')}</td><td>${escapeHtml(row.language ?? '—')}</td><td>${escapeHtml(row.titleTag ?? '—')}</td><td>${escapeHtml(row.detail)}</td></tr>`
+        `<tr><td>${row.index}</td><td>${escapeHtml(trackKindLabel(row.kind, b))}</td><td class="mono">${escapeHtml(row.codec)}</td><td class="mono">${escapeHtml(row.pixelFormat ?? b.dash)}</td><td class="mono">${escapeHtml(row.sampleAspectRatio ?? b.dash)}</td><td class="mono">${escapeHtml(row.displayAspectRatio ?? b.dash)}</td><td class="mono">${escapeHtml(row.colorSpace ?? b.dash)}</td><td class="mono">${escapeHtml(row.colorPrimaries ?? b.dash)}</td><td class="mono">${escapeHtml(row.colorTransfer ?? b.dash)}</td><td class="mono">${escapeHtml(row.colorRange ?? b.dash)}</td><td class="mono">${escapeHtml(formatFfprobeBitrateLabelFromKbps(row.streamBitrateKbps, locale) ?? b.dash)}</td><td>${escapeHtml(row.dispositionSummary.trim() !== '' ? row.dispositionSummary : b.dash)}</td><td>${escapeHtml(row.language ?? b.dash)}</td><td>${escapeHtml(row.titleTag ?? b.dash)}</td><td>${escapeHtml(row.detail)}</td></tr>`
     )
     .join('\n')
 
   const chapterRows = info.chapters
     .map((ch) => {
-      return `<tr><td>${ch.index}</td><td class="mono">${escapeHtml(formatProbeChapterTimecode(ch.startSec))}</td><td class="mono">${escapeHtml(formatProbeChapterTimecode(ch.endSec))}</td><td class="mono">${escapeHtml(formatChapterDurationSec(ch.endSec, ch.startSec))}</td><td>${escapeHtml(ch.title ?? '—')}</td></tr>`
+      return `<tr><td>${ch.index}</td><td class="mono">${escapeHtml(formatProbeChapterTimecode(ch.startSec))}</td><td class="mono">${escapeHtml(formatProbeChapterTimecode(ch.endSec))}</td><td class="mono">${escapeHtml(formatChapterDurationSec(ch.endSec, ch.startSec, b))}</td><td>${escapeHtml(ch.title ?? b.dash)}</td></tr>`
     })
     .join('\n')
 
   const chaptersSection =
     info.chapters.length > 0
-      ? `<h2>Главы (${info.chapters.length})</h2>
+      ? `<h2>${ffprobeSummaryFill(b.htmlChaptersH2Template, { count: info.chapters.length })}</h2>
   <table>
-    <thead><tr><th>id</th><th>Начало</th><th>Конец</th><th>Длительность</th><th>Заголовок</th></tr></thead>
+    ${b.htmlChapterTheadRow}
     <tbody>
 ${chapterRows}
     </tbody>
@@ -189,26 +201,28 @@ ${chapterRows}
       : ''
 
   const fpsSummary =
-    info.video !== null ? formatVideoFpsApproxForSummary(info.videoFpsApprox) : null
+    info.video !== null ? formatVideoFpsApproxForSummary(info.videoFpsApprox, locale) : null
   const metaParts = [
-    `<li>Длительность: ${escapeHtml(formatProbeDurationLine(info.durationSec))}</li>`,
+    `<li>${b.durationPrefix}: ${escapeHtml(formatProbeDurationLine(info.durationSec, b))}</li>`,
     info.video
-      ? `<li>Видео: ${info.video.width}×${info.video.height}, ${escapeHtml(info.video.codec)}</li>`
-      : '<li>Видео: нет</li>',
-    fpsSummary ? `<li>FPS (оценка, видео): ${escapeHtml(fpsSummary)}</li>` : '',
-    info.audioCodec ? `<li>Аудио: ${escapeHtml(info.audioCodec)}</li>` : '<li>Аудио: нет</li>',
-    info.formatName ? `<li>Формат: ${escapeHtml(info.formatName)}</li>` : '',
+      ? `<li>${b.videoLabel}: ${info.video.width}×${info.video.height}, ${escapeHtml(info.video.codec)}</li>`
+      : `<li>${b.videoNone}</li>`,
+    fpsSummary ? `<li>${b.fpsApproxPrefix}${escapeHtml(fpsSummary)}</li>` : '',
+    info.audioCodec
+      ? `<li>${b.audioCodecPrefix}${escapeHtml(info.audioCodec)}</li>`
+      : `<li>${b.audioNone}</li>`,
+    info.formatName ? `<li>${b.formatPrefix}${escapeHtml(info.formatName)}</li>` : '',
     info.formatLongName && info.formatLongName !== info.formatName
-      ? `<li>${escapeHtml(info.formatLongName)}</li>`
+      ? `<li>${b.formatLongPrefix}${escapeHtml(info.formatLongName)}</li>`
       : '',
-    bitrateLabel ? `<li>Битрейт: ${escapeHtml(bitrateLabel)}</li>` : ''
+    bitrateLabel ? `<li>${b.bitratePlainPrefix}${escapeHtml(bitrateLabel)}</li>` : ''
   ].filter(Boolean)
 
   return `<!DOCTYPE html>
-<html lang="ru">
+<html lang="${b.htmlLang}">
 <head>
   <meta charset="utf-8" />
-  <title>FluxAlloy — сводка ffprobe</title>
+  <title>${escapeHtml(b.htmlTitle)}</title>
   <style>
     body { font-family: system-ui, sans-serif; margin: 1rem 1.25rem; color: #111; }
     h1 { font-size: 1.1rem; }
@@ -221,19 +235,19 @@ ${chapterRows}
   </style>
 </head>
 <body>
-  <h1>Сводка ffprobe</h1>
+  <h1>${escapeHtml(b.htmlH1)}</h1>
   <ul>
 ${metaParts.join('\n')}
   </ul>
-  <h2>Дорожки (${info.tracks.length})</h2>
+  <h2>${escapeHtml(ffprobeSummaryFill(b.htmlTracksH2Template, { count: info.tracks.length }))}</h2>
   <table>
-    <thead><tr><th>#</th><th>Тип</th><th>Кодек</th><th>Pix_fmt</th><th>SAR</th><th>DAR</th><th>Цв.простран.</th><th>Primaries</th><th>Transfer</th><th>Диапазон</th><th>Битрейт</th><th>Disposition</th><th>Язык</th><th>Заголовок</th><th>Сведения</th></tr></thead>
+    ${b.htmlTrackTheadRow}
     <tbody>
-${rows || '<tr><td colspan="15">Нет дорожек</td></tr>'}
+${rows || b.htmlNoTracksRow}
     </tbody>
   </table>
 ${chaptersSection}
-  <footer>FluxAlloy §9</footer>
+  <footer>${escapeHtml(b.htmlFooter)}</footer>
 </body>
 </html>
 `

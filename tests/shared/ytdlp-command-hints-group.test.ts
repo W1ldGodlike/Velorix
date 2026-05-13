@@ -30,6 +30,15 @@ describe('groupYtdlpCommandHintsByCategory §6.3', () => {
     expect(g[0]?.[0]).toBe('Прочее')
   })
 
+  it('пустая категория → Other для en', () => {
+    const g = groupYtdlpCommandHintsByCategory(
+      [{ token: '-x', summary: '', category: '  ' }],
+      undefined,
+      'en'
+    )
+    expect(g[0]?.[0]).toBe('Other')
+  })
+
   it('фильтр по подстроке токена или summary', () => {
     const g = groupYtdlpCommandHintsByCategory(
       [

@@ -217,6 +217,9 @@ export interface MediaExportRequestPayload {
   audioNormalize?: FfmpegExportAudioNormalizeId | null
 }
 
+/** Стабильное `result.error` при отмене по `AbortSignal` (сравнение в main; не локализовать). */
+export const FFMPEG_EXPORT_CANCELLED_ERROR = 'Экспорт отменён' as const
+
 export type MediaExportStartResult =
   | { ok: true; path: string }
   | { ok: false; cancelled: true }

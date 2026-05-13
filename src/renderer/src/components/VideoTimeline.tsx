@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState, type KeyboardEvent, type RefObject } from
 import type { MediaProbeSuccess } from '../../../shared/ffprobe-contract'
 import { buildTimelineRulerTicks, pickTimelineRulerStepSec } from '../../../shared/timeline-ruler'
 import { snapSeekTimeSec } from '../../../shared/video-frame-snap'
+import { miniIconTitle, uiText, uiTextVars } from '../locales/ui-text'
 import { IconZoomIn, IconZoomOut } from './LucideMiniIcons'
 import TimelineWaveform from './TimelineWaveform'
 
@@ -37,7 +38,7 @@ function approxVideoFpsFromProbe(probe: MediaProbeSuccess | null): number | null
   if (!row) {
     return null
   }
-  const mm = /(\d+(?:\.\d+)?)\s*fps\b/i.exec(row.detail)
+  const mm = /(\d+(?:\.\d+)?)\s*(?:fps|к\/с)\b/i.exec(row.detail)
   if (!mm?.[1]) {
     return null
   }
@@ -50,20 +51,20 @@ function approxVideoFpsFromProbe(probe: MediaProbeSuccess | null): number | null
 
 function formatProbeVideoFact(probe: MediaProbeSuccess | null): string {
   if (!probe?.video) {
-    return '—'
+    return uiText('uiPlaceholderDash')
   }
   return `${probe.video.width}×${probe.video.height} ${probe.video.codec}`
 }
 
 function formatProbeAudioFact(probe: MediaProbeSuccess | null): string {
   if (!probe) {
-    return '—'
+    return uiText('uiPlaceholderDash')
   }
   if (probe.audioCodec && probe.audioCodec.trim().length > 0) {
     return probe.audioCodec
   }
   const row = probe.tracks.find((t) => t.kind === 'audio')
-  return row?.codec ?? '—'
+  return row?.codec ?? uiText('uiPlaceholderDash')
 }
 
 function formatProbePositionLine(
@@ -76,7 +77,8 @@ function formatProbePositionLine(
     const snapped = snapSeekTimeSec(currentSec, durationSec, fps)
     const f = Math.round(snapped * fps)
     const fMax = Math.max(0, Math.round(snapSeekTimeSec(durationSec, durationSec, fps) * fps))
-    return `${base} · кадр ~${Math.min(Math.max(f, 0), fMax)}`
+    const frame = Math.min(Math.max(f, 0), fMax)
+    return `${base}${uiTextVars('videoTimelineFrameApproxSuffixTemplate', { frame })}`
   }
   return base
 }
@@ -399,35 +401,38 @@ export default function VideoTimeline({
 
   return (
     <div className="app-timeline-stack">
-      <div className="app-timeline-zoom-row" aria-label="Масштаб временной шкалы">
+      <div className="app-timeline-zoom-row" aria-label={uiText('videoTimelineZoomRowAria')}>
         <div className="app-timeline-zoom-cluster">
           <button
             type="button"
             className="app-icon-btn app-timeline-zoom-ico"
             disabled={duration <= 0 || timelineZoomMul <= 1}
             onClick={handleTimelineZoomOut}
-            title="Отдалить шкалу (показать больший интервал времени)"
+            title={uiText('videoTimelineZoomOutTitle')}
           >
             <IconZoomOut />
-            <span className="app-visually-hidden">Zoom out timeline</span>
+            <span className="app-visually-hidden">{miniIconTitle('miniIconZoomOut')}</span>
           </button>
           <button
             type="button"
             className="app-icon-btn app-timeline-zoom-ico"
             disabled={duration <= 0 || timelineZoomMul >= TIMELINE_ZOOM_MAX}
             onClick={handleTimelineZoomIn}
-            title="Приблизить шкалу под точную позицию"
+            title={uiText('videoTimelineZoomInTitle')}
           >
             <IconZoomIn />
-            <span className="app-visually-hidden">Zoom in timeline</span>
+            <span className="app-visually-hidden">{miniIconTitle('miniIconZoomIn')}</span>
           </button>
         </div>
         <span
           className="app-timeline-zoom-readout"
-          title="Видимый диапазон scrub и полоски маркеров"
+          title={uiText('videoTimelineZoomReadoutTitle')}
         >
-          Масштаб ×{timelineZoomMul} · {formatTime(winStartEff)} —{' '}
-          {formatTime(Math.min(duration, winStartEff + windowLenSec))}
+          {uiTextVars('videoTimelineZoomReadoutTemplate', {
+            mul: timelineZoomMul,
+            start: formatTime(winStartEff),
+            end: formatTime(Math.min(duration, winStartEff + windowLenSec))
+          })}
         </span>
       </div>
 
@@ -443,7 +448,7 @@ export default function VideoTimeline({
       {duration > 0 ? (
         <div
           className="app-timeline-ruler"
-          aria-label="Линейка времени окна воспроизведения: клик или стрелки для перехода"
+          aria-label={uiText('videoTimelineRulerAria')}
         >
           <div
             className="app-timeline-ruler-track"
@@ -452,7 +457,11 @@ export default function VideoTimeline({
             aria-valuemin={0}
             aria-valuemax={1000}
             aria-valuenow={Math.round(Math.min(1, Math.max(0, ratio)) * 1000)}
-            aria-valuetext={`${formatTime(current)} в окне ${formatTime(winStartEff)} — ${formatTime(Math.min(duration, winStartEff + windowLenSec))}`}
+            aria-valuetext={uiTextVars('videoTimelineRulerValuetextTemplate', {
+              current: formatTime(current),
+              winStart: formatTime(winStartEff),
+              winEnd: formatTime(Math.min(duration, winStartEff + windowLenSec))
+            })}
             onPointerDown={(ev) => {
               if (ev.button !== 0) {
                 return
@@ -483,20 +492,21 @@ export default function VideoTimeline({
       ) : null}
 
       {duration > 0 ? (
-        <div className="app-timeline-media-facts" aria-label="Сводка медиа по ffprobe и позиция">
-          <span title="Первый видеопоток ffprobe">
-            <strong>Видео:</strong> {formatProbeVideoFact(probe)}
+        <div className="app-timeline-media-facts" aria-label={uiText('videoTimelineMediaFactsAria')}>
+          <span title={uiText('videoTimelineVideoStreamTitle')}>
+            <strong>{uiText('videoTimelineVideoLabel')}</strong> {formatProbeVideoFact(probe)}
           </span>
-          <span title="Первая аудиодорожка ffprobe">
-            <strong>Аудио:</strong> {formatProbeAudioFact(probe)}
+          <span title={uiText('videoTimelineAudioStreamTitle')}>
+            <strong>{uiText('videoTimelineAudioLabel')}</strong> {formatProbeAudioFact(probe)}
           </span>
-          <span title="Текущее время; номер кадра — оценка по fps из строки дорожки">
-            <strong>Позиция:</strong> {formatProbePositionLine(current, duration, fpsProbeHint)}
+          <span title={uiText('videoTimelinePositionTitle')}>
+            <strong>{uiText('videoTimelinePositionLabel')}</strong>{' '}
+            {formatProbePositionLine(current, duration, fpsProbeHint)}
           </span>
         </div>
       ) : null}
 
-      <div className="app-timeline" aria-label="Позиция воспроизведения">
+      <div className="app-timeline" aria-label={uiText('videoTimelineScrubAria')}>
         <span className="app-timeline-time">{formatTime(current)}</span>
         <input
           className="app-timeline-range"
@@ -505,7 +515,11 @@ export default function VideoTimeline({
           max={1}
           step={0.0001}
           value={ratio}
-          aria-valuetext={`${formatTime(current)} из ${formatTime(duration)} (окно воспроизведения под масштабом ×${timelineZoomMul})`}
+          aria-valuetext={uiTextVars('videoTimelineScrubValuetextTemplate', {
+            current: formatTime(current),
+            duration: formatTime(duration),
+            mul: timelineZoomMul
+          })}
           onChange={(e) => {
             seek(Number(e.target.value))
           }}
@@ -529,16 +543,16 @@ export default function VideoTimeline({
         <div
           className="app-timeline-marker-strip"
           aria-hidden
-          title="In–Out вне текущего окна шкалы — уменьшите масштаб (zoom out)."
+          title={uiText('videoTimelineMarkersOutsideWindowTitle')}
         >
           <div className="app-timeline-marker-track app-timeline-marker-track-idle" />
         </div>
       ) : null}
 
-      <div className="app-timeline-io" aria-label="Маркеры In / Out">
+      <div className="app-timeline-io" aria-label={uiText('videoTimelineIoAria')}>
         <span
           className="app-timeline-io-readout"
-          title="Диапазон для экспорта (§7.1): передаётся в ffmpeg как -ss/-t"
+          title={uiText('videoTimelineTrimReadoutTitle')}
         >
           In <strong>{formatTime(displayIn)}</strong> — Out{' '}
           <strong>{formatTime(displayOut)}</strong>
@@ -553,36 +567,36 @@ export default function VideoTimeline({
                 .querySelector('.app-settings-panel')
                 ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
             }}
-            title="Прокрутить к панели экспорта FFmpeg (маркеры In/Out и превью команды)"
+            title={uiText('videoTimelineExportJumpTitle')}
           >
-            Обрезать → экспорт
+            {uiText('videoTimelineExportJumpButton')}
           </button>
           <button
             type="button"
             className="app-btn app-btn-compact"
             disabled={duration <= 0}
             onClick={captureInFromPlayhead}
-            title="Записать In в текущую позицию воспроизведения"
+            title={uiText('videoTimelineInHereTitle')}
           >
-            In здесь
+            {uiText('videoTimelineInHereButton')}
           </button>
           <button
             type="button"
             className="app-btn app-btn-compact"
             disabled={duration <= 0}
             onClick={captureOutFromPlayhead}
-            title="Записать Out в текущую позицию воспроизведения"
+            title={uiText('videoTimelineOutHereTitle')}
           >
-            Out здесь
+            {uiText('videoTimelineOutHereButton')}
           </button>
           <button
             type="button"
             className="app-btn app-btn-compact"
             disabled={duration <= 0}
             onClick={resetTrimToFull}
-            title="Сбросить диапазон на весь файл"
+            title={uiText('videoTimelineResetTrimTitle')}
           >
-            Весь клип
+            {uiText('videoTimelineResetTrimButton')}
           </button>
         </div>
       </div>

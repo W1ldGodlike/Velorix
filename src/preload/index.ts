@@ -39,6 +39,10 @@ import type {
   MediaExportRequestPayload,
   MediaExportStartResult
 } from '../shared/ffmpeg-export-contract'
+import {
+  parseDownloadsWindowUiLocale,
+  type DownloadsWindowUiLocale
+} from '../shared/downloads-window-ui-locale'
 import type { AppAboutInfo } from '../shared/about-contract'
 import type {
   EngineId,
@@ -166,6 +170,8 @@ function isDownloadsLogPayload(raw: unknown): raw is DownloadsLogPayload {
 const fluxalloy = {
   settings: {
     get: (): Promise<AppSettingsView> => ipcRenderer.invoke(mw.settingsGet),
+    setUiLocale: (locale: DownloadsWindowUiLocale): Promise<AppSettings> =>
+      ipcRenderer.invoke(mw.settingsSetUiLocale, locale),
     setTheme: (theme: AppTheme): Promise<AppSettingsView> =>
       ipcRenderer.invoke(mw.settingsSetTheme, theme),
     setEngineExecutablePaths: (patch: EnginePathOverridesPatch): Promise<AppSettings> =>
@@ -242,7 +248,8 @@ const fluxalloy = {
       ipcRenderer.invoke(mw.settingsMergeMainWindowUiPanels, patch)
   },
   preview: {
-    openFileDialog: (): Promise<PreviewDialogResult> => ipcRenderer.invoke(mw.openVideoDialog),
+    openFileDialog: (uiLocale?: DownloadsWindowUiLocale): Promise<PreviewDialogResult> =>
+      ipcRenderer.invoke(mw.openVideoDialog, uiLocale),
     grantPath: (
       absolutePath: string
     ): Promise<
@@ -266,8 +273,9 @@ const fluxalloy = {
       ipcRenderer.invoke(mw.restoreLastSource)
   },
   downloads: {
-    openWindow: (initial?: string | { text?: string } | null): Promise<void> =>
-      ipcRenderer.invoke(mw.openDownloadsWindow, initial ?? null),
+    openWindow: (
+      initial?: string | { text?: string; uiLocale?: 'ru' | 'en' } | null
+    ): Promise<void> => ipcRenderer.invoke(mw.openDownloadsWindow, initial ?? null),
     addLines: (text: string): Promise<{ ok: true; added: number } | { ok: false; error: string }> =>
       ipcRenderer.invoke(d.addLines, text),
     getSnapshot: (): Promise<unknown[]> => ipcRenderer.invoke(d.getSnapshot),
@@ -456,10 +464,11 @@ const fluxalloy = {
     }
   },
   engines: {
-    getStatus: (): Promise<EnginesStatusSnapshot> => ipcRenderer.invoke(mw.enginesStatus),
+    getStatus: (uiLocale?: DownloadsWindowUiLocale): Promise<EnginesStatusSnapshot> =>
+      ipcRenderer.invoke(mw.enginesStatus, uiLocale),
     shouldOfferDownload: (): Promise<boolean> => ipcRenderer.invoke(mw.enginesShouldOfferDownload),
-    download: (): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(mw.enginesDownload),
+    download: (uiLocale?: DownloadsWindowUiLocale): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(mw.enginesDownload, uiLocale),
     clearUserBin: (): Promise<{ ok: true; removed: number } | { ok: false; error: string }> =>
       ipcRenderer.invoke(mw.enginesClearUserBin),
     onDownloadProgress: (listener: (progress: EngineDownloadProgress) => void): (() => void) => {
@@ -542,6 +551,19 @@ const fluxalloy = {
       // События из IPC валидируем так же, как invoke-аргументы: renderer не доверяет raw payload.
       if (raw === 'light' || raw === 'dark') {
         listener(raw)
+      }
+    }
+    ipcRenderer.on(channel, handler)
+    return (): void => {
+      ipcRenderer.removeListener(channel, handler)
+    }
+  },
+  onUiLocaleChanged: (listener: (locale: DownloadsWindowUiLocale) => void): (() => void) => {
+    const channel = mw.uiLocaleChanged
+    const handler = (_: unknown, raw: unknown): void => {
+      const loc = parseDownloadsWindowUiLocale(raw)
+      if (loc !== undefined) {
+        listener(loc)
       }
     }
     ipcRenderer.on(channel, handler)

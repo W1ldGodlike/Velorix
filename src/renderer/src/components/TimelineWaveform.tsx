@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { computeWaveformPeakEnvelopeMono } from '../../../shared/waveform-peaks'
+import { uiText, uiTextVars } from '../locales/ui-text'
 
 /** Декодируем waveform только для коротких клипов — полный буфер `decodeAudioData` тяжёлый для длинных роликов. */
 export const WAVEFORM_MAX_DURATION_SEC = 180
@@ -112,26 +113,26 @@ export default function TimelineWaveform({
         (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
       if (!ACtx) {
         if (!cancelled) {
-          setHint('Web Audio недоступен в этом контексте.')
+          setHint(uiText('timelineWaveformWebAudioUnavailable'))
         }
         return
       }
       try {
         const res = await fetch(mediaUrl, { signal: ac.signal })
         if (!res.ok) {
-          throw new Error(`Ответ медиа: ${res.status}`)
+          throw new Error(uiTextVars('timelineWaveformMediaResponseErrorTemplate', { status: res.status }))
         }
         const contentLength = Number(res.headers.get('content-length') ?? '')
         if (Number.isFinite(contentLength) && contentLength > WAVEFORM_MAX_FETCH_BYTES) {
           if (!cancelled) {
-            setHint('Waveform отключён для крупного файла (защита памяти).')
+            setHint(uiText('timelineWaveformDisabledLargeFile'))
           }
           return
         }
         const buf = await readArrayBufferWithLimit(res, WAVEFORM_MAX_FETCH_BYTES)
         if (buf === null) {
           if (!cancelled) {
-            setHint('Waveform отключён для крупного файла (защита памяти).')
+            setHint(uiText('timelineWaveformDisabledLargeFile'))
           }
           return
         }
@@ -152,16 +153,19 @@ export default function TimelineWaveform({
           setPeaks(envelope)
 
           if (!cancelled && decoded.duration > durationSec + 1.25) {
-            setHint(`Аудио ~${decoded.duration.toFixed(1)}s (видео ${durationSec.toFixed(1)}s).`)
+            setHint(
+              uiTextVars('timelineWaveformAudioLongerHintTemplate', {
+                audioSec: decoded.duration.toFixed(1),
+                videoSec: durationSec.toFixed(1)
+              })
+            )
           }
         } finally {
           void ctx.close().catch(() => {})
         }
       } catch {
         if (!cancelled && !ac.signal.aborted) {
-          setHint(
-            'Не удалось построить waveform (формат без доступного аудио или ошибка декодера).'
-          )
+          setHint(uiText('timelineWaveformDecodeFailedHint'))
         }
       }
     })()
@@ -254,9 +258,9 @@ export default function TimelineWaveform({
 
   if (durationSec > WAVEFORM_MAX_DURATION_SEC) {
     return (
-      <div className="app-timeline-waveform" aria-label="Waveform недоступен">
+      <div className="app-timeline-waveform" aria-label={uiText('timelineWaveformAriaUnavailable')}>
         <p className="app-timeline-waveform-hint">
-          Длинный клип (&gt; {WAVEFORM_MAX_DURATION_SEC}s) — waveform не строится (защита памяти).
+          {uiTextVars('timelineWaveformUnavailableLongTemplate', { max: WAVEFORM_MAX_DURATION_SEC })}
         </p>
       </div>
     )
@@ -267,12 +271,12 @@ export default function TimelineWaveform({
   }
 
   return (
-    <div className="app-timeline-waveform" ref={wrapRef} aria-label="Waveform огибающая">
+    <div className="app-timeline-waveform" ref={wrapRef} aria-label={uiText('timelineWaveformAriaEnvelope')}>
       {peaks !== null && peaks.length > 0 ? (
         <canvas ref={canvasRef} className="app-timeline-waveform-canvas" />
       ) : null}
       {peaks === null ? (
-        <div className="app-timeline-waveform-hint">{hint ?? 'Waveform…'}</div>
+        <div className="app-timeline-waveform-hint">{hint ?? uiText('timelineWaveformLoading')}</div>
       ) : null}
       {peaks !== null && peaks.length > 0 && hint ? (
         <div className="app-timeline-waveform-subhint">{hint}</div>
