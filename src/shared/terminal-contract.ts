@@ -5095,6 +5095,42 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
+    token: '· заголовок stdout utf-8',
+    summary: 'Заголовок без скачивания с явной кодировкой вывода UTF-8 (--encoding utf-8 --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --encoding utf-8 --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок max-downloads 3',
+    summary: 'Заголовок без скачивания с лимитом загрузок за прогон (--max-downloads 3 --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --max-downloads 3 --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок и архив загрузок',
+    summary: 'Заголовок без скачивания с файлом архива уже скачанного (--download-archive flux-terminal-archive.txt --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --download-archive flux-terminal-archive.txt --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· filename без перезаписи',
+    summary: 'Имя файла без скачивания и без перезаписи существующих (--no-overwrites --skip-download --print filename); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --no-overwrites --print filename '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· filename с перезаписью',
+    summary: 'Имя файла без скачивания с принудительной перезаписью (--force-overwrites --skip-download --print filename); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --force-overwrites --print filename '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок break-on-reject',
+    summary: 'Заголовок без скачивания с остановкой при отклонении формата (--break-on-reject --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --break-on-reject --print title '
+  },
+  {
+    tool: 'yt-dlp',
     token: '· обновить yt-dlp → stable',
     summary: 'Обновить yt-dlp до стабильной ветки (--update-to stable); ссылка в команде не нужна.',
     fullLine: 'yt-dlp --update-to stable'
@@ -7364,6 +7400,96 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· ffmpeg: colorbalance rgb 2с',
     summary: 'Сдвиг баланса RGB через colorbalance первых 2 с (rs=0.08 gs=-0.02 bs=0.05); дымовая проверка colorbalance; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf colorbalance=rs=0.08:gs=-0.02:bs=0.05 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· видео v:0 codec_tag',
+    summary: 'Поток v:0: codec_tag (поле ffprobe: числовой тег кодека вместе с codec_tag_string); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=codec_tag -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· субтитры s:5 start_time',
+    summary: 'Шестая дорожка субтитров s:5: start_time (поле ffprobe); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:5 -show_entries stream=start_time -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· главы end_time',
+    summary: 'Все главы: end_time (-show_chapters -show_entries chapter=end_time -of compact); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -show_chapters -show_entries chapter=end_time -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· аудио a:1 channels',
+    summary: 'Вторая аудиодорожка a:1: только channels (поле ffprobe); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:1 -show_entries stream=channels -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· видео v:0 bt601 709 цвет',
+    summary: 'Поток v:0: color_space, color_transfer и color_primaries одной строкой (поля ffprobe; сводка HDR/SDR); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=color_space,color_transfer,color_primaries -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: scale divisible 2с',
+    summary: 'Масштаб с force_divisible_by=2 первых 2 с (-vf scale=w=320:h=240:force_divisible_by=2); дымовая проверка выравнивания размеров; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf scale=w=320:h=240:force_divisible_by=2 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: colorspace fast 2с',
+    summary: 'Перевод цветового пространства colorspace=iall=bt601:all=bt709:fast=1 первых 2 с; дымовая проверка colorspace; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf colorspace=iall=bt601:all=bt709:fast=1 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: framestep 2с',
+    summary: 'Прореживание кадров framestep=2 первых 4 с; дымовая проверка framestep; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf framestep=2 -t 4 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: tmideint bob 2с',
+    summary: 'Деинтерлейс tmideint=mode=bob первых 2 с; дымовая проверка tmideint; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf tmideint=mode=bob -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: erosion 2с',
+    summary: 'Морфологическое сужение erosion первых 2 с; дымовая проверка erosion; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf erosion -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: dilation 2с',
+    summary: 'Морфологическое расширение dilation первых 2 с; дымовая проверка dilation; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf dilation -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: shuffleplanes 2:1:0',
+    summary: 'Перестановка плоскостей shuffleplanes=2:1:0 первых 2 с; дымовая проверка shuffleplanes; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf shuffleplanes=2:1:0 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: decimate cycle 12',
+    summary: 'Прореживание decimate=cycle=12 первых 6 с; дымовая проверка decimate с циклом; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf decimate=cycle=12 -t 6 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: scale bicubic full chroma 2с',
+    summary: 'Масштаб bicubic с full_chroma_inp первых 2 с (-vf scale=flags=bicubic+full_chroma_inp:interl=0); дымовая проверка scale; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf scale=w=iw:h=ih:flags=bicubic+full_chroma_inp:interl=0 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: avgblur 2с',
+    summary: 'Размытие avgblur 3×3 первых 2 с (-vf avgblur=3:1); дымовая проверка avgblur; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf avgblur=3:1 -t 2 -an -sn -f null -`
   }
 ]
 
