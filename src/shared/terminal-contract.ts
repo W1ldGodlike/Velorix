@@ -414,7 +414,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· ярлык .url на страницу',
+    token: '· ярлык (.url) на страницу',
     summary: 'Файл-ярлык на страницу без видео (--write-url-link --skip-download); допишите URL.',
     fullLine: 'yt-dlp --write-url-link --skip-download '
   },
@@ -655,7 +655,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   {
     tool: 'yt-dlp',
     token: '· HLS встроенный -F',
-    summary: 'HLS: встроенный загрузчик вместо утилиты ffmpeg, где возможно (--hls-prefer-native -F); допишите URL.',
+    summary: 'HLS: встроенный загрузчик вместо утилиты FFmpeg, где возможно (--hls-prefer-native -F); допишите URL.',
     fullLine: 'yt-dlp --hls-prefer-native -F '
   },
   {
@@ -1057,7 +1057,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   {
     tool: 'yt-dlp',
     token: '· нарезка по главам',
-    summary: 'Разрезать выход по главам (--split-chapters; нужна утилита ffmpeg в каталогах из PATH); допишите URL.',
+    summary: 'Разрезать выход по главам (--split-chapters; нужна утилита FFmpeg в каталогах из PATH); допишите URL.',
     fullLine: 'yt-dlp --split-chapters '
   },
   {
@@ -1117,13 +1117,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   {
     tool: 'yt-dlp',
     token: '· HLS через внешний FFmpeg -F',
-    summary: 'HLS: тянуть поток через утилиту ffmpeg вместо встроенного загрузчика (--hls-prefer-ffmpeg -F); обход части CDN-глюков; допишите URL.',
+    summary: 'HLS: тянуть поток через утилиту FFmpeg вместо встроенного загрузчика (--hls-prefer-ffmpeg -F); обход части CDN-глюков; допишите URL.',
     fullLine: 'yt-dlp --hls-prefer-ffmpeg -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· путь к бинарнику ffmpeg',
-    summary: 'Явный путь к утилите ffmpeg для постпроцессоров и слияния потоков (--ffmpeg-location ffmpeg); при необходимости замените на полный путь без пробелов; допишите URL.',
+    token: '· путь к FFmpeg',
+    summary: 'Явный путь к утилите FFmpeg для постпроцессоров и слияния потоков (--ffmpeg-location ffmpeg); при необходимости замените на полный путь без пробелов; допишите URL.',
     fullLine: 'yt-dlp --ffmpeg-location ffmpeg '
   },
   {
@@ -1285,7 +1285,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   {
     tool: 'yt-dlp',
     token: '· встроенный загрузчик -F',
-    summary: 'Встроенный загрузчик фрагментов (--downloader native -F); обход части сбоев утилиты ffmpeg; допишите URL.',
+    summary: 'Встроенный загрузчик фрагментов (--downloader native -F); обход части сбоев утилиты FFmpeg; допишите URL.',
     fullLine: 'yt-dlp --downloader native -F '
   },
   {
@@ -1668,8 +1668,8 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· загрузчик ffmpeg',
-    summary: 'Тянуть фрагменты через внешнюю утилиту ffmpeg (--external-downloader ffmpeg); обход части встроенных загрузчиков; допишите URL.',
+    token: '· загрузчик FFmpeg',
+    summary: 'Тянуть фрагменты через внешнюю утилиту FFmpeg (--external-downloader ffmpeg); обход части встроенных загрузчиков; допишите URL.',
     fullLine: 'yt-dlp --external-downloader ffmpeg '
   },
   {
@@ -1796,7 +1796,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   {
     tool: 'yt-dlp',
     token: '· аргументы внешнего загрузчика -F',
-    summary: 'Доп. аргументы внешней программе загрузки (downloader) без кавычек (--external-downloader-args ffmpeg_i:-nostdin -F); префикс ffmpeg_i и флаг -nostdin отключают stdin у утилиты ffmpeg; допишите URL при использовании внешнего загрузчика.',
+    summary: 'Доп. аргументы внешней программе загрузки (downloader) без кавычек (--external-downloader-args ffmpeg_i:-nostdin -F); префикс ffmpeg_i и флаг -nostdin отключают stdin у утилиты FFmpeg; допишите URL при использовании внешнего загрузчика.',
     fullLine: 'yt-dlp --external-downloader-args ffmpeg_i:-nostdin -F '
   },
   {
@@ -1832,7 +1832,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   {
     tool: 'yt-dlp',
     token: '· ключевые кадры на резах',
-    summary: 'Принудительные ключевые кадры на границах нарезки и склейки (--force-keyframes-at-cuts); для постпроцессора утилиты ffmpeg; допишите URL и -f …',
+    summary: 'Принудительные ключевые кадры на границах нарезки и склейки (--force-keyframes-at-cuts); для постпроцессора утилиты FFmpeg; допишите URL и -f …',
     fullLine: 'yt-dlp --force-keyframes-at-cuts '
   },
   {
@@ -1844,7 +1844,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   {
     tool: 'yt-dlp',
     token: '· совместимость: без прямого слияния -F',
-    summary: 'Не сливать потоки напрямую в mkv и webm (--compat-options no-direct-merge -F); диагностика слияния потоков и вызовов ffmpeg; допишите URL.',
+    summary: 'Не сливать потоки напрямую в mkv и webm (--compat-options no-direct-merge -F); диагностика слияния потоков и вызовов FFmpeg; допишите URL.',
     fullLine: 'yt-dlp --compat-options no-direct-merge -F '
   },
   {
@@ -1915,7 +1915,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· разрешить ссылки file:// -F',
+    token: '· разрешить локальные file-URL -F',
     summary: 'Разрешить file:// URL в аргументах (--enable-file-urls -F); только для доверенных путей; допишите URL.',
     fullLine: 'yt-dlp --enable-file-urls -F '
   },
@@ -2035,8 +2035,8 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· аргументы ffmpeg для загрузчика -F',
-    summary: 'Доп. аргументы встроенному загрузчику на базе ffmpeg (--downloader-args ffmpeg:-nostdin -F); -nostdin отключает stdin у утилиты ffmpeg; допишите URL.',
+    token: '· аргументы FFmpeg для загрузчика -F',
+    summary: 'Доп. аргументы встроенному загрузчику на базе FFmpeg (--downloader-args ffmpeg:-nostdin -F); -nostdin отключает stdin у утилиты FFmpeg; допишите URL.',
     fullLine: 'yt-dlp --downloader-args ffmpeg:-nostdin -F '
   },
   {
@@ -2095,7 +2095,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· клиентский сертификат PEM',
+    token: '· клиентский сертификат (формат PEM)',
     summary: 'Клиентский TLS-сертификат (--client-certificate client.pem); положите PEM рядом с рабочим каталогом или укажите абсолютный путь без кавычек; допишите URL.',
     fullLine: 'yt-dlp --client-certificate client.pem '
   },
@@ -2149,7 +2149,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· ключ к сертификату PEM',
+    token: '· ключ к сертификату (формат PEM)',
     summary: 'Приватный ключ к клиентскому TLS-сертификату (--client-certificate-key key.pem); положите PEM рядом с рабочим каталогом или укажите путь без кавычек; допишите URL.',
     fullLine: 'yt-dlp --client-certificate-key key.pem '
   },
@@ -2545,8 +2545,8 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· загрузчик ffmpeg -F',
-    summary: 'Явно качать через встроенный загрузчик на базе ffmpeg (--downloader ffmpeg -F); потоки HLS и DASH; допишите URL.',
+    token: '· загрузчик FFmpeg -F',
+    summary: 'Явно качать через встроенный загрузчик на базе FFmpeg (--downloader ffmpeg -F); потоки HLS и DASH; допишите URL.',
     fullLine: 'yt-dlp --downloader ffmpeg -F '
   },
   {
@@ -2641,8 +2641,8 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· постпроц.: ffmpeg, 1 поток -F',
-    summary: 'Дополнительные аргументы постпроцессору ffmpeg через --ppa (FFmpeg:-threads:1 -F); в списке аргументов без кавычек (как в argv); допишите URL.',
+    token: '· постпроц.: FFmpeg, 1 поток -F',
+    summary: 'Дополнительные аргументы постпроцессору FFmpeg через --ppa (FFmpeg:-threads:1 -F); в списке аргументов без кавычек (как в argv); допишите URL.',
     fullLine: 'yt-dlp --ppa FFmpeg:-threads:1 -F '
   },
   {
@@ -2822,7 +2822,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   {
     tool: 'yt-dlp',
     token: '· постпроц.: мультиплекс (mux), 1 поток -F',
-    summary: 'Аргументы постпроцессора для ffmpeg (--postprocessor-args ffmpeg:-threads 1 -F); ограничить нагрузку при слиянии потоков (мультиплексировании); допишите URL.',
+    summary: 'Аргументы постпроцессора для FFmpeg (--postprocessor-args ffmpeg:-threads 1 -F); ограничить нагрузку при слиянии потоков (мультиплексировании); допишите URL.',
     fullLine: 'yt-dlp --postprocessor-args ffmpeg:-threads 1 -F '
   },
   {
@@ -4795,7 +4795,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: заголовок «Referer»',
+    token: '· в файл: заголовок referer',
     summary: 'Записать referrer (HTTP Referer страницы, если есть) в flux-ytdlp-refurl.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file referrer flux-ytdlp-refurl.txt --skip-download '
   },
@@ -4991,7 +4991,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· контейнер и дорожки — JSON',
+    token: '· контейнер и дорожки в JSON',
     summary: 'Сводка блоков format и streams в JSON (-of json); удобно скопировать в ZIP-архив для поддержки или обработать в jq.',
     fullLine: `ffprobe -hide_banner -of json -show_format -show_streams ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5117,13 +5117,13 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· видео v:0 таймбаза и начальный PTS',
+    token: '· видео v:0: таймбаза и старт меток',
     summary: 'Поток v:0: time_base и start_pts (база времени и точка отсчёта меток); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=time_base,start_pts -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· аудио a:0 таймбаза и начальный PTS',
+    token: '· аудио a:0: таймбаза и старт меток',
     summary: 'Поток a:0: time_base и start_pts (база времени и точка отсчёта аудио); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=time_base,start_pts -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5171,7 +5171,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· контейнер: бренды совместимости (MP4/MOV)',
+    token: '· контейнер: бренды mp4/mov',
     summary: 'Теги контейнера: основной бренд и совместимые бренды (major_brand, compatible_brands; семейство контейнеров MP4 и MOV); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_entries format_tags=major_brand,compatible_brands -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5189,7 +5189,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· вложение t:0 (MKV)',
+    token: '· вложение t:0 (контейнер mkv)',
     summary: 'Первая вложенная дорожка t:0 (шрифты и обложки MKV): codec_name и codec_tag_string; путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams t:0 -show_entries stream=codec_name,codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5201,7 +5201,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· видео v:0 четырёхсимвольный код (FourCC)',
+    token: '· видео v:0: четырёхбуквенный тег кодека',
     summary: 'Поток v:0: codec_tag_string (четырёхбуквенный идентификатор FourCC — бренд сырого кодека); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5243,7 +5243,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· программы TS (компактный формат)',
+    token: '· программы в TS, компактно',
     summary: 'MPEG-TS и M3U8: список программ демультиплексора (-show_programs, вывод -of compact); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_programs -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5369,13 +5369,13 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· контейнер: читаемый вывод (-pretty)',
+    token: '· контейнер: удобочитаемый вывод',
     summary: 'Секция format в удобочитаемом виде (-pretty -show_format); единицы и время форматированы; путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -pretty -show_format ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· контейнер: плоский список полей (of flat)',
+    token: '· контейнер: плоский вывод ключ=значение',
     summary: 'Плоский вывод format ключ=значение (-of flat -show_format); удобно разбирать текстом (например, утилитами grep и awk); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -of flat -show_format ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5411,7 +5411,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: громкость по стандарту EBU 60с',
+    token: '· FFmpeg: громкость по стандарту EBU 60с',
     summary: 'Замер интегральной громкости фильтром loudnorm (print_format=summary) за 60 с; -vn -sn; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af loudnorm=print_format=summary -t 60 -vn -sn -f null -`
   },
@@ -5453,7 +5453,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· видео v:0 битрейт и длительность (MKV-теги)',
+    token: '· видео v:0: битрейт и длительность (теги mkv)',
     summary: 'MKV-статистика v:0: stream_tags BPS и DURATION (битрейт и длительность дорожки, если записаны mkvtoolnix); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream_tags=BPS,DURATION -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5471,7 +5471,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: масштаб 320, 1 с, пустой выход',
+    token: '· FFmpeg: масштаб 320, 1 с, пустой выход',
     summary: 'Дымовая проверка: перекодирование масштаба 320:-1 за 1 с в пустой выход (-vf scale=320:-1 -t 1, -f null); проверка цепочки видеофильтров; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf scale=320:-1 -t 1 -f null -`
   },
@@ -5489,13 +5489,13 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: копия аудио 3 с, пустой выход',
+    token: '· FFmpeg: копия аудио 3 с, пустой выход',
     summary: 'Перепаковка только аудио в пустой выход (-vn -sn -acodec copy -t 3, -f null); проверка дорожки без декода видео; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vn -sn -acodec copy -t 3 -f null -`
   },
   {
     tool: 'ffprobe',
-    token: '· аудио a:0 глубина PCM',
+    token: '· аудио a:0: глубина несжатого звука',
     summary: 'Поток a:0: bits_per_raw_sample (глубина PCM при несжатом звуке и форматах без потерь, lossless) при наличии; путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=bits_per_raw_sample -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5537,19 +5537,19 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: поток v:0 без перекода 2с',
+    token: '· FFmpeg: поток v:0 без перекода 2с',
     summary: 'Перепаковка только первой видеодорожки без перекодирования (-map 0:v:0 -c:v copy); без аудио и субтитров; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -t 2 -map 0:v:0 -c:v copy -an -sn -f null -`
   },
   {
     tool: 'ffprobe',
-    token: '· субтитры s:0 таймбаза и начальный PTS',
+    token: '· субтитры s:0: таймбаза и старт меток',
     summary: 'Поток s:0: time_base и start_pts (смещение субтитров относительно видео); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=time_base,start_pts -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: замер громкости 10с',
+    token: '· FFmpeg: замер громкости 10с',
     summary: 'Замер громкости первых 10 с (-af volumedetect -vn -sn); средняя и максимальная громкость (поля mean_volume и max_volume) попадают в стандартный поток ошибок (stderr); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af volumedetect -t 10 -vn -sn -f null -`
   },
@@ -5561,7 +5561,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: поиск тишины 30с',
+    token: '· FFmpeg: поиск тишины 30с',
     summary: 'Поиск тишины в первых 30 с (-af silencedetect=noise=-50dB:d=0.3); в стандартном потоке ошибок (stderr) — метки silence_start и silence_end; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af silencedetect=noise=-50dB:d=0.3 -t 30 -vn -sn -f null -`
   },
@@ -5579,7 +5579,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: статистика аудио 5с',
+    token: '· FFmpeg: статистика аудио 5с',
     summary: 'Краткая статистика аудио первых 5 с (-af astats=metadata=1:reset=1); СКЗ и пик (RMS и peak) попадают в стандартный поток ошибок (stderr); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af astats=metadata=1:reset=1 -t 5 -vn -sn -f null -`
   },
@@ -5591,7 +5591,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: громкость по шкале EBU R128, 12с',
+    token: '· FFmpeg: громкость по шкале EBU R128, 12с',
     summary: 'EBU R128: интегральная громкость, диапазон громкости и истинный пик (Integrated, LRA и True Peak) первых 12 с (-af ebur128=framelog=verbose); метрики попадают в стандартный поток ошибок (stderr); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af ebur128=framelog=verbose -t 12 -vn -sn -f null -`
   },
@@ -5609,7 +5609,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: фазометр 10с',
+    token: '· FFmpeg: фазометр 10с',
     summary: 'Стерео-фаза первых 10 с (-af aphasemeter=video=0); предупреждения о моно и фазе попадают в стандартный поток ошибок (stderr); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af aphasemeter=video=0 -t 10 -vn -sn -f null -`
   },
@@ -5621,7 +5621,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: чересстрочность 5с',
+    token: '· FFmpeg: чересстрочность 5с',
     summary: 'Детектор чересстрочности первых 5 с (-vf idet -t 5); метки чересстрочности сверху и снизу и прогрессивной развёртки (TFF, BFF, progressive) попадают в стандартный поток ошибок (stderr); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -t 5 -vf idet -an -sn -f null -`
   },
@@ -5633,31 +5633,31 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: чёрные кадры 30с',
+    token: '· FFmpeg: чёрные кадры 30с',
     summary: 'Поиск чёрных интервалов в первых 30 с (-vf blackdetect=d=0.1:pix_th=0.01); метки black_start и black_end попадают в стандартный поток ошибок (stderr); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf blackdetect=d=0.1:pix_th=0.01 -t 30 -an -sn -f null -`
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: автообрезка 30с',
+    token: '· FFmpeg: автообрезка 30с',
     summary: 'Оценка обрезки чёрных полей первых 30 с (-vf cropdetect=limit=24:round=16:reset=0); параметры обрезки (crop) попадают в стандартный поток ошибок (stderr); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf cropdetect=limit=24:round=16:reset=0 -t 30 -an -sn -f null -`
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: залипание кадра 45с',
+    token: '· FFmpeg: залипание кадра 45с',
     summary: 'Поиск залипших кадров первых 45 с (-vf freezedetect=n=-60dB:d=2); метки freeze_start и freeze_end попадают в стандартный поток ошибок (stderr); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf freezedetect=n=-60dB:d=2 -t 45 -an -sn -f null -`
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: статистика видео 8с',
+    token: '· FFmpeg: статистика видео 8с',
     summary: 'Статистика уровней и шума первых 8 с (-vf signalstats); YUV-средние и отклонения попадают в стандартный поток ошибок (stderr); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf signalstats -t 8 -an -sn -f null -`
   },
   {
     tool: 'ffprobe',
-    token: '· главы — JSON',
+    token: '· главы в JSON',
     summary: 'Главы контейнера одним JSON (--show-chapters -of json=c=1); длительности и заголовки сегментов; путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_chapters -of json=c=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5675,25 +5675,25 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· субтитры s:1 таймбаза и начальный PTS',
+    token: '· субтитры s:1: таймбаза и старт меток',
     summary: 'Вторая дорожка субтитров s:1: time_base и start_pts (смещение таймстемпов); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:1 -show_entries stream=time_base,start_pts -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· аудио a:1 таймбаза и начальный PTS',
+    token: '· аудио a:1: таймбаза и старт меток',
     summary: 'Вторая аудиодорожка a:1: time_base и start_pts (сдвиг относительно контейнера); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:1 -show_entries stream=time_base,start_pts -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: динам. нормализация 5с',
+    token: '· FFmpeg: динам. нормализация 5с',
     summary: 'Лёгкая динамическая нормализация громкости первых 5 с (-af dynaudnorm); проверка аудиофильтра; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af dynaudnorm=g=31:f=250:r=0.9 -t 5 -vn -sn -f null -`
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: ВЧ-срез 5с',
+    token: '· FFmpeg: ВЧ-срез 5с',
     summary: 'ВЧ-срез первых 5 с (-af highpass=f=200); проверка аудио-цепочки и тишины в низах; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af highpass=f=200 -t 5 -vn -sn -f null -`
   },
@@ -5723,13 +5723,13 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: смена сцен 20с',
+    token: '· FFmpeg: смена сцен 20с',
     summary: 'Детектор смен сцен первых 20 с (-vf scenedetect=scene=0.3); оценка смены кадра (scene_score) попадает в стандартный поток ошибок (stderr); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf scenedetect=scene=0.3 -t 20 -an -sn -f null -`
   },
   {
     tool: 'ffmpeg',
-    token: '· метки PTS (genpts) + ремукс 2 с',
+    token: '· метки времени (genpts) + ремукс 2 с',
     summary: 'Короткая перепаковка без перекодирования с генерацией PTS (-fflags +genpts -c copy -t 2); битые таймстемпы MPEG-TS и MKV; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -fflags +genpts -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -t 2 -c copy -f null -`
   },
@@ -5753,7 +5753,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: ресемпл 44.1 кГц 3с',
+    token: '· FFmpeg: ресемпл 44.1 кГц 3с',
     summary: 'Аудио: ресемплинг в 44,1 кГц первые 3 с (-af aresample=44100); проверка цепочки передискретизации (ресемплинг, SRC); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af aresample=44100 -t 3 -vn -sn -f null -`
   },
@@ -5765,7 +5765,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: спектральное шумоподавление 3с',
+    token: '· FFmpeg: спектральное шумоподавление 3с',
     summary: 'Лёгкое шумоподавление в частотной области (FFT, -af afftdn=nf=-25) первых 3 с; проверка аудиофильтра; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af afftdn=nf=-25 -t 3 -vn -sn -f null -`
   },
@@ -5783,7 +5783,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: компрессор 5с',
+    token: '· FFmpeg: компрессор 5с',
     summary: 'Лёгкая компрессия аудио первых 5 с (-af acompressor=threshold=-20dB:ratio=4:attack=5:release=100); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af acompressor=threshold=-20dB:ratio=4:attack=5:release=100 -t 5 -vn -sn -f null -`
   },
@@ -5795,7 +5795,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: обрезка тишины 60с',
+    token: '· FFmpeg: обрезка тишины 60с',
     summary: 'Обрезка ведущей тишины в первых 60 с (-af silenceremove=…); проверка цепочки -af на речи и музыке; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af silenceremove=start_periods=1:start_duration=0.5:start_threshold=-50dB:detection=peak:stop_periods=-1 -t 60 -vn -sn -f null -`
   },
@@ -5807,7 +5807,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: тембр ВЧ 3с',
+    token: '· FFmpeg: тембр ВЧ 3с',
     summary: 'Лёгкий эквалайзер ВЧ (treble) первых 3 с (-af treble=g=1); дымовая проверка цепочки аудиофильтров; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af treble=g=1 -t 3 -vn -sn -f null -`
   },
@@ -5831,7 +5831,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: НЧ-срез 3.5 кГц 3с',
+    token: '· FFmpeg: НЧ-срез 3.5 кГц 3с',
     summary: 'НЧ-фильтр первых 3 с (-af lowpass=f=3500); проверка аудио-цепочки; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af lowpass=f=3500 -t 3 -vn -sn -f null -`
   },
@@ -5861,13 +5861,13 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: шумовой гейт 5с',
+    token: '· FFmpeg: шумовой гейт 5с',
     summary: 'Шумовой гейт первых 5 с (-af agate=…); проверка динамики и тишины в цепочке -af; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af agate=threshold=0.005:ratio=2:attack=20:release=200 -t 5 -vn -sn -f null -`
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: деклик 5с',
+    token: '· FFmpeg: деклик 5с',
     summary: 'Клик-редактор первых 5 с (-af adeclick); диагностика щёлчков и дефектов записи; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af adeclick -t 5 -vn -sn -f null -`
   },
@@ -5885,7 +5885,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: расширение стерео 3с',
+    token: '· FFmpeg: расширение стерео 3с',
     summary: 'Усиление стерео-разницы первых 3 с (-af extrastereo); проверка ширины стерео-цепочки; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af extrastereo -t 3 -vn -sn -f null -`
   },
@@ -5903,7 +5903,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: фазер 4с',
+    token: '· FFmpeg: фазер 4с',
     summary: 'Лёгкий фазовый эффект первых 4 с (-af aphaser); дымовая проверка стерео-цепочки аудиофильтров (-af); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af aphaser=in_gain=0.4:out_gain=0.74 -t 4 -vn -sn -f null -`
   },
@@ -5921,7 +5921,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: флэнжер 4с',
+    token: '· FFmpeg: флэнжер 4с',
     summary: 'Лёгкий флэнжер (flanger) первых 4 с (-af flanger); дымовая проверка стерео-модуляции; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af flanger -t 4 -vn -sn -f null -`
   },
@@ -5933,7 +5933,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: де-ессер 4с',
+    token: '· FFmpeg: де-ессер 4с',
     summary: 'Де-эссер первых 4 с (-af deesser); диагностика свистящих согласных; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af deesser=i=0.5 -t 4 -vn -sn -f null -`
   },
@@ -5945,7 +5945,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: вибрато 4с',
+    token: '· FFmpeg: вибрато 4с',
     summary: 'Лёгкая вибрато-модуляция первых 4 с (-af vibrato); дымовая проверка стерео-цепочки аудиофильтров (-af); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af vibrato=f=6.5:d=0.5 -t 4 -vn -sn -f null -`
   },
@@ -5957,7 +5957,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: кристалайзер 4с',
+    token: '· FFmpeg: кристалайзер 4с',
     summary: 'Психоакустический кристалайзер (crystalizer) первых 4 с (-af crystalizer); дымовая проверка лёгких аудио-эффектов; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af crystalizer=i=1.2 -t 4 -vn -sn -f null -`
   },
@@ -5969,7 +5969,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: тон + сдвиг частоты дискр. 3с',
+    token: '· FFmpeg: тон + сдвиг частоты дискр. 3с',
     summary: 'Лёгкий resample-питч первых 3 с (-af asetrate=44100*1.01,aresample=44100); дымовая проверка цепочки asetrate → aresample; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af asetrate=44100*1.01,aresample=44100 -t 3 -vn -sn -f null -`
   },
@@ -5981,7 +5981,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: компандер 4с',
+    token: '· FFmpeg: компандер 4с',
     summary: 'Лёгкий компандер первых 4 с (-af compand); дымовая проверка динамической обработки; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af compand=attacks=0.02:decays=0.1:points=-80/-80|-25/-25|0/-10:gain=2 -t 4 -vn -sn -f null -`
   },
@@ -5999,7 +5999,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: динам. нормализация 4с',
+    token: '· FFmpeg: динам. нормализация 4с',
     summary: 'Лёгкая динамическая нормализация громкости первых 4 с (-af dynaudnorm); дымовая проверка цепочки выравнивания воспринимаемой громкости (loudness); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af dynaudnorm=f=150:g=15 -t 4 -vn -sn -f null -`
   },
@@ -6011,7 +6011,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: мягкое клипирование 4с',
+    token: '· FFmpeg: мягкое клипирование 4с',
     summary: 'Мягкий клиппер первых 4 с (-af asoftclip); дымовая проверка ограничения пиков без жёсткого лимитера; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af asoftclip -t 4 -vn -sn -f null -`
   },
@@ -6023,7 +6023,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: эхо 4с',
+    token: '· FFmpeg: эхо 4с',
     summary: 'Лёгкое эхо первых 4 с (-af aecho); дымовая проверка задержек и смешивания в цепочке -af; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af aecho=0.8:0.9:40:0.3 -t 4 -vn -sn -f null -`
   },
@@ -6035,13 +6035,13 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: тремоло 4с',
+    token: '· FFmpeg: тремоло 4с',
     summary: 'Лёгкая амплитудная модуляция первых 4 с (-af tremolo); дымовая проверка периодического аудиофильтра; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af tremolo=f=6:d=0.5 -t 4 -vn -sn -f null -`
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: полосовой фильтр 4с',
+    token: '· FFmpeg: полосовой фильтр 4с',
     summary: 'Узкополосный bandpass первых 4 с (-af bandpass); дымовая проверка частотной фильтрации; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af bandpass=f=1000:width_type=h:width=200 -t 4 -vn -sn -f null -`
   },
@@ -6053,7 +6053,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: полка ВЧ 3с',
+    token: '· FFmpeg: полка ВЧ 3с',
     summary: 'Лёгкий highshelf: верхняя полка спектра первых 3 с (-af highshelf); дымовая проверка параметрического эквалайзера (-af); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af highshelf=f=8000:width_type=o:width=2:g=-6 -t 3 -vn -sn -f null -`
   },
@@ -6065,7 +6065,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: пульсатор 3с',
+    token: '· FFmpeg: пульсатор 3с',
     summary: 'Лёгкий стерео-пульсатор первых 3 с (-af apulsator); дымовая проверка периодического pan и цепочки -af; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af apulsator=mode=sine:hz=1:width=2 -t 3 -vn -sn -f null -`
   },
@@ -6077,7 +6077,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: хорус 4с',
+    token: '· FFmpeg: хорус 4с',
     summary: 'Лёгкий хорус первых 4 с (-af chorus); дымовая проверка задержек и модуляции в цепочке -af; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af chorus=0.5:0.9:50:0.4:0.25:2 -t 4 -vn -sn -f null -`
   },
@@ -6089,7 +6089,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: нарастание громкости 3с',
+    token: '· FFmpeg: нарастание громкости 3с',
     summary: 'Плавное нарастание громкости первых 3 с (-af afade=t=in:st=0:d=0.6); дымовая проверка нарастания (afade in) без кавычек в списке аргументов (argv); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af afade=t=in:st=0:d=0.6 -t 3 -vn -sn -f null -`
   },
@@ -6101,7 +6101,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: затухание громкости 3с',
+    token: '· FFmpeg: затухание громкости 3с',
     summary: 'Плавное затухание громкости в хвосте первых 3 с (-af afade=t=out:st=1.2:d=0.6); дымовая проверка затухания (afade out) без кавычек в списке аргументов (argv); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af afade=t=out:st=1.2:d=0.6 -t 3 -vn -sn -f null -`
   },
@@ -6113,7 +6113,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: темп ×0.95, 3с',
+    token: '· FFmpeg: темп ×0.95, 3с',
     summary: 'Лёгкое замедление темпа первых 3 с (-af atempo=0.95); дымовая проверка фильтра atempo без кавычек в списке аргументов (argv); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af atempo=0.95 -t 3 -vn -sn -f null -`
   },
@@ -6125,7 +6125,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: лимитер 3с',
+    token: '· FFmpeg: лимитер 3с',
     summary: 'Мягкий лимитер пиков первых 3 с (-af alimiter=limit=0.8); дымовая проверка динамики в цепочке -af без кавычек в списке аргументов (argv); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af alimiter=limit=0.8 -t 3 -vn -sn -f null -`
   },
@@ -6137,7 +6137,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: стерео-коррекция 3с',
+    token: '· FFmpeg: стерео-коррекция 3с',
     summary: 'Лёгкая стерео-коррекция первых 3 с (-af stereotools=mlev=0.05:phlev=0.05); дымовая проверка ширины и фазы; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af stereotools=mlev=0.05:phlev=0.05 -t 3 -vn -sn -f null -`
   },
@@ -6149,7 +6149,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: нормализация речи 4с',
+    token: '· FFmpeg: нормализация речи 4с',
     summary: 'Лёгкая нормализация речи и подкаста первых 4 с (-af speechnorm=peak=0.25); дымовая проверка динамики диалога; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af speechnorm=peak=0.25 -t 4 -vn -sn -f null -`
   },
@@ -6161,7 +6161,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: межканальный кроссфейд 4с',
+    token: '· FFmpeg: межканальный кроссфейд 4с',
     summary: 'Лёгкий межканальный кроссфид bs2b первых 4 с (-af bs2b=profile=j2); дымовая проверка стерео-обработки; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af bs2b=profile=j2 -t 4 -vn -sn -f null -`
   },
@@ -6173,7 +6173,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: акцент НЧ 4с',
+    token: '· FFmpeg: акцент НЧ 4с',
     summary: 'Лёгкий низкочастотный акцент первых 4 с (-af bass=g=2:f=120); дымовая проверка эквалайзера НЧ (bass); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af bass=g=2:f=120 -t 4 -vn -sn -f null -`
   },
@@ -6185,7 +6185,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: многополосный эквалайзер 4с',
+    token: '· FFmpeg: многополосный эквалайзер 4с',
     summary: 'Лёгкий 10-полосный superequalizer (полоса 3 +4 dB) первых 4 с; дымовая проверка графического эквалайзера; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af superequalizer=3b=4 -t 4 -vn -sn -f null -`
   },
@@ -6197,7 +6197,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: полка НЧ 4с',
+    token: '· FFmpeg: полка НЧ 4с',
     summary: 'Лёгкий низкочастотный шельф первых 4 с (-af lowshelf=g=2:f=200); дымовая проверка нижнего полочного эквалайзера; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af lowshelf=g=2:f=200 -t 4 -vn -sn -f null -`
   },
@@ -6209,7 +6209,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: расширение стерео 4с',
+    token: '· FFmpeg: расширение стерео 4с',
     summary: 'Лёгкое расширение стереобазы первых 4 с (-af extrastereo=m=1.2); дымовая проверка ширины и pan; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af extrastereo=m=1.2 -t 4 -vn -sn -f null -`
   },
@@ -6221,7 +6221,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: биткрашер 4с',
+    token: '· FFmpeg: биткрашер 4с',
     summary: 'Лёгкое битовое дробление (bit-crush) первых 4 с (-af acrusher=level_in=0.8:level_out=0.8:bits=8:mode=log); дымовая проверка зернистости; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af acrusher=level_in=0.8:level_out=0.8:bits=8:mode=log -t 4 -vn -sn -f null -`
   },
@@ -6233,7 +6233,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: смешение стерео (pan) 4с',
+    token: '· FFmpeg: смешение стерео (pan) 4с',
     summary: 'Лёгкое стереосмешивание через pan первых 4 с (каналы c0 и c1, кросс-фейд 0.6 и 0.4); дымовая проверка фильтра pan без кавычек в списке аргументов (argv); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af pan=stereo|c0=0.6*c0+0.4*c1|c1=0.4*c0+0.6*c1 -t 4 -vn -sn -f null -`
   },
@@ -6257,13 +6257,13 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: ресемпл с компенсацией рассинхрона 4с',
+    token: '· FFmpeg: ресемпл с компенсацией рассинхрона 4с',
     summary: 'Лёгкая компенсация рассинхрона через aresample=async=1 первых 4 с; дымовая проверка цепочки ресемплера (aresample); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af aresample=async=1:first_pts=0 -t 4 -vn -sn -f null -`
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: компрессор 4с',
+    token: '· FFmpeg: компрессор 4с',
     summary: 'Лёгкий компрессор первых 4 с (-af acompressor=threshold=0.08:ratio=3:attack=5:release=50); дымовая проверка динамики; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af acompressor=threshold=0.08:ratio=3:attack=5:release=50 -t 4 -vn -sn -f null -`
   },
@@ -6275,7 +6275,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: контраст 3с',
+    token: '· FFmpeg: контраст 3с',
     summary: 'Лёгкий аудио-контраст первых 3 с (-af acontrast=25); дымовая проверка динамики без кавычек в списке аргументов (argv); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af acontrast=25 -t 3 -vn -sn -f null -`
   }
