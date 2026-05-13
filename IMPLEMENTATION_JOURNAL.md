@@ -560,3 +560,4 @@
 - [J-543] 2026-05-13 14:18:00 [Assistant]: §8 — тот же блок `--clean-infojson`: многострочный `summary:` (устранён prettier warning в quiet lint).
 - [J-544] 2026-05-13 15:00:00 [Assistant]: §8 — RU-компактные `token` для сценариев yt-dlp: `--extractor-retries`, `--http-chunk-size`, `--playlist-reverse`, `--update-to stable` (`fullLine` без изменений).
 - [J-545] 2026-05-13 16:00:00 [Assistant]: §8 — RU `token`: yt-dlp `--extractor-retries`/`-playlist-reverse` (доп. к J-544); ffprobe превью — compact/disposition/nb_streams/профиль/count_frames; плюс правки `generic`/program_version/loudnorm из рабочей копии.
+- [J-546] 2026-05-13 17:00:00 [Assistant]: §8 — ffprobe сценарии превью: RU-компактные `token` для disposition/time_base/brands/программ/глав/потоков a:2–a:3/s:2–s:3/format_* /packets|frames; `fullLine` без изменений.
