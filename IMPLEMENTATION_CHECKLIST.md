@@ -54,7 +54,7 @@
 
 - [x] `FLUXALLOY_TZ.md` существует в корне.
 - [x] `IMPLEMENTATION_CHECKLIST.md` существует в корне и используется как рабочий TODO.
-- [x] [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md) — хроника решений и проверок (отдельно от чек‑листа).
+- [x] [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md) — хроника решений и проверок (отдельно от чек‑листа); в `npm run check` входит `check:journal` (`scripts/check-journal-numbering.mjs`): строгий порядок `J-001…` и явная ошибка при **дубликатах** `[J-NNN]`.
 - [x] Стек проекта переведён в Electron + TypeScript + React.
 - [x] Базовые темы и IPC настроек заведены.
 - [x] Локальный Git-репозиторий создан.

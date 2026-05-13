@@ -601,3 +601,6 @@
 - [J-584] 2026-05-14 20:50:00 [Assistant]: `README.md` — в «Полезное» добавлена строка про правки `summary` в `terminal-contract.ts` и `npm run locales:terminal-summaries-ru` со ссылкой на `Help/ffmpeg-terminal-hints.md`.
 - [J-585] 2026-05-14 20:51:00 [Assistant]: §8 — `token`: гео tr/ch/cr/pa/mc/li/va/ne + гео-обход de/fr/es/pl/se — страна в скобках; `fullLine` без изменений.
 - [J-586] 2026-05-14 21:00:00 [Assistant]: §8 — `token`: гео mx…gl (≈57 ISO) — страна/территория в скобках; `fullLine` без изменений.
+- [J-587] 2026-05-14 21:05:00 [Assistant]: `scripts/check-journal-numbering.mjs` — явная ошибка при дубликате `[J-NNN]` (строка и номер первого вхождения); `docs/ARCHITECTURE.md` — пункт про `terminal-contract.ts` и `npm run locales:terminal-summaries-ru` + ссылка на `Help/ffmpeg-terminal-hints.md`.
+- [J-588] 2026-05-14 21:10:00 [Assistant]: `IMPLEMENTATION_CHECKLIST.md` — §0: в пункте про журнал добавлены `check:journal` и явное упоминание дубликатов `J-NNN`.
+- [J-589] 2026-05-14 21:12:00 [Assistant]: §8 — `token`: оставшиеся гео ISO (Карибы, океания, Африка, Ближний Восток и др.) — подсказка в скобках; `fullLine` без изменений.

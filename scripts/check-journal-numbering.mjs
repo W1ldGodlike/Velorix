@@ -9,6 +9,8 @@ const legacyEntryRe = /^- \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \[(Assistant|SDK)\
 
 let expected = 1
 let failed = false
+/** @type {Map<number, number>} */
+const seenIds = new Map()
 
 for (let i = 0; i < lines.length; i++) {
   const line = lines[i]
@@ -24,6 +26,13 @@ for (let i = 0; i < lines.length; i++) {
   }
 
   const n = Number.parseInt(m[1], 10)
+  if (seenIds.has(n)) {
+    console.error(
+      `[journal] line ${i + 1}: duplicate [J-${m[1]}] (first at line ${seenIds.get(n)})`
+    )
+    failed = true
+  }
+  seenIds.set(n, i + 1)
   if (n !== expected) {
     console.error(
       `[journal] line ${i + 1}: expected J-${String(expected).padStart(3, '0')}, got J-${m[1]}`
