@@ -278,6 +278,10 @@ const fluxalloy = {
     ): Promise<void> => ipcRenderer.invoke(mw.openDownloadsWindow, initial ?? null),
     addLines: (text: string): Promise<{ ok: true; added: number } | { ok: false; error: string }> =>
       ipcRenderer.invoke(d.addLines, text),
+    downloadFirstUrlOpenInMainEditor: (
+      text: string
+    ): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(d.downloadFirstUrlOpenInMainEditor, text),
     getSnapshot: (): Promise<unknown[]> => ipcRenderer.invoke(d.getSnapshot),
     clearQueue: (): Promise<{ ok: true } | { ok: false; error: string }> =>
       ipcRenderer.invoke(d.clear),

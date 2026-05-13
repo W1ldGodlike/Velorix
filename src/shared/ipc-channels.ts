@@ -103,6 +103,8 @@ export const downloadsIpc = {
   log: 'fluxalloy-downloads-log',
   getSnapshot: 'fluxalloy-downloads-get-snapshot',
   addLines: 'fluxalloy-downloads-add-lines',
+  /** §6 — первый URL из текста: скачать одной строкой и открыть результат в главном редакторе. */
+  downloadFirstUrlOpenInMainEditor: 'fluxalloy-downloads-first-url-open-editor',
   getOutputDir: 'fluxalloy-downloads-get-output-dir',
   openOutputDir: 'fluxalloy-downloads-open-output-dir',
   getCliOptions: 'fluxalloy-downloads-get-cli-options',

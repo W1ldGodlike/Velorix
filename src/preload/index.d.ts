@@ -162,6 +162,9 @@ export interface FluxAlloyApi {
   downloads: {
     openWindow: (initial?: string | { text?: string; uiLocale?: 'ru' | 'en' } | null) => Promise<void>
     addLines: (text: string) => Promise<{ ok: true; added: number } | { ok: false; error: string }>
+    downloadFirstUrlOpenInMainEditor: (
+      text: string
+    ) => Promise<{ ok: true } | { ok: false; error: string }>
     getSnapshot: () => Promise<unknown[]>
     clearQueue: () => Promise<{ ok: true } | { ok: false; error: string }>
     clearFinished: () => Promise<{ ok: true; removed: number } | { ok: false; error: string }>

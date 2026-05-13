@@ -4,6 +4,8 @@ import {
   appendUrlsFromMultilineBlock,
   clearDownloadsQueue,
   clearFinishedDownloadsQueueRows,
+  enqueueFirstWaitingUrlFromBlock,
+  extractFirstQueueUrlLine,
   getDownloadsQueueSnapshot,
   resetDownloadsQueueRowForRetry,
   updateDownloadsRow
@@ -11,6 +13,20 @@ import {
 
 afterEach(() => {
   clearDownloadsQueue()
+})
+
+describe('enqueue first URL from block', () => {
+  it('extractFirstQueueUrlLine берёт первую подходящую строку', () => {
+    expect(extractFirstQueueUrlLine(' \nhttps://a.test/x\nhttps://b.test/y')).toBe('https://a.test/x')
+    expect(extractFirstQueueUrlLine('not a url')).toBeNull()
+  })
+
+  it('enqueueFirstWaitingUrlFromBlock добавляет одну строку', () => {
+    const r = enqueueFirstWaitingUrlFromBlock('https://only.one/here\nhttps://ignored')
+    expect(r?.url).toBe('https://only.one/here')
+    expect(getDownloadsQueueSnapshot()).toHaveLength(1)
+    expect(getDownloadsQueueSnapshot()[0]!.id).toBe(r!.id)
+  })
 })
 
 describe('downloads queue cleanup', () => {

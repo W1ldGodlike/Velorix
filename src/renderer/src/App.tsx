@@ -30,7 +30,6 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconCircleHelp,
-  IconClipboardPaste,
   IconCloudDownload,
   IconDownload,
   IconFilm,
@@ -1218,6 +1217,23 @@ function App(): JSX.Element {
     if (added > 0) {
       setDownloadsUrl('')
     }
+  }, [downloadsUrl])
+
+  const handleDownloadFirstUrlOpenInEditor = useCallback(async (): Promise<void> => {
+    const text = downloadsUrl.trim()
+    if (text.length === 0) {
+      setStatusHint(uiText('statusDownloadOpenEditorNeedUrl'))
+      return
+    }
+    setStatusHint(uiText('statusDownloadOpenEditorWorking'))
+    const res = await window.fluxalloy.downloads.downloadFirstUrlOpenInMainEditor(text)
+    if (!res.ok) {
+      setStatusHint(res.error)
+      return
+    }
+    setWorkspaceTab('editor')
+    setStatusHint(uiText('statusDownloadOpenEditorSuccess'))
+    setDownloadsUrl('')
   }, [downloadsUrl])
 
   const onTrimRangeSnapshot = useCallback(
@@ -2548,23 +2564,10 @@ function App(): JSX.Element {
               className="app-btn"
               aria-describedby="quickYtdlpUrlHint"
               onClick={() => {
-                void handleAddDownloadsFromMain()
+                void handleDownloadFirstUrlOpenInEditor()
               }}
             >
-              {uiText('quickYtdlpToDownloadsTab')}
-            </button>
-            <button
-              type="button"
-              className="app-btn"
-              aria-describedby="quickYtdlpUrlHint"
-              onClick={() => {
-                void window.fluxalloy.clipboard.readText().then((t) => {
-                  setDownloadsUrl(t.trim())
-                })
-              }}
-              title={uiText('quickYtdlpPasteClipboardTitle')}
-            >
-              {uiText('downloadsFromClipboard')}
+              {uiText('quickYtdlpDownloadOpenEditor')}
             </button>
           </div>
         </details>
@@ -4070,18 +4073,6 @@ function App(): JSX.Element {
                 <p className="app-downloads-hint">{uiText('downloadsPageHint')}</p>
               </div>
               <div className="app-downloads-actions">
-                <button
-                  type="button"
-                  className="app-btn app-btn-icon-leading"
-                  onClick={() => {
-                    void window.fluxalloy.clipboard.readText().then((t) => {
-                      setDownloadsUrl(t.trim())
-                    })
-                  }}
-                >
-                  <IconClipboardPaste title="" size={17} />
-                  {uiText('downloadsFromClipboard')}
-                </button>
                 <button
                   type="button"
                   className="app-btn app-btn-icon-leading"

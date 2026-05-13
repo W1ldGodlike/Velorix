@@ -117,7 +117,7 @@ export function IconDownload({
   )
 }
 
-/** §6 / v0 — «Из буфера» на вкладке загрузок (общий stroke с `DOWNLOADS_TOPBAR_CLUSTER_ICONS.clipboard`). */
+/** §6 / v0 — иконка `clipboard` (stroke как `DOWNLOADS_TOPBAR_CLUSTER_ICONS.clipboard`). */
 export function IconClipboardPaste({
   title,
   size = 18

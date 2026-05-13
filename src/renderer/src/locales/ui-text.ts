@@ -185,7 +185,6 @@ const UI_TEXT = {
     downloadsPageTitle: 'Загрузки',
     downloadsPageHint:
       'Эта вкладка — основной рабочий стол yt-dlp (очередь по центру, журнал и история под таблицей, настройки справа как в v0; при ширине окна примерно до 1100px панель настроек переносится под журнал с прокруткой, поля не теряются — сверху есть кнопка «К настройкам», чтобы сразу прокрутить к панели). Отдельное окно — дубликат с той же связью с основным процессом (main, IPC) и длинным справочником токенов в одном списке.',
-    downloadsFromClipboard: 'Из буфера',
     downloadsPopOut: 'Отдельное окно',
     downloadsScrollToSettings: 'К настройкам',
     downloadsUrlPlaceholder: 'URL или несколько URL по строкам',
@@ -217,8 +216,7 @@ const UI_TEXT = {
     downloadsTableColEta: 'Осталось',
     downloadsTableColStatus: 'Статус',
     downloadsTableColActions: 'Действия',
-    downloadsEmptyQueue:
-      'Очередь пуста. Добавьте URL сверху или из быстрых действий редактора.',
+    downloadsEmptyQueue: 'Очередь пуста. Добавьте URL в поле выше.',
     downloadsEmptyFilter:
       'В этом фильтре строк нет. Переключите статус выше или добавьте новые URL.',
     downloadsQueueAriaMoveUp: 'Поднять выше в очереди',
@@ -238,13 +236,12 @@ const UI_TEXT = {
     downloadsQueueAriaRemoveRow: 'Удалить из очереди',
     quickYtdlpAria: 'Быстрая загрузка yt-dlp',
     quickYtdlpSummary: 'Быстрая загрузка yt-dlp',
-    quickYtdlpPlaceholder: 'URL или список URL — передать в менеджер загрузок',
+    quickYtdlpPlaceholder: 'URL или несколько URL по строкам (для кнопки ниже берётся первый)',
     quickYtdlpHint:
-      'Ссылка добавляется во вкладку «Загрузки»; несколько URL — по строкам.',
-    quickYtdlpToDownloadsTab: 'Во вкладку',
+      'Кнопка ниже скачивает первый распознанный URL текущими настройками yt-dlp и открывает готовый файл в этом редакторе. Параллельно с другой загрузкой нельзя — дождитесь окончания или отмените её на вкладке «Загрузки».',
+    quickYtdlpDownloadOpenEditor: 'Скачать и добавить в редактор',
     quickYtdlpDocFormats: 'Форматы',
     quickYtdlpDocOutputTemplate: 'Шаблон -o',
-    quickYtdlpPasteClipboardTitle: 'Вставить текст из буфера обмена в поле URL',
     downloadsRailAria: 'Настройки загрузок',
     downloadsRailTitle: 'Настройки yt-dlp',
     downloadsRailSubtitle:
@@ -623,6 +620,9 @@ const UI_TEXT = {
       'Видео не удалось воспроизвести: {detail}; запасной вариант тоже не сработал.',
     statusDownloadsUrlsAdded: 'Добавлено в очередь URL: {n}',
     statusDownloadsQueueNoUrlsParsed: 'В тексте не найдено ни одного URL для очереди.',
+    statusDownloadOpenEditorWorking: 'Скачиваю первый URL из поля…',
+    statusDownloadOpenEditorSuccess: 'Файл открыт в редакторе.',
+    statusDownloadOpenEditorNeedUrl: 'Введите URL в поле выше.',
     statusExportProgress: 'Экспорт · {tail}',
     statusEnginesDownloadPreparing: 'Подготовка загрузки…',
     statusErrorWithDetail: 'Ошибка: {detail}',
@@ -1029,7 +1029,6 @@ const UI_TEXT = {
     downloadsPageTitle: 'Downloads',
     downloadsPageHint:
       'This tab is the main yt-dlp desk (queue in the center, log and history under the table, settings on the right like v0; below ~1100px width the settings rail moves under the log with scrolling — fields stay reachable via “Scroll to settings” at the top). Pop-out is a second window with the same IPC and the full token reference list.',
-    downloadsFromClipboard: 'From clipboard',
     downloadsPopOut: 'Pop-out',
     downloadsScrollToSettings: 'Scroll to settings',
     downloadsUrlPlaceholder: 'One URL per line, or multiple URLs',
@@ -1061,8 +1060,7 @@ const UI_TEXT = {
     downloadsTableColEta: 'ETA',
     downloadsTableColStatus: 'Status',
     downloadsTableColActions: 'Actions',
-    downloadsEmptyQueue:
-      'Queue is empty. Add URLs above or use quick actions from the editor.',
+    downloadsEmptyQueue: 'Queue is empty. Add URLs in the field above.',
     downloadsEmptyFilter:
       'No rows match this filter. Change the status chips above or add new URLs.',
     downloadsQueueAriaMoveUp: 'Move up in queue',
@@ -1082,13 +1080,12 @@ const UI_TEXT = {
     downloadsQueueAriaRemoveRow: 'Remove from queue',
     quickYtdlpAria: 'Quick yt-dlp download',
     quickYtdlpSummary: 'Quick yt-dlp download',
-    quickYtdlpPlaceholder: 'URL or list of URLs for the download manager',
+    quickYtdlpPlaceholder: 'One URL per line (the button below uses the first recognized URL)',
     quickYtdlpHint:
-      'Adds to the Downloads tab; enter multiple URLs as separate lines.',
-    quickYtdlpToDownloadsTab: 'Send to tab',
+      'The button below downloads the first recognized URL with your current yt-dlp settings and opens the finished file in this editor. You cannot run it while another download is active — wait or cancel it on the Downloads tab.',
+    quickYtdlpDownloadOpenEditor: 'Download and open in editor',
     quickYtdlpDocFormats: 'Formats',
     quickYtdlpDocOutputTemplate: '-o template',
-    quickYtdlpPasteClipboardTitle: 'Paste clipboard text into the URL field',
     downloadsRailAria: 'Download settings',
     downloadsRailTitle: 'yt-dlp settings',
     downloadsRailSubtitle:
@@ -1462,6 +1459,9 @@ const UI_TEXT = {
       'Could not play video: {detail}; blob fallback also failed.',
     statusDownloadsUrlsAdded: 'Added URLs: {n}',
     statusDownloadsQueueNoUrlsParsed: 'No URLs found for the queue.',
+    statusDownloadOpenEditorWorking: 'Downloading the first URL from the field…',
+    statusDownloadOpenEditorSuccess: 'File opened in the editor.',
+    statusDownloadOpenEditorNeedUrl: 'Enter a URL in the field above.',
     statusExportProgress: 'Export · {tail}',
     statusEnginesDownloadPreparing: 'Preparing download…',
     statusErrorWithDetail: 'Error: {detail}',

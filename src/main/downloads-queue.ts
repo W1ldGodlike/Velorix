@@ -194,22 +194,50 @@ export function moveDownloadsQueueRow(id: number, delta: -1 | 1): boolean {
 }
 
 /**
- * Из многострочного текста (поле или буфер) добавляет каждую похожую на URL строку в очередь.
+ * Из многострочного текста добавляет каждую похожую на URL строку в очередь.
  * Дубликаты URL не фильтруем — пользователь может чистить вручную.
  */
-export function appendUrlsFromMultilineBlock(raw: string): number {
-  const lines = raw.split(/\r?\n/)
-  let n = 0
-  for (const line of lines) {
+function enqueueOneWaitingUrl(url: string): number {
+  const id = nextId++
+  rows.push({
+    id,
+    url,
+    shortLabel: shortUrlLabel(url),
+    progress: '—',
+    status: YTDLP_QUEUE_STATUS_WAITING
+  })
+  return id
+}
+
+/** Первая распознанная строка URL из многострочного текста (та же логика, что у очереди §6). */
+export function extractFirstQueueUrlLine(raw: string): string | null {
+  for (const line of raw.split(/\r?\n/)) {
     const url = normalizeUrlLine(line)
     if (url) {
-      rows.push({
-        id: nextId++,
-        url,
-        shortLabel: shortUrlLabel(url),
-        progress: '—',
-        status: YTDLP_QUEUE_STATUS_WAITING
-      })
+      return url
+    }
+  }
+  return null
+}
+
+/**
+ * Добавляет в очередь одну строку «Ожидание» для первого URL из текста.
+ * Возвращает `{ id, url }` или `null`, если URL не распознан.
+ */
+export function enqueueFirstWaitingUrlFromBlock(raw: string): { id: number; url: string } | null {
+  const url = extractFirstQueueUrlLine(raw)
+  if (!url) {
+    return null
+  }
+  return { id: enqueueOneWaitingUrl(url), url }
+}
+
+export function appendUrlsFromMultilineBlock(raw: string): number {
+  let n = 0
+  for (const line of raw.split(/\r?\n/)) {
+    const url = normalizeUrlLine(line)
+    if (url) {
+      enqueueOneWaitingUrl(url)
       n += 1
     }
   }

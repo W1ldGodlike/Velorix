@@ -48,6 +48,8 @@ export type DownloadsWindowIpcStrings = {
   mainWindowNotFound: string
   /** Queue runner */
   downloadAlreadyRunning: string
+  /** Редактор: быстрый yt-dlp «скачать и открыть» */
+  downloadOpenEditorNotReady: string
   noWaitingRowsInQueue: string
   startRowOnlyWaiting: string
   /** Pause / resume (yt-dlp child) */
@@ -109,6 +111,8 @@ const RU: DownloadsWindowIpcStrings = {
   mainWindowNotFound: 'Главное окно редактора не найдено.',
   downloadAlreadyRunning:
     'Уже выполняется загрузка. Отмените текущую или дождитесь окончания.',
+  downloadOpenEditorNotReady:
+    'Загрузка не завершилась успешно — файл в редактор не открыт. Текущий статус строки:',
   noWaitingRowsInQueue: 'В очереди нет строк со статусом «Ожидание».',
   startRowOnlyWaiting: 'Старт доступен только для строк со статусом «Ожидание».',
   pauseOsUnsupported:
@@ -167,6 +171,8 @@ const EN: DownloadsWindowIpcStrings = {
   mainWindowNotFound: 'Main editor window not found.',
   downloadAlreadyRunning:
     'A download is already running. Cancel it or wait until it finishes.',
+  downloadOpenEditorNotReady:
+    'Download did not finish successfully — the file was not opened in the editor. Row status:',
   noWaitingRowsInQueue: 'There are no rows waiting in the queue.',
   startRowOnlyWaiting: 'Start is only available for rows in the waiting state.',
   pauseOsUnsupported:
