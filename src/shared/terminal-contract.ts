@@ -2365,7 +2365,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· generic: не плейлист -F',
+    token: '· модуль generic: не плейлист -F',
     summary: 'Общий модуль (generic): не разворачивать плейлист (--extractor-args generic:noplaylist -F); допишите URL.',
     fullLine: 'yt-dlp --extractor-args generic:noplaylist -F '
   },
@@ -4711,7 +4711,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· extractor-retries 5 -F',
+    token: '· извлечение: до 5 повторов -F',
     summary: 'Повторы модуля извлечения вместе со списком форматов (--extractor-retries 5 -F); ошибки страницы и кода 403; допишите URL.',
     fullLine: 'yt-dlp --extractor-retries 5 -F '
   },
@@ -4801,7 +4801,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· playlist-reverse -F',
+    token: '· плейлист наоборот -F',
     summary: 'Плейлист в обратном порядке вместе со списком форматов (--playlist-reverse -F); допишите URL плейлиста.',
     fullLine: 'yt-dlp --playlist-reverse -F '
   },
@@ -4979,7 +4979,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· streams compact',
+    token: '· дорожки: compact-строка',
     summary: 'Все дорожки одной строкой: индекс, тип и имя кодека (index, codec_type, codec_name; вывод -of compact); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_entries stream=index,codec_type,codec_name -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5045,13 +5045,13 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· s:1 compact',
+    token: '· субтитры s:1 кратко',
     summary: 'Вторая дорожка субтитров s:1: кодек и строка тега кодека (codec_name, codec_tag_string; несколько языков); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:1 -show_entries stream=codec_name,codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· v:0 profile',
+    token: '· видео v:0 профиль',
     summary: 'Поток v:0: кодек, профиль и уровень (codec_name, profile, level — для транскодинга); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=codec_name,profile,level -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5069,19 +5069,19 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· streams disp',
+    token: '· дорожки: disposition',
     summary: 'Все дорожки: индекс, тип и disposition (index, codec_type, disposition: default, forced, captions, attached_pic — по умолчанию, принудительно, субтитры, обложка); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_entries stream=index,codec_type,disposition -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· format nb',
+    token: '· контейнер: nb_* и имя',
     summary: 'Контейнер: число потоков, программ и имя формата (nb_streams, nb_programs, format_name); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_entries format=nb_streams,nb_programs,format_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· v:0 count_frames',
+    token: '· видео v:0 пересчёт кадров',
     summary: 'Точный пересчёт кадров v:0 (-count_frames, поле nb_read_frames); медленно, но даёт реальный счёт; путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -count_frames -select_streams v:0 -show_entries stream=nb_read_frames -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5393,7 +5393,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· program version',
+    token: '· версия ffprobe',
     summary: 'Версия ffprobe и быстрый разбор файла (-show_program_version); сверка сборки; путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_program_version ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5411,7 +5411,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· loudnorm summary',
+    token: '· сводка loudnorm',
     summary: 'Замер интегральной громкости фильтром loudnorm (print_format=summary) за 60 с; -vn -sn; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af loudnorm=print_format=summary -t 60 -vn -sn -f null -`
   },

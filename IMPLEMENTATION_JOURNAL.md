@@ -559,3 +559,4 @@
 - [J-542] 2026-05-13 14:12:00 [Assistant]: §8 — `terminal-contract.ts`: перенос длинной строки `summary` под `--clean-infojson` под prettier (без смысловых правок).
 - [J-543] 2026-05-13 14:18:00 [Assistant]: §8 — тот же блок `--clean-infojson`: многострочный `summary:` (устранён prettier warning в quiet lint).
 - [J-544] 2026-05-13 15:00:00 [Assistant]: §8 — RU-компактные `token` для сценариев yt-dlp: `--extractor-retries`, `--http-chunk-size`, `--playlist-reverse`, `--update-to stable` (`fullLine` без изменений).
+- [J-545] 2026-05-13 16:00:00 [Assistant]: §8 — RU `token`: yt-dlp `--extractor-retries`/`-playlist-reverse` (доп. к J-544); ffprobe превью — compact/disposition/nb_streams/профиль/count_frames; плюс правки `generic`/program_version/loudnorm из рабочей копии.
