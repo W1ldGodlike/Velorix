@@ -600,7 +600,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· лимит скорости 1M',
+    token: '· лимит скорости 1m',
     summary: 'Ограничить скорость загрузки (~1 MiB/s) для диагностики CDN и таймаутов; при необходимости измените суффикс; допишите URL.',
     fullLine: 'yt-dlp --limit-rate 1M '
   },
@@ -690,7 +690,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· размер сетевого фрагмента 10M',
+    token: '· размер сетевого фрагмента 10m',
     summary: 'Размер HTTP-чанка 10 MiB (--http-chunk-size 10M); иногда стабилизирует медленные CDN; допишите URL.',
     fullLine: 'yt-dlp --http-chunk-size 10M '
   },
@@ -978,7 +978,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· качество аудио 192K',
+    token: '· качество аудио 192k',
     summary: 'Целевое качество аудио при извлечении (--audio-quality 192K --extract-audio); допишите URL.',
     fullLine: 'yt-dlp --audio-quality 192K --extract-audio '
   },
@@ -1026,7 +1026,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· заголовок UA в стиле curl -F',
+    token: '· заголовок ua в стиле curl -F',
     summary: 'Подменить заголовок User-Agent (--user-agent curl/8.5.0 -F; типичная строка curl); CDN и WAF; допишите URL.',
     fullLine: 'yt-dlp --user-agent curl/8.5.0 -F '
   },
@@ -1140,7 +1140,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· консоль в UTF-8',
+    token: '· консоль в utf-8',
     summary: 'Принудительно UTF-8 для вывода yt-dlp (--encoding utf-8); кириллица и символы Unicode в консоли Windows; допишите URL.',
     fullLine: 'yt-dlp --encoding utf-8 '
   },
@@ -1176,7 +1176,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· совместимость: без заглушек YT',
+    token: '· совместимость: без заглушек yt',
     summary: 'Совместимость: не подменять недоступные ролики YouTube заглушкой (--compat-options no-youtube-unavailable-videos -F); допишите URL.',
     fullLine: 'yt-dlp --compat-options no-youtube-unavailable-videos -F '
   },
@@ -1200,7 +1200,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· буфер чтения 16K -F',
+    token: '· буфер чтения 16k -F',
     summary: 'Размер буфера чтения для медленных CDN (--buffer-size 16K -F); подстройте при необходимости; допишите URL.',
     fullLine: 'yt-dlp --buffer-size 16K -F '
   },
@@ -2791,7 +2791,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· цвет ANSI всегда включён -F',
+    token: '· цвет ansi всегда включён -F',
     summary: 'Принудительно цвета ANSI в выводе (--color always -F); даже когда стандартный вывод не терминал (не TTY); допишите URL.',
     fullLine: 'yt-dlp --color always -F '
   },
@@ -2929,7 +2929,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· аудио WMA',
+    token: '· аудио wma',
     summary: 'Извлечь аудио в WMA (--extract-audio --audio-format wma); допишите URL и шаблон -o при необходимости.',
     fullLine: 'yt-dlp --extract-audio --audio-format wma '
   },
@@ -2941,7 +2941,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· имена: не только латиница (ASCII) -F',
+    token: '· имена: не только латиница (ascii) -F',
     summary: 'Не ограничивать имена файлов ASCII (--no-restrict-filenames -F); кириллица в -o; допишите URL.',
     fullLine: 'yt-dlp --no-restrict-filenames -F '
   },
@@ -3655,7 +3655,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: SAR после растяжения кадра',
+    token: '· в файл: sar после растяжения кадра',
     summary: 'Записать stretched_ratio (анаморфное растяжение кадра, если модуль извлечения отдаёт) в flux-ytdlp-sarfix.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file stretched_ratio flux-ytdlp-sarfix.txt --skip-download '
   },
@@ -4357,7 +4357,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· лимит скорости 500K -F',
+    token: '· лимит скорости 500k -F',
     summary: 'Список форматов с ограничением скорости 500 KiB/s (--limit-rate 500K -F); меньше нагрузки на канал при -F; допишите URL.',
     fullLine: 'yt-dlp --limit-rate 500K -F '
   },
@@ -4879,7 +4879,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: код ISRC',
+    token: '· в файл: код isrc',
     summary: 'Записать isrc (код ISRC трека или релиза, если площадка отдаёт) в flux-ytdlp-isrc.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file isrc flux-ytdlp-isrc.txt --skip-download '
   },
@@ -4949,7 +4949,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· видео v:0 SAR и DAR',
+    token: '· видео v:0 sar и dar',
     summary: 'Поток v:0: sample_aspect_ratio и display_aspect_ratio (анаморф и неквадратные пиксели); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=sample_aspect_ratio,display_aspect_ratio -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5243,7 +5243,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· программы в TS, компактно',
+    token: '· программы в ts, компактно',
     summary: 'MPEG-TS и M3U8: список программ демультиплексора (-show_programs, вывод -of compact); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_programs -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5927,7 +5927,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· тег ISRC',
+    token: '· тег isrc',
     summary: 'Тег контейнера isrc (ISRC релиза); каталогизация аудио; путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_entries format_tags=isrc -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -6083,7 +6083,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· теги: WMF SDK и кодировщик',
+    token: '· теги: wmf sdk и кодировщик',
     summary: 'Теги контейнера encoder и WMFSDKVersion (часто у WMV и ASF); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_entries format_tags=encoder,WMFSDKVersion -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -6155,7 +6155,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· теги: темп (BPM) и тональность',
+    token: '· теги: темп (bpm) и тональность',
     summary: 'Теги контейнера BPM и initial_key (если записаны каталогизатором); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_entries format_tags=BPM,initial_key -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
