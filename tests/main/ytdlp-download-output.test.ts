@@ -122,11 +122,41 @@ describe('deleteIncompleteDownloadArtifactsForQueueRow', () => {
     rmSync(root, { recursive: true, force: true })
   })
 
-  it('в статусе «Ожидание» не удаляет произвольные .part без смены статуса', () => {
+  it('удаляет .part в подкаталогах (глубина обхода для частичных файлов)', () => {
+    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-clean-nested-'))
+    const outDir = join(root, 'downloads', 'ytdlp')
+    const deep = join(outDir, 'Channel', 'Series')
+    mkdirSync(deep, { recursive: true })
+    const partPath = join(deep, 'episode.f140.m4a.part')
+    writeFileSync(partPath, 'x')
+    deleteIncompleteDownloadArtifactsForQueueRow(root, {
+      status: YTDLP_QUEUE_STATUS_RUNNING,
+      url: 'https://example.com/'
+    })
+    expect(existsSync(partPath)).toBe(false)
+    rmSync(root, { recursive: true, force: true })
+  })
+
+  it('в статусе «Ожидание» не удаляет произвольные .part в корне вывода', () => {
     const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-clean-wait-'))
     const outDir = join(root, 'downloads', 'ytdlp')
     mkdirSync(outDir, { recursive: true })
     const orphan = join(outDir, 'queued-but-not-started.part')
+    writeFileSync(orphan, 'x')
+    deleteIncompleteDownloadArtifactsForQueueRow(root, {
+      status: YTDLP_QUEUE_STATUS_WAITING,
+      url: 'https://example.com/'
+    })
+    expect(existsSync(orphan)).toBe(true)
+    rmSync(root, { recursive: true, force: true })
+  })
+
+  it('в статусе «Ожидание» не удаляет .part даже в подкаталоге', () => {
+    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-clean-wait-sub-'))
+    const outDir = join(root, 'downloads', 'ytdlp')
+    const deep = join(outDir, 'sub')
+    mkdirSync(deep, { recursive: true })
+    const orphan = join(deep, 'queued.part')
     writeFileSync(orphan, 'x')
     deleteIncompleteDownloadArtifactsForQueueRow(root, {
       status: YTDLP_QUEUE_STATUS_WAITING,

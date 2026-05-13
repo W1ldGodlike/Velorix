@@ -48,6 +48,7 @@ import {
   deleteIncompleteDownloadArtifactsForQueueRow
 } from './ytdlp-download-output'
 import {
+  forceKillActiveYtdlpForDownloadsCancel,
   getActiveYtdlpPauseState,
   pauseActiveYtdlpProcess,
   resumeActiveYtdlpProcess
@@ -67,7 +68,7 @@ import {
   getYtdlpDownloadHistoryWeeklySummary,
   readYtdlpDownloadHistoryNewestFirst
 } from './ytdlp-download-history'
-import { logError } from './logger-service'
+import { logError, logWarn } from './logger-service'
 import {
   attachDownloadsQueuePersistOnQuitOnce,
   hydrateDownloadsQueueFromDisk,
@@ -3508,10 +3509,21 @@ export function registerDownloadsWindowIpcHandlers(): void {
       if (wasActive) {
         cancelDownloadsRunner()
         await waitUntilRowNotActiveRunner(id, 12_000)
+        if (getActiveDownloadsRunnerRowId() === id) {
+          forceKillActiveYtdlpForDownloadsCancel()
+          await waitUntilRowNotActiveRunner(id, 4000)
+        }
+        if (getActiveDownloadsRunnerRowId() === id) {
+          logWarn(
+            'downloads-window',
+            'active download row still marked runner-active after cancel + force-kill; proceeding with cleanup'
+          )
+        }
       }
-      if (!isYtdlpQueueStatusDone(row.status)) {
+      const rowForCleanup = getDownloadsQueueRowById(id) ?? row
+      if (!isYtdlpQueueStatusDone(rowForCleanup.status)) {
         try {
-          deleteIncompleteDownloadArtifactsForQueueRow(resolveAppPaths().userData, row)
+          deleteIncompleteDownloadArtifactsForQueueRow(resolveAppPaths().userData, rowForCleanup)
         } catch (err) {
           logError('downloads-window', 'delete incomplete download artifacts failed', err)
         }

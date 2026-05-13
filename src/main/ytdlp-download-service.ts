@@ -1,4 +1,4 @@
-import { type ChildProcess, spawn } from 'child_process'
+import { type ChildProcess, execFile, spawn } from 'child_process'
 import { mkdirSync } from 'fs'
 
 import type { AppPaths } from './app-paths'
@@ -51,6 +51,42 @@ let activeYtdlpChild: ChildProcess | null = null
 let activeYtdlpPaused = false
 
 export { isYtdlpOsPauseSupported } from './ytdlp-os-pause-support'
+
+/**
+ * yt-dlp часто порождает ffmpeg/фрагментаторы; на Windows `child.kill()` без дерева оставляет детей,
+ * из‑за чего загрузка в логе «продолжается» и файл докачивается после «отмены».
+ */
+function killYtdlpSpawnTreeOrForce(child: ChildProcess): void {
+  const pid = child.pid
+  try {
+    if (process.platform === 'win32' && typeof pid === 'number' && pid > 0) {
+      execFile(
+        'taskkill',
+        ['/PID', String(pid), '/T', '/F'],
+        { windowsHide: true },
+        () => {
+          /* код выхода не важен — процесс уже мог завершиться */
+        }
+      )
+    }
+  } catch {
+    /* ignore */
+  }
+  try {
+    child.kill('SIGKILL')
+  } catch {
+    /* ignore */
+  }
+}
+
+/** IPC «удалить активную строку»: если abort не убрал процесс, добиваем дерево (в т.ч. Windows). */
+export function forceKillActiveYtdlpForDownloadsCancel(): void {
+  const ch = activeYtdlpChild
+  if (!ch || ch.killed) {
+    return
+  }
+  killYtdlpSpawnTreeOrForce(ch)
+}
 
 export function getActiveYtdlpPauseState(): {
   supported: boolean
@@ -231,7 +267,7 @@ export function runYtdlpOnce(
           child.kill('SIGCONT')
           activeYtdlpPaused = false
         }
-        child.kill()
+        killYtdlpSpawnTreeOrForce(child)
       } catch {
         /* ignore */
       }

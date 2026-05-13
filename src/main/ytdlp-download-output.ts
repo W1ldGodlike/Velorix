@@ -151,11 +151,68 @@ function tryUnlinkFileInsideYtdlpOutDir(absPath: string, outDirResolved: string)
   }
 }
 
+/** Глубина обхода подкаталогов для `*.part` / `*.ytdl`: 2 — корень и до двух уровней вложенности под ним. */
+const YTDLP_PARTIAL_SWEEP_MAX_DEPTH = 2
+
+/** Удаляет только верхнеуровневые в `dir` `*.part` / `*.ytdl`, каждый путь проверяется относительно `outDirResolved`. */
+function tryUnlinkLooseYtdlpPartialsInDir(dir: string, outDirResolved: string): void {
+  let ents: import('fs').Dirent[]
+  try {
+    ents = readdirSync(dir, { withFileTypes: true })
+  } catch {
+    return
+  }
+  const dirResolved = resolve(dir)
+  if (dirResolved !== outDirResolved && !isInsideDirectory(outDirResolved, dirResolved)) {
+    return
+  }
+  for (const e of ents) {
+    if (!e.isFile()) {
+      continue
+    }
+    const lower = e.name.toLowerCase()
+    if (!lower.endsWith('.part') && !lower.endsWith('.ytdl')) {
+      continue
+    }
+    tryUnlinkFileInsideYtdlpOutDir(join(dirResolved, e.name), outDirResolved)
+  }
+}
+
+function sweepLooseYtdlpPartialsUnderOutputRoot(outDirResolved: string, maxDepth: number): void {
+  const walk = (dir: string, depthLeft: number): void => {
+    const dirResolved = resolve(dir)
+    if (dirResolved !== outDirResolved && !isInsideDirectory(outDirResolved, dirResolved)) {
+      return
+    }
+    tryUnlinkLooseYtdlpPartialsInDir(dirResolved, outDirResolved)
+    if (depthLeft <= 0) {
+      return
+    }
+    let subEnts: import('fs').Dirent[]
+    try {
+      subEnts = readdirSync(dirResolved, { withFileTypes: true })
+    } catch {
+      return
+    }
+    for (const e of subEnts) {
+      if (!e.isDirectory()) {
+        continue
+      }
+      const subResolved = resolve(join(dirResolved, e.name))
+      if (!isInsideDirectory(outDirResolved, subResolved)) {
+        continue
+      }
+      walk(subResolved, depthLeft - 1)
+    }
+  }
+  walk(outDirResolved, maxDepth)
+}
+
 /**
  * Удаляет незавершённый вывод yt-dlp для строки очереди (после отмены / удаления строки).
  * Не трогает файлы со статусом «Готово».
- * Для статуса не «Ожидание»: дополнительно удаляет все `*.part` и `*.ytdl` в корне каталога загрузок
- * (типичные незавершённые артефакты yt-dlp для любого источника; очередь последовательная §6).
+ * Для статуса не «Ожидание»: дополнительно удаляет `*.part` и `*.ytdl` под корнем вывода yt-dlp
+ * с обходом подкаталогов до двух уровней вложенности (типичные шаблоны `-o` с подпапками; очередь последовательная §6).
  */
 export function deleteIncompleteDownloadArtifactsForQueueRow(
   userDataRoot: string,
@@ -173,20 +230,5 @@ export function deleteIncompleteDownloadArtifactsForQueueRow(
   if (isYtdlpQueueStatusWaiting(row.status)) {
     return
   }
-  let ents: import('fs').Dirent[]
-  try {
-    ents = readdirSync(outDir, { withFileTypes: true })
-  } catch {
-    return
-  }
-  for (const e of ents) {
-    if (!e.isFile()) {
-      continue
-    }
-    const lower = e.name.toLowerCase()
-    if (!lower.endsWith('.part') && !lower.endsWith('.ytdl')) {
-      continue
-    }
-    tryUnlinkFileInsideYtdlpOutDir(join(outDir, e.name), outDir)
-  }
+  sweepLooseYtdlpPartialsUnderOutputRoot(outDir, YTDLP_PARTIAL_SWEEP_MAX_DEPTH)
 }
