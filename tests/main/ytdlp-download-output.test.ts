@@ -1,12 +1,14 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'fs'
+import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'fs'
 import { join } from 'path'
 import { tmpdir } from 'os'
 import { afterEach, describe, expect, it } from 'vitest'
 
 import {
+  deleteIncompleteDownloadArtifactsForQueueRow,
   resolveAllowedYtdlpDownloadOutputFile,
   syncYtdlpDownloadDirectoryFromSettings
 } from '../../src/main/ytdlp-download-output'
+import { YTDLP_QUEUE_STATUS_DONE, YTDLP_QUEUE_STATUS_RUNNING } from '../../src/shared/ytdlp-queue-status'
 
 afterEach(() => {
   syncYtdlpDownloadDirectoryFromSettings(undefined)
@@ -63,6 +65,55 @@ describe('resolveAllowedYtdlpDownloadOutputFile', () => {
     const outside = join(root, 'outside [dCoZhhCIhXo].mp4')
 
     expect(resolveAllowedYtdlpDownloadOutputFile(outside, root)).toBeNull()
+    rmSync(root, { recursive: true, force: true })
+  })
+})
+
+describe('deleteIncompleteDownloadArtifactsForQueueRow', () => {
+  it('удаляет outputPath и соседний .part для незавершённой строки', () => {
+    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-clean-'))
+    const outDir = join(root, 'downloads', 'ytdlp')
+    mkdirSync(outDir, { recursive: true })
+    const f = join(outDir, 'a.mp4')
+    const part = join(outDir, 'a.mp4.part')
+    writeFileSync(f, 'x')
+    writeFileSync(part, 'x')
+    deleteIncompleteDownloadArtifactsForQueueRow(root, {
+      status: YTDLP_QUEUE_STATUS_RUNNING,
+      outputPath: f,
+      url: 'https://example.com/video'
+    })
+    expect(existsSync(f)).toBe(false)
+    expect(existsSync(part)).toBe(false)
+    rmSync(root, { recursive: true, force: true })
+  })
+
+  it('не трогает файлы при статусе «Готово»', () => {
+    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-clean-done-'))
+    const outDir = join(root, 'downloads', 'ytdlp')
+    mkdirSync(outDir, { recursive: true })
+    const f = join(outDir, 'done.mp4')
+    writeFileSync(f, 'x')
+    deleteIncompleteDownloadArtifactsForQueueRow(root, {
+      status: YTDLP_QUEUE_STATUS_DONE,
+      outputPath: f,
+      url: 'https://example.com/'
+    })
+    expect(existsSync(f)).toBe(true)
+    rmSync(root, { recursive: true, force: true })
+  })
+
+  it('удаляет .part с id YouTube в имени в каталоге загрузок', () => {
+    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-clean-yt-'))
+    const outDir = join(root, 'downloads', 'ytdlp')
+    mkdirSync(outDir, { recursive: true })
+    const part = join(outDir, 'Title [dQw4w9WgXcQ].f303.mp4.part')
+    writeFileSync(part, 'x')
+    deleteIncompleteDownloadArtifactsForQueueRow(root, {
+      status: YTDLP_QUEUE_STATUS_RUNNING,
+      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+    })
+    expect(existsSync(part)).toBe(false)
     rmSync(root, { recursive: true, force: true })
   })
 })

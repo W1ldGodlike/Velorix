@@ -98,6 +98,19 @@ export function cancelDownloadsRunner(): void {
   activeAbort?.abort()
 }
 
+/** Ждёт, пока `rowId` перестанет быть активной строкой runner (после abort и закрытия процесса). */
+export async function waitUntilRowNotActiveRunner(rowId: number, maxMs = 12_000): Promise<void> {
+  const t0 = Date.now()
+  while (Date.now() - t0 < maxMs) {
+    if (getActiveDownloadsRunnerRowId() !== rowId) {
+      return
+    }
+    await new Promise<void>((resolve) => {
+      setTimeout(resolve, 40)
+    })
+  }
+}
+
 export function getActiveDownloadsRunnerRowId(): number | null {
   return activeRunnerRowId
 }

@@ -20,7 +20,8 @@ import {
   getActiveDownloadsRunnerRowId,
   setDownloadsRunnerNotifier,
   startDownloadSingleRow,
-  startDownloadsSequential
+  startDownloadsSequential,
+  waitUntilRowNotActiveRunner
 } from './downloads-queue-runner'
 import {
   DOWNLOADS_LOG_CHANNEL,
@@ -30,6 +31,7 @@ import {
 } from './downloads-log-ipc'
 import { DOWNLOADS_VISIBLE_LOG_SAVE_CANCELLED } from '../shared/downloads-log-contract'
 import {
+  isYtdlpQueueStatusDone,
   isYtdlpQueueStatusRunningLike,
   YTDLP_QUEUE_STATUS_CANCELLED,
   YTDLP_QUEUE_STATUS_DONE,
@@ -42,7 +44,8 @@ import { resolvePreloadOutFile } from './preload-resolve'
 import {
   isYtdlpDownloadDirectoryDefault,
   resolveAllowedYtdlpDownloadOutputFile,
-  resolveYtdlpOutputDirectory
+  resolveYtdlpOutputDirectory,
+  deleteIncompleteDownloadArtifactsForQueueRow
 } from './ytdlp-download-output'
 import {
   getActiveYtdlpPauseState,
@@ -3487,23 +3490,39 @@ export function registerDownloadsWindowIpcHandlers(): void {
     }
   )
 
-  ipcMain.handle(d.remove, (event, id: unknown): { ok: true } | { ok: false; error: string } => {
-    const P = ipcStr(event.sender)
-    if (!isDownloadsOrMainSender(event.sender)) {
-      return { ok: false, error: P.invalidSender }
+  ipcMain.handle(
+    d.remove,
+    async (event, id: unknown): Promise<{ ok: true } | { ok: false; error: string }> => {
+      const P = ipcStr(event.sender)
+      if (!isDownloadsOrMainSender(event.sender)) {
+        return { ok: false, error: P.invalidSender }
+      }
+      if (typeof id !== 'number' || !Number.isFinite(id)) {
+        return { ok: false, error: P.invalidRowId }
+      }
+      const row = getDownloadsQueueRowById(id)
+      if (!row) {
+        return { ok: false, error: P.rowNotFound }
+      }
+      const wasActive = getActiveDownloadsRunnerRowId() === id
+      if (wasActive) {
+        cancelDownloadsRunner()
+        await waitUntilRowNotActiveRunner(id, 12_000)
+      }
+      if (!isYtdlpQueueStatusDone(row.status)) {
+        try {
+          deleteIncompleteDownloadArtifactsForQueueRow(resolveAppPaths().userData, row)
+        } catch (err) {
+          logError('downloads-window', 'delete incomplete download artifacts failed', err)
+        }
+      }
+      if (!removeDownloadsQueueRow(id)) {
+        return { ok: false, error: P.rowNotFound }
+      }
+      broadcastDownloadsSnapshot()
+      return { ok: true }
     }
-    if (typeof id !== 'number' || !Number.isFinite(id)) {
-      return { ok: false, error: P.invalidRowId }
-    }
-    if (getActiveDownloadsRunnerRowId() === id) {
-      cancelDownloadsRunner()
-    }
-    if (!removeDownloadsQueueRow(id)) {
-      return { ok: false, error: P.rowNotFound }
-    }
-    broadcastDownloadsSnapshot()
-    return { ok: true }
-  })
+  )
 
   ipcMain.handle(d.move, (event, id: unknown, direction: unknown) => {
     const P = ipcStr(event.sender)
