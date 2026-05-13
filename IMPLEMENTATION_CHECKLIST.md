@@ -435,7 +435,7 @@
 - [~] Viewer внутри приложения (markdown body: blockquote/`>`, `---`/thematic break, списки `-`/`+`/нумерация + перенос пункта с отступом 4+, внутренние `.md` и внешние `https`).
 - [x] Оглавление.
 - [x] Поиск.
-- [~] Открытие статей из подсказок (inline help вне Knowledge): deep-link в `KnowledgeDialog` (`initialSlug`); первая точка — вкладка «Терминал» → `ffmpeg-terminal-hints`.
+- [~] Открытие статей из подсказок (inline help вне Knowledge): deep-link в `KnowledgeDialog` (`initialSlug`); первая точка — вкладка «Терминал» → `ffmpeg-terminal-hints`; в `tools-terminal-inspector.md` (RU/EN) — отсылка к разделу встроенных сценариев (`terminal-contract.ts`, npm `locales:terminal-summaries-ru`).
 - [~] Tooltips на ключевых контролах (база знаний: топбар, диалог поиск/закрыть/TOC, markdown внутр./внешние ссылки; deep-link из «Терминала»).
 - [~] EN: при `preferredUiLocale=en` читается `Help/en/{slug}.md` при наличии, иначе корень `Help/*.md` (chrome EN/RU через `ui-text`); пары `Help`/`Help/en` для основных статей; дальше — точечные правки тел и новые slug’и.
 

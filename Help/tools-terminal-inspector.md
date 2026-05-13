@@ -4,7 +4,7 @@
 
 Строка ввода с подсказками из `Data/ytdlp_commands.json` и `Data/ffmpeg_commands.json`. Разрешены только три префикса: **yt-dlp**, **ffmpeg**, **ffprobe** — приложение подставляет пути из настроек. При открытии подставляется превью команды с активной вкладки (скачивание или обработка).
 
-Подробнее: [ffmpeg-terminal-hints.md](ffmpeg-terminal-hints.md).
+Подробнее: [подсказки ffmpeg / yt-dlp](ffmpeg-terminal-hints.md) — JSON из `Data/*` и раздел «Встроенные сценарии» (`terminal-contract.ts`, локализация полей `summary`).
 
 ## Инспектор (Сервис через меню / ffprobe из очередей)
 

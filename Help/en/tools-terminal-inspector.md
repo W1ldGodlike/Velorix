@@ -4,7 +4,7 @@
 
 Input line with hints from `Data/ytdlp_commands.json` and `Data/ffmpeg_commands.json`. Only three prefixes are allowed: **yt-dlp**, **ffmpeg**, **ffprobe** — the app injects paths from settings. On open, a preview command from the active tab (download or processing) is prefilled.
 
-More detail: [ffmpeg-terminal-hints.md](ffmpeg-terminal-hints.md).
+More detail: [ffmpeg / yt-dlp hints](ffmpeg-terminal-hints.md) — JSON under `Data/*` and the **Built-in scenarios** section (`terminal-contract.ts`, `summary` localization).
 
 ## Inspector (Tools menu / ffprobe from queues)
 

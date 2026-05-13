@@ -678,7 +678,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео us -F',
+    token: '· гео us (США) -F',
     summary: 'Обход гео через страну-подсказку (--geo-bypass-country US -F); при необходимости замените ISO-код; допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country US -F '
   },
@@ -1999,7 +1999,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео in -F',
+    token: '· гео in (Индия) -F',
     summary: 'Гео-обход с кодом страны IN (--geo-bypass-country IN -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country IN -F '
   },
@@ -2011,7 +2011,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео no -F',
+    token: '· гео no (Норвегия) -F',
     summary: 'Гео-обход с кодом страны NO (--geo-bypass-country NO -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country NO -F '
   },
@@ -2107,7 +2107,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео at -F',
+    token: '· гео at (Австрия) -F',
     summary: 'Гео-обход с кодом страны AT (--geo-bypass-country AT -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country AT -F '
   },
@@ -2137,7 +2137,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео be -F',
+    token: '· гео be (Бельгия) -F',
     summary: 'Гео-обход с кодом страны BE (--geo-bypass-country BE -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country BE -F '
   },
@@ -2215,7 +2215,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео is -F',
+    token: '· гео is (Исландия) -F',
     summary: 'Гео-обход с кодом страны IS (--geo-bypass-country IS -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country IS -F '
   },
@@ -2269,7 +2269,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео my -F',
+    token: '· гео my (Малайзия) -F',
     summary: 'Гео-обход с кодом страны MY (--geo-bypass-country MY -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country MY -F '
   },
@@ -2311,7 +2311,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео id -F',
+    token: '· гео id (Индонезия) -F',
     summary: 'Гео-обход с кодом страны ID (--geo-bypass-country ID -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country ID -F '
   },
@@ -2653,7 +2653,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео ad -F',
+    token: '· гео ad (Андорра) -F',
     summary: 'Гео-обход через Андорру (--geo-bypass-country AD -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country AD -F '
   },
@@ -4069,7 +4069,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео so -F',
+    token: '· гео so (Сомали) -F',
     summary: 'Гео-обход через Сомали (--geo-bypass-country SO -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country SO -F '
   },
@@ -4393,7 +4393,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео do -F',
+    token: '· гео do (Доминикана) -F',
     summary: 'Гео-обход через Доминиканскую Республику (--geo-bypass-country DO -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country DO -F '
   },
@@ -4543,7 +4543,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео re -F',
+    token: '· гео re (Реюньон) -F',
     summary: 'Гео-обход через Реюньон (--geo-bypass-country RE -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country RE -F '
   },
