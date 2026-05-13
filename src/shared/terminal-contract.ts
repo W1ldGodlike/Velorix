@@ -720,7 +720,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· журнал скачанных id (archive.txt)',
+    token: '· журнал скачанных (archive.txt)',
     summary: 'Журнал скачанных идентификаторов (id) в archive.txt (--download-archive archive.txt); поменяйте имя файла под свою папку; допишите URL.',
     fullLine: 'yt-dlp --download-archive archive.txt '
   },
@@ -1566,7 +1566,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· симуляция слияния лучших потоков (best)',
+    token: '· симуляция слияния лучших (best)',
     summary: 'Сухой прогон выбора слияния видео и аудио (--simulate -f bestvideo+bestaudio/best, шаблон «лучшее видео плюс лучшее аудио» или best); без файлов; допишите URL.',
     fullLine: 'yt-dlp --simulate -f bestvideo+bestaudio/best '
   },
@@ -1704,7 +1704,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: схема ссылки (http/https) (webpage_url_scheme)',
+    token: '· вывод: схема (http/https) (webpage_url_scheme)',
     summary: 'Схема ссылки страницы (http и https) без скачивания (--skip-download --print webpage_url_scheme); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print webpage_url_scheme '
   },
@@ -2821,7 +2821,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· постпроц.: мультиплекс (mux), 1 поток -F',
+    token: '· постпроц.: мультиплекс, 1 поток -F',
     summary: 'Аргументы постпроцессора для FFmpeg (--postprocessor-args ffmpeg:-threads 1 -F); ограничить нагрузку при слиянии потоков (мультиплексировании); допишите URL.',
     fullLine: 'yt-dlp --postprocessor-args ffmpeg:-threads 1 -F '
   },
@@ -5195,7 +5195,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· data-дорожка d:0',
+    token: '· дорожка данных d:0',
     summary: 'Первая data-дорожка d:0 (метаданные с привязкой ко времени и др.): codec_name и codec_tag_string; путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams d:0 -show_entries stream=codec_name,codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5429,7 +5429,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· видео v:0 размер доп. данных (extradata)',
+    token: '· видео v:0 размер доп. двоичника (extradata)',
     summary: 'Поток v:0: extradata_size (размер декодер-заголовков) и initial_padding; путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=extradata_size,initial_padding -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -6071,7 +6071,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· data-дорожка d:1 кодек',
+    token: '· дорожка данных d:1, кодек',
     summary: 'Вторая data-дорожка d:1: codec_name и codec_tag_string (таймкоды и метаданные в контейнере); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams d:1 -show_entries stream=codec_name,codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -6227,7 +6227,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· data-дорожка d:2 кодек',
+    token: '· дорожка данных d:2, кодек',
     summary: 'Третья data-дорожка d:2: codec_name и codec_tag_string (дополнительные таймкоды и метаданные); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams d:2 -show_entries stream=codec_name,codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
