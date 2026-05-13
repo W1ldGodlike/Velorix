@@ -42,19 +42,19 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· JSON один URL (dump-single-json)',
+    token: '· один JSON на URL (dump-single-json)',
     summary: 'Один JSON на ролик без скачивания (--dump-single-json, эквивалент -J для одного URL); допишите URL.',
     fullLine: 'yt-dlp --dump-single-json '
   },
   {
     tool: 'yt-dlp',
-    token: '· -v --skip-download',
+    token: '· подробный лог + сухой прогон',
     summary: 'Подробный журнал вывода без скачивания (-v --skip-download); допишите URL (ошибки модуля извлечения, геоблокировки (geo), защита контента (DRM)).',
     fullLine: 'yt-dlp -v --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· сухой прогон (simulate)',
+    token: '· сухой прогон (имитация)',
     summary: 'Сухой прогон без файлов (--simulate); допишите URL (проверка доступности и форматов).',
     fullLine: 'yt-dlp --simulate '
   },
@@ -84,7 +84,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· список миниатюр (thumbnail)',
+    token: '· список миниатюр (превью)',
     summary: 'Доступные URL миниатюр (thumbnail) без скачивания (--list-thumbnails); допишите URL.',
     fullLine: 'yt-dlp --list-thumbnails '
   },
@@ -522,7 +522,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод webpage_url_domain',
+    token: '· вывод: webpage_url_domain',
     summary: 'Домен страницы без скачивания (--skip-download --print webpage_url_domain); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print webpage_url_domain '
   },
@@ -804,8 +804,8 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод title либо NA',
-    summary: 'Печать title с заменителем NA для пустых полей (--output-na-placeholder NA --skip-download --print title); допишите URL.',
+    token: '· вывод: title либо н/д',
+    summary: 'Печать title с заменителем для пустых полей (--output-na-placeholder NA --skip-download --print title); в консоли будет NA, если поле пустое; допишите URL.',
     fullLine: 'yt-dlp --output-na-placeholder NA --skip-download --print title '
   },
   {
@@ -888,31 +888,31 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод season_number',
+    token: '· вывод: season_number',
     summary: 'Номер сезона из метаданных без скачивания (--skip-download --print season_number); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print season_number '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод episode_number',
+    token: '· вывод: episode_number',
     summary: 'Номер эпизода без скачивания (--skip-download --print episode_number); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print episode_number '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод track',
+    token: '· вывод: track',
     summary: 'Название трека (аудио) без скачивания (--skip-download --print track); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print track '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод artists',
+    token: '· вывод: artists',
     summary: 'Исполнители без скачивания (--skip-download --print artists); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print artists '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод album',
+    token: '· вывод: album',
     summary: 'Альбом без скачивания (--skip-download --print album); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print album '
   },
@@ -984,7 +984,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод n_entries',
+    token: '· вывод: n_entries',
     summary: 'Число записей плейлиста без скачивания (--skip-download --print n_entries); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print n_entries '
   },
@@ -1026,13 +1026,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· User-Agent как curl -F',
+    token: '· заголовок UA как curl -F',
     summary: 'Подменить заголовок User-Agent (--user-agent curl/8.5.0 -F; типичная строка curl); CDN и WAF; допишите URL.',
     fullLine: 'yt-dlp --user-agent curl/8.5.0 -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· лимит при throttling -F',
+    token: '· лимит при ограничении скорости -F',
     summary: 'Лимит скорости при намеренном снижении отдачи (throttling; ключ --throttled-rate 100K -F); допишите URL.',
     fullLine: 'yt-dlp --throttled-rate 100K -F '
   },
@@ -1140,7 +1140,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод UTF-8',
+    token: '· консоль в UTF-8',
     summary: 'Принудительно UTF-8 для вывода yt-dlp (--encoding utf-8); кириллица и символы Unicode в консоли Windows; допишите URL.',
     fullLine: 'yt-dlp --encoding utf-8 '
   },
@@ -1290,7 +1290,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· TLS legacy renegotiation -F',
+    token: '· TLS: старое повторное согласование -F',
     summary: 'Небезопасное повторное согласование TLS по старой схеме (legacy renegotiation, --legacy-server-connect -F) для старых CDN; допишите URL.',
     fullLine: 'yt-dlp --legacy-server-connect -F '
   },
@@ -1320,7 +1320,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· принуд. generic -F',
+    token: '· принудительно общий экстрактор -F',
     summary: 'Принудительно общий модуль извлечения generic (--force-generic-extractor -F) при сбое распознавания; допишите URL.',
     fullLine: 'yt-dlp --force-generic-extractor -F '
   },
@@ -1410,55 +1410,55 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод playlist_autonumber',
+    token: '· вывод: playlist_autonumber',
     summary: 'Автонумерация в шаблоне -o без скачивания (--skip-download --print playlist_autonumber); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print playlist_autonumber '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод modified_timestamp',
+    token: '· вывод: modified_timestamp',
     summary: 'Unix-время последнего изменения метаданных без скачивания (--skip-download --print modified_timestamp); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print modified_timestamp '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод release_timestamp',
+    token: '· вывод: release_timestamp',
     summary: 'Unix-время релиза и премьеры без скачивания (--skip-download --print release_timestamp); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print release_timestamp '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод upload_timestamp',
+    token: '· вывод: upload_timestamp',
     summary: 'Unix-время загрузки на площадку без скачивания (--skip-download --print upload_timestamp); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print upload_timestamp '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод stretched_ratio',
+    token: '· вывод: stretched_ratio',
     summary: 'Соотношение сторон после растяжения (stretched_ratio) без скачивания (--skip-download --print stretched_ratio); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print stretched_ratio '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод location',
+    token: '· вывод: location',
     summary: 'Данные о местоположении из метаданных без скачивания (--skip-download --print location); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print location '
   },
   {
     tool: 'yt-dlp',
-    token: '· YouTube, клиент android -F',
+    token: '· YouTube, Android-клиент -F',
     summary: 'YouTube: клиент Android через --extractor-args (--extractor-args youtube:player_client=android -F); обход части веб-ограничений; допишите URL.',
     fullLine: 'yt-dlp --extractor-args youtube:player_client=android -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· YouTube, клиент tv_embedded -F',
+    token: '· YouTube, встроенный TV -F',
     summary: 'YouTube: встроенный TV-клиент (--extractor-args youtube:player_client=tv_embedded -F); допишите URL.',
     fullLine: 'yt-dlp --extractor-args youtube:player_client=tv_embedded -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· YouTube, клиент ios -F',
+    token: '· YouTube, iOS-клиент -F',
     summary: 'YouTube: iOS-клиент через --extractor-args (--extractor-args youtube:player_client=ios -F); допишите URL.',
     fullLine: 'yt-dlp --extractor-args youtube:player_client=ios -F '
   },
@@ -1518,19 +1518,19 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· YouTube, клиент mweb -F',
+    token: '· YouTube, моб. веб-клиент -F',
     summary: 'YouTube: мобильный веб-клиент mweb через --extractor-args (--extractor-args youtube:player_client=mweb -F); допишите URL.',
     fullLine: 'yt-dlp --extractor-args youtube:player_client=mweb -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод requested_formats',
+    token: '· вывод: requested_formats',
     summary: 'Список запрошенных и выбранных форматов без скачивания (--skip-download --print requested_formats); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print requested_formats '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод requested_subtitles',
+    token: '· вывод: requested_subtitles',
     summary: 'Запрошенные субтитры без скачивания (--skip-download --print requested_subtitles); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print requested_subtitles '
   },
@@ -1542,13 +1542,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· YouTube, клиент web_creator -F',
+    token: '· YouTube, веб-автор -F',
     summary: 'YouTube: web_creator через --extractor-args (--extractor-args youtube:player_client=web_creator -F); YouTube Studio и ограниченные кейсы; допишите URL.',
     fullLine: 'yt-dlp --extractor-args youtube:player_client=web_creator -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· YouTube, клиент web_embedded -F',
+    token: '· YouTube, встраиваемый веб -F',
     summary: 'YouTube: web_embedded через --extractor-args (--extractor-args youtube:player_client=web_embedded -F); встраиваемый плеер; допишите URL.',
     fullLine: 'yt-dlp --extractor-args youtube:player_client=web_embedded -F '
   },
@@ -1560,7 +1560,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод formats',
+    token: '· вывод: formats',
     summary: 'Словарь доступных форматов без скачивания (--skip-download --print formats); тяжёлый вывод — для диагностики; допишите URL.',
     fullLine: 'yt-dlp --skip-download --print formats '
   },
@@ -1614,37 +1614,37 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод thumbnails',
+    token: '· вывод: thumbnails',
     summary: 'Словарь URL миниатюр (thumbnails) без скачивания (--skip-download --print thumbnails); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print thumbnails '
   },
   {
     tool: 'yt-dlp',
-    token: '· YouTube, клиент web_safari -F',
+    token: '· YouTube, Safari-веб -F',
     summary: 'YouTube: web_safari через --extractor-args (--extractor-args youtube:player_client=web_safari -F); Safari-подобный веб-клиент; допишите URL.',
     fullLine: 'yt-dlp --extractor-args youtube:player_client=web_safari -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод playlist_channel',
+    token: '· вывод: playlist_channel',
     summary: 'Имя канала плейлиста без скачивания (--skip-download --print playlist_channel); допишите URL плейлиста.',
     fullLine: 'yt-dlp --skip-download --print playlist_channel '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод playlist_channel_id',
+    token: '· вывод: playlist_channel_id',
     summary: 'Идентификатор канала плейлиста без скачивания (--skip-download --print playlist_channel_id); допишите URL плейлиста.',
     fullLine: 'yt-dlp --skip-download --print playlist_channel_id '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод playlist_uploader',
+    token: '· вывод: playlist_uploader',
     summary: 'Автор плейлиста (uploader) без скачивания (--skip-download --print playlist_uploader); допишите URL плейлиста.',
     fullLine: 'yt-dlp --skip-download --print playlist_uploader '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод playlist_uploader_id',
+    token: '· вывод: playlist_uploader_id',
     summary: 'ID автора плейлиста без скачивания (--skip-download --print playlist_uploader_id); допишите URL плейлиста.',
     fullLine: 'yt-dlp --skip-download --print playlist_uploader_id '
   },
@@ -1698,13 +1698,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод playlist_webpage_url',
+    token: '· вывод: playlist_webpage_url',
     summary: 'URL страницы плейлиста без скачивания (--skip-download --print playlist_webpage_url); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print playlist_webpage_url '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод webpage_url_scheme',
+    token: '· вывод: webpage_url_scheme',
     summary: 'Схема URL страницы (http и https) без скачивания (--skip-download --print webpage_url_scheme); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print webpage_url_scheme '
   },
@@ -1927,13 +1927,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод annotations',
+    token: '· вывод: annotations',
     summary: 'Сырые аннотации метаданных без скачивания (--skip-download --print annotations); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print annotations '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод storyboards',
+    token: '· вывод: storyboards',
     summary: 'Доски storyboard (если отдаёт площадка) без скачивания (--skip-download --print storyboards); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print storyboards '
   },
@@ -2623,13 +2623,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод genres',
+    token: '· вывод: genres',
     summary: 'Жанры и теги без скачивания (--skip-download --print genres); музыка и каталоги; допишите URL.',
     fullLine: 'yt-dlp --skip-download --print genres '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод cast',
+    token: '· вывод: cast',
     summary: 'Актёрский состав (cast) без скачивания (--skip-download --print cast); если отдаёт площадка; допишите URL.',
     fullLine: 'yt-dlp --skip-download --print cast '
   },
@@ -2743,7 +2743,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод dislike_count',
+    token: '· вывод: dislike_count',
     summary: 'Счётчик дизлайков без скачивания (--skip-download --print dislike_count; часто NA); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print dislike_count '
   },
@@ -2761,7 +2761,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод HTTP и TLS -F',
+    token: '· трассировка HTTP и TLS -F',
     summary: 'Печать HTTP и TLS трафика в стандартный поток ошибок (stderr) (--print-traffic -F); очень подробный вывод, только диагностика; допишите URL.',
     fullLine: 'yt-dlp --print-traffic -F '
   },
@@ -5321,7 +5321,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· теги artist и album',
+    token: '· теги исполнитель и альбом',
     summary: 'Теги контейнера artist и album (аудиофайлы и мультимедиа); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_entries format_tags=artist,album -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5345,7 +5345,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· тег encoder (контейнер)',
+    token: '· тег кодировщик (контейнер)',
     summary: 'Тег контейнера encoder (format_tags.encoder); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_entries format_tags=encoder -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5369,13 +5369,13 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· контейнер: pretty format',
+    token: '· контейнер: вывод pretty',
     summary: 'Секция format в удобочитаемом виде (-pretty -show_format); единицы и время форматированы; путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -pretty -show_format ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· контейнер: flat format',
+    token: '· контейнер: вывод flat',
     summary: 'Плоский вывод format ключ=значение (-of flat -show_format); удобно разбирать текстом (например, утилитами grep и awk); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -of flat -show_format ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5447,7 +5447,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· тег copyright',
+    token: '· тег авторские права',
     summary: 'Тег контейнера copyright (format_tags=copyright); кто и когда задал; путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_entries format_tags=copyright -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -6167,7 +6167,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· теги artist и album',
+    token: '· теги исполнитель и альбом',
     summary: 'Теги контейнера artist и album (часто у музыкальных релизов и клипов); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_entries format_tags=artist,album -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
