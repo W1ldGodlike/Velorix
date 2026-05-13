@@ -552,7 +552,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· прямая ссылка (-g), аудио bestaudio/best',
+    token: '· прямая (-g), только лучшее аудио',
     summary: 'Прямая ссылка только на лучший аудиоформат (-g -f bestaudio/best, то есть bestaudio либо best); без видео; допишите URL.',
     fullLine: 'yt-dlp -g -f bestaudio/best '
   },
@@ -564,7 +564,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: путь по шаблону -o (filepath)',
+    token: '· вывод: путь по шаблону -o (поле filepath)',
     summary: 'Шаблон выходного пути по текущим -o без скачивания (--skip-download --print filepath); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print filepath '
   },
@@ -588,7 +588,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· запись HTML-страниц',
+    token: '· запись страниц в HTML',
     summary: 'Сохранить сырые HTML-страницы модуля извлечения (extractor) в .dump (--write-pages --skip-download); диагностика разметки и ответов 403; допишите URL.',
     fullLine: 'yt-dlp --write-pages --skip-download '
   },
@@ -636,7 +636,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· слияние в MKV',
+    token: '· слияние в mkv',
     summary: 'Слияние потоков в контейнер MKV при мультиплексировании (--merge-output-format mkv); допишите URL и -f …',
     fullLine: 'yt-dlp --merge-output-format mkv '
   },
@@ -918,19 +918,19 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· ремукс в MKV',
+    token: '· ремукс в mkv',
     summary: 'После скачивания принудительная перепаковка в MKV (--remux-video mkv); допишите URL и -f/-o.',
     fullLine: 'yt-dlp --remux-video mkv '
   },
   {
     tool: 'yt-dlp',
-    token: '· субтитры SRT -F',
+    token: '· субтитры в srt -F',
     summary: 'Предпочесть субтитры в SRT при выборе форматов (--sub-format srt -F); допишите URL.',
     fullLine: 'yt-dlp --sub-format srt -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· превью в JPG',
+    token: '· превью jpg',
     summary: 'Конвертировать обложку в JPEG при скачивании (--convert-thumbnails jpg); допишите URL и ключи вывода.',
     fullLine: 'yt-dlp --convert-thumbnails jpg '
   },
@@ -972,7 +972,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· только аудио MP3',
+    token: '· только аудио mp3',
     summary: 'После скачивания извлечь аудиодорожку в MP3 (--extract-audio --audio-format mp3); допишите URL.',
     fullLine: 'yt-dlp --extract-audio --audio-format mp3 '
   },
@@ -1044,13 +1044,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· субтитры в SRT',
+    token: '· субтитры в srt',
     summary: 'Конвертировать субтитры в SRT постпроцессором (--convert-subs srt); допишите URL.',
     fullLine: 'yt-dlp --convert-subs srt '
   },
   {
     tool: 'yt-dlp',
-    token: '· шаблон -o: заголовок и тип (title.ext)',
+    token: '· шаблон -o: заголовок.расширение',
     summary: 'Шаблон имени без пробелов (-o %(title)s.%(ext)s); допишите URL (при необходимости смените шаблон вручную).',
     fullLine: 'yt-dlp -o %(title)s.%(ext)s '
   },
@@ -1086,7 +1086,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· перекод в MP4',
+    token: '· перекод в mp4',
     summary: 'Перекодировать итог в MP4 постпроцессором (--recode-video mp4); допишите URL и формат источника.',
     fullLine: 'yt-dlp --recode-video mp4 '
   },
@@ -1314,7 +1314,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· логин из .netrc -F',
+    token: '· логин из netrc -F',
     summary: 'Учётные данные из ~/.netrc (--netrc -F); для сайтов с логином; допишите URL.',
     fullLine: 'yt-dlp --netrc -F '
   },
@@ -1344,7 +1344,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· дамп HTML-страниц',
+    token: '· дамп страниц в HTML',
     summary: 'Сырой дамп HTML-страниц модуля извлечения (extractor) в файлы (--dump-pages --skip-download); диагностика разметки и ответов API; допишите URL.',
     fullLine: 'yt-dlp --dump-pages --skip-download '
   },
@@ -1656,7 +1656,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· слияние в MP4',
+    token: '· слияние в mp4',
     summary: 'Слияние потоков в MP4 при мультиплексировании (--merge-output-format mp4); допишите URL и -f …',
     fullLine: 'yt-dlp --merge-output-format mp4 '
   },
@@ -1879,7 +1879,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· слияние в WebM',
+    token: '· слияние в webm',
     summary: 'Слияние потоков в WebM при мультиплексировании (--merge-output-format webm); допишите URL и -f …',
     fullLine: 'yt-dlp --merge-output-format webm '
   },
@@ -1897,7 +1897,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· только аудио AAC',
+    token: '· только аудио aac',
     summary: 'Извлечь аудио в AAC (--extract-audio --audio-format aac); допишите URL.',
     fullLine: 'yt-dlp --extract-audio --audio-format aac '
   },
@@ -2023,7 +2023,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· заголовки «клиент за прокси» (--xfwd) -F',
+    token: '· заголовки клиента за прокси -F',
     summary: 'Добавить заголовки X-Forwarded-For и X-Forwarded-Proto к HTTP (--xfwd -F); для обратного прокси и отладки запросов; допишите URL.',
     fullLine: 'yt-dlp --xfwd -F '
   },
@@ -2221,31 +2221,31 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· превью в PNG',
+    token: '· превью png',
     summary: 'Конвертировать обложку в PNG при скачивании (--convert-thumbnails png); допишите URL и ключи вывода.',
     fullLine: 'yt-dlp --convert-thumbnails png '
   },
   {
     tool: 'yt-dlp',
-    token: '· аудио Opus',
+    token: '· аудио opus',
     summary: 'Извлечь аудио в Opus (--extract-audio --audio-format opus); допишите URL и ключи вывода.',
     fullLine: 'yt-dlp --extract-audio --audio-format opus '
   },
   {
     tool: 'yt-dlp',
-    token: '· аудио FLAC',
+    token: '· аудио flac',
     summary: 'Извлечь аудио в FLAC без потерь (--extract-audio --audio-format flac); допишите URL и ключи вывода.',
     fullLine: 'yt-dlp --extract-audio --audio-format flac '
   },
   {
     tool: 'yt-dlp',
-    token: '· аудио WAV',
+    token: '· аудио wav',
     summary: 'Извлечь аудио в WAV (--extract-audio --audio-format wav); допишите URL и ключи вывода.',
     fullLine: 'yt-dlp --extract-audio --audio-format wav '
   },
   {
     tool: 'yt-dlp',
-    token: '· аудио M4A',
+    token: '· аудио m4a',
     summary: 'Извлечь аудио в M4A или AAC (--extract-audio --audio-format m4a); допишите URL и ключи вывода.',
     fullLine: 'yt-dlp --extract-audio --audio-format m4a '
   },
@@ -2767,7 +2767,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· аудио → Vorbis',
+    token: '· аудио → vorbis',
     summary: 'Извлечь аудио в Ogg Vorbis (--extract-audio --audio-format vorbis); допишите URL и шаблон -o при необходимости.',
     fullLine: 'yt-dlp --extract-audio --audio-format vorbis '
   },
@@ -2803,13 +2803,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· аудио → ALAC',
+    token: '· аудио → alac',
     summary: 'Извлечь аудио в Apple Lossless (--extract-audio --audio-format alac); допишите URL и -o при необходимости.',
     fullLine: 'yt-dlp --extract-audio --audio-format alac '
   },
   {
     tool: 'yt-dlp',
-    token: '· аудио → AC-3',
+    token: '· аудио → ac-3',
     summary: 'Извлечь аудио в Dolby Digital AC-3 (--extract-audio --audio-format ac3); допишите URL.',
     fullLine: 'yt-dlp --extract-audio --audio-format ac3 '
   },
@@ -6131,7 +6131,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· бренды MP4 (теги)',
+    token: '· бренды контейнера mp4 (теги)',
     summary: 'Теги контейнера major_brand, minor_version и compatible_brands (часто у MP4 и MOV); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_entries format_tags=major_brand,minor_version,compatible_brands -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
