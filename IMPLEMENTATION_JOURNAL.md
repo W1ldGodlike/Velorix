@@ -566,3 +566,4 @@
 - [J-549] 2026-05-13 20:00:00 [Assistant]: §8 — начало набора `TERMINAL_SCENARIO_HINTS_DOWNLOADS`: RU-компактные `token` для `--print`/`--write*`/`--list*`/`--simulate`/плейлист/geo/версии и др. (первые ~50 записей); `fullLine` без изменений.
 - [J-550] 2026-05-13 21:00:00 [Assistant]: §8 — `TERMINAL_SCENARIO_HINTS_DOWNLOADS`: доведены RU-компактные `token` для оставшихся `--print`/`--write*`/TLS/кэш/info.json и метаданных; `fullLine` без изменений.
 - [J-551] 2026-05-13 22:00:00 [Assistant]: §8 — `terminal-contract.ts`: RU-компактные `token` (yt-dlp: сухой verbose, UA/TLS/generic/throttling, клиенты YouTube; ffprobe: теги/вывод pretty|flat); `fullLine` без изменений.
+- [J-552] 2026-05-13 23:00:00 [Assistant]: §8 — `TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA` + yt-dlp: RU `token` для метатегов контейнера/дорожек, заголовков HTTP, HLS/xattr; `fullLine` без изменений.
