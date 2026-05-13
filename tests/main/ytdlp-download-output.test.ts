@@ -8,7 +8,11 @@ import {
   resolveAllowedYtdlpDownloadOutputFile,
   syncYtdlpDownloadDirectoryFromSettings
 } from '../../src/main/ytdlp-download-output'
-import { YTDLP_QUEUE_STATUS_DONE, YTDLP_QUEUE_STATUS_RUNNING } from '../../src/shared/ytdlp-queue-status'
+import {
+  YTDLP_QUEUE_STATUS_DONE,
+  YTDLP_QUEUE_STATUS_RUNNING,
+  YTDLP_QUEUE_STATUS_WAITING
+} from '../../src/shared/ytdlp-queue-status'
 
 afterEach(() => {
   syncYtdlpDownloadDirectoryFromSettings(undefined)
@@ -103,17 +107,32 @@ describe('deleteIncompleteDownloadArtifactsForQueueRow', () => {
     rmSync(root, { recursive: true, force: true })
   })
 
-  it('удаляет .part с id YouTube в имени в каталоге загрузок', () => {
-    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-clean-yt-'))
+  it('удаляет все верхнеуровневые .part и .ytdl при незавершённом статусе (не «Ожидание»)', () => {
+    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-clean-loose-'))
     const outDir = join(root, 'downloads', 'ytdlp')
     mkdirSync(outDir, { recursive: true })
-    const part = join(outDir, 'Title [dQw4w9WgXcQ].f303.mp4.part')
-    writeFileSync(part, 'x')
+    writeFileSync(join(outDir, 'vod-site.part'), 'x')
+    writeFileSync(join(outDir, 'resume.ytdl'), 'y')
     deleteIncompleteDownloadArtifactsForQueueRow(root, {
       status: YTDLP_QUEUE_STATUS_RUNNING,
-      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+      url: 'https://example.com/video/123'
     })
-    expect(existsSync(part)).toBe(false)
+    expect(existsSync(join(outDir, 'vod-site.part'))).toBe(false)
+    expect(existsSync(join(outDir, 'resume.ytdl'))).toBe(false)
+    rmSync(root, { recursive: true, force: true })
+  })
+
+  it('в статусе «Ожидание» не удаляет произвольные .part без смены статуса', () => {
+    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-clean-wait-'))
+    const outDir = join(root, 'downloads', 'ytdlp')
+    mkdirSync(outDir, { recursive: true })
+    const orphan = join(outDir, 'queued-but-not-started.part')
+    writeFileSync(orphan, 'x')
+    deleteIncompleteDownloadArtifactsForQueueRow(root, {
+      status: YTDLP_QUEUE_STATUS_WAITING,
+      url: 'https://example.com/'
+    })
+    expect(existsSync(orphan)).toBe(true)
     rmSync(root, { recursive: true, force: true })
   })
 })

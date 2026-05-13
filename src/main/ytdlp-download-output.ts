@@ -1,7 +1,7 @@
 import { existsSync, readdirSync, statSync, unlinkSync } from 'fs'
 import { basename, extname, isAbsolute, join, normalize, relative, resolve } from 'path'
 
-import { isYtdlpQueueStatusDone } from '../shared/ytdlp-queue-status'
+import { isYtdlpQueueStatusDone, isYtdlpQueueStatusWaiting } from '../shared/ytdlp-queue-status'
 
 /** Абсолютный override из `settings.json`; `null` — каталог по умолчанию §6.2. */
 let overrideAbsolute: string | null = null
@@ -137,32 +137,6 @@ export function resolveAllowedYtdlpDownloadOutputFile(
   return resolveExistingSiblingByMediaId(outDir, file)
 }
 
-/** 11-символьный id ролика YouTube из URL, если распознать можно. */
-function tryExtractYouTubeId11(url: string): string | null {
-  const t = url.trim()
-  if (t.length < 12) {
-    return null
-  }
-  try {
-    const normalized = /^https?:\/\//i.test(t) ? t : `https://${t}`
-    const u = new URL(normalized)
-    const host = u.hostname.toLowerCase()
-    if (host === 'youtu.be') {
-      const id = u.pathname.replace(/^\//, '').split('/')[0] ?? ''
-      return /^[A-Za-z0-9_-]{11}$/.test(id) ? id : null
-    }
-    if (host.endsWith('youtube.com') || host === 'm.youtube.com' || host === 'www.youtube.com') {
-      const v = u.searchParams.get('v')
-      if (v && /^[A-Za-z0-9_-]{11}$/.test(v)) {
-        return v
-      }
-    }
-  } catch {
-    return null
-  }
-  return null
-}
-
 function tryUnlinkFileInsideYtdlpOutDir(absPath: string, outDirResolved: string): void {
   const resolved = resolve(absPath.trim())
   if (!isInsideDirectory(outDirResolved, resolved)) {
@@ -180,10 +154,12 @@ function tryUnlinkFileInsideYtdlpOutDir(absPath: string, outDirResolved: string)
 /**
  * Удаляет незавершённый вывод yt-dlp для строки очереди (после отмены / удаления строки).
  * Не трогает файлы со статусом «Готово».
+ * Для статуса не «Ожидание»: дополнительно удаляет все `*.part` и `*.ytdl` в корне каталога загрузок
+ * (типичные незавершённые артефакты yt-dlp для любого источника; очередь последовательная §6).
  */
 export function deleteIncompleteDownloadArtifactsForQueueRow(
   userDataRoot: string,
-  row: { status: string; outputPath?: string; url: string }
+  row: { status: string; outputPath?: string; url?: string }
 ): void {
   if (isYtdlpQueueStatusDone(row.status)) {
     return
@@ -194,8 +170,7 @@ export function deleteIncompleteDownloadArtifactsForQueueRow(
     tryUnlinkFileInsideYtdlpOutDir(op, outDir)
     tryUnlinkFileInsideYtdlpOutDir(`${op}.part`, outDir)
   }
-  const yt = tryExtractYouTubeId11(row.url)
-  if (!yt) {
+  if (isYtdlpQueueStatusWaiting(row.status)) {
     return
   }
   let ents: import('fs').Dirent[]
@@ -208,15 +183,10 @@ export function deleteIncompleteDownloadArtifactsForQueueRow(
     if (!e.isFile()) {
       continue
     }
-    const name = e.name
-    if (!name.includes(yt)) {
-      continue
-    }
-    const lower = name.toLowerCase()
+    const lower = e.name.toLowerCase()
     if (!lower.endsWith('.part') && !lower.endsWith('.ytdl')) {
       continue
     }
-    const full = join(outDir, name)
-    tryUnlinkFileInsideYtdlpOutDir(full, outDir)
+    tryUnlinkFileInsideYtdlpOutDir(join(outDir, e.name), outDir)
   }
 }
