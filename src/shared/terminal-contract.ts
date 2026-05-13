@@ -1987,13 +1987,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео mx -F',
+    token: '· гео mx (Мексика) -F',
     summary: 'Гео-обход с кодом страны MX (--geo-bypass-country MX -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country MX -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео kr -F',
+    token: '· гео kr (Корея) -F',
     summary: 'Гео-обход с кодом страны KR (--geo-bypass-country KR -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country KR -F '
   },
@@ -2077,13 +2077,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео nz -F',
+    token: '· гео nz (Новая Зеландия) -F',
     summary: 'Гео-обход с кодом страны NZ (--geo-bypass-country NZ -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country NZ -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео za -F',
+    token: '· гео za (ЮАР) -F',
     summary: 'Гео-обход с кодом страны ZA (--geo-bypass-country ZA -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country ZA -F '
   },
@@ -2113,25 +2113,25 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео dk -F',
+    token: '· гео dk (Дания) -F',
     summary: 'Гео-обход с кодом страны DK (--geo-bypass-country DK -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country DK -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео fi -F',
+    token: '· гео fi (Финляндия) -F',
     summary: 'Гео-обход с кодом страны FI (--geo-bypass-country FI -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country FI -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео gr -F',
+    token: '· гео gr (Греция) -F',
     summary: 'Гео-обход с кодом страны GR (--geo-bypass-country GR -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country GR -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео pt -F',
+    token: '· гео pt (Португалия) -F',
     summary: 'Гео-обход с кодом страны PT (--geo-bypass-country PT -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country PT -F '
   },
@@ -2143,7 +2143,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео ie -F',
+    token: '· гео ie (Ирландия) -F',
     summary: 'Гео-обход с кодом страны IE (--geo-bypass-country IE -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country IE -F '
   },
@@ -2167,49 +2167,49 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео cz -F',
+    token: '· гео cz (Чехия) -F',
     summary: 'Гео-обход с кодом страны CZ (--geo-bypass-country CZ -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country CZ -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео hu -F',
+    token: '· гео hu (Венгрия) -F',
     summary: 'Гео-обход с кодом страны HU (--geo-bypass-country HU -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country HU -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео ro -F',
+    token: '· гео ro (Румыния) -F',
     summary: 'Гео-обход с кодом страны RO (--geo-bypass-country RO -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country RO -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео bg -F',
+    token: '· гео bg (Болгария) -F',
     summary: 'Гео-обход с кодом страны BG (--geo-bypass-country BG -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country BG -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео hr -F',
+    token: '· гео hr (Хорватия) -F',
     summary: 'Гео-обход с кодом страны HR (--geo-bypass-country HR -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country HR -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео lv -F',
+    token: '· гео lv (Латвия) -F',
     summary: 'Гео-обход с кодом страны LV (--geo-bypass-country LV -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country LV -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео lt -F',
+    token: '· гео lt (Литва) -F',
     summary: 'Гео-обход с кодом страны LT (--geo-bypass-country LT -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country LT -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео ee -F',
+    token: '· гео ee (Эстония) -F',
     summary: 'Гео-обход с кодом страны EE (--geo-bypass-country EE -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country EE -F '
   },
@@ -2275,25 +2275,25 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео sg -F',
+    token: '· гео sg (Сингапур) -F',
     summary: 'Гео-обход с кодом страны SG (--geo-bypass-country SG -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country SG -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео th -F',
+    token: '· гео th (Таиланд) -F',
     summary: 'Гео-обход с кодом страны TH (--geo-bypass-country TH -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country TH -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео vn -F',
+    token: '· гео vn (Вьетнам) -F',
     summary: 'Гео-обход с кодом страны VN (--geo-bypass-country VN -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country VN -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео ar -F',
+    token: '· гео ar (Аргентина) -F',
     summary: 'Гео-обход с кодом страны AR (--geo-bypass-country AR -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country AR -F '
   },
@@ -2305,7 +2305,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео ph -F',
+    token: '· гео ph (Филиппины) -F',
     summary: 'Гео-обход с кодом страны PH (--geo-bypass-country PH -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country PH -F '
   },
@@ -2317,49 +2317,49 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео pk -F',
+    token: '· гео pk (Пакистан) -F',
     summary: 'Гео-обход с кодом страны PK (--geo-bypass-country PK -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country PK -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео bd -F',
+    token: '· гео bd (Бангладеш) -F',
     summary: 'Гео-обход с кодом страны BD (--geo-bypass-country BD -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country BD -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео eg -F',
+    token: '· гео eg (Египет) -F',
     summary: 'Гео-обход с кодом страны EG (--geo-bypass-country EG -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country EG -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео cl -F',
+    token: '· гео cl (Чили) -F',
     summary: 'Гео-обход с кодом страны CL (--geo-bypass-country CL -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country CL -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео pe -F',
+    token: '· гео pe (Перу) -F',
     summary: 'Гео-обход с кодом страны PE (--geo-bypass-country PE -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country PE -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео ke -F',
+    token: '· гео ke (Кения) -F',
     summary: 'Гео-обход с кодом страны KE (--geo-bypass-country KE -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country KE -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео co -F',
+    token: '· гео co (Колумбия) -F',
     summary: 'Гео-обход с кодом страны CO (--geo-bypass-country CO -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country CO -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео ng -F',
+    token: '· гео ng (Нигерия) -F',
     summary: 'Гео-обход с кодом страны NG (--geo-bypass-country NG -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country NG -F '
   },
@@ -2407,127 +2407,127 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео sk -F',
+    token: '· гео sk (Словакия) -F',
     summary: 'Гео-обход с кодом страны SK (--geo-bypass-country SK -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country SK -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео si -F',
+    token: '· гео si (Словения) -F',
     summary: 'Гео-обход с кодом страны SI (--geo-bypass-country SI -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country SI -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео lu -F',
+    token: '· гео lu (Люксембург) -F',
     summary: 'Гео-обход с кодом страны LU (--geo-bypass-country LU -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country LU -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео mt -F',
+    token: '· гео mt (Мальта) -F',
     summary: 'Гео-обход с кодом страны MT (--geo-bypass-country MT -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country MT -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео cy -F',
+    token: '· гео cy (Кипр) -F',
     summary: 'Гео-обход с кодом страны CY (--geo-bypass-country CY -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country CY -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео ba -F',
+    token: '· гео ba (Босния и Герцеговина) -F',
     summary: 'Гео-обход с кодом страны BA (--geo-bypass-country BA -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country BA -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео rs -F',
+    token: '· гео rs (Сербия) -F',
     summary: 'Гео-обход с кодом страны RS (--geo-bypass-country RS -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country RS -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео mn -F',
+    token: '· гео mn (Монголия) -F',
     summary: 'Гео-обход с кодом страны MN (--geo-bypass-country MN -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country MN -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео kz -F',
+    token: '· гео kz (Казахстан) -F',
     summary: 'Гео-обход с кодом страны KZ (--geo-bypass-country KZ -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country KZ -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео ge -F',
+    token: '· гео ge (Грузия) -F',
     summary: 'Гео-обход с кодом страны GE (--geo-bypass-country GE -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country GE -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео am -F',
+    token: '· гео am (Армения) -F',
     summary: 'Гео-обход с кодом страны AM (--geo-bypass-country AM -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country AM -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео az -F',
+    token: '· гео az (Азербайджан) -F',
     summary: 'Гео-обход с кодом страны AZ (--geo-bypass-country AZ -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country AZ -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео iq -F',
+    token: '· гео iq (Ирак) -F',
     summary: 'Гео-обход с кодом страны IQ (--geo-bypass-country IQ -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country IQ -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео lk -F',
+    token: '· гео lk (Шри-Ланка) -F',
     summary: 'Гео-обход с кодом страны LK (--geo-bypass-country LK -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country LK -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео tn -F',
+    token: '· гео tn (Тунис) -F',
     summary: 'Гео-обход с кодом страны TN (--geo-bypass-country TN -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country TN -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео ma -F',
+    token: '· гео ma (Марокко) -F',
     summary: 'Гео-обход с кодом страны MA (--geo-bypass-country MA -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country MA -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео dz -F',
+    token: '· гео dz (Алжир) -F',
     summary: 'Гео-обход с кодом страны DZ (--geo-bypass-country DZ -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country DZ -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео gh -F',
+    token: '· гео gh (Гана) -F',
     summary: 'Гео-обход с кодом страны GH (--geo-bypass-country GH -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country GH -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео et -F',
+    token: '· гео et (Эфиопия) -F',
     summary: 'Гео-обход с кодом страны ET (--geo-bypass-country ET -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country ET -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео uy -F',
+    token: '· гео uy (Уругвай) -F',
     summary: 'Гео-обход с кодом страны UY (--geo-bypass-country UY -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country UY -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео bo -F',
+    token: '· гео bo (Боливия) -F',
     summary: 'Гео-обход с кодом страны BO (--geo-bypass-country BO -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country BO -F '
   },
@@ -2671,7 +2671,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео sm -F',
+    token: '· гео sm (Сан-Марино) -F',
     summary: 'Гео-обход через Сан-Марино (--geo-bypass-country SM -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country SM -F '
   },
@@ -2683,37 +2683,37 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· гео gi -F',
+    token: '· гео gi (Гибралтар) -F',
     summary: 'Гео-обход через Гибралтар (--geo-bypass-country GI -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country GI -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео je -F',
+    token: '· гео je (Джерси) -F',
     summary: 'Гео-обход через Джерси (--geo-bypass-country JE -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country JE -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео gg -F',
+    token: '· гео gg (Гернси) -F',
     summary: 'Гео-обход через Гернси (--geo-bypass-country GG -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country GG -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео im -F',
+    token: '· гео im (Остров Мэн) -F',
     summary: 'Гео-обход через Остров Мэн (--geo-bypass-country IM -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country IM -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео fo -F',
+    token: '· гео fo (Фареры) -F',
     summary: 'Гео-обход через Фарерские острова (--geo-bypass-country FO -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country FO -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· гео gl -F',
+    token: '· гео gl (Гренландия) -F',
     summary: 'Гео-обход через Гренландию (--geo-bypass-country GL -F); допишите ссылку.',
     fullLine: 'yt-dlp --geo-bypass-country GL -F '
   },

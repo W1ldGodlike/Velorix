@@ -600,3 +600,4 @@
 - [J-583] 2026-05-14 20:45:00 [Assistant]: §15 — `Help/ffmpeg-terminal-hints.md`: в разделе «Встроенные сценарии» та же ясность, что и в EN — явно **допишите ссылку** vs **допишите URL** и порядок npm-скриптов.
 - [J-584] 2026-05-14 20:50:00 [Assistant]: `README.md` — в «Полезное» добавлена строка про правки `summary` в `terminal-contract.ts` и `npm run locales:terminal-summaries-ru` со ссылкой на `Help/ffmpeg-terminal-hints.md`.
 - [J-585] 2026-05-14 20:51:00 [Assistant]: §8 — `token`: гео tr/ch/cr/pa/mc/li/va/ne + гео-обход de/fr/es/pl/se — страна в скобках; `fullLine` без изменений.
+- [J-586] 2026-05-14 21:00:00 [Assistant]: §8 — `token`: гео mx…gl (≈57 ISO) — страна/территория в скобках; `fullLine` без изменений.
