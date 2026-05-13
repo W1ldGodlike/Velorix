@@ -583,3 +583,4 @@
 - [J-566] 2026-05-14 13:00:00 [Assistant]: §8 — `token`: DRM→защита контента, сетевой фрагмент 1M, Accept-Language, json/ffprobe-формулировки, generic-экстрактор, сырая HTML; `fullLine` без изменений.
 - [J-567] 2026-05-14 14:00:00 [Assistant]: §8 — `token`: aria2→aria2, pem в скобках, avc/av1 в нижнем регистре, TV Everywhere с «—», HLS встроенный, принудительно IPv4/IPv6; `fullLine` без изменений.
 - [J-568] 2026-05-14 15:00:00 [Assistant]: §8 — `token`: mpd/ebu r128/tls нижний регистр, BiDi из токена, кросс-пан стерео, сводка версии ffprobe; `fullLine` без изменений.
+- [J-569] 2026-05-14 16:00:00 [Assistant]: §8 — `token`: youtube/hls/ts/html в нижнем регистре, cookie-браузеры, referer youtube, трассировка tls, ipv4/ipv6, api sponsorblock; `fullLine` без изменений.

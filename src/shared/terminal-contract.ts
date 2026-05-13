@@ -30,7 +30,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· cookie из Chrome',
+    token: '· cookie из chrome',
     summary: 'Сухой прогон с файлами cookie из Chrome (--cookies-from-browser); допишите URL.',
     fullLine: 'yt-dlp --skip-download --cookies-from-browser chrome '
   },
@@ -342,13 +342,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· YouTube: клиент веб-сайта -F',
+    token: '· youtube: клиент веб-сайта -F',
     summary: 'YouTube: принудительно веб-клиент через --extractor-args (обход части ограничений), затем ключ -F для списка форматов; допишите URL.',
     fullLine: 'yt-dlp --extractor-args youtube:player_client=web -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· cookie из Edge',
+    token: '· cookie из edge',
     summary: 'Сухой прогон с файлами cookie из Edge (--cookies-from-browser); допишите URL (альтернатива Chrome).',
     fullLine: 'yt-dlp --skip-download --cookies-from-browser edge '
   },
@@ -426,7 +426,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· cookie из Firefox',
+    token: '· cookie из firefox',
     summary: 'Сухой прогон с файлами cookie из Firefox (--cookies-from-browser); допишите URL (альтернатива Chrome и Edge).',
     fullLine: 'yt-dlp --skip-download --cookies-from-browser firefox '
   },
@@ -588,7 +588,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· запись страниц в HTML',
+    token: '· запись страниц в html',
     summary: 'Сохранить сырые HTML-страницы модуля извлечения (extractor) в .dump (--write-pages --skip-download); диагностика разметки и ответов 403; допишите URL.',
     fullLine: 'yt-dlp --write-pages --skip-download '
   },
@@ -618,7 +618,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· принудительно IPv4 -F',
+    token: '· принудительно ipv4 -F',
     summary: 'Список форматов только через IPv4 (--force-ipv4 -F); если -6 не подходит; допишите URL.',
     fullLine: 'yt-dlp --force-ipv4 -F '
   },
@@ -654,7 +654,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· HLS: встроенный загрузчик -F',
+    token: '· hls: встроенный загрузчик -F',
     summary: 'HLS: встроенный загрузчик вместо утилиты FFmpeg, где возможно (--hls-prefer-native -F); допишите URL.',
     fullLine: 'yt-dlp --hls-prefer-native -F '
   },
@@ -810,7 +810,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· заголовок referer для YouTube -F',
+    token: '· заголовок referer для youtube -F',
     summary: 'Заголовок Referer для HTTP: обход ограничений хотлинка и CDN (--referer https://www.youtube.com/ -F); замените домен под сайт; допишите URL.',
     fullLine: 'yt-dlp --referer https://www.youtube.com/ -F '
   },
@@ -936,7 +936,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· принудительно IPv6 -F',
+    token: '· принудительно ipv6 -F',
     summary: 'Список форматов через IPv6 (--force-ipv6 -F); обход части проблем IPv4 и NAT; допишите URL.',
     fullLine: 'yt-dlp --force-ipv6 -F '
   },
@@ -1116,7 +1116,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· HLS: внешний загрузчик ffmpeg -F',
+    token: '· hls: внешний загрузчик ffmpeg -F',
     summary: 'HLS: тянуть поток через утилиту FFmpeg вместо встроенного загрузчика (--hls-prefer-ffmpeg -F); обход части CDN-глюков; допишите URL.',
     fullLine: 'yt-dlp --hls-prefer-ffmpeg -F '
   },
@@ -1236,7 +1236,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· cookie из Brave',
+    token: '· cookie из brave',
     summary: 'Сухой прогон с файлами cookie из Brave (--skip-download --cookies-from-browser brave); допишите URL.',
     fullLine: 'yt-dlp --skip-download --cookies-from-browser brave '
   },
@@ -1344,7 +1344,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· дамп страниц в HTML',
+    token: '· дамп страниц в html',
     summary: 'Сырой дамп HTML-страниц модуля извлечения (extractor) в файлы (--dump-pages --skip-download); диагностика разметки и ответов API; допишите URL.',
     fullLine: 'yt-dlp --dump-pages --skip-download '
   },
@@ -1368,7 +1368,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· HLS в контейнере TS -F',
+    token: '· hls в контейнере ts -F',
     summary: 'HLS: сохранять как MPEG-TS сегменты (--hls-use-mpegts -F) при проблемах с фрагментами; допишите URL.',
     fullLine: 'yt-dlp --hls-use-mpegts -F '
   },
@@ -1446,19 +1446,19 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· YouTube: Android-клиент -F',
+    token: '· youtube: android-клиент -F',
     summary: 'YouTube: клиент Android через --extractor-args (--extractor-args youtube:player_client=android -F); обход части веб-ограничений; допишите URL.',
     fullLine: 'yt-dlp --extractor-args youtube:player_client=android -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· YouTube: встроенный клиент TV -F',
+    token: '· youtube: встроенный клиент tv -F',
     summary: 'YouTube: встроенный TV-клиент (--extractor-args youtube:player_client=tv_embedded -F); допишите URL.',
     fullLine: 'yt-dlp --extractor-args youtube:player_client=tv_embedded -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· YouTube: iOS-клиент -F',
+    token: '· youtube: ios-клиент -F',
     summary: 'YouTube: iOS-клиент через --extractor-args (--extractor-args youtube:player_client=ios -F); допишите URL.',
     fullLine: 'yt-dlp --extractor-args youtube:player_client=ios -F '
   },
@@ -1494,19 +1494,19 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· cookie из Opera',
+    token: '· cookie из opera',
     summary: 'Сухой прогон с файлами cookie из Opera (--skip-download --cookies-from-browser opera); допишите URL.',
     fullLine: 'yt-dlp --skip-download --cookies-from-browser opera '
   },
   {
     tool: 'yt-dlp',
-    token: '· cookie из Chromium',
+    token: '· cookie из chromium',
     summary: 'Сухой прогон с файлами cookie из Chromium (--skip-download --cookies-from-browser chromium); допишите URL.',
     fullLine: 'yt-dlp --skip-download --cookies-from-browser chromium '
   },
   {
     tool: 'yt-dlp',
-    token: '· cookie из Vivaldi',
+    token: '· cookie из vivaldi',
     summary: 'Сухой прогон с файлами cookie из Vivaldi (--skip-download --cookies-from-browser vivaldi); допишите URL.',
     fullLine: 'yt-dlp --skip-download --cookies-from-browser vivaldi '
   },
@@ -1518,7 +1518,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· YouTube: мобильный веб-клиент -F',
+    token: '· youtube: мобильный веб-клиент -F',
     summary: 'YouTube: мобильный веб-клиент mweb через --extractor-args (--extractor-args youtube:player_client=mweb -F); допишите URL.',
     fullLine: 'yt-dlp --extractor-args youtube:player_client=mweb -F '
   },
@@ -1536,19 +1536,19 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· cookie из Safari',
+    token: '· cookie из safari',
     summary: 'Сухой прогон с файлами cookie из Safari (--skip-download --cookies-from-browser safari); macOS и Windows — по наличию профиля; допишите URL.',
     fullLine: 'yt-dlp --skip-download --cookies-from-browser safari '
   },
   {
     tool: 'yt-dlp',
-    token: '· YouTube: веб-клиент автора -F',
+    token: '· youtube: веб-клиент автора -F',
     summary: 'YouTube: web_creator через --extractor-args (--extractor-args youtube:player_client=web_creator -F); YouTube Studio и ограниченные кейсы; допишите URL.',
     fullLine: 'yt-dlp --extractor-args youtube:player_client=web_creator -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· YouTube: встраиваемый веб-клиент -F',
+    token: '· youtube: встраиваемый веб-клиент -F',
     summary: 'YouTube: web_embedded через --extractor-args (--extractor-args youtube:player_client=web_embedded -F); встраиваемый плеер; допишите URL.',
     fullLine: 'yt-dlp --extractor-args youtube:player_client=web_embedded -F '
   },
@@ -1620,7 +1620,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· YouTube: веб-клиент Safari -F',
+    token: '· youtube: веб-клиент safari -F',
     summary: 'YouTube: web_safari через --extractor-args (--extractor-args youtube:player_client=web_safari -F); Safari-подобный веб-клиент; допишите URL.',
     fullLine: 'yt-dlp --extractor-args youtube:player_client=web_safari -F '
   },
@@ -1837,7 +1837,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· без TS в HLS -F',
+    token: '· без ts в hls -F',
     summary: 'Отключить MPEG-TS для HLS (--no-hls-use-mpegts -F); противоположность --hls-use-mpegts; допишите URL.',
     fullLine: 'yt-dlp --no-hls-use-mpegts -F '
   },
@@ -1975,7 +1975,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· запасной API SponsorBlock -F',
+    token: '· запасной api sponsorblock -F',
     summary: 'Альтернативный адрес веб-API сервиса SponsorBlock (--sponsorblock-api https://sponsor.ajay.app -F) при сбоях сервера по умолчанию; допишите URL.',
     fullLine: 'yt-dlp --sponsorblock-api https://sponsor.ajay.app -F '
   },
@@ -2575,7 +2575,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· HLS по разрывам -F',
+    token: '· hls по разрывам -F',
     summary: 'HLS: резать плейлист по границам разрыва (discontinuity, --hls-split-discontinuity -F); стабильнее MPEG-TS-сегменты; допишите URL.',
     fullLine: 'yt-dlp --hls-split-discontinuity -F '
   },
@@ -2587,7 +2587,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· без сырой разметки HTML -F',
+    token: '· без сырой разметки html -F',
     summary: 'Не сохранять сырые HTML-страницы модуля извлечения (extractor) (--no-write-pages -F); чище диск при -F; допишите URL.',
     fullLine: 'yt-dlp --no-write-pages -F '
   },
@@ -2761,7 +2761,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· трассировка сети и TLS -F',
+    token: '· трассировка сети и tls -F',
     summary: 'Печать HTTP и TLS трафика в стандартный поток ошибок (stderr) (--print-traffic -F); очень подробный вывод, только диагностика; допишите URL.',
     fullLine: 'yt-dlp --print-traffic -F '
   },
