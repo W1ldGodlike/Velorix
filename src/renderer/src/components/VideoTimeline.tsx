@@ -21,6 +21,8 @@ const MIN_TRIM_GAP_SEC = 0.05
 const TIMELINE_ZOOM_MAX = 8
 /** Минимальное смещение указателя (px), после которого жест считается выделением In–Out, а не щелчком. */
 const TRIM_DRAG_THRESHOLD_PX = 4
+/** Зона нажатия у вертикали маркера In/Out (ручка), от края выделения в px. */
+const TRIM_HANDLE_HIT_PX = 11
 
 function formatTime(sec: number): string {
   if (!Number.isFinite(sec) || sec < 0) {
@@ -151,9 +153,10 @@ export default function VideoTimeline({
   /** Левый край окна времени при zoom>1 (секунды от начала файла). */
   const [timelineWindowStartSec, setTimelineWindowStartSec] = useState(0)
 
-  const markerTrackRef = useRef<HTMLDivElement | null>(null)
+  const timelinePaneRef = useRef<HTMLDivElement | null>(null)
   const trimPointerRef = useRef<{
     pointerId: number
+    mode: 'marquee' | 'inHandle' | 'outHandle'
     startClientX: number
     startSec: number
     dragging: boolean
@@ -268,20 +271,7 @@ export default function VideoTimeline({
     v.currentTime = snapSeekTimeSec(next, duration, fps)
   }
 
-  function seekFromRulerPointer(clientX: number, trackEl: Element): void {
-    if (!Number.isFinite(duration) || duration <= 0 || windowLenSec <= 0) {
-      return
-    }
-    const rect = trackEl.getBoundingClientRect()
-    const w = rect.width
-    if (!(w > 0)) {
-      return
-    }
-    const frac = (clientX - rect.left) / w
-    seek(Math.min(1, Math.max(0, frac)))
-  }
-
-  function handleRulerKeyDown(e: KeyboardEvent<HTMLDivElement>): void {
+  function handleTimelinePaneKeyDown(e: KeyboardEvent<HTMLDivElement>): void {
     if (!(duration > 0) || !(windowLenSec > 0)) {
       return
     }
@@ -396,9 +386,9 @@ export default function VideoTimeline({
     setTrim({ inSec: 0, outSec: duration })
   }
 
-  const timelineSecFromMarkerClientX = useCallback(
+  const timelineSecFromPaneClientX = useCallback(
     (clientX: number): number | null => {
-      const el = markerTrackRef.current
+      const el = timelinePaneRef.current
       if (!el || !(duration > 0) || !(windowLenSec > 0)) {
         return null
       }
@@ -425,7 +415,13 @@ export default function VideoTimeline({
       } catch {
         /* уже снят */
       }
-      if (seekOnClick && !st.dragging && duration > 0 && windowLenSec > 0) {
+      if (
+        st.mode === 'marquee' &&
+        seekOnClick &&
+        !st.dragging &&
+        duration > 0 &&
+        windowLenSec > 0
+      ) {
         const frac = (st.startSec - winStartEff) / windowLenSec
         seek(Math.min(1, Math.max(0, frac)))
       }
@@ -433,34 +429,81 @@ export default function VideoTimeline({
     [duration, windowLenSec, winStartEff, seek]
   )
 
-  const onMarkerTrackPointerDown = useCallback(
+  const resolveTrimPointerMode = useCallback(
+    (clientX: number): 'marquee' | 'inHandle' | 'outHandle' => {
+      const pane = timelinePaneRef.current
+      if (!pane || markerZoomOverlay === null) {
+        return 'marquee'
+      }
+      const rect = pane.getBoundingClientRect()
+      const w = rect.width
+      if (!(w > 0)) {
+        return 'marquee'
+      }
+      const leftPx = rect.left + (markerZoomOverlay.leftPct / 100) * w
+      const rightPx = rect.left + ((markerZoomOverlay.leftPct + markerZoomOverlay.widthPct) / 100) * w
+      if (Math.abs(clientX - leftPx) <= TRIM_HANDLE_HIT_PX) {
+        return 'inHandle'
+      }
+      if (Math.abs(clientX - rightPx) <= TRIM_HANDLE_HIT_PX) {
+        return 'outHandle'
+      }
+      return 'marquee'
+    },
+    [markerZoomOverlay]
+  )
+
+  const onTimelinePanePointerDownCapture = useCallback(
     (ev: PointerEvent<HTMLDivElement>): void => {
       if (ev.button !== 0 || duration <= 0) {
         return
       }
-      const t0 = timelineSecFromMarkerClientX(ev.clientX)
+      const t0 = timelineSecFromPaneClientX(ev.clientX)
       if (t0 === null) {
         return
       }
+      const mode = resolveTrimPointerMode(ev.clientX)
       trimPointerRef.current = {
         pointerId: ev.pointerId,
+        mode,
         startClientX: ev.clientX,
         startSec: t0,
         dragging: false
       }
       ev.currentTarget.setPointerCapture(ev.pointerId)
+      if (mode !== 'marquee') {
+        ev.preventDefault()
+      }
     },
-    [duration, timelineSecFromMarkerClientX]
+    [duration, resolveTrimPointerMode, timelineSecFromPaneClientX]
   )
 
-  const onMarkerTrackPointerMove = useCallback(
+  const onTimelinePanePointerMove = useCallback(
     (ev: PointerEvent<HTMLDivElement>): void => {
       const st = trimPointerRef.current
       if (!st || st.pointerId !== ev.pointerId) {
         return
       }
-      const t1 = timelineSecFromMarkerClientX(ev.clientX)
+      const t1 = timelineSecFromPaneClientX(ev.clientX)
       if (t1 === null) {
+        return
+      }
+      const fps = approxVideoFpsFromProbe(probe)
+      if (st.mode === 'inHandle') {
+        const snapped = snapSeekTimeSec(t1, duration, fps)
+        setTrim((prev) => {
+          const o = prev.outSec ?? duration
+          const { inSec, outSec } = clampTrimRange(snapped, o, duration)
+          return { inSec, outSec }
+        })
+        return
+      }
+      if (st.mode === 'outHandle') {
+        const snapped = snapSeekTimeSec(t1, duration, fps)
+        setTrim((prev) => {
+          const { inSec, outSec } = clampTrimRange(prev.inSec, snapped, duration)
+          return { inSec, outSec }
+        })
         return
       }
       if (!st.dragging) {
@@ -469,16 +512,15 @@ export default function VideoTimeline({
         }
         st.dragging = true
       }
-      const fps = approxVideoFpsFromProbe(probe)
       const a = snapSeekTimeSec(Math.min(st.startSec, t1), duration, fps)
       const b = snapSeekTimeSec(Math.max(st.startSec, t1), duration, fps)
       const { inSec, outSec } = clampTrimRange(a, b, duration)
       setTrim({ inSec, outSec })
     },
-    [duration, probe, timelineSecFromMarkerClientX]
+    [duration, probe, timelineSecFromPaneClientX]
   )
 
-  const onMarkerTrackPointerUpOrCancel = useCallback(
+  const onTimelinePanePointerUpOrCancel = useCallback(
     (ev: PointerEvent<HTMLDivElement>): void => {
       const st = trimPointerRef.current
       if (!st || st.pointerId !== ev.pointerId) {
@@ -489,7 +531,7 @@ export default function VideoTimeline({
     [endTrimPointerGesture]
   )
 
-  const onMarkerTrackLostPointerCapture = useCallback(
+  const onTimelinePaneLostPointerCapture = useCallback(
     (ev: PointerEvent<HTMLDivElement>): void => {
       const st = trimPointerRef.current
       if (!st || st.pointerId !== ev.pointerId) {
@@ -610,11 +652,38 @@ export default function VideoTimeline({
 
       {duration > 0 ? (
         <div className="app-timeline-unified">
-          <div className="app-timeline-ruler" aria-label={uiText('videoTimelineRulerAria')}>
+          <div className="app-timeline-pane">
+            <div className="app-timeline-pane-visuals">
+              <div className="app-timeline-ruler" aria-hidden="true">
+                <div className="app-timeline-ruler-track">
+                  {rulerTicks.map((t) => (
+                    <span
+                      key={`ruler-tick-${String(t)}`}
+                      className="app-timeline-ruler-tick"
+                      style={{ left: `${((t - winStartEff) / windowLenSec) * 100}%` }}
+                    >
+                      <span className="app-timeline-ruler-label">{formatTime(t)}</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="app-timeline-waveform-passive">
+                <TimelineWaveform
+                  key={mediaKey}
+                  mediaKey={mediaKey}
+                  mediaUrl={mediaUrl}
+                  durationSec={duration}
+                  windowStartSec={winStartEff}
+                  windowLenSec={windowLenSec}
+                />
+              </div>
+            </div>
             <div
-              className="app-timeline-ruler-track"
+              ref={timelinePaneRef}
+              className={`app-timeline-interaction-glass${markersDisjointZoomWindow ? ' app-timeline-interaction-glass-idle' : ''}`}
               tabIndex={0}
               role="slider"
+              aria-label={uiText('videoTimelineUnifiedPaneAria')}
               aria-valuemin={0}
               aria-valuemax={1000}
               aria-valuenow={Math.round(Math.min(1, Math.max(0, ratio)) * 1000)}
@@ -623,65 +692,45 @@ export default function VideoTimeline({
                 winStart: formatTime(winStartEff),
                 winEnd: formatTime(Math.min(duration, winStartEff + windowLenSec))
               })}
-              onPointerDown={(ev) => {
-                if (ev.button !== 0) {
-                  return
-                }
-                ev.preventDefault()
-                ev.currentTarget.focus()
-                seekFromRulerPointer(ev.clientX, ev.currentTarget)
-              }}
-              onKeyDown={handleRulerKeyDown}
-            >
-              {rulerTicks.map((t) => (
-                <span
-                  key={`ruler-tick-${String(t)}`}
-                  className="app-timeline-ruler-tick"
-                  style={{ left: `${((t - winStartEff) / windowLenSec) * 100}%` }}
-                >
-                  <span className="app-timeline-ruler-label">{formatTime(t)}</span>
-                </span>
-              ))}
-              {rulerPlayheadPct !== null && rulerPlayheadPct >= -1 && rulerPlayheadPct <= 101 ? (
-                <span
-                  className="app-timeline-ruler-playhead"
-                  style={{ left: `${Math.min(100, Math.max(0, rulerPlayheadPct))}%` }}
-                />
-              ) : null}
-            </div>
-          </div>
-          <TimelineWaveform
-            key={mediaKey}
-            mediaKey={mediaKey}
-            mediaUrl={mediaUrl}
-            durationSec={duration}
-            windowStartSec={winStartEff}
-            windowLenSec={windowLenSec}
-          />
-          <div className="app-timeline-marker-strip" aria-label={uiText('videoTimelineMarkerStripAria')}>
-            <div
-              ref={markerTrackRef}
-              className={`app-timeline-marker-track${markersDisjointZoomWindow ? ' app-timeline-marker-track-idle' : ''}`}
-              tabIndex={0}
               title={
                 markersDisjointZoomWindow
                   ? uiText('videoTimelineMarkersOutsideWindowTitle')
-                  : uiText('videoTimelineMarkerStripDragTitle')
+                  : uiText('videoTimelineUnifiedPaneHintTitle')
               }
-              onPointerDown={onMarkerTrackPointerDown}
-              onPointerMove={onMarkerTrackPointerMove}
-              onPointerUp={onMarkerTrackPointerUpOrCancel}
-              onPointerCancel={onMarkerTrackPointerUpOrCancel}
-              onLostPointerCapture={onMarkerTrackLostPointerCapture}
+              onPointerDownCapture={onTimelinePanePointerDownCapture}
+              onPointerMove={onTimelinePanePointerMove}
+              onPointerUp={onTimelinePanePointerUpOrCancel}
+              onPointerCancel={onTimelinePanePointerUpOrCancel}
+              onLostPointerCapture={onTimelinePaneLostPointerCapture}
+              onKeyDown={handleTimelinePaneKeyDown}
             >
-              {markerZoomOverlay ? (
-                <div
-                  className="app-timeline-marker-selection"
-                  style={{
-                    left: `${markerZoomOverlay.leftPct}%`,
-                    width: `${markerZoomOverlay.widthPct}%`
-                  }}
+              {rulerPlayheadPct !== null && rulerPlayheadPct >= -1 && rulerPlayheadPct <= 101 ? (
+                <span
+                  className="app-timeline-pane-playhead"
+                  style={{ left: `${Math.min(100, Math.max(0, rulerPlayheadPct))}%` }}
+                  aria-hidden
                 />
+              ) : null}
+              {markerZoomOverlay ? (
+                <>
+                  <div
+                    className="app-timeline-marker-selection"
+                    style={{
+                      left: `${markerZoomOverlay.leftPct}%`,
+                      width: `${markerZoomOverlay.widthPct}%`
+                    }}
+                  />
+                  <div
+                    className="app-timeline-handle app-timeline-handle--in"
+                    style={{ left: `${markerZoomOverlay.leftPct}%` }}
+                    title={uiText('videoTimelineInHandleDragTitle')}
+                  />
+                  <div
+                    className="app-timeline-handle app-timeline-handle--out"
+                    style={{ left: `${markerZoomOverlay.leftPct + markerZoomOverlay.widthPct}%` }}
+                    title={uiText('videoTimelineOutHandleDragTitle')}
+                  />
+                </>
               ) : null}
             </div>
           </div>

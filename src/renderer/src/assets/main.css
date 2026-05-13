@@ -2056,16 +2056,104 @@ button.app-downloads-hint-token:disabled {
   min-width: 0;
 }
 
+.app-timeline-pane {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 52px;
+}
+
+.app-timeline-pane-visuals {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  pointer-events: none;
+}
+
+.app-timeline-waveform-passive {
+  min-width: 0;
+}
+
+.app-timeline-waveform-passive .app-timeline-waveform {
+  pointer-events: none;
+}
+
+.app-timeline-interaction-glass {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  cursor: crosshair;
+  touch-action: none;
+  user-select: none;
+}
+
+.app-timeline-interaction-glass:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 1px;
+  border-radius: 3px;
+}
+
+.app-timeline-interaction-glass-idle {
+  opacity: 0.88;
+}
+
+.app-timeline-pane-playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--fa-accent);
+  border-radius: 1px;
+  pointer-events: none;
+  opacity: 0.95;
+  z-index: 3;
+}
+
+.app-timeline-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 16px;
+  margin-left: -8px;
+  z-index: 4;
+  cursor: ew-resize;
+  touch-action: none;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 3px;
+}
+
+.app-timeline-handle::after {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 13px;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--fa-bg) 55%, transparent);
+}
+
+.app-timeline-handle--in::after {
+  background: color-mix(in srgb, var(--fa-success) 88%, var(--fa-surface) 12%);
+}
+
+.app-timeline-handle--out::after {
+  background: color-mix(in srgb, var(--fa-danger) 88%, var(--fa-surface) 12%);
+}
+
+.app-timeline-pane .app-timeline-ruler-track {
+  cursor: default;
+}
+
 .app-timeline-unified .app-timeline-ruler {
   padding: 0.06rem 0.12rem 0;
 }
 
 .app-timeline-unified .app-timeline-waveform {
   padding: 0 0.12rem;
-}
-
-.app-timeline-unified .app-timeline-marker-strip {
-  padding: 0 0.12rem 0.02rem;
 }
 
 .app-timeline-footer {

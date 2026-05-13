@@ -804,6 +804,12 @@ const UI_TEXT = {
     videoTimelineMarkerStripAria: 'Фрагмент экспорта (In–Out): выделение мышью по дорожке',
     videoTimelineMarkerStripDragTitle:
       'Перетащите по дорожке, чтобы выделить фрагмент; короткий щелчок — перемотать к этому месту',
+    videoTimelineUnifiedPaneAria:
+      'Единая шкала времени и обрезка: щелчок — перемотка, перетаскивание — выделение фрагмента, края выделения — маркеры In и Out',
+    videoTimelineUnifiedPaneHintTitle:
+      'Щелчок — перемотка; перетаскивание — выделить фрагмент; у зелёной и красной линии — перетащите маркеры In/Out',
+    videoTimelineInHandleDragTitle: 'Перетащите, чтобы сдвинуть маркер In (начало фрагмента)',
+    videoTimelineOutHandleDragTitle: 'Перетащите, чтобы сдвинуть маркер Out (конец фрагмента)',
     videoTimelineIoAria: 'Маркеры In / Out',
     videoTimelineTrimReadoutTitle:
       'Диапазон для экспорта (раздел 7.1): передаётся в ffmpeg как -ss/-t',
@@ -1651,6 +1657,12 @@ const UI_TEXT = {
     videoTimelineMarkerStripAria: 'Export range (In–Out): drag on the track to select',
     videoTimelineMarkerStripDragTitle:
       'Drag on the track to select a range; a short click seeks to that time',
+    videoTimelineUnifiedPaneAria:
+      'Unified time ruler and trim: click to seek, drag to select a range, drag the green/red trim lines for In/Out',
+    videoTimelineUnifiedPaneHintTitle:
+      'Click to seek; drag to select a range; drag the green and red trim lines to move In/Out',
+    videoTimelineInHandleDragTitle: 'Drag to move the In marker (export range start)',
+    videoTimelineOutHandleDragTitle: 'Drag to move the Out marker (export range end)',
     videoTimelineIoAria: 'In / Out markers',
     videoTimelineTrimReadoutTitle: 'Export range (section 7.1): passed to ffmpeg as -ss / -t',
     videoTimelineExportJumpTitle:
