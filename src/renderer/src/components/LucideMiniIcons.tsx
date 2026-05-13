@@ -218,6 +218,20 @@ export function IconCircleHelp({
   )
 }
 
+export function IconBook({
+  title,
+  size = 20
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title ?? miniIconTitle('miniIconBook')} size={size}>
+      {renderStrokeParts(DOWNLOADS_TOPBAR_CLUSTER_ICONS.book)}
+    </SvgBase>
+  )
+}
+
 export function IconImage({
   title,
   size = 20

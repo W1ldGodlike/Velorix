@@ -86,7 +86,7 @@ const UI_TEXT = {
     terminalIntroLead:
       'Разрешены только префиксы ffmpeg, ffprobe и yt-dlp. Команда разбирается как argv, запускается в основном процессе (main) без оболочки (shell); каталог выбранного движка добавляется в PATH. В argv можно токен ',
     terminalIntroTailTemplate:
-      ' — подставится путь текущего превью редактора (только если файл уже открыт через диалог или перетаскивание). В строке ввода — подсказки при вводе (автодополнение): стрелки вверх/вниз, Home/End, PgUp/PgDn (шаг {pageStep}), Shift+Tab — предыдущая позиция в списке, Tab и Enter — подставить активную подсказку (до {maxInline} подсказок из той же базы, что и справа). Рядом есть полный выпадающий список (до {maxDd} пунктов по категориям инструментов): в поле фильтра списка — стрелки вверх/вниз, Home/End, PgUp/PgDn (шаг {pageStep}), Enter — вставить выделенную подсказку в argv, Escape — сбросить фильтр (или убрать фокус, если фильтр уже пуст). В журнале вывода каждая строка с кнопкой «Копир.» при наведении (копирует ровно эту строку). ',
+      ' — подставится путь текущего превью редактора (только если файл уже открыт через диалог или перетаскивание). В строке ввода при наборе — компактное автодополнение: стрелки вверх/вниз, Home/End, PgUp/PgDn (шаг {pageStep}), Shift+Tab — предыдущая позиция, Tab и Enter — подставить активную подсказку (до {maxInline} вариантов из той же базы, что и справа). Полный перечень — в боковой панели: «Поиск подсказок», клик по строке (если у подсказки есть готовая команда — подставится целиком). В журнале вывода у каждой строки — кнопка «Копир.» при наведении (копирует ровно эту строку). ',
     terminalCommandInputAriaLabel: 'Ввод команды терминала',
     terminalCommandPlaceholder: 'ffprobe -version',
     terminalPreviewFileButton: 'Превью-файл',
@@ -839,6 +839,7 @@ const UI_TEXT = {
     miniIconZoomOut: 'Уменьшить масштаб таймлайна',
     miniIconZoomIn: 'Увеличить масштаб таймлайна',
     miniIconCircleHelp: 'О программе',
+    miniIconBook: 'База знаний',
     miniIconImage: 'Снимок кадра',
     miniIconSave: 'Экспорт',
     miniIconSettings: 'Пути к движкам',
@@ -924,7 +925,7 @@ const UI_TEXT = {
     terminalIntroLead:
       'Only the ffmpeg, ffprobe, and yt-dlp prefixes are allowed. The command is parsed as argv, runs in the main process without a shell, and PATH is extended with the selected engine folder. In argv you can use the placeholder ',
     terminalIntroTailTemplate:
-      ' — it expands to the current editor preview path (only when a file is already open via the dialog or DnD). The input line has compact IntelliSense: Up/Down, Home/End, PgUp/PgDn (step {pageStep}), Shift+Tab moves the selection up in the list, Tab and Enter insert the active suggestion (up to {maxInline} suggestions from the same catalog as on the right). Next to it is a full dropdown list (up to {maxDd} items grouped by tool): in the list filter field — Up/Down, Home/End, PgUp/PgDn (step {pageStep}), Enter inserts the selected suggestion into argv, Escape clears the filter (or blurs the field when the filter is already empty). Each line in the output log has a “Copy” hover button (copies exactly that line). ',
+      ' — it expands to the current editor preview path (only when a file is already open via the dialog or DnD). While typing, the input shows compact IntelliSense: Up/Down, Home/End, PgUp/PgDn (step {pageStep}), Shift+Tab moves the selection up, Tab and Enter insert the active suggestion (up to {maxInline} items from the same catalog as the sidebar). The full catalog is in the right-hand panel: use “Filter hints”, click a row (when a hint has a full command line, it replaces the whole line). Each line in the output log has a “Copy” hover button (copies exactly that line). ',
     terminalCommandInputAriaLabel: 'CLI command',
     terminalCommandPlaceholder: 'ffprobe -version',
     terminalPreviewFileButton: 'Preview file',
@@ -1665,6 +1666,7 @@ const UI_TEXT = {
     miniIconZoomOut: 'Zoom timeline out',
     miniIconZoomIn: 'Zoom timeline in',
     miniIconCircleHelp: 'About',
+    miniIconBook: 'Knowledge base',
     miniIconImage: 'Frame capture',
     miniIconSave: 'Export',
     miniIconSettings: 'Engine paths',
@@ -1745,14 +1747,12 @@ export function uiTextVars(key: UiTextKey, vars: Record<string, string | number>
 export type TerminalIntroTailVars = {
   pageStep: number
   maxInline: number
-  maxDd: number
 }
 
 export function formatTerminalIntroTail(vars: TerminalIntroTailVars): string {
   return UI_TEXT[getUiLocale()].terminalIntroTailTemplate
     .replace(/\{pageStep\}/g, String(vars.pageStep))
     .replace(/\{maxInline\}/g, String(vars.maxInline))
-    .replace(/\{maxDd\}/g, String(vars.maxDd))
 }
 
 export function formatTerminalPreviewTooltip(token: string): string {

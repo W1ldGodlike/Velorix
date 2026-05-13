@@ -155,6 +155,16 @@ export const DOWNLOADS_TOPBAR_CLUSTER_ICONS = {
     { tag: 'path', attr: { d: 'M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3' } },
     { tag: 'path', attr: { d: 'M12 17h.01' } }
   ] as const satisfies readonly StrokePrim[],
+  /** lucide `book` — база знаний (отличается от круглой «справки» у «О программе»). */
+  book: [
+    { tag: 'path', attr: { d: 'M4 19.5A2.5 2.5 0 0 1 6.5 17H20' } },
+    {
+      tag: 'path',
+      attr: {
+        d: 'M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z'
+      }
+    }
+  ] as const satisfies readonly StrokePrim[],
   download: [
     { tag: 'path', attr: { d: 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4' } },
     { tag: 'polyline', attr: { points: '7 10 12 15 17 10' } },
