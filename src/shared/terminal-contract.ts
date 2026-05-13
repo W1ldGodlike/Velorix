@@ -1,4 +1,4 @@
-import type { EngineId } from './engine-contract'
+﻿import type { EngineId } from './engine-contract'
 import type { DownloadsWindowUiLocale } from './downloads-window-ui-locale'
 
 /** argv-токен: main подставляет абсолютный путь текущего превью (`isGrantedMediaPath`). */
@@ -570,7 +570,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: время публикации, Unix (epoch)',
+    token: '· вывод: публикация по unix-эпохе (epoch)',
     summary: 'Время публикации в секундах с эпохи Unix (epoch), если есть, без скачивания (--skip-download --print epoch); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print epoch '
   },
@@ -1416,19 +1416,19 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: время изменения, Unix (modified_timestamp)',
+    token: '· вывод: правка метаданных, unix (modified_timestamp)',
     summary: 'Unix-время последнего изменения метаданных без скачивания (--skip-download --print modified_timestamp); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print modified_timestamp '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: время релиза, Unix (release_timestamp)',
+    token: '· вывод: релиз, unix (release_timestamp)',
     summary: 'Unix-время релиза и премьеры без скачивания (--skip-download --print release_timestamp); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print release_timestamp '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: время загрузки, Unix (upload_timestamp)',
+    token: '· вывод: загрузка на площадку, unix (upload_timestamp)',
     summary: 'Unix-время загрузки на площадку без скачивания (--skip-download --print upload_timestamp); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print upload_timestamp '
   },
@@ -1615,7 +1615,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   {
     tool: 'yt-dlp',
     token: '· вывод: словарь миниатюр (thumbnails)',
-    summary: 'Словарь URL миниатюр (thumbnails) без скачивания (--skip-download --print thumbnails); допишите URL.',
+    summary: 'Словарь ссылок на миниатюры (thumbnails) без скачивания (--skip-download --print thumbnails); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print thumbnails '
   },
   {
@@ -1699,13 +1699,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   {
     tool: 'yt-dlp',
     token: '· вывод: ссылка страницы плейлиста (playlist_webpage_url)',
-    summary: 'URL страницы плейлиста без скачивания (--skip-download --print playlist_webpage_url); допишите URL.',
+    summary: 'Ссылка на страницу плейлиста без скачивания (--skip-download --print playlist_webpage_url); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print playlist_webpage_url '
   },
   {
     tool: 'yt-dlp',
     token: '· вывод: схема ссылки (http/https) (webpage_url_scheme)',
-    summary: 'Схема URL страницы (http и https) без скачивания (--skip-download --print webpage_url_scheme); допишите URL.',
+    summary: 'Схема ссылки страницы (http и https) без скачивания (--skip-download --print webpage_url_scheme); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print webpage_url_scheme '
   },
   {
@@ -1802,7 +1802,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   {
     tool: 'yt-dlp',
     token: '· плоский плейлист: все ссылки',
-    summary: 'Плоский плейлист: все URL элементов без скачивания (--flat-playlist --print urls --skip-download); допишите URL плейлиста.',
+    summary: 'Плоский плейлист: все ссылки элементов без скачивания (--flat-playlist --print urls --skip-download); допишите URL плейлиста.',
     fullLine: 'yt-dlp --flat-playlist --print urls --skip-download '
   },
   {
@@ -1916,7 +1916,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   {
     tool: 'yt-dlp',
     token: '· разрешить локальные file:-ссылки -F',
-    summary: 'Разрешить file:// URL в аргументах (--enable-file-urls -F); только для доверенных путей; допишите URL.',
+    summary: 'Разрешить ссылки file:// в аргументах (--enable-file-urls -F); только для доверенных путей; допишите URL.',
     fullLine: 'yt-dlp --enable-file-urls -F '
   },
   {
@@ -1964,7 +1964,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   {
     tool: 'yt-dlp',
     token: '· поиск по умолчанию -F',
-    summary: 'Поиск по умолчанию, если ввод не похож на URL (--default-search auto: -F); допишите запрос.',
+    summary: 'Поиск по умолчанию, если ввод не похож на ссылку (--default-search auto: -F); допишите запрос.',
     fullLine: 'yt-dlp --default-search auto: -F '
   },
   {
@@ -2720,7 +2720,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   {
     tool: 'yt-dlp',
     token: '· проверка всех ссылок -F',
-    summary: 'Проверить все HTTP-URL фрагментов перед загрузкой (--check-all-urls -F); диагностика кодов 403 и 410 на потоках HLS и DASH; допишите URL.',
+    summary: 'Проверить все HTTP-ссылки фрагментов перед загрузкой (--check-all-urls -F); диагностика кодов 403 и 410 на потоках HLS и DASH; допишите URL.',
     fullLine: 'yt-dlp --check-all-urls -F '
   },
   {
@@ -2756,7 +2756,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   {
     tool: 'yt-dlp',
     token: '· список модулей с описанием',
-    summary: 'Имена и краткие описания модулей извлечения (extractors) без URL (--list-extractor-descriptions); справка по поддерживаемым сайтам.',
+    summary: 'Имена и краткие описания модулей извлечения (extractors) в выводе; ссылка в команде не нужна (--list-extractor-descriptions); справка по поддерживаемым сайтам.',
     fullLine: 'yt-dlp --list-extractor-descriptions'
   },
   {
@@ -2936,7 +2936,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   {
     tool: 'yt-dlp',
     token: '· плейлист: не стоп при ошибке -F',
-    summary: 'Плейлист: продолжать после ошибки отдельного URL (--no-abort-on-error -F); допишите URL.',
+    summary: 'Плейлист: продолжать после ошибки отдельной ссылки (--no-abort-on-error -F); допишите URL.',
     fullLine: 'yt-dlp --no-abort-on-error -F '
   },
   {
