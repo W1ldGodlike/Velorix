@@ -4753,7 +4753,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· http-chunk-size 1M -F',
+    token: '· HTTP-чанк 1 MiB -F',
     summary: 'Меньший HTTP-чанк 1 MiB (--http-chunk-size 1M -F); тонкая подстройка скорости и стабильности CDN; допишите URL.',
     fullLine: 'yt-dlp --http-chunk-size 1M -F '
   },
@@ -4903,7 +4903,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --update-to stable',
+    token: '· обновить yt-dlp → stable',
     summary: 'Обновить yt-dlp до стабильной ветки (--update-to stable); URL не нужен.',
     fullLine: 'yt-dlp --update-to stable'
   }
@@ -4919,25 +4919,25 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· duration',
+    token: '· длительность (format)',
     summary: 'Кратко: длительность, размер и битрейт (duration, size, bit_rate) из блока format.',
     fullLine: `ffprobe -hide_banner -show_entries format=duration,size,bit_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· chapters',
+    token: '· главы и format',
     summary: 'Главы и метаданные контейнера (-show_chapters -show_format); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_chapters -show_format ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· v:0 compact',
+    token: '· видео v:0 кратко',
     summary: 'Поток v:0: ширина, высота, частота кадров и формат пикселей (width, height, r_frame_rate, pix_fmt; одно поле на строку — default=nw=1); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=width,height,r_frame_rate,pix_fmt -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· v:0 color',
+    token: '· видео v:0 цвет',
     summary: 'Поток v:0: цветовое пространство, первичные цвета и кривая переноса (color_space, color_primaries, color_transfer; диагностика HDR и SDR); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=color_space,color_primaries,color_transfer -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -4955,13 +4955,13 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· a:0 compact',
+    token: '· аудио a:0 кратко',
     summary: 'Поток a:0: кодек, частота дискретизации и число каналов (codec_name, sample_rate, channels; одно поле на строку — default=nw=1); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=codec_name,sample_rate,channels -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· a:0 language',
+    token: '· аудио a:0 язык',
     summary: 'Тег языка первой аудиодорожки (stream_tags: language); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream_tags=language -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -4973,7 +4973,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· s:0 compact',
+    token: '· субтитры s:0 кратко',
     summary: 'Поток s:0: кодек и строка тега кодека (codec_name, codec_tag_string; одно поле на строку — default=nw=1); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=codec_name,codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -4991,19 +4991,19 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· format JSON',
+    token: '· format и streams в JSON',
     summary: 'Сводка блоков format и streams в JSON (-of json); удобно скопировать в ZIP-архив для поддержки или обработать в jq.',
     fullLine: `ffprobe -hide_banner -of json -show_format -show_streams ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· show_error',
+    token: '· только ошибки',
     summary: 'Только ошибки контейнера или потока (-v error -show_error); пусто = файл читается без проблем.',
     fullLine: `ffprobe -hide_banner -v error -show_error ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· format tags',
+    token: '· теги контейнера (title, encoder)',
     summary: 'Теги контейнера: заголовок и кодировщик (title, encoder; -show_entries format_tags); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_entries format_tags=title,encoder -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5015,19 +5015,19 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· s:0 tags',
+    token: '· субтитры s:0 теги',
     summary: 'Поток s:0: теги заголовка и языка субтитров (stream_tags: title, language); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream_tags=title,language -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· a:1 compact',
+    token: '· аудио a:1 кратко',
     summary: 'Вторая аудиодорожка a:1: кодек, частота дискретизации и каналы (codec_name, sample_rate, channels; мультиязык и комментарии); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:1 -show_entries stream=codec_name,sample_rate,channels -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
-    token: '· v:0 stream tags',
+    token: '· видео v:0 теги дорожки',
     summary: 'Поток v:0: теги дорожки handler_name и encoder (stream_tags; отдельно от тегов контейнера); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream_tags=handler_name,encoder -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },

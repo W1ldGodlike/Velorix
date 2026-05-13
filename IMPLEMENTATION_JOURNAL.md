@@ -558,3 +558,4 @@
 - [J-541] 2026-05-13 14:05:00 [Assistant]: §8 — продолжение RU-компактных `token` для сценариев yt-dlp (плейлист/загрузчики/HLS/DASH/-S/ANSI/постпроцессор и др.; `fullLine` без изменений).
 - [J-542] 2026-05-13 14:12:00 [Assistant]: §8 — `terminal-contract.ts`: перенос длинной строки `summary` под `--clean-infojson` под prettier (без смысловых правок).
 - [J-543] 2026-05-13 14:18:00 [Assistant]: §8 — тот же блок `--clean-infojson`: многострочный `summary:` (устранён prettier warning в quiet lint).
+- [J-544] 2026-05-13 15:00:00 [Assistant]: §8 — RU-компактные `token` для сценариев yt-dlp: `--extractor-retries`, `--http-chunk-size`, `--playlist-reverse`, `--update-to stable` (`fullLine` без изменений).
