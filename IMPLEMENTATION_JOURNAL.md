@@ -582,3 +582,4 @@
 - [J-565] 2026-05-14 12:00:00 [Assistant]: §8 — `token`: нижний регистр контейнеров/кодеков (mkv/mp4/webm/jpg/png/srt/aac/mp3…), прямая (-g) аудио, шаблон -o, HTML→«страницы в HTML», netrc/xfwd/mp4-бренды; `summary` не трогали; `fullLine` без изменений.
 - [J-566] 2026-05-14 13:00:00 [Assistant]: §8 — `token`: DRM→защита контента, сетевой фрагмент 1M, Accept-Language, json/ffprobe-формулировки, generic-экстрактор, сырая HTML; `fullLine` без изменений.
 - [J-567] 2026-05-14 14:00:00 [Assistant]: §8 — `token`: aria2→aria2, pem в скобках, avc/av1 в нижнем регистре, TV Everywhere с «—», HLS встроенный, принудительно IPv4/IPv6; `fullLine` без изменений.
+- [J-568] 2026-05-14 15:00:00 [Assistant]: §8 — `token`: mpd/ebu r128/tls нижний регистр, BiDi из токена, кросс-пан стерео, сводка версии ffprobe; `fullLine` без изменений.

@@ -474,7 +474,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· TLS без проверки сертификата -F',
+    token: '· tls без проверки сертификата -F',
     summary: 'Список форматов при сбоях проверки TLS-сертификатов (--no-check-certificates -F); только для диагностики, снижает безопасность.',
     fullLine: 'yt-dlp --no-check-certificates -F '
   },
@@ -828,7 +828,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· TLS как у Chrome -F',
+    token: '· tls как у Chrome -F',
     summary: 'TLS и HTTP: отпечаток как у Chrome (--impersonate chrome -F); помогает обходить антибот-защиту; допишите URL.',
     fullLine: 'yt-dlp --impersonate chrome -F '
   },
@@ -1290,7 +1290,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· TLS: старое повторное согласование -F',
+    token: '· tls: старое повторное согласование -F',
     summary: 'Небезопасное повторное согласование TLS по старой схеме (legacy renegotiation, --legacy-server-connect -F) для старых CDN; допишите URL.',
     fullLine: 'yt-dlp --legacy-server-connect -F '
   },
@@ -1764,7 +1764,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· динамический MPD -F',
+    token: '· динамический mpd -F',
     summary: 'Разрешить динамический манифест DASH (MPD) с обновлением (--allow-dynamic-mpd -F); допишите URL.',
     fullLine: 'yt-dlp --allow-dynamic-mpd -F '
   },
@@ -1969,7 +1969,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· игнор динамики MPD -F',
+    token: '· игнор динамики mpd -F',
     summary: 'Игнорировать динамическое обновление манифеста DASH (MPD) (--ignore-dynamic-mpd -F); стабильнее на коротком окне; допишите URL.',
     fullLine: 'yt-dlp --ignore-dynamic-mpd -F '
   },
@@ -2155,13 +2155,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· TLS как у Firefox -F',
+    token: '· tls как у Firefox -F',
     summary: 'TLS и HTTP: отпечаток как у Firefox (--impersonate firefox -F); помогает обходить антибот-защиту; допишите URL.',
     fullLine: 'yt-dlp --impersonate firefox -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· TLS как у Edge -F',
+    token: '· tls как у Edge -F',
     summary: 'TLS и HTTP: отпечаток как у Edge (--impersonate edge -F); помогает обходить антибот-защиту; допишите URL.',
     fullLine: 'yt-dlp --impersonate edge -F '
   },
@@ -2389,7 +2389,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· обход двунаправл. текста (BiDi) -F',
+    token: '· обход двунаправл. текста -F',
     summary: 'Обход багов RTL и двунаправленного текста (BiDi) в именах файлов и метаданных (--bidi-workaround -F); допишите URL.',
     fullLine: 'yt-dlp --bidi-workaround -F '
   },
@@ -2581,7 +2581,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· буфер динам. MPD -F',
+    token: '· буфер динам. mpd -F',
     summary: 'DASH: буфер динамического манифеста MPD в секундах (--dynamic-mpd-buffer-size 100 -F); «живые» манифесты; допишите URL.',
     fullLine: 'yt-dlp --dynamic-mpd-buffer-size 100 -F '
   },
@@ -5393,7 +5393,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· версия ffprobe',
+    token: '· сводка версии ffprobe',
     summary: 'Версия ffprobe и быстрый разбор файла (-show_program_version); сверка сборки; путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_program_version ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5411,7 +5411,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: громкость по стандарту EBU 60с',
+    token: '· ffmpeg: громкость по стандарту ebu, 60с',
     summary: 'Замер интегральной громкости фильтром loudnorm (print_format=summary) за 60 с; -vn -sn; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af loudnorm=print_format=summary -t 60 -vn -sn -f null -`
   },
@@ -5591,7 +5591,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: громкость по шкале EBU R128, 12с',
+    token: '· ffmpeg: громкость по шкале ebu r128, 12с',
     summary: 'EBU R128: интегральная громкость, диапазон громкости и истинный пик (Integrated, LRA и True Peak) первых 12 с (-af ebur128=framelog=verbose); метрики попадают в стандартный поток ошибок (stderr); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af ebur128=framelog=verbose -t 12 -vn -sn -f null -`
   },
@@ -6233,7 +6233,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffmpeg',
-    token: '· ffmpeg: смешение стерео (pan) 4с',
+    token: '· ffmpeg: кросс-пан стерео 4с',
     summary: 'Лёгкое стереосмешивание через pan первых 4 с (каналы c0 и c1, кросс-фейд 0.6 и 0.4); дымовая проверка фильтра pan без кавычек в списке аргументов (argv); путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -af pan=stereo|c0=0.6*c0+0.4*c1|c1=0.4*c0+0.6*c1 -t 4 -vn -sn -f null -`
   },
