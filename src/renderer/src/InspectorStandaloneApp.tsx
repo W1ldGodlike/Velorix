@@ -4,6 +4,7 @@ import type { JSX } from 'react'
 import type { AppAboutInfo } from '../../shared/about-contract'
 import type { MediaProbeSuccess } from '../../shared/ffprobe-contract'
 import type { MainWindowUiPanelState, ResolvedAppTheme } from '../../shared/settings-contract'
+import type { DownloadsWindowUiLocale } from '../../shared/downloads-window-ui-locale'
 import { AboutDialog } from './components/AboutDialog'
 import {
   IconCircleHelp,
@@ -15,6 +16,7 @@ import {
 } from './components/LucideMiniIcons'
 import { PreviewProbeBody, type PreviewProbeSectionKey } from './components/MediaProbePanel'
 import Versions from './components/Versions'
+import { applyPersistedUiLocale, miniIconTitle, setUiLocaleForSession, getUiLocale, uiText, uiTextVars } from './locales/ui-text'
 
 type ProbeInspectorUiState = {
   probeExportSummary: boolean
@@ -54,6 +56,7 @@ export function InspectorStandaloneApp(): JSX.Element {
   const [aboutOpen, setAboutOpen] = useState(false)
   const [aboutInfo, setAboutInfo] = useState<AppAboutInfo | null>(null)
   const [probeUiPanels, setProbeUiPanels] = useState<ProbeInspectorUiState>(PROBE_UI_DEFAULTS)
+  const [, setUiLocaleRenderTick] = useState(0)
 
   const applyTheme = useCallback((value: ResolvedAppTheme) => {
     document.documentElement.dataset['theme'] = value
@@ -76,13 +79,38 @@ export function InspectorStandaloneApp(): JSX.Element {
       .catch(console.error)
   }, [])
 
+  const handleUiLocaleToggle = useCallback((): void => {
+    const next: DownloadsWindowUiLocale = getUiLocale() === 'ru' ? 'en' : 'ru'
+    void window.fluxalloy.settings
+      .setUiLocale(next)
+      .then(() => {
+        setUiLocaleForSession(next)
+        setUiLocaleRenderTick((n) => n + 1)
+      })
+      .catch(console.error)
+  }, [])
+
   useEffect(() => {
-    document.title = 'FluxAlloy — инспектор'
+    const off = window.fluxalloy.onUiLocaleChanged((loc) => {
+      setUiLocaleForSession(loc)
+      setUiLocaleRenderTick((n) => n + 1)
+    })
+    return off
+  }, [])
+
+  useEffect(() => {
+    document.title = uiText('inspectorWindowDocumentTitle')
     let cleanupTheme: (() => void) | undefined
     let cleanupUiPanels: (() => void) | undefined
     void window.fluxalloy.settings
       .get()
       .then((loaded) => {
+        const { resolved, shouldPersist } = applyPersistedUiLocale(loaded)
+        setUiLocaleRenderTick((n) => n + 1)
+        if (shouldPersist) {
+          void window.fluxalloy.settings.setUiLocale(resolved)
+        }
+        document.title = uiText('inspectorWindowDocumentTitle')
         applyTheme(loaded.effectiveTheme)
         setProbeUiPanels(probePanelsFromSettings(loaded.mainWindowUiPanels))
         cleanupTheme = window.fluxalloy.onThemeChanged((next) => {
@@ -148,7 +176,7 @@ export function InspectorStandaloneApp(): JSX.Element {
   }
 
   async function handleOpenDialog(): Promise<void> {
-    const result = await window.fluxalloy.preview.openFileDialog()
+    const result = await window.fluxalloy.preview.openFileDialog(getUiLocale() as DownloadsWindowUiLocale)
     if (result.ok) {
       setMediaPath(result.path)
       setStatusHint(result.name)
@@ -163,7 +191,7 @@ export function InspectorStandaloneApp(): JSX.Element {
     const absolutePath = window.fluxalloy.preview.getPathForFile(file)
     const granted = await window.fluxalloy.preview.grantPath(absolutePath)
     if (!granted.ok) {
-      setStatusHint(`DnD: ${granted.error}`)
+      setStatusHint(uiTextVars('statusDndGrantFailed', { error: granted.error }))
       return
     }
     setMediaPath(granted.path)
@@ -173,12 +201,12 @@ export function InspectorStandaloneApp(): JSX.Element {
   return (
     <div className="app-shell">
       <header className="app-topbar">
-        <div className="app-topbar-brand inspector-toolbar-brand" aria-label="FluxAlloy инспектор">
+        <div className="app-topbar-brand inspector-toolbar-brand" aria-label={uiText('inspectorStandaloneBrandAria')}>
           <span className="app-topbar-mark inspector-topbar-mark-icon" aria-hidden>
             <IconFilm title="" size={13} />
           </span>
-          <span className="app-topbar-title">Инспектор</span>
-          <span className="app-topbar-version">ffprobe</span>
+          <span className="app-topbar-title">{uiText('inspectorStandaloneHeaderTitle')}</span>
+          <span className="app-topbar-version">{uiText('inspectorStandaloneTopbarEngineLabel')}</span>
         </div>
         <div className="inspector-topbar-spacer" aria-hidden />
         <div className="app-topbar-actions">
@@ -188,10 +216,10 @@ export function InspectorStandaloneApp(): JSX.Element {
             onClick={() => {
               void handleOpenDialog()
             }}
-            title="Выбрать локальный медиафайл (тот же allowlist, что и превью)"
+            title={uiText('inspectorStandaloneOpenPickTitle')}
           >
-            <IconFolderOpen title="Открыть файл…" />
-            <span className="app-visually-hidden">Открыть файл…</span>
+            <IconFolderOpen title={miniIconTitle('miniIconFolderOpenEllipsis')} />
+            <span className="app-visually-hidden">{uiText('inspectorStandaloneOpenVisuallyHidden')}</span>
           </button>
           <button
             type="button"
@@ -200,10 +228,22 @@ export function InspectorStandaloneApp(): JSX.Element {
             onClick={() => {
               setProbeRefreshNonce((n) => n + 1)
             }}
-            title="Повторно запустить ffprobe для текущего файла"
+            title={
+              !mediaPath
+                ? uiText('inspectorStandaloneFfprobeRefreshDisabledTitle')
+                : uiText('inspectorStandaloneFfprobeRefreshTitle')
+            }
           >
-            <IconRefreshCw title={!mediaPath ? 'Нет файла для обновления' : 'Обновить ffprobe'} />
-            <span className="app-visually-hidden">Обновить ffprobe</span>
+            <IconRefreshCw
+              title={
+                !mediaPath
+                  ? uiText('inspectorStandaloneFfprobeRefreshDisabledTitle')
+                  : uiText('inspectorStandaloneFfprobeRefreshTitle')
+              }
+            />
+            <span className="app-visually-hidden">
+              {uiText('inspectorStandaloneFfprobeRefreshVisuallyHidden')}
+            </span>
           </button>
           <button
             type="button"
@@ -214,10 +254,27 @@ export function InspectorStandaloneApp(): JSX.Element {
                 setAboutOpen(true)
               })
             }}
-            title="О программе и быстрые действия диагностики"
+            title={uiText('inspectorStandaloneAboutDiagnosticsTitle')}
           >
-            <IconCircleHelp title="О программе" />
-            <span className="app-visually-hidden">О программе</span>
+            <IconCircleHelp />
+            <span className="app-visually-hidden">{uiText('aboutTitle')}</span>
+          </button>
+          <button
+            type="button"
+            className="app-icon-btn app-locale-badge"
+            onClick={handleUiLocaleToggle}
+            title={
+              getUiLocale() === 'ru'
+                ? uiText('topbarUiLocaleSwitchToEnglishTitle')
+                : uiText('topbarUiLocaleSwitchToRussianTitle')
+            }
+          >
+            <span aria-hidden>{getUiLocale() === 'ru' ? 'RU' : 'EN'}</span>
+            <span className="app-visually-hidden">
+              {getUiLocale() === 'ru'
+                ? uiText('topbarUiLocaleVisuallyHiddenRu')
+                : uiText('topbarUiLocaleVisuallyHiddenEn')}
+            </span>
           </button>
           <button
             type="button"
@@ -225,11 +282,11 @@ export function InspectorStandaloneApp(): JSX.Element {
             onClick={() => {
               void toggleTheme()
             }}
-            title="Переключить тему (синхронно с главным окном)"
+            title={uiText('inspectorStandaloneThemeToggleTitle')}
           >
-            {theme === 'dark' ? <IconSun title="Светлая тема" /> : <IconMoon title="Тёмная тема" />}
+            {theme === 'dark' ? <IconSun /> : <IconMoon />}
             <span className="app-visually-hidden">
-              {theme === 'dark' ? 'Светлая тема' : 'Тёмная тема'}
+              {theme === 'dark' ? miniIconTitle('miniIconSun') : miniIconTitle('miniIconMoon')}
             </span>
           </button>
         </div>
@@ -248,10 +305,7 @@ export function InspectorStandaloneApp(): JSX.Element {
         }}
       >
         {!mediaPath ? (
-          <p className="inspector-standalone-hint">
-            Перетащите видеофайл сюда или нажмите «Открыть…». При запуске из меню подставляется
-            последний файл из превью (если он ещё на диске).
-          </p>
+          <p className="inspector-standalone-hint">{uiText('inspectorStandaloneEmptyHint')}</p>
         ) : null}
         {displayedProbeError ? (
           <p className="app-preview-probe-error" role="alert">

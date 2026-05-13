@@ -1,4 +1,8 @@
 import type { ProcessingHistoryKind, ProcessingHistoryOutcome } from '../../../shared/processing-history-contract'
+import {
+  type DownloadsWindowUiLocale,
+  parseDownloadsWindowUiLocale
+} from '../../../shared/downloads-window-ui-locale'
 import type { YtdlpDownloadHistoryOutcome } from '../../../shared/ytdlp-history-contract'
 import {
   isYtdlpQueueStatusErrorLike,
@@ -12,20 +16,32 @@ import {
 
 type UiLocale = 'ru' | 'en'
 
+/** Set from `settings.json` after preload `settings.get()`; until then — `navigator`. */
+let uiLocaleOverride: UiLocale | undefined
+
+function resolveUiLocaleFromNavigator(): UiLocale {
+  if (typeof navigator !== 'undefined' && navigator.language.toLowerCase().startsWith('en')) {
+    return 'en'
+  }
+  return 'ru'
+}
+
 const UI_TEXT = {
   ru: {
     aboutTitle: 'О программе',
     appLabel: 'Приложение',
     versionLabel: 'Версия',
     loading: 'Загрузка…',
-    logsFolderButton: 'Папка логов',
-    supportZipSaved: 'Support ZIP сохранён',
-    supportZipButton: 'Support ZIP…',
+    rendererLogWindowErrorFallback: 'Неизвестная ошибка окна',
+    rendererLogUnhandledRejectionFallback: 'Неизвестное отклонение промиса',
+    logsFolderButton: 'Папка журналов',
+    supportZipSaved: 'Архив поддержки (Support ZIP) сохранён',
+    supportZipButton: 'Архив поддержки…',
     maintenanceSummaryButton: 'Размер временных',
     maintenanceCleanButton: 'Очистить временное',
-    maintenanceCleanPreviewButton: 'Очистить preview',
+    maintenanceCleanPreviewButton: 'Очистить кэш превью',
     maintenanceCleanPartialsButton: 'Очистить .part',
-    maintenanceCleanFfmpegTempButton: 'Очистить ffmpeg temp',
+    maintenanceCleanFfmpegTempButton: 'Очистить временные ffmpeg',
     maintenanceConfirmButton: 'Подтвердить очистку',
     maintenanceConfirmHintTemplate:
       '{label}: удаляются только временные данные. Нажмите «Подтвердить очистку» ещё раз.',
@@ -33,6 +49,22 @@ const UI_TEXT = {
     maintenanceSummaryTemplate: 'Временное: {bytes}',
     maintenanceSummaryWithDetailsTemplate: 'Временное: {bytes} ({details})',
     formatSelectionDoc: 'Выбор формата',
+    docLinkYtDlpReadme: 'README yt-dlp',
+    docLinkFfprobeShort: 'ffprobe',
+    aboutRuntimeElectronLabel: 'Electron',
+    aboutRuntimeChromiumLabel: 'Chromium',
+    aboutRuntimeNodeLabel: 'Node',
+    aboutMainLogButton: 'main.log',
+    aboutMainLogOpenErrorTemplate: 'main.log: {error}',
+    aboutMaintenanceCleanErrorTemplate: '{label}: {error}',
+    byteSizeZero: '0 Б',
+    byteSizeUnitB: 'Б',
+    byteSizeUnitKiB: 'КиБ',
+    byteSizeUnitMiB: 'МиБ',
+    byteSizeUnitGiB: 'ГиБ',
+    maintenanceSnapshotLabelPreviewCache: 'кэш превью',
+    maintenanceSnapshotLabelFfmpegTemp: 'временные ffmpeg',
+    maintenanceSnapshotLabelYtdlpPartials: 'yt-dlp .part',
     closeButton: 'Закрыть',
     versionsAriaLabel: 'Версии среды',
     knowledgeTitle: 'База знаний',
@@ -40,8 +72,8 @@ const UI_TEXT = {
       'Локальные статьи из Help/*.md; при интерфейсе EN, если есть пара Help/en/*.md, подставляется английский текст (иначе RU). Внешние https-ссылки открываются в браузере; ссылки на другие .md — внутри приложения.',
     knowledgeSearchPlaceholder: 'Поиск по статьям',
     knowledgeSearchTooltip:
-      'Фильтр списка статей по заголовку, имени файла или slug (без учёта регистра).',
-    knowledgeCloseTooltip: 'Закрыть окно справки (Esc или клик по фону).',
+      'Фильтр списка статей по заголовку, имени файла или короткому имени (slug) без учёта регистра.',
+    knowledgeCloseTooltip: 'Закрыть окно справки (Esc или щелчок по фону).',
     knowledgeTopbarTooltip: 'Открыть локальную базу знаний (статьи из Help/*.md).',
     knowledgeTocAria: 'Оглавление справки',
     knowledgeArticleTerminalHintsLink: 'База знаний: подсказки терминала (ffmpeg / yt-dlp)',
@@ -49,13 +81,13 @@ const UI_TEXT = {
       'Открыть статью с подсказками ffmpeg / yt-dlp для вкладки «Терминал».',
     knowledgeMdInternalLinkTooltip: 'Открыть связанную статью в этом окне.',
     knowledgeMdExternalLinkTooltip: 'Открыть ссылку в браузере (новая вкладка).',
-    terminalWorkspaceAriaLabel: 'Терминал CLI',
+    terminalWorkspaceAriaLabel: 'Панель терминала',
     terminalTitle: 'Терминал',
     terminalIntroLead:
-      'Разрешены только префиксы ffmpeg, ffprobe и yt-dlp. Команда разбирается как argv, запускается через main без shell, а PATH дополняется папкой выбранного движка. В argv можно токен ',
+      'Разрешены только префиксы ffmpeg, ffprobe и yt-dlp. Команда разбирается как argv, запускается в основном процессе (main) без оболочки (shell); каталог выбранного движка добавляется в PATH. В argv можно токен ',
     terminalIntroTailTemplate:
-      ' — подставится путь текущего превью редактора (только если файл уже открыт через диалог или DnD). В строке ввода — компактный IntelliSense: стрелки вверх/вниз, Home/End, PgUp/PgDn (шаг {pageStep}), Shift+Tab — предыдущая позиция в списке, Tab и Enter — подставить активную подсказку (до {maxInline} подсказок из той же базы, что и справа). Рядом есть полный выпадающий список (до {maxDd} пунктов по категориям инструментов): в поле фильтра списка — стрелки вверх/вниз, Home/End, PgUp/PgDn (шаг {pageStep}), Enter — вставить выделенную подсказку в argv, Escape — сбросить фильтр (или убрать фокус, если фильтр уже пуст). В журнале вывода каждая строка с кнопкой «Копир.» при наведении (копирует ровно эту строку). ',
-    terminalCommandInputAriaLabel: 'Команда CLI',
+      ' — подставится путь текущего превью редактора (только если файл уже открыт через диалог или перетаскивание). В строке ввода — подсказки при вводе (автодополнение): стрелки вверх/вниз, Home/End, PgUp/PgDn (шаг {pageStep}), Shift+Tab — предыдущая позиция в списке, Tab и Enter — подставить активную подсказку (до {maxInline} подсказок из той же базы, что и справа). Рядом есть полный выпадающий список (до {maxDd} пунктов по категориям инструментов): в поле фильтра списка — стрелки вверх/вниз, Home/End, PgUp/PgDn (шаг {pageStep}), Enter — вставить выделенную подсказку в argv, Escape — сбросить фильтр (или убрать фокус, если фильтр уже пуст). В журнале вывода каждая строка с кнопкой «Копир.» при наведении (копирует ровно эту строку). ',
+    terminalCommandInputAriaLabel: 'Ввод команды терминала',
     terminalCommandPlaceholder: 'ffprobe -version',
     terminalPreviewFileButton: 'Превью-файл',
     terminalPreviewFileTooltipOpen: 'Вставить токен «{token}» (путь текущего превью)',
@@ -64,18 +96,18 @@ const UI_TEXT = {
     terminalRunningButton: 'Выполняю…',
     terminalDropdownInsertLabel: 'Вставить подсказку из полного списка',
     terminalDropdownFilterAria: 'Фильтр полного списка подсказок терминала',
-    terminalDropdownFilterPlaceholder: 'Поиск по токену, summary или fullLine',
-    terminalDropdownListAria: 'Полный список CLI подсказок',
+    terminalDropdownFilterPlaceholder: 'Токен, краткое описание или полная строка',
+    terminalDropdownListAria: 'Полный список подсказок терминала',
     terminalDropdownEmpty: 'Ничего не найдено по фильтру.',
-    terminalInlineSuggestAria: 'Подсказки argv',
+    terminalInlineSuggestAria: 'Подсказки по аргументам (argv)',
     terminalHistoryAria: 'История команд терминала',
     terminalHistoryEmpty: 'История этой сессии пока пуста.',
-    terminalExitCodeMsTemplate: 'code {code} · {ms} ms',
-    terminalBlocked: 'blocked',
+    terminalExitCodeMsTemplate: 'код {code} · {ms} мс',
+    terminalBlocked: 'заблокировано',
     terminalCopyLineTitle: 'Копировать эту строку',
     terminalCopyLineAriaTemplate: 'Копировать строку {n}',
     terminalCopyLineButton: 'Копир.',
-    terminalHintsPanelAria: 'Подсказки CLI',
+    terminalHintsPanelAria: 'Панель подсказок терминала',
     terminalHintsSearchLabel: 'Поиск подсказок',
     terminalHintsSearchPlaceholder: '--help, -i, crop',
     processingOutcomeSuccess: 'Готово',
@@ -83,10 +115,10 @@ const UI_TEXT = {
     processingOutcomeCancelled: 'Отмена',
     processingHistoryTitle: 'История обработок',
     processingHistorySectionHint:
-      'Последние ffmpeg export, снимки кадров и авто-экспорт после загрузки.',
+      'Последние экспорты ffmpeg, снимки кадров и авто-экспорт после загрузки.',
     processingHistoryWeeklyAria: 'Недельная сводка обработок',
     processingHistory7dPrefix: '7 дней:',
-    processingHistoryChipOk: 'OK',
+    processingHistoryChipOk: 'ОК',
     processingHistoryChipErrors: 'Ошибки',
     processingHistoryChipCancelled: 'Отмена',
     processingHistoryChipTime: 'Время',
@@ -116,7 +148,7 @@ const UI_TEXT = {
     downloadsHistoryTitle: 'История',
     downloadsHistoryWeeklyAria: 'Недельная сводка загрузок',
     downloadsHistory7dPrefix: '7 дней:',
-    downloadsHistoryChipOk: 'OK',
+    downloadsHistoryChipOk: 'ОК',
     downloadsHistoryChipErrors: 'Ошибки',
     downloadsHistoryChipCancelled: 'Отмена',
     downloadsHistoryOutcomeFilterLabel: 'Исход',
@@ -138,23 +170,23 @@ const UI_TEXT = {
     downloadsHistoryRepeatQueued: 'URL из истории добавлен в очередь',
     downloadsHistoryRepeatNotAdded: 'URL не добавлен',
     downloadsHistoryOpenHandlerPreparing:
-      'Готовлю файл для редактора… при необходимости будет создан WebM preview.',
+      'Готовлю файл для редактора… при необходимости будет создано превью WebM.',
     downloadsHistoryOpenHandlerDone: 'Файл открыт в редакторе',
-    downloadsLogTitle: 'Живой лог',
+    downloadsLogTitle: 'Журнал в реальном времени',
     downloadsLogSave: 'Сохранить',
-    downloadsLogEmpty: 'Лог появится после запуска строки yt-dlp.',
+    downloadsLogEmpty: 'Записи журнала появятся после запуска строки yt-dlp.',
     workspaceTabsAria: 'Рабочие вкладки',
     workspaceTabEditor: 'Редактор',
     workspaceTabDownloads: 'Загрузки',
     workspaceTabTerminal: 'Терминал',
     workspaceTabDownloadsTooltip: 'Перейти во вкладку загрузок yt-dlp',
-    workspaceTabTerminalTooltip: 'Безопасный CLI для ffmpeg, ffprobe и yt-dlp',
+    workspaceTabTerminalTooltip: 'Безопасная командная строка для ffmpeg, ffprobe и yt-dlp',
     downloadsMainAria: 'Вкладка загрузок',
     downloadsPageTitle: 'Загрузки',
     downloadsPageHint:
-      'Эта вкладка — основной рабочий стол yt-dlp (очередь по центру, журнал и история под таблицей, настройки справа как в v0; при ширине окна примерно до 1100px панель настроек переносится под журнал с прокруткой, поля не теряются — сверху есть кнопка «К настройкам», чтобы сразу прокрутить к панели). Pop-out — дублирующее окно с тем же IPC и длинным справочником токенов в одном списке.',
+      'Эта вкладка — основной рабочий стол yt-dlp (очередь по центру, журнал и история под таблицей, настройки справа как в v0; при ширине окна примерно до 1100px панель настроек переносится под журнал с прокруткой, поля не теряются — сверху есть кнопка «К настройкам», чтобы сразу прокрутить к панели). Отдельное окно — дубликат с той же связью с основным процессом (main, IPC) и длинным справочником токенов в одном списке.',
     downloadsFromClipboard: 'Из буфера',
-    downloadsPopOut: 'Pop-out',
+    downloadsPopOut: 'Отдельное окно',
     downloadsScrollToSettings: 'К настройкам',
     downloadsUrlPlaceholder: 'URL или несколько URL по строкам',
     downloadsUrlAria: 'URL для добавления в очередь загрузок',
@@ -211,7 +243,7 @@ const UI_TEXT = {
     downloadsRailAria: 'Настройки загрузок',
     downloadsRailTitle: 'Настройки yt-dlp',
     downloadsRailSubtitle:
-      'Секции и раскрытие совпадают с pop-out: те же ключи в `downloadsWindowUiPanels`. Доп. argv, превью команды и справочник токенов (поиск + описания) — здесь; отдельное окно менеджера — для очереди и полноэкранной работы с загрузками.',
+      'Секции и раскрытие совпадают с отдельным окном загрузок: те же ключи в `downloadsWindowUiPanels`. Дополнительные аргументы (argv), превью команды и справочник токенов (поиск + описания) — здесь; отдельное окно менеджера — для очереди и полноэкранной работы с загрузками.',
     downloadsRailFormatSummary: 'Формат',
     downloadsRailFormatQualityLabel: 'Формат / качество',
     downloadsFormatHint:
@@ -240,10 +272,16 @@ const UI_TEXT = {
       'После успешного открытия — ffmpeg в файл `…-export` рядом с загрузкой (параметры панели экспорта).',
     downloadsCookiesBrowserLabel: 'Cookies браузера',
     downloadsCookiesBrowserNone: 'Не использовать',
+    downloadsYtdlpBrowserPrettyChrome: 'Chrome',
+    downloadsYtdlpBrowserPrettyEdge: 'Edge',
+    downloadsYtdlpBrowserPrettyFirefox: 'Firefox',
+    downloadsYtdlpBrowserTokenChrome: 'chrome',
+    downloadsYtdlpBrowserTokenEdge: 'edge',
+    downloadsYtdlpBrowserTokenFirefox: 'firefox',
     downloadsImpersonateLabel: 'Подмена клиента',
     downloadsImpersonateOff: 'Выключено',
     downloadsCookiesProfileLabel: 'Профиль / контейнер (cookies из браузера)',
-    downloadsCookiesProfilePlaceholder: 'например Default или Profile 1',
+    downloadsCookiesProfilePlaceholder: 'имя профиля в Chrome, напр. Default или Profile 1',
     downloadsCookiesProfileHint:
       'Суффикс yt-dlp после двоеточия: `--cookies-from-browser` `chrome:…` (без префикса браузера в поле).',
     downloadsCookiesFileGroupAria: 'Файл cookies yt-dlp',
@@ -264,7 +302,7 @@ const UI_TEXT = {
     downloadsFilenameTemplateHelp: 'Нужен `%(ext)s`; путь наружу через `..` запрещён.',
     downloadsRailNetworkSummary: 'Сеть',
     downloadsQueueRetryLabel: 'Повтор строки очереди',
-    downloadsQueueRetryHelp: 'Повторяет всю строку очереди при ненулевом exit code.',
+    downloadsQueueRetryHelp: 'Повторяет всю строку очереди при ненулевом коде выхода.',
     downloadsRateLimitLabel: 'Лимит скорости',
     downloadsRateLimitPlaceholder: '500K или 2M',
     downloadsRateLimitHelp: 'Ограничение скорости одним безопасным токеном.',
@@ -275,21 +313,20 @@ const UI_TEXT = {
     downloadsFragmentRetriesPlaceholder: '0–99',
     downloadsFragmentRetriesHelp: 'Повторы фрагментов HLS/DASH.',
     downloadsRailExpertSummary: 'Эксперт и превью',
-    downloadsExtraArgsLabel: 'Дополнительные argv',
+    downloadsExtraArgsLabel: 'Доп. аргументы (аргументы командной строки, argv)',
     downloadsExtraArgsHelp:
-      'Без shell: токены как в справочнике; небезопасное отсекает парсер main.',
+      'Без оболочки (shell): токены как в справочнике; небезопасное отсекает парсер в основном процессе (main).',
     downloadsInsertTokenLabel: 'Вставить токен из справочника',
-    downloadsInsertTokenAria: 'Добавить токен в дополнительные argv',
+    downloadsInsertTokenAria: 'Добавить токен в дополнительные аргументы (argv)',
     downloadsHintPickerPlaceholder: 'Выберите…',
-    downloadsHintSearchLabel: 'Поиск по справочнику argv',
+    downloadsHintSearchLabel: 'Поиск по справочнику аргументов (argv)',
     downloadsHintSearchPlaceholder: 'Например: --cookies или --sub',
-    downloadsHintSearchAria: 'Поиск по токенам и описаниям справочника argv',
+    downloadsHintSearchAria: 'Поиск по токенам и описаниям справочника аргументов (argv)',
     downloadsHintListAria: 'Справочник флагов с описаниями',
     downloadsHintsUnavailable: 'Справочник недоступен.',
     downloadsHintsNoMatches: 'Нет совпадений.',
     downloadsHintsSameAsPopoutHelp:
-      'Те же подсказки, что в pop-out; клик по токену добавляет его в argv.',
-    downloadsRailDocReadme: 'README',
+      'Те же подсказки, что в отдельном окне; щелчок по токену добавляет его в argv.',
     downloadsRailDocOutput: 'Шаблон вывода',
     downloadsRailDocPostprocess: 'Постобработка',
     downloadsCommandPreviewHelp: 'Превью команды (чтение)',
@@ -300,12 +337,22 @@ const UI_TEXT = {
     enginesSummaryMissing: 'Движки: не найдены',
     enginesSummaryError: 'Движки: ошибка проверки',
     enginesSummaryChecking: 'Движки: проверка…',
+    engineDisplayNameFfmpeg: 'ffmpeg',
+    engineDisplayNameFfprobe: 'ffprobe',
+    engineDisplayNameYtdlp: 'yt-dlp',
+    topbarEngineVersionsLineTemplate: 'ffmpeg {ffmpegVer} • yt-dlp {ytdlpVer}',
+    commonUnicodeEllipsis: '…',
+    enginesVersionLineErrorMark: '!',
+    uiPlaceholderDash: '—',
+    commonNotApplicableShort: 'н/д',
+    topbarProductName: 'FluxAlloy',
+    topbarProductEdition: 'настольное приложение',
     topbarOpenFileTitle: 'Открыть локальный видеофайл',
     topbarOpenFileLabel: 'Открыть',
     topbarRotateCcwTitle:
-      'Поворот против часовой: none → 90° CCW → 180° → 90° CW (экспорт §7.2)',
+      'Поворот против часовой: нет → 90° CCW → 180° → 90° CW (экспорт §7.2)',
     topbarRotateCcwLabel: 'Поворот CCW',
-    topbarRotateCwTitle: 'Поворот по часовой: none → 90° CW → 180° → 90° CCW (экспорт §7.2)',
+    topbarRotateCwTitle: 'Поворот по часовой: нет → 90° CW → 180° → 90° CCW (экспорт §7.2)',
     topbarRotateCwLabel: 'Поворот CW',
     topbarCropCycleTitle: 'Обрезка: нет → 1:1 → 16:9 → 4:3 (экспорт §7.2)',
     topbarCropLabel: 'Обрезка',
@@ -318,7 +365,7 @@ const UI_TEXT = {
     topbarExportTitle: 'Сохранить фрагмент In–Out или весь файл (libx264/aac), нужен ffmpeg',
     topbarExportLabel: 'Экспорт',
     topbarExportBusyLabel: 'Экспорт…',
-    topbarExportCancelTitle: 'Остановить текущий ffmpeg export',
+    topbarExportCancelTitle: 'Остановить текущий экспорт ffmpeg',
     topbarExportCancelBusy: 'Отмена…',
     topbarExportCancelReady: 'Отменить экспорт',
     topbarEnginesDownloadTitle: 'Скачать yt-dlp и FFmpeg в папку приложения пользователя',
@@ -332,12 +379,16 @@ const UI_TEXT = {
     topbarThemeToggleTitle: 'Переключить тёмную/светлую тему',
     topbarThemeUseLight: 'Светлая тема',
     topbarThemeUseDark: 'Тёмная тема',
+    topbarUiLocaleSwitchToEnglishTitle: 'Переключить интерфейс на English',
+    topbarUiLocaleSwitchToRussianTitle: 'Переключить интерфейс на русский',
+    topbarUiLocaleVisuallyHiddenRu: 'Текущий язык интерфейса: русский',
+    topbarUiLocaleVisuallyHiddenEn: 'Текущий язык интерфейса: English',
     editorPreviewDropzoneAria: 'Область предпросмотра',
     editorPreviewVideoAriaTemplate: 'Предпросмотр: {name}',
     editorPreviewEmptyLead:
       'Нет источника — перетащите видеофайл сюда или «Открыть…» в меню «Файл» / кнопка сверху.',
     editorPreviewEmptyHint:
-      'Локальный файл стримится через защищённую схему fluxmedia — только после выбора или DnD по пути из Electron.',
+      'Локальный файл стримится через защищённую схему fluxmedia — только после выбора или перетаскивания по пути из Electron.',
     editorFfmpegRailShowTitle: 'Показать настройки FFmpeg',
     editorFfmpegRailShowHidden: 'Развернуть панель настроек FFmpeg',
     editorFfmpegRailRestoreLabel: 'FFmpeg',
@@ -365,9 +416,9 @@ const UI_TEXT = {
     editorFieldDeinterlace: 'Деинтерлейс',
     editorAriaDeinterlace: 'Пресет yadif деинтерлейса',
     editorHintDeinterlace:
-      '`yadif` после crop и до `hqdn3d` §7.2; режим «Поле» удваивает частоту кадров для чересстрочного входа.',
+      '`yadif` после фильтра crop и до `hqdn3d` §7.2; режим «Поле» удваивает частоту кадров для чересстрочного входа.',
     editorFieldDenoise: 'Шумоподавление',
-    editorAriaDenoise: 'Пресет hqdn3d denoise',
+    editorAriaDenoise: 'Пресет шумоподавления hqdn3d',
     editorHintDenoise: '`hqdn3d` до `deband`/`unsharp` и масштаба §7.2.',
     editorFieldDeband: 'Deband',
     editorAriaDeband: 'Пресет deband',
@@ -378,13 +429,13 @@ const UI_TEXT = {
     editorFieldLut3d: '3D LUT',
     editorAriaLut3d: 'Пресет lut3d',
     editorHintLut3d:
-      '`lut3d` после `deband` и до `unsharp` (bundled `.cube` в `resources/luts/`) §7.2.',
+      '`lut3d` после `deband` и до `unsharp` (встроенные `.cube` в `resources/luts/`) §7.2.',
     editorFieldSharpen: 'Резкость',
     editorAriaSharpen: 'Пресет unsharp',
     editorHintSharpen: '`unsharp` после `deband`/`lut3d` и до `eq`/`scale`/`fps`.',
     editorFieldEq: 'Цвет',
     editorAriaEq: 'Пресет eq цветокоррекции',
-    editorHintEq: '`eq` применяется после резкости и до масштаба; только preset whitelist.',
+    editorHintEq: '`eq` применяется после резкости и до масштаба; только белый список пресетов.',
     editorFieldHue: 'Оттенок',
     editorAriaHue: 'Пресет hue после eq',
     editorHintHue: '`hue` сразу после `eq` и до зерна §7.2.',
@@ -405,7 +456,8 @@ const UI_TEXT = {
     editorFieldFps: 'FPS',
     editorAriaFpsExport: 'FPS экспорта',
     editorFpsOptionSource: 'FPS исходный',
-    editorTwoPassSpan: '2-pass libx264',
+    editorExportFpsOptionTemplate: '{value} к/с',
+    editorTwoPassSpan: 'Два прохода (libx264)',
     editorTwoPassPillLabel: 'Двухпроходное кодирование libx264',
     editorTwoPassHint:
       'Только H.264 (libx264) и выбранный видеобитрейт («Видео» выше); CRF и H.265 не поддерживают этот режим.',
@@ -420,7 +472,7 @@ const UI_TEXT = {
     editorNoAudioHint:
       'Включите, если нужен немой файл или звук будет добавлен позже.',
     editorFieldAacBitrate: 'Битрейт AAC',
-    editorAriaAacBitrate: 'Аудио bitrate экспорта',
+    editorAriaAacBitrate: 'Битрейт AAC экспорта',
     editorFieldAudioGain: 'Громкость аудио',
     editorAriaAudioGain: 'Сдвиг громкости аудио в дБ',
     editorHintAudioGain:
@@ -428,20 +480,20 @@ const UI_TEXT = {
     editorFieldAudioNormalize: 'Нормализация',
     editorAriaAudioNormalize: 'Нормализация громкости аудио',
     editorHintAudioNormalize:
-      'Склеивается с volume в один `-filter:a`: сначала gain, потом normalize.',
+      'Склеивается с volume в один `-filter:a`: сначала усиление (gain), затем нормализация (normalize).',
     editorFieldSnapshotFormat: 'Формат кадра',
     editorAriaSnapshotFormat: 'Формат снимка кадра',
     editorStripMetadataSpan: 'Удалить метаданные',
     editorStripMetadataPillLabel: 'Удалить контейнерные метаданные',
     editorStripMetadataHint:
-      'Добавляет `-map_metadata -1`: убирает title/artist и подобные теги из выхода.',
+      'Добавляет `-map_metadata -1`: убирает теги вроде title/artist и аналогичные из выходного файла.',
     editorStripChaptersSpan: 'Удалить главы',
-    editorStripChaptersPillLabel: 'Удалить chapter markers',
+    editorStripChaptersPillLabel: 'Удалить метки глав',
     editorStripChaptersHint: 'Добавляет `-map_chapters -1`: глав в выходном файле не будет.',
     editorFieldExportSubtitles: 'Субтитры',
     editorAriaExportSubtitles: 'Поведение субтитров на экспорте',
     editorHintExportSubtitles:
-      '«Не сохранять» — ffmpeg сам решает (обычно дропает). «Сохранить» — для MKV `-c:s copy`, для MP4/MOV `-c:s mov_text` (только текстовые субтитры).',
+      '«Не сохранять» — ffmpeg сам решает (обычно отбрасывает дорожку). «Сохранить» — для MKV `-c:s copy`, для MP4/MOV `-c:s mov_text` (только текстовые субтитры).',
     editorSnapshotLastFile: 'Файл кадра',
     editorSnapshotLastFolder: 'Папка',
     editorCopy: 'Копировать',
@@ -481,10 +533,10 @@ const UI_TEXT = {
     editorExportAudioGainP9: '+9 дБ',
     editorExportAudioGainP12: '+12 дБ',
     editorExportSubtitleDrop: 'Не сохранять',
-    editorExportSubtitleCopy: 'Сохранить (copy/mov_text)',
+    editorExportSubtitleCopy: 'Сохранить (режим copy / mov_text)',
     editorExportDeinterlaceOff: 'Деинтерлейс: выкл.',
-    editorExportDeinterlaceFrame: 'Кадр (yadif send_frame)',
-    editorExportDeinterlaceField: 'Поле (yadif send_field, 2×)',
+    editorExportDeinterlaceFrame: 'Кадр (yadif: режим send_frame)',
+    editorExportDeinterlaceField: 'Поле (yadif: режим send_field, 2×)',
     editorExportDenoiseOff: 'Шумоподавление: выкл.',
     editorExportDenoiseLight: 'Лёгкое (hqdn3d=1.5)',
     editorExportDenoiseMedium: 'Среднее (hqdn3d=3)',
@@ -494,9 +546,9 @@ const UI_TEXT = {
     editorExportSharpenMedium: 'Средняя (unsharp 1.0)',
     editorExportSharpenStrong: 'Сильная (unsharp 1.5)',
     editorExportDebandOff: 'Deband: выкл.',
-    editorExportDebandLight: 'Лёгкий (range=12)',
-    editorExportDebandMedium: 'Средний (range=20)',
-    editorExportDebandStrong: 'Сильный (range=28)',
+    editorExportDebandLight: 'Лёгкий (параметр range=12)',
+    editorExportDebandMedium: 'Средний (параметр range=20)',
+    editorExportDebandStrong: 'Сильный (параметр range=28)',
     editorExportHisteqOff: 'Histeq: выкл.',
     editorExportHisteqLight: 'Лёгкая (strength 0.14)',
     editorExportHisteqMedium: 'Средняя (strength 0.26)',
@@ -549,8 +601,8 @@ const UI_TEXT = {
     editorEnginePathsRemoveDownloadedTooltip:
       'Удалить только скачанные копии из userData/bin. Встроенные resources/bin и ручные пути не трогаются.',
     editorEnginePathsRemoveDownloaded: 'Удалить скачанные',
-    statusTerminalCliExitOk: 'CLI: код {code}',
-    statusTerminalCliFailed: 'CLI: {error}',
+    statusTerminalCliExitOk: 'Терминал: код {code}',
+    statusTerminalCliFailed: 'Терминал: {error}',
     statusTerminalOutputLineCopied: 'Строка вывода скопирована',
     statusTerminalOutputLineCopyFailed: 'Не удалось скопировать строку',
     statusVideoMediaErrAborted: 'загрузка отменена',
@@ -560,12 +612,12 @@ const UI_TEXT = {
     statusVideoMediaErrUnknown: 'неизвестная ошибка',
     statusVideoPlayFailed: 'Видео не удалось воспроизвести: {detail}',
     statusVideoDirectOpenFailedBlobTrying:
-      'Видео не открылось напрямую, пробую безопасный blob-fallback…',
-    statusVideoBlobFallbackActive: 'Видео переключено на blob-fallback для предпросмотра.',
+      'Видео не открылось напрямую, пробую безопасный предпросмотр через временный URL (blob)…',
+    statusVideoBlobFallbackActive: 'Видео переведено на предпросмотр через временный URL (blob).',
     statusVideoPlayFailedAfterFallback:
-      'Видео не удалось воспроизвести: {detail}; fallback тоже не сработал.',
-    statusDownloadsUrlsAdded: 'Добавлено URL: {n}',
-    statusDownloadsQueueNoUrlsParsed: 'Не нашёл URL для очереди.',
+      'Видео не удалось воспроизвести: {detail}; запасной вариант тоже не сработал.',
+    statusDownloadsUrlsAdded: 'Добавлено в очередь URL: {n}',
+    statusDownloadsQueueNoUrlsParsed: 'В тексте не найдено ни одного URL для очереди.',
     statusExportProgress: 'Экспорт · {tail}',
     statusEnginesDownloadPreparing: 'Подготовка загрузки…',
     statusErrorWithDetail: 'Ошибка: {detail}',
@@ -595,7 +647,7 @@ const UI_TEXT = {
     statusSnapshotPathCopyFailed: 'Не удалось скопировать путь кадра',
     statusFfmpegCommandCopied: 'Команда ffmpeg скопирована',
     statusFfmpegCommandCopyFailed: 'Не удалось скопировать команду ffmpeg',
-    statusDndGrantFailed: 'DnD: {error}',
+    statusDndGrantFailed: 'Перетаскивание: {error}',
     downloadsQueueRowStatusWaiting: 'Ожидание',
     downloadsQueueRowStatusRunning: 'Загрузка…',
     downloadsQueueRowStatusDone: 'Готово',
@@ -614,7 +666,7 @@ const UI_TEXT = {
     editorPresetDelete: 'Удалить',
     editorFfmpegSectionOutput: 'Вывод',
     editorFfmpegSectionOutputHint:
-      'Превью argv, экспорт через диалог «Сохранить» и быстрые действия над последним файлом.',
+      'Превью аргументов командной строки (argv), экспорт через диалог «Сохранить» и быстрые действия над последним файлом.',
     editorExportCommandPreviewSummary: 'Превью команды ffmpeg',
     editorAriaExportFfmpegCommand: 'Команда ffmpeg',
     editorCopyFfmpegCommandTitle: 'Скопировать строку команды ffmpeg в буфер',
@@ -626,19 +678,200 @@ const UI_TEXT = {
     editorExportPreviewHintNoSource:
       'Источник не выбран — в превью используются плейсхолдеры <input>/<output>.',
     editorExportPreviewHintTwoPass:
-      'Двухпроход: исходящий файл формирует только вторая команда; для passlog см. временный каталог в main.',
+      'Двухпроход: итоговый файл пишет только вторая команда; журнал passlog — во временном каталоге основного процесса (main).',
     editorExportPreviewHintTrimAppliedTemplate:
       'Маркеры In/Out подставлены: -ss {in} -t {t}.',
     editorExportPreviewHintTrimFull:
       'Маркеры покрывают почти весь файл — ffmpeg запустится без -ss/-t.',
     editorExportPreviewHintTrimWaiting:
-      'Маркеры In/Out появятся, как только таймлайн сообщит диапазон.'
+      'Маркеры In/Out появятся, как только таймлайн сообщит диапазон.',
+    inspectorStandaloneBrandAria: 'FluxAlloy инспектор',
+    inspectorStandaloneHeaderTitle: 'Инспектор',
+    inspectorStandaloneTopbarEngineLabel: 'ffprobe',
+    inspectorStandaloneOpenPickTitle:
+      'Выбрать локальный медиафайл (тот же белый список расширений, что у превью)',
+    inspectorStandaloneOpenVisuallyHidden: 'Открыть файл…',
+    inspectorStandaloneFfprobeRefreshTitle: 'Повторно запустить ffprobe для текущего файла',
+    inspectorStandaloneFfprobeRefreshDisabledTitle: 'Нет файла для обновления',
+    inspectorStandaloneFfprobeRefreshVisuallyHidden: 'Обновить ffprobe',
+    inspectorStandaloneAboutDiagnosticsTitle:
+      'О программе и быстрые действия диагностики',
+    inspectorStandaloneThemeToggleTitle:
+      'Переключить тему (синхронно с главным окном)',
+    inspectorStandaloneEmptyHint:
+      'Перетащите видеофайл сюда или нажмите «Открыть…». При запуске из меню подставляется последний файл из превью (если он ещё на диске).',
+    inspectorWindowDocumentTitle: 'FluxAlloy — инспектор',
+    probePanelAriaLabel: 'Расширенная сводка ffprobe',
+    probePanelOverviewHint:
+      'Раскрываемые блоки: экспорт текстовой/HTML сводки, таблицы дорожек и глав, сырой JSON ffprobe; в таблицах доступны контекстное меню и копирование ячеек.',
+    probeDurationUnknown: 'длительность неизвестна',
+    probeDurationSecShort: '{sec} с',
+    probeDurationClockApprox: '{clock} · {total} с',
+    probeSummaryAudioFragmentTemplate: ' · аудио {codec}',
+    probeBitrateMbpsTemplate: '{value} Мбит/с',
+    probeBitrateKbpsTemplate: '{value} кбит/с',
+    probeFfprobeDocLink: 'Документация ffprobe (все опции)',
+    probeClipboardCopied: 'Скопировано в буфер',
+    probeClipboardCopyFailed: 'Не удалось скопировать',
+    probeSaveJsonDialogTitle: 'Сохранить JSON ffprobe',
+    probeSaveSummaryTxtDialogTitle: 'Сохранить сводку ffprobe (TXT)',
+    probeSaveSummaryHtmlDialogTitle: 'Сохранить сводку ffprobe (HTML)',
+    probeSavedPathTemplate: 'Сохранено: {path}',
+    probeSectionExportSummary: 'Экспорт сводки (TXT / HTML)',
+    probeSectionExportSummaryHint:
+      'Текст или HTML со сводкой ffprobe («человеческое» оглавление и ключевые поля дорожек).',
+    probeSaveSummaryTxtButton: 'Сохранить сводку TXT…',
+    probeSaveSummaryHtmlButton: 'Сохранить сводку HTML…',
+    probeSectionTracksTemplate: 'Дорожки ({count})',
+    probeTracksCaption: 'Дорожки медиафайла по данным ffprobe',
+    probeTrackRowMenuHint: 'ПКМ, Enter или Shift+F10 — действия с дорожкой',
+    probeThIndex: '#',
+    probeThType: 'Тип',
+    probeThCodec: 'Кодек',
+    probeThPixFmt: 'Форм. пикс.',
+    probeThSar: 'SAR',
+    probeThDar: 'DAR',
+    probeThColorSpace: 'Цв. пространство',
+    probeThPrimaries: 'Осн. цвета',
+    probeThTransfer: 'Передача цвета',
+    probeThRange: 'Диапазон',
+    probeThBitrate: 'Битрейт',
+    probeThDisposition: 'Свойства дорожки',
+    probeThLanguage: 'Язык',
+    probeThTrackTitle: 'Заголовок',
+    probeThDetails: 'Сведения',
+    probeTrackKindVideo: 'Видео',
+    probeTrackKindAudio: 'Аудио',
+    probeTrackKindSubtitle: 'Субтитры',
+    probeTrackKindAttachment: 'Вложение',
+    probeTrackKindData: 'Данные',
+    probeTrackKindOther: 'Прочее',
+    probeChapterDurationSecTemplate: '{dur} с',
+    probeSectionChaptersTemplate: 'Главы ({count})',
+    probeChaptersCaption: 'Главы медиафайла по данным ffprobe',
+    probeChapterRowMenuHint: 'ПКМ, Enter или Shift+F10 — действия с главой',
+    probeThChapterId: 'ИД',
+    probeThChapterStart: 'Начало',
+    probeThChapterEnd: 'Конец',
+    probeThChapterDuration: 'Длительность',
+    probeThChapterTitle: 'Заголовок',
+    probeSectionRawJson: 'JSON ffprobe',
+    probeRawJsonHint:
+      'Вывод только для чтения; скопируйте или сохраните для поддержки или внешнего парсера.',
+    probeCopyJsonButton: 'Копировать JSON',
+    probeSaveJsonButton: 'Сохранить JSON…',
+    probeRawJsonPreAria: 'Сырой JSON ffprobe',
+    probeContextMenuAria: 'Действия со строкой ffprobe',
+    probeCtxCopyRowTab: 'Копировать строку (табуляция)',
+    probeCtxCopyCodec: 'Копировать кодек',
+    probeCtxCopyPixFmt: 'Копировать формат пикселей',
+    probeCtxCopySar: 'Копировать SAR',
+    probeCtxCopyDar: 'Копировать DAR',
+    probeCtxCopyColorSpace: 'Копировать цветовое пространство',
+    probeCtxCopyColorPrimaries: 'Копировать основные цвета',
+    probeCtxCopyColorTransfer: 'Копировать передачу цвета',
+    probeCtxCopyColorRange: 'Копировать диапазон цвета',
+    probeCtxCopyBitrate: 'Копировать битрейт',
+    probeCtxCopyDisposition: 'Копировать свойства дорожки',
+    probeCtxCopyDetail: 'Копировать сведения',
+    probeCtxCopyLanguage: 'Копировать язык',
+    probeCtxCopyTrackTitle: 'Копировать заголовок дорожки',
+    probeCtxCopyChapterTitle: 'Копировать заголовок',
+    videoTimelineZoomRowAria: 'Масштаб временной шкалы',
+    videoTimelineZoomOutTitle: 'Отдалить шкалу (показать больший интервал времени)',
+    videoTimelineZoomInTitle: 'Приблизить шкалу под точную позицию',
+    videoTimelineZoomReadoutTitle:
+      'Видимый диапазон перемотки (scrub) и полоски маркеров',
+    videoTimelineZoomReadoutTemplate: 'Масштаб ×{mul} · {start} — {end}',
+    videoTimelineRulerAria: 'Линейка времени окна воспроизведения: щелчок или стрелки для перехода',
+    videoTimelineRulerValuetextTemplate: '{current} в окне {winStart} — {winEnd}',
+    videoTimelineMediaFactsAria: 'Сводка медиа по ffprobe и позиция',
+    videoTimelineVideoStreamTitle: 'Первый видеопоток ffprobe',
+    videoTimelineVideoLabel: 'Видео:',
+    videoTimelineAudioStreamTitle: 'Первая аудиодорожка ffprobe',
+    videoTimelineAudioLabel: 'Аудио:',
+    videoTimelinePositionTitle:
+      'Текущее время; номер кадра — оценка по к/с из строки дорожки',
+    videoTimelinePositionLabel: 'Позиция:',
+    videoTimelineFrameApproxSuffixTemplate: ' · кадр ~{frame}',
+    videoTimelineScrubAria: 'Позиция воспроизведения',
+    videoTimelineScrubValuetextTemplate:
+      '{current} из {duration} (окно воспроизведения под масштабом ×{mul})',
+    videoTimelineMarkersOutsideWindowTitle:
+      'Маркеры In–Out вне видимого окна шкалы — отдалите масштаб.',
+    videoTimelineIoAria: 'Маркеры In / Out',
+    videoTimelineTrimReadoutTitle:
+      'Диапазон для экспорта (раздел 7.1): передаётся в ffmpeg как -ss/-t',
+    videoTimelineExportJumpTitle:
+      'Прокрутить к панели экспорта FFmpeg (маркеры In/Out и превью команды)',
+    videoTimelineExportJumpButton: 'Обрезать → экспорт',
+    videoTimelineInHereTitle: 'Записать In в текущую позицию воспроизведения',
+    videoTimelineInHereButton: 'In сюда',
+    videoTimelineOutHereTitle: 'Записать Out в текущую позицию воспроизведения',
+    videoTimelineOutHereButton: 'Out сюда',
+    videoTimelineResetTrimTitle: 'Сбросить диапазон на весь файл',
+    videoTimelineResetTrimButton: 'Весь клип',
+    previewTransportToolbarAria: 'Транспорт предпросмотра',
+    previewTransportMinusSecTitle: 'Минус {sec} с',
+    previewTransportPlusSecTitle: 'Плюс {sec} с',
+    previewTransportUnmuteTitle: 'Включить звук',
+    timelineWaveformWebAudioUnavailable:
+      'Аудиографика браузера (Web Audio API) недоступна в этом контексте.',
+    timelineWaveformMediaResponseErrorTemplate: 'Ответ медиа: {status}',
+    timelineWaveformDisabledLargeFile:
+      'Форма волны отключена для крупного файла (защита памяти).',
+    timelineWaveformAudioLongerHintTemplate: 'Аудио ~{audioSec} с (видео {videoSec} с).',
+    timelineWaveformDecodeFailedHint:
+      'Не удалось построить форму волны (формат без доступного аудио или ошибка декодера).',
+    timelineWaveformUnavailableLongTemplate:
+      'Длинный клип (> {max} с) — форму волны не строим (защита памяти).',
+    timelineWaveformAriaUnavailable: 'Форма волны недоступна',
+    timelineWaveformAriaEnvelope: 'Огибающая формы волны',
+    timelineWaveformLoading: 'Форма волны…',
+    miniIconFolderOpen: 'Открыть файл',
+    miniIconFolderOpenEllipsis: 'Открыть файл…',
+    miniIconRefreshCw: 'Обновить',
+    miniIconDownload: 'Загрузки',
+    miniIconClipboardPaste: 'Вставить из буфера',
+    miniIconPopOutWindow: 'Открыть отдельное окно загрузок',
+    miniIconFilm: 'Инспектор',
+    miniIconHome: 'Каталог по умолчанию',
+    miniIconZoomOut: 'Уменьшить масштаб таймлайна',
+    miniIconZoomIn: 'Увеличить масштаб таймлайна',
+    miniIconCircleHelp: 'О программе',
+    miniIconImage: 'Снимок кадра',
+    miniIconSave: 'Экспорт',
+    miniIconSettings: 'Пути к движкам',
+    miniIconSun: 'Светлая тема',
+    miniIconMoon: 'Тёмная тема',
+    miniIconSkipBack: 'В начало',
+    miniIconChevronLeft: 'Назад на 5 сек',
+    miniIconChevronRight: 'Вперёд на 5 сек',
+    miniIconSkipForward: 'В конец',
+    miniIconPlay: 'Воспроизвести',
+    miniIconPauseUi: 'Пауза',
+    miniIconVolume2: 'Громкость',
+    miniIconVolumeX: 'Без звука',
+    miniIconMaximize2: 'Полноэкранный предпросмотр',
+    miniIconRotateCcw: 'Шаг поворота против часовой (как FFmpeg §7.2)',
+    miniIconRotateCw: 'Шаг поворота по часовой (как FFmpeg §7.2)',
+    miniIconScissors: 'Следующий пресет обрезки crop (§7.2)',
+    miniIconQueueChevronUp: 'Выше',
+    miniIconQueueChevronDown: 'Ниже',
+    miniIconQueuePlus: 'Добавить',
+    miniIconQueueRetry: 'Повтор',
+    miniIconQueueFile: 'Открыть файл',
+    miniIconQueueOutbound: 'Открыть в редакторе',
+    miniIconQueueTrash: 'Удалить из очереди',
+    miniIconQueueX: 'Очистить'
   },
   en: {
     aboutTitle: 'About',
     appLabel: 'Application',
     versionLabel: 'Version',
     loading: 'Loading…',
+    rendererLogWindowErrorFallback: 'Unknown window error',
+    rendererLogUnhandledRejectionFallback: 'Unknown promise rejection',
     logsFolderButton: 'Logs folder',
     supportZipSaved: 'Support ZIP saved',
     supportZipButton: 'Support ZIP…',
@@ -654,6 +887,22 @@ const UI_TEXT = {
     maintenanceSummaryTemplate: 'Temporary data: {bytes}',
     maintenanceSummaryWithDetailsTemplate: 'Temporary data: {bytes} ({details})',
     formatSelectionDoc: 'Format selection',
+    docLinkYtDlpReadme: 'yt-dlp README',
+    docLinkFfprobeShort: 'ffprobe',
+    aboutRuntimeElectronLabel: 'Electron',
+    aboutRuntimeChromiumLabel: 'Chromium',
+    aboutRuntimeNodeLabel: 'Node',
+    aboutMainLogButton: 'main.log',
+    aboutMainLogOpenErrorTemplate: 'main.log: {error}',
+    aboutMaintenanceCleanErrorTemplate: '{label}: {error}',
+    byteSizeZero: '0 B',
+    byteSizeUnitB: 'B',
+    byteSizeUnitKiB: 'KiB',
+    byteSizeUnitMiB: 'MiB',
+    byteSizeUnitGiB: 'GiB',
+    maintenanceSnapshotLabelPreviewCache: 'preview cache',
+    maintenanceSnapshotLabelFfmpegTemp: 'ffmpeg temp',
+    maintenanceSnapshotLabelYtdlpPartials: 'yt-dlp .part',
     closeButton: 'Close',
     versionsAriaLabel: 'Runtime versions',
     knowledgeTitle: 'Knowledge base',
@@ -861,6 +1110,12 @@ const UI_TEXT = {
       'After a successful open — ffmpeg writes `…-export` next to the download (uses the export panel settings).',
     downloadsCookiesBrowserLabel: 'Browser cookies',
     downloadsCookiesBrowserNone: 'Do not use',
+    downloadsYtdlpBrowserPrettyChrome: 'Chrome',
+    downloadsYtdlpBrowserPrettyEdge: 'Edge',
+    downloadsYtdlpBrowserPrettyFirefox: 'Firefox',
+    downloadsYtdlpBrowserTokenChrome: 'chrome',
+    downloadsYtdlpBrowserTokenEdge: 'edge',
+    downloadsYtdlpBrowserTokenFirefox: 'firefox',
     downloadsImpersonateLabel: 'Client impersonation',
     downloadsImpersonateOff: 'Off',
     downloadsCookiesProfileLabel: 'Profile / container (browser cookies)',
@@ -910,7 +1165,6 @@ const UI_TEXT = {
     downloadsHintsNoMatches: 'No matches.',
     downloadsHintsSameAsPopoutHelp:
       'Same hints as pop-out; click a token to append it to argv.',
-    downloadsRailDocReadme: 'README',
     downloadsRailDocOutput: 'Output template',
     downloadsRailDocPostprocess: 'Post-processing',
     downloadsCommandPreviewHelp: 'Command preview (read-only)',
@@ -921,6 +1175,16 @@ const UI_TEXT = {
     enginesSummaryMissing: 'Engines: not found',
     enginesSummaryError: 'Engines: check error',
     enginesSummaryChecking: 'Engines: checking…',
+    engineDisplayNameFfmpeg: 'ffmpeg',
+    engineDisplayNameFfprobe: 'ffprobe',
+    engineDisplayNameYtdlp: 'yt-dlp',
+    topbarEngineVersionsLineTemplate: 'ffmpeg {ffmpegVer} • yt-dlp {ytdlpVer}',
+    commonUnicodeEllipsis: '…',
+    enginesVersionLineErrorMark: '!',
+    uiPlaceholderDash: '—',
+    commonNotApplicableShort: 'n/a',
+    topbarProductName: 'FluxAlloy',
+    topbarProductEdition: 'desktop',
     topbarOpenFileTitle: 'Open a local video file',
     topbarOpenFileLabel: 'Open',
     topbarRotateCcwTitle: 'Rotate CCW: none → 90° CCW → 180° → 90° CW (export §7.2)',
@@ -952,6 +1216,10 @@ const UI_TEXT = {
     topbarThemeToggleTitle: 'Toggle dark / light theme',
     topbarThemeUseLight: 'Light theme',
     topbarThemeUseDark: 'Dark theme',
+    topbarUiLocaleSwitchToEnglishTitle: 'Switch interface to English',
+    topbarUiLocaleSwitchToRussianTitle: 'Switch interface to Russian',
+    topbarUiLocaleVisuallyHiddenRu: 'Current interface language: Russian',
+    topbarUiLocaleVisuallyHiddenEn: 'Current interface language: English',
     editorPreviewDropzoneAria: 'Preview area',
     editorPreviewVideoAriaTemplate: 'Preview: {name}',
     editorPreviewEmptyLead:
@@ -1023,6 +1291,7 @@ const UI_TEXT = {
     editorFieldFps: 'FPS',
     editorAriaFpsExport: 'Export FPS',
     editorFpsOptionSource: 'Source FPS',
+    editorExportFpsOptionTemplate: '{value} fps',
     editorTwoPassSpan: '2-pass libx264',
     editorTwoPassPillLabel: 'Two-pass libx264 encoding',
     editorTwoPassHint:
@@ -1211,7 +1480,7 @@ const UI_TEXT = {
     statusSnapshotPathCopyFailed: 'Could not copy frame path',
     statusFfmpegCommandCopied: 'ffmpeg command copied',
     statusFfmpegCommandCopyFailed: 'Could not copy ffmpeg command',
-    statusDndGrantFailed: 'DnD: {error}',
+    statusDndGrantFailed: 'Drag-and-drop: {error}',
     downloadsQueueRowStatusWaiting: 'Waiting',
     downloadsQueueRowStatusRunning: 'Downloading…',
     downloadsQueueRowStatusDone: 'Done',
@@ -1247,23 +1516,222 @@ const UI_TEXT = {
     editorExportPreviewHintTrimFull:
       'Markers cover almost the entire file — ffmpeg runs without -ss/-t.',
     editorExportPreviewHintTrimWaiting:
-      'In/Out markers appear once the timeline reports a range.'
+      'In/Out markers appear once the timeline reports a range.',
+    inspectorStandaloneBrandAria: 'FluxAlloy inspector',
+    inspectorStandaloneHeaderTitle: 'Inspector',
+    inspectorStandaloneTopbarEngineLabel: 'ffprobe',
+    inspectorStandaloneOpenPickTitle:
+      'Pick a local media file (same allowlist as preview)',
+    inspectorStandaloneOpenVisuallyHidden: 'Open file…',
+    inspectorStandaloneFfprobeRefreshTitle: 'Run ffprobe again for the current file',
+    inspectorStandaloneFfprobeRefreshDisabledTitle: 'No file to refresh',
+    inspectorStandaloneFfprobeRefreshVisuallyHidden: 'Refresh ffprobe',
+    inspectorStandaloneAboutDiagnosticsTitle: 'About and quick diagnostics actions',
+    inspectorStandaloneThemeToggleTitle: 'Toggle theme (in sync with the main window)',
+    inspectorStandaloneEmptyHint:
+      'Drop a video file here or click “Open…”. When launched from the menu, the last preview file is used if it is still on disk.',
+    inspectorWindowDocumentTitle: 'FluxAlloy — Inspector',
+    probePanelAriaLabel: 'Extended ffprobe summary',
+    probePanelOverviewHint:
+      'Collapsible sections: export a text/HTML summary, track and chapter tables, raw ffprobe JSON; tables offer a context menu and copying cell values.',
+    probeDurationUnknown: 'duration unknown',
+    probeDurationSecShort: '{sec} s',
+    probeDurationClockApprox: '{clock} · {total} s',
+    probeSummaryAudioFragmentTemplate: ' · audio {codec}',
+    probeBitrateMbpsTemplate: '{value} Mb/s',
+    probeBitrateKbpsTemplate: '{value} kb/s',
+    probeFfprobeDocLink: 'ffprobe documentation (all options)',
+    probeClipboardCopied: 'Copied to clipboard',
+    probeClipboardCopyFailed: 'Copy failed',
+    probeSaveJsonDialogTitle: 'Save ffprobe JSON',
+    probeSaveSummaryTxtDialogTitle: 'Save ffprobe summary (TXT)',
+    probeSaveSummaryHtmlDialogTitle: 'Save ffprobe summary (HTML)',
+    probeSavedPathTemplate: 'Saved: {path}',
+    probeSectionExportSummary: 'Export summary (TXT / HTML)',
+    probeSectionExportSummaryHint:
+      'Plain text or HTML with an ffprobe summary (a readable outline and key stream fields).',
+    probeSaveSummaryTxtButton: 'Save summary as TXT…',
+    probeSaveSummaryHtmlButton: 'Save summary as HTML…',
+    probeSectionTracksTemplate: 'Tracks ({count})',
+    probeTracksCaption: 'Media streams from ffprobe',
+    probeTrackRowMenuHint: 'Right-click, Enter, or Shift+F10 — track actions',
+    probeThIndex: '#',
+    probeThType: 'Type',
+    probeThCodec: 'Codec',
+    probeThPixFmt: 'Pix_fmt',
+    probeThSar: 'SAR',
+    probeThDar: 'DAR',
+    probeThColorSpace: 'Color space',
+    probeThPrimaries: 'Primaries',
+    probeThTransfer: 'Transfer',
+    probeThRange: 'Range',
+    probeThBitrate: 'Bitrate',
+    probeThDisposition: 'Disposition',
+    probeThLanguage: 'Language',
+    probeThTrackTitle: 'Title',
+    probeThDetails: 'Details',
+    probeTrackKindVideo: 'Video',
+    probeTrackKindAudio: 'Audio',
+    probeTrackKindSubtitle: 'Subtitles',
+    probeTrackKindAttachment: 'Attachment',
+    probeTrackKindData: 'Data',
+    probeTrackKindOther: 'Other',
+    probeChapterDurationSecTemplate: '{dur} s',
+    probeSectionChaptersTemplate: 'Chapters ({count})',
+    probeChaptersCaption: 'Chapters from ffprobe',
+    probeChapterRowMenuHint: 'Right-click, Enter, or Shift+F10 — chapter actions',
+    probeThChapterId: 'id',
+    probeThChapterStart: 'Start',
+    probeThChapterEnd: 'End',
+    probeThChapterDuration: 'Duration',
+    probeThChapterTitle: 'Title',
+    probeSectionRawJson: 'ffprobe JSON',
+    probeRawJsonHint:
+      'Read-only output; copy or save it for support or an external parser.',
+    probeCopyJsonButton: 'Copy JSON',
+    probeSaveJsonButton: 'Save JSON…',
+    probeRawJsonPreAria: 'Raw ffprobe JSON',
+    probeContextMenuAria: 'ffprobe row actions',
+    probeCtxCopyRowTab: 'Copy row (tab-separated)',
+    probeCtxCopyCodec: 'Copy codec',
+    probeCtxCopyPixFmt: 'Copy pix_fmt',
+    probeCtxCopySar: 'Copy SAR',
+    probeCtxCopyDar: 'Copy DAR',
+    probeCtxCopyColorSpace: 'Copy color_space',
+    probeCtxCopyColorPrimaries: 'Copy color_primaries',
+    probeCtxCopyColorTransfer: 'Copy color_transfer',
+    probeCtxCopyColorRange: 'Copy color_range',
+    probeCtxCopyBitrate: 'Copy bitrate',
+    probeCtxCopyDisposition: 'Copy disposition',
+    probeCtxCopyDetail: 'Copy details',
+    probeCtxCopyLanguage: 'Copy language',
+    probeCtxCopyTrackTitle: 'Copy stream title',
+    probeCtxCopyChapterTitle: 'Copy title',
+    videoTimelineZoomRowAria: 'Timeline zoom',
+    videoTimelineZoomOutTitle: 'Zoom out (show a longer time range)',
+    videoTimelineZoomInTitle: 'Zoom in for finer scrubbing',
+    videoTimelineZoomReadoutTitle: 'Visible scrub range and marker strip',
+    videoTimelineZoomReadoutTemplate: 'Scale ×{mul} · {start} — {end}',
+    videoTimelineRulerAria: 'Playback window time ruler: click or arrow keys to seek',
+    videoTimelineRulerValuetextTemplate: '{current} in window {winStart} — {winEnd}',
+    videoTimelineMediaFactsAria: 'ffprobe media summary and playhead',
+    videoTimelineVideoStreamTitle: 'First ffprobe video stream',
+    videoTimelineVideoLabel: 'Video:',
+    videoTimelineAudioStreamTitle: 'First ffprobe audio track',
+    videoTimelineAudioLabel: 'Audio:',
+    videoTimelinePositionTitle:
+      'Current time; frame index estimated from stream frame rate in the track row',
+    videoTimelinePositionLabel: 'Position:',
+    videoTimelineFrameApproxSuffixTemplate: ' · frame ~{frame}',
+    videoTimelineScrubAria: 'Playback position',
+    videoTimelineScrubValuetextTemplate:
+      '{current} of {duration} (playback window at scale ×{mul})',
+    videoTimelineMarkersOutsideWindowTitle:
+      'In/Out is outside the current window — zoom out.',
+    videoTimelineIoAria: 'In / Out markers',
+    videoTimelineTrimReadoutTitle: 'Export range (section 7.1): passed to ffmpeg as -ss / -t',
+    videoTimelineExportJumpTitle:
+      'Scroll to the FFmpeg export panel (In/Out markers and command preview)',
+    videoTimelineExportJumpButton: 'Trim → export',
+    videoTimelineInHereTitle: 'Set In at the current playhead',
+    videoTimelineInHereButton: 'In here',
+    videoTimelineOutHereTitle: 'Set Out at the current playhead',
+    videoTimelineOutHereButton: 'Out here',
+    videoTimelineResetTrimTitle: 'Reset range to the full clip',
+    videoTimelineResetTrimButton: 'Full clip',
+    previewTransportToolbarAria: 'Preview transport',
+    previewTransportMinusSecTitle: 'Minus {sec} s',
+    previewTransportPlusSecTitle: 'Plus {sec} s',
+    previewTransportUnmuteTitle: 'Unmute',
+    timelineWaveformWebAudioUnavailable: 'Web Audio is not available in this context.',
+    timelineWaveformMediaResponseErrorTemplate: 'Media response: {status}',
+    timelineWaveformDisabledLargeFile: 'Waveform disabled for large files (memory guard).',
+    timelineWaveformAudioLongerHintTemplate: 'Audio ~{audioSec}s (video {videoSec}s).',
+    timelineWaveformDecodeFailedHint:
+      'Could not build a waveform (no decodable audio or decoder error).',
+    timelineWaveformUnavailableLongTemplate:
+      'Long clip (> {max}s) — waveform is not built (memory guard).',
+    timelineWaveformAriaUnavailable: 'Waveform unavailable',
+    timelineWaveformAriaEnvelope: 'Waveform envelope',
+    timelineWaveformLoading: 'Waveform…',
+    miniIconFolderOpen: 'Open file',
+    miniIconFolderOpenEllipsis: 'Open file…',
+    miniIconRefreshCw: 'Refresh',
+    miniIconDownload: 'Downloads',
+    miniIconClipboardPaste: 'Paste from clipboard',
+    miniIconPopOutWindow: 'Open downloads in a separate window',
+    miniIconFilm: 'Inspector',
+    miniIconHome: 'Default download folder',
+    miniIconZoomOut: 'Zoom timeline out',
+    miniIconZoomIn: 'Zoom timeline in',
+    miniIconCircleHelp: 'About',
+    miniIconImage: 'Frame capture',
+    miniIconSave: 'Export',
+    miniIconSettings: 'Engine paths',
+    miniIconSun: 'Light theme',
+    miniIconMoon: 'Dark theme',
+    miniIconSkipBack: 'Go to start',
+    miniIconChevronLeft: 'Back 5 seconds',
+    miniIconChevronRight: 'Forward 5 seconds',
+    miniIconSkipForward: 'Go to end',
+    miniIconPlay: 'Play',
+    miniIconPauseUi: 'Pause',
+    miniIconVolume2: 'Volume',
+    miniIconVolumeX: 'Mute',
+    miniIconMaximize2: 'Fullscreen preview',
+    miniIconRotateCcw: 'Rotate counter-clockwise (FFmpeg §7.2)',
+    miniIconRotateCw: 'Rotate clockwise (FFmpeg §7.2)',
+    miniIconScissors: 'Next crop preset (§7.2)',
+    miniIconQueueChevronUp: 'Move up',
+    miniIconQueueChevronDown: 'Move down',
+    miniIconQueuePlus: 'Add',
+    miniIconQueueRetry: 'Retry',
+    miniIconQueueFile: 'Open file',
+    miniIconQueueOutbound: 'Open in editor',
+    miniIconQueueTrash: 'Remove from queue',
+    miniIconQueueX: 'Clear'
   }
 } as const
 
 type UiTextKey = keyof (typeof UI_TEXT)['ru']
 
 export function getUiLocale(): UiLocale {
-  if (typeof navigator !== 'undefined' && navigator.language.toLowerCase().startsWith('en')) {
-    return 'en'
-  }
-  return 'ru'
+  return uiLocaleOverride ?? resolveUiLocaleFromNavigator()
 }
 
-const activeUiLocale = getUiLocale()
+/**
+ * Sync renderer UI strings with persisted `uiLocale` (or persist navigator default once).
+ * Caller should bump React state after this so components re-read `getUiLocale()` / `uiText()`.
+ */
+export function applyPersistedUiLocale(loaded: { uiLocale?: unknown }): {
+  resolved: DownloadsWindowUiLocale
+  shouldPersist: boolean
+} {
+  const fromFile = parseDownloadsWindowUiLocale(loaded.uiLocale)
+  if (fromFile !== undefined) {
+    uiLocaleOverride = fromFile
+    return { resolved: fromFile, shouldPersist: false }
+  }
+  const resolved = resolveUiLocaleFromNavigator()
+  uiLocaleOverride = resolved
+  return { resolved, shouldPersist: true }
+}
+
+/** После `settings.setUiLocale` или события main `uiLocaleChanged`. */
+export function setUiLocaleForSession(locale: DownloadsWindowUiLocale): void {
+  uiLocaleOverride = locale
+}
+
+export type MiniIconTitleKey = {
+  [K in UiTextKey]: K extends `miniIcon${string}` ? K : never
+}[UiTextKey]
+
+export function miniIconTitle(key: MiniIconTitleKey): string {
+  return UI_TEXT[getUiLocale()][key]
+}
 
 export function uiText(key: UiTextKey): string {
-  return UI_TEXT[activeUiLocale][key]
+  return UI_TEXT[getUiLocale()][key]
 }
 
 export function uiTextVars(key: UiTextKey, vars: Record<string, string | number>): string {
@@ -1281,53 +1749,74 @@ export type TerminalIntroTailVars = {
 }
 
 export function formatTerminalIntroTail(vars: TerminalIntroTailVars): string {
-  return UI_TEXT[activeUiLocale].terminalIntroTailTemplate
+  return UI_TEXT[getUiLocale()].terminalIntroTailTemplate
     .replace(/\{pageStep\}/g, String(vars.pageStep))
     .replace(/\{maxInline\}/g, String(vars.maxInline))
     .replace(/\{maxDd\}/g, String(vars.maxDd))
 }
 
 export function formatTerminalPreviewTooltip(token: string): string {
-  return UI_TEXT[activeUiLocale].terminalPreviewFileTooltipOpen.replace(/\{token\}/g, token)
+  return UI_TEXT[getUiLocale()].terminalPreviewFileTooltipOpen.replace(/\{token\}/g, token)
 }
 
 export function formatTerminalExitLine(code: number | null | undefined, ms: number): string {
-  const codeStr = code === null || code === undefined ? 'n/a' : String(code)
-  return UI_TEXT[activeUiLocale].terminalExitCodeMsTemplate
+  const codeStr =
+    code === null || code === undefined ? uiText('commonNotApplicableShort') : String(code)
+  return UI_TEXT[getUiLocale()].terminalExitCodeMsTemplate
     .replace(/\{code\}/g, codeStr)
     .replace(/\{ms\}/g, String(ms))
 }
 
 export function formatTerminalCopyLineAria(lineNumber1Based: number): string {
-  return UI_TEXT[activeUiLocale].terminalCopyLineAriaTemplate.replace(
+  return UI_TEXT[getUiLocale()].terminalCopyLineAriaTemplate.replace(
     /\{n\}/g,
     String(lineNumber1Based)
   )
 }
 
 export function formatMaintenanceCleanDone(files: number, bytes: string): string {
-  return UI_TEXT[activeUiLocale].maintenanceCleanDoneTemplate
+  return UI_TEXT[getUiLocale()].maintenanceCleanDoneTemplate
     .replace(/\{files\}/g, String(files))
     .replace(/\{bytes\}/g, bytes)
 }
 
 export function formatMaintenanceConfirmHint(label: string): string {
-  return UI_TEXT[activeUiLocale].maintenanceConfirmHintTemplate.replace(/\{label\}/g, label)
+  return UI_TEXT[getUiLocale()].maintenanceConfirmHintTemplate.replace(/\{label\}/g, label)
 }
 
 export function formatMaintenanceSummary(bytes: string, details?: string): string {
   const template =
     details && details.trim().length > 0
-      ? UI_TEXT[activeUiLocale].maintenanceSummaryWithDetailsTemplate
-      : UI_TEXT[activeUiLocale].maintenanceSummaryTemplate
+      ? UI_TEXT[getUiLocale()].maintenanceSummaryWithDetailsTemplate
+      : UI_TEXT[getUiLocale()].maintenanceSummaryTemplate
   return template.replace(/\{bytes\}/g, bytes).replace(/\{details\}/g, details ?? '')
+}
+
+/** Двоичные степени 1024 с локализованными суффиксами (см. `byteSize*` в `UI_TEXT`). */
+export function formatUiBytes(bytes: number): string {
+  if (!Number.isFinite(bytes) || bytes <= 0) {
+    return uiText('byteSizeZero')
+  }
+  const units = [
+    uiText('byteSizeUnitB'),
+    uiText('byteSizeUnitKiB'),
+    uiText('byteSizeUnitMiB'),
+    uiText('byteSizeUnitGiB')
+  ]
+  let value = bytes
+  let unitIndex = 0
+  while (value >= 1024 && unitIndex < units.length - 1) {
+    value /= 1024
+    unitIndex += 1
+  }
+  return `${value >= 10 || unitIndex === 0 ? value.toFixed(0) : value.toFixed(1)} ${units[unitIndex]}`
 }
 
 export function formatDownloadsHistoryTime(ms: number): string {
   if (!Number.isFinite(ms) || ms <= 0) {
-    return '—'
+    return uiText('uiPlaceholderDash')
   }
-  const loc = activeUiLocale === 'en' ? 'en-US' : 'ru-RU'
+  const loc = getUiLocale() === 'en' ? 'en-US' : 'ru-RU'
   return new Date(ms).toLocaleString(loc, {
     day: '2-digit',
     month: '2-digit',
@@ -1337,7 +1826,7 @@ export function formatDownloadsHistoryTime(ms: number): string {
 }
 
 export function formatProcessingDurationLabel(ms: number): string {
-  const en = activeUiLocale === 'en'
+  const en = getUiLocale() === 'en'
   if (!Number.isFinite(ms) || ms <= 0) {
     return en ? '0s' : '0с'
   }
