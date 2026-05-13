@@ -879,6 +879,7 @@ function sanitizeMainWindowUiPanelPatch(raw: unknown): Partial<MainWindowUiPanel
     'ffmpegPresets',
     'ffmpegOutput',
     'exportCommandPreview',
+    'processingHistory',
     'probeExportSummary',
     'probeTracks',
     'probeChapters',

@@ -2700,7 +2700,6 @@ function App(): JSX.Element {
                       {uiText('editorFfmpegRailCollapseHidden')}
                     </span>
                   </button>
-                  <span className="app-settings-badge">{exportContainer.toUpperCase()}</span>
                 </div>
               </div>
 

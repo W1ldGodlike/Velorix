@@ -93,6 +93,7 @@ import { downloadsIpc as d, mainWindowIpc as mw } from '../shared/ipc-channels'
 type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
 
 const MAIN_UI_PANEL_KEYS = [
+  'ffmpegSettingsRailOpen',
   'quickYtdlp',
   'ffmpegVideo',
   'ffmpegFormat',
