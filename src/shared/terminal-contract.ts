@@ -1783,7 +1783,8 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   {
     tool: 'yt-dlp',
     token: '· чистить info.json',
-    summary: 'Удалить временный .info.json после успешной загрузки (--clean-infojson); обычно вместе с --write-info-json; допишите URL и ключи вывода.',
+    summary:
+      'Удалить временный .info.json после успешной загрузки (--clean-infojson); обычно вместе с --write-info-json; допишите URL и ключи вывода.',
     fullLine: 'yt-dlp --clean-infojson '
   },
   {
@@ -2886,7 +2887,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: channel name',
+    token: '· в файл: имя канала',
     summary: 'Записать имя канала (поле channel) в flux-ytdlp-channel.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file channel flux-ytdlp-channel.txt --skip-download '
   },
@@ -2928,13 +2929,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· extract-audio wma',
+    token: '· аудио WMA',
     summary: 'Извлечь аудио в WMA (--extract-audio --audio-format wma); допишите URL и шаблон -o при необходимости.',
     fullLine: 'yt-dlp --extract-audio --audio-format wma '
   },
   {
     tool: 'yt-dlp',
-    token: '· no-abort-on-error -F',
+    token: '· плейлист: не стоп при ошибке -F',
     summary: 'Плейлист: продолжать после ошибки отдельного URL (--no-abort-on-error -F); допишите URL.',
     fullLine: 'yt-dlp --no-abort-on-error -F '
   },
