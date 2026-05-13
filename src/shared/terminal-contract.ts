@@ -42,7 +42,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· один JSON на ссылку (один ролик)',
+    token: '· один json на ссылку (один ролик)',
     summary: 'Один JSON на ролик без скачивания (--dump-single-json, эквивалент -J для одного URL); допишите URL.',
     fullLine: 'yt-dlp --dump-single-json '
   },
@@ -66,7 +66,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· плоский плейлист и полный JSON (-J)',
+    token: '· плоский плейлист и полный json (-J)',
     summary: 'Плейлист «плоско» и JSON (-J) без глубокого извлечения каждого ролика; допишите URL плейлиста.',
     fullLine: 'yt-dlp --flat-playlist -J '
   },
@@ -432,7 +432,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: признак DRM (has_drm)',
+    token: '· вывод: защита контента (has_drm)',
     summary: 'Флаг DRM и шифрования без скачивания (--skip-download --print has_drm); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print has_drm '
   },
@@ -816,7 +816,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· заголовок языка (Accept-Language) -F',
+    token: '· заголовок Accept-Language -F',
     summary: 'Произвольный заголовок без пробелов в значении (--add-header Accept-Language:en-US -F); при сложных значениях соберите список аргументов (в терминах argv) вручную; допишите URL.',
     fullLine: 'yt-dlp --add-header Accept-Language:en-US -F '
   },
@@ -1410,7 +1410,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: автонумерация в -o (playlist_autonumber)',
+    token: '· вывод: автонумерация в -o (поле playlist_autonumber)',
     summary: 'Автонумерация в шаблоне -o без скачивания (--skip-download --print playlist_autonumber); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print playlist_autonumber '
   },
@@ -2257,7 +2257,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· без комментариев в JSON -F',
+    token: '· без комментариев в json -F',
     summary: 'Не сохранять JSON комментариев (--no-write-comments -F); допишите URL.',
     fullLine: 'yt-dlp --no-write-comments -F '
   },
@@ -2365,7 +2365,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· общий экстрактор (generic): не плейлист -F',
+    token: '· экстрактор generic: не плейлист -F',
     summary: 'Общий модуль (generic): не разворачивать плейлист (--extractor-args generic:noplaylist -F); допишите URL.',
     fullLine: 'yt-dlp --extractor-args generic:noplaylist -F '
   },
@@ -2587,7 +2587,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· без сырого HTML -F',
+    token: '· без сырой разметки HTML -F',
     summary: 'Не сохранять сырые HTML-страницы модуля извлечения (extractor) (--no-write-pages -F); чище диск при -F; допишите URL.',
     fullLine: 'yt-dlp --no-write-pages -F '
   },
@@ -3559,7 +3559,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: признак DRM',
+    token: '· в файл: защита контента (has_drm)',
     summary: 'Записать has_drm в flux-ytdlp-drm.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file has_drm flux-ytdlp-drm.txt --skip-download '
   },
@@ -4753,7 +4753,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· HTTP-фрагмент 1 MiB -F',
+    token: '· сетевой фрагмент 1 MiB -F',
     summary: 'Меньший HTTP-чанк 1 MiB (--http-chunk-size 1M -F); тонкая подстройка скорости и стабильности CDN; допишите URL.',
     fullLine: 'yt-dlp --http-chunk-size 1M -F '
   },
@@ -4991,7 +4991,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· контейнер и дорожки в JSON',
+    token: '· контейнер и дорожки, вывод json',
     summary: 'Сводка блоков format и streams в JSON (-of json); удобно скопировать в ZIP-архив для поддержки или обработать в jq.',
     fullLine: `ffprobe -hide_banner -of json -show_format -show_streams ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -5657,7 +5657,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· главы в JSON',
+    token: '· главы, вывод json',
     summary: 'Главы контейнера одним JSON (--show-chapters -of json=c=1); длительности и заголовки сегментов; путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_chapters -of json=c=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },

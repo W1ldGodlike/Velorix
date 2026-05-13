@@ -580,3 +580,4 @@
 - [J-563] 2026-05-14 10:00:00 [Assistant]: §8 — повторно: UA/HLS/путь/загрузчик/postproc, `HTTP-фрагмент`→сетевой; все превью-токены `· FFmpeg:`→`· ffmpeg:` (replace); Accept-Language в токене; `fullLine` без изменений.
 - [J-564] 2026-05-14 11:00:00 [Assistant]: §8 — `token`: сетевой фрагмент 1M, Accept-Language, DRM→«защита контента», unix-формулировки для epoch/timestamps; случайную массовую правку `summary` откатили; `fullLine` без изменений.
 - [J-565] 2026-05-14 12:00:00 [Assistant]: §8 — `token`: нижний регистр контейнеров/кодеков (mkv/mp4/webm/jpg/png/srt/aac/mp3…), прямая (-g) аудио, шаблон -o, HTML→«страницы в HTML», netrc/xfwd/mp4-бренды; `summary` не трогали; `fullLine` без изменений.
+- [J-566] 2026-05-14 13:00:00 [Assistant]: §8 — `token`: DRM→защита контента, сетевой фрагмент 1M, Accept-Language, json/ffprobe-формулировки, generic-экстрактор, сырая HTML; `fullLine` без изменений.
