@@ -90,43 +90,43 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: title',
+    token: '· вывод: заголовок (title)',
     summary: 'Только заголовок ролика без скачивания (--skip-download --print title); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print title '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: duration_string',
+    token: '· вывод: длительность строкой (duration_string)',
     summary: 'Только длительность HH:MM:SS без скачивания (--skip-download --print duration_string); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print duration_string '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: uploader',
+    token: '· вывод: автор (uploader)',
     summary: 'Имя автора (uploader) без скачивания (--skip-download --print uploader); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print uploader '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: id',
+    token: '· вывод: идентификатор ролика (id)',
     summary: 'Идентификатор ролика на площадке без скачивания (--skip-download --print id); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print id '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: webpage_url',
+    token: '· вывод: ссылка страницы (webpage_url)',
     summary: 'Канонический URL страницы без скачивания (--skip-download --print webpage_url); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print webpage_url '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: channel',
+    token: '· вывод: канал (channel)',
     summary: 'Имя канала или площадки без скачивания (--skip-download --print channel); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print channel '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: channel_id',
+    token: '· вывод: идентификатор канала (channel_id)',
     summary: 'Идентификатор канала без скачивания (--skip-download --print channel_id); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print channel_id '
   },
@@ -138,61 +138,61 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: view_count',
+    token: '· вывод: число просмотров (view_count)',
     summary: 'Счётчик просмотров без скачивания (--skip-download --print view_count); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print view_count '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: upload_date',
+    token: '· вывод: дата публикации (upload_date)',
     summary: 'Дата публикации YYYYMMDD без скачивания (--skip-download --print upload_date); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print upload_date '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: playlist_title',
+    token: '· вывод: название плейлиста (playlist_title)',
     summary: 'Заголовок плейлиста без скачивания (--skip-download --print playlist_title); допишите URL плейлиста.',
     fullLine: 'yt-dlp --skip-download --print playlist_title '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: playlist_count',
+    token: '· вывод: число элементов плейлиста (playlist_count)',
     summary: 'Число элементов в плейлисте без скачивания (--skip-download --print playlist_count); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print playlist_count '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: filename',
+    token: '· вывод: имя файла (filename)',
     summary: 'Имя выходного файла по текущим -o без скачивания (--skip-download --print filename); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print filename '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: description',
+    token: '· вывод: описание (description)',
     summary: 'Текст описания ролика без скачивания (--skip-download --print description); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print description '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: categories',
+    token: '· вывод: категории (categories)',
     summary: 'Категории и тематики без скачивания (--skip-download --print categories); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print categories '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: language',
+    token: '· вывод: язык (language)',
     summary: 'Язык по умолчанию без скачивания (--skip-download --print language); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print language '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: extractor',
+    token: '· вывод: модуль извлечения (extractor)',
     summary: 'Имя модуля извлечения (extractor) без скачивания (--skip-download --print extractor); допишите URL (диагностика маршрута yt-dlp).',
     fullLine: 'yt-dlp --skip-download --print extractor '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: playlist_id',
+    token: '· вывод: идентификатор плейлиста (playlist_id)',
     summary: 'Идентификатор плейлиста без скачивания (--skip-download --print playlist_id); допишите URL плейлиста.',
     fullLine: 'yt-dlp --skip-download --print playlist_id '
   },
@@ -204,31 +204,31 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: format_id',
+    token: '· вывод: идентификатор формата (format_id)',
     summary: 'Идентификатор выбранного формата без скачивания (--skip-download --print format_id); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print format_id '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: ext',
+    token: '· вывод: расширение (ext)',
     summary: 'Расширение контейнера выбранного формата без скачивания (--skip-download --print ext); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print ext '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: resolution',
+    token: '· вывод: разрешение (resolution)',
     summary: 'Строка разрешения выбранного формата без скачивания (--skip-download --print resolution); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print resolution '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: vcodec',
+    token: '· вывод: видеокодек (vcodec)',
     summary: 'Видеокодек выбранного формата без скачивания (--skip-download --print vcodec); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print vcodec '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: acodec',
+    token: '· вывод: аудиокодек (acodec)',
     summary: 'Аудиокодек выбранного формата без скачивания (--skip-download --print acodec); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print acodec '
   },
@@ -258,13 +258,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: tags',
+    token: '· вывод: теги (tags)',
     summary: 'Сводка тегов и метаданных без скачивания (--skip-download --print tags); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print tags '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: filesize_approx',
+    token: '· вывод: размер приблизительно (filesize_approx)',
     summary: 'Оценка размера выбранного формата без скачивания (--skip-download --print filesize_approx); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print filesize_approx '
   },
@@ -288,49 +288,49 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: fps',
+    token: '· вывод: частота кадров (fps)',
     summary: 'Кадры в секунду выбранного формата без скачивания (--skip-download --print fps); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print fps '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: is_live',
+    token: '· вывод: признак эфира (is_live)',
     summary: 'Признак прямого эфира без скачивания (--skip-download --print is_live); в метаданных — да или нет (true/false); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print is_live '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: live_status',
+    token: '· вывод: статус эфира (live_status)',
     summary: 'Статус эфира без скачивания (--skip-download --print live_status): is_live (эфир сейчас), was_live (запись с эфира), not_live (не эфир), is_upcoming или upcoming (до начала эфира); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print live_status '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: availability',
+    token: '· вывод: доступность (availability)',
     summary: 'Видимость ролика без скачивания (--skip-download --print availability): public (для всех), unlisted (только по ссылке), premium (ограниченный доступ), needs_auth (нужна авторизация); допишите URL (диагностика 403 и входа по логину).',
     fullLine: 'yt-dlp --skip-download --print availability '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: age_limit',
+    token: '· вывод: возрастной лимит (age_limit)',
     summary: 'Возрастной лимит ролика без скачивания (--skip-download --print age_limit); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print age_limit '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: like_count',
+    token: '· вывод: число лайков (like_count)',
     summary: 'Счётчик лайков без скачивания (--skip-download --print like_count); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print like_count '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: comment_count',
+    token: '· вывод: число комментариев (comment_count)',
     summary: 'Число комментариев без скачивания (--skip-download --print comment_count); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print comment_count '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: aspect_ratio',
+    token: '· вывод: соотношение сторон (aspect_ratio)',
     summary: 'Соотношение сторон выбранного формата без скачивания (--skip-download --print aspect_ratio); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print aspect_ratio '
   },
@@ -354,43 +354,43 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: duration (сек)',
+    token: '· вывод: длительность в секундах (duration)',
     summary: 'Длительность в секундах (число) без скачивания (--skip-download --print duration); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print duration '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: width',
+    token: '· вывод: ширина (width)',
     summary: 'Ширина выбранного формата в пикселях без скачивания (--skip-download --print width); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print width '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: height',
+    token: '· вывод: высота (height)',
     summary: 'Высота выбранного формата в пикселях без скачивания (--skip-download --print height); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print height '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: tbr',
+    token: '· вывод: сводный битрейт (tbr)',
     summary: 'Сводный битрейт выбранного формата (kbps) без скачивания (--skip-download --print tbr); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print tbr '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: abr',
+    token: '· вывод: аудиобитрейт (abr)',
     summary: 'Аудио-битрейт выбранного формата (kbps) без скачивания (--skip-download --print abr); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print abr '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: vbr',
+    token: '· вывод: видеобитрейт (vbr)',
     summary: 'Видео-битрейт выбранного формата (kbps) без скачивания (--skip-download --print vbr); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print vbr '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: asr',
+    token: '· вывод: частота дискретизации (asr)',
     summary: 'Частота дискретизации аудио (Hz) без скачивания (--skip-download --print asr); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print asr '
   },
@@ -432,7 +432,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: has_drm',
+    token: '· вывод: признак DRM (has_drm)',
     summary: 'Флаг DRM и шифрования без скачивания (--skip-download --print has_drm); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print has_drm '
   },
@@ -444,31 +444,31 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: channel_url',
+    token: '· вывод: ссылка канала (channel_url)',
     summary: 'URL канала или плейлиста без скачивания (--skip-download --print channel_url); допишите URL ролика.',
     fullLine: 'yt-dlp --skip-download --print channel_url '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: uploader_id',
+    token: '· вывод: идентификатор автора (uploader_id)',
     summary: 'Идентификатор автора на площадке без скачивания (--skip-download --print uploader_id); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print uploader_id '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: was_live',
+    token: '· вывод: был эфир (was_live)',
     summary: 'Был ли эфир прямой трансляцией или записью стрима без скачивания (--skip-download --print was_live); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print was_live '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: media_type',
+    token: '· вывод: тип медиа (media_type)',
     summary: 'Тип медиа (видео или аудио и т. п.) без скачивания (--skip-download --print media_type); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print media_type '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: release_year',
+    token: '· вывод: год релиза (release_year)',
     summary: 'Год публикации (если есть) без скачивания (--skip-download --print release_year); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print release_year '
   },
@@ -480,19 +480,19 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: filesize',
+    token: '· вывод: размер файла (filesize)',
     summary: 'Размер файла выбранного формата (байты, если известен) без скачивания (--skip-download --print filesize); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print filesize '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: format_note',
+    token: '· вывод: примечание к формату (format_note)',
     summary: 'Поле примечания к формату (format_note) без скачивания (--skip-download --print format_note); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print format_note '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: subtitles',
+    token: '· вывод: субтитры (subtitles)',
     summary: 'Словарь субтитров из метаданных без скачивания (--skip-download --print subtitles); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print subtitles '
   },
@@ -504,7 +504,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: chapters',
+    token: '· вывод: главы (chapters)',
     summary: 'Главы из метаданных без скачивания (--skip-download --print chapters); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print chapters '
   },
@@ -516,25 +516,25 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: original_url',
+    token: '· вывод: исходная ссылка (original_url)',
     summary: 'Исходный URL запроса без скачивания (--skip-download --print original_url); сверка редиректов; допишите URL.',
     fullLine: 'yt-dlp --skip-download --print original_url '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: webpage_url_domain',
+    token: '· вывод: домен страницы (webpage_url_domain)',
     summary: 'Домен страницы без скачивания (--skip-download --print webpage_url_domain); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print webpage_url_domain '
   },
   {
     tool: 'yt-dlp',
-    token: '· плоский плейлист: вывод ID',
+    token: '· плоский плейлист: вывод идентификатора',
     summary: 'Плоский плейлист: идентификатор (id) каждого элемента без глубокого извлечения (--flat-playlist --skip-download --print id); допишите URL плейлиста.',
     fullLine: 'yt-dlp --flat-playlist --skip-download --print id '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: playlist_index',
+    token: '· вывод: индекс в плейлисте (playlist_index)',
     summary: 'Индекс ролика в плейлисте без скачивания (--skip-download --print playlist_index); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print playlist_index '
   },
@@ -564,13 +564,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: filepath',
+    token: '· вывод: путь по шаблону -o (filepath)',
     summary: 'Шаблон выходного пути по текущим -o без скачивания (--skip-download --print filepath); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print filepath '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: epoch',
+    token: '· вывод: время публикации, Unix (epoch)',
     summary: 'Время публикации в секундах с эпохи Unix (epoch), если есть, без скачивания (--skip-download --print epoch); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print epoch '
   },
@@ -594,7 +594,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: heatmap',
+    token: '· вывод: теплокарта просмотров (heatmap)',
     summary: 'Данные тепловой карты просмотров (heatmap; если отдаёт площадка, напр. YouTube) без скачивания (--skip-download --print heatmap); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print heatmap '
   },
@@ -804,7 +804,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: title либо н/д',
+    token: '· вывод: заголовок или н/д (title)',
     summary: 'Печать title с заменителем для пустых полей (--output-na-placeholder NA --skip-download --print title); в консоли будет NA, если поле пустое; допишите URL.',
     fullLine: 'yt-dlp --output-na-placeholder NA --skip-download --print title '
   },
@@ -888,31 +888,31 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: season_number',
+    token: '· вывод: номер сезона (season_number)',
     summary: 'Номер сезона из метаданных без скачивания (--skip-download --print season_number); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print season_number '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: episode_number',
+    token: '· вывод: номер эпизода (episode_number)',
     summary: 'Номер эпизода без скачивания (--skip-download --print episode_number); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print episode_number '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: track',
+    token: '· вывод: название трека (track)',
     summary: 'Название трека (аудио) без скачивания (--skip-download --print track); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print track '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: artists',
+    token: '· вывод: исполнители (artists)',
     summary: 'Исполнители без скачивания (--skip-download --print artists); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print artists '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: album',
+    token: '· вывод: альбом (album)',
     summary: 'Альбом без скачивания (--skip-download --print album); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print album '
   },
@@ -984,7 +984,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: n_entries',
+    token: '· вывод: число записей в плейлисте (n_entries)',
     summary: 'Число записей плейлиста без скачивания (--skip-download --print n_entries); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print n_entries '
   },
@@ -1146,7 +1146,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· ошибка по URL не рвёт плейлист -F',
+    token: '· ошибка по ссылке не рвёт плейлист -F',
     summary: 'Плейлист: не прерывать весь прогон при ошибке одного URL (--break-per-input -F); допишите URL.',
     fullLine: 'yt-dlp --break-per-input -F '
   },
@@ -1218,19 +1218,19 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: release_date',
+    token: '· вывод: дата релиза (release_date)',
     summary: 'Дата релиза YYYYMMDD без скачивания (--skip-download --print release_date); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print release_date '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: album_artist',
+    token: '· вывод: исполнитель альбома (album_artist)',
     summary: 'Исполнитель альбома без скачивания (--skip-download --print album_artist); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print album_artist '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: track_number',
+    token: '· вывод: номер трека (track_number)',
     summary: 'Номер трека внутри альбома без скачивания (--skip-download --print track_number); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print track_number '
   },
@@ -1242,37 +1242,37 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: series',
+    token: '· вывод: сериал (series)',
     summary: 'Название серии или шоу без скачивания (--skip-download --print series); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print series '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: season',
+    token: '· вывод: сезон, строка (season)',
     summary: 'Сезон (строка площадки) без скачивания (--skip-download --print season); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print season '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: episode',
+    token: '· вывод: эпизод, строка (episode)',
     summary: 'Эпизод (строка площадки) без скачивания (--skip-download --print episode); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print episode '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: display_id',
+    token: '· вывод: короткий id для отображения (display_id)',
     summary: 'Короткий display_id без скачивания (--skip-download --print display_id); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print display_id '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: webpage_url_basename',
+    token: '· вывод: имя пути страницы (webpage_url_basename)',
     summary: 'Последний сегмент пути страницы без скачивания (--skip-download --print webpage_url_basename); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print webpage_url_basename '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: fulltitle',
+    token: '· вывод: полный заголовок (fulltitle)',
     summary: 'Полный заголовок с плейлистом или серией без скачивания (--skip-download --print fulltitle); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print fulltitle '
   },
@@ -1326,19 +1326,19 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: channel_follower_count',
+    token: '· вывод: число подписчиков (channel_follower_count)',
     summary: 'Число подписчиков канала без скачивания (--skip-download --print channel_follower_count); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print channel_follower_count '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: average_rating',
+    token: '· вывод: средний рейтинг (average_rating)',
     summary: 'Средний рейтинг и оценка без скачивания (--skip-download --print average_rating); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print average_rating '
   },
   {
     tool: 'yt-dlp',
-    token: '· все URL в журнал',
+    token: '· все ссылки в журнал',
     summary: 'Список всех извлечённых URL в журнал (--write-all-urls --skip-download); допишите URL.',
     fullLine: 'yt-dlp --write-all-urls --skip-download '
   },
@@ -1356,7 +1356,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: is_private',
+    token: '· вывод: признак приватности (is_private)',
     summary: 'Признак приватного или ограниченного ролика без скачивания (--skip-download --print is_private); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print is_private '
   },
@@ -1404,43 +1404,43 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: playlist',
+    token: '· вывод: название как у плейлиста (playlist)',
     summary: 'Название плейлиста без скачивания (--skip-download --print playlist); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print playlist '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: playlist_autonumber',
+    token: '· вывод: автонумерация в -o (playlist_autonumber)',
     summary: 'Автонумерация в шаблоне -o без скачивания (--skip-download --print playlist_autonumber); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print playlist_autonumber '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: modified_timestamp',
+    token: '· вывод: время изменения, Unix (modified_timestamp)',
     summary: 'Unix-время последнего изменения метаданных без скачивания (--skip-download --print modified_timestamp); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print modified_timestamp '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: release_timestamp',
+    token: '· вывод: время релиза, Unix (release_timestamp)',
     summary: 'Unix-время релиза и премьеры без скачивания (--skip-download --print release_timestamp); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print release_timestamp '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: upload_timestamp',
+    token: '· вывод: время загрузки, Unix (upload_timestamp)',
     summary: 'Unix-время загрузки на площадку без скачивания (--skip-download --print upload_timestamp); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print upload_timestamp '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: stretched_ratio',
+    token: '· вывод: соотношение после растяжения (stretched_ratio)',
     summary: 'Соотношение сторон после растяжения (stretched_ratio) без скачивания (--skip-download --print stretched_ratio); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print stretched_ratio '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: location',
+    token: '· вывод: местоположение (location)',
     summary: 'Данные о местоположении из метаданных без скачивания (--skip-download --print location); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print location '
   },
@@ -1464,13 +1464,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: alternate_title',
+    token: '· вывод: альтернативный заголовок (alternate_title)',
     summary: 'Альтернативный заголовок без скачивания (--skip-download --print alternate_title); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print alternate_title '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: extractor_key',
+    token: '· вывод: внутренний ключ экстрактора (extractor_key)',
     summary: 'Внутренний ключ модуля извлечения (extractor_key) без скачивания (--skip-download --print extractor_key); сверка с `--print extractor`; допишите URL.',
     fullLine: 'yt-dlp --skip-download --print extractor_key '
   },
@@ -1488,7 +1488,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: channel_is_verified',
+    token: '· вывод: канал с галочкой (channel_is_verified)',
     summary: 'Флаг верифицированного канала без скачивания (--skip-download --print channel_is_verified); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print channel_is_verified '
   },
@@ -1524,13 +1524,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: requested_formats',
+    token: '· вывод: запрошенные форматы (requested_formats)',
     summary: 'Список запрошенных и выбранных форматов без скачивания (--skip-download --print requested_formats); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print requested_formats '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: requested_subtitles',
+    token: '· вывод: запрошенные субтитры (requested_subtitles)',
     summary: 'Запрошенные субтитры без скачивания (--skip-download --print requested_subtitles); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print requested_subtitles '
   },
@@ -1560,7 +1560,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: formats',
+    token: '· вывод: словарь форматов (formats)',
     summary: 'Словарь доступных форматов без скачивания (--skip-download --print formats); тяжёлый вывод — для диагностики; допишите URL.',
     fullLine: 'yt-dlp --skip-download --print formats '
   },
@@ -1614,7 +1614,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: thumbnails',
+    token: '· вывод: словарь миниатюр (thumbnails)',
     summary: 'Словарь URL миниатюр (thumbnails) без скачивания (--skip-download --print thumbnails); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print thumbnails '
   },
@@ -1626,25 +1626,25 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: playlist_channel',
+    token: '· вывод: канал плейлиста (playlist_channel)',
     summary: 'Имя канала плейлиста без скачивания (--skip-download --print playlist_channel); допишите URL плейлиста.',
     fullLine: 'yt-dlp --skip-download --print playlist_channel '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: playlist_channel_id',
+    token: '· вывод: id канала плейлиста (playlist_channel_id)',
     summary: 'Идентификатор канала плейлиста без скачивания (--skip-download --print playlist_channel_id); допишите URL плейлиста.',
     fullLine: 'yt-dlp --skip-download --print playlist_channel_id '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: playlist_uploader',
+    token: '· вывод: автор плейлиста (playlist_uploader)',
     summary: 'Автор плейлиста (uploader) без скачивания (--skip-download --print playlist_uploader); допишите URL плейлиста.',
     fullLine: 'yt-dlp --skip-download --print playlist_uploader '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: playlist_uploader_id',
+    token: '· вывод: id автора плейлиста (playlist_uploader_id)',
     summary: 'ID автора плейлиста без скачивания (--skip-download --print playlist_uploader_id); допишите URL плейлиста.',
     fullLine: 'yt-dlp --skip-download --print playlist_uploader_id '
   },
@@ -1668,7 +1668,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· загрузчик ffmpeg',
+    token: '· загрузчик FFmpeg',
     summary: 'Тянуть фрагменты через внешнюю утилиту ffmpeg (--external-downloader ffmpeg); обход части встроенных загрузчиков; допишите URL.',
     fullLine: 'yt-dlp --external-downloader ffmpeg '
   },
@@ -1698,13 +1698,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: playlist_webpage_url',
+    token: '· вывод: ссылка страницы плейлиста (playlist_webpage_url)',
     summary: 'URL страницы плейлиста без скачивания (--skip-download --print playlist_webpage_url); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print playlist_webpage_url '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: webpage_url_scheme',
+    token: '· вывод: схема ссылки (http/https) (webpage_url_scheme)',
     summary: 'Схема URL страницы (http и https) без скачивания (--skip-download --print webpage_url_scheme); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print webpage_url_scheme '
   },
@@ -1927,13 +1927,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: annotations',
+    token: '· вывод: аннотации (annotations)',
     summary: 'Сырые аннотации метаданных без скачивания (--skip-download --print annotations); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print annotations '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: storyboards',
+    token: '· вывод: раскадровки (storyboards)',
     summary: 'Доски storyboard (если отдаёт площадка) без скачивания (--skip-download --print storyboards); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print storyboards '
   },
@@ -2623,13 +2623,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: genres',
+    token: '· вывод: жанры (genres)',
     summary: 'Жанры и теги без скачивания (--skip-download --print genres); музыка и каталоги; допишите URL.',
     fullLine: 'yt-dlp --skip-download --print genres '
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: cast',
+    token: '· вывод: актёрский состав (cast)',
     summary: 'Актёрский состав (cast) без скачивания (--skip-download --print cast); если отдаёт площадка; допишите URL.',
     fullLine: 'yt-dlp --skip-download --print cast '
   },
@@ -2719,7 +2719,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· проверка всех URL -F',
+    token: '· проверка всех ссылок -F',
     summary: 'Проверить все HTTP-URL фрагментов перед загрузкой (--check-all-urls -F); диагностика кодов 403 и 410 на потоках HLS и DASH; допишите URL.',
     fullLine: 'yt-dlp --check-all-urls -F '
   },
@@ -2743,7 +2743,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· вывод: dislike_count',
+    token: '· вывод: число дизлайков (dislike_count)',
     summary: 'Счётчик дизлайков без скачивания (--skip-download --print dislike_count; часто NA); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print dislike_count '
   },
@@ -2839,7 +2839,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: URL страницы',
+    token: '· в файл: ссылка на страницу',
     summary: 'Записать webpage_url в flux-ytdlp-pageurl.txt без скачивания (--print-to-file …); допишите URL.',
     fullLine: 'yt-dlp --print-to-file webpage_url flux-ytdlp-pageurl.txt --skip-download '
   },
@@ -2857,7 +2857,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: URL канала',
+    token: '· в файл: ссылка на канал',
     summary: 'Записать channel_url в flux-ytdlp-churl.txt без скачивания; допишите URL ролика.',
     fullLine: 'yt-dlp --print-to-file channel_url flux-ytdlp-churl.txt --skip-download '
   },
@@ -2989,7 +2989,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: поле filename',
+    token: '· в файл: имя файла',
     summary: 'Записать шаблон filename (поле метаданных) в flux-ytdlp-fn.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file filename flux-ytdlp-fn.txt --skip-download '
   },
@@ -3019,7 +3019,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: autocap',
+    token: '· в файл: авто-субтитры',
     summary: 'Записать automatic_captions в flux-ytdlp-autocap.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file automatic_captions flux-ytdlp-autocap.txt --skip-download '
   },
@@ -3115,7 +3115,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: URL превью',
+    token: '· в файл: ссылка на превью',
     summary: 'Записать поле миниатюры (thumbnail, URL обложки) в flux-ytdlp-thumburl.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file thumbnail flux-ytdlp-thumburl.txt --skip-download '
   },
@@ -3193,7 +3193,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: FPS',
+    token: '· в файл: частота кадров (fps)',
     summary: 'Записать fps выбранного формата в flux-ytdlp-fps.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file fps flux-ytdlp-fps.txt --skip-download '
   },
@@ -3337,7 +3337,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: исходный URL',
+    token: '· в файл: исходная ссылка',
     summary: 'Записать original_url (исходный запрос до редиректов) в flux-ytdlp-ourl.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file original_url flux-ytdlp-ourl.txt --skip-download '
   },
@@ -3637,19 +3637,19 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: otype',
+    token: '· в файл: тип записи',
     summary: 'Записать тип объекта (_type: video, playlist и т. п.) в flux-ytdlp-otype.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file _type flux-ytdlp-otype.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: URL плейлиста',
+    token: '· в файл: ссылка на плейлист',
     summary: 'Записать playlist_url в flux-ytdlp-plurl.txt без скачивания; допишите URL плейлиста.',
     fullLine: 'yt-dlp --print-to-file playlist_url flux-ytdlp-plurl.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: URL манифеста',
+    token: '· в файл: ссылка на манифест',
     summary: 'Записать manifest_url (манифест HLS, DASH и др.) в flux-ytdlp-manurl.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file manifest_url flux-ytdlp-manurl.txt --skip-download '
   },
@@ -3709,7 +3709,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: thumbs',
+    token: '· в файл: миниатюры',
     summary: 'Записать словарь миниатюр (thumbnails, URL обложек разных размеров) в flux-ytdlp-thumbs.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file thumbnails flux-ytdlp-thumbs.txt --skip-download '
   },
@@ -3913,31 +3913,31 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: chverify',
+    token: '· в файл: верификация канала',
     summary: 'Записать channel_is_verified (флаг верификации канала) в flux-ytdlp-chverify.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file channel_is_verified flux-ytdlp-chverify.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: private',
+    token: '· в файл: приватность',
     summary: 'Записать is_private (признак приватного или ограниченного ролика) в flux-ytdlp-private.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file is_private flux-ytdlp-private.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: composers',
+    token: '· в файл: композиторы',
     summary: 'Записать composers (если модуль извлечения отдаёт) в flux-ytdlp-composers.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file composers flux-ytdlp-composers.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: creators',
+    token: '· в файл: создатели',
     summary: 'Записать creators (если модуль извлечения отдаёт) в flux-ytdlp-creators.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file creators flux-ytdlp-creators.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: trknum',
+    token: '· в файл: номер трека',
     summary: 'Записать track_number (номер трека в каталоге) в flux-ytdlp-trknum.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file track_number flux-ytdlp-trknum.txt --skip-download '
   },
@@ -4003,37 +4003,37 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: genre',
+    token: '· в файл: жанр',
     summary: 'Записать genre (жанр, если модуль извлечения отдаёт) в flux-ytdlp-genre.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file genre flux-ytdlp-genre.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: album_type',
+    token: '· в файл: тип альбома',
     summary: 'Записать album_type (тип релиза: альбом, сингл и т. п.) в flux-ytdlp-albumtype.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file album_type flux-ytdlp-albumtype.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: license',
+    token: '· в файл: лицензия',
     summary: 'Записать license (лицензия, Creative Commons и т. п., если есть) в flux-ytdlp-license.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file license flux-ytdlp-license.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: track',
+    token: '· в файл: трек',
     summary: 'Записать track (номер трека как строка каталога) в flux-ytdlp-track.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file track flux-ytdlp-track.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: album_artist',
+    token: '· в файл: исполнитель альбома',
     summary: 'Записать album_artist (альбомный исполнитель) в flux-ytdlp-albumartist.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file album_artist flux-ytdlp-albumartist.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: comment',
+    token: '· в файл: комментарий',
     summary: 'Записать comment (комментарий площадки или автора, uploader comment) в flux-ytdlp-comment.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file comment flux-ytdlp-comment.txt --skip-download '
   },
@@ -4099,25 +4099,25 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: lyrics',
+    token: '· в файл: текст песни',
     summary: 'Записать lyrics (текст песни, если модуль извлечения отдаёт) в flux-ytdlp-lyrics.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file lyrics flux-ytdlp-lyrics.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: disc_number',
+    token: '· в файл: номер диска',
     summary: 'Записать disc_number (номер диска в каталоге) в flux-ytdlp-discnum.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file disc_number flux-ytdlp-discnum.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: publisher',
+    token: '· в файл: издатель',
     summary: 'Записать publisher (издатель и лейбл, если есть) в flux-ytdlp-publisher.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file publisher flux-ytdlp-publisher.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: mood',
+    token: '· в файл: настроение',
     summary: 'Записать mood (настроение и тег настроения, если модуль извлечения отдаёт) в flux-ytdlp-mood.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file mood flux-ytdlp-mood.txt --skip-download '
   },
@@ -4195,49 +4195,49 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: artist_sort',
+    token: '· в файл: сортировка исполнителя',
     summary: 'Записать artist_sort (сортировочное имя исполнителя) в flux-ytdlp-artistsort.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file artist_sort flux-ytdlp-artistsort.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: album_sort',
+    token: '· в файл: сортировка альбома',
     summary: 'Записать album_sort (сортировочное имя альбома) в flux-ytdlp-albumsort.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file album_sort flux-ytdlp-albumsort.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: conductor',
+    token: '· в файл: дирижёр',
     summary: 'Записать conductor (дирижёр, если есть) в flux-ytdlp-conductor.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file conductor flux-ytdlp-conductor.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: performers',
+    token: '· в файл: исполнители',
     summary: 'Записать performers (список исполнителей, если модуль извлечения отдаёт) в flux-ytdlp-performers.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file performers flux-ytdlp-performers.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: copyright',
+    token: '· в файл: авторские права',
     summary: 'Записать поле copyright (строка правообладателя) в flux-ytdlp-copy.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file copyright flux-ytdlp-copy.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: uploader_url',
+    token: '· в файл: URL автора',
     summary: 'Записать uploader_url (канонический URL страницы автора) в flux-ytdlp-upurl.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file uploader_url flux-ytdlp-upurl.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: producer',
+    token: '· в файл: продюсер',
     summary: 'Записать producer (поле producer, если есть) в flux-ytdlp-producer.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file producer flux-ytdlp-producer.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: director',
+    token: '· в файл: режиссёр',
     summary: 'Записать director (режиссёр или автор видео, если модуль извлечения отдаёт) в flux-ytdlp-director.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file director flux-ytdlp-director.txt --skip-download '
   },
@@ -4297,61 +4297,61 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: arranger',
+    token: '· в файл: аранжировщик',
     summary: 'Записать arranger (аранжировка, если есть) в flux-ytdlp-arranger.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file arranger flux-ytdlp-arranger.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: remixer',
+    token: '· в файл: ремиксёр',
     summary: 'Записать remixer (ремиксёр, если модуль извлечения отдаёт) в flux-ytdlp-remixer.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file remixer flux-ytdlp-remixer.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: engineer',
+    token: '· в файл: звукорежиссёр',
     summary: 'Записать engineer (звукорежиссёр или инженер записи, если есть) в flux-ytdlp-engineer.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file engineer flux-ytdlp-engineer.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: lyricist',
+    token: '· в файл: автор текста',
     summary: 'Записать lyricist (автор текста, если есть) в flux-ytdlp-lyricist.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file lyricist flux-ytdlp-lyricist.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: grouping',
+    token: '· в файл: группировка',
     summary: 'Записать grouping (поле группировки треков, как в Apple Music и iTunes) в flux-ytdlp-grouping.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file grouping flux-ytdlp-grouping.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: compilation',
+    token: '· в файл: сборник',
     summary: 'Записать compilation (признак сборника, если модуль извлечения отдаёт) в flux-ytdlp-compilation.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file compilation flux-ytdlp-compilation.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: show',
+    token: '· в файл: шоу',
     summary: 'Записать show (название шоу или сериала, если модуль извлечения отдаёт) в flux-ytdlp-show.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file show flux-ytdlp-show.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: album_artists',
+    token: '· в файл: исполнители альбома',
     summary: 'Записать album_artists (альбомные исполнители: сборники VA, приглашённые артисты feat. и т. п., если модуль извлечения отдаёт) в flux-ytdlp-albumartists.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file album_artists flux-ytdlp-albumartists.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: cast',
+    token: '· в файл: актёрский состав',
     summary: 'Записать cast (актерский состав, если модуль извлечения отдаёт) в flux-ytdlp-cast.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file cast flux-ytdlp-cast.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: network',
+    token: '· в файл: телесеть',
     summary: 'Записать network (телесеть или студия вещания, если модуль извлечения отдаёт) в flux-ytdlp-network.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file network flux-ytdlp-network.txt --skip-download '
   },
@@ -4447,31 +4447,31 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: webpage_url_scheme',
+    token: '· в файл: схема URL страницы',
     summary: 'Записать webpage_url_scheme (http и https страницы) в flux-ytdlp-wuscheme.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file webpage_url_scheme flux-ytdlp-wuscheme.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: playlist',
+    token: '· в файл: плейлист',
     summary: 'Записать поле playlist (имя элемента плейлиста, если модуль извлечения отдаёт) в flux-ytdlp-playlist.txt без скачивания; допишите URL плейлиста.',
     fullLine: 'yt-dlp --print-to-file playlist flux-ytdlp-playlist.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: annotations',
+    token: '· в файл: аннотации',
     summary: 'Записать annotations (если модуль извлечения отдаёт) в flux-ytdlp-annotations.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file annotations flux-ytdlp-annotations.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: storyboards',
+    token: '· в файл: раскадровки',
     summary: 'Записать storyboards (доски превью, если модуль извлечения отдаёт) в flux-ytdlp-storyboards.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file storyboards flux-ytdlp-storyboards.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: playlist_webpage_url',
+    token: '· в файл: URL страницы плейлиста',
     summary: 'Записать playlist_webpage_url в flux-ytdlp-plwpurl.txt без скачивания; допишите URL плейлиста.',
     fullLine: 'yt-dlp --print-to-file playlist_webpage_url flux-ytdlp-plwpurl.txt --skip-download '
   },
@@ -4489,49 +4489,49 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: timestamp',
+    token: '· в файл: метка времени',
     summary: 'Записать timestamp (Unix-время публикации, если модуль извлечения отдаёт) в flux-ytdlp-ts.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file timestamp flux-ytdlp-ts.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: extractor_key',
+    token: '· в файл: ключ экстрактора',
     summary: 'Записать extractor_key (внутренний ключ модуля извлечения) в flux-ytdlp-extkey.txt без скачивания; полезно для диагностики; допишите URL.',
     fullLine: 'yt-dlp --print-to-file extractor_key flux-ytdlp-extkey.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: track_id',
+    token: '· в файл: id трека',
     summary: 'Записать track_id (идентификатор трека у модуля извлечения, если отдаёт) в flux-ytdlp-trackid.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file track_id flux-ytdlp-trackid.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: album_id',
+    token: '· в файл: id альбома',
     summary: 'Записать album_id (идентификатор альбома, если модуль извлечения отдаёт) в flux-ytdlp-albumid.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file album_id flux-ytdlp-albumid.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: dynamic_range',
+    token: '· в файл: динамический диапазон',
     summary: 'Записать динамический диапазон (поле dynamic_range: SDR, HDR, Dolby Vision — если модуль извлечения отдаёт) в flux-ytdlp-dynrange.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file dynamic_range flux-ytdlp-dynrange.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: audio_ext',
+    token: '· в файл: расширение аудио',
     summary: 'Записать audio_ext выбранного формата (m4a, webm, opus и т. п.) в flux-ytdlp-audext.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file audio_ext flux-ytdlp-audext.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: video_ext',
+    token: '· в файл: расширение видео',
     summary: 'Записать video_ext выбранного формата (mp4, webm, none и т. п.) в flux-ytdlp-vidext.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file video_ext flux-ytdlp-vidext.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: player_url',
+    token: '· в файл: URL плеера',
     summary: 'Записать player_url (URL встраиваемого плеера, embed, если модуль извлечения отдаёт) в flux-ytdlp-playerurl.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file player_url flux-ytdlp-playerurl.txt --skip-download '
   },
@@ -4567,49 +4567,49 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: audio_channels',
+    token: '· в файл: каналы аудио',
     summary: 'Записать audio_channels в flux-ytdlp-achs.txt без скачивания (--print-to-file audio_channels …); допишите URL.',
     fullLine: 'yt-dlp --print-to-file audio_channels flux-ytdlp-achs.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: chapter',
+    token: '· в файл: глава',
     summary: 'Записать chapter (название текущей главы) в flux-ytdlp-chapter.txt без скачивания (--print-to-file chapter …); допишите URL.',
     fullLine: 'yt-dlp --print-to-file chapter flux-ytdlp-chapter.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: chapter_id',
+    token: '· в файл: id главы',
     summary: 'Записать chapter_id в flux-ytdlp-chapid.txt без скачивания (--print-to-file chapter_id …); допишите URL.',
     fullLine: 'yt-dlp --print-to-file chapter_id flux-ytdlp-chapid.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: chapter_number',
+    token: '· в файл: номер главы',
     summary: 'Записать chapter_number в flux-ytdlp-chapnum.txt без скачивания (--print-to-file chapter_number …); допишите URL.',
     fullLine: 'yt-dlp --print-to-file chapter_number flux-ytdlp-chapnum.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: start_time',
+    token: '· в файл: время начала',
     summary: 'Записать start_time (секунды начала фрагмента) в flux-ytdlp-stt.txt без скачивания (--print-to-file start_time …); допишите URL.',
     fullLine: 'yt-dlp --print-to-file start_time flux-ytdlp-stt.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: end_time',
+    token: '· в файл: время конца',
     summary: 'Записать end_time (секунды окончания фрагмента) в flux-ytdlp-end.txt без скачивания (--print-to-file end_time …); допишите URL.',
     fullLine: 'yt-dlp --print-to-file end_time flux-ytdlp-end.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: quality',
+    token: '· в файл: качество',
     summary: 'Записать quality (оценка формата yt-dlp) в flux-ytdlp-quality.txt без скачивания (--print-to-file quality …); допишите URL.',
     fullLine: 'yt-dlp --print-to-file quality flux-ytdlp-quality.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: formats_table',
+    token: '· в файл: таблица форматов',
     summary: 'Записать formats_table (то, что показывает -F) в flux-ytdlp-ftbl.txt без скачивания (--print-to-file formats_table …); допишите URL.',
     fullLine: 'yt-dlp --print-to-file formats_table flux-ytdlp-ftbl.txt --skip-download '
   },
@@ -4651,19 +4651,19 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: format',
+    token: '· в файл: строка формата',
     summary: 'Записать человекочитаемую строку выбранного формата (format) в flux-ytdlp-fmtline.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file format flux-ytdlp-fmtline.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: language_preference',
+    token: '· в файл: предпочтение языка',
     summary: 'Записать language_preference (предпочтение языка субтитров и аудио, если модуль извлечения отдаёт) в flux-ytdlp-langpref.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file language_preference flux-ytdlp-langpref.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: autonumber',
+    token: '· в файл: автонумерация',
     summary: 'Записать autonumber (порядковый номер в плейлисте для шаблона -o) в flux-ytdlp-anum.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file autonumber flux-ytdlp-anum.txt --skip-download '
   },
@@ -4699,13 +4699,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: filename_sanitized',
+    token: '· в файл: безопасное имя файла',
     summary: 'Записать filename_sanitized (имя файла по шаблону -o после санитизации) в flux-ytdlp-fnsan.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file filename_sanitized flux-ytdlp-fnsan.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: requested_downloads',
+    token: '· в файл: запрошенные загрузки',
     summary: 'Записать requested_downloads (список запланированных загрузок после слияния потоков) в flux-ytdlp-reqdl.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file requested_downloads flux-ytdlp-reqdl.txt --skip-download '
   },
@@ -4741,13 +4741,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: modified_date',
+    token: '· в файл: дата изменения',
     summary: 'Записать modified_date (YYYYMMDD правки метаданных, если модуль извлечения отдаёт) в flux-ytdlp-mdate.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file modified_date flux-ytdlp-mdate.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: live_title',
+    token: '· в файл: заголовок эфира',
     summary: 'Записать live_title (заголовок прямой трансляции, если есть) в flux-ytdlp-livetitle.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file live_title flux-ytdlp-livetitle.txt --skip-download '
   },
@@ -4777,25 +4777,25 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: section_start',
+    token: '· в файл: начало секции',
     summary: 'Записать section_start (начало клипа по URL-фрагменту или параметру t=, если модуль извлечения отдаёт) в flux-ytdlp-segstart.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file section_start flux-ytdlp-segstart.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: section_end',
+    token: '· в файл: конец секции',
     summary: 'Записать section_end (конец клипа по URL-фрагменту, если есть) в flux-ytdlp-segend.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file section_end flux-ytdlp-segend.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: played_count',
+    token: '· в файл: число просмотров',
     summary: 'Записать played_count (оценка числа воспроизведений, если сайт отдаёт) в flux-ytdlp-playcnt.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file played_count flux-ytdlp-playcnt.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: referrer',
+    token: '· в файл: заголовок Referer',
     summary: 'Записать referrer (HTTP Referer страницы, если есть) в flux-ytdlp-refurl.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file referrer flux-ytdlp-refurl.txt --skip-download '
   },
@@ -4825,79 +4825,79 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: extractor_key',
+    token: '· в файл: ключ экстрактора',
     summary: 'Записать extractor_key (внутренний ключ модуля извлечения yt-dlp) в flux-ytdlp-extractor-key.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file extractor_key flux-ytdlp-extractor-key.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: uploader_url',
+    token: '· в файл: URL автора',
     summary: 'Записать uploader_url (канонический URL канала или автора, если есть) в flux-ytdlp-uploader-url.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file uploader_url flux-ytdlp-uploader-url.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: thumbnail',
+    token: '· в файл: URL превью',
     summary: 'Записать миниатюру (thumbnail, основной URL обложки) в flux-ytdlp-thumb-url.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file thumbnail flux-ytdlp-thumb-url.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: keywords',
+    token: '· в файл: ключевые слова',
     summary: 'Записать keywords (теги и SEO-ключи, если модуль извлечения отдаёт) в flux-ytdlp-keywords.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file keywords flux-ytdlp-keywords.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: plchurl',
+    token: '· в файл: URL канала плейлиста',
     summary: 'Записать playlist_channel_url (канонический URL вкладки или канала плейлиста, если есть) в flux-ytdlp-plchurl.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file playlist_channel_url flux-ytdlp-plchurl.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: starring',
+    token: '· в файл: в главных ролях',
     summary: 'Записать starring (верхний актёрский блок, если модуль извлечения отдаёт) в flux-ytdlp-starring.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file starring flux-ytdlp-starring.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: title_sort',
+    token: '· в файл: сортировка заголовка',
     summary: 'Записать title_sort (сортировочный заголовок каталога, если есть) в flux-ytdlp-titlesort.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file title_sort flux-ytdlp-titlesort.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: season',
+    token: '· в файл: сезон (строка)',
     summary: 'Записать season (название или метка сезона, если модуль извлечения отдаёт) в flux-ytdlp-season.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file season flux-ytdlp-season.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: section_number',
+    token: '· в файл: номер секции',
     summary: 'Записать section_number (номер секции или части релиза, если модуль извлечения отдаёт) в flux-ytdlp-secnum.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file section_number flux-ytdlp-secnum.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: isrc',
+    token: '· в файл: код ISRC',
     summary: 'Записать isrc (код ISRC трека или релиза, если площадка отдаёт) в flux-ytdlp-isrc.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file isrc flux-ytdlp-isrc.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: track_sort',
+    token: '· в файл: сортировка трека',
     summary: 'Записать track_sort (сортировочный номер или имя трека, если модуль извлечения отдаёт) в flux-ytdlp-tracksort.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file track_sort flux-ytdlp-tracksort.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: alt_description',
+    token: '· в файл: альтернативное описание',
     summary: 'Записать alt_description (краткое или альтернативное описание, если модуль извлечения отдаёт) в flux-ytdlp-altdesc.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file alt_description flux-ytdlp-altdesc.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: view_count alt file',
+    token: '· в файл: просмотры (доп. файл)',
     summary: 'Записать view_count в отдельный flux-ytdlp-viewcount.txt без скачивания (дубль поля для кастомных сценариев рядом с другими txt); допишите URL.',
     fullLine: 'yt-dlp --print-to-file view_count flux-ytdlp-viewcount.txt --skip-download '
   },
@@ -6215,7 +6215,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· теги подкаста и URL',
+    token: '· теги подкаста и веб-адрес',
     summary: 'Теги контейнера podcast и podcasturl (RSS-источник аудио-подкаста); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_entries format_tags=podcast,podcasturl -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
