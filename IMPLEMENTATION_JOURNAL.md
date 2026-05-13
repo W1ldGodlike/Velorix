@@ -556,3 +556,4 @@
 - [J-539] 2026-05-13 13:10:00 [Assistant]: §1.1/§21 — в индекс Git добавлены ранее неотслеживаемые `shared/*-locale.ts`/`ytdlp-command-hint-token-categories.ts` и сопутствующие правки main/preload/renderer/tests/Data (единый слой строк для окна загрузок, IPC, логов раннера, валидации CLI, payload/progress).
 - [J-540] 2026-05-13 13:25:00 [Assistant]: §8 — уточнены RU-компактные `token` для части сценарных подсказок yt-dlp в `terminal-contract.ts` (без изменения `fullLine`).
 - [J-541] 2026-05-13 14:05:00 [Assistant]: §8 — продолжение RU-компактных `token` для сценариев yt-dlp (плейлист/загрузчики/HLS/DASH/-S/ANSI/постпроцессор и др.; `fullLine` без изменений).
+- [J-542] 2026-05-13 14:12:00 [Assistant]: §8 — `terminal-contract.ts`: перенос длинной строки `summary` под `--clean-infojson` под prettier (без смысловых правок).

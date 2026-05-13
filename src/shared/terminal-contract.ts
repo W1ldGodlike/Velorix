@@ -3408,13 +3408,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· pl-random -F',
+    token: '· плейлист: случайный порядок -F',
     summary: 'Случайный порядок элементов плейлиста перед -F (--playlist-random -F); допишите URL плейлиста.',
     fullLine: 'yt-dlp --playlist-random -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· force-over -F',
+    token: '· перезапись без вопроса -F',
     summary: 'Перезапись существующих файлов без вопросов (--force-overwrites -F); допишите URL.',
     fullLine: 'yt-dlp --force-overwrites -F '
   },
@@ -3498,13 +3498,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· skip-unavail -F',
+    token: '· пропуск недоступных фрагментов -F',
     summary: 'Потоки DASH и HLS: пропускать недоступные фрагменты вместо аварийной остановки (--skip-unavailable-fragments -F); допишите URL.',
     fullLine: 'yt-dlp --skip-unavailable-fragments -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· abort-on-err -F',
+    token: '· стоп при первой ошибке -F',
     summary: 'Остановка при первой неустранимой ошибке (--abort-on-error -F); допишите URL плейлиста при необходимости.',
     fullLine: 'yt-dlp --abort-on-error -F '
   },
@@ -3630,7 +3630,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· no-brk-reject -F',
+    token: '· не стоп при отклонении формата -F',
     summary: 'Не останавливаться на отклонённом формате (--no-break-on-reject -F); допишите URL.',
     fullLine: 'yt-dlp --no-break-on-reject -F '
   },
@@ -3690,7 +3690,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· prog-delta -F',
+    token: '· прогресс реже (Δ 5 с) -F',
     summary: 'Реже обновлять строку прогресса (--progress-delta 5 -F); меньше шума в выводе при длинных списках с -F; допишите URL.',
     fullLine: 'yt-dlp --progress-delta 5 -F '
   },
@@ -3738,7 +3738,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· xattr-fsize -F',
+    token: '· xattr размера файла -F',
     summary: 'Писать ожидаемый размер файла в xattr где поддерживается ОС (--xattr-set-filesize -F); допишите URL.',
     fullLine: 'yt-dlp --xattr-set-filesize -F '
   },
@@ -3774,7 +3774,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· no-pl-metafiles -F',
+    token: '· без метафайлов плейлиста -F',
     summary: 'Не писать .info.json и .description рядом с плейлистом (--no-playlist-metafiles -F); допишите URL плейлиста.',
     fullLine: 'yt-dlp --no-playlist-metafiles -F '
   },
@@ -4242,7 +4242,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· no-build-paths -F',
+    token: '· без предсборки путей -F',
     summary: 'Не строить выходные пути до фактического скачивания (--no-build-paths -F); меньше лишних mkdir при -F; допишите URL.',
     fullLine: 'yt-dlp --no-build-paths -F '
   },
@@ -4356,7 +4356,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· limit-rate 500K -F',
+    token: '· лимит скорости 500K -F',
     summary: 'Список форматов с ограничением скорости 500 KiB/s (--limit-rate 500K -F); меньше нагрузки на канал при -F; допишите URL.',
     fullLine: 'yt-dlp --limit-rate 500K -F '
   },
@@ -4476,13 +4476,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· retries 20 -F',
+    token: '· повторы HTTP 20 -F',
     summary: 'Список форматов с увеличенным числом повторов HTTP (--retries 20 -F); нестабильные CDN; допишите URL.',
     fullLine: 'yt-dlp --retries 20 -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· fragment-retries 20 -F',
+    token: '· повторы фрагментов 20 -F',
     summary: 'Список форматов с повторами для фрагментов DASH и HLS (--fragment-retries 20 -F); допишите URL.',
     fullLine: 'yt-dlp --fragment-retries 20 -F '
   },
@@ -4536,7 +4536,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· concurrent-fragments 4 -F',
+    token: '· параллельно 4 фрагмента -F',
     summary: 'Список форматов с параллельной подкачкой фрагментов DASH и HLS (--concurrent-fragments 4 -F); допишите URL.',
     fullLine: 'yt-dlp --concurrent-fragments 4 -F '
   },
