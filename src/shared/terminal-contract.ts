@@ -618,7 +618,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· только IPv4 -F',
+    token: '· принудительно IPv4 -F',
     summary: 'Список форматов только через IPv4 (--force-ipv4 -F); если -6 не подходит; допишите URL.',
     fullLine: 'yt-dlp --force-ipv4 -F '
   },
@@ -654,7 +654,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· HLS встроенный -F',
+    token: '· HLS: встроенный загрузчик -F',
     summary: 'HLS: встроенный загрузчик вместо утилиты FFmpeg, где возможно (--hls-prefer-native -F); допишите URL.',
     fullLine: 'yt-dlp --hls-prefer-native -F '
   },
@@ -936,7 +936,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· только IPv6 -F',
+    token: '· принудительно IPv6 -F',
     summary: 'Список форматов через IPv6 (--force-ipv6 -F); обход части проблем IPv4 и NAT; допишите URL.',
     fullLine: 'yt-dlp --force-ipv6 -F '
   },
@@ -2059,13 +2059,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· TV Everywhere: Rogers -F',
+    token: '· TV Everywhere — Rogers -F',
     summary: 'Adobe Pass MSO id для TV Everywhere (--ap-mso Rogers -F); подставьте своего провайдера; допишите URL.',
     fullLine: 'yt-dlp --ap-mso Rogers -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· TV Everywhere: логин -F',
+    token: '· TV Everywhere — логин -F',
     summary: 'Логин TV Everywhere (--ap-username user@example.com -F); замените на свой аккаунт; допишите URL.',
     fullLine: 'yt-dlp --ap-username user@example.com -F '
   },
@@ -2089,13 +2089,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· TV Everywhere: пароль',
+    token: '· TV Everywhere — пароль',
     summary: 'Пароль TV Everywhere и Adobe Pass (--ap-password PASSWORD); замените PASSWORD на реальный; допишите URL.',
     fullLine: 'yt-dlp --ap-password PASSWORD '
   },
   {
     tool: 'yt-dlp',
-    token: '· клиентский сертификат (формат PEM)',
+    token: '· клиентский сертификат (pem)',
     summary: 'Клиентский TLS-сертификат (--client-certificate client.pem); положите PEM рядом с рабочим каталогом или укажите абсолютный путь без кавычек; допишите URL.',
     fullLine: 'yt-dlp --client-certificate client.pem '
   },
@@ -2149,7 +2149,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· ключ к сертификату (формат PEM)',
+    token: '· ключ к сертификату (pem)',
     summary: 'Приватный ключ к клиентскому TLS-сертификату (--client-certificate-key key.pem); положите PEM рядом с рабочим каталогом или укажите путь без кавычек; допишите URL.',
     fullLine: 'yt-dlp --client-certificate-key key.pem '
   },
@@ -2551,7 +2551,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· загрузчик aria2c -F',
+    token: '· загрузчик aria2 -F',
     summary: 'Внешний aria2c как загрузчик (--downloader aria2c -F; aria2c должен быть в каталогах из PATH); допишите URL.',
     fullLine: 'yt-dlp --downloader aria2c -F '
   },
@@ -2599,7 +2599,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· сорт -S: ~1080p AV1 -F',
+    token: '· сорт -S: ~1080p av1 -F',
     summary: 'Сортировка форматов: приоритет ~1080p и AV1 (-S +res:1080,+codec:av01 -F); подстройте res и codec; допишите URL.',
     fullLine: 'yt-dlp -S +res:1080,+codec:av01 -F '
   },
@@ -5183,7 +5183,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· видео v:0 субтитры в потоке и тип AVC',
+    token: '· видео v:0: встроенные субтитры и avc',
     summary: 'Поток v:0: признаки субтитров и AVC (closed_captions, is_avc; стандарты CEA-608 и CEA-708 и элементарный поток AVC); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=closed_captions,is_avc -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
