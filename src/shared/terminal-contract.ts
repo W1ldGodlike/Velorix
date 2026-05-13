@@ -5059,6 +5059,42 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
+    token: '· заголовок impersonate edge',
+    summary: 'Заголовок без скачивания с TLS-отпечатком Edge (--impersonate edge --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --impersonate edge --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок impersonate firefox',
+    summary: 'Заголовок без скачивания с TLS-отпечатком Firefox (--impersonate firefox --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --impersonate firefox --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок ipv6-only',
+    summary: 'Заголовок без скачивания только по IPv6 (-6 --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp -6 --skip-download --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· filename без mtime',
+    summary: 'Имя файла без скачивания и без выставления времени из метаданных (--no-mtime --skip-download --print filename); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --no-mtime --print filename '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок windows-filenames',
+    summary: 'Заголовок без скачивания с санитизацией имён под Windows (--windows-filenames --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --windows-filenames --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок xattrs',
+    summary: 'Заголовок без скачивания с записью xattr на выходе (--xattrs --skip-download --print title); на Windows часто no-op; допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --xattrs --print title '
+  },
+  {
+    tool: 'yt-dlp',
     token: '· обновить yt-dlp → stable',
     summary: 'Обновить yt-dlp до стабильной ветки (--update-to stable); ссылка в команде не нужна.',
     fullLine: 'yt-dlp --update-to stable'
@@ -7238,6 +7274,96 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· ffmpeg: colorhold 2с',
     summary: 'Удержание узкого цветового диапазона colorhold первых 2 с (similarity=0.15); дымовая проверка colorhold; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf colorhold=similarity=0.15 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· субтитры s:4 start_pts',
+    summary: 'Пятая дорожка субтитров s:4: start_pts (поле ffprobe: смещение таймкодов субтитров); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:4 -show_entries stream=start_pts -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· видео v:5 codec_name',
+    summary: 'Шестой видеопоток v:5: codec_name (поле ffprobe; редкие мультиракурсные контейнеры); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:5 -show_entries stream=codec_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· дорожка данных d:6',
+    summary: 'Седьмая data-дорожка d:6: codec_tag_string (поле ffprobe); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams d:6 -show_entries stream=codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· главы id и старт',
+    summary: 'Все главы: id и start_time (-show_chapters -show_entries chapter=id,start_time -of compact); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -show_chapters -show_entries chapter=id,start_time -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· аудио a:0 sample_aspect_ratio',
+    summary: 'Поток a:0: sample_aspect_ratio (поле ffprobe: формальный SAR у аудио, часто N/A); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=sample_aspect_ratio -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: bwdif 2с',
+    summary: 'Деинтерлейс bwdif=mode=send_field первых 2 с; дымовая проверка bwdif; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf bwdif=mode=send_field -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: il filter 2с',
+    summary: 'Чередование полей через il=d:c первых 2 с; дымовая проверка фильтра il; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf il=d:c -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: colormatrix 601→709 2с',
+    summary: 'Матрица цветов colormatrix=bt601:bt709 первых 2 с; дымовая проверка colormatrix; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf colormatrix=bt601:bt709 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: smartblur 2с',
+    summary: 'Умное размытие smartblur первых 2 с (-vf smartblur=luma_radius=1.2:luma_strength=0.4); дымовая проверка smartblur; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf smartblur=luma_radius=1.2:luma_strength=0.4 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: chromakey зелёный 2с',
+    summary: 'Ключ по зелёному chromakey первых 2 с (color=0x00ff00:similarity=0.02:blend=0.05); дымовая проверка chromakey; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf chromakey=color=0x00ff00:similarity=0.02:blend=0.05 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: yadif send_field 2с',
+    summary: 'Деинтерлейс yadif=1:-1:0 (режим send_field) первых 2 с; дымовая проверка числовых опций yadif; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf yadif=1:-1:0 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: phase A 2с',
+    summary: 'Коррекция фазы chroma phase=A первых 2 с (-vf phase=A); дымовая проверка phase; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf phase=A -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: lumakey 2с',
+    summary: 'Ключ по яркости lumakey первых 2 с (threshold=0.08); дымовая проверка lumakey; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf lumakey=threshold=0.08:tolerance=0.02 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: limiter 2с',
+    summary: 'Ограничитель яркости limiter первых 2 с (16-235); дымовая проверка limiter; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf limiter=16:235 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: colorbalance rgb 2с',
+    summary: 'Сдвиг баланса RGB через colorbalance первых 2 с (rs=0.08 gs=-0.02 bs=0.05); дымовая проверка colorbalance; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf colorbalance=rs=0.08:gs=-0.02:bs=0.05 -t 2 -an -sn -f null -`
   }
 ]
 
