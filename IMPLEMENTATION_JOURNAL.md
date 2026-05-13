@@ -574,3 +574,4 @@
 - [J-557] 2026-05-14 04:00:00 [Assistant]: §8 — yt-dlp `в файл:`: оставшиеся метатеги/музыка/главы/форматы/URL — RU `token`; `fullLine` без изменений.
 - [J-558] 2026-05-14 05:00:00 [Assistant]: §8 — yt-dlp: уточнены `token` для archive/ANSI/UA/HLS/ffmpeg; единый регистр `ffmpeg` в подсказках загрузчика; `fullLine` без изменений.
 - [J-559] 2026-05-14 06:00:00 [Assistant]: §8 — `terminal-contract.ts`: доведены RU `token` (UA curl, HLS+ffmpeg, путь к бинарнику, print-to-file без basename, токены загрузчика/постпроц./превью — lowercase ffmpeg); `fullLine` без изменений.
+- [J-560] 2026-05-14 07:00:00 [Assistant]: §8 — yt-dlp `token`: .part/чанк/SponsorBlock/xattr/TS-HLS/info.json-строки/HTTP-повторы/BiDi/трассировка, referer, «чистый .info.json»; `fullLine` без изменений.
