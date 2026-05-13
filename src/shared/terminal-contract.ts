@@ -2262,7 +2262,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· no-write-description -F',
+    token: '· без .description -F',
     summary: 'Не сохранять .description рядом с файлом (--no-write-description -F); допишите URL.',
     fullLine: 'yt-dlp --no-write-description -F '
   },
@@ -2364,37 +2364,37 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· extractor-args generic noplaylist -F',
+    token: '· generic: не плейлист -F',
     summary: 'Общий модуль (generic): не разворачивать плейлист (--extractor-args generic:noplaylist -F); допишите URL.',
     fullLine: 'yt-dlp --extractor-args generic:noplaylist -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· skip-pl-err 10 -F',
+    token: '· до 10 ош. плейлиста -F',
     summary: 'Пропустить до 10 ошибок подряд в плейлисте (--skip-playlist-after-errors 10 -F); допишите URL плейлиста.',
     fullLine: 'yt-dlp --skip-playlist-after-errors 10 -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· retries 15 -F',
+    token: '· повторы HTTP 15 -F',
     summary: 'Больше повторов HTTP (--retries 15 -F); нестабильные CDN; допишите URL.',
     fullLine: 'yt-dlp --retries 15 -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· fragment-retries 15 -F',
+    token: '· повторы фрагментов 15 -F',
     summary: 'Повторы для обрывов фрагментов HLS и DASH (--fragment-retries 15 -F); допишите URL.',
     fullLine: 'yt-dlp --fragment-retries 15 -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· bidi-workaround -F',
+    token: '· обход BiDi -F',
     summary: 'Обход багов RTL и двунаправленного текста (BiDi) в именах файлов и метаданных (--bidi-workaround -F); допишите URL.',
     fullLine: 'yt-dlp --bidi-workaround -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· daterange wide -F',
+    token: '· даты: широкий диапазон -F',
     summary: 'Ограничить по дате загрузки и релиза (--daterange 20000101-20991231 -F); подстройте диапазон; допишите URL.',
     fullLine: 'yt-dlp --daterange 20000101-20991231 -F '
   },
