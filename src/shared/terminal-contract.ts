@@ -4987,6 +4987,42 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
+    token: '· заголовок limit-rate 500K',
+    summary: 'Заголовок без скачивания с лимитом скорости 500 KiB/s (--limit-rate 500K --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --limit-rate 500K --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок extractor-retries=1',
+    summary: 'Заголовок без скачивания с лимитом повторов извлечения (--extractor-retries 1 --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --extractor-retries 1 --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок fragment-retries=2',
+    summary: 'Заголовок без скачивания с повторами фрагментов (--fragment-retries 2 --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --fragment-retries 2 --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· info.json и print filename',
+    summary: 'Сухой прогон с записью info.json и выводом имени файла (--write-info-json --skip-download --print filename); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --write-info-json --print filename '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· один элемент плейлиста title',
+    summary: 'Только первый элемент плейлиста: заголовок (--playlist-items 1 --skip-download --print title); допишите ссылку на плейлист.',
+    fullLine: 'yt-dlp --playlist-items 1 --skip-download --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· channel_url без разворота плейлиста',
+    summary: 'Ссылка на канал без разворота плейлиста (--no-playlist --skip-download --print channel_url); допишите ссылку на ролик.',
+    fullLine: 'yt-dlp --no-playlist --skip-download --print channel_url '
+  },
+  {
+    tool: 'yt-dlp',
     token: '· обновить yt-dlp → stable',
     summary: 'Обновить yt-dlp до стабильной ветки (--update-to stable); ссылка в команде не нужна.',
     fullLine: 'yt-dlp --update-to stable'
@@ -6956,6 +6992,126 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· ffmpeg: fps=60 2с',
     summary: 'Принудительные 60 fps на выходе первых 2 с (-vf fps=60); дымовая проверка удвоения/прореживания cadence; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf fps=60 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· видео v:0 field_order',
+    summary: 'Поток v:0: только field_order (поле ffprobe: чересстрочность tff/bff/progressive); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=field_order -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· аудио a:2 handler_name',
+    summary: 'Третья аудиодорожка a:2: тег handler_name в stream_tags (поле ffprobe: имя обработчика дорожки); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:2 -show_entries stream_tags=handler_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· контейнер format_tags=sort_album',
+    summary: 'Только тег sort_album контейнера (поле format_tags: сортировочное имя альбома); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format_tags=sort_album -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· контейнер format_name и flags',
+    summary: 'Контейнер: format_name и flags (поля format: имя и флаги демультиплексора); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format=format_name,flags -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· субтитры s:2 start_time',
+    summary: 'Третья дорожка субтитров s:2: start_time дорожки (поле ffprobe); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:2 -show_entries stream=start_time -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· аудио a:3 index codec',
+    summary: 'Четвёртая аудиодорожка a:3: index и codec_name (поля ffprobe); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:3 -show_entries stream=index,codec_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: nlmeans 2с',
+    summary: 'Нелокальное среднее nlmeans=s=4 первых 2 с; дымовая проверка тяжёлого шумоподавления; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf nlmeans=s=4 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: atadenoise 2с',
+    summary: 'Временной шумодав atadenoise первых 2 с (-vf atadenoise=0.01:0.01); дымовая проверка atadenoise; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf atadenoise=0.01:0.01 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: removegrain 2с',
+    summary: 'Пространственное сглаживание removegrain=m0=c2 первых 2 с; дымовая проверка removegrain; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf removegrain=m0=c2 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: pp al 2с',
+    summary: 'Лёгкая постобработка pp=al первых 2 с; дымовая проверка фильтра pp; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf pp=al -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: dedot 2с',
+    summary: 'Подавление цветовых точек dedot первых 2 с (-vf dedot=spatial_mix=4); дымовая проверка dedot; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf dedot=spatial_mix=4 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: owdenoise 2с',
+    summary: 'Вейвлет-шумодав owdenoise первых 2 с (-vf owdenoise=6.0); дымовая проверка owdenoise; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf owdenoise=6.0 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: estdif 2с',
+    summary: 'Деинтерлейс estdif первых 2 с; дымовая проверка estdif; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf estdif -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: w3fdif 2с',
+    summary: 'Деинтерлейс w3fdif первых 2 с; дымовая проверка w3fdif; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf w3fdif -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: kerndeint 2с',
+    summary: 'Деинтерлейс kerndeint=thresh=12 первых 2 с; дымовая проверка kerndeint; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf kerndeint=thresh=12 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: transpose=3 на 1с',
+    summary: 'Поворот transpose=3 (90° по часовой) первую секунду; дымовая проверка transpose; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf transpose=3 -t 1 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: scale flags neighbor 2с',
+    summary: 'Масштаб соседним пикселем flags=neighbor первых 2 с (-vf scale=320:240:flags=neighbor); дымовая проверка алгоритма scale; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf scale=320:240:flags=neighbor -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: format yuv420p 2с',
+    summary: 'Принудительный формат пикселей yuv420p первых 2 с (-vf format=yuv420p); дымовая проверка format; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf format=yuv420p -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: stereo3d anaglyph 2с',
+    summary: 'Анаглиф red/cyan через stereo3d первых 2 с (in_sbsl:out_anaglyph); дымовая проверка stereo3d без кавычек в argv; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf stereo3d=sbsl:anaglyph_red_cyan -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: paletteuse dummy 1с',
+    summary: 'Квантование через palettegen+paletteuse первой секунды (256 цветов, однопроходный гиф-подобный путь); дымовая проверка palette*; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf palettegen=max_colors=128:reserve_transparent=0,paletteuse -t 1 -an -sn -f null -`
   }
 ]
 
