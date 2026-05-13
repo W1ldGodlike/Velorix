@@ -120,7 +120,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print channel',
+    token: '· вывод: channel',
     summary: 'Имя канала или площадки без скачивания (--skip-download --print channel); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print channel '
   },
@@ -156,13 +156,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print playlist_count',
+    token: '· вывод: playlist_count',
     summary: 'Число элементов в плейлисте без скачивания (--skip-download --print playlist_count); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print playlist_count '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print filename',
+    token: '· вывод: filename',
     summary: 'Имя выходного файла по текущим -o без скачивания (--skip-download --print filename); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print filename '
   },
@@ -180,13 +180,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print language',
+    token: '· вывод: language',
     summary: 'Язык по умолчанию без скачивания (--skip-download --print language); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print language '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print extractor',
+    token: '· вывод: extractor',
     summary: 'Имя модуля извлечения (extractor) без скачивания (--skip-download --print extractor); допишите URL (диагностика маршрута yt-dlp).',
     fullLine: 'yt-dlp --skip-download --print extractor '
   },
@@ -204,7 +204,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print format_id',
+    token: '· вывод: format_id',
     summary: 'Идентификатор выбранного формата без скачивания (--skip-download --print format_id); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print format_id '
   },
@@ -258,13 +258,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print tags',
+    token: '· вывод: tags',
     summary: 'Сводка тегов и метаданных без скачивания (--skip-download --print tags); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print tags '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print filesize_approx',
+    token: '· вывод: filesize_approx',
     summary: 'Оценка размера выбранного формата без скачивания (--skip-download --print filesize_approx); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print filesize_approx '
   },
@@ -288,7 +288,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print fps',
+    token: '· вывод: fps',
     summary: 'Кадры в секунду выбранного формата без скачивания (--skip-download --print fps); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print fps '
   },
@@ -378,19 +378,19 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print abr',
+    token: '· вывод: abr',
     summary: 'Аудио-битрейт выбранного формата (kbps) без скачивания (--skip-download --print abr); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print abr '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print vbr',
+    token: '· вывод: vbr',
     summary: 'Видео-битрейт выбранного формата (kbps) без скачивания (--skip-download --print vbr); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print vbr '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print asr',
+    token: '· вывод: asr',
     summary: 'Частота дискретизации аудио (Hz) без скачивания (--skip-download --print asr); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print asr '
   },
@@ -444,55 +444,55 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print channel_url',
+    token: '· вывод: channel_url',
     summary: 'URL канала или плейлиста без скачивания (--skip-download --print channel_url); допишите URL ролика.',
     fullLine: 'yt-dlp --skip-download --print channel_url '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print uploader_id',
+    token: '· вывод: uploader_id',
     summary: 'Идентификатор автора на площадке без скачивания (--skip-download --print uploader_id); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print uploader_id '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print was_live',
+    token: '· вывод: was_live',
     summary: 'Был ли эфир прямой трансляцией или записью стрима без скачивания (--skip-download --print was_live); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print was_live '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print media_type',
+    token: '· вывод: media_type',
     summary: 'Тип медиа (видео или аудио и т. п.) без скачивания (--skip-download --print media_type); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print media_type '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print release_year',
+    token: '· вывод: release_year',
     summary: 'Год публикации (если есть) без скачивания (--skip-download --print release_year); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print release_year '
   },
   {
     tool: 'yt-dlp',
-    token: '· --no-check-certificates -F',
+    token: '· TLS без проверки + -F',
     summary: 'Список форматов при сбоях проверки TLS-сертификатов (--no-check-certificates -F); только для диагностики, снижает безопасность.',
     fullLine: 'yt-dlp --no-check-certificates -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print filesize',
+    token: '· вывод: filesize',
     summary: 'Размер файла выбранного формата (байты, если известен) без скачивания (--skip-download --print filesize); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print filesize '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print format_note',
+    token: '· вывод: format_note',
     summary: 'Поле примечания к формату (format_note) без скачивания (--skip-download --print format_note); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print format_note '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print subtitles',
+    token: '· вывод: subtitles',
     summary: 'Словарь субтитров из метаданных без скачивания (--skip-download --print subtitles); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print subtitles '
   },
@@ -504,7 +504,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print chapters',
+    token: '· вывод: chapters',
     summary: 'Главы из метаданных без скачивания (--skip-download --print chapters); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print chapters '
   },
@@ -516,7 +516,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print original_url',
+    token: '· вывод: original_url',
     summary: 'Исходный URL запроса без скачивания (--skip-download --print original_url); сверка редиректов; допишите URL.',
     fullLine: 'yt-dlp --skip-download --print original_url '
   },
@@ -534,19 +534,19 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print playlist_index',
+    token: '· вывод: playlist_index',
     summary: 'Индекс ролика в плейлисте без скачивания (--skip-download --print playlist_index); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print playlist_index '
   },
   {
     tool: 'yt-dlp',
-    token: '· --write-sub',
+    token: '· запись субтитров',
     summary: 'Субтитры в файлы без видео (--write-sub --skip-download); допишите URL.',
     fullLine: 'yt-dlp --write-sub --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· --write-comments',
+    token: '· запись комментариев',
     summary: 'Комментарии в JSON без видео (--write-comments --skip-download); допишите URL (если поддерживается площадкой).',
     fullLine: 'yt-dlp --write-comments --skip-download '
   },
@@ -564,13 +564,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print filepath',
+    token: '· вывод: filepath',
     summary: 'Шаблон выходного пути по текущим -o без скачивания (--skip-download --print filepath); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print filepath '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print epoch',
+    token: '· вывод: epoch',
     summary: 'Время публикации в секундах с эпохи Unix (epoch), если есть, без скачивания (--skip-download --print epoch); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print epoch '
   },
@@ -588,13 +588,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --write-pages',
+    token: '· запись HTML-страниц',
     summary: 'Сохранить сырые HTML-страницы модуля извлечения (extractor) в .dump (--write-pages --skip-download); диагностика разметки и ответов 403; допишите URL.',
     fullLine: 'yt-dlp --write-pages --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print heatmap',
+    token: '· вывод: heatmap',
     summary: 'Данные тепловой карты просмотров (heatmap; если отдаёт площадка, напр. YouTube) без скачивания (--skip-download --print heatmap); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print heatmap '
   },
@@ -1182,7 +1182,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --rm-cache-dir',
+    token: '· очистка кэша модулей',
     summary: 'Сбросить кэш модулей извлечения yt-dlp (--rm-cache-dir); URL не нужен; помогает при «битом» кэше и неверных форматах.',
     fullLine: 'yt-dlp --rm-cache-dir'
   },
@@ -1218,19 +1218,19 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print release_date',
+    token: '· вывод: release_date',
     summary: 'Дата релиза YYYYMMDD без скачивания (--skip-download --print release_date); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print release_date '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print album_artist',
+    token: '· вывод: album_artist',
     summary: 'Исполнитель альбома без скачивания (--skip-download --print album_artist); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print album_artist '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print track_number',
+    token: '· вывод: track_number',
     summary: 'Номер трека внутри альбома без скачивания (--skip-download --print track_number); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print track_number '
   },
@@ -1242,37 +1242,37 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print series',
+    token: '· вывод: series',
     summary: 'Название серии или шоу без скачивания (--skip-download --print series); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print series '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print season',
+    token: '· вывод: season',
     summary: 'Сезон (строка площадки) без скачивания (--skip-download --print season); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print season '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print episode',
+    token: '· вывод: episode',
     summary: 'Эпизод (строка площадки) без скачивания (--skip-download --print episode); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print episode '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print display_id',
+    token: '· вывод: display_id',
     summary: 'Короткий display_id без скачивания (--skip-download --print display_id); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print display_id '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print webpage_url_basename',
+    token: '· вывод: webpage_url_basename',
     summary: 'Последний сегмент пути страницы без скачивания (--skip-download --print webpage_url_basename); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print webpage_url_basename '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print fulltitle',
+    token: '· вывод: fulltitle',
     summary: 'Полный заголовок с плейлистом или серией без скачивания (--skip-download --print fulltitle); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print fulltitle '
   },
@@ -1326,13 +1326,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print follower_count',
+    token: '· вывод: channel_follower_count',
     summary: 'Число подписчиков канала без скачивания (--skip-download --print channel_follower_count); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print channel_follower_count '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print average_rating',
+    token: '· вывод: average_rating',
     summary: 'Средний рейтинг и оценка без скачивания (--skip-download --print average_rating); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print average_rating '
   },
@@ -1356,7 +1356,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print is_private',
+    token: '· вывод: is_private',
     summary: 'Признак приватного или ограниченного ролика без скачивания (--skip-download --print is_private); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print is_private '
   },
@@ -1404,7 +1404,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print playlist',
+    token: '· вывод: playlist',
     summary: 'Название плейлиста без скачивания (--skip-download --print playlist); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print playlist '
   },
@@ -1464,13 +1464,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print alternate_title',
+    token: '· вывод: alternate_title',
     summary: 'Альтернативный заголовок без скачивания (--skip-download --print alternate_title); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print alternate_title '
   },
   {
     tool: 'yt-dlp',
-    token: '· --print extractor_key',
+    token: '· вывод: extractor_key',
     summary: 'Внутренний ключ модуля извлечения (extractor_key) без скачивания (--skip-download --print extractor_key); сверка с `--print extractor`; допишите URL.',
     fullLine: 'yt-dlp --skip-download --print extractor_key '
   },
@@ -1488,7 +1488,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --print channel_is_verified',
+    token: '· вывод: channel_is_verified',
     summary: 'Флаг верифицированного канала без скачивания (--skip-download --print channel_is_verified); допишите URL.',
     fullLine: 'yt-dlp --skip-download --print channel_is_verified '
   },
@@ -4645,7 +4645,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --clean-info-json -F',
+    token: '· чистый info.json + -F',
     summary: 'Чистить .info.json от приватных URL и токенов перед записью (--clean-info-json -F); допишите URL.',
     fullLine: 'yt-dlp --clean-info-json -F '
   },
@@ -5243,7 +5243,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· программы TS: compact',
+    token: '· программы TS (формат compact)',
     summary: 'MPEG-TS и M3U8: список программ демультиплексора (-show_programs, вывод -of compact); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_programs -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -6071,7 +6071,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· data d:1 кодек',
+    token: '· data-дорожка d:1 кодек',
     summary: 'Вторая data-дорожка d:1: codec_name и codec_tag_string (таймкоды и метаданные в контейнере); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams d:1 -show_entries stream=codec_name,codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
@@ -6227,7 +6227,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· data d:2 кодек',
+    token: '· data-дорожка d:2 кодек',
     summary: 'Третья data-дорожка d:2: codec_name и codec_tag_string (дополнительные таймкоды и метаданные); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams d:2 -show_entries stream=codec_name,codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },

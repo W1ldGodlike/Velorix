@@ -564,3 +564,4 @@
 - [J-547] 2026-05-13 18:00:00 [Assistant]: §8 — превью: RU/`ffmpeg:` для пакетов ffprobe, smoke-ffmpeg (scale/acopy/map/volumedetect/…), блок фильтров `-af`/`-vf` (секунды → «с»), disposition доп. потоков; мелкие правки токенов PCM/size/comment из рабочей копии; `fullLine` без изменений.
 - [J-548] 2026-05-13 19:00:00 [Assistant]: §8 — превью ffprobe: уточнены токены v:0 side_data/s:0 PTS/v:2 summary/d:1–2/a:4/s:4/v:1; RU для format→JSON и тегов album_artist/WMF/encoding_tool; `fullLine` без изменений.
 - [J-549] 2026-05-13 20:00:00 [Assistant]: §8 — начало набора `TERMINAL_SCENARIO_HINTS_DOWNLOADS`: RU-компактные `token` для `--print`/`--write*`/`--list*`/`--simulate`/плейлист/geo/версии и др. (первые ~50 записей); `fullLine` без изменений.
+- [J-550] 2026-05-13 21:00:00 [Assistant]: §8 — `TERMINAL_SCENARIO_HINTS_DOWNLOADS`: доведены RU-компактные `token` для оставшихся `--print`/`--write*`/TLS/кэш/info.json и метаданных; `fullLine` без изменений.
