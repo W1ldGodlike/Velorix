@@ -13,7 +13,7 @@ import type { MediaProbeSuccess } from '../../../shared/ffprobe-contract'
 import { buildTimelineRulerTicks, pickTimelineRulerStepSec } from '../../../shared/timeline-ruler'
 import { snapSeekTimeSec } from '../../../shared/video-frame-snap'
 import { miniIconTitle, uiText, uiTextVars } from '../locales/ui-text'
-import { IconZoomIn, IconZoomOut } from './LucideMiniIcons'
+import { IconScissors, IconZoomIn, IconZoomOut } from './LucideMiniIcons'
 import TimelineWaveform from './TimelineWaveform'
 
 const MIN_TRIM_GAP_SEC = 0.05
@@ -502,6 +502,7 @@ export default function VideoTimeline({
 
   const displayIn = markerGeometry?.inSec ?? trim.inSec
   const displayOut = markerGeometry?.outSec ?? effectiveOut
+  const trimSpanSec = Math.max(0, displayOut - displayIn)
 
   const rulerTicks = useMemo(() => {
     if (!(duration > 0) || !(windowLenSec > 0)) {
@@ -524,191 +525,196 @@ export default function VideoTimeline({
 
   return (
     <div className="app-timeline-stack">
-      <div className="app-timeline-zoom-row" aria-label={uiText('videoTimelineZoomRowAria')}>
-        <div className="app-timeline-zoom-cluster">
-          <button
-            type="button"
-            className="app-icon-btn app-timeline-zoom-ico"
-            disabled={duration <= 0 || timelineZoomMul <= 1}
-            onClick={handleTimelineZoomOut}
-            title={uiText('videoTimelineZoomOutTitle')}
-          >
-            <IconZoomOut />
-            <span className="app-visually-hidden">{miniIconTitle('miniIconZoomOut')}</span>
-          </button>
-          <button
-            type="button"
-            className="app-icon-btn app-timeline-zoom-ico"
-            disabled={duration <= 0 || timelineZoomMul >= TIMELINE_ZOOM_MAX}
-            onClick={handleTimelineZoomIn}
-            title={uiText('videoTimelineZoomInTitle')}
-          >
-            <IconZoomIn />
-            <span className="app-visually-hidden">{miniIconTitle('miniIconZoomIn')}</span>
-          </button>
-        </div>
-        <span
-          className="app-timeline-zoom-readout"
-          title={uiText('videoTimelineZoomReadoutTitle')}
-        >
-          {uiTextVars('videoTimelineZoomReadoutTemplate', {
-            mul: timelineZoomMul,
-            start: formatTime(winStartEff),
-            end: formatTime(Math.min(duration, winStartEff + windowLenSec))
-          })}
-        </span>
-      </div>
-
-      <TimelineWaveform
-        key={mediaKey}
-        mediaKey={mediaKey}
-        mediaUrl={mediaUrl}
-        durationSec={duration}
-        windowStartSec={winStartEff}
-        windowLenSec={windowLenSec}
-      />
-
       {duration > 0 ? (
-        <div
-          className="app-timeline-ruler"
-          aria-label={uiText('videoTimelineRulerAria')}
-        >
-          <div
-            className="app-timeline-ruler-track"
-            tabIndex={0}
-            role="slider"
-            aria-valuemin={0}
-            aria-valuemax={1000}
-            aria-valuenow={Math.round(Math.min(1, Math.max(0, ratio)) * 1000)}
-            aria-valuetext={uiTextVars('videoTimelineRulerValuetextTemplate', {
-              current: formatTime(current),
-              winStart: formatTime(winStartEff),
-              winEnd: formatTime(Math.min(duration, winStartEff + windowLenSec))
-            })}
-            onPointerDown={(ev) => {
-              if (ev.button !== 0) {
-                return
-              }
-              ev.preventDefault()
-              ev.currentTarget.focus()
-              seekFromRulerPointer(ev.clientX, ev.currentTarget)
-            }}
-            onKeyDown={handleRulerKeyDown}
-          >
-            {rulerTicks.map((t) => (
-              <span
-                key={`ruler-tick-${String(t)}`}
-                className="app-timeline-ruler-tick"
-                style={{ left: `${((t - winStartEff) / windowLenSec) * 100}%` }}
-              >
-                <span className="app-timeline-ruler-label">{formatTime(t)}</span>
-              </span>
-            ))}
-            {rulerPlayheadPct !== null && rulerPlayheadPct >= -1 && rulerPlayheadPct <= 101 ? (
-              <span
-                className="app-timeline-ruler-playhead"
-                style={{ left: `${Math.min(100, Math.max(0, rulerPlayheadPct))}%` }}
-              />
-            ) : null}
+        <div className="app-timeline-toolbar" role="toolbar" aria-label={uiText('videoTimelineToolbarAria')}>
+          <div className="app-timeline-toolbar-primary">
+            <button
+              type="button"
+              className="app-btn app-btn-compact app-btn-timeline-in"
+              disabled={duration <= 0}
+              onClick={captureInFromPlayhead}
+              title={uiText('videoTimelineInHereTitle')}
+            >
+              {uiText('videoTimelineToolbarIn')}
+            </button>
+            <button
+              type="button"
+              className="app-btn app-btn-compact app-btn-timeline-out"
+              disabled={duration <= 0}
+              onClick={captureOutFromPlayhead}
+              title={uiText('videoTimelineOutHereTitle')}
+            >
+              {uiText('videoTimelineToolbarOut')}
+            </button>
+            <button
+              type="button"
+              className="app-btn app-btn-compact app-btn-timeline-trim"
+              disabled={duration <= 0}
+              onClick={() => {
+                document
+                  .querySelector('.app-settings-panel')
+                  ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+              }}
+              title={uiText('videoTimelineExportJumpTitle')}
+            >
+              <IconScissors title="" size={15} />
+              <span>{uiText('videoTimelineToolbarTrim')}</span>
+            </button>
+            <span
+              className="app-timeline-badge app-timeline-badge--in"
+              aria-label={uiTextVars('videoTimelineBadgeInAriaTemplate', { t: formatTime(displayIn) })}
+            >
+              {uiTextVars('videoTimelineBadgeInTemplate', { t: formatTime(displayIn) })}
+            </span>
+            <span
+              className="app-timeline-badge app-timeline-badge--out"
+              aria-label={uiTextVars('videoTimelineBadgeOutAriaTemplate', { t: formatTime(displayOut) })}
+            >
+              {uiTextVars('videoTimelineBadgeOutTemplate', { t: formatTime(displayOut) })}
+            </span>
+          </div>
+          <span className="app-timeline-toolbar-duration" title={uiText('videoTimelineTrimReadoutTitle')}>
+            {uiTextVars('videoTimelineTrimDurationToolbar', { span: formatTime(trimSpanSec) })}
+          </span>
+          <div className="app-timeline-toolbar-zoom" aria-label={uiText('videoTimelineZoomRowAria')}>
+            <button
+              type="button"
+              className="app-icon-btn app-timeline-zoom-ico"
+              disabled={duration <= 0 || timelineZoomMul <= 1}
+              onClick={handleTimelineZoomOut}
+              title={uiText('videoTimelineZoomOutTitle')}
+            >
+              <IconZoomOut />
+              <span className="app-visually-hidden">{miniIconTitle('miniIconZoomOut')}</span>
+            </button>
+            <button
+              type="button"
+              className="app-icon-btn app-timeline-zoom-ico"
+              disabled={duration <= 0 || timelineZoomMul >= TIMELINE_ZOOM_MAX}
+              onClick={handleTimelineZoomIn}
+              title={uiText('videoTimelineZoomInTitle')}
+            >
+              <IconZoomIn />
+              <span className="app-visually-hidden">{miniIconTitle('miniIconZoomIn')}</span>
+            </button>
+            <span className="app-timeline-zoom-readout" title={uiText('videoTimelineZoomReadoutTitle')}>
+              {uiTextVars('videoTimelineZoomReadoutTemplate', {
+                mul: timelineZoomMul,
+                start: formatTime(winStartEff),
+                end: formatTime(Math.min(duration, winStartEff + windowLenSec))
+              })}
+            </span>
           </div>
         </div>
       ) : null}
 
       {duration > 0 ? (
-        <div className="app-timeline-media-facts" aria-label={uiText('videoTimelineMediaFactsAria')}>
-          <span title={uiText('videoTimelineVideoStreamTitle')}>
-            <strong>{uiText('videoTimelineVideoLabel')}</strong> {formatProbeVideoFact(probe)}
-          </span>
-          <span title={uiText('videoTimelineAudioStreamTitle')}>
-            <strong>{uiText('videoTimelineAudioLabel')}</strong> {formatProbeAudioFact(probe)}
-          </span>
-          <span title={uiText('videoTimelinePositionTitle')}>
+        <div className="app-timeline-unified">
+          <div className="app-timeline-ruler" aria-label={uiText('videoTimelineRulerAria')}>
+            <div
+              className="app-timeline-ruler-track"
+              tabIndex={0}
+              role="slider"
+              aria-valuemin={0}
+              aria-valuemax={1000}
+              aria-valuenow={Math.round(Math.min(1, Math.max(0, ratio)) * 1000)}
+              aria-valuetext={uiTextVars('videoTimelineRulerValuetextTemplate', {
+                current: formatTime(current),
+                winStart: formatTime(winStartEff),
+                winEnd: formatTime(Math.min(duration, winStartEff + windowLenSec))
+              })}
+              onPointerDown={(ev) => {
+                if (ev.button !== 0) {
+                  return
+                }
+                ev.preventDefault()
+                ev.currentTarget.focus()
+                seekFromRulerPointer(ev.clientX, ev.currentTarget)
+              }}
+              onKeyDown={handleRulerKeyDown}
+            >
+              {rulerTicks.map((t) => (
+                <span
+                  key={`ruler-tick-${String(t)}`}
+                  className="app-timeline-ruler-tick"
+                  style={{ left: `${((t - winStartEff) / windowLenSec) * 100}%` }}
+                >
+                  <span className="app-timeline-ruler-label">{formatTime(t)}</span>
+                </span>
+              ))}
+              {rulerPlayheadPct !== null && rulerPlayheadPct >= -1 && rulerPlayheadPct <= 101 ? (
+                <span
+                  className="app-timeline-ruler-playhead"
+                  style={{ left: `${Math.min(100, Math.max(0, rulerPlayheadPct))}%` }}
+                />
+              ) : null}
+            </div>
+          </div>
+          <TimelineWaveform
+            key={mediaKey}
+            mediaKey={mediaKey}
+            mediaUrl={mediaUrl}
+            durationSec={duration}
+            windowStartSec={winStartEff}
+            windowLenSec={windowLenSec}
+          />
+          <div className="app-timeline-marker-strip" aria-label={uiText('videoTimelineMarkerStripAria')}>
+            <div
+              ref={markerTrackRef}
+              className={`app-timeline-marker-track${markersDisjointZoomWindow ? ' app-timeline-marker-track-idle' : ''}`}
+              tabIndex={0}
+              title={
+                markersDisjointZoomWindow
+                  ? uiText('videoTimelineMarkersOutsideWindowTitle')
+                  : uiText('videoTimelineMarkerStripDragTitle')
+              }
+              onPointerDown={onMarkerTrackPointerDown}
+              onPointerMove={onMarkerTrackPointerMove}
+              onPointerUp={onMarkerTrackPointerUpOrCancel}
+              onPointerCancel={onMarkerTrackPointerUpOrCancel}
+              onLostPointerCapture={onMarkerTrackLostPointerCapture}
+            >
+              {markerZoomOverlay ? (
+                <div
+                  className="app-timeline-marker-selection"
+                  style={{
+                    left: `${markerZoomOverlay.leftPct}%`,
+                    width: `${markerZoomOverlay.widthPct}%`
+                  }}
+                />
+              ) : null}
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {duration > 0 ? (
+        <div className="app-timeline-footer" aria-label={uiText('videoTimelineFooterAria')}>
+          <div className="app-timeline-footer-spec">
+            <span title={uiText('videoTimelineVideoStreamTitle')}>
+              <strong>{uiText('videoTimelineVideoLabel')}</strong> {formatProbeVideoFact(probe)}
+            </span>
+            <span title={uiText('videoTimelineAudioStreamTitle')}>
+              <strong>{uiText('videoTimelineAudioLabel')}</strong> {formatProbeAudioFact(probe)}
+            </span>
+          </div>
+          <span className="app-timeline-footer-position" title={uiText('videoTimelinePositionTitle')}>
             <strong>{uiText('videoTimelinePositionLabel')}</strong>{' '}
             {formatProbePositionLine(current, duration, fpsProbeHint)}
           </span>
         </div>
       ) : null}
 
-      {duration > 0 ? (
-        <div className="app-timeline-marker-strip" aria-label={uiText('videoTimelineMarkerStripAria')}>
-          <div
-            ref={markerTrackRef}
-            className={`app-timeline-marker-track${markersDisjointZoomWindow ? ' app-timeline-marker-track-idle' : ''}`}
-            tabIndex={0}
-            title={
-              markersDisjointZoomWindow
-                ? uiText('videoTimelineMarkersOutsideWindowTitle')
-                : uiText('videoTimelineMarkerStripDragTitle')
-            }
-            onPointerDown={onMarkerTrackPointerDown}
-            onPointerMove={onMarkerTrackPointerMove}
-            onPointerUp={onMarkerTrackPointerUpOrCancel}
-            onPointerCancel={onMarkerTrackPointerUpOrCancel}
-            onLostPointerCapture={onMarkerTrackLostPointerCapture}
-          >
-            {markerZoomOverlay ? (
-              <div
-                className="app-timeline-marker-selection"
-                style={{
-                  left: `${markerZoomOverlay.leftPct}%`,
-                  width: `${markerZoomOverlay.widthPct}%`
-                }}
-              />
-            ) : null}
-          </div>
-        </div>
-      ) : null}
-
-      <div className="app-timeline-io" aria-label={uiText('videoTimelineIoAria')}>
-        <span
-          className="app-timeline-io-readout"
-          title={uiText('videoTimelineTrimReadoutTitle')}
+      <div className="app-timeline-io app-timeline-io--solo" aria-label={uiText('videoTimelineIoAria')}>
+        <button
+          type="button"
+          className="app-btn app-btn-compact"
+          disabled={duration <= 0}
+          onClick={resetTrimToFull}
+          title={uiText('videoTimelineResetTrimTitle')}
         >
-          In <strong>{formatTime(displayIn)}</strong> — Out{' '}
-          <strong>{formatTime(displayOut)}</strong>
-        </span>
-        <div className="app-timeline-io-actions">
-          <button
-            type="button"
-            className="app-btn app-btn-compact app-timeline-export-jump"
-            disabled={duration <= 0}
-            onClick={() => {
-              document
-                .querySelector('.app-settings-panel')
-                ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-            }}
-            title={uiText('videoTimelineExportJumpTitle')}
-          >
-            {uiText('videoTimelineExportJumpButton')}
-          </button>
-          <button
-            type="button"
-            className="app-btn app-btn-compact"
-            disabled={duration <= 0}
-            onClick={captureInFromPlayhead}
-            title={uiText('videoTimelineInHereTitle')}
-          >
-            {uiText('videoTimelineInHereButton')}
-          </button>
-          <button
-            type="button"
-            className="app-btn app-btn-compact"
-            disabled={duration <= 0}
-            onClick={captureOutFromPlayhead}
-            title={uiText('videoTimelineOutHereTitle')}
-          >
-            {uiText('videoTimelineOutHereButton')}
-          </button>
-          <button
-            type="button"
-            className="app-btn app-btn-compact"
-            disabled={duration <= 0}
-            onClick={resetTrimToFull}
-            title={uiText('videoTimelineResetTrimTitle')}
-          >
-            {uiText('videoTimelineResetTrimButton')}
-          </button>
-        </div>
+          {uiText('videoTimelineResetTrimButton')}
+        </button>
       </div>
     </div>
   )

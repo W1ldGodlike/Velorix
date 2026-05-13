@@ -2593,29 +2593,31 @@ function App(): JSX.Element {
             {preview ? (
               <>
                 <div className="app-preview-stack" ref={previewStackRef}>
-                  <video
-                    key={`${preview.path}|${previewPlaybackUrl ?? preview.mediaUrl}`}
-                    ref={videoRef}
-                    className="app-preview-video"
-                    playsInline
-                    src={previewPlaybackUrl ?? preview.mediaUrl}
-                    aria-label={uiTextVars('editorPreviewVideoAriaTemplate', {
-                      name: basenameForAriaLabel(preview.path)
-                    })}
-                    onLoadedMetadata={(event) => {
-                      handlePreviewVideoLoaded(event.currentTarget)
-                    }}
-                    onError={(event) => {
-                      handlePreviewVideoError(event.currentTarget)
-                    }}
-                  />
-                  <PreviewTransport
-                    key={`${preview.path}|${previewPlaybackUrl ?? preview.mediaUrl}`}
-                    mediaKey={`${preview.path}|${previewPlaybackUrl ?? preview.mediaUrl}`}
-                    videoRef={videoRef}
-                    fullscreenRootRef={previewStackRef}
-                    disabled={exportBusy || snapshotBusy}
-                  />
+                  <div className="app-preview-media-card">
+                    <video
+                      key={`${preview.path}|${previewPlaybackUrl ?? preview.mediaUrl}`}
+                      ref={videoRef}
+                      className="app-preview-video"
+                      playsInline
+                      src={previewPlaybackUrl ?? preview.mediaUrl}
+                      aria-label={uiTextVars('editorPreviewVideoAriaTemplate', {
+                        name: basenameForAriaLabel(preview.path)
+                      })}
+                      onLoadedMetadata={(event) => {
+                        handlePreviewVideoLoaded(event.currentTarget)
+                      }}
+                      onError={(event) => {
+                        handlePreviewVideoError(event.currentTarget)
+                      }}
+                    />
+                    <PreviewTransport
+                      key={`${preview.path}|${previewPlaybackUrl ?? preview.mediaUrl}`}
+                      mediaKey={`${preview.path}|${previewPlaybackUrl ?? preview.mediaUrl}`}
+                      videoRef={videoRef}
+                      fullscreenRootRef={previewStackRef}
+                      disabled={exportBusy || snapshotBusy}
+                    />
+                  </div>
                   <VideoTimeline
                     key={`${preview.path}|${previewPlaybackUrl ?? preview.mediaUrl}`}
                     mediaKey={`${preview.path}|${previewPlaybackUrl ?? preview.mediaUrl}`}
