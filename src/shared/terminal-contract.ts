@@ -2400,7 +2400,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· playlist-start 2 -F',
+    token: '· плейлист с 2-го -F',
     summary: 'Плейлист начиная со 2-го элемента (--playlist-start 2 -F); допишите URL плейлиста.',
     fullLine: 'yt-dlp --playlist-start 2 -F '
   },
@@ -2544,19 +2544,19 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· downloader ffmpeg -F',
+    token: '· загрузчик ffmpeg -F',
     summary: 'Явно качать через встроенный загрузчик на базе ffmpeg (--downloader ffmpeg -F); потоки HLS и DASH; допишите URL.',
     fullLine: 'yt-dlp --downloader ffmpeg -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· downloader aria2c -F',
+    token: '· загрузчик aria2c -F',
     summary: 'Внешний aria2c как загрузчик (--downloader aria2c -F; aria2c должен быть в каталогах из PATH); допишите URL.',
     fullLine: 'yt-dlp --downloader aria2c -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· no-wait-for-video -F',
+    token: '· не ждать эфир -F',
     summary: 'Не ждать появления трансляции (--no-wait-for-video -F); быстрый -F для стримов; допишите URL.',
     fullLine: 'yt-dlp --no-wait-for-video -F '
   },
@@ -2568,55 +2568,55 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· trim-filenames -F',
+    token: '· обрезка длинных имён -F',
     summary: 'Обрезать слишком длинные имена файлов (--trim-filenames 180 -F); сетевые хранилища (NAS) и ограничение длины полного пути в Windows (около 260 символов, MAX_PATH); допишите URL.',
     fullLine: 'yt-dlp --trim-filenames 180 -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· hls-split-discontinuity -F',
+    token: '· HLS по разрывам -F',
     summary: 'HLS: резать плейлист по границам разрыва (discontinuity, --hls-split-discontinuity -F); стабильнее MPEG-TS-сегменты; допишите URL.',
     fullLine: 'yt-dlp --hls-split-discontinuity -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· dynamic-mpd-buffer -F',
+    token: '· буфер динам. MPD -F',
     summary: 'DASH: буфер динамического манифеста MPD в секундах (--dynamic-mpd-buffer-size 100 -F); «живые» манифесты; допишите URL.',
     fullLine: 'yt-dlp --dynamic-mpd-buffer-size 100 -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· no-write-pages -F',
+    token: '· без сырого HTML -F',
     summary: 'Не сохранять сырые HTML-страницы модуля извлечения (extractor) (--no-write-pages -F); чище диск при -F; допишите URL.',
     fullLine: 'yt-dlp --no-write-pages -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· socket-timeout 120 -F',
+    token: '· таймаут сокета 120 с -F',
     summary: 'Таймаут сокета 120 с (--socket-timeout 120 -F); очень медленные CDN и прокси; допишите URL.',
     fullLine: 'yt-dlp --socket-timeout 120 -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· -S 1080 av1 -F',
+    token: '· сорт -S: ~1080p AV1 -F',
     summary: 'Сортировка форматов: приоритет ~1080p и AV1 (-S +res:1080,+codec:av01 -F); подстройте res и codec; допишите URL.',
     fullLine: 'yt-dlp -S +res:1080,+codec:av01 -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· -S br5M 720p -F',
+    token: '· сорт -S: ~5 Мбит/с 720p -F',
     summary: 'Сортировка: битрейт ~5 Mbit/s и около 720p (-S +br:5000000,+res:720 -F); диагностика выбора -f; допишите URL.',
     fullLine: 'yt-dlp -S +br:5000000,+res:720 -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· hide-progress -F',
+    token: '· без прогресс-бара -F',
     summary: 'Список форматов без прогресс-бара (--hide-progress -F); чище вывод в терминале; допишите URL.',
     fullLine: 'yt-dlp --hide-progress -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· playlist last -F',
+    token: '· плейлист: последний -F',
     summary: 'Только последний элемент плейлиста и список форматов (--playlist-items -1 -F); хвост плейлиста без полного разбора; допишите URL.',
     fullLine: 'yt-dlp --playlist-items -1 -F '
   },
@@ -2634,19 +2634,19 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· playlist mid slice -F',
+    token: '· плейлист: эл. 2–4 -F',
     summary: 'Фрагмент плейлиста: только элементы 2…4 (--playlist-items 2:4 -F); середина без начала и конца; допишите URL плейлиста.',
     fullLine: 'yt-dlp --playlist-items 2:4 -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· ppa FFmpeg threads -F',
+    token: '· постпроц.: FFmpeg, 1 поток -F',
     summary: 'Дополнительные аргументы постпроцессору ffmpeg через --ppa (FFmpeg:-threads:1 -F); в списке аргументов без кавычек (как в argv); допишите URL.',
     fullLine: 'yt-dlp --ppa FFmpeg:-threads:1 -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· yes-playlist -F',
+    token: '· явно плейлист -F',
     summary: 'Явно развернуть плейлист и показать форматы (--yes-playlist -F); когда URL выглядит как один ролик, но это плейлист; допишите URL.',
     fullLine: 'yt-dlp --yes-playlist -F '
   },
@@ -2718,19 +2718,19 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· check-all-urls -F',
+    token: '· проверка всех URL -F',
     summary: 'Проверить все HTTP-URL фрагментов перед загрузкой (--check-all-urls -F); диагностика кодов 403 и 410 на потоках HLS и DASH; допишите URL.',
     fullLine: 'yt-dlp --check-all-urls -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· no-windows-filenames -F',
+    token: '· без лимита имён Win -F',
     summary: 'Отключить санитизацию имён под Windows (--no-windows-filenames -F); как в POSIX-шаблонах -o; допишите URL.',
     fullLine: 'yt-dlp --no-windows-filenames -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· replace-meta title -F',
+    token: '· подмена в title (_→-) -F',
     summary: 'Замена в метаданных до имени файла (--replace-in-metadata title,_,- — подчёркивание → дефис); допишите URL.',
     fullLine: 'yt-dlp --replace-in-metadata title,_,- -F '
   },
@@ -2766,7 +2766,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· audio vorbis',
+    token: '· аудио → Vorbis',
     summary: 'Извлечь аудио в Ogg Vorbis (--extract-audio --audio-format vorbis); допишите URL и шаблон -o при необходимости.',
     fullLine: 'yt-dlp --extract-audio --audio-format vorbis '
   },
@@ -2778,49 +2778,49 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· --no-update -F',
+    token: '· без self-update -F',
     summary: 'Запретить автообновление yt-dlp (self-update), даже если оно включено (--no-update -F); фиксируем версию из поставки; допишите URL.',
     fullLine: 'yt-dlp --no-update -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· --no-color -F',
+    token: '· без ANSI-цвета -F',
     summary: 'Вывод без цветов ANSI (--no-color -F); удобнее парсить или для непрерывной интеграции (CI); допишите URL.',
     fullLine: 'yt-dlp --no-color -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· --color always -F',
+    token: '· ANSI-цвет всегда -F',
     summary: 'Принудительно цвета ANSI в выводе (--color always -F); даже когда стандартный вывод не терминал (не TTY); допишите URL.',
     fullLine: 'yt-dlp --color always -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· allow-unplayable -F',
+    token: '· форматы с DRM в списке -F',
     summary: 'Разрешить «недостижимые» форматы в листинге (--allow-unplayable-formats -F); диагностика DRM и недоступного контента; допишите URL.',
     fullLine: 'yt-dlp --allow-unplayable-formats -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· audio alac',
+    token: '· аудио → ALAC',
     summary: 'Извлечь аудио в Apple Lossless (--extract-audio --audio-format alac); допишите URL и -o при необходимости.',
     fullLine: 'yt-dlp --extract-audio --audio-format alac '
   },
   {
     tool: 'yt-dlp',
-    token: '· audio ac3',
+    token: '· аудио → AC-3',
     summary: 'Извлечь аудио в Dolby Digital AC-3 (--extract-audio --audio-format ac3); допишите URL.',
     fullLine: 'yt-dlp --extract-audio --audio-format ac3 '
   },
   {
     tool: 'yt-dlp',
-    token: '· audio q0',
+    token: '· аудио, кач. макс. (q0)',
     summary: 'Извлечь аудио с максимальным качеством постпроцессора (--audio-quality 0 --extract-audio); допишите URL и -f при необходимости.',
     fullLine: 'yt-dlp --audio-quality 0 --extract-audio '
   },
   {
     tool: 'yt-dlp',
-    token: '· ppa ffmpeg threads 1',
+    token: '· постпроц.: mux, 1 поток -F',
     summary: 'Аргументы постпроцессора для ffmpeg (--postprocessor-args ffmpeg:-threads 1 -F); ограничить нагрузку при слиянии потоков (мультиплексировании); допишите URL.',
     fullLine: 'yt-dlp --postprocessor-args ffmpeg:-threads 1 -F '
   },
@@ -2940,7 +2940,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· no-restrict-filenames -F',
+    token: '· имена не только ASCII -F',
     summary: 'Не ограничивать имена файлов ASCII (--no-restrict-filenames -F); кириллица в -o; допишите URL.',
     fullLine: 'yt-dlp --no-restrict-filenames -F '
   },
@@ -2988,13 +2988,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: filename field',
+    token: '· в файл: поле filename',
     summary: 'Записать шаблон filename (поле метаданных) в flux-ytdlp-fn.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file filename flux-ytdlp-fn.txt --skip-download '
   },
   {
     tool: 'yt-dlp',
-    token: '· no-prefer-free -F',
+    token: '· без приоритета «свободных» кодеков -F',
     summary: 'Список форматов без приоритета «свободных» кодеков (--no-prefer-free-formats -F); контраст к --prefer-free-formats; допишите URL.',
     fullLine: 'yt-dlp --no-prefer-free-formats -F '
   },
@@ -3048,7 +3048,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: duration num',
+    token: '· в файл: длительность, сек',
     summary: 'Записать duration (секунды, число) в flux-ytdlp-duration.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file duration flux-ytdlp-duration.txt --skip-download '
   },
@@ -3084,13 +3084,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· no-continue -F',
+    token: '· без дозагрузки .part -F',
     summary: 'Листинг форматов без дозагрузки частичных .part (--no-continue -F); при скачивании начать заново; допишите URL.',
     fullLine: 'yt-dlp --no-continue -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· no-pl-reverse -F',
+    token: '· без обратного порядка плейлиста -F',
     summary: 'Не переворачивать порядок элементов плейлиста (--no-playlist-reverse -F); совместимость с плейлистами; допишите URL.',
     fullLine: 'yt-dlp --no-playlist-reverse -F '
   },
@@ -3114,7 +3114,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: thumb field',
+    token: '· в файл: URL превью',
     summary: 'Записать поле миниатюры (thumbnail, URL обложки) в flux-ytdlp-thumburl.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file thumbnail flux-ytdlp-thumburl.txt --skip-download '
   },
@@ -3216,7 +3216,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· reject-title -F',
+    token: '· отклонить по title -F',
     summary: 'Исключить элементы плейлиста по подстроке заголовка (--reject-title trailer -F); подстройте шаблон; допишите URL.',
     fullLine: 'yt-dlp --reject-title trailer -F '
   },
@@ -3402,7 +3402,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· max-dls -F',
+    token: '· макс. загрузок 5 -F',
     summary: 'Остановка после N загрузок из плейлиста (--max-downloads 5 -F); подстройте число; допишите URL.',
     fullLine: 'yt-dlp --max-downloads 5 -F '
   },
