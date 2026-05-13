@@ -1856,7 +1856,7 @@ button.app-downloads-hint-token:disabled {
   background: #000000;
 }
 
-/* §1.1 / v0: транспорт сразу под превью (нативные controls у `<video>` сохраняем по §7.1). */
+/* §1.1 / v0: транспорт под превью — единая панель управления без дублирующих нативных controls у `<video>`. */
 .app-preview-transport {
   flex-shrink: 0;
   display: flex;

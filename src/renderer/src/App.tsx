@@ -2594,10 +2594,10 @@ function App(): JSX.Element {
               <>
                 <div className="app-preview-stack" ref={previewStackRef}>
                   <video
-                    key={previewPlaybackUrl ?? preview.mediaUrl}
+                    key={`${preview.path}|${previewPlaybackUrl ?? preview.mediaUrl}`}
                     ref={videoRef}
                     className="app-preview-video"
-                    controls
+                    playsInline
                     src={previewPlaybackUrl ?? preview.mediaUrl}
                     aria-label={uiTextVars('editorPreviewVideoAriaTemplate', {
                       name: basenameForAriaLabel(preview.path)
@@ -2610,15 +2610,15 @@ function App(): JSX.Element {
                     }}
                   />
                   <PreviewTransport
-                    key={previewPlaybackUrl ?? preview.mediaUrl}
-                    mediaKey={previewPlaybackUrl ?? preview.mediaUrl}
+                    key={`${preview.path}|${previewPlaybackUrl ?? preview.mediaUrl}`}
+                    mediaKey={`${preview.path}|${previewPlaybackUrl ?? preview.mediaUrl}`}
                     videoRef={videoRef}
                     fullscreenRootRef={previewStackRef}
                     disabled={exportBusy || snapshotBusy}
                   />
                   <VideoTimeline
-                    key={previewPlaybackUrl ?? preview.mediaUrl}
-                    mediaKey={previewPlaybackUrl ?? preview.mediaUrl}
+                    key={`${preview.path}|${previewPlaybackUrl ?? preview.mediaUrl}`}
+                    mediaKey={`${preview.path}|${previewPlaybackUrl ?? preview.mediaUrl}`}
                     mediaUrl={previewPlaybackUrl ?? preview.mediaUrl}
                     probe={probeInfo}
                     videoRef={videoRef}
