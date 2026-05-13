@@ -2191,15 +2191,6 @@ button.app-downloads-hint-token:disabled {
   font-weight: 600;
 }
 
-.app-timeline-io--solo {
-  justify-content: center;
-  padding: 0.22rem 0.55rem 0.42rem;
-}
-
-.app-timeline-io--solo .app-btn {
-  min-width: 7.5rem;
-}
-
 .app-timeline-zoom-ico.app-icon-btn {
   min-width: 1.75rem;
   height: 1.75rem;

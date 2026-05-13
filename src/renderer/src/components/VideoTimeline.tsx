@@ -35,6 +35,22 @@ function formatTime(sec: number): string {
   return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`
 }
 
+/** Время для бейджей In/Out и длительности фрагмента — с миллисекундами (m:ss.mmm или h:mm:ss.mmm). */
+function formatTimeWithMs(sec: number): string {
+  if (!Number.isFinite(sec) || sec < 0) {
+    return '0:00.000'
+  }
+  const ms = Math.floor(sec * 1000) % 1000
+  const whole = Math.floor(sec)
+  const s = whole % 60
+  const m = Math.floor(whole / 60) % 60
+  const h = Math.floor(whole / 3600)
+  const pad2 = (n: number): string => n.toString().padStart(2, '0')
+  const pad3 = (n: number): string => n.toString().padStart(3, '0')
+  const frac = pad3(ms)
+  return h > 0 ? `${h}:${pad2(m)}:${pad2(s)}.${frac}` : `${m}:${pad2(s)}.${frac}`
+}
+
 function minEffectiveGap(duration: number): number {
   return Math.min(MIN_TRIM_GAP_SEC, Math.max(duration * 0.002, 1 / 60))
 }
@@ -135,6 +151,8 @@ interface VideoTimelineProps {
   probe?: MediaProbeSuccess | null
   /** Снимок актуальных маркеров для экспорта §7.1 (родитель держит только ref на последнее значение). */
   onTrimRangeChange?: (range: { inSec: number; outSec: number }) => void
+  /** Секция «Вывод» + превью команды в правом rail (кнопка «Обрезать»). */
+  onJumpToTrimExport?: () => void
 }
 
 export default function VideoTimeline({
@@ -142,7 +160,8 @@ export default function VideoTimeline({
   mediaUrl,
   videoRef,
   probe = null,
-  onTrimRangeChange
+  onTrimRangeChange,
+  onJumpToTrimExport
 }: VideoTimelineProps): React.JSX.Element {
   const [duration, setDuration] = useState(0)
   const [current, setCurrent] = useState(0)
@@ -593,30 +612,41 @@ export default function VideoTimeline({
               className="app-btn app-btn-compact app-btn-timeline-trim"
               disabled={duration <= 0}
               onClick={() => {
-                document
-                  .querySelector('.app-settings-panel')
-                  ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+                onJumpToTrimExport?.()
               }}
               title={uiText('videoTimelineExportJumpTitle')}
             >
               <IconScissors title="" size={15} />
               <span>{uiText('videoTimelineToolbarTrim')}</span>
             </button>
+            <button
+              type="button"
+              className="app-btn app-btn-compact"
+              disabled={duration <= 0}
+              onClick={resetTrimToFull}
+              title={uiText('videoTimelineResetTrimTitle')}
+            >
+              {uiText('videoTimelineResetTrimButton')}
+            </button>
             <span
               className="app-timeline-badge app-timeline-badge--in"
-              aria-label={uiTextVars('videoTimelineBadgeInAriaTemplate', { t: formatTime(displayIn) })}
+              aria-label={uiTextVars('videoTimelineBadgeInAriaTemplate', {
+                t: formatTimeWithMs(displayIn)
+              })}
             >
-              {uiTextVars('videoTimelineBadgeInTemplate', { t: formatTime(displayIn) })}
+              {uiTextVars('videoTimelineBadgeInTemplate', { t: formatTimeWithMs(displayIn) })}
             </span>
             <span
               className="app-timeline-badge app-timeline-badge--out"
-              aria-label={uiTextVars('videoTimelineBadgeOutAriaTemplate', { t: formatTime(displayOut) })}
+              aria-label={uiTextVars('videoTimelineBadgeOutAriaTemplate', {
+                t: formatTimeWithMs(displayOut)
+              })}
             >
-              {uiTextVars('videoTimelineBadgeOutTemplate', { t: formatTime(displayOut) })}
+              {uiTextVars('videoTimelineBadgeOutTemplate', { t: formatTimeWithMs(displayOut) })}
             </span>
           </div>
           <span className="app-timeline-toolbar-duration" title={uiText('videoTimelineTrimReadoutTitle')}>
-            {uiTextVars('videoTimelineTrimDurationToolbar', { span: formatTime(trimSpanSec) })}
+            {uiTextVars('videoTimelineTrimDurationToolbar', { span: formatTimeWithMs(trimSpanSec) })}
           </span>
           <div className="app-timeline-toolbar-zoom" aria-label={uiText('videoTimelineZoomRowAria')}>
             <button
@@ -754,17 +784,6 @@ export default function VideoTimeline({
         </div>
       ) : null}
 
-      <div className="app-timeline-io app-timeline-io--solo" aria-label={uiText('videoTimelineIoAria')}>
-        <button
-          type="button"
-          className="app-btn app-btn-compact"
-          disabled={duration <= 0}
-          onClick={resetTrimToFull}
-          title={uiText('videoTimelineResetTrimTitle')}
-        >
-          {uiText('videoTimelineResetTrimButton')}
-        </button>
-      </div>
     </div>
   )
 }

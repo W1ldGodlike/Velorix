@@ -1254,6 +1254,24 @@ function App(): JSX.Element {
     [currentSourcePath]
   )
 
+  const jumpToTrimExport = useCallback((): void => {
+    persistMainWindowUiPanelToggle('ffmpegSettingsRailOpen', true)
+    persistMainWindowUiPanelToggle('ffmpegOutput', true)
+    persistMainWindowUiPanelToggle('exportCommandPreview', true)
+    const scroll = (): void => {
+      document.getElementById('editor-ffmpeg-export-output')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest'
+      })
+    }
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        scroll()
+        window.setTimeout(scroll, 160)
+      })
+    })
+  }, [persistMainWindowUiPanelToggle])
+
   useEffect(() => {
     let mounted = true
     void window.fluxalloy.downloads.getSnapshot().then((rows) => {
@@ -2625,6 +2643,7 @@ function App(): JSX.Element {
                     probe={probeInfo}
                     videoRef={videoRef}
                     onTrimRangeChange={onTrimRangeSnapshot}
+                    onJumpToTrimExport={jumpToTrimExport}
                   />
                   {(probeInfo || probeError) && (
                     <div className="app-preview-probe" aria-live="polite">
@@ -3620,6 +3639,7 @@ function App(): JSX.Element {
               </details>
 
               <details
+                id="editor-ffmpeg-export-output"
                 className="app-settings-section"
                 open={panelOpen('ffmpegOutput')}
                 onToggle={(e) => {
