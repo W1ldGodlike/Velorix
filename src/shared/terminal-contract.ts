@@ -4903,6 +4903,54 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
+    token: '· обложка png без видео',
+    summary: 'Скачать только обложку и конвертировать в PNG (--write-thumbnail --convert-thumbnails png --skip-download); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --write-thumbnail --convert-thumbnails png '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· id без кэша метаданных',
+    summary: 'Идентификатор ролика без скачивания и без кэша метаданных (--no-cache-dir --skip-download --print id); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --no-cache-dir --print id '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· id без предупреждений',
+    summary: 'Идентификатор ролика без скачивания и без предупреждений в консоли (--no-warnings --skip-download --print id); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --no-warnings --print id '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок тихо (-q)',
+    summary: 'Краткий режим вывода и заголовок без скачивания (-q --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp -q --skip-download --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок с user-agent curl',
+    summary: 'Заголовок без скачивания с user-agent как у curl (--user-agent … --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --user-agent curl/8.5.0 --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок с referer example.org',
+    summary: 'Заголовок без скачивания с заголовком Referer на example.org (--referer … --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --referer https://example.org/ --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· заголовок с accept-language',
+    summary: 'Заголовок без скачивания с Accept-Language en-US (--add-headers … --skip-download --print title); допишите ссылку.',
+    fullLine: 'yt-dlp --skip-download --add-headers Accept-Language:en-US --print title '
+  },
+  {
+    tool: 'yt-dlp',
+    token: '· плоский плейлист: entries',
+    summary: 'Плоский плейлист: сырое поле entries без глубокого извлечения (--flat-playlist --skip-download --print entries); допишите ссылку на плейлист.',
+    fullLine: 'yt-dlp --flat-playlist --skip-download --print entries '
+  },
+  {
+    tool: 'yt-dlp',
     token: '· обновить yt-dlp → stable',
     summary: 'Обновить yt-dlp до стабильной ветки (--update-to stable); ссылка в команде не нужна.',
     fullLine: 'yt-dlp --update-to stable'
@@ -6602,6 +6650,156 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     token: '· ffmpeg: map v:0 null 2с',
     summary: 'Декод только первой видеодорожки (-map 0:v:0) первых 2 с в null; дымовая проверка -map индекса; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -map 0:v:0 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· видео v:0 только color_primaries',
+    summary: 'Поток v:0: только color_primaries (поле ffprobe: первичные цвета дисплея); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=color_primaries -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· видео v:0 только color_space',
+    summary: 'Поток v:0: только color_space (поле ffprobe: цветовое пространство bt709 и др.); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=color_space -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· видео v:0 duration_ts',
+    summary: 'Поток v:0: длительность в тиках time_base (поле ffprobe duration_ts; сверка с duration в секундах); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=duration_ts -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· видео v:0 pix_fmt и profile',
+    summary: 'Поток v:0: pix_fmt и profile (поля ffprobe: формат пикселей и профиль кодека); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=pix_fmt,profile -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· видео v:0 первые 2 пакета',
+    summary: 'Первые два пакета v:0 (-read_intervals %+#2 — только два пакета, -show_packets); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams v:0 -show_packets -read_intervals %+#2 -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· контейнер: time_base',
+    summary: 'Контейнер: format time_base (поле format.time_base — база времени контейнера); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format=time_base -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· аудио a:0 max_bit_rate',
+    summary: 'Поток a:0: max_bit_rate (поле ffprobe: пиковый битрейт при VBR, если задан); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=max_bit_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· субтитры s:0 codec_long_name',
+    summary: 'Поток s:0: codec_long_name (поле ffprobe: длинное имя кодека субтитров); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=codec_long_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: map a:0 null 2с',
+    summary: 'Декод только первой аудиодорожки (-map 0:a:0) первых 2 с в null; дымовая проверка -map аудио; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -map 0:a:0 -t 2 -vn -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: boxblur 2с',
+    summary: 'Лёгкое размытие boxblur первых 2 с (-vf boxblur=2:1); дымовая проверка пространственного фильтра; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf boxblur=2:1 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: gblur 2с',
+    summary: 'Гауссово размытие gblur первых 2 с (-vf gblur=sigma=1.2); дымовая проверка gblur; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf gblur=sigma=1.2 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: edgedetect 2с',
+    summary: 'Контуры edgedetect первых 2 с (-vf edgedetect=low=0.1:high=0.3); дымовая проверка высокочастотного фильтра; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf edgedetect=low=0.1:high=0.3 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: vignette 2с',
+    summary: 'Лёгкое затемнение по краям vignette первых 2 с (-vf vignette=PI/5); дымовая проверка vignette; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf vignette=PI/5 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: colorbalance 2с',
+    summary: 'Лёгкий сдвиг баланса белого colorbalance первых 2 с (rs=0.06); дымовая проверка цветокоррекции; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf colorbalance=rs=0.06 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: negate 2с',
+    summary: 'Инверсия яркости negate первых 2 с (-vf negate); дымовая проверка точечного видеофильтра; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf negate -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: hue сдвиг 2с',
+    summary: 'Сдвиг оттенка hue=h=0.08 первых 2 с; дымовая проверка hue; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf hue=h=0.08 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: gradfun 2с',
+    summary: 'Сглаживание бэнда gradfun первых 2 с (-vf gradfun=strength=0.9); дымовая проверка gradfun; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf gradfun=strength=0.9 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: dctdnoiz 2с',
+    summary: 'Лёгкое шумоподавление dctdnoiz первых 2 с (-vf dctdnoiz=s=4); дымовая проверка DCT-денойзера; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf dctdnoiz=s=4 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: weave 1с',
+    summary: 'Чересстрочное переплетение полей weave первую секунду (-vf weave); дымовая проверка weave; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf weave -t 1 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: fieldorder tff 2с',
+    summary: 'Указание порядка полей fieldorder=tff первых 2 с; дымовая проверка метаданных чересстрочности; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf fieldorder=tff -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: tpad хвост 2с',
+    summary: 'Короткая подкладка кадров в хвост через tpad первых 2 с (stop_mode=add, stop_duration=0.08); дымовая проверка tpad; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf tpad=stop_mode=add:stop_duration=0.08 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: sab 2с',
+    summary: 'Лёгкое сглаживание sab первых 2 с (-vf sab=strength=0.2); дымовая проверка shape adaptive blur; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf sab=strength=0.2 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: shuffleplanes 2с',
+    summary: 'Перестановка цветовых плоскостей shuffleplanes первых 2 с (map0g=1:map1g=0:map2g=2); дымовая проверка shuffleplanes без кавычек в argv; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf shuffleplanes=map0g=1:map1g=0:map2g=2 -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: extractplanes y 2с',
+    summary: 'Извлечь только плоскость Y через extractplanes=y первых 2 с; дымовая проверка планарного разбора; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf extractplanes=y -t 2 -an -sn -f null -`
+  },
+  {
+    tool: 'ffmpeg',
+    token: '· ffmpeg: swapuv 2с',
+    summary: 'Обмен цветоразностных каналов swapuv первых 2 с; дымовая проверка цвета без перекодирования в файл; путь к медиа подставляется из превью.',
+    fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -vf swapuv -t 2 -an -sn -f null -`
   }
 ]
 
