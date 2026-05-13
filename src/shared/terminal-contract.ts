@@ -24,7 +24,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· -g best',
+    token: '· прямая ссылка (-g), шаблон best',
     summary: 'Прямая ссылка на поток без скачивания (-g -f best); допишите URL.',
     fullLine: 'yt-dlp -g -f best '
   },
@@ -720,7 +720,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· журнал archive.txt',
+    token: '· журнал скачанных id (archive.txt)',
     summary: 'Журнал скачанных идентификаторов (id) в archive.txt (--download-archive archive.txt); поменяйте имя файла под свою папку; допишите URL.',
     fullLine: 'yt-dlp --download-archive archive.txt '
   },
@@ -774,7 +774,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· без ANSI-цвета (--color never) -F',
+    token: '· консоль без цветного вывода -F',
     summary: 'Без цветов ANSI в выводе (--color never -F); проще читать вывод и перенаправлять его; допишите URL.',
     fullLine: 'yt-dlp --color never -F '
   },
@@ -840,13 +840,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· пакет из urls.txt',
+    token: '· пакет из файла со ссылками (urls.txt)',
     summary: 'Пакет из файла со списком URL (--batch-file urls.txt); создайте urls.txt рядом с cwd или укажите полный путь без пробелов.',
     fullLine: 'yt-dlp --batch-file urls.txt '
   },
   {
     tool: 'yt-dlp',
-    token: '· загрузить info.json',
+    token: '· загрузить метаданные (info.json)',
     summary: 'Повторная обработка из сохранённого JSON (--load-info-json video.info.json); путь без пробелов; допишите -f/-o при необходимости.',
     fullLine: 'yt-dlp --load-info-json video.info.json '
   },
@@ -1026,7 +1026,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· заголовок User-Agent как у curl -F',
+    token: '· заголовок UA в стиле curl -F',
     summary: 'Подменить заголовок User-Agent (--user-agent curl/8.5.0 -F; типичная строка curl); CDN и WAF; допишите URL.',
     fullLine: 'yt-dlp --user-agent curl/8.5.0 -F '
   },
@@ -1050,7 +1050,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· -o title.ext',
+    token: '· шаблон -o: заголовок и тип (title.ext)',
     summary: 'Шаблон имени без пробелов (-o %(title)s.%(ext)s); допишите URL (при необходимости смените шаблон вручную).',
     fullLine: 'yt-dlp -o %(title)s.%(ext)s '
   },
@@ -1116,13 +1116,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· HLS через внешний FFmpeg -F',
+    token: '· HLS: внешний загрузчик ffmpeg -F',
     summary: 'HLS: тянуть поток через утилиту ffmpeg вместо встроенного загрузчика (--hls-prefer-ffmpeg -F); обход части CDN-глюков; допишите URL.',
     fullLine: 'yt-dlp --hls-prefer-ffmpeg -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· путь к FFmpeg',
+    token: '· путь к бинарнику ffmpeg',
     summary: 'Явный путь к утилите ffmpeg для постпроцессоров и слияния потоков (--ffmpeg-location ffmpeg); при необходимости замените на полный путь без пробелов; допишите URL.',
     fullLine: 'yt-dlp --ffmpeg-location ffmpeg '
   },
@@ -1134,7 +1134,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· без журнала archive.txt',
+    token: '· без журнала скачанных (archive.txt)',
     summary: 'Игнорировать журнал archive.txt даже если он в конфиге (--no-download-archive); допишите URL.',
     fullLine: 'yt-dlp --no-download-archive '
   },
@@ -1668,13 +1668,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· загрузчик FFmpeg',
+    token: '· загрузчик ffmpeg',
     summary: 'Тянуть фрагменты через внешнюю утилиту ffmpeg (--external-downloader ffmpeg); обход части встроенных загрузчиков; допишите URL.',
     fullLine: 'yt-dlp --external-downloader ffmpeg '
   },
   {
     tool: 'yt-dlp',
-    token: '· разбор метаданных title',
+    token: '· разбор метаданных: заголовок (title)',
     summary: 'Постобработка метаданных: перезапись title из шаблона (--parse-metadata title:%(title)s); допишите URL.',
     fullLine: 'yt-dlp --parse-metadata title:%(title)s '
   },
@@ -1921,7 +1921,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· исходящий IP (bind) -F',
+    token: '· исходящий IP (привязка адреса) -F',
     summary: 'Исходящий IP через bind (--source-address 198.51.100.2 -F, TEST-NET-2); допишите URL.',
     fullLine: 'yt-dlp --source-address 198.51.100.2 -F '
   },
@@ -1975,7 +1975,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· другой API SponsorBlock -F',
+    token: '· запасной сервер SponsorBlock (веб-API) -F',
     summary: 'Альтернативный адрес веб-API сервиса SponsorBlock (--sponsorblock-api https://sponsor.ajay.app -F) при сбоях сервера по умолчанию; допишите URL.',
     fullLine: 'yt-dlp --sponsorblock-api https://sponsor.ajay.app -F '
   },
@@ -2155,13 +2155,13 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· TLS как Firefox -F',
+    token: '· TLS как у Firefox -F',
     summary: 'TLS и HTTP: отпечаток как у Firefox (--impersonate firefox -F); помогает обходить антибот-защиту; допишите URL.',
     fullLine: 'yt-dlp --impersonate firefox -F '
   },
   {
     tool: 'yt-dlp',
-    token: '· TLS как Edge -F',
+    token: '· TLS как у Edge -F',
     summary: 'TLS и HTTP: отпечаток как у Edge (--impersonate edge -F); помогает обходить антибот-защиту; допишите URL.',
     fullLine: 'yt-dlp --impersonate edge -F '
   },
@@ -2545,7 +2545,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· загрузчик FFmpeg -F',
+    token: '· загрузчик ffmpeg -F',
     summary: 'Явно качать через встроенный загрузчик на базе ffmpeg (--downloader ffmpeg -F); потоки HLS и DASH; допишите URL.',
     fullLine: 'yt-dlp --downloader ffmpeg -F '
   },
@@ -2641,7 +2641,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· постпроц.: FFmpeg, 1 поток -F',
+    token: '· постпроц.: ffmpeg, 1 поток -F',
     summary: 'Дополнительные аргументы постпроцессору ffmpeg через --ppa (FFmpeg:-threads:1 -F); в списке аргументов без кавычек (как в argv); допишите URL.',
     fullLine: 'yt-dlp --ppa FFmpeg:-threads:1 -F '
   },
@@ -2785,7 +2785,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· без ANSI-цвета (--no-color) -F',
+    token: '· консоль без цветного вывода (--no-color) -F',
     summary: 'Вывод без цветов ANSI (--no-color -F); удобнее парсить или для непрерывной интеграции (CI); допишите URL.',
     fullLine: 'yt-dlp --no-color -F '
   },
@@ -3655,7 +3655,7 @@ export const TERMINAL_SCENARIO_HINTS_DOWNLOADS: TerminalCommandHintEntry[] = [
   },
   {
     tool: 'yt-dlp',
-    token: '· в файл: SAR после растяжения',
+    token: '· в файл: SAR после растяжения кадра',
     summary: 'Записать stretched_ratio (анаморфное растяжение кадра, если модуль извлечения отдаёт) в flux-ytdlp-sarfix.txt без скачивания; допишите URL.',
     fullLine: 'yt-dlp --print-to-file stretched_ratio flux-ytdlp-sarfix.txt --skip-download '
   },
@@ -4979,7 +4979,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
   },
   {
     tool: 'ffprobe',
-    token: '· все дорожки (формат compact)',
+    token: '· все дорожки (компактный формат)',
     summary: 'Все дорожки одной строкой: индекс, тип и имя кодека (index, codec_type, codec_name; вывод -of compact); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_entries stream=index,codec_type,codec_name -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
