@@ -95,6 +95,7 @@ npm run engines:doctor   # по желанию: наличие exe, SHA256 в л
 ## Полезное
 
 - `Data/`, `Help/` — материалы для UI и конфигураций (**§3** ТЗ и подсказки).
+- Правки русских `summary` встроенных сценариев терминала (`src/shared/terminal-contract.ts`): **`npm run locales:terminal-summaries-ru`** (дважды, пока второй прогон не покажет **0** замен и **0** gloss) — см. [`Help/ffmpeg-terminal-hints.md`](./Help/ffmpeg-terminal-hints.md).
 - Автоцикл по чеклисту через Cursor SDK (не IDE-чат): см. [`scripts/cursor-automation/README.md`](./scripts/cursor-automation/README.md).
 - Файлы yt-dlp из окна загрузок по умолчанию: `%AppData%\<FluxAlloy>\downloads\ytdlp` (Electron `userData/downloads/ytdlp`).
 - **Настоятельно используйте `contextIsolation`** и узкий IPC; тяжёлая работа только в **main process** (§2 ТЗ).

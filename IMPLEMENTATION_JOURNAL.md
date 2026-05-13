@@ -595,4 +595,8 @@
 - [J-578] 2026-05-14 20:26:00 [Assistant]: §8 — `token`: intra→ключевые кадры, гео to (Тонга), json без «вывод»; `fullLine` без изменений.
 - [J-579] 2026-05-14 20:30:00 [Assistant]: §15 — `Help/tools-terminal-inspector.md` и `Help/en/tools-terminal-inspector.md`: в блоке «Терминал» расширена отсылка к `ffmpeg-terminal-hints.md` (JSON из `Data/*` + раздел встроенных сценариев / `terminal-contract.ts`).
 - [J-580] 2026-05-14 20:35:00 [Assistant]: `IMPLEMENTATION_CHECKLIST.md` — §15: в пункте про deep-link из «Терминала» зафиксированы перекрёстные отсылки `tools-terminal-inspector` → встроенные сценарии и npm `locales:terminal-summaries-ru`.
-- [J-581] 2026-05-14 20:40:00 [Assistant]: §8 — `token`: гео ISO us/in/no/at/be/is/my/id/so/do/re/ad — страна в скобках; `fullLine` без изменений.
+- [J-581] 2026-05-14 20:40:00 [Assistant]: §15 — `Help/en/ffmpeg-terminal-hints.md`: уточнена EN-формулировка раздела Built-in scenarios (без смешения «ссылка»/URL в одной цитате; явно **допишите ссылку** vs **допишите URL**).
+- [J-582] 2026-05-14 20:41:00 [Assistant]: §8 — `token`: гео ISO us/in/no/at/be/is/my/id/so/do/re/ad — страна в скобках; `fullLine` без изменений.
+- [J-583] 2026-05-14 20:45:00 [Assistant]: §15 — `Help/ffmpeg-terminal-hints.md`: в разделе «Встроенные сценарии» та же ясность, что и в EN — явно **допишите ссылку** vs **допишите URL** и порядок npm-скриптов.
+- [J-584] 2026-05-14 20:50:00 [Assistant]: `README.md` — в «Полезное» добавлена строка про правки `summary` в `terminal-contract.ts` и `npm run locales:terminal-summaries-ru` со ссылкой на `Help/ffmpeg-terminal-hints.md`.
+- [J-585] 2026-05-14 20:51:00 [Assistant]: §8 — `token`: гео tr/ch/cr/pa/mc/li/va/ne + гео-обход de/fr/es/pl/se — страна в скобках; `fullLine` без изменений.
