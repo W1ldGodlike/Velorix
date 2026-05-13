@@ -801,16 +801,21 @@ const UI_TEXT = {
     videoTimelineFrameApproxSuffixTemplate: ' · кадр ~{frame}',
     videoTimelineMarkersOutsideWindowTitle:
       'Маркеры In–Out вне видимого окна шкалы — отдалите масштаб.',
+    videoTimelineMarkerStripAria: 'Фрагмент экспорта (In–Out): выделение мышью по дорожке',
+    videoTimelineMarkerStripDragTitle:
+      'Перетащите по дорожке, чтобы выделить фрагмент; короткий щелчок — перемотать к этому месту',
     videoTimelineIoAria: 'Маркеры In / Out',
     videoTimelineTrimReadoutTitle:
       'Диапазон для экспорта (раздел 7.1): передаётся в ffmpeg как -ss/-t',
     videoTimelineExportJumpTitle:
       'Прокрутить к панели экспорта FFmpeg (маркеры In/Out и превью команды)',
     videoTimelineExportJumpButton: 'Обрезать → экспорт',
-    videoTimelineInHereTitle: 'Записать In в текущую позицию воспроизведения',
-    videoTimelineInHereButton: 'In сюда',
-    videoTimelineOutHereTitle: 'Записать Out в текущую позицию воспроизведения',
-    videoTimelineOutHereButton: 'Out сюда',
+    videoTimelineInHereTitle:
+      'Поставить маркер In (начало фрагмента для экспорта) на текущее время воспроизведения',
+    videoTimelineInHereButton: 'Поставить In',
+    videoTimelineOutHereTitle:
+      'Поставить маркер Out (конец фрагмента для экспорта) на текущее время воспроизведения',
+    videoTimelineOutHereButton: 'Поставить Out',
     videoTimelineResetTrimTitle: 'Сбросить диапазон на весь файл',
     videoTimelineResetTrimButton: 'Весь клип',
     previewTransportToolbarAria: 'Транспорт предпросмотра',
@@ -1633,15 +1638,18 @@ const UI_TEXT = {
     videoTimelineFrameApproxSuffixTemplate: ' · frame ~{frame}',
     videoTimelineMarkersOutsideWindowTitle:
       'In/Out is outside the current window — zoom out.',
+    videoTimelineMarkerStripAria: 'Export range (In–Out): drag on the track to select',
+    videoTimelineMarkerStripDragTitle:
+      'Drag on the track to select a range; a short click seeks to that time',
     videoTimelineIoAria: 'In / Out markers',
     videoTimelineTrimReadoutTitle: 'Export range (section 7.1): passed to ffmpeg as -ss / -t',
     videoTimelineExportJumpTitle:
       'Scroll to the FFmpeg export panel (In/Out markers and command preview)',
     videoTimelineExportJumpButton: 'Trim → export',
-    videoTimelineInHereTitle: 'Set In at the current playhead',
-    videoTimelineInHereButton: 'In here',
-    videoTimelineOutHereTitle: 'Set Out at the current playhead',
-    videoTimelineOutHereButton: 'Out here',
+    videoTimelineInHereTitle: 'Set the In marker (export range start) to the current playhead time',
+    videoTimelineInHereButton: 'Set In',
+    videoTimelineOutHereTitle: 'Set the Out marker (export range end) to the current playhead time',
+    videoTimelineOutHereButton: 'Set Out',
     videoTimelineResetTrimTitle: 'Reset range to the full clip',
     videoTimelineResetTrimButton: 'Full clip',
     previewTransportToolbarAria: 'Preview transport',

@@ -2074,10 +2074,13 @@ button.app-downloads-hint-token:disabled {
 
 .app-timeline-marker-track {
   position: relative;
-  height: 6px;
-  border-radius: 3px;
+  height: 12px;
+  border-radius: 4px;
   background: var(--fa-border-subtle);
   overflow: hidden;
+  cursor: crosshair;
+  touch-action: none;
+  user-select: none;
 }
 
 .app-timeline-marker-selection {
@@ -2995,7 +2998,7 @@ button.app-downloads-hint-token:disabled {
   }
 
   .app-timeline-marker-track {
-    height: 7px;
+    height: 13px;
   }
 
   .app-timeline-io {
@@ -3357,7 +3360,7 @@ button.app-downloads-hint-token:disabled {
   }
 
   .app-timeline-marker-track {
-    height: 8px;
+    height: 14px;
   }
 
   .app-timeline-io {

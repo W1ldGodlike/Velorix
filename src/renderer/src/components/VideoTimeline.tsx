@@ -1,4 +1,13 @@
-import { useEffect, useMemo, useState, type KeyboardEvent, type RefObject } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type PointerEvent,
+  type RefObject
+} from 'react'
 
 import type { MediaProbeSuccess } from '../../../shared/ffprobe-contract'
 import { buildTimelineRulerTicks, pickTimelineRulerStepSec } from '../../../shared/timeline-ruler'
@@ -10,6 +19,8 @@ import TimelineWaveform from './TimelineWaveform'
 const MIN_TRIM_GAP_SEC = 0.05
 
 const TIMELINE_ZOOM_MAX = 8
+/** Минимальное смещение указателя (px), после которого жест считается выделением In–Out, а не щелчком. */
+const TRIM_DRAG_THRESHOLD_PX = 4
 
 function formatTime(sec: number): string {
   if (!Number.isFinite(sec) || sec < 0) {
@@ -139,6 +150,14 @@ export default function VideoTimeline({
   const [timelineZoomMul, setTimelineZoomMul] = useState(1)
   /** Левый край окна времени при zoom>1 (секунды от начала файла). */
   const [timelineWindowStartSec, setTimelineWindowStartSec] = useState(0)
+
+  const markerTrackRef = useRef<HTMLDivElement | null>(null)
+  const trimPointerRef = useRef<{
+    pointerId: number
+    startClientX: number
+    startSec: number
+    dragging: boolean
+  } | null>(null)
 
   useEffect(() => {
     const el = videoRef.current
@@ -377,6 +396,110 @@ export default function VideoTimeline({
     setTrim({ inSec: 0, outSec: duration })
   }
 
+  const timelineSecFromMarkerClientX = useCallback(
+    (clientX: number): number | null => {
+      const el = markerTrackRef.current
+      if (!el || !(duration > 0) || !(windowLenSec > 0)) {
+        return null
+      }
+      const rect = el.getBoundingClientRect()
+      const w = rect.width
+      if (!(w > 0)) {
+        return null
+      }
+      const frac = (clientX - rect.left) / w
+      return winStartEff + Math.min(1, Math.max(0, frac)) * windowLenSec
+    },
+    [duration, windowLenSec, winStartEff]
+  )
+
+  const endTrimPointerGesture = useCallback(
+    (target: HTMLDivElement, pointerId: number, seekOnClick: boolean): void => {
+      const st = trimPointerRef.current
+      if (!st || st.pointerId !== pointerId) {
+        return
+      }
+      trimPointerRef.current = null
+      try {
+        target.releasePointerCapture(pointerId)
+      } catch {
+        /* уже снят */
+      }
+      if (seekOnClick && !st.dragging && duration > 0 && windowLenSec > 0) {
+        const frac = (st.startSec - winStartEff) / windowLenSec
+        seek(Math.min(1, Math.max(0, frac)))
+      }
+    },
+    [duration, windowLenSec, winStartEff, seek]
+  )
+
+  const onMarkerTrackPointerDown = useCallback(
+    (ev: PointerEvent<HTMLDivElement>): void => {
+      if (ev.button !== 0 || duration <= 0) {
+        return
+      }
+      const t0 = timelineSecFromMarkerClientX(ev.clientX)
+      if (t0 === null) {
+        return
+      }
+      trimPointerRef.current = {
+        pointerId: ev.pointerId,
+        startClientX: ev.clientX,
+        startSec: t0,
+        dragging: false
+      }
+      ev.currentTarget.setPointerCapture(ev.pointerId)
+    },
+    [duration, timelineSecFromMarkerClientX]
+  )
+
+  const onMarkerTrackPointerMove = useCallback(
+    (ev: PointerEvent<HTMLDivElement>): void => {
+      const st = trimPointerRef.current
+      if (!st || st.pointerId !== ev.pointerId) {
+        return
+      }
+      const t1 = timelineSecFromMarkerClientX(ev.clientX)
+      if (t1 === null) {
+        return
+      }
+      if (!st.dragging) {
+        if (Math.abs(ev.clientX - st.startClientX) < TRIM_DRAG_THRESHOLD_PX) {
+          return
+        }
+        st.dragging = true
+      }
+      const fps = approxVideoFpsFromProbe(probe)
+      const a = snapSeekTimeSec(Math.min(st.startSec, t1), duration, fps)
+      const b = snapSeekTimeSec(Math.max(st.startSec, t1), duration, fps)
+      const { inSec, outSec } = clampTrimRange(a, b, duration)
+      setTrim({ inSec, outSec })
+    },
+    [duration, probe, timelineSecFromMarkerClientX]
+  )
+
+  const onMarkerTrackPointerUpOrCancel = useCallback(
+    (ev: PointerEvent<HTMLDivElement>): void => {
+      const st = trimPointerRef.current
+      if (!st || st.pointerId !== ev.pointerId) {
+        return
+      }
+      endTrimPointerGesture(ev.currentTarget, ev.pointerId, true)
+    },
+    [endTrimPointerGesture]
+  )
+
+  const onMarkerTrackLostPointerCapture = useCallback(
+    (ev: PointerEvent<HTMLDivElement>): void => {
+      const st = trimPointerRef.current
+      if (!st || st.pointerId !== ev.pointerId) {
+        return
+      }
+      endTrimPointerGesture(ev.currentTarget, ev.pointerId, false)
+    },
+    [endTrimPointerGesture]
+  )
+
   const displayIn = markerGeometry?.inSec ?? trim.inSec
   const displayOut = markerGeometry?.outSec ?? effectiveOut
 
@@ -506,25 +629,33 @@ export default function VideoTimeline({
         </div>
       ) : null}
 
-      {markerZoomOverlay ? (
-        <div className="app-timeline-marker-strip" aria-hidden>
-          <div className="app-timeline-marker-track">
-            <div
-              className="app-timeline-marker-selection"
-              style={{
-                left: `${markerZoomOverlay.leftPct}%`,
-                width: `${markerZoomOverlay.widthPct}%`
-              }}
-            />
+      {duration > 0 ? (
+        <div className="app-timeline-marker-strip" aria-label={uiText('videoTimelineMarkerStripAria')}>
+          <div
+            ref={markerTrackRef}
+            className={`app-timeline-marker-track${markersDisjointZoomWindow ? ' app-timeline-marker-track-idle' : ''}`}
+            tabIndex={0}
+            title={
+              markersDisjointZoomWindow
+                ? uiText('videoTimelineMarkersOutsideWindowTitle')
+                : uiText('videoTimelineMarkerStripDragTitle')
+            }
+            onPointerDown={onMarkerTrackPointerDown}
+            onPointerMove={onMarkerTrackPointerMove}
+            onPointerUp={onMarkerTrackPointerUpOrCancel}
+            onPointerCancel={onMarkerTrackPointerUpOrCancel}
+            onLostPointerCapture={onMarkerTrackLostPointerCapture}
+          >
+            {markerZoomOverlay ? (
+              <div
+                className="app-timeline-marker-selection"
+                style={{
+                  left: `${markerZoomOverlay.leftPct}%`,
+                  width: `${markerZoomOverlay.widthPct}%`
+                }}
+              />
+            ) : null}
           </div>
-        </div>
-      ) : markersDisjointZoomWindow ? (
-        <div
-          className="app-timeline-marker-strip"
-          aria-hidden
-          title={uiText('videoTimelineMarkersOutsideWindowTitle')}
-        >
-          <div className="app-timeline-marker-track app-timeline-marker-track-idle" />
         </div>
       ) : null}
 
