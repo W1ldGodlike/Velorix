@@ -568,3 +568,4 @@
 - [J-551] 2026-05-13 22:00:00 [Assistant]: §8 — `terminal-contract.ts`: RU-компактные `token` (yt-dlp: сухой verbose, UA/TLS/generic/throttling, клиенты YouTube; ffprobe: теги/вывод pretty|flat); `fullLine` без изменений.
 - [J-552] 2026-05-13 23:00:00 [Assistant]: §8 — `TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA` + yt-dlp: RU `token` для метатегов контейнера/дорожек, заголовков HTTP, HLS/xattr; `fullLine` без изменений.
 - [J-553] 2026-05-14 00:00:00 [Assistant]: §8 — `terminal-contract.ts`: RU `token` для ffprobe таймбаз/extradata/тегов/MKV, loudnorm, yt-dlp xfwd/прокси/самообновление; `fullLine` без изменений.
+- [J-554] 2026-05-14 01:00:00 [Assistant]: §8 — `TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA`/yt-dlp: RU `token` (метатеги genre/date, ffmpeg дымовые фильтры/afade/scale/map, sponsor); `fullLine` без изменений.
