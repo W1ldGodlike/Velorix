@@ -218,8 +218,7 @@ const RU: MainApplicationStrings = {
   previewGrantOpenFailed: 'Не удалось открыть файл',
   previewGrantSourceFailed: 'Не удалось открыть исходный файл',
   mediaProbePathMissing: 'Не указан путь к медиафайлу',
-  mediaProbeNotGranted:
-    'Нет доступа к этому пути для анализа (сначала откройте файл в превью).',
+  mediaProbeNotGranted: 'Нет доступа к этому пути для анализа (сначала откройте файл в превью).',
   saveDialogFilterJson: 'JSON',
   saveDialogFilterHtml: 'HTML',
   saveDialogFilterText: 'Текстовые файлы',
@@ -239,8 +238,7 @@ const RU: MainApplicationStrings = {
   exportFfmpegMissing: 'ffmpeg не найден — установите движки.',
   exportTwoPassRequiresBitrate:
     'Двухпроходное кодирование доступно только с выбранным видеобитрейтом, не с CRF.',
-  exportTwoPassLibx264Only:
-    'Двухпроходное кодирование поддержано только для H.264 (libx264).',
+  exportTwoPassLibx264Only: 'Двухпроходное кодирование поддержано только для H.264 (libx264).',
   exportFfmpegExitedWithCode: 'ffmpeg завершился с кодом {code}',
   exportLibx264SecondPassProgress: 'Второй проход libx264…',
   ffprobeAudioChannelsSuffix: '{n} кан.',
@@ -258,12 +256,10 @@ const RU: MainApplicationStrings = {
   openVideoDialogNoWindow: 'Нет активного окна',
   openVideoDialogTitle: 'Открыть видео',
   openVideoDialogFilterVideo: 'Видео',
-  previewDialogGrantMediaFailed:
-    'Не удалось открыть файл (нет доступа или это не обычный файл)',
+  previewDialogGrantMediaFailed: 'Не удалось открыть файл (нет доступа или это не обычный файл)',
   engineDownloadHttpFailedTemplate: 'Загрузка не удалась: HTTP {status} {statusText}',
   engineDownloadEmptyResponse: 'Пустой ответ сервера',
-  engineDownloadWindowsOnly:
-    'Автозагрузка движков пока реализована только для Windows (см. ТЗ §3)',
+  engineDownloadWindowsOnly: 'Автозагрузка движков пока реализована только для Windows (см. ТЗ §3)',
   engineDownloadYtDlpProgress: 'Скачивание yt-dlp (GitHub)…',
   engineDownloadFfmpegProgressTemplate: 'Скачивание FFmpeg ({label})…',
   engineDownloadFfmpegSourceFallbackTemplate:
@@ -307,7 +303,8 @@ const RU: MainApplicationStrings = {
     'Кавычки и строки оболочки (shell) не поддерживаются: вводите токены argv через пробел.',
   terminalTooManyArgs: 'Слишком много аргументов (макс. {max}).',
   terminalAllowedToolsOnly: 'Разрешены только префиксы ffmpeg, ffprobe и yt-dlp.',
-  terminalCurrentFileNeedsPreview: 'Токен __CURRENT_FILE__ требует открытый файл в превью редактора.',
+  terminalCurrentFileNeedsPreview:
+    'Токен __CURRENT_FILE__ требует открытый файл в превью редактора.',
   terminalCurrentFileNotGranted:
     'Текущий файл превью не разрешён для подстановки в команду (откройте через диалог или перетаскивание).',
   terminalEngineMissingInSettings: 'Движок {tool} не найден в настройках или в каталоге bin.',
@@ -420,20 +417,19 @@ const EN: MainApplicationStrings = {
   openVideoDialogNoWindow: 'No active window',
   openVideoDialogTitle: 'Open video',
   openVideoDialogFilterVideo: 'Video',
-  previewDialogGrantMediaFailed:
-    'Could not open the file (no access or it is not a regular file)',
+  previewDialogGrantMediaFailed: 'Could not open the file (no access or it is not a regular file)',
   engineDownloadHttpFailedTemplate: 'Download failed: HTTP {status} {statusText}',
   engineDownloadEmptyResponse: 'Empty server response',
   engineDownloadWindowsOnly:
     'Automatic engine download is only implemented on Windows for now (see spec §3)',
   engineDownloadYtDlpProgress: 'Downloading yt-dlp (GitHub)…',
   engineDownloadFfmpegProgressTemplate: 'Downloading FFmpeg ({label})…',
-  engineDownloadFfmpegSourceFallbackTemplate:
-    'FFmpeg source {label} failed, trying fallback…',
+  engineDownloadFfmpegSourceFallbackTemplate: 'FFmpeg source {label} failed, trying fallback…',
   engineDownloadFfmpegAllSourcesFailedTemplate:
     'Could not download FFmpeg from any source: {detail}',
   engineDownloadExtractFfmpeg: 'Extracting FFmpeg…',
-  engineDownloadFfmpegZipMissingBinaries: 'ffmpeg.exe / ffprobe.exe not found in the FFmpeg archive',
+  engineDownloadFfmpegZipMissingBinaries:
+    'ffmpeg.exe / ffprobe.exe not found in the FFmpeg archive',
   engineDownloadDone: 'Engine download finished',
   engineDownloadSha256MismatchTemplate: 'SHA256 mismatch for {path}',
   engineStatusMissingTemplate: '{exe} not found (override/bundled/user bin)',
@@ -460,7 +456,8 @@ const EN: MainApplicationStrings = {
     'Invalid output filename template (-o): ensure %(ext)s is present, no «..», and paths stay inside the download directory.',
   terminalArgvTokenTooLong: 'One of the argv tokens is too long.',
   terminalAtFileDisallowed: '@file-style arguments are not allowed.',
-  terminalDangerChars: 'Shell metacharacters (; | & ` $ < >) and control characters are not allowed.',
+  terminalDangerChars:
+    'Shell metacharacters (; | & ` $ < >) and control characters are not allowed.',
   terminalCommandMustBeString: 'The command must be a string.',
   terminalEnterCommand: 'Enter a command.',
   terminalCommandTooLong: 'Command is longer than {max} characters.',
@@ -485,14 +482,19 @@ export function formatTerminalEngineMissingInSettings(
   locale: DownloadsWindowUiLocale,
   tool: string
 ): string {
-  return getMainApplicationStrings(locale).terminalEngineMissingInSettings.replace(/\{tool\}/g, tool)
+  return getMainApplicationStrings(locale).terminalEngineMissingInSettings.replace(
+    /\{tool\}/g,
+    tool
+  )
 }
 
 export function formatPickEngineExecutableTitle(
   locale: DownloadsWindowUiLocale,
   engineId: string
 ): string {
-  return locale === 'en' ? `Select executable: ${engineId}` : `Выберите исполняемый файл: ${engineId}`
+  return locale === 'en'
+    ? `Select executable: ${engineId}`
+    : `Выберите исполняемый файл: ${engineId}`
 }
 
 export function formatMainProcessErrorClipboardHeader(

@@ -106,13 +106,21 @@ describe('stepTerminalSuggestIndex', () => {
   })
 
   it('pageDown jumps by pageSize capped to list length', () => {
-    expect(stepTerminalSuggestIndex(0, 12, 'pageDown', DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP)).toBe(5)
-    expect(stepTerminalSuggestIndex(10, 12, 'pageDown', DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP)).toBe(11)
+    expect(
+      stepTerminalSuggestIndex(0, 12, 'pageDown', DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP)
+    ).toBe(5)
+    expect(
+      stepTerminalSuggestIndex(10, 12, 'pageDown', DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP)
+    ).toBe(11)
   })
 
   it('pageUp jumps backward', () => {
-    expect(stepTerminalSuggestIndex(7, 12, 'pageUp', DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP)).toBe(2)
-    expect(stepTerminalSuggestIndex(2, 12, 'pageUp', DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP)).toBe(0)
+    expect(
+      stepTerminalSuggestIndex(7, 12, 'pageUp', DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP)
+    ).toBe(2)
+    expect(
+      stepTerminalSuggestIndex(2, 12, 'pageUp', DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP)
+    ).toBe(0)
   })
 
   it('pageDown uses DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP when omitted', () => {

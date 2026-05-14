@@ -160,7 +160,9 @@ export interface FluxAlloyApi {
     restoreLastSource: () => Promise<RestoredSourceInfo | null>
   }
   downloads: {
-    openWindow: (initial?: string | { text?: string; uiLocale?: 'ru' | 'en' } | null) => Promise<void>
+    openWindow: (
+      initial?: string | { text?: string; uiLocale?: 'ru' | 'en' } | null
+    ) => Promise<void>
     addLines: (text: string) => Promise<{ ok: true; added: number } | { ok: false; error: string }>
     downloadFirstUrlOpenInMainEditor: (
       text: string
@@ -261,7 +263,9 @@ export interface FluxAlloyApi {
   engines: {
     getStatus: (uiLocale?: DownloadsWindowUiLocale) => Promise<EnginesStatusSnapshot>
     shouldOfferDownload: () => Promise<boolean>
-    download: (uiLocale?: DownloadsWindowUiLocale) => Promise<{ ok: true } | { ok: false; error: string }>
+    download: (
+      uiLocale?: DownloadsWindowUiLocale
+    ) => Promise<{ ok: true } | { ok: false; error: string }>
     clearUserBin: () => Promise<{ ok: true; removed: number } | { ok: false; error: string }>
     onDownloadProgress: (listener: (progress: EngineDownloadProgress) => void) => () => void
   }

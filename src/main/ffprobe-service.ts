@@ -500,7 +500,9 @@ function buildTrackDetail(
     if (sdrTransferBrief) {
       parts.push(sdrTransferBrief)
     }
-    const pixFmt = ffprobeScalarDisplay(typeof stream.pix_fmt === 'string' ? stream.pix_fmt : undefined)
+    const pixFmt = ffprobeScalarDisplay(
+      typeof stream.pix_fmt === 'string' ? stream.pix_fmt : undefined
+    )
     if (pixFmt !== null) {
       const pixNorm = pixFmt.replace(/\s+/g, '').toLowerCase()
       if (pixNorm !== 'yuv420p' && pixNorm !== 'yuvj420p') {
@@ -554,7 +556,9 @@ function buildTrackDetail(
       parts.push('CEA-608/708')
     }
     const avcVal = parseFfprobeOptionalInt(stream.is_avc)
-    const codecNameLower = (typeof stream.codec_name === 'string' ? stream.codec_name : '').toLowerCase()
+    const codecNameLower = (
+      typeof stream.codec_name === 'string' ? stream.codec_name : ''
+    ).toLowerCase()
     if (codecNameLower.includes('h264') && avcVal === 0) {
       parts.push('Annex-B')
     }

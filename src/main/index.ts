@@ -2606,13 +2606,16 @@ app.whenReady().then(() => {
     }
   )
 
-  ipcMain.handle(mw.enginesStatus, async (_event, raw?: unknown): Promise<EnginesStatusSnapshot> => {
-    return getEnginesStatus(
-      resolveAppPaths(),
-      cachedSettings.engineExecutablePaths,
-      ipcDownloadsUiLocale(raw)
-    )
-  })
+  ipcMain.handle(
+    mw.enginesStatus,
+    async (_event, raw?: unknown): Promise<EnginesStatusSnapshot> => {
+      return getEnginesStatus(
+        resolveAppPaths(),
+        cachedSettings.engineExecutablePaths,
+        ipcDownloadsUiLocale(raw)
+      )
+    }
+  )
 
   ipcMain.handle(mw.enginesShouldOfferDownload, (): boolean => {
     return isAnyEngineMissing(resolveAppPaths(), cachedSettings.engineExecutablePaths)

@@ -96,15 +96,11 @@ describe('ffprobe-side-data', () => {
     ).toBe('AFD 8')
     expect(summarizeFfprobeSideDataList([{ side_data_type: 'AFD' }])).toBe('AFD')
     expect(
-      summarizeFfprobeSideDataList([
-        { side_data_type: 'MPEG-2 ATSC A53 Closed Captions' }
-      ])
+      summarizeFfprobeSideDataList([{ side_data_type: 'MPEG-2 ATSC A53 Closed Captions' }])
     ).toBe('CC')
     expect(summarizeFfprobeSideDataList([{ side_data_type: 'EIA-608' }])).toBe('CC')
     expect(
-      summarizeFfprobeSideDataList([
-        { side_data_type: 'Replay Gain', track_gain: '-6.5 dB' }
-      ])
+      summarizeFfprobeSideDataList([{ side_data_type: 'Replay Gain', track_gain: '-6.5 dB' }])
     ).toBe('Replay gain -6.5 dB')
     expect(summarizeFfprobeSideDataList([{ side_data_type: 'Replay Gain' }])).toBe('Replay gain')
     expect(summarizeFfprobeSideDataList([{ side_data_type: 'Skip Samples' }])).toBe('Skip samples')
@@ -113,16 +109,14 @@ describe('ffprobe-side-data', () => {
         { side_data_type: 'SMPTE 12-1 timecode', timecode: '01:00:00:00' }
       ])
     ).toBe('SMPTE TC 01:00:00:00')
-    expect(
-      summarizeFfprobeSideDataList([{ side_data_type: 'SMPTE 12M timecode' }])
-    ).toBe('SMPTE TC')
+    expect(summarizeFfprobeSideDataList([{ side_data_type: 'SMPTE 12M timecode' }])).toBe(
+      'SMPTE TC'
+    )
   })
 
   it('CPB properties / GOP timecode — короткие подписи', () => {
     expect(
-      summarizeFfprobeSideDataList([
-        { side_data_type: 'CPB properties', max_bitrate: '5000000' }
-      ])
+      summarizeFfprobeSideDataList([{ side_data_type: 'CPB properties', max_bitrate: '5000000' }])
     ).toBe('CPB max 5.0 Мбит/с')
     expect(
       summarizeFfprobeSideDataList([{ side_data_type: 'CPB properties', avg_bitrate: 768000 }])

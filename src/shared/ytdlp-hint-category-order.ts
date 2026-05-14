@@ -33,16 +33,11 @@ export function ytdlpHintsMiscCategoryLabel(locale: DownloadsWindowUiLocale): st
   return locale === 'en' ? 'Other' : 'Прочее'
 }
 
-export function getYtdlpHintCategoryOrder(
-  locale: DownloadsWindowUiLocale
-): readonly string[] {
+export function getYtdlpHintCategoryOrder(locale: DownloadsWindowUiLocale): readonly string[] {
   return locale === 'en' ? YTDLP_HINT_CATEGORY_ORDER_EN : YTDLP_HINT_CATEGORY_ORDER
 }
 
-export function categorySortRank(
-  category: string,
-  locale: DownloadsWindowUiLocale = 'ru'
-): number {
+export function categorySortRank(category: string, locale: DownloadsWindowUiLocale = 'ru'): number {
   const order = getYtdlpHintCategoryOrder(locale)
   const idx = order.indexOf(category)
   return idx === -1 ? order.length - 1 : idx

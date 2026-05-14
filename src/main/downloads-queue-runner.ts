@@ -498,7 +498,9 @@ async function runYtdlpForWaitingRow(
         const msg = e instanceof Error ? e.message : String(e)
         flushPendingProgressUI()
         updateDownloadsRow(rowId, {
-          status: aborted ? YTDLP_QUEUE_STATUS_CANCELLED : `${YTDLP_QUEUE_STATUS_ERROR_PREFIX}: ${msg.slice(0, 140)}`,
+          status: aborted
+            ? YTDLP_QUEUE_STATUS_CANCELLED
+            : `${YTDLP_QUEUE_STATUS_ERROR_PREFIX}: ${msg.slice(0, 140)}`,
           progress: lastProgressCell ?? '—'
         })
         finalExitCode = null

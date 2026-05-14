@@ -238,8 +238,7 @@ export function buildYtdlpSpawnArgvTokens(params: {
     args.push('--cookies', cf)
   } else if (params.cookiesBrowser) {
     const prof = (params.cookiesBrowserProfile ?? '').trim()
-    const spec =
-      prof.length > 0 ? `${params.cookiesBrowser}:${prof}` : params.cookiesBrowser
+    const spec = prof.length > 0 ? `${params.cookiesBrowser}:${prof}` : params.cookiesBrowser
     args.push('--cookies-from-browser', spec)
   }
   if (params.impersonateTarget) {

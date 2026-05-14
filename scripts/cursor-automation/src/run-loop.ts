@@ -5,17 +5,8 @@ import { join } from 'path'
 
 import { Agent, CursorAgentError, type AgentOptions } from '@cursor/sdk'
 
-import {
-  automationRoot,
-  projectRoot,
-  promptsDirDefault,
-  stopFlagPath
-} from './paths.js'
-import {
-  readBooleanSetting,
-  readIntegerSetting,
-  SDK_AUTOMATION_SETTINGS
-} from './sdk-settings.js'
+import { automationRoot, projectRoot, promptsDirDefault, stopFlagPath } from './paths.js'
+import { readBooleanSetting, readIntegerSetting, SDK_AUTOMATION_SETTINGS } from './sdk-settings.js'
 
 function readStdinIfNotTty(): Promise<string | null> {
   if (process.stdin.isTTY) {
@@ -50,9 +41,13 @@ function parseArgs(argv: string[]): {
   promptsDir: string
 } {
   let once = false
-  let maxSteps = readIntegerSetting(process.env.MAX_STEPS, SDK_AUTOMATION_SETTINGS.defaultMaxSteps, {
-    min: 1
-  })
+  let maxSteps = readIntegerSetting(
+    process.env.MAX_STEPS,
+    SDK_AUTOMATION_SETTINGS.defaultMaxSteps,
+    {
+      min: 1
+    }
+  )
   let sessionMaxSteps = readIntegerSetting(
     process.env.SDK_SESSION_STEPS,
     SDK_AUTOMATION_SETTINGS.defaultSessionMaxSteps,
@@ -180,10 +175,14 @@ function readRunErrorRetryConfig(stepRetry: { maxAttempts: number; baseDelayMs: 
 } {
   const retryAnyRunError = readLoopRetryRunErrorEnabled()
 
-  const maxAttempts = readIntegerSetting(process.env.LOOP_RUN_ERROR_RETRY_MAX, stepRetry.maxAttempts, {
-    min: 1,
-    max: SDK_AUTOMATION_SETTINGS.maxRetryAttemptsCap
-  })
+  const maxAttempts = readIntegerSetting(
+    process.env.LOOP_RUN_ERROR_RETRY_MAX,
+    stepRetry.maxAttempts,
+    {
+      min: 1,
+      max: SDK_AUTOMATION_SETTINGS.maxRetryAttemptsCap
+    }
+  )
   const baseDelayMs = readIntegerSetting(
     process.env.LOOP_RUN_ERROR_RETRY_BASE_MS,
     stepRetry.baseDelayMs,
@@ -297,13 +296,12 @@ async function runStepWithRetries<T extends AgentRunResultLike>(
       return result
     }
 
-    const detail =
-      typeof result.durationMs === 'number'
-        ? ` (${result.durationMs} мс)`
-        : ''
+    const detail = typeof result.durationMs === 'number' ? ` (${result.durationMs} мс)` : ''
 
     if (attempt >= maxAttempts - 1) {
-      console.error(`${describe}: run ${result.id} status=error${detail}, попытки исчерпаны (${maxAttempts}).`)
+      console.error(
+        `${describe}: run ${result.id} status=error${detail}, попытки исчерпаны (${maxAttempts}).`
+      )
       return result
     }
 
@@ -378,7 +376,9 @@ function verboseMaxChars(): number {
   )
 }
 
-async function streamVerboseAssistantText(run: { stream(): AsyncIterable<unknown> }): Promise<void> {
+async function streamVerboseAssistantText(run: {
+  stream(): AsyncIterable<unknown>
+}): Promise<void> {
   const maxChars = verboseMaxChars()
   let written = 0
   let truncated = false
@@ -425,7 +425,9 @@ async function streamVerboseAssistantText(run: { stream(): AsyncIterable<unknown
     }
 
     const mType =
-      typeof msg === 'object' && msg !== null && typeof (msg as { type?: unknown }).type !== 'undefined'
+      typeof msg === 'object' &&
+      msg !== null &&
+      typeof (msg as { type?: unknown }).type !== 'undefined'
         ? String((msg as { type?: unknown }).type)
         : ''
     if (
@@ -484,9 +486,7 @@ async function main(): Promise<number> {
 
   const apiKey = process.env.CURSOR_API_KEY?.trim()
   if (!apiKey) {
-    console.error(
-      'Нет CURSOR_API_KEY. См. README: ключ из Cursor Dashboard / service account.'
-    )
+    console.error('Нет CURSOR_API_KEY. См. README: ключ из Cursor Dashboard / service account.')
     return 1
   }
 
@@ -549,7 +549,6 @@ async function main(): Promise<number> {
         return 130
       }
       return 2
-
     } catch (e) {
       if (e instanceof CursorAgentError) {
         console.error(`SDK: ${e.message} (retryable=${e.isRetryable})`)
@@ -557,7 +556,6 @@ async function main(): Promise<number> {
       }
       throw e
     }
-
   }
 
   try {
@@ -566,7 +564,6 @@ async function main(): Promise<number> {
 
     while (completedSteps < opts.maxSteps) {
       if (shouldStopByFlag()) {
-
         console.error(`STOP=1 (${stopFlagPath}) — выход перед шагом ${completedSteps + 1}.`)
 
         return 0
@@ -665,23 +662,21 @@ async function main(): Promise<number> {
     console.error(`Достигнут лимит итераций (${opts.maxSteps}).`)
 
     return 0
-
   } catch (e) {
     if (e instanceof CursorAgentError) {
-
       console.error(`SDK: ${e.message} (retryable=${e.isRetryable})`)
 
       return 1
     }
     throw e
   }
-
-
 }
 
-void main().then((code) => {
-  process.exitCode = code
-}).catch((error: unknown) => {
-  console.error(error)
-  process.exitCode = 1
-})
+void main()
+  .then((code) => {
+    process.exitCode = code
+  })
+  .catch((error: unknown) => {
+    console.error(error)
+    process.exitCode = 1
+  })

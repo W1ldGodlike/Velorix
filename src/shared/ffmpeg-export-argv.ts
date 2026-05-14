@@ -134,7 +134,11 @@ export function normalizeFfmpegExportAudioGainDb(value: unknown): number | null 
       : typeof value === 'string' && value.trim() !== ''
         ? Number(value.trim())
         : NaN
-  if (!Number.isInteger(n) || n < FFMPEG_EXPORT_AUDIO_GAIN_DB_MIN || n > FFMPEG_EXPORT_AUDIO_GAIN_DB_MAX) {
+  if (
+    !Number.isInteger(n) ||
+    n < FFMPEG_EXPORT_AUDIO_GAIN_DB_MIN ||
+    n > FFMPEG_EXPORT_AUDIO_GAIN_DB_MAX
+  ) {
     return null
   }
   if (n === 0) {
@@ -204,9 +208,7 @@ export function resolveFfmpegExportVideoSharpenFilter(
  * §7.2 — пресет `deband` (сглаживание полос/ступеней); `off` → `null`.
  * Параметр `range` — радиус поиска полосы в пикселях (см. `ffmpeg -h filter=deband`).
  */
-export function resolveFfmpegExportVideoDebandFilter(
-  id: FfmpegExportVideoDebandId
-): string | null {
+export function resolveFfmpegExportVideoDebandFilter(id: FfmpegExportVideoDebandId): string | null {
   switch (id) {
     case 'light':
       return 'deband=range=12'
@@ -223,9 +225,7 @@ export function resolveFfmpegExportVideoDebandFilter(
  * §7.2 — пресет `histeq` (глобальное выравнивание гистограммы); `off` → `null`.
  * Параметр `strength` — доля эквализации (0…1); только whitelist.
  */
-export function resolveFfmpegExportVideoHisteqFilter(
-  id: FfmpegExportVideoHisteqId
-): string | null {
+export function resolveFfmpegExportVideoHisteqFilter(id: FfmpegExportVideoHisteqId): string | null {
   switch (id) {
     case 'light':
       return 'histeq=strength=0.14'
@@ -259,9 +259,7 @@ export function buildFfmpegExportLut3dFilter(cubeFileAbsPath: string): string {
  * чтобы пресет не вызывал клиппинг или явное искажение цвета. Произвольные значения
  * пользователь задавать не может — это сознательное упрощение §7.2.
  */
-export function resolveFfmpegExportVideoEqFilter(
-  id: FfmpegExportVideoEqPresetId
-): string | null {
+export function resolveFfmpegExportVideoEqFilter(id: FfmpegExportVideoEqPresetId): string | null {
   switch (id) {
     case 'warm':
       return 'eq=contrast=1.05:saturation=1.10'
@@ -294,9 +292,7 @@ export function resolveFfmpegExportVideoHueFilter(id: FfmpegExportVideoHueId): s
  * §7.2 — пресет `noise` (лёгкая зернистость); `off` → `null`.
  * `alls` — сила по всем компонентам; `allf=u` — равномерный шум (без отдельных «паттернов»).
  */
-export function resolveFfmpegExportVideoGrainFilter(
-  id: FfmpegExportVideoGrainId
-): string | null {
+export function resolveFfmpegExportVideoGrainFilter(id: FfmpegExportVideoGrainId): string | null {
   switch (id) {
     case 'light':
       return 'noise=alls=2:allf=u'

@@ -77,11 +77,7 @@ export function formatFfprobeVideoFpsDetail(
     return null
   }
   const b = ffprobeSummaryStrings(locale)
-  if (
-    avgFps !== null &&
-    rFps !== null &&
-    Math.abs(avgFps - rFps) > FPS_AVG_R_DIFF_EPS
-  ) {
+  if (avgFps !== null && rFps !== null && Math.abs(avgFps - rFps) > FPS_AVG_R_DIFF_EPS) {
     const core = `${formatFfprobeFpsNumber(avgFps)} / ${formatFfprobeFpsNumber(rFps)}`
     return ffprobeSummaryFill(b.fpsApproxValueTemplate, { value: core })
   }

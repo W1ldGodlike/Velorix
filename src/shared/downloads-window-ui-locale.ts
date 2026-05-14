@@ -12,7 +12,9 @@ export function parseDownloadsWindowUiLocale(v: unknown): DownloadsWindowUiLocal
 }
 
 /** Map Electron/Chromium `app.getLocale()` (or similar) to downloads UI locale. */
-export function downloadsWindowUiLocaleFromSystemLocale(systemLocale: string): DownloadsWindowUiLocale {
+export function downloadsWindowUiLocaleFromSystemLocale(
+  systemLocale: string
+): DownloadsWindowUiLocale {
   return systemLocale.toLowerCase().startsWith('en') ? 'en' : 'ru'
 }
 
@@ -163,9 +165,8 @@ export type DownloadsWindowUiStrings = {
   argsPreviewLabel: string
   argsPreviewAria: string
   hintsPanelSummary: string
-  hintInsertLabel: string
-  hintInsertPlaceholder: string
-  hintFilterLabel: string
+  hintCatalogIntro: string
+  hintCatalogFilterLabel: string
   hintFilterPlaceholder: string
   hintFilterAria: string
   hintListAria: string
@@ -181,8 +182,6 @@ export type DownloadsWindowUiStrings = {
   historyEmpty: string
   historyNoMatchingFilter: string
   confirmClearHistory: string
-  hintSelectEmpty: string
-  hintSelectPlaceholder: string
   hintsCatalogUnavailable: string
   hintsCatalogUnavailableShort: string
   hintsNoMatches: string
@@ -368,9 +367,9 @@ const RU: DownloadsWindowUiStrings = {
   argsPreviewLabel: 'Превью аргументов (argv)',
   argsPreviewAria: 'Превью аргументов командной строки yt-dlp (argv)',
   hintsPanelSummary: 'Справочник флагов',
-  hintInsertLabel: 'Вставить флаг из справочника',
-  hintInsertPlaceholder: 'Выберите флаг — он добавится в «Дополнительные аргументы»…',
-  hintFilterLabel: 'Поиск по токенам и описаниям',
+  hintCatalogIntro:
+    'Краткий справочник: введите часть флага или описания, нажмите на токен в списке — он добавится в «Дополнительные аргументы». Под каждым пунктом — пояснение простыми словами.',
+  hintCatalogFilterLabel: 'Поиск по справочнику аргументов (argv)',
   hintFilterPlaceholder: 'Например: --cookies или --sub',
   hintFilterAria: 'Поиск по токенам и описаниям справочника аргументов (argv)',
   hintListAria: 'Справочник флагов с описаниями',
@@ -393,8 +392,6 @@ const RU: DownloadsWindowUiStrings = {
   historyEmpty: 'Записей пока нет',
   historyNoMatchingFilter: 'Нет записей с таким исходом',
   confirmClearHistory: 'Удалить все записи истории загрузок?',
-  hintSelectEmpty: 'Справочник недоступен',
-  hintSelectPlaceholder: 'Выберите флаг — добавить в поле…',
   hintsCatalogUnavailable: 'Справочник недоступен.',
   hintsCatalogUnavailableShort: 'Справочник недоступен',
   hintsNoMatches: 'Нет совпадений.',
@@ -427,7 +424,7 @@ const RU: DownloadsWindowUiStrings = {
   resumeTitleSigcont: 'Возобновить загрузку yt-dlp (SIGCONT)',
   pauseToolbarResume: 'Продолжить',
   logEmptyAlert: 'Журнал пуст — пока нечего сохранять.',
-  logLinesWord: 'стр.',
+  logLinesWord: 'стр.'
 }
 
 const EN: DownloadsWindowUiStrings = {
@@ -576,9 +573,9 @@ const EN: DownloadsWindowUiStrings = {
   argsPreviewLabel: 'Argv preview',
   argsPreviewAria: 'yt-dlp argv preview',
   hintsPanelSummary: 'Flag reference',
-  hintInsertLabel: 'Insert flag from reference',
-  hintInsertPlaceholder: 'Pick a flag — it will be appended to “Extra arguments”…',
-  hintFilterLabel: 'Search tokens and descriptions',
+  hintCatalogIntro:
+    'Short catalog: type part of a flag or description, then click a token in the list — it is appended to “Extra arguments”. Each row has a plain-language note.',
+  hintCatalogFilterLabel: 'Search the argv catalog',
   hintFilterPlaceholder: 'e.g. --cookies or --sub',
   hintFilterAria: 'Search the argv reference by token or description',
   hintListAria: 'Flag reference with descriptions',
@@ -601,8 +598,6 @@ const EN: DownloadsWindowUiStrings = {
   historyEmpty: 'No entries yet',
   historyNoMatchingFilter: 'No entries for this outcome',
   confirmClearHistory: 'Delete all download history entries?',
-  hintSelectEmpty: 'Reference unavailable',
-  hintSelectPlaceholder: 'Pick a flag — append to field…',
   hintsCatalogUnavailable: 'Reference unavailable.',
   hintsCatalogUnavailableShort: 'Reference unavailable',
   hintsNoMatches: 'No matches.',
@@ -630,7 +625,8 @@ const EN: DownloadsWindowUiStrings = {
   histOpenInFlux: 'Open downloaded file in FluxAlloy',
   histOpenFile: 'Open downloaded file',
   histShowInFolder: 'Show file in folder',
-  pauseUnsupportedWinTitle: 'Pausing yt-dlp is not available on Windows (SIGSTOP/SIGCONT required).',
+  pauseUnsupportedWinTitle:
+    'Pausing yt-dlp is not available on Windows (SIGSTOP/SIGCONT required).',
   pauseTitleSigstop: 'Pause current yt-dlp download (SIGSTOP)',
   resumeTitleSigcont: 'Resume yt-dlp download (SIGCONT)',
   pauseToolbarResume: 'Resume',
@@ -638,7 +634,9 @@ const EN: DownloadsWindowUiStrings = {
   logLinesWord: 'lines'
 }
 
-export function getDownloadsWindowUiStrings(locale: DownloadsWindowUiLocale): DownloadsWindowUiStrings {
+export function getDownloadsWindowUiStrings(
+  locale: DownloadsWindowUiLocale
+): DownloadsWindowUiStrings {
   return locale === 'en' ? EN : RU
 }
 
@@ -655,8 +653,6 @@ export function buildDownloadsWindowScriptI18nJson(locale: DownloadsWindowUiLoca
     historyEmpty: s.historyEmpty,
     historyNoMatchingFilter: s.historyNoMatchingFilter,
     confirmClearHistory: s.confirmClearHistory,
-    hintSelectEmpty: s.hintSelectEmpty,
-    hintSelectPlaceholder: s.hintSelectPlaceholder,
     hintsCatalogUnavailable: s.hintsCatalogUnavailable,
     hintsCatalogUnavailableShort: s.hintsCatalogUnavailableShort,
     hintsNoMatches: s.hintsNoMatches,

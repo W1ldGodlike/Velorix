@@ -224,7 +224,8 @@
   border-radius: 10px;
   color: var(--fa-text-primary);
   background: color-mix(in srgb, #020617 64%, var(--fa-bg) 36%);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
     monospace;
   font-size: 0.78rem;
   line-height: 1.45;
@@ -264,7 +265,10 @@
   background: transparent;
   cursor: pointer;
   opacity: 0;
-  transition: opacity 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+  transition:
+    opacity 0.12s ease,
+    color 0.12s ease,
+    border-color 0.12s ease;
 }
 
 .app-terminal-output-line:hover .app-terminal-output-line-copy,
@@ -1850,7 +1854,8 @@ button.app-downloads-hint-token:disabled {
 /* Единая «карточка» превью: кадр + транспорт (§1.1 / v0). */
 .app-preview-media-card {
   flex: 1;
-  min-height: 0;
+  /* Не даём карточке сжаться ниже полосы видео + транспорта при узком окне (overflow:hidden). */
+  min-height: calc(220px + 3.75rem);
   display: flex;
   flex-direction: column;
   align-self: stretch;
@@ -1982,6 +1987,46 @@ button.app-downloads-hint-token:disabled {
   flex: 0 1 13rem;
   min-width: 6.5rem;
   text-align: right;
+}
+
+.app-timeline-toolbar-center {
+  flex: 1 1 12rem;
+  min-width: 0;
+  text-align: center;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+  color: var(--fa-text-secondary);
+}
+
+.app-timeline-toolbar-center-line {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-timeline-toolbar-center-line--muted {
+  color: var(--fa-text-muted);
+  font-size: 0.68rem;
+}
+
+.app-btn-timeline-export {
+  flex-shrink: 0;
+  font-weight: 650;
+  border-color: color-mix(in srgb, var(--fa-accent) 42%, var(--fa-border-subtle) 58%);
+  background: color-mix(in srgb, var(--fa-accent) 78%, var(--fa-surface-elevated));
+  color: var(--fa-accent-contrast);
+}
+
+.app-btn-timeline-export:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--fa-accent) 58%, var(--fa-border));
+  background: var(--fa-accent);
+  color: var(--fa-accent-contrast);
+}
+
+.app-btn-timeline-export:disabled {
+  opacity: 0.45;
 }
 
 .app-timeline-badge {

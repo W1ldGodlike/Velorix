@@ -174,9 +174,7 @@ describe('parseYtdlpDownloadProgressLine', () => {
       speed: 'повтор 4/10',
       eta: null
     })
-    expect(
-      parseYtdlpDownloadProgressLine('[download] Retrying in 5.00 seconds...')
-    ).toEqual({
+    expect(parseYtdlpDownloadProgressLine('[download] Retrying in 5.00 seconds...')).toEqual({
       percent: null,
       speed: 'повтор через 5.00 с',
       eta: null
@@ -327,9 +325,7 @@ describe('formatTorrentStyleSpeedFromBps', () => {
 
 describe('displayLabelFromYtdlpOutputPath', () => {
   it('убирает суффикс [id] из basename', () => {
-    expect(
-      displayLabelFromYtdlpOutputPath('C:\\dl\\My Video [L_DypYRwPJs].mp4')
-    ).toBe('My Video')
+    expect(displayLabelFromYtdlpOutputPath('C:\\dl\\My Video [L_DypYRwPJs].mp4')).toBe('My Video')
   })
 
   it('возвращает null для пустого или короткого', () => {
@@ -430,9 +426,9 @@ describe('formatYtdlpQueueFailureStatus', () => {
 
 describe('parseYtdlpDownloadProgressLine (en)', () => {
   it('playlist / fragment / merge hint', () => {
-    expect(
-      parseYtdlpDownloadProgressLine('[download] Downloading item 3 of 25', 'en')?.speed
-    ).toBe('playlist 3/25')
+    expect(parseYtdlpDownloadProgressLine('[download] Downloading item 3 of 25', 'en')?.speed).toBe(
+      'playlist 3/25'
+    )
     expect(parseYtdlpDownloadProgressLine('[download] fragment 5 of 120', 'en')?.speed).toBe(
       'fragment 5/120'
     )
@@ -493,9 +489,9 @@ describe('shouldSkipYtdlpQueueRetriesAfterFailure', () => {
   })
 
   it('true для нехватки места и отсутствия ffmpeg (повтор той же команды бессмысленен)', () => {
-    expect(shouldSkipYtdlpQueueRetriesAfterFailure(null, 'OSError: [Errno 28] No space left on device')).toBe(
-      true
-    )
+    expect(
+      shouldSkipYtdlpQueueRetriesAfterFailure(null, 'OSError: [Errno 28] No space left on device')
+    ).toBe(true)
     expect(shouldSkipYtdlpQueueRetriesAfterFailure('ffmpeg: not found', null)).toBe(true)
   })
 
@@ -563,9 +559,9 @@ describe('classifyYtdlpQueueFailureKind', () => {
     expect(classifyYtdlpQueueFailureKind("Sign in to confirm you're not a bot", null)).toBe(
       'likely_source_block'
     )
-    expect(classifyYtdlpQueueFailureKind('This video may be inappropriate for some users', null)).toBe(
-      'likely_source_block'
-    )
+    expect(
+      classifyYtdlpQueueFailureKind('This video may be inappropriate for some users', null)
+    ).toBe('likely_source_block')
     expect(classifyYtdlpQueueFailureKind('DRM protected video', null)).toBe('likely_source_block')
     expect(classifyYtdlpQueueFailureKind('No video formats found', null)).toBe(
       'likely_source_block'

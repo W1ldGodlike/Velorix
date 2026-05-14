@@ -1,4 +1,7 @@
-import type { ProcessingHistoryKind, ProcessingHistoryOutcome } from '../../../shared/processing-history-contract'
+import type {
+  ProcessingHistoryKind,
+  ProcessingHistoryOutcome
+} from '../../../shared/processing-history-contract'
 import {
   type DownloadsWindowUiLocale,
   parseDownloadsWindowUiLocale
@@ -56,6 +59,23 @@ const UI_TEXT = {
     aboutRuntimeNodeLabel: 'Node',
     aboutMainLogButton: 'main.log',
     aboutMainLogOpenErrorTemplate: 'main.log: {error}',
+    aboutTooltipLogsFolder:
+      'Открыть папку журналов приложения в проводнике — там runtime-логи и трассировки.',
+    aboutTooltipMainLog:
+      'Открыть основной лог main-процесса в программе по умолчанию для текстовых файлов.',
+    aboutTooltipSupportZip:
+      'Собрать архив диагностики в выбранный файл: версии, настройки, пути. Удобно для поддержки или своего бэкапа.',
+    aboutTooltipMaintenanceSummary:
+      'Показать в строке состояния, сколько места занимают кэш превью, временные ffmpeg и незавершённые загрузки .part — без удаления.',
+    aboutTooltipMaintenanceCleanAll:
+      'Удалить все служебные временные данные приложения. Первый щелчок — подсказка, второй при «Подтвердить…» — реальная очистка.',
+    aboutTooltipMaintenanceCleanPreview:
+      'Очистить только кэш превью. Два шага: сначала подсказка, затем подтверждение.',
+    aboutTooltipMaintenanceCleanPartials:
+      'Удалить незавершённые yt-dlp .part / .ytdl в зоне загрузок. Два шага с подтверждением.',
+    aboutTooltipMaintenanceCleanFfmpegTemp:
+      'Очистить временные файлы ffmpeg после экспорта. Два шага с подтверждением.',
+    aboutTooltipCloseAbout: 'Закрыть окно «О программе».',
     aboutMaintenanceCleanErrorTemplate: '{label}: {error}',
     byteSizeZero: '0 Б',
     byteSizeUnitB: 'Б',
@@ -179,8 +199,12 @@ const UI_TEXT = {
     workspaceTabEditor: 'Редактор',
     workspaceTabDownloads: 'Загрузки',
     workspaceTabTerminal: 'Терминал',
-    workspaceTabDownloadsTooltip: 'Перейти во вкладку загрузок yt-dlp',
-    workspaceTabTerminalTooltip: 'Безопасная командная строка для ffmpeg, ffprobe и yt-dlp',
+    workspaceTabEditorTooltip:
+      'Редактор: открыть видео с компьютера, посмотреть превью, выделить фрагмент на таймлайне и сохранить готовый файл. Справа панель «FFmpeg» задаёт качество картинки, звук и формат файла.',
+    workspaceTabDownloadsTooltip:
+      'Загрузки: очередь ссылок на ролики, журнал и настройки «как скачивать». Здесь выбирают качество, папку на диске, субтитры и поведение при ошибках сети.',
+    workspaceTabTerminalTooltip:
+      'Терминал: одна команда за раз для встроенных инструментов (обработка и загрузка). Обычному сценарию «открыть файл и сохранить» достаточно вкладки «Редактор».',
     downloadsMainAria: 'Вкладка загрузок',
     downloadsPageTitle: 'Загрузки',
     downloadsPageHint:
@@ -229,7 +253,8 @@ const UI_TEXT = {
       'Открыть папку загрузок yt-dlp (куда сохраняется файл; можно до окончания загрузки)',
     downloadsQueuePauseUnsupportedOsTitle:
       'Пауза yt-dlp недоступна в Windows (нужны SIGSTOP/SIGCONT на стороне ОС).',
-    downloadsQueuePauseWaitingProcessTitle: 'Пауза станет доступна сразу после запуска процесса yt-dlp',
+    downloadsQueuePauseWaitingProcessTitle:
+      'Пауза станет доступна сразу после запуска процесса yt-dlp',
     downloadsQueueAriaOpenInEditor: 'Открыть скачанный файл в FluxAlloy',
     downloadsQueueAriaResumeYtdlp: 'Продолжить yt-dlp',
     downloadsQueueAriaPauseYtdlp: 'Пауза yt-dlp',
@@ -245,11 +270,12 @@ const UI_TEXT = {
     downloadsRailAria: 'Настройки загрузок',
     downloadsRailTitle: 'Настройки yt-dlp',
     downloadsRailSubtitle:
-      'Секции и раскрытие совпадают с отдельным окном загрузок: те же ключи в `downloadsWindowUiPanels`. Дополнительные аргументы (argv), превью команды и справочник токенов (поиск + описания) — здесь; отдельное окно менеджера — для очереди и полноэкранной работы с загрузками.',
+      'Качество ролика, папка на диске, субтитры, поведение после загрузки и сеть. Секции можно сворачивать; те же значения используются в отдельном окне загрузок.',
+    downloadsRailIntroTooltip:
+      'Все поля здесь влияют на следующие загрузки из очереди. Наведите курсор на любой переключатель, список или кнопку — появится развёрнутая подсказка простыми словами.',
     downloadsRailFormatSummary: 'Формат',
     downloadsRailFormatQualityLabel: 'Формат / качество',
-    downloadsFormatHint:
-      'Пресет `-f`; при «Только аудио» формат видео не применяется.',
+    downloadsFormatHint: 'Пресет `-f`; при «Только аудио» формат видео не применяется.',
     downloadsPlaylistSpan: 'Весь плейлист',
     downloadsPlaylistPillLabel: 'Весь плейлист',
     downloadsPlaylistHint: '`--yes-playlist` вместо одного видео.',
@@ -260,8 +286,7 @@ const UI_TEXT = {
     downloadsSubPresetNone: 'Не скачивать',
     downloadsSubPresetManual: 'Ручные дорожки',
     downloadsSubPresetManualAuto: 'Ручные + авто',
-    downloadsSubLangsHelp:
-      'Один токен `--sub-langs` без пробелов (например ru,en или all).',
+    downloadsSubLangsHelp: 'Один токен `--sub-langs` без пробелов (например ru,en или all).',
     downloadsSubLangsLabel: 'Языки субтитров',
     downloadsSubLangsPlaceholder: 'ru,en или all',
     downloadsRailMetadataSummary: 'Метаданные',
@@ -318,23 +343,76 @@ const UI_TEXT = {
     downloadsExtraArgsLabel: 'Доп. аргументы (аргументы командной строки, argv)',
     downloadsExtraArgsHelp:
       'Без оболочки (shell): токены как в справочнике; небезопасное отсекает парсер в основном процессе (main).',
-    downloadsInsertTokenLabel: 'Вставить токен из справочника',
-    downloadsInsertTokenAria: 'Добавить токен в дополнительные аргументы (argv)',
-    downloadsHintPickerPlaceholder: 'Выберите…',
-    downloadsHintSearchLabel: 'Поиск по справочнику аргументов (argv)',
+    downloadsHintCatalogIntro:
+      'Ниже — краткий справочник флагов. Введите часть токена или описания, затем нажмите на флаг — он добавится в «Доп. аргументы». Под каждым пунктом — пояснение простыми словами.',
+    downloadsHintCatalogFilterLabel: 'Поиск по справочнику аргументов (argv)',
     downloadsHintSearchPlaceholder: 'Например: --cookies или --sub',
     downloadsHintSearchAria: 'Поиск по токенам и описаниям справочника аргументов (argv)',
     downloadsHintListAria: 'Справочник флагов с описаниями',
     downloadsHintsUnavailable: 'Справочник недоступен.',
     downloadsHintsNoMatches: 'Нет совпадений.',
     downloadsHintsSameAsPopoutHelp:
-      'Те же подсказки, что в отдельном окне; щелчок по токену добавляет его в argv.',
+      'Тот же справочник, что в отдельном окне загрузок: поиск и список; щелчок по флагу добавляет токен в argv.',
     downloadsRailDocOutput: 'Шаблон вывода',
     downloadsRailDocPostprocess: 'Постобработка',
     downloadsCommandPreviewHelp: 'Превью команды (чтение)',
     downloadsOptionsLoading: 'Загружаю настройки yt-dlp…',
     downloadsRailRefreshOptions: 'Обновить настройки',
-    downloadsRailStopCurrentRow: 'Остановить текущую',
+    downloadsTooltipSectionFormat:
+      'Какой вариант ролика скачивать по умолчанию: только звук или видео+звук, весь плейлист или одно видео, нужны ли субтитры и на каких языках.',
+    downloadsTooltipSectionMetadata:
+      'Что делать после успешной загрузки, как «представиться» сайту и как подтянуть вход без пароля (через браузер или файл cookies). Всё это нужно редко, но помогает, если сайт просит авторизацию.',
+    downloadsTooltipSectionSaving:
+      'Куда складывать файлы на диске и как назвать папку и имя файла. Путь по умолчанию безопасный; свой каталог удобен, если хотите складывать всё в «Загрузки» или на другой диск.',
+    downloadsTooltipSectionNetwork:
+      'Поведение при обрывах и лимиты скорости: чтобы не забивать канал или чтобы программа чаще пробовала заново при плохой сети.',
+    downloadsTooltipSectionExpert:
+      'Дополнительные параметры для опытных пользователей, справочник флагов и предпросмотр итоговой команды. Не обязательно трогать, если обычная загрузка уже работает.',
+    downloadsTooltipFormatPresetSelect:
+      'Готовый профиль «что скачивать»: ближе к исходному качеству, компактнее или только звук. Если включено «Только аудио», выбор про видео не используется.',
+    downloadsTooltipPlaylistSwitch:
+      'Если ссылка ведёт на плейлист, включите — скачается вся цепочка роликов. Выключите, если нужен только один ролик из списка.',
+    downloadsTooltipAudioOnlySwitch:
+      'Сохранить только звук (например музыку или подкаст) без видеодорожки — файл станет легче.',
+    downloadsTooltipSubtitlesSelect:
+      'Нужны ли текстовые дорожки вместе с видео и насколько агрессивно их подбирать. «Не скачивать» ускоряет и упрощает файл.',
+    downloadsTooltipSubLangsInput:
+      'Список языков субтитров через запятую или слово «все». Оставьте пустым или «не скачивать», если субтитры не нужны.',
+    downloadsTooltipOpenAfterSuccess:
+      'После удачной загрузки сразу открыть файл в этом приложении, чтобы посмотреть или дальше экспортировать.',
+    downloadsTooltipAutoExport:
+      'После открытия загруженного файла автоматически сохранить второй файл по правилам панели «FFmpeg» редактора — удобно, если всегда нужен один и тот же формат «на выход».',
+    downloadsTooltipCookiesBrowser:
+      'Разрешить программе взять «куки» входа из выбранного браузера, чтобы скачать то, что видите залогиненным в окне браузера. Не используйте на чужом компьютере.',
+    downloadsTooltipImpersonate:
+      'Сайт иногда отдаёт разное качество в зависимости от того, кем кажется программа. Оставьте «выключено», если всё уже качается нормально.',
+    downloadsTooltipCookiesProfile:
+      'Если в браузере несколько профилей, укажите имя нужного — иначе возьмется основной. Обычно поле можно не трогать.',
+    downloadsTooltipCookiesPick:
+      'Выбрать файл с сохранёнными cookies (если вы заранее экспортировали их из браузера). Имеет приоритет над «cookies из браузера».',
+    downloadsTooltipCookiesClear:
+      'Убрать выбранный файл cookies и снова полагаться только на браузер или настройки по умолчанию.',
+    downloadsTooltipOutputOpenFolder:
+      'Открыть текущую папку загрузок в проводнике, чтобы увидеть уже скачанные файлы.',
+    downloadsTooltipOutputPick: 'Выбрать другую папку на диске, куда складывать новые загрузки.',
+    downloadsTooltipOutputDefault:
+      'Вернуть встроенную папку приложения — удобно, если экспериментировали с путём и хотите всё как раньше.',
+    downloadsTooltipFilenameTemplate:
+      'Как назвать файл: в шаблоне должно быть место для расширения, иначе разные сайты могут перезаписать друг друга. Не используйте «..», чтобы не вылезти из папки.',
+    downloadsTooltipQueueRetrySelect:
+      'Сколько раз автоматически перезапускать всю строку очереди, если загрузка упала с ошибкой. Полезно при нестабильном интернете.',
+    downloadsTooltipRateLimitInput:
+      'Ограничить скорость скачивания, чтобы не мешать другим устройствам в доме. Оставьте пустым, если лимит не нужен.',
+    downloadsTooltipRetriesInput:
+      'Сколько раз подряд программа будет заново пробовать соединиться при обрыве до того, как покажет ошибку.',
+    downloadsTooltipFragmentRetriesInput:
+      'То же для мелких кусочков длинного ролика — повысьте, если обрывается на середине большого файла.',
+    downloadsTooltipExtraArgsTextarea:
+      'Сюда можно добавить особые параметры загрузки по одному слову, как в справочнике ниже. Неверные комбинации программа отфильтрует ради безопасности.',
+    downloadsTooltipHintSearchInput:
+      'Сузить список: введите часть флага или слова из описания. Нажмите на флаг в списке — токен добавится в «Доп. аргументы».',
+    downloadsTooltipRefreshFooter:
+      'Подтянуть настройки с диска, если меняли их в другом окне или вручную в файле.',
     enginesSummaryReady: 'Движки: готовы',
     enginesSummaryMissing: 'Движки: не найдены',
     enginesSummaryError: 'Движки: ошибка проверки',
@@ -342,38 +420,27 @@ const UI_TEXT = {
     engineDisplayNameFfmpeg: 'ffmpeg',
     engineDisplayNameFfprobe: 'ffprobe',
     engineDisplayNameYtdlp: 'yt-dlp',
-    topbarEngineVersionsLineTemplate: 'ffmpeg {ffmpegVer} • yt-dlp {ytdlpVer}',
     commonUnicodeEllipsis: '…',
     enginesVersionLineErrorMark: '!',
     uiPlaceholderDash: '—',
     commonNotApplicableShort: 'н/д',
     topbarProductName: 'FluxAlloy',
-    topbarProductEdition: 'настольное приложение',
-    topbarOpenFileTitle: 'Открыть локальный видеофайл',
+    topbarOpenFileTitle:
+      'Выбрать видео с компьютера: оно появится в превью и на таймлайне, дальше можно резать и сохранять.',
     topbarOpenFileLabel: 'Открыть',
-    topbarRotateCcwTitle:
-      'Поворот против часовой: нет → 90° CCW → 180° → 90° CW (экспорт §7.2)',
-    topbarRotateCcwLabel: 'Поворот CCW',
-    topbarRotateCwTitle: 'Поворот по часовой: нет → 90° CW → 180° → 90° CCW (экспорт §7.2)',
-    topbarRotateCwLabel: 'Поворот CW',
-    topbarCropCycleTitle: 'Обрезка: нет → 1:1 → 16:9 → 4:3 (экспорт §7.2)',
-    topbarCropLabel: 'Обрезка',
     topbarInspectorTitle:
-      'Отдельное окно инспектора ffprobe (§9). Если файл открыт в превью — сразу подставится его путь.',
+      'Отдельное окно: полная сводка ffprobe (дорожки, главы, JSON), экспорт текстовых/HTML сводок. Если ролик уже открыт в редакторе — подставится тот же файл.',
     topbarInspectorLabel: 'Инспектор',
-    topbarSnapshotTitle: 'Сохранить текущий кадр превью в PNG или JPEG (ffmpeg)',
-    topbarSnapshotLabel: 'Кадр',
-    topbarSnapshotBusyLabel: 'Кадр…',
-    topbarExportTitle: 'Сохранить фрагмент In–Out или весь файл (libx264/aac), нужен ffmpeg',
-    topbarExportLabel: 'Экспорт',
-    topbarExportBusyLabel: 'Экспорт…',
-    topbarExportCancelTitle: 'Остановить текущий экспорт ffmpeg',
+    topbarExportCancelTitle:
+      'Остановить текущее сохранение: частичный файл удалится, исходник на диске не пострадает.',
     topbarExportCancelBusy: 'Отмена…',
     topbarExportCancelReady: 'Отменить экспорт',
-    topbarEnginesDownloadTitle: 'Скачать yt-dlp и FFmpeg в папку приложения пользователя',
+    topbarEnginesDownloadTitle:
+      'Скачать недостающие встроенные инструменты в служебную папку пользователя — удобно на чистой системе.',
     topbarEnginesDownloadBusy: 'Загрузка…',
     topbarEnginesDownloadReady: 'Скачать движки',
-    topbarEnginePathsTitle: 'Задать исполняемые файлы ffmpeg, ffprobe и yt-dlp вручную',
+    topbarEnginePathsTitle:
+      'Указать вручную, где лежат программы сжатия и загрузки, если не хотите пользоваться встроенными или автопоиском.',
     topbarEnginePathsLabel: 'Пути к движкам',
     topbarKnowledgeLabel: 'База знаний',
     topbarAboutTitle: 'О программе и диагностика',
@@ -391,111 +458,190 @@ const UI_TEXT = {
       'Нет источника — перетащите видеофайл сюда или «Открыть…» в меню «Файл» / кнопка сверху.',
     editorPreviewEmptyHint:
       'Локальный файл стримится через защищённую схему fluxmedia — только после выбора или перетаскивания по пути из Electron.',
-    editorFfmpegRailShowTitle: 'Показать настройки FFmpeg',
+    editorFfmpegRailShowTitle:
+      'Развернуть правую панель «настройки сохранения»: там качество видео, звук, пресеты под сайты и предпросмотр команды.',
     editorFfmpegRailShowHidden: 'Развернуть панель настроек FFmpeg',
     editorFfmpegRailRestoreLabel: 'FFmpeg',
     editorFfmpegSettingsAria: 'Настройки FFmpeg',
     editorFfmpegSettingsTitle: 'Настройки FFmpeg',
-    editorFfmpegSettingsSubtitle: 'Секции можно сворачивать, как в референсе v0.',
-    editorFfmpegRailCollapseTitle: 'Свернуть панель (больше места для превью и таймлайна)',
+    editorFfmpegSettingsSubtitle:
+      'Здесь задаётся, как будет выглядеть и звучать сохранённый ролик. Секции можно сворачивать, чтобы не загромождать экран.',
+    editorFfmpegRailCollapseTitle:
+      'Свернуть панель настроек сохранения, чтобы больше места осталось под превью и таймлайн. Параметры не сбрасываются.',
     editorFfmpegRailCollapseHidden: 'Свернуть панель настроек FFmpeg',
+    editorTooltipFfmpegPanelIntro:
+      'Эта панель не ломает исходный файл: она только описывает будущий результат при нажатии «Экспорт» или при автосохранении после загрузки. Меняйте параметры спокойно, пока не нажали сохранение.',
+    editorTooltipSectionVideo:
+      'Блок «Видео»: способ сжатия картинки, упаковка в файл и дополнительные шаги «подчистить» кадр (полосы, шум, цвет). Чем сильнее эффекты, тем дольше ждать готовый файл.',
+    editorTooltipSectionFormat:
+      'Блок «Формат»: размер кадра, скорость смены картинок, поворот и обрезка. Удобно подогнать ролик под площадку (например квадрат или широкий экран) до сохранения.',
+    editorTooltipSectionAudio:
+      'Блок «Аудио и кадр»: громкость и чистота звука, отдельный снимок кадра, субтитры и служебные подписи в файле. Если звук не нужен — можно полностью отключить дорожку.',
+    editorTooltipSectionPresets:
+      'Блок «Пресеты»: готовые наборы под популярные сайты и ваши собственные сохранённые комбинации. Выбор пресета подставляет все поля сразу; дальше можно подправить вручную.',
+    editorTooltipSectionOutput:
+      'Блок «Вывод»: как программа собирает команду сохранения, куда предложит положить файл и быстрые действия с последним результатом.',
+    editorTooltipVideoCodec:
+      'Выбор «движка» для сжатия картинки. Один вариант чуть старее и совместим почти везде; другой даёт меньший размер при той же чёткости, но старые устройства могут не открыть без обновления.',
+    editorTooltipEncodePreset:
+      'Насколько быстро программа будет упаковывать видео при сохранении. «Быстрее и легче файл» — дольше ждать, «лучше картинка» — тяжелее файл и дольше кодирование. Для обычных роликов чаще хватает середины.',
+    editorTooltipContainer:
+      'Тип «коробки» для готового файла. Универсальные варианты открываются почти везде; один из вариантов удобен для техники Apple. Если сомневаетесь — оставляйте тот, что стоит по умолчанию.',
+    editorTooltipCrf:
+      'Тонкая настройка качества картинки при сохранении без жёсткого лимита размера. Меньшее число — чище картинка и тяжелее файл; большее — наоборот. «Как в пресете» — довериться выбранной скорости выше.',
+    editorTooltipVideoBitrate:
+      'Жёсткий «потолок» объёма видео в секунду. Удобно, когда нужен предсказуемый размер файла. Если выбран этот режим, отдельная шкала качества выше не действует.',
+    editorTooltipResolution:
+      'Насколько крупным будет кадр по вертикали. «Как в исходнике» — не уменьшать и не растягивать; остальные варианты уменьшают картинку, чтобы файл стал легче.',
+    editorTooltipFps:
+      'Сколько картинок в секунду в сохранённом ролике. «Как в исходнике» — не менять; фиксированные значения подходят, если площадка просит строго 30 или 25 кадров.',
+    editorTooltipRotation:
+      'Поворот или зеркало всего кадра перед сохранением. Удобно, если ролик снят «на бок» или нужно отразить картинку.',
+    editorTooltipCrop:
+      'Отрезать края по шаблону (квадрат, широкий формат и т.д.) до сжатия. Исходный файл на диске не меняется — обрезка только в готовом результате.',
+    editorTooltipAacBitrate:
+      'Насколько подробно сохраняется звук. Большее значение — богаче музыка и голос, но тяжелее файл. Для речи и простого монтажа часто хватает середины списка.',
+    editorTooltipSnapshotFormat:
+      'В каком виде сохраняется отдельный снимок кадра: с максимальной чёткостью без потерь или компактнее, чуть сжимая картинку.',
+    editorTooltipUserPresetSelectFallback:
+      'Выберите строку, чтобы подставить готовый набор полей. У встроенных пресетов есть короткое описание под курсором; свои пресеты вы сохраняете сами кнопкой «+ Пресет».',
+    editorTooltipPresetAdd:
+      'Запомнить текущие поля панели под новым именем. Так можно держать несколько «профилей» под разные задачи, не настраивая всё заново.',
+    editorTooltipPresetRename:
+      'Переименовать выбранный собственный пресет. Встроенные названия трогать нельзя — они обновляются вместе с программой.',
+    editorTooltipPresetOverwrite:
+      'Записать текущие поля поверх выбранного собственного пресета. Полезно, если вы подобрали настройки и хотите обновить сохранённый профиль.',
+    editorTooltipPresetDelete:
+      'Удалить выбранный собственный пресет из списка. Встроенные строки удалить нельзя.',
+    editorTooltipExportCommandPreview:
+      'Показывает, какие шаги программа выполнит при сохранении. Это для прозрачности: можно скопировать строку, если нужно повторить то же вне программы.',
+    editorTooltipExportLastFile:
+      'Открыть последний сохранённый ролик в том же предпросмотре, чтобы быстро проверить результат.',
+    editorTooltipExportLastFolder:
+      'Открыть папку, где лежит последний сохранённый ролик — например чтобы перетащить файл в мессенджер.',
+    editorTooltipCopyExportPath:
+      'Скопировать полный путь к последнему сохранённому файлу в буфер обмена — удобно вставить в другое приложение.',
+    editorTooltipExportOpenPreview:
+      'Открыть последний сохранённый ролик снова в этом окне предпросмотра, не ища файл в папке.',
+    editorTooltipSnapshotLastFile: 'Открыть последний сохранённый снимок кадра отдельно от видео.',
+    editorTooltipSnapshotLastFolder: 'Показать папку с последним снимком кадра.',
+    editorTooltipSnapshotCopyPath: 'Скопировать путь к последнему снимку кадра.',
+    editorTooltipTwoPass:
+      'Режим «два прохода» сначала анализирует весь ролик, потом сохраняет с более ровным размером файла. Имеет смысл только при выбранном «жёстком» битрейте видео и совместимом кодеке; займёт примерно вдвое больше времени.',
+    editorTooltipNoAudio:
+      'Включите, если нужен ролик только с картинкой: звук в готовом файле не будет. Полезно для заставок или если звук добавите позже в другой программе.',
+    editorTooltipStripMetadata:
+      'Убрать из готового файла «паспорт» — название, автора, обложку и другие скрытые подписи. Иногда так просят площадки или нужно не светить личные данные.',
+    editorTooltipStripChapters:
+      'Убрать метки разделов внутри ролика, чтобы файл шёл одной дорожкой без глав в плеере.',
     editorFfmpegSectionVideo: 'Видео',
     editorFfmpegSectionVideoHint:
-      'Кодек, контейнер, CRF и видеобитрейт итогового файла экспорта §7.',
+      'Здесь решается, насколько «тяжёлым» будет готовое видео: способ сжатия, упаковка в файл и дополнительная обработка картинки.',
     editorFieldVideoCodec: 'Видеокодек',
-    editorAriaVideoCodecExport: 'Видеокодек экспорта',
-    editorFieldEncodePreset: 'Пресет скорости / CRF по умолчанию',
+    editorAriaVideoCodecExport: 'Способ сжатия картинки при сохранении',
+    editorFieldEncodePreset: 'Скорость и качество по умолчанию',
     editorAriaEncodePresetExport:
-      'Пресет скорости кодирования экспорта (libx264/libx265 -preset)',
-    editorFieldContainer: 'Контейнер',
-    editorAriaContainerExport: 'Контейнер экспорта',
-    editorFieldCrf: 'CRF',
-    editorAriaCrfExport: 'CRF экспорта',
-    editorCrfOptionPreset: 'CRF пресета',
-    editorFieldVideoBitrate: 'Битрейт видео',
-    editorAriaVideoBitrateExport: 'Битрейт видео экспорта',
-    editorVideoBitrateOptionCrf: 'Видео CRF',
-    editorFieldDeinterlace: 'Деинтерлейс',
-    editorAriaDeinterlace: 'Пресет yadif деинтерлейса',
+      'Насколько долго крутится сохранение и насколько плотно сжимается картинка',
+    editorFieldContainer: 'Тип файла',
+    editorAriaContainerExport: 'В каком виде упаковать готовый ролик',
+    editorFieldCrf: 'Тонкая настройка качества',
+    editorAriaCrfExport: 'Тонкая настройка качества картинки',
+    editorCrfOptionPreset: 'Как в пресете скорости',
+    editorFieldVideoBitrate: 'Ограничение размера видео',
+    editorAriaVideoBitrateExport: 'Жёсткий лимит объёма видео в секунду',
+    editorVideoBitrateOptionCrf: 'Без жёсткого лимита (качество из шкалы выше)',
+    editorFieldDeinterlace: 'Сглаживание «гребёнки»',
+    editorAriaDeinterlace: 'Сглаживание чересстрочного видео',
     editorHintDeinterlace:
-      '`yadif` после фильтра crop и до `hqdn3d` §7.2; режим «Поле» удваивает частоту кадров для чересстрочного входа.',
+      'Старые камеры и ТВ иногда сохраняют картинку «через строку» — при движении появляются тонкие полоски. Первый режим убирает их, почти не меняя плавность; второй делает картинку ещё мягче, но может изменить ощущение скорости движения.',
     editorFieldDenoise: 'Шумоподавление',
-    editorAriaDenoise: 'Пресет шумоподавления hqdn3d',
-    editorHintDenoise: '`hqdn3d` до `deband`/`unsharp` и масштаба §7.2.',
-    editorFieldDeband: 'Deband',
-    editorAriaDeband: 'Пресет deband',
-    editorHintDeband: '`deband` между `hqdn3d` и `unsharp` (полосы/градиенты) §7.2.',
-    editorFieldHisteq: 'Histeq',
-    editorAriaHisteq: 'Пресет histeq выравнивания гистограммы',
-    editorHintHisteq: '`histeq` после `deband` и до `lut3d` §7.2.',
-    editorFieldLut3d: '3D LUT',
-    editorAriaLut3d: 'Пресет lut3d',
+    editorAriaDenoise: 'Шумоподавление',
+    editorHintDenoise:
+      'Убирает мелкую «крупинку» и цветовой шум, особенно в тени. Сильнее — чище картинка, но мелкие детали (волосы, текстура) могут стать мыльнее.',
+    editorFieldDeband: 'Сглаживание полос',
+    editorAriaDeband: 'Сглаживание полос на градиентах',
+    editorHintDeband:
+      'На небе, светлых стенах и тенях иногда видны ступеньки вместо плавного перехода цвета. Эта настройка смягчает такие ступеньки; сильный режим может слегка «размазать» очень тонкие детали.',
+    editorFieldHisteq: 'Выравнивание яркости',
+    editorAriaHisteq: 'Выравнивание общей яркости',
+    editorHintHisteq:
+      'Если весь кадр в целом слишком тёмный или «засвеченный», эта опция мягко подтянет баланс света. Не путать с ручной цветокоррекцией — эффект глобальный по кадру.',
+    editorFieldLut3d: 'Цветовой стиль',
+    editorAriaLut3d: 'Готовый цветовой стиль',
     editorHintLut3d:
-      '`lut3d` после `deband` и до `unsharp` (встроенные `.cube` в `resources/luts/`) §7.2.',
+      'Готовые «кино»-оттенки: теплее, холоднее или контрастнее без ручной настройки каждого ползунка. Подберите по вкусу; «выкл» возвращает исходные цвета.',
     editorFieldSharpen: 'Резкость',
-    editorAriaSharpen: 'Пресет unsharp',
-    editorHintSharpen: '`unsharp` после `deband`/`lut3d` и до `eq`/`scale`/`fps`.',
+    editorAriaSharpen: 'Резкость краёв',
+    editorHintSharpen:
+      'Делает контуры чуть отчётливее. Слабый режим почти незаметен; сильный может дать светлый ореол вокруг резких границ.',
     editorFieldEq: 'Цвет',
-    editorAriaEq: 'Пресет eq цветокоррекции',
-    editorHintEq: '`eq` применяется после резкости и до масштаба; только белый список пресетов.',
-    editorFieldHue: 'Оттенок',
-    editorAriaHue: 'Пресет hue после eq',
-    editorHintHue: '`hue` сразу после `eq` и до зерна §7.2.',
+    editorAriaEq: 'Готовые цветовые оттенки',
+    editorHintEq:
+      'Простые пресеты «теплее / холоднее / ярче / мягче» для быстрого настроения настроения ролика без графиков.',
+    editorFieldHue: 'Оттенок и насыщенность',
+    editorAriaHue: 'Сдвиг оттенка и насыщенности',
+    editorHintHue:
+      'Слегка сдвигает общий цветовой тон или добавляет насыщенность. Полезно, если картинка кажется «мышиной» или, наоборот, слишком кислотной.',
     editorFieldGrain: 'Зерно',
-    editorAriaGrain: 'Пресет noise зернистости',
-    editorHintGrain: '`noise` после `eq`/`hue` и до `scale`/`fps` §7.2.',
+    editorAriaGrain: 'Зерно по кадру',
+    editorHintGrain:
+      'Добавляет лёгкую живую текстуру, похожую на плёнку. Уместно для художественного эффекта; для чистого репортажа чаще оставляют выкл.',
     editorFieldVignette: 'Виньетка',
-    editorAriaVignette: 'Пресет vignette к краям кадра',
-    editorHintVignette: '`vignette` после зерна и до `scale`/`fps` §7.2.',
+    editorAriaVignette: 'Затемнение краёв',
+    editorHintVignette:
+      'Слегка затемняет углы кадра, уводя взгляд к центру. Сильная виньетка заметно «закрывает» края.',
     editorFieldBlur: 'Размытие',
-    editorAriaBlur: 'Пресет gblur размытия кадра',
-    editorHintBlur: '`gblur` после виньетки и до `scale`/`fps` §7.2.',
+    editorAriaBlur: 'Лёгкое размытие',
+    editorHintBlur:
+      'Равномерно смягчает детали по всему кадру — как будто чуть неточно наведли резкость. Для портретов иногда приятно; для текста на экране обычно вредно.',
     editorFfmpegSectionFrameLayout: 'Формат',
     editorFfmpegSectionFrameLayoutHint:
-      'Масштаб, FPS, поворот/зеркало и кадрирование относительно исходного кадра.',
+      'Размер картинки, сколько кадров в секунду, поворот и обрезка до сжатия — удобно подогнать ролик под площадку.',
     editorFieldResolution: 'Разрешение',
-    editorAriaResolutionExport: 'Размер экспорта',
-    editorFieldFps: 'FPS',
-    editorAriaFpsExport: 'FPS экспорта',
-    editorFpsOptionSource: 'FPS исходный',
+    editorAriaResolutionExport: 'Размер готового кадра',
+    editorFieldFps: 'Кадров в секунду',
+    editorAriaFpsExport: 'Скорость смены кадров в сохранённом файле',
+    editorFpsOptionSource: 'Как в исходнике',
     editorExportFpsOptionTemplate: '{value} к/с',
-    editorTwoPassSpan: 'Два прохода (libx264)',
-    editorTwoPassPillLabel: 'Двухпроходное кодирование libx264',
+    editorTwoPassSpan: 'Два прохода',
+    editorTwoPassPillLabel: 'Двухпроходное сохранение',
     editorTwoPassHint:
-      'Только H.264 (libx264) и выбранный видеобитрейт («Видео» выше); CRF и H.265 не поддерживают этот режим.',
+      'Работает только в связке «совместимый широкий формат видео» + выбранное ограничение размера видео выше. Если включена только «тонкая настройка качества» или выбран экономящий трафик формат — переключатель недоступен.',
     editorFieldRotation: 'Поворот',
-    editorAriaRotationExport: 'Поворот или зеркало экспорта',
+    editorAriaRotationExport: 'Поворот или зеркало',
     editorFieldCrop: 'Обрезка',
-    editorAriaCropExport: 'Обрезка экспорта',
+    editorAriaCropExport: 'Шаблон обрезки кадра',
     editorFfmpegSectionAudio: 'Аудио и кадр',
-    editorFfmpegSectionAudioHint: 'Аудиодорожка экспорта и параметры сохранения снимка кадра §7.',
+    editorFfmpegSectionAudioHint:
+      'Звуковая дорожка, громкость, отдельный снимок кадра и поведение субтитров в готовом файле.',
     editorNoAudioSpan: 'Без аудио',
     editorNoAudioPillLabel: 'Без аудио',
     editorNoAudioHint:
-      'Включите, если нужен немой файл или звук будет добавлен позже.',
-    editorFieldAacBitrate: 'Битрейт AAC',
-    editorAriaAacBitrate: 'Битрейт AAC экспорта',
+      'Включите, если в готовом файле не должно быть звука вообще — например заставка или подготовка под озвучку снаружи.',
+    editorFieldAacBitrate: 'Качество звука',
+    editorAriaAacBitrate: 'Насколько подробно сохраняется звук',
     editorFieldAudioGain: 'Громкость аудио',
-    editorAriaAudioGain: 'Сдвиг громкости аудио в дБ',
+    editorAriaAudioGain: 'Сдвиг громкости',
     editorHintAudioGain:
-      'Применяется как `-filter:a volume=NdB`; при «Без аудио» игнорируется.',
-    editorFieldAudioNormalize: 'Нормализация',
-    editorAriaAudioNormalize: 'Нормализация громкости аудио',
+      'Поднять или опустить громкость всей дорожки целиком. Не действует, если звук отключён переключателем выше.',
+    editorFieldAudioNormalize: 'Выравнивание громкости',
+    editorAriaAudioNormalize: 'Автоматическое выравнивание громкости',
     editorHintAudioNormalize:
-      'Склеивается с volume в один `-filter:a`: сначала усиление (gain), затем нормализация (normalize).',
+      'Делает тихие и громкие места ближе друг к другу по ощущению. «Подкаст» — спокойный уровень как у радио; «динамика» — мягче подтягивает шёпот, но может чуть менять «живость» записи.',
     editorFieldSnapshotFormat: 'Формат кадра',
-    editorAriaSnapshotFormat: 'Формат снимка кадра',
+    editorAriaSnapshotFormat: 'Формат отдельного снимка',
     editorStripMetadataSpan: 'Удалить метаданные',
-    editorStripMetadataPillLabel: 'Удалить контейнерные метаданные',
+    editorStripMetadataPillLabel: 'Удалить скрытые подписи файла',
     editorStripMetadataHint:
-      'Добавляет `-map_metadata -1`: убирает теги вроде title/artist и аналогичные из выходного файла.',
+      'Убирает из готового файла название, автора, обложку и другие служебные поля, которые плеер показывает как «информацию о ролике».',
     editorStripChaptersSpan: 'Удалить главы',
-    editorStripChaptersPillLabel: 'Удалить метки глав',
-    editorStripChaptersHint: 'Добавляет `-map_chapters -1`: глав в выходном файле не будет.',
+    editorStripChaptersPillLabel: 'Удалить разделы внутри ролика',
+    editorStripChaptersHint:
+      'Убирает метки разделов, по которым плеер прыгает по главам. Сама картинка и звук не режутся — только навигация.',
     editorFieldExportSubtitles: 'Субтитры',
-    editorAriaExportSubtitles: 'Поведение субтитров на экспорте',
+    editorAriaExportSubtitles: 'Сохранять ли текстовые дорожки',
     editorHintExportSubtitles:
-      '«Не сохранять» — ffmpeg сам решает (обычно отбрасывает дорожку). «Сохранить» — для MKV `-c:s copy`, для MP4/MOV `-c:s mov_text` (только текстовые субтитры).',
+      '«Не сохранять» — в итоговом файле обычно остаётся только картинка и звук. «Сохранить» пытается перенести текстовые субтитры; на некоторых типах файлов это может быть недоступно — тогда дорожка пропадёт.',
     editorSnapshotLastFile: 'Файл кадра',
     editorSnapshotLastFolder: 'Папка',
     editorCopy: 'Копировать',
@@ -585,7 +731,10 @@ const UI_TEXT = {
     editorExportAudioNormDynaudnorm: 'Динамическая (dynaudnorm)',
     editorExportSnapshotPng: 'Кадр PNG',
     editorExportSnapshotJpg: 'Кадр JPEG',
-    editorExportUserPresetsMaxStatus: 'Не более 8 пользовательских пресетов.',
+    editorExportUserPresetsMaxStatus:
+      'Не более 8 своих пресетов (встроенные пресеты платформ не считаются).',
+    editorExportUserPresetsMaxTotalStatus:
+      'Список пресетов в настройках заполнен по лимиту — удалите или переименуйте лишнее.',
     editorExportPresetDefaultName: 'Мой пресет',
     editorExportPresetDialogTitleCreate: 'Новый пресет экспорта',
     editorExportPresetDialogTitleRename: 'Имя пресета',
@@ -593,7 +742,8 @@ const UI_TEXT = {
       'Имя хранится только в настройках FluxAlloy и помогает быстро возвращаться к набору FFmpeg-параметров.',
     editorExportPresetNameLabel: 'Имя',
     editorExportPresetErrorEmpty: 'Введите имя пресета.',
-    editorExportPresetErrorMax: 'Не более 8 пользовательских пресетов.',
+    editorExportPresetErrorMax: 'Не более 8 своих пресетов (встроенные не считаются).',
+    editorExportPresetErrorMaxTotal: 'Список пресетов в настройках заполнен по лимиту.',
     editorEnginePathsDialogTitle: 'Пути к движкам',
     editorEnginePathsDialogHint:
       'Полный путь к каждому исполняемому файлу имеет приоритет над встроенным каталогом и загрузкой в userData/bin. Оставьте поле пустым и сохраните — сброс на авто-поиск.',
@@ -618,6 +768,7 @@ const UI_TEXT = {
     statusVideoBlobFallbackActive: 'Видео переведено на предпросмотр через временный URL (blob).',
     statusVideoPlayFailedAfterFallback:
       'Видео не удалось воспроизвести: {detail}; запасной вариант тоже не сработал.',
+    statusPreviewProbeFailedTemplate: 'Метаданные ffprobe недоступны: {error}',
     statusDownloadsUrlsAdded: 'Добавлено в очередь URL: {n}',
     statusDownloadsQueueNoUrlsParsed: 'В тексте не найдено ни одного URL для очереди.',
     statusDownloadOpenEditorWorking: 'Скачиваю первый URL из поля…',
@@ -661,7 +812,7 @@ const UI_TEXT = {
     downloadsQueueRowStatusRetryUnknown: 'Пауза перед повтором',
     editorFfmpegSectionPresets: 'Пресеты',
     editorFfmpegSectionPresetsHint:
-      'Сохранённые снимки настроек экспорта; кнопки меняют список пресетов в настройках.',
+      'Готовые наборы под TikTok, YouTube, Shorts, ВК, Reels, Telegram, Discord, iPhone и архив, плюс ваши сохранённые комбинации. Встроенные строки нельзя переименовать или удалить.',
     editorFieldUserPreset: 'Пользовательский пресет',
     editorAriaUserPreset: 'Пользовательский пресет экспорта',
     editorUserPresetPlaceholder: 'Пресет: —',
@@ -669,12 +820,15 @@ const UI_TEXT = {
     editorPresetRename: 'Имя',
     editorPresetOverwrite: 'Обновить',
     editorPresetDelete: 'Удалить',
+    editorBuiltinPresetLockedHint:
+      'Встроенные пресеты нельзя переименовать, обновить или удалить — создайте свой пресет.',
     editorFfmpegSectionOutput: 'Вывод',
     editorFfmpegSectionOutputHint:
-      'Превью аргументов командной строки (argv), экспорт через диалог «Сохранить» и быстрые действия над последним файлом.',
-    editorExportCommandPreviewSummary: 'Превью команды ffmpeg',
-    editorAriaExportFfmpegCommand: 'Команда ffmpeg',
-    editorCopyFfmpegCommandTitle: 'Скопировать строку команды ffmpeg в буфер',
+      'Показать, как программа соберёт сохранение; кнопка «Экспорт» вверху откроет диалог «Сохранить как…»; ниже — быстрые действия с последним готовым файлом.',
+    editorExportCommandPreviewSummary: 'Превью команды сохранения',
+    editorAriaExportFfmpegCommand: 'Текст команды сохранения',
+    editorCopyFfmpegCommandTitle:
+      'Скопировать текст команды в буфер — если нужно выполнить то же сохранение вручную или показать специалисту.',
     editorExportLastFile: 'Файл',
     editorExportLastFolder: 'Папка',
     editorCopyExportPath: 'Копировать путь',
@@ -684,8 +838,7 @@ const UI_TEXT = {
       'Источник не выбран — в превью используются плейсхолдеры <input>/<output>.',
     editorExportPreviewHintTwoPass:
       'Двухпроход: итоговый файл пишет только вторая команда; журнал passlog — во временном каталоге основного процесса (main).',
-    editorExportPreviewHintTrimAppliedTemplate:
-      'Маркеры In/Out подставлены: -ss {in} -t {t}.',
+    editorExportPreviewHintTrimAppliedTemplate: 'Маркеры In/Out подставлены: -ss {in} -t {t}.',
     editorExportPreviewHintTrimFull:
       'Маркеры покрывают почти весь файл — ffmpeg запустится без -ss/-t.',
     editorExportPreviewHintTrimWaiting:
@@ -699,10 +852,8 @@ const UI_TEXT = {
     inspectorStandaloneFfprobeRefreshTitle: 'Повторно запустить ffprobe для текущего файла',
     inspectorStandaloneFfprobeRefreshDisabledTitle: 'Нет файла для обновления',
     inspectorStandaloneFfprobeRefreshVisuallyHidden: 'Обновить ffprobe',
-    inspectorStandaloneAboutDiagnosticsTitle:
-      'О программе и быстрые действия диагностики',
-    inspectorStandaloneThemeToggleTitle:
-      'Переключить тему (синхронно с главным окном)',
+    inspectorStandaloneAboutDiagnosticsTitle: 'О программе и быстрые действия диагностики',
+    inspectorStandaloneThemeToggleTitle: 'Переключить тему (синхронно с главным окном)',
     inspectorStandaloneEmptyHint:
       'Перетащите видеофайл сюда или нажмите «Открыть…». При запуске из меню подставляется последний файл из превью (если он ещё на диске).',
     inspectorWindowDocumentTitle: 'FluxAlloy — инспектор',
@@ -785,8 +936,7 @@ const UI_TEXT = {
     videoTimelineZoomRowAria: 'Масштаб временной шкалы',
     videoTimelineZoomOutTitle: 'Отдалить шкалу (показать больший интервал времени)',
     videoTimelineZoomInTitle: 'Приблизить шкалу под точную позицию',
-    videoTimelineZoomReadoutTitle:
-      'Видимый диапазон перемотки (scrub) и полоски маркеров',
+    videoTimelineZoomReadoutTitle: 'Видимый диапазон перемотки (scrub) и полоски маркеров',
     videoTimelineZoomReadoutTemplate: 'Масштаб ×{mul} · {start} — {end}',
     videoTimelineRulerAria: 'Линейка времени окна воспроизведения: щелчок или стрелки для перехода',
     videoTimelineRulerValuetextTemplate: '{current} в окне {winStart} — {winEnd}',
@@ -795,8 +945,7 @@ const UI_TEXT = {
     videoTimelineVideoLabel: 'Видео:',
     videoTimelineAudioStreamTitle: 'Первая аудиодорожка ffprobe',
     videoTimelineAudioLabel: 'Аудио:',
-    videoTimelinePositionTitle:
-      'Текущее время; номер кадра — оценка по к/с из строки дорожки',
+    videoTimelinePositionTitle: 'Текущее время; номер кадра — оценка по к/с из строки дорожки',
     videoTimelinePositionLabel: 'Позиция:',
     videoTimelineFrameApproxSuffixTemplate: ' · кадр ~{frame}',
     videoTimelineMarkersOutsideWindowTitle:
@@ -833,7 +982,16 @@ const UI_TEXT = {
     videoTimelineBadgeInAriaTemplate: 'Маркер In, время {t}',
     videoTimelineBadgeOutAriaTemplate: 'Маркер Out, время {t}',
     videoTimelineTrimDurationToolbar: 'Длительность: {span}',
-    videoTimelineFooterAria: 'Сводка ffprobe и позиция воспроизведения',
+    videoTimelineToolbarCenterTitle:
+      'Длительность выбранного фрагмента и текущая позиция воспроизведения',
+    videoTimelineStartExport: 'Начать экспорт',
+    videoTimelineStartExportTitle:
+      'Экспортировать файл с текущими настройками FFmpeg (выбор папки)',
+    videoTimelineSaveFrame: 'Сохранить кадр',
+    videoTimelineSaveFrameBusy: 'Сохраняю кадр…',
+    videoTimelineSaveFrameTitle:
+      'Сохранить текущий кадр в отдельный файл. Формат (PNG/JPEG и т.д.) — в панели справа, раздел «Аудио и кадр».',
+    videoTimelineFooterAria: 'Краткая сводка видео и звука по данным анализа файла',
     previewTransportToolbarAria: 'Транспорт предпросмотра',
     previewTransportMinusSecTitle: 'Минус {sec} с',
     previewTransportPlusSecTitle: 'Плюс {sec} с',
@@ -841,8 +999,7 @@ const UI_TEXT = {
     timelineWaveformWebAudioUnavailable:
       'Аудиографика браузера (Web Audio API) недоступна в этом контексте.',
     timelineWaveformMediaResponseErrorTemplate: 'Ответ медиа: {status}',
-    timelineWaveformDisabledLargeFile:
-      'Форма волны отключена для крупного файла (защита памяти).',
+    timelineWaveformDisabledLargeFile: 'Форма волны отключена для крупного файла (защита памяти).',
     timelineWaveformAudioLongerHintTemplate: 'Аудио ~{audioSec} с (видео {videoSec} с).',
     timelineWaveformDecodeFailedHint:
       'Не удалось построить форму волны (формат без доступного аудио или ошибка декодера).',
@@ -918,6 +1075,23 @@ const UI_TEXT = {
     aboutRuntimeNodeLabel: 'Node',
     aboutMainLogButton: 'main.log',
     aboutMainLogOpenErrorTemplate: 'main.log: {error}',
+    aboutTooltipLogsFolder:
+      'Open the app logs folder in the file manager — runtime logs and traces live there.',
+    aboutTooltipMainLog:
+      'Open the main process log (main.log) with your default text editor or viewer.',
+    aboutTooltipSupportZip:
+      'Build a diagnostics ZIP to a path you choose: versions, settings, paths. Handy for support or your own backup.',
+    aboutTooltipMaintenanceSummary:
+      'Show in the status line how much space preview cache, ffmpeg temp, and unfinished yt-dlp .part files use — no deletion yet.',
+    aboutTooltipMaintenanceCleanAll:
+      'Delete all app-managed temporary data. First click shows a hint; second click while the button reads “Confirm…” performs the wipe.',
+    aboutTooltipMaintenanceCleanPreview:
+      'Clear preview cache only. Two-step flow: hint first, then confirm.',
+    aboutTooltipMaintenanceCleanPartials:
+      'Remove unfinished yt-dlp .part / .ytdl artifacts in the download area. Two-step confirm.',
+    aboutTooltipMaintenanceCleanFfmpegTemp:
+      'Clear ffmpeg temp files created during exports. Two-step confirm.',
+    aboutTooltipCloseAbout: 'Close the About dialog.',
     aboutMaintenanceCleanErrorTemplate: '{label}: {error}',
     byteSizeZero: '0 B',
     byteSizeUnitB: 'B',
@@ -1021,8 +1195,7 @@ const UI_TEXT = {
     downloadsHistoryRefresh: 'Refresh',
     downloadsHistoryClear: 'Clear',
     downloadsHistoryExportJson: 'Export JSON',
-    downloadsHistoryEmpty:
-      'No entries yet. Finished queue rows will appear here as they complete.',
+    downloadsHistoryEmpty: 'No entries yet. Finished queue rows will appear here as they complete.',
     downloadsHistoryRepeat: 'Retry',
     downloadsHistoryOpenFile: 'File',
     downloadsHistoryOpenFolder: 'Folder',
@@ -1041,8 +1214,12 @@ const UI_TEXT = {
     workspaceTabEditor: 'Editor',
     workspaceTabDownloads: 'Downloads',
     workspaceTabTerminal: 'Terminal',
-    workspaceTabDownloadsTooltip: 'Open the yt-dlp downloads tab',
-    workspaceTabTerminalTooltip: 'Safe CLI for ffmpeg, ffprobe, and yt-dlp',
+    workspaceTabEditorTooltip:
+      'Editor: open a video from your PC, preview it, pick a range on the timeline, and save a finished file. The FFmpeg panel on the right sets picture quality, audio, and file format.',
+    workspaceTabDownloadsTooltip:
+      'Downloads: a queue of links, a live log, and settings for how downloads work — quality, save folder, subtitles, and what to do when the network drops.',
+    workspaceTabTerminalTooltip:
+      'Terminal: run one command at a time for the built-in tools (processing and downloading). For the common “open a file and export” flow, use the Editor tab.',
     downloadsMainAria: 'Downloads tab',
     downloadsPageTitle: 'Downloads',
     downloadsPageHint:
@@ -1091,7 +1268,8 @@ const UI_TEXT = {
       'Open yt-dlp download folder (destination from settings; works before the download finishes)',
     downloadsQueuePauseUnsupportedOsTitle:
       'Pausing yt-dlp is not available on Windows (OS-level SIGSTOP/SIGCONT).',
-    downloadsQueuePauseWaitingProcessTitle: 'Pause becomes available once the yt-dlp process has started',
+    downloadsQueuePauseWaitingProcessTitle:
+      'Pause becomes available once the yt-dlp process has started',
     downloadsQueueAriaOpenInEditor: 'Open downloaded file in FluxAlloy',
     downloadsQueueAriaResumeYtdlp: 'Resume yt-dlp',
     downloadsQueueAriaPauseYtdlp: 'Pause yt-dlp',
@@ -1107,11 +1285,12 @@ const UI_TEXT = {
     downloadsRailAria: 'Download settings',
     downloadsRailTitle: 'yt-dlp settings',
     downloadsRailSubtitle:
-      'Sections match the pop-out window (`downloadsWindowUiPanels`). Extra argv, command preview, and the token catalog (search + descriptions) live here; the separate manager window is for the queue and full-screen download work.',
+      'Video quality, save folder, subtitles, after-download actions, and network behavior. Sections collapse; the same values apply in the pop-out downloads window.',
+    downloadsRailIntroTooltip:
+      'These fields affect upcoming downloads from the queue. Hover any switch, list, or button for a longer plain-language explanation.',
     downloadsRailFormatSummary: 'Format',
     downloadsRailFormatQualityLabel: 'Format / quality',
-    downloadsFormatHint:
-      '`-f` preset; with “Audio only”, video format presets are not applied.',
+    downloadsFormatHint: '`-f` preset; with “Audio only”, video format presets are not applied.',
     downloadsPlaylistSpan: 'Full playlist',
     downloadsPlaylistPillLabel: 'Full playlist',
     downloadsPlaylistHint: '`--yes-playlist` instead of a single video.',
@@ -1122,8 +1301,7 @@ const UI_TEXT = {
     downloadsSubPresetNone: 'Do not download',
     downloadsSubPresetManual: 'Manual tracks',
     downloadsSubPresetManualAuto: 'Manual + auto',
-    downloadsSubLangsHelp:
-      'A single `--sub-langs` token without spaces (e.g. ru,en or all).',
+    downloadsSubLangsHelp: 'A single `--sub-langs` token without spaces (e.g. ru,en or all).',
     downloadsSubLangsLabel: 'Subtitle languages',
     downloadsSubLangsPlaceholder: 'ru,en or all',
     downloadsRailMetadataSummary: 'Metadata',
@@ -1180,23 +1358,74 @@ const UI_TEXT = {
     downloadsExtraArgsLabel: 'Extra argv',
     downloadsExtraArgsHelp:
       'No shell: tokens as in the catalog; unsafe tokens are rejected in main.',
-    downloadsInsertTokenLabel: 'Insert token from catalog',
-    downloadsInsertTokenAria: 'Append a token to extra argv',
-    downloadsHintPickerPlaceholder: 'Select…',
-    downloadsHintSearchLabel: 'Search argv catalog',
+    downloadsHintCatalogIntro:
+      'Short reference of flags below. Type part of a token or description, then click a flag — it is appended to “Extra arguments”. Each row includes a plain-language note.',
+    downloadsHintCatalogFilterLabel: 'Search the argv catalog',
     downloadsHintSearchPlaceholder: 'e.g. --cookies or --sub',
     downloadsHintSearchAria: 'Search argv tokens and descriptions',
     downloadsHintListAria: 'Flag catalog with descriptions',
     downloadsHintsUnavailable: 'Catalog unavailable.',
     downloadsHintsNoMatches: 'No matches.',
     downloadsHintsSameAsPopoutHelp:
-      'Same hints as pop-out; click a token to append it to argv.',
+      'Same catalog as the download pop-out: search and list; click a flag to append the token to argv.',
     downloadsRailDocOutput: 'Output template',
     downloadsRailDocPostprocess: 'Post-processing',
     downloadsCommandPreviewHelp: 'Command preview (read-only)',
     downloadsOptionsLoading: 'Loading yt-dlp settings…',
     downloadsRailRefreshOptions: 'Reload settings',
-    downloadsRailStopCurrentRow: 'Stop current row',
+    downloadsTooltipSectionFormat:
+      'Default “what to download”: audio-only vs video+audio, whole playlist vs single item, subtitles and languages.',
+    downloadsTooltipSectionMetadata:
+      'After-download behavior, how to identify to the site, and optional login hints via browser cookies or a cookie file. Rarely needed until a site asks for sign-in.',
+    downloadsTooltipSectionSaving:
+      'Where files land on disk and how names are built. The built-in folder is safe; pick your own if you want everything in Downloads or another drive.',
+    downloadsTooltipSectionNetwork:
+      'Retry behavior and optional speed limits — spare your connection or ask the app to try harder on flaky Wi‑Fi.',
+    downloadsTooltipSectionExpert:
+      'Extra parameters for advanced users, a flag catalog, and a read-only command preview. Skip if normal downloads already work.',
+    downloadsTooltipFormatPresetSelect:
+      'A bundled profile for what to fetch: closer to source quality, smaller, or audio-only. When “Audio only” is on, video choices are ignored.',
+    downloadsTooltipPlaylistSwitch:
+      'If the URL is a playlist, turn this on to fetch the whole series; turn off for a single item only.',
+    downloadsTooltipAudioOnlySwitch:
+      'Save sound without a video track — lighter files for music or podcasts.',
+    downloadsTooltipSubtitlesSelect:
+      'Whether to pull text tracks with the video and how aggressively to match them. “Do not download” keeps things simpler and faster.',
+    downloadsTooltipSubLangsInput:
+      'Comma-separated subtitle languages or “all”. Leave empty or use “do not download” when subtitles are not needed.',
+    downloadsTooltipOpenAfterSuccess:
+      'After a successful download, open the file here so you can preview or export it immediately.',
+    downloadsTooltipAutoExport:
+      'After the file opens, automatically save a second file using the Editor FFmpeg panel — handy when you always need the same finished format.',
+    downloadsTooltipCookiesBrowser:
+      'Let the app reuse login cookies from the selected browser so private pages download like in your logged-in window. Avoid on shared PCs.',
+    downloadsTooltipImpersonate:
+      'Some sites vary quality by client type. Leave off unless you are troubleshooting a picky source.',
+    downloadsTooltipCookiesProfile:
+      'If the browser has multiple profiles, name the right one; otherwise the default profile is used. Often you can leave this blank.',
+    downloadsTooltipCookiesPick:
+      'Choose a cookie file you exported earlier. It overrides browser-based cookies when set.',
+    downloadsTooltipCookiesClear:
+      'Remove the chosen cookie file and fall back to browser or defaults.',
+    downloadsTooltipOutputOpenFolder:
+      'Open the current download folder in the file manager to inspect finished files.',
+    downloadsTooltipOutputPick: 'Choose a different folder for upcoming downloads.',
+    downloadsTooltipOutputDefault: 'Restore the app’s built-in download folder after experiments.',
+    downloadsTooltipFilenameTemplate:
+      'How output files are named — the template must leave room for the extension so different sites do not collide. Do not use “..” to jump out of the folder.',
+    downloadsTooltipQueueRetrySelect:
+      'How many times to restart the whole queue row after a non-zero failure — helpful on unstable networks.',
+    downloadsTooltipRateLimitInput:
+      'Cap download speed so the rest of the household keeps bandwidth. Leave empty for no limit.',
+    downloadsTooltipRetriesInput: 'How many reconnect attempts before surfacing an error.',
+    downloadsTooltipFragmentRetriesInput:
+      'Same idea for small pieces of long streams — raise if big files stall mid-way.',
+    downloadsTooltipExtraArgsTextarea:
+      'Optional extra words for advanced tuning, as in the catalog below. Unsafe combinations are filtered for safety.',
+    downloadsTooltipHintSearchInput:
+      'Filter the list by token or description text. Click a flag in the list to append that token to “Extra arguments”.',
+    downloadsTooltipRefreshFooter:
+      'Reload settings from disk after changes in another window or manual edits.',
     enginesSummaryReady: 'Engines: ready',
     enginesSummaryMissing: 'Engines: not found',
     enginesSummaryError: 'Engines: check error',
@@ -1204,37 +1433,27 @@ const UI_TEXT = {
     engineDisplayNameFfmpeg: 'ffmpeg',
     engineDisplayNameFfprobe: 'ffprobe',
     engineDisplayNameYtdlp: 'yt-dlp',
-    topbarEngineVersionsLineTemplate: 'ffmpeg {ffmpegVer} • yt-dlp {ytdlpVer}',
     commonUnicodeEllipsis: '…',
     enginesVersionLineErrorMark: '!',
     uiPlaceholderDash: '—',
     commonNotApplicableShort: 'n/a',
     topbarProductName: 'FluxAlloy',
-    topbarProductEdition: 'desktop',
-    topbarOpenFileTitle: 'Open a local video file',
+    topbarOpenFileTitle:
+      'Pick a video from your PC — it appears in the preview and timeline for trimming and export.',
     topbarOpenFileLabel: 'Open',
-    topbarRotateCcwTitle: 'Rotate CCW: none → 90° CCW → 180° → 90° CW (export §7.2)',
-    topbarRotateCcwLabel: 'Rotate CCW',
-    topbarRotateCwTitle: 'Rotate CW: none → 90° CW → 180° → 90° CCW (export §7.2)',
-    topbarRotateCwLabel: 'Rotate CW',
-    topbarCropCycleTitle: 'Crop: none → 1:1 → 16:9 → 4:3 (export §7.2)',
-    topbarCropLabel: 'Crop',
     topbarInspectorTitle:
-      'Separate ffprobe inspector window (§9). Uses the current preview path when a file is open.',
+      'Separate window: full ffprobe summary (tracks, chapters, JSON) and TXT/HTML export. If a clip is already open in the editor, the same file is used.',
     topbarInspectorLabel: 'Inspector',
-    topbarSnapshotTitle: 'Save the current preview frame as PNG or JPEG (ffmpeg)',
-    topbarSnapshotLabel: 'Snapshot',
-    topbarSnapshotBusyLabel: 'Snapshot…',
-    topbarExportTitle: 'Save In–Out range or full file (libx264/aac); requires ffmpeg',
-    topbarExportLabel: 'Export',
-    topbarExportBusyLabel: 'Export…',
-    topbarExportCancelTitle: 'Stop the current ffmpeg export',
+    topbarExportCancelTitle:
+      'Stop the current save job; any partial output is removed. The source file on disk stays untouched.',
     topbarExportCancelBusy: 'Cancelling…',
     topbarExportCancelReady: 'Cancel export',
-    topbarEnginesDownloadTitle: 'Download yt-dlp and FFmpeg into the app user folder',
+    topbarEnginesDownloadTitle:
+      'Download missing built-in tools into your user app folder — handy on a fresh machine.',
     topbarEnginesDownloadBusy: 'Downloading…',
     topbarEnginesDownloadReady: 'Download engines',
-    topbarEnginePathsTitle: 'Manually set ffmpeg, ffprobe, and yt-dlp executables',
+    topbarEnginePathsTitle:
+      'Point the app to custom tool locations if you do not want the bundled copies or auto-discovery.',
     topbarEnginePathsLabel: 'Engine paths',
     topbarKnowledgeLabel: 'Knowledge base',
     topbarAboutTitle: 'About and diagnostics',
@@ -1252,107 +1471,189 @@ const UI_TEXT = {
       'No source — drop a video here or use Open… in the File menu / the top button.',
     editorPreviewEmptyHint:
       'Local files stream via the fluxmedia scheme only after a dialog pick or Electron path DnD.',
-    editorFfmpegRailShowTitle: 'Show FFmpeg settings',
+    editorFfmpegRailShowTitle:
+      'Expand the right-hand “save settings” panel: video/audio quality, site presets, and command preview.',
     editorFfmpegRailShowHidden: 'Expand FFmpeg settings panel',
     editorFfmpegRailRestoreLabel: 'FFmpeg',
     editorFfmpegSettingsAria: 'FFmpeg settings',
     editorFfmpegSettingsTitle: 'FFmpeg settings',
-    editorFfmpegSettingsSubtitle: 'Sections can be collapsed like the v0 reference.',
-    editorFfmpegRailCollapseTitle: 'Collapse panel (more room for preview and timeline)',
+    editorFfmpegSettingsSubtitle:
+      'Choose how the saved clip will look and sound. You can collapse sections to keep the screen tidy.',
+    editorFfmpegRailCollapseTitle:
+      'Collapse the save-settings panel for more preview and timeline space. Your values stay saved.',
     editorFfmpegRailCollapseHidden: 'Collapse FFmpeg settings panel',
+    editorTooltipFfmpegPanelIntro:
+      'This panel does not change the source file on disk — it only describes the result when you export or when an auto-export runs after a download. Adjust freely until you save.',
+    editorTooltipSectionVideo:
+      'Video: how the picture is compressed, packed into a file, and optional cleanup (banding, noise, color). Stronger effects usually mean longer waits.',
+    editorTooltipSectionFormat:
+      'Layout: frame size, frame rate, rotation, and crop. Useful to match a platform (square or widescreen) before saving.',
+    editorTooltipSectionAudio:
+      'Audio & frame snapshot: loudness and cleanup, a still frame export, subtitles, and optional container tags. You can turn the audio track off entirely.',
+    editorTooltipSectionPresets:
+      'Presets: ready-made bundles for popular sites plus your own saved combinations. Picking a preset fills all fields; you can still tweak manually.',
+    editorTooltipSectionOutput:
+      'Output: how the save command is built, where the app will suggest saving, and quick actions for the last result.',
+    editorTooltipVideoCodec:
+      'Pick the picture “engine”. One option is widely compatible; another can make smaller files at similar sharpness, but very old devices may struggle.',
+    editorTooltipEncodePreset:
+      'Trade-off between encoding time and file size/quality. “Smaller file” waits longer; “higher quality” is heavier and slower. The middle option fits most clips.',
+    editorTooltipContainer:
+      'The file “wrapper” type. Common choices open almost everywhere; one option is handy for Apple devices. If unsure, keep the default.',
+    editorTooltipCrf:
+      'Fine quality control without a hard size cap. Lower numbers look cleaner but weigh more; higher numbers shrink the file. “Use preset” follows the speed choice above.',
+    editorTooltipVideoBitrate:
+      'A hard cap on video data per second — predictable file size. When this is active, the separate quality slider above is not used.',
+    editorTooltipResolution:
+      'How tall the frame is. “Source” keeps the original size; other choices shrink the picture to make the file lighter.',
+    editorTooltipFps:
+      'Frames per second in the saved clip. “Source” keeps the original rate; fixed values help when a site asks for exactly 30 or 25 fps.',
+    editorTooltipRotation:
+      'Rotate or mirror the whole frame before saving — handy for sideways footage or reflections.',
+    editorTooltipCrop:
+      'Cut edges using a template (square, widescreen, etc.) before compression. The original file on disk stays untouched.',
+    editorTooltipAacBitrate:
+      'How rich the saved audio is. Higher values sound fuller but increase size. Mid values are enough for speech and simple edits.',
+    editorTooltipSnapshotFormat:
+      'How a single captured frame is saved: maximum sharpness without compression, or a smaller JPEG.',
+    editorTooltipUserPresetSelectFallback:
+      'Pick a row to load a full set of fields. Built-in presets show a short description under the cursor; you create your own with “+ Preset”.',
+    editorTooltipPresetAdd:
+      'Save the current panel fields under a new name — handy for several recurring workflows.',
+    editorTooltipPresetRename:
+      'Rename the selected custom preset. Built-in names are fixed and update with the app.',
+    editorTooltipPresetOverwrite:
+      'Overwrite the selected custom preset with the current fields when you have tuned settings and want to refresh the saved profile.',
+    editorTooltipPresetDelete:
+      'Remove the selected custom preset from the list. Built-in rows cannot be deleted.',
+    editorTooltipExportCommandPreview:
+      'Shows the steps the app will run when saving — for transparency. You can copy the line if you need the same steps elsewhere.',
+    editorTooltipExportLastFile:
+      'Open the last saved clip in the same preview to quickly check the result.',
+    editorTooltipExportLastFolder:
+      'Open the folder that contains the last saved clip — for example to drag the file into a messenger.',
+    editorTooltipCopyExportPath:
+      'Copy the full path of the last saved clip to the clipboard for another app.',
+    editorTooltipExportOpenPreview:
+      'Open the last saved clip again in this preview without hunting for the file.',
+    editorTooltipSnapshotLastFile: 'Open the last saved frame snapshot separately from the video.',
+    editorTooltipSnapshotLastFolder: 'Show the folder of the last frame snapshot.',
+    editorTooltipSnapshotCopyPath: 'Copy the path of the last frame snapshot.',
+    editorTooltipTwoPass:
+      'Two-pass mode first scans the whole clip, then writes with steadier file size. It only makes sense with a fixed video bitrate and a compatible codec; expect roughly double the wait.',
+    editorTooltipNoAudio:
+      'Turn on for picture-only output — no sound in the saved file. Useful for bumpers or when you will add audio later elsewhere.',
+    editorTooltipStripMetadata:
+      'Remove hidden tags like title, artist, or cover art from the finished file. Some sites ask for this, or you may want less personal data in the file.',
+    editorTooltipStripChapters:
+      'Remove chapter markers so the file plays as one continuous stream without sections in the player.',
     editorFfmpegSectionVideo: 'Video',
-    editorFfmpegSectionVideoHint: 'Codec, container, CRF, and video bitrate for export §7.',
+    editorFfmpegSectionVideoHint:
+      'How heavy the finished video will be: compression style, file packaging, and optional picture cleanup.',
     editorFieldVideoCodec: 'Video codec',
-    editorAriaVideoCodecExport: 'Export video codec',
-    editorFieldEncodePreset: 'Speed / default CRF preset',
-    editorAriaEncodePresetExport: 'Export encoding speed preset (libx264/libx265 -preset)',
-    editorFieldContainer: 'Container',
-    editorAriaContainerExport: 'Export container',
-    editorFieldCrf: 'CRF',
-    editorAriaCrfExport: 'Export CRF',
-    editorCrfOptionPreset: 'Preset CRF',
-    editorFieldVideoBitrate: 'Video bitrate',
-    editorAriaVideoBitrateExport: 'Export video bitrate',
-    editorVideoBitrateOptionCrf: 'Video CRF',
-    editorFieldDeinterlace: 'Deinterlace',
-    editorAriaDeinterlace: 'yadif deinterlace preset',
+    editorAriaVideoCodecExport: 'How the picture is compressed when saving',
+    editorFieldEncodePreset: 'Speed and default quality',
+    editorAriaEncodePresetExport: 'How long saving runs and how tightly the picture is packed',
+    editorFieldContainer: 'File type',
+    editorAriaContainerExport: 'How the finished clip is packaged',
+    editorFieldCrf: 'Fine quality',
+    editorAriaCrfExport: 'Fine-grained picture quality',
+    editorCrfOptionPreset: 'Match the speed preset',
+    editorFieldVideoBitrate: 'Video size cap',
+    editorAriaVideoBitrateExport: 'Hard limit on video data per second',
+    editorVideoBitrateOptionCrf: 'No hard cap (use the quality slider above)',
+    editorFieldDeinterlace: 'Comb smoothing',
+    editorAriaDeinterlace: 'Smooth interlaced video',
     editorHintDeinterlace:
-      '`yadif` after crop and before `hqdn3d` §7.2; “Field” doubles frame rate for interlaced input.',
+      'Older TV/camera footage sometimes stores alternating lines — motion shows thin “combs”. The first mode removes them with little change to smoothness; the second is smoother but can change how motion feels.',
     editorFieldDenoise: 'Denoise',
-    editorAriaDenoise: 'hqdn3d denoise preset',
-    editorHintDenoise: '`hqdn3d` before `deband`/`unsharp` and scale §7.2.',
-    editorFieldDeband: 'Deband',
-    editorAriaDeband: 'deband preset',
-    editorHintDeband: '`deband` between `hqdn3d` and `unsharp` (banding/gradients) §7.2.',
-    editorFieldHisteq: 'Histeq',
-    editorAriaHisteq: 'histeq histogram equalization preset',
-    editorHintHisteq: '`histeq` after `deband` and before `lut3d` §7.2.',
-    editorFieldLut3d: '3D LUT',
-    editorAriaLut3d: 'lut3d preset',
+    editorAriaDenoise: 'Reduce noise',
+    editorHintDenoise:
+      'Removes speckle and color grain, especially in shadows. Stronger settings clean more but can soften fine hair, fabric, or text.',
+    editorFieldDeband: 'Reduce banding',
+    editorAriaDeband: 'Smooth color steps',
+    editorHintDeband:
+      'Skies, walls, and shadows sometimes show steps instead of smooth gradients. This softens those steps; strong modes can slightly blur very fine detail.',
+    editorFieldHisteq: 'Brightness balance',
+    editorAriaHisteq: 'Overall brightness balance',
+    editorHintHisteq:
+      'When the whole frame feels too dark or blown out, this gently rebalances light. It is a global pass, not full manual color grading.',
+    editorFieldLut3d: 'Color look',
+    editorAriaLut3d: 'Preset color look',
     editorHintLut3d:
-      '`lut3d` after `deband` and before `unsharp` (bundled `.cube` in `resources/luts/`) §7.2.',
+      'Built-in cinematic looks — warmer, cooler, or punchier without tweaking many sliders. Off returns the original colors.',
     editorFieldSharpen: 'Sharpen',
-    editorAriaSharpen: 'unsharp preset',
-    editorHintSharpen: '`unsharp` after `deband`/`lut3d` and before `eq`/`scale`/`fps`.',
+    editorAriaSharpen: 'Edge sharpening',
+    editorHintSharpen:
+      'Makes edges a bit crisper. Mild is subtle; strong can add bright halos around sharp edges.',
     editorFieldEq: 'Color',
-    editorAriaEq: 'eq color preset',
-    editorHintEq: '`eq` runs after sharpen and before scale; preset whitelist only.',
-    editorFieldHue: 'Hue',
-    editorAriaHue: 'hue preset after eq',
-    editorHintHue: '`hue` right after `eq` and before grain §7.2.',
-    editorFieldGrain: 'Grain',
-    editorAriaGrain: 'noise grain preset',
-    editorHintGrain: '`noise` after `eq`/`hue` and before `scale`/`fps` §7.2.',
+    editorAriaEq: 'Simple color moods',
+    editorHintEq:
+      'Quick moods: warmer, cooler, brighter, or softer — handy for vibe without graphs.',
+    editorFieldHue: 'Hue & saturation',
+    editorAriaHue: 'Hue shift and saturation',
+    editorHintHue:
+      'Nudges the overall color cast or boosts saturation — useful if the image feels dull or overly neon.',
+    editorFieldGrain: 'Film grain',
+    editorAriaGrain: 'Grain overlay',
+    editorHintGrain:
+      'Adds subtle texture like film stock. Nice for stylized looks; usually off for clean documentary footage.',
     editorFieldVignette: 'Vignette',
-    editorAriaVignette: 'vignette preset',
-    editorHintVignette: '`vignette` after grain and before `scale`/`fps` §7.2.',
+    editorAriaVignette: 'Edge darkening',
+    editorHintVignette:
+      'Darkens corners to draw the eye to the center. Strong vignettes noticeably close in the frame.',
     editorFieldBlur: 'Blur',
-    editorAriaBlur: 'gblur blur preset',
-    editorHintBlur: '`gblur` after vignette and before `scale`/`fps` §7.2.',
+    editorAriaBlur: 'Light blur',
+    editorHintBlur:
+      'Softens detail evenly — like a slight missed focus. Can flatter portraits; usually bad for on-screen text.',
     editorFfmpegSectionFrameLayout: 'Layout',
     editorFfmpegSectionFrameLayoutHint:
-      'Scale, FPS, rotation/mirror, and crop relative to the source frame.',
+      'Frame size, frames per second, rotation, and crop before compression — match a platform before saving.',
     editorFieldResolution: 'Resolution',
-    editorAriaResolutionExport: 'Export resolution / scale',
-    editorFieldFps: 'FPS',
-    editorAriaFpsExport: 'Export FPS',
-    editorFpsOptionSource: 'Source FPS',
+    editorAriaResolutionExport: 'Output frame size',
+    editorFieldFps: 'Frames per second',
+    editorAriaFpsExport: 'Frame rate in the saved file',
+    editorFpsOptionSource: 'Match source',
     editorExportFpsOptionTemplate: '{value} fps',
-    editorTwoPassSpan: '2-pass libx264',
-    editorTwoPassPillLabel: 'Two-pass libx264 encoding',
+    editorTwoPassSpan: 'Two-pass',
+    editorTwoPassPillLabel: 'Two-pass encoding',
     editorTwoPassHint:
-      'Only H.264 (libx264) with a selected video bitrate (“Video” above); CRF and H.265 are not supported.',
+      'Only works with the widely compatible video format plus a fixed video size cap above. If you rely only on the fine quality slider or a space-saving format, the switch stays disabled.',
     editorFieldRotation: 'Rotate',
-    editorAriaRotationExport: 'Export rotation or mirror',
+    editorAriaRotationExport: 'Rotate or mirror',
     editorFieldCrop: 'Crop',
-    editorAriaCropExport: 'Export crop',
+    editorAriaCropExport: 'Crop template',
     editorFfmpegSectionAudio: 'Audio & frame',
-    editorFfmpegSectionAudioHint: 'Export audio track and frame snapshot options §7.',
+    editorFfmpegSectionAudioHint:
+      'Audio track, loudness, separate frame snapshots, and subtitle behavior in the finished file.',
     editorNoAudioSpan: 'No audio',
     editorNoAudioPillLabel: 'No audio',
-    editorNoAudioHint: 'Enable for a silent file or when audio will be added later.',
-    editorFieldAacBitrate: 'AAC bitrate',
-    editorAriaAacBitrate: 'Export AAC bitrate',
+    editorNoAudioHint:
+      'Turn on when the saved file should have no sound at all — bumpers or prep for voice-over elsewhere.',
+    editorFieldAacBitrate: 'Audio quality',
+    editorAriaAacBitrate: 'How rich the saved audio is',
     editorFieldAudioGain: 'Audio gain',
-    editorAriaAudioGain: 'Audio gain shift in dB',
-    editorHintAudioGain: 'Applied as `-filter:a volume=NdB`; ignored when “No audio”.',
-    editorFieldAudioNormalize: 'Normalization',
-    editorAriaAudioNormalize: 'Audio loudness normalization',
+    editorAriaAudioGain: 'Loudness shift',
+    editorHintAudioGain:
+      'Boosts or lowers the entire track. Ignored when “No audio” is enabled above.',
+    editorFieldAudioNormalize: 'Loudness leveling',
+    editorAriaAudioNormalize: 'Automatic loudness leveling',
     editorHintAudioNormalize:
-      'Merged with volume into one `-filter:a`: gain first, then normalize.',
+      'Pulls quiet and loud parts closer in perceived volume. “Broadcast” aims for steady radio-like levels; “dynamic” gently lifts whispers but can slightly change the “live” feel.',
     editorFieldSnapshotFormat: 'Snapshot format',
-    editorAriaSnapshotFormat: 'Frame snapshot format',
+    editorAriaSnapshotFormat: 'Still frame format',
     editorStripMetadataSpan: 'Strip metadata',
-    editorStripMetadataPillLabel: 'Strip container metadata',
+    editorStripMetadataPillLabel: 'Remove hidden file tags',
     editorStripMetadataHint:
-      'Adds `-map_metadata -1`: removes title/artist-like tags from the output.',
+      'Removes title, artist, cover art, and other hidden tags players show as “file info”.',
     editorStripChaptersSpan: 'Strip chapters',
-    editorStripChaptersPillLabel: 'Strip chapter markers',
-    editorStripChaptersHint: 'Adds `-map_chapters -1`: no chapters in the output file.',
+    editorStripChaptersPillLabel: 'Remove in-file chapters',
+    editorStripChaptersHint:
+      'Removes chapter jump points; the video/audio itself is not cut — only navigation markers.',
     editorFieldExportSubtitles: 'Subtitles',
-    editorAriaExportSubtitles: 'Subtitle handling on export',
+    editorAriaExportSubtitles: 'Keep text subtitles or not',
     editorHintExportSubtitles:
-      '“Drop” lets ffmpeg decide (usually drops). “Copy” uses `-c:s copy` on MKV and `-c:s mov_text` on MP4/MOV (text subs only).',
+      '“Do not keep” usually leaves only picture and sound. “Keep” tries to carry text subtitles; a few file types cannot hold them, so the track may still disappear.',
     editorSnapshotLastFile: 'Snapshot file',
     editorSnapshotLastFolder: 'Folder',
     editorCopy: 'Copy',
@@ -1442,7 +1743,10 @@ const UI_TEXT = {
     editorExportAudioNormDynaudnorm: 'Dynamic (dynaudnorm)',
     editorExportSnapshotPng: 'PNG frame',
     editorExportSnapshotJpg: 'JPEG frame',
-    editorExportUserPresetsMaxStatus: 'At most 8 user export presets.',
+    editorExportUserPresetsMaxStatus:
+      'At most 8 custom presets (built-in platform presets do not count).',
+    editorExportUserPresetsMaxTotalStatus:
+      'The preset list in settings is full — remove or clean up entries.',
     editorExportPresetDefaultName: 'My preset',
     editorExportPresetDialogTitleCreate: 'New export preset',
     editorExportPresetDialogTitleRename: 'Preset name',
@@ -1450,7 +1754,8 @@ const UI_TEXT = {
       'The name is stored only in FluxAlloy settings and helps you return quickly to this FFmpeg parameter set.',
     editorExportPresetNameLabel: 'Name',
     editorExportPresetErrorEmpty: 'Enter a preset name.',
-    editorExportPresetErrorMax: 'At most 8 user export presets.',
+    editorExportPresetErrorMax: 'At most 8 custom presets (built-ins do not count).',
+    editorExportPresetErrorMaxTotal: 'The preset list in settings is full.',
     editorEnginePathsDialogTitle: 'Engine paths',
     editorEnginePathsDialogHint:
       'A full path to each executable overrides the bundled directory and downloads in userData/bin. Leave empty and save to reset to auto-discovery.',
@@ -1470,11 +1775,11 @@ const UI_TEXT = {
     statusVideoMediaErrSrcNotSupported: 'format not supported',
     statusVideoMediaErrUnknown: 'unknown error',
     statusVideoPlayFailed: 'Could not play video: {detail}',
-    statusVideoDirectOpenFailedBlobTrying:
-      'Direct playback failed; trying a safe blob fallback…',
+    statusVideoDirectOpenFailedBlobTrying: 'Direct playback failed; trying a safe blob fallback…',
     statusVideoBlobFallbackActive: 'Switched preview to blob fallback.',
     statusVideoPlayFailedAfterFallback:
       'Could not play video: {detail}; blob fallback also failed.',
+    statusPreviewProbeFailedTemplate: 'ffprobe metadata unavailable: {error}',
     statusDownloadsUrlsAdded: 'Added URLs: {n}',
     statusDownloadsQueueNoUrlsParsed: 'No URLs found for the queue.',
     statusDownloadOpenEditorWorking: 'Downloading the first URL from the field…',
@@ -1518,7 +1823,7 @@ const UI_TEXT = {
     downloadsQueueRowStatusRetryUnknown: 'Retry pause',
     editorFfmpegSectionPresets: 'Presets',
     editorFfmpegSectionPresetsHint:
-      'Saved export setting snapshots; buttons update the preset list in settings.',
+      'Built-ins for TikTok, YouTube, Shorts, VK, Reels, Telegram, Discord, iPhone, and archive, plus your saved mixes. Built-in rows cannot be renamed or deleted.',
     editorFieldUserPreset: 'User preset',
     editorAriaUserPreset: 'User export preset',
     editorUserPresetPlaceholder: 'Preset: —',
@@ -1526,12 +1831,15 @@ const UI_TEXT = {
     editorPresetRename: 'Rename',
     editorPresetOverwrite: 'Overwrite',
     editorPresetDelete: 'Delete',
+    editorBuiltinPresetLockedHint:
+      'Built-in presets cannot be renamed, overwritten, or deleted — save your own preset.',
     editorFfmpegSectionOutput: 'Output',
     editorFfmpegSectionOutputHint:
-      'Argv preview, export via Save dialog, and quick actions on the last file.',
-    editorExportCommandPreviewSummary: 'ffmpeg command preview',
-    editorAriaExportFfmpegCommand: 'ffmpeg command',
-    editorCopyFfmpegCommandTitle: 'Copy the ffmpeg command line to the clipboard',
+      'See how the save command is built; the Export button opens a Save dialog; below are quick actions for the last finished file.',
+    editorExportCommandPreviewSummary: 'Save command preview',
+    editorAriaExportFfmpegCommand: 'Save command text',
+    editorCopyFfmpegCommandTitle:
+      'Copy the command text to the clipboard — handy to rerun manually or share with support.',
     editorExportLastFile: 'File',
     editorExportLastFolder: 'Folder',
     editorCopyExportPath: 'Copy path',
@@ -1544,13 +1852,11 @@ const UI_TEXT = {
     editorExportPreviewHintTrimAppliedTemplate: 'In/Out markers applied: -ss {in} -t {t}.',
     editorExportPreviewHintTrimFull:
       'Markers cover almost the entire file — ffmpeg runs without -ss/-t.',
-    editorExportPreviewHintTrimWaiting:
-      'In/Out markers appear once the timeline reports a range.',
+    editorExportPreviewHintTrimWaiting: 'In/Out markers appear once the timeline reports a range.',
     inspectorStandaloneBrandAria: 'FluxAlloy inspector',
     inspectorStandaloneHeaderTitle: 'Inspector',
     inspectorStandaloneTopbarEngineLabel: 'ffprobe',
-    inspectorStandaloneOpenPickTitle:
-      'Pick a local media file (same allowlist as preview)',
+    inspectorStandaloneOpenPickTitle: 'Pick a local media file (same allowlist as preview)',
     inspectorStandaloneOpenVisuallyHidden: 'Open file…',
     inspectorStandaloneFfprobeRefreshTitle: 'Run ffprobe again for the current file',
     inspectorStandaloneFfprobeRefreshDisabledTitle: 'No file to refresh',
@@ -1615,8 +1921,7 @@ const UI_TEXT = {
     probeThChapterDuration: 'Duration',
     probeThChapterTitle: 'Title',
     probeSectionRawJson: 'ffprobe JSON',
-    probeRawJsonHint:
-      'Read-only output; copy or save it for support or an external parser.',
+    probeRawJsonHint: 'Read-only output; copy or save it for support or an external parser.',
     probeCopyJsonButton: 'Copy JSON',
     probeSaveJsonButton: 'Save JSON…',
     probeRawJsonPreAria: 'Raw ffprobe JSON',
@@ -1652,8 +1957,7 @@ const UI_TEXT = {
       'Current time; frame index estimated from stream frame rate in the track row',
     videoTimelinePositionLabel: 'Position:',
     videoTimelineFrameApproxSuffixTemplate: ' · frame ~{frame}',
-    videoTimelineMarkersOutsideWindowTitle:
-      'In/Out is outside the current window — zoom out.',
+    videoTimelineMarkersOutsideWindowTitle: 'In/Out is outside the current window — zoom out.',
     videoTimelineMarkerStripAria: 'Export range (In–Out): drag on the track to select',
     videoTimelineMarkerStripDragTitle:
       'Drag on the track to select a range; a short click seeks to that time',
@@ -1683,7 +1987,14 @@ const UI_TEXT = {
     videoTimelineBadgeInAriaTemplate: 'In marker at {t}',
     videoTimelineBadgeOutAriaTemplate: 'Out marker at {t}',
     videoTimelineTrimDurationToolbar: 'Duration: {span}',
-    videoTimelineFooterAria: 'ffprobe summary and playback position',
+    videoTimelineToolbarCenterTitle: 'Selected range duration and current playback position',
+    videoTimelineStartExport: 'Start export',
+    videoTimelineStartExportTitle: 'Export with current FFmpeg settings (pick save location)',
+    videoTimelineSaveFrame: 'Save frame',
+    videoTimelineSaveFrameBusy: 'Saving frame…',
+    videoTimelineSaveFrameTitle:
+      'Save the current frame to a separate image file. Format (PNG/JPEG, etc.) is in the right panel under Audio & frame.',
+    videoTimelineFooterAria: 'Short video and audio summary from file analysis',
     previewTransportToolbarAria: 'Preview transport',
     previewTransportMinusSecTitle: 'Minus {sec} s',
     previewTransportPlusSecTitle: 'Plus {sec} s',

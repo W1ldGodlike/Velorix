@@ -89,9 +89,9 @@ describe('processing-history', () => {
     expect(readProcessingHistoryNewestFirst(root, { kind: 'autoExport' }).map((e) => e.id)).toEqual(
       ['auto-ok']
     )
-    expect(readProcessingHistoryNewestFirst(root, { outcome: 'error' }).map((e) => e.id)).toEqual(
-      ['export-fail']
-    )
+    expect(readProcessingHistoryNewestFirst(root, { outcome: 'error' }).map((e) => e.id)).toEqual([
+      'export-fail'
+    ])
     expect(
       readProcessingHistoryNewestFirst(root, { query: 'cat-export' }).map((e) => e.id)
     ).toEqual(['auto-ok'])

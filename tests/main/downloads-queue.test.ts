@@ -17,7 +17,9 @@ afterEach(() => {
 
 describe('enqueue first URL from block', () => {
   it('extractFirstQueueUrlLine берёт первую подходящую строку', () => {
-    expect(extractFirstQueueUrlLine(' \nhttps://a.test/x\nhttps://b.test/y')).toBe('https://a.test/x')
+    expect(extractFirstQueueUrlLine(' \nhttps://a.test/x\nhttps://b.test/y')).toBe(
+      'https://a.test/x'
+    )
     expect(extractFirstQueueUrlLine('not a url')).toBeNull()
   })
 

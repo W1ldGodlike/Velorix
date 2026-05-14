@@ -176,12 +176,15 @@ export async function downloadEnginesWindows(
     percent: 0
   })
 
-  await downloadToFile(ENGINE_SOURCES_WINDOWS.ytDlpExeUrl, ytdlpTarget, (pct) =>
-    onProgress({
-      phase: 'yt-dlp',
-      message: S.engineDownloadYtDlpProgress,
-      percent: pct < 0 ? -1 : pct
-    }),
+  await downloadToFile(
+    ENGINE_SOURCES_WINDOWS.ytDlpExeUrl,
+    ytdlpTarget,
+    (pct) =>
+      onProgress({
+        phase: 'yt-dlp',
+        message: S.engineDownloadYtDlpProgress,
+        percent: pct < 0 ? -1 : pct
+      }),
     locale
   )
 
@@ -208,12 +211,15 @@ export async function downloadEnginesWindows(
       percent: 0
     })
     try {
-      await downloadToFile(source.url, zipTemp, (pct) =>
-        onProgress({
-          phase: 'ffmpeg-zip',
-          message: ffmpegProgressMsg,
-          percent: pct < 0 ? -1 : pct
-        }),
+      await downloadToFile(
+        source.url,
+        zipTemp,
+        (pct) =>
+          onProgress({
+            phase: 'ffmpeg-zip',
+            message: ffmpegProgressMsg,
+            percent: pct < 0 ? -1 : pct
+          }),
         locale
       )
       const zipHash = trustedHashForFfmpegZipWin(trusted, source.id)

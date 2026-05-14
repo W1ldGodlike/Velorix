@@ -17,7 +17,10 @@ export function isYtdlpQueueStatusWaiting(status: string): boolean {
 }
 
 export function isYtdlpQueueStatusRunningLike(status: string): boolean {
-  return status === YTDLP_QUEUE_STATUS_RUNNING || status.startsWith(YTDLP_QUEUE_STATUS_RETRY_PAUSE_PREFIX)
+  return (
+    status === YTDLP_QUEUE_STATUS_RUNNING ||
+    status.startsWith(YTDLP_QUEUE_STATUS_RETRY_PAUSE_PREFIX)
+  )
 }
 
 export function isYtdlpQueueStatusDone(status: string): boolean {
@@ -36,7 +39,9 @@ const RETRY_PAUSE_NUMBERS_RE = new RegExp(
   `^${YTDLP_QUEUE_STATUS_RETRY_PAUSE_PREFIX.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\((\\d+)/(\\d+)\\)`
 )
 
-export function parseYtdlpQueueRetryPauseCounts(status: string): { cur: string; max: string } | null {
+export function parseYtdlpQueueRetryPauseCounts(
+  status: string
+): { cur: string; max: string } | null {
   const m = RETRY_PAUSE_NUMBERS_RE.exec(status)
   if (!m?.[1] || !m[2]) {
     return null

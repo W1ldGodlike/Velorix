@@ -109,14 +109,12 @@ const RU: DownloadsWindowIpcStrings = {
   failedToResetRow: 'Не удалось сбросить строку',
   mergeUiPanelsNotConnected: 'Сохранение раскладки панелей не подключено.',
   mainWindowNotFound: 'Главное окно редактора не найдено.',
-  downloadAlreadyRunning:
-    'Уже выполняется загрузка. Отмените текущую или дождитесь окончания.',
+  downloadAlreadyRunning: 'Уже выполняется загрузка. Отмените текущую или дождитесь окончания.',
   downloadOpenEditorNotReady:
     'Загрузка не завершилась успешно — файл в редактор не открыт. Текущий статус строки:',
   noWaitingRowsInQueue: 'В очереди нет строк со статусом «Ожидание».',
   startRowOnlyWaiting: 'Старт доступен только для строк со статусом «Ожидание».',
-  pauseOsUnsupported:
-    'Пауза процесса yt-dlp на этой ОС не поддерживается (нужны SIGSTOP/SIGCONT).',
+  pauseOsUnsupported: 'Пауза процесса yt-dlp на этой ОС не поддерживается (нужны SIGSTOP/SIGCONT).',
   noActiveYtdlpDownload: 'Нет активной загрузки yt-dlp.',
   ytdlpAlreadyPaused: 'Загрузка уже приостановлена.',
   ytdlpNotPaused: 'Загрузка не на паузе.',
@@ -169,14 +167,12 @@ const EN: DownloadsWindowIpcStrings = {
   failedToResetRow: 'Failed to reset the row',
   mergeUiPanelsNotConnected: 'Panel layout persistence is not connected.',
   mainWindowNotFound: 'Main editor window not found.',
-  downloadAlreadyRunning:
-    'A download is already running. Cancel it or wait until it finishes.',
+  downloadAlreadyRunning: 'A download is already running. Cancel it or wait until it finishes.',
   downloadOpenEditorNotReady:
     'Download did not finish successfully — the file was not opened in the editor. Row status:',
   noWaitingRowsInQueue: 'There are no rows waiting in the queue.',
   startRowOnlyWaiting: 'Start is only available for rows in the waiting state.',
-  pauseOsUnsupported:
-    'Pausing yt-dlp is not supported on this OS (SIGSTOP/SIGCONT required).',
+  pauseOsUnsupported: 'Pausing yt-dlp is not supported on this OS (SIGSTOP/SIGCONT required).',
   noActiveYtdlpDownload: 'No active yt-dlp download.',
   ytdlpAlreadyPaused: 'Download is already paused.',
   ytdlpNotPaused: 'Download is not paused.',
@@ -184,6 +180,8 @@ const EN: DownloadsWindowIpcStrings = {
   logYtdlpResumedSigcont: '[FluxAlloy] yt-dlp process resumed (SIGCONT).'
 }
 
-export function getDownloadsWindowIpcStrings(locale: DownloadsWindowUiLocale): DownloadsWindowIpcStrings {
+export function getDownloadsWindowIpcStrings(
+  locale: DownloadsWindowUiLocale
+): DownloadsWindowIpcStrings {
   return locale === 'en' ? EN : RU
 }

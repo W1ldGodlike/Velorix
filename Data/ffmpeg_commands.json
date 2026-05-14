@@ -1,61 +1,415 @@
 [
-  {"token":"-i","summary":"Входной файл(ы); может повторяться для склейки/маппинга.","examples":["ffmpeg -i input.mp4 -c copy out.mkv"],"docUrl":"https://ffmpeg.org/ffmpeg.html#Main-options","tool":"ffmpeg"},
-  {"token":"-c:v","summary":"Выбор видеокодека потока: libx264, libx265, copy (без перекодирования).","examples":["ffmpeg -i in.mkv -c:v libx264 -crf 20 out.mp4"],"docUrl":"https://ffmpeg.org/ffmpeg.html#Stream-selection","tool":"ffmpeg"},
-  {"token":"libx264","summary":"Кодек H.264 программный; универсальный выбор качества через CRF/preset.","examples":["ffmpeg -i in.mp4 -c:v libx264 -preset slow -crf 18 out.mp4"],"docUrl":"https://trac.ffmpeg.org/wiki/Encode/H.264","tool":"ffmpeg"},
-  {"token":"libx265","summary":"Кодек H.265 (HEVC); лучше сжатие при большей нагрузке на CPU.","examples":["ffmpeg -i in.mp4 -c:v libx265 -crf 22 out.mkv"],"docUrl":"https://trac.ffmpeg.org/wiki/Encode/H.265","tool":"ffmpeg"},
-  {"token":"-c:a","summary":"Аудиокодек: aac, libopus, copy.","examples":["ffmpeg -i in.mp4 -c:a aac -b:a 192k out.mp4"],"docUrl":"https://ffmpeg.org/ffmpeg.html#Stream-selection","tool":"ffmpeg"},
-  {"token":"aac","summary":"AAC из коробки ffmpeg; подходит для MP4.","examples":["ffmpeg -i in.wav -c:a aac out.m4a"],"docUrl":"https://trac.ffmpeg.org/wiki/Encode/AAC","tool":"ffmpeg"},
-  {"token":"-crf","summary":"Постоянное качество (VP9/x264/x265): меньше — лучше картинка, больше файл.","examples":["ffmpeg -i in.mp4 -c:v libx264 -crf 20 out.mp4"],"docUrl":"https://trac.ffmpeg.org/wiki/Encode/H.264#crf","tool":"ffmpeg"},
-  {"token":"-preset","summary":"Скорость кодирования x264/x265: ultrafast…veryslow.","examples":["ffmpeg -c:v libx264 -preset slow"],"docUrl":"https://trac.ffmpeg.org/wiki/Encode/H.264#preset","tool":"ffmpeg"},
-  {"token":"-vf","summary":"Цепочка видеофильтров: scale, crop, format=…","examples":["ffmpeg -vf scale=1280:-2"],"docUrl":"https://ffmpeg.org/ffmpeg-filters.html#Video-Filters","tool":"ffmpeg"},
-  {"token":"scale","summary":"Масштаб: scale=ширина:высота или -2 для сохранения пропорций.","examples":["ffmpeg -vf scale=1920:-2"],"docUrl":"https://ffmpeg.org/ffmpeg-filters.html#scale-1","tool":"ffmpeg"},
-  {"token":"-ss","summary":"Начало обрезки по времени (до или после -i влияет на скорость).","examples":["ffmpeg -ss 00:01:30 -i in.mp4 -c copy clip.mp4"],"docUrl":"https://ffmpeg.org/ffmpeg.html#Main-options","tool":"ffmpeg"},
-  {"token":"-to","summary":"Конечная точка или длительность отсечения дорожки (зависит от позиции -i).","examples":["ffmpeg -i in.mp4 -ss 10 -to 60 -c copy out.mp4"],"docUrl":"https://ffmpeg.org/ffmpeg.html#Main-options","tool":"ffmpeg"},
-  {"token":"-t","summary":"Длительность вывода от текущей позиции в сек/units.","examples":["ffmpeg -i in.mp4 -ss 120 -t 30 -c copy out.mp4"],"docUrl":"https://ffmpeg.org/ffmpeg.html#Main-options","tool":"ffmpeg"},
-  {"token":"copy","summary":"Стрим-копирование без перекодирования (.mp4 может требовать -movflags faststart как отдельный шаг).","examples":["ffmpeg -i in.mkv -c copy out.mp4"],"docUrl":"https://ffmpeg.org/ffmpeg.html#Stream-copy","tool":"ffmpeg"},
-  {"token":"-threads","summary":"Число потоков ffmpeg; 1 экономит ресурсы.","examples":["ffmpeg -threads 1 -i in.mp4 out.mp4"],"docUrl":"https://ffmpeg.org/ffmpeg.html#Advanced-options","tool":"ffmpeg"},
-  {"token":"-y","summary":"Перезаписать выход без запроса.","examples":["ffmpeg -y -i in.mp4 out.mp4"],"docUrl":"https://ffmpeg.org/ffmpeg.html#Main-options","tool":"ffmpeg"},
-  {"token":"-map","summary":"Выбор потоков (видео/аудио/суб) по индексу из входов.","examples":["ffmpeg -i a.mp4 -i b.mp4 -map 0:v -map 1:a"],"docUrl":"https://ffmpeg.org/ffmpeg.html#Stream-mapping","tool":"ffmpeg"},
-  {"token":"-vn","summary":"Отключить видео на выходе (только аудио).","examples":["ffmpeg -i in.mp4 -vn -c:a copy out.m4a"],"docUrl":"https://ffmpeg.org/ffmpeg.html#Video-options","tool":"ffmpeg"},
-  {"token":"-an","summary":"Отключить аудио на выходе.","examples":["ffmpeg -an -i in.mp4 out.mp4"],"docUrl":"https://ffmpeg.org/ffmpeg.html#Audio-options","tool":"ffmpeg"},
-  {"token":"h264_nvenc","summary":"Аппаратный H.264 NVIDIA через NVENC.","examples":["ffmpeg -i in.mp4 -c:v h264_nvenc -cq 21 out.mp4"],"docUrl":"https://trac.ffmpeg.org/wiki/HWAccelIntro","tool":"ffmpeg"},
-  {"token":"hevc_nvenc","summary":"Аппаратный HEVC NVIDIA NVENC.","examples":["ffmpeg -i in.mp4 -c:v hevc_nvenc -cq 23 out.mkv"],"docUrl":"https://trac.ffmpeg.org/wiki/HWAccelIntro","tool":"ffmpeg"},
-  {"token":"h264_qsv","summary":"Intel Quick Sync H.264.","examples":["ffmpeg -hwaccel qsv -i in.mp4 -c:v h264_qsv out.mp4"],"docUrl":"https://trac.ffmpeg.org/wiki/Hardware/QuickSync","tool":"ffmpeg"},
-  {"token":"hevc_qsv","summary":"Intel Quick Sync HEVC.","examples":["ffmpeg -hwaccel qsv -i in.mp4 -c:v hevc_qsv out.mp4"],"docUrl":"https://trac.ffmpeg.org/wiki/Hardware/QuickSync","tool":"ffmpeg"},
-  {"token":"h264_amf","summary":"AMD AMF H.264.","examples":["ffmpeg -i in.mp4 -c:v h264_amf -quality balanced out.mp4"],"docUrl":"https://trac.ffmpeg.org/wiki/HWAccelIntro","tool":"ffmpeg"},
-  {"token":"hevc_amf","summary":"AMD AMF HEVC.","examples":["ffmpeg -i in.mp4 -c:v hevc_amf out.mp4"],"docUrl":"https://trac.ffmpeg.org/wiki/HWAccelIntro","tool":"ffmpeg"},
-  {"token":"-pix_fmt","summary":"Формат пикселей выхода yuv420p10le, yuv420p…","examples":["ffmpeg -pix_fmt yuv420p"],"docUrl":"https://ffmpeg.org/ffmpeg.html#Video-options","tool":"ffmpeg"},
-  {"token":"yuv420p","summary":"Стандарт 8-бит для совместимого H.264/HEVC потребителей.","examples":["ffmpeg -vf format=yuv420p"],"docUrl":"https://trac.ffmpeg.org/wiki/ChromaSubsampling","tool":"ffmpeg"},
-  {"token":"-vsync","summary":"Стратегия синхронизации кадров: cfr,vfr,passthrough.","examples":["ffmpeg -vsync cfr"],"docUrl":"https://ffmpeg.org/ffmpeg.html#Advanced-options","tool":"ffmpeg"},
-  {"token":"eq","summary":"Яркость/контраст/насыщение: eq=brightness=…","examples":["ffmpeg -vf eq=brightness=0.02:contrast=1.1"],"docUrl":"https://ffmpeg.org/ffmpeg-filters.html#eq","tool":"ffmpeg"},
-  {"token":"yadif","summary":"Yet Another DeInterlacing Filter.","examples":["ffmpeg -vf yadif=1:-1:0"],"docUrl":"https://ffmpeg.org/ffmpeg-filters.html#yadif-1","tool":"ffmpeg"},
-  {"token":"bwdif","summary":"Bob Weaver Deinterlacing.","examples":["ffmpeg -vf bwdif=mode=send_field"],"docUrl":"https://ffmpeg.org/ffmpeg-filters.html#bwdif","tool":"ffmpeg"},
-  {"token":"lut3d","summary":"Применить 3D LUT (.cube).","examples":["ffmpeg -vf lut3d=file='C:/lut.cube'"],"docUrl":"https://ffmpeg.org/ffmpeg-filters.html#lut3d-1","tool":"ffmpeg"},
-  {"token":"subtitles","summary":"Поджечь текстовые субтитры в кадр.","examples":["ffmpeg -vf subtitles='C:/sub.srt'"],"docUrl":"https://ffmpeg.org/ffmpeg-filters.html#subtitles-1","tool":"ffmpeg"},
-  {"token":"zscale","summary":"Масштабирование/цвет zscale перед tonemap HDR.","examples":["ffmpeg -vf zscale=t=linear:npl=100,format=gbrpf32le"],"docUrl":"https://ffmpeg.org/ffmpeg-filters.html#zscale-1","tool":"ffmpeg"},
-  {"token":"tonemap","summary":"Тонмаппер HDR→SDR: reinhard, mobius…","examples":["ffmpeg -vf zscale,...,tonemap=reinhard,format=yuv420p"],"docUrl":"https://ffmpeg.org/ffmpeg-filters.html#tonemap-1","tool":"ffmpeg"},
-  {"token":"-movflags","summary":"Muxer flags: faststart для веб-потока MP4.","examples":["ffmpeg -movflags +faststart"],"docUrl":"https://ffmpeg.org/ffmpeg-formats.html#mov_002c-mp4_002c-ismv","tool":"ffmpeg"},
-  {"token":"faststart","summary":"Разнести moov атом для быстрого старта воспроизведения по сети.","examples":["ffmpeg -movflags +faststart"],"docUrl":"https://trac.ffmpeg.org/wiki/Encode/H.264#faststartforwebvideo","tool":"ffmpeg"},
-  {"token":"libopus","summary":"Opus кодек высокого сжатия для WebM/MKA.","examples":["ffmpeg -c:a libopus -b:a 128k"],"docUrl":"https://trac.ffmpeg.org/wiki/Encode/Opus","tool":"ffmpeg"},
-  {"token":"libsvtav1","summary":"SVT-AV1 программный AV1.","examples":["ffmpeg -c:v libsvtav1 -crf 30"],"docUrl":"https://trac.ffmpeg.org/wiki/Encode/AV1","tool":"ffmpeg"},
-  {"token":"-b:a","summary":"Битрейт аудио.","examples":["ffmpeg -c:a aac -b:a 192k"],"docUrl":"https://ffmpeg.org/ffmpeg.html#Audio-options","tool":"ffmpeg"},
-  {"token":"-ar","summary":"Частота дискретизации аудио на выходе.","examples":["ffmpeg -ar 48000"],"docUrl":"https://ffmpeg.org/ffmpeg.html#Audio-options","tool":"ffmpeg"},
-  {"token":"-ac","summary":"Число каналов (2 стерео).","examples":["ffmpeg -ac 2"],"docUrl":"https://ffmpeg.org/ffmpeg.html#Audio-options","tool":"ffmpeg"},
-  {"token":"-shortest","summary":"Закончить при конце самого короткого входа.","examples":["ffmpeg -i a.mp4 -i b.wav -shortest out.mp4"],"docUrl":"https://ffmpeg.org/ffmpeg.html#Advanced-options","tool":"ffmpeg"},
-  {"token":"-avoid_negative_ts","summary":"Сдвиг временных меток при stream copy.","examples":["ffmpeg -avoid_negative_ts make_zero"],"docUrl":"https://ffmpeg.org/ffmpeg.html#Advanced-options","tool":"ffmpeg"},
-  {"token":"-reset_timestamps","summary":"Сбросить PTS на фильтрных/потоковых графах.","examples":["ffmpeg -reset_timestamps 1"],"docUrl":"https://ffmpeg.org/ffmpeg.html#Advanced-options","tool":"ffmpeg"},
-  {"token":"-hwaccel","summary":"Декод ускорение: cuda, qsv, d3d11va…","examples":["ffmpeg -hwaccel cuda -i in.mp4"],"docUrl":"https://trac.ffmpeg.org/wiki/HWAccelIntro","tool":"ffmpeg"},
-  {"token":"-filter_complex","summary":"Граф фильтров с несколькими входами; для overlay, concat filter, смешение аудио.","examples":["ffmpeg -filter_complex \"[0:v][1:v]hstack\" -map \"[out]\" out.mp4"],"docUrl":"https://ffmpeg.org/ffmpeg-filters.html","tool":"ffmpeg"},
-  {"token":"fps","summary":"Фильтр fps=… задаёт постоянную частоту кадров на выходе фильтра.","examples":["ffmpeg -vf fps=30"],"docUrl":"https://ffmpeg.org/ffmpeg-filters.html","tool":"ffmpeg"},
-  {"token":"format","summary":"Подфильтр format=pix_fmts:yuv420p выравнивает пиксельный формат.","examples":["ffmpeg -vf format=yuv420p"],"docUrl":"https://ffmpeg.org/ffmpeg-filters.html","tool":"ffmpeg"},
-  {"token":"crop","summary":"Обрезка кадра: crop=w:h:x:y в пикселях от левого-верха.","examples":["ffmpeg -vf crop=1920:800:0:140"],"docUrl":"https://ffmpeg.org/ffmpeg-filters.html","tool":"ffmpeg"},
-  {"token":"transpose","summary":"Поворот/отражение: transpose=2 для 90° по часовой.","examples":["ffmpeg -vf transpose=2"],"docUrl":"https://ffmpeg.org/ffmpeg-filters.html","tool":"ffmpeg"},
-  {"token":"loudnorm","summary":"Единый уровень громкости (EBU R128) по измерениям входа — двухпроходный режим возможен.","examples":["ffmpeg -af loudnorm=I=-16:TP=-1.5"],"docUrl":"https://trac.ffmpeg.org/wiki/Normalization","tool":"ffmpeg"},
-  {"token":"agate","summary":"Подавление шума/гейт на аудио.","examples":["ffmpeg -af agate"],"docUrl":"https://ffmpeg.org/ffmpeg-filters.html","tool":"ffmpeg"},
-  {"token":"dynaudnorm","summary":"Динамическая нормализация громкости по окну.","examples":["ffmpeg -af dynaudnorm"],"docUrl":"https://ffmpeg.org/ffmpeg-filters.html","tool":"ffmpeg"},
-  {"token":"pan","summary":"Ремаппинг каналов аудио: pan=stereo|c0<c0+c1.","examples":["ffmpeg -af pan=mono|c0=FL"],"docUrl":"https://ffmpeg.org/ffmpeg-filters.html","tool":"ffmpeg"},
-  {"token":"-strict","summary":"Строгость экспериментальных кодеков/режимов (unofficial).","examples":["ffmpeg -strict -2"],"docUrl":"https://ffmpeg.org/ffmpeg.html","tool":"ffmpeg"},
-  {"token":"-max_muxing_queue_size","summary":"Размер очереди mux при сложных фильтрах (иногда нужен при concat).","examples":["ffmpeg -max_muxing_queue_size 1024"],"docUrl":"https://ffmpeg.org/ffmpeg.html","tool":"ffmpeg"},
-  {"token":"concat","summary":"Либо demuxer concat:text file, либо фильтр concat для склейки сегментов.","examples":["ffmpeg -f concat -safe 0 -i list.txt -c copy out.mp4"],"docUrl":"https://trac.ffmpeg.org/wiki/Concatenate","tool":"ffmpeg"},
-  {"token":"-af","summary":"Цепочка аудиофильтров: loudnorm, apad, highpass так же как -vf для видео.","examples":["ffmpeg -i in.mp4 -af loudnorm=I=-16 out.wav"],"docUrl":"https://ffmpeg.org/ffmpeg.html#Audio-options","tool":"ffmpeg"}
+  {
+    "token": "-i",
+    "summary": "Входной файл(ы); может повторяться для склейки/маппинга.",
+    "examples": ["ffmpeg -i input.mp4 -c copy out.mkv"],
+    "docUrl": "https://ffmpeg.org/ffmpeg.html#Main-options",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-c:v",
+    "summary": "Выбор видеокодека потока: libx264, libx265, copy (без перекодирования).",
+    "examples": ["ffmpeg -i in.mkv -c:v libx264 -crf 20 out.mp4"],
+    "docUrl": "https://ffmpeg.org/ffmpeg.html#Stream-selection",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "libx264",
+    "summary": "Кодек H.264 программный; универсальный выбор качества через CRF/preset.",
+    "examples": ["ffmpeg -i in.mp4 -c:v libx264 -preset slow -crf 18 out.mp4"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/Encode/H.264",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "libx265",
+    "summary": "Кодек H.265 (HEVC); лучше сжатие при большей нагрузке на CPU.",
+    "examples": ["ffmpeg -i in.mp4 -c:v libx265 -crf 22 out.mkv"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/Encode/H.265",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-c:a",
+    "summary": "Аудиокодек: aac, libopus, copy.",
+    "examples": ["ffmpeg -i in.mp4 -c:a aac -b:a 192k out.mp4"],
+    "docUrl": "https://ffmpeg.org/ffmpeg.html#Stream-selection",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "aac",
+    "summary": "AAC из коробки ffmpeg; подходит для MP4.",
+    "examples": ["ffmpeg -i in.wav -c:a aac out.m4a"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/Encode/AAC",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-crf",
+    "summary": "Постоянное качество (VP9/x264/x265): меньше — лучше картинка, больше файл.",
+    "examples": ["ffmpeg -i in.mp4 -c:v libx264 -crf 20 out.mp4"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/Encode/H.264#crf",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-preset",
+    "summary": "Скорость кодирования x264/x265: ultrafast…veryslow.",
+    "examples": ["ffmpeg -c:v libx264 -preset slow"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/Encode/H.264#preset",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-vf",
+    "summary": "Цепочка видеофильтров: scale, crop, format=…",
+    "examples": ["ffmpeg -vf scale=1280:-2"],
+    "docUrl": "https://ffmpeg.org/ffmpeg-filters.html#Video-Filters",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "scale",
+    "summary": "Масштаб: scale=ширина:высота или -2 для сохранения пропорций.",
+    "examples": ["ffmpeg -vf scale=1920:-2"],
+    "docUrl": "https://ffmpeg.org/ffmpeg-filters.html#scale-1",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-ss",
+    "summary": "Начало обрезки по времени (до или после -i влияет на скорость).",
+    "examples": ["ffmpeg -ss 00:01:30 -i in.mp4 -c copy clip.mp4"],
+    "docUrl": "https://ffmpeg.org/ffmpeg.html#Main-options",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-to",
+    "summary": "Конечная точка или длительность отсечения дорожки (зависит от позиции -i).",
+    "examples": ["ffmpeg -i in.mp4 -ss 10 -to 60 -c copy out.mp4"],
+    "docUrl": "https://ffmpeg.org/ffmpeg.html#Main-options",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-t",
+    "summary": "Длительность вывода от текущей позиции в сек/units.",
+    "examples": ["ffmpeg -i in.mp4 -ss 120 -t 30 -c copy out.mp4"],
+    "docUrl": "https://ffmpeg.org/ffmpeg.html#Main-options",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "copy",
+    "summary": "Стрим-копирование без перекодирования (.mp4 может требовать -movflags faststart как отдельный шаг).",
+    "examples": ["ffmpeg -i in.mkv -c copy out.mp4"],
+    "docUrl": "https://ffmpeg.org/ffmpeg.html#Stream-copy",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-threads",
+    "summary": "Число потоков ffmpeg; 1 экономит ресурсы.",
+    "examples": ["ffmpeg -threads 1 -i in.mp4 out.mp4"],
+    "docUrl": "https://ffmpeg.org/ffmpeg.html#Advanced-options",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-y",
+    "summary": "Перезаписать выход без запроса.",
+    "examples": ["ffmpeg -y -i in.mp4 out.mp4"],
+    "docUrl": "https://ffmpeg.org/ffmpeg.html#Main-options",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-map",
+    "summary": "Выбор потоков (видео/аудио/суб) по индексу из входов.",
+    "examples": ["ffmpeg -i a.mp4 -i b.mp4 -map 0:v -map 1:a"],
+    "docUrl": "https://ffmpeg.org/ffmpeg.html#Stream-mapping",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-vn",
+    "summary": "Отключить видео на выходе (только аудио).",
+    "examples": ["ffmpeg -i in.mp4 -vn -c:a copy out.m4a"],
+    "docUrl": "https://ffmpeg.org/ffmpeg.html#Video-options",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-an",
+    "summary": "Отключить аудио на выходе.",
+    "examples": ["ffmpeg -an -i in.mp4 out.mp4"],
+    "docUrl": "https://ffmpeg.org/ffmpeg.html#Audio-options",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "h264_nvenc",
+    "summary": "Аппаратный H.264 NVIDIA через NVENC.",
+    "examples": ["ffmpeg -i in.mp4 -c:v h264_nvenc -cq 21 out.mp4"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/HWAccelIntro",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "hevc_nvenc",
+    "summary": "Аппаратный HEVC NVIDIA NVENC.",
+    "examples": ["ffmpeg -i in.mp4 -c:v hevc_nvenc -cq 23 out.mkv"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/HWAccelIntro",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "h264_qsv",
+    "summary": "Intel Quick Sync H.264.",
+    "examples": ["ffmpeg -hwaccel qsv -i in.mp4 -c:v h264_qsv out.mp4"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/Hardware/QuickSync",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "hevc_qsv",
+    "summary": "Intel Quick Sync HEVC.",
+    "examples": ["ffmpeg -hwaccel qsv -i in.mp4 -c:v hevc_qsv out.mp4"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/Hardware/QuickSync",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "h264_amf",
+    "summary": "AMD AMF H.264.",
+    "examples": ["ffmpeg -i in.mp4 -c:v h264_amf -quality balanced out.mp4"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/HWAccelIntro",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "hevc_amf",
+    "summary": "AMD AMF HEVC.",
+    "examples": ["ffmpeg -i in.mp4 -c:v hevc_amf out.mp4"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/HWAccelIntro",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-pix_fmt",
+    "summary": "Формат пикселей выхода yuv420p10le, yuv420p…",
+    "examples": ["ffmpeg -pix_fmt yuv420p"],
+    "docUrl": "https://ffmpeg.org/ffmpeg.html#Video-options",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "yuv420p",
+    "summary": "Стандарт 8-бит для совместимого H.264/HEVC потребителей.",
+    "examples": ["ffmpeg -vf format=yuv420p"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/ChromaSubsampling",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-vsync",
+    "summary": "Стратегия синхронизации кадров: cfr,vfr,passthrough.",
+    "examples": ["ffmpeg -vsync cfr"],
+    "docUrl": "https://ffmpeg.org/ffmpeg.html#Advanced-options",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "eq",
+    "summary": "Яркость/контраст/насыщение: eq=brightness=…",
+    "examples": ["ffmpeg -vf eq=brightness=0.02:contrast=1.1"],
+    "docUrl": "https://ffmpeg.org/ffmpeg-filters.html#eq",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "yadif",
+    "summary": "Yet Another DeInterlacing Filter.",
+    "examples": ["ffmpeg -vf yadif=1:-1:0"],
+    "docUrl": "https://ffmpeg.org/ffmpeg-filters.html#yadif-1",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "bwdif",
+    "summary": "Bob Weaver Deinterlacing.",
+    "examples": ["ffmpeg -vf bwdif=mode=send_field"],
+    "docUrl": "https://ffmpeg.org/ffmpeg-filters.html#bwdif",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "lut3d",
+    "summary": "Применить 3D LUT (.cube).",
+    "examples": ["ffmpeg -vf lut3d=file='C:/lut.cube'"],
+    "docUrl": "https://ffmpeg.org/ffmpeg-filters.html#lut3d-1",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "subtitles",
+    "summary": "Поджечь текстовые субтитры в кадр.",
+    "examples": ["ffmpeg -vf subtitles='C:/sub.srt'"],
+    "docUrl": "https://ffmpeg.org/ffmpeg-filters.html#subtitles-1",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "zscale",
+    "summary": "Масштабирование/цвет zscale перед tonemap HDR.",
+    "examples": ["ffmpeg -vf zscale=t=linear:npl=100,format=gbrpf32le"],
+    "docUrl": "https://ffmpeg.org/ffmpeg-filters.html#zscale-1",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "tonemap",
+    "summary": "Тонмаппер HDR→SDR: reinhard, mobius…",
+    "examples": ["ffmpeg -vf zscale,...,tonemap=reinhard,format=yuv420p"],
+    "docUrl": "https://ffmpeg.org/ffmpeg-filters.html#tonemap-1",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-movflags",
+    "summary": "Muxer flags: faststart для веб-потока MP4.",
+    "examples": ["ffmpeg -movflags +faststart"],
+    "docUrl": "https://ffmpeg.org/ffmpeg-formats.html#mov_002c-mp4_002c-ismv",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "faststart",
+    "summary": "Разнести moov атом для быстрого старта воспроизведения по сети.",
+    "examples": ["ffmpeg -movflags +faststart"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/Encode/H.264#faststartforwebvideo",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "libopus",
+    "summary": "Opus кодек высокого сжатия для WebM/MKA.",
+    "examples": ["ffmpeg -c:a libopus -b:a 128k"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/Encode/Opus",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "libsvtav1",
+    "summary": "SVT-AV1 программный AV1.",
+    "examples": ["ffmpeg -c:v libsvtav1 -crf 30"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/Encode/AV1",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-b:a",
+    "summary": "Битрейт аудио.",
+    "examples": ["ffmpeg -c:a aac -b:a 192k"],
+    "docUrl": "https://ffmpeg.org/ffmpeg.html#Audio-options",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-ar",
+    "summary": "Частота дискретизации аудио на выходе.",
+    "examples": ["ffmpeg -ar 48000"],
+    "docUrl": "https://ffmpeg.org/ffmpeg.html#Audio-options",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-ac",
+    "summary": "Число каналов (2 стерео).",
+    "examples": ["ffmpeg -ac 2"],
+    "docUrl": "https://ffmpeg.org/ffmpeg.html#Audio-options",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-shortest",
+    "summary": "Закончить при конце самого короткого входа.",
+    "examples": ["ffmpeg -i a.mp4 -i b.wav -shortest out.mp4"],
+    "docUrl": "https://ffmpeg.org/ffmpeg.html#Advanced-options",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-avoid_negative_ts",
+    "summary": "Сдвиг временных меток при stream copy.",
+    "examples": ["ffmpeg -avoid_negative_ts make_zero"],
+    "docUrl": "https://ffmpeg.org/ffmpeg.html#Advanced-options",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-reset_timestamps",
+    "summary": "Сбросить PTS на фильтрных/потоковых графах.",
+    "examples": ["ffmpeg -reset_timestamps 1"],
+    "docUrl": "https://ffmpeg.org/ffmpeg.html#Advanced-options",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-hwaccel",
+    "summary": "Декод ускорение: cuda, qsv, d3d11va…",
+    "examples": ["ffmpeg -hwaccel cuda -i in.mp4"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/HWAccelIntro",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-filter_complex",
+    "summary": "Граф фильтров с несколькими входами; для overlay, concat filter, смешение аудио.",
+    "examples": ["ffmpeg -filter_complex \"[0:v][1:v]hstack\" -map \"[out]\" out.mp4"],
+    "docUrl": "https://ffmpeg.org/ffmpeg-filters.html",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "fps",
+    "summary": "Фильтр fps=… задаёт постоянную частоту кадров на выходе фильтра.",
+    "examples": ["ffmpeg -vf fps=30"],
+    "docUrl": "https://ffmpeg.org/ffmpeg-filters.html",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "format",
+    "summary": "Подфильтр format=pix_fmts:yuv420p выравнивает пиксельный формат.",
+    "examples": ["ffmpeg -vf format=yuv420p"],
+    "docUrl": "https://ffmpeg.org/ffmpeg-filters.html",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "crop",
+    "summary": "Обрезка кадра: crop=w:h:x:y в пикселях от левого-верха.",
+    "examples": ["ffmpeg -vf crop=1920:800:0:140"],
+    "docUrl": "https://ffmpeg.org/ffmpeg-filters.html",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "transpose",
+    "summary": "Поворот/отражение: transpose=2 для 90° по часовой.",
+    "examples": ["ffmpeg -vf transpose=2"],
+    "docUrl": "https://ffmpeg.org/ffmpeg-filters.html",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "loudnorm",
+    "summary": "Единый уровень громкости (EBU R128) по измерениям входа — двухпроходный режим возможен.",
+    "examples": ["ffmpeg -af loudnorm=I=-16:TP=-1.5"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/Normalization",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "agate",
+    "summary": "Подавление шума/гейт на аудио.",
+    "examples": ["ffmpeg -af agate"],
+    "docUrl": "https://ffmpeg.org/ffmpeg-filters.html",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "dynaudnorm",
+    "summary": "Динамическая нормализация громкости по окну.",
+    "examples": ["ffmpeg -af dynaudnorm"],
+    "docUrl": "https://ffmpeg.org/ffmpeg-filters.html",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "pan",
+    "summary": "Ремаппинг каналов аудио: pan=stereo|c0<c0+c1.",
+    "examples": ["ffmpeg -af pan=mono|c0=FL"],
+    "docUrl": "https://ffmpeg.org/ffmpeg-filters.html",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-strict",
+    "summary": "Строгость экспериментальных кодеков/режимов (unofficial).",
+    "examples": ["ffmpeg -strict -2"],
+    "docUrl": "https://ffmpeg.org/ffmpeg.html",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-max_muxing_queue_size",
+    "summary": "Размер очереди mux при сложных фильтрах (иногда нужен при concat).",
+    "examples": ["ffmpeg -max_muxing_queue_size 1024"],
+    "docUrl": "https://ffmpeg.org/ffmpeg.html",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "concat",
+    "summary": "Либо demuxer concat:text file, либо фильтр concat для склейки сегментов.",
+    "examples": ["ffmpeg -f concat -safe 0 -i list.txt -c copy out.mp4"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/Concatenate",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "-af",
+    "summary": "Цепочка аудиофильтров: loudnorm, apad, highpass так же как -vf для видео.",
+    "examples": ["ffmpeg -i in.mp4 -af loudnorm=I=-16 out.wav"],
+    "docUrl": "https://ffmpeg.org/ffmpeg.html#Audio-options",
+    "tool": "ffmpeg"
+  }
 ]

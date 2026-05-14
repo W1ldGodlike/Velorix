@@ -406,8 +406,7 @@ export function parseYtdlpInfoQueueSizeHint(line: string): string | null {
   return null
 }
 
-const SPEED_TOKEN_RE =
-  /^([\d.,]+)\s*(KiB|MiB|GiB|TiB|KB|MB|GB|TB|B)\/s$/i
+const SPEED_TOKEN_RE = /^([\d.,]+)\s*(KiB|MiB|GiB|TiB|KB|MB|GB|TB|B)\/s$/i
 
 /**
  * Разбор скорости yt-dlp вида `1.20MiB/s`, `999.36KiB/s`, `Unknown B/s` → байт/с.

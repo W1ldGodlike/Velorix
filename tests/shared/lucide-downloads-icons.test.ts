@@ -7,6 +7,7 @@ import {
   EDITOR_TOPBAR_ACTION_ICONS,
   EDITOR_TRANSPORT_ICONS,
   QUEUE_ROW_ACTION_ICONS,
+  WORKSPACE_TAB_ICONS,
   emitDownloadsQueueRowIcoBootstrapJs,
   emitDownloadsTopbarClusterHtml,
   emitInlineStrokeSvg
@@ -70,5 +71,13 @@ describe('lucide-downloads-icons', () => {
 
   it('QUEUE_ROW_ACTION_ICONS.plus — кнопки «Добавить…» на вкладке загрузок', () => {
     expect(emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.plus, 17)).toContain('<path')
+  })
+
+  it('WORKSPACE_TAB_ICONS.editor — кадр, play и ножницы (stroke SVG)', () => {
+    const svg = emitInlineStrokeSvg(WORKSPACE_TAB_ICONS.editor, 16)
+    expect(svg).toContain('<rect')
+    expect(svg).toContain('polygon points=')
+    expect(svg).toContain('<circle')
+    expect(svg).toContain('<line')
   })
 })

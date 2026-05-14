@@ -225,10 +225,7 @@ function breaksListContinuation(trimmed: string): boolean {
   return false
 }
 
-export function parseKnowledgeMarkdown(
-  raw: string,
-  opts?: { articleTitle?: string }
-): MdBlock[] {
+export function parseKnowledgeMarkdown(raw: string, opts?: { articleTitle?: string }): MdBlock[] {
   const md = normalizeKnowledgeMarkdownSource(raw)
   const lines = md.split('\n')
   const blocks: MdBlock[] = []

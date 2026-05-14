@@ -62,7 +62,12 @@ function loadRawYtdlpCommandHints(): RawYtdlpHintRow[] {
       if (!row || typeof row !== 'object') {
         continue
       }
-      const o = row as { token?: unknown; summary?: unknown; summaryEn?: unknown; category?: unknown }
+      const o = row as {
+        token?: unknown
+        summary?: unknown
+        summaryEn?: unknown
+        category?: unknown
+      }
       if (typeof o.token !== 'string' || o.token.trim() === '') {
         continue
       }
@@ -112,8 +117,7 @@ function buildYtdlpCommandHintsForLocale(locale: DownloadsWindowUiLocale): Ytdlp
       fromFile !== null && fromFile !== ''
         ? fromFile
         : (ytdlpHintTokenCategory(row.token, locale) ?? misc)
-    const summary =
-      locale === 'en' && row.summaryEn.length > 0 ? row.summaryEn : row.summary
+    const summary = locale === 'en' && row.summaryEn.length > 0 ? row.summaryEn : row.summary
     out.push({ token: row.token, summary, category })
   }
   return sortYtdlpCommandHintsForUi(out, locale)

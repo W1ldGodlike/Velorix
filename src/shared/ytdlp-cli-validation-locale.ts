@@ -73,8 +73,7 @@ const ru: YtdlpCliValidationCopy = {
   tokenDangerChars:
     'Запрещены символы оболочки (shell): ; | & `, кавычки и аналогичные конструкции.',
   tokenAtFile: 'Аргументы вида @файл запрещены.',
-  tokenPathsForbidden:
-    'Каталоги вывода задаются настройками FluxAlloy; -P/--paths запрещены.',
+  tokenPathsForbidden: 'Каталоги вывода задаются настройками FluxAlloy; -P/--paths запрещены.',
   tokenOutputDup: 'Шаблон вывода задаётся полем выше; не дублируйте -o/--output.',
   tokenBatchForbidden: 'Пакетные файлы (-a/--batch-file) здесь запрещены.',
   tokenCookiesDup: 'Cookies задаются в блоке §6.2; не дублируйте --cookies.',
@@ -117,8 +116,7 @@ const ru: YtdlpCliValidationCopy = {
   cookiesPickerReadFailed: 'Не удалось прочитать файл cookies.',
 
   subLangsTooLong: 'Строка --sub-langs слишком длинная (макс. 160 символов).',
-  subLangsInvalidCharset:
-    'Для --sub-langs допустимы только буквы, цифры и символы ,.*+-_',
+  subLangsInvalidCharset: 'Для --sub-langs допустимы только буквы, цифры и символы ,.*+-_',
 
   rateLimitTooLong: 'Ограничение скорости слишком длинное.',
   rateLimitInvalidFormat:
@@ -158,7 +156,8 @@ const en: YtdlpCliValidationCopy = {
     'Cookies source is configured in the downloads settings; do not duplicate --cookies-from-browser.',
   tokenImpersonateDup:
     'Impersonate is configured in the downloads settings; do not duplicate --impersonate.',
-  tokenLimitRateDup: 'Rate limit has its own field in downloads settings; do not duplicate --limit-rate.',
+  tokenLimitRateDup:
+    'Rate limit has its own field in downloads settings; do not duplicate --limit-rate.',
   tokenShortRDup: 'Rate limit has its own field in downloads settings; do not duplicate -r.',
   tokenRetriesDup: 'Retries are set in downloads settings; do not duplicate --retries.',
   tokenFragmentRetriesDup:
@@ -173,7 +172,8 @@ const en: YtdlpCliValidationCopy = {
     'Cookies file was not found — fix the path or clear it; browser cookies stay disabled until fixed.',
   cookiesPathNotFile:
     'Cookies path is not a regular file; browser cookies stay disabled until fixed.',
-  cookiesStatFailed: 'Could not verify the cookies file; browser cookies stay disabled until fixed.',
+  cookiesStatFailed:
+    'Could not verify the cookies file; browser cookies stay disabled until fixed.',
 
   patchFilenameTemplateMustBeString: 'Filename template must be a string.',
   patchSubLangsMustBeString: 'Subtitle languages must be a string.',

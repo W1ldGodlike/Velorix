@@ -141,9 +141,9 @@ npm run build:win
 
 Репозиторий: `https://github.com/W1ldGodlike/FluxAlloy`.
 
-**Настройки репозитория (разово):** *Settings → Actions → General* — разрешить **Actions** (например *Allow all actions and reusable workflows* или политика организации); для PR из форков при необходимости включить одобрение первого запуска (*Fork pull request workflows*). Обновления npm и GitHub Actions для зависимостей CI приходят через **Dependabot** (`.github/dependabot.yml`); при отсутствии PR от бота проверьте *Settings → Code security and analysis → Dependabot version updates*.
+**Настройки репозитория (разово):** _Settings → Actions → General_ — разрешить **Actions** (например _Allow all actions and reusable workflows_ или политика организации); для PR из форков при необходимости включить одобрение первого запуска (_Fork pull request workflows_). Обновления npm и GitHub Actions для зависимостей CI приходят через **Dependabot** (`.github/dependabot.yml`); при отсутствии PR от бота проверьте _Settings → Code security and analysis → Dependabot version updates_.
 
-**Письма «Run failed / No jobs were run»:** это не обязательно падение `npm run check`. Статус *No jobs were run* значит, что workflow стартовал, но **ни один job не был поставлен в очередь** (например несовпадение триггера, политика форка или редкие граничные случаи GitHub). Смотреть в UI: есть ли job **`check`** и какое **Event** (*push* / *pull_request* / *workflow_dispatch*).
+**Письма «Run failed / No jobs were run»:** это не обязательно падение `npm run check`. Статус _No jobs were run_ значит, что workflow стартовал, но **ни один job не был поставлен в очередь** (например несовпадение триггера, политика форка или редкие граничные случаи GitHub). Смотреть в UI: есть ли job **`check`** и какое **Event** (_push_ / _pull_request_ / _workflow_dispatch_).
 
 Перед push:
 
@@ -157,4 +157,3 @@ git status
 Workflow `ci` на Windows: `actions/checkout` с `fetch-depth: 1`; `permissions: contents: read`; `concurrency` с `cancel-in-progress` для ветки; на job заданы **`FLUXALLOY_TRUSTED_HASHES_STRICT_UNKNOWN=1`** и **`FLUXALLOY_TRUSTED_HASHES_REQUIRE_SHA256_HEX=1`** (строгая проверка `Data/trusted_hashes.json` внутри `npm run check`); кэш **`%LOCALAPPDATA%\electron\Cache`** и **`%LOCALAPPDATA%\electron-builder\Cache`** (по `package-lock.json`); кэш `bin/`; `engines:prepare:win`; **`npm run engines:doctor`** (verify + SHA256-строки в лог + `--versions`; в verify при `GITHUB_ACTIONS` или `FLUXALLOY_LOG_ENGINE_VERSIONS` — первая строка версии каждого exe); `npm run build`; `npm run pack:dir` (`electron-builder --dir`) — проверка конфигурации упаковки без полного NSIS/portable/zip.
 
 На runner после `pack:dir` появляется **`dist/win-unpacked/`** (см. §4), затем шаг **`verify:win-unpacked`** (тот же скрипт, что в `check:release`); workflow **не** загружает эту папку в Artifacts — только проверка успешности шагов.
-

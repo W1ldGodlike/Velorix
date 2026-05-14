@@ -18,7 +18,12 @@ export async function firstVersionLineFromWinEngineExe(exePath, baseName) {
   const bn = baseName.toLowerCase()
   const args = bn === 'yt-dlp.exe' ? ['--version'] : ['-version']
   const { stdout } = await execFileAsync(exePath, args, WIN_EXE_OPTS)
-  return stdout.split(/\r?\n/).find((l) => l.trim())?.trim() ?? ''
+  return (
+    stdout
+      .split(/\r?\n/)
+      .find((l) => l.trim())
+      ?.trim() ?? ''
+  )
 }
 
 export async function tryFirstVersionLineFromWinEngineExe(exePath, baseName) {

@@ -109,12 +109,7 @@ async function main() {
 
   for (const k of ['YtDlpSha256', 'FfmpegSha256']) {
     const v = data[k]
-    if (
-      requireSha256Hex() &&
-      typeof v === 'string' &&
-      v.trim() !== '' &&
-      !isSha256Hex(v)
-    ) {
+    if (requireSha256Hex() && typeof v === 'string' && v.trim() !== '' && !isSha256Hex(v)) {
       console.error(
         `[trusted-hashes] поле ${k}: непустое значение должно быть 64-символьным hex SHA256`
       )

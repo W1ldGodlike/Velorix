@@ -93,6 +93,11 @@ export type FfmpegExportSubtitleModeId = 'drop' | 'copy'
 export const FFMPEG_EXPORT_AUDIO_GAIN_DB_MIN = -24
 export const FFMPEG_EXPORT_AUDIO_GAIN_DB_MAX = 24
 
+/** §7.2 — максимум записей пресетов в `settings.json` (встроенные платформы + пользовательские). */
+export const FFMPEG_EXPORT_USER_PRESETS_MAX_ENTRIES = 24
+/** §7.2 — максимум пользовательских пресетов (без учёта встроенных `flux-builtin-*`). */
+export const FFMPEG_EXPORT_USER_ADDED_PRESETS_MAX = 8
+
 /**
  * §7.2 — сохранённый снимок параметров экспорта для пользовательского пресета.
  * Совместим с белым списком parse-хелперов main (`parseFfmpegExport*`).
@@ -146,11 +151,13 @@ export interface FfmpegExportUserPresetSnapshot {
   audioNormalize?: FfmpegExportAudioNormalizeId
 }
 
-/** §7.2 — именованный пользовательский пресет (до нескольких штук в settings). */
+/** §7.2 — именованный пресет экспорта (пользовательский или встроенный список платформ). */
 export interface FfmpegExportUserPreset {
   id: string
   label: string
   snapshot: FfmpegExportUserPresetSnapshot
+  /** Краткая подсказка (§7.2); для встроенных пресетов — tooltip в UI. */
+  hint?: string
 }
 
 export interface MediaExportRequestPayload {

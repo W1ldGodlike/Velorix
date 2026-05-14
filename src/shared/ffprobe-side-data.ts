@@ -36,10 +36,7 @@ function shortSideDataType(raw: string): string {
   return raw.trim().replace(/\s+/g, ' ').slice(0, 64)
 }
 
-function parseAtscAudioServiceType(
-  o: Record<string, unknown>,
-  key: string
-): number | null {
+function parseAtscAudioServiceType(o: Record<string, unknown>, key: string): number | null {
   const raw = o[key]
   if (typeof raw === 'number' && Number.isFinite(raw)) {
     const n = Math.trunc(raw)
@@ -193,7 +190,10 @@ function summarizeSideDataItem(raw: unknown, locale: FfprobeSummaryLocale): stri
   if (low.includes('skip samples')) {
     return 'Skip samples'
   }
-  if (low.includes('smpte') && (low.includes('timecode') || low.includes('12m') || low.includes('12-m'))) {
+  if (
+    low.includes('smpte') &&
+    (low.includes('timecode') || low.includes('12m') || low.includes('12-m'))
+  ) {
     return summarizeSmpteTimecode(o)
   }
   if (low.includes('gop') && low.includes('timecode')) {

@@ -35,7 +35,6 @@ import {
   IconFilm,
   IconFolderOpen,
   IconHome,
-  IconImage,
   IconMoon,
   IconPauseUi,
   IconPlay,
@@ -49,12 +48,10 @@ import {
   IconQueueTrash,
   IconQueueX,
   IconRefreshCw,
-  IconRotateCcw,
-  IconRotateCw,
-  IconSave,
-  IconScissors,
   IconSettings,
-  IconSun
+  IconSun,
+  IconWorkspaceEditor,
+  IconWorkspaceTerminal
 } from './components/LucideMiniIcons'
 import type { EngineId } from '../../shared/engine-contract'
 import { ENGINE_IDS } from '../../shared/engine-contract'
@@ -82,8 +79,13 @@ import type {
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId
 } from '../../shared/ffmpeg-export-contract'
+import {
+  FFMPEG_EXPORT_USER_ADDED_PRESETS_MAX,
+  FFMPEG_EXPORT_USER_PRESETS_MAX_ENTRIES
+} from '../../shared/ffmpeg-export-contract'
 import type { AppSettings, ResolvedAppTheme } from '../../shared/settings-contract'
 import { buildFfmpegExportPreviewCommand } from '../../shared/ffmpeg-export-argv'
+import { isBuiltinExportUserPresetId } from '../../shared/builtin-ffmpeg-export-user-presets'
 import {
   YTDLP_DOC_FORMAT_SELECTION,
   YTDLP_DOC_OUTPUT_TEMPLATE,
@@ -135,7 +137,6 @@ import {
   filterTerminalInlineSuggestions,
   stepTerminalSuggestIndex
 } from '../../shared/terminal-inline-suggest'
-import { PreviewProbeBody } from './components/MediaProbePanel'
 import {
   useDownloadsWindowUiPanels,
   type DownloadsRailPanelKey
@@ -249,6 +250,8 @@ type PillSwitchProps = {
   checked: boolean
   disabled?: boolean
   describedBy?: string
+  /** Длинная подсказка при наведении (простым языком). */
+  tooltip?: string
   onToggle: () => void
 }
 
@@ -257,6 +260,7 @@ function PillSwitch({
   checked,
   disabled = false,
   describedBy,
+  tooltip,
   onToggle
 }: PillSwitchProps): JSX.Element {
   return (
@@ -267,6 +271,7 @@ function PillSwitch({
       aria-label={label}
       aria-checked={checked}
       aria-describedby={describedBy}
+      title={tooltip}
       disabled={disabled}
       onClick={onToggle}
     >
@@ -318,7 +323,10 @@ function formatEngineVersionsLine(snapshot: EnginesSnapshot): string {
     const e = snapshot.engines[id]
     const name = engineLabel(id)
     if (e.state === 'ready' && e.version) {
-      const cut = e.version.length > 30 ? `${e.version.slice(0, 28)}${uiText('commonUnicodeEllipsis')}` : e.version
+      const cut =
+        e.version.length > 30
+          ? `${e.version.slice(0, 28)}${uiText('commonUnicodeEllipsis')}`
+          : e.version
       return `${name}: ${cut}`
     }
     if (e.state === 'missing') {
@@ -330,46 +338,6 @@ function formatEngineVersionsLine(snapshot: EnginesSnapshot): string {
     return `${name}: ${uiText('commonUnicodeEllipsis')}`
   })
   return parts.join(' · ')
-}
-
-/** Короткая подпись для топбара v0 (`ffmpeg 6.x • yt-dlp 2024.x`) рядом с icon-кластером. */
-function shortEngineVersionSnippet(id: EngineId, raw: string | null): string {
-  if (!raw || raw.trim().length === 0) {
-    return uiText('uiPlaceholderDash')
-  }
-  const line = raw.split(/\r?\n/)[0]?.trim() ?? raw.trim()
-  if (id === 'ffmpeg') {
-    const mm = /ffmpeg\s+version\s+([^\s,]+)/i.exec(line)
-    if (mm?.[1]) {
-      return mm[1]
-    }
-  }
-  if (id === 'yt-dlp') {
-    const mm = /\byt-dlp\s+([^\s]+)/i.exec(line)
-    if (mm?.[1]) {
-      return mm[1]
-    }
-    const headToken = line.split(/\s+/)[0]
-    if (headToken && /^[\d.]+$/.test(headToken)) {
-      return headToken
-    }
-  }
-  return line.length > 20 ? `${line.slice(0, 18)}${uiText('commonUnicodeEllipsis')}` : line
-}
-
-function formatTopbarEngineVersionsLine(snapshot: EnginesSnapshot): string {
-  const ffmpeg = snapshot.engines.ffmpeg
-  const ytdlp = snapshot.engines['yt-dlp']
-  const dash = uiText('uiPlaceholderDash')
-  const fv =
-    ffmpeg.state === 'ready' && ffmpeg.version
-      ? shortEngineVersionSnippet('ffmpeg', ffmpeg.version)
-      : dash
-  const yv =
-    ytdlp.state === 'ready' && ytdlp.version
-      ? shortEngineVersionSnippet('yt-dlp', ytdlp.version)
-      : dash
-  return uiTextVars('topbarEngineVersionsLineTemplate', { ffmpegVer: fv, ytdlpVer: yv })
 }
 
 function clipboardLooksLikeDownloadsPayload(text: string): boolean {
@@ -570,13 +538,11 @@ function App(): JSX.Element {
   const [preview, setPreview] = useState<PreviewOpenedPayload | null>(null)
   const [previewBlobUrl, setPreviewBlobUrl] = useState<string | null>(null)
   const [probeInfo, setProbeInfo] = useState<MediaProbeSuccess | null>(null)
-  const [probeError, setProbeError] = useState<string | null>(null)
   const [downloadsUrl, setDownloadsUrl] = useState('')
   const [downloadsRows, setDownloadsRows] = useState<DownloadsQueueRowView[]>([])
   const [downloadsStatusFilter, setDownloadsStatusFilter] = useState<DownloadsStatusFilter>('all')
   const [downloadsOptions, setDownloadsOptions] = useState<YtdlpDownloadOptionsPayload | null>(null)
   const [downloadsOptionsBusy, setDownloadsOptionsBusy] = useState(false)
-  const [downloadsExpertHintPickerSeq, setDownloadsExpertHintPickerSeq] = useState(0)
   const [downloadsExpertHintFilter, setDownloadsExpertHintFilter] = useState('')
   const [downloadsHistory, setDownloadsHistory] = useState<YtdlpDownloadHistoryEntry[]>([])
   const [downloadsHistoryBusy, setDownloadsHistoryBusy] = useState(false)
@@ -617,7 +583,6 @@ function App(): JSX.Element {
   const [terminalSuggestIndex, setTerminalSuggestIndex] = useState(0)
   const terminalSuggestBlurTimeoutRef = useRef<number | undefined>(undefined)
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
-  const [topbarEngineVersionsLine, setTopbarEngineVersionsLine] = useState('')
   const [exportBusy, setExportBusy] = useState(false)
   const [exportCancelBusy, setExportCancelBusy] = useState(false)
   const [exportEncodePreset, setExportEncodePreset] =
@@ -675,6 +640,13 @@ function App(): JSX.Element {
   const [exportUserPresets, setExportUserPresets] = useState<FfmpegExportUserPreset[]>([])
   /** Выбранный в `<select>` пользовательский пресет; ручные правки тулбара сбрасывают выбор. */
   const [selectedUserPresetId, setSelectedUserPresetId] = useState<string | null>(null)
+  const selectedExportUserPreset = useMemo(
+    () =>
+      selectedUserPresetId
+        ? exportUserPresets.find((p) => p.id === selectedUserPresetId)
+        : undefined,
+    [exportUserPresets, selectedUserPresetId]
+  )
   const [exportPresetNameDialog, setExportPresetNameDialog] = useState<ExportPresetNameDialog>(null)
   const [lastExportPath, setLastExportPath] = useState<string | null>(null)
   const [lastSnapshotPath, setLastSnapshotPath] = useState<string | null>(null)
@@ -886,12 +858,6 @@ function App(): JSX.Element {
 
   const downloadsHintUiLocale = getUiLocale() as DownloadsWindowUiLocale
 
-  const ytdlpCommandHintsByCategory = useMemo(
-    () =>
-      groupYtdlpCommandHintsByCategory(downloadsOptions?.commandHints, undefined, downloadsHintUiLocale),
-    [downloadsOptions?.commandHints, downloadsHintUiLocale]
-  )
-
   const ytdlpCommandHintsFilteredByCategory = useMemo(
     () =>
       groupYtdlpCommandHintsByCategory(
@@ -986,7 +952,9 @@ function App(): JSX.Element {
       )
       setStatusHint(
         result.ok
-          ? uiTextVars('statusTerminalCliExitOk', { code: String(result.code ?? uiText('commonNotApplicableShort')) })
+          ? uiTextVars('statusTerminalCliExitOk', {
+              code: String(result.code ?? uiText('commonNotApplicableShort'))
+            })
           : uiTextVars('statusTerminalCliFailed', { error: result.error })
       )
     } finally {
@@ -1007,7 +975,6 @@ function App(): JSX.Element {
       const cur = downloadsOptions.extraArgsLine.trim()
       const next = cur ? `${cur} ${token}` : token
       setDownloadsOptions({ ...downloadsOptions, extraArgsLine: next })
-      setDownloadsExpertHintPickerSeq((s) => s + 1)
       void applyDownloadsOptionsPatch({ extraArgsLine: next })
     },
     [downloadsOptions, applyDownloadsOptionsPatch]
@@ -1125,7 +1092,7 @@ function App(): JSX.Element {
 
   const applyPreview = useCallback((payload: PreviewOpenedPayload): void => {
     setProbeInfo(null)
-    setProbeError(null)
+    setStatusHint(null)
     setPreview(payload)
     setWorkspaceTab('editor')
   }, [])
@@ -1499,36 +1466,6 @@ function App(): JSX.Element {
     setSelectedUserPresetId(null)
   }, [])
 
-  const cycleVideoTransformTopbar = useCallback(
-    (dir: -1 | 1): void => {
-      if (exportBusy || snapshotBusy) {
-        return
-      }
-      bumpManualExportEdit()
-      const order: FfmpegExportVideoTransformId[] = ['none', 'ccw90', 'r180', 'cw90']
-      const i = order.indexOf(exportVideoTransform)
-      const base = i >= 0 ? i : 0
-      const next = (base + dir + order.length * 16) % order.length
-      const v = order[next] ?? 'none'
-      setExportVideoTransform(v)
-      void window.fluxalloy.settings.setFfmpegExportVideoTransform(v).catch(console.error)
-    },
-    [bumpManualExportEdit, exportBusy, exportVideoTransform, snapshotBusy]
-  )
-
-  const cycleCropPresetTopbar = useCallback((): void => {
-    if (exportBusy || snapshotBusy) {
-      return
-    }
-    bumpManualExportEdit()
-    const order: FfmpegExportCropPresetId[] = ['none', 'center-square', 'center-16-9', 'center-4-3']
-    const i = order.indexOf(exportCropPreset)
-    const base = i >= 0 ? i : 0
-    const next = order[(base + 1) % order.length] ?? 'none'
-    setExportCropPreset(next)
-    void window.fluxalloy.settings.setFfmpegExportCropPreset(next).catch(console.error)
-  }, [bumpManualExportEdit, exportBusy, exportCropPreset, snapshotBusy])
-
   const buildCurrentExportSnapshot = useCallback((): FfmpegExportUserPresetSnapshot => {
     return {
       encodePreset: exportEncodePreset,
@@ -1592,15 +1529,28 @@ function App(): JSX.Element {
   ])
 
   const handleSaveExportUserPreset = useCallback(() => {
-    if (exportUserPresets.length >= 8) {
+    if (exportUserPresets.length >= FFMPEG_EXPORT_USER_PRESETS_MAX_ENTRIES) {
+      setStatusHint(uiText('editorExportUserPresetsMaxTotalStatus'))
+      return
+    }
+    const userAdded = exportUserPresets.filter((p) => !isBuiltinExportUserPresetId(p.id)).length
+    if (userAdded >= FFMPEG_EXPORT_USER_ADDED_PRESETS_MAX) {
       setStatusHint(uiText('editorExportUserPresetsMaxStatus'))
       return
     }
-    setExportPresetNameDialog({ mode: 'create', value: uiText('editorExportPresetDefaultName'), error: null })
-  }, [exportUserPresets.length])
+    setExportPresetNameDialog({
+      mode: 'create',
+      value: uiText('editorExportPresetDefaultName'),
+      error: null
+    })
+  }, [exportUserPresets])
 
   const handleDeleteExportUserPreset = useCallback(() => {
     if (!selectedUserPresetId) {
+      return
+    }
+    if (isBuiltinExportUserPresetId(selectedUserPresetId)) {
+      setStatusHint(uiText('editorBuiltinPresetLockedHint'))
       return
     }
     const next = exportUserPresets.filter((p) => p.id !== selectedUserPresetId)
@@ -1615,6 +1565,10 @@ function App(): JSX.Element {
 
   const handleRenameExportUserPreset = useCallback(() => {
     if (!selectedUserPresetId) {
+      return
+    }
+    if (isBuiltinExportUserPresetId(selectedUserPresetId)) {
+      setStatusHint(uiText('editorBuiltinPresetLockedHint'))
       return
     }
     const current = exportUserPresets.find((p) => p.id === selectedUserPresetId)
@@ -1637,7 +1591,14 @@ function App(): JSX.Element {
     }
     const safeLabel = label.slice(0, 64)
     if (exportPresetNameDialog.mode === 'create') {
-      if (exportUserPresets.length >= 8) {
+      if (exportUserPresets.length >= FFMPEG_EXPORT_USER_PRESETS_MAX_ENTRIES) {
+        setExportPresetNameDialog((prev) =>
+          prev === null ? null : { ...prev, error: uiText('editorExportPresetErrorMaxTotal') }
+        )
+        return
+      }
+      const userAdded = exportUserPresets.filter((p) => !isBuiltinExportUserPresetId(p.id)).length
+      if (userAdded >= FFMPEG_EXPORT_USER_ADDED_PRESETS_MAX) {
         setExportPresetNameDialog((prev) =>
           prev === null ? null : { ...prev, error: uiText('editorExportPresetErrorMax') }
         )
@@ -1679,6 +1640,10 @@ function App(): JSX.Element {
     if (!selectedUserPresetId) {
       return
     }
+    if (isBuiltinExportUserPresetId(selectedUserPresetId)) {
+      setStatusHint(uiText('editorBuiltinPresetLockedHint'))
+      return
+    }
     const snap = buildCurrentExportSnapshot()
     const next = exportUserPresets.map((p) =>
       p.id === selectedUserPresetId ? { ...p, snapshot: snap } : p
@@ -1697,13 +1662,11 @@ function App(): JSX.Element {
       const snapshot = await window.fluxalloy.engines.getStatus(loc)
       setEngineSummary(summarizeEngines(snapshot.engines))
       setEngineVersionsLine(formatEngineVersionsLine(snapshot))
-      setTopbarEngineVersionsLine(formatTopbarEngineVersionsLine(snapshot))
       const need = await window.fluxalloy.engines.shouldOfferDownload()
       setEnginesOfferDownload(need)
     } catch {
       setEngineSummary('error')
       setEngineVersionsLine('')
-      setTopbarEngineVersionsLine('')
     }
   }, [])
 
@@ -1795,10 +1758,9 @@ function App(): JSX.Element {
       }
       if (r.ok) {
         setProbeInfo(r)
-        setProbeError(null)
       } else {
         setProbeInfo(null)
-        setProbeError(r.error)
+        setStatusHint(uiTextVars('statusPreviewProbeFailedTemplate', { error: r.error }))
       }
     })
     return (): void => {
@@ -1945,7 +1907,9 @@ function App(): JSX.Element {
   }, [])
 
   async function handleOpenToolbar(): Promise<void> {
-    const result = await window.fluxalloy.preview.openFileDialog(getUiLocale() as DownloadsWindowUiLocale)
+    const result = await window.fluxalloy.preview.openFileDialog(
+      getUiLocale() as DownloadsWindowUiLocale
+    )
     if (result.ok) {
       applyPreview(result)
     }
@@ -1964,7 +1928,9 @@ function App(): JSX.Element {
       await refreshEngineUi()
       setStatusHint(uiText('statusEnginesDownloadedOk'))
     } catch (error) {
-      setStatusHint(error instanceof Error ? error.message : uiText('statusEnginesDownloadFailedGeneric'))
+      setStatusHint(
+        error instanceof Error ? error.message : uiText('statusEnginesDownloadFailedGeneric')
+      )
     } finally {
       setEngineDownloadBusy(false)
     }
@@ -2298,17 +2264,20 @@ function App(): JSX.Element {
             ◇
           </span>
           <span className="app-topbar-title">{uiText('topbarProductName')}</span>
-          <span className="app-topbar-version">{uiText('topbarProductEdition')}</span>
         </div>
         <nav className="app-workspace-tabs" aria-label={uiText('workspaceTabsAria')}>
           <button
             type="button"
             className={`app-workspace-tab${workspaceTab === 'editor' ? ' app-workspace-tab-active' : ''}`}
             aria-current={workspaceTab === 'editor' ? 'page' : undefined}
+            title={uiText('workspaceTabEditorTooltip')}
             onClick={() => {
               setWorkspaceTab('editor')
             }}
           >
+            <span aria-hidden className="app-workspace-tab-glyph">
+              <IconWorkspaceEditor title="" size={16} />
+            </span>
             {uiText('workspaceTabEditor')}
           </button>
           <button
@@ -2334,15 +2303,13 @@ function App(): JSX.Element {
             }}
             title={uiText('workspaceTabTerminalTooltip')}
           >
+            <span aria-hidden className="app-workspace-tab-glyph">
+              <IconWorkspaceTerminal title="" size={16} />
+            </span>
             {uiText('workspaceTabTerminal')}
           </button>
         </nav>
         <div className="app-topbar-trailing">
-          {topbarEngineVersionsLine.length > 0 ? (
-            <p className="app-topbar-engine-short" title={engineVersionsLine}>
-              {topbarEngineVersionsLine}
-            </p>
-          ) : null}
           <div className="app-topbar-actions">
             <button
               type="button"
@@ -2358,42 +2325,6 @@ function App(): JSX.Element {
             <button
               type="button"
               className="app-icon-btn"
-              disabled={exportBusy || snapshotBusy}
-              onClick={() => {
-                cycleVideoTransformTopbar(-1)
-              }}
-              title={uiText('topbarRotateCcwTitle')}
-            >
-              <IconRotateCcw />
-              <span className="app-visually-hidden">{uiText('topbarRotateCcwLabel')}</span>
-            </button>
-            <button
-              type="button"
-              className="app-icon-btn"
-              disabled={exportBusy || snapshotBusy}
-              onClick={() => {
-                cycleVideoTransformTopbar(1)
-              }}
-              title={uiText('topbarRotateCwTitle')}
-            >
-              <IconRotateCw />
-              <span className="app-visually-hidden">{uiText('topbarRotateCwLabel')}</span>
-            </button>
-            <button
-              type="button"
-              className="app-icon-btn"
-              disabled={exportBusy || snapshotBusy}
-              onClick={() => {
-                cycleCropPresetTopbar()
-              }}
-              title={uiText('topbarCropCycleTitle')}
-            >
-              <IconScissors />
-              <span className="app-visually-hidden">{uiText('topbarCropLabel')}</span>
-            </button>
-            <button
-              type="button"
-              className="app-icon-btn"
               onClick={() => {
                 void window.fluxalloy.inspector.openWindow(preview?.path ?? null)
               }}
@@ -2401,34 +2332,6 @@ function App(): JSX.Element {
             >
               <IconFilm />
               <span className="app-visually-hidden">{uiText('topbarInspectorLabel')}</span>
-            </button>
-            <button
-              type="button"
-              className="app-icon-btn"
-              disabled={!preview || exportBusy || snapshotBusy}
-              onClick={() => {
-                void handleSnapshot()
-              }}
-              title={uiText('topbarSnapshotTitle')}
-            >
-              <IconImage />
-              <span className="app-visually-hidden">
-                {snapshotBusy ? uiText('topbarSnapshotBusyLabel') : uiText('topbarSnapshotLabel')}
-              </span>
-            </button>
-            <button
-              type="button"
-              className="app-icon-btn app-icon-btn-primary"
-              disabled={!preview || exportBusy || snapshotBusy}
-              onClick={() => {
-                void handleExport()
-              }}
-              title={uiText('topbarExportTitle')}
-            >
-              <IconSave />
-              <span className="app-visually-hidden">
-                {exportBusy ? uiText('topbarExportBusyLabel') : uiText('topbarExportLabel')}
-              </span>
             </button>
             {exportBusy ? (
               <button
@@ -2644,34 +2547,15 @@ function App(): JSX.Element {
                     videoRef={videoRef}
                     onTrimRangeChange={onTrimRangeSnapshot}
                     onJumpToTrimExport={jumpToTrimExport}
+                    onStartExport={() => {
+                      void handleExport()
+                    }}
+                    onSaveFrame={() => {
+                      void handleSnapshot()
+                    }}
+                    saveFrameDisabled={exportBusy || snapshotBusy}
+                    saveFrameBusy={snapshotBusy}
                   />
-                  {(probeInfo || probeError) && (
-                    <div className="app-preview-probe" aria-live="polite">
-                      {probeError ? (
-                        <span className="app-preview-probe-error">{probeError}</span>
-                      ) : probeInfo ? (
-                        <PreviewProbeBody
-                          probeInfo={probeInfo}
-                          mediaPathForDefaultSave={preview.path}
-                          probeSectionOpen={{
-                            exportSummary: panelOpen('probeExportSummary'),
-                            tracks: panelOpen('probeTracks'),
-                            chapters: panelOpen('probeChapters'),
-                            rawJson: panelOpen('probeRawJson')
-                          }}
-                          onProbeSectionToggle={(key, nextOpen) => {
-                            const m = {
-                              exportSummary: 'probeExportSummary',
-                              tracks: 'probeTracks',
-                              chapters: 'probeChapters',
-                              rawJson: 'probeRawJson'
-                            } as const
-                            persistMainWindowUiPanelToggle(m[key], nextOpen)
-                          }}
-                        />
-                      ) : null}
-                    </div>
-                  )}
                   <footer className="app-preview-caption" title={preview.path}>
                     {preview.name}
                   </footer>
@@ -2705,7 +2589,12 @@ function App(): JSX.Element {
               <div className="app-settings-panel-head">
                 <div>
                   <h2 className="app-settings-title">{uiText('editorFfmpegSettingsTitle')}</h2>
-                  <p className="app-settings-subtitle">{uiText('editorFfmpegSettingsSubtitle')}</p>
+                  <p
+                    className="app-settings-subtitle"
+                    title={uiText('editorTooltipFfmpegPanelIntro')}
+                  >
+                    {uiText('editorFfmpegSettingsSubtitle')}
+                  </p>
                 </div>
                 <div className="app-settings-panel-head-trailing">
                   <button
@@ -2731,15 +2620,21 @@ function App(): JSX.Element {
                   persistMainWindowUiPanelToggle('ffmpegVideo', e.currentTarget.open)
                 }}
               >
-                <summary className="app-settings-summary">{uiText('editorFfmpegSectionVideo')}</summary>
+                <summary
+                  className="app-settings-summary"
+                  title={uiText('editorTooltipSectionVideo')}
+                >
+                  {uiText('editorFfmpegSectionVideo')}
+                </summary>
                 <p id="ffmpegVideoSectionHint" className="app-settings-section-hint">
                   {uiText('editorFfmpegSectionVideoHint')}
                 </p>
                 <div className="app-settings-grid" aria-describedby="ffmpegVideoSectionHint">
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorTooltipVideoCodec')}>
                     <span>{uiText('editorFieldVideoCodec')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorTooltipVideoCodec')}
                       aria-label={uiText('editorAriaVideoCodecExport')}
                       value={exportVideoCodec}
                       disabled={exportBusy || snapshotBusy}
@@ -2765,10 +2660,11 @@ function App(): JSX.Element {
                       ))}
                     </select>
                   </label>
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorTooltipEncodePreset')}>
                     <span>{uiText('editorFieldEncodePreset')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorTooltipEncodePreset')}
                       aria-label={uiText('editorAriaEncodePresetExport')}
                       value={exportEncodePreset}
                       disabled={exportBusy || snapshotBusy}
@@ -2788,10 +2684,11 @@ function App(): JSX.Element {
                       ))}
                     </select>
                   </label>
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorTooltipContainer')}>
                     <span>{uiText('editorFieldContainer')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorTooltipContainer')}
                       aria-label={uiText('editorAriaContainerExport')}
                       value={exportContainer}
                       disabled={exportBusy || snapshotBusy}
@@ -2811,10 +2708,11 @@ function App(): JSX.Element {
                       ))}
                     </select>
                   </label>
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorTooltipCrf')}>
                     <span>{uiText('editorFieldCrf')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorTooltipCrf')}
                       aria-label={uiText('editorAriaCrfExport')}
                       value={exportCrf === null ? 'preset' : String(exportCrf)}
                       disabled={exportBusy || snapshotBusy}
@@ -2834,10 +2732,11 @@ function App(): JSX.Element {
                       ))}
                     </select>
                   </label>
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorTooltipVideoBitrate')}>
                     <span>{uiText('editorFieldVideoBitrate')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorTooltipVideoBitrate')}
                       aria-label={uiText('editorAriaVideoBitrateExport')}
                       value={exportVideoBitrate === null ? 'crf' : exportVideoBitrate}
                       disabled={exportBusy || snapshotBusy}
@@ -2865,12 +2764,12 @@ function App(): JSX.Element {
                       ))}
                     </select>
                   </label>
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorHintDeinterlace')}>
                     <span>{uiText('editorFieldDeinterlace')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorHintDeinterlace')}
                       aria-label={uiText('editorAriaDeinterlace')}
-                      aria-describedby="ffmpegVideoDeinterlaceHint"
                       value={exportVideoDeinterlace}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -2888,16 +2787,13 @@ function App(): JSX.Element {
                         </option>
                       ))}
                     </select>
-                    <span id="ffmpegVideoDeinterlaceHint" className="app-field-help">
-                      {uiText('editorHintDeinterlace')}
-                    </span>
                   </label>
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorHintDenoise')}>
                     <span>{uiText('editorFieldDenoise')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorHintDenoise')}
                       aria-label={uiText('editorAriaDenoise')}
-                      aria-describedby="ffmpegVideoDenoiseHint"
                       value={exportVideoDenoise}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -2915,16 +2811,13 @@ function App(): JSX.Element {
                         </option>
                       ))}
                     </select>
-                    <span id="ffmpegVideoDenoiseHint" className="app-field-help">
-                      {uiText('editorHintDenoise')}
-                    </span>
                   </label>
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorHintDeband')}>
                     <span>{uiText('editorFieldDeband')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorHintDeband')}
                       aria-label={uiText('editorAriaDeband')}
-                      aria-describedby="ffmpegVideoDebandHint"
                       value={exportVideoDeband}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -2942,16 +2835,13 @@ function App(): JSX.Element {
                         </option>
                       ))}
                     </select>
-                    <span id="ffmpegVideoDebandHint" className="app-field-help">
-                      {uiText('editorHintDeband')}
-                    </span>
                   </label>
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorHintHisteq')}>
                     <span>{uiText('editorFieldHisteq')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorHintHisteq')}
                       aria-label={uiText('editorAriaHisteq')}
-                      aria-describedby="ffmpegVideoHisteqHint"
                       value={exportVideoHisteq}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -2969,16 +2859,13 @@ function App(): JSX.Element {
                         </option>
                       ))}
                     </select>
-                    <span id="ffmpegVideoHisteqHint" className="app-field-help">
-                      {uiText('editorHintHisteq')}
-                    </span>
                   </label>
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorHintLut3d')}>
                     <span>{uiText('editorFieldLut3d')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorHintLut3d')}
                       aria-label={uiText('editorAriaLut3d')}
-                      aria-describedby="ffmpegVideoLut3dHint"
                       value={exportVideoLut3d}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -2996,16 +2883,13 @@ function App(): JSX.Element {
                         </option>
                       ))}
                     </select>
-                    <span id="ffmpegVideoLut3dHint" className="app-field-help">
-                      {uiText('editorHintLut3d')}
-                    </span>
                   </label>
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorHintSharpen')}>
                     <span>{uiText('editorFieldSharpen')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorHintSharpen')}
                       aria-label={uiText('editorAriaSharpen')}
-                      aria-describedby="ffmpegVideoSharpenHint"
                       value={exportVideoSharpen}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -3023,16 +2907,13 @@ function App(): JSX.Element {
                         </option>
                       ))}
                     </select>
-                    <span id="ffmpegVideoSharpenHint" className="app-field-help">
-                      {uiText('editorHintSharpen')}
-                    </span>
                   </label>
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorHintEq')}>
                     <span>{uiText('editorFieldEq')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorHintEq')}
                       aria-label={uiText('editorAriaEq')}
-                      aria-describedby="ffmpegVideoEqHint"
                       value={exportVideoEqPreset}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -3050,16 +2931,13 @@ function App(): JSX.Element {
                         </option>
                       ))}
                     </select>
-                    <span id="ffmpegVideoEqHint" className="app-field-help">
-                      {uiText('editorHintEq')}
-                    </span>
                   </label>
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorHintHue')}>
                     <span>{uiText('editorFieldHue')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorHintHue')}
                       aria-label={uiText('editorAriaHue')}
-                      aria-describedby="ffmpegVideoHueHint"
                       value={exportVideoHue}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -3077,16 +2955,13 @@ function App(): JSX.Element {
                         </option>
                       ))}
                     </select>
-                    <span id="ffmpegVideoHueHint" className="app-field-help">
-                      {uiText('editorHintHue')}
-                    </span>
                   </label>
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorHintGrain')}>
                     <span>{uiText('editorFieldGrain')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorHintGrain')}
                       aria-label={uiText('editorAriaGrain')}
-                      aria-describedby="ffmpegVideoGrainHint"
                       value={exportVideoGrain}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -3104,16 +2979,13 @@ function App(): JSX.Element {
                         </option>
                       ))}
                     </select>
-                    <span id="ffmpegVideoGrainHint" className="app-field-help">
-                      {uiText('editorHintGrain')}
-                    </span>
                   </label>
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorHintVignette')}>
                     <span>{uiText('editorFieldVignette')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorHintVignette')}
                       aria-label={uiText('editorAriaVignette')}
-                      aria-describedby="ffmpegVideoVignetteHint"
                       value={exportVideoVignette}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -3131,16 +3003,13 @@ function App(): JSX.Element {
                         </option>
                       ))}
                     </select>
-                    <span id="ffmpegVideoVignetteHint" className="app-field-help">
-                      {uiText('editorHintVignette')}
-                    </span>
                   </label>
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorHintBlur')}>
                     <span>{uiText('editorFieldBlur')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorHintBlur')}
                       aria-label={uiText('editorAriaBlur')}
-                      aria-describedby="ffmpegVideoBlurHint"
                       value={exportVideoBlur}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -3158,9 +3027,6 @@ function App(): JSX.Element {
                         </option>
                       ))}
                     </select>
-                    <span id="ffmpegVideoBlurHint" className="app-field-help">
-                      {uiText('editorHintBlur')}
-                    </span>
                   </label>
                 </div>
               </details>
@@ -3172,17 +3038,21 @@ function App(): JSX.Element {
                   persistMainWindowUiPanelToggle('ffmpegFormat', e.currentTarget.open)
                 }}
               >
-                <summary className="app-settings-summary">
+                <summary
+                  className="app-settings-summary"
+                  title={uiText('editorTooltipSectionFormat')}
+                >
                   {uiText('editorFfmpegSectionFrameLayout')}
                 </summary>
                 <p id="ffmpegFormatSectionHint" className="app-settings-section-hint">
                   {uiText('editorFfmpegSectionFrameLayoutHint')}
                 </p>
                 <div className="app-settings-grid" aria-describedby="ffmpegFormatSectionHint">
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorTooltipResolution')}>
                     <span>{uiText('editorFieldResolution')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorTooltipResolution')}
                       aria-label={uiText('editorAriaResolutionExport')}
                       value={exportScalePreset}
                       disabled={exportBusy || snapshotBusy}
@@ -3202,10 +3072,11 @@ function App(): JSX.Element {
                       ))}
                     </select>
                   </label>
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorTooltipFps')}>
                     <span>{uiText('editorFieldFps')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorTooltipFps')}
                       aria-label={uiText('editorAriaFpsExport')}
                       value={exportFps === null ? 'source' : String(exportFps)}
                       disabled={exportBusy || snapshotBusy}
@@ -3229,6 +3100,7 @@ function App(): JSX.Element {
                     <span>{uiText('editorTwoPassSpan')}</span>
                     <PillSwitch
                       label={uiText('editorTwoPassPillLabel')}
+                      tooltip={uiText('editorTooltipTwoPass')}
                       checked={exportTwoPass && exportVideoBitrate !== null}
                       describedBy="ffmpegFormatSectionHint ffmpegTwoPassUiHint"
                       disabled={
@@ -3249,14 +3121,15 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     />
-                    <span id="ffmpegTwoPassUiHint" className="app-field-help">
+                    <span id="ffmpegTwoPassUiHint" className="app-visually-hidden">
                       {uiText('editorTwoPassHint')}
                     </span>
                   </div>
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorTooltipRotation')}>
                     <span>{uiText('editorFieldRotation')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorTooltipRotation')}
                       aria-label={uiText('editorAriaRotationExport')}
                       value={exportVideoTransform}
                       disabled={exportBusy || snapshotBusy}
@@ -3276,10 +3149,11 @@ function App(): JSX.Element {
                       ))}
                     </select>
                   </label>
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorTooltipCrop')}>
                     <span>{uiText('editorFieldCrop')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorTooltipCrop')}
                       aria-label={uiText('editorAriaCropExport')}
                       value={exportCropPreset}
                       disabled={exportBusy || snapshotBusy}
@@ -3309,7 +3183,12 @@ function App(): JSX.Element {
                   persistMainWindowUiPanelToggle('ffmpegAudio', e.currentTarget.open)
                 }}
               >
-                <summary className="app-settings-summary">{uiText('editorFfmpegSectionAudio')}</summary>
+                <summary
+                  className="app-settings-summary"
+                  title={uiText('editorTooltipSectionAudio')}
+                >
+                  {uiText('editorFfmpegSectionAudio')}
+                </summary>
                 <p id="ffmpegAudioSectionHint" className="app-settings-section-hint">
                   {uiText('editorFfmpegSectionAudioHint')}
                 </p>
@@ -3318,6 +3197,7 @@ function App(): JSX.Element {
                     <span>{uiText('editorNoAudioSpan')}</span>
                     <PillSwitch
                       label={uiText('editorNoAudioPillLabel')}
+                      tooltip={uiText('editorTooltipNoAudio')}
                       checked={exportAudioMode === 'none'}
                       describedBy="ffmpegAudioSectionHint ffmpegAudioModeHint"
                       disabled={exportBusy || snapshotBusy}
@@ -3331,14 +3211,15 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     />
-                    <span id="ffmpegAudioModeHint" className="app-field-help">
+                    <span id="ffmpegAudioModeHint" className="app-visually-hidden">
                       {uiText('editorNoAudioHint')}
                     </span>
                   </div>
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorTooltipAacBitrate')}>
                     <span>{uiText('editorFieldAacBitrate')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorTooltipAacBitrate')}
                       aria-label={uiText('editorAriaAacBitrate')}
                       value={exportAudioBitrate}
                       disabled={exportBusy || snapshotBusy || exportAudioMode === 'none'}
@@ -3358,12 +3239,12 @@ function App(): JSX.Element {
                       ))}
                     </select>
                   </label>
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorHintAudioGain')}>
                     <span>{uiText('editorFieldAudioGain')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorHintAudioGain')}
                       aria-label={uiText('editorAriaAudioGain')}
-                      aria-describedby="ffmpegAudioGainHint"
                       value={String(exportAudioGainDb)}
                       disabled={exportBusy || snapshotBusy || exportAudioMode === 'none'}
                       onChange={(e) => {
@@ -3382,16 +3263,13 @@ function App(): JSX.Element {
                         </option>
                       ))}
                     </select>
-                    <span id="ffmpegAudioGainHint" className="app-field-help">
-                      {uiText('editorHintAudioGain')}
-                    </span>
                   </label>
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorHintAudioNormalize')}>
                     <span>{uiText('editorFieldAudioNormalize')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorHintAudioNormalize')}
                       aria-label={uiText('editorAriaAudioNormalize')}
-                      aria-describedby="ffmpegAudioNormalizeHint"
                       value={exportAudioNormalize}
                       disabled={exportBusy || snapshotBusy || exportAudioMode === 'none'}
                       onChange={(e) => {
@@ -3409,14 +3287,12 @@ function App(): JSX.Element {
                         </option>
                       ))}
                     </select>
-                    <span id="ffmpegAudioNormalizeHint" className="app-field-help">
-                      {uiText('editorHintAudioNormalize')}
-                    </span>
                   </label>
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorTooltipSnapshotFormat')}>
                     <span>{uiText('editorFieldSnapshotFormat')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorTooltipSnapshotFormat')}
                       aria-label={uiText('editorAriaSnapshotFormat')}
                       value={snapshotFormat}
                       disabled={exportBusy || snapshotBusy}
@@ -3439,6 +3315,7 @@ function App(): JSX.Element {
                     <span>{uiText('editorStripMetadataSpan')}</span>
                     <PillSwitch
                       label={uiText('editorStripMetadataPillLabel')}
+                      tooltip={uiText('editorTooltipStripMetadata')}
                       checked={exportStripMetadata}
                       describedBy="ffmpegAudioSectionHint ffmpegStripMetadataHint"
                       disabled={exportBusy || snapshotBusy}
@@ -3451,7 +3328,7 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     />
-                    <span id="ffmpegStripMetadataHint" className="app-field-help">
+                    <span id="ffmpegStripMetadataHint" className="app-visually-hidden">
                       {uiText('editorStripMetadataHint')}
                     </span>
                   </div>
@@ -3459,6 +3336,7 @@ function App(): JSX.Element {
                     <span>{uiText('editorStripChaptersSpan')}</span>
                     <PillSwitch
                       label={uiText('editorStripChaptersPillLabel')}
+                      tooltip={uiText('editorTooltipStripChapters')}
                       checked={exportStripChapters}
                       describedBy="ffmpegAudioSectionHint ffmpegStripChaptersHint"
                       disabled={exportBusy || snapshotBusy}
@@ -3471,16 +3349,16 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     />
-                    <span id="ffmpegStripChaptersHint" className="app-field-help">
+                    <span id="ffmpegStripChaptersHint" className="app-visually-hidden">
                       {uiText('editorStripChaptersHint')}
                     </span>
                   </div>
-                  <label className="app-field">
+                  <label className="app-field" title={uiText('editorHintExportSubtitles')}>
                     <span>{uiText('editorFieldExportSubtitles')}</span>
                     <select
                       className="app-control"
+                      title={uiText('editorHintExportSubtitles')}
                       aria-label={uiText('editorAriaExportSubtitles')}
-                      aria-describedby="ffmpegSubtitleModeHint"
                       value={exportSubtitleMode}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -3499,9 +3377,6 @@ function App(): JSX.Element {
                         </option>
                       ))}
                     </select>
-                    <span id="ffmpegSubtitleModeHint" className="app-field-help">
-                      {uiText('editorHintExportSubtitles')}
-                    </span>
                   </label>
                 </div>
                 {lastSnapshotPath ? (
@@ -3511,6 +3386,7 @@ function App(): JSX.Element {
                       className="app-btn app-btn-compact"
                       disabled={exportBusy || snapshotBusy}
                       aria-describedby="ffmpegAudioSectionHint"
+                      title={uiText('editorTooltipSnapshotLastFile')}
                       onClick={() => {
                         void handleOpenLastSnapshot('file')
                       }}
@@ -3522,6 +3398,7 @@ function App(): JSX.Element {
                       className="app-btn app-btn-compact"
                       disabled={exportBusy || snapshotBusy}
                       aria-describedby="ffmpegAudioSectionHint"
+                      title={uiText('editorTooltipSnapshotLastFolder')}
                       onClick={() => {
                         void handleOpenLastSnapshot('folder')
                       }}
@@ -3533,6 +3410,7 @@ function App(): JSX.Element {
                       className="app-btn app-btn-compact"
                       disabled={exportBusy || snapshotBusy}
                       aria-describedby="ffmpegAudioSectionHint"
+                      title={uiText('editorTooltipSnapshotCopyPath')}
                       onClick={() => {
                         void handleCopyLastSnapshotPath()
                       }}
@@ -3550,15 +3428,30 @@ function App(): JSX.Element {
                   persistMainWindowUiPanelToggle('ffmpegPresets', e.currentTarget.open)
                 }}
               >
-                <summary className="app-settings-summary">{uiText('editorFfmpegSectionPresets')}</summary>
+                <summary
+                  className="app-settings-summary"
+                  title={uiText('editorTooltipSectionPresets')}
+                >
+                  {uiText('editorFfmpegSectionPresets')}
+                </summary>
                 <p id="ffmpegPresetsSectionHint" className="app-settings-section-hint">
                   {uiText('editorFfmpegSectionPresetsHint')}
                 </p>
                 <div className="app-settings-stack" aria-describedby="ffmpegPresetsSectionHint">
-                  <label className="app-field">
+                  <label
+                    className="app-field"
+                    title={
+                      selectedExportUserPreset?.hint?.trim() ||
+                      uiText('editorTooltipUserPresetSelectFallback')
+                    }
+                  >
                     <span>{uiText('editorFieldUserPreset')}</span>
                     <select
                       className="app-control"
+                      title={
+                        selectedExportUserPreset?.hint?.trim() ||
+                        uiText('editorTooltipUserPresetSelectFallback')
+                      }
                       aria-label={uiText('editorAriaUserPreset')}
                       value={selectedUserPresetId ?? ''}
                       disabled={exportBusy || snapshotBusy}
@@ -3595,6 +3488,7 @@ function App(): JSX.Element {
                       className="app-btn app-btn-compact"
                       disabled={exportBusy || snapshotBusy}
                       aria-describedby="ffmpegPresetsSectionHint"
+                      title={uiText('editorTooltipPresetAdd')}
                       onClick={() => {
                         handleSaveExportUserPreset()
                       }}
@@ -3604,8 +3498,15 @@ function App(): JSX.Element {
                     <button
                       type="button"
                       className="app-btn app-btn-compact"
-                      disabled={exportBusy || snapshotBusy || !selectedUserPresetId}
+                      disabled={
+                        exportBusy ||
+                        snapshotBusy ||
+                        !selectedUserPresetId ||
+                        (selectedUserPresetId != null &&
+                          isBuiltinExportUserPresetId(selectedUserPresetId))
+                      }
                       aria-describedby="ffmpegPresetsSectionHint"
+                      title={uiText('editorTooltipPresetRename')}
                       onClick={() => {
                         handleRenameExportUserPreset()
                       }}
@@ -3615,8 +3516,15 @@ function App(): JSX.Element {
                     <button
                       type="button"
                       className="app-btn app-btn-compact"
-                      disabled={exportBusy || snapshotBusy || !selectedUserPresetId}
+                      disabled={
+                        exportBusy ||
+                        snapshotBusy ||
+                        !selectedUserPresetId ||
+                        (selectedUserPresetId != null &&
+                          isBuiltinExportUserPresetId(selectedUserPresetId))
+                      }
                       aria-describedby="ffmpegPresetsSectionHint"
+                      title={uiText('editorTooltipPresetOverwrite')}
                       onClick={() => {
                         handleOverwriteExportUserPreset()
                       }}
@@ -3626,8 +3534,15 @@ function App(): JSX.Element {
                     <button
                       type="button"
                       className="app-btn app-btn-compact"
-                      disabled={exportBusy || snapshotBusy || !selectedUserPresetId}
+                      disabled={
+                        exportBusy ||
+                        snapshotBusy ||
+                        !selectedUserPresetId ||
+                        (selectedUserPresetId != null &&
+                          isBuiltinExportUserPresetId(selectedUserPresetId))
+                      }
                       aria-describedby="ffmpegPresetsSectionHint"
+                      title={uiText('editorTooltipPresetDelete')}
                       onClick={() => {
                         handleDeleteExportUserPreset()
                       }}
@@ -3646,7 +3561,12 @@ function App(): JSX.Element {
                   persistMainWindowUiPanelToggle('ffmpegOutput', e.currentTarget.open)
                 }}
               >
-                <summary className="app-settings-summary">{uiText('editorFfmpegSectionOutput')}</summary>
+                <summary
+                  className="app-settings-summary"
+                  title={uiText('editorTooltipSectionOutput')}
+                >
+                  {uiText('editorFfmpegSectionOutput')}
+                </summary>
                 <p id="ffmpegOutputSectionHint" className="app-settings-section-hint">
                   {uiText('editorFfmpegSectionOutputHint')}
                 </p>
@@ -3658,7 +3578,10 @@ function App(): JSX.Element {
                       persistMainWindowUiPanelToggle('exportCommandPreview', e.currentTarget.open)
                     }}
                   >
-                    <summary className="app-export-preview-summary">
+                    <summary
+                      className="app-export-preview-summary"
+                      title={uiText('editorTooltipExportCommandPreview')}
+                    >
                       {uiText('editorExportCommandPreviewSummary')}
                     </summary>
                     <div className="app-export-preview-body">
@@ -3696,6 +3619,7 @@ function App(): JSX.Element {
                         className="app-btn app-btn-compact"
                         disabled={exportBusy || snapshotBusy}
                         aria-describedby="ffmpegOutputSectionHint"
+                        title={uiText('editorTooltipExportLastFile')}
                         onClick={() => {
                           void handleOpenLastExport('file')
                         }}
@@ -3707,6 +3631,7 @@ function App(): JSX.Element {
                         className="app-btn app-btn-compact"
                         disabled={exportBusy || snapshotBusy}
                         aria-describedby="ffmpegOutputSectionHint"
+                        title={uiText('editorTooltipExportLastFolder')}
                         onClick={() => {
                           void handleOpenLastExport('folder')
                         }}
@@ -3718,6 +3643,7 @@ function App(): JSX.Element {
                         className="app-btn app-btn-compact"
                         disabled={exportBusy || snapshotBusy}
                         aria-describedby="ffmpegOutputSectionHint"
+                        title={uiText('editorTooltipExportOpenPreview')}
                         onClick={() => {
                           void handleOpenLastExport('preview')
                         }}
@@ -3729,6 +3655,7 @@ function App(): JSX.Element {
                         className="app-btn app-btn-compact"
                         disabled={exportBusy || snapshotBusy}
                         aria-describedby="ffmpegOutputSectionHint"
+                        title={uiText('editorTooltipCopyExportPath')}
                         onClick={() => {
                           void handleCopyLastExportPath()
                         }}
@@ -4212,7 +4139,9 @@ function App(): JSX.Element {
                 <strong>{downloadsStats.running}</strong>
               </div>
               <div className="app-downloads-stat">
-                <span className="app-downloads-stat-label">{uiText('downloadsQueueFilterDone')}</span>
+                <span className="app-downloads-stat-label">
+                  {uiText('downloadsQueueFilterDone')}
+                </span>
                 <strong>{downloadsStats.done}</strong>
               </div>
               <div className="app-downloads-stat">
@@ -4288,8 +4217,12 @@ function App(): JSX.Element {
                               <div className="app-downloads-row-title">{row.shortLabel}</div>
                               <div className="app-downloads-row-url">{row.url}</div>
                             </td>
-                            <td className="app-downloads-mono">{row.queueFmt ?? uiText('uiPlaceholderDash')}</td>
-                            <td className="app-downloads-mono">{row.queueSize ?? uiText('uiPlaceholderDash')}</td>
+                            <td className="app-downloads-mono">
+                              {row.queueFmt ?? uiText('uiPlaceholderDash')}
+                            </td>
+                            <td className="app-downloads-mono">
+                              {row.queueSize ?? uiText('uiPlaceholderDash')}
+                            </td>
                             <td className="app-downloads-mono">
                               <div className="app-downloads-progress">
                                 {showProgressBar ? (
@@ -4320,8 +4253,12 @@ function App(): JSX.Element {
                                 )}
                               </div>
                             </td>
-                            <td className="app-downloads-mono">{row.queueSpeed ?? uiText('uiPlaceholderDash')}</td>
-                            <td className="app-downloads-mono">{row.queueEta ?? uiText('uiPlaceholderDash')}</td>
+                            <td className="app-downloads-mono">
+                              {row.queueSpeed ?? uiText('uiPlaceholderDash')}
+                            </td>
+                            <td className="app-downloads-mono">
+                              {row.queueEta ?? uiText('uiPlaceholderDash')}
+                            </td>
                             <td>
                               <span
                                 className={`app-downloads-status app-downloads-status-${statusTone}`}
@@ -4438,14 +4375,18 @@ function App(): JSX.Element {
                                       aria-label={uiText('downloadsQueueAriaOpenInEditor')}
                                       title={uiText('downloadsQueueAriaOpenInEditor')}
                                       onClick={() => {
-                                        setStatusHint(uiText('downloadsHistoryOpenHandlerPreparing'))
+                                        setStatusHint(
+                                          uiText('downloadsHistoryOpenHandlerPreparing')
+                                        )
                                         void window.fluxalloy.downloads
                                           .openQueueOutputInHandler(row.id)
                                           .then((res) => {
                                             if (!res.ok) {
                                               setStatusHint(res.error)
                                             } else {
-                                              setStatusHint(uiText('downloadsHistoryOpenHandlerDone'))
+                                              setStatusHint(
+                                                uiText('downloadsHistoryOpenHandlerDone')
+                                              )
                                             }
                                           })
                                       }}
@@ -4619,7 +4560,9 @@ function App(): JSX.Element {
             aria-label={uiText('downloadsRailAria')}
           >
             <h3 className="app-settings-title">{uiText('downloadsRailTitle')}</h3>
-            <p className="app-settings-subtitle">{uiText('downloadsRailSubtitle')}</p>
+            <p className="app-settings-subtitle" title={uiText('downloadsRailIntroTooltip')}>
+              {uiText('downloadsRailSubtitle')}
+            </p>
             {downloadsOptions ? (
               <div className="app-downloads-settings-stack">
                 <details
@@ -4627,14 +4570,21 @@ function App(): JSX.Element {
                   open={downloadsRailPanels.format}
                   onToggle={handleDownloadsRailSectionToggle('format')}
                 >
-                  <summary className="app-downloads-rail-summary">
+                  <summary
+                    className="app-downloads-rail-summary"
+                    title={uiText('downloadsTooltipSectionFormat')}
+                  >
                     {uiText('downloadsRailFormatSummary')}
                   </summary>
                   <div className="app-downloads-rail-section-body">
-                    <label className="app-field">
+                    <label
+                      className="app-field"
+                      title={uiText('downloadsTooltipFormatPresetSelect')}
+                    >
                       <span>{uiText('downloadsRailFormatQualityLabel')}</span>
                       <select
                         className="app-control"
+                        title={uiText('downloadsTooltipFormatPresetSelect')}
                         value={downloadsOptions.formatPreset}
                         disabled={downloadsOptionsBusy || downloadsOptions.audioOnly}
                         aria-describedby="downloadsFormatHint"
@@ -4659,6 +4609,7 @@ function App(): JSX.Element {
                         <span>{uiText('downloadsPlaylistSpan')}</span>
                         <PillSwitch
                           label={uiText('downloadsPlaylistPillLabel')}
+                          tooltip={uiText('downloadsTooltipPlaylistSwitch')}
                           checked={downloadsOptions.downloadPlaylist}
                           describedBy="downloadsPlaylistHint"
                           disabled={downloadsOptionsBusy}
@@ -4676,6 +4627,7 @@ function App(): JSX.Element {
                         <span>{uiText('downloadsAudioOnlySpan')}</span>
                         <PillSwitch
                           label={uiText('downloadsAudioOnlyPillLabel')}
+                          tooltip={uiText('downloadsTooltipAudioOnlySwitch')}
                           checked={downloadsOptions.audioOnly}
                           describedBy="downloadsAudioOnlyHint"
                           disabled={downloadsOptionsBusy}
@@ -4690,10 +4642,11 @@ function App(): JSX.Element {
                         </span>
                       </div>
                     </div>
-                    <label className="app-field">
+                    <label className="app-field" title={uiText('downloadsTooltipSubtitlesSelect')}>
                       <span>{uiText('downloadsSubtitlesLabel')}</span>
                       <select
                         className="app-control"
+                        title={uiText('downloadsTooltipSubtitlesSelect')}
                         value={downloadsOptions.subtitlePreset}
                         disabled={downloadsOptionsBusy}
                         onChange={(e) => {
@@ -4704,14 +4657,17 @@ function App(): JSX.Element {
                       >
                         <option value="none">{uiText('downloadsSubPresetNone')}</option>
                         <option value="manual">{uiText('downloadsSubPresetManual')}</option>
-                        <option value="manual_auto">{uiText('downloadsSubPresetManualAuto')}</option>
+                        <option value="manual_auto">
+                          {uiText('downloadsSubPresetManualAuto')}
+                        </option>
                       </select>
                       <span className="app-field-help">{uiText('downloadsSubLangsHelp')}</span>
                     </label>
-                    <label className="app-field">
+                    <label className="app-field" title={uiText('downloadsTooltipSubLangsInput')}>
                       <span>{uiText('downloadsSubLangsLabel')}</span>
                       <input
                         className="app-control app-downloads-template-input"
+                        title={uiText('downloadsTooltipSubLangsInput')}
                         value={downloadsOptions.subLangsLine}
                         disabled={
                           downloadsOptionsBusy || downloadsOptions.subtitlePreset === 'none'
@@ -4736,7 +4692,10 @@ function App(): JSX.Element {
                   open={downloadsRailPanels.metadata}
                   onToggle={handleDownloadsRailSectionToggle('metadata')}
                 >
-                  <summary className="app-downloads-rail-summary">
+                  <summary
+                    className="app-downloads-rail-summary"
+                    title={uiText('downloadsTooltipSectionMetadata')}
+                  >
                     {uiText('downloadsRailMetadataSummary')}
                   </summary>
                   <div className="app-downloads-rail-section-body">
@@ -4744,6 +4703,7 @@ function App(): JSX.Element {
                       <span>{uiText('downloadsOpenAfterSuccessSpan')}</span>
                       <PillSwitch
                         label={uiText('downloadsOpenAfterSuccessPillLabel')}
+                        tooltip={uiText('downloadsTooltipOpenAfterSuccess')}
                         checked={downloadsOptions.openInHandlerOnComplete}
                         describedBy="downloadsOpenAfterSuccessHint"
                         disabled={downloadsOptionsBusy}
@@ -4761,6 +4721,7 @@ function App(): JSX.Element {
                       <span>{uiText('downloadsAutoExportSpan')}</span>
                       <PillSwitch
                         label={uiText('downloadsAutoExportPillLabel')}
+                        tooltip={uiText('downloadsTooltipAutoExport')}
                         checked={downloadsOptions.autoExportAfterOpenInHandler}
                         describedBy="downloadsAutoExportAfterOpenHint"
                         disabled={downloadsOptionsBusy || !downloadsOptions.openInHandlerOnComplete}
@@ -4776,10 +4737,11 @@ function App(): JSX.Element {
                       </span>
                     </div>
                     <div className="app-downloads-select-grid">
-                      <label className="app-field">
+                      <label className="app-field" title={uiText('downloadsTooltipCookiesBrowser')}>
                         <span>{uiText('downloadsCookiesBrowserLabel')}</span>
                         <select
                           className="app-control"
+                          title={uiText('downloadsTooltipCookiesBrowser')}
                           value={downloadsOptions.cookiesBrowserChoice}
                           disabled={downloadsOptionsBusy}
                           onChange={(e) => {
@@ -4789,15 +4751,20 @@ function App(): JSX.Element {
                           }}
                         >
                           <option value="none">{uiText('downloadsCookiesBrowserNone')}</option>
-                          <option value="chrome">{uiText('downloadsYtdlpBrowserPrettyChrome')}</option>
+                          <option value="chrome">
+                            {uiText('downloadsYtdlpBrowserPrettyChrome')}
+                          </option>
                           <option value="edge">{uiText('downloadsYtdlpBrowserPrettyEdge')}</option>
-                          <option value="firefox">{uiText('downloadsYtdlpBrowserPrettyFirefox')}</option>
+                          <option value="firefox">
+                            {uiText('downloadsYtdlpBrowserPrettyFirefox')}
+                          </option>
                         </select>
                       </label>
-                      <label className="app-field">
+                      <label className="app-field" title={uiText('downloadsTooltipImpersonate')}>
                         <span>{uiText('downloadsImpersonateLabel')}</span>
                         <select
                           className="app-control"
+                          title={uiText('downloadsTooltipImpersonate')}
                           value={downloadsOptions.impersonateChoice}
                           disabled={downloadsOptionsBusy}
                           onChange={(e) => {
@@ -4807,16 +4774,21 @@ function App(): JSX.Element {
                           }}
                         >
                           <option value="none">{uiText('downloadsImpersonateOff')}</option>
-                          <option value="chrome">{uiText('downloadsYtdlpBrowserTokenChrome')}</option>
+                          <option value="chrome">
+                            {uiText('downloadsYtdlpBrowserTokenChrome')}
+                          </option>
                           <option value="edge">{uiText('downloadsYtdlpBrowserTokenEdge')}</option>
-                          <option value="firefox">{uiText('downloadsYtdlpBrowserTokenFirefox')}</option>
+                          <option value="firefox">
+                            {uiText('downloadsYtdlpBrowserTokenFirefox')}
+                          </option>
                         </select>
                       </label>
                     </div>
-                    <label className="app-field">
+                    <label className="app-field" title={uiText('downloadsTooltipCookiesProfile')}>
                       <span>{uiText('downloadsCookiesProfileLabel')}</span>
                       <input
                         className="app-control app-downloads-template-input"
+                        title={uiText('downloadsTooltipCookiesProfile')}
                         value={downloadsOptions.cookiesBrowserProfileLine}
                         disabled={downloadsOptionsBusy}
                         spellCheck={false}
@@ -4844,7 +4816,9 @@ function App(): JSX.Element {
                       role="group"
                       aria-label={uiText('downloadsCookiesFileGroupAria')}
                     >
-                      <span className="app-field-help">{uiText('downloadsCookiesNetscapeHelp')}</span>
+                      <span className="app-field-help">
+                        {uiText('downloadsCookiesNetscapeHelp')}
+                      </span>
                       <strong title={downloadsOptions.cookiesFilePathStored}>
                         {downloadsOptions.cookiesFilePathStored ||
                           uiText('downloadsCookiesFileNotSelected')}
@@ -4857,6 +4831,7 @@ function App(): JSX.Element {
                           type="button"
                           className="app-btn app-btn-compact app-btn-icon-leading"
                           disabled={downloadsOptionsBusy}
+                          title={uiText('downloadsTooltipCookiesPick')}
                           onClick={() => {
                             void window.fluxalloy.downloads.pickCookiesFile().then((res) => {
                               if (res.ok) {
@@ -4879,6 +4854,7 @@ function App(): JSX.Element {
                             downloadsOptionsBusy ||
                             downloadsOptions.cookiesFilePathStored.length === 0
                           }
+                          title={uiText('downloadsTooltipCookiesClear')}
                           onClick={() => {
                             void window.fluxalloy.downloads.clearCookiesFile().then((res) => {
                               if (!res.ok) {
@@ -4901,7 +4877,10 @@ function App(): JSX.Element {
                   open={downloadsRailPanels.saving}
                   onToggle={handleDownloadsRailSectionToggle('saving')}
                 >
-                  <summary className="app-downloads-rail-summary">
+                  <summary
+                    className="app-downloads-rail-summary"
+                    title={uiText('downloadsTooltipSectionSaving')}
+                  >
                     {uiText('downloadsRailSavingSummary')}
                   </summary>
                   <div className="app-downloads-rail-section-body">
@@ -4923,6 +4902,7 @@ function App(): JSX.Element {
                         <button
                           type="button"
                           className="app-btn app-btn-compact app-btn-icon-leading"
+                          title={uiText('downloadsTooltipOutputOpenFolder')}
                           onClick={() => {
                             void window.fluxalloy.downloads.openOutputDirectory().then((res) => {
                               if (!res.ok) {
@@ -4937,6 +4917,7 @@ function App(): JSX.Element {
                         <button
                           type="button"
                           className="app-btn app-btn-compact app-btn-icon-leading"
+                          title={uiText('downloadsTooltipOutputPick')}
                           onClick={() => {
                             void window.fluxalloy.downloads.pickOutputDirectory().then((res) => {
                               if (res.ok) {
@@ -4955,6 +4936,7 @@ function App(): JSX.Element {
                         <button
                           type="button"
                           className="app-btn app-btn-compact app-btn-icon-leading"
+                          title={uiText('downloadsTooltipOutputDefault')}
                           onClick={() => {
                             void window.fluxalloy.downloads.clearOutputDirectory().then((res) => {
                               if (!res.ok) {
@@ -4970,10 +4952,11 @@ function App(): JSX.Element {
                         </button>
                       </div>
                     </div>
-                    <label className="app-field">
+                    <label className="app-field" title={uiText('downloadsTooltipFilenameTemplate')}>
                       <span>{uiText('downloadsFilenameTemplateLabel')}</span>
                       <input
                         className="app-control app-downloads-template-input"
+                        title={uiText('downloadsTooltipFilenameTemplate')}
                         value={downloadsOptions.filenameTemplate}
                         disabled={downloadsOptionsBusy}
                         spellCheck={false}
@@ -4998,14 +4981,18 @@ function App(): JSX.Element {
                   open={downloadsRailPanels.network}
                   onToggle={handleDownloadsRailSectionToggle('network')}
                 >
-                  <summary className="app-downloads-rail-summary">
+                  <summary
+                    className="app-downloads-rail-summary"
+                    title={uiText('downloadsTooltipSectionNetwork')}
+                  >
                     {uiText('downloadsRailNetworkSummary')}
                   </summary>
                   <div className="app-downloads-rail-section-body">
-                    <label className="app-field">
+                    <label className="app-field" title={uiText('downloadsTooltipQueueRetrySelect')}>
                       <span>{uiText('downloadsQueueRetryLabel')}</span>
                       <select
                         className="app-control"
+                        title={uiText('downloadsTooltipQueueRetrySelect')}
                         value={downloadsOptions.queueRetryProfile}
                         disabled={downloadsOptionsBusy}
                         onChange={(e) => {
@@ -5023,10 +5010,11 @@ function App(): JSX.Element {
                       <span className="app-field-help">{uiText('downloadsQueueRetryHelp')}</span>
                     </label>
                     <div className="app-downloads-select-grid">
-                      <label className="app-field">
+                      <label className="app-field" title={uiText('downloadsTooltipRateLimitInput')}>
                         <span>{uiText('downloadsRateLimitLabel')}</span>
                         <input
                           className="app-control"
+                          title={uiText('downloadsTooltipRateLimitInput')}
                           value={downloadsOptions.rateLimit}
                           disabled={downloadsOptionsBusy}
                           placeholder={uiText('downloadsRateLimitPlaceholder')}
@@ -5040,10 +5028,11 @@ function App(): JSX.Element {
                         />
                         <span className="app-field-help">{uiText('downloadsRateLimitHelp')}</span>
                       </label>
-                      <label className="app-field">
+                      <label className="app-field" title={uiText('downloadsTooltipRetriesInput')}>
                         <span>{uiText('downloadsYtdlpRetriesLabel')}</span>
                         <input
                           className="app-control"
+                          title={uiText('downloadsTooltipRetriesInput')}
                           value={downloadsOptions.retriesLine}
                           disabled={downloadsOptionsBusy}
                           inputMode="numeric"
@@ -5059,12 +5048,18 @@ function App(): JSX.Element {
                             void applyDownloadsOptionsPatch({ retriesLine: e.target.value })
                           }}
                         />
-                        <span className="app-field-help">{uiText('downloadsYtdlpRetriesHelp')}</span>
+                        <span className="app-field-help">
+                          {uiText('downloadsYtdlpRetriesHelp')}
+                        </span>
                       </label>
-                      <label className="app-field">
+                      <label
+                        className="app-field"
+                        title={uiText('downloadsTooltipFragmentRetriesInput')}
+                      >
                         <span>{uiText('downloadsFragmentRetriesLabel')}</span>
                         <input
                           className="app-control"
+                          title={uiText('downloadsTooltipFragmentRetriesInput')}
                           value={downloadsOptions.fragmentRetriesLine}
                           disabled={downloadsOptionsBusy}
                           inputMode="numeric"
@@ -5094,14 +5089,21 @@ function App(): JSX.Element {
                   open={downloadsRailPanels.expert}
                   onToggle={handleDownloadsRailSectionToggle('expert')}
                 >
-                  <summary className="app-downloads-rail-summary">
+                  <summary
+                    className="app-downloads-rail-summary"
+                    title={uiText('downloadsTooltipSectionExpert')}
+                  >
                     {uiText('downloadsRailExpertSummary')}
                   </summary>
                   <div className="app-downloads-rail-section-body">
-                    <label className="app-field">
+                    <label
+                      className="app-field"
+                      title={uiText('downloadsTooltipExtraArgsTextarea')}
+                    >
                       <span>{uiText('downloadsExtraArgsLabel')}</span>
                       <textarea
                         className="app-control app-downloads-extra-args"
+                        title={uiText('downloadsTooltipExtraArgsTextarea')}
                         rows={3}
                         spellCheck={false}
                         autoComplete="off"
@@ -5124,41 +5126,20 @@ function App(): JSX.Element {
                         {downloadsOptions.extraArgsParseWarning}
                       </p>
                     ) : null}
-                    <label className="app-field">
-                      <span>{uiText('downloadsInsertTokenLabel')}</span>
-                      <select
-                        key={downloadsExpertHintPickerSeq}
-                        className="app-control app-downloads-expert-hint-select"
-                        aria-label={uiText('downloadsInsertTokenAria')}
-                        disabled={downloadsOptionsBusy}
-                        defaultValue=""
-                        onChange={(e) => {
-                          const token = e.target.value
-                          if (!token) return
-                          appendDownloadsExtraArgsToken(token)
-                        }}
-                      >
-                        <option value="">{uiText('downloadsHintPickerPlaceholder')}</option>
-                        {ytdlpCommandHintsByCategory.map(([cat, rows]) => (
-                          <optgroup key={cat} label={cat}>
-                            {rows.map((h) => (
-                              <option key={`${cat}:${h.token}`} value={h.token} title={h.summary}>
-                                {h.token}
-                              </option>
-                            ))}
-                          </optgroup>
-                        ))}
-                      </select>
-                    </label>
-                    <label className="app-field">
-                      <span>{uiText('downloadsHintSearchLabel')}</span>
+                    <p id="downloadsHintCatalogIntro" className="app-field-help">
+                      {uiText('downloadsHintCatalogIntro')}
+                    </p>
+                    <label className="app-field" title={uiText('downloadsTooltipHintSearchInput')}>
+                      <span>{uiText('downloadsHintCatalogFilterLabel')}</span>
                       <input
                         type="text"
                         className="app-control app-downloads-hint-filter"
+                        title={uiText('downloadsTooltipHintSearchInput')}
                         spellCheck={false}
                         autoComplete="off"
                         placeholder={uiText('downloadsHintSearchPlaceholder')}
                         aria-label={uiText('downloadsHintSearchAria')}
+                        aria-describedby="downloadsHintCatalogIntro"
                         disabled={downloadsOptionsBusy}
                         value={downloadsExpertHintFilter}
                         onChange={(e) => setDownloadsExpertHintFilter(e.target.value)}
@@ -5199,10 +5180,8 @@ function App(): JSX.Element {
                                   {h.token}
                                 </button>
                                 {h.summary ? (
-                                  <div className="app-downloads-hint-desc">
-                                    {h.summary.length > 420
-                                      ? `${h.summary.slice(0, 418)}…`
-                                      : h.summary}
+                                  <div className="app-downloads-hint-desc" title={h.summary}>
+                                    {h.summary}
                                   </div>
                                 ) : null}
                               </div>
@@ -5211,7 +5190,9 @@ function App(): JSX.Element {
                         ))
                       )}
                     </div>
-                    <span className="app-field-help">{uiText('downloadsHintsSameAsPopoutHelp')}</span>
+                    <span className="app-field-help">
+                      {uiText('downloadsHintsSameAsPopoutHelp')}
+                    </span>
                     <p className="app-doc-inline-links app-downloads-doc-links">
                       <a href={YTDLP_DOC_README} target="_blank" rel="noreferrer">
                         {uiText('docLinkYtDlpReadme')}
@@ -5247,26 +5228,13 @@ function App(): JSX.Element {
                 type="button"
                 className="app-btn app-btn-icon-leading"
                 disabled={downloadsOptionsBusy}
+                title={uiText('downloadsTooltipRefreshFooter')}
                 onClick={() => {
                   void refreshDownloadsOptions()
                 }}
               >
                 <IconRefreshCw title="" size={16} />
                 {uiText('downloadsRailRefreshOptions')}
-              </button>
-              <button
-                type="button"
-                className="app-btn app-btn-warn app-btn-icon-leading"
-                onClick={() => {
-                  void window.fluxalloy.downloads.cancelQueue().then((res) => {
-                    if (!res.ok) {
-                      setStatusHint(res.error)
-                    }
-                  })
-                }}
-              >
-                <IconBan title="" size={16} />
-                {uiText('downloadsRailStopCurrentRow')}
               </button>
             </div>
           </aside>

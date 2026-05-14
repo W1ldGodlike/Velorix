@@ -44,14 +44,19 @@ export function useMainWindowUiPanels(): {
     [mainUiPanels]
   )
 
-  const hydrateMainWindowUiPanels = useCallback((patch: MainWindowUiPanelState | null | undefined) => {
-    setMainUiPanels(mergeMainWindowUiPanels(patch))
-  }, [])
+  const hydrateMainWindowUiPanels = useCallback(
+    (patch: MainWindowUiPanelState | null | undefined) => {
+      setMainUiPanels(mergeMainWindowUiPanels(patch))
+    },
+    []
+  )
 
   const persistMainWindowUiPanelToggle = useCallback(
     (key: MainWindowUiPanelKey, nextOpen: boolean): void => {
       setMainUiPanels((prev) => ({ ...prev, [key]: nextOpen }))
-      void window.fluxalloy.settings.mergeMainWindowUiPanels({ [key]: nextOpen }).catch(console.error)
+      void window.fluxalloy.settings
+        .mergeMainWindowUiPanels({ [key]: nextOpen })
+        .catch(console.error)
     },
     []
   )

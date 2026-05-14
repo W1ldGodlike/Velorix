@@ -37,13 +37,20 @@ export function useDownloadsWindowUiPanels(): {
       setDownloadsEmbeddedHistoryOpen(patch?.history !== false)
       setDownloadsEmbeddedLogOpen(patch?.log !== false)
       setDownloadsRailPanels({
-        format: typeof patch?.format === 'boolean' ? patch.format : DOWNLOADS_RAIL_PANEL_DEFAULTS.format,
+        format:
+          typeof patch?.format === 'boolean' ? patch.format : DOWNLOADS_RAIL_PANEL_DEFAULTS.format,
         metadata:
-          typeof patch?.metadata === 'boolean' ? patch.metadata : DOWNLOADS_RAIL_PANEL_DEFAULTS.metadata,
-        saving: typeof patch?.saving === 'boolean' ? patch.saving : DOWNLOADS_RAIL_PANEL_DEFAULTS.saving,
+          typeof patch?.metadata === 'boolean'
+            ? patch.metadata
+            : DOWNLOADS_RAIL_PANEL_DEFAULTS.metadata,
+        saving:
+          typeof patch?.saving === 'boolean' ? patch.saving : DOWNLOADS_RAIL_PANEL_DEFAULTS.saving,
         network:
-          typeof patch?.network === 'boolean' ? patch.network : DOWNLOADS_RAIL_PANEL_DEFAULTS.network,
-        expert: typeof patch?.expert === 'boolean' ? patch.expert : DOWNLOADS_RAIL_PANEL_DEFAULTS.expert
+          typeof patch?.network === 'boolean'
+            ? patch.network
+            : DOWNLOADS_RAIL_PANEL_DEFAULTS.network,
+        expert:
+          typeof patch?.expert === 'boolean' ? patch.expert : DOWNLOADS_RAIL_PANEL_DEFAULTS.expert
       })
     },
     []

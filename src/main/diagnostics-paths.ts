@@ -59,10 +59,7 @@ function resolveDiagnosticsFolderPath(id: DiagnosticsFolderId): string {
   }
 }
 
-function diagnosticsFolderLabel(
-  id: DiagnosticsFolderId,
-  locale: DownloadsWindowUiLocale
-): string {
+function diagnosticsFolderLabel(id: DiagnosticsFolderId, locale: DownloadsWindowUiLocale): string {
   const s = getMainApplicationStrings(locale)
   switch (id) {
     case 'userData':

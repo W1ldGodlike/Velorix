@@ -1,12 +1,5 @@
 import { execFile } from 'child_process'
-import {
-  appendFileSync,
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  statSync,
-  writeFileSync
-} from 'fs'
+import { appendFileSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'fs'
 import { app } from 'electron'
 import { is } from '@electron-toolkit/utils'
 import { dirname, join, normalize, resolve } from 'path'
@@ -47,10 +40,7 @@ export function resolveTerminalCliSessionLogPath(userData: string): string {
 }
 
 /** §8 — журнал прогонов вкладки «Терминал» для Support ZIP (stderr и блокировки). */
-export function appendTerminalCliSessionLog(params: {
-  userData: string
-  block: string
-}): void {
+export function appendTerminalCliSessionLog(params: { userData: string; block: string }): void {
   const { userData, block } = params
   try {
     const dir = join(userData, 'logs')
@@ -185,7 +175,9 @@ export function resolveTerminalCurrentFileArgs(params: {
 }
 
 function trimOutput(text: string): string {
-  return text.length <= MAX_OUTPUT_CHARS ? text : `${text.slice(0, MAX_OUTPUT_CHARS)}\n… truncated …`
+  return text.length <= MAX_OUTPUT_CHARS
+    ? text
+    : `${text.slice(0, MAX_OUTPUT_CHARS)}\n… truncated …`
 }
 
 function terminalCliLogIsoStamp(): string {
@@ -367,4 +359,3 @@ export function getTerminalCommandHints(): TerminalCommandHintEntry[] {
   ].sort((a, b) => a.tool.localeCompare(b.tool) || a.token.localeCompare(b.token, 'ru'))
   return hintsMemo
 }
-

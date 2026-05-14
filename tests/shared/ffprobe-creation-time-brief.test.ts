@@ -4,9 +4,9 @@ import { formatFfprobeCreationTimeBrief } from '../../src/shared/ffprobe-creatio
 
 describe('formatFfprobeCreationTimeBrief', () => {
   it('ISO с T → только дата', () => {
-    expect(
-      formatFfprobeCreationTimeBrief({ creation_time: '2024-03-15T18:22:11.000000Z' })
-    ).toBe('created 2024-03-15')
+    expect(formatFfprobeCreationTimeBrief({ creation_time: '2024-03-15T18:22:11.000000Z' })).toBe(
+      'created 2024-03-15'
+    )
   })
 
   it('дата без T → дата', () => {

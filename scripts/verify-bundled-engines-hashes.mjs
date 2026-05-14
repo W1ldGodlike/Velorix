@@ -107,10 +107,15 @@ async function main() {
   try {
     trusted = JSON.parse(await readFile(trustedHashesPath, 'utf-8'))
   } catch (e) {
-    throw new Error(`Не удалось прочитать ${trustedHashesPath}: ${e instanceof Error ? e.message : String(e)}`)
+    throw new Error(
+      `Не удалось прочитать ${trustedHashesPath}: ${e instanceof Error ? e.message : String(e)}`
+    )
   }
 
-  const wx = trusted['windows-x64'] && typeof trusted['windows-x64'] === 'object' ? trusted['windows-x64'] : {}
+  const wx =
+    trusted['windows-x64'] && typeof trusted['windows-x64'] === 'object'
+      ? trusted['windows-x64']
+      : {}
 
   for (const { file, jsonKey } of EXE_KEYS) {
     const full = join(binDir, file)

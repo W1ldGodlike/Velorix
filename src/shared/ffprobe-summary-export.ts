@@ -41,7 +41,10 @@ export function defaultFfprobeSummaryHtmlFileName(mediaPath: string | undefined)
   return `${stemFromMediaPath(mediaPath)}-ffprobe-summary.html`
 }
 
-function trackKindLabel(kind: MediaProbeTrackRow['kind'], b: ReturnType<typeof ffprobeSummaryStrings>): string {
+function trackKindLabel(
+  kind: MediaProbeTrackRow['kind'],
+  b: ReturnType<typeof ffprobeSummaryStrings>
+): string {
   switch (kind) {
     case 'video':
       return b.trackKindVideo
@@ -58,7 +61,10 @@ function trackKindLabel(kind: MediaProbeTrackRow['kind'], b: ReturnType<typeof f
   }
 }
 
-function formatProbeDurationLine(sec: number | null, b: ReturnType<typeof ffprobeSummaryStrings>): string {
+function formatProbeDurationLine(
+  sec: number | null,
+  b: ReturnType<typeof ffprobeSummaryStrings>
+): string {
   if (sec === null || !Number.isFinite(sec)) {
     return b.durationUnknown
   }

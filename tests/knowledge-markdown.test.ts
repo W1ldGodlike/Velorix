@@ -9,8 +9,12 @@ import {
 
 describe('knowledgeInternalSlugFromHref', () => {
   it('maps help filenames to slugs', () => {
-    expect(knowledgeInternalSlugFromHref('processing-social-presets.md')).toBe('processing-social-presets')
-    expect(knowledgeInternalSlugFromHref('./tools-terminal-inspector.md')).toBe('tools-terminal-inspector')
+    expect(knowledgeInternalSlugFromHref('processing-social-presets.md')).toBe(
+      'processing-social-presets'
+    )
+    expect(knowledgeInternalSlugFromHref('./tools-terminal-inspector.md')).toBe(
+      'tools-terminal-inspector'
+    )
   })
 
   it('rejects schemes and bad names', () => {

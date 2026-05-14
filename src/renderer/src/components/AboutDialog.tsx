@@ -83,7 +83,12 @@ export function AboutDialog({
       if (r.ok) {
         pushStatus(formatMaintenanceCleanDone(r.removedFiles, formatUiBytes(r.removedBytes)))
       } else {
-        pushStatus(uiTextVars('aboutMaintenanceCleanErrorTemplate', { label: maintenanceLabel(choice), error: r.error }))
+        pushStatus(
+          uiTextVars('aboutMaintenanceCleanErrorTemplate', {
+            label: maintenanceLabel(choice),
+            error: r.error
+          })
+        )
       }
     })
   }
@@ -142,6 +147,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className="app-btn app-btn-compact"
+                title={uiText('aboutTooltipLogsFolder')}
                 onClick={() => {
                   void window.fluxalloy.diagnostics.openFolder('logs').then((r) => {
                     if (!r.ok) {
@@ -160,6 +166,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className="app-btn app-btn-compact"
+                title={uiText('aboutTooltipMainLog')}
                 onClick={() => {
                   void window.fluxalloy.diagnostics.openMainLog().then((r) => {
                     if (!r.ok) {
@@ -173,6 +180,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className="app-btn app-btn-compact"
+                title={uiText('aboutTooltipSupportZip')}
                 onClick={() => {
                   void window.fluxalloy.diagnostics.createSupportZip().then((r) => {
                     if (r.ok) {
@@ -193,6 +201,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className="app-btn app-btn-compact"
+                title={uiText('aboutTooltipMaintenanceSummary')}
                 onClick={() => {
                   setMaintenanceConfirm(null)
                   void window.fluxalloy.diagnostics.maintenanceSnapshot().then((snapshot) => {
@@ -205,6 +214,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className={`app-btn app-btn-compact${maintenanceConfirm === 'all' ? ' app-btn-danger' : ''}`}
+                title={uiText('aboutTooltipMaintenanceCleanAll')}
                 onClick={() => {
                   handleCleanMaintenance('all')
                 }}
@@ -218,6 +228,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className={`app-btn app-btn-compact${maintenanceConfirm === 'previewCache' ? ' app-btn-danger' : ''}`}
+                title={uiText('aboutTooltipMaintenanceCleanPreview')}
                 onClick={() => {
                   handleCleanMaintenance('previewCache')
                 }}
@@ -231,6 +242,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className={`app-btn app-btn-compact${maintenanceConfirm === 'ytdlpPartials' ? ' app-btn-danger' : ''}`}
+                title={uiText('aboutTooltipMaintenanceCleanPartials')}
                 onClick={() => {
                   handleCleanMaintenance('ytdlpPartials')
                 }}
@@ -244,6 +256,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className={`app-btn app-btn-compact${maintenanceConfirm === 'ffmpegTemp' ? ' app-btn-danger' : ''}`}
+                title={uiText('aboutTooltipMaintenanceCleanFfmpegTemp')}
                 onClick={() => {
                   handleCleanMaintenance('ffmpegTemp')
                 }}
@@ -269,7 +282,12 @@ export function AboutDialog({
               </a>
             </p>
           </div>
-          <button type="button" className="app-btn app-btn-primary" onClick={onClose}>
+          <button
+            type="button"
+            className="app-btn app-btn-primary"
+            title={uiText('aboutTooltipCloseAbout')}
+            onClick={onClose}
+          >
             {uiText('closeButton')}
           </button>
         </div>

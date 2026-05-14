@@ -170,7 +170,9 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
   it('preview: есть JSON-сводка и show_error для текущего превью', () => {
     const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
     expect(
-      lines.some((l) => l.includes('-of json') && l.includes('-show_format') && l.includes('-show_streams'))
+      lines.some(
+        (l) => l.includes('-of json') && l.includes('-show_format') && l.includes('-show_streams')
+      )
     ).toBe(true)
     expect(lines.some((l) => l.includes('-show_error'))).toBe(true)
     expect(lines.some((l) => l.includes('stream_tags=language'))).toBe(true)
@@ -180,49 +182,58 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines.some((l) => l.includes('sample_aspect_ratio,display_aspect_ratio'))).toBe(true)
     expect(lines.some((l) => l.includes('format_tags=title,encoder'))).toBe(true)
     expect(lines.some((l) => l.includes('field_order,color_range'))).toBe(true)
-    expect(lines.some((l) => l.includes('select_streams s:0') && l.includes('stream_tags=title,language'))).toBe(
-      true
-    )
-    expect(lines.some((l) => l.includes('select_streams a:1') && l.includes('codec_name,sample_rate,channels'))).toBe(
-      true
-    )
     expect(
       lines.some(
-        (l) =>
-          l.includes('select_streams v:0') &&
-          l.includes('stream_tags=handler_name,encoder')
+        (l) => l.includes('select_streams s:0') && l.includes('stream_tags=title,language')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) => l.includes('select_streams a:1') && l.includes('codec_name,sample_rate,channels')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) => l.includes('select_streams v:0') && l.includes('stream_tags=handler_name,encoder')
       )
     ).toBe(true)
     expect(lines.some((l) => l.includes('nb_frames,duration'))).toBe(true)
     expect(lines.some((l) => l.includes('format=start_time,duration'))).toBe(true)
     expect(
-      lines.some((l) => l.includes('select_streams s:1') && l.includes('codec_name,codec_tag_string'))
+      lines.some(
+        (l) => l.includes('select_streams s:1') && l.includes('codec_name,codec_tag_string')
+      )
     ).toBe(true)
     expect(lines.some((l) => l.includes('stream_tags=filename,mimetype'))).toBe(true)
     expect(lines.some((l) => l.includes('codec_name,profile,level'))).toBe(true)
     expect(
-      lines.some((l) => l.includes('select_streams a:0') && l.includes('codec_name,profile,bit_rate'))
+      lines.some(
+        (l) => l.includes('select_streams a:0') && l.includes('codec_name,profile,bit_rate')
+      )
     ).toBe(true)
     expect(lines.some((l) => l.includes('refs,has_b_frames'))).toBe(true)
     expect(lines.some((l) => l.includes('stream=index,codec_type,disposition'))).toBe(true)
     expect(lines.some((l) => l.includes('format=nb_streams,nb_programs,format_name'))).toBe(true)
     expect(
       lines.some(
-        (l) => l.includes('-count_frames') && l.includes('select_streams v:0') && l.includes('nb_read_frames')
-      )
-    ).toBe(true)
-    expect(lines.some((l) => l.includes('select_streams a:0') && l.includes('stream=disposition'))).toBe(true)
-    expect(
-      lines.some(
         (l) =>
-          l.includes('select_streams v:0') && l.includes('pix_fmt,color_space,color_range')
-      )
-    ).toBe(true)
-    expect(
-      lines.some(
-        (l) =>
+          l.includes('-count_frames') &&
           l.includes('select_streams v:0') &&
-          l.includes('coded_width,coded_height,width,height')
+          l.includes('nb_read_frames')
+      )
+    ).toBe(true)
+    expect(
+      lines.some((l) => l.includes('select_streams a:0') && l.includes('stream=disposition'))
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) => l.includes('select_streams v:0') && l.includes('pix_fmt,color_space,color_range')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) =>
+          l.includes('select_streams v:0') && l.includes('coded_width,coded_height,width,height')
       )
     ).toBe(true)
     expect(lines.some((l) => l.includes('format_tags=creation_time'))).toBe(true)
@@ -250,43 +261,47 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     ).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('select_streams a:0') && l.includes('stream=channel_layout,bit_rate')
+        (l) => l.includes('select_streams a:0') && l.includes('stream=channel_layout,bit_rate')
       )
     ).toBe(true)
     expect(lines.some((l) => l.includes('show_entries format=bit_rate'))).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('select_streams a:0') && l.includes('stream_tags=title,handler_name')
+        (l) => l.includes('select_streams a:0') && l.includes('stream_tags=title,handler_name')
+      )
+    ).toBe(true)
+    expect(
+      lines.some((l) => l.includes('select_streams v:0') && l.includes('stream=r_frame_rate'))
+    ).toBe(true)
+    expect(lines.some((l) => l.includes('format_tags=major_brand,compatible_brands'))).toBe(true)
+    expect(
+      lines.some(
+        (l) => l.includes('select_streams s:2') && l.includes('codec_name,codec_tag_string')
       )
     ).toBe(true)
     expect(
       lines.some(
-        (l) => l.includes('select_streams v:0') && l.includes('stream=r_frame_rate')
+        (l) => l.includes('select_streams v:0') && l.includes('stream=closed_captions,is_avc')
       )
     ).toBe(true)
     expect(
-      lines.some((l) => l.includes('format_tags=major_brand,compatible_brands'))
+      lines.some(
+        (l) => l.includes('select_streams t:0') && l.includes('stream=codec_name,codec_tag_string')
+      )
     ).toBe(true)
     expect(
-      lines.some((l) => l.includes('select_streams s:2') && l.includes('codec_name,codec_tag_string'))
-    ).toBe(true)
-    expect(
-      lines.some((l) => l.includes('select_streams v:0') && l.includes('stream=closed_captions,is_avc'))
-    ).toBe(true)
-    expect(
-      lines.some((l) => l.includes('select_streams t:0') && l.includes('stream=codec_name,codec_tag_string'))
-    ).toBe(true)
-    expect(
-      lines.some((l) => l.includes('select_streams d:0') && l.includes('stream=codec_name,codec_tag_string'))
+      lines.some(
+        (l) => l.includes('select_streams d:0') && l.includes('stream=codec_name,codec_tag_string')
+      )
     ).toBe(true)
     expect(
       lines.some((l) => l.includes('select_streams v:0') && l.includes('stream=codec_tag_string'))
     ).toBe(true)
     expect(lines.some((l) => l.includes('format=probe_score'))).toBe(true)
     expect(
-      lines.some((l) => l.includes('select_streams a:2') && l.includes('codec_name,sample_rate,channels'))
+      lines.some(
+        (l) => l.includes('select_streams a:2') && l.includes('codec_name,sample_rate,channels')
+      )
     ).toBe(true)
     expect(lines.some((l) => l.includes('format=format_long_name'))).toBe(true)
     expect(
@@ -300,40 +315,36 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines.some((l) => l.includes('-frames:v 1 -f null -'))).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('select_streams v:0') && l.includes('stream=start_time,duration')
+        (l) => l.includes('select_streams v:0') && l.includes('stream=start_time,duration')
       )
     ).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('select_streams a:0') && l.includes('stream=start_time,duration')
+        (l) => l.includes('select_streams a:0') && l.includes('stream=start_time,duration')
       )
     ).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('select_streams v:0') && l.includes('stream=bits_per_raw_sample')
+        (l) => l.includes('select_streams v:0') && l.includes('stream=bits_per_raw_sample')
       )
     ).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('select_streams v:1') && l.includes('stream=codec_name,width,height')
+        (l) => l.includes('select_streams v:1') && l.includes('stream=codec_name,width,height')
       )
     ).toBe(true)
     expect(lines.some((l) => l.includes('show_entries format=size,duration'))).toBe(true)
     expect(lines.some((l) => l.includes('-t 5 -c copy -f null -'))).toBe(true)
-    expect(lines.some((l) => l.includes('select_streams s:1') && l.includes('stream_tags=language'))).toBe(
-      true
-    )
+    expect(
+      lines.some((l) => l.includes('select_streams s:1') && l.includes('stream_tags=language'))
+    ).toBe(true)
     expect(
       lines.some((l) => l.includes('select_streams a:1') && l.includes('stream=disposition'))
     ).toBe(true)
     expect(lines.some((l) => l.includes('format_tags=language'))).toBe(true)
-    expect(lines.some((l) => l.includes('-err_detect ignore_err') && l.includes('-t 2 -f null -'))).toBe(
-      true
-    )
+    expect(
+      lines.some((l) => l.includes('-err_detect ignore_err') && l.includes('-t 2 -f null -'))
+    ).toBe(true)
     expect(lines.some((l) => l.includes('format_tags=artist,album'))).toBe(true)
     expect(
       lines.some(
@@ -352,21 +363,18 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
           l.includes('default=nw=1:nk=1')
       )
     ).toBe(true)
-    expect(lines.some((l) => l.includes('format_tags=encoder') && l.includes('default=nw=1:nk=1'))).toBe(
-      true
-    )
     expect(
-      lines.some(
-        (l) =>
-          l.includes('select_streams a:3') &&
-          l.includes('stream=codec_name,sample_rate,channels')
-      )
+      lines.some((l) => l.includes('format_tags=encoder') && l.includes('default=nw=1:nk=1'))
     ).toBe(true)
     expect(
       lines.some(
         (l) =>
-          l.includes('select_streams s:3') &&
-          l.includes('stream=codec_name,codec_tag_string')
+          l.includes('select_streams a:3') && l.includes('stream=codec_name,sample_rate,channels')
+      )
+    ).toBe(true)
+    expect(
+      lines.some(
+        (l) => l.includes('select_streams s:3') && l.includes('stream=codec_name,codec_tag_string')
       )
     ).toBe(true)
     expect(lines.some((l) => l.includes('-an -sn -t 2 -f null -'))).toBe(true)
@@ -542,11 +550,7 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines.some((l) => l.includes('show_entries format=duration_ts'))).toBe(true)
     expect(lines.some((l) => l.includes('format_tags=copyright'))).toBe(true)
     expect(
-      lines.some(
-        (l) =>
-          l.includes('select_streams v:0') &&
-          l.includes('stream_tags=BPS,DURATION')
-      )
+      lines.some((l) => l.includes('select_streams v:0') && l.includes('stream_tags=BPS,DURATION'))
     ).toBe(true)
     expect(
       lines.some(
@@ -557,9 +561,9 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
     expect(lines.some((l) => l.includes('show_entries format=probe_size'))).toBe(true)
-    expect(
-      lines.some((l) => l.includes('-vf scale=320:-1') && l.includes('-t 1 -f null -'))
-    ).toBe(true)
+    expect(lines.some((l) => l.includes('-vf scale=320:-1') && l.includes('-t 1 -f null -'))).toBe(
+      true
+    )
   })
 
   it('preview: v:0 stream creation_time, format handler_name, acodec copy null', () => {
@@ -575,8 +579,7 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines.some((l) => l.includes('format_tags=handler_name'))).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('-acodec copy') && l.includes('-vn -sn') && l.includes('-t 3 -f null -')
+        (l) => l.includes('-acodec copy') && l.includes('-vn -sn') && l.includes('-t 3 -f null -')
       )
     ).toBe(true)
   })
@@ -681,9 +684,9 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
           l.includes('default=nw=1:nk=1')
       )
     ).toBe(true)
-    expect(lines.some((l) => l.includes('-map 0:v:0 -c:v copy') && l.includes('-an -sn -f null -'))).toBe(
-      true
-    )
+    expect(
+      lines.some((l) => l.includes('-map 0:v:0 -c:v copy') && l.includes('-an -sn -f null -'))
+    ).toBe(true)
   })
 
   it('downloads: extra browsers + FR geo + mweb + requested_*', () => {
@@ -707,9 +710,11 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
           l.includes('default=nw=1:nk=1')
       )
     ).toBe(true)
-    expect(lines.some((l) => l.includes('-af volumedetect') && l.includes('-vn -sn') && l.includes('-t 10'))).toBe(
-      true
-    )
+    expect(
+      lines.some(
+        (l) => l.includes('-af volumedetect') && l.includes('-vn -sn') && l.includes('-t 10')
+      )
+    ).toBe(true)
   })
 
   it('downloads: safari + web_creator/web_embedded + GB + formats + simulate merge + multi-streams + compat 2024', () => {
@@ -784,7 +789,10 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
     expect(
-      lines.some((l) => l.includes('-af astats=metadata=1:reset=1') && l.includes('-t 5') && l.includes('-vn -sn'))
+      lines.some(
+        (l) =>
+          l.includes('-af astats=metadata=1:reset=1') && l.includes('-t 5') && l.includes('-vn -sn')
+      )
     ).toBe(true)
   })
 
@@ -851,7 +859,9 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
     expect(
-      lines.some((l) => l.includes('-af aphasemeter=video=0') && l.includes('-t 10') && l.includes('-vn -sn'))
+      lines.some(
+        (l) => l.includes('-af aphasemeter=video=0') && l.includes('-t 10') && l.includes('-vn -sn')
+      )
     ).toBe(true)
   })
 
@@ -865,7 +875,9 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
           l.includes('default=nw=1:nk=1')
       )
     ).toBe(true)
-    expect(lines.some((l) => l.includes('-vf idet') && l.includes('-t 5') && l.includes('-an -sn'))).toBe(true)
+    expect(
+      lines.some((l) => l.includes('-vf idet') && l.includes('-t 5') && l.includes('-an -sn'))
+    ).toBe(true)
   })
 
   it('downloads: force-keyframes / no-hls-use-mpegts / compat no-direct-merge / geo ES–SE / no-embed-meta / playlist range / merge webm / ignore-no-formats / no-write-thumb / extract aac / no-embed-thumb', () => {
@@ -889,9 +901,7 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
     expect(
       lines.some(
-        (l) =>
-          l.includes('format_tags=publisher,encoded_by') &&
-          l.includes('default=nw=1:nk=1')
+        (l) => l.includes('format_tags=publisher,encoded_by') && l.includes('default=nw=1:nk=1')
       )
     ).toBe(true)
     expect(
@@ -939,7 +949,9 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --source-address 198.51.100.2 -F ')
     expect(lines).toContain('yt-dlp --skip-download --print annotations ')
     expect(lines).toContain('yt-dlp --skip-download --print storyboards ')
-    expect(lines).toContain('yt-dlp --sponsorblock-mark all --sponsorblock-chapter-title %(category)s ')
+    expect(lines).toContain(
+      'yt-dlp --sponsorblock-mark all --sponsorblock-chapter-title %(category)s '
+    )
     expect(lines).toContain('yt-dlp --concat-playlist never -F ')
     expect(lines).toContain('yt-dlp --fixup warn -F ')
     expect(lines).toContain('yt-dlp --use-extractors youtube -F ')
@@ -950,10 +962,14 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
     expect(lines.some((l) => l.includes('-show_chapters -of json=c=1'))).toBe(true)
     expect(
-      lines.some((l) => l.includes('-select_streams s:0') && l.includes('stream=start_time,duration'))
+      lines.some(
+        (l) => l.includes('-select_streams s:0') && l.includes('stream=start_time,duration')
+      )
     ).toBe(true)
     expect(
-      lines.some((l) => l.includes('-select_streams a:1') && l.includes('stream=start_time,duration'))
+      lines.some(
+        (l) => l.includes('-select_streams a:1') && l.includes('stream=start_time,duration')
+      )
     ).toBe(true)
     expect(
       lines.some(
@@ -990,14 +1006,14 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(
       lines.some(
         (l) =>
-          l.includes('-vf freezedetect=n=-60dB:d=2') &&
-          l.includes('-t 45') &&
-          l.includes('-an -sn')
+          l.includes('-vf freezedetect=n=-60dB:d=2') && l.includes('-t 45') && l.includes('-an -sn')
       )
     ).toBe(true)
-    expect(lines.some((l) => l.includes('-vf signalstats') && l.includes('-t 8') && l.includes('-an -sn'))).toBe(
-      true
-    )
+    expect(
+      lines.some(
+        (l) => l.includes('-vf signalstats') && l.includes('-t 8') && l.includes('-an -sn')
+      )
+    ).toBe(true)
   })
 
   it('downloads: ap-password / client-cert / geo-verification-proxy / geo AT..IE', () => {
@@ -1032,7 +1048,11 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
           l.includes('default=nw=1:nk=1')
       )
     ).toBe(true)
-    expect(lines.some((l) => l.includes('-fflags +genpts') && l.includes('-c copy') && l.includes('-t 2'))).toBe(true)
+    expect(
+      lines.some(
+        (l) => l.includes('-fflags +genpts') && l.includes('-c copy') && l.includes('-t 2')
+      )
+    ).toBe(true)
   })
 
   it('downloads: client-cert-key / impersonate firefox+edge / geo CZ..IS / convert-thumbnails png', () => {
@@ -1071,7 +1091,10 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
     expect(
-      lines.some((l) => l.includes('-vf scenedetect=scene=0.3') && l.includes('-t 20') && l.includes('-an -sn'))
+      lines.some(
+        (l) =>
+          l.includes('-vf scenedetect=scene=0.3') && l.includes('-t 20') && l.includes('-an -sn')
+      )
     ).toBe(true)
   })
 
@@ -1112,8 +1135,7 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     ).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('format=size,bit_rate,nb_streams') && l.includes('default=nw=1:nk=1')
+        (l) => l.includes('format=size,bit_rate,nb_streams') && l.includes('default=nw=1:nk=1')
       )
     ).toBe(true)
     expect(
@@ -1237,7 +1259,9 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(
       lines.some(
         (l) =>
-          l.includes('-af silenceremove=start_periods=1:start_duration=0.5:start_threshold=-50dB') &&
+          l.includes(
+            '-af silenceremove=start_periods=1:start_duration=0.5:start_threshold=-50dB'
+          ) &&
           l.includes('-t 60') &&
           l.includes('-vn -sn')
       )
@@ -1265,9 +1289,7 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
     expect(
-      lines.some(
-        (l) => l.includes('-af treble=g=1') && l.includes('-t 3') && l.includes('-vn -sn')
-      )
+      lines.some((l) => l.includes('-af treble=g=1') && l.includes('-t 3') && l.includes('-vn -sn'))
     ).toBe(true)
   })
 
@@ -1287,9 +1309,7 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
     expect(
       lines.some(
-        (l) =>
-          l.includes('format_tags=software') &&
-          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+        (l) => l.includes('format_tags=software') && l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
       )
     ).toBe(true)
     expect(
@@ -1300,9 +1320,7 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
       )
     ).toBe(true)
     expect(
-      lines.some(
-        (l) => l.includes('-af volume=3dB') && l.includes('-t 2') && l.includes('-vn -sn')
-      )
+      lines.some((l) => l.includes('-af volume=3dB') && l.includes('-t 2') && l.includes('-vn -sn'))
     ).toBe(true)
     expect(
       lines.some(
@@ -1368,9 +1386,9 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
           l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
       )
     ).toBe(true)
-    expect(lines.some((l) => l.includes('-af adeclick') && l.includes('-t 5') && l.includes('-vn -sn'))).toBe(
-      true
-    )
+    expect(
+      lines.some((l) => l.includes('-af adeclick') && l.includes('-t 5') && l.includes('-vn -sn'))
+    ).toBe(true)
   })
 
   it('downloads: list-extractor-descriptions / print-traffic / vorbis / print-to-file id', () => {
@@ -1393,9 +1411,7 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(
       lines.some(
         (l) =>
-          l.includes('-af agate=threshold=0.005') &&
-          l.includes('-t 5') &&
-          l.includes('-vn -sn')
+          l.includes('-af agate=threshold=0.005') && l.includes('-t 5') && l.includes('-vn -sn')
       )
     ).toBe(true)
   })
@@ -1418,9 +1434,7 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
     expect(
       lines.some(
-        (l) =>
-          l.includes('format_tags=performer') &&
-          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+        (l) => l.includes('format_tags=performer') && l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
       )
     ).toBe(true)
     expect(
@@ -1433,20 +1447,25 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     ).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('-af extrastereo') &&
-          l.includes('-t 3') &&
-          l.includes('-vn -sn')
+        (l) => l.includes('-af extrastereo') && l.includes('-t 3') && l.includes('-vn -sn')
       )
     ).toBe(true)
   })
 
   it('downloads: print-to-file pageurl+durstr+uploader+churl + geo BY+AL+MK', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
-    expect(lines).toContain('yt-dlp --print-to-file webpage_url flux-ytdlp-pageurl.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file duration_string flux-ytdlp-durstr.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file uploader flux-ytdlp-uploader.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file channel_url flux-ytdlp-churl.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file webpage_url flux-ytdlp-pageurl.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file duration_string flux-ytdlp-durstr.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file uploader flux-ytdlp-uploader.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file channel_url flux-ytdlp-churl.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --geo-bypass-country BY -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country AL -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country MK -F ')
@@ -1457,8 +1476,7 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(
       lines.some(
         (l) =>
-          l.includes('format_tags=purchase_date') &&
-          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+          l.includes('format_tags=purchase_date') && l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
       )
     ).toBe(true)
     expect(
@@ -1470,21 +1488,28 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     ).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('-af aphaser=in_gain=0.4') &&
-          l.includes('-t 4') &&
-          l.includes('-vn -sn')
+        (l) => l.includes('-af aphaser=in_gain=0.4') && l.includes('-t 4') && l.includes('-vn -sn')
       )
     ).toBe(true)
   })
 
   it('downloads: print-to-file views+channel+extractor+pltitle+uploaddate + geo ME+PS+TL + wma', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
-    expect(lines).toContain('yt-dlp --print-to-file view_count flux-ytdlp-views.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file channel flux-ytdlp-channel.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file extractor flux-ytdlp-extractor.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file playlist_title flux-ytdlp-pltitle.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file upload_date flux-ytdlp-update.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file view_count flux-ytdlp-views.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file channel flux-ytdlp-channel.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file extractor flux-ytdlp-extractor.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file playlist_title flux-ytdlp-pltitle.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file upload_date flux-ytdlp-update.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --geo-bypass-country ME -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country PS -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country TL -F ')
@@ -1523,7 +1548,9 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --geo-bypass-country AS -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country MP -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country UM -F ')
-    expect(lines).toContain('yt-dlp --print-to-file description flux-ytdlp-desc.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file description flux-ytdlp-desc.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file filename flux-ytdlp-fn.txt --skip-download ')
   })
 
@@ -1531,17 +1558,12 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
     expect(
       lines.some(
-        (l) =>
-          l.includes('format_tags=isrc') &&
-          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+        (l) => l.includes('format_tags=isrc') && l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
       )
     ).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('-af deesser=i=0.5') &&
-          l.includes('-t 4') &&
-          l.includes('-vn -sn')
+        (l) => l.includes('-af deesser=i=0.5') && l.includes('-t 4') && l.includes('-vn -sn')
       )
     ).toBe(true)
   })
@@ -1549,11 +1571,19 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
   it('downloads: no-prefer-free + print-to-file categories/tags/language/autocap/chapters/acodec/vcodec', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
     expect(lines).toContain('yt-dlp --no-prefer-free-formats -F ')
-    expect(lines).toContain('yt-dlp --print-to-file categories flux-ytdlp-categories.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file categories flux-ytdlp-categories.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file tags flux-ytdlp-tags.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file language flux-ytdlp-language.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file automatic_captions flux-ytdlp-autocap.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file chapters flux-ytdlp-chapters.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file language flux-ytdlp-language.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file automatic_captions flux-ytdlp-autocap.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file chapters flux-ytdlp-chapters.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file acodec flux-ytdlp-acodec.txt --skip-download ')
     expect(lines).toContain('yt-dlp --print-to-file vcodec flux-ytdlp-vcodec.txt --skip-download ')
   })
@@ -1570,22 +1600,29 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     ).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('-af vibrato=f=6.5:d=0.5') &&
-          l.includes('-t 4') &&
-          l.includes('-vn -sn')
+        (l) => l.includes('-af vibrato=f=6.5:d=0.5') && l.includes('-t 4') && l.includes('-vn -sn')
       )
     ).toBe(true)
   })
 
   it('downloads: print-to-file likes+duration+subs+chid+plid+heatmap + lazy-pl + no-continue -F', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
-    expect(lines).toContain('yt-dlp --print-to-file like_count flux-ytdlp-likes.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file duration flux-ytdlp-duration.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file like_count flux-ytdlp-likes.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file duration flux-ytdlp-duration.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file subtitles flux-ytdlp-subs.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file channel_id flux-ytdlp-chid.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file playlist_id flux-ytdlp-plid.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file heatmap flux-ytdlp-heatmap.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file channel_id flux-ytdlp-chid.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file playlist_id flux-ytdlp-plid.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file heatmap flux-ytdlp-heatmap.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --lazy-playlist -F ')
     expect(lines).toContain('yt-dlp --no-continue -F ')
   })
@@ -1601,10 +1638,7 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     ).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('-af crystalizer=i=1.2') &&
-          l.includes('-t 4') &&
-          l.includes('-vn -sn')
+        (l) => l.includes('-af crystalizer=i=1.2') && l.includes('-t 4') && l.includes('-vn -sn')
       )
     ).toBe(true)
   })
@@ -1612,14 +1646,26 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
   it('downloads: no-playlist-reverse + print-to-file extra fields + geo BM/KY/JM/BB/BS -F', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
     expect(lines).toContain('yt-dlp --no-playlist-reverse -F ')
-    expect(lines).toContain('yt-dlp --print-to-file comment_count flux-ytdlp-ccount.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file webpage_url_basename flux-ytdlp-wubase.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file display_id flux-ytdlp-dispid.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file thumbnail flux-ytdlp-thumburl.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file release_timestamp flux-ytdlp-reltsepoch.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file comment_count flux-ytdlp-ccount.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file webpage_url_basename flux-ytdlp-wubase.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file display_id flux-ytdlp-dispid.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file thumbnail flux-ytdlp-thumburl.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file release_timestamp flux-ytdlp-reltsepoch.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file filepath flux-ytdlp-fpath.txt --skip-download ')
     expect(lines).toContain('yt-dlp --print-to-file resolution flux-ytdlp-res.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file format_id flux-ytdlp-fmtid.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file format_id flux-ytdlp-fmtid.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file ext flux-ytdlp-ext.txt --skip-download ')
     expect(lines).toContain('yt-dlp --geo-bypass-country BM -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country KY -F ')
@@ -1654,7 +1700,9 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --print-to-file height flux-ytdlp-height.txt --skip-download ')
     expect(lines).toContain('yt-dlp --print-to-file fps flux-ytdlp-fps.txt --skip-download ')
     expect(lines).toContain('yt-dlp --print-to-file tbr flux-ytdlp-tbr.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file filesize_approx flux-ytdlp-fsize.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file filesize_approx flux-ytdlp-fsize.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file protocol flux-ytdlp-proto.txt --skip-download ')
     expect(lines).toContain('yt-dlp --reject-title trailer -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country LC -F ')
@@ -1685,13 +1733,27 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
 
   it('downloads: print-to-file playlist/uploader/rating/availability/age + geo AW/CW/SX/TC/VG', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
-    expect(lines).toContain('yt-dlp --print-to-file playlist_index flux-ytdlp-plidx.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file playlist_autonumber flux-ytdlp-plauto.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file playlist_count flux-ytdlp-plcount.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file playlist_uploader_id flux-ytdlp-plupid.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file uploader_id flux-ytdlp-upid.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file average_rating flux-ytdlp-rating.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file availability flux-ytdlp-avail.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file playlist_index flux-ytdlp-plidx.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file playlist_autonumber flux-ytdlp-plauto.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file playlist_count flux-ytdlp-plcount.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file playlist_uploader_id flux-ytdlp-plupid.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file uploader_id flux-ytdlp-upid.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file average_rating flux-ytdlp-rating.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file availability flux-ytdlp-avail.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file age_limit flux-ytdlp-age.txt --skip-download ')
     expect(lines).toContain('yt-dlp --geo-bypass-country AW -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country CW -F ')
@@ -1710,29 +1772,34 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     ).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('format_tags=track,disc') && l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+        (l) => l.includes('format_tags=track,disc') && l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
       )
     ).toBe(true)
     expect(
       lines.some(
         (l) =>
-          l.includes('-af dynaudnorm=f=150:g=15') &&
-          l.includes('-t 4') &&
-          l.includes('-vn -sn')
+          l.includes('-af dynaudnorm=f=150:g=15') && l.includes('-t 4') && l.includes('-vn -sn')
       )
     ).toBe(true)
   })
 
   it('downloads: print-to-file domain/original/abr/vbr/filesize/format_note/plup + geo AG/MS/AI/GP/BQ + max-dls/pl-random/force-over', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
-    expect(lines).toContain('yt-dlp --print-to-file webpage_url_domain flux-ytdlp-wudom.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file original_url flux-ytdlp-ourl.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file webpage_url_domain flux-ytdlp-wudom.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file original_url flux-ytdlp-ourl.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file abr flux-ytdlp-abr.txt --skip-download ')
     expect(lines).toContain('yt-dlp --print-to-file vbr flux-ytdlp-vbr.txt --skip-download ')
     expect(lines).toContain('yt-dlp --print-to-file filesize flux-ytdlp-fszb.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file format_note flux-ytdlp-fnote.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file playlist_uploader flux-ytdlp-plup.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file format_note flux-ytdlp-fnote.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file playlist_uploader flux-ytdlp-plup.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --geo-bypass-country AG -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country MS -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country AI -F ')
@@ -1748,30 +1815,34 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(
       lines.some(
         (l) =>
-          l.includes('format_tags=lyrics,synopsis') &&
-          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+          l.includes('format_tags=lyrics,synopsis') && l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
       )
     ).toBe(true)
     expect(
-      lines.some(
-        (l) =>
-          l.includes('-af asoftclip') &&
-          l.includes('-t 4') &&
-          l.includes('-vn -sn')
-      )
+      lines.some((l) => l.includes('-af asoftclip') && l.includes('-t 4') && l.includes('-vn -sn'))
     ).toBe(true)
   })
 
   it('downloads: print-to-file fulltitle/alt_title/artist/album/relyear/is_live/live_status/chfol + geo CK/NU/TK/TO/WS + skip-unavail/abort -F', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
-    expect(lines).toContain('yt-dlp --print-to-file fulltitle flux-ytdlp-fulltitle.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file alt_title flux-ytdlp-alttitle.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file fulltitle flux-ytdlp-fulltitle.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file alt_title flux-ytdlp-alttitle.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file artist flux-ytdlp-artist.txt --skip-download ')
     expect(lines).toContain('yt-dlp --print-to-file album flux-ytdlp-album.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file release_year flux-ytdlp-relyear.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file release_year flux-ytdlp-relyear.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file is_live flux-ytdlp-islive.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file live_status flux-ytdlp-livestat.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file channel_follower_count flux-ytdlp-chfol.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file live_status flux-ytdlp-livestat.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file channel_follower_count flux-ytdlp-chfol.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --geo-bypass-country CK -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country NU -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country TK -F ')
@@ -1793,10 +1864,7 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     ).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('-af aecho=0.8:0.9:40:0.3') &&
-          l.includes('-t 4') &&
-          l.includes('-vn -sn')
+        (l) => l.includes('-af aecho=0.8:0.9:40:0.3') && l.includes('-t 4') && l.includes('-vn -sn')
       )
     ).toBe(true)
   })
@@ -1804,17 +1872,31 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
   it('downloads: print-to-file series/snum/epnum/epstr/epid/sid/plchid/asr/drm/embed/waslive/mtype + geo PF/NC/FJ/VU/SB/FM/MH/PW + no-brk-reject -F', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
     expect(lines).toContain('yt-dlp --print-to-file series flux-ytdlp-series.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file season_number flux-ytdlp-snum.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file episode_number flux-ytdlp-epnum.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file season_number flux-ytdlp-snum.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file episode_number flux-ytdlp-epnum.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file episode flux-ytdlp-epstr.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file episode_id flux-ytdlp-epid.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file episode_id flux-ytdlp-epid.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file season_id flux-ytdlp-sid.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file playlist_channel_id flux-ytdlp-plchid.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file playlist_channel_id flux-ytdlp-plchid.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file asr flux-ytdlp-asr.txt --skip-download ')
     expect(lines).toContain('yt-dlp --print-to-file has_drm flux-ytdlp-drm.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file playable_in_embed flux-ytdlp-embed.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file was_live flux-ytdlp-waslive.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file media_type flux-ytdlp-mtype.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file playable_in_embed flux-ytdlp-embed.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file was_live flux-ytdlp-waslive.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file media_type flux-ytdlp-mtype.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --geo-bypass-country PF -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country NC -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country FJ -F ')
@@ -1838,10 +1920,7 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     ).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('-af tremolo=f=6:d=0.5') &&
-          l.includes('-t 4') &&
-          l.includes('-vn -sn')
+        (l) => l.includes('-af tremolo=f=6:d=0.5') && l.includes('-t 4') && l.includes('-vn -sn')
       )
     ).toBe(true)
     expect(
@@ -1857,10 +1936,18 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
   it('downloads: print-to-file _type/plurl/manurl/sarfix/reqf + geo NR/TV/KI/WF + progress-delta -F', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
     expect(lines).toContain('yt-dlp --print-to-file _type flux-ytdlp-otype.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file playlist_url flux-ytdlp-plurl.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file manifest_url flux-ytdlp-manurl.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file stretched_ratio flux-ytdlp-sarfix.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file requested_formats flux-ytdlp-reqf.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file playlist_url flux-ytdlp-plurl.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file manifest_url flux-ytdlp-manurl.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file stretched_ratio flux-ytdlp-sarfix.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file requested_formats flux-ytdlp-reqf.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --geo-bypass-country NR -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country TV -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country KI -F ')
@@ -1870,10 +1957,16 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
 
   it('downloads: print-to-file formats/url/thumbnails/location + geo AX/SJ/SH + xattr-set-filesize -F', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
-    expect(lines).toContain('yt-dlp --print-to-file formats flux-ytdlp-formats.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file formats flux-ytdlp-formats.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file url flux-ytdlp-url.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file thumbnails flux-ytdlp-thumbs.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file location flux-ytdlp-locmeta.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file thumbnails flux-ytdlp-thumbs.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file location flux-ytdlp-locmeta.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --geo-bypass-country AX -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country SJ -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country SH -F ')
@@ -1923,10 +2016,16 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
   it('downloads: print-to-file epoch/reqsubs/plch/nent/dislikes + no-pl-metafiles + geo BV/TF/HM -F', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
     expect(lines).toContain('yt-dlp --print-to-file epoch flux-ytdlp-epoch.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file requested_subtitles flux-ytdlp-reqsubs.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file playlist_channel flux-ytdlp-plch.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file requested_subtitles flux-ytdlp-reqsubs.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file playlist_channel flux-ytdlp-plch.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file n_entries flux-ytdlp-nent.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file dislike_count flux-ytdlp-dislikes.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file dislike_count flux-ytdlp-dislikes.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --no-playlist-metafiles -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country BV -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country TF -F ')
@@ -1960,11 +2059,21 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --geo-bypass-country AQ -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country GS -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country PM -F ')
-    expect(lines).toContain('yt-dlp --print-to-file release_date flux-ytdlp-reldate.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file modified_timestamp flux-ytdlp-mts.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file upload_timestamp flux-ytdlp-upts.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file aspect_ratio flux-ytdlp-aspect.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file episode_sort flux-ytdlp-epsort.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file release_date flux-ytdlp-reldate.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file modified_timestamp flux-ytdlp-mts.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file upload_timestamp flux-ytdlp-upts.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file aspect_ratio flux-ytdlp-aspect.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file episode_sort flux-ytdlp-epsort.txt --skip-download '
+    )
   })
 
   it('preview: ffprobe format encoder+WMFSDKVersion + ffmpeg afade in 3s', () => {
@@ -1979,9 +2088,7 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(
       lines.some(
         (l) =>
-          l.includes('-af afade=t=in:st=0:d=0.6') &&
-          l.includes('-t 3') &&
-          l.includes('-vn -sn')
+          l.includes('-af afade=t=in:st=0:d=0.6') && l.includes('-t 3') && l.includes('-vn -sn')
       )
     ).toBe(true)
   })
@@ -2000,10 +2107,18 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain(
       'yt-dlp --print-to-file channel_is_verified flux-ytdlp-chverify.txt --skip-download '
     )
-    expect(lines).toContain('yt-dlp --print-to-file is_private flux-ytdlp-private.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file composers flux-ytdlp-composers.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file creators flux-ytdlp-creators.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file track_number flux-ytdlp-trknum.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file is_private flux-ytdlp-private.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file composers flux-ytdlp-composers.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file creators flux-ytdlp-creators.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file track_number flux-ytdlp-trknum.txt --skip-download '
+    )
   })
 
   it('downloads: geo MM/BT/MV/MZ/ZW/BW/NA/LS/MW/SZ + print-to-file genre/album_type/license/track/album_artist/comment', () => {
@@ -2019,28 +2134,31 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --geo-bypass-country MW -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country SZ -F ')
     expect(lines).toContain('yt-dlp --print-to-file genre flux-ytdlp-genre.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file album_type flux-ytdlp-albumtype.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file license flux-ytdlp-license.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file album_type flux-ytdlp-albumtype.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file license flux-ytdlp-license.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file track flux-ytdlp-track.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file album_artist flux-ytdlp-albumartist.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file comment flux-ytdlp-comment.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file album_artist flux-ytdlp-albumartist.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file comment flux-ytdlp-comment.txt --skip-download '
+    )
   })
 
   it('preview: ffprobe format probe_score + ffmpeg atempo 0.95 3s', () => {
     const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
     expect(
       lines.some(
-        (l) =>
-          l.includes('format=probe_score') &&
-          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+        (l) => l.includes('format=probe_score') && l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
       )
     ).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('-af atempo=0.95') &&
-          l.includes('-t 3') &&
-          l.includes('-vn -sn')
+        (l) => l.includes('-af atempo=0.95') && l.includes('-t 3') && l.includes('-vn -sn')
       )
     ).toBe(true)
   })
@@ -2050,16 +2168,13 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(
       lines.some(
         (l) =>
-          l.includes('format_tags=encoding_tool') &&
-          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+          l.includes('format_tags=encoding_tool') && l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
       )
     ).toBe(true)
     expect(
       lines.some(
         (l) =>
-          l.includes('-af afade=t=out:st=1.2:d=0.6') &&
-          l.includes('-t 3') &&
-          l.includes('-vn -sn')
+          l.includes('-af afade=t=out:st=1.2:d=0.6') && l.includes('-t 3') && l.includes('-vn -sn')
       )
     ).toBe(true)
   })
@@ -2077,8 +2192,12 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --geo-bypass-country YE -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country MR -F ')
     expect(lines).toContain('yt-dlp --print-to-file lyrics flux-ytdlp-lyrics.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file disc_number flux-ytdlp-discnum.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file publisher flux-ytdlp-publisher.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file disc_number flux-ytdlp-discnum.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file publisher flux-ytdlp-publisher.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file mood flux-ytdlp-mood.txt --skip-download ')
   })
 
@@ -2094,10 +2213,7 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     ).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('-af alimiter=limit=0.8') &&
-          l.includes('-t 3') &&
-          l.includes('-vn -sn')
+        (l) => l.includes('-af alimiter=limit=0.8') && l.includes('-t 3') && l.includes('-vn -sn')
       )
     ).toBe(true)
   })
@@ -2116,14 +2232,28 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --geo-bypass-country UG -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country TZ -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country ZM -F ')
-    expect(lines).toContain('yt-dlp --print-to-file artist_sort flux-ytdlp-artistsort.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file album_sort flux-ytdlp-albumsort.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file conductor flux-ytdlp-conductor.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file performers flux-ytdlp-performers.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file artist_sort flux-ytdlp-artistsort.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file album_sort flux-ytdlp-albumsort.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file conductor flux-ytdlp-conductor.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file performers flux-ytdlp-performers.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file copyright flux-ytdlp-copy.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file uploader_url flux-ytdlp-upurl.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file producer flux-ytdlp-producer.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file director flux-ytdlp-director.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file uploader_url flux-ytdlp-upurl.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file producer flux-ytdlp-producer.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file director flux-ytdlp-director.txt --skip-download '
+    )
   })
 
   it('preview: ffprobe format MP4 brands + ffmpeg stereotools 3s', () => {
@@ -2156,12 +2286,24 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --geo-bypass-country SL -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country GN -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country GW -F ')
-    expect(lines).toContain('yt-dlp --print-to-file arranger flux-ytdlp-arranger.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file remixer flux-ytdlp-remixer.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file engineer flux-ytdlp-engineer.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file lyricist flux-ytdlp-lyricist.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file grouping flux-ytdlp-grouping.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file compilation flux-ytdlp-compilation.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file arranger flux-ytdlp-arranger.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file remixer flux-ytdlp-remixer.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file engineer flux-ytdlp-engineer.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file lyricist flux-ytdlp-lyricist.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file grouping flux-ytdlp-grouping.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file compilation flux-ytdlp-compilation.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file show flux-ytdlp-show.txt --skip-download ')
   })
 
@@ -2176,10 +2318,7 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     ).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('-af speechnorm=peak=0.25') &&
-          l.includes('-t 4') &&
-          l.includes('-vn -sn')
+        (l) => l.includes('-af speechnorm=peak=0.25') && l.includes('-t 4') && l.includes('-vn -sn')
       )
     ).toBe(true)
   })
@@ -2194,9 +2333,13 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain('yt-dlp --geo-bypass-country DO -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country HT -F ')
     expect(lines).toContain('yt-dlp --limit-rate 500K -F ')
-    expect(lines).toContain('yt-dlp --print-to-file album_artists flux-ytdlp-albumartists.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file album_artists flux-ytdlp-albumartists.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file cast flux-ytdlp-cast.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file network flux-ytdlp-network.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file network flux-ytdlp-network.txt --skip-download '
+    )
   })
 
   it('preview: ffprobe format BPM+key + ffmpeg bs2b 4s', () => {
@@ -2204,16 +2347,12 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(
       lines.some(
         (l) =>
-          l.includes('format_tags=BPM,initial_key') &&
-          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+          l.includes('format_tags=BPM,initial_key') && l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
       )
     ).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('-af bs2b=profile=j2') &&
-          l.includes('-t 4') &&
-          l.includes('-vn -sn')
+        (l) => l.includes('-af bs2b=profile=j2') && l.includes('-t 4') && l.includes('-vn -sn')
       )
     ).toBe(true)
   })
@@ -2238,26 +2377,30 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(
       lines.some(
         (l) =>
-          l.includes('format_tags=artist,album') &&
-          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+          l.includes('format_tags=artist,album') && l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
       )
     ).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('-af bass=g=2:f=120') &&
-          l.includes('-t 4') &&
-          l.includes('-vn -sn')
+        (l) => l.includes('-af bass=g=2:f=120') && l.includes('-t 4') && l.includes('-vn -sn')
       )
     ).toBe(true)
   })
 
   it('downloads: print-to-file playlist/annotations/storyboards/plwpurl + retries/fragment-retries 20 -F', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
-    expect(lines).toContain('yt-dlp --print-to-file playlist flux-ytdlp-playlist.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file annotations flux-ytdlp-annotations.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file storyboards flux-ytdlp-storyboards.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file playlist_webpage_url flux-ytdlp-plwpurl.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file playlist flux-ytdlp-playlist.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file annotations flux-ytdlp-annotations.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file storyboards flux-ytdlp-storyboards.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file playlist_webpage_url flux-ytdlp-plwpurl.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --retries 20 -F ')
     expect(lines).toContain('yt-dlp --fragment-retries 20 -F ')
   })
@@ -2274,10 +2417,7 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     ).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('-af superequalizer=3b=4') &&
-          l.includes('-t 4') &&
-          l.includes('-vn -sn')
+        (l) => l.includes('-af superequalizer=3b=4') && l.includes('-t 4') && l.includes('-vn -sn')
       )
     ).toBe(true)
   })
@@ -2285,18 +2425,32 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
   it('downloads: print-to-file timestamp/extractor_key/track_id/album_id/dynamic_range + geo TT -F', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
     expect(lines).toContain('yt-dlp --print-to-file timestamp flux-ytdlp-ts.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file extractor_key flux-ytdlp-extkey.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file track_id flux-ytdlp-trackid.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file album_id flux-ytdlp-albumid.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file dynamic_range flux-ytdlp-dynrange.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file extractor_key flux-ytdlp-extkey.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file track_id flux-ytdlp-trackid.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file album_id flux-ytdlp-albumid.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file dynamic_range flux-ytdlp-dynrange.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --geo-bypass-country TT -F ')
   })
 
   it('downloads: print-to-file audio_ext/video_ext/player_url + concurrent-fragments 4 -F + geo RE/MU/SC -F', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
-    expect(lines).toContain('yt-dlp --print-to-file audio_ext flux-ytdlp-audext.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file video_ext flux-ytdlp-vidext.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file player_url flux-ytdlp-playerurl.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file audio_ext flux-ytdlp-audext.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file video_ext flux-ytdlp-vidext.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file player_url flux-ytdlp-playerurl.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --concurrent-fragments 4 -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country RE -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country MU -F ')
@@ -2314,10 +2468,7 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     ).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('-af lowshelf=g=2:f=200') &&
-          l.includes('-t 4') &&
-          l.includes('-vn -sn')
+        (l) => l.includes('-af lowshelf=g=2:f=200') && l.includes('-t 4') && l.includes('-vn -sn')
       )
     ).toBe(true)
   })
@@ -2326,31 +2477,38 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')
     expect(
       lines.some(
-        (l) =>
-          l.includes('format_tags=genre,date') &&
-          l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
+        (l) => l.includes('format_tags=genre,date') && l.includes(TERMINAL_CURRENT_FILE_PLACEHOLDER)
       )
     ).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('-af extrastereo=m=1.2') &&
-          l.includes('-t 4') &&
-          l.includes('-vn -sn')
+        (l) => l.includes('-af extrastereo=m=1.2') && l.includes('-t 4') && l.includes('-vn -sn')
       )
     ).toBe(true)
   })
 
   it('downloads: print-to-file audio_channels/chapter*/start_time/end_time/quality/formats_table', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
-    expect(lines).toContain('yt-dlp --print-to-file audio_channels flux-ytdlp-achs.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file chapter flux-ytdlp-chapter.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file chapter_id flux-ytdlp-chapid.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file chapter_number flux-ytdlp-chapnum.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file audio_channels flux-ytdlp-achs.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file chapter flux-ytdlp-chapter.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file chapter_id flux-ytdlp-chapid.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file chapter_number flux-ytdlp-chapnum.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file start_time flux-ytdlp-stt.txt --skip-download ')
     expect(lines).toContain('yt-dlp --print-to-file end_time flux-ytdlp-end.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file quality flux-ytdlp-quality.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file formats_table flux-ytdlp-ftbl.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file quality flux-ytdlp-quality.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file formats_table flux-ytdlp-ftbl.txt --skip-download '
+    )
   })
 
   it('downloads: geo AF/AO/HK/IL/KW -F + --clean-info-json -F + --update-to stable', () => {
@@ -2367,8 +2525,12 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
   it('downloads: print-to-file format/language_preference/autonumber + geo OM/QA/BH/AE/SA', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
     expect(lines).toContain('yt-dlp --print-to-file format flux-ytdlp-fmtline.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file language_preference flux-ytdlp-langpref.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file autonumber flux-ytdlp-anum.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file language_preference flux-ytdlp-langpref.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file autonumber flux-ytdlp-anum.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --geo-bypass-country OM -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country QA -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country BH -F ')
@@ -2378,8 +2540,12 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
 
   it('downloads: print-to-file filename_sanitized/requested_downloads + extractor-retries 5 -F + geo JO/LB/UZ/TM', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
-    expect(lines).toContain('yt-dlp --print-to-file filename_sanitized flux-ytdlp-fnsan.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file requested_downloads flux-ytdlp-reqdl.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file filename_sanitized flux-ytdlp-fnsan.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file requested_downloads flux-ytdlp-reqdl.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --extractor-retries 5 -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country JO -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country LB -F ')
@@ -2389,8 +2555,12 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
 
   it('downloads: print-to-file modified_date/live_title + http-chunk 1M -F + geo CV/GM/KM', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
-    expect(lines).toContain('yt-dlp --print-to-file modified_date flux-ytdlp-mdate.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file live_title flux-ytdlp-livetitle.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file modified_date flux-ytdlp-mdate.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file live_title flux-ytdlp-livetitle.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --http-chunk-size 1M -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country CV -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country GM -F ')
@@ -2399,10 +2569,18 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
 
   it('downloads: print-to-file section_start/section_end/played_count/referrer + playlist-reverse -F + geo YT/MG/PG', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
-    expect(lines).toContain('yt-dlp --print-to-file section_start flux-ytdlp-segstart.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file section_end flux-ytdlp-segend.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file played_count flux-ytdlp-playcnt.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file referrer flux-ytdlp-refurl.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file section_start flux-ytdlp-segstart.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file section_end flux-ytdlp-segend.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file played_count flux-ytdlp-playcnt.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file referrer flux-ytdlp-refurl.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --playlist-reverse -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country YT -F ')
     expect(lines).toContain('yt-dlp --geo-bypass-country MG -F ')
@@ -2417,21 +2595,39 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     expect(lines).toContain(
       'yt-dlp --print-to-file uploader_url flux-ytdlp-uploader-url.txt --skip-download '
     )
-    expect(lines).toContain('yt-dlp --print-to-file thumbnail flux-ytdlp-thumb-url.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file thumbnail flux-ytdlp-thumb-url.txt --skip-download '
+    )
   })
 
   it('downloads: print-to-file keywords/plchurl/starring/title_sort/season/section_number/isrc/track_sort/alt_description/view_count', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
-    expect(lines).toContain('yt-dlp --print-to-file keywords flux-ytdlp-keywords.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file playlist_channel_url flux-ytdlp-plchurl.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file starring flux-ytdlp-starring.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file title_sort flux-ytdlp-titlesort.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file keywords flux-ytdlp-keywords.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file playlist_channel_url flux-ytdlp-plchurl.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file starring flux-ytdlp-starring.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file title_sort flux-ytdlp-titlesort.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file season flux-ytdlp-season.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file section_number flux-ytdlp-secnum.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file section_number flux-ytdlp-secnum.txt --skip-download '
+    )
     expect(lines).toContain('yt-dlp --print-to-file isrc flux-ytdlp-isrc.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file track_sort flux-ytdlp-tracksort.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file alt_description flux-ytdlp-altdesc.txt --skip-download ')
-    expect(lines).toContain('yt-dlp --print-to-file view_count flux-ytdlp-viewcount.txt --skip-download ')
+    expect(lines).toContain(
+      'yt-dlp --print-to-file track_sort flux-ytdlp-tracksort.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file alt_description flux-ytdlp-altdesc.txt --skip-download '
+    )
+    expect(lines).toContain(
+      'yt-dlp --print-to-file view_count flux-ytdlp-viewcount.txt --skip-download '
+    )
   })
 
   it('preview: ffprobe format cat+barcode + ffmpeg aresample async 4s', () => {
@@ -2513,10 +2709,7 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     ).toBe(true)
     expect(
       lines.some(
-        (l) =>
-          l.includes('-af acontrast=25') &&
-          l.includes('-t 3') &&
-          l.includes('-vn -sn')
+        (l) => l.includes('-af acontrast=25') && l.includes('-t 3') && l.includes('-vn -sn')
       )
     ).toBe(true)
   })

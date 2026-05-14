@@ -62,7 +62,7 @@ export interface MainWindowUiPanelState {
   exportCommandPreview?: boolean
   /** §13 — журнал завершённых обработок FFmpeg в правой панели главного окна. */
   processingHistory?: boolean
-  /** §4.1 / §9 — раскрытие `details` инспектора под превью. */
+  /** §4.1 / §9 — раскрытие секций сводки ffprobe (окно инспектора; те же ключи влияют на раскрытие блоков там). */
   probeExportSummary?: boolean
   probeTracks?: boolean
   probeChapters?: boolean

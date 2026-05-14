@@ -17,7 +17,10 @@ export function openAllowedExternalUrl(raw: string): void {
   void shell.openExternal(raw)
 }
 
-export function shouldAllowElectronWindowNavigation(targetUrl: string, currentUrl: string): boolean {
+export function shouldAllowElectronWindowNavigation(
+  targetUrl: string,
+  currentUrl: string
+): boolean {
   if (targetUrl === currentUrl) {
     return true
   }
@@ -54,4 +57,3 @@ export function installExternalNavigationGuard(webContents: WebContents): void {
     openAllowedExternalUrl(url)
   })
 }
-

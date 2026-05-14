@@ -248,9 +248,7 @@ describe('buildYtdlpRunOptionsSnapshot §6.4 openInHandlerOnComplete', () => {
 
 describe('buildYtdlpRunOptionsSnapshot §6.4 autoExportAfterOpenInHandler', () => {
   it('по умолчанию выключено', () => {
-    expect(buildYtdlpRunOptionsSnapshot({ theme: 'dark' }).autoExportAfterOpenInHandler).toBe(
-      false
-    )
+    expect(buildYtdlpRunOptionsSnapshot({ theme: 'dark' }).autoExportAfterOpenInHandler).toBe(false)
   })
 
   it('включается только при явном true в settings.json', () => {

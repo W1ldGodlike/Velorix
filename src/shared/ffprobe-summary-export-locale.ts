@@ -170,7 +170,10 @@ export function formatFfprobeBitrateLabelFromKbps(
 }
 
 /** bps из side_data CPB (сырая числовая строка в бит/с). */
-export function formatFfprobeBitrateLabelFromBps(bps: number, locale: FfprobeSummaryLocale): string {
+export function formatFfprobeBitrateLabelFromBps(
+  bps: number,
+  locale: FfprobeSummaryLocale
+): string {
   const b = ffprobeSummaryStrings(locale)
   if (!Number.isFinite(bps) || bps <= 0) {
     return ffprobeSummaryFill(b.bitrateBitsTemplate, { value: '0' })

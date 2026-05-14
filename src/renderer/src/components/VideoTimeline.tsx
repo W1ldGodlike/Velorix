@@ -13,7 +13,7 @@ import type { MediaProbeSuccess } from '../../../shared/ffprobe-contract'
 import { buildTimelineRulerTicks, pickTimelineRulerStepSec } from '../../../shared/timeline-ruler'
 import { snapSeekTimeSec } from '../../../shared/video-frame-snap'
 import { miniIconTitle, uiText, uiTextVars } from '../locales/ui-text'
-import { IconScissors, IconZoomIn, IconZoomOut } from './LucideMiniIcons'
+import { IconImage, IconSave, IconScissors, IconZoomIn, IconZoomOut } from './LucideMiniIcons'
 import TimelineWaveform from './TimelineWaveform'
 
 const MIN_TRIM_GAP_SEC = 0.05
@@ -153,6 +153,12 @@ interface VideoTimelineProps {
   onTrimRangeChange?: (range: { inSec: number; outSec: number }) => void
   /** Секция «Вывод» + превью команды в правом rail (кнопка «Обрезать»). */
   onJumpToTrimExport?: () => void
+  /** Запуск экспорта (та же логика, что кнопка «Начать экспорт» на таймлайне). */
+  onStartExport?: () => void
+  /** Сохранить кадр в позиции воспроизведения (отдельный файл). */
+  onSaveFrame?: () => void
+  saveFrameDisabled?: boolean
+  saveFrameBusy?: boolean
 }
 
 export default function VideoTimeline({
@@ -161,7 +167,11 @@ export default function VideoTimeline({
   videoRef,
   probe = null,
   onTrimRangeChange,
-  onJumpToTrimExport
+  onJumpToTrimExport,
+  onStartExport,
+  onSaveFrame,
+  saveFrameDisabled = false,
+  saveFrameBusy = false
 }: VideoTimelineProps): React.JSX.Element {
   const [duration, setDuration] = useState(0)
   const [current, setCurrent] = useState(0)
@@ -460,7 +470,8 @@ export default function VideoTimeline({
         return 'marquee'
       }
       const leftPx = rect.left + (markerZoomOverlay.leftPct / 100) * w
-      const rightPx = rect.left + ((markerZoomOverlay.leftPct + markerZoomOverlay.widthPct) / 100) * w
+      const rightPx =
+        rect.left + ((markerZoomOverlay.leftPct + markerZoomOverlay.widthPct) / 100) * w
       if (Math.abs(clientX - leftPx) <= TRIM_HANDLE_HIT_PX) {
         return 'inHandle'
       }
@@ -587,7 +598,11 @@ export default function VideoTimeline({
   return (
     <div className="app-timeline-stack">
       {duration > 0 ? (
-        <div className="app-timeline-toolbar" role="toolbar" aria-label={uiText('videoTimelineToolbarAria')}>
+        <div
+          className="app-timeline-toolbar"
+          role="toolbar"
+          aria-label={uiText('videoTimelineToolbarAria')}
+        >
           <div className="app-timeline-toolbar-primary">
             <button
               type="button"
@@ -645,10 +660,55 @@ export default function VideoTimeline({
               {uiTextVars('videoTimelineBadgeOutTemplate', { t: formatTimeWithMs(displayOut) })}
             </span>
           </div>
-          <span className="app-timeline-toolbar-duration" title={uiText('videoTimelineTrimReadoutTitle')}>
-            {uiTextVars('videoTimelineTrimDurationToolbar', { span: formatTimeWithMs(trimSpanSec) })}
-          </span>
-          <div className="app-timeline-toolbar-zoom" aria-label={uiText('videoTimelineZoomRowAria')}>
+          <div
+            className="app-timeline-toolbar-center"
+            title={uiTextVars('videoTimelineToolbarCenterTitle', {
+              dur: formatTimeWithMs(trimSpanSec),
+              pos: formatProbePositionLine(current, duration, fpsProbeHint)
+            })}
+          >
+            <span className="app-timeline-toolbar-center-line">
+              {uiTextVars('videoTimelineTrimDurationToolbar', {
+                span: formatTimeWithMs(trimSpanSec)
+              })}
+            </span>
+            <span className="app-timeline-toolbar-center-line app-timeline-toolbar-center-line--muted">
+              <strong>{uiText('videoTimelinePositionLabel')}</strong>{' '}
+              {formatProbePositionLine(current, duration, fpsProbeHint)}
+            </span>
+          </div>
+          <div className="app-timeline-toolbar-export-cluster">
+            <button
+              type="button"
+              className="app-btn app-btn-compact app-btn-timeline-snapshot"
+              disabled={duration <= 0 || saveFrameDisabled}
+              onClick={() => {
+                onSaveFrame?.()
+              }}
+              title={uiText('videoTimelineSaveFrameTitle')}
+            >
+              <IconImage title="" size={15} />
+              <span>
+                {saveFrameBusy ? uiText('videoTimelineSaveFrameBusy') : uiText('videoTimelineSaveFrame')}
+              </span>
+            </button>
+            <button
+              type="button"
+              className="app-btn app-btn-compact app-btn-timeline-export"
+              disabled={duration <= 0}
+              onClick={() => {
+                onStartExport?.()
+              }}
+              title={uiText('videoTimelineStartExportTitle')}
+            >
+              <IconSave title="" size={15} />
+              <span>{uiText('videoTimelineStartExport')}</span>
+            </button>
+          </div>
+          <div
+            className="app-timeline-toolbar-zoom"
+            aria-label={uiText('videoTimelineZoomRowAria')}
+          >
             <button
               type="button"
               className="app-icon-btn app-timeline-zoom-ico"
@@ -669,7 +729,10 @@ export default function VideoTimeline({
               <IconZoomIn />
               <span className="app-visually-hidden">{miniIconTitle('miniIconZoomIn')}</span>
             </button>
-            <span className="app-timeline-zoom-readout" title={uiText('videoTimelineZoomReadoutTitle')}>
+            <span
+              className="app-timeline-zoom-readout"
+              title={uiText('videoTimelineZoomReadoutTitle')}
+            >
               {uiTextVars('videoTimelineZoomReadoutTemplate', {
                 mul: timelineZoomMul,
                 start: formatTime(winStartEff),
@@ -777,13 +840,8 @@ export default function VideoTimeline({
               <strong>{uiText('videoTimelineAudioLabel')}</strong> {formatProbeAudioFact(probe)}
             </span>
           </div>
-          <span className="app-timeline-footer-position" title={uiText('videoTimelinePositionTitle')}>
-            <strong>{uiText('videoTimelinePositionLabel')}</strong>{' '}
-            {formatProbePositionLine(current, duration, fpsProbeHint)}
-          </span>
         </div>
       ) : null}
-
     </div>
   )
 }

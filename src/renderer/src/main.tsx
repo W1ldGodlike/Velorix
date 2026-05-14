@@ -44,10 +44,7 @@ window.addEventListener('error', (event) => {
   safeLog(
     'error',
     'window.error',
-    describeError(
-      event.error,
-      event.message || uiText('rendererLogWindowErrorFallback')
-    )
+    describeError(event.error, event.message || uiText('rendererLogWindowErrorFallback'))
   )
 })
 

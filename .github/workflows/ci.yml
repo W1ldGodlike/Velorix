@@ -64,7 +64,7 @@ jobs:
       - name: Prepare Windows engines (CI smoke)
         run: npm run engines:prepare:win
 
-      - name: Verify bundled engines (doctor: verify + SHA + versions)
+      - name: 'Verify bundled engines (doctor: verify + SHA + versions)'
         run: npm run engines:doctor
 
       - name: Build
@@ -75,4 +75,3 @@ jobs:
 
       - name: Verify win-unpacked layout (exe + bundled engines + extraResources)
         run: npm run verify:win-unpacked
-

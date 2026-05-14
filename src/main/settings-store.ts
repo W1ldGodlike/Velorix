@@ -19,6 +19,10 @@ import {
 import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
 import { validateYtdlpCookiesBrowserProfile } from './ytdlp-extra-args'
 import { parseDownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import {
+  getBuiltinFfmpegExportUserPresets,
+  mergeBuiltinFfmpegExportUserPresetsFromFile
+} from '../shared/builtin-ffmpeg-export-user-presets'
 
 export type {
   AppSettings,
@@ -362,7 +366,10 @@ function parseStoredTheme(raw: unknown): AppTheme {
   return 'dark'
 }
 
-const defaults: AppSettings = { theme: 'dark' }
+const defaults: AppSettings = {
+  theme: 'dark',
+  ffmpegExportUserPresets: getBuiltinFfmpegExportUserPresets('ru')
+}
 
 /**
  * Читает настройки терпимо.
@@ -537,10 +544,13 @@ export function loadSettings(filePath: string): AppSettings {
     if (qrp !== 'off') {
       base.ytdlpQueueRetryProfile = qrp
     }
-    const ffmpegExportUserPresets = parseFfmpegExportUserPresetsList(parsed.ffmpegExportUserPresets)
-    if (ffmpegExportUserPresets.length > 0) {
-      base.ffmpegExportUserPresets = ffmpegExportUserPresets
-    }
+    const uiLocaleParsed = parseDownloadsWindowUiLocale(parsed.uiLocale)
+    const presetUiLocale: 'ru' | 'en' = uiLocaleParsed === 'en' ? 'en' : 'ru'
+    const fromFile = parseFfmpegExportUserPresetsList(parsed.ffmpegExportUserPresets)
+    base.ffmpegExportUserPresets = mergeBuiltinFfmpegExportUserPresetsFromFile(
+      fromFile,
+      presetUiLocale
+    )
     const mainWindowUiPanels = parseMainWindowUiPanels(parsed.mainWindowUiPanels)
     if (mainWindowUiPanels !== undefined) {
       base.mainWindowUiPanels = mainWindowUiPanels
@@ -549,9 +559,8 @@ export function loadSettings(filePath: string): AppSettings {
     if (downloadsWindowUiPanels !== undefined) {
       base.downloadsWindowUiPanels = downloadsWindowUiPanels
     }
-    const uiLocale = parseDownloadsWindowUiLocale(parsed.uiLocale)
-    if (uiLocale !== undefined) {
-      base.uiLocale = uiLocale
+    if (uiLocaleParsed !== undefined) {
+      base.uiLocale = uiLocaleParsed
     }
     return base
   } catch {

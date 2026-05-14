@@ -455,7 +455,10 @@ export function buildYtdlpRunOptionsSnapshot(
     typeof settings.ytdlpCookiesBrowserProfile === 'string'
       ? settings.ytdlpCookiesBrowserProfile
       : ''
-  const cookiesProfileParsed = validateYtdlpCookiesBrowserProfile(cookiesBrowserProfileLine, uiLocale)
+  const cookiesProfileParsed = validateYtdlpCookiesBrowserProfile(
+    cookiesBrowserProfileLine,
+    uiLocale
+  )
   let cookiesArgvBrowserProfile: string | null = null
   if (
     cookiesArgvBrowser !== null &&

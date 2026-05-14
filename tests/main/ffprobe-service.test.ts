@@ -501,7 +501,7 @@ describe('ffprobe-service buildTrackRows', () => {
     )
     expect(row?.detail).toContain('…')
     expect(row?.detail).not.toContain('tail')
-    expect((row?.detail.length ?? 0)).toBeLessThan(long.length + 80)
+    expect(row?.detail.length ?? 0).toBeLessThan(long.length + 80)
   })
 
   it('video detail: max_bit_rate заметно выше bit_rate → «max … Мбит/с» (RU)', () => {

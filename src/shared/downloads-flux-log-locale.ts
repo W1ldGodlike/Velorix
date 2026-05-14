@@ -85,9 +85,7 @@ export function formatFluxLogAutoExportDone(
 }
 
 export function fluxLogAutoExportCancelled(locale: DownloadsWindowUiLocale): string {
-  return locale === 'en'
-    ? `${BR} Auto-export cancelled.`
-    : `${BR} Авто-экспорт отменён.`
+  return locale === 'en' ? `${BR} Auto-export cancelled.` : `${BR} Авто-экспорт отменён.`
 }
 
 export function formatFluxLogAutoExportFailed(

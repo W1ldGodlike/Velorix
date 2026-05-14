@@ -1135,7 +1135,7 @@ function buildDownloadsHtml(
       background: var(--bg); color: color-mix(in srgb, var(--green) 78%, white); font-family: ui-monospace, Consolas, Menlo, monospace;
       font-size: 0.68rem; white-space: pre-wrap; word-break: break-word; max-height: 120px; overflow: auto;
     }
-    #hintSummary { min-height: 2.5em; margin-top: 0.4rem; }
+    #hintCatalogIntro { margin-bottom: 0.35rem; }
     .opts-hint { font-size: 0.68rem; color: var(--dim); margin: 0 0 0.5rem; line-height: 1.35; }
     .note { display: none; }
     .history-actions { display: flex; gap: 0.45rem; flex-wrap: wrap; align-items: center; padding: 0 0.65rem 0.55rem; }
@@ -1539,14 +1539,10 @@ ${emitDownloadsTopbarClusterHtml(18, L.topbarCluster)}
               <pre class="args-preview" id="argsPreview" aria-label="${L.argsPreviewAria}" aria-describedby="dlRailExpertSectionHint"></pre>
               <details class="hints-panel details-chev" id="hintsPanel"${openAttr('hints', false)}>
                 <summary>${L.hintsPanelSummary}</summary>
-                <label class="opts-preview-label" for="hintInsert">${L.hintInsertLabel}</label>
-                <select id="hintInsert" class="hint-select" aria-describedby="dlRailExpertSectionHint">
-                  <option value="">${L.hintInsertPlaceholder}</option>
-                </select>
-                <p class="opts-hint" id="hintSummary"></p>
+                <p id="hintCatalogIntro" class="opts-hint">${L.hintCatalogIntro}</p>
                 <div class="hints-search">
-                  <label class="opts-preview-label" for="hintFilter">${L.hintFilterLabel}</label>
-                  <input type="text" id="hintFilter" spellcheck="false" autocomplete="off" placeholder="${L.hintFilterPlaceholder}" aria-describedby="dlRailExpertSectionHint" aria-label="${L.hintFilterAria}" />
+                  <label class="opts-preview-label" for="hintFilter">${L.hintCatalogFilterLabel}</label>
+                  <input type="text" id="hintFilter" spellcheck="false" autocomplete="off" placeholder="${L.hintFilterPlaceholder}" aria-describedby="hintCatalogIntro dlRailExpertSectionHint" aria-label="${L.hintFilterAria}" />
                 </div>
                 <div class="hint-list" id="hintList" role="list" aria-label="${L.hintListAria}"></div>
               </details>
@@ -1619,8 +1615,6 @@ ${emitDownloadsTopbarClusterHtml(18, L.topbarCluster)}
       var previewOutDirOverride = document.getElementById('previewOutDirOverride');
       var argsPreview = document.getElementById('argsPreview');
       var extraArgsWarn = document.getElementById('extraArgsWarn');
-      var hintInsert = document.getElementById('hintInsert');
-      var hintSummary = document.getElementById('hintSummary');
       var hintFilter = document.getElementById('hintFilter');
       var hintList = document.getElementById('hintList');
       var historyBody = document.getElementById('historyBody');
@@ -1986,32 +1980,8 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
         });
       }
 
-      function fillHintSelect(hints) {
-        if (!hintInsert) return;
-        var list = Array.isArray(hints) ? hints : [];
-        lastCommandHints = list;
-        hintInsert.replaceChildren();
-        var ph = document.createElement('option');
-        ph.value = '';
-        ph.textContent = list.length === 0 ? DL_I18N.hintSelectEmpty : DL_I18N.hintSelectPlaceholder;
-        hintInsert.appendChild(ph);
-        var curCat = null;
-        var og = null;
-        list.forEach(function (h) {
-          if (!h || typeof h.token !== 'string') return;
-          var cat = typeof h.category === 'string' && h.category.length ? h.category : DL_I18N.hintCategoryFallback;
-          if (cat !== curCat) {
-            curCat = cat;
-            og = document.createElement('optgroup');
-            og.label = cat;
-            hintInsert.appendChild(og);
-          }
-          var o = document.createElement('option');
-          o.value = h.token;
-          o.textContent = h.token;
-          o.title = typeof h.summary === 'string' ? h.summary : '';
-          if (og) og.appendChild(o);
-        });
+      function applyCommandHints(hints) {
+        lastCommandHints = Array.isArray(hints) ? hints : [];
         renderHintList();
       }
 
@@ -2077,7 +2047,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
             if (row.summary) {
               var desc = document.createElement('div');
               desc.className = 'hint-desc';
-              desc.textContent = row.summary.length > 420 ? row.summary.slice(0, 418) + '…' : row.summary;
+              desc.textContent = row.summary;
               item.appendChild(desc);
             }
             hintList.appendChild(item);
@@ -2183,7 +2153,7 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
               extraArgsWarn.hidden = true;
             }
           }
-          fillHintSelect(p.commandHints);
+          applyCommandHints(p.commandHints);
           cliFormHydrated = true;
           refreshPreviewOnly();
         });
@@ -2823,24 +2793,6 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
       attachPreviewRefreshOnInput(extraArgsInput);
       attachPreviewRefreshOnInput(previewOutDirOverride);
 
-      if (hintInsert && extraArgsInput) {
-        hintInsert.addEventListener('change', function () {
-          var opt = hintInsert.selectedOptions && hintInsert.selectedOptions[0];
-          var token = hintInsert.value;
-          if (!token) {
-            if (hintSummary) hintSummary.textContent = '';
-            return;
-          }
-          if (hintSummary && opt && opt.title) {
-            hintSummary.textContent = opt.title.length > 360 ? opt.title.slice(0, 358) + '…' : opt.title;
-          }
-          var cur = extraArgsInput.value.trim();
-          extraArgsInput.value = cur ? cur + ' ' + token : token;
-          hintInsert.value = '';
-          schedulePreviewRefresh();
-        });
-      }
-
       urls.addEventListener('dragover', function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -3025,10 +2977,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
 
   ipcMain.handle(
     d.downloadFirstUrlOpenInMainEditor,
-    async (
-      event,
-      raw: unknown
-    ): Promise<{ ok: true } | { ok: false; error: string }> => {
+    async (event, raw: unknown): Promise<{ ok: true } | { ok: false; error: string }> => {
       const P = ipcStr(event.sender)
       if (!isDownloadsOrMainSender(event.sender)) {
         return { ok: false, error: P.invalidSender }

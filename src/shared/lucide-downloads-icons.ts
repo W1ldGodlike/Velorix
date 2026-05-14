@@ -188,6 +188,27 @@ export const DOWNLOADS_TOPBAR_CLUSTER_ICONS = {
   ] as const satisfies readonly StrokePrim[]
 } as const
 
+/** Вкладки «Редактор» / «Терминал» в шапке главного окна (lucide-подобные stroke). */
+export const WORKSPACE_TAB_ICONS = {
+  /** Кадр, play и ножницы — монтаж/обрезка (оригинальная композиция по мотивам «плёнка + ножницы»). */
+  editor: [
+    { tag: 'rect', attr: { x: '2', y: '6', width: '11.5', height: '12', rx: '1.5' } },
+    { tag: 'line', attr: { x1: '2.6', y1: '8.5', x2: '2.6', y2: '10.5' } },
+    { tag: 'line', attr: { x1: '2.6', y1: '14', x2: '2.6', y2: '16' } },
+    { tag: 'polygon', attr: { points: '5.5 9.8 9.2 12 5.5 14.2' } },
+    { tag: 'circle', attr: { cx: '16.5', cy: '15', r: '2' } },
+    { tag: 'circle', attr: { cx: '16.5', cy: '19.5', r: '2' } },
+    { tag: 'line', attr: { x1: '20.2', y1: '13.6', x2: '14.3', y2: '16.6' } },
+    { tag: 'line', attr: { x1: '20.2', y1: '21', x2: '14.3', y2: '18' } },
+    { tag: 'line', attr: { x1: '14.3', y1: '16.6', x2: '14.3', y2: '18' } }
+  ] as const satisfies readonly StrokePrim[],
+  /** lucide `terminal`. */
+  terminal: [
+    { tag: 'polyline', attr: { points: '4 17 10 11 4 5' } },
+    { tag: 'line', attr: { x1: '12', y1: '19', x2: '20', y2: '19' } }
+  ] as const satisfies readonly StrokePrim[]
+} as const
+
 export type DownloadsTopbarClusterIconKey = keyof typeof DOWNLOADS_TOPBAR_CLUSTER_ICONS
 
 /**

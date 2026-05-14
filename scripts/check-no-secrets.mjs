@@ -51,4 +51,3 @@ if (hit) {
 } else {
   console.log('[secrets] OK')
 }
-

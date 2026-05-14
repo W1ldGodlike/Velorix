@@ -1,6 +1,9 @@
 import type { DownloadsWindowUiLocale } from './downloads-window-ui-locale'
 import type { YtdlpCommandHintEntry } from './ytdlp-download-contract'
-import { compareYtdlpHintCategoryKeys, ytdlpHintsMiscCategoryLabel } from './ytdlp-hint-category-order'
+import {
+  compareYtdlpHintCategoryKeys,
+  ytdlpHintsMiscCategoryLabel
+} from './ytdlp-hint-category-order'
 
 /**
  * §6.3 — группировка подсказок argv для UI (вкладка «Загрузки» и pop-out):

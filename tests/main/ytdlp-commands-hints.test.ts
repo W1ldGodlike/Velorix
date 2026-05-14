@@ -9,7 +9,10 @@ vi.mock('@electron-toolkit/utils', () => ({
   is: { dev: true }
 }))
 
-import { getYtdlpCommandHints, sortYtdlpCommandHintsForUi } from '../../src/main/ytdlp-commands-hints'
+import {
+  getYtdlpCommandHints,
+  sortYtdlpCommandHintsForUi
+} from '../../src/main/ytdlp-commands-hints'
 
 describe('sortYtdlpCommandHintsForUi §6.3', () => {
   it('ставит «Справка» перед «Форматы и кодеки», токены внутри группы — по алфавиту', () => {

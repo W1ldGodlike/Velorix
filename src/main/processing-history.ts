@@ -97,7 +97,9 @@ function loadEntries(userDataRoot: string): ProcessingHistoryEntry[] {
     if (parsed.schema !== PROCESSING_HISTORY_SCHEMA || !Array.isArray(parsed.entries)) {
       return []
     }
-    return parsed.entries.map(parseEntry).filter((entry): entry is ProcessingHistoryEntry => !!entry)
+    return parsed.entries
+      .map(parseEntry)
+      .filter((entry): entry is ProcessingHistoryEntry => !!entry)
   } catch (err) {
     logError('processing-history', 'read processing/history.json failed', err)
     return []
@@ -163,8 +165,8 @@ export function readProcessingHistoryNewestFirst(
       if (!q) {
         return true
       }
-      return [entry.inputPath, entry.outputPath ?? '', entry.status, entry.errorHint ?? ''].some((text) =>
-        text.toLowerCase().includes(q)
+      return [entry.inputPath, entry.outputPath ?? '', entry.status, entry.errorHint ?? ''].some(
+        (text) => text.toLowerCase().includes(q)
       )
     })
     .slice(-max)

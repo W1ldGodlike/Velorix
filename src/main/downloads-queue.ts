@@ -93,7 +93,9 @@ export function clearDownloadsQueue(): void {
 
 export function clearFinishedDownloadsQueueRows(): number {
   const before = rows.length
-  rows = rows.filter((r) => isYtdlpQueueStatusWaiting(r.status) || isYtdlpQueueStatusRunningLike(r.status))
+  rows = rows.filter(
+    (r) => isYtdlpQueueStatusWaiting(r.status) || isYtdlpQueueStatusRunningLike(r.status)
+  )
   return before - rows.length
 }
 

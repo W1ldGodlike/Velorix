@@ -30,7 +30,10 @@ import type {
   FfmpegExportVideoVignetteId,
   MediaExportTrimPayload
 } from '../shared/ffmpeg-export-contract'
-import { FFMPEG_EXPORT_CANCELLED_ERROR } from '../shared/ffmpeg-export-contract'
+import {
+  FFMPEG_EXPORT_CANCELLED_ERROR,
+  FFMPEG_EXPORT_USER_PRESETS_MAX_ENTRIES
+} from '../shared/ffmpeg-export-contract'
 import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
 import {
@@ -436,14 +439,14 @@ export function parseFfmpegExportUserPresetSnapshot(
 }
 
 /**
- * §7.2 — список пользовательских пресетов для `settings.json` (не более 8 записей).
+ * §7.2 — список пресетов экспорта для `settings.json` (см. `FFMPEG_EXPORT_USER_PRESETS_MAX_ENTRIES`).
  */
 export function parseFfmpegExportUserPresetsList(raw: unknown): FfmpegExportUserPreset[] {
   if (!Array.isArray(raw)) {
     return []
   }
   const out: FfmpegExportUserPreset[] = []
-  for (const item of raw.slice(0, 8)) {
+  for (const item of raw.slice(0, FFMPEG_EXPORT_USER_PRESETS_MAX_ENTRIES)) {
     if (!item || typeof item !== 'object') {
       continue
     }
@@ -456,11 +459,16 @@ export function parseFfmpegExportUserPresetsList(raw: unknown): FfmpegExportUser
       typeof labelRaw === 'string' && labelRaw.trim().length > 0
         ? labelRaw.trim().slice(0, 64)
         : null
+    const hintRaw = o['hint']
+    const hint =
+      typeof hintRaw === 'string' && hintRaw.trim().length > 0
+        ? hintRaw.trim().slice(0, 220)
+        : undefined
     const snap = parseFfmpegExportUserPresetSnapshot(o['snapshot'])
     if (!id || !label || !snap) {
       continue
     }
-    out.push({ id, label, snapshot: snap })
+    out.push({ id, label, snapshot: snap, ...(hint ? { hint } : {}) })
   }
   return out
 }
@@ -517,11 +525,7 @@ export function mergeFfmpegExportSnapshotIntoAppSettings(
     next.ffmpegExportCropPreset = snapshot.cropPreset
   }
   const snapCodec = parseFfmpegExportVideoCodec(snapshot.videoCodec)
-  if (
-    snapshot.twoPass === true &&
-    snapCodec === 'libx264' &&
-    snapshot.videoBitrate !== null
-  ) {
+  if (snapshot.twoPass === true && snapCodec === 'libx264' && snapshot.videoBitrate !== null) {
     next.ffmpegExportTwoPass = true
   } else {
     delete next.ffmpegExportTwoPass
@@ -887,8 +891,7 @@ export async function runFfmpegExportJob(params: {
   const videoTransform = parseFfmpegExportVideoTransform(params.videoTransform)
   const cropPreset = parseFfmpegExportCropPreset(params.cropPreset)
   const container = parseFfmpegExportContainer(params.container ?? 'mp4')
-  const wantTwoPass =
-    params.twoPass === true && videoBitrate !== null && videoCodec === 'libx264'
+  const wantTwoPass = params.twoPass === true && videoBitrate !== null && videoCodec === 'libx264'
   const audioGainDb = parseFfmpegExportAudioGainDb(params.audioGainDb)
   const stripMetadata = parseFfmpegExportStripFlag(params.stripMetadata)
   const stripChapters = parseFfmpegExportStripFlag(params.stripChapters)

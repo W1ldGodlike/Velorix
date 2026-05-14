@@ -172,7 +172,9 @@ function sendHttpMedia(filePath: string, req: IncomingMessage, res: ServerRespon
   const st = statSync(filePath)
   const size = st.size
   const mime = mediaMimeType(filePath)
-  const rawRange = Array.isArray(req.headers.range) ? req.headers.range[0] : (req.headers.range ?? null)
+  const rawRange = Array.isArray(req.headers.range)
+    ? req.headers.range[0]
+    : (req.headers.range ?? null)
   const range = parseRangeHeader(rawRange, size)
   const baseHeaders = {
     'Accept-Ranges': 'bytes',

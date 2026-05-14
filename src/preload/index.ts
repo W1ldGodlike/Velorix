@@ -472,7 +472,9 @@ const fluxalloy = {
     getStatus: (uiLocale?: DownloadsWindowUiLocale): Promise<EnginesStatusSnapshot> =>
       ipcRenderer.invoke(mw.enginesStatus, uiLocale),
     shouldOfferDownload: (): Promise<boolean> => ipcRenderer.invoke(mw.enginesShouldOfferDownload),
-    download: (uiLocale?: DownloadsWindowUiLocale): Promise<{ ok: true } | { ok: false; error: string }> =>
+    download: (
+      uiLocale?: DownloadsWindowUiLocale
+    ): Promise<{ ok: true } | { ok: false; error: string }> =>
       ipcRenderer.invoke(mw.enginesDownload, uiLocale),
     clearUserBin: (): Promise<{ ok: true; removed: number } | { ok: false; error: string }> =>
       ipcRenderer.invoke(mw.enginesClearUserBin),

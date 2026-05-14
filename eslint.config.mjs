@@ -8,7 +8,13 @@ import eslintPluginReactRefresh from 'eslint-plugin-react-refresh'
 export default defineConfig(
   // Сгенерированные каталоги и зависимости не линтим: они большие и не являются исходниками проекта.
   {
-    ignores: ['**/node_modules', '**/dist', '**/out', 'scripts/cursor-automation/**', 'scripts/inject-flux-summary-pole.mjs']
+    ignores: [
+      '**/node_modules',
+      '**/dist',
+      '**/out',
+      'scripts/cursor-automation/**',
+      'scripts/inject-flux-summary-pole.mjs'
+    ]
   },
   tseslint.configs.recommended,
   eslintPluginReact.configs.flat.recommended,

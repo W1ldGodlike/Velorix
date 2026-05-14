@@ -57,4 +57,3 @@ describe('external-url guard', () => {
     ).toBe(false)
   })
 })
-

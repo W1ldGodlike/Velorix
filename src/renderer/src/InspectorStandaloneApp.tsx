@@ -16,7 +16,14 @@ import {
 } from './components/LucideMiniIcons'
 import { PreviewProbeBody, type PreviewProbeSectionKey } from './components/MediaProbePanel'
 import Versions from './components/Versions'
-import { applyPersistedUiLocale, miniIconTitle, setUiLocaleForSession, getUiLocale, uiText, uiTextVars } from './locales/ui-text'
+import {
+  applyPersistedUiLocale,
+  miniIconTitle,
+  setUiLocaleForSession,
+  getUiLocale,
+  uiText,
+  uiTextVars
+} from './locales/ui-text'
 
 type ProbeInspectorUiState = {
   probeExportSummary: boolean
@@ -176,7 +183,9 @@ export function InspectorStandaloneApp(): JSX.Element {
   }
 
   async function handleOpenDialog(): Promise<void> {
-    const result = await window.fluxalloy.preview.openFileDialog(getUiLocale() as DownloadsWindowUiLocale)
+    const result = await window.fluxalloy.preview.openFileDialog(
+      getUiLocale() as DownloadsWindowUiLocale
+    )
     if (result.ok) {
       setMediaPath(result.path)
       setStatusHint(result.name)
@@ -201,12 +210,17 @@ export function InspectorStandaloneApp(): JSX.Element {
   return (
     <div className="app-shell">
       <header className="app-topbar">
-        <div className="app-topbar-brand inspector-toolbar-brand" aria-label={uiText('inspectorStandaloneBrandAria')}>
+        <div
+          className="app-topbar-brand inspector-toolbar-brand"
+          aria-label={uiText('inspectorStandaloneBrandAria')}
+        >
           <span className="app-topbar-mark inspector-topbar-mark-icon" aria-hidden>
             <IconFilm title="" size={13} />
           </span>
           <span className="app-topbar-title">{uiText('inspectorStandaloneHeaderTitle')}</span>
-          <span className="app-topbar-version">{uiText('inspectorStandaloneTopbarEngineLabel')}</span>
+          <span className="app-topbar-version">
+            {uiText('inspectorStandaloneTopbarEngineLabel')}
+          </span>
         </div>
         <div className="inspector-topbar-spacer" aria-hidden />
         <div className="app-topbar-actions">
@@ -219,7 +233,9 @@ export function InspectorStandaloneApp(): JSX.Element {
             title={uiText('inspectorStandaloneOpenPickTitle')}
           >
             <IconFolderOpen title={miniIconTitle('miniIconFolderOpenEllipsis')} />
-            <span className="app-visually-hidden">{uiText('inspectorStandaloneOpenVisuallyHidden')}</span>
+            <span className="app-visually-hidden">
+              {uiText('inspectorStandaloneOpenVisuallyHidden')}
+            </span>
           </button>
           <button
             type="button"

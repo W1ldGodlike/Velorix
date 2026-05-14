@@ -52,4 +52,3 @@ if (failed) {
 } else {
   console.log(`[journal] OK (${expected - 1} entries)`)
 }
-

@@ -120,7 +120,9 @@ export default function TimelineWaveform({
       try {
         const res = await fetch(mediaUrl, { signal: ac.signal })
         if (!res.ok) {
-          throw new Error(uiTextVars('timelineWaveformMediaResponseErrorTemplate', { status: res.status }))
+          throw new Error(
+            uiTextVars('timelineWaveformMediaResponseErrorTemplate', { status: res.status })
+          )
         }
         const contentLength = Number(res.headers.get('content-length') ?? '')
         if (Number.isFinite(contentLength) && contentLength > WAVEFORM_MAX_FETCH_BYTES) {
@@ -260,7 +262,9 @@ export default function TimelineWaveform({
     return (
       <div className="app-timeline-waveform" aria-label={uiText('timelineWaveformAriaUnavailable')}>
         <p className="app-timeline-waveform-hint">
-          {uiTextVars('timelineWaveformUnavailableLongTemplate', { max: WAVEFORM_MAX_DURATION_SEC })}
+          {uiTextVars('timelineWaveformUnavailableLongTemplate', {
+            max: WAVEFORM_MAX_DURATION_SEC
+          })}
         </p>
       </div>
     )
@@ -271,12 +275,18 @@ export default function TimelineWaveform({
   }
 
   return (
-    <div className="app-timeline-waveform" ref={wrapRef} aria-label={uiText('timelineWaveformAriaEnvelope')}>
+    <div
+      className="app-timeline-waveform"
+      ref={wrapRef}
+      aria-label={uiText('timelineWaveformAriaEnvelope')}
+    >
       {peaks !== null && peaks.length > 0 ? (
         <canvas ref={canvasRef} className="app-timeline-waveform-canvas" />
       ) : null}
       {peaks === null ? (
-        <div className="app-timeline-waveform-hint">{hint ?? uiText('timelineWaveformLoading')}</div>
+        <div className="app-timeline-waveform-hint">
+          {hint ?? uiText('timelineWaveformLoading')}
+        </div>
       ) : null}
       {peaks !== null && peaks.length > 0 && hint ? (
         <div className="app-timeline-waveform-subhint">{hint}</div>
