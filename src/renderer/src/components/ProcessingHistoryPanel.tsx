@@ -60,7 +60,8 @@ export function ProcessingHistoryPanel({
   onClear,
   onExportVisible,
   onOpenOutput,
-  onOpenInputInHandler
+  onOpenInputInHandler,
+  onAddInputToBatch
 }: {
   open: boolean
   busy: boolean
@@ -74,6 +75,7 @@ export function ProcessingHistoryPanel({
   onExportVisible: () => void
   onOpenOutput: (id: string, mode: 'file' | 'folder' | 'preview') => void
   onOpenInputInHandler: (id: string) => void
+  onAddInputToBatch?: (id: string) => void
 }): JSX.Element {
   const kindOptions: Array<{ value: '' | ProcessingHistoryKind; label: string }> = [
     { value: '', label: uiText('processingHistoryKindAll') },
@@ -244,6 +246,15 @@ export function ProcessingHistoryPanel({
                 >
                   {uiText('processingHistoryRepeat')}
                 </button>
+                {onAddInputToBatch ? (
+                  <button
+                    type="button"
+                    className="app-btn app-btn-compact"
+                    onClick={() => onAddInputToBatch(entry.id)}
+                  >
+                    {uiText('batchExportAddHistoryInput')}
+                  </button>
+                ) : null}
               </div>
               {entry.outputPath ? (
                 <div className="app-downloads-history-actions">

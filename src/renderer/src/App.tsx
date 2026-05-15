@@ -87,6 +87,7 @@ import {
 } from '../../shared/ffmpeg-export-contract'
 import type { AppSettings, ResolvedAppTheme } from '../../shared/settings-contract'
 import { buildFfmpegExportPreviewCommand } from '../../shared/ffmpeg-export-argv'
+import { isFfmpegExportBatchVideoPath } from '../../shared/ffmpeg-export-batch-video-ext'
 import { isBuiltinExportUserPresetId } from '../../shared/builtin-ffmpeg-export-user-presets'
 import { FFMPEG_HW_VIDEO_ENCODER_IDS } from '../../shared/ffmpeg-hw-encoder-probe'
 import type { FfmpegHwEncodersProbeResult } from '../../shared/ffmpeg-hw-encoder-probe'
@@ -2194,6 +2195,47 @@ function App(): JSX.Element {
     }
   }
 
+  async function handleBatchAddCurrentPreview(): Promise<void> {
+    const path = preview?.path
+    if (!path || !isFfmpegExportBatchVideoPath(path)) {
+      setStatusHint(uiText('batchExportNoVideoPaths'))
+      return
+    }
+    const res = await window.fluxalloy.batchExport.addPaths([path])
+    if (res.ok) {
+      setStatusHint(uiTextVars('batchExportAddedFiles', { count: String(res.added) }))
+    } else if ('error' in res) {
+      setStatusHint(res.error)
+    }
+  }
+
+  async function handleBatchAddDownloadsDone(ids?: number[]): Promise<void> {
+    const res = await window.fluxalloy.batchExport.addFromDownloadsDone(ids)
+    if (!res.ok) {
+      setStatusHint(res.error)
+      return
+    }
+    if (res.added === 0) {
+      setStatusHint(uiText('batchExportNoVideoPaths'))
+      return
+    }
+    setStatusHint(uiTextVars('batchExportAddedFiles', { count: String(res.added) }))
+  }
+
+  async function handleBatchRetryFailedAndStart(): Promise<void> {
+    if (mediaPipelineBusy) {
+      return
+    }
+    const res = await window.fluxalloy.batchExport.retryFailedAndStart(
+      buildCurrentFfmpegExportOverrides()
+    )
+    if (!res.ok) {
+      setStatusHint(res.error)
+      return
+    }
+    setStatusHint(uiText('batchExportStarted'))
+  }
+
   async function toggleTheme(): Promise<void> {
     const s = await window.fluxalloy.settings.get()
     if (s.theme === 'system') {
@@ -2882,6 +2924,26 @@ function App(): JSX.Element {
                 </button>
                 <button
                   type="button"
+                  className="app-btn"
+                  disabled={batchExportBusy || !preview?.path}
+                  onClick={() => {
+                    void handleBatchAddCurrentPreview()
+                  }}
+                >
+                  {uiText('batchExportAddCurrentPreview')}
+                </button>
+                <button
+                  type="button"
+                  className="app-btn"
+                  disabled={batchExportBusy}
+                  onClick={() => {
+                    void handleBatchAddDownloadsDone()
+                  }}
+                >
+                  {uiText('batchExportAddDownloadsDone')}
+                </button>
+                <button
+                  type="button"
                   className="app-btn app-btn-primary"
                   disabled={batchExportBusy || (batchSnapshot?.rows.length ?? 0) === 0}
                   onClick={() => {
@@ -2909,6 +2971,16 @@ function App(): JSX.Element {
                   }}
                 >
                   {uiText('batchExportRetryFailed')}
+                </button>
+                <button
+                  type="button"
+                  className="app-btn"
+                  disabled={batchExportBusy || (batchSnapshot?.completedError ?? 0) === 0}
+                  onClick={() => {
+                    void handleBatchRetryFailedAndStart()
+                  }}
+                >
+                  {uiText('batchExportRetryFailedAndStart')}
                 </button>
                 <button
                   type="button"
@@ -4388,6 +4460,19 @@ function App(): JSX.Element {
                     setStatusHint(res.ok ? uiText('processingHistoryOpenInputDone') : res.error)
                   })
                 }}
+                onAddInputToBatch={(id) => {
+                  void window.fluxalloy.batchExport.addFromHistoryInputs([id]).then((res) => {
+                    if (!res.ok) {
+                      setStatusHint(res.error)
+                      return
+                    }
+                    if (res.added === 0) {
+                      setStatusHint(uiText('batchExportNoVideoPaths'))
+                      return
+                    }
+                    setStatusHint(uiTextVars('batchExportAddedFiles', { count: String(res.added) }))
+                  })
+                }}
               />
             </aside>
           ) : null}
@@ -5072,6 +5157,21 @@ function App(): JSX.Element {
                                     >
                                       <IconQueueOutbound title="" size={18} />
                                     </button>
+                                    {isYtdlpQueueStatusDone(row.status) &&
+                                    row.outputPath &&
+                                    isFfmpegExportBatchVideoPath(row.outputPath) ? (
+                                      <button
+                                        type="button"
+                                        className="app-icon-btn"
+                                        aria-label={uiText('batchExportAddToBatch')}
+                                        title={uiText('batchExportAddToBatch')}
+                                        onClick={() => {
+                                          void handleBatchAddDownloadsDone([row.id])
+                                        }}
+                                      >
+                                        <IconQueuePlus title="" size={18} />
+                                      </button>
+                                    ) : null}
                                   </>
                                 ) : (
                                   <button

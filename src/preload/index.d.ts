@@ -317,6 +317,13 @@ export interface FluxAlloyApi {
     retryFailed: () => Promise<{ ok: true; reset: number } | { ok: false; error: string }>
     retryRows: (ids: number[]) => Promise<{ ok: true; reset: number } | { ok: false; error: string }>
     clearCompleted: () => Promise<{ ok: true; removed: number } | { ok: false; error: string }>
+    addFromDownloadsDone: (
+      ids?: number[]
+    ) => Promise<{ ok: true; added: number } | { ok: false; error: string }>
+    addFromHistoryInputs: (
+      ids: string[]
+    ) => Promise<{ ok: true; added: number } | { ok: false; error: string }>
+    retryFailedAndStart: (rawExportOverrides?: unknown) => Promise<FfmpegExportBatchStartResult>
     onSnapshot: (listener: (snapshot: FfmpegExportBatchSnapshot) => void) => () => void
   }
   processingHistory: {

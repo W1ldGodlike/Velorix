@@ -35,6 +35,8 @@ import {
 } from './downloads-queue-runner'
 import { emitDownloadsLog } from './downloads-log-ipc'
 import { getDownloadsQueueSnapshot } from './downloads-queue'
+import { filterExistingVideoPathsForBatch } from './ffmpeg-export-batch-grant-paths'
+import { collectDownloadsQueueVideoPaths } from '../shared/ffmpeg-export-batch-collect-paths'
 import {
   configureDownloadsWindowBoundsHooks,
   focusOrCreateDownloadsWindow,
@@ -3467,6 +3469,93 @@ app.whenReady().then(() => {
       const removed = removeCompletedFfmpegExportBatchRows()
       pushBatchExportSnapshot()
       return { ok: true, removed }
+    }
+  )
+
+  ipcMain.handle(
+    mw.batchExportAddFromDownloadsDone,
+    (_event, raw: unknown): { ok: true; added: number } | { ok: false; error: string } => {
+      const M = mainAppStr()
+      if (isFfmpegExportBatchActive()) {
+        return { ok: false, error: M.batchExportRunningCantMutate }
+      }
+      const ids = Array.isArray(raw) ? raw.filter((n): n is number => typeof n === 'number') : []
+      const candidates = collectDownloadsQueueVideoPaths(getDownloadsQueueSnapshot(), {
+        ...(ids.length > 0 ? { ids } : {}),
+        doneOnly: true
+      })
+      const granted = filterExistingVideoPathsForBatch(candidates)
+      const added = addFfmpegExportBatchPaths(granted)
+      pushBatchExportSnapshot()
+      return { ok: true, added }
+    }
+  )
+
+  ipcMain.handle(
+    mw.batchExportAddFromHistoryInputs,
+    (_event, raw: unknown): { ok: true; added: number } | { ok: false; error: string } => {
+      const M = mainAppStr()
+      if (isFfmpegExportBatchActive()) {
+        return { ok: false, error: M.batchExportRunningCantMutate }
+      }
+      const ids = Array.isArray(raw) ? raw.filter((id): id is string => typeof id === 'string') : []
+      if (ids.length === 0) {
+        return { ok: false, error: M.ipcInvalidRequest }
+      }
+      const paths = resolveAppPaths()
+      const candidates: string[] = []
+      for (const id of ids) {
+        const entry = findProcessingHistoryEntryById(paths.userData, id)
+        if (entry?.inputPath) {
+          candidates.push(entry.inputPath)
+        }
+      }
+      const granted = filterExistingVideoPathsForBatch(candidates)
+      const added = addFfmpegExportBatchPaths(granted)
+      pushBatchExportSnapshot()
+      return { ok: true, added }
+    }
+  )
+
+  ipcMain.handle(
+    mw.batchExportRetryFailedAndStart,
+    async (event, raw: unknown): Promise<FfmpegExportBatchStartResult> => {
+      const M = mainAppStr()
+      if (activeExportAbort !== null || isFfmpegExportBatchActive()) {
+        return { ok: false, error: M.batchExportAlreadyRunning }
+      }
+      retryFailedFfmpegExportBatchRows()
+      pushBatchExportSnapshot()
+      const snap = getFfmpegExportBatchSnapshot()
+      if (!snap.rows.some((r) => r.status === 'waiting')) {
+        return { ok: false, error: M.batchExportQueueEmpty }
+      }
+      const paths = resolveAppPaths()
+      const ffmpeg = resolveEngineExecutablePath(paths, 'ffmpeg', cachedSettings.engineExecutablePaths)
+      if (!ffmpeg) {
+        return { ok: false, error: M.batchExportFfmpegMissing }
+      }
+      const win = BrowserWindow.fromWebContents(event.sender)
+      const loc = mainDownloadsUiLocale()
+      void runFfmpegExportBatchQueue({
+        ffmpegPath: ffmpeg,
+        settings: cachedSettings,
+        lutResourcesRoot: paths.resources,
+        rawExportOverrides: raw,
+        userDataRoot: paths.userData,
+        rememberExportOutputPath,
+        rememberFfmpegExportDirectory,
+        uiLocale: loc,
+        pushRowProgress: (rowId, p) => {
+          if (win && !win.isDestroyed()) {
+            win.webContents.send(mw.exportProgress, { ...p, batchRowId: rowId })
+          }
+        }
+      }).finally(() => {
+        pushBatchExportSnapshot(win)
+      })
+      pushBatchExportSnapshot(win)
+      return { ok: true }
     }
   )
 
