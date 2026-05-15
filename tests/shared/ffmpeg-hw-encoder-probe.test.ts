@@ -7,6 +7,7 @@ import {
 } from '../../src/shared/ffmpeg-hw-encoder-probe'
 
 const SAMPLE = `Encoders:
+ V....D av1_vaapi           AV1 (VAAPI) (codec av1)
  V....D av1_nvenc            NVIDIA NVENC av1 encoder (codec av1)
  V....D h264_nvenc           NVIDIA NVENC H.264 encoder (codec h264)
  V....D hevc_amf             AMD AMF HEVC encoder (codec hevc)
@@ -19,11 +20,12 @@ describe('parseFfmpegEncodersListOutput', () => {
     const s = parseFfmpegEncodersListOutput(SAMPLE)
     expect(s.h264_nvenc).toBe(true)
     expect(s.av1_nvenc).toBe(true)
+    expect(s.av1_vaapi).toBe(true)
     expect(s.hevc_amf).toBe(true)
     expect(s.h264_qsv).toBe(true)
     expect(s.hevc_nvenc).toBe(false)
     expect(s.h264_amf).toBe(false)
-    expect(s.matchedEncoderLines).toBe(4)
+    expect(s.matchedEncoderLines).toBe(5)
   })
 
   it('пустой снимок без совпадений', () => {

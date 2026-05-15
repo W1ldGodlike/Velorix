@@ -16,7 +16,8 @@ export const FFMPEG_HW_VIDEO_ENCODER_IDS = [
   'h264_videotoolbox',
   'hevc_videotoolbox',
   'h264_vaapi',
-  'hevc_vaapi'
+  'hevc_vaapi',
+  'av1_vaapi'
 ] as const
 
 export type FfmpegHwVideoEncoderId = (typeof FFMPEG_HW_VIDEO_ENCODER_IDS)[number]

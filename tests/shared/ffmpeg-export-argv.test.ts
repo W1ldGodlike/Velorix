@@ -25,7 +25,7 @@ import {
   resolveFfmpegExportVideoTransformFilters,
   shouldApplyFfmpegExportTrim
 } from '../../src/shared/ffmpeg-export-argv'
-import { FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR } from '../../src/shared/ffmpeg-export-contract'
+import { FFMPEG_EXPORT_SVTAV1_MKV_ONLY_ERROR, FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR } from '../../src/shared/ffmpeg-export-contract'
 
 describe('shared ffmpeg export argv', () => {
   it('даёт CRF и x264 preset под системные пресеты §7.2', () => {
@@ -194,6 +194,43 @@ describe('shared ffmpeg export argv', () => {
       '-deadline',
       'best'
     ])
+    expect(argv[argv.indexOf('-crf') + 1]).toBe('40')
+  })
+
+  it('libsvtav1: только MKV; -preset и -crf по пресету', () => {
+    expect(() =>
+      buildFfmpegExportArgv({
+        inputPath: 'in.mp4',
+        outputPath: 'out.mp4',
+        applyTrim: false,
+        encodePreset: 'balance',
+        videoCodec: 'libsvtav1',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'aac',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        container: 'mp4'
+      })
+    ).toThrow(FFMPEG_EXPORT_SVTAV1_MKV_ONLY_ERROR)
+
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mkv',
+      outputPath: 'out.mkv',
+      applyTrim: false,
+      encodePreset: 'smaller',
+      videoCodec: 'libsvtav1',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mkv'
+    })
+    const j = argv.indexOf('-c:v')
+    expect(argv.slice(j, j + 4)).toEqual(['-c:v', 'libsvtav1', '-preset', '12'])
     expect(argv[argv.indexOf('-crf') + 1]).toBe('40')
   })
 

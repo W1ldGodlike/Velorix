@@ -16,12 +16,15 @@ describe('ffmpeg-export-video-codec', () => {
     expect(parseFfmpegExportVideoCodec('hw_auto_hevc')).toBe('hw_auto_hevc')
     expect(parseFfmpegExportVideoCodec('libx265')).toBe('libx265')
     expect(parseFfmpegExportVideoCodec('libvpx-vp9')).toBe('libvpx-vp9')
+    expect(parseFfmpegExportVideoCodec('libsvtav1')).toBe('libsvtav1')
     expect(parseFfmpegExportVideoCodec('h264_nvenc')).toBe('h264_nvenc')
     expect(parseFfmpegExportVideoCodec('evil')).toBe('libx264')
   })
 
   it('pickFfmpegHwAutoEncoder — AV1 после H.264', () => {
     const snap = createEmptyFfmpegHwEncodersSnapshot()
+    snap.av1_vaapi = true
+    expect(pickFfmpegHwAutoEncoder(snap)).toBe('av1_vaapi')
     snap.av1_qsv = true
     expect(pickFfmpegHwAutoEncoder(snap)).toBe('av1_qsv')
     snap.h264_vaapi = true
@@ -40,6 +43,12 @@ describe('ffmpeg-export-video-codec', () => {
     expect(pickFfmpegHwAutoEncoder(snap)).toBe('h264_amf')
     snap.h264_nvenc = true
     expect(pickFfmpegHwAutoEncoder(snap)).toBe('h264_nvenc')
+  })
+
+  it('pickFfmpegHwAutoHevcEncoder — av1_vaapi в цепочке AV1', () => {
+    const snap = createEmptyFfmpegHwEncodersSnapshot()
+    snap.av1_vaapi = true
+    expect(pickFfmpegHwAutoHevcEncoder(snap)).toBe('av1_vaapi')
   })
 
   it('pickFfmpegHwAutoHevcEncoder — HEVC затем AV1, иначе libx265', () => {

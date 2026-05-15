@@ -26,7 +26,8 @@ const HW_AUTO_H264_PRIORITY: readonly FfmpegHwVideoEncoderId[] = [
 const HW_AUTO_AV1_PRIORITY: readonly FfmpegHwVideoEncoderId[] = [
   'av1_nvenc',
   'av1_amf',
-  'av1_qsv'
+  'av1_qsv',
+  'av1_vaapi'
 ]
 
 /** §16 — `hw_auto_hevc`: HEVC HW, затем AV1 HW, иначе libx265. */
@@ -110,6 +111,9 @@ export function parseFfmpegExportVideoCodec(raw: unknown): FfmpegExportVideoCode
   }
   if (raw === 'libvpx-vp9') {
     return 'libvpx-vp9'
+  }
+  if (raw === 'libsvtav1') {
+    return 'libsvtav1'
   }
   if (typeof raw === 'string' && HW_SET.has(raw)) {
     return raw as FfmpegHwVideoEncoderId
