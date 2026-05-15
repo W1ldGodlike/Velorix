@@ -116,6 +116,7 @@ const UI_TEXT = {
     knowledgeMdExternalLinkTooltip: 'Открыть ссылку в браузере (новая вкладка).',
     terminalWorkspaceAriaLabel: 'Панель терминала',
     terminalTitle: 'Терминал',
+    terminalIntroBandAria: 'Вводная зона вкладки терминала',
     terminalIntroLead:
       'Разрешены только префиксы ffmpeg, ffprobe и yt-dlp. Команда разбирается как argv, запускается в основном процессе (main) без оболочки (shell); каталог выбранного движка добавляется в PATH. В argv можно токен ',
     terminalIntroTailTemplate:
@@ -236,6 +237,7 @@ const UI_TEXT = {
     downloadsPageTitle: 'Загрузки',
     downloadsPageHint:
       'Эта вкладка — основной рабочий стол yt-dlp (очередь по центру, журнал и история под таблицей, настройки справа как в v0; при ширине окна примерно до 1100px панель настроек переносится под журнал с прокруткой, поля не теряются — сверху есть кнопка «К настройкам», чтобы сразу прокрутить к панели). Отдельное окно — дубликат с той же связью с основным процессом (main, IPC) и длинным справочником токенов в одном списке.',
+    downloadsPageIntroBandAria: 'Заголовок и действия вкладки загрузок',
     downloadsPopOut: 'Отдельное окно',
     downloadsScrollToSettings: 'К настройкам',
     downloadsBandToolbarAria: 'Быстрые действия вкладки загрузок',
@@ -253,6 +255,7 @@ const UI_TEXT = {
     downloadsFinishedRemovedTemplate: 'Убрано завершённых строк: {n}',
     downloadsNoFinishedRowsHint: 'Завершённых строк нет.',
     downloadsOverviewAria: 'Сводка очереди загрузок',
+    downloadsLowerStackAria: 'Журнал и история под очередью',
     downloadsStatTotal: 'Всего',
     downloadsStatPending: 'Ожидает',
     downloadsFilterBarAria: 'Фильтр очереди по статусу',
@@ -291,6 +294,7 @@ const UI_TEXT = {
     downloadsQueueAriaPauseYtdlp: 'Пауза yt-dlp',
     downloadsQueueAriaRemoveRow: 'Удалить из очереди',
     quickYtdlpAria: 'Быстрая загрузка yt-dlp',
+    quickYtdlpUrlFieldGroupAria: 'Поле URL, поведение вставки и документация',
     quickYtdlpSummary: 'Быстрая загрузка yt-dlp',
     quickYtdlpPlaceholder: 'URL или несколько URL по строкам (для кнопки ниже берётся первый)',
     quickYtdlpHint:
@@ -1341,6 +1345,7 @@ const UI_TEXT = {
     knowledgeMdExternalLinkTooltip: 'Open link in the browser (new tab).',
     terminalWorkspaceAriaLabel: 'Terminal CLI',
     terminalTitle: 'Terminal',
+    terminalIntroBandAria: 'Terminal tab intro and actions',
     terminalIntroLead:
       'Only the ffmpeg, ffprobe, and yt-dlp prefixes are allowed. The command is parsed as argv, runs in the main process without a shell, and PATH is extended with the selected engine folder. In argv you can use the placeholder ',
     terminalIntroTailTemplate:
@@ -1460,6 +1465,7 @@ const UI_TEXT = {
     downloadsPageTitle: 'Downloads',
     downloadsPageHint:
       'This tab is the main yt-dlp desk (queue in the center, log and history under the table, settings on the right like v0; below ~1100px width the settings rail moves under the log with scrolling — fields stay reachable via “Scroll to settings” at the top). Pop-out is a second window with the same IPC and the full token reference list.',
+    downloadsPageIntroBandAria: 'Downloads tab title and quick actions',
     downloadsPopOut: 'Pop-out',
     downloadsScrollToSettings: 'Scroll to settings',
     downloadsBandToolbarAria: 'Quick actions on the downloads tab',
@@ -1477,6 +1483,7 @@ const UI_TEXT = {
     downloadsFinishedRemovedTemplate: 'Removed finished rows: {n}',
     downloadsNoFinishedRowsHint: 'No finished rows to remove.',
     downloadsOverviewAria: 'Download queue summary',
+    downloadsLowerStackAria: 'Log and history under the queue',
     downloadsStatTotal: 'Total',
     downloadsStatPending: 'Pending',
     downloadsFilterBarAria: 'Queue status filter',
@@ -1515,6 +1522,7 @@ const UI_TEXT = {
     downloadsQueueAriaPauseYtdlp: 'Pause yt-dlp',
     downloadsQueueAriaRemoveRow: 'Remove from queue',
     quickYtdlpAria: 'Quick yt-dlp download',
+    quickYtdlpUrlFieldGroupAria: 'URL field, paste behavior, and documentation links',
     quickYtdlpSummary: 'Quick yt-dlp download',
     quickYtdlpPlaceholder: 'One URL per line (the button below uses the first recognized URL)',
     quickYtdlpHint:

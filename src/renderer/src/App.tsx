@@ -3145,7 +3145,11 @@ function App(): JSX.Element {
             <h3 id="quick-ytdlp-region-title" className="app-visually-hidden">
               {uiText('quickYtdlpAria')}
             </h3>
-            <div className="app-url-field">
+            <div
+              className="app-url-field"
+              role="group"
+              aria-label={uiText('quickYtdlpUrlFieldGroupAria')}
+            >
               <textarea
                 className="app-downloads-url-input app-url-input"
                 placeholder={uiText('quickYtdlpPlaceholder')}
@@ -5234,7 +5238,11 @@ function App(): JSX.Element {
           className="app-main app-terminal-workspace"
         >
           <section className="app-terminal-panel">
-            <div className="app-downloads-band">
+            <div
+              className="app-downloads-band"
+              role="region"
+              aria-label={uiText('terminalIntroBandAria')}
+            >
               <div className="app-downloads-band-copy">
                 <h2 className="app-downloads-title">{uiText('terminalTitle')}</h2>
                 <p className="app-downloads-hint">
@@ -5559,8 +5567,12 @@ function App(): JSX.Element {
           aria-labelledby="workspace-tab-downloads"
           className="app-main app-downloads-workspace"
         >
-          <section className="app-downloads-main">
-            <div className="app-downloads-band">
+          <section className="app-downloads-main" aria-label={uiText('downloadsMainAria')}>
+            <div
+              className="app-downloads-band"
+              role="region"
+              aria-label={uiText('downloadsPageIntroBandAria')}
+            >
               <div className="app-downloads-band-copy">
                 <h2 className="app-downloads-title">{uiText('downloadsPageTitle')}</h2>
                 <p className="app-downloads-hint">{uiText('downloadsPageHint')}</p>
@@ -6067,7 +6079,11 @@ function App(): JSX.Element {
                   </tbody>
                 </table>
               </div>
-              <div className="app-downloads-lower-stack">
+              <div
+                className="app-downloads-lower-stack"
+                role="region"
+                aria-label={uiText('downloadsLowerStackAria')}
+              >
                 <DownloadsHistoryPanel
                   open={downloadsEmbeddedHistoryOpen}
                   busy={downloadsHistoryBusy}

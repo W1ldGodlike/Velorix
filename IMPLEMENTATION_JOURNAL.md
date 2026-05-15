@@ -778,4 +778,9 @@
 - [J-755] 2026-05-16 06:50:00 [Assistant]: Терминал — заголовок записи журнала (`app-terminal-entry-head`): `terminalEntryHeadGroupAria`.
 - [J-756] 2026-05-16 06:52:00 [Assistant]: Загрузки — строка URL (`app-downloads-url-row`): `downloadsUrlRowGroupAria`.
 - [J-757] 2026-05-16 06:54:00 [Assistant]: `VideoTimeline` — `app-timeline-stack`: `role="region"` + `videoTimelineStackAria`.
+- [J-758] 2026-05-16 06:58:00 [Assistant]: Быстрая yt-dlp в редакторе — `app-url-field`: `role="group"` + `quickYtdlpUrlFieldGroupAria`.
+- [J-759] 2026-05-16 07:00:00 [Assistant]: Вкладка «Терминал» — верхняя полоса: `role="region"` + `terminalIntroBandAria`.
+- [J-760] 2026-05-16 07:02:00 [Assistant]: Вкладка «Загрузки» — верхняя полоса: `downloadsPageIntroBandAria`.
+- [J-761] 2026-05-16 07:04:00 [Assistant]: Загрузки — `app-downloads-lower-stack`: `downloadsLowerStackAria`.
+- [J-762] 2026-05-16 07:06:00 [Assistant]: Загрузки — `<section class="app-downloads-main">`: `aria-label` + существующий ключ `downloadsMainAria`.
 
