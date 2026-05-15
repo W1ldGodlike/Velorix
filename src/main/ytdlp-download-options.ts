@@ -152,6 +152,10 @@ export interface YtdlpRunOptionsSnapshot {
   openInHandlerOnComplete: boolean
   /** §6.4 — после успешного авто-открытия запустить ffmpeg-экспорт (runner + main). */
   autoExportAfterOpenInHandler: boolean
+  /** §7.4 — после успеха добавить файл в пакетный экспорт. */
+  enqueueBatchOnDownloadComplete: boolean
+  /** §7.4 — запустить пакет после добавления. */
+  autoStartBatchAfterEnqueue: boolean
 }
 
 export function parseYtdlpFormatPreset(raw: unknown): YtdlpFormatPresetId {
@@ -503,6 +507,8 @@ export function buildYtdlpRunOptionsSnapshot(
   const queueRetryProfile = parseYtdlpQueueRetryProfile(settings.ytdlpQueueRetryProfile)
   const openInHandlerOnComplete = settings.ytdlpOpenInHandlerOnComplete === true
   const autoExportAfterOpenInHandler = settings.ytdlpAutoExportAfterOpenInHandler === true
+  const enqueueBatchOnDownloadComplete = settings.ytdlpEnqueueBatchOnDownloadComplete === true
+  const autoStartBatchAfterEnqueue = settings.ytdlpAutoStartBatchAfterEnqueue === true
 
   return {
     filenameTemplate,
@@ -534,7 +540,9 @@ export function buildYtdlpRunOptionsSnapshot(
     fragmentRetriesLine,
     queueRetryProfile,
     openInHandlerOnComplete,
-    autoExportAfterOpenInHandler
+    autoExportAfterOpenInHandler,
+    enqueueBatchOnDownloadComplete,
+    autoStartBatchAfterEnqueue
   }
 }
 
@@ -604,6 +612,8 @@ export function payloadFromSnapshot(
     queueRetryProfile: snap.queueRetryProfile,
     queueRetryProfileChoices: buildYtdlpQueueRetryProfileChoices(uiLocale),
     openInHandlerOnComplete: snap.openInHandlerOnComplete,
-    autoExportAfterOpenInHandler: snap.autoExportAfterOpenInHandler
+    autoExportAfterOpenInHandler: snap.autoExportAfterOpenInHandler,
+    enqueueBatchOnDownloadComplete: snap.enqueueBatchOnDownloadComplete,
+    autoStartBatchAfterEnqueue: snap.autoStartBatchAfterEnqueue
   }
 }

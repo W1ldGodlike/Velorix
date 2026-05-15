@@ -1476,6 +1476,20 @@ ${emitDownloadsTopbarClusterHtml(18, L.topbarCluster)}
                   <span class="pill-switch-text">${L.pillOff}</span>
                 </button>
               </div>
+              <div class="opts-pill-field" style="margin-top:0.35rem">
+                <span class="opts-pill-label">${L.enqueueBatchPillLabel} <span class="opts-check-muted">§7.4</span></span>
+                <button type="button" class="pill-switch" id="pillEnqueueBatch" role="switch" aria-checked="false" aria-label="${L.enqueueBatchAria}" aria-describedby="dlRailMetaSectionHint">
+                  <span class="pill-switch-knob" aria-hidden="true"></span>
+                  <span class="pill-switch-text">${L.pillOff}</span>
+                </button>
+              </div>
+              <div class="opts-pill-field" style="margin-top:0.35rem">
+                <span class="opts-pill-label">${L.autoStartBatchPillLabel} <span class="opts-check-muted">§7.4</span></span>
+                <button type="button" class="pill-switch" id="pillAutoStartBatch" role="switch" aria-checked="false" aria-label="${L.autoStartBatchAria}" aria-describedby="dlRailMetaSectionHint">
+                  <span class="pill-switch-knob" aria-hidden="true"></span>
+                  <span class="pill-switch-text">${L.pillOff}</span>
+                </button>
+              </div>
             </div>
           </details>
           <details class="settings-section" id="dlRailSave"${openAttr('saving', true)}>
@@ -1611,6 +1625,8 @@ ${emitDownloadsTopbarClusterHtml(18, L.topbarCluster)}
       var queueRetrySelect = document.getElementById('queueRetrySelect');
       var pillOpenInHandler = document.getElementById('pillOpenInHandler');
       var pillAutoExportAfterOpen = document.getElementById('pillAutoExportAfterOpen');
+      var pillEnqueueBatch = document.getElementById('pillEnqueueBatch');
+      var pillAutoStartBatch = document.getElementById('pillAutoStartBatch');
       var extraArgsInput = document.getElementById('extraArgsInput');
       var previewOutDirOverride = document.getElementById('previewOutDirOverride');
       var argsPreview = document.getElementById('argsPreview');
@@ -1674,6 +1690,15 @@ ${emitDownloadsTopbarClusterHtml(18, L.topbarCluster)}
         }
       }
 
+      function syncAutoStartBatchPillLocked() {
+        if (!pillAutoStartBatch) return;
+        var enqueueOn = !!(pillEnqueueBatch && pillIsOn(pillEnqueueBatch));
+        pillAutoStartBatch.disabled = !enqueueOn;
+        if (!enqueueOn && pillIsOn(pillAutoStartBatch)) {
+          pillSet(pillAutoStartBatch, false);
+        }
+      }
+
       function collectDraftCliPatch() {
         return {
           filenameTemplate: tmplInput ? tmplInput.value : '',
@@ -1691,6 +1716,8 @@ ${emitDownloadsTopbarClusterHtml(18, L.topbarCluster)}
           queueRetryProfile: queueRetrySelect ? queueRetrySelect.value : 'off',
           openInHandlerOnComplete: pillIsOn(pillOpenInHandler),
           autoExportAfterOpenInHandler: pillIsOn(pillAutoExportAfterOpen),
+          enqueueBatchOnDownloadComplete: pillIsOn(pillEnqueueBatch),
+          autoStartBatchAfterEnqueue: pillIsOn(pillAutoStartBatch),
           extraArgsLine: extraArgsInput ? extraArgsInput.value : ''
         };
       }
@@ -1760,6 +1787,20 @@ ${emitDownloadsTopbarClusterHtml(18, L.topbarCluster)}
         pillAutoExportAfterOpen.addEventListener('click', function () {
           if (pillAutoExportAfterOpen.disabled) return;
           pillToggle(pillAutoExportAfterOpen);
+          schedulePreviewRefresh();
+        });
+      }
+      if (pillEnqueueBatch) {
+        pillEnqueueBatch.addEventListener('click', function () {
+          pillToggle(pillEnqueueBatch);
+          syncAutoStartBatchPillLocked();
+          schedulePreviewRefresh();
+        });
+      }
+      if (pillAutoStartBatch) {
+        pillAutoStartBatch.addEventListener('click', function () {
+          if (pillAutoStartBatch.disabled) return;
+          pillToggle(pillAutoStartBatch);
           schedulePreviewRefresh();
         });
       }
@@ -2127,7 +2168,14 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
           if (pillAutoExportAfterOpen && typeof p.autoExportAfterOpenInHandler === 'boolean') {
             pillSet(pillAutoExportAfterOpen, p.autoExportAfterOpenInHandler);
           }
+          if (pillEnqueueBatch && typeof p.enqueueBatchOnDownloadComplete === 'boolean') {
+            pillSet(pillEnqueueBatch, p.enqueueBatchOnDownloadComplete);
+          }
+          if (pillAutoStartBatch && typeof p.autoStartBatchAfterEnqueue === 'boolean') {
+            pillSet(pillAutoStartBatch, p.autoStartBatchAfterEnqueue);
+          }
           syncAutoExportPillLocked();
+          syncAutoStartBatchPillLocked();
           if (!fmtPreset) return;
           fmtPreset.replaceChildren();
           (p.formatPresetChoices || []).forEach(function (c) {
@@ -2749,6 +2797,8 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
             queueRetryProfile: queueRetrySelect ? queueRetrySelect.value : 'off',
             openInHandlerOnComplete: pillIsOn(pillOpenInHandler),
             autoExportAfterOpenInHandler: pillIsOn(pillAutoExportAfterOpen),
+            enqueueBatchOnDownloadComplete: pillIsOn(pillEnqueueBatch),
+            autoStartBatchAfterEnqueue: pillIsOn(pillAutoStartBatch),
             extraArgsLine: extraArgsInput ? extraArgsInput.value : ''
           }).then(function (res) {
             if (res && res.ok === false && res.error) window.alert(res.error);
@@ -3200,6 +3250,18 @@ export function registerDownloadsWindowIpcHandlers(): void {
         }
         patch.autoExportAfterOpenInHandler = o['autoExportAfterOpenInHandler']
       }
+      if (Object.prototype.hasOwnProperty.call(o, 'enqueueBatchOnDownloadComplete')) {
+        if (typeof o['enqueueBatchOnDownloadComplete'] !== 'boolean') {
+          return { ok: false, error: P.enqueueBatchFlagMustBeBoolean }
+        }
+        patch.enqueueBatchOnDownloadComplete = o['enqueueBatchOnDownloadComplete']
+      }
+      if (Object.prototype.hasOwnProperty.call(o, 'autoStartBatchAfterEnqueue')) {
+        if (typeof o['autoStartBatchAfterEnqueue'] !== 'boolean') {
+          return { ok: false, error: P.autoStartBatchFlagMustBeBoolean }
+        }
+        patch.autoStartBatchAfterEnqueue = o['autoStartBatchAfterEnqueue']
+      }
       if (
         patch.filenameTemplate === undefined &&
         patch.formatPreset === undefined &&
@@ -3216,7 +3278,9 @@ export function registerDownloadsWindowIpcHandlers(): void {
         patch.extraArgsLine === undefined &&
         patch.queueRetryProfile === undefined &&
         patch.openInHandlerOnComplete === undefined &&
-        patch.autoExportAfterOpenInHandler === undefined
+        patch.autoExportAfterOpenInHandler === undefined &&
+        patch.enqueueBatchOnDownloadComplete === undefined &&
+        patch.autoStartBatchAfterEnqueue === undefined
       ) {
         return { ok: false, error: P.nothingToSave }
       }

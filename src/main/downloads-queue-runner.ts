@@ -37,6 +37,7 @@ import {
   downloadsRunnerAbortMessage,
   fluxLogAutoOpenSkippedBadPath,
   fluxLogAutoOpenSkippedNoHandler,
+  fluxLogBatchEnqueueSkippedBadPath,
   fluxLogQueueRetriesCancelled,
   formatFluxLogAttemptExitCode,
   formatFluxLogAutoOpenFailed,
@@ -78,15 +79,22 @@ type AfterDownloadOpenedInMainHandlerFn = (absoluteFile: string, rowId: number) 
 /** §6.4 → §7.2: после успешного авто-открытия (например авто-экспорт). */
 let afterDownloadOpenedInMainHandlerHook: AfterDownloadOpenedInMainHandlerFn | null = null
 
+type AfterDownloadEnqueueBatchFn = (absoluteFile: string, rowId: number) => void
+
+/** §7.4 — после успешной загрузки добавить файл в пакетный экспорт. */
+let afterDownloadEnqueueBatchHook: AfterDownloadEnqueueBatchFn | null = null
+
 /**
  * Регистрируется при старте приложения: без hook авто-открытие §6.4 после успеха yt-dlp отключено.
  */
 export function configureDownloadsQueueRunnerHooks(hooks: {
   openDownloadedFileInHandler?: OpenDownloadedInMainHandlerFn
   afterDownloadOpenedInMainHandler?: AfterDownloadOpenedInMainHandlerFn | null
+  afterDownloadEnqueueBatch?: AfterDownloadEnqueueBatchFn | null
 }): void {
   openDownloadedFileInMainHandlerHook = hooks.openDownloadedFileInHandler ?? null
   afterDownloadOpenedInMainHandlerHook = hooks.afterDownloadOpenedInMainHandler ?? null
+  afterDownloadEnqueueBatchHook = hooks.afterDownloadEnqueueBatch ?? null
 }
 
 /** Вызывается из downloads-window: обновить UI после изменений очереди/прогресса. */
@@ -516,6 +524,23 @@ async function runYtdlpForWaitingRow(
           progress: lastProgressCell ?? '100%'
         })
         const cliOpen = getYtdlpRunOptionsSnapshot()
+        if (cliOpen.enqueueBatchOnDownloadComplete) {
+          const batchCand = lastOutputPath ?? getDownloadsQueueRowById(rowId)?.outputPath ?? null
+          const batchSafe =
+            batchCand !== null && batchCand.length > 0
+              ? resolveAllowedYtdlpDownloadOutputFile(batchCand, paths.userData)
+              : null
+          if (!batchSafe) {
+            emitDownloadsLog({
+              kind: 'line',
+              rowId,
+              stream: 'stderr',
+              text: fluxLogBatchEnqueueSkippedBadPath(locale)
+            })
+          } else {
+            afterDownloadEnqueueBatchHook?.(batchSafe, rowId)
+          }
+        }
         if (cliOpen.openInHandlerOnComplete) {
           const cand = lastOutputPath ?? getDownloadsQueueRowById(rowId)?.outputPath ?? null
           const safe =

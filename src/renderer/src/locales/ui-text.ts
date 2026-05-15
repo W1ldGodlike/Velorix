@@ -301,6 +301,18 @@ const UI_TEXT = {
     downloadsAutoExportPillLabel: 'Авто-экспорт после открытия',
     downloadsAutoExportHint:
       'После успешного открытия — ffmpeg в файл `…-export` рядом с загрузкой (параметры панели экспорта).',
+    downloadsEnqueueBatchSpan: 'В пакетный экспорт',
+    downloadsEnqueueBatchPillLabel: 'В пакет после загрузки',
+    downloadsEnqueueBatchHint:
+      'После успешной загрузки видео попадёт в очередь пакетного экспорта §7.3.',
+    downloadsTooltipEnqueueBatch:
+      'Добавить готовый файл в пакетный экспорт без ручного выбора на вкладке «Редактор».',
+    downloadsAutoStartBatchSpan: 'Запустить пакет',
+    downloadsAutoStartBatchPillLabel: 'Авто-запуск пакета',
+    downloadsAutoStartBatchHint:
+      'После добавления в пакет — старт обработки, если ffmpeg свободен (параметры панели экспорта).',
+    downloadsTooltipAutoStartBatch:
+      'Автоматически запустить пакетный экспорт после постановки файла в очередь.',
     downloadsCookiesBrowserLabel: 'Cookies браузера',
     downloadsCookiesBrowserNone: 'Не использовать',
     downloadsYtdlpBrowserPrettyChrome: 'Chrome',
@@ -1402,6 +1414,18 @@ const UI_TEXT = {
     downloadsAutoExportPillLabel: 'Auto-export after open',
     downloadsAutoExportHint:
       'After a successful open — ffmpeg writes `…-export` next to the download (uses the export panel settings).',
+    downloadsEnqueueBatchSpan: 'Batch export',
+    downloadsEnqueueBatchPillLabel: 'Enqueue after download',
+    downloadsEnqueueBatchHint:
+      'After a successful download, video files are added to the §7.3 batch export queue.',
+    downloadsTooltipEnqueueBatch:
+      'Add the finished file to batch export without picking it manually on the Editor tab.',
+    downloadsAutoStartBatchSpan: 'Start batch',
+    downloadsAutoStartBatchPillLabel: 'Auto-start batch',
+    downloadsAutoStartBatchHint:
+      'After enqueue, start batch processing when ffmpeg is idle (export panel settings).',
+    downloadsTooltipAutoStartBatch:
+      'Automatically start batch export after the file is queued.',
     downloadsCookiesBrowserLabel: 'Browser cookies',
     downloadsCookiesBrowserNone: 'Do not use',
     downloadsYtdlpBrowserPrettyChrome: 'Chrome',

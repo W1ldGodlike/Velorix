@@ -230,7 +230,8 @@ import {
 import type { YtdlpGetCliOptionsParams } from '../shared/ytdlp-download-contract'
 import type { MainWindowUiPanelState } from '../shared/settings-contract'
 import { parseExtraYtdlpArgsLine, validateYtdlpCookiesBrowserProfile } from './ytdlp-extra-args'
-import { refreshYtdlpRunOptionsSnapshot } from './ytdlp-run-options-sync'
+import { getYtdlpRunOptionsSnapshot, refreshYtdlpRunOptionsSnapshot } from './ytdlp-run-options-sync'
+import { isFfmpegExportBatchVideoPath } from '../shared/ffmpeg-export-batch-video-ext'
 import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
 import type {
@@ -246,7 +247,12 @@ import {
   fluxLogAutoExportSkippedBusy,
   fluxLogAutoExportSkippedMainWindow,
   formatFluxLogAutoExportDone,
-  formatFluxLogAutoExportFailed
+  formatFluxLogAutoExportFailed,
+  formatFluxLogBatchEnqueueAdded,
+  fluxLogBatchAutoStartFfmpegMissing,
+  fluxLogBatchAutoStartLaunched,
+  fluxLogBatchAutoStartSkippedBusy,
+  fluxLogBatchEnqueueSkippedNotVideo
 } from '../shared/downloads-flux-log-locale'
 import {
   exportProgressLaunchingFfmpeg,
@@ -397,6 +403,9 @@ const MAX_GRANTED_EXPORT_OUTPUT_PATHS = 20
 let allowMainWindowClose = false
 
 let mainWindowWebContentsId: number | null = null
+
+/** §7.4 — push `batchExportSnapshot` после enqueue из downloads-runner (до createWindow IPC). */
+let broadcastFfmpegExportBatchSnapshot: ((win?: BrowserWindow | null) => void) | null = null
 
 type ExportOutputOpenMode = 'file' | 'folder' | 'preview'
 
@@ -854,7 +863,133 @@ function mergeYtdlpDownloadCliPatchOntoSettings(
       delete merged.ytdlpAutoExportAfterOpenInHandler
     }
   }
+  if (patch.enqueueBatchOnDownloadComplete !== undefined) {
+    if (patch.enqueueBatchOnDownloadComplete) {
+      merged.ytdlpEnqueueBatchOnDownloadComplete = true
+    } else {
+      delete merged.ytdlpEnqueueBatchOnDownloadComplete
+      delete merged.ytdlpAutoStartBatchAfterEnqueue
+    }
+  }
+  if (patch.autoStartBatchAfterEnqueue !== undefined) {
+    if (patch.autoStartBatchAfterEnqueue) {
+      merged.ytdlpAutoStartBatchAfterEnqueue = true
+      merged.ytdlpEnqueueBatchOnDownloadComplete = true
+    } else {
+      delete merged.ytdlpAutoStartBatchAfterEnqueue
+    }
+  }
   return { ok: true, settings: merged }
+}
+
+function launchFfmpegExportBatchRunner(
+  rawExportOverrides?: unknown,
+  progressTargetWin?: BrowserWindow | null
+): boolean {
+  if (activeExportAbort !== null || isFfmpegExportBatchActive()) {
+    return false
+  }
+  const snap = getFfmpegExportBatchSnapshot()
+  if (!snap.rows.some((r) => r.status === 'waiting')) {
+    return false
+  }
+  const paths = resolveAppPaths()
+  const ffmpeg = resolveEngineExecutablePath(paths, 'ffmpeg', cachedSettings.engineExecutablePaths)
+  if (!ffmpeg) {
+    return false
+  }
+  const loc = mainDownloadsUiLocale()
+  void runFfmpegExportBatchQueue({
+    ffmpegPath: ffmpeg,
+    settings: cachedSettings,
+    lutResourcesRoot: paths.resources,
+    rawExportOverrides,
+    userDataRoot: paths.userData,
+    rememberExportOutputPath,
+    rememberFfmpegExportDirectory,
+    uiLocale: loc,
+    pushRowProgress: (rowId, p) => {
+      if (progressTargetWin && !progressTargetWin.isDestroyed()) {
+        progressTargetWin.webContents.send(mw.exportProgress, { ...p, batchRowId: rowId })
+        return
+      }
+      for (const w of BrowserWindow.getAllWindows()) {
+        if (!w.isDestroyed()) {
+          w.webContents.send(mw.exportProgress, { ...p, batchRowId: rowId })
+        }
+      }
+    }
+  }).finally(() => {
+    broadcastFfmpegExportBatchSnapshot?.(progressTargetWin ?? undefined)
+  })
+  broadcastFfmpegExportBatchSnapshot?.(progressTargetWin ?? undefined)
+  return true
+}
+
+function scheduleEnqueueBatchAfterDownload(absoluteFile: string, rowId: number): void {
+  void (async () => {
+    const loc = mainDownloadsUiLocale()
+    grantMediaPath(absoluteFile)
+    if (!isFfmpegExportBatchVideoPath(absoluteFile)) {
+      emitDownloadsLog({
+        kind: 'line',
+        rowId,
+        stream: 'stderr',
+        text: fluxLogBatchEnqueueSkippedNotVideo(loc)
+      })
+      return
+    }
+    const granted = filterExistingVideoPathsForBatch([absoluteFile])
+    if (granted.length === 0) {
+      return
+    }
+    const added = addFfmpegExportBatchPaths(granted)
+    if (added > 0) {
+      emitDownloadsLog({
+        kind: 'line',
+        rowId,
+        stream: 'stderr',
+        text: formatFluxLogBatchEnqueueAdded(loc, absoluteFile)
+      })
+    }
+    broadcastFfmpegExportBatchSnapshot?.()
+    const cli = getYtdlpRunOptionsSnapshot()
+    if (!cli.autoStartBatchAfterEnqueue) {
+      return
+    }
+    if (activeExportAbort !== null || isFfmpegExportBatchActive()) {
+      emitDownloadsLog({
+        kind: 'line',
+        rowId,
+        stream: 'stderr',
+        text: fluxLogBatchAutoStartSkippedBusy(loc)
+      })
+      return
+    }
+    const paths = resolveAppPaths()
+    const ffmpeg = resolveEngineExecutablePath(
+      paths,
+      'ffmpeg',
+      cachedSettings.engineExecutablePaths
+    )
+    if (!ffmpeg) {
+      emitDownloadsLog({
+        kind: 'line',
+        rowId,
+        stream: 'stderr',
+        text: fluxLogBatchAutoStartFfmpegMissing(loc)
+      })
+      return
+    }
+    if (launchFfmpegExportBatchRunner(undefined)) {
+      emitDownloadsLog({
+        kind: 'line',
+        rowId,
+        stream: 'stderr',
+        text: fluxLogBatchAutoStartLaunched(loc)
+      })
+    }
+  })()
 }
 
 function parseYtdlpGetCliOptionsParams(raw: unknown): YtdlpGetCliOptionsParams | undefined {
@@ -2420,7 +2555,8 @@ app.whenReady().then(() => {
   }
   configureDownloadsQueueRunnerHooks({
     openDownloadedFileInHandler: (absoluteFile) => openDownloadedFileInMainHandler(absoluteFile),
-    afterDownloadOpenedInMainHandler: scheduleAutoExportAfterSuccessfulYtdlpOpen
+    afterDownloadOpenedInMainHandler: scheduleAutoExportAfterSuccessfulYtdlpOpen,
+    afterDownloadEnqueueBatch: scheduleEnqueueBatchAfterDownload
   })
   configureInspectorWindowHooks({
     getSavedInspectorBounds: () => cachedSettings.windowBounds?.inspector,
@@ -3256,6 +3392,7 @@ app.whenReady().then(() => {
       w.webContents.send(mw.batchExportSnapshot, snap)
     }
   }
+  broadcastFfmpegExportBatchSnapshot = pushBatchExportSnapshot
 
   setFfmpegExportBatchRunnerNotifier(() => {
     pushBatchExportSnapshot()
@@ -3399,25 +3536,9 @@ app.whenReady().then(() => {
         return { ok: false, error: M.batchExportFfmpegMissing }
       }
       const win = BrowserWindow.fromWebContents(event.sender)
-      const loc = mainDownloadsUiLocale()
-      void runFfmpegExportBatchQueue({
-        ffmpegPath: ffmpeg,
-        settings: cachedSettings,
-        lutResourcesRoot: paths.resources,
-        rawExportOverrides: raw,
-        userDataRoot: paths.userData,
-        rememberExportOutputPath,
-        rememberFfmpegExportDirectory,
-        uiLocale: loc,
-        pushRowProgress: (rowId, p) => {
-          if (win && !win.isDestroyed()) {
-            win.webContents.send(mw.exportProgress, { ...p, batchRowId: rowId })
-          }
-        }
-      }).finally(() => {
-        pushBatchExportSnapshot(win)
-      })
-      pushBatchExportSnapshot(win)
+      if (!launchFfmpegExportBatchRunner(raw, win)) {
+        return { ok: false, error: M.batchExportAlreadyRunning }
+      }
       return { ok: true }
     }
   )

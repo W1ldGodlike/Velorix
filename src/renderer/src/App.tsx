@@ -5515,6 +5515,45 @@ function App(): JSX.Element {
                         {uiText('downloadsAutoExportHint')}
                       </span>
                     </div>
+                    <div className="app-field app-field-switch">
+                      <span>{uiText('downloadsEnqueueBatchSpan')}</span>
+                      <PillSwitch
+                        label={uiText('downloadsEnqueueBatchPillLabel')}
+                        tooltip={uiText('downloadsTooltipEnqueueBatch')}
+                        checked={downloadsOptions.enqueueBatchOnDownloadComplete}
+                        describedBy="downloadsEnqueueBatchHint"
+                        disabled={downloadsOptionsBusy}
+                        onToggle={() => {
+                          void applyDownloadsOptionsPatch({
+                            enqueueBatchOnDownloadComplete:
+                              !downloadsOptions.enqueueBatchOnDownloadComplete
+                          })
+                        }}
+                      />
+                      <span id="downloadsEnqueueBatchHint" className="app-field-help">
+                        {uiText('downloadsEnqueueBatchHint')}
+                      </span>
+                    </div>
+                    <div className="app-field app-field-switch">
+                      <span>{uiText('downloadsAutoStartBatchSpan')}</span>
+                      <PillSwitch
+                        label={uiText('downloadsAutoStartBatchPillLabel')}
+                        tooltip={uiText('downloadsTooltipAutoStartBatch')}
+                        checked={downloadsOptions.autoStartBatchAfterEnqueue}
+                        describedBy="downloadsAutoStartBatchHint"
+                        disabled={
+                          downloadsOptionsBusy || !downloadsOptions.enqueueBatchOnDownloadComplete
+                        }
+                        onToggle={() => {
+                          void applyDownloadsOptionsPatch({
+                            autoStartBatchAfterEnqueue: !downloadsOptions.autoStartBatchAfterEnqueue
+                          })
+                        }}
+                      />
+                      <span id="downloadsAutoStartBatchHint" className="app-field-help">
+                        {uiText('downloadsAutoStartBatchHint')}
+                      </span>
+                    </div>
                     <div className="app-downloads-select-grid">
                       <label className="app-field" title={uiText('downloadsTooltipCookiesBrowser')}>
                         <span>{uiText('downloadsCookiesBrowserLabel')}</span>

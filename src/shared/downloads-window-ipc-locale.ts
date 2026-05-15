@@ -23,6 +23,8 @@ export type DownloadsWindowIpcStrings = {
   extraArgsMustBeString: string
   openInHandlerFlagMustBeBoolean: string
   autoExportFlagMustBeBoolean: string
+  enqueueBatchFlagMustBeBoolean: string
+  autoStartBatchFlagMustBeBoolean: string
   nothingToSave: string
   pickDirectoryNotConnected: string
   noWindow: string
@@ -86,6 +88,10 @@ const RU: DownloadsWindowIpcStrings = {
     'Флаг авто-открытия в обработчике должен быть логическим значением (boolean).',
   autoExportFlagMustBeBoolean:
     'Флаг авто-экспорта после открытия должен быть логическим значением (boolean).',
+  enqueueBatchFlagMustBeBoolean:
+    'Флаг постановки в пакетный экспорт должен быть логическим значением (boolean).',
+  autoStartBatchFlagMustBeBoolean:
+    'Флаг авто-запуска пакета должен быть логическим значением (boolean).',
   nothingToSave: 'Нечего сохранять',
   pickDirectoryNotConnected: 'Выбор каталога не подключён',
   noWindow: 'Нет окна',
@@ -144,6 +150,8 @@ const EN: DownloadsWindowIpcStrings = {
   extraArgsMustBeString: 'Extra arguments must be a string',
   openInHandlerFlagMustBeBoolean: 'Open-in-handler flag must be a boolean',
   autoExportFlagMustBeBoolean: 'Auto-export-after-open flag must be a boolean',
+  enqueueBatchFlagMustBeBoolean: 'Enqueue-to-batch flag must be a boolean',
+  autoStartBatchFlagMustBeBoolean: 'Auto-start-batch flag must be a boolean',
   nothingToSave: 'Nothing to save',
   pickDirectoryNotConnected: 'Directory picker is not connected',
   noWindow: 'No window',

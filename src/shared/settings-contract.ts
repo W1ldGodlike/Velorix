@@ -130,6 +130,10 @@ export interface AppSettings {
   ytdlpOpenInHandlerOnComplete?: boolean
   /** §6.4: после успешного авто-открытия в обработчике запустить ffmpeg-экспорт в соседний файл (параметры §7.2). */
   ytdlpAutoExportAfterOpenInHandler?: boolean
+  /** §7.4: после успешной загрузки добавить видео в очередь пакетного экспорта. */
+  ytdlpEnqueueBatchOnDownloadComplete?: boolean
+  /** §7.4: после добавления в пакет автоматически запустить batch. */
+  ytdlpAutoStartBatchAfterEnqueue?: boolean
   /** §7.2: системный пресет экспорта (CRF/preset для libx264/libx265). */
   ffmpegExportEncodePreset?: string
   /** §7.2: видеокодек экспорта (`libx264` по умолчанию — поле можно не писать). */

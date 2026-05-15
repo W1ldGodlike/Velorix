@@ -129,6 +129,10 @@ export type DownloadsWindowUiStrings = {
   openInHandlerAria: string
   autoExportPillLabel: string
   autoExportAria: string
+  enqueueBatchPillLabel: string
+  enqueueBatchAria: string
+  autoStartBatchPillLabel: string
+  autoStartBatchAria: string
   savingSummary: string
   savingSectionHint: string
   outDirLabel: string
@@ -328,6 +332,10 @@ const RU: DownloadsWindowUiStrings = {
   openInHandlerAria: 'Открывать результат в обработчике после успеха',
   autoExportPillLabel: 'Затем авто-экспорт',
   autoExportAria: 'После авто-открытия запустить экспорт в файл рядом с загрузкой',
+  enqueueBatchPillLabel: 'В пакет после загрузки',
+  enqueueBatchAria: 'После успеха добавить видео в пакетный экспорт',
+  autoStartBatchPillLabel: 'Авто-запуск пакета',
+  autoStartBatchAria: 'Запустить пакетный экспорт после добавления в очередь',
   savingSummary: 'Сохранение',
   savingSectionHint:
     'Целевой каталог yt-dlp, шаблон имени (-o); кнопка «Сохранить параметры» записывает настройки в userData/settings.json §6.',
@@ -534,6 +542,10 @@ const EN: DownloadsWindowUiStrings = {
   openInHandlerAria: 'Open downloaded file in handler after success',
   autoExportPillLabel: 'Then auto-export',
   autoExportAria: 'After auto-open, run export to a file next to the download',
+  enqueueBatchPillLabel: 'Enqueue to batch',
+  enqueueBatchAria: 'After success, add video to batch export queue',
+  autoStartBatchPillLabel: 'Auto-start batch',
+  autoStartBatchAria: 'Start batch export after enqueue',
   savingSummary: 'Saving',
   savingSectionHint:
     'yt-dlp output directory and filename template (-o). “Save settings” writes to userData/settings.json.',

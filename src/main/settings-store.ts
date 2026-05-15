@@ -528,6 +528,12 @@ export function loadSettings(filePath: string): AppSettings {
     if (parsed.ytdlpAutoExportAfterOpenInHandler === true) {
       base.ytdlpAutoExportAfterOpenInHandler = true
     }
+    if (parsed.ytdlpEnqueueBatchOnDownloadComplete === true) {
+      base.ytdlpEnqueueBatchOnDownloadComplete = true
+    }
+    if (parsed.ytdlpAutoStartBatchAfterEnqueue === true) {
+      base.ytdlpAutoStartBatchAfterEnqueue = true
+    }
     if (ytdlpSubtitlePreset !== undefined) {
       base.ytdlpSubtitlePreset = ytdlpSubtitlePreset
     }

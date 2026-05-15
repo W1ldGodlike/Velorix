@@ -63,6 +63,10 @@ export interface YtdlpDownloadOptionsPayload {
   openInHandlerOnComplete: boolean
   /** §6.4 — после успешного авто-открытия запустить экспорт §7.2 в `…-export` рядом с файлом. */
   autoExportAfterOpenInHandler: boolean
+  /** §7.4 — после успеха yt-dlp добавить файл в пакетный экспорт §7.3. */
+  enqueueBatchOnDownloadComplete: boolean
+  /** §7.4 — автоматически запустить пакет после добавления (если ffmpeg свободен). */
+  autoStartBatchAfterEnqueue: boolean
 }
 
 /**
@@ -98,4 +102,8 @@ export interface YtdlpDownloadOptionsPatch {
   openInHandlerOnComplete?: boolean
   /** §6.4 — авто-экспорт после успешного авто-открытия (только вместе с `openInHandlerOnComplete`). */
   autoExportAfterOpenInHandler?: boolean
+  /** §7.4 — добавить скачанное видео в пакетный экспорт. */
+  enqueueBatchOnDownloadComplete?: boolean
+  /** §7.4 — запустить пакет после добавления. */
+  autoStartBatchAfterEnqueue?: boolean
 }

@@ -97,6 +97,45 @@ export function formatFluxLogAutoExportFailed(
     : `${BR} Авто-экспорт не удался: ${error}`
 }
 
+export function formatFluxLogBatchEnqueueAdded(
+  locale: DownloadsWindowUiLocale,
+  path: string
+): string {
+  return locale === 'en'
+    ? `${BR} Added to batch export queue: ${path}`
+    : `${BR} Добавлено в пакетный экспорт: ${path}`
+}
+
+export function fluxLogBatchEnqueueSkippedNotVideo(locale: DownloadsWindowUiLocale): string {
+  return locale === 'en'
+    ? `${BR} Batch enqueue skipped: not a supported video file.`
+    : `${BR} Пакетный экспорт: файл не подходит (не видео).`
+}
+
+export function fluxLogBatchEnqueueSkippedBadPath(locale: DownloadsWindowUiLocale): string {
+  return locale === 'en'
+    ? `${BR} Batch enqueue skipped: output path not allowed.`
+    : `${BR} Пакетный экспорт: путь к файлу не разрешён.`
+}
+
+export function fluxLogBatchAutoStartSkippedBusy(locale: DownloadsWindowUiLocale): string {
+  return locale === 'en'
+    ? `${BR} Batch auto-start skipped: export already running.`
+    : `${BR} Авто-запуск пакета пропущен: уже идёт экспорт.`
+}
+
+export function fluxLogBatchAutoStartFfmpegMissing(locale: DownloadsWindowUiLocale): string {
+  return locale === 'en'
+    ? `${BR} Batch auto-start skipped: ffmpeg not found.`
+    : `${BR} Авто-запуск пакета пропущен: ffmpeg не найден.`
+}
+
+export function fluxLogBatchAutoStartLaunched(locale: DownloadsWindowUiLocale): string {
+  return locale === 'en'
+    ? `${BR} Batch export started automatically.`
+    : `${BR} Пакетный экспорт запущен автоматически.`
+}
+
 export function autoExportProgressMessage(locale: DownloadsWindowUiLocale): string {
   return locale === 'en' ? 'Auto-export after download…' : 'Авто-экспорт после загрузки…'
 }
