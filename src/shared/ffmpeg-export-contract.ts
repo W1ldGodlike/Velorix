@@ -84,6 +84,8 @@ export type FfmpegExportVideoHueId = 'off' | 'warmShift' | 'coolShift' | 'satBoo
 export type FfmpegExportVideoLut3dId = 'off' | 'film-warm' | 'film-cool' | 'punch'
 export type FfmpegExportAudioModeId =
   | 'aac'
+  | 'libmp3lame'
+  | 'ac3'
   | 'copy'
   | 'pcm_s16le'
   | 'libvorbis'

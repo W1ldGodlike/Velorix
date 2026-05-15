@@ -82,6 +82,8 @@ describe('ffmpeg export pure helpers', () => {
     expect(parseFfmpegExportAudioBitrate('16k')).toBeNull()
     expect(parseFfmpegExportAudioBitrate('1000k')).toBeNull()
     expect(parseFfmpegExportAudioMode('none')).toBe('none')
+    expect(parseFfmpegExportAudioMode('libmp3lame')).toBe('libmp3lame')
+    expect(parseFfmpegExportAudioMode('ac3')).toBe('ac3')
     expect(parseFfmpegExportAudioMode('copy')).toBe('copy')
     expect(parseFfmpegExportAudioMode('pcm_s16le')).toBe('pcm_s16le')
     expect(parseFfmpegExportAudioMode('libvorbis')).toBe('libvorbis')

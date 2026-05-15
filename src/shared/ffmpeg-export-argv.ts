@@ -801,6 +801,10 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
       args.push('-c:a', 'libopus', '-b:a', params.audioBitrate)
     } else if (audioMode === 'flac') {
       args.push('-c:a', 'flac')
+    } else if (audioMode === 'libmp3lame') {
+      args.push('-c:a', 'libmp3lame', '-b:a', params.audioBitrate)
+    } else if (audioMode === 'ac3') {
+      args.push('-c:a', 'ac3', '-b:a', params.audioBitrate)
     } else {
       args.push('-c:a', 'aac', '-b:a', params.audioBitrate)
     }

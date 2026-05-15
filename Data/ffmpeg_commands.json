@@ -29,7 +29,7 @@
   },
   {
     "token": "-c:a",
-    "summary": "Аудиокодек: aac, libopus, libvorbis, copy.",
+    "summary": "Аудиокодек: aac, libmp3lame, ac3, libopus, libvorbis, copy.",
     "examples": ["ffmpeg -i in.mp4 -c:a aac -b:a 192k out.mp4"],
     "docUrl": "https://ffmpeg.org/ffmpeg.html#Stream-selection",
     "tool": "ffmpeg"
@@ -39,6 +39,20 @@
     "summary": "AAC из коробки ffmpeg; подходит для MP4.",
     "examples": ["ffmpeg -i in.wav -c:a aac out.m4a"],
     "docUrl": "https://trac.ffmpeg.org/wiki/Encode/AAC",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "libmp3lame",
+    "summary": "MP3 через LAME; широкая совместимость плееров.",
+    "examples": ["ffmpeg -i in.wav -c:a libmp3lame -b:a 192k out.mp3"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/Encode/MP3",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "ac3",
+    "summary": "Dolby Digital (AC-3) для DVD/Blu-ray и MP4/MKV.",
+    "examples": ["ffmpeg -i in.wav -c:a ac3 -b:a 256k out.ac3"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/Encode/AC-3",
     "tool": "ffmpeg"
   },
   {

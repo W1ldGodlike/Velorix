@@ -30,7 +30,13 @@ export function exportAudioModeMkvOnlyErrorMessage(mode: FfmpegExportAudioModeId
 
 /** Режимы, для которых в argv используется `-b:a` из `audioBitrate`. */
 export function ffmpegExportAudioModeUsesBitrate(mode: FfmpegExportAudioModeId): boolean {
-  return mode === 'aac' || mode === 'libopus' || mode === 'libvorbis'
+  return (
+    mode === 'aac' ||
+    mode === 'libmp3lame' ||
+    mode === 'ac3' ||
+    mode === 'libopus' ||
+    mode === 'libvorbis'
+  )
 }
 
 /** Громкость/нормализация через `-filter:a` (нельзя с `copy` и без дорожки). */

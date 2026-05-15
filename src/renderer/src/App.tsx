@@ -861,6 +861,8 @@ function App(): JSX.Element {
       ] as Array<{ id: FfmpegExportAudioNormalizeId; label: string }>,
       audioModes: [
         { id: 'aac', label: uiText('editorExportAudioModeAac') },
+        { id: 'libmp3lame', label: uiText('editorExportAudioModeLibmp3lame') },
+        { id: 'ac3', label: uiText('editorExportAudioModeAc3') },
         { id: 'copy', label: uiText('editorExportAudioModeCopy') },
         { id: 'pcm_s16le', label: uiText('editorExportAudioModePcmS16le') },
         { id: 'libvorbis', label: uiText('editorExportAudioModeLibvorbis') },
@@ -1454,6 +1456,10 @@ function App(): JSX.Element {
     let nextAudioMode: FfmpegExportAudioModeId = 'aac'
     if (loaded.ffmpegExportAudioMode === 'none') {
       nextAudioMode = 'none'
+    } else if (loaded.ffmpegExportAudioMode === 'libmp3lame') {
+      nextAudioMode = 'libmp3lame'
+    } else if (loaded.ffmpegExportAudioMode === 'ac3') {
+      nextAudioMode = 'ac3'
     } else if (loaded.ffmpegExportAudioMode === 'copy') {
       nextAudioMode = 'copy'
     } else if (loaded.ffmpegExportAudioMode === 'pcm_s16le') {

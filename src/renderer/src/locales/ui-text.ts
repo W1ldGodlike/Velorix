@@ -619,6 +619,8 @@ const UI_TEXT = {
       'Звуковая дорожка (AAC, Opus, FLAC, PCM или без звука), громкость, отдельный снимок кадра и поведение субтитров в готовом файле.',
     editorFieldAudioMode: 'Звуковая дорожка',
     editorExportAudioModeAac: 'AAC',
+    editorExportAudioModeLibmp3lame: 'MP3 (libmp3lame)',
+    editorExportAudioModeAc3: 'AC-3 (Dolby Digital)',
     editorExportAudioModeCopy: 'Копировать дорожку (без перекодирования)',
     editorExportAudioModePcmS16le: 'PCM 16 бит (без сжатия)',
     editorExportAudioModeLibvorbis: 'Vorbis (libvorbis, только MKV)',
@@ -627,7 +629,7 @@ const UI_TEXT = {
     editorExportAudioModeNone: 'Нет дорожки',
     editorAriaAudioModeExport: 'Режим аудио при экспорте',
     editorTooltipAudioMode:
-      'AAC — обычный сжатый звук. «Копировать» — исходная дорожка без перекодирования (громкость/нормализация недоступны). PCM и FLAC — без потерь. Opus/Vorbis — эффективное сжатие, только MKV. «Нет дорожки» — только видео.',
+      'AAC — обычный сжатый звук. MP3 и AC-3 — альтернативные сжатые кодеки. «Копировать» — исходная дорожка без перекодирования (громкость/нормализация недоступны). PCM и FLAC — без потерь. Opus/Vorbis — эффективное сжатие, только MKV. «Нет дорожки» — только видео.',
     editorExportAudioModeSelectHint:
       'AAC для совместимости; «Копировать» — без перекодирования; Opus/Vorbis/FLAC — только MKV; PCM — несжатый звук; или отключите дорожку.',
     editorNoAudioSpan: 'Без аудио',
@@ -1665,6 +1667,8 @@ const UI_TEXT = {
       'Audio track (AAC, Opus, FLAC, uncompressed PCM, or no sound), loudness, separate frame snapshots, and subtitle behavior in the finished file.',
     editorFieldAudioMode: 'Audio track',
     editorExportAudioModeAac: 'AAC',
+    editorExportAudioModeLibmp3lame: 'MP3 (libmp3lame)',
+    editorExportAudioModeAc3: 'AC-3 (Dolby Digital)',
     editorExportAudioModeCopy: 'Copy track (no re-encode)',
     editorExportAudioModePcmS16le: 'PCM 16-bit (uncompressed)',
     editorExportAudioModeLibvorbis: 'Vorbis (libvorbis, MKV only)',
@@ -1673,7 +1677,7 @@ const UI_TEXT = {
     editorExportAudioModeNone: 'No audio track',
     editorAriaAudioModeExport: 'Export audio mode',
     editorTooltipAudioMode:
-      'AAC is the usual compressed choice. «Copy» keeps the source track without re-encoding (gain/normalize unavailable). PCM and FLAC are lossless. Opus/Vorbis are efficient compression in MKV only. «No track» exports video only.',
+      'AAC for compatibility; MP3/AC-3 are alternative compressed codecs. «Copy» skips re-encode (gain/normalize unavailable). PCM and FLAC are lossless. Opus/Vorbis are efficient compression in MKV only. «No track» exports video only.',
     editorExportAudioModeSelectHint:
       'AAC for compatibility; «Copy» skips re-encode; Opus/Vorbis/FLAC require MKV; PCM is uncompressed; or disable the track.',
     editorNoAudioSpan: 'No audio',

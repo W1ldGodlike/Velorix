@@ -180,6 +180,12 @@ export function parseFfmpegExportAudioMode(raw: unknown): FfmpegExportAudioModeI
   if (raw === 'none') {
     return 'none'
   }
+  if (raw === 'libmp3lame') {
+    return 'libmp3lame'
+  }
+  if (raw === 'ac3') {
+    return 'ac3'
+  }
   if (raw === 'copy') {
     return 'copy'
   }

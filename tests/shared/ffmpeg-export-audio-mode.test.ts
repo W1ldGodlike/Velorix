@@ -19,6 +19,8 @@ describe('ffmpeg-export-audio-mode', () => {
 
   it('ffmpegExportAudioModeUsesBitrate', () => {
     expect(ffmpegExportAudioModeUsesBitrate('aac')).toBe(true)
+    expect(ffmpegExportAudioModeUsesBitrate('libmp3lame')).toBe(true)
+    expect(ffmpegExportAudioModeUsesBitrate('ac3')).toBe(true)
     expect(ffmpegExportAudioModeUsesBitrate('libopus')).toBe(true)
     expect(ffmpegExportAudioModeUsesBitrate('libvorbis')).toBe(true)
     expect(ffmpegExportAudioModeUsesBitrate('flac')).toBe(false)

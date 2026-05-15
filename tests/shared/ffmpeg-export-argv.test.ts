@@ -197,6 +197,42 @@ describe('shared ffmpeg export argv', () => {
     expect(argv.slice(i, i + 4)).toEqual(['-c:a', 'libvorbis', '-b:a', '160k'])
   })
 
+  it('audioMode libmp3lame и ac3: -c:a с -b:a', () => {
+    const mp3 = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      videoCodec: 'libx264',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'libmp3lame',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mp4'
+    })
+    const mp3i = mp3.indexOf('-c:a')
+    expect(mp3.slice(mp3i, mp3i + 4)).toEqual(['-c:a', 'libmp3lame', '-b:a', '192k'])
+
+    const ac3 = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mkv',
+      applyTrim: false,
+      encodePreset: 'balance',
+      videoCodec: 'libx264',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'ac3',
+      audioBitrate: '256k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mkv'
+    })
+    const ac3i = ac3.indexOf('-c:a')
+    expect(ac3.slice(ac3i, ac3i + 4)).toEqual(['-c:a', 'ac3', '-b:a', '256k'])
+  })
+
   it('возвращает scale-фильтр только для непустых пресетов', () => {
     expect(resolveFfmpegExportScaleFilter('source')).toBeNull()
     expect(resolveFfmpegExportScaleFilter('480p')).toBe('scale=-2:480')

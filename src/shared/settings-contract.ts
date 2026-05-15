@@ -141,7 +141,16 @@ export interface AppSettings {
   /** §7.2 / v0 — двухпроходное libx264 (только вместе с `ffmpegExportVideoBitrate`, не с CRF). */
   ffmpegExportTwoPass?: boolean
   /** §7.2: режим аудио экспорта: AAC, PCM s16le или без дорожки. */
-  ffmpegExportAudioMode?: 'aac' | 'copy' | 'pcm_s16le' | 'libvorbis' | 'libopus' | 'flac' | 'none'
+  ffmpegExportAudioMode?:
+    | 'aac'
+    | 'libmp3lame'
+    | 'ac3'
+    | 'copy'
+    | 'pcm_s16le'
+    | 'libvorbis'
+    | 'libopus'
+    | 'flac'
+    | 'none'
   /** §7.2: битрейт AAC одним argv-токеном (`128k`, `192k`, `320k`). */
   ffmpegExportAudioBitrate?: string
   /** §7.2: FPS вывода; отсутствует — исходная частота. */
