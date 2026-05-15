@@ -32,6 +32,7 @@ import {
   FFMPEG_EXPORT_AUDIO_GAIN_DB_MAX,
   FFMPEG_EXPORT_AUDIO_GAIN_DB_MIN
 } from './ffmpeg-export-contract'
+import { appendFfmpegExportExtraArgsToArgv } from './ffmpeg-export-extra-args'
 import { appendFfmpegHwaccelBeforeInput } from './ffmpeg-export-hw-decode'
 import type { FfmpegHwVideoEncoderId } from './ffmpeg-hw-encoder-probe'
 import {
@@ -436,6 +437,8 @@ export interface FfmpegExportArgvParams {
   economyMode?: boolean
   /** §7.2 — `-hwaccel` перед входом (уже разрешённый метод, см. `resolveFfmpegExportHwaccelForDecode`). */
   hwaccelDecode?: string | null
+  /** §7.2 — доп. токены перед выходным файлом (уже разобранные `parseFfmpegExportExtraArgsLine`). */
+  extraArgs?: readonly string[]
   /**
    * §7.2 — сдвиг громкости в дБ. `null`/`0` — без `-filter:a`. При `audioMode='none'`
    * параметр игнорируется (нет звука, фильтр некуда применять).
@@ -844,6 +847,8 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
     args.push('-map', '0:v?', '-map', '0:a?', '-map', '0:s?', '-c:s', subCodec)
   }
 
+  appendFfmpegExportExtraArgsToArgv(args, params.extraArgs ?? [])
+
   /** `-movflags +faststart` относится к MP4/MOV; для MKV (Matroska) эти флаги не применяются. */
   if (container === 'mkv') {
     args.push(params.outputPath)
@@ -898,6 +903,8 @@ export interface FfmpegExportPreviewInput {
   economyMode?: boolean
   /** §7.2 — `-hwaccel` в превью (уже разрешённый метод). */
   hwaccelDecode?: string | null
+  /** §7.2 — доп. argv (уже разобранные). */
+  extraArgs?: readonly string[]
   /** Плейсхолдер `-passlogfile` в тексте превью (нет реального пути во временном каталоге). */
   twoPassPasslogPlaceholder?: string | null
   /** Плейсхолдер вывода 1-го прохода (строго текст для UI). */
@@ -1008,6 +1015,9 @@ export function buildFfmpegExportPreviewCommand(
     ...(input.economyMode === true ? { economyMode: true } : {}),
     ...(typeof input.hwaccelDecode === 'string' && input.hwaccelDecode.trim() !== ''
       ? { hwaccelDecode: input.hwaccelDecode.trim() }
+      : {}),
+    ...(input.extraArgs !== undefined && input.extraArgs.length > 0
+      ? { extraArgs: input.extraArgs }
       : {})
   }
 

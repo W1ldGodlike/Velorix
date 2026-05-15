@@ -492,6 +492,12 @@ export function loadSettings(filePath: string): AppSettings {
     if (parsed.ffmpegExportHwDecode === true) {
       base.ffmpegExportHwDecode = true
     }
+    if (
+      typeof parsed.ffmpegExportExtraArgsLine === 'string' &&
+      parsed.ffmpegExportExtraArgsLine.trim().length > 0
+    ) {
+      base.ffmpegExportExtraArgsLine = parsed.ffmpegExportExtraArgsLine.trim().slice(0, 1200)
+    }
     if (ffmpegExportAudioBitrate !== undefined) {
       base.ffmpegExportAudioBitrate = ffmpegExportAudioBitrate
     }

@@ -629,6 +629,11 @@ const UI_TEXT = {
     editorHwDecodeHint: 'HW decode: ffmpeg декодирует исходник через -hwaccel',
     editorStatusbarCodec: 'Кодек: {codec}',
     editorStatusbarHwDecode: ' · HW decode: {method}',
+    editorExportExtraArgsLabel: 'Доп. аргументы ffmpeg',
+    editorExportExtraArgsPlaceholder: '-max_muxing_queue_size 1024 -shortest',
+    editorExportExtraArgsHint:
+      'Токены через пробел, вставляются перед выходным файлом. Без -i, -c:v, -vf, -map и shell-символов.',
+    editorExportExtraArgsParseError: 'Ошибка доп. argv: {detail}',
     editorEconomyModePillLabel: 'Один поток ffmpeg',
     editorTooltipEconomyMode: 'Ограничить ffmpeg одним потоком (-threads 1), чтобы снизить нагрузку на CPU',
     editorEconomyModeHint: 'Экономный режим: ffmpeg использует один поток',
@@ -1761,6 +1766,11 @@ const UI_TEXT = {
     editorHwDecodeHint: 'HW decode: ffmpeg decodes the source via -hwaccel',
     editorStatusbarCodec: 'Codec: {codec}',
     editorStatusbarHwDecode: ' · HW decode: {method}',
+    editorExportExtraArgsLabel: 'Extra ffmpeg arguments',
+    editorExportExtraArgsPlaceholder: '-max_muxing_queue_size 1024 -shortest',
+    editorExportExtraArgsHint:
+      'Space-separated tokens inserted before the output file. No -i, -c:v, -vf, -map, or shell metacharacters.',
+    editorExportExtraArgsParseError: 'Extra argv error: {detail}',
     editorEconomyModePillLabel: 'Single ffmpeg thread',
     editorTooltipEconomyMode: 'Limit ffmpeg to one thread (-threads 1) to reduce CPU load',
     editorEconomyModeHint: 'Economy mode: ffmpeg runs with a single thread',

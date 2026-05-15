@@ -72,6 +72,7 @@ export type ResolvedFfmpegExportJobOptions = {
   twoPass: boolean
   economyMode: boolean
   hwDecode: boolean
+  extraArgsLine: string
   audioGainDb: number | null
   stripMetadata: boolean | null
   stripChapters: boolean | null
@@ -172,6 +173,13 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
     hwDecodeRaw !== undefined && hwDecodeRaw !== null
       ? parseFfmpegExportHwDecode(hwDecodeRaw)
       : parseFfmpegExportHwDecode(settings.ffmpegExportHwDecode)
+  const extraArgsLineRaw = raw['extraArgsLine']
+  const extraArgsLine =
+    typeof extraArgsLineRaw === 'string'
+      ? extraArgsLineRaw
+      : typeof settings.ffmpegExportExtraArgsLine === 'string'
+        ? settings.ffmpegExportExtraArgsLine
+        : ''
   const audioGainRaw = raw['audioGainDb']
   const audioGainDb =
     audioGainRaw !== undefined
@@ -268,6 +276,7 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
     twoPass,
     economyMode,
     hwDecode,
+    extraArgsLine,
     audioGainDb,
     stripMetadata,
     stripChapters,

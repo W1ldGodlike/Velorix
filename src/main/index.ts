@@ -1253,6 +1253,22 @@ function persistFfmpegExportHwDecode(raw: unknown): AppSettings {
   return { ...cachedSettings }
 }
 
+function persistFfmpegExportExtraArgsLine(raw: unknown): AppSettings {
+  const next = { ...cachedSettings }
+  if (typeof raw !== 'string') {
+    return { ...cachedSettings }
+  }
+  const trimmed = raw.trim().slice(0, 1200)
+  if (trimmed.length === 0) {
+    delete next.ffmpegExportExtraArgsLine
+  } else {
+    next.ffmpegExportExtraArgsLine = trimmed
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
 function persistFfmpegExportAudioGainDb(raw: unknown): AppSettings {
   const value = parseFfmpegExportAudioGainDb(raw)
   const next = { ...cachedSettings }
@@ -2684,6 +2700,11 @@ app.whenReady().then(() => {
   ipcMain.handle(
     mw.settingsSetFfmpegExportHwDecode,
     (_, raw: unknown): AppSettings => persistFfmpegExportHwDecode(raw)
+  )
+
+  ipcMain.handle(
+    mw.settingsSetFfmpegExportExtraArgsLine,
+    (_, raw: unknown): AppSettings => persistFfmpegExportExtraArgsLine(raw)
   )
 
   ipcMain.handle(

@@ -121,6 +121,7 @@ export interface FluxAlloyApi {
     setFfmpegExportTwoPass: (enabled: boolean) => Promise<AppSettings>
     setFfmpegExportEconomyMode: (enabled: boolean) => Promise<AppSettings>
     setFfmpegExportHwDecode: (enabled: boolean) => Promise<AppSettings>
+    setFfmpegExportExtraArgsLine: (line: string) => Promise<AppSettings>
     setFfmpegExportAudioMode: (mode: FfmpegExportAudioModeId) => Promise<AppSettings>
     setFfmpegExportAudioBitrate: (bitrate: string | null) => Promise<AppSettings>
     setFfmpegExportFps: (fps: number | null) => Promise<AppSettings>

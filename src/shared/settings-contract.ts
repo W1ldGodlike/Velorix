@@ -150,6 +150,8 @@ export interface AppSettings {
   ffmpegExportEconomyMode?: boolean
   /** §7.2 — аппаратное декодирование исходника (`-hwaccel`) при экспорте. */
   ffmpegExportHwDecode?: boolean
+  /** §7.2 — дополнительные argv ffmpeg перед выходным файлом (пробелы между токенами). */
+  ffmpegExportExtraArgsLine?: string
   /** §7.2: режим аудио экспорта: AAC, PCM s16le или без дорожки. */
   ffmpegExportAudioMode?:
     | 'aac'

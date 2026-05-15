@@ -87,6 +87,7 @@ import {
 } from '../../shared/ffmpeg-export-contract'
 import type { AppSettings, ResolvedAppTheme } from '../../shared/settings-contract'
 import { buildFfmpegExportPreviewCommand } from '../../shared/ffmpeg-export-argv'
+import { parseFfmpegExportExtraArgsLine } from '../../shared/ffmpeg-export-extra-args'
 import { resolveFfmpegExportHwaccelForDecode } from '../../shared/ffmpeg-export-hw-decode'
 import { formatFfmpegExportBatchReportText } from '../../shared/ffmpeg-export-batch-report'
 import { isFfmpegExportBatchVideoPath } from '../../shared/ffmpeg-export-batch-video-ext'
@@ -630,6 +631,7 @@ function App(): JSX.Element {
   const [exportTwoPass, setExportTwoPass] = useState(false)
   const [exportEconomyMode, setExportEconomyMode] = useState(false)
   const [exportHwDecode, setExportHwDecode] = useState(false)
+  const [exportExtraArgsLine, setExportExtraArgsLine] = useState('')
   /** §7.2 — сдвиг громкости в дБ (`-filter:a volume`); `0` означает «без фильтра». */
   const [exportAudioGainDb, setExportAudioGainDb] = useState<number>(0)
   /** §7.2 — добавить `-map_metadata -1` (очистить контейнерные tag-ы). */
@@ -893,6 +895,10 @@ function App(): JSX.Element {
     () =>
       resolveFfmpegExportVideoCodecForArgv(exportVideoCodec, probeSnapshotOrEmpty(hwEncoderProbe)),
     [exportVideoCodec, hwEncoderProbe]
+  )
+  const exportExtraArgsParsed = useMemo(
+    () => parseFfmpegExportExtraArgsLine(exportExtraArgsLine, getUiLocale()),
+    [exportExtraArgsLine]
   )
   const exportHwaccelDecodeForPreview = useMemo(() => {
     if (!exportHwDecode) {
@@ -1556,6 +1562,11 @@ function App(): JSX.Element {
     setExportTwoPass(loaded.ffmpegExportTwoPass === true && bitrateOk && vcodec === 'libx264')
     setExportEconomyMode(loaded.ffmpegExportEconomyMode === true)
     setExportHwDecode(loaded.ffmpegExportHwDecode === true)
+    setExportExtraArgsLine(
+      typeof loaded.ffmpegExportExtraArgsLine === 'string'
+        ? loaded.ffmpegExportExtraArgsLine
+        : ''
+    )
     if (
       typeof loaded.ffmpegExportAudioBitrate === 'string' &&
       EXPORT_AUDIO_BITRATES.includes(loaded.ffmpegExportAudioBitrate)
@@ -1662,6 +1673,7 @@ function App(): JSX.Element {
       ...(exportTwoPass && exportVideoCodec === 'libx264' ? { twoPass: true as const } : {}),
       ...(exportEconomyMode ? { economyMode: true as const } : {}),
       ...(exportHwDecode ? { hwDecode: true as const } : {}),
+      ...(exportExtraArgsLine.trim().length > 0 ? { extraArgsLine: exportExtraArgsLine.trim() } : {}),
       ...(exportAudioGainDb !== 0 ? { audioGainDb: exportAudioGainDb } : {}),
       ...(exportStripMetadata ? { stripMetadata: true } : {}),
       ...(exportStripChapters ? { stripChapters: true } : {}),
@@ -1694,6 +1706,7 @@ function App(): JSX.Element {
     exportTwoPass,
     exportEconomyMode,
     exportHwDecode,
+    exportExtraArgsLine,
     exportAudioGainDb,
     exportStripMetadata,
     exportStripChapters,
@@ -2109,6 +2122,7 @@ function App(): JSX.Element {
       twoPass: exportTwoPass && exportVideoBitrate !== null && exportVideoCodec === 'libx264',
       economyMode: exportEconomyMode,
       hwDecode: exportHwDecode,
+      extraArgsLine: exportExtraArgsLine,
       audioGainDb: exportAudioGainDb === 0 ? null : exportAudioGainDb,
       stripMetadata: exportStripMetadata,
       stripChapters: exportStripChapters,
@@ -2141,6 +2155,7 @@ function App(): JSX.Element {
       exportTwoPass,
       exportEconomyMode,
       exportHwDecode,
+      exportExtraArgsLine,
       exportAudioGainDb,
       exportStripMetadata,
       exportStripChapters,
@@ -2515,6 +2530,7 @@ function App(): JSX.Element {
         twoPass: exportTwoPass && exportVideoBitrate !== null && exportVideoCodec === 'libx264',
         economyMode: exportEconomyMode,
         hwDecode: exportHwDecode,
+        extraArgsLine: exportExtraArgsLine,
         audioGainDb: exportAudioGainDb === 0 ? null : exportAudioGainDb,
         stripMetadata: exportStripMetadata,
         stripChapters: exportStripChapters,
@@ -2638,6 +2654,9 @@ function App(): JSX.Element {
       ...(exportHwaccelDecodeForPreview !== null
         ? { hwaccelDecode: exportHwaccelDecodeForPreview }
         : {}),
+      ...(exportExtraArgsParsed.ok && exportExtraArgsParsed.args.length > 0
+        ? { extraArgs: exportExtraArgsParsed.args }
+        : {}),
       audioGainDb: exportAudioGainDb === 0 ? null : exportAudioGainDb,
       stripMetadata: exportStripMetadata,
       stripChapters: exportStripChapters,
@@ -2677,6 +2696,7 @@ function App(): JSX.Element {
     exportTwoPass,
     exportEconomyMode,
     exportHwaccelDecodeForPreview,
+    exportExtraArgsParsed,
     exportAudioGainDb,
     exportStripMetadata,
     exportStripChapters,
@@ -2700,6 +2720,9 @@ function App(): JSX.Element {
   const exportPreviewCommand = exportPreview.command
 
   function exportPreviewHint(): string {
+    if (!exportExtraArgsParsed.ok) {
+      return uiTextVars('editorExportExtraArgsParseError', { detail: exportExtraArgsParsed.error })
+    }
     if (!preview) {
       return uiText('editorExportPreviewHintNoSource')
     }
@@ -4545,6 +4568,30 @@ function App(): JSX.Element {
                   {uiText('editorFfmpegSectionOutputHint')}
                 </p>
                 <div className="app-settings-stack" aria-describedby="ffmpegOutputSectionHint">
+                  <label className="app-field app-field-block" title={uiText('editorExportExtraArgsHint')}>
+                    <span>{uiText('editorExportExtraArgsLabel')}</span>
+                    <textarea
+                      className="app-downloads-url-input app-control"
+                      value={exportExtraArgsLine}
+                      placeholder={uiText('editorExportExtraArgsPlaceholder')}
+                      rows={2}
+                      disabled={exportBusy || snapshotBusy}
+                      onChange={(e) => {
+                        bumpManualExportEdit()
+                        const v = e.target.value
+                        setExportExtraArgsLine(v)
+                        void window.fluxalloy.settings.setFfmpegExportExtraArgsLine(v).catch(console.error)
+                      }}
+                    />
+                    <span className="app-settings-section-hint">{uiText('editorExportExtraArgsHint')}</span>
+                    {!exportExtraArgsParsed.ok ? (
+                      <span className="app-field-error" role="alert">
+                        {uiTextVars('editorExportExtraArgsParseError', {
+                          detail: exportExtraArgsParsed.error
+                        })}
+                      </span>
+                    ) : null}
+                  </label>
                   <details
                     className="app-export-preview app-export-preview-nested"
                     open={panelOpen('exportCommandPreview')}

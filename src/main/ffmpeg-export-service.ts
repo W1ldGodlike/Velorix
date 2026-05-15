@@ -58,6 +58,7 @@ import {
 
 import { logExternalProcessLine } from './external-process-log'
 import { resolveFfmpegExportLutCubeAbsPath } from './ffmpeg-export-lut-path'
+import { parseFfmpegExportExtraArgsLine } from '../shared/ffmpeg-export-extra-args'
 import {
   parseFfmpegExportHwDecode,
   resolveFfmpegExportHwaccelForDecode
@@ -434,6 +435,8 @@ export function parseFfmpegExportUserPresetSnapshot(
   const twoPass = o['twoPass'] === true
   const economyMode = parseFfmpegExportEconomyMode(o['economyMode'])
   const hwDecode = parseFfmpegExportHwDecode(o['hwDecode'])
+  const extraArgsLine =
+    typeof o['extraArgsLine'] === 'string' ? o['extraArgsLine'].trim().slice(0, 1200) : ''
   const audioGainDb = parseFfmpegExportAudioGainDb(o['audioGainDb'])
   const stripMetadata = parseFfmpegExportStripFlag(o['stripMetadata'])
   const stripChapters = parseFfmpegExportStripFlag(o['stripChapters'])
@@ -465,6 +468,7 @@ export function parseFfmpegExportUserPresetSnapshot(
     ...(twoPass && videoCodec === 'libx264' ? { twoPass: true as const } : {}),
     ...(economyMode ? { economyMode: true as const } : {}),
     ...(hwDecode ? { hwDecode: true as const } : {}),
+    ...(extraArgsLine.length > 0 ? { extraArgsLine } : {}),
     ...(audioGainDb !== null ? { audioGainDb } : {}),
     ...(stripMetadata ? { stripMetadata: true } : {}),
     ...(stripChapters ? { stripChapters: true } : {}),
@@ -586,6 +590,11 @@ export function mergeFfmpegExportSnapshotIntoAppSettings(
     next.ffmpegExportHwDecode = true
   } else {
     delete next.ffmpegExportHwDecode
+  }
+  if (typeof snapshot.extraArgsLine === 'string' && snapshot.extraArgsLine.trim().length > 0) {
+    next.ffmpegExportExtraArgsLine = snapshot.extraArgsLine.trim()
+  } else {
+    delete next.ffmpegExportExtraArgsLine
   }
   if (typeof snapshot.audioGainDb === 'number' && snapshot.audioGainDb !== 0) {
     next.ffmpegExportAudioGainDb = snapshot.audioGainDb
@@ -898,6 +907,8 @@ export async function runFfmpegExportJob(params: {
   economyMode?: boolean | null
   /** §7.2 — аппаратное декодирование (`-hwaccel`). */
   hwDecode?: boolean | null
+  /** §7.2 — доп. argv (строка). */
+  extraArgsLine?: string | null
   /** §7.2 — целое значение в дБ; `null`/`0` = без `-filter:a volume`. */
   audioGainDb?: number | null
   /** §7.2 — удалить контейнерные метаданные. */
@@ -1002,6 +1013,16 @@ export async function runFfmpegExportJob(params: {
   }
   const wantTwoPass = params.twoPass === true && videoBitrate !== null && videoCodec === 'libx264'
   const economyMode = parseFfmpegExportEconomyMode(params.economyMode)
+  const extraArgsLine =
+    typeof params.extraArgsLine === 'string' ? params.extraArgsLine : ''
+  const extraParsed = parseFfmpegExportExtraArgsLine(extraArgsLine, uloc)
+  if (!extraParsed.ok) {
+    return {
+      ok: false,
+      error: extraParsed.error,
+      videoCodecUsed: videoCodec
+    }
+  }
   const audioGainDb = parseFfmpegExportAudioGainDb(params.audioGainDb)
   const stripMetadata = parseFfmpegExportStripFlag(params.stripMetadata)
   const stripChapters = parseFfmpegExportStripFlag(params.stripChapters)
@@ -1081,7 +1102,8 @@ export async function runFfmpegExportJob(params: {
     ...(videoDeinterlace !== 'off' ? { videoDeinterlace } : {}),
     ...(audioNormalize !== 'off' ? { audioNormalize } : {}),
     ...(economyMode ? { economyMode: true } : {}),
-    ...(hwaccelDecode !== null ? { hwaccelDecode } : {})
+    ...(hwaccelDecode !== null ? { hwaccelDecode } : {}),
+    ...(extraParsed.args.length > 0 ? { extraArgs: extraParsed.args } : {})
   }
 
   const doneOk = (): { ok: true; videoCodecUsed: FfmpegExportVideoCodecId } => ({
