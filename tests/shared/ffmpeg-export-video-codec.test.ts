@@ -4,20 +4,30 @@ import {
   isFfmpegHwExportVideoCodec,
   parseFfmpegExportVideoCodec,
   pickFfmpegHwAutoEncoder,
+  pickFfmpegHwAutoHevcEncoder,
   resolveFfmpegExportVideoCodecForArgv
 } from '../../src/shared/ffmpeg-export-video-codec'
 import { createEmptyFfmpegHwEncodersSnapshot } from '../../src/shared/ffmpeg-hw-encoder-probe'
 
 describe('ffmpeg-export-video-codec', () => {
-  it('parse: hw_auto, libx265 и HW whitelist, иначе libx264', () => {
+  it('parse: hw_auto, hw_auto_hevc, libx265 и HW whitelist, иначе libx264', () => {
     expect(parseFfmpegExportVideoCodec(undefined)).toBe('libx264')
     expect(parseFfmpegExportVideoCodec('hw_auto')).toBe('hw_auto')
+    expect(parseFfmpegExportVideoCodec('hw_auto_hevc')).toBe('hw_auto_hevc')
     expect(parseFfmpegExportVideoCodec('libx265')).toBe('libx265')
     expect(parseFfmpegExportVideoCodec('h264_nvenc')).toBe('h264_nvenc')
     expect(parseFfmpegExportVideoCodec('evil')).toBe('libx264')
   })
 
-  it('pickFfmpegHwAutoEncoder — приоритет NVENC > AMF > QSV > VideoToolbox > VAAPI', () => {
+  it('pickFfmpegHwAutoEncoder — AV1 после H.264', () => {
+    const snap = createEmptyFfmpegHwEncodersSnapshot()
+    snap.av1_qsv = true
+    expect(pickFfmpegHwAutoEncoder(snap)).toBe('av1_qsv')
+    snap.h264_vaapi = true
+    expect(pickFfmpegHwAutoEncoder(snap)).toBe('h264_vaapi')
+  })
+
+  it('pickFfmpegHwAutoEncoder — приоритет H.264 NVENC > AMF > QSV > VideoToolbox > VAAPI', () => {
     const snap = createEmptyFfmpegHwEncodersSnapshot()
     snap.h264_vaapi = true
     expect(pickFfmpegHwAutoEncoder(snap)).toBe('h264_vaapi')
@@ -31,10 +41,28 @@ describe('ffmpeg-export-video-codec', () => {
     expect(pickFfmpegHwAutoEncoder(snap)).toBe('h264_nvenc')
   })
 
+  it('pickFfmpegHwAutoHevcEncoder — HEVC затем AV1, иначе libx265', () => {
+    const snap = createEmptyFfmpegHwEncodersSnapshot()
+    snap.av1_amf = true
+    expect(pickFfmpegHwAutoHevcEncoder(snap)).toBe('av1_amf')
+    snap.hevc_vaapi = true
+    expect(pickFfmpegHwAutoHevcEncoder(snap)).toBe('hevc_vaapi')
+    snap.hevc_videotoolbox = true
+    expect(pickFfmpegHwAutoHevcEncoder(snap)).toBe('hevc_videotoolbox')
+    snap.hevc_qsv = true
+    expect(pickFfmpegHwAutoHevcEncoder(snap)).toBe('hevc_qsv')
+    snap.hevc_amf = true
+    expect(pickFfmpegHwAutoHevcEncoder(snap)).toBe('hevc_amf')
+    snap.hevc_nvenc = true
+    expect(pickFfmpegHwAutoHevcEncoder(snap)).toBe('hevc_nvenc')
+  })
+
   it('resolveFfmpegExportVideoCodecForArgv', () => {
     const snap = createEmptyFfmpegHwEncodersSnapshot()
     snap.h264_amf = true
     expect(resolveFfmpegExportVideoCodecForArgv('hw_auto', snap)).toBe('h264_amf')
+    snap.hevc_qsv = true
+    expect(resolveFfmpegExportVideoCodecForArgv('hw_auto_hevc', snap)).toBe('hevc_qsv')
     expect(resolveFfmpegExportVideoCodecForArgv('libx265', snap)).toBe('libx265')
   })
 

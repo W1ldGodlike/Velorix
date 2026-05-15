@@ -32,7 +32,8 @@ import type {
 } from '../shared/ffmpeg-export-contract'
 import {
   parseFfmpegExportVideoCodec,
-  pickFfmpegHwAutoEncoder
+  pickFfmpegHwAutoEncoder,
+  pickFfmpegHwAutoHevcEncoder
 } from '../shared/ffmpeg-export-video-codec'
 import { createEmptyFfmpegHwEncodersSnapshot } from '../shared/ffmpeg-hw-encoder-probe'
 import {
@@ -884,7 +885,7 @@ export async function runFfmpegExportJob(params: {
   const encodePreset = params.encodePreset ?? 'balance'
   const parsedVideoCodec = parseFfmpegExportVideoCodec(params.videoCodec)
   let videoCodec: FfmpegExportVideoCodecId = parsedVideoCodec
-  if (parsedVideoCodec === 'hw_auto') {
+  if (parsedVideoCodec === 'hw_auto' || parsedVideoCodec === 'hw_auto_hevc') {
     let snap = createEmptyFfmpegHwEncodersSnapshot()
     try {
       const pr = await probeFfmpegHwEncoders(params.ffmpegPath)
@@ -894,7 +895,10 @@ export async function runFfmpegExportJob(params: {
     } catch {
       /* probe не обязан быть доступен — остаёмся на CPU */
     }
-    videoCodec = pickFfmpegHwAutoEncoder(snap)
+    videoCodec =
+      parsedVideoCodec === 'hw_auto_hevc'
+        ? pickFfmpegHwAutoHevcEncoder(snap)
+        : pickFfmpegHwAutoEncoder(snap)
   }
   const crf = parseFfmpegExportCrf(params.crf)
   const videoBitrate = parseFfmpegExportVideoBitrate(params.videoBitrate)

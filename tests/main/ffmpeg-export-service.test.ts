@@ -347,6 +347,21 @@ describe('ffmpeg export pure helpers', () => {
     })
     expect(autoCodec.ffmpegExportVideoCodec).toBe('hw_auto')
 
+    const autoHevc = mergeFfmpegExportSnapshotIntoAppSettings({ theme: 'dark' }, {
+      encodePreset: 'balance',
+      videoCodec: 'hw_auto_hevc',
+      container: 'mp4',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      videoTransform: 'none',
+      cropPreset: 'none'
+    })
+    expect(autoHevc.ffmpegExportVideoCodec).toBe('hw_auto_hevc')
+
     const deb = mergeFfmpegExportSnapshotIntoAppSettings(
       { theme: 'dark' },
       {

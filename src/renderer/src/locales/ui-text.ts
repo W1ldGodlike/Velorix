@@ -657,10 +657,14 @@ const UI_TEXT = {
     editorExportEncodeQuality: 'Качество',
     editorExportCodecH264: 'H.264 (libx264)',
     editorExportCodecH265: 'H.265 (libx265)',
-    editorExportCodecHwAuto: 'Авто (лучший H.264 HW или CPU)',
+    editorExportCodecHwAuto: 'Авто (лучший H.264/AV1 HW или CPU)',
     editorExportCodecHwAutoBadge: 'АВТО',
     editorExportCodecHwAutoBadgeTitle:
-      'При экспорте будет выбран первый доступный из списка: NVENC → AMF → QSV → VideoToolbox → VAAPI, иначе libx264.',
+      'При экспорте: NVENC → AMF → QSV → VideoToolbox → VAAPI (H.264), затем AV1 NVENC/AMF/QSV, иначе libx264.',
+    editorExportCodecHwAutoHevc: 'Авто HEVC (лучший HEVC/AV1 HW или libx265)',
+    editorExportCodecHwAutoHevcBadge: 'АВТО HEVC',
+    editorExportCodecHwAutoHevcBadgeTitle:
+      'При экспорте: HEVC NVENC → AMF → QSV → VideoToolbox → VAAPI, затем AV1 NVENC/AMF/QSV, иначе libx265.',
     editorExportHwaccelsTitle: 'Аппаратные методы (ffmpeg -hwaccels)',
     editorExportContainerMp4: 'MP4',
     editorExportContainerMkv: 'MKV',
@@ -1677,10 +1681,14 @@ const UI_TEXT = {
     editorExportEncodeQuality: 'Quality',
     editorExportCodecH264: 'H.264 (libx264)',
     editorExportCodecH265: 'H.265 (libx265)',
-    editorExportCodecHwAuto: 'Auto (best H.264 HW or CPU)',
+    editorExportCodecHwAuto: 'Auto (best H.264/AV1 HW or CPU)',
     editorExportCodecHwAutoBadge: 'AUTO',
     editorExportCodecHwAutoBadgeTitle:
-      'At export time picks the first available: NVENC → AMF → QSV → VideoToolbox → VAAPI, else libx264.',
+      'At export: NVENC → AMF → QSV → VideoToolbox → VAAPI (H.264), then AV1 NVENC/AMF/QSV, else libx264.',
+    editorExportCodecHwAutoHevc: 'Auto HEVC (best HEVC/AV1 HW or libx265)',
+    editorExportCodecHwAutoHevcBadge: 'AUTO HEVC',
+    editorExportCodecHwAutoHevcBadgeTitle:
+      'At export: HEVC NVENC → AMF → QSV → VideoToolbox → VAAPI, then AV1 NVENC/AMF/QSV, else libx265.',
     editorExportHwaccelsTitle: 'Hardware acceleration (ffmpeg -hwaccels)',
     editorExportContainerMp4: 'MP4',
     editorExportContainerMkv: 'MKV',

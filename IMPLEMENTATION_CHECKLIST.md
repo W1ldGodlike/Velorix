@@ -443,15 +443,15 @@
 ## §16. Аппаратное ускорение
 
 - [~] Диагностика GPU: в ответе `probeHwEncoders` добавлен список `hwaccels` (`ffmpeg -hwaccels`), показ в tooltip у поля «Видеокодек».
-- [~] Определение доступных кодировщиков: парсер `ffmpeg -encoders`, IPC `probeHwEncoders`, список кодеков в rail «Формат» по снимку; при отсутствии кодека в сборке — откат на libx264; **hw_auto** в UI и spawn.
-- [~] Auto mode: `hw_auto` — приоритет H.264 NVENC → AMF → QSV → VideoToolbox → VAAPI → libx264; резолв в `runFfmpegExportJob` и превью.
+- [~] Определение доступных кодировщиков: парсер `ffmpeg -encoders`, IPC `probeHwEncoders`, список кодеков в rail «Формат» по снимку; при отсутствии кодека в сборке — откат на libx264; **hw_auto** / **hw_auto_hevc** в UI и spawn.
+- [~] Auto mode: `hw_auto` — H.264 NVENC → AMF → QSV → VideoToolbox → VAAPI, затем AV1 NVENC/AMF/QSV → libx264; `hw_auto_hevc` — HEVC NVENC → … → VAAPI, затем AV1 → libx265; резолв в `runFfmpegExportJob` и превью.
 - [~] Manual mode: выбор HW из whitelist (NVENC/AMF/QSV/VideoToolbox/VAAPI), argv в `ffmpeg-export-argv`.
 - [ ] NVENC.
 - [ ] AMF.
 - [ ] QSV.
 - [~] VideoToolbox для macOS: `h264_videotoolbox` / `hevc_videotoolbox` в пробе и argv (`-q:v`).
 - [ ] VAAPI/прочее для Linux по возможности.
-- [~] Индикатор `[АВТО]`: бейдж у выбора кодека при `hw_auto` + подсказка.
+- [~] Индикатор `[АВТО]`: бейдж у выбора кодека при `hw_auto` / `hw_auto_hevc` + подсказка.
 - [ ] Режим экономии CPU/threads/priority.
 - [ ] Кнопка «Оценить».
 

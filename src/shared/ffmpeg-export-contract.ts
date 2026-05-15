@@ -19,6 +19,7 @@ export type FfmpegExportVideoCodecId =
   | 'libx264'
   | 'libx265'
   | 'hw_auto'
+  | 'hw_auto_hevc'
   | FfmpegHwVideoEncoderId
 export type FfmpegExportContainerId = 'mp4' | 'mkv' | 'mov'
 export type FfmpegExportScalePresetId = 'source' | '480p' | '720p' | '1080p'

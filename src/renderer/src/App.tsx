@@ -89,6 +89,7 @@ import { isBuiltinExportUserPresetId } from '../../shared/builtin-ffmpeg-export-
 import { FFMPEG_HW_VIDEO_ENCODER_IDS } from '../../shared/ffmpeg-hw-encoder-probe'
 import type { FfmpegHwEncodersProbeResult } from '../../shared/ffmpeg-hw-encoder-probe'
 import {
+  isFfmpegHwAutoVideoCodec,
   isFfmpegHwExportVideoCodec,
   parseFfmpegExportVideoCodec,
   probeSnapshotOrEmpty,
@@ -719,7 +720,8 @@ function App(): JSX.Element {
         const v: Array<{ id: FfmpegExportVideoCodecId; label: string }> = [
           { id: 'libx264', label: uiText('editorExportCodecH264') },
           { id: 'libx265', label: uiText('editorExportCodecH265') },
-          { id: 'hw_auto', label: uiText('editorExportCodecHwAuto') }
+          { id: 'hw_auto', label: uiText('editorExportCodecHwAuto') },
+          { id: 'hw_auto_hevc', label: uiText('editorExportCodecHwAutoHevc') }
         ]
         if (hwEncoderProbe?.ok === true) {
           for (const id of FFMPEG_HW_VIDEO_ENCODER_IDS) {
@@ -1347,7 +1349,7 @@ function App(): JSX.Element {
     return window.fluxalloy.engines.probeHwEncoders().then((r) => {
       setHwEncoderProbe(r)
       setExportVideoCodec((codec) => {
-        if (codec === 'hw_auto') {
+        if (codec === 'hw_auto' || codec === 'hw_auto_hevc') {
           return codec
         }
         if (!isFfmpegHwExportVideoCodec(codec)) {
@@ -2694,12 +2696,18 @@ function App(): JSX.Element {
                   >
                     <span className="app-field-label-inline">
                       {uiText('editorFieldVideoCodec')}
-                      {exportVideoCodec === 'hw_auto' ? (
+                      {isFfmpegHwAutoVideoCodec(exportVideoCodec) ? (
                         <span
                           className="app-hw-auto-badge"
-                          title={uiText('editorExportCodecHwAutoBadgeTitle')}
+                          title={
+                            exportVideoCodec === 'hw_auto_hevc'
+                              ? uiText('editorExportCodecHwAutoHevcBadgeTitle')
+                              : uiText('editorExportCodecHwAutoBadgeTitle')
+                          }
                         >
-                          {uiText('editorExportCodecHwAutoBadge')}
+                          {exportVideoCodec === 'hw_auto_hevc'
+                            ? uiText('editorExportCodecHwAutoHevcBadge')
+                            : uiText('editorExportCodecHwAutoBadge')}
                         </span>
                       ) : null}
                     </span>
