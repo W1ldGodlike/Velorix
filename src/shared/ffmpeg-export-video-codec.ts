@@ -39,6 +39,13 @@ const HW_AUTO_HEVC_PRIORITY: readonly FfmpegHwVideoEncoderId[] = [
   'hevc_vaapi'
 ]
 
+const MKV_ONLY_CPU_CODECS = new Set<FfmpegExportVideoCodecId>(['libvpx-vp9', 'libsvtav1'])
+
+/** VP9/AV1 (CPU) в текущей модели экспорта допускаются только в MKV. */
+export function cpuFfmpegVideoCodecRequiresMkv(codec: FfmpegExportVideoCodecId): boolean {
+  return MKV_ONLY_CPU_CODECS.has(codec)
+}
+
 export function isFfmpegHwExportVideoCodec(
   c: FfmpegExportVideoCodecId
 ): c is FfmpegHwVideoEncoderId {

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  cpuFfmpegVideoCodecRequiresMkv,
   isFfmpegHwExportVideoCodec,
   parseFfmpegExportVideoCodec,
   pickFfmpegHwAutoEncoder,
@@ -65,6 +66,12 @@ describe('ffmpeg-export-video-codec', () => {
     expect(pickFfmpegHwAutoHevcEncoder(snap)).toBe('hevc_amf')
     snap.hevc_nvenc = true
     expect(pickFfmpegHwAutoHevcEncoder(snap)).toBe('hevc_nvenc')
+  })
+
+  it('cpuFfmpegVideoCodecRequiresMkv', () => {
+    expect(cpuFfmpegVideoCodecRequiresMkv('libvpx-vp9')).toBe(true)
+    expect(cpuFfmpegVideoCodecRequiresMkv('libsvtav1')).toBe(true)
+    expect(cpuFfmpegVideoCodecRequiresMkv('libx264')).toBe(false)
   })
 
   it('resolveFfmpegExportVideoCodecForArgv', () => {

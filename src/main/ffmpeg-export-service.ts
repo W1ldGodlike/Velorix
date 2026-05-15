@@ -31,6 +31,7 @@ import type {
   MediaExportTrimPayload
 } from '../shared/ffmpeg-export-contract'
 import {
+  cpuFfmpegVideoCodecRequiresMkv,
   parseFfmpegExportVideoCodec,
   pickFfmpegHwAutoEncoder,
   pickFfmpegHwAutoHevcEncoder
@@ -914,10 +915,7 @@ export async function runFfmpegExportJob(params: {
   const videoTransform = parseFfmpegExportVideoTransform(params.videoTransform)
   const cropPreset = parseFfmpegExportCropPreset(params.cropPreset)
   const container = parseFfmpegExportContainer(params.container ?? 'mp4')
-  if (
-    (videoCodec === 'libvpx-vp9' || videoCodec === 'libsvtav1') &&
-    container !== 'mkv'
-  ) {
+  if (cpuFfmpegVideoCodecRequiresMkv(videoCodec) && container !== 'mkv') {
     return {
       ok: false,
       error:

@@ -89,6 +89,7 @@ import { isBuiltinExportUserPresetId } from '../../shared/builtin-ffmpeg-export-
 import { FFMPEG_HW_VIDEO_ENCODER_IDS } from '../../shared/ffmpeg-hw-encoder-probe'
 import type { FfmpegHwEncodersProbeResult } from '../../shared/ffmpeg-hw-encoder-probe'
 import {
+  cpuFfmpegVideoCodecRequiresMkv,
   isFfmpegHwAutoVideoCodec,
   isFfmpegHwExportVideoCodec,
   parseFfmpegExportVideoCodec,
@@ -1397,9 +1398,6 @@ function App(): JSX.Element {
       setExportEncodePreset(ep)
     }
     const ec = loaded.ffmpegExportContainer
-    if (ec === 'mp4' || ec === 'mkv' || ec === 'mov') {
-      setExportContainer(ec)
-    }
     if (
       typeof loaded.ffmpegExportCrf === 'number' &&
       Number.isInteger(loaded.ffmpegExportCrf) &&
@@ -1423,6 +1421,13 @@ function App(): JSX.Element {
       EXPORT_VIDEO_BITRATES.includes(loaded.ffmpegExportVideoBitrate)
     const vcodec = parseFfmpegExportVideoCodec(loaded.ffmpegExportVideoCodec)
     setExportVideoCodec(vcodec)
+    let nextContainer: FfmpegExportContainerId =
+      ec === 'mp4' || ec === 'mkv' || ec === 'mov' ? ec : 'mp4'
+    if (cpuFfmpegVideoCodecRequiresMkv(vcodec) && nextContainer !== 'mkv') {
+      nextContainer = 'mkv'
+      void window.fluxalloy.settings.setFfmpegExportContainer('mkv').catch(console.error)
+    }
+    setExportContainer(nextContainer)
     setExportTwoPass(loaded.ffmpegExportTwoPass === true && bitrateOk && vcodec === 'libx264')
     if (
       typeof loaded.ffmpegExportAudioBitrate === 'string' &&
@@ -2726,6 +2731,13 @@ function App(): JSX.Element {
                         bumpManualExportEdit()
                         const v = e.target.value as FfmpegExportVideoCodecId
                         setExportVideoCodec(v)
+                        if (cpuFfmpegVideoCodecRequiresMkv(v) && exportContainer !== 'mkv') {
+                          setExportContainer('mkv')
+                          void window.fluxalloy.settings
+                            .setFfmpegExportContainer('mkv')
+                            .catch(console.error)
+                          setStatusHint(uiText('editorExportAutoContainerMkv'))
+                        }
                         if (v !== 'libx264' && exportTwoPass) {
                           setExportTwoPass(false)
                           void window.fluxalloy.settings
@@ -2786,7 +2798,13 @@ function App(): JSX.Element {
                       }}
                     >
                       {ffmpegExportSelectOptions.containers.map((p) => (
-                        <option key={p.id} value={p.id}>
+                        <option
+                          key={p.id}
+                          value={p.id}
+                          disabled={
+                            cpuFfmpegVideoCodecRequiresMkv(exportVideoCodec) && p.id !== 'mkv'
+                          }
+                        >
                           {p.label}
                         </option>
                       ))}

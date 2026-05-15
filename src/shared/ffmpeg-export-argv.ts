@@ -35,7 +35,7 @@ import {
   FFMPEG_EXPORT_SVTAV1_MKV_ONLY_ERROR
 } from './ffmpeg-export-contract'
 import type { FfmpegHwVideoEncoderId } from './ffmpeg-hw-encoder-probe'
-import { isFfmpegHwExportVideoCodec } from './ffmpeg-export-video-codec'
+import { cpuFfmpegVideoCodecRequiresMkv, isFfmpegHwExportVideoCodec } from './ffmpeg-export-video-codec'
 
 /**
  * §7.2 — решает, нужно ли подставлять `-ss/-t` для пары маркеров.
@@ -624,7 +624,7 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
 
   const vcodec: FfmpegExportVideoCodecId = params.videoCodec ?? 'libx264'
   const tp = params.twoPass
-  if ((vcodec === 'libvpx-vp9' || vcodec === 'libsvtav1') && container !== 'mkv') {
+  if (cpuFfmpegVideoCodecRequiresMkv(vcodec) && container !== 'mkv') {
     throw new Error(
       vcodec === 'libvpx-vp9' ? FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR : FFMPEG_EXPORT_SVTAV1_MKV_ONLY_ERROR
     )

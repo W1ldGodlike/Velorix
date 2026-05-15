@@ -659,6 +659,7 @@ const UI_TEXT = {
     editorExportCodecH265: 'H.265 (libx265)',
     editorExportCodecVp9: 'VP9 (libvpx-vp9, только MKV)',
     editorExportCodecSvtav1: 'AV1 (libsvtav1, только MKV)',
+    editorExportAutoContainerMkv: 'Контейнер переключён на MKV (VP9/AV1 CPU).',
     editorExportCodecHwAuto: 'Авто (лучший H.264/AV1 HW или CPU)',
     editorExportCodecHwAutoBadge: 'АВТО',
     editorExportCodecHwAutoBadgeTitle:
@@ -1685,6 +1686,7 @@ const UI_TEXT = {
     editorExportCodecH265: 'H.265 (libx265)',
     editorExportCodecVp9: 'VP9 (libvpx-vp9, MKV only)',
     editorExportCodecSvtav1: 'AV1 (libsvtav1, MKV only)',
+    editorExportAutoContainerMkv: 'Container switched to MKV (VP9/AV1 CPU).',
     editorExportCodecHwAuto: 'Auto (best H.264/AV1 HW or CPU)',
     editorExportCodecHwAutoBadge: 'AUTO',
     editorExportCodecHwAutoBadgeTitle:
