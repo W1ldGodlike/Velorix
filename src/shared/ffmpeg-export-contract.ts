@@ -15,7 +15,11 @@ export interface MediaExportTrimPayload {
 /** Первые системные пресеты libx264 §7.2 — только белый список, без произвольных аргументов. */
 export type FfmpegExportEncodePresetId = 'balance' | 'smaller' | 'quality'
 /** §7.2 / §16 — видеокодек перекодирования; только whitelist (spawn без произвольного `-c:v`). */
-export type FfmpegExportVideoCodecId = 'libx264' | 'libx265' | FfmpegHwVideoEncoderId
+export type FfmpegExportVideoCodecId =
+  | 'libx264'
+  | 'libx265'
+  | 'hw_auto'
+  | FfmpegHwVideoEncoderId
 export type FfmpegExportContainerId = 'mp4' | 'mkv' | 'mov'
 export type FfmpegExportScalePresetId = 'source' | '480p' | '720p' | '1080p'
 /** §7.2 — безопасные повороты/зеркала через whitelist `-vf` (до scale/fps). */

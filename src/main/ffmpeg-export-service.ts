@@ -30,7 +30,11 @@ import type {
   FfmpegExportVideoVignetteId,
   MediaExportTrimPayload
 } from '../shared/ffmpeg-export-contract'
-import { parseFfmpegExportVideoCodec } from '../shared/ffmpeg-export-video-codec'
+import {
+  parseFfmpegExportVideoCodec,
+  pickFfmpegHwAutoEncoder
+} from '../shared/ffmpeg-export-video-codec'
+import { createEmptyFfmpegHwEncodersSnapshot } from '../shared/ffmpeg-hw-encoder-probe'
 import {
   FFMPEG_EXPORT_CANCELLED_ERROR,
   FFMPEG_EXPORT_USER_PRESETS_MAX_ENTRIES
@@ -45,6 +49,7 @@ import {
 
 import { logExternalProcessLine } from './external-process-log'
 import { resolveFfmpegExportLutCubeAbsPath } from './ffmpeg-export-lut-path'
+import { probeFfmpegHwEncoders } from './ffmpeg-hw-encoder-probe-main'
 
 export type {
   FfmpegExportAudioModeId,
@@ -877,7 +882,20 @@ export async function runFfmpegExportJob(params: {
   const S = getMainApplicationStrings(uloc)
   const applyTrim = shouldApplyFfmpegExportTrim(params.trim ?? null, params.probeDurationSec)
   const encodePreset = params.encodePreset ?? 'balance'
-  const videoCodec = parseFfmpegExportVideoCodec(params.videoCodec)
+  const parsedVideoCodec = parseFfmpegExportVideoCodec(params.videoCodec)
+  let videoCodec: FfmpegExportVideoCodecId = parsedVideoCodec
+  if (parsedVideoCodec === 'hw_auto') {
+    let snap = createEmptyFfmpegHwEncodersSnapshot()
+    try {
+      const pr = await probeFfmpegHwEncoders(params.ffmpegPath)
+      if (pr.ok) {
+        snap = pr.snapshot
+      }
+    } catch {
+      /* probe не обязан быть доступен — остаёмся на CPU */
+    }
+    videoCodec = pickFfmpegHwAutoEncoder(snap)
+  }
   const crf = parseFfmpegExportCrf(params.crf)
   const videoBitrate = parseFfmpegExportVideoBitrate(params.videoBitrate)
   const audioMode = parseFfmpegExportAudioMode(params.audioMode)

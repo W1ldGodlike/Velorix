@@ -213,6 +213,26 @@ describe('shared ffmpeg export argv', () => {
     expect(argv.includes('-cq:v')).toBe(false)
   })
 
+  it('h264_videotoolbox: -q:v при CRF-режиме', () => {
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mov',
+      applyTrim: false,
+      encodePreset: 'balance',
+      videoCodec: 'h264_videotoolbox',
+      crf: 23,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mov'
+    })
+    expect(argv[argv.indexOf('-c:v') + 1]).toBe('h264_videotoolbox')
+    expect(argv).toContain('-q:v')
+    expect(typeof argv[argv.indexOf('-q:v') + 1]).toBe('string')
+  })
+
   it('подставляет trim, override CRF, scale, fps и audio-none', () => {
     const argv = buildFfmpegExportArgv({
       inputPath: '/src/clip.mov',

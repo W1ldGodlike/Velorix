@@ -90,7 +90,9 @@ import { FFMPEG_HW_VIDEO_ENCODER_IDS } from '../../shared/ffmpeg-hw-encoder-prob
 import type { FfmpegHwEncodersProbeResult } from '../../shared/ffmpeg-hw-encoder-probe'
 import {
   isFfmpegHwExportVideoCodec,
-  parseFfmpegExportVideoCodec
+  parseFfmpegExportVideoCodec,
+  probeSnapshotOrEmpty,
+  resolveFfmpegExportVideoCodecForArgv
 } from '../../shared/ffmpeg-export-video-codec'
 import {
   YTDLP_DOC_FORMAT_SELECTION,
@@ -716,7 +718,8 @@ function App(): JSX.Element {
       videoCodecs: (() => {
         const v: Array<{ id: FfmpegExportVideoCodecId; label: string }> = [
           { id: 'libx264', label: uiText('editorExportCodecH264') },
-          { id: 'libx265', label: uiText('editorExportCodecH265') }
+          { id: 'libx265', label: uiText('editorExportCodecH265') },
+          { id: 'hw_auto', label: uiText('editorExportCodecHwAuto') }
         ]
         if (hwEncoderProbe?.ok === true) {
           for (const id of FFMPEG_HW_VIDEO_ENCODER_IDS) {
@@ -846,6 +849,11 @@ function App(): JSX.Element {
       ] as Array<{ id: FfmpegSnapshotFormatId; label: string }>
     }),
     [hwEncoderProbe, exportVideoCodec]
+  )
+  const exportVideoCodecResolvedForPreview = useMemo(
+    () =>
+      resolveFfmpegExportVideoCodecForArgv(exportVideoCodec, probeSnapshotOrEmpty(hwEncoderProbe)),
+    [exportVideoCodec, hwEncoderProbe]
   )
   const refreshDownloadsOptions = useCallback(async (): Promise<void> => {
     const res = await window.fluxalloy.downloads.getCliOptions({
@@ -1355,6 +1363,9 @@ function App(): JSX.Element {
       }
       setHwEncoderProbe(r)
       setExportVideoCodec((codec) => {
+        if (codec === 'hw_auto') {
+          return codec
+        }
         if (!isFfmpegHwExportVideoCodec(codec)) {
           return codec
         }
@@ -2183,7 +2194,7 @@ function App(): JSX.Element {
     }
     return buildFfmpegExportPreviewCommand({
       encodePreset: exportEncodePreset,
-      videoCodec: exportVideoCodec,
+      videoCodec: exportVideoCodecResolvedForPreview,
       container: exportContainer,
       crf: exportCrf,
       videoBitrate: exportVideoBitrate,
@@ -2193,7 +2204,10 @@ function App(): JSX.Element {
       scalePreset: exportScalePreset,
       videoTransform: exportVideoTransform,
       cropPreset: exportCropPreset,
-      twoPass: exportTwoPass && exportVideoBitrate !== null && exportVideoCodec === 'libx264',
+      twoPass:
+        exportTwoPass &&
+        exportVideoBitrate !== null &&
+        exportVideoCodecResolvedForPreview === 'libx264',
       audioGainDb: exportAudioGainDb === 0 ? null : exportAudioGainDb,
       stripMetadata: exportStripMetadata,
       stripChapters: exportStripChapters,
@@ -2220,7 +2234,7 @@ function App(): JSX.Element {
   }, [
     preview?.path,
     exportEncodePreset,
-    exportVideoCodec,
+    exportVideoCodecResolvedForPreview,
     exportContainer,
     exportCrf,
     exportVideoBitrate,

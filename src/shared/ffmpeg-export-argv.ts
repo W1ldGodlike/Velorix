@@ -513,6 +513,15 @@ function appendFfmpegHwEncoderRateArgs(
     }
     return
   }
+  if (vcodec.endsWith('_videotoolbox')) {
+    const qv = Math.min(100, Math.max(8, Math.round(72 - cq * 0.85)))
+    if (videoBitrate === null) {
+      args.push('-q:v', String(qv))
+    } else {
+      args.push('-b:v', videoBitrate)
+    }
+    return
+  }
   if (vcodec.endsWith('_vaapi')) {
     if (videoBitrate === null) {
       args.push('-qp', String(cq))

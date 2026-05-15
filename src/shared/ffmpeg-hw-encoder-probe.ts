@@ -13,6 +13,8 @@ export const FFMPEG_HW_VIDEO_ENCODER_IDS = [
   'h264_qsv',
   'hevc_qsv',
   'av1_qsv',
+  'h264_videotoolbox',
+  'hevc_videotoolbox',
   'h264_vaapi',
   'hevc_vaapi'
 ] as const
