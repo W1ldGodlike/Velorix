@@ -763,4 +763,9 @@
 - [J-740] 2026-05-16 06:14:00 [Assistant]: Вкладка «Загрузки» — футер rail: `toolbar` + `downloadsRailFooterToolbarAria` (обновить настройки).
 - [J-741] 2026-05-16 06:16:00 [Assistant]: База знаний — регион статьи: при наличии заголовка `aria-labelledby` на `h3#knowledge-article-heading`, иначе `aria-label` как раньше.
 - [J-742] 2026-05-16 06:18:00 [Assistant]: База знаний — кнопка закрытия: `aria-label` + `knowledgeCloseButtonAria`.
+- [J-743] 2026-05-16 06:22:00 [Assistant]: Транспорт предпросмотра — кластер воспроизведения: `role="group"` + `previewTransportPlaybackClusterAria`.
+- [J-744] 2026-05-16 06:24:00 [Assistant]: Транспорт предпросмотра — кластер громкости и полноэкранного режима: `previewTransportVolumeClusterAria`.
+- [J-745] 2026-05-16 06:26:00 [Assistant]: Таймлайн — строка масштаба: `role="group"` (сохранён `videoTimelineZoomRowAria`).
+- [J-746] 2026-05-16 06:28:00 [Assistant]: База знаний — строка заголовка модалки: `role="group"` + `knowledgeDialogHeaderRowAria`.
+- [J-747] 2026-05-16 06:30:00 [Assistant]: Панель ffprobe — строка краткой сводки: `role="group"` + `probeSummaryReadoutGroupAria`.
 

@@ -134,7 +134,11 @@ export default function PreviewTransport({
       role="toolbar"
       aria-label={uiText('previewTransportToolbarAria')}
     >
-      <div className="app-preview-transport-cluster">
+      <div
+        className="app-preview-transport-cluster"
+        role="group"
+        aria-label={uiText('previewTransportPlaybackClusterAria')}
+      >
         <button
           type="button"
           className="app-icon-btn"
@@ -196,7 +200,11 @@ export default function PreviewTransport({
           <span className="app-visually-hidden">{miniIconTitle('miniIconSkipForward')}</span>
         </button>
       </div>
-      <div className="app-preview-transport-end">
+      <div
+        className="app-preview-transport-end"
+        role="group"
+        aria-label={uiText('previewTransportVolumeClusterAria')}
+      >
         <button
           type="button"
           className="app-icon-btn"

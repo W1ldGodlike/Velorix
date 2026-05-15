@@ -150,7 +150,11 @@ export function KnowledgeDialog({
           e.stopPropagation()
         }}
       >
-          <div className="app-modal-header-row">
+          <div
+            className="app-modal-header-row"
+            role="group"
+            aria-label={uiText('knowledgeDialogHeaderRowAria')}
+          >
             <div>
               <h2 id="knowledge-title" className="app-modal-title">
                 {uiText('knowledgeTitle')}

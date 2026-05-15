@@ -284,7 +284,11 @@ export function PreviewProbeBody({
         <p id="probePanelOverviewHint" className="app-visually-hidden">
           {uiText('probePanelOverviewHint')}
         </p>
-        <div className="app-preview-probe-summary-line">
+        <div
+          className="app-preview-probe-summary-line"
+          role="group"
+          aria-label={uiText('probeSummaryReadoutGroupAria')}
+        >
           <span title={formatTooltip}>
             {formatProbeDuration(probeInfo.durationSec)}
             {probeInfo.video

@@ -717,6 +717,7 @@ export default function VideoTimeline({
           </div>
           <div
             className="app-timeline-toolbar-zoom"
+            role="group"
             aria-label={uiText('videoTimelineZoomRowAria')}
           >
             <button
