@@ -768,4 +768,9 @@
 - [J-745] 2026-05-16 06:26:00 [Assistant]: Таймлайн — строка масштаба: `role="group"` (сохранён `videoTimelineZoomRowAria`).
 - [J-746] 2026-05-16 06:28:00 [Assistant]: База знаний — строка заголовка модалки: `role="group"` + `knowledgeDialogHeaderRowAria`.
 - [J-747] 2026-05-16 06:30:00 [Assistant]: Панель ffprobe — строка краткой сводки: `role="group"` + `probeSummaryReadoutGroupAria`.
+- [J-748] 2026-05-16 06:34:00 [Assistant]: Редактор — карточка превью: `role="group"` + `editorPreviewMediaCardGroupAria`.
+- [J-749] 2026-05-16 06:36:00 [Assistant]: Редактор — тело блока превью команды экспорта: `role="region"` + `editorExportPreviewBodyRegionAria`.
+- [J-750] 2026-05-16 06:38:00 [Assistant]: Терминал — стек ввода (`app-terminal-command-stack`): `role="region"` + `terminalCommandStackAria`.
+- [J-751] 2026-05-16 06:40:00 [Assistant]: Терминал колонки журнал/подсказки (`app-terminal-layout`): `role="region"` + `terminalMainSplitAria`.
+- [J-752] 2026-05-16 06:42:00 [Assistant]: База знаний — сетка оглавление+статья: `role="group"` + `knowledgeDialogGridAria`.
 

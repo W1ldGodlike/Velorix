@@ -174,7 +174,11 @@ export function KnowledgeDialog({
             </div>
           </div>
 
-        <div className="app-knowledge-grid">
+        <div
+          className="app-knowledge-grid"
+          role="group"
+          aria-label={uiText('knowledgeDialogGridAria')}
+        >
           <aside className="app-knowledge-sidebar" aria-label={uiText('knowledgeTocAria')}>
             <input
               className="app-input app-knowledge-search"

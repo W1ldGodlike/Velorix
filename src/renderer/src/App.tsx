@@ -3854,7 +3854,11 @@ function App(): JSX.Element {
             {preview ? (
               <>
                 <div className="app-preview-stack" ref={previewStackRef}>
-                  <div className="app-preview-media-card">
+                  <div
+                    className="app-preview-media-card"
+                    role="group"
+                    aria-label={uiText('editorPreviewMediaCardGroupAria')}
+                  >
                     <video
                       key={`${preview.path}|${previewPlaybackUrl ?? preview.mediaUrl}`}
                       ref={videoRef}
@@ -5063,7 +5067,11 @@ function App(): JSX.Element {
                     >
                       {uiText('editorExportCommandPreviewSummary')}
                     </summary>
-                    <div className="app-export-preview-body">
+                    <div
+                      className="app-export-preview-body"
+                      role="region"
+                      aria-label={uiText('editorExportPreviewBodyRegionAria')}
+                    >
                       <pre
                         className="app-export-preview-pre"
                         aria-label={uiText('editorAriaExportFfmpegCommand')}
@@ -5241,7 +5249,11 @@ function App(): JSX.Element {
                 </p>
               </div>
             </div>
-            <div className="app-terminal-command-stack">
+            <div
+              className="app-terminal-command-stack"
+              role="region"
+              aria-label={uiText('terminalCommandStackAria')}
+            >
               <div
                 className="app-terminal-command-row"
                 role="toolbar"
@@ -5423,7 +5435,11 @@ function App(): JSX.Element {
                 </div>
               ) : null}
             </div>
-            <div className="app-terminal-layout">
+            <div
+              className="app-terminal-layout"
+              role="region"
+              aria-label={uiText('terminalMainSplitAria')}
+            >
               <section className="app-terminal-history" aria-label={uiText('terminalHistoryAria')}>
                 {terminalHistory.length === 0 ? (
                   <p className="app-downloads-empty">{uiText('terminalHistoryEmpty')}</p>

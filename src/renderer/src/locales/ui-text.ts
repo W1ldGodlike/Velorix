@@ -104,6 +104,7 @@ const UI_TEXT = {
     knowledgeCloseButtonAria: 'Закрыть окно справки',
     knowledgeDialogActionsToolbarAria: 'Действия в окне базы знаний',
     knowledgeDialogHeaderRowAria: 'Заголовок и действия окна базы знаний',
+    knowledgeDialogGridAria: 'Оглавление и текст статьи',
     knowledgeTopbarTooltip: 'Открыть локальную базу знаний (статьи из Help/*.md).',
     knowledgeTocAria: 'Оглавление справки',
     knowledgeArticleRegionAria: 'Текст выбранной статьи',
@@ -121,6 +122,8 @@ const UI_TEXT = {
       ' — подставится путь текущего превью редактора (только если файл уже открыт через диалог или перетаскивание). В строке ввода при наборе — компактное автодополнение: стрелки вверх/вниз, Home/End, PgUp/PgDn (шаг {pageStep}), Shift+Tab — предыдущая позиция, Tab и Enter — подставить активную подсказку (до {maxInline} вариантов из той же базы, что и справа). Полный перечень — в боковой панели: «Поиск подсказок», клик по строке (если у подсказки есть готовая команда — подставится целиком). В журнале вывода у каждой строки — кнопка «Копир.» при наведении (копирует ровно эту строку). ',
     terminalCommandInputAriaLabel: 'Ввод команды терминала',
     terminalCommandToolbarAria: 'Ввод команды, вставка файла и запуск',
+    terminalCommandStackAria: 'Строка команды и всплывающие подсказки',
+    terminalMainSplitAria: 'Журнал вывода и каталог подсказок',
     terminalCommandPlaceholder: 'ffprobe -version',
     terminalPreviewFileButton: 'Превью-файл',
     terminalPreviewFileTooltipOpen: 'Вставить токен «{token}» (путь текущего превью)',
@@ -511,6 +514,7 @@ const UI_TEXT = {
     topbarUiLocaleVisuallyHiddenEn: 'Текущий язык интерфейса: English',
     editorPreviewDropzoneAria: 'Область предпросмотра',
     editorPreviewVideoAriaTemplate: 'Предпросмотр: {name}',
+    editorPreviewMediaCardGroupAria: 'Видео предпросмотра и панель управления',
     editorPreviewEmptyLead:
       'Нет источника — перетащите видеофайл сюда или «Открыть…» в меню «Файл» / кнопка сверху.',
     editorPreviewEmptyHint:
@@ -1012,6 +1016,7 @@ const UI_TEXT = {
     editorFfmpegSectionOutputHint:
       'Показать, как программа соберёт сохранение; кнопка «Экспорт» вверху откроет диалог «Сохранить как…»; ниже — быстрые действия с последним готовым файлом.',
     editorExportCommandPreviewSummary: 'Превью команды сохранения',
+    editorExportPreviewBodyRegionAria: 'Текст превью команды сохранения и действия копирования',
     editorAriaExportFfmpegCommand: 'Текст команды сохранения',
     editorCopyFfmpegCommandTitle:
       'Скопировать текст команды в буфер — если нужно выполнить то же сохранение вручную или показать специалисту.',
@@ -1319,6 +1324,7 @@ const UI_TEXT = {
     knowledgeCloseButtonAria: 'Close help window',
     knowledgeDialogActionsToolbarAria: 'Knowledge base window actions',
     knowledgeDialogHeaderRowAria: 'Knowledge base dialog title and actions',
+    knowledgeDialogGridAria: 'Table of contents and article',
     knowledgeTopbarTooltip: 'Open the local knowledge base (Help/*.md articles).',
     knowledgeTocAria: 'Help table of contents',
     knowledgeArticleRegionAria: 'Selected article body',
@@ -1336,6 +1342,8 @@ const UI_TEXT = {
       ' — it expands to the current editor preview path (only when a file is already open via the dialog or DnD). While typing, the input shows compact IntelliSense: Up/Down, Home/End, PgUp/PgDn (step {pageStep}), Shift+Tab moves the selection up, Tab and Enter insert the active suggestion (up to {maxInline} items from the same catalog as the sidebar). The full catalog is in the right-hand panel: use “Filter hints”, click a row (when a hint has a full command line, it replaces the whole line). Each line in the output log has a “Copy” hover button (copies exactly that line). ',
     terminalCommandInputAriaLabel: 'CLI command',
     terminalCommandToolbarAria: 'Command line, insert file, and run',
+    terminalCommandStackAria: 'Command input and inline suggestions',
+    terminalMainSplitAria: 'Output log and hints catalog',
     terminalCommandPlaceholder: 'ffprobe -version',
     terminalPreviewFileButton: 'Preview file',
     terminalPreviewFileTooltipOpen: 'Insert the “{token}” token (current preview path)',
@@ -1723,6 +1731,7 @@ const UI_TEXT = {
     topbarUiLocaleVisuallyHiddenEn: 'Current interface language: English',
     editorPreviewDropzoneAria: 'Preview area',
     editorPreviewVideoAriaTemplate: 'Preview: {name}',
+    editorPreviewMediaCardGroupAria: 'Preview video and transport controls',
     editorPreviewEmptyLead:
       'No source — drop a video here or use Open… in the File menu / the top button.',
     editorPreviewEmptyHint:
@@ -2223,6 +2232,7 @@ const UI_TEXT = {
     editorFfmpegSectionOutputHint:
       'See how the save command is built; the Export button opens a Save dialog; below are quick actions for the last finished file.',
     editorExportCommandPreviewSummary: 'Save command preview',
+    editorExportPreviewBodyRegionAria: 'Save command preview text and copy actions',
     editorAriaExportFfmpegCommand: 'Save command text',
     editorCopyFfmpegCommandTitle:
       'Copy the command text to the clipboard — handy to rerun manually or share with support.',
