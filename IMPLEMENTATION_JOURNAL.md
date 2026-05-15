@@ -692,5 +692,6 @@
 - [J-673] 2026-05-15 16:27:03 [Assistant]: §7.3 — `listFfmpegExportBatchInputPaths`, `removeWaitingFfmpegExportBatchRows`, IPC `batchExportListInputPaths` / `batchExportRemoveWaiting`; `ffmpeg-export-batch-report` (копировать пути, сохранить TSV-отчёт); toolbar App; авто-раскрытие панели batch при auto-enqueue; Vitest report/queue/ytdlp snapshot. `npm run check:quiet`.
 - [J-674] 2026-05-15 23:21:48 [Assistant]: журнал — `check-journal` (git-якоря, монотонность, не из будущего), `sync-journal-times-from-git.mjs`, правило времени в шапке; массовая синхронизация 673 записей.
 - [J-675] 2026-05-15 23:26:49 [Assistant]: §7.3/§7.4 — `addFfmpegExportBatchPaths` → `{added,skipped}` + подсказки UI; IPC `batchExportOpenInput` (файл/папка/редактор); quick yt-dlp textarea + «В очередь» без смены вкладки; Vitest open-input/add-counts. `npm run check:quiet`.
-- [J-677] 2026-05-15 23:33:00 [Assistant]: §7.2 HW — `ffmpegExportHwDecode` + `-hwaccel` (`ffmpeg-export-hw-decode.ts`, argv/preview/batch/single); PillSwitch в rail; статусбар кодека; пресеты/snapshot; Vitest hw-decode/argv. `npm run check:quiet`.
+- [J-676] 2026-05-15 23:26:56 [Assistant]: журнал — метка J-675 по git.
+- [J-677] 2026-05-15 23:34:08 [Assistant]: §7.2 HW — `ffmpegExportHwDecode` + `-hwaccel` (`ffmpeg-export-hw-decode.ts`, argv/preview/batch/single); PillSwitch в rail; статусбар кодека; пресеты/snapshot; Vitest hw-decode/argv. `npm run check:quiet`.
 
