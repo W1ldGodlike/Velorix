@@ -260,3 +260,31 @@ describe('buildYtdlpRunOptionsSnapshot §6.4 autoExportAfterOpenInHandler', () =
     ).toBe(true)
   })
 })
+
+describe('buildYtdlpRunOptionsSnapshot §7.4 batch enqueue', () => {
+  it('по умолчанию enqueue/autoStart выключены', () => {
+    const snap = buildYtdlpRunOptionsSnapshot({ theme: 'dark' })
+    expect(snap.enqueueBatchOnDownloadComplete).toBe(false)
+    expect(snap.autoStartBatchAfterEnqueue).toBe(false)
+  })
+
+  it('включаются при явных флагах settings', () => {
+    const snap = buildYtdlpRunOptionsSnapshot({
+      theme: 'dark',
+      ytdlpEnqueueBatchOnDownloadComplete: true,
+      ytdlpAutoStartBatchAfterEnqueue: true
+    })
+    expect(snap.enqueueBatchOnDownloadComplete).toBe(true)
+    expect(snap.autoStartBatchAfterEnqueue).toBe(true)
+  })
+
+  it('payloadFromSnapshot прокидывает batch-флаги', () => {
+    const snap = buildYtdlpRunOptionsSnapshot({
+      theme: 'dark',
+      ytdlpEnqueueBatchOnDownloadComplete: true
+    })
+    const payload = payloadFromSnapshot(snap, undefined, 'ru')
+    expect(payload.enqueueBatchOnDownloadComplete).toBe(true)
+    expect(payload.autoStartBatchAfterEnqueue).toBe(false)
+  })
+})

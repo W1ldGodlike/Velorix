@@ -290,6 +290,11 @@ export interface FluxAlloyApi {
   }
   batchExport: {
     getSnapshot: () => Promise<FfmpegExportBatchSnapshot>
+    listInputPaths: () => Promise<{ ok: true; paths: string[] }>
+    removeWaiting: () => Promise<
+      | { ok: true; removed: number }
+      | { ok: false; error: string }
+    >
     pickFiles: () => Promise<
       | { ok: true; added: number }
       | { ok: false; cancelled: true }

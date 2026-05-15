@@ -10,6 +10,8 @@ import {
   addFfmpegExportBatchPaths,
   clearFfmpegExportBatchQueue,
   getFfmpegExportBatchSnapshot,
+  listFfmpegExportBatchInputPaths,
+  removeWaitingFfmpegExportBatchRows,
   moveFfmpegExportBatchRow,
   removeCompletedFfmpegExportBatchRows,
   removeFfmpegExportBatchRows,
@@ -121,6 +123,22 @@ describe('ffmpeg-export-batch-queue', () => {
       progress: '100%'
     })
     expect(removeCompletedFfmpegExportBatchRows()).toBe(1)
+    expect(getFfmpegExportBatchSnapshot().rows).toHaveLength(1)
+  })
+
+  it('listFfmpegExportBatchInputPaths сохраняет порядок', () => {
+    addFfmpegExportBatchPaths(['z.mp4', 'a.mp4'])
+    expect(listFfmpegExportBatchInputPaths()).toEqual(['z.mp4', 'a.mp4'])
+  })
+
+  it('removeWaitingFfmpegExportBatchRows', () => {
+    addFfmpegExportBatchPaths(['a.mp4', 'b.mp4'])
+    const rows = getFfmpegExportBatchSnapshot().rows
+    updateFfmpegExportBatchRow(rows[0]!.id, {
+      status: FFMPEG_EXPORT_BATCH_STATUS_DONE,
+      progress: '100%'
+    })
+    expect(removeWaitingFfmpegExportBatchRows()).toBe(1)
     expect(getFfmpegExportBatchSnapshot().rows).toHaveLength(1)
   })
 })

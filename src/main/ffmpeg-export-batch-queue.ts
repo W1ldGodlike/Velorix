@@ -73,6 +73,20 @@ export function hydrateFfmpegExportBatchQueueFromPersisted(
   concurrency = payload.concurrency
 }
 
+export function listFfmpegExportBatchInputPaths(): string[] {
+  return rows.map((r) => r.inputPath)
+}
+
+export function removeWaitingFfmpegExportBatchRows(): number {
+  const before = rows.length
+  rows = rows.filter((r) => r.status !== FFMPEG_EXPORT_BATCH_STATUS_WAITING)
+  const removed = before - rows.length
+  if (removed > 0) {
+    notifyQueueChanged()
+  }
+  return removed
+}
+
 export function getFfmpegExportBatchSnapshot(): FfmpegExportBatchSnapshot {
   let completedOk = 0
   let completedError = 0

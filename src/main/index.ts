@@ -130,8 +130,10 @@ import {
   getFfmpegExportBatchSnapshot,
   markWaitingFfmpegExportBatchRowsCancelled,
   moveFfmpegExportBatchRow,
+  listFfmpegExportBatchInputPaths,
   removeFfmpegExportBatchRows,
   removeCompletedFfmpegExportBatchRows,
+  removeWaitingFfmpegExportBatchRows,
   reorderFfmpegExportBatchRowAt,
   retryFailedFfmpegExportBatchRows,
   retryFfmpegExportBatchRows,
@@ -951,6 +953,7 @@ function scheduleEnqueueBatchAfterDownload(absoluteFile: string, rowId: number):
         stream: 'stderr',
         text: formatFluxLogBatchEnqueueAdded(loc, absoluteFile)
       })
+      revealMainWindowBatchExportPanel()
     }
     broadcastFfmpegExportBatchSnapshot?.()
     const cli = getYtdlpRunOptionsSnapshot()
@@ -1072,6 +1075,13 @@ function sanitizeMainWindowUiPanelPatch(raw: unknown): Partial<MainWindowUiPanel
 }
 
 /** §4.1 — persist раскрытия collapsible FFmpeg / быстрый yt-dlp в главном renderer. */
+function revealMainWindowBatchExportPanel(): void {
+  if (cachedSettings.mainWindowUiPanels?.batchExport === true) {
+    return
+  }
+  persistMainWindowUiPanelsMerge({ batchExport: true })
+}
+
 function persistMainWindowUiPanelsMerge(raw: unknown): AppSettings {
   const patch = sanitizeMainWindowUiPanelPatch(raw)
   if (Object.keys(patch).length === 0) {
@@ -3401,6 +3411,23 @@ app.whenReady().then(() => {
   ipcMain.handle(mw.batchExportGetSnapshot, (): FfmpegExportBatchSnapshot => {
     return getFfmpegExportBatchSnapshot()
   })
+
+  ipcMain.handle(mw.batchExportListInputPaths, (): { ok: true; paths: string[] } => {
+    return { ok: true, paths: listFfmpegExportBatchInputPaths() }
+  })
+
+  ipcMain.handle(
+    mw.batchExportRemoveWaiting,
+    (): { ok: true; removed: number } | { ok: false; error: string } => {
+      const M = mainAppStr()
+      if (isFfmpegExportBatchActive()) {
+        return { ok: false, error: M.batchExportRunningCantMutate }
+      }
+      const removed = removeWaitingFfmpegExportBatchRows()
+      pushBatchExportSnapshot()
+      return { ok: true, removed }
+    }
+  )
 
   ipcMain.handle(
     mw.batchExportPickFiles,

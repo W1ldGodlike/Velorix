@@ -532,6 +532,12 @@ const fluxalloy = {
   batchExport: {
     getSnapshot: (): Promise<FfmpegExportBatchSnapshot> =>
       ipcRenderer.invoke(mw.batchExportGetSnapshot),
+    listInputPaths: (): Promise<{ ok: true; paths: string[] }> =>
+      ipcRenderer.invoke(mw.batchExportListInputPaths),
+    removeWaiting: (): Promise<
+      | { ok: true; removed: number }
+      | { ok: false; error: string }
+    > => ipcRenderer.invoke(mw.batchExportRemoveWaiting),
     pickFiles: (): Promise<
       | { ok: true; added: number }
       | { ok: false; cancelled: true }

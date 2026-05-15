@@ -87,6 +87,7 @@ import {
 } from '../../shared/ffmpeg-export-contract'
 import type { AppSettings, ResolvedAppTheme } from '../../shared/settings-contract'
 import { buildFfmpegExportPreviewCommand } from '../../shared/ffmpeg-export-argv'
+import { formatFfmpegExportBatchReportText } from '../../shared/ffmpeg-export-batch-report'
 import { isFfmpegExportBatchVideoPath } from '../../shared/ffmpeg-export-batch-video-ext'
 import { isBuiltinExportUserPresetId } from '../../shared/builtin-ffmpeg-export-user-presets'
 import { FFMPEG_HW_VIDEO_ENCODER_IDS } from '../../shared/ffmpeg-hw-encoder-probe'
@@ -2236,6 +2237,51 @@ function App(): JSX.Element {
     setStatusHint(uiText('batchExportStarted'))
   }
 
+  async function handleBatchCopyInputPaths(): Promise<void> {
+    const listed = await window.fluxalloy.batchExport.listInputPaths()
+    if (listed.paths.length === 0) {
+      setStatusHint(uiText('batchExportEmpty'))
+      return
+    }
+    const text = listed.paths.join('\r\n')
+    const written = await window.fluxalloy.clipboard.writeText(text)
+    if (!written.ok) {
+      setStatusHint(uiText('batchExportCopyPathsFailed'))
+      return
+    }
+    setStatusHint(uiTextVars('batchExportCopiedPaths', { count: String(listed.paths.length) }))
+  }
+
+  async function handleBatchSaveReport(): Promise<void> {
+    const snap = batchSnapshot ?? (await window.fluxalloy.batchExport.getSnapshot())
+    if (snap.rows.length === 0) {
+      setStatusHint(uiText('batchExportEmpty'))
+      return
+    }
+    const loc = getUiLocale() === 'en' ? 'en' : 'ru'
+    const res = await window.fluxalloy.saveTextWithDialog({
+      title: uiText('batchExportSaveReportTitle'),
+      defaultFileName: uiText('batchExportSaveReportDefaultName'),
+      content: formatFfmpegExportBatchReportText(snap, loc)
+    })
+    if (res.ok) {
+      setStatusHint(uiTextVars('batchExportReportSaved', { path: res.path }))
+    } else if ('error' in res) {
+      setStatusHint(res.error)
+    }
+  }
+
+  async function handleBatchRemoveWaiting(): Promise<void> {
+    const res = await window.fluxalloy.batchExport.removeWaiting()
+    if (!res.ok) {
+      setStatusHint(res.error)
+      return
+    }
+    if (res.removed > 0) {
+      setStatusHint(uiTextVars('batchExportRemovedWaiting', { count: String(res.removed) }))
+    }
+  }
+
   async function toggleTheme(): Promise<void> {
     const s = await window.fluxalloy.settings.get()
     if (s.theme === 'system') {
@@ -3001,6 +3047,36 @@ function App(): JSX.Element {
                   }}
                 >
                   {uiText('batchExportClear')}
+                </button>
+                <button
+                  type="button"
+                  className="app-btn"
+                  disabled={(batchSnapshot?.rows.length ?? 0) === 0}
+                  onClick={() => {
+                    void handleBatchCopyInputPaths()
+                  }}
+                >
+                  {uiText('batchExportCopyPaths')}
+                </button>
+                <button
+                  type="button"
+                  className="app-btn"
+                  disabled={(batchSnapshot?.rows.length ?? 0) === 0}
+                  onClick={() => {
+                    void handleBatchSaveReport()
+                  }}
+                >
+                  {uiText('batchExportSaveReport')}
+                </button>
+                <button
+                  type="button"
+                  className="app-btn"
+                  disabled={batchExportBusy}
+                  onClick={() => {
+                    void handleBatchRemoveWaiting()
+                  }}
+                >
+                  {uiText('batchExportRemoveWaiting')}
                 </button>
               </div>
               </div>
