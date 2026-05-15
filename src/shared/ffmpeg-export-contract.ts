@@ -22,6 +22,7 @@ export type FfmpegExportVideoCodecId =
   | 'libsvtav1'
   | 'libaom-av1'
   | 'librav1e'
+  | 'prores_ks'
   | 'hw_auto'
   | 'hw_auto_hevc'
   | FfmpegHwVideoEncoderId
@@ -247,6 +248,9 @@ export const FFMPEG_EXPORT_SVTAV1_MKV_ONLY_ERROR = 'AV1 (libsvtav1): тольк�
 export const FFMPEG_EXPORT_AOM_AV1_MKV_ONLY_ERROR = 'AV1 (libaom-av1): только контейнер MKV.' as const
 /** `librav1e` допускается только с контейнером MKV (spawn и превью). */
 export const FFMPEG_EXPORT_RAV1E_MKV_ONLY_ERROR = 'AV1 (librav1e): только контейнер MKV.' as const
+/** `prores_ks` в текущей модели экспорта — только QuickTime MOV. */
+export const FFMPEG_EXPORT_PRORES_MOV_ONLY_ERROR =
+  'Apple ProRes (prores_ks): только контейнер MOV.' as const
 
 export type MediaExportStartResult =
   | { ok: true; path: string }

@@ -25,7 +25,13 @@ import {
   resolveFfmpegExportVideoTransformFilters,
   shouldApplyFfmpegExportTrim
 } from '../../src/shared/ffmpeg-export-argv'
-import { FFMPEG_EXPORT_AOM_AV1_MKV_ONLY_ERROR, FFMPEG_EXPORT_RAV1E_MKV_ONLY_ERROR, FFMPEG_EXPORT_SVTAV1_MKV_ONLY_ERROR, FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR } from '../../src/shared/ffmpeg-export-contract'
+import {
+  FFMPEG_EXPORT_AOM_AV1_MKV_ONLY_ERROR,
+  FFMPEG_EXPORT_PRORES_MOV_ONLY_ERROR,
+  FFMPEG_EXPORT_RAV1E_MKV_ONLY_ERROR,
+  FFMPEG_EXPORT_SVTAV1_MKV_ONLY_ERROR,
+  FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR
+} from '../../src/shared/ffmpeg-export-contract'
 
 describe('shared ffmpeg export argv', () => {
   it('даёт CRF и x264 preset под системные пресеты §7.2', () => {
@@ -306,6 +312,50 @@ describe('shared ffmpeg export argv', () => {
     const j = argv.indexOf('-c:v')
     expect(argv.slice(j, j + 4)).toEqual(['-c:v', 'librav1e', '-speed', '7'])
     expect(argv[argv.indexOf('-qp') + 1]).toBe('95')
+  })
+
+  it('prores_ks: только MOV; -profile:v и -vendor', () => {
+    expect(() =>
+      buildFfmpegExportArgv({
+        inputPath: 'in.mp4',
+        outputPath: 'out.mkv',
+        applyTrim: false,
+        encodePreset: 'balance',
+        videoCodec: 'prores_ks',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'aac',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        container: 'mkv'
+      })
+    ).toThrow(FFMPEG_EXPORT_PRORES_MOV_ONLY_ERROR)
+
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mov',
+      outputPath: 'out.mov',
+      applyTrim: false,
+      encodePreset: 'quality',
+      videoCodec: 'prores_ks',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mov'
+    })
+    const j = argv.indexOf('-c:v')
+    expect(argv.slice(j, j + 6)).toEqual([
+      '-c:v',
+      'prores_ks',
+      '-profile:v',
+      '4',
+      '-vendor',
+      'apl0'
+    ])
+    expect(argv.includes('-pix_fmt')).toBe(false)
   })
 
   it('h264_nvenc: без libx264-preset, VBR + cq; hevc_nvenc + mp4 даёт hvc1', () => {

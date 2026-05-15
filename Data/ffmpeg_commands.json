@@ -287,6 +287,13 @@
     "tool": "ffmpeg"
   },
   {
+    "token": "prores_ks",
+    "summary": "Apple ProRes (prores_ks), обычно в MOV.",
+    "examples": ["ffmpeg -c:v prores_ks -profile:v 3 -vendor apl0 out.mov"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/Encode/VFX",
+    "tool": "ffmpeg"
+  },
+  {
     "token": "-b:a",
     "summary": "Битрейт аудио.",
     "examples": ["ffmpeg -c:a aac -b:a 192k"],

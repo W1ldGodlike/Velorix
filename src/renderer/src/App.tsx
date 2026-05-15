@@ -90,6 +90,7 @@ import { FFMPEG_HW_VIDEO_ENCODER_IDS } from '../../shared/ffmpeg-hw-encoder-prob
 import type { FfmpegHwEncodersProbeResult } from '../../shared/ffmpeg-hw-encoder-probe'
 import {
   cpuFfmpegVideoCodecRequiresMkv,
+  ffmpegExportVideoCodecRequiresMov,
   isFfmpegHwAutoVideoCodec,
   isFfmpegHwExportVideoCodec,
   parseFfmpegExportVideoCodec,
@@ -725,6 +726,7 @@ function App(): JSX.Element {
           { id: 'libsvtav1', label: uiText('editorExportCodecSvtav1') },
           { id: 'libaom-av1', label: uiText('editorExportCodecAomav1') },
           { id: 'librav1e', label: uiText('editorExportCodecLibrav1e') },
+          { id: 'prores_ks', label: uiText('editorExportCodecProresKs') },
           { id: 'hw_auto', label: uiText('editorExportCodecHwAuto') },
           { id: 'hw_auto_hevc', label: uiText('editorExportCodecHwAutoHevc') }
         ]
@@ -1428,6 +1430,10 @@ function App(): JSX.Element {
     if (cpuFfmpegVideoCodecRequiresMkv(vcodec) && nextContainer !== 'mkv') {
       nextContainer = 'mkv'
       void window.fluxalloy.settings.setFfmpegExportContainer('mkv').catch(console.error)
+    }
+    if (ffmpegExportVideoCodecRequiresMov(vcodec) && nextContainer !== 'mov') {
+      nextContainer = 'mov'
+      void window.fluxalloy.settings.setFfmpegExportContainer('mov').catch(console.error)
     }
     setExportContainer(nextContainer)
     setExportTwoPass(loaded.ffmpegExportTwoPass === true && bitrateOk && vcodec === 'libx264')
@@ -2740,6 +2746,13 @@ function App(): JSX.Element {
                             .catch(console.error)
                           setStatusHint(uiText('editorExportAutoContainerMkv'))
                         }
+                        if (ffmpegExportVideoCodecRequiresMov(v) && exportContainer !== 'mov') {
+                          setExportContainer('mov')
+                          void window.fluxalloy.settings
+                            .setFfmpegExportContainer('mov')
+                            .catch(console.error)
+                          setStatusHint(uiText('editorExportAutoContainerMov'))
+                        }
                         if (v !== 'libx264' && exportTwoPass) {
                           setExportTwoPass(false)
                           void window.fluxalloy.settings
@@ -2804,7 +2817,8 @@ function App(): JSX.Element {
                           key={p.id}
                           value={p.id}
                           disabled={
-                            cpuFfmpegVideoCodecRequiresMkv(exportVideoCodec) && p.id !== 'mkv'
+                            (cpuFfmpegVideoCodecRequiresMkv(exportVideoCodec) && p.id !== 'mkv') ||
+                            (ffmpegExportVideoCodecRequiresMov(exportVideoCodec) && p.id !== 'mov')
                           }
                         >
                           {p.label}

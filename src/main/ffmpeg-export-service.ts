@@ -33,6 +33,8 @@ import type {
 import {
   cpuFfmpegVideoCodecRequiresMkv,
   exportCpuCodecMkvOnlyErrorMessage,
+  exportMovOnlyCodecErrorMessage,
+  ffmpegExportVideoCodecRequiresMov,
   parseFfmpegExportVideoCodec,
   pickFfmpegHwAutoEncoder,
   pickFfmpegHwAutoHevcEncoder
@@ -918,6 +920,13 @@ export async function runFfmpegExportJob(params: {
     return {
       ok: false,
       error: exportCpuCodecMkvOnlyErrorMessage(videoCodec),
+      videoCodecUsed: videoCodec
+    }
+  }
+  if (ffmpegExportVideoCodecRequiresMov(videoCodec) && container !== 'mov') {
+    return {
+      ok: false,
+      error: exportMovOnlyCodecErrorMessage(videoCodec),
       videoCodecUsed: videoCodec
     }
   }

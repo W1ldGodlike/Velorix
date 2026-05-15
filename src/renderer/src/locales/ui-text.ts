@@ -661,7 +661,9 @@ const UI_TEXT = {
     editorExportCodecSvtav1: 'AV1 (libsvtav1, только MKV)',
     editorExportCodecAomav1: 'AV1 (libaom-av1, только MKV)',
     editorExportCodecLibrav1e: 'AV1 (librav1e, только MKV)',
+    editorExportCodecProresKs: 'Apple ProRes (prores_ks, только MOV)',
     editorExportAutoContainerMkv: 'Контейнер переключён на MKV (VP9/AV1 CPU).',
+    editorExportAutoContainerMov: 'Контейнер переключён на MOV (ProRes).',
     editorExportCodecHwAuto: 'Авто (лучший H.264/AV1 HW или CPU)',
     editorExportCodecHwAutoBadge: 'АВТО',
     editorExportCodecHwAutoBadgeTitle:
@@ -1690,7 +1692,9 @@ const UI_TEXT = {
     editorExportCodecSvtav1: 'AV1 (libsvtav1, MKV only)',
     editorExportCodecAomav1: 'AV1 (libaom-av1, MKV only)',
     editorExportCodecLibrav1e: 'AV1 (librav1e, MKV only)',
+    editorExportCodecProresKs: 'Apple ProRes (prores_ks, MOV only)',
     editorExportAutoContainerMkv: 'Container switched to MKV (VP9/AV1 CPU).',
+    editorExportAutoContainerMov: 'Container switched to MOV (ProRes).',
     editorExportCodecHwAuto: 'Auto (best H.264/AV1 HW or CPU)',
     editorExportCodecHwAutoBadge: 'AUTO',
     editorExportCodecHwAutoBadgeTitle:

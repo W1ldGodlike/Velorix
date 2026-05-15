@@ -36,6 +36,8 @@ import type { FfmpegHwVideoEncoderId } from './ffmpeg-hw-encoder-probe'
 import {
   cpuFfmpegVideoCodecRequiresMkv,
   exportCpuCodecMkvOnlyErrorMessage,
+  exportMovOnlyCodecErrorMessage,
+  ffmpegExportVideoCodecRequiresMov,
   isFfmpegHwExportVideoCodec
 } from './ffmpeg-export-video-codec'
 
@@ -629,6 +631,9 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
   if (cpuFfmpegVideoCodecRequiresMkv(vcodec) && container !== 'mkv') {
     throw new Error(exportCpuCodecMkvOnlyErrorMessage(vcodec))
   }
+  if (ffmpegExportVideoCodecRequiresMov(vcodec) && container !== 'mov') {
+    throw new Error(exportMovOnlyCodecErrorMessage(vcodec))
+  }
   if (isFfmpegHwExportVideoCodec(vcodec)) {
     if (tp) {
       throw new Error('Двухпроходный режим поддерживается только для libx264')
@@ -704,6 +709,16 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
     } else {
       args.push('-b:v', params.videoBitrate)
     }
+  } else if (vcodec === 'prores_ks') {
+    if (tp) {
+      throw new Error('Двухпроходный режим поддерживается только для libx264')
+    }
+    const profile =
+      params.encodePreset === 'smaller' ? '1' : params.encodePreset === 'quality' ? '4' : '3'
+    args.push('-c:v', 'prores_ks', '-profile:v', profile, '-vendor', 'apl0')
+    if (params.videoBitrate !== null) {
+      args.push('-b:v', params.videoBitrate)
+    }
   } else {
     args.push('-c:v', vcodec, '-preset', enc.x264preset)
     if (vcodec === 'libx265' && (container === 'mp4' || container === 'mov')) {
@@ -723,7 +738,9 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
     }
   }
 
-  args.push('-pix_fmt', 'yuv420p')
+  if (vcodec !== 'prores_ks') {
+    args.push('-pix_fmt', 'yuv420p')
+  }
   if (filters.length > 0) {
     args.push('-vf', filters.join(','))
   }

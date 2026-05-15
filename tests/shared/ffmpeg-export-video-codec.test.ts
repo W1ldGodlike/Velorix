@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest'
 import {
   cpuFfmpegVideoCodecRequiresMkv,
   exportCpuCodecMkvOnlyErrorMessage,
+  exportMovOnlyCodecErrorMessage,
+  ffmpegExportVideoCodecRequiresMov,
   isFfmpegHwExportVideoCodec,
   parseFfmpegExportVideoCodec,
   pickFfmpegHwAutoEncoder,
@@ -21,6 +23,7 @@ describe('ffmpeg-export-video-codec', () => {
     expect(parseFfmpegExportVideoCodec('libsvtav1')).toBe('libsvtav1')
     expect(parseFfmpegExportVideoCodec('libaom-av1')).toBe('libaom-av1')
     expect(parseFfmpegExportVideoCodec('librav1e')).toBe('librav1e')
+    expect(parseFfmpegExportVideoCodec('prores_ks')).toBe('prores_ks')
     expect(parseFfmpegExportVideoCodec('h264_nvenc')).toBe('h264_nvenc')
     expect(parseFfmpegExportVideoCodec('evil')).toBe('libx264')
   })
@@ -76,7 +79,14 @@ describe('ffmpeg-export-video-codec', () => {
     expect(cpuFfmpegVideoCodecRequiresMkv('libsvtav1')).toBe(true)
     expect(cpuFfmpegVideoCodecRequiresMkv('libaom-av1')).toBe(true)
     expect(cpuFfmpegVideoCodecRequiresMkv('librav1e')).toBe(true)
+    expect(cpuFfmpegVideoCodecRequiresMkv('prores_ks')).toBe(false)
     expect(cpuFfmpegVideoCodecRequiresMkv('libx264')).toBe(false)
+  })
+
+  it('ffmpegExportVideoCodecRequiresMov / exportMovOnlyCodecErrorMessage', () => {
+    expect(ffmpegExportVideoCodecRequiresMov('prores_ks')).toBe(true)
+    expect(ffmpegExportVideoCodecRequiresMov('libx264')).toBe(false)
+    expect(exportMovOnlyCodecErrorMessage('prores_ks')).toContain('prores_ks')
   })
 
   it('exportCpuCodecMkvOnlyErrorMessage', () => {
