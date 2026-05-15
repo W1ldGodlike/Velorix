@@ -431,6 +431,8 @@ export interface FfmpegExportArgvParams {
    * Проход 1: `-an`, вывод в `nullDevice`; проход 2: обычный звук и `outputPath`.
    */
   twoPass?: { pass: 1 | 2; passlogfile: string; nullDevice: string }
+  /** §7.3 — ограничить ffmpeg одним потоком (`-threads 1`). */
+  economyMode?: boolean
   /**
    * §7.2 — сдвиг громкости в дБ. `null`/`0` — без `-filter:a`. При `audioMode='none'`
    * параметр игнорируется (нет звука, фильтр некуда применять).
@@ -612,6 +614,9 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
     filters.push(`fps=${params.fps}`)
   }
   const args = ['-y', '-hide_banner', '-loglevel', 'info', '-stats']
+  if (params.economyMode === true) {
+    args.push('-threads', '1')
+  }
   if (params.applyTrim && params.trim) {
     args.push(
       '-ss',
@@ -885,6 +890,8 @@ export interface FfmpegExportPreviewInput {
   applyTrim?: boolean
   /** §7.2 / v0 — показать пару команд при включённом двухпроходе и режиме битрейта. */
   twoPass?: boolean
+  /** §7.3 — `-threads 1` в превью argv. */
+  economyMode?: boolean
   /** Плейсхолдер `-passlogfile` в тексте превью (нет реального пути во временном каталоге). */
   twoPassPasslogPlaceholder?: string | null
   /** Плейсхолдер вывода 1-го прохода (строго текст для UI). */
@@ -991,7 +998,8 @@ export function buildFfmpegExportPreviewCommand(
     ...(input.videoVignette !== undefined ? { videoVignette: input.videoVignette } : {}),
     ...(input.videoBlur !== undefined ? { videoBlur: input.videoBlur } : {}),
     ...(input.videoDeinterlace !== undefined ? { videoDeinterlace: input.videoDeinterlace } : {}),
-    ...(input.audioNormalize !== undefined ? { audioNormalize: input.audioNormalize } : {})
+    ...(input.audioNormalize !== undefined ? { audioNormalize: input.audioNormalize } : {}),
+    ...(input.economyMode === true ? { economyMode: true } : {})
   }
 
   let pass1Command: string | undefined

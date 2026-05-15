@@ -18,6 +18,7 @@ import {
   formatTerminalIntroTail,
   formatTerminalPreviewTooltip,
   formatDownloadsQueueRowStatus,
+  formatFfmpegExportBatchStatusLabel,
   applyPersistedUiLocale,
   setUiLocaleForSession,
   getUiLocale,
@@ -624,6 +625,7 @@ function App(): JSX.Element {
   const [exportScalePreset, setExportScalePreset] = useState<FfmpegExportScalePresetId>('source')
   /** §7.2 / v0 — двухпроходный libx264 только вместе с выбранным видеобитрейтом. */
   const [exportTwoPass, setExportTwoPass] = useState(false)
+  const [exportEconomyMode, setExportEconomyMode] = useState(false)
   /** §7.2 — сдвиг громкости в дБ (`-filter:a volume`); `0` означает «без фильтра». */
   const [exportAudioGainDb, setExportAudioGainDb] = useState<number>(0)
   /** §7.2 — добавить `-map_metadata -1` (очистить контейнерные tag-ы). */
@@ -1486,6 +1488,7 @@ function App(): JSX.Element {
     setExportContainer(nextContainer)
     setExportAudioMode(nextAudioMode)
     setExportTwoPass(loaded.ffmpegExportTwoPass === true && bitrateOk && vcodec === 'libx264')
+    setExportEconomyMode(loaded.ffmpegExportEconomyMode === true)
     if (
       typeof loaded.ffmpegExportAudioBitrate === 'string' &&
       EXPORT_AUDIO_BITRATES.includes(loaded.ffmpegExportAudioBitrate)
@@ -1590,6 +1593,7 @@ function App(): JSX.Element {
       videoTransform: exportVideoTransform,
       cropPreset: exportCropPreset,
       ...(exportTwoPass && exportVideoCodec === 'libx264' ? { twoPass: true as const } : {}),
+      ...(exportEconomyMode ? { economyMode: true as const } : {}),
       ...(exportAudioGainDb !== 0 ? { audioGainDb: exportAudioGainDb } : {}),
       ...(exportStripMetadata ? { stripMetadata: true } : {}),
       ...(exportStripChapters ? { stripChapters: true } : {}),
@@ -1620,6 +1624,7 @@ function App(): JSX.Element {
     exportVideoTransform,
     exportCropPreset,
     exportTwoPass,
+    exportEconomyMode,
     exportAudioGainDb,
     exportStripMetadata,
     exportStripChapters,
@@ -2009,8 +2014,15 @@ function App(): JSX.Element {
 
   useEffect(() => {
     void window.fluxalloy.batchExport.getSnapshot().then(setBatchSnapshot).catch(console.error)
-    return window.fluxalloy.batchExport.onSnapshot(setBatchSnapshot)
-  }, [])
+    return window.fluxalloy.batchExport.onSnapshot((snap) => {
+      setBatchSnapshot((prev) => {
+        if (prev?.running === true && snap.running === false) {
+          void refreshProcessingHistory()
+        }
+        return snap
+      })
+    })
+  }, [refreshProcessingHistory])
 
   const buildCurrentFfmpegExportOverrides = useCallback(
     () => ({
@@ -2026,6 +2038,7 @@ function App(): JSX.Element {
       videoTransform: exportVideoTransform,
       cropPreset: exportCropPreset,
       twoPass: exportTwoPass && exportVideoBitrate !== null && exportVideoCodec === 'libx264',
+      economyMode: exportEconomyMode,
       audioGainDb: exportAudioGainDb === 0 ? null : exportAudioGainDb,
       stripMetadata: exportStripMetadata,
       stripChapters: exportStripChapters,
@@ -2056,6 +2069,7 @@ function App(): JSX.Element {
       exportVideoTransform,
       exportCropPreset,
       exportTwoPass,
+      exportEconomyMode,
       exportAudioGainDb,
       exportStripMetadata,
       exportStripChapters,
@@ -2074,6 +2088,16 @@ function App(): JSX.Element {
       exportAudioNormalize
     ]
   )
+
+  async function handleBatchOpenOutput(
+    outputPath: string,
+    mode: 'file' | 'folder'
+  ): Promise<void> {
+    const res = await window.fluxalloy.export.openOutput(outputPath, mode)
+    if (!res.ok) {
+      setStatusHint(uiTextVars('statusExportFailedWithDetail', { detail: res.error }))
+    }
+  }
 
   async function handleBatchPickFiles(): Promise<void> {
     const res = await window.fluxalloy.batchExport.pickFiles()
@@ -2297,6 +2321,7 @@ function App(): JSX.Element {
         videoTransform: exportVideoTransform,
         cropPreset: exportCropPreset,
         twoPass: exportTwoPass && exportVideoBitrate !== null && exportVideoCodec === 'libx264',
+        economyMode: exportEconomyMode,
         audioGainDb: exportAudioGainDb === 0 ? null : exportAudioGainDb,
         stripMetadata: exportStripMetadata,
         stripChapters: exportStripChapters,
@@ -2416,6 +2441,7 @@ function App(): JSX.Element {
         exportTwoPass &&
         exportVideoBitrate !== null &&
         exportVideoCodecResolvedForPreview === 'libx264',
+      economyMode: exportEconomyMode,
       audioGainDb: exportAudioGainDb === 0 ? null : exportAudioGainDb,
       stripMetadata: exportStripMetadata,
       stripChapters: exportStripChapters,
@@ -2453,6 +2479,7 @@ function App(): JSX.Element {
     exportVideoTransform,
     exportCropPreset,
     exportTwoPass,
+    exportEconomyMode,
     exportAudioGainDb,
     exportStripMetadata,
     exportStripChapters,
@@ -2867,6 +2894,7 @@ function App(): JSX.Element {
                   <tr>
                     <th>{uiText('batchExportColFile')}</th>
                     <th>{uiText('batchExportColStatus')}</th>
+                    <th>{uiText('batchExportColOutput')}</th>
                     <th>{uiText('batchExportColProgress')}</th>
                     <th>{uiText('batchExportColActions')}</th>
                   </tr>
@@ -2900,9 +2928,40 @@ function App(): JSX.Element {
                       }}
                     >
                       <td title={row.inputPath}>{row.shortLabel}</td>
-                      <td>{row.status}</td>
-                      <td>{row.progress}</td>
+                      <td>{formatFfmpegExportBatchStatusLabel(row.status)}</td>
+                      <td title={row.outputPath ?? undefined}>
+                        {row.outputPath
+                          ? row.outputPath.replace(/^.*[\\/]/, '')
+                          : '—'}
+                      </td>
+                      <td title={row.status === 'error' ? row.progress : undefined}>
+                        {row.progress}
+                      </td>
                       <td>
+                        {row.outputPath ? (
+                          <>
+                            <button
+                              type="button"
+                              className="app-btn app-btn-icon"
+                              title={uiText('processingHistoryOpenFile')}
+                              onClick={() => {
+                                void handleBatchOpenOutput(row.outputPath as string, 'file')
+                              }}
+                            >
+                              <IconPlay aria-hidden />
+                            </button>
+                            <button
+                              type="button"
+                              className="app-btn app-btn-icon"
+                              title={uiText('processingHistoryOpenFolder')}
+                              onClick={() => {
+                                void handleBatchOpenOutput(row.outputPath as string, 'folder')
+                              }}
+                            >
+                              <IconFolderOpen aria-hidden />
+                            </button>
+                          </>
+                        ) : null}
                         <button
                           type="button"
                           className="app-btn app-btn-icon"
@@ -3637,6 +3696,27 @@ function App(): JSX.Element {
                     />
                     <span id="ffmpegTwoPassUiHint" className="app-visually-hidden">
                       {uiText('editorTwoPassHint')}
+                    </span>
+                  </div>
+                  <div className="app-field app-field-switch">
+                    <span>{uiText('editorEconomyModeSpan')}</span>
+                    <PillSwitch
+                      label={uiText('editorEconomyModePillLabel')}
+                      tooltip={uiText('editorTooltipEconomyMode')}
+                      checked={exportEconomyMode}
+                      describedBy="ffmpegFormatSectionHint ffmpegEconomyModeUiHint"
+                      disabled={exportBusy || snapshotBusy}
+                      onToggle={() => {
+                        bumpManualExportEdit()
+                        const v = !exportEconomyMode
+                        setExportEconomyMode(v)
+                        void window.fluxalloy.settings
+                          .setFfmpegExportEconomyMode(v)
+                          .catch(console.error)
+                      }}
+                    />
+                    <span id="ffmpegEconomyModeUiHint" className="app-visually-hidden">
+                      {uiText('editorEconomyModeHint')}
                     </span>
                   </div>
                   <label className="app-field" title={uiText('editorTooltipRotation')}>

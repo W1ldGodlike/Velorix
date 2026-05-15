@@ -79,7 +79,8 @@ export function ProcessingHistoryPanel({
     { value: '', label: uiText('processingHistoryKindAll') },
     { value: 'ffmpegExport', label: uiText('processingHistoryKindExport') },
     { value: 'ffmpegSnapshot', label: uiText('processingHistoryKindSnapshot') },
-    { value: 'autoExport', label: uiText('processingHistoryKindAutoExport') }
+    { value: 'autoExport', label: uiText('processingHistoryKindAutoExport') },
+    { value: 'ffmpegBatchExport', label: uiText('processingHistoryKindBatchExport') }
   ]
   const outcomeOptions: Array<{ value: '' | ProcessingHistoryOutcome; label: string }> = [
     { value: '', label: uiText('processingHistoryOutcomeAll') },
@@ -219,7 +220,9 @@ export function ProcessingHistoryPanel({
               <div className="app-downloads-history-meta">
                 <span>{formatDownloadsHistoryTime(entry.finishedAt)}</span>
                 <span>{formatProcessingHistoryKindLabel(entry.kind)}</span>
-                {(entry.kind === 'ffmpegExport' || entry.kind === 'autoExport') &&
+                {(entry.kind === 'ffmpegExport' ||
+                  entry.kind === 'ffmpegBatchExport' ||
+                  entry.kind === 'autoExport') &&
                 entry.exportVideoCodecUsed ? (
                   <span
                     className="app-downloads-history-codec"

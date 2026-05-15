@@ -142,6 +142,8 @@ export interface AppSettings {
   ffmpegExportVideoBitrate?: string
   /** §7.2 / v0 — двухпроходное libx264 (только вместе с `ffmpegExportVideoBitrate`, не с CRF). */
   ffmpegExportTwoPass?: boolean
+  /** §7.3 — экономный режим: `-threads 1` в argv ffmpeg. */
+  ffmpegExportEconomyMode?: boolean
   /** §7.2: режим аудио экспорта: AAC, PCM s16le или без дорожки. */
   ffmpegExportAudioMode?:
     | 'aac'

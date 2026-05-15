@@ -14,7 +14,13 @@ import {
   resolveFfmpegExportBatchConcurrencyLimit
 } from '../shared/ffmpeg-export-batch-contract'
 import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import {
+  processingHistoryFfmpegBatchExportCancelled,
+  processingHistoryFfmpegBatchExportFailed,
+  processingHistoryFfmpegBatchExportSuccess
+} from '../shared/processing-history-status-locale'
 import type { AppSettings } from '../shared/settings-contract'
+import { appendProcessingHistoryEntry } from './processing-history'
 import { runFfmpegExportJob } from './ffmpeg-export-service'
 import {
   pickUniqueAutoExportOutputPath,
@@ -48,6 +54,9 @@ export async function runFfmpegExportBatchQueue(deps: {
   settings: AppSettings
   lutResourcesRoot: string
   rawExportOverrides?: unknown
+  userDataRoot: string
+  rememberExportOutputPath: (filePath: string) => void
+  rememberFfmpegExportDirectory: (filePath: string) => void
   pushRowProgress: (rowId: number, payload: FfmpegExportProgressPayload) => void
   uiLocale: DownloadsWindowUiLocale
 }): Promise<void> {
@@ -76,6 +85,7 @@ export async function runFfmpegExportBatchQueue(deps: {
       notifySnapshot()
       return
     }
+    const startedAt = Date.now()
     const outPath = pickUniqueAutoExportOutputPath(inputPath, exportOpts.container)
     updateFfmpegExportBatchRow(rowId, {
       status: FFMPEG_EXPORT_BATCH_STATUS_RUNNING,
@@ -93,28 +103,68 @@ export async function runFfmpegExportBatchQueue(deps: {
       uiLocale: deps.uiLocale,
       onProgress: (p) => {
         const label =
-          p.percent >= 0 ? `${Math.round(p.percent)}%` : p.message.trim().length > 0 ? p.message : '…'
+          p.percent >= 0
+            ? `${Math.round(p.percent)}%`
+            : p.message.trim().length > 0
+              ? p.message
+              : '…'
         updateFfmpegExportBatchRow(rowId, { progress: label })
         deps.pushRowProgress(rowId, p)
         notifySnapshot()
       }
     })
+    const finishedAt = Date.now()
     if (result.ok) {
+      deps.rememberExportOutputPath(outPath)
+      deps.rememberFfmpegExportDirectory(outPath)
       updateFfmpegExportBatchRow(rowId, {
         status: FFMPEG_EXPORT_BATCH_STATUS_DONE,
         progress: '100%',
         outputPath: outPath
+      })
+      appendProcessingHistoryEntry(deps.userDataRoot, {
+        kind: 'ffmpegBatchExport',
+        startedAt,
+        finishedAt,
+        inputPath,
+        outputPath: outPath,
+        outcome: 'success',
+        status: processingHistoryFfmpegBatchExportSuccess(deps.uiLocale),
+        errorHint: null,
+        exportVideoCodecUsed: result.videoCodecUsed
       })
     } else if (result.error === FFMPEG_EXPORT_CANCELLED_ERROR || signal.aborted) {
       updateFfmpegExportBatchRow(rowId, {
         status: FFMPEG_EXPORT_BATCH_STATUS_CANCELLED,
         progress: '—'
       })
+      appendProcessingHistoryEntry(deps.userDataRoot, {
+        kind: 'ffmpegBatchExport',
+        startedAt,
+        finishedAt,
+        inputPath,
+        outputPath: outPath,
+        outcome: 'cancelled',
+        status: processingHistoryFfmpegBatchExportCancelled(deps.uiLocale),
+        errorHint: null,
+        exportVideoCodecUsed: result.videoCodecUsed
+      })
     } else {
       updateFfmpegExportBatchRow(rowId, {
         status: FFMPEG_EXPORT_BATCH_STATUS_ERROR,
         progress: result.error,
         error: result.error
+      })
+      appendProcessingHistoryEntry(deps.userDataRoot, {
+        kind: 'ffmpegBatchExport',
+        startedAt,
+        finishedAt,
+        inputPath,
+        outputPath: outPath,
+        outcome: 'error',
+        status: processingHistoryFfmpegBatchExportFailed(deps.uiLocale),
+        errorHint: result.error,
+        exportVideoCodecUsed: result.videoCodecUsed
       })
     }
     notifySnapshot()

@@ -261,6 +261,11 @@ export function parseFfmpegExportTwoPass(raw: unknown): boolean {
   return raw === true
 }
 
+/** §7.3 — экономный режим (`-threads 1`); только явный `true`. */
+export function parseFfmpegExportEconomyMode(raw: unknown): boolean {
+  return raw === true
+}
+
 /**
  * §7.2 — режим субтитров. По умолчанию `drop`: argv не меняется, поведение совпадает с
  * прежней веткой (ffmpeg сам решает по дефолтному mapping). `copy` валидируется отдельно,
@@ -563,6 +568,11 @@ export function mergeFfmpegExportSnapshotIntoAppSettings(
     next.ffmpegExportTwoPass = true
   } else {
     delete next.ffmpegExportTwoPass
+  }
+  if (snapshot.economyMode === true) {
+    next.ffmpegExportEconomyMode = true
+  } else {
+    delete next.ffmpegExportEconomyMode
   }
   if (typeof snapshot.audioGainDb === 'number' && snapshot.audioGainDb !== 0) {
     next.ffmpegExportAudioGainDb = snapshot.audioGainDb
@@ -871,6 +881,8 @@ export async function runFfmpegExportJob(params: {
   cropPreset?: FfmpegExportCropPresetId | null
   /** §7.2 / v0 — двухпроход без CRF и только с bitrate. */
   twoPass?: boolean | null
+  /** §7.3 — `-threads 1` в argv. */
+  economyMode?: boolean | null
   /** §7.2 — целое значение в дБ; `null`/`0` = без `-filter:a volume`. */
   audioGainDb?: number | null
   /** §7.2 — удалить контейнерные метаданные. */
@@ -966,6 +978,7 @@ export async function runFfmpegExportJob(params: {
     }
   }
   const wantTwoPass = params.twoPass === true && videoBitrate !== null && videoCodec === 'libx264'
+  const economyMode = parseFfmpegExportEconomyMode(params.economyMode)
   const audioGainDb = parseFfmpegExportAudioGainDb(params.audioGainDb)
   const stripMetadata = parseFfmpegExportStripFlag(params.stripMetadata)
   const stripChapters = parseFfmpegExportStripFlag(params.stripChapters)
@@ -1043,7 +1056,8 @@ export async function runFfmpegExportJob(params: {
     ...(videoVignette !== 'off' ? { videoVignette } : {}),
     ...(videoBlur !== 'off' ? { videoBlur } : {}),
     ...(videoDeinterlace !== 'off' ? { videoDeinterlace } : {}),
-    ...(audioNormalize !== 'off' ? { audioNormalize } : {})
+    ...(audioNormalize !== 'off' ? { audioNormalize } : {}),
+    ...(economyMode ? { economyMode: true } : {})
   }
 
   const doneOk = (): { ok: true; videoCodecUsed: FfmpegExportVideoCodecId } => ({

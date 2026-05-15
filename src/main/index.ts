@@ -110,6 +110,7 @@ import {
   parseFfmpegExportUserPresetsList,
   parseFfmpegExportVideoBitrate,
   parseFfmpegExportVideoCodec,
+  parseFfmpegExportEconomyMode,
   parseFfmpegExportTwoPass,
   ensureFfmpegExportExtension,
   runFfmpegExportJob,
@@ -1067,6 +1068,19 @@ function persistFfmpegExportTwoPass(raw: unknown): AppSettings {
     next.ffmpegExportTwoPass = true
   } else {
     delete next.ffmpegExportTwoPass
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+/** §7.3 — экономный режим (`-threads 1`). */
+function persistFfmpegExportEconomyMode(raw: unknown): AppSettings {
+  const next = { ...cachedSettings }
+  if (parseFfmpegExportEconomyMode(raw)) {
+    next.ffmpegExportEconomyMode = true
+  } else {
+    delete next.ffmpegExportEconomyMode
   }
   cachedSettings = next
   saveSettings(settingsPath(), cachedSettings)
@@ -2496,6 +2510,11 @@ app.whenReady().then(() => {
   )
 
   ipcMain.handle(
+    mw.settingsSetFfmpegExportEconomyMode,
+    (_, raw: unknown): AppSettings => persistFfmpegExportEconomyMode(raw)
+  )
+
+  ipcMain.handle(
     mw.settingsSetFfmpegExportFps,
     (_, raw: unknown): AppSettings => persistFfmpegExportFps(raw)
   )
@@ -3379,6 +3398,9 @@ app.whenReady().then(() => {
         settings: cachedSettings,
         lutResourcesRoot: paths.resources,
         rawExportOverrides: raw,
+        userDataRoot: paths.userData,
+        rememberExportOutputPath,
+        rememberFfmpegExportDirectory,
         uiLocale: loc,
         pushRowProgress: (rowId, p) => {
           if (win && !win.isDestroyed()) {

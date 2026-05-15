@@ -335,7 +335,7 @@
 - [~] Таблица файлов + добавить файлы (multi-select) + **папка (рекурсивный scan)** + DnD файлов.
 - [~] Параллелизм 1/2/4/auto.
 - [~] Очередь статусов (waiting/running/done/error/cancelled); **persist `userData/ffmpeg-export-batch/queue.json`**.
-- [~] Сводка ошибок после завершения; **drag-reorder строк** (`reorderRow`).
+- [~] Сводка ошибок после завершения; **drag-reorder строк** (`reorderRow`); **economy `-threads 1`**, история `ffmpegBatchExport`, open file/folder по строке, локализованные статусы.
 
 ### §7.4 Комбинированный режим
 

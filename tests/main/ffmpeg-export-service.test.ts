@@ -20,6 +20,7 @@ import {
   parseFfmpegExportFps,
   parseFfmpegExportScalePreset,
   parseFfmpegExportTrim,
+  parseFfmpegExportEconomyMode,
   parseFfmpegExportTwoPass,
   parseFfmpegExportUserPresetSnapshot,
   parseFfmpegExportUserPresetsList,
@@ -94,6 +95,9 @@ describe('ffmpeg export pure helpers', () => {
     expect(parseFfmpegExportTwoPass(true)).toBe(true)
     expect(parseFfmpegExportTwoPass(false)).toBe(false)
     expect(parseFfmpegExportTwoPass(1)).toBe(false)
+    expect(parseFfmpegExportEconomyMode(true)).toBe(true)
+    expect(parseFfmpegExportEconomyMode(false)).toBe(false)
+    expect(parseFfmpegExportEconomyMode(1)).toBe(false)
   })
 
   it('валидирует FPS и scale preset', () => {

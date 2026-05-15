@@ -45,6 +45,24 @@ describe('shared ffmpeg export argv', () => {
     expect(resolveFfmpegExportEncodeParams('quality')).toEqual({ crf: '18', x264preset: 'medium' })
   })
 
+  it('economyMode: добавляет -threads 1 после баннера', () => {
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      economyMode: true
+    })
+    const i = argv.indexOf('-threads')
+    expect(argv.slice(i, i + 2)).toEqual(['-threads', '1'])
+  })
+
   it('audioMode pcm_s16le: -c:a pcm_s16le без -b:a', () => {
     const argv = buildFfmpegExportArgv({
       inputPath: 'in.mp4',

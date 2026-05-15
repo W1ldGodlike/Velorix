@@ -149,6 +149,7 @@ const UI_TEXT = {
     processingHistoryKindExport: 'Экспорт',
     processingHistoryKindSnapshot: 'Кадры',
     processingHistoryKindAutoExport: 'Авто-экспорт',
+    processingHistoryKindBatchExport: 'Пакетный экспорт',
     processingHistoryOutcomeAll: 'Все исходы',
     processingHistoryKindFilterAria: 'Тип обработки',
     processingHistoryOutcomeFilterAria: 'Исход обработки',
@@ -608,6 +609,10 @@ const UI_TEXT = {
     editorExportFpsOptionTemplate: '{value} к/с',
     editorTwoPassSpan: 'Два прохода',
     editorTwoPassPillLabel: 'Двухпроходное сохранение',
+    editorEconomyModeSpan: 'Экономия CPU',
+    editorEconomyModePillLabel: 'Один поток ffmpeg',
+    editorTooltipEconomyMode: 'Ограничить ffmpeg одним потоком (-threads 1), чтобы снизить нагрузку на CPU',
+    editorEconomyModeHint: 'Экономный режим: ffmpeg использует один поток',
     editorTwoPassHint:
       'Работает только в связке «совместимый широкий формат видео» + выбранное ограничение размера видео выше. Если включена только «тонкая настройка качества» или выбран экономящий трафик формат — переключатель недоступен.',
     editorFieldRotation: 'Поворот',
@@ -829,7 +834,13 @@ const UI_TEXT = {
     batchExportEmpty: 'Добавьте видеофайлы для пакетной обработки.',
     batchExportColFile: 'Файл',
     batchExportColStatus: 'Статус',
+    batchExportColOutput: 'Выход',
     batchExportColProgress: 'Прогресс',
+    batchExportRowStatusWaiting: 'Ожидание',
+    batchExportRowStatusRunning: 'В работе',
+    batchExportRowStatusDone: 'Готово',
+    batchExportRowStatusError: 'Ошибка',
+    batchExportRowStatusCancelled: 'Отменено',
     batchExportColActions: 'Действия',
     batchExportMoveUp: 'Выше',
     batchExportMoveDown: 'Ниже',
@@ -1228,6 +1239,7 @@ const UI_TEXT = {
     processingHistoryKindExport: 'Export',
     processingHistoryKindSnapshot: 'Frames',
     processingHistoryKindAutoExport: 'Auto export',
+    processingHistoryKindBatchExport: 'Batch export',
     processingHistoryOutcomeAll: 'All outcomes',
     processingHistoryKindFilterAria: 'Processing type',
     processingHistoryOutcomeFilterAria: 'Outcome',
@@ -1683,6 +1695,10 @@ const UI_TEXT = {
     editorExportFpsOptionTemplate: '{value} fps',
     editorTwoPassSpan: 'Two-pass',
     editorTwoPassPillLabel: 'Two-pass encoding',
+    editorEconomyModeSpan: 'CPU saver',
+    editorEconomyModePillLabel: 'Single ffmpeg thread',
+    editorTooltipEconomyMode: 'Limit ffmpeg to one thread (-threads 1) to reduce CPU load',
+    editorEconomyModeHint: 'Economy mode: ffmpeg runs with a single thread',
     editorTwoPassHint:
       'Only works with the widely compatible video format plus a fixed video size cap above. If you rely only on the fine quality slider or a space-saving format, the switch stays disabled.',
     editorFieldRotation: 'Rotate',
@@ -1903,7 +1919,13 @@ const UI_TEXT = {
     batchExportEmpty: 'Add video files for batch processing.',
     batchExportColFile: 'File',
     batchExportColStatus: 'Status',
+    batchExportColOutput: 'Output',
     batchExportColProgress: 'Progress',
+    batchExportRowStatusWaiting: 'Waiting',
+    batchExportRowStatusRunning: 'Running',
+    batchExportRowStatusDone: 'Done',
+    batchExportRowStatusError: 'Error',
+    batchExportRowStatusCancelled: 'Cancelled',
     batchExportColActions: 'Actions',
     batchExportMoveUp: 'Move up',
     batchExportMoveDown: 'Move down',
@@ -2346,7 +2368,30 @@ export function formatProcessingHistoryKindLabel(kind: ProcessingHistoryKind): s
   if (kind === 'autoExport') {
     return uiText('processingHistoryKindAutoExport')
   }
+  if (kind === 'ffmpegBatchExport') {
+    return uiText('processingHistoryKindBatchExport')
+  }
   return uiText('processingHistoryKindExport')
+}
+
+/** Localized label for §7.3 batch queue row `status`. */
+export function formatFfmpegExportBatchStatusLabel(status: string): string {
+  if (status === 'waiting') {
+    return uiText('batchExportRowStatusWaiting')
+  }
+  if (status === 'running') {
+    return uiText('batchExportRowStatusRunning')
+  }
+  if (status === 'done') {
+    return uiText('batchExportRowStatusDone')
+  }
+  if (status === 'error') {
+    return uiText('batchExportRowStatusError')
+  }
+  if (status === 'cancelled') {
+    return uiText('batchExportRowStatusCancelled')
+  }
+  return status
 }
 
 /** Localized label for a persisted yt-dlp queue row `status` string (§6). */

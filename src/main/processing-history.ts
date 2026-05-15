@@ -47,7 +47,12 @@ function isFiniteNumber(raw: unknown): raw is number {
 }
 
 function isKind(raw: unknown): raw is ProcessingHistoryKind {
-  return raw === 'ffmpegExport' || raw === 'ffmpegSnapshot' || raw === 'autoExport'
+  return (
+    raw === 'ffmpegExport' ||
+    raw === 'ffmpegBatchExport' ||
+    raw === 'ffmpegSnapshot' ||
+    raw === 'autoExport'
+  )
 }
 
 function isOutcome(raw: unknown): raw is ProcessingHistoryOutcome {
@@ -210,6 +215,7 @@ export function getProcessingHistoryWeeklySummary(
     error: 0,
     cancelled: 0,
     ffmpegExport: 0,
+    ffmpegBatchExport: 0,
     ffmpegSnapshot: 0,
     autoExport: 0,
     totalDurationMs: 0

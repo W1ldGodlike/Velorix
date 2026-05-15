@@ -37,6 +37,7 @@ import {
   parseFfmpegExportScalePreset,
   parseFfmpegExportStripFlag,
   parseFfmpegExportSubtitleMode,
+  parseFfmpegExportEconomyMode,
   parseFfmpegExportTwoPass,
   parseFfmpegExportVideoBitrate,
   parseFfmpegExportVideoCodec,
@@ -68,6 +69,7 @@ export type ResolvedFfmpegExportJobOptions = {
   videoTransform: FfmpegExportVideoTransformId | null
   cropPreset: FfmpegExportCropPresetId | null
   twoPass: boolean
+  economyMode: boolean
   audioGainDb: number | null
   stripMetadata: boolean | null
   stripChapters: boolean | null
@@ -158,6 +160,11 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
     twoPassRaw !== undefined && twoPassRaw !== null
       ? parseFfmpegExportTwoPass(twoPassRaw) && videoCodec === 'libx264'
       : parseFfmpegExportTwoPass(settings.ffmpegExportTwoPass) && videoCodec === 'libx264'
+  const economyModeRaw = raw['economyMode']
+  const economyMode =
+    economyModeRaw !== undefined && economyModeRaw !== null
+      ? parseFfmpegExportEconomyMode(economyModeRaw)
+      : parseFfmpegExportEconomyMode(settings.ffmpegExportEconomyMode)
   const audioGainRaw = raw['audioGainDb']
   const audioGainDb =
     audioGainRaw !== undefined
@@ -252,6 +259,7 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
     videoTransform,
     cropPreset,
     twoPass,
+    economyMode,
     audioGainDb,
     stripMetadata,
     stripChapters,

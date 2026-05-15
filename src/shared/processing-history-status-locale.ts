@@ -28,6 +28,20 @@ export function processingHistoryFfmpegExportFailed(locale: DownloadsWindowUiLoc
   return locale === 'en' ? 'Export failed' : 'Экспорт не удался'
 }
 
+export function processingHistoryFfmpegBatchExportSuccess(locale: DownloadsWindowUiLocale): string {
+  return locale === 'en' ? 'Batch export finished' : 'Пакетный экспорт завершён'
+}
+
+export function processingHistoryFfmpegBatchExportCancelled(
+  locale: DownloadsWindowUiLocale
+): string {
+  return locale === 'en' ? 'Batch export cancelled' : 'Пакетный экспорт отменён'
+}
+
+export function processingHistoryFfmpegBatchExportFailed(locale: DownloadsWindowUiLocale): string {
+  return locale === 'en' ? 'Batch export failed' : 'Пакетный экспорт не удался'
+}
+
 export function processingHistorySnapshotSuccess(locale: DownloadsWindowUiLocale): string {
   return locale === 'en' ? 'Frame saved' : 'Кадр сохранён'
 }
