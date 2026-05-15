@@ -163,6 +163,10 @@ import {
   pickFfmpegExportBatchInputFolder,
   pickFfmpegExportBatchOutputFolder
 } from './ffmpeg-export-batch-pick'
+import {
+  expandFfmpegExportBatchDnDPaths,
+  scanFolderForFfmpegExportBatchVideos
+} from './ffmpeg-export-batch-folder-scan'
 import { openFfmpegExportBatchInputPath } from './ffmpeg-export-batch-open-input'
 import type {
   FfmpegExportBatchClearCompletedResult,
@@ -2316,6 +2320,40 @@ async function createWebmPreviewProxy(
   return output
 }
 
+function resolveUserPathToPreviewSourceFile(
+  rawPath: string
+):
+  | { ok: true; path: string }
+  | {
+      ok: false
+      error: string
+    } {
+  const P = mainAppStr()
+  const normalized = normalize(rawPath.trim())
+  if (!existsSync(normalized)) {
+    return { ok: false, error: P.previewGrantOpenFailed }
+  }
+  try {
+    const st = statSync(normalized)
+    if (st.isDirectory()) {
+      const scanned = scanFolderForFfmpegExportBatchVideos(normalized)
+      if (scanned.length === 0) {
+        return { ok: false, error: P.batchExportFolderEmpty }
+      }
+      return { ok: true, path: scanned[0]! }
+    }
+    if (!st.isFile()) {
+      return { ok: false, error: P.previewGrantOpenFailed }
+    }
+    return { ok: true, path: normalized }
+  } catch (error) {
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : String(error)
+    }
+  }
+}
+
 async function ensurePreviewPlayableMedia(absoluteFile: string): Promise<string> {
   if (isLikelyBrowserPlayableMedia(absoluteFile)) {
     return absoluteFile
@@ -3032,9 +3070,14 @@ app.whenReady().then(() => {
     if (typeof rawPath !== 'string' || rawPath.length === 0) {
       return { ok: false, error: P.previewGrantEmptyPath }
     }
+    const resolved = resolveUserPathToPreviewSourceFile(rawPath)
+    if (!resolved.ok) {
+      return { ok: false, error: resolved.error }
+    }
+    const sourceMediaPath = resolved.path
     let previewFile: string
     try {
-      previewFile = await ensurePreviewPlayableMedia(rawPath)
+      previewFile = await ensurePreviewPlayableMedia(sourceMediaPath)
     } catch (error) {
       return { ok: false, error: error instanceof Error ? error.message : String(error) }
     }
@@ -3042,15 +3085,15 @@ app.whenReady().then(() => {
     if (!mediaUrl) {
       return { ok: false, error: P.previewGrantOpenFailed }
     }
-    if (!grantMediaPath(rawPath)) {
+    if (!grantMediaPath(sourceMediaPath)) {
       return { ok: false, error: P.previewGrantSourceFailed }
     }
-    persistLastOpenedSource(rawPath)
+    persistLastOpenedSource(sourceMediaPath)
     return {
       ok: true,
-      path: rawPath,
+      path: sourceMediaPath,
       mediaUrl,
-      name: basename(rawPath)
+      name: basename(sourceMediaPath)
     }
   })
 
@@ -3070,9 +3113,15 @@ app.whenReady().then(() => {
       return null
     }
     const sourcePath = saved.trim()
+    const resolved = resolveUserPathToPreviewSourceFile(sourcePath)
+    if (!resolved.ok) {
+      persistLastOpenedSource(null)
+      return null
+    }
+    const sourceMediaPath = resolved.path
     let previewFile: string
     try {
-      previewFile = await ensurePreviewPlayableMedia(sourcePath)
+      previewFile = await ensurePreviewPlayableMedia(sourceMediaPath)
     } catch {
       persistLastOpenedSource(null)
       return null
@@ -3082,15 +3131,17 @@ app.whenReady().then(() => {
       persistLastOpenedSource(null)
       return null
     }
-    if (!grantMediaPath(sourcePath)) {
+    if (!grantMediaPath(sourceMediaPath)) {
       persistLastOpenedSource(null)
       return null
     }
     return {
-      path: sourcePath,
+      path: sourceMediaPath,
       mediaUrl,
       name:
-        previewFile === sourcePath ? basename(sourcePath) : `${basename(sourcePath)} · preview WebM`
+        previewFile === sourceMediaPath
+          ? basename(sourceMediaPath)
+          : `${basename(sourceMediaPath)} · preview WebM`
     }
   })
 
@@ -3610,10 +3661,10 @@ app.whenReady().then(() => {
         return { ok: false, error: mainAppStr().ipcInvalidRequest }
       }
       const paths = raw.filter((p): p is string => typeof p === 'string')
+      const expanded = expandFfmpegExportBatchDnDPaths(paths)
       const granted: string[] = []
-      for (const p of paths) {
-        const abs = normalize(p.trim())
-        if (abs.length > 0 && grantMediaPath(abs)) {
+      for (const abs of expanded) {
+        if (grantMediaPath(abs)) {
           granted.push(abs)
         }
       }

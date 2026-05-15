@@ -1,6 +1,7 @@
-import { readdirSync } from 'node:fs'
+import { existsSync, readdirSync, statSync } from 'node:fs'
 import { join, normalize } from 'node:path'
 
+import { collectUniqueVideoPaths } from '../shared/ffmpeg-export-batch-collect-paths'
 import { isFfmpegExportBatchVideoPath } from '../shared/ffmpeg-export-batch-video-ext'
 
 const MAX_BATCH_FOLDER_FILES = 500
@@ -39,4 +40,30 @@ export function scanFolderForFfmpegExportBatchVideos(
 
   walk(root, 0)
   return found.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
+}
+
+/** §4.B / §7.3 — DnD и IPC: папка → те же видео, что и «добавить папку»; файл — как раньше (любой путь, отбор ext в collect). */
+export function expandFfmpegExportBatchDnDPaths(paths: string[]): string[] {
+  const flattened: string[] = []
+  for (const raw of paths) {
+    if (typeof raw !== 'string' || raw.trim().length === 0) {
+      continue
+    }
+    const abs = normalize(raw.trim())
+    if (!existsSync(abs)) {
+      continue
+    }
+    let st
+    try {
+      st = statSync(abs)
+    } catch {
+      continue
+    }
+    if (st.isDirectory()) {
+      flattened.push(...scanFolderForFfmpegExportBatchVideos(abs))
+    } else if (st.isFile()) {
+      flattened.push(abs)
+    }
+  }
+  return collectUniqueVideoPaths(flattened)
 }
