@@ -753,4 +753,9 @@
 - [J-730] 2026-05-16 05:49:00 [Assistant]: О программе — колонка кнопки «Закрыть» как `toolbar` (`aboutDialogCloseToolbarAria`).
 - [J-731] 2026-05-16 05:51:00 [Assistant]: База знаний — `article` как `role="region"` + `knowledgeArticleRegionAria`.
 - [J-732] 2026-05-16 05:53:00 [Assistant]: §7.3 сетка панели пакета (`app-batch-export-toolbar`) — `role="group"` + `batchExportPanelFormGroupAria`.
+- [J-733] 2026-05-16 05:55:00 [Assistant]: Редактор — последний сохранённый кадр: `toolbar` + `editorSnapshotLastActionsToolbarAria`.
+- [J-734] 2026-05-16 05:57:00 [Assistant]: Редактор — пользовательские пресеты экспорта: `toolbar` + `editorExportPresetsActionsToolbarAria`.
+- [J-735] 2026-05-16 05:59:00 [Assistant]: Редактор — превью команды экспорта: `toolbar` + `editorExportPreviewActionsToolbarAria`.
+- [J-736] 2026-05-16 06:01:00 [Assistant]: Редактор — последний файл экспорта: `toolbar` + `editorExportLastOutputActionsToolbarAria`.
+- [J-737] 2026-05-16 06:03:00 [Assistant]: База знаний — список статей: `role="group"` + `knowledgeTocListAria` (вместо `list` без `listitem`).
 

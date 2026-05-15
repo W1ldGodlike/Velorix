@@ -4827,7 +4827,11 @@ function App(): JSX.Element {
                   </label>
                 </div>
                 {lastSnapshotPath ? (
-                  <div className="app-settings-actions">
+                  <div
+                    className="app-settings-actions"
+                    role="toolbar"
+                    aria-label={uiText('editorSnapshotLastActionsToolbarAria')}
+                  >
                     <button
                       type="button"
                       className="app-btn app-btn-compact"
@@ -4929,7 +4933,11 @@ function App(): JSX.Element {
                       ))}
                     </select>
                   </label>
-                  <div className="app-settings-actions">
+                  <div
+                    className="app-settings-actions"
+                    role="toolbar"
+                    aria-label={uiText('editorExportPresetsActionsToolbarAria')}
+                  >
                     <button
                       type="button"
                       className="app-btn app-btn-compact"
@@ -5065,7 +5073,11 @@ function App(): JSX.Element {
                           ? `${uiText('editorExportPreviewPass1')}\n${exportPreview.pass1Command}\n\n${uiText('editorExportPreviewPass2')}\n${exportPreviewCommand}`
                           : exportPreviewCommand}
                       </pre>
-                      <div className="app-export-preview-actions">
+                      <div
+                        className="app-export-preview-actions"
+                        role="toolbar"
+                        aria-label={uiText('editorExportPreviewActionsToolbarAria')}
+                      >
                         <button
                           type="button"
                           className="app-btn app-btn-compact"
@@ -5084,7 +5096,11 @@ function App(): JSX.Element {
                     </div>
                   </details>
                   {lastExportPath ? (
-                    <div className="app-settings-actions">
+                    <div
+                      className="app-settings-actions"
+                      role="toolbar"
+                      aria-label={uiText('editorExportLastOutputActionsToolbarAria')}
+                    >
                       <button
                         type="button"
                         className="app-btn app-btn-compact"

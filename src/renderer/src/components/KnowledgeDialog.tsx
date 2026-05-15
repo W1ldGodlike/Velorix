@@ -178,7 +178,7 @@ export function KnowledgeDialog({
                 setFilter(e.target.value)
               }}
             />
-            <div className="app-knowledge-list" role="list">
+            <div className="app-knowledge-list" role="group" aria-label={uiText('knowledgeTocListAria')}>
               {visibleArticles.map((article) => (
                 <button
                   key={article.slug}

@@ -105,6 +105,7 @@ const UI_TEXT = {
     knowledgeTopbarTooltip: 'Открыть локальную базу знаний (статьи из Help/*.md).',
     knowledgeTocAria: 'Оглавление справки',
     knowledgeArticleRegionAria: 'Текст выбранной статьи',
+    knowledgeTocListAria: 'Список статей для выбора',
     knowledgeArticleTerminalHintsLink: 'База знаний: подсказки терминала (ffmpeg / yt-dlp)',
     terminalKnowledgeDeepLinkTooltip:
       'Открыть статью с подсказками ffmpeg / yt-dlp для вкладки «Терминал».',
@@ -728,6 +729,7 @@ const UI_TEXT = {
       '«Не сохранять» — в итоговом файле обычно остаётся только картинка и звук. «Сохранить» пытается перенести текстовые субтитры; на некоторых типах файлов это может быть недоступно — тогда дорожка пропадёт.',
     editorSnapshotLastFile: 'Файл кадра',
     editorSnapshotLastFolder: 'Папка',
+    editorSnapshotLastActionsToolbarAria: 'Последний сохранённый кадр: открыть и копировать путь',
     editorCopy: 'Копировать',
     editorPillSwitchOn: 'Вкл',
     editorPillSwitchOff: 'Выкл',
@@ -998,6 +1000,7 @@ const UI_TEXT = {
     editorPresetRename: 'Имя',
     editorPresetOverwrite: 'Обновить',
     editorPresetDelete: 'Удалить',
+    editorExportPresetsActionsToolbarAria: 'Действия с пользовательскими пресетами экспорта',
     editorBuiltinPresetLockedHint:
       'Встроенные пресеты нельзя переименовать, обновить или удалить — создайте свой пресет.',
     editorFfmpegSectionOutput: 'Вывод',
@@ -1007,9 +1010,11 @@ const UI_TEXT = {
     editorAriaExportFfmpegCommand: 'Текст команды сохранения',
     editorCopyFfmpegCommandTitle:
       'Скопировать текст команды в буфер — если нужно выполнить то же сохранение вручную или показать специалисту.',
+    editorExportPreviewActionsToolbarAria: 'Превью команды: копировать текст',
     editorExportLastFile: 'Файл',
     editorExportLastFolder: 'Папка',
     editorCopyExportPath: 'Копировать путь',
+    editorExportLastOutputActionsToolbarAria: 'Последний экспорт: открыть и скопировать путь',
     editorExportPreviewPass1: '# Проход 1',
     editorExportPreviewPass2: '# Проход 2',
     editorExportPreviewHintNoSource:
@@ -1307,6 +1312,7 @@ const UI_TEXT = {
     knowledgeTopbarTooltip: 'Open the local knowledge base (Help/*.md articles).',
     knowledgeTocAria: 'Help table of contents',
     knowledgeArticleRegionAria: 'Selected article body',
+    knowledgeTocListAria: 'Article list for selection',
     knowledgeArticleTerminalHintsLink: 'Knowledge: terminal hints (ffmpeg / yt-dlp)',
     terminalKnowledgeDeepLinkTooltip:
       'Open the ffmpeg / yt-dlp hints article for the Terminal tab.',
@@ -1925,6 +1931,8 @@ const UI_TEXT = {
       '“Do not keep” usually leaves only picture and sound. “Keep” tries to carry text subtitles; a few file types cannot hold them, so the track may still disappear.',
     editorSnapshotLastFile: 'Snapshot file',
     editorSnapshotLastFolder: 'Folder',
+    editorSnapshotLastActionsToolbarAria:
+      'Last saved frame: open file or folder and copy path',
     editorCopy: 'Copy',
     editorPillSwitchOn: 'On',
     editorPillSwitchOff: 'Off',
@@ -2194,6 +2202,7 @@ const UI_TEXT = {
     editorPresetRename: 'Rename',
     editorPresetOverwrite: 'Overwrite',
     editorPresetDelete: 'Delete',
+    editorExportPresetsActionsToolbarAria: 'Custom export preset actions',
     editorBuiltinPresetLockedHint:
       'Built-in presets cannot be renamed, overwritten, or deleted — save your own preset.',
     editorFfmpegSectionOutput: 'Output',
@@ -2203,9 +2212,12 @@ const UI_TEXT = {
     editorAriaExportFfmpegCommand: 'Save command text',
     editorCopyFfmpegCommandTitle:
       'Copy the command text to the clipboard — handy to rerun manually or share with support.',
+    editorExportPreviewActionsToolbarAria: 'Save command preview: copy text',
     editorExportLastFile: 'File',
     editorExportLastFolder: 'Folder',
     editorCopyExportPath: 'Copy path',
+    editorExportLastOutputActionsToolbarAria:
+      'Last export: open file or folder and copy path',
     editorExportPreviewPass1: '# Pass 1',
     editorExportPreviewPass2: '# Pass 2',
     editorExportPreviewHintNoSource:
