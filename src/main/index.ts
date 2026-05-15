@@ -153,6 +153,7 @@ import {
   pickFfmpegExportBatchInputFiles,
   pickFfmpegExportBatchInputFolder
 } from './ffmpeg-export-batch-pick'
+import { openFfmpegExportBatchInputPath } from './ffmpeg-export-batch-open-input'
 import type {
   FfmpegExportBatchClearCompletedResult,
   FfmpegExportBatchRetryFailedResult,
@@ -945,7 +946,7 @@ function scheduleEnqueueBatchAfterDownload(absoluteFile: string, rowId: number):
     if (granted.length === 0) {
       return
     }
-    const added = addFfmpegExportBatchPaths(granted)
+    const { added } = addFfmpegExportBatchPaths(granted)
     if (added > 0) {
       emitDownloadsLog({
         kind: 'line',
@@ -3445,9 +3446,9 @@ app.whenReady().then(() => {
       if (!picked.ok) {
         return picked
       }
-      const added = addFfmpegExportBatchPaths(picked.paths)
+      const counts = addFfmpegExportBatchPaths(picked.paths)
       pushBatchExportSnapshot(win)
-      return { ok: true, added }
+      return { ok: true, ...counts }
     }
   )
 
@@ -3467,9 +3468,9 @@ app.whenReady().then(() => {
       if (!picked.ok) {
         return picked
       }
-      const added = addFfmpegExportBatchPaths(picked.paths)
+      const counts = addFfmpegExportBatchPaths(picked.paths)
       pushBatchExportSnapshot(win)
-      return { ok: true, added }
+      return { ok: true, ...counts }
     }
   )
 
@@ -3487,9 +3488,9 @@ app.whenReady().then(() => {
           granted.push(abs)
         }
       }
-      const added = addFfmpegExportBatchPaths(granted)
+      const counts = addFfmpegExportBatchPaths(granted)
       pushBatchExportSnapshot()
-      return { ok: true, added }
+      return { ok: true, ...counts }
     }
   )
 
@@ -3633,9 +3634,9 @@ app.whenReady().then(() => {
         doneOnly: true
       })
       const granted = filterExistingVideoPathsForBatch(candidates)
-      const added = addFfmpegExportBatchPaths(granted)
+      const counts = addFfmpegExportBatchPaths(granted)
       pushBatchExportSnapshot()
-      return { ok: true, added }
+      return { ok: true, ...counts }
     }
   )
 
@@ -3659,9 +3660,25 @@ app.whenReady().then(() => {
         }
       }
       const granted = filterExistingVideoPathsForBatch(candidates)
-      const added = addFfmpegExportBatchPaths(granted)
+      const counts = addFfmpegExportBatchPaths(granted)
       pushBatchExportSnapshot()
-      return { ok: true, added }
+      return { ok: true, ...counts }
+    }
+  )
+
+  ipcMain.handle(
+    mw.batchExportOpenInput,
+    async (
+      _event,
+      raw: unknown
+    ): Promise<{ ok: true; path: string } | { ok: false; error: string }> => {
+      if (!raw || typeof raw !== 'object') {
+        return { ok: false, error: mainAppStr().exportOpenBadRequest }
+      }
+      const payload = raw as { path?: unknown; mode?: unknown }
+      return openFfmpegExportBatchInputPath(payload.path, payload.mode, mainAppStr(), {
+        openInMainHandler: openDownloadedFileInMainHandler
+      })
     }
   )
 

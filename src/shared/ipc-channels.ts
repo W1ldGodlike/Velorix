@@ -104,6 +104,7 @@ export const mainWindowIpc = {
   batchExportRetryFailedAndStart: 'fluxalloy:batch-export-retry-failed-and-start',
   batchExportListInputPaths: 'fluxalloy:batch-export-list-input-paths',
   batchExportRemoveWaiting: 'fluxalloy:batch-export-remove-waiting',
+  batchExportOpenInput: 'fluxalloy:batch-export-open-input',
   batchExportSnapshot: 'fluxalloy:batch-export-snapshot',
   snapshotFrame: 'fluxalloy:snapshot-frame',
   logRenderer: 'fluxalloy:log-renderer',

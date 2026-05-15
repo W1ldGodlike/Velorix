@@ -18,6 +18,7 @@ import {
   FFMPEG_EXPORT_BATCH_STATUS_WAITING,
   parseFfmpegExportBatchConcurrency
 } from '../shared/ffmpeg-export-batch-contract'
+import type { FfmpegExportBatchAddCounts } from '../shared/ffmpeg-export-batch-add-counts'
 import type { PersistedFfmpegExportBatchQueuePayload } from './ffmpeg-export-batch-persist-parse'
 
 let rows: FfmpegExportBatchRow[] = []
@@ -163,8 +164,9 @@ export function reorderFfmpegExportBatchRowAt(id: number, toIndex: number): bool
   return true
 }
 
-export function addFfmpegExportBatchPaths(paths: string[]): number {
+export function addFfmpegExportBatchPaths(paths: string[]): FfmpegExportBatchAddCounts {
   let added = 0
+  let skipped = 0
   for (const p of paths) {
     const t = p.trim()
     if (t.length === 0) {
@@ -172,6 +174,7 @@ export function addFfmpegExportBatchPaths(paths: string[]): number {
     }
     const abs = normalize(t)
     if (rowIndexByPath(abs) >= 0) {
+      skipped += 1
       continue
     }
     rows.push({
@@ -186,7 +189,7 @@ export function addFfmpegExportBatchPaths(paths: string[]): number {
   if (added > 0) {
     notifyQueueChanged()
   }
-  return added
+  return { added, skipped }
 }
 
 export function takeNextFfmpegExportBatchWaitingRow(): FfmpegExportBatchRow | undefined {

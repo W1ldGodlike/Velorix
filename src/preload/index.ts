@@ -40,6 +40,9 @@ import type {
   MediaExportStartResult
 } from '../shared/ffmpeg-export-contract'
 import type {
+  FfmpegExportBatchAddPathsResult,
+  FfmpegExportBatchOpenInputResult,
+  FfmpegExportBatchPickFilesResult,
   FfmpegExportBatchSnapshot,
   FfmpegExportBatchConcurrency,
   FfmpegExportBatchStartResult
@@ -538,18 +541,17 @@ const fluxalloy = {
       | { ok: true; removed: number }
       | { ok: false; error: string }
     > => ipcRenderer.invoke(mw.batchExportRemoveWaiting),
-    pickFiles: (): Promise<
-      | { ok: true; added: number }
-      | { ok: false; cancelled: true }
-      | { ok: false; error: string }
-    > => ipcRenderer.invoke(mw.batchExportPickFiles),
-    pickFolder: (): Promise<
-      | { ok: true; added: number }
-      | { ok: false; cancelled: true }
-      | { ok: false; error: string }
-    > => ipcRenderer.invoke(mw.batchExportPickFolder),
-    addPaths: (paths: string[]): Promise<{ ok: true; added: number } | { ok: false; error: string }> =>
+    pickFiles: (): Promise<FfmpegExportBatchPickFilesResult> =>
+      ipcRenderer.invoke(mw.batchExportPickFiles),
+    pickFolder: (): Promise<FfmpegExportBatchPickFilesResult> =>
+      ipcRenderer.invoke(mw.batchExportPickFolder),
+    addPaths: (paths: string[]): Promise<FfmpegExportBatchAddPathsResult> =>
       ipcRenderer.invoke(mw.batchExportAddPaths, paths),
+    openInput: (
+      path: string,
+      mode: 'file' | 'folder' | 'preview'
+    ): Promise<FfmpegExportBatchOpenInputResult> =>
+      ipcRenderer.invoke(mw.batchExportOpenInput, { path, mode }),
     removeRows: (ids: number[]): Promise<{ ok: true; removed: number }> =>
       ipcRenderer.invoke(mw.batchExportRemoveRows, ids),
     clear: (): Promise<{ ok: true }> => ipcRenderer.invoke(mw.batchExportClear),

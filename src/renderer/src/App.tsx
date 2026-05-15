@@ -1250,6 +1250,28 @@ function App(): JSX.Element {
     }
   }, [downloadsUrl])
 
+  const handleQuickYtdlpEnqueueLines = useCallback(async (): Promise<void> => {
+    const text = downloadsUrl.trim()
+    if (text.length === 0) {
+      setStatusHint(uiText('statusDownloadsQueueNoUrlsParsed'))
+      return
+    }
+    const addRes = await window.fluxalloy.downloads.addLines(text)
+    if (!addRes.ok) {
+      setStatusHint(addRes.error)
+      return
+    }
+    const added = addRes.added
+    setStatusHint(
+      added > 0
+        ? uiTextVars('statusDownloadsUrlsAdded', { n: String(added) })
+        : uiText('statusDownloadsQueueNoUrlsParsed')
+    )
+    if (added > 0) {
+      setDownloadsUrl('')
+    }
+  }, [downloadsUrl])
+
   const handleDownloadFirstUrlOpenInEditor = useCallback(async (): Promise<void> => {
     const text = downloadsUrl.trim()
     if (text.length === 0) {
@@ -1266,6 +1288,32 @@ function App(): JSX.Element {
     setStatusHint(uiText('statusDownloadOpenEditorSuccess'))
     setDownloadsUrl('')
   }, [downloadsUrl])
+
+  const setBatchAddStatusHint = useCallback(
+    (counts: { added: number; skipped: number }, emptyMsg?: string): void => {
+      if (counts.added === 0 && counts.skipped === 0) {
+        setStatusHint(emptyMsg ?? uiText('batchExportNoVideoPaths'))
+        return
+      }
+      if (counts.added === 0 && counts.skipped > 0) {
+        setStatusHint(
+          uiTextVars('batchExportSkippedDuplicates', { count: String(counts.skipped) })
+        )
+        return
+      }
+      if (counts.skipped > 0) {
+        setStatusHint(
+          uiTextVars('batchExportAddedFilesWithSkipped', {
+            added: String(counts.added),
+            skipped: String(counts.skipped)
+          })
+        )
+        return
+      }
+      setStatusHint(uiTextVars('batchExportAddedFiles', { count: String(counts.added) }))
+    },
+    []
+  )
 
   const onTrimRangeSnapshot = useCallback(
     (range: { inSec: number; outSec: number }) => {
@@ -2101,10 +2149,25 @@ function App(): JSX.Element {
     }
   }
 
+  async function handleBatchOpenInput(
+    inputPath: string,
+    mode: 'file' | 'folder' | 'preview'
+  ): Promise<void> {
+    const res = await window.fluxalloy.batchExport.openInput(inputPath, mode)
+    if (!res.ok) {
+      setStatusHint(uiTextVars('statusExportFailedWithDetail', { detail: res.error }))
+      return
+    }
+    if (mode === 'preview') {
+      setWorkspaceTab('editor')
+      setStatusHint(uiText('processingHistoryOpenInputDone'))
+    }
+  }
+
   async function handleBatchPickFiles(): Promise<void> {
     const res = await window.fluxalloy.batchExport.pickFiles()
     if (res.ok) {
-      setStatusHint(uiTextVars('batchExportAddedFiles', { count: String(res.added) }))
+      setBatchAddStatusHint(res)
       return
     }
     if ('cancelled' in res && res.cancelled) {
@@ -2118,7 +2181,7 @@ function App(): JSX.Element {
   async function handleBatchPickFolder(): Promise<void> {
     const res = await window.fluxalloy.batchExport.pickFolder()
     if (res.ok) {
-      setStatusHint(uiTextVars('batchExportAddedFiles', { count: String(res.added) }))
+      setBatchAddStatusHint(res)
       return
     }
     if ('cancelled' in res && res.cancelled) {
@@ -2149,7 +2212,7 @@ function App(): JSX.Element {
     }
     const res = await window.fluxalloy.batchExport.addPaths(paths)
     if (res.ok) {
-      setStatusHint(uiTextVars('batchExportAddedFiles', { count: String(res.added) }))
+      setBatchAddStatusHint(res)
     } else if ('error' in res) {
       setStatusHint(res.error)
     }
@@ -2204,7 +2267,7 @@ function App(): JSX.Element {
     }
     const res = await window.fluxalloy.batchExport.addPaths([path])
     if (res.ok) {
-      setStatusHint(uiTextVars('batchExportAddedFiles', { count: String(res.added) }))
+      setBatchAddStatusHint(res)
     } else if ('error' in res) {
       setStatusHint(res.error)
     }
@@ -2216,11 +2279,7 @@ function App(): JSX.Element {
       setStatusHint(res.error)
       return
     }
-    if (res.added === 0) {
-      setStatusHint(uiText('batchExportNoVideoPaths'))
-      return
-    }
-    setStatusHint(uiTextVars('batchExportAddedFiles', { count: String(res.added) }))
+    setBatchAddStatusHint(res)
   }
 
   async function handleBatchRetryFailedAndStart(): Promise<void> {
@@ -2854,13 +2913,12 @@ function App(): JSX.Element {
           <summary className="app-url-summary">{uiText('quickYtdlpSummary')}</summary>
           <div className="app-url-body">
             <div className="app-url-field">
-              <input
-                className="app-url-input"
-                type="url"
-                inputMode="url"
+              <textarea
+                className="app-downloads-url-input app-url-input"
                 placeholder={uiText('quickYtdlpPlaceholder')}
                 aria-describedby="quickYtdlpUrlHint"
                 value={downloadsUrl}
+                rows={3}
                 onChange={(e) => {
                   setDownloadsUrl(e.target.value)
                 }}
@@ -2882,16 +2940,30 @@ function App(): JSX.Element {
                 </a>
               </p>
             </div>
-            <button
-              type="button"
-              className="app-btn"
-              aria-describedby="quickYtdlpUrlHint"
-              onClick={() => {
-                void handleDownloadFirstUrlOpenInEditor()
-              }}
-            >
-              {uiText('quickYtdlpDownloadOpenEditor')}
-            </button>
+            <div className="app-downloads-url-actions">
+              <button
+                type="button"
+                className="app-btn app-btn-primary app-btn-icon-leading"
+                aria-describedby="quickYtdlpUrlHint"
+                onClick={() => {
+                  void handleQuickYtdlpEnqueueLines()
+                }}
+              >
+                <IconQueuePlus title="" size={17} />
+                {uiText('quickYtdlpEnqueueLines')}
+              </button>
+              <button
+                type="button"
+                className="app-btn app-btn-icon-leading"
+                aria-describedby="quickYtdlpUrlHint"
+                onClick={() => {
+                  void handleDownloadFirstUrlOpenInEditor()
+                }}
+              >
+                <IconDownload title="" size={17} />
+                {uiText('quickYtdlpDownloadOpenEditor')}
+              </button>
+            </div>
           </div>
         </details>
       ) : null}
@@ -3130,6 +3202,36 @@ function App(): JSX.Element {
                         {row.progress}
                       </td>
                       <td>
+                        <button
+                          type="button"
+                          className="app-btn app-btn-icon"
+                          title={uiText('batchExportOpenInputInEditor')}
+                          onClick={() => {
+                            void handleBatchOpenInput(row.inputPath, 'preview')
+                          }}
+                        >
+                          <IconFilm aria-hidden />
+                        </button>
+                        <button
+                          type="button"
+                          className="app-btn app-btn-icon"
+                          title={uiText('batchExportOpenInputFile')}
+                          onClick={() => {
+                            void handleBatchOpenInput(row.inputPath, 'file')
+                          }}
+                        >
+                          <IconPlay aria-hidden />
+                        </button>
+                        <button
+                          type="button"
+                          className="app-btn app-btn-icon"
+                          title={uiText('batchExportOpenInputFolder')}
+                          onClick={() => {
+                            void handleBatchOpenInput(row.inputPath, 'folder')
+                          }}
+                        >
+                          <IconFolderOpen aria-hidden />
+                        </button>
                         {row.outputPath ? (
                           <>
                             <button
@@ -4542,11 +4644,7 @@ function App(): JSX.Element {
                       setStatusHint(res.error)
                       return
                     }
-                    if (res.added === 0) {
-                      setStatusHint(uiText('batchExportNoVideoPaths'))
-                      return
-                    }
-                    setStatusHint(uiTextVars('batchExportAddedFiles', { count: String(res.added) }))
+                    setBatchAddStatusHint(res)
                   })
                 }}
               />

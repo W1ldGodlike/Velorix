@@ -40,6 +40,9 @@ import type {
 } from '../shared/ffmpeg-export-contract'
 import type {
   FfmpegExportBatchConcurrency,
+  FfmpegExportBatchAddPathsResult,
+  FfmpegExportBatchOpenInputResult,
+  FfmpegExportBatchPickFilesResult,
   FfmpegExportBatchSnapshot,
   FfmpegExportBatchStartResult
 } from '../shared/ffmpeg-export-batch-contract'
@@ -295,17 +298,13 @@ export interface FluxAlloyApi {
       | { ok: true; removed: number }
       | { ok: false; error: string }
     >
-    pickFiles: () => Promise<
-      | { ok: true; added: number }
-      | { ok: false; cancelled: true }
-      | { ok: false; error: string }
-    >
-    pickFolder: () => Promise<
-      | { ok: true; added: number }
-      | { ok: false; cancelled: true }
-      | { ok: false; error: string }
-    >
-    addPaths: (paths: string[]) => Promise<{ ok: true; added: number } | { ok: false; error: string }>
+    pickFiles: () => Promise<FfmpegExportBatchPickFilesResult>
+    pickFolder: () => Promise<FfmpegExportBatchPickFilesResult>
+    addPaths: (paths: string[]) => Promise<FfmpegExportBatchAddPathsResult>
+    openInput: (
+      path: string,
+      mode: 'file' | 'folder' | 'preview'
+    ) => Promise<FfmpegExportBatchOpenInputResult>
     removeRows: (ids: number[]) => Promise<{ ok: true; removed: number }>
     clear: () => Promise<{ ok: true }>
     moveRow: (
@@ -322,12 +321,8 @@ export interface FluxAlloyApi {
     retryFailed: () => Promise<{ ok: true; reset: number } | { ok: false; error: string }>
     retryRows: (ids: number[]) => Promise<{ ok: true; reset: number } | { ok: false; error: string }>
     clearCompleted: () => Promise<{ ok: true; removed: number } | { ok: false; error: string }>
-    addFromDownloadsDone: (
-      ids?: number[]
-    ) => Promise<{ ok: true; added: number } | { ok: false; error: string }>
-    addFromHistoryInputs: (
-      ids: string[]
-    ) => Promise<{ ok: true; added: number } | { ok: false; error: string }>
+    addFromDownloadsDone: (ids?: number[]) => Promise<FfmpegExportBatchAddPathsResult>
+    addFromHistoryInputs: (ids: string[]) => Promise<FfmpegExportBatchAddPathsResult>
     retryFailedAndStart: (rawExportOverrides?: unknown) => Promise<FfmpegExportBatchStartResult>
     onSnapshot: (listener: (snapshot: FfmpegExportBatchSnapshot) => void) => () => void
   }

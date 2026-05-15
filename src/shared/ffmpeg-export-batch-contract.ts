@@ -2,6 +2,10 @@
  * §7.3 — пакетный экспорт ffmpeg: типы очереди и снимка для main/renderer (без Node).
  */
 
+import type { FfmpegExportBatchAddCounts } from './ffmpeg-export-batch-add-counts'
+
+export type { FfmpegExportBatchAddCounts } from './ffmpeg-export-batch-add-counts'
+
 export const FFMPEG_EXPORT_BATCH_STATUS_WAITING = 'waiting' as const
 export const FFMPEG_EXPORT_BATCH_STATUS_RUNNING = 'running' as const
 export const FFMPEG_EXPORT_BATCH_STATUS_DONE = 'done' as const
@@ -38,12 +42,16 @@ export interface FfmpegExportBatchSnapshot {
 }
 
 export type FfmpegExportBatchAddPathsResult =
-  | { ok: true; added: number }
+  | ({ ok: true } & FfmpegExportBatchAddCounts)
   | { ok: false; error: string }
 
 export type FfmpegExportBatchPickFilesResult =
-  | { ok: true; added: number }
+  | ({ ok: true } & FfmpegExportBatchAddCounts)
   | { ok: false; cancelled: true }
+  | { ok: false; error: string }
+
+export type FfmpegExportBatchOpenInputResult =
+  | { ok: true; path: string }
   | { ok: false; error: string }
 
 export type FfmpegExportBatchStartResult =

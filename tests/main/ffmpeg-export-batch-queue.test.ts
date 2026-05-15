@@ -31,7 +31,10 @@ describe('ffmpeg-export-batch-queue', () => {
   })
 
   it('addFfmpegExportBatchPaths и takeNext', () => {
-    expect(addFfmpegExportBatchPaths(['C:\\a.mp4', 'C:\\b.mkv'])).toBe(2)
+    expect(addFfmpegExportBatchPaths(['C:\\a.mp4', 'C:\\b.mkv'])).toEqual({
+      added: 2,
+      skipped: 0
+    })
     const next = takeNextFfmpegExportBatchWaitingRow()
     expect(next?.inputPath).toBe('C:\\a.mp4')
     expect(getFfmpegExportBatchSnapshot().rows).toHaveLength(2)
@@ -54,7 +57,11 @@ describe('ffmpeg-export-batch-queue', () => {
   })
 
   it('addFfmpegExportBatchPaths пропускает дубликаты', () => {
-    expect(addFfmpegExportBatchPaths(['a.mp4', 'A.MP4'])).toBe(1)
+    expect(addFfmpegExportBatchPaths(['a.mp4', 'A.MP4'])).toEqual({
+      added: 1,
+      skipped: 1
+    })
+    expect(addFfmpegExportBatchPaths(['a.mp4'])).toEqual({ added: 0, skipped: 1 })
   })
 
   it('reorderFfmpegExportBatchRowAt', () => {
