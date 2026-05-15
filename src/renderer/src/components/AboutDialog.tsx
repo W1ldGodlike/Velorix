@@ -304,14 +304,16 @@ export function AboutDialog({
               </p>
             ) : null}
           </div>
-          <button
-            type="button"
-            className="app-btn app-btn-primary"
-            title={uiText('aboutTooltipCloseAbout')}
-            onClick={onClose}
-          >
-            {uiText('closeButton')}
-          </button>
+          <div role="toolbar" aria-label={uiText('aboutDialogCloseToolbarAria')}>
+            <button
+              type="button"
+              className="app-btn app-btn-primary"
+              title={uiText('aboutTooltipCloseAbout')}
+              onClick={onClose}
+            >
+              {uiText('closeButton')}
+            </button>
+          </div>
         </div>
       </div>
     </div>

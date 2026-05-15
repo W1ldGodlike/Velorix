@@ -4,7 +4,8 @@ import type { YtdlpDownloadHistoryEntry } from '../../../../shared/ytdlp-history
 import {
   formatDownloadsHistoryOutcomeLabel,
   formatDownloadsHistoryTime,
-  uiText
+  uiText,
+  uiTextVars
 } from '../../locales/ui-text'
 
 export function DownloadsHistoryPanel({
@@ -125,7 +126,13 @@ export function DownloadsHistoryPanel({
             <article key={entry.id} className="app-downloads-history-card">
               <div className="app-downloads-history-head">
                 <strong>{entry.shortLabel}</strong>
-                <div className="app-downloads-history-head-trailing">
+                <div
+                  className="app-downloads-history-head-trailing"
+                  role="toolbar"
+                  aria-label={uiTextVars('downloadsHistoryCardToolbarAriaTemplate', {
+                    title: entry.shortLabel
+                  })}
+                >
                   <span
                     className={`app-downloads-history-outcome app-downloads-history-${entry.outcome}`}
                   >

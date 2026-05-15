@@ -748,4 +748,9 @@
 - [J-725] 2026-05-16 05:29:00 [Assistant]: Заголовок rail FFmpeg — `toolbar` + `editorFfmpegRailHeaderToolbarAria`.
 - [J-726] 2026-05-16 05:31:00 [Assistant]: Терминал — список подсказок как `role="group"` + `terminalHintsInsertListAria`.
 - [J-727] 2026-05-16 05:33:00 [Assistant]: `VideoTimeline` — внутри общего `toolbar` кластеры trim / статус / снимок+экспорт с `role="group"` и подписями.
+- [J-728] 2026-05-16 05:45:00 [Assistant]: История загрузок — `toolbar` у trailing в карточке (`downloadsHistoryCardToolbarAriaTemplate`).
+- [J-729] 2026-05-16 05:47:00 [Assistant]: История обработок — два `toolbar` в карточке (исходник/пакет и выход) с шаблоном по короткому id.
+- [J-730] 2026-05-16 05:49:00 [Assistant]: О программе — колонка кнопки «Закрыть» как `toolbar` (`aboutDialogCloseToolbarAria`).
+- [J-731] 2026-05-16 05:51:00 [Assistant]: База знаний — `article` как `role="region"` + `knowledgeArticleRegionAria`.
+- [J-732] 2026-05-16 05:53:00 [Assistant]: §7.3 сетка панели пакета (`app-batch-export-toolbar`) — `role="group"` + `batchExportPanelFormGroupAria`.
 

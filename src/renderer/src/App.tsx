@@ -3267,7 +3267,11 @@ function App(): JSX.Element {
                 void handleBatchDropFiles(e.dataTransfer.files)
               }}
             >
-              <div className="app-settings-grid app-batch-export-toolbar">
+              <div
+                className="app-settings-grid app-batch-export-toolbar"
+                role="group"
+                aria-label={uiText('batchExportPanelFormGroupAria')}
+              >
                 <label className="app-field">
                   <span className="app-field-label-row">
                     <IconScissors size={16} aria-hidden />

@@ -12,7 +12,8 @@ import {
   formatProcessingHistoryKindLabel,
   formatProcessingHistoryOutcomeLabel,
   formatDownloadsHistoryTime,
-  uiText
+  uiText,
+  uiTextVars
 } from '../locales/ui-text'
 
 function mergeFilter(
@@ -244,7 +245,13 @@ export function ProcessingHistoryPanel({
                 <span>{entry.status}</span>
               </div>
               {entry.errorHint ? <p className="app-downloads-warning">{entry.errorHint}</p> : null}
-              <div className="app-downloads-history-actions">
+              <div
+                className="app-downloads-history-actions"
+                role="toolbar"
+                aria-label={uiTextVars('processingHistoryCardSourceToolbarAriaTemplate', {
+                  id: entry.id.length > 10 ? `${entry.id.slice(0, 8)}…` : entry.id
+                })}
+              >
                 <button
                   type="button"
                   className="app-btn app-btn-compact"
@@ -263,7 +270,13 @@ export function ProcessingHistoryPanel({
                 ) : null}
               </div>
               {entry.outputPath ? (
-                <div className="app-downloads-history-actions">
+                <div
+                  className="app-downloads-history-actions"
+                  role="toolbar"
+                  aria-label={uiTextVars('processingHistoryCardOutputToolbarAriaTemplate', {
+                    id: entry.id.length > 10 ? `${entry.id.slice(0, 8)}…` : entry.id
+                  })}
+                >
                   <button
                     type="button"
                     className="app-btn app-btn-compact"

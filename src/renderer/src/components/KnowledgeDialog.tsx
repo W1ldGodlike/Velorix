@@ -200,7 +200,7 @@ export function KnowledgeDialog({
             </div>
           </aside>
 
-          <article className="app-knowledge-article">
+          <article className="app-knowledge-article" role="region" aria-label={uiText('knowledgeArticleRegionAria')}>
             {loading ? <p className="app-modal-hint">{uiText('loading')}</p> : null}
             {error ? <p className="app-modal-hint app-error-text">{error}</p> : null}
             {!loading && !error && articlePane ? (
