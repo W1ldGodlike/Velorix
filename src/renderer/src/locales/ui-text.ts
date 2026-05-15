@@ -662,8 +662,9 @@ const UI_TEXT = {
     editorExportCodecAomav1: 'AV1 (libaom-av1, только MKV)',
     editorExportCodecLibrav1e: 'AV1 (librav1e, только MKV)',
     editorExportCodecProresKs: 'Apple ProRes (prores_ks, только MOV)',
+    editorExportCodecDnxhd: 'Avid DNxHR (dnxhd, только MOV)',
     editorExportAutoContainerMkv: 'Контейнер переключён на MKV (VP9/AV1 CPU).',
-    editorExportAutoContainerMov: 'Контейнер переключён на MOV (ProRes).',
+    editorExportAutoContainerMov: 'Контейнер переключён на MOV (ProRes / DNxHD).',
     editorExportCodecHwAuto: 'Авто (лучший H.264/AV1 HW или CPU)',
     editorExportCodecHwAutoBadge: 'АВТО',
     editorExportCodecHwAutoBadgeTitle:
@@ -1693,8 +1694,9 @@ const UI_TEXT = {
     editorExportCodecAomav1: 'AV1 (libaom-av1, MKV only)',
     editorExportCodecLibrav1e: 'AV1 (librav1e, MKV only)',
     editorExportCodecProresKs: 'Apple ProRes (prores_ks, MOV only)',
+    editorExportCodecDnxhd: 'Avid DNxHR (dnxhd, MOV only)',
     editorExportAutoContainerMkv: 'Container switched to MKV (VP9/AV1 CPU).',
-    editorExportAutoContainerMov: 'Container switched to MOV (ProRes).',
+    editorExportAutoContainerMov: 'Container switched to MOV (ProRes / DNxHD).',
     editorExportCodecHwAuto: 'Auto (best H.264/AV1 HW or CPU)',
     editorExportCodecHwAutoBadge: 'AUTO',
     editorExportCodecHwAutoBadgeTitle:

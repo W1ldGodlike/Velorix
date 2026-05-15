@@ -294,6 +294,13 @@
     "tool": "ffmpeg"
   },
   {
+    "token": "dnxhd",
+    "summary": "Avid DNxHD/DNxHR (энкодер dnxhd, профили dnxhr_*).",
+    "examples": ["ffmpeg -c:v dnxhd -profile:v dnxhr_sq out.mov"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/Encode/VFX",
+    "tool": "ffmpeg"
+  },
+  {
     "token": "-b:a",
     "summary": "Битрейт аудио.",
     "examples": ["ffmpeg -c:a aac -b:a 192k"],

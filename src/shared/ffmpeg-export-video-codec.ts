@@ -6,6 +6,7 @@
 import type { FfmpegExportVideoCodecId } from './ffmpeg-export-contract'
 import {
   FFMPEG_EXPORT_AOM_AV1_MKV_ONLY_ERROR,
+  FFMPEG_EXPORT_DNXHD_MOV_ONLY_ERROR,
   FFMPEG_EXPORT_PRORES_MOV_ONLY_ERROR,
   FFMPEG_EXPORT_RAV1E_MKV_ONLY_ERROR,
   FFMPEG_EXPORT_SVTAV1_MKV_ONLY_ERROR,
@@ -53,7 +54,7 @@ const MKV_ONLY_CPU_CODECS = new Set<FfmpegExportVideoCodecId>([
   'librav1e'
 ])
 
-const MOV_ONLY_VIDEO_CODECS = new Set<FfmpegExportVideoCodecId>(['prores_ks'])
+const MOV_ONLY_VIDEO_CODECS = new Set<FfmpegExportVideoCodecId>(['prores_ks', 'dnxhd'])
 
 /** VP9/AV1 (CPU) в текущей модели экспорта допускаются только в MKV. */
 export function cpuFfmpegVideoCodecRequiresMkv(codec: FfmpegExportVideoCodecId): boolean {
@@ -82,7 +83,12 @@ export function exportCpuCodecMkvOnlyErrorMessage(codec: FfmpegExportVideoCodecI
 }
 
 export function exportMovOnlyCodecErrorMessage(codec: FfmpegExportVideoCodecId): string {
-  void codec
+  if (codec === 'prores_ks') {
+    return FFMPEG_EXPORT_PRORES_MOV_ONLY_ERROR
+  }
+  if (codec === 'dnxhd') {
+    return FFMPEG_EXPORT_DNXHD_MOV_ONLY_ERROR
+  }
   return FFMPEG_EXPORT_PRORES_MOV_ONLY_ERROR
 }
 
@@ -170,6 +176,9 @@ export function parseFfmpegExportVideoCodec(raw: unknown): FfmpegExportVideoCode
   }
   if (raw === 'prores_ks') {
     return 'prores_ks'
+  }
+  if (raw === 'dnxhd') {
+    return 'dnxhd'
   }
   if (typeof raw === 'string' && HW_SET.has(raw)) {
     return raw as FfmpegHwVideoEncoderId

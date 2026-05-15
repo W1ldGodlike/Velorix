@@ -23,6 +23,7 @@ export type FfmpegExportVideoCodecId =
   | 'libaom-av1'
   | 'librav1e'
   | 'prores_ks'
+  | 'dnxhd'
   | 'hw_auto'
   | 'hw_auto_hevc'
   | FfmpegHwVideoEncoderId
@@ -251,6 +252,9 @@ export const FFMPEG_EXPORT_RAV1E_MKV_ONLY_ERROR = 'AV1 (librav1e): только 
 /** `prores_ks` в текущей модели экспорта — только QuickTime MOV. */
 export const FFMPEG_EXPORT_PRORES_MOV_ONLY_ERROR =
   'Apple ProRes (prores_ks): только контейнер MOV.' as const
+/** `dnxhd` (DNxHR в `-profile:v`) в текущей модели экспорта — только MOV. */
+export const FFMPEG_EXPORT_DNXHD_MOV_ONLY_ERROR =
+  'Avid DNxHD/DNxHR (dnxhd): только контейнер MOV.' as const
 
 export type MediaExportStartResult =
   | { ok: true; path: string }

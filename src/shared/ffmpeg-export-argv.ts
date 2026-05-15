@@ -719,6 +719,20 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
     if (params.videoBitrate !== null) {
       args.push('-b:v', params.videoBitrate)
     }
+  } else if (vcodec === 'dnxhd') {
+    if (tp) {
+      throw new Error('Двухпроходный режим поддерживается только для libx264')
+    }
+    const profile =
+      params.encodePreset === 'smaller'
+        ? 'dnxhr_lb'
+        : params.encodePreset === 'quality'
+          ? 'dnxhr_hq'
+          : 'dnxhr_sq'
+    args.push('-c:v', 'dnxhd', '-profile:v', profile)
+    if (params.videoBitrate !== null) {
+      args.push('-b:v', params.videoBitrate)
+    }
   } else {
     args.push('-c:v', vcodec, '-preset', enc.x264preset)
     if (vcodec === 'libx265' && (container === 'mp4' || container === 'mov')) {
@@ -738,7 +752,7 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
     }
   }
 
-  if (vcodec !== 'prores_ks') {
+  if (vcodec !== 'prores_ks' && vcodec !== 'dnxhd') {
     args.push('-pix_fmt', 'yuv420p')
   }
   if (filters.length > 0) {

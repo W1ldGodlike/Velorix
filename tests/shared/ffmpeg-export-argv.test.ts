@@ -27,6 +27,7 @@ import {
 } from '../../src/shared/ffmpeg-export-argv'
 import {
   FFMPEG_EXPORT_AOM_AV1_MKV_ONLY_ERROR,
+  FFMPEG_EXPORT_DNXHD_MOV_ONLY_ERROR,
   FFMPEG_EXPORT_PRORES_MOV_ONLY_ERROR,
   FFMPEG_EXPORT_RAV1E_MKV_ONLY_ERROR,
   FFMPEG_EXPORT_SVTAV1_MKV_ONLY_ERROR,
@@ -355,6 +356,43 @@ describe('shared ffmpeg export argv', () => {
       '-vendor',
       'apl0'
     ])
+    expect(argv.includes('-pix_fmt')).toBe(false)
+  })
+
+  it('dnxhd: только MOV; DNxHR -profile:v', () => {
+    expect(() =>
+      buildFfmpegExportArgv({
+        inputPath: 'in.mp4',
+        outputPath: 'out.mp4',
+        applyTrim: false,
+        encodePreset: 'balance',
+        videoCodec: 'dnxhd',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'aac',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        container: 'mp4'
+      })
+    ).toThrow(FFMPEG_EXPORT_DNXHD_MOV_ONLY_ERROR)
+
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mov',
+      outputPath: 'out.mov',
+      applyTrim: false,
+      encodePreset: 'smaller',
+      videoCodec: 'dnxhd',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mov'
+    })
+    const j = argv.indexOf('-c:v')
+    expect(argv.slice(j, j + 4)).toEqual(['-c:v', 'dnxhd', '-profile:v', 'dnxhr_lb'])
     expect(argv.includes('-pix_fmt')).toBe(false)
   })
 
