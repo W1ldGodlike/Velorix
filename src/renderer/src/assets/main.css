@@ -1162,6 +1162,17 @@ button.app-downloads-hint-token:disabled {
   font-size: 0.6rem;
 }
 
+.app-downloads-history-codec {
+  flex: 0 1 auto;
+  max-width: 12rem;
+  overflow: hidden;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .app-downloads-log-panel {
   border-radius: 8px;
   border: 1px solid var(--fa-border-subtle);

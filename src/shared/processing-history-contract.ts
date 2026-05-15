@@ -11,6 +11,8 @@ export interface ProcessingHistoryEntry {
   outcome: ProcessingHistoryOutcome
   status: string
   errorHint: string | null
+  /** Фактический `-c:v` после резолва auto (экспорт ffmpeg / авто-экспорт). */
+  exportVideoCodecUsed?: string
 }
 
 export interface ProcessingHistoryFilter {

@@ -97,6 +97,27 @@ describe('processing-history', () => {
     ).toEqual(['auto-ok'])
   })
 
+  it('сохраняет exportVideoCodecUsed и ищет по нему', () => {
+    const root = makeTempRoot()
+    appendProcessingHistoryEntry(root, {
+      id: 'with-codec',
+      kind: 'ffmpegExport',
+      startedAt: 1,
+      finishedAt: 2,
+      inputPath: 'C:/in.mp4',
+      outputPath: 'C:/out.mp4',
+      outcome: 'success',
+      status: 'ok',
+      errorHint: null,
+      exportVideoCodecUsed: 'h264_nvenc'
+    })
+    const rows = readProcessingHistoryNewestFirst(root)
+    expect(rows[0]?.exportVideoCodecUsed).toBe('h264_nvenc')
+    expect(readProcessingHistoryNewestFirst(root, { query: 'nvenc' }).map((e) => e.id)).toEqual([
+      'with-codec'
+    ])
+  })
+
   it('находит запись по id для безопасного открытия результата из main', () => {
     const root = makeTempRoot()
     appendProcessingHistoryEntry(root, {

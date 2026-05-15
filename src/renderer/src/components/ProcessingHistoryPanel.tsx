@@ -219,6 +219,15 @@ export function ProcessingHistoryPanel({
               <div className="app-downloads-history-meta">
                 <span>{formatDownloadsHistoryTime(entry.finishedAt)}</span>
                 <span>{formatProcessingHistoryKindLabel(entry.kind)}</span>
+                {(entry.kind === 'ffmpegExport' || entry.kind === 'autoExport') &&
+                entry.exportVideoCodecUsed ? (
+                  <span
+                    className="app-downloads-history-codec"
+                    title={entry.exportVideoCodecUsed}
+                  >
+                    {entry.exportVideoCodecUsed}
+                  </span>
+                ) : null}
               </div>
               <div className="app-downloads-history-meta">
                 <span>{entry.status}</span>

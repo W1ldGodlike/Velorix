@@ -2314,7 +2314,8 @@ app.whenReady().then(() => {
             outputPath: outPath,
             outcome: 'success',
             status: processingHistoryAutoExportSuccess(loc),
-            errorHint: null
+            errorHint: null,
+            exportVideoCodecUsed: result.videoCodecUsed
           })
           emitDownloadsLog({
             kind: 'line',
@@ -2333,7 +2334,8 @@ app.whenReady().then(() => {
             outputPath: outPath,
             outcome: 'cancelled',
             status: processingHistoryAutoExportCancelled(loc),
-            errorHint: null
+            errorHint: null,
+            exportVideoCodecUsed: result.videoCodecUsed
           })
           emitDownloadsLog({
             kind: 'line',
@@ -2351,7 +2353,8 @@ app.whenReady().then(() => {
           outputPath: outPath,
           outcome: 'error',
           status: processingHistoryAutoExportFailed(loc),
-          errorHint: result.error
+          errorHint: result.error,
+          exportVideoCodecUsed: result.videoCodecUsed
         })
         emitDownloadsLog({
           kind: 'line',
@@ -3141,7 +3144,8 @@ app.whenReady().then(() => {
           outputPath: outPath,
           outcome: 'success',
           status: processingHistoryFfmpegExportSuccess(exportUiLocale),
-          errorHint: null
+          errorHint: null,
+          exportVideoCodecUsed: result.videoCodecUsed
         })
         return { ok: true, path: outPath }
       }
@@ -3154,7 +3158,8 @@ app.whenReady().then(() => {
           outputPath: outPath,
           outcome: 'cancelled',
           status: processingHistoryFfmpegExportCancelled(exportUiLocale),
-          errorHint: null
+          errorHint: null,
+          exportVideoCodecUsed: result.videoCodecUsed
         })
         return { ok: false, cancelled: true }
       }
@@ -3166,7 +3171,8 @@ app.whenReady().then(() => {
         outputPath: outPath,
         outcome: 'error',
         status: processingHistoryFfmpegExportFailed(exportUiLocale),
-        errorHint: result.error
+        errorHint: result.error,
+        exportVideoCodecUsed: result.videoCodecUsed
       })
       return { ok: false, error: result.error }
     } finally {

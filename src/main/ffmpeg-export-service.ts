@@ -878,7 +878,10 @@ export async function runFfmpegExportJob(params: {
   signal: AbortSignal
   onProgress?: (p: FfmpegExportProgressPayload) => void
   uiLocale?: DownloadsWindowUiLocale
-}): Promise<{ ok: true } | { ok: false; error: string }> {
+}): Promise<
+  | { ok: true; videoCodecUsed: FfmpegExportVideoCodecId }
+  | { ok: false; error: string; videoCodecUsed: FfmpegExportVideoCodecId }
+> {
   const uloc = params.uiLocale ?? 'ru'
   const S = getMainApplicationStrings(uloc)
   const applyTrim = shouldApplyFfmpegExportTrim(params.trim ?? null, params.probeDurationSec)
@@ -939,13 +942,15 @@ export async function runFfmpegExportJob(params: {
   if (params.twoPass === true && videoBitrate === null) {
     return {
       ok: false,
-      error: S.exportTwoPassRequiresBitrate
+      error: S.exportTwoPassRequiresBitrate,
+      videoCodecUsed: videoCodec
     }
   }
   if (params.twoPass === true && videoCodec !== 'libx264') {
     return {
       ok: false,
-      error: S.exportTwoPassLibx264Only
+      error: S.exportTwoPassLibx264Only,
+      videoCodecUsed: videoCodec
     }
   }
   const segmentDur = resolveExportSegmentDurationSec(
@@ -988,6 +993,16 @@ export async function runFfmpegExportJob(params: {
     ...(audioNormalize !== 'off' ? { audioNormalize } : {})
   }
 
+  const doneOk = (): { ok: true; videoCodecUsed: FfmpegExportVideoCodecId } => ({
+    ok: true,
+    videoCodecUsed: videoCodec
+  })
+  const doneErr = (error: string): { ok: false; error: string; videoCodecUsed: FfmpegExportVideoCodecId } => ({
+    ok: false,
+    error,
+    videoCodecUsed: videoCodec
+  })
+
   const onProgressCb = params.onProgress
   const jobOnProgress =
     onProgressCb === undefined
@@ -998,7 +1013,7 @@ export async function runFfmpegExportJob(params: {
 
   if (!wantTwoPass) {
     const args = buildFfmpegExportArgv(baseArgvParams)
-    return await runFfmpegExportOnce({
+    const r = await runFfmpegExportOnce({
       ffmpegPath: params.ffmpegPath,
       args,
       signal: params.signal,
@@ -1006,6 +1021,7 @@ export async function runFfmpegExportJob(params: {
       uiLocale: uloc,
       ...(jobOnProgress !== undefined ? { onProgress: jobOnProgress } : {})
     })
+    return r.ok ? doneOk() : doneErr(r.error)
   }
 
   let tmpDir: string | null = null
@@ -1028,10 +1044,10 @@ export async function runFfmpegExportJob(params: {
       ...(jobOnProgress !== undefined ? { onProgress: jobOnProgress } : {})
     })
     if (!r1.ok) {
-      return r1
+      return doneErr(r1.error)
     }
     if (params.signal.aborted) {
-      return { ok: false, error: FFMPEG_EXPORT_CANCELLED_ERROR }
+      return doneErr(FFMPEG_EXPORT_CANCELLED_ERROR)
     }
 
     jobOnProgress?.({ percent: 50, message: S.exportLibx264SecondPassProgress })
@@ -1040,7 +1056,7 @@ export async function runFfmpegExportJob(params: {
       ...baseArgvParams,
       twoPass: { pass: 2, passlogfile: passlogBase, nullDevice: nullSink }
     })
-    return await runFfmpegExportOnce({
+    const r2 = await runFfmpegExportOnce({
       ffmpegPath: params.ffmpegPath,
       args: argsPass2,
       signal: params.signal,
@@ -1049,6 +1065,7 @@ export async function runFfmpegExportJob(params: {
       mapPercent: (p) => 50 + p * 0.5,
       ...(jobOnProgress !== undefined ? { onProgress: jobOnProgress } : {})
     })
+    return r2.ok ? doneOk() : doneErr(r2.error)
   } finally {
     if (tmpDir !== null) {
       try {

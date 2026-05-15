@@ -74,7 +74,8 @@ function parseEntry(raw: unknown): ProcessingHistoryEntry | null {
   }
   const outputRaw = o['outputPath']
   const errorRaw = o['errorHint']
-  return {
+  const codecRaw = o['exportVideoCodecUsed']
+  const entry: ProcessingHistoryEntry = {
     id: o['id'].slice(0, 64),
     kind: o['kind'],
     startedAt: o['startedAt'],
@@ -85,6 +86,10 @@ function parseEntry(raw: unknown): ProcessingHistoryEntry | null {
     status: o['status'].slice(0, 400),
     errorHint: typeof errorRaw === 'string' ? errorRaw.slice(0, 500) : null
   }
+  if (typeof codecRaw === 'string' && codecRaw.trim().length > 0) {
+    entry.exportVideoCodecUsed = codecRaw.trim().slice(0, 64)
+  }
+  return entry
 }
 
 function loadEntries(userDataRoot: string): ProcessingHistoryEntry[] {
@@ -134,7 +139,7 @@ export function appendProcessingHistoryEntry(
   partial: Omit<ProcessingHistoryEntry, 'id'> & { id?: string }
 ): void {
   const entries = loadEntries(userDataRoot)
-  entries.push({
+  const next: ProcessingHistoryEntry = {
     id: partial.id && partial.id.length > 0 ? partial.id.slice(0, 64) : newEntryId(),
     kind: partial.kind,
     startedAt: partial.startedAt,
@@ -144,7 +149,14 @@ export function appendProcessingHistoryEntry(
     outcome: partial.outcome,
     status: partial.status.slice(0, 400),
     errorHint: partial.errorHint ? partial.errorHint.slice(0, 500) : null
-  })
+  }
+  if (
+    typeof partial.exportVideoCodecUsed === 'string' &&
+    partial.exportVideoCodecUsed.trim().length > 0
+  ) {
+    next.exportVideoCodecUsed = partial.exportVideoCodecUsed.trim().slice(0, 64)
+  }
+  entries.push(next)
   while (entries.length > PROCESSING_HISTORY_MAX_ENTRIES) {
     entries.shift()
   }
@@ -165,7 +177,7 @@ export function readProcessingHistoryNewestFirst(
       if (!q) {
         return true
       }
-      return [entry.inputPath, entry.outputPath ?? '', entry.status, entry.errorHint ?? ''].some(
+      return [entry.inputPath, entry.outputPath ?? '', entry.status, entry.errorHint ?? '', entry.exportVideoCodecUsed ?? ''].some(
         (text) => text.toLowerCase().includes(q)
       )
     })
