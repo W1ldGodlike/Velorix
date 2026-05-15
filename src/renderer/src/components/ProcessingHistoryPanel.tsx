@@ -95,6 +95,7 @@ export function ProcessingHistoryPanel({
   return (
     <details
       className="app-settings-section app-processing-history-panel"
+      aria-label={uiText('processingHistorySectionAria')}
       open={open}
       onToggle={(event) => {
         onToggle(event.currentTarget.open)

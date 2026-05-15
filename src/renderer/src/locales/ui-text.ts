@@ -115,6 +115,7 @@ const UI_TEXT = {
     knowledgeMdInternalLinkTooltip: 'Открыть связанную статью в этом окне.',
     knowledgeMdExternalLinkTooltip: 'Открыть ссылку в браузере (новая вкладка).',
     terminalWorkspaceAriaLabel: 'Панель терминала',
+    terminalPanelSectionAria: 'Область терминала: ввод, журнал и подсказки',
     terminalTitle: 'Терминал',
     terminalIntroBandAria: 'Вводная зона вкладки терминала',
     terminalIntroLead:
@@ -153,6 +154,7 @@ const UI_TEXT = {
     processingOutcomeError: 'Ошибка',
     processingOutcomeCancelled: 'Отмена',
     processingHistoryTitle: 'История обработок',
+    processingHistorySectionAria: 'Секция истории обработок в панели FFmpeg',
     processingHistorySectionHint:
       'Последние экспорты ffmpeg, снимки кадров и авто-экспорт после загрузки.',
     processingHistoryWeeklyAria: 'Недельная сводка обработок',
@@ -256,6 +258,7 @@ const UI_TEXT = {
     downloadsNoFinishedRowsHint: 'Завершённых строк нет.',
     downloadsOverviewAria: 'Сводка очереди загрузок',
     downloadsLowerStackAria: 'Журнал и история под очередью',
+    downloadsQueueTableZoneAria: 'Таблица очереди загрузок',
     downloadsStatTotal: 'Всего',
     downloadsStatPending: 'Ожидает',
     downloadsFilterBarAria: 'Фильтр очереди по статусу',
@@ -315,6 +318,7 @@ const UI_TEXT = {
     batchExportOutputDirOpen: 'Показать папку',
     batchExportOutputDirPlaceholder: 'Рядом с исходным файлом',
     downloadsRailAria: 'Настройки загрузок',
+    downloadsSettingsSectionsStackAria: 'Сворачиваемые секции настроек yt-dlp',
     downloadsRailTitle: 'Настройки yt-dlp',
     downloadsRailSubtitle:
       'Качество ролика, папка на диске, субтитры, поведение после загрузки и сеть. Секции можно сворачивать; те же значения используются в отдельном окне загрузок.',
@@ -901,6 +905,7 @@ const UI_TEXT = {
     statusExportProgress: 'Экспорт · {tail}',
     statusExportBatchRow: 'Пакет #{id}',
     batchExportAria: 'Пакетный экспорт видео',
+    batchExportDropzoneAria: 'Область пакета: перетаскивание файлов, параметры и таблица очереди',
     batchExportActionsToolbarAria: 'Действия панели пакетного экспорта',
     batchExportPanelFormGroupAria: 'Параметры пакета: суффикс, папка, параллелизм и действия очереди',
     batchExportOutputDirRowGroupAria: 'Папка вывода: выбрать, открыть, сбросить',
@@ -1344,6 +1349,7 @@ const UI_TEXT = {
     knowledgeMdInternalLinkTooltip: 'Open the linked article here.',
     knowledgeMdExternalLinkTooltip: 'Open link in the browser (new tab).',
     terminalWorkspaceAriaLabel: 'Terminal CLI',
+    terminalPanelSectionAria: 'Terminal workspace: input, output log, and hints',
     terminalTitle: 'Terminal',
     terminalIntroBandAria: 'Terminal tab intro and actions',
     terminalIntroLead:
@@ -1382,6 +1388,7 @@ const UI_TEXT = {
     processingOutcomeError: 'Error',
     processingOutcomeCancelled: 'Cancelled',
     processingHistoryTitle: 'Processing history',
+    processingHistorySectionAria: 'Processing history section in the FFmpeg panel',
     processingHistorySectionHint:
       'Recent ffmpeg exports, frame snapshots, and post-download auto-exports.',
     processingHistoryWeeklyAria: 'Seven-day processing summary',
@@ -1484,6 +1491,7 @@ const UI_TEXT = {
     downloadsNoFinishedRowsHint: 'No finished rows to remove.',
     downloadsOverviewAria: 'Download queue summary',
     downloadsLowerStackAria: 'Log and history under the queue',
+    downloadsQueueTableZoneAria: 'Download queue table',
     downloadsStatTotal: 'Total',
     downloadsStatPending: 'Pending',
     downloadsFilterBarAria: 'Queue status filter',
@@ -1542,6 +1550,7 @@ const UI_TEXT = {
     batchExportOutputDirOpen: 'Open folder',
     batchExportOutputDirPlaceholder: 'Next to source file',
     downloadsRailAria: 'Download settings',
+    downloadsSettingsSectionsStackAria: 'Collapsible yt-dlp settings sections',
     downloadsRailTitle: 'yt-dlp settings',
     downloadsRailSubtitle:
       'Video quality, save folder, subtitles, after-download actions, and network behavior. Sections collapse; the same values apply in the pop-out downloads window.',
@@ -2126,6 +2135,7 @@ const UI_TEXT = {
     statusExportProgress: 'Export · {tail}',
     statusExportBatchRow: 'Batch #{id}',
     batchExportAria: 'Batch video export',
+    batchExportDropzoneAria: 'Batch area: drag-and-drop files, options, and queue table',
     batchExportActionsToolbarAria: 'Batch export action bar',
     batchExportPanelFormGroupAria: 'Batch options: suffix, folder, concurrency, and queue actions',
     batchExportOutputDirRowGroupAria: 'Output folder: pick, reveal, reset',

@@ -783,4 +783,9 @@
 - [J-760] 2026-05-16 07:02:00 [Assistant]: Вкладка «Загрузки» — верхняя полоса: `downloadsPageIntroBandAria`.
 - [J-761] 2026-05-16 07:04:00 [Assistant]: Загрузки — `app-downloads-lower-stack`: `downloadsLowerStackAria`.
 - [J-762] 2026-05-16 07:06:00 [Assistant]: Загрузки — `<section class="app-downloads-main">`: `aria-label` + существующий ключ `downloadsMainAria`.
+- [J-763] 2026-05-16 07:10:00 [Assistant]: Терминал — `<section class="app-terminal-panel">`: `terminalPanelSectionAria`.
+- [J-764] 2026-05-16 07:12:00 [Assistant]: Загрузки — зона таблицы очереди: `role="region"` + `downloadsQueueTableZoneAria`.
+- [J-765] 2026-05-16 07:14:00 [Assistant]: Пакетный экспорт — `app-batch-export-dropzone`: `aria-label` + `batchExportDropzoneAria`.
+- [J-766] 2026-05-16 07:16:00 [Assistant]: Загрузки rail — стек секций настроек: `downloadsSettingsSectionsStackAria`.
+- [J-767] 2026-05-16 07:18:00 [Assistant]: История обработок — `<details>`: `aria-label` + `processingHistorySectionAria`.
 

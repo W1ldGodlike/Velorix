@@ -3259,6 +3259,7 @@ function App(): JSX.Element {
             </p>
             <div
               className="app-batch-export-dropzone"
+              aria-label={uiText('batchExportDropzoneAria')}
               aria-busy={batchExportBusy}
               aria-describedby="batch-export-panel-hint batch-export-drop-hint"
               onDragOver={(e) => {
@@ -5237,7 +5238,7 @@ function App(): JSX.Element {
           aria-labelledby="workspace-tab-terminal"
           className="app-main app-terminal-workspace"
         >
-          <section className="app-terminal-panel">
+          <section className="app-terminal-panel" aria-label={uiText('terminalPanelSectionAria')}>
             <div
               className="app-downloads-band"
               role="region"
@@ -5749,7 +5750,11 @@ function App(): JSX.Element {
                 </button>
               ))}
             </div>
-            <div className="app-downloads-table-zone">
+            <div
+              className="app-downloads-table-zone"
+              role="region"
+              aria-label={uiText('downloadsQueueTableZoneAria')}
+            >
               <div className="app-downloads-table-wrap">
                 <table className="app-downloads-table">
                   <thead>
@@ -6168,7 +6173,11 @@ function App(): JSX.Element {
               {uiText('downloadsRailSubtitle')}
             </p>
             {downloadsOptions ? (
-              <div className="app-downloads-settings-stack">
+              <div
+                className="app-downloads-settings-stack"
+                role="region"
+                aria-label={uiText('downloadsSettingsSectionsStackAria')}
+              >
                 <details
                   className="app-downloads-rail-section"
                   open={downloadsRailPanels.format}
