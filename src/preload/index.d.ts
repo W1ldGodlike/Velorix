@@ -294,12 +294,21 @@ export interface FluxAlloyApi {
       | { ok: false; cancelled: true }
       | { ok: false; error: string }
     >
+    pickFolder: () => Promise<
+      | { ok: true; added: number }
+      | { ok: false; cancelled: true }
+      | { ok: false; error: string }
+    >
     addPaths: (paths: string[]) => Promise<{ ok: true; added: number } | { ok: false; error: string }>
     removeRows: (ids: number[]) => Promise<{ ok: true; removed: number }>
     clear: () => Promise<{ ok: true }>
     moveRow: (
       id: number,
       direction: 'up' | 'down'
+    ) => Promise<{ ok: true; moved: boolean } | { ok: false; error: string }>
+    reorderRow: (
+      id: number,
+      toIndex: number
     ) => Promise<{ ok: true; moved: boolean } | { ok: false; error: string }>
     setConcurrency: (value: FfmpegExportBatchConcurrency) => Promise<{ ok: true }>
     start: (rawExportOverrides?: unknown) => Promise<FfmpegExportBatchStartResult>

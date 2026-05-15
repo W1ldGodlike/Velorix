@@ -128,15 +128,23 @@ import {
   markWaitingFfmpegExportBatchRowsCancelled,
   moveFfmpegExportBatchRow,
   removeFfmpegExportBatchRows,
+  reorderFfmpegExportBatchRowAt,
   setFfmpegExportBatchConcurrency
 } from './ffmpeg-export-batch-queue'
+import {
+  attachFfmpegExportBatchQueuePersist,
+  hydrateFfmpegExportBatchQueueFromDisk
+} from './ffmpeg-export-batch-persist'
 import {
   cancelFfmpegExportBatchRunner,
   isFfmpegExportBatchActive,
   runFfmpegExportBatchQueue,
   setFfmpegExportBatchRunnerNotifier
 } from './ffmpeg-export-batch-runner'
-import { pickFfmpegExportBatchInputFiles } from './ffmpeg-export-batch-pick'
+import {
+  pickFfmpegExportBatchInputFiles,
+  pickFfmpegExportBatchInputFolder
+} from './ffmpeg-export-batch-pick'
 import type {
   FfmpegExportBatchSnapshot,
   FfmpegExportBatchStartResult
@@ -2137,6 +2145,8 @@ app.whenReady().then(() => {
   refreshEnginePathOverridesSnapshot()
   syncYtdlpDownloadDirectoryFromSettings(cachedSettings.ytdlpDownloadDirectory)
   refreshYtdlpRunOptionsSnapshot(cachedSettings, mainDownloadsUiLocale())
+  attachFfmpegExportBatchQueuePersist(app)
+  hydrateFfmpegExportBatchQueueFromDisk(resolveAppPaths().userData)
   nativeTheme.on('updated', () => {
     if (cachedSettings.theme !== 'system') {
       return
@@ -3252,13 +3262,42 @@ app.whenReady().then(() => {
   )
 
   ipcMain.handle(
+    mw.batchExportPickFolder,
+    async (event): Promise<
+      | { ok: true; added: number }
+      | { ok: false; cancelled: true }
+      | { ok: false; error: string }
+    > => {
+      const win = BrowserWindow.fromWebContents(event.sender)
+      if (!win) {
+        return { ok: false, error: mainAppStr().openVideoDialogNoWindow }
+      }
+      const loc = mainDownloadsUiLocale()
+      const picked = await pickFfmpegExportBatchInputFolder(win, loc)
+      if (!picked.ok) {
+        return picked
+      }
+      const added = addFfmpegExportBatchPaths(picked.paths)
+      pushBatchExportSnapshot(win)
+      return { ok: true, added }
+    }
+  )
+
+  ipcMain.handle(
     mw.batchExportAddPaths,
     (_event, raw: unknown): { ok: true; added: number } | { ok: false; error: string } => {
       if (!Array.isArray(raw)) {
         return { ok: false, error: mainAppStr().ipcInvalidRequest }
       }
       const paths = raw.filter((p): p is string => typeof p === 'string')
-      const added = addFfmpegExportBatchPaths(paths)
+      const granted: string[] = []
+      for (const p of paths) {
+        const abs = normalize(p.trim())
+        if (abs.length > 0 && grantMediaPath(abs)) {
+          granted.push(abs)
+        }
+      }
+      const added = addFfmpegExportBatchPaths(granted)
       pushBatchExportSnapshot()
       return { ok: true, added }
     }
@@ -3289,6 +3328,23 @@ app.whenReady().then(() => {
         return { ok: false, error: mainAppStr().ipcInvalidRequest }
       }
       const moved = moveFfmpegExportBatchRow(id, direction)
+      pushBatchExportSnapshot()
+      return { ok: true, moved }
+    }
+  )
+
+  ipcMain.handle(
+    mw.batchExportReorderRow,
+    (_event, raw: unknown): { ok: true; moved: boolean } | { ok: false; error: string } => {
+      if (!raw || typeof raw !== 'object') {
+        return { ok: false, error: mainAppStr().ipcInvalidRequest }
+      }
+      const id = (raw as { id?: unknown }).id
+      const toIndex = (raw as { toIndex?: unknown }).toIndex
+      if (typeof id !== 'number' || typeof toIndex !== 'number' || !Number.isFinite(toIndex)) {
+        return { ok: false, error: mainAppStr().ipcInvalidRequest }
+      }
+      const moved = reorderFfmpegExportBatchRowAt(id, Math.trunc(toIndex))
       pushBatchExportSnapshot()
       return { ok: true, moved }
     }

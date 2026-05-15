@@ -535,6 +535,11 @@ const fluxalloy = {
       | { ok: false; cancelled: true }
       | { ok: false; error: string }
     > => ipcRenderer.invoke(mw.batchExportPickFiles),
+    pickFolder: (): Promise<
+      | { ok: true; added: number }
+      | { ok: false; cancelled: true }
+      | { ok: false; error: string }
+    > => ipcRenderer.invoke(mw.batchExportPickFolder),
     addPaths: (paths: string[]): Promise<{ ok: true; added: number } | { ok: false; error: string }> =>
       ipcRenderer.invoke(mw.batchExportAddPaths, paths),
     removeRows: (ids: number[]): Promise<{ ok: true; removed: number }> =>
@@ -545,6 +550,11 @@ const fluxalloy = {
       direction: 'up' | 'down'
     ): Promise<{ ok: true; moved: boolean } | { ok: false; error: string }> =>
       ipcRenderer.invoke(mw.batchExportMoveRow, { id, direction }),
+    reorderRow: (
+      id: number,
+      toIndex: number
+    ): Promise<{ ok: true; moved: boolean } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(mw.batchExportReorderRow, { id, toIndex }),
     setConcurrency: (value: FfmpegExportBatchConcurrency): Promise<{ ok: true }> =>
       ipcRenderer.invoke(mw.batchExportSetConcurrency, value),
     start: (rawExportOverrides?: unknown): Promise<FfmpegExportBatchStartResult> =>

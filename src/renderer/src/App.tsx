@@ -602,6 +602,7 @@ function App(): JSX.Element {
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
   const [exportBusy, setExportBusy] = useState(false)
   const [batchSnapshot, setBatchSnapshot] = useState<FfmpegExportBatchSnapshot | null>(null)
+  const [batchDragRowId, setBatchDragRowId] = useState<number | null>(null)
   const batchExportBusy = batchSnapshot?.running === true
   const mediaPipelineBusy = exportBusy || batchExportBusy
   const [exportCancelBusy, setExportCancelBusy] = useState(false)
@@ -2088,6 +2089,46 @@ function App(): JSX.Element {
     }
   }
 
+  async function handleBatchPickFolder(): Promise<void> {
+    const res = await window.fluxalloy.batchExport.pickFolder()
+    if (res.ok) {
+      setStatusHint(uiTextVars('batchExportAddedFiles', { count: String(res.added) }))
+      return
+    }
+    if ('cancelled' in res && res.cancelled) {
+      return
+    }
+    if ('error' in res) {
+      setStatusHint(res.error)
+    }
+  }
+
+  async function handleBatchDropFiles(files: FileList | null): Promise<void> {
+    if (!files || files.length === 0 || batchExportBusy) {
+      return
+    }
+    const paths: string[] = []
+    for (let i = 0; i < files.length; i += 1) {
+      const file = files.item(i)
+      if (!file) {
+        continue
+      }
+      const absolutePath = window.fluxalloy.preview.getPathForFile(file)
+      if (absolutePath) {
+        paths.push(absolutePath)
+      }
+    }
+    if (paths.length === 0) {
+      return
+    }
+    const res = await window.fluxalloy.batchExport.addPaths(paths)
+    if (res.ok) {
+      setStatusHint(uiTextVars('batchExportAddedFiles', { count: String(res.added) }))
+    } else if ('error' in res) {
+      setStatusHint(res.error)
+    }
+  }
+
   async function handleBatchStart(): Promise<void> {
     if (mediaPipelineBusy) {
       return
@@ -2728,9 +2769,22 @@ function App(): JSX.Element {
           <summary className="app-url-summary">{uiText('batchExportSummary')}</summary>
           <div className="app-url-body">
             <p className="app-url-hint">{uiText('batchExportHint')}</p>
-            <div className="app-settings-grid app-batch-export-toolbar">
-              <label className="app-field">
-                <span>{uiText('batchExportConcurrency')}</span>
+            <p className="app-url-hint">{uiText('batchExportDragHint')}</p>
+            <div
+              className="app-batch-export-dropzone"
+              onDragOver={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+              }}
+              onDrop={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                void handleBatchDropFiles(e.dataTransfer.files)
+              }}
+            >
+              <div className="app-settings-grid app-batch-export-toolbar">
+                <label className="app-field">
+                  <span>{uiText('batchExportConcurrency')}</span>
                 <select
                   className="app-control"
                   value={String(batchSnapshot?.concurrency ?? 'auto')}
@@ -2767,6 +2821,16 @@ function App(): JSX.Element {
                 </button>
                 <button
                   type="button"
+                  className="app-btn"
+                  disabled={batchExportBusy}
+                  onClick={() => {
+                    void handleBatchPickFolder()
+                  }}
+                >
+                  {uiText('batchExportAddFolder')}
+                </button>
+                <button
+                  type="button"
                   className="app-btn app-btn-primary"
                   disabled={batchExportBusy || (batchSnapshot?.rows.length ?? 0) === 0}
                   onClick={() => {
@@ -2796,7 +2860,7 @@ function App(): JSX.Element {
                   {uiText('batchExportClear')}
                 </button>
               </div>
-            </div>
+              </div>
             {batchSnapshot && batchSnapshot.rows.length > 0 ? (
               <table className="app-batch-export-table">
                 <thead>
@@ -2808,8 +2872,33 @@ function App(): JSX.Element {
                   </tr>
                 </thead>
                 <tbody>
-                  {batchSnapshot.rows.map((row) => (
-                    <tr key={row.id}>
+                  {batchSnapshot.rows.map((row, rowIndex) => (
+                    <tr
+                      key={row.id}
+                      draggable={!batchExportBusy && row.status !== 'running'}
+                      onDragStart={() => {
+                        setBatchDragRowId(row.id)
+                      }}
+                      onDragEnd={() => {
+                        setBatchDragRowId(null)
+                      }}
+                      onDragOver={(e) => {
+                        if (!batchExportBusy && row.status !== 'running') {
+                          e.preventDefault()
+                        }
+                      }}
+                      onDrop={(e) => {
+                        e.preventDefault()
+                        const fromId = batchDragRowId
+                        setBatchDragRowId(null)
+                        if (fromId === null || fromId === row.id) {
+                          return
+                        }
+                        void window.fluxalloy.batchExport
+                          .reorderRow(fromId, rowIndex)
+                          .catch(console.error)
+                      }}
+                    >
                       <td title={row.inputPath}>{row.shortLabel}</td>
                       <td>{row.status}</td>
                       <td>{row.progress}</td>
@@ -2869,6 +2958,7 @@ function App(): JSX.Element {
                 })}
               </p>
             ) : null}
+            </div>
           </div>
         </details>
       ) : null}

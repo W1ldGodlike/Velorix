@@ -9,6 +9,7 @@ import {
   getFfmpegExportBatchSnapshot,
   moveFfmpegExportBatchRow,
   removeFfmpegExportBatchRows,
+  reorderFfmpegExportBatchRowAt,
   setFfmpegExportBatchConcurrency,
   takeNextFfmpegExportBatchWaitingRow,
   updateFfmpegExportBatchRow
@@ -41,6 +42,17 @@ describe('ffmpeg-export-batch-queue', () => {
     const id = getFfmpegExportBatchSnapshot().rows[0]!.id
     removeFfmpegExportBatchRows([id])
     expect(getFfmpegExportBatchSnapshot().rows).toHaveLength(0)
+  })
+
+  it('addFfmpegExportBatchPaths пропускает дубликаты', () => {
+    expect(addFfmpegExportBatchPaths(['a.mp4', 'A.MP4'])).toBe(1)
+  })
+
+  it('reorderFfmpegExportBatchRowAt', () => {
+    addFfmpegExportBatchPaths(['a.mp4', 'b.mp4', 'c.mp4'])
+    const id = getFfmpegExportBatchSnapshot().rows[2]!.id
+    expect(reorderFfmpegExportBatchRowAt(id, 0)).toBe(true)
+    expect(takeNextFfmpegExportBatchWaitingRow()?.inputPath).toContain('c.mp4')
   })
 
   it('snapshot считает завершённые', () => {

@@ -103,6 +103,8 @@ export type MainApplicationStrings = {
   openVideoDialogTitle: string
   openVideoDialogFilterVideo: string
   batchExportPickFilesTitle: string
+  batchExportPickFolderTitle: string
+  batchExportFolderEmpty: string
   batchExportAlreadyRunning: string
   batchExportQueueEmpty: string
   batchExportFfmpegMissing: string
@@ -261,6 +263,8 @@ const RU: MainApplicationStrings = {
   openVideoDialogTitle: 'Открыть видео',
   openVideoDialogFilterVideo: 'Видео',
   batchExportPickFilesTitle: 'Добавить файлы в пакетный экспорт',
+  batchExportPickFolderTitle: 'Добавить папку в пакетный экспорт',
+  batchExportFolderEmpty: 'В выбранной папке нет поддерживаемых видеофайлов',
   batchExportAlreadyRunning: 'Пакетный экспорт уже выполняется',
   batchExportQueueEmpty: 'Очередь пакетного экспорта пуста',
   batchExportFfmpegMissing: 'FFmpeg не найден — пакетный экспорт недоступен',
@@ -426,6 +430,8 @@ const EN: MainApplicationStrings = {
   openVideoDialogTitle: 'Open video',
   openVideoDialogFilterVideo: 'Video',
   batchExportPickFilesTitle: 'Add files to batch export',
+  batchExportPickFolderTitle: 'Add folder to batch export',
+  batchExportFolderEmpty: 'No supported video files in the selected folder',
   batchExportAlreadyRunning: 'Batch export is already running',
   batchExportQueueEmpty: 'Batch export queue is empty',
   batchExportFfmpegMissing: 'FFmpeg not found — batch export unavailable',
