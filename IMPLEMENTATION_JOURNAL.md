@@ -696,5 +696,6 @@
 - [J-677] 2026-05-15 23:34:08 [Assistant]: §7.2 HW — `ffmpegExportHwDecode` + `-hwaccel` (`ffmpeg-export-hw-decode.ts`, argv/preview/batch/single); PillSwitch в rail; статусбар кодека; пресеты/snapshot; Vitest hw-decode/argv. `npm run check:quiet`.
 - [J-678] 2026-05-15 23:34:26 [Assistant]: журнал — записи J-676/J-677.
 - [J-679] 2026-05-15 23:39:07 [Assistant]: §7.2 Advanced args — `ffmpegExportExtraArgsLine`, `parseFfmpegExportExtraArgsLine`, вставка перед output в argv; UI/presets/batch/single; Vitest. `npm run check:quiet`.
+- [J-681] 2026-05-15 23:48:00 [Assistant]: §7.3/§7.4/§7.2 — шаблон выхода batch (`ffmpegExportBatchOutputSuffix`); `editorUrlPasteBehavior` (Ctrl+V/DnD URL); VAAPI `hwupload` в `-vf`; Vitest suffix/vaapi/paste. `npm run typecheck` + vitest.
 
 

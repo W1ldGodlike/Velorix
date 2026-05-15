@@ -271,6 +271,11 @@ const UI_TEXT = {
     quickYtdlpDownloadOpenEditor: 'Скачать и добавить в редактор',
     quickYtdlpDocFormats: 'Форматы',
     quickYtdlpDocOutputTemplate: 'Шаблон -o',
+    editorUrlPasteBehaviorLabel: 'Ctrl+V с URL',
+    editorUrlPasteBehaviorDownloads: 'Окно загрузок',
+    editorUrlPasteBehaviorOpenEditor: 'Скачать в редактор',
+    batchExportOutputSuffixLabel: 'Имя выхода',
+    batchExportOutputSuffixHint: 'Токены {stem}, {name}, {ext}; расширение контейнера добавится отдельно.',
     downloadsRailAria: 'Настройки загрузок',
     downloadsRailTitle: 'Настройки yt-dlp',
     downloadsRailSubtitle:
@@ -1411,6 +1416,11 @@ const UI_TEXT = {
     quickYtdlpDownloadOpenEditor: 'Download and open in editor',
     quickYtdlpDocFormats: 'Formats',
     quickYtdlpDocOutputTemplate: '-o template',
+    editorUrlPasteBehaviorLabel: 'Ctrl+V with URL',
+    editorUrlPasteBehaviorDownloads: 'Downloads window',
+    editorUrlPasteBehaviorOpenEditor: 'Download to editor',
+    batchExportOutputSuffixLabel: 'Output name',
+    batchExportOutputSuffixHint: 'Tokens {stem}, {name}, {ext}; container extension is appended.',
     downloadsRailAria: 'Download settings',
     downloadsRailTitle: 'yt-dlp settings',
     downloadsRailSubtitle:

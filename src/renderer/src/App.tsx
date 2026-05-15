@@ -88,6 +88,12 @@ import {
 import type { AppSettings, ResolvedAppTheme } from '../../shared/settings-contract'
 import { buildFfmpegExportPreviewCommand } from '../../shared/ffmpeg-export-argv'
 import { parseFfmpegExportExtraArgsLine } from '../../shared/ffmpeg-export-extra-args'
+import {
+  DEFAULT_EDITOR_URL_PASTE_BEHAVIOR,
+  parseEditorUrlPasteBehavior,
+  type EditorUrlPasteBehaviorId
+} from '../../shared/editor-url-paste-behavior'
+import { DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX } from '../../shared/ffmpeg-export-batch-output-suffix'
 import { resolveFfmpegExportHwaccelForDecode } from '../../shared/ffmpeg-export-hw-decode'
 import { formatFfmpegExportBatchReportText } from '../../shared/ffmpeg-export-batch-report'
 import { isFfmpegExportBatchVideoPath } from '../../shared/ffmpeg-export-batch-video-ext'
@@ -632,6 +638,12 @@ function App(): JSX.Element {
   const [exportEconomyMode, setExportEconomyMode] = useState(false)
   const [exportHwDecode, setExportHwDecode] = useState(false)
   const [exportExtraArgsLine, setExportExtraArgsLine] = useState('')
+  const [editorUrlPasteBehavior, setEditorUrlPasteBehavior] = useState<EditorUrlPasteBehaviorId>(
+    DEFAULT_EDITOR_URL_PASTE_BEHAVIOR
+  )
+  const [batchOutputSuffix, setBatchOutputSuffix] = useState(
+    DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX
+  )
   /** §7.2 — сдвиг громкости в дБ (`-filter:a volume`); `0` означает «без фильтра». */
   const [exportAudioGainDb, setExportAudioGainDb] = useState<number>(0)
   /** §7.2 — добавить `-map_metadata -1` (очистить контейнерные tag-ы). */
@@ -1567,6 +1579,13 @@ function App(): JSX.Element {
         ? loaded.ffmpegExportExtraArgsLine
         : ''
     )
+    setEditorUrlPasteBehavior(parseEditorUrlPasteBehavior(loaded.editorUrlPasteBehavior))
+    setBatchOutputSuffix(
+      typeof loaded.ffmpegExportBatchOutputSuffix === 'string' &&
+        loaded.ffmpegExportBatchOutputSuffix.trim().length > 0
+        ? loaded.ffmpegExportBatchOutputSuffix.trim()
+        : DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX
+    )
     if (
       typeof loaded.ffmpegExportAudioBitrate === 'string' &&
       EXPORT_AUDIO_BITRATES.includes(loaded.ffmpegExportAudioBitrate)
@@ -2028,7 +2047,22 @@ function App(): JSX.Element {
         if (!clipboardLooksLikeDownloadsPayload(raw)) {
           return
         }
-        void window.fluxalloy.downloads.openWindow({ text: raw.trim(), uiLocale: getUiLocale() })
+        const trimmed = raw.trim()
+        if (editorUrlPasteBehavior === 'download_open_editor') {
+          setWorkspaceTab('editor')
+          setDownloadsUrl(trimmed)
+          setStatusHint(uiText('statusDownloadOpenEditorWorking'))
+          void window.fluxalloy.downloads.downloadFirstUrlOpenInMainEditor(trimmed).then((res) => {
+            if (!res.ok) {
+              setStatusHint(res.error)
+              return
+            }
+            setDownloadsUrl('')
+            setStatusHint(uiText('statusDownloadOpenEditorSuccess'))
+          })
+          return
+        }
+        void window.fluxalloy.downloads.openWindow({ text: trimmed, uiLocale: getUiLocale() })
       })
     }
 
@@ -2036,7 +2070,7 @@ function App(): JSX.Element {
     return (): void => {
       document.removeEventListener('keydown', onKeyDown)
     }
-  }, [])
+  }, [editorUrlPasteBehavior])
 
   useEffect(() => {
     if (typeof window.matchMedia !== 'function') {
@@ -2752,9 +2786,28 @@ function App(): JSX.Element {
     )
   }
 
-  async function handlePreviewDrop(files: FileList | null): Promise<void> {
+  async function handlePreviewDrop(
+    files: FileList | null,
+    dataTransfer?: DataTransfer | null
+  ): Promise<void> {
     const file = files?.[0]
     if (!file) {
+      const urlText = dataTransfer?.getData('text/plain')?.trim() ?? ''
+      if (clipboardLooksLikeDownloadsPayload(urlText)) {
+        if (editorUrlPasteBehavior === 'download_open_editor') {
+          setDownloadsUrl(urlText)
+          setStatusHint(uiText('statusDownloadOpenEditorWorking'))
+          const res = await window.fluxalloy.downloads.downloadFirstUrlOpenInMainEditor(urlText)
+          if (!res.ok) {
+            setStatusHint(res.error)
+            return
+          }
+          setDownloadsUrl('')
+          setStatusHint(uiText('statusDownloadOpenEditorSuccess'))
+        } else {
+          void window.fluxalloy.downloads.openWindow({ text: urlText, uiLocale: getUiLocale() })
+        }
+      }
       return
     }
     const absolutePath = window.fluxalloy.preview.getPathForFile(file)
@@ -2975,6 +3028,26 @@ function App(): JSX.Element {
               <p id="quickYtdlpUrlHint" className="app-url-hint">
                 {uiText('quickYtdlpHint')}
               </p>
+              <label className="app-field app-field-inline">
+                <span>{uiText('editorUrlPasteBehaviorLabel')}</span>
+                <select
+                  className="app-control"
+                  value={editorUrlPasteBehavior}
+                  aria-describedby="quickYtdlpUrlHint"
+                  onChange={(e) => {
+                    const v = parseEditorUrlPasteBehavior(e.target.value)
+                    setEditorUrlPasteBehavior(v)
+                    void window.fluxalloy.settings.setEditorUrlPasteBehavior(v).catch(console.error)
+                  }}
+                >
+                  <option value="downloads_window">
+                    {uiText('editorUrlPasteBehaviorDownloads')}
+                  </option>
+                  <option value="download_open_editor">
+                    {uiText('editorUrlPasteBehaviorOpenEditor')}
+                  </option>
+                </select>
+              </label>
               <p className="app-doc-inline-links app-url-bar-doc-links">
                 <a href={YTDLP_DOC_README} target="_blank" rel="noreferrer">
                   {uiText('docLinkYtDlpReadme')}
@@ -3043,6 +3116,33 @@ function App(): JSX.Element {
               }}
             >
               <div className="app-settings-grid app-batch-export-toolbar">
+                <label className="app-field">
+                  <span>{uiText('batchExportOutputSuffixLabel')}</span>
+                  <input
+                    type="text"
+                    className="app-control"
+                    value={batchOutputSuffix}
+                    disabled={batchExportBusy}
+                    spellCheck={false}
+                    title={uiText('batchExportOutputSuffixHint')}
+                    onChange={(e) => {
+                      setBatchOutputSuffix(e.target.value)
+                    }}
+                    onBlur={() => {
+                      void window.fluxalloy.settings
+                        .setFfmpegExportBatchOutputSuffix(batchOutputSuffix)
+                        .then((s) => {
+                          setBatchOutputSuffix(
+                            typeof s.ffmpegExportBatchOutputSuffix === 'string' &&
+                              s.ffmpegExportBatchOutputSuffix.trim().length > 0
+                              ? s.ffmpegExportBatchOutputSuffix.trim()
+                              : DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX
+                          )
+                        })
+                        .catch(console.error)
+                    }}
+                  />
+                </label>
                 <label className="app-field">
                   <span>{uiText('batchExportConcurrency')}</span>
                 <select
@@ -3404,7 +3504,7 @@ function App(): JSX.Element {
             onDrop={(event) => {
               event.preventDefault()
               event.stopPropagation()
-              void handlePreviewDrop(event.dataTransfer.files)
+              void handlePreviewDrop(event.dataTransfer.files, event.dataTransfer)
             }}
           >
             {preview ? (

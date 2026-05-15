@@ -3,6 +3,7 @@
  * Используется preload и main; поля опциональны для совместимости со старыми файлами.
  */
 
+import type { EditorUrlPasteBehaviorId } from './editor-url-paste-behavior'
 import type { EnginePathOverrides } from './engine-contract'
 import type { DownloadsWindowUiLocale } from './downloads-window-ui-locale'
 import type {
@@ -152,6 +153,10 @@ export interface AppSettings {
   ffmpegExportHwDecode?: boolean
   /** §7.2 — дополнительные argv ffmpeg перед выходным файлом (пробелы между токенами). */
   ffmpegExportExtraArgsLine?: string
+  /** §7.3 — шаблон имени выхода пакета (`{stem}`, `{name}`, `{ext}`); без расширения контейнера. */
+  ffmpegExportBatchOutputSuffix?: string
+  /** §4.6 / §7.4 — глобальная вставка URL: менеджер загрузок или скачать в редактор. */
+  editorUrlPasteBehavior?: EditorUrlPasteBehaviorId
   /** §7.2: режим аудио экспорта: AAC, PCM s16le или без дорожки. */
   ffmpegExportAudioMode?:
     | 'aac'

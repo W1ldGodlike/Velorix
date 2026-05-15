@@ -120,6 +120,14 @@ import {
   type FfmpegExportProgressPayload
 } from './ffmpeg-export-service'
 import { FFMPEG_EXPORT_CANCELLED_ERROR } from '../shared/ffmpeg-export-contract'
+import {
+  DEFAULT_EDITOR_URL_PASTE_BEHAVIOR,
+  parseEditorUrlPasteBehavior
+} from '../shared/editor-url-paste-behavior'
+import {
+  DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX,
+  parseFfmpegExportBatchOutputSuffixTemplate
+} from '../shared/ffmpeg-export-batch-output-suffix'
 import { parseFfmpegExportHwDecode } from '../shared/ffmpeg-export-hw-decode'
 import {
   pickUniqueAutoExportOutputPath,
@@ -1263,6 +1271,38 @@ function persistFfmpegExportExtraArgsLine(raw: unknown): AppSettings {
     delete next.ffmpegExportExtraArgsLine
   } else {
     next.ffmpegExportExtraArgsLine = trimmed
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistFfmpegExportBatchOutputSuffix(raw: unknown): AppSettings {
+  const next = { ...cachedSettings }
+  if (typeof raw !== 'string') {
+    return { ...cachedSettings }
+  }
+  const parsed = parseFfmpegExportBatchOutputSuffixTemplate(raw)
+  if (!parsed.ok) {
+    return { ...cachedSettings }
+  }
+  if (parsed.template === DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX) {
+    delete next.ffmpegExportBatchOutputSuffix
+  } else {
+    next.ffmpegExportBatchOutputSuffix = parsed.template
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistEditorUrlPasteBehavior(raw: unknown): AppSettings {
+  const next = { ...cachedSettings }
+  const behavior = parseEditorUrlPasteBehavior(raw)
+  if (behavior === DEFAULT_EDITOR_URL_PASTE_BEHAVIOR) {
+    delete next.editorUrlPasteBehavior
+  } else {
+    next.editorUrlPasteBehavior = behavior
   }
   cachedSettings = next
   saveSettings(settingsPath(), cachedSettings)
@@ -2705,6 +2745,15 @@ app.whenReady().then(() => {
   ipcMain.handle(
     mw.settingsSetFfmpegExportExtraArgsLine,
     (_, raw: unknown): AppSettings => persistFfmpegExportExtraArgsLine(raw)
+  )
+
+  ipcMain.handle(
+    mw.settingsSetFfmpegExportBatchOutputSuffix,
+    (_, raw: unknown): AppSettings => persistFfmpegExportBatchOutputSuffix(raw)
+  )
+
+  ipcMain.handle(mw.settingsSetEditorUrlPasteBehavior, (_, raw: unknown): AppSettings =>
+    persistEditorUrlPasteBehavior(raw)
   )
 
   ipcMain.handle(

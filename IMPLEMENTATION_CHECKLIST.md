@@ -324,8 +324,8 @@
 - [~] Audio filters: `-filter:a volume=NdB` + `loudnorm`/`dynaudnorm` через whitelist; фильтры склеиваются в один chain `volume,...normalize`; расширенные режимы и двухпроходный loudness-анализ — позже.
 - [~] Subtitles: §7.2 — pill/select «Не сохранять» / «Сохранить»; `copy` добавляет `-map 0:v?/0:a?/0:s?` + `-c:s copy` (MKV) или `-c:s mov_text` (MP4/MOV). Burn-in/выбор языка/конкретной дорожки — позже.
 - [~] Metadata: §7.2 — pill «Удалить метаданные» (`-map_metadata -1`) и «Удалить главы» (`-map_chapters -1`). Точечная правка тегов — позже.
-- [ ] Hardware acceleration.
-- [ ] Advanced args.
+- [~] Hardware acceleration: HW encode auto (`hw_auto`/`hw_auto_hevc`), probe UI, **декод `-hwaccel`**, **VAAPI `hwupload` перед кодером**; дальше — полировка цепочек QSV/CUDA.
+- [~] Advanced args: `ffmpegExportExtraArgsLine` + parse/валидация + argv перед output; UI/presets/batch.
 - [~] Live preview команды ffmpeg: pure helpers в `src/shared/ffmpeg-export-argv.ts` (`buildFfmpegExportPreviewCommand` + `shouldApplyFfmpegExportTrim`), сворачиваемый блок в App.tsx с копированием; маркеры In/Out + probeDurationSec + выбранный контейнер/crop/rotate/flip/filters §7.2 подмешиваются и совпадают со spawn (в т.ч. без `-movflags` для MKV); кнопка **перейти к экспорту** из таймлайна раскрывает rail и прокручивает к секции «Вывод» (J-632); пользовательские пресеты (persist, переименование/снимок/удаление, имя через app-modal); **встроенный сворачиваемый dock ffprobe под таймлайном снят** — краткая строка в `VideoTimeline` + окно инспектора (после J-633); дальше HW/advanced args и т.п.
 - [~] Безопасная сборка аргументов без shell injection: ffmpeg-экспорт идёт через `buildFfmpegExportArgv` (массив токенов, без shell); валидация значений в main `parse*`-хелперах.
 
@@ -335,11 +335,11 @@
 - [~] Таблица файлов + добавить файлы (multi-select) + **папка (рекурсивный scan)** + DnD файлов.
 - [~] Параллелизм 1/2/4/auto.
 - [~] Очередь статусов (waiting/running/done/error/cancelled); **persist `userData/ffmpeg-export-batch/queue.json`**.
-- [~] Сводка ошибок после завершения; **drag-reorder**; economy/history/open; **retry failed** + **clear completed** + retry строки; **копировать пути** / **сохранить отчёт** / **убрать ожидающие**; авто-раскрытие панели при auto-enqueue §7.4.
+- [~] Сводка ошибок после завершения; **drag-reorder**; economy/history/open; **retry failed** + **clear completed** + retry строки; **копировать пути** / **сохранить отчёт** / **убрать ожидающие**; **шаблон имени выхода** (`ffmpegExportBatchOutputSuffix`, `{stem}`/`{name}`/`{ext}`); авто-раскрытие панели при auto-enqueue §7.4.
 
 ### §7.4 Комбинированный режим
 
-- [ ] URL на обработке отправляется в yt-dlp или разовый сценарий по настройке.
+- [~] URL на обработке: настройка **Ctrl+V / DnD URL** (`editorUrlPasteBehavior`: менеджер загрузок или «скачать в редактор»); быстрая полоса yt-dlp + кнопки; дальше — единое окно «Настройки».
 - [~] Скачанный файл можно вручную отправить как источник из очереди/истории yt-dlp; **добавление готовых загрузок и истории в пакетный экспорт**; **авто-постановка в пакет + опциональный авто-старт после успеха yt-dlp** (§7.4).
 - [~] Сценарий «скачать и обработать» (авто-открытие в preview после загрузки; цепочка с ffmpeg без ручного шага — позже).
 

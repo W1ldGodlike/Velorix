@@ -33,4 +33,16 @@ describe('pickUniqueAutoExportOutputPath', () => {
       rmSync(dir, { recursive: true, force: true })
     }
   })
+
+  it('кастомный шаблон {stem}_out', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'fa-autoexp3-'))
+    try {
+      const input = join(dir, 'x.mp4')
+      closeSync(openSync(input, 'w'))
+      const out = pickUniqueAutoExportOutputPath(input, 'mp4', '{stem}_out')
+      expect(out).toBe(join(dir, 'x_out.mp4'))
+    } finally {
+      rmSync(dir, { recursive: true, force: true })
+    }
+  })
 })

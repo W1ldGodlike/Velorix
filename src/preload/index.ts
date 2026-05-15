@@ -207,6 +207,12 @@ const fluxalloy = {
       ipcRenderer.invoke(mw.settingsSetFfmpegExportHwDecode, enabled),
     setFfmpegExportExtraArgsLine: (line: string): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportExtraArgsLine, line),
+    setFfmpegExportBatchOutputSuffix: (suffix: string): Promise<AppSettings> =>
+      ipcRenderer.invoke(mw.settingsSetFfmpegExportBatchOutputSuffix, suffix),
+    setEditorUrlPasteBehavior: (
+      behavior: 'downloads_window' | 'download_open_editor'
+    ): Promise<AppSettings> =>
+      ipcRenderer.invoke(mw.settingsSetEditorUrlPasteBehavior, behavior),
     setFfmpegExportAudioMode: (mode: FfmpegExportAudioModeId): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportAudioMode, mode),
     setFfmpegExportAudioBitrate: (bitrate: string | null): Promise<AppSettings> =>

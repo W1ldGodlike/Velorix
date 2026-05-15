@@ -692,6 +692,28 @@ describe('shared ffmpeg export argv', () => {
     expect(argv.slice(i - 2, i)).toEqual(['-hwaccel', 'cuda'])
   })
 
+  it('h264_vaapi: -vf начинается с hwupload', () => {
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      videoCodec: 'h264_vaapi',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mp4',
+      videoTransform: 'hflip'
+    })
+    const vfIdx = argv.indexOf('-vf')
+    const vf = argv[vfIdx + 1] ?? ''
+    expect(vf.startsWith('format=nv12,hwupload,')).toBe(true)
+    expect(vf).toContain('hflip')
+  })
+
   it('h264_nvenc: без libx264-preset, VBR + cq; hevc_nvenc + mp4 даёт hvc1', () => {
     const h264 = buildFfmpegExportArgv({
       inputPath: 'in.mp4',

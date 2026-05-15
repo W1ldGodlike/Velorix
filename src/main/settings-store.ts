@@ -24,6 +24,10 @@ import {
   getBuiltinFfmpegExportUserPresets,
   mergeBuiltinFfmpegExportUserPresetsFromFile
 } from '../shared/builtin-ffmpeg-export-user-presets'
+import {
+  DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX,
+  parseFfmpegExportBatchOutputSuffixTemplate
+} from '../shared/ffmpeg-export-batch-output-suffix'
 
 export type {
   AppSettings,
@@ -491,6 +495,20 @@ export function loadSettings(filePath: string): AppSettings {
     }
     if (parsed.ffmpegExportHwDecode === true) {
       base.ffmpegExportHwDecode = true
+    }
+    if (
+      typeof parsed.ffmpegExportBatchOutputSuffix === 'string' &&
+      parsed.ffmpegExportBatchOutputSuffix.trim().length > 0
+    ) {
+      const suffixParsed = parseFfmpegExportBatchOutputSuffixTemplate(
+        parsed.ffmpegExportBatchOutputSuffix
+      )
+      if (suffixParsed.ok && suffixParsed.template !== DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX) {
+        base.ffmpegExportBatchOutputSuffix = suffixParsed.template
+      }
+    }
+    if (parsed.editorUrlPasteBehavior === 'download_open_editor') {
+      base.editorUrlPasteBehavior = 'download_open_editor'
     }
     if (
       typeof parsed.ffmpegExportExtraArgsLine === 'string' &&

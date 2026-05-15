@@ -34,6 +34,7 @@ import {
 } from './ffmpeg-export-contract'
 import { appendFfmpegExportExtraArgsToArgv } from './ffmpeg-export-extra-args'
 import { appendFfmpegHwaccelBeforeInput } from './ffmpeg-export-hw-decode'
+import { prependVaapiHwuploadToVideoFilters } from './ffmpeg-export-vaapi-vf'
 import type { FfmpegHwVideoEncoderId } from './ffmpeg-hw-encoder-probe'
 import {
   exportAudioModeMkvOnlyErrorMessage,
@@ -783,6 +784,7 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
   if (vcodec !== 'prores_ks' && vcodec !== 'dnxhd') {
     args.push('-pix_fmt', 'yuv420p')
   }
+  prependVaapiHwuploadToVideoFilters(filters, vcodec)
   if (filters.length > 0) {
     args.push('-vf', filters.join(','))
   }

@@ -19,6 +19,9 @@ export const mainWindowIpc = {
   settingsSetFfmpegExportEconomyMode: 'fluxalloy:settings-set-ffmpeg-export-economy-mode',
   settingsSetFfmpegExportHwDecode: 'fluxalloy:settings-set-ffmpeg-export-hw-decode',
   settingsSetFfmpegExportExtraArgsLine: 'fluxalloy:settings-set-ffmpeg-export-extra-args-line',
+  settingsSetFfmpegExportBatchOutputSuffix:
+    'fluxalloy:settings-set-ffmpeg-export-batch-output-suffix',
+  settingsSetEditorUrlPasteBehavior: 'fluxalloy:settings-set-editor-url-paste-behavior',
   settingsSetFfmpegExportFps: 'fluxalloy:settings-set-ffmpeg-export-fps',
   settingsSetFfmpegExportScalePreset: 'fluxalloy:settings-set-ffmpeg-export-scale-preset',
   settingsSetFfmpegExportVideoTransform: 'fluxalloy:settings-set-ffmpeg-export-video-transform',

@@ -1,5 +1,5 @@
 import { existsSync } from 'fs'
-import { basename, dirname, join } from 'path'
+import { dirname, join } from 'path'
 
 import type { AppSettings } from '../shared/settings-contract'
 import type {
@@ -55,6 +55,11 @@ import {
   parseFfmpegExportVideoTransform
 } from './ffmpeg-export-service'
 import { parseFfmpegExportHwDecode } from '../shared/ffmpeg-export-hw-decode'
+import {
+  buildFfmpegExportBatchOutputBasename,
+  DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX,
+  parseFfmpegExportBatchOutputSuffixTemplate
+} from '../shared/ffmpeg-export-batch-output-suffix'
 
 /** Параметры `runFfmpegExportJob`, кроме путей, ffmpeg, trim, probe, signal, onProgress. */
 export type ResolvedFfmpegExportJobOptions = {
@@ -296,19 +301,31 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
   }
 }
 
-/** §6.4 → §7.2: соседний файл `name-export(.-N).ext` без перезаписи существующих. */
+/** §6.4 → §7.2 / §7.3: уникальный выход рядом с источником; шаблон без расширения контейнера. */
 export function pickUniqueAutoExportOutputPath(
   inputAbsolutePath: string,
-  container: FfmpegExportContainerId
+  container: FfmpegExportContainerId,
+  outputSuffixTemplate?: string | null
 ): string {
+  const parsed = parseFfmpegExportBatchOutputSuffixTemplate(
+    outputSuffixTemplate ?? DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX
+  )
+  const template = parsed.ok ? parsed.template : DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX
   const dir = dirname(inputAbsolutePath)
-  const stem = basename(inputAbsolutePath).replace(/\.[^.]+$/, '')
+  const base = buildFfmpegExportBatchOutputBasename(inputAbsolutePath, template)
   const ext = container
   let n = 0
-  let candidate = join(dir, `${stem}-export.${ext}`)
+  let candidate = join(dir, `${base}.${ext}`)
   while (existsSync(candidate)) {
     n += 1
-    candidate = join(dir, `${stem}-export-${n}.${ext}`)
+    candidate = join(dir, `${base}-${n}.${ext}`)
   }
   return candidate
+}
+
+export function resolveFfmpegExportBatchOutputSuffixFromSettings(
+  settings: AppSettings
+): string {
+  const parsed = parseFfmpegExportBatchOutputSuffixTemplate(settings.ffmpegExportBatchOutputSuffix)
+  return parsed.ok ? parsed.template : DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX
 }
