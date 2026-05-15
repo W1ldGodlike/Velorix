@@ -773,4 +773,9 @@
 - [J-750] 2026-05-16 06:38:00 [Assistant]: Терминал — стек ввода (`app-terminal-command-stack`): `role="region"` + `terminalCommandStackAria`.
 - [J-751] 2026-05-16 06:40:00 [Assistant]: Терминал колонки журнал/подсказки (`app-terminal-layout`): `role="region"` + `terminalMainSplitAria`.
 - [J-752] 2026-05-16 06:42:00 [Assistant]: База знаний — сетка оглавление+статья: `role="group"` + `knowledgeDialogGridAria`.
+- [J-753] 2026-05-16 06:46:00 [Assistant]: Редактор — `app-preview-stack`: `role="region"` + `editorPreviewStackAria`.
+- [J-754] 2026-05-16 06:48:00 [Assistant]: Панель FFmpeg — шапка (`app-settings-panel-head`): `role="group"` + `editorFfmpegPanelHeadGroupAria`.
+- [J-755] 2026-05-16 06:50:00 [Assistant]: Терминал — заголовок записи журнала (`app-terminal-entry-head`): `terminalEntryHeadGroupAria`.
+- [J-756] 2026-05-16 06:52:00 [Assistant]: Загрузки — строка URL (`app-downloads-url-row`): `downloadsUrlRowGroupAria`.
+- [J-757] 2026-05-16 06:54:00 [Assistant]: `VideoTimeline` — `app-timeline-stack`: `role="region"` + `videoTimelineStackAria`.
 

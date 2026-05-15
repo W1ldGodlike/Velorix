@@ -596,7 +596,11 @@ export default function VideoTimeline({
   }, [current, duration, windowLenSec, winStartEff])
 
   return (
-    <div className="app-timeline-stack">
+    <div
+      className="app-timeline-stack"
+      role="region"
+      aria-label={uiText('videoTimelineStackAria')}
+    >
       {duration > 0 ? (
         <div
           className="app-timeline-toolbar"

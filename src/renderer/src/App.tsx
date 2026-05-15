@@ -3853,7 +3853,12 @@ function App(): JSX.Element {
           >
             {preview ? (
               <>
-                <div className="app-preview-stack" ref={previewStackRef}>
+                <div
+                  className="app-preview-stack"
+                  ref={previewStackRef}
+                  role="region"
+                  aria-label={uiText('editorPreviewStackAria')}
+                >
                   <div
                     className="app-preview-media-card"
                     role="group"
@@ -3931,7 +3936,11 @@ function App(): JSX.Element {
           </section>
           {panelOpen('ffmpegSettingsRailOpen') ? (
             <aside className="app-settings-panel" aria-label={uiText('editorFfmpegSettingsAria')}>
-              <div className="app-settings-panel-head">
+              <div
+                className="app-settings-panel-head"
+                role="group"
+                aria-label={uiText('editorFfmpegPanelHeadGroupAria')}
+              >
                 <div>
                   <h2 className="app-settings-title">{uiText('editorFfmpegSettingsTitle')}</h2>
                   <p
@@ -5456,7 +5465,11 @@ function App(): JSX.Element {
                     })()
                     return (
                       <article key={entry.id} className="app-terminal-entry">
-                        <div className="app-terminal-entry-head">
+                        <div
+                          className="app-terminal-entry-head"
+                          role="group"
+                          aria-label={uiText('terminalEntryHeadGroupAria')}
+                        >
                           <code>{entry.line}</code>
                           <span>
                             {entry.result.ok
@@ -5589,7 +5602,11 @@ function App(): JSX.Element {
                 ) : null}
               </div>
             </div>
-            <div className="app-downloads-url-row">
+            <div
+              className="app-downloads-url-row"
+              role="group"
+              aria-label={uiText('downloadsUrlRowGroupAria')}
+            >
               <textarea
                 className="app-downloads-url-input"
                 value={downloadsUrl}

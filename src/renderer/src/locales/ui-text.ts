@@ -124,6 +124,7 @@ const UI_TEXT = {
     terminalCommandToolbarAria: 'Ввод команды, вставка файла и запуск',
     terminalCommandStackAria: 'Строка команды и всплывающие подсказки',
     terminalMainSplitAria: 'Журнал вывода и каталог подсказок',
+    terminalEntryHeadGroupAria: 'Введённая команда и результат выполнения',
     terminalCommandPlaceholder: 'ffprobe -version',
     terminalPreviewFileButton: 'Превью-файл',
     terminalPreviewFileTooltipOpen: 'Вставить токен «{token}» (путь текущего превью)',
@@ -240,6 +241,7 @@ const UI_TEXT = {
     downloadsBandToolbarAria: 'Быстрые действия вкладки загрузок',
     downloadsUrlPlaceholder: 'URL или несколько URL по строкам',
     downloadsUrlAria: 'URL для добавления в очередь загрузок',
+    downloadsUrlRowGroupAria: 'Поле URL и действия постановки в очередь',
     downloadsUrlActionsToolbarAria: 'Действия с полем URL и очередью загрузок',
     downloadsAddToQueue: 'Добавить в очередь',
     downloadsStopQueue: 'Прервать загрузку',
@@ -515,6 +517,7 @@ const UI_TEXT = {
     editorPreviewDropzoneAria: 'Область предпросмотра',
     editorPreviewVideoAriaTemplate: 'Предпросмотр: {name}',
     editorPreviewMediaCardGroupAria: 'Видео предпросмотра и панель управления',
+    editorPreviewStackAria: 'Стек превью: видео, таймлайн и панель ffprobe',
     editorPreviewEmptyLead:
       'Нет источника — перетащите видеофайл сюда или «Открыть…» в меню «Файл» / кнопка сверху.',
     editorPreviewEmptyHint:
@@ -524,6 +527,7 @@ const UI_TEXT = {
     editorFfmpegRailShowHidden: 'Развернуть панель настроек FFmpeg',
     editorFfmpegRailRestoreLabel: 'FFmpeg',
     editorFfmpegSettingsAria: 'Настройки FFmpeg',
+    editorFfmpegPanelHeadGroupAria: 'Заголовок панели FFmpeg и кнопка сворачивания',
     editorFfmpegSettingsTitle: 'Настройки FFmpeg',
     editorFfmpegSettingsSubtitle:
       'Здесь задаётся, как будет выглядеть и звучать сохранённый ролик. Секции можно сворачивать, чтобы не загромождать экран.',
@@ -1170,6 +1174,7 @@ const UI_TEXT = {
     videoTimelineOutHereButton: 'Поставить Out',
     videoTimelineResetTrimTitle: 'Сбросить обрезку (весь файл)',
     videoTimelineResetTrimButton: 'Сбросить обрезку',
+    videoTimelineStackAria: 'Таймлайн: панель инструментов, дорожка и сводка',
     videoTimelineToolbarAria: 'Таймлайн: In, Out, переход к экспорту, масштаб',
     videoTimelineTrimGroupAria: 'In, Out, сброс обрезки и метки времени',
     videoTimelineStatusReadoutGroupAria: 'Длительность выбранного фрагмента и позиция',
@@ -1344,6 +1349,7 @@ const UI_TEXT = {
     terminalCommandToolbarAria: 'Command line, insert file, and run',
     terminalCommandStackAria: 'Command input and inline suggestions',
     terminalMainSplitAria: 'Output log and hints catalog',
+    terminalEntryHeadGroupAria: 'Entered command and run outcome',
     terminalCommandPlaceholder: 'ffprobe -version',
     terminalPreviewFileButton: 'Preview file',
     terminalPreviewFileTooltipOpen: 'Insert the “{token}” token (current preview path)',
@@ -1459,6 +1465,7 @@ const UI_TEXT = {
     downloadsBandToolbarAria: 'Quick actions on the downloads tab',
     downloadsUrlPlaceholder: 'One URL per line, or multiple URLs',
     downloadsUrlAria: 'URLs to append to the download queue',
+    downloadsUrlRowGroupAria: 'URL field and enqueue actions',
     downloadsUrlActionsToolbarAria: 'Actions for the URL field and download queue',
     downloadsAddToQueue: 'Add to queue',
     downloadsStopQueue: 'Cancel download',
@@ -1732,6 +1739,7 @@ const UI_TEXT = {
     editorPreviewDropzoneAria: 'Preview area',
     editorPreviewVideoAriaTemplate: 'Preview: {name}',
     editorPreviewMediaCardGroupAria: 'Preview video and transport controls',
+    editorPreviewStackAria: 'Preview stack: video, timeline, and ffprobe panel',
     editorPreviewEmptyLead:
       'No source — drop a video here or use Open… in the File menu / the top button.',
     editorPreviewEmptyHint:
@@ -1741,6 +1749,7 @@ const UI_TEXT = {
     editorFfmpegRailShowHidden: 'Expand FFmpeg settings panel',
     editorFfmpegRailRestoreLabel: 'FFmpeg',
     editorFfmpegSettingsAria: 'FFmpeg settings',
+    editorFfmpegPanelHeadGroupAria: 'FFmpeg panel header and collapse control',
     editorFfmpegSettingsTitle: 'FFmpeg settings',
     editorFfmpegSettingsSubtitle:
       'Choose how the saved clip will look and sound. You can collapse sections to keep the screen tidy.',
@@ -2381,6 +2390,7 @@ const UI_TEXT = {
     videoTimelineOutHereButton: 'Set Out',
     videoTimelineResetTrimTitle: 'Reset trim (full file)',
     videoTimelineResetTrimButton: 'Reset trim',
+    videoTimelineStackAria: 'Timeline: toolbar, track, and footer summary',
     videoTimelineToolbarAria: 'Timeline: In, Out, jump to export, zoom',
     videoTimelineTrimGroupAria: 'In, Out, reset trim, and time badges',
     videoTimelineStatusReadoutGroupAria: 'Selection duration and playhead position',
