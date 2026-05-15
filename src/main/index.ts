@@ -145,6 +145,8 @@ import {
   type EnginePathOverridesPatch,
   type EnginesStatusSnapshot
 } from './engine-service'
+import { probeFfmpegHwEncoders } from './ffmpeg-hw-encoder-probe-main'
+import type { FfmpegHwEncodersProbeResult } from '../shared/ffmpeg-hw-encoder-probe'
 import {
   grantMediaPath,
   isGrantedMediaPath,
@@ -2682,6 +2684,15 @@ app.whenReady().then(() => {
       }
     }
   )
+
+  ipcMain.handle(mw.enginesProbeHwEncoders, async (): Promise<FfmpegHwEncodersProbeResult> => {
+    const paths = resolveAppPaths()
+    const ffmpeg = resolveEngineExecutablePath(paths, 'ffmpeg', cachedSettings.engineExecutablePaths)
+    if (!ffmpeg) {
+      return { ok: false, error: mainAppStr().exportFfmpegMissing }
+    }
+    return probeFfmpegHwEncoders(ffmpeg)
+  })
 
   ipcMain.handle(mw.openVideoDialog, async (event, raw?: unknown) => {
     const win = BrowserWindow.fromWebContents(event.sender)

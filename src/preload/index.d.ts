@@ -85,6 +85,7 @@ import type {
   KnowledgeListArticlesRequest,
   KnowledgeReadArticleRequest
 } from '../shared/knowledge-contract'
+import type { FfmpegHwEncodersProbeResult } from '../shared/ffmpeg-hw-encoder-probe'
 
 /** Данные для привязки `<video>` к локальному файлу через allowlist-схему `fluxmedia://`. */
 export type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
@@ -268,6 +269,7 @@ export interface FluxAlloyApi {
       uiLocale?: DownloadsWindowUiLocale
     ) => Promise<{ ok: true } | { ok: false; error: string }>
     clearUserBin: () => Promise<{ ok: true; removed: number } | { ok: false; error: string }>
+    probeHwEncoders: () => Promise<FfmpegHwEncodersProbeResult>
     onDownloadProgress: (listener: (progress: EngineDownloadProgress) => void) => () => void
   }
   export: {

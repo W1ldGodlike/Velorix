@@ -443,7 +443,7 @@
 ## §16. Аппаратное ускорение
 
 - [ ] Диагностика GPU.
-- [ ] Определение доступных кодировщиков.
+- [~] Определение доступных кодировщиков: парсер вывода `ffmpeg -encoders` (whitelist NVENC/AMF/QSV/VideoToolbox/VAAPI и др.), main `probeFfmpegHwEncoders`, IPC `fluxalloy:engines-probe-hw-encoders` и preload `probeHwEncoders`; выбор кодека в UI и авто-режим — дальше.
 - [ ] Auto mode.
 - [ ] Manual mode.
 - [ ] NVENC.

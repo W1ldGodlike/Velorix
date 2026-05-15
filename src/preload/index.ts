@@ -89,6 +89,7 @@ import type {
   KnowledgeListArticlesRequest,
   KnowledgeReadArticleRequest
 } from '../shared/knowledge-contract'
+import type { FfmpegHwEncodersProbeResult } from '../shared/ffmpeg-hw-encoder-probe'
 import { downloadsIpc as d, mainWindowIpc as mw } from '../shared/ipc-channels'
 
 type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
@@ -479,6 +480,8 @@ const fluxalloy = {
       ipcRenderer.invoke(mw.enginesDownload, uiLocale),
     clearUserBin: (): Promise<{ ok: true; removed: number } | { ok: false; error: string }> =>
       ipcRenderer.invoke(mw.enginesClearUserBin),
+    probeHwEncoders: (): Promise<FfmpegHwEncodersProbeResult> =>
+      ipcRenderer.invoke(mw.enginesProbeHwEncoders),
     onDownloadProgress: (listener: (progress: EngineDownloadProgress) => void): (() => void) => {
       const channel = mw.enginesProgress
       const handler = (_event: unknown, raw: unknown): void => {
