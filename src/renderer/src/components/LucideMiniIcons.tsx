@@ -90,6 +90,20 @@ export function IconFolderOpen({
   )
 }
 
+export function IconFolder({
+  title,
+  size = 20
+}: {
+  title?: string
+  size?: number
+}): JSX.Element {
+  return (
+    <SvgBase title={title ?? miniIconTitle('miniIconFolder')} size={size}>
+      {renderStrokeParts(EDITOR_TOPBAR_ACTION_ICONS.folder)}
+    </SvgBase>
+  )
+}
+
 export function IconRefreshCw({
   title,
   size = 20

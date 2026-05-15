@@ -277,6 +277,8 @@ const fluxalloy = {
   preview: {
     openFileDialog: (uiLocale?: DownloadsWindowUiLocale): Promise<PreviewDialogResult> =>
       ipcRenderer.invoke(mw.openVideoDialog, uiLocale),
+    openVideoFolderDialog: (uiLocale?: DownloadsWindowUiLocale): Promise<PreviewDialogResult> =>
+      ipcRenderer.invoke(mw.openVideoFolderDialog, uiLocale),
     grantPath: (
       absolutePath: string
     ): Promise<

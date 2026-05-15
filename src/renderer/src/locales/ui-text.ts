@@ -455,6 +455,9 @@ const UI_TEXT = {
     topbarOpenFileTitle:
       'Выбрать видео с компьютера: оно появится в превью и на таймлайне, дальше можно резать и сохранять.',
     topbarOpenFileLabel: 'Открыть',
+    topbarOpenVideoFolderTitle:
+      'Выбрать папку: в превью откроется первое найденное видео (тот же поиск, что у пакета и перетаскивания папки).',
+    topbarOpenVideoFolderLabel: 'Папка',
     topbarInspectorTitle:
       'Отдельное окно: полная сводка ffprobe (дорожки, главы, JSON), экспорт текстовых/HTML сводок. Если ролик уже открыт в редакторе — подставится тот же файл.',
     topbarInspectorLabel: 'Инспектор',
@@ -1145,6 +1148,7 @@ const UI_TEXT = {
     timelineWaveformAriaEnvelope: 'Огибающая формы волны',
     timelineWaveformLoading: 'Форма волны…',
     miniIconFolderOpen: 'Открыть файл',
+    miniIconFolder: 'Открыть папку с видео',
     miniIconFolderOpenEllipsis: 'Открыть файл…',
     miniIconRefreshCw: 'Обновить',
     miniIconDownload: 'Загрузки',
@@ -1603,6 +1607,9 @@ const UI_TEXT = {
     topbarOpenFileTitle:
       'Pick a video from your PC — it appears in the preview and timeline for trimming and export.',
     topbarOpenFileLabel: 'Open',
+    topbarOpenVideoFolderTitle:
+      'Pick a folder — the first video found is opened in preview (same scan as batch and folder drag-and-drop).',
+    topbarOpenVideoFolderLabel: 'Folder',
     topbarInspectorTitle:
       'Separate window: full ffprobe summary (tracks, chapters, JSON) and TXT/HTML export. If a clip is already open in the editor, the same file is used.',
     topbarInspectorLabel: 'Inspector',
@@ -2282,6 +2289,7 @@ const UI_TEXT = {
     timelineWaveformAriaEnvelope: 'Waveform envelope',
     timelineWaveformLoading: 'Waveform…',
     miniIconFolderOpen: 'Open file',
+    miniIconFolder: 'Open video folder',
     miniIconFolderOpenEllipsis: 'Open file…',
     miniIconRefreshCw: 'Refresh',
     miniIconDownload: 'Downloads',

@@ -158,6 +158,7 @@ export interface FluxAlloyApi {
   }
   preview: {
     openFileDialog: (uiLocale?: DownloadsWindowUiLocale) => Promise<PreviewDialogResult>
+    openVideoFolderDialog: (uiLocale?: DownloadsWindowUiLocale) => Promise<PreviewDialogResult>
     grantPath: (
       absolutePath: string
     ) => Promise<

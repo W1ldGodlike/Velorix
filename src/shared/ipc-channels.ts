@@ -57,6 +57,7 @@ export const mainWindowIpc = {
   enginesProbeHwEncoders: 'fluxalloy:engines-probe-hw-encoders',
   enginesProgress: 'fluxalloy:engines-progress',
   openVideoDialog: 'fluxalloy:open-video-dialog',
+  openVideoFolderDialog: 'fluxalloy:open-video-folder-dialog',
   previewGrantPath: 'fluxalloy:preview-grant-path',
   persistLastSource: 'fluxalloy:persist-last-source',
   restoreLastSource: 'fluxalloy:restore-last-source',

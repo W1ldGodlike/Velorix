@@ -31,11 +31,13 @@ function grantBatchVideoPaths(
 
 export async function pickFfmpegExportBatchInputFiles(
   browserWindow: BrowserWindow,
-  locale: DownloadsWindowUiLocale = 'ru'
+  locale: DownloadsWindowUiLocale = 'ru',
+  opts?: { defaultPath?: string }
 ): Promise<{ ok: true; paths: string[] } | { ok: false; cancelled: true } | { ok: false; error: string }> {
   const S = getMainApplicationStrings(locale)
   const { canceled, filePaths } = await dialog.showOpenDialog(browserWindow, {
     title: S.batchExportPickFilesTitle,
+    ...(opts?.defaultPath ? { defaultPath: opts.defaultPath } : {}),
     properties: ['openFile', 'multiSelections'],
     filters: [
       {
@@ -58,11 +60,13 @@ export async function pickFfmpegExportBatchInputFiles(
 
 export async function pickFfmpegExportBatchInputFolder(
   browserWindow: BrowserWindow,
-  locale: DownloadsWindowUiLocale = 'ru'
+  locale: DownloadsWindowUiLocale = 'ru',
+  opts?: { defaultPath?: string }
 ): Promise<{ ok: true; paths: string[] } | { ok: false; cancelled: true } | { ok: false; error: string }> {
   const S = getMainApplicationStrings(locale)
   const { canceled, filePaths } = await dialog.showOpenDialog(browserWindow, {
     title: S.batchExportPickFolderTitle,
+    ...(opts?.defaultPath ? { defaultPath: opts.defaultPath } : {}),
     properties: ['openDirectory']
   })
   if (canceled || filePaths.length === 0 || !filePaths[0]) {
@@ -79,11 +83,13 @@ export async function pickFfmpegExportBatchInputFolder(
 /** §7.3 — папка сохранения результатов пакета (без сканирования файлов). */
 export async function pickFfmpegExportBatchOutputFolder(
   browserWindow: BrowserWindow,
-  locale: DownloadsWindowUiLocale = 'ru'
+  locale: DownloadsWindowUiLocale = 'ru',
+  opts?: { defaultPath?: string }
 ): Promise<{ ok: true; path: string } | { ok: false; cancelled: true }> {
   const S = getMainApplicationStrings(locale)
   const { canceled, filePaths } = await dialog.showOpenDialog(browserWindow, {
     title: S.batchExportPickOutputFolderTitle,
+    ...(opts?.defaultPath ? { defaultPath: opts.defaultPath } : {}),
     properties: ['openDirectory', 'createDirectory']
   })
   if (canceled || filePaths.length === 0 || !filePaths[0]) {

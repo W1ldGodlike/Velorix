@@ -34,6 +34,7 @@ import {
   IconCloudDownload,
   IconDownload,
   IconFilm,
+  IconFolder,
   IconFolderOpen,
   IconHome,
   IconMoon,
@@ -2468,6 +2469,17 @@ function App(): JSX.Element {
     }
   }
 
+  async function handleOpenVideoFolderToolbar(): Promise<void> {
+    const result = await window.fluxalloy.preview.openVideoFolderDialog(
+      getUiLocale() as DownloadsWindowUiLocale
+    )
+    if (result.ok) {
+      applyPreview(result)
+    } else if ('error' in result && typeof result.error === 'string' && result.error.length > 0) {
+      setStatusHint(result.error)
+    }
+  }
+
   async function handleEnginesDownload(): Promise<void> {
     setEngineDownloadBusy(true)
     setStatusHint(uiText('statusEnginesDownloadPreparing'))
@@ -2902,6 +2914,17 @@ function App(): JSX.Element {
         </nav>
         <div className="app-topbar-trailing">
           <div className="app-topbar-actions">
+            <button
+              type="button"
+              className="app-icon-btn"
+              onClick={() => {
+                void handleOpenVideoFolderToolbar()
+              }}
+              title={uiText('topbarOpenVideoFolderTitle')}
+            >
+              <IconFolder />
+              <span className="app-visually-hidden">{uiText('topbarOpenVideoFolderLabel')}</span>
+            </button>
             <button
               type="button"
               className="app-icon-btn"

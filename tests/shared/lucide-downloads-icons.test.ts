@@ -48,6 +48,7 @@ describe('lucide-downloads-icons', () => {
   })
 
   it('EDITOR_TOPBAR_ACTION_ICONS (снимок/экспорт/бан/облако) сериализуются в stroke SVG', () => {
+    expect(emitInlineStrokeSvg(EDITOR_TOPBAR_ACTION_ICONS.folder, 20)).toContain('path d=')
     expect(emitInlineStrokeSvg(EDITOR_TOPBAR_ACTION_ICONS.save, 20)).toContain('path d=')
     expect(emitInlineStrokeSvg(EDITOR_TOPBAR_ACTION_ICONS.image, 20)).toContain('rect')
     expect(emitInlineStrokeSvg(EDITOR_TOPBAR_ACTION_ICONS.ban, 20)).toContain('circle')

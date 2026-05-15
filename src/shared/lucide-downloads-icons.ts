@@ -285,6 +285,15 @@ export const EDITOR_TOPBAR_TOOLS_ICONS = {
 
 /** Экспорт/снимок/отмена/загрузка движков в правой части топбара редактора (общие данные с data HTML §6 при необходимости). */
 export const EDITOR_TOPBAR_ACTION_ICONS = {
+  /** lucide `folder` (closed) — выбор папки с видео §4.B */
+  folder: [
+    {
+      tag: 'path',
+      attr: {
+        d: 'M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9l-.9-1.2A2 2 0 0 0 9.07 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z'
+      }
+    }
+  ] as const satisfies readonly StrokePrim[],
   image: [
     { tag: 'rect', attr: { x: '3', y: '3', width: '18', height: '18', rx: '2' } },
     { tag: 'circle', attr: { cx: '9', cy: '9', r: '2' } },

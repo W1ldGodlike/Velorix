@@ -124,6 +124,7 @@ import {
   DEFAULT_EDITOR_URL_PASTE_BEHAVIOR,
   parseEditorUrlPasteBehavior
 } from '../shared/editor-url-paste-behavior'
+import { resolveOpenMediaDialogDefaultPath } from '../shared/preview-open-dialog-default-path'
 import {
   DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX,
   parseFfmpegExportBatchOutputSuffixTemplate
@@ -207,7 +208,7 @@ import {
   registerFluxMediaProtocol
 } from './media-protocol'
 import { registerFluxHelpPrivileges, registerFluxHelpProtocol } from './help-assets-protocol'
-import { openVideoWithDialog } from './preview-dialog'
+import { openVideoFolderWithDialog, openVideoWithDialog } from './preview-dialog'
 import type {
   AppSettings,
   AppSettingsView,
@@ -1058,6 +1059,28 @@ function persistLastOpenedSource(absolutePath: string | null): void {
     cachedSettings = { ...cachedSettings, lastOpenedSourcePath: absolutePath.trim() }
   }
   saveSettings(settingsPath(), cachedSettings)
+}
+
+function previewOpenDialogOptsFromSettings(): { defaultPath: string } | undefined {
+  const d = resolveOpenMediaDialogDefaultPath(cachedSettings.lastOpenedSourcePath)
+  return d !== undefined ? { defaultPath: d } : undefined
+}
+
+function batchExportOutputFolderPickOptsFromSettings(): { defaultPath: string } | undefined {
+  const raw = cachedSettings.ffmpegExportBatchOutputDirectory
+  if (typeof raw === 'string' && raw.trim().length > 0) {
+    const p = normalize(raw.trim())
+    if (existsSync(p)) {
+      try {
+        if (statSync(p).isDirectory()) {
+          return { defaultPath: p }
+        }
+      } catch {
+        /* fall back to last preview path */
+      }
+    }
+  }
+  return previewOpenDialogOptsFromSettings()
 }
 
 function sanitizeMainWindowUiPanelPatch(raw: unknown): Partial<MainWindowUiPanelState> {
@@ -1967,8 +1990,34 @@ function buildApplicationMenu(): void {
               return
             }
             target.focus()
-            const result = await openVideoWithDialog(target, mainDownloadsUiLocale())
+            const def = previewOpenDialogOptsFromSettings()
+            const result = await openVideoWithDialog(target, mainDownloadsUiLocale(), def)
             if (!result.ok) {
+              return
+            }
+            persistLastOpenedSource(result.path)
+            target.webContents.send(mw.previewOpened, result)
+          }
+        },
+        {
+          label: m.menuOpenVideoFolder,
+          accelerator: 'CmdOrCtrl+Shift+O',
+          click: async (): Promise<void> => {
+            const target = getMainUiWindow()
+            if (!target || target.isDestroyed()) {
+              return
+            }
+            target.focus()
+            const def = previewOpenDialogOptsFromSettings()
+            const result = await openVideoFolderWithDialog(target, mainDownloadsUiLocale(), def)
+            if (!result.ok) {
+              if ('error' in result && typeof result.error === 'string' && result.error.length > 0) {
+                void dialog.showMessageBox(target, {
+                  type: 'warning',
+                  title: m.openVideoFolderDialogTitle,
+                  message: result.error
+                })
+              }
               return
             }
             persistLastOpenedSource(result.path)
@@ -3058,7 +3107,21 @@ app.whenReady().then(() => {
     if (!win) {
       return { ok: false, error: mainAppStr().openVideoDialogNoWindow }
     }
-    const result = await openVideoWithDialog(win, ipcDownloadsUiLocale(raw))
+    const def = previewOpenDialogOptsFromSettings()
+    const result = await openVideoWithDialog(win, ipcDownloadsUiLocale(raw), def)
+    if (result.ok) {
+      persistLastOpenedSource(result.path)
+    }
+    return result
+  })
+
+  ipcMain.handle(mw.openVideoFolderDialog, async (event, raw?: unknown) => {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    if (!win) {
+      return { ok: false, error: mainAppStr().openVideoDialogNoWindow }
+    }
+    const def = previewOpenDialogOptsFromSettings()
+    const result = await openVideoFolderWithDialog(win, ipcDownloadsUiLocale(raw), def)
     if (result.ok) {
       persistLastOpenedSource(result.path)
     }
@@ -3608,7 +3671,8 @@ app.whenReady().then(() => {
         return { ok: false, error: mainAppStr().openVideoDialogNoWindow }
       }
       const loc = mainDownloadsUiLocale()
-      const picked = await pickFfmpegExportBatchInputFiles(win, loc)
+      const def = previewOpenDialogOptsFromSettings()
+      const picked = await pickFfmpegExportBatchInputFiles(win, loc, def)
       if (!picked.ok) {
         return picked
       }
@@ -3630,7 +3694,8 @@ app.whenReady().then(() => {
         return { ok: false, error: mainAppStr().openVideoDialogNoWindow }
       }
       const loc = mainDownloadsUiLocale()
-      const picked = await pickFfmpegExportBatchInputFolder(win, loc)
+      const def = previewOpenDialogOptsFromSettings()
+      const picked = await pickFfmpegExportBatchInputFolder(win, loc, def)
       if (!picked.ok) {
         return picked
       }
@@ -3650,7 +3715,8 @@ app.whenReady().then(() => {
         return { ok: false, cancelled: true }
       }
       const loc = mainDownloadsUiLocale()
-      return pickFfmpegExportBatchOutputFolder(win, loc)
+      const def = batchExportOutputFolderPickOptsFromSettings()
+      return pickFfmpegExportBatchOutputFolder(win, loc, def)
     }
   )
 

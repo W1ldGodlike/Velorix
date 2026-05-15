@@ -28,6 +28,7 @@ export type MainApplicationStrings = {
   processErrorMetaPlatform: string
   menuFile: string
   menuOpen: string
+  menuOpenVideoFolder: string
   menuDownloadsManager: string
   menuPasteUrlDownloads: string
   menuSettings: string
@@ -101,6 +102,7 @@ export type MainApplicationStrings = {
   exportOpenBadRequest: string
   openVideoDialogNoWindow: string
   openVideoDialogTitle: string
+  openVideoFolderDialogTitle: string
   openVideoDialogFilterVideo: string
   batchExportPickFilesTitle: string
   batchExportPickFolderTitle: string
@@ -191,6 +193,7 @@ const RU: MainApplicationStrings = {
   processErrorMetaPlatform: 'Платформа',
   menuFile: 'Файл',
   menuOpen: 'Открыть…',
+  menuOpenVideoFolder: 'Открыть папку с видео…',
   menuDownloadsManager: 'Менеджер загрузок (yt-dlp)…',
   menuPasteUrlDownloads: 'Вставить URL из буфера в менеджер…',
   menuSettings: 'Настройки',
@@ -267,6 +270,7 @@ const RU: MainApplicationStrings = {
   exportOpenBadRequest: 'Некорректный запрос',
   openVideoDialogNoWindow: 'Нет активного окна',
   openVideoDialogTitle: 'Открыть видео',
+  openVideoFolderDialogTitle: 'Открыть папку с видео',
   openVideoDialogFilterVideo: 'Видео',
   batchExportPickFilesTitle: 'Добавить файлы в пакетный экспорт',
   batchExportPickFolderTitle: 'Добавить папку в пакетный экспорт',
@@ -364,6 +368,7 @@ const EN: MainApplicationStrings = {
   processErrorMetaPlatform: 'Platform',
   menuFile: 'File',
   menuOpen: 'Open…',
+  menuOpenVideoFolder: 'Open video folder…',
   menuDownloadsManager: 'Download manager (yt-dlp)…',
   menuPasteUrlDownloads: 'Paste URL from clipboard into manager…',
   menuSettings: 'Settings',
@@ -440,6 +445,7 @@ const EN: MainApplicationStrings = {
   exportOpenBadRequest: 'Invalid request',
   openVideoDialogNoWindow: 'No active window',
   openVideoDialogTitle: 'Open video',
+  openVideoFolderDialogTitle: 'Open video folder',
   openVideoDialogFilterVideo: 'Video',
   batchExportPickFilesTitle: 'Add files to batch export',
   batchExportPickFolderTitle: 'Add folder to batch export',

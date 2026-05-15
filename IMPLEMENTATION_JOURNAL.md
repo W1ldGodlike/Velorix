@@ -703,4 +703,6 @@
 - [J-680] 2026-05-15 23:58:48 [Assistant]: шапка журнала — в ответах ассистента не пересказывать содержимое журнала, только ссылка/номер J при необходимости.
 - [J-681] 2026-05-16 00:01:40 [Assistant]: §7.3 — общая папка выхода пакета (`ffmpegExportBatchOutputDirectory`, pick/clear в App, persist/main/runner/IPC, `resolveFfmpegExportBatchOutputDirectoryFromSettings` + nested test); preload `batchExport.pickOutputFolder` в `index.d.ts`; импорты Vitest `ffmpeg-export-resolve-from-settings`; чеклист §7.3. `npm run check:journal` + typecheck + vitest.
 - [J-682] 2026-05-16 00:04:50 [Assistant]: §4.B/§7.3 — DnD **папки**: `resolveUserPathToPreviewSourceFile` + `previewGrantPath`/`restoreLastSource` (первое видео из scan); `expandFfmpegExportBatchDnDPaths` + `batchExportAddPaths`; Vitest `ffmpeg-export-batch-dnd-expand`; чеклист.
+- [J-683] 2026-05-16 00:12:00 [Assistant]: §4.B — **«Открыть папку с видео»**: `openVideoFolderWithDialog`, IPC `openVideoFolderDialog`, пункт меню + Ctrl+Shift+O, topbar `IconFolder` (`EDITOR_TOPBAR_ACTION_ICONS.folder`), preload/d.ts; чеклист.
+- [J-684] 2026-05-16 00:18:30 [Assistant]: §4.B/§7.3 — `resolveOpenMediaDialogDefaultPath` + `defaultPath` в `openVideo*WithDialog`, batch pick files/folder/output, меню и IPC; Vitest `preview-open-dialog-default-path`; чеклист.
 
