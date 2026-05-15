@@ -728,6 +728,7 @@ function App(): JSX.Element {
           { id: 'librav1e', label: uiText('editorExportCodecLibrav1e') },
           { id: 'prores_ks', label: uiText('editorExportCodecProresKs') },
           { id: 'dnxhd', label: uiText('editorExportCodecDnxhd') },
+          { id: 'ffv1', label: uiText('editorExportCodecFfv1') },
           { id: 'hw_auto', label: uiText('editorExportCodecHwAuto') },
           { id: 'hw_auto_hevc', label: uiText('editorExportCodecHwAutoHevc') }
         ]

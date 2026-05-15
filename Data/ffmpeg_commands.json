@@ -301,6 +301,13 @@
     "tool": "ffmpeg"
   },
   {
+    "token": "ffv1",
+    "summary": "FFV1 lossless-видео, чаще в MKV/AVI.",
+    "examples": ["ffmpeg -c:v ffv1 -level 3 -slicecrc 1 out.mkv"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/FFV1",
+    "tool": "ffmpeg"
+  },
+  {
     "token": "-b:a",
     "summary": "Битрейт аудио.",
     "examples": ["ffmpeg -c:a aac -b:a 192k"],

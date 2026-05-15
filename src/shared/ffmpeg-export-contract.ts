@@ -24,6 +24,7 @@ export type FfmpegExportVideoCodecId =
   | 'librav1e'
   | 'prores_ks'
   | 'dnxhd'
+  | 'ffv1'
   | 'hw_auto'
   | 'hw_auto_hevc'
   | FfmpegHwVideoEncoderId
@@ -255,6 +256,8 @@ export const FFMPEG_EXPORT_PRORES_MOV_ONLY_ERROR =
 /** `dnxhd` (DNxHR в `-profile:v`) в текущей модели экспорта — только MOV. */
 export const FFMPEG_EXPORT_DNXHD_MOV_ONLY_ERROR =
   'Avid DNxHD/DNxHR (dnxhd): только контейнер MOV.' as const
+/** `ffv1` (архивный lossless) допускается только с контейнером MKV (spawn и превью). */
+export const FFMPEG_EXPORT_FFV1_MKV_ONLY_ERROR = 'FFV1 (ffv1): только контейнер MKV.' as const
 
 export type MediaExportStartResult =
   | { ok: true; path: string }

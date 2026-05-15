@@ -733,6 +733,13 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
     if (params.videoBitrate !== null) {
       args.push('-b:v', params.videoBitrate)
     }
+  } else if (vcodec === 'ffv1') {
+    if (tp) {
+      throw new Error('Двухпроходный режим поддерживается только для libx264')
+    }
+    const level = params.encodePreset === 'smaller' ? '1' : '3'
+    const slices = params.encodePreset === 'smaller' ? '24' : '4'
+    args.push('-c:v', 'ffv1', '-level', level, '-slicecrc', '1', '-slices', slices)
   } else {
     args.push('-c:v', vcodec, '-preset', enc.x264preset)
     if (vcodec === 'libx265' && (container === 'mp4' || container === 'mov')) {

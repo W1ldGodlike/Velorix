@@ -28,6 +28,7 @@ import {
 import {
   FFMPEG_EXPORT_AOM_AV1_MKV_ONLY_ERROR,
   FFMPEG_EXPORT_DNXHD_MOV_ONLY_ERROR,
+  FFMPEG_EXPORT_FFV1_MKV_ONLY_ERROR,
   FFMPEG_EXPORT_PRORES_MOV_ONLY_ERROR,
   FFMPEG_EXPORT_RAV1E_MKV_ONLY_ERROR,
   FFMPEG_EXPORT_SVTAV1_MKV_ONLY_ERROR,
@@ -394,6 +395,52 @@ describe('shared ffmpeg export argv', () => {
     const j = argv.indexOf('-c:v')
     expect(argv.slice(j, j + 4)).toEqual(['-c:v', 'dnxhd', '-profile:v', 'dnxhr_lb'])
     expect(argv.includes('-pix_fmt')).toBe(false)
+  })
+
+  it('ffv1: только MKV; -level -slicecrc -slices', () => {
+    expect(() =>
+      buildFfmpegExportArgv({
+        inputPath: 'in.mp4',
+        outputPath: 'out.mov',
+        applyTrim: false,
+        encodePreset: 'balance',
+        videoCodec: 'ffv1',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'aac',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        container: 'mov'
+      })
+    ).toThrow(FFMPEG_EXPORT_FFV1_MKV_ONLY_ERROR)
+
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mkv',
+      outputPath: 'out.mkv',
+      applyTrim: false,
+      encodePreset: 'smaller',
+      videoCodec: 'ffv1',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mkv'
+    })
+    const j = argv.indexOf('-c:v')
+    expect(argv.slice(j, j + 8)).toEqual([
+      '-c:v',
+      'ffv1',
+      '-level',
+      '1',
+      '-slicecrc',
+      '1',
+      '-slices',
+      '24'
+    ])
+    expect(argv.includes('-pix_fmt')).toBe(true)
   })
 
   it('h264_nvenc: без libx264-preset, VBR + cq; hevc_nvenc + mp4 даёт hvc1', () => {

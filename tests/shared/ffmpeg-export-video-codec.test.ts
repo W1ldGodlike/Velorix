@@ -25,6 +25,7 @@ describe('ffmpeg-export-video-codec', () => {
     expect(parseFfmpegExportVideoCodec('librav1e')).toBe('librav1e')
     expect(parseFfmpegExportVideoCodec('prores_ks')).toBe('prores_ks')
     expect(parseFfmpegExportVideoCodec('dnxhd')).toBe('dnxhd')
+    expect(parseFfmpegExportVideoCodec('ffv1')).toBe('ffv1')
     expect(parseFfmpegExportVideoCodec('h264_nvenc')).toBe('h264_nvenc')
     expect(parseFfmpegExportVideoCodec('evil')).toBe('libx264')
   })
@@ -80,6 +81,7 @@ describe('ffmpeg-export-video-codec', () => {
     expect(cpuFfmpegVideoCodecRequiresMkv('libsvtav1')).toBe(true)
     expect(cpuFfmpegVideoCodecRequiresMkv('libaom-av1')).toBe(true)
     expect(cpuFfmpegVideoCodecRequiresMkv('librav1e')).toBe(true)
+    expect(cpuFfmpegVideoCodecRequiresMkv('ffv1')).toBe(true)
     expect(cpuFfmpegVideoCodecRequiresMkv('prores_ks')).toBe(false)
     expect(cpuFfmpegVideoCodecRequiresMkv('dnxhd')).toBe(false)
     expect(cpuFfmpegVideoCodecRequiresMkv('libx264')).toBe(false)
@@ -98,7 +100,9 @@ describe('ffmpeg-export-video-codec', () => {
     expect(exportCpuCodecMkvOnlyErrorMessage('libsvtav1')).toContain('libsvtav1')
     expect(exportCpuCodecMkvOnlyErrorMessage('libaom-av1')).toContain('libaom-av1')
     expect(exportCpuCodecMkvOnlyErrorMessage('librav1e')).toContain('librav1e')
+    expect(exportCpuCodecMkvOnlyErrorMessage('ffv1')).toContain('ffv1')
   })
+
   it('resolveFfmpegExportVideoCodecForArgv', () => {
     const snap = createEmptyFfmpegHwEncodersSnapshot()
     snap.h264_amf = true
