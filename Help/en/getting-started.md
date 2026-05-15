@@ -1,7 +1,20 @@
-# FluxAlloy — quick start
+# Getting started
 
-1. Open the **Download** tab.
-2. Paste URLs (one per line).
-3. Click **Add to queue**, then **Start queue**.
+**FluxAlloy** helps with two everyday jobs: **download a link** and **reshape a local video** for social apps or an archive.
 
-To process local files, open the **Processing** tab, add files, and click **Run batch**. Clipboard URLs and drag & drop: [downloads-dragdrop.md](downloads-dragdrop.md). Sessions and download→process flow: [session-and-queues.md](session-and-queues.md). Social presets: [processing-social-presets.md](processing-social-presets.md). Terminal, inspector, and watch folder: [tools-terminal-inspector.md](tools-terminal-inspector.md). GPU/CPU encoders: [hardware-encoding.md](hardware-encoding.md).
+![Tabs: Editor, Downloads, Terminal (diagram)](assets/workspace-tabs-diagram.svg)
+
+## First steps
+
+1. Open the **Downloads** tab when you work with internet links.
+2. Paste addresses (one per line) and add them to the queue.
+3. Start a single row or the whole queue — the app calls the downloader for you.
+
+For a file on disk open the **Editor** tab, drop the file on the preview zone, or use **Open**.
+
+## Where to read next
+
+- How tabs fit together — [workspace-tabs.md](workspace-tabs.md)
+- Queue and quick actions — [downloads-workflow.md](downloads-workflow.md)
+- Preview, timeline, export — [editor-workflow.md](editor-workflow.md) and [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md)
+- Using this help window — [knowledge-base-howto.md](knowledge-base-howto.md)

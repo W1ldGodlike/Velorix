@@ -1,21 +1,13 @@
-# Terminal, inspector, and scheduler
+# Terminal and inspector
 
-## Terminal (Tools)
+## Terminal
 
-Input line with hints from `Data/ytdlp_commands.json` and `Data/ffmpeg_commands.json`. Only three prefixes are allowed: **yt-dlp**, **ffmpeg**, **ffprobe** — the app injects paths from settings. On open, a preview command from the active tab (download or processing) is prefilled.
+The **Terminal** tab builds a command from hints and validates it before launch. Only three tool families are allowed — the link downloader, the media encoder, and the media analyzer — so you never accidentally spawn unrelated software.
 
-More detail: [ffmpeg / yt-dlp hints](ffmpeg-terminal-hints.md) — JSON under `Data/*` and the **Built-in scenarios** section (`terminal-contract.ts`, `summary` localization).
+Hints come from bundled lists plus **built-in scenarios** for common tasks. Maintainer-focused detail lives in [ffmpeg-terminal-hints.md](ffmpeg-terminal-hints.md).
 
-## Inspector (Tools menu / ffprobe from queues)
+## Inspector
 
-Separate window with full **ffprobe** JSON for the selected file. Use **Copy JSON** to copy the result.
+The **Tools** menu opens a separate window with track tables and the raw analyzer report. **Copy JSON** is available for support tickets.
 
-## Watch-folder scheduler (Tools)
-
-You set a folder, a JSON scenario file, and a poll interval. Start stays disabled until folder and scenario are set — a hint is shown.
-
-## Explorer integration and abnormal shutdown
-
-In **Settings** you can enable Explorer context menu entries (HKCU): **Open in FluxAlloy** (enqueue file for processing as-is) and **Quick convert to MP4** (opens FluxAlloy with H.264/AAC preset and auto codec pick).
-
-If the last session ended abnormally, the next launch may show a reminder: queues are restored from `ui-session.json`.
+See also [probe-and-inspector-basics.md](probe-and-inspector-basics.md).

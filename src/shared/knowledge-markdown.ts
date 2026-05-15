@@ -6,6 +6,7 @@ export type MdInline =
   | { kind: 'strong'; children: MdInline[] }
   | { kind: 'em'; children: MdInline[] }
   | { kind: 'link'; href: string; children: MdInline[] }
+  | { kind: 'image'; alt: string; src: string }
 
 export type MdBlock =
   | { kind: 'heading'; level: 1 | 2 | 3; children: MdInline[] }
@@ -17,6 +18,46 @@ export type MdBlock =
   | { kind: 'pre'; language: string | null; code: string }
 
 const SLUG_RE = /^[a-z0-9][a-z0-9-]*$/i
+
+/** Разрешённые пути картинок в статьях: только `Help/assets/**` с безопасным именем файла. */
+const KNOWLEDGE_ASSET_IMAGE_RE =
+  /^(?:\.\/)?assets\/[a-z0-9][a-z0-9._/-]*\.(?:png|jpg|jpeg|gif|webp|svg)$/i
+
+export function isKnowledgeSafeAssetImageHref(href: string): boolean {
+  const t = href.trim()
+  if (t.includes('..') || t.includes('\\')) {
+    return false
+  }
+  return KNOWLEDGE_ASSET_IMAGE_RE.test(t)
+}
+
+const KNOWLEDGE_DATA_IMAGE_BASE64_MAX_CHARS = 700_000
+
+/** Разрешённые `data:image/*;base64,...` из main (в base64 нет `)`, markdown-парсер не ломается). */
+export function isKnowledgeTrustedDataImageSrc(href: string): boolean {
+  const t = href.trim()
+  if (t.length === 0 || t.length > KNOWLEDGE_DATA_IMAGE_BASE64_MAX_CHARS) {
+    return false
+  }
+  return /^data:image\/(?:svg\+xml|png|jpeg|gif|webp);base64,[A-Za-z0-9+/]+=*$/i.test(t)
+}
+
+export function isKnowledgeTrustedImageSrc(href: string): boolean {
+  return isKnowledgeSafeAssetImageHref(href) || isKnowledgeTrustedDataImageSrc(href)
+}
+
+/** URL для `<img src>` в Electron (схема регистрируется в main). */
+export function knowledgeHelpAssetFluxhelpUrl(href: string): string {
+  const t = href.trim()
+  if (t.startsWith('data:')) {
+    return t
+  }
+  const clean = t.replace(/^\.\//, '')
+  return `fluxhelp:///${clean
+    .split('/')
+    .map((segment) => encodeURIComponent(segment))
+    .join('/')}`
+}
 
 export function normalizeKnowledgeMarkdownSource(raw: string): string {
   return raw.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
@@ -117,6 +158,32 @@ function parseInlinesInner(input: string, depth: number): MdInline[] {
       continue
     }
 
+    if (ch === '!' && input[i + 1] === '[') {
+      flushText()
+      const closeLabel = input.indexOf(']', i + 2)
+      if (
+        closeLabel !== -1 &&
+        input[closeLabel + 1] === '(' &&
+        input.indexOf(')', closeLabel + 2) !== -1
+      ) {
+        const closeHref = input.indexOf(')', closeLabel + 2)
+        const labelRaw = input.slice(i + 2, closeLabel)
+        const href = input.slice(closeLabel + 2, closeHref).trim()
+        if (isKnowledgeTrustedImageSrc(href)) {
+          out.push({
+            kind: 'image',
+            alt: labelRaw.trim(),
+            src: href.replace(/^\.\//, '')
+          })
+          i = closeHref + 1
+          continue
+        }
+      }
+      buf += '!'
+      i += 1
+      continue
+    }
+
     if (ch === '[') {
       const closeLabel = input.indexOf(']', i + 1)
       if (closeLabel !== -1 && input[closeLabel + 1] === '(') {
@@ -183,6 +250,8 @@ function inlinesToPlainText(nodes: MdInline[]): string {
       s += inlinesToPlainText(n.children)
     } else if (n.kind === 'link') {
       s += inlinesToPlainText(n.children)
+    } else if (n.kind === 'image') {
+      s += n.alt.length > 0 ? n.alt : n.src
     }
   }
   return s

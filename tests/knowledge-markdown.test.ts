@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  isKnowledgeSafeAssetImageHref,
   isKnowledgeThematicBreak,
+  isKnowledgeTrustedDataImageSrc,
+  knowledgeHelpAssetFluxhelpUrl,
   knowledgeInternalSlugFromHref,
   normalizeKnowledgeMarkdownSource,
   parseKnowledgeMarkdown
@@ -32,6 +35,66 @@ describe('isKnowledgeThematicBreak', () => {
     expect(isKnowledgeThematicBreak('___')).toBe(true)
     expect(isKnowledgeThematicBreak('- item')).toBe(false)
     expect(isKnowledgeThematicBreak('--')).toBe(false)
+  })
+})
+
+describe('isKnowledgeSafeAssetImageHref', () => {
+  it('allows Help/assets paths only', () => {
+    expect(isKnowledgeSafeAssetImageHref('assets/diagram.svg')).toBe(true)
+    expect(isKnowledgeSafeAssetImageHref('./assets/x.png')).toBe(true)
+    expect(isKnowledgeSafeAssetImageHref('assets/../x.png')).toBe(false)
+    expect(isKnowledgeSafeAssetImageHref('other/x.png')).toBe(false)
+    expect(isKnowledgeSafeAssetImageHref('assets/readme.txt')).toBe(false)
+  })
+})
+
+describe('isKnowledgeTrustedDataImageSrc', () => {
+  it('allows only tight data:image/*;base64,... patterns', () => {
+    expect(
+      isKnowledgeTrustedDataImageSrc(
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='
+      )
+    ).toBe(true)
+    expect(isKnowledgeTrustedDataImageSrc('data:text/html;base64,PHNjcmlwdD4=')).toBe(false)
+    expect(isKnowledgeTrustedDataImageSrc('data:image/png;base64,ab)d')).toBe(false)
+  })
+})
+
+describe('knowledgeHelpAssetFluxhelpUrl', () => {
+  it('builds fluxhelp URL with encoded segments', () => {
+    expect(knowledgeHelpAssetFluxhelpUrl('assets/a b.svg')).toBe('fluxhelp:///assets/a%20b.svg')
+  })
+
+  it('passes through data:image base64 URLs unchanged', () => {
+    const data =
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='
+    expect(knowledgeHelpAssetFluxhelpUrl(data)).toBe(data)
+  })
+})
+
+describe('parseKnowledgeMarkdown images', () => {
+  it('parses safe asset images into image inlines', () => {
+    const md = 'Text ![cap](assets/x.png) tail.'
+    const blocks = parseKnowledgeMarkdown(md)
+    const p = blocks.find((b) => b.kind === 'paragraph')
+    expect(p?.kind).toBe('paragraph')
+    if (p?.kind === 'paragraph') {
+      const img = p.children.find((c) => c.kind === 'image')
+      expect(img).toEqual({ kind: 'image', alt: 'cap', src: 'assets/x.png' })
+    }
+  })
+
+  it('parses inlined data:image base64 into image inlines', () => {
+    const data =
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='
+    const md = `Pic ![1x1](${data}) end.`
+    const blocks = parseKnowledgeMarkdown(md)
+    const p = blocks.find((b) => b.kind === 'paragraph')
+    expect(p?.kind).toBe('paragraph')
+    if (p?.kind === 'paragraph') {
+      const img = p.children.find((c) => c.kind === 'image')
+      expect(img).toEqual({ kind: 'image', alt: '1x1', src: data })
+    }
   })
 })
 

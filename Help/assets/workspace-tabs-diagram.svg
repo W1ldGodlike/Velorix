@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="120" viewBox="0 0 520 120" role="img" aria-labelledby="wt">
+  <title id="wt">Схема вкладок: Редактор, Загрузки, Терминал</title>
+  <rect width="520" height="120" rx="10" fill="#0d1219" stroke="#202936"/>
+  <text x="260" y="22" fill="#9aa7b7" font-size="12" font-family="Segoe UI,sans-serif" text-anchor="middle">Верхняя полоса окна</text>
+  <rect x="20" y="36" width="150" height="36" rx="6" fill="#1e3a5f" stroke="#2f8cff"/>
+  <text x="95" y="60" fill="#e8edf5" font-size="13" font-family="Segoe UI,sans-serif" text-anchor="middle">Редактор</text>
+  <rect x="185" y="36" width="150" height="36" rx="6" fill="#151c27" stroke="#202936"/>
+  <text x="260" y="60" fill="#e8edf5" font-size="13" font-family="Segoe UI,sans-serif" text-anchor="middle">Загрузки</text>
+  <rect x="350" y="36" width="150" height="36" rx="6" fill="#151c27" stroke="#202936"/>
+  <text x="425" y="60" fill="#e8edf5" font-size="13" font-family="Segoe UI,sans-serif" text-anchor="middle">Терминал</text>
+  <rect x="20" y="82" width="480" height="22" rx="4" fill="#070a0f" stroke="#202936"/>
+  <text x="260" y="97" fill="#5f6b7a" font-size="11" font-family="Segoe UI,sans-serif" text-anchor="middle">Основная область выбранной вкладки</text>
+</svg>

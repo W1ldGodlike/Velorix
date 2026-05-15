@@ -1,11 +1,17 @@
-# Extract frames
+# Snapshot from preview
 
-**Tools → Extract frames** opens a simplified scenario window (§7.6):
+On the editor toolbar above the preview you will find a **snapshot** button. It saves a still image from the **current playback** position.
 
-- **Every N seconds** — uses the `fps=1/N` filter.
-- **K frames evenly spaced** — requires duration from ffprobe; sets `fps = K/duration`.
-- **Single frame** — `-ss` and one output file with a timestamp in the filename.
+## Format
 
-Formats: JPG, PNG, WebP. Files are saved to the folder you pick (`flux_frame_*.jpg`, or a single file in “one frame” mode).
+Pick **PNG** or **JPEG** next to the snapshot control before saving.
 
-The full spec set (progress bar, manual comma-separated marks, sprites §7.5) is not implemented in this window yet.
+## Where it goes
+
+A standard Save dialog lets you choose folder and filename.
+
+## Batch extraction
+
+Batch “extract many frames on a schedule” from a dedicated menu is **not wired yet** — it stays on the product roadmap. Today you get the quick single-frame snapshot from preview.
+
+See [editor-workflow.md](editor-workflow.md).

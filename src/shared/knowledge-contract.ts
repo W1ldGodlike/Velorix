@@ -18,3 +18,6 @@ export type KnowledgeArticleResult = KnowledgeArticleReadResult | { ok: false; e
 
 /** Строка — только `slug`; объект — опциональный `preferredUiLocale` для выбора `Help/en/*.md`. */
 export type KnowledgeReadArticleRequest = string | { slug: string; preferredUiLocale?: 'ru' | 'en' }
+
+/** Список статей: заголовки из `Help/en/*.md` при `preferredUiLocale: 'en'`, если файл есть. */
+export type KnowledgeListArticlesRequest = { preferredUiLocale?: 'ru' | 'en' } | undefined

@@ -110,4 +110,4 @@
 - Не добавлять heavy abstractions, пока UI живёт в data HTML окне.
 - Любой новый UI-блок сверять с этим документом и `IMPLEMENTATION_CHECKLIST.md`.
 - После крупных UI-изменений обновлять `Ближайший TODO спринта`.
-- Внешняя документация (yt-dlp README / разделы, ffprobe-all): компактные текстовые ссылки `target="_blank"` в быстрой полосе yt-dlp, rail «Эксперт», блоке ffprobe под превью, «О программе»; main/pop-out — `setWindowOpenHandler` + `shell.openExternal`.
+- Внешняя документация (yt-dlp README / разделы, ffprobe-all): компактные текстовые ссылки `target="_blank"` в быстрой полосе yt-dlp, rail «Эксперт», **окне инспектора** (ffprobe), «О программе»; main/pop-out — `setWindowOpenHandler` + `shell.openExternal`.

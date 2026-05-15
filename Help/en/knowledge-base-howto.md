@@ -1,0 +1,23 @@
+# How to use the help
+
+Open the window with the **“?”** button in the top-right. The left side lists articles and search; the right side shows the article.
+
+## Language
+
+Article language follows the app interface language (Russian or English). Change the interface language in settings and open help again — titles and body load from separate files, without mixing two languages in one page.
+
+## Pictures
+
+Illustrations live under `Help/assets`. In Markdown use only this form:
+
+`![Short caption](assets/file-name.png)`
+
+When you open an article, the app **inlines** small files (up to ~512 KiB) as embedded image data so diagrams work in dev and in packaged builds. The caption appears if the image cannot load.
+
+## Links
+
+Blue buttons jump to other in-app articles. Links that start with `https` open in your external browser.
+
+## Tables
+
+The help viewer **does not** render Markdown pipe tables. For “shortcut → action” style content, use a **bullet list** and bold the first part, for example: `- **Ctrl+O** — open a file…`

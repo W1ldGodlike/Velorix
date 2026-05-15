@@ -1,5 +1,5 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'fs'
-import { basename, join, normalize } from 'path'
+import { basename, extname, join, normalize, relative } from 'path'
 
 import type {
   KnowledgeArticleListItem,
@@ -8,6 +8,7 @@ import type {
 } from '../shared/knowledge-contract'
 import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
+import { isKnowledgeSafeAssetImageHref } from '../shared/knowledge-markdown'
 
 const HELP_FILE_RE = /^[a-z0-9][a-z0-9-]*\.md$/i
 const MAX_ARTICLE_BYTES = 256 * 1024
@@ -54,7 +55,7 @@ function safeHelpFileName(slug: unknown): string | null {
   return `${clean}.md`
 }
 
-function resolveHelpDir(candidates: readonly string[]): string | null {
+export function resolveKnowledgeHelpDirectory(candidates: readonly string[]): string | null {
   for (const dir of candidates) {
     if (existsSync(dir) && statSync(dir).isDirectory()) {
       return dir
@@ -78,6 +79,51 @@ function readHelpMarkdown(helpDir: string, fileName: string): string | null {
   return readFileSync(abs, 'utf8')
 }
 
+const MAX_INLINED_HELP_ASSET_BYTES = 512 * 1024
+
+const HELP_ASSET_IMG_MD_RE =
+  /!\[([^\]]*)\]\((assets\/[a-z0-9][a-z0-9._/-]*\.(?:png|jpg|jpeg|gif|webp|svg))\)/gi
+
+const MIME_FOR_HELP_ASSET_EXT: Record<string, string> = {
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.gif': 'image/gif',
+  '.webp': 'image/webp',
+  '.svg': 'image/svg+xml'
+}
+
+/**
+ * Встраивает мелкие `Help/assets/*` в markdown как `data:image/*;base64,...`, чтобы `<img>` в
+ * Chromium не зависел от кастомной схемы `fluxhelp:` (CSP/загрузка с dev-сервера).
+ */
+function inlineKnowledgeMarkdownAssetImages(helpDir: string, markdown: string): string {
+  const root = normalize(helpDir)
+  return markdown.replace(HELP_ASSET_IMG_MD_RE, (full, alt: string, href: string) => {
+    const cleanHref = href.replace(/^\.\//, '')
+    if (!isKnowledgeSafeAssetImageHref(cleanHref)) {
+      return full
+    }
+    const abs = normalize(join(helpDir, cleanHref))
+    const rel = relative(root, abs).replace(/\\/g, '/')
+    if (!rel.startsWith('assets/') || rel.includes('/../')) {
+      return full
+    }
+    if (!existsSync(abs) || !statSync(abs).isFile()) {
+      return full
+    }
+    if (statSync(abs).size > MAX_INLINED_HELP_ASSET_BYTES) {
+      return full
+    }
+    const mime = MIME_FOR_HELP_ASSET_EXT[extname(abs).toLowerCase()]
+    if (!mime) {
+      return full
+    }
+    const buf = readFileSync(abs)
+    return `![${alt}](data:${mime};base64,${buf.toString('base64')})`
+  })
+}
+
 export function buildKnowledgeHelpDirCandidates(opts: {
   cwd: string
   appPath: string
@@ -93,15 +139,27 @@ export function listKnowledgeArticles(
   helpDirCandidates: readonly string[],
   locale: DownloadsWindowUiLocale = 'ru'
 ): KnowledgeArticleListResult {
-  const helpDir = resolveHelpDir(helpDirCandidates)
+  const helpDir = resolveKnowledgeHelpDirectory(helpDirCandidates)
   if (helpDir === null) {
     return { ok: false, error: getMainApplicationStrings(locale).knowledgeHelpNotFound }
   }
   const articles: KnowledgeArticleListItem[] = []
+  const listLocale: DownloadsWindowUiLocale = locale
+  const enDir = normalize(join(helpDir, HELP_EN_SUBDIR))
+  const enRoot = normalize(helpDir)
+  const hasEnDir =
+    enDir.startsWith(enRoot) && existsSync(enDir) && statSync(enDir).isDirectory()
+
   for (const fileName of readdirSync(helpDir)
     .filter((f) => HELP_FILE_RE.test(f))
     .sort()) {
-    const markdown = readHelpMarkdown(helpDir, fileName)
+    let markdown: string | null = null
+    if (listLocale === 'en' && hasEnDir) {
+      markdown = readHelpMarkdown(enDir, fileName)
+    }
+    if (markdown === null) {
+      markdown = readHelpMarkdown(helpDir, fileName)
+    }
     if (markdown === null) {
       continue
     }
@@ -117,14 +175,15 @@ export function listKnowledgeArticles(
 export function readKnowledgeArticle(
   helpDirCandidates: readonly string[],
   raw: unknown,
-  locale: DownloadsWindowUiLocale = 'ru'
+  fallbackLocale: DownloadsWindowUiLocale = 'ru'
 ): KnowledgeArticleResult {
   const { slug: rawSlug, preferredUiLocale } = parseReadArticleRequest(raw)
+  const locale = preferredUiLocale ?? fallbackLocale
   const fileName = safeHelpFileName(rawSlug)
   if (fileName === null) {
     return { ok: false, error: getMainApplicationStrings(locale).knowledgeInvalidArticle }
   }
-  const helpDir = resolveHelpDir(helpDirCandidates)
+  const helpDir = resolveKnowledgeHelpDirectory(helpDirCandidates)
   if (helpDir === null) {
     return { ok: false, error: getMainApplicationStrings(locale).knowledgeHelpNotFound }
   }
@@ -151,12 +210,14 @@ export function readKnowledgeArticle(
   if (markdown === null) {
     return { ok: false, error: getMainApplicationStrings(locale).knowledgeArticleNotFound }
   }
+  const title = titleFromMarkdown(resolvedFileName, markdown)
+  markdown = inlineKnowledgeMarkdownAssetImages(helpDir, markdown)
   return {
     ok: true,
     article: {
       slug: basename(fileName, '.md'),
       fileName: resolvedFileName,
-      title: titleFromMarkdown(resolvedFileName, markdown)
+      title
     },
     markdown
   }

@@ -11,13 +11,16 @@ export function KnowledgeDialog({
   open,
   onClose,
   onStatus,
-  initialSlug = null
+  initialSlug = null,
+  localeVersion = 0
 }: {
   open: boolean
   onClose: () => void
   onStatus?: (message: string) => void
   /** Если задан и есть в списке статей — выбрать при открытии вместо первой в TOC. */
   initialSlug?: string | null
+  /** Инкремент при смене языка интерфейса: перечитать список и заголовки статей. */
+  localeVersion?: number
 }): JSX.Element | null {
   const [articles, setArticles] = useState<KnowledgeArticleListItem[]>([])
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null)
@@ -35,7 +38,9 @@ export function KnowledgeDialog({
     void Promise.resolve().then(async () => {
       setLoading(true)
       setError(null)
-      const res = await window.fluxalloy.knowledge.listArticles()
+      const res = await window.fluxalloy.knowledge.listArticles({
+        preferredUiLocale: getUiLocale()
+      })
       if (disposed) {
         return
       }
@@ -54,7 +59,7 @@ export function KnowledgeDialog({
     return () => {
       disposed = true
     }
-  }, [initialSlug, onStatus, open])
+  }, [initialSlug, localeVersion, onStatus, open])
 
   useEffect(() => {
     if (!open || selectedSlug === null) {
@@ -85,7 +90,7 @@ export function KnowledgeDialog({
     return () => {
       disposed = true
     }
-  }, [onStatus, open, selectedSlug])
+  }, [localeVersion, onStatus, open, selectedSlug])
 
   const selected = useMemo(
     () => articles.find((article) => article.slug === selectedSlug) ?? null,

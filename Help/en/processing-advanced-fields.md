@@ -1,11 +1,13 @@
-# Processing — advanced panel
+# Advanced editor fields
 
-This mirrors core **`FfmpegProcessingOptions`**: trim **`-ss`/`-to`**, scale with **KeepAspect**, deinterlace (yadif/bwdif), EQ **brightness/contrast/saturation**, burn-in subtitles, **HDR→SDR** via **HdrToSdr** (tonemapper in the zscale chain as in the command builder), LUT, output filename template.
+The editor rail is split into **collapsible sections**:
 
-## Presets
+- **Video** — picture: crop, rotation, TV-style filters (deinterlace, denoise, light color tweaks).
+- **Audio** — volume and gentle loudness evening between clips.
+- **Presets** — built-in profiles plus your saved setting bundles.
+- **Output format** — file container, subtitle tracks, stripping metadata you do not need.
+- **Command preview** — the exact text sent to the external tool; copy when you need to double-check.
 
-The dropdown quickly applies codecs and typical CRF. After changing preset, press **Refresh command preview** when you need the line updated.
+Change values in small steps and watch the preview — you catch mistakes before a long encode.
 
-## Parallelism
-
-Sets how many **ffmpeg** processes run in parallel. For **NVENC**, keep concurrency within what your driver/GPU tolerates.
+See [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md).

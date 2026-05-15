@@ -1,7 +1,10 @@
 import type { JSX } from 'react'
 
 import type { MdBlock, MdInline } from '../../../shared/knowledge-markdown'
-import { knowledgeInternalSlugFromHref } from '../../../shared/knowledge-markdown'
+import {
+  knowledgeHelpAssetFluxhelpUrl,
+  knowledgeInternalSlugFromHref
+} from '../../../shared/knowledge-markdown'
 
 import { uiText } from '../locales/ui-text'
 
@@ -28,41 +31,56 @@ function renderInline(
     if (n.kind === 'em') {
       return <em key={k}>{renderInline(n.children, `${k}-e`, onOpenSlug)}</em>
     }
-    const slug = knowledgeInternalSlugFromHref(n.href)
-    if (slug !== null) {
+    if (n.kind === 'image') {
       return (
-        <button
+        <img
           key={k}
-          type="button"
-          className="app-knowledge-link"
-          title={uiText('knowledgeMdInternalLinkTooltip')}
-          onClick={() => {
-            onOpenSlug(slug)
-          }}
-        >
-          {renderInline(n.children, `${k}-l`, onOpenSlug)}
-        </button>
+          className="app-knowledge-img"
+          src={knowledgeHelpAssetFluxhelpUrl(n.src)}
+          alt={n.alt}
+          loading="lazy"
+          decoding="async"
+        />
       )
     }
-    if (/^https?:\/\//i.test(n.href.trim())) {
+    if (n.kind === 'link') {
+      const slug = knowledgeInternalSlugFromHref(n.href)
+      if (slug !== null) {
+        return (
+          <button
+            key={k}
+            type="button"
+            className="app-knowledge-link"
+            title={uiText('knowledgeMdInternalLinkTooltip')}
+            onClick={() => {
+              onOpenSlug(slug)
+            }}
+          >
+            {renderInline(n.children, `${k}-l`, onOpenSlug)}
+          </button>
+        )
+      }
+      if (/^https?:\/\//i.test(n.href.trim())) {
+        return (
+          <a
+            key={k}
+            className="app-knowledge-a"
+            href={n.href.trim()}
+            target="_blank"
+            rel="noreferrer noopener"
+            title={uiText('knowledgeMdExternalLinkTooltip')}
+          >
+            {renderInline(n.children, `${k}-a`, onOpenSlug)}
+          </a>
+        )
+      }
       return (
-        <a
-          key={k}
-          className="app-knowledge-a"
-          href={n.href.trim()}
-          target="_blank"
-          rel="noreferrer noopener"
-          title={uiText('knowledgeMdExternalLinkTooltip')}
-        >
-          {renderInline(n.children, `${k}-a`, onOpenSlug)}
-        </a>
+        <span key={k} className="app-knowledge-link-denied" title={n.href}>
+          {renderInline(n.children, `${k}-d`, onOpenSlug)}
+        </span>
       )
     }
-    return (
-      <span key={k} className="app-knowledge-link-denied" title={n.href}>
-        {renderInline(n.children, `${k}-d`, onOpenSlug)}
-      </span>
-    )
+    throw new Error(`Unexpected MdInline kind: ${(n as { kind: string }).kind}`)
   })
 }
 

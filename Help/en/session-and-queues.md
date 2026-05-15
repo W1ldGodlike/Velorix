@@ -1,13 +1,19 @@
-# Sessions, queues, and “Download → Process”
+# Queue and persistence
 
-## ui-session.json
+## Download queue
 
-Queues on the **Download** and **Processing** tabs and the main form fields are saved to `%LocalAppData%\FluxAlloy\ui-session.json` about every 55 seconds and on app exit. Any queue row in `Running` is normalized back to `Queued` when saved.
+The address list is stored in the user data area as a small **queue** file. After restarting FluxAlloy the rows return, but an active download does not resume by itself — start it again.
 
-## After download
+## Window layout
 
-The **add to processing** and **after the whole queue run batch** flags collect successful paths from the yt-dlp log **after the entire download queue has finished**, so the same files are not re-encoded in the middle of the queue between jobs.
+Column widths and which panels are collapsed are remembered with the general app settings.
 
-## Tips
+## After a successful download
 
-If you want manual control between steps, keep only enqueue-to-processing and press **Run batch** on the ffmpeg tab when you are ready.
+You can **open the file** in the editor or **only reveal the folder**, depending on switches in the download settings. Automatic follow-up steps (for example re-encoding) use a separate toggle and only run when a safe path to the finished file is known.
+
+## Manual control
+
+Keep downloads only, then start encoding yourself once the file is on disk.
+
+See also [downloads-workflow.md](downloads-workflow.md).

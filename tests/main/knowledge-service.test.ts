@@ -57,6 +57,23 @@ describe('knowledge-service', () => {
     })
   })
 
+  it('listKnowledgeArticles с preferredUiLocale=en берёт заголовок из Help/en при наличии', () => {
+    withHelpDir((help) => {
+      mkdirSync(join(help, 'en'))
+      writeFileSync(join(help, 'demo.md'), '# Русский заголовок\n\nru', 'utf8')
+      writeFileSync(join(help, 'en', 'demo.md'), '# English title\n\nen', 'utf8')
+
+      expect(listKnowledgeArticles([help], 'en')).toEqual({
+        ok: true,
+        articles: [{ slug: 'demo', fileName: 'demo.md', title: 'English title' }]
+      })
+      expect(listKnowledgeArticles([help], 'ru')).toEqual({
+        ok: true,
+        articles: [{ slug: 'demo', fileName: 'demo.md', title: 'Русский заголовок' }]
+      })
+    })
+  })
+
   it('readKnowledgeArticle валидирует slug и возвращает markdown', () => {
     withHelpDir((help) => {
       writeFileSync(join(help, 'keyboard-shortcuts.md'), '# Hotkeys\n\nCtrl+O', 'utf8')
@@ -101,6 +118,27 @@ describe('knowledge-service', () => {
         article: { slug: 'only-ru', fileName: 'only-ru.md', title: 'Ru' },
         markdown: '# Ru\n\nx'
       })
+    })
+  })
+
+  it('readKnowledgeArticle встраивает Help/assets в data:image base64', () => {
+    withHelpDir((help) => {
+      mkdirSync(join(help, 'assets'))
+      writeFileSync(join(help, 'assets', 'tiny.svg'), '<svg xmlns="http://www.w3.org/2000/svg"/>', 'utf8')
+      writeFileSync(
+        join(help, 'with-pic.md'),
+        '# Pic\n\n![t](assets/tiny.svg)\n',
+        'utf8'
+      )
+
+      const res = readKnowledgeArticle([help], 'with-pic')
+      expect(res.ok).toBe(true)
+      if (!res.ok) {
+        return
+      }
+      expect(res.markdown).toContain('data:image/svg+xml;base64,')
+      expect(res.markdown).not.toContain('fluxhelp:')
+      expect(res.article.title).toBe('Pic')
     })
   })
 

@@ -1,8 +1,13 @@
-# “Social” presets (Processing tab)
+# Presets for social platforms
 
-The preset combo includes quick **Social: …** templates. They apply a typical **H.264 + AAC in MP4** baseline and CRF tuned for common platforms.
+The export preset list starts with **ready-made profiles** for popular destinations: short vertical clips, long uploads, messengers, and more. Each profile includes a short plain-language hint.
 
-- After picking a preset you can still edit resolution, bitrate, `-vf`, and other fields manually.
-- These are **ffmpeg starting points** from local files only; reframing to 9:16, thumbnails, and packaging extras are done in your editor or with extra filters.
+## After you pick one
 
-See also [processing-advanced-fields.md](processing-advanced-fields.md).
+You can still **tweak** resolution, quality, and filters. Aspect ratios like 9:16 and cover art are usually handled in an editor or with extra steps before export.
+
+## Coming from Downloads
+
+When a file arrives from the **Downloads** tab, open it in the editor and pick a preset — it keeps a consistent look for a channel.
+
+See [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md).

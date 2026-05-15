@@ -1,17 +1,17 @@
-# Keyboard shortcuts (main window)
+# Shortcuts and the menu
 
-Defaults below; you can **remap** them in **Settings → Hotkeys** (per product spec §4.6). After saving, new bindings apply immediately.
+These accelerators are wired in the **main window menu** (labels follow the UI language).
 
-Registered programmatically:
+- **Ctrl+O** or **Cmd+O** — open a video file in the editor.
+- **Ctrl+Shift+Y** or **Cmd+Shift+Y** — open the separate downloads window.
+- **Ctrl+Shift+V** or **Cmd+Shift+V** — paste clipboard text into the downloads window.
 
-| Shortcut       | Action                                                     |
-| -------------- | ---------------------------------------------------------- |
-| Ctrl+, (comma) | Settings                                                   |
-| Ctrl+Shift+T   | Terminal window                                            |
-| Ctrl+H         | Task history                                               |
-| Ctrl+Shift+K   | Knowledge base (Markdown articles from the `Help/` folder) |
-| Ctrl+1         | **Download (yt-dlp)** tab                                  |
-| Ctrl+2         | **Processing (ffmpeg)** tab                                |
-| Ctrl+M         | Mini Player (compact panel over queued tasks)              |
+## Paste outside text fields
 
-**Tools → Media inspector (ffprobe)** opens a separate ffprobe window without switching tabs.
+When the caret is **not** inside a text field, **Ctrl+V** (or Cmd+V on macOS) with a URL-like clipboard payload may open the downloads window prefilled — handy right after copying a link from a browser.
+
+## Next steps
+
+The **inspector** window opens from the **Tools** menu. A full user-rebindable shortcut table will arrive with the dedicated settings screen.
+
+See also [workspace-tabs.md](workspace-tabs.md).

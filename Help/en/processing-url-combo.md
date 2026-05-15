@@ -1,17 +1,16 @@
-# URL on the **Processing** tab (§7.4)
+# Editor URL strip (download → process chain)
 
-The **URL → download → encode** block above the file queue links yt-dlp and ffmpeg without switching to the **Download** tab.
+Above the editor queue you will find a block for **one or more links**. It connects downloading and follow-up steps without leaving the Editor tab.
 
-## How to use
+## How to use it
 
-1. Paste a link (**first non-empty line** of the field is used).
-2. **Download with yt-dlp first** — when enabled, parameters match the **current Download tab fields**: quality, container, output folder (`OutputDir`), proxy, cookies, expert extra args, etc. If you clear the checkbox, only a direct **http(s)** URL is queued for ffmpeg (good for direct file links).
-3. **Then run batch encode** — after files land in the queue, ffmpeg starts immediately with the current options and parallelism.
+1. Paste links — the **first non-empty line** is treated as primary.
+2. Turn on **Download first** for the regular site workflow. Options mirror what you configured on the **Downloads** tab: folder, format, network, cookies, and expert fields.
+3. When the toggle is off, the queue receives a direct file URL — rare but handy for plain file links.
+4. **Then run processing** enqueues finished files for re-encoding with the current editor settings.
 
-## History
+## Repeat
 
-Entries like `processing+yt-dlp` can be **retried** with the **Retry** button: the app opens the Processing tab and fills this field with the URL.
+Matching history rows can be **replayed** — the app reopens this strip with the same address.
 
-## ffprobe analysis
-
-If the first queue item is a remote http(s) input, **Analyze (ffprobe)** and the row context menu still run ffprobe on that URL (in practice not all hosts work).
+See [session-and-queues.md](session-and-queues.md) and [downloads-workflow.md](downloads-workflow.md).

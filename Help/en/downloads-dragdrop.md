@@ -1,12 +1,19 @@
-# Downloads: clipboard and drag & drop
+# Clipboard and drag-and-drop on Downloads
 
-When you open the tab and when the app regains focus, FluxAlloy tries to append any `http(s)://` strings from the clipboard.
+## Automatic clipboard scan
 
-## Drag & drop
+When you open the **Downloads** tab or bring FluxAlloy back to the front, it looks at the clipboard for strings that look like normal **web addresses** (`http://` or `https://`) and may add them to the queue for you. This speeds up work from a browser.
 
-You can drop onto the tab’s scroll area:
+## Drag-and-drop
 
-- plain text containing links (parsed by spaces and line breaks);
-- a `.txt` file or a `.url` shortcut — text is read and parsed the same way.
+Drop onto free space on the tab (not directly on the text field):
 
-Command preview still uses the **first** non-empty line in the URL field, as before.
+- text that contains links — addresses are split on spaces and line breaks;
+- a plain text file with a list of links;
+- a Windows `.url` shortcut — the target address is read.
+
+## Manual paste
+
+You can always paste with **Ctrl+V** while the caret is in the URL field, or use the app menu.
+
+More about the queue — [downloads-workflow.md](downloads-workflow.md).

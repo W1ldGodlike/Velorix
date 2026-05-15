@@ -21,7 +21,8 @@ import { resolveAppPaths } from './app-paths'
 import {
   buildKnowledgeHelpDirCandidates,
   listKnowledgeArticles,
-  readKnowledgeArticle
+  readKnowledgeArticle,
+  resolveKnowledgeHelpDirectory
 } from './knowledge-service'
 import { resolveFfmpegExportLutCubeAbsPath } from './ffmpeg-export-lut-path'
 import { getYtdlpCliValidationCopy } from '../shared/ytdlp-cli-validation-locale'
@@ -150,6 +151,7 @@ import {
   registerFluxMediaPrivileges,
   registerFluxMediaProtocol
 } from './media-protocol'
+import { registerFluxHelpPrivileges, registerFluxHelpProtocol } from './help-assets-protocol'
 import { openVideoWithDialog } from './preview-dialog'
 import type {
   AppSettings,
@@ -233,6 +235,7 @@ import {
 /** Кастомная схема для локального видеопревью; привилегии обязаны зарегистрироваться до `app.whenReady`. */
 attachProcessErrorHandlers()
 registerFluxMediaPrivileges()
+registerFluxHelpPrivileges()
 
 function mainDownloadsUiLocale(): DownloadsWindowUiLocale {
   try {
@@ -2376,6 +2379,16 @@ app.whenReady().then(() => {
     }
   })
   registerFluxMediaProtocol()
+  registerFluxHelpProtocol(() =>
+    resolveKnowledgeHelpDirectory(
+      buildKnowledgeHelpDirCandidates({
+        cwd: process.cwd(),
+        appPath: app.getAppPath(),
+        resourcesPath: process.resourcesPath,
+        isPackaged: app.isPackaged
+      })
+    )
+  )
   registerDownloadsWindowIpcHandlers()
   registerInspectorWindowIpcHandlers()
 
@@ -2856,8 +2869,15 @@ app.whenReady().then(() => {
       isPackaged: app.isPackaged
     })
 
-  ipcMain.handle(mw.knowledgeListArticles, () => {
-    return listKnowledgeArticles(knowledgeHelpDirCandidates(), mainDownloadsUiLocale())
+  ipcMain.handle(mw.knowledgeListArticles, (_event, raw: unknown) => {
+    let listLocale = mainDownloadsUiLocale()
+    if (raw !== null && typeof raw === 'object') {
+      const loc = (raw as Record<string, unknown>)['preferredUiLocale']
+      if (loc === 'en' || loc === 'ru') {
+        listLocale = loc
+      }
+    }
+    return listKnowledgeArticles(knowledgeHelpDirCandidates(), listLocale)
   })
 
   ipcMain.handle(mw.knowledgeReadArticle, (_event, raw: unknown) => {

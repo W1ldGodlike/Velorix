@@ -86,6 +86,7 @@ import type {
 import type {
   KnowledgeArticleListResult,
   KnowledgeArticleResult,
+  KnowledgeListArticlesRequest,
   KnowledgeReadArticleRequest
 } from '../shared/knowledge-contract'
 import { downloadsIpc as d, mainWindowIpc as mw } from '../shared/ipc-channels'
@@ -428,8 +429,8 @@ const fluxalloy = {
       ipcRenderer.invoke(mw.terminalRun, payload)
   },
   knowledge: {
-    listArticles: (): Promise<KnowledgeArticleListResult> =>
-      ipcRenderer.invoke(mw.knowledgeListArticles),
+    listArticles: (req?: KnowledgeListArticlesRequest): Promise<KnowledgeArticleListResult> =>
+      ipcRenderer.invoke(mw.knowledgeListArticles, req ?? null),
     readArticle: (req: KnowledgeReadArticleRequest): Promise<KnowledgeArticleResult> =>
       ipcRenderer.invoke(mw.knowledgeReadArticle, req)
   },

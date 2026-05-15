@@ -1,21 +1,17 @@
 # Logs and diagnostics
 
-## Where logs live
+## Main log
 
-Under Electron **`userData`** (on Windows this is usually **`%AppData%\FluxAlloy\`**, then the **`logs`** subfolder):
+The primary text log from the main process is **`main.log`** inside the `logs` folder under the app data directory (next to settings and queues). A small rotated backup may sit beside it.
 
-- **`main.log`** — rolling main-process log (**info / warn / error**, timestamps and scopes).
-- **`main.log.1`** — previous segment when **`main.log`** exceeds the size limit (single rotated backup).
-- **`session.log`** — per-launch session log for the current run.
-- Renderer logs are forwarded through IPC into the same pipeline (rate-limited; control characters stripped).
-- **Terminal** tab CLI runs may append to **`terminal-cli.log`** in the same folder.
+## Session log
 
-Use **Help → About** or diagnostics menu actions (e.g. **Open logs folder**) to jump to the directory on disk.
+Each launch also writes a compact **session** log — easy to attach when you describe repro steps.
 
-## Support bundle
+## How to open
 
-In **Help → About**, **Create Support ZIP** (wording may match your locale) packs recent logs, crash dumps when present, and a short **`diagnostics.txt`** for support.
+The **Tools** menu has entries to open the log in your viewer and to build a **support archive** (one zip with several helpful files).
 
-## Crash dialog
+## About dialog extras
 
-On uncaught errors in main, a dialog offers **copy details**, **open log**, and **Support ZIP** when applicable.
+Temporary cleanup buttons and folder sizes live in [about-support-logs.md](about-support-logs.md).

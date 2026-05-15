@@ -82,6 +82,7 @@ import type {
 import type {
   KnowledgeArticleListResult,
   KnowledgeArticleResult,
+  KnowledgeListArticlesRequest,
   KnowledgeReadArticleRequest
 } from '../shared/knowledge-contract'
 
@@ -238,7 +239,7 @@ export interface FluxAlloyApi {
     run: (payload: TerminalRunRequest) => Promise<TerminalRunResult>
   }
   knowledge: {
-    listArticles: () => Promise<KnowledgeArticleListResult>
+    listArticles: (req?: KnowledgeListArticlesRequest) => Promise<KnowledgeArticleListResult>
     readArticle: (req: KnowledgeReadArticleRequest) => Promise<KnowledgeArticleResult>
   }
   saveTextWithDialog: (payload: SaveTextDialogPayload) => Promise<SaveTextDialogResult>

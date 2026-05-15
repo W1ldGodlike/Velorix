@@ -30,8 +30,8 @@
 - [~] Автозагрузка движков **Windows x64** (yt-dlp GitHub + ffmpeg zip mirror/fallback), SHA256 опционально через `Data/trusted_hashes.json`; `npm run engines:prepare:win` / `engines:prepare:win:force` / `predev` наполняет локальный `bin/`, а установщик берёт `resources/bin` (`extraResources`) для заранее проверенных bundled `ffmpeg.exe`/`ffprobe.exe`/`yt-dlp.exe`; бинарники в Git не коммитятся.
 - [~] Локализация: основной слой RU/EN в `src/renderer/src/locales/ui-text.ts` (вкл. редактор, загрузки, терминал, статусбар, подсказки); плоские `locales/ru|en/*.json` и смена языка без перезапуска — позже (см. §2.2/§5).
 - [~] Основная вкладка `Загрузки` в React уже закрывает очередь, старт/stop/retry/pause, настройки yt-dlp, каталог/cookies/network, live log, историю; **компактная панель «История»** — в основном **«Повторить»** (URL в очередь; J-626), полные действия файла/папки/редактора — в таблице очереди и pop-out; open учитывает финальный файл после merge и Windows UTF-8 stdout; pop-out — вторичный режим для редких settings.
-- [~] ffprobe-инспектор: **сводка под таймлайном** (сворачиваемый блок) + отдельное окно — дорожки/главы/raw JSON, TXT/HTML export, Dolby/HDR side_data summary, контекстные действия.
-- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; по последней зелёной проверке `npm run check:quiet` выполняет **48 test files / 596 tests** + валидаторы `trusted_hashes`, нумерации журнала и secrets guard. Покрыты чистые парсеры и сервисы (`ytdlp-extra-args`, `ytdlp-progress-parser` + retry/fixup-постпроцессоры yt-dlp §6.4, `ytdlp-queue-retry`, `ytdlp-download-history`, `processing-history`, `ytdlp-download-options` + превью каталога §6.3, `ytdlp-download-output`, `ytdlp-download-queue-persist`, `ytdlp-commands-hints`, `ytdlp-os-pause-support`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-export-resolve-from-settings`, `ffmpeg-frame-snapshot-service`, `external-process-log`, `support-bundle`, `ipc-channels`, `engine-contract`, `ffmpeg-export-argv` (+ §7.2 audio/video filters), `external-url`, `ffprobe-summary-export`, `ffprobe-chapters`, `ffprobe-timecode`, `ffprobe-disposition`, `ffprobe-video-fps`, `ffprobe-side-data`, `ffprobe-stream-duration-detail`, `ffprobe-service`, `ffprobe-probe-media.integration`, `ffprobe-probe-media-json-mock`, `diagnostics-maintenance`, `knowledge-service`, `timeline-ruler`, `waveform-peaks`, `video-frame-snap`, `lucide-downloads-icons`, `window-hidpi`, `terminal-contract-scenarios`, `terminal-inline-suggest`).
+- [~] ffprobe-инспектор: в **главном редакторе** под таймлайном — только **короткая строка** видео/аудио (`VideoTimeline`); полная сводка, таблица дорожек, главы, JSON и экспорт — в **отдельном окне** инспектора; Dolby/HDR side_data summary, контекстные действия — там же.
+- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; по последней зелёной проверке `npm run check:quiet` выполняет **48 test files / 604 tests** + валидаторы `trusted_hashes`, нумерации журнала и secrets guard. Покрыты чистые парсеры и сервисы (`ytdlp-extra-args`, `ytdlp-progress-parser` + retry/fixup-постпроцессоры yt-dlp §6.4, `ytdlp-queue-retry`, `ytdlp-download-history`, `processing-history`, `ytdlp-download-options` + превью каталога §6.3, `ytdlp-download-output`, `ytdlp-download-queue-persist`, `ytdlp-commands-hints`, `ytdlp-os-pause-support`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-export-resolve-from-settings`, `ffmpeg-frame-snapshot-service`, `external-process-log`, `support-bundle`, `ipc-channels`, `engine-contract`, `ffmpeg-export-argv` (+ §7.2 audio/video filters), `external-url`, `ffprobe-summary-export`, `ffprobe-chapters`, `ffprobe-timecode`, `ffprobe-disposition`, `ffprobe-video-fps`, `ffprobe-side-data`, `ffprobe-stream-duration-detail`, `ffprobe-service`, `ffprobe-probe-media.integration`, `ffprobe-probe-media-json-mock`, `diagnostics-maintenance`, `knowledge-service`, `knowledge-markdown`, `timeline-ruler`, `waveform-peaks`, `video-frame-snap`, `lucide-downloads-icons`, `window-hidpi`, `terminal-contract-scenarios`, `terminal-inline-suggest`).
 
 ## Журнал решений и проверок
 
@@ -45,7 +45,7 @@
 - [~] §6/§7: downloads→processing — batch-режим, HW encode и оставшиеся расхождения embedded/pop-out.
 - [~] §8: terminal/CLI — polish подсказок/сценариев + RU/EN chrome вкладки «Терминал» (`ui-text`); RU `summary` контракта — `npm run locales:terminal-summaries-ru`; UX argv/выполнения без раздувания TODO-архива.
 - [~] §9/§18: ffprobe/diagnostics — crash/e2e smoke и точечные редкие поля по мере нахождения.
-- [~] §15: knowledge — deep-link из «Терминала»; tooltips; EN-тела через `Help/en/` + fallback.
+- [~] §15: knowledge — расширить deep-link/tooltips; при необходимости заменить схематичные SVG на PNG скриншотов UI в `Help/assets/`.
 - [~] §1.1/§2.2/§5: добить оставшиеся литералы → `ui-text`, contrast/focus audit и DPI/multi-monitor smoke.
 
 ---
@@ -326,7 +326,7 @@
 - [~] Metadata: §7.2 — pill «Удалить метаданные» (`-map_metadata -1`) и «Удалить главы» (`-map_chapters -1`). Точечная правка тегов — позже.
 - [ ] Hardware acceleration.
 - [ ] Advanced args.
-- [~] Live preview команды ffmpeg: pure helpers в `src/shared/ffmpeg-export-argv.ts` (`buildFfmpegExportPreviewCommand` + `shouldApplyFfmpegExportTrim`), сворачиваемый блок в App.tsx с копированием; маркеры In/Out + probeDurationSec + выбранный контейнер/crop/rotate/flip/filters §7.2 подмешиваются и совпадают со spawn (в т.ч. без `-movflags` для MKV); кнопка **перейти к экспорту** из таймлайна раскрывает rail и прокручивает к секции «Вывод» (J-632); пользовательские пресеты (persist, переименование/снимок/удаление, имя через app-modal); сводка ffprobe — **под таймлайном** в сворачиваемом `<details>` (`editorProbeDockOpen`; J-633); дальше HW/advanced args и т.п.
+- [~] Live preview команды ffmpeg: pure helpers в `src/shared/ffmpeg-export-argv.ts` (`buildFfmpegExportPreviewCommand` + `shouldApplyFfmpegExportTrim`), сворачиваемый блок в App.tsx с копированием; маркеры In/Out + probeDurationSec + выбранный контейнер/crop/rotate/flip/filters §7.2 подмешиваются и совпадают со spawn (в т.ч. без `-movflags` для MKV); кнопка **перейти к экспорту** из таймлайна раскрывает rail и прокручивает к секции «Вывод» (J-632); пользовательские пресеты (persist, переименование/снимок/удаление, имя через app-modal); **встроенный сворачиваемый dock ffprobe под таймлайном снят** — краткая строка в `VideoTimeline` + окно инспектора (после J-633); дальше HW/advanced args и т.п.
 - [~] Безопасная сборка аргументов без shell injection: ffmpeg-экспорт идёт через `buildFfmpegExportArgv` (массив токенов, без shell); валидация значений в main `parse*`-хелперах.
 
 ### §7.3 Пакетная обработка
@@ -373,12 +373,12 @@
 
 ## §9. Инспектор видеофайлов
 
-- [x] Запуск ffprobe: grant-пути (IPC); сводка + таблица дорожек под превью и в отдельном окне `#inspector` §363 (`inspector-window.ts`, `windowBounds.inspector`).
-- [x] Сводка: контейнер, длительность, bitrate (строка под превью + tooltip длинного имени формата).
-- [x] Таблица дорожек под превью и в отдельном окне (`tags`, битрейт/`disposition`, видео `pix_fmt`/SAR/DAR + `color_*`, контекстное меню).
+- [x] Запуск ffprobe: grant-пути (IPC); полная сводка + таблица дорожек в **отдельном окне** `#inspector` (`inspector-window.ts`, `windowBounds.inspector`); в главном редакторе — короткая строка видео/аудио под таймлайном (`VideoTimeline`).
+- [x] Сводка: контейнер, длительность, bitrate — **в окне инспектора**; в редакторе под превью — имя файла (полный путь в подсказке).
+- [x] Таблица дорожек — **в окне инспектора** (`tags`, битрейт/`disposition`, видео `pix_fmt`/SAR/DAR + `color_*`, контекстное меню).
 - [x] Детали дорожек расширены точечными ffprobe-полями: `codec_tag` hex fallback, `extradata_size`, `initial_padding`, `closed_captions`, `is_avc`, `ticks_per_frame`, `bits_per_coded_sample`, ReplayGain, аудио `language`/`title`/`handler_name`.
-- [x] Главы (`-show_chapters`, таблица под превью + TXT/HTML сводка).
-- [x] JSON ffprobe: сворачиваемый блок под превью (просмотр/копирование/файл; отдельная вкладка не требуется).
+- [x] Главы (`-show_chapters`, таблица **в окне инспектора** + TXT/HTML сводка).
+- [x] JSON ffprobe: сворачиваемый блок **в окне инспектора** (просмотр/копирование/файл; отдельная вкладка не требуется).
 - [x] Копирование JSON (форматированный текст в буфер); сохранение в файл через IPC/main (`save-text-dialog-contract`).
 - [x] Сохранение TXT/HTML (сводка инспектора через `saveTextWithDialog`, генераторы в `ffprobe-summary-export`).
 - [x] Контекстные действия из таблиц (ПКМ по строке дорожки / главы → копирование в буфер через preload).
@@ -432,12 +432,13 @@
 ## §15. База знаний и подсказки
 
 - [x] Файлы `Help/*.md` есть.
-- [~] Viewer внутри приложения (markdown body: blockquote/`>`, `---`/thematic break, списки `-`/`+`/нумерация + перенос пункта с отступом 4+, внутренние `.md` и внешние `https`).
+- [~] Viewer внутри приложения (markdown body: blockquote/`>`, `---`/thematic break, списки `-`/`+`/нумерация + перенос пункта с отступом 4+, внутренние `.md` и внешние `https`, **картинки** `![alt](assets/…)` — при `readKnowledgeArticle` мелкие файлы из `Help/assets/**` (до ~512 KiB) **встраиваются** в markdown как `data:image/*;base64` (стабильно в dev и сборке); парсер допускает только whitelist `data:`; `fluxhelp:` + CSP `img-src` остаются как запасной путь.
 - [x] Оглавление.
 - [x] Поиск.
+- [x] Язык UI и база: `listArticles`/`readKnowledgeArticle` с `preferredUiLocale` — при EN заголовки оглавления из `Help/en/*.md` при наличии; тела статей — `Help/en/{slug}.md` или fallback на `Help/{slug}.md`; сообщения об ошибках чтения статьи — по тому же языку; при смене языка интерфейса список/статья перезапрашиваются.
 - [~] Открытие статей из подсказок (inline help вне Knowledge): deep-link в `KnowledgeDialog` (`initialSlug`); первая точка — вкладка «Терминал» → `ffmpeg-terminal-hints`; в `tools-terminal-inspector.md` (RU/EN) — отсылка к разделу встроенных сценариев (`terminal-contract.ts`, npm `locales:terminal-summaries-ru`).
 - [~] Tooltips на ключевых контролах (база знаний: топбар, диалог поиск/закрыть/TOC, markdown внутр./внешние ссылки; deep-link из «Терминала»).
-- [~] EN: при `preferredUiLocale=en` читается `Help/en/{slug}.md` при наличии, иначе корень `Help/*.md` (chrome EN/RU через `ui-text`); пары `Help`/`Help/en` для основных статей; дальше — точечные правки тел и новые slug’и.
+- [x] Пары `Help/*.md` / `Help/en/*.md` для основных slug’ов (без смешения RU/EN в одном файле); дальше — новые статьи и скриншоты в `Help/assets/` по мере стабилизации UI.
 
 ## §16. Аппаратное ускорение
 

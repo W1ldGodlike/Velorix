@@ -521,7 +521,7 @@ function App(): JSX.Element {
   const [engineDownloadBusy, setEngineDownloadBusy] = useState(false)
   const [enginePathsOpen, setEnginePathsOpen] = useState(false)
   /** Сброс дерева после `applyPersistedUiLocale` — строки из `ui-text` читают `getUiLocale()` из модуля. */
-  const [, setUiLocaleRenderTick] = useState(0)
+  const [uiLocaleRenderTick, setUiLocaleRenderTick] = useState(0)
   const [knowledgeOpen, setKnowledgeOpen] = useState(false)
   const [knowledgeInitialSlug, setKnowledgeInitialSlug] = useState<string | null>(null)
   const [aboutOpen, setAboutOpen] = useState(false)
@@ -5275,6 +5275,7 @@ function App(): JSX.Element {
       <KnowledgeDialog
         open={knowledgeOpen}
         initialSlug={knowledgeInitialSlug}
+        localeVersion={uiLocaleRenderTick}
         onClose={() => {
           setKnowledgeOpen(false)
           setKnowledgeInitialSlug(null)
