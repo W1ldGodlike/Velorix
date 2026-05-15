@@ -29,7 +29,7 @@
   },
   {
     "token": "-c:a",
-    "summary": "Аудиокодек: aac, libopus, copy.",
+    "summary": "Аудиокодек: aac, libopus, libvorbis, copy.",
     "examples": ["ffmpeg -i in.mp4 -c:a aac -b:a 192k out.mp4"],
     "docUrl": "https://ffmpeg.org/ffmpeg.html#Stream-selection",
     "tool": "ffmpeg"
@@ -263,6 +263,13 @@
     "summary": "Opus кодек высокого сжатия для WebM/MKA.",
     "examples": ["ffmpeg -c:a libopus -b:a 128k"],
     "docUrl": "https://trac.ffmpeg.org/wiki/Encode/Opus",
+    "tool": "ffmpeg"
+  },
+  {
+    "token": "libvorbis",
+    "summary": "Vorbis аудио для Matroska (MKV).",
+    "examples": ["ffmpeg -c:a libvorbis -b:a 160k"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/TheoraVorbisEncodingGuide",
     "tool": "ffmpeg"
   },
   {

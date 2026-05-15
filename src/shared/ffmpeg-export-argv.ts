@@ -35,6 +35,7 @@ import {
 import type { FfmpegHwVideoEncoderId } from './ffmpeg-hw-encoder-probe'
 import {
   exportAudioModeMkvOnlyErrorMessage,
+  ffmpegExportAudioModeAllowsFilters,
   ffmpegExportAudioModeRequiresMkv
 } from './ffmpeg-export-audio-mode'
 import {
@@ -781,17 +782,21 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
     return args
   }
 
-  const gainDb =
-    params.audioMode === 'none' ? null : normalizeFfmpegExportAudioGainDb(params.audioGainDb)
-  const normalizeFilter =
-    params.audioMode === 'none'
-      ? null
-      : resolveFfmpegExportAudioNormalizeFilter(params.audioNormalize ?? 'off')
+  const gainDb = ffmpegExportAudioModeAllowsFilters(params.audioMode ?? 'aac')
+    ? normalizeFfmpegExportAudioGainDb(params.audioGainDb)
+    : null
+  const normalizeFilter = ffmpegExportAudioModeAllowsFilters(params.audioMode ?? 'aac')
+    ? resolveFfmpegExportAudioNormalizeFilter(params.audioNormalize ?? 'off')
+    : null
   if (audioMode === 'none') {
     args.push('-an')
   } else {
-    if (audioMode === 'pcm_s16le') {
+    if (audioMode === 'copy') {
+      args.push('-c:a', 'copy')
+    } else if (audioMode === 'pcm_s16le') {
       args.push('-c:a', 'pcm_s16le')
+    } else if (audioMode === 'libvorbis') {
+      args.push('-c:a', 'libvorbis', '-b:a', params.audioBitrate)
     } else if (audioMode === 'libopus') {
       args.push('-c:a', 'libopus', '-b:a', params.audioBitrate)
     } else if (audioMode === 'flac') {

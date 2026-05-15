@@ -90,7 +90,8 @@ import { FFMPEG_HW_VIDEO_ENCODER_IDS } from '../../shared/ffmpeg-hw-encoder-prob
 import type { FfmpegHwEncodersProbeResult } from '../../shared/ffmpeg-hw-encoder-probe'
 import {
   ffmpegExportAudioModeRequiresMkv,
-  ffmpegExportAudioModeUsesBitrate
+  ffmpegExportAudioModeUsesBitrate,
+  ffmpegExportAudioModeAllowsFilters
 } from '../../shared/ffmpeg-export-audio-mode'
 import {
   cpuFfmpegVideoCodecRequiresMkv,
@@ -860,7 +861,9 @@ function App(): JSX.Element {
       ] as Array<{ id: FfmpegExportAudioNormalizeId; label: string }>,
       audioModes: [
         { id: 'aac', label: uiText('editorExportAudioModeAac') },
+        { id: 'copy', label: uiText('editorExportAudioModeCopy') },
         { id: 'pcm_s16le', label: uiText('editorExportAudioModePcmS16le') },
+        { id: 'libvorbis', label: uiText('editorExportAudioModeLibvorbis') },
         { id: 'libopus', label: uiText('editorExportAudioModeLibopus') },
         { id: 'flac', label: uiText('editorExportAudioModeFlac') },
         { id: 'none', label: uiText('editorExportAudioModeNone') }
@@ -1451,8 +1454,12 @@ function App(): JSX.Element {
     let nextAudioMode: FfmpegExportAudioModeId = 'aac'
     if (loaded.ffmpegExportAudioMode === 'none') {
       nextAudioMode = 'none'
+    } else if (loaded.ffmpegExportAudioMode === 'copy') {
+      nextAudioMode = 'copy'
     } else if (loaded.ffmpegExportAudioMode === 'pcm_s16le') {
       nextAudioMode = 'pcm_s16le'
+    } else if (loaded.ffmpegExportAudioMode === 'libvorbis') {
+      nextAudioMode = 'libvorbis'
     } else if (loaded.ffmpegExportAudioMode === 'libopus') {
       nextAudioMode = 'libopus'
     } else if (loaded.ffmpegExportAudioMode === 'flac') {
@@ -3404,7 +3411,7 @@ function App(): JSX.Element {
                       title={uiText('editorHintAudioGain')}
                       aria-label={uiText('editorAriaAudioGain')}
                       value={String(exportAudioGainDb)}
-                      disabled={exportBusy || snapshotBusy || exportAudioMode === 'none'}
+                      disabled={exportBusy || snapshotBusy || !ffmpegExportAudioModeAllowsFilters(exportAudioMode)}
                       onChange={(e) => {
                         bumpManualExportEdit()
                         const parsed = Number(e.target.value)
@@ -3429,7 +3436,7 @@ function App(): JSX.Element {
                       title={uiText('editorHintAudioNormalize')}
                       aria-label={uiText('editorAriaAudioNormalize')}
                       value={exportAudioNormalize}
-                      disabled={exportBusy || snapshotBusy || exportAudioMode === 'none'}
+                      disabled={exportBusy || snapshotBusy || !ffmpegExportAudioModeAllowsFilters(exportAudioMode)}
                       onChange={(e) => {
                         bumpManualExportEdit()
                         const v = e.target.value as FfmpegExportAudioNormalizeId

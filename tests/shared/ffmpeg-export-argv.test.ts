@@ -29,6 +29,7 @@ import {
   FFMPEG_EXPORT_AOM_AV1_MKV_ONLY_ERROR,
   FFMPEG_EXPORT_AUDIO_FLAC_MKV_ONLY_ERROR,
   FFMPEG_EXPORT_AUDIO_LIBOPUS_MKV_ONLY_ERROR,
+  FFMPEG_EXPORT_AUDIO_LIBVORBIS_MKV_ONLY_ERROR,
   FFMPEG_EXPORT_DNXHD_MOV_ONLY_ERROR,
   FFMPEG_EXPORT_FFV1_MKV_ONLY_ERROR,
   FFMPEG_EXPORT_PRORES_MOV_ONLY_ERROR,
@@ -135,6 +136,65 @@ describe('shared ffmpeg export argv', () => {
     const i = argv.indexOf('-c:a')
     expect(argv.slice(i, i + 2)).toEqual(['-c:a', 'flac'])
     expect(argv.includes('-b:a')).toBe(false)
+  })
+
+  it('audioMode copy: -c:a copy без -filter:a', () => {
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      videoCodec: 'libx264',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'copy',
+      audioBitrate: '192k',
+      audioGainDb: 6,
+      audioNormalize: 'loudnorm',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mp4'
+    })
+    const i = argv.indexOf('-c:a')
+    expect(argv.slice(i, i + 2)).toEqual(['-c:a', 'copy'])
+    expect(argv.includes('-filter:a')).toBe(false)
+    expect(argv.includes('-b:a')).toBe(false)
+  })
+
+  it('audioMode libvorbis: только MKV; -c:a libvorbis -b:a', () => {
+    expect(() =>
+      buildFfmpegExportArgv({
+        inputPath: 'in.mp4',
+        outputPath: 'out.mp4',
+        applyTrim: false,
+        encodePreset: 'balance',
+        videoCodec: 'libx264',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'libvorbis',
+        audioBitrate: '160k',
+        fps: null,
+        scalePreset: 'source',
+        container: 'mp4'
+      })
+    ).toThrow(FFMPEG_EXPORT_AUDIO_LIBVORBIS_MKV_ONLY_ERROR)
+
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mkv',
+      outputPath: 'out.mkv',
+      applyTrim: false,
+      encodePreset: 'balance',
+      videoCodec: 'libx264',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'libvorbis',
+      audioBitrate: '160k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mkv'
+    })
+    const i = argv.indexOf('-c:a')
+    expect(argv.slice(i, i + 4)).toEqual(['-c:a', 'libvorbis', '-b:a', '160k'])
   })
 
   it('возвращает scale-фильтр только для непустых пресетов', () => {

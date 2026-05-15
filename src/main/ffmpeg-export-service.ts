@@ -180,8 +180,14 @@ export function parseFfmpegExportAudioMode(raw: unknown): FfmpegExportAudioModeI
   if (raw === 'none') {
     return 'none'
   }
+  if (raw === 'copy') {
+    return 'copy'
+  }
   if (raw === 'pcm_s16le') {
     return 'pcm_s16le'
+  }
+  if (raw === 'libvorbis') {
+    return 'libvorbis'
   }
   if (raw === 'libopus') {
     return 'libopus'
