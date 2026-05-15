@@ -489,6 +489,9 @@ export function loadSettings(filePath: string): AppSettings {
     if (parsed.ffmpegExportEconomyMode === true) {
       base.ffmpegExportEconomyMode = true
     }
+    if (parsed.ffmpegExportHwDecode === true) {
+      base.ffmpegExportHwDecode = true
+    }
     if (ffmpegExportAudioBitrate !== undefined) {
       base.ffmpegExportAudioBitrate = ffmpegExportAudioBitrate
     }

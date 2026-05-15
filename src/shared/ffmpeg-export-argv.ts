@@ -32,6 +32,7 @@ import {
   FFMPEG_EXPORT_AUDIO_GAIN_DB_MAX,
   FFMPEG_EXPORT_AUDIO_GAIN_DB_MIN
 } from './ffmpeg-export-contract'
+import { appendFfmpegHwaccelBeforeInput } from './ffmpeg-export-hw-decode'
 import type { FfmpegHwVideoEncoderId } from './ffmpeg-hw-encoder-probe'
 import {
   exportAudioModeMkvOnlyErrorMessage,
@@ -433,6 +434,8 @@ export interface FfmpegExportArgvParams {
   twoPass?: { pass: 1 | 2; passlogfile: string; nullDevice: string }
   /** §7.3 — ограничить ffmpeg одним потоком (`-threads 1`). */
   economyMode?: boolean
+  /** §7.2 — `-hwaccel` перед входом (уже разрешённый метод, см. `resolveFfmpegExportHwaccelForDecode`). */
+  hwaccelDecode?: string | null
   /**
    * §7.2 — сдвиг громкости в дБ. `null`/`0` — без `-filter:a`. При `audioMode='none'`
    * параметр игнорируется (нет звука, фильтр некуда применять).
@@ -617,6 +620,7 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
   if (params.economyMode === true) {
     args.push('-threads', '1')
   }
+  appendFfmpegHwaccelBeforeInput(args, params.hwaccelDecode ?? null)
   if (params.applyTrim && params.trim) {
     args.push(
       '-ss',
@@ -892,6 +896,8 @@ export interface FfmpegExportPreviewInput {
   twoPass?: boolean
   /** §7.3 — `-threads 1` в превью argv. */
   economyMode?: boolean
+  /** §7.2 — `-hwaccel` в превью (уже разрешённый метод). */
+  hwaccelDecode?: string | null
   /** Плейсхолдер `-passlogfile` в тексте превью (нет реального пути во временном каталоге). */
   twoPassPasslogPlaceholder?: string | null
   /** Плейсхолдер вывода 1-го прохода (строго текст для UI). */
@@ -999,7 +1005,10 @@ export function buildFfmpegExportPreviewCommand(
     ...(input.videoBlur !== undefined ? { videoBlur: input.videoBlur } : {}),
     ...(input.videoDeinterlace !== undefined ? { videoDeinterlace: input.videoDeinterlace } : {}),
     ...(input.audioNormalize !== undefined ? { audioNormalize: input.audioNormalize } : {}),
-    ...(input.economyMode === true ? { economyMode: true } : {})
+    ...(input.economyMode === true ? { economyMode: true } : {}),
+    ...(typeof input.hwaccelDecode === 'string' && input.hwaccelDecode.trim() !== ''
+      ? { hwaccelDecode: input.hwaccelDecode.trim() }
+      : {})
   }
 
   let pass1Command: string | undefined

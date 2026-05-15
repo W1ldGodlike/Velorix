@@ -148,6 +148,8 @@ export interface AppSettings {
   ffmpegExportTwoPass?: boolean
   /** §7.3 — экономный режим: `-threads 1` в argv ffmpeg. */
   ffmpegExportEconomyMode?: boolean
+  /** §7.2 — аппаратное декодирование исходника (`-hwaccel`) при экспорте. */
+  ffmpegExportHwDecode?: boolean
   /** §7.2: режим аудио экспорта: AAC, PCM s16le или без дорожки. */
   ffmpegExportAudioMode?:
     | 'aac'

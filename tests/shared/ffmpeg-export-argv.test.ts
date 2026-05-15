@@ -672,6 +672,26 @@ describe('shared ffmpeg export argv', () => {
     expect(argv.includes('-pix_fmt')).toBe(true)
   })
 
+  it('hwaccelDecode вставляется перед -i', () => {
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      videoCodec: 'h264_nvenc',
+      hwaccelDecode: 'cuda',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mp4'
+    })
+    const i = argv.indexOf('-i')
+    expect(argv.slice(i - 2, i)).toEqual(['-hwaccel', 'cuda'])
+  })
+
   it('h264_nvenc: без libx264-preset, VBR + cq; hevc_nvenc + mp4 даёт hvc1', () => {
     const h264 = buildFfmpegExportArgv({
       inputPath: 'in.mp4',

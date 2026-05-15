@@ -142,6 +142,8 @@ export interface FfmpegExportUserPresetSnapshot {
   twoPass?: boolean
   /** §7.3 — `-threads 1` в argv ffmpeg. */
   economyMode?: boolean
+  /** §7.2 — аппаратное декодирование (`-hwaccel`). */
+  hwDecode?: boolean
   /** §7.2 — целое значение в дБ; 0/null = без `-filter:a volume`. */
   audioGainDb?: number | null
   /** §7.2 — удалить контейнерные метаданные (`-map_metadata -1`). */
@@ -217,6 +219,8 @@ export interface MediaExportRequestPayload {
   twoPass?: boolean
   /** §7.3 — экономный режим (`-threads 1`). */
   economyMode?: boolean
+  /** §7.2 — аппаратное декодирование (`-hwaccel`). */
+  hwDecode?: boolean
   /** §7.2 — сдвиг громкости звука в дБ (`-filter:a volume=NdB`); 0/null — без фильтра. */
   audioGainDb?: number | null
   /** §7.2 — удалить контейнерные метаданные (`-map_metadata -1`). */

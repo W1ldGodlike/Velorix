@@ -54,6 +54,7 @@ import {
   parseFfmpegExportVideoSharpen,
   parseFfmpegExportVideoTransform
 } from './ffmpeg-export-service'
+import { parseFfmpegExportHwDecode } from '../shared/ffmpeg-export-hw-decode'
 
 /** Параметры `runFfmpegExportJob`, кроме путей, ffmpeg, trim, probe, signal, onProgress. */
 export type ResolvedFfmpegExportJobOptions = {
@@ -70,6 +71,7 @@ export type ResolvedFfmpegExportJobOptions = {
   cropPreset: FfmpegExportCropPresetId | null
   twoPass: boolean
   economyMode: boolean
+  hwDecode: boolean
   audioGainDb: number | null
   stripMetadata: boolean | null
   stripChapters: boolean | null
@@ -165,6 +167,11 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
     economyModeRaw !== undefined && economyModeRaw !== null
       ? parseFfmpegExportEconomyMode(economyModeRaw)
       : parseFfmpegExportEconomyMode(settings.ffmpegExportEconomyMode)
+  const hwDecodeRaw = raw['hwDecode']
+  const hwDecode =
+    hwDecodeRaw !== undefined && hwDecodeRaw !== null
+      ? parseFfmpegExportHwDecode(hwDecodeRaw)
+      : parseFfmpegExportHwDecode(settings.ffmpegExportHwDecode)
   const audioGainRaw = raw['audioGainDb']
   const audioGainDb =
     audioGainRaw !== undefined
@@ -260,6 +267,7 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
     cropPreset,
     twoPass,
     economyMode,
+    hwDecode,
     audioGainDb,
     stripMetadata,
     stripChapters,

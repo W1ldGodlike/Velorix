@@ -87,6 +87,7 @@ import {
 } from '../../shared/ffmpeg-export-contract'
 import type { AppSettings, ResolvedAppTheme } from '../../shared/settings-contract'
 import { buildFfmpegExportPreviewCommand } from '../../shared/ffmpeg-export-argv'
+import { resolveFfmpegExportHwaccelForDecode } from '../../shared/ffmpeg-export-hw-decode'
 import { formatFfmpegExportBatchReportText } from '../../shared/ffmpeg-export-batch-report'
 import { isFfmpegExportBatchVideoPath } from '../../shared/ffmpeg-export-batch-video-ext'
 import { isBuiltinExportUserPresetId } from '../../shared/builtin-ffmpeg-export-user-presets'
@@ -628,6 +629,7 @@ function App(): JSX.Element {
   /** §7.2 / v0 — двухпроходный libx264 только вместе с выбранным видеобитрейтом. */
   const [exportTwoPass, setExportTwoPass] = useState(false)
   const [exportEconomyMode, setExportEconomyMode] = useState(false)
+  const [exportHwDecode, setExportHwDecode] = useState(false)
   /** §7.2 — сдвиг громкости в дБ (`-filter:a volume`); `0` означает «без фильтра». */
   const [exportAudioGainDb, setExportAudioGainDb] = useState<number>(0)
   /** §7.2 — добавить `-map_metadata -1` (очистить контейнерные tag-ы). */
@@ -892,6 +894,20 @@ function App(): JSX.Element {
       resolveFfmpegExportVideoCodecForArgv(exportVideoCodec, probeSnapshotOrEmpty(hwEncoderProbe)),
     [exportVideoCodec, hwEncoderProbe]
   )
+  const exportHwaccelDecodeForPreview = useMemo(() => {
+    if (!exportHwDecode) {
+      return null
+    }
+    const hwaccels = hwEncoderProbe?.ok === true ? hwEncoderProbe.hwaccels : []
+    return resolveFfmpegExportHwaccelForDecode(exportVideoCodecResolvedForPreview, hwaccels)
+  }, [exportHwDecode, hwEncoderProbe, exportVideoCodecResolvedForPreview])
+  const exportCodecStatusbarLabel = useMemo(() => {
+    let label = uiTextVars('editorStatusbarCodec', { codec: exportVideoCodecResolvedForPreview })
+    if (exportHwaccelDecodeForPreview) {
+      label += uiTextVars('editorStatusbarHwDecode', { method: exportHwaccelDecodeForPreview })
+    }
+    return label
+  }, [exportVideoCodecResolvedForPreview, exportHwaccelDecodeForPreview])
   const refreshDownloadsOptions = useCallback(async (): Promise<void> => {
     const res = await window.fluxalloy.downloads.getCliOptions({
       uiLocale: getUiLocale() as DownloadsWindowUiLocale
@@ -1539,6 +1555,7 @@ function App(): JSX.Element {
     setExportAudioMode(nextAudioMode)
     setExportTwoPass(loaded.ffmpegExportTwoPass === true && bitrateOk && vcodec === 'libx264')
     setExportEconomyMode(loaded.ffmpegExportEconomyMode === true)
+    setExportHwDecode(loaded.ffmpegExportHwDecode === true)
     if (
       typeof loaded.ffmpegExportAudioBitrate === 'string' &&
       EXPORT_AUDIO_BITRATES.includes(loaded.ffmpegExportAudioBitrate)
@@ -1644,6 +1661,7 @@ function App(): JSX.Element {
       cropPreset: exportCropPreset,
       ...(exportTwoPass && exportVideoCodec === 'libx264' ? { twoPass: true as const } : {}),
       ...(exportEconomyMode ? { economyMode: true as const } : {}),
+      ...(exportHwDecode ? { hwDecode: true as const } : {}),
       ...(exportAudioGainDb !== 0 ? { audioGainDb: exportAudioGainDb } : {}),
       ...(exportStripMetadata ? { stripMetadata: true } : {}),
       ...(exportStripChapters ? { stripChapters: true } : {}),
@@ -1675,6 +1693,7 @@ function App(): JSX.Element {
     exportCropPreset,
     exportTwoPass,
     exportEconomyMode,
+    exportHwDecode,
     exportAudioGainDb,
     exportStripMetadata,
     exportStripChapters,
@@ -2089,6 +2108,7 @@ function App(): JSX.Element {
       cropPreset: exportCropPreset,
       twoPass: exportTwoPass && exportVideoBitrate !== null && exportVideoCodec === 'libx264',
       economyMode: exportEconomyMode,
+      hwDecode: exportHwDecode,
       audioGainDb: exportAudioGainDb === 0 ? null : exportAudioGainDb,
       stripMetadata: exportStripMetadata,
       stripChapters: exportStripChapters,
@@ -2120,6 +2140,7 @@ function App(): JSX.Element {
       exportCropPreset,
       exportTwoPass,
       exportEconomyMode,
+      exportHwDecode,
       exportAudioGainDb,
       exportStripMetadata,
       exportStripChapters,
@@ -2493,6 +2514,7 @@ function App(): JSX.Element {
         cropPreset: exportCropPreset,
         twoPass: exportTwoPass && exportVideoBitrate !== null && exportVideoCodec === 'libx264',
         economyMode: exportEconomyMode,
+        hwDecode: exportHwDecode,
         audioGainDb: exportAudioGainDb === 0 ? null : exportAudioGainDb,
         stripMetadata: exportStripMetadata,
         stripChapters: exportStripChapters,
@@ -2613,6 +2635,9 @@ function App(): JSX.Element {
         exportVideoBitrate !== null &&
         exportVideoCodecResolvedForPreview === 'libx264',
       economyMode: exportEconomyMode,
+      ...(exportHwaccelDecodeForPreview !== null
+        ? { hwaccelDecode: exportHwaccelDecodeForPreview }
+        : {}),
       audioGainDb: exportAudioGainDb === 0 ? null : exportAudioGainDb,
       stripMetadata: exportStripMetadata,
       stripChapters: exportStripChapters,
@@ -2651,6 +2676,7 @@ function App(): JSX.Element {
     exportCropPreset,
     exportTwoPass,
     exportEconomyMode,
+    exportHwaccelDecodeForPreview,
     exportAudioGainDb,
     exportStripMetadata,
     exportStripChapters,
@@ -4036,6 +4062,25 @@ function App(): JSX.Element {
                     />
                     <span id="ffmpegEconomyModeUiHint" className="app-visually-hidden">
                       {uiText('editorEconomyModeHint')}
+                    </span>
+                  </div>
+                  <div className="app-field app-field-switch">
+                    <span>{uiText('editorHwDecodeSpan')}</span>
+                    <PillSwitch
+                      label={uiText('editorHwDecodePillLabel')}
+                      tooltip={uiText('editorTooltipHwDecode')}
+                      checked={exportHwDecode}
+                      describedBy="ffmpegFormatSectionHint ffmpegHwDecodeUiHint"
+                      disabled={exportBusy || snapshotBusy}
+                      onToggle={() => {
+                        bumpManualExportEdit()
+                        const v = !exportHwDecode
+                        setExportHwDecode(v)
+                        void window.fluxalloy.settings.setFfmpegExportHwDecode(v).catch(console.error)
+                      }}
+                    />
+                    <span id="ffmpegHwDecodeUiHint" className="app-visually-hidden">
+                      {uiText('editorHwDecodeHint')}
                     </span>
                   </div>
                   <label className="app-field" title={uiText('editorTooltipRotation')}>
@@ -6240,6 +6285,14 @@ function App(): JSX.Element {
             <span className="app-statusbar-sep" aria-hidden />
             <span className="app-statusbar-engines" title={engineVersionsLine}>
               {engineVersionsLine}
+            </span>
+          </>
+        ) : null}
+        {workspaceTab === 'editor' ? (
+          <>
+            <span className="app-statusbar-sep" aria-hidden />
+            <span className="app-statusbar-codec" title={exportCodecStatusbarLabel}>
+              {exportCodecStatusbarLabel}
             </span>
           </>
         ) : null}

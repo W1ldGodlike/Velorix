@@ -120,6 +120,7 @@ import {
   type FfmpegExportProgressPayload
 } from './ffmpeg-export-service'
 import { FFMPEG_EXPORT_CANCELLED_ERROR } from '../shared/ffmpeg-export-contract'
+import { parseFfmpegExportHwDecode } from '../shared/ffmpeg-export-hw-decode'
 import {
   pickUniqueAutoExportOutputPath,
   resolveFfmpegExportJobOptionsFromAppSettings
@@ -1234,6 +1235,18 @@ function persistFfmpegExportEconomyMode(raw: unknown): AppSettings {
     next.ffmpegExportEconomyMode = true
   } else {
     delete next.ffmpegExportEconomyMode
+  }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistFfmpegExportHwDecode(raw: unknown): AppSettings {
+  const next = { ...cachedSettings }
+  if (parseFfmpegExportHwDecode(raw)) {
+    next.ffmpegExportHwDecode = true
+  } else {
+    delete next.ffmpegExportHwDecode
   }
   cachedSettings = next
   saveSettings(settingsPath(), cachedSettings)
@@ -2666,6 +2679,11 @@ app.whenReady().then(() => {
   ipcMain.handle(
     mw.settingsSetFfmpegExportEconomyMode,
     (_, raw: unknown): AppSettings => persistFfmpegExportEconomyMode(raw)
+  )
+
+  ipcMain.handle(
+    mw.settingsSetFfmpegExportHwDecode,
+    (_, raw: unknown): AppSettings => persistFfmpegExportHwDecode(raw)
   )
 
   ipcMain.handle(

@@ -58,6 +58,10 @@ import {
 
 import { logExternalProcessLine } from './external-process-log'
 import { resolveFfmpegExportLutCubeAbsPath } from './ffmpeg-export-lut-path'
+import {
+  parseFfmpegExportHwDecode,
+  resolveFfmpegExportHwaccelForDecode
+} from '../shared/ffmpeg-export-hw-decode'
 import { probeFfmpegHwEncoders } from './ffmpeg-hw-encoder-probe-main'
 
 export type {
@@ -428,6 +432,8 @@ export function parseFfmpegExportUserPresetSnapshot(
   const videoTransform = parseFfmpegExportVideoTransform(o['videoTransform'])
   const cropPreset = parseFfmpegExportCropPreset(o['cropPreset'])
   const twoPass = o['twoPass'] === true
+  const economyMode = parseFfmpegExportEconomyMode(o['economyMode'])
+  const hwDecode = parseFfmpegExportHwDecode(o['hwDecode'])
   const audioGainDb = parseFfmpegExportAudioGainDb(o['audioGainDb'])
   const stripMetadata = parseFfmpegExportStripFlag(o['stripMetadata'])
   const stripChapters = parseFfmpegExportStripFlag(o['stripChapters'])
@@ -457,6 +463,8 @@ export function parseFfmpegExportUserPresetSnapshot(
     videoTransform,
     cropPreset,
     ...(twoPass && videoCodec === 'libx264' ? { twoPass: true as const } : {}),
+    ...(economyMode ? { economyMode: true as const } : {}),
+    ...(hwDecode ? { hwDecode: true as const } : {}),
     ...(audioGainDb !== null ? { audioGainDb } : {}),
     ...(stripMetadata ? { stripMetadata: true } : {}),
     ...(stripChapters ? { stripChapters: true } : {}),
@@ -573,6 +581,11 @@ export function mergeFfmpegExportSnapshotIntoAppSettings(
     next.ffmpegExportEconomyMode = true
   } else {
     delete next.ffmpegExportEconomyMode
+  }
+  if (snapshot.hwDecode === true) {
+    next.ffmpegExportHwDecode = true
+  } else {
+    delete next.ffmpegExportHwDecode
   }
   if (typeof snapshot.audioGainDb === 'number' && snapshot.audioGainDb !== 0) {
     next.ffmpegExportAudioGainDb = snapshot.audioGainDb
@@ -883,6 +896,8 @@ export async function runFfmpegExportJob(params: {
   twoPass?: boolean | null
   /** §7.3 — `-threads 1` в argv. */
   economyMode?: boolean | null
+  /** §7.2 — аппаратное декодирование (`-hwaccel`). */
+  hwDecode?: boolean | null
   /** §7.2 — целое значение в дБ; `null`/`0` = без `-filter:a volume`. */
   audioGainDb?: number | null
   /** §7.2 — удалить контейнерные метаданные. */
@@ -932,21 +947,29 @@ export async function runFfmpegExportJob(params: {
   const encodePreset = params.encodePreset ?? 'balance'
   const parsedVideoCodec = parseFfmpegExportVideoCodec(params.videoCodec)
   let videoCodec: FfmpegExportVideoCodecId = parsedVideoCodec
-  if (parsedVideoCodec === 'hw_auto' || parsedVideoCodec === 'hw_auto_hevc') {
+  const wantHwDecode = parseFfmpegExportHwDecode(params.hwDecode)
+  let hwaccels: readonly string[] = []
+  if (parsedVideoCodec === 'hw_auto' || parsedVideoCodec === 'hw_auto_hevc' || wantHwDecode) {
     let snap = createEmptyFfmpegHwEncodersSnapshot()
     try {
       const pr = await probeFfmpegHwEncoders(params.ffmpegPath)
       if (pr.ok) {
         snap = pr.snapshot
+        hwaccels = pr.hwaccels
       }
     } catch {
       /* probe не обязан быть доступен — остаёмся на CPU */
     }
-    videoCodec =
-      parsedVideoCodec === 'hw_auto_hevc'
-        ? pickFfmpegHwAutoHevcEncoder(snap)
-        : pickFfmpegHwAutoEncoder(snap)
+    if (parsedVideoCodec === 'hw_auto' || parsedVideoCodec === 'hw_auto_hevc') {
+      videoCodec =
+        parsedVideoCodec === 'hw_auto_hevc'
+          ? pickFfmpegHwAutoHevcEncoder(snap)
+          : pickFfmpegHwAutoEncoder(snap)
+    }
   }
+  const hwaccelDecode = wantHwDecode
+    ? resolveFfmpegExportHwaccelForDecode(videoCodec, hwaccels)
+    : null
   const crf = parseFfmpegExportCrf(params.crf)
   const videoBitrate = parseFfmpegExportVideoBitrate(params.videoBitrate)
   const audioMode = parseFfmpegExportAudioMode(params.audioMode)
@@ -1057,7 +1080,8 @@ export async function runFfmpegExportJob(params: {
     ...(videoBlur !== 'off' ? { videoBlur } : {}),
     ...(videoDeinterlace !== 'off' ? { videoDeinterlace } : {}),
     ...(audioNormalize !== 'off' ? { audioNormalize } : {}),
-    ...(economyMode ? { economyMode: true } : {})
+    ...(economyMode ? { economyMode: true } : {}),
+    ...(hwaccelDecode !== null ? { hwaccelDecode } : {})
   }
 
   const doneOk = (): { ok: true; videoCodecUsed: FfmpegExportVideoCodecId } => ({
