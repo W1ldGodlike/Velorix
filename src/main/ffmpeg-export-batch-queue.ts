@@ -230,3 +230,61 @@ export function isFfmpegExportBatchTerminalStatus(status: FfmpegExportBatchStatu
     status === FFMPEG_EXPORT_BATCH_STATUS_CANCELLED
   )
 }
+
+function resetFfmpegExportBatchRowForRetry(row: FfmpegExportBatchRow): void {
+  row.status = FFMPEG_EXPORT_BATCH_STATUS_WAITING
+  row.progress = '—'
+  delete row.outputPath
+  delete row.error
+}
+
+/** §7.3 — вернуть error/cancelled (или указанные id) в waiting для повторного прогона. */
+export function retryFfmpegExportBatchRows(options?: {
+  ids?: number[]
+  includeCancelled?: boolean
+}): number {
+  if (runnerBusy) {
+    return 0
+  }
+  const idSet =
+    options?.ids !== undefined && options.ids.length > 0 ? new Set(options.ids) : null
+  const includeCancelled = options?.includeCancelled === true
+  let reset = 0
+  for (const row of rows) {
+    if (row.status === FFMPEG_EXPORT_BATCH_STATUS_RUNNING) {
+      continue
+    }
+    if (idSet !== null && !idSet.has(row.id)) {
+      continue
+    }
+    if (row.status === FFMPEG_EXPORT_BATCH_STATUS_ERROR) {
+      resetFfmpegExportBatchRowForRetry(row)
+      reset += 1
+      continue
+    }
+    if (includeCancelled && row.status === FFMPEG_EXPORT_BATCH_STATUS_CANCELLED) {
+      resetFfmpegExportBatchRowForRetry(row)
+      reset += 1
+    }
+  }
+  if (reset > 0) {
+    notifyQueueChanged()
+  }
+  return reset
+}
+
+/** §7.3 — только строки со статусом error. */
+export function retryFailedFfmpegExportBatchRows(): number {
+  return retryFfmpegExportBatchRows()
+}
+
+/** §7.3 — убрать успешно завершённые строки из очереди. */
+export function removeCompletedFfmpegExportBatchRows(): number {
+  const before = rows.length
+  rows = rows.filter((r) => r.status !== FFMPEG_EXPORT_BATCH_STATUS_DONE)
+  const removed = before - rows.length
+  if (removed > 0) {
+    notifyQueueChanged()
+  }
+  return removed
+}

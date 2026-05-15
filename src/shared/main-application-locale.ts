@@ -108,6 +108,7 @@ export type MainApplicationStrings = {
   batchExportAlreadyRunning: string
   batchExportQueueEmpty: string
   batchExportFfmpegMissing: string
+  batchExportRunningCantMutate: string
   previewDialogGrantMediaFailed: string
   engineDownloadHttpFailedTemplate: string
   engineDownloadEmptyResponse: string
@@ -268,6 +269,7 @@ const RU: MainApplicationStrings = {
   batchExportAlreadyRunning: 'Пакетный экспорт уже выполняется',
   batchExportQueueEmpty: 'Очередь пакетного экспорта пуста',
   batchExportFfmpegMissing: 'FFmpeg не найден — пакетный экспорт недоступен',
+  batchExportRunningCantMutate: 'Нельзя менять очередь во время пакетного экспорта',
   previewDialogGrantMediaFailed: 'Не удалось открыть файл (нет доступа или это не обычный файл)',
   engineDownloadHttpFailedTemplate: 'Загрузка не удалась: HTTP {status} {statusText}',
   engineDownloadEmptyResponse: 'Пустой ответ сервера',
@@ -435,6 +437,7 @@ const EN: MainApplicationStrings = {
   batchExportAlreadyRunning: 'Batch export is already running',
   batchExportQueueEmpty: 'Batch export queue is empty',
   batchExportFfmpegMissing: 'FFmpeg not found — batch export unavailable',
+  batchExportRunningCantMutate: 'Cannot change the batch queue while export is running',
   previewDialogGrantMediaFailed: 'Could not open the file (no access or it is not a regular file)',
   engineDownloadHttpFailedTemplate: 'Download failed: HTTP {status} {statusText}',
   engineDownloadEmptyResponse: 'Empty server response',

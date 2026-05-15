@@ -2170,6 +2170,30 @@ function App(): JSX.Element {
     setStatusHint(uiText('batchExportCancelled'))
   }
 
+  async function handleBatchRetryFailed(): Promise<void> {
+    const res = await window.fluxalloy.batchExport.retryFailed()
+    if (!res.ok) {
+      setStatusHint(res.error)
+      return
+    }
+    if (res.reset === 0) {
+      setStatusHint(uiText('batchExportNothingToRetry'))
+      return
+    }
+    setStatusHint(uiTextVars('batchExportRetriedFailed', { count: String(res.reset) }))
+  }
+
+  async function handleBatchClearCompleted(): Promise<void> {
+    const res = await window.fluxalloy.batchExport.clearCompleted()
+    if (!res.ok) {
+      setStatusHint(res.error)
+      return
+    }
+    if (res.removed > 0) {
+      setStatusHint(uiTextVars('batchExportClearedCompleted', { count: String(res.removed) }))
+    }
+  }
+
   async function toggleTheme(): Promise<void> {
     const s = await window.fluxalloy.settings.get()
     if (s.theme === 'system') {
@@ -2879,6 +2903,26 @@ function App(): JSX.Element {
                 <button
                   type="button"
                   className="app-btn"
+                  disabled={batchExportBusy || (batchSnapshot?.completedError ?? 0) === 0}
+                  onClick={() => {
+                    void handleBatchRetryFailed()
+                  }}
+                >
+                  {uiText('batchExportRetryFailed')}
+                </button>
+                <button
+                  type="button"
+                  className="app-btn"
+                  disabled={batchExportBusy || (batchSnapshot?.completedOk ?? 0) === 0}
+                  onClick={() => {
+                    void handleBatchClearCompleted()
+                  }}
+                >
+                  {uiText('batchExportClearCompleted')}
+                </button>
+                <button
+                  type="button"
+                  className="app-btn"
                   disabled={batchExportBusy || (batchSnapshot?.rows.length ?? 0) === 0}
                   onClick={() => {
                     void window.fluxalloy.batchExport.clear().catch(console.error)
@@ -2961,6 +3005,31 @@ function App(): JSX.Element {
                               <IconFolderOpen aria-hidden />
                             </button>
                           </>
+                        ) : null}
+                        {row.status === 'error' || row.status === 'cancelled' ? (
+                          <button
+                            type="button"
+                            className="app-btn app-btn-icon"
+                            title={uiText('batchExportRetryRow')}
+                            disabled={batchExportBusy}
+                            onClick={() => {
+                              void window.fluxalloy.batchExport.retryRows([row.id]).then((res) => {
+                                if (!res.ok) {
+                                  setStatusHint(res.error)
+                                  return
+                                }
+                                if (res.reset > 0) {
+                                  setStatusHint(
+                                    uiTextVars('batchExportRetriedFailed', {
+                                      count: String(res.reset)
+                                    })
+                                  )
+                                }
+                              })
+                            }}
+                          >
+                            <IconQueueRetry aria-hidden />
+                          </button>
                         ) : null}
                         <button
                           type="button"

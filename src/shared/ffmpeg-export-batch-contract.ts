@@ -50,6 +50,14 @@ export type FfmpegExportBatchStartResult =
   | { ok: true }
   | { ok: false; error: string }
 
+export type FfmpegExportBatchRetryFailedResult =
+  | { ok: true; reset: number }
+  | { ok: false; error: string }
+
+export type FfmpegExportBatchClearCompletedResult =
+  | { ok: true; removed: number }
+  | { ok: false; error: string }
+
 export function parseFfmpegExportBatchConcurrency(raw: unknown): FfmpegExportBatchConcurrency {
   if (raw === 1 || raw === 2 || raw === 4) {
     return raw

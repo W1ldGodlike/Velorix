@@ -1,16 +1,23 @@
 import { describe, expect, it, beforeEach } from 'vitest'
 
 import {
-  FFMPEG_EXPORT_BATCH_STATUS_DONE
+  FFMPEG_EXPORT_BATCH_STATUS_CANCELLED,
+  FFMPEG_EXPORT_BATCH_STATUS_DONE,
+  FFMPEG_EXPORT_BATCH_STATUS_ERROR,
+  FFMPEG_EXPORT_BATCH_STATUS_WAITING
 } from '../../src/shared/ffmpeg-export-batch-contract'
 import {
   addFfmpegExportBatchPaths,
   clearFfmpegExportBatchQueue,
   getFfmpegExportBatchSnapshot,
   moveFfmpegExportBatchRow,
+  removeCompletedFfmpegExportBatchRows,
   removeFfmpegExportBatchRows,
   reorderFfmpegExportBatchRowAt,
+  retryFailedFfmpegExportBatchRows,
+  retryFfmpegExportBatchRows,
   setFfmpegExportBatchConcurrency,
+  setFfmpegExportBatchRunnerBusy,
   takeNextFfmpegExportBatchWaitingRow,
   updateFfmpegExportBatchRow
 } from '../../src/main/ffmpeg-export-batch-queue'
@@ -62,5 +69,58 @@ describe('ffmpeg-export-batch-queue', () => {
     const snap = getFfmpegExportBatchSnapshot()
     expect(snap.completedOk).toBe(1)
     expect(snap.rows[0]?.status).toBe(FFMPEG_EXPORT_BATCH_STATUS_DONE)
+  })
+
+  it('retryFailed сбрасывает error в waiting без outputPath', () => {
+    addFfmpegExportBatchPaths(['a.mp4', 'b.mp4'])
+    const [a, b] = getFfmpegExportBatchSnapshot().rows
+    updateFfmpegExportBatchRow(a!.id, {
+      status: FFMPEG_EXPORT_BATCH_STATUS_ERROR,
+      progress: 'boom',
+      outputPath: 'out.mp4',
+      error: 'boom'
+    })
+    updateFfmpegExportBatchRow(b!.id, {
+      status: FFMPEG_EXPORT_BATCH_STATUS_DONE,
+      progress: '100%',
+      outputPath: 'ok.mp4'
+    })
+    expect(retryFailedFfmpegExportBatchRows()).toBe(1)
+    const rows = getFfmpegExportBatchSnapshot().rows
+    expect(rows.find((r) => r.id === a!.id)?.status).toBe(FFMPEG_EXPORT_BATCH_STATUS_WAITING)
+    expect(rows.find((r) => r.id === a!.id)?.outputPath).toBeUndefined()
+    expect(rows.find((r) => r.id === b!.id)?.status).toBe(FFMPEG_EXPORT_BATCH_STATUS_DONE)
+    expect(takeNextFfmpegExportBatchWaitingRow()?.inputPath).toContain('a.mp4')
+  })
+
+  it('retryFfmpegExportBatchRows по id включает cancelled', () => {
+    addFfmpegExportBatchPaths(['x.mp4'])
+    const id = getFfmpegExportBatchSnapshot().rows[0]!.id
+    updateFfmpegExportBatchRow(id, {
+      status: FFMPEG_EXPORT_BATCH_STATUS_CANCELLED,
+      progress: '—'
+    })
+    expect(retryFfmpegExportBatchRows({ ids: [id], includeCancelled: true })).toBe(1)
+    expect(getFfmpegExportBatchSnapshot().rows[0]?.status).toBe(FFMPEG_EXPORT_BATCH_STATUS_WAITING)
+  })
+
+  it('retry не работает при runnerBusy', () => {
+    addFfmpegExportBatchPaths(['a.mp4'])
+    const id = getFfmpegExportBatchSnapshot().rows[0]!.id
+    updateFfmpegExportBatchRow(id, { status: FFMPEG_EXPORT_BATCH_STATUS_ERROR, progress: 'e' })
+    setFfmpegExportBatchRunnerBusy(true)
+    expect(retryFailedFfmpegExportBatchRows()).toBe(0)
+    setFfmpegExportBatchRunnerBusy(false)
+  })
+
+  it('removeCompletedFfmpegExportBatchRows', () => {
+    addFfmpegExportBatchPaths(['a.mp4', 'b.mp4'])
+    const rows = getFfmpegExportBatchSnapshot().rows
+    updateFfmpegExportBatchRow(rows[0]!.id, {
+      status: FFMPEG_EXPORT_BATCH_STATUS_DONE,
+      progress: '100%'
+    })
+    expect(removeCompletedFfmpegExportBatchRows()).toBe(1)
+    expect(getFfmpegExportBatchSnapshot().rows).toHaveLength(1)
   })
 })

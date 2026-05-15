@@ -314,6 +314,9 @@ export interface FluxAlloyApi {
     setConcurrency: (value: FfmpegExportBatchConcurrency) => Promise<{ ok: true }>
     start: (rawExportOverrides?: unknown) => Promise<FfmpegExportBatchStartResult>
     cancel: () => Promise<{ ok: true }>
+    retryFailed: () => Promise<{ ok: true; reset: number } | { ok: false; error: string }>
+    retryRows: (ids: number[]) => Promise<{ ok: true; reset: number } | { ok: false; error: string }>
+    clearCompleted: () => Promise<{ ok: true; removed: number } | { ok: false; error: string }>
     onSnapshot: (listener: (snapshot: FfmpegExportBatchSnapshot) => void) => () => void
   }
   processingHistory: {

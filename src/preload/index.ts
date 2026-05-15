@@ -562,6 +562,18 @@ const fluxalloy = {
     start: (rawExportOverrides?: unknown): Promise<FfmpegExportBatchStartResult> =>
       ipcRenderer.invoke(mw.batchExportStart, rawExportOverrides ?? null),
     cancel: (): Promise<{ ok: true }> => ipcRenderer.invoke(mw.batchExportCancel),
+    retryFailed: (): Promise<
+      | { ok: true; reset: number }
+      | { ok: false; error: string }
+    > => ipcRenderer.invoke(mw.batchExportRetryFailed),
+    retryRows: (
+      ids: number[]
+    ): Promise<{ ok: true; reset: number } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(mw.batchExportRetryRows, ids),
+    clearCompleted: (): Promise<
+      | { ok: true; removed: number }
+      | { ok: false; error: string }
+    > => ipcRenderer.invoke(mw.batchExportClearCompleted),
     onSnapshot: (listener: (snapshot: FfmpegExportBatchSnapshot) => void): (() => void) => {
       const channel = mw.batchExportSnapshot
       const handler = (_event: unknown, raw: unknown): void => {

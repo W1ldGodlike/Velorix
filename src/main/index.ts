@@ -129,7 +129,10 @@ import {
   markWaitingFfmpegExportBatchRowsCancelled,
   moveFfmpegExportBatchRow,
   removeFfmpegExportBatchRows,
+  removeCompletedFfmpegExportBatchRows,
   reorderFfmpegExportBatchRowAt,
+  retryFailedFfmpegExportBatchRows,
+  retryFfmpegExportBatchRows,
   setFfmpegExportBatchConcurrency
 } from './ffmpeg-export-batch-queue'
 import {
@@ -147,6 +150,8 @@ import {
   pickFfmpegExportBatchInputFolder
 } from './ffmpeg-export-batch-pick'
 import type {
+  FfmpegExportBatchClearCompletedResult,
+  FfmpegExportBatchRetryFailedResult,
   FfmpegExportBatchSnapshot,
   FfmpegExportBatchStartResult
 } from '../shared/ffmpeg-export-batch-contract'
@@ -3421,6 +3426,49 @@ app.whenReady().then(() => {
     pushBatchExportSnapshot()
     return { ok: true }
   })
+
+  ipcMain.handle(
+    mw.batchExportRetryFailed,
+    (): FfmpegExportBatchRetryFailedResult => {
+      const M = mainAppStr()
+      if (isFfmpegExportBatchActive()) {
+        return { ok: false, error: M.batchExportRunningCantMutate }
+      }
+      const reset = retryFailedFfmpegExportBatchRows()
+      pushBatchExportSnapshot()
+      return { ok: true, reset }
+    }
+  )
+
+  ipcMain.handle(
+    mw.batchExportRetryRows,
+    (_event, raw: unknown): FfmpegExportBatchRetryFailedResult => {
+      const M = mainAppStr()
+      if (isFfmpegExportBatchActive()) {
+        return { ok: false, error: M.batchExportRunningCantMutate }
+      }
+      const ids = Array.isArray(raw) ? raw.filter((n): n is number => typeof n === 'number') : []
+      if (ids.length === 0) {
+        return { ok: false, error: M.ipcInvalidRequest }
+      }
+      const reset = retryFfmpegExportBatchRows({ ids, includeCancelled: true })
+      pushBatchExportSnapshot()
+      return { ok: true, reset }
+    }
+  )
+
+  ipcMain.handle(
+    mw.batchExportClearCompleted,
+    (): FfmpegExportBatchClearCompletedResult => {
+      const M = mainAppStr()
+      if (isFfmpegExportBatchActive()) {
+        return { ok: false, error: M.batchExportRunningCantMutate }
+      }
+      const removed = removeCompletedFfmpegExportBatchRows()
+      pushBatchExportSnapshot()
+      return { ok: true, removed }
+    }
+  )
 
   ipcMain.handle(
     mw.exportOpenOutput,
