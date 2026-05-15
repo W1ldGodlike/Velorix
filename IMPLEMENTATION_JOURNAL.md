@@ -728,4 +728,9 @@
 - [J-705] 2026-05-16 02:05:00 [Assistant]: §7.x вкладка «Загрузки»: `role="toolbar"` + `downloadsUrlActionsToolbarAria` у блока действий у поля URL; `aria-label` у кнопок добавить в очередь, прервать, убрать готовые, очистить очередь.
 - [J-706] 2026-05-16 02:12:00 [Assistant]: §7.x вкладка «Загрузки»: верхний блок `app-downloads-actions` — `role="toolbar"`, `downloadsBandToolbarAria`, `aria-label` у «Отдельное окно» и «К настройкам».
 - [J-707] 2026-05-16 02:18:00 [Assistant]: §7.x вкладка «Загрузки»: `app-downloads-filterbar` — `role="toolbar"` (сохранён `aria-label` фильтра очереди).
+- [J-708] 2026-05-16 03:05:00 [Assistant]: Вкладки workspace — `role="tablist"` / `role="tab"` / `aria-selected`; панели `main` — `role="tabpanel"` + `aria-labelledby` на соответствующую вкладку.
+- [J-709] 2026-05-16 03:08:00 [Assistant]: Топбар — `app-topbar-actions` как `toolbar` + `topbarActionsToolbarAria`; иконки «отменить экспорт» и «скачать движки» получили явный `aria-label`.
+- [J-710] 2026-05-16 03:12:00 [Assistant]: Терминал — строка ввода: `toolbar` + `terminalCommandToolbarAria`; `aria-label` у кнопки вставки файла и выполнения; поиск подсказок — `aria-label`.
+- [J-711] 2026-05-16 03:16:00 [Assistant]: §7.3 пакетный экспорт — `role="group"` на строке папки вывода; `app-batch-export-actions` — `toolbar` + `batchExportActionsToolbarAria`.
+- [J-712] 2026-05-16 03:20:00 [Assistant]: Подвал — `aria-label` строки состояния; rail загрузок — `aria-label` у кнопки обновления опций.
 

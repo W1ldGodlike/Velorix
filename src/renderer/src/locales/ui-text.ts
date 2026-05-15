@@ -111,6 +111,7 @@ const UI_TEXT = {
     terminalIntroTailTemplate:
       ' — подставится путь текущего превью редактора (только если файл уже открыт через диалог или перетаскивание). В строке ввода при наборе — компактное автодополнение: стрелки вверх/вниз, Home/End, PgUp/PgDn (шаг {pageStep}), Shift+Tab — предыдущая позиция, Tab и Enter — подставить активную подсказку (до {maxInline} вариантов из той же базы, что и справа). Полный перечень — в боковой панели: «Поиск подсказок», клик по строке (если у подсказки есть готовая команда — подставится целиком). В журнале вывода у каждой строки — кнопка «Копир.» при наведении (копирует ровно эту строку). ',
     terminalCommandInputAriaLabel: 'Ввод команды терминала',
+    terminalCommandToolbarAria: 'Ввод команды, вставка файла и запуск',
     terminalCommandPlaceholder: 'ffprobe -version',
     terminalPreviewFileButton: 'Превью-файл',
     terminalPreviewFileTooltipOpen: 'Вставить токен «{token}» (путь текущего превью)',
@@ -200,6 +201,7 @@ const UI_TEXT = {
     downloadsLogSave: 'Сохранить',
     downloadsLogEmpty: 'Записи журнала появятся после запуска строки yt-dlp.',
     workspaceTabsAria: 'Рабочие вкладки',
+    appStatusbarAria: 'Строка состояния',
     workspaceTabEditor: 'Редактор',
     workspaceTabDownloads: 'Загрузки',
     workspaceTabTerminal: 'Терминал',
@@ -455,6 +457,7 @@ const UI_TEXT = {
     uiPlaceholderDash: '—',
     commonNotApplicableShort: 'н/д',
     topbarProductName: 'FluxAlloy',
+    topbarActionsToolbarAria: 'Панель действий: файлы, инструменты и справка',
     topbarOpenFileTitle:
       'Выбрать видео с компьютера: оно появится в превью и на таймлайне, дальше можно резать и сохранять.',
     topbarOpenFileLabel: 'Открыть',
@@ -860,6 +863,8 @@ const UI_TEXT = {
     statusExportProgress: 'Экспорт · {tail}',
     statusExportBatchRow: 'Пакет #{id}',
     batchExportAria: 'Пакетный экспорт видео',
+    batchExportActionsToolbarAria: 'Действия панели пакетного экспорта',
+    batchExportOutputDirRowGroupAria: 'Папка вывода: выбрать, открыть, сбросить',
     batchExportSummary: 'Пакетный экспорт (§7.3)',
     batchExportHint:
       'Одни и те же настройки FFmpeg применяются ко всем файлам. Выход — рядом с исходником (`имя-export.ext`).',
@@ -1281,6 +1286,7 @@ const UI_TEXT = {
     terminalIntroTailTemplate:
       ' — it expands to the current editor preview path (only when a file is already open via the dialog or DnD). While typing, the input shows compact IntelliSense: Up/Down, Home/End, PgUp/PgDn (step {pageStep}), Shift+Tab moves the selection up, Tab and Enter insert the active suggestion (up to {maxInline} items from the same catalog as the sidebar). The full catalog is in the right-hand panel: use “Filter hints”, click a row (when a hint has a full command line, it replaces the whole line). Each line in the output log has a “Copy” hover button (copies exactly that line). ',
     terminalCommandInputAriaLabel: 'CLI command',
+    terminalCommandToolbarAria: 'Command line, insert file, and run',
     terminalCommandPlaceholder: 'ffprobe -version',
     terminalPreviewFileButton: 'Preview file',
     terminalPreviewFileTooltipOpen: 'Insert the “{token}” token (current preview path)',
@@ -1369,6 +1375,7 @@ const UI_TEXT = {
     downloadsLogSave: 'Save',
     downloadsLogEmpty: 'The log will appear after you start a yt-dlp queue row.',
     workspaceTabsAria: 'Workspace tabs',
+    appStatusbarAria: 'Status bar',
     workspaceTabEditor: 'Editor',
     workspaceTabDownloads: 'Downloads',
     workspaceTabTerminal: 'Terminal',
@@ -1621,6 +1628,7 @@ const UI_TEXT = {
     uiPlaceholderDash: '—',
     commonNotApplicableShort: 'n/a',
     topbarProductName: 'FluxAlloy',
+    topbarActionsToolbarAria: 'Actions toolbar: files, tools, and help',
     topbarOpenFileTitle:
       'Pick a video from your PC — it appears in the preview and timeline for trimming and export.',
     topbarOpenFileLabel: 'Open',
@@ -2024,6 +2032,8 @@ const UI_TEXT = {
     statusExportProgress: 'Export · {tail}',
     statusExportBatchRow: 'Batch #{id}',
     batchExportAria: 'Batch video export',
+    batchExportActionsToolbarAria: 'Batch export action bar',
+    batchExportOutputDirRowGroupAria: 'Output folder: pick, reveal, reset',
     batchExportSummary: 'Batch export (§7.3)',
     batchExportHint:
       'The same FFmpeg settings apply to every file. Output is written next to each source (`name-export.ext`).',

@@ -2917,11 +2917,17 @@ function App(): JSX.Element {
           </span>
           <span className="app-topbar-title">{uiText('topbarProductName')}</span>
         </div>
-        <nav className="app-workspace-tabs" aria-label={uiText('workspaceTabsAria')}>
+        <nav
+          className="app-workspace-tabs"
+          aria-label={uiText('workspaceTabsAria')}
+          role="tablist"
+        >
           <button
             type="button"
+            id="workspace-tab-editor"
             className={`app-workspace-tab${workspaceTab === 'editor' ? ' app-workspace-tab-active' : ''}`}
-            aria-current={workspaceTab === 'editor' ? 'page' : undefined}
+            role="tab"
+            aria-selected={workspaceTab === 'editor'}
             title={uiText('workspaceTabEditorTooltip')}
             onClick={() => {
               setWorkspaceTab('editor')
@@ -2934,8 +2940,10 @@ function App(): JSX.Element {
           </button>
           <button
             type="button"
+            id="workspace-tab-downloads"
             className={`app-workspace-tab${workspaceTab === 'downloads' ? ' app-workspace-tab-active' : ''}`}
-            aria-current={workspaceTab === 'downloads' ? 'page' : undefined}
+            role="tab"
+            aria-selected={workspaceTab === 'downloads'}
             onClick={() => {
               setWorkspaceTab('downloads')
             }}
@@ -2948,8 +2956,10 @@ function App(): JSX.Element {
           </button>
           <button
             type="button"
+            id="workspace-tab-terminal"
             className={`app-workspace-tab${workspaceTab === 'terminal' ? ' app-workspace-tab-active' : ''}`}
-            aria-current={workspaceTab === 'terminal' ? 'page' : undefined}
+            role="tab"
+            aria-selected={workspaceTab === 'terminal'}
             onClick={() => {
               setWorkspaceTab('terminal')
             }}
@@ -2962,7 +2972,11 @@ function App(): JSX.Element {
           </button>
         </nav>
         <div className="app-topbar-trailing">
-          <div className="app-topbar-actions">
+          <div
+            className="app-topbar-actions"
+            role="toolbar"
+            aria-label={uiText('topbarActionsToolbarAria')}
+          >
             <button
               type="button"
               className="app-icon-btn"
@@ -3001,6 +3015,11 @@ function App(): JSX.Element {
                 type="button"
                 className="app-icon-btn app-icon-btn-warn"
                 disabled={exportCancelBusy}
+                aria-label={
+                  exportCancelBusy
+                    ? uiText('topbarExportCancelBusy')
+                    : uiText('topbarExportCancelReady')
+                }
                 onClick={() => {
                   void handleCancelExport()
                 }}
@@ -3020,6 +3039,11 @@ function App(): JSX.Element {
                 type="button"
                 className="app-icon-btn app-icon-btn-warn"
                 disabled={engineDownloadBusy}
+                aria-label={
+                  engineDownloadBusy
+                    ? uiText('topbarEnginesDownloadBusy')
+                    : uiText('topbarEnginesDownloadReady')
+                }
                 onClick={() => {
                   void handleEnginesDownload()
                 }}
@@ -3284,7 +3308,7 @@ function App(): JSX.Element {
                     <IconFolder size={16} aria-hidden />
                     {uiText('batchExportOutputDirLabel')}
                   </span>
-                  <div className="app-batch-export-dir-row">
+                  <div className="app-batch-export-dir-row" role="group" aria-label={uiText('batchExportOutputDirRowGroupAria')}>
                     <input
                       type="text"
                       className="app-control"
@@ -3363,7 +3387,11 @@ function App(): JSX.Element {
                     <option value="auto">{uiText('batchExportConcurrencyAuto')}</option>
                   </select>
                 </label>
-              <div className="app-batch-export-actions">
+              <div
+                className="app-batch-export-actions"
+                role="toolbar"
+                aria-label={uiText('batchExportActionsToolbarAria')}
+              >
                 <button
                   type="button"
                   className="app-btn app-btn-icon-leading"
@@ -3794,6 +3822,9 @@ function App(): JSX.Element {
 
       {workspaceTab === 'editor' ? (
         <main
+          id="workspace-panel-editor"
+          role="tabpanel"
+          aria-labelledby="workspace-tab-editor"
           className={`app-main app-workbench${panelOpen('ffmpegSettingsRailOpen') ? '' : ' app-workbench-ffmpeg-collapsed'}`}
         >
           <section
@@ -5147,8 +5178,10 @@ function App(): JSX.Element {
         </main>
       ) : workspaceTab === 'terminal' ? (
         <main
+          id="workspace-panel-terminal"
+          role="tabpanel"
+          aria-labelledby="workspace-tab-terminal"
           className="app-main app-terminal-workspace"
-          aria-label={uiText('terminalWorkspaceAriaLabel')}
         >
           <section className="app-terminal-panel">
             <div className="app-downloads-band">
@@ -5176,7 +5209,11 @@ function App(): JSX.Element {
               </div>
             </div>
             <div className="app-terminal-command-stack">
-              <div className="app-terminal-command-row">
+              <div
+                className="app-terminal-command-row"
+                role="toolbar"
+                aria-label={uiText('terminalCommandToolbarAria')}
+              >
                 <input
                   className="app-control app-terminal-input"
                   value={terminalLine}
@@ -5294,6 +5331,7 @@ function App(): JSX.Element {
                       ? formatTerminalPreviewTooltip(TERMINAL_CURRENT_FILE_PLACEHOLDER)
                       : uiText('terminalPreviewFileTooltipNeedFile')
                   }
+                  aria-label={uiText('terminalPreviewFileButton')}
                   onClick={() => appendTerminalToken(TERMINAL_CURRENT_FILE_PLACEHOLDER)}
                 >
                   {uiText('terminalPreviewFileButton')}
@@ -5302,6 +5340,9 @@ function App(): JSX.Element {
                   type="button"
                   className="app-btn app-btn-primary"
                   disabled={terminalBusy || terminalLine.trim().length === 0}
+                  aria-label={
+                    terminalBusy ? uiText('terminalRunningButton') : uiText('terminalRunButton')
+                  }
                   onClick={() => {
                     void runTerminalLine()
                   }}
@@ -5414,6 +5455,7 @@ function App(): JSX.Element {
                     value={terminalHintFilter}
                     spellCheck={false}
                     placeholder={uiText('terminalHintsSearchPlaceholder')}
+                    aria-label={uiText('terminalHintsSearchLabel')}
                     onChange={(e) => {
                       setTerminalHintFilter(e.target.value)
                     }}
@@ -5445,7 +5487,12 @@ function App(): JSX.Element {
           </section>
         </main>
       ) : (
-        <main className="app-main app-downloads-workspace" aria-label={uiText('downloadsMainAria')}>
+        <main
+          id="workspace-panel-downloads"
+          role="tabpanel"
+          aria-labelledby="workspace-tab-downloads"
+          className="app-main app-downloads-workspace"
+        >
           <section className="app-downloads-main">
             <div className="app-downloads-band">
               <div className="app-downloads-band-copy">
@@ -6732,6 +6779,7 @@ function App(): JSX.Element {
                 type="button"
                 className="app-btn app-btn-icon-leading"
                 disabled={downloadsOptionsBusy}
+                aria-label={uiText('downloadsRailRefreshOptions')}
                 title={uiText('downloadsTooltipRefreshFooter')}
                 onClick={() => {
                   void refreshDownloadsOptions()
@@ -6745,7 +6793,7 @@ function App(): JSX.Element {
         </main>
       )}
 
-      <footer className="app-statusbar">
+      <footer className="app-statusbar" aria-label={uiText('appStatusbarAria')}>
         <span>{engineSummaryText(engineSummary)}</span>
         {engineVersionsLine ? (
           <>
