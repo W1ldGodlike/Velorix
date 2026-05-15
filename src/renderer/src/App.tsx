@@ -6908,7 +6908,11 @@ function App(): JSX.Element {
                 {exportPresetNameDialog.error}
               </p>
             ) : null}
-            <div className="app-modal-footer">
+            <div
+              className="app-modal-footer"
+              role="toolbar"
+              aria-label={uiText('exportPresetDialogFooterToolbarAria')}
+            >
               <button
                 type="button"
                 className="app-btn"
@@ -6966,7 +6970,13 @@ function App(): JSX.Element {
                       setEnginePathsDraft((prev) => ({ ...prev, [id]: e.target.value }))
                     }}
                   />
-                  <div className="app-engine-path-actions">
+                  <div
+                    className="app-engine-path-actions"
+                    role="toolbar"
+                    aria-label={uiTextVars('editorEnginePathRowToolbarAriaTemplate', {
+                      engine: engineLabel(id)
+                    })}
+                  >
                     <button
                       type="button"
                       className="app-btn app-btn-compact"
@@ -6989,7 +6999,11 @@ function App(): JSX.Element {
                 </div>
               ))}
             </div>
-            <div className="app-modal-footer">
+            <div
+              className="app-modal-footer"
+              role="toolbar"
+              aria-label={uiText('enginePathsDialogFooterToolbarAria')}
+            >
               <button
                 type="button"
                 className="app-btn app-btn-danger"

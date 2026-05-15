@@ -316,7 +316,7 @@ export function PreviewProbeBody({
           <p id="probeExportSummaryHint" className="app-probe-toolbar-hint">
             {uiText('probeSectionExportSummaryHint')}
           </p>
-          <div className="app-probe-json-toolbar">
+          <div className="app-probe-json-toolbar" role="toolbar" aria-label={uiText('probeExportSummaryToolbarAria')}>
             <button
               type="button"
               className="app-btn app-btn-compact"
@@ -499,7 +499,7 @@ export function PreviewProbeBody({
             <p id="probeRawJsonHint" className="app-probe-toolbar-hint">
               {uiText('probeRawJsonHint')}
             </p>
-            <div className="app-probe-json-toolbar">
+            <div className="app-probe-json-toolbar" role="toolbar" aria-label={uiText('probeRawJsonToolbarAria')}>
               <button
                 type="button"
                 className="app-btn app-btn-compact"

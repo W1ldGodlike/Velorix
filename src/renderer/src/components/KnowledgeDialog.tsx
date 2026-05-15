@@ -147,22 +147,24 @@ export function KnowledgeDialog({
           e.stopPropagation()
         }}
       >
-        <div className="app-modal-header-row">
-          <div>
-            <h2 id="knowledge-title" className="app-modal-title">
-              {uiText('knowledgeTitle')}
-            </h2>
-            <p className="app-modal-hint">{uiText('knowledgeHint')}</p>
+          <div className="app-modal-header-row">
+            <div>
+              <h2 id="knowledge-title" className="app-modal-title">
+                {uiText('knowledgeTitle')}
+              </h2>
+              <p className="app-modal-hint">{uiText('knowledgeHint')}</p>
+            </div>
+            <div role="toolbar" aria-label={uiText('knowledgeDialogActionsToolbarAria')}>
+              <button
+                type="button"
+                className="app-btn"
+                onClick={onClose}
+                title={uiText('knowledgeCloseTooltip')}
+              >
+                {uiText('closeButton')}
+              </button>
+            </div>
           </div>
-          <button
-            type="button"
-            className="app-btn"
-            onClick={onClose}
-            title={uiText('knowledgeCloseTooltip')}
-          >
-            {uiText('closeButton')}
-          </button>
-        </div>
 
         <div className="app-knowledge-grid">
           <aside className="app-knowledge-sidebar" aria-label={uiText('knowledgeTocAria')}>

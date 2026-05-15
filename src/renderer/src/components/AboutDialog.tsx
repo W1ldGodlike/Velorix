@@ -147,7 +147,11 @@ export function AboutDialog({
         )}
         <div className="app-modal-footer app-modal-footer-split">
           <div className="app-about-footer-left">
-            <div className="app-about-diagnostics">
+            <div
+              className="app-about-diagnostics"
+              role="toolbar"
+              aria-label={uiText('aboutDiagnosticsToolbarAria')}
+            >
               <button
                 type="button"
                 className="app-btn app-btn-compact"
@@ -272,7 +276,7 @@ export function AboutDialog({
                 )}
               </button>
             </div>
-            <p className="app-doc-inline-links app-about-doc-links">
+            <nav className="app-doc-inline-links app-about-doc-links" aria-label={uiText('aboutExternalDocsNavAria')}>
               <a href={YTDLP_DOC_README} target="_blank" rel="noreferrer">
                 {uiText('docLinkYtDlpReadme')}
               </a>
@@ -284,7 +288,7 @@ export function AboutDialog({
               <a href={FFPROBE_DOC_ALL} target="_blank" rel="noreferrer">
                 {uiText('docLinkFfprobeShort')}
               </a>
-            </p>
+            </nav>
             {onOpenKnowledgeArticle ? (
               <p className="app-about-knowledge-link">
                 <button

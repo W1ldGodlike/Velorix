@@ -738,4 +738,9 @@
 - [J-715] 2026-05-16 04:14:00 [Assistant]: База знаний — `aria-label` у поля поиска (`knowledgeSearchInputAria`).
 - [J-716] 2026-05-16 04:16:00 [Assistant]: История обработок редактора — `toolbar` у блока фильтров и блока кнопок действий.
 - [J-717] 2026-05-16 04:18:00 [Assistant]: Редактор — кнопки свернуть/развернуть rail FFmpeg: явный `aria-label`.
+- [J-718] 2026-05-16 05:00:00 [Assistant]: О программе — блок диагностики как `role="toolbar"` (`aboutDiagnosticsToolbarAria`).
+- [J-719] 2026-05-16 05:02:00 [Assistant]: ffprobe-панель (`MediaProbePanel`) — `toolbar` у кластеров экспорта сводки и работы с JSON.
+- [J-720] 2026-05-16 05:04:00 [Assistant]: Диалоги редактора — подвал пресета экспорта и подвал путей движков как `toolbar`; строка `app-engine-path-actions` — `toolbar` с шаблоном по имени движка.
+- [J-721] 2026-05-16 05:06:00 [Assistant]: База знаний — заголовок модалки: группа закрытия как `toolbar` (`knowledgeDialogActionsToolbarAria`).
+- [J-722] 2026-05-16 05:08:00 [Assistant]: О программе — ссылки на внешнюю документацию оформлены как `<nav>` + `aboutExternalDocsNavAria`.
 
