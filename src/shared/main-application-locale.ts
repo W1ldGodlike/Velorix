@@ -108,6 +108,9 @@ export type MainApplicationStrings = {
   batchExportPickFolderTitle: string
   batchExportPickOutputFolderTitle: string
   batchExportFolderEmpty: string
+  batchExportSharedOutputDirNotSet: string
+  batchExportSharedOutputDirMissing: string
+  batchExportSharedOutputDirNotDirectory: string
   batchExportAlreadyRunning: string
   batchExportQueueEmpty: string
   batchExportFfmpegMissing: string
@@ -276,6 +279,9 @@ const RU: MainApplicationStrings = {
   batchExportPickFolderTitle: 'Добавить папку в пакетный экспорт',
   batchExportPickOutputFolderTitle: 'Папка для готовых файлов пакета',
   batchExportFolderEmpty: 'В выбранной папке нет поддерживаемых видеофайлов',
+  batchExportSharedOutputDirNotSet: 'Общая папка выхода пакета не задана',
+  batchExportSharedOutputDirMissing: 'Папка выхода пакета не найдена',
+  batchExportSharedOutputDirNotDirectory: 'Путь выхода пакета не является папкой',
   batchExportAlreadyRunning: 'Пакетный экспорт уже выполняется',
   batchExportQueueEmpty: 'Очередь пакетного экспорта пуста',
   batchExportFfmpegMissing: 'FFmpeg не найден — пакетный экспорт недоступен',
@@ -451,6 +457,9 @@ const EN: MainApplicationStrings = {
   batchExportPickFolderTitle: 'Add folder to batch export',
   batchExportPickOutputFolderTitle: 'Batch export output folder',
   batchExportFolderEmpty: 'No supported video files in the selected folder',
+  batchExportSharedOutputDirNotSet: 'Batch shared output folder is not set',
+  batchExportSharedOutputDirMissing: 'Batch output folder was not found',
+  batchExportSharedOutputDirNotDirectory: 'Batch output path is not a folder',
   batchExportAlreadyRunning: 'Batch export is already running',
   batchExportQueueEmpty: 'Batch export queue is empty',
   batchExportFfmpegMissing: 'FFmpeg not found — batch export unavailable',

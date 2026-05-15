@@ -705,4 +705,7 @@
 - [J-682] 2026-05-16 00:04:50 [Assistant]: §4.B/§7.3 — DnD **папки**: `resolveUserPathToPreviewSourceFile` + `previewGrantPath`/`restoreLastSource` (первое видео из scan); `expandFfmpegExportBatchDnDPaths` + `batchExportAddPaths`; Vitest `ffmpeg-export-batch-dnd-expand`; чеклист.
 - [J-683] 2026-05-16 00:12:00 [Assistant]: §4.B — **«Открыть папку с видео»**: `openVideoFolderWithDialog`, IPC `openVideoFolderDialog`, пункт меню + Ctrl+Shift+O, topbar `IconFolder` (`EDITOR_TOPBAR_ACTION_ICONS.folder`), preload/d.ts; чеклист.
 - [J-684] 2026-05-16 00:18:30 [Assistant]: §4.B/§7.3 — `resolveOpenMediaDialogDefaultPath` + `defaultPath` в `openVideo*WithDialog`, batch pick files/folder/output, меню и IPC; Vitest `preview-open-dialog-default-path`; чеклист.
+- [J-685] 2026-05-16 00:20:15 [Assistant]: §9 — окно инспектора: кнопка «папка с видео» (`openVideoFolderDialog`, `IconFolder`), чеклист; DnD папки — тот же `previewGrantPath` §4.B.
+- [J-686] 2026-05-16 00:25:00 [Assistant]: §7.3 — IPC `batchExportRevealSharedOutputFolder` / preload `revealSharedOutputFolder`, кнопка «Показать папку» у общего выхода пакета; строки main `batchExportSharedOutputDir*`; чеклист.
+- [J-687] 2026-05-16 00:27:15 [Assistant]: §7.3 — `listFfmpegExportBatchOutputPaths`, IPC `batchExportListOutputPaths`, кнопка копирования путей готовых файлов; Vitest queue; чеклист.
 

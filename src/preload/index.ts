@@ -553,6 +553,8 @@ const fluxalloy = {
       ipcRenderer.invoke(mw.batchExportGetSnapshot),
     listInputPaths: (): Promise<{ ok: true; paths: string[] }> =>
       ipcRenderer.invoke(mw.batchExportListInputPaths),
+    listOutputPaths: (): Promise<{ ok: true; paths: string[] }> =>
+      ipcRenderer.invoke(mw.batchExportListOutputPaths),
     removeWaiting: (): Promise<
       | { ok: true; removed: number }
       | { ok: false; error: string }
@@ -564,6 +566,9 @@ const fluxalloy = {
     pickOutputFolder: (): Promise<
       { ok: true; path: string } | { ok: false; cancelled: true }
     > => ipcRenderer.invoke(mw.batchExportPickOutputFolder),
+    revealSharedOutputFolder: (): Promise<
+      { ok: true } | { ok: false; error: string }
+    > => ipcRenderer.invoke(mw.batchExportRevealSharedOutputFolder),
     addPaths: (paths: string[]): Promise<FfmpegExportBatchAddPathsResult> =>
       ipcRenderer.invoke(mw.batchExportAddPaths, paths),
     openInput: (

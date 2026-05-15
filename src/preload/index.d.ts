@@ -302,6 +302,7 @@ export interface FluxAlloyApi {
   batchExport: {
     getSnapshot: () => Promise<FfmpegExportBatchSnapshot>
     listInputPaths: () => Promise<{ ok: true; paths: string[] }>
+    listOutputPaths: () => Promise<{ ok: true; paths: string[] }>
     removeWaiting: () => Promise<
       | { ok: true; removed: number }
       | { ok: false; error: string }
@@ -309,6 +310,7 @@ export interface FluxAlloyApi {
     pickFiles: () => Promise<FfmpegExportBatchPickFilesResult>
     pickFolder: () => Promise<FfmpegExportBatchPickFilesResult>
     pickOutputFolder: () => Promise<{ ok: true; path: string } | { ok: false; cancelled: true }>
+    revealSharedOutputFolder: () => Promise<{ ok: true } | { ok: false; error: string }>
     addPaths: (paths: string[]) => Promise<FfmpegExportBatchAddPathsResult>
     openInput: (
       path: string,

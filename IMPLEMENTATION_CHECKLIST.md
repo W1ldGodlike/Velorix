@@ -337,7 +337,7 @@
 - [~] Таблица файлов + добавить файлы (multi-select) + **папка (рекурсивный scan)** + DnD файлов **и папок**.
 - [~] Параллелизм 1/2/4/auto.
 - [~] Очередь статусов (waiting/running/done/error/cancelled); **persist `userData/ffmpeg-export-batch/queue.json`**.
-- [~] Сводка ошибок после завершения; **drag-reorder**; economy/history/open; **retry failed** + **clear completed** + retry строки; **копировать пути** / **сохранить отчёт** / **убрать ожидающие**; **шаблон имени выхода** (`ffmpegExportBatchOutputSuffix`); **общая папка выхода** (`ffmpegExportBatchOutputDirectory`); авто-раскрытие панели при auto-enqueue §7.4.
+- [~] Сводка ошибок после завершения; **drag-reorder**; economy/history/open; **retry failed** + **clear completed** + retry строки; **копировать пути (вход/выход)** / **сохранить отчёт** / **убрать ожидающие**; **шаблон имени выхода** (`ffmpegExportBatchOutputSuffix`); **общая папка выхода** (`ffmpegExportBatchOutputDirectory`, открыть в проводнике); авто-раскрытие панели при auto-enqueue §7.4.
 
 ### §7.4 Комбинированный режим
 
@@ -374,7 +374,7 @@
 
 ## §9. Инспектор видеофайлов
 
-- [x] Запуск ffprobe: grant-пути (IPC); полная сводка + таблица дорожек в **отдельном окне** `#inspector` (`inspector-window.ts`, `windowBounds.inspector`); в главном редакторе — короткая строка видео/аудио под таймлайном (`VideoTimeline`).
+- [x] Запуск ffprobe: grant-пути (IPC); полная сводка + таблица дорожек в **отдельном окне** `#inspector` (`inspector-window.ts`, `windowBounds.inspector`); в главном редакторе — короткая строка видео/аудио под таймлайном (`VideoTimeline`); **в инспекторе** — кнопка «папка с видео» и DnD папки (как §4.B).
 - [x] Сводка: контейнер, длительность, bitrate — **в окне инспектора**; в редакторе под превью — имя файла (полный путь в подсказке).
 - [x] Таблица дорожек — **в окне инспектора** (`tags`, битрейт/`disposition`, видео `pix_fmt`/SAR/DAR + `color_*`, контекстное меню).
 - [x] Детали дорожек расширены точечными ffprobe-полями: `codec_tag` hex fallback, `extradata_size`, `initial_padding`, `closed_captions`, `is_avc`, `ticks_per_frame`, `bits_per_coded_sample`, ReplayGain, аудио `language`/`title`/`handler_name`.

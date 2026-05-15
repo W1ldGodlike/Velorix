@@ -2291,6 +2291,13 @@ function App(): JSX.Element {
     )
   }
 
+  async function handleBatchRevealSharedOutputFolder(): Promise<void> {
+    const res = await window.fluxalloy.batchExport.revealSharedOutputFolder()
+    if (!res.ok) {
+      setStatusHint(res.error)
+    }
+  }
+
   async function handleBatchDropFiles(files: FileList | null): Promise<void> {
     if (!files || files.length === 0 || batchExportBusy) {
       return
@@ -2408,6 +2415,21 @@ function App(): JSX.Element {
       return
     }
     setStatusHint(uiTextVars('batchExportCopiedPaths', { count: String(listed.paths.length) }))
+  }
+
+  async function handleBatchCopyOutputPaths(): Promise<void> {
+    const listed = await window.fluxalloy.batchExport.listOutputPaths()
+    if (listed.paths.length === 0) {
+      setStatusHint(uiText('batchExportNoOutputPaths'))
+      return
+    }
+    const text = listed.paths.join('\r\n')
+    const written = await window.fluxalloy.clipboard.writeText(text)
+    if (!written.ok) {
+      setStatusHint(uiText('batchExportCopyPathsFailed'))
+      return
+    }
+    setStatusHint(uiTextVars('batchExportCopiedOutputPaths', { count: String(listed.paths.length) }))
   }
 
   async function handleBatchSaveReport(): Promise<void> {
@@ -3221,6 +3243,16 @@ function App(): JSX.Element {
                       className="app-btn"
                       disabled={batchExportBusy || batchOutputDirectory.length === 0}
                       onClick={() => {
+                        void handleBatchRevealSharedOutputFolder()
+                      }}
+                    >
+                      {uiText('batchExportOutputDirOpen')}
+                    </button>
+                    <button
+                      type="button"
+                      className="app-btn"
+                      disabled={batchExportBusy || batchOutputDirectory.length === 0}
+                      onClick={() => {
                         void handleBatchClearOutputDirectory()
                       }}
                     >
@@ -3364,6 +3396,22 @@ function App(): JSX.Element {
                   }}
                 >
                   {uiText('batchExportCopyPaths')}
+                </button>
+                <button
+                  type="button"
+                  className="app-btn"
+                  disabled={
+                    !(
+                      batchSnapshot?.rows.some(
+                        (r) => typeof r.outputPath === 'string' && r.outputPath.trim() !== ''
+                      ) ?? false
+                    )
+                  }
+                  onClick={() => {
+                    void handleBatchCopyOutputPaths()
+                  }}
+                >
+                  {uiText('batchExportCopyOutputPaths')}
                 </button>
                 <button
                   type="button"

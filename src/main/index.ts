@@ -141,6 +141,7 @@ import {
   markWaitingFfmpegExportBatchRowsCancelled,
   moveFfmpegExportBatchRow,
   listFfmpegExportBatchInputPaths,
+  listFfmpegExportBatchOutputPaths,
   removeFfmpegExportBatchRows,
   removeCompletedFfmpegExportBatchRows,
   removeWaitingFfmpegExportBatchRows,
@@ -3646,6 +3647,10 @@ app.whenReady().then(() => {
     return { ok: true, paths: listFfmpegExportBatchInputPaths() }
   })
 
+  ipcMain.handle(mw.batchExportListOutputPaths, (): { ok: true; paths: string[] } => {
+    return { ok: true, paths: listFfmpegExportBatchOutputPaths() }
+  })
+
   ipcMain.handle(
     mw.batchExportRemoveWaiting,
     (): { ok: true; removed: number } | { ok: false; error: string } => {
@@ -3717,6 +3722,30 @@ app.whenReady().then(() => {
       const loc = mainDownloadsUiLocale()
       const def = batchExportOutputFolderPickOptsFromSettings()
       return pickFfmpegExportBatchOutputFolder(win, loc, def)
+    }
+  )
+
+  ipcMain.handle(
+    mw.batchExportRevealSharedOutputFolder,
+    async (): Promise<{ ok: true } | { ok: false; error: string }> => {
+      const M = mainAppStr()
+      const raw = cachedSettings.ffmpegExportBatchOutputDirectory
+      if (typeof raw !== 'string' || raw.trim().length === 0) {
+        return { ok: false, error: M.batchExportSharedOutputDirNotSet }
+      }
+      const dir = normalize(raw.trim())
+      if (!existsSync(dir)) {
+        return { ok: false, error: M.batchExportSharedOutputDirMissing }
+      }
+      try {
+        if (!statSync(dir).isDirectory()) {
+          return { ok: false, error: M.batchExportSharedOutputDirNotDirectory }
+        }
+      } catch {
+        return { ok: false, error: M.batchExportSharedOutputDirMissing }
+      }
+      const err = await shell.openPath(dir)
+      return err ? { ok: false, error: err } : { ok: true }
     }
   )
 

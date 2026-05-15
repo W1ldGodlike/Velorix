@@ -78,6 +78,28 @@ export function listFfmpegExportBatchInputPaths(): string[] {
   return rows.map((r) => r.inputPath)
 }
 
+export function listFfmpegExportBatchOutputPaths(): string[] {
+  const seen = new Set<string>()
+  const out: string[] = []
+  for (const row of rows) {
+    const raw = row.outputPath
+    if (typeof raw !== 'string') {
+      continue
+    }
+    const p = raw.trim()
+    if (p.length === 0) {
+      continue
+    }
+    const key = pathKey(p)
+    if (seen.has(key)) {
+      continue
+    }
+    seen.add(key)
+    out.push(p)
+  }
+  return out
+}
+
 export function removeWaitingFfmpegExportBatchRows(): number {
   const before = rows.length
   rows = rows.filter((r) => r.status !== FFMPEG_EXPORT_BATCH_STATUS_WAITING)

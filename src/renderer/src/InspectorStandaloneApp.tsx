@@ -9,6 +9,7 @@ import { AboutDialog } from './components/AboutDialog'
 import {
   IconCircleHelp,
   IconFilm,
+  IconFolder,
   IconFolderOpen,
   IconMoon,
   IconRefreshCw,
@@ -182,6 +183,18 @@ export function InspectorStandaloneApp(): JSX.Element {
     }
   }
 
+  async function handleOpenFolderDialog(): Promise<void> {
+    const result = await window.fluxalloy.preview.openVideoFolderDialog(
+      getUiLocale() as DownloadsWindowUiLocale
+    )
+    if (result.ok) {
+      setMediaPath(result.path)
+      setStatusHint(result.name)
+    } else if ('error' in result && typeof result.error === 'string' && result.error.length > 0) {
+      setStatusHint(result.error)
+    }
+  }
+
   async function handleOpenDialog(): Promise<void> {
     const result = await window.fluxalloy.preview.openFileDialog(
       getUiLocale() as DownloadsWindowUiLocale
@@ -224,6 +237,17 @@ export function InspectorStandaloneApp(): JSX.Element {
         </div>
         <div className="inspector-topbar-spacer" aria-hidden />
         <div className="app-topbar-actions">
+          <button
+            type="button"
+            className="app-icon-btn"
+            onClick={() => {
+              void handleOpenFolderDialog()
+            }}
+            title={uiText('topbarOpenVideoFolderTitle')}
+          >
+            <IconFolder />
+            <span className="app-visually-hidden">{uiText('topbarOpenVideoFolderLabel')}</span>
+          </button>
           <button
             type="button"
             className="app-icon-btn app-icon-btn-primary"

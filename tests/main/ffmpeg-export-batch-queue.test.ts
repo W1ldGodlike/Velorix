@@ -11,6 +11,7 @@ import {
   clearFfmpegExportBatchQueue,
   getFfmpegExportBatchSnapshot,
   listFfmpegExportBatchInputPaths,
+  listFfmpegExportBatchOutputPaths,
   removeWaitingFfmpegExportBatchRows,
   moveFfmpegExportBatchRow,
   removeCompletedFfmpegExportBatchRows,
@@ -136,6 +137,15 @@ describe('ffmpeg-export-batch-queue', () => {
   it('listFfmpegExportBatchInputPaths сохраняет порядок', () => {
     addFfmpegExportBatchPaths(['z.mp4', 'a.mp4'])
     expect(listFfmpegExportBatchInputPaths()).toEqual(['z.mp4', 'a.mp4'])
+  })
+
+  it('listFfmpegExportBatchOutputPaths: порядок, без пустых, без дубликатов по normalize', () => {
+    addFfmpegExportBatchPaths(['a.mp4', 'b.mp4', 'c.mp4'])
+    const ids = getFfmpegExportBatchSnapshot().rows
+    updateFfmpegExportBatchRow(ids[0]!.id, { outputPath: '  out1.mp4  ' })
+    updateFfmpegExportBatchRow(ids[1]!.id, { outputPath: 'OUT1.mp4' })
+    updateFfmpegExportBatchRow(ids[2]!.id, { outputPath: 'z.mkv' })
+    expect(listFfmpegExportBatchOutputPaths()).toEqual(['out1.mp4', 'z.mkv'])
   })
 
   it('removeWaitingFfmpegExportBatchRows', () => {
