@@ -42,6 +42,26 @@ describe('shared ffmpeg export argv', () => {
     expect(resolveFfmpegExportEncodeParams('quality')).toEqual({ crf: '18', x264preset: 'medium' })
   })
 
+  it('audioMode pcm_s16le: -c:a pcm_s16le без -b:a', () => {
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mkv',
+      applyTrim: false,
+      encodePreset: 'balance',
+      videoCodec: 'libx264',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'pcm_s16le',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mkv'
+    })
+    const i = argv.indexOf('-c:a')
+    expect(argv.slice(i, i + 2)).toEqual(['-c:a', 'pcm_s16le'])
+    expect(argv.includes('-b:a')).toBe(false)
+  })
+
   it('возвращает scale-фильтр только для непустых пресетов', () => {
     expect(resolveFfmpegExportScaleFilter('source')).toBeNull()
     expect(resolveFfmpegExportScaleFilter('480p')).toBe('scale=-2:480')

@@ -782,7 +782,11 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
   if (params.audioMode === 'none') {
     args.push('-an')
   } else {
-    args.push('-c:a', 'aac', '-b:a', params.audioBitrate)
+    if (params.audioMode === 'pcm_s16le') {
+      args.push('-c:a', 'pcm_s16le')
+    } else {
+      args.push('-c:a', 'aac', '-b:a', params.audioBitrate)
+    }
     // -filter:a применяется только к аудио потоку; -af применяется и к input filter chain,
     // но фактически в нашем шаблоне они эквивалентны. Используем явное :a, чтобы было видно,
     // что фильтр привязан к аудио и не задевает -vf. Громкость идёт первой, нормализация

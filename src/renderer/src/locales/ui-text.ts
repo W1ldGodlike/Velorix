@@ -616,7 +616,16 @@ const UI_TEXT = {
     editorAriaCropExport: 'Шаблон обрезки кадра',
     editorFfmpegSectionAudio: 'Аудио и кадр',
     editorFfmpegSectionAudioHint:
-      'Звуковая дорожка, громкость, отдельный снимок кадра и поведение субтитров в готовом файле.',
+      'Звуковая дорожка (AAC, PCM без сжатия или без звука), громкость, отдельный снимок кадра и поведение субтитров в готовом файле.',
+    editorFieldAudioMode: 'Звуковая дорожка',
+    editorExportAudioModeAac: 'AAC',
+    editorExportAudioModePcmS16le: 'PCM 16 бит (без сжатия)',
+    editorExportAudioModeNone: 'Нет дорожки',
+    editorAriaAudioModeExport: 'Режим аудио при экспорте',
+    editorTooltipAudioMode:
+      'AAC — обычный сжатый звук для плееров. PCM — без потерь и без сжатия (файл крупнее), удобно для монтажа и архива. «Нет дорожки» — только видео.',
+    editorExportAudioModeSelectHint:
+      'Выберите AAC для совместимости, PCM для несжатого звука или отключите дорожку полностью.',
     editorNoAudioSpan: 'Без аудио',
     editorNoAudioPillLabel: 'Без аудио',
     editorNoAudioHint:
@@ -626,7 +635,7 @@ const UI_TEXT = {
     editorFieldAudioGain: 'Громкость аудио',
     editorAriaAudioGain: 'Сдвиг громкости',
     editorHintAudioGain:
-      'Поднять или опустить громкость всей дорожки целиком. Не действует, если звук отключён переключателем выше.',
+      'Поднять или опустить громкость всей дорожки целиком. Не действует, если выбран режим «Нет дорожки».',
     editorFieldAudioNormalize: 'Выравнивание громкости',
     editorAriaAudioNormalize: 'Автоматическое выравнивание громкости',
     editorHintAudioNormalize:
@@ -1649,7 +1658,16 @@ const UI_TEXT = {
     editorAriaCropExport: 'Crop template',
     editorFfmpegSectionAudio: 'Audio & frame',
     editorFfmpegSectionAudioHint:
-      'Audio track, loudness, separate frame snapshots, and subtitle behavior in the finished file.',
+      'Audio track (AAC, uncompressed PCM, or no sound), loudness, separate frame snapshots, and subtitle behavior in the finished file.',
+    editorFieldAudioMode: 'Audio track',
+    editorExportAudioModeAac: 'AAC',
+    editorExportAudioModePcmS16le: 'PCM 16-bit (uncompressed)',
+    editorExportAudioModeNone: 'No audio track',
+    editorAriaAudioModeExport: 'Export audio mode',
+    editorTooltipAudioMode:
+      'AAC is the usual compressed choice for players. PCM is lossless and uncompressed (larger files), handy for editing and archival. «No track» exports video only.',
+    editorExportAudioModeSelectHint:
+      'Choose AAC for compatibility, PCM for uncompressed audio, or disable the track entirely.',
     editorNoAudioSpan: 'No audio',
     editorNoAudioPillLabel: 'No audio',
     editorNoAudioHint:
@@ -1659,7 +1677,7 @@ const UI_TEXT = {
     editorFieldAudioGain: 'Audio gain',
     editorAriaAudioGain: 'Loudness shift',
     editorHintAudioGain:
-      'Boosts or lowers the entire track. Ignored when “No audio” is enabled above.',
+      'Boosts or lowers the entire track. Ignored when «No audio track» is selected.',
     editorFieldAudioNormalize: 'Loudness leveling',
     editorAriaAudioNormalize: 'Automatic loudness leveling',
     editorHintAudioNormalize:

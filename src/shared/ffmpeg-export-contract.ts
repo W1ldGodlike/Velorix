@@ -82,7 +82,7 @@ export type FfmpegExportVideoHueId = 'off' | 'warmShift' | 'coolShift' | 'satBoo
  * §7.2 — bundled 3D LUT для `lut3d=file=…` (whitelist; `.cube` в `resources/luts/`, путь подставляет main).
  */
 export type FfmpegExportVideoLut3dId = 'off' | 'film-warm' | 'film-cool' | 'punch'
-export type FfmpegExportAudioModeId = 'aac' | 'none'
+export type FfmpegExportAudioModeId = 'aac' | 'pcm_s16le' | 'none'
 /**
  * §7.2 — пресеты нормализации громкости. `loudnorm` — однопроходный EBU R128,
  * `dynaudnorm` — динамическая нормализация. Включаются только в одиночном проходе:

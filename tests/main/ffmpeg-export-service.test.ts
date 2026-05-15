@@ -82,6 +82,7 @@ describe('ffmpeg export pure helpers', () => {
     expect(parseFfmpegExportAudioBitrate('16k')).toBeNull()
     expect(parseFfmpegExportAudioBitrate('1000k')).toBeNull()
     expect(parseFfmpegExportAudioMode('none')).toBe('none')
+    expect(parseFfmpegExportAudioMode('pcm_s16le')).toBe('pcm_s16le')
     expect(parseFfmpegExportAudioMode('bad')).toBe('aac')
     expect(parseFfmpegExportTwoPass(true)).toBe(true)
     expect(parseFfmpegExportTwoPass(false)).toBe(false)
@@ -361,6 +362,20 @@ describe('ffmpeg export pure helpers', () => {
       cropPreset: 'none'
     })
     expect(autoHevc.ffmpegExportVideoCodec).toBe('hw_auto_hevc')
+
+    const pcmMode = mergeFfmpegExportSnapshotIntoAppSettings({ theme: 'dark' }, {
+      encodePreset: 'balance',
+      container: 'mkv',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'pcm_s16le',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      videoTransform: 'none',
+      cropPreset: 'none'
+    })
+    expect(pcmMode.ffmpegExportAudioMode).toBe('pcm_s16le')
 
     const deb = mergeFfmpegExportSnapshotIntoAppSettings(
       { theme: 'dark' },

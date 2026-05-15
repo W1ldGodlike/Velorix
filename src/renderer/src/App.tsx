@@ -854,6 +854,11 @@ function App(): JSX.Element {
         { id: 'loudnorm', label: uiText('editorExportAudioNormLoudnorm') },
         { id: 'dynaudnorm', label: uiText('editorExportAudioNormDynaudnorm') }
       ] as Array<{ id: FfmpegExportAudioNormalizeId; label: string }>,
+      audioModes: [
+        { id: 'aac', label: uiText('editorExportAudioModeAac') },
+        { id: 'pcm_s16le', label: uiText('editorExportAudioModePcmS16le') },
+        { id: 'none', label: uiText('editorExportAudioModeNone') }
+      ] as Array<{ id: FfmpegExportAudioModeId; label: string }>,
       snapshotFormats: [
         { id: 'png', label: uiText('editorExportSnapshotPng') },
         { id: 'jpg', label: uiText('editorExportSnapshotJpg') }
@@ -1447,6 +1452,8 @@ function App(): JSX.Element {
     }
     if (loaded.ffmpegExportAudioMode === 'none') {
       setExportAudioMode('none')
+    } else if (loaded.ffmpegExportAudioMode === 'pcm_s16le') {
+      setExportAudioMode('pcm_s16le')
     } else {
       setExportAudioMode('aac')
     }
@@ -3313,28 +3320,35 @@ function App(): JSX.Element {
                   {uiText('editorFfmpegSectionAudioHint')}
                 </p>
                 <div className="app-settings-grid" aria-describedby="ffmpegAudioSectionHint">
-                  <div className="app-field app-field-switch">
-                    <span>{uiText('editorNoAudioSpan')}</span>
-                    <PillSwitch
-                      label={uiText('editorNoAudioPillLabel')}
-                      tooltip={uiText('editorTooltipNoAudio')}
-                      checked={exportAudioMode === 'none'}
-                      describedBy="ffmpegAudioSectionHint ffmpegAudioModeHint"
+                  <label
+                    className="app-field"
+                    title={uiText('editorTooltipAudioMode')}
+                    aria-describedby="ffmpegAudioSectionHint ffmpegAudioModeSelectHint"
+                  >
+                    <span>{uiText('editorFieldAudioMode')}</span>
+                    <select
+                      className="app-control"
+                      title={uiText('editorTooltipAudioMode')}
+                      aria-label={uiText('editorAriaAudioModeExport')}
+                      value={exportAudioMode}
                       disabled={exportBusy || snapshotBusy}
-                      onToggle={() => {
+                      onChange={(e) => {
                         bumpManualExportEdit()
-                        const v: FfmpegExportAudioModeId =
-                          exportAudioMode === 'none' ? 'aac' : 'none'
+                        const v = e.target.value as FfmpegExportAudioModeId
                         setExportAudioMode(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportAudioMode(v)
-                          .catch(console.error)
+                        void window.fluxalloy.settings.setFfmpegExportAudioMode(v).catch(console.error)
                       }}
-                    />
-                    <span id="ffmpegAudioModeHint" className="app-visually-hidden">
-                      {uiText('editorNoAudioHint')}
+                    >
+                      {ffmpegExportSelectOptions.audioModes.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.label}
+                        </option>
+                      ))}
+                    </select>
+                    <span id="ffmpegAudioModeSelectHint" className="app-visually-hidden">
+                      {uiText('editorExportAudioModeSelectHint')}
                     </span>
-                  </div>
+                  </label>
                   <label className="app-field" title={uiText('editorTooltipAacBitrate')}>
                     <span>{uiText('editorFieldAacBitrate')}</span>
                     <select
@@ -3342,7 +3356,7 @@ function App(): JSX.Element {
                       title={uiText('editorTooltipAacBitrate')}
                       aria-label={uiText('editorAriaAacBitrate')}
                       value={exportAudioBitrate}
-                      disabled={exportBusy || snapshotBusy || exportAudioMode === 'none'}
+                      disabled={exportBusy || snapshotBusy || exportAudioMode !== 'aac'}
                       onChange={(e) => {
                         bumpManualExportEdit()
                         const v = e.target.value

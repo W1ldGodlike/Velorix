@@ -176,6 +176,9 @@ export function parseFfmpegExportAudioMode(raw: unknown): FfmpegExportAudioModeI
   if (raw === 'none') {
     return 'none'
   }
+  if (raw === 'pcm_s16le') {
+    return 'pcm_s16le'
+  }
   return 'aac'
 }
 
@@ -508,7 +511,7 @@ export function mergeFfmpegExportSnapshotIntoAppSettings(
   if (snapshot.audioMode === 'aac') {
     delete next.ffmpegExportAudioMode
   } else {
-    next.ffmpegExportAudioMode = 'none'
+    next.ffmpegExportAudioMode = snapshot.audioMode
   }
   if (snapshot.fps === null) {
     delete next.ffmpegExportFps

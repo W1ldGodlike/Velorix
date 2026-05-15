@@ -283,8 +283,8 @@ function parseFfmpegExportVideoBitrateStored(raw: unknown): string | undefined {
   return `${kbps}k`
 }
 
-function parseFfmpegExportAudioModeStored(raw: unknown): 'aac' | 'none' | undefined {
-  if (raw === 'aac' || raw === 'none') {
+function parseFfmpegExportAudioModeStored(raw: unknown): 'aac' | 'none' | 'pcm_s16le' | undefined {
+  if (raw === 'aac' || raw === 'none' || raw === 'pcm_s16le') {
     return raw
   }
   return undefined
