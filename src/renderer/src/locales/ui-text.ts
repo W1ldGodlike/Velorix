@@ -76,6 +76,9 @@ const UI_TEXT = {
     aboutTooltipMaintenanceCleanFfmpegTemp:
       'Очистить временные файлы ffmpeg после экспорта. Два шага с подтверждением.',
     aboutTooltipCloseAbout: 'Закрыть окно «О программе».',
+    aboutKnowledgeSupportArticle: 'Справка: логи и диагностика',
+    aboutKnowledgeSupportArticleTooltip:
+      'Открыть статью справки про журналы, Support ZIP и очистку временных файлов.',
     aboutMaintenanceCleanErrorTemplate: '{label}: {error}',
     byteSizeZero: '0 Б',
     byteSizeUnitB: 'Б',
@@ -1092,6 +1095,9 @@ const UI_TEXT = {
     aboutTooltipMaintenanceCleanFfmpegTemp:
       'Clear ffmpeg temp files created during exports. Two-step confirm.',
     aboutTooltipCloseAbout: 'Close the About dialog.',
+    aboutKnowledgeSupportArticle: 'Help: logs and diagnostics',
+    aboutKnowledgeSupportArticleTooltip:
+      'Open the in-app article about logs, Support ZIP, and cleaning temporary files.',
     aboutMaintenanceCleanErrorTemplate: '{label}: {error}',
     byteSizeZero: '0 B',
     byteSizeUnitB: 'B',

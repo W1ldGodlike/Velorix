@@ -3096,6 +3096,10 @@ button.app-downloads-hint-token:disabled {
   gap: 0.45rem;
 }
 
+.app-about-knowledge-link {
+  margin: 0.15rem 0 0;
+}
+
 .app-doc-inline-links {
   margin: 0;
   max-width: 100%;

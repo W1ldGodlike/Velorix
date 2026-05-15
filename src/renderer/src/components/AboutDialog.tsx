@@ -1,6 +1,7 @@
 import { useState, type JSX } from 'react'
 
 import type { AppAboutInfo } from '../../../shared/about-contract'
+import { KNOWLEDGE_SLUG_ABOUT_SUPPORT_LOGS } from '../../../shared/knowledge-contract'
 import type {
   DiagnosticsMaintenanceSnapshot,
   DiagnosticsMaintenanceTargetId
@@ -41,12 +42,15 @@ export function AboutDialog({
   open,
   aboutInfo,
   onClose,
-  onDiagnosticStatus
+  onDiagnosticStatus,
+  onOpenKnowledgeArticle
 }: {
   open: boolean
   aboutInfo: AppAboutInfo | null
   onClose: () => void
   onDiagnosticStatus?: (message: string) => void
+  /** Если задано — кнопка открывает статью базы знаний (главное окно). */
+  onOpenKnowledgeArticle?: (slug: string) => void
 }): JSX.Element | null {
   const [maintenanceConfirm, setMaintenanceConfirm] = useState<MaintenanceCleanChoice | null>(null)
 
@@ -281,6 +285,20 @@ export function AboutDialog({
                 {uiText('docLinkFfprobeShort')}
               </a>
             </p>
+            {onOpenKnowledgeArticle ? (
+              <p className="app-about-knowledge-link">
+                <button
+                  type="button"
+                  className="app-btn app-btn-compact"
+                  title={uiText('aboutKnowledgeSupportArticleTooltip')}
+                  onClick={() => {
+                    onOpenKnowledgeArticle(KNOWLEDGE_SLUG_ABOUT_SUPPORT_LOGS)
+                  }}
+                >
+                  {uiText('aboutKnowledgeSupportArticle')}
+                </button>
+              </p>
+            ) : null}
           </div>
           <button
             type="button"

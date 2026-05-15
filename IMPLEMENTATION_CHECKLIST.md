@@ -45,7 +45,7 @@
 - [~] §6/§7: downloads→processing — batch-режим, HW encode и оставшиеся расхождения embedded/pop-out.
 - [~] §8: terminal/CLI — polish подсказок/сценариев + RU/EN chrome вкладки «Терминал» (`ui-text`); RU `summary` контракта — `npm run locales:terminal-summaries-ru`; UX argv/выполнения без раздувания TODO-архива.
 - [~] §9/§18: ffprobe/diagnostics — crash/e2e smoke и точечные редкие поля по мере нахождения.
-- [~] §15: knowledge — расширить deep-link/tooltips; при необходимости заменить схематичные SVG на PNG скриншотов UI в `Help/assets/`.
+- [~] §15: knowledge — deep-link из «О программе» на `about-support-logs`; терминал; дальше — tooltips и при желании PNG в `Help/assets/`.
 - [~] §1.1/§2.2/§5: добить оставшиеся литералы → `ui-text`, contrast/focus audit и DPI/multi-monitor smoke.
 
 ---

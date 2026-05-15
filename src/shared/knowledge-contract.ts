@@ -21,3 +21,6 @@ export type KnowledgeReadArticleRequest = string | { slug: string; preferredUiLo
 
 /** Список статей: заголовки из `Help/en/*.md` при `preferredUiLocale: 'en'`, если файл есть. */
 export type KnowledgeListArticlesRequest = { preferredUiLocale?: 'ru' | 'en' } | undefined
+
+/** Deep-link из UI в базу знаний: логи, Support ZIP, диагностика (`Help/about-support-logs.md`). */
+export const KNOWLEDGE_SLUG_ABOUT_SUPPORT_LOGS = 'about-support-logs'

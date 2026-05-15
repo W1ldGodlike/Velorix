@@ -5270,6 +5270,11 @@ function App(): JSX.Element {
         onDiagnosticStatus={(message) => {
           setStatusHint(message)
         }}
+        onOpenKnowledgeArticle={(slug) => {
+          setAboutOpen(false)
+          setKnowledgeInitialSlug(slug)
+          setKnowledgeOpen(true)
+        }}
       />
 
       <KnowledgeDialog
