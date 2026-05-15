@@ -36,7 +36,11 @@ export function DownloadsLogPanel({
         {uiText('downloadsLogTitle')}
         <span>{targetRowId !== null ? `#${targetRowId}` : uiText('uiPlaceholderDash')}</span>
       </summary>
-      <div className="app-downloads-log-actions">
+      <div
+        className="app-downloads-log-actions"
+        role="toolbar"
+        aria-label={uiText('downloadsLogActionsToolbarAria')}
+      >
         <button
           type="button"
           className="app-btn app-btn-compact app-btn-icon-leading"

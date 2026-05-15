@@ -3900,6 +3900,7 @@ function App(): JSX.Element {
               <button
                 type="button"
                 className="app-ffmpeg-rail-restore app-icon-btn"
+                aria-label={uiText('editorFfmpegRailShowHidden')}
                 onClick={() => {
                   persistMainWindowUiPanelToggle('ffmpegSettingsRailOpen', true)
                 }}
@@ -3929,6 +3930,7 @@ function App(): JSX.Element {
                   <button
                     type="button"
                     className="app-icon-btn app-settings-rail-collapse-btn"
+                    aria-label={uiText('editorFfmpegRailCollapseHidden')}
                     onClick={() => {
                       persistMainWindowUiPanelToggle('ffmpegSettingsRailOpen', false)
                     }}

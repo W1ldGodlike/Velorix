@@ -131,6 +131,8 @@ export function ProcessingHistoryPanel({
       ) : null}
       <div
         className="app-processing-history-controls"
+        role="toolbar"
+        aria-label={uiText('processingHistoryFiltersToolbarAria')}
         aria-describedby="processingHistorySectionHint"
       >
         <select
@@ -176,7 +178,11 @@ export function ProcessingHistoryPanel({
           }}
         />
       </div>
-      <div className="app-processing-history-actions">
+      <div
+        className="app-processing-history-actions"
+        role="toolbar"
+        aria-label={uiText('processingHistoryActionsToolbarAria')}
+      >
         <button
           type="button"
           className="app-btn app-btn-compact"

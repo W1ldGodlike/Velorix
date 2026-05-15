@@ -171,6 +171,7 @@ export function KnowledgeDialog({
               value={filter}
               placeholder={uiText('knowledgeSearchPlaceholder')}
               title={uiText('knowledgeSearchTooltip')}
+              aria-label={uiText('knowledgeSearchInputAria')}
               onChange={(e) => {
                 setFilter(e.target.value)
               }}

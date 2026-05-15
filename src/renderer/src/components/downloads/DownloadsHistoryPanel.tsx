@@ -70,13 +70,18 @@ export function DownloadsHistoryPanel({
           {uiText('downloadsHistoryChipCancelled')} {weeklySummary.cancelled}
         </span>
       </div>
-      <div className="app-downloads-history-actions">
+      <div
+        className="app-downloads-history-actions"
+        role="toolbar"
+        aria-label={uiText('downloadsHistoryActionsToolbarAria')}
+      >
         <label className="app-downloads-history-filter">
           <span>{uiText('downloadsHistoryOutcomeFilterLabel')}</span>
           <select
             className="app-control"
             value={outcomeFilter}
             disabled={busy}
+            aria-label={uiText('downloadsHistoryOutcomeFilterLabel')}
             onChange={(event) => {
               onOutcomeFilterChange(event.currentTarget.value as typeof outcomeFilter)
             }}

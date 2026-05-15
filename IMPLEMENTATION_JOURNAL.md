@@ -733,4 +733,9 @@
 - [J-710] 2026-05-16 03:12:00 [Assistant]: Терминал — строка ввода: `toolbar` + `terminalCommandToolbarAria`; `aria-label` у кнопки вставки файла и выполнения; поиск подсказок — `aria-label`.
 - [J-711] 2026-05-16 03:16:00 [Assistant]: §7.3 пакетный экспорт — `role="group"` на строке папки вывода; `app-batch-export-actions` — `toolbar` + `batchExportActionsToolbarAria`.
 - [J-712] 2026-05-16 03:20:00 [Assistant]: Подвал — `aria-label` строки состояния; rail загрузок — `aria-label` у кнопки обновления опций.
+- [J-713] 2026-05-16 04:10:00 [Assistant]: Окно инспектора — `toolbar` у `app-topbar-actions`, подпись строки состояния (`appStatusbarAria`).
+- [J-714] 2026-05-16 04:12:00 [Assistant]: Панели загрузок pop-out/main — `toolbar` у действий живого журнала и истории; `aria-label` у select фильтра исхода.
+- [J-715] 2026-05-16 04:14:00 [Assistant]: База знаний — `aria-label` у поля поиска (`knowledgeSearchInputAria`).
+- [J-716] 2026-05-16 04:16:00 [Assistant]: История обработок редактора — `toolbar` у блока фильтров и блока кнопок действий.
+- [J-717] 2026-05-16 04:18:00 [Assistant]: Редактор — кнопки свернуть/развернуть rail FFmpeg: явный `aria-label`.
 
