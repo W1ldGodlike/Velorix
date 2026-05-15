@@ -30,7 +30,8 @@ import type {
 } from './ffmpeg-export-contract'
 import {
   FFMPEG_EXPORT_AUDIO_GAIN_DB_MAX,
-  FFMPEG_EXPORT_AUDIO_GAIN_DB_MIN
+  FFMPEG_EXPORT_AUDIO_GAIN_DB_MIN,
+  FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR
 } from './ffmpeg-export-contract'
 import type { FfmpegHwVideoEncoderId } from './ffmpeg-hw-encoder-probe'
 import { isFfmpegHwExportVideoCodec } from './ffmpeg-export-video-codec'
@@ -630,6 +631,27 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
     appendFfmpegHwEncoderRateArgs(args, vcodec, params.encodePreset, crf, params.videoBitrate)
     if (vcodec.startsWith('hevc_') && (container === 'mp4' || container === 'mov')) {
       args.push('-tag:v', 'hvc1')
+    }
+  } else if (vcodec === 'libvpx-vp9') {
+    if (tp) {
+      throw new Error('Двухпроходный режим поддерживается только для libx264')
+    }
+    if (container !== 'mkv') {
+      throw new Error(FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR)
+    }
+    args.push('-c:v', 'libvpx-vp9', '-row-mt', '1')
+    const cpuUsed =
+      params.encodePreset === 'smaller' ? '4' : params.encodePreset === 'quality' ? '0' : '2'
+    const deadline =
+      params.encodePreset === 'quality' ? 'best' : params.encodePreset === 'smaller' ? 'realtime' : 'good'
+    args.push('-cpu-used', cpuUsed, '-deadline', deadline)
+    if (params.videoBitrate === null) {
+      const presetCrf =
+        params.encodePreset === 'quality' ? 28 : params.encodePreset === 'smaller' ? 38 : 32
+      const crfNum = params.crf === null ? presetCrf : Math.min(63, Math.max(0, params.crf))
+      args.push('-crf', String(crfNum))
+    } else {
+      args.push('-b:v', params.videoBitrate)
     }
   } else {
     args.push('-c:v', vcodec, '-preset', enc.x264preset)

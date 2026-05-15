@@ -18,6 +18,7 @@ export type FfmpegExportEncodePresetId = 'balance' | 'smaller' | 'quality'
 export type FfmpegExportVideoCodecId =
   | 'libx264'
   | 'libx265'
+  | 'libvpx-vp9'
   | 'hw_auto'
   | 'hw_auto_hevc'
   | FfmpegHwVideoEncoderId
@@ -232,6 +233,9 @@ export interface MediaExportRequestPayload {
 
 /** Стабильное `result.error` при отмене по `AbortSignal` (сравнение в main; не локализовать). */
 export const FFMPEG_EXPORT_CANCELLED_ERROR = 'Экспорт отменён' as const
+
+/** `libvpx-vp9` допускается только с контейнером MKV (spawn и превью). */
+export const FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR = 'VP9 (libvpx-vp9): только контейнер MKV.' as const
 
 export type MediaExportStartResult =
   | { ok: true; path: string }

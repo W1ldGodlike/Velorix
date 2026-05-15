@@ -108,6 +108,9 @@ export function parseFfmpegExportVideoCodec(raw: unknown): FfmpegExportVideoCode
   if (raw === 'libx265') {
     return 'libx265'
   }
+  if (raw === 'libvpx-vp9') {
+    return 'libvpx-vp9'
+  }
   if (typeof raw === 'string' && HW_SET.has(raw)) {
     return raw as FfmpegHwVideoEncoderId
   }

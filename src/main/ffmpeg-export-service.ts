@@ -38,7 +38,8 @@ import {
 import { createEmptyFfmpegHwEncodersSnapshot } from '../shared/ffmpeg-hw-encoder-probe'
 import {
   FFMPEG_EXPORT_CANCELLED_ERROR,
-  FFMPEG_EXPORT_USER_PRESETS_MAX_ENTRIES
+  FFMPEG_EXPORT_USER_PRESETS_MAX_ENTRIES,
+  FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR
 } from '../shared/ffmpeg-export-contract'
 import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
@@ -912,6 +913,13 @@ export async function runFfmpegExportJob(params: {
   const videoTransform = parseFfmpegExportVideoTransform(params.videoTransform)
   const cropPreset = parseFfmpegExportCropPreset(params.cropPreset)
   const container = parseFfmpegExportContainer(params.container ?? 'mp4')
+  if (videoCodec === 'libvpx-vp9' && container !== 'mkv') {
+    return {
+      ok: false,
+      error: FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR,
+      videoCodecUsed: videoCodec
+    }
+  }
   const wantTwoPass = params.twoPass === true && videoBitrate !== null && videoCodec === 'libx264'
   const audioGainDb = parseFfmpegExportAudioGainDb(params.audioGainDb)
   const stripMetadata = parseFfmpegExportStripFlag(params.stripMetadata)

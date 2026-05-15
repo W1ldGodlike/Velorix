@@ -15,6 +15,7 @@ describe('ffmpeg-export-video-codec', () => {
     expect(parseFfmpegExportVideoCodec('hw_auto')).toBe('hw_auto')
     expect(parseFfmpegExportVideoCodec('hw_auto_hevc')).toBe('hw_auto_hevc')
     expect(parseFfmpegExportVideoCodec('libx265')).toBe('libx265')
+    expect(parseFfmpegExportVideoCodec('libvpx-vp9')).toBe('libvpx-vp9')
     expect(parseFfmpegExportVideoCodec('h264_nvenc')).toBe('h264_nvenc')
     expect(parseFfmpegExportVideoCodec('evil')).toBe('libx264')
   })

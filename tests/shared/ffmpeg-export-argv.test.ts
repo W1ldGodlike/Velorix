@@ -25,6 +25,7 @@ import {
   resolveFfmpegExportVideoTransformFilters,
   shouldApplyFfmpegExportTrim
 } from '../../src/shared/ffmpeg-export-argv'
+import { FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR } from '../../src/shared/ffmpeg-export-contract'
 
 describe('shared ffmpeg export argv', () => {
   it('даёт CRF и x264 preset под системные пресеты §7.2', () => {
@@ -148,6 +149,52 @@ describe('shared ffmpeg export argv', () => {
     })
     expect(mkv.includes('hvc1')).toBe(false)
     expect(mkv[mkv.indexOf('-c:v') + 1]).toBe('libx265')
+  })
+
+  it('libvpx-vp9: только MKV; -row-mt, -cpu-used, -deadline, -crf', () => {
+    expect(() =>
+      buildFfmpegExportArgv({
+        inputPath: 'in.mp4',
+        outputPath: 'out.mp4',
+        applyTrim: false,
+        encodePreset: 'balance',
+        videoCodec: 'libvpx-vp9',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'aac',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        container: 'mp4'
+      })
+    ).toThrow(FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR)
+
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mkv',
+      outputPath: 'out.mkv',
+      applyTrim: false,
+      encodePreset: 'quality',
+      videoCodec: 'libvpx-vp9',
+      crf: 40,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mkv'
+    })
+    const j = argv.indexOf('-c:v')
+    expect(argv.slice(j, j + 8)).toEqual([
+      '-c:v',
+      'libvpx-vp9',
+      '-row-mt',
+      '1',
+      '-cpu-used',
+      '0',
+      '-deadline',
+      'best'
+    ])
+    expect(argv[argv.indexOf('-crf') + 1]).toBe('40')
   })
 
   it('h264_nvenc: без libx264-preset, VBR + cq; hevc_nvenc + mp4 даёт hvc1', () => {

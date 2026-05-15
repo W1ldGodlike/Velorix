@@ -720,6 +720,7 @@ function App(): JSX.Element {
         const v: Array<{ id: FfmpegExportVideoCodecId; label: string }> = [
           { id: 'libx264', label: uiText('editorExportCodecH264') },
           { id: 'libx265', label: uiText('editorExportCodecH265') },
+          { id: 'libvpx-vp9', label: uiText('editorExportCodecVp9') },
           { id: 'hw_auto', label: uiText('editorExportCodecHwAuto') },
           { id: 'hw_auto_hevc', label: uiText('editorExportCodecHwAutoHevc') }
         ]
