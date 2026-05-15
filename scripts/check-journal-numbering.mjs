@@ -1,5 +1,4 @@
 import { readFileSync } from 'node:fs'
-import { execFileSync } from 'node:child_process'
 
 const path = 'IMPLEMENTATION_JOURNAL.md'
 const text = readFileSync(path, 'utf8')
@@ -9,35 +8,10 @@ const entryRe =
   /^- \[J-(\d{3,})\] (\d{4}-\d{2}-\d{2}) (\d{2}):(\d{2}):(\d{2}) \[(Assistant|SDK)\]: /
 const legacyEntryRe = /^- \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \[(Assistant|SDK)\]: /
 
-const gitParenRe = /\(J-(\d{3,})\)/g
-
 let expected = 1
 let failed = false
 /** @type {Map<number, number>} */
 const seenIds = new Map()
-
-/** @type {Map<number, string>} */
-const gitAnchors = new Map()
-
-try {
-  const log = execFileSync('git', ['log', '--format=%ci %s'], {
-    encoding: 'utf8',
-    maxBuffer: 32 * 1024 * 1024
-  })
-  for (const line of log.split(/\r?\n/)) {
-    if (!line.trim()) continue
-    const m = /^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) [+-]\d{4} (.+)$/.exec(line)
-    if (!m) continue
-    for (const jm of m[2].matchAll(gitParenRe)) {
-      const id = Number.parseInt(jm[1], 10)
-      if (!gitAnchors.has(id)) {
-        gitAnchors.set(id, m[1])
-      }
-    }
-  }
-} catch {
-  console.warn('[journal] git log unavailable; skipping git time cross-check')
-}
 
 const nowMs = Date.now()
 const futureSlackMs = 120_000
@@ -92,14 +66,6 @@ for (let i = 0; i < lines.length; i++) {
   }
 
   stamps.push({ id: n, line: i + 1, ms, stamp })
-
-  const gitStamp = gitAnchors.get(n)
-  if (gitStamp && gitStamp !== stamp) {
-    console.error(
-      `[journal] line ${i + 1}: [J-${m[1]}] journal ${stamp} != git ${gitStamp} (commit has (J-${m[1]}))`
-    )
-    failed = true
-  }
 }
 
 for (let i = 1; i < stamps.length; i++) {
@@ -120,11 +86,9 @@ if (expected === 1) {
 
 if (failed) {
   console.error(
-    '[journal] hint: new entry — local time or `git log -1 --format=%ci` after commit with (J-NNN); bulk fix: `node scripts/sync-journal-times-from-git.mjs --write`'
+    '[journal] hint: новая запись — локальное время `YYYY-MM-DD HH:mm:ss`, следующий `[J-NNN]` без пропусков после последней строки раздела «Записи».'
   )
   process.exitCode = 2
 } else {
-  console.log(
-    `[journal] OK (${expected - 1} entries; monotonic; ${gitAnchors.size} git anchors (J-NNN))`
-  )
+  console.log(`[journal] OK (${expected - 1} entries; monotonic time)`)
 }

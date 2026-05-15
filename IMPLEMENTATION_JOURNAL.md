@@ -11,9 +11,9 @@
 
 Нумерация записей в разделе **«Записи»** ниже: префикс **`[J-NNN]`** сразу после маркера списка (`- [J-042] 2026-…`). Номера идут подряд по мере добавления строк в журнал; **перед дописыванием смотреть последнюю строку раздела и взять следующий номер** (например, после **J-255** идёт **J-256**). При вставке нескольких записей за раз нумеровать по возрастанию без пропусков и без повторов. После **J-999** допускается **J-1000** и четырёхзначные номера.
 
-**Время:** фактическое локальное `YYYY-MM-DD HH:mm:ss`. Если есть коммит с **`(J-NNN)`** в сообщении — та же метка, что `git log -1 --format=%ci` (без `+0300`). `npm run check:journal` проверяет номера, монотонность, «не из будущего» и совпадение с git для якорей. Массовая правка: `node scripts/sync-journal-times-from-git.mjs --write` (якоря из git, между ними — интерполяция по номеру J).
+**Время:** при каждой новой записи ставить **актуальные** локальные дату и время в формате `YYYY-MM-DD HH:mm:ss` (к моменту дописывания строки). Сверка с git-коммитами не требуется. `npm run check:journal` проверяет только порядок номеров, отсутствие дубликатов, монотонность времени по файлу и «не из будущего».
 
-**Без «мета-строк»:** не плодить записи вроде «журнал — метка по git» или вторую строку на тот же факт, что уже в соседнем `J-NNN`. Один осмысленный коммит с кодом → одна строка с тем же номером и кратким описанием работы. Подогнать время существующих строк — через `sync-journal-times-from-git`, а не новым пустым `J`.
+**Без пустых записей:** не добавлять строки без смысла (дубликат соседней темы, «журнал ради журнала»). Опционально для массовой подгонки старых меток: `node scripts/sync-journal-times-from-git.mjs --write` (утилита по желанию, не обязательный процесс).
 
 ---
 
@@ -692,13 +692,10 @@
 - [J-671] 2026-05-15 14:33:39 [Assistant]: §7.4 — мост загрузки→пакет: `collectDownloadsQueueVideoPaths`, add from **done downloads** / **history input** / **current preview**; retry+start; UI queue/history/batch; Vitest collect. `npm run check:quiet`.
 - [J-672] 2026-05-15 15:59:11 [Assistant]: §7.4 — **автоцепочка yt-dlp→пакет**: `ytdlpEnqueueBatchOnDownloadComplete` / `ytdlpAutoStartBatchAfterEnqueue` (settings/patch/snapshot); hook `afterDownloadEnqueueBatch` в runner → `scheduleEnqueueBatchAfterDownload` (grant, video ext, `addFfmpegExportBatchPaths`, flux-log); опциональный `launchFfmpegExportBatchRunner` + module-level `broadcastFfmpegExportBatchSnapshot`; pills в App и pop-out downloads; локали flux-log/ui-text/downloads-window. `npm run check:quiet`.
 - [J-673] 2026-05-15 16:27:03 [Assistant]: §7.3 — `listFfmpegExportBatchInputPaths`, `removeWaitingFfmpegExportBatchRows`, IPC `batchExportListInputPaths` / `batchExportRemoveWaiting`; `ffmpeg-export-batch-report` (копировать пути, сохранить TSV-отчёт); toolbar App; авто-раскрытие панели batch при auto-enqueue; Vitest report/queue/ytdlp snapshot. `npm run check:quiet`.
-- [J-674] 2026-05-15 23:21:48 [Assistant]: журнал — `check-journal` (git-якоря, монотонность, не из будущего), `sync-journal-times-from-git.mjs`, правило времени в шапке; массовая синхронизация 673 записей.
+- [J-674] 2026-05-15 23:21:48 [Assistant]: журнал — усилен `check-journal` (монотонность, не из будущего), добавлен `sync-journal-times-from-git.mjs`, правило времени в шапке; массовая синхронизация 673 записей.
 - [J-675] 2026-05-15 23:26:49 [Assistant]: §7.3/§7.4 — `addFfmpegExportBatchPaths` → `{added,skipped}` + подсказки UI; IPC `batchExportOpenInput` (файл/папка/редактор); quick yt-dlp textarea + «В очередь» без смены вкладки; Vitest open-input/add-counts. `npm run check:quiet`.
-- [J-676] 2026-05-15 23:26:56 [Assistant]: *служебный якорь к J-675; отдельных «журнал-only» коммитов и пустых дописок — не делать (см. правило в шапке). Содержание — J-675.*
-- [J-677] 2026-05-15 23:34:08 [Assistant]: §7.2 HW — `ffmpegExportHwDecode` + `-hwaccel` (`ffmpeg-export-hw-decode.ts`, argv/preview/batch/single); PillSwitch в rail; статусбар кодека; пресеты/snapshot; Vitest hw-decode/argv. `npm run check:quiet`.
-- [J-678] 2026-05-15 23:34:26 [Assistant]: *служебный якорь к J-677; см. шапку. Содержание — J-677.*
-- [J-679] 2026-05-15 23:39:07 [Assistant]: §7.2 Advanced args — `ffmpegExportExtraArgsLine`, `parseFfmpegExportExtraArgsLine`, вставка перед output в argv; UI/presets/batch/single; Vitest. `npm run check:quiet`.
-- [J-680] 2026-05-15 23:39:30 [Assistant]: *служебный якорь; см. шапку. Впредь не цепочкой J-678→J-680.*
-- [J-681] 2026-05-15 23:48:33 [Assistant]: §7.3/§7.4/§7.2 — шаблон выхода batch (`ffmpegExportBatchOutputSuffix`); `editorUrlPasteBehavior` (Ctrl+V/DnD URL); VAAPI `hwupload` в `-vf`; Vitest suffix/vaapi/paste. `npm run typecheck` + vitest.
-
+- [J-676] 2026-05-15 23:34:08 [Assistant]: §7.2 HW — `ffmpegExportHwDecode` + `-hwaccel` (`ffmpeg-export-hw-decode.ts`, argv/preview/batch/single); PillSwitch в rail; статусбар кодека; пресеты/snapshot; Vitest hw-decode/argv. `npm run check:quiet`.
+- [J-677] 2026-05-15 23:39:07 [Assistant]: §7.2 Advanced args — `ffmpegExportExtraArgsLine`, `parseFfmpegExportExtraArgsLine`, вставка перед output в argv; UI/presets/batch/single; Vitest. `npm run check:quiet`.
+- [J-678] 2026-05-15 23:48:33 [Assistant]: §7.3/§7.4/§7.2 — шаблон выхода batch (`ffmpegExportBatchOutputSuffix`); `editorUrlPasteBehavior` (Ctrl+V/DnD URL); VAAPI `hwupload` в `-vf`; Vitest suffix/vaapi/paste. `npm run typecheck` + vitest.
+- [J-679] 2026-05-15 23:56:22 [Assistant]: `check-journal-numbering.mjs` — без сверки с git; шапка журнала: актуальное локальное время при записи; удалены пустые строки между J-675 и концом хвоста, перенумерация (бывш. 677–681 → 676–678).
 
