@@ -6,6 +6,7 @@
 import type { FfmpegExportVideoCodecId } from './ffmpeg-export-contract'
 import {
   FFMPEG_EXPORT_AOM_AV1_MKV_ONLY_ERROR,
+  FFMPEG_EXPORT_RAV1E_MKV_ONLY_ERROR,
   FFMPEG_EXPORT_SVTAV1_MKV_ONLY_ERROR,
   FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR
 } from './ffmpeg-export-contract'
@@ -44,7 +45,12 @@ const HW_AUTO_HEVC_PRIORITY: readonly FfmpegHwVideoEncoderId[] = [
   'hevc_vaapi'
 ]
 
-const MKV_ONLY_CPU_CODECS = new Set<FfmpegExportVideoCodecId>(['libvpx-vp9', 'libsvtav1', 'libaom-av1'])
+const MKV_ONLY_CPU_CODECS = new Set<FfmpegExportVideoCodecId>([
+  'libvpx-vp9',
+  'libsvtav1',
+  'libaom-av1',
+  'librav1e'
+])
 
 /** VP9/AV1 (CPU) в текущей модели экспорта допускаются только в MKV. */
 export function cpuFfmpegVideoCodecRequiresMkv(codec: FfmpegExportVideoCodecId): boolean {
@@ -60,6 +66,9 @@ export function exportCpuCodecMkvOnlyErrorMessage(codec: FfmpegExportVideoCodecI
   }
   if (codec === 'libaom-av1') {
     return FFMPEG_EXPORT_AOM_AV1_MKV_ONLY_ERROR
+  }
+  if (codec === 'librav1e') {
+    return FFMPEG_EXPORT_RAV1E_MKV_ONLY_ERROR
   }
   return FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR
 }
@@ -142,6 +151,9 @@ export function parseFfmpegExportVideoCodec(raw: unknown): FfmpegExportVideoCode
   }
   if (raw === 'libaom-av1') {
     return 'libaom-av1'
+  }
+  if (raw === 'librav1e') {
+    return 'librav1e'
   }
   if (typeof raw === 'string' && HW_SET.has(raw)) {
     return raw as FfmpegHwVideoEncoderId

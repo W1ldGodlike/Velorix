@@ -688,6 +688,22 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
     } else {
       args.push('-b:v', params.videoBitrate)
     }
+  } else if (vcodec === 'librav1e') {
+    if (tp) {
+      throw new Error('Двухпроходный режим поддерживается только для libx264')
+    }
+    const speed =
+      params.encodePreset === 'smaller' ? '10' : params.encodePreset === 'quality' ? '4' : '7'
+    args.push('-c:v', 'librav1e', '-speed', speed)
+    if (params.videoBitrate === null) {
+      const presetQp =
+        params.encodePreset === 'quality' ? 75 : params.encodePreset === 'smaller' ? 118 : 95
+      const qpNum =
+        params.crf === null ? presetQp : Math.min(255, Math.max(1, Math.floor(params.crf)))
+      args.push('-qp', String(qpNum))
+    } else {
+      args.push('-b:v', params.videoBitrate)
+    }
   } else {
     args.push('-c:v', vcodec, '-preset', enc.x264preset)
     if (vcodec === 'libx265' && (container === 'mp4' || container === 'mov')) {

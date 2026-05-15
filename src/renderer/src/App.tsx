@@ -724,6 +724,7 @@ function App(): JSX.Element {
           { id: 'libvpx-vp9', label: uiText('editorExportCodecVp9') },
           { id: 'libsvtav1', label: uiText('editorExportCodecSvtav1') },
           { id: 'libaom-av1', label: uiText('editorExportCodecAomav1') },
+          { id: 'librav1e', label: uiText('editorExportCodecLibrav1e') },
           { id: 'hw_auto', label: uiText('editorExportCodecHwAuto') },
           { id: 'hw_auto_hevc', label: uiText('editorExportCodecHwAutoHevc') }
         ]

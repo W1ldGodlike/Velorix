@@ -280,6 +280,13 @@
     "tool": "ffmpeg"
   },
   {
+    "token": "librav1e",
+    "summary": "rav1e (librav1e) программный AV1.",
+    "examples": ["ffmpeg -c:v librav1e -speed 6 -qp 100"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/Encode/AV1",
+    "tool": "ffmpeg"
+  },
+  {
     "token": "-b:a",
     "summary": "Битрейт аудио.",
     "examples": ["ffmpeg -c:a aac -b:a 192k"],

@@ -311,8 +311,8 @@
 ### §7.2 Панель настроек
 
 - [~] Пресеты обработки: в тулбаре — пресеты скорости/CRF для libx264/libx265 (`ffmpegExportEncodePreset`); список **пресетов экспорта** — **11 встроенных платформенных** из кода (`getBuiltinFfmpegExportUserPresets`, TikTok/YouTube/…; `hint` в данных) + до **8** пользовательских без префикса `flux-builtin-`, слияние при загрузке `mergeBuiltinFfmpegExportUserPresetsFromFile` (до **24** записей суммарно; J-633–J-635); старые три `flux-builtin-*` из файла настроек не подмешиваются.
-- [~] Контейнер/формат: toolbar + settings MP4/MKV/MOV; VP9/SVT-AV1 CPU — только MKV (disabled MP4/MOV в UI, авто-переключение при смене кодека и при загрузке настроек).
-- [~] Видео кодек: whitelist **libx264** / **libx265** / **libvpx-vp9** / **libsvtav1** / **libaom-av1** (MKV-only для VP9/AV1 CPU) / HW (`ffmpegExportVideoCodec`, settings/IPC, argv, UI rail «Видео»); 2-pass только для H.264; AV1 HW — в `hw_auto`/`hw_auto_hevc` (в т.ч. **av1_vaapi** в пробе и цепочке AV1); prores — дальше.
+- [~] Контейнер/формат: toolbar + settings MP4/MKV/MOV; VP9 и CPU AV1 (SVT, AOM, rav1e) — только MKV (disabled MP4/MOV в UI, авто-переключение при смене кодека и при загрузке настроек).
+- [~] Видео кодек: whitelist **libx264** / **libx265** / **libvpx-vp9** / **libsvtav1** / **libaom-av1** / **librav1e** (MKV-only для VP9/AV1 CPU) / HW (`ffmpegExportVideoCodec`, settings/IPC, argv, UI rail «Видео»); 2-pass только для H.264; AV1 HW — в `hw_auto`/`hw_auto_hevc` (в т.ч. **av1_vaapi** в пробе и цепочке AV1); prores — дальше.
 - [~] Аудио кодек: AAC или без аудио; **громкость аудио** через `-filter:a volume=NdB` (`ffmpegExportAudioGainDb`, шаг 3 дБ, диапазон −24…+24); выбор другого кодека — позже.
 - [~] Bitrate/CRF/quality: persisted CRF override, video bitrate mode и AAC bitrate в toolbar/settings; **опционально 2-pass при bitrate** (`ffmpegExportTwoPass`); расширенная quality-панель — позже.
 - [~] FPS: persisted preset source/24/25/30/50/60 для экспорта.
