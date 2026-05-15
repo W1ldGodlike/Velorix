@@ -3639,6 +3639,12 @@ function App(): JSX.Element {
                         {row.progress}
                       </td>
                       <td headers={BATCH_EXPORT_TABLE_HEADER_IDS.actions}>
+                        <div
+                          role="toolbar"
+                          aria-label={uiTextVars('batchExportRowActionsToolbarAriaTemplate', {
+                            n: String(rowIndex + 1)
+                          })}
+                        >
                         <button
                           type="button"
                           className="app-btn app-btn-icon"
@@ -3793,6 +3799,7 @@ function App(): JSX.Element {
                         >
                           <IconQueueTrash aria-hidden />
                         </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -3926,7 +3933,11 @@ function App(): JSX.Element {
                     {uiText('editorFfmpegSettingsSubtitle')}
                   </p>
                 </div>
-                <div className="app-settings-panel-head-trailing">
+                <div
+                  className="app-settings-panel-head-trailing"
+                  role="toolbar"
+                  aria-label={uiText('editorFfmpegRailHeaderToolbarAria')}
+                >
                   <button
                     type="button"
                     className="app-icon-btn app-settings-rail-collapse-btn"
@@ -5463,7 +5474,11 @@ function App(): JSX.Element {
                     }}
                   />
                 </label>
-                <div className="app-terminal-hint-list">
+                <div
+                  className="app-terminal-hint-list"
+                  role="group"
+                  aria-label={uiText('terminalHintsInsertListAria')}
+                >
                   {visibleTerminalHints.map((hint) => (
                     <button
                       key={`${hint.tool}:${hint.token}:${hint.fullLine ?? ''}`}
@@ -5767,7 +5782,13 @@ function App(): JSX.Element {
                               </span>
                             </td>
                             <td>
-                              <div className="app-downloads-row-actions">
+                              <div
+                                className="app-downloads-row-actions"
+                                role="toolbar"
+                                aria-label={uiTextVars('downloadsQueueRowActionsToolbarAriaTemplate', {
+                                  id: String(row.id)
+                                })}
+                              >
                                 <button
                                   type="button"
                                   className="app-icon-btn"

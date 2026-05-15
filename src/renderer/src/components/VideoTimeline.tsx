@@ -603,7 +603,11 @@ export default function VideoTimeline({
           role="toolbar"
           aria-label={uiText('videoTimelineToolbarAria')}
         >
-          <div className="app-timeline-toolbar-primary">
+          <div
+            className="app-timeline-toolbar-primary"
+            role="group"
+            aria-label={uiText('videoTimelineTrimGroupAria')}
+          >
             <button
               type="button"
               className="app-btn app-btn-compact app-btn-timeline-in"
@@ -662,6 +666,8 @@ export default function VideoTimeline({
           </div>
           <div
             className="app-timeline-toolbar-center"
+            role="group"
+            aria-label={uiText('videoTimelineStatusReadoutGroupAria')}
             title={uiTextVars('videoTimelineToolbarCenterTitle', {
               dur: formatTimeWithMs(trimSpanSec),
               pos: formatProbePositionLine(current, duration, fpsProbeHint)
@@ -677,7 +683,11 @@ export default function VideoTimeline({
               {formatProbePositionLine(current, duration, fpsProbeHint)}
             </span>
           </div>
-          <div className="app-timeline-toolbar-export-cluster">
+          <div
+            className="app-timeline-toolbar-export-cluster"
+            role="group"
+            aria-label={uiText('videoTimelineExportSnapshotGroupAria')}
+          >
             <button
               type="button"
               className="app-btn app-btn-compact app-btn-timeline-snapshot"

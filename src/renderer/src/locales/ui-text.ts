@@ -138,6 +138,7 @@ const UI_TEXT = {
     terminalHintsPanelAria: 'Панель подсказок терминала',
     terminalHintsSearchLabel: 'Поиск подсказок',
     terminalHintsSearchPlaceholder: '--help, -i, crop',
+    terminalHintsInsertListAria: 'Подсказки: вставить токен или строку в команду',
     processingOutcomeSuccess: 'Готово',
     processingOutcomeError: 'Ошибка',
     processingOutcomeCancelled: 'Отмена',
@@ -260,6 +261,7 @@ const UI_TEXT = {
     downloadsEmptyFilter:
       'В этом фильтре строк нет. Переключите статус выше или добавьте новые URL.',
     downloadsQueueAriaMoveUp: 'Поднять выше в очереди',
+    downloadsQueueRowActionsToolbarAriaTemplate: 'Строка очереди #{id}: действия',
     downloadsQueueAriaMoveDown: 'Опустить ниже в очереди',
     downloadsQueueAriaRetryRow: 'Повторить загрузку этой строки',
     downloadsQueueAriaStartRow: 'Скачать эту строку',
@@ -513,6 +515,7 @@ const UI_TEXT = {
     editorFfmpegRailCollapseTitle:
       'Свернуть панель настроек сохранения, чтобы больше места осталось под превью и таймлайн. Параметры не сбрасываются.',
     editorFfmpegRailCollapseHidden: 'Свернуть панель настроек FFmpeg',
+    editorFfmpegRailHeaderToolbarAria: 'Заголовок панели FFmpeg: свернуть',
     editorTooltipFfmpegPanelIntro:
       'Эта панель не ломает исходный файл: она только описывает будущий результат при нажатии «Экспорт» или при автосохранении после загрузки. Меняйте параметры спокойно, пока не нажали сохранение.',
     editorTooltipSectionVideo:
@@ -923,6 +926,7 @@ const UI_TEXT = {
     batchExportRowStatusError: 'Ошибка',
     batchExportRowStatusCancelled: 'Отменено',
     batchExportColActions: 'Действия',
+    batchExportRowActionsToolbarAriaTemplate: 'Строка пакета {n}: действия',
     batchExportTableCaption:
       'Таблица очереди пакетного экспорта. Двойной щелчок по строке открывает исходник в редакторе; двойной щелчок по ячейке «Выход» открывает готовый файл, если путь известен. Кнопки копируют полные пути.',
     batchExportMoveUp: 'Выше',
@@ -1145,6 +1149,9 @@ const UI_TEXT = {
     videoTimelineResetTrimTitle: 'Сбросить обрезку (весь файл)',
     videoTimelineResetTrimButton: 'Сбросить обрезку',
     videoTimelineToolbarAria: 'Таймлайн: In, Out, переход к экспорту, масштаб',
+    videoTimelineTrimGroupAria: 'In, Out, сброс обрезки и метки времени',
+    videoTimelineStatusReadoutGroupAria: 'Длительность выбранного фрагмента и позиция',
+    videoTimelineExportSnapshotGroupAria: 'Сохранение кадра и переход к экспорту',
     videoTimelineToolbarIn: '← IN',
     videoTimelineToolbarOut: 'OUT →',
     videoTimelineToolbarTrim: 'Обрезать',
@@ -1327,6 +1334,7 @@ const UI_TEXT = {
     terminalHintsPanelAria: 'CLI hints',
     terminalHintsSearchLabel: 'Filter hints',
     terminalHintsSearchPlaceholder: '--help, -i, crop',
+    terminalHintsInsertListAria: 'Hints: insert a token or full line into the command',
     processingOutcomeSuccess: 'Done',
     processingOutcomeError: 'Error',
     processingOutcomeCancelled: 'Cancelled',
@@ -1448,6 +1456,7 @@ const UI_TEXT = {
     downloadsEmptyFilter:
       'No rows match this filter. Change the status chips above or add new URLs.',
     downloadsQueueAriaMoveUp: 'Move up in queue',
+    downloadsQueueRowActionsToolbarAriaTemplate: 'Queue row #{id}: actions',
     downloadsQueueAriaMoveDown: 'Move down in queue',
     downloadsQueueAriaRetryRow: 'Retry this download',
     downloadsQueueAriaStartRow: 'Download this row',
@@ -1698,6 +1707,7 @@ const UI_TEXT = {
     editorFfmpegRailCollapseTitle:
       'Collapse the save-settings panel for more preview and timeline space. Your values stay saved.',
     editorFfmpegRailCollapseHidden: 'Collapse FFmpeg settings panel',
+    editorFfmpegRailHeaderToolbarAria: 'FFmpeg panel header: collapse',
     editorTooltipFfmpegPanelIntro:
       'This panel does not change the source file on disk — it only describes the result when you export or when an auto-export runs after a download. Adjust freely until you save.',
     editorTooltipSectionVideo:
@@ -2106,6 +2116,7 @@ const UI_TEXT = {
     batchExportRowStatusError: 'Error',
     batchExportRowStatusCancelled: 'Cancelled',
     batchExportColActions: 'Actions',
+    batchExportRowActionsToolbarAriaTemplate: 'Batch row {n}: actions',
     batchExportTableCaption:
       'Batch export queue table. Double-click a row to open the source in the editor; double-click the output cell to open the finished file when its path is known. Buttons copy full paths.',
     batchExportMoveUp: 'Move up',
@@ -2322,6 +2333,9 @@ const UI_TEXT = {
     videoTimelineResetTrimTitle: 'Reset trim (full file)',
     videoTimelineResetTrimButton: 'Reset trim',
     videoTimelineToolbarAria: 'Timeline: In, Out, jump to export, zoom',
+    videoTimelineTrimGroupAria: 'In, Out, reset trim, and time badges',
+    videoTimelineStatusReadoutGroupAria: 'Selection duration and playhead position',
+    videoTimelineExportSnapshotGroupAria: 'Save frame and start export',
     videoTimelineToolbarIn: '← IN',
     videoTimelineToolbarOut: 'OUT →',
     videoTimelineToolbarTrim: 'Trim',

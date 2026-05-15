@@ -743,4 +743,9 @@
 - [J-720] 2026-05-16 05:04:00 [Assistant]: Диалоги редактора — подвал пресета экспорта и подвал путей движков как `toolbar`; строка `app-engine-path-actions` — `toolbar` с шаблоном по имени движка.
 - [J-721] 2026-05-16 05:06:00 [Assistant]: База знаний — заголовок модалки: группа закрытия как `toolbar` (`knowledgeDialogActionsToolbarAria`).
 - [J-722] 2026-05-16 05:08:00 [Assistant]: О программе — ссылки на внешнюю документацию оформлены как `<nav>` + `aboutExternalDocsNavAria`.
+- [J-723] 2026-05-16 05:25:00 [Assistant]: Очередь загрузок — `role="toolbar"` у `app-downloads-row-actions` с шаблоном по номеру строки (`downloadsQueueRowActionsToolbarAriaTemplate`).
+- [J-724] 2026-05-16 05:27:00 [Assistant]: §7.3 таблица пакета — `toolbar` в ячейке действий, подпись по индексу строки (`batchExportRowActionsToolbarAriaTemplate`).
+- [J-725] 2026-05-16 05:29:00 [Assistant]: Заголовок rail FFmpeg — `toolbar` + `editorFfmpegRailHeaderToolbarAria`.
+- [J-726] 2026-05-16 05:31:00 [Assistant]: Терминал — список подсказок как `role="group"` + `terminalHintsInsertListAria`.
+- [J-727] 2026-05-16 05:33:00 [Assistant]: `VideoTimeline` — внутри общего `toolbar` кластеры trim / статус / снимок+экспорт с `role="group"` и подписями.
 
