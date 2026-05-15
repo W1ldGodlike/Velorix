@@ -3,6 +3,7 @@ import { dirname, isAbsolute, normalize } from 'path'
 
 import { ENGINE_IDS, type EnginePathOverrides } from '../shared/engine-contract'
 import type { FfmpegExportVideoCodecId } from '../shared/ffmpeg-export-contract'
+import { parseFfmpegExportVideoCodec } from '../shared/ffmpeg-export-video-codec'
 import type {
   AppSettings,
   AppTheme,
@@ -231,10 +232,11 @@ function parseFfmpegExportEncodePresetStored(raw: unknown): string | undefined {
 }
 
 function parseFfmpegExportVideoCodecStored(raw: unknown): FfmpegExportVideoCodecId | undefined {
-  if (raw === 'libx265') {
-    return 'libx265'
+  const id = parseFfmpegExportVideoCodec(raw)
+  if (id === 'libx264') {
+    return undefined
   }
-  return undefined
+  return id
 }
 
 function parseFfmpegExportContainerStored(raw: unknown): 'mp4' | 'mkv' | 'mov' | undefined {

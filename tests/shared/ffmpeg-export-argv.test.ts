@@ -150,6 +150,69 @@ describe('shared ffmpeg export argv', () => {
     expect(mkv[mkv.indexOf('-c:v') + 1]).toBe('libx265')
   })
 
+  it('h264_nvenc: без libx264-preset, VBR + cq; hevc_nvenc + mp4 даёт hvc1', () => {
+    const h264 = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      videoCodec: 'h264_nvenc',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mp4'
+    })
+    const cv = h264.indexOf('-c:v')
+    expect(h264.slice(cv, cv + 2)).toEqual(['-c:v', 'h264_nvenc'])
+    expect(h264).toContain('-preset')
+    expect(h264).toContain('-rc:v')
+    expect(h264).toContain('vbr')
+    expect(h264).toContain('-cq:v')
+    expect(h264[h264.indexOf('-cq:v') + 1]).toBe('23')
+    expect(h264.includes('libx264')).toBe(false)
+
+    const hevc = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'smaller',
+      videoCodec: 'hevc_nvenc',
+      crf: 30,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mp4'
+    })
+    expect(hevc).toContain('-tag:v')
+    expect(hevc).toContain('hvc1')
+    expect(hevc[hevc.indexOf('-cq:v') + 1]).toBe('30')
+  })
+
+  it('h264_nvenc + videoBitrate: -b:v без -cq', () => {
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      videoCodec: 'h264_nvenc',
+      crf: null,
+      videoBitrate: '5M',
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mp4'
+    })
+    expect(argv).toContain('-b:v')
+    expect(argv[argv.indexOf('-b:v') + 1]).toBe('5M')
+    expect(argv.includes('-cq:v')).toBe(false)
+  })
+
   it('подставляет trim, override CRF, scale, fps и audio-none', () => {
     const argv = buildFfmpegExportArgv({
       inputPath: '/src/clip.mov',

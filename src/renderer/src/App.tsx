@@ -86,6 +86,12 @@ import {
 import type { AppSettings, ResolvedAppTheme } from '../../shared/settings-contract'
 import { buildFfmpegExportPreviewCommand } from '../../shared/ffmpeg-export-argv'
 import { isBuiltinExportUserPresetId } from '../../shared/builtin-ffmpeg-export-user-presets'
+import { FFMPEG_HW_VIDEO_ENCODER_IDS } from '../../shared/ffmpeg-hw-encoder-probe'
+import type { FfmpegHwEncodersProbeResult } from '../../shared/ffmpeg-hw-encoder-probe'
+import {
+  isFfmpegHwExportVideoCodec,
+  parseFfmpegExportVideoCodec
+} from '../../shared/ffmpeg-export-video-codec'
 import {
   YTDLP_DOC_FORMAT_SELECTION,
   YTDLP_DOC_OUTPUT_TEMPLATE,
@@ -588,6 +594,7 @@ function App(): JSX.Element {
   const [exportEncodePreset, setExportEncodePreset] =
     useState<FfmpegExportEncodePresetId>('balance')
   const [exportVideoCodec, setExportVideoCodec] = useState<FfmpegExportVideoCodecId>('libx264')
+  const [hwEncoderProbe, setHwEncoderProbe] = useState<FfmpegHwEncodersProbeResult | null>(null)
   const [exportContainer, setExportContainer] = useState<FfmpegExportContainerId>('mp4')
   const [exportCrf, setExportCrf] = useState<number | null>(null)
   const [exportVideoBitrate, setExportVideoBitrate] = useState<string | null>(null)
@@ -706,10 +713,22 @@ function App(): JSX.Element {
         { id: 'smaller', label: uiText('editorExportEncodeSmaller') },
         { id: 'quality', label: uiText('editorExportEncodeQuality') }
       ] as Array<{ id: FfmpegExportEncodePresetId; label: string }>,
-      videoCodecs: [
-        { id: 'libx264', label: uiText('editorExportCodecH264') },
-        { id: 'libx265', label: uiText('editorExportCodecH265') }
-      ] as Array<{ id: FfmpegExportVideoCodecId; label: string }>,
+      videoCodecs: (() => {
+        const v: Array<{ id: FfmpegExportVideoCodecId; label: string }> = [
+          { id: 'libx264', label: uiText('editorExportCodecH264') },
+          { id: 'libx265', label: uiText('editorExportCodecH265') }
+        ]
+        if (hwEncoderProbe?.ok === true) {
+          for (const id of FFMPEG_HW_VIDEO_ENCODER_IDS) {
+            if (hwEncoderProbe.snapshot[id]) {
+              v.push({ id, label: id })
+            }
+          }
+        } else if (isFfmpegHwExportVideoCodec(exportVideoCodec)) {
+          v.push({ id: exportVideoCodec, label: `${exportVideoCodec} (?)` })
+        }
+        return v
+      })(),
       containers: [
         { id: 'mp4', label: uiText('editorExportContainerMp4') },
         { id: 'mkv', label: uiText('editorExportContainerMkv') },
@@ -826,7 +845,7 @@ function App(): JSX.Element {
         { id: 'jpg', label: uiText('editorExportSnapshotJpg') }
       ] as Array<{ id: FfmpegSnapshotFormatId; label: string }>
     }),
-    []
+    [hwEncoderProbe, exportVideoCodec]
   )
   const refreshDownloadsOptions = useCallback(async (): Promise<void> => {
     const res = await window.fluxalloy.downloads.getCliOptions({
@@ -1329,6 +1348,29 @@ function App(): JSX.Element {
   }, [])
 
   useEffect(() => {
+    let mounted = true
+    void window.fluxalloy.engines.probeHwEncoders().then((r) => {
+      if (!mounted) {
+        return
+      }
+      setHwEncoderProbe(r)
+      setExportVideoCodec((codec) => {
+        if (!isFfmpegHwExportVideoCodec(codec)) {
+          return codec
+        }
+        if (r.ok === true && r.snapshot[codec]) {
+          return codec
+        }
+        void window.fluxalloy.settings.setFfmpegExportVideoCodec('libx264').catch(console.error)
+        return 'libx264'
+      })
+    })
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  useEffect(() => {
     trimSnapshotRef.current = null
   }, [currentSourcePath])
 
@@ -1367,8 +1409,7 @@ function App(): JSX.Element {
     const bitrateOk =
       typeof loaded.ffmpegExportVideoBitrate === 'string' &&
       EXPORT_VIDEO_BITRATES.includes(loaded.ffmpegExportVideoBitrate)
-    const vcodec: FfmpegExportVideoCodecId =
-      loaded.ffmpegExportVideoCodec === 'libx265' ? 'libx265' : 'libx264'
+    const vcodec = parseFfmpegExportVideoCodec(loaded.ffmpegExportVideoCodec)
     setExportVideoCodec(vcodec)
     setExportTwoPass(loaded.ffmpegExportTwoPass === true && bitrateOk && vcodec === 'libx264')
     if (

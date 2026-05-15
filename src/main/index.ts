@@ -955,14 +955,14 @@ function persistFfmpegExportEncodePreset(raw: unknown): AppSettings {
   return { ...cachedSettings }
 }
 
-/** §7.2 — видеокодек экспорта (libx264 по умолчанию — ключ удаляем). */
+/** §7.2 / §16 — видеокодек экспорта (libx264 по умолчанию — ключ удаляем). */
 function persistFfmpegExportVideoCodec(raw: unknown): AppSettings {
   const id = parseFfmpegExportVideoCodec(raw)
   const next = { ...cachedSettings }
   if (id === 'libx264') {
     delete next.ffmpegExportVideoCodec
   } else {
-    next.ffmpegExportVideoCodec = 'libx265'
+    next.ffmpegExportVideoCodec = id
     if (next.ffmpegExportTwoPass === true) {
       delete next.ffmpegExportTwoPass
     }

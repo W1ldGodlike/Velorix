@@ -30,6 +30,7 @@ import type {
   FfmpegExportVideoVignetteId,
   MediaExportTrimPayload
 } from '../shared/ffmpeg-export-contract'
+import { parseFfmpegExportVideoCodec } from '../shared/ffmpeg-export-video-codec'
 import {
   FFMPEG_EXPORT_CANCELLED_ERROR,
   FFMPEG_EXPORT_USER_PRESETS_MAX_ENTRIES
@@ -102,13 +103,7 @@ export function parseFfmpegExportEncodePreset(raw: unknown): FfmpegExportEncodeP
   return 'balance'
 }
 
-/** §7.2 — видеокодек экспорта; только whitelist. */
-export function parseFfmpegExportVideoCodec(raw: unknown): FfmpegExportVideoCodecId {
-  if (raw === 'libx265') {
-    return 'libx265'
-  }
-  return 'libx264'
-}
+export { parseFfmpegExportVideoCodec }
 
 export function parseFfmpegExportContainer(raw: unknown): FfmpegExportContainerId {
   if (raw === 'mkv' || raw === 'mov' || raw === 'mp4') {
@@ -482,10 +477,11 @@ export function mergeFfmpegExportSnapshotIntoAppSettings(
 ): AppSettings {
   const next: AppSettings = { ...base }
   next.ffmpegExportEncodePreset = snapshot.encodePreset
-  if (parseFfmpegExportVideoCodec(snapshot.videoCodec) === 'libx265') {
-    next.ffmpegExportVideoCodec = 'libx265'
-  } else {
+  const snapV = parseFfmpegExportVideoCodec(snapshot.videoCodec)
+  if (snapV === 'libx264') {
     delete next.ffmpegExportVideoCodec
+  } else {
+    next.ffmpegExportVideoCodec = snapV
   }
   next.ffmpegExportContainer = snapshot.container
   if (snapshot.crf === null) {

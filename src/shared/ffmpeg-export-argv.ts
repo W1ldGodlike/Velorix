@@ -32,6 +32,8 @@ import {
   FFMPEG_EXPORT_AUDIO_GAIN_DB_MAX,
   FFMPEG_EXPORT_AUDIO_GAIN_DB_MIN
 } from './ffmpeg-export-contract'
+import type { FfmpegHwVideoEncoderId } from './ffmpeg-hw-encoder-probe'
+import { isFfmpegHwExportVideoCodec } from './ffmpeg-export-video-codec'
 
 /**
  * §7.2 — решает, нужно ли подставлять `-ss/-t` для пары маркеров.
@@ -465,6 +467,61 @@ export interface FfmpegExportArgvParams {
   audioNormalize?: FfmpegExportAudioNormalizeId
 }
 
+/** §16 — rate control для whitelist HW-кодеков (без произвольных `-c:v`). */
+function appendFfmpegHwEncoderRateArgs(
+  args: string[],
+  vcodec: FfmpegHwVideoEncoderId,
+  encodePreset: FfmpegExportEncodePresetId,
+  crf: string,
+  videoBitrate: string | null
+): void {
+  const cq = (() => {
+    const n = parseInt(crf, 10)
+    return Number.isFinite(n) ? Math.min(51, Math.max(0, n)) : 23
+  })()
+  const nvLikePreset =
+    encodePreset === 'smaller' ? 'fast' : encodePreset === 'quality' ? 'slow' : 'medium'
+
+  if (vcodec.endsWith('_nvenc')) {
+    args.push('-preset', nvLikePreset, '-rc:v', 'vbr')
+    if (videoBitrate === null) {
+      args.push('-cq:v', String(cq))
+    } else {
+      args.push('-b:v', videoBitrate)
+    }
+    return
+  }
+  if (vcodec.endsWith('_amf')) {
+    const q =
+      encodePreset === 'smaller' ? 'speed' : encodePreset === 'quality' ? 'quality' : 'balanced'
+    args.push('-quality', q)
+    if (videoBitrate === null) {
+      args.push('-rc', 'cqp', '-qp_i', String(cq), '-qp_p', String(cq), '-qp_b', String(cq))
+    } else {
+      args.push('-rc', 'vbr_peak', '-b:v', videoBitrate)
+    }
+    return
+  }
+  if (vcodec.endsWith('_qsv')) {
+    const p =
+      encodePreset === 'smaller' ? 'veryfast' : encodePreset === 'quality' ? 'slow' : 'faster'
+    args.push('-preset', p)
+    if (videoBitrate === null) {
+      args.push('-global_quality', String(cq))
+    } else {
+      args.push('-b:v', videoBitrate)
+    }
+    return
+  }
+  if (vcodec.endsWith('_vaapi')) {
+    if (videoBitrate === null) {
+      args.push('-qp', String(cq))
+    } else {
+      args.push('-b:v', videoBitrate)
+    }
+  }
+}
+
 /** Полный argv ffmpeg без пути к exe; используется и runner, и preview UI. */
 export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] {
   const container: FfmpegExportContainerId = params.container ?? 'mp4'
@@ -555,23 +612,33 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
   }
 
   const vcodec: FfmpegExportVideoCodecId = params.videoCodec ?? 'libx264'
-  args.push('-c:v', vcodec, '-preset', enc.x264preset)
-  if (vcodec === 'libx265' && (container === 'mp4' || container === 'mov')) {
-    args.push('-tag:v', 'hvc1')
-  }
-
   const tp = params.twoPass
-  if (tp) {
-    if (params.videoBitrate === null) {
-      throw new Error('two-pass требует videoBitrate')
+  if (isFfmpegHwExportVideoCodec(vcodec)) {
+    if (tp) {
+      throw new Error('Двухпроходный режим поддерживается только для libx264')
     }
-    args.push('-b:v', params.videoBitrate)
-    args.push('-pass', String(tp.pass))
-    args.push('-passlogfile', tp.passlogfile)
-  } else if (params.videoBitrate === null) {
-    args.push('-crf', crf)
+    args.push('-c:v', vcodec)
+    appendFfmpegHwEncoderRateArgs(args, vcodec, params.encodePreset, crf, params.videoBitrate)
+    if (vcodec.startsWith('hevc_') && (container === 'mp4' || container === 'mov')) {
+      args.push('-tag:v', 'hvc1')
+    }
   } else {
-    args.push('-b:v', params.videoBitrate)
+    args.push('-c:v', vcodec, '-preset', enc.x264preset)
+    if (vcodec === 'libx265' && (container === 'mp4' || container === 'mov')) {
+      args.push('-tag:v', 'hvc1')
+    }
+    if (tp) {
+      if (params.videoBitrate === null) {
+        throw new Error('two-pass требует videoBitrate')
+      }
+      args.push('-b:v', params.videoBitrate)
+      args.push('-pass', String(tp.pass))
+      args.push('-passlogfile', tp.passlogfile)
+    } else if (params.videoBitrate === null) {
+      args.push('-crf', crf)
+    } else {
+      args.push('-b:v', params.videoBitrate)
+    }
   }
 
   args.push('-pix_fmt', 'yuv420p')

@@ -317,6 +317,21 @@ describe('ffmpeg export pure helpers', () => {
     )
     expect(withTp.ffmpegExportTwoPass).toBe(true)
 
+    const hwCodec = mergeFfmpegExportSnapshotIntoAppSettings({ theme: 'dark' }, {
+      encodePreset: 'balance',
+      videoCodec: 'h264_nvenc',
+      container: 'mp4',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      videoTransform: 'none',
+      cropPreset: 'none'
+    })
+    expect(hwCodec.ffmpegExportVideoCodec).toBe('h264_nvenc')
+
     const deb = mergeFfmpegExportSnapshotIntoAppSettings(
       { theme: 'dark' },
       {
