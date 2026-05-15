@@ -11,6 +11,9 @@ bin/*
 !bin/.gitkeep
 !bin/README.md
 
+# Кэш инкрементальной компиляции TypeScript (локально).
+*.tsbuildinfo
+
 # Локальный кэш линтера и любые временные логи не должны попадать в историю.
 .eslintcache
 *.log*

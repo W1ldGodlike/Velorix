@@ -21,7 +21,8 @@ const snap: FfmpegExportBatchSnapshot = {
       inputPath: 'C:\\in\\b.mkv',
       shortLabel: 'b.mkv',
       status: 'error',
-      progress: 'codec failed'
+      progress: 'codec failed',
+      error: 'codec failed'
     }
   ],
   running: false,
@@ -42,11 +43,38 @@ describe('ffmpeg-export-batch-report', () => {
     expect(text).toContain('C:\\in\\a.mp4')
     expect(text).toContain('Готово')
     expect(text).toContain('Ошибка')
+    expect(text).toContain('ошибка')
+    expect(text).toContain('codec failed')
   })
 
   it('formatFfmpegExportBatchReportText en', () => {
     const text = formatFfmpegExportBatchReportText(snap, 'en')
     expect(text).toContain('Done')
     expect(text).toContain('Error')
+  })
+
+  it('санитизирует табы и переносы в ячейках', () => {
+    const messy: FfmpegExportBatchSnapshot = {
+      rows: [
+        {
+          id: 1,
+          inputPath: 'C:\\bad\tname.mp4',
+          shortLabel: 'x',
+          status: 'error',
+          progress: 'a\nb',
+          error: 'e\tf'
+        }
+      ],
+      running: false,
+      concurrency: 1,
+      completedOk: 0,
+      completedError: 1,
+      completedCancelled: 0
+    }
+    const text = formatFfmpegExportBatchReportText(messy, 'ru')
+    expect(text).toContain('bad name.mp4')
+    expect(text).toContain('a b')
+    expect(text).toContain('e f')
+    expect(text).not.toContain('\tname.mp4')
   })
 })

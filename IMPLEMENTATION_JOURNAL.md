@@ -708,4 +708,7 @@
 - [J-685] 2026-05-16 00:20:15 [Assistant]: §9 — окно инспектора: кнопка «папка с видео» (`openVideoFolderDialog`, `IconFolder`), чеклист; DnD папки — тот же `previewGrantPath` §4.B.
 - [J-686] 2026-05-16 00:25:00 [Assistant]: §7.3 — IPC `batchExportRevealSharedOutputFolder` / preload `revealSharedOutputFolder`, кнопка «Показать папку» у общего выхода пакета; строки main `batchExportSharedOutputDir*`; чеклист.
 - [J-687] 2026-05-16 00:27:15 [Assistant]: §7.3 — `listFfmpegExportBatchOutputPaths`, IPC `batchExportListOutputPaths`, кнопка копирования путей готовых файлов; Vitest queue; чеклист.
+- [J-688] 2026-05-16 00:30:22 [Assistant]: §7.3 — пакет: открыть готовый файл в редакторе (`export.openOutput` preview); `.gitignore` `*.tsbuildinfo`; чеклист.
+- [J-689] 2026-05-16 00:35:00 [Assistant]: §7.3 — TSV-отчёт: колонка ошибки + санитизация `\t`/переносов; двойной клик по строке очереди → исходник в редакторе; Vitest report; чеклист.
+- [J-690] 2026-05-16 00:40:00 [Assistant]: §7.3 — двойной клик по ячейке колонки «Выход» → открыть результат в редакторе (иначе — исходник); чеклист.
 

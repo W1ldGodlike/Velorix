@@ -42,6 +42,10 @@ export function formatFfmpegExportBatchInputPathsText(paths: string[]): string {
   return paths.join('\r\n')
 }
 
+function sanitizeReportCell(raw: string): string {
+  return raw.replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/\n/g, ' ').replace(/\t/g, ' ')
+}
+
 /** TSV-подобный отчёт для буфера обмена / сохранения в файл. */
 export function formatFfmpegExportBatchReportText(
   snap: FfmpegExportBatchSnapshot,
@@ -57,13 +61,16 @@ export function formatFfmpegExportBatchReportText(
       : `running=${snap.running} ok=${snap.completedOk} error=${snap.completedError} cancelled=${snap.completedCancelled} concurrency=${snap.concurrency}\r\n`
   const colHeader =
     locale === 'en'
-      ? 'status\tinput\toutput\tprogress\r\n'
-      : 'статус\tвход\tвыход\tпрогресс\r\n'
+      ? 'status\tinput\toutput\tprogress\terror_detail\r\n'
+      : 'статус\tвход\tвыход\tпрогресс\tошибка\r\n'
   const lines = snap.rows.map((row) => {
     const status = batchStatusLabel(row.status, locale)
     const out = row.outputPath ?? ''
-    const prog = row.progress.replace(/\t/g, ' ')
-    return `${status}\t${row.inputPath}\t${out}\t${prog}`
+    const prog = sanitizeReportCell(row.progress)
+    const err = sanitizeReportCell(typeof row.error === 'string' ? row.error : '')
+    return `${sanitizeReportCell(status)}\t${sanitizeReportCell(row.inputPath)}\t${sanitizeReportCell(
+      out
+    )}\t${prog}\t${err}`
   })
   return header + summary + colHeader + lines.join('\r\n') + '\r\n'
 }

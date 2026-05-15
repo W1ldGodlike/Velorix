@@ -2218,11 +2218,15 @@ function App(): JSX.Element {
 
   async function handleBatchOpenOutput(
     outputPath: string,
-    mode: 'file' | 'folder'
+    mode: 'file' | 'folder' | 'preview'
   ): Promise<void> {
     const res = await window.fluxalloy.export.openOutput(outputPath, mode)
     if (!res.ok) {
       setStatusHint(uiTextVars('statusExportFailedWithDetail', { detail: res.error }))
+      return
+    }
+    if (mode === 'preview') {
+      setWorkspaceTab('editor')
     }
   }
 
@@ -3451,6 +3455,20 @@ function App(): JSX.Element {
                     <tr
                       key={row.id}
                       draggable={!batchExportBusy && row.status !== 'running'}
+                      onDoubleClick={(e) => {
+                        if ((e.target as HTMLElement).closest('button')) {
+                          return
+                        }
+                        const td = (e.target as HTMLElement).closest('td')
+                        const idx = td?.cellIndex ?? -1
+                        const out =
+                          typeof row.outputPath === 'string' ? row.outputPath.trim() : ''
+                        if (idx === 2 && out.length > 0) {
+                          void handleBatchOpenOutput(out, 'preview')
+                          return
+                        }
+                        void handleBatchOpenInput(row.inputPath, 'preview')
+                      }}
                       onDragStart={() => {
                         setBatchDragRowId(row.id)
                       }}
@@ -3517,6 +3535,16 @@ function App(): JSX.Element {
                         </button>
                         {row.outputPath ? (
                           <>
+                            <button
+                              type="button"
+                              className="app-btn app-btn-icon"
+                              title={uiText('batchExportOpenOutputInEditor')}
+                              onClick={() => {
+                                void handleBatchOpenOutput(row.outputPath as string, 'preview')
+                              }}
+                            >
+                              <IconFilm aria-hidden />
+                            </button>
                             <button
                               type="button"
                               className="app-btn app-btn-icon"
