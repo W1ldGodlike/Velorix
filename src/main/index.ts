@@ -160,7 +160,8 @@ import {
 } from './ffmpeg-export-batch-runner'
 import {
   pickFfmpegExportBatchInputFiles,
-  pickFfmpegExportBatchInputFolder
+  pickFfmpegExportBatchInputFolder,
+  pickFfmpegExportBatchOutputFolder
 } from './ffmpeg-export-batch-pick'
 import { openFfmpegExportBatchInputPath } from './ffmpeg-export-batch-open-input'
 import type {
@@ -1291,6 +1292,27 @@ function persistFfmpegExportBatchOutputSuffix(raw: unknown): AppSettings {
   } else {
     next.ffmpegExportBatchOutputSuffix = parsed.template
   }
+  cachedSettings = next
+  saveSettings(settingsPath(), cachedSettings)
+  return { ...cachedSettings }
+}
+
+function persistFfmpegExportBatchOutputDirectory(raw: unknown): AppSettings {
+  const next = { ...cachedSettings }
+  if (raw === null || raw === '') {
+    delete next.ffmpegExportBatchOutputDirectory
+    cachedSettings = next
+    saveSettings(settingsPath(), cachedSettings)
+    return { ...cachedSettings }
+  }
+  if (typeof raw !== 'string') {
+    return { ...cachedSettings }
+  }
+  const n = normalize(raw.trim())
+  if (!isAbsolute(n) || n.length > 4096) {
+    return { ...cachedSettings }
+  }
+  next.ffmpegExportBatchOutputDirectory = n
   cachedSettings = next
   saveSettings(settingsPath(), cachedSettings)
   return { ...cachedSettings }
@@ -2752,6 +2774,11 @@ app.whenReady().then(() => {
     (_, raw: unknown): AppSettings => persistFfmpegExportBatchOutputSuffix(raw)
   )
 
+  ipcMain.handle(
+    mw.settingsSetFfmpegExportBatchOutputDirectory,
+    (_, raw: unknown): AppSettings => persistFfmpegExportBatchOutputDirectory(raw)
+  )
+
   ipcMain.handle(mw.settingsSetEditorUrlPasteBehavior, (_, raw: unknown): AppSettings =>
     persistEditorUrlPasteBehavior(raw)
   )
@@ -3559,6 +3586,20 @@ app.whenReady().then(() => {
       const counts = addFfmpegExportBatchPaths(picked.paths)
       pushBatchExportSnapshot(win)
       return { ok: true, ...counts }
+    }
+  )
+
+  ipcMain.handle(
+    mw.batchExportPickOutputFolder,
+    async (
+      event
+    ): Promise<{ ok: true; path: string } | { ok: false; cancelled: true }> => {
+      const win = BrowserWindow.fromWebContents(event.sender)
+      if (!win) {
+        return { ok: false, cancelled: true }
+      }
+      const loc = mainDownloadsUiLocale()
+      return pickFfmpegExportBatchOutputFolder(win, loc)
     }
   )
 

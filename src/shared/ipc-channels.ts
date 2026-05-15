@@ -21,6 +21,7 @@ export const mainWindowIpc = {
   settingsSetFfmpegExportExtraArgsLine: 'fluxalloy:settings-set-ffmpeg-export-extra-args-line',
   settingsSetFfmpegExportBatchOutputSuffix:
     'fluxalloy:settings-set-ffmpeg-export-batch-output-suffix',
+  settingsSetFfmpegExportBatchOutputDirectory: 'fluxalloy:settings-set-ffmpeg-export-batch-output-dir',
   settingsSetEditorUrlPasteBehavior: 'fluxalloy:settings-set-editor-url-paste-behavior',
   settingsSetFfmpegExportFps: 'fluxalloy:settings-set-ffmpeg-export-fps',
   settingsSetFfmpegExportScalePreset: 'fluxalloy:settings-set-ffmpeg-export-scale-preset',
@@ -93,6 +94,7 @@ export const mainWindowIpc = {
   batchExportGetSnapshot: 'fluxalloy:batch-export-get-snapshot',
   batchExportPickFiles: 'fluxalloy:batch-export-pick-files',
   batchExportPickFolder: 'fluxalloy:batch-export-pick-folder',
+  batchExportPickOutputFolder: 'fluxalloy:batch-export-pick-output-folder',
   batchExportAddPaths: 'fluxalloy:batch-export-add-paths',
   batchExportRemoveRows: 'fluxalloy:batch-export-remove-rows',
   batchExportClear: 'fluxalloy:batch-export-clear',

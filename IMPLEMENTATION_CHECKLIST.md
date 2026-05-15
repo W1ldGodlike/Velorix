@@ -335,7 +335,7 @@
 - [~] Таблица файлов + добавить файлы (multi-select) + **папка (рекурсивный scan)** + DnD файлов.
 - [~] Параллелизм 1/2/4/auto.
 - [~] Очередь статусов (waiting/running/done/error/cancelled); **persist `userData/ffmpeg-export-batch/queue.json`**.
-- [~] Сводка ошибок после завершения; **drag-reorder**; economy/history/open; **retry failed** + **clear completed** + retry строки; **копировать пути** / **сохранить отчёт** / **убрать ожидающие**; **шаблон имени выхода** (`ffmpegExportBatchOutputSuffix`, `{stem}`/`{name}`/`{ext}`); авто-раскрытие панели при auto-enqueue §7.4.
+- [~] Сводка ошибок после завершения; **drag-reorder**; economy/history/open; **retry failed** + **clear completed** + retry строки; **копировать пути** / **сохранить отчёт** / **убрать ожидающие**; **шаблон имени выхода** (`ffmpegExportBatchOutputSuffix`); **общая папка выхода** (`ffmpegExportBatchOutputDirectory`); авто-раскрытие панели при auto-enqueue §7.4.
 
 ### §7.4 Комбинированный режим
 

@@ -701,4 +701,5 @@
 - [J-678] 2026-05-15 23:48:33 [Assistant]: §7.3/§7.4/§7.2 — шаблон выхода batch (`ffmpegExportBatchOutputSuffix`); `editorUrlPasteBehavior` (Ctrl+V/DnD URL); VAAPI `hwupload` в `-vf`; Vitest suffix/vaapi/paste. `npm run typecheck` + vitest.
 - [J-679] 2026-05-15 23:56:22 [Assistant]: `check-journal-numbering.mjs` — без сверки с git; шапка журнала: актуальное локальное время при записи; удалены пустые строки между J-675 и концом хвоста, перенумерация (бывш. 677–681 → 676–678).
 - [J-680] 2026-05-15 23:58:48 [Assistant]: шапка журнала — в ответах ассистента не пересказывать содержимое журнала, только ссылка/номер J при необходимости.
+- [J-681] 2026-05-16 00:01:40 [Assistant]: §7.3 — общая папка выхода пакета (`ffmpegExportBatchOutputDirectory`, pick/clear в App, persist/main/runner/IPC, `resolveFfmpegExportBatchOutputDirectoryFromSettings` + nested test); preload `batchExport.pickOutputFolder` в `index.d.ts`; импорты Vitest `ffmpeg-export-resolve-from-settings`; чеклист §7.3. `npm run check:journal` + typecheck + vitest.
 

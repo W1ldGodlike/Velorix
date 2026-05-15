@@ -209,6 +209,10 @@ const fluxalloy = {
       ipcRenderer.invoke(mw.settingsSetFfmpegExportExtraArgsLine, line),
     setFfmpegExportBatchOutputSuffix: (suffix: string): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportBatchOutputSuffix, suffix),
+    setFfmpegExportBatchOutputDirectory: (
+      dir: string | null
+    ): Promise<AppSettings> =>
+      ipcRenderer.invoke(mw.settingsSetFfmpegExportBatchOutputDirectory, dir),
     setEditorUrlPasteBehavior: (
       behavior: 'downloads_window' | 'download_open_editor'
     ): Promise<AppSettings> =>
@@ -555,6 +559,9 @@ const fluxalloy = {
       ipcRenderer.invoke(mw.batchExportPickFiles),
     pickFolder: (): Promise<FfmpegExportBatchPickFilesResult> =>
       ipcRenderer.invoke(mw.batchExportPickFolder),
+    pickOutputFolder: (): Promise<
+      { ok: true; path: string } | { ok: false; cancelled: true }
+    > => ipcRenderer.invoke(mw.batchExportPickOutputFolder),
     addPaths: (paths: string[]): Promise<FfmpegExportBatchAddPathsResult> =>
       ipcRenderer.invoke(mw.batchExportAddPaths, paths),
     openInput: (

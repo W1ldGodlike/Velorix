@@ -155,6 +155,8 @@ export interface AppSettings {
   ffmpegExportExtraArgsLine?: string
   /** §7.3 — шаблон имени выхода пакета (`{stem}`, `{name}`, `{ext}`); без расширения контейнера. */
   ffmpegExportBatchOutputSuffix?: string
+  /** §7.3 — абсолютная папка для готовых файлов пакета; не задано — рядом с каждым источником. */
+  ffmpegExportBatchOutputDirectory?: string
   /** §4.6 / §7.4 — глобальная вставка URL: менеджер загрузок или скачать в редактор. */
   editorUrlPasteBehavior?: EditorUrlPasteBehaviorId
   /** §7.2: режим аудио экспорта: AAC, PCM s16le или без дорожки. */

@@ -1,4 +1,4 @@
-import { closeSync, existsSync, mkdtempSync, openSync, rmSync, unlinkSync } from 'fs'
+import { closeSync, existsSync, mkdirSync, mkdtempSync, openSync, rmSync, unlinkSync } from 'fs'
 import { join } from 'path'
 import { tmpdir } from 'os'
 import { describe, expect, it } from 'vitest'
@@ -41,6 +41,21 @@ describe('pickUniqueAutoExportOutputPath', () => {
       closeSync(openSync(input, 'w'))
       const out = pickUniqueAutoExportOutputPath(input, 'mp4', '{stem}_out')
       expect(out).toBe(join(dir, 'x_out.mp4'))
+    } finally {
+      rmSync(dir, { recursive: true, force: true })
+    }
+  })
+
+  it('общая папка выхода пакета', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'fa-autoexp-outdir-'))
+    try {
+      const outDir = join(dir, 'out')
+      mkdirSync(outDir)
+      const input = join(dir, 'nested', 'clip.mp4')
+      mkdirSync(join(dir, 'nested'), { recursive: true })
+      closeSync(openSync(input, 'w'))
+      const out = pickUniqueAutoExportOutputPath(input, 'mp4', null, outDir)
+      expect(out).toBe(join(outDir, 'clip-export.mp4'))
     } finally {
       rmSync(dir, { recursive: true, force: true })
     }

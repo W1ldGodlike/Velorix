@@ -507,6 +507,10 @@ export function loadSettings(filePath: string): AppSettings {
         base.ffmpegExportBatchOutputSuffix = suffixParsed.template
       }
     }
+    const batchDirStored = parseFfmpegExportDirectoryStored(parsed.ffmpegExportBatchOutputDirectory)
+    if (batchDirStored) {
+      base.ffmpegExportBatchOutputDirectory = batchDirStored
+    }
     if (parsed.editorUrlPasteBehavior === 'download_open_editor') {
       base.editorUrlPasteBehavior = 'download_open_editor'
     }

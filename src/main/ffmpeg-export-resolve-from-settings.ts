@@ -1,5 +1,5 @@
 import { existsSync } from 'fs'
-import { dirname, join } from 'path'
+import { dirname, isAbsolute, join, normalize } from 'path'
 
 import type { AppSettings } from '../shared/settings-contract'
 import type {
@@ -301,17 +301,25 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
   }
 }
 
-/** §6.4 → §7.2 / §7.3: уникальный выход рядом с источником; шаблон без расширения контейнера. */
+/** §6.4 → §7.2 / §7.3: уникальный выход; шаблон без расширения контейнера; опционально общая папка для пакета. */
 export function pickUniqueAutoExportOutputPath(
   inputAbsolutePath: string,
   container: FfmpegExportContainerId,
-  outputSuffixTemplate?: string | null
+  outputSuffixTemplate?: string | null,
+  outputDirAbsolute?: string | null
 ): string {
   const parsed = parseFfmpegExportBatchOutputSuffixTemplate(
     outputSuffixTemplate ?? DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX
   )
   const template = parsed.ok ? parsed.template : DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX
-  const dir = dirname(inputAbsolutePath)
+  const inDir = dirname(inputAbsolutePath)
+  let dir = inDir
+  if (typeof outputDirAbsolute === 'string') {
+    const n = normalize(outputDirAbsolute.trim())
+    if (n.length > 0 && n.length <= 4096 && isAbsolute(n)) {
+      dir = n
+    }
+  }
   const base = buildFfmpegExportBatchOutputBasename(inputAbsolutePath, template)
   const ext = container
   let n = 0
@@ -321,6 +329,20 @@ export function pickUniqueAutoExportOutputPath(
     candidate = join(dir, `${base}-${n}.${ext}`)
   }
   return candidate
+}
+
+export function resolveFfmpegExportBatchOutputDirectoryFromSettings(
+  settings: AppSettings
+): string | null {
+  const raw = settings.ffmpegExportBatchOutputDirectory
+  if (typeof raw !== 'string' || raw.trim() === '') {
+    return null
+  }
+  const n = normalize(raw.trim())
+  if (!isAbsolute(n) || n.length > 4096) {
+    return null
+  }
+  return n
 }
 
 export function resolveFfmpegExportBatchOutputSuffixFromSettings(

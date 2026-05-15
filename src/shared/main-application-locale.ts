@@ -104,6 +104,7 @@ export type MainApplicationStrings = {
   openVideoDialogFilterVideo: string
   batchExportPickFilesTitle: string
   batchExportPickFolderTitle: string
+  batchExportPickOutputFolderTitle: string
   batchExportFolderEmpty: string
   batchExportAlreadyRunning: string
   batchExportQueueEmpty: string
@@ -269,6 +270,7 @@ const RU: MainApplicationStrings = {
   openVideoDialogFilterVideo: 'Видео',
   batchExportPickFilesTitle: 'Добавить файлы в пакетный экспорт',
   batchExportPickFolderTitle: 'Добавить папку в пакетный экспорт',
+  batchExportPickOutputFolderTitle: 'Папка для готовых файлов пакета',
   batchExportFolderEmpty: 'В выбранной папке нет поддерживаемых видеофайлов',
   batchExportAlreadyRunning: 'Пакетный экспорт уже выполняется',
   batchExportQueueEmpty: 'Очередь пакетного экспорта пуста',
@@ -441,6 +443,7 @@ const EN: MainApplicationStrings = {
   openVideoDialogFilterVideo: 'Video',
   batchExportPickFilesTitle: 'Add files to batch export',
   batchExportPickFolderTitle: 'Add folder to batch export',
+  batchExportPickOutputFolderTitle: 'Batch export output folder',
   batchExportFolderEmpty: 'No supported video files in the selected folder',
   batchExportAlreadyRunning: 'Batch export is already running',
   batchExportQueueEmpty: 'Batch export queue is empty',

@@ -123,6 +123,7 @@ export interface FluxAlloyApi {
     setFfmpegExportHwDecode: (enabled: boolean) => Promise<AppSettings>
     setFfmpegExportExtraArgsLine: (line: string) => Promise<AppSettings>
     setFfmpegExportBatchOutputSuffix: (suffix: string) => Promise<AppSettings>
+    setFfmpegExportBatchOutputDirectory: (dir: string | null) => Promise<AppSettings>
     setEditorUrlPasteBehavior: (
       behavior: 'downloads_window' | 'download_open_editor'
     ) => Promise<AppSettings>
@@ -306,6 +307,7 @@ export interface FluxAlloyApi {
     >
     pickFiles: () => Promise<FfmpegExportBatchPickFilesResult>
     pickFolder: () => Promise<FfmpegExportBatchPickFilesResult>
+    pickOutputFolder: () => Promise<{ ok: true; path: string } | { ok: false; cancelled: true }>
     addPaths: (paths: string[]) => Promise<FfmpegExportBatchAddPathsResult>
     openInput: (
       path: string,

@@ -276,6 +276,12 @@ const UI_TEXT = {
     editorUrlPasteBehaviorOpenEditor: 'Скачать в редактор',
     batchExportOutputSuffixLabel: 'Имя выхода',
     batchExportOutputSuffixHint: 'Токены {stem}, {name}, {ext}; расширение контейнера добавится отдельно.',
+    batchExportOutputDirLabel: 'Папка выхода',
+    batchExportOutputDirHint:
+      'Пусто — файл рядом с каждым исходником; иначе все готовые файлы пакета в эту папку.',
+    batchExportOutputDirPick: 'Выбрать…',
+    batchExportOutputDirClear: 'Рядом с файлом',
+    batchExportOutputDirPlaceholder: 'Рядом с исходным файлом',
     downloadsRailAria: 'Настройки загрузок',
     downloadsRailTitle: 'Настройки yt-dlp',
     downloadsRailSubtitle:
@@ -1421,6 +1427,11 @@ const UI_TEXT = {
     editorUrlPasteBehaviorOpenEditor: 'Download to editor',
     batchExportOutputSuffixLabel: 'Output name',
     batchExportOutputSuffixHint: 'Tokens {stem}, {name}, {ext}; container extension is appended.',
+    batchExportOutputDirLabel: 'Output folder',
+    batchExportOutputDirHint: 'Empty — next to each source file; otherwise all batch outputs go here.',
+    batchExportOutputDirPick: 'Choose…',
+    batchExportOutputDirClear: 'Next to source',
+    batchExportOutputDirPlaceholder: 'Next to source file',
     downloadsRailAria: 'Download settings',
     downloadsRailTitle: 'yt-dlp settings',
     downloadsRailSubtitle:

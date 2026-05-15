@@ -644,6 +644,7 @@ function App(): JSX.Element {
   const [batchOutputSuffix, setBatchOutputSuffix] = useState(
     DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX
   )
+  const [batchOutputDirectory, setBatchOutputDirectory] = useState('')
   /** §7.2 — сдвиг громкости в дБ (`-filter:a volume`); `0` означает «без фильтра». */
   const [exportAudioGainDb, setExportAudioGainDb] = useState<number>(0)
   /** §7.2 — добавить `-map_metadata -1` (очистить контейнерные tag-ы). */
@@ -1586,6 +1587,11 @@ function App(): JSX.Element {
         ? loaded.ffmpegExportBatchOutputSuffix.trim()
         : DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX
     )
+    setBatchOutputDirectory(
+      typeof loaded.ffmpegExportBatchOutputDirectory === 'string'
+        ? loaded.ffmpegExportBatchOutputDirectory.trim()
+        : ''
+    )
     if (
       typeof loaded.ffmpegExportAudioBitrate === 'string' &&
       EXPORT_AUDIO_BITRATES.includes(loaded.ffmpegExportAudioBitrate)
@@ -2260,6 +2266,28 @@ function App(): JSX.Element {
     if ('error' in res) {
       setStatusHint(res.error)
     }
+  }
+
+  async function handleBatchPickOutputFolder(): Promise<void> {
+    const picked = await window.fluxalloy.batchExport.pickOutputFolder()
+    if (!picked.ok) {
+      return
+    }
+    const s = await window.fluxalloy.settings.setFfmpegExportBatchOutputDirectory(picked.path)
+    setBatchOutputDirectory(
+      typeof s.ffmpegExportBatchOutputDirectory === 'string'
+        ? s.ffmpegExportBatchOutputDirectory
+        : ''
+    )
+  }
+
+  async function handleBatchClearOutputDirectory(): Promise<void> {
+    const s = await window.fluxalloy.settings.setFfmpegExportBatchOutputDirectory(null)
+    setBatchOutputDirectory(
+      typeof s.ffmpegExportBatchOutputDirectory === 'string'
+        ? s.ffmpegExportBatchOutputDirectory
+        : ''
+    )
   }
 
   async function handleBatchDropFiles(files: FileList | null): Promise<void> {
@@ -3142,6 +3170,41 @@ function App(): JSX.Element {
                         .catch(console.error)
                     }}
                   />
+                </label>
+                <label className="app-field" style={{ gridColumn: '1 / -1' }}>
+                  <span>{uiText('batchExportOutputDirLabel')}</span>
+                  <div className="app-batch-export-dir-row">
+                    <input
+                      type="text"
+                      className="app-control"
+                      readOnly
+                      value={batchOutputDirectory}
+                      placeholder={uiText('batchExportOutputDirPlaceholder')}
+                      title={batchOutputDirectory || uiText('batchExportOutputDirPlaceholder')}
+                      disabled={batchExportBusy}
+                    />
+                    <button
+                      type="button"
+                      className="app-btn"
+                      disabled={batchExportBusy}
+                      onClick={() => {
+                        void handleBatchPickOutputFolder()
+                      }}
+                    >
+                      {uiText('batchExportOutputDirPick')}
+                    </button>
+                    <button
+                      type="button"
+                      className="app-btn"
+                      disabled={batchExportBusy || batchOutputDirectory.length === 0}
+                      onClick={() => {
+                        void handleBatchClearOutputDirectory()
+                      }}
+                    >
+                      {uiText('batchExportOutputDirClear')}
+                    </button>
+                  </div>
+                  <span className="app-field-hint">{uiText('batchExportOutputDirHint')}</span>
                 </label>
                 <label className="app-field">
                   <span>{uiText('batchExportConcurrency')}</span>

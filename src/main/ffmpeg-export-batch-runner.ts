@@ -24,6 +24,7 @@ import { appendProcessingHistoryEntry } from './processing-history'
 import { runFfmpegExportJob } from './ffmpeg-export-service'
 import {
   pickUniqueAutoExportOutputPath,
+  resolveFfmpegExportBatchOutputDirectoryFromSettings,
   resolveFfmpegExportBatchOutputSuffixFromSettings,
   resolveFfmpegExportJobOptionsFromAppSettings
 } from './ffmpeg-export-resolve-from-settings'
@@ -72,6 +73,7 @@ export async function runFfmpegExportBatchQueue(deps: {
     deps.rawExportOverrides
   )
   const batchOutputSuffix = resolveFfmpegExportBatchOutputSuffixFromSettings(deps.settings)
+  const batchOutDir = resolveFfmpegExportBatchOutputDirectoryFromSettings(deps.settings)
   const limit = resolveFfmpegExportBatchConcurrencyLimit(
     getFfmpegExportBatchConcurrency(),
     cpus().length
@@ -91,7 +93,8 @@ export async function runFfmpegExportBatchQueue(deps: {
     const outPath = pickUniqueAutoExportOutputPath(
       inputPath,
       exportOpts.container,
-      batchOutputSuffix
+      batchOutputSuffix,
+      batchOutDir
     )
     updateFfmpegExportBatchRow(rowId, {
       status: FFMPEG_EXPORT_BATCH_STATUS_RUNNING,

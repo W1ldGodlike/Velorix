@@ -1851,6 +1851,17 @@ button.app-downloads-hint-token:disabled {
   padding: 0 0.8rem 0.8rem;
 }
 
+.app-batch-export-dir-row {
+  display: flex;
+  align-items: stretch;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.app-batch-export-dir-row .app-control {
+  flex: 1 1 12rem;
+}
+
 .app-preview-stack {
   flex: 1;
   min-height: 0;

@@ -75,3 +75,19 @@ export async function pickFfmpegExportBatchInputFolder(
   }
   return grantBatchVideoPaths(scanned, S.previewDialogGrantMediaFailed)
 }
+
+/** §7.3 — папка сохранения результатов пакета (без сканирования файлов). */
+export async function pickFfmpegExportBatchOutputFolder(
+  browserWindow: BrowserWindow,
+  locale: DownloadsWindowUiLocale = 'ru'
+): Promise<{ ok: true; path: string } | { ok: false; cancelled: true }> {
+  const S = getMainApplicationStrings(locale)
+  const { canceled, filePaths } = await dialog.showOpenDialog(browserWindow, {
+    title: S.batchExportPickOutputFolderTitle,
+    properties: ['openDirectory', 'createDirectory']
+  })
+  if (canceled || filePaths.length === 0 || !filePaths[0]) {
+    return { ok: false, cancelled: true }
+  }
+  return { ok: true, path: normalize(filePaths[0]) }
+}
