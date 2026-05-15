@@ -988,6 +988,14 @@ export async function runFfmpegExportJob(params: {
     ...(audioNormalize !== 'off' ? { audioNormalize } : {})
   }
 
+  const onProgressCb = params.onProgress
+  const jobOnProgress =
+    onProgressCb === undefined
+      ? undefined
+      : (p: FfmpegExportProgressPayload): void => {
+          onProgressCb({ ...p, videoCodecUsed: videoCodec })
+        }
+
   if (!wantTwoPass) {
     const args = buildFfmpegExportArgv(baseArgvParams)
     return await runFfmpegExportOnce({
@@ -996,7 +1004,7 @@ export async function runFfmpegExportJob(params: {
       signal: params.signal,
       segmentDur,
       uiLocale: uloc,
-      ...(params.onProgress !== undefined ? { onProgress: params.onProgress } : {})
+      ...(jobOnProgress !== undefined ? { onProgress: jobOnProgress } : {})
     })
   }
 
@@ -1017,7 +1025,7 @@ export async function runFfmpegExportJob(params: {
       segmentDur,
       uiLocale: uloc,
       mapPercent: (p) => p * 0.5,
-      ...(params.onProgress !== undefined ? { onProgress: params.onProgress } : {})
+      ...(jobOnProgress !== undefined ? { onProgress: jobOnProgress } : {})
     })
     if (!r1.ok) {
       return r1
@@ -1026,7 +1034,7 @@ export async function runFfmpegExportJob(params: {
       return { ok: false, error: FFMPEG_EXPORT_CANCELLED_ERROR }
     }
 
-    params.onProgress?.({ percent: 50, message: S.exportLibx264SecondPassProgress })
+    jobOnProgress?.({ percent: 50, message: S.exportLibx264SecondPassProgress })
 
     const argsPass2 = buildFfmpegExportArgv({
       ...baseArgvParams,
@@ -1039,7 +1047,7 @@ export async function runFfmpegExportJob(params: {
       segmentDur,
       uiLocale: uloc,
       mapPercent: (p) => 50 + p * 0.5,
-      ...(params.onProgress !== undefined ? { onProgress: params.onProgress } : {})
+      ...(jobOnProgress !== undefined ? { onProgress: jobOnProgress } : {})
     })
   } finally {
     if (tmpDir !== null) {

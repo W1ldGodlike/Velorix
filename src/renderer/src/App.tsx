@@ -1924,7 +1924,11 @@ function App(): JSX.Element {
       const pct =
         typeof p.percent === 'number' && p.percent >= 0 ? `${Math.round(p.percent)}% · ` : ''
       const spd = typeof p.speed === 'string' && p.speed.trim() !== '' ? `${p.speed.trim()} · ` : ''
-      setStatusHint(uiTextVars('statusExportProgress', { tail: `${pct}${spd}${p.message}` }))
+      const vc =
+        typeof p.videoCodecUsed === 'string' && p.videoCodecUsed.trim() !== ''
+          ? `${p.videoCodecUsed.trim()} · `
+          : ''
+      setStatusHint(uiTextVars('statusExportProgress', { tail: `${pct}${spd}${vc}${p.message}` }))
     })
 
     const offMenuPreview = window.fluxalloy.onPreviewOpened((payload) => {

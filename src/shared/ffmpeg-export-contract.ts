@@ -244,4 +244,9 @@ export interface FfmpegExportProgressPayload {
   message: string
   /** Множитель относительно реального времени (`1.04x`, `N/A`), из последней строки статистики со `speed=`. */
   speed?: string
+  /**
+   * Фактический `-c:v` после резолва `hw_auto` / `hw_auto_hevc` в main.
+   * Сообщение «запуск ffmpeg» из IPC до `runFfmpegExportJob` может прийти без этого поля.
+   */
+  videoCodecUsed?: string
 }
