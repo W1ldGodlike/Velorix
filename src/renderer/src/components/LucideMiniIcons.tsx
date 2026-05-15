@@ -141,6 +141,15 @@ export function IconClipboardPaste({
   )
 }
 
+/** Копирование в буфер (lucide `copy`, те же штрихи, что `QUEUE_ROW_ACTION_ICONS.copy`). */
+export function IconCopy({ title, size = 18 }: { title?: string; size?: number }): JSX.Element {
+  return (
+    <SvgBase title={title ?? miniIconTitle('miniIconCopy')} size={size}>
+      {renderStrokeParts(QUEUE_ROW_ACTION_ICONS.copy)}
+    </SvgBase>
+  )
+}
+
 /** §6 — отдельное окно yt-dlp (pop-out), тот же глиф, что external-link в очереди. */
 export function IconPopOutWindow({
   title,

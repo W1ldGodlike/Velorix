@@ -30,6 +30,7 @@ import {
   IconBook,
   IconChevronLeft,
   IconChevronRight,
+  IconCopy,
   IconCircleHelp,
   IconCloudDownload,
   IconDownload,
@@ -50,6 +51,7 @@ import {
   IconQueueTrash,
   IconQueueX,
   IconRefreshCw,
+  IconSave,
   IconSettings,
   IconSun,
   IconWorkspaceEditor,
@@ -2436,6 +2438,17 @@ function App(): JSX.Element {
     setStatusHint(uiTextVars('batchExportCopiedOutputPaths', { count: String(listed.paths.length) }))
   }
 
+  async function handleBatchCopyRowPath(path: string, kind: 'in' | 'out'): Promise<void> {
+    const written = await window.fluxalloy.clipboard.writeText(path)
+    if (!written.ok) {
+      setStatusHint(uiText('batchExportCopyPathsFailed'))
+      return
+    }
+    setStatusHint(
+      kind === 'in' ? uiText('batchExportCopiedRowInputPath') : uiText('batchExportCopiedRowOutputPath')
+    )
+  }
+
   async function handleBatchSaveReport(): Promise<void> {
     const snap = batchSnapshot ?? (await window.fluxalloy.batchExport.getSnapshot())
     if (snap.rows.length === 0) {
@@ -3293,117 +3306,128 @@ function App(): JSX.Element {
               <div className="app-batch-export-actions">
                 <button
                   type="button"
-                  className="app-btn"
+                  className="app-btn app-btn-icon-leading"
                   disabled={batchExportBusy}
                   onClick={() => {
                     void handleBatchPickFiles()
                   }}
                 >
+                  <IconQueueFile size={16} aria-hidden />
                   {uiText('batchExportAddFiles')}
                 </button>
                 <button
                   type="button"
-                  className="app-btn"
+                  className="app-btn app-btn-icon-leading"
                   disabled={batchExportBusy}
                   onClick={() => {
                     void handleBatchPickFolder()
                   }}
                 >
+                  <IconFolderOpen size={16} aria-hidden />
                   {uiText('batchExportAddFolder')}
                 </button>
                 <button
                   type="button"
-                  className="app-btn"
+                  className="app-btn app-btn-icon-leading"
                   disabled={batchExportBusy || !preview?.path}
                   onClick={() => {
                     void handleBatchAddCurrentPreview()
                   }}
                 >
+                  <IconFilm size={16} aria-hidden />
                   {uiText('batchExportAddCurrentPreview')}
                 </button>
                 <button
                   type="button"
-                  className="app-btn"
+                  className="app-btn app-btn-icon-leading"
                   disabled={batchExportBusy}
                   onClick={() => {
                     void handleBatchAddDownloadsDone()
                   }}
                 >
+                  <IconDownload size={16} aria-hidden />
                   {uiText('batchExportAddDownloadsDone')}
                 </button>
                 <button
                   type="button"
-                  className="app-btn app-btn-primary"
+                  className="app-btn app-btn-primary app-btn-icon-leading"
                   disabled={batchExportBusy || (batchSnapshot?.rows.length ?? 0) === 0}
                   onClick={() => {
                     void handleBatchStart()
                   }}
                 >
+                  <IconPlay size={16} aria-hidden />
                   {uiText('batchExportStart')}
                 </button>
                 <button
                   type="button"
-                  className="app-btn"
+                  className="app-btn app-btn-icon-leading"
                   disabled={!batchExportBusy}
                   onClick={() => {
                     void handleBatchCancel()
                   }}
                 >
+                  <IconBan size={16} aria-hidden />
                   {uiText('batchExportCancel')}
                 </button>
                 <button
                   type="button"
-                  className="app-btn"
+                  className="app-btn app-btn-icon-leading"
                   disabled={batchExportBusy || (batchSnapshot?.completedError ?? 0) === 0}
                   onClick={() => {
                     void handleBatchRetryFailed()
                   }}
                 >
+                  <IconQueueRetry size={16} aria-hidden />
                   {uiText('batchExportRetryFailed')}
                 </button>
                 <button
                   type="button"
-                  className="app-btn"
+                  className="app-btn app-btn-icon-leading"
                   disabled={batchExportBusy || (batchSnapshot?.completedError ?? 0) === 0}
                   onClick={() => {
                     void handleBatchRetryFailedAndStart()
                   }}
                 >
+                  <IconQueueRetry size={16} aria-hidden />
                   {uiText('batchExportRetryFailedAndStart')}
                 </button>
                 <button
                   type="button"
-                  className="app-btn"
+                  className="app-btn app-btn-icon-leading"
                   disabled={batchExportBusy || (batchSnapshot?.completedOk ?? 0) === 0}
                   onClick={() => {
                     void handleBatchClearCompleted()
                   }}
                 >
+                  <IconQueueTrash size={16} aria-hidden />
                   {uiText('batchExportClearCompleted')}
                 </button>
                 <button
                   type="button"
-                  className="app-btn"
+                  className="app-btn app-btn-icon-leading"
                   disabled={batchExportBusy || (batchSnapshot?.rows.length ?? 0) === 0}
                   onClick={() => {
                     void window.fluxalloy.batchExport.clear().catch(console.error)
                   }}
                 >
+                  <IconQueueTrash size={16} aria-hidden />
                   {uiText('batchExportClear')}
                 </button>
                 <button
                   type="button"
-                  className="app-btn"
+                  className="app-btn app-btn-icon-leading"
                   disabled={(batchSnapshot?.rows.length ?? 0) === 0}
                   onClick={() => {
                     void handleBatchCopyInputPaths()
                   }}
                 >
+                  <IconCopy size={16} aria-hidden />
                   {uiText('batchExportCopyPaths')}
                 </button>
                 <button
                   type="button"
-                  className="app-btn"
+                  className="app-btn app-btn-icon-leading"
                   disabled={
                     !(
                       batchSnapshot?.rows.some(
@@ -3415,26 +3439,29 @@ function App(): JSX.Element {
                     void handleBatchCopyOutputPaths()
                   }}
                 >
+                  <IconCopy size={16} aria-hidden />
                   {uiText('batchExportCopyOutputPaths')}
                 </button>
                 <button
                   type="button"
-                  className="app-btn"
+                  className="app-btn app-btn-icon-leading"
                   disabled={(batchSnapshot?.rows.length ?? 0) === 0}
                   onClick={() => {
                     void handleBatchSaveReport()
                   }}
                 >
+                  <IconSave size={16} aria-hidden />
                   {uiText('batchExportSaveReport')}
                 </button>
                 <button
                   type="button"
-                  className="app-btn"
+                  className="app-btn app-btn-icon-leading"
                   disabled={batchExportBusy}
                   onClick={() => {
                     void handleBatchRemoveWaiting()
                   }}
                 >
+                  <IconQueueX size={16} aria-hidden />
                   {uiText('batchExportRemoveWaiting')}
                 </button>
               </div>
@@ -3533,6 +3560,16 @@ function App(): JSX.Element {
                         >
                           <IconFolderOpen aria-hidden />
                         </button>
+                        <button
+                          type="button"
+                          className="app-btn app-btn-icon"
+                          title={uiText('batchExportCopyRowInputPath')}
+                          onClick={() => {
+                            void handleBatchCopyRowPath(row.inputPath, 'in')
+                          }}
+                        >
+                          <IconCopy aria-hidden />
+                        </button>
                         {row.outputPath ? (
                           <>
                             <button
@@ -3564,6 +3601,16 @@ function App(): JSX.Element {
                               }}
                             >
                               <IconFolderOpen aria-hidden />
+                            </button>
+                            <button
+                              type="button"
+                              className="app-btn app-btn-icon"
+                              title={uiText('batchExportCopyRowOutputPath')}
+                              onClick={() => {
+                                void handleBatchCopyRowPath(row.outputPath as string, 'out')
+                              }}
+                            >
+                              <IconCopy aria-hidden />
                             </button>
                           </>
                         ) : null}

@@ -74,6 +74,11 @@ describe('lucide-downloads-icons', () => {
     expect(emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.plus, 17)).toContain('<path')
   })
 
+  it('QUEUE_ROW_ACTION_ICONS.copy — копирование (пакет и др.)', () => {
+    expect(emitInlineStrokeSvg(QUEUE_ROW_ACTION_ICONS.copy, 18)).toContain('<rect')
+    expect(emitDownloadsQueueRowIcoBootstrapJs()).toContain('copy:')
+  })
+
   it('WORKSPACE_TAB_ICONS.editor — кадр, play и ножницы (stroke SVG)', () => {
     const svg = emitInlineStrokeSvg(WORKSPACE_TAB_ICONS.editor, 16)
     expect(svg).toContain('<rect')
