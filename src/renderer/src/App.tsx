@@ -209,6 +209,15 @@ const TERMINAL_HINT_AUDIO_EXTS = new Set([
 /** §15 — slug `Help/ffmpeg-terminal-hints.md` для deep-link из подсказок UI. */
 const KNOWLEDGE_SLUG_FFMPEG_TERMINAL_HINTS = 'ffmpeg-terminal-hints'
 
+/** §7.3 — id заголовков таблицы очереди пакета (`headers` на `<td>`). */
+const BATCH_EXPORT_TABLE_HEADER_IDS = {
+  file: 'flux-batch-col-file',
+  status: 'flux-batch-col-status',
+  output: 'flux-batch-col-output',
+  progress: 'flux-batch-col-progress',
+  actions: 'flux-batch-col-actions'
+} as const
+
 type WorkspaceTab = 'editor' | 'downloads' | 'terminal'
 
 function previewPathExtensionLower(path: string | null): string | null {
@@ -3247,32 +3256,35 @@ function App(): JSX.Element {
                     />
                     <button
                       type="button"
-                      className="app-btn"
+                      className="app-btn app-btn-icon-leading"
                       disabled={batchExportBusy}
                       onClick={() => {
                         void handleBatchPickOutputFolder()
                       }}
                     >
+                      <IconFolder size={16} aria-hidden />
                       {uiText('batchExportOutputDirPick')}
                     </button>
                     <button
                       type="button"
-                      className="app-btn"
+                      className="app-btn app-btn-icon-leading"
                       disabled={batchExportBusy || batchOutputDirectory.length === 0}
                       onClick={() => {
                         void handleBatchRevealSharedOutputFolder()
                       }}
                     >
+                      <IconFolderOpen size={16} aria-hidden />
                       {uiText('batchExportOutputDirOpen')}
                     </button>
                     <button
                       type="button"
-                      className="app-btn"
+                      className="app-btn app-btn-icon-leading"
                       disabled={batchExportBusy || batchOutputDirectory.length === 0}
                       onClick={() => {
                         void handleBatchClearOutputDirectory()
                       }}
                     >
+                      <IconHome size={16} aria-hidden />
                       {uiText('batchExportOutputDirClear')}
                     </button>
                   </div>
@@ -3468,13 +3480,24 @@ function App(): JSX.Element {
               </div>
             {batchSnapshot && batchSnapshot.rows.length > 0 ? (
               <table className="app-batch-export-table">
+                <caption className="app-visually-hidden">{uiText('batchExportTableCaption')}</caption>
                 <thead>
                   <tr>
-                    <th>{uiText('batchExportColFile')}</th>
-                    <th>{uiText('batchExportColStatus')}</th>
-                    <th>{uiText('batchExportColOutput')}</th>
-                    <th>{uiText('batchExportColProgress')}</th>
-                    <th>{uiText('batchExportColActions')}</th>
+                    <th scope="col" id={BATCH_EXPORT_TABLE_HEADER_IDS.file}>
+                      {uiText('batchExportColFile')}
+                    </th>
+                    <th scope="col" id={BATCH_EXPORT_TABLE_HEADER_IDS.status}>
+                      {uiText('batchExportColStatus')}
+                    </th>
+                    <th scope="col" id={BATCH_EXPORT_TABLE_HEADER_IDS.output}>
+                      {uiText('batchExportColOutput')}
+                    </th>
+                    <th scope="col" id={BATCH_EXPORT_TABLE_HEADER_IDS.progress}>
+                      {uiText('batchExportColProgress')}
+                    </th>
+                    <th scope="col" id={BATCH_EXPORT_TABLE_HEADER_IDS.actions}>
+                      {uiText('batchExportColActions')}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -3519,21 +3542,32 @@ function App(): JSX.Element {
                           .catch(console.error)
                       }}
                     >
-                      <td title={row.inputPath}>{row.shortLabel}</td>
-                      <td>{formatFfmpegExportBatchStatusLabel(row.status)}</td>
-                      <td title={row.outputPath ?? undefined}>
+                      <td headers={BATCH_EXPORT_TABLE_HEADER_IDS.file} title={row.inputPath}>
+                        {row.shortLabel}
+                      </td>
+                      <td headers={BATCH_EXPORT_TABLE_HEADER_IDS.status}>
+                        {formatFfmpegExportBatchStatusLabel(row.status)}
+                      </td>
+                      <td
+                        headers={BATCH_EXPORT_TABLE_HEADER_IDS.output}
+                        title={row.outputPath ?? undefined}
+                      >
                         {row.outputPath
                           ? row.outputPath.replace(/^.*[\\/]/, '')
                           : '—'}
                       </td>
-                      <td title={row.status === 'error' ? row.progress : undefined}>
+                      <td
+                        headers={BATCH_EXPORT_TABLE_HEADER_IDS.progress}
+                        title={row.status === 'error' ? row.progress : undefined}
+                      >
                         {row.progress}
                       </td>
-                      <td>
+                      <td headers={BATCH_EXPORT_TABLE_HEADER_IDS.actions}>
                         <button
                           type="button"
                           className="app-btn app-btn-icon"
                           title={uiText('batchExportOpenInputInEditor')}
+                          aria-label={uiText('batchExportOpenInputInEditor')}
                           onClick={() => {
                             void handleBatchOpenInput(row.inputPath, 'preview')
                           }}
@@ -3544,6 +3578,7 @@ function App(): JSX.Element {
                           type="button"
                           className="app-btn app-btn-icon"
                           title={uiText('batchExportOpenInputFile')}
+                          aria-label={uiText('batchExportOpenInputFile')}
                           onClick={() => {
                             void handleBatchOpenInput(row.inputPath, 'file')
                           }}
@@ -3554,6 +3589,7 @@ function App(): JSX.Element {
                           type="button"
                           className="app-btn app-btn-icon"
                           title={uiText('batchExportOpenInputFolder')}
+                          aria-label={uiText('batchExportOpenInputFolder')}
                           onClick={() => {
                             void handleBatchOpenInput(row.inputPath, 'folder')
                           }}
@@ -3564,6 +3600,7 @@ function App(): JSX.Element {
                           type="button"
                           className="app-btn app-btn-icon"
                           title={uiText('batchExportCopyRowInputPath')}
+                          aria-label={uiText('batchExportCopyRowInputPath')}
                           onClick={() => {
                             void handleBatchCopyRowPath(row.inputPath, 'in')
                           }}
@@ -3576,6 +3613,7 @@ function App(): JSX.Element {
                               type="button"
                               className="app-btn app-btn-icon"
                               title={uiText('batchExportOpenOutputInEditor')}
+                              aria-label={uiText('batchExportOpenOutputInEditor')}
                               onClick={() => {
                                 void handleBatchOpenOutput(row.outputPath as string, 'preview')
                               }}
@@ -3586,6 +3624,7 @@ function App(): JSX.Element {
                               type="button"
                               className="app-btn app-btn-icon"
                               title={uiText('processingHistoryOpenFile')}
+                              aria-label={uiText('processingHistoryOpenFile')}
                               onClick={() => {
                                 void handleBatchOpenOutput(row.outputPath as string, 'file')
                               }}
@@ -3596,6 +3635,7 @@ function App(): JSX.Element {
                               type="button"
                               className="app-btn app-btn-icon"
                               title={uiText('processingHistoryOpenFolder')}
+                              aria-label={uiText('processingHistoryOpenFolder')}
                               onClick={() => {
                                 void handleBatchOpenOutput(row.outputPath as string, 'folder')
                               }}
@@ -3606,6 +3646,7 @@ function App(): JSX.Element {
                               type="button"
                               className="app-btn app-btn-icon"
                               title={uiText('batchExportCopyRowOutputPath')}
+                              aria-label={uiText('batchExportCopyRowOutputPath')}
                               onClick={() => {
                                 void handleBatchCopyRowPath(row.outputPath as string, 'out')
                               }}
@@ -3619,6 +3660,7 @@ function App(): JSX.Element {
                             type="button"
                             className="app-btn app-btn-icon"
                             title={uiText('batchExportRetryRow')}
+                            aria-label={uiText('batchExportRetryRow')}
                             disabled={batchExportBusy}
                             onClick={() => {
                               void window.fluxalloy.batchExport.retryRows([row.id]).then((res) => {
@@ -3643,6 +3685,7 @@ function App(): JSX.Element {
                           type="button"
                           className="app-btn app-btn-icon"
                           title={uiText('batchExportMoveUp')}
+                          aria-label={uiText('batchExportMoveUp')}
                           disabled={batchExportBusy || row.status === 'running'}
                           onClick={() => {
                             void window.fluxalloy.batchExport.moveRow(row.id, 'up').catch(console.error)
@@ -3654,6 +3697,7 @@ function App(): JSX.Element {
                           type="button"
                           className="app-btn app-btn-icon"
                           title={uiText('batchExportMoveDown')}
+                          aria-label={uiText('batchExportMoveDown')}
                           disabled={batchExportBusy || row.status === 'running'}
                           onClick={() => {
                             void window.fluxalloy.batchExport.moveRow(row.id, 'down').catch(console.error)
@@ -3665,6 +3709,7 @@ function App(): JSX.Element {
                           type="button"
                           className="app-btn app-btn-icon"
                           title={uiText('batchExportRemoveRow')}
+                          aria-label={uiText('batchExportRemoveRow')}
                           disabled={batchExportBusy || row.status === 'running'}
                           onClick={() => {
                             void window.fluxalloy.batchExport.removeRows([row.id]).catch(console.error)

@@ -905,6 +905,8 @@ const UI_TEXT = {
     batchExportRowStatusError: 'Ошибка',
     batchExportRowStatusCancelled: 'Отменено',
     batchExportColActions: 'Действия',
+    batchExportTableCaption:
+      'Таблица очереди пакетного экспорта. Двойной щелчок по строке открывает исходник в редакторе; двойной щелчок по ячейке «Выход» открывает готовый файл, если путь известен. Кнопки копируют полные пути.',
     batchExportMoveUp: 'Выше',
     batchExportMoveDown: 'Ниже',
     batchExportRemoveRow: 'Убрать из очереди',
@@ -2065,6 +2067,8 @@ const UI_TEXT = {
     batchExportRowStatusError: 'Error',
     batchExportRowStatusCancelled: 'Cancelled',
     batchExportColActions: 'Actions',
+    batchExportTableCaption:
+      'Batch export queue table. Double-click a row to open the source in the editor; double-click the output cell to open the finished file when its path is known. Buttons copy full paths.',
     batchExportMoveUp: 'Move up',
     batchExportMoveDown: 'Move down',
     batchExportRemoveRow: 'Remove from queue',

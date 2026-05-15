@@ -715,4 +715,8 @@
 - [J-692] 2026-05-16 00:50:00 [Assistant]: §7.3 — общий глиф `QUEUE_ROW_ACTION_ICONS.copy` + `IconCopy` (LucideMiniIcons); пакет использует `IconCopy` вместо clipboard; miniIconCopy в ui-text; Vitest lucide.
 - [J-693] 2026-05-16 00:55:00 [Assistant]: §7.3 — панель пакета: кнопки «Копировать пути» / «Копировать пути выхода» / «Сохранить отчёт» с `app-btn-icon-leading` + `IconCopy`/`IconSave`.
 - [J-694] 2026-05-16 01:00:00 [Assistant]: §7.3 — остальные кнопки панели пакета с ведущими иконками (добавить/старт/отмена/retry/очистка/убрать ожидающие).
+- [J-695] 2026-05-16 01:05:00 [Assistant]: §7.3 — строка общей папки выхода: pick/open/clear с `IconFolder`/`IconFolderOpen`/`IconHome`.
+- [J-696] 2026-05-16 01:10:00 [Assistant]: §7.3 — таблица очереди: скрытый `<caption>` + `scope="col"` на заголовках; `batchExportTableCaption` в ui-text.
+- [J-697] 2026-05-16 01:15:00 [Assistant]: §7.3 — таблица пакета: стабильные `id` у `<th>` и атрибут `headers` на `<td>` (`BATCH_EXPORT_TABLE_HEADER_IDS`).
+- [J-698] 2026-05-16 01:20:00 [Assistant]: §7.3 — икон-кнопки в строке пакета: дублирование подписи в `aria-label` (доступность).
 
