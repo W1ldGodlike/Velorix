@@ -273,6 +273,13 @@
     "tool": "ffmpeg"
   },
   {
+    "token": "libaom-av1",
+    "summary": "AOMedia AV1 (libaom) программный AV1.",
+    "examples": ["ffmpeg -c:v libaom-av1 -cpu-used 4 -crf 30"],
+    "docUrl": "https://trac.ffmpeg.org/wiki/Encode/AV1",
+    "tool": "ffmpeg"
+  },
+  {
     "token": "-b:a",
     "summary": "Битрейт аудио.",
     "examples": ["ffmpeg -c:a aac -b:a 192k"],

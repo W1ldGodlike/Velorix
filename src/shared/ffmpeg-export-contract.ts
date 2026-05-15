@@ -20,6 +20,7 @@ export type FfmpegExportVideoCodecId =
   | 'libx265'
   | 'libvpx-vp9'
   | 'libsvtav1'
+  | 'libaom-av1'
   | 'hw_auto'
   | 'hw_auto_hevc'
   | FfmpegHwVideoEncoderId
@@ -240,6 +241,9 @@ export const FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR = 'VP9 (libvpx-vp9): только 
 
 /** `libsvtav1` допускается только с контейнером MKV (spawn и превью). */
 export const FFMPEG_EXPORT_SVTAV1_MKV_ONLY_ERROR = 'AV1 (libsvtav1): только контейнер MKV.' as const
+
+/** `libaom-av1` допускается только с контейнером MKV (spawn и превью). */
+export const FFMPEG_EXPORT_AOM_AV1_MKV_ONLY_ERROR = 'AV1 (libaom-av1): только контейнер MKV.' as const
 
 export type MediaExportStartResult =
   | { ok: true; path: string }

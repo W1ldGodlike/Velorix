@@ -30,12 +30,14 @@ import type {
 } from './ffmpeg-export-contract'
 import {
   FFMPEG_EXPORT_AUDIO_GAIN_DB_MAX,
-  FFMPEG_EXPORT_AUDIO_GAIN_DB_MIN,
-  FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR,
-  FFMPEG_EXPORT_SVTAV1_MKV_ONLY_ERROR
+  FFMPEG_EXPORT_AUDIO_GAIN_DB_MIN
 } from './ffmpeg-export-contract'
 import type { FfmpegHwVideoEncoderId } from './ffmpeg-hw-encoder-probe'
-import { cpuFfmpegVideoCodecRequiresMkv, isFfmpegHwExportVideoCodec } from './ffmpeg-export-video-codec'
+import {
+  cpuFfmpegVideoCodecRequiresMkv,
+  exportCpuCodecMkvOnlyErrorMessage,
+  isFfmpegHwExportVideoCodec
+} from './ffmpeg-export-video-codec'
 
 /**
  * §7.2 — решает, нужно ли подставлять `-ss/-t` для пары маркеров.
@@ -625,9 +627,7 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
   const vcodec: FfmpegExportVideoCodecId = params.videoCodec ?? 'libx264'
   const tp = params.twoPass
   if (cpuFfmpegVideoCodecRequiresMkv(vcodec) && container !== 'mkv') {
-    throw new Error(
-      vcodec === 'libvpx-vp9' ? FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR : FFMPEG_EXPORT_SVTAV1_MKV_ONLY_ERROR
-    )
+    throw new Error(exportCpuCodecMkvOnlyErrorMessage(vcodec))
   }
   if (isFfmpegHwExportVideoCodec(vcodec)) {
     if (tp) {
@@ -666,6 +666,22 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
     if (params.videoBitrate === null) {
       const presetCrf =
         params.encodePreset === 'quality' ? 26 : params.encodePreset === 'smaller' ? 40 : 32
+      const crfNum =
+        params.crf === null ? presetCrf : Math.min(63, Math.max(0, Math.floor(params.crf)))
+      args.push('-crf', String(crfNum))
+    } else {
+      args.push('-b:v', params.videoBitrate)
+    }
+  } else if (vcodec === 'libaom-av1') {
+    if (tp) {
+      throw new Error('Двухпроходный режим поддерживается только для libx264')
+    }
+    const cpuUsed =
+      params.encodePreset === 'smaller' ? '8' : params.encodePreset === 'quality' ? '2' : '5'
+    args.push('-c:v', 'libaom-av1', '-cpu-used', cpuUsed)
+    if (params.videoBitrate === null) {
+      const presetCrf =
+        params.encodePreset === 'quality' ? 28 : params.encodePreset === 'smaller' ? 42 : 32
       const crfNum =
         params.crf === null ? presetCrf : Math.min(63, Math.max(0, Math.floor(params.crf)))
       args.push('-crf', String(crfNum))

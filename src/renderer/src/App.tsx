@@ -723,6 +723,7 @@ function App(): JSX.Element {
           { id: 'libx265', label: uiText('editorExportCodecH265') },
           { id: 'libvpx-vp9', label: uiText('editorExportCodecVp9') },
           { id: 'libsvtav1', label: uiText('editorExportCodecSvtav1') },
+          { id: 'libaom-av1', label: uiText('editorExportCodecAomav1') },
           { id: 'hw_auto', label: uiText('editorExportCodecHwAuto') },
           { id: 'hw_auto_hevc', label: uiText('editorExportCodecHwAutoHevc') }
         ]

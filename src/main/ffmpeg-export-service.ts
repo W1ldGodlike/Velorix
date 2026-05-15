@@ -32,6 +32,7 @@ import type {
 } from '../shared/ffmpeg-export-contract'
 import {
   cpuFfmpegVideoCodecRequiresMkv,
+  exportCpuCodecMkvOnlyErrorMessage,
   parseFfmpegExportVideoCodec,
   pickFfmpegHwAutoEncoder,
   pickFfmpegHwAutoHevcEncoder
@@ -39,9 +40,7 @@ import {
 import { createEmptyFfmpegHwEncodersSnapshot } from '../shared/ffmpeg-hw-encoder-probe'
 import {
   FFMPEG_EXPORT_CANCELLED_ERROR,
-  FFMPEG_EXPORT_USER_PRESETS_MAX_ENTRIES,
-  FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR,
-  FFMPEG_EXPORT_SVTAV1_MKV_ONLY_ERROR
+  FFMPEG_EXPORT_USER_PRESETS_MAX_ENTRIES
 } from '../shared/ffmpeg-export-contract'
 import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
@@ -918,10 +917,7 @@ export async function runFfmpegExportJob(params: {
   if (cpuFfmpegVideoCodecRequiresMkv(videoCodec) && container !== 'mkv') {
     return {
       ok: false,
-      error:
-        videoCodec === 'libvpx-vp9'
-          ? FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR
-          : FFMPEG_EXPORT_SVTAV1_MKV_ONLY_ERROR,
+      error: exportCpuCodecMkvOnlyErrorMessage(videoCodec),
       videoCodecUsed: videoCodec
     }
   }

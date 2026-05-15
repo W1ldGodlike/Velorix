@@ -25,7 +25,7 @@ import {
   resolveFfmpegExportVideoTransformFilters,
   shouldApplyFfmpegExportTrim
 } from '../../src/shared/ffmpeg-export-argv'
-import { FFMPEG_EXPORT_SVTAV1_MKV_ONLY_ERROR, FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR } from '../../src/shared/ffmpeg-export-contract'
+import { FFMPEG_EXPORT_AOM_AV1_MKV_ONLY_ERROR, FFMPEG_EXPORT_SVTAV1_MKV_ONLY_ERROR, FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR } from '../../src/shared/ffmpeg-export-contract'
 
 describe('shared ffmpeg export argv', () => {
   it('даёт CRF и x264 preset под системные пресеты §7.2', () => {
@@ -232,6 +232,43 @@ describe('shared ffmpeg export argv', () => {
     const j = argv.indexOf('-c:v')
     expect(argv.slice(j, j + 4)).toEqual(['-c:v', 'libsvtav1', '-preset', '12'])
     expect(argv[argv.indexOf('-crf') + 1]).toBe('40')
+  })
+
+  it('libaom-av1: только MKV; -cpu-used и -crf', () => {
+    expect(() =>
+      buildFfmpegExportArgv({
+        inputPath: 'in.mp4',
+        outputPath: 'out.mp4',
+        applyTrim: false,
+        encodePreset: 'balance',
+        videoCodec: 'libaom-av1',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'aac',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        container: 'mov'
+      })
+    ).toThrow(FFMPEG_EXPORT_AOM_AV1_MKV_ONLY_ERROR)
+
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mkv',
+      outputPath: 'out.mkv',
+      applyTrim: false,
+      encodePreset: 'quality',
+      videoCodec: 'libaom-av1',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mkv'
+    })
+    const j = argv.indexOf('-c:v')
+    expect(argv.slice(j, j + 4)).toEqual(['-c:v', 'libaom-av1', '-cpu-used', '2'])
+    expect(argv[argv.indexOf('-crf') + 1]).toBe('28')
   })
 
   it('h264_nvenc: без libx264-preset, VBR + cq; hevc_nvenc + mp4 даёт hvc1', () => {
