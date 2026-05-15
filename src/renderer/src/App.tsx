@@ -89,6 +89,10 @@ import { isBuiltinExportUserPresetId } from '../../shared/builtin-ffmpeg-export-
 import { FFMPEG_HW_VIDEO_ENCODER_IDS } from '../../shared/ffmpeg-hw-encoder-probe'
 import type { FfmpegHwEncodersProbeResult } from '../../shared/ffmpeg-hw-encoder-probe'
 import {
+  ffmpegExportAudioModeRequiresMkv,
+  ffmpegExportAudioModeUsesBitrate
+} from '../../shared/ffmpeg-export-audio-mode'
+import {
   cpuFfmpegVideoCodecRequiresMkv,
   ffmpegExportVideoCodecRequiresMov,
   isFfmpegHwAutoVideoCodec,
@@ -857,6 +861,8 @@ function App(): JSX.Element {
       audioModes: [
         { id: 'aac', label: uiText('editorExportAudioModeAac') },
         { id: 'pcm_s16le', label: uiText('editorExportAudioModePcmS16le') },
+        { id: 'libopus', label: uiText('editorExportAudioModeLibopus') },
+        { id: 'flac', label: uiText('editorExportAudioModeFlac') },
         { id: 'none', label: uiText('editorExportAudioModeNone') }
       ] as Array<{ id: FfmpegExportAudioModeId; label: string }>,
       snapshotFormats: [
@@ -1442,20 +1448,28 @@ function App(): JSX.Element {
       nextContainer = 'mov'
       void window.fluxalloy.settings.setFfmpegExportContainer('mov').catch(console.error)
     }
+    let nextAudioMode: FfmpegExportAudioModeId = 'aac'
+    if (loaded.ffmpegExportAudioMode === 'none') {
+      nextAudioMode = 'none'
+    } else if (loaded.ffmpegExportAudioMode === 'pcm_s16le') {
+      nextAudioMode = 'pcm_s16le'
+    } else if (loaded.ffmpegExportAudioMode === 'libopus') {
+      nextAudioMode = 'libopus'
+    } else if (loaded.ffmpegExportAudioMode === 'flac') {
+      nextAudioMode = 'flac'
+    }
+    if (ffmpegExportAudioModeRequiresMkv(nextAudioMode) && nextContainer !== 'mkv') {
+      nextContainer = 'mkv'
+      void window.fluxalloy.settings.setFfmpegExportContainer('mkv').catch(console.error)
+    }
     setExportContainer(nextContainer)
+    setExportAudioMode(nextAudioMode)
     setExportTwoPass(loaded.ffmpegExportTwoPass === true && bitrateOk && vcodec === 'libx264')
     if (
       typeof loaded.ffmpegExportAudioBitrate === 'string' &&
       EXPORT_AUDIO_BITRATES.includes(loaded.ffmpegExportAudioBitrate)
     ) {
       setExportAudioBitrate(loaded.ffmpegExportAudioBitrate)
-    }
-    if (loaded.ffmpegExportAudioMode === 'none') {
-      setExportAudioMode('none')
-    } else if (loaded.ffmpegExportAudioMode === 'pcm_s16le') {
-      setExportAudioMode('pcm_s16le')
-    } else {
-      setExportAudioMode('aac')
     }
     if (
       typeof loaded.ffmpegExportFps === 'number' &&
@@ -2827,7 +2841,8 @@ function App(): JSX.Element {
                           value={p.id}
                           disabled={
                             (cpuFfmpegVideoCodecRequiresMkv(exportVideoCodec) && p.id !== 'mkv') ||
-                            (ffmpegExportVideoCodecRequiresMov(exportVideoCodec) && p.id !== 'mov')
+                            (ffmpegExportVideoCodecRequiresMov(exportVideoCodec) && p.id !== 'mov') ||
+                            (ffmpegExportAudioModeRequiresMkv(exportAudioMode) && p.id !== 'mkv')
                           }
                         >
                           {p.label}
@@ -3336,6 +3351,13 @@ function App(): JSX.Element {
                         bumpManualExportEdit()
                         const v = e.target.value as FfmpegExportAudioModeId
                         setExportAudioMode(v)
+                        if (ffmpegExportAudioModeRequiresMkv(v) && exportContainer !== 'mkv') {
+                          setExportContainer('mkv')
+                          void window.fluxalloy.settings
+                            .setFfmpegExportContainer('mkv')
+                            .catch(console.error)
+                          setStatusHint(uiText('editorExportAutoContainerMkv'))
+                        }
                         void window.fluxalloy.settings.setFfmpegExportAudioMode(v).catch(console.error)
                       }}
                     >
@@ -3356,7 +3378,9 @@ function App(): JSX.Element {
                       title={uiText('editorTooltipAacBitrate')}
                       aria-label={uiText('editorAriaAacBitrate')}
                       value={exportAudioBitrate}
-                      disabled={exportBusy || snapshotBusy || exportAudioMode !== 'aac'}
+                      disabled={
+                        exportBusy || snapshotBusy || !ffmpegExportAudioModeUsesBitrate(exportAudioMode)
+                      }
                       onChange={(e) => {
                         bumpManualExportEdit()
                         const v = e.target.value

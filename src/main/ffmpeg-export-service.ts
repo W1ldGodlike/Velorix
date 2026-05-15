@@ -31,6 +31,10 @@ import type {
   MediaExportTrimPayload
 } from '../shared/ffmpeg-export-contract'
 import {
+  exportAudioModeMkvOnlyErrorMessage,
+  ffmpegExportAudioModeRequiresMkv
+} from '../shared/ffmpeg-export-audio-mode'
+import {
   cpuFfmpegVideoCodecRequiresMkv,
   exportCpuCodecMkvOnlyErrorMessage,
   exportMovOnlyCodecErrorMessage,
@@ -178,6 +182,12 @@ export function parseFfmpegExportAudioMode(raw: unknown): FfmpegExportAudioModeI
   }
   if (raw === 'pcm_s16le') {
     return 'pcm_s16le'
+  }
+  if (raw === 'libopus') {
+    return 'libopus'
+  }
+  if (raw === 'flac') {
+    return 'flac'
   }
   return 'aac'
 }
@@ -930,6 +940,13 @@ export async function runFfmpegExportJob(params: {
     return {
       ok: false,
       error: exportMovOnlyCodecErrorMessage(videoCodec),
+      videoCodecUsed: videoCodec
+    }
+  }
+  if (ffmpegExportAudioModeRequiresMkv(audioMode) && container !== 'mkv') {
+    return {
+      ok: false,
+      error: exportAudioModeMkvOnlyErrorMessage(audioMode),
       videoCodecUsed: videoCodec
     }
   }

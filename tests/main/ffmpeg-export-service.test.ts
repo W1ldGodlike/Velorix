@@ -83,6 +83,8 @@ describe('ffmpeg export pure helpers', () => {
     expect(parseFfmpegExportAudioBitrate('1000k')).toBeNull()
     expect(parseFfmpegExportAudioMode('none')).toBe('none')
     expect(parseFfmpegExportAudioMode('pcm_s16le')).toBe('pcm_s16le')
+    expect(parseFfmpegExportAudioMode('libopus')).toBe('libopus')
+    expect(parseFfmpegExportAudioMode('flac')).toBe('flac')
     expect(parseFfmpegExportAudioMode('bad')).toBe('aac')
     expect(parseFfmpegExportTwoPass(true)).toBe(true)
     expect(parseFfmpegExportTwoPass(false)).toBe(false)
@@ -376,6 +378,20 @@ describe('ffmpeg export pure helpers', () => {
       cropPreset: 'none'
     })
     expect(pcmMode.ffmpegExportAudioMode).toBe('pcm_s16le')
+
+    const opusMode = mergeFfmpegExportSnapshotIntoAppSettings({ theme: 'dark' }, {
+      encodePreset: 'balance',
+      container: 'mkv',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'libopus',
+      audioBitrate: '128k',
+      fps: null,
+      scalePreset: 'source',
+      videoTransform: 'none',
+      cropPreset: 'none'
+    })
+    expect(opusMode.ffmpegExportAudioMode).toBe('libopus')
 
     const deb = mergeFfmpegExportSnapshotIntoAppSettings(
       { theme: 'dark' },

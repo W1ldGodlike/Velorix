@@ -616,16 +616,18 @@ const UI_TEXT = {
     editorAriaCropExport: 'Шаблон обрезки кадра',
     editorFfmpegSectionAudio: 'Аудио и кадр',
     editorFfmpegSectionAudioHint:
-      'Звуковая дорожка (AAC, PCM без сжатия или без звука), громкость, отдельный снимок кадра и поведение субтитров в готовом файле.',
+      'Звуковая дорожка (AAC, Opus, FLAC, PCM или без звука), громкость, отдельный снимок кадра и поведение субтитров в готовом файле.',
     editorFieldAudioMode: 'Звуковая дорожка',
     editorExportAudioModeAac: 'AAC',
     editorExportAudioModePcmS16le: 'PCM 16 бит (без сжатия)',
+    editorExportAudioModeLibopus: 'Opus (libopus, только MKV)',
+    editorExportAudioModeFlac: 'FLAC (без потерь, только MKV)',
     editorExportAudioModeNone: 'Нет дорожки',
     editorAriaAudioModeExport: 'Режим аудио при экспорте',
     editorTooltipAudioMode:
-      'AAC — обычный сжатый звук для плееров. PCM — без потерь и без сжатия (файл крупнее), удобно для монтажа и архива. «Нет дорожки» — только видео.',
+      'AAC — обычный сжатый звук для плееров. PCM и FLAC — без потерь (файл крупнее). Opus — эффективное сжатие, только MKV. «Нет дорожки» — только видео.',
     editorExportAudioModeSelectHint:
-      'Выберите AAC для совместимости, PCM для несжатого звука или отключите дорожку полностью.',
+      'AAC для совместимости; Opus/FLAC — только MKV; PCM — несжатый звук; или отключите дорожку.',
     editorNoAudioSpan: 'Без аудио',
     editorNoAudioPillLabel: 'Без аудио',
     editorNoAudioHint:
@@ -673,7 +675,7 @@ const UI_TEXT = {
     editorExportCodecProresKs: 'Apple ProRes (prores_ks, только MOV)',
     editorExportCodecDnxhd: 'Avid DNxHR (dnxhd, только MOV)',
     editorExportCodecFfv1: 'FFV1 (архив, только MKV)',
-    editorExportAutoContainerMkv: 'Контейнер переключён на MKV (VP9/AV1 CPU / FFV1).',
+    editorExportAutoContainerMkv: 'Контейнер переключён на MKV (VP9/AV1 CPU / FFV1 / Opus / FLAC).',
     editorExportAutoContainerMov: 'Контейнер переключён на MOV (ProRes / DNxHD).',
     editorExportCodecHwAuto: 'Авто (лучший H.264/AV1 HW или CPU)',
     editorExportCodecHwAutoBadge: 'АВТО',
@@ -1658,16 +1660,18 @@ const UI_TEXT = {
     editorAriaCropExport: 'Crop template',
     editorFfmpegSectionAudio: 'Audio & frame',
     editorFfmpegSectionAudioHint:
-      'Audio track (AAC, uncompressed PCM, or no sound), loudness, separate frame snapshots, and subtitle behavior in the finished file.',
+      'Audio track (AAC, Opus, FLAC, uncompressed PCM, or no sound), loudness, separate frame snapshots, and subtitle behavior in the finished file.',
     editorFieldAudioMode: 'Audio track',
     editorExportAudioModeAac: 'AAC',
     editorExportAudioModePcmS16le: 'PCM 16-bit (uncompressed)',
+    editorExportAudioModeLibopus: 'Opus (libopus, MKV only)',
+    editorExportAudioModeFlac: 'FLAC (lossless, MKV only)',
     editorExportAudioModeNone: 'No audio track',
     editorAriaAudioModeExport: 'Export audio mode',
     editorTooltipAudioMode:
-      'AAC is the usual compressed choice for players. PCM is lossless and uncompressed (larger files), handy for editing and archival. «No track» exports video only.',
+      'AAC is the usual compressed choice for players. PCM and FLAC are lossless (larger files). Opus is efficient compression in MKV only. «No track» exports video only.',
     editorExportAudioModeSelectHint:
-      'Choose AAC for compatibility, PCM for uncompressed audio, or disable the track entirely.',
+      'AAC for compatibility; Opus/FLAC require MKV; PCM is uncompressed; or disable the track.',
     editorNoAudioSpan: 'No audio',
     editorNoAudioPillLabel: 'No audio',
     editorNoAudioHint:
@@ -1715,7 +1719,7 @@ const UI_TEXT = {
     editorExportCodecProresKs: 'Apple ProRes (prores_ks, MOV only)',
     editorExportCodecDnxhd: 'Avid DNxHR (dnxhd, MOV only)',
     editorExportCodecFfv1: 'FFV1 (archival, MKV only)',
-    editorExportAutoContainerMkv: 'Container switched to MKV (VP9/AV1 CPU / FFV1).',
+    editorExportAutoContainerMkv: 'Container switched to MKV (VP9/AV1 CPU / FFV1 / Opus / FLAC).',
     editorExportAutoContainerMov: 'Container switched to MOV (ProRes / DNxHD).',
     editorExportCodecHwAuto: 'Auto (best H.264/AV1 HW or CPU)',
     editorExportCodecHwAutoBadge: 'AUTO',

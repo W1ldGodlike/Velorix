@@ -82,7 +82,7 @@ export type FfmpegExportVideoHueId = 'off' | 'warmShift' | 'coolShift' | 'satBoo
  * §7.2 — bundled 3D LUT для `lut3d=file=…` (whitelist; `.cube` в `resources/luts/`, путь подставляет main).
  */
 export type FfmpegExportVideoLut3dId = 'off' | 'film-warm' | 'film-cool' | 'punch'
-export type FfmpegExportAudioModeId = 'aac' | 'pcm_s16le' | 'none'
+export type FfmpegExportAudioModeId = 'aac' | 'pcm_s16le' | 'libopus' | 'flac' | 'none'
 /**
  * §7.2 — пресеты нормализации громкости. `loudnorm` — однопроходный EBU R128,
  * `dynaudnorm` — динамическая нормализация. Включаются только в одиночном проходе:
@@ -258,6 +258,12 @@ export const FFMPEG_EXPORT_DNXHD_MOV_ONLY_ERROR =
   'Avid DNxHD/DNxHR (dnxhd): только контейнер MOV.' as const
 /** `ffv1` (архивный lossless) допускается только с контейнером MKV (spawn и превью). */
 export const FFMPEG_EXPORT_FFV1_MKV_ONLY_ERROR = 'FFV1 (ffv1): только контейнер MKV.' as const
+/** `libopus` допускается только с контейнером MKV (spawn и превью). */
+export const FFMPEG_EXPORT_AUDIO_LIBOPUS_MKV_ONLY_ERROR =
+  'Opus (libopus): только контейнер MKV.' as const
+/** `flac` допускается только с контейнером MKV (spawn и превью). */
+export const FFMPEG_EXPORT_AUDIO_FLAC_MKV_ONLY_ERROR =
+  'FLAC (flac): только контейнер MKV.' as const
 
 export type MediaExportStartResult =
   | { ok: true; path: string }

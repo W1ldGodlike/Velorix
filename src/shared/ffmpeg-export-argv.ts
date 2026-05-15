@@ -34,6 +34,10 @@ import {
 } from './ffmpeg-export-contract'
 import type { FfmpegHwVideoEncoderId } from './ffmpeg-hw-encoder-probe'
 import {
+  exportAudioModeMkvOnlyErrorMessage,
+  ffmpegExportAudioModeRequiresMkv
+} from './ffmpeg-export-audio-mode'
+import {
   cpuFfmpegVideoCodecRequiresMkv,
   exportCpuCodecMkvOnlyErrorMessage,
   exportMovOnlyCodecErrorMessage,
@@ -627,12 +631,16 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
   }
 
   const vcodec: FfmpegExportVideoCodecId = params.videoCodec ?? 'libx264'
+  const audioMode: FfmpegExportAudioModeId = params.audioMode ?? 'aac'
   const tp = params.twoPass
   if (cpuFfmpegVideoCodecRequiresMkv(vcodec) && container !== 'mkv') {
     throw new Error(exportCpuCodecMkvOnlyErrorMessage(vcodec))
   }
   if (ffmpegExportVideoCodecRequiresMov(vcodec) && container !== 'mov') {
     throw new Error(exportMovOnlyCodecErrorMessage(vcodec))
+  }
+  if (ffmpegExportAudioModeRequiresMkv(audioMode) && container !== 'mkv') {
+    throw new Error(exportAudioModeMkvOnlyErrorMessage(audioMode))
   }
   if (isFfmpegHwExportVideoCodec(vcodec)) {
     if (tp) {
@@ -779,11 +787,15 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
     params.audioMode === 'none'
       ? null
       : resolveFfmpegExportAudioNormalizeFilter(params.audioNormalize ?? 'off')
-  if (params.audioMode === 'none') {
+  if (audioMode === 'none') {
     args.push('-an')
   } else {
-    if (params.audioMode === 'pcm_s16le') {
+    if (audioMode === 'pcm_s16le') {
       args.push('-c:a', 'pcm_s16le')
+    } else if (audioMode === 'libopus') {
+      args.push('-c:a', 'libopus', '-b:a', params.audioBitrate)
+    } else if (audioMode === 'flac') {
+      args.push('-c:a', 'flac')
     } else {
       args.push('-c:a', 'aac', '-b:a', params.audioBitrate)
     }
