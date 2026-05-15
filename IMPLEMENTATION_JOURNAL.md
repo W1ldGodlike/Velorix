@@ -758,4 +758,9 @@
 - [J-735] 2026-05-16 05:59:00 [Assistant]: Редактор — превью команды экспорта: `toolbar` + `editorExportPreviewActionsToolbarAria`.
 - [J-736] 2026-05-16 06:01:00 [Assistant]: Редактор — последний файл экспорта: `toolbar` + `editorExportLastOutputActionsToolbarAria`.
 - [J-737] 2026-05-16 06:03:00 [Assistant]: База знаний — список статей: `role="group"` + `knowledgeTocListAria` (вместо `list` без `listitem`).
+- [J-738] 2026-05-16 06:10:00 [Assistant]: Вкладка «Загрузки» — rail cookies: `toolbar` + `downloadsCookiesFileActionsToolbarAria` у pick/clear.
+- [J-739] 2026-05-16 06:12:00 [Assistant]: Вкладка «Загрузки» — rail каталог вывода: `toolbar` + `downloadsOutputDirActionsToolbarAria`.
+- [J-740] 2026-05-16 06:14:00 [Assistant]: Вкладка «Загрузки» — футер rail: `toolbar` + `downloadsRailFooterToolbarAria` (обновить настройки).
+- [J-741] 2026-05-16 06:16:00 [Assistant]: База знаний — регион статьи: при наличии заголовка `aria-labelledby` на `h3#knowledge-article-heading`, иначе `aria-label` как раньше.
+- [J-742] 2026-05-16 06:18:00 [Assistant]: База знаний — кнопка закрытия: `aria-label` + `knowledgeCloseButtonAria`.
 

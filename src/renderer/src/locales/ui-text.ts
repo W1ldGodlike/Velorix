@@ -101,6 +101,7 @@ const UI_TEXT = {
       'Фильтр списка статей по заголовку, имени файла или короткому имени (slug) без учёта регистра.',
     knowledgeSearchInputAria: 'Поиск по статьям в оглавлении',
     knowledgeCloseTooltip: 'Закрыть окно справки (Esc или щелчок по фону).',
+    knowledgeCloseButtonAria: 'Закрыть окно справки',
     knowledgeDialogActionsToolbarAria: 'Действия в окне базы знаний',
     knowledgeTopbarTooltip: 'Открыть локальную базу знаний (статьи из Help/*.md).',
     knowledgeTocAria: 'Оглавление справки',
@@ -360,6 +361,7 @@ const UI_TEXT = {
     downloadsCookiesProfileHint:
       'Суффикс yt-dlp после двоеточия: `--cookies-from-browser` `chrome:…` (без префикса браузера в поле).',
     downloadsCookiesFileGroupAria: 'Файл cookies yt-dlp',
+    downloadsCookiesFileActionsToolbarAria: 'Файл cookies: выбрать или очистить',
     downloadsCookiesNetscapeHelp: 'Файл cookies Netscape',
     downloadsCookiesFileNotSelected: 'Файл не выбран',
     downloadsCookiesFilePriorityHelp:
@@ -367,6 +369,7 @@ const UI_TEXT = {
     downloadsRailPick: 'Выбрать',
     downloadsRailSavingSummary: 'Сохранение',
     downloadsOutputDirAria: 'Каталог загрузок yt-dlp',
+    downloadsOutputDirActionsToolbarAria: 'Каталог загрузок: открыть, выбрать или сбросить на умолчание',
     downloadsOutputDirLabel: 'Каталог загрузок',
     downloadsOutputPathLoading: 'Загружаю путь…',
     downloadsOutputUseDefaultUserdata: 'Используется каталог по умолчанию в userData.',
@@ -406,6 +409,7 @@ const UI_TEXT = {
     downloadsCommandPreviewHelp: 'Превью команды (чтение)',
     downloadsOptionsLoading: 'Загружаю настройки yt-dlp…',
     downloadsRailRefreshOptions: 'Обновить настройки',
+    downloadsRailFooterToolbarAria: 'Нижняя панель настроек загрузок',
     downloadsTooltipSectionFormat:
       'Какой вариант ролика скачивать по умолчанию: только звук или видео+звук, весь плейлист или одно видео, нужны ли субтитры и на каких языках.',
     downloadsTooltipSectionMetadata:
@@ -1308,6 +1312,7 @@ const UI_TEXT = {
       'Filter the article list by title, file name, or slug (case-insensitive).',
     knowledgeSearchInputAria: 'Search articles in the table of contents',
     knowledgeCloseTooltip: 'Close help (Esc or click the backdrop).',
+    knowledgeCloseButtonAria: 'Close help window',
     knowledgeDialogActionsToolbarAria: 'Knowledge base window actions',
     knowledgeTopbarTooltip: 'Open the local knowledge base (Help/*.md articles).',
     knowledgeTocAria: 'Help table of contents',
@@ -1565,6 +1570,7 @@ const UI_TEXT = {
     downloadsCookiesProfileHint:
       'yt-dlp suffix after the colon: `--cookies-from-browser` `chrome:…` (do not type the browser prefix in this field).',
     downloadsCookiesFileGroupAria: 'yt-dlp cookies file',
+    downloadsCookiesFileActionsToolbarAria: 'Cookies file: pick or clear',
     downloadsCookiesNetscapeHelp: 'Netscape cookies file',
     downloadsCookiesFileNotSelected: 'No file selected',
     downloadsCookiesFilePriorityHelp:
@@ -1572,6 +1578,8 @@ const UI_TEXT = {
     downloadsRailPick: 'Select',
     downloadsRailSavingSummary: 'Saving',
     downloadsOutputDirAria: 'yt-dlp download directory',
+    downloadsOutputDirActionsToolbarAria:
+      'Download directory: open in explorer, pick folder, or reset to default',
     downloadsOutputDirLabel: 'Download directory',
     downloadsOutputPathLoading: 'Loading path…',
     downloadsOutputUseDefaultUserdata: 'Using the default directory under userData.',
@@ -1611,6 +1619,7 @@ const UI_TEXT = {
     downloadsCommandPreviewHelp: 'Command preview (read-only)',
     downloadsOptionsLoading: 'Loading yt-dlp settings…',
     downloadsRailRefreshOptions: 'Reload settings',
+    downloadsRailFooterToolbarAria: 'Downloads settings rail footer',
     downloadsTooltipSectionFormat:
       'Default “what to download”: audio-only vs video+audio, whole playlist vs single item, subtitles and languages.',
     downloadsTooltipSectionMetadata:

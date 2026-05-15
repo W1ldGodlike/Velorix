@@ -6420,7 +6420,11 @@ function App(): JSX.Element {
                       <span className="app-field-help">
                         {uiText('downloadsCookiesFilePriorityHelp')}
                       </span>
-                      <div className="app-downloads-history-actions">
+                      <div
+                        className="app-downloads-history-actions"
+                        role="toolbar"
+                        aria-label={uiText('downloadsCookiesFileActionsToolbarAria')}
+                      >
                         <button
                           type="button"
                           className="app-btn app-btn-compact app-btn-icon-leading"
@@ -6492,7 +6496,11 @@ function App(): JSX.Element {
                           ? uiText('downloadsOutputUseDefaultUserdata')
                           : uiText('downloadsOutputUseCustom')}
                       </span>
-                      <div className="app-downloads-history-actions">
+                      <div
+                        className="app-downloads-history-actions"
+                        role="toolbar"
+                        aria-label={uiText('downloadsOutputDirActionsToolbarAria')}
+                      >
                         <button
                           type="button"
                           className="app-btn app-btn-compact app-btn-icon-leading"
@@ -6817,7 +6825,11 @@ function App(): JSX.Element {
             ) : (
               <p className="app-settings-subtitle">{uiText('downloadsOptionsLoading')}</p>
             )}
-            <div className="app-downloads-rail-footer">
+            <div
+              className="app-downloads-rail-footer"
+              role="toolbar"
+              aria-label={uiText('downloadsRailFooterToolbarAria')}
+            >
               <button
                 type="button"
                 className="app-btn app-btn-icon-leading"

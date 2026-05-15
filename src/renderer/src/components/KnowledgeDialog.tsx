@@ -128,6 +128,9 @@ export function KnowledgeDialog({
     return null
   }
 
+  const knowledgeArticleRegionLabelledBy =
+    !loading && !error && articlePane ? 'knowledge-article-heading' : undefined
+
   return (
     <div
       className="app-modal-backdrop"
@@ -159,6 +162,7 @@ export function KnowledgeDialog({
                 type="button"
                 className="app-btn"
                 onClick={onClose}
+                aria-label={uiText('knowledgeCloseButtonAria')}
                 title={uiText('knowledgeCloseTooltip')}
               >
                 {uiText('closeButton')}
@@ -200,12 +204,21 @@ export function KnowledgeDialog({
             </div>
           </aside>
 
-          <article className="app-knowledge-article" role="region" aria-label={uiText('knowledgeArticleRegionAria')}>
+          <article
+            className="app-knowledge-article"
+            role="region"
+            aria-labelledby={knowledgeArticleRegionLabelledBy}
+            aria-label={
+              knowledgeArticleRegionLabelledBy === undefined
+                ? uiText('knowledgeArticleRegionAria')
+                : undefined
+            }
+          >
             {loading ? <p className="app-modal-hint">{uiText('loading')}</p> : null}
             {error ? <p className="app-modal-hint app-error-text">{error}</p> : null}
             {!loading && !error && articlePane ? (
               <>
-                <h3>{articlePane.title}</h3>
+                <h3 id="knowledge-article-heading">{articlePane.title}</h3>
                 <KnowledgeMarkdownBody
                   blocks={mdBlocks}
                   onOpenSlug={(slug) => {
