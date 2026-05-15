@@ -215,8 +215,10 @@ const UI_TEXT = {
       'Эта вкладка — основной рабочий стол yt-dlp (очередь по центру, журнал и история под таблицей, настройки справа как в v0; при ширине окна примерно до 1100px панель настроек переносится под журнал с прокруткой, поля не теряются — сверху есть кнопка «К настройкам», чтобы сразу прокрутить к панели). Отдельное окно — дубликат с той же связью с основным процессом (main, IPC) и длинным справочником токенов в одном списке.',
     downloadsPopOut: 'Отдельное окно',
     downloadsScrollToSettings: 'К настройкам',
+    downloadsBandToolbarAria: 'Быстрые действия вкладки загрузок',
     downloadsUrlPlaceholder: 'URL или несколько URL по строкам',
     downloadsUrlAria: 'URL для добавления в очередь загрузок',
+    downloadsUrlActionsToolbarAria: 'Действия с полем URL и очередью загрузок',
     downloadsAddToQueue: 'Добавить в очередь',
     downloadsStopQueue: 'Прервать загрузку',
     downloadsStopQueueTooltip:
@@ -1382,8 +1384,10 @@ const UI_TEXT = {
       'This tab is the main yt-dlp desk (queue in the center, log and history under the table, settings on the right like v0; below ~1100px width the settings rail moves under the log with scrolling — fields stay reachable via “Scroll to settings” at the top). Pop-out is a second window with the same IPC and the full token reference list.',
     downloadsPopOut: 'Pop-out',
     downloadsScrollToSettings: 'Scroll to settings',
+    downloadsBandToolbarAria: 'Quick actions on the downloads tab',
     downloadsUrlPlaceholder: 'One URL per line, or multiple URLs',
     downloadsUrlAria: 'URLs to append to the download queue',
+    downloadsUrlActionsToolbarAria: 'Actions for the URL field and download queue',
     downloadsAddToQueue: 'Add to queue',
     downloadsStopQueue: 'Cancel download',
     downloadsStopQueueTooltip:

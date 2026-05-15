@@ -723,4 +723,9 @@
 - [J-700] 2026-05-16 01:30:00 [Assistant]: §7.3 — поле параллелизма: `IconSettings` + класс `app-field-label-row`; `aria-label` на `<select>`.
 - [J-701] 2026-05-16 01:35:00 [Assistant]: §7.3 — шаблон имени выхода: `IconScissors`, скрытая подсказка `aria-describedby`; папка выхода: `IconFolder` в подписи, id на видимой подсказке + `aria-*` у readonly.
 - [J-702] 2026-05-16 01:40:00 [Assistant]: §7.3 — тело панели пакета: `role="region"` + скрытый `h3` (`batchExportAria`) для `aria-labelledby`.
+- [J-703] 2026-05-16 01:45:00 [Assistant]: §7.4 — быстрая yt-dlp: `role="region"` + скрытый заголовок; `aria-label` у textarea и select поведения вставки URL.
+- [J-704] 2026-05-16 01:50:00 [Assistant]: §7.4 — быстрая yt-dlp: `role="toolbar"` + `aria-label` у панели кнопок; явные `aria-label` у кнопок постановки в очередь и скачивания в редактор.
+- [J-705] 2026-05-16 02:05:00 [Assistant]: §7.x вкладка «Загрузки»: `role="toolbar"` + `downloadsUrlActionsToolbarAria` у блока действий у поля URL; `aria-label` у кнопок добавить в очередь, прервать, убрать готовые, очистить очередь.
+- [J-706] 2026-05-16 02:12:00 [Assistant]: §7.x вкладка «Загрузки»: верхний блок `app-downloads-actions` — `role="toolbar"`, `downloadsBandToolbarAria`, `aria-label` у «Отдельное окно» и «К настройкам».
+- [J-707] 2026-05-16 02:18:00 [Assistant]: §7.x вкладка «Загрузки»: `app-downloads-filterbar` — `role="toolbar"` (сохранён `aria-label` фильтра очереди).
 

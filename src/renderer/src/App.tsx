@@ -3113,11 +3113,19 @@ function App(): JSX.Element {
           }}
         >
           <summary className="app-url-summary">{uiText('quickYtdlpSummary')}</summary>
-          <div className="app-url-body">
+          <div
+            className="app-url-body"
+            role="region"
+            aria-labelledby="quick-ytdlp-region-title"
+          >
+            <h3 id="quick-ytdlp-region-title" className="app-visually-hidden">
+              {uiText('quickYtdlpAria')}
+            </h3>
             <div className="app-url-field">
               <textarea
                 className="app-downloads-url-input app-url-input"
                 placeholder={uiText('quickYtdlpPlaceholder')}
+                aria-label={uiText('quickYtdlpAria')}
                 aria-describedby="quickYtdlpUrlHint"
                 value={downloadsUrl}
                 rows={3}
@@ -3133,6 +3141,7 @@ function App(): JSX.Element {
                 <select
                   className="app-control"
                   value={editorUrlPasteBehavior}
+                  aria-label={uiText('editorUrlPasteBehaviorLabel')}
                   aria-describedby="quickYtdlpUrlHint"
                   onChange={(e) => {
                     const v = parseEditorUrlPasteBehavior(e.target.value)
@@ -3162,11 +3171,16 @@ function App(): JSX.Element {
                 </a>
               </p>
             </div>
-            <div className="app-downloads-url-actions">
+            <div
+              className="app-downloads-url-actions"
+              role="toolbar"
+              aria-label={uiText('quickYtdlpAria')}
+            >
               <button
                 type="button"
                 className="app-btn app-btn-primary app-btn-icon-leading"
                 aria-describedby="quickYtdlpUrlHint"
+                aria-label={uiText('quickYtdlpEnqueueLines')}
                 onClick={() => {
                   void handleQuickYtdlpEnqueueLines()
                 }}
@@ -3178,6 +3192,7 @@ function App(): JSX.Element {
                 type="button"
                 className="app-btn app-btn-icon-leading"
                 aria-describedby="quickYtdlpUrlHint"
+                aria-label={uiText('quickYtdlpDownloadOpenEditor')}
                 onClick={() => {
                   void handleDownloadFirstUrlOpenInEditor()
                 }}
@@ -5437,10 +5452,15 @@ function App(): JSX.Element {
                 <h2 className="app-downloads-title">{uiText('downloadsPageTitle')}</h2>
                 <p className="app-downloads-hint">{uiText('downloadsPageHint')}</p>
               </div>
-              <div className="app-downloads-actions">
+              <div
+                className="app-downloads-actions"
+                role="toolbar"
+                aria-label={uiText('downloadsBandToolbarAria')}
+              >
                 <button
                   type="button"
                   className="app-btn app-btn-icon-leading"
+                  aria-label={uiText('downloadsPopOut')}
                   onClick={() => {
                     void window.fluxalloy.downloads.openWindow({
                       ...(downloadsUrl.trim().length > 0 ? { text: downloadsUrl } : {}),
@@ -5455,6 +5475,7 @@ function App(): JSX.Element {
                   <button
                     type="button"
                     className="app-btn app-btn-icon-leading"
+                    aria-label={uiText('downloadsScrollToSettings')}
                     onClick={() => {
                       downloadsSettingsRailRef.current?.scrollIntoView({
                         behavior: 'smooth',
@@ -5478,10 +5499,15 @@ function App(): JSX.Element {
                   setDownloadsUrl(e.target.value)
                 }}
               />
-              <div className="app-downloads-url-actions">
+              <div
+                className="app-downloads-url-actions"
+                role="toolbar"
+                aria-label={uiText('downloadsUrlActionsToolbarAria')}
+              >
                 <button
                   type="button"
                   className="app-btn app-btn-primary app-btn-icon-leading"
+                  aria-label={uiText('downloadsAddToQueue')}
                   onClick={() => {
                     void handleAddDownloadsFromMain()
                   }}
@@ -5493,6 +5519,7 @@ function App(): JSX.Element {
                   type="button"
                   className="app-btn app-btn-warn app-btn-icon-leading"
                   title={uiText('downloadsStopQueueTooltip')}
+                  aria-label={uiText('downloadsStopQueue')}
                   onClick={() => {
                     void window.fluxalloy.downloads.cancelQueue().then((res) => {
                       if (!res.ok) {
@@ -5508,6 +5535,7 @@ function App(): JSX.Element {
                   type="button"
                   className="app-btn app-btn-icon-leading"
                   disabled={downloadsRows.length === 0}
+                  aria-label={uiText('downloadsRemoveFinished')}
                   onClick={() => {
                     void window.fluxalloy.downloads.clearFinished().then((res) => {
                       if (!res.ok) {
@@ -5529,6 +5557,7 @@ function App(): JSX.Element {
                   type="button"
                   className="app-btn app-btn-warn app-btn-icon-leading"
                   disabled={downloadsRows.length === 0}
+                  aria-label={uiText('downloadsClearQueue')}
                   onClick={() => {
                     void window.fluxalloy.downloads.clearQueue().then((res) => {
                       if (!res.ok) {
@@ -5572,7 +5601,11 @@ function App(): JSX.Element {
                 <strong>{downloadsStats.pending}</strong>
               </div>
             </div>
-            <div className="app-downloads-filterbar" aria-label={uiText('downloadsFilterBarAria')}>
+            <div
+              className="app-downloads-filterbar"
+              role="toolbar"
+              aria-label={uiText('downloadsFilterBarAria')}
+            >
               {downloadsStatusFilterChips.map((filter) => (
                 <button
                   key={filter.id}
