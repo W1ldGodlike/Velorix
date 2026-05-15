@@ -15,6 +15,8 @@
 
 **Без пустых записей:** не добавлять строки без смысла (дубликат соседней темы, «журнал ради журнала»). Опционально для массовой подгонки старых меток: `node scripts/sync-journal-times-from-git.mjs --write` (утилита по желанию, не обязательный процесс).
 
+**Ответы ассистента:** в чате не дублировать текст и перечни из журнала — достаточно ссылки на файл или короткого «см. `IMPLEMENTATION_JOURNAL.md`, J-…»; детали правок держим в самом журнале.
+
 ---
 
 ## Записи
@@ -698,4 +700,5 @@
 - [J-677] 2026-05-15 23:39:07 [Assistant]: §7.2 Advanced args — `ffmpegExportExtraArgsLine`, `parseFfmpegExportExtraArgsLine`, вставка перед output в argv; UI/presets/batch/single; Vitest. `npm run check:quiet`.
 - [J-678] 2026-05-15 23:48:33 [Assistant]: §7.3/§7.4/§7.2 — шаблон выхода batch (`ffmpegExportBatchOutputSuffix`); `editorUrlPasteBehavior` (Ctrl+V/DnD URL); VAAPI `hwupload` в `-vf`; Vitest suffix/vaapi/paste. `npm run typecheck` + vitest.
 - [J-679] 2026-05-15 23:56:22 [Assistant]: `check-journal-numbering.mjs` — без сверки с git; шапка журнала: актуальное локальное время при записи; удалены пустые строки между J-675 и концом хвоста, перенумерация (бывш. 677–681 → 676–678).
+- [J-680] 2026-05-15 23:58:48 [Assistant]: шапка журнала — в ответах ассистента не пересказывать содержимое журнала, только ссылка/номер J при необходимости.
 
