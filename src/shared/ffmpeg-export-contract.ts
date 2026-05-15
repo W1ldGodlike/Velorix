@@ -91,6 +91,7 @@ export type FfmpegExportAudioModeId =
   | 'libvorbis'
   | 'libopus'
   | 'flac'
+  | 'alac'
   | 'none'
 /**
  * §7.2 — пресеты нормализации громкости. `loudnorm` — однопроходный EBU R128,
@@ -293,4 +294,6 @@ export interface FfmpegExportProgressPayload {
    * Сообщение «запуск ffmpeg» из IPC до `runFfmpegExportJob` может прийти без этого поля.
    */
   videoCodecUsed?: string
+  /** §7.3 — id строки пакетной очереди, если прогресс относится к batch. */
+  batchRowId?: number
 }

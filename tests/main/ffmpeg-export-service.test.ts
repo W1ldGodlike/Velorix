@@ -89,6 +89,7 @@ describe('ffmpeg export pure helpers', () => {
     expect(parseFfmpegExportAudioMode('libvorbis')).toBe('libvorbis')
     expect(parseFfmpegExportAudioMode('libopus')).toBe('libopus')
     expect(parseFfmpegExportAudioMode('flac')).toBe('flac')
+    expect(parseFfmpegExportAudioMode('alac')).toBe('alac')
     expect(parseFfmpegExportAudioMode('bad')).toBe('aac')
     expect(parseFfmpegExportTwoPass(true)).toBe(true)
     expect(parseFfmpegExportTwoPass(false)).toBe(false)

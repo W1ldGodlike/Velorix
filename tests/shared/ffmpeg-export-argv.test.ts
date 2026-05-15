@@ -233,6 +233,26 @@ describe('shared ffmpeg export argv', () => {
     expect(ac3.slice(ac3i, ac3i + 4)).toEqual(['-c:a', 'ac3', '-b:a', '256k'])
   })
 
+  it('audioMode alac: -c:a alac без -b:a', () => {
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mov',
+      outputPath: 'out.mov',
+      applyTrim: false,
+      encodePreset: 'balance',
+      videoCodec: 'libx264',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'alac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mov'
+    })
+    const i = argv.indexOf('-c:a')
+    expect(argv.slice(i, i + 2)).toEqual(['-c:a', 'alac'])
+    expect(argv.includes('-b:a')).toBe(false)
+  })
+
   it('возвращает scale-фильтр только для непустых пресетов', () => {
     expect(resolveFfmpegExportScaleFilter('source')).toBeNull()
     expect(resolveFfmpegExportScaleFilter('480p')).toBe('scale=-2:480')

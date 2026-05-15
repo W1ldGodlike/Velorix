@@ -53,6 +53,8 @@ export interface MainWindowUiPanelState {
   /** §4.1 / v0 — видимость правой колонки «Настройки FFmpeg»; `false` — только превью (больше места под таймлайн). */
   ffmpegSettingsRailOpen?: boolean
   quickYtdlp?: boolean
+  /** §7.3 — панель пакетного экспорта над workbench. */
+  batchExport?: boolean
   ffmpegVideo?: boolean
   ffmpegFormat?: boolean
   ffmpegAudio?: boolean
@@ -150,6 +152,7 @@ export interface AppSettings {
     | 'libvorbis'
     | 'libopus'
     | 'flac'
+    | 'alac'
     | 'none'
   /** §7.2: битрейт AAC одним argv-токеном (`128k`, `192k`, `320k`). */
   ffmpegExportAudioBitrate?: string

@@ -6,6 +6,7 @@ import type { MainWindowUiPanelState } from '../../shared/settings-contract'
 export const MAIN_WINDOW_UI_PANEL_DEFAULTS: Required<MainWindowUiPanelState> = {
   ffmpegSettingsRailOpen: true,
   quickYtdlp: false,
+  batchExport: false,
   ffmpegVideo: true,
   ffmpegFormat: true,
   ffmpegAudio: false,

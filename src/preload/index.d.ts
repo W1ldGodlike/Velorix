@@ -38,6 +38,11 @@ import type {
   MediaExportRequestPayload,
   MediaExportStartResult
 } from '../shared/ffmpeg-export-contract'
+import type {
+  FfmpegExportBatchConcurrency,
+  FfmpegExportBatchSnapshot,
+  FfmpegExportBatchStartResult
+} from '../shared/ffmpeg-export-batch-contract'
 import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
 import type { AppAboutInfo } from '../shared/about-contract'
 import type {
@@ -281,6 +286,25 @@ export interface FluxAlloyApi {
       mode: 'file' | 'folder' | 'preview'
     ) => Promise<{ ok: true; path: string } | { ok: false; error: string }>
     onProgress: (listener: (progress: FfmpegExportProgressPayload) => void) => () => void
+  }
+  batchExport: {
+    getSnapshot: () => Promise<FfmpegExportBatchSnapshot>
+    pickFiles: () => Promise<
+      | { ok: true; added: number }
+      | { ok: false; cancelled: true }
+      | { ok: false; error: string }
+    >
+    addPaths: (paths: string[]) => Promise<{ ok: true; added: number } | { ok: false; error: string }>
+    removeRows: (ids: number[]) => Promise<{ ok: true; removed: number }>
+    clear: () => Promise<{ ok: true }>
+    moveRow: (
+      id: number,
+      direction: 'up' | 'down'
+    ) => Promise<{ ok: true; moved: boolean } | { ok: false; error: string }>
+    setConcurrency: (value: FfmpegExportBatchConcurrency) => Promise<{ ok: true }>
+    start: (rawExportOverrides?: unknown) => Promise<FfmpegExportBatchStartResult>
+    cancel: () => Promise<{ ok: true }>
+    onSnapshot: (listener: (snapshot: FfmpegExportBatchSnapshot) => void) => () => void
   }
   processingHistory: {
     get: (

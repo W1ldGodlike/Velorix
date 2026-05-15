@@ -201,6 +201,9 @@ export function parseFfmpegExportAudioMode(raw: unknown): FfmpegExportAudioModeI
   if (raw === 'flac') {
     return 'flac'
   }
+  if (raw === 'alac') {
+    return 'alac'
+  }
   return 'aac'
 }
 

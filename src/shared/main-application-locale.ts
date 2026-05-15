@@ -102,6 +102,10 @@ export type MainApplicationStrings = {
   openVideoDialogNoWindow: string
   openVideoDialogTitle: string
   openVideoDialogFilterVideo: string
+  batchExportPickFilesTitle: string
+  batchExportAlreadyRunning: string
+  batchExportQueueEmpty: string
+  batchExportFfmpegMissing: string
   previewDialogGrantMediaFailed: string
   engineDownloadHttpFailedTemplate: string
   engineDownloadEmptyResponse: string
@@ -256,6 +260,10 @@ const RU: MainApplicationStrings = {
   openVideoDialogNoWindow: 'Нет активного окна',
   openVideoDialogTitle: 'Открыть видео',
   openVideoDialogFilterVideo: 'Видео',
+  batchExportPickFilesTitle: 'Добавить файлы в пакетный экспорт',
+  batchExportAlreadyRunning: 'Пакетный экспорт уже выполняется',
+  batchExportQueueEmpty: 'Очередь пакетного экспорта пуста',
+  batchExportFfmpegMissing: 'FFmpeg не найден — пакетный экспорт недоступен',
   previewDialogGrantMediaFailed: 'Не удалось открыть файл (нет доступа или это не обычный файл)',
   engineDownloadHttpFailedTemplate: 'Загрузка не удалась: HTTP {status} {statusText}',
   engineDownloadEmptyResponse: 'Пустой ответ сервера',
@@ -417,6 +425,10 @@ const EN: MainApplicationStrings = {
   openVideoDialogNoWindow: 'No active window',
   openVideoDialogTitle: 'Open video',
   openVideoDialogFilterVideo: 'Video',
+  batchExportPickFilesTitle: 'Add files to batch export',
+  batchExportAlreadyRunning: 'Batch export is already running',
+  batchExportQueueEmpty: 'Batch export queue is empty',
+  batchExportFfmpegMissing: 'FFmpeg not found — batch export unavailable',
   previewDialogGrantMediaFailed: 'Could not open the file (no access or it is not a regular file)',
   engineDownloadHttpFailedTemplate: 'Download failed: HTTP {status} {statusText}',
   engineDownloadEmptyResponse: 'Empty server response',

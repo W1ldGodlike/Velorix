@@ -39,6 +39,11 @@ import type {
   MediaExportRequestPayload,
   MediaExportStartResult
 } from '../shared/ffmpeg-export-contract'
+import type {
+  FfmpegExportBatchSnapshot,
+  FfmpegExportBatchConcurrency,
+  FfmpegExportBatchStartResult
+} from '../shared/ffmpeg-export-batch-contract'
 import {
   parseDownloadsWindowUiLocale,
   type DownloadsWindowUiLocale
@@ -515,6 +520,43 @@ const fluxalloy = {
           return
         }
         listener(raw as FfmpegExportProgressPayload)
+      }
+      ipcRenderer.on(channel, handler)
+      return (): void => {
+        ipcRenderer.removeListener(channel, handler)
+      }
+    }
+  },
+  batchExport: {
+    getSnapshot: (): Promise<FfmpegExportBatchSnapshot> =>
+      ipcRenderer.invoke(mw.batchExportGetSnapshot),
+    pickFiles: (): Promise<
+      | { ok: true; added: number }
+      | { ok: false; cancelled: true }
+      | { ok: false; error: string }
+    > => ipcRenderer.invoke(mw.batchExportPickFiles),
+    addPaths: (paths: string[]): Promise<{ ok: true; added: number } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(mw.batchExportAddPaths, paths),
+    removeRows: (ids: number[]): Promise<{ ok: true; removed: number }> =>
+      ipcRenderer.invoke(mw.batchExportRemoveRows, ids),
+    clear: (): Promise<{ ok: true }> => ipcRenderer.invoke(mw.batchExportClear),
+    moveRow: (
+      id: number,
+      direction: 'up' | 'down'
+    ): Promise<{ ok: true; moved: boolean } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(mw.batchExportMoveRow, { id, direction }),
+    setConcurrency: (value: FfmpegExportBatchConcurrency): Promise<{ ok: true }> =>
+      ipcRenderer.invoke(mw.batchExportSetConcurrency, value),
+    start: (rawExportOverrides?: unknown): Promise<FfmpegExportBatchStartResult> =>
+      ipcRenderer.invoke(mw.batchExportStart, rawExportOverrides ?? null),
+    cancel: (): Promise<{ ok: true }> => ipcRenderer.invoke(mw.batchExportCancel),
+    onSnapshot: (listener: (snapshot: FfmpegExportBatchSnapshot) => void): (() => void) => {
+      const channel = mw.batchExportSnapshot
+      const handler = (_event: unknown, raw: unknown): void => {
+        if (!raw || typeof raw !== 'object') {
+          return
+        }
+        listener(raw as FfmpegExportBatchSnapshot)
       }
       ipcRenderer.on(channel, handler)
       return (): void => {

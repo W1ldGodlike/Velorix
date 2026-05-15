@@ -122,6 +122,26 @@ import {
   resolveFfmpegExportJobOptionsFromAppSettings
 } from './ffmpeg-export-resolve-from-settings'
 import {
+  addFfmpegExportBatchPaths,
+  clearFfmpegExportBatchQueue,
+  getFfmpegExportBatchSnapshot,
+  markWaitingFfmpegExportBatchRowsCancelled,
+  moveFfmpegExportBatchRow,
+  removeFfmpegExportBatchRows,
+  setFfmpegExportBatchConcurrency
+} from './ffmpeg-export-batch-queue'
+import {
+  cancelFfmpegExportBatchRunner,
+  isFfmpegExportBatchActive,
+  runFfmpegExportBatchQueue,
+  setFfmpegExportBatchRunnerNotifier
+} from './ffmpeg-export-batch-runner'
+import { pickFfmpegExportBatchInputFiles } from './ffmpeg-export-batch-pick'
+import type {
+  FfmpegExportBatchSnapshot,
+  FfmpegExportBatchStartResult
+} from '../shared/ffmpeg-export-batch-contract'
+import {
   appendProcessingHistoryEntry,
   clearProcessingHistory,
   findProcessingHistoryEntryById,
@@ -3046,7 +3066,7 @@ app.whenReady().then(() => {
 
   ipcMain.handle(mw.exportStart, async (event, raw: unknown): Promise<MediaExportStartResult> => {
     const base = mainAppStr()
-    if (activeExportAbort !== null) {
+    if (activeExportAbort !== null || isFfmpegExportBatchActive()) {
       return { ok: false, error: base.exportAlreadyRunning }
     }
     if (!raw || typeof raw !== 'object') {
@@ -3181,10 +3201,146 @@ app.whenReady().then(() => {
   })
 
   ipcMain.handle(mw.exportCancel, (): { ok: true } | { ok: false; error: string } => {
-    if (activeExportAbort === null) {
+    if (activeExportAbort === null && !isFfmpegExportBatchActive()) {
       return { ok: false, error: mainAppStr().exportCancelNoActive }
     }
-    activeExportAbort.abort()
+    activeExportAbort?.abort()
+    cancelFfmpegExportBatchRunner()
+    markWaitingFfmpegExportBatchRowsCancelled()
+    pushBatchExportSnapshot()
+    return { ok: true }
+  })
+
+  const pushBatchExportSnapshot = (win?: BrowserWindow | null): void => {
+    const snap = getFfmpegExportBatchSnapshot()
+    const targets = win
+      ? [win]
+      : BrowserWindow.getAllWindows().filter((w) => !w.isDestroyed())
+    for (const w of targets) {
+      w.webContents.send(mw.batchExportSnapshot, snap)
+    }
+  }
+
+  setFfmpegExportBatchRunnerNotifier(() => {
+    pushBatchExportSnapshot()
+  })
+
+  ipcMain.handle(mw.batchExportGetSnapshot, (): FfmpegExportBatchSnapshot => {
+    return getFfmpegExportBatchSnapshot()
+  })
+
+  ipcMain.handle(
+    mw.batchExportPickFiles,
+    async (event): Promise<
+      | { ok: true; added: number }
+      | { ok: false; cancelled: true }
+      | { ok: false; error: string }
+    > => {
+      const win = BrowserWindow.fromWebContents(event.sender)
+      if (!win) {
+        return { ok: false, error: mainAppStr().openVideoDialogNoWindow }
+      }
+      const loc = mainDownloadsUiLocale()
+      const picked = await pickFfmpegExportBatchInputFiles(win, loc)
+      if (!picked.ok) {
+        return picked
+      }
+      const added = addFfmpegExportBatchPaths(picked.paths)
+      pushBatchExportSnapshot(win)
+      return { ok: true, added }
+    }
+  )
+
+  ipcMain.handle(
+    mw.batchExportAddPaths,
+    (_event, raw: unknown): { ok: true; added: number } | { ok: false; error: string } => {
+      if (!Array.isArray(raw)) {
+        return { ok: false, error: mainAppStr().ipcInvalidRequest }
+      }
+      const paths = raw.filter((p): p is string => typeof p === 'string')
+      const added = addFfmpegExportBatchPaths(paths)
+      pushBatchExportSnapshot()
+      return { ok: true, added }
+    }
+  )
+
+  ipcMain.handle(mw.batchExportRemoveRows, (_event, raw: unknown): { ok: true; removed: number } => {
+    const ids = Array.isArray(raw) ? raw.filter((n): n is number => typeof n === 'number') : []
+    const removed = removeFfmpegExportBatchRows(ids)
+    pushBatchExportSnapshot()
+    return { ok: true, removed }
+  })
+
+  ipcMain.handle(mw.batchExportClear, (): { ok: true } => {
+    clearFfmpegExportBatchQueue()
+    pushBatchExportSnapshot()
+    return { ok: true }
+  })
+
+  ipcMain.handle(
+    mw.batchExportMoveRow,
+    (_event, raw: unknown): { ok: true; moved: boolean } | { ok: false; error: string } => {
+      if (!raw || typeof raw !== 'object') {
+        return { ok: false, error: mainAppStr().ipcInvalidRequest }
+      }
+      const id = (raw as { id?: unknown }).id
+      const direction = (raw as { direction?: unknown }).direction
+      if (typeof id !== 'number' || (direction !== 'up' && direction !== 'down')) {
+        return { ok: false, error: mainAppStr().ipcInvalidRequest }
+      }
+      const moved = moveFfmpegExportBatchRow(id, direction)
+      pushBatchExportSnapshot()
+      return { ok: true, moved }
+    }
+  )
+
+  ipcMain.handle(mw.batchExportSetConcurrency, (_event, raw: unknown): { ok: true } => {
+    setFfmpegExportBatchConcurrency(raw)
+    pushBatchExportSnapshot()
+    return { ok: true }
+  })
+
+  ipcMain.handle(
+    mw.batchExportStart,
+    async (event, raw: unknown): Promise<FfmpegExportBatchStartResult> => {
+      const M = mainAppStr()
+      if (activeExportAbort !== null || isFfmpegExportBatchActive()) {
+        return { ok: false, error: M.batchExportAlreadyRunning }
+      }
+      const snap = getFfmpegExportBatchSnapshot()
+      if (!snap.rows.some((r) => r.status === 'waiting')) {
+        return { ok: false, error: M.batchExportQueueEmpty }
+      }
+      const paths = resolveAppPaths()
+      const ffmpeg = resolveEngineExecutablePath(paths, 'ffmpeg', cachedSettings.engineExecutablePaths)
+      if (!ffmpeg) {
+        return { ok: false, error: M.batchExportFfmpegMissing }
+      }
+      const win = BrowserWindow.fromWebContents(event.sender)
+      const loc = mainDownloadsUiLocale()
+      void runFfmpegExportBatchQueue({
+        ffmpegPath: ffmpeg,
+        settings: cachedSettings,
+        lutResourcesRoot: paths.resources,
+        rawExportOverrides: raw,
+        uiLocale: loc,
+        pushRowProgress: (rowId, p) => {
+          if (win && !win.isDestroyed()) {
+            win.webContents.send(mw.exportProgress, { ...p, batchRowId: rowId })
+          }
+        }
+      }).finally(() => {
+        pushBatchExportSnapshot(win)
+      })
+      pushBatchExportSnapshot(win)
+      return { ok: true }
+    }
+  )
+
+  ipcMain.handle(mw.batchExportCancel, (): { ok: true } => {
+    cancelFfmpegExportBatchRunner()
+    markWaitingFfmpegExportBatchRowsCancelled()
+    pushBatchExportSnapshot()
     return { ok: true }
   })
 

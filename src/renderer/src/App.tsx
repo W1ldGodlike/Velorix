@@ -53,6 +53,7 @@ import {
   IconWorkspaceEditor,
   IconWorkspaceTerminal
 } from './components/LucideMiniIcons'
+import type { FfmpegExportBatchConcurrency, FfmpegExportBatchSnapshot } from '../../shared/ffmpeg-export-batch-contract'
 import type { EngineId } from '../../shared/engine-contract'
 import { ENGINE_IDS } from '../../shared/engine-contract'
 import type {
@@ -600,6 +601,9 @@ function App(): JSX.Element {
   const terminalSuggestBlurTimeoutRef = useRef<number | undefined>(undefined)
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
   const [exportBusy, setExportBusy] = useState(false)
+  const [batchSnapshot, setBatchSnapshot] = useState<FfmpegExportBatchSnapshot | null>(null)
+  const batchExportBusy = batchSnapshot?.running === true
+  const mediaPipelineBusy = exportBusy || batchExportBusy
   const [exportCancelBusy, setExportCancelBusy] = useState(false)
   const [exportEncodePreset, setExportEncodePreset] =
     useState<FfmpegExportEncodePresetId>('balance')
@@ -868,6 +872,7 @@ function App(): JSX.Element {
         { id: 'libvorbis', label: uiText('editorExportAudioModeLibvorbis') },
         { id: 'libopus', label: uiText('editorExportAudioModeLibopus') },
         { id: 'flac', label: uiText('editorExportAudioModeFlac') },
+        { id: 'alac', label: uiText('editorExportAudioModeAlac') },
         { id: 'none', label: uiText('editorExportAudioModeNone') }
       ] as Array<{ id: FfmpegExportAudioModeId; label: string }>,
       snapshotFormats: [
@@ -1470,6 +1475,8 @@ function App(): JSX.Element {
       nextAudioMode = 'libopus'
     } else if (loaded.ffmpegExportAudioMode === 'flac') {
       nextAudioMode = 'flac'
+    } else if (loaded.ffmpegExportAudioMode === 'alac') {
+      nextAudioMode = 'alac'
     }
     if (ffmpegExportAudioModeRequiresMkv(nextAudioMode) && nextContainer !== 'mkv') {
       nextContainer = 'mkv'
@@ -1979,7 +1986,13 @@ function App(): JSX.Element {
         typeof p.videoCodecUsed === 'string' && p.videoCodecUsed.trim() !== ''
           ? `${p.videoCodecUsed.trim()} · `
           : ''
-      setStatusHint(uiTextVars('statusExportProgress', { tail: `${pct}${spd}${vc}${p.message}` }))
+      const batch =
+        typeof p.batchRowId === 'number'
+          ? uiTextVars('statusExportBatchRow', { id: String(p.batchRowId) }) + ' · '
+          : ''
+      setStatusHint(
+        uiTextVars('statusExportProgress', { tail: `${batch}${pct}${spd}${vc}${p.message}` })
+      )
     })
 
     const offMenuPreview = window.fluxalloy.onPreviewOpened((payload) => {
@@ -1992,6 +2005,105 @@ function App(): JSX.Element {
       offMenuPreview()
     }
   }, [applyPreview])
+
+  useEffect(() => {
+    void window.fluxalloy.batchExport.getSnapshot().then(setBatchSnapshot).catch(console.error)
+    return window.fluxalloy.batchExport.onSnapshot(setBatchSnapshot)
+  }, [])
+
+  const buildCurrentFfmpegExportOverrides = useCallback(
+    () => ({
+      encodePreset: exportEncodePreset,
+      videoCodec: exportVideoCodec,
+      container: exportContainer,
+      crf: exportCrf,
+      videoBitrate: exportVideoBitrate,
+      audioMode: exportAudioMode,
+      audioBitrate: exportAudioBitrate,
+      fps: exportFps,
+      scalePreset: exportScalePreset,
+      videoTransform: exportVideoTransform,
+      cropPreset: exportCropPreset,
+      twoPass: exportTwoPass && exportVideoBitrate !== null && exportVideoCodec === 'libx264',
+      audioGainDb: exportAudioGainDb === 0 ? null : exportAudioGainDb,
+      stripMetadata: exportStripMetadata,
+      stripChapters: exportStripChapters,
+      subtitleMode: exportSubtitleMode,
+      videoDeinterlace: exportVideoDeinterlace,
+      videoDenoise: exportVideoDenoise,
+      videoDeband: exportVideoDeband,
+      videoHisteq: exportVideoHisteq,
+      videoLut3d: exportVideoLut3d,
+      videoSharpen: exportVideoSharpen,
+      videoEqPreset: exportVideoEqPreset,
+      videoHue: exportVideoHue,
+      videoGrain: exportVideoGrain,
+      videoVignette: exportVideoVignette,
+      videoBlur: exportVideoBlur,
+      audioNormalize: exportAudioNormalize
+    }),
+    [
+      exportEncodePreset,
+      exportVideoCodec,
+      exportContainer,
+      exportCrf,
+      exportVideoBitrate,
+      exportAudioMode,
+      exportAudioBitrate,
+      exportFps,
+      exportScalePreset,
+      exportVideoTransform,
+      exportCropPreset,
+      exportTwoPass,
+      exportAudioGainDb,
+      exportStripMetadata,
+      exportStripChapters,
+      exportSubtitleMode,
+      exportVideoDeinterlace,
+      exportVideoDenoise,
+      exportVideoDeband,
+      exportVideoHisteq,
+      exportVideoLut3d,
+      exportVideoSharpen,
+      exportVideoEqPreset,
+      exportVideoHue,
+      exportVideoGrain,
+      exportVideoVignette,
+      exportVideoBlur,
+      exportAudioNormalize
+    ]
+  )
+
+  async function handleBatchPickFiles(): Promise<void> {
+    const res = await window.fluxalloy.batchExport.pickFiles()
+    if (res.ok) {
+      setStatusHint(uiTextVars('batchExportAddedFiles', { count: String(res.added) }))
+      return
+    }
+    if ('cancelled' in res && res.cancelled) {
+      return
+    }
+    if ('error' in res) {
+      setStatusHint(res.error)
+    }
+  }
+
+  async function handleBatchStart(): Promise<void> {
+    if (mediaPipelineBusy) {
+      return
+    }
+    const res = await window.fluxalloy.batchExport.start(buildCurrentFfmpegExportOverrides())
+    if (!res.ok) {
+      setStatusHint(res.error)
+      return
+    }
+    setStatusHint(uiText('batchExportStarted'))
+  }
+
+  async function handleBatchCancel(): Promise<void> {
+    await window.fluxalloy.batchExport.cancel()
+    setStatusHint(uiText('batchExportCancelled'))
+  }
 
   async function toggleTheme(): Promise<void> {
     const s = await window.fluxalloy.settings.get()
@@ -2118,7 +2230,7 @@ function App(): JSX.Element {
   }
 
   async function handleExport(): Promise<void> {
-    if (!preview || exportBusy || snapshotBusy) {
+    if (!preview || mediaPipelineBusy || snapshotBusy) {
       return
     }
     setExportBusy(true)
@@ -2600,6 +2712,163 @@ function App(): JSX.Element {
             >
               {uiText('quickYtdlpDownloadOpenEditor')}
             </button>
+          </div>
+        </details>
+      ) : null}
+
+      {workspaceTab === 'editor' ? (
+        <details
+          className="app-url-bar app-batch-export-bar"
+          aria-label={uiText('batchExportAria')}
+          open={panelOpen('batchExport')}
+          onToggle={(e) => {
+            persistMainWindowUiPanelToggle('batchExport', e.currentTarget.open)
+          }}
+        >
+          <summary className="app-url-summary">{uiText('batchExportSummary')}</summary>
+          <div className="app-url-body">
+            <p className="app-url-hint">{uiText('batchExportHint')}</p>
+            <div className="app-settings-grid app-batch-export-toolbar">
+              <label className="app-field">
+                <span>{uiText('batchExportConcurrency')}</span>
+                <select
+                  className="app-control"
+                  value={String(batchSnapshot?.concurrency ?? 'auto')}
+                  disabled={batchExportBusy}
+                  onChange={(e) => {
+                    const raw = e.target.value
+                    let v: FfmpegExportBatchConcurrency = 'auto'
+                    if (raw === '1') {
+                      v = 1
+                    } else if (raw === '2') {
+                      v = 2
+                    } else if (raw === '4') {
+                      v = 4
+                    }
+                    void window.fluxalloy.batchExport.setConcurrency(v).catch(console.error)
+                  }}
+                >
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="4">4</option>
+                  <option value="auto">{uiText('batchExportConcurrencyAuto')}</option>
+                </select>
+              </label>
+              <div className="app-batch-export-actions">
+                <button
+                  type="button"
+                  className="app-btn"
+                  disabled={batchExportBusy}
+                  onClick={() => {
+                    void handleBatchPickFiles()
+                  }}
+                >
+                  {uiText('batchExportAddFiles')}
+                </button>
+                <button
+                  type="button"
+                  className="app-btn app-btn-primary"
+                  disabled={batchExportBusy || (batchSnapshot?.rows.length ?? 0) === 0}
+                  onClick={() => {
+                    void handleBatchStart()
+                  }}
+                >
+                  {uiText('batchExportStart')}
+                </button>
+                <button
+                  type="button"
+                  className="app-btn"
+                  disabled={!batchExportBusy}
+                  onClick={() => {
+                    void handleBatchCancel()
+                  }}
+                >
+                  {uiText('batchExportCancel')}
+                </button>
+                <button
+                  type="button"
+                  className="app-btn"
+                  disabled={batchExportBusy || (batchSnapshot?.rows.length ?? 0) === 0}
+                  onClick={() => {
+                    void window.fluxalloy.batchExport.clear().catch(console.error)
+                  }}
+                >
+                  {uiText('batchExportClear')}
+                </button>
+              </div>
+            </div>
+            {batchSnapshot && batchSnapshot.rows.length > 0 ? (
+              <table className="app-batch-export-table">
+                <thead>
+                  <tr>
+                    <th>{uiText('batchExportColFile')}</th>
+                    <th>{uiText('batchExportColStatus')}</th>
+                    <th>{uiText('batchExportColProgress')}</th>
+                    <th>{uiText('batchExportColActions')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {batchSnapshot.rows.map((row) => (
+                    <tr key={row.id}>
+                      <td title={row.inputPath}>{row.shortLabel}</td>
+                      <td>{row.status}</td>
+                      <td>{row.progress}</td>
+                      <td>
+                        <button
+                          type="button"
+                          className="app-btn app-btn-icon"
+                          title={uiText('batchExportMoveUp')}
+                          disabled={batchExportBusy || row.status === 'running'}
+                          onClick={() => {
+                            void window.fluxalloy.batchExport.moveRow(row.id, 'up').catch(console.error)
+                          }}
+                        >
+                          <IconQueueChevronUp aria-hidden />
+                        </button>
+                        <button
+                          type="button"
+                          className="app-btn app-btn-icon"
+                          title={uiText('batchExportMoveDown')}
+                          disabled={batchExportBusy || row.status === 'running'}
+                          onClick={() => {
+                            void window.fluxalloy.batchExport.moveRow(row.id, 'down').catch(console.error)
+                          }}
+                        >
+                          <IconQueueChevronDown aria-hidden />
+                        </button>
+                        <button
+                          type="button"
+                          className="app-btn app-btn-icon"
+                          title={uiText('batchExportRemoveRow')}
+                          disabled={batchExportBusy || row.status === 'running'}
+                          onClick={() => {
+                            void window.fluxalloy.batchExport.removeRows([row.id]).catch(console.error)
+                          }}
+                        >
+                          <IconQueueTrash aria-hidden />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="app-url-hint">{uiText('batchExportEmpty')}</p>
+            )}
+            {batchSnapshot &&
+            !batchSnapshot.running &&
+            batchSnapshot.completedError > 0 ? (
+              <p className="app-batch-export-summary app-url-hint" role="status">
+                {uiTextVars('batchExportErrorSummary', {
+                  failed: String(batchSnapshot.completedError),
+                  total: String(
+                    batchSnapshot.completedOk +
+                      batchSnapshot.completedError +
+                      batchSnapshot.completedCancelled
+                  )
+                })}
+              </p>
+            ) : null}
           </div>
         </details>
       ) : null}

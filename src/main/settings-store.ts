@@ -285,7 +285,7 @@ function parseFfmpegExportVideoBitrateStored(raw: unknown): string | undefined {
 
 function parseFfmpegExportAudioModeStored(
   raw: unknown
-): 'aac' | 'libmp3lame' | 'ac3' | 'copy' | 'none' | 'pcm_s16le' | 'libvorbis' | 'libopus' | 'flac' | undefined {
+): 'aac' | 'libmp3lame' | 'ac3' | 'copy' | 'none' | 'pcm_s16le' | 'libvorbis' | 'libopus' | 'flac' | 'alac' | undefined {
   if (
     raw === 'aac' ||
     raw === 'libmp3lame' ||
@@ -295,7 +295,8 @@ function parseFfmpegExportAudioModeStored(
     raw === 'pcm_s16le' ||
     raw === 'libvorbis' ||
     raw === 'libopus' ||
-    raw === 'flac'
+    raw === 'flac' ||
+    raw === 'alac'
   ) {
     return raw
   }
