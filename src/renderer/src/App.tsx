@@ -52,6 +52,7 @@ import {
   IconQueueX,
   IconRefreshCw,
   IconSave,
+  IconScissors,
   IconSettings,
   IconSun,
   IconWorkspaceEditor,
@@ -3199,11 +3200,24 @@ function App(): JSX.Element {
           }}
         >
           <summary className="app-url-summary">{uiText('batchExportSummary')}</summary>
-          <div className="app-url-body">
-            <p className="app-url-hint">{uiText('batchExportHint')}</p>
-            <p className="app-url-hint">{uiText('batchExportDragHint')}</p>
+          <div
+            className="app-url-body"
+            role="region"
+            aria-labelledby="batch-export-region-title"
+          >
+            <h3 id="batch-export-region-title" className="app-visually-hidden">
+              {uiText('batchExportAria')}
+            </h3>
+            <p id="batch-export-panel-hint" className="app-url-hint">
+              {uiText('batchExportHint')}
+            </p>
+            <p id="batch-export-drop-hint" className="app-url-hint">
+              {uiText('batchExportDragHint')}
+            </p>
             <div
               className="app-batch-export-dropzone"
+              aria-busy={batchExportBusy}
+              aria-describedby="batch-export-panel-hint batch-export-drop-hint"
               onDragOver={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
@@ -3216,7 +3230,10 @@ function App(): JSX.Element {
             >
               <div className="app-settings-grid app-batch-export-toolbar">
                 <label className="app-field">
-                  <span>{uiText('batchExportOutputSuffixLabel')}</span>
+                  <span className="app-field-label-row">
+                    <IconScissors size={16} aria-hidden />
+                    {uiText('batchExportOutputSuffixLabel')}
+                  </span>
                   <input
                     type="text"
                     className="app-control"
@@ -3224,6 +3241,8 @@ function App(): JSX.Element {
                     disabled={batchExportBusy}
                     spellCheck={false}
                     title={uiText('batchExportOutputSuffixHint')}
+                    aria-label={uiText('batchExportOutputSuffixLabel')}
+                    aria-describedby="batch-export-suffix-hint"
                     onChange={(e) => {
                       setBatchOutputSuffix(e.target.value)
                     }}
@@ -3241,9 +3260,15 @@ function App(): JSX.Element {
                         .catch(console.error)
                     }}
                   />
+                  <span id="batch-export-suffix-hint" className="app-visually-hidden">
+                    {uiText('batchExportOutputSuffixHint')}
+                  </span>
                 </label>
                 <label className="app-field" style={{ gridColumn: '1 / -1' }}>
-                  <span>{uiText('batchExportOutputDirLabel')}</span>
+                  <span className="app-field-label-row">
+                    <IconFolder size={16} aria-hidden />
+                    {uiText('batchExportOutputDirLabel')}
+                  </span>
                   <div className="app-batch-export-dir-row">
                     <input
                       type="text"
@@ -3253,6 +3278,8 @@ function App(): JSX.Element {
                       placeholder={uiText('batchExportOutputDirPlaceholder')}
                       title={batchOutputDirectory || uiText('batchExportOutputDirPlaceholder')}
                       disabled={batchExportBusy}
+                      aria-label={uiText('batchExportOutputDirLabel')}
+                      aria-describedby="batch-export-outdir-hint"
                     />
                     <button
                       type="button"
@@ -3288,33 +3315,39 @@ function App(): JSX.Element {
                       {uiText('batchExportOutputDirClear')}
                     </button>
                   </div>
-                  <span className="app-field-hint">{uiText('batchExportOutputDirHint')}</span>
+                  <span id="batch-export-outdir-hint" className="app-field-hint">
+                    {uiText('batchExportOutputDirHint')}
+                  </span>
                 </label>
                 <label className="app-field">
-                  <span>{uiText('batchExportConcurrency')}</span>
-                <select
-                  className="app-control"
-                  value={String(batchSnapshot?.concurrency ?? 'auto')}
-                  disabled={batchExportBusy}
-                  onChange={(e) => {
-                    const raw = e.target.value
-                    let v: FfmpegExportBatchConcurrency = 'auto'
-                    if (raw === '1') {
-                      v = 1
-                    } else if (raw === '2') {
-                      v = 2
-                    } else if (raw === '4') {
-                      v = 4
-                    }
-                    void window.fluxalloy.batchExport.setConcurrency(v).catch(console.error)
-                  }}
-                >
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="4">4</option>
-                  <option value="auto">{uiText('batchExportConcurrencyAuto')}</option>
-                </select>
-              </label>
+                  <span className="app-field-label-row">
+                    <IconSettings size={16} aria-hidden />
+                    {uiText('batchExportConcurrency')}
+                  </span>
+                  <select
+                    className="app-control"
+                    aria-label={uiText('batchExportConcurrency')}
+                    value={String(batchSnapshot?.concurrency ?? 'auto')}
+                    disabled={batchExportBusy}
+                    onChange={(e) => {
+                      const raw = e.target.value
+                      let v: FfmpegExportBatchConcurrency = 'auto'
+                      if (raw === '1') {
+                        v = 1
+                      } else if (raw === '2') {
+                        v = 2
+                      } else if (raw === '4') {
+                        v = 4
+                      }
+                      void window.fluxalloy.batchExport.setConcurrency(v).catch(console.error)
+                    }}
+                  >
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="4">4</option>
+                    <option value="auto">{uiText('batchExportConcurrencyAuto')}</option>
+                  </select>
+                </label>
               <div className="app-batch-export-actions">
                 <button
                   type="button"
@@ -3479,7 +3512,7 @@ function App(): JSX.Element {
               </div>
               </div>
             {batchSnapshot && batchSnapshot.rows.length > 0 ? (
-              <table className="app-batch-export-table">
+              <table className="app-batch-export-table" aria-busy={batchExportBusy}>
                 <caption className="app-visually-hidden">{uiText('batchExportTableCaption')}</caption>
                 <thead>
                   <tr>

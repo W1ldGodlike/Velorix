@@ -1821,6 +1821,18 @@ button.app-downloads-hint-token:disabled {
   white-space: nowrap;
 }
 
+.app-field-label-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.app-field-label-row svg {
+  flex-shrink: 0;
+  opacity: 0.92;
+}
+
 .app-control {
   width: 100%;
   min-width: 0;

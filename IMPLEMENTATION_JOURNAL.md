@@ -719,4 +719,8 @@
 - [J-696] 2026-05-16 01:10:00 [Assistant]: §7.3 — таблица очереди: скрытый `<caption>` + `scope="col"` на заголовках; `batchExportTableCaption` в ui-text.
 - [J-697] 2026-05-16 01:15:00 [Assistant]: §7.3 — таблица пакета: стабильные `id` у `<th>` и атрибут `headers` на `<td>` (`BATCH_EXPORT_TABLE_HEADER_IDS`).
 - [J-698] 2026-05-16 01:20:00 [Assistant]: §7.3 — икон-кнопки в строке пакета: дублирование подписи в `aria-label` (доступность).
+- [J-699] 2026-05-16 01:25:00 [Assistant]: §7.3 — зона пакета: `aria-busy` + `aria-describedby` на dropzone; `aria-busy` на таблице очереди; id на подсказках.
+- [J-700] 2026-05-16 01:30:00 [Assistant]: §7.3 — поле параллелизма: `IconSettings` + класс `app-field-label-row`; `aria-label` на `<select>`.
+- [J-701] 2026-05-16 01:35:00 [Assistant]: §7.3 — шаблон имени выхода: `IconScissors`, скрытая подсказка `aria-describedby`; папка выхода: `IconFolder` в подписи, id на видимой подсказке + `aria-*` у readonly.
+- [J-702] 2026-05-16 01:40:00 [Assistant]: §7.3 — тело панели пакета: `role="region"` + скрытый `h3` (`batchExportAria`) для `aria-labelledby`.
 
