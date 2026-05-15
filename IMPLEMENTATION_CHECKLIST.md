@@ -41,12 +41,12 @@
 
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый; подробности фиксировать ниже в тематических § и в `IMPLEMENTATION_JOURNAL.md`.
 
-- [~] §19/§3/§17: release/security — CI/check:release + `verify:win-unpacked`, непустые SHA, строгий JSON, подпись Win; интерактивный smoke вручную.
-- [~] §6/§7: downloads→processing — batch-режим, HW encode и оставшиеся расхождения embedded/pop-out.
-- [~] §8: terminal/CLI — polish подсказок/сценариев + RU/EN chrome вкладки «Терминал» (`ui-text`); RU `summary` контракта — `npm run locales:terminal-summaries-ru`; UX argv/выполнения без раздувания TODO-архива.
-- [~] §9/§18: ffprobe/diagnostics — crash/e2e smoke и точечные редкие поля по мере нахождения.
-- [~] §15: knowledge — deep-link из «О программе» на `about-support-logs`; терминал; дальше — tooltips и при желании PNG в `Help/assets/`.
-- [~] §1.1/§2.2/§5: добить оставшиеся литералы → `ui-text`, contrast/focus audit и DPI/multi-monitor smoke.
+- [~] §6/§7: главный инженерный фокус цикла — batch, HW encode и оставшиеся расхождения embedded↔pop-out загрузок; быстрые регрессии по очереди yt-dlp.
+- [~] §8: терминал — polish подсказок/сценариев, RU/EN chrome вкладки (`ui-text`); `npm run locales:terminal-summaries-ru`; argv/выполнение без раздувания TODO.
+- [~] §9/§18: ffprobe/diagnostics — crash/e2e smoke, редкие поля по факту; связка с логами/Support ZIP.
+- [~] §19/§3/§17: release/security — `check:release` + `verify:win-unpacked`, SHA/JSON, подпись Win; короткий packaged smoke по чеклисту.
+- [x] §15: knowledge — пакет закрыт: RU/EN Help, инлайн `data:` для мелких assets, fluxhelp, About→логи, терминал→hints; далее tooltips/PNG по стабилизации UI.
+- [~] §1.1/§2.2/§5: литералы→`ui-text`, contrast/focus, DPI smoke; не блокировать §6/§7 параллельно точечными PR.
 
 ---
 
@@ -80,7 +80,7 @@
 - [x] Назначение продукта зафиксировано: графический комбайн yt-dlp + ffmpeg.
 - [x] Целевые платформы зафиксированы: Windows приоритет, macOS, Linux.
 - [x] Лицензия есть в `LICENSE`.
-- [~] UI уже не каркас: есть рабочий editor/downloads workspace и инженерные rail/table/log/history паттерны (v0 используется только как ориентир для нужных UI-правок); до целевой глубины продукта не хватает **JSON-локализации/смены языка**, полноты базы знаний, терминала/сценариев, HW/batch и ручной DPI-полировки.
+- [~] UI уже не каркас: есть рабочий editor/downloads workspace и инженерные rail/table/log/history паттерны (v0 используется только как ориентир для нужных UI-правок); до целевой глубины продукта не хватает **JSON-локализации/смены языка**, polish базы знаний (tooltips/скриншоты), терминала/сценариев, HW/batch и ручной DPI-полировки.
 - [~] Держать основной UX как единый workspace с вкладками `Редактор` / `Загрузки`; логика очереди и обработки остаётся разделённой по сервисам, pop-out окна — вторичный режим.
 
 ### §1.1 UI и UX
