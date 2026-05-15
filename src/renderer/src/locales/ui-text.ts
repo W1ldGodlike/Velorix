@@ -658,6 +658,10 @@ const UI_TEXT = {
     editorExportCodecH264: 'H.264 (libx264)',
     editorExportCodecH265: 'H.265 (libx265)',
     editorExportCodecHwAuto: 'Авто (лучший H.264 HW или CPU)',
+    editorExportCodecHwAutoBadge: 'АВТО',
+    editorExportCodecHwAutoBadgeTitle:
+      'При экспорте будет выбран первый доступный из списка: NVENC → AMF → QSV → VideoToolbox → VAAPI, иначе libx264.',
+    editorExportHwaccelsTitle: 'Аппаратные методы (ffmpeg -hwaccels)',
     editorExportContainerMp4: 'MP4',
     editorExportContainerMkv: 'MKV',
     editorExportContainerMov: 'MOV',
@@ -1674,6 +1678,10 @@ const UI_TEXT = {
     editorExportCodecH264: 'H.264 (libx264)',
     editorExportCodecH265: 'H.265 (libx265)',
     editorExportCodecHwAuto: 'Auto (best H.264 HW or CPU)',
+    editorExportCodecHwAutoBadge: 'AUTO',
+    editorExportCodecHwAutoBadgeTitle:
+      'At export time picks the first available: NVENC → AMF → QSV → VideoToolbox → VAAPI, else libx264.',
+    editorExportHwaccelsTitle: 'Hardware acceleration (ffmpeg -hwaccels)',
     editorExportContainerMp4: 'MP4',
     editorExportContainerMkv: 'MKV',
     editorExportContainerMov: 'MOV',

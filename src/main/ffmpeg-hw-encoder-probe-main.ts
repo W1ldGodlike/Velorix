@@ -1,30 +1,32 @@
 import { execFile } from 'child_process'
 
 import type { FfmpegHwEncodersProbeResult } from '../shared/ffmpeg-hw-encoder-probe'
-import { parseFfmpegEncodersListOutput } from '../shared/ffmpeg-hw-encoder-probe'
+import {
+  parseFfmpegEncodersListOutput,
+  parseFfmpegHwaccelsOutput
+} from '../shared/ffmpeg-hw-encoder-probe'
 
-/** Запуск `ffmpeg -hide_banner -encoders` и разбор whitelist HW-кодеков (без shell). */
+const EXEC_OPTS = {
+  timeout: 15_000,
+  windowsHide: true,
+  maxBuffer: 8 * 1024 * 1024
+} as const
+
+/** Запуск `ffmpeg -encoders` и `-hwaccels`, разбор whitelist HW-кодеков (без shell). */
 export function probeFfmpegHwEncoders(ffmpegPath: string): Promise<FfmpegHwEncodersProbeResult> {
   return new Promise((resolve) => {
-    execFile(
-      ffmpegPath,
-      ['-hide_banner', '-encoders'],
-      {
-        timeout: 15_000,
-        windowsHide: true,
-        maxBuffer: 8 * 1024 * 1024
-      },
-      (err, stdout, stderr) => {
-        if (err) {
-          const msg = (stderr && String(stderr).trim()) || err.message || String(err)
-          resolve({ ok: false, error: msg })
-          return
-        }
-        resolve({
-          ok: true,
-          snapshot: parseFfmpegEncodersListOutput(String(stdout ?? ''))
-        })
+    execFile(ffmpegPath, ['-hide_banner', '-encoders'], EXEC_OPTS, (err, stdout, stderr) => {
+      if (err) {
+        const msg = (stderr && String(stderr).trim()) || err.message || String(err)
+        resolve({ ok: false, error: msg })
+        return
       }
-    )
+      const snapshot = parseFfmpegEncodersListOutput(String(stdout ?? ''))
+      execFile(ffmpegPath, ['-hide_banner', '-hwaccels'], EXEC_OPTS, (err2, stdout2, stderr2) => {
+        const merged = `${String(stdout2 ?? '')}\n${String(stderr2 ?? '')}`
+        const hwaccels = err2 ? [] : parseFfmpegHwaccelsOutput(merged)
+        resolve({ ok: true, snapshot, hwaccels })
+      })
+    })
   })
 }

@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest'
 
 import {
   createEmptyFfmpegHwEncodersSnapshot,
-  parseFfmpegEncodersListOutput
+  parseFfmpegEncodersListOutput,
+  parseFfmpegHwaccelsOutput
 } from '../../src/shared/ffmpeg-hw-encoder-probe'
 
 const SAMPLE = `Encoders:
@@ -36,5 +37,20 @@ describe('parseFfmpegEncodersListOutput', () => {
     expect(e.matchedEncoderLines).toBe(0)
     expect(e.h264_nvenc).toBe(false)
     expect(e.hevc_vaapi).toBe(false)
+  })
+})
+
+describe('parseFfmpegHwaccelsOutput', () => {
+  it('собирает имена методов из типичного вывода', () => {
+    const text = `Hardware acceleration methods:
+cuda
+dxva2
+qsv
+`
+    expect(parseFfmpegHwaccelsOutput(text)).toEqual(['cuda', 'dxva2', 'qsv'])
+  })
+
+  it('игнорирует заголовки с двоеточием и пустые строки', () => {
+    expect(parseFfmpegHwaccelsOutput('foo: bar\n')).toEqual([])
   })
 })

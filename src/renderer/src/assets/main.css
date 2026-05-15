@@ -3790,3 +3790,23 @@ button.app-downloads-hint-token:disabled {
     height: 19px;
   }
 }
+
+/* §16 — метка «АВТО» у выбора кодека; список hwaccels в title у label. */
+.app-field-label-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.2rem;
+}
+
+.app-hw-auto-badge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.08rem 0.28rem;
+  border-radius: 3px;
+  border: 1px solid var(--fa-border-subtle);
+  background: color-mix(in srgb, var(--fa-bg) 70%, var(--fa-accent) 30%);
+  color: var(--fa-text-primary);
+}

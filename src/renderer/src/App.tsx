@@ -1343,24 +1343,8 @@ function App(): JSX.Element {
     })
   }, [])
 
-  useEffect(() => {
-    let mounted = true
-    void window.fluxalloy.terminal.getHints().then((hints) => {
-      if (mounted) {
-        setTerminalHints(hints)
-      }
-    })
-    return () => {
-      mounted = false
-    }
-  }, [])
-
-  useEffect(() => {
-    let mounted = true
-    void window.fluxalloy.engines.probeHwEncoders().then((r) => {
-      if (!mounted) {
-        return
-      }
+  const refetchHwEncoders = useCallback((): Promise<void> => {
+    return window.fluxalloy.engines.probeHwEncoders().then((r) => {
       setHwEncoderProbe(r)
       setExportVideoCodec((codec) => {
         if (codec === 'hw_auto') {
@@ -1376,10 +1360,23 @@ function App(): JSX.Element {
         return 'libx264'
       })
     })
+  }, [])
+
+  useEffect(() => {
+    let mounted = true
+    void window.fluxalloy.terminal.getHints().then((hints) => {
+      if (mounted) {
+        setTerminalHints(hints)
+      }
+    })
     return () => {
       mounted = false
     }
   }, [])
+
+  useEffect(() => {
+    void refetchHwEncoders()
+  }, [refetchHwEncoders])
 
   useEffect(() => {
     trimSnapshotRef.current = null
@@ -1716,11 +1713,12 @@ function App(): JSX.Element {
       setEngineVersionsLine(formatEngineVersionsLine(snapshot))
       const need = await window.fluxalloy.engines.shouldOfferDownload()
       setEnginesOfferDownload(need)
+      await refetchHwEncoders()
     } catch {
       setEngineSummary('error')
       setEngineVersionsLine('')
     }
-  }, [])
+  }, [refetchHwEncoders])
 
   useEffect(() => {
     let cleanupTheme: (() => void) | undefined
@@ -2685,11 +2683,28 @@ function App(): JSX.Element {
                   {uiText('editorFfmpegSectionVideoHint')}
                 </p>
                 <div className="app-settings-grid" aria-describedby="ffmpegVideoSectionHint">
-                  <label className="app-field" title={uiText('editorTooltipVideoCodec')}>
-                    <span>{uiText('editorFieldVideoCodec')}</span>
+                  <label
+                    className="app-field"
+                    title={
+                      uiText('editorTooltipVideoCodec') +
+                      (hwEncoderProbe?.ok === true && hwEncoderProbe.hwaccels.length > 0
+                        ? `\n${uiText('editorExportHwaccelsTitle')}: ${hwEncoderProbe.hwaccels.join(', ')}`
+                        : '')
+                    }
+                  >
+                    <span className="app-field-label-inline">
+                      {uiText('editorFieldVideoCodec')}
+                      {exportVideoCodec === 'hw_auto' ? (
+                        <span
+                          className="app-hw-auto-badge"
+                          title={uiText('editorExportCodecHwAutoBadgeTitle')}
+                        >
+                          {uiText('editorExportCodecHwAutoBadge')}
+                        </span>
+                      ) : null}
+                    </span>
                     <select
                       className="app-control"
-                      title={uiText('editorTooltipVideoCodec')}
                       aria-label={uiText('editorAriaVideoCodecExport')}
                       value={exportVideoCodec}
                       disabled={exportBusy || snapshotBusy}
@@ -2697,7 +2712,7 @@ function App(): JSX.Element {
                         bumpManualExportEdit()
                         const v = e.target.value as FfmpegExportVideoCodecId
                         setExportVideoCodec(v)
-                        if (v === 'libx265' && exportTwoPass) {
+                        if (v !== 'libx264' && exportTwoPass) {
                           setExportTwoPass(false)
                           void window.fluxalloy.settings
                             .setFfmpegExportTwoPass(false)

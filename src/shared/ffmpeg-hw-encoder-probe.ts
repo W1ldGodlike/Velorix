@@ -27,7 +27,7 @@ export type FfmpegHwEncodersSnapshot = { [K in FfmpegHwVideoEncoderId]: boolean 
 }
 
 export type FfmpegHwEncodersProbeResult =
-  | { ok: true; snapshot: FfmpegHwEncodersSnapshot }
+  | { ok: true; snapshot: FfmpegHwEncodersSnapshot; hwaccels: readonly string[] }
   | { ok: false; error: string }
 
 const HW_ALT_PATTERN = FFMPEG_HW_VIDEO_ENCODER_IDS.map((id) =>
@@ -66,4 +66,24 @@ export function parseFfmpegEncodersListOutput(text: string): FfmpegHwEncodersSna
     }
   }
   return snap
+}
+
+/** Разбор stdout/stderr `ffmpeg -hwaccels` — список имён методов (нижний регистр, без дублей). */
+export function parseFfmpegHwaccelsOutput(text: string): string[] {
+  const seen = new Set<string>()
+  const out: string[] = []
+  for (const rawLine of text.split(/\r?\n/)) {
+    const t = rawLine.trim()
+    if (t.length === 0 || t.includes(':')) {
+      continue
+    }
+    if (/^[a-z0-9_-]+$/i.test(t)) {
+      const low = t.toLowerCase()
+      if (!seen.has(low)) {
+        seen.add(low)
+        out.push(low)
+      }
+    }
+  }
+  return out
 }
