@@ -694,4 +694,7 @@
 - [J-675] 2026-05-15 23:26:49 [Assistant]: §7.3/§7.4 — `addFfmpegExportBatchPaths` → `{added,skipped}` + подсказки UI; IPC `batchExportOpenInput` (файл/папка/редактор); quick yt-dlp textarea + «В очередь» без смены вкладки; Vitest open-input/add-counts. `npm run check:quiet`.
 - [J-676] 2026-05-15 23:26:56 [Assistant]: журнал — метка J-675 по git.
 - [J-677] 2026-05-15 23:34:08 [Assistant]: §7.2 HW — `ffmpegExportHwDecode` + `-hwaccel` (`ffmpeg-export-hw-decode.ts`, argv/preview/batch/single); PillSwitch в rail; статусбар кодека; пресеты/snapshot; Vitest hw-decode/argv. `npm run check:quiet`.
+- [J-678] 2026-05-15 23:34:26 [Assistant]: журнал — записи J-676/J-677.
+- [J-679] 2026-05-15 23:39:07 [Assistant]: §7.2 Advanced args — `ffmpegExportExtraArgsLine`, `parseFfmpegExportExtraArgsLine`, вставка перед output в argv; UI/presets/batch/single; Vitest. `npm run check:quiet`.
+
 
