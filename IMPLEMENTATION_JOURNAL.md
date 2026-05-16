@@ -1023,4 +1023,9 @@
 - [J-1000] 2026-05-16 15:14:00 [Assistant]: История обработки и история yt-dlp — карточки (`processingHistoryCardArticleAriaTemplate`, `downloadsHistoryCardArticleAriaTemplate`): `aria-busy={busy}` на `<article>`.
 - [J-1001] 2026-05-16 15:16:00 [Assistant]: Инспектор §9 — подвал статусбара (`appStatusbarAria`): `aria-busy={probePending}`.
 - [J-1002] 2026-05-16 15:18:00 [Assistant]: Редактор — элемент превью `<video>`: `aria-busy={editorPreviewRegionBusy}`.
+- [J-1003] 2026-05-16 15:20:00 [Assistant]: Таймлайн — огибающая waveform (`timelineWaveformAriaEnvelope`): `aria-busy` пока `peaks === null && hint === null` (декодирование аудио для огибающей).
+- [J-1004] 2026-05-16 15:22:00 [Assistant]: FFprobe-панель — таблицы дорожек и глав (`probeTracksCaption`, `probeChaptersCaption`): на `<table>` добавлен `aria-busy={probeRefreshing}`.
+- [J-1005] 2026-05-16 15:24:00 [Assistant]: История обработки — кнопки на карточках (повтор, batch, открыть вывод): `disabled={busy}` при обновлении списка.
+- [J-1006] 2026-05-16 15:26:00 [Assistant]: FFprobe-панель — контейнер сводки для экспорта (`probeExportSummaryRegionId`): `aria-busy={probeRefreshing}`.
+- [J-1007] 2026-05-16 15:28:00 [Assistant]: FFprobe-панель — статус копирования (`probeToolbarFeedbackAria`): `aria-busy={probeRefreshing}` на время повторного ffprobe.
 

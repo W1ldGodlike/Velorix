@@ -352,6 +352,7 @@ export function PreviewProbeBody({
             role="status"
             aria-live="polite"
             aria-label={uiText('probeToolbarFeedbackAria')}
+            aria-busy={probeRefreshing}
           >
             {probeToolbarTip}
           </div>
@@ -371,7 +372,7 @@ export function PreviewProbeBody({
           >
             {uiText('probeSectionExportSummary')}
           </summary>
-          <div id={probeExportSummaryRegionId}>
+          <div id={probeExportSummaryRegionId} aria-busy={probeRefreshing}>
             <p id="probeExportSummaryHint" className="app-probe-toolbar-hint">
               {uiText('probeSectionExportSummaryHint')}
             </p>
@@ -422,7 +423,7 @@ export function PreviewProbeBody({
               aria-label={uiText('probeTracksTableWrapGroupAria')}
               aria-busy={probeRefreshing}
             >
-              <table className="app-probe-table">
+              <table className="app-probe-table" aria-busy={probeRefreshing}>
                 <caption className="app-visually-hidden">{uiText('probeTracksCaption')}</caption>
                 <thead>
                   <tr>
@@ -583,7 +584,7 @@ export function PreviewProbeBody({
               aria-label={uiText('probeChaptersTableWrapGroupAria')}
               aria-busy={probeRefreshing}
             >
-              <table className="app-probe-table">
+              <table className="app-probe-table" aria-busy={probeRefreshing}>
                 <caption className="app-visually-hidden">{uiText('probeChaptersCaption')}</caption>
                 <thead>
                   <tr>

@@ -301,6 +301,7 @@ export function ProcessingHistoryPanel({
                 <button
                   type="button"
                   className="app-btn app-btn-compact"
+                  disabled={busy}
                   onClick={() => onOpenInputInHandler(entry.id)}
                 >
                   {uiText('processingHistoryRepeat')}
@@ -309,6 +310,7 @@ export function ProcessingHistoryPanel({
                   <button
                     type="button"
                     className="app-btn app-btn-compact"
+                    disabled={busy}
                     onClick={() => onAddInputToBatch(entry.id)}
                   >
                     {uiText('batchExportAddHistoryInput')}
@@ -328,6 +330,7 @@ export function ProcessingHistoryPanel({
                   <button
                     type="button"
                     className="app-btn app-btn-compact"
+                    disabled={busy}
                     onClick={() => onOpenOutput(entry.id, 'file')}
                   >
                     {uiText('processingHistoryOpenFile')}
@@ -335,6 +338,7 @@ export function ProcessingHistoryPanel({
                   <button
                     type="button"
                     className="app-btn app-btn-compact"
+                    disabled={busy}
                     onClick={() => onOpenOutput(entry.id, 'folder')}
                   >
                     {uiText('processingHistoryOpenFolder')}
@@ -342,6 +346,7 @@ export function ProcessingHistoryPanel({
                   <button
                     type="button"
                     className="app-btn app-btn-compact"
+                    disabled={busy}
                     onClick={() => onOpenOutput(entry.id, 'preview')}
                   >
                     {uiText('processingHistoryOpenPreview')}

@@ -274,11 +274,14 @@ export default function TimelineWaveform({
     return <div className="app-timeline-waveform app-timeline-waveform-empty" aria-hidden />
   }
 
+  const waveformDecodeBusy = peaks === null && hint === null
+
   return (
     <div
       className="app-timeline-waveform"
       ref={wrapRef}
       aria-label={uiText('timelineWaveformAriaEnvelope')}
+      aria-busy={waveformDecodeBusy}
     >
       {peaks !== null && peaks.length > 0 ? (
         <canvas ref={canvasRef} className="app-timeline-waveform-canvas" />
