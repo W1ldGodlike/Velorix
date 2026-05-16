@@ -123,6 +123,8 @@ const UI_TEXT = {
     terminalPanelSectionAria: 'Область терминала: ввод, журнал и подсказки',
     terminalTitle: 'Терминал',
     terminalIntroBandAria: 'Вводная зона вкладки терминала',
+    terminalIntroKnowledgeNavAria:
+      'Навигация: открыть статью подсказок терминала в базе знаний',
     terminalIntroLead:
       'Разрешены только префиксы ffmpeg, ffprobe и yt-dlp. Команда разбирается как argv, запускается в основном процессе (main) без оболочки (shell); каталог выбранного движка добавляется в PATH. В argv можно токен ',
     terminalIntroTailTemplate:
@@ -132,6 +134,8 @@ const UI_TEXT = {
     terminalCommandStackAria: 'Строка команды и всплывающие подсказки',
     terminalMainSplitAria: 'Журнал вывода и каталог подсказок',
     terminalEntryHeadGroupAria: 'Введённая команда и результат выполнения',
+    terminalEntryArticleAriaTemplate: 'Запись журнала {index}: {line}',
+    terminalEntryOutputLogAriaTemplate: 'Текстовый вывод команды {index}',
     terminalCommandPlaceholder: 'ffprobe -version',
     terminalPreviewFileButton: 'Превью-файл',
     terminalPreviewFileTooltipOpen: 'Вставить токен «{token}» (путь текущего превью)',
@@ -559,6 +563,7 @@ const UI_TEXT = {
     editorFfmpegRailShowHidden: 'Развернуть панель настроек FFmpeg',
     editorFfmpegRailRestoreLabel: 'FFmpeg',
     editorFfmpegSettingsAria: 'Настройки FFmpeg',
+    editorFfmpegRailSectionsRegionAria: 'Секции настроек экспорта в rail FFmpeg',
     editorFfmpegPanelHeadGroupAria: 'Заголовок панели FFmpeg и кнопка сворачивания',
     editorFfmpegSettingsTitle: 'Настройки FFmpeg',
     editorFfmpegSettingsSubtitle:
@@ -1402,6 +1407,7 @@ const UI_TEXT = {
     terminalPanelSectionAria: 'Terminal workspace: input, output log, and hints',
     terminalTitle: 'Terminal',
     terminalIntroBandAria: 'Terminal tab intro and actions',
+    terminalIntroKnowledgeNavAria: 'Navigation: open terminal hints article in the knowledge base',
     terminalIntroLead:
       'Only the ffmpeg, ffprobe, and yt-dlp prefixes are allowed. The command is parsed as argv, runs in the main process without a shell, and PATH is extended with the selected engine folder. In argv you can use the placeholder ',
     terminalIntroTailTemplate:
@@ -1411,6 +1417,8 @@ const UI_TEXT = {
     terminalCommandStackAria: 'Command input and inline suggestions',
     terminalMainSplitAria: 'Output log and hints catalog',
     terminalEntryHeadGroupAria: 'Entered command and run outcome',
+    terminalEntryArticleAriaTemplate: 'Log entry {index}: {line}',
+    terminalEntryOutputLogAriaTemplate: 'Text output for command {index}',
     terminalCommandPlaceholder: 'ffprobe -version',
     terminalPreviewFileButton: 'Preview file',
     terminalPreviewFileTooltipOpen: 'Insert the “{token}” token (current preview path)',
@@ -1835,6 +1843,7 @@ const UI_TEXT = {
     editorFfmpegRailShowHidden: 'Expand FFmpeg settings panel',
     editorFfmpegRailRestoreLabel: 'FFmpeg',
     editorFfmpegSettingsAria: 'FFmpeg settings',
+    editorFfmpegRailSectionsRegionAria: 'FFmpeg export settings sections in the side rail',
     editorFfmpegPanelHeadGroupAria: 'FFmpeg panel header and collapse control',
     editorFfmpegSettingsTitle: 'FFmpeg settings',
     editorFfmpegSettingsSubtitle:

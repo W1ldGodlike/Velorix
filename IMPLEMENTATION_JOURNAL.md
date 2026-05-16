@@ -848,4 +848,9 @@
 - [J-825] 2026-05-16 09:22:00 [Assistant]: ffprobe-панель — секция глав: `aria-label` из `probeSectionChaptersTemplate` (`uiTextVars`).
 - [J-826] 2026-05-16 09:24:00 [Assistant]: ffprobe-панель — секция JSON: `aria-label` из `probeSectionRawJson`.
 - [J-827] 2026-05-16 09:26:00 [Assistant]: Загрузки rail — эксперт: блок ссылок на документацию yt-dlp — `<nav>` + `downloadsRailExpertDocNavAria`.
+- [J-828] 2026-05-16 09:28:00 [Assistant]: Терминал — вводная зона: кнопка статьи базы знаний вынесена из `<p>` в `<nav>` + `terminalIntroKnowledgeNavAria` + класс `app-terminal-intro-knowledge`.
+- [J-829] 2026-05-16 09:30:00 [Assistant]: Редактор — rail FFmpeg: сворачиваемые секции экспорта обёрнуты в `role="region"` + `editorFfmpegRailSectionsRegionAria` (без истории обработок).
+- [J-830] 2026-05-16 09:32:00 [Assistant]: Терминал — карточки журнала (`article.app-terminal-entry`): `aria-label` из `terminalEntryArticleAriaTemplate` (индекс и усечённая команда).
+- [J-831] 2026-05-16 09:34:00 [Assistant]: Терминал — блок stdout/stderr (`role="log"`): `aria-label` из `terminalEntryOutputLogAriaTemplate` по номеру записи.
+- [J-832] 2026-05-16 09:36:00 [Assistant]: Стили — `.app-terminal-intro-knowledge`: отступ под текстом вводной зоны терминала.
 

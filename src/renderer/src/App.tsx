@@ -4004,6 +4004,7 @@ function App(): JSX.Element {
                 </div>
               </div>
 
+              <div role="region" aria-label={uiText('editorFfmpegRailSectionsRegionAria')}>
               <details
                 className="app-settings-section"
                 aria-label={uiText('editorFfmpegSectionVideo')}
@@ -5208,6 +5209,7 @@ function App(): JSX.Element {
                   ) : null}
                 </div>
               </details>
+              </div>
               <ProcessingHistoryPanel
                 open={panelOpen('processingHistory')}
                 busy={processingHistoryBusy}
@@ -5291,6 +5293,11 @@ function App(): JSX.Element {
                     pageStep: DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP,
                     maxInline: DEFAULT_TERMINAL_INLINE_SUGGEST_MAX
                   })}
+                </p>
+                <nav
+                  className="app-terminal-intro-knowledge"
+                  aria-label={uiText('terminalIntroKnowledgeNavAria')}
+                >
                   <button
                     type="button"
                     className="app-knowledge-link"
@@ -5302,7 +5309,7 @@ function App(): JSX.Element {
                   >
                     {uiText('knowledgeArticleTerminalHintsLink')}
                   </button>
-                </p>
+                </nav>
               </div>
             </div>
             <div
@@ -5502,7 +5509,7 @@ function App(): JSX.Element {
                     {uiText('terminalHistoryEmpty')}
                   </p>
                 ) : (
-                  terminalHistory.map((entry) => {
+                  terminalHistory.map((entry, entryIdx) => {
                     const lines = (() => {
                       if (!entry.result.ok) {
                         return [] as string[]
@@ -5512,8 +5519,17 @@ function App(): JSX.Element {
                         .join('\n')
                       return blob.length > 0 ? blob.split(/\r?\n/) : ['']
                     })()
+                    const entryBrief =
+                      entry.line.length > 96 ? `${entry.line.slice(0, 96)}…` : entry.line
                     return (
-                      <article key={entry.id} className="app-terminal-entry">
+                      <article
+                        key={entry.id}
+                        className="app-terminal-entry"
+                        aria-label={uiTextVars('terminalEntryArticleAriaTemplate', {
+                          index: entryIdx + 1,
+                          line: entryBrief
+                        })}
+                      >
                         <div
                           className="app-terminal-entry-head"
                           role="group"
@@ -5527,7 +5543,13 @@ function App(): JSX.Element {
                           </span>
                         </div>
                         {entry.result.ok ? (
-                          <div className="app-terminal-output" role="log">
+                          <div
+                            className="app-terminal-output"
+                            role="log"
+                            aria-label={uiTextVars('terminalEntryOutputLogAriaTemplate', {
+                              index: entryIdx + 1
+                            })}
+                          >
                             {lines.map((line, lineIdx) => (
                               <div
                                 key={`${entry.id}:${lineIdx}`}

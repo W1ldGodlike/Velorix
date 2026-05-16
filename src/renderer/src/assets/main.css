@@ -116,6 +116,10 @@
   min-height: 0;
 }
 
+.app-terminal-intro-knowledge {
+  margin-top: 0.35rem;
+}
+
 .app-terminal-command-stack {
   display: flex;
   flex-direction: column;
