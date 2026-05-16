@@ -788,4 +788,9 @@
 - [J-765] 2026-05-16 07:14:00 [Assistant]: Пакетный экспорт — `app-batch-export-dropzone`: `aria-label` + `batchExportDropzoneAria`.
 - [J-766] 2026-05-16 07:16:00 [Assistant]: Загрузки rail — стек секций настроек: `downloadsSettingsSectionsStackAria`.
 - [J-767] 2026-05-16 07:18:00 [Assistant]: История обработок — `<details>`: `aria-label` + `processingHistorySectionAria`.
+- [J-768] 2026-05-16 07:22:00 [Assistant]: `<header class="app-topbar">`: `aria-label` + `topbarHeaderAria`.
+- [J-769] 2026-05-16 07:24:00 [Assistant]: Редактор — `<main id="workspace-panel-editor">`: `aria-label` + `editorWorkbenchAria`.
+- [J-770] 2026-05-16 07:26:00 [Assistant]: Превью — подпись файла (`app-preview-caption`): `aria-label` + `editorPreviewCaptionAria`.
+- [J-771] 2026-05-16 07:28:00 [Assistant]: Превью — пустое состояние (`app-preview-placeholder`): `role="region"` + `editorPreviewPlaceholderAria`.
+- [J-772] 2026-05-16 07:30:00 [Assistant]: Пакетный экспорт — обёртка таблицы/пустого состояния: `batchExportQueueTableZoneAria`.
 

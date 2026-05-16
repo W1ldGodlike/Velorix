@@ -2910,7 +2910,7 @@ function App(): JSX.Element {
 
   return (
     <div className="app-shell">
-      <header className="app-topbar">
+      <header className="app-topbar" aria-label={uiText('topbarHeaderAria')}>
         <div className="app-topbar-brand" aria-label={uiText('topbarProductName')}>
           <span className="app-topbar-mark" aria-hidden>
             ◇
@@ -3563,6 +3563,10 @@ function App(): JSX.Element {
                 </button>
               </div>
               </div>
+            <div
+              role="region"
+              aria-label={uiText('batchExportQueueTableZoneAria')}
+            >
             {batchSnapshot && batchSnapshot.rows.length > 0 ? (
               <table className="app-batch-export-table" aria-busy={batchExportBusy}>
                 <caption className="app-visually-hidden">{uiText('batchExportTableCaption')}</caption>
@@ -3817,6 +3821,7 @@ function App(): JSX.Element {
             ) : (
               <p className="app-url-hint">{uiText('batchExportEmpty')}</p>
             )}
+            </div>
             {batchSnapshot &&
             !batchSnapshot.running &&
             batchSnapshot.completedError > 0 ? (
@@ -3841,6 +3846,7 @@ function App(): JSX.Element {
           id="workspace-panel-editor"
           role="tabpanel"
           aria-labelledby="workspace-tab-editor"
+          aria-label={uiText('editorWorkbenchAria')}
           className={`app-main app-workbench${panelOpen('ffmpegSettingsRailOpen') ? '' : ' app-workbench-ffmpeg-collapsed'}`}
         >
           <section
@@ -3910,13 +3916,21 @@ function App(): JSX.Element {
                     saveFrameDisabled={exportBusy || snapshotBusy}
                     saveFrameBusy={snapshotBusy}
                   />
-                  <footer className="app-preview-caption" title={preview.path}>
+                  <footer
+                    className="app-preview-caption"
+                    title={preview.path}
+                    aria-label={uiText('editorPreviewCaptionAria')}
+                  >
                     {preview.name}
                   </footer>
                 </div>
               </>
             ) : (
-              <div className="app-preview-placeholder">
+              <div
+                className="app-preview-placeholder"
+                role="region"
+                aria-label={uiText('editorPreviewPlaceholderAria')}
+              >
                 {uiText('editorPreviewEmptyLead')}
                 <p className="app-preview-hint">{uiText('editorPreviewEmptyHint')}</p>
               </div>

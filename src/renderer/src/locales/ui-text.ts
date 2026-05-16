@@ -491,6 +491,7 @@ const UI_TEXT = {
     uiPlaceholderDash: '—',
     commonNotApplicableShort: 'н/д',
     topbarProductName: 'FluxAlloy',
+    topbarHeaderAria: 'Верхняя панель: вкладки рабочей области и действия',
     topbarActionsToolbarAria: 'Панель действий: файлы, инструменты и справка',
     topbarOpenFileTitle:
       'Выбрать видео с компьютера: оно появится в превью и на таймлайне, дальше можно резать и сохранять.',
@@ -526,6 +527,9 @@ const UI_TEXT = {
     editorPreviewVideoAriaTemplate: 'Предпросмотр: {name}',
     editorPreviewMediaCardGroupAria: 'Видео предпросмотра и панель управления',
     editorPreviewStackAria: 'Стек превью: видео, таймлайн и панель ffprobe',
+    editorWorkbenchAria: 'Редактор: область превью и панель FFmpeg',
+    editorPreviewCaptionAria: 'Подпись к превью с именем файла',
+    editorPreviewPlaceholderAria: 'Превью без файла',
     editorPreviewEmptyLead:
       'Нет источника — перетащите видеофайл сюда или «Открыть…» в меню «Файл» / кнопка сверху.',
     editorPreviewEmptyHint:
@@ -906,6 +910,7 @@ const UI_TEXT = {
     statusExportBatchRow: 'Пакет #{id}',
     batchExportAria: 'Пакетный экспорт видео',
     batchExportDropzoneAria: 'Область пакета: перетаскивание файлов, параметры и таблица очереди',
+    batchExportQueueTableZoneAria: 'Таблица очереди пакетного экспорта или пустое состояние',
     batchExportActionsToolbarAria: 'Действия панели пакетного экспорта',
     batchExportPanelFormGroupAria: 'Параметры пакета: суффикс, папка, параллелизм и действия очереди',
     batchExportOutputDirRowGroupAria: 'Папка вывода: выбрать, открыть, сбросить',
@@ -1722,6 +1727,7 @@ const UI_TEXT = {
     uiPlaceholderDash: '—',
     commonNotApplicableShort: 'n/a',
     topbarProductName: 'FluxAlloy',
+    topbarHeaderAria: 'Top bar: workspace tabs and actions',
     topbarActionsToolbarAria: 'Actions toolbar: files, tools, and help',
     topbarOpenFileTitle:
       'Pick a video from your PC — it appears in the preview and timeline for trimming and export.',
@@ -1757,6 +1763,9 @@ const UI_TEXT = {
     editorPreviewVideoAriaTemplate: 'Preview: {name}',
     editorPreviewMediaCardGroupAria: 'Preview video and transport controls',
     editorPreviewStackAria: 'Preview stack: video, timeline, and ffprobe panel',
+    editorWorkbenchAria: 'Editor: preview area and FFmpeg panel',
+    editorPreviewCaptionAria: 'Preview caption with file name',
+    editorPreviewPlaceholderAria: 'Preview without a file',
     editorPreviewEmptyLead:
       'No source — drop a video here or use Open… in the File menu / the top button.',
     editorPreviewEmptyHint:
@@ -2136,6 +2145,7 @@ const UI_TEXT = {
     statusExportBatchRow: 'Batch #{id}',
     batchExportAria: 'Batch video export',
     batchExportDropzoneAria: 'Batch area: drag-and-drop files, options, and queue table',
+    batchExportQueueTableZoneAria: 'Batch export queue table or empty state',
     batchExportActionsToolbarAria: 'Batch export action bar',
     batchExportPanelFormGroupAria: 'Batch options: suffix, folder, concurrency, and queue actions',
     batchExportOutputDirRowGroupAria: 'Output folder: pick, reveal, reset',
