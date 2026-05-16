@@ -1720,8 +1720,16 @@ function getCrashDumpsPathSafe(): string | null {
   }
 }
 
-function supportBundleRuntimeInfo(): SupportBundleRuntimeInfo {
+async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRuntimeInfo> {
   const paths = resolveAppPaths()
+  const engines = await getEnginesStatus(paths)
+  const engineDiagnosticLines = ENGINE_IDS.map((id) => {
+    const e = engines.engines[id]
+    const pathPart = e.path ?? '-'
+    const detail =
+      e.version ?? (e.message && e.message.length > 0 ? e.message : e.state)
+    return `  ${id}: ${e.state} | ${pathPart} | ${detail}`
+  })
   let appLocale = '?'
   let systemLocale = '?'
   try {
@@ -1766,7 +1774,8 @@ function supportBundleRuntimeInfo(): SupportBundleRuntimeInfo {
     logBackupFile: getMainLogBackupFilePath(),
     sessionLogFile: getSessionLogFilePath(),
     terminalCliLogFile: resolveTerminalCliSessionLogPath(paths.userData),
-    crashDumps: getCrashDumpsPathSafe()
+    crashDumps: getCrashDumpsPathSafe(),
+    engineDiagnosticLines
   }
 }
 
@@ -1843,7 +1852,7 @@ async function createSupportBundleWithDialog(
     return { outcome: 'cancelled' }
   }
   try {
-    createSupportBundleZip(result.filePath, supportBundleRuntimeInfo())
+    createSupportBundleZip(result.filePath, await buildSupportBundleRuntimeInfo())
     logInfo('diagnostics', 'support zip created', result.filePath)
     return { outcome: 'saved', path: result.filePath }
   } catch (err) {

@@ -39,6 +39,8 @@ export interface SupportBundleRuntimeInfo {
   /** §8 — последние прогонки вкладки «Терминал» (stderr и блокировки). */
   terminalCliLogFile: string | null
   crashDumps: string | null
+  /** §3/§9 — `ffmpeg` / `ffprobe` / `yt-dlp`: state, путь, первая строка `-version`. */
+  engineDiagnosticLines: readonly string[]
 }
 
 export interface DiagnosticsPruneOptions {
@@ -350,7 +352,10 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
     ...maintenance.targets.map(
       (target) =>
         `  ${target.id}: ${target.files} files, ${target.directories} dirs, ${target.bytes} bytes`
-    )
+    ),
+    ...(info.engineDiagnosticLines.length > 0
+      ? ['', 'engines:', ...info.engineDiagnosticLines]
+      : [])
   ].join('\n')
 }
 

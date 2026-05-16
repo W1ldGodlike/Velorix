@@ -718,3 +718,5 @@
 - [J-690] 2026-05-16 19:12:36 [Assistant]: §7.2/§16 — NVENC: `format=nv12,hwupload_cuda` в `-vf` только при CPU-фильтрах (без `-vf` — прямой путь в RAM); Vitest vf/argv. `npm run check:quiet`.
 - [J-691] 2026-05-16 19:14:03 [Assistant]: §7.2/§16 — HW decode: `-hwaccel_output_format` (cuda/qsv/vaapi/d3d11) в паре с `-hwaccel` в `appendFfmpegHwaccelBeforeInput`; не для `auto`; Vitest hw-decode/argv. `npm run check:quiet`.
 - [J-692] 2026-05-16 19:15:56 [Assistant]: §7.2/§16 — сводка HW export (J-689–691): QSV/AMF/VAAPI/NVENC `-vf` upload, `-hwaccel_output_format`; регрессионные argv-тесты полной цепочки; marathon commit #5. `npm run check:quiet`.
+- [J-693] 2026-05-16 19:17:58 [Assistant]: §9/§19 — `smoke:packaged-ffprobe` (version + lavfi JSON probe из `dist/win-unpacked`/`bin/`); lib + Vitest; в `check:release` после `verify:win-unpacked`. `npm run check:quiet`.
+- [J-694] 2026-05-16 19:20:25 [Assistant]: §9/§18 — Support ZIP `diagnostics.txt`: блок `engines:` (state/path/-version через `getEnginesStatus`); коммит вместе с J-693 smoke. `npm run check:quiet`.

@@ -84,7 +84,11 @@ describe('createSupportBundleZip', () => {
       logBackupFile: null,
       sessionLogFile: sessionLog,
       terminalCliLogFile: terminalCli,
-      crashDumps: null
+      crashDumps: null,
+      engineDiagnosticLines: [
+        '  ffmpeg: ready | C:\\bin\\ffmpeg.exe | ffmpeg version 7.0',
+        '  ffprobe: ready | C:\\bin\\ffprobe.exe | ffprobe version 7.0'
+      ]
     })
 
     const zip = readFileSync(out)
@@ -102,6 +106,9 @@ describe('createSupportBundleZip', () => {
     expect(zip.includes(Buffer.from('maintenanceTargets:'))).toBe(true)
     expect(zip.includes(Buffer.from('previewCache: 1 files'))).toBe(true)
     expect(zip.includes(Buffer.from('ytdlpPartials: 1 files'))).toBe(true)
+    expect(zip.includes(Buffer.from('engines:'))).toBe(true)
+    expect(zip.includes(Buffer.from('ffmpeg: ready'))).toBe(true)
+    expect(zip.includes(Buffer.from('ffprobe: ready'))).toBe(true)
   })
 })
 
