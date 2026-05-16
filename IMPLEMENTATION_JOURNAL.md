@@ -968,4 +968,9 @@
 - [J-945] 2026-05-16 13:24:00 [Assistant]: Терминал — тулбар строки команды (`terminalCommandToolbarAria`): `aria-busy={terminalBusy}`.
 - [J-946] 2026-05-16 13:26:00 [Assistant]: Инспектор §9 — верхний тулбар действий (`inspectorTopbarActionsToolbarAria`): `aria-busy` при активном ffprobe (`probePending`), если файл выбран.
 - [J-947] 2026-05-16 13:28:00 [Assistant]: Главное окно — передача `previewPipelineBusy` в `VideoTimeline` из `App.tsx` (`exportBusy || snapshotBusy || probePending`).
+- [J-948] 2026-05-16 13:30:00 [Assistant]: Диалог путей движков (`editorEnginePathsDialogTitle`): состояние `enginePathsSaving`, `aria-busy` на `dialog` и группе строк, блокировка полей/кнопок и клика по backdrop до завершения сохранения в настройки.
+- [J-949] 2026-05-16 13:32:00 [Assistant]: Пакетный экспорт — группа обёртки таблицы (`batchExportTableWrapGroupAria`): `aria-busy={batchExportBusy}`.
+- [J-950] 2026-05-16 13:34:00 [Assistant]: Таймлайн — тулбар (`videoTimelineToolbarAria`): `aria-busy={saveFrameBusy || previewPipelineBusy}`.
+- [J-951] 2026-05-16 13:36:00 [Assistant]: Таймлайн — регион unified (`videoTimelineUnifiedRegionAria`): тот же флаг `aria-busy`.
+- [J-952] 2026-05-16 13:38:00 [Assistant]: Таймлайн — подвал (`videoTimelineFooterAria`): `aria-busy` при обновлении потока данных превью (снимок/ffprobe/экспорт).
 

@@ -611,6 +611,7 @@ export default function VideoTimeline({
           role="toolbar"
           aria-orientation="horizontal"
           aria-label={uiText('videoTimelineToolbarAria')}
+          aria-busy={saveFrameBusy || previewPipelineBusy}
         >
           <div
             className="app-timeline-toolbar-primary"
@@ -869,7 +870,11 @@ export default function VideoTimeline({
       ) : null}
 
       {duration > 0 ? (
-        <div className="app-timeline-footer" aria-label={uiText('videoTimelineFooterAria')}>
+        <div
+          className="app-timeline-footer"
+          aria-label={uiText('videoTimelineFooterAria')}
+          aria-busy={saveFrameBusy || previewPipelineBusy}
+        >
           <div className="app-timeline-footer-spec" role="group" aria-label={uiText('videoTimelineFooterSpecGroupAria')}>
             <span title={uiText('videoTimelineVideoStreamTitle')}>
               <strong>{uiText('videoTimelineVideoLabel')}</strong> {formatProbeVideoFact(probe)}

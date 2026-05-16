@@ -629,6 +629,7 @@ function App(): JSX.Element {
     ffprobe: '',
     'yt-dlp': ''
   })
+  const [enginePathsSaving, setEnginePathsSaving] = useState(false)
   /** Подстрочное сообщение статусбара: прогресс загрузки движков, ошибки DnD и т.п. */
   const [statusHint, setStatusHint] = useState<string | null>(null)
   const [preview, setPreview] = useState<PreviewOpenedPayload | null>(null)
@@ -2636,14 +2637,19 @@ function App(): JSX.Element {
   }
 
   async function handleSaveEnginePaths(): Promise<void> {
-    await window.fluxalloy.settings.setEngineExecutablePaths({
-      ffmpeg: enginePathsDraft.ffmpeg.trim() || null,
-      ffprobe: enginePathsDraft.ffprobe.trim() || null,
-      'yt-dlp': enginePathsDraft['yt-dlp'].trim() || null
-    })
-    await refreshEngineUi()
-    setEnginePathsOpen(false)
-    setStatusHint(uiText('statusEnginePathsSaved'))
+    setEnginePathsSaving(true)
+    try {
+      await window.fluxalloy.settings.setEngineExecutablePaths({
+        ffmpeg: enginePathsDraft.ffmpeg.trim() || null,
+        ffprobe: enginePathsDraft.ffprobe.trim() || null,
+        'yt-dlp': enginePathsDraft['yt-dlp'].trim() || null
+      })
+      await refreshEngineUi()
+      setEnginePathsOpen(false)
+      setStatusHint(uiText('statusEnginePathsSaved'))
+    } finally {
+      setEnginePathsSaving(false)
+    }
   }
 
   async function handlePickEngine(id: EngineId): Promise<void> {
@@ -3673,6 +3679,7 @@ function App(): JSX.Element {
                 className="app-batch-export-table-wrap"
                 role="group"
                 aria-label={uiText('batchExportTableWrapGroupAria')}
+                aria-busy={batchExportBusy}
               >
               <table className="app-batch-export-table" aria-busy={batchExportBusy}>
                 <caption className="app-visually-hidden">{uiText('batchExportTableCaption')}</caption>
@@ -7322,6 +7329,9 @@ function App(): JSX.Element {
           className="app-modal-backdrop"
           role="presentation"
           onMouseDown={(e) => {
+            if (enginePathsSaving) {
+              return
+            }
             if (e.target === e.currentTarget) {
               setEnginePathsOpen(false)
             }
@@ -7331,6 +7341,7 @@ function App(): JSX.Element {
             className="app-modal"
             role="dialog"
             aria-modal="true"
+            aria-busy={enginePathsSaving}
             aria-labelledby="engine-paths-title"
             aria-describedby="engine-paths-hint"
             onMouseDown={(e) => {
@@ -7347,6 +7358,7 @@ function App(): JSX.Element {
               className="app-engine-path-rows"
               role="group"
               aria-label={uiText('enginePathsDialogRowsGroupAria')}
+              aria-busy={enginePathsSaving}
             >
               {ENGINE_IDS.map((id) => (
                 <div key={id} className="app-engine-path-row">
@@ -7358,6 +7370,7 @@ function App(): JSX.Element {
                     className="app-engine-path-input"
                     type="text"
                     spellCheck={false}
+                    disabled={enginePathsSaving}
                     placeholder={uiText('editorEnginePathPlaceholderAuto')}
                     value={enginePathsDraft[id]}
                     onChange={(e) => {
@@ -7375,6 +7388,7 @@ function App(): JSX.Element {
                     <button
                       type="button"
                       className="app-btn app-btn-compact"
+                      disabled={enginePathsSaving}
                       onClick={() => {
                         void handlePickEngine(id)
                       }}
@@ -7384,6 +7398,7 @@ function App(): JSX.Element {
                     <button
                       type="button"
                       className="app-btn app-btn-compact"
+                      disabled={enginePathsSaving}
                       onClick={() => {
                         setEnginePathsDraft((prev) => ({ ...prev, [id]: '' }))
                       }}
@@ -7403,7 +7418,7 @@ function App(): JSX.Element {
               <button
                 type="button"
                 className="app-btn app-btn-danger"
-                disabled={engineDownloadBusy}
+                disabled={engineDownloadBusy || enginePathsSaving}
                 title={uiText('editorEnginePathsRemoveDownloadedTooltip')}
                 onClick={() => {
                   void handleClearDownloadedEngines()
@@ -7414,6 +7429,7 @@ function App(): JSX.Element {
               <button
                 type="button"
                 className="app-btn"
+                disabled={enginePathsSaving}
                 onClick={() => {
                   setEnginePathsOpen(false)
                 }}
@@ -7423,6 +7439,7 @@ function App(): JSX.Element {
               <button
                 type="button"
                 className="app-btn app-btn-primary"
+                disabled={enginePathsSaving}
                 onClick={() => {
                   void handleSaveEnginePaths()
                 }}
