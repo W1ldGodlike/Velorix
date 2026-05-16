@@ -21,16 +21,23 @@ export type FfprobeSummaryStrings = {
   containerBrandWithCompatTemplate: string
   containerCreationTimeTemplate: string
   containerEncoderTemplate: string
+  containerPublisherTemplate: string
+  containerEncodedByTemplate: string
+  containerSoftwareTemplate: string
   containerTitleTemplate: string
   containerCommentTemplate: string
   containerDescriptionTemplate: string
   containerArtistTemplate: string
   containerSortArtistTemplate: string
   containerAlbumTemplate: string
+  containerAlbumArtistTemplate: string
   containerSortAlbumTemplate: string
   containerSortTitleTemplate: string
   containerGenreTemplate: string
+  containerTrackTemplate: string
+  containerDiscTemplate: string
   containerCopyrightTemplate: string
+  containerIsrcTemplate: string
   containerDateTemplate: string
   containerPurchaseDateTemplate: string
   probeScoreTemplate: string
@@ -91,16 +98,23 @@ const RU: FfprobeSummaryStrings = {
   containerBrandWithCompatTemplate: 'Бренд контейнера: {brand} (совместимые: {compat})',
   containerCreationTimeTemplate: 'Дата создания (creation_time): {time}',
   containerEncoderTemplate: 'Кодировщик контейнера (encoder): {encoder}',
+  containerPublisherTemplate: 'Издатель контейнера (publisher): {publisher}',
+  containerEncodedByTemplate: 'Кодировал (encoded_by): {encodedBy}',
+  containerSoftwareTemplate: 'ПО контейнера (software): {software}',
   containerTitleTemplate: 'Заголовок контейнера (title): {title}',
   containerCommentTemplate: 'Комментарий контейнера (comment): {comment}',
   containerDescriptionTemplate: 'Описание контейнера (description): {description}',
   containerArtistTemplate: 'Исполнитель контейнера (artist): {artist}',
   containerSortArtistTemplate: 'Сортировка исполнителя контейнера (sort_artist): {sortArtist}',
   containerAlbumTemplate: 'Альбом контейнера (album): {album}',
+  containerAlbumArtistTemplate: 'Исполнитель альбома контейнера (album_artist): {albumArtist}',
   containerSortAlbumTemplate: 'Сортировка альбома контейнера (sort_album): {sortAlbum}',
   containerSortTitleTemplate: 'Сортировка заголовка контейнера (sort_title): {sortTitle}',
   containerGenreTemplate: 'Жанр контейнера (genre): {genre}',
+  containerTrackTemplate: 'Трек контейнера (track): {track}',
+  containerDiscTemplate: 'Диск контейнера (disc): {disc}',
   containerCopyrightTemplate: 'Авторские права контейнера (copyright): {copyright}',
+  containerIsrcTemplate: 'ISRC контейнера (isrc): {isrc}',
   containerDateTemplate: 'Дата контейнера (date): {date}',
   containerPurchaseDateTemplate: 'Дата покупки контейнера (purchase_date): {purchaseDate}',
   probeScoreTemplate: 'Оценка демультиплексора (probe_score): {score}',
@@ -166,16 +180,23 @@ const EN: FfprobeSummaryStrings = {
   containerBrandWithCompatTemplate: 'Container brand: {brand} (compatible: {compat})',
   containerCreationTimeTemplate: 'Creation time (creation_time): {time}',
   containerEncoderTemplate: 'Container encoder (encoder): {encoder}',
+  containerPublisherTemplate: 'Container publisher (publisher): {publisher}',
+  containerEncodedByTemplate: 'Encoded by (encoded_by): {encodedBy}',
+  containerSoftwareTemplate: 'Container software (software): {software}',
   containerTitleTemplate: 'Container title (title): {title}',
   containerCommentTemplate: 'Container comment (comment): {comment}',
   containerDescriptionTemplate: 'Container description (description): {description}',
   containerArtistTemplate: 'Container artist (artist): {artist}',
   containerSortArtistTemplate: 'Container sort artist (sort_artist): {sortArtist}',
   containerAlbumTemplate: 'Container album (album): {album}',
+  containerAlbumArtistTemplate: 'Container album artist (album_artist): {albumArtist}',
   containerSortAlbumTemplate: 'Container sort album (sort_album): {sortAlbum}',
   containerSortTitleTemplate: 'Container sort title (sort_title): {sortTitle}',
   containerGenreTemplate: 'Container genre (genre): {genre}',
+  containerTrackTemplate: 'Container track (track): {track}',
+  containerDiscTemplate: 'Container disc (disc): {disc}',
   containerCopyrightTemplate: 'Container copyright (copyright): {copyright}',
+  containerIsrcTemplate: 'Container ISRC (isrc): {isrc}',
   containerDateTemplate: 'Container date (date): {date}',
   containerPurchaseDateTemplate: 'Container purchase date (purchase_date): {purchaseDate}',
   probeScoreTemplate: 'Demuxer confidence (probe_score): {score}',

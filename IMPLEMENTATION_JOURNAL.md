@@ -772,3 +772,8 @@
 - [J-744] 2026-05-16 20:45:12 [Assistant]: §9 — ffprobe `format.tags.sort_album` → `containerSortAlbumTag` в probe, инспекторе (`salb …`) и TXT/HTML; Vitest. `npm run check:quiet`.
 - [J-745] 2026-05-16 20:48:47 [Assistant]: §9 — ffprobe `format.tags.sort_artist` и `sort_title` → `containerSortArtistTag` / `containerSortTitleTag` в probe, инспекторе (`sart` / `stit`) и TXT/HTML; Vitest. `npm run check:quiet`.
 - [J-746] 2026-05-16 20:55:50 [Assistant]: §9 — ffprobe `format.tags.purchase_date` → `containerPurchaseDateTag` в probe, инспекторе (`pdt …`) и TXT/HTML; Vitest. Marathon #60 commit+push. `npm run check:quiet`.
+- [J-747] 2026-05-16 20:57:26 [Assistant]: §9 — ffprobe `format.tags.album_artist` → `containerAlbumArtistTag` в probe, инспекторе (`aart …`) и TXT/HTML; Vitest. `npm run check:quiet`.
+- [J-748] 2026-05-16 20:58:56 [Assistant]: §9 — ffprobe `format.tags.publisher` и `encoded_by` → `containerPublisherTag` / `containerEncodedByTag` в probe, инспекторе (`pub` / `eby`) и TXT/HTML; Vitest. `npm run check:quiet`.
+- [J-749] 2026-05-16 21:00:15 [Assistant]: §9 — ffprobe `format.tags.track` и `disc` → `containerTrackTag` / `containerDiscTag` в probe, инспекторе (`trk` / `disc`) и TXT/HTML; Vitest. `npm run check:quiet`.
+- [J-750] 2026-05-16 21:01:35 [Assistant]: §9 — ffprobe `format.tags.software` → `containerSoftwareTag` в probe, инспекторе (`soft …`) и TXT/HTML; Vitest. `npm run check:quiet`.
+- [J-751] 2026-05-16 21:02:49 [Assistant]: §9 — ffprobe `format.tags.isrc` → `containerIsrcTag` в probe, инспекторе (`isrc …`) и TXT/HTML; Vitest. Marathon #65 commit (пакет J-747–751). `npm run check:quiet`.

@@ -10,13 +10,20 @@ import {
   formatFfprobeContainerBrandExportLine,
   formatFfprobeContainerCreationTimeExportLine,
   formatFfprobeContainerEncoderExportLine,
+  formatFfprobeContainerPublisherExportLine,
+  formatFfprobeContainerEncodedByExportLine,
+  formatFfprobeContainerSoftwareExportLine,
   formatFfprobeContainerCommentExportLine,
   formatFfprobeContainerAlbumExportLine,
+  formatFfprobeContainerAlbumArtistExportLine,
   formatFfprobeContainerSortAlbumExportLine,
   formatFfprobeContainerCopyrightExportLine,
+  formatFfprobeContainerIsrcExportLine,
   formatFfprobeContainerDateExportLine,
   formatFfprobeContainerPurchaseDateExportLine,
   formatFfprobeContainerGenreExportLine,
+  formatFfprobeContainerTrackExportLine,
+  formatFfprobeContainerDiscExportLine,
   formatFfprobeContainerArtistExportLine,
   formatFfprobeContainerSortArtistExportLine,
   formatFfprobeContainerDescriptionExportLine,
@@ -168,6 +175,9 @@ export function formatProbeSummaryPlainText(
     ),
     formatFfprobeContainerCreationTimeExportLine(info.containerCreationTime, locale),
     formatFfprobeContainerEncoderExportLine(info.containerEncoder, locale),
+    formatFfprobeContainerPublisherExportLine(info.containerPublisherTag, locale),
+    formatFfprobeContainerEncodedByExportLine(info.containerEncodedByTag, locale),
+    formatFfprobeContainerSoftwareExportLine(info.containerSoftwareTag, locale),
     formatFfprobeContainerTitleExportLine(info.containerTitleTag, locale),
     formatFfprobeContainerSortTitleExportLine(info.containerSortTitleTag, locale),
     formatFfprobeContainerCommentExportLine(info.containerCommentTag, locale),
@@ -175,9 +185,13 @@ export function formatProbeSummaryPlainText(
     formatFfprobeContainerArtistExportLine(info.containerArtistTag, locale),
     formatFfprobeContainerSortArtistExportLine(info.containerSortArtistTag, locale),
     formatFfprobeContainerAlbumExportLine(info.containerAlbumTag, locale),
+    formatFfprobeContainerAlbumArtistExportLine(info.containerAlbumArtistTag, locale),
     formatFfprobeContainerSortAlbumExportLine(info.containerSortAlbumTag, locale),
     formatFfprobeContainerGenreExportLine(info.containerGenreTag, locale),
+    formatFfprobeContainerTrackExportLine(info.containerTrackTag, locale),
+    formatFfprobeContainerDiscExportLine(info.containerDiscTag, locale),
     formatFfprobeContainerCopyrightExportLine(info.containerCopyrightTag, locale),
+    formatFfprobeContainerIsrcExportLine(info.containerIsrcTag, locale),
     formatFfprobeContainerDateExportLine(info.containerDateTag, locale),
     formatFfprobeContainerPurchaseDateExportLine(info.containerPurchaseDateTag, locale),
     formatFfprobeProbeScoreExportLine(info.probeScore, locale),
@@ -294,6 +308,18 @@ ${chapterRows}
       return enc ? `<li>${escapeHtml(enc)}</li>` : ''
     })(),
     (() => {
+      const pub = formatFfprobeContainerPublisherExportLine(info.containerPublisherTag, locale)
+      return pub ? `<li>${escapeHtml(pub)}</li>` : ''
+    })(),
+    (() => {
+      const eby = formatFfprobeContainerEncodedByExportLine(info.containerEncodedByTag, locale)
+      return eby ? `<li>${escapeHtml(eby)}</li>` : ''
+    })(),
+    (() => {
+      const sw = formatFfprobeContainerSoftwareExportLine(info.containerSoftwareTag, locale)
+      return sw ? `<li>${escapeHtml(sw)}</li>` : ''
+    })(),
+    (() => {
       const ttl = formatFfprobeContainerTitleExportLine(info.containerTitleTag, locale)
       return ttl ? `<li>${escapeHtml(ttl)}</li>` : ''
     })(),
@@ -322,6 +348,10 @@ ${chapterRows}
       return alb ? `<li>${escapeHtml(alb)}</li>` : ''
     })(),
     (() => {
+      const aart = formatFfprobeContainerAlbumArtistExportLine(info.containerAlbumArtistTag, locale)
+      return aart ? `<li>${escapeHtml(aart)}</li>` : ''
+    })(),
+    (() => {
       const salb = formatFfprobeContainerSortAlbumExportLine(info.containerSortAlbumTag, locale)
       return salb ? `<li>${escapeHtml(salb)}</li>` : ''
     })(),
@@ -330,8 +360,20 @@ ${chapterRows}
       return gen ? `<li>${escapeHtml(gen)}</li>` : ''
     })(),
     (() => {
+      const trk = formatFfprobeContainerTrackExportLine(info.containerTrackTag, locale)
+      return trk ? `<li>${escapeHtml(trk)}</li>` : ''
+    })(),
+    (() => {
+      const dsc = formatFfprobeContainerDiscExportLine(info.containerDiscTag, locale)
+      return dsc ? `<li>${escapeHtml(dsc)}</li>` : ''
+    })(),
+    (() => {
       const cpy = formatFfprobeContainerCopyrightExportLine(info.containerCopyrightTag, locale)
       return cpy ? `<li>${escapeHtml(cpy)}</li>` : ''
+    })(),
+    (() => {
+      const isrc = formatFfprobeContainerIsrcExportLine(info.containerIsrcTag, locale)
+      return isrc ? `<li>${escapeHtml(isrc)}</li>` : ''
     })(),
     (() => {
       const dt = formatFfprobeContainerDateExportLine(info.containerDateTag, locale)

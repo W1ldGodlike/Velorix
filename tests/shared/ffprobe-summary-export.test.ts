@@ -59,16 +59,23 @@ const sampleProbe: MediaProbeSuccess = {
   containerMajorBrand: 'isom',
   containerCreationTime: '2024-06-01T10:00:00.000000Z',
   containerEncoder: 'Lavf62.0.100',
+  containerPublisherTag: 'Flux Media',
+  containerEncodedByTag: 'HandBrake 1.8',
+  containerSoftwareTag: 'Adobe Premiere Pro',
   containerTitleTag: 'Sample',
   containerCommentTag: 'Offline edit',
   containerDescriptionTag: 'Demo reel',
   containerArtistTag: 'Flux Studio',
   containerSortArtistTag: 'Studio, Flux',
   containerAlbumTag: 'Season One',
+  containerAlbumArtistTag: 'Various Artists',
   containerSortAlbumTag: 'Season One (2024)',
   containerSortTitleTag: '01 clip',
   containerGenreTag: 'Documentary',
+  containerTrackTag: '3/12',
+  containerDiscTag: '1/2',
   containerCopyrightTag: '2024 Flux',
+  containerIsrcTag: 'USRC17607839',
   containerDateTag: '2024-03-20',
   containerPurchaseDateTag: '2024-01-15',
   containerCompatibleBrands: 'mp41iso2',
@@ -122,6 +129,9 @@ describe('ffprobe-summary-export', () => {
     expect(t).toContain('Бренд контейнера: isom')
     expect(t).toContain('creation_time): 2024-06-01')
     expect(t).toContain('encoder): Lavf62.0.100')
+    expect(t).toContain('publisher): Flux Media')
+    expect(t).toContain('encoded_by): HandBrake 1.8')
+    expect(t).toContain('software): Adobe Premiere Pro')
     expect(t).toContain('title): Sample')
     expect(t).toContain('sort_title): 01 clip')
     expect(t).toContain('comment): Offline edit')
@@ -129,9 +139,13 @@ describe('ffprobe-summary-export', () => {
     expect(t).toContain('artist): Flux Studio')
     expect(t).toContain('sort_artist): Studio, Flux')
     expect(t).toContain('album): Season One')
+    expect(t).toContain('album_artist): Various Artists')
     expect(t).toContain('sort_album): Season One (2024)')
     expect(t).toContain('genre): Documentary')
+    expect(t).toContain('track): 3/12')
+    expect(t).toContain('disc): 1/2')
     expect(t).toContain('copyright): 2024 Flux')
+    expect(t).toContain('isrc): USRC17607839')
     expect(t).toContain('date): 2024-03-20')
     expect(t).toContain('purchase_date): 2024-01-15')
     expect(t).toContain('probe_score): 100')

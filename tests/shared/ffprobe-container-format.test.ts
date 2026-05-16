@@ -6,16 +6,23 @@ import {
   formatFfprobeContainerCreationTimeExportLine,
   formatFfprobeContainerCommentExportLine,
   formatFfprobeContainerAlbumExportLine,
+  formatFfprobeContainerAlbumArtistExportLine,
   formatFfprobeContainerSortAlbumExportLine,
   formatFfprobeContainerCopyrightExportLine,
+  formatFfprobeContainerIsrcExportLine,
   formatFfprobeContainerDateExportLine,
   formatFfprobeContainerPurchaseDateExportLine,
   formatFfprobeContainerGenreExportLine,
+  formatFfprobeContainerTrackExportLine,
+  formatFfprobeContainerDiscExportLine,
   formatFfprobeContainerArtistExportLine,
   formatFfprobeContainerSortArtistExportLine,
   formatFfprobeContainerDescriptionExportLine,
   formatFfprobeContainerSortTitleExportLine,
   formatFfprobeContainerEncoderExportLine,
+  formatFfprobeContainerPublisherExportLine,
+  formatFfprobeContainerEncodedByExportLine,
+  formatFfprobeContainerSoftwareExportLine,
   formatFfprobeContainerTitleExportLine,
   formatFfprobeContainerSizeExportLine,
   formatFfprobeContainerSizeCompact,
@@ -33,16 +40,23 @@ import {
   parseFfprobeFormatCreationTime,
   parseFfprobeFormatCommentTag,
   parseFfprobeFormatAlbumTag,
+  parseFfprobeFormatAlbumArtistTag,
   parseFfprobeFormatSortAlbumTag,
   parseFfprobeFormatCopyrightTag,
+  parseFfprobeFormatIsrcTag,
   parseFfprobeFormatDateTag,
   parseFfprobeFormatPurchaseDateTag,
   parseFfprobeFormatGenreTag,
+  parseFfprobeFormatTrackTag,
+  parseFfprobeFormatDiscTag,
   parseFfprobeFormatArtistTag,
   parseFfprobeFormatSortArtistTag,
   parseFfprobeFormatDescriptionTag,
   parseFfprobeFormatSortTitleTag,
   parseFfprobeFormatEncoder,
+  parseFfprobeFormatPublisherTag,
+  parseFfprobeFormatEncodedByTag,
+  parseFfprobeFormatSoftwareTag,
   parseFfprobeFormatTitleTag,
   parseFfprobeFormatFlags,
   parseFfprobeFormatMajorBrand,
@@ -66,16 +80,23 @@ const probeBase: MediaProbeSuccess = {
   containerMajorBrand: null,
   containerCreationTime: null,
   containerEncoder: null,
+  containerPublisherTag: null,
+  containerEncodedByTag: null,
+  containerSoftwareTag: null,
   containerTitleTag: null,
   containerCommentTag: null,
   containerDescriptionTag: null,
   containerArtistTag: null,
   containerSortArtistTag: null,
   containerAlbumTag: null,
+  containerAlbumArtistTag: null,
   containerSortAlbumTag: null,
   containerSortTitleTag: null,
   containerGenreTag: null,
+  containerTrackTag: null,
+  containerDiscTag: null,
   containerCopyrightTag: null,
+  containerIsrcTag: null,
   containerDateTag: null,
   containerPurchaseDateTag: null,
   containerCompatibleBrands: null,
@@ -182,6 +203,15 @@ describe('ffprobe-container-format', () => {
     expect(formatFfprobeContainerAlbumExportLine('Season One', 'ru')).toContain('album')
   })
 
+  it('parseFfprobeFormatAlbumArtistTag и export line', () => {
+    expect(parseFfprobeFormatAlbumArtistTag({ album_artist: 'Various Artists' })).toBe(
+      'Various Artists'
+    )
+    expect(formatFfprobeContainerAlbumArtistExportLine('Various Artists', 'en')).toContain(
+      'album_artist'
+    )
+  })
+
   it('parseFfprobeFormatSortAlbumTag и export line', () => {
     expect(parseFfprobeFormatSortAlbumTag({ sort_album: 'Season One (2024)' })).toBe(
       'Season One (2024)'
@@ -201,9 +231,21 @@ describe('ffprobe-container-format', () => {
     expect(formatFfprobeContainerGenreExportLine('Documentary', 'en')).toContain('genre')
   })
 
+  it('parseFfprobeFormatTrackTag и DiscTag export lines', () => {
+    expect(parseFfprobeFormatTrackTag({ track: '3/12' })).toBe('3/12')
+    expect(parseFfprobeFormatDiscTag({ disc: '1/2' })).toBe('1/2')
+    expect(formatFfprobeContainerTrackExportLine('3/12', 'ru')).toContain('track')
+    expect(formatFfprobeContainerDiscExportLine('1/2', 'en')).toContain('disc')
+  })
+
   it('parseFfprobeFormatCopyrightTag и export line', () => {
     expect(parseFfprobeFormatCopyrightTag({ copyright: '2024 Flux' })).toBe('2024 Flux')
     expect(formatFfprobeContainerCopyrightExportLine('2024 Flux', 'ru')).toContain('copyright')
+  })
+
+  it('parseFfprobeFormatIsrcTag и export line', () => {
+    expect(parseFfprobeFormatIsrcTag({ isrc: 'USRC17607839' })).toBe('USRC17607839')
+    expect(formatFfprobeContainerIsrcExportLine('USRC17607839', 'en')).toContain('isrc')
   })
 
   it('parseFfprobeFormatDateTag и export line', () => {
@@ -222,6 +264,18 @@ describe('ffprobe-container-format', () => {
     const tags = { encoder: 'Lavf62.3.100' }
     expect(parseFfprobeFormatEncoder(tags)).toBe('Lavf62.3.100')
     expect(formatFfprobeContainerEncoderExportLine('Lavf62.3.100', 'en')).toContain('Lavf')
+  })
+
+  it('parseFfprobeFormatPublisherTag и EncodedByTag export lines', () => {
+    expect(parseFfprobeFormatPublisherTag({ publisher: 'Flux Media' })).toBe('Flux Media')
+    expect(parseFfprobeFormatEncodedByTag({ encoded_by: 'HandBrake 1.8' })).toBe('HandBrake 1.8')
+    expect(formatFfprobeContainerPublisherExportLine('Flux Media', 'ru')).toContain('publisher')
+    expect(formatFfprobeContainerEncodedByExportLine('HandBrake 1.8', 'en')).toContain('encoded_by')
+  })
+
+  it('parseFfprobeFormatSoftwareTag и export line', () => {
+    expect(parseFfprobeFormatSoftwareTag({ software: 'Adobe Premiere Pro' })).toBe('Adobe Premiere Pro')
+    expect(formatFfprobeContainerSoftwareExportLine('Adobe Premiere Pro', 'en')).toContain('software')
   })
 
   it('parseFfprobeFormatCreationTime и export line', () => {

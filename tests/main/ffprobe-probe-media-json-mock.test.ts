@@ -106,16 +106,23 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
           compatible_brands: 'mp41iso2',
           creation_time: '2024-03-20T08:30:00.000000Z',
           encoder: 'Lavf61.0.100',
+          publisher: 'Flux Media',
+          encoded_by: 'HandBrake 1.8',
+          software: 'Adobe Premiere Pro',
           title: 'clip',
           comment: 'offline',
           description: 'Demo reel',
           artist: 'Flux Studio',
           sort_artist: 'Studio, Flux',
           album: 'Season One',
+          album_artist: 'Various Artists',
           sort_album: 'Season One (2024)',
           sort_title: '01 clip',
           genre: 'Documentary',
+          track: '3/12',
+          disc: '1/2',
           copyright: '2024 Flux',
+          isrc: 'USRC17607839',
           date: '2024-03-20',
           purchase_date: '2024-01-15'
         }
@@ -152,16 +159,23 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
         expect(r.containerMajorBrand).toBe('isom')
         expect(r.containerCreationTime).toContain('2024-03-20')
         expect(r.containerEncoder).toBe('Lavf61.0.100')
+        expect(r.containerPublisherTag).toBe('Flux Media')
+        expect(r.containerEncodedByTag).toBe('HandBrake 1.8')
+        expect(r.containerSoftwareTag).toBe('Adobe Premiere Pro')
         expect(r.containerTitleTag).toBe('clip')
         expect(r.containerCommentTag).toBe('offline')
         expect(r.containerDescriptionTag).toBe('Demo reel')
         expect(r.containerArtistTag).toBe('Flux Studio')
         expect(r.containerSortArtistTag).toBe('Studio, Flux')
         expect(r.containerAlbumTag).toBe('Season One')
+        expect(r.containerAlbumArtistTag).toBe('Various Artists')
         expect(r.containerSortAlbumTag).toBe('Season One (2024)')
         expect(r.containerSortTitleTag).toBe('01 clip')
         expect(r.containerGenreTag).toBe('Documentary')
+        expect(r.containerTrackTag).toBe('3/12')
+        expect(r.containerDiscTag).toBe('1/2')
         expect(r.containerCopyrightTag).toBe('2024 Flux')
+        expect(r.containerIsrcTag).toBe('USRC17607839')
         expect(r.containerDateTag).toBe('2024-03-20')
         expect(r.containerPurchaseDateTag).toBe('2024-01-15')
         expect(r.containerCompatibleBrands).toBe('mp41iso2')

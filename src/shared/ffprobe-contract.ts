@@ -66,6 +66,12 @@ export interface MediaProbeSuccess {
   containerCreationTime: string | null
   /** `format.tags.encoder`, если ffprobe отдал. */
   containerEncoder: string | null
+  /** `format.tags.publisher`, если ffprobe отдал. */
+  containerPublisherTag: string | null
+  /** `format.tags.encoded_by`, если ffprobe отдал. */
+  containerEncodedByTag: string | null
+  /** `format.tags.software`, если ffprobe отдал. */
+  containerSoftwareTag: string | null
   /** `format.tags.title`, если ffprobe отдал. */
   containerTitleTag: string | null
   /** `format.tags.comment`, если ffprobe отдал. */
@@ -78,14 +84,22 @@ export interface MediaProbeSuccess {
   containerSortArtistTag: string | null
   /** `format.tags.album`, если ffprobe отдал. */
   containerAlbumTag: string | null
+  /** `format.tags.album_artist`, если ffprobe отдал. */
+  containerAlbumArtistTag: string | null
   /** `format.tags.sort_album`, если ffprobe отдал. */
   containerSortAlbumTag: string | null
   /** `format.tags.sort_title`, если ffprobe отдал. */
   containerSortTitleTag: string | null
   /** `format.tags.genre`, если ffprobe отдал. */
   containerGenreTag: string | null
+  /** `format.tags.track`, если ffprobe отдал (номер трека в альбоме). */
+  containerTrackTag: string | null
+  /** `format.tags.disc`, если ffprobe отдал (номер диска). */
+  containerDiscTag: string | null
   /** `format.tags.copyright`, если ffprobe отдал. */
   containerCopyrightTag: string | null
+  /** `format.tags.isrc`, если ffprobe отдал (международный код записи). */
+  containerIsrcTag: string | null
   /** `format.tags.date`, если ffprobe отдал (отдельно от `creation_time`). */
   containerDateTag: string | null
   /** `format.tags.purchase_date`, если ffprobe отдал (iTunes Store и др.). */

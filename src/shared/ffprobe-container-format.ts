@@ -77,6 +77,24 @@ export function parseFfprobeFormatEncoder(
   return tagScalar(tags?.['encoder'])
 }
 
+export function parseFfprobeFormatPublisherTag(
+  tags: Record<string, string | number | undefined> | undefined
+): string | null {
+  return tagScalar(tags?.['publisher'])
+}
+
+export function parseFfprobeFormatEncodedByTag(
+  tags: Record<string, string | number | undefined> | undefined
+): string | null {
+  return tagScalar(tags?.['encoded_by'])
+}
+
+export function parseFfprobeFormatSoftwareTag(
+  tags: Record<string, string | number | undefined> | undefined
+): string | null {
+  return tagScalar(tags?.['software'])
+}
+
 export function parseFfprobeFormatTitleTag(
   tags: Record<string, string | number | undefined> | undefined
 ): string | null {
@@ -113,6 +131,12 @@ export function parseFfprobeFormatAlbumTag(
   return tagScalar(tags?.['album'])
 }
 
+export function parseFfprobeFormatAlbumArtistTag(
+  tags: Record<string, string | number | undefined> | undefined
+): string | null {
+  return tagScalar(tags?.['album_artist'])
+}
+
 export function parseFfprobeFormatSortAlbumTag(
   tags: Record<string, string | number | undefined> | undefined
 ): string | null {
@@ -131,10 +155,28 @@ export function parseFfprobeFormatGenreTag(
   return tagScalar(tags?.['genre'])
 }
 
+export function parseFfprobeFormatTrackTag(
+  tags: Record<string, string | number | undefined> | undefined
+): string | null {
+  return tagScalar(tags?.['track'])
+}
+
+export function parseFfprobeFormatDiscTag(
+  tags: Record<string, string | number | undefined> | undefined
+): string | null {
+  return tagScalar(tags?.['disc'])
+}
+
 export function parseFfprobeFormatCopyrightTag(
   tags: Record<string, string | number | undefined> | undefined
 ): string | null {
   return tagScalar(tags?.['copyright'])
+}
+
+export function parseFfprobeFormatIsrcTag(
+  tags: Record<string, string | number | undefined> | undefined
+): string | null {
+  return tagScalar(tags?.['isrc'])
 }
 
 export function parseFfprobeFormatDateTag(
@@ -308,6 +350,17 @@ export function formatFfprobeContainerAlbumExportLine(
   return ffprobeSummaryFill(b.containerAlbumTemplate, { album })
 }
 
+export function formatFfprobeContainerAlbumArtistExportLine(
+  albumArtist: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (albumArtist === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerAlbumArtistTemplate, { albumArtist })
+}
+
 export function formatFfprobeContainerSortAlbumExportLine(
   sortAlbum: string | null,
   locale: FfprobeSummaryLocale
@@ -341,6 +394,28 @@ export function formatFfprobeContainerGenreExportLine(
   return ffprobeSummaryFill(b.containerGenreTemplate, { genre })
 }
 
+export function formatFfprobeContainerTrackExportLine(
+  track: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (track === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerTrackTemplate, { track })
+}
+
+export function formatFfprobeContainerDiscExportLine(
+  disc: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (disc === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerDiscTemplate, { disc })
+}
+
 export function formatFfprobeContainerCopyrightExportLine(
   copyright: string | null,
   locale: FfprobeSummaryLocale
@@ -350,6 +425,17 @@ export function formatFfprobeContainerCopyrightExportLine(
   }
   const b = ffprobeSummaryStrings(locale)
   return ffprobeSummaryFill(b.containerCopyrightTemplate, { copyright })
+}
+
+export function formatFfprobeContainerIsrcExportLine(
+  isrc: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (isrc === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerIsrcTemplate, { isrc })
 }
 
 export function formatFfprobeContainerDateExportLine(
@@ -383,6 +469,39 @@ export function formatFfprobeContainerEncoderExportLine(
   }
   const b = ffprobeSummaryStrings(locale)
   return ffprobeSummaryFill(b.containerEncoderTemplate, { encoder })
+}
+
+export function formatFfprobeContainerPublisherExportLine(
+  publisher: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (publisher === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerPublisherTemplate, { publisher })
+}
+
+export function formatFfprobeContainerEncodedByExportLine(
+  encodedBy: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (encodedBy === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerEncodedByTemplate, { encodedBy })
+}
+
+export function formatFfprobeContainerSoftwareExportLine(
+  software: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (software === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerSoftwareTemplate, { software })
 }
 
 export function formatFfprobeContainerCreationTimeExportLine(

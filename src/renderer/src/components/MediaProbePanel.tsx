@@ -355,6 +355,15 @@ export function PreviewProbeBody({
             {probeInfo.containerEncoder
               ? ` · enc ${probeInfo.containerEncoder.length > 24 ? `${probeInfo.containerEncoder.slice(0, 23)}…` : probeInfo.containerEncoder}`
               : ''}
+            {probeInfo.containerPublisherTag
+              ? ` · pub ${probeInfo.containerPublisherTag.length > 20 ? `${probeInfo.containerPublisherTag.slice(0, 19)}…` : probeInfo.containerPublisherTag}`
+              : ''}
+            {probeInfo.containerEncodedByTag
+              ? ` · eby ${probeInfo.containerEncodedByTag.length > 20 ? `${probeInfo.containerEncodedByTag.slice(0, 19)}…` : probeInfo.containerEncodedByTag}`
+              : ''}
+            {probeInfo.containerSoftwareTag
+              ? ` · soft ${probeInfo.containerSoftwareTag.length > 20 ? `${probeInfo.containerSoftwareTag.slice(0, 19)}…` : probeInfo.containerSoftwareTag}`
+              : ''}
             {probeInfo.containerTitleTag
               ? ` · «${probeInfo.containerTitleTag.length > 20 ? `${probeInfo.containerTitleTag.slice(0, 19)}…` : probeInfo.containerTitleTag}»`
               : ''}
@@ -376,14 +385,26 @@ export function PreviewProbeBody({
             {probeInfo.containerAlbumTag
               ? ` · alb ${probeInfo.containerAlbumTag.length > 20 ? `${probeInfo.containerAlbumTag.slice(0, 19)}…` : probeInfo.containerAlbumTag}`
               : ''}
+            {probeInfo.containerAlbumArtistTag
+              ? ` · aart ${probeInfo.containerAlbumArtistTag.length > 20 ? `${probeInfo.containerAlbumArtistTag.slice(0, 19)}…` : probeInfo.containerAlbumArtistTag}`
+              : ''}
             {probeInfo.containerSortAlbumTag
               ? ` · salb ${probeInfo.containerSortAlbumTag.length > 20 ? `${probeInfo.containerSortAlbumTag.slice(0, 19)}…` : probeInfo.containerSortAlbumTag}`
               : ''}
             {probeInfo.containerGenreTag
               ? ` · gen ${probeInfo.containerGenreTag.length > 20 ? `${probeInfo.containerGenreTag.slice(0, 19)}…` : probeInfo.containerGenreTag}`
               : ''}
+            {probeInfo.containerTrackTag
+              ? ` · trk ${probeInfo.containerTrackTag.length > 20 ? `${probeInfo.containerTrackTag.slice(0, 19)}…` : probeInfo.containerTrackTag}`
+              : ''}
+            {probeInfo.containerDiscTag
+              ? ` · disc ${probeInfo.containerDiscTag.length > 20 ? `${probeInfo.containerDiscTag.slice(0, 19)}…` : probeInfo.containerDiscTag}`
+              : ''}
             {probeInfo.containerCopyrightTag
               ? ` · cpy ${probeInfo.containerCopyrightTag.length > 20 ? `${probeInfo.containerCopyrightTag.slice(0, 19)}…` : probeInfo.containerCopyrightTag}`
+              : ''}
+            {probeInfo.containerIsrcTag
+              ? ` · isrc ${probeInfo.containerIsrcTag.length > 20 ? `${probeInfo.containerIsrcTag.slice(0, 19)}…` : probeInfo.containerIsrcTag}`
               : ''}
             {probeInfo.containerDateTag
               ? ` · date ${probeInfo.containerDateTag.length > 20 ? `${probeInfo.containerDateTag.slice(0, 19)}…` : probeInfo.containerDateTag}`
