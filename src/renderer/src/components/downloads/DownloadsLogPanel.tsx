@@ -28,6 +28,7 @@ export function DownloadsLogPanel({
     <details
       className="app-downloads-log-panel"
       open={open}
+      aria-label={uiText('downloadsLogDetailsAria')}
       onToggle={(event) => {
         onToggle(event.currentTarget.open)
       }}

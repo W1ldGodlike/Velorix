@@ -759,9 +759,21 @@ export default function VideoTimeline({
       ) : null}
 
       {duration > 0 ? (
-        <div className="app-timeline-unified">
-          <div className="app-timeline-pane">
-            <div className="app-timeline-pane-visuals">
+        <div
+          className="app-timeline-unified"
+          role="region"
+          aria-label={uiText('videoTimelineUnifiedRegionAria')}
+        >
+          <div
+            className="app-timeline-pane"
+            role="group"
+            aria-label={uiText('videoTimelinePaneGroupAria')}
+          >
+            <div
+              className="app-timeline-pane-visuals"
+              role="group"
+              aria-label={uiText('videoTimelinePaneVisualsGroupAria')}
+            >
               <div className="app-timeline-ruler" aria-hidden="true">
                 <div className="app-timeline-ruler-track">
                   {rulerTicks.map((t) => (

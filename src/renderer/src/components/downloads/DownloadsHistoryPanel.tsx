@@ -44,6 +44,7 @@ export function DownloadsHistoryPanel({
     <details
       className="app-downloads-history-panel"
       open={open}
+      aria-label={uiText('downloadsHistoryDetailsAria')}
       onToggle={(event) => {
         onToggle(event.currentTarget.open)
       }}

@@ -808,4 +808,9 @@
 - [J-785] 2026-05-16 08:02:00 [Assistant]: О программе — разделённый подвал модалки: `aboutModalFooterSplitAria`.
 - [J-786] 2026-05-16 08:04:00 [Assistant]: Панель ffprobe — ссылка на документацию: `<nav>` + `probeFfprobeDocNavAria`.
 - [J-787] 2026-05-16 08:06:00 [Assistant]: Инспектор — подсказка без файла: `inspectorStandaloneEmptyRegionAria`.
+- [J-788] 2026-05-16 08:08:00 [Assistant]: Таймлайн — контейнер дорожки (`app-timeline-unified`): `role="region"` + `videoTimelineUnifiedRegionAria`.
+- [J-789] 2026-05-16 08:10:00 [Assistant]: Таймлайн — колонка дорожки (`app-timeline-pane`): `role="group"` + `videoTimelinePaneGroupAria`.
+- [J-790] 2026-05-16 08:12:00 [Assistant]: Таймлайн — блок шкалы и волны (`app-timeline-pane-visuals`): `role="group"` + `videoTimelinePaneVisualsGroupAria`.
+- [J-791] 2026-05-16 08:14:00 [Assistant]: Загрузки — сворачиваемая история (`app-downloads-history-panel`): `aria-label` + `downloadsHistoryDetailsAria`.
+- [J-792] 2026-05-16 08:16:00 [Assistant]: Загрузки — сворачиваемый журнал (`app-downloads-log-panel`): `aria-label` + `downloadsLogDetailsAria`.
 
