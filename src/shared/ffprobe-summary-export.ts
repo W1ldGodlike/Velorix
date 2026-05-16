@@ -8,10 +8,15 @@ import {
 import { formatProbeChapterTimecode } from './ffprobe-timecode'
 import {
   formatFfprobeContainerBrandExportLine,
+  formatFfprobeContainerCreationTimeExportLine,
+  formatFfprobeContainerEncoderExportLine,
+  formatFfprobeContainerTitleExportLine,
   formatFfprobeContainerSizeExportLine,
   formatFfprobeContainerStartTimeExportLine,
   formatFfprobeContainerStartTimeRealExportLine,
+  formatFfprobeContainerFilenameExportLine,
   formatFfprobeFormatFlagsExportLine,
+  formatFfprobeNbProgramsExportLine,
   formatFfprobeNbStreamsExportLine,
   formatFfprobeProbeScoreExportLine
 } from './ffprobe-container-format'
@@ -150,8 +155,12 @@ export function formatProbeSummaryPlainText(
       info.containerCompatibleBrands,
       locale
     ),
+    formatFfprobeContainerCreationTimeExportLine(info.containerCreationTime, locale),
+    formatFfprobeContainerEncoderExportLine(info.containerEncoder, locale),
+    formatFfprobeContainerTitleExportLine(info.containerTitleTag, locale),
     formatFfprobeProbeScoreExportLine(info.probeScore, locale),
     formatFfprobeNbStreamsExportLine(info.containerNbStreams, info.tracks.length, locale),
+    formatFfprobeNbProgramsExportLine(info.containerNbPrograms, locale),
     formatFfprobeFormatFlagsExportLine(info.containerFormatFlags, locale),
     formatFfprobeContainerSizeExportLine(info.containerSizeBytes, locale),
     formatFfprobeContainerStartTimeExportLine(info.containerStartTimeSec, locale),
@@ -160,6 +169,7 @@ export function formatProbeSummaryPlainText(
       info.containerStartTimeSec,
       locale
     ),
+    formatFfprobeContainerFilenameExportLine(info.containerFilename, locale),
     '',
     ffprobeSummaryFill(b.streamsCountTemplate, { count: info.tracks.length }),
     ''
@@ -254,6 +264,18 @@ ${chapterRows}
       return brand ? `<li>${escapeHtml(brand)}</li>` : ''
     })(),
     (() => {
+      const ct = formatFfprobeContainerCreationTimeExportLine(info.containerCreationTime, locale)
+      return ct ? `<li>${escapeHtml(ct)}</li>` : ''
+    })(),
+    (() => {
+      const enc = formatFfprobeContainerEncoderExportLine(info.containerEncoder, locale)
+      return enc ? `<li>${escapeHtml(enc)}</li>` : ''
+    })(),
+    (() => {
+      const ttl = formatFfprobeContainerTitleExportLine(info.containerTitleTag, locale)
+      return ttl ? `<li>${escapeHtml(ttl)}</li>` : ''
+    })(),
+    (() => {
       const score = formatFfprobeProbeScoreExportLine(info.probeScore, locale)
       return score ? `<li>${escapeHtml(score)}</li>` : ''
     })(),
@@ -264,6 +286,10 @@ ${chapterRows}
         locale
       )
       return nb ? `<li>${escapeHtml(nb)}</li>` : ''
+    })(),
+    (() => {
+      const np = formatFfprobeNbProgramsExportLine(info.containerNbPrograms, locale)
+      return np ? `<li>${escapeHtml(np)}</li>` : ''
     })(),
     (() => {
       const fl = formatFfprobeFormatFlagsExportLine(info.containerFormatFlags, locale)
@@ -284,6 +310,10 @@ ${chapterRows}
         locale
       )
       return str ? `<li>${escapeHtml(str)}</li>` : ''
+    })(),
+    (() => {
+      const fn = formatFfprobeContainerFilenameExportLine(info.containerFilename, locale)
+      return fn ? `<li>${escapeHtml(fn)}</li>` : ''
     })(),
     bitrateLabel ? `<li>${b.bitratePlainPrefix}${escapeHtml(bitrateLabel)}</li>` : ''
   ].filter(Boolean)

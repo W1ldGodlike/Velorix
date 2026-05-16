@@ -7,7 +7,9 @@ import type {
   MediaProbeSuccess,
   MediaProbeTrackRow
 } from '../../../shared/ffprobe-contract'
+import { formatFfprobeCreationTimeBrief } from '../../../shared/ffprobe-creation-time-brief'
 import {
+  ffprobeContainerFilenameBasename,
   formatFfprobeContainerSizeCompact,
   formatFfprobeContainerStartTimeCompact
 } from '../../../shared/ffprobe-container-format'
@@ -338,10 +340,30 @@ export function PreviewProbeBody({
               ? uiTextVars('probeSummaryAudioFragmentTemplate', { codec: probeInfo.audioCodec })
               : ''}
             {probeInfo.formatName ? ` · ${probeInfo.formatName}` : ''}
+            {probeInfo.containerFilename
+              ? ` · ${ffprobeContainerFilenameBasename(probeInfo.containerFilename)}`
+              : ''}
             {probeInfo.containerMajorBrand ? ` · ${probeInfo.containerMajorBrand}` : ''}
+            {(() => {
+              const created = formatFfprobeCreationTimeBrief(
+                probeInfo.containerCreationTime !== null
+                  ? { creation_time: probeInfo.containerCreationTime }
+                  : undefined
+              )
+              return created ? ` · ${created}` : ''
+            })()}
+            {probeInfo.containerEncoder
+              ? ` · enc ${probeInfo.containerEncoder.length > 24 ? `${probeInfo.containerEncoder.slice(0, 23)}…` : probeInfo.containerEncoder}`
+              : ''}
+            {probeInfo.containerTitleTag
+              ? ` · «${probeInfo.containerTitleTag.length > 20 ? `${probeInfo.containerTitleTag.slice(0, 19)}…` : probeInfo.containerTitleTag}»`
+              : ''}
             {probeInfo.probeScore !== null ? ` · probe ${probeInfo.probeScore}` : ''}
             {probeInfo.containerNbStreams !== null
               ? ` · ${probeInfo.containerNbStreams} str.`
+              : ''}
+            {probeInfo.containerNbPrograms !== null && probeInfo.containerNbPrograms > 0
+              ? ` · ${probeInfo.containerNbPrograms} prog.`
               : ''}
             {probeInfo.containerSizeBytes !== null
               ? ` · ${formatFfprobeContainerSizeCompact(probeInfo.containerSizeBytes)}`

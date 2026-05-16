@@ -37,6 +37,22 @@ export function parseFfprobeFormatProbeScore(raw: string | number | undefined): 
   return null
 }
 
+export function parseFfprobeFormatFilename(raw: string | undefined): string | null {
+  if (typeof raw !== 'string') {
+    return null
+  }
+  const t = raw.trim()
+  return t.length > 0 ? t : null
+}
+
+/** Basename для краткой строки инспектора. */
+export function ffprobeContainerFilenameBasename(filename: string): string {
+  const normalized = filename.replace(/\\/g, '/')
+  const base = normalized.split('/').pop() ?? filename
+  const t = base.trim()
+  return t.length > 0 ? t : filename
+}
+
 export function parseFfprobeFormatMajorBrand(
   tags: Record<string, string | number | undefined> | undefined
 ): string | null {
@@ -47,6 +63,24 @@ export function parseFfprobeFormatCompatibleBrands(
   tags: Record<string, string | number | undefined> | undefined
 ): string | null {
   return tagScalar(tags?.['compatible_brands'])
+}
+
+export function parseFfprobeFormatCreationTime(
+  tags: Record<string, string | number | undefined> | undefined
+): string | null {
+  return tagScalar(tags?.['creation_time'])
+}
+
+export function parseFfprobeFormatEncoder(
+  tags: Record<string, string | number | undefined> | undefined
+): string | null {
+  return tagScalar(tags?.['encoder'])
+}
+
+export function parseFfprobeFormatTitleTag(
+  tags: Record<string, string | number | undefined> | undefined
+): string | null {
+  return tagScalar(tags?.['title'])
 }
 
 export function parseFfprobeFormatFlags(raw: string | number | undefined): string | null {
@@ -122,6 +156,10 @@ export function formatFfprobeContainerSizeCompact(bytes: number): string {
   return `${label} ${units[unitIndex]}`
 }
 
+export function parseFfprobeFormatNbPrograms(raw: string | number | undefined): number | null {
+  return parseFfprobeFormatNbStreams(raw)
+}
+
 export function parseFfprobeFormatNbStreams(raw: string | number | undefined): number | null {
   if (typeof raw === 'number' && Number.isFinite(raw)) {
     const n = Math.trunc(raw)
@@ -136,6 +174,39 @@ export function parseFfprobeFormatNbStreams(raw: string | number | undefined): n
     return Number.isFinite(n) && n >= 0 ? n : null
   }
   return null
+}
+
+export function formatFfprobeContainerTitleExportLine(
+  title: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (title === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerTitleTemplate, { title })
+}
+
+export function formatFfprobeContainerEncoderExportLine(
+  encoder: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (encoder === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerEncoderTemplate, { encoder })
+}
+
+export function formatFfprobeContainerCreationTimeExportLine(
+  creationTime: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (creationTime === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerCreationTimeTemplate, { time: creationTime })
 }
 
 export function formatFfprobeContainerBrandExportLine(
@@ -213,6 +284,17 @@ export function formatFfprobeContainerStartTimeCompact(startSec: number | null):
   return formatFfprobeStreamStartTime(String(startSec))
 }
 
+export function formatFfprobeContainerFilenameExportLine(
+  filename: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (filename === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerFilenameTemplate, { filename })
+}
+
 export function formatFfprobeContainerStartTimeRealExportLine(
   startRealSec: number | null,
   startSec: number | null,
@@ -231,6 +313,17 @@ export function formatFfprobeContainerStartTimeRealExportLine(
   return ffprobeSummaryFill(b.containerStartTimeRealTemplate, {
     time: formatProbeChapterTimecode(startRealSec)
   })
+}
+
+export function formatFfprobeNbProgramsExportLine(
+  nbPrograms: number | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (nbPrograms === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerNbProgramsTemplate, { count: nbPrograms })
 }
 
 export function formatFfprobeNbStreamsExportLine(

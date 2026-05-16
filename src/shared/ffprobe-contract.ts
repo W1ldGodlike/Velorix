@@ -62,12 +62,20 @@ export interface MediaProbeSuccess {
   bitrateKbps: number | null
   /** `format.tags.major_brand` (MP4/MOV), если ffprobe отдал. */
   containerMajorBrand: string | null
+  /** `format.tags.creation_time`, если ffprobe отдал. */
+  containerCreationTime: string | null
+  /** `format.tags.encoder`, если ffprobe отдал. */
+  containerEncoder: string | null
+  /** `format.tags.title`, если ffprobe отдал. */
+  containerTitleTag: string | null
   /** `format.tags.compatible_brands`, если ffprobe отдал. */
   containerCompatibleBrands: string | null
   /** `format.probe_score` 0–100, если ffprobe отдал. */
   probeScore: number | null
   /** `format.nb_streams`, если ffprobe отдал. */
   containerNbStreams: number | null
+  /** `format.nb_programs`, если ffprobe отдал. */
+  containerNbPrograms: number | null
   /** `format.flags` (hex-строка для UI/экспорта), если ffprobe отдал. */
   containerFormatFlags: string | null
   /** `format.size` в байтах, если ffprobe отдал. */
@@ -76,6 +84,8 @@ export interface MediaProbeSuccess {
   containerStartTimeSec: number | null
   /** `format.start_time_real` (секунды), если ffprobe отдал ненулевое значение. */
   containerStartTimeRealSec: number | null
+  /** `format.filename` (путь/имя входа ffprobe), если отдал. */
+  containerFilename: string | null
   /** Все потоки в порядке индекса ffprobe. */
   tracks: MediaProbeTrackRow[]
   /** Главы из `-show_chapters`; пусто, если в файле нет метаданных глав. */

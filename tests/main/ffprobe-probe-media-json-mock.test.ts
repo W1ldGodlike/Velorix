@@ -95,11 +95,19 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
         format_name: 'mov,mp4,m4a,3gp,3g2,mj2',
         probe_score: 100,
         nb_streams: 2,
+        nb_programs: 1,
         flags: 0,
         size: '2048',
         start_time: '0.500000',
         start_time_real: '0.750000',
-        tags: { major_brand: 'isom', compatible_brands: 'mp41iso2' }
+        filename: 'C:\\clips\\clip.mp4',
+        tags: {
+          major_brand: 'isom',
+          compatible_brands: 'mp41iso2',
+          creation_time: '2024-03-20T08:30:00.000000Z',
+          encoder: 'Lavf61.0.100',
+          title: 'clip'
+        }
       },
       streams: [
         {
@@ -131,13 +139,18 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
       expect(r.ok).toBe(true)
       if (r.ok) {
         expect(r.containerMajorBrand).toBe('isom')
+        expect(r.containerCreationTime).toContain('2024-03-20')
+        expect(r.containerEncoder).toBe('Lavf61.0.100')
+        expect(r.containerTitleTag).toBe('clip')
         expect(r.containerCompatibleBrands).toBe('mp41iso2')
         expect(r.probeScore).toBe(100)
         expect(r.containerNbStreams).toBe(2)
+        expect(r.containerNbPrograms).toBe(1)
         expect(r.containerFormatFlags).toBe('0x0')
         expect(r.containerSizeBytes).toBe(2048)
         expect(r.containerStartTimeSec).toBe(0.5)
         expect(r.containerStartTimeRealSec).toBe(0.75)
+        expect(r.containerFilename).toBe('C:\\clips\\clip.mp4')
       }
     } finally {
       cleanup()

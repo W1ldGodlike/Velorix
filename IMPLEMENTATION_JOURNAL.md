@@ -738,3 +738,8 @@
 - [J-710] 2026-05-16 19:47:20 [Assistant]: §9 — ffprobe `format.start_time_real` в probe/summary/HTML; расхождение с `start_time` в экспорте и инспекторе; Vitest. `npm run check:quiet`.
 - [J-711] 2026-05-16 19:48:33 [Assistant]: §19 — `smoke:packaged-release` (verify + app + engines); `check:release` и CI на одну цель. `npm run check:quiet`.
 - [J-712] 2026-05-16 19:50:12 [Assistant]: §9/§18 — Support ZIP `releaseSmoke:` (команда smoke + статус `win-unpacked`); Vitest. Marathon #25 commit. `npm run check:quiet`.
+- [J-713] 2026-05-16 19:51:51 [Assistant]: §9 — ffprobe `format.filename` в probe, инспекторе (basename) и TXT/HTML; Vitest. `npm run check:quiet`.
+- [J-714] 2026-05-16 19:53:25 [Assistant]: §9 — ffprobe `format.nb_programs` в probe, инспекторе и TXT/HTML; Vitest. `npm run check:quiet`.
+- [J-715] 2026-05-16 19:55:03 [Assistant]: §9 — ffprobe `format.tags.creation_time` в probe, инспекторе (`formatFfprobeCreationTimeBrief`) и TXT/HTML; Vitest. `npm run check:quiet`.
+- [J-716] 2026-05-16 19:56:30 [Assistant]: §9 — ffprobe `format.tags.encoder` в probe, инспекторе и TXT/HTML; Vitest. `npm run check:quiet`.
+- [J-717] 2026-05-16 19:57:50 [Assistant]: §9 — ffprobe `format.tags.title` в probe, инспекторе и TXT/HTML; Vitest. Marathon #30 commit+push. `npm run check:quiet`.

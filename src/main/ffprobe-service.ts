@@ -22,7 +22,12 @@ import { formatFfprobeCreationTimeBrief } from '../shared/ffprobe-creation-time-
 import {
   parseFfprobeFormatCompatibleBrands,
   parseFfprobeFormatFlags,
+  parseFfprobeFormatFilename,
+  parseFfprobeFormatCreationTime,
+  parseFfprobeFormatEncoder,
+  parseFfprobeFormatTitleTag,
   parseFfprobeFormatMajorBrand,
+  parseFfprobeFormatNbPrograms,
   parseFfprobeFormatNbStreams,
   parseFfprobeFormatProbeScore,
   parseFfprobeFormatSize,
@@ -52,10 +57,12 @@ interface FfprobeJson {
     bit_rate?: string
     probe_score?: string | number
     nb_streams?: string | number
+    nb_programs?: string | number
     flags?: string | number
     size?: string | number
     start_time?: string | number
     start_time_real?: string | number
+    filename?: string
     tags?: Record<string, string | number | undefined>
   }
   streams?: Array<{
@@ -974,13 +981,18 @@ export async function probeMediaFile(
     formatLongName: formatLong,
     bitrateKbps: formatBitrateKbps(parsed.format?.bit_rate),
     containerMajorBrand: parseFfprobeFormatMajorBrand(parsed.format?.tags),
+    containerCreationTime: parseFfprobeFormatCreationTime(parsed.format?.tags),
+    containerEncoder: parseFfprobeFormatEncoder(parsed.format?.tags),
+    containerTitleTag: parseFfprobeFormatTitleTag(parsed.format?.tags),
     containerCompatibleBrands: parseFfprobeFormatCompatibleBrands(parsed.format?.tags),
     probeScore: parseFfprobeFormatProbeScore(parsed.format?.probe_score),
     containerNbStreams: parseFfprobeFormatNbStreams(parsed.format?.nb_streams),
+    containerNbPrograms: parseFfprobeFormatNbPrograms(parsed.format?.nb_programs),
     containerFormatFlags: parseFfprobeFormatFlags(parsed.format?.flags),
     containerSizeBytes: parseFfprobeFormatSize(parsed.format?.size),
     containerStartTimeSec: parseFfprobeFormatStartTimeSec(parsed.format?.start_time),
     containerStartTimeRealSec: parseFfprobeFormatStartTimeSec(parsed.format?.start_time_real),
+    containerFilename: parseFfprobeFormatFilename(parsed.format?.filename),
     tracks: buildTrackRows(parsed.streams, durationSecResolved, locale),
     chapters: buildChapterRowsFromFfprobeJson(parsed.chapters),
     rawJson

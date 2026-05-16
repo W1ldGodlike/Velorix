@@ -19,14 +19,19 @@ export type FfprobeSummaryStrings = {
   formatLongPrefix: string
   containerBrandTemplate: string
   containerBrandWithCompatTemplate: string
+  containerCreationTimeTemplate: string
+  containerEncoderTemplate: string
+  containerTitleTemplate: string
   probeScoreTemplate: string
   containerNbStreamsTemplate: string
   containerNbStreamsMismatchTemplate: string
+  containerNbProgramsTemplate: string
   containerFormatFlagsTemplate: string
   containerSizeTemplate: string
   containerStartTimeTemplate: string
   containerStartTimeRealTemplate: string
   containerStartTimeRealMismatchTemplate: string
+  containerFilenameTemplate: string
   bitrateEstPrefix: string
   bitratePlainPrefix: string
   bitrateMbpsTemplate: string
@@ -73,16 +78,21 @@ const RU: FfprobeSummaryStrings = {
   formatLongPrefix: 'Описание формата: ',
   containerBrandTemplate: 'Бренд контейнера: {brand}',
   containerBrandWithCompatTemplate: 'Бренд контейнера: {brand} (совместимые: {compat})',
+  containerCreationTimeTemplate: 'Дата создания (creation_time): {time}',
+  containerEncoderTemplate: 'Кодировщик контейнера (encoder): {encoder}',
+  containerTitleTemplate: 'Заголовок контейнера (title): {title}',
   probeScoreTemplate: 'Оценка демультиплексора (probe_score): {score}',
   containerNbStreamsTemplate: 'Потоков в контейнере (nb_streams): {count}',
   containerNbStreamsMismatchTemplate:
     'Потоков в контейнере (nb_streams): {nb} (разобрано дорожек: {parsed})',
+  containerNbProgramsTemplate: 'Программ в контейнере (nb_programs): {count}',
   containerFormatFlagsTemplate: 'Флаги контейнера (flags): {flags}',
   containerSizeTemplate: 'Размер файла (format.size): {label} ({bytes} B)',
   containerStartTimeTemplate: 'Смещение контейнера (start_time): {time}',
   containerStartTimeRealTemplate: 'Реальное смещение (start_time_real): {time}',
   containerStartTimeRealMismatchTemplate:
     'Реальное смещение (start_time_real): {real} (start_time: {nominal})',
+  containerFilenameTemplate: 'Имя входа ffprobe (filename): {filename}',
   bitrateEstPrefix: 'Битрейт (оценка): ',
   bitratePlainPrefix: 'Битрейт: ',
   bitrateMbpsTemplate: '{value} Мбит/с',
@@ -132,16 +142,21 @@ const EN: FfprobeSummaryStrings = {
   formatLongPrefix: 'Container description: ',
   containerBrandTemplate: 'Container brand: {brand}',
   containerBrandWithCompatTemplate: 'Container brand: {brand} (compatible: {compat})',
+  containerCreationTimeTemplate: 'Creation time (creation_time): {time}',
+  containerEncoderTemplate: 'Container encoder (encoder): {encoder}',
+  containerTitleTemplate: 'Container title (title): {title}',
   probeScoreTemplate: 'Demuxer confidence (probe_score): {score}',
   containerNbStreamsTemplate: 'Container streams (nb_streams): {count}',
   containerNbStreamsMismatchTemplate:
     'Container streams (nb_streams): {nb} (parsed tracks: {parsed})',
+  containerNbProgramsTemplate: 'Container programs (nb_programs): {count}',
   containerFormatFlagsTemplate: 'Container flags (flags): {flags}',
   containerSizeTemplate: 'File size (format.size): {label} ({bytes} B)',
   containerStartTimeTemplate: 'Container start offset (start_time): {time}',
   containerStartTimeRealTemplate: 'Real start offset (start_time_real): {time}',
   containerStartTimeRealMismatchTemplate:
     'Real start offset (start_time_real): {real} (start_time: {nominal})',
+  containerFilenameTemplate: 'Ffprobe input name (filename): {filename}',
   bitrateEstPrefix: 'Bitrate (estimate): ',
   bitratePlainPrefix: 'Bitrate: ',
   bitrateMbpsTemplate: '{value} Mb/s',

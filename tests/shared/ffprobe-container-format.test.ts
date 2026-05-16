@@ -3,21 +3,32 @@ import { describe, expect, it } from 'vitest'
 import type { MediaProbeSuccess } from '../../src/shared/ffprobe-contract'
 import {
   formatFfprobeContainerBrandExportLine,
+  formatFfprobeContainerCreationTimeExportLine,
+  formatFfprobeContainerEncoderExportLine,
+  formatFfprobeContainerTitleExportLine,
   formatFfprobeContainerSizeExportLine,
   formatFfprobeContainerSizeCompact,
   formatFfprobeContainerStartTimeExportLine,
+  formatFfprobeContainerFilenameExportLine,
   formatFfprobeContainerStartTimeRealExportLine,
   formatFfprobeContainerStartTimeCompact,
+  ffprobeContainerFilenameBasename,
   formatFfprobeEditorVideoFactLine,
   formatFfprobeFormatFlagsExportLine,
+  formatFfprobeNbProgramsExportLine,
   formatFfprobeNbStreamsExportLine,
   formatFfprobeProbeScoreExportLine,
   parseFfprobeFormatCompatibleBrands,
+  parseFfprobeFormatCreationTime,
+  parseFfprobeFormatEncoder,
+  parseFfprobeFormatTitleTag,
   parseFfprobeFormatFlags,
   parseFfprobeFormatMajorBrand,
+  parseFfprobeFormatNbPrograms,
   parseFfprobeFormatNbStreams,
   parseFfprobeFormatProbeScore,
   parseFfprobeFormatSize,
+  parseFfprobeFormatFilename,
   parseFfprobeFormatStartTimeSec
 } from '../../src/shared/ffprobe-container-format'
 
@@ -31,13 +42,18 @@ const probeBase: MediaProbeSuccess = {
   formatLongName: null,
   bitrateKbps: null,
   containerMajorBrand: null,
+  containerCreationTime: null,
+  containerEncoder: null,
+  containerTitleTag: null,
   containerCompatibleBrands: null,
   probeScore: null,
   containerNbStreams: null,
+  containerNbPrograms: null,
   containerFormatFlags: null,
   containerSizeBytes: null,
   containerStartTimeSec: null,
   containerStartTimeRealSec: null,
+  containerFilename: null,
   tracks: [],
   chapters: [],
   rawJson: '{}'
@@ -76,6 +92,17 @@ describe('ffprobe-container-format', () => {
     expect(formatFfprobeNbStreamsExportLine(3, 2, 'en')).toContain('parsed tracks: 2')
   })
 
+  it('parseFfprobeFormatNbPrograms и export line', () => {
+    expect(parseFfprobeFormatNbPrograms('2')).toBe(2)
+    expect(formatFfprobeNbProgramsExportLine(2, 'ru')).toContain('nb_programs')
+  })
+
+  it('parseFfprobeFormatFilename и export line', () => {
+    expect(parseFfprobeFormatFilename('C:\\clips\\demo.mp4')).toBe('C:\\clips\\demo.mp4')
+    expect(ffprobeContainerFilenameBasename('C:\\clips\\demo.mp4')).toBe('demo.mp4')
+    expect(formatFfprobeContainerFilenameExportLine('demo.mp4', 'ru')).toContain('filename')
+  })
+
   it('parseFfprobeFormatStartTimeSec и export line', () => {
     expect(parseFfprobeFormatStartTimeSec('0')).toBeNull()
     expect(parseFfprobeFormatStartTimeSec('1.5')).toBe(1.5)
@@ -88,6 +115,25 @@ describe('ffprobe-container-format', () => {
     expect(parseFfprobeFormatSize('1048576')).toBe(1048576)
     expect(formatFfprobeContainerSizeCompact(1048576)).toBe('1.00 MiB')
     expect(formatFfprobeContainerSizeExportLine(1024, 'ru')).toContain('1024 B')
+  })
+
+  it('parseFfprobeFormatTitleTag и export line', () => {
+    expect(parseFfprobeFormatTitleTag({ title: 'Demo clip' })).toBe('Demo clip')
+    expect(formatFfprobeContainerTitleExportLine('Demo clip', 'ru')).toContain('title')
+  })
+
+  it('parseFfprobeFormatEncoder и export line', () => {
+    const tags = { encoder: 'Lavf62.3.100' }
+    expect(parseFfprobeFormatEncoder(tags)).toBe('Lavf62.3.100')
+    expect(formatFfprobeContainerEncoderExportLine('Lavf62.3.100', 'en')).toContain('Lavf')
+  })
+
+  it('parseFfprobeFormatCreationTime и export line', () => {
+    const tags = { creation_time: '2024-01-15T12:00:00.000000Z' }
+    expect(parseFfprobeFormatCreationTime(tags)).toContain('2024-01-15')
+    expect(formatFfprobeContainerCreationTimeExportLine('2024-01-15', 'ru')).toContain(
+      'creation_time'
+    )
   })
 
   it('formatFfprobeContainerBrandExportLine RU/EN', () => {

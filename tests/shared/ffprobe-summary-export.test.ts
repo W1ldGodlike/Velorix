@@ -57,13 +57,18 @@ const sampleProbe: MediaProbeSuccess = {
   chapters: [],
   rawJson: '{}',
   containerMajorBrand: 'isom',
+  containerCreationTime: '2024-06-01T10:00:00.000000Z',
+  containerEncoder: 'Lavf62.0.100',
+  containerTitleTag: 'Sample',
   containerCompatibleBrands: 'mp41iso2',
   probeScore: 100,
   containerNbStreams: 2,
+  containerNbPrograms: 1,
   containerFormatFlags: '0x0',
   containerSizeBytes: 12_345_678,
   containerStartTimeSec: 1.25,
-  containerStartTimeRealSec: 1.5
+  containerStartTimeRealSec: 1.5,
+  containerFilename: 'D:\\clips\\Demo.mkv'
 }
 
 describe('ffprobe-summary-export', () => {
@@ -104,12 +109,17 @@ describe('ffprobe-summary-export', () => {
     expect(t).toContain('eng')
     expect(t).toContain('Commentary')
     expect(t).toContain('Бренд контейнера: isom')
+    expect(t).toContain('creation_time): 2024-06-01')
+    expect(t).toContain('encoder): Lavf62.0.100')
+    expect(t).toContain('title): Sample')
     expect(t).toContain('probe_score): 100')
     expect(t).toContain('nb_streams): 2')
+    expect(t).toContain('nb_programs): 1')
     expect(t).toContain('format.size)')
     expect(t).toContain('12345678 B')
     expect(t).toContain('start_time)')
     expect(t).toContain('start_time_real')
+    expect(t).toContain('filename): D:\\clips\\Demo.mkv')
   })
 
   it('formatProbeSummaryPlainText и HTML включают главы', () => {
