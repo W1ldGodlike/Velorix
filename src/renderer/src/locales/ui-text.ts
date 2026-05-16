@@ -32,7 +32,9 @@ function resolveUiLocaleFromNavigator(): UiLocale {
 const UI_TEXT = {
   ru: {
     aboutTitle: 'О программе',
+    aboutRuntimeDetailsAria: 'Название приложения и версии среды',
     aboutDiagnosticsToolbarAria: 'Диагностика, журналы и очистка временных данных',
+    aboutFooterLeftGroupAria: 'Диагностика, внешние ссылки и статья справки',
     aboutExternalDocsNavAria: 'Внешние ссылки на документацию yt-dlp и ffprobe',
     aboutDialogCloseToolbarAria: 'Закрыть окно «О программе»',
     appLabel: 'Приложение',
@@ -494,6 +496,7 @@ const UI_TEXT = {
     commonNotApplicableShort: 'н/д',
     topbarProductName: 'FluxAlloy',
     topbarHeaderAria: 'Верхняя панель: вкладки рабочей области и действия',
+    appMainShellAria: 'Главное окно FluxAlloy',
     topbarActionsToolbarAria: 'Панель действий: файлы, инструменты и справка',
     topbarOpenFileTitle:
       'Выбрать видео с компьютера: оно появится в превью и на таймлайне, дальше можно резать и сохранять.',
@@ -1057,6 +1060,7 @@ const UI_TEXT = {
     editorExportPreviewHintTrimWaiting:
       'Маркеры In/Out появятся, как только таймлайн сообщит диапазон.',
     inspectorStandaloneBrandAria: 'FluxAlloy инспектор',
+    inspectorStandaloneTopbarAria: 'Верхняя панель окна инспектора',
     inspectorTopbarActionsToolbarAria: 'Панель инспектора: файл, обновление, справка',
     inspectorStandaloneHeaderTitle: 'Инспектор',
     inspectorStandaloneTopbarEngineLabel: 'ffprobe',
@@ -1073,6 +1077,7 @@ const UI_TEXT = {
     inspectorStandaloneMainAria: 'Область инспектора: подсказка, ошибка и сводка ffprobe',
     inspectorStandaloneProbeStackAria: 'Результат ffprobe для текущего файла',
     inspectorStandalonePathFooterAria: 'Полный путь к открытому файлу',
+    inspectorStandaloneShellAria: 'Отдельное окно инспектора ffprobe',
     inspectorWindowDocumentTitle: 'FluxAlloy — инспектор',
     probePanelAriaLabel: 'Расширенная сводка ffprobe',
     probePanelOverviewHint:
@@ -1276,7 +1281,9 @@ const UI_TEXT = {
   },
   en: {
     aboutTitle: 'About',
+    aboutRuntimeDetailsAria: 'Application name and runtime versions',
     aboutDiagnosticsToolbarAria: 'Diagnostics, logs, and temporary data cleanup',
+    aboutFooterLeftGroupAria: 'Diagnostics links, external docs, and help article',
     aboutExternalDocsNavAria: 'External yt-dlp and ffprobe documentation links',
     aboutDialogCloseToolbarAria: 'Close the About window',
     appLabel: 'Application',
@@ -1735,6 +1742,7 @@ const UI_TEXT = {
     commonNotApplicableShort: 'n/a',
     topbarProductName: 'FluxAlloy',
     topbarHeaderAria: 'Top bar: workspace tabs and actions',
+    appMainShellAria: 'FluxAlloy main window',
     topbarActionsToolbarAria: 'Actions toolbar: files, tools, and help',
     topbarOpenFileTitle:
       'Pick a video from your PC — it appears in the preview and timeline for trimming and export.',
@@ -2297,6 +2305,7 @@ const UI_TEXT = {
       'Markers cover almost the entire file — ffmpeg runs without -ss/-t.',
     editorExportPreviewHintTrimWaiting: 'In/Out markers appear once the timeline reports a range.',
     inspectorStandaloneBrandAria: 'FluxAlloy inspector',
+    inspectorStandaloneTopbarAria: 'Inspector window top bar',
     inspectorTopbarActionsToolbarAria: 'Inspector toolbar: file, refresh, help',
     inspectorStandaloneHeaderTitle: 'Inspector',
     inspectorStandaloneTopbarEngineLabel: 'ffprobe',
@@ -2312,6 +2321,7 @@ const UI_TEXT = {
     inspectorStandaloneMainAria: 'Inspector workspace: hint, error, and ffprobe summary',
     inspectorStandaloneProbeStackAria: 'ffprobe results for the current file',
     inspectorStandalonePathFooterAria: 'Full path of the open file',
+    inspectorStandaloneShellAria: 'Standalone ffprobe inspector window',
     inspectorWindowDocumentTitle: 'FluxAlloy — Inspector',
     probePanelAriaLabel: 'Extended ffprobe summary',
     probePanelOverviewHint:

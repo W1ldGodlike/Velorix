@@ -2909,7 +2909,7 @@ function App(): JSX.Element {
   }
 
   return (
-    <div className="app-shell">
+    <div className="app-shell" aria-label={uiText('appMainShellAria')}>
       <header className="app-topbar" aria-label={uiText('topbarHeaderAria')}>
         <div className="app-topbar-brand" aria-label={uiText('topbarProductName')}>
           <span className="app-topbar-mark" aria-hidden>

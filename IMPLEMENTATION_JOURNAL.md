@@ -798,4 +798,9 @@
 - [J-775] 2026-05-16 07:38:00 [Assistant]: Окно инспектора — `<main>`: `inspectorStandaloneMainAria`.
 - [J-776] 2026-05-16 07:40:00 [Assistant]: Инспектор — блок сводки ffprobe: `role="region"` + `inspectorStandaloneProbeStackAria`.
 - [J-777] 2026-05-16 07:42:00 [Assistant]: Инспектор — подвал с путём файла: `aria-label` + `inspectorStandalonePathFooterAria`.
+- [J-778] 2026-05-16 07:46:00 [Assistant]: Корень главного окна — `app-shell`: `appMainShellAria`.
+- [J-779] 2026-05-16 07:48:00 [Assistant]: Инспектор — корень `app-shell`: `inspectorStandaloneShellAria`.
+- [J-780] 2026-05-16 07:50:00 [Assistant]: Инспектор — `<header class="app-topbar">`: `inspectorStandaloneTopbarAria`.
+- [J-781] 2026-05-16 07:52:00 [Assistant]: О программе — список версий (`app-about-dl`): `aboutRuntimeDetailsAria`.
+- [J-782] 2026-05-16 07:54:00 [Assistant]: О программе — левая колонка подвала (`app-about-footer-left`): `role="group"` + `aboutFooterLeftGroupAria`.
 

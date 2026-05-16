@@ -120,7 +120,7 @@ export function AboutDialog({
           {uiText('aboutTitle')}
         </h2>
         {aboutInfo ? (
-          <dl className="app-about-dl">
+          <dl className="app-about-dl" aria-label={uiText('aboutRuntimeDetailsAria')}>
             <div className="app-about-row">
               <dt>{uiText('appLabel')}</dt>
               <dd>{aboutInfo.appName}</dd>
@@ -146,7 +146,11 @@ export function AboutDialog({
           <p className="app-modal-hint">{uiText('loading')}</p>
         )}
         <div className="app-modal-footer app-modal-footer-split">
-          <div className="app-about-footer-left">
+          <div
+            className="app-about-footer-left"
+            role="group"
+            aria-label={uiText('aboutFooterLeftGroupAria')}
+          >
             <div
               className="app-about-diagnostics"
               role="toolbar"

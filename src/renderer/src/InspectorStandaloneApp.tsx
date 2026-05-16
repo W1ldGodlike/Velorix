@@ -221,8 +221,8 @@ export function InspectorStandaloneApp(): JSX.Element {
   }
 
   return (
-    <div className="app-shell">
-      <header className="app-topbar">
+    <div className="app-shell" aria-label={uiText('inspectorStandaloneShellAria')}>
+      <header className="app-topbar" aria-label={uiText('inspectorStandaloneTopbarAria')}>
         <div
           className="app-topbar-brand inspector-toolbar-brand"
           aria-label={uiText('inspectorStandaloneBrandAria')}
