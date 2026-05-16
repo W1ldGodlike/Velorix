@@ -112,6 +112,7 @@ export function AboutDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby="about-title"
+        aria-describedby="about-dialog-desc"
         onMouseDown={(e) => {
           e.stopPropagation()
         }}
@@ -119,6 +120,9 @@ export function AboutDialog({
         <h2 id="about-title" className="app-modal-title">
           {uiText('aboutTitle')}
         </h2>
+        <p id="about-dialog-desc" className="app-visually-hidden">
+          {uiText('aboutDialogDescAria')}
+        </p>
         {aboutInfo ? (
           <dl className="app-about-dl" aria-label={uiText('aboutRuntimeDetailsAria')}>
             <div className="app-about-row">

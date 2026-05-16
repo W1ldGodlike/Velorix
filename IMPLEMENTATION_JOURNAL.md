@@ -863,4 +863,9 @@
 - [J-840] 2026-05-16 09:52:00 [Assistant]: Загрузки — заголовки таблицы очереди: `scope="col"` на всех `<th>`.
 - [J-841] 2026-05-16 09:54:00 [Assistant]: Диалог имени пресета экспорта — текст ошибки валидации: `role="alert"`.
 - [J-842] 2026-05-16 09:56:00 [Assistant]: Диалог путей движков — подсказка с `id="engine-paths-hint"`; у `dialog` добавлен `aria-describedby`.
+- [J-843] 2026-05-16 10:00:00 [Assistant]: База знаний — у `dialog` добавлен `aria-describedby="knowledge-dialog-hint"`; подсказка под заголовком с этим `id`.
+- [J-844] 2026-05-16 10:02:00 [Assistant]: О программе — скрытый абзац `aboutDialogDescAria` (`id="about-dialog-desc"`) + `aria-describedby` у диалога.
+- [J-845] 2026-05-16 10:04:00 [Assistant]: База знаний — выбранная статья в оглавлении: у кнопки `aria-current="page"`.
+- [J-846] 2026-05-16 10:06:00 [Assistant]: Диалог имени пресета — поле имени: `aria-describedby` всегда включает подсказку; при ошибке добавляется `export-preset-name-error`.
+- [J-847] 2026-05-16 10:08:00 [Assistant]: Загрузки — таблица очереди: стабильные `id` столбцов (`DOWNLOADS_QUEUE_TABLE_HEADER_IDS`) и атрибут `headers` у ячеек данных.
 

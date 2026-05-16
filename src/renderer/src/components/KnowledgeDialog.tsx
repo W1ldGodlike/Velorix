@@ -146,6 +146,7 @@ export function KnowledgeDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby="knowledge-title"
+        aria-describedby="knowledge-dialog-hint"
         onMouseDown={(e) => {
           e.stopPropagation()
         }}
@@ -159,7 +160,9 @@ export function KnowledgeDialog({
               <h2 id="knowledge-title" className="app-modal-title">
                 {uiText('knowledgeTitle')}
               </h2>
-              <p className="app-modal-hint">{uiText('knowledgeHint')}</p>
+              <p id="knowledge-dialog-hint" className="app-modal-hint">
+                {uiText('knowledgeHint')}
+              </p>
             </div>
             <div role="toolbar" aria-label={uiText('knowledgeDialogActionsToolbarAria')}>
               <button
@@ -200,6 +203,7 @@ export function KnowledgeDialog({
                       ? 'app-knowledge-item app-knowledge-item-active'
                       : 'app-knowledge-item'
                   }
+                  aria-current={article.slug === selectedSlug ? 'page' : undefined}
                   title={`${article.fileName} · ${article.slug}`}
                   onClick={() => {
                     setSelectedSlug(article.slug)

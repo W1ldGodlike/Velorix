@@ -219,6 +219,19 @@ const BATCH_EXPORT_TABLE_HEADER_IDS = {
   actions: 'flux-batch-col-actions'
 } as const
 
+/** §6 — id заголовков таблицы очереди yt-dlp (`headers` на `<td>`). */
+const DOWNLOADS_QUEUE_TABLE_HEADER_IDS = {
+  num: 'flux-dlq-col-num',
+  titleUrl: 'flux-dlq-col-title-url',
+  format: 'flux-dlq-col-format',
+  size: 'flux-dlq-col-size',
+  progress: 'flux-dlq-col-progress',
+  speed: 'flux-dlq-col-speed',
+  eta: 'flux-dlq-col-eta',
+  status: 'flux-dlq-col-status',
+  actions: 'flux-dlq-col-actions'
+} as const
+
 type WorkspaceTab = 'editor' | 'downloads' | 'terminal'
 
 function previewPathExtensionLower(path: string | null): string | null {
@@ -5839,15 +5852,33 @@ function App(): JSX.Element {
                   </caption>
                   <thead>
                     <tr>
-                      <th scope="col">{uiText('downloadsTableColNum')}</th>
-                      <th scope="col">{uiText('downloadsTableColTitleUrl')}</th>
-                      <th scope="col">{uiText('downloadsTableColFormat')}</th>
-                      <th scope="col">{uiText('downloadsTableColSize')}</th>
-                      <th scope="col">{uiText('downloadsTableColProgress')}</th>
-                      <th scope="col">{uiText('downloadsTableColSpeed')}</th>
-                      <th scope="col">{uiText('downloadsTableColEta')}</th>
-                      <th scope="col">{uiText('downloadsTableColStatus')}</th>
-                      <th scope="col">{uiText('downloadsTableColActions')}</th>
+                      <th scope="col" id={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.num}>
+                        {uiText('downloadsTableColNum')}
+                      </th>
+                      <th scope="col" id={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.titleUrl}>
+                        {uiText('downloadsTableColTitleUrl')}
+                      </th>
+                      <th scope="col" id={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.format}>
+                        {uiText('downloadsTableColFormat')}
+                      </th>
+                      <th scope="col" id={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.size}>
+                        {uiText('downloadsTableColSize')}
+                      </th>
+                      <th scope="col" id={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.progress}>
+                        {uiText('downloadsTableColProgress')}
+                      </th>
+                      <th scope="col" id={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.speed}>
+                        {uiText('downloadsTableColSpeed')}
+                      </th>
+                      <th scope="col" id={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.eta}>
+                        {uiText('downloadsTableColEta')}
+                      </th>
+                      <th scope="col" id={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.status}>
+                        {uiText('downloadsTableColStatus')}
+                      </th>
+                      <th scope="col" id={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.actions}>
+                        {uiText('downloadsTableColActions')}
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -5876,18 +5907,29 @@ function App(): JSX.Element {
                         const statusTone = downloadsStatusTone(row)
                         return (
                           <tr key={row.id}>
-                            <td className="app-downloads-mono">{row.id}</td>
-                            <td>
+                            <td className="app-downloads-mono" headers={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.num}>
+                              {row.id}
+                            </td>
+                            <td headers={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.titleUrl}>
                               <div className="app-downloads-row-title">{row.shortLabel}</div>
                               <div className="app-downloads-row-url">{row.url}</div>
                             </td>
-                            <td className="app-downloads-mono">
+                            <td
+                              className="app-downloads-mono"
+                              headers={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.format}
+                            >
                               {row.queueFmt ?? uiText('uiPlaceholderDash')}
                             </td>
-                            <td className="app-downloads-mono">
+                            <td
+                              className="app-downloads-mono"
+                              headers={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.size}
+                            >
                               {row.queueSize ?? uiText('uiPlaceholderDash')}
                             </td>
-                            <td className="app-downloads-mono">
+                            <td
+                              className="app-downloads-mono"
+                              headers={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.progress}
+                            >
                               <div className="app-downloads-progress">
                                 {showProgressBar ? (
                                   <div className="app-downloads-progress-bar-row">
@@ -5917,13 +5959,19 @@ function App(): JSX.Element {
                                 )}
                               </div>
                             </td>
-                            <td className="app-downloads-mono">
+                            <td
+                              className="app-downloads-mono"
+                              headers={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.speed}
+                            >
                               {row.queueSpeed ?? uiText('uiPlaceholderDash')}
                             </td>
-                            <td className="app-downloads-mono">
+                            <td
+                              className="app-downloads-mono"
+                              headers={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.eta}
+                            >
                               {row.queueEta ?? uiText('uiPlaceholderDash')}
                             </td>
-                            <td>
+                            <td headers={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.status}>
                               <span
                                 className={`app-downloads-status app-downloads-status-${statusTone}`}
                               >
@@ -5931,7 +5979,7 @@ function App(): JSX.Element {
                                 {formatDownloadsQueueRowStatus(row.status)}
                               </span>
                             </td>
-                            <td>
+                            <td headers={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.actions}>
                               <div
                                 className="app-downloads-row-actions"
                                 role="toolbar"
@@ -7106,7 +7154,9 @@ function App(): JSX.Element {
                   value={exportPresetNameDialog.value}
                   aria-invalid={exportPresetNameDialog.error !== null}
                   aria-describedby={
-                    exportPresetNameDialog.error ? 'export-preset-name-error' : undefined
+                    exportPresetNameDialog.error
+                      ? 'export-preset-name-hint export-preset-name-error'
+                      : 'export-preset-name-hint'
                   }
                   onChange={(e) => {
                     setExportPresetNameDialog((prev) =>

@@ -32,6 +32,8 @@ function resolveUiLocaleFromNavigator(): UiLocale {
 const UI_TEXT = {
   ru: {
     aboutTitle: 'О программе',
+    aboutDialogDescAria:
+      'Диалог версий приложения и среды; диагностика, внешние ссылки на документацию и закрытие.',
     aboutRuntimeDetailsAria: 'Название приложения и версии среды',
     aboutDiagnosticsToolbarAria: 'Диагностика, журналы и очистка временных данных',
     aboutFooterLeftGroupAria: 'Диагностика, внешние ссылки и статья справки',
@@ -1321,6 +1323,8 @@ const UI_TEXT = {
   },
   en: {
     aboutTitle: 'About',
+    aboutDialogDescAria:
+      'Dialog with app and runtime versions; diagnostics, external documentation links, and close.',
     aboutRuntimeDetailsAria: 'Application name and runtime versions',
     aboutDiagnosticsToolbarAria: 'Diagnostics, logs, and temporary data cleanup',
     aboutFooterLeftGroupAria: 'Diagnostics links, external docs, and help article',
