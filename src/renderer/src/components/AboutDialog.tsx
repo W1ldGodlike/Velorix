@@ -298,7 +298,11 @@ export function AboutDialog({
               </a>
             </nav>
             {onOpenKnowledgeArticle ? (
-              <p className="app-about-knowledge-link">
+              <div
+                className="app-about-knowledge-link"
+                role="region"
+                aria-label={uiText('aboutKnowledgeArticleRegionAria')}
+              >
                 <button
                   type="button"
                   className="app-btn app-btn-compact"
@@ -309,7 +313,7 @@ export function AboutDialog({
                 >
                   {uiText('aboutKnowledgeSupportArticle')}
                 </button>
-              </p>
+              </div>
             ) : null}
           </div>
           <div role="toolbar" aria-label={uiText('aboutDialogCloseToolbarAria')}>

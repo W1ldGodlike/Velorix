@@ -818,4 +818,9 @@
 - [J-795] 2026-05-16 08:22:00 [Assistant]: Загрузки — обёртка таблицы очереди (`app-downloads-table-wrap`): `role="group"` + `downloadsQueueTableWrapGroupAria`.
 - [J-796] 2026-05-16 08:24:00 [Assistant]: База знаний — тело Markdown (`app-knowledge-body`): `role="group"` + `knowledgeArticleBodyGroupAria`.
 - [J-797] 2026-05-16 08:26:00 [Assistant]: Диалог путей движков — блок строк (`app-engine-path-rows`): `role="group"` + `enginePathsDialogRowsGroupAria`.
+- [J-798] 2026-05-16 08:28:00 [Assistant]: Верхняя панель — контейнер справа от вкладок (`app-topbar-trailing`): `role="group"` + `topbarTrailingGroupAria`.
+- [J-799] 2026-05-16 08:30:00 [Assistant]: Зона заголовка вкладок терминала и загрузок (`app-downloads-band-copy`): `role="group"` + `downloadsBandHeadingCopyGroupAria`.
+- [J-800] 2026-05-16 08:32:00 [Assistant]: О программе — блок кнопки статьи базы знаний (`app-about-knowledge-link`): `role="region"` + `aboutKnowledgeArticleRegionAria`.
+- [J-801] 2026-05-16 08:34:00 [Assistant]: Диалог имени пресета экспорта — поле ввода имени: обёртка `role="group"` + `exportPresetNameFieldGroupAria`.
+- [J-802] 2026-05-16 08:36:00 [Assistant]: Редактор — быстрая yt-dlp: ссылки на документацию — `<nav>` + `quickYtdlpDocNavAria`.
 

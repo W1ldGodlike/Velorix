@@ -2971,7 +2971,11 @@ function App(): JSX.Element {
             {uiText('workspaceTabTerminal')}
           </button>
         </nav>
-        <div className="app-topbar-trailing">
+        <div
+          className="app-topbar-trailing"
+          role="group"
+          aria-label={uiText('topbarTrailingGroupAria')}
+        >
           <div
             className="app-topbar-actions"
             role="toolbar"
@@ -3185,7 +3189,10 @@ function App(): JSX.Element {
                   </option>
                 </select>
               </label>
-              <p className="app-doc-inline-links app-url-bar-doc-links">
+              <nav
+                className="app-doc-inline-links app-url-bar-doc-links"
+                aria-label={uiText('quickYtdlpDocNavAria')}
+              >
                 <a href={YTDLP_DOC_README} target="_blank" rel="noreferrer">
                   {uiText('docLinkYtDlpReadme')}
                 </a>
@@ -3197,7 +3204,7 @@ function App(): JSX.Element {
                 <a href={YTDLP_DOC_OUTPUT_TEMPLATE} target="_blank" rel="noreferrer">
                   {uiText('quickYtdlpDocOutputTemplate')}
                 </a>
-              </p>
+              </nav>
             </div>
             <div
               className="app-downloads-url-actions"
@@ -5259,7 +5266,11 @@ function App(): JSX.Element {
               role="region"
               aria-label={uiText('terminalIntroBandAria')}
             >
-              <div className="app-downloads-band-copy">
+              <div
+                className="app-downloads-band-copy"
+                role="group"
+                aria-label={uiText('downloadsBandHeadingCopyGroupAria')}
+              >
                 <h2 className="app-downloads-title">{uiText('terminalTitle')}</h2>
                 <p className="app-downloads-hint">
                   {uiText('terminalIntroLead')}
@@ -5590,7 +5601,11 @@ function App(): JSX.Element {
               role="region"
               aria-label={uiText('downloadsPageIntroBandAria')}
             >
-              <div className="app-downloads-band-copy">
+              <div
+                className="app-downloads-band-copy"
+                role="group"
+                aria-label={uiText('downloadsBandHeadingCopyGroupAria')}
+              >
                 <h2 className="app-downloads-title">{uiText('downloadsPageTitle')}</h2>
                 <p className="app-downloads-hint">{uiText('downloadsPageHint')}</p>
               </div>
@@ -7015,25 +7030,27 @@ function App(): JSX.Element {
             <p id="export-preset-name-hint" className="app-modal-hint">
               {uiText('editorExportPresetDialogHint')}
             </p>
-            <label className="app-engine-path-row">
-              <span className="app-engine-path-label">{uiText('editorExportPresetNameLabel')}</span>
-              <input
-                className="app-engine-path-input"
-                type="text"
-                maxLength={64}
-                autoFocus
-                value={exportPresetNameDialog.value}
-                aria-invalid={exportPresetNameDialog.error !== null}
-                aria-describedby={
-                  exportPresetNameDialog.error ? 'export-preset-name-error' : undefined
-                }
-                onChange={(e) => {
-                  setExportPresetNameDialog((prev) =>
-                    prev === null ? null : { ...prev, value: e.target.value, error: null }
-                  )
-                }}
-              />
-            </label>
+            <div role="group" aria-label={uiText('exportPresetNameFieldGroupAria')}>
+              <label className="app-engine-path-row">
+                <span className="app-engine-path-label">{uiText('editorExportPresetNameLabel')}</span>
+                <input
+                  className="app-engine-path-input"
+                  type="text"
+                  maxLength={64}
+                  autoFocus
+                  value={exportPresetNameDialog.value}
+                  aria-invalid={exportPresetNameDialog.error !== null}
+                  aria-describedby={
+                    exportPresetNameDialog.error ? 'export-preset-name-error' : undefined
+                  }
+                  onChange={(e) => {
+                    setExportPresetNameDialog((prev) =>
+                      prev === null ? null : { ...prev, value: e.target.value, error: null }
+                    )
+                  }}
+                />
+              </label>
+            </div>
             {exportPresetNameDialog.error ? (
               <p id="export-preset-name-error" className="app-modal-hint app-modal-error">
                 {exportPresetNameDialog.error}

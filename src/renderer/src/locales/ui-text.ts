@@ -85,6 +85,7 @@ const UI_TEXT = {
     aboutKnowledgeSupportArticle: 'Справка: логи и диагностика',
     aboutKnowledgeSupportArticleTooltip:
       'Открыть статью справки про журналы, Support ZIP и очистку временных файлов.',
+    aboutKnowledgeArticleRegionAria: 'Ссылка на статью базы знаний по журналам и диагностике',
     aboutMaintenanceCleanErrorTemplate: '{label}: {error}',
     byteSizeZero: '0 Б',
     byteSizeUnitB: 'Б',
@@ -250,6 +251,7 @@ const UI_TEXT = {
     downloadsPageHint:
       'Эта вкладка — основной рабочий стол yt-dlp (очередь по центру, журнал и история под таблицей, настройки справа как в v0; при ширине окна примерно до 1100px панель настроек переносится под журнал с прокруткой, поля не теряются — сверху есть кнопка «К настройкам», чтобы сразу прокрутить к панели). Отдельное окно — дубликат с той же связью с основным процессом (main, IPC) и длинным справочником токенов в одном списке.',
     downloadsPageIntroBandAria: 'Заголовок и действия вкладки загрузок',
+    downloadsBandHeadingCopyGroupAria: 'Заголовок и пояснение к вкладке',
     downloadsPopOut: 'Отдельное окно',
     downloadsScrollToSettings: 'К настройкам',
     downloadsBandToolbarAria: 'Быстрые действия вкладки загрузок',
@@ -314,6 +316,7 @@ const UI_TEXT = {
     quickYtdlpHint:
       'Кнопка ниже скачивает первый распознанный URL текущими настройками yt-dlp и открывает готовый файл в этом редакторе. Параллельно с другой загрузкой нельзя — дождитесь окончания или отмените её на вкладке «Загрузки».',
     quickYtdlpDownloadOpenEditor: 'Скачать и добавить в редактор',
+    quickYtdlpDocNavAria: 'Ссылки на документацию yt-dlp',
     quickYtdlpDocFormats: 'Форматы',
     quickYtdlpDocOutputTemplate: 'Шаблон -o',
     editorUrlPasteBehaviorLabel: 'Ctrl+V с URL',
@@ -503,6 +506,7 @@ const UI_TEXT = {
     commonNotApplicableShort: 'н/д',
     topbarProductName: 'FluxAlloy',
     topbarHeaderAria: 'Верхняя панель: вкладки рабочей области и действия',
+    topbarTrailingGroupAria: 'Блок кнопок справа от вкладок',
     appMainShellAria: 'Главное окно FluxAlloy',
     topbarActionsToolbarAria: 'Панель действий: файлы, инструменты и справка',
     topbarOpenFileTitle:
@@ -881,6 +885,7 @@ const UI_TEXT = {
     editorExportPresetDialogTitleRename: 'Имя пресета',
     editorExportPresetDialogHint:
       'Имя хранится только в настройках FluxAlloy и помогает быстро возвращаться к набору FFmpeg-параметров.',
+    exportPresetNameFieldGroupAria: 'Поле имени пользовательского пресета',
     editorExportPresetNameLabel: 'Имя',
     editorExportPresetErrorEmpty: 'Введите имя пресета.',
     editorExportPresetErrorMax: 'Не более 8 своих пресетов (встроенные не считаются).',
@@ -1349,6 +1354,7 @@ const UI_TEXT = {
     aboutKnowledgeSupportArticle: 'Help: logs and diagnostics',
     aboutKnowledgeSupportArticleTooltip:
       'Open the in-app article about logs, Support ZIP, and cleaning temporary files.',
+    aboutKnowledgeArticleRegionAria: 'Knowledge base article link about logs and diagnostics',
     aboutMaintenanceCleanErrorTemplate: '{label}: {error}',
     byteSizeZero: '0 B',
     byteSizeUnitB: 'B',
@@ -1513,6 +1519,7 @@ const UI_TEXT = {
     downloadsPageHint:
       'This tab is the main yt-dlp desk (queue in the center, log and history under the table, settings on the right like v0; below ~1100px width the settings rail moves under the log with scrolling — fields stay reachable via “Scroll to settings” at the top). Pop-out is a second window with the same IPC and the full token reference list.',
     downloadsPageIntroBandAria: 'Downloads tab title and quick actions',
+    downloadsBandHeadingCopyGroupAria: 'Tab heading and description',
     downloadsPopOut: 'Pop-out',
     downloadsScrollToSettings: 'Scroll to settings',
     downloadsBandToolbarAria: 'Quick actions on the downloads tab',
@@ -1577,6 +1584,7 @@ const UI_TEXT = {
     quickYtdlpHint:
       'The button below downloads the first recognized URL with your current yt-dlp settings and opens the finished file in this editor. You cannot run it while another download is active — wait or cancel it on the Downloads tab.',
     quickYtdlpDownloadOpenEditor: 'Download and open in editor',
+    quickYtdlpDocNavAria: 'yt-dlp documentation links',
     quickYtdlpDocFormats: 'Formats',
     quickYtdlpDocOutputTemplate: '-o template',
     editorUrlPasteBehaviorLabel: 'Ctrl+V with URL',
@@ -1764,6 +1772,7 @@ const UI_TEXT = {
     commonNotApplicableShort: 'n/a',
     topbarProductName: 'FluxAlloy',
     topbarHeaderAria: 'Top bar: workspace tabs and actions',
+    topbarTrailingGroupAria: 'Button cluster to the right of workspace tabs',
     appMainShellAria: 'FluxAlloy main window',
     topbarActionsToolbarAria: 'Actions toolbar: files, tools, and help',
     topbarOpenFileTitle:
@@ -2142,6 +2151,7 @@ const UI_TEXT = {
     editorExportPresetDialogTitleRename: 'Preset name',
     editorExportPresetDialogHint:
       'The name is stored only in FluxAlloy settings and helps you return quickly to this FFmpeg parameter set.',
+    exportPresetNameFieldGroupAria: 'Custom export preset name field',
     editorExportPresetNameLabel: 'Name',
     editorExportPresetErrorEmpty: 'Enter a preset name.',
     editorExportPresetErrorMax: 'At most 8 custom presets (built-ins do not count).',
