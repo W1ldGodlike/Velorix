@@ -43,7 +43,7 @@
 
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый; подробности фиксировать ниже в тематических § и в `IMPLEMENTATION_JOURNAL.md`.
 
-- [~] §6/§7: HW encode (цепочки QSV/CUDA/VAAPI), регрессии batch §7.3 и очереди yt-dlp; паритет embedded↔pop-out загрузок.
+- [~] Рефактор ф.2: `ytdlp-download-options` whitelist→registry; затем §6/§7 HW/batch/очередь yt-dlp.
 - [~] §8: терминал — редкие сценарии/argv по факту; при правках `summary` — `npm run locales:terminal-summaries-ru` (дважды до 0/0).
 - [~] §9/§18: packaged/ffprobe e2e smoke; редкие поля ffprobe; связка с Support ZIP.
 - [~] §19/§3: `check:release`, `verify:win-unpacked`, SHA/JSON; packaged smoke; macOS/Linux engines и targets.

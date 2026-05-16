@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-16T19:10:52.155Z",
+  "generatedAt": "2026-05-16T20:17:57.583Z",
   "repoRoot": "C:\\Users\\truno\\FluxAlloy",
   "codeRoots": [
     "src",
@@ -18,7 +18,7 @@
     ".cursor",
     "coverage"
   ],
-  "fileCount": 277,
+  "fileCount": 279,
   "files": [
     "electron.vite.config.ts",
     "eslint.config.mjs",
@@ -26,12 +26,14 @@
     "scripts/apply-terminal-summary-ru.mjs",
     "scripts/audit-copy-paste-patterns.mjs",
     "scripts/audit-inventory.mjs",
+    "scripts/audit-ipc-architecture.mjs",
     "scripts/audit-scope.config.mjs",
     "scripts/audit-structural.mjs",
     "scripts/check-checklist-sprint.mjs",
     "scripts/check-field-registries.mjs",
     "scripts/check-journal-numbering.mjs",
     "scripts/check-no-secrets.mjs",
+    "scripts/check-rules-explicit.mjs",
     "scripts/cursor-automation/src/paths.ts",
     "scripts/cursor-automation/src/run-loop.ts",
     "scripts/cursor-automation/src/sdk-settings.ts",

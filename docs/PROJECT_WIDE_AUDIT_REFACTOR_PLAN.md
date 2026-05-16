@@ -85,8 +85,8 @@
 
 - [x] **0.1** Зафиксировать baseline: `npm run audit:inventory` → `docs/audit-manifest.json` (277 files, 2026-05-16).  
 - [x] **0.2** `npm run audit:structural` — размер файлов, `TODO|FIXME|HACK` (29 файлов ≥400 строк; крупнейшие: `terminal-contract.ts`, `App.tsx`, `index.ts`).  
-- [ ] **0.3** Таблица hotspots → колонка «фаза» в §4 этого файла (обновлять каждые 5 итераций).  
-- [ ] **0.4** Синхронизация: `docs/SOURCES_OF_TRUTH.md`, `AGENTS.md`, `agent-contract.txt` — строка на программу.
+- [x] **0.3** Таблица hotspots → колонка «фаза» в §6 Hotspot log.  
+- [x] **0.4** Синхронизация: `docs/SOURCES_OF_TRUTH.md`, `AGENTS.md`, `agent-contract.txt`, rules (`9c825bd`).
 
 ---
 
@@ -105,6 +105,28 @@
 | 1.5 | Сверка `docs/ARCHITECTURE.md` ↔ `ipc-channels.ts` | список расхождений |
 
 **Критерий готовности:** таблица hotspots заполнена; manifest в репо; одна сводная `J-*`.
+
+**Результаты (2026-05-16, J-703):**
+
+| Шаг | Статус | Выход |
+|-----|--------|--------|
+| 1.1 | ✅ | `docs/audit-manifest.json` — **279** файлов |
+| 1.2 | ✅ | §6 Hotspot log (6 строк + structural list) |
+| 1.3 | ✅ | См. таблицу TODO ниже |
+| 1.4 | ✅ | 29 файлов ≥400 строк (`npm run audit:structural`) |
+| 1.5 | ✅ | `npm run audit:ipc-architecture`; правка `ARCHITECTURE.md` (таблица handle) |
+
+**TODO/FIXME/HACK в коде (не «TODO спринта» в чеклисте):**
+
+| Файл | Тип | Суть |
+|------|-----|------|
+| `src/main/engine-service.ts` | `TODO(§3)` | progress/checking при длительной проверке хешей |
+| `src/main/engine-download.ts` | комментарий | macOS/Linux загрузчики — заглушка, §3 |
+| `scripts/cursor-automation/src/run-loop.ts` | текст промпта | не технический долг |
+
+`audit:structural` считает **17** вхождений слова TODO в репо scope — большинство ложные (скрипты чеклиста, заголовки).
+
+**IPC:** реестр **156**, `ipcMain.handle` **139** (index 102 + downloads 35 + inspector 2); расхождение — push-каналы без handle.
 
 ---
 
@@ -244,7 +266,7 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | many-standalone-it | 67 | tests/shared/ffmpeg-export-argv.test.ts | 3 | — | ⬜ |
 | many-standalone-it | 46 | tests/main/ffprobe-service.test.ts | 3 | — | ⬜ |
 | many-export-parse | 13 | src/main/ffmpeg-export-service.ts | 2 | — | ⬜ |
-| whitelist-if-chains | 4 | src/main/ytdlp-download-options.ts | 2 | — | ⬜ |
+| whitelist-if-chains | 4 | src/main/ytdlp-download-options.ts | 2 | Реестр whitelist chains + тесты; убрать 4× if-chain | ⬜ |
 
 **Структурные (≥400 строк, фаза 4):** `terminal-contract.ts` (12959), `App.tsx` (7650), `index.ts` (4152), `downloads-window.ts` (4074), `ui-text.ts` (2848), `ffmpeg-export-argv.ts` (1055), `ffprobe-service.ts` (978), `MediaProbePanel.tsx` (985). Полный список: `npm run audit:structural`.
 
@@ -286,8 +308,8 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 ## 9. Статус фаз (чеклист)
 
 - [x] Фаза 0 — audit scripts, registries, fixtures, inventory manifest, structural script, правила  
-- [ ] Фаза 1 — инвентаризация (таблицы долгов, ARCHITECTURE↔IPC)  
-- [ ] Фаза 2 — src копипаста  
+- [x] Фаза 1 — инвентаризация (таблицы долгов, ARCHITECTURE↔IPC, `audit:ipc-architecture`)  
+- [ ] Фаза 2 — src копипаста (`ytdlp-download-options.ts` → registry первым срезом)  
 - [ ] Фаза 3 — tests копипаста  
 - [ ] Фаза 4 — крупные модули  
 - [ ] Фаза 5 — TODO/временное  

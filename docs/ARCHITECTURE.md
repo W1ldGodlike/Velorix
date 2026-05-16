@@ -33,8 +33,16 @@
 
 ## IPC и контракты
 
-- Реестр имён каналов: [`src/shared/ipc-channels.ts`](../src/shared/ipc-channels.ts) (`mainWindowIpc`, `downloadsIpc`).
-- Обработчики регистрируются в main (в первую очередь в `src/main/index.ts`, плюс специализированные модули окон загрузок / инспектора).
+- Реестр имён каналов: [`src/shared/ipc-channels.ts`](../src/shared/ipc-channels.ts) (`mainWindowIpc`, `downloadsIpc`) — **156** строковых каналов (invoke + push-события).
+- Регистрация `ipcMain.handle` (инвентаризация фазы 1, `npm run audit:ipc-architecture`):
+
+| Файл | `ipcMain.handle` |
+|------|------------------|
+| [`src/main/index.ts`](../src/main/index.ts) | 102 |
+| [`src/main/downloads-window.ts`](../src/main/downloads-window.ts) | 35 |
+| [`src/main/inspector-window.ts`](../src/main/inspector-window.ts) | 2 |
+
+Остальные каналы реестра — `webContents.send` / broadcast (прогресс, снимки очереди, тема, UI panels).
 - Настройки экспорта ffmpeg идут отдельными `settings-set-ffmpeg-export-*` каналами; значения проходят whitelist-парсеры main перед записью и spawn.
 - Пакетный экспорт и очередь yt-dlp — отдельные IPC/сервисы с persist в `userData` (`queue.json` и аналоги для batch).
 - Каталог вывода yt-dlp, CLI/options и раскрытие панелей загрузок: push `downloadsOutputDirectoryChanged` / `downloadsCliOptionsChanged` / `downloadsWindowUiPanelsChanged` из main во вкладку «Загрузки» и pop-out.
