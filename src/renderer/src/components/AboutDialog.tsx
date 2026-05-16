@@ -145,7 +145,11 @@ export function AboutDialog({
         ) : (
           <p className="app-modal-hint">{uiText('loading')}</p>
         )}
-        <div className="app-modal-footer app-modal-footer-split">
+        <div
+          className="app-modal-footer app-modal-footer-split"
+          role="region"
+          aria-label={uiText('aboutModalFooterSplitAria')}
+        >
           <div
             className="app-about-footer-left"
             role="group"

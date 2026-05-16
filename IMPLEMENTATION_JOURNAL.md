@@ -803,4 +803,9 @@
 - [J-780] 2026-05-16 07:50:00 [Assistant]: Инспектор — `<header class="app-topbar">`: `inspectorStandaloneTopbarAria`.
 - [J-781] 2026-05-16 07:52:00 [Assistant]: О программе — список версий (`app-about-dl`): `aboutRuntimeDetailsAria`.
 - [J-782] 2026-05-16 07:54:00 [Assistant]: О программе — левая колонка подвала (`app-about-footer-left`): `role="group"` + `aboutFooterLeftGroupAria`.
+- [J-783] 2026-05-16 07:58:00 [Assistant]: Таймлайн — блок сводки в подвале (`app-timeline-footer-spec`): `videoTimelineFooterSpecGroupAria`.
+- [J-784] 2026-05-16 08:00:00 [Assistant]: Таймлайн — блок формы волны (`app-timeline-waveform-passive`): `videoTimelineWaveformClusterAria`.
+- [J-785] 2026-05-16 08:02:00 [Assistant]: О программе — разделённый подвал модалки: `aboutModalFooterSplitAria`.
+- [J-786] 2026-05-16 08:04:00 [Assistant]: Панель ffprobe — ссылка на документацию: `<nav>` + `probeFfprobeDocNavAria`.
+- [J-787] 2026-05-16 08:06:00 [Assistant]: Инспектор — подсказка без файла: `inspectorStandaloneEmptyRegionAria`.
 

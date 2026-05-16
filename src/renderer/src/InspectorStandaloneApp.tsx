@@ -350,7 +350,9 @@ export function InspectorStandaloneApp(): JSX.Element {
         }}
       >
         {!mediaPath ? (
-          <p className="inspector-standalone-hint">{uiText('inspectorStandaloneEmptyHint')}</p>
+          <div role="region" aria-label={uiText('inspectorStandaloneEmptyRegionAria')}>
+            <p className="inspector-standalone-hint">{uiText('inspectorStandaloneEmptyHint')}</p>
+          </div>
         ) : null}
         {displayedProbeError ? (
           <p className="app-preview-probe-error" role="alert">

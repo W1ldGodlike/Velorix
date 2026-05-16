@@ -301,11 +301,14 @@ export function PreviewProbeBody({
             {bitrateLabel ? ` · ${bitrateLabel}` : ''}
           </span>
         </div>
-        <p className="app-doc-inline-links app-preview-probe-doc-links">
+        <nav
+          className="app-doc-inline-links app-preview-probe-doc-links"
+          aria-label={uiText('probeFfprobeDocNavAria')}
+        >
           <a href={FFPROBE_DOC_ALL} target="_blank" rel="noreferrer">
             {uiText('probeFfprobeDocLink')}
           </a>
-        </p>
+        </nav>
         {probeToolbarTip ? (
           <div className="app-probe-copy-tip app-probe-tip-global">{probeToolbarTip}</div>
         ) : null}

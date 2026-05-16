@@ -775,7 +775,11 @@ export default function VideoTimeline({
                   ))}
                 </div>
               </div>
-              <div className="app-timeline-waveform-passive">
+              <div
+                className="app-timeline-waveform-passive"
+                role="group"
+                aria-label={uiText('videoTimelineWaveformClusterAria')}
+              >
                 <TimelineWaveform
                   key={mediaKey}
                   mediaKey={mediaKey}
@@ -847,7 +851,7 @@ export default function VideoTimeline({
 
       {duration > 0 ? (
         <div className="app-timeline-footer" aria-label={uiText('videoTimelineFooterAria')}>
-          <div className="app-timeline-footer-spec">
+          <div className="app-timeline-footer-spec" role="group" aria-label={uiText('videoTimelineFooterSpecGroupAria')}>
             <span title={uiText('videoTimelineVideoStreamTitle')}>
               <strong>{uiText('videoTimelineVideoLabel')}</strong> {formatProbeVideoFact(probe)}
             </span>
