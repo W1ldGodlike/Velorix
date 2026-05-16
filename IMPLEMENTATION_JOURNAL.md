@@ -833,4 +833,9 @@
 - [J-810] 2026-05-16 08:52:00 [Assistant]: ffprobe — подсказка панели после копирования (`app-probe-copy-tip`): `role="status"` + `aria-live="polite"` + `probeToolbarFeedbackAria`.
 - [J-811] 2026-05-16 08:54:00 [Assistant]: Редактор — `<details>` превью команды FFmpeg (`app-export-preview-nested`): `aria-label` + `editorExportPreviewDetailsAria`.
 - [J-812] 2026-05-16 08:56:00 [Assistant]: Терминал — пустой журнал (`terminalHistoryEmpty`): `role="status"` + `aria-live="polite"`.
+- [J-813] 2026-05-16 08:58:00 [Assistant]: Редактор — секция FFmpeg «Видео» (`details.app-settings-section`): `aria-label` из `editorFfmpegSectionVideo`.
+- [J-814] 2026-05-16 09:00:00 [Assistant]: Редактор — секция «Кадр / FPS»: `aria-label` из `editorFfmpegSectionFrameLayout`.
+- [J-815] 2026-05-16 09:02:00 [Assistant]: Редактор — секция «Аудио»: `aria-label` из `editorFfmpegSectionAudio`.
+- [J-816] 2026-05-16 09:04:00 [Assistant]: Редактор — секция «Пресеты»: `aria-label` из `editorFfmpegSectionPresets`.
+- [J-817] 2026-05-16 09:06:00 [Assistant]: Редактор — секция «Вывод»: `aria-label` из `editorFfmpegSectionOutput`.
 

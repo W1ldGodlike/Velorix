@@ -4006,6 +4006,7 @@ function App(): JSX.Element {
 
               <details
                 className="app-settings-section"
+                aria-label={uiText('editorFfmpegSectionVideo')}
                 open={panelOpen('ffmpegVideo')}
                 onToggle={(e) => {
                   persistMainWindowUiPanelToggle('ffmpegVideo', e.currentTarget.open)
@@ -4469,6 +4470,7 @@ function App(): JSX.Element {
 
               <details
                 className="app-settings-section"
+                aria-label={uiText('editorFfmpegSectionFrameLayout')}
                 open={panelOpen('ffmpegFormat')}
                 onToggle={(e) => {
                   persistMainWindowUiPanelToggle('ffmpegFormat', e.currentTarget.open)
@@ -4654,6 +4656,7 @@ function App(): JSX.Element {
 
               <details
                 className="app-settings-section"
+                aria-label={uiText('editorFfmpegSectionAudio')}
                 open={panelOpen('ffmpegAudio')}
                 onToggle={(e) => {
                   persistMainWindowUiPanelToggle('ffmpegAudio', e.currentTarget.open)
@@ -4919,6 +4922,7 @@ function App(): JSX.Element {
 
               <details
                 className="app-settings-section"
+                aria-label={uiText('editorFfmpegSectionPresets')}
                 open={panelOpen('ffmpegPresets')}
                 onToggle={(e) => {
                   persistMainWindowUiPanelToggle('ffmpegPresets', e.currentTarget.open)
@@ -5056,6 +5060,7 @@ function App(): JSX.Element {
               <details
                 id="editor-ffmpeg-export-output"
                 className="app-settings-section"
+                aria-label={uiText('editorFfmpegSectionOutput')}
                 open={panelOpen('ffmpegOutput')}
                 onToggle={(e) => {
                   persistMainWindowUiPanelToggle('ffmpegOutput', e.currentTarget.open)
