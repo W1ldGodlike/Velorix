@@ -118,6 +118,7 @@ export function ProcessingHistoryPanel({
           className="app-processing-history-summary"
           role="region"
           aria-label={uiText('processingHistoryWeeklyAria')}
+          aria-busy={busy}
         >
           <span>
             {uiText('processingHistory7dPrefix')} {weeklySummary.total}

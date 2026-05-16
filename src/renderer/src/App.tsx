@@ -3487,6 +3487,7 @@ function App(): JSX.Element {
                 role="toolbar"
                 aria-orientation="horizontal"
                 aria-label={uiText('batchExportActionsToolbarAria')}
+                aria-busy={batchExportBusy}
               >
                 <button
                   type="button"
@@ -5568,6 +5569,7 @@ function App(): JSX.Element {
               className="app-terminal-layout"
               role="region"
               aria-label={uiText('terminalMainSplitAria')}
+              aria-busy={terminalBusy}
             >
               <section className="app-terminal-history" aria-label={uiText('terminalHistoryAria')}>
                 {terminalHistory.length === 0 ? (

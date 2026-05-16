@@ -933,4 +933,9 @@
 - [J-910] 2026-05-16 12:14:00 [Assistant]: База знаний — корневой `dialog` модалки: `aria-busy={loading}` при загрузке контента.
 - [J-911] 2026-05-16 12:16:00 [Assistant]: Пакетный экспорт — группа полей (`batchExportPanelFormGroupAria`): `aria-busy={batchExportBusy}` на время работы очереди.
 - [J-912] 2026-05-16 12:18:00 [Assistant]: Загрузки — таблица очереди yt-dlp: `aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}` (согласовано с секцией вкладки).
+- [J-913] 2026-05-16 12:20:00 [Assistant]: Инспектор §9 — стек ffprobe (`inspectorStandaloneProbeStackAria`): `aria-busy` при повторном ffprobe (`probePending`), если файл уже выбран.
+- [J-914] 2026-05-16 12:22:00 [Assistant]: Пакетный экспорт — тулбар действий (`batchExportActionsToolbarAria`): `aria-busy={batchExportBusy}`.
+- [J-915] 2026-05-16 12:24:00 [Assistant]: Терминал — сплит история/подсказки (`terminalMainSplitAria`): `aria-busy={terminalBusy}` на время выполнения команды.
+- [J-916] 2026-05-16 12:26:00 [Assistant]: История загрузок — недельная сводка (`downloadsHistoryWeeklyAria`): `aria-busy={busy}` при обновлении истории.
+- [J-917] 2026-05-16 12:28:00 [Assistant]: История обработки — недельная сводка (`processingHistoryWeeklyAria`): `aria-busy={busy}` при обновлении списка.
 

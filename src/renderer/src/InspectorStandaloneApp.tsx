@@ -377,6 +377,7 @@ export function InspectorStandaloneApp(): JSX.Element {
             aria-live="polite"
             role="region"
             aria-label={uiText('inspectorStandaloneProbeStackAria')}
+            aria-busy={probePending && mediaPath !== null}
           >
             <PreviewProbeBody
               probeInfo={displayedProbeInfo}

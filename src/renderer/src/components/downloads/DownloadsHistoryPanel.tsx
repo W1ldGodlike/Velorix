@@ -61,6 +61,7 @@ export function DownloadsHistoryPanel({
         className="app-processing-history-summary"
         role="region"
         aria-label={uiText('downloadsHistoryWeeklyAria')}
+        aria-busy={busy}
       >
         <span>
           {uiText('downloadsHistory7dPrefix')} {weeklySummary.total}
