@@ -5,21 +5,25 @@ alwaysApply: true
 
 # FluxAlloy — ядро
 
-**Источники истины и синхронизация:** [`docs/SOURCES_OF_TRUTH.md`](../../docs/SOURCES_OF_TRUTH.md). Меняя договорённость — обновляйте все связанные места **одним коммитом** (rules + шапка артефакта + `AGENT_REANCHOR` / SDK contract).
+Глоссарий терминов: [`fluxalloy-rules-explicit.mdc`](fluxalloy-rules-explicit.mdc).  
+Синхронизация артефактов: [`docs/SOURCES_OF_TRUTH.md`](../../docs/SOURCES_OF_TRUTH.md) — при смене договорённости **один коммит**: rules + шапка артефакта + `docs/AGENT_MARATHON.md` + `agent-contract.txt`.
 
-| Артефакт | Роль | Правила формата |
-|----------|------|-----------------|
-| [`FLUXALLOY_TZ.md`](../../FLUXALLOY_TZ.md) | Канон продукта | Читать **нужный §**, не весь файл. **Не редактировать** без явной просьбы владельца. |
-| [`IMPLEMENTATION_CHECKLIST.md`](../../IMPLEMENTATION_CHECKLIST.md) | Прогресс, спринт | Блок «Ближайший TODO спринта»; `npm run check:checklist`. См. `fluxalloy-checklist.mdc`. |
-| [`IMPLEMENTATION_JOURNAL.md`](../../IMPLEMENTATION_JOURNAL.md) | Хроника | **Одна сводная `J-*` за итерацию**; `npm run journal:stamp`; `npm run check:journal`. См. `fluxalloy-journal.mdc`. |
-| [`docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md) | IPC, слои | Обновлять при новых каналах вместе с `src/shared/ipc-channels.ts`. |
+| Артефакт | Роль | Обязательная проверка |
+|----------|------|------------------------|
+| [`FLUXALLOY_TZ.md`](../../FLUXALLOY_TZ.md) | Канон продукта | Читать **один §** по задаче. **Запрещено:** правки без **явной просьбы владельца**. |
+| [`IMPLEMENTATION_CHECKLIST.md`](../../IMPLEMENTATION_CHECKLIST.md) | Спринт | Блок `## Ближайший TODO спринта`; `npm run check:checklist`. |
+| [`IMPLEMENTATION_JOURNAL.md`](../../IMPLEMENTATION_JOURNAL.md) | Хроника | **Одна J за итерацию**; `npm run journal:stamp`; `npm run check:journal`. |
+| [`docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md) | IPC | **Если** добавлен канал в `ipc-channels.ts` **то** обновить ARCHITECTURE в том же коммите. |
 
-**Режим marathon / «продолжай» / `agent:loop`:** обязательно [`docs/AGENT_REANCHOR.md`](../../docs/AGENT_REANCHOR.md) + `fluxalloy-marathon.mdc`.
+**Если** сообщение = «продолжай» / marathon **то** [`docs/AGENT_MARATHON.md`](../../docs/AGENT_MARATHON.md) + `fluxalloy-marathon.mdc` + `fluxalloy-iteration-batch.mdc`.
 
-**Автономность:** не спрашивать подтверждение на `run`, установки, перезапуски. Неясность по ТЗ — короткий вопрос; остальное не стопорить.
+**Автономность run:** **Запрещено** спрашивать разрешение на `npm run`, установки, перезапуск dev. **Если** **неясность по ТЗ** **то** один вопрос владельцу, код не менять до ответа.
 
-**Стек:** Electron + React + TypeScript (§2 ТЗ). **Не** WinUI / `Microsoft.WindowsAppSDK` без явного запроса. ffmpeg, yt-dlp, FS — **main** + whitelist IPC; preload — `contextBridge`.
+**Стек:** Electron + React + TypeScript (§2 ТЗ). **Запрещено:** WinUI / `Microsoft.WindowsAppSDK` без **явной просьбы владельца**. ffmpeg, yt-dlp, FS — только `src/main/` + whitelist IPC; preload — `contextBridge`.
 
-**Большие файлы:** дробить на части и продолжать. **Бинарники:** не ослаблять `Data/trusted_hashes.json` (§3 ТЗ).
+**Запрещено:** ослаблять `Data/trusted_hashes.json` (§3 ТЗ).
 
-**Справочник (не дублировать в ответах):** [`docs/AGENT_INSTRUCTIONS_AND_AGREEMENTS.md`](../../docs/AGENT_INSTRUCTIONS_AND_AGREEMENTS.md).
+**Если** diff по одному файлу **>400** строк **то** **подсрез >400 строк** (глоссарий): **≥2** commit в **той же** итерации, **одна J** в конце.
+
+**Среда, дифф, проверки, ответ:** [`fluxalloy-agent-runtime.mdc`](fluxalloy-agent-runtime.mdc).  
+**Operational notes (CSP, yt-dlp):** [`docs/AGENT_OPERATIONAL_NOTES.md`](../../docs/AGENT_OPERATIONAL_NOTES.md) — открывать при отладке, не копировать в чат.

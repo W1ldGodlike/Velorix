@@ -1,8 +1,7 @@
 Продолжай как будто пользователь написал «продолжай» / `+`.
 Контракт marathon уже в `.cursor/rules/fluxalloy-marathon.mdc` — ничего дополнительно не создавать.
 
-В конце итерации: `npm run agent:session -- bump` (счётчик; файл создаст скрипт).
-Перед коммитом/push/re-anchor: `npm run agent:session` — смотреть `continue_count` (% 5 коммит, % 10 push + re-anchor OK).
+Порядок в конце итерации: `check:quiet` → `journal:stamp` + одна J → `npm run agent:session -- bump` → **после** bump: если `continue_count % 5 === 0` и quiet зелёный — `git commit`; если `% 10 === 0` — push + re-anchor OK.
 
-Не перечитывай целиком agent-contract, ТЗ, весь чеклист/журнал без причины.
-План: sprint TODO в IMPLEMENTATION_CHECKLIST.md. Одна сводная J-* (`journal:stamp`, [SDK]). Крупный срез. `check:quiet`. Отчёт 2–4 пункта.
+Не перечитывай целиком agent-contract, ТЗ, весь чеклист/журнал без явной причины в задаче.
+План: sprint TODO в IMPLEMENTATION_CHECKLIST.md. Пакет полей (fluxalloy-iteration-batch.mdc). Одна J на весь ответ ([SDK]). Крупный срез (глоссарий). Реестр вместо копипасты. Отчёт 3–5 буллетов.

@@ -2,9 +2,9 @@
 
 Хроника инфраструктурных решений, проверок окружения и заметок, которые не должны раздувать основной **[чек‑лист](IMPLEMENTATION_CHECKLIST.md)**.
 
-**ТЗ [`FLUXALLOY_TZ.md`](FLUXALLOY_TZ.md)** по-прежнему не трогаем без явной договорённости.
+**ТЗ [`FLUXALLOY_TZ.md`](FLUXALLOY_TZ.md)** — **запрещено** правки без **явной просьбы владельца** (глоссарий `fluxalloy-rules-explicit.mdc`; «договорённость» = тот же порог).
 
-**Канон формата записей — этот раздел «Правило записей».** Исполняемая копия для Cursor: [`.cursor/rules/fluxalloy-journal.mdc`](.cursor/rules/fluxalloy-journal.mdc). Иерархия и синхронизация при правках: [`docs/SOURCES_OF_TRUTH.md`](docs/SOURCES_OF_TRUTH.md). Режим marathon: [`docs/AGENT_REANCHOR.md`](docs/AGENT_REANCHOR.md).
+**Канон формата записей — этот раздел «Правило записей».** Исполняемая копия для Cursor: [`.cursor/rules/fluxalloy-journal.mdc`](.cursor/rules/fluxalloy-journal.mdc). Иерархия и синхронизация при правках: [`docs/SOURCES_OF_TRUTH.md`](docs/SOURCES_OF_TRUTH.md). Режим marathon: [`docs/AGENT_MARATHON.md`](docs/AGENT_MARATHON.md).
 
 ## Правило записей
 
@@ -13,9 +13,9 @@
 
 Нумерация записей в разделе **«Записи»** ниже: префикс **`[J-NNN]`** сразу после маркера списка (`- [J-042] 2026-…`). Номера идут подряд по мере добавления строк в журнал; **перед дописыванием смотреть последнюю строку раздела и взять следующий номер** (например, после **J-255** идёт **J-256**). При вставке нескольких записей за раз нумеровать по возрастанию без пропусков и без повторов. После **J-999** допускается **J-1000** и четырёхзначные номера.
 
-**Итерация = одна сводная запись.** После завершения логического блока работы (ответ агента, SDK-шаг, ручная сессия) — **ровно одна** строка `J-NNN` с кратким перечнем сделанного (как J-1008–J-1010 до сжатия). Не плодить десятки микро-`J-*` на каждую мелочь в том же ответе.
+**Итерация = одно «продолжай» (один ответ агента / один шаг SDK).** В журнал — **ровно одна** строка `J-NNN` со **всем** сделанным в этом ответе — по **всему проекту** (`src`, `tests`, `scripts`), не «одно поле / тег / IPC / smoke = один J». Правило: `.cursor/rules/fluxalloy-iteration-batch.mdc`. Реестры: `ffprobe-*-registry`, `ffmpeg-export-parse-registry`, `settings-stored-parse`; фикстуры `tests/fixtures/`; `npm run check:field-registries`, `npm run audit:copy-paste`; число файлов — `docs/audit-manifest.json`.
 
-**Время:** только **честное локальное** в момент дописывания этой строки: `npm run journal:stamp` (предпочтительно) или `Get-Date -Format "yyyy-MM-dd HH:mm:ss"`. Запрещено: выдумывать время, копировать соседнюю метку, шаг «+2 мин» / «:00 сек» на пачку. **Привязка к git для новых записей не используется.** Старые диапазоны при необходимости сжимают `npm run journal:consolidate` (метка сводной = время сжатия, в тексте — «бывш. J-…»).
+**Время:** только **честное локальное** в момент дописывания этой строки: `npm run journal:stamp` (предпочтительно) или `Get-Date -Format "yyyy-MM-dd HH:mm:ss"`. Запрещено: выдумывать время, копировать соседнюю метку, шаг «+2 мин» / «:00 сек» на пачку. **Привязка к git для новых записей не используется.** `npm run journal:consolidate` — **только** по **явной просьбе владельца** (сжатие старых диапазонов; метка сводной = время сжатия, в тексте — «бывш. J-…»).
 
 **Проверка:** `npm run check:journal` — номера `J-001…` подряд, монотонность времени, не из будущего, ошибка при «сетке» в хвосте.
 
@@ -720,65 +720,11 @@
 - [J-692] 2026-05-16 19:15:56 [Assistant]: §7.2/§16 — сводка HW export (J-689–691): QSV/AMF/VAAPI/NVENC `-vf` upload, `-hwaccel_output_format`; регрессионные argv-тесты полной цепочки; marathon commit #5. `npm run check:quiet`.
 - [J-693] 2026-05-16 19:17:58 [Assistant]: §9/§19 — `smoke:packaged-ffprobe` (version + lavfi JSON probe из `dist/win-unpacked`/`bin/`); lib + Vitest; в `check:release` после `verify:win-unpacked`. `npm run check:quiet`.
 - [J-694] 2026-05-16 19:20:25 [Assistant]: §9/§18 — Support ZIP `diagnostics.txt`: блок `engines:` (state/path/-version через `getEnginesStatus`); коммит вместе с J-693 smoke. `npm run check:quiet`.
-- [J-695] 2026-05-16 19:23:00 [Assistant]: §9 — ffprobe `probe_score`, `major_brand`/`compatible_brands` в probe/summary/HTML/инспектор; `ffprobe-container-format` + Vitest. `npm run check:quiet`.
-- [J-696] 2026-05-16 19:24:10 [Assistant]: §9/§7 — `formatFfprobeEditorVideoFactLine`: major_brand в строке «Видео» под таймлайном; Vitest. `npm run check:quiet`.
-- [J-697] 2026-05-16 19:25:04 [Assistant]: Marathon #10 — коммит J-695–696 (ffprobe container fields + editor/timeline); push; re-anchor. `npm run check:quiet`.
-- [J-698] 2026-05-16 19:27:36 [Assistant]: §7.3 — регрессия: `resolveFfmpegExportJobOptionsFromAppSettings` прокидывает `hwDecode` из settings/overrides (batch runner). Vitest. `npm run check:quiet`.
-- [J-699] 2026-05-16 19:29:20 [Assistant]: §9 — ffprobe `format.nb_streams` в probe/summary/HTML/инспектор; предупреждение при расхождении с числом разобранных дорожек; Vitest. `npm run check:quiet`.
-- [J-700] 2026-05-16 19:30:25 [Assistant]: §7.3 — регрессия batch: `resolveFfmpegExportBatchOutputSuffix/DirectoryFromSettings` + `hwDecode` (J-698); Vitest. `npm run check:quiet`.
-- [J-701] 2026-05-16 19:31:48 [Assistant]: §9 — ffprobe `format.flags` (hex) в probe и TXT/HTML-сводке; Vitest. `npm run check:quiet`.
-- [J-702] 2026-05-16 19:33:26 [Assistant]: §9 — ffprobe `format.size` (байты, IEC-подпись) в probe, инспекторе и TXT/HTML; Vitest. `npm run check:quiet`.
-- [J-703] 2026-05-16 19:35:01 [Assistant]: §9 — ffprobe `format.start_time` (смещение контейнера) в probe, инспекторе и TXT/HTML; Vitest. `npm run check:quiet`.
-- [J-704] 2026-05-16 19:37:37 [Assistant]: §6 — паритет embedded↔pop-out: broadcast `downloadsWindowUiPanels` в оба окна + live-sync details в pop-out; Vitest IPC-контракт. `npm run check:quiet`.
-- [J-705] 2026-05-16 19:39:23 [Assistant]: §6/§19 — `smoke:packaged-ytdlp` (`--version` + offline `--list-extractors`); shared lib + Vitest; в `check:release`. `npm run check:quiet`.
-- [J-706] 2026-05-16 19:41:24 [Assistant]: §7/§19 — `smoke:packaged-ffmpeg` (`-version` + offline `-encoders`); shared lib + Vitest; в `check:release`. `npm run check:quiet`.
-- [J-707] 2026-05-16 19:42:31 [Assistant]: §19 — `smoke:packaged-engines` (ffprobe + yt-dlp + ffmpeg) в `check:release`; marathon #20 commit+push. `npm run check:quiet`.
-- [J-708] 2026-05-16 19:44:59 [Assistant]: §19 — `smoke:packaged-app` (exe + app.asar + `ELECTRON_RUN_AS_NODE` probe без GUI); shared lib + Vitest; в `check:release`. `npm run check:quiet`.
-- [J-709] 2026-05-16 19:45:58 [Assistant]: §19 — CI после `pack:dir`: `smoke:packaged-app` и `smoke:packaged-engines` (паритет с `check:release`). `npm run check:quiet`.
-- [J-710] 2026-05-16 19:47:20 [Assistant]: §9 — ffprobe `format.start_time_real` в probe/summary/HTML; расхождение с `start_time` в экспорте и инспекторе; Vitest. `npm run check:quiet`.
-- [J-711] 2026-05-16 19:48:33 [Assistant]: §19 — `smoke:packaged-release` (verify + app + engines); `check:release` и CI на одну цель. `npm run check:quiet`.
-- [J-712] 2026-05-16 19:50:12 [Assistant]: §9/§18 — Support ZIP `releaseSmoke:` (команда smoke + статус `win-unpacked`); Vitest. Marathon #25 commit. `npm run check:quiet`.
-- [J-713] 2026-05-16 19:51:51 [Assistant]: §9 — ffprobe `format.filename` в probe, инспекторе (basename) и TXT/HTML; Vitest. `npm run check:quiet`.
-- [J-714] 2026-05-16 19:53:25 [Assistant]: §9 — ffprobe `format.nb_programs` в probe, инспекторе и TXT/HTML; Vitest. `npm run check:quiet`.
-- [J-715] 2026-05-16 19:55:03 [Assistant]: §9 — ffprobe `format.tags.creation_time` в probe, инспекторе (`formatFfprobeCreationTimeBrief`) и TXT/HTML; Vitest. `npm run check:quiet`.
-- [J-716] 2026-05-16 19:56:30 [Assistant]: §9 — ffprobe `format.tags.encoder` в probe, инспекторе и TXT/HTML; Vitest. `npm run check:quiet`.
-- [J-717] 2026-05-16 19:57:50 [Assistant]: §9 — ffprobe `format.tags.title` в probe, инспекторе и TXT/HTML; Vitest. Marathon #30 commit+push. `npm run check:quiet`.
-- [J-718] 2026-05-16 20:00:26 [Assistant]: §7.3 — регрессия `resolveFfmpegExportJobOptionsFromAppSettings`: `videoCodec` и `container` из settings и overrides; Vitest. `npm run check:quiet`.
-- [J-719] 2026-05-16 20:02:59 [Assistant]: §6.2 — broadcast `downloadsOutputDirectoryChanged` (pick/clear каталога yt-dlp): embedded ↔ pop-out, preload, Vitest; `docs/ARCHITECTURE.md`. `npm run check:quiet`.
-- [J-720] 2026-05-16 20:04:31 [Assistant]: §7.3 — регрессия resolve: `encodePreset`, `crf`, `scalePreset`, `stripMetadata` из settings и overrides; Vitest. `npm run check:quiet`.
-- [J-721] 2026-05-16 20:06:44 [Assistant]: §9 — ffprobe `format.tags.comment` → `containerCommentTag` в probe, инспекторе (`cmt …`) и TXT/HTML; Vitest. `npm run check:quiet`.
-- [J-722] 2026-05-16 20:08:00 [Assistant]: §7.3 — регрессия resolve: `twoPass` (libx264) и `audioMode` из settings/overrides; Vitest. Marathon #35 commit. `npm run check:quiet`.
-- [J-723] 2026-05-16 20:10:00 [Assistant]: §6.2 — broadcast `downloadsCliOptionsChanged` после persist CLI/cookies: embedded ↔ pop-out (`getCliOptions`/`refreshCliOpts`); Vitest. `npm run check:quiet`.
-- [J-724] 2026-05-16 20:11:22 [Assistant]: §7.3 — регрессия resolve: `extraArgsLine`, `stripChapters`, `fps` из settings и overrides; Vitest. `npm run check:quiet`.
-- [J-725] 2026-05-16 20:13:01 [Assistant]: §9 — ffprobe `format.tags.description` → `containerDescriptionTag` в probe, инспекторе (`desc …`) и TXT/HTML; Vitest. `npm run check:quiet`.
-- [J-726] 2026-05-16 20:14:04 [Assistant]: §7.3 — регрессия resolve: `cropPreset` и `videoTransform` из settings и overrides; Vitest. `npm run check:quiet`.
-- [J-727] 2026-05-16 20:15:15 [Assistant]: §7.3 — регрессия resolve: `videoBitrate` и `subtitleMode` из settings/overrides; Vitest. Marathon #40 commit+push. `npm run check:quiet`.
-- [J-728] 2026-05-16 20:17:16 [Assistant]: §7.3 — регрессия resolve: `audioBitrate` из settings и overrides; Vitest. `npm run check:quiet`.
-- [J-729] 2026-05-16 20:18:42 [Assistant]: §9 — ffprobe `format.tags.artist` → `containerArtistTag` в probe, инспекторе (`art …`) и TXT/HTML; Vitest. `npm run check:quiet`.
-- [J-730] 2026-05-16 20:19:58 [Assistant]: §7.3 — регрессия resolve: `audioGainDb` и `videoDenoise` из settings и overrides; Vitest. `npm run check:quiet`.
-- [J-731] 2026-05-16 20:21:06 [Assistant]: §7.3 — регрессия resolve: `videoSharpen` и `audioNormalize` из settings и overrides; Vitest. `npm run check:quiet`.
-- [J-732] 2026-05-16 20:22:17 [Assistant]: Marathon #45 commit — пакет J-728–731: resolve regressions (audioBitrate, filters) + ffprobe `format.tags.artist`; `npm run check:quiet`.
-- [J-733] 2026-05-16 20:23:58 [Assistant]: §9 — ffprobe `format.tags.album` → `containerAlbumTag` в probe, инспекторе (`alb …`) и TXT/HTML; Vitest. `npm run check:quiet`.
-- [J-734] 2026-05-16 20:25:05 [Assistant]: §7.3 — регрессия resolve: `videoBlur` и `videoDeinterlace` из settings и overrides; Vitest. `npm run check:quiet`.
-- [J-735] 2026-05-16 20:26:20 [Assistant]: §7.3 — регрессия resolve: `videoEqPreset` и `videoGrain` из settings и overrides; Vitest. `npm run check:quiet`.
-- [J-736] 2026-05-16 20:27:27 [Assistant]: §7.3 — регрессия resolve: `videoHue` и `videoVignette` из settings и overrides; Vitest. `npm run check:quiet`.
-- [J-737] 2026-05-16 20:28:31 [Assistant]: Marathon #50 commit+push — пакет J-733–736: ffprobe `format.tags.album` + resolve video filters; `npm run check:quiet`.
-- [J-738] 2026-05-16 20:30:26 [Assistant]: §7.3 — регрессия resolve: `videoDeband`, `videoHisteq`, `videoLut3d` из settings и overrides; Vitest. `npm run check:quiet`.
-- [J-739] 2026-05-16 20:31:59 [Assistant]: §9 — ffprobe `format.tags.genre` → `containerGenreTag` в probe, инспекторе (`gen …`) и TXT/HTML; Vitest. `npm run check:quiet`.
-- [J-740] 2026-05-16 20:34:10 [Assistant]: §9 — ffprobe `format.tags.copyright` → `containerCopyrightTag` в probe, инспекторе (`cpy …`) и TXT/HTML; Vitest. `npm run check:quiet`.
-- [J-741] 2026-05-16 20:35:57 [Assistant]: Marathon #55 commit — пакет J-738–740: resolve deband/histeq/lut3d + ffprobe genre/copyright; `npm run check:quiet`.
-- [J-742] 2026-05-16 20:37:41 [Assistant]: §9 — ffprobe `format.tags.date` → `containerDateTag` в probe, инспекторе (`date …`) и TXT/HTML; Vitest. `npm run check:quiet`.
-- [J-743] 2026-05-16 20:39:07 [Assistant]: §7.3 — связка `resolveFfmpegExportBatchOutputSuffixFromSettings` + `buildFfmpegExportBatchOutputBasename` (шаблон с `{ext}`); Vitest. `npm run check:quiet`.
-- [J-744] 2026-05-16 20:45:12 [Assistant]: §9 — ffprobe `format.tags.sort_album` → `containerSortAlbumTag` в probe, инспекторе (`salb …`) и TXT/HTML; Vitest. `npm run check:quiet`.
-- [J-745] 2026-05-16 20:48:47 [Assistant]: §9 — ffprobe `format.tags.sort_artist` и `sort_title` → `containerSortArtistTag` / `containerSortTitleTag` в probe, инспекторе (`sart` / `stit`) и TXT/HTML; Vitest. `npm run check:quiet`.
-- [J-746] 2026-05-16 20:55:50 [Assistant]: §9 — ffprobe `format.tags.purchase_date` → `containerPurchaseDateTag` в probe, инспекторе (`pdt …`) и TXT/HTML; Vitest. Marathon #60 commit+push. `npm run check:quiet`.
-- [J-747] 2026-05-16 20:57:26 [Assistant]: §9 — ffprobe `format.tags.album_artist` → `containerAlbumArtistTag` в probe, инспекторе (`aart …`) и TXT/HTML; Vitest. `npm run check:quiet`.
-- [J-748] 2026-05-16 20:58:56 [Assistant]: §9 — ffprobe `format.tags.publisher` и `encoded_by` → `containerPublisherTag` / `containerEncodedByTag` в probe, инспекторе (`pub` / `eby`) и TXT/HTML; Vitest. `npm run check:quiet`.
-- [J-749] 2026-05-16 21:00:15 [Assistant]: §9 — ffprobe `format.tags.track` и `disc` → `containerTrackTag` / `containerDiscTag` в probe, инспекторе (`trk` / `disc`) и TXT/HTML; Vitest. `npm run check:quiet`.
-- [J-750] 2026-05-16 21:01:35 [Assistant]: §9 — ffprobe `format.tags.software` → `containerSoftwareTag` в probe, инспекторе (`soft …`) и TXT/HTML; Vitest. `npm run check:quiet`.
-- [J-751] 2026-05-16 21:02:49 [Assistant]: §9 — ffprobe `format.tags.isrc` → `containerIsrcTag` в probe, инспекторе (`isrc …`) и TXT/HTML; Vitest. Marathon #65 commit (пакет J-747–751). `npm run check:quiet`.
-- [J-752] 2026-05-16 21:04:05 [Assistant]: §9 — ffprobe `format.tags.location` → `containerLocationTag` в probe, инспекторе (`loc …`) и TXT/HTML; Vitest. `npm run check:quiet`.
-- [J-753] 2026-05-16 21:05:52 [Assistant]: §9 — ffprobe `format.tags.keywords` → `containerKeywordsTag` в probe, инспекторе (`kw …`) и TXT/HTML; Vitest. `npm run check:quiet`.
-- [J-754] 2026-05-16 21:07:12 [Assistant]: §9 — ffprobe `format.tags.lyrics` → `containerLyricsTag` в probe, инспекторе (`lyr …`) и TXT/HTML; Vitest. `npm run check:quiet`.
-- [J-755] 2026-05-16 21:08:26 [Assistant]: §9 — ffprobe `format.tags.synopsis` → `containerSynopsisTag` в probe, инспекторе (`syn …`) и TXT/HTML; Vitest. `npm run check:quiet`.
-- [J-756] 2026-05-16 21:10:16 [Assistant]: §9 — ffprobe `format.tags.performer` → `containerPerformerTag` в probe, инспекторе (`perf …`) и TXT/HTML; Vitest. Marathon #70 commit+push (пакет J-752–756). `npm run check:quiet`.
+- [J-695] 2026-05-16 21:21:50 [Assistant]: Marathon-микрошаги (§6–§9/§7.3): ffprobe `format.*`/`format.tags.*`, resolve export и smoke/broadcast по 1–2 поля на J — сводка (бывш. J-695–J-756).
+- [J-696] 2026-05-16 21:21:53 [Assistant]: Anti-micro итерации: `ffprobe-format-tag-registry` (пакет `format.tags.*`), сжатие журнала; `fluxalloy-iteration-batch.mdc`, усилены marathon/journal/REANCHOR/SDK; `check:journal` — эвристика микро-ffprobe/resolve; consolidate CRLF-safe. `npm run check:quiet`.
+- [J-697] 2026-05-16 21:30:12 [Assistant]: Anti-micro **по всему проекту**: `ffmpeg-export-resolve-field-registry` + contract (убрана копипаста resolve); `check:field-registries`; правила/check:journal — ffprobe, resolve, broadcast, smoke, aria-busy; тесты resolve — пакетные.
+- [J-698] 2026-05-16 21:31:55 [Assistant]: Доводка: `check:quiet` зелёный (lint/typecheck/tests/field-registries/journal); `check:field-registries` — исключение `twoPass`/`extraArgsLine`; заголовок журнала — scope «весь проект»; resolve batch-тест `libx264`. `npm run check:quiet`.
+- [J-699] 2026-05-16 21:41:29 [Assistant]: Anti-копипаста по проекту: `parse-whitelist.ts`, `ffmpeg-export-parse-registry` (15 enum-парсеров), `ffprobe-container-field-registry` (format parse+export); `audit:copy-paste` в `check:quiet`; усилены `check:field-registries` и `fluxalloy-iteration-batch.mdc` (обязательный обход перед срезом). Hotspots: settings-store, остаток parse в export-service. `npm run check:quiet`.
+- [J-700] 2026-05-16 21:44:37 [Assistant]: Охват **src+tests+scripts** (268 файлов): `audit:copy-paste` — фикстуры тестов, inline probeBase запрещён; `settings-stored-parse` + рефактор `settings-store`; `tests/fixtures/media-probe-success-base`, `app-settings-base`. Hotspots: terminal-contract-scenarios, ytdlp-progress-parser, ffmpeg-export-argv. `npm run check:quiet`.
+- [J-701] 2026-05-16 22:11:01 [Assistant]: Программа **полного аудита/рефактора** — `docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md` (фазы 0–9); `audit-scope.config.mjs`, `audit:inventory`/`structural`/`all`; `fluxalloy-project-audit.mdc`; baseline `docs/audit-manifest.json` (277 files). `npm run check:quiet`.
+- [J-702] 2026-05-16 22:22:48 [Assistant]: Однозначные правила: `fluxalloy-rules-explicit.mdc` (глоссарий), переписаны все `.cursor/rules/*.mdc`; `check:rules-explicit` в `check:quiet`; синхрон `AGENT_REANCHOR.md`, `AGENTS.md`, `SOURCES_OF_TRUTH`, SDK contract. `npm run check:quiet`.

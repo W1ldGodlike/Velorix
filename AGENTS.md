@@ -2,13 +2,13 @@
 
 Краткая карта (подробности — в linked files):
 
-1. **Всегда:** [`.cursor/rules/fluxalloy-core.mdc`](.cursor/rules/fluxalloy-core.mdc), [`fluxalloy-marathon.mdc`](.cursor/rules/fluxalloy-marathon.mdc)
-2. **Иерархия без противоречий:** [`docs/SOURCES_OF_TRUTH.md`](docs/SOURCES_OF_TRUTH.md)
-3. **Marathon / «продолжай»:** достаточно слова «продолжай»; [`docs/AGENT_REANCHOR.md`](docs/AGENT_REANCHOR.md) — re-anchor **10**, коммит **5**, push **10**; счётчик: `npm run agent:session -- bump` (ничего вручную не создавать)
-4. **Продукт:** [`FLUXALLOY_TZ.md`](FLUXALLOY_TZ.md) (не править без просьбы)
+1. **Всегда:** [`fluxalloy-rules-explicit.mdc`](.cursor/rules/fluxalloy-rules-explicit.mdc), [`fluxalloy-core.mdc`](.cursor/rules/fluxalloy-core.mdc), [`fluxalloy-agent-runtime.mdc`](.cursor/rules/fluxalloy-agent-runtime.mdc), [`fluxalloy-marathon.mdc`](.cursor/rules/fluxalloy-marathon.mdc), [`fluxalloy-iteration-batch.mdc`](.cursor/rules/fluxalloy-iteration-batch.mdc). **Если** существует [`docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md`](docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md) **то** также [`fluxalloy-project-audit.mdc`](.cursor/rules/fluxalloy-project-audit.mdc) (после фазы 9 — audit.mdc без plan-файла).
+2. **Иерархия:** [`docs/SOURCES_OF_TRUTH.md`](docs/SOURCES_OF_TRUTH.md)
+3. **Marathon / «продолжай»:** [`docs/AGENT_MARATHON.md`](docs/AGENT_MARATHON.md) — `bump` в конце; cadence **после** bump: коммит при `% 5 === 0`, push при `% 10 === 0`
+4. **Продукт:** [`FLUXALLOY_TZ.md`](FLUXALLOY_TZ.md) — **запрещено** правки без явной просьбы владельца в чате
 5. **Спринт:** [`IMPLEMENTATION_CHECKLIST.md`](IMPLEMENTATION_CHECKLIST.md) → `## Ближайший TODO спринта`
-6. **Журнал:** [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md) — одна сводная `J-*` / итерация
-7. **Справочник:** [`docs/AGENT_INSTRUCTIONS_AND_AGREEMENTS.md`](docs/AGENT_INSTRUCTIONS_AND_AGREEMENTS.md)
+6. **Журнал:** [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md) — **одна** `J-NNN` на итерацию
+7. **Operational notes:** [`docs/AGENT_OPERATIONAL_NOTES.md`](docs/AGENT_OPERATIONAL_NOTES.md) — CSP, медиа, yt-dlp (открывать при отладке)
 8. **SDK:** [`scripts/cursor-automation/prompts/agent-contract.txt`](scripts/cursor-automation/prompts/agent-contract.txt)
 
-Проверки: `npm run check:quiet` перед коммитом; полный `npm run check` при необходимости.
+**Проверки:** `npm run check:quiet` перед коммитом marathon (включает `check:rules-explicit`). Полный `npm run check` — перед релизом или по запросу владельца.

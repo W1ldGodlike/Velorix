@@ -77,6 +77,64 @@ for (let i = 1; i < stamps.length; i++) {
   }
 }
 
+/** Однотипные микро-шаги в хвосте журнала (любой §). */
+const MICRO_JOURNAL_PATTERNS = [
+  {
+    id: 'ffprobe-field',
+    re: /§9\s*—\s*ffprobe\s+`format\.(tags\.\w+|\w+)`|format\.tags\.\w+\s*→\s*`container\w+`/i,
+    hint: 'ffprobe format/tags — пакетом через ffprobe-format-tag-registry.ts'
+  },
+  {
+    id: 'resolve-field',
+    re: /§7\.3\s*—\s*регрессия\s+resolve:/i,
+    hint: 'resolve export — пакетом через ffmpeg-export-resolve-field-registry.ts'
+  },
+  {
+    id: 'broadcast-ipc',
+    re: /§6\.?\d*\s*—\s*broadcast\s+`[^`]+`/i,
+    hint: 'IPC broadcast — один срез: канал + preload + окна'
+  },
+  {
+    id: 'smoke-packaged',
+    re: /§(9|19|7)\/?\s*§?\d*\s*—\s*`smoke:packaged-/i,
+    hint: 'packaged smoke — пакетом в check:release, не по одному бинарнику на J'
+  },
+  {
+    id: 'aria-busy',
+    re: /aria-busy|busy-флаг/i,
+    hint: 'busy-флаги — пакетом по workspace, не по одному компоненту'
+  },
+  {
+    id: 'settings-ipc',
+    re: /IPC\s+`settingsSet\w+`|preload.*settings/i,
+    hint: 'settings IPC — пакет полей или реестр, не одно поле на итерацию'
+  }
+]
+
+/** @type {typeof lines} */
+const entryLines = []
+for (let i = 0; i < lines.length; i++) {
+  const line = lines[i]
+  if (!line.startsWith('- ')) continue
+  const m = ENTRY_RE.exec(line)
+  if (!m) continue
+  entryLines.push({ line: i + 1, body: line.slice(m[0].length) })
+}
+
+const scanTail = entryLines.slice(-14)
+for (const pattern of MICRO_JOURNAL_PATTERNS) {
+  let count = 0
+  for (const e of scanTail) {
+    if (pattern.re.test(e.body)) count += 1
+  }
+  if (count >= 4) {
+    console.error(
+      `[journal] last ${count} entries look like micro "${pattern.id}" steps — one iteration = one J; ${pattern.hint}; see fluxalloy-iteration-batch.mdc`
+    )
+    failed = true
+  }
+}
+
 const tail = stamps.slice(-10).filter((s) => Number.isFinite(s.ms))
 if (tail.length >= 5) {
   const deltas = []

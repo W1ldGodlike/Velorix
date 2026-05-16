@@ -114,22 +114,51 @@ export {
   resolveFfmpegExportVideoVignetteFilter,
   shouldApplyFfmpegExportTrim
 } from '../shared/ffmpeg-export-argv'
+import {
+  parseFfmpegExportEncodePreset,
+  parseFfmpegExportContainer,
+  parseFfmpegExportAudioMode,
+  parseFfmpegExportScalePreset,
+  parseFfmpegExportVideoTransform,
+  parseFfmpegExportCropPreset,
+  parseFfmpegExportSubtitleMode,
+  parseFfmpegExportVideoDenoise,
+  parseFfmpegExportVideoSharpen,
+  parseFfmpegExportVideoDeband,
+  parseFfmpegExportVideoHisteq,
+  parseFfmpegExportVideoLut3d,
+  parseFfmpegExportVideoEqPreset,
+  parseFfmpegExportVideoGrain,
+  parseFfmpegExportVideoVignette,
+  parseFfmpegExportVideoBlur,
+  parseFfmpegExportVideoDeinterlace,
+  parseFfmpegExportVideoHue,
+  parseFfmpegExportAudioNormalize
+} from '../shared/ffmpeg-export-parse-registry'
 
-export function parseFfmpegExportEncodePreset(raw: unknown): FfmpegExportEncodePresetId {
-  if (raw === 'balance' || raw === 'smaller' || raw === 'quality') {
-    return raw
-  }
-  return 'balance'
-}
+export {
+  parseFfmpegExportEncodePreset,
+  parseFfmpegExportContainer,
+  parseFfmpegExportAudioMode,
+  parseFfmpegExportScalePreset,
+  parseFfmpegExportVideoTransform,
+  parseFfmpegExportCropPreset,
+  parseFfmpegExportSubtitleMode,
+  parseFfmpegExportVideoDenoise,
+  parseFfmpegExportVideoSharpen,
+  parseFfmpegExportVideoDeband,
+  parseFfmpegExportVideoHisteq,
+  parseFfmpegExportVideoLut3d,
+  parseFfmpegExportVideoEqPreset,
+  parseFfmpegExportVideoGrain,
+  parseFfmpegExportVideoVignette,
+  parseFfmpegExportVideoBlur,
+  parseFfmpegExportVideoDeinterlace,
+  parseFfmpegExportVideoHue,
+  parseFfmpegExportAudioNormalize
+} from '../shared/ffmpeg-export-parse-registry'
 
 export { parseFfmpegExportVideoCodec }
-
-export function parseFfmpegExportContainer(raw: unknown): FfmpegExportContainerId {
-  if (raw === 'mkv' || raw === 'mov' || raw === 'mp4') {
-    return raw
-  }
-  return 'mp4'
-}
 
 export function inferFfmpegExportContainerFromPath(path: string): FfmpegExportContainerId {
   const lower = path.trim().toLowerCase()
@@ -181,37 +210,6 @@ export function parseFfmpegExportAudioBitrate(raw: unknown): string | null {
   return `${kbps}k`
 }
 
-export function parseFfmpegExportAudioMode(raw: unknown): FfmpegExportAudioModeId {
-  if (raw === 'none') {
-    return 'none'
-  }
-  if (raw === 'libmp3lame') {
-    return 'libmp3lame'
-  }
-  if (raw === 'ac3') {
-    return 'ac3'
-  }
-  if (raw === 'copy') {
-    return 'copy'
-  }
-  if (raw === 'pcm_s16le') {
-    return 'pcm_s16le'
-  }
-  if (raw === 'libvorbis') {
-    return 'libvorbis'
-  }
-  if (raw === 'libopus') {
-    return 'libopus'
-  }
-  if (raw === 'flac') {
-    return 'flac'
-  }
-  if (raw === 'alac') {
-    return 'alac'
-  }
-  return 'aac'
-}
-
 export function parseFfmpegExportVideoBitrate(raw: unknown): string | null {
   if (typeof raw !== 'string') {
     return null
@@ -240,27 +238,6 @@ export function parseFfmpegExportFps(raw: unknown): number | null {
   return n
 }
 
-export function parseFfmpegExportScalePreset(raw: unknown): FfmpegExportScalePresetId {
-  if (raw === '480p' || raw === '720p' || raw === '1080p') {
-    return raw
-  }
-  return 'source'
-}
-
-export function parseFfmpegExportVideoTransform(raw: unknown): FfmpegExportVideoTransformId {
-  if (raw === 'cw90' || raw === 'ccw90' || raw === 'r180' || raw === 'hflip' || raw === 'vflip') {
-    return raw
-  }
-  return 'none'
-}
-
-export function parseFfmpegExportCropPreset(raw: unknown): FfmpegExportCropPresetId {
-  if (raw === 'center-square' || raw === 'center-16-9' || raw === 'center-4-3') {
-    return raw
-  }
-  return 'none'
-}
-
 /** §7.2 / v0 — двухпроходное libx264; только явный `true`. */
 export function parseFfmpegExportTwoPass(raw: unknown): boolean {
   return raw === true
@@ -271,117 +248,9 @@ export function parseFfmpegExportEconomyMode(raw: unknown): boolean {
   return raw === true
 }
 
-/**
- * §7.2 — режим субтитров. По умолчанию `drop`: argv не меняется, поведение совпадает с
- * прежней веткой (ffmpeg сам решает по дефолтному mapping). `copy` валидируется отдельно,
- * чтобы случайные строки в `settings.json` не попадали в spawn.
- */
-export function parseFfmpegExportSubtitleMode(raw: unknown): FfmpegExportSubtitleModeId {
-  if (raw === 'copy') {
-    return 'copy'
-  }
-  return 'drop'
-}
-
 /** §7.2 — strip-флаги; только явный `true` ставит `-map_metadata -1` / `-map_chapters -1`. */
 export function parseFfmpegExportStripFlag(raw: unknown): boolean {
   return raw === true
-}
-
-/** §7.2 — пресет `hqdn3d`; по умолчанию `off`. */
-export function parseFfmpegExportVideoDenoise(raw: unknown): FfmpegExportVideoDenoiseId {
-  if (raw === 'light' || raw === 'medium' || raw === 'strong') {
-    return raw
-  }
-  return 'off'
-}
-
-/** §7.2 — пресет `unsharp`; по умолчанию `off`. */
-export function parseFfmpegExportVideoSharpen(raw: unknown): FfmpegExportVideoSharpenId {
-  if (raw === 'light' || raw === 'medium' || raw === 'strong') {
-    return raw
-  }
-  return 'off'
-}
-
-/** §7.2 — пресет `deband`; только whitelist, иначе `off`. */
-export function parseFfmpegExportVideoDeband(raw: unknown): FfmpegExportVideoDebandId {
-  if (raw === 'light' || raw === 'medium' || raw === 'strong') {
-    return raw
-  }
-  return 'off'
-}
-
-/** §7.2 — пресет `histeq`; только whitelist, иначе `off`. */
-export function parseFfmpegExportVideoHisteq(raw: unknown): FfmpegExportVideoHisteqId {
-  if (raw === 'light' || raw === 'medium' || raw === 'strong') {
-    return raw
-  }
-  return 'off'
-}
-
-/** §7.2 — bundled `lut3d`; только whitelist, иначе `off`. */
-export function parseFfmpegExportVideoLut3d(raw: unknown): FfmpegExportVideoLut3dId {
-  if (raw === 'film-warm' || raw === 'film-cool' || raw === 'punch') {
-    return raw
-  }
-  return 'off'
-}
-
-/** §7.2 — пресет `eq=` (цветокор); только whitelist, иначе `off`. */
-export function parseFfmpegExportVideoEqPreset(raw: unknown): FfmpegExportVideoEqPresetId {
-  if (raw === 'warm' || raw === 'cool' || raw === 'vivid' || raw === 'flat') {
-    return raw
-  }
-  return 'off'
-}
-
-/** §7.2 — пресет `noise` (зернистость); только whitelist, иначе `off`. */
-export function parseFfmpegExportVideoGrain(raw: unknown): FfmpegExportVideoGrainId {
-  if (raw === 'light' || raw === 'medium' || raw === 'strong') {
-    return raw
-  }
-  return 'off'
-}
-
-/** §7.2 — пресет `vignette`; только whitelist, иначе `off`. */
-export function parseFfmpegExportVideoVignette(raw: unknown): FfmpegExportVideoVignetteId {
-  if (raw === 'light' || raw === 'medium' || raw === 'strong') {
-    return raw
-  }
-  return 'off'
-}
-
-/** §7.2 — пресет `gblur`; только whitelist, иначе `off`. */
-export function parseFfmpegExportVideoBlur(raw: unknown): FfmpegExportVideoBlurId {
-  if (raw === 'light' || raw === 'medium' || raw === 'strong') {
-    return raw
-  }
-  return 'off'
-}
-
-/** §7.2 — деинтерлейс `yadif`; только whitelist, иначе `off`. */
-export function parseFfmpegExportVideoDeinterlace(raw: unknown): FfmpegExportVideoDeinterlaceId {
-  if (raw === 'frame' || raw === 'field') {
-    return raw
-  }
-  return 'off'
-}
-
-/** §7.2 — пресет `hue` после `eq`; только whitelist, иначе `off`. */
-export function parseFfmpegExportVideoHue(raw: unknown): FfmpegExportVideoHueId {
-  if (raw === 'warmShift' || raw === 'coolShift' || raw === 'satBoost') {
-    return raw
-  }
-  return 'off'
-}
-
-/** §7.2 — пресет нормализации громкости (`loudnorm`/`dynaudnorm`); иначе `off`. */
-export function parseFfmpegExportAudioNormalize(raw: unknown): FfmpegExportAudioNormalizeId {
-  if (raw === 'loudnorm' || raw === 'dynaudnorm') {
-    return raw
-  }
-  return 'off'
 }
 
 /**

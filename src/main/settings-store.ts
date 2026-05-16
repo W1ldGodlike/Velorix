@@ -6,7 +6,6 @@ import type { FfmpegExportVideoCodecId } from '../shared/ffmpeg-export-contract'
 import { parseFfmpegExportVideoCodec } from '../shared/ffmpeg-export-video-codec'
 import type {
   AppSettings,
-  AppTheme,
   DownloadsWindowUiPanelState,
   MainWindowUiPanelState,
   StoredWindowRect,
@@ -28,6 +27,11 @@ import {
   DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX,
   parseFfmpegExportBatchOutputSuffixTemplate
 } from '../shared/ffmpeg-export-batch-output-suffix'
+import {
+  parseStoredTheme as parseAppThemeFromRaw,
+  parseStoredTrimmedWhitelistEnum,
+  parseStoredWhitelistEnum
+} from '../shared/settings-stored-parse'
 
 export type {
   AppSettings,
@@ -116,10 +120,7 @@ function parseFfmpegSnapshotDirectoryStored(raw: unknown): string | undefined {
 }
 
 function parseFfmpegSnapshotFormatStored(raw: unknown): 'png' | 'jpg' | undefined {
-  if (raw === 'png' || raw === 'jpg') {
-    return raw
-  }
-  return undefined
+  return parseStoredWhitelistEnum(raw, ['png', 'jpg'])
 }
 
 function parseYtdlpFilenameTemplate(raw: unknown): string | undefined {
@@ -149,10 +150,7 @@ function parseYtdlpExtraArgsLineStored(raw: unknown): string | undefined {
 }
 
 function parseYtdlpSubtitlePresetStored(raw: unknown): 'manual' | 'manual_auto' | undefined {
-  if (raw === 'manual' || raw === 'manual_auto') {
-    return raw
-  }
-  return undefined
+  return parseStoredWhitelistEnum(raw, ['manual', 'manual_auto'])
 }
 
 /** Только безопасный алфавит для одного argv-токена `--sub-langs` (без пробелов/shell). */
@@ -182,10 +180,7 @@ function parseYtdlpCookiesFileStored(raw: unknown): string | undefined {
 }
 
 function parseYtdlpCookiesBrowserStored(raw: unknown): 'chrome' | 'edge' | 'firefox' | undefined {
-  if (raw === 'chrome' || raw === 'edge' || raw === 'firefox') {
-    return raw
-  }
-  return undefined
+  return parseStoredWhitelistEnum(raw, ['chrome', 'edge', 'firefox'])
 }
 
 function parseYtdlpCookiesBrowserProfileStored(raw: unknown): string | undefined {
@@ -200,10 +195,7 @@ function parseYtdlpCookiesBrowserProfileStored(raw: unknown): string | undefined
 }
 
 function parseYtdlpImpersonateStored(raw: unknown): 'chrome' | 'edge' | 'firefox' | undefined {
-  if (raw === 'chrome' || raw === 'edge' || raw === 'firefox') {
-    return raw
-  }
-  return undefined
+  return parseStoredWhitelistEnum(raw, ['chrome', 'edge', 'firefox'])
 }
 
 function parseYtdlpRateLimitStored(raw: unknown): string | undefined {
@@ -225,14 +217,7 @@ function parseYtdlpRetriesStored(raw: unknown): number | undefined {
 }
 
 function parseFfmpegExportEncodePresetStored(raw: unknown): string | undefined {
-  if (typeof raw !== 'string') {
-    return undefined
-  }
-  const t = raw.trim()
-  if (t === 'balance' || t === 'smaller' || t === 'quality') {
-    return t
-  }
-  return undefined
+  return parseStoredTrimmedWhitelistEnum(raw, ['balance', 'smaller', 'quality'])
 }
 
 function parseFfmpegExportVideoCodecStored(raw: unknown): FfmpegExportVideoCodecId | undefined {
@@ -244,10 +229,7 @@ function parseFfmpegExportVideoCodecStored(raw: unknown): FfmpegExportVideoCodec
 }
 
 function parseFfmpegExportContainerStored(raw: unknown): 'mp4' | 'mkv' | 'mov' | undefined {
-  if (raw === 'mp4' || raw === 'mkv' || raw === 'mov') {
-    return raw
-  }
-  return undefined
+  return parseStoredWhitelistEnum(raw, ['mp4', 'mkv', 'mov'])
 }
 
 function parseFfmpegExportCrfStored(raw: unknown): number | undefined {
@@ -301,21 +283,18 @@ function parseFfmpegExportAudioModeStored(
   | 'flac'
   | 'alac'
   | undefined {
-  if (
-    raw === 'aac' ||
-    raw === 'libmp3lame' ||
-    raw === 'ac3' ||
-    raw === 'copy' ||
-    raw === 'none' ||
-    raw === 'pcm_s16le' ||
-    raw === 'libvorbis' ||
-    raw === 'libopus' ||
-    raw === 'flac' ||
-    raw === 'alac'
-  ) {
-    return raw
-  }
-  return undefined
+  return parseStoredWhitelistEnum(raw, [
+    'aac',
+    'libmp3lame',
+    'ac3',
+    'copy',
+    'none',
+    'pcm_s16le',
+    'libvorbis',
+    'libopus',
+    'flac',
+    'alac'
+  ])
 }
 
 function parseFfmpegExportFpsStored(raw: unknown): number | undefined {
@@ -328,10 +307,7 @@ function parseFfmpegExportFpsStored(raw: unknown): number | undefined {
 function parseFfmpegExportScalePresetStored(
   raw: unknown
 ): 'source' | '480p' | '720p' | '1080p' | undefined {
-  if (raw === 'source' || raw === '480p' || raw === '720p' || raw === '1080p') {
-    return raw
-  }
-  return undefined
+  return parseStoredWhitelistEnum(raw, ['source', '480p', '720p', '1080p'])
 }
 
 const MAIN_UI_PANEL_KEYS = [
@@ -389,13 +365,6 @@ function parseDownloadsWindowUiPanels(raw: unknown): DownloadsWindowUiPanelState
   return Object.keys(out).length > 0 ? out : undefined
 }
 
-function parseStoredTheme(raw: unknown): AppTheme {
-  if (raw === 'light' || raw === 'dark' || raw === 'system') {
-    return raw
-  }
-  return 'dark'
-}
-
 const defaults: AppSettings = {
   theme: 'dark',
   ffmpegExportUserPresets: getBuiltinFfmpegExportUserPresets('ru')
@@ -415,7 +384,7 @@ export function loadSettings(filePath: string): AppSettings {
     }
     const raw = readFileSync(filePath, 'utf-8')
     const parsed = JSON.parse(raw) as Partial<AppSettings>
-    const theme = parseStoredTheme(parsed.theme)
+    const theme = parseAppThemeFromRaw(parsed.theme)
     const last =
       typeof parsed.lastOpenedSourcePath === 'string' && parsed.lastOpenedSourcePath.trim() !== ''
         ? parsed.lastOpenedSourcePath.trim()

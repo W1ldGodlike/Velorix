@@ -9,6 +9,9 @@ const steps = [
   ['typecheck', ['run', 'typecheck']],
   ['test', ['run', 'test']],
   ['trusted-hashes', ['run', 'check:trusted-hashes']],
+  ['rules-explicit', ['run', 'check:rules-explicit']],
+  ['field-registries', ['run', 'check:field-registries']],
+  ['audit:copy-paste', ['run', 'audit:copy-paste']],
   ['journal', ['run', 'check:journal']],
   ['checklist', ['run', 'check:checklist']],
   ['secrets', ['run', 'check:secrets']]

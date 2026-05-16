@@ -1,0 +1,57 @@
+import type { MediaProbeSuccess } from '../../src/shared/ffprobe-contract'
+
+/** Минимальный валидный `MediaProbeSuccess` для unit-тестов; без копипасты 50+ полей. */
+export function createMediaProbeSuccessBase(
+  overrides: Partial<MediaProbeSuccess> = {}
+): MediaProbeSuccess {
+  return {
+    ok: true,
+    durationSec: 1,
+    video: { width: 1280, height: 720, codec: 'h264' },
+    videoFpsApprox: 24,
+    audioCodec: 'aac',
+    formatName: 'mp4',
+    formatLongName: null,
+    bitrateKbps: null,
+    containerMajorBrand: null,
+    containerCreationTime: null,
+    containerEncoder: null,
+    containerPublisherTag: null,
+    containerEncodedByTag: null,
+    containerSoftwareTag: null,
+    containerTitleTag: null,
+    containerCommentTag: null,
+    containerSynopsisTag: null,
+    containerDescriptionTag: null,
+    containerKeywordsTag: null,
+    containerLyricsTag: null,
+    containerArtistTag: null,
+    containerPerformerTag: null,
+    containerSortArtistTag: null,
+    containerAlbumTag: null,
+    containerAlbumArtistTag: null,
+    containerSortAlbumTag: null,
+    containerSortTitleTag: null,
+    containerGenreTag: null,
+    containerTrackTag: null,
+    containerDiscTag: null,
+    containerCopyrightTag: null,
+    containerIsrcTag: null,
+    containerDateTag: null,
+    containerLocationTag: null,
+    containerPurchaseDateTag: null,
+    containerCompatibleBrands: null,
+    probeScore: null,
+    containerNbStreams: null,
+    containerNbPrograms: null,
+    containerFormatFlags: null,
+    containerSizeBytes: null,
+    containerStartTimeSec: null,
+    containerStartTimeRealSec: null,
+    containerFilename: null,
+    tracks: [],
+    chapters: [],
+    rawJson: '{}',
+    ...overrides
+  }
+}

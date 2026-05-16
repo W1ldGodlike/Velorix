@@ -1,0 +1,306 @@
+# Программа: полный аудит и рефакторинг репозитория
+
+> **Статус:** активный временный трек (2026-05).  
+> **Удалить этот файл** после фазы 9 (критерии «Готово») — канон процесса останется в `.cursor/rules/fluxalloy-project-audit.mdc` и скриптах `audit-*` / `check:field-registries`.
+
+Владелец: запрос на **ВСЁ** — весь исполняемый код, все зоны репо, без сужения до §9/ffprobe/`src` только.  
+Агент: **не додумывать scope** — если в плане «весь репозиторий», работать по таблице областей ниже.
+
+---
+
+## 1. Что значит «ВСЁ» (явная граница)
+
+| Входит в программу | Не входит (только по отдельной задаче) |
+|--------------------|----------------------------------------|
+| `src/**` — main, preload, renderer, shared | `Help/**` — пользовательская документация (содержание, не код) |
+| `tests/**` — unit/integration | `Data/**` — JSON-данные, хеши движков (не рефакторить структуру без ТЗ) |
+| `scripts/**` — CI, audit, automation | `resources/luts/*.cube` — бинарные ассеты |
+| Корневые конфиги: `vitest.config.ts`, `electron.vite.config.ts`, `eslint.config.mjs`, `tsconfig*.json` | `bin/**` — бинарники движков |
+| `.github/workflows/**` — если ломает `check` | `FLUXALLOY_TZ.md` — не редактировать без просьбы владельца |
+| `docs/ARCHITECTURE.md`, `ipc-channels` — синхрон с кодом | Маркетинговые README — только факты при расхождении |
+
+**Scope в коде:** `scripts/audit-scope.config.mjs` — единственное место, куда добавлять новые корни/исключения при росте проекта.  
+**Счётчик файлов не хардкодится:** `npm run audit:inventory` → `docs/audit-manifest.json`.
+
+---
+
+## 2. Правила: два слоя (как вы описали)
+
+Фраза «закрепить правила **до** рефакторинга» была неудачной. Имеется в виду **два разных момента**:
+
+### A. До и во время рефакторинга — **ограждения**, чтобы не накосячить сильнее
+
+Цель: пока код ещё «сырой», **не усугублять** (новая копипаста, микро-J, сужение scope, поломка без тестов).
+
+| Что | Где |
+|-----|-----|
+| Не сужать «весь проект» до ffprobe/§9 | `fluxalloy-project-audit.mdc`, `fluxalloy-iteration-batch.mdc` |
+| Одна J на итерацию, пакетные срезы | `fluxalloy-journal.mdc`, `fluxalloy-iteration-batch.mdc` |
+| Уже закрытые зоны не откатывать | `check:field-registries`, `audit:copy-paste` (регрессии = fail) |
+| Новые поля — в реестр, не ctrl+c | таблица реестров в `fluxalloy-iteration-batch.mdc` |
+| Тесты — fixtures, не inline `probeBase` | `check:field-registries` |
+
+Это **не** «все будущие правила на веки» — только **страховка на период большого рефактора**.
+
+### B. По результатам рефакторинга — **актуализировать**, чтобы не повторилось
+
+Цель: всё, что нашли и **исправили**, перенести в постоянные правила и CI, иначе через месяц снова нарастёт копипаста.
+
+**Когда:** в **том же коммите**, где зона фазы считается закрытой (не «когда-нибудь потом»).
+
+| Нашли при рефакторе | Закрепить |
+|---------------------|-----------|
+| Паттерн копипасты (N похожих parse/export) | строка в реестре + проверка в `check:field-registries` |
+| Дубли в тестах | fixture / `it.each` + запрет в audit |
+| Новый модуль после split | `docs/ARCHITECTURE.md` + при IPC — `ipc-channels.ts` |
+| Временный HACK убрали | правило «как правильно» в `fluxalloy-iteration-batch.mdc` или узкий `.mdc` |
+| Hotspot исчез из audit | порог/ошибка в `audit-copy-paste` (warning → fail) |
+
+**Итог:** сначала **ограждения** (A), по мере закрытия зон — **ужесточение** (B). В конце программы (фаза 9) план-файл удаляется; остаются rules + `npm run check:quiet`.
+
+---
+
+## 3. Цели рефакторинга (три слоя)
+
+1. **Копипаста** — registries, `parseWhitelistEnum`, fixtures, `it.each`; запрет возврата через CI.  
+2. **Крупные модули** — файлы с высокой связностью/размером; разбиение по слоям (shared ← main ← renderer).  
+3. **Временное / «как нибудь»** — TODO/FIXME, дубли IPC, несогласованные контракты, обходы без тестов.
+
+Каждый слой закрывается **фазами**; одна marathon-итерация = один срез фазы, одна `J-*`.
+
+---
+
+## 4. Инфраструктура (фаза 0 — частично сделано)
+
+| Артефакт | Назначение |
+|----------|------------|
+| `scripts/audit-scope.config.mjs` | Scope обхода (растёт с проектом) |
+| `npm run audit:inventory` | Manifest всех файлов scope |
+| `npm run audit:copy-paste` | Hotspots + регрессии |
+| `npm run check:field-registries` | Защита реестров |
+| `.cursor/rules/fluxalloy-project-audit.mdc` | Поведение агента на время программы |
+| `.cursor/rules/fluxalloy-iteration-batch.mdc` | Пакетные итерации, anti-micro |
+
+**Сделать в фазе 0 (остаток):**
+
+- [x] **0.1** Зафиксировать baseline: `npm run audit:inventory` → `docs/audit-manifest.json` (277 files, 2026-05-16).  
+- [x] **0.2** `npm run audit:structural` — размер файлов, `TODO|FIXME|HACK` (29 файлов ≥400 строк; крупнейшие: `terminal-contract.ts`, `App.tsx`, `index.ts`).  
+- [ ] **0.3** Таблица hotspots → колонка «фаза» в §4 этого файла (обновлять каждые 5 итераций).  
+- [ ] **0.4** Синхронизация: `docs/SOURCES_OF_TRUTH.md`, `AGENTS.md`, `agent-contract.txt` — строка на программу.
+
+---
+
+## 5. Пошаговый план фаз
+
+### Фаза 1 — Инвентаризация (карта, без массового рефактора)
+
+**Цель:** полный список долгов, приоритеты, ноль «сюрпризов».
+
+| Шаг | Действие | Выход |
+|-----|----------|--------|
+| 1.1 | `audit:inventory` + сохранить manifest | `docs/audit-manifest.json` |
+| 1.2 | Прогон `audit:copy-paste`, выписать все hotspots в таблицу ниже | § «Hotspot log» |
+| 1.3 | `rg "TODO|FIXME|HACK|temporary|временн" src tests scripts` | список файлов |
+| 1.4 | Файлы >400 строк (скрипт structural) | кандидаты фазы 4 |
+| 1.5 | Сверка `docs/ARCHITECTURE.md` ↔ `ipc-channels.ts` | список расхождений |
+
+**Критерий готовности:** таблица hotspots заполнена; manifest в репо; одна сводная `J-*`.
+
+---
+
+### Фаза 2 — Копипаста: парсеры и реестры (`src`)
+
+**Цель:** любой whitelist/поле — таблица, не N функций.
+
+| Зона | Статус | Реестр / файл |
+|------|--------|----------------|
+| ffprobe `format.tags.*` | ✅ | `ffprobe-format-tag-registry.ts` |
+| ffprobe `format.*` | ✅ | `ffprobe-container-field-registry.ts` |
+| ffmpeg export enum | ✅ | `ffmpeg-export-parse-registry.ts` |
+| ffmpeg export resolve | ✅ | `ffmpeg-export-resolve-field-registry.ts` |
+| settings.json stored | ✅ | `settings-stored-parse.ts` |
+| `ytdlp-download-options.ts` | ⬜ | новый registry или shared parse |
+| `ffmpeg-export-service.ts` (остаток parse) | ⬜ | вынести в registries / shared |
+| `ffprobe-side-data.ts` summarizers | ⬜ | table-driven side_data types |
+| `ffprobe-summary-export-locale.ts` | ⬜ | только если дубли шаблонов |
+
+| Шаг | Действие |
+|-----|----------|
+| 2.1 | Закрыть hotspots `whitelist-if-chains` в `src/` |
+| 2.2 | Расширить `check:field-registries` под каждый новый реестр |
+| 2.3 | Пакетные тесты на реестры (`it.each`), не 1 поле = 1 файл |
+
+**Критерий:** `audit:copy-paste` без hotspots в `src/` (кроме явно помеченных WIP в таблице).
+
+---
+
+### Фаза 3 — Копипаста: тесты (`tests`)
+
+| Зона | Статус | Действие |
+|------|--------|----------|
+| `MediaProbeSuccess` base | ✅ | `tests/fixtures/media-probe-success-base.ts` |
+| `AppSettings` base | ✅ | `tests/fixtures/app-settings-base.ts` |
+| `terminal-contract-scenarios.test.ts` (123 it) | ⬜ | scenario table + `it.each` / shared builder |
+| `ytdlp-progress-parser.test.ts` (77 it) | ⬜ | case matrix |
+| `ffmpeg-export-argv.test.ts` (67 it) | ⬜ | argv table |
+| `ffprobe-service.test.ts` (46 it) | ⬜ | fixtures + batches |
+| Остальные `many-standalone-it` | ⬜ | по убыванию count из audit |
+
+| Шаг | Действие |
+|-----|----------|
+| 3.1 | Запрет inline probeBase (CI) — ✅ |
+| 3.2 | Общие fixtures: export job options, ytdlp queue row, terminal line |
+| 3.3 | Уплотнить top-3 файла по `many-standalone-it` |
+| 3.4 | `check:field-registries` — запрет дубля `const probeBase` |
+
+**Критерий:** нет файлов tests с `many-standalone-it` выше порога (понизить порог в config после top-3).
+
+---
+
+### Фаза 4 — Крупные модули (разбиение)
+
+Работать **по одному файлу за 1–2 итерации**, не смешивать с фазой 2 в одной J.
+
+| Приоритет | Файл | Проблема | Направление |
+|-----------|------|----------|-------------|
+| P1 | `src/main/index.ts` | IPC god-module | handlers → `src/main/ipc/*.ts` |
+| P1 | `src/renderer/src/App.tsx` | UI + логика | hooks, подкомпоненты |
+| P2 | `src/main/ffmpeg-export-service.ts` | spawn + parse + presets | service / parse / spawn |
+| P2 | `src/main/ffprobe-service.ts` | probe + tracks | probe core / track builder |
+| P2 | `src/shared/ffmpeg-export-argv.ts` | argv builder | filters / hw / container |
+| P3 | `src/shared/terminal-contract.ts` | сценарии | уже частично; не дублировать тесты |
+| P3 | `src/main/settings-store.ts` | load whitelist | уже parse extract; split load sections |
+
+| Шаг | Действие |
+|-----|----------|
+| 4.1 | Для файла: тесты зелёные до split |
+| 4.2 | Выделить без изменения поведения |
+| 4.3 | `docs/ARCHITECTURE.md` — новые модули |
+| 4.4 | Не оставлять re-export «ради совместимости» >1 итерацию |
+
+**Критерий:** ни один файл в `AUDIT_LARGE_MODULE_CANDIDATES` не >500 строк без обоснования в комментарии модуля.
+
+---
+
+### Фаза 5 — Временное и долги
+
+| Шаг | Действие |
+|-----|----------|
+| 5.1 | Каждый `TODO/FIXME` — тикет в чеклист спринта или исправить |
+| 5.2 | Удалить мёртвый код, неиспользуемые export |
+| 5.3 | `journal-consolidate` — не трогать старые MERGE без владельца |
+
+---
+
+### Фаза 6 — `scripts/` и automation
+
+| Шаг | Действие |
+|-----|----------|
+| 6.1 | Общий `scripts/lib/*.mjs` для повторяющихся readFile/spawn |
+| 6.2 | cursor-automation: не дублировать промпты (single source) |
+| 6.3 | smoke-* — общая lib (частично есть) |
+
+---
+
+### Фаза 7 — Контракты и ARCHITECTURE
+
+| Шаг | Действие |
+|-----|----------|
+| 7.1 | Каждый IPC: `ipc-channels.ts` + preload + main + ARCHITECTURE |
+| 7.2 | Shared contracts: один файл — один домен |
+| 7.3 | `npm run check` полный перед релизом |
+
+---
+
+### Фаза 8 — Ужесточение CI (не допустить откат)
+
+| Шаг | Действие |
+|-----|----------|
+| 8.1 | Hotspot → error (не warning) по мере закрытия фазы |
+| 8.2 | Добавить `check:structural` в `check:quiet` |
+| 8.3 | PR checklist: `audit:inventory` diff при добавлении корней в scope |
+
+---
+
+### Фаза 9 — Закрытие программы
+
+| Шаг | Действие |
+|-----|----------|
+| 9.1 | Все фазы ✅ в таблице статуса |
+| 9.2 | Удалить `docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md` |
+| 9.3 | Оставить `fluxalloy-project-audit.mdc` в режиме «поддержка» (короткий) |
+| 9.4 | Сводная `J-*`: программа закрыта |
+
+---
+
+## 6. Hotspot log (обновлять агенту каждую 5-ю итерацию)
+
+_Заполняется из `npm run audit:copy-paste` + structural. Дата baseline: 2026-05-16._
+
+| kind | count | file | Фаза | Срез (1 предложение, до кода) | Статус |
+|------|-------|------|------|-------------------------------|--------|
+| many-standalone-it | 123 | tests/shared/terminal-contract-scenarios.test.ts | 3 | — | ⬜ |
+| many-standalone-it | 77 | tests/main/ytdlp-progress-parser.test.ts | 3 | — | ⬜ |
+| many-standalone-it | 67 | tests/shared/ffmpeg-export-argv.test.ts | 3 | — | ⬜ |
+| many-standalone-it | 46 | tests/main/ffprobe-service.test.ts | 3 | — | ⬜ |
+| many-export-parse | 13 | src/main/ffmpeg-export-service.ts | 2 | — | ⬜ |
+| whitelist-if-chains | 4 | src/main/ytdlp-download-options.ts | 2 | — | ⬜ |
+
+**Структурные (≥400 строк, фаза 4):** `terminal-contract.ts` (12959), `App.tsx` (7650), `index.ts` (4152), `downloads-window.ts` (4074), `ui-text.ts` (2848), `ffmpeg-export-argv.ts` (1055), `ffprobe-service.ts` (978), `MediaProbePanel.tsx` (985). Полный список: `npm run audit:structural`.
+
+---
+
+## 7. Синхронизация правил (чеклист на закрытие зоны)
+
+**Канон однозначности:** [`.cursor/rules/fluxalloy-rules-explicit.mdc`](../.cursor/rules/fluxalloy-rules-explicit.mdc) + `npm run check:rules-explicit`.
+
+При **каждом** «зона закрыта» — один коммит, в нём:
+
+1. Код рефактора + тесты зелёные (`check:quiet`).
+2. Обновить §6 hotspot log (статус ✅).
+3. **Слой B:** дописать/ужесточить rule или `check:*` под найденный антипаттерн.
+4. Если менялась договорённость — `docs/SOURCES_OF_TRUTH.md` (таблица синхронизации).
+
+| Постоянный артефакт | Роль |
+|---------------------|------|
+| `fluxalloy-project-audit.mdc` | ограждения (A) на время программы |
+| `fluxalloy-iteration-batch.mdc` | реестры, anti-micro |
+| `check:field-registries.mjs` | слой B для копипасты |
+| `audit-copy-paste-patterns.mjs` | слой B для hotspots |
+
+---
+
+## 8. Workflow одной marathon-итерации
+
+1. Прочитать **текущую фазу** (первый блок с ⬜ в §4).  
+2. `npm run audit:inventory` если менялся scope или много новых файлов.  
+3. `npm run audit:copy-paste` — взять **верхний** hotspot текущей фазы.  
+4. Заполнить колонку **«срез»** в §6 для выбранного hotspot; пакет правок + тесты; слой B при закрытии зоны.  
+5. Обновить §6 (статус ✅) и чекбоксы §9.  
+6. Одна `J-*`, `npm run check:quiet`, `agent:session -- bump`.
+
+**Запрещено:** «продолжай» только для одного тега/поля; сужение scope без явной просьбы.
+
+---
+
+## 9. Статус фаз (чеклист)
+
+- [x] Фаза 0 — audit scripts, registries, fixtures, inventory manifest, structural script, правила  
+- [ ] Фаза 1 — инвентаризация (таблицы долгов, ARCHITECTURE↔IPC)  
+- [ ] Фаза 2 — src копипаста  
+- [ ] Фаза 3 — tests копипаста  
+- [ ] Фаза 4 — крупные модули  
+- [ ] Фаза 5 — TODO/временное  
+- [ ] Фаза 6 — scripts  
+- [ ] Фаза 7 — ARCHITECTURE/contracts  
+- [ ] Фаза 8 — CI hardening  
+- [ ] Фаза 9 — закрытие  
+
+---
+
+## 10. Оценка объёма (честно)
+
+Полная программа — **десятки marathon-итераций**, не одна сессия.  
+Порядок выбран так, чтобы **сначала** CI/правила (не откатить), **потом** src, **потом** tests, **потом** splits — иначе снова ctrl+c в тестах после рефактора src.
+
+Владелец может сказать «фаза N только» — тогда агент **всё равно** не сужает внутри фазы до подпункта без согласования.

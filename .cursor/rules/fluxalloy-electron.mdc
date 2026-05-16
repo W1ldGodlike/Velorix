@@ -9,9 +9,16 @@ alwaysApply: false
 
 # Electron: main / preload / shared
 
-- Тяжёлое (ffmpeg, ffprobe, yt-dlp, FS, spawn) — **только** `src/main/`.
-- Внешние процессы: `execFile` / `spawn` с **массивом argv**, **без shell**.
-- Новый IPC: `src/shared/ipc-channels.ts` + preload + main + [`docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md).
-- Preload: узкий `contextBridge`; два бандла (main window / downloads) — не смешивать API.
-- Пути медиа и диалогов — только через allowlist / grant в main.
-- Не ослаблять проверки движков и `trusted_hashes.json`.
+Глоссарий: [`fluxalloy-rules-explicit.mdc`](fluxalloy-rules-explicit.mdc).
+
+## Обязательно
+
+- ffmpeg, ffprobe, yt-dlp, FS, `spawn` — **только** `src/main/`.
+- Внешние процессы: `execFile` / `spawn` с **массивом argv**; **запрещено** `shell: true` и строка команды целиком.
+- **Если** новый IPC-канал **то** в одном коммите: `src/shared/ipc-channels.ts` + preload expose + main handler + [`docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md).
+- Preload: узкий `contextBridge` (только нужные методы); два бандла (main window / downloads). **Запрещено** смешивать API downloads в main preload и наоборот.
+- Пути медиа и диалогов — только allowlist/grant в main.
+
+## Запрещено
+
+- Ослаблять проверки движков и `Data/trusted_hashes.json`.

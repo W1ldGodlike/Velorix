@@ -1,0 +1,32 @@
+---
+description: Программа полного аудита/рефактора (временно, до фазы 9 плана)
+alwaysApply: true
+---
+
+# Программа «весь репозиторий»
+
+Глоссарий: [`fluxalloy-rules-explicit.mdc`](fluxalloy-rules-explicit.mdc).  
+План фаз: [`docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md`](../../docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md).
+
+## Слой A (во время программы)
+
+**Запрещено:** **сужение scope**; **микро-J**; новая **копипаста-парсер**; завершать итерацию без **check:quiet зелёный**; пропускать `tests/` и `scripts/` в audit.
+
+## Слой B (закрытие зоны)
+
+**Если** строка hotspot log (§6 плана) со статусом ✅ **то** в **том же коммите** выполнить **≥1** из:
+
+1. Ужесточить `scripts/check-field-registries.mjs` под закрытый паттерн.
+2. Ужесточить `scripts/audit-copy-paste-patterns.mjs` (warning → fail).
+3. Дописать однозначный буллет в `.cursor/rules/*.mdc` (формат — `fluxalloy-rules-explicit.mdc`).
+
+## Обязательно каждую итерацию программы
+
+1. Работать по **первому чекбоксу ⬜** в **§9** плана (статус программы).
+2. **Если** добавлены файлы в `AUDIT_CODE_ROOTS` **то** `npm run audit:inventory`.
+3. `npm run audit:copy-paste`; **если** **номер фазы аудита** ≥ 1 (глоссарий) **то** `npm run audit:structural`.
+
+## Запрещено
+
+- Удалять `PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md` до фазы 9 (все чекбоксы §9 ✅).
+- Писать в отчёте число файлов без `audit-manifest.json` или вывода `audit:inventory`.

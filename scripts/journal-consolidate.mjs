@@ -15,46 +15,22 @@ import {
 const journalPath = 'IMPLEMENTATION_JOURNAL.md'
 const write = process.argv.includes('--write')
 
+/**
+ * Одноразовые диапазоны **исторических** id J-NNN (до сжатия). Не повторять диапазон,
+ * если в журнале уже одна сводная строка с «бывш. J-…» — иначе съедут живые записи.
+ */
 /** @type {Array<{ from: number, to: number, author: string, body: string }>} */
-const MERGES = [
-  {
-    from: 681,
-    to: 728,
-    author: 'Assistant',
-    body:
-      '§7.3 пакетный экспорт — сводка микрошагов UI: общая папка вывода, DnD папки, открытие в редакторе/проводнике, TSV-отчёт, иконки/toolbar/caption/headers таблицы, шаблон имени, параллелизм, aria-busy на панели (бывш. J-681–J-728).'
-  },
-  {
-    from: 729,
-    to: 892,
-    author: 'Assistant',
-    body:
-      '§1.1/§4/§6–§9 — доступность (сводка): role=toolbar/region/tablist, aria-orientation, label/htmlFor, captions, списки, модалки, ffprobe-таблицы, загрузки/терминал/база знаний (бывш. J-729–J-892).'
-  },
-  {
-    from: 893,
-    to: 1007,
-    author: 'Assistant',
-    body:
-      '§1.1 — aria-busy и связанные busy-флаги по workspace: редактор, загрузки, терминал, ffprobe, batch, about, knowledge, appChromeBusy, таймлайн/waveform (бывш. J-893–J-1007).'
-  },
-  {
-    from: 1008,
-    to: 1010,
-    author: 'Assistant',
-    body:
-      'Сводка: docs/чеклист (~45%, 68/705); lint — queueMicrotask для probePending в useEffect (реакция на eslint, не try/catch), LF/prettier; check-journal — исправлен парсинг даты; `journal:stamp`, `journal-lib`, `journal-consolidate`; удалён `sync-journal-times-from-git`; `engines-bundled-sha256`; правило одной записи за итерацию; сжатие микрозаписей J-681–728, J-729–892, J-893–1007; `check:quiet` ок (бывш. J-1008–J-1010).'
-  }
-]
+const MERGES = []
 
-const headerEnd = '## Записи\n'
 const raw = readFileSync(journalPath, 'utf8')
-const headerIdx = raw.indexOf(headerEnd)
-if (headerIdx < 0) {
+const entriesMarker = /^## Записи\r?\n/m
+const markerMatch = entriesMarker.exec(raw)
+if (!markerMatch || markerMatch.index === undefined) {
   console.error('[journal-consolidate] missing ## Записи')
   process.exit(1)
 }
-const header = raw.slice(0, headerIdx + headerEnd.length)
+const headerEnd = markerMatch.index + markerMatch[0].length
+const header = raw.slice(0, headerEnd)
 
 const entries = parseJournalEntries(raw)
 if (entries.length === 0) {

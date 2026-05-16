@@ -7,14 +7,20 @@ alwaysApply: false
 
 # Журнал (канон = шапка файла)
 
-Перед правкой откройте шапку [`IMPLEMENTATION_JOURNAL.md`](../../IMPLEMENTATION_JOURNAL.md). При смене правил синхронизируйте: шапка + этот rule + `docs/AGENT_REANCHOR.md` + `agent-contract.txt` ([`docs/SOURCES_OF_TRUTH.md`](../../docs/SOURCES_OF_TRUTH.md)).
+Глоссарий: [`fluxalloy-rules-explicit.mdc`](fluxalloy-rules-explicit.mdc).  
+Синхронизация: шапка [`IMPLEMENTATION_JOURNAL.md`](../../IMPLEMENTATION_JOURNAL.md) + этот rule + `docs/AGENT_MARATHON.md` + `agent-contract.txt` — [`docs/SOURCES_OF_TRUTH.md`](../../docs/SOURCES_OF_TRUTH.md).
 
-**Обязательно:**
+**Если** правите `IMPLEMENTATION_JOURNAL.md` **то** сначала прочитать раздел «Правило записей» в шапке файла.
 
-- **Одна сводная** строка `- [J-NNN] YYYY-MM-DD HH:mm:ss [Assistant|SDK]: …` **за итерацию** (не десятки микро-J на мелочи).
-- Время: **`npm run journal:stamp`** (или `Get-Date -Format "yyyy-MM-dd HH:mm:ss"`) **один раз** перед этой строкой. Без git, без выдуманного времени, без «сетки».
-- Следующий номер — после последней строки в «Записи», без пропусков и дублей `[J-NNN]`.
-- `[Assistant]` — Cursor-чат; `[SDK]` — `scripts/cursor-automation` (SDK **никогда** не ставит `[Assistant]`).
-- В чате — ссылка на `J-NNN`, не копировать тело журнала.
+## Обязательно
 
-**Проверка:** `npm run check:journal`. Сжатие старых диапазонов — только `npm run journal:consolidate` по запросу.
+- **Одна J за итерацию** — одна строка `- [J-NNN] …` на весь ответ агента/SDK.
+- **Запрещено:** **микро-J** (глоссарий); серии соседних J с одним `format.tags.*` / одним resolve-ключом — объединить или `npm run journal:consolidate` **только** по запросу владельца.
+- Время: **только** вывод `npm run journal:stamp` **или** `Get-Date -Format "yyyy-MM-dd HH:mm:ss"` в момент дописывания. **Запрещено:** время из git, выдуманное время, одинаковые `:00` сек у пачки строк.
+- Номер `J-NNN`: последняя строка раздела «Записи» + 1; без пропусков и дублей.
+- Тег автора: `[Assistant]` — Cursor-чат; `[SDK]` — `scripts/cursor-automation`. **Запрещено:** `[Assistant]` в SDK-записях.
+- **Запрещено:** в чате копировать тело журнала — только ссылка вида «см. `IMPLEMENTATION_JOURNAL.md`, J-NNN`».
+
+## Проверка
+
+**Обязательно перед завершением правок журнала:** `npm run check:journal` → exit code 0.
