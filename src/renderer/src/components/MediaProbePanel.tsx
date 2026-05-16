@@ -321,6 +321,7 @@ export function PreviewProbeBody({
         ) : null}
         <details
           className="app-probe-details"
+          aria-label={uiText('probeSectionExportSummary')}
           open={sectionOpen('exportSummary')}
           onToggle={(e) => {
             persistOrLocalSectionToggle('exportSummary', e.currentTarget.open)
@@ -356,6 +357,7 @@ export function PreviewProbeBody({
         {probeInfo.tracks.length > 0 ? (
           <details
             className="app-probe-details"
+            aria-label={uiTextVars('probeSectionTracksTemplate', { count: probeInfo.tracks.length })}
             open={sectionOpen('tracks')}
             onToggle={(e) => {
               persistOrLocalSectionToggle('tracks', e.currentTarget.open)
@@ -446,6 +448,9 @@ export function PreviewProbeBody({
         {probeInfo.chapters.length > 0 ? (
           <details
             className="app-probe-details"
+            aria-label={uiTextVars('probeSectionChaptersTemplate', {
+              count: probeInfo.chapters.length
+            })}
             open={sectionOpen('chapters')}
             onToggle={(e) => {
               persistOrLocalSectionToggle('chapters', e.currentTarget.open)
@@ -512,6 +517,7 @@ export function PreviewProbeBody({
         {probeInfo.rawJson.length > 0 ? (
           <details
             className="app-probe-details"
+            aria-label={uiText('probeSectionRawJson')}
             open={sectionOpen('rawJson')}
             onToggle={(e) => {
               persistOrLocalSectionToggle('rawJson', e.currentTarget.open)

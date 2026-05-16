@@ -6913,7 +6913,10 @@ function App(): JSX.Element {
                     <span className="app-field-help">
                       {uiText('downloadsHintsSameAsPopoutHelp')}
                     </span>
-                    <p className="app-doc-inline-links app-downloads-doc-links">
+                    <nav
+                      className="app-doc-inline-links app-downloads-doc-links"
+                      aria-label={uiText('downloadsRailExpertDocNavAria')}
+                    >
                       <a href={YTDLP_DOC_README} target="_blank" rel="noreferrer">
                         {uiText('docLinkYtDlpReadme')}
                       </a>
@@ -6929,7 +6932,7 @@ function App(): JSX.Element {
                       <a href={YTDLP_DOC_POSTPROCESS} target="_blank" rel="noreferrer">
                         {uiText('downloadsRailDocPostprocess')}
                       </a>
-                    </p>
+                    </nav>
                     <span className="app-field-help">{uiText('downloadsCommandPreviewHelp')}</span>
                     <div className="app-downloads-command-preview app-downloads-command-preview--flat">
                       <pre>{downloadsOptions.commandPreview}</pre>

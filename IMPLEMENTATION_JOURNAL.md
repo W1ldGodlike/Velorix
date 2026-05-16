@@ -843,4 +843,9 @@
 - [J-820] 2026-05-16 09:12:00 [Assistant]: Загрузки rail — секция «Сохранение»: `aria-label` из `downloadsRailSavingSummary`.
 - [J-821] 2026-05-16 09:14:00 [Assistant]: Загрузки rail — секция «Сеть»: `aria-label` из `downloadsRailNetworkSummary`.
 - [J-822] 2026-05-16 09:16:00 [Assistant]: Загрузки rail — секция «Эксперт»: `aria-label` из `downloadsRailExpertSummary`.
+- [J-823] 2026-05-16 09:18:00 [Assistant]: ffprobe-панель — секция «Экспорт сводки»: `details.app-probe-details` с `aria-label` из `probeSectionExportSummary`.
+- [J-824] 2026-05-16 09:20:00 [Assistant]: ffprobe-панель — секция дорожек: `aria-label` из `probeSectionTracksTemplate` (`uiTextVars` с числом дорожек).
+- [J-825] 2026-05-16 09:22:00 [Assistant]: ffprobe-панель — секция глав: `aria-label` из `probeSectionChaptersTemplate` (`uiTextVars`).
+- [J-826] 2026-05-16 09:24:00 [Assistant]: ffprobe-панель — секция JSON: `aria-label` из `probeSectionRawJson`.
+- [J-827] 2026-05-16 09:26:00 [Assistant]: Загрузки rail — эксперт: блок ссылок на документацию yt-dlp — `<nav>` + `downloadsRailExpertDocNavAria`.
 
