@@ -147,6 +147,7 @@ export function KnowledgeDialog({
         className="app-modal app-modal-wide app-knowledge-dialog"
         role="dialog"
         aria-modal="true"
+        aria-busy={loading}
         aria-labelledby="knowledge-title"
         aria-describedby="knowledge-dialog-hint"
         onMouseDown={(e) => {

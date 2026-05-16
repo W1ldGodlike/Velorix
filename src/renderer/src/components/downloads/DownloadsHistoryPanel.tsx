@@ -129,6 +129,7 @@ export function DownloadsHistoryPanel({
         className="app-downloads-history-list"
         role="region"
         aria-label={uiText('downloadsHistoryListRegionAria')}
+        aria-busy={busy}
       >
         {entries.length === 0 ? (
           <p className="app-downloads-history-empty">{uiText('downloadsHistoryEmpty')}</p>

@@ -3360,6 +3360,7 @@ function App(): JSX.Element {
                 className="app-settings-grid app-batch-export-toolbar"
                 role="group"
                 aria-label={uiText('batchExportPanelFormGroupAria')}
+                aria-busy={batchExportBusy}
               >
                 <label className="app-field">
                   <span className="app-field-label-row">
@@ -5911,7 +5912,10 @@ function App(): JSX.Element {
                 role="group"
                 aria-label={uiText('downloadsQueueTableWrapGroupAria')}
               >
-                <table className="app-downloads-table">
+                <table
+                  className="app-downloads-table"
+                  aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
+                >
                   <caption className="app-visually-hidden">
                     {uiText('downloadsQueueTableCaption')}
                   </caption>

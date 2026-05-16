@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import type { JSX } from 'react'
 import { createPortal } from 'react-dom'
 
@@ -191,6 +191,11 @@ export function PreviewProbeBody({
     return `${ch.index}\t${formatProbeChapterTimecode(ch.startSec)}\t${formatProbeChapterTimecode(ch.endSec)}\t${dur}\t${title}`
   }
 
+  const probeExportSummaryRegionId = useId()
+  const probeTracksRegionId = useId()
+  const probeChaptersRegionId = useId()
+  const probeRawJsonRegionId = useId()
+
   const [probeToolbarTip, setProbeToolbarTip] = useState<string | null>(null)
   const [probeTableMenu, setProbeTableMenu] = useState<ProbeTableContextMenu>(null)
   const probeTableMenuRef = useRef<HTMLDivElement | null>(null)
@@ -353,31 +358,38 @@ export function PreviewProbeBody({
             persistOrLocalSectionToggle('exportSummary', e.currentTarget.open)
           }}
         >
-          <summary className="app-probe-summary">{uiText('probeSectionExportSummary')}</summary>
-          <p id="probeExportSummaryHint" className="app-probe-toolbar-hint">
-            {uiText('probeSectionExportSummaryHint')}
-          </p>
-          <div className="app-probe-json-toolbar" role="toolbar" aria-orientation="horizontal" aria-label={uiText('probeExportSummaryToolbarAria')}>
-            <button
-              type="button"
-              className="app-btn app-btn-compact"
-              aria-describedby="probeExportSummaryHint"
-              onClick={() => {
-                void handleSaveSummaryTxt()
-              }}
-            >
-              {uiText('probeSaveSummaryTxtButton')}
-            </button>
-            <button
-              type="button"
-              className="app-btn app-btn-compact"
-              aria-describedby="probeExportSummaryHint"
-              onClick={() => {
-                void handleSaveSummaryHtml()
-              }}
-            >
-              {uiText('probeSaveSummaryHtmlButton')}
-            </button>
+          <summary
+            className="app-probe-summary"
+            aria-controls={probeExportSummaryRegionId}
+          >
+            {uiText('probeSectionExportSummary')}
+          </summary>
+          <div id={probeExportSummaryRegionId}>
+            <p id="probeExportSummaryHint" className="app-probe-toolbar-hint">
+              {uiText('probeSectionExportSummaryHint')}
+            </p>
+            <div className="app-probe-json-toolbar" role="toolbar" aria-orientation="horizontal" aria-label={uiText('probeExportSummaryToolbarAria')}>
+              <button
+                type="button"
+                className="app-btn app-btn-compact"
+                aria-describedby="probeExportSummaryHint"
+                onClick={() => {
+                  void handleSaveSummaryTxt()
+                }}
+              >
+                {uiText('probeSaveSummaryTxtButton')}
+              </button>
+              <button
+                type="button"
+                className="app-btn app-btn-compact"
+                aria-describedby="probeExportSummaryHint"
+                onClick={() => {
+                  void handleSaveSummaryHtml()
+                }}
+              >
+                {uiText('probeSaveSummaryHtmlButton')}
+              </button>
+            </div>
           </div>
         </details>
         {probeInfo.tracks.length > 0 ? (
@@ -389,10 +401,14 @@ export function PreviewProbeBody({
               persistOrLocalSectionToggle('tracks', e.currentTarget.open)
             }}
           >
-            <summary className="app-probe-summary">
+            <summary
+              className="app-probe-summary"
+              aria-controls={probeTracksRegionId}
+            >
               {uiTextVars('probeSectionTracksTemplate', { count: probeInfo.tracks.length })}
             </summary>
             <div
+              id={probeTracksRegionId}
               className="app-probe-table-wrap"
               role="group"
               aria-label={uiText('probeTracksTableWrapGroupAria')}
@@ -544,10 +560,14 @@ export function PreviewProbeBody({
               persistOrLocalSectionToggle('chapters', e.currentTarget.open)
             }}
           >
-            <summary className="app-probe-summary">
+            <summary
+              className="app-probe-summary"
+              aria-controls={probeChaptersRegionId}
+            >
               {uiTextVars('probeSectionChaptersTemplate', { count: probeInfo.chapters.length })}
             </summary>
             <div
+              id={probeChaptersRegionId}
               className="app-probe-table-wrap"
               role="group"
               aria-label={uiText('probeChaptersTableWrapGroupAria')}
@@ -629,39 +649,43 @@ export function PreviewProbeBody({
               persistOrLocalSectionToggle('rawJson', e.currentTarget.open)
             }}
           >
-            <summary className="app-probe-summary">{uiText('probeSectionRawJson')}</summary>
-            <p id="probeRawJsonHint" className="app-probe-toolbar-hint">
-              {uiText('probeRawJsonHint')}
-            </p>
-            <div className="app-probe-json-toolbar" role="toolbar" aria-orientation="horizontal" aria-label={uiText('probeRawJsonToolbarAria')}>
-              <button
-                type="button"
-                className="app-btn app-btn-compact"
+            <summary className="app-probe-summary" aria-controls={probeRawJsonRegionId}>
+              {uiText('probeSectionRawJson')}
+            </summary>
+            <div id={probeRawJsonRegionId}>
+              <p id="probeRawJsonHint" className="app-probe-toolbar-hint">
+                {uiText('probeRawJsonHint')}
+              </p>
+              <div className="app-probe-json-toolbar" role="toolbar" aria-orientation="horizontal" aria-label={uiText('probeRawJsonToolbarAria')}>
+                <button
+                  type="button"
+                  className="app-btn app-btn-compact"
+                  aria-describedby="probeRawJsonHint"
+                  onClick={() => {
+                    void handleCopyProbeJson()
+                  }}
+                >
+                  {uiText('probeCopyJsonButton')}
+                </button>
+                <button
+                  type="button"
+                  className="app-btn app-btn-compact"
+                  aria-describedby="probeRawJsonHint"
+                  onClick={() => {
+                    void handleSaveProbeJson()
+                  }}
+                >
+                  {uiText('probeSaveJsonButton')}
+                </button>
+              </div>
+              <pre
+                className="app-probe-json-pre"
+                aria-label={uiText('probeRawJsonPreAria')}
                 aria-describedby="probeRawJsonHint"
-                onClick={() => {
-                  void handleCopyProbeJson()
-                }}
               >
-                {uiText('probeCopyJsonButton')}
-              </button>
-              <button
-                type="button"
-                className="app-btn app-btn-compact"
-                aria-describedby="probeRawJsonHint"
-                onClick={() => {
-                  void handleSaveProbeJson()
-                }}
-              >
-                {uiText('probeSaveJsonButton')}
-              </button>
+                {formatProbeJsonForDisplay(probeInfo.rawJson)}
+              </pre>
             </div>
-            <pre
-              className="app-probe-json-pre"
-              aria-label={uiText('probeRawJsonPreAria')}
-              aria-describedby="probeRawJsonHint"
-            >
-              {formatProbeJsonForDisplay(probeInfo.rawJson)}
-            </pre>
           </details>
         ) : null}
       </div>

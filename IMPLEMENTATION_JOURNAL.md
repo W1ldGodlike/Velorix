@@ -928,4 +928,9 @@
 - [J-905] 2026-05-16 12:04:00 [Assistant]: База знаний — сетка модалки (`knowledgeDialogGridAria`): `aria-busy={loading}` на группе TOC + статьи.
 - [J-906] 2026-05-16 12:06:00 [Assistant]: Загрузки — основная секция вкладки (`downloadsMainAria`): `aria-busy` при загрузке опций yt-dlp или истории (`downloadsOptionsBusy || downloadsHistoryBusy`).
 - [J-907] 2026-05-16 12:08:00 [Assistant]: История обработки — список карточек (`processingHistoryListRegionAria`): `aria-busy={busy}` при обновлении/фильтрации списка.
+- [J-908] 2026-05-16 12:10:00 [Assistant]: ffprobe-панель (`PreviewProbeBody`): у секций `<details>` — `useId` на сворачиваемой области и `aria-controls` на `<summary>` (экспорт сводки, дорожки, главы, raw JSON).
+- [J-909] 2026-05-16 12:12:00 [Assistant]: История yt-dlp (`DownloadsHistoryPanel`): регион списка карточек (`downloadsHistoryListRegionAria`) — `aria-busy={busy}`.
+- [J-910] 2026-05-16 12:14:00 [Assistant]: База знаний — корневой `dialog` модалки: `aria-busy={loading}` при загрузке контента.
+- [J-911] 2026-05-16 12:16:00 [Assistant]: Пакетный экспорт — группа полей (`batchExportPanelFormGroupAria`): `aria-busy={batchExportBusy}` на время работы очереди.
+- [J-912] 2026-05-16 12:18:00 [Assistant]: Загрузки — таблица очереди yt-dlp: `aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}` (согласовано с секцией вкладки).
 
