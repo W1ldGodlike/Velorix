@@ -998,4 +998,9 @@
 - [J-975] 2026-05-16 14:24:00 [Assistant]: Главное окно — список вкладок (`workspaceTabsAria`): в `aria-busy` добавлен `probePending`; панель редактора (`workspace-panel-editor`): `aria-busy` при экспорте/снимке/ffprobe/отмене экспорта.
 - [J-976] 2026-05-16 14:26:00 [Assistant]: Быстрый yt-dlp — навигация документации (`quickYtdlpDocNavAria`): `aria-busy` синхронизирован с регионом; вкладка загрузок — группа заголовка полосы (`downloadsBandHeadingCopyGroupAria` под `downloadsPageTitle`): `aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}`.
 - [J-977] 2026-05-16 14:28:00 [Assistant]: Терминал — группа текста вводной полосы (`downloadsBandHeadingCopyGroupAria` под `terminalTitle`), навигация статьи (`terminalIntroKnowledgeNavAria`) и список inline-подсказок (`terminalInlineSuggestAria`): `aria-busy={terminalBusy}`.
+- [J-978] 2026-05-16 14:30:00 [Assistant]: Вкладка загрузок — `tabpanel` (`workspace-panel-downloads`): `aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}`; регион вводной полосы страницы (`downloadsPageIntroBandAria`): тот же флаг.
+- [J-979] 2026-05-16 14:32:00 [Assistant]: Вкладка терминала — `tabpanel` (`workspace-panel-terminal`): `aria-busy={terminalBusy}`.
+- [J-980] 2026-05-16 14:34:00 [Assistant]: Терминал — список подсказок для вставки (`terminalHintsInsertListAria`): `aria-busy={terminalBusy}`; поле фильтра подсказок и кнопки элементов — `disabled={terminalBusy}` на время выполнения команды.
+- [J-981] 2026-05-16 14:36:00 [Assistant]: Редактор — плейсхолдер без превью (`editorPreviewPlaceholderAria`): `aria-busy={probePending}` при фоновом ffprobe.
+- [J-982] 2026-05-16 14:38:00 [Assistant]: FFmpeg rail — регион секций (`editorFfmpegRailSectionsRegionAria`): в `aria-busy` добавлен `probePending`; инспектор §9 — пустой регион (`inspectorStandaloneEmptyRegionAria`): `aria-busy={probePending}`.
 

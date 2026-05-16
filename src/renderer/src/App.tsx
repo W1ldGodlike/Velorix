@@ -4074,6 +4074,7 @@ function App(): JSX.Element {
                 className="app-preview-placeholder"
                 role="region"
                 aria-label={uiText('editorPreviewPlaceholderAria')}
+                aria-busy={probePending}
               >
                 {uiText('editorPreviewEmptyLead')}
                 <p className="app-preview-hint">{uiText('editorPreviewEmptyHint')}</p>
@@ -4143,7 +4144,7 @@ function App(): JSX.Element {
               <div
                 role="region"
                 aria-label={uiText('editorFfmpegRailSectionsRegionAria')}
-                aria-busy={exportBusy || snapshotBusy || exportCancelBusy}
+                aria-busy={exportBusy || snapshotBusy || exportCancelBusy || probePending}
               >
               <details
                 className="app-settings-section"
@@ -5393,6 +5394,7 @@ function App(): JSX.Element {
           id="workspace-panel-terminal"
           role="tabpanel"
           aria-labelledby="workspace-tab-terminal"
+          aria-busy={terminalBusy}
           className="app-main app-terminal-workspace"
         >
           <section
@@ -5732,17 +5734,19 @@ function App(): JSX.Element {
                     value={terminalHintFilter}
                     spellCheck={false}
                     placeholder={uiText('terminalHintsSearchPlaceholder')}
+                    disabled={terminalBusy}
                     onChange={(e) => {
                       setTerminalHintFilter(e.target.value)
                     }}
                   />
                 </div>
-                <ul className="app-terminal-hint-list" aria-label={uiText('terminalHintsInsertListAria')}>
+                <ul className="app-terminal-hint-list" aria-label={uiText('terminalHintsInsertListAria')} aria-busy={terminalBusy}>
                   {visibleTerminalHints.map((hint) => (
                     <li key={`${hint.tool}:${hint.token}:${hint.fullLine ?? ''}`}>
                       <button
                         type="button"
                         className="app-terminal-hint"
+                        disabled={terminalBusy}
                         aria-label={terminalHintInsertAccessibleDescription(hint)}
                         onClick={() => {
                           if (hint.fullLine !== undefined && hint.fullLine.length > 0) {
@@ -5769,6 +5773,7 @@ function App(): JSX.Element {
           id="workspace-panel-downloads"
           role="tabpanel"
           aria-labelledby="workspace-tab-downloads"
+          aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
           className="app-main app-downloads-workspace"
         >
           <section
@@ -5780,6 +5785,7 @@ function App(): JSX.Element {
               className="app-downloads-band"
               role="region"
               aria-label={uiText('downloadsPageIntroBandAria')}
+              aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
             >
               <div
                 className="app-downloads-band-copy"

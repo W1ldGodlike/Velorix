@@ -364,7 +364,7 @@ export function InspectorStandaloneApp(): JSX.Element {
         }}
       >
         {!mediaPath ? (
-          <div role="region" aria-label={uiText('inspectorStandaloneEmptyRegionAria')}>
+          <div role="region" aria-label={uiText('inspectorStandaloneEmptyRegionAria')} aria-busy={probePending}>
             <p className="inspector-standalone-hint">{uiText('inspectorStandaloneEmptyHint')}</p>
           </div>
         ) : null}
