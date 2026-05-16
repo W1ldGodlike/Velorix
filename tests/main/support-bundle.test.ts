@@ -88,6 +88,10 @@ describe('createSupportBundleZip', () => {
       engineDiagnosticLines: [
         '  ffmpeg: ready | C:\\bin\\ffmpeg.exe | ffmpeg version 7.0',
         '  ffprobe: ready | C:\\bin\\ffprobe.exe | ffprobe version 7.0'
+      ],
+      releaseSmokeLines: [
+        'command: npm run smoke:packaged-release (after npm run pack:dir)',
+        'win-unpacked: not built (C:\\repo\\dist\\win-unpacked)'
       ]
     })
 
@@ -109,6 +113,8 @@ describe('createSupportBundleZip', () => {
     expect(zip.includes(Buffer.from('engines:'))).toBe(true)
     expect(zip.includes(Buffer.from('ffmpeg: ready'))).toBe(true)
     expect(zip.includes(Buffer.from('ffprobe: ready'))).toBe(true)
+    expect(zip.includes(Buffer.from('releaseSmoke:'))).toBe(true)
+    expect(zip.includes(Buffer.from('smoke:packaged-release'))).toBe(true)
   })
 })
 

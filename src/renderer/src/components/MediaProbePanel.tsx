@@ -352,6 +352,19 @@ export function PreviewProbeBody({
               )
               return startLabel ? ` · ${startLabel}` : ''
             })()}
+            {(() => {
+              const real = probeInfo.containerStartTimeRealSec
+              const nominal = probeInfo.containerStartTimeSec
+              if (
+                real === null ||
+                nominal === null ||
+                Math.abs(real - nominal) < 0.0005
+              ) {
+                return ''
+              }
+              const realLabel = formatFfprobeContainerStartTimeCompact(real)
+              return realLabel ? ` · real ${realLabel.replace(/^start /, '')}` : ''
+            })()}
             {bitrateLabel ? ` · ${bitrateLabel}` : ''}
           </span>
         </div>

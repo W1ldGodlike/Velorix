@@ -213,6 +213,26 @@ export function formatFfprobeContainerStartTimeCompact(startSec: number | null):
   return formatFfprobeStreamStartTime(String(startSec))
 }
 
+export function formatFfprobeContainerStartTimeRealExportLine(
+  startRealSec: number | null,
+  startSec: number | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (startRealSec === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  if (startSec !== null && startRealSec !== startSec) {
+    return ffprobeSummaryFill(b.containerStartTimeRealMismatchTemplate, {
+      real: formatProbeChapterTimecode(startRealSec),
+      nominal: formatProbeChapterTimecode(startSec)
+    })
+  }
+  return ffprobeSummaryFill(b.containerStartTimeRealTemplate, {
+    time: formatProbeChapterTimecode(startRealSec)
+  })
+}
+
 export function formatFfprobeNbStreamsExportLine(
   nbStreams: number | null,
   parsedTrackCount: number,

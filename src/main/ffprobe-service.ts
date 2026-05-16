@@ -55,6 +55,7 @@ interface FfprobeJson {
     flags?: string | number
     size?: string | number
     start_time?: string | number
+    start_time_real?: string | number
     tags?: Record<string, string | number | undefined>
   }
   streams?: Array<{
@@ -979,6 +980,7 @@ export async function probeMediaFile(
     containerFormatFlags: parseFfprobeFormatFlags(parsed.format?.flags),
     containerSizeBytes: parseFfprobeFormatSize(parsed.format?.size),
     containerStartTimeSec: parseFfprobeFormatStartTimeSec(parsed.format?.start_time),
+    containerStartTimeRealSec: parseFfprobeFormatStartTimeSec(parsed.format?.start_time_real),
     tracks: buildTrackRows(parsed.streams, durationSecResolved, locale),
     chapters: buildChapterRowsFromFfprobeJson(parsed.chapters),
     rawJson

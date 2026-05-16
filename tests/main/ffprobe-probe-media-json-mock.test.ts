@@ -98,6 +98,7 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
         flags: 0,
         size: '2048',
         start_time: '0.500000',
+        start_time_real: '0.750000',
         tags: { major_brand: 'isom', compatible_brands: 'mp41iso2' }
       },
       streams: [
@@ -136,6 +137,7 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
         expect(r.containerFormatFlags).toBe('0x0')
         expect(r.containerSizeBytes).toBe(2048)
         expect(r.containerStartTimeSec).toBe(0.5)
+        expect(r.containerStartTimeRealSec).toBe(0.75)
       }
     } finally {
       cleanup()

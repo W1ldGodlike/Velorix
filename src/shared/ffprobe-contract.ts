@@ -74,6 +74,8 @@ export interface MediaProbeSuccess {
   containerSizeBytes: number | null
   /** `format.start_time` (секунды), если ffprobe отдал ненулевое смещение. */
   containerStartTimeSec: number | null
+  /** `format.start_time_real` (секунды), если ffprobe отдал ненулевое значение. */
+  containerStartTimeRealSec: number | null
   /** Все потоки в порядке индекса ffprobe. */
   tracks: MediaProbeTrackRow[]
   /** Главы из `-show_chapters`; пусто, если в файле нет метаданных глав. */

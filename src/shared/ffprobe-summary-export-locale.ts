@@ -25,6 +25,8 @@ export type FfprobeSummaryStrings = {
   containerFormatFlagsTemplate: string
   containerSizeTemplate: string
   containerStartTimeTemplate: string
+  containerStartTimeRealTemplate: string
+  containerStartTimeRealMismatchTemplate: string
   bitrateEstPrefix: string
   bitratePlainPrefix: string
   bitrateMbpsTemplate: string
@@ -78,6 +80,9 @@ const RU: FfprobeSummaryStrings = {
   containerFormatFlagsTemplate: 'Флаги контейнера (flags): {flags}',
   containerSizeTemplate: 'Размер файла (format.size): {label} ({bytes} B)',
   containerStartTimeTemplate: 'Смещение контейнера (start_time): {time}',
+  containerStartTimeRealTemplate: 'Реальное смещение (start_time_real): {time}',
+  containerStartTimeRealMismatchTemplate:
+    'Реальное смещение (start_time_real): {real} (start_time: {nominal})',
   bitrateEstPrefix: 'Битрейт (оценка): ',
   bitratePlainPrefix: 'Битрейт: ',
   bitrateMbpsTemplate: '{value} Мбит/с',
@@ -134,6 +139,9 @@ const EN: FfprobeSummaryStrings = {
   containerFormatFlagsTemplate: 'Container flags (flags): {flags}',
   containerSizeTemplate: 'File size (format.size): {label} ({bytes} B)',
   containerStartTimeTemplate: 'Container start offset (start_time): {time}',
+  containerStartTimeRealTemplate: 'Real start offset (start_time_real): {time}',
+  containerStartTimeRealMismatchTemplate:
+    'Real start offset (start_time_real): {real} (start_time: {nominal})',
   bitrateEstPrefix: 'Bitrate (estimate): ',
   bitratePlainPrefix: 'Bitrate: ',
   bitrateMbpsTemplate: '{value} Mb/s',

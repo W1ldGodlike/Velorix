@@ -733,3 +733,8 @@
 - [J-705] 2026-05-16 19:39:23 [Assistant]: §6/§19 — `smoke:packaged-ytdlp` (`--version` + offline `--list-extractors`); shared lib + Vitest; в `check:release`. `npm run check:quiet`.
 - [J-706] 2026-05-16 19:41:24 [Assistant]: §7/§19 — `smoke:packaged-ffmpeg` (`-version` + offline `-encoders`); shared lib + Vitest; в `check:release`. `npm run check:quiet`.
 - [J-707] 2026-05-16 19:42:31 [Assistant]: §19 — `smoke:packaged-engines` (ffprobe + yt-dlp + ffmpeg) в `check:release`; marathon #20 commit+push. `npm run check:quiet`.
+- [J-708] 2026-05-16 19:44:59 [Assistant]: §19 — `smoke:packaged-app` (exe + app.asar + `ELECTRON_RUN_AS_NODE` probe без GUI); shared lib + Vitest; в `check:release`. `npm run check:quiet`.
+- [J-709] 2026-05-16 19:45:58 [Assistant]: §19 — CI после `pack:dir`: `smoke:packaged-app` и `smoke:packaged-engines` (паритет с `check:release`). `npm run check:quiet`.
+- [J-710] 2026-05-16 19:47:20 [Assistant]: §9 — ffprobe `format.start_time_real` в probe/summary/HTML; расхождение с `start_time` в экспорте и инспекторе; Vitest. `npm run check:quiet`.
+- [J-711] 2026-05-16 19:48:33 [Assistant]: §19 — `smoke:packaged-release` (verify + app + engines); `check:release` и CI на одну цель. `npm run check:quiet`.
+- [J-712] 2026-05-16 19:50:12 [Assistant]: §9/§18 — Support ZIP `releaseSmoke:` (команда smoke + статус `win-unpacked`); Vitest. Marathon #25 commit. `npm run check:quiet`.

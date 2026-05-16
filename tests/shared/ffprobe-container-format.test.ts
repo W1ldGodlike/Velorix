@@ -6,6 +6,7 @@ import {
   formatFfprobeContainerSizeExportLine,
   formatFfprobeContainerSizeCompact,
   formatFfprobeContainerStartTimeExportLine,
+  formatFfprobeContainerStartTimeRealExportLine,
   formatFfprobeContainerStartTimeCompact,
   formatFfprobeEditorVideoFactLine,
   formatFfprobeFormatFlagsExportLine,
@@ -36,6 +37,7 @@ const probeBase: MediaProbeSuccess = {
   containerFormatFlags: null,
   containerSizeBytes: null,
   containerStartTimeSec: null,
+  containerStartTimeRealSec: null,
   tracks: [],
   chapters: [],
   rawJson: '{}'
@@ -79,6 +81,7 @@ describe('ffprobe-container-format', () => {
     expect(parseFfprobeFormatStartTimeSec('1.5')).toBe(1.5)
     expect(formatFfprobeContainerStartTimeCompact(1.5)).toContain('start')
     expect(formatFfprobeContainerStartTimeExportLine(1.5, 'ru')).toContain('start_time')
+    expect(formatFfprobeContainerStartTimeRealExportLine(2, 1.5, 'en')).toContain('start_time_real')
   })
 
   it('parseFfprobeFormatSize и export line', () => {

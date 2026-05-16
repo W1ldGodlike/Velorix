@@ -10,6 +10,7 @@ import {
   formatFfprobeContainerBrandExportLine,
   formatFfprobeContainerSizeExportLine,
   formatFfprobeContainerStartTimeExportLine,
+  formatFfprobeContainerStartTimeRealExportLine,
   formatFfprobeFormatFlagsExportLine,
   formatFfprobeNbStreamsExportLine,
   formatFfprobeProbeScoreExportLine
@@ -154,6 +155,11 @@ export function formatProbeSummaryPlainText(
     formatFfprobeFormatFlagsExportLine(info.containerFormatFlags, locale),
     formatFfprobeContainerSizeExportLine(info.containerSizeBytes, locale),
     formatFfprobeContainerStartTimeExportLine(info.containerStartTimeSec, locale),
+    formatFfprobeContainerStartTimeRealExportLine(
+      info.containerStartTimeRealSec,
+      info.containerStartTimeSec,
+      locale
+    ),
     '',
     ffprobeSummaryFill(b.streamsCountTemplate, { count: info.tracks.length }),
     ''
@@ -270,6 +276,14 @@ ${chapterRows}
     (() => {
       const st = formatFfprobeContainerStartTimeExportLine(info.containerStartTimeSec, locale)
       return st ? `<li>${escapeHtml(st)}</li>` : ''
+    })(),
+    (() => {
+      const str = formatFfprobeContainerStartTimeRealExportLine(
+        info.containerStartTimeRealSec,
+        info.containerStartTimeSec,
+        locale
+      )
+      return str ? `<li>${escapeHtml(str)}</li>` : ''
     })(),
     bitrateLabel ? `<li>${b.bitratePlainPrefix}${escapeHtml(bitrateLabel)}</li>` : ''
   ].filter(Boolean)

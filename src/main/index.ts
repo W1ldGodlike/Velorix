@@ -17,6 +17,7 @@ import type { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
+import { packagedWinUnpackedRoot } from '../shared/packaged-app-smoke'
 import { resolveAppPaths } from './app-paths'
 import {
   buildKnowledgeHelpDirCandidates,
@@ -1732,6 +1733,18 @@ async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRuntimeInfo
     /* headless / до ready */
   }
 
+  const unpackedRoot = packagedWinUnpackedRoot(paths.appRoot)
+  const unpackedExe = join(
+    unpackedRoot,
+    process.platform === 'win32' ? 'FluxAlloy.exe' : 'FluxAlloy'
+  )
+  const releaseSmokeLines: string[] = [
+    'command: npm run smoke:packaged-release (after npm run pack:dir)',
+    existsSync(unpackedExe)
+      ? `win-unpacked: ${unpackedExe}`
+      : `win-unpacked: not built (${unpackedRoot})`
+  ]
+
   return {
     appVersion: app.getVersion(),
     electronVersion: process.versions.electron ?? '?',
@@ -1753,7 +1766,8 @@ async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRuntimeInfo
     sessionLogFile: getSessionLogFilePath(),
     terminalCliLogFile: resolveTerminalCliSessionLogPath(paths.userData),
     crashDumps: getCrashDumpsPathSafe(),
-    engineDiagnosticLines
+    engineDiagnosticLines,
+    releaseSmokeLines
   }
 }
 

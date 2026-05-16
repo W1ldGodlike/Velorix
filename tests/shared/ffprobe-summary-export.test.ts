@@ -62,7 +62,8 @@ const sampleProbe: MediaProbeSuccess = {
   containerNbStreams: 2,
   containerFormatFlags: '0x0',
   containerSizeBytes: 12_345_678,
-  containerStartTimeSec: 1.25
+  containerStartTimeSec: 1.25,
+  containerStartTimeRealSec: 1.5
 }
 
 describe('ffprobe-summary-export', () => {
@@ -108,6 +109,7 @@ describe('ffprobe-summary-export', () => {
     expect(t).toContain('format.size)')
     expect(t).toContain('12345678 B')
     expect(t).toContain('start_time)')
+    expect(t).toContain('start_time_real')
   })
 
   it('formatProbeSummaryPlainText и HTML включают главы', () => {

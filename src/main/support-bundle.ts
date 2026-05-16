@@ -41,6 +41,8 @@ export interface SupportBundleRuntimeInfo {
   crashDumps: string | null
   /** §3/§9 — `ffmpeg` / `ffprobe` / `yt-dlp`: state, путь, первая строка `-version`. */
   engineDiagnosticLines: readonly string[]
+  /** §19 — подсказки `smoke:packaged-release` и наличие `dist/win-unpacked`. */
+  releaseSmokeLines: readonly string[]
 }
 
 export interface DiagnosticsPruneOptions {
@@ -355,6 +357,9 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
     ),
     ...(info.engineDiagnosticLines.length > 0
       ? ['', 'engines:', ...info.engineDiagnosticLines]
+      : []),
+    ...(info.releaseSmokeLines.length > 0
+      ? ['', 'releaseSmoke:', ...info.releaseSmokeLines]
       : [])
   ].join('\n')
 }
