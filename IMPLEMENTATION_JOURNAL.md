@@ -878,4 +878,9 @@
 - [J-855] 2026-05-16 10:24:00 [Assistant]: Превью и таймлайн — `PreviewTransport`, `VideoTimeline`: явная горизонтальная ориентация toolbar.
 - [J-856] 2026-05-16 10:26:00 [Assistant]: Отдельное окно инспектора — верхний `app-topbar-actions` с `aria-orientation="horizontal"`.
 - [J-857] 2026-05-16 10:28:00 [Assistant]: ffprobe-панель и модалки — `MediaProbePanel` (JSON toolbars), `KnowledgeDialog`, вторичный toolbar закрытия `AboutDialog`: `aria-orientation="horizontal"`.
+- [J-858] 2026-05-16 10:30:00 [Assistant]: Загрузки — блок сводки очереди (`app-downloads-overview`): явный `role="region"` + существующий `aria-label` (`downloadsOverviewAria`).
+- [J-859] 2026-05-16 10:32:00 [Assistant]: Загрузки — счётчики в сводке (`app-downloads-overview-stats`): `role="list"`, каждый `app-downloads-stat` — `role="listitem"`; в CSS сброс маркеров и отступов списка.
+- [J-860] 2026-05-16 10:34:00 [Assistant]: Полоска «7 дней» — в `DownloadsHistoryPanel` и `ProcessingHistoryPanel` (`app-processing-history-summary`): явный `role="region"` при сохранённых `aria-label`.
+- [J-861] 2026-05-16 10:36:00 [Assistant]: История загрузок — фильтр исхода: связка `label`/`htmlFor`/`id` через `useId`, у `select` убран избыточный `aria-label`.
+- [J-862] 2026-05-16 10:38:00 [Assistant]: Терминал — фильтр подсказок вставки: `label`/`htmlFor`/`useId` вместо вложенного `label`+`span`; у `input` убран дублирующий `aria-label`.
 

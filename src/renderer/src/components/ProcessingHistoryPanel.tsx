@@ -111,6 +111,7 @@ export function ProcessingHistoryPanel({
       {weeklySummary ? (
         <div
           className="app-processing-history-summary"
+          role="region"
           aria-label={uiText('processingHistoryWeeklyAria')}
         >
           <span>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { JSX, SyntheticEvent } from 'react'
 
 import { AboutDialog } from './components/AboutDialog'
@@ -632,6 +632,7 @@ function App(): JSX.Element {
   const [terminalBusy, setTerminalBusy] = useState(false)
   const [terminalHints, setTerminalHints] = useState<TerminalCommandHintEntry[]>([])
   const [terminalHintFilter, setTerminalHintFilter] = useState('')
+  const terminalHintsSearchFieldId = useId()
   const [terminalHistory, setTerminalHistory] = useState<TerminalHistoryEntry[]>([])
   const [terminalSuggestFocus, setTerminalSuggestFocus] = useState(false)
   const [terminalSuggestIndex, setTerminalSuggestIndex] = useState(0)
@@ -5612,19 +5613,21 @@ function App(): JSX.Element {
                 )}
               </section>
               <aside className="app-terminal-hints" aria-label={uiText('terminalHintsPanelAria')}>
-                <label className="app-field">
-                  <span>{uiText('terminalHintsSearchLabel')}</span>
+                <div className="app-field">
+                  <label htmlFor={terminalHintsSearchFieldId}>
+                    {uiText('terminalHintsSearchLabel')}
+                  </label>
                   <input
+                    id={terminalHintsSearchFieldId}
                     className="app-control"
                     value={terminalHintFilter}
                     spellCheck={false}
                     placeholder={uiText('terminalHintsSearchPlaceholder')}
-                    aria-label={uiText('terminalHintsSearchLabel')}
                     onChange={(e) => {
                       setTerminalHintFilter(e.target.value)
                     }}
                   />
-                </label>
+                </div>
                 <ul className="app-terminal-hint-list" aria-label={uiText('terminalHintsInsertListAria')}>
                   {visibleTerminalHints.map((hint) => (
                     <li key={`${hint.tool}:${hint.token}:${hint.fullLine ?? ''}`}>
@@ -5806,39 +5809,43 @@ function App(): JSX.Element {
                 </button>
               </div>
             </div>
-            <div className="app-downloads-overview" aria-label={uiText('downloadsOverviewAria')}>
+            <div
+              className="app-downloads-overview"
+              role="region"
+              aria-label={uiText('downloadsOverviewAria')}
+            >
               <div
                 className="app-downloads-overview-stats"
-                role="group"
+                role="list"
                 aria-label={uiText('downloadsOverviewStatsGroupAria')}
               >
-              <div className="app-downloads-stat">
-                <span className="app-downloads-stat-label">{uiText('downloadsStatTotal')}</span>
-                <strong>{downloadsStats.total}</strong>
+                <div className="app-downloads-stat" role="listitem">
+                  <span className="app-downloads-stat-label">{uiText('downloadsStatTotal')}</span>
+                  <strong>{downloadsStats.total}</strong>
+                </div>
+                <div className="app-downloads-stat" role="listitem">
+                  <span className="app-downloads-stat-label">
+                    {uiText('downloadsQueueFilterRunning')}
+                  </span>
+                  <strong>{downloadsStats.running}</strong>
+                </div>
+                <div className="app-downloads-stat" role="listitem">
+                  <span className="app-downloads-stat-label">
+                    {uiText('downloadsQueueFilterDone')}
+                  </span>
+                  <strong>{downloadsStats.done}</strong>
+                </div>
+                <div className="app-downloads-stat" role="listitem">
+                  <span className="app-downloads-stat-label">
+                    {uiText('downloadsQueueFilterError')}
+                  </span>
+                  <strong>{downloadsStats.error}</strong>
+                </div>
+                <div className="app-downloads-stat" role="listitem">
+                  <span className="app-downloads-stat-label">{uiText('downloadsStatPending')}</span>
+                  <strong>{downloadsStats.pending}</strong>
+                </div>
               </div>
-              <div className="app-downloads-stat">
-                <span className="app-downloads-stat-label">
-                  {uiText('downloadsQueueFilterRunning')}
-                </span>
-                <strong>{downloadsStats.running}</strong>
-              </div>
-              <div className="app-downloads-stat">
-                <span className="app-downloads-stat-label">
-                  {uiText('downloadsQueueFilterDone')}
-                </span>
-                <strong>{downloadsStats.done}</strong>
-              </div>
-              <div className="app-downloads-stat">
-                <span className="app-downloads-stat-label">
-                  {uiText('downloadsQueueFilterError')}
-                </span>
-                <strong>{downloadsStats.error}</strong>
-              </div>
-              <div className="app-downloads-stat">
-                <span className="app-downloads-stat-label">{uiText('downloadsStatPending')}</span>
-                <strong>{downloadsStats.pending}</strong>
-              </div>
-            </div>
             </div>
             <div
               className="app-downloads-filterbar"

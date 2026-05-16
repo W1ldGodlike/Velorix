@@ -1,4 +1,4 @@
-import type { JSX } from 'react'
+import { useId, type JSX } from 'react'
 
 import type { YtdlpDownloadHistoryEntry } from '../../../../shared/ytdlp-history-contract'
 import {
@@ -40,6 +40,7 @@ export function DownloadsHistoryPanel({
   onExportVisible: () => void
   onRepeat: (url: string) => void
 }): JSX.Element {
+  const downloadsHistoryOutcomeFilterId = useId()
   return (
     <details
       className="app-downloads-history-panel"
@@ -57,6 +58,7 @@ export function DownloadsHistoryPanel({
       </summary>
       <div
         className="app-processing-history-summary"
+        role="region"
         aria-label={uiText('downloadsHistoryWeeklyAria')}
       >
         <span>
@@ -78,13 +80,15 @@ export function DownloadsHistoryPanel({
         aria-orientation="horizontal"
         aria-label={uiText('downloadsHistoryActionsToolbarAria')}
       >
-        <label className="app-downloads-history-filter">
-          <span>{uiText('downloadsHistoryOutcomeFilterLabel')}</span>
+        <div className="app-downloads-history-filter">
+          <label htmlFor={downloadsHistoryOutcomeFilterId}>
+            {uiText('downloadsHistoryOutcomeFilterLabel')}
+          </label>
           <select
+            id={downloadsHistoryOutcomeFilterId}
             className="app-control"
             value={outcomeFilter}
             disabled={busy}
-            aria-label={uiText('downloadsHistoryOutcomeFilterLabel')}
             onChange={(event) => {
               onOutcomeFilterChange(event.currentTarget.value as typeof outcomeFilter)
             }}
@@ -94,7 +98,7 @@ export function DownloadsHistoryPanel({
             <option value="error">{uiText('downloadsHistoryFilterError')}</option>
             <option value="cancelled">{uiText('downloadsHistoryFilterCancelled')}</option>
           </select>
-        </label>
+        </div>
         <button
           type="button"
           className="app-btn app-btn-compact app-btn-icon-leading"

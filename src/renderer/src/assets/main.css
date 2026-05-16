@@ -1320,6 +1320,9 @@ button.app-downloads-hint-token:disabled {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 0.55rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .app-downloads-stat {
