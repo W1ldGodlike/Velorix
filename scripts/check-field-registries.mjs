@@ -51,6 +51,13 @@ if (/if\s*\(\s*raw\s*===\s*'[^']+'\s*\|\|/.test(ytdlpDownloadOptions)) {
   )
 }
 
+const ffmpegExportService = readFileSync('src/main/ffmpeg-export-service.ts', 'utf8')
+if (/export function parseFfmpegExport/.test(ffmpegExportService)) {
+  failures.push(
+    'ffmpeg-export-service.ts: parse — только ffmpeg-export-*-parse.ts / parse-registry'
+  )
+}
+
 const testsDir = 'tests'
 function walkTests(dir) {
   const out = []

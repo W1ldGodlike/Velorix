@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  TERMINAL_DOWNLOADS_EXTRA_SCENARIO_LINES,
+  TERMINAL_DOWNLOADS_PRINT_TEMPLATE_LINES
+} from '../fixtures/terminal-downloads-full-line-expectations'
+import { downloadsScenarioFullLines } from '../fixtures/terminal-scenario-test-helpers'
+import {
   TERMINAL_CURRENT_FILE_PLACEHOLDER,
   TERMINAL_SCENARIO_HINTS_DOWNLOADS,
   TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA
@@ -54,118 +59,19 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     }
   })
 
-  it('downloads: есть --print шаблоны для title и duration_string', () => {
-    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
-    expect(lines).toContain('yt-dlp --dump-single-json ')
-    expect(lines).toContain('yt-dlp --skip-download --print title ')
-    expect(lines).toContain('yt-dlp --skip-download --print duration_string ')
-    expect(lines).toContain('yt-dlp --skip-download --print uploader ')
-    expect(lines).toContain('yt-dlp --skip-download --print id ')
-    expect(lines).toContain('yt-dlp --skip-download --print webpage_url ')
-    expect(lines).toContain('yt-dlp --skip-download --print channel ')
-    expect(lines).toContain('yt-dlp --skip-download --print channel_id ')
-    expect(lines).toContain('yt-dlp --skip-download --print thumbnail ')
-    expect(lines).toContain('yt-dlp --skip-download --print view_count ')
-    expect(lines).toContain('yt-dlp --skip-download --print upload_date ')
-    expect(lines).toContain('yt-dlp --skip-download --print playlist_title ')
-    expect(lines).toContain('yt-dlp --skip-download --print playlist_count ')
-    expect(lines).toContain('yt-dlp --skip-download --print filename ')
-    expect(lines).toContain('yt-dlp --skip-download --print description ')
-    expect(lines).toContain('yt-dlp --skip-download --print categories ')
-    expect(lines).toContain('yt-dlp --skip-download --print language ')
-    expect(lines).toContain('yt-dlp --skip-download --print extractor ')
-    expect(lines).toContain('yt-dlp --skip-download --print playlist_id ')
-    expect(lines).toContain('yt-dlp --geo-bypass -F ')
-    expect(lines).toContain('yt-dlp --skip-download --print format_id ')
-    expect(lines).toContain('yt-dlp --skip-download --print ext ')
-    expect(lines).toContain('yt-dlp --skip-download --print resolution ')
-    expect(lines).toContain('yt-dlp --skip-download --print vcodec ')
-    expect(lines).toContain('yt-dlp --skip-download --print acodec ')
-    expect(lines).toContain('yt-dlp --list-extractors')
-    expect(lines).toContain('yt-dlp --version')
-    expect(lines).toContain('yt-dlp -4 -F ')
-    expect(lines).toContain('yt-dlp --no-cache-dir -F ')
-    expect(lines).toContain('yt-dlp --skip-download --print tags ')
-    expect(lines).toContain('yt-dlp --skip-download --print filesize_approx ')
-    expect(lines).toContain('yt-dlp --ignore-errors --flat-playlist -J ')
-    expect(lines).toContain('yt-dlp --write-info-json --skip-download ')
-    expect(lines).toContain('yt-dlp --no-warnings -F ')
-    expect(lines).toContain('yt-dlp --skip-download --print fps ')
-    expect(lines).toContain('yt-dlp --skip-download --print is_live ')
-    expect(lines).toContain('yt-dlp --skip-download --print live_status ')
-    expect(lines).toContain('yt-dlp --skip-download --print availability ')
-    expect(lines).toContain('yt-dlp --skip-download --print age_limit ')
-    expect(lines).toContain('yt-dlp --skip-download --print like_count ')
-    expect(lines).toContain('yt-dlp --skip-download --print comment_count ')
-    expect(lines).toContain('yt-dlp --skip-download --print aspect_ratio ')
-    expect(lines).toContain('yt-dlp --playlist-items 1 -F ')
-    expect(lines).toContain('yt-dlp --extractor-args youtube:player_client=web -F ')
-    expect(lines).toContain('yt-dlp --skip-download --cookies-from-browser edge ')
-    expect(lines).toContain('yt-dlp --skip-download --print duration ')
-    expect(lines).toContain('yt-dlp --skip-download --print width ')
-    expect(lines).toContain('yt-dlp --skip-download --print height ')
-    expect(lines).toContain('yt-dlp --skip-download --print tbr ')
-    expect(lines).toContain('yt-dlp --skip-download --print abr ')
-    expect(lines).toContain('yt-dlp --skip-download --print vbr ')
-    expect(lines).toContain('yt-dlp --skip-download --print asr ')
-    expect(lines).toContain('yt-dlp --write-thumbnail --skip-download ')
-    expect(lines).toContain('yt-dlp --write-auto-sub --skip-download ')
-    expect(lines).toContain('yt-dlp --write-description --skip-download ')
-    expect(lines).toContain('yt-dlp --write-url-link --skip-download ')
-    expect(lines).toContain('yt-dlp --check-formats ')
-    expect(lines).toContain('yt-dlp --skip-download --cookies-from-browser firefox ')
-    expect(lines).toContain('yt-dlp --skip-download --print has_drm ')
-    expect(lines).toContain('yt-dlp --skip-download --print playable_in_embed ')
-    expect(lines).toContain('yt-dlp --skip-download --print channel_url ')
-    expect(lines).toContain('yt-dlp --skip-download --print uploader_id ')
-    expect(lines).toContain('yt-dlp --skip-download --print was_live ')
-    expect(lines).toContain('yt-dlp --skip-download --print media_type ')
-    expect(lines).toContain('yt-dlp --skip-download --print release_year ')
-    expect(lines).toContain('yt-dlp --no-check-certificates -F ')
-    expect(lines).toContain('yt-dlp --skip-download --print filesize ')
-    expect(lines).toContain('yt-dlp --skip-download --print format_note ')
-    expect(lines).toContain('yt-dlp --skip-download --print subtitles ')
-    expect(lines).toContain('yt-dlp --skip-download --print automatic_captions ')
-    expect(lines).toContain('yt-dlp --skip-download --print chapters ')
-    expect(lines).toContain('yt-dlp --flat-playlist --skip-download --print title ')
-    expect(lines).toContain('yt-dlp --skip-download --print original_url ')
-    expect(lines).toContain('yt-dlp --skip-download --print webpage_url_domain ')
-    expect(lines).toContain('yt-dlp --flat-playlist --skip-download --print id ')
-    expect(lines).toContain('yt-dlp --skip-download --print playlist_index ')
-    expect(lines).toContain('yt-dlp --write-sub --skip-download ')
-    expect(lines).toContain('yt-dlp --write-comments --skip-download ')
-  })
+  it.each(TERMINAL_DOWNLOADS_PRINT_TEMPLATE_LINES)(
+    'downloads: fullLine содержит print-шаблон %s',
+    (expected) => {
+      expect(downloadsScenarioFullLines()).toContain(expected)
+    }
+  )
 
-  it('downloads: доп. сценарии — audio URL, flat simulate, print filepath/epoch', () => {
-    const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')
-    expect(lines).toContain('yt-dlp -g -f bestaudio/best ')
-    expect(lines).toContain('yt-dlp --flat-playlist --simulate ')
-    expect(lines).toContain('yt-dlp --skip-download --print filepath ')
-    expect(lines).toContain('yt-dlp --skip-download --print epoch ')
-    expect(lines).toContain('yt-dlp -6 -F ')
-    expect(lines).toContain('yt-dlp --flat-playlist --print url ')
-    expect(lines).toContain('yt-dlp --write-pages --skip-download ')
-    expect(lines).toContain('yt-dlp --skip-download --print heatmap ')
-    expect(lines).toContain('yt-dlp --limit-rate 1M ')
-    expect(lines).toContain('yt-dlp --retries 10 --fragment-retries 10 ')
-    expect(lines).toContain('yt-dlp --socket-timeout 30 ')
-    expect(lines).toContain('yt-dlp --force-ipv4 -F ')
-    expect(lines).toContain('yt-dlp --no-part -F ')
-    expect(lines).toContain('yt-dlp --concurrent-fragments 4 ')
-    expect(lines).toContain('yt-dlp --merge-output-format mkv ')
-    expect(lines).toContain('yt-dlp --format-sort +res:720 -F ')
-    expect(lines).toContain('yt-dlp --playlist-end 10 -J ')
-    expect(lines).toContain('yt-dlp --geo-bypass-country US -F ')
-    expect(lines).toContain('yt-dlp --extractor-retries 5 ')
-    expect(lines).toContain('yt-dlp --http-chunk-size 10M ')
-    expect(lines).toContain('yt-dlp --no-overwrites -F ')
-    expect(lines).toContain('yt-dlp --windows-filenames -F ')
-    expect(lines).toContain('yt-dlp --newline -F ')
-    expect(lines).toContain('yt-dlp --skip-unavailable-fragments ')
-    expect(lines).toContain('yt-dlp --download-archive archive.txt ')
-    expect(lines).toContain('yt-dlp --break-on-reject -F ')
-    expect(lines).toContain('yt-dlp --trim-file-names 80 -F ')
-  })
+  it.each(TERMINAL_DOWNLOADS_EXTRA_SCENARIO_LINES)(
+    'downloads: fullLine содержит доп. сценарий %s',
+    (expected) => {
+      expect(downloadsScenarioFullLines()).toContain(expected)
+    }
+  )
 
   it('preview: есть JSON-сводка и show_error для текущего превью', () => {
     const lines = TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.map((h) => h.fullLine ?? '')

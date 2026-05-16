@@ -1,76 +1,21 @@
 import { describe, expect, it } from 'vitest'
 
+import { FFPROBE_TRACK_DETAIL_CASES } from '../fixtures/ffprobe-track-detail-cases'
+import { trackDetailAt } from '../fixtures/ffprobe-track-rows-helpers'
 import { buildTrackRows } from '../../src/main/ffprobe-service'
 
 describe('ffprobe-service buildTrackRows', () => {
-  it('audio detail включает codec_tag_string (FourCC), если ffprobe отдал', () => {
-    const [row] = buildTrackRows(
-      [
-        {
-          index: 1,
-          codec_type: 'audio',
-          codec_name: 'aac',
-          channels: 2,
-          sample_rate: '48000',
-          channel_layout: 'stereo',
-          codec_tag_string: 'mp4a'
-        }
-      ],
-      120
-    )
-    expect(row?.detail).toContain('mp4a')
-  })
-
-  it('audio detail без codec_tag_string не содержит пустых токенов FourCC', () => {
-    const [row] = buildTrackRows(
-      [
-        {
-          index: 0,
-          codec_type: 'audio',
-          codec_name: 'flac',
-          channels: 2,
-          sample_rate: '44100'
-        }
-      ],
-      null
-    )
-    expect(row?.detail).not.toMatch(/\bN\/A\b/i)
-  })
-
-  it('audio detail: при пустом FourCC показывает hex codec_tag', () => {
-    const [row] = buildTrackRows(
-      [
-        {
-          index: 0,
-          codec_type: 'audio',
-          codec_name: 'aac',
-          channels: 2,
-          sample_rate: '48000',
-          codec_tag_string: '[0][0][0][0]',
-          codec_tag: '0x6134706d'
-        }
-      ],
-      null
-    )
-    expect(row?.detail).toContain('tag 0x6134706d')
-    expect(row?.detail).not.toContain('[0][0][0][0]')
-  })
-
-  it('video detail: extradata_size как exdata N B', () => {
-    const [row] = buildTrackRows(
-      [
-        {
-          index: 0,
-          codec_type: 'video',
-          codec_name: 'h264',
-          width: 1280,
-          height: 720,
-          extradata_size: 42
-        }
-      ],
-      null
-    )
-    expect(row?.detail).toContain('exdata 42 B')
+  it.each(FFPROBE_TRACK_DETAIL_CASES)('$label', ({ streams, duration, row, contains, notContains, notMatch }) => {
+    const detail = trackDetailAt(streams, row, duration)
+    for (const token of contains) {
+      expect(detail).toContain(token)
+    }
+    for (const token of notContains ?? []) {
+      expect(detail).not.toContain(token)
+    }
+    if (notMatch) {
+      expect(detail).not.toMatch(notMatch)
+    }
   })
 
   it('video/audio/subtitle detail: nb_frames как N frm при положительном значении', () => {
@@ -206,40 +151,6 @@ describe('ffprobe-service buildTrackRows', () => {
       null
     )
     expect(row?.detail).toContain('TC 01:00:00:00')
-  })
-
-  it('video detail добавляет pix_fmt, если не тривиальный yuv420p/yuvj420p', () => {
-    const [row] = buildTrackRows(
-      [
-        {
-          index: 0,
-          codec_type: 'video',
-          codec_name: 'hevc',
-          width: 3840,
-          height: 2160,
-          pix_fmt: 'yuv420p10le'
-        }
-      ],
-      null
-    )
-    expect(row?.detail).toContain('yuv420p10le')
-  })
-
-  it('video detail не дублирует стандартный pix_fmt yuv420p', () => {
-    const [row] = buildTrackRows(
-      [
-        {
-          index: 0,
-          codec_type: 'video',
-          codec_name: 'h264',
-          width: 1280,
-          height: 720,
-          pix_fmt: 'yuv420p'
-        }
-      ],
-      null
-    )
-    expect(row?.detail).not.toMatch(/\byuv420p\b/)
   })
 
   it('attachment/detail для прочих потоков включает codec_name перед filename', () => {
@@ -502,181 +413,6 @@ describe('ffprobe-service buildTrackRows', () => {
     expect(row?.detail).toContain('…')
     expect(row?.detail).not.toContain('tail')
     expect(row?.detail.length ?? 0).toBeLessThan(long.length + 80)
-  })
-
-  it('video detail: max_bit_rate заметно выше bit_rate → «max … Мбит/с» (RU)', () => {
-    const [row] = buildTrackRows(
-      [
-        {
-          index: 0,
-          codec_type: 'video',
-          codec_name: 'h264',
-          width: 1920,
-          height: 1080,
-          bit_rate: '5000000',
-          max_bit_rate: '12000000'
-        }
-      ],
-      null
-    )
-    expect(row?.detail).toContain('max 12.00 Мбит/с')
-  })
-
-  it('video detail: max_bit_rate≈bit_rate — не дублируем пик в сводке', () => {
-    const [row] = buildTrackRows(
-      [
-        {
-          index: 0,
-          codec_type: 'video',
-          codec_name: 'h264',
-          width: 1280,
-          height: 720,
-          bit_rate: '5000000',
-          max_bit_rate: '5050000'
-        }
-      ],
-      null
-    )
-    expect(row?.detail).not.toMatch(/\bmax\b/i)
-  })
-
-  it('audio detail: только max_bit_rate — показываем пик', () => {
-    const [row] = buildTrackRows(
-      [
-        {
-          index: 1,
-          codec_type: 'audio',
-          codec_name: 'aac',
-          channels: 2,
-          sample_rate: '48000',
-          max_bit_rate: '320000'
-        }
-      ],
-      null
-    )
-    expect(row?.detail).toContain('max 320 кбит/с')
-  })
-
-  it('video detail: ненулевой closed_captions → CEA-608/708', () => {
-    const [row] = buildTrackRows(
-      [
-        {
-          index: 0,
-          codec_type: 'video',
-          codec_name: 'h264',
-          width: 1280,
-          height: 720,
-          closed_captions: 1
-        }
-      ],
-      null
-    )
-    expect(row?.detail).toContain('CEA-608/708')
-  })
-
-  it('video detail: H.264 + is_avc=0 → Annex-B', () => {
-    const [row] = buildTrackRows(
-      [
-        {
-          index: 0,
-          codec_type: 'video',
-          codec_name: 'h264',
-          width: 1920,
-          height: 1080,
-          is_avc: 0
-        }
-      ],
-      null
-    )
-    expect(row?.detail).toContain('Annex-B')
-  })
-
-  it('video detail: H.264 + is_avc=1 — без Annex-B', () => {
-    const [row] = buildTrackRows(
-      [
-        {
-          index: 0,
-          codec_type: 'video',
-          codec_name: 'h264',
-          width: 1920,
-          height: 1080,
-          is_avc: 1
-        }
-      ],
-      null
-    )
-    expect(row?.detail).not.toContain('Annex-B')
-  })
-
-  it('video detail: ticks_per_frame>1 → «tpf N»', () => {
-    const [row] = buildTrackRows(
-      [
-        {
-          index: 0,
-          codec_type: 'video',
-          codec_name: 'mpeg2video',
-          width: 720,
-          height: 576,
-          ticks_per_frame: 2
-        }
-      ],
-      null
-    )
-    expect(row?.detail).toContain('tpf 2')
-  })
-
-  it('video detail: ticks_per_frame=1 — без «tpf»', () => {
-    const [row] = buildTrackRows(
-      [
-        {
-          index: 0,
-          codec_type: 'video',
-          codec_name: 'h264',
-          width: 1280,
-          height: 720,
-          ticks_per_frame: 1
-        }
-      ],
-      null
-    )
-    expect(row?.detail).not.toMatch(/\btpf\b/)
-  })
-
-  it('video detail: bits_per_coded_sample → «bpc …-bit» (отдельно от coded WxH)', () => {
-    const [row] = buildTrackRows(
-      [
-        {
-          index: 0,
-          codec_type: 'video',
-          codec_name: 'h264',
-          width: 1280,
-          height: 720,
-          coded_width: 1920,
-          coded_height: 1080,
-          bits_per_coded_sample: 8
-        }
-      ],
-      null
-    )
-    expect(row?.detail).toContain('bpc 8-bit')
-    expect(row?.detail).toContain('coded 1920×1080')
-  })
-
-  it('audio detail: bits_per_coded_sample → «bpc …-bit»', () => {
-    const [row] = buildTrackRows(
-      [
-        {
-          index: 0,
-          codec_type: 'audio',
-          codec_name: 'pcm_s16le',
-          channels: 2,
-          sample_rate: '48000',
-          bits_per_coded_sample: 16
-        }
-      ],
-      null
-    )
-    expect(row?.detail).toContain('bpc 16-bit')
   })
 
   it('video detail включает language/title/handler_name без дубля handler=title', () => {
@@ -1003,25 +739,4 @@ describe('ffprobe-service buildTrackRows', () => {
     expect(row?.detail).toContain('GOP TC 00:00:10:00')
   })
 
-  it('video detail: PRFT/AV1 film grain side_data попадает в сводку дорожки', () => {
-    const [row] = buildTrackRows(
-      [
-        {
-          index: 0,
-          codec_type: 'video',
-          codec_name: 'av1',
-          width: 1920,
-          height: 1080,
-          side_data_list: [
-            { side_data_type: 'Producer Reference Time', pts: '123456' },
-            { side_data_type: 'AV1 film grain params' }
-          ]
-        }
-      ],
-      null
-    )
-
-    expect(row?.detail).toContain('PRFT 123456')
-    expect(row?.detail).toContain('AV1 film grain')
-  })
 })

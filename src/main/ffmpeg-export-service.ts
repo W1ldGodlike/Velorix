@@ -13,7 +13,6 @@ import type {
   FfmpegExportProgressPayload,
   FfmpegExportScalePresetId,
   FfmpegExportSubtitleModeId,
-  FfmpegExportUserPreset,
   FfmpegExportUserPresetSnapshot,
   FfmpegExportVideoCodecId,
   FfmpegExportVideoDebandId,
@@ -44,17 +43,10 @@ import {
   pickFfmpegHwAutoHevcEncoder
 } from '../shared/ffmpeg-export-video-codec'
 import { createEmptyFfmpegHwEncodersSnapshot } from '../shared/ffmpeg-hw-encoder-probe'
-import {
-  FFMPEG_EXPORT_CANCELLED_ERROR,
-  FFMPEG_EXPORT_USER_PRESETS_MAX_ENTRIES
-} from '../shared/ffmpeg-export-contract'
+import { FFMPEG_EXPORT_CANCELLED_ERROR } from '../shared/ffmpeg-export-contract'
 import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
-import {
-  buildFfmpegExportArgv,
-  normalizeFfmpegExportAudioGainDb,
-  shouldApplyFfmpegExportTrim
-} from '../shared/ffmpeg-export-argv'
+import { buildFfmpegExportArgv, shouldApplyFfmpegExportTrim } from '../shared/ffmpeg-export-argv'
 
 import { logExternalProcessLine } from './external-process-log'
 import { resolveFfmpegExportLutCubeAbsPath } from './ffmpeg-export-lut-path'
@@ -64,6 +56,19 @@ import {
   resolveFfmpegExportHwaccelForDecode
 } from '../shared/ffmpeg-export-hw-decode'
 import { probeFfmpegHwEncoders } from './ffmpeg-hw-encoder-probe-main'
+import {
+  parseFfmpegExportAudioBitrate,
+  parseFfmpegExportAudioGainDb,
+  parseFfmpegExportCrf,
+  parseFfmpegExportEconomyMode,
+  parseFfmpegExportFps,
+  parseFfmpegExportStripFlag,
+  parseFfmpegExportVideoBitrate
+} from '../shared/ffmpeg-export-stored-parse'
+import {
+  parseFfmpegSpeedToken,
+  parseFfmpegTimeSeconds
+} from '../shared/ffmpeg-export-progress-parse'
 
 export type {
   FfmpegExportAudioModeId,
@@ -115,7 +120,6 @@ export {
   shouldApplyFfmpegExportTrim
 } from '../shared/ffmpeg-export-argv'
 import {
-  parseFfmpegExportEncodePreset,
   parseFfmpegExportContainer,
   parseFfmpegExportAudioMode,
   parseFfmpegExportScalePreset,
@@ -160,6 +164,28 @@ export {
 
 export { parseFfmpegExportVideoCodec }
 
+export {
+  parseFfmpegExportAudioBitrate,
+  parseFfmpegExportAudioGainDb,
+  parseFfmpegExportCrf,
+  parseFfmpegExportEconomyMode,
+  parseFfmpegExportFps,
+  parseFfmpegExportStripFlag,
+  parseFfmpegExportTrim,
+  parseFfmpegExportTwoPass,
+  parseFfmpegExportVideoBitrate
+} from '../shared/ffmpeg-export-stored-parse'
+
+export {
+  parseFfmpegExportUserPresetSnapshot,
+  parseFfmpegExportUserPresetsList
+} from '../shared/ffmpeg-export-user-preset-parse'
+
+export {
+  parseFfmpegSpeedToken,
+  parseFfmpegTimeSeconds
+} from '../shared/ffmpeg-export-progress-parse'
+
 export function inferFfmpegExportContainerFromPath(path: string): FfmpegExportContainerId {
   const lower = path.trim().toLowerCase()
   if (lower.endsWith('.mkv')) {
@@ -180,216 +206,6 @@ export function ensureFfmpegExportExtension(
     return trimmed
   }
   return `${trimmed}.${parseFfmpegExportContainer(fallback)}`
-}
-
-export function parseFfmpegExportCrf(raw: unknown): number | null {
-  const n =
-    typeof raw === 'number'
-      ? raw
-      : typeof raw === 'string' && raw.trim() !== ''
-        ? Number(raw.trim())
-        : NaN
-  if (!Number.isInteger(n) || n < 0 || n > 51) {
-    return null
-  }
-  return n
-}
-
-export function parseFfmpegExportAudioBitrate(raw: unknown): string | null {
-  if (typeof raw !== 'string') {
-    return null
-  }
-  const t = raw.trim().toLowerCase()
-  if (!/^\d{2,3}k$/.test(t)) {
-    return null
-  }
-  const kbps = Number(t.slice(0, -1))
-  if (!Number.isInteger(kbps) || kbps < 32 || kbps > 512) {
-    return null
-  }
-  return `${kbps}k`
-}
-
-export function parseFfmpegExportVideoBitrate(raw: unknown): string | null {
-  if (typeof raw !== 'string') {
-    return null
-  }
-  const t = raw.trim().toLowerCase()
-  if (!/^\d{3,5}k$/.test(t)) {
-    return null
-  }
-  const kbps = Number(t.slice(0, -1))
-  if (!Number.isInteger(kbps) || kbps < 300 || kbps > 50000) {
-    return null
-  }
-  return `${kbps}k`
-}
-
-export function parseFfmpegExportFps(raw: unknown): number | null {
-  const n =
-    typeof raw === 'number'
-      ? raw
-      : typeof raw === 'string' && raw.trim() !== ''
-        ? Number(raw.trim())
-        : NaN
-  if (![24, 25, 30, 50, 60].includes(n)) {
-    return null
-  }
-  return n
-}
-
-/** §7.2 / v0 — двухпроходное libx264; только явный `true`. */
-export function parseFfmpegExportTwoPass(raw: unknown): boolean {
-  return raw === true
-}
-
-/** §7.3 — экономный режим (`-threads 1`); только явный `true`. */
-export function parseFfmpegExportEconomyMode(raw: unknown): boolean {
-  return raw === true
-}
-
-/** §7.2 — strip-флаги; только явный `true` ставит `-map_metadata -1` / `-map_chapters -1`. */
-export function parseFfmpegExportStripFlag(raw: unknown): boolean {
-  return raw === true
-}
-
-/**
- * §7.2 — целочисленный сдвиг громкости в дБ; `null` при пустом/некорректном/нулевом значении.
- * Дополнительная гарантия по сравнению с `normalizeFfmpegExportAudioGainDb`: явно
- * фиксируем сигнатуру, чтобы main мог использовать тот же helper для persist и для spawn.
- */
-export function parseFfmpegExportAudioGainDb(raw: unknown): number | null {
-  return normalizeFfmpegExportAudioGainDb(raw)
-}
-
-/** §7.2 — IPC/renderer trim payload: только конечные неотрицательные маркеры In < Out. */
-export function parseFfmpegExportTrim(raw: unknown): MediaExportTrimPayload | undefined {
-  if (!raw || typeof raw !== 'object') {
-    return undefined
-  }
-  const o = raw as Record<string, unknown>
-  if (typeof o['inSec'] !== 'number' || typeof o['outSec'] !== 'number') {
-    return undefined
-  }
-  const inSec = o['inSec']
-  const outSec = o['outSec']
-  if (!Number.isFinite(inSec) || !Number.isFinite(outSec)) {
-    return undefined
-  }
-  if (inSec < 0 || outSec <= inSec) {
-    return undefined
-  }
-  return { inSec, outSec }
-}
-
-/** §7.2 — разбор снимка пользовательского пресета из IPC/renderer (белые списки). */
-export function parseFfmpegExportUserPresetSnapshot(
-  raw: unknown
-): FfmpegExportUserPresetSnapshot | null {
-  if (!raw || typeof raw !== 'object') {
-    return null
-  }
-  const o = raw as Record<string, unknown>
-  const encodePreset = parseFfmpegExportEncodePreset(o['encodePreset'])
-  const videoCodec = parseFfmpegExportVideoCodec(o['videoCodec'])
-  const container = parseFfmpegExportContainer(o['container'])
-  const crf = parseFfmpegExportCrf(o['crf'])
-  const videoBitrate = parseFfmpegExportVideoBitrate(o['videoBitrate'])
-  const audioMode = parseFfmpegExportAudioMode(o['audioMode'])
-  const audioBitrate = parseFfmpegExportAudioBitrate(o['audioBitrate']) ?? '192k'
-  const fps = parseFfmpegExportFps(o['fps'])
-  const scalePreset = parseFfmpegExportScalePreset(o['scalePreset'])
-  const videoTransform = parseFfmpegExportVideoTransform(o['videoTransform'])
-  const cropPreset = parseFfmpegExportCropPreset(o['cropPreset'])
-  const twoPass = o['twoPass'] === true
-  const economyMode = parseFfmpegExportEconomyMode(o['economyMode'])
-  const hwDecode = parseFfmpegExportHwDecode(o['hwDecode'])
-  const extraArgsLine =
-    typeof o['extraArgsLine'] === 'string' ? o['extraArgsLine'].trim().slice(0, 1200) : ''
-  const audioGainDb = parseFfmpegExportAudioGainDb(o['audioGainDb'])
-  const stripMetadata = parseFfmpegExportStripFlag(o['stripMetadata'])
-  const stripChapters = parseFfmpegExportStripFlag(o['stripChapters'])
-  const subtitleMode = parseFfmpegExportSubtitleMode(o['subtitleMode'])
-  const videoDenoise = parseFfmpegExportVideoDenoise(o['videoDenoise'])
-  const videoDeband = parseFfmpegExportVideoDeband(o['videoDeband'])
-  const videoHisteq = parseFfmpegExportVideoHisteq(o['videoHisteq'])
-  const videoLut3d = parseFfmpegExportVideoLut3d(o['videoLut3d'])
-  const videoSharpen = parseFfmpegExportVideoSharpen(o['videoSharpen'])
-  const videoEqPreset = parseFfmpegExportVideoEqPreset(o['videoEqPreset'])
-  const videoHue = parseFfmpegExportVideoHue(o['videoHue'])
-  const videoGrain = parseFfmpegExportVideoGrain(o['videoGrain'])
-  const videoVignette = parseFfmpegExportVideoVignette(o['videoVignette'])
-  const videoBlur = parseFfmpegExportVideoBlur(o['videoBlur'])
-  const videoDeinterlace = parseFfmpegExportVideoDeinterlace(o['videoDeinterlace'])
-  const audioNormalize = parseFfmpegExportAudioNormalize(o['audioNormalize'])
-  return {
-    encodePreset,
-    ...(videoCodec !== 'libx264' ? { videoCodec } : {}),
-    container,
-    crf,
-    videoBitrate,
-    audioMode,
-    audioBitrate,
-    fps,
-    scalePreset,
-    videoTransform,
-    cropPreset,
-    ...(twoPass && videoCodec === 'libx264' ? { twoPass: true as const } : {}),
-    ...(economyMode ? { economyMode: true as const } : {}),
-    ...(hwDecode ? { hwDecode: true as const } : {}),
-    ...(extraArgsLine.length > 0 ? { extraArgsLine } : {}),
-    ...(audioGainDb !== null ? { audioGainDb } : {}),
-    ...(stripMetadata ? { stripMetadata: true } : {}),
-    ...(stripChapters ? { stripChapters: true } : {}),
-    ...(subtitleMode === 'copy' ? { subtitleMode: 'copy' as const } : {}),
-    ...(videoDenoise !== 'off' ? { videoDenoise } : {}),
-    ...(videoDeband !== 'off' ? { videoDeband } : {}),
-    ...(videoHisteq !== 'off' ? { videoHisteq } : {}),
-    ...(videoLut3d !== 'off' ? { videoLut3d } : {}),
-    ...(videoSharpen !== 'off' ? { videoSharpen } : {}),
-    ...(videoEqPreset !== 'off' ? { videoEqPreset } : {}),
-    ...(videoHue !== 'off' ? { videoHue } : {}),
-    ...(videoGrain !== 'off' ? { videoGrain } : {}),
-    ...(videoVignette !== 'off' ? { videoVignette } : {}),
-    ...(videoBlur !== 'off' ? { videoBlur } : {}),
-    ...(videoDeinterlace !== 'off' ? { videoDeinterlace } : {}),
-    ...(audioNormalize !== 'off' ? { audioNormalize } : {})
-  }
-}
-
-/**
- * §7.2 — список пресетов экспорта для `settings.json` (см. `FFMPEG_EXPORT_USER_PRESETS_MAX_ENTRIES`).
- */
-export function parseFfmpegExportUserPresetsList(raw: unknown): FfmpegExportUserPreset[] {
-  if (!Array.isArray(raw)) {
-    return []
-  }
-  const out: FfmpegExportUserPreset[] = []
-  for (const item of raw.slice(0, FFMPEG_EXPORT_USER_PRESETS_MAX_ENTRIES)) {
-    if (!item || typeof item !== 'object') {
-      continue
-    }
-    const o = item as Record<string, unknown>
-    const idRaw = o['id']
-    const id =
-      typeof idRaw === 'string' && /^[a-zA-Z0-9_-]{1,64}$/.test(idRaw.trim()) ? idRaw.trim() : null
-    const labelRaw = o['label']
-    const label =
-      typeof labelRaw === 'string' && labelRaw.trim().length > 0
-        ? labelRaw.trim().slice(0, 64)
-        : null
-    const hintRaw = o['hint']
-    const hint =
-      typeof hintRaw === 'string' && hintRaw.trim().length > 0
-        ? hintRaw.trim().slice(0, 220)
-        : undefined
-    const snap = parseFfmpegExportUserPresetSnapshot(o['snapshot'])
-    if (!id || !label || !snap) {
-      continue
-    }
-    out.push({ id, label, snapshot: snap, ...(hint ? { hint } : {}) })
-  }
-  return out
 }
 
 /**
@@ -587,27 +403,6 @@ export function mergeFfmpegExportSnapshotIntoAppSettings(
     delete next.ffmpegExportAudioNormalize
   }
   return next
-}
-
-/** Поле `speed=` в строках прогресса ffmpeg (`-stats`). */
-export function parseFfmpegSpeedToken(line: string): string | null {
-  const m = line.match(/\bspeed=\s*(\S+)/)
-  const token = m?.[1]
-  return token !== undefined ? token : null
-}
-
-export function parseFfmpegTimeSeconds(line: string): number | null {
-  const m = line.match(/time=(\d+):(\d+):(\d+(?:\.\d+)?)/)
-  if (!m) {
-    return null
-  }
-  const h = Number(m[1])
-  const min = Number(m[2])
-  const sec = Number(m[3])
-  if (!Number.isFinite(h + min + sec)) {
-    return null
-  }
-  return h * 3600 + min * 60 + sec
 }
 
 /**

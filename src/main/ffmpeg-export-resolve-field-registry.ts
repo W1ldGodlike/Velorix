@@ -4,21 +4,13 @@
 import type { AppSettings } from '../shared/settings-contract'
 import type { ResolvedFfmpegExportJobOptions } from '../shared/ffmpeg-export-resolve-contract'
 import {
-  parseFfmpegExportAudioBitrate,
-  parseFfmpegExportAudioGainDb,
   parseFfmpegExportAudioMode,
   parseFfmpegExportAudioNormalize,
   parseFfmpegExportContainer,
   parseFfmpegExportCropPreset,
-  parseFfmpegExportCrf,
   parseFfmpegExportEncodePreset,
-  parseFfmpegExportFps,
   parseFfmpegExportScalePreset,
-  parseFfmpegExportStripFlag,
   parseFfmpegExportSubtitleMode,
-  parseFfmpegExportEconomyMode,
-  parseFfmpegExportVideoBitrate,
-  parseFfmpegExportVideoCodec,
   parseFfmpegExportVideoDeband,
   parseFfmpegExportVideoDeinterlace,
   parseFfmpegExportVideoHisteq,
@@ -31,7 +23,17 @@ import {
   parseFfmpegExportVideoVignette,
   parseFfmpegExportVideoSharpen,
   parseFfmpegExportVideoTransform
-} from './ffmpeg-export-service'
+} from '../shared/ffmpeg-export-parse-registry'
+import {
+  parseFfmpegExportAudioBitrate,
+  parseFfmpegExportAudioGainDb,
+  parseFfmpegExportCrf,
+  parseFfmpegExportEconomyMode,
+  parseFfmpegExportFps,
+  parseFfmpegExportStripFlag,
+  parseFfmpegExportVideoBitrate
+} from '../shared/ffmpeg-export-stored-parse'
+import { parseFfmpegExportVideoCodec } from '../shared/ffmpeg-export-video-codec'
 import { parseFfmpegExportHwDecode } from '../shared/ffmpeg-export-hw-decode'
 
 type ParseFn = (raw: unknown) => unknown

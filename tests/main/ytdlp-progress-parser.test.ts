@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  YTDLP_PROGRESS_EQUAL_CASES,
+  YTDLP_PROGRESS_NULL_LINES,
+  YTDLP_PROGRESS_PERCENT_NUMBER_CASES,
+  YTDLP_SPEED_TO_BPS_CASES
+} from '../fixtures/ytdlp-progress-parse-cases'
+import {
   classifyYtdlpQueueFailureKind,
   extractYtdlpErrorSummary,
   extractYtdlpOutputPath,
@@ -20,26 +26,12 @@ import {
 } from '../../src/main/ytdlp-progress-parser'
 
 describe('parseYtdlpDownloadProgressLine', () => {
-  it('возвращает null для строк без префикса [download]', () => {
-    expect(parseYtdlpDownloadProgressLine('[info] some')).toBeNull()
-    expect(parseYtdlpDownloadProgressLine('random output')).toBeNull()
-    expect(parseYtdlpDownloadProgressLine('')).toBeNull()
+  it.each(YTDLP_PROGRESS_NULL_LINES)('null для %s', (line) => {
+    expect(parseYtdlpDownloadProgressLine(line)).toBeNull()
   })
 
-  it('игнорирует Destination: без процентов', () => {
-    expect(parseYtdlpDownloadProgressLine('[download] Destination: video.mp4')).toBeNull()
-  })
-
-  it('парсит процент + скорость + ETA', () => {
-    const r = parseYtdlpDownloadProgressLine(
-      '[download]  42.1% of   12.34MiB at  1.20MiB/s ETA 00:15'
-    )
-    expect(r).toEqual({
-      percent: '42.1%',
-      speed: '1.20MiB/s',
-      eta: '00:15',
-      sizeTotal: '12.34MiB'
-    })
+  it.each(YTDLP_PROGRESS_EQUAL_CASES)('$label', ({ line, expected }) => {
+    expect(parseYtdlpDownloadProgressLine(line)).toEqual(expected)
   })
 
   it('парсит размер с отдельным символом приблизительности "~"', () => {
@@ -57,97 +49,12 @@ describe('parseYtdlpDownloadProgressLine', () => {
     expect(r?.sizeTotal).toBe('12.34MiB')
   })
 
-  it('парсит строку только с процентом', () => {
-    const r = parseYtdlpDownloadProgressLine('[download] 7%')
-    expect(r).toEqual({ percent: '7%', speed: null, eta: null })
-  })
-
-  it('парсит строку fragment X of Y (DASH/HLS)', () => {
-    const r = parseYtdlpDownloadProgressLine('[download] fragment 5 of 120')
-    expect(r).toEqual({ percent: null, speed: 'фрагмент 5/120', eta: null })
-  })
-
-  it('парсит Total progress: N%', () => {
-    const r = parseYtdlpDownloadProgressLine('[download] Total progress: 33.3%')
-    expect(r).toEqual({ percent: '33.3%', speed: null, eta: null })
-  })
-
-  it('предпочитает Total progress строкам фрагментов', () => {
-    const r = parseYtdlpDownloadProgressLine('[download] Total progress: 33.3% (fragment 5 of 120)')
-    expect(r).toEqual({ percent: '33.3%', speed: null, eta: null })
-  })
-
-  it('парсит Downloading video/item X of Y (плейлист)', () => {
-    expect(parseYtdlpDownloadProgressLine('[download] Downloading item 3 of 25')).toEqual({
-      percent: null,
-      speed: 'плейлист 3/25',
-      eta: null
-    })
-    expect(parseYtdlpDownloadProgressLine('[download] Downloading video 1 of 5')).toEqual({
-      percent: null,
-      speed: 'плейлист 1/5',
-      eta: null
-    })
-  })
-
-  it('парсит вариант «N of M videos» без слова video/item', () => {
-    expect(parseYtdlpDownloadProgressLine('[download] Downloading 3 of 10 videos')).toEqual({
-      percent: null,
-      speed: 'плейлист 3/10',
-      eta: null
-    })
-  })
-
-  it('не принимает произвольные «N of M videos» как прогресс плейлиста', () => {
-    expect(parseYtdlpDownloadProgressLine('[download] Skipping 3 of 10 videos')).toBeNull()
-  })
-
-  it('возвращает null если ни процента, ни скорости нет', () => {
-    expect(parseYtdlpDownloadProgressLine('[download] Unable to rename file')).toBeNull()
-  })
-
-  it('парсит вариант (frag N/M) без процентов; со строкой с % отдаёт процент/скорость', () => {
-    expect(parseYtdlpDownloadProgressLine('[download] (frag 12/120)')).toEqual({
-      percent: null,
-      speed: 'фрагмент 12/120',
-      eta: null
-    })
+  it('парсит вариант (frag N/M) со строкой с %', () => {
     const withPct = parseYtdlpDownloadProgressLine(
       '[download] 10.0% of ~ 5.00MiB at 1.00MiB/s ETA 00:01 (frag 12/120)'
     )
     expect(withPct?.percent).toBe('10.0%')
     expect(withPct?.speed).toBe('1.00MiB/s')
-  })
-
-  it('парсит Sleeping … seconds и Waiting for reconnect', () => {
-    expect(parseYtdlpDownloadProgressLine('[download] Sleeping 6.00 seconds ...')).toEqual({
-      percent: null,
-      speed: 'пауза 6.00 с',
-      eta: null
-    })
-    expect(
-      parseYtdlpDownloadProgressLine('[download] Waiting for reconnect after forced IP bind...')
-    ).toEqual({
-      percent: null,
-      speed: 'ожидание переподключения',
-      eta: null
-    })
-  })
-
-  it('парсит прочие «Waiting for …» без reconnect', () => {
-    expect(parseYtdlpDownloadProgressLine('[download] Waiting for available formats...')).toEqual({
-      percent: null,
-      speed: 'ожидание',
-      eta: null
-    })
-  })
-
-  it('парсит Resuming download at byte …', () => {
-    expect(parseYtdlpDownloadProgressLine('[download] Resuming download at byte 1048576')).toEqual({
-      percent: null,
-      speed: 'продолжение загрузки',
-      eta: null
-    })
   })
 
   it('парсит retry-счётчик yt-dlp', () => {
@@ -181,25 +88,6 @@ describe('parseYtdlpDownloadProgressLine', () => {
     })
   })
 
-  it('парсит подготовительные строки m3u8 / player API / webpage без процентов', () => {
-    expect(parseYtdlpDownloadProgressLine('[download] Downloading m3u8 information')).toEqual({
-      percent: null,
-      speed: 'манифест HLS',
-      eta: null
-    })
-    expect(
-      parseYtdlpDownloadProgressLine('[download] Downloading android player API JSON')
-    ).toEqual({
-      percent: null,
-      speed: 'метаданные API плеера',
-      eta: null
-    })
-    expect(parseYtdlpDownloadProgressLine('[download] Downloading webpage')).toEqual({
-      percent: null,
-      speed: 'веб-страница',
-      eta: null
-    })
-  })
 })
 
 describe('parseYtdlpInfoDownloadingTitlePrefix', () => {
@@ -295,24 +183,27 @@ describe('parseYtdlpInfoQueueSizeHint', () => {
 })
 
 describe('parseYtdlpProgressPercentNumber', () => {
-  it('достаёт число только из чистого «NN%»', () => {
-    expect(parseYtdlpProgressPercentNumber('42.1%')).toBeCloseTo(42.1, 5)
-    expect(parseYtdlpProgressPercentNumber('100%')).toBe(100)
-    expect(parseYtdlpProgressPercentNumber(null)).toBeNull()
-    expect(parseYtdlpProgressPercentNumber('3 of 10')).toBeNull()
-  })
+  it.each(YTDLP_PROGRESS_PERCENT_NUMBER_CASES)(
+    'parseYtdlpProgressPercentNumber(%j)',
+    ({ input, expected }) => {
+      const r = parseYtdlpProgressPercentNumber(input)
+      if (expected === null) {
+        expect(r).toBeNull()
+      } else {
+        expect(r).toBeCloseTo(expected, 5)
+      }
+    }
+  )
 })
 
 describe('parseYtdlpSpeedToBytesPerSec', () => {
-  it('парсит KiB/s и MiB/s', () => {
-    expect(parseYtdlpSpeedToBytesPerSec('999.36KiB/s')).toBeCloseTo(999.36 * 1024, 1)
-    expect(parseYtdlpSpeedToBytesPerSec('1.20MiB/s')).toBeCloseTo(1.2 * 1024 ** 2, 1)
-  })
-
-  it('возвращает null для статуса и Unknown', () => {
-    expect(parseYtdlpSpeedToBytesPerSec('')).toBeNull()
-    expect(parseYtdlpSpeedToBytesPerSec('Unknown')).toBeNull()
-    expect(parseYtdlpSpeedToBytesPerSec('fragment 3 of 10')).toBeNull()
+  it.each(YTDLP_SPEED_TO_BPS_CASES)('parseYtdlpSpeedToBytesPerSec(%j)', ({ input, expected }) => {
+    const r = parseYtdlpSpeedToBytesPerSec(input)
+    if (expected === null) {
+      expect(r).toBeNull()
+    } else {
+      expect(r).toBeCloseTo(expected, 1)
+    }
   })
 })
 

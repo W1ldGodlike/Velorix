@@ -1,6 +1,18 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  FFMPEG_EXPORT_AUDIO_GAIN_DB_CASES,
+  FFMPEG_EXPORT_CROP_FILTER_CASES,
+  FFMPEG_EXPORT_ENCODE_PRESET_CASES,
+  FFMPEG_EXPORT_FILTER_RESOLVE_CASES,
+  FFMPEG_EXPORT_LUT_ESCAPE_CASES,
+  FFMPEG_EXPORT_SCALE_FILTER_CASES,
+  FFMPEG_EXPORT_SHOULD_APPLY_TRIM_CASES,
+  FFMPEG_EXPORT_SUBTITLE_COPY_CODEC_CASES,
+  FFMPEG_EXPORT_VIDEO_TRANSFORM_CASES,
+  type FfmpegExportArgvFilterResolver
+} from '../fixtures/ffmpeg-export-argv-cases'
+import {
   buildFfmpegExportArgv,
   buildFfmpegExportLut3dFilter,
   buildFfmpegExportPreviewCommand,
@@ -38,12 +50,30 @@ import {
   FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR
 } from '../../src/shared/ffmpeg-export-contract'
 
+const FFMPEG_EXPORT_FILTER_RESOLVERS: Record<
+  FfmpegExportArgvFilterResolver,
+  (id: string) => string | null
+> = {
+  denoise: (id) => resolveFfmpegExportVideoDenoiseFilter(id as 'off'),
+  sharpen: (id) => resolveFfmpegExportVideoSharpenFilter(id as 'off'),
+  deband: (id) => resolveFfmpegExportVideoDebandFilter(id as 'off'),
+  grain: (id) => resolveFfmpegExportVideoGrainFilter(id as 'off'),
+  vignette: (id) => resolveFfmpegExportVideoVignetteFilter(id as 'off'),
+  blur: (id) => resolveFfmpegExportVideoBlurFilter(id as 'off'),
+  deinterlace: (id) => resolveFfmpegExportVideoDeinterlaceFilter(id as 'off'),
+  histeq: (id) => resolveFfmpegExportVideoHisteqFilter(id as 'off'),
+  hue: (id) => resolveFfmpegExportVideoHueFilter(id as 'off'),
+  eq: (id) => resolveFfmpegExportVideoEqFilter(id as 'off'),
+  audioNormalize: (id) => resolveFfmpegExportAudioNormalizeFilter(id as 'off')
+}
+
 describe('shared ffmpeg export argv', () => {
-  it('даёт CRF и x264 preset под системные пресеты §7.2', () => {
-    expect(resolveFfmpegExportEncodeParams('balance')).toEqual({ crf: '23', x264preset: 'fast' })
-    expect(resolveFfmpegExportEncodeParams('smaller')).toEqual({ crf: '28', x264preset: 'fast' })
-    expect(resolveFfmpegExportEncodeParams('quality')).toEqual({ crf: '18', x264preset: 'medium' })
-  })
+  it.each(FFMPEG_EXPORT_ENCODE_PRESET_CASES)(
+    'resolveFfmpegExportEncodeParams($preset)',
+    ({ preset, crf, x264preset }) => {
+      expect(resolveFfmpegExportEncodeParams(preset)).toEqual({ crf, x264preset })
+    }
+  )
 
   it('economyMode: добавляет -threads 1 после баннера', () => {
     const argv = buildFfmpegExportArgv({
@@ -271,28 +301,26 @@ describe('shared ffmpeg export argv', () => {
     expect(argv.includes('-b:a')).toBe(false)
   })
 
-  it('возвращает scale-фильтр только для непустых пресетов', () => {
-    expect(resolveFfmpegExportScaleFilter('source')).toBeNull()
-    expect(resolveFfmpegExportScaleFilter('480p')).toBe('scale=-2:480')
-    expect(resolveFfmpegExportScaleFilter('1080p')).toBe('scale=-2:1080')
-  })
+  it.each(FFMPEG_EXPORT_SCALE_FILTER_CASES)(
+    'resolveFfmpegExportScaleFilter($preset)',
+    ({ preset, filter }) => {
+      expect(resolveFfmpegExportScaleFilter(preset)).toBe(filter)
+    }
+  )
 
-  it('whitelist videoTransform — только известные фрагменты -vf', () => {
-    expect(resolveFfmpegExportVideoTransformFilters('none')).toEqual([])
-    expect(resolveFfmpegExportVideoTransformFilters('cw90')).toEqual(['transpose=1'])
-    expect(resolveFfmpegExportVideoTransformFilters('ccw90')).toEqual(['transpose=2'])
-    expect(resolveFfmpegExportVideoTransformFilters('r180')).toEqual(['transpose=1', 'transpose=1'])
-    expect(resolveFfmpegExportVideoTransformFilters('hflip')).toEqual(['hflip'])
-    expect(resolveFfmpegExportVideoTransformFilters('vflip')).toEqual(['vflip'])
-  })
+  it.each(FFMPEG_EXPORT_VIDEO_TRANSFORM_CASES)(
+    'resolveFfmpegExportVideoTransformFilters($id)',
+    ({ id, filters }) => {
+      expect(resolveFfmpegExportVideoTransformFilters(id)).toEqual(filters)
+    }
+  )
 
-  it('whitelist cropPreset — только предустановленные crop-фильтры §7.2', () => {
-    expect(resolveFfmpegExportCropFilter('none')).toBeNull()
-    expect(resolveFfmpegExportCropFilter('center-square')).toBe('crop=min(iw\\,ih):min(iw\\,ih)')
-    expect(resolveFfmpegExportCropFilter('center-16-9')).toBe(
-      'crop=min(iw\\,ih*16/9):min(ih\\,iw*9/16)'
-    )
-  })
+  it.each(FFMPEG_EXPORT_CROP_FILTER_CASES)(
+    'resolveFfmpegExportCropFilter($preset)',
+    ({ preset, filter }) => {
+      expect(resolveFfmpegExportCropFilter(preset)).toBe(filter)
+    }
+  )
 
   it('трансформ и crop идут в -vf перед scale и fps §7.2', () => {
     const argv = buildFfmpegExportArgv({
@@ -1128,20 +1156,12 @@ describe('shared ffmpeg export argv', () => {
     expect(explicitOff.appliedTrim).toBe(false)
   })
 
-  it('shouldApplyFfmpegExportTrim фильтрует вырожденные и почти полные диапазоны', () => {
-    // Базовый диапазон без длительности — применяем.
-    expect(shouldApplyFfmpegExportTrim({ inSec: 1, outSec: 4 }, null)).toBe(true)
-    // Слишком короткий — нет.
-    expect(shouldApplyFfmpegExportTrim({ inSec: 2, outSec: 2.01 }, null)).toBe(false)
-    // Маркеры покрывают весь файл (с допуском) — нет.
-    expect(shouldApplyFfmpegExportTrim({ inSec: 0, outSec: 19.9 }, 20)).toBe(false)
-    // Сдвинутый In > 0.08 при близкой длине — применяем (ffmpeg реально режет).
-    expect(shouldApplyFfmpegExportTrim({ inSec: 0.5, outSec: 19.9 }, 20)).toBe(true)
-    // Без маркеров — нет.
-    expect(shouldApplyFfmpegExportTrim(null, 20)).toBe(false)
-    // NaN маркеры — нет, без падения.
-    expect(shouldApplyFfmpegExportTrim({ inSec: Number.NaN, outSec: 5 }, null)).toBe(false)
-  })
+  it.each(FFMPEG_EXPORT_SHOULD_APPLY_TRIM_CASES)(
+    'shouldApplyFfmpegExportTrim(%j, %j)',
+    ({ trim, duration, expected }) => {
+      expect(shouldApplyFfmpegExportTrim(trim, duration)).toBe(expected)
+    }
+  )
 
   it('buildFfmpegExportPreviewCommand с probeDurationSec повторяет логику main-сервиса', () => {
     // Маркеры почти на весь файл — preview должен пропустить -ss/-t, как и spawn.
@@ -1240,26 +1260,19 @@ describe('shared ffmpeg export argv', () => {
     expect(argv.at(-1)).toBe('C:/out/file.mp4')
   })
 
-  it('normalizeFfmpegExportAudioGainDb принимает только целые в диапазоне −24…+24 и режет нули', () => {
-    expect(normalizeFfmpegExportAudioGainDb(null)).toBeNull()
-    expect(normalizeFfmpegExportAudioGainDb(undefined)).toBeNull()
-    expect(normalizeFfmpegExportAudioGainDb('')).toBeNull()
-    expect(normalizeFfmpegExportAudioGainDb('abc')).toBeNull()
-    expect(normalizeFfmpegExportAudioGainDb(0)).toBeNull()
-    expect(normalizeFfmpegExportAudioGainDb(25)).toBeNull()
-    expect(normalizeFfmpegExportAudioGainDb(-25)).toBeNull()
-    expect(normalizeFfmpegExportAudioGainDb(3.5)).toBeNull()
-    expect(normalizeFfmpegExportAudioGainDb(3)).toBe(3)
-    expect(normalizeFfmpegExportAudioGainDb('-6')).toBe(-6)
-    expect(normalizeFfmpegExportAudioGainDb(24)).toBe(24)
-    expect(normalizeFfmpegExportAudioGainDb(-24)).toBe(-24)
-  })
+  it.each(FFMPEG_EXPORT_AUDIO_GAIN_DB_CASES)(
+    'normalizeFfmpegExportAudioGainDb(%j)',
+    ({ raw, expected }) => {
+      expect(normalizeFfmpegExportAudioGainDb(raw)).toBe(expected)
+    }
+  )
 
-  it('resolveFfmpegExportSubtitleCopyCodec даёт copy только для MKV; иначе mov_text', () => {
-    expect(resolveFfmpegExportSubtitleCopyCodec('mkv')).toBe('copy')
-    expect(resolveFfmpegExportSubtitleCopyCodec('mp4')).toBe('mov_text')
-    expect(resolveFfmpegExportSubtitleCopyCodec('mov')).toBe('mov_text')
-  })
+  it.each(FFMPEG_EXPORT_SUBTITLE_COPY_CODEC_CASES)(
+    'resolveFfmpegExportSubtitleCopyCodec($container)',
+    ({ container, codec }) => {
+      expect(resolveFfmpegExportSubtitleCopyCodec(container)).toBe(codec)
+    }
+  )
 
   it('audioGainDb добавляет -filter:a volume только при aac и ненулевом сдвиге', () => {
     const withGain = buildFfmpegExportArgv({
@@ -1436,84 +1449,24 @@ describe('shared ffmpeg export argv', () => {
     expect(result.command).toContain('mov_text')
   })
 
-  it('resolveFfmpegExportVideoDenoiseFilter/Sharpen дают только белый список', () => {
-    expect(resolveFfmpegExportVideoDenoiseFilter('off')).toBeNull()
-    expect(resolveFfmpegExportVideoDenoiseFilter('light')).toBe('hqdn3d=1.5:1.5:6:6')
-    expect(resolveFfmpegExportVideoDenoiseFilter('medium')).toBe('hqdn3d=3:3:6:6')
-    expect(resolveFfmpegExportVideoDenoiseFilter('strong')).toBe('hqdn3d=5:5:10:10')
-    expect(resolveFfmpegExportVideoSharpenFilter('off')).toBeNull()
-    expect(resolveFfmpegExportVideoSharpenFilter('light')).toBe('unsharp=5:5:0.6:5:5:0.0')
-    expect(resolveFfmpegExportVideoSharpenFilter('medium')).toBe('unsharp=5:5:1.0:5:5:0.0')
-    expect(resolveFfmpegExportVideoSharpenFilter('strong')).toBe('unsharp=7:7:1.5:7:7:0.0')
-  })
+  it.each(FFMPEG_EXPORT_FILTER_RESOLVE_CASES)(
+    'filter resolver $resolver $id',
+    ({ resolver, id, expected }) => {
+      expect(FFMPEG_EXPORT_FILTER_RESOLVERS[resolver](id)).toBe(expected)
+    }
+  )
 
-  it('resolveFfmpegExportVideoDebandFilter — только whitelist deband', () => {
-    expect(resolveFfmpegExportVideoDebandFilter('off')).toBeNull()
-    expect(resolveFfmpegExportVideoDebandFilter('light')).toBe('deband=range=12')
-    expect(resolveFfmpegExportVideoDebandFilter('medium')).toBe('deband=range=20')
-    expect(resolveFfmpegExportVideoDebandFilter('strong')).toBe('deband=range=28')
-  })
+  it.each(FFMPEG_EXPORT_LUT_ESCAPE_CASES)(
+    'escapeFilePathForFfmpegFilter($path)',
+    ({ path, escaped }) => {
+      expect(escapeFilePathForFfmpegFilter(path)).toBe(escaped)
+    }
+  )
 
-  it('escapeFilePathForFfmpegFilter / buildFfmpegExportLut3dFilter', () => {
-    expect(escapeFilePathForFfmpegFilter('C:/tmp/t.cube')).toBe('C\\:/tmp/t.cube')
-    expect(escapeFilePathForFfmpegFilter("/var/l/a'b.cube")).toBe("/var/l/a\\'b.cube")
+  it('buildFfmpegExportLut3dFilter', () => {
     expect(buildFfmpegExportLut3dFilter('D:/luts/film-warm.cube')).toBe(
       "lut3d=file='D\\:/luts/film-warm.cube':interp=trilinear"
     )
-  })
-
-  it('resolveFfmpegExportVideoEqFilter/AudioNormalize дают только белый список', () => {
-    expect(resolveFfmpegExportVideoEqFilter('off')).toBeNull()
-    expect(resolveFfmpegExportVideoEqFilter('warm')).toBe('eq=contrast=1.05:saturation=1.10')
-    expect(resolveFfmpegExportVideoEqFilter('cool')).toBe('eq=contrast=1.00:saturation=0.92')
-    expect(resolveFfmpegExportVideoEqFilter('vivid')).toBe('eq=contrast=1.10:saturation=1.20')
-    expect(resolveFfmpegExportVideoEqFilter('flat')).toBe('eq=contrast=0.95:saturation=0.85')
-    expect(resolveFfmpegExportAudioNormalizeFilter('off')).toBeNull()
-    expect(resolveFfmpegExportAudioNormalizeFilter('loudnorm')).toBe(
-      'loudnorm=I=-16:LRA=11:TP=-1.5'
-    )
-    expect(resolveFfmpegExportAudioNormalizeFilter('dynaudnorm')).toBe('dynaudnorm=f=200:g=15')
-  })
-
-  it('resolveFfmpegExportVideoGrainFilter — только whitelist noise', () => {
-    expect(resolveFfmpegExportVideoGrainFilter('off')).toBeNull()
-    expect(resolveFfmpegExportVideoGrainFilter('light')).toBe('noise=alls=2:allf=u')
-    expect(resolveFfmpegExportVideoGrainFilter('medium')).toBe('noise=alls=5:allf=u')
-    expect(resolveFfmpegExportVideoGrainFilter('strong')).toBe('noise=alls=9:allf=u')
-  })
-
-  it('resolveFfmpegExportVideoVignetteFilter — только whitelist vignette', () => {
-    expect(resolveFfmpegExportVideoVignetteFilter('off')).toBeNull()
-    expect(resolveFfmpegExportVideoVignetteFilter('light')).toBe('vignette=angle=PI/3')
-    expect(resolveFfmpegExportVideoVignetteFilter('medium')).toBe('vignette=angle=PI/5')
-    expect(resolveFfmpegExportVideoVignetteFilter('strong')).toBe('vignette=angle=PI/10')
-  })
-
-  it('resolveFfmpegExportVideoBlurFilter — только whitelist gblur', () => {
-    expect(resolveFfmpegExportVideoBlurFilter('off')).toBeNull()
-    expect(resolveFfmpegExportVideoBlurFilter('light')).toBe('gblur=sigma=1')
-    expect(resolveFfmpegExportVideoBlurFilter('medium')).toBe('gblur=sigma=2.5')
-    expect(resolveFfmpegExportVideoBlurFilter('strong')).toBe('gblur=sigma=5')
-  })
-
-  it('resolveFfmpegExportVideoDeinterlaceFilter — только whitelist yadif', () => {
-    expect(resolveFfmpegExportVideoDeinterlaceFilter('off')).toBeNull()
-    expect(resolveFfmpegExportVideoDeinterlaceFilter('frame')).toBe('yadif')
-    expect(resolveFfmpegExportVideoDeinterlaceFilter('field')).toBe('yadif=mode=send_field')
-  })
-
-  it('resolveFfmpegExportVideoHisteqFilter — только whitelist histeq', () => {
-    expect(resolveFfmpegExportVideoHisteqFilter('off')).toBeNull()
-    expect(resolveFfmpegExportVideoHisteqFilter('light')).toBe('histeq=strength=0.14')
-    expect(resolveFfmpegExportVideoHisteqFilter('medium')).toBe('histeq=strength=0.26')
-    expect(resolveFfmpegExportVideoHisteqFilter('strong')).toBe('histeq=strength=0.40')
-  })
-
-  it('resolveFfmpegExportVideoHueFilter — только whitelist hue', () => {
-    expect(resolveFfmpegExportVideoHueFilter('off')).toBeNull()
-    expect(resolveFfmpegExportVideoHueFilter('warmShift')).toBe('hue=h=-11:s=1.03')
-    expect(resolveFfmpegExportVideoHueFilter('coolShift')).toBe('hue=h=13:s=1.03')
-    expect(resolveFfmpegExportVideoHueFilter('satBoost')).toBe('hue=h=0:s=1.16')
   })
 
   it('denoise и sharpen встают между crop и scale, перед fps', () => {

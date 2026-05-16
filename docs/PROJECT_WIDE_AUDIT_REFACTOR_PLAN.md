@@ -142,7 +142,7 @@
 | ffmpeg export resolve | ✅ | `ffmpeg-export-resolve-field-registry.ts` |
 | settings.json stored | ✅ | `settings-stored-parse.ts` |
 | `ytdlp-download-options.ts` | ✅ | `ytdlp-download-stored-parse.ts` + `check:field-registries` |
-| `ffmpeg-export-service.ts` (остаток parse) | ⬜ | вынести в registries / shared |
+| `ffmpeg-export-service.ts` (остаток parse) | ✅ | `ffmpeg-export-stored-parse`, `user-preset-parse`, `progress-parse` |
 | `ffprobe-side-data.ts` summarizers | ⬜ | table-driven side_data types |
 | `ffprobe-summary-export-locale.ts` | ⬜ | только если дубли шаблонов |
 
@@ -162,9 +162,9 @@
 |------|--------|----------|
 | `MediaProbeSuccess` base | ✅ | `tests/fixtures/media-probe-success-base.ts` |
 | `AppSettings` base | ✅ | `tests/fixtures/app-settings-base.ts` |
-| `terminal-contract-scenarios.test.ts` (123 it) | ⬜ | scenario table + `it.each` / shared builder |
-| `ytdlp-progress-parser.test.ts` (77 it) | ⬜ | case matrix |
-| `ffmpeg-export-argv.test.ts` (67 it) | ⬜ | argv table |
+| `terminal-contract-scenarios.test.ts` (123 it) | [~] | fixture lines + `it.each` (срез 1); остальные `it` — далее |
+| `ytdlp-progress-parser.test.ts` (77 it) | ✅ | `ytdlp-progress-parse-cases` + `it.each` |
+| `ffmpeg-export-argv.test.ts` (67 it) | ✅ | `ffmpeg-export-argv-cases` + `it.each` (filter/trim/encode) |
 | `ffprobe-service.test.ts` (46 it) | ⬜ | fixtures + batches |
 | Остальные `many-standalone-it` | ⬜ | по убыванию count из audit |
 
@@ -261,11 +261,11 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 
 | kind | count | file | Фаза | Срез (1 предложение, до кода) | Статус |
 |------|-------|------|------|-------------------------------|--------|
-| many-standalone-it | 123 | tests/shared/terminal-contract-scenarios.test.ts | 3 | — | ⬜ |
-| many-standalone-it | 77 | tests/main/ytdlp-progress-parser.test.ts | 3 | — | ⬜ |
-| many-standalone-it | 67 | tests/shared/ffmpeg-export-argv.test.ts | 3 | — | ⬜ |
-| many-standalone-it | 46 | tests/main/ffprobe-service.test.ts | 3 | — | ⬜ |
-| many-export-parse | 13 | src/main/ffmpeg-export-service.ts | 2 | — | ⬜ |
+| many-standalone-it | 123 | tests/shared/terminal-contract-scenarios.test.ts | 3 | fixture + it.each (срез) | [~] J-706 |
+| many-standalone-it | 77 | tests/main/ytdlp-progress-parser.test.ts | 3 | case matrix + it.each | ✅ J-706 |
+| many-standalone-it | 67 | tests/shared/ffmpeg-export-argv.test.ts | 3 | argv-cases + it.each | ✅ J-707 |
+| many-standalone-it | 46 | tests/main/ffprobe-service.test.ts | 3 | track-detail-cases + it.each | ✅ J-708 |
+| many-export-parse | 13 | src/main/ffmpeg-export-service.ts | 2 | stored/user-preset/progress parse modules | ✅ J-705 |
 | whitelist-if-chains | 4 | src/main/ytdlp-download-options.ts | 2 | Реестр whitelist chains + тесты; убрать 4× if-chain | ✅ J-704 |
 
 **Структурные (≥400 строк, фаза 4):** `terminal-contract.ts` (12959), `App.tsx` (7650), `index.ts` (4152), `downloads-window.ts` (4074), `ui-text.ts` (2848), `ffmpeg-export-argv.ts` (1055), `ffprobe-service.ts` (978), `MediaProbePanel.tsx` (985). Полный список: `npm run audit:structural`.
