@@ -948,4 +948,9 @@
 - [J-925] 2026-05-16 12:44:00 [Assistant]: Загрузки — тулбар действий над очередью (`downloadsUrlActionsToolbarAria`): `aria-busy` при загрузке опций/истории.
 - [J-926] 2026-05-16 12:46:00 [Assistant]: Загрузки — полоска фильтров статусов (`downloadsFilterBarAria`): `aria-busy` синхронизирован с вкладкой.
 - [J-927] 2026-05-16 12:48:00 [Assistant]: Загрузки — регион зоны таблицы очереди (`downloadsQueueTableZoneAria`): `aria-busy` для экрана списка задач.
+- [J-928] 2026-05-16 12:50:00 [Assistant]: Редактор — зона превью/DnD (`editorPreviewDropzoneAria`): `aria-busy` при экспорте, снимке кадра или ffprobe (`probePending`).
+- [J-929] 2026-05-16 12:52:00 [Assistant]: Загрузки — обзор счётчиков (`downloadsOverviewAria`): `aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}`.
+- [J-930] 2026-05-16 12:54:00 [Assistant]: Загрузки — список статистики очереди (`downloadsOverviewStatsGroupAria`): тот же флаг `aria-busy`.
+- [J-931] 2026-05-16 12:56:00 [Assistant]: Терминал — стек команды и автодополнения (`terminalCommandStackAria`): `aria-busy={terminalBusy}`.
+- [J-932] 2026-05-16 12:58:00 [Assistant]: Терминал — панель подсказок (`terminalHintsPanelAria`): `aria-busy={terminalBusy}` во время выполнения команды.
 

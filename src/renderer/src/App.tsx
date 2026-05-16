@@ -3955,6 +3955,7 @@ function App(): JSX.Element {
           <section
             className="app-preview"
             aria-label={uiText('editorPreviewDropzoneAria')}
+            aria-busy={exportBusy || snapshotBusy || probePending}
             onDragOver={(event) => {
               event.preventDefault()
               event.stopPropagation()
@@ -5390,6 +5391,7 @@ function App(): JSX.Element {
               className="app-terminal-command-stack"
               role="region"
               aria-label={uiText('terminalCommandStackAria')}
+              aria-busy={terminalBusy}
             >
               <div
                 className="app-terminal-command-row"
@@ -5656,7 +5658,11 @@ function App(): JSX.Element {
                   })
                 )}
               </section>
-              <aside className="app-terminal-hints" aria-label={uiText('terminalHintsPanelAria')}>
+              <aside
+                className="app-terminal-hints"
+                aria-label={uiText('terminalHintsPanelAria')}
+                aria-busy={terminalBusy}
+              >
                 <div className="app-field">
                   <label htmlFor={terminalHintsSearchFieldId}>
                     {uiText('terminalHintsSearchLabel')}
@@ -5861,11 +5867,13 @@ function App(): JSX.Element {
               className="app-downloads-overview"
               role="region"
               aria-label={uiText('downloadsOverviewAria')}
+              aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
             >
               <div
                 className="app-downloads-overview-stats"
                 role="list"
                 aria-label={uiText('downloadsOverviewStatsGroupAria')}
+                aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
               >
                 <div className="app-downloads-stat" role="listitem">
                   <span className="app-downloads-stat-label">{uiText('downloadsStatTotal')}</span>
