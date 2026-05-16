@@ -3400,7 +3400,6 @@ function App(): JSX.Element {
                   </span>
                   <select
                     className="app-control"
-                    aria-label={uiText('batchExportConcurrency')}
                     aria-describedby="batch-export-concurrency-hint"
                     value={String(batchSnapshot?.concurrency ?? 'auto')}
                     disabled={batchExportBusy}
@@ -4077,7 +4076,6 @@ function App(): JSX.Element {
                     </span>
                     <select
                       className="app-control"
-                      aria-label={uiText('editorAriaVideoCodecExport')}
                       value={exportVideoCodec}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -4121,7 +4119,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorTooltipEncodePreset')}
-                      aria-label={uiText('editorAriaEncodePresetExport')}
                       value={exportEncodePreset}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -4145,7 +4142,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorTooltipContainer')}
-                      aria-label={uiText('editorAriaContainerExport')}
                       value={exportContainer}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -4177,7 +4173,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorTooltipCrf')}
-                      aria-label={uiText('editorAriaCrfExport')}
                       value={exportCrf === null ? 'preset' : String(exportCrf)}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -4201,7 +4196,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorTooltipVideoBitrate')}
-                      aria-label={uiText('editorAriaVideoBitrateExport')}
                       value={exportVideoBitrate === null ? 'crf' : exportVideoBitrate}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -4233,7 +4227,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorHintDeinterlace')}
-                      aria-label={uiText('editorAriaDeinterlace')}
                       value={exportVideoDeinterlace}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -4257,7 +4250,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorHintDenoise')}
-                      aria-label={uiText('editorAriaDenoise')}
                       value={exportVideoDenoise}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -4281,7 +4273,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorHintDeband')}
-                      aria-label={uiText('editorAriaDeband')}
                       value={exportVideoDeband}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -4305,7 +4296,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorHintHisteq')}
-                      aria-label={uiText('editorAriaHisteq')}
                       value={exportVideoHisteq}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -4329,7 +4319,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorHintLut3d')}
-                      aria-label={uiText('editorAriaLut3d')}
                       value={exportVideoLut3d}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -4353,7 +4342,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorHintSharpen')}
-                      aria-label={uiText('editorAriaSharpen')}
                       value={exportVideoSharpen}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -4377,7 +4365,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorHintEq')}
-                      aria-label={uiText('editorAriaEq')}
                       value={exportVideoEqPreset}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -4401,7 +4388,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorHintHue')}
-                      aria-label={uiText('editorAriaHue')}
                       value={exportVideoHue}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -4425,7 +4411,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorHintGrain')}
-                      aria-label={uiText('editorAriaGrain')}
                       value={exportVideoGrain}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -4449,7 +4434,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorHintVignette')}
-                      aria-label={uiText('editorAriaVignette')}
                       value={exportVideoVignette}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -4473,7 +4457,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorHintBlur')}
-                      aria-label={uiText('editorAriaBlur')}
                       value={exportVideoBlur}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -4518,7 +4501,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorTooltipResolution')}
-                      aria-label={uiText('editorAriaResolutionExport')}
                       value={exportScalePreset}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -4542,7 +4524,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorTooltipFps')}
-                      aria-label={uiText('editorAriaFpsExport')}
                       value={exportFps === null ? 'source' : String(exportFps)}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -4635,7 +4616,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorTooltipRotation')}
-                      aria-label={uiText('editorAriaRotationExport')}
                       value={exportVideoTransform}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -4659,7 +4639,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorTooltipCrop')}
-                      aria-label={uiText('editorAriaCropExport')}
                       value={exportCropPreset}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -4708,7 +4687,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorTooltipAudioMode')}
-                      aria-label={uiText('editorAriaAudioModeExport')}
                       value={exportAudioMode}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -4740,7 +4718,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorTooltipAacBitrate')}
-                      aria-label={uiText('editorAriaAacBitrate')}
                       value={exportAudioBitrate}
                       disabled={
                         exportBusy || snapshotBusy || !ffmpegExportAudioModeUsesBitrate(exportAudioMode)
@@ -4766,7 +4743,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorHintAudioGain')}
-                      aria-label={uiText('editorAriaAudioGain')}
                       value={String(exportAudioGainDb)}
                       disabled={exportBusy || snapshotBusy || !ffmpegExportAudioModeAllowsFilters(exportAudioMode)}
                       onChange={(e) => {
@@ -4791,7 +4767,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorHintAudioNormalize')}
-                      aria-label={uiText('editorAriaAudioNormalize')}
                       value={exportAudioNormalize}
                       disabled={exportBusy || snapshotBusy || !ffmpegExportAudioModeAllowsFilters(exportAudioMode)}
                       onChange={(e) => {
@@ -4815,7 +4790,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorTooltipSnapshotFormat')}
-                      aria-label={uiText('editorAriaSnapshotFormat')}
                       value={snapshotFormat}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -4880,7 +4854,6 @@ function App(): JSX.Element {
                     <select
                       className="app-control"
                       title={uiText('editorHintExportSubtitles')}
-                      aria-label={uiText('editorAriaExportSubtitles')}
                       value={exportSubtitleMode}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
@@ -4980,7 +4953,6 @@ function App(): JSX.Element {
                         selectedExportUserPreset?.hint?.trim() ||
                         uiText('editorTooltipUserPresetSelectFallback')
                       }
-                      aria-label={uiText('editorAriaUserPreset')}
                       value={selectedUserPresetId ?? ''}
                       disabled={exportBusy || snapshotBusy}
                       onChange={(e) => {
