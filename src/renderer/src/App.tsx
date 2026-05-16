@@ -2985,6 +2985,9 @@ function App(): JSX.Element {
     applyPreview(granted)
   }
 
+  const editorFfmpegDetailBusy =
+    exportBusy || snapshotBusy || exportCancelBusy || probePending
+
   return (
     <div className="app-shell" aria-label={uiText('appMainShellAria')}>
       <header className="app-topbar" aria-label={uiText('topbarHeaderAria')}>
@@ -3244,6 +3247,7 @@ function App(): JSX.Element {
         <details
           className="app-url-bar"
           aria-label={uiText('quickYtdlpAria')}
+          aria-busy={engineDownloadBusy || downloadsOptionsBusy || downloadsHistoryBusy}
           open={panelOpen('quickYtdlp')}
           onToggle={(e) => {
             persistMainWindowUiPanelToggle('quickYtdlp', e.currentTarget.open)
@@ -3358,6 +3362,7 @@ function App(): JSX.Element {
         <details
           className="app-url-bar app-batch-export-bar"
           aria-label={uiText('batchExportAria')}
+          aria-busy={batchExportBusy}
           open={panelOpen('batchExport')}
           onToggle={(e) => {
             persistMainWindowUiPanelToggle('batchExport', e.currentTarget.open)
@@ -4144,11 +4149,12 @@ function App(): JSX.Element {
               <div
                 role="region"
                 aria-label={uiText('editorFfmpegRailSectionsRegionAria')}
-                aria-busy={exportBusy || snapshotBusy || exportCancelBusy || probePending}
+                aria-busy={editorFfmpegDetailBusy}
               >
               <details
                 className="app-settings-section"
                 aria-label={uiText('editorFfmpegSectionVideo')}
+                aria-busy={editorFfmpegDetailBusy}
                 open={panelOpen('ffmpegVideo')}
                 onToggle={(e) => {
                   persistMainWindowUiPanelToggle('ffmpegVideo', e.currentTarget.open)
@@ -4597,6 +4603,7 @@ function App(): JSX.Element {
               <details
                 className="app-settings-section"
                 aria-label={uiText('editorFfmpegSectionFrameLayout')}
+                aria-busy={editorFfmpegDetailBusy}
                 open={panelOpen('ffmpegFormat')}
                 onToggle={(e) => {
                   persistMainWindowUiPanelToggle('ffmpegFormat', e.currentTarget.open)
@@ -4779,6 +4786,7 @@ function App(): JSX.Element {
               <details
                 className="app-settings-section"
                 aria-label={uiText('editorFfmpegSectionAudio')}
+                aria-busy={editorFfmpegDetailBusy}
                 open={panelOpen('ffmpegAudio')}
                 onToggle={(e) => {
                   persistMainWindowUiPanelToggle('ffmpegAudio', e.currentTarget.open)
@@ -5041,6 +5049,7 @@ function App(): JSX.Element {
               <details
                 className="app-settings-section"
                 aria-label={uiText('editorFfmpegSectionPresets')}
+                aria-busy={editorFfmpegDetailBusy}
                 open={panelOpen('ffmpegPresets')}
                 onToggle={(e) => {
                   persistMainWindowUiPanelToggle('ffmpegPresets', e.currentTarget.open)
@@ -5180,6 +5189,7 @@ function App(): JSX.Element {
                 id="editor-ffmpeg-export-output"
                 className="app-settings-section"
                 aria-label={uiText('editorFfmpegSectionOutput')}
+                aria-busy={editorFfmpegDetailBusy}
                 open={panelOpen('ffmpegOutput')}
                 onToggle={(e) => {
                   persistMainWindowUiPanelToggle('ffmpegOutput', e.currentTarget.open)
@@ -5222,6 +5232,7 @@ function App(): JSX.Element {
                   <details
                     className="app-export-preview app-export-preview-nested"
                     aria-label={uiText('editorExportPreviewDetailsAria')}
+                    aria-busy={editorFfmpegDetailBusy}
                     open={panelOpen('exportCommandPreview')}
                     onToggle={(e) => {
                       persistMainWindowUiPanelToggle('exportCommandPreview', e.currentTarget.open)
@@ -6458,6 +6469,7 @@ function App(): JSX.Element {
             id="downloads-ytdlp-settings-rail"
             className="app-downloads-rail"
             aria-label={uiText('downloadsRailAria')}
+            aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
           >
             <h3 className="app-settings-title">{uiText('downloadsRailTitle')}</h3>
             <p className="app-settings-subtitle" title={uiText('downloadsRailIntroTooltip')}>
@@ -6467,12 +6479,13 @@ function App(): JSX.Element {
               <div
                 className="app-downloads-settings-stack"
                 role="region"
-                aria-busy={downloadsOptionsBusy}
+                aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
                 aria-label={uiText('downloadsSettingsSectionsStackAria')}
               >
                 <details
                   className="app-downloads-rail-section"
                   aria-label={uiText('downloadsRailFormatSummary')}
+                  aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
                   open={downloadsRailPanels.format}
                   onToggle={handleDownloadsRailSectionToggle('format')}
                 >
@@ -6596,6 +6609,7 @@ function App(): JSX.Element {
                 <details
                   className="app-downloads-rail-section"
                   aria-label={uiText('downloadsRailMetadataSummary')}
+                  aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
                   open={downloadsRailPanels.metadata}
                   onToggle={handleDownloadsRailSectionToggle('metadata')}
                 >
@@ -6828,6 +6842,7 @@ function App(): JSX.Element {
                 <details
                   className="app-downloads-rail-section"
                   aria-label={uiText('downloadsRailSavingSummary')}
+                  aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
                   open={downloadsRailPanels.saving}
                   onToggle={handleDownloadsRailSectionToggle('saving')}
                 >
@@ -6940,6 +6955,7 @@ function App(): JSX.Element {
                 <details
                   className="app-downloads-rail-section"
                   aria-label={uiText('downloadsRailNetworkSummary')}
+                  aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
                   open={downloadsRailPanels.network}
                   onToggle={handleDownloadsRailSectionToggle('network')}
                 >
@@ -7049,6 +7065,7 @@ function App(): JSX.Element {
                 <details
                   className="app-downloads-rail-section"
                   aria-label={uiText('downloadsRailExpertSummary')}
+                  aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
                   open={downloadsRailPanels.expert}
                   onToggle={handleDownloadsRailSectionToggle('expert')}
                 >
@@ -7111,6 +7128,7 @@ function App(): JSX.Element {
                       className="app-downloads-hint-list"
                       role="list"
                       aria-label={uiText('downloadsHintListAria')}
+                      aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
                     >
                       {!downloadsOptions.commandHints?.length ? (
                         <div className="app-downloads-hint-item app-downloads-hint-item--muted">
@@ -7159,6 +7177,7 @@ function App(): JSX.Element {
                     <nav
                       className="app-doc-inline-links app-downloads-doc-links"
                       aria-label={uiText('downloadsRailExpertDocNavAria')}
+                      aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
                     >
                       <a href={YTDLP_DOC_README} target="_blank" rel="noreferrer">
                         {uiText('docLinkYtDlpReadme')}
@@ -7262,7 +7281,9 @@ function App(): JSX.Element {
           </>
         ) : null}
         <span className="app-statusbar-sep" aria-hidden />
-        <Versions />
+        <Versions
+          statusBusy={engineDownloadBusy || engineSummary === 'checking'}
+        />
       </footer>
 
       <AboutDialog

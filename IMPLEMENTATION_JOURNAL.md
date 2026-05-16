@@ -1003,4 +1003,9 @@
 - [J-980] 2026-05-16 14:34:00 [Assistant]: Терминал — список подсказок для вставки (`terminalHintsInsertListAria`): `aria-busy={terminalBusy}`; поле фильтра подсказок и кнопки элементов — `disabled={terminalBusy}` на время выполнения команды.
 - [J-981] 2026-05-16 14:36:00 [Assistant]: Редактор — плейсхолдер без превью (`editorPreviewPlaceholderAria`): `aria-busy={probePending}` при фоновом ffprobe.
 - [J-982] 2026-05-16 14:38:00 [Assistant]: FFmpeg rail — регион секций (`editorFfmpegRailSectionsRegionAria`): в `aria-busy` добавлен `probePending`; инспектор §9 — пустой регион (`inspectorStandaloneEmptyRegionAria`): `aria-busy={probePending}`.
+- [J-983] 2026-05-16 14:40:00 [Assistant]: Редактор — введён `editorFfmpegDetailBusy`; секции FFmpeg (`editorFfmpegSectionVideo` … `editorFfmpegSectionOutput`) и вложенное превью команды (`editorExportPreviewDetailsAria`): `aria-busy={editorFfmpegDetailBusy}`.
+- [J-984] 2026-05-16 14:42:00 [Assistant]: Быстрый yt-dlp и пакетный экспорт — корневые `<details>` (`quickYtdlpAria`, `batchExportAria`): `aria-busy` по загрузке опций/истории/движков и очереди batch соответственно.
+- [J-985] 2026-05-16 14:44:00 [Assistant]: Загрузки — правая панель (`downloadsRailAria`), стек секций (`downloadsSettingsSectionsStackAria`) и пять секций rail (`downloadsRailFormatSummary` … `downloadsRailExpertSummary`): `aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}`.
+- [J-986] 2026-05-16 14:46:00 [Assistant]: Загрузки — каталог подсказок expert (`downloadsHintListAria`) и навигация доков (`downloadsRailExpertDocNavAria`): тот же флаг `aria-busy`.
+- [J-987] 2026-05-16 14:48:00 [Assistant]: Статусбар — список версий Electron/Chromium/Node (`versionsAriaLabel`): проп `statusBusy`, из `App` — при загрузке движков или `engineSummary === 'checking'`.
 
