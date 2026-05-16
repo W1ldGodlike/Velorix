@@ -755,3 +755,7 @@
 - [J-727] 2026-05-17 01:18:30 [Assistant]: Ф.4 P2 срез 2 — `use-ffmpeg-export-batch.ts` (snapshot IPC, drag id, 18 batch handlers + `reportBatchPathsAdded`); `App.tsx` ~7290→~7020; `mediaPipelineBusy` после хука. `npm run check:quiet`.
 - [J-728] 2026-05-17 01:23:15 [Assistant]: Ф.4 P2 срез 3 — `use-terminal-workspace.ts` (hints merge/suggest, run/copy, `getHints` effect); `App.tsx` ~7020→~6910. `npm run check:quiet`.
 - [J-729] 2026-05-17 01:25:55 [Assistant]: Ф.4 P2 срез 4 — `use-downloads-url-actions.ts`; marathon cadence **100** — коммит+push J-725–729 (settings-ipc-persist, App split helpers/hooks). `npm run check:quiet`.
+- [J-730] 2026-05-17 01:34:20 [Assistant]: Ф.4 P2 срез 5 — `use-downloads-workspace.ts` (options/history/log/output IPC, hints, effects); `App.tsx` ~6850→~6680. `npm run check:quiet`.
+- [J-731] 2026-05-17 01:38:51 [Assistant]: Ф.4 P2 срез 6 — `components/TerminalWorkspacePanel.tsx` (вкладка «Терминал»: intro, argv, inline suggest, history, hints); `App.tsx` ~6680→~6330; `docs/ARCHITECTURE.md`. `npm run check:quiet`.
+- [J-732] 2026-05-17 01:45:53 [Assistant]: Ф.4 P2 срез 7 — `components/downloads/DownloadsSettingsRail.tsx` (yt-dlp rail: format/metadata/saving/network/expert); `App.tsx` ~6330→~5560. `npm run check:quiet`.
+- [J-733] 2026-05-17 01:55:44 [Assistant]: Ф.4 P2 срез 8 — `DownloadsWorkspaceMain.tsx` (URL, очередь, history/log); `DOWNLOADS_QUEUE_TABLE_HEADER_IDS` → `downloads-queue-view.ts`; `App.tsx` ~5560→~4890. `npm run check:quiet`.

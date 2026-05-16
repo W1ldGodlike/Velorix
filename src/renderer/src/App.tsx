@@ -3,21 +3,14 @@ import type { JSX, SyntheticEvent } from 'react'
 
 import { AboutDialog } from './components/AboutDialog'
 import { KnowledgeDialog } from './components/KnowledgeDialog'
-import { DownloadsHistoryPanel } from './components/downloads/DownloadsHistoryPanel'
+import { DownloadsSettingsRail } from './components/downloads/DownloadsSettingsRail'
+import { DownloadsWorkspaceMain } from './components/downloads/DownloadsWorkspaceMain'
 import { ProcessingHistoryPanel } from './components/ProcessingHistoryPanel'
-import {
-  DownloadsLogPanel,
-  type DownloadsLogLineView
-} from './components/downloads/DownloadsLogPanel'
+import { TerminalWorkspacePanel } from './components/TerminalWorkspacePanel'
 import VideoTimeline from './components/VideoTimeline'
 import PreviewTransport from './components/PreviewTransport'
 import Versions from './components/Versions'
 import {
-  formatTerminalCopyLineAria,
-  formatTerminalExitLine,
-  formatTerminalIntroTail,
-  formatTerminalPreviewTooltip,
-  formatDownloadsQueueRowStatus,
   formatFfmpegExportBatchStatusLabel,
   applyPersistedUiLocale,
   setUiLocaleForSession,
@@ -39,18 +32,14 @@ import {
   IconFolderOpen,
   IconHome,
   IconMoon,
-  IconPauseUi,
   IconPlay,
-  IconPopOutWindow,
   IconQueueChevronDown,
   IconQueuePlus,
   IconQueueChevronUp,
   IconQueueFile,
-  IconQueueOutbound,
   IconQueueRetry,
   IconQueueTrash,
   IconQueueX,
-  IconRefreshCw,
   IconSave,
   IconScissors,
   IconSettings,
@@ -99,7 +88,6 @@ import {
 } from '../../shared/editor-url-paste-behavior'
 import { DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX } from '../../shared/ffmpeg-export-batch-output-suffix'
 import { resolveFfmpegExportHwaccelForDecode } from '../../shared/ffmpeg-export-hw-decode'
-import { isFfmpegExportBatchVideoPath } from '../../shared/ffmpeg-export-batch-video-ext'
 import { isBuiltinExportUserPresetId } from '../../shared/builtin-ffmpeg-export-user-presets'
 import { FFMPEG_HW_VIDEO_ENCODER_IDS } from '../../shared/ffmpeg-hw-encoder-probe'
 import type { FfmpegHwEncodersProbeResult } from '../../shared/ffmpeg-hw-encoder-probe'
@@ -120,44 +108,17 @@ import {
 import {
   YTDLP_DOC_FORMAT_SELECTION,
   YTDLP_DOC_OUTPUT_TEMPLATE,
-  YTDLP_DOC_POSTPROCESS,
   YTDLP_DOC_README
 } from '../../shared/external-doc-urls'
 import type { FfmpegSnapshotFormatId } from '../../shared/ffmpeg-snapshot-contract'
 import type { RestoredSourceInfo } from '../../shared/preview-dialog-contract'
 import type { MediaProbeSuccess } from '../../shared/ffprobe-contract'
-import type {
-  YtdlpCookiesBrowserId,
-  YtdlpDownloadOptionsPatch,
-  YtdlpDownloadOptionsPayload,
-  YtdlpFormatPresetId,
-  YtdlpImpersonateId,
-  YtdlpQueueRetryProfileId,
-  YtdlpSubtitlePresetId
-} from '../../shared/ytdlp-download-contract'
 import type { DownloadsWindowUiLocale } from '../../shared/downloads-window-ui-locale'
-import { groupYtdlpCommandHintsByCategory } from '../../shared/ytdlp-command-hints-group'
-import type {
-  YtdlpDownloadHistoryEntry,
-  YtdlpDownloadHistoryWeeklySummary
-} from '../../shared/ytdlp-history-contract'
 import type {
   ProcessingHistoryEntry,
   ProcessingHistoryFilter,
   ProcessingHistoryWeeklySummary
 } from '../../shared/processing-history-contract'
-import type { DownloadsLogPayload } from '../../shared/downloads-log-contract'
-import { DOWNLOADS_VISIBLE_LOG_SAVE_CANCELLED } from '../../shared/downloads-log-contract'
-import {
-  isYtdlpQueueStatusDone,
-  isYtdlpQueueStatusErrorLike
-} from '../../shared/ytdlp-queue-status'
-import { TERMINAL_CURRENT_FILE_PLACEHOLDER } from '../../shared/terminal-contract'
-import {
-  DEFAULT_TERMINAL_INLINE_SUGGEST_MAX,
-  DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP,
-  stepTerminalSuggestIndex
-} from '../../shared/terminal-inline-suggest'
 import {
   useDownloadsWindowUiPanels,
   type DownloadsRailPanelKey
@@ -166,6 +127,7 @@ import { useMainWindowUiPanels } from './use-main-window-ui-panels'
 import { useFfmpegExportBatch } from './use-ffmpeg-export-batch'
 import { useTerminalWorkspace } from './use-terminal-workspace'
 import { useDownloadsUrlActions } from './use-downloads-url-actions'
+import { useDownloadsWorkspace } from './use-downloads-workspace'
 import { PillSwitch } from './components/PillSwitch'
 import {
   type EnginePathsDraft,
@@ -181,19 +143,11 @@ import {
   domTargetIsTextField,
   previewVideoMediaErrorDetailLabel
 } from './app-shell-ui-helpers'
-import {
-  KNOWLEDGE_SLUG_FFMPEG_TERMINAL_HINTS,
-  downloadsCatalogHintTokenAccessibleDescription,
-  terminalHintInsertAccessibleDescription,
-  type WorkspaceTab
-} from './app-terminal-hint-ui'
+import { KNOWLEDGE_SLUG_FFMPEG_TERMINAL_HINTS, type WorkspaceTab } from './app-terminal-hint-ui'
 import {
   type DownloadsQueueRowView,
   type DownloadsStatusFilter,
   downloadsRowMatchesStatus,
-  downloadsStatusTone,
-  formatDownloadsLogText,
-  parseDownloadsProgressPercent,
   sanitizeDownloadsRows,
   summarizeDownloadsRows
 } from './downloads-queue-view'
@@ -208,19 +162,6 @@ const BATCH_EXPORT_TABLE_HEADER_IDS = {
   actions: 'flux-batch-col-actions'
 } as const
 
-/** §6 — id заголовков таблицы очереди yt-dlp (`headers` на `<td>`). */
-const DOWNLOADS_QUEUE_TABLE_HEADER_IDS = {
-  num: 'flux-dlq-col-num',
-  titleUrl: 'flux-dlq-col-title-url',
-  format: 'flux-dlq-col-format',
-  size: 'flux-dlq-col-size',
-  progress: 'flux-dlq-col-progress',
-  speed: 'flux-dlq-col-speed',
-  eta: 'flux-dlq-col-eta',
-  status: 'flux-dlq-col-status',
-  actions: 'flux-dlq-col-actions'
-} as const
-
 const EXPORT_CRF_OPTIONS = [18, 20, 23, 26, 28, 30]
 const EXPORT_VIDEO_BITRATES = ['1000k', '2500k', '5000k', '8000k', '12000k', '20000k']
 const EXPORT_AUDIO_BITRATES = ['96k', '128k', '160k', '192k', '256k', '320k']
@@ -232,8 +173,6 @@ type ExportPresetNameDialog = {
   value: string
   error: string | null
 } | null
-type DownloadsHistoryOutcomeFilter = 'all' | YtdlpDownloadHistoryEntry['outcome']
-
 function App(): JSX.Element {
   const [workspaceTab, setWorkspaceTab] = useState<WorkspaceTab>('editor')
   const [theme, setTheme] = useState<Theme>('dark')
@@ -264,15 +203,33 @@ function App(): JSX.Element {
   const [downloadsUrl, setDownloadsUrl] = useState('')
   const [downloadsRows, setDownloadsRows] = useState<DownloadsQueueRowView[]>([])
   const [downloadsStatusFilter, setDownloadsStatusFilter] = useState<DownloadsStatusFilter>('all')
-  const [downloadsOptions, setDownloadsOptions] = useState<YtdlpDownloadOptionsPayload | null>(null)
-  const [downloadsOptionsBusy, setDownloadsOptionsBusy] = useState(false)
-  const [downloadsExpertHintFilter, setDownloadsExpertHintFilter] = useState('')
-  const [downloadsHistory, setDownloadsHistory] = useState<YtdlpDownloadHistoryEntry[]>([])
-  const [downloadsHistoryBusy, setDownloadsHistoryBusy] = useState(false)
-  const [downloadsHistoryOutcomeFilter, setDownloadsHistoryOutcomeFilter] =
-    useState<DownloadsHistoryOutcomeFilter>('all')
-  const [downloadsHistoryWeeklySummary, setDownloadsHistoryWeeklySummary] =
-    useState<YtdlpDownloadHistoryWeeklySummary | null>(null)
+  const {
+    downloadsOptions,
+    setDownloadsOptions,
+    downloadsOptionsBusy,
+    downloadsExpertHintFilter,
+    setDownloadsExpertHintFilter,
+    downloadsHistory,
+    setDownloadsHistory,
+    downloadsHistoryBusy,
+    downloadsHistoryOutcomeFilter,
+    setDownloadsHistoryOutcomeFilter,
+    downloadsHistoryWeeklySummary,
+    downloadsLogLines,
+    setDownloadsLogLines,
+    downloadsLogTargetRowId,
+    setDownloadsLogTargetRowId,
+    downloadsOutputDirectory,
+    setDownloadsOutputDirectory,
+    visibleDownloadsHistory,
+    ytdlpCommandHintsFilteredByCategory,
+    refreshDownloadsOptions,
+    applyDownloadsOptionsPatch,
+    appendDownloadsExtraArgsToken,
+    refreshDownloadsHistory,
+    exportVisibleDownloadsHistory,
+    refreshDownloadsOutputDirectory
+  } = useDownloadsWorkspace({ setStatusHint })
   const [processingHistory, setProcessingHistory] = useState<ProcessingHistoryEntry[]>([])
   const [processingHistoryBusy, setProcessingHistoryBusy] = useState(false)
   const [processingHistoryFilter, setProcessingHistoryFilter] = useState<ProcessingHistoryFilter>(
@@ -280,12 +237,6 @@ function App(): JSX.Element {
   )
   const [processingHistoryWeeklySummary, setProcessingHistoryWeeklySummary] =
     useState<ProcessingHistoryWeeklySummary | null>(null)
-  const [downloadsLogLines, setDownloadsLogLines] = useState<DownloadsLogLineView[]>([])
-  const [downloadsLogTargetRowId, setDownloadsLogTargetRowId] = useState<number | null>(null)
-  const [downloadsOutputDirectory, setDownloadsOutputDirectory] = useState<{
-    path: string
-    isDefault: boolean
-  } | null>(null)
   const {
     downloadsEmbeddedHistoryOpen,
     downloadsEmbeddedLogOpen,
@@ -387,7 +338,6 @@ function App(): JSX.Element {
   const previewStackRef = useRef<HTMLDivElement>(null)
   /** §6 / узкая ширина: `scrollIntoView` к панели настроек yt-dlp под очередью. */
   const downloadsSettingsRailRef = useRef<HTMLElement | null>(null)
-  const downloadsLogNextIdRef = useRef(1)
   /** Последний диапазон In/Out с таймлайна для IPC экспорта, привязанный к текущему файлу. */
   const trimSnapshotRef = useRef<{
     path: string | null
@@ -437,13 +387,6 @@ function App(): JSX.Element {
   const visibleDownloadsRows = useMemo(
     () => downloadsRows.filter((row) => downloadsRowMatchesStatus(row, downloadsStatusFilter)),
     [downloadsRows, downloadsStatusFilter]
-  )
-  const visibleDownloadsHistory = useMemo(
-    () =>
-      downloadsHistoryOutcomeFilter === 'all'
-        ? downloadsHistory
-        : downloadsHistory.filter((entry) => entry.outcome === downloadsHistoryOutcomeFilter),
-    [downloadsHistory, downloadsHistoryOutcomeFilter]
   )
   const downloadsStatusFilterChips = useMemo(
     (): Array<{ id: DownloadsStatusFilter; label: string }> => [
@@ -640,70 +583,6 @@ function App(): JSX.Element {
     }
     return label
   }, [exportVideoCodecResolvedForPreview, exportHwaccelDecodeForPreview])
-  const refreshDownloadsOptions = useCallback(async (): Promise<void> => {
-    const res = await window.fluxalloy.downloads.getCliOptions({
-      uiLocale: getUiLocale() as DownloadsWindowUiLocale
-    })
-    if (res.ok) {
-      setDownloadsOptions(res.payload)
-      return
-    }
-    setStatusHint(res.error)
-  }, [getUiLocale])
-
-  const applyDownloadsOptionsPatch = useCallback(
-    async (patch: YtdlpDownloadOptionsPatch): Promise<void> => {
-      setDownloadsOptionsBusy(true)
-      try {
-        const res = await window.fluxalloy.downloads.setCliOptions(patch)
-        if (!res.ok) {
-          setStatusHint(res.error)
-          return
-        }
-        await refreshDownloadsOptions()
-      } finally {
-        setDownloadsOptionsBusy(false)
-      }
-    },
-    [refreshDownloadsOptions]
-  )
-
-  const downloadsHintUiLocale = getUiLocale() as DownloadsWindowUiLocale
-
-  const ytdlpCommandHintsFilteredByCategory = useMemo(
-    () =>
-      groupYtdlpCommandHintsByCategory(
-        downloadsOptions?.commandHints,
-        downloadsExpertHintFilter,
-        downloadsHintUiLocale
-      ),
-    [downloadsOptions?.commandHints, downloadsExpertHintFilter, downloadsHintUiLocale]
-  )
-
-  const appendDownloadsExtraArgsToken = useCallback(
-    (token: string) => {
-      if (!downloadsOptions) return
-      const cur = downloadsOptions.extraArgsLine.trim()
-      const next = cur ? `${cur} ${token}` : token
-      setDownloadsOptions({ ...downloadsOptions, extraArgsLine: next })
-      void applyDownloadsOptionsPatch({ extraArgsLine: next })
-    },
-    [downloadsOptions, applyDownloadsOptionsPatch]
-  )
-
-  const refreshDownloadsHistory = useCallback(async (): Promise<void> => {
-    setDownloadsHistoryBusy(true)
-    try {
-      const [rows, summary] = await Promise.all([
-        window.fluxalloy.downloads.getHistory(),
-        window.fluxalloy.downloads.getHistoryWeeklySummary()
-      ])
-      setDownloadsHistory(rows)
-      setDownloadsHistoryWeeklySummary(summary)
-    } finally {
-      setDownloadsHistoryBusy(false)
-    }
-  }, [])
 
   const refreshProcessingHistory = useCallback(
     async (filter: ProcessingHistoryFilter = processingHistoryFilter): Promise<void> => {
@@ -750,25 +629,6 @@ function App(): JSX.Element {
     }
   }, [processingHistory, processingHistoryFilter, processingHistoryWeeklySummary])
 
-  const exportVisibleDownloadsHistory = useCallback(async (): Promise<void> => {
-    const payload = {
-      schema: 1,
-      exportedAt: Date.now(),
-      outcomeFilter: downloadsHistoryOutcomeFilter,
-      entries: visibleDownloadsHistory
-    }
-    const res = await window.fluxalloy.saveTextWithDialog({
-      title: uiText('downloadsHistoryExportDialogTitle'),
-      defaultFileName: 'fluxalloy-downloads-history.json',
-      content: JSON.stringify(payload, null, 2)
-    })
-    if (res.ok) {
-      setStatusHint(uiText('downloadsHistoryExportSaved'))
-    } else if ('error' in res) {
-      setStatusHint(res.error)
-    }
-  }, [downloadsHistoryOutcomeFilter, visibleDownloadsHistory])
-
   const handleDownloadsRailSectionToggle = useCallback(
     (key: DownloadsRailPanelKey) => {
       return (e: SyntheticEvent<HTMLDetailsElement>): void => {
@@ -778,28 +638,6 @@ function App(): JSX.Element {
     },
     [persistDownloadsRailPanelToggle]
   )
-
-  const handleDownloadsLogPayload = useCallback((payload: DownloadsLogPayload): void => {
-    if (payload.kind === 'reset') {
-      setDownloadsLogTargetRowId(payload.rowId)
-      setDownloadsLogLines([])
-      return
-    }
-    setDownloadsLogTargetRowId(payload.rowId)
-    setDownloadsLogLines((prev) => {
-      const nextId = downloadsLogNextIdRef.current++
-      const next = [
-        ...prev,
-        { id: nextId, rowId: payload.rowId, stream: payload.stream, text: payload.text }
-      ]
-      return next.length > 420 ? next.slice(next.length - 420) : next
-    })
-  }, [])
-
-  const refreshDownloadsOutputDirectory = useCallback(async (): Promise<void> => {
-    const dir = await window.fluxalloy.downloads.getOutputDirectory()
-    setDownloadsOutputDirectory(dir)
-  }, [])
 
   const applyPreview = useCallback((payload: PreviewOpenedPayload): void => {
     setProbeInfo(null)
@@ -939,41 +777,6 @@ function App(): JSX.Element {
 
   useEffect(() => {
     let mounted = true
-    void window.fluxalloy.downloads
-      .getCliOptions({ uiLocale: getUiLocale() as DownloadsWindowUiLocale })
-      .then((res) => {
-        if (!mounted) {
-          return
-        }
-        if (res.ok) {
-          setDownloadsOptions(res.payload)
-          return
-        }
-        setStatusHint(res.error)
-      })
-    return () => {
-      mounted = false
-    }
-  }, [getUiLocale])
-
-  useEffect(() => {
-    let mounted = true
-    void Promise.all([
-      window.fluxalloy.downloads.getHistory(),
-      window.fluxalloy.downloads.getHistoryWeeklySummary()
-    ]).then(([rows, summary]) => {
-      if (mounted) {
-        setDownloadsHistory(rows)
-        setDownloadsHistoryWeeklySummary(summary)
-      }
-    })
-    return () => {
-      mounted = false
-    }
-  }, [])
-
-  useEffect(() => {
-    let mounted = true
     void Promise.all([
       window.fluxalloy.processingHistory.get({ limit: 100 }),
       window.fluxalloy.processingHistory.weeklySummary()
@@ -986,16 +789,6 @@ function App(): JSX.Element {
     return () => {
       mounted = false
     }
-  }, [])
-
-  useEffect(() => {
-    return window.fluxalloy.downloads.onLog(handleDownloadsLogPayload)
-  }, [handleDownloadsLogPayload])
-
-  useEffect(() => {
-    void window.fluxalloy.downloads.getOutputDirectory().then((dir) => {
-      setDownloadsOutputDirectory(dir)
-    })
   }, [])
 
   const refetchHwEncoders = useCallback((): Promise<void> => {
@@ -1473,20 +1266,6 @@ function App(): JSX.Element {
     })
     return off
   }, [hydrateDownloadsWindowUiPanels])
-
-  useEffect(() => {
-    const off = window.fluxalloy.downloads.onDownloadsOutputDirectoryChanged((snap) => {
-      setDownloadsOutputDirectory(snap)
-    })
-    return off
-  }, [])
-
-  useEffect(() => {
-    const off = window.fluxalloy.downloads.onDownloadsCliOptionsChanged(() => {
-      void refreshDownloadsOptions()
-    })
-    return off
-  }, [refreshDownloadsOptions])
 
   useEffect(() => {
     let cancelled = false
@@ -4686,388 +4465,32 @@ function App(): JSX.Element {
           ) : null}
         </main>
       ) : workspaceTab === 'terminal' ? (
-        <main
-          id="workspace-panel-terminal"
-          role="tabpanel"
-          aria-labelledby="workspace-tab-terminal"
-          aria-busy={terminalBusy}
-          className="app-main app-terminal-workspace"
-        >
-          <section
-            className="app-terminal-panel"
-            aria-label={uiText('terminalPanelSectionAria')}
-            aria-busy={terminalBusy}
-          >
-            <div
-              className="app-downloads-band"
-              role="region"
-              aria-label={uiText('terminalIntroBandAria')}
-              aria-busy={terminalBusy}
-            >
-              <div
-                className="app-downloads-band-copy"
-                role="group"
-                aria-label={uiText('downloadsBandHeadingCopyGroupAria')}
-                aria-busy={terminalBusy}
-              >
-                <h2 className="app-downloads-title">{uiText('terminalTitle')}</h2>
-                <p className="app-downloads-hint">
-                  {uiText('terminalIntroLead')}
-                  <code>{TERMINAL_CURRENT_FILE_PLACEHOLDER}</code>
-                  {formatTerminalIntroTail({
-                    pageStep: DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP,
-                    maxInline: DEFAULT_TERMINAL_INLINE_SUGGEST_MAX
-                  })}
-                </p>
-                <nav
-                  className="app-terminal-intro-knowledge"
-                  aria-label={uiText('terminalIntroKnowledgeNavAria')}
-                  aria-busy={terminalBusy}
-                >
-                  <button
-                    type="button"
-                    className="app-knowledge-link"
-                    title={uiText('terminalKnowledgeDeepLinkTooltip')}
-                    onClick={() => {
-                      setKnowledgeInitialSlug(KNOWLEDGE_SLUG_FFMPEG_TERMINAL_HINTS)
-                      setKnowledgeOpen(true)
-                    }}
-                  >
-                    {uiText('knowledgeArticleTerminalHintsLink')}
-                  </button>
-                </nav>
-              </div>
-            </div>
-            <div
-              className="app-terminal-command-stack"
-              role="region"
-              aria-label={uiText('terminalCommandStackAria')}
-              aria-busy={terminalBusy}
-            >
-              <div
-                className="app-terminal-command-row"
-                role="toolbar"
-                aria-orientation="horizontal"
-                aria-label={uiText('terminalCommandToolbarAria')}
-                aria-busy={terminalBusy}
-              >
-                <label htmlFor={terminalCommandInputId} className="app-visually-hidden">
-                  {uiText('terminalCommandInputAriaLabel')}
-                </label>
-                <input
-                  id={terminalCommandInputId}
-                  className="app-control app-terminal-input"
-                  value={terminalLine}
-                  spellCheck={false}
-                  autoComplete="off"
-                  placeholder={uiText('terminalCommandPlaceholder')}
-                  aria-expanded={terminalInlineSuggestions.length > 0 && terminalSuggestFocus}
-                  aria-controls="terminal-inline-suggest-list"
-                  aria-autocomplete="list"
-                  disabled={terminalBusy}
-                  onChange={(e) => {
-                    setTerminalLine(e.target.value)
-                  }}
-                  onFocus={() => {
-                    window.clearTimeout(terminalSuggestBlurTimeoutRef.current)
-                    setTerminalSuggestFocus(true)
-                  }}
-                  onBlur={() => {
-                    terminalSuggestBlurTimeoutRef.current = window.setTimeout(() => {
-                      setTerminalSuggestFocus(false)
-                    }, 160)
-                  }}
-                  onKeyDown={(e) => {
-                    const list = terminalInlineSuggestions
-                    if (
-                      e.key === 'Enter' &&
-                      list.length > 0 &&
-                      terminalSuggestFocus &&
-                      !e.shiftKey
-                    ) {
-                      e.preventDefault()
-                      const h = list[terminalSuggestActiveIndex]
-                      if (h) {
-                        applyTerminalSuggest(h)
-                      }
-                      return
-                    }
-                    if (list.length > 0) {
-                      if (e.key === 'ArrowDown') {
-                        e.preventDefault()
-                        setTerminalSuggestIndex((i) =>
-                          stepTerminalSuggestIndex(i, list.length, 'down')
-                        )
-                        return
-                      }
-                      if (e.key === 'ArrowUp') {
-                        e.preventDefault()
-                        setTerminalSuggestIndex((i) =>
-                          stepTerminalSuggestIndex(i, list.length, 'up')
-                        )
-                        return
-                      }
-                      if (e.key === 'Home') {
-                        e.preventDefault()
-                        setTerminalSuggestIndex((i) =>
-                          stepTerminalSuggestIndex(i, list.length, 'home')
-                        )
-                        return
-                      }
-                      if (e.key === 'End') {
-                        e.preventDefault()
-                        setTerminalSuggestIndex((i) =>
-                          stepTerminalSuggestIndex(i, list.length, 'end')
-                        )
-                        return
-                      }
-                      if (e.key === 'PageDown') {
-                        e.preventDefault()
-                        setTerminalSuggestIndex((i) =>
-                          stepTerminalSuggestIndex(i, list.length, 'pageDown')
-                        )
-                        return
-                      }
-                      if (e.key === 'PageUp') {
-                        e.preventDefault()
-                        setTerminalSuggestIndex((i) =>
-                          stepTerminalSuggestIndex(i, list.length, 'pageUp')
-                        )
-                        return
-                      }
-                      if (e.key === 'Tab') {
-                        e.preventDefault()
-                        if (e.shiftKey) {
-                          setTerminalSuggestIndex((i) =>
-                            stepTerminalSuggestIndex(i, list.length, 'up')
-                          )
-                        } else {
-                          const h = list[terminalSuggestActiveIndex]
-                          if (h) {
-                            applyTerminalSuggest(h)
-                          }
-                        }
-                        return
-                      }
-                      if (e.key === 'Escape') {
-                        e.preventDefault()
-                        window.clearTimeout(terminalSuggestBlurTimeoutRef.current)
-                        setTerminalSuggestFocus(false)
-                        return
-                      }
-                    }
-                    if (e.key === 'Enter') {
-                      e.preventDefault()
-                      void runTerminalLine()
-                    }
-                  }}
-                />
-                <button
-                  type="button"
-                  className="app-btn"
-                  disabled={terminalBusy || !currentSourcePath}
-                  title={
-                    currentSourcePath
-                      ? formatTerminalPreviewTooltip(TERMINAL_CURRENT_FILE_PLACEHOLDER)
-                      : uiText('terminalPreviewFileTooltipNeedFile')
-                  }
-                  onClick={() => appendTerminalToken(TERMINAL_CURRENT_FILE_PLACEHOLDER)}
-                >
-                  {uiText('terminalPreviewFileButton')}
-                </button>
-                <button
-                  type="button"
-                  className="app-btn app-btn-primary"
-                  disabled={terminalBusy || terminalLine.trim().length === 0}
-                  onClick={() => {
-                    void runTerminalLine()
-                  }}
-                >
-                  {terminalBusy ? uiText('terminalRunningButton') : uiText('terminalRunButton')}
-                </button>
-              </div>
-              {terminalInlineSuggestions.length > 0 && terminalSuggestFocus ? (
-                <div
-                  id="terminal-inline-suggest-list"
-                  className="app-terminal-suggest"
-                  role="listbox"
-                  aria-label={uiText('terminalInlineSuggestAria')}
-                  aria-busy={terminalBusy}
-                  onMouseDown={(ev) => {
-                    ev.preventDefault()
-                  }}
-                >
-                  {terminalInlineSuggestions.map((hint, idx) => (
-                    <button
-                      key={`inline:${hint.tool}:${hint.token}:${hint.fullLine ?? ''}:${idx}`}
-                      type="button"
-                      role="option"
-                      aria-selected={idx === terminalSuggestActiveIndex}
-                      aria-label={terminalHintInsertAccessibleDescription(hint)}
-                      className={`app-terminal-suggest-item${
-                        idx === terminalSuggestActiveIndex
-                          ? ' app-terminal-suggest-item-active'
-                          : ''
-                      }`}
-                      onMouseEnter={() => {
-                        setTerminalSuggestIndex(idx)
-                      }}
-                      onClick={() => {
-                        applyTerminalSuggest(hint)
-                      }}
-                    >
-                      <code>
-                        {hint.fullLine !== undefined && hint.fullLine.length > 0
-                          ? hint.fullLine.trimEnd()
-                          : hint.token}
-                      </code>
-                      <span>{hint.tool}</span>
-                      <small>{hint.summary}</small>
-                    </button>
-                  ))}
-                </div>
-              ) : null}
-            </div>
-            <div
-              className="app-terminal-layout"
-              role="region"
-              aria-label={uiText('terminalMainSplitAria')}
-              aria-busy={terminalBusy}
-            >
-              <section
-                className="app-terminal-history"
-                aria-label={uiText('terminalHistoryAria')}
-                aria-busy={terminalBusy}
-              >
-                {terminalHistory.length === 0 ? (
-                  <p className="app-downloads-empty" role="status" aria-live="polite">
-                    {uiText('terminalHistoryEmpty')}
-                  </p>
-                ) : (
-                  terminalHistory.map((entry, entryIdx) => {
-                    const lines = (() => {
-                      if (!entry.result.ok) {
-                        return [] as string[]
-                      }
-                      const blob = [entry.result.stdout, entry.result.stderr]
-                        .filter(Boolean)
-                        .join('\n')
-                      return blob.length > 0 ? blob.split(/\r?\n/) : ['']
-                    })()
-                    const entryBrief =
-                      entry.line.length > 96 ? `${entry.line.slice(0, 96)}…` : entry.line
-                    return (
-                      <article
-                        key={entry.id}
-                        className="app-terminal-entry"
-                        aria-label={uiTextVars('terminalEntryArticleAriaTemplate', {
-                          index: entryIdx + 1,
-                          line: entryBrief
-                        })}
-                      >
-                        <div
-                          className="app-terminal-entry-head"
-                          role="group"
-                          aria-label={uiText('terminalEntryHeadGroupAria')}
-                        >
-                          <code>{entry.line}</code>
-                          <span>
-                            {entry.result.ok
-                              ? formatTerminalExitLine(entry.result.code, entry.result.elapsedMs)
-                              : uiText('terminalBlocked')}
-                          </span>
-                        </div>
-                        {entry.result.ok ? (
-                          <div
-                            className="app-terminal-output"
-                            role="log"
-                            aria-label={uiTextVars('terminalEntryOutputLogAriaTemplate', {
-                              index: entryIdx + 1
-                            })}
-                          >
-                            {lines.map((line, lineIdx) => (
-                              <div
-                                key={`${entry.id}:${lineIdx}`}
-                                className="app-terminal-output-line"
-                              >
-                                <span className="app-terminal-output-line-text">
-                                  {line.length > 0 ? line : '\u00a0'}
-                                </span>
-                                <button
-                                  type="button"
-                                  className="app-terminal-output-line-copy"
-                                  title={uiText('terminalCopyLineTitle')}
-                                  aria-label={formatTerminalCopyLineAria(lineIdx + 1)}
-                                  onClick={() => {
-                                    void copyTerminalOutputLine(line)
-                                  }}
-                                >
-                                  {uiText('terminalCopyLineButton')}
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="app-downloads-warning">{entry.result.error}</p>
-                        )}
-                      </article>
-                    )
-                  })
-                )}
-              </section>
-              <aside
-                className="app-terminal-hints"
-                aria-label={uiText('terminalHintsPanelAria')}
-                aria-busy={terminalBusy}
-              >
-                <div className="app-field">
-                  <label htmlFor={terminalHintsSearchFieldId}>
-                    {uiText('terminalHintsSearchLabel')}
-                  </label>
-                  <input
-                    id={terminalHintsSearchFieldId}
-                    className="app-control"
-                    value={terminalHintFilter}
-                    spellCheck={false}
-                    placeholder={uiText('terminalHintsSearchPlaceholder')}
-                    disabled={terminalBusy}
-                    onChange={(e) => {
-                      setTerminalHintFilter(e.target.value)
-                    }}
-                  />
-                </div>
-                <ul
-                  className="app-terminal-hint-list"
-                  aria-label={uiText('terminalHintsInsertListAria')}
-                  aria-busy={terminalBusy}
-                >
-                  {visibleTerminalHints.map((hint) => (
-                    <li key={`${hint.tool}:${hint.token}:${hint.fullLine ?? ''}`}>
-                      <button
-                        type="button"
-                        className="app-terminal-hint"
-                        disabled={terminalBusy}
-                        aria-label={terminalHintInsertAccessibleDescription(hint)}
-                        onClick={() => {
-                          if (hint.fullLine !== undefined && hint.fullLine.length > 0) {
-                            setTerminalLine(hint.fullLine)
-                          } else {
-                            appendTerminalToken(hint.token)
-                          }
-                        }}
-                        title={hint.summary}
-                      >
-                        <code>{hint.token}</code>
-                        <span>{hint.tool}</span>
-                        <small>{hint.summary}</small>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </aside>
-            </div>
-          </section>
-        </main>
+        <TerminalWorkspacePanel
+          terminalBusy={terminalBusy}
+          terminalLine={terminalLine}
+          setTerminalLine={setTerminalLine}
+          terminalCommandInputId={terminalCommandInputId}
+          terminalInlineSuggestions={terminalInlineSuggestions}
+          terminalSuggestFocus={terminalSuggestFocus}
+          setTerminalSuggestFocus={setTerminalSuggestFocus}
+          terminalSuggestActiveIndex={terminalSuggestActiveIndex}
+          setTerminalSuggestIndex={setTerminalSuggestIndex}
+          terminalSuggestBlurTimeoutRef={terminalSuggestBlurTimeoutRef}
+          currentSourcePath={currentSourcePath}
+          runTerminalLine={runTerminalLine}
+          applyTerminalSuggest={applyTerminalSuggest}
+          appendTerminalToken={appendTerminalToken}
+          terminalHistory={terminalHistory}
+          copyTerminalOutputLine={copyTerminalOutputLine}
+          terminalHintsSearchFieldId={terminalHintsSearchFieldId}
+          terminalHintFilter={terminalHintFilter}
+          setTerminalHintFilter={setTerminalHintFilter}
+          visibleTerminalHints={visibleTerminalHints}
+          onOpenTerminalKnowledge={() => {
+            setKnowledgeInitialSlug(KNOWLEDGE_SLUG_FFMPEG_TERMINAL_HINTS)
+            setKnowledgeOpen(true)
+          }}
+        />
       ) : (
         <main
           id="workspace-panel-downloads"
@@ -5076,1467 +4499,80 @@ function App(): JSX.Element {
           aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
           className="app-main app-downloads-workspace"
         >
-          <section
-            className="app-downloads-main"
-            aria-label={uiText('downloadsMainAria')}
-            aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-          >
-            <div
-              className="app-downloads-band"
-              role="region"
-              aria-label={uiText('downloadsPageIntroBandAria')}
-              aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-            >
-              <div
-                className="app-downloads-band-copy"
-                role="group"
-                aria-label={uiText('downloadsBandHeadingCopyGroupAria')}
-                aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-              >
-                <h2 className="app-downloads-title">{uiText('downloadsPageTitle')}</h2>
-                <p className="app-downloads-hint">{uiText('downloadsPageHint')}</p>
-              </div>
-              <div
-                className="app-downloads-actions"
-                role="toolbar"
-                aria-orientation="horizontal"
-                aria-label={uiText('downloadsBandToolbarAria')}
-                aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-              >
-                <button
-                  type="button"
-                  className="app-btn app-btn-icon-leading"
-                  onClick={() => {
-                    void window.fluxalloy.downloads.openWindow({
-                      ...(downloadsUrl.trim().length > 0 ? { text: downloadsUrl } : {}),
-                      uiLocale: getUiLocale()
-                    })
-                  }}
-                >
-                  <IconPopOutWindow title="" size={17} />
-                  {uiText('downloadsPopOut')}
-                </button>
-                {downloadsNarrowLayout ? (
-                  <button
-                    type="button"
-                    className="app-btn app-btn-icon-leading"
-                    onClick={() => {
-                      downloadsSettingsRailRef.current?.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                      })
-                    }}
-                  >
-                    <IconSettings title="" size={17} />
-                    {uiText('downloadsScrollToSettings')}
-                  </button>
-                ) : null}
-              </div>
-            </div>
-            <div
-              className="app-downloads-url-row"
-              role="group"
-              aria-label={uiText('downloadsUrlRowGroupAria')}
-              aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-            >
-              <div className="app-downloads-url-field">
-                <label htmlFor={downloadsMainUrlFieldId} className="app-visually-hidden">
-                  {uiText('downloadsUrlAria')}
-                </label>
-                <textarea
-                  id={downloadsMainUrlFieldId}
-                  className="app-downloads-url-input"
-                  value={downloadsUrl}
-                  placeholder={uiText('downloadsUrlPlaceholder')}
-                  aria-describedby="downloads-main-url-hint"
-                  onChange={(e) => {
-                    setDownloadsUrl(e.target.value)
-                  }}
-                />
-                <p id="downloads-main-url-hint" className="app-field-help">
-                  {uiText('downloadsUrlEnqueueHint')}
-                </p>
-              </div>
-              <div
-                className="app-downloads-url-actions"
-                role="toolbar"
-                aria-orientation="horizontal"
-                aria-label={uiText('downloadsUrlActionsToolbarAria')}
-                aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-              >
-                <button
-                  type="button"
-                  className="app-btn app-btn-primary app-btn-icon-leading"
-                  onClick={() => {
-                    void handleAddDownloadsFromMain()
-                  }}
-                >
-                  <IconQueuePlus title="" size={17} />
-                  {uiText('downloadsAddToQueue')}
-                </button>
-                <button
-                  type="button"
-                  className="app-btn app-btn-warn app-btn-icon-leading"
-                  title={uiText('downloadsStopQueueTooltip')}
-                  onClick={() => {
-                    void window.fluxalloy.downloads.cancelQueue().then((res) => {
-                      if (!res.ok) {
-                        setStatusHint(res.error)
-                      }
-                    })
-                  }}
-                >
-                  <IconBan title="" size={17} />
-                  {uiText('downloadsStopQueue')}
-                </button>
-                <button
-                  type="button"
-                  className="app-btn app-btn-icon-leading"
-                  disabled={downloadsRows.length === 0}
-                  onClick={() => {
-                    void window.fluxalloy.downloads.clearFinished().then((res) => {
-                      if (!res.ok) {
-                        setStatusHint(res.error)
-                        return
-                      }
-                      setStatusHint(
-                        res.removed > 0
-                          ? uiTextVars('downloadsFinishedRemovedTemplate', { n: res.removed })
-                          : uiText('downloadsNoFinishedRowsHint')
-                      )
-                    })
-                  }}
-                >
-                  <IconQueueTrash title="" size={17} />
-                  {uiText('downloadsRemoveFinished')}
-                </button>
-                <button
-                  type="button"
-                  className="app-btn app-btn-warn app-btn-icon-leading"
-                  disabled={downloadsRows.length === 0}
-                  onClick={() => {
-                    void window.fluxalloy.downloads.clearQueue().then((res) => {
-                      if (!res.ok) {
-                        setStatusHint(res.error)
-                        return
-                      }
-                      setStatusHint(uiText('downloadsQueueClearedHint'))
-                    })
-                  }}
-                >
-                  <IconQueueTrash title="" size={17} />
-                  {uiText('downloadsClearQueue')}
-                </button>
-              </div>
-            </div>
-            <div
-              className="app-downloads-overview"
-              role="region"
-              aria-label={uiText('downloadsOverviewAria')}
-              aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-            >
-              <div
-                className="app-downloads-overview-stats"
-                role="list"
-                aria-label={uiText('downloadsOverviewStatsGroupAria')}
-                aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-              >
-                <div className="app-downloads-stat" role="listitem">
-                  <span className="app-downloads-stat-label">{uiText('downloadsStatTotal')}</span>
-                  <strong>{downloadsStats.total}</strong>
-                </div>
-                <div className="app-downloads-stat" role="listitem">
-                  <span className="app-downloads-stat-label">
-                    {uiText('downloadsQueueFilterRunning')}
-                  </span>
-                  <strong>{downloadsStats.running}</strong>
-                </div>
-                <div className="app-downloads-stat" role="listitem">
-                  <span className="app-downloads-stat-label">
-                    {uiText('downloadsQueueFilterDone')}
-                  </span>
-                  <strong>{downloadsStats.done}</strong>
-                </div>
-                <div className="app-downloads-stat" role="listitem">
-                  <span className="app-downloads-stat-label">
-                    {uiText('downloadsQueueFilterError')}
-                  </span>
-                  <strong>{downloadsStats.error}</strong>
-                </div>
-                <div className="app-downloads-stat" role="listitem">
-                  <span className="app-downloads-stat-label">{uiText('downloadsStatPending')}</span>
-                  <strong>{downloadsStats.pending}</strong>
-                </div>
-              </div>
-            </div>
-            <div
-              className="app-downloads-filterbar"
-              role="toolbar"
-              aria-orientation="horizontal"
-              aria-label={uiText('downloadsFilterBarAria')}
-              aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-            >
-              {downloadsStatusFilterChips.map((filter) => (
-                <button
-                  key={filter.id}
-                  type="button"
-                  className={`app-filter-chip${downloadsStatusFilter === filter.id ? ' app-filter-chip-active' : ''}`}
-                  aria-pressed={downloadsStatusFilter === filter.id}
-                  onClick={() => {
-                    setDownloadsStatusFilter(filter.id)
-                  }}
-                >
-                  {filter.label}
-                </button>
-              ))}
-            </div>
-            <div
-              className="app-downloads-table-zone"
-              role="region"
-              aria-label={uiText('downloadsQueueTableZoneAria')}
-              aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-            >
-              <div
-                className="app-downloads-table-wrap"
-                role="group"
-                aria-label={uiText('downloadsQueueTableWrapGroupAria')}
-                aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-              >
-                <table
-                  className="app-downloads-table"
-                  aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-                >
-                  <caption className="app-visually-hidden">
-                    {uiText('downloadsQueueTableCaption')}
-                  </caption>
-                  <thead>
-                    <tr>
-                      <th scope="col" id={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.num}>
-                        {uiText('downloadsTableColNum')}
-                      </th>
-                      <th scope="col" id={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.titleUrl}>
-                        {uiText('downloadsTableColTitleUrl')}
-                      </th>
-                      <th scope="col" id={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.format}>
-                        {uiText('downloadsTableColFormat')}
-                      </th>
-                      <th scope="col" id={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.size}>
-                        {uiText('downloadsTableColSize')}
-                      </th>
-                      <th scope="col" id={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.progress}>
-                        {uiText('downloadsTableColProgress')}
-                      </th>
-                      <th scope="col" id={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.speed}>
-                        {uiText('downloadsTableColSpeed')}
-                      </th>
-                      <th scope="col" id={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.eta}>
-                        {uiText('downloadsTableColEta')}
-                      </th>
-                      <th scope="col" id={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.status}>
-                        {uiText('downloadsTableColStatus')}
-                      </th>
-                      <th scope="col" id={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.actions}>
-                        {uiText('downloadsTableColActions')}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {downloadsRows.length === 0 ? (
-                      <tr>
-                        <td colSpan={9} className="app-downloads-empty">
-                          {uiText('downloadsEmptyQueue')}
-                        </td>
-                      </tr>
-                    ) : visibleDownloadsRows.length === 0 ? (
-                      <tr>
-                        <td colSpan={9} className="app-downloads-empty">
-                          {uiText('downloadsEmptyFilter')}
-                        </td>
-                      </tr>
-                    ) : (
-                      visibleDownloadsRows.map((row) => {
-                        const progressPercent = parseDownloadsProgressPercent(row.progress)
-                        const isDoneRow = downloadsRowMatchesStatus(row, 'done')
-                        const showProgressBar = isDoneRow || progressPercent !== null
-                        const barPercent = isDoneRow
-                          ? 100
-                          : progressPercent === null
-                            ? 0
-                            : Math.min(100, Math.max(0, progressPercent))
-                        const statusTone = downloadsStatusTone(row)
-                        return (
-                          <tr key={row.id}>
-                            <td
-                              className="app-downloads-mono"
-                              headers={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.num}
-                            >
-                              {row.id}
-                            </td>
-                            <td headers={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.titleUrl}>
-                              <div className="app-downloads-row-title">{row.shortLabel}</div>
-                              <div className="app-downloads-row-url">{row.url}</div>
-                            </td>
-                            <td
-                              className="app-downloads-mono"
-                              headers={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.format}
-                            >
-                              {row.queueFmt ?? uiText('uiPlaceholderDash')}
-                            </td>
-                            <td
-                              className="app-downloads-mono"
-                              headers={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.size}
-                            >
-                              {row.queueSize ?? uiText('uiPlaceholderDash')}
-                            </td>
-                            <td
-                              className="app-downloads-mono"
-                              headers={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.progress}
-                            >
-                              <div className="app-downloads-progress">
-                                {showProgressBar ? (
-                                  <div className="app-downloads-progress-bar-row">
-                                    <span className="app-downloads-progress-track" aria-hidden>
-                                      <span
-                                        className={
-                                          isDoneRow
-                                            ? 'app-downloads-progress-fill app-downloads-progress-fill--complete'
-                                            : 'app-downloads-progress-fill'
-                                        }
-                                        style={{ width: `${barPercent}%` }}
-                                      />
-                                    </span>
-                                    <span className="app-downloads-progress-pct">
-                                      {Math.round(barPercent)}%
-                                    </span>
-                                  </div>
-                                ) : row.progress ? (
-                                  <span
-                                    className="app-downloads-progress-fallback"
-                                    title={row.progress}
-                                  >
-                                    {row.progress}
-                                  </span>
-                                ) : (
-                                  uiText('uiPlaceholderDash')
-                                )}
-                              </div>
-                            </td>
-                            <td
-                              className="app-downloads-mono"
-                              headers={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.speed}
-                            >
-                              {row.queueSpeed ?? uiText('uiPlaceholderDash')}
-                            </td>
-                            <td
-                              className="app-downloads-mono"
-                              headers={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.eta}
-                            >
-                              {row.queueEta ?? uiText('uiPlaceholderDash')}
-                            </td>
-                            <td headers={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.status}>
-                              <span
-                                className={`app-downloads-status app-downloads-status-${statusTone}`}
-                              >
-                                <span className="app-downloads-status-dot" aria-hidden />
-                                {formatDownloadsQueueRowStatus(row.status)}
-                              </span>
-                            </td>
-                            <td headers={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.actions}>
-                              <div
-                                className="app-downloads-row-actions"
-                                role="toolbar"
-                                aria-orientation="horizontal"
-                                aria-label={uiTextVars(
-                                  'downloadsQueueRowActionsToolbarAriaTemplate',
-                                  {
-                                    id: String(row.id)
-                                  }
-                                )}
-                                aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-                              >
-                                <button
-                                  type="button"
-                                  className="app-icon-btn"
-                                  aria-label={uiText('downloadsQueueAriaMoveUp')}
-                                  title={uiText('downloadsQueueAriaMoveUp')}
-                                  onClick={() => {
-                                    void window.fluxalloy.downloads
-                                      .moveRow(row.id, -1)
-                                      .then((res) => {
-                                        if (!res.ok) {
-                                          setStatusHint(res.error)
-                                        }
-                                      })
-                                  }}
-                                >
-                                  <IconQueueChevronUp title="" size={18} />
-                                </button>
-                                <button
-                                  type="button"
-                                  className="app-icon-btn"
-                                  aria-label={uiText('downloadsQueueAriaMoveDown')}
-                                  title={uiText('downloadsQueueAriaMoveDown')}
-                                  onClick={() => {
-                                    void window.fluxalloy.downloads
-                                      .moveRow(row.id, 1)
-                                      .then((res) => {
-                                        if (!res.ok) {
-                                          setStatusHint(res.error)
-                                        }
-                                      })
-                                  }}
-                                >
-                                  <IconQueueChevronDown title="" size={18} />
-                                </button>
-                                <button
-                                  type="button"
-                                  className="app-icon-btn app-icon-btn-primary"
-                                  aria-label={
-                                    isYtdlpQueueStatusErrorLike(row.status)
-                                      ? uiText('downloadsQueueAriaRetryRow')
-                                      : uiText('downloadsQueueAriaStartRow')
-                                  }
-                                  title={
-                                    isYtdlpQueueStatusErrorLike(row.status)
-                                      ? uiText('downloadsQueueAriaRetryRow')
-                                      : uiText('downloadsQueueAriaStartRow')
-                                  }
-                                  onClick={() => {
-                                    const fn = isYtdlpQueueStatusErrorLike(row.status)
-                                      ? window.fluxalloy.downloads.retryRow
-                                      : window.fluxalloy.downloads.startRow
-                                    void fn(row.id).then((res) => {
-                                      if (!res.ok) {
-                                        setStatusHint(res.error)
-                                      }
-                                    })
-                                  }}
-                                >
-                                  {isYtdlpQueueStatusErrorLike(row.status) ? (
-                                    <IconQueueRetry title="" size={18} />
-                                  ) : (
-                                    <IconPlay title="" size={18} />
-                                  )}
-                                </button>
-                                {row.outputPath ? (
-                                  <>
-                                    <button
-                                      type="button"
-                                      className="app-icon-btn"
-                                      aria-label={uiText('downloadsQueueAriaOpenFile')}
-                                      title={uiText('downloadsQueueAriaOpenFile')}
-                                      onClick={() => {
-                                        void window.fluxalloy.downloads
-                                          .openQueueOutput(row.id, 'file')
-                                          .then((res) => {
-                                            if (!res.ok) {
-                                              setStatusHint(res.error)
-                                            }
-                                          })
-                                      }}
-                                    >
-                                      <IconQueueFile title="" size={18} />
-                                    </button>
-                                    <button
-                                      type="button"
-                                      className="app-icon-btn"
-                                      aria-label={uiText('downloadsQueueAriaOpenFolder')}
-                                      title={uiText('downloadsQueueAriaOpenFolder')}
-                                      onClick={() => {
-                                        void window.fluxalloy.downloads
-                                          .openQueueOutput(row.id, 'folder')
-                                          .then((res) => {
-                                            if (!res.ok) {
-                                              setStatusHint(res.error)
-                                            }
-                                          })
-                                      }}
-                                    >
-                                      <IconFolderOpen title="" size={18} />
-                                    </button>
-                                    <button
-                                      type="button"
-                                      className="app-icon-btn"
-                                      aria-label={uiText('downloadsQueueAriaOpenInEditor')}
-                                      title={uiText('downloadsQueueAriaOpenInEditor')}
-                                      onClick={() => {
-                                        setStatusHint(
-                                          uiText('downloadsHistoryOpenHandlerPreparing')
-                                        )
-                                        void window.fluxalloy.downloads
-                                          .openQueueOutputInHandler(row.id)
-                                          .then((res) => {
-                                            if (!res.ok) {
-                                              setStatusHint(res.error)
-                                            } else {
-                                              setStatusHint(
-                                                uiText('downloadsHistoryOpenHandlerDone')
-                                              )
-                                            }
-                                          })
-                                      }}
-                                    >
-                                      <IconQueueOutbound title="" size={18} />
-                                    </button>
-                                    {isYtdlpQueueStatusDone(row.status) &&
-                                    row.outputPath &&
-                                    isFfmpegExportBatchVideoPath(row.outputPath) ? (
-                                      <button
-                                        type="button"
-                                        className="app-icon-btn"
-                                        aria-label={uiText('batchExportAddToBatch')}
-                                        title={uiText('batchExportAddToBatch')}
-                                        onClick={() => {
-                                          void handleBatchAddDownloadsDone([row.id])
-                                        }}
-                                      >
-                                        <IconQueuePlus title="" size={18} />
-                                      </button>
-                                    ) : null}
-                                  </>
-                                ) : (
-                                  <button
-                                    type="button"
-                                    className="app-icon-btn"
-                                    aria-label={uiText('downloadsQueueOpenDownloadDirTitle')}
-                                    title={uiText('downloadsQueueOpenDownloadDirTitle')}
-                                    onClick={() => {
-                                      void window.fluxalloy.downloads
-                                        .openQueueOutput(row.id, 'folder')
-                                        .then((res) => {
-                                          if (!res.ok) {
-                                            setStatusHint(res.error)
-                                          }
-                                        })
-                                    }}
-                                  >
-                                    <IconFolderOpen title="" size={18} />
-                                  </button>
-                                )}
-                                {row.isActiveRunner ? (
-                                  <button
-                                    type="button"
-                                    className="app-icon-btn"
-                                    disabled={
-                                      row.ytdlpPauseSupported !== true ||
-                                      row.ytdlpPauseChildActive !== true
-                                    }
-                                    aria-label={
-                                      row.ytdlpPaused
-                                        ? uiText('downloadsQueueAriaResumeYtdlp')
-                                        : uiText('downloadsQueueAriaPauseYtdlp')
-                                    }
-                                    title={
-                                      row.ytdlpPauseSupported !== true
-                                        ? uiText('downloadsQueuePauseUnsupportedOsTitle')
-                                        : row.ytdlpPauseChildActive !== true
-                                          ? uiText('downloadsQueuePauseWaitingProcessTitle')
-                                          : row.ytdlpPaused
-                                            ? uiText('downloadsQueueAriaResumeYtdlp')
-                                            : uiText('downloadsQueueAriaPauseYtdlp')
-                                    }
-                                    onClick={() => {
-                                      const fn = row.ytdlpPaused
-                                        ? window.fluxalloy.downloads.resumeYtdlp
-                                        : window.fluxalloy.downloads.pauseYtdlp
-                                      void fn().then((res) => {
-                                        if (!res.ok) {
-                                          setStatusHint(res.error)
-                                        }
-                                      })
-                                    }}
-                                  >
-                                    {row.ytdlpPaused ? (
-                                      <IconPlay title="" size={18} />
-                                    ) : (
-                                      <IconPauseUi title="" size={18} />
-                                    )}
-                                  </button>
-                                ) : null}
-                                <button
-                                  type="button"
-                                  className="app-icon-btn app-icon-btn-warn"
-                                  aria-label={uiText('downloadsQueueAriaRemoveRow')}
-                                  title={uiText('downloadsQueueAriaRemoveRow')}
-                                  onClick={() => {
-                                    void window.fluxalloy.downloads
-                                      .removeRow(row.id)
-                                      .then((res) => {
-                                        if (!res.ok) {
-                                          setStatusHint(res.error)
-                                        }
-                                      })
-                                  }}
-                                >
-                                  <IconQueueTrash title="" size={18} />
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        )
-                      })
-                    )}
-                  </tbody>
-                </table>
-              </div>
-              <div
-                className="app-downloads-lower-stack"
-                role="region"
-                aria-label={uiText('downloadsLowerStackAria')}
-                aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-              >
-                <DownloadsHistoryPanel
-                  open={downloadsEmbeddedHistoryOpen}
-                  busy={downloadsHistoryBusy}
-                  entries={visibleDownloadsHistory}
-                  totalEntries={downloadsHistory.length}
-                  outcomeFilter={downloadsHistoryOutcomeFilter}
-                  weeklySummary={
-                    downloadsHistoryWeeklySummary ?? {
-                      since: 0,
-                      until: 0,
-                      total: 0,
-                      success: 0,
-                      error: 0,
-                      cancelled: 0
-                    }
-                  }
-                  onToggle={(next) => {
-                    persistDownloadsEmbeddedHistoryOpen(next)
-                  }}
-                  onOutcomeFilterChange={setDownloadsHistoryOutcomeFilter}
-                  onRefresh={() => {
-                    void refreshDownloadsHistory()
-                  }}
-                  onClear={() => {
-                    void window.fluxalloy.downloads.clearHistory().then((res) => {
-                      if (!res.ok) {
-                        setStatusHint(res.error)
-                        return
-                      }
-                      setDownloadsHistory([])
-                    })
-                  }}
-                  onExportVisible={() => {
-                    void exportVisibleDownloadsHistory()
-                  }}
-                  onRepeat={(url) => {
-                    void window.fluxalloy.downloads.addLines(url).then((res) => {
-                      if (!res.ok) {
-                        setStatusHint(res.error)
-                        return
-                      }
-                      setWorkspaceTab('downloads')
-                      setStatusHint(
-                        res.added > 0
-                          ? uiText('downloadsHistoryRepeatQueued')
-                          : uiText('downloadsHistoryRepeatNotAdded')
-                      )
-                    })
-                  }}
-                />
-                <DownloadsLogPanel
-                  open={downloadsEmbeddedLogOpen}
-                  targetRowId={downloadsLogTargetRowId}
-                  lines={downloadsLogLines}
-                  downloadsTabBusy={downloadsOptionsBusy || downloadsHistoryBusy}
-                  onToggle={(next) => {
-                    persistDownloadsEmbeddedLogOpen(next)
-                  }}
-                  onClear={() => {
-                    setDownloadsLogLines([])
-                    setDownloadsLogTargetRowId(null)
-                  }}
-                  onSave={() => {
-                    const text = formatDownloadsLogText(downloadsLogLines)
-                    void window.fluxalloy.downloads.saveVisibleLog(text).then((res) => {
-                      if (!res.ok && res.error !== DOWNLOADS_VISIBLE_LOG_SAVE_CANCELLED) {
-                        setStatusHint(res.error)
-                      }
-                    })
-                  }}
-                />
-              </div>
-            </div>
-          </section>
-          <aside
+          <DownloadsWorkspaceMain
+            downloadsOptionsBusy={downloadsOptionsBusy}
+            downloadsHistoryBusy={downloadsHistoryBusy}
+            downloadsUrl={downloadsUrl}
+            setDownloadsUrl={setDownloadsUrl}
+            downloadsMainUrlFieldId={downloadsMainUrlFieldId}
+            onAddToQueue={() => {
+              void handleAddDownloadsFromMain()
+            }}
+            downloadsNarrowLayout={downloadsNarrowLayout}
+            onScrollToSettings={() => {
+              downloadsSettingsRailRef.current?.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+              })
+            }}
+            downloadsStats={downloadsStats}
+            downloadsStatusFilter={downloadsStatusFilter}
+            setDownloadsStatusFilter={setDownloadsStatusFilter}
+            downloadsStatusFilterChips={downloadsStatusFilterChips}
+            downloadsRows={downloadsRows}
+            visibleDownloadsRows={visibleDownloadsRows}
+            setStatusHint={setStatusHint}
+            onBatchAddDownloadsDone={(rowIds) => {
+              void handleBatchAddDownloadsDone(rowIds)
+            }}
+            onSelectDownloadsTab={() => {
+              setWorkspaceTab('downloads')
+            }}
+            downloadsEmbeddedHistoryOpen={downloadsEmbeddedHistoryOpen}
+            persistDownloadsEmbeddedHistoryOpen={persistDownloadsEmbeddedHistoryOpen}
+            visibleDownloadsHistory={visibleDownloadsHistory}
+            downloadsHistoryCount={downloadsHistory.length}
+            downloadsHistoryOutcomeFilter={downloadsHistoryOutcomeFilter}
+            setDownloadsHistoryOutcomeFilter={setDownloadsHistoryOutcomeFilter}
+            downloadsHistoryWeeklySummary={
+              downloadsHistoryWeeklySummary ?? {
+                since: 0,
+                until: 0,
+                total: 0,
+                success: 0,
+                error: 0,
+                cancelled: 0
+              }
+            }
+            refreshDownloadsHistory={refreshDownloadsHistory}
+            setDownloadsHistory={setDownloadsHistory}
+            exportVisibleDownloadsHistory={exportVisibleDownloadsHistory}
+            downloadsEmbeddedLogOpen={downloadsEmbeddedLogOpen}
+            persistDownloadsEmbeddedLogOpen={persistDownloadsEmbeddedLogOpen}
+            downloadsLogTargetRowId={downloadsLogTargetRowId}
+            downloadsLogLines={downloadsLogLines}
+            setDownloadsLogLines={setDownloadsLogLines}
+            setDownloadsLogTargetRowId={setDownloadsLogTargetRowId}
+          />
+          <DownloadsSettingsRail
             ref={downloadsSettingsRailRef}
-            id="downloads-ytdlp-settings-rail"
-            className="app-downloads-rail"
-            aria-label={uiText('downloadsRailAria')}
-            aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-          >
-            <h3 className="app-settings-title">{uiText('downloadsRailTitle')}</h3>
-            <p className="app-settings-subtitle" title={uiText('downloadsRailIntroTooltip')}>
-              {uiText('downloadsRailSubtitle')}
-            </p>
-            {downloadsOptions ? (
-              <div
-                className="app-downloads-settings-stack"
-                role="region"
-                aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-                aria-label={uiText('downloadsSettingsSectionsStackAria')}
-              >
-                <details
-                  className="app-downloads-rail-section"
-                  aria-label={uiText('downloadsRailFormatSummary')}
-                  aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-                  open={downloadsRailPanels.format}
-                  onToggle={handleDownloadsRailSectionToggle('format')}
-                >
-                  <summary
-                    className="app-downloads-rail-summary"
-                    title={uiText('downloadsTooltipSectionFormat')}
-                  >
-                    {uiText('downloadsRailFormatSummary')}
-                  </summary>
-                  <div className="app-downloads-rail-section-body">
-                    <label
-                      className="app-field"
-                      title={uiText('downloadsTooltipFormatPresetSelect')}
-                    >
-                      <span>{uiText('downloadsRailFormatQualityLabel')}</span>
-                      <select
-                        className="app-control"
-                        title={uiText('downloadsTooltipFormatPresetSelect')}
-                        value={downloadsOptions.formatPreset}
-                        disabled={downloadsOptionsBusy || downloadsOptions.audioOnly}
-                        aria-describedby="downloadsFormatHint"
-                        onChange={(e) => {
-                          void applyDownloadsOptionsPatch({
-                            formatPreset: e.target.value as YtdlpFormatPresetId
-                          })
-                        }}
-                      >
-                        {downloadsOptions.formatPresetChoices.map((choice) => (
-                          <option key={choice.id} value={choice.id}>
-                            {choice.label}
-                          </option>
-                        ))}
-                      </select>
-                      <span id="downloadsFormatHint" className="app-field-help">
-                        {uiText('downloadsFormatHint')}
-                      </span>
-                    </label>
-                    <div className="app-downloads-switch-grid">
-                      <div className="app-field app-field-switch">
-                        <span>{uiText('downloadsPlaylistSpan')}</span>
-                        <PillSwitch
-                          label={uiText('downloadsPlaylistPillLabel')}
-                          tooltip={uiText('downloadsTooltipPlaylistSwitch')}
-                          checked={downloadsOptions.downloadPlaylist}
-                          describedBy="downloadsPlaylistHint"
-                          disabled={downloadsOptionsBusy}
-                          onToggle={() => {
-                            void applyDownloadsOptionsPatch({
-                              downloadPlaylist: !downloadsOptions.downloadPlaylist
-                            })
-                          }}
-                        />
-                        <span id="downloadsPlaylistHint" className="app-field-help">
-                          {uiText('downloadsPlaylistHint')}
-                        </span>
-                      </div>
-                      <div className="app-field app-field-switch">
-                        <span>{uiText('downloadsAudioOnlySpan')}</span>
-                        <PillSwitch
-                          label={uiText('downloadsAudioOnlyPillLabel')}
-                          tooltip={uiText('downloadsTooltipAudioOnlySwitch')}
-                          checked={downloadsOptions.audioOnly}
-                          describedBy="downloadsAudioOnlyHint"
-                          disabled={downloadsOptionsBusy}
-                          onToggle={() => {
-                            void applyDownloadsOptionsPatch({
-                              audioOnly: !downloadsOptions.audioOnly
-                            })
-                          }}
-                        />
-                        <span id="downloadsAudioOnlyHint" className="app-field-help">
-                          {uiText('downloadsAudioOnlyHint')}
-                        </span>
-                      </div>
-                    </div>
-                    <label className="app-field" title={uiText('downloadsTooltipSubtitlesSelect')}>
-                      <span>{uiText('downloadsSubtitlesLabel')}</span>
-                      <select
-                        className="app-control"
-                        title={uiText('downloadsTooltipSubtitlesSelect')}
-                        value={downloadsOptions.subtitlePreset}
-                        disabled={downloadsOptionsBusy}
-                        onChange={(e) => {
-                          void applyDownloadsOptionsPatch({
-                            subtitlePreset: e.target.value as YtdlpSubtitlePresetId
-                          })
-                        }}
-                      >
-                        <option value="none">{uiText('downloadsSubPresetNone')}</option>
-                        <option value="manual">{uiText('downloadsSubPresetManual')}</option>
-                        <option value="manual_auto">
-                          {uiText('downloadsSubPresetManualAuto')}
-                        </option>
-                      </select>
-                      <span className="app-field-help">{uiText('downloadsSubLangsHelp')}</span>
-                    </label>
-                    <label className="app-field" title={uiText('downloadsTooltipSubLangsInput')}>
-                      <span>{uiText('downloadsSubLangsLabel')}</span>
-                      <input
-                        className="app-control app-downloads-template-input"
-                        title={uiText('downloadsTooltipSubLangsInput')}
-                        value={downloadsOptions.subLangsLine}
-                        disabled={
-                          downloadsOptionsBusy || downloadsOptions.subtitlePreset === 'none'
-                        }
-                        spellCheck={false}
-                        placeholder={uiText('downloadsSubLangsPlaceholder')}
-                        onChange={(e) => {
-                          setDownloadsOptions({
-                            ...downloadsOptions,
-                            subLangsLine: e.target.value
-                          })
-                        }}
-                        onBlur={(e) => {
-                          void applyDownloadsOptionsPatch({ subLangs: e.target.value })
-                        }}
-                      />
-                    </label>
-                  </div>
-                </details>
-                <details
-                  className="app-downloads-rail-section"
-                  aria-label={uiText('downloadsRailMetadataSummary')}
-                  aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-                  open={downloadsRailPanels.metadata}
-                  onToggle={handleDownloadsRailSectionToggle('metadata')}
-                >
-                  <summary
-                    className="app-downloads-rail-summary"
-                    title={uiText('downloadsTooltipSectionMetadata')}
-                  >
-                    {uiText('downloadsRailMetadataSummary')}
-                  </summary>
-                  <div className="app-downloads-rail-section-body">
-                    <div className="app-field app-field-switch">
-                      <span>{uiText('downloadsOpenAfterSuccessSpan')}</span>
-                      <PillSwitch
-                        label={uiText('downloadsOpenAfterSuccessPillLabel')}
-                        tooltip={uiText('downloadsTooltipOpenAfterSuccess')}
-                        checked={downloadsOptions.openInHandlerOnComplete}
-                        describedBy="downloadsOpenAfterSuccessHint"
-                        disabled={downloadsOptionsBusy}
-                        onToggle={() => {
-                          void applyDownloadsOptionsPatch({
-                            openInHandlerOnComplete: !downloadsOptions.openInHandlerOnComplete
-                          })
-                        }}
-                      />
-                      <span id="downloadsOpenAfterSuccessHint" className="app-field-help">
-                        {uiText('downloadsOpenAfterSuccessHint')}
-                      </span>
-                    </div>
-                    <div className="app-field app-field-switch">
-                      <span>{uiText('downloadsAutoExportSpan')}</span>
-                      <PillSwitch
-                        label={uiText('downloadsAutoExportPillLabel')}
-                        tooltip={uiText('downloadsTooltipAutoExport')}
-                        checked={downloadsOptions.autoExportAfterOpenInHandler}
-                        describedBy="downloadsAutoExportAfterOpenHint"
-                        disabled={downloadsOptionsBusy || !downloadsOptions.openInHandlerOnComplete}
-                        onToggle={() => {
-                          void applyDownloadsOptionsPatch({
-                            autoExportAfterOpenInHandler:
-                              !downloadsOptions.autoExportAfterOpenInHandler
-                          })
-                        }}
-                      />
-                      <span id="downloadsAutoExportAfterOpenHint" className="app-field-help">
-                        {uiText('downloadsAutoExportHint')}
-                      </span>
-                    </div>
-                    <div className="app-field app-field-switch">
-                      <span>{uiText('downloadsEnqueueBatchSpan')}</span>
-                      <PillSwitch
-                        label={uiText('downloadsEnqueueBatchPillLabel')}
-                        tooltip={uiText('downloadsTooltipEnqueueBatch')}
-                        checked={downloadsOptions.enqueueBatchOnDownloadComplete}
-                        describedBy="downloadsEnqueueBatchHint"
-                        disabled={downloadsOptionsBusy}
-                        onToggle={() => {
-                          void applyDownloadsOptionsPatch({
-                            enqueueBatchOnDownloadComplete:
-                              !downloadsOptions.enqueueBatchOnDownloadComplete
-                          })
-                        }}
-                      />
-                      <span id="downloadsEnqueueBatchHint" className="app-field-help">
-                        {uiText('downloadsEnqueueBatchHint')}
-                      </span>
-                    </div>
-                    <div className="app-field app-field-switch">
-                      <span>{uiText('downloadsAutoStartBatchSpan')}</span>
-                      <PillSwitch
-                        label={uiText('downloadsAutoStartBatchPillLabel')}
-                        tooltip={uiText('downloadsTooltipAutoStartBatch')}
-                        checked={downloadsOptions.autoStartBatchAfterEnqueue}
-                        describedBy="downloadsAutoStartBatchHint"
-                        disabled={
-                          downloadsOptionsBusy || !downloadsOptions.enqueueBatchOnDownloadComplete
-                        }
-                        onToggle={() => {
-                          void applyDownloadsOptionsPatch({
-                            autoStartBatchAfterEnqueue: !downloadsOptions.autoStartBatchAfterEnqueue
-                          })
-                        }}
-                      />
-                      <span id="downloadsAutoStartBatchHint" className="app-field-help">
-                        {uiText('downloadsAutoStartBatchHint')}
-                      </span>
-                    </div>
-                    <div className="app-downloads-select-grid">
-                      <label className="app-field" title={uiText('downloadsTooltipCookiesBrowser')}>
-                        <span>{uiText('downloadsCookiesBrowserLabel')}</span>
-                        <select
-                          className="app-control"
-                          title={uiText('downloadsTooltipCookiesBrowser')}
-                          value={downloadsOptions.cookiesBrowserChoice}
-                          disabled={downloadsOptionsBusy}
-                          onChange={(e) => {
-                            void applyDownloadsOptionsPatch({
-                              cookiesBrowser: e.target.value as 'none' | YtdlpCookiesBrowserId
-                            })
-                          }}
-                        >
-                          <option value="none">{uiText('downloadsCookiesBrowserNone')}</option>
-                          <option value="chrome">
-                            {uiText('downloadsYtdlpBrowserPrettyChrome')}
-                          </option>
-                          <option value="edge">{uiText('downloadsYtdlpBrowserPrettyEdge')}</option>
-                          <option value="firefox">
-                            {uiText('downloadsYtdlpBrowserPrettyFirefox')}
-                          </option>
-                        </select>
-                      </label>
-                      <label className="app-field" title={uiText('downloadsTooltipImpersonate')}>
-                        <span>{uiText('downloadsImpersonateLabel')}</span>
-                        <select
-                          className="app-control"
-                          title={uiText('downloadsTooltipImpersonate')}
-                          value={downloadsOptions.impersonateChoice}
-                          disabled={downloadsOptionsBusy}
-                          onChange={(e) => {
-                            void applyDownloadsOptionsPatch({
-                              impersonate: e.target.value as 'none' | YtdlpImpersonateId
-                            })
-                          }}
-                        >
-                          <option value="none">{uiText('downloadsImpersonateOff')}</option>
-                          <option value="chrome">
-                            {uiText('downloadsYtdlpBrowserTokenChrome')}
-                          </option>
-                          <option value="edge">{uiText('downloadsYtdlpBrowserTokenEdge')}</option>
-                          <option value="firefox">
-                            {uiText('downloadsYtdlpBrowserTokenFirefox')}
-                          </option>
-                        </select>
-                      </label>
-                    </div>
-                    <label className="app-field" title={uiText('downloadsTooltipCookiesProfile')}>
-                      <span>{uiText('downloadsCookiesProfileLabel')}</span>
-                      <input
-                        className="app-control app-downloads-template-input"
-                        title={uiText('downloadsTooltipCookiesProfile')}
-                        value={downloadsOptions.cookiesBrowserProfileLine}
-                        disabled={downloadsOptionsBusy}
-                        spellCheck={false}
-                        autoComplete="off"
-                        placeholder={uiText('downloadsCookiesProfilePlaceholder')}
-                        aria-describedby="downloadsCookiesProfileHint"
-                        onChange={(e) => {
-                          setDownloadsOptions({
-                            ...downloadsOptions,
-                            cookiesBrowserProfileLine: e.target.value
-                          })
-                        }}
-                        onBlur={(e) => {
-                          void applyDownloadsOptionsPatch({
-                            cookiesBrowserProfile: e.target.value
-                          })
-                        }}
-                      />
-                      <span id="downloadsCookiesProfileHint" className="app-field-help">
-                        {uiText('downloadsCookiesProfileHint')}
-                      </span>
-                    </label>
-                    <div
-                      className="app-downloads-output-dir"
-                      role="group"
-                      aria-label={uiText('downloadsCookiesFileGroupAria')}
-                      aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-                    >
-                      <span className="app-field-help">
-                        {uiText('downloadsCookiesNetscapeHelp')}
-                      </span>
-                      <strong title={downloadsOptions.cookiesFilePathStored}>
-                        {downloadsOptions.cookiesFilePathStored ||
-                          uiText('downloadsCookiesFileNotSelected')}
-                      </strong>
-                      <span className="app-field-help">
-                        {uiText('downloadsCookiesFilePriorityHelp')}
-                      </span>
-                      <div
-                        className="app-downloads-history-actions"
-                        role="toolbar"
-                        aria-orientation="horizontal"
-                        aria-label={uiText('downloadsCookiesFileActionsToolbarAria')}
-                        aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-                      >
-                        <button
-                          type="button"
-                          className="app-btn app-btn-compact app-btn-icon-leading"
-                          disabled={downloadsOptionsBusy}
-                          title={uiText('downloadsTooltipCookiesPick')}
-                          onClick={() => {
-                            void window.fluxalloy.downloads.pickCookiesFile().then((res) => {
-                              if (res.ok) {
-                                void refreshDownloadsOptions()
-                                return
-                              }
-                              if ('error' in res) {
-                                setStatusHint(res.error)
-                              }
-                            })
-                          }}
-                        >
-                          <IconQueueFile title="" size={14} />
-                          {uiText('downloadsRailPick')}
-                        </button>
-                        <button
-                          type="button"
-                          className="app-btn app-btn-compact app-btn-icon-leading"
-                          disabled={
-                            downloadsOptionsBusy ||
-                            downloadsOptions.cookiesFilePathStored.length === 0
-                          }
-                          title={uiText('downloadsTooltipCookiesClear')}
-                          onClick={() => {
-                            void window.fluxalloy.downloads.clearCookiesFile().then((res) => {
-                              if (!res.ok) {
-                                setStatusHint(res.error)
-                                return
-                              }
-                              void refreshDownloadsOptions()
-                            })
-                          }}
-                        >
-                          <IconQueueX title="" size={14} />
-                          {uiText('downloadsHistoryClear')}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </details>
-                <details
-                  className="app-downloads-rail-section"
-                  aria-label={uiText('downloadsRailSavingSummary')}
-                  aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-                  open={downloadsRailPanels.saving}
-                  onToggle={handleDownloadsRailSectionToggle('saving')}
-                >
-                  <summary
-                    className="app-downloads-rail-summary"
-                    title={uiText('downloadsTooltipSectionSaving')}
-                  >
-                    {uiText('downloadsRailSavingSummary')}
-                  </summary>
-                  <div className="app-downloads-rail-section-body">
-                    <div
-                      className="app-downloads-output-dir"
-                      role="group"
-                      aria-label={uiText('downloadsOutputDirAria')}
-                      aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-                    >
-                      <span className="app-field-help">{uiText('downloadsOutputDirLabel')}</span>
-                      <strong title={downloadsOutputDirectory?.path ?? ''}>
-                        {downloadsOutputDirectory?.path ?? uiText('downloadsOutputPathLoading')}
-                      </strong>
-                      <span className="app-field-help">
-                        {downloadsOutputDirectory?.isDefault
-                          ? uiText('downloadsOutputUseDefaultUserdata')
-                          : uiText('downloadsOutputUseCustom')}
-                      </span>
-                      <div
-                        className="app-downloads-history-actions"
-                        role="toolbar"
-                        aria-orientation="horizontal"
-                        aria-label={uiText('downloadsOutputDirActionsToolbarAria')}
-                        aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-                      >
-                        <button
-                          type="button"
-                          className="app-btn app-btn-compact app-btn-icon-leading"
-                          title={uiText('downloadsTooltipOutputOpenFolder')}
-                          onClick={() => {
-                            void window.fluxalloy.downloads.openOutputDirectory().then((res) => {
-                              if (!res.ok) {
-                                setStatusHint(res.error)
-                              }
-                            })
-                          }}
-                        >
-                          <IconFolderOpen title="" size={14} />
-                          {uiText('downloadsRailOpenFolder')}
-                        </button>
-                        <button
-                          type="button"
-                          className="app-btn app-btn-compact app-btn-icon-leading"
-                          title={uiText('downloadsTooltipOutputPick')}
-                          onClick={() => {
-                            void window.fluxalloy.downloads.pickOutputDirectory().then((res) => {
-                              if (res.ok) {
-                                setDownloadsOutputDirectory({ path: res.path, isDefault: false })
-                                return
-                              }
-                              if ('error' in res) {
-                                setStatusHint(res.error)
-                              }
-                            })
-                          }}
-                        >
-                          <IconQueuePlus title="" size={14} />
-                          {uiText('downloadsRailPick')}
-                        </button>
-                        <button
-                          type="button"
-                          className="app-btn app-btn-compact app-btn-icon-leading"
-                          title={uiText('downloadsTooltipOutputDefault')}
-                          onClick={() => {
-                            void window.fluxalloy.downloads.clearOutputDirectory().then((res) => {
-                              if (!res.ok) {
-                                setStatusHint(res.error)
-                                return
-                              }
-                              void refreshDownloadsOutputDirectory()
-                            })
-                          }}
-                        >
-                          <IconHome title="" size={14} />
-                          {uiText('downloadsOutputDefaultButton')}
-                        </button>
-                      </div>
-                    </div>
-                    <label className="app-field" title={uiText('downloadsTooltipFilenameTemplate')}>
-                      <span>{uiText('downloadsFilenameTemplateLabel')}</span>
-                      <input
-                        className="app-control app-downloads-template-input"
-                        title={uiText('downloadsTooltipFilenameTemplate')}
-                        value={downloadsOptions.filenameTemplate}
-                        disabled={downloadsOptionsBusy}
-                        spellCheck={false}
-                        onChange={(e) => {
-                          setDownloadsOptions({
-                            ...downloadsOptions,
-                            filenameTemplate: e.target.value
-                          })
-                        }}
-                        onBlur={(e) => {
-                          void applyDownloadsOptionsPatch({ filenameTemplate: e.target.value })
-                        }}
-                      />
-                      <span className="app-field-help">
-                        {uiText('downloadsFilenameTemplateHelp')}
-                      </span>
-                    </label>
-                  </div>
-                </details>
-                <details
-                  className="app-downloads-rail-section"
-                  aria-label={uiText('downloadsRailNetworkSummary')}
-                  aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-                  open={downloadsRailPanels.network}
-                  onToggle={handleDownloadsRailSectionToggle('network')}
-                >
-                  <summary
-                    className="app-downloads-rail-summary"
-                    title={uiText('downloadsTooltipSectionNetwork')}
-                  >
-                    {uiText('downloadsRailNetworkSummary')}
-                  </summary>
-                  <div className="app-downloads-rail-section-body">
-                    <label className="app-field" title={uiText('downloadsTooltipQueueRetrySelect')}>
-                      <span>{uiText('downloadsQueueRetryLabel')}</span>
-                      <select
-                        className="app-control"
-                        title={uiText('downloadsTooltipQueueRetrySelect')}
-                        value={downloadsOptions.queueRetryProfile}
-                        disabled={downloadsOptionsBusy}
-                        onChange={(e) => {
-                          void applyDownloadsOptionsPatch({
-                            queueRetryProfile: e.target.value as YtdlpQueueRetryProfileId
-                          })
-                        }}
-                      >
-                        {downloadsOptions.queueRetryProfileChoices.map((choice) => (
-                          <option key={choice.id} value={choice.id}>
-                            {choice.label}
-                          </option>
-                        ))}
-                      </select>
-                      <span className="app-field-help">{uiText('downloadsQueueRetryHelp')}</span>
-                    </label>
-                    <div className="app-downloads-select-grid">
-                      <label className="app-field" title={uiText('downloadsTooltipRateLimitInput')}>
-                        <span>{uiText('downloadsRateLimitLabel')}</span>
-                        <input
-                          className="app-control"
-                          title={uiText('downloadsTooltipRateLimitInput')}
-                          value={downloadsOptions.rateLimit}
-                          disabled={downloadsOptionsBusy}
-                          placeholder={uiText('downloadsRateLimitPlaceholder')}
-                          spellCheck={false}
-                          onChange={(e) => {
-                            setDownloadsOptions({ ...downloadsOptions, rateLimit: e.target.value })
-                          }}
-                          onBlur={(e) => {
-                            void applyDownloadsOptionsPatch({ rateLimit: e.target.value })
-                          }}
-                        />
-                        <span className="app-field-help">{uiText('downloadsRateLimitHelp')}</span>
-                      </label>
-                      <label className="app-field" title={uiText('downloadsTooltipRetriesInput')}>
-                        <span>{uiText('downloadsYtdlpRetriesLabel')}</span>
-                        <input
-                          className="app-control"
-                          title={uiText('downloadsTooltipRetriesInput')}
-                          value={downloadsOptions.retriesLine}
-                          disabled={downloadsOptionsBusy}
-                          inputMode="numeric"
-                          placeholder={uiText('downloadsYtdlpRetriesPlaceholder')}
-                          spellCheck={false}
-                          onChange={(e) => {
-                            setDownloadsOptions({
-                              ...downloadsOptions,
-                              retriesLine: e.target.value
-                            })
-                          }}
-                          onBlur={(e) => {
-                            void applyDownloadsOptionsPatch({ retriesLine: e.target.value })
-                          }}
-                        />
-                        <span className="app-field-help">
-                          {uiText('downloadsYtdlpRetriesHelp')}
-                        </span>
-                      </label>
-                      <label
-                        className="app-field"
-                        title={uiText('downloadsTooltipFragmentRetriesInput')}
-                      >
-                        <span>{uiText('downloadsFragmentRetriesLabel')}</span>
-                        <input
-                          className="app-control"
-                          title={uiText('downloadsTooltipFragmentRetriesInput')}
-                          value={downloadsOptions.fragmentRetriesLine}
-                          disabled={downloadsOptionsBusy}
-                          inputMode="numeric"
-                          placeholder={uiText('downloadsFragmentRetriesPlaceholder')}
-                          spellCheck={false}
-                          onChange={(e) => {
-                            setDownloadsOptions({
-                              ...downloadsOptions,
-                              fragmentRetriesLine: e.target.value
-                            })
-                          }}
-                          onBlur={(e) => {
-                            void applyDownloadsOptionsPatch({
-                              fragmentRetriesLine: e.target.value
-                            })
-                          }}
-                        />
-                        <span className="app-field-help">
-                          {uiText('downloadsFragmentRetriesHelp')}
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-                </details>
-                <details
-                  className="app-downloads-rail-section"
-                  aria-label={uiText('downloadsRailExpertSummary')}
-                  aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-                  open={downloadsRailPanels.expert}
-                  onToggle={handleDownloadsRailSectionToggle('expert')}
-                >
-                  <summary
-                    className="app-downloads-rail-summary"
-                    title={uiText('downloadsTooltipSectionExpert')}
-                  >
-                    {uiText('downloadsRailExpertSummary')}
-                  </summary>
-                  <div className="app-downloads-rail-section-body">
-                    <label
-                      className="app-field"
-                      title={uiText('downloadsTooltipExtraArgsTextarea')}
-                    >
-                      <span>{uiText('downloadsExtraArgsLabel')}</span>
-                      <textarea
-                        className="app-control app-downloads-extra-args"
-                        title={uiText('downloadsTooltipExtraArgsTextarea')}
-                        rows={3}
-                        spellCheck={false}
-                        autoComplete="off"
-                        value={downloadsOptions.extraArgsLine}
-                        disabled={downloadsOptionsBusy}
-                        onChange={(e) => {
-                          setDownloadsOptions({
-                            ...downloadsOptions,
-                            extraArgsLine: e.target.value
-                          })
-                        }}
-                        onBlur={(e) => {
-                          void applyDownloadsOptionsPatch({ extraArgsLine: e.target.value })
-                        }}
-                      />
-                      <span className="app-field-help">{uiText('downloadsExtraArgsHelp')}</span>
-                    </label>
-                    {downloadsOptions.extraArgsParseWarning ? (
-                      <p className="app-downloads-warning" role="alert">
-                        {downloadsOptions.extraArgsParseWarning}
-                      </p>
-                    ) : null}
-                    <p id="downloadsHintCatalogIntro" className="app-field-help">
-                      {uiText('downloadsHintCatalogIntro')}
-                    </p>
-                    <label className="app-field" title={uiText('downloadsTooltipHintSearchInput')}>
-                      <span>{uiText('downloadsHintCatalogFilterLabel')}</span>
-                      <input
-                        type="text"
-                        className="app-control app-downloads-hint-filter"
-                        title={uiText('downloadsTooltipHintSearchInput')}
-                        spellCheck={false}
-                        autoComplete="off"
-                        placeholder={uiText('downloadsHintSearchPlaceholder')}
-                        aria-describedby="downloadsHintCatalogIntro"
-                        disabled={downloadsOptionsBusy}
-                        value={downloadsExpertHintFilter}
-                        onChange={(e) => setDownloadsExpertHintFilter(e.target.value)}
-                      />
-                    </label>
-                    <div
-                      className="app-downloads-hint-list"
-                      role="list"
-                      aria-label={uiText('downloadsHintListAria')}
-                      aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-                    >
-                      {!downloadsOptions.commandHints?.length ? (
-                        <div className="app-downloads-hint-item app-downloads-hint-item--muted">
-                          {uiText('downloadsHintsUnavailable')}
-                        </div>
-                      ) : ytdlpCommandHintsFilteredByCategory.length === 0 ? (
-                        <div className="app-downloads-hint-item app-downloads-hint-item--muted">
-                          {uiText('downloadsHintsNoMatches')}
-                        </div>
-                      ) : (
-                        ytdlpCommandHintsFilteredByCategory.map(([cat, rows]) => (
-                          <div key={cat}>
-                            <div className="app-downloads-hint-cat" role="presentation">
-                              {cat}
-                            </div>
-                            {rows.map((h) => (
-                              <div
-                                key={`${cat}:${h.token}`}
-                                className="app-downloads-hint-item"
-                                role="listitem"
-                              >
-                                <button
-                                  type="button"
-                                  className="app-downloads-hint-token"
-                                  title={h.summary || h.token}
-                                  aria-label={downloadsCatalogHintTokenAccessibleDescription(
-                                    cat,
-                                    h
-                                  )}
-                                  disabled={downloadsOptionsBusy}
-                                  onClick={() => appendDownloadsExtraArgsToken(h.token)}
-                                >
-                                  {h.token}
-                                </button>
-                                {h.summary ? (
-                                  <div className="app-downloads-hint-desc" title={h.summary}>
-                                    {h.summary}
-                                  </div>
-                                ) : null}
-                              </div>
-                            ))}
-                          </div>
-                        ))
-                      )}
-                    </div>
-                    <span className="app-field-help">
-                      {uiText('downloadsHintsSameAsPopoutHelp')}
-                    </span>
-                    <nav
-                      className="app-doc-inline-links app-downloads-doc-links"
-                      aria-label={uiText('downloadsRailExpertDocNavAria')}
-                      aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-                    >
-                      <a href={YTDLP_DOC_README} target="_blank" rel="noreferrer">
-                        {uiText('docLinkYtDlpReadme')}
-                      </a>
-                      {' · '}
-                      <a href={YTDLP_DOC_FORMAT_SELECTION} target="_blank" rel="noreferrer">
-                        {uiText('quickYtdlpDocFormats')}
-                      </a>
-                      {' · '}
-                      <a href={YTDLP_DOC_OUTPUT_TEMPLATE} target="_blank" rel="noreferrer">
-                        {uiText('downloadsRailDocOutput')}
-                      </a>
-                      {' · '}
-                      <a href={YTDLP_DOC_POSTPROCESS} target="_blank" rel="noreferrer">
-                        {uiText('downloadsRailDocPostprocess')}
-                      </a>
-                    </nav>
-                    <span id="downloads-command-preview-help" className="app-field-help">
-                      {uiText('downloadsCommandPreviewHelp')}
-                    </span>
-                    <div className="app-downloads-command-preview app-downloads-command-preview--flat">
-                      <pre
-                        className="app-downloads-command-preview-pre"
-                        role="status"
-                        aria-live="polite"
-                        aria-relevant="text"
-                        aria-labelledby="downloads-command-preview-help"
-                      >
-                        {downloadsOptions.commandPreview}
-                      </pre>
-                    </div>
-                  </div>
-                </details>
-                {downloadsOptions.cookiesWarning ? (
-                  <p className="app-downloads-warning">{downloadsOptions.cookiesWarning}</p>
-                ) : null}
-              </div>
-            ) : (
-              <p className="app-settings-subtitle">{uiText('downloadsOptionsLoading')}</p>
-            )}
-            <div
-              className="app-downloads-rail-footer"
-              role="toolbar"
-              aria-orientation="horizontal"
-              aria-label={uiText('downloadsRailFooterToolbarAria')}
-              aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-            >
-              <button
-                type="button"
-                className="app-btn app-btn-icon-leading"
-                disabled={downloadsOptionsBusy}
-                title={uiText('downloadsTooltipRefreshFooter')}
-                onClick={() => {
-                  void refreshDownloadsOptions()
-                }}
-              >
-                <IconRefreshCw title="" size={16} />
-                {uiText('downloadsRailRefreshOptions')}
-              </button>
-            </div>
-          </aside>
+            downloadsOptionsBusy={downloadsOptionsBusy}
+            downloadsHistoryBusy={downloadsHistoryBusy}
+            downloadsOptions={downloadsOptions}
+            setDownloadsOptions={setDownloadsOptions}
+            downloadsRailPanels={downloadsRailPanels}
+            onRailSectionToggle={handleDownloadsRailSectionToggle}
+            applyDownloadsOptionsPatch={applyDownloadsOptionsPatch}
+            downloadsOutputDirectory={downloadsOutputDirectory}
+            setDownloadsOutputDirectory={setDownloadsOutputDirectory}
+            refreshDownloadsOutputDirectory={refreshDownloadsOutputDirectory}
+            setStatusHint={setStatusHint}
+            downloadsExpertHintFilter={downloadsExpertHintFilter}
+            setDownloadsExpertHintFilter={setDownloadsExpertHintFilter}
+            ytdlpCommandHintsFilteredByCategory={ytdlpCommandHintsFilteredByCategory}
+            appendDownloadsExtraArgsToken={appendDownloadsExtraArgsToken}
+            refreshDownloadsOptions={refreshDownloadsOptions}
+          />
         </main>
       )}
 

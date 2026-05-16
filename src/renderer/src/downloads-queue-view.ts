@@ -35,6 +35,19 @@ export type DownloadsQueueStats = {
   pending: number
 }
 
+/** §6 — id заголовков таблицы очереди yt-dlp (`headers` на `<td>`). */
+export const DOWNLOADS_QUEUE_TABLE_HEADER_IDS = {
+  num: 'flux-dlq-col-num',
+  titleUrl: 'flux-dlq-col-title-url',
+  format: 'flux-dlq-col-format',
+  size: 'flux-dlq-col-size',
+  progress: 'flux-dlq-col-progress',
+  speed: 'flux-dlq-col-speed',
+  eta: 'flux-dlq-col-eta',
+  status: 'flux-dlq-col-status',
+  actions: 'flux-dlq-col-actions'
+} as const
+
 export function sanitizeDownloadsRows(raw: unknown[]): DownloadsQueueRowView[] {
   return raw.flatMap((item): DownloadsQueueRowView[] => {
     if (!item || typeof item !== 'object') {
