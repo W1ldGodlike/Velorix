@@ -436,6 +436,17 @@ const fluxalloy = {
       return (): void => {
         ipcRenderer.removeListener(channel, handler)
       }
+    },
+    /** Main → renderer: yt-dlp CLI/options изменились (вызовите getCliOptions). */
+    onDownloadsCliOptionsChanged: (listener: () => void): (() => void) => {
+      const channel = mw.downloadsCliOptionsChanged
+      const handler = (): void => {
+        listener()
+      }
+      ipcRenderer.on(channel, handler)
+      return (): void => {
+        ipcRenderer.removeListener(channel, handler)
+      }
     }
   },
   /** §9 §363 — отдельное окно инспектора (тот же preload, что главное окно). */

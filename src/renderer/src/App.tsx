@@ -2036,6 +2036,13 @@ function App(): JSX.Element {
   }, [])
 
   useEffect(() => {
+    const off = window.fluxalloy.downloads.onDownloadsCliOptionsChanged(() => {
+      void refreshDownloadsOptions()
+    })
+    return off
+  }, [refreshDownloadsOptions])
+
+  useEffect(() => {
     let cancelled = false
     void window.fluxalloy.session.restoreLastSource().then((restored) => {
       if (cancelled || !restored) {

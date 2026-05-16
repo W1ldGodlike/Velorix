@@ -123,6 +123,63 @@ describe('resolveFfmpegExportJobOptionsFromAppSettings', () => {
     ).toBe('none')
   })
 
+  it('extraArgsLine, stripChapters и fps из settings и overrides (§7.3)', () => {
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings({
+        ...base,
+        ffmpegExportExtraArgsLine: '-map 0',
+        ffmpegExportStripChapters: true,
+        ffmpegExportFps: 30
+      })
+    ).toMatchObject({
+      extraArgsLine: '-map 0',
+      stripChapters: true,
+      fps: 30
+    })
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings(
+        { ...base, ffmpegExportExtraArgsLine: '-map 0', ffmpegExportFps: 30 },
+        { extraArgsLine: '-tag:v hvc1', stripChapters: false, fps: 24 }
+      )
+    ).toMatchObject({
+      extraArgsLine: '-tag:v hvc1',
+      stripChapters: false,
+      fps: 24
+    })
+  })
+
+  it('videoBitrate и subtitleMode из settings и overrides (§7.3)', () => {
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings({
+        ...base,
+        ffmpegExportVideoBitrate: '2500k',
+        ffmpegExportSubtitleMode: 'copy'
+      })
+    ).toMatchObject({ videoBitrate: '2500k', subtitleMode: 'copy' })
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings(
+        { ...base, ffmpegExportSubtitleMode: 'copy' },
+        { videoBitrate: '4000k', subtitleMode: 'drop' }
+      )
+    ).toMatchObject({ videoBitrate: '4000k', subtitleMode: 'drop' })
+  })
+
+  it('cropPreset и videoTransform из settings и overrides (§7.3)', () => {
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings({
+        ...base,
+        ffmpegExportCropPreset: 'center-16-9',
+        ffmpegExportVideoTransform: 'cw90'
+      })
+    ).toMatchObject({ cropPreset: 'center-16-9', videoTransform: 'cw90' })
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings(
+        { ...base, ffmpegExportCropPreset: 'center-16-9' },
+        { cropPreset: 'none', videoTransform: 'hflip' }
+      )
+    ).toMatchObject({ cropPreset: 'none', videoTransform: 'hflip' })
+  })
+
   it('hwDecode из settings и overrides (§7.3 batch/single)', () => {
     expect(
       resolveFfmpegExportJobOptionsFromAppSettings({

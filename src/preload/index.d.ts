@@ -245,6 +245,7 @@ export interface FluxAlloyApi {
     onDownloadsOutputDirectoryChanged: (
       listener: (snap: import('../shared/downloads-output-directory-snapshot').DownloadsOutputDirectorySnapshot) => void
     ) => () => void
+    onDownloadsCliOptionsChanged: (listener: () => void) => () => void
   }
   inspector: {
     openWindow: (absoluteMediaPath?: string | null) => Promise<void>

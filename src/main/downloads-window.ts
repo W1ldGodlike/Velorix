@@ -343,6 +343,25 @@ export function broadcastDownloadsWindowUiPanelsSnapshot(
   }
 }
 
+/** §6.2 — yt-dlp CLI/options: вкладка «Загрузки» ↔ pop-out после persist patch/cookies. */
+export function broadcastDownloadsCliOptionsChanged(): void {
+  const targets: BrowserWindow[] = []
+  if (downloadsWindow && !downloadsWindow.isDestroyed()) {
+    targets.push(downloadsWindow)
+  }
+  const mainEditor = resolveMainEditorWindow()
+  if (mainEditor && !mainEditor.isDestroyed()) {
+    targets.push(mainEditor)
+  }
+  for (const w of targets) {
+    try {
+      w.webContents.send(mw.downloadsCliOptionsChanged)
+    } catch {
+      /* окно закрывается */
+    }
+  }
+}
+
 /** §6.2 — каталог вывода yt-dlp: вкладка «Загрузки» ↔ pop-out после pick/clear. */
 export function broadcastDownloadsOutputDirectorySnapshot(
   snap?: DownloadsOutputDirectorySnapshot
@@ -3059,6 +3078,12 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
       if (api && typeof api.onDownloadsOutputDirectoryChanged === 'function') {
         api.onDownloadsOutputDirectoryChanged(function () {
           refreshOutDir();
+          schedulePreviewRefresh();
+        });
+      }
+      if (api && typeof api.onDownloadsCliOptionsChanged === 'function') {
+        api.onDownloadsCliOptionsChanged(function () {
+          refreshCliOpts();
           schedulePreviewRefresh();
         });
       }

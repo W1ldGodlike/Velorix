@@ -107,7 +107,8 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
           creation_time: '2024-03-20T08:30:00.000000Z',
           encoder: 'Lavf61.0.100',
           title: 'clip',
-          comment: 'offline'
+          comment: 'offline',
+          description: 'Demo reel'
         }
       },
       streams: [
@@ -144,6 +145,7 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
         expect(r.containerEncoder).toBe('Lavf61.0.100')
         expect(r.containerTitleTag).toBe('clip')
         expect(r.containerCommentTag).toBe('offline')
+        expect(r.containerDescriptionTag).toBe('Demo reel')
         expect(r.containerCompatibleBrands).toBe('mp41iso2')
         expect(r.probeScore).toBe(100)
         expect(r.containerNbStreams).toBe(2)

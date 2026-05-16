@@ -28,4 +28,10 @@ describe('downloads output directory snapshot', () => {
       'fluxalloy:downloads-output-directory-changed'
     )
   })
+
+  it('downloadsCliOptionsChanged channel is stable', () => {
+    expect(mainWindowIpc.downloadsCliOptionsChanged).toBe(
+      'fluxalloy:downloads-cli-options-changed'
+    )
+  })
 })

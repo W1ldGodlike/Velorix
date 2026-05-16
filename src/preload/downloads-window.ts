@@ -217,6 +217,17 @@ contextBridge.exposeInMainWorld('fluxalloyDownloads', {
     }
   },
 
+  onDownloadsCliOptionsChanged: (listener: () => void): (() => void) => {
+    const channel = mw.downloadsCliOptionsChanged
+    const handler = (): void => {
+      listener()
+    }
+    ipcRenderer.on(channel, handler)
+    return (): void => {
+      ipcRenderer.removeListener(channel, handler)
+    }
+  },
+
   /** §1.1 — broadcast эффективной палитры из main (`persistThemePreference` / `nativeTheme`): как у главного окна. */
   onThemeChanged: (listener: (theme: ResolvedAppTheme) => void): (() => void) => {
     const handler = (_event: unknown, raw: unknown): void => {

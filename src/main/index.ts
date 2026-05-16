@@ -39,6 +39,7 @@ import { getDownloadsQueueSnapshot } from './downloads-queue'
 import { filterExistingVideoPathsForBatch } from './ffmpeg-export-batch-grant-paths'
 import { collectDownloadsQueueVideoPaths } from '../shared/ffmpeg-export-batch-collect-paths'
 import {
+  broadcastDownloadsCliOptionsChanged,
   broadcastDownloadsOutputDirectorySnapshot,
   broadcastDownloadsWindowUiPanelsSnapshot,
   configureDownloadsWindowBoundsHooks,
@@ -702,6 +703,7 @@ function persistYtdlpCookiesFileFromPicker(
   cachedSettings = merged
   saveSettings(settingsPath(), cachedSettings)
   refreshYtdlpRunOptionsSnapshot(cachedSettings, mainDownloadsUiLocale())
+  broadcastDownloadsCliOptionsChanged()
   return { ok: true }
 }
 
@@ -711,6 +713,7 @@ function persistClearYtdlpCookiesFile(): void {
   cachedSettings = merged
   saveSettings(settingsPath(), cachedSettings)
   refreshYtdlpRunOptionsSnapshot(cachedSettings, mainDownloadsUiLocale())
+  broadcastDownloadsCliOptionsChanged()
 }
 
 /**
@@ -1055,6 +1058,7 @@ function persistYtdlpDownloadCliOptionsPatch(
   cachedSettings = merged.settings
   saveSettings(settingsPath(), cachedSettings)
   refreshYtdlpRunOptionsSnapshot(cachedSettings, mainDownloadsUiLocale())
+  broadcastDownloadsCliOptionsChanged()
   return { ok: true }
 }
 

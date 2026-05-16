@@ -748,3 +748,8 @@
 - [J-720] 2026-05-16 20:04:31 [Assistant]: §7.3 — регрессия resolve: `encodePreset`, `crf`, `scalePreset`, `stripMetadata` из settings и overrides; Vitest. `npm run check:quiet`.
 - [J-721] 2026-05-16 20:06:44 [Assistant]: §9 — ffprobe `format.tags.comment` → `containerCommentTag` в probe, инспекторе (`cmt …`) и TXT/HTML; Vitest. `npm run check:quiet`.
 - [J-722] 2026-05-16 20:08:00 [Assistant]: §7.3 — регрессия resolve: `twoPass` (libx264) и `audioMode` из settings/overrides; Vitest. Marathon #35 commit. `npm run check:quiet`.
+- [J-723] 2026-05-16 20:10:00 [Assistant]: §6.2 — broadcast `downloadsCliOptionsChanged` после persist CLI/cookies: embedded ↔ pop-out (`getCliOptions`/`refreshCliOpts`); Vitest. `npm run check:quiet`.
+- [J-724] 2026-05-16 20:11:22 [Assistant]: §7.3 — регрессия resolve: `extraArgsLine`, `stripChapters`, `fps` из settings и overrides; Vitest. `npm run check:quiet`.
+- [J-725] 2026-05-16 20:13:01 [Assistant]: §9 — ffprobe `format.tags.description` → `containerDescriptionTag` в probe, инспекторе (`desc …`) и TXT/HTML; Vitest. `npm run check:quiet`.
+- [J-726] 2026-05-16 20:14:04 [Assistant]: §7.3 — регрессия resolve: `cropPreset` и `videoTransform` из settings и overrides; Vitest. `npm run check:quiet`.
+- [J-727] 2026-05-16 20:15:15 [Assistant]: §7.3 — регрессия resolve: `videoBitrate` и `subtitleMode` из settings/overrides; Vitest. Marathon #40 commit+push. `npm run check:quiet`.

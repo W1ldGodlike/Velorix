@@ -37,7 +37,7 @@
 - Обработчики регистрируются в main (в первую очередь в `src/main/index.ts`, плюс специализированные модули окон загрузок / инспектора).
 - Настройки экспорта ffmpeg идут отдельными `settings-set-ffmpeg-export-*` каналами; значения проходят whitelist-парсеры main перед записью и spawn.
 - Пакетный экспорт и очередь yt-dlp — отдельные IPC/сервисы с persist в `userData` (`queue.json` и аналоги для batch).
-- Каталог вывода yt-dlp и раскрытие панелей загрузок: push `downloadsOutputDirectoryChanged` / `downloadsWindowUiPanelsChanged` из main во вкладку «Загрузки» и pop-out.
+- Каталог вывода yt-dlp, CLI/options и раскрытие панелей загрузок: push `downloadsOutputDirectoryChanged` / `downloadsCliOptionsChanged` / `downloadsWindowUiPanelsChanged` из main во вкладку «Загрузки» и pop-out.
 - Терминал: allowlist команд и подсказки из `Data/*_commands.json` + [`terminal-contract.ts`](../src/shared/terminal-contract.ts); не произвольный shell.
 - Принцип: **узкий whitelist** — нет произвольного «выполни команду» или чтения произвольных путей без проверок.
 

@@ -89,6 +89,12 @@ export function parseFfprobeFormatCommentTag(
   return tagScalar(tags?.['comment'])
 }
 
+export function parseFfprobeFormatDescriptionTag(
+  tags: Record<string, string | number | undefined> | undefined
+): string | null {
+  return tagScalar(tags?.['description'])
+}
+
 export function parseFfprobeFormatFlags(raw: string | number | undefined): string | null {
   if (typeof raw === 'number' && Number.isFinite(raw)) {
     const u = Math.trunc(raw) >>> 0
@@ -202,6 +208,17 @@ export function formatFfprobeContainerCommentExportLine(
   }
   const b = ffprobeSummaryStrings(locale)
   return ffprobeSummaryFill(b.containerCommentTemplate, { comment })
+}
+
+export function formatFfprobeContainerDescriptionExportLine(
+  description: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (description === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerDescriptionTemplate, { description })
 }
 
 export function formatFfprobeContainerEncoderExportLine(

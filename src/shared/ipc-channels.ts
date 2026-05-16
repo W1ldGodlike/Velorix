@@ -130,7 +130,9 @@ export const mainWindowIpc = {
   /** Main → главное окно: снимок `downloadsWindowUiPanels` после merge (вкладка «Загрузки» ↔ pop-out). */
   downloadsWindowUiPanelsChanged: 'fluxalloy:downloads-window-ui-panels-changed',
   /** Main → вкладка «Загрузки» и pop-out: каталог вывода yt-dlp после pick/clear/merge settings. */
-  downloadsOutputDirectoryChanged: 'fluxalloy:downloads-output-directory-changed'
+  downloadsOutputDirectoryChanged: 'fluxalloy:downloads-output-directory-changed',
+  /** Main → вкладка «Загрузки» и pop-out: yt-dlp CLI/options изменились (клиенты делают getCliOptions). */
+  downloadsCliOptionsChanged: 'fluxalloy:downloads-cli-options-changed'
 } as const
 
 /** Окно yt-dlp: invoke/handle + push (`queueSnapshot`, `log`). */

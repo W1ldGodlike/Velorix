@@ -5,6 +5,7 @@ import {
   formatFfprobeContainerBrandExportLine,
   formatFfprobeContainerCreationTimeExportLine,
   formatFfprobeContainerCommentExportLine,
+  formatFfprobeContainerDescriptionExportLine,
   formatFfprobeContainerEncoderExportLine,
   formatFfprobeContainerTitleExportLine,
   formatFfprobeContainerSizeExportLine,
@@ -22,6 +23,7 @@ import {
   parseFfprobeFormatCompatibleBrands,
   parseFfprobeFormatCreationTime,
   parseFfprobeFormatCommentTag,
+  parseFfprobeFormatDescriptionTag,
   parseFfprobeFormatEncoder,
   parseFfprobeFormatTitleTag,
   parseFfprobeFormatFlags,
@@ -48,6 +50,7 @@ const probeBase: MediaProbeSuccess = {
   containerEncoder: null,
   containerTitleTag: null,
   containerCommentTag: null,
+  containerDescriptionTag: null,
   containerCompatibleBrands: null,
   probeScore: null,
   containerNbStreams: null,
@@ -128,6 +131,11 @@ describe('ffprobe-container-format', () => {
   it('parseFfprobeFormatCommentTag и export line', () => {
     expect(parseFfprobeFormatCommentTag({ comment: 'Edited offline' })).toBe('Edited offline')
     expect(formatFfprobeContainerCommentExportLine('Edited offline', 'en')).toContain('comment')
+  })
+
+  it('parseFfprobeFormatDescriptionTag и export line', () => {
+    expect(parseFfprobeFormatDescriptionTag({ description: 'Demo reel' })).toBe('Demo reel')
+    expect(formatFfprobeContainerDescriptionExportLine('Demo reel', 'ru')).toContain('description')
   })
 
   it('parseFfprobeFormatEncoder и export line', () => {
