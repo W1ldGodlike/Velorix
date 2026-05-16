@@ -25,9 +25,14 @@ export type FfprobeSummaryStrings = {
   containerCommentTemplate: string
   containerDescriptionTemplate: string
   containerArtistTemplate: string
+  containerSortArtistTemplate: string
   containerAlbumTemplate: string
+  containerSortAlbumTemplate: string
+  containerSortTitleTemplate: string
   containerGenreTemplate: string
   containerCopyrightTemplate: string
+  containerDateTemplate: string
+  containerPurchaseDateTemplate: string
   probeScoreTemplate: string
   containerNbStreamsTemplate: string
   containerNbStreamsMismatchTemplate: string
@@ -90,9 +95,14 @@ const RU: FfprobeSummaryStrings = {
   containerCommentTemplate: 'Комментарий контейнера (comment): {comment}',
   containerDescriptionTemplate: 'Описание контейнера (description): {description}',
   containerArtistTemplate: 'Исполнитель контейнера (artist): {artist}',
+  containerSortArtistTemplate: 'Сортировка исполнителя контейнера (sort_artist): {sortArtist}',
   containerAlbumTemplate: 'Альбом контейнера (album): {album}',
+  containerSortAlbumTemplate: 'Сортировка альбома контейнера (sort_album): {sortAlbum}',
+  containerSortTitleTemplate: 'Сортировка заголовка контейнера (sort_title): {sortTitle}',
   containerGenreTemplate: 'Жанр контейнера (genre): {genre}',
   containerCopyrightTemplate: 'Авторские права контейнера (copyright): {copyright}',
+  containerDateTemplate: 'Дата контейнера (date): {date}',
+  containerPurchaseDateTemplate: 'Дата покупки контейнера (purchase_date): {purchaseDate}',
   probeScoreTemplate: 'Оценка демультиплексора (probe_score): {score}',
   containerNbStreamsTemplate: 'Потоков в контейнере (nb_streams): {count}',
   containerNbStreamsMismatchTemplate:
@@ -160,9 +170,14 @@ const EN: FfprobeSummaryStrings = {
   containerCommentTemplate: 'Container comment (comment): {comment}',
   containerDescriptionTemplate: 'Container description (description): {description}',
   containerArtistTemplate: 'Container artist (artist): {artist}',
+  containerSortArtistTemplate: 'Container sort artist (sort_artist): {sortArtist}',
   containerAlbumTemplate: 'Container album (album): {album}',
+  containerSortAlbumTemplate: 'Container sort album (sort_album): {sortAlbum}',
+  containerSortTitleTemplate: 'Container sort title (sort_title): {sortTitle}',
   containerGenreTemplate: 'Container genre (genre): {genre}',
   containerCopyrightTemplate: 'Container copyright (copyright): {copyright}',
+  containerDateTemplate: 'Container date (date): {date}',
+  containerPurchaseDateTemplate: 'Container purchase date (purchase_date): {purchaseDate}',
   probeScoreTemplate: 'Demuxer confidence (probe_score): {score}',
   containerNbStreamsTemplate: 'Container streams (nb_streams): {count}',
   containerNbStreamsMismatchTemplate:

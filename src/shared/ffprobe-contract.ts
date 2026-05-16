@@ -74,12 +74,22 @@ export interface MediaProbeSuccess {
   containerDescriptionTag: string | null
   /** `format.tags.artist`, если ffprobe отдал. */
   containerArtistTag: string | null
+  /** `format.tags.sort_artist`, если ffprobe отдал. */
+  containerSortArtistTag: string | null
   /** `format.tags.album`, если ffprobe отдал. */
   containerAlbumTag: string | null
+  /** `format.tags.sort_album`, если ffprobe отдал. */
+  containerSortAlbumTag: string | null
+  /** `format.tags.sort_title`, если ffprobe отдал. */
+  containerSortTitleTag: string | null
   /** `format.tags.genre`, если ffprobe отдал. */
   containerGenreTag: string | null
   /** `format.tags.copyright`, если ffprobe отдал. */
   containerCopyrightTag: string | null
+  /** `format.tags.date`, если ffprobe отдал (отдельно от `creation_time`). */
+  containerDateTag: string | null
+  /** `format.tags.purchase_date`, если ffprobe отдал (iTunes Store и др.). */
+  containerPurchaseDateTag: string | null
   /** `format.tags.compatible_brands`, если ffprobe отдал. */
   containerCompatibleBrands: string | null
   /** `format.probe_score` 0–100, если ffprobe отдал. */

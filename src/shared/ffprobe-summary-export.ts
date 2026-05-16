@@ -12,11 +12,16 @@ import {
   formatFfprobeContainerEncoderExportLine,
   formatFfprobeContainerCommentExportLine,
   formatFfprobeContainerAlbumExportLine,
+  formatFfprobeContainerSortAlbumExportLine,
   formatFfprobeContainerCopyrightExportLine,
+  formatFfprobeContainerDateExportLine,
+  formatFfprobeContainerPurchaseDateExportLine,
   formatFfprobeContainerGenreExportLine,
   formatFfprobeContainerArtistExportLine,
+  formatFfprobeContainerSortArtistExportLine,
   formatFfprobeContainerDescriptionExportLine,
   formatFfprobeContainerTitleExportLine,
+  formatFfprobeContainerSortTitleExportLine,
   formatFfprobeContainerSizeExportLine,
   formatFfprobeContainerStartTimeExportLine,
   formatFfprobeContainerStartTimeRealExportLine,
@@ -164,12 +169,17 @@ export function formatProbeSummaryPlainText(
     formatFfprobeContainerCreationTimeExportLine(info.containerCreationTime, locale),
     formatFfprobeContainerEncoderExportLine(info.containerEncoder, locale),
     formatFfprobeContainerTitleExportLine(info.containerTitleTag, locale),
+    formatFfprobeContainerSortTitleExportLine(info.containerSortTitleTag, locale),
     formatFfprobeContainerCommentExportLine(info.containerCommentTag, locale),
     formatFfprobeContainerDescriptionExportLine(info.containerDescriptionTag, locale),
     formatFfprobeContainerArtistExportLine(info.containerArtistTag, locale),
+    formatFfprobeContainerSortArtistExportLine(info.containerSortArtistTag, locale),
     formatFfprobeContainerAlbumExportLine(info.containerAlbumTag, locale),
+    formatFfprobeContainerSortAlbumExportLine(info.containerSortAlbumTag, locale),
     formatFfprobeContainerGenreExportLine(info.containerGenreTag, locale),
     formatFfprobeContainerCopyrightExportLine(info.containerCopyrightTag, locale),
+    formatFfprobeContainerDateExportLine(info.containerDateTag, locale),
+    formatFfprobeContainerPurchaseDateExportLine(info.containerPurchaseDateTag, locale),
     formatFfprobeProbeScoreExportLine(info.probeScore, locale),
     formatFfprobeNbStreamsExportLine(info.containerNbStreams, info.tracks.length, locale),
     formatFfprobeNbProgramsExportLine(info.containerNbPrograms, locale),
@@ -288,6 +298,10 @@ ${chapterRows}
       return ttl ? `<li>${escapeHtml(ttl)}</li>` : ''
     })(),
     (() => {
+      const stit = formatFfprobeContainerSortTitleExportLine(info.containerSortTitleTag, locale)
+      return stit ? `<li>${escapeHtml(stit)}</li>` : ''
+    })(),
+    (() => {
       const cmt = formatFfprobeContainerCommentExportLine(info.containerCommentTag, locale)
       return cmt ? `<li>${escapeHtml(cmt)}</li>` : ''
     })(),
@@ -300,8 +314,16 @@ ${chapterRows}
       return art ? `<li>${escapeHtml(art)}</li>` : ''
     })(),
     (() => {
+      const sart = formatFfprobeContainerSortArtistExportLine(info.containerSortArtistTag, locale)
+      return sart ? `<li>${escapeHtml(sart)}</li>` : ''
+    })(),
+    (() => {
       const alb = formatFfprobeContainerAlbumExportLine(info.containerAlbumTag, locale)
       return alb ? `<li>${escapeHtml(alb)}</li>` : ''
+    })(),
+    (() => {
+      const salb = formatFfprobeContainerSortAlbumExportLine(info.containerSortAlbumTag, locale)
+      return salb ? `<li>${escapeHtml(salb)}</li>` : ''
     })(),
     (() => {
       const gen = formatFfprobeContainerGenreExportLine(info.containerGenreTag, locale)
@@ -310,6 +332,14 @@ ${chapterRows}
     (() => {
       const cpy = formatFfprobeContainerCopyrightExportLine(info.containerCopyrightTag, locale)
       return cpy ? `<li>${escapeHtml(cpy)}</li>` : ''
+    })(),
+    (() => {
+      const dt = formatFfprobeContainerDateExportLine(info.containerDateTag, locale)
+      return dt ? `<li>${escapeHtml(dt)}</li>` : ''
+    })(),
+    (() => {
+      const pdt = formatFfprobeContainerPurchaseDateExportLine(info.containerPurchaseDateTag, locale)
+      return pdt ? `<li>${escapeHtml(pdt)}</li>` : ''
     })(),
     (() => {
       const score = formatFfprobeProbeScoreExportLine(info.probeScore, locale)

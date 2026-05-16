@@ -6,10 +6,15 @@ import {
   formatFfprobeContainerCreationTimeExportLine,
   formatFfprobeContainerCommentExportLine,
   formatFfprobeContainerAlbumExportLine,
+  formatFfprobeContainerSortAlbumExportLine,
   formatFfprobeContainerCopyrightExportLine,
+  formatFfprobeContainerDateExportLine,
+  formatFfprobeContainerPurchaseDateExportLine,
   formatFfprobeContainerGenreExportLine,
   formatFfprobeContainerArtistExportLine,
+  formatFfprobeContainerSortArtistExportLine,
   formatFfprobeContainerDescriptionExportLine,
+  formatFfprobeContainerSortTitleExportLine,
   formatFfprobeContainerEncoderExportLine,
   formatFfprobeContainerTitleExportLine,
   formatFfprobeContainerSizeExportLine,
@@ -28,10 +33,15 @@ import {
   parseFfprobeFormatCreationTime,
   parseFfprobeFormatCommentTag,
   parseFfprobeFormatAlbumTag,
+  parseFfprobeFormatSortAlbumTag,
   parseFfprobeFormatCopyrightTag,
+  parseFfprobeFormatDateTag,
+  parseFfprobeFormatPurchaseDateTag,
   parseFfprobeFormatGenreTag,
   parseFfprobeFormatArtistTag,
+  parseFfprobeFormatSortArtistTag,
   parseFfprobeFormatDescriptionTag,
+  parseFfprobeFormatSortTitleTag,
   parseFfprobeFormatEncoder,
   parseFfprobeFormatTitleTag,
   parseFfprobeFormatFlags,
@@ -60,9 +70,14 @@ const probeBase: MediaProbeSuccess = {
   containerCommentTag: null,
   containerDescriptionTag: null,
   containerArtistTag: null,
+  containerSortArtistTag: null,
   containerAlbumTag: null,
+  containerSortAlbumTag: null,
+  containerSortTitleTag: null,
   containerGenreTag: null,
   containerCopyrightTag: null,
+  containerDateTag: null,
+  containerPurchaseDateTag: null,
   containerCompatibleBrands: null,
   probeScore: null,
   containerNbStreams: null,
@@ -155,9 +170,30 @@ describe('ffprobe-container-format', () => {
     expect(formatFfprobeContainerArtistExportLine('Flux Studio', 'en')).toContain('artist')
   })
 
+  it('parseFfprobeFormatSortArtistTag и export line', () => {
+    expect(parseFfprobeFormatSortArtistTag({ sort_artist: 'Studio, Flux' })).toBe('Studio, Flux')
+    expect(formatFfprobeContainerSortArtistExportLine('Studio, Flux', 'en')).toContain(
+      'sort_artist'
+    )
+  })
+
   it('parseFfprobeFormatAlbumTag и export line', () => {
     expect(parseFfprobeFormatAlbumTag({ album: 'Season One' })).toBe('Season One')
     expect(formatFfprobeContainerAlbumExportLine('Season One', 'ru')).toContain('album')
+  })
+
+  it('parseFfprobeFormatSortAlbumTag и export line', () => {
+    expect(parseFfprobeFormatSortAlbumTag({ sort_album: 'Season One (2024)' })).toBe(
+      'Season One (2024)'
+    )
+    expect(formatFfprobeContainerSortAlbumExportLine('Season One (2024)', 'en')).toContain(
+      'sort_album'
+    )
+  })
+
+  it('parseFfprobeFormatSortTitleTag и export line', () => {
+    expect(parseFfprobeFormatSortTitleTag({ sort_title: '01 clip' })).toBe('01 clip')
+    expect(formatFfprobeContainerSortTitleExportLine('01 clip', 'ru')).toContain('sort_title')
   })
 
   it('parseFfprobeFormatGenreTag и export line', () => {
@@ -168,6 +204,18 @@ describe('ffprobe-container-format', () => {
   it('parseFfprobeFormatCopyrightTag и export line', () => {
     expect(parseFfprobeFormatCopyrightTag({ copyright: '2024 Flux' })).toBe('2024 Flux')
     expect(formatFfprobeContainerCopyrightExportLine('2024 Flux', 'ru')).toContain('copyright')
+  })
+
+  it('parseFfprobeFormatDateTag и export line', () => {
+    expect(parseFfprobeFormatDateTag({ date: '2024-03-20' })).toBe('2024-03-20')
+    expect(formatFfprobeContainerDateExportLine('2024-03-20', 'en')).toContain('date')
+  })
+
+  it('parseFfprobeFormatPurchaseDateTag и export line', () => {
+    expect(parseFfprobeFormatPurchaseDateTag({ purchase_date: '2024-01-15' })).toBe('2024-01-15')
+    expect(formatFfprobeContainerPurchaseDateExportLine('2024-01-15', 'ru')).toContain(
+      'purchase_date'
+    )
   })
 
   it('parseFfprobeFormatEncoder и export line', () => {

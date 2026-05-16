@@ -358,6 +358,9 @@ export function PreviewProbeBody({
             {probeInfo.containerTitleTag
               ? ` · «${probeInfo.containerTitleTag.length > 20 ? `${probeInfo.containerTitleTag.slice(0, 19)}…` : probeInfo.containerTitleTag}»`
               : ''}
+            {probeInfo.containerSortTitleTag
+              ? ` · stit ${probeInfo.containerSortTitleTag.length > 20 ? `${probeInfo.containerSortTitleTag.slice(0, 19)}…` : probeInfo.containerSortTitleTag}`
+              : ''}
             {probeInfo.containerCommentTag
               ? ` · cmt ${probeInfo.containerCommentTag.length > 20 ? `${probeInfo.containerCommentTag.slice(0, 19)}…` : probeInfo.containerCommentTag}`
               : ''}
@@ -367,14 +370,26 @@ export function PreviewProbeBody({
             {probeInfo.containerArtistTag
               ? ` · art ${probeInfo.containerArtistTag.length > 20 ? `${probeInfo.containerArtistTag.slice(0, 19)}…` : probeInfo.containerArtistTag}`
               : ''}
+            {probeInfo.containerSortArtistTag
+              ? ` · sart ${probeInfo.containerSortArtistTag.length > 20 ? `${probeInfo.containerSortArtistTag.slice(0, 19)}…` : probeInfo.containerSortArtistTag}`
+              : ''}
             {probeInfo.containerAlbumTag
               ? ` · alb ${probeInfo.containerAlbumTag.length > 20 ? `${probeInfo.containerAlbumTag.slice(0, 19)}…` : probeInfo.containerAlbumTag}`
+              : ''}
+            {probeInfo.containerSortAlbumTag
+              ? ` · salb ${probeInfo.containerSortAlbumTag.length > 20 ? `${probeInfo.containerSortAlbumTag.slice(0, 19)}…` : probeInfo.containerSortAlbumTag}`
               : ''}
             {probeInfo.containerGenreTag
               ? ` · gen ${probeInfo.containerGenreTag.length > 20 ? `${probeInfo.containerGenreTag.slice(0, 19)}…` : probeInfo.containerGenreTag}`
               : ''}
             {probeInfo.containerCopyrightTag
               ? ` · cpy ${probeInfo.containerCopyrightTag.length > 20 ? `${probeInfo.containerCopyrightTag.slice(0, 19)}…` : probeInfo.containerCopyrightTag}`
+              : ''}
+            {probeInfo.containerDateTag
+              ? ` · date ${probeInfo.containerDateTag.length > 20 ? `${probeInfo.containerDateTag.slice(0, 19)}…` : probeInfo.containerDateTag}`
+              : ''}
+            {probeInfo.containerPurchaseDateTag
+              ? ` · pdt ${probeInfo.containerPurchaseDateTag.length > 20 ? `${probeInfo.containerPurchaseDateTag.slice(0, 19)}…` : probeInfo.containerPurchaseDateTag}`
               : ''}
             {probeInfo.probeScore !== null ? ` · probe ${probeInfo.probeScore}` : ''}
             {probeInfo.containerNbStreams !== null

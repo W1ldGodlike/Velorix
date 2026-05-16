@@ -101,10 +101,28 @@ export function parseFfprobeFormatArtistTag(
   return tagScalar(tags?.['artist'])
 }
 
+export function parseFfprobeFormatSortArtistTag(
+  tags: Record<string, string | number | undefined> | undefined
+): string | null {
+  return tagScalar(tags?.['sort_artist'])
+}
+
 export function parseFfprobeFormatAlbumTag(
   tags: Record<string, string | number | undefined> | undefined
 ): string | null {
   return tagScalar(tags?.['album'])
+}
+
+export function parseFfprobeFormatSortAlbumTag(
+  tags: Record<string, string | number | undefined> | undefined
+): string | null {
+  return tagScalar(tags?.['sort_album'])
+}
+
+export function parseFfprobeFormatSortTitleTag(
+  tags: Record<string, string | number | undefined> | undefined
+): string | null {
+  return tagScalar(tags?.['sort_title'])
 }
 
 export function parseFfprobeFormatGenreTag(
@@ -117,6 +135,18 @@ export function parseFfprobeFormatCopyrightTag(
   tags: Record<string, string | number | undefined> | undefined
 ): string | null {
   return tagScalar(tags?.['copyright'])
+}
+
+export function parseFfprobeFormatDateTag(
+  tags: Record<string, string | number | undefined> | undefined
+): string | null {
+  return tagScalar(tags?.['date'])
+}
+
+export function parseFfprobeFormatPurchaseDateTag(
+  tags: Record<string, string | number | undefined> | undefined
+): string | null {
+  return tagScalar(tags?.['purchase_date'])
 }
 
 export function parseFfprobeFormatFlags(raw: string | number | undefined): string | null {
@@ -256,6 +286,17 @@ export function formatFfprobeContainerArtistExportLine(
   return ffprobeSummaryFill(b.containerArtistTemplate, { artist })
 }
 
+export function formatFfprobeContainerSortArtistExportLine(
+  sortArtist: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (sortArtist === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerSortArtistTemplate, { sortArtist })
+}
+
 export function formatFfprobeContainerAlbumExportLine(
   album: string | null,
   locale: FfprobeSummaryLocale
@@ -265,6 +306,28 @@ export function formatFfprobeContainerAlbumExportLine(
   }
   const b = ffprobeSummaryStrings(locale)
   return ffprobeSummaryFill(b.containerAlbumTemplate, { album })
+}
+
+export function formatFfprobeContainerSortAlbumExportLine(
+  sortAlbum: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (sortAlbum === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerSortAlbumTemplate, { sortAlbum })
+}
+
+export function formatFfprobeContainerSortTitleExportLine(
+  sortTitle: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (sortTitle === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerSortTitleTemplate, { sortTitle })
 }
 
 export function formatFfprobeContainerGenreExportLine(
@@ -287,6 +350,28 @@ export function formatFfprobeContainerCopyrightExportLine(
   }
   const b = ffprobeSummaryStrings(locale)
   return ffprobeSummaryFill(b.containerCopyrightTemplate, { copyright })
+}
+
+export function formatFfprobeContainerDateExportLine(
+  date: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (date === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerDateTemplate, { date })
+}
+
+export function formatFfprobeContainerPurchaseDateExportLine(
+  purchaseDate: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (purchaseDate === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerPurchaseDateTemplate, { purchaseDate })
 }
 
 export function formatFfprobeContainerEncoderExportLine(

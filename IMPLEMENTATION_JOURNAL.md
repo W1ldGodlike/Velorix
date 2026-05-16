@@ -767,3 +767,8 @@
 - [J-739] 2026-05-16 20:31:59 [Assistant]: §9 — ffprobe `format.tags.genre` → `containerGenreTag` в probe, инспекторе (`gen …`) и TXT/HTML; Vitest. `npm run check:quiet`.
 - [J-740] 2026-05-16 20:34:10 [Assistant]: §9 — ffprobe `format.tags.copyright` → `containerCopyrightTag` в probe, инспекторе (`cpy …`) и TXT/HTML; Vitest. `npm run check:quiet`.
 - [J-741] 2026-05-16 20:35:57 [Assistant]: Marathon #55 commit — пакет J-738–740: resolve deband/histeq/lut3d + ffprobe genre/copyright; `npm run check:quiet`.
+- [J-742] 2026-05-16 20:37:41 [Assistant]: §9 — ffprobe `format.tags.date` → `containerDateTag` в probe, инспекторе (`date …`) и TXT/HTML; Vitest. `npm run check:quiet`.
+- [J-743] 2026-05-16 20:39:07 [Assistant]: §7.3 — связка `resolveFfmpegExportBatchOutputSuffixFromSettings` + `buildFfmpegExportBatchOutputBasename` (шаблон с `{ext}`); Vitest. `npm run check:quiet`.
+- [J-744] 2026-05-16 20:45:12 [Assistant]: §9 — ffprobe `format.tags.sort_album` → `containerSortAlbumTag` в probe, инспекторе (`salb …`) и TXT/HTML; Vitest. `npm run check:quiet`.
+- [J-745] 2026-05-16 20:48:47 [Assistant]: §9 — ffprobe `format.tags.sort_artist` и `sort_title` → `containerSortArtistTag` / `containerSortTitleTag` в probe, инспекторе (`sart` / `stit`) и TXT/HTML; Vitest. `npm run check:quiet`.
+- [J-746] 2026-05-16 20:55:50 [Assistant]: §9 — ffprobe `format.tags.purchase_date` → `containerPurchaseDateTag` в probe, инспекторе (`pdt …`) и TXT/HTML; Vitest. Marathon #60 commit+push. `npm run check:quiet`.

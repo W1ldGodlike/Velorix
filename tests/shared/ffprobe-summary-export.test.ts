@@ -63,9 +63,14 @@ const sampleProbe: MediaProbeSuccess = {
   containerCommentTag: 'Offline edit',
   containerDescriptionTag: 'Demo reel',
   containerArtistTag: 'Flux Studio',
+  containerSortArtistTag: 'Studio, Flux',
   containerAlbumTag: 'Season One',
+  containerSortAlbumTag: 'Season One (2024)',
+  containerSortTitleTag: '01 clip',
   containerGenreTag: 'Documentary',
   containerCopyrightTag: '2024 Flux',
+  containerDateTag: '2024-03-20',
+  containerPurchaseDateTag: '2024-01-15',
   containerCompatibleBrands: 'mp41iso2',
   probeScore: 100,
   containerNbStreams: 2,
@@ -118,12 +123,17 @@ describe('ffprobe-summary-export', () => {
     expect(t).toContain('creation_time): 2024-06-01')
     expect(t).toContain('encoder): Lavf62.0.100')
     expect(t).toContain('title): Sample')
+    expect(t).toContain('sort_title): 01 clip')
     expect(t).toContain('comment): Offline edit')
     expect(t).toContain('description): Demo reel')
     expect(t).toContain('artist): Flux Studio')
+    expect(t).toContain('sort_artist): Studio, Flux')
     expect(t).toContain('album): Season One')
+    expect(t).toContain('sort_album): Season One (2024)')
     expect(t).toContain('genre): Documentary')
     expect(t).toContain('copyright): 2024 Flux')
+    expect(t).toContain('date): 2024-03-20')
+    expect(t).toContain('purchase_date): 2024-01-15')
     expect(t).toContain('probe_score): 100')
     expect(t).toContain('nb_streams): 2')
     expect(t).toContain('nb_programs): 1')

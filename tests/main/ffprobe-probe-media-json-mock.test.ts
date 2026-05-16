@@ -110,9 +110,14 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
           comment: 'offline',
           description: 'Demo reel',
           artist: 'Flux Studio',
+          sort_artist: 'Studio, Flux',
           album: 'Season One',
+          sort_album: 'Season One (2024)',
+          sort_title: '01 clip',
           genre: 'Documentary',
-          copyright: '2024 Flux'
+          copyright: '2024 Flux',
+          date: '2024-03-20',
+          purchase_date: '2024-01-15'
         }
       },
       streams: [
@@ -151,9 +156,14 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
         expect(r.containerCommentTag).toBe('offline')
         expect(r.containerDescriptionTag).toBe('Demo reel')
         expect(r.containerArtistTag).toBe('Flux Studio')
+        expect(r.containerSortArtistTag).toBe('Studio, Flux')
         expect(r.containerAlbumTag).toBe('Season One')
+        expect(r.containerSortAlbumTag).toBe('Season One (2024)')
+        expect(r.containerSortTitleTag).toBe('01 clip')
         expect(r.containerGenreTag).toBe('Documentary')
         expect(r.containerCopyrightTag).toBe('2024 Flux')
+        expect(r.containerDateTag).toBe('2024-03-20')
+        expect(r.containerPurchaseDateTag).toBe('2024-01-15')
         expect(r.containerCompatibleBrands).toBe('mp41iso2')
         expect(r.probeScore).toBe(100)
         expect(r.containerNbStreams).toBe(2)

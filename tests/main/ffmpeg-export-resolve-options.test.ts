@@ -7,7 +7,10 @@ import {
   resolveFfmpegExportBatchOutputSuffixFromSettings,
   resolveFfmpegExportJobOptionsFromAppSettings
 } from '../../src/main/ffmpeg-export-resolve-from-settings'
-import { DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX } from '../../src/shared/ffmpeg-export-batch-output-suffix'
+import {
+  buildFfmpegExportBatchOutputBasename,
+  DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX
+} from '../../src/shared/ffmpeg-export-batch-output-suffix'
 import type { AppSettings } from '../../src/shared/settings-contract'
 
 const base: AppSettings = {
@@ -334,6 +337,16 @@ describe('resolveFfmpegExportJobOptionsFromAppSettings', () => {
         ffmpegExportBatchOutputSuffix: 'bad/path'
       })
     ).toBe(DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX)
+  })
+
+  it('batch suffix из settings → buildFfmpegExportBatchOutputBasename (§7.3)', () => {
+    const suffix = resolveFfmpegExportBatchOutputSuffixFromSettings({
+      ...base,
+      ffmpegExportBatchOutputSuffix: '{stem}_done.{ext}'
+    })
+    expect(buildFfmpegExportBatchOutputBasename('D:\\v\\clip.mp4', suffix)).toBe('clip_done.mp4')
+    const def = resolveFfmpegExportBatchOutputSuffixFromSettings(base)
+    expect(buildFfmpegExportBatchOutputBasename('/v/clip.webm', def)).toBe('clip-export')
   })
 
   it('batch output directory: только абсолютный путь', () => {
