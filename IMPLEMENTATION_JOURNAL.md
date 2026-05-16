@@ -908,4 +908,9 @@
 - [J-885] 2026-05-16 11:24:00 [Assistant]: Загрузки rail — справочник argv: кнопки токенов с `aria-label` из `downloadsHintTokenButtonAriaTemplate` / `…NoSummaryTemplate` (учёт категории и усечённого описания).
 - [J-886] 2026-05-16 11:26:00 [Assistant]: Загрузки rail — превью команды yt-dlp: `<pre>` с классом, `role="status"`, `aria-live="polite"`, подпись через `aria-labelledby` на пояснение «Превью команды».
 - [J-887] 2026-05-16 11:28:00 [Assistant]: Загрузки rail — стек секций настроек (`app-downloads-settings-stack`): `aria-busy` синхронизирован с `downloadsOptionsBusy`.
+- [J-888] 2026-05-16 11:30:00 [Assistant]: Верхняя панель — вкладки рабочего пространства: `aria-describedby` на скрытые расширенные описания (`editorWorkbenchAria`, `downloadsWorkbenchAria`, `terminalWorkbenchAria`).
+- [J-889] 2026-05-16 11:32:00 [Assistant]: Терминал — автодополнение (`role="option"`): явное `aria-label` через `terminalHintInsertAccessibleDescription`.
+- [J-890] 2026-05-16 11:34:00 [Assistant]: Пакетный экспорт — регион таблицы очереди: `aria-busy={batchExportBusy}` на обёртке зоны очереди (дополнительно к dropzone и `<table>`).
+- [J-891] 2026-05-16 11:36:00 [Assistant]: Таймлайн — строка масштаба: считывание диапазона (`app-timeline-zoom-readout`) со `role="status"` и `aria-live="polite"`.
+- [J-892] 2026-05-16 11:38:00 [Assistant]: База знаний — тело статьи (`KnowledgeMarkdownBody`): контейнер заменён на `<article>` с прежним `aria-label`.
 

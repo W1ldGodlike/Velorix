@@ -153,12 +153,11 @@ export function KnowledgeMarkdownBody({
   onOpenSlug: (slug: string) => void
 }): JSX.Element {
   return (
-    <div
+    <article
       className="app-knowledge-body"
-      role="group"
       aria-label={uiText('knowledgeArticleBodyGroupAria')}
     >
       {blocks.map((block, idx) => renderBlock(block, idx, onOpenSlug))}
-    </div>
+    </article>
   )
 }

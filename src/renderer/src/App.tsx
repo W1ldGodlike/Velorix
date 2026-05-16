@@ -2988,6 +2988,7 @@ function App(): JSX.Element {
             role="tab"
             aria-selected={workspaceTab === 'editor'}
             aria-controls="workspace-panel-editor"
+            aria-describedby="workspace-tab-editor-desc"
             title={uiText('workspaceTabEditorTooltip')}
             onClick={() => {
               setWorkspaceTab('editor')
@@ -2997,6 +2998,9 @@ function App(): JSX.Element {
               <IconWorkspaceEditor title="" size={16} />
             </span>
             {uiText('workspaceTabEditor')}
+            <span id="workspace-tab-editor-desc" className="app-visually-hidden">
+              {uiText('editorWorkbenchAria')}
+            </span>
           </button>
           <button
             type="button"
@@ -3005,6 +3009,7 @@ function App(): JSX.Element {
             role="tab"
             aria-selected={workspaceTab === 'downloads'}
             aria-controls="workspace-panel-downloads"
+            aria-describedby="workspace-tab-downloads-desc"
             onClick={() => {
               setWorkspaceTab('downloads')
             }}
@@ -3014,6 +3019,9 @@ function App(): JSX.Element {
               <IconDownload title="" size={16} />
             </span>
             {uiText('workspaceTabDownloads')}
+            <span id="workspace-tab-downloads-desc" className="app-visually-hidden">
+              {uiText('downloadsWorkbenchAria')}
+            </span>
           </button>
           <button
             type="button"
@@ -3022,6 +3030,7 @@ function App(): JSX.Element {
             role="tab"
             aria-selected={workspaceTab === 'terminal'}
             aria-controls="workspace-panel-terminal"
+            aria-describedby="workspace-tab-terminal-desc"
             onClick={() => {
               setWorkspaceTab('terminal')
             }}
@@ -3031,6 +3040,9 @@ function App(): JSX.Element {
               <IconWorkspaceTerminal title="" size={16} />
             </span>
             {uiText('workspaceTabTerminal')}
+            <span id="workspace-tab-terminal-desc" className="app-visually-hidden">
+              {uiText('terminalWorkbenchAria')}
+            </span>
           </button>
         </nav>
         <div
@@ -3636,6 +3648,7 @@ function App(): JSX.Element {
             <div
               role="region"
               aria-label={uiText('batchExportQueueTableZoneAria')}
+              aria-busy={batchExportBusy}
             >
             {batchSnapshot && batchSnapshot.rows.length > 0 ? (
               <div
@@ -5512,6 +5525,7 @@ function App(): JSX.Element {
                       type="button"
                       role="option"
                       aria-selected={idx === terminalSuggestActiveIndex}
+                      aria-label={terminalHintInsertAccessibleDescription(hint)}
                       className={`app-terminal-suggest-item${
                         idx === terminalSuggestActiveIndex
                           ? ' app-terminal-suggest-item-active'

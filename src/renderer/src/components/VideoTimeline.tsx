@@ -748,6 +748,8 @@ export default function VideoTimeline({
             <span
               className="app-timeline-zoom-readout"
               title={uiText('videoTimelineZoomReadoutTitle')}
+              role="status"
+              aria-live="polite"
             >
               {uiTextVars('videoTimelineZoomReadoutTemplate', {
                 mul: timelineZoomMul,
