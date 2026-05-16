@@ -10,6 +10,7 @@ import {
 } from 'react'
 
 import type { MediaProbeSuccess } from '../../../shared/ffprobe-contract'
+import { formatFfprobeEditorVideoFactLine } from '../../../shared/ffprobe-container-format'
 import { buildTimelineRulerTicks, pickTimelineRulerStepSec } from '../../../shared/timeline-ruler'
 import { snapSeekTimeSec } from '../../../shared/video-frame-snap'
 import { miniIconTitle, uiText, uiTextVars } from '../locales/ui-text'
@@ -79,10 +80,7 @@ function approxVideoFpsFromProbe(probe: MediaProbeSuccess | null): number | null
 }
 
 function formatProbeVideoFact(probe: MediaProbeSuccess | null): string {
-  if (!probe?.video) {
-    return uiText('uiPlaceholderDash')
-  }
-  return `${probe.video.width}×${probe.video.height} ${probe.video.codec}`
+  return formatFfprobeEditorVideoFactLine(probe, uiText('uiPlaceholderDash'))
 }
 
 function formatProbeAudioFact(probe: MediaProbeSuccess | null): string {

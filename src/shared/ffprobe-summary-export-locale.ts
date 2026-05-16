@@ -17,6 +17,9 @@ export type FfprobeSummaryStrings = {
   formatPrefix: string
   formatUnknown: string
   formatLongPrefix: string
+  containerBrandTemplate: string
+  containerBrandWithCompatTemplate: string
+  probeScoreTemplate: string
   bitrateEstPrefix: string
   bitratePlainPrefix: string
   bitrateMbpsTemplate: string
@@ -61,6 +64,9 @@ const RU: FfprobeSummaryStrings = {
   formatPrefix: 'Формат: ',
   formatUnknown: 'Формат: ?',
   formatLongPrefix: 'Описание формата: ',
+  containerBrandTemplate: 'Бренд контейнера: {brand}',
+  containerBrandWithCompatTemplate: 'Бренд контейнера: {brand} (совместимые: {compat})',
+  probeScoreTemplate: 'Оценка демультиплексора (probe_score): {score}',
   bitrateEstPrefix: 'Битрейт (оценка): ',
   bitratePlainPrefix: 'Битрейт: ',
   bitrateMbpsTemplate: '{value} Мбит/с',
@@ -108,6 +114,9 @@ const EN: FfprobeSummaryStrings = {
   formatPrefix: 'Format: ',
   formatUnknown: 'Format: ?',
   formatLongPrefix: 'Container description: ',
+  containerBrandTemplate: 'Container brand: {brand}',
+  containerBrandWithCompatTemplate: 'Container brand: {brand} (compatible: {compat})',
+  probeScoreTemplate: 'Demuxer confidence (probe_score): {score}',
   bitrateEstPrefix: 'Bitrate (estimate): ',
   bitratePlainPrefix: 'Bitrate: ',
   bitrateMbpsTemplate: '{value} Mb/s',

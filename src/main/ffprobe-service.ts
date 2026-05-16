@@ -19,6 +19,11 @@ import {
   formatFfprobeVideoSdrTransferBrief
 } from '../shared/ffprobe-video-color-brief'
 import { formatFfprobeCreationTimeBrief } from '../shared/ffprobe-creation-time-brief'
+import {
+  parseFfprobeFormatCompatibleBrands,
+  parseFfprobeFormatMajorBrand,
+  parseFfprobeFormatProbeScore
+} from '../shared/ffprobe-container-format'
 import type {
   MediaProbeResult,
   MediaProbeSuccess,
@@ -41,6 +46,8 @@ interface FfprobeJson {
     format_name?: string
     format_long_name?: string
     bit_rate?: string
+    probe_score?: string | number
+    tags?: Record<string, string | number | undefined>
   }
   streams?: Array<{
     index?: number
@@ -957,6 +964,9 @@ export async function probeMediaFile(
         : null,
     formatLongName: formatLong,
     bitrateKbps: formatBitrateKbps(parsed.format?.bit_rate),
+    containerMajorBrand: parseFfprobeFormatMajorBrand(parsed.format?.tags),
+    containerCompatibleBrands: parseFfprobeFormatCompatibleBrands(parsed.format?.tags),
+    probeScore: parseFfprobeFormatProbeScore(parsed.format?.probe_score),
     tracks: buildTrackRows(parsed.streams, durationSecResolved, locale),
     chapters: buildChapterRowsFromFfprobeJson(parsed.chapters),
     rawJson

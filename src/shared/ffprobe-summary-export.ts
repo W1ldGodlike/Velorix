@@ -6,6 +6,10 @@ import {
   formatFfprobeBitrateLabelFromKbps
 } from './ffprobe-summary-export-locale'
 import { formatProbeChapterTimecode } from './ffprobe-timecode'
+import {
+  formatFfprobeContainerBrandExportLine,
+  formatFfprobeProbeScoreExportLine
+} from './ffprobe-container-format'
 
 export type { FfprobeSummaryLocale } from './ffprobe-summary-export-locale'
 
@@ -136,6 +140,12 @@ export function formatProbeSummaryPlainText(
       ? `${b.formatLongPrefix}${info.formatLongName}`
       : null,
     bitrateLabel ? `${b.bitrateEstPrefix}${bitrateLabel}` : null,
+    formatFfprobeContainerBrandExportLine(
+      info.containerMajorBrand,
+      info.containerCompatibleBrands,
+      locale
+    ),
+    formatFfprobeProbeScoreExportLine(info.probeScore, locale),
     '',
     ffprobeSummaryFill(b.streamsCountTemplate, { count: info.tracks.length }),
     ''
@@ -221,6 +231,18 @@ ${chapterRows}
     info.formatLongName && info.formatLongName !== info.formatName
       ? `<li>${b.formatLongPrefix}${escapeHtml(info.formatLongName)}</li>`
       : '',
+    (() => {
+      const brand = formatFfprobeContainerBrandExportLine(
+        info.containerMajorBrand,
+        info.containerCompatibleBrands,
+        locale
+      )
+      return brand ? `<li>${escapeHtml(brand)}</li>` : ''
+    })(),
+    (() => {
+      const score = formatFfprobeProbeScoreExportLine(info.probeScore, locale)
+      return score ? `<li>${escapeHtml(score)}</li>` : ''
+    })(),
     bitrateLabel ? `<li>${b.bitratePlainPrefix}${escapeHtml(bitrateLabel)}</li>` : ''
   ].filter(Boolean)
 

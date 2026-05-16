@@ -55,7 +55,10 @@ const sampleProbe: MediaProbeSuccess = {
     }
   ],
   chapters: [],
-  rawJson: '{}'
+  rawJson: '{}',
+  containerMajorBrand: 'isom',
+  containerCompatibleBrands: 'mp41iso2',
+  probeScore: 100
 }
 
 describe('ffprobe-summary-export', () => {
@@ -95,6 +98,8 @@ describe('ffprobe-summary-export', () => {
     expect(t).toContain('Видео\t')
     expect(t).toContain('eng')
     expect(t).toContain('Commentary')
+    expect(t).toContain('Бренд контейнера: isom')
+    expect(t).toContain('probe_score): 100')
   })
 
   it('formatProbeSummaryPlainText и HTML включают главы', () => {

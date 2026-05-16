@@ -60,6 +60,12 @@ export interface MediaProbeSuccess {
   formatLongName: string | null
   /** Средний битрейт файла в килобитах/с из `format.bit_rate`; `null`, если неизвестен. */
   bitrateKbps: number | null
+  /** `format.tags.major_brand` (MP4/MOV), если ffprobe отдал. */
+  containerMajorBrand: string | null
+  /** `format.tags.compatible_brands`, если ffprobe отдал. */
+  containerCompatibleBrands: string | null
+  /** `format.probe_score` 0–100, если ffprobe отдал. */
+  probeScore: number | null
   /** Все потоки в порядке индекса ffprobe. */
   tracks: MediaProbeTrackRow[]
   /** Главы из `-show_chapters`; пусто, если в файле нет метаданных глав. */

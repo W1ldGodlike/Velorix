@@ -720,3 +720,6 @@
 - [J-692] 2026-05-16 19:15:56 [Assistant]: §7.2/§16 — сводка HW export (J-689–691): QSV/AMF/VAAPI/NVENC `-vf` upload, `-hwaccel_output_format`; регрессионные argv-тесты полной цепочки; marathon commit #5. `npm run check:quiet`.
 - [J-693] 2026-05-16 19:17:58 [Assistant]: §9/§19 — `smoke:packaged-ffprobe` (version + lavfi JSON probe из `dist/win-unpacked`/`bin/`); lib + Vitest; в `check:release` после `verify:win-unpacked`. `npm run check:quiet`.
 - [J-694] 2026-05-16 19:20:25 [Assistant]: §9/§18 — Support ZIP `diagnostics.txt`: блок `engines:` (state/path/-version через `getEnginesStatus`); коммит вместе с J-693 smoke. `npm run check:quiet`.
+- [J-695] 2026-05-16 19:23:00 [Assistant]: §9 — ffprobe `probe_score`, `major_brand`/`compatible_brands` в probe/summary/HTML/инспектор; `ffprobe-container-format` + Vitest. `npm run check:quiet`.
+- [J-696] 2026-05-16 19:24:10 [Assistant]: §9/§7 — `formatFfprobeEditorVideoFactLine`: major_brand в строке «Видео» под таймлайном; Vitest. `npm run check:quiet`.
+- [J-697] 2026-05-16 19:25:04 [Assistant]: Marathon #10 — коммит J-695–696 (ffprobe container fields + editor/timeline); push; re-anchor. `npm run check:quiet`.

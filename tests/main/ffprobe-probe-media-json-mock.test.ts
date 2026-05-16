@@ -88,6 +88,52 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
     }
   })
 
+  it('парсит format.tags и probe_score', async () => {
+    const payload = {
+      format: {
+        duration: '1.0',
+        format_name: 'mov,mp4,m4a,3gp,3g2,mj2',
+        probe_score: 100,
+        tags: { major_brand: 'isom', compatible_brands: 'mp41iso2' }
+      },
+      streams: [
+        {
+          index: 0,
+          codec_type: 'video',
+          codec_name: 'h264',
+          width: 320,
+          height: 240,
+          avg_frame_rate: '24/1'
+        }
+      ]
+    }
+    execFileMock.mockImplementation((_cmd, _args, _opts, cb) => {
+      queueMicrotask(() => {
+        ;(cb as (err: Error | null, stdout: string, stderr: string) => void)(
+          null,
+          JSON.stringify(payload),
+          ''
+        )
+      })
+    })
+    const { paths, cleanup } = tmpAppPaths()
+    const probeName = process.platform === 'win32' ? 'ffprobe.exe' : 'ffprobe'
+    writeFileSync(join(paths.bundledBin, probeName), '')
+    try {
+      const media = join(paths.appRoot, 'clip.mp4')
+      writeFileSync(media, '')
+      const r = await probeMediaFile(paths, media)
+      expect(r.ok).toBe(true)
+      if (r.ok) {
+        expect(r.containerMajorBrand).toBe('isom')
+        expect(r.containerCompatibleBrands).toBe('mp41iso2')
+        expect(r.probeScore).toBe(100)
+      }
+    } finally {
+      cleanup()
+    }
+  })
+
   it('ok:false при error из execFile с приоритетом stderr', async () => {
     execFileMock.mockImplementation((_cmd, _args, _opts, cb) => {
       queueMicrotask(() => {

@@ -334,6 +334,8 @@ export function PreviewProbeBody({
               ? uiTextVars('probeSummaryAudioFragmentTemplate', { codec: probeInfo.audioCodec })
               : ''}
             {probeInfo.formatName ? ` · ${probeInfo.formatName}` : ''}
+            {probeInfo.containerMajorBrand ? ` · ${probeInfo.containerMajorBrand}` : ''}
+            {probeInfo.probeScore !== null ? ` · probe ${probeInfo.probeScore}` : ''}
             {bitrateLabel ? ` · ${bitrateLabel}` : ''}
           </span>
         </div>
