@@ -44,6 +44,13 @@ if (/if\s*\(\s*raw\s*===\s*'[^']+'\s*\|\|/.test(settingsStore)) {
   )
 }
 
+const ytdlpDownloadOptions = readFileSync('src/main/ytdlp-download-options.ts', 'utf8')
+if (/if\s*\(\s*raw\s*===\s*'[^']+'\s*\|\|/.test(ytdlpDownloadOptions)) {
+  failures.push(
+    'ytdlp-download-options.ts: whitelist stored — только ytdlp-download-stored-parse.ts'
+  )
+}
+
 const testsDir = 'tests'
 function walkTests(dir) {
   const out = []

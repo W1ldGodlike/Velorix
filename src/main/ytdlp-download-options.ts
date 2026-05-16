@@ -15,6 +15,12 @@ import {
   validateYtdlpCookiesBrowserProfile
 } from './ytdlp-extra-args'
 import { getYtdlpCommandHints } from './ytdlp-commands-hints'
+import {
+  parseYtdlpCookiesBrowser,
+  parseYtdlpFormatPreset,
+  parseYtdlpImpersonate,
+  parseYtdlpSubtitlePreset
+} from '../shared/ytdlp-download-stored-parse'
 import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
 import { resolveYtdlpOutputDirectory } from './ytdlp-download-output'
 import type {
@@ -158,33 +164,12 @@ export interface YtdlpRunOptionsSnapshot {
   autoStartBatchAfterEnqueue: boolean
 }
 
-export function parseYtdlpFormatPreset(raw: unknown): YtdlpFormatPresetId {
-  if (raw === 'editor_mp4' || raw === 'merge_bv_ba' || raw === 'best_single' || raw === 'default') {
-    return raw
-  }
-  return 'editor_mp4'
-}
-
-export function parseYtdlpSubtitlePreset(raw: unknown): YtdlpSubtitlePresetId {
-  if (raw === 'manual' || raw === 'manual_auto') {
-    return raw
-  }
-  return 'none'
-}
-
-export function parseYtdlpCookiesBrowser(raw: unknown): YtdlpCookiesBrowserId | undefined {
-  if (raw === 'chrome' || raw === 'edge' || raw === 'firefox') {
-    return raw
-  }
-  return undefined
-}
-
-export function parseYtdlpImpersonate(raw: unknown): YtdlpImpersonateId | undefined {
-  if (raw === 'chrome' || raw === 'edge' || raw === 'firefox') {
-    return raw
-  }
-  return undefined
-}
+export {
+  parseYtdlpCookiesBrowser,
+  parseYtdlpFormatPreset,
+  parseYtdlpImpersonate,
+  parseYtdlpSubtitlePreset
+} from '../shared/ytdlp-download-stored-parse'
 
 /** Проверка перед сохранением пути и после диалога выбора файла §6.2. */
 export function validateYtdlpCookiesFilePath(

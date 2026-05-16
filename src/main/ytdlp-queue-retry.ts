@@ -8,19 +8,13 @@
 import type { YtdlpQueueRetryProfileId } from '../shared/ytdlp-download-contract'
 
 export type { YtdlpQueueRetryProfileId } from '../shared/ytdlp-download-contract'
+export { parseYtdlpQueueRetryProfile } from '../shared/ytdlp-download-stored-parse'
 
 export interface YtdlpQueueRetryPlan {
   /** Сколько дополнительных запусков после первой неудачи (0 = только одна попытка). */
   extraAttempts: number
   /** Задержки перед каждым дополнительным запуском, мс; длина = extraAttempts. */
   delaysMs: number[]
-}
-
-export function parseYtdlpQueueRetryProfile(raw: unknown): YtdlpQueueRetryProfileId {
-  if (raw === 'light' || raw === 'normal' || raw === 'persistent') {
-    return raw
-  }
-  return 'off'
 }
 
 /** План пауз и числа повторов для выбранного профиля. */

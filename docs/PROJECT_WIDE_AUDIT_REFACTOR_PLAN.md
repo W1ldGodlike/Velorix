@@ -141,7 +141,7 @@
 | ffmpeg export enum | ✅ | `ffmpeg-export-parse-registry.ts` |
 | ffmpeg export resolve | ✅ | `ffmpeg-export-resolve-field-registry.ts` |
 | settings.json stored | ✅ | `settings-stored-parse.ts` |
-| `ytdlp-download-options.ts` | ⬜ | новый registry или shared parse |
+| `ytdlp-download-options.ts` | ✅ | `ytdlp-download-stored-parse.ts` + `check:field-registries` |
 | `ffmpeg-export-service.ts` (остаток parse) | ⬜ | вынести в registries / shared |
 | `ffprobe-side-data.ts` summarizers | ⬜ | table-driven side_data types |
 | `ffprobe-summary-export-locale.ts` | ⬜ | только если дубли шаблонов |
@@ -266,7 +266,7 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | many-standalone-it | 67 | tests/shared/ffmpeg-export-argv.test.ts | 3 | — | ⬜ |
 | many-standalone-it | 46 | tests/main/ffprobe-service.test.ts | 3 | — | ⬜ |
 | many-export-parse | 13 | src/main/ffmpeg-export-service.ts | 2 | — | ⬜ |
-| whitelist-if-chains | 4 | src/main/ytdlp-download-options.ts | 2 | Реестр whitelist chains + тесты; убрать 4× if-chain | ⬜ |
+| whitelist-if-chains | 4 | src/main/ytdlp-download-options.ts | 2 | Реестр whitelist chains + тесты; убрать 4× if-chain | ✅ J-704 |
 
 **Структурные (≥400 строк, фаза 4):** `terminal-contract.ts` (12959), `App.tsx` (7650), `index.ts` (4152), `downloads-window.ts` (4074), `ui-text.ts` (2848), `ffmpeg-export-argv.ts` (1055), `ffprobe-service.ts` (978), `MediaProbePanel.tsx` (985). Полный список: `npm run audit:structural`.
 
@@ -309,7 +309,7 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 
 - [x] Фаза 0 — audit scripts, registries, fixtures, inventory manifest, structural script, правила  
 - [x] Фаза 1 — инвентаризация (таблицы долгов, ARCHITECTURE↔IPC, `audit:ipc-architecture`)  
-- [ ] Фаза 2 — src копипаста (`ytdlp-download-options.ts` → registry первым срезом)  
+- [x] Фаза 2 — срез 1: `ytdlp-download-stored-parse.ts` (остальные hotspots — далее по §6)  
 - [ ] Фаза 3 — tests копипаста  
 - [ ] Фаза 4 — крупные модули  
 - [ ] Фаза 5 — TODO/временное  
