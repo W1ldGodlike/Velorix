@@ -243,6 +243,7 @@ export function InspectorStandaloneApp(): JSX.Element {
           className="inspector-topbar-trailing"
           role="group"
           aria-label={uiText('inspectorTopbarTrailingGroupAria')}
+          aria-busy={probePending && mediaPath !== null}
         >
           <div className="inspector-topbar-spacer" aria-hidden />
           <div
@@ -400,6 +401,7 @@ export function InspectorStandaloneApp(): JSX.Element {
             className="inspector-standalone-path"
             title={mediaPath}
             aria-label={uiText('inspectorStandalonePathFooterAria')}
+            aria-busy={probePending}
           >
             {mediaPath}
           </footer>

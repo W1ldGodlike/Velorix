@@ -766,6 +766,7 @@ function App(): JSX.Element {
     [exportUserPresets, selectedUserPresetId]
   )
   const [exportPresetNameDialog, setExportPresetNameDialog] = useState<ExportPresetNameDialog>(null)
+  const [exportPresetSaving, setExportPresetSaving] = useState(false)
   const [lastExportPath, setLastExportPath] = useState<string | null>(null)
   const [lastSnapshotPath, setLastSnapshotPath] = useState<string | null>(null)
   const [snapshotFormat, setSnapshotFormat] = useState<FfmpegSnapshotFormatId>('png')
@@ -1875,7 +1876,7 @@ function App(): JSX.Element {
     setExportPresetNameDialog({ mode: 'rename', value: current.label, error: null })
   }, [exportUserPresets, selectedUserPresetId])
 
-  const handleSubmitExportPresetName = useCallback(() => {
+  const handleSubmitExportPresetName = useCallback(async () => {
     if (!exportPresetNameDialog) {
       return
     }
@@ -1906,14 +1907,17 @@ function App(): JSX.Element {
         ...exportUserPresets,
         { id, label: safeLabel, snapshot: buildCurrentExportSnapshot() }
       ]
-      void window.fluxalloy.settings
-        .setFfmpegExportUserPresets(next)
-        .then((s) => {
-          setExportUserPresets(s.ffmpegExportUserPresets ?? [])
-          setSelectedUserPresetId(id)
-          setExportPresetNameDialog(null)
-        })
-        .catch(console.error)
+      setExportPresetSaving(true)
+      try {
+        const s = await window.fluxalloy.settings.setFfmpegExportUserPresets(next)
+        setExportUserPresets(s.ffmpegExportUserPresets ?? [])
+        setSelectedUserPresetId(id)
+        setExportPresetNameDialog(null)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setExportPresetSaving(false)
+      }
       return
     }
 
@@ -1924,13 +1928,16 @@ function App(): JSX.Element {
     const next = exportUserPresets.map((p) =>
       p.id === selectedUserPresetId ? { ...p, label: safeLabel } : p
     )
-    void window.fluxalloy.settings
-      .setFfmpegExportUserPresets(next)
-      .then((s) => {
-        setExportUserPresets(s.ffmpegExportUserPresets ?? [])
-        setExportPresetNameDialog(null)
-      })
-      .catch(console.error)
+    setExportPresetSaving(true)
+    try {
+      const s = await window.fluxalloy.settings.setFfmpegExportUserPresets(next)
+      setExportUserPresets(s.ffmpegExportUserPresets ?? [])
+      setExportPresetNameDialog(null)
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setExportPresetSaving(false)
+    }
   }, [buildCurrentExportSnapshot, exportPresetNameDialog, exportUserPresets, selectedUserPresetId])
 
   const handleOverwriteExportUserPreset = useCallback(() => {
@@ -3062,13 +3069,26 @@ function App(): JSX.Element {
           className="app-topbar-trailing"
           role="group"
           aria-label={uiText('topbarTrailingGroupAria')}
+          aria-busy={
+            engineDownloadBusy ||
+            exportBusy ||
+            snapshotBusy ||
+            exportCancelBusy ||
+            probePending
+          }
         >
           <div
             className="app-topbar-actions"
             role="toolbar"
             aria-orientation="horizontal"
             aria-label={uiText('topbarActionsToolbarAria')}
-            aria-busy={engineDownloadBusy || exportBusy || snapshotBusy || exportCancelBusy}
+            aria-busy={
+              engineDownloadBusy ||
+              exportBusy ||
+              snapshotBusy ||
+              exportCancelBusy ||
+              probePending
+            }
           >
             <button
               type="button"
@@ -7195,6 +7215,7 @@ function App(): JSX.Element {
           role="group"
           aria-label={uiText('statusbarEnginesClusterAria')}
           className="app-statusbar-cluster"
+          aria-busy={engineDownloadBusy || engineSummary === 'checking'}
         >
           <span>{engineSummaryText(engineSummary)}</span>
           {engineVersionsLine ? (
@@ -7211,6 +7232,7 @@ function App(): JSX.Element {
             role="group"
             aria-label={uiText('statusbarExportCodecClusterAria')}
             className="app-statusbar-cluster"
+            aria-busy={exportBusy || snapshotBusy || exportCancelBusy || probePending}
           >
             <span className="app-statusbar-sep" aria-hidden />
             <span className="app-statusbar-codec" title={exportCodecStatusbarLabel}>
@@ -7264,6 +7286,9 @@ function App(): JSX.Element {
           className="app-modal-backdrop"
           role="presentation"
           onMouseDown={(e) => {
+            if (exportPresetSaving) {
+              return
+            }
             if (e.target === e.currentTarget) {
               setExportPresetNameDialog(null)
             }
@@ -7273,6 +7298,7 @@ function App(): JSX.Element {
             className="app-modal app-modal-narrow"
             role="dialog"
             aria-modal="true"
+            aria-busy={exportPresetSaving}
             aria-labelledby="export-preset-name-title"
             aria-describedby="export-preset-name-hint"
             onMouseDown={(e) => {
@@ -7280,7 +7306,7 @@ function App(): JSX.Element {
             }}
             onSubmit={(e) => {
               e.preventDefault()
-              handleSubmitExportPresetName()
+              void handleSubmitExportPresetName()
             }}
           >
             <h2 id="export-preset-name-title" className="app-modal-title">
@@ -7291,7 +7317,11 @@ function App(): JSX.Element {
             <p id="export-preset-name-hint" className="app-modal-hint">
               {uiText('editorExportPresetDialogHint')}
             </p>
-            <div role="group" aria-label={uiText('exportPresetNameFieldGroupAria')}>
+            <div
+              role="group"
+              aria-label={uiText('exportPresetNameFieldGroupAria')}
+              aria-busy={exportPresetSaving}
+            >
               <label className="app-engine-path-row">
                 <span className="app-engine-path-label">{uiText('editorExportPresetNameLabel')}</span>
                 <input
@@ -7299,6 +7329,7 @@ function App(): JSX.Element {
                   type="text"
                   maxLength={64}
                   autoFocus
+                  disabled={exportPresetSaving}
                   value={exportPresetNameDialog.value}
                   aria-invalid={exportPresetNameDialog.error !== null}
                   aria-describedby={
@@ -7324,17 +7355,19 @@ function App(): JSX.Element {
               role="toolbar"
               aria-orientation="horizontal"
               aria-label={uiText('exportPresetDialogFooterToolbarAria')}
+              aria-busy={exportPresetSaving}
             >
               <button
                 type="button"
                 className="app-btn"
+                disabled={exportPresetSaving}
                 onClick={() => {
                   setExportPresetNameDialog(null)
                 }}
               >
                 {uiText('appDialogCancel')}
               </button>
-              <button type="submit" className="app-btn app-btn-primary">
+              <button type="submit" className="app-btn app-btn-primary" disabled={exportPresetSaving}>
                 {uiText('appDialogSave')}
               </button>
             </div>
@@ -7432,6 +7465,7 @@ function App(): JSX.Element {
               role="toolbar"
               aria-orientation="horizontal"
               aria-label={uiText('enginePathsDialogFooterToolbarAria')}
+              aria-busy={enginePathsSaving}
             >
               <button
                 type="button"

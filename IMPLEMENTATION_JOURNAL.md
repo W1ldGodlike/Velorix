@@ -983,4 +983,9 @@
 - [J-960] 2026-05-16 13:54:00 [Assistant]: FFmpeg rail — тулбар последнего вывода (`editorExportLastOutputActionsToolbarAria`): тот же флаг `aria-busy`.
 - [J-961] 2026-05-16 13:56:00 [Assistant]: Загрузки — rail: группа cookies (`downloadsCookiesFileGroupAria`), тулбар файла cookies, группа каталога вывода (`downloadsOutputDirAria`) и его тулбар — `aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}`.
 - [J-962] 2026-05-16 13:58:00 [Assistant]: Загрузки — футер правой панели (`downloadsRailFooterToolbarAria`) и тулбар строки очереди (`downloadsQueueRowActionsToolbarAriaTemplate`): тот же флаг `aria-busy`.
+- [J-963] 2026-05-16 14:00:00 [Assistant]: Диалог имени пресета экспорта: `exportPresetSaving`, async сохранение в настройки, `aria-busy` на `dialog`/группе поля/футере, отключение полей и закрытия по backdrop на время записи.
+- [J-964] 2026-05-16 14:02:00 [Assistant]: Диалог путей движков — тулбары строк (`editorEnginePathRowToolbarAriaTemplate`) и футера (`enginePathsDialogFooterToolbarAria`): `aria-busy={enginePathsSaving}`.
+- [J-965] 2026-05-16 14:04:00 [Assistant]: Верхняя панель — группа хвоста (`topbarTrailingGroupAria`) и тулбар действий (`topbarActionsToolbarAria`): в `aria-busy` добавлен `probePending` превью редактора.
+- [J-966] 2026-05-16 14:06:00 [Assistant]: Статусбар — кластер движков (`statusbarEnginesClusterAria`): `aria-busy` при загрузке движков или состоянии `checking`; кластер кодека экспорта (`statusbarExportCodecClusterAria`): при экспорте/снимке/отмене/ffprobe.
+- [J-967] 2026-05-16 14:08:00 [Assistant]: Инспектор §9 — группа хвоста топбара (`inspectorTopbarTrailingGroupAria`) и подвал пути (`inspectorStandalonePathFooterAria`): `aria-busy` на время ffprobe выбранного файла.
 
