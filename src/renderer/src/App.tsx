@@ -128,6 +128,7 @@ import type { FfmpegSnapshotFormatId } from '../../shared/ffmpeg-snapshot-contra
 import type { RestoredSourceInfo } from '../../shared/preview-dialog-contract'
 import type { MediaProbeSuccess } from '../../shared/ffprobe-contract'
 import type {
+  YtdlpCommandHintEntry,
   YtdlpCookiesBrowserId,
   YtdlpDownloadOptionsPatch,
   YtdlpDownloadOptionsPayload,
@@ -565,6 +566,47 @@ type DownloadsHistoryOutcomeFilter = 'all' | YtdlpDownloadHistoryEntry['outcome'
 
 function formatDownloadsLogText(lines: DownloadsLogLineView[]): string {
   return lines.map((line) => `[${line.rowId}] ${line.stream}: ${line.text}`).join('\n')
+}
+
+function terminalHintInsertAccessibleDescription(hint: TerminalCommandHintEntry): string {
+  const summaryRaw = hint.summary?.trim() ?? ''
+  const summary =
+    summaryRaw.length > 180
+      ? `${summaryRaw.slice(0, 178)}${uiText('commonUnicodeEllipsis')}`
+      : summaryRaw
+  if (summary.length > 0) {
+    return uiTextVars('terminalHintInsertButtonAriaTemplate', {
+      token: hint.token,
+      tool: hint.tool,
+      summary
+    })
+  }
+  return uiTextVars('terminalHintInsertButtonAriaNoSummaryTemplate', {
+    token: hint.token,
+    tool: hint.tool
+  })
+}
+
+function downloadsCatalogHintTokenAccessibleDescription(
+  category: string,
+  hint: YtdlpCommandHintEntry
+): string {
+  const summaryRaw = hint.summary?.trim() ?? ''
+  const summary =
+    summaryRaw.length > 180
+      ? `${summaryRaw.slice(0, 178)}${uiText('commonUnicodeEllipsis')}`
+      : summaryRaw
+  if (summary.length > 0) {
+    return uiTextVars('downloadsHintTokenButtonAriaTemplate', {
+      category,
+      token: hint.token,
+      summary
+    })
+  }
+  return uiTextVars('downloadsHintTokenButtonAriaNoSummaryTemplate', {
+    category,
+    token: hint.token
+  })
 }
 
 function App(): JSX.Element {
@@ -3881,7 +3923,6 @@ function App(): JSX.Element {
           id="workspace-panel-editor"
           role="tabpanel"
           aria-labelledby="workspace-tab-editor"
-          aria-label={uiText('editorWorkbenchAria')}
           className={`app-main app-workbench${panelOpen('ffmpegSettingsRailOpen') ? '' : ' app-workbench-ffmpeg-collapsed'}`}
         >
           <section
@@ -5269,7 +5310,6 @@ function App(): JSX.Element {
           id="workspace-panel-terminal"
           role="tabpanel"
           aria-labelledby="workspace-tab-terminal"
-          aria-label={uiText('terminalWorkbenchAria')}
           className="app-main app-terminal-workspace"
         >
           <section className="app-terminal-panel" aria-label={uiText('terminalPanelSectionAria')}>
@@ -5600,6 +5640,7 @@ function App(): JSX.Element {
                       <button
                         type="button"
                         className="app-terminal-hint"
+                        aria-label={terminalHintInsertAccessibleDescription(hint)}
                         onClick={() => {
                           if (hint.fullLine !== undefined && hint.fullLine.length > 0) {
                             setTerminalLine(hint.fullLine)
@@ -5625,7 +5666,6 @@ function App(): JSX.Element {
           id="workspace-panel-downloads"
           role="tabpanel"
           aria-labelledby="workspace-tab-downloads"
-          aria-label={uiText('downloadsWorkbenchAria')}
           className="app-main app-downloads-workspace"
         >
           <section className="app-downloads-main" aria-label={uiText('downloadsMainAria')}>
@@ -6299,6 +6339,7 @@ function App(): JSX.Element {
               <div
                 className="app-downloads-settings-stack"
                 role="region"
+                aria-busy={downloadsOptionsBusy}
                 aria-label={uiText('downloadsSettingsSectionsStackAria')}
               >
                 <details
@@ -6963,6 +7004,7 @@ function App(): JSX.Element {
                                   type="button"
                                   className="app-downloads-hint-token"
                                   title={h.summary || h.token}
+                                  aria-label={downloadsCatalogHintTokenAccessibleDescription(cat, h)}
                                   disabled={downloadsOptionsBusy}
                                   onClick={() => appendDownloadsExtraArgsToken(h.token)}
                                 >
@@ -7002,9 +7044,19 @@ function App(): JSX.Element {
                         {uiText('downloadsRailDocPostprocess')}
                       </a>
                     </nav>
-                    <span className="app-field-help">{uiText('downloadsCommandPreviewHelp')}</span>
+                    <span id="downloads-command-preview-help" className="app-field-help">
+                      {uiText('downloadsCommandPreviewHelp')}
+                    </span>
                     <div className="app-downloads-command-preview app-downloads-command-preview--flat">
-                      <pre>{downloadsOptions.commandPreview}</pre>
+                      <pre
+                        className="app-downloads-command-preview-pre"
+                        role="status"
+                        aria-live="polite"
+                        aria-relevant="text"
+                        aria-labelledby="downloads-command-preview-help"
+                      >
+                        {downloadsOptions.commandPreview}
+                      </pre>
                     </div>
                   </div>
                 </details>

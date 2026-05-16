@@ -903,4 +903,9 @@
 - [J-880] 2026-05-16 11:14:00 [Assistant]: Вкладка загрузок — полоса вводной зоны: кнопки «Отдельное окно» и «К настройкам» без дублирующего `aria-label`.
 - [J-881] 2026-05-16 11:16:00 [Assistant]: Загрузки rail — подвал: кнопка обновления опций без дублирующего `aria-label` (есть видимый текст и `title`).
 - [J-882] 2026-05-16 11:18:00 [Assistant]: Редактор — FFmpeg rail: кнопка восстановления панели и свёртывание заголовка без дублирующего `aria-label` (имя из видимого/скрытого текста внутри кнопки).
+- [J-883] 2026-05-16 11:20:00 [Assistant]: Вкладки рабочего пространства — у `<main role="tabpanel">` убран избыточный `aria-label` (имя из подписи вкладки через `aria-labelledby`).
+- [J-884] 2026-05-16 11:22:00 [Assistant]: Терминал — кнопки подсказок вставки argv: явное `aria-label` из шаблонов `terminalHintInsertButtonAriaTemplate` / `…NoSummaryTemplate`.
+- [J-885] 2026-05-16 11:24:00 [Assistant]: Загрузки rail — справочник argv: кнопки токенов с `aria-label` из `downloadsHintTokenButtonAriaTemplate` / `…NoSummaryTemplate` (учёт категории и усечённого описания).
+- [J-886] 2026-05-16 11:26:00 [Assistant]: Загрузки rail — превью команды yt-dlp: `<pre>` с классом, `role="status"`, `aria-live="polite"`, подпись через `aria-labelledby` на пояснение «Превью команды».
+- [J-887] 2026-05-16 11:28:00 [Assistant]: Загрузки rail — стек секций настроек (`app-downloads-settings-stack`): `aria-busy` синхронизирован с `downloadsOptionsBusy`.
 
