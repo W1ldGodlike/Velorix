@@ -4,6 +4,7 @@ import type { MediaProbeSuccess } from '../../src/shared/ffprobe-contract'
 import {
   formatFfprobeContainerBrandExportLine,
   formatFfprobeContainerCreationTimeExportLine,
+  formatFfprobeContainerCommentExportLine,
   formatFfprobeContainerEncoderExportLine,
   formatFfprobeContainerTitleExportLine,
   formatFfprobeContainerSizeExportLine,
@@ -20,6 +21,7 @@ import {
   formatFfprobeProbeScoreExportLine,
   parseFfprobeFormatCompatibleBrands,
   parseFfprobeFormatCreationTime,
+  parseFfprobeFormatCommentTag,
   parseFfprobeFormatEncoder,
   parseFfprobeFormatTitleTag,
   parseFfprobeFormatFlags,
@@ -45,6 +47,7 @@ const probeBase: MediaProbeSuccess = {
   containerCreationTime: null,
   containerEncoder: null,
   containerTitleTag: null,
+  containerCommentTag: null,
   containerCompatibleBrands: null,
   probeScore: null,
   containerNbStreams: null,
@@ -120,6 +123,11 @@ describe('ffprobe-container-format', () => {
   it('parseFfprobeFormatTitleTag и export line', () => {
     expect(parseFfprobeFormatTitleTag({ title: 'Demo clip' })).toBe('Demo clip')
     expect(formatFfprobeContainerTitleExportLine('Demo clip', 'ru')).toContain('title')
+  })
+
+  it('parseFfprobeFormatCommentTag и export line', () => {
+    expect(parseFfprobeFormatCommentTag({ comment: 'Edited offline' })).toBe('Edited offline')
+    expect(formatFfprobeContainerCommentExportLine('Edited offline', 'en')).toContain('comment')
   })
 
   it('parseFfprobeFormatEncoder и export line', () => {

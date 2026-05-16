@@ -2,6 +2,7 @@ import { mkdirSync, writeFileSync } from 'fs'
 import { BrowserWindow, app, dialog, ipcMain, shell, type WebContents } from 'electron'
 
 import { resolveAppPaths } from './app-paths'
+import type { DownloadsOutputDirectorySnapshot } from '../shared/downloads-output-directory-snapshot'
 import type { DownloadsWindowUiPanelState, ResolvedAppTheme } from '../shared/settings-contract'
 import type { StoredWindowRect } from './settings-store'
 import { boundsFromBrowserWindow, rectifyBoundsForRestore } from './window-bounds'
@@ -336,6 +337,34 @@ export function broadcastDownloadsWindowUiPanelsSnapshot(
   for (const w of targets) {
     try {
       w.webContents.send(mw.downloadsWindowUiPanelsChanged, snap)
+    } catch {
+      /* окно закрывается */
+    }
+  }
+}
+
+/** §6.2 — каталог вывода yt-dlp: вкладка «Загрузки» ↔ pop-out после pick/clear. */
+export function broadcastDownloadsOutputDirectorySnapshot(
+  snap?: DownloadsOutputDirectorySnapshot
+): void {
+  const paths = resolveAppPaths()
+  const payload: DownloadsOutputDirectorySnapshot =
+    snap ??
+    ({
+      path: resolveYtdlpOutputDirectory(paths.userData),
+      isDefault: isYtdlpDownloadDirectoryDefault()
+    } as const)
+  const targets: BrowserWindow[] = []
+  if (downloadsWindow && !downloadsWindow.isDestroyed()) {
+    targets.push(downloadsWindow)
+  }
+  const mainEditor = resolveMainEditorWindow()
+  if (mainEditor && !mainEditor.isDestroyed()) {
+    targets.push(mainEditor)
+  }
+  for (const w of targets) {
+    try {
+      w.webContents.send(mw.downloadsOutputDirectoryChanged, payload)
     } catch {
       /* окно закрывается */
     }
@@ -3026,6 +3055,12 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
       }
       if (api && typeof api.onDownloadsWindowUiPanelsChanged === 'function') {
         api.onDownloadsWindowUiPanelsChanged(applyDownloadsUiPanelsSnapshot);
+      }
+      if (api && typeof api.onDownloadsOutputDirectoryChanged === 'function') {
+        api.onDownloadsOutputDirectoryChanged(function () {
+          refreshOutDir();
+          schedulePreviewRefresh();
+        });
       }
 
       api.getSnapshot().then(onQueueSnapshot);

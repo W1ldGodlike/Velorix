@@ -2029,6 +2029,13 @@ function App(): JSX.Element {
   }, [hydrateDownloadsWindowUiPanels])
 
   useEffect(() => {
+    const off = window.fluxalloy.downloads.onDownloadsOutputDirectoryChanged((snap) => {
+      setDownloadsOutputDirectory(snap)
+    })
+    return off
+  }, [])
+
+  useEffect(() => {
     let cancelled = false
     void window.fluxalloy.session.restoreLastSource().then((restored) => {
       if (cancelled || !restored) {

@@ -242,6 +242,9 @@ export interface FluxAlloyApi {
     onDownloadsWindowUiPanelsChanged: (
       listener: (panels: DownloadsWindowUiPanelState) => void
     ) => () => void
+    onDownloadsOutputDirectoryChanged: (
+      listener: (snap: import('../shared/downloads-output-directory-snapshot').DownloadsOutputDirectorySnapshot) => void
+    ) => () => void
   }
   inspector: {
     openWindow: (absoluteMediaPath?: string | null) => Promise<void>

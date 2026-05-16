@@ -128,7 +128,9 @@ export const mainWindowIpc = {
   /** Main → все окна с главным preload: актуальный снимок `mainWindowUiPanels` после merge §4.1. */
   mainWindowUiPanelsChanged: 'fluxalloy:main-window-ui-panels-changed',
   /** Main → главное окно: снимок `downloadsWindowUiPanels` после merge (вкладка «Загрузки» ↔ pop-out). */
-  downloadsWindowUiPanelsChanged: 'fluxalloy:downloads-window-ui-panels-changed'
+  downloadsWindowUiPanelsChanged: 'fluxalloy:downloads-window-ui-panels-changed',
+  /** Main → вкладка «Загрузки» и pop-out: каталог вывода yt-dlp после pick/clear/merge settings. */
+  downloadsOutputDirectoryChanged: 'fluxalloy:downloads-output-directory-changed'
 } as const
 
 /** Окно yt-dlp: invoke/handle + push (`queueSnapshot`, `log`). */

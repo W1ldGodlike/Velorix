@@ -743,3 +743,8 @@
 - [J-715] 2026-05-16 19:55:03 [Assistant]: §9 — ffprobe `format.tags.creation_time` в probe, инспекторе (`formatFfprobeCreationTimeBrief`) и TXT/HTML; Vitest. `npm run check:quiet`.
 - [J-716] 2026-05-16 19:56:30 [Assistant]: §9 — ffprobe `format.tags.encoder` в probe, инспекторе и TXT/HTML; Vitest. `npm run check:quiet`.
 - [J-717] 2026-05-16 19:57:50 [Assistant]: §9 — ffprobe `format.tags.title` в probe, инспекторе и TXT/HTML; Vitest. Marathon #30 commit+push. `npm run check:quiet`.
+- [J-718] 2026-05-16 20:00:26 [Assistant]: §7.3 — регрессия `resolveFfmpegExportJobOptionsFromAppSettings`: `videoCodec` и `container` из settings и overrides; Vitest. `npm run check:quiet`.
+- [J-719] 2026-05-16 20:02:59 [Assistant]: §6.2 — broadcast `downloadsOutputDirectoryChanged` (pick/clear каталога yt-dlp): embedded ↔ pop-out, preload, Vitest; `docs/ARCHITECTURE.md`. `npm run check:quiet`.
+- [J-720] 2026-05-16 20:04:31 [Assistant]: §7.3 — регрессия resolve: `encodePreset`, `crf`, `scalePreset`, `stripMetadata` из settings и overrides; Vitest. `npm run check:quiet`.
+- [J-721] 2026-05-16 20:06:44 [Assistant]: §9 — ffprobe `format.tags.comment` → `containerCommentTag` в probe, инспекторе (`cmt …`) и TXT/HTML; Vitest. `npm run check:quiet`.
+- [J-722] 2026-05-16 20:08:00 [Assistant]: §7.3 — регрессия resolve: `twoPass` (libx264) и `audioMode` из settings/overrides; Vitest. Marathon #35 commit. `npm run check:quiet`.

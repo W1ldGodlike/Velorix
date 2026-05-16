@@ -43,6 +43,86 @@ describe('resolveFfmpegExportJobOptionsFromAppSettings', () => {
     ).toBe(false)
   })
 
+  it('videoCodec и container из settings и overrides (§7.3)', () => {
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings({
+        ...base,
+        ffmpegExportVideoCodec: 'libx265',
+        ffmpegExportContainer: 'mkv'
+      }).videoCodec
+    ).toBe('libx265')
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings({
+        ...base,
+        ffmpegExportVideoCodec: 'libx265',
+        ffmpegExportContainer: 'mkv'
+      }).container
+    ).toBe('mkv')
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings(base, {
+        videoCodec: 'h264_nvenc',
+        container: 'mov'
+      }).videoCodec
+    ).toBe('h264_nvenc')
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings(
+        { ...base, ffmpegExportVideoCodec: 'libx265' },
+        { videoCodec: 'libx264' }
+      ).videoCodec
+    ).toBe('libx264')
+  })
+
+  it('encodePreset, crf, scalePreset и stripMetadata из settings и overrides (§7.3)', () => {
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings({
+        ...base,
+        ffmpegExportEncodePreset: 'quality',
+        ffmpegExportCrf: 22,
+        ffmpegExportScalePreset: '1080p',
+        ffmpegExportStripMetadata: true
+      })
+    ).toMatchObject({
+      encodePreset: 'quality',
+      crf: 22,
+      scalePreset: '1080p',
+      stripMetadata: true
+    })
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings(
+        { ...base, ffmpegExportEncodePreset: 'quality', ffmpegExportCrf: 22 },
+        {
+          encodePreset: 'smaller',
+          crf: 18,
+          scalePreset: '720p',
+          stripMetadata: false
+        }
+      )
+    ).toMatchObject({
+      encodePreset: 'smaller',
+      crf: 18,
+      scalePreset: '720p',
+      stripMetadata: false
+    })
+  })
+
+  it('twoPass и audioMode из settings (§7.3)', () => {
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings({
+        ...base,
+        ffmpegExportVideoCodec: 'libx264',
+        ffmpegExportTwoPass: true,
+        ffmpegExportVideoBitrate: '2500k',
+        ffmpegExportAudioMode: 'copy'
+      })
+    ).toMatchObject({ twoPass: true, audioMode: 'copy' })
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings(
+        { ...base, ffmpegExportAudioMode: 'copy' },
+        { audioMode: 'none' }
+      ).audioMode
+    ).toBe('none')
+  })
+
   it('hwDecode из settings и overrides (§7.3 batch/single)', () => {
     expect(
       resolveFfmpegExportJobOptionsFromAppSettings({

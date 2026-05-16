@@ -60,6 +60,7 @@ const sampleProbe: MediaProbeSuccess = {
   containerCreationTime: '2024-06-01T10:00:00.000000Z',
   containerEncoder: 'Lavf62.0.100',
   containerTitleTag: 'Sample',
+  containerCommentTag: 'Offline edit',
   containerCompatibleBrands: 'mp41iso2',
   probeScore: 100,
   containerNbStreams: 2,
@@ -112,6 +113,7 @@ describe('ffprobe-summary-export', () => {
     expect(t).toContain('creation_time): 2024-06-01')
     expect(t).toContain('encoder): Lavf62.0.100')
     expect(t).toContain('title): Sample')
+    expect(t).toContain('comment): Offline edit')
     expect(t).toContain('probe_score): 100')
     expect(t).toContain('nb_streams): 2')
     expect(t).toContain('nb_programs): 1')

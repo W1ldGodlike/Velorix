@@ -57,6 +57,8 @@ import type {
   EnginePathOverridesPatch,
   EnginesStatusSnapshot
 } from '../shared/engine-contract'
+import { sanitizeDownloadsOutputDirectorySnapshot } from '../shared/downloads-output-directory-snapshot'
+import type { DownloadsOutputDirectorySnapshot } from '../shared/downloads-output-directory-snapshot'
 import type { MediaProbeResult } from '../shared/ffprobe-contract'
 import type { PreviewDialogResult, RestoredSourceInfo } from '../shared/preview-dialog-contract'
 import type {
@@ -416,6 +418,19 @@ const fluxalloy = {
       const channel = mw.downloadsWindowUiPanelsChanged
       const handler = (_: unknown, raw: unknown): void => {
         listener(sanitizeDownloadsWindowUiPanelState(raw))
+      }
+      ipcRenderer.on(channel, handler)
+      return (): void => {
+        ipcRenderer.removeListener(channel, handler)
+      }
+    },
+    /** Main → renderer: каталог вывода yt-dlp после pick/clear (вкладка «Загрузки» ↔ pop-out). */
+    onDownloadsOutputDirectoryChanged: (
+      listener: (snap: DownloadsOutputDirectorySnapshot) => void
+    ): (() => void) => {
+      const channel = mw.downloadsOutputDirectoryChanged
+      const handler = (_: unknown, raw: unknown): void => {
+        listener(sanitizeDownloadsOutputDirectorySnapshot(raw))
       }
       ipcRenderer.on(channel, handler)
       return (): void => {

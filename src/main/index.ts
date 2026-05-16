@@ -39,6 +39,7 @@ import { getDownloadsQueueSnapshot } from './downloads-queue'
 import { filterExistingVideoPathsForBatch } from './ffmpeg-export-batch-grant-paths'
 import { collectDownloadsQueueVideoPaths } from '../shared/ffmpeg-export-batch-collect-paths'
 import {
+  broadcastDownloadsOutputDirectorySnapshot,
   broadcastDownloadsWindowUiPanelsSnapshot,
   configureDownloadsWindowBoundsHooks,
   focusOrCreateDownloadsWindow,
@@ -684,6 +685,7 @@ function persistYtdlpDownloadDirectory(abs: string | null): void {
   saveSettings(settingsPath(), cachedSettings)
   syncYtdlpDownloadDirectoryFromSettings(cachedSettings.ytdlpDownloadDirectory)
   buildApplicationMenu()
+  broadcastDownloadsOutputDirectorySnapshot()
 }
 
 /** §6.2 — выбор файла Netscape cookies; взаимоисключающий с --cookies-from-browser. */

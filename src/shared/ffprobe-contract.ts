@@ -68,6 +68,8 @@ export interface MediaProbeSuccess {
   containerEncoder: string | null
   /** `format.tags.title`, если ffprobe отдал. */
   containerTitleTag: string | null
+  /** `format.tags.comment`, если ffprobe отдал. */
+  containerCommentTag: string | null
   /** `format.tags.compatible_brands`, если ffprobe отдал. */
   containerCompatibleBrands: string | null
   /** `format.probe_score` 0–100, если ffprobe отдал. */

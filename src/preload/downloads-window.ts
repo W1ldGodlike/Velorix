@@ -6,6 +6,8 @@ import type {
   YtdlpDownloadOptionsPayload,
   YtdlpGetCliOptionsParams
 } from '../shared/ytdlp-download-contract'
+import { sanitizeDownloadsOutputDirectorySnapshot } from '../shared/downloads-output-directory-snapshot'
+import type { DownloadsOutputDirectorySnapshot } from '../shared/downloads-output-directory-snapshot'
 import type { DownloadsWindowUiPanelState, ResolvedAppTheme } from '../shared/settings-contract'
 import type { YtdlpDownloadHistoryEntry } from '../shared/ytdlp-history-contract'
 import { downloadsIpc as d, mainWindowIpc as mw } from '../shared/ipc-channels'
@@ -195,6 +197,19 @@ contextBridge.exposeInMainWorld('fluxalloyDownloads', {
     const channel = mw.downloadsWindowUiPanelsChanged
     const handler = (_: unknown, raw: unknown): void => {
       listener(sanitizeDownloadsWindowUiPanelState(raw))
+    }
+    ipcRenderer.on(channel, handler)
+    return (): void => {
+      ipcRenderer.removeListener(channel, handler)
+    }
+  },
+
+  onDownloadsOutputDirectoryChanged: (
+    listener: (snap: DownloadsOutputDirectorySnapshot) => void
+  ): (() => void) => {
+    const channel = mw.downloadsOutputDirectoryChanged
+    const handler = (_: unknown, raw: unknown): void => {
+      listener(sanitizeDownloadsOutputDirectorySnapshot(raw))
     }
     ipcRenderer.on(channel, handler)
     return (): void => {
