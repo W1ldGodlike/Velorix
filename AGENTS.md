@@ -4,7 +4,7 @@
 
 1. **Всегда:** [`.cursor/rules/fluxalloy-core.mdc`](.cursor/rules/fluxalloy-core.mdc), [`fluxalloy-marathon.mdc`](.cursor/rules/fluxalloy-marathon.mdc)
 2. **Иерархия без противоречий:** [`docs/SOURCES_OF_TRUTH.md`](docs/SOURCES_OF_TRUTH.md)
-3. **Marathon / «продолжай»:** [`docs/AGENT_REANCHOR.md`](docs/AGENT_REANCHOR.md) — re-anchor каждые **10**, коммит каждые **5**, push каждые **10**, журнал **каждую** итерацию
+3. **Marathon / «продолжай»:** достаточно слова «продолжай»; [`docs/AGENT_REANCHOR.md`](docs/AGENT_REANCHOR.md) — re-anchor **10**, коммит **5**, push **10**; счётчик: `npm run agent:session -- bump` (ничего вручную не создавать)
 4. **Продукт:** [`FLUXALLOY_TZ.md`](FLUXALLOY_TZ.md) (не править без просьбы)
 5. **Спринт:** [`IMPLEMENTATION_CHECKLIST.md`](IMPLEMENTATION_CHECKLIST.md) → `## Ближайший TODO спринта`
 6. **Журнал:** [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md) — одна сводная `J-*` / итерация

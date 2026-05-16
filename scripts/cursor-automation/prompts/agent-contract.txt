@@ -2,7 +2,7 @@
 
 Обязательные источники контекста:
 1. На первой итерации прочитай этот контракт целиком; на продолжениях используй уже загруженный контракт и не перечитывай его без причины.
-2. Иерархия без противоречий: `docs/SOURCES_OF_TRUTH.md`. Marathon: `docs/AGENT_REANCHOR.md` (re-anchor каждые 10 итераций, коммит каждые 5, push каждые 10, одна сводная J-* каждую итерацию). Счётчик: `docs/.agent-session.json`.
+2. Иерархия без противоречий: `docs/SOURCES_OF_TRUTH.md`. Marathon: `docs/AGENT_REANCHOR.md` (re-anchor каждые 10 итераций, коммит каждые 5, push каждые 10, одна сводная J-* каждую итерацию). Счётчик: `npm run agent:session -- bump` (файл создаёт скрипт, вручную не заводить).
 3. `FLUXALLOY_TZ.md` — канон требований; читай только нужный раздел, не весь файл, и не редактируй без прямого запроса пользователя.
 4. `IMPLEMENTATION_CHECKLIST.md` — рабочий навигатор; обычно достаточно блока `## Ближайший TODO спринта` и связанного тематического §.
 5. `IMPLEMENTATION_JOURNAL.md` — читать только последние 30–50 строк, чтобы увидеть последние J-номера и не дублировать работу.
@@ -80,7 +80,7 @@
 
 Проверки и Git (marathon cadence):
 - В конце итерации: `npm run check:quiet`; полный `npm run check` — при падении quiet, перед релизом или по необходимости. Если менял `scripts/cursor-automation` — `npm run agent:typecheck`.
-- Счётчик `continue_count` в `docs/.agent-session.json` увеличивай на 1 после каждой итерации.
+- После каждой итерации: `npm run agent:session -- bump`. Перед cadence: `npm run agent:session` для `continue_count`.
 - Каждые 5 итераций (`continue_count % 5 === 0`): один логичный **локальный коммит**, если `check:quiet` зелёный. Сообщение — полное предложение (что и зачем). `git status` — только релевантные файлы; без секретов и артефактов сборки.
 - Каждые 10 итераций (`continue_count % 10 === 0`): **`git push`** на origin (без force в main/master), если remote настроен.
 - Каждые 10 итераций: **re-anchor** — перечитать `docs/AGENT_REANCHOR.md`, `docs/SOURCES_OF_TRUTH.md`, sprint TODO, последние 3 строки журнала; в отчёте написать `re-anchor OK`.

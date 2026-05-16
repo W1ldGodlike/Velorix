@@ -1,19 +1,8 @@
-Продолжай как будто пользователь написал в чате `+` или «продолжай работать».
-Контракт marathon: `docs/AGENT_REANCHOR.md` и `.cursor/rules/fluxalloy-marathon.mdc`.
+Продолжай как будто пользователь написал «продолжай» / `+`.
+Контракт marathon уже в `.cursor/rules/fluxalloy-marathon.mdc` — ничего дополнительно не создавать.
 
-Счётчик: `docs/.agent-session.json` — после итерации `continue_count += 1`.
+В конце итерации: `npm run agent:session -- bump` (счётчик; файл создаст скрипт).
+Перед коммитом/push/re-anchor: `npm run agent:session` — смотреть `continue_count` (% 5 коммит, % 10 push + re-anchor OK).
 
-Если `continue_count % 10 === 0`: re-anchor (AGENT_REANCHOR + SOURCES_OF_TRUTH + sprint TODO + 3 последние J-*) → в отчёте `re-anchor OK`.
-Если `continue_count % 5 === 0`: локальный коммит при зелёном `check:quiet`.
-Если `continue_count % 10 === 0`: `git push` (без force в main/master).
-
-Не перечитывай целиком `agent-contract.txt`, `FLUXALLOY_TZ.md`, весь чеклист или весь журнал без причины.
-
-Точечно:
-1. `IMPLEMENTATION_CHECKLIST.md` — только sprint TODO, если нужен план или обновление спринта.
-2. `IMPLEMENTATION_JOURNAL.md` — перед одной сводной записью (последний J-NNN).
-3. `docs/UX_REFERENCE_V0.md` — только для UI/layout.
-
-За итерацию: один крупный вертикальный срез; **одна** сводная `J-*` (`npm run journal:stamp`, метка `[SDK]`); `check:quiet` → коммит/push по cadence выше.
-
-Отчёт: 2–4 пункта. БЛОКЕР — если упёрся.
+Не перечитывай целиком agent-contract, ТЗ, весь чеклист/журнал без причины.
+План: sprint TODO в IMPLEMENTATION_CHECKLIST.md. Одна сводная J-* (`journal:stamp`, [SDK]). Крупный срез. `check:quiet`. Отчёт 2–4 пункта.

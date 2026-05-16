@@ -1,62 +1,41 @@
 # Re-anchor: режим marathon / «продолжай»
 
-**Когда применять:** очередь «продолжай», `npm run agent:loop`, явный запрос владельца на автономный спринт.
+**Когда применять:** очередь «продолжай», `npm run agent:loop`, автономный спринт.
 
-**Счётчик:** ведите `docs/.agent-session.json` (в Git не коммитить) или строку в [`SESSION_HANDOFF.md`](SESSION_HANDOFF.md):
+**Владельцу ничего создавать не нужно:** достаточно писать **«продолжай»** (или `+`). Контракт уже в `.cursor/rules/fluxalloy-marathon.mdc` (`alwaysApply`). Шаблоны и handoff — только справка, не обязательны.
 
-```json
-{ "continue_count": 1, "last_reanchor_at": 0, "last_commit_iteration": 0, "last_push_iteration": 0 }
-```
+**Счётчик итераций:** в конце каждой итерации агент выполняет `npm run agent:session -- bump` — скрипт сам создаёт `docs/.agent-session.json` при первом вызове (файл в `.gitignore`). Вручную JSON не заводить.
 
-После каждой итерации увеличивайте `continue_count` на 1.
+Перед коммитом/push/re-anchor: `npm run agent:session` — узнать текущий `continue_count`.
 
 ---
 
 ## Каждую итерацию
 
-1. План — только [`IMPLEMENTATION_CHECKLIST.md`](../IMPLEMENTATION_CHECKLIST.md) → **`## Ближайший TODO спринта`** (3–7 пунктов). ТЗ — **один** нужный § [`FLUXALLOY_TZ.md`](../FLUXALLOY_TZ.md), не весь файл.
-2. Объём — **один крупный вертикальный срез** (main → preload → renderer → тесты), не мелочь за итерацию.
-3. **Журнал** — ровно **одна** сводная строка `J-NNN` в конце итерации: `npm run journal:stamp` → запись с `[Assistant]` (IDE) или `[SDK]` (automation). Без git для времени. Не дублировать журнал в чате.
-4. **Отчёт в чате** — 3–5 буллетов, без простыни и без пересказа журнала.
-5. Перед коммитом — `npm run check:quiet` (полный `npm run check` — при падении quiet или перед релизом).
+1. План — [`IMPLEMENTATION_CHECKLIST.md`](../IMPLEMENTATION_CHECKLIST.md) → **`## Ближайший TODO спринта`**. ТЗ — один § [`FLUXALLOY_TZ.md`](../FLUXALLOY_TZ.md).
+2. **Один крупный вертикальный срез** (main → preload → renderer → тесты).
+3. **Журнал** — одна сводная `J-NNN`: `npm run journal:stamp` → запись `[Assistant]` / `[SDK]`.
+4. **Отчёт** — 3–5 буллетов, без пересказа журнала.
+5. `npm run check:quiet` перед коммитом.
+6. `npm run agent:session -- bump`.
 
 ## Каждые 5 итераций (`continue_count % 5 === 0`)
 
-- **Локальный коммит** одним логичным сообщением (полное предложение: что и зачем), только если `check:quiet` зелёный.
-- `git status` — в коммит только релевантные файлы; без секретов и артефактов сборки.
-- Обновить `last_commit_iteration` в `.agent-session.json`.
+- Локальный **коммит**, если `check:quiet` зелёный.
 
 ## Каждые 10 итераций (`continue_count % 10 === 0`)
 
-- **`git push`** на настроенный `origin` (если ветка отслеживает remote и нет блокера). Не force-push в `main`/`master`.
-- Обновить `last_push_iteration`.
-
-## Каждые 10 итераций — re-anchor (`continue_count % 10 === 0`)
-
-Перечитать **целиком** (короткие файлы):
-
-1. Этот файл (`AGENT_REANCHOR.md`).
-2. [`docs/SOURCES_OF_TRUTH.md`](SOURCES_OF_TRUTH.md).
-3. Блок **`## Ближайший TODO спринта`** в чеклисте.
-4. Последние **3** строки журнала (номер `J-*`, не дублировать работу).
-
-В отчёте итерации написать: **`re-anchor OK`** (и одной строкой — текущий фокус спринта).
-
-Обновить `last_reanchor_at := continue_count`.
+- **`git push`** (без force в main/master).
+- **Re-anchor:** перечитать этот файл, [`SOURCES_OF_TRUTH.md`](SOURCES_OF_TRUTH.md), sprint TODO, 3 последние строки журнала → в отчёте **`re-anchor OK`**.
 
 ## Запрещено в marathon
 
-- Десятки микро-`J-*` за одну итерацию.
-- Правки [`FLUXALLOY_TZ.md`](../FLUXALLOY_TZ.md) без явной просьбы.
-- Случайные новые `.md` «для красоты».
-- Drive-by рефакторинг вне текущего среза.
-- `prettier .` по всему репо (риск для ТЗ).
-- Выдуманное время, «сетка» минут, привязка новых меток журнала к git.
+- Микро-`J-*`, правки ТЗ без просьбы, лишние `.md`, drive-by рефактор, `prettier .` по репо, выдуманное время в журнале.
 
-## Новый чат (рекомендация каждые ~20–25 итераций)
+## Новый чат (по желанию, не обязательно)
 
-Заполните [`SESSION_HANDOFF.md`](SESSION_HANDOFF.md) и начните чат: «Продолжай по SESSION_HANDOFF + sprint TODO».
+Можно сказать «продолжай по sprint TODO» — правил достаточно. [`SESSION_HANDOFF.md`](SESSION_HANDOFF.md) агент заполняет **сам**, только если вы явно просите handoff между чатами.
 
-## Шаблон сообщения «продолжай»
+## Справка (не копировать)
 
-См. [`CONTINUE_PROMPT.ru.md`](CONTINUE_PROMPT.ru.md).
+Текст для очереди, если хочется усилить один раз: [`CONTINUE_PROMPT.ru.md`](CONTINUE_PROMPT.ru.md) — **опционально**, дублирует rules.

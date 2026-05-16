@@ -5,14 +5,14 @@ alwaysApply: true
 
 # Marathon (продолжай / SDK loop)
 
-Полный протокол: [`docs/AGENT_REANCHOR.md`](../../docs/AGENT_REANCHOR.md). Счётчик: `docs/.agent-session.json` (пример — `docs/.agent-session.json.example`).
+Голое **«продолжай»** достаточно — этот rule уже активен. Владельцу **ничего не создавать** (ни JSON, ни handoff, ни шаблонов).
 
-| Каждые N итераций | Действие |
-|-------------------|----------|
-| **1** | Один крупный вертикальный срез; **одна** сводная `J-*` (`journal:stamp`); отчёт 3–5 буллетов |
-| **5** | Локальный **коммит**, если `npm run check:quiet` зелёный |
-| **10** | **`git push`** (без force в main/master) + **re-anchor** (этот файл, SOURCES_OF_TRUTH, sprint TODO, 3 последние J-*) → в отчёте **`re-anchor OK`** |
+Протокол: [`docs/AGENT_REANCHOR.md`](../../docs/AGENT_REANCHOR.md). Счётчик: в конце итерации `npm run agent:session -- bump` (файл создаёт скрипт).
 
-**Запрещено:** микро-`J-*`, правки ТЗ без просьбы, лишние `.md`, drive-by рефактор, `prettier .` по всему репо.
+| Каждые N | Действие |
+|----------|----------|
+| **1** | Крупный срез; одна `J-*` (`journal:stamp`); отчёт 3–5 буллетов; `agent:session -- bump` |
+| **5** | Коммит при зелёном `check:quiet` |
+| **10** | `git push` + re-anchor → **`re-anchor OK`** |
 
-Шаблон сообщения: [`docs/CONTINUE_PROMPT.ru.md`](../../docs/CONTINUE_PROMPT.ru.md). Handoff ~20–25 итераций: [`docs/SESSION_HANDOFF.md`](../../docs/SESSION_HANDOFF.md).
+**Запрещено:** микро-`J-*`, правки ТЗ без просьбы, лишние `.md`, drive-by рефактор, `prettier .` по репо.
