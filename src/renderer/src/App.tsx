@@ -5729,6 +5729,7 @@ function App(): JSX.Element {
                 role="toolbar"
                 aria-orientation="horizontal"
                 aria-label={uiText('downloadsBandToolbarAria')}
+                aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
               >
                 <button
                   type="button"
@@ -5764,6 +5765,7 @@ function App(): JSX.Element {
               className="app-downloads-url-row"
               role="group"
               aria-label={uiText('downloadsUrlRowGroupAria')}
+              aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
             >
               <div className="app-downloads-url-field">
                 <label htmlFor={downloadsMainUrlFieldId} className="app-visually-hidden">
@@ -5788,6 +5790,7 @@ function App(): JSX.Element {
                 role="toolbar"
                 aria-orientation="horizontal"
                 aria-label={uiText('downloadsUrlActionsToolbarAria')}
+                aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
               >
                 <button
                   type="button"
@@ -5897,6 +5900,7 @@ function App(): JSX.Element {
               role="toolbar"
               aria-orientation="horizontal"
               aria-label={uiText('downloadsFilterBarAria')}
+              aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
             >
               {downloadsStatusFilterChips.map((filter) => (
                 <button
@@ -5916,6 +5920,7 @@ function App(): JSX.Element {
               className="app-downloads-table-zone"
               role="region"
               aria-label={uiText('downloadsQueueTableZoneAria')}
+              aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
             >
               <div
                 className="app-downloads-table-wrap"

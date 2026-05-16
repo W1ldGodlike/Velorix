@@ -943,4 +943,9 @@
 - [J-920] 2026-05-16 12:34:00 [Assistant]: История загрузок — тулбар действий (`downloadsHistoryActionsToolbarAria`): `aria-busy={busy}`.
 - [J-921] 2026-05-16 12:36:00 [Assistant]: История обработки — тулбар фильтров (`processingHistoryFiltersToolbarAria`): `aria-busy={busy}`.
 - [J-922] 2026-05-16 12:38:00 [Assistant]: История обработки — тулбар действий (`processingHistoryActionsToolbarAria`): `aria-busy={busy}`.
+- [J-923] 2026-05-16 12:40:00 [Assistant]: Загрузки — тулбар верхней полосы (`downloadsBandToolbarAria`): `aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}`.
+- [J-924] 2026-05-16 12:42:00 [Assistant]: Загрузки — группа поля URL (`downloadsUrlRowGroupAria`): тот же флаг `aria-busy`.
+- [J-925] 2026-05-16 12:44:00 [Assistant]: Загрузки — тулбар действий над очередью (`downloadsUrlActionsToolbarAria`): `aria-busy` при загрузке опций/истории.
+- [J-926] 2026-05-16 12:46:00 [Assistant]: Загрузки — полоска фильтров статусов (`downloadsFilterBarAria`): `aria-busy` синхронизирован с вкладкой.
+- [J-927] 2026-05-16 12:48:00 [Assistant]: Загрузки — регион зоны таблицы очереди (`downloadsQueueTableZoneAria`): `aria-busy` для экрана списка задач.
 
