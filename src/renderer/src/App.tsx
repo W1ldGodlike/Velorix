@@ -6235,6 +6235,7 @@ function App(): JSX.Element {
               >
                 <details
                   className="app-downloads-rail-section"
+                  aria-label={uiText('downloadsRailFormatSummary')}
                   open={downloadsRailPanels.format}
                   onToggle={handleDownloadsRailSectionToggle('format')}
                 >
@@ -6357,6 +6358,7 @@ function App(): JSX.Element {
                 </details>
                 <details
                   className="app-downloads-rail-section"
+                  aria-label={uiText('downloadsRailMetadataSummary')}
                   open={downloadsRailPanels.metadata}
                   onToggle={handleDownloadsRailSectionToggle('metadata')}
                 >
@@ -6585,6 +6587,7 @@ function App(): JSX.Element {
                 </details>
                 <details
                   className="app-downloads-rail-section"
+                  aria-label={uiText('downloadsRailSavingSummary')}
                   open={downloadsRailPanels.saving}
                   onToggle={handleDownloadsRailSectionToggle('saving')}
                 >
@@ -6693,6 +6696,7 @@ function App(): JSX.Element {
                 </details>
                 <details
                   className="app-downloads-rail-section"
+                  aria-label={uiText('downloadsRailNetworkSummary')}
                   open={downloadsRailPanels.network}
                   onToggle={handleDownloadsRailSectionToggle('network')}
                 >
@@ -6801,6 +6805,7 @@ function App(): JSX.Element {
                 </details>
                 <details
                   className="app-downloads-rail-section"
+                  aria-label={uiText('downloadsRailExpertSummary')}
                   open={downloadsRailPanels.expert}
                   onToggle={handleDownloadsRailSectionToggle('expert')}
                 >

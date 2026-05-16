@@ -838,4 +838,9 @@
 - [J-815] 2026-05-16 09:02:00 [Assistant]: Редактор — секция «Аудио»: `aria-label` из `editorFfmpegSectionAudio`.
 - [J-816] 2026-05-16 09:04:00 [Assistant]: Редактор — секция «Пресеты»: `aria-label` из `editorFfmpegSectionPresets`.
 - [J-817] 2026-05-16 09:06:00 [Assistant]: Редактор — секция «Вывод»: `aria-label` из `editorFfmpegSectionOutput`.
+- [J-818] 2026-05-16 09:08:00 [Assistant]: Загрузки rail — секция «Формат»: `aria-label` из `downloadsRailFormatSummary`.
+- [J-819] 2026-05-16 09:10:00 [Assistant]: Загрузки rail — секция «Метаданные и поведение»: `aria-label` из `downloadsRailMetadataSummary`.
+- [J-820] 2026-05-16 09:12:00 [Assistant]: Загрузки rail — секция «Сохранение»: `aria-label` из `downloadsRailSavingSummary`.
+- [J-821] 2026-05-16 09:14:00 [Assistant]: Загрузки rail — секция «Сеть»: `aria-label` из `downloadsRailNetworkSummary`.
+- [J-822] 2026-05-16 09:16:00 [Assistant]: Загрузки rail — секция «Эксперт»: `aria-label` из `downloadsRailExpertSummary`.
 
