@@ -678,6 +678,8 @@ function App(): JSX.Element {
   const terminalHintsSearchFieldId = useId()
   const downloadsMainUrlFieldId = useId()
   const terminalCommandInputId = useId()
+  const quickYtdlpBarRegionBodyId = useId()
+  const batchExportBarRegionBodyId = useId()
   const [terminalHistory, setTerminalHistory] = useState<TerminalHistoryEntry[]>([])
   const [terminalSuggestFocus, setTerminalSuggestFocus] = useState(false)
   const [terminalSuggestIndex, setTerminalSuggestIndex] = useState(0)
@@ -3219,8 +3221,11 @@ function App(): JSX.Element {
             persistMainWindowUiPanelToggle('quickYtdlp', e.currentTarget.open)
           }}
         >
-          <summary className="app-url-summary">{uiText('quickYtdlpSummary')}</summary>
+          <summary className="app-url-summary" aria-controls={quickYtdlpBarRegionBodyId}>
+            {uiText('quickYtdlpSummary')}
+          </summary>
           <div
+            id={quickYtdlpBarRegionBodyId}
             className="app-url-body"
             role="region"
             aria-labelledby="quick-ytdlp-region-title"
@@ -3326,8 +3331,11 @@ function App(): JSX.Element {
             persistMainWindowUiPanelToggle('batchExport', e.currentTarget.open)
           }}
         >
-          <summary className="app-url-summary">{uiText('batchExportSummary')}</summary>
+          <summary className="app-url-summary" aria-controls={batchExportBarRegionBodyId}>
+            {uiText('batchExportSummary')}
+          </summary>
           <div
+            id={batchExportBarRegionBodyId}
             className="app-url-body"
             role="region"
             aria-labelledby="batch-export-region-title"

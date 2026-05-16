@@ -144,6 +144,7 @@ export function ProcessingHistoryPanel({
         aria-orientation="horizontal"
         aria-label={uiText('processingHistoryFiltersToolbarAria')}
         aria-describedby="processingHistorySectionHint"
+        aria-busy={busy}
       >
         <div className="app-processing-history-filter-field">
           <label htmlFor={processingHistoryKindFilterId}>
@@ -208,6 +209,7 @@ export function ProcessingHistoryPanel({
         role="toolbar"
         aria-orientation="horizontal"
         aria-label={uiText('processingHistoryActionsToolbarAria')}
+        aria-busy={busy}
       >
         <button
           type="button"

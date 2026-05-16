@@ -81,6 +81,7 @@ export function DownloadsHistoryPanel({
         role="toolbar"
         aria-orientation="horizontal"
         aria-label={uiText('downloadsHistoryActionsToolbarAria')}
+        aria-busy={busy}
       >
         <div className="app-downloads-history-filter">
           <label htmlFor={downloadsHistoryOutcomeFilterId}>

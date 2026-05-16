@@ -938,4 +938,9 @@
 - [J-915] 2026-05-16 12:24:00 [Assistant]: Терминал — сплит история/подсказки (`terminalMainSplitAria`): `aria-busy={terminalBusy}` на время выполнения команды.
 - [J-916] 2026-05-16 12:26:00 [Assistant]: История загрузок — недельная сводка (`downloadsHistoryWeeklyAria`): `aria-busy={busy}` при обновлении истории.
 - [J-917] 2026-05-16 12:28:00 [Assistant]: История обработки — недельная сводка (`processingHistoryWeeklyAria`): `aria-busy={busy}` при обновлении списка.
+- [J-918] 2026-05-16 12:30:00 [Assistant]: Быстрый yt-dlp (верхняя `<details>`): `aria-controls` на `<summary>` и стабильный `useId` на теле региона (`app-url-body`).
+- [J-919] 2026-05-16 12:32:00 [Assistant]: Пакетный экспорт — свёрнутая панель (`app-batch-export-bar`): та же связь `summary` ↔ регион через `useId` и `aria-controls`.
+- [J-920] 2026-05-16 12:34:00 [Assistant]: История загрузок — тулбар действий (`downloadsHistoryActionsToolbarAria`): `aria-busy={busy}`.
+- [J-921] 2026-05-16 12:36:00 [Assistant]: История обработки — тулбар фильтров (`processingHistoryFiltersToolbarAria`): `aria-busy={busy}`.
+- [J-922] 2026-05-16 12:38:00 [Assistant]: История обработки — тулбар действий (`processingHistoryActionsToolbarAria`): `aria-busy={busy}`.
 
