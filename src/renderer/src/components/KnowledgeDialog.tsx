@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useId, useMemo, useState } from 'react'
 import type { JSX } from 'react'
 
 import type { KnowledgeArticleListItem } from '../../../shared/knowledge-contract'
@@ -29,6 +29,8 @@ export function KnowledgeDialog({
   const [readArticleMeta, setReadArticleMeta] = useState<KnowledgeArticleListItem | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const knowledgeSearchFieldId = useId()
 
   useEffect(() => {
     if (!open) {
@@ -183,12 +185,15 @@ export function KnowledgeDialog({
           aria-label={uiText('knowledgeDialogGridAria')}
         >
           <aside className="app-knowledge-sidebar" aria-label={uiText('knowledgeTocAria')}>
+            <label htmlFor={knowledgeSearchFieldId} className="app-visually-hidden">
+              {uiText('knowledgeSearchInputAria')}
+            </label>
             <input
+              id={knowledgeSearchFieldId}
               className="app-input app-knowledge-search"
               value={filter}
               placeholder={uiText('knowledgeSearchPlaceholder')}
               title={uiText('knowledgeSearchTooltip')}
-              aria-label={uiText('knowledgeSearchInputAria')}
               onChange={(e) => {
                 setFilter(e.target.value)
               }}

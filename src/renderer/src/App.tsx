@@ -3236,7 +3236,6 @@ function App(): JSX.Element {
                 type="button"
                 className="app-btn app-btn-primary app-btn-icon-leading"
                 aria-describedby="quickYtdlpUrlHint"
-                aria-label={uiText('quickYtdlpEnqueueLines')}
                 onClick={() => {
                   void handleQuickYtdlpEnqueueLines()
                 }}
@@ -3248,7 +3247,6 @@ function App(): JSX.Element {
                 type="button"
                 className="app-btn app-btn-icon-leading"
                 aria-describedby="quickYtdlpUrlHint"
-                aria-label={uiText('quickYtdlpDownloadOpenEditor')}
                 onClick={() => {
                   void handleDownloadFirstUrlOpenInEditor()
                 }}
@@ -5720,7 +5718,6 @@ function App(): JSX.Element {
                 <button
                   type="button"
                   className="app-btn app-btn-primary app-btn-icon-leading"
-                  aria-label={uiText('downloadsAddToQueue')}
                   onClick={() => {
                     void handleAddDownloadsFromMain()
                   }}
@@ -5732,7 +5729,6 @@ function App(): JSX.Element {
                   type="button"
                   className="app-btn app-btn-warn app-btn-icon-leading"
                   title={uiText('downloadsStopQueueTooltip')}
-                  aria-label={uiText('downloadsStopQueue')}
                   onClick={() => {
                     void window.fluxalloy.downloads.cancelQueue().then((res) => {
                       if (!res.ok) {
@@ -5748,7 +5744,6 @@ function App(): JSX.Element {
                   type="button"
                   className="app-btn app-btn-icon-leading"
                   disabled={downloadsRows.length === 0}
-                  aria-label={uiText('downloadsRemoveFinished')}
                   onClick={() => {
                     void window.fluxalloy.downloads.clearFinished().then((res) => {
                       if (!res.ok) {
@@ -5770,7 +5765,6 @@ function App(): JSX.Element {
                   type="button"
                   className="app-btn app-btn-warn app-btn-icon-leading"
                   disabled={downloadsRows.length === 0}
-                  aria-label={uiText('downloadsClearQueue')}
                   onClick={() => {
                     void window.fluxalloy.downloads.clearQueue().then((res) => {
                       if (!res.ok) {

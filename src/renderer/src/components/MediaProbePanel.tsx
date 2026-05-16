@@ -40,6 +40,32 @@ function keyboardProbeMenuPosition(el: HTMLElement): { x: number; y: number } {
   return clampProbeTableMenuPosition(rect.left + 24, rect.top + 24)
 }
 
+const PROBE_TRACKS_TABLE_HEADER_IDS = {
+  index: 'probe-tracks-th-index',
+  kind: 'probe-tracks-th-kind',
+  codec: 'probe-tracks-th-codec',
+  pixelFormat: 'probe-tracks-th-pixfmt',
+  sar: 'probe-tracks-th-sar',
+  dar: 'probe-tracks-th-dar',
+  colorSpace: 'probe-tracks-th-colorspace',
+  primaries: 'probe-tracks-th-primaries',
+  transfer: 'probe-tracks-th-transfer',
+  range: 'probe-tracks-th-range',
+  bitrate: 'probe-tracks-th-bitrate',
+  disposition: 'probe-tracks-th-disposition',
+  language: 'probe-tracks-th-language',
+  title: 'probe-tracks-th-title',
+  details: 'probe-tracks-th-details'
+} as const
+
+const PROBE_CHAPTERS_TABLE_HEADER_IDS = {
+  id: 'probe-chapters-th-id',
+  start: 'probe-chapters-th-start',
+  end: 'probe-chapters-th-end',
+  duration: 'probe-chapters-th-duration',
+  title: 'probe-chapters-th-title'
+} as const
+
 function formatBitrateLine(kbps: number | null): string | null {
   if (kbps === null || !Number.isFinite(kbps)) {
     return null
@@ -375,21 +401,51 @@ export function PreviewProbeBody({
                 <caption className="app-visually-hidden">{uiText('probeTracksCaption')}</caption>
                 <thead>
                   <tr>
-                    <th scope="col">{uiText('probeThIndex')}</th>
-                    <th scope="col">{uiText('probeThType')}</th>
-                    <th scope="col">{uiText('probeThCodec')}</th>
-                    <th scope="col">{uiText('probeThPixFmt')}</th>
-                    <th scope="col">{uiText('probeThSar')}</th>
-                    <th scope="col">{uiText('probeThDar')}</th>
-                    <th scope="col">{uiText('probeThColorSpace')}</th>
-                    <th scope="col">{uiText('probeThPrimaries')}</th>
-                    <th scope="col">{uiText('probeThTransfer')}</th>
-                    <th scope="col">{uiText('probeThRange')}</th>
-                    <th scope="col">{uiText('probeThBitrate')}</th>
-                    <th scope="col">{uiText('probeThDisposition')}</th>
-                    <th scope="col">{uiText('probeThLanguage')}</th>
-                    <th scope="col">{uiText('probeThTrackTitle')}</th>
-                    <th scope="col">{uiText('probeThDetails')}</th>
+                    <th scope="col" id={PROBE_TRACKS_TABLE_HEADER_IDS.index}>
+                      {uiText('probeThIndex')}
+                    </th>
+                    <th scope="col" id={PROBE_TRACKS_TABLE_HEADER_IDS.kind}>
+                      {uiText('probeThType')}
+                    </th>
+                    <th scope="col" id={PROBE_TRACKS_TABLE_HEADER_IDS.codec}>
+                      {uiText('probeThCodec')}
+                    </th>
+                    <th scope="col" id={PROBE_TRACKS_TABLE_HEADER_IDS.pixelFormat}>
+                      {uiText('probeThPixFmt')}
+                    </th>
+                    <th scope="col" id={PROBE_TRACKS_TABLE_HEADER_IDS.sar}>
+                      {uiText('probeThSar')}
+                    </th>
+                    <th scope="col" id={PROBE_TRACKS_TABLE_HEADER_IDS.dar}>
+                      {uiText('probeThDar')}
+                    </th>
+                    <th scope="col" id={PROBE_TRACKS_TABLE_HEADER_IDS.colorSpace}>
+                      {uiText('probeThColorSpace')}
+                    </th>
+                    <th scope="col" id={PROBE_TRACKS_TABLE_HEADER_IDS.primaries}>
+                      {uiText('probeThPrimaries')}
+                    </th>
+                    <th scope="col" id={PROBE_TRACKS_TABLE_HEADER_IDS.transfer}>
+                      {uiText('probeThTransfer')}
+                    </th>
+                    <th scope="col" id={PROBE_TRACKS_TABLE_HEADER_IDS.range}>
+                      {uiText('probeThRange')}
+                    </th>
+                    <th scope="col" id={PROBE_TRACKS_TABLE_HEADER_IDS.bitrate}>
+                      {uiText('probeThBitrate')}
+                    </th>
+                    <th scope="col" id={PROBE_TRACKS_TABLE_HEADER_IDS.disposition}>
+                      {uiText('probeThDisposition')}
+                    </th>
+                    <th scope="col" id={PROBE_TRACKS_TABLE_HEADER_IDS.language}>
+                      {uiText('probeThLanguage')}
+                    </th>
+                    <th scope="col" id={PROBE_TRACKS_TABLE_HEADER_IDS.title}>
+                      {uiText('probeThTrackTitle')}
+                    </th>
+                    <th scope="col" id={PROBE_TRACKS_TABLE_HEADER_IDS.details}>
+                      {uiText('probeThDetails')}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -415,29 +471,61 @@ export function PreviewProbeBody({
                         }
                       }}
                     >
-                      <td>{row.index}</td>
-                      <td>{trackKindLabel(row.kind)}</td>
-                      <td className="app-probe-table-mono">{row.codec}</td>
-                      <td className="app-probe-table-mono">{row.pixelFormat ?? dash}</td>
-                      <td className="app-probe-table-mono">{row.sampleAspectRatio ?? dash}</td>
-                      <td className="app-probe-table-mono">{row.displayAspectRatio ?? dash}</td>
-                      <td className="app-probe-table-mono">{row.colorSpace ?? dash}</td>
-                      <td className="app-probe-table-mono">{row.colorPrimaries ?? dash}</td>
-                      <td className="app-probe-table-mono">{row.colorTransfer ?? dash}</td>
-                      <td className="app-probe-table-mono">{row.colorRange ?? dash}</td>
-                      <td title={formatBitrateLine(row.streamBitrateKbps) ?? undefined}>
+                      <td headers={PROBE_TRACKS_TABLE_HEADER_IDS.index}>{row.index}</td>
+                      <td headers={PROBE_TRACKS_TABLE_HEADER_IDS.kind}>{trackKindLabel(row.kind)}</td>
+                      <td className="app-probe-table-mono" headers={PROBE_TRACKS_TABLE_HEADER_IDS.codec}>
+                        {row.codec}
+                      </td>
+                      <td
+                        className="app-probe-table-mono"
+                        headers={PROBE_TRACKS_TABLE_HEADER_IDS.pixelFormat}
+                      >
+                        {row.pixelFormat ?? dash}
+                      </td>
+                      <td className="app-probe-table-mono" headers={PROBE_TRACKS_TABLE_HEADER_IDS.sar}>
+                        {row.sampleAspectRatio ?? dash}
+                      </td>
+                      <td className="app-probe-table-mono" headers={PROBE_TRACKS_TABLE_HEADER_IDS.dar}>
+                        {row.displayAspectRatio ?? dash}
+                      </td>
+                      <td
+                        className="app-probe-table-mono"
+                        headers={PROBE_TRACKS_TABLE_HEADER_IDS.colorSpace}
+                      >
+                        {row.colorSpace ?? dash}
+                      </td>
+                      <td
+                        className="app-probe-table-mono"
+                        headers={PROBE_TRACKS_TABLE_HEADER_IDS.primaries}
+                      >
+                        {row.colorPrimaries ?? dash}
+                      </td>
+                      <td
+                        className="app-probe-table-mono"
+                        headers={PROBE_TRACKS_TABLE_HEADER_IDS.transfer}
+                      >
+                        {row.colorTransfer ?? dash}
+                      </td>
+                      <td className="app-probe-table-mono" headers={PROBE_TRACKS_TABLE_HEADER_IDS.range}>
+                        {row.colorRange ?? dash}
+                      </td>
+                      <td
+                        headers={PROBE_TRACKS_TABLE_HEADER_IDS.bitrate}
+                        title={formatBitrateLine(row.streamBitrateKbps) ?? undefined}
+                      >
                         {formatBitrateLine(row.streamBitrateKbps) ?? dash}
                       </td>
                       <td
+                        headers={PROBE_TRACKS_TABLE_HEADER_IDS.disposition}
                         title={
                           row.dispositionSummary.trim() !== '' ? row.dispositionSummary : undefined
                         }
                       >
                         {row.dispositionSummary.trim() !== '' ? row.dispositionSummary : dash}
                       </td>
-                      <td>{row.language ?? dash}</td>
-                      <td>{row.titleTag ?? dash}</td>
-                      <td>{row.detail}</td>
+                      <td headers={PROBE_TRACKS_TABLE_HEADER_IDS.language}>{row.language ?? dash}</td>
+                      <td headers={PROBE_TRACKS_TABLE_HEADER_IDS.title}>{row.titleTag ?? dash}</td>
+                      <td headers={PROBE_TRACKS_TABLE_HEADER_IDS.details}>{row.detail}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -468,11 +556,21 @@ export function PreviewProbeBody({
                 <caption className="app-visually-hidden">{uiText('probeChaptersCaption')}</caption>
                 <thead>
                   <tr>
-                    <th scope="col">{uiText('probeThChapterId')}</th>
-                    <th scope="col">{uiText('probeThChapterStart')}</th>
-                    <th scope="col">{uiText('probeThChapterEnd')}</th>
-                    <th scope="col">{uiText('probeThChapterDuration')}</th>
-                    <th scope="col">{uiText('probeThChapterTitle')}</th>
+                    <th scope="col" id={PROBE_CHAPTERS_TABLE_HEADER_IDS.id}>
+                      {uiText('probeThChapterId')}
+                    </th>
+                    <th scope="col" id={PROBE_CHAPTERS_TABLE_HEADER_IDS.start}>
+                      {uiText('probeThChapterStart')}
+                    </th>
+                    <th scope="col" id={PROBE_CHAPTERS_TABLE_HEADER_IDS.end}>
+                      {uiText('probeThChapterEnd')}
+                    </th>
+                    <th scope="col" id={PROBE_CHAPTERS_TABLE_HEADER_IDS.duration}>
+                      {uiText('probeThChapterDuration')}
+                    </th>
+                    <th scope="col" id={PROBE_CHAPTERS_TABLE_HEADER_IDS.title}>
+                      {uiText('probeThChapterTitle')}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -498,15 +596,23 @@ export function PreviewProbeBody({
                         }
                       }}
                     >
-                      <td>{ch.index}</td>
-                      <td className="app-probe-table-mono">
+                      <td headers={PROBE_CHAPTERS_TABLE_HEADER_IDS.id}>{ch.index}</td>
+                      <td
+                        className="app-probe-table-mono"
+                        headers={PROBE_CHAPTERS_TABLE_HEADER_IDS.start}
+                      >
                         {formatProbeChapterTimecode(ch.startSec)}
                       </td>
-                      <td className="app-probe-table-mono">
+                      <td
+                        className="app-probe-table-mono"
+                        headers={PROBE_CHAPTERS_TABLE_HEADER_IDS.end}
+                      >
                         {formatProbeChapterTimecode(ch.endSec)}
                       </td>
-                      <td>{formatChapterDurationSec(ch.endSec, ch.startSec)}</td>
-                      <td>{ch.title ?? dash}</td>
+                      <td headers={PROBE_CHAPTERS_TABLE_HEADER_IDS.duration}>
+                        {formatChapterDurationSec(ch.endSec, ch.startSec)}
+                      </td>
+                      <td headers={PROBE_CHAPTERS_TABLE_HEADER_IDS.title}>{ch.title ?? dash}</td>
                     </tr>
                   ))}
                 </tbody>
