@@ -694,6 +694,7 @@ export function PreviewProbeBody({
                 className="app-probe-json-pre"
                 aria-label={uiText('probeRawJsonPreAria')}
                 aria-describedby="probeRawJsonHint"
+                aria-busy={probeRefreshing}
               >
                 {formatProbeJsonForDisplay(probeInfo.rawJson)}
               </pre>

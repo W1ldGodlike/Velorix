@@ -72,6 +72,7 @@ export function DownloadsLogPanel({
           role="log"
           aria-label={uiText('downloadsLogViewportAria')}
           aria-live="polite"
+          aria-busy={tabBusy}
         >
           {lines.length === 0
             ? uiText('downloadsLogEmpty')

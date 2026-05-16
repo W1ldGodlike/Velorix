@@ -1018,4 +1018,9 @@
 - [J-995] 2026-05-16 15:04:00 [Assistant]: Загрузки — нижний стек истории/лога (`downloadsLowerStackAria`): `aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}` вместо только истории.
 - [J-996] 2026-05-16 15:06:00 [Assistant]: Редактор — введён `editorPreviewRegionBusy`; превью (`editorPreviewDropzoneAria`, стек, медиакарточка, подпись): `aria-busy` включает отмену экспорта и batch.
 - [J-997] 2026-05-16 15:08:00 [Assistant]: Статусбар главного окна (`appStatusbarAria`): `aria-busy={appChromeBusy}`; инспектор §9 — список версий (`versionsAriaLabel`): `statusBusy={probePending}`.
+- [J-998] 2026-05-16 15:10:00 [Assistant]: FFprobe-панель — блок сырого JSON (`probeRawJsonPreAria`): `aria-busy={probeRefreshing}`.
+- [J-999] 2026-05-16 15:12:00 [Assistant]: Загрузки — область лога yt-dlp (`downloadsLogViewportAria`): `aria-busy={tabBusy}`.
+- [J-1000] 2026-05-16 15:14:00 [Assistant]: История обработки и история yt-dlp — карточки (`processingHistoryCardArticleAriaTemplate`, `downloadsHistoryCardArticleAriaTemplate`): `aria-busy={busy}` на `<article>`.
+- [J-1001] 2026-05-16 15:16:00 [Assistant]: Инспектор §9 — подвал статусбара (`appStatusbarAria`): `aria-busy={probePending}`.
+- [J-1002] 2026-05-16 15:18:00 [Assistant]: Редактор — элемент превью `<video>`: `aria-busy={editorPreviewRegionBusy}`.
 

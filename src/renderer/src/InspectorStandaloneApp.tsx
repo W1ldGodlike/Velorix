@@ -410,7 +410,7 @@ export function InspectorStandaloneApp(): JSX.Element {
         ) : null}
       </main>
 
-      <footer className="app-statusbar" aria-label={uiText('appStatusbarAria')}>
+      <footer className="app-statusbar" aria-label={uiText('appStatusbarAria')} aria-busy={probePending}>
         {statusHint ? (
           <span className="app-statusbar-extra" role="status" aria-live="polite">
             {statusHint}

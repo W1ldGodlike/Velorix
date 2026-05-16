@@ -4039,6 +4039,7 @@ function App(): JSX.Element {
                       className="app-preview-video"
                       playsInline
                       src={previewPlaybackUrl ?? preview.mediaUrl}
+                      aria-busy={editorPreviewRegionBusy}
                       aria-label={uiTextVars('editorPreviewVideoAriaTemplate', {
                         name: basenameForAriaLabel(preview.path)
                       })}

@@ -144,6 +144,7 @@ export function DownloadsHistoryPanel({
                 index: idx + 1,
                 title: entry.shortLabel
               })}
+              aria-busy={busy}
             >
               <div className="app-downloads-history-head">
                 <strong>{entry.shortLabel}</strong>

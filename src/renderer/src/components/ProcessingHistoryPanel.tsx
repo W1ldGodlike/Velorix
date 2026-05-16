@@ -257,6 +257,7 @@ export function ProcessingHistoryPanel({
                 index: idx + 1,
                 label
               })}
+              aria-busy={busy}
             >
               <div className="app-downloads-history-head">
                 <strong title={entry.outputPath ?? entry.inputPath}>
