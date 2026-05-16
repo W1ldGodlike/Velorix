@@ -723,3 +723,8 @@
 - [J-695] 2026-05-16 19:23:00 [Assistant]: §9 — ffprobe `probe_score`, `major_brand`/`compatible_brands` в probe/summary/HTML/инспектор; `ffprobe-container-format` + Vitest. `npm run check:quiet`.
 - [J-696] 2026-05-16 19:24:10 [Assistant]: §9/§7 — `formatFfprobeEditorVideoFactLine`: major_brand в строке «Видео» под таймлайном; Vitest. `npm run check:quiet`.
 - [J-697] 2026-05-16 19:25:04 [Assistant]: Marathon #10 — коммит J-695–696 (ffprobe container fields + editor/timeline); push; re-anchor. `npm run check:quiet`.
+- [J-698] 2026-05-16 19:27:36 [Assistant]: §7.3 — регрессия: `resolveFfmpegExportJobOptionsFromAppSettings` прокидывает `hwDecode` из settings/overrides (batch runner). Vitest. `npm run check:quiet`.
+- [J-699] 2026-05-16 19:29:20 [Assistant]: §9 — ffprobe `format.nb_streams` в probe/summary/HTML/инспектор; предупреждение при расхождении с числом разобранных дорожек; Vitest. `npm run check:quiet`.
+- [J-700] 2026-05-16 19:30:25 [Assistant]: §7.3 — регрессия batch: `resolveFfmpegExportBatchOutputSuffix/DirectoryFromSettings` + `hwDecode` (J-698); Vitest. `npm run check:quiet`.
+- [J-701] 2026-05-16 19:31:48 [Assistant]: §9 — ffprobe `format.flags` (hex) в probe и TXT/HTML-сводке; Vitest. `npm run check:quiet`.
+- [J-702] 2026-05-16 19:33:26 [Assistant]: §9 — ffprobe `format.size` (байты, IEC-подпись) в probe, инспекторе и TXT/HTML; Vitest. `npm run check:quiet`.

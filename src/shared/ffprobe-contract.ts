@@ -66,6 +66,12 @@ export interface MediaProbeSuccess {
   containerCompatibleBrands: string | null
   /** `format.probe_score` 0–100, если ffprobe отдал. */
   probeScore: number | null
+  /** `format.nb_streams`, если ffprobe отдал. */
+  containerNbStreams: number | null
+  /** `format.flags` (hex-строка для UI/экспорта), если ffprobe отдал. */
+  containerFormatFlags: string | null
+  /** `format.size` в байтах, если ffprobe отдал. */
+  containerSizeBytes: number | null
   /** Все потоки в порядке индекса ffprobe. */
   tracks: MediaProbeTrackRow[]
   /** Главы из `-show_chapters`; пусто, если в файле нет метаданных глав. */

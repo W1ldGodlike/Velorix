@@ -8,6 +8,9 @@ import {
 import { formatProbeChapterTimecode } from './ffprobe-timecode'
 import {
   formatFfprobeContainerBrandExportLine,
+  formatFfprobeContainerSizeExportLine,
+  formatFfprobeFormatFlagsExportLine,
+  formatFfprobeNbStreamsExportLine,
   formatFfprobeProbeScoreExportLine
 } from './ffprobe-container-format'
 
@@ -146,6 +149,9 @@ export function formatProbeSummaryPlainText(
       locale
     ),
     formatFfprobeProbeScoreExportLine(info.probeScore, locale),
+    formatFfprobeNbStreamsExportLine(info.containerNbStreams, info.tracks.length, locale),
+    formatFfprobeFormatFlagsExportLine(info.containerFormatFlags, locale),
+    formatFfprobeContainerSizeExportLine(info.containerSizeBytes, locale),
     '',
     ffprobeSummaryFill(b.streamsCountTemplate, { count: info.tracks.length }),
     ''
@@ -242,6 +248,22 @@ ${chapterRows}
     (() => {
       const score = formatFfprobeProbeScoreExportLine(info.probeScore, locale)
       return score ? `<li>${escapeHtml(score)}</li>` : ''
+    })(),
+    (() => {
+      const nb = formatFfprobeNbStreamsExportLine(
+        info.containerNbStreams,
+        info.tracks.length,
+        locale
+      )
+      return nb ? `<li>${escapeHtml(nb)}</li>` : ''
+    })(),
+    (() => {
+      const fl = formatFfprobeFormatFlagsExportLine(info.containerFormatFlags, locale)
+      return fl ? `<li>${escapeHtml(fl)}</li>` : ''
+    })(),
+    (() => {
+      const sz = formatFfprobeContainerSizeExportLine(info.containerSizeBytes, locale)
+      return sz ? `<li>${escapeHtml(sz)}</li>` : ''
     })(),
     bitrateLabel ? `<li>${b.bitratePlainPrefix}${escapeHtml(bitrateLabel)}</li>` : ''
   ].filter(Boolean)

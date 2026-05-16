@@ -20,6 +20,10 @@ export type FfprobeSummaryStrings = {
   containerBrandTemplate: string
   containerBrandWithCompatTemplate: string
   probeScoreTemplate: string
+  containerNbStreamsTemplate: string
+  containerNbStreamsMismatchTemplate: string
+  containerFormatFlagsTemplate: string
+  containerSizeTemplate: string
   bitrateEstPrefix: string
   bitratePlainPrefix: string
   bitrateMbpsTemplate: string
@@ -67,6 +71,11 @@ const RU: FfprobeSummaryStrings = {
   containerBrandTemplate: 'Бренд контейнера: {brand}',
   containerBrandWithCompatTemplate: 'Бренд контейнера: {brand} (совместимые: {compat})',
   probeScoreTemplate: 'Оценка демультиплексора (probe_score): {score}',
+  containerNbStreamsTemplate: 'Потоков в контейнере (nb_streams): {count}',
+  containerNbStreamsMismatchTemplate:
+    'Потоков в контейнере (nb_streams): {nb} (разобрано дорожек: {parsed})',
+  containerFormatFlagsTemplate: 'Флаги контейнера (flags): {flags}',
+  containerSizeTemplate: 'Размер файла (format.size): {label} ({bytes} B)',
   bitrateEstPrefix: 'Битрейт (оценка): ',
   bitratePlainPrefix: 'Битрейт: ',
   bitrateMbpsTemplate: '{value} Мбит/с',
@@ -117,6 +126,11 @@ const EN: FfprobeSummaryStrings = {
   containerBrandTemplate: 'Container brand: {brand}',
   containerBrandWithCompatTemplate: 'Container brand: {brand} (compatible: {compat})',
   probeScoreTemplate: 'Demuxer confidence (probe_score): {score}',
+  containerNbStreamsTemplate: 'Container streams (nb_streams): {count}',
+  containerNbStreamsMismatchTemplate:
+    'Container streams (nb_streams): {nb} (parsed tracks: {parsed})',
+  containerFormatFlagsTemplate: 'Container flags (flags): {flags}',
+  containerSizeTemplate: 'File size (format.size): {label} ({bytes} B)',
   bitrateEstPrefix: 'Bitrate (estimate): ',
   bitratePlainPrefix: 'Bitrate: ',
   bitrateMbpsTemplate: '{value} Mb/s',

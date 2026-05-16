@@ -3,11 +3,18 @@ import { describe, expect, it } from 'vitest'
 import type { MediaProbeSuccess } from '../../src/shared/ffprobe-contract'
 import {
   formatFfprobeContainerBrandExportLine,
+  formatFfprobeContainerSizeExportLine,
+  formatFfprobeContainerSizeCompact,
   formatFfprobeEditorVideoFactLine,
+  formatFfprobeFormatFlagsExportLine,
+  formatFfprobeNbStreamsExportLine,
   formatFfprobeProbeScoreExportLine,
   parseFfprobeFormatCompatibleBrands,
+  parseFfprobeFormatFlags,
   parseFfprobeFormatMajorBrand,
-  parseFfprobeFormatProbeScore
+  parseFfprobeFormatNbStreams,
+  parseFfprobeFormatProbeScore,
+  parseFfprobeFormatSize
 } from '../../src/shared/ffprobe-container-format'
 
 const probeBase: MediaProbeSuccess = {
@@ -22,6 +29,9 @@ const probeBase: MediaProbeSuccess = {
   containerMajorBrand: null,
   containerCompatibleBrands: null,
   probeScore: null,
+  containerNbStreams: null,
+  containerFormatFlags: null,
+  containerSizeBytes: null,
   tracks: [],
   chapters: [],
   rawJson: '{}'
@@ -47,6 +57,23 @@ describe('ffprobe-container-format', () => {
     expect(
       formatFfprobeEditorVideoFactLine({ ...probeBase, containerMajorBrand: 'isom' }, '—')
     ).toBe('1280×720 h264 · isom')
+  })
+
+  it('parseFfprobeFormatFlags', () => {
+    expect(parseFfprobeFormatFlags('32768')).toBe('0x8000')
+    expect(formatFfprobeFormatFlagsExportLine('0x8000', 'en')).toContain('0x8000')
+  })
+
+  it('parseFfprobeFormatNbStreams и export line', () => {
+    expect(parseFfprobeFormatNbStreams('3')).toBe(3)
+    expect(formatFfprobeNbStreamsExportLine(2, 2, 'ru')).toContain('2')
+    expect(formatFfprobeNbStreamsExportLine(3, 2, 'en')).toContain('parsed tracks: 2')
+  })
+
+  it('parseFfprobeFormatSize и export line', () => {
+    expect(parseFfprobeFormatSize('1048576')).toBe(1048576)
+    expect(formatFfprobeContainerSizeCompact(1048576)).toBe('1.00 MiB')
+    expect(formatFfprobeContainerSizeExportLine(1024, 'ru')).toContain('1024 B')
   })
 
   it('formatFfprobeContainerBrandExportLine RU/EN', () => {

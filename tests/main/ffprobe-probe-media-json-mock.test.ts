@@ -94,6 +94,9 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
         duration: '1.0',
         format_name: 'mov,mp4,m4a,3gp,3g2,mj2',
         probe_score: 100,
+        nb_streams: 2,
+        flags: 0,
+        size: '2048',
         tags: { major_brand: 'isom', compatible_brands: 'mp41iso2' }
       },
       streams: [
@@ -128,6 +131,9 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
         expect(r.containerMajorBrand).toBe('isom')
         expect(r.containerCompatibleBrands).toBe('mp41iso2')
         expect(r.probeScore).toBe(100)
+        expect(r.containerNbStreams).toBe(2)
+        expect(r.containerFormatFlags).toBe('0x0')
+        expect(r.containerSizeBytes).toBe(2048)
       }
     } finally {
       cleanup()

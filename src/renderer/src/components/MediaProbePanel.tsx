@@ -7,6 +7,7 @@ import type {
   MediaProbeSuccess,
   MediaProbeTrackRow
 } from '../../../shared/ffprobe-contract'
+import { formatFfprobeContainerSizeCompact } from '../../../shared/ffprobe-container-format'
 import {
   defaultFfprobeJsonFileName,
   defaultFfprobeSummaryHtmlFileName,
@@ -336,6 +337,12 @@ export function PreviewProbeBody({
             {probeInfo.formatName ? ` · ${probeInfo.formatName}` : ''}
             {probeInfo.containerMajorBrand ? ` · ${probeInfo.containerMajorBrand}` : ''}
             {probeInfo.probeScore !== null ? ` · probe ${probeInfo.probeScore}` : ''}
+            {probeInfo.containerNbStreams !== null
+              ? ` · ${probeInfo.containerNbStreams} str.`
+              : ''}
+            {probeInfo.containerSizeBytes !== null
+              ? ` · ${formatFfprobeContainerSizeCompact(probeInfo.containerSizeBytes)}`
+              : ''}
             {bitrateLabel ? ` · ${bitrateLabel}` : ''}
           </span>
         </div>

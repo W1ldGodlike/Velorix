@@ -47,6 +47,77 @@ export function parseFfprobeFormatCompatibleBrands(
   return tagScalar(tags?.['compatible_brands'])
 }
 
+export function parseFfprobeFormatFlags(raw: string | number | undefined): string | null {
+  if (typeof raw === 'number' && Number.isFinite(raw)) {
+    const u = Math.trunc(raw) >>> 0
+    return `0x${u.toString(16)}`
+  }
+  if (typeof raw === 'string') {
+    const t = raw.trim()
+    if (t.length === 0) {
+      return null
+    }
+    if (/^0x[0-9a-f]+$/i.test(t)) {
+      return t.toLowerCase()
+    }
+    const n = Number.parseInt(t, 10)
+    if (Number.isFinite(n)) {
+      return `0x${(n >>> 0).toString(16)}`
+    }
+    return t
+  }
+  return null
+}
+
+export function parseFfprobeFormatSize(raw: string | number | undefined): number | null {
+  if (typeof raw === 'number' && Number.isFinite(raw)) {
+    const n = Math.trunc(raw)
+    return n >= 0 ? n : null
+  }
+  if (typeof raw === 'string') {
+    const t = raw.trim()
+    if (t === '') {
+      return null
+    }
+    const n = Number.parseInt(t, 10)
+    return Number.isFinite(n) && n >= 0 ? n : null
+  }
+  return null
+}
+
+/** Компактная подпись размера файла (IEC KiB/MiB/…). */
+export function formatFfprobeContainerSizeCompact(bytes: number): string {
+  if (bytes < 1024) {
+    return `${bytes} B`
+  }
+  const units = ['KiB', 'MiB', 'GiB', 'TiB'] as const
+  let value = bytes
+  let unitIndex = -1
+  while (value >= 1024 && unitIndex < units.length - 1) {
+    value /= 1024
+    unitIndex += 1
+  }
+  const label =
+    value < 10 ? value.toFixed(2) : value < 100 ? value.toFixed(1) : String(Math.round(value))
+  return `${label} ${units[unitIndex]}`
+}
+
+export function parseFfprobeFormatNbStreams(raw: string | number | undefined): number | null {
+  if (typeof raw === 'number' && Number.isFinite(raw)) {
+    const n = Math.trunc(raw)
+    return n >= 0 ? n : null
+  }
+  if (typeof raw === 'string') {
+    const t = raw.trim()
+    if (t === '') {
+      return null
+    }
+    const n = Number.parseInt(t, 10)
+    return Number.isFinite(n) && n >= 0 ? n : null
+  }
+  return null
+}
+
 export function formatFfprobeContainerBrandExportLine(
   majorBrand: string | null,
   compatibleBrands: string | null,
@@ -74,6 +145,49 @@ export function formatFfprobeProbeScoreExportLine(
   }
   const b = ffprobeSummaryStrings(locale)
   return ffprobeSummaryFill(b.probeScoreTemplate, { score: probeScore })
+}
+
+export function formatFfprobeFormatFlagsExportLine(
+  flags: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (flags === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerFormatFlagsTemplate, { flags })
+}
+
+export function formatFfprobeContainerSizeExportLine(
+  sizeBytes: number | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (sizeBytes === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerSizeTemplate, {
+    label: formatFfprobeContainerSizeCompact(sizeBytes),
+    bytes: sizeBytes
+  })
+}
+
+export function formatFfprobeNbStreamsExportLine(
+  nbStreams: number | null,
+  parsedTrackCount: number,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (nbStreams === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  if (nbStreams !== parsedTrackCount) {
+    return ffprobeSummaryFill(b.containerNbStreamsMismatchTemplate, {
+      nb: nbStreams,
+      parsed: parsedTrackCount
+    })
+  }
+  return ffprobeSummaryFill(b.containerNbStreamsTemplate, { count: nbStreams })
 }
 
 /** §7 — краткая строка «Видео» под таймлайном: разрешение, кодек, опц. major_brand. */
