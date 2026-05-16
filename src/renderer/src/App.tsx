@@ -5771,7 +5771,11 @@ function App(): JSX.Element {
               role="region"
               aria-label={uiText('downloadsQueueTableZoneAria')}
             >
-              <div className="app-downloads-table-wrap">
+              <div
+                className="app-downloads-table-wrap"
+                role="group"
+                aria-label={uiText('downloadsQueueTableWrapGroupAria')}
+              >
                 <table className="app-downloads-table">
                   <thead>
                     <tr>
@@ -7080,7 +7084,11 @@ function App(): JSX.Element {
               {uiText('editorEnginePathsDialogTitle')}
             </h2>
             <p className="app-modal-hint">{uiText('editorEnginePathsDialogHint')}</p>
-            <div className="app-engine-path-rows">
+            <div
+              className="app-engine-path-rows"
+              role="group"
+              aria-label={uiText('enginePathsDialogRowsGroupAria')}
+            >
               {ENGINE_IDS.map((id) => (
                 <div key={id} className="app-engine-path-row">
                   <label className="app-engine-path-label" htmlFor={`engine-path-${id}`}>

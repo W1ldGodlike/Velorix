@@ -813,4 +813,9 @@
 - [J-790] 2026-05-16 08:12:00 [Assistant]: Таймлайн — блок шкалы и волны (`app-timeline-pane-visuals`): `role="group"` + `videoTimelinePaneVisualsGroupAria`.
 - [J-791] 2026-05-16 08:14:00 [Assistant]: Загрузки — сворачиваемая история (`app-downloads-history-panel`): `aria-label` + `downloadsHistoryDetailsAria`.
 - [J-792] 2026-05-16 08:16:00 [Assistant]: Загрузки — сворачиваемый журнал (`app-downloads-log-panel`): `aria-label` + `downloadsLogDetailsAria`.
+- [J-793] 2026-05-16 08:18:00 [Assistant]: Загрузки — список карточек истории (`app-downloads-history-list`): `role="region"` + `downloadsHistoryListRegionAria`.
+- [J-794] 2026-05-16 08:20:00 [Assistant]: История обработок — список карточек (`app-processing-history-list`): `role="region"` + `processingHistoryListRegionAria`.
+- [J-795] 2026-05-16 08:22:00 [Assistant]: Загрузки — обёртка таблицы очереди (`app-downloads-table-wrap`): `role="group"` + `downloadsQueueTableWrapGroupAria`.
+- [J-796] 2026-05-16 08:24:00 [Assistant]: База знаний — тело Markdown (`app-knowledge-body`): `role="group"` + `knowledgeArticleBodyGroupAria`.
+- [J-797] 2026-05-16 08:26:00 [Assistant]: Диалог путей движков — блок строк (`app-engine-path-rows`): `role="group"` + `enginePathsDialogRowsGroupAria`.
 

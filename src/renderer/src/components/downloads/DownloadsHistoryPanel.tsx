@@ -119,7 +119,11 @@ export function DownloadsHistoryPanel({
           {uiText('downloadsHistoryExportJson')}
         </button>
       </div>
-      <div className="app-downloads-history-list">
+      <div
+        className="app-downloads-history-list"
+        role="region"
+        aria-label={uiText('downloadsHistoryListRegionAria')}
+      >
         {entries.length === 0 ? (
           <p className="app-downloads-history-empty">{uiText('downloadsHistoryEmpty')}</p>
         ) : (

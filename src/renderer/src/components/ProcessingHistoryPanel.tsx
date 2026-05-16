@@ -210,7 +210,11 @@ export function ProcessingHistoryPanel({
           {uiText('processingHistoryExportJson')}
         </button>
       </div>
-      <div className="app-processing-history-list">
+      <div
+        className="app-processing-history-list"
+        role="region"
+        aria-label={uiText('processingHistoryListRegionAria')}
+      >
         {entries.length === 0 ? (
           <p className="app-downloads-history-empty">{uiText('processingHistoryEmpty')}</p>
         ) : (
