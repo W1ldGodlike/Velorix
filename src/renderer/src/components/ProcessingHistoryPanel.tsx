@@ -1,4 +1,4 @@
-import type { JSX } from 'react'
+import { useId, type JSX } from 'react'
 
 import type {
   ProcessingHistoryEntry,
@@ -92,6 +92,10 @@ export function ProcessingHistoryPanel({
     { value: 'cancelled', label: uiText('processingOutcomeCancelled') }
   ]
 
+  const processingHistoryKindFilterId = useId()
+  const processingHistoryOutcomeFilterId = useId()
+  const processingHistoryQueryFilterId = useId()
+
   return (
     <details
       className="app-settings-section app-processing-history-panel"
@@ -139,48 +143,63 @@ export function ProcessingHistoryPanel({
         aria-label={uiText('processingHistoryFiltersToolbarAria')}
         aria-describedby="processingHistorySectionHint"
       >
-        <select
-          className="app-control"
-          aria-label={uiText('processingHistoryKindFilterAria')}
-          value={filter.kind ?? ''}
-          disabled={busy}
-          onChange={(event) => {
-            const value = event.currentTarget.value as '' | ProcessingHistoryKind
-            onFilterChange(mergeFilter(filter, { kind: value }))
-          }}
-        >
-          {kindOptions.map((option) => (
-            <option key={option.value || 'all'} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-        <select
-          className="app-control"
-          aria-label={uiText('processingHistoryOutcomeFilterAria')}
-          value={filter.outcome ?? ''}
-          disabled={busy}
-          onChange={(event) => {
-            const value = event.currentTarget.value as '' | ProcessingHistoryOutcome
-            onFilterChange(mergeFilter(filter, { outcome: value }))
-          }}
-        >
-          {outcomeOptions.map((option) => (
-            <option key={option.value || 'all'} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-        <input
-          className="app-control"
-          value={filter.query ?? ''}
-          disabled={busy}
-          placeholder={uiText('processingHistoryQueryPlaceholder')}
-          aria-label={uiText('processingHistoryQueryAria')}
-          onChange={(event) => {
-            onFilterChange(mergeFilter(filter, { query: event.currentTarget.value }))
-          }}
-        />
+        <div className="app-processing-history-filter-field">
+          <label htmlFor={processingHistoryKindFilterId}>
+            {uiText('processingHistoryKindFilterAria')}
+          </label>
+          <select
+            id={processingHistoryKindFilterId}
+            className="app-control"
+            value={filter.kind ?? ''}
+            disabled={busy}
+            onChange={(event) => {
+              const value = event.currentTarget.value as '' | ProcessingHistoryKind
+              onFilterChange(mergeFilter(filter, { kind: value }))
+            }}
+          >
+            {kindOptions.map((option) => (
+              <option key={option.value || 'all'} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="app-processing-history-filter-field">
+          <label htmlFor={processingHistoryOutcomeFilterId}>
+            {uiText('processingHistoryOutcomeFilterAria')}
+          </label>
+          <select
+            id={processingHistoryOutcomeFilterId}
+            className="app-control"
+            value={filter.outcome ?? ''}
+            disabled={busy}
+            onChange={(event) => {
+              const value = event.currentTarget.value as '' | ProcessingHistoryOutcome
+              onFilterChange(mergeFilter(filter, { outcome: value }))
+            }}
+          >
+            {outcomeOptions.map((option) => (
+              <option key={option.value || 'all'} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="app-processing-history-filter-field">
+          <label htmlFor={processingHistoryQueryFilterId}>
+            {uiText('processingHistoryQueryAria')}
+          </label>
+          <input
+            id={processingHistoryQueryFilterId}
+            className="app-control"
+            value={filter.query ?? ''}
+            disabled={busy}
+            placeholder={uiText('processingHistoryQueryPlaceholder')}
+            onChange={(event) => {
+              onFilterChange(mergeFilter(filter, { query: event.currentTarget.value }))
+            }}
+          />
+        </div>
       </div>
       <div
         className="app-processing-history-actions"

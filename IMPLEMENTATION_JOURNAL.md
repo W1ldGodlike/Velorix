@@ -883,4 +883,9 @@
 - [J-860] 2026-05-16 10:34:00 [Assistant]: Полоска «7 дней» — в `DownloadsHistoryPanel` и `ProcessingHistoryPanel` (`app-processing-history-summary`): явный `role="region"` при сохранённых `aria-label`.
 - [J-861] 2026-05-16 10:36:00 [Assistant]: История загрузок — фильтр исхода: связка `label`/`htmlFor`/`id` через `useId`, у `select` убран избыточный `aria-label`.
 - [J-862] 2026-05-16 10:38:00 [Assistant]: Терминал — фильтр подсказок вставки: `label`/`htmlFor`/`useId` вместо вложенного `label`+`span`; у `input` убран дублирующий `aria-label`.
+- [J-863] 2026-05-16 10:40:00 [Assistant]: История обработок — панель фильтров: три поля с явными `label`/`htmlFor`/`useId`, без дублирующих `aria-label`; класс `app-processing-history-filter-field` и общие стили с `.app-downloads-history-filter`.
+- [J-864] 2026-05-16 10:42:00 [Assistant]: Быстрая yt-dlp — поле URL: имя из скрытого заголовка региона через `aria-labelledby="quick-ytdlp-region-title"`; у select поведения вставки URL убран избыточный `aria-label` при видимой подписи.
+- [J-865] 2026-05-16 10:44:00 [Assistant]: Вкладка «Загрузки» — поле URL очереди: скрытый `label`/`htmlFor`/`useId`, у `textarea` убран дублирующий `aria-label`.
+- [J-866] 2026-05-16 10:46:00 [Assistant]: Пакетный экспорт — суффикс вывода и поле каталога: убраны избыточные `aria-label` у полей внутри уже подписанных `label`.
+- [J-867] 2026-05-16 10:48:00 [Assistant]: Терминал — строка команды: скрытый `label`/`htmlFor`/`useId`, без дублирующего `aria-label` у `input`.
 

@@ -633,6 +633,8 @@ function App(): JSX.Element {
   const [terminalHints, setTerminalHints] = useState<TerminalCommandHintEntry[]>([])
   const [terminalHintFilter, setTerminalHintFilter] = useState('')
   const terminalHintsSearchFieldId = useId()
+  const downloadsMainUrlFieldId = useId()
+  const terminalCommandInputId = useId()
   const [terminalHistory, setTerminalHistory] = useState<TerminalHistoryEntry[]>([])
   const [terminalSuggestFocus, setTerminalSuggestFocus] = useState(false)
   const [terminalSuggestIndex, setTerminalSuggestIndex] = useState(0)
@@ -3176,7 +3178,7 @@ function App(): JSX.Element {
               <textarea
                 className="app-downloads-url-input app-url-input"
                 placeholder={uiText('quickYtdlpPlaceholder')}
-                aria-label={uiText('quickYtdlpAria')}
+                aria-labelledby="quick-ytdlp-region-title"
                 aria-describedby="quickYtdlpUrlHint"
                 value={downloadsUrl}
                 rows={3}
@@ -3192,7 +3194,6 @@ function App(): JSX.Element {
                 <select
                   className="app-control"
                   value={editorUrlPasteBehavior}
-                  aria-label={uiText('editorUrlPasteBehaviorLabel')}
                   aria-describedby="quickYtdlpUrlHint"
                   onChange={(e) => {
                     const v = parseEditorUrlPasteBehavior(e.target.value)
@@ -3316,7 +3317,6 @@ function App(): JSX.Element {
                     disabled={batchExportBusy}
                     spellCheck={false}
                     title={uiText('batchExportOutputSuffixHint')}
-                    aria-label={uiText('batchExportOutputSuffixLabel')}
                     aria-describedby="batch-export-suffix-hint"
                     onChange={(e) => {
                       setBatchOutputSuffix(e.target.value)
@@ -3353,7 +3353,6 @@ function App(): JSX.Element {
                       placeholder={uiText('batchExportOutputDirPlaceholder')}
                       title={batchOutputDirectory || uiText('batchExportOutputDirPlaceholder')}
                       disabled={batchExportBusy}
-                      aria-label={uiText('batchExportOutputDirLabel')}
                       aria-describedby="batch-export-outdir-hint"
                     />
                     <button
@@ -5354,13 +5353,16 @@ function App(): JSX.Element {
                 aria-orientation="horizontal"
                 aria-label={uiText('terminalCommandToolbarAria')}
               >
+                <label htmlFor={terminalCommandInputId} className="app-visually-hidden">
+                  {uiText('terminalCommandInputAriaLabel')}
+                </label>
                 <input
+                  id={terminalCommandInputId}
                   className="app-control app-terminal-input"
                   value={terminalLine}
                   spellCheck={false}
                   autoComplete="off"
                   placeholder={uiText('terminalCommandPlaceholder')}
-                  aria-label={uiText('terminalCommandInputAriaLabel')}
                   aria-expanded={terminalInlineSuggestions.length > 0 && terminalSuggestFocus}
                   aria-controls="terminal-inline-suggest-list"
                   aria-autocomplete="list"
@@ -5720,11 +5722,14 @@ function App(): JSX.Element {
               aria-label={uiText('downloadsUrlRowGroupAria')}
             >
               <div className="app-downloads-url-field">
+                <label htmlFor={downloadsMainUrlFieldId} className="app-visually-hidden">
+                  {uiText('downloadsUrlAria')}
+                </label>
                 <textarea
+                  id={downloadsMainUrlFieldId}
                   className="app-downloads-url-input"
                   value={downloadsUrl}
                   placeholder={uiText('downloadsUrlPlaceholder')}
-                  aria-label={uiText('downloadsUrlAria')}
                   aria-describedby="downloads-main-url-hint"
                   onChange={(e) => {
                     setDownloadsUrl(e.target.value)

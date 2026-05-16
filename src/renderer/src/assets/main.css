@@ -1077,7 +1077,8 @@ button.app-downloads-hint-token:disabled {
   padding: 0 0.65rem 0.55rem;
 }
 
-.app-downloads-history-filter {
+.app-downloads-history-filter,
+.app-processing-history-filter-field {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
@@ -1086,7 +1087,8 @@ button.app-downloads-hint-token:disabled {
   font-weight: 700;
 }
 
-.app-downloads-history-filter .app-control {
+.app-downloads-history-filter .app-control,
+.app-processing-history-filter-field .app-control {
   min-height: 28px;
   padding: 0 0.45rem;
   font-size: 0.68rem;
@@ -1737,6 +1739,11 @@ button.app-downloads-hint-token:disabled {
 }
 
 .app-processing-history-controls .app-control {
+  flex: 1 1 7.5rem;
+  min-width: 0;
+}
+
+.app-processing-history-controls .app-processing-history-filter-field {
   flex: 1 1 7.5rem;
   min-width: 0;
 }
