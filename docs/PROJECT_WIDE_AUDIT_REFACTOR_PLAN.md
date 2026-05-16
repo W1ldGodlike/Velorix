@@ -143,8 +143,8 @@
 | settings.json stored | ✅ | `settings-stored-parse.ts` |
 | `ytdlp-download-options.ts` | ✅ | `ytdlp-download-stored-parse.ts` + `check:field-registries` |
 | `ffmpeg-export-service.ts` (остаток parse) | ✅ | `ffmpeg-export-stored-parse`, `user-preset-parse`, `progress-parse` |
-| `ffprobe-side-data.ts` summarizers | ⬜ | table-driven side_data types |
-| `ffprobe-summary-export-locale.ts` | ⬜ | только если дубли шаблонов |
+| `ffprobe-side-data.ts` summarizers | ✅ | `FFPROBE_SIDE_DATA_RULES` + `check:field-registries` |
+| `ffprobe-summary-export-locale.ts` | ✅ | `ffprobe-summary-container-template-specs` |
 
 | Шаг | Действие |
 |-----|----------|
@@ -165,7 +165,7 @@
 | `terminal-contract-scenarios.test.ts` (4 it + 6×it.each) | [x] | batches 60/690; preview 35+182 predicates; meta smoke |
 | `ytdlp-progress-parser.test.ts` (77 it) | ✅ | `ytdlp-progress-parse-cases` + `it.each` |
 | `ffmpeg-export-argv.test.ts` (67 it) | ✅ | `ffmpeg-export-argv-cases` + `it.each` (filter/trim/encode) |
-| `ffprobe-service.test.ts` (46 it) | ⬜ | fixtures + batches |
+| `ffprobe-service.test.ts` (29 it + it.each) | ✅ | track-detail-cases |
 | Остальные `many-standalone-it` | ⬜ | по убыванию count из audit |
 
 | Шаг | Действие |
@@ -309,9 +309,9 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 
 - [x] Фаза 0 — audit scripts, registries, fixtures, inventory manifest, structural script, правила  
 - [x] Фаза 1 — инвентаризация (таблицы долгов, ARCHITECTURE↔IPC, `audit:ipc-architecture`)  
-- [x] Фаза 2 — срез 1: `ytdlp-download-stored-parse.ts` (остальные hotspots — далее по §6)  
-- [ ] Фаза 3 — tests копипаста  
-- [ ] Фаза 4 — крупные модули  
+- [x] Фаза 2 — src registries + side-data/summary locale + §6/§7 batch/hw/ytdlp filename (J-704–718; `audit:copy-paste` src без hotspots)  
+- [~] Фаза 3 — top tests ✅ (terminal batches/preview, ytdlp/ffmpeg argv, ffprobe track); остаток `many-standalone-it` по audit  
+- [ ] Фаза 4 — крупные модули (след.: P1 `index.ts` IPC split)  
 - [ ] Фаза 5 — TODO/временное  
 - [ ] Фаза 6 — scripts  
 - [ ] Фаза 7 — ARCHITECTURE/contracts  

@@ -1,22 +1,26 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  FFMPEG_EXPORT_BATCH_CONCURRENCY_LIMIT_CASES,
+  FFMPEG_EXPORT_BATCH_CONCURRENCY_PARSE_CASES
+} from '../fixtures/ffmpeg-export-batch-contract-cases'
+import {
   parseFfmpegExportBatchConcurrency,
   resolveFfmpegExportBatchConcurrencyLimit
 } from '../../src/shared/ffmpeg-export-batch-contract'
 
 describe('ffmpeg-export-batch-contract', () => {
-  it('parseFfmpegExportBatchConcurrency', () => {
-    expect(parseFfmpegExportBatchConcurrency(1)).toBe(1)
-    expect(parseFfmpegExportBatchConcurrency(2)).toBe(2)
-    expect(parseFfmpegExportBatchConcurrency(4)).toBe(4)
-    expect(parseFfmpegExportBatchConcurrency('auto')).toBe('auto')
-    expect(parseFfmpegExportBatchConcurrency('bad')).toBe('auto')
-  })
+  it.each(FFMPEG_EXPORT_BATCH_CONCURRENCY_PARSE_CASES)(
+    'parseFfmpegExportBatchConcurrency $raw → $expected',
+    ({ raw, expected }) => {
+      expect(parseFfmpegExportBatchConcurrency(raw)).toBe(expected)
+    }
+  )
 
-  it('resolveFfmpegExportBatchConcurrencyLimit', () => {
-    expect(resolveFfmpegExportBatchConcurrencyLimit(2, 8)).toBe(2)
-    expect(resolveFfmpegExportBatchConcurrencyLimit('auto', 8)).toBe(4)
-    expect(resolveFfmpegExportBatchConcurrencyLimit('auto', 2)).toBe(1)
-  })
+  it.each(FFMPEG_EXPORT_BATCH_CONCURRENCY_LIMIT_CASES)(
+    'resolveFfmpegExportBatchConcurrencyLimit $value cpu=$cpuCount',
+    ({ value, cpuCount, expected }) => {
+      expect(resolveFfmpegExportBatchConcurrencyLimit(value, cpuCount)).toBe(expected)
+    }
+  )
 })

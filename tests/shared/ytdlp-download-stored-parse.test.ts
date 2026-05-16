@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import {
   parseYtdlpCookiesBrowser,
+  parseYtdlpFilenameTemplateStored,
   parseYtdlpFormatPreset,
   parseYtdlpImpersonate,
   parseYtdlpQueueRetryProfile,
@@ -30,5 +31,14 @@ describe('ytdlp-download-stored-parse', () => {
   it('parseYtdlpQueueRetryProfile — persistent или off', () => {
     expect(parseYtdlpQueueRetryProfile('persistent')).toBe('persistent')
     expect(parseYtdlpQueueRetryProfile('')).toBe('off')
+  })
+
+  it.each([
+    { raw: '  %(title)s.%(ext)s  ', expected: '%(title)s.%(ext)s' },
+    { raw: '', expected: undefined },
+    { raw: 42, expected: undefined },
+    { raw: 'x'.repeat(500), expected: 'x'.repeat(480) }
+  ])('parseYtdlpFilenameTemplateStored $#', ({ raw, expected }) => {
+    expect(parseYtdlpFilenameTemplateStored(raw)).toBe(expected)
   })
 })

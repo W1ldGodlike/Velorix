@@ -275,17 +275,7 @@ export function validateYtdlpFragmentRetriesLine(
   return { ok: false, error: V.fragmentRetriesMustBeInteger99 }
 }
 
-/** Строковые поля из JSON без семантической проверки шаблона — см. validateFilenameTemplate. */
-export function parseYtdlpFilenameTemplateStored(raw: unknown): string | undefined {
-  if (typeof raw !== 'string') {
-    return undefined
-  }
-  const t = raw.trim()
-  if (t.length === 0) {
-    return undefined
-  }
-  return t.length <= 480 ? t : t.slice(0, 480)
-}
+export { parseYtdlpFilenameTemplateStored } from '../shared/ytdlp-download-stored-parse'
 
 function hasParentDirSegment(template: string): boolean {
   return template.split(/[/\\]/).some((seg) => seg === '..')

@@ -1,5 +1,23 @@
+import {
+  FFPROBE_SUMMARY_CONTAINER_TEMPLATE_SPECS,
+  type FfprobeSummaryContainerTemplateKey
+} from './ffprobe-summary-container-template-specs'
+
 /** Локали экспорта TXT/HTML сводки ffprobe (shared; без renderer). */
 export type FfprobeSummaryLocale = 'ru' | 'en'
+
+function pickSummaryContainerTemplates(
+  locale: FfprobeSummaryLocale
+): Record<FfprobeSummaryContainerTemplateKey, string> {
+  const lang = locale === 'en' ? 'en' : 'ru'
+  const out = {} as Record<FfprobeSummaryContainerTemplateKey, string>
+  for (const key of Object.keys(
+    FFPROBE_SUMMARY_CONTAINER_TEMPLATE_SPECS
+  ) as FfprobeSummaryContainerTemplateKey[]) {
+    out[key] = FFPROBE_SUMMARY_CONTAINER_TEMPLATE_SPECS[key][lang]
+  }
+  return out
+}
 
 export type FfprobeSummaryStrings = {
   plainDocTitle: string
@@ -99,46 +117,7 @@ const RU: FfprobeSummaryStrings = {
   formatPrefix: 'Формат: ',
   formatUnknown: 'Формат: ?',
   formatLongPrefix: 'Описание формата: ',
-  containerBrandTemplate: 'Бренд контейнера: {brand}',
-  containerBrandWithCompatTemplate: 'Бренд контейнера: {brand} (совместимые: {compat})',
-  containerCreationTimeTemplate: 'Дата создания (creation_time): {time}',
-  containerEncoderTemplate: 'Кодировщик контейнера (encoder): {encoder}',
-  containerPublisherTemplate: 'Издатель контейнера (publisher): {publisher}',
-  containerEncodedByTemplate: 'Кодировал (encoded_by): {encodedBy}',
-  containerSoftwareTemplate: 'ПО контейнера (software): {software}',
-  containerTitleTemplate: 'Заголовок контейнера (title): {title}',
-  containerCommentTemplate: 'Комментарий контейнера (comment): {comment}',
-  containerSynopsisTemplate: 'Синопсис контейнера (synopsis): {synopsis}',
-  containerDescriptionTemplate: 'Описание контейнера (description): {description}',
-  containerKeywordsTemplate: 'Ключевые слова контейнера (keywords): {keywords}',
-  containerLyricsTemplate: 'Текст песни контейнера (lyrics): {lyrics}',
-  containerArtistTemplate: 'Исполнитель контейнера (artist): {artist}',
-  containerPerformerTemplate: 'Исполнитель (performer) контейнера: {performer}',
-  containerSortArtistTemplate: 'Сортировка исполнителя контейнера (sort_artist): {sortArtist}',
-  containerAlbumTemplate: 'Альбом контейнера (album): {album}',
-  containerAlbumArtistTemplate: 'Исполнитель альбома контейнера (album_artist): {albumArtist}',
-  containerSortAlbumTemplate: 'Сортировка альбома контейнера (sort_album): {sortAlbum}',
-  containerSortTitleTemplate: 'Сортировка заголовка контейнера (sort_title): {sortTitle}',
-  containerGenreTemplate: 'Жанр контейнера (genre): {genre}',
-  containerTrackTemplate: 'Трек контейнера (track): {track}',
-  containerDiscTemplate: 'Диск контейнера (disc): {disc}',
-  containerCopyrightTemplate: 'Авторские права контейнера (copyright): {copyright}',
-  containerIsrcTemplate: 'ISRC контейнера (isrc): {isrc}',
-  containerDateTemplate: 'Дата контейнера (date): {date}',
-  containerLocationTemplate: 'Место контейнера (location): {location}',
-  containerPurchaseDateTemplate: 'Дата покупки контейнера (purchase_date): {purchaseDate}',
-  probeScoreTemplate: 'Оценка демультиплексора (probe_score): {score}',
-  containerNbStreamsTemplate: 'Потоков в контейнере (nb_streams): {count}',
-  containerNbStreamsMismatchTemplate:
-    'Потоков в контейнере (nb_streams): {nb} (разобрано дорожек: {parsed})',
-  containerNbProgramsTemplate: 'Программ в контейнере (nb_programs): {count}',
-  containerFormatFlagsTemplate: 'Флаги контейнера (flags): {flags}',
-  containerSizeTemplate: 'Размер файла (format.size): {label} ({bytes} B)',
-  containerStartTimeTemplate: 'Смещение контейнера (start_time): {time}',
-  containerStartTimeRealTemplate: 'Реальное смещение (start_time_real): {time}',
-  containerStartTimeRealMismatchTemplate:
-    'Реальное смещение (start_time_real): {real} (start_time: {nominal})',
-  containerFilenameTemplate: 'Имя входа ffprobe (filename): {filename}',
+  ...pickSummaryContainerTemplates('ru'),
   bitrateEstPrefix: 'Битрейт (оценка): ',
   bitratePlainPrefix: 'Битрейт: ',
   bitrateMbpsTemplate: '{value} Мбит/с',
@@ -186,46 +165,7 @@ const EN: FfprobeSummaryStrings = {
   formatPrefix: 'Format: ',
   formatUnknown: 'Format: ?',
   formatLongPrefix: 'Container description: ',
-  containerBrandTemplate: 'Container brand: {brand}',
-  containerBrandWithCompatTemplate: 'Container brand: {brand} (compatible: {compat})',
-  containerCreationTimeTemplate: 'Creation time (creation_time): {time}',
-  containerEncoderTemplate: 'Container encoder (encoder): {encoder}',
-  containerPublisherTemplate: 'Container publisher (publisher): {publisher}',
-  containerEncodedByTemplate: 'Encoded by (encoded_by): {encodedBy}',
-  containerSoftwareTemplate: 'Container software (software): {software}',
-  containerTitleTemplate: 'Container title (title): {title}',
-  containerCommentTemplate: 'Container comment (comment): {comment}',
-  containerSynopsisTemplate: 'Container synopsis (synopsis): {synopsis}',
-  containerDescriptionTemplate: 'Container description (description): {description}',
-  containerKeywordsTemplate: 'Container keywords (keywords): {keywords}',
-  containerLyricsTemplate: 'Container lyrics (lyrics): {lyrics}',
-  containerArtistTemplate: 'Container artist (artist): {artist}',
-  containerPerformerTemplate: 'Container performer (performer): {performer}',
-  containerSortArtistTemplate: 'Container sort artist (sort_artist): {sortArtist}',
-  containerAlbumTemplate: 'Container album (album): {album}',
-  containerAlbumArtistTemplate: 'Container album artist (album_artist): {albumArtist}',
-  containerSortAlbumTemplate: 'Container sort album (sort_album): {sortAlbum}',
-  containerSortTitleTemplate: 'Container sort title (sort_title): {sortTitle}',
-  containerGenreTemplate: 'Container genre (genre): {genre}',
-  containerTrackTemplate: 'Container track (track): {track}',
-  containerDiscTemplate: 'Container disc (disc): {disc}',
-  containerCopyrightTemplate: 'Container copyright (copyright): {copyright}',
-  containerIsrcTemplate: 'Container ISRC (isrc): {isrc}',
-  containerDateTemplate: 'Container date (date): {date}',
-  containerLocationTemplate: 'Container location (location): {location}',
-  containerPurchaseDateTemplate: 'Container purchase date (purchase_date): {purchaseDate}',
-  probeScoreTemplate: 'Demuxer confidence (probe_score): {score}',
-  containerNbStreamsTemplate: 'Container streams (nb_streams): {count}',
-  containerNbStreamsMismatchTemplate:
-    'Container streams (nb_streams): {nb} (parsed tracks: {parsed})',
-  containerNbProgramsTemplate: 'Container programs (nb_programs): {count}',
-  containerFormatFlagsTemplate: 'Container flags (flags): {flags}',
-  containerSizeTemplate: 'File size (format.size): {label} ({bytes} B)',
-  containerStartTimeTemplate: 'Container start offset (start_time): {time}',
-  containerStartTimeRealTemplate: 'Real start offset (start_time_real): {time}',
-  containerStartTimeRealMismatchTemplate:
-    'Real start offset (start_time_real): {real} (start_time: {nominal})',
-  containerFilenameTemplate: 'Ffprobe input name (filename): {filename}',
+  ...pickSummaryContainerTemplates('en'),
   bitrateEstPrefix: 'Bitrate (estimate): ',
   bitratePlainPrefix: 'Bitrate: ',
   bitrateMbpsTemplate: '{value} Mb/s',

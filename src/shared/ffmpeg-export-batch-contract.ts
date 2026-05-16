@@ -64,12 +64,7 @@ export type FfmpegExportBatchClearCompletedResult =
   | { ok: true; removed: number }
   | { ok: false; error: string }
 
-export function parseFfmpegExportBatchConcurrency(raw: unknown): FfmpegExportBatchConcurrency {
-  if (raw === 1 || raw === 2 || raw === 4) {
-    return raw
-  }
-  return 'auto'
-}
+export { parseFfmpegExportBatchConcurrency } from './ffmpeg-export-batch-stored-parse'
 
 export function resolveFfmpegExportBatchConcurrencyLimit(
   value: FfmpegExportBatchConcurrency,

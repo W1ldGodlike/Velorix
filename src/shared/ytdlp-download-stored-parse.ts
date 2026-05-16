@@ -36,3 +36,15 @@ export function parseYtdlpImpersonate(raw: unknown): YtdlpImpersonateId | undefi
 export function parseYtdlpQueueRetryProfile(raw: unknown): YtdlpQueueRetryProfileId {
   return parseWhitelistEnum(raw, ['light', 'normal', 'persistent'], 'off')
 }
+
+/** Строковый шаблон `-o` из settings (семантика — `validateFilenameTemplate` в main). */
+export function parseYtdlpFilenameTemplateStored(raw: unknown): string | undefined {
+  if (typeof raw !== 'string') {
+    return undefined
+  }
+  const t = raw.trim()
+  if (t.length === 0) {
+    return undefined
+  }
+  return t.length <= 480 ? t : t.slice(0, 480)
+}

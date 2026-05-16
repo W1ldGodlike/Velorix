@@ -140,6 +140,61 @@ function summarizeProducerReferenceTime(o: Record<string, unknown>): string {
   return value !== null ? `PRFT ${value}` : 'PRFT'
 }
 
+function summarizeAtscAudioService(o: Record<string, unknown>): string {
+  const svc =
+    parseAtscAudioServiceType(o, 'service_type') ??
+    parseAtscAudioServiceType(o, 'audio_service_type')
+  return svc !== null ? `ATSC svc ${svc}` : 'ATSC audio svc'
+}
+
+function summarizeFilmGrain(low: string): string {
+  return low.includes('av1') ? 'AV1 film grain' : 'Film grain'
+}
+
+type FfprobeSideDataRule = {
+  match: (low: string) => boolean
+  summarize: (o: Record<string, unknown>, locale: FfprobeSummaryLocale) => string | null
+}
+
+/** Порядок важен: первое совпадение wins; `null` — не показывать в сводке (Display Matrix). */
+const FFPROBE_SIDE_DATA_RULES: readonly FfprobeSideDataRule[] = [
+  { match: (low) => low.includes('dovi') || low.includes('dolby vision'), summarize: summarizeDolbyVision },
+  { match: (low) => low.includes('mastering display'), summarize: summarizeMasteringDisplay },
+  { match: (low) => low.includes('content light'), summarize: summarizeContentLight },
+  {
+    match: (low) => low.includes('display matrix'),
+    summarize: () => null
+  },
+  { match: (low) => low.includes('ambient viewing'), summarize: () => 'HDR ambient viewing' },
+  { match: (low) => low.includes('spherical'), summarize: () => '360°' },
+  { match: (low) => low.includes('stereo') && low.includes('3d'), summarize: () => '3D' },
+  { match: (low) => low.includes('audio service type'), summarize: summarizeAtscAudioService },
+  { match: (low) => low.includes('active format') || low === 'afd', summarize: summarizeAfd },
+  {
+    match: (low) =>
+      low.includes('closed captions') || low.includes('eia-608') || low.includes('eia-708'),
+    summarize: () => 'CC'
+  },
+  { match: (low) => low.includes('replay gain'), summarize: summarizeReplayGain },
+  { match: (low) => low.includes('skip samples'), summarize: () => 'Skip samples' },
+  {
+    match: (low) =>
+      low.includes('smpte') &&
+      (low.includes('timecode') || low.includes('12m') || low.includes('12-m')),
+    summarize: summarizeSmpteTimecode
+  },
+  {
+    match: (low) => low.includes('gop') && low.includes('timecode'),
+    summarize: summarizeGopTimecode
+  },
+  { match: (low) => low.includes('producer reference time'), summarize: summarizeProducerReferenceTime },
+  {
+    match: (low) => low.includes('film grain'),
+    summarize: (o) => summarizeFilmGrain((scalarToken(o, 'side_data_type') ?? '').toLowerCase())
+  },
+  { match: (low) => low.includes('cpb'), summarize: summarizeCpb }
+]
+
 function summarizeSideDataItem(raw: unknown, locale: FfprobeSummaryLocale): string | null {
   const o = recordFromUnknown(raw)
   if (o === null) {
@@ -150,63 +205,15 @@ function summarizeSideDataItem(raw: unknown, locale: FfprobeSummaryLocale): stri
     return null
   }
   const low = type.toLowerCase()
-  if (low.includes('dovi') || low.includes('dolby vision')) {
-    return summarizeDolbyVision(o)
-  }
-  if (low.includes('mastering display')) {
-    return summarizeMasteringDisplay(o)
-  }
-  if (low.includes('content light')) {
-    return summarizeContentLight(o)
-  }
-  if (low.includes('display matrix')) {
-    // Rotation from Display Matrix is shown separately as `matrix N°`.
+  for (const rule of FFPROBE_SIDE_DATA_RULES) {
+    if (!rule.match(low)) {
+      continue
+    }
+    const label = rule.summarize(o, locale)
+    if (label !== null) {
+      return label
+    }
     return null
-  }
-  if (low.includes('ambient viewing')) {
-    return 'HDR ambient viewing'
-  }
-  if (low.includes('spherical')) {
-    return '360°'
-  }
-  if (low.includes('stereo') && low.includes('3d')) {
-    return '3D'
-  }
-  if (low.includes('audio service type')) {
-    const svc =
-      parseAtscAudioServiceType(o, 'service_type') ??
-      parseAtscAudioServiceType(o, 'audio_service_type')
-    return svc !== null ? `ATSC svc ${svc}` : 'ATSC audio svc'
-  }
-  if (low.includes('active format') || low === 'afd') {
-    return summarizeAfd(o)
-  }
-  if (low.includes('closed captions') || low.includes('eia-608') || low.includes('eia-708')) {
-    return 'CC'
-  }
-  if (low.includes('replay gain')) {
-    return summarizeReplayGain(o)
-  }
-  if (low.includes('skip samples')) {
-    return 'Skip samples'
-  }
-  if (
-    low.includes('smpte') &&
-    (low.includes('timecode') || low.includes('12m') || low.includes('12-m'))
-  ) {
-    return summarizeSmpteTimecode(o)
-  }
-  if (low.includes('gop') && low.includes('timecode')) {
-    return summarizeGopTimecode(o)
-  }
-  if (low.includes('producer reference time')) {
-    return summarizeProducerReferenceTime(o)
-  }
-  if (low.includes('film grain')) {
-    return low.includes('av1') ? 'AV1 film grain' : 'Film grain'
-  }
-  if (low.includes('cpb')) {
-    return summarizeCpb(o, locale)
   }
   return shortSideDataType(type)
 }

@@ -32,6 +32,7 @@ import {
   parseStoredTrimmedWhitelistEnum,
   parseStoredWhitelistEnum
 } from '../shared/settings-stored-parse'
+import { parseYtdlpFilenameTemplateStored } from '../shared/ytdlp-download-stored-parse'
 
 export type {
   AppSettings,
@@ -121,14 +122,6 @@ function parseFfmpegSnapshotDirectoryStored(raw: unknown): string | undefined {
 
 function parseFfmpegSnapshotFormatStored(raw: unknown): 'png' | 'jpg' | undefined {
   return parseStoredWhitelistEnum(raw, ['png', 'jpg'])
-}
-
-function parseYtdlpFilenameTemplate(raw: unknown): string | undefined {
-  if (typeof raw !== 'string' || raw.trim() === '') {
-    return undefined
-  }
-  const t = raw.trim()
-  return t.length <= 480 ? t : t.slice(0, 480)
 }
 
 function parseYtdlpFormatPresetStored(raw: unknown): string | undefined {
@@ -392,7 +385,7 @@ export function loadSettings(filePath: string): AppSettings {
     const engineExecutablePaths = parseEngineExecutablePaths(parsed.engineExecutablePaths)
     const windowBounds = parseWindowBoundsConfig(parsed.windowBounds)
     const ytdlpDownloadDirectory = parseYtdlpDownloadDirectory(parsed.ytdlpDownloadDirectory)
-    const ytdlpFilenameTemplate = parseYtdlpFilenameTemplate(parsed.ytdlpFilenameTemplate)
+    const ytdlpFilenameTemplate = parseYtdlpFilenameTemplateStored(parsed.ytdlpFilenameTemplate)
     const ytdlpFormatPreset = parseYtdlpFormatPresetStored(parsed.ytdlpFormatPreset)
     const ffmpegExportEncodePreset = parseFfmpegExportEncodePresetStored(
       parsed.ffmpegExportEncodePreset

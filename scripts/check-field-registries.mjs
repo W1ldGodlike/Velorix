@@ -50,11 +50,31 @@ if (/if\s*\(\s*raw\s*===\s*'[^']+'\s*\|\|/.test(ytdlpDownloadOptions)) {
     'ytdlp-download-options.ts: whitelist stored — только ytdlp-download-stored-parse.ts'
   )
 }
+if (/export function parseYtdlp/.test(ytdlpDownloadOptions)) {
+  failures.push('ytdlp-download-options.ts: parse — только ytdlp-download-stored-parse.ts')
+}
 
 const ffmpegExportService = readFileSync('src/main/ffmpeg-export-service.ts', 'utf8')
 if (/export function parseFfmpegExport/.test(ffmpegExportService)) {
   failures.push(
     'ffmpeg-export-service.ts: parse — только ffmpeg-export-*-parse.ts / parse-registry'
+  )
+}
+
+const ffprobeSideData = readFileSync('src/shared/ffprobe-side-data.ts', 'utf8')
+if (
+  /function summarizeSideDataItem[\s\S]*?if\s*\(\s*low\.includes/.test(ffprobeSideData) ||
+  !ffprobeSideData.includes('FFPROBE_SIDE_DATA_RULES')
+) {
+  failures.push(
+    'ffprobe-side-data.ts: matchers — только FFPROBE_SIDE_DATA_RULES (table-driven)'
+  )
+}
+
+const batchContract = readFileSync('src/shared/ffmpeg-export-batch-contract.ts', 'utf8')
+if (/export function parseFfmpegExportBatchConcurrency/.test(batchContract)) {
+  failures.push(
+    'ffmpeg-export-batch-contract.ts: parse — только ffmpeg-export-batch-stored-parse.ts'
   )
 }
 
