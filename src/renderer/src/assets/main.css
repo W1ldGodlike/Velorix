@@ -2700,6 +2700,10 @@ button.app-downloads-hint-token:disabled {
   overflow: hidden;
 }
 
+.app-statusbar-cluster {
+  display: contents;
+}
+
 .app-statusbar-sep {
   width: 1px;
   height: 14px;
@@ -3174,6 +3178,10 @@ button.app-downloads-hint-token:disabled {
 
 .inspector-topbar-spacer {
   min-width: 0;
+}
+
+.inspector-topbar-trailing {
+  display: contents;
 }
 
 .inspector-topbar-mark-icon {

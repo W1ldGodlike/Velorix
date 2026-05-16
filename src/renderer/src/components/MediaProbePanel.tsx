@@ -357,7 +357,11 @@ export function PreviewProbeBody({
             <summary className="app-probe-summary">
               {uiTextVars('probeSectionTracksTemplate', { count: probeInfo.tracks.length })}
             </summary>
-            <div className="app-probe-table-wrap">
+            <div
+              className="app-probe-table-wrap"
+              role="group"
+              aria-label={uiText('probeTracksTableWrapGroupAria')}
+            >
               <table className="app-probe-table">
                 <caption className="app-visually-hidden">{uiText('probeTracksCaption')}</caption>
                 <thead>
@@ -443,7 +447,11 @@ export function PreviewProbeBody({
             <summary className="app-probe-summary">
               {uiTextVars('probeSectionChaptersTemplate', { count: probeInfo.chapters.length })}
             </summary>
-            <div className="app-probe-table-wrap">
+            <div
+              className="app-probe-table-wrap"
+              role="group"
+              aria-label={uiText('probeChaptersTableWrapGroupAria')}
+            >
               <table className="app-probe-table">
                 <caption className="app-visually-hidden">{uiText('probeChaptersCaption')}</caption>
                 <thead>

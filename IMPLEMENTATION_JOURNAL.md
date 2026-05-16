@@ -823,4 +823,9 @@
 - [J-800] 2026-05-16 08:32:00 [Assistant]: О программе — блок кнопки статьи базы знаний (`app-about-knowledge-link`): `role="region"` + `aboutKnowledgeArticleRegionAria`.
 - [J-801] 2026-05-16 08:34:00 [Assistant]: Диалог имени пресета экспорта — поле ввода имени: обёртка `role="group"` + `exportPresetNameFieldGroupAria`.
 - [J-802] 2026-05-16 08:36:00 [Assistant]: Редактор — быстрая yt-dlp: ссылки на документацию — `<nav>` + `quickYtdlpDocNavAria`.
+- [J-803] 2026-05-16 08:38:00 [Assistant]: Инспектор — контейнер справа от бренда (`inspector-topbar-trailing`): `role="group"` + `inspectorTopbarTrailingGroupAria`, CSS `display: contents`.
+- [J-804] 2026-05-16 08:40:00 [Assistant]: ffprobe — обёртки таблиц дорожек и глав (`app-probe-table-wrap`): `probeTracksTableWrapGroupAria`, `probeChaptersTableWrapGroupAria`.
+- [J-805] 2026-05-16 08:42:00 [Assistant]: Строка состояния — кластер движков (`app-statusbar-cluster`): `statusbarEnginesClusterAria`, класс с `display: contents`.
+- [J-806] 2026-05-16 08:44:00 [Assistant]: Строка состояния — кластер кодека экспорта редактора: `statusbarExportCodecClusterAria`.
+- [J-807] 2026-05-16 08:46:00 [Assistant]: Строка состояния — временное сообщение (`app-statusbar-extra`): `role="status"` + `aria-live="polite"` в главном окне и инспекторе.
 

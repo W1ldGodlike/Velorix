@@ -6942,27 +6942,39 @@ function App(): JSX.Element {
       )}
 
       <footer className="app-statusbar" aria-label={uiText('appStatusbarAria')}>
-        <span>{engineSummaryText(engineSummary)}</span>
-        {engineVersionsLine ? (
-          <>
-            <span className="app-statusbar-sep" aria-hidden />
-            <span className="app-statusbar-engines" title={engineVersionsLine}>
-              {engineVersionsLine}
-            </span>
-          </>
-        ) : null}
+        <div
+          role="group"
+          aria-label={uiText('statusbarEnginesClusterAria')}
+          className="app-statusbar-cluster"
+        >
+          <span>{engineSummaryText(engineSummary)}</span>
+          {engineVersionsLine ? (
+            <>
+              <span className="app-statusbar-sep" aria-hidden />
+              <span className="app-statusbar-engines" title={engineVersionsLine}>
+                {engineVersionsLine}
+              </span>
+            </>
+          ) : null}
+        </div>
         {workspaceTab === 'editor' ? (
-          <>
+          <div
+            role="group"
+            aria-label={uiText('statusbarExportCodecClusterAria')}
+            className="app-statusbar-cluster"
+          >
             <span className="app-statusbar-sep" aria-hidden />
             <span className="app-statusbar-codec" title={exportCodecStatusbarLabel}>
               {exportCodecStatusbarLabel}
             </span>
-          </>
+          </div>
         ) : null}
         {statusHint ? (
           <>
             <span className="app-statusbar-sep" aria-hidden />
-            <span className="app-statusbar-extra">{statusHint}</span>
+            <span className="app-statusbar-extra" role="status" aria-live="polite">
+              {statusHint}
+            </span>
           </>
         ) : null}
         <span className="app-statusbar-sep" aria-hidden />

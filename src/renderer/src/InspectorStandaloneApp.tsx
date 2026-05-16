@@ -235,12 +235,17 @@ export function InspectorStandaloneApp(): JSX.Element {
             {uiText('inspectorStandaloneTopbarEngineLabel')}
           </span>
         </div>
-        <div className="inspector-topbar-spacer" aria-hidden />
         <div
-          className="app-topbar-actions"
-          role="toolbar"
-          aria-label={uiText('inspectorTopbarActionsToolbarAria')}
+          className="inspector-topbar-trailing"
+          role="group"
+          aria-label={uiText('inspectorTopbarTrailingGroupAria')}
         >
+          <div className="inspector-topbar-spacer" aria-hidden />
+          <div
+            className="app-topbar-actions"
+            role="toolbar"
+            aria-label={uiText('inspectorTopbarActionsToolbarAria')}
+          >
           <button
             type="button"
             className="app-icon-btn"
@@ -334,6 +339,7 @@ export function InspectorStandaloneApp(): JSX.Element {
             </span>
           </button>
         </div>
+        </div>
       </header>
 
       <main
@@ -393,7 +399,11 @@ export function InspectorStandaloneApp(): JSX.Element {
       </main>
 
       <footer className="app-statusbar" aria-label={uiText('appStatusbarAria')}>
-        {statusHint ? <span className="app-statusbar-extra">{statusHint}</span> : null}
+        {statusHint ? (
+          <span className="app-statusbar-extra" role="status" aria-live="polite">
+            {statusHint}
+          </span>
+        ) : null}
         {statusHint ? <span className="app-statusbar-sep" aria-hidden /> : null}
         <Versions />
       </footer>
