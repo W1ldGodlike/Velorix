@@ -225,11 +225,12 @@ export function InspectorStandaloneApp(): JSX.Element {
   }
 
   return (
-    <div className="app-shell" aria-label={uiText('inspectorStandaloneShellAria')}>
-      <header className="app-topbar" aria-label={uiText('inspectorStandaloneTopbarAria')}>
+    <div className="app-shell" aria-label={uiText('inspectorStandaloneShellAria')} aria-busy={probePending}>
+      <header className="app-topbar" aria-label={uiText('inspectorStandaloneTopbarAria')} aria-busy={probePending}>
         <div
           className="app-topbar-brand inspector-toolbar-brand"
           aria-label={uiText('inspectorStandaloneBrandAria')}
+          aria-busy={probePending}
         >
           <span className="app-topbar-mark inspector-topbar-mark-icon" aria-hidden>
             <IconFilm title="" size={13} />

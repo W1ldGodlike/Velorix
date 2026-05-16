@@ -2988,10 +2988,28 @@ function App(): JSX.Element {
   const editorFfmpegDetailBusy =
     exportBusy || snapshotBusy || exportCancelBusy || probePending
 
+  const appChromeBusy =
+    engineDownloadBusy ||
+    engineSummary === 'checking' ||
+    probePending ||
+    exportBusy ||
+    snapshotBusy ||
+    exportCancelBusy ||
+    terminalBusy ||
+    batchExportBusy ||
+    exportPresetSaving ||
+    enginePathsSaving ||
+    downloadsOptionsBusy ||
+    downloadsHistoryBusy
+
   return (
-    <div className="app-shell" aria-label={uiText('appMainShellAria')}>
-      <header className="app-topbar" aria-label={uiText('topbarHeaderAria')}>
-        <div className="app-topbar-brand" aria-label={uiText('topbarProductName')}>
+    <div className="app-shell" aria-label={uiText('appMainShellAria')} aria-busy={appChromeBusy}>
+      <header className="app-topbar" aria-label={uiText('topbarHeaderAria')} aria-busy={appChromeBusy}>
+        <div
+          className="app-topbar-brand"
+          aria-label={uiText('topbarProductName')}
+          aria-busy={engineDownloadBusy || engineSummary === 'checking'}
+        >
           <span className="app-topbar-mark" aria-hidden>
             ◇
           </span>
@@ -3002,7 +3020,7 @@ function App(): JSX.Element {
           aria-label={uiText('workspaceTabsAria')}
           role="tablist"
           aria-orientation="horizontal"
-          aria-busy={engineDownloadBusy || probePending}
+          aria-busy={appChromeBusy}
         >
           <button
             type="button"
@@ -3072,26 +3090,14 @@ function App(): JSX.Element {
           className="app-topbar-trailing"
           role="group"
           aria-label={uiText('topbarTrailingGroupAria')}
-          aria-busy={
-            engineDownloadBusy ||
-            exportBusy ||
-            snapshotBusy ||
-            exportCancelBusy ||
-            probePending
-          }
+          aria-busy={appChromeBusy}
         >
           <div
             className="app-topbar-actions"
             role="toolbar"
             aria-orientation="horizontal"
             aria-label={uiText('topbarActionsToolbarAria')}
-            aria-busy={
-              engineDownloadBusy ||
-              exportBusy ||
-              snapshotBusy ||
-              exportCancelBusy ||
-              probePending
-            }
+            aria-busy={appChromeBusy}
           >
             <button
               type="button"
@@ -3990,7 +3996,9 @@ function App(): JSX.Element {
           id="workspace-panel-editor"
           role="tabpanel"
           aria-labelledby="workspace-tab-editor"
-          aria-busy={exportBusy || snapshotBusy || probePending || exportCancelBusy}
+          aria-busy={
+            exportBusy || snapshotBusy || probePending || exportCancelBusy || batchExportBusy
+          }
           className={`app-main app-workbench${panelOpen('ffmpegSettingsRailOpen') ? '' : ' app-workbench-ffmpeg-collapsed'}`}
         >
           <section
@@ -7264,7 +7272,13 @@ function App(): JSX.Element {
             role="group"
             aria-label={uiText('statusbarExportCodecClusterAria')}
             className="app-statusbar-cluster"
-            aria-busy={exportBusy || snapshotBusy || exportCancelBusy || probePending}
+            aria-busy={
+              exportBusy ||
+              snapshotBusy ||
+              exportCancelBusy ||
+              probePending ||
+              batchExportBusy
+            }
           >
             <span className="app-statusbar-sep" aria-hidden />
             <span className="app-statusbar-codec" title={exportCodecStatusbarLabel}>

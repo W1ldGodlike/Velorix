@@ -1008,4 +1008,9 @@
 - [J-985] 2026-05-16 14:44:00 [Assistant]: Загрузки — правая панель (`downloadsRailAria`), стек секций (`downloadsSettingsSectionsStackAria`) и пять секций rail (`downloadsRailFormatSummary` … `downloadsRailExpertSummary`): `aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}`.
 - [J-986] 2026-05-16 14:46:00 [Assistant]: Загрузки — каталог подсказок expert (`downloadsHintListAria`) и навигация доков (`downloadsRailExpertDocNavAria`): тот же флаг `aria-busy`.
 - [J-987] 2026-05-16 14:48:00 [Assistant]: Статусбар — список версий Electron/Chromium/Node (`versionsAriaLabel`): проп `statusBusy`, из `App` — при загрузке движков или `engineSummary === 'checking'`.
+- [J-988] 2026-05-16 14:50:00 [Assistant]: Главное окно — введён агрегат `appChromeBusy` (движки, ffprobe, экспорт/снимок/отмена, терминал, batch, сохранение пресета/путей движков, загрузки опции/история); оболочка (`appMainShellAria`) и шапка (`topbarHeaderAria`): `aria-busy={appChromeBusy}`.
+- [J-989] 2026-05-16 14:52:00 [Assistant]: Топбар — блок бренда (`topbarProductName`): `aria-busy={engineDownloadBusy || engineSummary === 'checking'}`.
+- [J-990] 2026-05-16 14:54:00 [Assistant]: Топбар — список вкладок (`workspaceTabsAria`): `aria-busy` заменён на `appChromeBusy` вместо узкого `engineDownloadBusy || probePending`.
+- [J-991] 2026-05-16 14:56:00 [Assistant]: Топбар — завершающая группа (`topbarTrailingGroupAria`) и тулбар действий (`topbarActionsToolbarAria`): `aria-busy={appChromeBusy}`.
+- [J-992] 2026-05-16 14:58:00 [Assistant]: Редактор — `tabpanel` (`workspace-panel-editor`) и кластер кодека в статусбаре (`statusbarExportCodecClusterAria`): в `aria-busy` добавлен `batchExportBusy`; окно инспектора §9 — оболочка, шапка и бренд: `aria-busy={probePending}`.
 
