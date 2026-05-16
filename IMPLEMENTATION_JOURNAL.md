@@ -978,4 +978,9 @@
 - [J-955] 2026-05-16 13:44:00 [Assistant]: Превью — подпись файла (`editorPreviewCaptionAria`): тот же флаг `aria-busy`.
 - [J-956] 2026-05-16 13:46:00 [Assistant]: FFmpeg rail — шапка панели (`editorFfmpegPanelHeadGroupAria`) и тулбар сворачивания (`editorFfmpegRailHeaderToolbarAria`): `aria-busy` с учётом `probePending`.
 - [J-957] 2026-05-16 13:48:00 [Assistant]: FFmpeg rail — тулбар последнего снимка (`editorSnapshotLastActionsToolbarAria`) и действий пресетов (`editorExportPresetsActionsToolbarAria`): `aria-busy` при активном ffprobe превью.
+- [J-958] 2026-05-16 13:50:00 [Assistant]: Пакетный экспорт — тулбар действий строки таблицы (`batchExportRowActionsToolbarAriaTemplate`): `aria-busy={batchExportBusy}`.
+- [J-959] 2026-05-16 13:52:00 [Assistant]: FFmpeg rail — регион превью команды (`editorExportPreviewBodyRegionAria`) и тулбар копирования (`editorExportPreviewActionsToolbarAria`): `aria-busy` при экспорте/снимке/ffprobe.
+- [J-960] 2026-05-16 13:54:00 [Assistant]: FFmpeg rail — тулбар последнего вывода (`editorExportLastOutputActionsToolbarAria`): тот же флаг `aria-busy`.
+- [J-961] 2026-05-16 13:56:00 [Assistant]: Загрузки — rail: группа cookies (`downloadsCookiesFileGroupAria`), тулбар файла cookies, группа каталога вывода (`downloadsOutputDirAria`) и его тулбар — `aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}`.
+- [J-962] 2026-05-16 13:58:00 [Assistant]: Загрузки — футер правой панели (`downloadsRailFooterToolbarAria`) и тулбар строки очереди (`downloadsQueueRowActionsToolbarAriaTemplate`): тот же флаг `aria-busy`.
 

@@ -3773,6 +3773,7 @@ function App(): JSX.Element {
                           aria-label={uiTextVars('batchExportRowActionsToolbarAriaTemplate', {
                             n: String(rowIndex + 1)
                           })}
+                          aria-busy={batchExportBusy}
                         >
                         <button
                           type="button"
@@ -5213,6 +5214,7 @@ function App(): JSX.Element {
                       className="app-export-preview-body"
                       role="region"
                       aria-label={uiText('editorExportPreviewBodyRegionAria')}
+                      aria-busy={exportBusy || snapshotBusy || probePending}
                     >
                       <pre
                         className="app-export-preview-pre"
@@ -5228,6 +5230,7 @@ function App(): JSX.Element {
                         role="toolbar"
                         aria-orientation="horizontal"
                         aria-label={uiText('editorExportPreviewActionsToolbarAria')}
+                        aria-busy={exportBusy || snapshotBusy || probePending}
                       >
                         <button
                           type="button"
@@ -5252,6 +5255,7 @@ function App(): JSX.Element {
                       role="toolbar"
                       aria-orientation="horizontal"
                       aria-label={uiText('editorExportLastOutputActionsToolbarAria')}
+                      aria-busy={exportBusy || snapshotBusy || probePending}
                     >
                       <button
                         type="button"
@@ -6110,6 +6114,7 @@ function App(): JSX.Element {
                                 aria-label={uiTextVars('downloadsQueueRowActionsToolbarAriaTemplate', {
                                   id: String(row.id)
                                 })}
+                                aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
                               >
                                 <button
                                   type="button"
@@ -6723,6 +6728,7 @@ function App(): JSX.Element {
                       className="app-downloads-output-dir"
                       role="group"
                       aria-label={uiText('downloadsCookiesFileGroupAria')}
+                      aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
                     >
                       <span className="app-field-help">
                         {uiText('downloadsCookiesNetscapeHelp')}
@@ -6739,6 +6745,7 @@ function App(): JSX.Element {
                         role="toolbar"
                         aria-orientation="horizontal"
                         aria-label={uiText('downloadsCookiesFileActionsToolbarAria')}
+                        aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
                       >
                         <button
                           type="button"
@@ -6802,6 +6809,7 @@ function App(): JSX.Element {
                       className="app-downloads-output-dir"
                       role="group"
                       aria-label={uiText('downloadsOutputDirAria')}
+                      aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
                     >
                       <span className="app-field-help">{uiText('downloadsOutputDirLabel')}</span>
                       <strong title={downloadsOutputDirectory?.path ?? ''}>
@@ -6817,6 +6825,7 @@ function App(): JSX.Element {
                         role="toolbar"
                         aria-orientation="horizontal"
                         aria-label={uiText('downloadsOutputDirActionsToolbarAria')}
+                        aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
                       >
                         <button
                           type="button"
@@ -7162,6 +7171,7 @@ function App(): JSX.Element {
               role="toolbar"
               aria-orientation="horizontal"
               aria-label={uiText('downloadsRailFooterToolbarAria')}
+              aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
             >
               <button
                 type="button"
