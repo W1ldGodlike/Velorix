@@ -44,7 +44,7 @@
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый; подробности фиксировать ниже в тематических § и в `IMPLEMENTATION_JOURNAL.md`.
 
 - [x] Рефактор ф.4 P1: invoke IPC вынесен из `index.ts` → `src/main/ipc/register-*` (102 handle); `index.ts` — lifecycle + `ipcMain.on`.
-- [~] Ф.4 P2: `settings-ipc-persist` (✓); `App.tsx` split 1–8 (~7.6k→~4.9k): hooks + terminal/downloads panels; далее export-state hook / editor JSX.
+- [~] Ф.4 P2: `settings-ipc-persist` (✓); `App.tsx` split 1–13 (~7.6k→~1.95k): hooks + workspace panels + export hooks + editor components; далее header/statusbar/tooling в App.
 - [~] §8: терминал — редкие сценарии/argv по факту; при правках `summary` — `npm run locales:terminal-summaries-ru` (дважды до 0/0).
 - [~] §9/§18: packaged/ffprobe e2e smoke; редкие поля ffprobe; связка с Support ZIP.
 - [~] §19/§3: `check:release`, `verify:win-unpacked`, SHA/JSON; packaged smoke; macOS/Linux engines и targets.
