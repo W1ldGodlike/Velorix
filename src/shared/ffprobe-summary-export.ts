@@ -12,6 +12,8 @@ import {
   formatFfprobeContainerEncoderExportLine,
   formatFfprobeContainerCommentExportLine,
   formatFfprobeContainerAlbumExportLine,
+  formatFfprobeContainerCopyrightExportLine,
+  formatFfprobeContainerGenreExportLine,
   formatFfprobeContainerArtistExportLine,
   formatFfprobeContainerDescriptionExportLine,
   formatFfprobeContainerTitleExportLine,
@@ -166,6 +168,8 @@ export function formatProbeSummaryPlainText(
     formatFfprobeContainerDescriptionExportLine(info.containerDescriptionTag, locale),
     formatFfprobeContainerArtistExportLine(info.containerArtistTag, locale),
     formatFfprobeContainerAlbumExportLine(info.containerAlbumTag, locale),
+    formatFfprobeContainerGenreExportLine(info.containerGenreTag, locale),
+    formatFfprobeContainerCopyrightExportLine(info.containerCopyrightTag, locale),
     formatFfprobeProbeScoreExportLine(info.probeScore, locale),
     formatFfprobeNbStreamsExportLine(info.containerNbStreams, info.tracks.length, locale),
     formatFfprobeNbProgramsExportLine(info.containerNbPrograms, locale),
@@ -298,6 +302,14 @@ ${chapterRows}
     (() => {
       const alb = formatFfprobeContainerAlbumExportLine(info.containerAlbumTag, locale)
       return alb ? `<li>${escapeHtml(alb)}</li>` : ''
+    })(),
+    (() => {
+      const gen = formatFfprobeContainerGenreExportLine(info.containerGenreTag, locale)
+      return gen ? `<li>${escapeHtml(gen)}</li>` : ''
+    })(),
+    (() => {
+      const cpy = formatFfprobeContainerCopyrightExportLine(info.containerCopyrightTag, locale)
+      return cpy ? `<li>${escapeHtml(cpy)}</li>` : ''
     })(),
     (() => {
       const score = formatFfprobeProbeScoreExportLine(info.probeScore, locale)

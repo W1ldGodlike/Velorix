@@ -164,6 +164,31 @@ describe('resolveFfmpegExportJobOptionsFromAppSettings', () => {
     ).toMatchObject({ videoSharpen: 'strong', audioNormalize: 'off' })
   })
 
+  it('videoDeband, videoHisteq и videoLut3d из settings и overrides (§7.3)', () => {
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings({
+        ...base,
+        ffmpegExportVideoDeband: 'medium',
+        ffmpegExportVideoHisteq: 'light',
+        ffmpegExportVideoLut3d: 'film-warm'
+      })
+    ).toMatchObject({
+      videoDeband: 'medium',
+      videoHisteq: 'light',
+      videoLut3d: 'film-warm'
+    })
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings(
+        { ...base, ffmpegExportVideoLut3d: 'film-warm' },
+        { videoDeband: 'off', videoHisteq: 'strong', videoLut3d: 'punch' }
+      )
+    ).toMatchObject({
+      videoDeband: 'off',
+      videoHisteq: 'strong',
+      videoLut3d: 'punch'
+    })
+  })
+
   it('videoHue и videoVignette из settings и overrides (§7.3)', () => {
     expect(
       resolveFfmpegExportJobOptionsFromAppSettings({

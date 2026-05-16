@@ -370,6 +370,12 @@ export function PreviewProbeBody({
             {probeInfo.containerAlbumTag
               ? ` · alb ${probeInfo.containerAlbumTag.length > 20 ? `${probeInfo.containerAlbumTag.slice(0, 19)}…` : probeInfo.containerAlbumTag}`
               : ''}
+            {probeInfo.containerGenreTag
+              ? ` · gen ${probeInfo.containerGenreTag.length > 20 ? `${probeInfo.containerGenreTag.slice(0, 19)}…` : probeInfo.containerGenreTag}`
+              : ''}
+            {probeInfo.containerCopyrightTag
+              ? ` · cpy ${probeInfo.containerCopyrightTag.length > 20 ? `${probeInfo.containerCopyrightTag.slice(0, 19)}…` : probeInfo.containerCopyrightTag}`
+              : ''}
             {probeInfo.probeScore !== null ? ` · probe ${probeInfo.probeScore}` : ''}
             {probeInfo.containerNbStreams !== null
               ? ` · ${probeInfo.containerNbStreams} str.`

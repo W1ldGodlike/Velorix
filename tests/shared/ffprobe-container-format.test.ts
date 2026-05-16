@@ -6,6 +6,8 @@ import {
   formatFfprobeContainerCreationTimeExportLine,
   formatFfprobeContainerCommentExportLine,
   formatFfprobeContainerAlbumExportLine,
+  formatFfprobeContainerCopyrightExportLine,
+  formatFfprobeContainerGenreExportLine,
   formatFfprobeContainerArtistExportLine,
   formatFfprobeContainerDescriptionExportLine,
   formatFfprobeContainerEncoderExportLine,
@@ -26,6 +28,8 @@ import {
   parseFfprobeFormatCreationTime,
   parseFfprobeFormatCommentTag,
   parseFfprobeFormatAlbumTag,
+  parseFfprobeFormatCopyrightTag,
+  parseFfprobeFormatGenreTag,
   parseFfprobeFormatArtistTag,
   parseFfprobeFormatDescriptionTag,
   parseFfprobeFormatEncoder,
@@ -57,6 +61,8 @@ const probeBase: MediaProbeSuccess = {
   containerDescriptionTag: null,
   containerArtistTag: null,
   containerAlbumTag: null,
+  containerGenreTag: null,
+  containerCopyrightTag: null,
   containerCompatibleBrands: null,
   probeScore: null,
   containerNbStreams: null,
@@ -152,6 +158,16 @@ describe('ffprobe-container-format', () => {
   it('parseFfprobeFormatAlbumTag и export line', () => {
     expect(parseFfprobeFormatAlbumTag({ album: 'Season One' })).toBe('Season One')
     expect(formatFfprobeContainerAlbumExportLine('Season One', 'ru')).toContain('album')
+  })
+
+  it('parseFfprobeFormatGenreTag и export line', () => {
+    expect(parseFfprobeFormatGenreTag({ genre: 'Documentary' })).toBe('Documentary')
+    expect(formatFfprobeContainerGenreExportLine('Documentary', 'en')).toContain('genre')
+  })
+
+  it('parseFfprobeFormatCopyrightTag и export line', () => {
+    expect(parseFfprobeFormatCopyrightTag({ copyright: '2024 Flux' })).toBe('2024 Flux')
+    expect(formatFfprobeContainerCopyrightExportLine('2024 Flux', 'ru')).toContain('copyright')
   })
 
   it('parseFfprobeFormatEncoder и export line', () => {

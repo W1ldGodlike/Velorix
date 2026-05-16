@@ -64,6 +64,8 @@ const sampleProbe: MediaProbeSuccess = {
   containerDescriptionTag: 'Demo reel',
   containerArtistTag: 'Flux Studio',
   containerAlbumTag: 'Season One',
+  containerGenreTag: 'Documentary',
+  containerCopyrightTag: '2024 Flux',
   containerCompatibleBrands: 'mp41iso2',
   probeScore: 100,
   containerNbStreams: 2,
@@ -120,6 +122,8 @@ describe('ffprobe-summary-export', () => {
     expect(t).toContain('description): Demo reel')
     expect(t).toContain('artist): Flux Studio')
     expect(t).toContain('album): Season One')
+    expect(t).toContain('genre): Documentary')
+    expect(t).toContain('copyright): 2024 Flux')
     expect(t).toContain('probe_score): 100')
     expect(t).toContain('nb_streams): 2')
     expect(t).toContain('nb_programs): 1')

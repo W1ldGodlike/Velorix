@@ -763,3 +763,7 @@
 - [J-735] 2026-05-16 20:26:20 [Assistant]: §7.3 — регрессия resolve: `videoEqPreset` и `videoGrain` из settings и overrides; Vitest. `npm run check:quiet`.
 - [J-736] 2026-05-16 20:27:27 [Assistant]: §7.3 — регрессия resolve: `videoHue` и `videoVignette` из settings и overrides; Vitest. `npm run check:quiet`.
 - [J-737] 2026-05-16 20:28:31 [Assistant]: Marathon #50 commit+push — пакет J-733–736: ffprobe `format.tags.album` + resolve video filters; `npm run check:quiet`.
+- [J-738] 2026-05-16 20:30:26 [Assistant]: §7.3 — регрессия resolve: `videoDeband`, `videoHisteq`, `videoLut3d` из settings и overrides; Vitest. `npm run check:quiet`.
+- [J-739] 2026-05-16 20:31:59 [Assistant]: §9 — ffprobe `format.tags.genre` → `containerGenreTag` в probe, инспекторе (`gen …`) и TXT/HTML; Vitest. `npm run check:quiet`.
+- [J-740] 2026-05-16 20:34:10 [Assistant]: §9 — ffprobe `format.tags.copyright` → `containerCopyrightTag` в probe, инспекторе (`cpy …`) и TXT/HTML; Vitest. `npm run check:quiet`.
+- [J-741] 2026-05-16 20:35:57 [Assistant]: Marathon #55 commit — пакет J-738–740: resolve deband/histeq/lut3d + ffprobe genre/copyright; `npm run check:quiet`.

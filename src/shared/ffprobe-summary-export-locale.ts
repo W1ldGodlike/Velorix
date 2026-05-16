@@ -26,6 +26,8 @@ export type FfprobeSummaryStrings = {
   containerDescriptionTemplate: string
   containerArtistTemplate: string
   containerAlbumTemplate: string
+  containerGenreTemplate: string
+  containerCopyrightTemplate: string
   probeScoreTemplate: string
   containerNbStreamsTemplate: string
   containerNbStreamsMismatchTemplate: string
@@ -89,6 +91,8 @@ const RU: FfprobeSummaryStrings = {
   containerDescriptionTemplate: 'Описание контейнера (description): {description}',
   containerArtistTemplate: 'Исполнитель контейнера (artist): {artist}',
   containerAlbumTemplate: 'Альбом контейнера (album): {album}',
+  containerGenreTemplate: 'Жанр контейнера (genre): {genre}',
+  containerCopyrightTemplate: 'Авторские права контейнера (copyright): {copyright}',
   probeScoreTemplate: 'Оценка демультиплексора (probe_score): {score}',
   containerNbStreamsTemplate: 'Потоков в контейнере (nb_streams): {count}',
   containerNbStreamsMismatchTemplate:
@@ -157,6 +161,8 @@ const EN: FfprobeSummaryStrings = {
   containerDescriptionTemplate: 'Container description (description): {description}',
   containerArtistTemplate: 'Container artist (artist): {artist}',
   containerAlbumTemplate: 'Container album (album): {album}',
+  containerGenreTemplate: 'Container genre (genre): {genre}',
+  containerCopyrightTemplate: 'Container copyright (copyright): {copyright}',
   probeScoreTemplate: 'Demuxer confidence (probe_score): {score}',
   containerNbStreamsTemplate: 'Container streams (nb_streams): {count}',
   containerNbStreamsMismatchTemplate:
