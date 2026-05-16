@@ -3974,7 +3974,6 @@ function App(): JSX.Element {
               <button
                 type="button"
                 className="app-ffmpeg-rail-restore app-icon-btn"
-                aria-label={uiText('editorFfmpegRailShowHidden')}
                 onClick={() => {
                   persistMainWindowUiPanelToggle('ffmpegSettingsRailOpen', true)
                 }}
@@ -4013,7 +4012,6 @@ function App(): JSX.Element {
                   <button
                     type="button"
                     className="app-icon-btn app-settings-rail-collapse-btn"
-                    aria-label={uiText('editorFfmpegRailCollapseHidden')}
                     onClick={() => {
                       persistMainWindowUiPanelToggle('ffmpegSettingsRailOpen', false)
                     }}
@@ -5443,7 +5441,6 @@ function App(): JSX.Element {
                       ? formatTerminalPreviewTooltip(TERMINAL_CURRENT_FILE_PLACEHOLDER)
                       : uiText('terminalPreviewFileTooltipNeedFile')
                   }
-                  aria-label={uiText('terminalPreviewFileButton')}
                   onClick={() => appendTerminalToken(TERMINAL_CURRENT_FILE_PLACEHOLDER)}
                 >
                   {uiText('terminalPreviewFileButton')}
@@ -5452,9 +5449,6 @@ function App(): JSX.Element {
                   type="button"
                   className="app-btn app-btn-primary"
                   disabled={terminalBusy || terminalLine.trim().length === 0}
-                  aria-label={
-                    terminalBusy ? uiText('terminalRunningButton') : uiText('terminalRunButton')
-                  }
                   onClick={() => {
                     void runTerminalLine()
                   }}
@@ -5657,7 +5651,6 @@ function App(): JSX.Element {
                 <button
                   type="button"
                   className="app-btn app-btn-icon-leading"
-                  aria-label={uiText('downloadsPopOut')}
                   onClick={() => {
                     void window.fluxalloy.downloads.openWindow({
                       ...(downloadsUrl.trim().length > 0 ? { text: downloadsUrl } : {}),
@@ -5672,7 +5665,6 @@ function App(): JSX.Element {
                   <button
                     type="button"
                     className="app-btn app-btn-icon-leading"
-                    aria-label={uiText('downloadsScrollToSettings')}
                     onClick={() => {
                       downloadsSettingsRailRef.current?.scrollIntoView({
                         behavior: 'smooth',
@@ -6936,7 +6928,6 @@ function App(): JSX.Element {
                         spellCheck={false}
                         autoComplete="off"
                         placeholder={uiText('downloadsHintSearchPlaceholder')}
-                        aria-label={uiText('downloadsHintSearchAria')}
                         aria-describedby="downloadsHintCatalogIntro"
                         disabled={downloadsOptionsBusy}
                         value={downloadsExpertHintFilter}
@@ -7034,7 +7025,6 @@ function App(): JSX.Element {
                 type="button"
                 className="app-btn app-btn-icon-leading"
                 disabled={downloadsOptionsBusy}
-                aria-label={uiText('downloadsRailRefreshOptions')}
                 title={uiText('downloadsTooltipRefreshFooter')}
                 onClick={() => {
                   void refreshDownloadsOptions()
