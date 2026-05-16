@@ -5250,6 +5250,7 @@ function App(): JSX.Element {
           id="workspace-panel-terminal"
           role="tabpanel"
           aria-labelledby="workspace-tab-terminal"
+          aria-label={uiText('terminalWorkbenchAria')}
           className="app-main app-terminal-workspace"
         >
           <section className="app-terminal-panel" aria-label={uiText('terminalPanelSectionAria')}>
@@ -5580,6 +5581,7 @@ function App(): JSX.Element {
           id="workspace-panel-downloads"
           role="tabpanel"
           aria-labelledby="workspace-tab-downloads"
+          aria-label={uiText('downloadsWorkbenchAria')}
           className="app-main app-downloads-workspace"
         >
           <section className="app-downloads-main" aria-label={uiText('downloadsMainAria')}>

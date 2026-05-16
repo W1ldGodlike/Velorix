@@ -235,7 +235,9 @@ const UI_TEXT = {
       'Загрузки: очередь ссылок на ролики, журнал и настройки «как скачивать». Здесь выбирают качество, папку на диске, субтитры и поведение при ошибках сети.',
     workspaceTabTerminalTooltip:
       'Терминал: одна команда за раз для встроенных инструментов (обработка и загрузка). Обычному сценарию «открыть файл и сохранить» достаточно вкладки «Редактор».',
+    terminalWorkbenchAria: 'Вкладка терминала: поле команды, журнал и подсказки',
     downloadsMainAria: 'Вкладка загрузок',
+    downloadsWorkbenchAria: 'Вкладка загрузок: очередь, журнал и панель настроек yt-dlp',
     downloadsPageTitle: 'Загрузки',
     downloadsPageHint:
       'Эта вкладка — основной рабочий стол yt-dlp (очередь по центру, журнал и история под таблицей, настройки справа как в v0; при ширине окна примерно до 1100px панель настроек переносится под журнал с прокруткой, поля не теряются — сверху есть кнопка «К настройкам», чтобы сразу прокрутить к панели). Отдельное окно — дубликат с той же связью с основным процессом (main, IPC) и длинным справочником токенов в одном списке.',
@@ -1068,6 +1070,9 @@ const UI_TEXT = {
     inspectorStandaloneThemeToggleTitle: 'Переключить тему (синхронно с главным окном)',
     inspectorStandaloneEmptyHint:
       'Перетащите видеофайл сюда или нажмите «Открыть…». При запуске из меню подставляется последний файл из превью (если он ещё на диске).',
+    inspectorStandaloneMainAria: 'Область инспектора: подсказка, ошибка и сводка ffprobe',
+    inspectorStandaloneProbeStackAria: 'Результат ffprobe для текущего файла',
+    inspectorStandalonePathFooterAria: 'Полный путь к открытому файлу',
     inspectorWindowDocumentTitle: 'FluxAlloy — инспектор',
     probePanelAriaLabel: 'Расширенная сводка ffprobe',
     probePanelOverviewHint:
@@ -1473,7 +1478,9 @@ const UI_TEXT = {
       'Downloads: a queue of links, a live log, and settings for how downloads work — quality, save folder, subtitles, and what to do when the network drops.',
     workspaceTabTerminalTooltip:
       'Terminal: run one command at a time for the built-in tools (processing and downloading). For the common “open a file and export” flow, use the Editor tab.',
+    terminalWorkbenchAria: 'Terminal tab: command input, log, and hints',
     downloadsMainAria: 'Downloads tab',
+    downloadsWorkbenchAria: 'Downloads tab: queue, log, and yt-dlp settings rail',
     downloadsPageTitle: 'Downloads',
     downloadsPageHint:
       'This tab is the main yt-dlp desk (queue in the center, log and history under the table, settings on the right like v0; below ~1100px width the settings rail moves under the log with scrolling — fields stay reachable via “Scroll to settings” at the top). Pop-out is a second window with the same IPC and the full token reference list.',
@@ -2302,6 +2309,9 @@ const UI_TEXT = {
     inspectorStandaloneThemeToggleTitle: 'Toggle theme (in sync with the main window)',
     inspectorStandaloneEmptyHint:
       'Drop a video file here or click “Open…”. When launched from the menu, the last preview file is used if it is still on disk.',
+    inspectorStandaloneMainAria: 'Inspector workspace: hint, error, and ffprobe summary',
+    inspectorStandaloneProbeStackAria: 'ffprobe results for the current file',
+    inspectorStandalonePathFooterAria: 'Full path of the open file',
     inspectorWindowDocumentTitle: 'FluxAlloy — Inspector',
     probePanelAriaLabel: 'Extended ffprobe summary',
     probePanelOverviewHint:

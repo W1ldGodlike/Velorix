@@ -338,6 +338,7 @@ export function InspectorStandaloneApp(): JSX.Element {
 
       <main
         className="app-main inspector-standalone-main"
+        aria-label={uiText('inspectorStandaloneMainAria')}
         onDragOver={(event) => {
           event.preventDefault()
           event.stopPropagation()
@@ -357,7 +358,12 @@ export function InspectorStandaloneApp(): JSX.Element {
           </p>
         ) : null}
         {displayedProbeInfo ? (
-          <div className="app-preview-probe inspector-standalone-probe" aria-live="polite">
+          <div
+            className="app-preview-probe inspector-standalone-probe"
+            aria-live="polite"
+            role="region"
+            aria-label={uiText('inspectorStandaloneProbeStackAria')}
+          >
             <PreviewProbeBody
               probeInfo={displayedProbeInfo}
               probeSectionOpen={{
@@ -374,7 +380,11 @@ export function InspectorStandaloneApp(): JSX.Element {
           </div>
         ) : null}
         {mediaPath ? (
-          <footer className="inspector-standalone-path" title={mediaPath}>
+          <footer
+            className="inspector-standalone-path"
+            title={mediaPath}
+            aria-label={uiText('inspectorStandalonePathFooterAria')}
+          >
             {mediaPath}
           </footer>
         ) : null}

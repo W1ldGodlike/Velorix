@@ -793,4 +793,9 @@
 - [J-770] 2026-05-16 07:26:00 [Assistant]: Превью — подпись файла (`app-preview-caption`): `aria-label` + `editorPreviewCaptionAria`.
 - [J-771] 2026-05-16 07:28:00 [Assistant]: Превью — пустое состояние (`app-preview-placeholder`): `role="region"` + `editorPreviewPlaceholderAria`.
 - [J-772] 2026-05-16 07:30:00 [Assistant]: Пакетный экспорт — обёртка таблицы/пустого состояния: `batchExportQueueTableZoneAria`.
+- [J-773] 2026-05-16 07:34:00 [Assistant]: Вкладка «Терминал» — `<main id="workspace-panel-terminal">`: `terminalWorkbenchAria`.
+- [J-774] 2026-05-16 07:36:00 [Assistant]: Вкладка «Загрузки» — `<main id="workspace-panel-downloads">`: `downloadsWorkbenchAria`.
+- [J-775] 2026-05-16 07:38:00 [Assistant]: Окно инспектора — `<main>`: `inspectorStandaloneMainAria`.
+- [J-776] 2026-05-16 07:40:00 [Assistant]: Инспектор — блок сводки ffprobe: `role="region"` + `inspectorStandaloneProbeStackAria`.
+- [J-777] 2026-05-16 07:42:00 [Assistant]: Инспектор — подвал с путём файла: `aria-label` + `inspectorStandalonePathFooterAria`.
 
