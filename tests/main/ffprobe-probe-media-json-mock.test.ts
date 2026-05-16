@@ -111,8 +111,12 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
           software: 'Adobe Premiere Pro',
           title: 'clip',
           comment: 'offline',
+          synopsis: 'Short plot summary',
           description: 'Demo reel',
+          keywords: 'demo, offline',
+          lyrics: 'Verse one…',
           artist: 'Flux Studio',
+          performer: 'Guest Vocalist',
           sort_artist: 'Studio, Flux',
           album: 'Season One',
           album_artist: 'Various Artists',
@@ -124,6 +128,7 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
           copyright: '2024 Flux',
           isrc: 'USRC17607839',
           date: '2024-03-20',
+          location: '+55.7558+037.6173/',
           purchase_date: '2024-01-15'
         }
       },
@@ -164,8 +169,12 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
         expect(r.containerSoftwareTag).toBe('Adobe Premiere Pro')
         expect(r.containerTitleTag).toBe('clip')
         expect(r.containerCommentTag).toBe('offline')
+        expect(r.containerSynopsisTag).toBe('Short plot summary')
         expect(r.containerDescriptionTag).toBe('Demo reel')
+        expect(r.containerKeywordsTag).toBe('demo, offline')
+        expect(r.containerLyricsTag).toBe('Verse one…')
         expect(r.containerArtistTag).toBe('Flux Studio')
+        expect(r.containerPerformerTag).toBe('Guest Vocalist')
         expect(r.containerSortArtistTag).toBe('Studio, Flux')
         expect(r.containerAlbumTag).toBe('Season One')
         expect(r.containerAlbumArtistTag).toBe('Various Artists')
@@ -177,6 +186,7 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
         expect(r.containerCopyrightTag).toBe('2024 Flux')
         expect(r.containerIsrcTag).toBe('USRC17607839')
         expect(r.containerDateTag).toBe('2024-03-20')
+        expect(r.containerLocationTag).toBe('+55.7558+037.6173/')
         expect(r.containerPurchaseDateTag).toBe('2024-01-15')
         expect(r.containerCompatibleBrands).toBe('mp41iso2')
         expect(r.probeScore).toBe(100)

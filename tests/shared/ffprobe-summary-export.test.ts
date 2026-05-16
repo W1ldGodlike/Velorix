@@ -64,8 +64,12 @@ const sampleProbe: MediaProbeSuccess = {
   containerSoftwareTag: 'Adobe Premiere Pro',
   containerTitleTag: 'Sample',
   containerCommentTag: 'Offline edit',
+  containerSynopsisTag: 'Short plot summary',
   containerDescriptionTag: 'Demo reel',
+  containerKeywordsTag: 'demo, offline',
+  containerLyricsTag: 'Verse one…',
   containerArtistTag: 'Flux Studio',
+  containerPerformerTag: 'Guest Vocalist',
   containerSortArtistTag: 'Studio, Flux',
   containerAlbumTag: 'Season One',
   containerAlbumArtistTag: 'Various Artists',
@@ -77,6 +81,7 @@ const sampleProbe: MediaProbeSuccess = {
   containerCopyrightTag: '2024 Flux',
   containerIsrcTag: 'USRC17607839',
   containerDateTag: '2024-03-20',
+  containerLocationTag: '+55.7558+037.6173/',
   containerPurchaseDateTag: '2024-01-15',
   containerCompatibleBrands: 'mp41iso2',
   probeScore: 100,
@@ -135,8 +140,12 @@ describe('ffprobe-summary-export', () => {
     expect(t).toContain('title): Sample')
     expect(t).toContain('sort_title): 01 clip')
     expect(t).toContain('comment): Offline edit')
+    expect(t).toContain('synopsis): Short plot summary')
     expect(t).toContain('description): Demo reel')
+    expect(t).toContain('keywords): demo, offline')
+    expect(t).toContain('lyrics): Verse one…')
     expect(t).toContain('artist): Flux Studio')
+    expect(t).toContain('(performer) контейнера: Guest Vocalist')
     expect(t).toContain('sort_artist): Studio, Flux')
     expect(t).toContain('album): Season One')
     expect(t).toContain('album_artist): Various Artists')
@@ -147,6 +156,7 @@ describe('ffprobe-summary-export', () => {
     expect(t).toContain('copyright): 2024 Flux')
     expect(t).toContain('isrc): USRC17607839')
     expect(t).toContain('date): 2024-03-20')
+    expect(t).toContain('location): +55.7558+037.6173/')
     expect(t).toContain('purchase_date): 2024-01-15')
     expect(t).toContain('probe_score): 100')
     expect(t).toContain('nb_streams): 2')

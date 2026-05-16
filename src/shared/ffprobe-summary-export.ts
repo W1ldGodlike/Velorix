@@ -14,19 +14,24 @@ import {
   formatFfprobeContainerEncodedByExportLine,
   formatFfprobeContainerSoftwareExportLine,
   formatFfprobeContainerCommentExportLine,
+  formatFfprobeContainerSynopsisExportLine,
   formatFfprobeContainerAlbumExportLine,
   formatFfprobeContainerAlbumArtistExportLine,
   formatFfprobeContainerSortAlbumExportLine,
   formatFfprobeContainerCopyrightExportLine,
   formatFfprobeContainerIsrcExportLine,
   formatFfprobeContainerDateExportLine,
+  formatFfprobeContainerLocationExportLine,
   formatFfprobeContainerPurchaseDateExportLine,
   formatFfprobeContainerGenreExportLine,
   formatFfprobeContainerTrackExportLine,
   formatFfprobeContainerDiscExportLine,
   formatFfprobeContainerArtistExportLine,
+  formatFfprobeContainerPerformerExportLine,
   formatFfprobeContainerSortArtistExportLine,
   formatFfprobeContainerDescriptionExportLine,
+  formatFfprobeContainerKeywordsExportLine,
+  formatFfprobeContainerLyricsExportLine,
   formatFfprobeContainerTitleExportLine,
   formatFfprobeContainerSortTitleExportLine,
   formatFfprobeContainerSizeExportLine,
@@ -181,8 +186,12 @@ export function formatProbeSummaryPlainText(
     formatFfprobeContainerTitleExportLine(info.containerTitleTag, locale),
     formatFfprobeContainerSortTitleExportLine(info.containerSortTitleTag, locale),
     formatFfprobeContainerCommentExportLine(info.containerCommentTag, locale),
+    formatFfprobeContainerSynopsisExportLine(info.containerSynopsisTag, locale),
     formatFfprobeContainerDescriptionExportLine(info.containerDescriptionTag, locale),
+    formatFfprobeContainerKeywordsExportLine(info.containerKeywordsTag, locale),
+    formatFfprobeContainerLyricsExportLine(info.containerLyricsTag, locale),
     formatFfprobeContainerArtistExportLine(info.containerArtistTag, locale),
+    formatFfprobeContainerPerformerExportLine(info.containerPerformerTag, locale),
     formatFfprobeContainerSortArtistExportLine(info.containerSortArtistTag, locale),
     formatFfprobeContainerAlbumExportLine(info.containerAlbumTag, locale),
     formatFfprobeContainerAlbumArtistExportLine(info.containerAlbumArtistTag, locale),
@@ -193,6 +202,7 @@ export function formatProbeSummaryPlainText(
     formatFfprobeContainerCopyrightExportLine(info.containerCopyrightTag, locale),
     formatFfprobeContainerIsrcExportLine(info.containerIsrcTag, locale),
     formatFfprobeContainerDateExportLine(info.containerDateTag, locale),
+    formatFfprobeContainerLocationExportLine(info.containerLocationTag, locale),
     formatFfprobeContainerPurchaseDateExportLine(info.containerPurchaseDateTag, locale),
     formatFfprobeProbeScoreExportLine(info.probeScore, locale),
     formatFfprobeNbStreamsExportLine(info.containerNbStreams, info.tracks.length, locale),
@@ -332,12 +342,28 @@ ${chapterRows}
       return cmt ? `<li>${escapeHtml(cmt)}</li>` : ''
     })(),
     (() => {
+      const syn = formatFfprobeContainerSynopsisExportLine(info.containerSynopsisTag, locale)
+      return syn ? `<li>${escapeHtml(syn)}</li>` : ''
+    })(),
+    (() => {
       const desc = formatFfprobeContainerDescriptionExportLine(info.containerDescriptionTag, locale)
       return desc ? `<li>${escapeHtml(desc)}</li>` : ''
     })(),
     (() => {
+      const kw = formatFfprobeContainerKeywordsExportLine(info.containerKeywordsTag, locale)
+      return kw ? `<li>${escapeHtml(kw)}</li>` : ''
+    })(),
+    (() => {
+      const lyr = formatFfprobeContainerLyricsExportLine(info.containerLyricsTag, locale)
+      return lyr ? `<li>${escapeHtml(lyr)}</li>` : ''
+    })(),
+    (() => {
       const art = formatFfprobeContainerArtistExportLine(info.containerArtistTag, locale)
       return art ? `<li>${escapeHtml(art)}</li>` : ''
+    })(),
+    (() => {
+      const perf = formatFfprobeContainerPerformerExportLine(info.containerPerformerTag, locale)
+      return perf ? `<li>${escapeHtml(perf)}</li>` : ''
     })(),
     (() => {
       const sart = formatFfprobeContainerSortArtistExportLine(info.containerSortArtistTag, locale)
@@ -378,6 +404,10 @@ ${chapterRows}
     (() => {
       const dt = formatFfprobeContainerDateExportLine(info.containerDateTag, locale)
       return dt ? `<li>${escapeHtml(dt)}</li>` : ''
+    })(),
+    (() => {
+      const loc = formatFfprobeContainerLocationExportLine(info.containerLocationTag, locale)
+      return loc ? `<li>${escapeHtml(loc)}</li>` : ''
     })(),
     (() => {
       const pdt = formatFfprobeContainerPurchaseDateExportLine(info.containerPurchaseDateTag, locale)

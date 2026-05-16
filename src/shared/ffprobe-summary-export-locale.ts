@@ -26,8 +26,12 @@ export type FfprobeSummaryStrings = {
   containerSoftwareTemplate: string
   containerTitleTemplate: string
   containerCommentTemplate: string
+  containerSynopsisTemplate: string
   containerDescriptionTemplate: string
+  containerKeywordsTemplate: string
+  containerLyricsTemplate: string
   containerArtistTemplate: string
+  containerPerformerTemplate: string
   containerSortArtistTemplate: string
   containerAlbumTemplate: string
   containerAlbumArtistTemplate: string
@@ -39,6 +43,7 @@ export type FfprobeSummaryStrings = {
   containerCopyrightTemplate: string
   containerIsrcTemplate: string
   containerDateTemplate: string
+  containerLocationTemplate: string
   containerPurchaseDateTemplate: string
   probeScoreTemplate: string
   containerNbStreamsTemplate: string
@@ -103,8 +108,12 @@ const RU: FfprobeSummaryStrings = {
   containerSoftwareTemplate: 'ПО контейнера (software): {software}',
   containerTitleTemplate: 'Заголовок контейнера (title): {title}',
   containerCommentTemplate: 'Комментарий контейнера (comment): {comment}',
+  containerSynopsisTemplate: 'Синопсис контейнера (synopsis): {synopsis}',
   containerDescriptionTemplate: 'Описание контейнера (description): {description}',
+  containerKeywordsTemplate: 'Ключевые слова контейнера (keywords): {keywords}',
+  containerLyricsTemplate: 'Текст песни контейнера (lyrics): {lyrics}',
   containerArtistTemplate: 'Исполнитель контейнера (artist): {artist}',
+  containerPerformerTemplate: 'Исполнитель (performer) контейнера: {performer}',
   containerSortArtistTemplate: 'Сортировка исполнителя контейнера (sort_artist): {sortArtist}',
   containerAlbumTemplate: 'Альбом контейнера (album): {album}',
   containerAlbumArtistTemplate: 'Исполнитель альбома контейнера (album_artist): {albumArtist}',
@@ -116,6 +125,7 @@ const RU: FfprobeSummaryStrings = {
   containerCopyrightTemplate: 'Авторские права контейнера (copyright): {copyright}',
   containerIsrcTemplate: 'ISRC контейнера (isrc): {isrc}',
   containerDateTemplate: 'Дата контейнера (date): {date}',
+  containerLocationTemplate: 'Место контейнера (location): {location}',
   containerPurchaseDateTemplate: 'Дата покупки контейнера (purchase_date): {purchaseDate}',
   probeScoreTemplate: 'Оценка демультиплексора (probe_score): {score}',
   containerNbStreamsTemplate: 'Потоков в контейнере (nb_streams): {count}',
@@ -185,8 +195,12 @@ const EN: FfprobeSummaryStrings = {
   containerSoftwareTemplate: 'Container software (software): {software}',
   containerTitleTemplate: 'Container title (title): {title}',
   containerCommentTemplate: 'Container comment (comment): {comment}',
+  containerSynopsisTemplate: 'Container synopsis (synopsis): {synopsis}',
   containerDescriptionTemplate: 'Container description (description): {description}',
+  containerKeywordsTemplate: 'Container keywords (keywords): {keywords}',
+  containerLyricsTemplate: 'Container lyrics (lyrics): {lyrics}',
   containerArtistTemplate: 'Container artist (artist): {artist}',
+  containerPerformerTemplate: 'Container performer (performer): {performer}',
   containerSortArtistTemplate: 'Container sort artist (sort_artist): {sortArtist}',
   containerAlbumTemplate: 'Container album (album): {album}',
   containerAlbumArtistTemplate: 'Container album artist (album_artist): {albumArtist}',
@@ -198,6 +212,7 @@ const EN: FfprobeSummaryStrings = {
   containerCopyrightTemplate: 'Container copyright (copyright): {copyright}',
   containerIsrcTemplate: 'Container ISRC (isrc): {isrc}',
   containerDateTemplate: 'Container date (date): {date}',
+  containerLocationTemplate: 'Container location (location): {location}',
   containerPurchaseDateTemplate: 'Container purchase date (purchase_date): {purchaseDate}',
   probeScoreTemplate: 'Demuxer confidence (probe_score): {score}',
   containerNbStreamsTemplate: 'Container streams (nb_streams): {count}',

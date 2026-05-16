@@ -76,10 +76,18 @@ export interface MediaProbeSuccess {
   containerTitleTag: string | null
   /** `format.tags.comment`, если ffprobe отдал. */
   containerCommentTag: string | null
+  /** `format.tags.synopsis`, если ffprobe отдал. */
+  containerSynopsisTag: string | null
   /** `format.tags.description`, если ffprobe отдал. */
   containerDescriptionTag: string | null
+  /** `format.tags.keywords`, если ffprobe отдал. */
+  containerKeywordsTag: string | null
+  /** `format.tags.lyrics`, если ffprobe отдал. */
+  containerLyricsTag: string | null
   /** `format.tags.artist`, если ffprobe отдал. */
   containerArtistTag: string | null
+  /** `format.tags.performer`, если ffprobe отдал. */
+  containerPerformerTag: string | null
   /** `format.tags.sort_artist`, если ffprobe отдал. */
   containerSortArtistTag: string | null
   /** `format.tags.album`, если ffprobe отдал. */
@@ -102,6 +110,8 @@ export interface MediaProbeSuccess {
   containerIsrcTag: string | null
   /** `format.tags.date`, если ffprobe отдал (отдельно от `creation_time`). */
   containerDateTag: string | null
+  /** `format.tags.location`, если ffprobe отдал (геометка / координаты). */
+  containerLocationTag: string | null
   /** `format.tags.purchase_date`, если ffprobe отдал (iTunes Store и др.). */
   containerPurchaseDateTag: string | null
   /** `format.tags.compatible_brands`, если ffprobe отдал. */

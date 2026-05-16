@@ -107,16 +107,40 @@ export function parseFfprobeFormatCommentTag(
   return tagScalar(tags?.['comment'])
 }
 
+export function parseFfprobeFormatSynopsisTag(
+  tags: Record<string, string | number | undefined> | undefined
+): string | null {
+  return tagScalar(tags?.['synopsis'])
+}
+
 export function parseFfprobeFormatDescriptionTag(
   tags: Record<string, string | number | undefined> | undefined
 ): string | null {
   return tagScalar(tags?.['description'])
 }
 
+export function parseFfprobeFormatKeywordsTag(
+  tags: Record<string, string | number | undefined> | undefined
+): string | null {
+  return tagScalar(tags?.['keywords'])
+}
+
+export function parseFfprobeFormatLyricsTag(
+  tags: Record<string, string | number | undefined> | undefined
+): string | null {
+  return tagScalar(tags?.['lyrics'])
+}
+
 export function parseFfprobeFormatArtistTag(
   tags: Record<string, string | number | undefined> | undefined
 ): string | null {
   return tagScalar(tags?.['artist'])
+}
+
+export function parseFfprobeFormatPerformerTag(
+  tags: Record<string, string | number | undefined> | undefined
+): string | null {
+  return tagScalar(tags?.['performer'])
 }
 
 export function parseFfprobeFormatSortArtistTag(
@@ -183,6 +207,12 @@ export function parseFfprobeFormatDateTag(
   tags: Record<string, string | number | undefined> | undefined
 ): string | null {
   return tagScalar(tags?.['date'])
+}
+
+export function parseFfprobeFormatLocationTag(
+  tags: Record<string, string | number | undefined> | undefined
+): string | null {
+  return tagScalar(tags?.['location'])
 }
 
 export function parseFfprobeFormatPurchaseDateTag(
@@ -306,6 +336,17 @@ export function formatFfprobeContainerCommentExportLine(
   return ffprobeSummaryFill(b.containerCommentTemplate, { comment })
 }
 
+export function formatFfprobeContainerSynopsisExportLine(
+  synopsis: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (synopsis === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerSynopsisTemplate, { synopsis })
+}
+
 export function formatFfprobeContainerDescriptionExportLine(
   description: string | null,
   locale: FfprobeSummaryLocale
@@ -317,6 +358,28 @@ export function formatFfprobeContainerDescriptionExportLine(
   return ffprobeSummaryFill(b.containerDescriptionTemplate, { description })
 }
 
+export function formatFfprobeContainerKeywordsExportLine(
+  keywords: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (keywords === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerKeywordsTemplate, { keywords })
+}
+
+export function formatFfprobeContainerLyricsExportLine(
+  lyrics: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (lyrics === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerLyricsTemplate, { lyrics })
+}
+
 export function formatFfprobeContainerArtistExportLine(
   artist: string | null,
   locale: FfprobeSummaryLocale
@@ -326,6 +389,17 @@ export function formatFfprobeContainerArtistExportLine(
   }
   const b = ffprobeSummaryStrings(locale)
   return ffprobeSummaryFill(b.containerArtistTemplate, { artist })
+}
+
+export function formatFfprobeContainerPerformerExportLine(
+  performer: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (performer === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerPerformerTemplate, { performer })
 }
 
 export function formatFfprobeContainerSortArtistExportLine(
@@ -447,6 +521,17 @@ export function formatFfprobeContainerDateExportLine(
   }
   const b = ffprobeSummaryStrings(locale)
   return ffprobeSummaryFill(b.containerDateTemplate, { date })
+}
+
+export function formatFfprobeContainerLocationExportLine(
+  location: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (location === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerLocationTemplate, { location })
 }
 
 export function formatFfprobeContainerPurchaseDateExportLine(

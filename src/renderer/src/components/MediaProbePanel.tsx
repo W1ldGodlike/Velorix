@@ -373,11 +373,23 @@ export function PreviewProbeBody({
             {probeInfo.containerCommentTag
               ? ` · cmt ${probeInfo.containerCommentTag.length > 20 ? `${probeInfo.containerCommentTag.slice(0, 19)}…` : probeInfo.containerCommentTag}`
               : ''}
+            {probeInfo.containerSynopsisTag
+              ? ` · syn ${probeInfo.containerSynopsisTag.length > 20 ? `${probeInfo.containerSynopsisTag.slice(0, 19)}…` : probeInfo.containerSynopsisTag}`
+              : ''}
             {probeInfo.containerDescriptionTag
               ? ` · desc ${probeInfo.containerDescriptionTag.length > 20 ? `${probeInfo.containerDescriptionTag.slice(0, 19)}…` : probeInfo.containerDescriptionTag}`
               : ''}
+            {probeInfo.containerKeywordsTag
+              ? ` · kw ${probeInfo.containerKeywordsTag.length > 20 ? `${probeInfo.containerKeywordsTag.slice(0, 19)}…` : probeInfo.containerKeywordsTag}`
+              : ''}
+            {probeInfo.containerLyricsTag
+              ? ` · lyr ${probeInfo.containerLyricsTag.length > 20 ? `${probeInfo.containerLyricsTag.slice(0, 19)}…` : probeInfo.containerLyricsTag}`
+              : ''}
             {probeInfo.containerArtistTag
               ? ` · art ${probeInfo.containerArtistTag.length > 20 ? `${probeInfo.containerArtistTag.slice(0, 19)}…` : probeInfo.containerArtistTag}`
+              : ''}
+            {probeInfo.containerPerformerTag
+              ? ` · perf ${probeInfo.containerPerformerTag.length > 20 ? `${probeInfo.containerPerformerTag.slice(0, 19)}…` : probeInfo.containerPerformerTag}`
               : ''}
             {probeInfo.containerSortArtistTag
               ? ` · sart ${probeInfo.containerSortArtistTag.length > 20 ? `${probeInfo.containerSortArtistTag.slice(0, 19)}…` : probeInfo.containerSortArtistTag}`
@@ -408,6 +420,9 @@ export function PreviewProbeBody({
               : ''}
             {probeInfo.containerDateTag
               ? ` · date ${probeInfo.containerDateTag.length > 20 ? `${probeInfo.containerDateTag.slice(0, 19)}…` : probeInfo.containerDateTag}`
+              : ''}
+            {probeInfo.containerLocationTag
+              ? ` · loc ${probeInfo.containerLocationTag.length > 20 ? `${probeInfo.containerLocationTag.slice(0, 19)}…` : probeInfo.containerLocationTag}`
               : ''}
             {probeInfo.containerPurchaseDateTag
               ? ` · pdt ${probeInfo.containerPurchaseDateTag.length > 20 ? `${probeInfo.containerPurchaseDateTag.slice(0, 19)}…` : probeInfo.containerPurchaseDateTag}`

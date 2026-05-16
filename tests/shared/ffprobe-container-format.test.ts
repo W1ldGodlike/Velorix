@@ -5,19 +5,24 @@ import {
   formatFfprobeContainerBrandExportLine,
   formatFfprobeContainerCreationTimeExportLine,
   formatFfprobeContainerCommentExportLine,
+  formatFfprobeContainerSynopsisExportLine,
   formatFfprobeContainerAlbumExportLine,
   formatFfprobeContainerAlbumArtistExportLine,
   formatFfprobeContainerSortAlbumExportLine,
   formatFfprobeContainerCopyrightExportLine,
   formatFfprobeContainerIsrcExportLine,
   formatFfprobeContainerDateExportLine,
+  formatFfprobeContainerLocationExportLine,
   formatFfprobeContainerPurchaseDateExportLine,
   formatFfprobeContainerGenreExportLine,
   formatFfprobeContainerTrackExportLine,
   formatFfprobeContainerDiscExportLine,
   formatFfprobeContainerArtistExportLine,
+  formatFfprobeContainerPerformerExportLine,
   formatFfprobeContainerSortArtistExportLine,
   formatFfprobeContainerDescriptionExportLine,
+  formatFfprobeContainerKeywordsExportLine,
+  formatFfprobeContainerLyricsExportLine,
   formatFfprobeContainerSortTitleExportLine,
   formatFfprobeContainerEncoderExportLine,
   formatFfprobeContainerPublisherExportLine,
@@ -39,19 +44,24 @@ import {
   parseFfprobeFormatCompatibleBrands,
   parseFfprobeFormatCreationTime,
   parseFfprobeFormatCommentTag,
+  parseFfprobeFormatSynopsisTag,
   parseFfprobeFormatAlbumTag,
   parseFfprobeFormatAlbumArtistTag,
   parseFfprobeFormatSortAlbumTag,
   parseFfprobeFormatCopyrightTag,
   parseFfprobeFormatIsrcTag,
   parseFfprobeFormatDateTag,
+  parseFfprobeFormatLocationTag,
   parseFfprobeFormatPurchaseDateTag,
   parseFfprobeFormatGenreTag,
   parseFfprobeFormatTrackTag,
   parseFfprobeFormatDiscTag,
   parseFfprobeFormatArtistTag,
+  parseFfprobeFormatPerformerTag,
   parseFfprobeFormatSortArtistTag,
   parseFfprobeFormatDescriptionTag,
+  parseFfprobeFormatKeywordsTag,
+  parseFfprobeFormatLyricsTag,
   parseFfprobeFormatSortTitleTag,
   parseFfprobeFormatEncoder,
   parseFfprobeFormatPublisherTag,
@@ -85,8 +95,12 @@ const probeBase: MediaProbeSuccess = {
   containerSoftwareTag: null,
   containerTitleTag: null,
   containerCommentTag: null,
+  containerSynopsisTag: null,
   containerDescriptionTag: null,
+  containerKeywordsTag: null,
+  containerLyricsTag: null,
   containerArtistTag: null,
+  containerPerformerTag: null,
   containerSortArtistTag: null,
   containerAlbumTag: null,
   containerAlbumArtistTag: null,
@@ -98,6 +112,7 @@ const probeBase: MediaProbeSuccess = {
   containerCopyrightTag: null,
   containerIsrcTag: null,
   containerDateTag: null,
+  containerLocationTag: null,
   containerPurchaseDateTag: null,
   containerCompatibleBrands: null,
   probeScore: null,
@@ -181,14 +196,38 @@ describe('ffprobe-container-format', () => {
     expect(formatFfprobeContainerCommentExportLine('Edited offline', 'en')).toContain('comment')
   })
 
+  it('parseFfprobeFormatSynopsisTag и export line', () => {
+    expect(parseFfprobeFormatSynopsisTag({ synopsis: 'Short plot summary' })).toBe(
+      'Short plot summary'
+    )
+    expect(formatFfprobeContainerSynopsisExportLine('Short plot summary', 'ru')).toContain(
+      'synopsis'
+    )
+  })
+
   it('parseFfprobeFormatDescriptionTag и export line', () => {
     expect(parseFfprobeFormatDescriptionTag({ description: 'Demo reel' })).toBe('Demo reel')
     expect(formatFfprobeContainerDescriptionExportLine('Demo reel', 'ru')).toContain('description')
   })
 
+  it('parseFfprobeFormatKeywordsTag и export line', () => {
+    expect(parseFfprobeFormatKeywordsTag({ keywords: 'demo, offline' })).toBe('demo, offline')
+    expect(formatFfprobeContainerKeywordsExportLine('demo, offline', 'en')).toContain('keywords')
+  })
+
+  it('parseFfprobeFormatLyricsTag и export line', () => {
+    expect(parseFfprobeFormatLyricsTag({ lyrics: 'Verse one…' })).toBe('Verse one…')
+    expect(formatFfprobeContainerLyricsExportLine('Verse one…', 'ru')).toContain('lyrics')
+  })
+
   it('parseFfprobeFormatArtistTag и export line', () => {
     expect(parseFfprobeFormatArtistTag({ artist: 'Flux Studio' })).toBe('Flux Studio')
     expect(formatFfprobeContainerArtistExportLine('Flux Studio', 'en')).toContain('artist')
+  })
+
+  it('parseFfprobeFormatPerformerTag и export line', () => {
+    expect(parseFfprobeFormatPerformerTag({ performer: 'Guest Vocalist' })).toBe('Guest Vocalist')
+    expect(formatFfprobeContainerPerformerExportLine('Guest Vocalist', 'ru')).toContain('performer')
   })
 
   it('parseFfprobeFormatSortArtistTag и export line', () => {
@@ -251,6 +290,15 @@ describe('ffprobe-container-format', () => {
   it('parseFfprobeFormatDateTag и export line', () => {
     expect(parseFfprobeFormatDateTag({ date: '2024-03-20' })).toBe('2024-03-20')
     expect(formatFfprobeContainerDateExportLine('2024-03-20', 'en')).toContain('date')
+  })
+
+  it('parseFfprobeFormatLocationTag и export line', () => {
+    expect(parseFfprobeFormatLocationTag({ location: '+55.7558+037.6173/' })).toBe(
+      '+55.7558+037.6173/'
+    )
+    expect(formatFfprobeContainerLocationExportLine('+55.7558+037.6173/', 'ru')).toContain(
+      'location'
+    )
   })
 
   it('parseFfprobeFormatPurchaseDateTag и export line', () => {

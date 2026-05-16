@@ -777,3 +777,8 @@
 - [J-749] 2026-05-16 21:00:15 [Assistant]: §9 — ffprobe `format.tags.track` и `disc` → `containerTrackTag` / `containerDiscTag` в probe, инспекторе (`trk` / `disc`) и TXT/HTML; Vitest. `npm run check:quiet`.
 - [J-750] 2026-05-16 21:01:35 [Assistant]: §9 — ffprobe `format.tags.software` → `containerSoftwareTag` в probe, инспекторе (`soft …`) и TXT/HTML; Vitest. `npm run check:quiet`.
 - [J-751] 2026-05-16 21:02:49 [Assistant]: §9 — ffprobe `format.tags.isrc` → `containerIsrcTag` в probe, инспекторе (`isrc …`) и TXT/HTML; Vitest. Marathon #65 commit (пакет J-747–751). `npm run check:quiet`.
+- [J-752] 2026-05-16 21:04:05 [Assistant]: §9 — ffprobe `format.tags.location` → `containerLocationTag` в probe, инспекторе (`loc …`) и TXT/HTML; Vitest. `npm run check:quiet`.
+- [J-753] 2026-05-16 21:05:52 [Assistant]: §9 — ffprobe `format.tags.keywords` → `containerKeywordsTag` в probe, инспекторе (`kw …`) и TXT/HTML; Vitest. `npm run check:quiet`.
+- [J-754] 2026-05-16 21:07:12 [Assistant]: §9 — ffprobe `format.tags.lyrics` → `containerLyricsTag` в probe, инспекторе (`lyr …`) и TXT/HTML; Vitest. `npm run check:quiet`.
+- [J-755] 2026-05-16 21:08:26 [Assistant]: §9 — ffprobe `format.tags.synopsis` → `containerSynopsisTag` в probe, инспекторе (`syn …`) и TXT/HTML; Vitest. `npm run check:quiet`.
+- [J-756] 2026-05-16 21:10:16 [Assistant]: §9 — ffprobe `format.tags.performer` → `containerPerformerTag` в probe, инспекторе (`perf …`) и TXT/HTML; Vitest. Marathon #70 commit+push (пакет J-752–756). `npm run check:quiet`.
