@@ -923,4 +923,9 @@
 - [J-900] 2026-05-16 11:54:00 [Assistant]: Редактор — стек превью (`editorPreviewStackAria`): `aria-busy` при `exportBusy` или `snapshotBusy`.
 - [J-901] 2026-05-16 11:56:00 [Assistant]: Редактор — регион секций FFmpeg rail (`editorFfmpegRailSectionsRegionAria`): `aria-busy` при экспорте/снимке или отмене экспорта (`exportCancelBusy`).
 - [J-902] 2026-05-16 11:58:00 [Assistant]: Загрузки — нижний стек истории/журнала (`downloadsLowerStackAria`): `aria-busy={downloadsHistoryBusy}` при обновлении истории.
+- [J-903] 2026-05-16 12:00:00 [Assistant]: Редактор — превью-стек: в `aria-busy` добавлен асинхронный ffprobe (`probePending` рядом с загрузкой метаданных по `preview.path`).
+- [J-904] 2026-05-16 12:02:00 [Assistant]: Окно инспектора §9 (`InspectorStandaloneApp`): состояние `probePending` и `aria-busy` на `<main>` до завершения ffprobe выбранного файла.
+- [J-905] 2026-05-16 12:04:00 [Assistant]: База знаний — сетка модалки (`knowledgeDialogGridAria`): `aria-busy={loading}` на группе TOC + статьи.
+- [J-906] 2026-05-16 12:06:00 [Assistant]: Загрузки — основная секция вкладки (`downloadsMainAria`): `aria-busy` при загрузке опций yt-dlp или истории (`downloadsOptionsBusy || downloadsHistoryBusy`).
+- [J-907] 2026-05-16 12:08:00 [Assistant]: История обработки — список карточек (`processingHistoryListRegionAria`): `aria-busy={busy}` при обновлении/фильтрации списка.
 

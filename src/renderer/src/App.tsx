@@ -634,6 +634,7 @@ function App(): JSX.Element {
   const [preview, setPreview] = useState<PreviewOpenedPayload | null>(null)
   const [previewBlobUrl, setPreviewBlobUrl] = useState<string | null>(null)
   const [probeInfo, setProbeInfo] = useState<MediaProbeSuccess | null>(null)
+  const [probePending, setProbePending] = useState(false)
   const [downloadsUrl, setDownloadsUrl] = useState('')
   const [downloadsRows, setDownloadsRows] = useState<DownloadsQueueRowView[]>([])
   const [downloadsStatusFilter, setDownloadsStatusFilter] = useState<DownloadsStatusFilter>('all')
@@ -2043,13 +2044,16 @@ function App(): JSX.Element {
   useEffect(() => {
     const path = preview?.path
     if (!path) {
+      setProbePending(false)
       return
     }
+    setProbePending(true)
     let cancelled = false
     void window.fluxalloy.preview.probe(path).then((r) => {
       if (cancelled) {
         return
       }
+      setProbePending(false)
       if (r.ok) {
         setProbeInfo(r)
       } else {
@@ -3958,7 +3962,7 @@ function App(): JSX.Element {
                   ref={previewStackRef}
                   role="region"
                   aria-label={uiText('editorPreviewStackAria')}
-                  aria-busy={exportBusy || snapshotBusy}
+                  aria-busy={exportBusy || snapshotBusy || probePending}
                 >
                   <div
                     className="app-preview-media-card"
@@ -5691,7 +5695,11 @@ function App(): JSX.Element {
           aria-labelledby="workspace-tab-downloads"
           className="app-main app-downloads-workspace"
         >
-          <section className="app-downloads-main" aria-label={uiText('downloadsMainAria')}>
+          <section
+            className="app-downloads-main"
+            aria-label={uiText('downloadsMainAria')}
+            aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
+          >
             <div
               className="app-downloads-band"
               role="region"

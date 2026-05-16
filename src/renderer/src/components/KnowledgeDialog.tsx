@@ -183,6 +183,7 @@ export function KnowledgeDialog({
           className="app-knowledge-grid"
           role="group"
           aria-label={uiText('knowledgeDialogGridAria')}
+          aria-busy={loading}
         >
           <aside
             className="app-knowledge-sidebar"

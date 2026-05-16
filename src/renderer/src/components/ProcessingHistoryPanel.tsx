@@ -237,6 +237,7 @@ export function ProcessingHistoryPanel({
         className="app-processing-history-list"
         role="region"
         aria-label={uiText('processingHistoryListRegionAria')}
+        aria-busy={busy}
       >
         {entries.length === 0 ? (
           <p className="app-downloads-history-empty">{uiText('processingHistoryEmpty')}</p>

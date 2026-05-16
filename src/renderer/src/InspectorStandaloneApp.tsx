@@ -59,6 +59,7 @@ export function InspectorStandaloneApp(): JSX.Element {
   /** Сброс кэша React при повторном ffprobe того же файла («Обновить ffprobe»). */
   const [probeRefreshNonce, setProbeRefreshNonce] = useState(0)
   const [probeInfo, setProbeInfo] = useState<MediaProbeSuccess | null>(null)
+  const [probePending, setProbePending] = useState(false)
   const [probeError, setProbeError] = useState<string | null>(null)
   const [statusHint, setStatusHint] = useState<string | null>(null)
   const [aboutOpen, setAboutOpen] = useState(false)
@@ -151,13 +152,16 @@ export function InspectorStandaloneApp(): JSX.Element {
 
   useEffect(() => {
     if (!mediaPath) {
+      setProbePending(false)
       return
     }
+    setProbePending(true)
     let cancelled = false
     void window.fluxalloy.preview.probe(mediaPath).then((r) => {
       if (cancelled) {
         return
       }
+      setProbePending(false)
       if (r.ok) {
         setProbeInfo(r)
         setProbeError(null)
@@ -346,6 +350,7 @@ export function InspectorStandaloneApp(): JSX.Element {
       <main
         className="app-main inspector-standalone-main"
         aria-label={uiText('inspectorStandaloneMainAria')}
+        aria-busy={probePending}
         onDragOver={(event) => {
           event.preventDefault()
           event.stopPropagation()
