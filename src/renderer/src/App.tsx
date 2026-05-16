@@ -2999,7 +2999,7 @@ function App(): JSX.Element {
           aria-label={uiText('workspaceTabsAria')}
           role="tablist"
           aria-orientation="horizontal"
-          aria-busy={engineDownloadBusy}
+          aria-busy={engineDownloadBusy || probePending}
         >
           <button
             type="button"
@@ -3305,6 +3305,7 @@ function App(): JSX.Element {
               <nav
                 className="app-doc-inline-links app-url-bar-doc-links"
                 aria-label={uiText('quickYtdlpDocNavAria')}
+                aria-busy={engineDownloadBusy || downloadsOptionsBusy || downloadsHistoryBusy}
               >
                 <a href={YTDLP_DOC_README} target="_blank" rel="noreferrer">
                   {uiText('docLinkYtDlpReadme')}
@@ -3984,6 +3985,7 @@ function App(): JSX.Element {
           id="workspace-panel-editor"
           role="tabpanel"
           aria-labelledby="workspace-tab-editor"
+          aria-busy={exportBusy || snapshotBusy || probePending || exportCancelBusy}
           className={`app-main app-workbench${panelOpen('ffmpegSettingsRailOpen') ? '' : ' app-workbench-ffmpeg-collapsed'}`}
         >
           <section
@@ -5408,6 +5410,7 @@ function App(): JSX.Element {
                 className="app-downloads-band-copy"
                 role="group"
                 aria-label={uiText('downloadsBandHeadingCopyGroupAria')}
+                aria-busy={terminalBusy}
               >
                 <h2 className="app-downloads-title">{uiText('terminalTitle')}</h2>
                 <p className="app-downloads-hint">
@@ -5421,6 +5424,7 @@ function App(): JSX.Element {
                 <nav
                   className="app-terminal-intro-knowledge"
                   aria-label={uiText('terminalIntroKnowledgeNavAria')}
+                  aria-busy={terminalBusy}
                 >
                   <button
                     type="button"
@@ -5590,6 +5594,7 @@ function App(): JSX.Element {
                   className="app-terminal-suggest"
                   role="listbox"
                   aria-label={uiText('terminalInlineSuggestAria')}
+                  aria-busy={terminalBusy}
                   onMouseDown={(ev) => {
                     ev.preventDefault()
                   }}
@@ -5780,6 +5785,7 @@ function App(): JSX.Element {
                 className="app-downloads-band-copy"
                 role="group"
                 aria-label={uiText('downloadsBandHeadingCopyGroupAria')}
+                aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
               >
                 <h2 className="app-downloads-title">{uiText('downloadsPageTitle')}</h2>
                 <p className="app-downloads-hint">{uiText('downloadsPageHint')}</p>

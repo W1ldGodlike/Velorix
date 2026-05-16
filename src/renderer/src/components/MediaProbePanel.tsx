@@ -99,12 +99,15 @@ export function PreviewProbeBody({
   probeInfo,
   mediaPathForDefaultSave,
   probeSectionOpen,
-  onProbeSectionToggle
+  onProbeSectionToggle,
+  probeRefreshing = false
 }: {
   probeInfo: MediaProbeSuccess
   mediaPathForDefaultSave?: string
   probeSectionOpen?: Partial<Record<PreviewProbeSectionKey, boolean>>
   onProbeSectionToggle?: (key: PreviewProbeSectionKey, open: boolean) => void
+  /** Текущее обновление ffprobe выбранного файла (инспектор / будущие встраивания). */
+  probeRefreshing?: boolean
 }): JSX.Element {
   const persistedProbeSections = typeof onProbeSectionToggle === 'function'
   const [localProbeSections, setLocalProbeSections] = useState(PREVIEW_PROBE_SECTION_DEFAULTS)
@@ -311,6 +314,7 @@ export function PreviewProbeBody({
         role="region"
         aria-label={uiText('probePanelAriaLabel')}
         aria-describedby="probePanelOverviewHint"
+        aria-busy={probeRefreshing}
       >
         <p id="probePanelOverviewHint" className="app-visually-hidden">
           {uiText('probePanelOverviewHint')}
@@ -319,6 +323,7 @@ export function PreviewProbeBody({
           className="app-preview-probe-summary-line"
           role="group"
           aria-label={uiText('probeSummaryReadoutGroupAria')}
+          aria-busy={probeRefreshing}
         >
           <span title={formatTooltip}>
             {formatProbeDuration(probeInfo.durationSec)}
@@ -335,6 +340,7 @@ export function PreviewProbeBody({
         <nav
           className="app-doc-inline-links app-preview-probe-doc-links"
           aria-label={uiText('probeFfprobeDocNavAria')}
+          aria-busy={probeRefreshing}
         >
           <a href={FFPROBE_DOC_ALL} target="_blank" rel="noreferrer">
             {uiText('probeFfprobeDocLink')}
@@ -353,6 +359,7 @@ export function PreviewProbeBody({
         <details
           className="app-probe-details"
           aria-label={uiText('probeSectionExportSummary')}
+          aria-busy={probeRefreshing}
           open={sectionOpen('exportSummary')}
           onToggle={(e) => {
             persistOrLocalSectionToggle('exportSummary', e.currentTarget.open)
@@ -368,7 +375,7 @@ export function PreviewProbeBody({
             <p id="probeExportSummaryHint" className="app-probe-toolbar-hint">
               {uiText('probeSectionExportSummaryHint')}
             </p>
-            <div className="app-probe-json-toolbar" role="toolbar" aria-orientation="horizontal" aria-label={uiText('probeExportSummaryToolbarAria')}>
+            <div className="app-probe-json-toolbar" role="toolbar" aria-orientation="horizontal" aria-label={uiText('probeExportSummaryToolbarAria')} aria-busy={probeRefreshing}>
               <button
                 type="button"
                 className="app-btn app-btn-compact"
@@ -396,6 +403,7 @@ export function PreviewProbeBody({
           <details
             className="app-probe-details"
             aria-label={uiTextVars('probeSectionTracksTemplate', { count: probeInfo.tracks.length })}
+            aria-busy={probeRefreshing}
             open={sectionOpen('tracks')}
             onToggle={(e) => {
               persistOrLocalSectionToggle('tracks', e.currentTarget.open)
@@ -412,6 +420,7 @@ export function PreviewProbeBody({
               className="app-probe-table-wrap"
               role="group"
               aria-label={uiText('probeTracksTableWrapGroupAria')}
+              aria-busy={probeRefreshing}
             >
               <table className="app-probe-table">
                 <caption className="app-visually-hidden">{uiText('probeTracksCaption')}</caption>
@@ -555,6 +564,7 @@ export function PreviewProbeBody({
             aria-label={uiTextVars('probeSectionChaptersTemplate', {
               count: probeInfo.chapters.length
             })}
+            aria-busy={probeRefreshing}
             open={sectionOpen('chapters')}
             onToggle={(e) => {
               persistOrLocalSectionToggle('chapters', e.currentTarget.open)
@@ -571,6 +581,7 @@ export function PreviewProbeBody({
               className="app-probe-table-wrap"
               role="group"
               aria-label={uiText('probeChaptersTableWrapGroupAria')}
+              aria-busy={probeRefreshing}
             >
               <table className="app-probe-table">
                 <caption className="app-visually-hidden">{uiText('probeChaptersCaption')}</caption>
@@ -644,6 +655,7 @@ export function PreviewProbeBody({
           <details
             className="app-probe-details"
             aria-label={uiText('probeSectionRawJson')}
+            aria-busy={probeRefreshing}
             open={sectionOpen('rawJson')}
             onToggle={(e) => {
               persistOrLocalSectionToggle('rawJson', e.currentTarget.open)
@@ -656,7 +668,7 @@ export function PreviewProbeBody({
               <p id="probeRawJsonHint" className="app-probe-toolbar-hint">
                 {uiText('probeRawJsonHint')}
               </p>
-              <div className="app-probe-json-toolbar" role="toolbar" aria-orientation="horizontal" aria-label={uiText('probeRawJsonToolbarAria')}>
+              <div className="app-probe-json-toolbar" role="toolbar" aria-orientation="horizontal" aria-label={uiText('probeRawJsonToolbarAria')} aria-busy={probeRefreshing}>
                 <button
                   type="button"
                   className="app-btn app-btn-compact"

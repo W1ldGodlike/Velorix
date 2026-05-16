@@ -383,6 +383,7 @@ export function InspectorStandaloneApp(): JSX.Element {
           >
             <PreviewProbeBody
               probeInfo={displayedProbeInfo}
+              probeRefreshing={probePending && mediaPath !== null}
               probeSectionOpen={{
                 exportSummary: probeUiPanels.probeExportSummary,
                 tracks: probeUiPanels.probeTracks,
