@@ -162,7 +162,7 @@
 |------|--------|----------|
 | `MediaProbeSuccess` base | ✅ | `tests/fixtures/media-probe-success-base.ts` |
 | `AppSettings` base | ✅ | `tests/fixtures/app-settings-base.ts` |
-| `terminal-contract-scenarios.test.ts` (123 it) | [~] | fixture lines + `it.each` (срез 1); остальные `it` — далее |
+| `terminal-contract-scenarios.test.ts` (4 it + 6×it.each) | [x] | batches 60/690; preview 35+182 predicates; meta smoke |
 | `ytdlp-progress-parser.test.ts` (77 it) | ✅ | `ytdlp-progress-parse-cases` + `it.each` |
 | `ffmpeg-export-argv.test.ts` (67 it) | ✅ | `ffmpeg-export-argv-cases` + `it.each` (filter/trim/encode) |
 | `ffprobe-service.test.ts` (46 it) | ⬜ | fixtures + batches |
@@ -261,7 +261,7 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 
 | kind | count | file | Фаза | Срез (1 предложение, до кода) | Статус |
 |------|-------|------|------|-------------------------------|--------|
-| many-standalone-it | 123 | tests/shared/terminal-contract-scenarios.test.ts | 3 | fixture + it.each (срез) | [~] J-706 |
+| many-standalone-it | 4 | tests/shared/terminal-contract-scenarios.test.ts | 6 | predicates + substrings + batches | [x] J-714 |
 | many-standalone-it | 77 | tests/main/ytdlp-progress-parser.test.ts | 3 | case matrix + it.each | ✅ J-706 |
 | many-standalone-it | 67 | tests/shared/ffmpeg-export-argv.test.ts | 3 | argv-cases + it.each | ✅ J-707 |
 | many-standalone-it | 46 | tests/main/ffprobe-service.test.ts | 3 | track-detail-cases + it.each | ✅ J-708 |

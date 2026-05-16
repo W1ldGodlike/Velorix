@@ -34,6 +34,10 @@ import {
   validateYtdlpRetriesLine,
   YTDLP_DEFAULT_FILENAME_TEMPLATE
 } from '../../src/main/ytdlp-download-options'
+import {
+  YTDLP_RATE_LIMIT_CASES,
+  YTDLP_RETRIES_LINE_CASES
+} from '../fixtures/ytdlp-download-options-validator-cases'
 
 describe('validateFilenameTemplate', () => {
   it('принимает дефолтный шаблон yt-dlp', () => {
@@ -76,30 +80,23 @@ describe('resolveSafeYtdlpOutputPattern', () => {
 })
 
 describe('validateYtdlpRateLimit', () => {
-  it('нормализует суффикс скорости в верхний регистр', () => {
-    expect(validateYtdlpRateLimit(' 500k ')).toEqual({ ok: true, value: '500K' })
-    expect(validateYtdlpRateLimit('2m')).toEqual({ ok: true, value: '2M' })
-  })
-
-  it('отвергает shell-подобные и многословные значения', () => {
-    expect(validateYtdlpRateLimit('1M --exec')).toMatchObject({ ok: false })
-    expect(validateYtdlpRateLimit('fast')).toMatchObject({ ok: false })
+  it.each(YTDLP_RATE_LIMIT_CASES)('$input', (row) => {
+    const result = validateYtdlpRateLimit(row.input)
+    if ('expected' in row) {
+      expect(result).toEqual(row.expected)
+    } else {
+      expect(result).toMatchObject({ ok: row.expectedOk })
+    }
   })
 })
 
 describe('validateYtdlpRetriesLine', () => {
-  it('разбирает пустое значение как дефолт yt-dlp', () => {
-    expect(validateYtdlpRetriesLine('')).toEqual({ ok: true, value: null, line: '' })
-  })
-
-  it('принимает целые значения 0-99', () => {
-    expect(validateYtdlpRetriesLine('0')).toEqual({ ok: true, value: 0, line: '0' })
-    expect(validateYtdlpRetriesLine('99')).toEqual({ ok: true, value: 99, line: '99' })
-  })
-
-  it('отвергает дробные, отрицательные и слишком большие значения', () => {
-    for (const value of ['1.5', '-1', '100']) {
-      expect(validateYtdlpRetriesLine(value).ok, value).toBe(false)
+  it.each(YTDLP_RETRIES_LINE_CASES)('$input', (row) => {
+    const result = validateYtdlpRetriesLine(row.input)
+    if ('expected' in row) {
+      expect(result).toEqual(row.expected)
+    } else {
+      expect(result.ok, row.input).toBe(row.expectedOk)
     }
   })
 })

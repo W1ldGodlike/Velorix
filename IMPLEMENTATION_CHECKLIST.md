@@ -43,7 +43,7 @@
 
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый; подробности фиксировать ниже в тематических § и в `IMPLEMENTATION_JOURNAL.md`.
 
-- [~] Рефактор ф.2: `terminal-contract-scenarios` (остаток it); §6/§7 HW/batch.
+- [~] Рефактор ф.2/§6/§7: HW/batch (terminal-contract-scenarios ✅ J-714).
 - [~] §8: терминал — редкие сценарии/argv по факту; при правках `summary` — `npm run locales:terminal-summaries-ru` (дважды до 0/0).
 - [~] §9/§18: packaged/ffprobe e2e smoke; редкие поля ffprobe; связка с Support ZIP.
 - [~] §19/§3: `check:release`, `verify:win-unpacked`, SHA/JSON; packaged smoke; macOS/Linux engines и targets.
