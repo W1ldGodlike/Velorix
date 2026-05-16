@@ -953,4 +953,9 @@
 - [J-930] 2026-05-16 12:54:00 [Assistant]: Загрузки — список статистики очереди (`downloadsOverviewStatsGroupAria`): тот же флаг `aria-busy`.
 - [J-931] 2026-05-16 12:56:00 [Assistant]: Терминал — стек команды и автодополнения (`terminalCommandStackAria`): `aria-busy={terminalBusy}`.
 - [J-932] 2026-05-16 12:58:00 [Assistant]: Терминал — панель подсказок (`terminalHintsPanelAria`): `aria-busy={terminalBusy}` во время выполнения команды.
+- [J-933] 2026-05-16 13:00:00 [Assistant]: Верхняя панель — список вкладок рабочего пространства (`workspaceTabsAria`): `aria-busy={engineDownloadBusy}` при загрузке движков.
+- [J-934] 2026-05-16 13:02:00 [Assistant]: Верхняя панель — тулбар действий (`topbarActionsToolbarAria`): `aria-busy` при загрузке движков, экспорте, снимке или отмене экспорта.
+- [J-935] 2026-05-16 13:04:00 [Assistant]: Пакетный экспорт — тело свёрнутой панели (`app-url-body` региона batch): `aria-busy={batchExportBusy}`.
+- [J-936] 2026-05-16 13:06:00 [Assistant]: Загрузки — группа обёртки таблицы (`downloadsQueueTableWrapGroupAria`): `aria-busy` синхронизирован с вкладкой загрузок.
+- [J-937] 2026-05-16 13:08:00 [Assistant]: Терминал — вводная полоса (`terminalIntroBandAria`): `aria-busy={terminalBusy}` на время выполнения команды.
 

@@ -2986,6 +2986,7 @@ function App(): JSX.Element {
           aria-label={uiText('workspaceTabsAria')}
           role="tablist"
           aria-orientation="horizontal"
+          aria-busy={engineDownloadBusy}
         >
           <button
             type="button"
@@ -3061,6 +3062,7 @@ function App(): JSX.Element {
             role="toolbar"
             aria-orientation="horizontal"
             aria-label={uiText('topbarActionsToolbarAria')}
+            aria-busy={engineDownloadBusy || exportBusy || snapshotBusy || exportCancelBusy}
           >
             <button
               type="button"
@@ -3339,6 +3341,7 @@ function App(): JSX.Element {
             className="app-url-body"
             role="region"
             aria-labelledby="batch-export-region-title"
+            aria-busy={batchExportBusy}
           >
             <h3 id="batch-export-region-title" className="app-visually-hidden">
               {uiText('batchExportAria')}
@@ -5354,6 +5357,7 @@ function App(): JSX.Element {
               className="app-downloads-band"
               role="region"
               aria-label={uiText('terminalIntroBandAria')}
+              aria-busy={terminalBusy}
             >
               <div
                 className="app-downloads-band-copy"
@@ -5934,6 +5938,7 @@ function App(): JSX.Element {
                 className="app-downloads-table-wrap"
                 role="group"
                 aria-label={uiText('downloadsQueueTableWrapGroupAria')}
+                aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
               >
                 <table
                   className="app-downloads-table"
