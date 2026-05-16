@@ -271,6 +271,7 @@ const UI_TEXT = {
     downloadsFinishedRemovedTemplate: 'Убрано завершённых строк: {n}',
     downloadsNoFinishedRowsHint: 'Завершённых строк нет.',
     downloadsOverviewAria: 'Сводка очереди загрузок',
+    downloadsOverviewStatsGroupAria: 'Счётчики строк очереди по статусам',
     downloadsLowerStackAria: 'Журнал и история под очередью',
     downloadsQueueTableZoneAria: 'Таблица очереди загрузок',
     downloadsQueueTableWrapGroupAria: 'Прокручиваемая таблица очереди',
@@ -931,6 +932,7 @@ const UI_TEXT = {
     batchExportAria: 'Пакетный экспорт видео',
     batchExportDropzoneAria: 'Область пакета: перетаскивание файлов, параметры и таблица очереди',
     batchExportQueueTableZoneAria: 'Таблица очереди пакетного экспорта или пустое состояние',
+    batchExportTableWrapGroupAria: 'Таблица очереди пакетного экспорта',
     batchExportActionsToolbarAria: 'Действия панели пакетного экспорта',
     batchExportPanelFormGroupAria: 'Параметры пакета: суффикс, папка, параллелизм и действия очереди',
     batchExportOutputDirRowGroupAria: 'Папка вывода: выбрать, открыть, сбросить',
@@ -1054,6 +1056,7 @@ const UI_TEXT = {
     editorFfmpegSectionOutputHint:
       'Показать, как программа соберёт сохранение; кнопка «Экспорт» вверху откроет диалог «Сохранить как…»; ниже — быстрые действия с последним готовым файлом.',
     editorExportCommandPreviewSummary: 'Превью команды сохранения',
+    editorExportPreviewDetailsAria: 'Сворачиваемое превью команды сохранения',
     editorExportPreviewBodyRegionAria: 'Текст превью команды сохранения и действия копирования',
     editorAriaExportFfmpegCommand: 'Текст команды сохранения',
     editorCopyFfmpegCommandTitle:
@@ -1109,6 +1112,7 @@ const UI_TEXT = {
     probeFfprobeDocLink: 'Документация ffprobe (все опции)',
     probeFfprobeDocNavAria: 'Навигация: документация ffprobe в браузере',
     probeClipboardCopied: 'Скопировано в буфер',
+    probeToolbarFeedbackAria: 'Сообщение после копирования или ошибки',
     probeClipboardCopyFailed: 'Не удалось скопировать',
     probeSaveJsonDialogTitle: 'Сохранить JSON ffprobe',
     probeSaveSummaryTxtDialogTitle: 'Сохранить сводку ffprobe (TXT)',
@@ -1544,6 +1548,7 @@ const UI_TEXT = {
     downloadsFinishedRemovedTemplate: 'Removed finished rows: {n}',
     downloadsNoFinishedRowsHint: 'No finished rows to remove.',
     downloadsOverviewAria: 'Download queue summary',
+    downloadsOverviewStatsGroupAria: 'Queue status counters',
     downloadsLowerStackAria: 'Log and history under the queue',
     downloadsQueueTableZoneAria: 'Download queue table',
     downloadsQueueTableWrapGroupAria: 'Scrollable queue table',
@@ -2201,6 +2206,7 @@ const UI_TEXT = {
     batchExportAria: 'Batch video export',
     batchExportDropzoneAria: 'Batch area: drag-and-drop files, options, and queue table',
     batchExportQueueTableZoneAria: 'Batch export queue table or empty state',
+    batchExportTableWrapGroupAria: 'Batch export queue table',
     batchExportActionsToolbarAria: 'Batch export action bar',
     batchExportPanelFormGroupAria: 'Batch options: suffix, folder, concurrency, and queue actions',
     batchExportOutputDirRowGroupAria: 'Output folder: pick, reveal, reset',
@@ -2324,6 +2330,7 @@ const UI_TEXT = {
     editorFfmpegSectionOutputHint:
       'See how the save command is built; the Export button opens a Save dialog; below are quick actions for the last finished file.',
     editorExportCommandPreviewSummary: 'Save command preview',
+    editorExportPreviewDetailsAria: 'Collapsible save command preview',
     editorExportPreviewBodyRegionAria: 'Save command preview text and copy actions',
     editorAriaExportFfmpegCommand: 'Save command text',
     editorCopyFfmpegCommandTitle:
@@ -2378,6 +2385,7 @@ const UI_TEXT = {
     probeFfprobeDocLink: 'ffprobe documentation (all options)',
     probeFfprobeDocNavAria: 'Navigation: ffprobe documentation in the browser',
     probeClipboardCopied: 'Copied to clipboard',
+    probeToolbarFeedbackAria: 'Message after copy success or failure',
     probeClipboardCopyFailed: 'Copy failed',
     probeSaveJsonDialogTitle: 'Save ffprobe JSON',
     probeSaveSummaryTxtDialogTitle: 'Save ffprobe summary (TXT)',

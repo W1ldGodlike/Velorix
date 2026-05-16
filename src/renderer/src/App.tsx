@@ -3575,6 +3575,11 @@ function App(): JSX.Element {
               aria-label={uiText('batchExportQueueTableZoneAria')}
             >
             {batchSnapshot && batchSnapshot.rows.length > 0 ? (
+              <div
+                className="app-batch-export-table-wrap"
+                role="group"
+                aria-label={uiText('batchExportTableWrapGroupAria')}
+              >
               <table className="app-batch-export-table" aria-busy={batchExportBusy}>
                 <caption className="app-visually-hidden">{uiText('batchExportTableCaption')}</caption>
                 <thead>
@@ -3825,6 +3830,7 @@ function App(): JSX.Element {
                   ))}
                 </tbody>
               </table>
+              </div>
             ) : (
               <p className="app-url-hint">{uiText('batchExportEmpty')}</p>
             )}
@@ -5091,6 +5097,7 @@ function App(): JSX.Element {
                   </label>
                   <details
                     className="app-export-preview app-export-preview-nested"
+                    aria-label={uiText('editorExportPreviewDetailsAria')}
                     open={panelOpen('exportCommandPreview')}
                     onToggle={(e) => {
                       persistMainWindowUiPanelToggle('exportCommandPreview', e.currentTarget.open)
@@ -5486,7 +5493,9 @@ function App(): JSX.Element {
             >
               <section className="app-terminal-history" aria-label={uiText('terminalHistoryAria')}>
                 {terminalHistory.length === 0 ? (
-                  <p className="app-downloads-empty">{uiText('terminalHistoryEmpty')}</p>
+                  <p className="app-downloads-empty" role="status" aria-live="polite">
+                    {uiText('terminalHistoryEmpty')}
+                  </p>
                 ) : (
                   terminalHistory.map((entry) => {
                     const lines = (() => {
@@ -5735,6 +5744,11 @@ function App(): JSX.Element {
               </div>
             </div>
             <div className="app-downloads-overview" aria-label={uiText('downloadsOverviewAria')}>
+              <div
+                className="app-downloads-overview-stats"
+                role="group"
+                aria-label={uiText('downloadsOverviewStatsGroupAria')}
+              >
               <div className="app-downloads-stat">
                 <span className="app-downloads-stat-label">{uiText('downloadsStatTotal')}</span>
                 <strong>{downloadsStats.total}</strong>
@@ -5761,6 +5775,7 @@ function App(): JSX.Element {
                 <span className="app-downloads-stat-label">{uiText('downloadsStatPending')}</span>
                 <strong>{downloadsStats.pending}</strong>
               </div>
+            </div>
             </div>
             <div
               className="app-downloads-filterbar"

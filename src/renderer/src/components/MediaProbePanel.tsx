@@ -310,7 +310,14 @@ export function PreviewProbeBody({
           </a>
         </nav>
         {probeToolbarTip ? (
-          <div className="app-probe-copy-tip app-probe-tip-global">{probeToolbarTip}</div>
+          <div
+            className="app-probe-copy-tip app-probe-tip-global"
+            role="status"
+            aria-live="polite"
+            aria-label={uiText('probeToolbarFeedbackAria')}
+          >
+            {probeToolbarTip}
+          </div>
         ) : null}
         <details
           className="app-probe-details"

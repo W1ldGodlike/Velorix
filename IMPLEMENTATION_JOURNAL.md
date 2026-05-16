@@ -828,4 +828,9 @@
 - [J-805] 2026-05-16 08:42:00 [Assistant]: Строка состояния — кластер движков (`app-statusbar-cluster`): `statusbarEnginesClusterAria`, класс с `display: contents`.
 - [J-806] 2026-05-16 08:44:00 [Assistant]: Строка состояния — кластер кодека экспорта редактора: `statusbarExportCodecClusterAria`.
 - [J-807] 2026-05-16 08:46:00 [Assistant]: Строка состояния — временное сообщение (`app-statusbar-extra`): `role="status"` + `aria-live="polite"` в главном окне и инспекторе.
+- [J-808] 2026-05-16 08:48:00 [Assistant]: Пакетный экспорт — обёртка таблицы очереди (`app-batch-export-table-wrap`): `role="group"` + `batchExportTableWrapGroupAria`.
+- [J-809] 2026-05-16 08:50:00 [Assistant]: Загрузки — сетка счётчиков в сводке (`app-downloads-overview-stats`): `role="group"` + `downloadsOverviewStatsGroupAria`; перенос grid из `.app-downloads-overview`.
+- [J-810] 2026-05-16 08:52:00 [Assistant]: ffprobe — подсказка панели после копирования (`app-probe-copy-tip`): `role="status"` + `aria-live="polite"` + `probeToolbarFeedbackAria`.
+- [J-811] 2026-05-16 08:54:00 [Assistant]: Редактор — `<details>` превью команды FFmpeg (`app-export-preview-nested`): `aria-label` + `editorExportPreviewDetailsAria`.
+- [J-812] 2026-05-16 08:56:00 [Assistant]: Терминал — пустой журнал (`terminalHistoryEmpty`): `role="status"` + `aria-live="polite"`.
 

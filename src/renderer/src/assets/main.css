@@ -1294,10 +1294,13 @@ button.app-downloads-hint-token:disabled {
 }
 
 .app-downloads-overview {
+  padding: 0.7rem 0.85rem 0;
+}
+
+.app-downloads-overview-stats {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 0.55rem;
-  padding: 0.7rem 0.85rem 0;
 }
 
 .app-downloads-stat {
@@ -1516,7 +1519,7 @@ button.app-downloads-hint-token:disabled {
     scroll-margin-top: 0.45rem;
   }
 
-  .app-downloads-overview {
+  .app-downloads-overview-stats {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
