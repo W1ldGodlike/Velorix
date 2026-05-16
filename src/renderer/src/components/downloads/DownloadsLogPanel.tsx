@@ -1,4 +1,4 @@
-import type { JSX } from 'react'
+import { useId, type JSX } from 'react'
 
 import { uiText } from '../../locales/ui-text'
 
@@ -24,6 +24,7 @@ export function DownloadsLogPanel({
   onClear: () => void
   onSave: () => void
 }): JSX.Element {
+  const downloadsLogViewportId = useId()
   return (
     <details
       className="app-downloads-log-panel"
@@ -33,7 +34,7 @@ export function DownloadsLogPanel({
         onToggle(event.currentTarget.open)
       }}
     >
-      <summary>
+      <summary aria-controls={downloadsLogViewportId}>
         {uiText('downloadsLogTitle')}
         <span>{targetRowId !== null ? `#${targetRowId}` : uiText('uiPlaceholderDash')}</span>
       </summary>
@@ -61,6 +62,7 @@ export function DownloadsLogPanel({
         </button>
       </div>
       <pre
+        id={downloadsLogViewportId}
         className="app-downloads-log-pre"
         role="log"
         aria-label={uiText('downloadsLogViewportAria')}

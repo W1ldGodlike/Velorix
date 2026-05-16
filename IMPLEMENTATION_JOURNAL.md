@@ -913,4 +913,9 @@
 - [J-890] 2026-05-16 11:34:00 [Assistant]: Пакетный экспорт — регион таблицы очереди: `aria-busy={batchExportBusy}` на обёртке зоны очереди (дополнительно к dropzone и `<table>`).
 - [J-891] 2026-05-16 11:36:00 [Assistant]: Таймлайн — строка масштаба: считывание диапазона (`app-timeline-zoom-readout`) со `role="status"` и `aria-live="polite"`.
 - [J-892] 2026-05-16 11:38:00 [Assistant]: База знаний — тело статьи (`KnowledgeMarkdownBody`): контейнер заменён на `<article>` с прежним `aria-label`.
+- [J-893] 2026-05-16 11:40:00 [Assistant]: История загрузок (`DownloadsHistoryPanel`): на `<details>` добавлен `aria-busy={busy}` при обновлении/очистке списка.
+- [J-894] 2026-05-16 11:42:00 [Assistant]: Журнал yt-dlp (`DownloadsLogPanel`): стабильный `useId` на `<pre>`, у `<summary>` — `aria-controls` для связи с областью лога.
+- [J-895] 2026-05-16 11:44:00 [Assistant]: История обработки FFmpeg (`ProcessingHistoryPanel`): `aria-busy={busy}` на секции `<details>`.
+- [J-896] 2026-05-16 11:46:00 [Assistant]: База знаний (`KnowledgeDialog`): регион статьи (`article`) — `aria-busy={loading}` при загрузке списка/текста статьи.
+- [J-897] 2026-05-16 11:48:00 [Assistant]: О программе (`AboutDialog`): у модального `dialog` — `aria-busy`, пока карточка рантайма (`aboutInfo`) ещё не получена.
 

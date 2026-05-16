@@ -224,6 +224,7 @@ export function KnowledgeDialog({
           <article
             className="app-knowledge-article"
             role="region"
+            aria-busy={loading}
             aria-labelledby={knowledgeArticleRegionLabelledBy}
             aria-label={
               knowledgeArticleRegionLabelledBy === undefined

@@ -111,6 +111,7 @@ export function AboutDialog({
         className="app-modal app-modal-narrow"
         role="dialog"
         aria-modal="true"
+        aria-busy={aboutInfo === null}
         aria-labelledby="about-title"
         aria-describedby="about-dialog-desc"
         onMouseDown={(e) => {
