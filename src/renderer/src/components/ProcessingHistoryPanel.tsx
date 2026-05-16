@@ -218,8 +218,19 @@ export function ProcessingHistoryPanel({
         {entries.length === 0 ? (
           <p className="app-downloads-history-empty">{uiText('processingHistoryEmpty')}</p>
         ) : (
-          entries.slice(0, 10).map((entry) => (
-            <article key={entry.id} className="app-downloads-history-card">
+          entries.slice(0, 10).map((entry, idx) => {
+            const primary =
+              entry.outputPath ?? entry.inputPath ?? uiText('processingHistoryCardUntitledStub')
+            const label = primary.length > 96 ? `${primary.slice(0, 96)}…` : primary
+            return (
+            <article
+              key={entry.id}
+              className="app-downloads-history-card"
+              aria-label={uiTextVars('processingHistoryCardArticleAriaTemplate', {
+                index: idx + 1,
+                label
+              })}
+            >
               <div className="app-downloads-history-head">
                 <strong title={entry.outputPath ?? entry.inputPath}>
                   {entry.outputPath ?? entry.inputPath}
@@ -306,7 +317,8 @@ export function ProcessingHistoryPanel({
                 </div>
               ) : null}
             </article>
-          ))
+            )
+          })
         )}
       </div>
     </details>

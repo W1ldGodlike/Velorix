@@ -127,8 +127,15 @@ export function DownloadsHistoryPanel({
         {entries.length === 0 ? (
           <p className="app-downloads-history-empty">{uiText('downloadsHistoryEmpty')}</p>
         ) : (
-          entries.slice(0, 8).map((entry) => (
-            <article key={entry.id} className="app-downloads-history-card">
+          entries.slice(0, 8).map((entry, idx) => (
+            <article
+              key={entry.id}
+              className="app-downloads-history-card"
+              aria-label={uiTextVars('downloadsHistoryCardArticleAriaTemplate', {
+                index: idx + 1,
+                title: entry.shortLabel
+              })}
+            >
               <div className="app-downloads-history-head">
                 <strong>{entry.shortLabel}</strong>
                 <div

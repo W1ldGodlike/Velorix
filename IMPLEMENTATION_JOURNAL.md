@@ -853,4 +853,9 @@
 - [J-830] 2026-05-16 09:32:00 [Assistant]: Терминал — карточки журнала (`article.app-terminal-entry`): `aria-label` из `terminalEntryArticleAriaTemplate` (индекс и усечённая команда).
 - [J-831] 2026-05-16 09:34:00 [Assistant]: Терминал — блок stdout/stderr (`role="log"`): `aria-label` из `terminalEntryOutputLogAriaTemplate` по номеру записи.
 - [J-832] 2026-05-16 09:36:00 [Assistant]: Стили — `.app-terminal-intro-knowledge`: отступ под текстом вводной зоны терминала.
+- [J-833] 2026-05-16 09:38:00 [Assistant]: История загрузок — карточки (`article`): `aria-label` из `downloadsHistoryCardArticleAriaTemplate` (номер в списке и заголовок).
+- [J-834] 2026-05-16 09:40:00 [Assistant]: История обработок — карточки: `aria-label` из `processingHistoryCardArticleAriaTemplate`; заглушка пути `processingHistoryCardUntitledStub`.
+- [J-835] 2026-05-16 09:42:00 [Assistant]: Журнал yt-dlp (`DownloadsLogPanel`): `pre` с `role="log"` + `downloadsLogViewportAria`, `aria-live="polite"`.
+- [J-836] 2026-05-16 09:44:00 [Assistant]: База знаний — состояние загрузки статьи: абзац со `role="status"` + `aria-live="polite"`.
+- [J-837] 2026-05-16 09:46:00 [Assistant]: База знаний — ошибка чтения статьи: абзац со `role="alert"`.
 

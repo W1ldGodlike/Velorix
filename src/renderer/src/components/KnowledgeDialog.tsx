@@ -222,8 +222,16 @@ export function KnowledgeDialog({
                 : undefined
             }
           >
-            {loading ? <p className="app-modal-hint">{uiText('loading')}</p> : null}
-            {error ? <p className="app-modal-hint app-error-text">{error}</p> : null}
+            {loading ? (
+              <p className="app-modal-hint" role="status" aria-live="polite">
+                {uiText('loading')}
+              </p>
+            ) : null}
+            {error ? (
+              <p className="app-modal-hint app-error-text" role="alert">
+                {error}
+              </p>
+            ) : null}
             {!loading && !error && articlePane ? (
               <>
                 <h3 id="knowledge-article-heading">{articlePane.title}</h3>

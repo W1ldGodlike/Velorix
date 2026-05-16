@@ -59,7 +59,12 @@ export function DownloadsLogPanel({
           {uiText('downloadsLogSave')}
         </button>
       </div>
-      <pre className="app-downloads-log-pre" aria-live="polite">
+      <pre
+        className="app-downloads-log-pre"
+        role="log"
+        aria-label={uiText('downloadsLogViewportAria')}
+        aria-live="polite"
+      >
         {lines.length === 0
           ? uiText('downloadsLogEmpty')
           : lines.map((line) => `[${line.rowId}] ${line.stream}: ${line.text}`).join('\n')}
