@@ -2,11 +2,13 @@
  * §9 — редкие поля контейнера ffprobe: `probe_score`, `format.tags` (MP4/MOV brands).
  */
 import type { MediaProbeSuccess } from './ffprobe-contract'
+import { formatFfprobeStreamStartTime } from './ffprobe-stream-start-time'
 import {
   type FfprobeSummaryLocale,
   ffprobeSummaryFill,
   ffprobeSummaryStrings
 } from './ffprobe-summary-export-locale'
+import { formatProbeChapterTimecode } from './ffprobe-timecode'
 
 function tagScalar(raw: string | number | undefined): string | null {
   if (typeof raw === 'number' && Number.isFinite(raw)) {
@@ -65,6 +67,24 @@ export function parseFfprobeFormatFlags(raw: string | number | undefined): strin
       return `0x${(n >>> 0).toString(16)}`
     }
     return t
+  }
+  return null
+}
+
+export function parseFfprobeFormatStartTimeSec(raw: string | number | undefined): number | null {
+  if (typeof raw === 'number' && Number.isFinite(raw)) {
+    return Math.abs(raw) < 0.0005 ? null : raw
+  }
+  if (typeof raw === 'string') {
+    const t = raw.trim()
+    if (t === '' || /^n\/a$/i.test(t)) {
+      return null
+    }
+    const sec = Number.parseFloat(t.replace(',', '.'))
+    if (!Number.isFinite(sec) || Math.abs(sec) < 0.0005) {
+      return null
+    }
+    return sec
   }
   return null
 }
@@ -170,6 +190,27 @@ export function formatFfprobeContainerSizeExportLine(
     label: formatFfprobeContainerSizeCompact(sizeBytes),
     bytes: sizeBytes
   })
+}
+
+export function formatFfprobeContainerStartTimeExportLine(
+  startSec: number | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (startSec === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerStartTimeTemplate, {
+    time: formatProbeChapterTimecode(startSec)
+  })
+}
+
+/** Компактная подпись для инспектора (как у дорожек). */
+export function formatFfprobeContainerStartTimeCompact(startSec: number | null): string | null {
+  if (startSec === null) {
+    return null
+  }
+  return formatFfprobeStreamStartTime(String(startSec))
 }
 
 export function formatFfprobeNbStreamsExportLine(

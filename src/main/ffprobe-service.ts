@@ -25,7 +25,8 @@ import {
   parseFfprobeFormatMajorBrand,
   parseFfprobeFormatNbStreams,
   parseFfprobeFormatProbeScore,
-  parseFfprobeFormatSize
+  parseFfprobeFormatSize,
+  parseFfprobeFormatStartTimeSec
 } from '../shared/ffprobe-container-format'
 import type {
   MediaProbeResult,
@@ -53,6 +54,7 @@ interface FfprobeJson {
     nb_streams?: string | number
     flags?: string | number
     size?: string | number
+    start_time?: string | number
     tags?: Record<string, string | number | undefined>
   }
   streams?: Array<{
@@ -976,6 +978,7 @@ export async function probeMediaFile(
     containerNbStreams: parseFfprobeFormatNbStreams(parsed.format?.nb_streams),
     containerFormatFlags: parseFfprobeFormatFlags(parsed.format?.flags),
     containerSizeBytes: parseFfprobeFormatSize(parsed.format?.size),
+    containerStartTimeSec: parseFfprobeFormatStartTimeSec(parsed.format?.start_time),
     tracks: buildTrackRows(parsed.streams, durationSecResolved, locale),
     chapters: buildChapterRowsFromFfprobeJson(parsed.chapters),
     rawJson

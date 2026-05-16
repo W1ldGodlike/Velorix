@@ -24,6 +24,7 @@ export type FfprobeSummaryStrings = {
   containerNbStreamsMismatchTemplate: string
   containerFormatFlagsTemplate: string
   containerSizeTemplate: string
+  containerStartTimeTemplate: string
   bitrateEstPrefix: string
   bitratePlainPrefix: string
   bitrateMbpsTemplate: string
@@ -76,6 +77,7 @@ const RU: FfprobeSummaryStrings = {
     'Потоков в контейнере (nb_streams): {nb} (разобрано дорожек: {parsed})',
   containerFormatFlagsTemplate: 'Флаги контейнера (flags): {flags}',
   containerSizeTemplate: 'Размер файла (format.size): {label} ({bytes} B)',
+  containerStartTimeTemplate: 'Смещение контейнера (start_time): {time}',
   bitrateEstPrefix: 'Битрейт (оценка): ',
   bitratePlainPrefix: 'Битрейт: ',
   bitrateMbpsTemplate: '{value} Мбит/с',
@@ -131,6 +133,7 @@ const EN: FfprobeSummaryStrings = {
     'Container streams (nb_streams): {nb} (parsed tracks: {parsed})',
   containerFormatFlagsTemplate: 'Container flags (flags): {flags}',
   containerSizeTemplate: 'File size (format.size): {label} ({bytes} B)',
+  containerStartTimeTemplate: 'Container start offset (start_time): {time}',
   bitrateEstPrefix: 'Bitrate (estimate): ',
   bitratePlainPrefix: 'Bitrate: ',
   bitrateMbpsTemplate: '{value} Mb/s',

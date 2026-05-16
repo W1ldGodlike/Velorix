@@ -728,3 +728,8 @@
 - [J-700] 2026-05-16 19:30:25 [Assistant]: §7.3 — регрессия batch: `resolveFfmpegExportBatchOutputSuffix/DirectoryFromSettings` + `hwDecode` (J-698); Vitest. `npm run check:quiet`.
 - [J-701] 2026-05-16 19:31:48 [Assistant]: §9 — ffprobe `format.flags` (hex) в probe и TXT/HTML-сводке; Vitest. `npm run check:quiet`.
 - [J-702] 2026-05-16 19:33:26 [Assistant]: §9 — ffprobe `format.size` (байты, IEC-подпись) в probe, инспекторе и TXT/HTML; Vitest. `npm run check:quiet`.
+- [J-703] 2026-05-16 19:35:01 [Assistant]: §9 — ffprobe `format.start_time` (смещение контейнера) в probe, инспекторе и TXT/HTML; Vitest. `npm run check:quiet`.
+- [J-704] 2026-05-16 19:37:37 [Assistant]: §6 — паритет embedded↔pop-out: broadcast `downloadsWindowUiPanels` в оба окна + live-sync details в pop-out; Vitest IPC-контракт. `npm run check:quiet`.
+- [J-705] 2026-05-16 19:39:23 [Assistant]: §6/§19 — `smoke:packaged-ytdlp` (`--version` + offline `--list-extractors`); shared lib + Vitest; в `check:release`. `npm run check:quiet`.
+- [J-706] 2026-05-16 19:41:24 [Assistant]: §7/§19 — `smoke:packaged-ffmpeg` (`-version` + offline `-encoders`); shared lib + Vitest; в `check:release`. `npm run check:quiet`.
+- [J-707] 2026-05-16 19:42:31 [Assistant]: §19 — `smoke:packaged-engines` (ffprobe + yt-dlp + ffmpeg) в `check:release`; marathon #20 commit+push. `npm run check:quiet`.

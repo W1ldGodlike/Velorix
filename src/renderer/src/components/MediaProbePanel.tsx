@@ -7,7 +7,10 @@ import type {
   MediaProbeSuccess,
   MediaProbeTrackRow
 } from '../../../shared/ffprobe-contract'
-import { formatFfprobeContainerSizeCompact } from '../../../shared/ffprobe-container-format'
+import {
+  formatFfprobeContainerSizeCompact,
+  formatFfprobeContainerStartTimeCompact
+} from '../../../shared/ffprobe-container-format'
 import {
   defaultFfprobeJsonFileName,
   defaultFfprobeSummaryHtmlFileName,
@@ -343,6 +346,12 @@ export function PreviewProbeBody({
             {probeInfo.containerSizeBytes !== null
               ? ` · ${formatFfprobeContainerSizeCompact(probeInfo.containerSizeBytes)}`
               : ''}
+            {(() => {
+              const startLabel = formatFfprobeContainerStartTimeCompact(
+                probeInfo.containerStartTimeSec
+              )
+              return startLabel ? ` · ${startLabel}` : ''
+            })()}
             {bitrateLabel ? ` · ${bitrateLabel}` : ''}
           </span>
         </div>

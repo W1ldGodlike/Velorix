@@ -321,6 +321,27 @@ function broadcastDownloadsLogPayload(payload: DownloadsLogPayload): void {
   }
 }
 
+/** §6.1 — раскрытие секций rail / история / лог: pop-out ↔ вкладка «Загрузки» в главном окне. */
+export function broadcastDownloadsWindowUiPanelsSnapshot(
+  snap: DownloadsWindowUiPanelState = {}
+): void {
+  const targets: BrowserWindow[] = []
+  if (downloadsWindow && !downloadsWindow.isDestroyed()) {
+    targets.push(downloadsWindow)
+  }
+  const mainEditor = resolveMainEditorWindow()
+  if (mainEditor && !mainEditor.isDestroyed()) {
+    targets.push(mainEditor)
+  }
+  for (const w of targets) {
+    try {
+      w.webContents.send(mw.downloadsWindowUiPanelsChanged, snap)
+    } catch {
+      /* окно закрывается */
+    }
+  }
+}
+
 function sanitizeDownloadsUiPanelPatch(raw: unknown): Partial<DownloadsWindowUiPanelState> {
   if (!raw || typeof raw !== 'object') {
     return {}
@@ -2974,6 +2995,37 @@ ${emitDownloadsQueueRowIcoBootstrapJs()}
       }
       if (api && typeof api.onThemeChanged === 'function') {
         api.onThemeChanged(applyDownloadsTheme);
+      }
+
+      function applyDownloadsUiPanelsSnapshot(panels) {
+        if (!panels || typeof panels !== 'object') return;
+        var pairs = [
+          ['historyDetails', 'history', false],
+          ['logDetails', 'log', false],
+          ['dlRailFormat', 'format', true],
+          ['dlRailMeta', 'metadata', true],
+          ['dlRailSave', 'saving', true],
+          ['dlRailNet', 'network', false],
+          ['expertArgsDetails', 'expert', false],
+          ['hintsPanel', 'hints', true]
+        ];
+        suppressDetailsUiPersist = true;
+        if (suppressDetailsUiPersistTimer !== null) {
+          window.clearTimeout(suppressDetailsUiPersistTimer);
+        }
+        pairs.forEach(function (pair) {
+          var el = document.getElementById(pair[0]);
+          if (!el || el.tagName !== 'DETAILS') return;
+          var v = panels[pair[1]];
+          el.open = typeof v === 'boolean' ? v : pair[2];
+        });
+        suppressDetailsUiPersistTimer = window.setTimeout(function () {
+          suppressDetailsUiPersist = false;
+          suppressDetailsUiPersistTimer = null;
+        }, 0);
+      }
+      if (api && typeof api.onDownloadsWindowUiPanelsChanged === 'function') {
+        api.onDownloadsWindowUiPanelsChanged(applyDownloadsUiPanelsSnapshot);
       }
 
       api.getSnapshot().then(onQueueSnapshot);

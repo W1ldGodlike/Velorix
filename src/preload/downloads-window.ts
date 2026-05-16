@@ -33,6 +33,31 @@ function isDownloadsLogPayload(raw: unknown): raw is DownloadsLogPayload {
   return false
 }
 
+const DOWNLOADS_WINDOW_UI_PANEL_KEYS: (keyof DownloadsWindowUiPanelState)[] = [
+  'history',
+  'log',
+  'format',
+  'metadata',
+  'saving',
+  'network',
+  'expert',
+  'hints'
+]
+
+function sanitizeDownloadsWindowUiPanelState(raw: unknown): DownloadsWindowUiPanelState {
+  if (!raw || typeof raw !== 'object') {
+    return {}
+  }
+  const src = raw as Record<string, unknown>
+  const out: DownloadsWindowUiPanelState = {}
+  for (const key of DOWNLOADS_WINDOW_UI_PANEL_KEYS) {
+    if (typeof src[key] === 'boolean') {
+      out[key] = src[key]
+    }
+  }
+  return out
+}
+
 /**
  * Узкий API только для второго окна (data-document + sandbox).
  * Основное приложение этот объект не экспонирует.
@@ -162,6 +187,20 @@ contextBridge.exposeInMainWorld('fluxalloyDownloads', {
     patch: Partial<DownloadsWindowUiPanelState>
   ): Promise<{ ok: true } | { ok: false; error: string }> =>
     ipcRenderer.invoke(d.mergeUiPanels, patch),
+
+  /** Main → pop-out: полный снимок панелей после merge (вкладка «Загрузки» ↔ pop-out). */
+  onDownloadsWindowUiPanelsChanged: (
+    listener: (panels: DownloadsWindowUiPanelState) => void
+  ): (() => void) => {
+    const channel = mw.downloadsWindowUiPanelsChanged
+    const handler = (_: unknown, raw: unknown): void => {
+      listener(sanitizeDownloadsWindowUiPanelState(raw))
+    }
+    ipcRenderer.on(channel, handler)
+    return (): void => {
+      ipcRenderer.removeListener(channel, handler)
+    }
+  },
 
   /** §1.1 — broadcast эффективной палитры из main (`persistThemePreference` / `nativeTheme`): как у главного окна. */
   onThemeChanged: (listener: (theme: ResolvedAppTheme) => void): (() => void) => {

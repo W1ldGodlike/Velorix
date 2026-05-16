@@ -38,6 +38,7 @@ import { getDownloadsQueueSnapshot } from './downloads-queue'
 import { filterExistingVideoPathsForBatch } from './ffmpeg-export-batch-grant-paths'
 import { collectDownloadsQueueVideoPaths } from '../shared/ffmpeg-export-batch-collect-paths'
 import {
+  broadcastDownloadsWindowUiPanelsSnapshot,
   configureDownloadsWindowBoundsHooks,
   focusOrCreateDownloadsWindow,
   isDownloadsWindow,
@@ -1145,29 +1146,6 @@ function persistMainWindowUiPanelsMerge(raw: unknown): AppSettings {
     }
   }
   return { ...cachedSettings }
-}
-
-/** §6.1 — синхронизация раскрытия секций rail / история / лог между pop-out и встроенной вкладкой. */
-function broadcastDownloadsWindowUiPanelsSnapshot(): void {
-  const snap = cachedSettings.downloadsWindowUiPanels ?? {}
-  const targets: BrowserWindow[] = []
-  if (mainWindowRef && !mainWindowRef.isDestroyed()) {
-    targets.push(mainWindowRef)
-  } else {
-    const fallback = BrowserWindow.getAllWindows().find(
-      (w) => !isDownloadsWindow(w) && !isInspectorWindow(w)
-    )
-    if (fallback && !fallback.isDestroyed()) {
-      targets.push(fallback)
-    }
-  }
-  for (const w of targets) {
-    try {
-      w.webContents.send(mw.downloadsWindowUiPanelsChanged, snap)
-    } catch {
-      /* окно закрывается */
-    }
-  }
 }
 
 /** §7.2 — пресет libx264 для экспорта; только белый список через parse. */
@@ -2622,7 +2600,7 @@ app.whenReady().then(() => {
         downloadsWindowUiPanels: { ...prev, ...patch }
       }
       saveSettings(settingsPath(), cachedSettings)
-      broadcastDownloadsWindowUiPanelsSnapshot()
+      broadcastDownloadsWindowUiPanelsSnapshot(cachedSettings.downloadsWindowUiPanels ?? {})
     },
     getAppTheme: (): ResolvedAppTheme => resolveEffectiveTheme(cachedSettings.theme),
     getDownloadsUiLocale: (): DownloadsWindowUiLocale => mainDownloadsUiLocale()

@@ -5,6 +5,8 @@ import {
   formatFfprobeContainerBrandExportLine,
   formatFfprobeContainerSizeExportLine,
   formatFfprobeContainerSizeCompact,
+  formatFfprobeContainerStartTimeExportLine,
+  formatFfprobeContainerStartTimeCompact,
   formatFfprobeEditorVideoFactLine,
   formatFfprobeFormatFlagsExportLine,
   formatFfprobeNbStreamsExportLine,
@@ -14,7 +16,8 @@ import {
   parseFfprobeFormatMajorBrand,
   parseFfprobeFormatNbStreams,
   parseFfprobeFormatProbeScore,
-  parseFfprobeFormatSize
+  parseFfprobeFormatSize,
+  parseFfprobeFormatStartTimeSec
 } from '../../src/shared/ffprobe-container-format'
 
 const probeBase: MediaProbeSuccess = {
@@ -32,6 +35,7 @@ const probeBase: MediaProbeSuccess = {
   containerNbStreams: null,
   containerFormatFlags: null,
   containerSizeBytes: null,
+  containerStartTimeSec: null,
   tracks: [],
   chapters: [],
   rawJson: '{}'
@@ -68,6 +72,13 @@ describe('ffprobe-container-format', () => {
     expect(parseFfprobeFormatNbStreams('3')).toBe(3)
     expect(formatFfprobeNbStreamsExportLine(2, 2, 'ru')).toContain('2')
     expect(formatFfprobeNbStreamsExportLine(3, 2, 'en')).toContain('parsed tracks: 2')
+  })
+
+  it('parseFfprobeFormatStartTimeSec и export line', () => {
+    expect(parseFfprobeFormatStartTimeSec('0')).toBeNull()
+    expect(parseFfprobeFormatStartTimeSec('1.5')).toBe(1.5)
+    expect(formatFfprobeContainerStartTimeCompact(1.5)).toContain('start')
+    expect(formatFfprobeContainerStartTimeExportLine(1.5, 'ru')).toContain('start_time')
   })
 
   it('parseFfprobeFormatSize и export line', () => {

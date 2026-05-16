@@ -9,6 +9,7 @@ import { formatProbeChapterTimecode } from './ffprobe-timecode'
 import {
   formatFfprobeContainerBrandExportLine,
   formatFfprobeContainerSizeExportLine,
+  formatFfprobeContainerStartTimeExportLine,
   formatFfprobeFormatFlagsExportLine,
   formatFfprobeNbStreamsExportLine,
   formatFfprobeProbeScoreExportLine
@@ -152,6 +153,7 @@ export function formatProbeSummaryPlainText(
     formatFfprobeNbStreamsExportLine(info.containerNbStreams, info.tracks.length, locale),
     formatFfprobeFormatFlagsExportLine(info.containerFormatFlags, locale),
     formatFfprobeContainerSizeExportLine(info.containerSizeBytes, locale),
+    formatFfprobeContainerStartTimeExportLine(info.containerStartTimeSec, locale),
     '',
     ffprobeSummaryFill(b.streamsCountTemplate, { count: info.tracks.length }),
     ''
@@ -264,6 +266,10 @@ ${chapterRows}
     (() => {
       const sz = formatFfprobeContainerSizeExportLine(info.containerSizeBytes, locale)
       return sz ? `<li>${escapeHtml(sz)}</li>` : ''
+    })(),
+    (() => {
+      const st = formatFfprobeContainerStartTimeExportLine(info.containerStartTimeSec, locale)
+      return st ? `<li>${escapeHtml(st)}</li>` : ''
     })(),
     bitrateLabel ? `<li>${b.bitratePlainPrefix}${escapeHtml(bitrateLabel)}</li>` : ''
   ].filter(Boolean)
