@@ -11,6 +11,7 @@ import {
   formatFfprobeContainerCreationTimeExportLine,
   formatFfprobeContainerEncoderExportLine,
   formatFfprobeContainerCommentExportLine,
+  formatFfprobeContainerArtistExportLine,
   formatFfprobeContainerDescriptionExportLine,
   formatFfprobeContainerTitleExportLine,
   formatFfprobeContainerSizeExportLine,
@@ -162,6 +163,7 @@ export function formatProbeSummaryPlainText(
     formatFfprobeContainerTitleExportLine(info.containerTitleTag, locale),
     formatFfprobeContainerCommentExportLine(info.containerCommentTag, locale),
     formatFfprobeContainerDescriptionExportLine(info.containerDescriptionTag, locale),
+    formatFfprobeContainerArtistExportLine(info.containerArtistTag, locale),
     formatFfprobeProbeScoreExportLine(info.probeScore, locale),
     formatFfprobeNbStreamsExportLine(info.containerNbStreams, info.tracks.length, locale),
     formatFfprobeNbProgramsExportLine(info.containerNbPrograms, locale),
@@ -286,6 +288,10 @@ ${chapterRows}
     (() => {
       const desc = formatFfprobeContainerDescriptionExportLine(info.containerDescriptionTag, locale)
       return desc ? `<li>${escapeHtml(desc)}</li>` : ''
+    })(),
+    (() => {
+      const art = formatFfprobeContainerArtistExportLine(info.containerArtistTag, locale)
+      return art ? `<li>${escapeHtml(art)}</li>` : ''
     })(),
     (() => {
       const score = formatFfprobeProbeScoreExportLine(info.probeScore, locale)

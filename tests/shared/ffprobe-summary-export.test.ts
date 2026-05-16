@@ -62,6 +62,7 @@ const sampleProbe: MediaProbeSuccess = {
   containerTitleTag: 'Sample',
   containerCommentTag: 'Offline edit',
   containerDescriptionTag: 'Demo reel',
+  containerArtistTag: 'Flux Studio',
   containerCompatibleBrands: 'mp41iso2',
   probeScore: 100,
   containerNbStreams: 2,
@@ -116,6 +117,7 @@ describe('ffprobe-summary-export', () => {
     expect(t).toContain('title): Sample')
     expect(t).toContain('comment): Offline edit')
     expect(t).toContain('description): Demo reel')
+    expect(t).toContain('artist): Flux Studio')
     expect(t).toContain('probe_score): 100')
     expect(t).toContain('nb_streams): 2')
     expect(t).toContain('nb_programs): 1')

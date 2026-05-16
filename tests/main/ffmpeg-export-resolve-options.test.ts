@@ -148,6 +148,53 @@ describe('resolveFfmpegExportJobOptionsFromAppSettings', () => {
     })
   })
 
+  it('videoSharpen и audioNormalize из settings и overrides (§7.3)', () => {
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings({
+        ...base,
+        ffmpegExportVideoSharpen: 'light',
+        ffmpegExportAudioNormalize: 'loudnorm'
+      })
+    ).toMatchObject({ videoSharpen: 'light', audioNormalize: 'loudnorm' })
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings(
+        { ...base, ffmpegExportAudioNormalize: 'loudnorm' },
+        { videoSharpen: 'strong', audioNormalize: 'off' }
+      )
+    ).toMatchObject({ videoSharpen: 'strong', audioNormalize: 'off' })
+  })
+
+  it('audioGainDb и videoDenoise из settings и overrides (§7.3)', () => {
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings({
+        ...base,
+        ffmpegExportAudioGainDb: 6,
+        ffmpegExportVideoDenoise: 'medium'
+      })
+    ).toMatchObject({ audioGainDb: 6, videoDenoise: 'medium' })
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings(
+        { ...base, ffmpegExportVideoDenoise: 'medium' },
+        { audioGainDb: -3, videoDenoise: 'off' }
+      )
+    ).toMatchObject({ audioGainDb: -3, videoDenoise: 'off' })
+  })
+
+  it('audioBitrate из settings и overrides (§7.3)', () => {
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings({
+        ...base,
+        ffmpegExportAudioBitrate: '128k'
+      }).audioBitrate
+    ).toBe('128k')
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings(
+        { ...base, ffmpegExportAudioBitrate: '128k' },
+        { audioBitrate: '320k' }
+      ).audioBitrate
+    ).toBe('320k')
+  })
+
   it('videoBitrate и subtitleMode из settings и overrides (§7.3)', () => {
     expect(
       resolveFfmpegExportJobOptionsFromAppSettings({

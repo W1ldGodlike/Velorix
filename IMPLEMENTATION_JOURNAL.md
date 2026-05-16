@@ -753,3 +753,8 @@
 - [J-725] 2026-05-16 20:13:01 [Assistant]: §9 — ffprobe `format.tags.description` → `containerDescriptionTag` в probe, инспекторе (`desc …`) и TXT/HTML; Vitest. `npm run check:quiet`.
 - [J-726] 2026-05-16 20:14:04 [Assistant]: §7.3 — регрессия resolve: `cropPreset` и `videoTransform` из settings и overrides; Vitest. `npm run check:quiet`.
 - [J-727] 2026-05-16 20:15:15 [Assistant]: §7.3 — регрессия resolve: `videoBitrate` и `subtitleMode` из settings/overrides; Vitest. Marathon #40 commit+push. `npm run check:quiet`.
+- [J-728] 2026-05-16 20:17:16 [Assistant]: §7.3 — регрессия resolve: `audioBitrate` из settings и overrides; Vitest. `npm run check:quiet`.
+- [J-729] 2026-05-16 20:18:42 [Assistant]: §9 — ffprobe `format.tags.artist` → `containerArtistTag` в probe, инспекторе (`art …`) и TXT/HTML; Vitest. `npm run check:quiet`.
+- [J-730] 2026-05-16 20:19:58 [Assistant]: §7.3 — регрессия resolve: `audioGainDb` и `videoDenoise` из settings и overrides; Vitest. `npm run check:quiet`.
+- [J-731] 2026-05-16 20:21:06 [Assistant]: §7.3 — регрессия resolve: `videoSharpen` и `audioNormalize` из settings и overrides; Vitest. `npm run check:quiet`.
+- [J-732] 2026-05-16 20:22:17 [Assistant]: Marathon #45 commit — пакет J-728–731: resolve regressions (audioBitrate, filters) + ffprobe `format.tags.artist`; `npm run check:quiet`.

@@ -108,7 +108,8 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
           encoder: 'Lavf61.0.100',
           title: 'clip',
           comment: 'offline',
-          description: 'Demo reel'
+          description: 'Demo reel',
+          artist: 'Flux Studio'
         }
       },
       streams: [
@@ -146,6 +147,7 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
         expect(r.containerTitleTag).toBe('clip')
         expect(r.containerCommentTag).toBe('offline')
         expect(r.containerDescriptionTag).toBe('Demo reel')
+        expect(r.containerArtistTag).toBe('Flux Studio')
         expect(r.containerCompatibleBrands).toBe('mp41iso2')
         expect(r.probeScore).toBe(100)
         expect(r.containerNbStreams).toBe(2)

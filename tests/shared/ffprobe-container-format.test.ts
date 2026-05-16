@@ -5,6 +5,7 @@ import {
   formatFfprobeContainerBrandExportLine,
   formatFfprobeContainerCreationTimeExportLine,
   formatFfprobeContainerCommentExportLine,
+  formatFfprobeContainerArtistExportLine,
   formatFfprobeContainerDescriptionExportLine,
   formatFfprobeContainerEncoderExportLine,
   formatFfprobeContainerTitleExportLine,
@@ -23,6 +24,7 @@ import {
   parseFfprobeFormatCompatibleBrands,
   parseFfprobeFormatCreationTime,
   parseFfprobeFormatCommentTag,
+  parseFfprobeFormatArtistTag,
   parseFfprobeFormatDescriptionTag,
   parseFfprobeFormatEncoder,
   parseFfprobeFormatTitleTag,
@@ -51,6 +53,7 @@ const probeBase: MediaProbeSuccess = {
   containerTitleTag: null,
   containerCommentTag: null,
   containerDescriptionTag: null,
+  containerArtistTag: null,
   containerCompatibleBrands: null,
   probeScore: null,
   containerNbStreams: null,
@@ -136,6 +139,11 @@ describe('ffprobe-container-format', () => {
   it('parseFfprobeFormatDescriptionTag и export line', () => {
     expect(parseFfprobeFormatDescriptionTag({ description: 'Demo reel' })).toBe('Demo reel')
     expect(formatFfprobeContainerDescriptionExportLine('Demo reel', 'ru')).toContain('description')
+  })
+
+  it('parseFfprobeFormatArtistTag и export line', () => {
+    expect(parseFfprobeFormatArtistTag({ artist: 'Flux Studio' })).toBe('Flux Studio')
+    expect(formatFfprobeContainerArtistExportLine('Flux Studio', 'en')).toContain('artist')
   })
 
   it('parseFfprobeFormatEncoder и export line', () => {

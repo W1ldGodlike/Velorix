@@ -95,6 +95,12 @@ export function parseFfprobeFormatDescriptionTag(
   return tagScalar(tags?.['description'])
 }
 
+export function parseFfprobeFormatArtistTag(
+  tags: Record<string, string | number | undefined> | undefined
+): string | null {
+  return tagScalar(tags?.['artist'])
+}
+
 export function parseFfprobeFormatFlags(raw: string | number | undefined): string | null {
   if (typeof raw === 'number' && Number.isFinite(raw)) {
     const u = Math.trunc(raw) >>> 0
@@ -219,6 +225,17 @@ export function formatFfprobeContainerDescriptionExportLine(
   }
   const b = ffprobeSummaryStrings(locale)
   return ffprobeSummaryFill(b.containerDescriptionTemplate, { description })
+}
+
+export function formatFfprobeContainerArtistExportLine(
+  artist: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (artist === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerArtistTemplate, { artist })
 }
 
 export function formatFfprobeContainerEncoderExportLine(

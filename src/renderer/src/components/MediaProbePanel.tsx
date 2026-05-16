@@ -364,6 +364,9 @@ export function PreviewProbeBody({
             {probeInfo.containerDescriptionTag
               ? ` · desc ${probeInfo.containerDescriptionTag.length > 20 ? `${probeInfo.containerDescriptionTag.slice(0, 19)}…` : probeInfo.containerDescriptionTag}`
               : ''}
+            {probeInfo.containerArtistTag
+              ? ` · art ${probeInfo.containerArtistTag.length > 20 ? `${probeInfo.containerArtistTag.slice(0, 19)}…` : probeInfo.containerArtistTag}`
+              : ''}
             {probeInfo.probeScore !== null ? ` · probe ${probeInfo.probeScore}` : ''}
             {probeInfo.containerNbStreams !== null
               ? ` · ${probeInfo.containerNbStreams} str.`
