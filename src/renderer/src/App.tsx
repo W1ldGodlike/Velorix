@@ -3296,6 +3296,7 @@ function App(): JSX.Element {
               role="toolbar"
               aria-orientation="horizontal"
               aria-label={uiText('quickYtdlpAria')}
+              aria-busy={engineDownloadBusy}
             >
               <button
                 type="button"
@@ -4061,7 +4062,11 @@ function App(): JSX.Element {
             ) : null}
           </section>
           {panelOpen('ffmpegSettingsRailOpen') ? (
-            <aside className="app-settings-panel" aria-label={uiText('editorFfmpegSettingsAria')}>
+            <aside
+              className="app-settings-panel"
+              aria-label={uiText('editorFfmpegSettingsAria')}
+              aria-busy={exportBusy || snapshotBusy || exportCancelBusy || probePending}
+            >
               <div
                 className="app-settings-panel-head"
                 role="group"
@@ -5585,7 +5590,11 @@ function App(): JSX.Element {
               aria-label={uiText('terminalMainSplitAria')}
               aria-busy={terminalBusy}
             >
-              <section className="app-terminal-history" aria-label={uiText('terminalHistoryAria')}>
+              <section
+                className="app-terminal-history"
+                aria-label={uiText('terminalHistoryAria')}
+                aria-busy={terminalBusy}
+              >
                 {terminalHistory.length === 0 ? (
                   <p className="app-downloads-empty" role="status" aria-live="polite">
                     {uiText('terminalHistoryEmpty')}

@@ -958,4 +958,9 @@
 - [J-935] 2026-05-16 13:04:00 [Assistant]: Пакетный экспорт — тело свёрнутой панели (`app-url-body` региона batch): `aria-busy={batchExportBusy}`.
 - [J-936] 2026-05-16 13:06:00 [Assistant]: Загрузки — группа обёртки таблицы (`downloadsQueueTableWrapGroupAria`): `aria-busy` синхронизирован с вкладкой загрузок.
 - [J-937] 2026-05-16 13:08:00 [Assistant]: Терминал — вводная полоса (`terminalIntroBandAria`): `aria-busy={terminalBusy}` на время выполнения команды.
+- [J-938] 2026-05-16 13:10:00 [Assistant]: ffprobe — контекстное меню таблицы дорожек/глав (`probeContextMenuAria`): контейнер `role="menu"`, пункты — `role="menuitem"`.
+- [J-939] 2026-05-16 13:12:00 [Assistant]: Журнал yt-dlp (`DownloadsLogPanel`): `aria-controls` на `<summary>` указывает на обёртку тела — тулбар очистки/сохранения и `<pre role="log">` внутри одного региона.
+- [J-940] 2026-05-16 13:14:00 [Assistant]: Быстрый yt-dlp — тулбар действий (`quickYtdlpAria`): `aria-busy={engineDownloadBusy}` при загрузке движков.
+- [J-941] 2026-05-16 13:16:00 [Assistant]: Терминал — секция истории (`terminalHistoryAria`): `aria-busy={terminalBusy}` на время выполнения команды.
+- [J-942] 2026-05-16 13:18:00 [Assistant]: Редактор — боковая панель FFmpeg (`editorFfmpegSettingsAria`): `aria-busy` при экспорте/снимке/отмене экспорта или ffprobe превью (`probePending`).
 
