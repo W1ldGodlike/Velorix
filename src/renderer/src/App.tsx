@@ -4024,6 +4024,7 @@ function App(): JSX.Element {
                     }}
                     saveFrameDisabled={exportBusy || snapshotBusy}
                     saveFrameBusy={snapshotBusy}
+                    previewPipelineBusy={exportBusy || snapshotBusy || probePending}
                   />
                   <footer
                     className="app-preview-caption"
@@ -5407,6 +5408,7 @@ function App(): JSX.Element {
                 role="toolbar"
                 aria-orientation="horizontal"
                 aria-label={uiText('terminalCommandToolbarAria')}
+                aria-busy={terminalBusy}
               >
                 <label htmlFor={terminalCommandInputId} className="app-visually-hidden">
                   {uiText('terminalCommandInputAriaLabel')}

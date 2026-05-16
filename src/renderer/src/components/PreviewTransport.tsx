@@ -134,6 +134,7 @@ export default function PreviewTransport({
       role="toolbar"
       aria-orientation="horizontal"
       aria-label={uiText('previewTransportToolbarAria')}
+      aria-busy={disabled}
     >
       <div
         className="app-preview-transport-cluster"

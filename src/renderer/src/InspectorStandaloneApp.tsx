@@ -250,6 +250,7 @@ export function InspectorStandaloneApp(): JSX.Element {
             role="toolbar"
             aria-orientation="horizontal"
             aria-label={uiText('inspectorTopbarActionsToolbarAria')}
+            aria-busy={probePending && mediaPath !== null}
           >
           <button
             type="button"

@@ -159,6 +159,8 @@ interface VideoTimelineProps {
   onSaveFrame?: () => void
   saveFrameDisabled?: boolean
   saveFrameBusy?: boolean
+  /** Экспорт/снимок/ffprobe превью — синхронизация `aria-busy` с родителем (`App.tsx`). */
+  previewPipelineBusy?: boolean
 }
 
 export default function VideoTimeline({
@@ -171,7 +173,8 @@ export default function VideoTimeline({
   onStartExport,
   onSaveFrame,
   saveFrameDisabled = false,
-  saveFrameBusy = false
+  saveFrameBusy = false,
+  previewPipelineBusy = false
 }: VideoTimelineProps): React.JSX.Element {
   const [duration, setDuration] = useState(0)
   const [current, setCurrent] = useState(0)
@@ -600,6 +603,7 @@ export default function VideoTimeline({
       className="app-timeline-stack"
       role="region"
       aria-label={uiText('videoTimelineStackAria')}
+      aria-busy={saveFrameBusy || previewPipelineBusy}
     >
       {duration > 0 ? (
         <div

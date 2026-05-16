@@ -963,4 +963,9 @@
 - [J-940] 2026-05-16 13:14:00 [Assistant]: Быстрый yt-dlp — тулбар действий (`quickYtdlpAria`): `aria-busy={engineDownloadBusy}` при загрузке движков.
 - [J-941] 2026-05-16 13:16:00 [Assistant]: Терминал — секция истории (`terminalHistoryAria`): `aria-busy={terminalBusy}` на время выполнения команды.
 - [J-942] 2026-05-16 13:18:00 [Assistant]: Редактор — боковая панель FFmpeg (`editorFfmpegSettingsAria`): `aria-busy` при экспорте/снимке/отмене экспорта или ffprobe превью (`probePending`).
+- [J-943] 2026-05-16 13:20:00 [Assistant]: Превью — транспорт (`previewTransportToolbarAria`): `aria-busy={disabled}`, когда родитель блокирует управление (экспорт/снимок).
+- [J-944] 2026-05-16 13:22:00 [Assistant]: Таймлайн — опция `previewPipelineBusy` и `aria-busy` на стеке (`videoTimelineStackAria`): учёт экспорта/снимка/ffprobe наряду с `saveFrameBusy`.
+- [J-945] 2026-05-16 13:24:00 [Assistant]: Терминал — тулбар строки команды (`terminalCommandToolbarAria`): `aria-busy={terminalBusy}`.
+- [J-946] 2026-05-16 13:26:00 [Assistant]: Инспектор §9 — верхний тулбар действий (`inspectorTopbarActionsToolbarAria`): `aria-busy` при активном ffprobe (`probePending`), если файл выбран.
+- [J-947] 2026-05-16 13:28:00 [Assistant]: Главное окно — передача `previewPipelineBusy` в `VideoTimeline` из `App.tsx` (`exportBusy || snapshotBusy || probePending`).
 
