@@ -1,0 +1,223 @@
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type Dispatch,
+  type MutableRefObject,
+  type SetStateAction
+} from 'react'
+
+import type { DownloadsWindowUiLocale } from '../../shared/downloads-window-ui-locale'
+import {
+  TERMINAL_SCENARIO_HINTS_DOWNLOADS,
+  TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA,
+  type TerminalCommandHintEntry,
+  type TerminalRunResult
+} from '../../shared/terminal-contract'
+import {
+  applyTerminalInlinePick,
+  DEFAULT_TERMINAL_INLINE_SUGGEST_MAX,
+  filterTerminalInlineSuggestions
+} from '../../shared/terminal-inline-suggest'
+import {
+  previewPathExtensionLower,
+  TERMINAL_HINT_AUDIO_EXTS,
+  TERMINAL_HINT_VIDEO_EXTS,
+  terminalHintToolRank,
+  type WorkspaceTab
+} from './app-terminal-hint-ui'
+import { getUiLocale, uiText, uiTextVars } from './locales/ui-text'
+
+export type TerminalHistoryEntry = {
+  id: number
+  line: string
+  result: TerminalRunResult
+}
+
+export type UseTerminalWorkspaceDeps = {
+  workspaceTab: WorkspaceTab
+  currentSourcePath: string | null
+  setStatusHint: (hint: string | null) => void
+}
+
+export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
+  terminalLine: string
+  setTerminalLine: Dispatch<SetStateAction<string>>
+  terminalBusy: boolean
+  terminalHintFilter: string
+  setTerminalHintFilter: Dispatch<SetStateAction<string>>
+  terminalHistory: TerminalHistoryEntry[]
+  terminalSuggestFocus: boolean
+  setTerminalSuggestFocus: Dispatch<SetStateAction<boolean>>
+  terminalSuggestBlurTimeoutRef: MutableRefObject<number | undefined>
+  terminalHintsSearchFieldId: string
+  terminalCommandInputId: string
+  visibleTerminalHints: TerminalCommandHintEntry[]
+  terminalInlineSuggestions: TerminalCommandHintEntry[]
+  terminalSuggestActiveIndex: number
+  setTerminalSuggestIndex: Dispatch<SetStateAction<number>>
+  appendTerminalToken: (token: string) => void
+  applyTerminalSuggest: (hint: TerminalCommandHintEntry) => void
+  runTerminalLine: () => Promise<void>
+  copyTerminalOutputLine: (line: string) => Promise<void>
+} {
+  const { workspaceTab, currentSourcePath, setStatusHint } = deps
+
+  const [terminalLine, setTerminalLine] = useState('ffmpeg -version')
+  const [terminalBusy, setTerminalBusy] = useState(false)
+  const [terminalHints, setTerminalHints] = useState<TerminalCommandHintEntry[]>([])
+  const [terminalHintFilter, setTerminalHintFilter] = useState('')
+  const [terminalHistory, setTerminalHistory] = useState<TerminalHistoryEntry[]>([])
+  const [terminalSuggestFocus, setTerminalSuggestFocus] = useState(false)
+  const [terminalSuggestIndex, setTerminalSuggestIndex] = useState(0)
+
+  const terminalHintsSearchFieldId = useId()
+  const terminalCommandInputId = useId()
+  const terminalSuggestBlurTimeoutRef = useRef<number | undefined>(undefined)
+  const terminalHistoryNextIdRef = useRef(1)
+
+  useEffect(() => {
+    let mounted = true
+    void window.fluxalloy.terminal.getHints().then((hints) => {
+      if (mounted) {
+        setTerminalHints(hints)
+      }
+    })
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  const terminalMergedSortedHints = useMemo(() => {
+    const ext = previewPathExtensionLower(currentSourcePath)
+    const mediaInPreview = Boolean(
+      ext && (TERMINAL_HINT_VIDEO_EXTS.has(ext) || TERMINAL_HINT_AUDIO_EXTS.has(ext))
+    )
+    const scenarioPrefix: TerminalCommandHintEntry[] = [
+      ...(workspaceTab === 'downloads' ? TERMINAL_SCENARIO_HINTS_DOWNLOADS : []),
+      ...(workspaceTab === 'editor' || workspaceTab === 'terminal'
+        ? mediaInPreview
+          ? TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA
+          : []
+        : [])
+    ]
+    const merged = [...scenarioPrefix, ...terminalHints]
+    return [...merged].sort((a, b) => {
+      const ra = terminalHintToolRank(a.tool, workspaceTab, mediaInPreview)
+      const rb = terminalHintToolRank(b.tool, workspaceTab, mediaInPreview)
+      if (ra !== rb) {
+        return ra - rb
+      }
+      return a.tool.localeCompare(b.tool) || a.token.localeCompare(b.token, 'ru')
+    })
+  }, [terminalHints, currentSourcePath, workspaceTab])
+
+  const visibleTerminalHints = useMemo(() => {
+    const q = terminalHintFilter.trim().toLowerCase()
+    const filtered = terminalMergedSortedHints.filter((hint) => {
+      if (q === '') {
+        return true
+      }
+      return (
+        hint.tool.toLowerCase().includes(q) ||
+        hint.token.toLowerCase().includes(q) ||
+        hint.summary.toLowerCase().includes(q) ||
+        (hint.fullLine !== undefined && hint.fullLine.toLowerCase().includes(q))
+      )
+    })
+    return filtered.slice(0, 36)
+  }, [terminalHintFilter, terminalMergedSortedHints])
+
+  const terminalInlineSuggestions = useMemo(
+    () =>
+      filterTerminalInlineSuggestions({
+        line: terminalLine,
+        hints: terminalMergedSortedHints,
+        max: DEFAULT_TERMINAL_INLINE_SUGGEST_MAX
+      }),
+    [terminalLine, terminalMergedSortedHints]
+  )
+
+  const terminalSuggestActiveIndex = useMemo(() => {
+    const len = terminalInlineSuggestions.length
+    if (len === 0) {
+      return 0
+    }
+    return Math.min(terminalSuggestIndex, len - 1)
+  }, [terminalInlineSuggestions, terminalSuggestIndex])
+
+  const appendTerminalToken = useCallback((token: string) => {
+    setTerminalLine((line) => {
+      const trimmed = line.trimEnd()
+      return trimmed ? `${trimmed} ${token}` : token
+    })
+  }, [])
+
+  const applyTerminalSuggest = useCallback((hint: TerminalCommandHintEntry) => {
+    setTerminalLine((prev) => applyTerminalInlinePick({ line: prev, hint }))
+  }, [])
+
+  const runTerminalLine = useCallback(async (): Promise<void> => {
+    const line = terminalLine.trim()
+    if (!line || terminalBusy) {
+      return
+    }
+    setTerminalBusy(true)
+    try {
+      const result = await window.fluxalloy.terminal.run({
+        line,
+        currentFilePath: currentSourcePath,
+        uiLocale: getUiLocale() as DownloadsWindowUiLocale
+      })
+      setTerminalHistory((rows) =>
+        [{ id: terminalHistoryNextIdRef.current++, line, result }, ...rows].slice(0, 20)
+      )
+      setStatusHint(
+        result.ok
+          ? uiTextVars('statusTerminalCliExitOk', {
+              code: String(result.code ?? uiText('commonNotApplicableShort'))
+            })
+          : uiTextVars('statusTerminalCliFailed', { error: result.error })
+      )
+    } finally {
+      setTerminalBusy(false)
+    }
+  }, [currentSourcePath, setStatusHint, terminalBusy, terminalLine])
+
+  const copyTerminalOutputLine = useCallback(
+    async (line: string): Promise<void> => {
+      const r = await window.fluxalloy.clipboard.writeText(line)
+      setStatusHint(
+        r.ok
+          ? uiText('statusTerminalOutputLineCopied')
+          : uiText('statusTerminalOutputLineCopyFailed')
+      )
+    },
+    [setStatusHint]
+  )
+
+  return {
+    terminalLine,
+    setTerminalLine,
+    terminalBusy,
+    terminalHintFilter,
+    setTerminalHintFilter,
+    terminalHistory,
+    terminalSuggestFocus,
+    setTerminalSuggestFocus,
+    terminalSuggestBlurTimeoutRef,
+    terminalHintsSearchFieldId,
+    terminalCommandInputId,
+    visibleTerminalHints,
+    terminalInlineSuggestions,
+    terminalSuggestActiveIndex,
+    setTerminalSuggestIndex,
+    appendTerminalToken,
+    applyTerminalSuggest,
+    runTerminalLine,
+    copyTerminalOutputLine
+  }
+}

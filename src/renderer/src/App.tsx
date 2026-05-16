@@ -58,10 +58,7 @@ import {
   IconWorkspaceEditor,
   IconWorkspaceTerminal
 } from './components/LucideMiniIcons'
-import type {
-  FfmpegExportBatchConcurrency,
-  FfmpegExportBatchSnapshot
-} from '../../shared/ffmpeg-export-batch-contract'
+import type { FfmpegExportBatchConcurrency } from '../../shared/ffmpeg-export-batch-contract'
 import type { EngineId } from '../../shared/engine-contract'
 import { ENGINE_IDS } from '../../shared/engine-contract'
 import type {
@@ -102,7 +99,6 @@ import {
 } from '../../shared/editor-url-paste-behavior'
 import { DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX } from '../../shared/ffmpeg-export-batch-output-suffix'
 import { resolveFfmpegExportHwaccelForDecode } from '../../shared/ffmpeg-export-hw-decode'
-import { formatFfmpegExportBatchReportText } from '../../shared/ffmpeg-export-batch-report'
 import { isFfmpegExportBatchVideoPath } from '../../shared/ffmpeg-export-batch-video-ext'
 import { isBuiltinExportUserPresetId } from '../../shared/builtin-ffmpeg-export-user-presets'
 import { FFMPEG_HW_VIDEO_ENCODER_IDS } from '../../shared/ffmpeg-hw-encoder-probe'
@@ -131,7 +127,6 @@ import type { FfmpegSnapshotFormatId } from '../../shared/ffmpeg-snapshot-contra
 import type { RestoredSourceInfo } from '../../shared/preview-dialog-contract'
 import type { MediaProbeSuccess } from '../../shared/ffprobe-contract'
 import type {
-  YtdlpCommandHintEntry,
   YtdlpCookiesBrowserId,
   YtdlpDownloadOptionsPatch,
   YtdlpDownloadOptionsPayload,
@@ -154,23 +149,13 @@ import type {
 import type { DownloadsLogPayload } from '../../shared/downloads-log-contract'
 import { DOWNLOADS_VISIBLE_LOG_SAVE_CANCELLED } from '../../shared/downloads-log-contract'
 import {
-  isYtdlpQueueStatusCancelled,
   isYtdlpQueueStatusDone,
-  isYtdlpQueueStatusErrorLike,
-  isYtdlpQueueStatusRunningLike
+  isYtdlpQueueStatusErrorLike
 } from '../../shared/ytdlp-queue-status'
+import { TERMINAL_CURRENT_FILE_PLACEHOLDER } from '../../shared/terminal-contract'
 import {
-  TERMINAL_CURRENT_FILE_PLACEHOLDER,
-  TERMINAL_SCENARIO_HINTS_DOWNLOADS,
-  TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA,
-  type TerminalCommandHintEntry,
-  type TerminalRunResult
-} from '../../shared/terminal-contract'
-import {
-  applyTerminalInlinePick,
   DEFAULT_TERMINAL_INLINE_SUGGEST_MAX,
   DEFAULT_TERMINAL_INLINE_SUGGEST_PAGE_STEP,
-  filterTerminalInlineSuggestions,
   stepTerminalSuggestIndex
 } from '../../shared/terminal-inline-suggest'
 import {
@@ -178,41 +163,41 @@ import {
   type DownloadsRailPanelKey
 } from './use-downloads-window-ui-panels'
 import { useMainWindowUiPanels } from './use-main-window-ui-panels'
+import { useFfmpegExportBatch } from './use-ffmpeg-export-batch'
+import { useTerminalWorkspace } from './use-terminal-workspace'
+import { useDownloadsUrlActions } from './use-downloads-url-actions'
+import { PillSwitch } from './components/PillSwitch'
+import {
+  type EnginePathsDraft,
+  type EngineSummary,
+  engineLabel,
+  engineSummaryText,
+  formatEngineVersionsLine,
+  summarizeEngines
+} from './app-engines-ui'
+import {
+  basenameForAriaLabel,
+  clipboardLooksLikeDownloadsPayload,
+  domTargetIsTextField,
+  previewVideoMediaErrorDetailLabel
+} from './app-shell-ui-helpers'
+import {
+  KNOWLEDGE_SLUG_FFMPEG_TERMINAL_HINTS,
+  downloadsCatalogHintTokenAccessibleDescription,
+  terminalHintInsertAccessibleDescription,
+  type WorkspaceTab
+} from './app-terminal-hint-ui'
+import {
+  type DownloadsQueueRowView,
+  type DownloadsStatusFilter,
+  downloadsRowMatchesStatus,
+  downloadsStatusTone,
+  formatDownloadsLogText,
+  parseDownloadsProgressPercent,
+  sanitizeDownloadsRows,
+  summarizeDownloadsRows
+} from './downloads-queue-view'
 type Theme = ResolvedAppTheme
-
-/** §8 — расширенный порядок подсказок терминала при открытом медиа в превью. */
-const TERMINAL_HINT_VIDEO_EXTS = new Set([
-  '3gp',
-  'asf',
-  'avi',
-  'flv',
-  'm2ts',
-  'm4v',
-  'mkv',
-  'mov',
-  'mp4',
-  'mpeg',
-  'mpg',
-  'mts',
-  'ogv',
-  'ts',
-  'webm',
-  'wmv'
-])
-const TERMINAL_HINT_AUDIO_EXTS = new Set([
-  'aac',
-  'aiff',
-  'alac',
-  'flac',
-  'm4a',
-  'mp3',
-  'ogg',
-  'opus',
-  'wav',
-  'wma'
-])
-/** §15 — slug `Help/ffmpeg-terminal-hints.md` для deep-link из подсказок UI. */
-const KNOWLEDGE_SLUG_FFMPEG_TERMINAL_HINTS = 'ffmpeg-terminal-hints'
 
 /** §7.3 — id заголовков таблицы очереди пакета (`headers` на `<td>`). */
 const BATCH_EXPORT_TABLE_HEADER_IDS = {
@@ -236,381 +221,18 @@ const DOWNLOADS_QUEUE_TABLE_HEADER_IDS = {
   actions: 'flux-dlq-col-actions'
 } as const
 
-type WorkspaceTab = 'editor' | 'downloads' | 'terminal'
-
-function previewPathExtensionLower(path: string | null): string | null {
-  if (typeof path !== 'string' || path.trim().length === 0) {
-    return null
-  }
-  const base = path.replace(/\\/g, '/').split('/').pop() ?? ''
-  const dot = base.lastIndexOf('.')
-  if (dot <= 0 || dot >= base.length - 1) {
-    return null
-  }
-  return base.slice(dot + 1).toLowerCase()
-}
-
-function terminalHintToolRank(
-  tool: TerminalCommandHintEntry['tool'],
-  workspaceTab: WorkspaceTab,
-  mediaInPreview: boolean
-): number {
-  if (workspaceTab === 'downloads') {
-    return tool === 'yt-dlp' ? 0 : tool === 'ffmpeg' ? 1 : 2
-  }
-  if (mediaInPreview) {
-    return tool === 'ffprobe' ? 0 : tool === 'ffmpeg' ? 1 : 2
-  }
-  return tool === 'ffmpeg' ? 0 : tool === 'ffprobe' ? 1 : 2
-}
-
-type PreviewOpenedPayload = RestoredSourceInfo
-type EngineSummary = 'checking' | 'ready' | 'missing' | 'error'
-type ExportPresetNameDialog = {
-  mode: 'create' | 'rename'
-  value: string
-  error: string | null
-} | null
-type DownloadsQueueRowView = {
-  id: number
-  url: string
-  shortLabel: string
-  progress: string
-  status: string
-  outputPath?: string
-  queueFmt?: string
-  queueSize?: string
-  queueSpeed?: string
-  queueEta?: string
-  isActiveRunner?: boolean
-  ytdlpPauseSupported?: boolean
-  ytdlpPauseChildActive?: boolean
-  ytdlpPaused?: boolean
-}
-type DownloadsStatusFilter = 'all' | 'running' | 'done' | 'error' | 'cancelled'
-type DownloadsQueueStats = {
-  total: number
-  running: number
-  done: number
-  error: number
-  cancelled: number
-  pending: number
-}
-type TerminalHistoryEntry = {
-  id: number
-  line: string
-  result: TerminalRunResult
-}
-type EnginesSnapshot = Awaited<ReturnType<typeof window.fluxalloy.engines.getStatus>>
-
-type PillSwitchProps = {
-  label: string
-  checked: boolean
-  disabled?: boolean
-  describedBy?: string
-  /** Длинная подсказка при наведении (простым языком). */
-  tooltip?: string
-  onToggle: () => void
-}
-
-function PillSwitch({
-  label,
-  checked,
-  disabled = false,
-  describedBy,
-  tooltip,
-  onToggle
-}: PillSwitchProps): JSX.Element {
-  return (
-    <button
-      type="button"
-      className={`app-pill-switch${checked ? ' app-pill-switch-on' : ''}`}
-      role="switch"
-      aria-label={label}
-      aria-checked={checked}
-      aria-describedby={describedBy}
-      title={tooltip}
-      disabled={disabled}
-      onClick={onToggle}
-    >
-      <span className="app-pill-switch-knob" aria-hidden />
-      <span className="app-pill-switch-text">
-        {checked ? uiText('editorPillSwitchOn') : uiText('editorPillSwitchOff')}
-      </span>
-    </button>
-  )
-}
-
 const EXPORT_CRF_OPTIONS = [18, 20, 23, 26, 28, 30]
 const EXPORT_VIDEO_BITRATES = ['1000k', '2500k', '5000k', '8000k', '12000k', '20000k']
 const EXPORT_AUDIO_BITRATES = ['96k', '128k', '160k', '192k', '256k', '320k']
 const EXPORT_FPS_OPTIONS = [24, 25, 30, 50, 60]
 
-function previewVideoMediaErrorDetailLabel(code: number): string {
-  switch (code) {
-    case 1:
-      return uiText('statusVideoMediaErrAborted')
-    case 2:
-      return uiText('statusVideoMediaErrNetwork')
-    case 3:
-      return uiText('statusVideoMediaErrDecode')
-    case 4:
-      return uiText('statusVideoMediaErrSrcNotSupported')
-    default:
-      return uiText('statusVideoMediaErrUnknown')
-  }
-}
-
-function engineLabel(id: EngineId): string {
-  switch (id) {
-    case 'ffmpeg':
-      return uiText('engineDisplayNameFfmpeg')
-    case 'ffprobe':
-      return uiText('engineDisplayNameFfprobe')
-    case 'yt-dlp':
-      return uiText('engineDisplayNameYtdlp')
-    default:
-      return id
-  }
-}
-
-type EnginePathsDraft = Record<EngineId, string>
-
-function formatEngineVersionsLine(snapshot: EnginesSnapshot): string {
-  const parts = ENGINE_IDS.map((id) => {
-    const e = snapshot.engines[id]
-    const name = engineLabel(id)
-    if (e.state === 'ready' && e.version) {
-      const cut =
-        e.version.length > 30
-          ? `${e.version.slice(0, 28)}${uiText('commonUnicodeEllipsis')}`
-          : e.version
-      return `${name}: ${cut}`
-    }
-    if (e.state === 'missing') {
-      return `${name}: ${uiText('uiPlaceholderDash')}`
-    }
-    if (e.state === 'error') {
-      return `${name}: ${uiText('enginesVersionLineErrorMark')}`
-    }
-    return `${name}: ${uiText('commonUnicodeEllipsis')}`
-  })
-  return parts.join(' · ')
-}
-
-function clipboardLooksLikeDownloadsPayload(text: string): boolean {
-  const t = text.trim()
-  if (t.length < 12) {
-    return false
-  }
-  const lines = t.split(/\r?\n/)
-  return lines.some((line) => {
-    const x = line.trim()
-    return /^https?:\/\//i.test(x) || (/^[\w.-]+\.[a-z]{2,}\//i.test(x) && x.includes('/'))
-  })
-}
-
-function basenameForAriaLabel(absPath: string): string {
-  const n = absPath.replace(/\\/g, '/')
-  const i = n.lastIndexOf('/')
-  return i >= 0 ? n.slice(i + 1) : n
-}
-
-function domTargetIsTextField(target: EventTarget | null): boolean {
-  if (!target || !(target instanceof HTMLElement)) {
-    return false
-  }
-  const tag = target.tagName
-  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
-    return true
-  }
-  return target.isContentEditable
-}
-
-/**
- * Сводит подробные статусы движков к одной строке для нижнего статусбара.
- *
- * Подробности (пути, версии, ошибки по каждому бинарнику) позже уйдут в окно настроек
- * зависимостей. Статусбар должен оставаться компактным и показывать только состояние,
- * требующее внимания пользователя.
- */
-function summarizeEngines(
-  engines: Awaited<ReturnType<typeof window.fluxalloy.engines.getStatus>>['engines']
-): EngineSummary {
-  const states = Object.values(engines).map((engine) => engine.state)
-
-  if (states.includes('error')) {
-    return 'error'
-  }
-  if (states.includes('missing')) {
-    return 'missing'
-  }
-  return 'ready'
-}
-
-function engineSummaryText(summary: EngineSummary): string {
-  switch (summary) {
-    case 'ready':
-      return uiText('enginesSummaryReady')
-    case 'missing':
-      return uiText('enginesSummaryMissing')
-    case 'error':
-      return uiText('enginesSummaryError')
-    case 'checking':
-      return uiText('enginesSummaryChecking')
-  }
-}
-
-function sanitizeDownloadsRows(raw: unknown[]): DownloadsQueueRowView[] {
-  return raw.flatMap((item): DownloadsQueueRowView[] => {
-    if (!item || typeof item !== 'object') {
-      return []
-    }
-    const o = item as Record<string, unknown>
-    if (typeof o['id'] !== 'number' || typeof o['url'] !== 'string') {
-      return []
-    }
-    return [
-      {
-        id: o['id'],
-        url: o['url'],
-        shortLabel: typeof o['shortLabel'] === 'string' ? o['shortLabel'] : o['url'],
-        progress: typeof o['progress'] === 'string' ? o['progress'] : uiText('uiPlaceholderDash'),
-        status: typeof o['status'] === 'string' ? o['status'] : uiText('uiPlaceholderDash'),
-        ...(typeof o['outputPath'] === 'string' ? { outputPath: o['outputPath'] } : {}),
-        ...(typeof o['queueFmt'] === 'string' ? { queueFmt: o['queueFmt'] } : {}),
-        ...(typeof o['queueSize'] === 'string' ? { queueSize: o['queueSize'] } : {}),
-        ...(typeof o['queueSpeed'] === 'string' ? { queueSpeed: o['queueSpeed'] } : {}),
-        ...(typeof o['queueEta'] === 'string' ? { queueEta: o['queueEta'] } : {}),
-        ...(typeof o['isActiveRunner'] === 'boolean'
-          ? { isActiveRunner: o['isActiveRunner'] }
-          : {}),
-        ...(typeof o['ytdlpPauseSupported'] === 'boolean'
-          ? { ytdlpPauseSupported: o['ytdlpPauseSupported'] }
-          : {}),
-        ...(typeof o['ytdlpPauseChildActive'] === 'boolean'
-          ? { ytdlpPauseChildActive: o['ytdlpPauseChildActive'] }
-          : {}),
-        ...(typeof o['ytdlpPaused'] === 'boolean' ? { ytdlpPaused: o['ytdlpPaused'] } : {})
-      }
-    ]
-  })
-}
-
-function downloadsRowMatchesStatus(
-  row: DownloadsQueueRowView,
-  filter: DownloadsStatusFilter
-): boolean {
-  if (filter === 'all') {
-    return true
-  }
-  if (filter === 'running') {
-    return isYtdlpQueueStatusRunningLike(row.status)
-  }
-  if (filter === 'done') {
-    return isYtdlpQueueStatusDone(row.status)
-  }
-  if (filter === 'error') {
-    return isYtdlpQueueStatusErrorLike(row.status)
-  }
-  return isYtdlpQueueStatusCancelled(row.status)
-}
-
-function summarizeDownloadsRows(rows: DownloadsQueueRowView[]): DownloadsQueueStats {
-  return rows.reduce<DownloadsQueueStats>(
-    (acc, row) => {
-      acc.total += 1
-      if (downloadsRowMatchesStatus(row, 'running')) {
-        acc.running += 1
-      } else if (downloadsRowMatchesStatus(row, 'done')) {
-        acc.done += 1
-      } else if (downloadsRowMatchesStatus(row, 'error')) {
-        acc.error += 1
-      } else if (downloadsRowMatchesStatus(row, 'cancelled')) {
-        acc.cancelled += 1
-      } else {
-        acc.pending += 1
-      }
-      return acc
-    },
-    { total: 0, running: 0, done: 0, error: 0, cancelled: 0, pending: 0 }
-  )
-}
-
-function parseDownloadsProgressPercent(raw: string): number | null {
-  const match = raw.match(/(\d+(?:[.,]\d+)?)\s*%/)
-  if (!match?.[1]) {
-    return null
-  }
-  const n = Number(match[1].replace(',', '.'))
-  if (!Number.isFinite(n)) {
-    return null
-  }
-  return Math.max(0, Math.min(100, n))
-}
-
-function downloadsStatusTone(row: DownloadsQueueRowView): string {
-  if (downloadsRowMatchesStatus(row, 'running')) {
-    return 'running'
-  }
-  if (downloadsRowMatchesStatus(row, 'done')) {
-    return 'done'
-  }
-  if (downloadsRowMatchesStatus(row, 'error')) {
-    return 'error'
-  }
-  if (downloadsRowMatchesStatus(row, 'cancelled')) {
-    return 'cancelled'
-  }
-  return 'pending'
-}
-
+type PreviewOpenedPayload = RestoredSourceInfo
+type ExportPresetNameDialog = {
+  mode: 'create' | 'rename'
+  value: string
+  error: string | null
+} | null
 type DownloadsHistoryOutcomeFilter = 'all' | YtdlpDownloadHistoryEntry['outcome']
-
-function formatDownloadsLogText(lines: DownloadsLogLineView[]): string {
-  return lines.map((line) => `[${line.rowId}] ${line.stream}: ${line.text}`).join('\n')
-}
-
-function terminalHintInsertAccessibleDescription(hint: TerminalCommandHintEntry): string {
-  const summaryRaw = hint.summary?.trim() ?? ''
-  const summary =
-    summaryRaw.length > 180
-      ? `${summaryRaw.slice(0, 178)}${uiText('commonUnicodeEllipsis')}`
-      : summaryRaw
-  if (summary.length > 0) {
-    return uiTextVars('terminalHintInsertButtonAriaTemplate', {
-      token: hint.token,
-      tool: hint.tool,
-      summary
-    })
-  }
-  return uiTextVars('terminalHintInsertButtonAriaNoSummaryTemplate', {
-    token: hint.token,
-    tool: hint.tool
-  })
-}
-
-function downloadsCatalogHintTokenAccessibleDescription(
-  category: string,
-  hint: YtdlpCommandHintEntry
-): string {
-  const summaryRaw = hint.summary?.trim() ?? ''
-  const summary =
-    summaryRaw.length > 180
-      ? `${summaryRaw.slice(0, 178)}${uiText('commonUnicodeEllipsis')}`
-      : summaryRaw
-  if (summary.length > 0) {
-    return uiTextVars('downloadsHintTokenButtonAriaTemplate', {
-      category,
-      token: hint.token,
-      summary
-    })
-  }
-  return uiTextVars('downloadsHintTokenButtonAriaNoSummaryTemplate', {
-    category,
-    token: hint.token
-  })
-}
 
 function App(): JSX.Element {
   const [workspaceTab, setWorkspaceTab] = useState<WorkspaceTab>('editor')
@@ -675,25 +297,11 @@ function App(): JSX.Element {
   } = useDownloadsWindowUiPanels()
   /** Совпадает с `max-width: 1100px` в `main.css` для вкладки «Загрузки». */
   const [downloadsNarrowLayout, setDownloadsNarrowLayout] = useState(false)
-  const [terminalLine, setTerminalLine] = useState('ffmpeg -version')
-  const [terminalBusy, setTerminalBusy] = useState(false)
-  const [terminalHints, setTerminalHints] = useState<TerminalCommandHintEntry[]>([])
-  const [terminalHintFilter, setTerminalHintFilter] = useState('')
-  const terminalHintsSearchFieldId = useId()
   const downloadsMainUrlFieldId = useId()
-  const terminalCommandInputId = useId()
   const quickYtdlpBarRegionBodyId = useId()
   const batchExportBarRegionBodyId = useId()
-  const [terminalHistory, setTerminalHistory] = useState<TerminalHistoryEntry[]>([])
-  const [terminalSuggestFocus, setTerminalSuggestFocus] = useState(false)
-  const [terminalSuggestIndex, setTerminalSuggestIndex] = useState(0)
-  const terminalSuggestBlurTimeoutRef = useRef<number | undefined>(undefined)
   const [engineVersionsLine, setEngineVersionsLine] = useState('')
   const [exportBusy, setExportBusy] = useState(false)
-  const [batchSnapshot, setBatchSnapshot] = useState<FfmpegExportBatchSnapshot | null>(null)
-  const [batchDragRowId, setBatchDragRowId] = useState<number | null>(null)
-  const batchExportBusy = batchSnapshot?.running === true
-  const mediaPipelineBusy = exportBusy || batchExportBusy
   const [exportCancelBusy, setExportCancelBusy] = useState(false)
   const [exportEncodePreset, setExportEncodePreset] =
     useState<FfmpegExportEncodePresetId>('balance')
@@ -780,7 +388,6 @@ function App(): JSX.Element {
   /** §6 / узкая ширина: `scrollIntoView` к панели настроек yt-dlp под очередью. */
   const downloadsSettingsRailRef = useRef<HTMLElement | null>(null)
   const downloadsLogNextIdRef = useRef(1)
-  const terminalHistoryNextIdRef = useRef(1)
   /** Последний диапазон In/Out с таймлайна для IPC экспорта, привязанный к текущему файлу. */
   const trimSnapshotRef = useRef<{
     path: string | null
@@ -797,6 +404,33 @@ function App(): JSX.Element {
     range: { inSec: number; outSec: number } | null
   }>({ path: null, range: null })
   const currentSourcePath = preview?.path ?? null
+
+  const {
+    terminalLine,
+    setTerminalLine,
+    terminalBusy,
+    terminalHintFilter,
+    setTerminalHintFilter,
+    terminalHistory,
+    terminalSuggestFocus,
+    setTerminalSuggestFocus,
+    terminalSuggestBlurTimeoutRef,
+    terminalHintsSearchFieldId,
+    terminalCommandInputId,
+    visibleTerminalHints,
+    terminalInlineSuggestions,
+    terminalSuggestActiveIndex,
+    setTerminalSuggestIndex,
+    appendTerminalToken,
+    applyTerminalSuggest,
+    runTerminalLine,
+    copyTerminalOutputLine
+  } = useTerminalWorkspace({
+    workspaceTab,
+    currentSourcePath,
+    setStatusHint
+  })
+
   const previewPlaybackUrl = previewBlobUrl ?? preview?.mediaUrl ?? null
   const trimRange = trimState.path === currentSourcePath ? trimState.range : null
   const downloadsStats = useMemo(() => summarizeDownloadsRows(downloadsRows), [downloadsRows])
@@ -1046,107 +680,6 @@ function App(): JSX.Element {
     [downloadsOptions?.commandHints, downloadsExpertHintFilter, downloadsHintUiLocale]
   )
 
-  const terminalMergedSortedHints = useMemo(() => {
-    const ext = previewPathExtensionLower(currentSourcePath)
-    const mediaInPreview = Boolean(
-      ext && (TERMINAL_HINT_VIDEO_EXTS.has(ext) || TERMINAL_HINT_AUDIO_EXTS.has(ext))
-    )
-    const scenarioPrefix: TerminalCommandHintEntry[] = [
-      ...(workspaceTab === 'downloads' ? TERMINAL_SCENARIO_HINTS_DOWNLOADS : []),
-      ...(workspaceTab === 'editor' || workspaceTab === 'terminal'
-        ? mediaInPreview
-          ? TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA
-          : []
-        : [])
-    ]
-    const merged = [...scenarioPrefix, ...terminalHints]
-    return [...merged].sort((a, b) => {
-      const ra = terminalHintToolRank(a.tool, workspaceTab, mediaInPreview)
-      const rb = terminalHintToolRank(b.tool, workspaceTab, mediaInPreview)
-      if (ra !== rb) {
-        return ra - rb
-      }
-      return a.tool.localeCompare(b.tool) || a.token.localeCompare(b.token, 'ru')
-    })
-  }, [terminalHints, currentSourcePath, workspaceTab])
-
-  const visibleTerminalHints = useMemo(() => {
-    const q = terminalHintFilter.trim().toLowerCase()
-    const filtered = terminalMergedSortedHints.filter((hint) => {
-      if (q === '') return true
-      return (
-        hint.tool.toLowerCase().includes(q) ||
-        hint.token.toLowerCase().includes(q) ||
-        hint.summary.toLowerCase().includes(q) ||
-        (hint.fullLine !== undefined && hint.fullLine.toLowerCase().includes(q))
-      )
-    })
-    return filtered.slice(0, 36)
-  }, [terminalHintFilter, terminalMergedSortedHints])
-
-  const terminalInlineSuggestions = useMemo(
-    () =>
-      filterTerminalInlineSuggestions({
-        line: terminalLine,
-        hints: terminalMergedSortedHints,
-        max: DEFAULT_TERMINAL_INLINE_SUGGEST_MAX
-      }),
-    [terminalLine, terminalMergedSortedHints]
-  )
-
-  const terminalSuggestActiveIndex = useMemo(() => {
-    const len = terminalInlineSuggestions.length
-    if (len === 0) {
-      return 0
-    }
-    return Math.min(terminalSuggestIndex, len - 1)
-  }, [terminalInlineSuggestions, terminalSuggestIndex])
-
-  const appendTerminalToken = useCallback((token: string) => {
-    setTerminalLine((line) => {
-      const trimmed = line.trimEnd()
-      return trimmed ? `${trimmed} ${token}` : token
-    })
-  }, [])
-
-  const applyTerminalSuggest = useCallback((hint: TerminalCommandHintEntry) => {
-    setTerminalLine((prev) => applyTerminalInlinePick({ line: prev, hint }))
-  }, [])
-
-  const runTerminalLine = useCallback(async (): Promise<void> => {
-    const line = terminalLine.trim()
-    if (!line || terminalBusy) {
-      return
-    }
-    setTerminalBusy(true)
-    try {
-      const result = await window.fluxalloy.terminal.run({
-        line,
-        currentFilePath: currentSourcePath,
-        uiLocale: getUiLocale() as DownloadsWindowUiLocale
-      })
-      setTerminalHistory((rows) =>
-        [{ id: terminalHistoryNextIdRef.current++, line, result }, ...rows].slice(0, 20)
-      )
-      setStatusHint(
-        result.ok
-          ? uiTextVars('statusTerminalCliExitOk', {
-              code: String(result.code ?? uiText('commonNotApplicableShort'))
-            })
-          : uiTextVars('statusTerminalCliFailed', { error: result.error })
-      )
-    } finally {
-      setTerminalBusy(false)
-    }
-  }, [terminalBusy, terminalLine, currentSourcePath])
-
-  const copyTerminalOutputLine = useCallback(async (line: string): Promise<void> => {
-    const r = await window.fluxalloy.clipboard.writeText(line)
-    setStatusHint(
-      r.ok ? uiText('statusTerminalOutputLineCopied') : uiText('statusTerminalOutputLineCopyFailed')
-    )
-  }, [])
-
   const appendDownloadsExtraArgsToken = useCallback(
     (token: string) => {
       if (!downloadsOptions) return
@@ -1341,91 +874,16 @@ function App(): JSX.Element {
     [preview, previewBlobUrl]
   )
 
-  const handleAddDownloadsFromMain = useCallback(async (): Promise<void> => {
-    const text = downloadsUrl.trim()
-    if (text.length === 0) {
-      setWorkspaceTab('downloads')
-      return
-    }
-    const addRes = await window.fluxalloy.downloads.addLines(text)
-    setWorkspaceTab('downloads')
-    if (!addRes.ok) {
-      setStatusHint(addRes.error)
-      return
-    }
-    const added = addRes.added
-    setStatusHint(
-      added > 0
-        ? uiTextVars('statusDownloadsUrlsAdded', { n: String(added) })
-        : uiText('statusDownloadsQueueNoUrlsParsed')
-    )
-    if (added > 0) {
-      setDownloadsUrl('')
-    }
-  }, [downloadsUrl])
-
-  const handleQuickYtdlpEnqueueLines = useCallback(async (): Promise<void> => {
-    const text = downloadsUrl.trim()
-    if (text.length === 0) {
-      setStatusHint(uiText('statusDownloadsQueueNoUrlsParsed'))
-      return
-    }
-    const addRes = await window.fluxalloy.downloads.addLines(text)
-    if (!addRes.ok) {
-      setStatusHint(addRes.error)
-      return
-    }
-    const added = addRes.added
-    setStatusHint(
-      added > 0
-        ? uiTextVars('statusDownloadsUrlsAdded', { n: String(added) })
-        : uiText('statusDownloadsQueueNoUrlsParsed')
-    )
-    if (added > 0) {
-      setDownloadsUrl('')
-    }
-  }, [downloadsUrl])
-
-  const handleDownloadFirstUrlOpenInEditor = useCallback(async (): Promise<void> => {
-    const text = downloadsUrl.trim()
-    if (text.length === 0) {
-      setStatusHint(uiText('statusDownloadOpenEditorNeedUrl'))
-      return
-    }
-    setStatusHint(uiText('statusDownloadOpenEditorWorking'))
-    const res = await window.fluxalloy.downloads.downloadFirstUrlOpenInMainEditor(text)
-    if (!res.ok) {
-      setStatusHint(res.error)
-      return
-    }
-    setWorkspaceTab('editor')
-    setStatusHint(uiText('statusDownloadOpenEditorSuccess'))
-    setDownloadsUrl('')
-  }, [downloadsUrl])
-
-  const setBatchAddStatusHint = useCallback(
-    (counts: { added: number; skipped: number }, emptyMsg?: string): void => {
-      if (counts.added === 0 && counts.skipped === 0) {
-        setStatusHint(emptyMsg ?? uiText('batchExportNoVideoPaths'))
-        return
-      }
-      if (counts.added === 0 && counts.skipped > 0) {
-        setStatusHint(uiTextVars('batchExportSkippedDuplicates', { count: String(counts.skipped) }))
-        return
-      }
-      if (counts.skipped > 0) {
-        setStatusHint(
-          uiTextVars('batchExportAddedFilesWithSkipped', {
-            added: String(counts.added),
-            skipped: String(counts.skipped)
-          })
-        )
-        return
-      }
-      setStatusHint(uiTextVars('batchExportAddedFiles', { count: String(counts.added) }))
-    },
-    []
-  )
+  const {
+    handleAddDownloadsFromMain,
+    handleQuickYtdlpEnqueueLines,
+    handleDownloadFirstUrlOpenInEditor
+  } = useDownloadsUrlActions({
+    downloadsUrl,
+    setDownloadsUrl,
+    setWorkspaceTab,
+    setStatusHint
+  })
 
   const onTrimRangeSnapshot = useCallback(
     (range: { inSec: number; outSec: number }) => {
@@ -1557,18 +1015,6 @@ function App(): JSX.Element {
         return 'libx264'
       })
     })
-  }, [])
-
-  useEffect(() => {
-    let mounted = true
-    void window.fluxalloy.terminal.getHints().then((hints) => {
-      if (mounted) {
-        setTerminalHints(hints)
-      }
-    })
-    return () => {
-      mounted = false
-    }
   }, [])
 
   useEffect(() => {
@@ -2234,18 +1680,6 @@ function App(): JSX.Element {
     }
   }, [applyPreview])
 
-  useEffect(() => {
-    void window.fluxalloy.batchExport.getSnapshot().then(setBatchSnapshot).catch(console.error)
-    return window.fluxalloy.batchExport.onSnapshot((snap) => {
-      setBatchSnapshot((prev) => {
-        if (prev?.running === true && snap.running === false) {
-          void refreshProcessingHistory()
-        }
-        return snap
-      })
-    })
-  }, [refreshProcessingHistory])
-
   const buildCurrentFfmpegExportOverrides = useCallback(
     () => ({
       encodePreset: exportEncodePreset,
@@ -2315,270 +1749,43 @@ function App(): JSX.Element {
     ]
   )
 
-  async function handleBatchOpenOutput(
-    outputPath: string,
-    mode: 'file' | 'folder' | 'preview'
-  ): Promise<void> {
-    const res = await window.fluxalloy.export.openOutput(outputPath, mode)
-    if (!res.ok) {
-      setStatusHint(uiTextVars('statusExportFailedWithDetail', { detail: res.error }))
-      return
-    }
-    if (mode === 'preview') {
-      setWorkspaceTab('editor')
-    }
-  }
+  const {
+    batchSnapshot,
+    batchDragRowId,
+    setBatchDragRowId,
+    batchExportBusy,
+    handleBatchOpenOutput,
+    handleBatchOpenInput,
+    handleBatchPickFiles,
+    handleBatchPickFolder,
+    handleBatchPickOutputFolder,
+    handleBatchClearOutputDirectory,
+    handleBatchRevealSharedOutputFolder,
+    handleBatchDropFiles,
+    handleBatchStart,
+    handleBatchCancel,
+    handleBatchRetryFailed,
+    handleBatchClearCompleted,
+    handleBatchAddCurrentPreview,
+    handleBatchAddDownloadsDone,
+    handleBatchRetryFailedAndStart,
+    handleBatchCopyInputPaths,
+    handleBatchCopyOutputPaths,
+    handleBatchCopyRowPath,
+    handleBatchSaveReport,
+    handleBatchRemoveWaiting,
+    reportBatchPathsAdded
+  } = useFfmpegExportBatch({
+    setStatusHint,
+    setWorkspaceTab,
+    buildExportOverrides: buildCurrentFfmpegExportOverrides,
+    previewPath: preview?.path,
+    exportBusy,
+    setBatchOutputDirectory,
+    onBatchRunFinished: refreshProcessingHistory
+  })
 
-  async function handleBatchOpenInput(
-    inputPath: string,
-    mode: 'file' | 'folder' | 'preview'
-  ): Promise<void> {
-    const res = await window.fluxalloy.batchExport.openInput(inputPath, mode)
-    if (!res.ok) {
-      setStatusHint(uiTextVars('statusExportFailedWithDetail', { detail: res.error }))
-      return
-    }
-    if (mode === 'preview') {
-      setWorkspaceTab('editor')
-      setStatusHint(uiText('processingHistoryOpenInputDone'))
-    }
-  }
-
-  async function handleBatchPickFiles(): Promise<void> {
-    const res = await window.fluxalloy.batchExport.pickFiles()
-    if (res.ok) {
-      setBatchAddStatusHint(res)
-      return
-    }
-    if ('cancelled' in res && res.cancelled) {
-      return
-    }
-    if ('error' in res) {
-      setStatusHint(res.error)
-    }
-  }
-
-  async function handleBatchPickFolder(): Promise<void> {
-    const res = await window.fluxalloy.batchExport.pickFolder()
-    if (res.ok) {
-      setBatchAddStatusHint(res)
-      return
-    }
-    if ('cancelled' in res && res.cancelled) {
-      return
-    }
-    if ('error' in res) {
-      setStatusHint(res.error)
-    }
-  }
-
-  async function handleBatchPickOutputFolder(): Promise<void> {
-    const picked = await window.fluxalloy.batchExport.pickOutputFolder()
-    if (!picked.ok) {
-      return
-    }
-    const s = await window.fluxalloy.settings.setFfmpegExportBatchOutputDirectory(picked.path)
-    setBatchOutputDirectory(
-      typeof s.ffmpegExportBatchOutputDirectory === 'string'
-        ? s.ffmpegExportBatchOutputDirectory
-        : ''
-    )
-  }
-
-  async function handleBatchClearOutputDirectory(): Promise<void> {
-    const s = await window.fluxalloy.settings.setFfmpegExportBatchOutputDirectory(null)
-    setBatchOutputDirectory(
-      typeof s.ffmpegExportBatchOutputDirectory === 'string'
-        ? s.ffmpegExportBatchOutputDirectory
-        : ''
-    )
-  }
-
-  async function handleBatchRevealSharedOutputFolder(): Promise<void> {
-    const res = await window.fluxalloy.batchExport.revealSharedOutputFolder()
-    if (!res.ok) {
-      setStatusHint(res.error)
-    }
-  }
-
-  async function handleBatchDropFiles(files: FileList | null): Promise<void> {
-    if (!files || files.length === 0 || batchExportBusy) {
-      return
-    }
-    const paths: string[] = []
-    for (let i = 0; i < files.length; i += 1) {
-      const file = files.item(i)
-      if (!file) {
-        continue
-      }
-      const absolutePath = window.fluxalloy.preview.getPathForFile(file)
-      if (absolutePath) {
-        paths.push(absolutePath)
-      }
-    }
-    if (paths.length === 0) {
-      return
-    }
-    const res = await window.fluxalloy.batchExport.addPaths(paths)
-    if (res.ok) {
-      setBatchAddStatusHint(res)
-    } else if ('error' in res) {
-      setStatusHint(res.error)
-    }
-  }
-
-  async function handleBatchStart(): Promise<void> {
-    if (mediaPipelineBusy) {
-      return
-    }
-    const res = await window.fluxalloy.batchExport.start(buildCurrentFfmpegExportOverrides())
-    if (!res.ok) {
-      setStatusHint(res.error)
-      return
-    }
-    setStatusHint(uiText('batchExportStarted'))
-  }
-
-  async function handleBatchCancel(): Promise<void> {
-    await window.fluxalloy.batchExport.cancel()
-    setStatusHint(uiText('batchExportCancelled'))
-  }
-
-  async function handleBatchRetryFailed(): Promise<void> {
-    const res = await window.fluxalloy.batchExport.retryFailed()
-    if (!res.ok) {
-      setStatusHint(res.error)
-      return
-    }
-    if (res.reset === 0) {
-      setStatusHint(uiText('batchExportNothingToRetry'))
-      return
-    }
-    setStatusHint(uiTextVars('batchExportRetriedFailed', { count: String(res.reset) }))
-  }
-
-  async function handleBatchClearCompleted(): Promise<void> {
-    const res = await window.fluxalloy.batchExport.clearCompleted()
-    if (!res.ok) {
-      setStatusHint(res.error)
-      return
-    }
-    if (res.removed > 0) {
-      setStatusHint(uiTextVars('batchExportClearedCompleted', { count: String(res.removed) }))
-    }
-  }
-
-  async function handleBatchAddCurrentPreview(): Promise<void> {
-    const path = preview?.path
-    if (!path || !isFfmpegExportBatchVideoPath(path)) {
-      setStatusHint(uiText('batchExportNoVideoPaths'))
-      return
-    }
-    const res = await window.fluxalloy.batchExport.addPaths([path])
-    if (res.ok) {
-      setBatchAddStatusHint(res)
-    } else if ('error' in res) {
-      setStatusHint(res.error)
-    }
-  }
-
-  async function handleBatchAddDownloadsDone(ids?: number[]): Promise<void> {
-    const res = await window.fluxalloy.batchExport.addFromDownloadsDone(ids)
-    if (!res.ok) {
-      setStatusHint(res.error)
-      return
-    }
-    setBatchAddStatusHint(res)
-  }
-
-  async function handleBatchRetryFailedAndStart(): Promise<void> {
-    if (mediaPipelineBusy) {
-      return
-    }
-    const res = await window.fluxalloy.batchExport.retryFailedAndStart(
-      buildCurrentFfmpegExportOverrides()
-    )
-    if (!res.ok) {
-      setStatusHint(res.error)
-      return
-    }
-    setStatusHint(uiText('batchExportStarted'))
-  }
-
-  async function handleBatchCopyInputPaths(): Promise<void> {
-    const listed = await window.fluxalloy.batchExport.listInputPaths()
-    if (listed.paths.length === 0) {
-      setStatusHint(uiText('batchExportEmpty'))
-      return
-    }
-    const text = listed.paths.join('\r\n')
-    const written = await window.fluxalloy.clipboard.writeText(text)
-    if (!written.ok) {
-      setStatusHint(uiText('batchExportCopyPathsFailed'))
-      return
-    }
-    setStatusHint(uiTextVars('batchExportCopiedPaths', { count: String(listed.paths.length) }))
-  }
-
-  async function handleBatchCopyOutputPaths(): Promise<void> {
-    const listed = await window.fluxalloy.batchExport.listOutputPaths()
-    if (listed.paths.length === 0) {
-      setStatusHint(uiText('batchExportNoOutputPaths'))
-      return
-    }
-    const text = listed.paths.join('\r\n')
-    const written = await window.fluxalloy.clipboard.writeText(text)
-    if (!written.ok) {
-      setStatusHint(uiText('batchExportCopyPathsFailed'))
-      return
-    }
-    setStatusHint(
-      uiTextVars('batchExportCopiedOutputPaths', { count: String(listed.paths.length) })
-    )
-  }
-
-  async function handleBatchCopyRowPath(path: string, kind: 'in' | 'out'): Promise<void> {
-    const written = await window.fluxalloy.clipboard.writeText(path)
-    if (!written.ok) {
-      setStatusHint(uiText('batchExportCopyPathsFailed'))
-      return
-    }
-    setStatusHint(
-      kind === 'in'
-        ? uiText('batchExportCopiedRowInputPath')
-        : uiText('batchExportCopiedRowOutputPath')
-    )
-  }
-
-  async function handleBatchSaveReport(): Promise<void> {
-    const snap = batchSnapshot ?? (await window.fluxalloy.batchExport.getSnapshot())
-    if (snap.rows.length === 0) {
-      setStatusHint(uiText('batchExportEmpty'))
-      return
-    }
-    const loc = getUiLocale() === 'en' ? 'en' : 'ru'
-    const res = await window.fluxalloy.saveTextWithDialog({
-      title: uiText('batchExportSaveReportTitle'),
-      defaultFileName: uiText('batchExportSaveReportDefaultName'),
-      content: formatFfmpegExportBatchReportText(snap, loc)
-    })
-    if (res.ok) {
-      setStatusHint(uiTextVars('batchExportReportSaved', { path: res.path }))
-    } else if ('error' in res) {
-      setStatusHint(res.error)
-    }
-  }
-
-  async function handleBatchRemoveWaiting(): Promise<void> {
-    const res = await window.fluxalloy.batchExport.removeWaiting()
-    if (!res.ok) {
-      setStatusHint(res.error)
-      return
-    }
-    if (res.removed > 0) {
-      setStatusHint(uiTextVars('batchExportRemovedWaiting', { count: String(res.removed) }))
-    }
-  }
+  const mediaPipelineBusy = exportBusy || batchExportBusy
 
   async function toggleTheme(): Promise<void> {
     const s = await window.fluxalloy.settings.get()
@@ -5471,7 +4678,7 @@ function App(): JSX.Element {
                       setStatusHint(res.error)
                       return
                     }
-                    setBatchAddStatusHint(res)
+                    reportBatchPathsAdded(res)
                   })
                 }}
               />

@@ -25,6 +25,7 @@ import { registerSettingsIpcHandlers } from './ipc/register-settings-ipc'
 import { registerEnginesPreviewIpcHandlers } from './ipc/register-engines-preview-ipc'
 import { registerMainUtilitiesIpcHandlers } from './ipc/register-main-utilities-ipc'
 import { registerExportBatchIpcHandlers } from './ipc/register-export-batch-ipc'
+import { createSettingsIpcPersist, type SettingsIpcPersistApi } from './settings-ipc-persist'
 import { getYtdlpCliValidationCopy } from '../shared/ytdlp-cli-validation-locale'
 import { installExternalNavigationGuard, openAllowedExternalUrl } from './external-url'
 import {
@@ -72,53 +73,9 @@ import {
   pruneOldDiagnosticFiles,
   type SupportBundleRuntimeInfo
 } from './support-bundle'
-import { parseFfmpegSnapshotFormat } from './ffmpeg-frame-snapshot-service'
-import {
-  mergeFfmpegExportSnapshotIntoAppSettings,
-  parseFfmpegExportAudioNormalize,
-  parseFfmpegExportContainer,
-  parseFfmpegExportCropPreset,
-  parseFfmpegExportAudioBitrate,
-  parseFfmpegExportAudioGainDb,
-  parseFfmpegExportAudioMode,
-  parseFfmpegExportCrf,
-  parseFfmpegExportEncodePreset,
-  parseFfmpegExportFps,
-  parseFfmpegExportScalePreset,
-  parseFfmpegExportStripFlag,
-  parseFfmpegExportSubtitleMode,
-  parseFfmpegExportVideoDeband,
-  parseFfmpegExportVideoHisteq,
-  parseFfmpegExportVideoDenoise,
-  parseFfmpegExportVideoEqPreset,
-  parseFfmpegExportVideoGrain,
-  parseFfmpegExportVideoLut3d,
-  parseFfmpegExportVideoVignette,
-  parseFfmpegExportVideoBlur,
-  parseFfmpegExportVideoDeinterlace,
-  parseFfmpegExportVideoHue,
-  parseFfmpegExportVideoSharpen,
-  parseFfmpegExportVideoTransform,
-  parseFfmpegExportUserPresetSnapshot,
-  parseFfmpegExportUserPresetsList,
-  parseFfmpegExportVideoBitrate,
-  parseFfmpegExportVideoCodec,
-  parseFfmpegExportEconomyMode,
-  parseFfmpegExportTwoPass,
-  runFfmpegExportJob,
-  type FfmpegExportProgressPayload
-} from './ffmpeg-export-service'
+import { runFfmpegExportJob, type FfmpegExportProgressPayload } from './ffmpeg-export-service'
 import { FFMPEG_EXPORT_CANCELLED_ERROR } from '../shared/ffmpeg-export-contract'
-import {
-  DEFAULT_EDITOR_URL_PASTE_BEHAVIOR,
-  parseEditorUrlPasteBehavior
-} from '../shared/editor-url-paste-behavior'
 import { resolveOpenMediaDialogDefaultPath } from '../shared/preview-open-dialog-default-path'
-import {
-  DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX,
-  parseFfmpegExportBatchOutputSuffixTemplate
-} from '../shared/ffmpeg-export-batch-output-suffix'
-import { parseFfmpegExportHwDecode } from '../shared/ffmpeg-export-hw-decode'
 import {
   pickUniqueAutoExportOutputPath,
   resolveFfmpegExportJobOptionsFromAppSettings
@@ -133,13 +90,7 @@ import { scanFolderForFfmpegExportBatchVideos } from './ffmpeg-export-batch-fold
 import { appendProcessingHistoryEntry } from './processing-history'
 import { resolveTerminalCliSessionLogPath } from './terminal-service'
 import { setEnginePathOverridesSnapshot } from './engine-path-sync'
-import {
-  ENGINE_IDS,
-  getEnginesStatus,
-  resolveEngineExecutablePath,
-  type EnginePathOverrides,
-  type EnginePathOverridesPatch
-} from './engine-service'
+import { ENGINE_IDS, getEnginesStatus, resolveEngineExecutablePath } from './engine-service'
 import { grantMediaPath, registerFluxMediaPrivileges, registerFluxMediaProtocol } from './media-protocol'
 import { registerFluxHelpPrivileges, registerFluxHelpProtocol } from './help-assets-protocol'
 import { openVideoFolderWithDialog, openVideoWithDialog } from './preview-dialog'
@@ -178,7 +129,6 @@ import {
   type YtdlpDownloadOptionsPatch
 } from './ytdlp-download-options'
 import type { YtdlpGetCliOptionsParams } from '../shared/ytdlp-download-contract'
-import type { MainWindowUiPanelState } from '../shared/settings-contract'
 import { parseExtraYtdlpArgsLine, validateYtdlpCookiesBrowserProfile } from './ytdlp-extra-args'
 import {
   getYtdlpRunOptionsSnapshot,
@@ -334,6 +284,18 @@ function technicalSpecPath(): string {
 
 // Main process хранит актуальные настройки в памяти, чтобы меню и IPC отвечали одинаково.
 let cachedSettings: AppSettings = { theme: 'dark' }
+
+const mainSettingsAccess = {
+  get: (): AppSettings => cachedSettings,
+  set: (next: AppSettings): void => {
+    cachedSettings = next
+  },
+  save: (): void => {
+    saveSettings(settingsPath(), cachedSettings)
+  }
+}
+
+let settingsIpcPersist: SettingsIpcPersistApi
 
 let activeExportAbort: AbortController | null = null
 const grantedExportOutputPaths = new Set<string>()
@@ -539,50 +501,6 @@ function attachMainWindowBoundsPersistence(win: BrowserWindow): void {
     }
     flush()
   })
-}
-
-function validateEngineOverridePath(raw: string): string | null {
-  const normalized = normalize(raw.trim())
-  if (!isAbsolute(normalized) || normalized.length > 4096 || !existsSync(normalized)) {
-    return null
-  }
-  try {
-    return statSync(normalized).isFile() ? normalized : null
-  } catch {
-    return null
-  }
-}
-
-function persistEnginePathOverridesPatch(patch: EnginePathOverridesPatch): AppSettings {
-  const nextPaths: EnginePathOverrides = { ...(cachedSettings.engineExecutablePaths ?? {}) }
-  for (const id of ENGINE_IDS) {
-    if (!(id in patch)) {
-      continue
-    }
-    const v = patch[id]
-    if (v === null || v === '') {
-      delete nextPaths[id]
-    } else if (typeof v === 'string' && v.trim() !== '') {
-      const validPath = validateEngineOverridePath(v)
-      if (validPath !== null) {
-        nextPaths[id] = validPath
-      }
-    }
-  }
-  const merged: AppSettings = { ...cachedSettings }
-  if (Object.keys(nextPaths).length === 0) {
-    delete merged.engineExecutablePaths
-  } else {
-    merged.engineExecutablePaths = nextPaths
-  }
-  cachedSettings = merged
-  saveSettings(settingsPath(), cachedSettings)
-  refreshEnginePathOverridesSnapshot()
-  buildApplicationMenu()
-  BrowserWindow.getAllWindows().forEach((w) => {
-    w.webContents.send(mw.enginePathsChanged)
-  })
-  return { ...cachedSettings }
 }
 
 function persistYtdlpDownloadDirectory(abs: string | null): void {
@@ -1009,597 +927,18 @@ function batchExportOutputFolderPickOptsFromSettings(): { defaultPath: string } 
   return previewOpenDialogOptsFromSettings()
 }
 
-function sanitizeMainWindowUiPanelPatch(raw: unknown): Partial<MainWindowUiPanelState> {
-  if (!raw || typeof raw !== 'object') {
-    return {}
-  }
-  const keys: (keyof MainWindowUiPanelState)[] = [
-    'ffmpegSettingsRailOpen',
-    'quickYtdlp',
-    'ffmpegVideo',
-    'ffmpegFormat',
-    'ffmpegAudio',
-    'ffmpegPresets',
-    'ffmpegOutput',
-    'exportCommandPreview',
-    'processingHistory',
-    'probeExportSummary',
-    'probeTracks',
-    'probeChapters',
-    'probeRawJson'
-  ]
-  const o = raw as Record<string, unknown>
-  const out: Partial<MainWindowUiPanelState> = {}
-  for (const k of keys) {
-    if (typeof o[k] === 'boolean') {
-      out[k] = o[k]
-    }
-  }
-  return out
-}
-
 /** §4.1 — persist раскрытия collapsible FFmpeg / быстрый yt-dlp в главном renderer. */
 function revealMainWindowBatchExportPanel(): void {
   if (cachedSettings.mainWindowUiPanels?.batchExport === true) {
     return
   }
-  persistMainWindowUiPanelsMerge({ batchExport: true })
-}
-
-function persistMainWindowUiPanelsMerge(raw: unknown): AppSettings {
-  const patch = sanitizeMainWindowUiPanelPatch(raw)
-  if (Object.keys(patch).length === 0) {
-    return { ...cachedSettings }
-  }
-  cachedSettings = {
-    ...cachedSettings,
-    mainWindowUiPanels: {
-      ...(cachedSettings.mainWindowUiPanels ?? {}),
-      ...patch
-    }
-  }
-  saveSettings(settingsPath(), cachedSettings)
-  const snapshot = cachedSettings.mainWindowUiPanels
-  /** Синхронизация между главным окном и инспектором §9 без повторного `settings-get`. */
-  for (const w of BrowserWindow.getAllWindows()) {
-    if (!w.isDestroyed()) {
-      w.webContents.send(mw.mainWindowUiPanelsChanged, snapshot ?? {})
-    }
-  }
-  return { ...cachedSettings }
-}
-
-/** §7.2 — пресет libx264 для экспорта; только белый список через parse. */
-function persistFfmpegExportEncodePreset(raw: unknown): AppSettings {
-  const id = parseFfmpegExportEncodePreset(raw)
-  cachedSettings = { ...cachedSettings, ffmpegExportEncodePreset: id }
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-/** §7.2 / §16 — видеокодек экспорта (libx264 по умолчанию — ключ удаляем). */
-function persistFfmpegExportVideoCodec(raw: unknown): AppSettings {
-  const id = parseFfmpegExportVideoCodec(raw)
-  const next = { ...cachedSettings }
-  if (id === 'libx264') {
-    delete next.ffmpegExportVideoCodec
-  } else {
-    next.ffmpegExportVideoCodec = id
-    if (next.ffmpegExportTwoPass === true) {
-      delete next.ffmpegExportTwoPass
-    }
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-/** §7.2 — контейнер экспорта по умолчанию; влияет на defaultPath и расширение save dialog. */
-function persistFfmpegExportContainer(raw: unknown): AppSettings {
-  const id = parseFfmpegExportContainer(raw)
-  cachedSettings = { ...cachedSettings, ffmpegExportContainer: id }
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportCrf(raw: unknown): AppSettings {
-  const value = parseFfmpegExportCrf(raw)
-  const next = { ...cachedSettings }
-  if (value === null) {
-    delete next.ffmpegExportCrf
-  } else {
-    next.ffmpegExportCrf = value
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportAudioBitrate(raw: unknown): AppSettings {
-  const value = parseFfmpegExportAudioBitrate(raw)
-  const next = { ...cachedSettings }
-  if (value === null) {
-    delete next.ffmpegExportAudioBitrate
-  } else {
-    next.ffmpegExportAudioBitrate = value
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportAudioMode(raw: unknown): AppSettings {
-  const value = parseFfmpegExportAudioMode(raw)
-  const next = { ...cachedSettings }
-  if (value === 'aac') {
-    delete next.ffmpegExportAudioMode
-  } else {
-    next.ffmpegExportAudioMode = value
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportVideoBitrate(raw: unknown): AppSettings {
-  const value = parseFfmpegExportVideoBitrate(raw)
-  const next = { ...cachedSettings }
-  if (value === null) {
-    delete next.ffmpegExportVideoBitrate
-  } else {
-    next.ffmpegExportVideoBitrate = value
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-/** §7.2 / v0 — двухпроходное libx264 (требует сохранённого video bitrate при экспорте). */
-function persistFfmpegExportTwoPass(raw: unknown): AppSettings {
-  const next = { ...cachedSettings }
-  if (parseFfmpegExportTwoPass(raw)) {
-    next.ffmpegExportTwoPass = true
-  } else {
-    delete next.ffmpegExportTwoPass
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-/** §7.3 — экономный режим (`-threads 1`). */
-function persistFfmpegExportEconomyMode(raw: unknown): AppSettings {
-  const next = { ...cachedSettings }
-  if (parseFfmpegExportEconomyMode(raw)) {
-    next.ffmpegExportEconomyMode = true
-  } else {
-    delete next.ffmpegExportEconomyMode
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportHwDecode(raw: unknown): AppSettings {
-  const next = { ...cachedSettings }
-  if (parseFfmpegExportHwDecode(raw)) {
-    next.ffmpegExportHwDecode = true
-  } else {
-    delete next.ffmpegExportHwDecode
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportExtraArgsLine(raw: unknown): AppSettings {
-  const next = { ...cachedSettings }
-  if (typeof raw !== 'string') {
-    return { ...cachedSettings }
-  }
-  const trimmed = raw.trim().slice(0, 1200)
-  if (trimmed.length === 0) {
-    delete next.ffmpegExportExtraArgsLine
-  } else {
-    next.ffmpegExportExtraArgsLine = trimmed
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportBatchOutputSuffix(raw: unknown): AppSettings {
-  const next = { ...cachedSettings }
-  if (typeof raw !== 'string') {
-    return { ...cachedSettings }
-  }
-  const parsed = parseFfmpegExportBatchOutputSuffixTemplate(raw)
-  if (!parsed.ok) {
-    return { ...cachedSettings }
-  }
-  if (parsed.template === DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX) {
-    delete next.ffmpegExportBatchOutputSuffix
-  } else {
-    next.ffmpegExportBatchOutputSuffix = parsed.template
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportBatchOutputDirectory(raw: unknown): AppSettings {
-  const next = { ...cachedSettings }
-  if (raw === null || raw === '') {
-    delete next.ffmpegExportBatchOutputDirectory
-    cachedSettings = next
-    saveSettings(settingsPath(), cachedSettings)
-    return { ...cachedSettings }
-  }
-  if (typeof raw !== 'string') {
-    return { ...cachedSettings }
-  }
-  const n = normalize(raw.trim())
-  if (!isAbsolute(n) || n.length > 4096) {
-    return { ...cachedSettings }
-  }
-  next.ffmpegExportBatchOutputDirectory = n
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistEditorUrlPasteBehavior(raw: unknown): AppSettings {
-  const next = { ...cachedSettings }
-  const behavior = parseEditorUrlPasteBehavior(raw)
-  if (behavior === DEFAULT_EDITOR_URL_PASTE_BEHAVIOR) {
-    delete next.editorUrlPasteBehavior
-  } else {
-    next.editorUrlPasteBehavior = behavior
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportAudioGainDb(raw: unknown): AppSettings {
-  const value = parseFfmpegExportAudioGainDb(raw)
-  const next = { ...cachedSettings }
-  if (value === null) {
-    delete next.ffmpegExportAudioGainDb
-  } else {
-    next.ffmpegExportAudioGainDb = value
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportStripMetadata(raw: unknown): AppSettings {
-  const next = { ...cachedSettings }
-  if (parseFfmpegExportStripFlag(raw)) {
-    next.ffmpegExportStripMetadata = true
-  } else {
-    delete next.ffmpegExportStripMetadata
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportStripChapters(raw: unknown): AppSettings {
-  const next = { ...cachedSettings }
-  if (parseFfmpegExportStripFlag(raw)) {
-    next.ffmpegExportStripChapters = true
-  } else {
-    delete next.ffmpegExportStripChapters
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportSubtitleMode(raw: unknown): AppSettings {
-  const value = parseFfmpegExportSubtitleMode(raw)
-  const next = { ...cachedSettings }
-  if (value === 'copy') {
-    next.ffmpegExportSubtitleMode = 'copy'
-  } else {
-    delete next.ffmpegExportSubtitleMode
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportVideoDenoise(raw: unknown): AppSettings {
-  const value = parseFfmpegExportVideoDenoise(raw)
-  const next = { ...cachedSettings }
-  if (value === 'off') {
-    delete next.ffmpegExportVideoDenoise
-  } else {
-    next.ffmpegExportVideoDenoise = value
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportVideoDeband(raw: unknown): AppSettings {
-  const value = parseFfmpegExportVideoDeband(raw)
-  const next = { ...cachedSettings }
-  if (value === 'off') {
-    delete next.ffmpegExportVideoDeband
-  } else {
-    next.ffmpegExportVideoDeband = value
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportVideoHisteq(raw: unknown): AppSettings {
-  const value = parseFfmpegExportVideoHisteq(raw)
-  const next = { ...cachedSettings }
-  if (value === 'off') {
-    delete next.ffmpegExportVideoHisteq
-  } else {
-    next.ffmpegExportVideoHisteq = value
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportVideoLut3d(raw: unknown): AppSettings {
-  const value = parseFfmpegExportVideoLut3d(raw)
-  const next = { ...cachedSettings }
-  if (value === 'off') {
-    delete next.ffmpegExportVideoLut3d
-  } else {
-    next.ffmpegExportVideoLut3d = value
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportVideoSharpen(raw: unknown): AppSettings {
-  const value = parseFfmpegExportVideoSharpen(raw)
-  const next = { ...cachedSettings }
-  if (value === 'off') {
-    delete next.ffmpegExportVideoSharpen
-  } else {
-    next.ffmpegExportVideoSharpen = value
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportVideoEqPreset(raw: unknown): AppSettings {
-  const value = parseFfmpegExportVideoEqPreset(raw)
-  const next = { ...cachedSettings }
-  if (value === 'off') {
-    delete next.ffmpegExportVideoEqPreset
-  } else {
-    next.ffmpegExportVideoEqPreset = value
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportVideoGrain(raw: unknown): AppSettings {
-  const value = parseFfmpegExportVideoGrain(raw)
-  const next = { ...cachedSettings }
-  if (value === 'off') {
-    delete next.ffmpegExportVideoGrain
-  } else {
-    next.ffmpegExportVideoGrain = value
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportVideoVignette(raw: unknown): AppSettings {
-  const value = parseFfmpegExportVideoVignette(raw)
-  const next = { ...cachedSettings }
-  if (value === 'off') {
-    delete next.ffmpegExportVideoVignette
-  } else {
-    next.ffmpegExportVideoVignette = value
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportVideoBlur(raw: unknown): AppSettings {
-  const value = parseFfmpegExportVideoBlur(raw)
-  const next = { ...cachedSettings }
-  if (value === 'off') {
-    delete next.ffmpegExportVideoBlur
-  } else {
-    next.ffmpegExportVideoBlur = value
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportVideoDeinterlace(raw: unknown): AppSettings {
-  const value = parseFfmpegExportVideoDeinterlace(raw)
-  const next = { ...cachedSettings }
-  if (value === 'off') {
-    delete next.ffmpegExportVideoDeinterlace
-  } else {
-    next.ffmpegExportVideoDeinterlace = value
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportVideoHue(raw: unknown): AppSettings {
-  const value = parseFfmpegExportVideoHue(raw)
-  const next = { ...cachedSettings }
-  if (value === 'off') {
-    delete next.ffmpegExportVideoHue
-  } else {
-    next.ffmpegExportVideoHue = value
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportAudioNormalize(raw: unknown): AppSettings {
-  const value = parseFfmpegExportAudioNormalize(raw)
-  const next = { ...cachedSettings }
-  if (value === 'off') {
-    delete next.ffmpegExportAudioNormalize
-  } else {
-    next.ffmpegExportAudioNormalize = value
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportFps(raw: unknown): AppSettings {
-  const value = parseFfmpegExportFps(raw)
-  const next = { ...cachedSettings }
-  if (value === null) {
-    delete next.ffmpegExportFps
-  } else {
-    next.ffmpegExportFps = value
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportScalePreset(raw: unknown): AppSettings {
-  const value = parseFfmpegExportScalePreset(raw)
-  const next = { ...cachedSettings }
-  if (value === 'source') {
-    delete next.ffmpegExportScalePreset
-  } else {
-    next.ffmpegExportScalePreset = value
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportVideoTransform(raw: unknown): AppSettings {
-  const value = parseFfmpegExportVideoTransform(raw)
-  const next = { ...cachedSettings }
-  if (value === 'none') {
-    delete next.ffmpegExportVideoTransform
-  } else {
-    next.ffmpegExportVideoTransform = value
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegExportCropPreset(raw: unknown): AppSettings {
-  const value = parseFfmpegExportCropPreset(raw)
-  const next = { ...cachedSettings }
-  if (value === 'none') {
-    delete next.ffmpegExportCropPreset
-  } else {
-    next.ffmpegExportCropPreset = value
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistFfmpegSnapshotFormat(raw: unknown): AppSettings {
-  const value = parseFfmpegSnapshotFormat(raw)
-  const next = { ...cachedSettings }
-  if (value === 'png') {
-    delete next.ffmpegSnapshotFormat
-  } else {
-    next.ffmpegSnapshotFormat = value
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-/** §7.2 — заменить список пользовательских пресетов экспорта (валидированный массив). */
-function persistFfmpegExportUserPresets(raw: unknown): AppSettings {
-  const list = parseFfmpegExportUserPresetsList(raw)
-  const next = { ...cachedSettings }
-  if (list.length === 0) {
-    delete next.ffmpegExportUserPresets
-  } else {
-    next.ffmpegExportUserPresets = list
-  }
-  cachedSettings = next
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-/** §7.2 — применить снимок пресета к полям экспорта в settings одним сохранением. */
-function persistFfmpegExportApplySnapshot(raw: unknown): AppSettings {
-  const snapshot = parseFfmpegExportUserPresetSnapshot(raw)
-  if (!snapshot) {
-    return { ...cachedSettings }
-  }
-  cachedSettings = mergeFfmpegExportSnapshotIntoAppSettings(cachedSettings, snapshot)
-  saveSettings(settingsPath(), cachedSettings)
-  return { ...cachedSettings }
-}
-
-function persistThemePreference(pref: AppTheme): AppSettingsView {
-  cachedSettings = { ...cachedSettings, theme: pref }
-  saveSettings(settingsPath(), cachedSettings)
-  const resolved = resolveEffectiveTheme(pref)
-  // Renderer подписан на событие, поэтому смена темы из меню сразу отражается во всех окнах.
-  BrowserWindow.getAllWindows().forEach((w) => {
-    if (!w.isDestroyed()) {
-      w.webContents.send(mw.themeChanged, resolved)
-    }
-  })
-  buildApplicationMenu()
-  return { ...cachedSettings, effectiveTheme: resolved }
+  settingsIpcPersist.persistMainWindowUiPanelsMerge({ batchExport: true })
 }
 
 function setTheme(pref: AppTheme): AppSettingsView {
-  return persistThemePreference(pref)
+  return settingsIpcPersist.persistThemePreference(pref)
 }
 
-function persistUiLocale(raw: unknown): AppSettings {
-  const v = parseDownloadsWindowUiLocale(raw)
-  if (v === undefined) {
-    return cachedSettings
-  }
-  cachedSettings = { ...cachedSettings, uiLocale: v }
-  saveSettings(settingsPath(), cachedSettings)
-  buildApplicationMenu()
-  syncDownloadsPopoutHtmlToLocale(v)
-  for (const w of BrowserWindow.getAllWindows()) {
-    if (!w.isDestroyed()) {
-      w.webContents.send(mw.uiLocaleChanged, v)
-    }
-  }
-  return cachedSettings
-}
-
-/**
- * §17/§18 — пункты «Инструменты → Открыть папку…».
- *
- * Подменю строится из whitelist `listDiagnosticsFolders`, чтобы пользователь не мог
- * через меню заставить приложение открыть произвольный путь. Если каталог уже отсутствует
- * (например, `bin` не подложен в dev), пункт остаётся видимым, но disabled. Меню пересобирается
- * при фокусе окна и после операций с путями, поэтому `enabled` не застывает на весь запуск.
- */
 function buildDiagnosticsFolderSubmenu(): Electron.MenuItemConstructorOptions[] {
   const entries = listDiagnosticsFolders(mainDownloadsUiLocale())
   return entries.map((entry: DiagnosticsFolderEntry) => ({
@@ -1649,7 +988,7 @@ async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRuntimeInfo
     const { width: ww, height: wh } = d.workAreaSize
     primaryDisplayLine = `${bw}×${bh}@${d.scaleFactor.toFixed(2)} work ${ww}×${wh}`
   } catch {
-    /* headless / до ready */
+    /* headless / not ready */
   }
 
   const unpackedRoot = packagedWinUnpackedRoot(paths.appRoot)
@@ -2065,7 +1404,7 @@ function buildApplicationMenu(): void {
               type: 'radio',
               checked: uiLoc === 'ru',
               click: (): void => {
-                void persistUiLocale('ru')
+                void settingsIpcPersist.persistUiLocale('ru')
               }
             },
             {
@@ -2073,7 +1412,7 @@ function buildApplicationMenu(): void {
               type: 'radio',
               checked: uiLoc === 'en',
               click: (): void => {
-                void persistUiLocale('en')
+                void settingsIpcPersist.persistUiLocale('en')
               }
             }
           ]
@@ -2413,6 +1752,12 @@ app.whenReady().then(() => {
   logStartupBanner()
   pruneDiagnosticsOnStartup()
   cachedSettings = loadSettings(settingsPath())
+  settingsIpcPersist = createSettingsIpcPersist(mainSettingsAccess, {
+    resolveEffectiveTheme,
+    buildApplicationMenu,
+    syncDownloadsPopoutHtmlToLocale,
+    refreshEnginePathOverridesSnapshot
+  })
   refreshEnginePathOverridesSnapshot()
   syncYtdlpDownloadDirectoryFromSettings(cachedSettings.ytdlpDownloadDirectory)
   refreshYtdlpRunOptionsSnapshot(cachedSettings, mainDownloadsUiLocale())
@@ -2710,50 +2055,8 @@ app.whenReady().then(() => {
       effectiveTheme: resolveEffectiveTheme(cachedSettings.theme)
     }),
     copyCachedSettings: () => ({ ...cachedSettings }),
-    persistUiLocale,
-    persistThemePreference,
-    persistEnginePathOverridesPatch,
-    persistMainWindowUiPanelsMerge,
     isMainWindowUiPanelSender,
-    ffmpegExport: {
-      encodePreset: persistFfmpegExportEncodePreset,
-      videoCodec: persistFfmpegExportVideoCodec,
-      container: persistFfmpegExportContainer,
-      crf: persistFfmpegExportCrf,
-      audioBitrate: persistFfmpegExportAudioBitrate,
-      audioMode: persistFfmpegExportAudioMode,
-      videoBitrate: persistFfmpegExportVideoBitrate,
-      twoPass: persistFfmpegExportTwoPass,
-      economyMode: persistFfmpegExportEconomyMode,
-      hwDecode: persistFfmpegExportHwDecode,
-      extraArgsLine: persistFfmpegExportExtraArgsLine,
-      batchOutputSuffix: persistFfmpegExportBatchOutputSuffix,
-      batchOutputDirectory: persistFfmpegExportBatchOutputDirectory,
-      editorUrlPasteBehavior: persistEditorUrlPasteBehavior,
-      fps: persistFfmpegExportFps,
-      scalePreset: persistFfmpegExportScalePreset,
-      videoTransform: persistFfmpegExportVideoTransform,
-      cropPreset: persistFfmpegExportCropPreset,
-      audioGainDb: persistFfmpegExportAudioGainDb,
-      stripMetadata: persistFfmpegExportStripMetadata,
-      stripChapters: persistFfmpegExportStripChapters,
-      subtitleMode: persistFfmpegExportSubtitleMode,
-      videoDenoise: persistFfmpegExportVideoDenoise,
-      videoDeband: persistFfmpegExportVideoDeband,
-      videoHisteq: persistFfmpegExportVideoHisteq,
-      videoLut3d: persistFfmpegExportVideoLut3d,
-      videoSharpen: persistFfmpegExportVideoSharpen,
-      videoEqPreset: persistFfmpegExportVideoEqPreset,
-      videoGrain: persistFfmpegExportVideoGrain,
-      videoVignette: persistFfmpegExportVideoVignette,
-      videoBlur: persistFfmpegExportVideoBlur,
-      videoDeinterlace: persistFfmpegExportVideoDeinterlace,
-      videoHue: persistFfmpegExportVideoHue,
-      audioNormalize: persistFfmpegExportAudioNormalize,
-      snapshotFormat: persistFfmpegSnapshotFormat,
-      userPresets: persistFfmpegExportUserPresets,
-      applySnapshot: persistFfmpegExportApplySnapshot
-    }
+    ...settingsIpcPersist
   })
   registerEnginesPreviewIpcHandlers({
     mainAppStr,
