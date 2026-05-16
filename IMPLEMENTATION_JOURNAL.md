@@ -758,3 +758,8 @@
 - [J-730] 2026-05-16 20:19:58 [Assistant]: §7.3 — регрессия resolve: `audioGainDb` и `videoDenoise` из settings и overrides; Vitest. `npm run check:quiet`.
 - [J-731] 2026-05-16 20:21:06 [Assistant]: §7.3 — регрессия resolve: `videoSharpen` и `audioNormalize` из settings и overrides; Vitest. `npm run check:quiet`.
 - [J-732] 2026-05-16 20:22:17 [Assistant]: Marathon #45 commit — пакет J-728–731: resolve regressions (audioBitrate, filters) + ffprobe `format.tags.artist`; `npm run check:quiet`.
+- [J-733] 2026-05-16 20:23:58 [Assistant]: §9 — ffprobe `format.tags.album` → `containerAlbumTag` в probe, инспекторе (`alb …`) и TXT/HTML; Vitest. `npm run check:quiet`.
+- [J-734] 2026-05-16 20:25:05 [Assistant]: §7.3 — регрессия resolve: `videoBlur` и `videoDeinterlace` из settings и overrides; Vitest. `npm run check:quiet`.
+- [J-735] 2026-05-16 20:26:20 [Assistant]: §7.3 — регрессия resolve: `videoEqPreset` и `videoGrain` из settings и overrides; Vitest. `npm run check:quiet`.
+- [J-736] 2026-05-16 20:27:27 [Assistant]: §7.3 — регрессия resolve: `videoHue` и `videoVignette` из settings и overrides; Vitest. `npm run check:quiet`.
+- [J-737] 2026-05-16 20:28:31 [Assistant]: Marathon #50 commit+push — пакет J-733–736: ffprobe `format.tags.album` + resolve video filters; `npm run check:quiet`.

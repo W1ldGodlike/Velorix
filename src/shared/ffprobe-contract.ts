@@ -74,6 +74,8 @@ export interface MediaProbeSuccess {
   containerDescriptionTag: string | null
   /** `format.tags.artist`, если ffprobe отдал. */
   containerArtistTag: string | null
+  /** `format.tags.album`, если ffprobe отдал. */
+  containerAlbumTag: string | null
   /** `format.tags.compatible_brands`, если ffprobe отдал. */
   containerCompatibleBrands: string | null
   /** `format.probe_score` 0–100, если ffprobe отдал. */

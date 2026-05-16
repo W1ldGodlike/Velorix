@@ -367,6 +367,9 @@ export function PreviewProbeBody({
             {probeInfo.containerArtistTag
               ? ` · art ${probeInfo.containerArtistTag.length > 20 ? `${probeInfo.containerArtistTag.slice(0, 19)}…` : probeInfo.containerArtistTag}`
               : ''}
+            {probeInfo.containerAlbumTag
+              ? ` · alb ${probeInfo.containerAlbumTag.length > 20 ? `${probeInfo.containerAlbumTag.slice(0, 19)}…` : probeInfo.containerAlbumTag}`
+              : ''}
             {probeInfo.probeScore !== null ? ` · probe ${probeInfo.probeScore}` : ''}
             {probeInfo.containerNbStreams !== null
               ? ` · ${probeInfo.containerNbStreams} str.`

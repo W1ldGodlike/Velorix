@@ -164,6 +164,54 @@ describe('resolveFfmpegExportJobOptionsFromAppSettings', () => {
     ).toMatchObject({ videoSharpen: 'strong', audioNormalize: 'off' })
   })
 
+  it('videoHue и videoVignette из settings и overrides (§7.3)', () => {
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings({
+        ...base,
+        ffmpegExportVideoHue: 'warmShift',
+        ffmpegExportVideoVignette: 'light'
+      })
+    ).toMatchObject({ videoHue: 'warmShift', videoVignette: 'light' })
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings(
+        { ...base, ffmpegExportVideoVignette: 'light' },
+        { videoHue: 'satBoost', videoVignette: 'off' }
+      )
+    ).toMatchObject({ videoHue: 'satBoost', videoVignette: 'off' })
+  })
+
+  it('videoEqPreset и videoGrain из settings и overrides (§7.3)', () => {
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings({
+        ...base,
+        ffmpegExportVideoEqPreset: 'warm',
+        ffmpegExportVideoGrain: 'light'
+      })
+    ).toMatchObject({ videoEqPreset: 'warm', videoGrain: 'light' })
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings(
+        { ...base, ffmpegExportVideoEqPreset: 'warm' },
+        { videoEqPreset: 'vivid', videoGrain: 'off' }
+      )
+    ).toMatchObject({ videoEqPreset: 'vivid', videoGrain: 'off' })
+  })
+
+  it('videoBlur и videoDeinterlace из settings и overrides (§7.3)', () => {
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings({
+        ...base,
+        ffmpegExportVideoBlur: 'medium',
+        ffmpegExportVideoDeinterlace: 'frame'
+      })
+    ).toMatchObject({ videoBlur: 'medium', videoDeinterlace: 'frame' })
+    expect(
+      resolveFfmpegExportJobOptionsFromAppSettings(
+        { ...base, ffmpegExportVideoDeinterlace: 'frame' },
+        { videoBlur: 'off', videoDeinterlace: 'field' }
+      )
+    ).toMatchObject({ videoBlur: 'off', videoDeinterlace: 'field' })
+  })
+
   it('audioGainDb и videoDenoise из settings и overrides (§7.3)', () => {
     expect(
       resolveFfmpegExportJobOptionsFromAppSettings({
