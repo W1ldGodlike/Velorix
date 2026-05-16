@@ -40,6 +40,7 @@ export function DownloadsLogPanel({
       <div
         className="app-downloads-log-actions"
         role="toolbar"
+        aria-orientation="horizontal"
         aria-label={uiText('downloadsLogActionsToolbarAria')}
       >
         <button

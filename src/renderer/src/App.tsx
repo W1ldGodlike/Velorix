@@ -2996,6 +2996,7 @@ function App(): JSX.Element {
           <div
             className="app-topbar-actions"
             role="toolbar"
+            aria-orientation="horizontal"
             aria-label={uiText('topbarActionsToolbarAria')}
           >
             <button
@@ -3226,6 +3227,7 @@ function App(): JSX.Element {
             <div
               className="app-downloads-url-actions"
               role="toolbar"
+              aria-orientation="horizontal"
               aria-label={uiText('quickYtdlpAria')}
             >
               <button
@@ -3427,6 +3429,7 @@ function App(): JSX.Element {
               <div
                 className="app-batch-export-actions"
                 role="toolbar"
+                aria-orientation="horizontal"
                 aria-label={uiText('batchExportActionsToolbarAria')}
               >
                 <button
@@ -3687,6 +3690,7 @@ function App(): JSX.Element {
                       <td headers={BATCH_EXPORT_TABLE_HEADER_IDS.actions}>
                         <div
                           role="toolbar"
+                          aria-orientation="horizontal"
                           aria-label={uiTextVars('batchExportRowActionsToolbarAriaTemplate', {
                             n: String(rowIndex + 1)
                           })}
@@ -4006,6 +4010,7 @@ function App(): JSX.Element {
                 <div
                   className="app-settings-panel-head-trailing"
                   role="toolbar"
+                  aria-orientation="horizontal"
                   aria-label={uiText('editorFfmpegRailHeaderToolbarAria')}
                 >
                   <button
@@ -4900,6 +4905,7 @@ function App(): JSX.Element {
                   <div
                     className="app-settings-actions"
                     role="toolbar"
+                    aria-orientation="horizontal"
                     aria-label={uiText('editorSnapshotLastActionsToolbarAria')}
                   >
                     <button
@@ -5007,6 +5013,7 @@ function App(): JSX.Element {
                   <div
                     className="app-settings-actions"
                     role="toolbar"
+                    aria-orientation="horizontal"
                     aria-label={uiText('editorExportPresetsActionsToolbarAria')}
                   >
                     <button
@@ -5153,6 +5160,7 @@ function App(): JSX.Element {
                       <div
                         className="app-export-preview-actions"
                         role="toolbar"
+                        aria-orientation="horizontal"
                         aria-label={uiText('editorExportPreviewActionsToolbarAria')}
                       >
                         <button
@@ -5176,6 +5184,7 @@ function App(): JSX.Element {
                     <div
                       className="app-settings-actions"
                       role="toolbar"
+                      aria-orientation="horizontal"
                       aria-label={uiText('editorExportLastOutputActionsToolbarAria')}
                     >
                       <button
@@ -5341,6 +5350,7 @@ function App(): JSX.Element {
               <div
                 className="app-terminal-command-row"
                 role="toolbar"
+                aria-orientation="horizontal"
                 aria-label={uiText('terminalCommandToolbarAria')}
               >
                 <input
@@ -5666,6 +5676,7 @@ function App(): JSX.Element {
               <div
                 className="app-downloads-actions"
                 role="toolbar"
+                aria-orientation="horizontal"
                 aria-label={uiText('downloadsBandToolbarAria')}
               >
                 <button
@@ -5723,6 +5734,7 @@ function App(): JSX.Element {
               <div
                 className="app-downloads-url-actions"
                 role="toolbar"
+                aria-orientation="horizontal"
                 aria-label={uiText('downloadsUrlActionsToolbarAria')}
               >
                 <button
@@ -5995,6 +6007,7 @@ function App(): JSX.Element {
                               <div
                                 className="app-downloads-row-actions"
                                 role="toolbar"
+                                aria-orientation="horizontal"
                                 aria-label={uiTextVars('downloadsQueueRowActionsToolbarAriaTemplate', {
                                   id: String(row.id)
                                 })}
@@ -6623,6 +6636,7 @@ function App(): JSX.Element {
                       <div
                         className="app-downloads-history-actions"
                         role="toolbar"
+                        aria-orientation="horizontal"
                         aria-label={uiText('downloadsCookiesFileActionsToolbarAria')}
                       >
                         <button
@@ -6700,6 +6714,7 @@ function App(): JSX.Element {
                       <div
                         className="app-downloads-history-actions"
                         role="toolbar"
+                        aria-orientation="horizontal"
                         aria-label={uiText('downloadsOutputDirActionsToolbarAria')}
                       >
                         <button
@@ -7034,6 +7049,7 @@ function App(): JSX.Element {
             <div
               className="app-downloads-rail-footer"
               role="toolbar"
+              aria-orientation="horizontal"
               aria-label={uiText('downloadsRailFooterToolbarAria')}
             >
               <button
@@ -7186,6 +7202,7 @@ function App(): JSX.Element {
             <div
               className="app-modal-footer"
               role="toolbar"
+              aria-orientation="horizontal"
               aria-label={uiText('exportPresetDialogFooterToolbarAria')}
             >
               <button
@@ -7255,6 +7272,7 @@ function App(): JSX.Element {
                   <div
                     className="app-engine-path-actions"
                     role="toolbar"
+                    aria-orientation="horizontal"
                     aria-label={uiTextVars('editorEnginePathRowToolbarAriaTemplate', {
                       engine: engineLabel(id)
                     })}
@@ -7284,6 +7302,7 @@ function App(): JSX.Element {
             <div
               className="app-modal-footer"
               role="toolbar"
+              aria-orientation="horizontal"
               aria-label={uiText('enginePathsDialogFooterToolbarAria')}
             >
               <button

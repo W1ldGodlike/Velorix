@@ -244,6 +244,7 @@ export function InspectorStandaloneApp(): JSX.Element {
           <div
             className="app-topbar-actions"
             role="toolbar"
+            aria-orientation="horizontal"
             aria-label={uiText('inspectorTopbarActionsToolbarAria')}
           >
           <button

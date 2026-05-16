@@ -873,4 +873,9 @@
 - [J-850] 2026-05-16 10:14:00 [Assistant]: Терминал — список подсказок вставки: разметка `<ul>` / `<li>` вместо плоского `role="group"`; сброс стилей списка в CSS.
 - [J-851] 2026-05-16 10:16:00 [Assistant]: Пакетный экспорт — селект параллелизма: видимая подсказка `batchExportConcurrencyHint` и `aria-describedby` у `select`.
 - [J-852] 2026-05-16 10:18:00 [Assistant]: Загрузки — панель фильтров статуса (`app-downloads-filterbar`): у `role="toolbar"` добавлен `aria-orientation="horizontal"`.
+- [J-853] 2026-05-16 10:20:00 [Assistant]: Главное окно — горизонтальная ориентация для основных `role="toolbar"`: топбар, быстрая yt-dlp, batch export, rail FFmpeg, секции экспорта, терминал, вкладка загрузок (полоса, URL, строки очереди), подвал rail cookies/output и модальные footer/engine-row (`App.tsx`).
+- [J-854] 2026-05-16 10:22:00 [Assistant]: Компоненты загрузок/истории — `aria-orientation="horizontal"` у toolbar в `DownloadsLogPanel`, `DownloadsHistoryPanel`, `ProcessingHistoryPanel`.
+- [J-855] 2026-05-16 10:24:00 [Assistant]: Превью и таймлайн — `PreviewTransport`, `VideoTimeline`: явная горизонтальная ориентация toolbar.
+- [J-856] 2026-05-16 10:26:00 [Assistant]: Отдельное окно инспектора — верхний `app-topbar-actions` с `aria-orientation="horizontal"`.
+- [J-857] 2026-05-16 10:28:00 [Assistant]: ffprobe-панель и модалки — `MediaProbePanel` (JSON toolbars), `KnowledgeDialog`, вторичный toolbar закрытия `AboutDialog`: `aria-orientation="horizontal"`.
 

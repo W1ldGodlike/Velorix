@@ -132,6 +132,7 @@ export default function PreviewTransport({
     <div
       className="app-preview-transport"
       role="toolbar"
+      aria-orientation="horizontal"
       aria-label={uiText('previewTransportToolbarAria')}
     >
       <div

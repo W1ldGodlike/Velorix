@@ -164,6 +164,7 @@ export function AboutDialog({
             <div
               className="app-about-diagnostics"
               role="toolbar"
+              aria-orientation="horizontal"
               aria-label={uiText('aboutDiagnosticsToolbarAria')}
             >
               <button
@@ -322,7 +323,7 @@ export function AboutDialog({
               </div>
             ) : null}
           </div>
-          <div role="toolbar" aria-label={uiText('aboutDialogCloseToolbarAria')}>
+          <div role="toolbar" aria-orientation="horizontal" aria-label={uiText('aboutDialogCloseToolbarAria')}>
             <button
               type="button"
               className="app-btn app-btn-primary"

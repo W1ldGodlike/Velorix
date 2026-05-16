@@ -605,6 +605,7 @@ export default function VideoTimeline({
         <div
           className="app-timeline-toolbar"
           role="toolbar"
+          aria-orientation="horizontal"
           aria-label={uiText('videoTimelineToolbarAria')}
         >
           <div

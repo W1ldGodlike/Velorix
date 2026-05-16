@@ -134,6 +134,7 @@ export function ProcessingHistoryPanel({
       <div
         className="app-processing-history-controls"
         role="toolbar"
+        aria-orientation="horizontal"
         aria-label={uiText('processingHistoryFiltersToolbarAria')}
         aria-describedby="processingHistorySectionHint"
       >
@@ -183,6 +184,7 @@ export function ProcessingHistoryPanel({
       <div
         className="app-processing-history-actions"
         role="toolbar"
+        aria-orientation="horizontal"
         aria-label={uiText('processingHistoryActionsToolbarAria')}
       >
         <button
@@ -264,6 +266,7 @@ export function ProcessingHistoryPanel({
               <div
                 className="app-downloads-history-actions"
                 role="toolbar"
+                aria-orientation="horizontal"
                 aria-label={uiTextVars('processingHistoryCardSourceToolbarAriaTemplate', {
                   id: entry.id.length > 10 ? `${entry.id.slice(0, 8)}…` : entry.id
                 })}
@@ -289,6 +292,7 @@ export function ProcessingHistoryPanel({
                 <div
                   className="app-downloads-history-actions"
                   role="toolbar"
+                  aria-orientation="horizontal"
                   aria-label={uiTextVars('processingHistoryCardOutputToolbarAriaTemplate', {
                     id: entry.id.length > 10 ? `${entry.id.slice(0, 8)}…` : entry.id
                   })}

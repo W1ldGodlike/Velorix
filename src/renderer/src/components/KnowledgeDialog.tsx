@@ -164,7 +164,7 @@ export function KnowledgeDialog({
                 {uiText('knowledgeHint')}
               </p>
             </div>
-            <div role="toolbar" aria-label={uiText('knowledgeDialogActionsToolbarAria')}>
+            <div role="toolbar" aria-orientation="horizontal" aria-label={uiText('knowledgeDialogActionsToolbarAria')}>
               <button
                 type="button"
                 className="app-btn"

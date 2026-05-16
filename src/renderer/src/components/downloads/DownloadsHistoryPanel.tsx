@@ -75,6 +75,7 @@ export function DownloadsHistoryPanel({
       <div
         className="app-downloads-history-actions"
         role="toolbar"
+        aria-orientation="horizontal"
         aria-label={uiText('downloadsHistoryActionsToolbarAria')}
       >
         <label className="app-downloads-history-filter">
@@ -141,6 +142,7 @@ export function DownloadsHistoryPanel({
                 <div
                   className="app-downloads-history-head-trailing"
                   role="toolbar"
+                  aria-orientation="horizontal"
                   aria-label={uiTextVars('downloadsHistoryCardToolbarAriaTemplate', {
                     title: entry.shortLabel
                   })}
