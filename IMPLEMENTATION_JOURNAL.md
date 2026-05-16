@@ -868,4 +868,9 @@
 - [J-845] 2026-05-16 10:04:00 [Assistant]: База знаний — выбранная статья в оглавлении: у кнопки `aria-current="page"`.
 - [J-846] 2026-05-16 10:06:00 [Assistant]: Диалог имени пресета — поле имени: `aria-describedby` всегда включает подсказку; при ошибке добавляется `export-preset-name-error`.
 - [J-847] 2026-05-16 10:08:00 [Assistant]: Загрузки — таблица очереди: стабильные `id` столбцов (`DOWNLOADS_QUEUE_TABLE_HEADER_IDS`) и атрибут `headers` у ячеек данных.
+- [J-848] 2026-05-16 10:10:00 [Assistant]: Верхняя панель — список вкладок `role="tablist"`: добавлен `aria-orientation="horizontal"` и у каждого `tab` — `aria-controls` на соответствующий `tabpanel`.
+- [J-849] 2026-05-16 10:12:00 [Assistant]: Загрузки — поле URL: колонка «поле + подсказка» (`app-downloads-url-field`), текст `downloadsUrlEnqueueHint`, `aria-describedby` у textarea.
+- [J-850] 2026-05-16 10:14:00 [Assistant]: Терминал — список подсказок вставки: разметка `<ul>` / `<li>` вместо плоского `role="group"`; сброс стилей списка в CSS.
+- [J-851] 2026-05-16 10:16:00 [Assistant]: Пакетный экспорт — селект параллелизма: видимая подсказка `batchExportConcurrencyHint` и `aria-describedby` у `select`.
+- [J-852] 2026-05-16 10:18:00 [Assistant]: Загрузки — панель фильтров статуса (`app-downloads-filterbar`): у `role="toolbar"` добавлен `aria-orientation="horizontal"`.
 

@@ -296,6 +296,14 @@
   gap: 0.45rem;
   max-height: 32rem;
   overflow: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.app-terminal-hint-list > li {
+  margin: 0;
+  min-width: 0;
 }
 
 .app-terminal-hint {
@@ -1277,6 +1285,13 @@ button.app-downloads-hint-token:disabled {
   gap: 0.65rem;
   padding: 0.75rem 0.85rem;
   border-bottom: 1px solid var(--fa-border-subtle);
+}
+
+.app-downloads-url-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
 }
 
 .app-downloads-url-input {

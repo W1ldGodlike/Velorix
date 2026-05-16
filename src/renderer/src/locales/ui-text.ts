@@ -269,6 +269,8 @@ const UI_TEXT = {
     downloadsBandToolbarAria: 'Быстрые действия вкладки загрузок',
     downloadsUrlPlaceholder: 'URL или несколько URL по строкам',
     downloadsUrlAria: 'URL для добавления в очередь загрузок',
+    downloadsUrlEnqueueHint:
+      'Несколько ссылок — по одной на строку. Постановка в очередь — кнопками справа от поля.',
     downloadsUrlRowGroupAria: 'Поле URL и действия постановки в очередь',
     downloadsUrlActionsToolbarAria: 'Действия с полем URL и очередью загрузок',
     downloadsAddToQueue: 'Добавить в очередь',
@@ -954,6 +956,8 @@ const UI_TEXT = {
       'Одни и те же настройки FFmpeg применяются ко всем файлам. Выход — рядом с исходником (`имя-export.ext`).',
     batchExportConcurrency: 'Параллельно',
     batchExportConcurrencyAuto: 'Авто',
+    batchExportConcurrencyHint:
+      'Сколько строк очереди выполнять одновременно. «Авто» подбирает по системе.',
     batchExportAddFiles: 'Добавить файлы',
     batchExportAddFolder: 'Добавить папку',
     batchExportDragHint: 'Перетащите видеофайлы в эту область или используйте кнопки. Порядок строк — перетаскиванием.',
@@ -1558,6 +1562,8 @@ const UI_TEXT = {
     downloadsBandToolbarAria: 'Quick actions on the downloads tab',
     downloadsUrlPlaceholder: 'One URL per line, or multiple URLs',
     downloadsUrlAria: 'URLs to append to the download queue',
+    downloadsUrlEnqueueHint:
+      'Paste multiple URLs, one per line. Use the buttons to the right of the field to enqueue.',
     downloadsUrlRowGroupAria: 'URL field and enqueue actions',
     downloadsUrlActionsToolbarAria: 'Actions for the URL field and download queue',
     downloadsAddToQueue: 'Add to queue',
@@ -2240,6 +2246,8 @@ const UI_TEXT = {
       'The same FFmpeg settings apply to every file. Output is written next to each source (`name-export.ext`).',
     batchExportConcurrency: 'Parallel jobs',
     batchExportConcurrencyAuto: 'Auto',
+    batchExportConcurrencyHint:
+      'How many queue rows to run at once. Auto picks a sensible default for this system.',
     batchExportAddFiles: 'Add files',
     batchExportAddFolder: 'Add folder',
     batchExportDragHint: 'Drop video files here or use the buttons. Reorder rows by dragging.',

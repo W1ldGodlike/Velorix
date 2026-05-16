@@ -2934,6 +2934,7 @@ function App(): JSX.Element {
           className="app-workspace-tabs"
           aria-label={uiText('workspaceTabsAria')}
           role="tablist"
+          aria-orientation="horizontal"
         >
           <button
             type="button"
@@ -2941,6 +2942,7 @@ function App(): JSX.Element {
             className={`app-workspace-tab${workspaceTab === 'editor' ? ' app-workspace-tab-active' : ''}`}
             role="tab"
             aria-selected={workspaceTab === 'editor'}
+            aria-controls="workspace-panel-editor"
             title={uiText('workspaceTabEditorTooltip')}
             onClick={() => {
               setWorkspaceTab('editor')
@@ -2957,6 +2959,7 @@ function App(): JSX.Element {
             className={`app-workspace-tab${workspaceTab === 'downloads' ? ' app-workspace-tab-active' : ''}`}
             role="tab"
             aria-selected={workspaceTab === 'downloads'}
+            aria-controls="workspace-panel-downloads"
             onClick={() => {
               setWorkspaceTab('downloads')
             }}
@@ -2973,6 +2976,7 @@ function App(): JSX.Element {
             className={`app-workspace-tab${workspaceTab === 'terminal' ? ' app-workspace-tab-active' : ''}`}
             role="tab"
             aria-selected={workspaceTab === 'terminal'}
+            aria-controls="workspace-panel-terminal"
             onClick={() => {
               setWorkspaceTab('terminal')
             }}
@@ -3395,6 +3399,7 @@ function App(): JSX.Element {
                   <select
                     className="app-control"
                     aria-label={uiText('batchExportConcurrency')}
+                    aria-describedby="batch-export-concurrency-hint"
                     value={String(batchSnapshot?.concurrency ?? 'auto')}
                     disabled={batchExportBusy}
                     onChange={(e) => {
@@ -3415,6 +3420,9 @@ function App(): JSX.Element {
                     <option value="4">4</option>
                     <option value="auto">{uiText('batchExportConcurrencyAuto')}</option>
                   </select>
+                  <span id="batch-export-concurrency-hint" className="app-field-help">
+                    {uiText('batchExportConcurrencyHint')}
+                  </span>
                 </label>
               <div
                 className="app-batch-export-actions"
@@ -5607,31 +5615,28 @@ function App(): JSX.Element {
                     }}
                   />
                 </label>
-                <div
-                  className="app-terminal-hint-list"
-                  role="group"
-                  aria-label={uiText('terminalHintsInsertListAria')}
-                >
+                <ul className="app-terminal-hint-list" aria-label={uiText('terminalHintsInsertListAria')}>
                   {visibleTerminalHints.map((hint) => (
-                    <button
-                      key={`${hint.tool}:${hint.token}:${hint.fullLine ?? ''}`}
-                      type="button"
-                      className="app-terminal-hint"
-                      onClick={() => {
-                        if (hint.fullLine !== undefined && hint.fullLine.length > 0) {
-                          setTerminalLine(hint.fullLine)
-                        } else {
-                          appendTerminalToken(hint.token)
-                        }
-                      }}
-                      title={hint.summary}
-                    >
-                      <code>{hint.token}</code>
-                      <span>{hint.tool}</span>
-                      <small>{hint.summary}</small>
-                    </button>
+                    <li key={`${hint.tool}:${hint.token}:${hint.fullLine ?? ''}`}>
+                      <button
+                        type="button"
+                        className="app-terminal-hint"
+                        onClick={() => {
+                          if (hint.fullLine !== undefined && hint.fullLine.length > 0) {
+                            setTerminalLine(hint.fullLine)
+                          } else {
+                            appendTerminalToken(hint.token)
+                          }
+                        }}
+                        title={hint.summary}
+                      >
+                        <code>{hint.token}</code>
+                        <span>{hint.tool}</span>
+                        <small>{hint.summary}</small>
+                      </button>
+                    </li>
                   ))}
-                </div>
+                </ul>
               </aside>
             </div>
           </section>
@@ -5700,15 +5705,21 @@ function App(): JSX.Element {
               role="group"
               aria-label={uiText('downloadsUrlRowGroupAria')}
             >
-              <textarea
-                className="app-downloads-url-input"
-                value={downloadsUrl}
-                placeholder={uiText('downloadsUrlPlaceholder')}
-                aria-label={uiText('downloadsUrlAria')}
-                onChange={(e) => {
-                  setDownloadsUrl(e.target.value)
-                }}
-              />
+              <div className="app-downloads-url-field">
+                <textarea
+                  className="app-downloads-url-input"
+                  value={downloadsUrl}
+                  placeholder={uiText('downloadsUrlPlaceholder')}
+                  aria-label={uiText('downloadsUrlAria')}
+                  aria-describedby="downloads-main-url-hint"
+                  onChange={(e) => {
+                    setDownloadsUrl(e.target.value)
+                  }}
+                />
+                <p id="downloads-main-url-hint" className="app-field-help">
+                  {uiText('downloadsUrlEnqueueHint')}
+                </p>
+              </div>
               <div
                 className="app-downloads-url-actions"
                 role="toolbar"
@@ -5820,6 +5831,7 @@ function App(): JSX.Element {
             <div
               className="app-downloads-filterbar"
               role="toolbar"
+              aria-orientation="horizontal"
               aria-label={uiText('downloadsFilterBarAria')}
             >
               {downloadsStatusFilterChips.map((filter) => (
