@@ -973,4 +973,9 @@
 - [J-950] 2026-05-16 13:34:00 [Assistant]: Таймлайн — тулбар (`videoTimelineToolbarAria`): `aria-busy={saveFrameBusy || previewPipelineBusy}`.
 - [J-951] 2026-05-16 13:36:00 [Assistant]: Таймлайн — регион unified (`videoTimelineUnifiedRegionAria`): тот же флаг `aria-busy`.
 - [J-952] 2026-05-16 13:38:00 [Assistant]: Таймлайн — подвал (`videoTimelineFooterAria`): `aria-busy` при обновлении потока данных превью (снимок/ffprobe/экспорт).
+- [J-953] 2026-05-16 13:40:00 [Assistant]: Быстрый yt-dlp — регион тела (`quick-ytdlp`), группа URL (`quickYtdlpUrlFieldGroupAria`) и тулбар действий: `aria-busy={engineDownloadBusy || downloadsOptionsBusy || downloadsHistoryBusy}`.
+- [J-954] 2026-05-16 13:42:00 [Assistant]: Превью — медиакарточка (`editorPreviewMediaCardGroupAria`): `aria-busy` при экспорте/снимке/ffprobe.
+- [J-955] 2026-05-16 13:44:00 [Assistant]: Превью — подпись файла (`editorPreviewCaptionAria`): тот же флаг `aria-busy`.
+- [J-956] 2026-05-16 13:46:00 [Assistant]: FFmpeg rail — шапка панели (`editorFfmpegPanelHeadGroupAria`) и тулбар сворачивания (`editorFfmpegRailHeaderToolbarAria`): `aria-busy` с учётом `probePending`.
+- [J-957] 2026-05-16 13:48:00 [Assistant]: FFmpeg rail — тулбар последнего снимка (`editorSnapshotLastActionsToolbarAria`) и действий пресетов (`editorExportPresetsActionsToolbarAria`): `aria-busy` при активном ffprobe превью.
 

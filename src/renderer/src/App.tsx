@@ -3237,6 +3237,7 @@ function App(): JSX.Element {
             className="app-url-body"
             role="region"
             aria-labelledby="quick-ytdlp-region-title"
+            aria-busy={engineDownloadBusy || downloadsOptionsBusy || downloadsHistoryBusy}
           >
             <h3 id="quick-ytdlp-region-title" className="app-visually-hidden">
               {uiText('quickYtdlpAria')}
@@ -3245,6 +3246,7 @@ function App(): JSX.Element {
               className="app-url-field"
               role="group"
               aria-label={uiText('quickYtdlpUrlFieldGroupAria')}
+              aria-busy={engineDownloadBusy || downloadsOptionsBusy || downloadsHistoryBusy}
             >
               <textarea
                 className="app-downloads-url-input app-url-input"
@@ -3302,7 +3304,7 @@ function App(): JSX.Element {
               role="toolbar"
               aria-orientation="horizontal"
               aria-label={uiText('quickYtdlpAria')}
-              aria-busy={engineDownloadBusy}
+              aria-busy={engineDownloadBusy || downloadsOptionsBusy || downloadsHistoryBusy}
             >
               <button
                 type="button"
@@ -3990,6 +3992,7 @@ function App(): JSX.Element {
                     className="app-preview-media-card"
                     role="group"
                     aria-label={uiText('editorPreviewMediaCardGroupAria')}
+                    aria-busy={exportBusy || snapshotBusy || probePending}
                   >
                     <video
                       key={`${preview.path}|${previewPlaybackUrl ?? preview.mediaUrl}`}
@@ -4037,6 +4040,7 @@ function App(): JSX.Element {
                     className="app-preview-caption"
                     title={preview.path}
                     aria-label={uiText('editorPreviewCaptionAria')}
+                    aria-busy={exportBusy || snapshotBusy || probePending}
                   >
                     {preview.name}
                   </footer>
@@ -4079,6 +4083,7 @@ function App(): JSX.Element {
                 className="app-settings-panel-head"
                 role="group"
                 aria-label={uiText('editorFfmpegPanelHeadGroupAria')}
+                aria-busy={exportBusy || snapshotBusy || exportCancelBusy || probePending}
               >
                 <div>
                   <h2 className="app-settings-title">{uiText('editorFfmpegSettingsTitle')}</h2>
@@ -4094,6 +4099,7 @@ function App(): JSX.Element {
                   role="toolbar"
                   aria-orientation="horizontal"
                   aria-label={uiText('editorFfmpegRailHeaderToolbarAria')}
+                  aria-busy={exportBusy || snapshotBusy || exportCancelBusy || probePending}
                 >
                   <button
                     type="button"
@@ -4966,6 +4972,7 @@ function App(): JSX.Element {
                     role="toolbar"
                     aria-orientation="horizontal"
                     aria-label={uiText('editorSnapshotLastActionsToolbarAria')}
+                    aria-busy={exportBusy || snapshotBusy || probePending}
                   >
                     <button
                       type="button"
@@ -5073,6 +5080,7 @@ function App(): JSX.Element {
                     role="toolbar"
                     aria-orientation="horizontal"
                     aria-label={uiText('editorExportPresetsActionsToolbarAria')}
+                    aria-busy={exportBusy || snapshotBusy || probePending}
                   >
                     <button
                       type="button"
