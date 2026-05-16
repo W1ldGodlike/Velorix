@@ -124,12 +124,12 @@ describe('knowledge-service', () => {
   it('readKnowledgeArticle встраивает Help/assets в data:image base64', () => {
     withHelpDir((help) => {
       mkdirSync(join(help, 'assets'))
-      writeFileSync(join(help, 'assets', 'tiny.svg'), '<svg xmlns="http://www.w3.org/2000/svg"/>', 'utf8')
       writeFileSync(
-        join(help, 'with-pic.md'),
-        '# Pic\n\n![t](assets/tiny.svg)\n',
+        join(help, 'assets', 'tiny.svg'),
+        '<svg xmlns="http://www.w3.org/2000/svg"/>',
         'utf8'
       )
+      writeFileSync(join(help, 'with-pic.md'), '# Pic\n\n![t](assets/tiny.svg)\n', 'utf8')
 
       const res = readKnowledgeArticle([help], 'with-pic')
       expect(res.ok).toBe(true)

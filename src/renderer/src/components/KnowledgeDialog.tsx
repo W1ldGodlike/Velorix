@@ -154,32 +154,37 @@ export function KnowledgeDialog({
           e.stopPropagation()
         }}
       >
+        <div
+          className="app-modal-header-row"
+          role="group"
+          aria-label={uiText('knowledgeDialogHeaderRowAria')}
+          aria-busy={loading}
+        >
+          <div>
+            <h2 id="knowledge-title" className="app-modal-title">
+              {uiText('knowledgeTitle')}
+            </h2>
+            <p id="knowledge-dialog-hint" className="app-modal-hint">
+              {uiText('knowledgeHint')}
+            </p>
+          </div>
           <div
-            className="app-modal-header-row"
-            role="group"
-            aria-label={uiText('knowledgeDialogHeaderRowAria')}
+            role="toolbar"
+            aria-orientation="horizontal"
+            aria-label={uiText('knowledgeDialogActionsToolbarAria')}
             aria-busy={loading}
           >
-            <div>
-              <h2 id="knowledge-title" className="app-modal-title">
-                {uiText('knowledgeTitle')}
-              </h2>
-              <p id="knowledge-dialog-hint" className="app-modal-hint">
-                {uiText('knowledgeHint')}
-              </p>
-            </div>
-            <div role="toolbar" aria-orientation="horizontal" aria-label={uiText('knowledgeDialogActionsToolbarAria')} aria-busy={loading}>
-              <button
-                type="button"
-                className="app-btn"
-                onClick={onClose}
-                aria-label={uiText('knowledgeCloseButtonAria')}
-                title={uiText('knowledgeCloseTooltip')}
-              >
-                {uiText('closeButton')}
-              </button>
-            </div>
+            <button
+              type="button"
+              className="app-btn"
+              onClick={onClose}
+              aria-label={uiText('knowledgeCloseButtonAria')}
+              title={uiText('knowledgeCloseTooltip')}
+            >
+              {uiText('closeButton')}
+            </button>
           </div>
+        </div>
 
         <div
           className="app-knowledge-grid"
@@ -205,7 +210,12 @@ export function KnowledgeDialog({
                 setFilter(e.target.value)
               }}
             />
-            <div className="app-knowledge-list" role="group" aria-label={uiText('knowledgeTocListAria')} aria-busy={loading}>
+            <div
+              className="app-knowledge-list"
+              role="group"
+              aria-label={uiText('knowledgeTocListAria')}
+              aria-busy={loading}
+            >
               {visibleArticles.map((article) => (
                 <button
                   key={article.slug}

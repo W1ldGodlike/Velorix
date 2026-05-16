@@ -714,7 +714,9 @@ export default function VideoTimeline({
             >
               <IconImage title="" size={15} />
               <span>
-                {saveFrameBusy ? uiText('videoTimelineSaveFrameBusy') : uiText('videoTimelineSaveFrame')}
+                {saveFrameBusy
+                  ? uiText('videoTimelineSaveFrameBusy')
+                  : uiText('videoTimelineSaveFrame')}
               </span>
             </button>
             <button
@@ -886,7 +888,12 @@ export default function VideoTimeline({
           aria-label={uiText('videoTimelineFooterAria')}
           aria-busy={pipelineBusy}
         >
-          <div className="app-timeline-footer-spec" role="group" aria-label={uiText('videoTimelineFooterSpecGroupAria')} aria-busy={pipelineBusy}>
+          <div
+            className="app-timeline-footer-spec"
+            role="group"
+            aria-label={uiText('videoTimelineFooterSpecGroupAria')}
+            aria-busy={pipelineBusy}
+          >
             <span title={uiText('videoTimelineVideoStreamTitle')}>
               <strong>{uiText('videoTimelineVideoLabel')}</strong> {formatProbeVideoFact(probe)}
             </span>

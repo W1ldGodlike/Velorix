@@ -34,6 +34,8 @@
     "check:quiet": "node scripts/run-quiet-check.mjs",
     "check:trusted-hashes": "node scripts/validate-trusted-hashes-json.mjs",
     "check:journal": "node scripts/check-journal-numbering.mjs",
+    "journal:stamp": "node scripts/journal-next-stamp.mjs",
+    "journal:consolidate": "node scripts/journal-consolidate.mjs",
     "check:checklist": "node scripts/check-checklist-sprint.mjs",
     "check:secrets": "node scripts/check-no-secrets.mjs",
     "locales:terminal-summaries-ru": "node scripts/apply-terminal-summary-ru.mjs",

@@ -269,7 +269,8 @@ export const FFMPEG_EXPORT_VP9_MKV_ONLY_ERROR = 'VP9 (libvpx-vp9): только 
 export const FFMPEG_EXPORT_SVTAV1_MKV_ONLY_ERROR = 'AV1 (libsvtav1): только контейнер MKV.' as const
 
 /** `libaom-av1` допускается только с контейнером MKV (spawn и превью). */
-export const FFMPEG_EXPORT_AOM_AV1_MKV_ONLY_ERROR = 'AV1 (libaom-av1): только контейнер MKV.' as const
+export const FFMPEG_EXPORT_AOM_AV1_MKV_ONLY_ERROR =
+  'AV1 (libaom-av1): только контейнер MKV.' as const
 /** `librav1e` допускается только с контейнером MKV (spawn и превью). */
 export const FFMPEG_EXPORT_RAV1E_MKV_ONLY_ERROR = 'AV1 (librav1e): только контейнер MKV.' as const
 /** `prores_ks` в текущей модели экспорта — только QuickTime MOV. */
@@ -284,8 +285,7 @@ export const FFMPEG_EXPORT_FFV1_MKV_ONLY_ERROR = 'FFV1 (ffv1): только ко
 export const FFMPEG_EXPORT_AUDIO_LIBOPUS_MKV_ONLY_ERROR =
   'Opus (libopus): только контейнер MKV.' as const
 /** `flac` допускается только с контейнером MKV (spawn и превью). */
-export const FFMPEG_EXPORT_AUDIO_FLAC_MKV_ONLY_ERROR =
-  'FLAC (flac): только контейнер MKV.' as const
+export const FFMPEG_EXPORT_AUDIO_FLAC_MKV_ONLY_ERROR = 'FLAC (flac): только контейнер MKV.' as const
 /** `libvorbis` допускается только с контейнером MKV (spawn и превью). */
 export const FFMPEG_EXPORT_AUDIO_LIBVORBIS_MKV_ONLY_ERROR =
   'Vorbis (libvorbis): только контейнер MKV.' as const

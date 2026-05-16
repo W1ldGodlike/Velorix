@@ -15,8 +15,7 @@ export function collectDownloadsQueueVideoPaths(
   rows: DownloadsQueueRowForBatchCollect[],
   options?: { ids?: number[]; doneOnly?: boolean }
 ): string[] {
-  const idSet =
-    options?.ids !== undefined && options.ids.length > 0 ? new Set(options.ids) : null
+  const idSet = options?.ids !== undefined && options.ids.length > 0 ? new Set(options.ids) : null
   const doneOnly = options?.doneOnly !== false
   const out: string[] = []
   const seen = new Set<string>()

@@ -209,14 +209,11 @@ const fluxalloy = {
       ipcRenderer.invoke(mw.settingsSetFfmpegExportExtraArgsLine, line),
     setFfmpegExportBatchOutputSuffix: (suffix: string): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportBatchOutputSuffix, suffix),
-    setFfmpegExportBatchOutputDirectory: (
-      dir: string | null
-    ): Promise<AppSettings> =>
+    setFfmpegExportBatchOutputDirectory: (dir: string | null): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportBatchOutputDirectory, dir),
     setEditorUrlPasteBehavior: (
       behavior: 'downloads_window' | 'download_open_editor'
-    ): Promise<AppSettings> =>
-      ipcRenderer.invoke(mw.settingsSetEditorUrlPasteBehavior, behavior),
+    ): Promise<AppSettings> => ipcRenderer.invoke(mw.settingsSetEditorUrlPasteBehavior, behavior),
     setFfmpegExportAudioMode: (mode: FfmpegExportAudioModeId): Promise<AppSettings> =>
       ipcRenderer.invoke(mw.settingsSetFfmpegExportAudioMode, mode),
     setFfmpegExportAudioBitrate: (bitrate: string | null): Promise<AppSettings> =>
@@ -555,20 +552,16 @@ const fluxalloy = {
       ipcRenderer.invoke(mw.batchExportListInputPaths),
     listOutputPaths: (): Promise<{ ok: true; paths: string[] }> =>
       ipcRenderer.invoke(mw.batchExportListOutputPaths),
-    removeWaiting: (): Promise<
-      | { ok: true; removed: number }
-      | { ok: false; error: string }
-    > => ipcRenderer.invoke(mw.batchExportRemoveWaiting),
+    removeWaiting: (): Promise<{ ok: true; removed: number } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(mw.batchExportRemoveWaiting),
     pickFiles: (): Promise<FfmpegExportBatchPickFilesResult> =>
       ipcRenderer.invoke(mw.batchExportPickFiles),
     pickFolder: (): Promise<FfmpegExportBatchPickFilesResult> =>
       ipcRenderer.invoke(mw.batchExportPickFolder),
-    pickOutputFolder: (): Promise<
-      { ok: true; path: string } | { ok: false; cancelled: true }
-    > => ipcRenderer.invoke(mw.batchExportPickOutputFolder),
-    revealSharedOutputFolder: (): Promise<
-      { ok: true } | { ok: false; error: string }
-    > => ipcRenderer.invoke(mw.batchExportRevealSharedOutputFolder),
+    pickOutputFolder: (): Promise<{ ok: true; path: string } | { ok: false; cancelled: true }> =>
+      ipcRenderer.invoke(mw.batchExportPickOutputFolder),
+    revealSharedOutputFolder: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(mw.batchExportRevealSharedOutputFolder),
     addPaths: (paths: string[]): Promise<FfmpegExportBatchAddPathsResult> =>
       ipcRenderer.invoke(mw.batchExportAddPaths, paths),
     openInput: (
@@ -594,18 +587,14 @@ const fluxalloy = {
     start: (rawExportOverrides?: unknown): Promise<FfmpegExportBatchStartResult> =>
       ipcRenderer.invoke(mw.batchExportStart, rawExportOverrides ?? null),
     cancel: (): Promise<{ ok: true }> => ipcRenderer.invoke(mw.batchExportCancel),
-    retryFailed: (): Promise<
-      | { ok: true; reset: number }
-      | { ok: false; error: string }
-    > => ipcRenderer.invoke(mw.batchExportRetryFailed),
+    retryFailed: (): Promise<{ ok: true; reset: number } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(mw.batchExportRetryFailed),
     retryRows: (
       ids: number[]
     ): Promise<{ ok: true; reset: number } | { ok: false; error: string }> =>
       ipcRenderer.invoke(mw.batchExportRetryRows, ids),
-    clearCompleted: (): Promise<
-      | { ok: true; removed: number }
-      | { ok: false; error: string }
-    > => ipcRenderer.invoke(mw.batchExportClearCompleted),
+    clearCompleted: (): Promise<{ ok: true; removed: number } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(mw.batchExportClearCompleted),
     addFromDownloadsDone: (
       ids?: number[]
     ): Promise<{ ok: true; added: number } | { ok: false; error: string }> =>
@@ -614,9 +603,7 @@ const fluxalloy = {
       ids: string[]
     ): Promise<{ ok: true; added: number } | { ok: false; error: string }> =>
       ipcRenderer.invoke(mw.batchExportAddFromHistoryInputs, ids),
-    retryFailedAndStart: (
-      rawExportOverrides?: unknown
-    ): Promise<FfmpegExportBatchStartResult> =>
+    retryFailedAndStart: (rawExportOverrides?: unknown): Promise<FfmpegExportBatchStartResult> =>
       ipcRenderer.invoke(mw.batchExportRetryFailedAndStart, rawExportOverrides ?? null),
     onSnapshot: (listener: (snapshot: FfmpegExportBatchSnapshot) => void): (() => void) => {
       const channel = mw.batchExportSnapshot

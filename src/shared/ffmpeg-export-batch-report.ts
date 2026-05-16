@@ -2,10 +2,16 @@
  * §7.3 — текстовый отчёт пакетной очереди (shared, без Node).
  */
 
-import type { FfmpegExportBatchSnapshot, FfmpegExportBatchStatus } from './ffmpeg-export-batch-contract'
+import type {
+  FfmpegExportBatchSnapshot,
+  FfmpegExportBatchStatus
+} from './ffmpeg-export-batch-contract'
 import type { DownloadsWindowUiLocale } from './downloads-window-ui-locale'
 
-function batchStatusLabel(status: FfmpegExportBatchStatus, locale: DownloadsWindowUiLocale): string {
+function batchStatusLabel(
+  status: FfmpegExportBatchStatus,
+  locale: DownloadsWindowUiLocale
+): string {
   if (locale === 'en') {
     switch (status) {
       case 'waiting':

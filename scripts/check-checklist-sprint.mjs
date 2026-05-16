@@ -3,14 +3,14 @@ import { readFileSync } from 'node:fs'
 const checklistPath = 'IMPLEMENTATION_CHECKLIST.md'
 const text = readFileSync(checklistPath, 'utf8')
 
-const startMarker = '## Ближайший TODO спринта'
-const start = text.indexOf(startMarker)
-if (start < 0) {
+const headingRe = /^## Ближайший TODO спринта\s*$/m
+const headingMatch = text.match(headingRe)
+if (!headingMatch || headingMatch.index === undefined) {
   console.error('[checklist] missing sprint TODO heading')
   process.exit(1)
 }
 
-const afterStart = text.slice(start + startMarker.length)
+const afterStart = text.slice(headingMatch.index + headingMatch[0].length)
 const end = afterStart.indexOf('\n---')
 if (end < 0) {
   console.error('[checklist] sprint TODO block must end before ---')

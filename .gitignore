@@ -31,6 +31,9 @@ yarn.lock
 # Временные файлы сообщений коммитов (PowerShell не поддерживает heredoc, ред-сценарий через --file).
 .git-commit-msg.tmp
 
+# Счётчик marathon-итераций агента (локально).
+docs/.agent-session.json
+
 # Локальные секреты (Cursor SDK automation и прочее).
 .env
 **/.env

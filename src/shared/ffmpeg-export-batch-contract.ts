@@ -54,9 +54,7 @@ export type FfmpegExportBatchOpenInputResult =
   | { ok: true; path: string }
   | { ok: false; error: string }
 
-export type FfmpegExportBatchStartResult =
-  | { ok: true }
-  | { ok: false; error: string }
+export type FfmpegExportBatchStartResult = { ok: true } | { ok: false; error: string }
 
 export type FfmpegExportBatchRetryFailedResult =
   | { ok: true; reset: number }

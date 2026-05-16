@@ -1,0 +1,13 @@
+---
+description: Renderer — React без Node API
+globs:
+  - src/renderer/**
+alwaysApply: false
+---
+
+# Renderer (React)
+
+- **Без** `fs`, `child_process`, произвольного Node в renderer.
+- Только API с preload (`window.fluxalloy…`); ошибки — `{ ok, error }` где так принято в проекте.
+- UI-строки: существующие паттерны (`ui-text.ts`, токены CSS); v0 — только если задача про layout/UX ([`docs/UX_REFERENCE_V0.md`](../../docs/UX_REFERENCE_V0.md)).
+- Settings: не затирать весь объект при изменении одного поля (spread существующих полей).

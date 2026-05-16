@@ -1,12 +1,9 @@
 import { readFileSync } from 'node:fs'
+import { ENTRY_RE, entryStampToMs, parseJournalEntries } from './journal-lib.mjs'
 
 const path = 'IMPLEMENTATION_JOURNAL.md'
 const text = readFileSync(path, 'utf8')
 const lines = text.split(/\r?\n/)
-
-const entryRe =
-  /^- \[J-(\d{3,})\] (\d{4}-\d{2}-\d{2}) (\d{2}):(\d{2}):(\d{2}) \[(Assistant|SDK)\]: /
-const legacyEntryRe = /^- \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \[(Assistant|SDK)\]: /
 
 let expected = 1
 let failed = false
@@ -23,9 +20,10 @@ for (let i = 0; i < lines.length; i++) {
   const line = lines[i]
   if (!line.startsWith('- ')) continue
 
-  const m = entryRe.exec(line)
+  const m = ENTRY_RE.exec(line)
   if (!m) {
-    if (legacyEntryRe.test(line)) {
+    const legacy = /^- \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} \[(Assistant|SDK)\]: /
+    if (legacy.test(line)) {
       console.error(`[journal] line ${i + 1}: missing [J-NNN] prefix`)
       failed = true
     }
@@ -34,13 +32,12 @@ for (let i = 0; i < lines.length; i++) {
 
   const n = Number.parseInt(m[1], 10)
   const stamp = `${m[2]} ${m[3]}:${m[4]}:${m[5]}`
-  const ms = new Date(
-    Number(m[2]),
-    Number(m[3]) - 1,
-    Number(m[4]),
-    Number(m[5]),
-    Number(m[6])
-  ).getTime()
+  const ms = entryStampToMs(m)
+
+  if (!Number.isFinite(ms)) {
+    console.error(`[journal] line ${i + 1}: [J-${m[1]}] invalid timestamp ${stamp}`)
+    failed = true
+  }
 
   if (seenIds.has(n)) {
     console.error(
@@ -58,10 +55,8 @@ for (let i = 0; i < lines.length; i++) {
   }
   expected++
 
-  if (ms > nowMs + futureSlackMs) {
-    console.error(
-      `[journal] line ${i + 1}: [J-${m[1]}] timestamp ${stamp} is in the future`
-    )
+  if (Number.isFinite(ms) && ms > nowMs + futureSlackMs) {
+    console.error(`[journal] line ${i + 1}: [J-${m[1]}] timestamp ${stamp} is in the future`)
     failed = true
   }
 
@@ -71,9 +66,31 @@ for (let i = 0; i < lines.length; i++) {
 for (let i = 1; i < stamps.length; i++) {
   const prev = stamps[i - 1]
   const cur = stamps[i]
+  if (!Number.isFinite(cur.ms) || !Number.isFinite(prev.ms)) {
+    continue
+  }
   if (cur.ms < prev.ms) {
     console.error(
       `[journal] line ${cur.line}: [J-${String(cur.id).padStart(3, '0')}] ${cur.stamp} is before [J-${String(prev.id).padStart(3, '0')}] ${prev.stamp}`
+    )
+    failed = true
+  }
+}
+
+const tail = stamps.slice(-10).filter((s) => Number.isFinite(s.ms))
+if (tail.length >= 5) {
+  const deltas = []
+  for (let i = 1; i < tail.length; i++) {
+    deltas.push(tail[i].ms - tail[i - 1].ms)
+  }
+  const first = deltas[0]
+  const grid =
+    first > 0 &&
+    deltas.every((d) => d === first) &&
+    (first % 60_000 === 0 || first % 120_000 === 0)
+  if (grid) {
+    console.error(
+      `[journal] last ${tail.length} entries have identical ${first / 1000}s step — invented timestamps; one summary line per iteration via \`npm run journal:stamp\``
     )
     failed = true
   }
@@ -86,7 +103,7 @@ if (expected === 1) {
 
 if (failed) {
   console.error(
-    '[journal] hint: новая запись — локальное время `YYYY-MM-DD HH:mm:ss`, следующий `[J-NNN]` без пропусков после последней строки раздела «Записи».'
+    '[journal] hint: одна сводная запись за итерацию; время только `npm run journal:stamp` / Get-Date; без git и без «сетки».'
   )
   process.exitCode = 2
 } else {

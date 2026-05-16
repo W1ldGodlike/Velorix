@@ -1013,8 +1013,7 @@ export async function runFfmpegExportJob(params: {
   }
   const wantTwoPass = params.twoPass === true && videoBitrate !== null && videoCodec === 'libx264'
   const economyMode = parseFfmpegExportEconomyMode(params.economyMode)
-  const extraArgsLine =
-    typeof params.extraArgsLine === 'string' ? params.extraArgsLine : ''
+  const extraArgsLine = typeof params.extraArgsLine === 'string' ? params.extraArgsLine : ''
   const extraParsed = parseFfmpegExportExtraArgsLine(extraArgsLine, uloc)
   if (!extraParsed.ok) {
     return {
@@ -1110,7 +1109,9 @@ export async function runFfmpegExportJob(params: {
     ok: true,
     videoCodecUsed: videoCodec
   })
-  const doneErr = (error: string): { ok: false; error: string; videoCodecUsed: FfmpegExportVideoCodecId } => ({
+  const doneErr = (
+    error: string
+  ): { ok: false; error: string; videoCodecUsed: FfmpegExportVideoCodecId } => ({
     ok: false,
     error,
     videoCodecUsed: videoCodec

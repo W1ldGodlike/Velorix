@@ -21,7 +21,8 @@ export const mainWindowIpc = {
   settingsSetFfmpegExportExtraArgsLine: 'fluxalloy:settings-set-ffmpeg-export-extra-args-line',
   settingsSetFfmpegExportBatchOutputSuffix:
     'fluxalloy:settings-set-ffmpeg-export-batch-output-suffix',
-  settingsSetFfmpegExportBatchOutputDirectory: 'fluxalloy:settings-set-ffmpeg-export-batch-output-dir',
+  settingsSetFfmpegExportBatchOutputDirectory:
+    'fluxalloy:settings-set-ffmpeg-export-batch-output-dir',
   settingsSetEditorUrlPasteBehavior: 'fluxalloy:settings-set-editor-url-paste-behavior',
   settingsSetFfmpegExportFps: 'fluxalloy:settings-set-ffmpeg-export-fps',
   settingsSetFfmpegExportScalePreset: 'fluxalloy:settings-set-ffmpeg-export-scale-preset',

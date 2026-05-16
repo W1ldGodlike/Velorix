@@ -10,7 +10,9 @@ describe('resolveOpenMediaDialogDefaultPath', () => {
     expect(resolveOpenMediaDialogDefaultPath(undefined)).toBeUndefined()
     expect(resolveOpenMediaDialogDefaultPath('')).toBeUndefined()
     expect(resolveOpenMediaDialogDefaultPath('   ')).toBeUndefined()
-    expect(resolveOpenMediaDialogDefaultPath(join(tmpdir(), 'flux-no-such-path-xyz'))).toBeUndefined()
+    expect(
+      resolveOpenMediaDialogDefaultPath(join(tmpdir(), 'flux-no-such-path-xyz'))
+    ).toBeUndefined()
   })
 
   it('returns directory for directory path', () => {

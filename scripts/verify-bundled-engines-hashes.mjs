@@ -7,23 +7,21 @@
  * Без strict пустые поля = проверка пропускается (dev), но файлы после prepare должны существовать.
  * Флаги: `--help`.
  */
-import { createHash } from 'node:crypto'
-import { createReadStream } from 'node:fs'
 import { readFile, stat } from 'node:fs/promises'
 import { join, dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { tryFirstVersionLineFromWinEngineExe } from './engines-exe-version-line.mjs'
+import {
+  BUNDLED_EXE_FILES,
+  sha256File,
+  tryFirstVersionLineFromWinEngineExe
+} from './engines-bundled-sha256.mjs'
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const binDir = join(rootDir, 'bin')
 const trustedHashesPath = join(rootDir, 'Data', 'trusted_hashes.json')
 
-const EXE_KEYS = [
-  { file: 'yt-dlp.exe', jsonKey: 'yt-dlp.exe' },
-  { file: 'ffmpeg.exe', jsonKey: 'ffmpeg.exe' },
-  { file: 'ffprobe.exe', jsonKey: 'ffprobe.exe' }
-]
+const EXE_KEYS = BUNDLED_EXE_FILES
 
 function log(message) {
   console.log(`[engines:verify] ${message}`)
@@ -31,16 +29,6 @@ function log(message) {
 
 function isWindows() {
   return process.platform === 'win32'
-}
-
-async function sha256File(path) {
-  return new Promise((resolveHash, reject) => {
-    const hash = createHash('sha256')
-    createReadStream(path)
-      .on('error', reject)
-      .on('data', (chunk) => hash.update(chunk))
-      .on('end', () => resolveHash(hash.digest('hex')))
-  })
 }
 
 async function fileNonEmpty(path) {

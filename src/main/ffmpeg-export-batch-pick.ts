@@ -33,7 +33,9 @@ export async function pickFfmpegExportBatchInputFiles(
   browserWindow: BrowserWindow,
   locale: DownloadsWindowUiLocale = 'ru',
   opts?: { defaultPath?: string }
-): Promise<{ ok: true; paths: string[] } | { ok: false; cancelled: true } | { ok: false; error: string }> {
+): Promise<
+  { ok: true; paths: string[] } | { ok: false; cancelled: true } | { ok: false; error: string }
+> {
   const S = getMainApplicationStrings(locale)
   const { canceled, filePaths } = await dialog.showOpenDialog(browserWindow, {
     title: S.batchExportPickFilesTitle,
@@ -62,7 +64,9 @@ export async function pickFfmpegExportBatchInputFolder(
   browserWindow: BrowserWindow,
   locale: DownloadsWindowUiLocale = 'ru',
   opts?: { defaultPath?: string }
-): Promise<{ ok: true; paths: string[] } | { ok: false; cancelled: true } | { ok: false; error: string }> {
+): Promise<
+  { ok: true; paths: string[] } | { ok: false; cancelled: true } | { ok: false; error: string }
+> {
   const S = getMainApplicationStrings(locale)
   const { canceled, filePaths } = await dialog.showOpenDialog(browserWindow, {
     title: S.batchExportPickFolderTitle,

@@ -17,7 +17,9 @@ export const FFMPEG_EXPORT_BATCH_VIDEO_EXTENSIONS = [
 
 export type FfmpegExportBatchVideoExtension = (typeof FFMPEG_EXPORT_BATCH_VIDEO_EXTENSIONS)[number]
 
-export function isFfmpegExportBatchVideoExtension(ext: string): ext is FfmpegExportBatchVideoExtension {
+export function isFfmpegExportBatchVideoExtension(
+  ext: string
+): ext is FfmpegExportBatchVideoExtension {
   return (FFMPEG_EXPORT_BATCH_VIDEO_EXTENSIONS as readonly string[]).includes(ext)
 }
 

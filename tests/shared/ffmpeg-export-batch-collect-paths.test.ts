@@ -4,7 +4,10 @@ import {
   collectDownloadsQueueVideoPaths,
   collectUniqueVideoPaths
 } from '../../src/shared/ffmpeg-export-batch-collect-paths'
-import { YTDLP_QUEUE_STATUS_DONE, YTDLP_QUEUE_STATUS_WAITING } from '../../src/shared/ytdlp-queue-status'
+import {
+  YTDLP_QUEUE_STATUS_DONE,
+  YTDLP_QUEUE_STATUS_WAITING
+} from '../../src/shared/ytdlp-queue-status'
 
 describe('ffmpeg-export-batch-collect-paths', () => {
   it('collectDownloadsQueueVideoPaths — только done с video outputPath', () => {

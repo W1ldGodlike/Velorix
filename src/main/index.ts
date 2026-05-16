@@ -249,7 +249,10 @@ import {
 import type { YtdlpGetCliOptionsParams } from '../shared/ytdlp-download-contract'
 import type { MainWindowUiPanelState } from '../shared/settings-contract'
 import { parseExtraYtdlpArgsLine, validateYtdlpCookiesBrowserProfile } from './ytdlp-extra-args'
-import { getYtdlpRunOptionsSnapshot, refreshYtdlpRunOptionsSnapshot } from './ytdlp-run-options-sync'
+import {
+  getYtdlpRunOptionsSnapshot,
+  refreshYtdlpRunOptionsSnapshot
+} from './ytdlp-run-options-sync'
 import { isFfmpegExportBatchVideoPath } from '../shared/ffmpeg-export-batch-video-ext'
 import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
@@ -2012,7 +2015,11 @@ function buildApplicationMenu(): void {
             const def = previewOpenDialogOptsFromSettings()
             const result = await openVideoFolderWithDialog(target, mainDownloadsUiLocale(), def)
             if (!result.ok) {
-              if ('error' in result && typeof result.error === 'string' && result.error.length > 0) {
+              if (
+                'error' in result &&
+                typeof result.error === 'string' &&
+                result.error.length > 0
+              ) {
                 void dialog.showMessageBox(target, {
                   type: 'warning',
                   title: m.openVideoFolderDialogTitle,
@@ -2370,9 +2377,7 @@ async function createWebmPreviewProxy(
   return output
 }
 
-function resolveUserPathToPreviewSourceFile(
-  rawPath: string
-):
+function resolveUserPathToPreviewSourceFile(rawPath: string):
   | { ok: true; path: string }
   | {
       ok: false
@@ -2867,8 +2872,9 @@ app.whenReady().then(() => {
     (_, raw: unknown): AppSettings => persistFfmpegExportBatchOutputDirectory(raw)
   )
 
-  ipcMain.handle(mw.settingsSetEditorUrlPasteBehavior, (_, raw: unknown): AppSettings =>
-    persistEditorUrlPasteBehavior(raw)
+  ipcMain.handle(
+    mw.settingsSetEditorUrlPasteBehavior,
+    (_, raw: unknown): AppSettings => persistEditorUrlPasteBehavior(raw)
   )
 
   ipcMain.handle(
@@ -3096,7 +3102,11 @@ app.whenReady().then(() => {
 
   ipcMain.handle(mw.enginesProbeHwEncoders, async (): Promise<FfmpegHwEncodersProbeResult> => {
     const paths = resolveAppPaths()
-    const ffmpeg = resolveEngineExecutablePath(paths, 'ffmpeg', cachedSettings.engineExecutablePaths)
+    const ffmpeg = resolveEngineExecutablePath(
+      paths,
+      'ffmpeg',
+      cachedSettings.engineExecutablePaths
+    )
     if (!ffmpeg) {
       return { ok: false, error: mainAppStr().exportFfmpegMissing }
     }
@@ -3626,9 +3636,7 @@ app.whenReady().then(() => {
 
   const pushBatchExportSnapshot = (win?: BrowserWindow | null): void => {
     const snap = getFfmpegExportBatchSnapshot()
-    const targets = win
-      ? [win]
-      : BrowserWindow.getAllWindows().filter((w) => !w.isDestroyed())
+    const targets = win ? [win] : BrowserWindow.getAllWindows().filter((w) => !w.isDestroyed())
     for (const w of targets) {
       w.webContents.send(mw.batchExportSnapshot, snap)
     }
@@ -3666,10 +3674,10 @@ app.whenReady().then(() => {
 
   ipcMain.handle(
     mw.batchExportPickFiles,
-    async (event): Promise<
-      | { ok: true; added: number }
-      | { ok: false; cancelled: true }
-      | { ok: false; error: string }
+    async (
+      event
+    ): Promise<
+      { ok: true; added: number } | { ok: false; cancelled: true } | { ok: false; error: string }
     > => {
       const win = BrowserWindow.fromWebContents(event.sender)
       if (!win) {
@@ -3689,10 +3697,10 @@ app.whenReady().then(() => {
 
   ipcMain.handle(
     mw.batchExportPickFolder,
-    async (event): Promise<
-      | { ok: true; added: number }
-      | { ok: false; cancelled: true }
-      | { ok: false; error: string }
+    async (
+      event
+    ): Promise<
+      { ok: true; added: number } | { ok: false; cancelled: true } | { ok: false; error: string }
     > => {
       const win = BrowserWindow.fromWebContents(event.sender)
       if (!win) {
@@ -3712,9 +3720,7 @@ app.whenReady().then(() => {
 
   ipcMain.handle(
     mw.batchExportPickOutputFolder,
-    async (
-      event
-    ): Promise<{ ok: true; path: string } | { ok: false; cancelled: true }> => {
+    async (event): Promise<{ ok: true; path: string } | { ok: false; cancelled: true }> => {
       const win = BrowserWindow.fromWebContents(event.sender)
       if (!win) {
         return { ok: false, cancelled: true }
@@ -3769,12 +3775,15 @@ app.whenReady().then(() => {
     }
   )
 
-  ipcMain.handle(mw.batchExportRemoveRows, (_event, raw: unknown): { ok: true; removed: number } => {
-    const ids = Array.isArray(raw) ? raw.filter((n): n is number => typeof n === 'number') : []
-    const removed = removeFfmpegExportBatchRows(ids)
-    pushBatchExportSnapshot()
-    return { ok: true, removed }
-  })
+  ipcMain.handle(
+    mw.batchExportRemoveRows,
+    (_event, raw: unknown): { ok: true; removed: number } => {
+      const ids = Array.isArray(raw) ? raw.filter((n): n is number => typeof n === 'number') : []
+      const removed = removeFfmpegExportBatchRows(ids)
+      pushBatchExportSnapshot()
+      return { ok: true, removed }
+    }
+  )
 
   ipcMain.handle(mw.batchExportClear, (): { ok: true } => {
     clearFfmpegExportBatchQueue()
@@ -3834,7 +3843,11 @@ app.whenReady().then(() => {
         return { ok: false, error: M.batchExportQueueEmpty }
       }
       const paths = resolveAppPaths()
-      const ffmpeg = resolveEngineExecutablePath(paths, 'ffmpeg', cachedSettings.engineExecutablePaths)
+      const ffmpeg = resolveEngineExecutablePath(
+        paths,
+        'ffmpeg',
+        cachedSettings.engineExecutablePaths
+      )
       if (!ffmpeg) {
         return { ok: false, error: M.batchExportFfmpegMissing }
       }
@@ -3853,18 +3866,15 @@ app.whenReady().then(() => {
     return { ok: true }
   })
 
-  ipcMain.handle(
-    mw.batchExportRetryFailed,
-    (): FfmpegExportBatchRetryFailedResult => {
-      const M = mainAppStr()
-      if (isFfmpegExportBatchActive()) {
-        return { ok: false, error: M.batchExportRunningCantMutate }
-      }
-      const reset = retryFailedFfmpegExportBatchRows()
-      pushBatchExportSnapshot()
-      return { ok: true, reset }
+  ipcMain.handle(mw.batchExportRetryFailed, (): FfmpegExportBatchRetryFailedResult => {
+    const M = mainAppStr()
+    if (isFfmpegExportBatchActive()) {
+      return { ok: false, error: M.batchExportRunningCantMutate }
     }
-  )
+    const reset = retryFailedFfmpegExportBatchRows()
+    pushBatchExportSnapshot()
+    return { ok: true, reset }
+  })
 
   ipcMain.handle(
     mw.batchExportRetryRows,
@@ -3883,18 +3893,15 @@ app.whenReady().then(() => {
     }
   )
 
-  ipcMain.handle(
-    mw.batchExportClearCompleted,
-    (): FfmpegExportBatchClearCompletedResult => {
-      const M = mainAppStr()
-      if (isFfmpegExportBatchActive()) {
-        return { ok: false, error: M.batchExportRunningCantMutate }
-      }
-      const removed = removeCompletedFfmpegExportBatchRows()
-      pushBatchExportSnapshot()
-      return { ok: true, removed }
+  ipcMain.handle(mw.batchExportClearCompleted, (): FfmpegExportBatchClearCompletedResult => {
+    const M = mainAppStr()
+    if (isFfmpegExportBatchActive()) {
+      return { ok: false, error: M.batchExportRunningCantMutate }
     }
-  )
+    const removed = removeCompletedFfmpegExportBatchRows()
+    pushBatchExportSnapshot()
+    return { ok: true, removed }
+  })
 
   ipcMain.handle(
     mw.batchExportAddFromDownloadsDone,
@@ -3971,7 +3978,11 @@ app.whenReady().then(() => {
         return { ok: false, error: M.batchExportQueueEmpty }
       }
       const paths = resolveAppPaths()
-      const ffmpeg = resolveEngineExecutablePath(paths, 'ffmpeg', cachedSettings.engineExecutablePaths)
+      const ffmpeg = resolveEngineExecutablePath(
+        paths,
+        'ffmpeg',
+        cachedSettings.engineExecutablePaths
+      )
       if (!ffmpeg) {
         return { ok: false, error: M.batchExportFfmpegMissing }
       }

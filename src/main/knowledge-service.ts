@@ -147,8 +147,7 @@ export function listKnowledgeArticles(
   const listLocale: DownloadsWindowUiLocale = locale
   const enDir = normalize(join(helpDir, HELP_EN_SUBDIR))
   const enRoot = normalize(helpDir)
-  const hasEnDir =
-    enDir.startsWith(enRoot) && existsSync(enDir) && statSync(enDir).isDirectory()
+  const hasEnDir = enDir.startsWith(enRoot) && existsSync(enDir) && statSync(enDir).isDirectory()
 
   for (const fileName of readdirSync(helpDir)
     .filter((f) => HELP_FILE_RE.test(f))

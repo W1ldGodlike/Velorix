@@ -105,7 +105,8 @@ export function sanitizePersistedFfmpegExportBatchPayload(
       rows.push(row)
     }
   }
-  let nextId = typeof o['nextId'] === 'number' && Number.isFinite(o['nextId']) ? Math.trunc(o['nextId']) : 1
+  let nextId =
+    typeof o['nextId'] === 'number' && Number.isFinite(o['nextId']) ? Math.trunc(o['nextId']) : 1
   for (const r of rows) {
     if (r.id >= nextId) {
       nextId = r.id + 1

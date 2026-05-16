@@ -3,22 +3,20 @@
  * Печать SHA256 для `bin/*.exe` (§19): удобно заполнить `Data/trusted_hashes.json` после `engines:prepare:win`.
  * Флаги: `--json` — фрагмент для вставки в `windows-x64` (только exe-ключи); `--versions` — первая строка `--version`/`-version` для каждого exe; `--help`.
  */
-import { createHash } from 'node:crypto'
-import { createReadStream } from 'node:fs'
 import { stat } from 'node:fs/promises'
 import { join, dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { tryFirstVersionLineFromWinEngineExe } from './engines-exe-version-line.mjs'
+import {
+  BUNDLED_EXE_FILES,
+  sha256File,
+  tryFirstVersionLineFromWinEngineExe
+} from './engines-bundled-sha256.mjs'
 
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const binDir = join(rootDir, 'bin')
 
-const FILES = [
-  { key: 'yt-dlp.exe', name: 'yt-dlp.exe' },
-  { key: 'ffmpeg.exe', name: 'ffmpeg.exe' },
-  { key: 'ffprobe.exe', name: 'ffprobe.exe' }
-]
+const FILES = BUNDLED_EXE_FILES.map(({ file }) => ({ key: file, name: file }))
 
 function log(message) {
   console.log(`[engines:report-hashes] ${message}`)
@@ -26,16 +24,6 @@ function log(message) {
 
 function isWindows() {
   return process.platform === 'win32'
-}
-
-async function sha256File(path) {
-  return new Promise((resolveHash, reject) => {
-    const hash = createHash('sha256')
-    createReadStream(path)
-      .on('error', reject)
-      .on('data', (chunk) => hash.update(chunk))
-      .on('end', () => resolveHash(hash.digest('hex')))
-  })
 }
 
 async function printVersionLines() {

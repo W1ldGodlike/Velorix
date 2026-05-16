@@ -329,77 +329,92 @@ describe('ffmpeg export pure helpers', () => {
     )
     expect(withTp.ffmpegExportTwoPass).toBe(true)
 
-    const hwCodec = mergeFfmpegExportSnapshotIntoAppSettings({ theme: 'dark' }, {
-      encodePreset: 'balance',
-      videoCodec: 'h264_nvenc',
-      container: 'mp4',
-      crf: null,
-      videoBitrate: null,
-      audioMode: 'aac',
-      audioBitrate: '192k',
-      fps: null,
-      scalePreset: 'source',
-      videoTransform: 'none',
-      cropPreset: 'none'
-    })
+    const hwCodec = mergeFfmpegExportSnapshotIntoAppSettings(
+      { theme: 'dark' },
+      {
+        encodePreset: 'balance',
+        videoCodec: 'h264_nvenc',
+        container: 'mp4',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'aac',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        videoTransform: 'none',
+        cropPreset: 'none'
+      }
+    )
     expect(hwCodec.ffmpegExportVideoCodec).toBe('h264_nvenc')
 
-    const autoCodec = mergeFfmpegExportSnapshotIntoAppSettings({ theme: 'dark' }, {
-      encodePreset: 'balance',
-      videoCodec: 'hw_auto',
-      container: 'mp4',
-      crf: null,
-      videoBitrate: null,
-      audioMode: 'aac',
-      audioBitrate: '192k',
-      fps: null,
-      scalePreset: 'source',
-      videoTransform: 'none',
-      cropPreset: 'none'
-    })
+    const autoCodec = mergeFfmpegExportSnapshotIntoAppSettings(
+      { theme: 'dark' },
+      {
+        encodePreset: 'balance',
+        videoCodec: 'hw_auto',
+        container: 'mp4',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'aac',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        videoTransform: 'none',
+        cropPreset: 'none'
+      }
+    )
     expect(autoCodec.ffmpegExportVideoCodec).toBe('hw_auto')
 
-    const autoHevc = mergeFfmpegExportSnapshotIntoAppSettings({ theme: 'dark' }, {
-      encodePreset: 'balance',
-      videoCodec: 'hw_auto_hevc',
-      container: 'mp4',
-      crf: null,
-      videoBitrate: null,
-      audioMode: 'aac',
-      audioBitrate: '192k',
-      fps: null,
-      scalePreset: 'source',
-      videoTransform: 'none',
-      cropPreset: 'none'
-    })
+    const autoHevc = mergeFfmpegExportSnapshotIntoAppSettings(
+      { theme: 'dark' },
+      {
+        encodePreset: 'balance',
+        videoCodec: 'hw_auto_hevc',
+        container: 'mp4',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'aac',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        videoTransform: 'none',
+        cropPreset: 'none'
+      }
+    )
     expect(autoHevc.ffmpegExportVideoCodec).toBe('hw_auto_hevc')
 
-    const pcmMode = mergeFfmpegExportSnapshotIntoAppSettings({ theme: 'dark' }, {
-      encodePreset: 'balance',
-      container: 'mkv',
-      crf: null,
-      videoBitrate: null,
-      audioMode: 'pcm_s16le',
-      audioBitrate: '192k',
-      fps: null,
-      scalePreset: 'source',
-      videoTransform: 'none',
-      cropPreset: 'none'
-    })
+    const pcmMode = mergeFfmpegExportSnapshotIntoAppSettings(
+      { theme: 'dark' },
+      {
+        encodePreset: 'balance',
+        container: 'mkv',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'pcm_s16le',
+        audioBitrate: '192k',
+        fps: null,
+        scalePreset: 'source',
+        videoTransform: 'none',
+        cropPreset: 'none'
+      }
+    )
     expect(pcmMode.ffmpegExportAudioMode).toBe('pcm_s16le')
 
-    const opusMode = mergeFfmpegExportSnapshotIntoAppSettings({ theme: 'dark' }, {
-      encodePreset: 'balance',
-      container: 'mkv',
-      crf: null,
-      videoBitrate: null,
-      audioMode: 'libopus',
-      audioBitrate: '128k',
-      fps: null,
-      scalePreset: 'source',
-      videoTransform: 'none',
-      cropPreset: 'none'
-    })
+    const opusMode = mergeFfmpegExportSnapshotIntoAppSettings(
+      { theme: 'dark' },
+      {
+        encodePreset: 'balance',
+        container: 'mkv',
+        crf: null,
+        videoBitrate: null,
+        audioMode: 'libopus',
+        audioBitrate: '128k',
+        fps: null,
+        scalePreset: 'source',
+        videoTransform: 'none',
+        cropPreset: 'none'
+      }
+    )
     expect(opusMode.ffmpegExportAudioMode).toBe('libopus')
 
     const deb = mergeFfmpegExportSnapshotIntoAppSettings(

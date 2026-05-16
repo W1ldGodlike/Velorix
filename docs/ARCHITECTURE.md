@@ -22,8 +22,8 @@
 
 ## Структура каталогов (логика, не полный список)
 
-- **`src/main/`** — сервисы: движки, очередь yt-dlp, ffprobe, экспорт ffmpeg, медиа-протокол, настройки, логи, support bundle.
-- **`src/renderer/src/`** — React-компоненты и стили; только через `window.fluxalloy` из preload.
+- **`src/main/`** — сервисы: движки, очередь yt-dlp, ffprobe, одиночный и **пакетный** экспорт ffmpeg (`ffmpeg-export-batch-*`), терминал (`terminal-service`), медиа-протокол, настройки, логи, support bundle, база знаний (`knowledge-service`).
+- **`src/renderer/src/`** — React: единый workspace с вкладками **Редактор / Загрузки / Терминал** (`App.tsx`), отдельное окно инспектора (`InspectorStandaloneApp`); строки UI — в основном [`locales/ui-text.ts`](../src/renderer/src/locales/ui-text.ts) (RU/EN); только через `window.fluxalloy` из preload.
 - **`src/shared/`** — типы и константы IPC/домена, общие для main и preload/renderer (без импорта Electron в «чистых» модулях).
 - **`src/preload/`** — мост и типы [`index.d.ts`](../src/preload/index.d.ts) для `window.fluxalloy`.
 - **`Data/`** — конфиги и доверенные хеши §3 ТЗ (`trusted_hashes.json`); в проде копируются как `extraResources` (см. [`electron-builder.yml`](../electron-builder.yml)).
@@ -36,6 +36,8 @@
 - Реестр имён каналов: [`src/shared/ipc-channels.ts`](../src/shared/ipc-channels.ts) (`mainWindowIpc`, `downloadsIpc`).
 - Обработчики регистрируются в main (в первую очередь в `src/main/index.ts`, плюс специализированные модули окон загрузок / инспектора).
 - Настройки экспорта ffmpeg идут отдельными `settings-set-ffmpeg-export-*` каналами; значения проходят whitelist-парсеры main перед записью и spawn.
+- Пакетный экспорт и очередь yt-dlp — отдельные IPC/сервисы с persist в `userData` (`queue.json` и аналоги для batch).
+- Терминал: allowlist команд и подсказки из `Data/*_commands.json` + [`terminal-contract.ts`](../src/shared/terminal-contract.ts); не произвольный shell.
 - Принцип: **узкий whitelist** — нет произвольного «выполни команду» или чтения произвольных путей без проверок.
 
 ## Медиа и доступ к файлам

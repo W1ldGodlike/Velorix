@@ -1,0 +1,18 @@
+---
+description: Marathon — продолжай / agent loop (re-anchor, коммит, push)
+alwaysApply: true
+---
+
+# Marathon (продолжай / SDK loop)
+
+Полный протокол: [`docs/AGENT_REANCHOR.md`](../../docs/AGENT_REANCHOR.md). Счётчик: `docs/.agent-session.json` (пример — `docs/.agent-session.json.example`).
+
+| Каждые N итераций | Действие |
+|-------------------|----------|
+| **1** | Один крупный вертикальный срез; **одна** сводная `J-*` (`journal:stamp`); отчёт 3–5 буллетов |
+| **5** | Локальный **коммит**, если `npm run check:quiet` зелёный |
+| **10** | **`git push`** (без force в main/master) + **re-anchor** (этот файл, SOURCES_OF_TRUTH, sprint TODO, 3 последние J-*) → в отчёте **`re-anchor OK`** |
+
+**Запрещено:** микро-`J-*`, правки ТЗ без просьбы, лишние `.md`, drive-by рефактор, `prettier .` по всему репо.
+
+Шаблон сообщения: [`docs/CONTINUE_PROMPT.ru.md`](../../docs/CONTINUE_PROMPT.ru.md). Handoff ~20–25 итераций: [`docs/SESSION_HANDOFF.md`](../../docs/SESSION_HANDOFF.md).

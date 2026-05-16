@@ -1,0 +1,20 @@
+---
+description: IMPLEMENTATION_CHECKLIST — спринт и прогресс
+globs:
+  - IMPLEMENTATION_CHECKLIST.md
+alwaysApply: false
+---
+
+# Чеклист (канон = шапка файла)
+
+Перед правкой откройте шапку [`IMPLEMENTATION_CHECKLIST.md`](../../IMPLEMENTATION_CHECKLIST.md). Синхронизация при смене правил — [`docs/SOURCES_OF_TRUTH.md`](../../docs/SOURCES_OF_TRUTH.md).
+
+**Обязательно:**
+
+- [`FLUXALLOY_TZ.md`](../../FLUXALLOY_TZ.md) **не редактировать** без явной просьбы владельца.
+- **`## Ближайший TODO спринта`** — 3–7 коротких пунктов (≤220 символов каждый), навигатор, **не** архив и не changelog.
+- `[x]` только при реально готовом поведении; `[~]` — частично.
+- Длинные детали — в тематических § ниже или в журнале, не в спринт-блоке.
+- После итерации marathon — обновить спринт, если срез закрыт или сдвинулся фокус.
+
+**Проверка:** `npm run check:checklist`.

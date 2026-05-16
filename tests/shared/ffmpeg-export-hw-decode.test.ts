@@ -1,12 +1,13 @@
 import { describe, expect, it } from 'vitest'
 
-import { appendFfmpegHwaccelBeforeInput, resolveFfmpegExportHwaccelForDecode } from '../../src/shared/ffmpeg-export-hw-decode'
+import {
+  appendFfmpegHwaccelBeforeInput,
+  resolveFfmpegExportHwaccelForDecode
+} from '../../src/shared/ffmpeg-export-hw-decode'
 
 describe('ffmpeg-export-hw-decode', () => {
   it('resolveFfmpegExportHwaccelForDecode подбирает cuda для nvenc', () => {
-    expect(
-      resolveFfmpegExportHwaccelForDecode('h264_nvenc', ['cuda', 'dxva2'])
-    ).toBe('cuda')
+    expect(resolveFfmpegExportHwaccelForDecode('h264_nvenc', ['cuda', 'dxva2'])).toBe('cuda')
   })
 
   it('resolveFfmpegExportHwaccelForDecode fallback auto', () => {

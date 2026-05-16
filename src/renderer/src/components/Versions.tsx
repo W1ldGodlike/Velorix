@@ -12,11 +12,7 @@ function Versions({
   const [versions] = useState(window.electron.process.versions)
 
   return (
-    <ul
-      className="versions-inline"
-      aria-label={uiText('versionsAriaLabel')}
-      aria-busy={statusBusy}
-    >
+    <ul className="versions-inline" aria-label={uiText('versionsAriaLabel')} aria-busy={statusBusy}>
       <li>
         {uiText('aboutRuntimeElectronLabel')} {versions['electron']}
       </li>

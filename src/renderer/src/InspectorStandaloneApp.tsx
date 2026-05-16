@@ -152,10 +152,10 @@ export function InspectorStandaloneApp(): JSX.Element {
 
   useEffect(() => {
     if (!mediaPath) {
-      setProbePending(false)
+      queueMicrotask(() => setProbePending(false))
       return
     }
-    setProbePending(true)
+    queueMicrotask(() => setProbePending(true))
     let cancelled = false
     void window.fluxalloy.preview.probe(mediaPath).then((r) => {
       if (cancelled) {
@@ -225,8 +225,16 @@ export function InspectorStandaloneApp(): JSX.Element {
   }
 
   return (
-    <div className="app-shell" aria-label={uiText('inspectorStandaloneShellAria')} aria-busy={probePending}>
-      <header className="app-topbar" aria-label={uiText('inspectorStandaloneTopbarAria')} aria-busy={probePending}>
+    <div
+      className="app-shell"
+      aria-label={uiText('inspectorStandaloneShellAria')}
+      aria-busy={probePending}
+    >
+      <header
+        className="app-topbar"
+        aria-label={uiText('inspectorStandaloneTopbarAria')}
+        aria-busy={probePending}
+      >
         <div
           className="app-topbar-brand inspector-toolbar-brand"
           aria-label={uiText('inspectorStandaloneBrandAria')}
@@ -254,99 +262,99 @@ export function InspectorStandaloneApp(): JSX.Element {
             aria-label={uiText('inspectorTopbarActionsToolbarAria')}
             aria-busy={probePending && mediaPath !== null}
           >
-          <button
-            type="button"
-            className="app-icon-btn"
-            onClick={() => {
-              void handleOpenFolderDialog()
-            }}
-            title={uiText('topbarOpenVideoFolderTitle')}
-          >
-            <IconFolder />
-            <span className="app-visually-hidden">{uiText('topbarOpenVideoFolderLabel')}</span>
-          </button>
-          <button
-            type="button"
-            className="app-icon-btn app-icon-btn-primary"
-            onClick={() => {
-              void handleOpenDialog()
-            }}
-            title={uiText('inspectorStandaloneOpenPickTitle')}
-          >
-            <IconFolderOpen title={miniIconTitle('miniIconFolderOpenEllipsis')} />
-            <span className="app-visually-hidden">
-              {uiText('inspectorStandaloneOpenVisuallyHidden')}
-            </span>
-          </button>
-          <button
-            type="button"
-            className="app-icon-btn"
-            disabled={!mediaPath}
-            onClick={() => {
-              setProbeRefreshNonce((n) => n + 1)
-            }}
-            title={
-              !mediaPath
-                ? uiText('inspectorStandaloneFfprobeRefreshDisabledTitle')
-                : uiText('inspectorStandaloneFfprobeRefreshTitle')
-            }
-          >
-            <IconRefreshCw
+            <button
+              type="button"
+              className="app-icon-btn"
+              onClick={() => {
+                void handleOpenFolderDialog()
+              }}
+              title={uiText('topbarOpenVideoFolderTitle')}
+            >
+              <IconFolder />
+              <span className="app-visually-hidden">{uiText('topbarOpenVideoFolderLabel')}</span>
+            </button>
+            <button
+              type="button"
+              className="app-icon-btn app-icon-btn-primary"
+              onClick={() => {
+                void handleOpenDialog()
+              }}
+              title={uiText('inspectorStandaloneOpenPickTitle')}
+            >
+              <IconFolderOpen title={miniIconTitle('miniIconFolderOpenEllipsis')} />
+              <span className="app-visually-hidden">
+                {uiText('inspectorStandaloneOpenVisuallyHidden')}
+              </span>
+            </button>
+            <button
+              type="button"
+              className="app-icon-btn"
+              disabled={!mediaPath}
+              onClick={() => {
+                setProbeRefreshNonce((n) => n + 1)
+              }}
               title={
                 !mediaPath
                   ? uiText('inspectorStandaloneFfprobeRefreshDisabledTitle')
                   : uiText('inspectorStandaloneFfprobeRefreshTitle')
               }
-            />
-            <span className="app-visually-hidden">
-              {uiText('inspectorStandaloneFfprobeRefreshVisuallyHidden')}
-            </span>
-          </button>
-          <button
-            type="button"
-            className="app-icon-btn"
-            onClick={() => {
-              void window.fluxalloy.about.getInfo().then((info) => {
-                setAboutInfo(info)
-                setAboutOpen(true)
-              })
-            }}
-            title={uiText('inspectorStandaloneAboutDiagnosticsTitle')}
-          >
-            <IconCircleHelp />
-            <span className="app-visually-hidden">{uiText('aboutTitle')}</span>
-          </button>
-          <button
-            type="button"
-            className="app-icon-btn app-locale-badge"
-            onClick={handleUiLocaleToggle}
-            title={
-              getUiLocale() === 'ru'
-                ? uiText('topbarUiLocaleSwitchToEnglishTitle')
-                : uiText('topbarUiLocaleSwitchToRussianTitle')
-            }
-          >
-            <span aria-hidden>{getUiLocale() === 'ru' ? 'RU' : 'EN'}</span>
-            <span className="app-visually-hidden">
-              {getUiLocale() === 'ru'
-                ? uiText('topbarUiLocaleVisuallyHiddenRu')
-                : uiText('topbarUiLocaleVisuallyHiddenEn')}
-            </span>
-          </button>
-          <button
-            type="button"
-            className="app-icon-btn"
-            onClick={() => {
-              void toggleTheme()
-            }}
-            title={uiText('inspectorStandaloneThemeToggleTitle')}
-          >
-            {theme === 'dark' ? <IconSun /> : <IconMoon />}
-            <span className="app-visually-hidden">
-              {theme === 'dark' ? miniIconTitle('miniIconSun') : miniIconTitle('miniIconMoon')}
-            </span>
-          </button>
-        </div>
+            >
+              <IconRefreshCw
+                title={
+                  !mediaPath
+                    ? uiText('inspectorStandaloneFfprobeRefreshDisabledTitle')
+                    : uiText('inspectorStandaloneFfprobeRefreshTitle')
+                }
+              />
+              <span className="app-visually-hidden">
+                {uiText('inspectorStandaloneFfprobeRefreshVisuallyHidden')}
+              </span>
+            </button>
+            <button
+              type="button"
+              className="app-icon-btn"
+              onClick={() => {
+                void window.fluxalloy.about.getInfo().then((info) => {
+                  setAboutInfo(info)
+                  setAboutOpen(true)
+                })
+              }}
+              title={uiText('inspectorStandaloneAboutDiagnosticsTitle')}
+            >
+              <IconCircleHelp />
+              <span className="app-visually-hidden">{uiText('aboutTitle')}</span>
+            </button>
+            <button
+              type="button"
+              className="app-icon-btn app-locale-badge"
+              onClick={handleUiLocaleToggle}
+              title={
+                getUiLocale() === 'ru'
+                  ? uiText('topbarUiLocaleSwitchToEnglishTitle')
+                  : uiText('topbarUiLocaleSwitchToRussianTitle')
+              }
+            >
+              <span aria-hidden>{getUiLocale() === 'ru' ? 'RU' : 'EN'}</span>
+              <span className="app-visually-hidden">
+                {getUiLocale() === 'ru'
+                  ? uiText('topbarUiLocaleVisuallyHiddenRu')
+                  : uiText('topbarUiLocaleVisuallyHiddenEn')}
+              </span>
+            </button>
+            <button
+              type="button"
+              className="app-icon-btn"
+              onClick={() => {
+                void toggleTheme()
+              }}
+              title={uiText('inspectorStandaloneThemeToggleTitle')}
+            >
+              {theme === 'dark' ? <IconSun /> : <IconMoon />}
+              <span className="app-visually-hidden">
+                {theme === 'dark' ? miniIconTitle('miniIconSun') : miniIconTitle('miniIconMoon')}
+              </span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -365,7 +373,11 @@ export function InspectorStandaloneApp(): JSX.Element {
         }}
       >
         {!mediaPath ? (
-          <div role="region" aria-label={uiText('inspectorStandaloneEmptyRegionAria')} aria-busy={probePending}>
+          <div
+            role="region"
+            aria-label={uiText('inspectorStandaloneEmptyRegionAria')}
+            aria-busy={probePending}
+          >
             <p className="inspector-standalone-hint">{uiText('inspectorStandaloneEmptyHint')}</p>
           </div>
         ) : null}
@@ -410,7 +422,11 @@ export function InspectorStandaloneApp(): JSX.Element {
         ) : null}
       </main>
 
-      <footer className="app-statusbar" aria-label={uiText('appStatusbarAria')} aria-busy={probePending}>
+      <footer
+        className="app-statusbar"
+        aria-label={uiText('appStatusbarAria')}
+        aria-busy={probePending}
+      >
         {statusHint ? (
           <span className="app-statusbar-extra" role="status" aria-live="polite">
             {statusHint}

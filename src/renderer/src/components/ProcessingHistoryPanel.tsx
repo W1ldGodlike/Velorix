@@ -250,79 +250,52 @@ export function ProcessingHistoryPanel({
               entry.outputPath ?? entry.inputPath ?? uiText('processingHistoryCardUntitledStub')
             const label = primary.length > 96 ? `${primary.slice(0, 96)}…` : primary
             return (
-            <article
-              key={entry.id}
-              className="app-downloads-history-card"
-              aria-label={uiTextVars('processingHistoryCardArticleAriaTemplate', {
-                index: idx + 1,
-                label
-              })}
-              aria-busy={busy}
-            >
-              <div className="app-downloads-history-head">
-                <strong title={entry.outputPath ?? entry.inputPath}>
-                  {entry.outputPath ?? entry.inputPath}
-                </strong>
-                <span
-                  className={`app-downloads-history-outcome app-downloads-history-${entry.outcome}`}
-                >
-                  {formatProcessingHistoryOutcomeLabel(entry.outcome)}
-                </span>
-              </div>
-              <p title={entry.inputPath}>{entry.inputPath}</p>
-              <div className="app-downloads-history-meta">
-                <span>{formatDownloadsHistoryTime(entry.finishedAt)}</span>
-                <span>{formatProcessingHistoryKindLabel(entry.kind)}</span>
-                {(entry.kind === 'ffmpegExport' ||
-                  entry.kind === 'ffmpegBatchExport' ||
-                  entry.kind === 'autoExport') &&
-                entry.exportVideoCodecUsed ? (
-                  <span
-                    className="app-downloads-history-codec"
-                    title={entry.exportVideoCodecUsed}
-                  >
-                    {entry.exportVideoCodecUsed}
-                  </span>
-                ) : null}
-              </div>
-              <div className="app-downloads-history-meta">
-                <span>{entry.status}</span>
-              </div>
-              {entry.errorHint ? <p className="app-downloads-warning">{entry.errorHint}</p> : null}
-              <div
-                className="app-downloads-history-actions"
-                role="toolbar"
-                aria-orientation="horizontal"
-                aria-label={uiTextVars('processingHistoryCardSourceToolbarAriaTemplate', {
-                  id: entry.id.length > 10 ? `${entry.id.slice(0, 8)}…` : entry.id
+              <article
+                key={entry.id}
+                className="app-downloads-history-card"
+                aria-label={uiTextVars('processingHistoryCardArticleAriaTemplate', {
+                  index: idx + 1,
+                  label
                 })}
                 aria-busy={busy}
               >
-                <button
-                  type="button"
-                  className="app-btn app-btn-compact"
-                  disabled={busy}
-                  onClick={() => onOpenInputInHandler(entry.id)}
-                >
-                  {uiText('processingHistoryRepeat')}
-                </button>
-                {onAddInputToBatch ? (
-                  <button
-                    type="button"
-                    className="app-btn app-btn-compact"
-                    disabled={busy}
-                    onClick={() => onAddInputToBatch(entry.id)}
+                <div className="app-downloads-history-head">
+                  <strong title={entry.outputPath ?? entry.inputPath}>
+                    {entry.outputPath ?? entry.inputPath}
+                  </strong>
+                  <span
+                    className={`app-downloads-history-outcome app-downloads-history-${entry.outcome}`}
                   >
-                    {uiText('batchExportAddHistoryInput')}
-                  </button>
+                    {formatProcessingHistoryOutcomeLabel(entry.outcome)}
+                  </span>
+                </div>
+                <p title={entry.inputPath}>{entry.inputPath}</p>
+                <div className="app-downloads-history-meta">
+                  <span>{formatDownloadsHistoryTime(entry.finishedAt)}</span>
+                  <span>{formatProcessingHistoryKindLabel(entry.kind)}</span>
+                  {(entry.kind === 'ffmpegExport' ||
+                    entry.kind === 'ffmpegBatchExport' ||
+                    entry.kind === 'autoExport') &&
+                  entry.exportVideoCodecUsed ? (
+                    <span
+                      className="app-downloads-history-codec"
+                      title={entry.exportVideoCodecUsed}
+                    >
+                      {entry.exportVideoCodecUsed}
+                    </span>
+                  ) : null}
+                </div>
+                <div className="app-downloads-history-meta">
+                  <span>{entry.status}</span>
+                </div>
+                {entry.errorHint ? (
+                  <p className="app-downloads-warning">{entry.errorHint}</p>
                 ) : null}
-              </div>
-              {entry.outputPath ? (
                 <div
                   className="app-downloads-history-actions"
                   role="toolbar"
                   aria-orientation="horizontal"
-                  aria-label={uiTextVars('processingHistoryCardOutputToolbarAriaTemplate', {
+                  aria-label={uiTextVars('processingHistoryCardSourceToolbarAriaTemplate', {
                     id: entry.id.length > 10 ? `${entry.id.slice(0, 8)}…` : entry.id
                   })}
                   aria-busy={busy}
@@ -331,29 +304,58 @@ export function ProcessingHistoryPanel({
                     type="button"
                     className="app-btn app-btn-compact"
                     disabled={busy}
-                    onClick={() => onOpenOutput(entry.id, 'file')}
+                    onClick={() => onOpenInputInHandler(entry.id)}
                   >
-                    {uiText('processingHistoryOpenFile')}
+                    {uiText('processingHistoryRepeat')}
                   </button>
-                  <button
-                    type="button"
-                    className="app-btn app-btn-compact"
-                    disabled={busy}
-                    onClick={() => onOpenOutput(entry.id, 'folder')}
-                  >
-                    {uiText('processingHistoryOpenFolder')}
-                  </button>
-                  <button
-                    type="button"
-                    className="app-btn app-btn-compact"
-                    disabled={busy}
-                    onClick={() => onOpenOutput(entry.id, 'preview')}
-                  >
-                    {uiText('processingHistoryOpenPreview')}
-                  </button>
+                  {onAddInputToBatch ? (
+                    <button
+                      type="button"
+                      className="app-btn app-btn-compact"
+                      disabled={busy}
+                      onClick={() => onAddInputToBatch(entry.id)}
+                    >
+                      {uiText('batchExportAddHistoryInput')}
+                    </button>
+                  ) : null}
                 </div>
-              ) : null}
-            </article>
+                {entry.outputPath ? (
+                  <div
+                    className="app-downloads-history-actions"
+                    role="toolbar"
+                    aria-orientation="horizontal"
+                    aria-label={uiTextVars('processingHistoryCardOutputToolbarAriaTemplate', {
+                      id: entry.id.length > 10 ? `${entry.id.slice(0, 8)}…` : entry.id
+                    })}
+                    aria-busy={busy}
+                  >
+                    <button
+                      type="button"
+                      className="app-btn app-btn-compact"
+                      disabled={busy}
+                      onClick={() => onOpenOutput(entry.id, 'file')}
+                    >
+                      {uiText('processingHistoryOpenFile')}
+                    </button>
+                    <button
+                      type="button"
+                      className="app-btn app-btn-compact"
+                      disabled={busy}
+                      onClick={() => onOpenOutput(entry.id, 'folder')}
+                    >
+                      {uiText('processingHistoryOpenFolder')}
+                    </button>
+                    <button
+                      type="button"
+                      className="app-btn app-btn-compact"
+                      disabled={busy}
+                      onClick={() => onOpenOutput(entry.id, 'preview')}
+                    >
+                      {uiText('processingHistoryOpenPreview')}
+                    </button>
+                  </div>
+                ) : null}
+              </article>
             )
           })
         )}

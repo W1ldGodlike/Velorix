@@ -1,0 +1,17 @@
+---
+description: Main/preload — IPC, процессы, безопасность
+globs:
+  - src/main/**
+  - src/preload/**
+  - src/shared/**
+alwaysApply: false
+---
+
+# Electron: main / preload / shared
+
+- Тяжёлое (ffmpeg, ffprobe, yt-dlp, FS, spawn) — **только** `src/main/`.
+- Внешние процессы: `execFile` / `spawn` с **массивом argv**, **без shell**.
+- Новый IPC: `src/shared/ipc-channels.ts` + preload + main + [`docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md).
+- Preload: узкий `contextBridge`; два бандла (main window / downloads) — не смешивать API.
+- Пути медиа и диалогов — только через allowlist / grant в main.
+- Не ослаблять проверки движков и `trusted_hashes.json`.

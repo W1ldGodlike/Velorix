@@ -2,9 +2,11 @@
 
 Источник требований: **[`FLUXALLOY_TZ.md`](FLUXALLOY_TZ.md)**. ТЗ не редактировать без явного согласования. Состояние по §, спринту и TODO — **в этом файле**; хронологию решений, проверок окружения и длинные заметки — в **[`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md)**.
 
+**Канон формата спринта и меток — этот файл** (раздел «Ближайший TODO спринта» ниже). Исполняемая копия для Cursor: [`.cursor/rules/fluxalloy-checklist.mdc`](.cursor/rules/fluxalloy-checklist.mdc). Иерархия: [`docs/SOURCES_OF_TRUTH.md`](docs/SOURCES_OF_TRUTH.md). Marathon: [`docs/AGENT_REANCHOR.md`](docs/AGENT_REANCHOR.md).
+
 ## Готовность полного итога
 
-- **Оценка: ~41%**. Рабочее ядро Electron/React, preview/ffmpeg base, расширенный yt-dlp workspace, ffprobe-инспектор, диагностика, CI/release guardrails и тесты уже есть; крупно не закрыты терминал/CLI, сценарии/планировщик, **плоские `locales/**` и смена языка без перезапуска**, hardware encode, batch/утилиты, ручной packaged smoke и кроссплатформенная упаковочная матрица.
+- **Оценка: ~45%**. Рабочее ядро Electron/React, preview/ffmpeg, **пакетный экспорт §7.3** (каркас), расширенный yt-dlp, **терминал §8 (v1)**, ffprobe-инспектор, база знаний §15, **HW auto/manual §16** (частично), диагностика и CI/release guardrails; крупно не закрыты планировщик/конструктор сценариев, **плоские `locales/**` и смена языка без перезапуска**, полировка цепочек NVENC/AMF/QSV/VAAPI, утилиты §17.5, ручной packaged smoke и macOS/Linux packaging.
 
 ## Легенда
 
@@ -31,7 +33,7 @@
 - [~] Локализация: основной слой RU/EN в `src/renderer/src/locales/ui-text.ts` (вкл. редактор, загрузки, терминал, статусбар, подсказки); плоские `locales/ru|en/*.json` и смена языка без перезапуска — позже (см. §2.2/§5).
 - [~] Основная вкладка `Загрузки` в React уже закрывает очередь, старт/stop/retry/pause, настройки yt-dlp, каталог/cookies/network, live log, историю; **компактная панель «История»** — в основном **«Повторить»** (URL в очередь; J-626), полные действия файла/папки/редактора — в таблице очереди и pop-out; open учитывает финальный файл после merge и Windows UTF-8 stdout; pop-out — вторичный режим для редких settings.
 - [~] ffprobe-инспектор: в **главном редакторе** под таймлайном — только **короткая строка** видео/аудио (`VideoTimeline`); полная сводка, таблица дорожек, главы, JSON и экспорт — в **отдельном окне** инспектора; Dolby/HDR side_data summary, контекстные действия — там же.
-- [~] Тестовый раннер: подключён Vitest + `npm run test`/`test:watch`; по последней зелёной проверке `npm run check:quiet` выполняет **48 test files / 604 tests** + валидаторы `trusted_hashes`, нумерации журнала и secrets guard. Покрыты чистые парсеры и сервисы (`ytdlp-extra-args`, `ytdlp-progress-parser` + retry/fixup-постпроцессоры yt-dlp §6.4, `ytdlp-queue-retry`, `ytdlp-download-history`, `processing-history`, `ytdlp-download-options` + превью каталога §6.3, `ytdlp-download-output`, `ytdlp-download-queue-persist`, `ytdlp-commands-hints`, `ytdlp-os-pause-support`, `downloads-queue`, `settings-store`, `ffmpeg-export-service`, `ffmpeg-export-resolve-from-settings`, `ffmpeg-frame-snapshot-service`, `external-process-log`, `support-bundle`, `ipc-channels`, `engine-contract`, `ffmpeg-export-argv` (+ §7.2 audio/video filters), `external-url`, `ffprobe-summary-export`, `ffprobe-chapters`, `ffprobe-timecode`, `ffprobe-disposition`, `ffprobe-video-fps`, `ffprobe-side-data`, `ffprobe-stream-duration-detail`, `ffprobe-service`, `ffprobe-probe-media.integration`, `ffprobe-probe-media-json-mock`, `diagnostics-maintenance`, `knowledge-service`, `knowledge-markdown`, `timeline-ruler`, `waveform-peaks`, `video-frame-snap`, `lucide-downloads-icons`, `window-hidpi`, `terminal-contract-scenarios`, `terminal-inline-suggest`).
+- [~] Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`68 test files / 705 tests`**; `npm run check` / `check:quiet` проходят (lint, typecheck, тесты, `trusted_hashes`, `check:journal`, `check:checklist`, secrets guard; J-1009). Покрыты парсеры/сервисы yt-dlp §6, ffmpeg export/batch §7 (`ffmpeg-export-batch-*`, `ffmpeg-export-hw-decode`, `ffmpeg-hw-encoder-probe`, `ffmpeg-export-vaapi-vf`), ffprobe §9, knowledge §15, terminal §8, diagnostics, UI helpers (`timeline-ruler`, `waveform-peaks`, `ui-text`-связанные контракты).
 
 ## Журнал решений и проверок
 
@@ -41,12 +43,12 @@
 
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый; подробности фиксировать ниже в тематических § и в `IMPLEMENTATION_JOURNAL.md`.
 
-- [~] §6/§7: главный инженерный фокус цикла — batch, HW encode и оставшиеся расхождения embedded↔pop-out загрузок; быстрые регрессии по очереди yt-dlp.
-- [~] §8: терминал — polish подсказок/сценариев, RU/EN chrome вкладки (`ui-text`); `npm run locales:terminal-summaries-ru`; argv/выполнение без раздувания TODO.
-- [~] §9/§18: ffprobe/diagnostics — crash/e2e smoke, редкие поля по факту; связка с логами/Support ZIP.
-- [~] §19/§3/§17: release/security — `check:release` + `verify:win-unpacked`, SHA/JSON, подпись Win; короткий packaged smoke по чеклисту.
-- [x] §15: knowledge — пакет закрыт: RU/EN Help, инлайн `data:` для мелких assets, fluxhelp, About→логи, терминал→hints; далее tooltips/PNG по стабилизации UI.
-- [~] §1.1/§2.2/§5: литералы→`ui-text`, contrast/focus, DPI smoke; не блокировать §6/§7 параллельно точечными PR.
+- [~] §6/§7: HW encode (цепочки QSV/CUDA/VAAPI), регрессии batch §7.3 и очереди yt-dlp; паритет embedded↔pop-out загрузок.
+- [~] §8: терминал — редкие сценарии/argv по факту; при правках `summary` — `npm run locales:terminal-summaries-ru` (дважды до 0/0).
+- [~] §9/§18: packaged/ffprobe e2e smoke; редкие поля ffprobe; связка с Support ZIP.
+- [~] §19/§3: `check:release`, `verify:win-unpacked`, SHA/JSON; packaged smoke; macOS/Linux engines и targets.
+- [x] §15: knowledge — пакет закрыт (RU/EN Help, `data:` assets, fluxhelp, About→справка); далее tooltips/PNG по UI.
+- [~] §2.2/§5: `locales/**` JSON + смена языка без перезапуска; DPI-матрица 100–200%; §1.1 — контраст/focus после `aria-busy` (J-977–J-1007).
 
 ---
 
@@ -513,7 +515,7 @@
 - [x] IPC contracts: `ipc-channels.ts`; перечисленные `src/shared/*-contract.ts` (в т.ч. ffprobe, save-text-dialog, settings, engine, about, preview-dialog, ffmpeg export, yt-dlp окно/лог/история, диагностика, engine-download, snapshot) — главный preload импортирует типы из `src/shared`, не из `main`; дальше — новые домены по мере IPC.
 - [ ] Вынести сервисы main (упорядочить без дублирования с текущими модулями).
 - [~] Вынести модели shared: часть IPC/доменов уже в `src/shared/*-contract.ts`; остальное по мере выноса сервисов.
-- [~] Unit tests для чистых модулей: `tests/main/*` — перечисленные парсеры/сервисы; `tests/shared/ipc-channels` — уникальность строк каналов; `tests/shared/engine-contract` — порядок/уникальность `ENGINE_IDS`; `tests/shared/ffmpeg-export-argv` — pure builder и preview placeholders; `tests/shared/ffprobe-summary-export` — текст/HTML сводки §9; `tests/shared/ffprobe-chapters`, `ffprobe-timecode`, `ffprobe-disposition`, `ffprobe-video-fps`, `ffprobe-side-data`, `timeline-ruler`, `waveform-peaks`, `video-frame-snap`, `lucide-downloads-icons`. Дальше — расширять `src/shared/*` контрактами под остальные IPC и точечные тесты при появлении runtime-констант.
+- [~] Unit tests для чистых модулей: каталог `tests/` — **68 файлов / 705 тестов** (Vitest); перечень доменов — в снимке «Тестовый раннер» выше и в `tests/main|shared/`. Дальше — e2e smoke и контракты под новые IPC.
 - [x] Выбрать Vitest/Jest: Vitest подключён (`npm run test`/`test:watch`, `tsconfig.tests.json`).
 - [ ] Добавить e2e smoke позже.
 - [~] Комментарии на русском для публичных API и сложной логики: базовые комментарии добавлены; дальше писать чуть развёрнутее, чтобы следующему проходу агента было понятно «зачем» и «где границы», не только «что делает строка».

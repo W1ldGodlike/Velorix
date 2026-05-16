@@ -366,17 +366,20 @@ export function PreviewProbeBody({
             persistOrLocalSectionToggle('exportSummary', e.currentTarget.open)
           }}
         >
-          <summary
-            className="app-probe-summary"
-            aria-controls={probeExportSummaryRegionId}
-          >
+          <summary className="app-probe-summary" aria-controls={probeExportSummaryRegionId}>
             {uiText('probeSectionExportSummary')}
           </summary>
           <div id={probeExportSummaryRegionId} aria-busy={probeRefreshing}>
             <p id="probeExportSummaryHint" className="app-probe-toolbar-hint">
               {uiText('probeSectionExportSummaryHint')}
             </p>
-            <div className="app-probe-json-toolbar" role="toolbar" aria-orientation="horizontal" aria-label={uiText('probeExportSummaryToolbarAria')} aria-busy={probeRefreshing}>
+            <div
+              className="app-probe-json-toolbar"
+              role="toolbar"
+              aria-orientation="horizontal"
+              aria-label={uiText('probeExportSummaryToolbarAria')}
+              aria-busy={probeRefreshing}
+            >
               <button
                 type="button"
                 className="app-btn app-btn-compact"
@@ -403,17 +406,16 @@ export function PreviewProbeBody({
         {probeInfo.tracks.length > 0 ? (
           <details
             className="app-probe-details"
-            aria-label={uiTextVars('probeSectionTracksTemplate', { count: probeInfo.tracks.length })}
+            aria-label={uiTextVars('probeSectionTracksTemplate', {
+              count: probeInfo.tracks.length
+            })}
             aria-busy={probeRefreshing}
             open={sectionOpen('tracks')}
             onToggle={(e) => {
               persistOrLocalSectionToggle('tracks', e.currentTarget.open)
             }}
           >
-            <summary
-              className="app-probe-summary"
-              aria-controls={probeTracksRegionId}
-            >
+            <summary className="app-probe-summary" aria-controls={probeTracksRegionId}>
               {uiTextVars('probeSectionTracksTemplate', { count: probeInfo.tracks.length })}
             </summary>
             <div
@@ -498,8 +500,13 @@ export function PreviewProbeBody({
                       }}
                     >
                       <td headers={PROBE_TRACKS_TABLE_HEADER_IDS.index}>{row.index}</td>
-                      <td headers={PROBE_TRACKS_TABLE_HEADER_IDS.kind}>{trackKindLabel(row.kind)}</td>
-                      <td className="app-probe-table-mono" headers={PROBE_TRACKS_TABLE_HEADER_IDS.codec}>
+                      <td headers={PROBE_TRACKS_TABLE_HEADER_IDS.kind}>
+                        {trackKindLabel(row.kind)}
+                      </td>
+                      <td
+                        className="app-probe-table-mono"
+                        headers={PROBE_TRACKS_TABLE_HEADER_IDS.codec}
+                      >
                         {row.codec}
                       </td>
                       <td
@@ -508,10 +515,16 @@ export function PreviewProbeBody({
                       >
                         {row.pixelFormat ?? dash}
                       </td>
-                      <td className="app-probe-table-mono" headers={PROBE_TRACKS_TABLE_HEADER_IDS.sar}>
+                      <td
+                        className="app-probe-table-mono"
+                        headers={PROBE_TRACKS_TABLE_HEADER_IDS.sar}
+                      >
                         {row.sampleAspectRatio ?? dash}
                       </td>
-                      <td className="app-probe-table-mono" headers={PROBE_TRACKS_TABLE_HEADER_IDS.dar}>
+                      <td
+                        className="app-probe-table-mono"
+                        headers={PROBE_TRACKS_TABLE_HEADER_IDS.dar}
+                      >
                         {row.displayAspectRatio ?? dash}
                       </td>
                       <td
@@ -532,7 +545,10 @@ export function PreviewProbeBody({
                       >
                         {row.colorTransfer ?? dash}
                       </td>
-                      <td className="app-probe-table-mono" headers={PROBE_TRACKS_TABLE_HEADER_IDS.range}>
+                      <td
+                        className="app-probe-table-mono"
+                        headers={PROBE_TRACKS_TABLE_HEADER_IDS.range}
+                      >
                         {row.colorRange ?? dash}
                       </td>
                       <td
@@ -549,7 +565,9 @@ export function PreviewProbeBody({
                       >
                         {row.dispositionSummary.trim() !== '' ? row.dispositionSummary : dash}
                       </td>
-                      <td headers={PROBE_TRACKS_TABLE_HEADER_IDS.language}>{row.language ?? dash}</td>
+                      <td headers={PROBE_TRACKS_TABLE_HEADER_IDS.language}>
+                        {row.language ?? dash}
+                      </td>
                       <td headers={PROBE_TRACKS_TABLE_HEADER_IDS.title}>{row.titleTag ?? dash}</td>
                       <td headers={PROBE_TRACKS_TABLE_HEADER_IDS.details}>{row.detail}</td>
                     </tr>
@@ -571,10 +589,7 @@ export function PreviewProbeBody({
               persistOrLocalSectionToggle('chapters', e.currentTarget.open)
             }}
           >
-            <summary
-              className="app-probe-summary"
-              aria-controls={probeChaptersRegionId}
-            >
+            <summary className="app-probe-summary" aria-controls={probeChaptersRegionId}>
               {uiTextVars('probeSectionChaptersTemplate', { count: probeInfo.chapters.length })}
             </summary>
             <div
@@ -669,7 +684,13 @@ export function PreviewProbeBody({
               <p id="probeRawJsonHint" className="app-probe-toolbar-hint">
                 {uiText('probeRawJsonHint')}
               </p>
-              <div className="app-probe-json-toolbar" role="toolbar" aria-orientation="horizontal" aria-label={uiText('probeRawJsonToolbarAria')} aria-busy={probeRefreshing}>
+              <div
+                className="app-probe-json-toolbar"
+                role="toolbar"
+                aria-orientation="horizontal"
+                aria-label={uiText('probeRawJsonToolbarAria')}
+                aria-busy={probeRefreshing}
+              >
                 <button
                   type="button"
                   className="app-btn app-btn-compact"

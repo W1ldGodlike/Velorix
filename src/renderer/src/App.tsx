@@ -58,7 +58,10 @@ import {
   IconWorkspaceEditor,
   IconWorkspaceTerminal
 } from './components/LucideMiniIcons'
-import type { FfmpegExportBatchConcurrency, FfmpegExportBatchSnapshot } from '../../shared/ffmpeg-export-batch-contract'
+import type {
+  FfmpegExportBatchConcurrency,
+  FfmpegExportBatchSnapshot
+} from '../../shared/ffmpeg-export-batch-contract'
 import type { EngineId } from '../../shared/engine-contract'
 import { ENGINE_IDS } from '../../shared/engine-contract'
 import type {
@@ -1407,9 +1410,7 @@ function App(): JSX.Element {
         return
       }
       if (counts.added === 0 && counts.skipped > 0) {
-        setStatusHint(
-          uiTextVars('batchExportSkippedDuplicates', { count: String(counts.skipped) })
-        )
+        setStatusHint(uiTextVars('batchExportSkippedDuplicates', { count: String(counts.skipped) }))
         return
       }
       if (counts.skipped > 0) {
@@ -1652,9 +1653,7 @@ function App(): JSX.Element {
     setExportEconomyMode(loaded.ffmpegExportEconomyMode === true)
     setExportHwDecode(loaded.ffmpegExportHwDecode === true)
     setExportExtraArgsLine(
-      typeof loaded.ffmpegExportExtraArgsLine === 'string'
-        ? loaded.ffmpegExportExtraArgsLine
-        : ''
+      typeof loaded.ffmpegExportExtraArgsLine === 'string' ? loaded.ffmpegExportExtraArgsLine : ''
     )
     setEditorUrlPasteBehavior(parseEditorUrlPasteBehavior(loaded.editorUrlPasteBehavior))
     setBatchOutputSuffix(
@@ -1774,7 +1773,9 @@ function App(): JSX.Element {
       ...(exportTwoPass && exportVideoCodec === 'libx264' ? { twoPass: true as const } : {}),
       ...(exportEconomyMode ? { economyMode: true as const } : {}),
       ...(exportHwDecode ? { hwDecode: true as const } : {}),
-      ...(exportExtraArgsLine.trim().length > 0 ? { extraArgsLine: exportExtraArgsLine.trim() } : {}),
+      ...(exportExtraArgsLine.trim().length > 0
+        ? { extraArgsLine: exportExtraArgsLine.trim() }
+        : {}),
       ...(exportAudioGainDb !== 0 ? { audioGainDb: exportAudioGainDb } : {}),
       ...(exportStripMetadata ? { stripMetadata: true } : {}),
       ...(exportStripChapters ? { stripChapters: true } : {}),
@@ -2054,10 +2055,10 @@ function App(): JSX.Element {
   useEffect(() => {
     const path = preview?.path
     if (!path) {
-      setProbePending(false)
+      queueMicrotask(() => setProbePending(false))
       return
     }
-    setProbePending(true)
+    queueMicrotask(() => setProbePending(true))
     let cancelled = false
     void window.fluxalloy.preview.probe(path).then((r) => {
       if (cancelled) {
@@ -2517,7 +2518,9 @@ function App(): JSX.Element {
       setStatusHint(uiText('batchExportCopyPathsFailed'))
       return
     }
-    setStatusHint(uiTextVars('batchExportCopiedOutputPaths', { count: String(listed.paths.length) }))
+    setStatusHint(
+      uiTextVars('batchExportCopiedOutputPaths', { count: String(listed.paths.length) })
+    )
   }
 
   async function handleBatchCopyRowPath(path: string, kind: 'in' | 'out'): Promise<void> {
@@ -2527,7 +2530,9 @@ function App(): JSX.Element {
       return
     }
     setStatusHint(
-      kind === 'in' ? uiText('batchExportCopiedRowInputPath') : uiText('batchExportCopiedRowOutputPath')
+      kind === 'in'
+        ? uiText('batchExportCopiedRowInputPath')
+        : uiText('batchExportCopiedRowOutputPath')
     )
   }
 
@@ -2985,8 +2990,7 @@ function App(): JSX.Element {
     applyPreview(granted)
   }
 
-  const editorFfmpegDetailBusy =
-    exportBusy || snapshotBusy || exportCancelBusy || probePending
+  const editorFfmpegDetailBusy = exportBusy || snapshotBusy || exportCancelBusy || probePending
 
   const editorPreviewRegionBusy =
     exportBusy || snapshotBusy || probePending || exportCancelBusy || batchExportBusy
@@ -3007,7 +3011,11 @@ function App(): JSX.Element {
 
   return (
     <div className="app-shell" aria-label={uiText('appMainShellAria')} aria-busy={appChromeBusy}>
-      <header className="app-topbar" aria-label={uiText('topbarHeaderAria')} aria-busy={appChromeBusy}>
+      <header
+        className="app-topbar"
+        aria-label={uiText('topbarHeaderAria')}
+        aria-busy={appChromeBusy}
+      >
         <div
           className="app-topbar-brand"
           aria-label={uiText('topbarProductName')}
@@ -3456,7 +3464,12 @@ function App(): JSX.Element {
                     <IconFolder size={16} aria-hidden />
                     {uiText('batchExportOutputDirLabel')}
                   </span>
-                  <div className="app-batch-export-dir-row" role="group" aria-label={uiText('batchExportOutputDirRowGroupAria')} aria-busy={batchExportBusy}>
+                  <div
+                    className="app-batch-export-dir-row"
+                    role="group"
+                    aria-label={uiText('batchExportOutputDirRowGroupAria')}
+                    aria-busy={batchExportBusy}
+                  >
                     <input
                       type="text"
                       className="app-control"
@@ -3537,458 +3550,470 @@ function App(): JSX.Element {
                     {uiText('batchExportConcurrencyHint')}
                   </span>
                 </label>
+                <div
+                  className="app-batch-export-actions"
+                  role="toolbar"
+                  aria-orientation="horizontal"
+                  aria-label={uiText('batchExportActionsToolbarAria')}
+                  aria-busy={batchExportBusy}
+                >
+                  <button
+                    type="button"
+                    className="app-btn app-btn-icon-leading"
+                    disabled={batchExportBusy}
+                    onClick={() => {
+                      void handleBatchPickFiles()
+                    }}
+                  >
+                    <IconQueueFile size={16} aria-hidden />
+                    {uiText('batchExportAddFiles')}
+                  </button>
+                  <button
+                    type="button"
+                    className="app-btn app-btn-icon-leading"
+                    disabled={batchExportBusy}
+                    onClick={() => {
+                      void handleBatchPickFolder()
+                    }}
+                  >
+                    <IconFolderOpen size={16} aria-hidden />
+                    {uiText('batchExportAddFolder')}
+                  </button>
+                  <button
+                    type="button"
+                    className="app-btn app-btn-icon-leading"
+                    disabled={batchExportBusy || !preview?.path}
+                    onClick={() => {
+                      void handleBatchAddCurrentPreview()
+                    }}
+                  >
+                    <IconFilm size={16} aria-hidden />
+                    {uiText('batchExportAddCurrentPreview')}
+                  </button>
+                  <button
+                    type="button"
+                    className="app-btn app-btn-icon-leading"
+                    disabled={batchExportBusy}
+                    onClick={() => {
+                      void handleBatchAddDownloadsDone()
+                    }}
+                  >
+                    <IconDownload size={16} aria-hidden />
+                    {uiText('batchExportAddDownloadsDone')}
+                  </button>
+                  <button
+                    type="button"
+                    className="app-btn app-btn-primary app-btn-icon-leading"
+                    disabled={batchExportBusy || (batchSnapshot?.rows.length ?? 0) === 0}
+                    onClick={() => {
+                      void handleBatchStart()
+                    }}
+                  >
+                    <IconPlay size={16} aria-hidden />
+                    {uiText('batchExportStart')}
+                  </button>
+                  <button
+                    type="button"
+                    className="app-btn app-btn-icon-leading"
+                    disabled={!batchExportBusy}
+                    onClick={() => {
+                      void handleBatchCancel()
+                    }}
+                  >
+                    <IconBan size={16} aria-hidden />
+                    {uiText('batchExportCancel')}
+                  </button>
+                  <button
+                    type="button"
+                    className="app-btn app-btn-icon-leading"
+                    disabled={batchExportBusy || (batchSnapshot?.completedError ?? 0) === 0}
+                    onClick={() => {
+                      void handleBatchRetryFailed()
+                    }}
+                  >
+                    <IconQueueRetry size={16} aria-hidden />
+                    {uiText('batchExportRetryFailed')}
+                  </button>
+                  <button
+                    type="button"
+                    className="app-btn app-btn-icon-leading"
+                    disabled={batchExportBusy || (batchSnapshot?.completedError ?? 0) === 0}
+                    onClick={() => {
+                      void handleBatchRetryFailedAndStart()
+                    }}
+                  >
+                    <IconQueueRetry size={16} aria-hidden />
+                    {uiText('batchExportRetryFailedAndStart')}
+                  </button>
+                  <button
+                    type="button"
+                    className="app-btn app-btn-icon-leading"
+                    disabled={batchExportBusy || (batchSnapshot?.completedOk ?? 0) === 0}
+                    onClick={() => {
+                      void handleBatchClearCompleted()
+                    }}
+                  >
+                    <IconQueueTrash size={16} aria-hidden />
+                    {uiText('batchExportClearCompleted')}
+                  </button>
+                  <button
+                    type="button"
+                    className="app-btn app-btn-icon-leading"
+                    disabled={batchExportBusy || (batchSnapshot?.rows.length ?? 0) === 0}
+                    onClick={() => {
+                      void window.fluxalloy.batchExport.clear().catch(console.error)
+                    }}
+                  >
+                    <IconQueueTrash size={16} aria-hidden />
+                    {uiText('batchExportClear')}
+                  </button>
+                  <button
+                    type="button"
+                    className="app-btn app-btn-icon-leading"
+                    disabled={(batchSnapshot?.rows.length ?? 0) === 0}
+                    onClick={() => {
+                      void handleBatchCopyInputPaths()
+                    }}
+                  >
+                    <IconCopy size={16} aria-hidden />
+                    {uiText('batchExportCopyPaths')}
+                  </button>
+                  <button
+                    type="button"
+                    className="app-btn app-btn-icon-leading"
+                    disabled={
+                      !(
+                        batchSnapshot?.rows.some(
+                          (r) => typeof r.outputPath === 'string' && r.outputPath.trim() !== ''
+                        ) ?? false
+                      )
+                    }
+                    onClick={() => {
+                      void handleBatchCopyOutputPaths()
+                    }}
+                  >
+                    <IconCopy size={16} aria-hidden />
+                    {uiText('batchExportCopyOutputPaths')}
+                  </button>
+                  <button
+                    type="button"
+                    className="app-btn app-btn-icon-leading"
+                    disabled={(batchSnapshot?.rows.length ?? 0) === 0}
+                    onClick={() => {
+                      void handleBatchSaveReport()
+                    }}
+                  >
+                    <IconSave size={16} aria-hidden />
+                    {uiText('batchExportSaveReport')}
+                  </button>
+                  <button
+                    type="button"
+                    className="app-btn app-btn-icon-leading"
+                    disabled={batchExportBusy}
+                    onClick={() => {
+                      void handleBatchRemoveWaiting()
+                    }}
+                  >
+                    <IconQueueX size={16} aria-hidden />
+                    {uiText('batchExportRemoveWaiting')}
+                  </button>
+                </div>
+              </div>
               <div
-                className="app-batch-export-actions"
-                role="toolbar"
-                aria-orientation="horizontal"
-                aria-label={uiText('batchExportActionsToolbarAria')}
+                role="region"
+                aria-label={uiText('batchExportQueueTableZoneAria')}
                 aria-busy={batchExportBusy}
               >
-                <button
-                  type="button"
-                  className="app-btn app-btn-icon-leading"
-                  disabled={batchExportBusy}
-                  onClick={() => {
-                    void handleBatchPickFiles()
-                  }}
-                >
-                  <IconQueueFile size={16} aria-hidden />
-                  {uiText('batchExportAddFiles')}
-                </button>
-                <button
-                  type="button"
-                  className="app-btn app-btn-icon-leading"
-                  disabled={batchExportBusy}
-                  onClick={() => {
-                    void handleBatchPickFolder()
-                  }}
-                >
-                  <IconFolderOpen size={16} aria-hidden />
-                  {uiText('batchExportAddFolder')}
-                </button>
-                <button
-                  type="button"
-                  className="app-btn app-btn-icon-leading"
-                  disabled={batchExportBusy || !preview?.path}
-                  onClick={() => {
-                    void handleBatchAddCurrentPreview()
-                  }}
-                >
-                  <IconFilm size={16} aria-hidden />
-                  {uiText('batchExportAddCurrentPreview')}
-                </button>
-                <button
-                  type="button"
-                  className="app-btn app-btn-icon-leading"
-                  disabled={batchExportBusy}
-                  onClick={() => {
-                    void handleBatchAddDownloadsDone()
-                  }}
-                >
-                  <IconDownload size={16} aria-hidden />
-                  {uiText('batchExportAddDownloadsDone')}
-                </button>
-                <button
-                  type="button"
-                  className="app-btn app-btn-primary app-btn-icon-leading"
-                  disabled={batchExportBusy || (batchSnapshot?.rows.length ?? 0) === 0}
-                  onClick={() => {
-                    void handleBatchStart()
-                  }}
-                >
-                  <IconPlay size={16} aria-hidden />
-                  {uiText('batchExportStart')}
-                </button>
-                <button
-                  type="button"
-                  className="app-btn app-btn-icon-leading"
-                  disabled={!batchExportBusy}
-                  onClick={() => {
-                    void handleBatchCancel()
-                  }}
-                >
-                  <IconBan size={16} aria-hidden />
-                  {uiText('batchExportCancel')}
-                </button>
-                <button
-                  type="button"
-                  className="app-btn app-btn-icon-leading"
-                  disabled={batchExportBusy || (batchSnapshot?.completedError ?? 0) === 0}
-                  onClick={() => {
-                    void handleBatchRetryFailed()
-                  }}
-                >
-                  <IconQueueRetry size={16} aria-hidden />
-                  {uiText('batchExportRetryFailed')}
-                </button>
-                <button
-                  type="button"
-                  className="app-btn app-btn-icon-leading"
-                  disabled={batchExportBusy || (batchSnapshot?.completedError ?? 0) === 0}
-                  onClick={() => {
-                    void handleBatchRetryFailedAndStart()
-                  }}
-                >
-                  <IconQueueRetry size={16} aria-hidden />
-                  {uiText('batchExportRetryFailedAndStart')}
-                </button>
-                <button
-                  type="button"
-                  className="app-btn app-btn-icon-leading"
-                  disabled={batchExportBusy || (batchSnapshot?.completedOk ?? 0) === 0}
-                  onClick={() => {
-                    void handleBatchClearCompleted()
-                  }}
-                >
-                  <IconQueueTrash size={16} aria-hidden />
-                  {uiText('batchExportClearCompleted')}
-                </button>
-                <button
-                  type="button"
-                  className="app-btn app-btn-icon-leading"
-                  disabled={batchExportBusy || (batchSnapshot?.rows.length ?? 0) === 0}
-                  onClick={() => {
-                    void window.fluxalloy.batchExport.clear().catch(console.error)
-                  }}
-                >
-                  <IconQueueTrash size={16} aria-hidden />
-                  {uiText('batchExportClear')}
-                </button>
-                <button
-                  type="button"
-                  className="app-btn app-btn-icon-leading"
-                  disabled={(batchSnapshot?.rows.length ?? 0) === 0}
-                  onClick={() => {
-                    void handleBatchCopyInputPaths()
-                  }}
-                >
-                  <IconCopy size={16} aria-hidden />
-                  {uiText('batchExportCopyPaths')}
-                </button>
-                <button
-                  type="button"
-                  className="app-btn app-btn-icon-leading"
-                  disabled={
-                    !(
-                      batchSnapshot?.rows.some(
-                        (r) => typeof r.outputPath === 'string' && r.outputPath.trim() !== ''
-                      ) ?? false
-                    )
-                  }
-                  onClick={() => {
-                    void handleBatchCopyOutputPaths()
-                  }}
-                >
-                  <IconCopy size={16} aria-hidden />
-                  {uiText('batchExportCopyOutputPaths')}
-                </button>
-                <button
-                  type="button"
-                  className="app-btn app-btn-icon-leading"
-                  disabled={(batchSnapshot?.rows.length ?? 0) === 0}
-                  onClick={() => {
-                    void handleBatchSaveReport()
-                  }}
-                >
-                  <IconSave size={16} aria-hidden />
-                  {uiText('batchExportSaveReport')}
-                </button>
-                <button
-                  type="button"
-                  className="app-btn app-btn-icon-leading"
-                  disabled={batchExportBusy}
-                  onClick={() => {
-                    void handleBatchRemoveWaiting()
-                  }}
-                >
-                  <IconQueueX size={16} aria-hidden />
-                  {uiText('batchExportRemoveWaiting')}
-                </button>
-              </div>
-              </div>
-            <div
-              role="region"
-              aria-label={uiText('batchExportQueueTableZoneAria')}
-              aria-busy={batchExportBusy}
-            >
-            {batchSnapshot && batchSnapshot.rows.length > 0 ? (
-              <div
-                className="app-batch-export-table-wrap"
-                role="group"
-                aria-label={uiText('batchExportTableWrapGroupAria')}
-                aria-busy={batchExportBusy}
-              >
-              <table className="app-batch-export-table" aria-busy={batchExportBusy}>
-                <caption className="app-visually-hidden">{uiText('batchExportTableCaption')}</caption>
-                <thead>
-                  <tr>
-                    <th scope="col" id={BATCH_EXPORT_TABLE_HEADER_IDS.file}>
-                      {uiText('batchExportColFile')}
-                    </th>
-                    <th scope="col" id={BATCH_EXPORT_TABLE_HEADER_IDS.status}>
-                      {uiText('batchExportColStatus')}
-                    </th>
-                    <th scope="col" id={BATCH_EXPORT_TABLE_HEADER_IDS.output}>
-                      {uiText('batchExportColOutput')}
-                    </th>
-                    <th scope="col" id={BATCH_EXPORT_TABLE_HEADER_IDS.progress}>
-                      {uiText('batchExportColProgress')}
-                    </th>
-                    <th scope="col" id={BATCH_EXPORT_TABLE_HEADER_IDS.actions}>
-                      {uiText('batchExportColActions')}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {batchSnapshot.rows.map((row, rowIndex) => (
-                    <tr
-                      key={row.id}
-                      draggable={!batchExportBusy && row.status !== 'running'}
-                      onDoubleClick={(e) => {
-                        if ((e.target as HTMLElement).closest('button')) {
-                          return
-                        }
-                        const td = (e.target as HTMLElement).closest('td')
-                        const idx = td?.cellIndex ?? -1
-                        const out =
-                          typeof row.outputPath === 'string' ? row.outputPath.trim() : ''
-                        if (idx === 2 && out.length > 0) {
-                          void handleBatchOpenOutput(out, 'preview')
-                          return
-                        }
-                        void handleBatchOpenInput(row.inputPath, 'preview')
-                      }}
-                      onDragStart={() => {
-                        setBatchDragRowId(row.id)
-                      }}
-                      onDragEnd={() => {
-                        setBatchDragRowId(null)
-                      }}
-                      onDragOver={(e) => {
-                        if (!batchExportBusy && row.status !== 'running') {
-                          e.preventDefault()
-                        }
-                      }}
-                      onDrop={(e) => {
-                        e.preventDefault()
-                        const fromId = batchDragRowId
-                        setBatchDragRowId(null)
-                        if (fromId === null || fromId === row.id) {
-                          return
-                        }
-                        void window.fluxalloy.batchExport
-                          .reorderRow(fromId, rowIndex)
-                          .catch(console.error)
-                      }}
-                    >
-                      <td headers={BATCH_EXPORT_TABLE_HEADER_IDS.file} title={row.inputPath}>
-                        {row.shortLabel}
-                      </td>
-                      <td headers={BATCH_EXPORT_TABLE_HEADER_IDS.status}>
-                        {formatFfmpegExportBatchStatusLabel(row.status)}
-                      </td>
-                      <td
-                        headers={BATCH_EXPORT_TABLE_HEADER_IDS.output}
-                        title={row.outputPath ?? undefined}
-                      >
-                        {row.outputPath
-                          ? row.outputPath.replace(/^.*[\\/]/, '')
-                          : '—'}
-                      </td>
-                      <td
-                        headers={BATCH_EXPORT_TABLE_HEADER_IDS.progress}
-                        title={row.status === 'error' ? row.progress : undefined}
-                      >
-                        {row.progress}
-                      </td>
-                      <td headers={BATCH_EXPORT_TABLE_HEADER_IDS.actions}>
-                        <div
-                          role="toolbar"
-                          aria-orientation="horizontal"
-                          aria-label={uiTextVars('batchExportRowActionsToolbarAriaTemplate', {
-                            n: String(rowIndex + 1)
-                          })}
-                          aria-busy={batchExportBusy}
-                        >
-                        <button
-                          type="button"
-                          className="app-btn app-btn-icon"
-                          title={uiText('batchExportOpenInputInEditor')}
-                          aria-label={uiText('batchExportOpenInputInEditor')}
-                          onClick={() => {
-                            void handleBatchOpenInput(row.inputPath, 'preview')
-                          }}
-                        >
-                          <IconFilm aria-hidden />
-                        </button>
-                        <button
-                          type="button"
-                          className="app-btn app-btn-icon"
-                          title={uiText('batchExportOpenInputFile')}
-                          aria-label={uiText('batchExportOpenInputFile')}
-                          onClick={() => {
-                            void handleBatchOpenInput(row.inputPath, 'file')
-                          }}
-                        >
-                          <IconPlay aria-hidden />
-                        </button>
-                        <button
-                          type="button"
-                          className="app-btn app-btn-icon"
-                          title={uiText('batchExportOpenInputFolder')}
-                          aria-label={uiText('batchExportOpenInputFolder')}
-                          onClick={() => {
-                            void handleBatchOpenInput(row.inputPath, 'folder')
-                          }}
-                        >
-                          <IconFolderOpen aria-hidden />
-                        </button>
-                        <button
-                          type="button"
-                          className="app-btn app-btn-icon"
-                          title={uiText('batchExportCopyRowInputPath')}
-                          aria-label={uiText('batchExportCopyRowInputPath')}
-                          onClick={() => {
-                            void handleBatchCopyRowPath(row.inputPath, 'in')
-                          }}
-                        >
-                          <IconCopy aria-hidden />
-                        </button>
-                        {row.outputPath ? (
-                          <>
-                            <button
-                              type="button"
-                              className="app-btn app-btn-icon"
-                              title={uiText('batchExportOpenOutputInEditor')}
-                              aria-label={uiText('batchExportOpenOutputInEditor')}
-                              onClick={() => {
-                                void handleBatchOpenOutput(row.outputPath as string, 'preview')
-                              }}
-                            >
-                              <IconFilm aria-hidden />
-                            </button>
-                            <button
-                              type="button"
-                              className="app-btn app-btn-icon"
-                              title={uiText('processingHistoryOpenFile')}
-                              aria-label={uiText('processingHistoryOpenFile')}
-                              onClick={() => {
-                                void handleBatchOpenOutput(row.outputPath as string, 'file')
-                              }}
-                            >
-                              <IconPlay aria-hidden />
-                            </button>
-                            <button
-                              type="button"
-                              className="app-btn app-btn-icon"
-                              title={uiText('processingHistoryOpenFolder')}
-                              aria-label={uiText('processingHistoryOpenFolder')}
-                              onClick={() => {
-                                void handleBatchOpenOutput(row.outputPath as string, 'folder')
-                              }}
-                            >
-                              <IconFolderOpen aria-hidden />
-                            </button>
-                            <button
-                              type="button"
-                              className="app-btn app-btn-icon"
-                              title={uiText('batchExportCopyRowOutputPath')}
-                              aria-label={uiText('batchExportCopyRowOutputPath')}
-                              onClick={() => {
-                                void handleBatchCopyRowPath(row.outputPath as string, 'out')
-                              }}
-                            >
-                              <IconCopy aria-hidden />
-                            </button>
-                          </>
-                        ) : null}
-                        {row.status === 'error' || row.status === 'cancelled' ? (
-                          <button
-                            type="button"
-                            className="app-btn app-btn-icon"
-                            title={uiText('batchExportRetryRow')}
-                            aria-label={uiText('batchExportRetryRow')}
-                            disabled={batchExportBusy}
-                            onClick={() => {
-                              void window.fluxalloy.batchExport.retryRows([row.id]).then((res) => {
-                                if (!res.ok) {
-                                  setStatusHint(res.error)
-                                  return
-                                }
-                                if (res.reset > 0) {
-                                  setStatusHint(
-                                    uiTextVars('batchExportRetriedFailed', {
-                                      count: String(res.reset)
-                                    })
-                                  )
-                                }
-                              })
+                {batchSnapshot && batchSnapshot.rows.length > 0 ? (
+                  <div
+                    className="app-batch-export-table-wrap"
+                    role="group"
+                    aria-label={uiText('batchExportTableWrapGroupAria')}
+                    aria-busy={batchExportBusy}
+                  >
+                    <table className="app-batch-export-table" aria-busy={batchExportBusy}>
+                      <caption className="app-visually-hidden">
+                        {uiText('batchExportTableCaption')}
+                      </caption>
+                      <thead>
+                        <tr>
+                          <th scope="col" id={BATCH_EXPORT_TABLE_HEADER_IDS.file}>
+                            {uiText('batchExportColFile')}
+                          </th>
+                          <th scope="col" id={BATCH_EXPORT_TABLE_HEADER_IDS.status}>
+                            {uiText('batchExportColStatus')}
+                          </th>
+                          <th scope="col" id={BATCH_EXPORT_TABLE_HEADER_IDS.output}>
+                            {uiText('batchExportColOutput')}
+                          </th>
+                          <th scope="col" id={BATCH_EXPORT_TABLE_HEADER_IDS.progress}>
+                            {uiText('batchExportColProgress')}
+                          </th>
+                          <th scope="col" id={BATCH_EXPORT_TABLE_HEADER_IDS.actions}>
+                            {uiText('batchExportColActions')}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {batchSnapshot.rows.map((row, rowIndex) => (
+                          <tr
+                            key={row.id}
+                            draggable={!batchExportBusy && row.status !== 'running'}
+                            onDoubleClick={(e) => {
+                              if ((e.target as HTMLElement).closest('button')) {
+                                return
+                              }
+                              const td = (e.target as HTMLElement).closest('td')
+                              const idx = td?.cellIndex ?? -1
+                              const out =
+                                typeof row.outputPath === 'string' ? row.outputPath.trim() : ''
+                              if (idx === 2 && out.length > 0) {
+                                void handleBatchOpenOutput(out, 'preview')
+                                return
+                              }
+                              void handleBatchOpenInput(row.inputPath, 'preview')
+                            }}
+                            onDragStart={() => {
+                              setBatchDragRowId(row.id)
+                            }}
+                            onDragEnd={() => {
+                              setBatchDragRowId(null)
+                            }}
+                            onDragOver={(e) => {
+                              if (!batchExportBusy && row.status !== 'running') {
+                                e.preventDefault()
+                              }
+                            }}
+                            onDrop={(e) => {
+                              e.preventDefault()
+                              const fromId = batchDragRowId
+                              setBatchDragRowId(null)
+                              if (fromId === null || fromId === row.id) {
+                                return
+                              }
+                              void window.fluxalloy.batchExport
+                                .reorderRow(fromId, rowIndex)
+                                .catch(console.error)
                             }}
                           >
-                            <IconQueueRetry aria-hidden />
-                          </button>
-                        ) : null}
-                        <button
-                          type="button"
-                          className="app-btn app-btn-icon"
-                          title={uiText('batchExportMoveUp')}
-                          aria-label={uiText('batchExportMoveUp')}
-                          disabled={batchExportBusy || row.status === 'running'}
-                          onClick={() => {
-                            void window.fluxalloy.batchExport.moveRow(row.id, 'up').catch(console.error)
-                          }}
-                        >
-                          <IconQueueChevronUp aria-hidden />
-                        </button>
-                        <button
-                          type="button"
-                          className="app-btn app-btn-icon"
-                          title={uiText('batchExportMoveDown')}
-                          aria-label={uiText('batchExportMoveDown')}
-                          disabled={batchExportBusy || row.status === 'running'}
-                          onClick={() => {
-                            void window.fluxalloy.batchExport.moveRow(row.id, 'down').catch(console.error)
-                          }}
-                        >
-                          <IconQueueChevronDown aria-hidden />
-                        </button>
-                        <button
-                          type="button"
-                          className="app-btn app-btn-icon"
-                          title={uiText('batchExportRemoveRow')}
-                          aria-label={uiText('batchExportRemoveRow')}
-                          disabled={batchExportBusy || row.status === 'running'}
-                          onClick={() => {
-                            void window.fluxalloy.batchExport.removeRows([row.id]).catch(console.error)
-                          }}
-                        >
-                          <IconQueueTrash aria-hidden />
-                        </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                            <td headers={BATCH_EXPORT_TABLE_HEADER_IDS.file} title={row.inputPath}>
+                              {row.shortLabel}
+                            </td>
+                            <td headers={BATCH_EXPORT_TABLE_HEADER_IDS.status}>
+                              {formatFfmpegExportBatchStatusLabel(row.status)}
+                            </td>
+                            <td
+                              headers={BATCH_EXPORT_TABLE_HEADER_IDS.output}
+                              title={row.outputPath ?? undefined}
+                            >
+                              {row.outputPath ? row.outputPath.replace(/^.*[\\/]/, '') : '—'}
+                            </td>
+                            <td
+                              headers={BATCH_EXPORT_TABLE_HEADER_IDS.progress}
+                              title={row.status === 'error' ? row.progress : undefined}
+                            >
+                              {row.progress}
+                            </td>
+                            <td headers={BATCH_EXPORT_TABLE_HEADER_IDS.actions}>
+                              <div
+                                role="toolbar"
+                                aria-orientation="horizontal"
+                                aria-label={uiTextVars('batchExportRowActionsToolbarAriaTemplate', {
+                                  n: String(rowIndex + 1)
+                                })}
+                                aria-busy={batchExportBusy}
+                              >
+                                <button
+                                  type="button"
+                                  className="app-btn app-btn-icon"
+                                  title={uiText('batchExportOpenInputInEditor')}
+                                  aria-label={uiText('batchExportOpenInputInEditor')}
+                                  onClick={() => {
+                                    void handleBatchOpenInput(row.inputPath, 'preview')
+                                  }}
+                                >
+                                  <IconFilm aria-hidden />
+                                </button>
+                                <button
+                                  type="button"
+                                  className="app-btn app-btn-icon"
+                                  title={uiText('batchExportOpenInputFile')}
+                                  aria-label={uiText('batchExportOpenInputFile')}
+                                  onClick={() => {
+                                    void handleBatchOpenInput(row.inputPath, 'file')
+                                  }}
+                                >
+                                  <IconPlay aria-hidden />
+                                </button>
+                                <button
+                                  type="button"
+                                  className="app-btn app-btn-icon"
+                                  title={uiText('batchExportOpenInputFolder')}
+                                  aria-label={uiText('batchExportOpenInputFolder')}
+                                  onClick={() => {
+                                    void handleBatchOpenInput(row.inputPath, 'folder')
+                                  }}
+                                >
+                                  <IconFolderOpen aria-hidden />
+                                </button>
+                                <button
+                                  type="button"
+                                  className="app-btn app-btn-icon"
+                                  title={uiText('batchExportCopyRowInputPath')}
+                                  aria-label={uiText('batchExportCopyRowInputPath')}
+                                  onClick={() => {
+                                    void handleBatchCopyRowPath(row.inputPath, 'in')
+                                  }}
+                                >
+                                  <IconCopy aria-hidden />
+                                </button>
+                                {row.outputPath ? (
+                                  <>
+                                    <button
+                                      type="button"
+                                      className="app-btn app-btn-icon"
+                                      title={uiText('batchExportOpenOutputInEditor')}
+                                      aria-label={uiText('batchExportOpenOutputInEditor')}
+                                      onClick={() => {
+                                        void handleBatchOpenOutput(
+                                          row.outputPath as string,
+                                          'preview'
+                                        )
+                                      }}
+                                    >
+                                      <IconFilm aria-hidden />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className="app-btn app-btn-icon"
+                                      title={uiText('processingHistoryOpenFile')}
+                                      aria-label={uiText('processingHistoryOpenFile')}
+                                      onClick={() => {
+                                        void handleBatchOpenOutput(row.outputPath as string, 'file')
+                                      }}
+                                    >
+                                      <IconPlay aria-hidden />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className="app-btn app-btn-icon"
+                                      title={uiText('processingHistoryOpenFolder')}
+                                      aria-label={uiText('processingHistoryOpenFolder')}
+                                      onClick={() => {
+                                        void handleBatchOpenOutput(
+                                          row.outputPath as string,
+                                          'folder'
+                                        )
+                                      }}
+                                    >
+                                      <IconFolderOpen aria-hidden />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      className="app-btn app-btn-icon"
+                                      title={uiText('batchExportCopyRowOutputPath')}
+                                      aria-label={uiText('batchExportCopyRowOutputPath')}
+                                      onClick={() => {
+                                        void handleBatchCopyRowPath(row.outputPath as string, 'out')
+                                      }}
+                                    >
+                                      <IconCopy aria-hidden />
+                                    </button>
+                                  </>
+                                ) : null}
+                                {row.status === 'error' || row.status === 'cancelled' ? (
+                                  <button
+                                    type="button"
+                                    className="app-btn app-btn-icon"
+                                    title={uiText('batchExportRetryRow')}
+                                    aria-label={uiText('batchExportRetryRow')}
+                                    disabled={batchExportBusy}
+                                    onClick={() => {
+                                      void window.fluxalloy.batchExport
+                                        .retryRows([row.id])
+                                        .then((res) => {
+                                          if (!res.ok) {
+                                            setStatusHint(res.error)
+                                            return
+                                          }
+                                          if (res.reset > 0) {
+                                            setStatusHint(
+                                              uiTextVars('batchExportRetriedFailed', {
+                                                count: String(res.reset)
+                                              })
+                                            )
+                                          }
+                                        })
+                                    }}
+                                  >
+                                    <IconQueueRetry aria-hidden />
+                                  </button>
+                                ) : null}
+                                <button
+                                  type="button"
+                                  className="app-btn app-btn-icon"
+                                  title={uiText('batchExportMoveUp')}
+                                  aria-label={uiText('batchExportMoveUp')}
+                                  disabled={batchExportBusy || row.status === 'running'}
+                                  onClick={() => {
+                                    void window.fluxalloy.batchExport
+                                      .moveRow(row.id, 'up')
+                                      .catch(console.error)
+                                  }}
+                                >
+                                  <IconQueueChevronUp aria-hidden />
+                                </button>
+                                <button
+                                  type="button"
+                                  className="app-btn app-btn-icon"
+                                  title={uiText('batchExportMoveDown')}
+                                  aria-label={uiText('batchExportMoveDown')}
+                                  disabled={batchExportBusy || row.status === 'running'}
+                                  onClick={() => {
+                                    void window.fluxalloy.batchExport
+                                      .moveRow(row.id, 'down')
+                                      .catch(console.error)
+                                  }}
+                                >
+                                  <IconQueueChevronDown aria-hidden />
+                                </button>
+                                <button
+                                  type="button"
+                                  className="app-btn app-btn-icon"
+                                  title={uiText('batchExportRemoveRow')}
+                                  aria-label={uiText('batchExportRemoveRow')}
+                                  disabled={batchExportBusy || row.status === 'running'}
+                                  onClick={() => {
+                                    void window.fluxalloy.batchExport
+                                      .removeRows([row.id])
+                                      .catch(console.error)
+                                  }}
+                                >
+                                  <IconQueueTrash aria-hidden />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <p className="app-url-hint">{uiText('batchExportEmpty')}</p>
+                )}
               </div>
-            ) : (
-              <p className="app-url-hint">{uiText('batchExportEmpty')}</p>
-            )}
-            </div>
-            {batchSnapshot &&
-            !batchSnapshot.running &&
-            batchSnapshot.completedError > 0 ? (
-              <p className="app-batch-export-summary app-url-hint" role="status">
-                {uiTextVars('batchExportErrorSummary', {
-                  failed: String(batchSnapshot.completedError),
-                  total: String(
-                    batchSnapshot.completedOk +
-                      batchSnapshot.completedError +
-                      batchSnapshot.completedCancelled
-                  )
-                })}
-              </p>
-            ) : null}
+              {batchSnapshot && !batchSnapshot.running && batchSnapshot.completedError > 0 ? (
+                <p className="app-batch-export-summary app-url-hint" role="status">
+                  {uiTextVars('batchExportErrorSummary', {
+                    failed: String(batchSnapshot.completedError),
+                    total: String(
+                      batchSnapshot.completedOk +
+                        batchSnapshot.completedError +
+                        batchSnapshot.completedCancelled
+                    )
+                  })}
+                </p>
+              ) : null}
             </div>
           </div>
         </details>
@@ -4163,1198 +4188,1225 @@ function App(): JSX.Element {
                 aria-label={uiText('editorFfmpegRailSectionsRegionAria')}
                 aria-busy={editorFfmpegDetailBusy}
               >
-              <details
-                className="app-settings-section"
-                aria-label={uiText('editorFfmpegSectionVideo')}
-                aria-busy={editorFfmpegDetailBusy}
-                open={panelOpen('ffmpegVideo')}
-                onToggle={(e) => {
-                  persistMainWindowUiPanelToggle('ffmpegVideo', e.currentTarget.open)
-                }}
-              >
-                <summary
-                  className="app-settings-summary"
-                  title={uiText('editorTooltipSectionVideo')}
+                <details
+                  className="app-settings-section"
+                  aria-label={uiText('editorFfmpegSectionVideo')}
+                  aria-busy={editorFfmpegDetailBusy}
+                  open={panelOpen('ffmpegVideo')}
+                  onToggle={(e) => {
+                    persistMainWindowUiPanelToggle('ffmpegVideo', e.currentTarget.open)
+                  }}
                 >
-                  {uiText('editorFfmpegSectionVideo')}
-                </summary>
-                <p id="ffmpegVideoSectionHint" className="app-settings-section-hint">
-                  {uiText('editorFfmpegSectionVideoHint')}
-                </p>
-                <div className="app-settings-grid" aria-describedby="ffmpegVideoSectionHint">
-                  <label
-                    className="app-field"
-                    title={
-                      uiText('editorTooltipVideoCodec') +
-                      (hwEncoderProbe?.ok === true && hwEncoderProbe.hwaccels.length > 0
-                        ? `\n${uiText('editorExportHwaccelsTitle')}: ${hwEncoderProbe.hwaccels.join(', ')}`
-                        : '')
-                    }
+                  <summary
+                    className="app-settings-summary"
+                    title={uiText('editorTooltipSectionVideo')}
                   >
-                    <span className="app-field-label-inline">
-                      {uiText('editorFieldVideoCodec')}
-                      {isFfmpegHwAutoVideoCodec(exportVideoCodec) ? (
-                        <span
-                          className="app-hw-auto-badge"
-                          title={
-                            exportVideoCodec === 'hw_auto_hevc'
-                              ? uiText('editorExportCodecHwAutoHevcBadgeTitle')
-                              : uiText('editorExportCodecHwAutoBadgeTitle')
-                          }
-                        >
-                          {exportVideoCodec === 'hw_auto_hevc'
-                            ? uiText('editorExportCodecHwAutoHevcBadge')
-                            : uiText('editorExportCodecHwAutoBadge')}
-                        </span>
-                      ) : null}
-                    </span>
-                    <select
-                      className="app-control"
-                      value={exportVideoCodec}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const v = e.target.value as FfmpegExportVideoCodecId
-                        setExportVideoCodec(v)
-                        if (cpuFfmpegVideoCodecRequiresMkv(v) && exportContainer !== 'mkv') {
-                          setExportContainer('mkv')
-                          void window.fluxalloy.settings
-                            .setFfmpegExportContainer('mkv')
-                            .catch(console.error)
-                          setStatusHint(uiText('editorExportAutoContainerMkv'))
-                        }
-                        if (ffmpegExportVideoCodecRequiresMov(v) && exportContainer !== 'mov') {
-                          setExportContainer('mov')
-                          void window.fluxalloy.settings
-                            .setFfmpegExportContainer('mov')
-                            .catch(console.error)
-                          setStatusHint(uiText('editorExportAutoContainerMov'))
-                        }
-                        if (v !== 'libx264' && exportTwoPass) {
-                          setExportTwoPass(false)
-                          void window.fluxalloy.settings
-                            .setFfmpegExportTwoPass(false)
-                            .catch(console.error)
-                        }
-                        void window.fluxalloy.settings
-                          .setFfmpegExportVideoCodec(v)
-                          .catch(console.error)
-                      }}
-                    >
-                      {ffmpegExportSelectOptions.videoCodecs.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="app-field" title={uiText('editorTooltipEncodePreset')}>
-                    <span>{uiText('editorFieldEncodePreset')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorTooltipEncodePreset')}
-                      value={exportEncodePreset}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const v = e.target.value as FfmpegExportEncodePresetId
-                        setExportEncodePreset(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportEncodePreset(v)
-                          .catch(console.error)
-                      }}
-                    >
-                      {ffmpegExportSelectOptions.encodePresets.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="app-field" title={uiText('editorTooltipContainer')}>
-                    <span>{uiText('editorFieldContainer')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorTooltipContainer')}
-                      value={exportContainer}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const v = e.target.value as FfmpegExportContainerId
-                        setExportContainer(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportContainer(v)
-                          .catch(console.error)
-                      }}
-                    >
-                      {ffmpegExportSelectOptions.containers.map((p) => (
-                        <option
-                          key={p.id}
-                          value={p.id}
-                          disabled={
-                            (cpuFfmpegVideoCodecRequiresMkv(exportVideoCodec) && p.id !== 'mkv') ||
-                            (ffmpegExportVideoCodecRequiresMov(exportVideoCodec) && p.id !== 'mov') ||
-                            (ffmpegExportAudioModeRequiresMkv(exportAudioMode) && p.id !== 'mkv')
-                          }
-                        >
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="app-field" title={uiText('editorTooltipCrf')}>
-                    <span>{uiText('editorFieldCrf')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorTooltipCrf')}
-                      value={exportCrf === null ? 'preset' : String(exportCrf)}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const raw = e.target.value
-                        const next = raw === 'preset' ? null : Number(raw)
-                        setExportCrf(next)
-                        void window.fluxalloy.settings.setFfmpegExportCrf(next).catch(console.error)
-                      }}
-                    >
-                      <option value="preset">{uiText('editorCrfOptionPreset')}</option>
-                      {EXPORT_CRF_OPTIONS.map((v) => (
-                        <option key={v} value={v}>
-                          CRF {v}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="app-field" title={uiText('editorTooltipVideoBitrate')}>
-                    <span>{uiText('editorFieldVideoBitrate')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorTooltipVideoBitrate')}
-                      value={exportVideoBitrate === null ? 'crf' : exportVideoBitrate}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const raw = e.target.value
-                        const next = raw === 'crf' ? null : raw
-                        setExportVideoBitrate(next)
-                        if (next === null && exportTwoPass) {
-                          setExportTwoPass(false)
-                          void window.fluxalloy.settings
-                            .setFfmpegExportTwoPass(false)
-                            .catch(console.error)
-                        }
-                        void window.fluxalloy.settings
-                          .setFfmpegExportVideoBitrate(next)
-                          .catch(console.error)
-                      }}
-                    >
-                      <option value="crf">{uiText('editorVideoBitrateOptionCrf')}</option>
-                      {EXPORT_VIDEO_BITRATES.map((v) => (
-                        <option key={v} value={v}>
-                          Video {v}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="app-field" title={uiText('editorHintDeinterlace')}>
-                    <span>{uiText('editorFieldDeinterlace')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorHintDeinterlace')}
-                      value={exportVideoDeinterlace}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const v = e.target.value as FfmpegExportVideoDeinterlaceId
-                        setExportVideoDeinterlace(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportVideoDeinterlace(v)
-                          .catch(console.error)
-                      }}
-                    >
-                      {ffmpegExportSelectOptions.videoDeinterlace.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="app-field" title={uiText('editorHintDenoise')}>
-                    <span>{uiText('editorFieldDenoise')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorHintDenoise')}
-                      value={exportVideoDenoise}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const v = e.target.value as FfmpegExportVideoDenoiseId
-                        setExportVideoDenoise(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportVideoDenoise(v)
-                          .catch(console.error)
-                      }}
-                    >
-                      {ffmpegExportSelectOptions.videoDenoise.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="app-field" title={uiText('editorHintDeband')}>
-                    <span>{uiText('editorFieldDeband')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorHintDeband')}
-                      value={exportVideoDeband}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const v = e.target.value as FfmpegExportVideoDebandId
-                        setExportVideoDeband(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportVideoDeband(v)
-                          .catch(console.error)
-                      }}
-                    >
-                      {ffmpegExportSelectOptions.videoDeband.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="app-field" title={uiText('editorHintHisteq')}>
-                    <span>{uiText('editorFieldHisteq')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorHintHisteq')}
-                      value={exportVideoHisteq}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const v = e.target.value as FfmpegExportVideoHisteqId
-                        setExportVideoHisteq(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportVideoHisteq(v)
-                          .catch(console.error)
-                      }}
-                    >
-                      {ffmpegExportSelectOptions.videoHisteq.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="app-field" title={uiText('editorHintLut3d')}>
-                    <span>{uiText('editorFieldLut3d')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorHintLut3d')}
-                      value={exportVideoLut3d}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const v = e.target.value as FfmpegExportVideoLut3dId
-                        setExportVideoLut3d(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportVideoLut3d(v)
-                          .catch(console.error)
-                      }}
-                    >
-                      {ffmpegExportSelectOptions.videoLut3d.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="app-field" title={uiText('editorHintSharpen')}>
-                    <span>{uiText('editorFieldSharpen')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorHintSharpen')}
-                      value={exportVideoSharpen}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const v = e.target.value as FfmpegExportVideoSharpenId
-                        setExportVideoSharpen(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportVideoSharpen(v)
-                          .catch(console.error)
-                      }}
-                    >
-                      {ffmpegExportSelectOptions.videoSharpen.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="app-field" title={uiText('editorHintEq')}>
-                    <span>{uiText('editorFieldEq')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorHintEq')}
-                      value={exportVideoEqPreset}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const v = e.target.value as FfmpegExportVideoEqPresetId
-                        setExportVideoEqPreset(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportVideoEqPreset(v)
-                          .catch(console.error)
-                      }}
-                    >
-                      {ffmpegExportSelectOptions.videoEq.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="app-field" title={uiText('editorHintHue')}>
-                    <span>{uiText('editorFieldHue')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorHintHue')}
-                      value={exportVideoHue}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const v = e.target.value as FfmpegExportVideoHueId
-                        setExportVideoHue(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportVideoHue(v)
-                          .catch(console.error)
-                      }}
-                    >
-                      {ffmpegExportSelectOptions.videoHue.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="app-field" title={uiText('editorHintGrain')}>
-                    <span>{uiText('editorFieldGrain')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorHintGrain')}
-                      value={exportVideoGrain}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const v = e.target.value as FfmpegExportVideoGrainId
-                        setExportVideoGrain(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportVideoGrain(v)
-                          .catch(console.error)
-                      }}
-                    >
-                      {ffmpegExportSelectOptions.videoGrain.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="app-field" title={uiText('editorHintVignette')}>
-                    <span>{uiText('editorFieldVignette')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorHintVignette')}
-                      value={exportVideoVignette}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const v = e.target.value as FfmpegExportVideoVignetteId
-                        setExportVideoVignette(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportVideoVignette(v)
-                          .catch(console.error)
-                      }}
-                    >
-                      {ffmpegExportSelectOptions.videoVignette.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="app-field" title={uiText('editorHintBlur')}>
-                    <span>{uiText('editorFieldBlur')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorHintBlur')}
-                      value={exportVideoBlur}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const v = e.target.value as FfmpegExportVideoBlurId
-                        setExportVideoBlur(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportVideoBlur(v)
-                          .catch(console.error)
-                      }}
-                    >
-                      {ffmpegExportSelectOptions.videoBlur.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                </div>
-              </details>
-
-              <details
-                className="app-settings-section"
-                aria-label={uiText('editorFfmpegSectionFrameLayout')}
-                aria-busy={editorFfmpegDetailBusy}
-                open={panelOpen('ffmpegFormat')}
-                onToggle={(e) => {
-                  persistMainWindowUiPanelToggle('ffmpegFormat', e.currentTarget.open)
-                }}
-              >
-                <summary
-                  className="app-settings-summary"
-                  title={uiText('editorTooltipSectionFormat')}
-                >
-                  {uiText('editorFfmpegSectionFrameLayout')}
-                </summary>
-                <p id="ffmpegFormatSectionHint" className="app-settings-section-hint">
-                  {uiText('editorFfmpegSectionFrameLayoutHint')}
-                </p>
-                <div className="app-settings-grid" aria-describedby="ffmpegFormatSectionHint">
-                  <label className="app-field" title={uiText('editorTooltipResolution')}>
-                    <span>{uiText('editorFieldResolution')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorTooltipResolution')}
-                      value={exportScalePreset}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const v = e.target.value as FfmpegExportScalePresetId
-                        setExportScalePreset(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportScalePreset(v)
-                          .catch(console.error)
-                      }}
-                    >
-                      {ffmpegExportSelectOptions.scalePresets.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="app-field" title={uiText('editorTooltipFps')}>
-                    <span>{uiText('editorFieldFps')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorTooltipFps')}
-                      value={exportFps === null ? 'source' : String(exportFps)}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const raw = e.target.value
-                        const next = raw === 'source' ? null : Number(raw)
-                        setExportFps(next)
-                        void window.fluxalloy.settings.setFfmpegExportFps(next).catch(console.error)
-                      }}
-                    >
-                      <option value="source">{uiText('editorFpsOptionSource')}</option>
-                      {EXPORT_FPS_OPTIONS.map((v) => (
-                        <option key={v} value={v}>
-                          {uiTextVars('editorExportFpsOptionTemplate', { value: String(v) })}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <div className="app-field app-field-switch">
-                    <span>{uiText('editorTwoPassSpan')}</span>
-                    <PillSwitch
-                      label={uiText('editorTwoPassPillLabel')}
-                      tooltip={uiText('editorTooltipTwoPass')}
-                      checked={exportTwoPass && exportVideoBitrate !== null}
-                      describedBy="ffmpegFormatSectionHint ffmpegTwoPassUiHint"
-                      disabled={
-                        exportBusy ||
-                        snapshotBusy ||
-                        exportVideoBitrate === null ||
-                        exportVideoCodec !== 'libx264'
+                    {uiText('editorFfmpegSectionVideo')}
+                  </summary>
+                  <p id="ffmpegVideoSectionHint" className="app-settings-section-hint">
+                    {uiText('editorFfmpegSectionVideoHint')}
+                  </p>
+                  <div className="app-settings-grid" aria-describedby="ffmpegVideoSectionHint">
+                    <label
+                      className="app-field"
+                      title={
+                        uiText('editorTooltipVideoCodec') +
+                        (hwEncoderProbe?.ok === true && hwEncoderProbe.hwaccels.length > 0
+                          ? `\n${uiText('editorExportHwaccelsTitle')}: ${hwEncoderProbe.hwaccels.join(', ')}`
+                          : '')
                       }
-                      onToggle={() => {
-                        if (exportVideoBitrate === null) {
-                          return
-                        }
-                        bumpManualExportEdit()
-                        const v = !exportTwoPass
-                        setExportTwoPass(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportTwoPass(v)
-                          .catch(console.error)
-                      }}
-                    />
-                    <span id="ffmpegTwoPassUiHint" className="app-visually-hidden">
-                      {uiText('editorTwoPassHint')}
-                    </span>
-                  </div>
-                  <div className="app-field app-field-switch">
-                    <span>{uiText('editorEconomyModeSpan')}</span>
-                    <PillSwitch
-                      label={uiText('editorEconomyModePillLabel')}
-                      tooltip={uiText('editorTooltipEconomyMode')}
-                      checked={exportEconomyMode}
-                      describedBy="ffmpegFormatSectionHint ffmpegEconomyModeUiHint"
-                      disabled={exportBusy || snapshotBusy}
-                      onToggle={() => {
-                        bumpManualExportEdit()
-                        const v = !exportEconomyMode
-                        setExportEconomyMode(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportEconomyMode(v)
-                          .catch(console.error)
-                      }}
-                    />
-                    <span id="ffmpegEconomyModeUiHint" className="app-visually-hidden">
-                      {uiText('editorEconomyModeHint')}
-                    </span>
-                  </div>
-                  <div className="app-field app-field-switch">
-                    <span>{uiText('editorHwDecodeSpan')}</span>
-                    <PillSwitch
-                      label={uiText('editorHwDecodePillLabel')}
-                      tooltip={uiText('editorTooltipHwDecode')}
-                      checked={exportHwDecode}
-                      describedBy="ffmpegFormatSectionHint ffmpegHwDecodeUiHint"
-                      disabled={exportBusy || snapshotBusy}
-                      onToggle={() => {
-                        bumpManualExportEdit()
-                        const v = !exportHwDecode
-                        setExportHwDecode(v)
-                        void window.fluxalloy.settings.setFfmpegExportHwDecode(v).catch(console.error)
-                      }}
-                    />
-                    <span id="ffmpegHwDecodeUiHint" className="app-visually-hidden">
-                      {uiText('editorHwDecodeHint')}
-                    </span>
-                  </div>
-                  <label className="app-field" title={uiText('editorTooltipRotation')}>
-                    <span>{uiText('editorFieldRotation')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorTooltipRotation')}
-                      value={exportVideoTransform}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const v = e.target.value as FfmpegExportVideoTransformId
-                        setExportVideoTransform(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportVideoTransform(v)
-                          .catch(console.error)
-                      }}
                     >
-                      {ffmpegExportSelectOptions.videoTransforms.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="app-field" title={uiText('editorTooltipCrop')}>
-                    <span>{uiText('editorFieldCrop')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorTooltipCrop')}
-                      value={exportCropPreset}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const v = e.target.value as FfmpegExportCropPresetId
-                        setExportCropPreset(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportCropPreset(v)
-                          .catch(console.error)
-                      }}
-                    >
-                      {ffmpegExportSelectOptions.cropPresets.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                </div>
-              </details>
+                      <span className="app-field-label-inline">
+                        {uiText('editorFieldVideoCodec')}
+                        {isFfmpegHwAutoVideoCodec(exportVideoCodec) ? (
+                          <span
+                            className="app-hw-auto-badge"
+                            title={
+                              exportVideoCodec === 'hw_auto_hevc'
+                                ? uiText('editorExportCodecHwAutoHevcBadgeTitle')
+                                : uiText('editorExportCodecHwAutoBadgeTitle')
+                            }
+                          >
+                            {exportVideoCodec === 'hw_auto_hevc'
+                              ? uiText('editorExportCodecHwAutoHevcBadge')
+                              : uiText('editorExportCodecHwAutoBadge')}
+                          </span>
+                        ) : null}
+                      </span>
+                      <select
+                        className="app-control"
+                        value={exportVideoCodec}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const v = e.target.value as FfmpegExportVideoCodecId
+                          setExportVideoCodec(v)
+                          if (cpuFfmpegVideoCodecRequiresMkv(v) && exportContainer !== 'mkv') {
+                            setExportContainer('mkv')
+                            void window.fluxalloy.settings
+                              .setFfmpegExportContainer('mkv')
+                              .catch(console.error)
+                            setStatusHint(uiText('editorExportAutoContainerMkv'))
+                          }
+                          if (ffmpegExportVideoCodecRequiresMov(v) && exportContainer !== 'mov') {
+                            setExportContainer('mov')
+                            void window.fluxalloy.settings
+                              .setFfmpegExportContainer('mov')
+                              .catch(console.error)
+                            setStatusHint(uiText('editorExportAutoContainerMov'))
+                          }
+                          if (v !== 'libx264' && exportTwoPass) {
+                            setExportTwoPass(false)
+                            void window.fluxalloy.settings
+                              .setFfmpegExportTwoPass(false)
+                              .catch(console.error)
+                          }
+                          void window.fluxalloy.settings
+                            .setFfmpegExportVideoCodec(v)
+                            .catch(console.error)
+                        }}
+                      >
+                        {ffmpegExportSelectOptions.videoCodecs.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="app-field" title={uiText('editorTooltipEncodePreset')}>
+                      <span>{uiText('editorFieldEncodePreset')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorTooltipEncodePreset')}
+                        value={exportEncodePreset}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const v = e.target.value as FfmpegExportEncodePresetId
+                          setExportEncodePreset(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportEncodePreset(v)
+                            .catch(console.error)
+                        }}
+                      >
+                        {ffmpegExportSelectOptions.encodePresets.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="app-field" title={uiText('editorTooltipContainer')}>
+                      <span>{uiText('editorFieldContainer')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorTooltipContainer')}
+                        value={exportContainer}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const v = e.target.value as FfmpegExportContainerId
+                          setExportContainer(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportContainer(v)
+                            .catch(console.error)
+                        }}
+                      >
+                        {ffmpegExportSelectOptions.containers.map((p) => (
+                          <option
+                            key={p.id}
+                            value={p.id}
+                            disabled={
+                              (cpuFfmpegVideoCodecRequiresMkv(exportVideoCodec) &&
+                                p.id !== 'mkv') ||
+                              (ffmpegExportVideoCodecRequiresMov(exportVideoCodec) &&
+                                p.id !== 'mov') ||
+                              (ffmpegExportAudioModeRequiresMkv(exportAudioMode) && p.id !== 'mkv')
+                            }
+                          >
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="app-field" title={uiText('editorTooltipCrf')}>
+                      <span>{uiText('editorFieldCrf')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorTooltipCrf')}
+                        value={exportCrf === null ? 'preset' : String(exportCrf)}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const raw = e.target.value
+                          const next = raw === 'preset' ? null : Number(raw)
+                          setExportCrf(next)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportCrf(next)
+                            .catch(console.error)
+                        }}
+                      >
+                        <option value="preset">{uiText('editorCrfOptionPreset')}</option>
+                        {EXPORT_CRF_OPTIONS.map((v) => (
+                          <option key={v} value={v}>
+                            CRF {v}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="app-field" title={uiText('editorTooltipVideoBitrate')}>
+                      <span>{uiText('editorFieldVideoBitrate')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorTooltipVideoBitrate')}
+                        value={exportVideoBitrate === null ? 'crf' : exportVideoBitrate}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const raw = e.target.value
+                          const next = raw === 'crf' ? null : raw
+                          setExportVideoBitrate(next)
+                          if (next === null && exportTwoPass) {
+                            setExportTwoPass(false)
+                            void window.fluxalloy.settings
+                              .setFfmpegExportTwoPass(false)
+                              .catch(console.error)
+                          }
+                          void window.fluxalloy.settings
+                            .setFfmpegExportVideoBitrate(next)
+                            .catch(console.error)
+                        }}
+                      >
+                        <option value="crf">{uiText('editorVideoBitrateOptionCrf')}</option>
+                        {EXPORT_VIDEO_BITRATES.map((v) => (
+                          <option key={v} value={v}>
+                            Video {v}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="app-field" title={uiText('editorHintDeinterlace')}>
+                      <span>{uiText('editorFieldDeinterlace')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorHintDeinterlace')}
+                        value={exportVideoDeinterlace}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const v = e.target.value as FfmpegExportVideoDeinterlaceId
+                          setExportVideoDeinterlace(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportVideoDeinterlace(v)
+                            .catch(console.error)
+                        }}
+                      >
+                        {ffmpegExportSelectOptions.videoDeinterlace.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="app-field" title={uiText('editorHintDenoise')}>
+                      <span>{uiText('editorFieldDenoise')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorHintDenoise')}
+                        value={exportVideoDenoise}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const v = e.target.value as FfmpegExportVideoDenoiseId
+                          setExportVideoDenoise(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportVideoDenoise(v)
+                            .catch(console.error)
+                        }}
+                      >
+                        {ffmpegExportSelectOptions.videoDenoise.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="app-field" title={uiText('editorHintDeband')}>
+                      <span>{uiText('editorFieldDeband')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorHintDeband')}
+                        value={exportVideoDeband}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const v = e.target.value as FfmpegExportVideoDebandId
+                          setExportVideoDeband(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportVideoDeband(v)
+                            .catch(console.error)
+                        }}
+                      >
+                        {ffmpegExportSelectOptions.videoDeband.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="app-field" title={uiText('editorHintHisteq')}>
+                      <span>{uiText('editorFieldHisteq')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorHintHisteq')}
+                        value={exportVideoHisteq}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const v = e.target.value as FfmpegExportVideoHisteqId
+                          setExportVideoHisteq(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportVideoHisteq(v)
+                            .catch(console.error)
+                        }}
+                      >
+                        {ffmpegExportSelectOptions.videoHisteq.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="app-field" title={uiText('editorHintLut3d')}>
+                      <span>{uiText('editorFieldLut3d')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorHintLut3d')}
+                        value={exportVideoLut3d}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const v = e.target.value as FfmpegExportVideoLut3dId
+                          setExportVideoLut3d(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportVideoLut3d(v)
+                            .catch(console.error)
+                        }}
+                      >
+                        {ffmpegExportSelectOptions.videoLut3d.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="app-field" title={uiText('editorHintSharpen')}>
+                      <span>{uiText('editorFieldSharpen')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorHintSharpen')}
+                        value={exportVideoSharpen}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const v = e.target.value as FfmpegExportVideoSharpenId
+                          setExportVideoSharpen(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportVideoSharpen(v)
+                            .catch(console.error)
+                        }}
+                      >
+                        {ffmpegExportSelectOptions.videoSharpen.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="app-field" title={uiText('editorHintEq')}>
+                      <span>{uiText('editorFieldEq')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorHintEq')}
+                        value={exportVideoEqPreset}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const v = e.target.value as FfmpegExportVideoEqPresetId
+                          setExportVideoEqPreset(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportVideoEqPreset(v)
+                            .catch(console.error)
+                        }}
+                      >
+                        {ffmpegExportSelectOptions.videoEq.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="app-field" title={uiText('editorHintHue')}>
+                      <span>{uiText('editorFieldHue')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorHintHue')}
+                        value={exportVideoHue}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const v = e.target.value as FfmpegExportVideoHueId
+                          setExportVideoHue(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportVideoHue(v)
+                            .catch(console.error)
+                        }}
+                      >
+                        {ffmpegExportSelectOptions.videoHue.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="app-field" title={uiText('editorHintGrain')}>
+                      <span>{uiText('editorFieldGrain')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorHintGrain')}
+                        value={exportVideoGrain}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const v = e.target.value as FfmpegExportVideoGrainId
+                          setExportVideoGrain(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportVideoGrain(v)
+                            .catch(console.error)
+                        }}
+                      >
+                        {ffmpegExportSelectOptions.videoGrain.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="app-field" title={uiText('editorHintVignette')}>
+                      <span>{uiText('editorFieldVignette')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorHintVignette')}
+                        value={exportVideoVignette}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const v = e.target.value as FfmpegExportVideoVignetteId
+                          setExportVideoVignette(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportVideoVignette(v)
+                            .catch(console.error)
+                        }}
+                      >
+                        {ffmpegExportSelectOptions.videoVignette.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="app-field" title={uiText('editorHintBlur')}>
+                      <span>{uiText('editorFieldBlur')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorHintBlur')}
+                        value={exportVideoBlur}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const v = e.target.value as FfmpegExportVideoBlurId
+                          setExportVideoBlur(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportVideoBlur(v)
+                            .catch(console.error)
+                        }}
+                      >
+                        {ffmpegExportSelectOptions.videoBlur.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+                </details>
 
-              <details
-                className="app-settings-section"
-                aria-label={uiText('editorFfmpegSectionAudio')}
-                aria-busy={editorFfmpegDetailBusy}
-                open={panelOpen('ffmpegAudio')}
-                onToggle={(e) => {
-                  persistMainWindowUiPanelToggle('ffmpegAudio', e.currentTarget.open)
-                }}
-              >
-                <summary
-                  className="app-settings-summary"
-                  title={uiText('editorTooltipSectionAudio')}
+                <details
+                  className="app-settings-section"
+                  aria-label={uiText('editorFfmpegSectionFrameLayout')}
+                  aria-busy={editorFfmpegDetailBusy}
+                  open={panelOpen('ffmpegFormat')}
+                  onToggle={(e) => {
+                    persistMainWindowUiPanelToggle('ffmpegFormat', e.currentTarget.open)
+                  }}
                 >
-                  {uiText('editorFfmpegSectionAudio')}
-                </summary>
-                <p id="ffmpegAudioSectionHint" className="app-settings-section-hint">
-                  {uiText('editorFfmpegSectionAudioHint')}
-                </p>
-                <div className="app-settings-grid" aria-describedby="ffmpegAudioSectionHint">
-                  <label
-                    className="app-field"
-                    title={uiText('editorTooltipAudioMode')}
-                    aria-describedby="ffmpegAudioSectionHint ffmpegAudioModeSelectHint"
+                  <summary
+                    className="app-settings-summary"
+                    title={uiText('editorTooltipSectionFormat')}
                   >
-                    <span>{uiText('editorFieldAudioMode')}</span>
-                    <select
-                      className="app-control"
+                    {uiText('editorFfmpegSectionFrameLayout')}
+                  </summary>
+                  <p id="ffmpegFormatSectionHint" className="app-settings-section-hint">
+                    {uiText('editorFfmpegSectionFrameLayoutHint')}
+                  </p>
+                  <div className="app-settings-grid" aria-describedby="ffmpegFormatSectionHint">
+                    <label className="app-field" title={uiText('editorTooltipResolution')}>
+                      <span>{uiText('editorFieldResolution')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorTooltipResolution')}
+                        value={exportScalePreset}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const v = e.target.value as FfmpegExportScalePresetId
+                          setExportScalePreset(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportScalePreset(v)
+                            .catch(console.error)
+                        }}
+                      >
+                        {ffmpegExportSelectOptions.scalePresets.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="app-field" title={uiText('editorTooltipFps')}>
+                      <span>{uiText('editorFieldFps')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorTooltipFps')}
+                        value={exportFps === null ? 'source' : String(exportFps)}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const raw = e.target.value
+                          const next = raw === 'source' ? null : Number(raw)
+                          setExportFps(next)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportFps(next)
+                            .catch(console.error)
+                        }}
+                      >
+                        <option value="source">{uiText('editorFpsOptionSource')}</option>
+                        {EXPORT_FPS_OPTIONS.map((v) => (
+                          <option key={v} value={v}>
+                            {uiTextVars('editorExportFpsOptionTemplate', { value: String(v) })}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <div className="app-field app-field-switch">
+                      <span>{uiText('editorTwoPassSpan')}</span>
+                      <PillSwitch
+                        label={uiText('editorTwoPassPillLabel')}
+                        tooltip={uiText('editorTooltipTwoPass')}
+                        checked={exportTwoPass && exportVideoBitrate !== null}
+                        describedBy="ffmpegFormatSectionHint ffmpegTwoPassUiHint"
+                        disabled={
+                          exportBusy ||
+                          snapshotBusy ||
+                          exportVideoBitrate === null ||
+                          exportVideoCodec !== 'libx264'
+                        }
+                        onToggle={() => {
+                          if (exportVideoBitrate === null) {
+                            return
+                          }
+                          bumpManualExportEdit()
+                          const v = !exportTwoPass
+                          setExportTwoPass(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportTwoPass(v)
+                            .catch(console.error)
+                        }}
+                      />
+                      <span id="ffmpegTwoPassUiHint" className="app-visually-hidden">
+                        {uiText('editorTwoPassHint')}
+                      </span>
+                    </div>
+                    <div className="app-field app-field-switch">
+                      <span>{uiText('editorEconomyModeSpan')}</span>
+                      <PillSwitch
+                        label={uiText('editorEconomyModePillLabel')}
+                        tooltip={uiText('editorTooltipEconomyMode')}
+                        checked={exportEconomyMode}
+                        describedBy="ffmpegFormatSectionHint ffmpegEconomyModeUiHint"
+                        disabled={exportBusy || snapshotBusy}
+                        onToggle={() => {
+                          bumpManualExportEdit()
+                          const v = !exportEconomyMode
+                          setExportEconomyMode(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportEconomyMode(v)
+                            .catch(console.error)
+                        }}
+                      />
+                      <span id="ffmpegEconomyModeUiHint" className="app-visually-hidden">
+                        {uiText('editorEconomyModeHint')}
+                      </span>
+                    </div>
+                    <div className="app-field app-field-switch">
+                      <span>{uiText('editorHwDecodeSpan')}</span>
+                      <PillSwitch
+                        label={uiText('editorHwDecodePillLabel')}
+                        tooltip={uiText('editorTooltipHwDecode')}
+                        checked={exportHwDecode}
+                        describedBy="ffmpegFormatSectionHint ffmpegHwDecodeUiHint"
+                        disabled={exportBusy || snapshotBusy}
+                        onToggle={() => {
+                          bumpManualExportEdit()
+                          const v = !exportHwDecode
+                          setExportHwDecode(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportHwDecode(v)
+                            .catch(console.error)
+                        }}
+                      />
+                      <span id="ffmpegHwDecodeUiHint" className="app-visually-hidden">
+                        {uiText('editorHwDecodeHint')}
+                      </span>
+                    </div>
+                    <label className="app-field" title={uiText('editorTooltipRotation')}>
+                      <span>{uiText('editorFieldRotation')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorTooltipRotation')}
+                        value={exportVideoTransform}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const v = e.target.value as FfmpegExportVideoTransformId
+                          setExportVideoTransform(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportVideoTransform(v)
+                            .catch(console.error)
+                        }}
+                      >
+                        {ffmpegExportSelectOptions.videoTransforms.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="app-field" title={uiText('editorTooltipCrop')}>
+                      <span>{uiText('editorFieldCrop')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorTooltipCrop')}
+                        value={exportCropPreset}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const v = e.target.value as FfmpegExportCropPresetId
+                          setExportCropPreset(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportCropPreset(v)
+                            .catch(console.error)
+                        }}
+                      >
+                        {ffmpegExportSelectOptions.cropPresets.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+                </details>
+
+                <details
+                  className="app-settings-section"
+                  aria-label={uiText('editorFfmpegSectionAudio')}
+                  aria-busy={editorFfmpegDetailBusy}
+                  open={panelOpen('ffmpegAudio')}
+                  onToggle={(e) => {
+                    persistMainWindowUiPanelToggle('ffmpegAudio', e.currentTarget.open)
+                  }}
+                >
+                  <summary
+                    className="app-settings-summary"
+                    title={uiText('editorTooltipSectionAudio')}
+                  >
+                    {uiText('editorFfmpegSectionAudio')}
+                  </summary>
+                  <p id="ffmpegAudioSectionHint" className="app-settings-section-hint">
+                    {uiText('editorFfmpegSectionAudioHint')}
+                  </p>
+                  <div className="app-settings-grid" aria-describedby="ffmpegAudioSectionHint">
+                    <label
+                      className="app-field"
                       title={uiText('editorTooltipAudioMode')}
-                      value={exportAudioMode}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const v = e.target.value as FfmpegExportAudioModeId
-                        setExportAudioMode(v)
-                        if (ffmpegExportAudioModeRequiresMkv(v) && exportContainer !== 'mkv') {
-                          setExportContainer('mkv')
+                      aria-describedby="ffmpegAudioSectionHint ffmpegAudioModeSelectHint"
+                    >
+                      <span>{uiText('editorFieldAudioMode')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorTooltipAudioMode')}
+                        value={exportAudioMode}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const v = e.target.value as FfmpegExportAudioModeId
+                          setExportAudioMode(v)
+                          if (ffmpegExportAudioModeRequiresMkv(v) && exportContainer !== 'mkv') {
+                            setExportContainer('mkv')
+                            void window.fluxalloy.settings
+                              .setFfmpegExportContainer('mkv')
+                              .catch(console.error)
+                            setStatusHint(uiText('editorExportAutoContainerMkv'))
+                          }
                           void window.fluxalloy.settings
-                            .setFfmpegExportContainer('mkv')
+                            .setFfmpegExportAudioMode(v)
                             .catch(console.error)
-                          setStatusHint(uiText('editorExportAutoContainerMkv'))
+                        }}
+                      >
+                        {ffmpegExportSelectOptions.audioModes.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                      <span id="ffmpegAudioModeSelectHint" className="app-visually-hidden">
+                        {uiText('editorExportAudioModeSelectHint')}
+                      </span>
+                    </label>
+                    <label className="app-field" title={uiText('editorTooltipAacBitrate')}>
+                      <span>{uiText('editorFieldAacBitrate')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorTooltipAacBitrate')}
+                        value={exportAudioBitrate}
+                        disabled={
+                          exportBusy ||
+                          snapshotBusy ||
+                          !ffmpegExportAudioModeUsesBitrate(exportAudioMode)
                         }
-                        void window.fluxalloy.settings.setFfmpegExportAudioMode(v).catch(console.error)
-                      }}
-                    >
-                      {ffmpegExportSelectOptions.audioModes.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                    <span id="ffmpegAudioModeSelectHint" className="app-visually-hidden">
-                      {uiText('editorExportAudioModeSelectHint')}
-                    </span>
-                  </label>
-                  <label className="app-field" title={uiText('editorTooltipAacBitrate')}>
-                    <span>{uiText('editorFieldAacBitrate')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorTooltipAacBitrate')}
-                      value={exportAudioBitrate}
-                      disabled={
-                        exportBusy || snapshotBusy || !ffmpegExportAudioModeUsesBitrate(exportAudioMode)
-                      }
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const v = e.target.value
-                        setExportAudioBitrate(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportAudioBitrate(v)
-                          .catch(console.error)
-                      }}
-                    >
-                      {EXPORT_AUDIO_BITRATES.map((v) => (
-                        <option key={v} value={v}>
-                          AAC {v}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="app-field" title={uiText('editorHintAudioGain')}>
-                    <span>{uiText('editorFieldAudioGain')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorHintAudioGain')}
-                      value={String(exportAudioGainDb)}
-                      disabled={exportBusy || snapshotBusy || !ffmpegExportAudioModeAllowsFilters(exportAudioMode)}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const parsed = Number(e.target.value)
-                        const v = Number.isFinite(parsed) ? Math.trunc(parsed) : 0
-                        setExportAudioGainDb(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportAudioGainDb(v === 0 ? null : v)
-                          .catch(console.error)
-                      }}
-                    >
-                      {ffmpegExportSelectOptions.audioGainOptions.map((p) => (
-                        <option key={p.value} value={String(p.value)}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="app-field" title={uiText('editorHintAudioNormalize')}>
-                    <span>{uiText('editorFieldAudioNormalize')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorHintAudioNormalize')}
-                      value={exportAudioNormalize}
-                      disabled={exportBusy || snapshotBusy || !ffmpegExportAudioModeAllowsFilters(exportAudioMode)}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const v = e.target.value as FfmpegExportAudioNormalizeId
-                        setExportAudioNormalize(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportAudioNormalize(v)
-                          .catch(console.error)
-                      }}
-                    >
-                      {ffmpegExportSelectOptions.audioNormalize.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="app-field" title={uiText('editorTooltipSnapshotFormat')}>
-                    <span>{uiText('editorFieldSnapshotFormat')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorTooltipSnapshotFormat')}
-                      value={snapshotFormat}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        const v = e.target.value === 'jpg' ? 'jpg' : 'png'
-                        setSnapshotFormat(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegSnapshotFormat(v)
-                          .catch(console.error)
-                      }}
-                    >
-                      {ffmpegExportSelectOptions.snapshotFormats.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <div className="app-field app-field-switch">
-                    <span>{uiText('editorStripMetadataSpan')}</span>
-                    <PillSwitch
-                      label={uiText('editorStripMetadataPillLabel')}
-                      tooltip={uiText('editorTooltipStripMetadata')}
-                      checked={exportStripMetadata}
-                      describedBy="ffmpegAudioSectionHint ffmpegStripMetadataHint"
-                      disabled={exportBusy || snapshotBusy}
-                      onToggle={() => {
-                        bumpManualExportEdit()
-                        const next = !exportStripMetadata
-                        setExportStripMetadata(next)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportStripMetadata(next)
-                          .catch(console.error)
-                      }}
-                    />
-                    <span id="ffmpegStripMetadataHint" className="app-visually-hidden">
-                      {uiText('editorStripMetadataHint')}
-                    </span>
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const v = e.target.value
+                          setExportAudioBitrate(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportAudioBitrate(v)
+                            .catch(console.error)
+                        }}
+                      >
+                        {EXPORT_AUDIO_BITRATES.map((v) => (
+                          <option key={v} value={v}>
+                            AAC {v}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="app-field" title={uiText('editorHintAudioGain')}>
+                      <span>{uiText('editorFieldAudioGain')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorHintAudioGain')}
+                        value={String(exportAudioGainDb)}
+                        disabled={
+                          exportBusy ||
+                          snapshotBusy ||
+                          !ffmpegExportAudioModeAllowsFilters(exportAudioMode)
+                        }
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const parsed = Number(e.target.value)
+                          const v = Number.isFinite(parsed) ? Math.trunc(parsed) : 0
+                          setExportAudioGainDb(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportAudioGainDb(v === 0 ? null : v)
+                            .catch(console.error)
+                        }}
+                      >
+                        {ffmpegExportSelectOptions.audioGainOptions.map((p) => (
+                          <option key={p.value} value={String(p.value)}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="app-field" title={uiText('editorHintAudioNormalize')}>
+                      <span>{uiText('editorFieldAudioNormalize')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorHintAudioNormalize')}
+                        value={exportAudioNormalize}
+                        disabled={
+                          exportBusy ||
+                          snapshotBusy ||
+                          !ffmpegExportAudioModeAllowsFilters(exportAudioMode)
+                        }
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const v = e.target.value as FfmpegExportAudioNormalizeId
+                          setExportAudioNormalize(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportAudioNormalize(v)
+                            .catch(console.error)
+                        }}
+                      >
+                        {ffmpegExportSelectOptions.audioNormalize.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="app-field" title={uiText('editorTooltipSnapshotFormat')}>
+                      <span>{uiText('editorFieldSnapshotFormat')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorTooltipSnapshotFormat')}
+                        value={snapshotFormat}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          const v = e.target.value === 'jpg' ? 'jpg' : 'png'
+                          setSnapshotFormat(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegSnapshotFormat(v)
+                            .catch(console.error)
+                        }}
+                      >
+                        {ffmpegExportSelectOptions.snapshotFormats.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <div className="app-field app-field-switch">
+                      <span>{uiText('editorStripMetadataSpan')}</span>
+                      <PillSwitch
+                        label={uiText('editorStripMetadataPillLabel')}
+                        tooltip={uiText('editorTooltipStripMetadata')}
+                        checked={exportStripMetadata}
+                        describedBy="ffmpegAudioSectionHint ffmpegStripMetadataHint"
+                        disabled={exportBusy || snapshotBusy}
+                        onToggle={() => {
+                          bumpManualExportEdit()
+                          const next = !exportStripMetadata
+                          setExportStripMetadata(next)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportStripMetadata(next)
+                            .catch(console.error)
+                        }}
+                      />
+                      <span id="ffmpegStripMetadataHint" className="app-visually-hidden">
+                        {uiText('editorStripMetadataHint')}
+                      </span>
+                    </div>
+                    <div className="app-field app-field-switch">
+                      <span>{uiText('editorStripChaptersSpan')}</span>
+                      <PillSwitch
+                        label={uiText('editorStripChaptersPillLabel')}
+                        tooltip={uiText('editorTooltipStripChapters')}
+                        checked={exportStripChapters}
+                        describedBy="ffmpegAudioSectionHint ffmpegStripChaptersHint"
+                        disabled={exportBusy || snapshotBusy}
+                        onToggle={() => {
+                          bumpManualExportEdit()
+                          const next = !exportStripChapters
+                          setExportStripChapters(next)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportStripChapters(next)
+                            .catch(console.error)
+                        }}
+                      />
+                      <span id="ffmpegStripChaptersHint" className="app-visually-hidden">
+                        {uiText('editorStripChaptersHint')}
+                      </span>
+                    </div>
+                    <label className="app-field" title={uiText('editorHintExportSubtitles')}>
+                      <span>{uiText('editorFieldExportSubtitles')}</span>
+                      <select
+                        className="app-control"
+                        title={uiText('editorHintExportSubtitles')}
+                        value={exportSubtitleMode}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const v: FfmpegExportSubtitleModeId =
+                            e.target.value === 'copy' ? 'copy' : 'drop'
+                          setExportSubtitleMode(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportSubtitleMode(v)
+                            .catch(console.error)
+                        }}
+                      >
+                        {ffmpegExportSelectOptions.subtitleModes.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
                   </div>
-                  <div className="app-field app-field-switch">
-                    <span>{uiText('editorStripChaptersSpan')}</span>
-                    <PillSwitch
-                      label={uiText('editorStripChaptersPillLabel')}
-                      tooltip={uiText('editorTooltipStripChapters')}
-                      checked={exportStripChapters}
-                      describedBy="ffmpegAudioSectionHint ffmpegStripChaptersHint"
-                      disabled={exportBusy || snapshotBusy}
-                      onToggle={() => {
-                        bumpManualExportEdit()
-                        const next = !exportStripChapters
-                        setExportStripChapters(next)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportStripChapters(next)
-                          .catch(console.error)
-                      }}
-                    />
-                    <span id="ffmpegStripChaptersHint" className="app-visually-hidden">
-                      {uiText('editorStripChaptersHint')}
-                    </span>
-                  </div>
-                  <label className="app-field" title={uiText('editorHintExportSubtitles')}>
-                    <span>{uiText('editorFieldExportSubtitles')}</span>
-                    <select
-                      className="app-control"
-                      title={uiText('editorHintExportSubtitles')}
-                      value={exportSubtitleMode}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const v: FfmpegExportSubtitleModeId =
-                          e.target.value === 'copy' ? 'copy' : 'drop'
-                        setExportSubtitleMode(v)
-                        void window.fluxalloy.settings
-                          .setFfmpegExportSubtitleMode(v)
-                          .catch(console.error)
-                      }}
+                  {lastSnapshotPath ? (
+                    <div
+                      className="app-settings-actions"
+                      role="toolbar"
+                      aria-orientation="horizontal"
+                      aria-label={uiText('editorSnapshotLastActionsToolbarAria')}
+                      aria-busy={exportBusy || snapshotBusy || probePending}
                     >
-                      {ffmpegExportSelectOptions.subtitleModes.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                </div>
-                {lastSnapshotPath ? (
-                  <div
-                    className="app-settings-actions"
-                    role="toolbar"
-                    aria-orientation="horizontal"
-                    aria-label={uiText('editorSnapshotLastActionsToolbarAria')}
-                    aria-busy={exportBusy || snapshotBusy || probePending}
-                  >
-                    <button
-                      type="button"
-                      className="app-btn app-btn-compact"
-                      disabled={exportBusy || snapshotBusy}
-                      aria-describedby="ffmpegAudioSectionHint"
-                      title={uiText('editorTooltipSnapshotLastFile')}
-                      onClick={() => {
-                        void handleOpenLastSnapshot('file')
-                      }}
-                    >
-                      {uiText('editorSnapshotLastFile')}
-                    </button>
-                    <button
-                      type="button"
-                      className="app-btn app-btn-compact"
-                      disabled={exportBusy || snapshotBusy}
-                      aria-describedby="ffmpegAudioSectionHint"
-                      title={uiText('editorTooltipSnapshotLastFolder')}
-                      onClick={() => {
-                        void handleOpenLastSnapshot('folder')
-                      }}
-                    >
-                      {uiText('editorSnapshotLastFolder')}
-                    </button>
-                    <button
-                      type="button"
-                      className="app-btn app-btn-compact"
-                      disabled={exportBusy || snapshotBusy}
-                      aria-describedby="ffmpegAudioSectionHint"
-                      title={uiText('editorTooltipSnapshotCopyPath')}
-                      onClick={() => {
-                        void handleCopyLastSnapshotPath()
-                      }}
-                    >
-                      {uiText('editorCopy')}
-                    </button>
-                  </div>
-                ) : null}
-              </details>
+                      <button
+                        type="button"
+                        className="app-btn app-btn-compact"
+                        disabled={exportBusy || snapshotBusy}
+                        aria-describedby="ffmpegAudioSectionHint"
+                        title={uiText('editorTooltipSnapshotLastFile')}
+                        onClick={() => {
+                          void handleOpenLastSnapshot('file')
+                        }}
+                      >
+                        {uiText('editorSnapshotLastFile')}
+                      </button>
+                      <button
+                        type="button"
+                        className="app-btn app-btn-compact"
+                        disabled={exportBusy || snapshotBusy}
+                        aria-describedby="ffmpegAudioSectionHint"
+                        title={uiText('editorTooltipSnapshotLastFolder')}
+                        onClick={() => {
+                          void handleOpenLastSnapshot('folder')
+                        }}
+                      >
+                        {uiText('editorSnapshotLastFolder')}
+                      </button>
+                      <button
+                        type="button"
+                        className="app-btn app-btn-compact"
+                        disabled={exportBusy || snapshotBusy}
+                        aria-describedby="ffmpegAudioSectionHint"
+                        title={uiText('editorTooltipSnapshotCopyPath')}
+                        onClick={() => {
+                          void handleCopyLastSnapshotPath()
+                        }}
+                      >
+                        {uiText('editorCopy')}
+                      </button>
+                    </div>
+                  ) : null}
+                </details>
 
-              <details
-                className="app-settings-section"
-                aria-label={uiText('editorFfmpegSectionPresets')}
-                aria-busy={editorFfmpegDetailBusy}
-                open={panelOpen('ffmpegPresets')}
-                onToggle={(e) => {
-                  persistMainWindowUiPanelToggle('ffmpegPresets', e.currentTarget.open)
-                }}
-              >
-                <summary
-                  className="app-settings-summary"
-                  title={uiText('editorTooltipSectionPresets')}
+                <details
+                  className="app-settings-section"
+                  aria-label={uiText('editorFfmpegSectionPresets')}
+                  aria-busy={editorFfmpegDetailBusy}
+                  open={panelOpen('ffmpegPresets')}
+                  onToggle={(e) => {
+                    persistMainWindowUiPanelToggle('ffmpegPresets', e.currentTarget.open)
+                  }}
                 >
-                  {uiText('editorFfmpegSectionPresets')}
-                </summary>
-                <p id="ffmpegPresetsSectionHint" className="app-settings-section-hint">
-                  {uiText('editorFfmpegSectionPresetsHint')}
-                </p>
-                <div className="app-settings-stack" aria-describedby="ffmpegPresetsSectionHint">
-                  <label
-                    className="app-field"
-                    title={
-                      selectedExportUserPreset?.hint?.trim() ||
-                      uiText('editorTooltipUserPresetSelectFallback')
-                    }
+                  <summary
+                    className="app-settings-summary"
+                    title={uiText('editorTooltipSectionPresets')}
                   >
-                    <span>{uiText('editorFieldUserPreset')}</span>
-                    <select
-                      className="app-control"
+                    {uiText('editorFfmpegSectionPresets')}
+                  </summary>
+                  <p id="ffmpegPresetsSectionHint" className="app-settings-section-hint">
+                    {uiText('editorFfmpegSectionPresetsHint')}
+                  </p>
+                  <div className="app-settings-stack" aria-describedby="ffmpegPresetsSectionHint">
+                    <label
+                      className="app-field"
                       title={
                         selectedExportUserPreset?.hint?.trim() ||
                         uiText('editorTooltipUserPresetSelectFallback')
                       }
-                      value={selectedUserPresetId ?? ''}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        const v = e.target.value
-                        if (v === '') {
-                          setSelectedUserPresetId(null)
-                          return
+                    >
+                      <span>{uiText('editorFieldUserPreset')}</span>
+                      <select
+                        className="app-control"
+                        title={
+                          selectedExportUserPreset?.hint?.trim() ||
+                          uiText('editorTooltipUserPresetSelectFallback')
                         }
-                        const preset = exportUserPresets.find((p) => p.id === v)
-                        if (!preset) {
-                          return
-                        }
-                        void window.fluxalloy.settings
-                          .applyFfmpegExportSnapshot(preset.snapshot)
-                          .then((s) => {
-                            hydrateExportFieldsFromSettings(s)
-                            setSelectedUserPresetId(v)
-                          })
-                          .catch(console.error)
-                      }}
-                    >
-                      <option value="">{uiText('editorUserPresetPlaceholder')}</option>
-                      {exportUserPresets.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <div
-                    className="app-settings-actions"
-                    role="toolbar"
-                    aria-orientation="horizontal"
-                    aria-label={uiText('editorExportPresetsActionsToolbarAria')}
-                    aria-busy={exportBusy || snapshotBusy || probePending}
-                  >
-                    <button
-                      type="button"
-                      className="app-btn app-btn-compact"
-                      disabled={exportBusy || snapshotBusy}
-                      aria-describedby="ffmpegPresetsSectionHint"
-                      title={uiText('editorTooltipPresetAdd')}
-                      onClick={() => {
-                        handleSaveExportUserPreset()
-                      }}
-                    >
-                      {uiText('editorPresetAdd')}
-                    </button>
-                    <button
-                      type="button"
-                      className="app-btn app-btn-compact"
-                      disabled={
-                        exportBusy ||
-                        snapshotBusy ||
-                        !selectedUserPresetId ||
-                        (selectedUserPresetId != null &&
-                          isBuiltinExportUserPresetId(selectedUserPresetId))
-                      }
-                      aria-describedby="ffmpegPresetsSectionHint"
-                      title={uiText('editorTooltipPresetRename')}
-                      onClick={() => {
-                        handleRenameExportUserPreset()
-                      }}
-                    >
-                      {uiText('editorPresetRename')}
-                    </button>
-                    <button
-                      type="button"
-                      className="app-btn app-btn-compact"
-                      disabled={
-                        exportBusy ||
-                        snapshotBusy ||
-                        !selectedUserPresetId ||
-                        (selectedUserPresetId != null &&
-                          isBuiltinExportUserPresetId(selectedUserPresetId))
-                      }
-                      aria-describedby="ffmpegPresetsSectionHint"
-                      title={uiText('editorTooltipPresetOverwrite')}
-                      onClick={() => {
-                        handleOverwriteExportUserPreset()
-                      }}
-                    >
-                      {uiText('editorPresetOverwrite')}
-                    </button>
-                    <button
-                      type="button"
-                      className="app-btn app-btn-compact"
-                      disabled={
-                        exportBusy ||
-                        snapshotBusy ||
-                        !selectedUserPresetId ||
-                        (selectedUserPresetId != null &&
-                          isBuiltinExportUserPresetId(selectedUserPresetId))
-                      }
-                      aria-describedby="ffmpegPresetsSectionHint"
-                      title={uiText('editorTooltipPresetDelete')}
-                      onClick={() => {
-                        handleDeleteExportUserPreset()
-                      }}
-                    >
-                      {uiText('editorPresetDelete')}
-                    </button>
-                  </div>
-                </div>
-              </details>
-
-              <details
-                id="editor-ffmpeg-export-output"
-                className="app-settings-section"
-                aria-label={uiText('editorFfmpegSectionOutput')}
-                aria-busy={editorFfmpegDetailBusy}
-                open={panelOpen('ffmpegOutput')}
-                onToggle={(e) => {
-                  persistMainWindowUiPanelToggle('ffmpegOutput', e.currentTarget.open)
-                }}
-              >
-                <summary
-                  className="app-settings-summary"
-                  title={uiText('editorTooltipSectionOutput')}
-                >
-                  {uiText('editorFfmpegSectionOutput')}
-                </summary>
-                <p id="ffmpegOutputSectionHint" className="app-settings-section-hint">
-                  {uiText('editorFfmpegSectionOutputHint')}
-                </p>
-                <div className="app-settings-stack" aria-describedby="ffmpegOutputSectionHint">
-                  <label className="app-field app-field-block" title={uiText('editorExportExtraArgsHint')}>
-                    <span>{uiText('editorExportExtraArgsLabel')}</span>
-                    <textarea
-                      className="app-downloads-url-input app-control"
-                      value={exportExtraArgsLine}
-                      placeholder={uiText('editorExportExtraArgsPlaceholder')}
-                      rows={2}
-                      disabled={exportBusy || snapshotBusy}
-                      onChange={(e) => {
-                        bumpManualExportEdit()
-                        const v = e.target.value
-                        setExportExtraArgsLine(v)
-                        void window.fluxalloy.settings.setFfmpegExportExtraArgsLine(v).catch(console.error)
-                      }}
-                    />
-                    <span className="app-settings-section-hint">{uiText('editorExportExtraArgsHint')}</span>
-                    {!exportExtraArgsParsed.ok ? (
-                      <span className="app-field-error" role="alert">
-                        {uiTextVars('editorExportExtraArgsParseError', {
-                          detail: exportExtraArgsParsed.error
-                        })}
-                      </span>
-                    ) : null}
-                  </label>
-                  <details
-                    className="app-export-preview app-export-preview-nested"
-                    aria-label={uiText('editorExportPreviewDetailsAria')}
-                    aria-busy={editorFfmpegDetailBusy}
-                    open={panelOpen('exportCommandPreview')}
-                    onToggle={(e) => {
-                      persistMainWindowUiPanelToggle('exportCommandPreview', e.currentTarget.open)
-                    }}
-                  >
-                    <summary
-                      className="app-export-preview-summary"
-                      title={uiText('editorTooltipExportCommandPreview')}
-                    >
-                      {uiText('editorExportCommandPreviewSummary')}
-                    </summary>
+                        value={selectedUserPresetId ?? ''}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          const v = e.target.value
+                          if (v === '') {
+                            setSelectedUserPresetId(null)
+                            return
+                          }
+                          const preset = exportUserPresets.find((p) => p.id === v)
+                          if (!preset) {
+                            return
+                          }
+                          void window.fluxalloy.settings
+                            .applyFfmpegExportSnapshot(preset.snapshot)
+                            .then((s) => {
+                              hydrateExportFieldsFromSettings(s)
+                              setSelectedUserPresetId(v)
+                            })
+                            .catch(console.error)
+                        }}
+                      >
+                        <option value="">{uiText('editorUserPresetPlaceholder')}</option>
+                        {exportUserPresets.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
                     <div
-                      className="app-export-preview-body"
-                      role="region"
-                      aria-label={uiText('editorExportPreviewBodyRegionAria')}
+                      className="app-settings-actions"
+                      role="toolbar"
+                      aria-orientation="horizontal"
+                      aria-label={uiText('editorExportPresetsActionsToolbarAria')}
                       aria-busy={exportBusy || snapshotBusy || probePending}
                     >
-                      <pre
-                        className="app-export-preview-pre"
-                        aria-label={uiText('editorAriaExportFfmpegCommand')}
-                        aria-describedby="exportCommandPreviewHint"
+                      <button
+                        type="button"
+                        className="app-btn app-btn-compact"
+                        disabled={exportBusy || snapshotBusy}
+                        aria-describedby="ffmpegPresetsSectionHint"
+                        title={uiText('editorTooltipPresetAdd')}
+                        onClick={() => {
+                          handleSaveExportUserPreset()
+                        }}
                       >
-                        {exportPreview.pass1Command
-                          ? `${uiText('editorExportPreviewPass1')}\n${exportPreview.pass1Command}\n\n${uiText('editorExportPreviewPass2')}\n${exportPreviewCommand}`
-                          : exportPreviewCommand}
-                      </pre>
+                        {uiText('editorPresetAdd')}
+                      </button>
+                      <button
+                        type="button"
+                        className="app-btn app-btn-compact"
+                        disabled={
+                          exportBusy ||
+                          snapshotBusy ||
+                          !selectedUserPresetId ||
+                          (selectedUserPresetId != null &&
+                            isBuiltinExportUserPresetId(selectedUserPresetId))
+                        }
+                        aria-describedby="ffmpegPresetsSectionHint"
+                        title={uiText('editorTooltipPresetRename')}
+                        onClick={() => {
+                          handleRenameExportUserPreset()
+                        }}
+                      >
+                        {uiText('editorPresetRename')}
+                      </button>
+                      <button
+                        type="button"
+                        className="app-btn app-btn-compact"
+                        disabled={
+                          exportBusy ||
+                          snapshotBusy ||
+                          !selectedUserPresetId ||
+                          (selectedUserPresetId != null &&
+                            isBuiltinExportUserPresetId(selectedUserPresetId))
+                        }
+                        aria-describedby="ffmpegPresetsSectionHint"
+                        title={uiText('editorTooltipPresetOverwrite')}
+                        onClick={() => {
+                          handleOverwriteExportUserPreset()
+                        }}
+                      >
+                        {uiText('editorPresetOverwrite')}
+                      </button>
+                      <button
+                        type="button"
+                        className="app-btn app-btn-compact"
+                        disabled={
+                          exportBusy ||
+                          snapshotBusy ||
+                          !selectedUserPresetId ||
+                          (selectedUserPresetId != null &&
+                            isBuiltinExportUserPresetId(selectedUserPresetId))
+                        }
+                        aria-describedby="ffmpegPresetsSectionHint"
+                        title={uiText('editorTooltipPresetDelete')}
+                        onClick={() => {
+                          handleDeleteExportUserPreset()
+                        }}
+                      >
+                        {uiText('editorPresetDelete')}
+                      </button>
+                    </div>
+                  </div>
+                </details>
+
+                <details
+                  id="editor-ffmpeg-export-output"
+                  className="app-settings-section"
+                  aria-label={uiText('editorFfmpegSectionOutput')}
+                  aria-busy={editorFfmpegDetailBusy}
+                  open={panelOpen('ffmpegOutput')}
+                  onToggle={(e) => {
+                    persistMainWindowUiPanelToggle('ffmpegOutput', e.currentTarget.open)
+                  }}
+                >
+                  <summary
+                    className="app-settings-summary"
+                    title={uiText('editorTooltipSectionOutput')}
+                  >
+                    {uiText('editorFfmpegSectionOutput')}
+                  </summary>
+                  <p id="ffmpegOutputSectionHint" className="app-settings-section-hint">
+                    {uiText('editorFfmpegSectionOutputHint')}
+                  </p>
+                  <div className="app-settings-stack" aria-describedby="ffmpegOutputSectionHint">
+                    <label
+                      className="app-field app-field-block"
+                      title={uiText('editorExportExtraArgsHint')}
+                    >
+                      <span>{uiText('editorExportExtraArgsLabel')}</span>
+                      <textarea
+                        className="app-downloads-url-input app-control"
+                        value={exportExtraArgsLine}
+                        placeholder={uiText('editorExportExtraArgsPlaceholder')}
+                        rows={2}
+                        disabled={exportBusy || snapshotBusy}
+                        onChange={(e) => {
+                          bumpManualExportEdit()
+                          const v = e.target.value
+                          setExportExtraArgsLine(v)
+                          void window.fluxalloy.settings
+                            .setFfmpegExportExtraArgsLine(v)
+                            .catch(console.error)
+                        }}
+                      />
+                      <span className="app-settings-section-hint">
+                        {uiText('editorExportExtraArgsHint')}
+                      </span>
+                      {!exportExtraArgsParsed.ok ? (
+                        <span className="app-field-error" role="alert">
+                          {uiTextVars('editorExportExtraArgsParseError', {
+                            detail: exportExtraArgsParsed.error
+                          })}
+                        </span>
+                      ) : null}
+                    </label>
+                    <details
+                      className="app-export-preview app-export-preview-nested"
+                      aria-label={uiText('editorExportPreviewDetailsAria')}
+                      aria-busy={editorFfmpegDetailBusy}
+                      open={panelOpen('exportCommandPreview')}
+                      onToggle={(e) => {
+                        persistMainWindowUiPanelToggle('exportCommandPreview', e.currentTarget.open)
+                      }}
+                    >
+                      <summary
+                        className="app-export-preview-summary"
+                        title={uiText('editorTooltipExportCommandPreview')}
+                      >
+                        {uiText('editorExportCommandPreviewSummary')}
+                      </summary>
                       <div
-                        className="app-export-preview-actions"
+                        className="app-export-preview-body"
+                        role="region"
+                        aria-label={uiText('editorExportPreviewBodyRegionAria')}
+                        aria-busy={exportBusy || snapshotBusy || probePending}
+                      >
+                        <pre
+                          className="app-export-preview-pre"
+                          aria-label={uiText('editorAriaExportFfmpegCommand')}
+                          aria-describedby="exportCommandPreviewHint"
+                        >
+                          {exportPreview.pass1Command
+                            ? `${uiText('editorExportPreviewPass1')}\n${exportPreview.pass1Command}\n\n${uiText('editorExportPreviewPass2')}\n${exportPreviewCommand}`
+                            : exportPreviewCommand}
+                        </pre>
+                        <div
+                          className="app-export-preview-actions"
+                          role="toolbar"
+                          aria-orientation="horizontal"
+                          aria-label={uiText('editorExportPreviewActionsToolbarAria')}
+                          aria-busy={exportBusy || snapshotBusy || probePending}
+                        >
+                          <button
+                            type="button"
+                            className="app-btn app-btn-compact"
+                            onClick={() => {
+                              void handleCopyExportPreview()
+                            }}
+                            title={uiText('editorCopyFfmpegCommandTitle')}
+                            aria-describedby="exportCommandPreviewHint"
+                          >
+                            {uiText('editorCopy')}
+                          </button>
+                          <span id="exportCommandPreviewHint" className="app-export-preview-hint">
+                            {exportPreviewHint()}
+                          </span>
+                        </div>
+                      </div>
+                    </details>
+                    {lastExportPath ? (
+                      <div
+                        className="app-settings-actions"
                         role="toolbar"
                         aria-orientation="horizontal"
-                        aria-label={uiText('editorExportPreviewActionsToolbarAria')}
+                        aria-label={uiText('editorExportLastOutputActionsToolbarAria')}
                         aria-busy={exportBusy || snapshotBusy || probePending}
                       >
                         <button
                           type="button"
                           className="app-btn app-btn-compact"
+                          disabled={exportBusy || snapshotBusy}
+                          aria-describedby="ffmpegOutputSectionHint"
+                          title={uiText('editorTooltipExportLastFile')}
                           onClick={() => {
-                            void handleCopyExportPreview()
+                            void handleOpenLastExport('file')
                           }}
-                          title={uiText('editorCopyFfmpegCommandTitle')}
-                          aria-describedby="exportCommandPreviewHint"
                         >
-                          {uiText('editorCopy')}
+                          {uiText('editorExportLastFile')}
                         </button>
-                        <span id="exportCommandPreviewHint" className="app-export-preview-hint">
-                          {exportPreviewHint()}
-                        </span>
+                        <button
+                          type="button"
+                          className="app-btn app-btn-compact"
+                          disabled={exportBusy || snapshotBusy}
+                          aria-describedby="ffmpegOutputSectionHint"
+                          title={uiText('editorTooltipExportLastFolder')}
+                          onClick={() => {
+                            void handleOpenLastExport('folder')
+                          }}
+                        >
+                          {uiText('editorExportLastFolder')}
+                        </button>
+                        <button
+                          type="button"
+                          className="app-btn app-btn-compact"
+                          disabled={exportBusy || snapshotBusy}
+                          aria-describedby="ffmpegOutputSectionHint"
+                          title={uiText('editorTooltipExportOpenPreview')}
+                          onClick={() => {
+                            void handleOpenLastExport('preview')
+                          }}
+                        >
+                          {uiText('processingHistoryOpenPreview')}
+                        </button>
+                        <button
+                          type="button"
+                          className="app-btn app-btn-compact"
+                          disabled={exportBusy || snapshotBusy}
+                          aria-describedby="ffmpegOutputSectionHint"
+                          title={uiText('editorTooltipCopyExportPath')}
+                          onClick={() => {
+                            void handleCopyLastExportPath()
+                          }}
+                        >
+                          {uiText('editorCopyExportPath')}
+                        </button>
                       </div>
-                    </div>
-                  </details>
-                  {lastExportPath ? (
-                    <div
-                      className="app-settings-actions"
-                      role="toolbar"
-                      aria-orientation="horizontal"
-                      aria-label={uiText('editorExportLastOutputActionsToolbarAria')}
-                      aria-busy={exportBusy || snapshotBusy || probePending}
-                    >
-                      <button
-                        type="button"
-                        className="app-btn app-btn-compact"
-                        disabled={exportBusy || snapshotBusy}
-                        aria-describedby="ffmpegOutputSectionHint"
-                        title={uiText('editorTooltipExportLastFile')}
-                        onClick={() => {
-                          void handleOpenLastExport('file')
-                        }}
-                      >
-                        {uiText('editorExportLastFile')}
-                      </button>
-                      <button
-                        type="button"
-                        className="app-btn app-btn-compact"
-                        disabled={exportBusy || snapshotBusy}
-                        aria-describedby="ffmpegOutputSectionHint"
-                        title={uiText('editorTooltipExportLastFolder')}
-                        onClick={() => {
-                          void handleOpenLastExport('folder')
-                        }}
-                      >
-                        {uiText('editorExportLastFolder')}
-                      </button>
-                      <button
-                        type="button"
-                        className="app-btn app-btn-compact"
-                        disabled={exportBusy || snapshotBusy}
-                        aria-describedby="ffmpegOutputSectionHint"
-                        title={uiText('editorTooltipExportOpenPreview')}
-                        onClick={() => {
-                          void handleOpenLastExport('preview')
-                        }}
-                      >
-                        {uiText('processingHistoryOpenPreview')}
-                      </button>
-                      <button
-                        type="button"
-                        className="app-btn app-btn-compact"
-                        disabled={exportBusy || snapshotBusy}
-                        aria-describedby="ffmpegOutputSectionHint"
-                        title={uiText('editorTooltipCopyExportPath')}
-                        onClick={() => {
-                          void handleCopyLastExportPath()
-                        }}
-                      >
-                        {uiText('editorCopyExportPath')}
-                      </button>
-                    </div>
-                  ) : null}
-                </div>
-              </details>
+                    ) : null}
+                  </div>
+                </details>
               </div>
               <ProcessingHistoryPanel
                 open={panelOpen('processingHistory')}
@@ -5763,7 +5815,11 @@ function App(): JSX.Element {
                     }}
                   />
                 </div>
-                <ul className="app-terminal-hint-list" aria-label={uiText('terminalHintsInsertListAria')} aria-busy={terminalBusy}>
+                <ul
+                  className="app-terminal-hint-list"
+                  aria-label={uiText('terminalHintsInsertListAria')}
+                  aria-busy={terminalBusy}
+                >
                   {visibleTerminalHints.map((hint) => (
                     <li key={`${hint.tool}:${hint.token}:${hint.fullLine ?? ''}`}>
                       <button
@@ -6089,7 +6145,10 @@ function App(): JSX.Element {
                         const statusTone = downloadsStatusTone(row)
                         return (
                           <tr key={row.id}>
-                            <td className="app-downloads-mono" headers={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.num}>
+                            <td
+                              className="app-downloads-mono"
+                              headers={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.num}
+                            >
                               {row.id}
                             </td>
                             <td headers={DOWNLOADS_QUEUE_TABLE_HEADER_IDS.titleUrl}>
@@ -6166,9 +6225,12 @@ function App(): JSX.Element {
                                 className="app-downloads-row-actions"
                                 role="toolbar"
                                 aria-orientation="horizontal"
-                                aria-label={uiTextVars('downloadsQueueRowActionsToolbarAriaTemplate', {
-                                  id: String(row.id)
-                                })}
+                                aria-label={uiTextVars(
+                                  'downloadsQueueRowActionsToolbarAriaTemplate',
+                                  {
+                                    id: String(row.id)
+                                  }
+                                )}
                                 aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
                               >
                                 <button
@@ -7166,7 +7228,10 @@ function App(): JSX.Element {
                                   type="button"
                                   className="app-downloads-hint-token"
                                   title={h.summary || h.token}
-                                  aria-label={downloadsCatalogHintTokenAccessibleDescription(cat, h)}
+                                  aria-label={downloadsCatalogHintTokenAccessibleDescription(
+                                    cat,
+                                    h
+                                  )}
                                   disabled={downloadsOptionsBusy}
                                   onClick={() => appendDownloadsExtraArgsToken(h.token)}
                                 >
@@ -7254,7 +7319,11 @@ function App(): JSX.Element {
         </main>
       )}
 
-      <footer className="app-statusbar" aria-label={uiText('appStatusbarAria')} aria-busy={appChromeBusy}>
+      <footer
+        className="app-statusbar"
+        aria-label={uiText('appStatusbarAria')}
+        aria-busy={appChromeBusy}
+      >
         <div
           role="group"
           aria-label={uiText('statusbarEnginesClusterAria')}
@@ -7277,11 +7346,7 @@ function App(): JSX.Element {
             aria-label={uiText('statusbarExportCodecClusterAria')}
             className="app-statusbar-cluster"
             aria-busy={
-              exportBusy ||
-              snapshotBusy ||
-              exportCancelBusy ||
-              probePending ||
-              batchExportBusy
+              exportBusy || snapshotBusy || exportCancelBusy || probePending || batchExportBusy
             }
           >
             <span className="app-statusbar-sep" aria-hidden />
@@ -7299,9 +7364,7 @@ function App(): JSX.Element {
           </>
         ) : null}
         <span className="app-statusbar-sep" aria-hidden />
-        <Versions
-          statusBusy={engineDownloadBusy || engineSummary === 'checking'}
-        />
+        <Versions statusBusy={engineDownloadBusy || engineSummary === 'checking'} />
       </footer>
 
       <AboutDialog
@@ -7375,7 +7438,9 @@ function App(): JSX.Element {
               aria-busy={exportPresetSaving}
             >
               <label className="app-engine-path-row">
-                <span className="app-engine-path-label">{uiText('editorExportPresetNameLabel')}</span>
+                <span className="app-engine-path-label">
+                  {uiText('editorExportPresetNameLabel')}
+                </span>
                 <input
                   className="app-engine-path-input"
                   type="text"
@@ -7398,7 +7463,11 @@ function App(): JSX.Element {
               </label>
             </div>
             {exportPresetNameDialog.error ? (
-              <p id="export-preset-name-error" className="app-modal-hint app-modal-error" role="alert">
+              <p
+                id="export-preset-name-error"
+                className="app-modal-hint app-modal-error"
+                role="alert"
+              >
                 {exportPresetNameDialog.error}
               </p>
             ) : null}
@@ -7419,7 +7488,11 @@ function App(): JSX.Element {
               >
                 {uiText('appDialogCancel')}
               </button>
-              <button type="submit" className="app-btn app-btn-primary" disabled={exportPresetSaving}>
+              <button
+                type="submit"
+                className="app-btn app-btn-primary"
+                disabled={exportPresetSaving}
+              >
                 {uiText('appDialogSave')}
               </button>
             </div>

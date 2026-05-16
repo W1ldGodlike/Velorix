@@ -353,7 +353,12 @@ export function AboutDialog({
               </div>
             ) : null}
           </div>
-          <div role="toolbar" aria-orientation="horizontal" aria-label={uiText('aboutDialogCloseToolbarAria')} aria-busy={aboutShellBusy}>
+          <div
+            role="toolbar"
+            aria-orientation="horizontal"
+            aria-label={uiText('aboutDialogCloseToolbarAria')}
+            aria-busy={aboutShellBusy}
+          >
             <button
               type="button"
               className="app-btn app-btn-primary"

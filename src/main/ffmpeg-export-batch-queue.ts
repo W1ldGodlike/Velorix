@@ -221,7 +221,9 @@ export function takeNextFfmpegExportBatchWaitingRow(): FfmpegExportBatchRow | un
 
 export function updateFfmpegExportBatchRow(
   id: number,
-  patch: Partial<Pick<FfmpegExportBatchRow, 'status' | 'progress' | 'outputPath' | 'error' | 'shortLabel'>>
+  patch: Partial<
+    Pick<FfmpegExportBatchRow, 'status' | 'progress' | 'outputPath' | 'error' | 'shortLabel'>
+  >
 ): void {
   const row = rows.find((r) => r.id === id)
   if (!row) {
@@ -285,8 +287,7 @@ export function retryFfmpegExportBatchRows(options?: {
   if (runnerBusy) {
     return 0
   }
-  const idSet =
-    options?.ids !== undefined && options.ids.length > 0 ? new Set(options.ids) : null
+  const idSet = options?.ids !== undefined && options.ids.length > 0 ? new Set(options.ids) : null
   const includeCancelled = options?.includeCancelled === true
   let reset = 0
   for (const row of rows) {

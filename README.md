@@ -11,7 +11,7 @@
 
 1. Установите [Node.js](https://nodejs.org/) LTS (подходит 20.x, 22.x или 24.x).
 2. В корне репозитория: `npm install` (postinstall подтянет **electron-builder** native deps).
-3. Проверка: `npm run check` — **ESLint**, **TypeScript** (main/web/tests), **Vitest**, `trusted_hashes.json`, нумерация журнала, guard секретов (см. `docs/RELEASE.md` §1).
+3. Проверка: `npm run check` — **ESLint**, **TypeScript** (main/web/tests), **Vitest**, `trusted_hashes.json`, нумерация журнала, валидатор спринт-TODO чеклиста, guard секретов (см. `docs/RELEASE.md` §1). Краткий сводный вывод: `npm run check:quiet`.
 4. Разработка: `npm run dev` (lifecycle **`predev`** → `engines:prepare:win` для `bin/`; отдельно **`engines:doctor`** не вызывается — при необходимости вручную).
 5. Рекомендуемые расширения VS Code / Cursor перечислены в [`.vscode/extensions.json`](./.vscode/extensions.json); для форматирования и ESLint см. [`.vscode/settings.json`](./.vscode/settings.json).
 
@@ -94,6 +94,7 @@ npm run engines:doctor   # по желанию: наличие exe, SHA256 в л
 
 ## Полезное
 
+- Агент (Cursor / marathon): [`AGENTS.md`](./AGENTS.md), [`docs/AGENT_REANCHOR.md`](./docs/AGENT_REANCHOR.md), [`docs/SOURCES_OF_TRUTH.md`](./docs/SOURCES_OF_TRUTH.md).
 - `Data/`, `Help/` — материалы для UI и конфигураций (**§3** ТЗ и подсказки).
 - Правки русских `summary` встроенных сценариев терминала (`src/shared/terminal-contract.ts`): **`npm run locales:terminal-summaries-ru`** (дважды, пока второй прогон не покажет **0** замен и **0** gloss) — см. [`Help/ffmpeg-terminal-hints.md`](./Help/ffmpeg-terminal-hints.md).
 - Автоцикл по чеклисту через Cursor SDK (не IDE-чат): см. [`scripts/cursor-automation/README.md`](./scripts/cursor-automation/README.md).

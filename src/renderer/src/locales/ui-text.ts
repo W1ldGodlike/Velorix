@@ -125,8 +125,7 @@ const UI_TEXT = {
     terminalPanelSectionAria: 'Область терминала: ввод, журнал и подсказки',
     terminalTitle: 'Терминал',
     terminalIntroBandAria: 'Вводная зона вкладки терминала',
-    terminalIntroKnowledgeNavAria:
-      'Навигация: открыть статью подсказок терминала в базе знаний',
+    terminalIntroKnowledgeNavAria: 'Навигация: открыть статью подсказок терминала в базе знаний',
     terminalIntroLead:
       'Разрешены только префиксы ffmpeg, ffprobe и yt-dlp. Команда разбирается как argv, запускается в основном процессе (main) без оболочки (shell); каталог выбранного движка добавляется в PATH. В argv можно токен ',
     terminalIntroTailTemplate:
@@ -339,7 +338,8 @@ const UI_TEXT = {
     editorUrlPasteBehaviorDownloads: 'Окно загрузок',
     editorUrlPasteBehaviorOpenEditor: 'Скачать в редактор',
     batchExportOutputSuffixLabel: 'Имя выхода',
-    batchExportOutputSuffixHint: 'Токены {stem}, {name}, {ext}; расширение контейнера добавится отдельно.',
+    batchExportOutputSuffixHint:
+      'Токены {stem}, {name}, {ext}; расширение контейнера добавится отдельно.',
     batchExportOutputDirLabel: 'Папка выхода',
     batchExportOutputDirHint:
       'Пусто — файл рядом с каждым исходником; иначе все готовые файлы пакета в эту папку.',
@@ -413,7 +413,8 @@ const UI_TEXT = {
     downloadsRailPick: 'Выбрать',
     downloadsRailSavingSummary: 'Сохранение',
     downloadsOutputDirAria: 'Каталог загрузок yt-dlp',
-    downloadsOutputDirActionsToolbarAria: 'Каталог загрузок: открыть, выбрать или сбросить на умолчание',
+    downloadsOutputDirActionsToolbarAria:
+      'Каталог загрузок: открыть, выбрать или сбросить на умолчание',
     downloadsOutputDirLabel: 'Каталог загрузок',
     downloadsOutputPathLoading: 'Загружаю путь…',
     downloadsOutputUseDefaultUserdata: 'Используется каталог по умолчанию в userData.',
@@ -454,7 +455,8 @@ const UI_TEXT = {
     downloadsCommandPreviewHelp: 'Превью команды (чтение)',
     terminalHintInsertButtonAriaTemplate: 'Вставить {token}, инструмент {tool}. {summary}',
     terminalHintInsertButtonAriaNoSummaryTemplate: 'Вставить {token}, инструмент {tool}',
-    downloadsHintTokenButtonAriaTemplate: 'Добавить токен {token} из группы «{category}». {summary}',
+    downloadsHintTokenButtonAriaTemplate:
+      'Добавить токен {token} из группы «{category}». {summary}',
     downloadsHintTokenButtonAriaNoSummaryTemplate: 'Добавить токен {token} из группы «{category}»',
     downloadsOptionsLoading: 'Загружаю настройки yt-dlp…',
     downloadsRailRefreshOptions: 'Обновить настройки',
@@ -735,7 +737,8 @@ const UI_TEXT = {
       'Токены через пробел, вставляются перед выходным файлом. Без -i, -c:v, -vf, -map и shell-символов.',
     editorExportExtraArgsParseError: 'Ошибка доп. argv: {detail}',
     editorEconomyModePillLabel: 'Один поток ffmpeg',
-    editorTooltipEconomyMode: 'Ограничить ffmpeg одним потоком (-threads 1), чтобы снизить нагрузку на CPU',
+    editorTooltipEconomyMode:
+      'Ограничить ffmpeg одним потоком (-threads 1), чтобы снизить нагрузку на CPU',
     editorEconomyModeHint: 'Экономный режим: ffmpeg использует один поток',
     editorTwoPassHint:
       'Работает только в связке «совместимый широкий формат видео» + выбранное ограничение размера видео выше. Если включена только «тонкая настройка качества» или выбран экономящий трафик формат — переключатель недоступен.',
@@ -953,7 +956,8 @@ const UI_TEXT = {
     batchExportQueueTableZoneAria: 'Таблица очереди пакетного экспорта или пустое состояние',
     batchExportTableWrapGroupAria: 'Таблица очереди пакетного экспорта',
     batchExportActionsToolbarAria: 'Действия панели пакетного экспорта',
-    batchExportPanelFormGroupAria: 'Параметры пакета: суффикс, папка, параллелизм и действия очереди',
+    batchExportPanelFormGroupAria:
+      'Параметры пакета: суффикс, папка, параллелизм и действия очереди',
     batchExportOutputDirRowGroupAria: 'Папка вывода: выбрать, открыть, сбросить',
     batchExportSummary: 'Пакетный экспорт (§7.3)',
     batchExportHint:
@@ -964,7 +968,8 @@ const UI_TEXT = {
       'Сколько строк очереди выполнять одновременно. «Авто» подбирает по системе.',
     batchExportAddFiles: 'Добавить файлы',
     batchExportAddFolder: 'Добавить папку',
-    batchExportDragHint: 'Перетащите видеофайлы в эту область или используйте кнопки. Порядок строк — перетаскиванием.',
+    batchExportDragHint:
+      'Перетащите видеофайлы в эту область или используйте кнопки. Порядок строк — перетаскиванием.',
     batchExportDragRow: 'Перетащите для смены порядка',
     batchExportStart: 'Запустить пакет',
     batchExportCancel: 'Остановить пакет',
@@ -1638,7 +1643,8 @@ const UI_TEXT = {
     batchExportOutputSuffixLabel: 'Output name',
     batchExportOutputSuffixHint: 'Tokens {stem}, {name}, {ext}; container extension is appended.',
     batchExportOutputDirLabel: 'Output folder',
-    batchExportOutputDirHint: 'Empty — next to each source file; otherwise all batch outputs go here.',
+    batchExportOutputDirHint:
+      'Empty — next to each source file; otherwise all batch outputs go here.',
     batchExportOutputDirPick: 'Choose…',
     batchExportOutputDirClear: 'Next to source',
     batchExportOutputDirOpen: 'Open folder',
@@ -1684,8 +1690,7 @@ const UI_TEXT = {
     downloadsAutoStartBatchPillLabel: 'Auto-start batch',
     downloadsAutoStartBatchHint:
       'After enqueue, start batch processing when ffmpeg is idle (export panel settings).',
-    downloadsTooltipAutoStartBatch:
-      'Automatically start batch export after the file is queued.',
+    downloadsTooltipAutoStartBatch: 'Automatically start batch export after the file is queued.',
     downloadsCookiesBrowserLabel: 'Browser cookies',
     downloadsCookiesBrowserNone: 'Do not use',
     downloadsYtdlpBrowserPrettyChrome: 'Chrome',
@@ -1747,12 +1752,15 @@ const UI_TEXT = {
       'Same catalog as the download pop-out: search and list; click a flag to append the token to argv.',
     downloadsRailDocOutput: 'Output template',
     downloadsRailDocPostprocess: 'Post-processing',
-    downloadsRailExpertDocNavAria: 'Navigation: external yt-dlp documentation for the expert section',
+    downloadsRailExpertDocNavAria:
+      'Navigation: external yt-dlp documentation for the expert section',
     downloadsCommandPreviewHelp: 'Command preview (read-only)',
     terminalHintInsertButtonAriaTemplate: 'Insert {token}, tool {tool}. {summary}',
     terminalHintInsertButtonAriaNoSummaryTemplate: 'Insert {token}, tool {tool}',
-    downloadsHintTokenButtonAriaTemplate: 'Append token {token} from category «{category}». {summary}',
-    downloadsHintTokenButtonAriaNoSummaryTemplate: 'Append token {token} from category «{category}»',
+    downloadsHintTokenButtonAriaTemplate:
+      'Append token {token} from category «{category}». {summary}',
+    downloadsHintTokenButtonAriaNoSummaryTemplate:
+      'Append token {token} from category «{category}»',
     downloadsOptionsLoading: 'Loading yt-dlp settings…',
     downloadsRailRefreshOptions: 'Reload settings',
     downloadsRailFooterToolbarAria: 'Downloads settings rail footer',
@@ -2086,8 +2094,7 @@ const UI_TEXT = {
       '“Do not keep” usually leaves only picture and sound. “Keep” tries to carry text subtitles; a few file types cannot hold them, so the track may still disappear.',
     editorSnapshotLastFile: 'Snapshot file',
     editorSnapshotLastFolder: 'Folder',
-    editorSnapshotLastActionsToolbarAria:
-      'Last saved frame: open file or folder and copy path',
+    editorSnapshotLastActionsToolbarAria: 'Last saved frame: open file or folder and copy path',
     editorCopy: 'Copy',
     editorPillSwitchOn: 'On',
     editorPillSwitchOff: 'Off',
@@ -2380,8 +2387,7 @@ const UI_TEXT = {
     editorExportLastFile: 'File',
     editorExportLastFolder: 'Folder',
     editorCopyExportPath: 'Copy path',
-    editorExportLastOutputActionsToolbarAria:
-      'Last export: open file or folder and copy path',
+    editorExportLastOutputActionsToolbarAria: 'Last export: open file or folder and copy path',
     editorExportPreviewPass1: '# Pass 1',
     editorExportPreviewPass2: '# Pass 2',
     editorExportPreviewHintNoSource:

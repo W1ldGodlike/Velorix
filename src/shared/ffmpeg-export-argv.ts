@@ -673,7 +673,11 @@ export function buildFfmpegExportArgv(params: FfmpegExportArgvParams): string[] 
     const cpuUsed =
       params.encodePreset === 'smaller' ? '4' : params.encodePreset === 'quality' ? '0' : '2'
     const deadline =
-      params.encodePreset === 'quality' ? 'best' : params.encodePreset === 'smaller' ? 'realtime' : 'good'
+      params.encodePreset === 'quality'
+        ? 'best'
+        : params.encodePreset === 'smaller'
+          ? 'realtime'
+          : 'good'
     args.push('-cpu-used', cpuUsed, '-deadline', deadline)
     if (params.videoBitrate === null) {
       const presetCrf =

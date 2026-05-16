@@ -345,9 +345,7 @@ export function resolveFfmpegExportBatchOutputDirectoryFromSettings(
   return n
 }
 
-export function resolveFfmpegExportBatchOutputSuffixFromSettings(
-  settings: AppSettings
-): string {
+export function resolveFfmpegExportBatchOutputSuffixFromSettings(settings: AppSettings): string {
   const parsed = parseFfmpegExportBatchOutputSuffixTemplate(settings.ffmpegExportBatchOutputSuffix)
   return parsed.ok ? parsed.template : DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX
 }

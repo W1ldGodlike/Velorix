@@ -24,9 +24,7 @@ export function resolveFfmpegExportHwaccelForDecode(
   vcodec: FfmpegExportVideoCodecId,
   hwaccels: readonly string[]
 ): string | null {
-  const avail = new Set(
-    hwaccels.map((h) => h.trim().toLowerCase()).filter((h) => h.length > 0)
-  )
+  const avail = new Set(hwaccels.map((h) => h.trim().toLowerCase()).filter((h) => h.length > 0))
   if (avail.size === 0) {
     return null
   }

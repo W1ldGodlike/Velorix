@@ -182,9 +182,13 @@ export function readProcessingHistoryNewestFirst(
       if (!q) {
         return true
       }
-      return [entry.inputPath, entry.outputPath ?? '', entry.status, entry.errorHint ?? '', entry.exportVideoCodecUsed ?? ''].some(
-        (text) => text.toLowerCase().includes(q)
-      )
+      return [
+        entry.inputPath,
+        entry.outputPath ?? '',
+        entry.status,
+        entry.errorHint ?? '',
+        entry.exportVideoCodecUsed ?? ''
+      ].some((text) => text.toLowerCase().includes(q))
     })
     .slice(-max)
     .reverse()

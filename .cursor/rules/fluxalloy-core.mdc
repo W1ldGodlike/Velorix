@@ -1,0 +1,25 @@
+---
+description: FluxAlloy — hub (стек, карта файлов, источники истины)
+alwaysApply: true
+---
+
+# FluxAlloy — ядро
+
+**Источники истины и синхронизация:** [`docs/SOURCES_OF_TRUTH.md`](../../docs/SOURCES_OF_TRUTH.md). Меняя договорённость — обновляйте все связанные места **одним коммитом** (rules + шапка артефакта + `AGENT_REANCHOR` / SDK contract).
+
+| Артефакт | Роль | Правила формата |
+|----------|------|-----------------|
+| [`FLUXALLOY_TZ.md`](../../FLUXALLOY_TZ.md) | Канон продукта | Читать **нужный §**, не весь файл. **Не редактировать** без явной просьбы владельца. |
+| [`IMPLEMENTATION_CHECKLIST.md`](../../IMPLEMENTATION_CHECKLIST.md) | Прогресс, спринт | Блок «Ближайший TODO спринта»; `npm run check:checklist`. См. `fluxalloy-checklist.mdc`. |
+| [`IMPLEMENTATION_JOURNAL.md`](../../IMPLEMENTATION_JOURNAL.md) | Хроника | **Одна сводная `J-*` за итерацию**; `npm run journal:stamp`; `npm run check:journal`. См. `fluxalloy-journal.mdc`. |
+| [`docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md) | IPC, слои | Обновлять при новых каналах вместе с `src/shared/ipc-channels.ts`. |
+
+**Режим marathon / «продолжай» / `agent:loop`:** обязательно [`docs/AGENT_REANCHOR.md`](../../docs/AGENT_REANCHOR.md) + `fluxalloy-marathon.mdc`.
+
+**Автономность:** не спрашивать подтверждение на `run`, установки, перезапуски. Неясность по ТЗ — короткий вопрос; остальное не стопорить.
+
+**Стек:** Electron + React + TypeScript (§2 ТЗ). **Не** WinUI / `Microsoft.WindowsAppSDK` без явного запроса. ffmpeg, yt-dlp, FS — **main** + whitelist IPC; preload — `contextBridge`.
+
+**Большие файлы:** дробить на части и продолжать. **Бинарники:** не ослаблять `Data/trusted_hashes.json` (§3 ТЗ).
+
+**Справочник (не дублировать в ответах):** [`docs/AGENT_INSTRUCTIONS_AND_AGREEMENTS.md`](../../docs/AGENT_INSTRUCTIONS_AND_AGREEMENTS.md).

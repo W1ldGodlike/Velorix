@@ -303,10 +303,7 @@ export interface FluxAlloyApi {
     getSnapshot: () => Promise<FfmpegExportBatchSnapshot>
     listInputPaths: () => Promise<{ ok: true; paths: string[] }>
     listOutputPaths: () => Promise<{ ok: true; paths: string[] }>
-    removeWaiting: () => Promise<
-      | { ok: true; removed: number }
-      | { ok: false; error: string }
-    >
+    removeWaiting: () => Promise<{ ok: true; removed: number } | { ok: false; error: string }>
     pickFiles: () => Promise<FfmpegExportBatchPickFilesResult>
     pickFolder: () => Promise<FfmpegExportBatchPickFilesResult>
     pickOutputFolder: () => Promise<{ ok: true; path: string } | { ok: false; cancelled: true }>
@@ -330,7 +327,9 @@ export interface FluxAlloyApi {
     start: (rawExportOverrides?: unknown) => Promise<FfmpegExportBatchStartResult>
     cancel: () => Promise<{ ok: true }>
     retryFailed: () => Promise<{ ok: true; reset: number } | { ok: false; error: string }>
-    retryRows: (ids: number[]) => Promise<{ ok: true; reset: number } | { ok: false; error: string }>
+    retryRows: (
+      ids: number[]
+    ) => Promise<{ ok: true; reset: number } | { ok: false; error: string }>
     clearCompleted: () => Promise<{ ok: true; removed: number } | { ok: false; error: string }>
     addFromDownloadsDone: (ids?: number[]) => Promise<FfmpegExportBatchAddPathsResult>
     addFromHistoryInputs: (ids: string[]) => Promise<FfmpegExportBatchAddPathsResult>
