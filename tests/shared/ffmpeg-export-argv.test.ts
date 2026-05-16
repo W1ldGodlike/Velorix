@@ -672,7 +672,7 @@ describe('shared ffmpeg export argv', () => {
     expect(argv.includes('-pix_fmt')).toBe(true)
   })
 
-  it('hwaccelDecode вставляется перед -i', () => {
+  it('hwaccelDecode вставляется перед -i с output format', () => {
     const argv = buildFfmpegExportArgv({
       inputPath: 'in.mp4',
       outputPath: 'out.mp4',
@@ -689,7 +689,32 @@ describe('shared ffmpeg export argv', () => {
       container: 'mp4'
     })
     const i = argv.indexOf('-i')
-    expect(argv.slice(i - 2, i)).toEqual(['-hwaccel', 'cuda'])
+    expect(argv.slice(i - 4, i)).toEqual([
+      '-hwaccel',
+      'cuda',
+      '-hwaccel_output_format',
+      'cuda'
+    ])
+  })
+
+  it('hwaccelDecode qsv: output format qsv перед -i', () => {
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      videoCodec: 'h264_qsv',
+      hwaccelDecode: 'qsv',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mp4'
+    })
+    const i = argv.indexOf('-i')
+    expect(argv.slice(i - 4, i)).toEqual(['-hwaccel', 'qsv', '-hwaccel_output_format', 'qsv'])
   })
 
   it('h264_vaapi: -vf начинается с hwupload', () => {
@@ -712,6 +737,145 @@ describe('shared ffmpeg export argv', () => {
     const vf = argv[vfIdx + 1] ?? ''
     expect(vf.startsWith('format=nv12,hwupload,')).toBe(true)
     expect(vf).toContain('hflip')
+  })
+
+  it('h264_qsv: -vf начинается с QSV hwupload-цепочки', () => {
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      videoCodec: 'h264_qsv',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mp4',
+      videoTransform: 'hflip'
+    })
+    const vf = argv[argv.indexOf('-vf') + 1] ?? ''
+    expect(vf.startsWith('format=nv12,hwupload=extra_hw_frames=64,format=qsv,')).toBe(true)
+    expect(vf).toContain('hflip')
+  })
+
+  it('h264_amf: -vf начинается с AMF hwupload-цепочки', () => {
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      videoCodec: 'h264_amf',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: '720p',
+      container: 'mp4'
+    })
+    const vf = argv[argv.indexOf('-vf') + 1] ?? ''
+    expect(vf.startsWith('format=nv12,hwupload,format=d3d11,')).toBe(true)
+    expect(vf).toContain('scale=')
+  })
+
+  it('h264_nvenc + CPU -vf: префикс hwupload_cuda', () => {
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      videoCodec: 'h264_nvenc',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mp4',
+      videoTransform: 'hflip'
+    })
+    const vf = argv[argv.indexOf('-vf') + 1] ?? ''
+    expect(vf.startsWith('format=nv12,hwupload_cuda,')).toBe(true)
+    expect(vf).toContain('hflip')
+  })
+
+  it('h264_nvenc без -vf: без hwupload_cuda', () => {
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      videoCodec: 'h264_nvenc',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mp4'
+    })
+    expect(argv.includes('-vf')).toBe(false)
+  })
+
+  it('§16 регрессия: nvenc + cuda hwaccel + CPU vf — output format и hwupload_cuda', () => {
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mp4',
+      applyTrim: false,
+      encodePreset: 'balance',
+      videoCodec: 'h264_nvenc',
+      hwaccelDecode: 'cuda',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mp4',
+      videoTransform: 'hflip'
+    })
+    const i = argv.indexOf('-i')
+    expect(argv.slice(i - 4, i)).toEqual([
+      '-hwaccel',
+      'cuda',
+      '-hwaccel_output_format',
+      'cuda'
+    ])
+    const vf = argv[argv.indexOf('-vf') + 1] ?? ''
+    expect(vf.startsWith('format=nv12,hwupload_cuda,')).toBe(true)
+    expect(vf).toContain('hflip')
+    expect(argv).toContain('h264_nvenc')
+  })
+
+  it('§16 регрессия: vaapi encode + vaapi hwaccel + crop', () => {
+    const argv = buildFfmpegExportArgv({
+      inputPath: 'in.mp4',
+      outputPath: 'out.mkv',
+      applyTrim: false,
+      encodePreset: 'balance',
+      videoCodec: 'h264_vaapi',
+      hwaccelDecode: 'vaapi',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      container: 'mkv',
+      cropPreset: 'center-square'
+    })
+    const i = argv.indexOf('-i')
+    expect(argv.slice(i - 4, i)).toEqual([
+      '-hwaccel',
+      'vaapi',
+      '-hwaccel_output_format',
+      'vaapi'
+    ])
+    const vf = argv[argv.indexOf('-vf') + 1] ?? ''
+    expect(vf.startsWith('format=nv12,hwupload,')).toBe(true)
+    expect(vf).toContain('crop=')
   })
 
   it('h264_nvenc: без libx264-preset, VBR + cq; hevc_nvenc + mp4 даёт hvc1', () => {

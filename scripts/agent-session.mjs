@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 /**
  * Локальный счётчик marathon-итераций (docs/.agent-session.json, в .gitignore).
  * Владельцу ничего создавать не нужно — первый вызов создаёт файл.
