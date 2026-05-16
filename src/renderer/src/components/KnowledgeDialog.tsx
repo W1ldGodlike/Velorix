@@ -184,7 +184,11 @@ export function KnowledgeDialog({
           role="group"
           aria-label={uiText('knowledgeDialogGridAria')}
         >
-          <aside className="app-knowledge-sidebar" aria-label={uiText('knowledgeTocAria')}>
+          <aside
+            className="app-knowledge-sidebar"
+            aria-label={uiText('knowledgeTocAria')}
+            aria-busy={loading}
+          >
             <label htmlFor={knowledgeSearchFieldId} className="app-visually-hidden">
               {uiText('knowledgeSearchInputAria')}
             </label>

@@ -918,4 +918,9 @@
 - [J-895] 2026-05-16 11:44:00 [Assistant]: История обработки FFmpeg (`ProcessingHistoryPanel`): `aria-busy={busy}` на секции `<details>`.
 - [J-896] 2026-05-16 11:46:00 [Assistant]: База знаний (`KnowledgeDialog`): регион статьи (`article`) — `aria-busy={loading}` при загрузке списка/текста статьи.
 - [J-897] 2026-05-16 11:48:00 [Assistant]: О программе (`AboutDialog`): у модального `dialog` — `aria-busy`, пока карточка рантайма (`aboutInfo`) ещё не получена.
+- [J-898] 2026-05-16 11:50:00 [Assistant]: Терминал — секция панели (`app-terminal-panel`): `aria-busy={terminalBusy}` на время выполнения команды.
+- [J-899] 2026-05-16 11:52:00 [Assistant]: База знаний — боковая колонка оглавления (`aside`): `aria-busy={loading}` при загрузке списка/статьи.
+- [J-900] 2026-05-16 11:54:00 [Assistant]: Редактор — стек превью (`editorPreviewStackAria`): `aria-busy` при `exportBusy` или `snapshotBusy`.
+- [J-901] 2026-05-16 11:56:00 [Assistant]: Редактор — регион секций FFmpeg rail (`editorFfmpegRailSectionsRegionAria`): `aria-busy` при экспорте/снимке или отмене экспорта (`exportCancelBusy`).
+- [J-902] 2026-05-16 11:58:00 [Assistant]: Загрузки — нижний стек истории/журнала (`downloadsLowerStackAria`): `aria-busy={downloadsHistoryBusy}` при обновлении истории.
 

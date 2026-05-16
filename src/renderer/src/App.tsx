@@ -3958,6 +3958,7 @@ function App(): JSX.Element {
                   ref={previewStackRef}
                   role="region"
                   aria-label={uiText('editorPreviewStackAria')}
+                  aria-busy={exportBusy || snapshotBusy}
                 >
                   <div
                     className="app-preview-media-card"
@@ -4079,7 +4080,11 @@ function App(): JSX.Element {
                 </div>
               </div>
 
-              <div role="region" aria-label={uiText('editorFfmpegRailSectionsRegionAria')}>
+              <div
+                role="region"
+                aria-label={uiText('editorFfmpegRailSectionsRegionAria')}
+                aria-busy={exportBusy || snapshotBusy || exportCancelBusy}
+              >
               <details
                 className="app-settings-section"
                 aria-label={uiText('editorFfmpegSectionVideo')}
@@ -5325,7 +5330,11 @@ function App(): JSX.Element {
           aria-labelledby="workspace-tab-terminal"
           className="app-main app-terminal-workspace"
         >
-          <section className="app-terminal-panel" aria-label={uiText('terminalPanelSectionAria')}>
+          <section
+            className="app-terminal-panel"
+            aria-label={uiText('terminalPanelSectionAria')}
+            aria-busy={terminalBusy}
+          >
             <div
               className="app-downloads-band"
               role="region"
@@ -6265,6 +6274,7 @@ function App(): JSX.Element {
                 className="app-downloads-lower-stack"
                 role="region"
                 aria-label={uiText('downloadsLowerStackAria')}
+                aria-busy={downloadsHistoryBusy}
               >
                 <DownloadsHistoryPanel
                   open={downloadsEmbeddedHistoryOpen}
