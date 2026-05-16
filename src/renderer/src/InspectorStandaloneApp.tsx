@@ -417,7 +417,7 @@ export function InspectorStandaloneApp(): JSX.Element {
           </span>
         ) : null}
         {statusHint ? <span className="app-statusbar-sep" aria-hidden /> : null}
-        <Versions />
+        <Versions statusBusy={probePending} />
       </footer>
 
       <AboutDialog

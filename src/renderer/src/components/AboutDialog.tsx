@@ -133,7 +133,11 @@ export function AboutDialog({
           {uiText('aboutDialogDescAria')}
         </p>
         {aboutInfo ? (
-          <dl className="app-about-dl" aria-label={uiText('aboutRuntimeDetailsAria')}>
+          <dl
+            className="app-about-dl"
+            aria-label={uiText('aboutRuntimeDetailsAria')}
+            aria-busy={aboutShellBusy}
+          >
             <div className="app-about-row">
               <dt>{uiText('appLabel')}</dt>
               <dd>{aboutInfo.appName}</dd>
@@ -311,7 +315,11 @@ export function AboutDialog({
                 )}
               </button>
             </div>
-            <nav className="app-doc-inline-links app-about-doc-links" aria-label={uiText('aboutExternalDocsNavAria')}>
+            <nav
+              className="app-doc-inline-links app-about-doc-links"
+              aria-label={uiText('aboutExternalDocsNavAria')}
+              aria-busy={aboutShellBusy}
+            >
               <a href={YTDLP_DOC_README} target="_blank" rel="noreferrer">
                 {uiText('docLinkYtDlpReadme')}
               </a>

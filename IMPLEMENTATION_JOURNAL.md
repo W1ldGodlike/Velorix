@@ -1013,4 +1013,9 @@
 - [J-990] 2026-05-16 14:54:00 [Assistant]: Топбар — список вкладок (`workspaceTabsAria`): `aria-busy` заменён на `appChromeBusy` вместо узкого `engineDownloadBusy || probePending`.
 - [J-991] 2026-05-16 14:56:00 [Assistant]: Топбар — завершающая группа (`topbarTrailingGroupAria`) и тулбар действий (`topbarActionsToolbarAria`): `aria-busy={appChromeBusy}`.
 - [J-992] 2026-05-16 14:58:00 [Assistant]: Редактор — `tabpanel` (`workspace-panel-editor`) и кластер кодека в статусбаре (`statusbarExportCodecClusterAria`): в `aria-busy` добавлен `batchExportBusy`; окно инспектора §9 — оболочка, шапка и бренд: `aria-busy={probePending}`.
+- [J-993] 2026-05-16 15:00:00 [Assistant]: About §4.5 — описание рантайма (`aboutRuntimeDetailsAria`) и навигация внешних доков (`aboutExternalDocsNavAria`): `aria-busy={aboutShellBusy}`.
+- [J-994] 2026-05-16 15:02:00 [Assistant]: Диалог путей движков — построчный тулбар (`editorEnginePathRowToolbarAriaTemplate`): `aria-busy={enginePathsSaving}`.
+- [J-995] 2026-05-16 15:04:00 [Assistant]: Загрузки — нижний стек истории/лога (`downloadsLowerStackAria`): `aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}` вместо только истории.
+- [J-996] 2026-05-16 15:06:00 [Assistant]: Редактор — введён `editorPreviewRegionBusy`; превью (`editorPreviewDropzoneAria`, стек, медиакарточка, подпись): `aria-busy` включает отмену экспорта и batch.
+- [J-997] 2026-05-16 15:08:00 [Assistant]: Статусбар главного окна (`appStatusbarAria`): `aria-busy={appChromeBusy}`; инспектор §9 — список версий (`versionsAriaLabel`): `statusBusy={probePending}`.
 

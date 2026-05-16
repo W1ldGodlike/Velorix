@@ -2988,6 +2988,9 @@ function App(): JSX.Element {
   const editorFfmpegDetailBusy =
     exportBusy || snapshotBusy || exportCancelBusy || probePending
 
+  const editorPreviewRegionBusy =
+    exportBusy || snapshotBusy || probePending || exportCancelBusy || batchExportBusy
+
   const appChromeBusy =
     engineDownloadBusy ||
     engineSummary === 'checking' ||
@@ -4004,7 +4007,7 @@ function App(): JSX.Element {
           <section
             className="app-preview"
             aria-label={uiText('editorPreviewDropzoneAria')}
-            aria-busy={exportBusy || snapshotBusy || probePending}
+            aria-busy={editorPreviewRegionBusy}
             onDragOver={(event) => {
               event.preventDefault()
               event.stopPropagation()
@@ -4022,13 +4025,13 @@ function App(): JSX.Element {
                   ref={previewStackRef}
                   role="region"
                   aria-label={uiText('editorPreviewStackAria')}
-                  aria-busy={exportBusy || snapshotBusy || probePending}
+                  aria-busy={editorPreviewRegionBusy}
                 >
                   <div
                     className="app-preview-media-card"
                     role="group"
                     aria-label={uiText('editorPreviewMediaCardGroupAria')}
-                    aria-busy={exportBusy || snapshotBusy || probePending}
+                    aria-busy={editorPreviewRegionBusy}
                   >
                     <video
                       key={`${preview.path}|${previewPlaybackUrl ?? preview.mediaUrl}`}
@@ -4076,7 +4079,7 @@ function App(): JSX.Element {
                     className="app-preview-caption"
                     title={preview.path}
                     aria-label={uiText('editorPreviewCaptionAria')}
-                    aria-busy={exportBusy || snapshotBusy || probePending}
+                    aria-busy={editorPreviewRegionBusy}
                   >
                     {preview.name}
                   </footer>
@@ -6396,7 +6399,7 @@ function App(): JSX.Element {
                 className="app-downloads-lower-stack"
                 role="region"
                 aria-label={uiText('downloadsLowerStackAria')}
-                aria-busy={downloadsHistoryBusy}
+                aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
               >
                 <DownloadsHistoryPanel
                   open={downloadsEmbeddedHistoryOpen}
@@ -7250,7 +7253,7 @@ function App(): JSX.Element {
         </main>
       )}
 
-      <footer className="app-statusbar" aria-label={uiText('appStatusbarAria')}>
+      <footer className="app-statusbar" aria-label={uiText('appStatusbarAria')} aria-busy={appChromeBusy}>
         <div
           role="group"
           aria-label={uiText('statusbarEnginesClusterAria')}
@@ -7483,6 +7486,7 @@ function App(): JSX.Element {
                     aria-label={uiTextVars('editorEnginePathRowToolbarAriaTemplate', {
                       engine: engineLabel(id)
                     })}
+                    aria-busy={enginePathsSaving}
                   >
                     <button
                       type="button"
