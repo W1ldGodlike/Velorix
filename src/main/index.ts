@@ -1,6 +1,6 @@
 import { execFile } from 'child_process'
 import { createHash } from 'crypto'
-import { existsSync, mkdirSync, rmSync, statSync, writeFileSync } from 'fs'
+import { existsSync, mkdirSync, rmSync, statSync } from 'fs'
 import { basename, dirname, extname, isAbsolute, join, normalize, resolve } from 'path'
 import {
   BrowserWindow,
@@ -19,16 +19,14 @@ import icon from '../../resources/icon.png?asset'
 
 import { packagedWinUnpackedRoot } from '../shared/packaged-app-smoke'
 import { resolveAppPaths } from './app-paths'
-import {
-  buildKnowledgeHelpDirCandidates,
-  listKnowledgeArticles,
-  readKnowledgeArticle,
-  resolveKnowledgeHelpDirectory
-} from './knowledge-service'
-import { resolveFfmpegExportLutCubeAbsPath } from './ffmpeg-export-lut-path'
+import { buildKnowledgeHelpDirCandidates, resolveKnowledgeHelpDirectory } from './knowledge-service'
+import { registerKnowledgeDiagnosticsIpcHandlers } from './ipc/register-knowledge-diagnostics-ipc'
+import { registerSettingsIpcHandlers } from './ipc/register-settings-ipc'
+import { registerEnginesPreviewIpcHandlers } from './ipc/register-engines-preview-ipc'
+import { registerMainUtilitiesIpcHandlers } from './ipc/register-main-utilities-ipc'
+import { registerExportBatchIpcHandlers } from './ipc/register-export-batch-ipc'
 import { getYtdlpCliValidationCopy } from '../shared/ytdlp-cli-validation-locale'
 import { installExternalNavigationGuard, openAllowedExternalUrl } from './external-url'
-import { downloadEnginesWindows, isAnyEngineMissing } from './engine-download'
 import {
   cancelDownloadsRunner,
   configureDownloadsQueueRunnerHooks,
@@ -37,7 +35,6 @@ import {
 import { emitDownloadsLog } from './downloads-log-ipc'
 import { getDownloadsQueueSnapshot } from './downloads-queue'
 import { filterExistingVideoPathsForBatch } from './ffmpeg-export-batch-grant-paths'
-import { collectDownloadsQueueVideoPaths } from '../shared/ffmpeg-export-batch-collect-paths'
 import {
   broadcastDownloadsCliOptionsChanged,
   broadcastDownloadsOutputDirectorySnapshot,
@@ -55,15 +52,10 @@ import {
   registerInspectorWindowIpcHandlers
 } from './inspector-window'
 import {
-  isDiagnosticsFolderId,
   listDiagnosticsFolders,
   openDiagnosticsFolder,
   type DiagnosticsFolderEntry
 } from './diagnostics-paths'
-import {
-  cleanDiagnosticsMaintenance,
-  getDiagnosticsMaintenanceSnapshot
-} from './diagnostics-maintenance'
 import {
   attachProcessErrorHandlers,
   getMainLogBackupFilePath,
@@ -80,11 +72,7 @@ import {
   pruneOldDiagnosticFiles,
   type SupportBundleRuntimeInfo
 } from './support-bundle'
-import {
-  ensureFfmpegSnapshotExtension,
-  parseFfmpegSnapshotFormat,
-  runFfmpegSnapshotFrame
-} from './ffmpeg-frame-snapshot-service'
+import { parseFfmpegSnapshotFormat } from './ffmpeg-frame-snapshot-service'
 import {
   mergeFfmpegExportSnapshotIntoAppSettings,
   parseFfmpegExportAudioNormalize,
@@ -99,7 +87,6 @@ import {
   parseFfmpegExportScalePreset,
   parseFfmpegExportStripFlag,
   parseFfmpegExportSubtitleMode,
-  parseFfmpegExportTrim,
   parseFfmpegExportVideoDeband,
   parseFfmpegExportVideoHisteq,
   parseFfmpegExportVideoDenoise,
@@ -118,9 +105,7 @@ import {
   parseFfmpegExportVideoCodec,
   parseFfmpegExportEconomyMode,
   parseFfmpegExportTwoPass,
-  ensureFfmpegExportExtension,
   runFfmpegExportJob,
-  type MediaExportStartResult,
   type FfmpegExportProgressPayload
 } from './ffmpeg-export-service'
 import { FFMPEG_EXPORT_CANCELLED_ERROR } from '../shared/ffmpeg-export-contract'
@@ -138,80 +123,24 @@ import {
   pickUniqueAutoExportOutputPath,
   resolveFfmpegExportJobOptionsFromAppSettings
 } from './ffmpeg-export-resolve-from-settings'
-import {
-  addFfmpegExportBatchPaths,
-  clearFfmpegExportBatchQueue,
-  getFfmpegExportBatchSnapshot,
-  markWaitingFfmpegExportBatchRowsCancelled,
-  moveFfmpegExportBatchRow,
-  listFfmpegExportBatchInputPaths,
-  listFfmpegExportBatchOutputPaths,
-  removeFfmpegExportBatchRows,
-  removeCompletedFfmpegExportBatchRows,
-  removeWaitingFfmpegExportBatchRows,
-  reorderFfmpegExportBatchRowAt,
-  retryFailedFfmpegExportBatchRows,
-  retryFfmpegExportBatchRows,
-  setFfmpegExportBatchConcurrency
-} from './ffmpeg-export-batch-queue'
+import { addFfmpegExportBatchPaths, getFfmpegExportBatchSnapshot } from './ffmpeg-export-batch-queue'
 import {
   attachFfmpegExportBatchQueuePersist,
   hydrateFfmpegExportBatchQueueFromDisk
 } from './ffmpeg-export-batch-persist'
-import {
-  cancelFfmpegExportBatchRunner,
-  isFfmpegExportBatchActive,
-  runFfmpegExportBatchQueue,
-  setFfmpegExportBatchRunnerNotifier
-} from './ffmpeg-export-batch-runner'
-import {
-  pickFfmpegExportBatchInputFiles,
-  pickFfmpegExportBatchInputFolder,
-  pickFfmpegExportBatchOutputFolder
-} from './ffmpeg-export-batch-pick'
-import {
-  expandFfmpegExportBatchDnDPaths,
-  scanFolderForFfmpegExportBatchVideos
-} from './ffmpeg-export-batch-folder-scan'
-import { openFfmpegExportBatchInputPath } from './ffmpeg-export-batch-open-input'
-import type {
-  FfmpegExportBatchClearCompletedResult,
-  FfmpegExportBatchRetryFailedResult,
-  FfmpegExportBatchSnapshot,
-  FfmpegExportBatchStartResult
-} from '../shared/ffmpeg-export-batch-contract'
-import {
-  appendProcessingHistoryEntry,
-  clearProcessingHistory,
-  findProcessingHistoryEntryById,
-  getProcessingHistoryWeeklySummary,
-  readProcessingHistoryNewestFirst
-} from './processing-history'
-import { probeMediaFile } from './ffprobe-service'
-import type { ProcessingHistoryFilter } from '../shared/processing-history-contract'
-import {
-  getTerminalCommandHints,
-  resolveTerminalCliSessionLogPath,
-  runTerminalCommand
-} from './terminal-service'
-import type { EngineDownloadProgress } from './engine-download'
+import { isFfmpegExportBatchActive, runFfmpegExportBatchQueue } from './ffmpeg-export-batch-runner'
+import { scanFolderForFfmpegExportBatchVideos } from './ffmpeg-export-batch-folder-scan'
+import { appendProcessingHistoryEntry } from './processing-history'
+import { resolveTerminalCliSessionLogPath } from './terminal-service'
 import { setEnginePathOverridesSnapshot } from './engine-path-sync'
 import {
   ENGINE_IDS,
   getEnginesStatus,
   resolveEngineExecutablePath,
   type EnginePathOverrides,
-  type EnginePathOverridesPatch,
-  type EnginesStatusSnapshot
+  type EnginePathOverridesPatch
 } from './engine-service'
-import { probeFfmpegHwEncoders } from './ffmpeg-hw-encoder-probe-main'
-import type { FfmpegHwEncodersProbeResult } from '../shared/ffmpeg-hw-encoder-probe'
-import {
-  grantMediaPath,
-  isGrantedMediaPath,
-  registerFluxMediaPrivileges,
-  registerFluxMediaProtocol
-} from './media-protocol'
+import { grantMediaPath, registerFluxMediaPrivileges, registerFluxMediaProtocol } from './media-protocol'
 import { registerFluxHelpPrivileges, registerFluxHelpProtocol } from './help-assets-protocol'
 import { openVideoFolderWithDialog, openVideoWithDialog } from './preview-dialog'
 import type {
@@ -222,7 +151,6 @@ import type {
   WindowBoundsConfig
 } from './settings-store'
 import { loadSettings, saveSettings } from './settings-store'
-import { loadTrustedHashes, resolveTrustedHashesPath } from './trusted-hashes-store'
 import { resolvePreloadOutFile } from './preload-resolve'
 import {
   defaultMainEditorSize,
@@ -231,7 +159,6 @@ import {
   mainEditorMinLogicalSize
 } from './window-hidpi'
 import { boundsFromBrowserWindow, rectifyBoundsForRestore } from './window-bounds'
-import { getAppAboutInfo } from './about-info'
 import {
   resolveYtdlpOutputDirectory,
   syncYtdlpDownloadDirectoryFromSettings
@@ -260,12 +187,6 @@ import {
 import { isFfmpegExportBatchVideoPath } from '../shared/ffmpeg-export-batch-video-ext'
 import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
-import type {
-  DiagnosticsOpenMainLogResult,
-  DiagnosticsSupportZipResult
-} from '../shared/diagnostics-contract'
-import type { SaveTextDialogResult } from '../shared/save-text-dialog-contract'
-import type { TerminalCommandHintEntry, TerminalRunResult } from '../shared/terminal-contract'
 import {
   autoExportProgressMessage,
   fluxLogAutoExportCancelled,
@@ -281,15 +202,9 @@ import {
   fluxLogBatchEnqueueSkippedNotVideo
 } from '../shared/downloads-flux-log-locale'
 import {
-  exportProgressLaunchingFfmpeg,
   processingHistoryAutoExportCancelled,
   processingHistoryAutoExportFailed,
-  processingHistoryAutoExportSuccess,
-  processingHistoryFfmpegExportCancelled,
-  processingHistoryFfmpegExportFailed,
-  processingHistoryFfmpegExportSuccess,
-  processingHistorySnapshotFailed,
-  processingHistorySnapshotSuccess
+  processingHistoryAutoExportSuccess
 } from '../shared/processing-history-status-locale'
 import {
   downloadsWindowUiLocaleFromSystemLocale,
@@ -298,7 +213,6 @@ import {
 } from '../shared/downloads-window-ui-locale'
 import {
   formatMainProcessErrorClipboardHeader,
-  formatPickEngineExecutableTitle,
   getMainApplicationStrings
 } from '../shared/main-application-locale'
 
@@ -1711,8 +1625,7 @@ async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRuntimeInfo
   const engineDiagnosticLines = ENGINE_IDS.map((id) => {
     const e = engines.engines[id]
     const pathPart = e.path ?? '-'
-    const detail =
-      e.version ?? (e.message && e.message.length > 0 ? e.message : e.state)
+    const detail = e.version ?? (e.message && e.message.length > 0 ? e.message : e.state)
     return `  ${id}: ${e.state} | ${pathPart} | ${detail}`
   })
   let appLocale = '?'
@@ -2785,6 +2698,85 @@ app.whenReady().then(() => {
   )
   registerDownloadsWindowIpcHandlers()
   registerInspectorWindowIpcHandlers()
+  registerKnowledgeDiagnosticsIpcHandlers({
+    mainDownloadsUiLocale,
+    mainAppStr,
+    openMainLogForUser,
+    createSupportBundleWithDialog
+  })
+  registerSettingsIpcHandlers({
+    getSettingsView: () => ({
+      ...cachedSettings,
+      effectiveTheme: resolveEffectiveTheme(cachedSettings.theme)
+    }),
+    copyCachedSettings: () => ({ ...cachedSettings }),
+    persistUiLocale,
+    persistThemePreference,
+    persistEnginePathOverridesPatch,
+    persistMainWindowUiPanelsMerge,
+    isMainWindowUiPanelSender,
+    ffmpegExport: {
+      encodePreset: persistFfmpegExportEncodePreset,
+      videoCodec: persistFfmpegExportVideoCodec,
+      container: persistFfmpegExportContainer,
+      crf: persistFfmpegExportCrf,
+      audioBitrate: persistFfmpegExportAudioBitrate,
+      audioMode: persistFfmpegExportAudioMode,
+      videoBitrate: persistFfmpegExportVideoBitrate,
+      twoPass: persistFfmpegExportTwoPass,
+      economyMode: persistFfmpegExportEconomyMode,
+      hwDecode: persistFfmpegExportHwDecode,
+      extraArgsLine: persistFfmpegExportExtraArgsLine,
+      batchOutputSuffix: persistFfmpegExportBatchOutputSuffix,
+      batchOutputDirectory: persistFfmpegExportBatchOutputDirectory,
+      editorUrlPasteBehavior: persistEditorUrlPasteBehavior,
+      fps: persistFfmpegExportFps,
+      scalePreset: persistFfmpegExportScalePreset,
+      videoTransform: persistFfmpegExportVideoTransform,
+      cropPreset: persistFfmpegExportCropPreset,
+      audioGainDb: persistFfmpegExportAudioGainDb,
+      stripMetadata: persistFfmpegExportStripMetadata,
+      stripChapters: persistFfmpegExportStripChapters,
+      subtitleMode: persistFfmpegExportSubtitleMode,
+      videoDenoise: persistFfmpegExportVideoDenoise,
+      videoDeband: persistFfmpegExportVideoDeband,
+      videoHisteq: persistFfmpegExportVideoHisteq,
+      videoLut3d: persistFfmpegExportVideoLut3d,
+      videoSharpen: persistFfmpegExportVideoSharpen,
+      videoEqPreset: persistFfmpegExportVideoEqPreset,
+      videoGrain: persistFfmpegExportVideoGrain,
+      videoVignette: persistFfmpegExportVideoVignette,
+      videoBlur: persistFfmpegExportVideoBlur,
+      videoDeinterlace: persistFfmpegExportVideoDeinterlace,
+      videoHue: persistFfmpegExportVideoHue,
+      audioNormalize: persistFfmpegExportAudioNormalize,
+      snapshotFormat: persistFfmpegSnapshotFormat,
+      userPresets: persistFfmpegExportUserPresets,
+      applySnapshot: persistFfmpegExportApplySnapshot
+    }
+  })
+  registerEnginesPreviewIpcHandlers({
+    mainAppStr,
+    mainDownloadsUiLocale,
+    ipcDownloadsUiLocale,
+    getEnginePathOverrides: () => cachedSettings.engineExecutablePaths ?? {},
+    getLastOpenedSourcePath: () => cachedSettings.lastOpenedSourcePath,
+    buildApplicationMenu,
+    previewOpenDialogOptsFromSettings,
+    persistLastOpenedSource,
+    resolveUserPathToPreviewSourceFile,
+    ensurePreviewPlayableMedia
+  })
+  registerMainUtilitiesIpcHandlers({
+    mainAppStr,
+    mainDownloadsUiLocale,
+    getEnginePathOverrides: () => cachedSettings.engineExecutablePaths ?? {},
+    parseSaveTextDialogPayload,
+    isExportOutputOpenMode,
+    rememberExportOutputPath,
+    openExportOutputPath,
+    openDownloadedFileInMainHandler
+  })
 
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
@@ -2794,1338 +2786,29 @@ app.whenReady().then(() => {
     buildApplicationMenu()
   })
 
-  // IPC-каналы держим узкими: renderer просит только конкретные операции, без произвольного доступа к Node.
-  ipcMain.handle(mw.settingsGet, (): AppSettingsView => {
-    return {
-      ...cachedSettings,
-      effectiveTheme: resolveEffectiveTheme(cachedSettings.theme)
-    }
+  registerExportBatchIpcHandlers({
+    getActiveExportAbort: () => activeExportAbort,
+    setActiveExportAbort: (ac) => {
+      activeExportAbort = ac
+    },
+    getSettings: () => cachedSettings,
+    bindBatchSnapshotBroadcast: (fn) => {
+      broadcastFfmpegExportBatchSnapshot = fn
+    },
+    launchFfmpegExportBatchRunner,
+    mainAppStr,
+    mainDownloadsUiLocale,
+    previewOpenDialogOptsFromSettings,
+    batchExportOutputFolderPickOptsFromSettings,
+    rememberedExportDefaultPath,
+    rememberExportOutputPath,
+    rememberFfmpegExportDirectory,
+    rememberedSnapshotDefaultPath,
+    rememberFfmpegSnapshotDirectory,
+    openExportOutputPath,
+    openDownloadedFileInMainHandler,
+    parseDownloadsOpenRequest
   })
-
-  ipcMain.handle(mw.settingsSetUiLocale, (_, raw: unknown): AppSettings => persistUiLocale(raw))
-
-  ipcMain.handle(mw.settingsSetTheme, (_, theme: unknown): AppSettingsView => {
-    let next: AppTheme = 'dark'
-    if (theme === 'light') {
-      next = 'light'
-    } else if (theme === 'system') {
-      next = 'system'
-    }
-    return persistThemePreference(next)
-  })
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportEncodePreset,
-    (_, raw: unknown): AppSettings => persistFfmpegExportEncodePreset(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportVideoCodec,
-    (_, raw: unknown): AppSettings => persistFfmpegExportVideoCodec(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportContainer,
-    (_, raw: unknown): AppSettings => persistFfmpegExportContainer(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportCrf,
-    (_, raw: unknown): AppSettings => persistFfmpegExportCrf(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportAudioBitrate,
-    (_, raw: unknown): AppSettings => persistFfmpegExportAudioBitrate(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportAudioMode,
-    (_, raw: unknown): AppSettings => persistFfmpegExportAudioMode(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportVideoBitrate,
-    (_, raw: unknown): AppSettings => persistFfmpegExportVideoBitrate(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportTwoPass,
-    (_, raw: unknown): AppSettings => persistFfmpegExportTwoPass(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportEconomyMode,
-    (_, raw: unknown): AppSettings => persistFfmpegExportEconomyMode(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportHwDecode,
-    (_, raw: unknown): AppSettings => persistFfmpegExportHwDecode(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportExtraArgsLine,
-    (_, raw: unknown): AppSettings => persistFfmpegExportExtraArgsLine(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportBatchOutputSuffix,
-    (_, raw: unknown): AppSettings => persistFfmpegExportBatchOutputSuffix(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportBatchOutputDirectory,
-    (_, raw: unknown): AppSettings => persistFfmpegExportBatchOutputDirectory(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetEditorUrlPasteBehavior,
-    (_, raw: unknown): AppSettings => persistEditorUrlPasteBehavior(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportFps,
-    (_, raw: unknown): AppSettings => persistFfmpegExportFps(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportScalePreset,
-    (_, raw: unknown): AppSettings => persistFfmpegExportScalePreset(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportVideoTransform,
-    (_, raw: unknown): AppSettings => persistFfmpegExportVideoTransform(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportCropPreset,
-    (_, raw: unknown): AppSettings => persistFfmpegExportCropPreset(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportAudioGainDb,
-    (_, raw: unknown): AppSettings => persistFfmpegExportAudioGainDb(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportStripMetadata,
-    (_, raw: unknown): AppSettings => persistFfmpegExportStripMetadata(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportStripChapters,
-    (_, raw: unknown): AppSettings => persistFfmpegExportStripChapters(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportSubtitleMode,
-    (_, raw: unknown): AppSettings => persistFfmpegExportSubtitleMode(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportVideoDenoise,
-    (_, raw: unknown): AppSettings => persistFfmpegExportVideoDenoise(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportVideoDeband,
-    (_, raw: unknown): AppSettings => persistFfmpegExportVideoDeband(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportVideoHisteq,
-    (_, raw: unknown): AppSettings => persistFfmpegExportVideoHisteq(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportVideoLut3d,
-    (_, raw: unknown): AppSettings => persistFfmpegExportVideoLut3d(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportVideoSharpen,
-    (_, raw: unknown): AppSettings => persistFfmpegExportVideoSharpen(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportVideoEqPreset,
-    (_, raw: unknown): AppSettings => persistFfmpegExportVideoEqPreset(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportVideoGrain,
-    (_, raw: unknown): AppSettings => persistFfmpegExportVideoGrain(raw)
-  )
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportVideoVignette,
-    (_, raw: unknown): AppSettings => persistFfmpegExportVideoVignette(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportVideoBlur,
-    (_, raw: unknown): AppSettings => persistFfmpegExportVideoBlur(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportVideoDeinterlace,
-    (_, raw: unknown): AppSettings => persistFfmpegExportVideoDeinterlace(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportVideoHue,
-    (_, raw: unknown): AppSettings => persistFfmpegExportVideoHue(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportAudioNormalize,
-    (_, raw: unknown): AppSettings => persistFfmpegExportAudioNormalize(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegSnapshotFormat,
-    (_, raw: unknown): AppSettings => persistFfmpegSnapshotFormat(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsSetFfmpegExportUserPresets,
-    (_, raw: unknown): AppSettings => persistFfmpegExportUserPresets(raw)
-  )
-
-  ipcMain.handle(
-    mw.settingsApplyFfmpegExportSnapshot,
-    (_, raw: unknown): AppSettings => persistFfmpegExportApplySnapshot(raw)
-  )
-
-  ipcMain.handle(mw.settingsSetEnginePaths, (_, patch: unknown): AppSettings => {
-    if (!patch || typeof patch !== 'object') {
-      return { ...cachedSettings }
-    }
-    return persistEnginePathOverridesPatch(patch as EnginePathOverridesPatch)
-  })
-
-  ipcMain.handle(mw.settingsMergeMainWindowUiPanels, (event, raw: unknown): AppSettings => {
-    if (!isMainWindowUiPanelSender(event)) {
-      return { ...cachedSettings }
-    }
-    return persistMainWindowUiPanelsMerge(raw)
-  })
-
-  ipcMain.handle(
-    mw.pickEngineExecutable,
-    async (event, engineId: unknown): Promise<string | null> => {
-      const win = BrowserWindow.fromWebContents(event.sender)
-      if (!win) {
-        return null
-      }
-      const I = mainAppStr()
-      const id =
-        engineId === 'ffmpeg' || engineId === 'ffprobe' || engineId === 'yt-dlp' ? engineId : null
-      if (!id) {
-        return null
-      }
-      const result = await dialog.showOpenDialog(win, {
-        title: formatPickEngineExecutableTitle(mainDownloadsUiLocale(), id),
-        properties: ['openFile'],
-        filters:
-          process.platform === 'win32'
-            ? [
-                { name: I.filterExecutables, extensions: ['exe'] },
-                { name: I.exportFilterAll, extensions: ['*'] }
-              ]
-            : [{ name: I.exportFilterAll, extensions: ['*'] }]
-      })
-      if (result.canceled || result.filePaths.length === 0) {
-        return null
-      }
-      return result.filePaths[0] ?? null
-    }
-  )
-
-  ipcMain.handle(
-    mw.enginesStatus,
-    async (_event, raw?: unknown): Promise<EnginesStatusSnapshot> => {
-      return getEnginesStatus(
-        resolveAppPaths(),
-        cachedSettings.engineExecutablePaths,
-        ipcDownloadsUiLocale(raw)
-      )
-    }
-  )
-
-  ipcMain.handle(mw.enginesShouldOfferDownload, (): boolean => {
-    return isAnyEngineMissing(resolveAppPaths(), cachedSettings.engineExecutablePaths)
-  })
-
-  ipcMain.handle(
-    mw.enginesDownload,
-    async (event, raw?: unknown): Promise<{ ok: true } | { ok: false; error: string }> => {
-      const win = BrowserWindow.fromWebContents(event.sender)
-      const paths = resolveAppPaths()
-      const trusted = loadTrustedHashes(resolveTrustedHashesPath())
-      const loc = ipcDownloadsUiLocale(raw)
-      try {
-        await downloadEnginesWindows(
-          paths,
-          trusted,
-          (p: EngineDownloadProgress) => {
-            win?.webContents.send(mw.enginesProgress, p)
-          },
-          loc
-        )
-        buildApplicationMenu()
-        return { ok: true }
-      } catch (error) {
-        const msg = error instanceof Error ? error.message : String(error)
-        return { ok: false, error: msg }
-      }
-    }
-  )
-
-  ipcMain.handle(
-    mw.enginesClearUserBin,
-    async (): Promise<{ ok: true; removed: number } | { ok: false; error: string }> => {
-      const paths = resolveAppPaths()
-      const suffix = process.platform === 'win32' ? '.exe' : ''
-      let removed = 0
-      try {
-        for (const id of ENGINE_IDS) {
-          const target = join(paths.userBin, `${id}${suffix}`)
-          if (existsSync(target)) {
-            rmSync(target, { force: true })
-            removed += 1
-          }
-        }
-        rmSync(join(paths.userBin, '.cache'), { recursive: true, force: true })
-        buildApplicationMenu()
-        return { ok: true, removed }
-      } catch (error) {
-        const msg = error instanceof Error ? error.message : String(error)
-        return { ok: false, error: msg }
-      }
-    }
-  )
-
-  ipcMain.handle(mw.enginesProbeHwEncoders, async (): Promise<FfmpegHwEncodersProbeResult> => {
-    const paths = resolveAppPaths()
-    const ffmpeg = resolveEngineExecutablePath(
-      paths,
-      'ffmpeg',
-      cachedSettings.engineExecutablePaths
-    )
-    if (!ffmpeg) {
-      return { ok: false, error: mainAppStr().exportFfmpegMissing }
-    }
-    return probeFfmpegHwEncoders(ffmpeg)
-  })
-
-  ipcMain.handle(mw.openVideoDialog, async (event, raw?: unknown) => {
-    const win = BrowserWindow.fromWebContents(event.sender)
-    if (!win) {
-      return { ok: false, error: mainAppStr().openVideoDialogNoWindow }
-    }
-    const def = previewOpenDialogOptsFromSettings()
-    const result = await openVideoWithDialog(win, ipcDownloadsUiLocale(raw), def)
-    if (result.ok) {
-      persistLastOpenedSource(result.path)
-    }
-    return result
-  })
-
-  ipcMain.handle(mw.openVideoFolderDialog, async (event, raw?: unknown) => {
-    const win = BrowserWindow.fromWebContents(event.sender)
-    if (!win) {
-      return { ok: false, error: mainAppStr().openVideoDialogNoWindow }
-    }
-    const def = previewOpenDialogOptsFromSettings()
-    const result = await openVideoFolderWithDialog(win, ipcDownloadsUiLocale(raw), def)
-    if (result.ok) {
-      persistLastOpenedSource(result.path)
-    }
-    return result
-  })
-
-  ipcMain.handle(mw.previewGrantPath, async (_, rawPath: unknown) => {
-    const P = mainAppStr()
-    if (typeof rawPath !== 'string' || rawPath.length === 0) {
-      return { ok: false, error: P.previewGrantEmptyPath }
-    }
-    const resolved = resolveUserPathToPreviewSourceFile(rawPath)
-    if (!resolved.ok) {
-      return { ok: false, error: resolved.error }
-    }
-    const sourceMediaPath = resolved.path
-    let previewFile: string
-    try {
-      previewFile = await ensurePreviewPlayableMedia(sourceMediaPath)
-    } catch (error) {
-      return { ok: false, error: error instanceof Error ? error.message : String(error) }
-    }
-    const mediaUrl = grantMediaPath(previewFile)
-    if (!mediaUrl) {
-      return { ok: false, error: P.previewGrantOpenFailed }
-    }
-    if (!grantMediaPath(sourceMediaPath)) {
-      return { ok: false, error: P.previewGrantSourceFailed }
-    }
-    persistLastOpenedSource(sourceMediaPath)
-    return {
-      ok: true,
-      path: sourceMediaPath,
-      mediaUrl,
-      name: basename(sourceMediaPath)
-    }
-  })
-
-  ipcMain.handle(mw.persistLastSource, (_, raw: unknown) => {
-    if (raw === null || raw === undefined || raw === '') {
-      persistLastOpenedSource(null)
-      return
-    }
-    if (typeof raw === 'string') {
-      persistLastOpenedSource(raw)
-    }
-  })
-
-  ipcMain.handle(mw.restoreLastSource, async () => {
-    const saved = cachedSettings.lastOpenedSourcePath
-    if (typeof saved !== 'string' || saved.trim().length === 0 || !existsSync(saved)) {
-      return null
-    }
-    const sourcePath = saved.trim()
-    const resolved = resolveUserPathToPreviewSourceFile(sourcePath)
-    if (!resolved.ok) {
-      persistLastOpenedSource(null)
-      return null
-    }
-    const sourceMediaPath = resolved.path
-    let previewFile: string
-    try {
-      previewFile = await ensurePreviewPlayableMedia(sourceMediaPath)
-    } catch {
-      persistLastOpenedSource(null)
-      return null
-    }
-    const mediaUrl = grantMediaPath(previewFile)
-    if (!mediaUrl) {
-      persistLastOpenedSource(null)
-      return null
-    }
-    if (!grantMediaPath(sourceMediaPath)) {
-      persistLastOpenedSource(null)
-      return null
-    }
-    return {
-      path: sourceMediaPath,
-      mediaUrl,
-      name:
-        previewFile === sourceMediaPath
-          ? basename(sourceMediaPath)
-          : `${basename(sourceMediaPath)} · preview WebM`
-    }
-  })
-
-  ipcMain.handle(mw.mediaProbe, async (_, rawPath: unknown) => {
-    const P = mainAppStr()
-    if (typeof rawPath !== 'string' || rawPath.trim().length === 0) {
-      return { ok: false as const, error: P.mediaProbePathMissing }
-    }
-    const abs = resolve(normalize(rawPath.trim()))
-    if (!isGrantedMediaPath(abs)) {
-      return {
-        ok: false as const,
-        error: P.mediaProbeNotGranted
-      }
-    }
-    return probeMediaFile(
-      resolveAppPaths(),
-      abs,
-      cachedSettings.engineExecutablePaths,
-      mainDownloadsUiLocale()
-    )
-  })
-
-  ipcMain.handle(mw.terminalHints, (): TerminalCommandHintEntry[] => getTerminalCommandHints())
-
-  ipcMain.handle(mw.terminalRun, async (_, raw: unknown): Promise<TerminalRunResult> => {
-    const loc =
-      raw && typeof raw === 'object'
-        ? (parseDownloadsWindowUiLocale((raw as { uiLocale?: unknown }).uiLocale) ??
-          mainDownloadsUiLocale())
-        : mainDownloadsUiLocale()
-    const line =
-      raw && typeof raw === 'object' && typeof (raw as { line?: unknown }).line === 'string'
-        ? (raw as { line: string }).line
-        : ''
-    const currentRaw =
-      raw && typeof raw === 'object' && 'currentFilePath' in raw
-        ? (raw as { currentFilePath?: unknown }).currentFilePath
-        : undefined
-    const currentFilePath =
-      typeof currentRaw === 'string' ? currentRaw : currentRaw === null ? null : undefined
-    return runTerminalCommand({
-      paths: resolveAppPaths(),
-      overrides: cachedSettings.engineExecutablePaths,
-      line,
-      locale: loc,
-      ...(currentFilePath !== undefined ? { currentFilePath } : {})
-    })
-  })
-
-  ipcMain.handle(mw.clipboardReadText, () => clipboard.readText())
-
-  ipcMain.handle(mw.clipboardWriteText, (_, raw: unknown): { ok: true } | { ok: false } => {
-    if (typeof raw !== 'string') {
-      return { ok: false }
-    }
-    const max = 24 * 1024 * 1024
-    if (raw.length > max) {
-      return { ok: false }
-    }
-    clipboard.writeText(raw)
-    return { ok: true }
-  })
-
-  ipcMain.handle(
-    mw.saveTextWithDialog,
-    async (event, raw: unknown): Promise<SaveTextDialogResult> => {
-      const parsed = parseSaveTextDialogPayload(raw, mainDownloadsUiLocale())
-      if (!parsed.ok) {
-        return { ok: false, error: parsed.error }
-      }
-      const win = BrowserWindow.fromWebContents(event.sender)
-      const parent = win && !win.isDestroyed() ? win : undefined
-      const Sv = mainAppStr()
-      const saveOpts = {
-        title: parsed.title,
-        defaultPath: parsed.defaultFileName,
-        filters: [
-          { name: Sv.saveDialogFilterJson, extensions: ['json'] },
-          { name: Sv.saveDialogFilterHtml, extensions: ['html', 'htm'] },
-          { name: Sv.saveDialogFilterText, extensions: ['txt', 'log'] },
-          { name: Sv.saveDialogFilterAll, extensions: ['*'] }
-        ]
-      }
-      const res = parent
-        ? await dialog.showSaveDialog(parent, saveOpts)
-        : await dialog.showSaveDialog(saveOpts)
-      if (res.canceled || typeof res.filePath !== 'string' || res.filePath.trim().length === 0) {
-        return { ok: false, cancelled: true }
-      }
-      try {
-        writeFileSync(res.filePath, parsed.content, 'utf8')
-        return { ok: true, path: res.filePath }
-      } catch (error: unknown) {
-        logError('saveTextWithDialog', 'write failed', error)
-        return { ok: false, error: Sv.saveDialogWriteFailed }
-      }
-    }
-  )
-
-  ipcMain.handle(mw.appAboutInfo, () => getAppAboutInfo())
-
-  const knowledgeHelpDirCandidates = (): string[] =>
-    buildKnowledgeHelpDirCandidates({
-      cwd: process.cwd(),
-      appPath: app.getAppPath(),
-      resourcesPath: process.resourcesPath,
-      isPackaged: app.isPackaged
-    })
-
-  ipcMain.handle(mw.knowledgeListArticles, (_event, raw: unknown) => {
-    let listLocale = mainDownloadsUiLocale()
-    if (raw !== null && typeof raw === 'object') {
-      const loc = (raw as Record<string, unknown>)['preferredUiLocale']
-      if (loc === 'en' || loc === 'ru') {
-        listLocale = loc
-      }
-    }
-    return listKnowledgeArticles(knowledgeHelpDirCandidates(), listLocale)
-  })
-
-  ipcMain.handle(mw.knowledgeReadArticle, (_event, raw: unknown) => {
-    return readKnowledgeArticle(knowledgeHelpDirCandidates(), raw, mainDownloadsUiLocale())
-  })
-
-  ipcMain.handle(mw.diagnosticsListFolders, (): DiagnosticsFolderEntry[] => {
-    return listDiagnosticsFolders(mainDownloadsUiLocale())
-  })
-
-  ipcMain.handle(
-    mw.diagnosticsOpenFolder,
-    async (
-      _event,
-      raw: unknown
-    ): Promise<{ ok: true; path: string } | { ok: false; error: string }> => {
-      if (!isDiagnosticsFolderId(raw)) {
-        return { ok: false, error: mainAppStr().diagnosticsUnknownFolder }
-      }
-      return openDiagnosticsFolder(raw)
-    }
-  )
-
-  ipcMain.handle(mw.diagnosticsOpenMainLog, async (): Promise<DiagnosticsOpenMainLogResult> => {
-    return openMainLogForUser()
-  })
-
-  ipcMain.handle(
-    mw.diagnosticsCreateSupportZip,
-    async (event): Promise<DiagnosticsSupportZipResult> => {
-      const win = BrowserWindow.fromWebContents(event.sender)
-      const parent = win && !win.isDestroyed() ? win : undefined
-      const out = await createSupportBundleWithDialog(parent)
-      if (out.outcome === 'saved') {
-        return { ok: true, path: out.path }
-      }
-      if (out.outcome === 'cancelled') {
-        return { ok: false, cancelled: true }
-      }
-      return { ok: false, error: out.message }
-    }
-  )
-
-  ipcMain.handle(mw.diagnosticsMaintenanceSnapshot, () => {
-    return getDiagnosticsMaintenanceSnapshot(resolveAppPaths())
-  })
-
-  ipcMain.handle(mw.diagnosticsCleanMaintenance, (_event, raw: unknown) => {
-    const request =
-      raw && typeof raw === 'object' ? (raw as { targets?: unknown }).targets : undefined
-    const targets = Array.isArray(request)
-      ? request.filter((id): id is 'previewCache' | 'ytdlpPartials' | 'ffmpegTemp' => {
-          return id === 'previewCache' || id === 'ytdlpPartials' || id === 'ffmpegTemp'
-        })
-      : undefined
-    return cleanDiagnosticsMaintenance(
-      resolveAppPaths(),
-      targets ? { targets } : undefined,
-      mainDownloadsUiLocale()
-    )
-  })
-
-  ipcMain.handle(mw.processingHistoryGet, (_event, raw: unknown) => {
-    const filter: ProcessingHistoryFilter = {}
-    const limit =
-      raw && typeof raw === 'object' && typeof (raw as { limit?: unknown }).limit === 'number'
-        ? (raw as { limit: number }).limit
-        : 100
-    if (raw && typeof raw === 'object') {
-      const src = raw as { kind?: unknown; outcome?: unknown; query?: unknown }
-      if (
-        src.kind === 'ffmpegExport' ||
-        src.kind === 'ffmpegSnapshot' ||
-        src.kind === 'autoExport'
-      ) {
-        filter.kind = src.kind
-      }
-      if (src.outcome === 'success' || src.outcome === 'error' || src.outcome === 'cancelled') {
-        filter.outcome = src.outcome
-      }
-      if (typeof src.query === 'string') {
-        filter.query = src.query
-      }
-    }
-    return readProcessingHistoryNewestFirst(resolveAppPaths().userData, filter, limit)
-  })
-
-  ipcMain.handle(mw.processingHistoryWeeklySummary, () => {
-    return getProcessingHistoryWeeklySummary(resolveAppPaths().userData)
-  })
-
-  ipcMain.handle(mw.processingHistoryClear, (): { ok: true } | { ok: false; error: string } => {
-    try {
-      clearProcessingHistory(resolveAppPaths().userData)
-      return { ok: true }
-    } catch (error) {
-      return { ok: false, error: error instanceof Error ? error.message : String(error) }
-    }
-  })
-
-  ipcMain.handle(
-    mw.processingHistoryOpenOutput,
-    async (
-      _event,
-      raw: unknown
-    ): Promise<{ ok: true; path: string } | { ok: false; error: string }> => {
-      const H = mainAppStr()
-      if (!raw || typeof raw !== 'object') {
-        return { ok: false, error: H.processingHistoryBadRequest }
-      }
-      const payload = raw as { id?: unknown; mode?: unknown }
-      if (typeof payload.id !== 'string') {
-        return { ok: false, error: H.processingHistoryIdMissing }
-      }
-      if (!isExportOutputOpenMode(payload.mode)) {
-        return { ok: false, error: H.processingHistoryBadAction }
-      }
-      const entry = findProcessingHistoryEntryById(resolveAppPaths().userData, payload.id)
-      if (!entry?.outputPath) {
-        return { ok: false, error: H.processingHistoryNoOutput }
-      }
-      rememberExportOutputPath(entry.outputPath)
-      return openExportOutputPath(entry.outputPath, payload.mode)
-    }
-  )
-
-  ipcMain.handle(
-    mw.processingHistoryOpenInputInHandler,
-    async (_event, raw: unknown): Promise<{ ok: true } | { ok: false; error: string }> => {
-      const H = mainAppStr()
-      if (typeof raw !== 'string') {
-        return { ok: false, error: H.processingHistoryIdMissing }
-      }
-      const entry = findProcessingHistoryEntryById(resolveAppPaths().userData, raw)
-      if (!entry) {
-        return { ok: false, error: H.processingHistoryEntryNotFound }
-      }
-      return openDownloadedFileInMainHandler(entry.inputPath)
-    }
-  )
-
-  ipcMain.handle(mw.openDownloadsWindow, (_, raw: unknown) => {
-    const req = parseDownloadsOpenRequest(raw)
-    focusOrCreateDownloadsWindow(req.mergeText, req.uiLocale)
-  })
-
-  ipcMain.handle(mw.exportResolveBundledLutCubePath, (_event, raw: unknown): string | null => {
-    const id = parseFfmpegExportVideoLut3d(raw)
-    const paths = resolveAppPaths()
-    return resolveFfmpegExportLutCubeAbsPath(paths.resources, id)
-  })
-
-  ipcMain.handle(mw.exportStart, async (event, raw: unknown): Promise<MediaExportStartResult> => {
-    const base = mainAppStr()
-    if (activeExportAbort !== null || isFfmpegExportBatchActive()) {
-      return { ok: false, error: base.exportAlreadyRunning }
-    }
-    if (!raw || typeof raw !== 'object') {
-      return { ok: false, error: base.exportInvalidRequest }
-    }
-    const exportUiLocale =
-      parseDownloadsWindowUiLocale((raw as { uiLocale?: unknown }).uiLocale) ??
-      mainDownloadsUiLocale()
-    const M = getMainApplicationStrings(exportUiLocale)
-    const inputRaw = (raw as { inputPath?: unknown }).inputPath
-    if (typeof inputRaw !== 'string' || inputRaw.trim().length === 0) {
-      return { ok: false, error: M.exportInputMissing }
-    }
-    const abs = resolve(normalize(inputRaw.trim()))
-    if (!existsSync(abs)) {
-      return { ok: false, error: M.exportFileNotFound }
-    }
-    if (!isGrantedMediaPath(abs)) {
-      return {
-        ok: false,
-        error: M.exportNotGrantedPath
-      }
-    }
-
-    const pd = (raw as { probeDurationSec?: unknown }).probeDurationSec
-    const probeDurationSec = typeof pd === 'number' && Number.isFinite(pd) && pd > 0 ? pd : null
-
-    const trim = parseFfmpegExportTrim((raw as { trim?: unknown }).trim)
-    const exportOpts = resolveFfmpegExportJobOptionsFromAppSettings(cachedSettings, raw)
-    const exportContainer = exportOpts.container
-
-    const paths = resolveAppPaths()
-    const ffmpeg = resolveEngineExecutablePath(
-      paths,
-      'ffmpeg',
-      cachedSettings.engineExecutablePaths
-    )
-    if (!ffmpeg) {
-      return { ok: false, error: M.exportFfmpegMissing }
-    }
-
-    const win = BrowserWindow.fromWebContents(event.sender)
-    if (!win) {
-      return { ok: false, error: M.exportNoActiveWindow }
-    }
-
-    const stem = basename(abs).replace(/\.[^.]+$/, '')
-    const defaultExportName = `${stem}-export.${exportContainer}`
-    const pick = await dialog.showSaveDialog(win, {
-      title: M.exportVideoDialogTitle,
-      defaultPath: rememberedExportDefaultPath(defaultExportName),
-      filters: [
-        { name: M.exportFilterMp4, extensions: ['mp4'] },
-        { name: M.exportFilterMkv, extensions: ['mkv'] },
-        { name: M.exportFilterMov, extensions: ['mov'] },
-        { name: M.exportFilterAll, extensions: ['*'] }
-      ]
-    })
-
-    if (pick.canceled || !pick.filePath || pick.filePath.trim().length === 0) {
-      return { ok: false, cancelled: true }
-    }
-
-    const outPath = ensureFfmpegExportExtension(pick.filePath, exportContainer)
-    const ac = new AbortController()
-    activeExportAbort = ac
-    const startedAt = Date.now()
-
-    const pushProgress = (p: FfmpegExportProgressPayload): void => {
-      win.webContents.send(mw.exportProgress, p)
-    }
-
-    try {
-      pushProgress({ percent: -1, message: exportProgressLaunchingFfmpeg(exportUiLocale) })
-      const result = await runFfmpegExportJob({
-        ffmpegPath: ffmpeg,
-        inputPath: abs,
-        outputPath: outPath,
-        ...(trim !== undefined ? { trim } : {}),
-        probeDurationSec,
-        ...exportOpts,
-        lutResourcesRoot: paths.resources,
-        signal: ac.signal,
-        onProgress: pushProgress,
-        uiLocale: exportUiLocale
-      })
-      if (result.ok) {
-        rememberExportOutputPath(outPath)
-        rememberFfmpegExportDirectory(outPath)
-        appendProcessingHistoryEntry(paths.userData, {
-          kind: 'ffmpegExport',
-          startedAt,
-          finishedAt: Date.now(),
-          inputPath: abs,
-          outputPath: outPath,
-          outcome: 'success',
-          status: processingHistoryFfmpegExportSuccess(exportUiLocale),
-          errorHint: null,
-          exportVideoCodecUsed: result.videoCodecUsed
-        })
-        return { ok: true, path: outPath }
-      }
-      if (result.error === FFMPEG_EXPORT_CANCELLED_ERROR) {
-        appendProcessingHistoryEntry(paths.userData, {
-          kind: 'ffmpegExport',
-          startedAt,
-          finishedAt: Date.now(),
-          inputPath: abs,
-          outputPath: outPath,
-          outcome: 'cancelled',
-          status: processingHistoryFfmpegExportCancelled(exportUiLocale),
-          errorHint: null,
-          exportVideoCodecUsed: result.videoCodecUsed
-        })
-        return { ok: false, cancelled: true }
-      }
-      appendProcessingHistoryEntry(paths.userData, {
-        kind: 'ffmpegExport',
-        startedAt,
-        finishedAt: Date.now(),
-        inputPath: abs,
-        outputPath: outPath,
-        outcome: 'error',
-        status: processingHistoryFfmpegExportFailed(exportUiLocale),
-        errorHint: result.error,
-        exportVideoCodecUsed: result.videoCodecUsed
-      })
-      return { ok: false, error: result.error }
-    } finally {
-      activeExportAbort = null
-    }
-  })
-
-  ipcMain.handle(mw.exportCancel, (): { ok: true } | { ok: false; error: string } => {
-    if (activeExportAbort === null && !isFfmpegExportBatchActive()) {
-      return { ok: false, error: mainAppStr().exportCancelNoActive }
-    }
-    activeExportAbort?.abort()
-    cancelFfmpegExportBatchRunner()
-    markWaitingFfmpegExportBatchRowsCancelled()
-    pushBatchExportSnapshot()
-    return { ok: true }
-  })
-
-  const pushBatchExportSnapshot = (win?: BrowserWindow | null): void => {
-    const snap = getFfmpegExportBatchSnapshot()
-    const targets = win ? [win] : BrowserWindow.getAllWindows().filter((w) => !w.isDestroyed())
-    for (const w of targets) {
-      w.webContents.send(mw.batchExportSnapshot, snap)
-    }
-  }
-  broadcastFfmpegExportBatchSnapshot = pushBatchExportSnapshot
-
-  setFfmpegExportBatchRunnerNotifier(() => {
-    pushBatchExportSnapshot()
-  })
-
-  ipcMain.handle(mw.batchExportGetSnapshot, (): FfmpegExportBatchSnapshot => {
-    return getFfmpegExportBatchSnapshot()
-  })
-
-  ipcMain.handle(mw.batchExportListInputPaths, (): { ok: true; paths: string[] } => {
-    return { ok: true, paths: listFfmpegExportBatchInputPaths() }
-  })
-
-  ipcMain.handle(mw.batchExportListOutputPaths, (): { ok: true; paths: string[] } => {
-    return { ok: true, paths: listFfmpegExportBatchOutputPaths() }
-  })
-
-  ipcMain.handle(
-    mw.batchExportRemoveWaiting,
-    (): { ok: true; removed: number } | { ok: false; error: string } => {
-      const M = mainAppStr()
-      if (isFfmpegExportBatchActive()) {
-        return { ok: false, error: M.batchExportRunningCantMutate }
-      }
-      const removed = removeWaitingFfmpegExportBatchRows()
-      pushBatchExportSnapshot()
-      return { ok: true, removed }
-    }
-  )
-
-  ipcMain.handle(
-    mw.batchExportPickFiles,
-    async (
-      event
-    ): Promise<
-      { ok: true; added: number } | { ok: false; cancelled: true } | { ok: false; error: string }
-    > => {
-      const win = BrowserWindow.fromWebContents(event.sender)
-      if (!win) {
-        return { ok: false, error: mainAppStr().openVideoDialogNoWindow }
-      }
-      const loc = mainDownloadsUiLocale()
-      const def = previewOpenDialogOptsFromSettings()
-      const picked = await pickFfmpegExportBatchInputFiles(win, loc, def)
-      if (!picked.ok) {
-        return picked
-      }
-      const counts = addFfmpegExportBatchPaths(picked.paths)
-      pushBatchExportSnapshot(win)
-      return { ok: true, ...counts }
-    }
-  )
-
-  ipcMain.handle(
-    mw.batchExportPickFolder,
-    async (
-      event
-    ): Promise<
-      { ok: true; added: number } | { ok: false; cancelled: true } | { ok: false; error: string }
-    > => {
-      const win = BrowserWindow.fromWebContents(event.sender)
-      if (!win) {
-        return { ok: false, error: mainAppStr().openVideoDialogNoWindow }
-      }
-      const loc = mainDownloadsUiLocale()
-      const def = previewOpenDialogOptsFromSettings()
-      const picked = await pickFfmpegExportBatchInputFolder(win, loc, def)
-      if (!picked.ok) {
-        return picked
-      }
-      const counts = addFfmpegExportBatchPaths(picked.paths)
-      pushBatchExportSnapshot(win)
-      return { ok: true, ...counts }
-    }
-  )
-
-  ipcMain.handle(
-    mw.batchExportPickOutputFolder,
-    async (event): Promise<{ ok: true; path: string } | { ok: false; cancelled: true }> => {
-      const win = BrowserWindow.fromWebContents(event.sender)
-      if (!win) {
-        return { ok: false, cancelled: true }
-      }
-      const loc = mainDownloadsUiLocale()
-      const def = batchExportOutputFolderPickOptsFromSettings()
-      return pickFfmpegExportBatchOutputFolder(win, loc, def)
-    }
-  )
-
-  ipcMain.handle(
-    mw.batchExportRevealSharedOutputFolder,
-    async (): Promise<{ ok: true } | { ok: false; error: string }> => {
-      const M = mainAppStr()
-      const raw = cachedSettings.ffmpegExportBatchOutputDirectory
-      if (typeof raw !== 'string' || raw.trim().length === 0) {
-        return { ok: false, error: M.batchExportSharedOutputDirNotSet }
-      }
-      const dir = normalize(raw.trim())
-      if (!existsSync(dir)) {
-        return { ok: false, error: M.batchExportSharedOutputDirMissing }
-      }
-      try {
-        if (!statSync(dir).isDirectory()) {
-          return { ok: false, error: M.batchExportSharedOutputDirNotDirectory }
-        }
-      } catch {
-        return { ok: false, error: M.batchExportSharedOutputDirMissing }
-      }
-      const err = await shell.openPath(dir)
-      return err ? { ok: false, error: err } : { ok: true }
-    }
-  )
-
-  ipcMain.handle(
-    mw.batchExportAddPaths,
-    (_event, raw: unknown): { ok: true; added: number } | { ok: false; error: string } => {
-      if (!Array.isArray(raw)) {
-        return { ok: false, error: mainAppStr().ipcInvalidRequest }
-      }
-      const paths = raw.filter((p): p is string => typeof p === 'string')
-      const expanded = expandFfmpegExportBatchDnDPaths(paths)
-      const granted: string[] = []
-      for (const abs of expanded) {
-        if (grantMediaPath(abs)) {
-          granted.push(abs)
-        }
-      }
-      const counts = addFfmpegExportBatchPaths(granted)
-      pushBatchExportSnapshot()
-      return { ok: true, ...counts }
-    }
-  )
-
-  ipcMain.handle(
-    mw.batchExportRemoveRows,
-    (_event, raw: unknown): { ok: true; removed: number } => {
-      const ids = Array.isArray(raw) ? raw.filter((n): n is number => typeof n === 'number') : []
-      const removed = removeFfmpegExportBatchRows(ids)
-      pushBatchExportSnapshot()
-      return { ok: true, removed }
-    }
-  )
-
-  ipcMain.handle(mw.batchExportClear, (): { ok: true } => {
-    clearFfmpegExportBatchQueue()
-    pushBatchExportSnapshot()
-    return { ok: true }
-  })
-
-  ipcMain.handle(
-    mw.batchExportMoveRow,
-    (_event, raw: unknown): { ok: true; moved: boolean } | { ok: false; error: string } => {
-      if (!raw || typeof raw !== 'object') {
-        return { ok: false, error: mainAppStr().ipcInvalidRequest }
-      }
-      const id = (raw as { id?: unknown }).id
-      const direction = (raw as { direction?: unknown }).direction
-      if (typeof id !== 'number' || (direction !== 'up' && direction !== 'down')) {
-        return { ok: false, error: mainAppStr().ipcInvalidRequest }
-      }
-      const moved = moveFfmpegExportBatchRow(id, direction)
-      pushBatchExportSnapshot()
-      return { ok: true, moved }
-    }
-  )
-
-  ipcMain.handle(
-    mw.batchExportReorderRow,
-    (_event, raw: unknown): { ok: true; moved: boolean } | { ok: false; error: string } => {
-      if (!raw || typeof raw !== 'object') {
-        return { ok: false, error: mainAppStr().ipcInvalidRequest }
-      }
-      const id = (raw as { id?: unknown }).id
-      const toIndex = (raw as { toIndex?: unknown }).toIndex
-      if (typeof id !== 'number' || typeof toIndex !== 'number' || !Number.isFinite(toIndex)) {
-        return { ok: false, error: mainAppStr().ipcInvalidRequest }
-      }
-      const moved = reorderFfmpegExportBatchRowAt(id, Math.trunc(toIndex))
-      pushBatchExportSnapshot()
-      return { ok: true, moved }
-    }
-  )
-
-  ipcMain.handle(mw.batchExportSetConcurrency, (_event, raw: unknown): { ok: true } => {
-    setFfmpegExportBatchConcurrency(raw)
-    pushBatchExportSnapshot()
-    return { ok: true }
-  })
-
-  ipcMain.handle(
-    mw.batchExportStart,
-    async (event, raw: unknown): Promise<FfmpegExportBatchStartResult> => {
-      const M = mainAppStr()
-      if (activeExportAbort !== null || isFfmpegExportBatchActive()) {
-        return { ok: false, error: M.batchExportAlreadyRunning }
-      }
-      const snap = getFfmpegExportBatchSnapshot()
-      if (!snap.rows.some((r) => r.status === 'waiting')) {
-        return { ok: false, error: M.batchExportQueueEmpty }
-      }
-      const paths = resolveAppPaths()
-      const ffmpeg = resolveEngineExecutablePath(
-        paths,
-        'ffmpeg',
-        cachedSettings.engineExecutablePaths
-      )
-      if (!ffmpeg) {
-        return { ok: false, error: M.batchExportFfmpegMissing }
-      }
-      const win = BrowserWindow.fromWebContents(event.sender)
-      if (!launchFfmpegExportBatchRunner(raw, win)) {
-        return { ok: false, error: M.batchExportAlreadyRunning }
-      }
-      return { ok: true }
-    }
-  )
-
-  ipcMain.handle(mw.batchExportCancel, (): { ok: true } => {
-    cancelFfmpegExportBatchRunner()
-    markWaitingFfmpegExportBatchRowsCancelled()
-    pushBatchExportSnapshot()
-    return { ok: true }
-  })
-
-  ipcMain.handle(mw.batchExportRetryFailed, (): FfmpegExportBatchRetryFailedResult => {
-    const M = mainAppStr()
-    if (isFfmpegExportBatchActive()) {
-      return { ok: false, error: M.batchExportRunningCantMutate }
-    }
-    const reset = retryFailedFfmpegExportBatchRows()
-    pushBatchExportSnapshot()
-    return { ok: true, reset }
-  })
-
-  ipcMain.handle(
-    mw.batchExportRetryRows,
-    (_event, raw: unknown): FfmpegExportBatchRetryFailedResult => {
-      const M = mainAppStr()
-      if (isFfmpegExportBatchActive()) {
-        return { ok: false, error: M.batchExportRunningCantMutate }
-      }
-      const ids = Array.isArray(raw) ? raw.filter((n): n is number => typeof n === 'number') : []
-      if (ids.length === 0) {
-        return { ok: false, error: M.ipcInvalidRequest }
-      }
-      const reset = retryFfmpegExportBatchRows({ ids, includeCancelled: true })
-      pushBatchExportSnapshot()
-      return { ok: true, reset }
-    }
-  )
-
-  ipcMain.handle(mw.batchExportClearCompleted, (): FfmpegExportBatchClearCompletedResult => {
-    const M = mainAppStr()
-    if (isFfmpegExportBatchActive()) {
-      return { ok: false, error: M.batchExportRunningCantMutate }
-    }
-    const removed = removeCompletedFfmpegExportBatchRows()
-    pushBatchExportSnapshot()
-    return { ok: true, removed }
-  })
-
-  ipcMain.handle(
-    mw.batchExportAddFromDownloadsDone,
-    (_event, raw: unknown): { ok: true; added: number } | { ok: false; error: string } => {
-      const M = mainAppStr()
-      if (isFfmpegExportBatchActive()) {
-        return { ok: false, error: M.batchExportRunningCantMutate }
-      }
-      const ids = Array.isArray(raw) ? raw.filter((n): n is number => typeof n === 'number') : []
-      const candidates = collectDownloadsQueueVideoPaths(getDownloadsQueueSnapshot(), {
-        ...(ids.length > 0 ? { ids } : {}),
-        doneOnly: true
-      })
-      const granted = filterExistingVideoPathsForBatch(candidates)
-      const counts = addFfmpegExportBatchPaths(granted)
-      pushBatchExportSnapshot()
-      return { ok: true, ...counts }
-    }
-  )
-
-  ipcMain.handle(
-    mw.batchExportAddFromHistoryInputs,
-    (_event, raw: unknown): { ok: true; added: number } | { ok: false; error: string } => {
-      const M = mainAppStr()
-      if (isFfmpegExportBatchActive()) {
-        return { ok: false, error: M.batchExportRunningCantMutate }
-      }
-      const ids = Array.isArray(raw) ? raw.filter((id): id is string => typeof id === 'string') : []
-      if (ids.length === 0) {
-        return { ok: false, error: M.ipcInvalidRequest }
-      }
-      const paths = resolveAppPaths()
-      const candidates: string[] = []
-      for (const id of ids) {
-        const entry = findProcessingHistoryEntryById(paths.userData, id)
-        if (entry?.inputPath) {
-          candidates.push(entry.inputPath)
-        }
-      }
-      const granted = filterExistingVideoPathsForBatch(candidates)
-      const counts = addFfmpegExportBatchPaths(granted)
-      pushBatchExportSnapshot()
-      return { ok: true, ...counts }
-    }
-  )
-
-  ipcMain.handle(
-    mw.batchExportOpenInput,
-    async (
-      _event,
-      raw: unknown
-    ): Promise<{ ok: true; path: string } | { ok: false; error: string }> => {
-      if (!raw || typeof raw !== 'object') {
-        return { ok: false, error: mainAppStr().exportOpenBadRequest }
-      }
-      const payload = raw as { path?: unknown; mode?: unknown }
-      return openFfmpegExportBatchInputPath(payload.path, payload.mode, mainAppStr(), {
-        openInMainHandler: openDownloadedFileInMainHandler
-      })
-    }
-  )
-
-  ipcMain.handle(
-    mw.batchExportRetryFailedAndStart,
-    async (event, raw: unknown): Promise<FfmpegExportBatchStartResult> => {
-      const M = mainAppStr()
-      if (activeExportAbort !== null || isFfmpegExportBatchActive()) {
-        return { ok: false, error: M.batchExportAlreadyRunning }
-      }
-      retryFailedFfmpegExportBatchRows()
-      pushBatchExportSnapshot()
-      const snap = getFfmpegExportBatchSnapshot()
-      if (!snap.rows.some((r) => r.status === 'waiting')) {
-        return { ok: false, error: M.batchExportQueueEmpty }
-      }
-      const paths = resolveAppPaths()
-      const ffmpeg = resolveEngineExecutablePath(
-        paths,
-        'ffmpeg',
-        cachedSettings.engineExecutablePaths
-      )
-      if (!ffmpeg) {
-        return { ok: false, error: M.batchExportFfmpegMissing }
-      }
-      const win = BrowserWindow.fromWebContents(event.sender)
-      const loc = mainDownloadsUiLocale()
-      void runFfmpegExportBatchQueue({
-        ffmpegPath: ffmpeg,
-        settings: cachedSettings,
-        lutResourcesRoot: paths.resources,
-        rawExportOverrides: raw,
-        userDataRoot: paths.userData,
-        rememberExportOutputPath,
-        rememberFfmpegExportDirectory,
-        uiLocale: loc,
-        pushRowProgress: (rowId, p) => {
-          if (win && !win.isDestroyed()) {
-            win.webContents.send(mw.exportProgress, { ...p, batchRowId: rowId })
-          }
-        }
-      }).finally(() => {
-        pushBatchExportSnapshot(win)
-      })
-      pushBatchExportSnapshot(win)
-      return { ok: true }
-    }
-  )
-
-  ipcMain.handle(
-    mw.exportOpenOutput,
-    async (
-      _event,
-      raw: unknown
-    ): Promise<{ ok: true; path: string } | { ok: false; error: string }> => {
-      if (!raw || typeof raw !== 'object') {
-        return { ok: false, error: mainAppStr().exportOpenBadRequest }
-      }
-      const payload = raw as { path?: unknown; mode?: unknown }
-      return openExportOutputPath(payload.path, payload.mode)
-    }
-  )
-
-  ipcMain.handle(
-    mw.snapshotFrame,
-    async (
-      event,
-      raw: unknown
-    ): Promise<
-      { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
-    > => {
-      const win = BrowserWindow.fromWebContents(event.sender)
-      if (!win) {
-        return { ok: false, error: mainAppStr().ipcNoActiveWindow }
-      }
-      if (!raw || typeof raw !== 'object') {
-        return { ok: false, error: mainAppStr().ipcInvalidRequest }
-      }
-      const snapUiLocale =
-        parseDownloadsWindowUiLocale((raw as { uiLocale?: unknown }).uiLocale) ??
-        mainDownloadsUiLocale()
-      const M = getMainApplicationStrings(snapUiLocale)
-      const inputRaw = (raw as { inputPath?: unknown }).inputPath
-      const timeRaw = (raw as { timeSec?: unknown }).timeSec
-      if (typeof inputRaw !== 'string' || inputRaw.trim().length === 0) {
-        return { ok: false, error: M.exportInputMissing }
-      }
-      const abs = resolve(normalize(inputRaw.trim()))
-      if (!existsSync(abs)) {
-        return { ok: false, error: M.exportFileNotFound }
-      }
-      if (!isGrantedMediaPath(abs)) {
-        return { ok: false, error: M.exportNotGrantedPath }
-      }
-      const timeSec =
-        typeof timeRaw === 'number' && Number.isFinite(timeRaw) ? Math.max(0, timeRaw) : 0
-
-      const paths = resolveAppPaths()
-      const ffmpeg = resolveEngineExecutablePath(
-        paths,
-        'ffmpeg',
-        cachedSettings.engineExecutablePaths
-      )
-      if (!ffmpeg) {
-        return { ok: false, error: M.exportFfmpegMissing }
-      }
-
-      const stem = basename(abs).replace(/\.[^.]+$/, '')
-      const snapshotFormat = parseFfmpegSnapshotFormat(cachedSettings.ffmpegSnapshotFormat)
-      const pick = await dialog.showSaveDialog(win, {
-        title: M.snapshotSaveDialogTitle,
-        defaultPath: rememberedSnapshotDefaultPath(`${stem}-frame.${snapshotFormat}`),
-        filters: [
-          { name: M.snapshotFilterPng, extensions: ['png'] },
-          { name: M.snapshotFilterJpeg, extensions: ['jpg', 'jpeg'] }
-        ]
-      })
-
-      if (pick.canceled || !pick.filePath || pick.filePath.trim().length === 0) {
-        return { ok: false, cancelled: true }
-      }
-
-      const outPath = ensureFfmpegSnapshotExtension(pick.filePath, snapshotFormat)
-      const startedAt = Date.now()
-      const result = await runFfmpegSnapshotFrame({
-        ffmpegPath: ffmpeg,
-        inputPath: abs,
-        outputPath: outPath,
-        timeSec
-      })
-      if (result.ok) {
-        rememberExportOutputPath(outPath)
-        rememberFfmpegSnapshotDirectory(outPath)
-        appendProcessingHistoryEntry(paths.userData, {
-          kind: 'ffmpegSnapshot',
-          startedAt,
-          finishedAt: Date.now(),
-          inputPath: abs,
-          outputPath: outPath,
-          outcome: 'success',
-          status: processingHistorySnapshotSuccess(snapUiLocale),
-          errorHint: null
-        })
-        return { ok: true, path: outPath }
-      }
-      appendProcessingHistoryEntry(paths.userData, {
-        kind: 'ffmpegSnapshot',
-        startedAt,
-        finishedAt: Date.now(),
-        inputPath: abs,
-        outputPath: outPath,
-        outcome: 'error',
-        status: processingHistorySnapshotFailed(snapUiLocale),
-        errorHint: result.error
-      })
-      return result
-    }
-  )
 
   ipcMain.on(mw.logRenderer, (event, raw: unknown) => {
     if (!isMainWindowSender(event) || !consumeRendererLogToken(event.sender.id)) {
