@@ -143,7 +143,9 @@ export function AboutDialog({
             </div>
           </dl>
         ) : (
-          <p className="app-modal-hint">{uiText('loading')}</p>
+          <p className="app-modal-hint" role="status" aria-live="polite">
+            {uiText('loading')}
+          </p>
         )}
         <div
           className="app-modal-footer app-modal-footer-split"

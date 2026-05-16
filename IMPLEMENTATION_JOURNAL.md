@@ -858,4 +858,9 @@
 - [J-835] 2026-05-16 09:42:00 [Assistant]: Журнал yt-dlp (`DownloadsLogPanel`): `pre` с `role="log"` + `downloadsLogViewportAria`, `aria-live="polite"`.
 - [J-836] 2026-05-16 09:44:00 [Assistant]: База знаний — состояние загрузки статьи: абзац со `role="status"` + `aria-live="polite"`.
 - [J-837] 2026-05-16 09:46:00 [Assistant]: База знаний — ошибка чтения статьи: абзац со `role="alert"`.
+- [J-838] 2026-05-16 09:48:00 [Assistant]: О программе — пока нет `aboutInfo`: абзац загрузки со `role="status"` + `aria-live="polite"`.
+- [J-839] 2026-05-16 09:50:00 [Assistant]: Загрузки — таблица очереди: скрытый `<caption>` + ключ `downloadsQueueTableCaption`.
+- [J-840] 2026-05-16 09:52:00 [Assistant]: Загрузки — заголовки таблицы очереди: `scope="col"` на всех `<th>`.
+- [J-841] 2026-05-16 09:54:00 [Assistant]: Диалог имени пресета экспорта — текст ошибки валидации: `role="alert"`.
+- [J-842] 2026-05-16 09:56:00 [Assistant]: Диалог путей движков — подсказка с `id="engine-paths-hint"`; у `dialog` добавлен `aria-describedby`.
 

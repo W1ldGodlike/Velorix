@@ -5834,17 +5834,20 @@ function App(): JSX.Element {
                 aria-label={uiText('downloadsQueueTableWrapGroupAria')}
               >
                 <table className="app-downloads-table">
+                  <caption className="app-visually-hidden">
+                    {uiText('downloadsQueueTableCaption')}
+                  </caption>
                   <thead>
                     <tr>
-                      <th>{uiText('downloadsTableColNum')}</th>
-                      <th>{uiText('downloadsTableColTitleUrl')}</th>
-                      <th>{uiText('downloadsTableColFormat')}</th>
-                      <th>{uiText('downloadsTableColSize')}</th>
-                      <th>{uiText('downloadsTableColProgress')}</th>
-                      <th>{uiText('downloadsTableColSpeed')}</th>
-                      <th>{uiText('downloadsTableColEta')}</th>
-                      <th>{uiText('downloadsTableColStatus')}</th>
-                      <th>{uiText('downloadsTableColActions')}</th>
+                      <th scope="col">{uiText('downloadsTableColNum')}</th>
+                      <th scope="col">{uiText('downloadsTableColTitleUrl')}</th>
+                      <th scope="col">{uiText('downloadsTableColFormat')}</th>
+                      <th scope="col">{uiText('downloadsTableColSize')}</th>
+                      <th scope="col">{uiText('downloadsTableColProgress')}</th>
+                      <th scope="col">{uiText('downloadsTableColSpeed')}</th>
+                      <th scope="col">{uiText('downloadsTableColEta')}</th>
+                      <th scope="col">{uiText('downloadsTableColStatus')}</th>
+                      <th scope="col">{uiText('downloadsTableColActions')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -7114,7 +7117,7 @@ function App(): JSX.Element {
               </label>
             </div>
             {exportPresetNameDialog.error ? (
-              <p id="export-preset-name-error" className="app-modal-hint app-modal-error">
+              <p id="export-preset-name-error" className="app-modal-hint app-modal-error" role="alert">
                 {exportPresetNameDialog.error}
               </p>
             ) : null}
@@ -7155,6 +7158,7 @@ function App(): JSX.Element {
             role="dialog"
             aria-modal="true"
             aria-labelledby="engine-paths-title"
+            aria-describedby="engine-paths-hint"
             onMouseDown={(e) => {
               e.stopPropagation()
             }}
@@ -7162,7 +7166,9 @@ function App(): JSX.Element {
             <h2 id="engine-paths-title" className="app-modal-title">
               {uiText('editorEnginePathsDialogTitle')}
             </h2>
-            <p className="app-modal-hint">{uiText('editorEnginePathsDialogHint')}</p>
+            <p id="engine-paths-hint" className="app-modal-hint">
+              {uiText('editorEnginePathsDialogHint')}
+            </p>
             <div
               className="app-engine-path-rows"
               role="group"
