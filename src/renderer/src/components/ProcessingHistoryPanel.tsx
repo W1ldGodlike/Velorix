@@ -295,6 +295,7 @@ export function ProcessingHistoryPanel({
                 aria-label={uiTextVars('processingHistoryCardSourceToolbarAriaTemplate', {
                   id: entry.id.length > 10 ? `${entry.id.slice(0, 8)}…` : entry.id
                 })}
+                aria-busy={busy}
               >
                 <button
                   type="button"
@@ -321,6 +322,7 @@ export function ProcessingHistoryPanel({
                   aria-label={uiTextVars('processingHistoryCardOutputToolbarAriaTemplate', {
                     id: entry.id.length > 10 ? `${entry.id.slice(0, 8)}…` : entry.id
                   })}
+                  aria-busy={busy}
                 >
                   <button
                     type="button"

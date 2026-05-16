@@ -13,6 +13,7 @@ export function DownloadsLogPanel({
   open,
   targetRowId,
   lines,
+  downloadsTabBusy,
   onToggle,
   onClear,
   onSave
@@ -20,16 +21,19 @@ export function DownloadsLogPanel({
   open: boolean
   targetRowId: number | null
   lines: DownloadsLogLineView[]
+  downloadsTabBusy?: boolean
   onToggle: (nextOpen: boolean) => void
   onClear: () => void
   onSave: () => void
 }): JSX.Element {
   const downloadsLogRegionId = useId()
+  const tabBusy = downloadsTabBusy ?? false
   return (
     <details
       className="app-downloads-log-panel"
       open={open}
       aria-label={uiText('downloadsLogDetailsAria')}
+      aria-busy={tabBusy}
       onToggle={(event) => {
         onToggle(event.currentTarget.open)
       }}
@@ -44,6 +48,7 @@ export function DownloadsLogPanel({
           role="toolbar"
           aria-orientation="horizontal"
           aria-label={uiText('downloadsLogActionsToolbarAria')}
+          aria-busy={tabBusy}
         >
           <button
             type="button"

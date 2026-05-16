@@ -158,6 +158,7 @@ export function KnowledgeDialog({
             className="app-modal-header-row"
             role="group"
             aria-label={uiText('knowledgeDialogHeaderRowAria')}
+            aria-busy={loading}
           >
             <div>
               <h2 id="knowledge-title" className="app-modal-title">
@@ -167,7 +168,7 @@ export function KnowledgeDialog({
                 {uiText('knowledgeHint')}
               </p>
             </div>
-            <div role="toolbar" aria-orientation="horizontal" aria-label={uiText('knowledgeDialogActionsToolbarAria')}>
+            <div role="toolbar" aria-orientation="horizontal" aria-label={uiText('knowledgeDialogActionsToolbarAria')} aria-busy={loading}>
               <button
                 type="button"
                 className="app-btn"
@@ -204,7 +205,7 @@ export function KnowledgeDialog({
                 setFilter(e.target.value)
               }}
             />
-            <div className="app-knowledge-list" role="group" aria-label={uiText('knowledgeTocListAria')}>
+            <div className="app-knowledge-list" role="group" aria-label={uiText('knowledgeTocListAria')} aria-busy={loading}>
               {visibleArticles.map((article) => (
                 <button
                   key={article.slug}

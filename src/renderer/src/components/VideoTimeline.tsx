@@ -598,12 +598,14 @@ export default function VideoTimeline({
     return Number.isFinite(pct) ? pct : null
   }, [current, duration, windowLenSec, winStartEff])
 
+  const pipelineBusy = saveFrameBusy || previewPipelineBusy
+
   return (
     <div
       className="app-timeline-stack"
       role="region"
       aria-label={uiText('videoTimelineStackAria')}
-      aria-busy={saveFrameBusy || previewPipelineBusy}
+      aria-busy={pipelineBusy}
     >
       {duration > 0 ? (
         <div
@@ -611,12 +613,13 @@ export default function VideoTimeline({
           role="toolbar"
           aria-orientation="horizontal"
           aria-label={uiText('videoTimelineToolbarAria')}
-          aria-busy={saveFrameBusy || previewPipelineBusy}
+          aria-busy={pipelineBusy}
         >
           <div
             className="app-timeline-toolbar-primary"
             role="group"
             aria-label={uiText('videoTimelineTrimGroupAria')}
+            aria-busy={pipelineBusy}
           >
             <button
               type="button"
@@ -678,6 +681,7 @@ export default function VideoTimeline({
             className="app-timeline-toolbar-center"
             role="group"
             aria-label={uiText('videoTimelineStatusReadoutGroupAria')}
+            aria-busy={pipelineBusy}
             title={uiTextVars('videoTimelineToolbarCenterTitle', {
               dur: formatTimeWithMs(trimSpanSec),
               pos: formatProbePositionLine(current, duration, fpsProbeHint)
@@ -697,6 +701,7 @@ export default function VideoTimeline({
             className="app-timeline-toolbar-export-cluster"
             role="group"
             aria-label={uiText('videoTimelineExportSnapshotGroupAria')}
+            aria-busy={pipelineBusy}
           >
             <button
               type="button"
@@ -729,6 +734,7 @@ export default function VideoTimeline({
             className="app-timeline-toolbar-zoom"
             role="group"
             aria-label={uiText('videoTimelineZoomRowAria')}
+            aria-busy={pipelineBusy}
           >
             <button
               type="button"
@@ -771,16 +777,19 @@ export default function VideoTimeline({
           className="app-timeline-unified"
           role="region"
           aria-label={uiText('videoTimelineUnifiedRegionAria')}
+          aria-busy={pipelineBusy}
         >
           <div
             className="app-timeline-pane"
             role="group"
             aria-label={uiText('videoTimelinePaneGroupAria')}
+            aria-busy={pipelineBusy}
           >
             <div
               className="app-timeline-pane-visuals"
               role="group"
               aria-label={uiText('videoTimelinePaneVisualsGroupAria')}
+              aria-busy={pipelineBusy}
             >
               <div className="app-timeline-ruler" aria-hidden="true">
                 <div className="app-timeline-ruler-track">
@@ -799,6 +808,7 @@ export default function VideoTimeline({
                 className="app-timeline-waveform-passive"
                 role="group"
                 aria-label={uiText('videoTimelineWaveformClusterAria')}
+                aria-busy={pipelineBusy}
               >
                 <TimelineWaveform
                   key={mediaKey}
@@ -816,6 +826,7 @@ export default function VideoTimeline({
               tabIndex={0}
               role="slider"
               aria-label={uiText('videoTimelineUnifiedPaneAria')}
+              aria-busy={pipelineBusy}
               aria-valuemin={0}
               aria-valuemax={1000}
               aria-valuenow={Math.round(Math.min(1, Math.max(0, ratio)) * 1000)}
@@ -873,9 +884,9 @@ export default function VideoTimeline({
         <div
           className="app-timeline-footer"
           aria-label={uiText('videoTimelineFooterAria')}
-          aria-busy={saveFrameBusy || previewPipelineBusy}
+          aria-busy={pipelineBusy}
         >
-          <div className="app-timeline-footer-spec" role="group" aria-label={uiText('videoTimelineFooterSpecGroupAria')}>
+          <div className="app-timeline-footer-spec" role="group" aria-label={uiText('videoTimelineFooterSpecGroupAria')} aria-busy={pipelineBusy}>
             <span title={uiText('videoTimelineVideoStreamTitle')}>
               <strong>{uiText('videoTimelineVideoLabel')}</strong> {formatProbeVideoFact(probe)}
             </span>

@@ -154,6 +154,7 @@ export function DownloadsHistoryPanel({
                   aria-label={uiTextVars('downloadsHistoryCardToolbarAriaTemplate', {
                     title: entry.shortLabel
                   })}
+                  aria-busy={busy}
                 >
                   <span
                     className={`app-downloads-history-outcome app-downloads-history-${entry.outcome}`}

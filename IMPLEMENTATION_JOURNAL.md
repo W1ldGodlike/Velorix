@@ -988,4 +988,9 @@
 - [J-965] 2026-05-16 14:04:00 [Assistant]: Верхняя панель — группа хвоста (`topbarTrailingGroupAria`) и тулбар действий (`topbarActionsToolbarAria`): в `aria-busy` добавлен `probePending` превью редактора.
 - [J-966] 2026-05-16 14:06:00 [Assistant]: Статусбар — кластер движков (`statusbarEnginesClusterAria`): `aria-busy` при загрузке движков или состоянии `checking`; кластер кодека экспорта (`statusbarExportCodecClusterAria`): при экспорте/снимке/отмене/ffprobe.
 - [J-967] 2026-05-16 14:08:00 [Assistant]: Инспектор §9 — группа хвоста топбара (`inspectorTopbarTrailingGroupAria`) и подвал пути (`inspectorStandalonePathFooterAria`): `aria-busy` на время ffprobe выбранного файла.
+- [J-968] 2026-05-16 14:10:00 [Assistant]: Таймлайн — введён `pipelineBusy`; `aria-busy` на внутренних группах тулбара, регионе unified, pane/waveform, слайдере playhead и группе спецификаций подвала (`videoTimelineFooterSpecGroupAria`).
+- [J-969] 2026-05-16 14:12:00 [Assistant]: Пакетный экспорт — строка каталога вывода (`batchExportOutputDirRowGroupAria`): `aria-busy={batchExportBusy}`.
+- [J-970] 2026-05-16 14:14:00 [Assistant]: База знаний — шапка модалки (`knowledgeDialogHeaderRowAria`), тулбар действий (`knowledgeDialogActionsToolbarAria`) и список TOC (`knowledgeTocListAria`): `aria-busy={loading}`.
+- [J-971] 2026-05-16 14:16:00 [Assistant]: О программе — `maintenanceBusy` при `cleanMaintenance`; `aboutShellBusy` на `dialog`/футере/дигностическом тулбаре; блокировка кнопок футера на время загрузки about или очистки.
+- [J-972] 2026-05-16 14:18:00 [Assistant]: Превью — кластеры транспорта (`previewTransportPlaybackClusterAria`, `previewTransportVolumeClusterAria`): `aria-busy={disabled}`; истории — тулбары карточек и встроенный журнал yt-dlp (`downloadsLogDetailsAria`, `downloadsLogActionsToolbarAria`) с привязкой к занятости вкладки загрузок.
 

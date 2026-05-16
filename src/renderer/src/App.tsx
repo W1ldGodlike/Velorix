@@ -3441,7 +3441,7 @@ function App(): JSX.Element {
                     <IconFolder size={16} aria-hidden />
                     {uiText('batchExportOutputDirLabel')}
                   </span>
-                  <div className="app-batch-export-dir-row" role="group" aria-label={uiText('batchExportOutputDirRowGroupAria')}>
+                  <div className="app-batch-export-dir-row" role="group" aria-label={uiText('batchExportOutputDirRowGroupAria')} aria-busy={batchExportBusy}>
                     <input
                       type="text"
                       className="app-control"
@@ -6421,6 +6421,7 @@ function App(): JSX.Element {
                   open={downloadsEmbeddedLogOpen}
                   targetRowId={downloadsLogTargetRowId}
                   lines={downloadsLogLines}
+                  downloadsTabBusy={downloadsOptionsBusy || downloadsHistoryBusy}
                   onToggle={(next) => {
                     persistDownloadsEmbeddedLogOpen(next)
                   }}

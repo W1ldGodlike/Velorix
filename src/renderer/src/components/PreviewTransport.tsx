@@ -140,6 +140,7 @@ export default function PreviewTransport({
         className="app-preview-transport-cluster"
         role="group"
         aria-label={uiText('previewTransportPlaybackClusterAria')}
+        aria-busy={disabled}
       >
         <button
           type="button"
@@ -206,6 +207,7 @@ export default function PreviewTransport({
         className="app-preview-transport-end"
         role="group"
         aria-label={uiText('previewTransportVolumeClusterAria')}
+        aria-busy={disabled}
       >
         <button
           type="button"

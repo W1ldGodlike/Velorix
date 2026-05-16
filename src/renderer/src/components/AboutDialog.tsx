@@ -53,6 +53,7 @@ export function AboutDialog({
   onOpenKnowledgeArticle?: (slug: string) => void
 }): JSX.Element | null {
   const [maintenanceConfirm, setMaintenanceConfirm] = useState<MaintenanceCleanChoice | null>(null)
+  const [maintenanceBusy, setMaintenanceBusy] = useState(false)
 
   if (!open) {
     return null
@@ -76,13 +77,18 @@ export function AboutDialog({
   }
 
   function handleCleanMaintenance(choice: MaintenanceCleanChoice): void {
+    if (maintenanceBusy) {
+      return
+    }
     if (maintenanceConfirm !== choice) {
       setMaintenanceConfirm(choice)
       pushStatus(formatMaintenanceConfirmHint(maintenanceLabel(choice)))
       return
     }
     const request = choice === 'all' ? undefined : { targets: [choice] }
+    setMaintenanceBusy(true)
     void window.fluxalloy.diagnostics.cleanMaintenance(request).then((r) => {
+      setMaintenanceBusy(false)
       setMaintenanceConfirm(null)
       if (r.ok) {
         pushStatus(formatMaintenanceCleanDone(r.removedFiles, formatUiBytes(r.removedBytes)))
@@ -96,6 +102,8 @@ export function AboutDialog({
       }
     })
   }
+
+  const aboutShellBusy = aboutInfo === null || maintenanceBusy
 
   return (
     <div
@@ -111,7 +119,7 @@ export function AboutDialog({
         className="app-modal app-modal-narrow"
         role="dialog"
         aria-modal="true"
-        aria-busy={aboutInfo === null}
+        aria-busy={aboutShellBusy}
         aria-labelledby="about-title"
         aria-describedby="about-dialog-desc"
         onMouseDown={(e) => {
@@ -156,21 +164,25 @@ export function AboutDialog({
           className="app-modal-footer app-modal-footer-split"
           role="region"
           aria-label={uiText('aboutModalFooterSplitAria')}
+          aria-busy={aboutShellBusy}
         >
           <div
             className="app-about-footer-left"
             role="group"
             aria-label={uiText('aboutFooterLeftGroupAria')}
+            aria-busy={aboutShellBusy}
           >
             <div
               className="app-about-diagnostics"
               role="toolbar"
               aria-orientation="horizontal"
               aria-label={uiText('aboutDiagnosticsToolbarAria')}
+              aria-busy={aboutShellBusy}
             >
               <button
                 type="button"
                 className="app-btn app-btn-compact"
+                disabled={aboutShellBusy}
                 title={uiText('aboutTooltipLogsFolder')}
                 onClick={() => {
                   void window.fluxalloy.diagnostics.openFolder('logs').then((r) => {
@@ -190,6 +202,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className="app-btn app-btn-compact"
+                disabled={aboutShellBusy}
                 title={uiText('aboutTooltipMainLog')}
                 onClick={() => {
                   void window.fluxalloy.diagnostics.openMainLog().then((r) => {
@@ -204,6 +217,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className="app-btn app-btn-compact"
+                disabled={aboutShellBusy}
                 title={uiText('aboutTooltipSupportZip')}
                 onClick={() => {
                   void window.fluxalloy.diagnostics.createSupportZip().then((r) => {
@@ -225,6 +239,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className="app-btn app-btn-compact"
+                disabled={aboutShellBusy}
                 title={uiText('aboutTooltipMaintenanceSummary')}
                 onClick={() => {
                   setMaintenanceConfirm(null)
@@ -238,6 +253,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className={`app-btn app-btn-compact${maintenanceConfirm === 'all' ? ' app-btn-danger' : ''}`}
+                disabled={aboutShellBusy}
                 title={uiText('aboutTooltipMaintenanceCleanAll')}
                 onClick={() => {
                   handleCleanMaintenance('all')
@@ -252,6 +268,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className={`app-btn app-btn-compact${maintenanceConfirm === 'previewCache' ? ' app-btn-danger' : ''}`}
+                disabled={aboutShellBusy}
                 title={uiText('aboutTooltipMaintenanceCleanPreview')}
                 onClick={() => {
                   handleCleanMaintenance('previewCache')
@@ -266,6 +283,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className={`app-btn app-btn-compact${maintenanceConfirm === 'ytdlpPartials' ? ' app-btn-danger' : ''}`}
+                disabled={aboutShellBusy}
                 title={uiText('aboutTooltipMaintenanceCleanPartials')}
                 onClick={() => {
                   handleCleanMaintenance('ytdlpPartials')
@@ -280,6 +298,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className={`app-btn app-btn-compact${maintenanceConfirm === 'ffmpegTemp' ? ' app-btn-danger' : ''}`}
+                disabled={aboutShellBusy}
                 title={uiText('aboutTooltipMaintenanceCleanFfmpegTemp')}
                 onClick={() => {
                   handleCleanMaintenance('ffmpegTemp')
@@ -310,10 +329,12 @@ export function AboutDialog({
                 className="app-about-knowledge-link"
                 role="region"
                 aria-label={uiText('aboutKnowledgeArticleRegionAria')}
+                aria-busy={aboutShellBusy}
               >
                 <button
                   type="button"
                   className="app-btn app-btn-compact"
+                  disabled={aboutShellBusy}
                   title={uiText('aboutKnowledgeSupportArticleTooltip')}
                   onClick={() => {
                     onOpenKnowledgeArticle(KNOWLEDGE_SLUG_ABOUT_SUPPORT_LOGS)
@@ -324,7 +345,7 @@ export function AboutDialog({
               </div>
             ) : null}
           </div>
-          <div role="toolbar" aria-orientation="horizontal" aria-label={uiText('aboutDialogCloseToolbarAria')}>
+          <div role="toolbar" aria-orientation="horizontal" aria-label={uiText('aboutDialogCloseToolbarAria')} aria-busy={aboutShellBusy}>
             <button
               type="button"
               className="app-btn app-btn-primary"
