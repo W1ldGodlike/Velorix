@@ -60,6 +60,7 @@ export function VideoTimelineToolbar(props: VideoTimelineToolbarProps) {
       role="toolbar"
       aria-orientation="horizontal"
       aria-label={uiText('videoTimelineToolbarAria')}
+      aria-describedby="editor-video-timeline-hint"
       aria-busy={pipelineBusy}
     >
       <div

@@ -15,6 +15,7 @@ export function DownloadsWorkspaceMain(props: DownloadsWorkspaceMainProps): JSX.
     <section
       className="app-downloads-main"
       aria-label={uiText('downloadsMainAria')}
+      aria-describedby="downloads-page-hint"
       aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
     >
       <DownloadsWorkspaceMainBand {...props} />
@@ -23,6 +24,7 @@ export function DownloadsWorkspaceMain(props: DownloadsWorkspaceMainProps): JSX.
         className="app-downloads-table-zone"
         role="region"
         aria-label={uiText('downloadsQueueTableZoneAria')}
+        aria-describedby="downloads-page-hint"
         aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
       >
         <DownloadsWorkspaceMainQueueTable {...props} />

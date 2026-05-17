@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-17T17:32:01.883Z",
+  "generatedAt": "2026-05-17T18:20:26.605Z",
   "repoRoot": "C:\\Users\\truno\\FluxAlloy",
   "codeRoots": [
     "src",
@@ -18,7 +18,7 @@
     ".cursor",
     "coverage"
   ],
-  "fileCount": 758,
+  "fileCount": 760,
   "files": [
     "electron.vite.config.ts",
     "eslint.config.mjs",
@@ -49,6 +49,7 @@
     "scripts/check-locales-json.mjs",
     "scripts/check-no-secrets.mjs",
     "scripts/check-rules-explicit.mjs",
+    "scripts/check-terminal-summaries-ru.mjs",
     "scripts/collect-terminal-preview-predicates.mjs",
     "scripts/collect-terminal-preview-substrings.mjs",
     "scripts/cursor-automation/scripts/split-run-loop.mjs",
@@ -700,6 +701,7 @@
     "tests/scripts/audit-shared-contracts.test.ts",
     "tests/scripts/check-locales-json.test.ts",
     "tests/scripts/check-release-chain.test.ts",
+    "tests/scripts/check-terminal-summaries-ru.test.ts",
     "tests/scripts/engines-verify-bundled-hashes-help.test.ts",
     "tests/scripts/scripts-lib-phase6.test.ts",
     "tests/scripts/smoke-packaged-scripts-help.test.ts",

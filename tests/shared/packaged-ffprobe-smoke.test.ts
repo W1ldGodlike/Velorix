@@ -56,6 +56,9 @@ describe('packaged-ffprobe-smoke', () => {
     expect(lines.some((l) => l.includes('extradata_size'))).toBe(true)
     expect(lines.some((l) => l.includes('disposition'))).toBe(true)
     expect(lines.some((l) => l.includes('codec_name, id,'))).toBe(true)
+    expect(lines.some((l) => l.includes('stream_index'))).toBe(true)
+    expect(lines.some((l) => l.includes('nb_read_frames'))).toBe(true)
+    expect(lines.some((l) => l.includes('nb_read_packets'))).toBe(true)
     expect(lines.some((l) => l.includes('ParsableForSmoke'))).toBe(true)
     expect(lines.some((l) => l.includes('formatFfprobeContainerDiagnostics'))).toBe(true)
     expect(lines).toContain(`candidate: ${candidates[0]} (present)`)
@@ -250,7 +253,7 @@ describe('packaged-ffprobe-smoke', () => {
           format_name: 'mp4',
           format_long_name: 'QuickTime / MOV',
           nb_streams: '1',
-          tags: { major_brand: 'isom', encoder: 'Lavf61.0' }
+          tags: { major_brand: 'isom', minor_version: '512', encoder: 'Lavf61.0' }
         }
       })
     ).toBe(true)
@@ -458,7 +461,7 @@ describe('packaged-ffprobe-smoke', () => {
             start_pts: '1024',
             codec_tag_string: 'avc1',
             codec_tag: '0x31637661',
-            tags: { language: 'eng', stereo_mode: '2' }
+            tags: { language: 'eng', stereo_mode: '2', rotate: '90' }
           }
         ]
       })
@@ -546,6 +549,24 @@ describe('packaged-ffprobe-smoke', () => {
       isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
         ...base,
         streams: [{ id: 'not-hex' }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ stream_index: '1', nb_read_frames: '1200', nb_read_packets: '900' }]
+      })
+    ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ nb_read_packets: 'not-a-count' }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ stream_index: 'not-an-index' }]
       })
     ).toBe(false)
     expect(

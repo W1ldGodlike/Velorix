@@ -58,6 +58,7 @@ export function VideoTimelineUnifiedPane({
         className="app-timeline-unified"
         role="region"
         aria-label={uiText('videoTimelineUnifiedRegionAria')}
+        aria-describedby="editor-video-timeline-hint"
         aria-busy={pipelineBusy}
       >
         <div

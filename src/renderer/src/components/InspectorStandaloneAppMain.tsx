@@ -19,6 +19,7 @@ export function InspectorStandaloneAppMain(props: InspectorStandaloneAppModel): 
     <main
       className="app-main inspector-standalone-main"
       aria-label={uiText('inspectorStandaloneMainAria')}
+      aria-describedby={mediaPath ? undefined : 'inspector-standalone-empty-hint'}
       aria-busy={probePending}
       onDragOver={(event) => {
         event.preventDefault()
@@ -30,14 +31,19 @@ export function InspectorStandaloneAppMain(props: InspectorStandaloneAppModel): 
         void handleDrop(event.dataTransfer.files)
       }}
     >
+      <p
+        id="inspector-standalone-empty-hint"
+        className={mediaPath ? 'app-visually-hidden' : 'inspector-standalone-hint'}
+      >
+        {uiText('inspectorStandaloneEmptyHint')}
+      </p>
       {!mediaPath ? (
         <div
           role="region"
           aria-label={uiText('inspectorStandaloneEmptyRegionAria')}
+          aria-describedby="inspector-standalone-empty-hint"
           aria-busy={probePending}
-        >
-          <p className="inspector-standalone-hint">{uiText('inspectorStandaloneEmptyHint')}</p>
-        </div>
+        />
       ) : null}
       {displayedProbeError ? (
         <p className="app-preview-probe-error" role="alert">
@@ -50,6 +56,7 @@ export function InspectorStandaloneAppMain(props: InspectorStandaloneAppModel): 
           aria-live="polite"
           role="region"
           aria-label={uiText('inspectorStandaloneProbeStackAria')}
+          aria-describedby="probePanelOverviewHint"
           aria-busy={probePending && mediaPath !== null}
         >
           <PreviewProbeBody

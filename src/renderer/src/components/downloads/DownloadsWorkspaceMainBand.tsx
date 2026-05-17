@@ -30,16 +30,20 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
         className="app-downloads-band"
         role="region"
         aria-label={uiText('downloadsPageIntroBandAria')}
+        aria-describedby="downloads-page-hint"
         aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
       >
         <div
           className="app-downloads-band-copy"
           role="group"
           aria-label={uiText('downloadsBandHeadingCopyGroupAria')}
+          aria-describedby="downloads-page-hint"
           aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
         >
           <h2 className="app-downloads-title">{uiText('downloadsPageTitle')}</h2>
-          <p className="app-downloads-hint">{uiText('downloadsPageHint')}</p>
+          <p id="downloads-page-hint" className="app-downloads-hint">
+            {uiText('downloadsPageHint')}
+          </p>
         </div>
         <div
           className="app-downloads-actions"

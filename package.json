@@ -50,6 +50,7 @@
     "agent:session": "node scripts/agent-session.mjs",
     "check:checklist": "node scripts/check-checklist-sprint.mjs",
     "check:locales-json": "node scripts/check-locales-json.mjs",
+    "check:terminal-summaries-ru": "node scripts/check-terminal-summaries-ru.mjs",
     "check:secrets": "node scripts/check-no-secrets.mjs",
     "locales:terminal-summaries-ru": "node scripts/apply-terminal-summary-ru.mjs",
     "locales:terminal-flux-pole": "node scripts/inject-flux-summary-pole.mjs",

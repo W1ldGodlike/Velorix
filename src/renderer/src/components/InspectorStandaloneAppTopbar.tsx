@@ -74,6 +74,7 @@ export function InspectorStandaloneAppTopbar(props: InspectorStandaloneAppModel)
               void handleOpenDialog()
             }}
             title={uiText('inspectorStandaloneOpenPickTitle')}
+            aria-describedby="inspector-standalone-empty-hint"
           >
             <IconFolderOpen title={miniIconTitle('miniIconFolderOpenEllipsis')} />
             <span className="app-visually-hidden">

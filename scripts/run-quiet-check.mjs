@@ -12,6 +12,7 @@ const steps = [
   ['rules-explicit', ['run', 'check:rules-explicit']],
   ['field-registries', ['run', 'check:field-registries']],
   ['locales-json', ['run', 'check:locales-json']],
+  ['terminal-summaries-ru', ['run', 'check:terminal-summaries-ru']],
   ['audit:copy-paste', ['run', 'audit:copy-paste']],
   ['audit:todo-debt', ['run', 'audit:todo-debt']],
   ['audit:dead-type-reexports', ['run', 'audit:dead-type-reexports']],

@@ -35,7 +35,7 @@
 - **`src/preload/`** — мост и типы [`index.d.ts`](../src/preload/index.d.ts) для `window.fluxalloy`.
 - **`Data/`** — конфиги и доверенные хеши §3 ТЗ (`trusted_hashes.json`); в проде копируются как `extraResources` (см. [`electron-builder.yml`](../electron-builder.yml)).
 - **`Help/`** — тексты подсказок для UI.
-- **[`src/shared/terminal-contract.ts`](../src/shared/terminal-contract.ts)** — контракт сценарных подсказок терминала (вкладка загрузок и превью медиа): поля `summary` / `token` / `fullLine`. После правок русских `summary` нужно дважды выполнить **`npm run locales:terminal-summaries-ru`**, пока второй прогон не покажет **0** замен и **0** gloss (см. [`Help/ffmpeg-terminal-hints.md`](../Help/ffmpeg-terminal-hints.md)).
+- **[`src/shared/terminal-contract.ts`](../src/shared/terminal-contract.ts)** — контракт сценарных подсказок терминала (вкладка загрузок и превью медиа): поля `summary` / `token` / `fullLine`. После правок русских `summary` — **`npm run locales:terminal-summaries-ru`** дважды до **0** замен и **0** gloss; в **`npm run check:quiet`** входит **`npm run check:terminal-summaries-ru`** (см. [`Help/ffmpeg-terminal-hints.md`](../Help/ffmpeg-terminal-hints.md)).
 - **`scripts/cursor-automation/`** — изолированный пакет с `@cursor/sdk`; не является частью приложения в runtime.
 
 ## IPC и контракты

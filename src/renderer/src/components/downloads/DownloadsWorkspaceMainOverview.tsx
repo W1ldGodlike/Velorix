@@ -19,6 +19,7 @@ export function DownloadsWorkspaceMainOverview(props: DownloadsWorkspaceMainProp
         className="app-downloads-overview"
         role="region"
         aria-label={uiText('downloadsOverviewAria')}
+        aria-describedby="downloads-page-hint"
         aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
       >
         <div
@@ -56,6 +57,7 @@ export function DownloadsWorkspaceMainOverview(props: DownloadsWorkspaceMainProp
         role="toolbar"
         aria-orientation="horizontal"
         aria-label={uiText('downloadsFilterBarAria')}
+        aria-describedby="downloads-page-hint"
         aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
       >
         {downloadsStatusFilterChips.map((filter) => (
