@@ -97,6 +97,7 @@ export function ExportPresetNameDialog(props: ExportPresetNameDialogProps): JSX.
           <button
             type="button"
             className="app-btn"
+            aria-describedby="export-preset-name-hint"
             disabled={exportPresetSaving}
             onClick={() => {
               setDialog(null)
@@ -104,7 +105,12 @@ export function ExportPresetNameDialog(props: ExportPresetNameDialogProps): JSX.
           >
             {uiText('appDialogCancel')}
           </button>
-          <button type="submit" className="app-btn app-btn-primary" disabled={exportPresetSaving}>
+          <button
+            type="submit"
+            className="app-btn app-btn-primary"
+            aria-describedby="export-preset-name-hint"
+            disabled={exportPresetSaving}
+          >
             {uiText('appDialogSave')}
           </button>
         </div>

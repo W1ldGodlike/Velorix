@@ -309,6 +309,7 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
                             <button
                               type="button"
                               className="app-icon-btn"
+                              aria-describedby="downloads-page-hint"
                               aria-label={uiText('batchExportAddToBatch')}
                               title={uiText('batchExportAddToBatch')}
                               onClick={() => {

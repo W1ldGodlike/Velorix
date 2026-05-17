@@ -56,6 +56,7 @@ export function EditorFfmpegSettingsRailPresetsSection(props: EditorFfmpegSettin
           <span>{uiText('editorFieldUserPreset')}</span>
           <select
             className="app-control"
+            aria-describedby="ffmpegPresetsSectionHint editor-ffmpeg-settings-hint"
             title={
               selectedExportUserPreset?.hint?.trim() ||
               uiText('editorTooltipUserPresetSelectFallback')

@@ -199,6 +199,12 @@ describe('packaged-ffprobe-smoke', () => {
     expect(
       isPackagedFfprobeProbeJsonParsableByContainerRegistry({
         streams: [{}],
+        format: { format_name: 'mp4', nb_streams: '1', probe_score: 'not-a-score' }
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
         format: {
           format_name: 'mp4',
           nb_streams: '1',
@@ -574,6 +580,30 @@ describe('packaged-ffprobe-smoke', () => {
     expect(
       isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
         ...base,
+        streams: [{ chroma_location: 42 }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ field_order: 42 }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ codec_tag_string: 42 }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ color_transfer: 42 }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
         streams: [
           {
             sample_aspect_ratio: '1:1',
@@ -638,6 +668,36 @@ describe('packaged-ffprobe-smoke', () => {
     expect(
       isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
         ...base,
+        streams: [{ codec_name: 42 }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ codec_type: 42 }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ sample_fmt: 42 }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ display_aspect_ratio: 42 }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ sample_aspect_ratio: 42 }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
         streams: [
           {
             start_pts: '1024',
@@ -696,6 +756,24 @@ describe('packaged-ffprobe-smoke', () => {
       isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
         ...base,
         streams: [{ color_space: 42 }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ color_primaries: 42 }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ color_range: 42 }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ color_trc: 42 }]
       })
     ).toBe(false)
     expect(

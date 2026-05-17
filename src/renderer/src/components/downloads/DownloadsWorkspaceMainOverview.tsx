@@ -66,6 +66,7 @@ export function DownloadsWorkspaceMainOverview(props: DownloadsWorkspaceMainProp
             type="button"
             className={`app-filter-chip${downloadsStatusFilter === filter.id ? ' app-filter-chip-active' : ''}`}
             aria-pressed={downloadsStatusFilter === filter.id}
+            aria-describedby="downloads-page-hint"
             onClick={() => {
               setDownloadsStatusFilter(filter.id)
             }}

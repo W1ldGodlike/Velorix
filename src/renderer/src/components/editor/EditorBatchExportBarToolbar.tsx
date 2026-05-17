@@ -45,7 +45,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
                 disabled={batchExportBusy}
                 spellCheck={false}
                 title={uiText('batchExportOutputSuffixHint')}
-                aria-describedby="batch-export-suffix-hint"
+                aria-describedby="batch-export-panel-hint batch-export-suffix-hint"
                 onChange={(e) => {
                   setBatchOutputSuffix(e.target.value)
                 }}
@@ -137,7 +137,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
               </span>
               <select
                 className="app-control"
-                aria-describedby="batch-export-concurrency-hint"
+                aria-describedby="batch-export-panel-hint batch-export-concurrency-hint"
                 value={String(batchSnapshot?.concurrency ?? 'auto')}
                 disabled={batchExportBusy}
                 onChange={(e) => {

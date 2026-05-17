@@ -122,6 +122,7 @@ export function DownloadsSettingsRailSavingSection(props: DownloadsSettingsRailP
           <span>{uiText('downloadsFilenameTemplateLabel')}</span>
           <input
             className="app-control app-downloads-template-input"
+            aria-describedby="downloads-page-hint"
             title={uiText('downloadsTooltipFilenameTemplate')}
             value={downloadsOptions.filenameTemplate}
             disabled={downloadsOptionsBusy}

@@ -55,7 +55,12 @@ export function PreviewProbeBodyOverview({ ctx }: { ctx: PreviewProbeBodyCtx }):
         aria-describedby="probePanelOverviewHint"
         aria-busy={probeRefreshing}
       >
-        <a href={FFPROBE_DOC_ALL} target="_blank" rel="noreferrer">
+        <a
+          href={FFPROBE_DOC_ALL}
+          target="_blank"
+          rel="noreferrer"
+          aria-describedby="probePanelOverviewHint"
+        >
           {uiText('probeFfprobeDocLink')}
         </a>
       </nav>

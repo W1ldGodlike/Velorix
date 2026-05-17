@@ -38,6 +38,7 @@ export function DownloadsSettingsRailNetworkSection(props: DownloadsSettingsRail
           <span>{uiText('downloadsQueueRetryLabel')}</span>
           <select
             className="app-control"
+            aria-describedby="downloads-page-hint"
             title={uiText('downloadsTooltipQueueRetrySelect')}
             value={downloadsOptions.queueRetryProfile}
             disabled={downloadsOptionsBusy}
@@ -60,6 +61,7 @@ export function DownloadsSettingsRailNetworkSection(props: DownloadsSettingsRail
             <span>{uiText('downloadsRateLimitLabel')}</span>
             <input
               className="app-control"
+              aria-describedby="downloads-page-hint"
               title={uiText('downloadsTooltipRateLimitInput')}
               value={downloadsOptions.rateLimit}
               disabled={downloadsOptionsBusy}
@@ -78,6 +80,7 @@ export function DownloadsSettingsRailNetworkSection(props: DownloadsSettingsRail
             <span>{uiText('downloadsYtdlpRetriesLabel')}</span>
             <input
               className="app-control"
+              aria-describedby="downloads-page-hint"
               title={uiText('downloadsTooltipRetriesInput')}
               value={downloadsOptions.retriesLine}
               disabled={downloadsOptionsBusy}
@@ -100,6 +103,7 @@ export function DownloadsSettingsRailNetworkSection(props: DownloadsSettingsRail
             <span>{uiText('downloadsFragmentRetriesLabel')}</span>
             <input
               className="app-control"
+              aria-describedby="downloads-page-hint"
               title={uiText('downloadsTooltipFragmentRetriesInput')}
               value={downloadsOptions.fragmentRetriesLine}
               disabled={downloadsOptionsBusy}

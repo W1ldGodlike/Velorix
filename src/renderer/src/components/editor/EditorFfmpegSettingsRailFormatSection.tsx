@@ -64,6 +64,7 @@ export function EditorFfmpegSettingsRailFormatSection(props: EditorFfmpegSetting
           <span>{uiText('editorFieldResolution')}</span>
           <select
             className="app-control"
+            aria-describedby="ffmpegFormatSectionHint editor-ffmpeg-settings-hint"
             title={uiText('editorTooltipResolution')}
             value={exportScalePreset}
             disabled={exportBusy || snapshotBusy}
@@ -85,6 +86,7 @@ export function EditorFfmpegSettingsRailFormatSection(props: EditorFfmpegSetting
           <span>{uiText('editorFieldFps')}</span>
           <select
             className="app-control"
+            aria-describedby="ffmpegFormatSectionHint editor-ffmpeg-settings-hint"
             title={uiText('editorTooltipFps')}
             value={exportFps === null ? 'source' : String(exportFps)}
             disabled={exportBusy || snapshotBusy}
@@ -173,6 +175,7 @@ export function EditorFfmpegSettingsRailFormatSection(props: EditorFfmpegSetting
           <span>{uiText('editorFieldRotation')}</span>
           <select
             className="app-control"
+            aria-describedby="ffmpegFormatSectionHint editor-ffmpeg-settings-hint"
             title={uiText('editorTooltipRotation')}
             value={exportVideoTransform}
             disabled={exportBusy || snapshotBusy}
@@ -194,6 +197,7 @@ export function EditorFfmpegSettingsRailFormatSection(props: EditorFfmpegSetting
           <span>{uiText('editorFieldCrop')}</span>
           <select
             className="app-control"
+            aria-describedby="ffmpegFormatSectionHint editor-ffmpeg-settings-hint"
             title={uiText('editorTooltipCrop')}
             value={exportCropPreset}
             disabled={exportBusy || snapshotBusy}

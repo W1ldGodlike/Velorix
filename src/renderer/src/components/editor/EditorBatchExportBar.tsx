@@ -70,7 +70,11 @@ export function EditorBatchExportBar(props: EditorBatchExportBarProps): JSX.Elem
           <EditorBatchExportBarToolbar {...props} />
           <EditorBatchExportBarQueueTable {...props} />
           {batchSnapshot && !batchSnapshot.running && batchSnapshot.completedError > 0 ? (
-            <p className="app-batch-export-summary app-url-hint" role="status">
+            <p
+              className="app-batch-export-summary app-url-hint"
+              role="status"
+              aria-describedby="batch-export-panel-hint batch-export-drop-hint"
+            >
               {uiTextVars('batchExportErrorSummary', {
                 failed: String(batchSnapshot.completedError),
                 total: String(

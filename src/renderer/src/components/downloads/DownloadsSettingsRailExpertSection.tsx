@@ -48,6 +48,7 @@ export function DownloadsSettingsRailExpertSection(props: DownloadsSettingsRailP
           <span>{uiText('downloadsExtraArgsLabel')}</span>
           <textarea
             className="app-control app-downloads-extra-args"
+            aria-describedby="downloads-page-hint downloadsHintCatalogIntro"
             title={uiText('downloadsTooltipExtraArgsTextarea')}
             rows={3}
             spellCheck={false}

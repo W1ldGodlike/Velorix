@@ -128,6 +128,7 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                             <button
                               type="button"
                               className="app-btn app-btn-icon"
+                              aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                               title={uiText('batchExportOpenInputInEditor')}
                               aria-label={uiText('batchExportOpenInputInEditor')}
                               onClick={() => {
@@ -139,6 +140,7 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                             <button
                               type="button"
                               className="app-btn app-btn-icon"
+                              aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                               title={uiText('batchExportOpenInputFile')}
                               aria-label={uiText('batchExportOpenInputFile')}
                               onClick={() => {
@@ -150,6 +152,7 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                             <button
                               type="button"
                               className="app-btn app-btn-icon"
+                              aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                               title={uiText('batchExportOpenInputFolder')}
                               aria-label={uiText('batchExportOpenInputFolder')}
                               onClick={() => {
@@ -161,6 +164,7 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                             <button
                               type="button"
                               className="app-btn app-btn-icon"
+                              aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                               title={uiText('batchExportCopyRowInputPath')}
                               aria-label={uiText('batchExportCopyRowInputPath')}
                               onClick={() => {
@@ -221,6 +225,7 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                               <button
                                 type="button"
                                 className="app-btn app-btn-icon"
+                                aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                                 title={uiText('batchExportRetryRow')}
                                 aria-label={uiText('batchExportRetryRow')}
                                 disabled={batchExportBusy}
@@ -248,6 +253,7 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                             <button
                               type="button"
                               className="app-btn app-btn-icon"
+                              aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                               title={uiText('batchExportMoveUp')}
                               aria-label={uiText('batchExportMoveUp')}
                               disabled={batchExportBusy || row.status === 'running'}
@@ -262,6 +268,7 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                             <button
                               type="button"
                               className="app-btn app-btn-icon"
+                              aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                               title={uiText('batchExportMoveDown')}
                               aria-label={uiText('batchExportMoveDown')}
                               disabled={batchExportBusy || row.status === 'running'}
@@ -276,6 +283,7 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                             <button
                               type="button"
                               className="app-btn app-btn-icon"
+                              aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                               title={uiText('batchExportRemoveRow')}
                               aria-label={uiText('batchExportRemoveRow')}
                               disabled={batchExportBusy || row.status === 'running'}

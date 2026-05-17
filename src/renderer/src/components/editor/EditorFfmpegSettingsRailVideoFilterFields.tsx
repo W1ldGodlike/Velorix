@@ -51,6 +51,7 @@ export function EditorFfmpegSettingsRailVideoFilterFields(props: EditorFfmpegSet
         <span>{uiText('editorFieldDeinterlace')}</span>
         <select
           className="app-control"
+          aria-describedby="ffmpegVideoSectionHint editor-ffmpeg-settings-hint"
           title={uiText('editorHintDeinterlace')}
           value={exportVideoDeinterlace}
           disabled={exportBusy || snapshotBusy}
@@ -72,6 +73,7 @@ export function EditorFfmpegSettingsRailVideoFilterFields(props: EditorFfmpegSet
         <span>{uiText('editorFieldDenoise')}</span>
         <select
           className="app-control"
+          aria-describedby="ffmpegVideoSectionHint editor-ffmpeg-settings-hint"
           title={uiText('editorHintDenoise')}
           value={exportVideoDenoise}
           disabled={exportBusy || snapshotBusy}
@@ -93,6 +95,7 @@ export function EditorFfmpegSettingsRailVideoFilterFields(props: EditorFfmpegSet
         <span>{uiText('editorFieldDeband')}</span>
         <select
           className="app-control"
+          aria-describedby="ffmpegVideoSectionHint editor-ffmpeg-settings-hint"
           title={uiText('editorHintDeband')}
           value={exportVideoDeband}
           disabled={exportBusy || snapshotBusy}
@@ -114,6 +117,7 @@ export function EditorFfmpegSettingsRailVideoFilterFields(props: EditorFfmpegSet
         <span>{uiText('editorFieldHisteq')}</span>
         <select
           className="app-control"
+          aria-describedby="ffmpegVideoSectionHint editor-ffmpeg-settings-hint"
           title={uiText('editorHintHisteq')}
           value={exportVideoHisteq}
           disabled={exportBusy || snapshotBusy}
@@ -135,6 +139,7 @@ export function EditorFfmpegSettingsRailVideoFilterFields(props: EditorFfmpegSet
         <span>{uiText('editorFieldLut3d')}</span>
         <select
           className="app-control"
+          aria-describedby="ffmpegVideoSectionHint editor-ffmpeg-settings-hint"
           title={uiText('editorHintLut3d')}
           value={exportVideoLut3d}
           disabled={exportBusy || snapshotBusy}
@@ -156,6 +161,7 @@ export function EditorFfmpegSettingsRailVideoFilterFields(props: EditorFfmpegSet
         <span>{uiText('editorFieldSharpen')}</span>
         <select
           className="app-control"
+          aria-describedby="ffmpegVideoSectionHint editor-ffmpeg-settings-hint"
           title={uiText('editorHintSharpen')}
           value={exportVideoSharpen}
           disabled={exportBusy || snapshotBusy}
@@ -177,6 +183,7 @@ export function EditorFfmpegSettingsRailVideoFilterFields(props: EditorFfmpegSet
         <span>{uiText('editorFieldEq')}</span>
         <select
           className="app-control"
+          aria-describedby="ffmpegVideoSectionHint editor-ffmpeg-settings-hint"
           title={uiText('editorHintEq')}
           value={exportVideoEqPreset}
           disabled={exportBusy || snapshotBusy}
@@ -198,6 +205,7 @@ export function EditorFfmpegSettingsRailVideoFilterFields(props: EditorFfmpegSet
         <span>{uiText('editorFieldHue')}</span>
         <select
           className="app-control"
+          aria-describedby="ffmpegVideoSectionHint editor-ffmpeg-settings-hint"
           title={uiText('editorHintHue')}
           value={exportVideoHue}
           disabled={exportBusy || snapshotBusy}
@@ -219,6 +227,7 @@ export function EditorFfmpegSettingsRailVideoFilterFields(props: EditorFfmpegSet
         <span>{uiText('editorFieldGrain')}</span>
         <select
           className="app-control"
+          aria-describedby="ffmpegVideoSectionHint editor-ffmpeg-settings-hint"
           title={uiText('editorHintGrain')}
           value={exportVideoGrain}
           disabled={exportBusy || snapshotBusy}
@@ -240,6 +249,7 @@ export function EditorFfmpegSettingsRailVideoFilterFields(props: EditorFfmpegSet
         <span>{uiText('editorFieldVignette')}</span>
         <select
           className="app-control"
+          aria-describedby="ffmpegVideoSectionHint editor-ffmpeg-settings-hint"
           title={uiText('editorHintVignette')}
           value={exportVideoVignette}
           disabled={exportBusy || snapshotBusy}
@@ -261,6 +271,7 @@ export function EditorFfmpegSettingsRailVideoFilterFields(props: EditorFfmpegSet
         <span>{uiText('editorFieldBlur')}</span>
         <select
           className="app-control"
+          aria-describedby="ffmpegVideoSectionHint editor-ffmpeg-settings-hint"
           title={uiText('editorHintBlur')}
           value={exportVideoBlur}
           disabled={exportBusy || snapshotBusy}

@@ -81,6 +81,7 @@ export function EnginePathsDialog(props: EnginePathsDialogProps): JSX.Element | 
                 type="text"
                 spellCheck={false}
                 disabled={enginePathsSaving}
+                aria-describedby="engine-paths-hint"
                 placeholder={uiText('editorEnginePathPlaceholderAuto')}
                 value={enginePathsDraft[id]}
                 onChange={(e) => {
@@ -111,6 +112,7 @@ export function EnginePathsDialog(props: EnginePathsDialogProps): JSX.Element | 
                 <button
                   type="button"
                   className="app-btn app-btn-compact"
+                  aria-describedby="engine-paths-hint"
                   disabled={enginePathsSaving}
                   onClick={() => {
                     setEnginePathsDraft((prev) => ({ ...prev, [id]: '' }))
@@ -133,6 +135,7 @@ export function EnginePathsDialog(props: EnginePathsDialogProps): JSX.Element | 
           <button
             type="button"
             className="app-btn app-btn-danger"
+            aria-describedby="engine-paths-hint"
             disabled={engineDownloadBusy || enginePathsSaving}
             title={uiText('editorEnginePathsRemoveDownloadedTooltip')}
             onClick={() => {
@@ -144,6 +147,7 @@ export function EnginePathsDialog(props: EnginePathsDialogProps): JSX.Element | 
           <button
             type="button"
             className="app-btn"
+            aria-describedby="engine-paths-hint"
             disabled={enginePathsSaving}
             onClick={() => {
               onClose()
@@ -154,6 +158,7 @@ export function EnginePathsDialog(props: EnginePathsDialogProps): JSX.Element | 
           <button
             type="button"
             className="app-btn app-btn-primary"
+            aria-describedby="engine-paths-hint"
             disabled={enginePathsSaving}
             onClick={() => {
               onSave()

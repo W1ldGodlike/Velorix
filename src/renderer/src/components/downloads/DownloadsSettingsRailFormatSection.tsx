@@ -42,7 +42,7 @@ export function DownloadsSettingsRailFormatSection(props: DownloadsSettingsRailP
             title={uiText('downloadsTooltipFormatPresetSelect')}
             value={downloadsOptions.formatPreset}
             disabled={downloadsOptionsBusy || downloadsOptions.audioOnly}
-            aria-describedby="downloadsFormatHint"
+            aria-describedby="downloads-page-hint downloadsFormatHint"
             onChange={(e) => {
               void applyDownloadsOptionsPatch({
                 formatPreset: e.target.value as YtdlpFormatPresetId
@@ -66,7 +66,7 @@ export function DownloadsSettingsRailFormatSection(props: DownloadsSettingsRailP
               label={uiText('downloadsPlaylistPillLabel')}
               tooltip={uiText('downloadsTooltipPlaylistSwitch')}
               checked={downloadsOptions.downloadPlaylist}
-              describedBy="downloadsPlaylistHint"
+              describedBy="downloads-page-hint downloadsPlaylistHint"
               disabled={downloadsOptionsBusy}
               onToggle={() => {
                 void applyDownloadsOptionsPatch({
@@ -84,7 +84,7 @@ export function DownloadsSettingsRailFormatSection(props: DownloadsSettingsRailP
               label={uiText('downloadsAudioOnlyPillLabel')}
               tooltip={uiText('downloadsTooltipAudioOnlySwitch')}
               checked={downloadsOptions.audioOnly}
-              describedBy="downloadsAudioOnlyHint"
+              describedBy="downloads-page-hint downloadsAudioOnlyHint"
               disabled={downloadsOptionsBusy}
               onToggle={() => {
                 void applyDownloadsOptionsPatch({
@@ -101,6 +101,7 @@ export function DownloadsSettingsRailFormatSection(props: DownloadsSettingsRailP
           <span>{uiText('downloadsSubtitlesLabel')}</span>
           <select
             className="app-control"
+            aria-describedby="downloads-page-hint"
             title={uiText('downloadsTooltipSubtitlesSelect')}
             value={downloadsOptions.subtitlePreset}
             disabled={downloadsOptionsBusy}
@@ -120,6 +121,7 @@ export function DownloadsSettingsRailFormatSection(props: DownloadsSettingsRailP
           <span>{uiText('downloadsSubLangsLabel')}</span>
           <input
             className="app-control app-downloads-template-input"
+            aria-describedby="downloads-page-hint"
             title={uiText('downloadsTooltipSubLangsInput')}
             value={downloadsOptions.subLangsLine}
             disabled={downloadsOptionsBusy || downloadsOptions.subtitlePreset === 'none'}

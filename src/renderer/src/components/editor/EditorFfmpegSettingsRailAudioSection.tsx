@@ -80,6 +80,7 @@ export function EditorFfmpegSettingsRailAudioSection(props: EditorFfmpegSettings
           <span>{uiText('editorFieldAudioMode')}</span>
           <select
             className="app-control"
+            aria-describedby="ffmpegAudioSectionHint ffmpegAudioModeSelectHint editor-ffmpeg-settings-hint"
             title={uiText('editorTooltipAudioMode')}
             value={exportAudioMode}
             disabled={exportBusy || snapshotBusy}
@@ -109,6 +110,7 @@ export function EditorFfmpegSettingsRailAudioSection(props: EditorFfmpegSettings
           <span>{uiText('editorFieldAacBitrate')}</span>
           <select
             className="app-control"
+            aria-describedby="ffmpegAudioSectionHint editor-ffmpeg-settings-hint"
             title={uiText('editorTooltipAacBitrate')}
             value={exportAudioBitrate}
             disabled={
@@ -132,6 +134,7 @@ export function EditorFfmpegSettingsRailAudioSection(props: EditorFfmpegSettings
           <span>{uiText('editorFieldAudioGain')}</span>
           <select
             className="app-control"
+            aria-describedby="ffmpegAudioSectionHint editor-ffmpeg-settings-hint"
             title={uiText('editorHintAudioGain')}
             value={String(exportAudioGainDb)}
             disabled={
@@ -158,6 +161,7 @@ export function EditorFfmpegSettingsRailAudioSection(props: EditorFfmpegSettings
           <span>{uiText('editorFieldAudioNormalize')}</span>
           <select
             className="app-control"
+            aria-describedby="ffmpegAudioSectionHint editor-ffmpeg-settings-hint"
             title={uiText('editorHintAudioNormalize')}
             value={exportAudioNormalize}
             disabled={
@@ -181,6 +185,7 @@ export function EditorFfmpegSettingsRailAudioSection(props: EditorFfmpegSettings
           <span>{uiText('editorFieldSnapshotFormat')}</span>
           <select
             className="app-control"
+            aria-describedby="ffmpegAudioSectionHint editor-ffmpeg-settings-hint"
             title={uiText('editorTooltipSnapshotFormat')}
             value={snapshotFormat}
             disabled={exportBusy || snapshotBusy}
@@ -239,6 +244,7 @@ export function EditorFfmpegSettingsRailAudioSection(props: EditorFfmpegSettings
           <span>{uiText('editorFieldExportSubtitles')}</span>
           <select
             className="app-control"
+            aria-describedby="ffmpegAudioSectionHint editor-ffmpeg-settings-hint"
             title={uiText('editorHintExportSubtitles')}
             value={exportSubtitleMode}
             disabled={exportBusy || snapshotBusy}

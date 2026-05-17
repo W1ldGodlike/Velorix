@@ -229,6 +229,7 @@ export function ProcessingHistoryPanel({
         <button
           type="button"
           className="app-btn app-btn-compact app-btn-warn"
+          aria-describedby="processingHistorySectionHint"
           disabled={busy || entries.length === 0}
           onClick={onClear}
         >
@@ -237,6 +238,7 @@ export function ProcessingHistoryPanel({
         <button
           type="button"
           className="app-btn app-btn-compact"
+          aria-describedby="processingHistorySectionHint"
           disabled={busy || entries.length === 0}
           onClick={onExportVisible}
         >

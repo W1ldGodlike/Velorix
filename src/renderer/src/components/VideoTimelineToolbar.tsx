@@ -223,6 +223,7 @@ export function VideoTimelineToolbar(props: VideoTimelineToolbarProps) {
           title={uiText('videoTimelineZoomReadoutTitle')}
           role="status"
           aria-live="polite"
+          aria-describedby="editor-video-timeline-hint"
         >
           {uiTextVars('videoTimelineZoomReadoutTemplate', {
             mul: timelineZoomMul,

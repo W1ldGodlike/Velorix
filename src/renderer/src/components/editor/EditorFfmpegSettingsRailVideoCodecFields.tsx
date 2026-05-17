@@ -70,6 +70,7 @@ export function EditorFfmpegSettingsRailVideoCodecFields(props: EditorFfmpegSett
         </span>
         <select
           className="app-control"
+          aria-describedby="ffmpegVideoSectionHint editor-ffmpeg-settings-hint"
           value={exportVideoCodec}
           disabled={exportBusy || snapshotBusy}
           onChange={(e) => {
@@ -104,6 +105,7 @@ export function EditorFfmpegSettingsRailVideoCodecFields(props: EditorFfmpegSett
         <span>{uiText('editorFieldEncodePreset')}</span>
         <select
           className="app-control"
+          aria-describedby="ffmpegVideoSectionHint editor-ffmpeg-settings-hint"
           title={uiText('editorTooltipEncodePreset')}
           value={exportEncodePreset}
           disabled={exportBusy || snapshotBusy}
@@ -125,6 +127,7 @@ export function EditorFfmpegSettingsRailVideoCodecFields(props: EditorFfmpegSett
         <span>{uiText('editorFieldContainer')}</span>
         <select
           className="app-control"
+          aria-describedby="ffmpegVideoSectionHint editor-ffmpeg-settings-hint"
           title={uiText('editorTooltipContainer')}
           value={exportContainer}
           disabled={exportBusy || snapshotBusy}
@@ -154,6 +157,7 @@ export function EditorFfmpegSettingsRailVideoCodecFields(props: EditorFfmpegSett
         <span>{uiText('editorFieldCrf')}</span>
         <select
           className="app-control"
+          aria-describedby="ffmpegVideoSectionHint editor-ffmpeg-settings-hint"
           title={uiText('editorTooltipCrf')}
           value={exportCrf === null ? 'preset' : String(exportCrf)}
           disabled={exportBusy || snapshotBusy}
@@ -177,6 +181,7 @@ export function EditorFfmpegSettingsRailVideoCodecFields(props: EditorFfmpegSett
         <span>{uiText('editorFieldVideoBitrate')}</span>
         <select
           className="app-control"
+          aria-describedby="ffmpegVideoSectionHint editor-ffmpeg-settings-hint"
           title={uiText('editorTooltipVideoBitrate')}
           value={exportVideoBitrate === null ? 'crf' : exportVideoBitrate}
           disabled={exportBusy || snapshotBusy}

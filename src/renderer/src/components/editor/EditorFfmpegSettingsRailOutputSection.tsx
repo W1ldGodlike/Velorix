@@ -52,6 +52,7 @@ export function EditorFfmpegSettingsRailOutputSection(props: EditorFfmpegSetting
           <span>{uiText('editorExportExtraArgsLabel')}</span>
           <textarea
             className="app-downloads-url-input app-control"
+            aria-describedby="ffmpegOutputSectionHint editor-ffmpeg-settings-hint"
             value={exportExtraArgsLine}
             placeholder={uiText('editorExportExtraArgsPlaceholder')}
             rows={2}

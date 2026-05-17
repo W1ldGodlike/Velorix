@@ -44,7 +44,7 @@ export function DownloadsSettingsRailMetadataSection(props: DownloadsSettingsRai
             label={uiText('downloadsOpenAfterSuccessPillLabel')}
             tooltip={uiText('downloadsTooltipOpenAfterSuccess')}
             checked={downloadsOptions.openInHandlerOnComplete}
-            describedBy="downloadsOpenAfterSuccessHint"
+            describedBy="downloads-page-hint downloadsOpenAfterSuccessHint"
             disabled={downloadsOptionsBusy}
             onToggle={() => {
               void applyDownloadsOptionsPatch({
@@ -62,7 +62,7 @@ export function DownloadsSettingsRailMetadataSection(props: DownloadsSettingsRai
             label={uiText('downloadsAutoExportPillLabel')}
             tooltip={uiText('downloadsTooltipAutoExport')}
             checked={downloadsOptions.autoExportAfterOpenInHandler}
-            describedBy="downloadsAutoExportAfterOpenHint"
+            describedBy="downloads-page-hint downloadsAutoExportAfterOpenHint"
             disabled={downloadsOptionsBusy || !downloadsOptions.openInHandlerOnComplete}
             onToggle={() => {
               void applyDownloadsOptionsPatch({
@@ -80,7 +80,7 @@ export function DownloadsSettingsRailMetadataSection(props: DownloadsSettingsRai
             label={uiText('downloadsEnqueueBatchPillLabel')}
             tooltip={uiText('downloadsTooltipEnqueueBatch')}
             checked={downloadsOptions.enqueueBatchOnDownloadComplete}
-            describedBy="downloadsEnqueueBatchHint"
+            describedBy="downloads-page-hint downloadsEnqueueBatchHint"
             disabled={downloadsOptionsBusy}
             onToggle={() => {
               void applyDownloadsOptionsPatch({
@@ -98,7 +98,7 @@ export function DownloadsSettingsRailMetadataSection(props: DownloadsSettingsRai
             label={uiText('downloadsAutoStartBatchPillLabel')}
             tooltip={uiText('downloadsTooltipAutoStartBatch')}
             checked={downloadsOptions.autoStartBatchAfterEnqueue}
-            describedBy="downloadsAutoStartBatchHint"
+            describedBy="downloads-page-hint downloadsAutoStartBatchHint"
             disabled={downloadsOptionsBusy || !downloadsOptions.enqueueBatchOnDownloadComplete}
             onToggle={() => {
               void applyDownloadsOptionsPatch({
@@ -115,6 +115,7 @@ export function DownloadsSettingsRailMetadataSection(props: DownloadsSettingsRai
             <span>{uiText('downloadsCookiesBrowserLabel')}</span>
             <select
               className="app-control"
+              aria-describedby="downloads-page-hint"
               title={uiText('downloadsTooltipCookiesBrowser')}
               value={downloadsOptions.cookiesBrowserChoice}
               disabled={downloadsOptionsBusy}
@@ -134,6 +135,7 @@ export function DownloadsSettingsRailMetadataSection(props: DownloadsSettingsRai
             <span>{uiText('downloadsImpersonateLabel')}</span>
             <select
               className="app-control"
+              aria-describedby="downloads-page-hint"
               title={uiText('downloadsTooltipImpersonate')}
               value={downloadsOptions.impersonateChoice}
               disabled={downloadsOptionsBusy}
@@ -160,7 +162,7 @@ export function DownloadsSettingsRailMetadataSection(props: DownloadsSettingsRai
             spellCheck={false}
             autoComplete="off"
             placeholder={uiText('downloadsCookiesProfilePlaceholder')}
-            aria-describedby="downloadsCookiesProfileHint"
+            aria-describedby="downloads-page-hint downloadsCookiesProfileHint"
             onChange={(e) => {
               setDownloadsOptions({
                 ...downloadsOptions,
