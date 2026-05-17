@@ -10,6 +10,7 @@ import type { FfprobeFormatJsonSlice } from './ffprobe-container-field-registry'
 import { formatFfprobeCodecLongNameDetail } from './ffprobe-codec-long-name'
 import { parseFfprobeTickCount } from './ffprobe-stream-duration-ts'
 import { formatFfprobeStreamStereoModeDetail } from './ffprobe-stream-stereo-mode'
+import { parseFfprobeRationalFps } from './ffprobe-video-fps'
 import {
   listPackagedFfmpegCandidatePaths,
   listPackagedFfprobeCandidatePaths
@@ -22,8 +23,17 @@ type FfprobeSmokeStreamSlice = {
   codec_long_name?: string
   codec_time_base?: string
   time_base?: string
+  duration?: string | number
   duration_ts?: string | number
   start_time?: string | number
+  avg_frame_rate?: string
+  r_frame_rate?: string
+  bit_rate?: string | number
+  max_bit_rate?: string | number
+  nb_frames?: string | number
+  width?: string | number
+  height?: string | number
+  pix_fmt?: string
   tags?: Record<string, string | number | undefined>
 }
 
@@ -65,6 +75,59 @@ function smokeOptionalStreamNumericField(raw: string | number | undefined): bool
   return Number.isFinite(Number.parseFloat(t.replace(',', '.')))
 }
 
+function smokeOptionalStreamBitRateField(raw: string | number | undefined): boolean {
+  if (raw === undefined || raw === null) {
+    return true
+  }
+  const t = String(raw).trim()
+  if (t === '' || /^n\/a$/i.test(t)) {
+    return true
+  }
+  return parseFfprobeFormatBitRateKbps(raw) !== null
+}
+
+function smokeOptionalStreamPositiveIntField(raw: string | number | undefined): boolean {
+  if (raw === undefined || raw === null) {
+    return true
+  }
+  const t = String(raw).trim()
+  if (t === '' || /^n\/a$/i.test(t)) {
+    return true
+  }
+  const n = Number.parseInt(t, 10)
+  return Number.isFinite(n) && n > 0
+}
+
+function smokeOptionalStreamPixFmtField(raw: string | undefined): boolean {
+  if (typeof raw !== 'string' || raw.trim().length === 0 || /^n\/a$/i.test(raw.trim())) {
+    return true
+  }
+  return raw.trim().length > 0
+}
+
+function smokeOptionalStreamNbFramesField(raw: string | number | undefined): boolean {
+  if (raw === undefined || raw === null) {
+    return true
+  }
+  const t = String(raw).trim()
+  if (t === '' || /^n\/a$/i.test(t)) {
+    return true
+  }
+  const n = Number.parseInt(t.replace(',', '.'), 10)
+  return Number.isFinite(n) && n >= 0
+}
+
+function smokeOptionalStreamRationalFpsField(raw: string | undefined): boolean {
+  if (typeof raw !== 'string' || raw.trim().length === 0 || /^n\/a$/i.test(raw.trim())) {
+    return true
+  }
+  const norm = raw.trim().replace(/\s+/g, '')
+  if (norm === '0/0') {
+    return true
+  }
+  return parseFfprobeRationalFps(raw) !== null
+}
+
 function smokeOptionalStreamDurationTsField(raw: string | number | undefined): boolean {
   if (raw === undefined || raw === null) {
     return true
@@ -91,6 +154,33 @@ export function isPackagedFfprobeProbeJsonParsableByStreamDetailFields(parsed: u
       return false
     }
     if (!smokeOptionalStreamNumericField(stream.start_time)) {
+      return false
+    }
+    if (!smokeOptionalStreamNumericField(stream.duration)) {
+      return false
+    }
+    if (!smokeOptionalStreamRationalFpsField(stream.avg_frame_rate)) {
+      return false
+    }
+    if (!smokeOptionalStreamRationalFpsField(stream.r_frame_rate)) {
+      return false
+    }
+    if (!smokeOptionalStreamBitRateField(stream.bit_rate)) {
+      return false
+    }
+    if (!smokeOptionalStreamBitRateField(stream.max_bit_rate)) {
+      return false
+    }
+    if (!smokeOptionalStreamNbFramesField(stream.nb_frames)) {
+      return false
+    }
+    if (!smokeOptionalStreamPositiveIntField(stream.width)) {
+      return false
+    }
+    if (!smokeOptionalStreamPositiveIntField(stream.height)) {
+      return false
+    }
+    if (!smokeOptionalStreamPixFmtField(stream.pix_fmt)) {
       return false
     }
     if (!smokeStreamTimeBaseFractionOk(stream.codec_time_base)) {
@@ -222,7 +312,7 @@ export function formatPackagedFfprobeSmokeDiagnosticLines(): string[] {
     'command: npm run smoke:packaged-ffprobe (part of smoke:packaged-engines)',
     'check: isMinimalFfprobeProbeJson + isPackagedFfprobeProbeJsonParsableForSmoke (format + stream detail)',
     'registry optional: format.duration, duration_ts, time_base, probe_size, flags, probe_score, filename, bit_rate, start_time, start_time_real (parse must not fail)',
-    'stream detail optional: duration_ts, start_time, codec_time_base, time_base, codec_long_name, tags.stereo_mode',
+    'stream detail optional: duration, duration_ts, start_time, fps, bit_rate, max_bit_rate, nb_frames, time_base, codec_long_name, tags.stereo_mode',
     'ui/export: formatFfprobeContainerDiagnostics* (filename + probe layout + offset/timing)',
     'env: FLUXALLOY_SKIP_FFPROBE_SMOKE, FLUXALLOY_FFPROBE_SMOKE_PROBE=0, FLUXALLOY_FFPROBE_PATH'
   ]

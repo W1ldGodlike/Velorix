@@ -21,6 +21,7 @@ export function TerminalWorkspacePanelCommandStack(
     | 'terminalSuggestBlurTimeoutRef'
     | 'currentSourcePath'
     | 'runTerminalLine'
+    | 'recallTerminalCommand'
     | 'applyTerminalSuggest'
     | 'appendTerminalToken'
   >
@@ -38,6 +39,7 @@ export function TerminalWorkspacePanelCommandStack(
     terminalSuggestBlurTimeoutRef,
     currentSourcePath,
     runTerminalLine,
+    recallTerminalCommand,
     applyTerminalSuggest,
     appendTerminalToken
   } = props
@@ -92,6 +94,14 @@ export function TerminalWorkspacePanelCommandStack(
               }
               return
             }
+            const recallKeys =
+              (e.key === 'ArrowUp' || e.key === 'ArrowDown') &&
+              !(list.length > 0 && terminalSuggestFocus)
+            if (recallKeys) {
+              e.preventDefault()
+              recallTerminalCommand(e.key === 'ArrowUp' ? 'up' : 'down')
+              return
+            }
             if (list.length > 0) {
               if (e.key === 'ArrowDown') {
                 e.preventDefault()
@@ -115,9 +125,7 @@ export function TerminalWorkspacePanelCommandStack(
               }
               if (e.key === 'PageDown') {
                 e.preventDefault()
-                setTerminalSuggestIndex((i) =>
-                  stepTerminalSuggestIndex(i, list.length, 'pageDown')
-                )
+                setTerminalSuggestIndex((i) => stepTerminalSuggestIndex(i, list.length, 'pageDown'))
                 return
               }
               if (e.key === 'PageUp') {

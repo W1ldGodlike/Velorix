@@ -40,7 +40,7 @@ describe('packaged-ffprobe-smoke', () => {
     expect(lines[0]).toContain('smoke:packaged-ffprobe')
     expect(lines.some((l) => l.includes('registry optional'))).toBe(true)
     expect(lines.some((l) => l.includes('start_time, start_time_real'))).toBe(true)
-    expect(lines.some((l) => l.includes('codec_time_base'))).toBe(true)
+    expect(lines.some((l) => l.includes('bit_rate'))).toBe(true)
     expect(lines.some((l) => l.includes('ParsableForSmoke'))).toBe(true)
     expect(lines.some((l) => l.includes('formatFfprobeContainerDiagnostics'))).toBe(true)
     expect(lines).toContain(`candidate: ${candidates[0]} (present)`)
@@ -272,6 +272,42 @@ describe('packaged-ffprobe-smoke', () => {
         ]
       })
     ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ avg_frame_rate: '24000/1001', r_frame_rate: '24/1' }]
+      })
+    ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ avg_frame_rate: 'not-a-rate' }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ bit_rate: '2500000', max_bit_rate: '3000000', nb_frames: '720' }]
+      })
+    ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ bit_rate: 'not-bps' }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ width: '1920', height: '1080', pix_fmt: 'yuv420p' }]
+      })
+    ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ width: '0' }]
+      })
+    ).toBe(false)
     expect(
       isPackagedFfprobeProbeJsonParsableForSmoke({
         streams: [{ start_time: '1.0' }],

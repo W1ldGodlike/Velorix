@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-17T13:11:16.712Z",
+  "generatedAt": "2026-05-17T13:20:45.294Z",
   "repoRoot": "C:\\Users\\truno\\FluxAlloy",
   "codeRoots": [
     "src",
@@ -18,7 +18,7 @@
     ".cursor",
     "coverage"
   ],
-  "fileCount": 736,
+  "fileCount": 741,
   "files": [
     "electron.vite.config.ts",
     "eslint.config.mjs",
@@ -455,6 +455,7 @@
     "src/renderer/src/use-terminal-workspace.ts",
     "src/shared/about-contract.ts",
     "src/shared/builtin-ffmpeg-export-user-presets.ts",
+    "src/shared/bundled-engines-trusted-hashes.ts",
     "src/shared/diagnostics-contract.ts",
     "src/shared/downloads-flux-log-locale.ts",
     "src/shared/downloads-log-contract.ts",
@@ -554,6 +555,7 @@
     "src/shared/save-text-dialog-contract.ts",
     "src/shared/settings-contract.ts",
     "src/shared/settings-stored-parse.ts",
+    "src/shared/terminal-command-recall.ts",
     "src/shared/terminal-contract-hints-downloads-01.ts",
     "src/shared/terminal-contract-hints-downloads-02.ts",
     "src/shared/terminal-contract-hints-downloads-03.ts",
@@ -686,9 +688,11 @@
     "tests/scripts/audit-phase5-guards.test.ts",
     "tests/scripts/audit-shared-contracts.test.ts",
     "tests/scripts/check-release-chain.test.ts",
+    "tests/scripts/engines-verify-bundled-hashes-help.test.ts",
     "tests/scripts/scripts-lib-phase6.test.ts",
     "tests/scripts/smoke-packaged-scripts-help.test.ts",
     "tests/scripts/verify-win-unpacked-layout.test.ts",
+    "tests/shared/bundled-engines-trusted-hashes.test.ts",
     "tests/shared/downloads-output-directory-snapshot.test.ts",
     "tests/shared/editor-url-paste-behavior.test.ts",
     "tests/shared/engine-contract.test.ts",
@@ -742,6 +746,7 @@
     "tests/shared/packaged-ytdlp-smoke.test.ts",
     "tests/shared/preview-open-dialog-default-path.test.ts",
     "tests/shared/settings-stored-parse.test.ts",
+    "tests/shared/terminal-command-recall.test.ts",
     "tests/shared/terminal-contract-scenarios.test.ts",
     "tests/shared/terminal-inline-suggest.test.ts",
     "tests/shared/timeline-ruler.test.ts",

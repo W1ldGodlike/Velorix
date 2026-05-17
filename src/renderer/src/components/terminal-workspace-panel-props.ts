@@ -16,6 +16,7 @@ export type TerminalWorkspacePanelProps = {
   terminalSuggestBlurTimeoutRef: MutableRefObject<number | undefined>
   currentSourcePath: string | null
   runTerminalLine: () => Promise<void>
+  recallTerminalCommand: (direction: 'up' | 'down') => void
   applyTerminalSuggest: (hint: TerminalCommandHintEntry) => void
   appendTerminalToken: (token: string) => void
   terminalHistory: TerminalHistoryEntry[]

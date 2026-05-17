@@ -18,6 +18,11 @@ import {
   type TerminalRunResult
 } from '../../shared/terminal-contract'
 import {
+  applyTerminalRecallStep,
+  listTerminalRecallLines,
+  type TerminalRecallState
+} from '../../shared/terminal-command-recall'
+import {
   applyTerminalInlinePick,
   DEFAULT_TERMINAL_INLINE_SUGGEST_MAX,
   filterTerminalInlineSuggestions
@@ -62,6 +67,7 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
   appendTerminalToken: (token: string) => void
   applyTerminalSuggest: (hint: TerminalCommandHintEntry) => void
   runTerminalLine: () => Promise<void>
+  recallTerminalCommand: (direction: 'up' | 'down') => void
   copyTerminalOutputLine: (line: string) => Promise<void>
 } {
   const { workspaceTab, currentSourcePath, setStatusHint } = deps
@@ -78,6 +84,19 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
   const terminalCommandInputId = useId()
   const terminalSuggestBlurTimeoutRef = useRef<number | undefined>(undefined)
   const terminalHistoryNextIdRef = useRef(1)
+  const terminalRecallRef = useRef<TerminalRecallState>({ index: null, draft: null })
+
+  const resetTerminalRecall = useCallback(() => {
+    terminalRecallRef.current = { index: null, draft: null }
+  }, [])
+
+  const setTerminalLineWithRecallReset = useCallback(
+    (action: SetStateAction<string>) => {
+      resetTerminalRecall()
+      setTerminalLine(action)
+    },
+    [resetTerminalRecall]
+  )
 
   useEffect(() => {
     let mounted = true
@@ -141,6 +160,11 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
     [terminalLine, terminalMergedSortedHints]
   )
 
+  const terminalRecallLines = useMemo(
+    () => listTerminalRecallLines(terminalHistory.map((e) => e.line)),
+    [terminalHistory]
+  )
+
   const terminalSuggestActiveIndex = useMemo(() => {
     const len = terminalInlineSuggestions.length
     if (len === 0) {
@@ -149,16 +173,38 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
     return Math.min(terminalSuggestIndex, len - 1)
   }, [terminalInlineSuggestions, terminalSuggestIndex])
 
-  const appendTerminalToken = useCallback((token: string) => {
-    setTerminalLine((line) => {
-      const trimmed = line.trimEnd()
-      return trimmed ? `${trimmed} ${token}` : token
-    })
-  }, [])
+  const appendTerminalToken = useCallback(
+    (token: string) => {
+      setTerminalLineWithRecallReset((line) => {
+        const trimmed = line.trimEnd()
+        return trimmed ? `${trimmed} ${token}` : token
+      })
+    },
+    [setTerminalLineWithRecallReset]
+  )
 
-  const applyTerminalSuggest = useCallback((hint: TerminalCommandHintEntry) => {
-    setTerminalLine((prev) => applyTerminalInlinePick({ line: prev, hint }))
-  }, [])
+  const applyTerminalSuggest = useCallback(
+    (hint: TerminalCommandHintEntry) => {
+      setTerminalLineWithRecallReset((prev) => applyTerminalInlinePick({ line: prev, hint }))
+    },
+    [setTerminalLineWithRecallReset]
+  )
+
+  const recallTerminalCommand = useCallback(
+    (direction: 'up' | 'down') => {
+      setTerminalLine((current) => {
+        const result = applyTerminalRecallStep(
+          terminalRecallRef.current,
+          current,
+          terminalRecallLines,
+          direction
+        )
+        terminalRecallRef.current = result.next
+        return result.line
+      })
+    },
+    [terminalRecallLines]
+  )
 
   const runTerminalLine = useCallback(async (): Promise<void> => {
     const line = terminalLine.trim()
@@ -172,6 +218,7 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
         currentFilePath: currentSourcePath,
         uiLocale: getUiLocale() as DownloadsWindowUiLocale
       })
+      resetTerminalRecall()
       setTerminalHistory((rows) =>
         [{ id: terminalHistoryNextIdRef.current++, line, result }, ...rows].slice(0, 20)
       )
@@ -185,7 +232,7 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
     } finally {
       setTerminalBusy(false)
     }
-  }, [currentSourcePath, setStatusHint, terminalBusy, terminalLine])
+  }, [currentSourcePath, resetTerminalRecall, setStatusHint, terminalBusy, terminalLine])
 
   const copyTerminalOutputLine = useCallback(
     async (line: string): Promise<void> => {
@@ -201,7 +248,7 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
 
   return {
     terminalLine,
-    setTerminalLine,
+    setTerminalLine: setTerminalLineWithRecallReset,
     terminalBusy,
     terminalHintFilter,
     setTerminalHintFilter,
@@ -218,6 +265,7 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
     appendTerminalToken,
     applyTerminalSuggest,
     runTerminalLine,
+    recallTerminalCommand,
     copyTerminalOutputLine
   }
 }

@@ -24,4 +24,13 @@ describe('check:release script chain §19', () => {
     expect(cmd).toContain('smoke:packaged-release')
     expect(cmd).toContain('audit:moderate')
   })
+
+  it('check:release runs engines:doctor before build', () => {
+    const cmd = scripts['check:release'] ?? ''
+    const doctorAt = cmd.indexOf('engines:doctor')
+    const buildAt = cmd.indexOf('npm run build')
+    expect(doctorAt).toBeGreaterThanOrEqual(0)
+    expect(buildAt).toBeGreaterThan(doctorAt)
+    expect(cmd).toContain('engines:prepare:win')
+  })
 })

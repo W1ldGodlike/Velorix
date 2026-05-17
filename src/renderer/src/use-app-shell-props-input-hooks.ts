@@ -62,6 +62,7 @@ export function useAppShellPropsInputHooks(state: AppCompositionState) {
     appendTerminalToken,
     applyTerminalSuggest,
     runTerminalLine,
+    recallTerminalCommand,
     copyTerminalOutputLine
   } = useTerminalWorkspace({
     workspaceTab: state.workspaceTab,
@@ -297,6 +298,7 @@ export function useAppShellPropsInputHooks(state: AppCompositionState) {
     appendTerminalToken,
     applyTerminalSuggest,
     runTerminalLine,
+    recallTerminalCommand,
     copyTerminalOutputLine,
     downloadsStats,
     visibleDownloadsRows,
