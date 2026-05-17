@@ -41,6 +41,7 @@ export function EditorQuickYtdlpBar(props: EditorQuickYtdlpBarProps): JSX.Elemen
     <details
       className="app-url-bar"
       aria-label={uiText('quickYtdlpAria')}
+      aria-describedby="quickYtdlpUrlHint"
       aria-busy={chromeBusy}
       open={open}
       onToggle={(e) => {

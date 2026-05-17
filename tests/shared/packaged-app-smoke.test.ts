@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  formatPackagedAppSmokeDiagnosticLines,
   isMinimalPackagedAppElectronVersionOutput,
   listPackagedAppExeCandidatePaths,
   packagedAppAsarPath,
@@ -29,5 +30,12 @@ describe('packaged-app-smoke', () => {
     expect(isMinimalPackagedAppElectronVersionOutput('34.2.0')).toBe(true)
     expect(isMinimalPackagedAppElectronVersionOutput('')).toBe(false)
     expect(isMinimalPackagedAppElectronVersionOutput('node')).toBe(false)
+  })
+
+  it('formatPackagedAppSmokeDiagnosticLines', () => {
+    const lines = formatPackagedAppSmokeDiagnosticLines()
+    expect(lines[0]).toContain('smoke:packaged-app')
+    expect(lines.some((l) => l.includes('FLUXALLOY_APP_EXE_PATH'))).toBe(true)
+    expect(lines.some((l) => l.includes('check:terminal-summaries-ru'))).toBe(true)
   })
 })

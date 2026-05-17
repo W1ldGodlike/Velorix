@@ -36,6 +36,7 @@ export function EditorFfmpegSettingsRail(props: EditorFfmpegSettingsRailProps) {
     <aside
       className="app-settings-panel"
       aria-label={uiText('editorFfmpegSettingsAria')}
+      aria-describedby="editor-ffmpeg-settings-hint"
       aria-busy={exportBusy || snapshotBusy || exportCancelBusy || probePending}
     >
       <div
@@ -46,7 +47,11 @@ export function EditorFfmpegSettingsRail(props: EditorFfmpegSettingsRailProps) {
       >
         <div>
           <h2 className="app-settings-title">{uiText('editorFfmpegSettingsTitle')}</h2>
-          <p className="app-settings-subtitle" title={uiText('editorTooltipFfmpegPanelIntro')}>
+          <p
+            id="editor-ffmpeg-settings-hint"
+            className="app-settings-subtitle"
+            title={uiText('editorTooltipFfmpegPanelIntro')}
+          >
             {uiText('editorFfmpegSettingsSubtitle')}
           </p>
         </div>
@@ -55,6 +60,7 @@ export function EditorFfmpegSettingsRail(props: EditorFfmpegSettingsRailProps) {
           role="toolbar"
           aria-orientation="horizontal"
           aria-label={uiText('editorFfmpegRailHeaderToolbarAria')}
+          aria-describedby="editor-ffmpeg-settings-hint"
           aria-busy={exportBusy || snapshotBusy || exportCancelBusy || probePending}
         >
           <button
@@ -74,6 +80,7 @@ export function EditorFfmpegSettingsRail(props: EditorFfmpegSettingsRailProps) {
       <div
         role="region"
         aria-label={uiText('editorFfmpegRailSectionsRegionAria')}
+        aria-describedby="editor-ffmpeg-settings-hint"
         aria-busy={editorFfmpegDetailBusy}
       >
         <EditorFfmpegSettingsRailVideoSection {...props} />

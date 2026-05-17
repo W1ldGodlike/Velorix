@@ -30,6 +30,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
             className="app-settings-grid app-batch-export-toolbar"
             role="group"
             aria-label={uiText('batchExportPanelFormGroupAria')}
+            aria-describedby="batch-export-panel-hint"
             aria-busy={batchExportBusy}
           >
             <label className="app-field">

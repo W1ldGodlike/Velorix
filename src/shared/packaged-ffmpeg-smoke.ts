@@ -14,3 +14,13 @@ export function isMinimalFfmpegEncodersOutput(text: string): boolean {
     .filter((l) => l.length > 0)
   return lines.length >= 40
 }
+
+/** §18/§19 Support ZIP — подсказки smoke:packaged-ffmpeg без запуска exe. */
+export function formatPackagedFfmpegSmokeDiagnosticLines(): string[] {
+  return [
+    'command: npm run smoke:packaged-ffmpeg (part of smoke:packaged-engines)',
+    'check: ffmpeg -hide_banner -encoders offline (isMinimalFfmpegEncodersOutput)',
+    'env: FLUXALLOY_FFMPEG_PATH, FLUXALLOY_SKIP_FFMPEG_SMOKE',
+    'dev quiet: npm run check:quiet includes check:terminal-summaries-ru (§8 terminal RU summaries 0/0)'
+  ]
+}

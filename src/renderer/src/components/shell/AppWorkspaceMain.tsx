@@ -78,6 +78,7 @@ export function AppWorkspaceMain({
           id="workspace-panel-editor"
           role="tabpanel"
           aria-labelledby="workspace-tab-editor"
+          aria-describedby="workspace-tab-editor-desc"
           aria-busy={editorMainAriaBusy}
           className={`app-main app-workbench${panelOpen('ffmpegSettingsRailOpen') ? '' : ' app-workbench-ffmpeg-collapsed'}`}
         >

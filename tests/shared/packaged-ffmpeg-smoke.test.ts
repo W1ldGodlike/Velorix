@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  formatPackagedFfmpegSmokeDiagnosticLines,
   isMinimalFfmpegEncodersOutput,
   listPackagedFfmpegCandidatePaths
 } from '../../src/shared/packaged-ffmpeg-smoke'
@@ -27,5 +28,12 @@ describe('packaged-ffmpeg-smoke', () => {
     expect(isMinimalFfmpegEncodersOutput('short')).toBe(false)
     const ok = `encoders:\n${Array.from({ length: 45 }, (_, i) => ` V..... line${i}`).join('\n')}`
     expect(isMinimalFfmpegEncodersOutput(ok)).toBe(true)
+  })
+
+  it('formatPackagedFfmpegSmokeDiagnosticLines', () => {
+    const lines = formatPackagedFfmpegSmokeDiagnosticLines()
+    expect(lines[0]).toContain('smoke:packaged-ffmpeg')
+    expect(lines.some((l) => l.includes('FLUXALLOY_SKIP_FFMPEG_SMOKE'))).toBe(true)
+    expect(lines.some((l) => l.includes('check:terminal-summaries-ru'))).toBe(true)
   })
 })

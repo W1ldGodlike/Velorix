@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  formatPackagedYtdlpSmokeDiagnosticLines,
   isMinimalYtdlpExtractorsOutput,
   listPackagedYtdlpCandidatePaths
 } from '../../src/shared/packaged-ytdlp-smoke'
@@ -29,5 +30,12 @@ describe('packaged-ytdlp-smoke', () => {
     const ok = Array.from({ length: 40 }, (_, i) => `ext${i}`).join('\n')
     expect(isMinimalYtdlpExtractorsOutput(ok)).toBe(true)
     expect(isMinimalYtdlpExtractorsOutput('[debug] noise\nyoutube\n')).toBe(false)
+  })
+
+  it('formatPackagedYtdlpSmokeDiagnosticLines', () => {
+    const lines = formatPackagedYtdlpSmokeDiagnosticLines()
+    expect(lines[0]).toContain('smoke:packaged-ytdlp')
+    expect(lines.some((l) => l.includes('FLUXALLOY_SKIP_YTDLP_SMOKE'))).toBe(true)
+    expect(lines.some((l) => l.includes('check:terminal-summaries-ru'))).toBe(true)
   })
 })

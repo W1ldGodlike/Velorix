@@ -30,3 +30,13 @@ export function isMinimalPackagedAppElectronVersionOutput(text: string): boolean
   const t = text.trim()
   return /^\d+\.\d+/.test(t)
 }
+
+/** §18/§19 Support ZIP — подсказки smoke:packaged-app без запуска exe. */
+export function formatPackagedAppSmokeDiagnosticLines(): string[] {
+  return [
+    'command: npm run smoke:packaged-app (part of smoke:packaged-release)',
+    'check: ELECTRON_RUN_AS_NODE version stdout matches isMinimalPackagedAppElectronVersionOutput',
+    'env: FLUXALLOY_APP_EXE_PATH, FLUXALLOY_SKIP_PACK_VERIFY (packaged-release chain)',
+    'dev quiet: npm run check:quiet includes check:terminal-summaries-ru (§8 terminal RU summaries 0/0)'
+  ]
+}

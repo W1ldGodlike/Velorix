@@ -93,6 +93,7 @@ export function formatWinUnpackedLayoutVerifyDiagnosticLines(
     'command: npm run verify:win-unpacked (part of check:release / smoke:packaged-release)',
     'checks: FluxAlloy.exe, resources/bin engines, FLUXALLOY_TZ.md, Data/trusted_hashes.json, Help/',
     'env: FLUXALLOY_SKIP_PACK_VERIFY',
+    'dev quiet: npm run check:quiet includes check:terminal-summaries-ru (§8 terminal RU summaries 0/0)',
     ...listWinUnpackedLayoutChecks(unpackedRoot).map((check) => {
       const present = check.kind === 'dir' ? existsSync(check.path) : existsSync(check.path)
       return `layout: ${check.label} (${present ? 'present' : 'missing'})`

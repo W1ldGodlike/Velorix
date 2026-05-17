@@ -21,6 +21,7 @@ export function EditorBatchExportBar(props: EditorBatchExportBarProps): JSX.Elem
     <details
       className="app-url-bar app-batch-export-bar"
       aria-label={uiText('batchExportAria')}
+      aria-describedby="batch-export-panel-hint"
       aria-busy={batchExportBusy}
       open={open}
       onToggle={(e) => {
@@ -35,6 +36,7 @@ export function EditorBatchExportBar(props: EditorBatchExportBarProps): JSX.Elem
         className="app-url-body"
         role="region"
         aria-labelledby="batch-export-region-title"
+        aria-describedby="batch-export-panel-hint batch-export-drop-hint"
         aria-busy={batchExportBusy}
       >
         <h3 id="batch-export-region-title" className="app-visually-hidden">

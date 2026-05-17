@@ -80,6 +80,7 @@ export function EditorPreviewSection(props: EditorPreviewSectionProps): JSX.Elem
               className="app-preview-media-card"
               role="group"
               aria-label={uiText('editorPreviewMediaCardGroupAria')}
+              aria-describedby="editor-preview-transport-hint editor-video-timeline-hint"
               aria-busy={editorPreviewRegionBusy}
             >
               <video

@@ -110,6 +110,12 @@ describe('packaged-ffprobe-smoke', () => {
     expect(
       isPackagedFfprobeProbeJsonParsableByContainerRegistry({
         streams: [{}],
+        format: { format_name: 'mp4', nb_streams: '1', duration_ts: 'not-ticks' }
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
         format: {
           format_name: 'mp4',
           nb_streams: '1',
@@ -176,10 +182,17 @@ describe('packaged-ffprobe-smoke', () => {
     expect(
       isPackagedFfprobeProbeJsonParsableByContainerRegistry({
         streams: [{}],
+        format: { format_name: 'mp4', nb_streams: '1', probe_score: '88' }
+      })
+    ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
         format: {
           format_name: 'mp4',
           nb_streams: '1',
-          filename: 'clip.mp4'
+          filename: 'clip.mp4',
+          bit_rate: '5000000'
         }
       })
     ).toBe(true)

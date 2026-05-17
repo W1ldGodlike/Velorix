@@ -4,7 +4,13 @@
 import { formatCheckReleaseScriptDiagnosticLines } from './check-release-scripts'
 import { formatPlatformPackagingDiagnosticLines } from './platform-packaging-scripts'
 import { formatBundledEnginesTrustedHashDiagnosticLines } from './bundled-engines-trusted-hashes'
-import { listPackagedAppExeCandidatePaths } from './packaged-app-smoke'
+import {
+  formatPackagedAppSmokeDiagnosticLines,
+  listPackagedAppExeCandidatePaths
+} from './packaged-app-smoke'
+import { formatPackagedFfmpegSmokeDiagnosticLines } from './packaged-ffmpeg-smoke'
+import { formatPackagedFfprobeSmokeDiagnosticLines } from './packaged-ffprobe-smoke'
+import { formatPackagedYtdlpSmokeDiagnosticLines } from './packaged-ytdlp-smoke'
 import { formatWinUnpackedLayoutVerifyDiagnosticLines } from './win-unpacked-layout-verify'
 
 /** §18 Support ZIP — `releaseSmoke:` без запуска pack:dir. */
@@ -19,6 +25,10 @@ export function buildSupportZipPackagedReleaseLines(
     ...formatPlatformPackagingDiagnosticLines(),
     'command: npm run smoke:packaged-release (check:release after pack:dir)',
     'steps: verify:win-unpacked → smoke:packaged-app → smoke:packaged-engines (ffprobe, yt-dlp, ffmpeg)',
+    ...formatPackagedAppSmokeDiagnosticLines(),
+    ...formatPackagedYtdlpSmokeDiagnosticLines(),
+    ...formatPackagedFfmpegSmokeDiagnosticLines(),
+    ...formatPackagedFfprobeSmokeDiagnosticLines(),
     'env skips: FLUXALLOY_SKIP_PACK_VERIFY, FLUXALLOY_SKIP_*_SMOKE (per engine script)',
     ...formatBundledEnginesTrustedHashDiagnosticLines(),
     ...listPackagedAppExeCandidatePaths(repoRoot).map(

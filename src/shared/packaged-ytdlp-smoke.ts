@@ -11,3 +11,13 @@ export function isMinimalYtdlpExtractorsOutput(text: string): boolean {
     .filter((l) => l.length > 0 && !l.startsWith('['))
   return lines.length >= 32
 }
+
+/** §18/§19 Support ZIP — подсказки smoke:packaged-ytdlp без запуска exe. */
+export function formatPackagedYtdlpSmokeDiagnosticLines(): string[] {
+  return [
+    'command: npm run smoke:packaged-ytdlp (part of smoke:packaged-engines)',
+    'check: yt-dlp --list-extractors offline (isMinimalYtdlpExtractorsOutput)',
+    'env: FLUXALLOY_YTDLP_PATH, FLUXALLOY_SKIP_YTDLP_SMOKE',
+    'dev quiet: npm run check:quiet includes check:terminal-summaries-ru (§8 terminal RU summaries 0/0)'
+  ]
+}
