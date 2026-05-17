@@ -1,12 +1,11 @@
 import { existsSync, statSync } from 'fs'
-import { basename, dirname, isAbsolute, join, normalize, resolve } from 'path'
+import { basename, isAbsolute, join, normalize, resolve } from 'path'
 import {
   BrowserWindow,
   app,
   dialog,
   ipcMain,
-  nativeTheme,
-  shell
+  nativeTheme
 } from 'electron'
 import type { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
@@ -93,6 +92,16 @@ import type {
 } from './settings-store'
 import { loadSettings, saveSettings } from './settings-store'
 import { createMainWindow } from './main-window'
+import {
+  configureMainExportOutputPaths,
+  isExportOutputOpenMode,
+  openExportOutputPath,
+  rememberExportOutputPath,
+  rememberFfmpegExportDirectory,
+  rememberFfmpegSnapshotDirectory,
+  rememberedExportDefaultPath,
+  rememberedSnapshotDefaultPath
+} from './main-export-output-paths'
 import { boundsFromBrowserWindow } from './window-bounds'
 import {
   resolveYtdlpOutputDirectory,
@@ -271,9 +280,6 @@ const mainSettingsAccess = {
 let settingsIpcPersist: SettingsIpcPersistApi
 
 let activeExportAbort: AbortController | null = null
-const grantedExportOutputPaths = new Set<string>()
-const MAX_GRANTED_EXPORT_OUTPUT_PATHS = 20
-
 /** Обход диалога §4.2 после явного подтверждения «Закрыть и прервать». */
 let allowMainWindowClose = false
 
@@ -281,8 +287,6 @@ let mainWindowWebContentsId: number | null = null
 
 /** §7.4 — push `batchExportSnapshot` после enqueue из downloads-runner (до createWindow IPC). */
 let broadcastFfmpegExportBatchSnapshot: ((win?: BrowserWindow | null) => void) | null = null
-
-type ExportOutputOpenMode = 'file' | 'folder' | 'preview'
 
 interface RendererLogBucket {
   tokens: number
@@ -312,104 +316,6 @@ function consumeRendererLogToken(senderId: number): boolean {
   bucket.tokens -= 1
   rendererLogBuckets.set(senderId, bucket)
   return true
-}
-
-function isExportOutputOpenMode(raw: unknown): raw is ExportOutputOpenMode {
-  return raw === 'file' || raw === 'folder' || raw === 'preview'
-}
-
-function rememberExportOutputPath(filePath: string): void {
-  const abs = resolve(normalize(filePath))
-  grantedExportOutputPaths.delete(abs)
-  grantedExportOutputPaths.add(abs)
-  while (grantedExportOutputPaths.size > MAX_GRANTED_EXPORT_OUTPUT_PATHS) {
-    const oldest = grantedExportOutputPaths.values().next().value as string | undefined
-    if (oldest === undefined) {
-      break
-    }
-    grantedExportOutputPaths.delete(oldest)
-  }
-}
-
-async function openExportOutputPath(
-  rawPath: unknown,
-  rawMode: unknown
-): Promise<{ ok: true; path: string } | { ok: false; error: string }> {
-  const S = mainAppStr()
-  if (typeof rawPath !== 'string' || rawPath.trim().length === 0) {
-    return { ok: false, error: S.exportOutputPathMissing }
-  }
-  if (!isExportOutputOpenMode(rawMode)) {
-    return { ok: false, error: S.exportOutputBadMode }
-  }
-  const abs = resolve(normalize(rawPath.trim()))
-  if (!grantedExportOutputPaths.has(abs)) {
-    return { ok: false, error: S.exportOutputNotGranted }
-  }
-  if (!existsSync(abs)) {
-    return { ok: false, error: S.exportOutputFileNotFound }
-  }
-  try {
-    if (!statSync(abs).isFile()) {
-      return { ok: false, error: S.exportOutputNotAFile }
-    }
-  } catch {
-    return { ok: false, error: S.exportOutputStatFailed }
-  }
-  if (rawMode === 'folder') {
-    shell.showItemInFolder(abs)
-    return { ok: true, path: abs }
-  }
-  if (rawMode === 'preview') {
-    const opened = await openDownloadedFileInMainHandler(abs)
-    return opened.ok ? { ok: true, path: abs } : opened
-  }
-  const result = await shell.openPath(abs)
-  return result ? { ok: false, error: result } : { ok: true, path: abs }
-}
-
-function rememberedExportDefaultPath(fileName: string): string {
-  const raw = cachedSettings.ffmpegExportDirectory
-  if (typeof raw !== 'string' || raw.trim().length === 0) {
-    return fileName
-  }
-  const dir = resolve(normalize(raw.trim()))
-  try {
-    if (existsSync(dir) && statSync(dir).isDirectory()) {
-      return join(dir, fileName)
-    }
-  } catch {
-    // Если папку удалили или доступ пропал, диалог всё равно откроется со стандартным именем.
-  }
-  return fileName
-}
-
-function rememberFfmpegExportDirectory(outputPath: string): void {
-  const dir = dirname(resolve(normalize(outputPath)))
-  cachedSettings = { ...cachedSettings, ffmpegExportDirectory: dir }
-  saveSettings(settingsPath(), cachedSettings)
-}
-
-function rememberedSnapshotDefaultPath(fileName: string): string {
-  const raw = cachedSettings.ffmpegSnapshotDirectory
-  if (typeof raw !== 'string' || raw.trim().length === 0) {
-    return fileName
-  }
-  const dir = resolve(normalize(raw.trim()))
-  try {
-    if (existsSync(dir) && statSync(dir).isDirectory()) {
-      return join(dir, fileName)
-    }
-  } catch {
-    // Удалённая/недоступная папка не должна мешать сохранению нового кадра.
-  }
-  return fileName
-}
-
-function rememberFfmpegSnapshotDirectory(outputPath: string): void {
-  const dir = dirname(resolve(normalize(outputPath)))
-  cachedSettings = { ...cachedSettings, ffmpegSnapshotDirectory: dir }
-  saveSettings(settingsPath(), cachedSettings)
 }
 
 function isMainWindowSender(event: IpcMainEvent): boolean {
@@ -829,6 +735,20 @@ app.whenReady().then(() => {
     buildApplicationMenu,
     syncDownloadsPopoutHtmlToLocale,
     refreshEnginePathOverridesSnapshot
+  })
+  configureMainExportOutputPaths({
+    mainAppStr,
+    getFfmpegExportDirectory: () => cachedSettings.ffmpegExportDirectory,
+    getFfmpegSnapshotDirectory: () => cachedSettings.ffmpegSnapshotDirectory,
+    persistFfmpegExportDirectory: (dir) => {
+      cachedSettings = { ...cachedSettings, ffmpegExportDirectory: dir }
+      saveSettings(settingsPath(), cachedSettings)
+    },
+    persistFfmpegSnapshotDirectory: (dir) => {
+      cachedSettings = { ...cachedSettings, ffmpegSnapshotDirectory: dir }
+      saveSettings(settingsPath(), cachedSettings)
+    },
+    openDownloadedFileInMainHandler
   })
   refreshEnginePathOverridesSnapshot()
   syncYtdlpDownloadDirectoryFromSettings(cachedSettings.ytdlpDownloadDirectory)

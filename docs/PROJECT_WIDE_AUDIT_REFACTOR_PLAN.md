@@ -300,6 +300,7 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | structural | ~1900 | src/main/index.ts | 4 | `main-application-menu.ts` (buildApplicationMenu + diagnostics submenu) | ✅ J-787 |
 | structural | ~1650 | src/main/index.ts | 4 | `main-diagnostics-service.ts` (support ZIP, logs, process error dialog) | ✅ J-788 |
 | structural | ~1400 | src/main/index.ts | 4 | `main-window.ts` (createMainWindow, close guard, preload load) | ✅ J-789 |
+| structural | ~1200 | src/main/index.ts | 4 | `main-export-output-paths.ts` (grant set, open export output, dialog defaults) | ✅ J-790 |
 
 ---
 

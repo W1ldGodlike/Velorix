@@ -815,3 +815,4 @@
 - [J-787] 2026-05-17 08:44:02 [Assistant]: Фаза 4 P1 — `main-application-menu.ts` (`buildApplicationMenu`, diagnostics submenu); `configureMainApplicationMenu` в bootstrap; `ARCHITECTURE.md`. `npm run check:quiet`.
 - [J-788] 2026-05-17 08:46:16 [Assistant]: Фаза 4 P1 — `main-diagnostics-service.ts` (support ZIP runtime, logs, process error dialog, prune); `ARCHITECTURE.md`. `npm run check:quiet`.
 - [J-789] 2026-05-17 08:49:15 [Assistant]: Фаза 4 P1 — `main-window.ts` (`createMainWindow`: bounds, close guard, preload, external nav); `index.ts` — callbacks host state. `ARCHITECTURE.md`. `npm run check:quiet`.
+- [J-790] 2026-05-17 08:50:59 [Assistant]: Фаза 4 P1 — `main-export-output-paths.ts` (grant LRU, open file/folder/preview, export/snapshot dialog defaults); `ARCHITECTURE.md`. `npm run check:quiet`.
