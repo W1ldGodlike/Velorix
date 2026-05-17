@@ -6,6 +6,31 @@
 Владелец: запрос на **ВСЁ** — весь исполняемый код, все зоны репо, без сужения до §9/ffprobe/`src` только.  
 Агент: **не додумывать scope** — если в плане «весь репозиторий», работать по таблице областей ниже.
 
+### ⛔ PROGRAM GATE (владелец, 2026-05-16) — до фазы 9
+
+**Пока в §9 есть хотя бы один чекбокс не ✅ — вся остальная работа по репозиторию на СТОПЕ** для любых агентов (Cursor, SDK, marathon, «продолжай»).
+
+| Разрешено | Запрещено (без явной просьбы владельца в чате) |
+|-----------|------------------------------------------------|
+| Срезы по **§4–§8** этого плана (текущая фаза → первый ⬜) | `## Ближайший TODO спринта`, §6–§9 ТЗ, ffprobe/smoke/терминал «ещё одно поле» |
+| `audit:*`, `check:field-registries`, fixtures/`it.each` в `tests/` | Новые product-фичи, расширение registry/smoke ради покрытия полей |
+| Слой B при закрытии зоны (rules/CI) | Marathon-cadence коммит **только** off-program diff |
+| Одна сводная `J-*` на срез программы | Микро-J на одно поле/тег/предикат |
+
+**«Продолжай»** = следующий срез **программы** (сейчас: дозакрыть фазу 3 → `many-standalone-it` по `npm run audit:copy-paste`), **не** спринт и не ffprobe.
+
+**Приоритет над:** `IMPLEMENTATION_CHECKLIST.md` (спринт), `agent-contract.txt` (SDK sprint), marathon cadence по продукту.
+
+**Off-program WIP:** в `git stash` (метка `off-program: ffprobe/smoke/terminal WIP`); не продолжать без явной просьбы владельца.
+
+### Возобновление после off-program (не «с начала»)
+
+**Запрещено:** сбрасывать чекбоксы §9 фаз 0–2; заново проходить фазы 0–2 «потому что агент ушёл в спринт»; откатывать уже закоммиченные срезы программы без явной просьбы владельца.
+
+**Обязательно:** `npm run audit:copy-paste` → первый hotspot/⬜ **текущей** фазы (сейчас фаза 3: `tests/shared/ffprobe-container-format.test.ts`); `npm run check:quiet` перед срезом.
+
+**Итог:** программа **продолжается** с фазы 3, а не перезапускается с фазы 0.
+
 ---
 
 ## 1. Что значит «ВСЁ» (явная граница)
@@ -265,6 +290,7 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | many-standalone-it | 77 | tests/main/ytdlp-progress-parser.test.ts | 3 | case matrix + it.each | ✅ J-706 |
 | many-standalone-it | 67 | tests/shared/ffmpeg-export-argv.test.ts | 3 | argv-cases + it.each | ✅ J-707 |
 | many-standalone-it | 46 | tests/main/ffprobe-service.test.ts | 3 | track-detail-cases + it.each | ✅ J-708 |
+| many-standalone-it | 25 | tests/shared/ffprobe-container-format.test.ts | 3 | container-format cases + it.each (след. срез фазы 3) | ⬜ |
 | many-export-parse | 13 | src/main/ffmpeg-export-service.ts | 2 | stored/user-preset/progress parse modules | ✅ J-705 |
 | whitelist-if-chains | 4 | src/main/ytdlp-download-options.ts | 2 | Реестр whitelist chains + тесты; убрать 4× if-chain | ✅ J-704 |
 

@@ -8,6 +8,14 @@ alwaysApply: true
 Глоссарий: [`fluxalloy-rules-explicit.mdc`](fluxalloy-rules-explicit.mdc).  
 План фаз: [`docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md`](../../docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md).
 
+## PROGRAM GATE (владелец)
+
+**Если** файл плана существует **и** в §9 плана не все фазы ✅ **то:**
+
+- **Запрещено:** спринт-TODO, §6–§9 ТЗ, ffprobe/smoke/терминал «ещё поле», product-фичи, marathon-cadence коммит off-program diff.
+- **Обязательно:** первый ⬜ в §4 плана → §8 workflow → одна `J-*` на срез программы.
+- **«Продолжай»** трактуется как срез программы, **не** как `## Ближайший TODO спринта`.
+
 ## Слой A (во время программы)
 
 **Запрещено:** **сужение scope**; **микро-J**; новая **копипаста-парсер**; завершать итерацию без **check:quiet зелёный**; пропускать `tests/` и `scripts/` в audit.

@@ -809,3 +809,4 @@
 - [J-781] 2026-05-17 07:08:13 [Assistant]: §9/§18 — `parseFfprobeFormatDurationSec`; smoke registry (+duration, start_time, start_time_real); `ffprobe-service` на shared parse; §8 — терминал diagnostics +duration. Vitest. Чеклист спринт. `npm run check:quiet`.
 - [J-782] 2026-05-17 07:16:15 [Assistant]: §9 — `format.duration` compact/export (`dur …`) в offset/timing и diagnostics; §8 — терминал `offset+timing` +duration; Vitest. Чеклист спринт. `npm run check:quiet`.
 - [J-783] 2026-05-17 07:19:37 [Assistant]: marathon cadence **155** — §9/§8 J-779–782: diagnostics (filename, bit_rate, duration), registry parse+smoke, offset/timing compact/export, терминал; инспектор/экспорт без дублей. `npm run check:quiet`; коммит `fdb7790`.
+- [J-784] 2026-05-17 08:20:29 [Assistant]: PROGRAM GATE синхрон (план, rules, AGENTS, marathon, checklist, SDK contract, SOURCES_OF_TRUTH); возобновление программы с фазы 3 (не с 0); push origin. `npm run check:quiet`.

@@ -1,5 +1,7 @@
 # Marathon: «продолжай» / SDK loop
 
+> **PROGRAM GATE:** пока активен [`PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md`](PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md) (§9 не все ✅), «продолжай» = срез **программы аудита**, не спринт и не ffprobe/smoke.
+
 **Когда применять:** очередь «продолжай», `npm run agent:loop`, автономный спринт.
 
 **Владельцу ничего создавать не нужно:** достаточно **«продолжай»** или `+`. Исполняемое — `.cursor/rules/fluxalloy-marathon.mdc` (`alwaysApply`) + глоссарий `fluxalloy-rules-explicit.mdc`.
@@ -12,7 +14,7 @@
 
 ## Каждую итерацию
 
-1. План — [`IMPLEMENTATION_CHECKLIST.md`](../IMPLEMENTATION_CHECKLIST.md) → **`## Ближайший TODO спринта`**. ТЗ — один § [`FLUXALLOY_TZ.md`](../FLUXALLOY_TZ.md).
+1. **Если** программа аудита активна (§9 плана не все ✅) — [`PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md`](PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md) §4–§8. **Иначе** — [`IMPLEMENTATION_CHECKLIST.md`](../IMPLEMENTATION_CHECKLIST.md) → **`## Ближайший TODO спринта`**. ТЗ — один § [`FLUXALLOY_TZ.md`](../FLUXALLOY_TZ.md) (только вне gate).
 2. **Крупный срез** (глоссарий). **Если** новый/изменённый IPC — **вертикальный срез**. **Запрещено:** **микро-J**, **микро-срез** (`fluxalloy-iteration-batch.mdc`).
 3. **Журнал** — **одна J за итерацию** (`npm run journal:stamp` → `[Assistant]` / `[SDK]`).
 4. **Отчёт** — 3–5 буллетов; **запрещено** копировать тело журнала.

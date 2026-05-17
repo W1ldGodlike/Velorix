@@ -41,6 +41,8 @@
 
 ## Ближайший TODO спринта
 
+> **PROGRAM GATE (2026-05-16):** пока [`docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md`](docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md) §9 не полностью ✅ — агенты **не** берут пункты ниже; только срезы программы аудита. Спринт возобновляется после фазы 9.
+
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый; подробности фиксировать ниже в тематических § и в `IMPLEMENTATION_JOURNAL.md`.
 
 - [x] Рефактор ф.4 P1: invoke IPC вынесен из `index.ts` → `src/main/ipc/register-*` (102 handle); `index.ts` — lifecycle + `ipcMain.on`.

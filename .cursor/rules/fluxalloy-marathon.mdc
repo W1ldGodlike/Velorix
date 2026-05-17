@@ -10,6 +10,8 @@ alwaysApply: true
 
 **Если** пользователь написал только «продолжай» или `+` **то** этого достаточно для старта итерации. **Запрещено** просить владельца создать JSON, handoff или шаблоны.
 
+**PROGRAM GATE:** **если** активен [`docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md`](../../docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md) (§9 не все ✅) **то** «продолжай» = срез программы аудита (`fluxalloy-project-audit.mdc`), **не** спринт/ffprobe.
+
 ## Каждую итерацию
 
 1. **Обязательно:** **крупный срез** (глоссарий) + **одна J за итерацию** (`npm run journal:stamp`).
