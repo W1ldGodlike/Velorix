@@ -24,16 +24,16 @@
 - [x] Есть `package.json`, `electron-vite`, `electron-builder`, ESLint, Prettier, TypeScript-конфиги.
 - [x] Есть `src/main`, `src/preload`, `src/renderer`.
 - [x] Renderer изолирован: `contextIsolation: true`, `nodeIntegration: false`.
-- [x] Есть базовая тёмная/светлая тема и режим **как в системе** (`theme: system` + `nativeTheme`), сохранение в `userData/settings.json`, меню `Вид -> Тема`.
+- [x] Есть базовая тёмная/светлая тема и режим **как в системе** (`theme: system` + `nativeTheme`), сохранение в `app-data/settings.json`, меню `Вид -> Тема`.
 - [~] Есть главное окно 1920x1080 (FHD) по умолчанию и единый workspace `Редактор` / `Загрузки`; редактор содержит toolbar, видеопредпросмотр (`fluxmedia://` allowlist + byte-range streaming для `<video>`), DnD/«Открыть», транспорт, timeline/waveform и статусбар.
 - [~] Есть `Data/`, `Help/`, `FLUXALLOY_TZ.md`, `IMPLEMENTATION_CHECKLIST.md`, [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md), упаковка `Data/`, `Help/`, ТЗ через `extraResources` (журнал в установщик пока не включаем — только для разработки).
 - [x] Windows: `electron-builder` с режимом sign по умолчанию; после перезагрузки проверены `build:unpack`/`winCodeSign`.
-- [~] Есть ffmpeg export MP4/MKV/MOV, trim In/Out, crop/rotate/flip/scale/FPS/CRF/bitrate, пользовательские пресеты и snapshot PNG/JPEG; batch, HW encode и расширенные фильтры ещё впереди. Политика движков — bundled-first (`resources/bin`) с кнопкой скачивания/обновления и очисткой скачанных копий в `userData/bin`, есть проверка `--version`.
+- [~] Есть ffmpeg export MP4/MKV/MOV, trim In/Out, crop/rotate/flip/scale/FPS/CRF/bitrate, пользовательские пресеты и snapshot PNG/JPEG; batch, HW encode и расширенные фильтры ещё впереди. Политика движков — bundled-first (`resources/bin`) с кнопкой скачивания/обновления и очисткой скачанных копий в `app-data/bin`, есть проверка `--version`.
 - [~] Автозагрузка движков **Windows x64** (yt-dlp GitHub + ffmpeg zip mirror/fallback), SHA256 опционально через `Data/trusted_hashes.json`; `npm run engines:prepare:win` / `engines:prepare:win:force` / `predev` наполняет локальный `bin/`, а установщик берёт `resources/bin` (`extraResources`) для заранее проверенных bundled `ffmpeg.exe`/`ffprobe.exe`/`yt-dlp.exe`; бинарники в Git не коммитятся.
 - [~] Локализация: основной слой RU/EN в `src/renderer/src/locales/ui-text.ts` (вкл. редактор, загрузки, терминал, статусбар, подсказки); плоские `locales/ru|en/*.json` и смена языка без перезапуска — позже (см. §2.2/§5).
 - [~] Основная вкладка `Загрузки` в React уже закрывает очередь, старт/stop/retry/pause, настройки yt-dlp, каталог/cookies/network, live log, историю; **компактная панель «История»** — в основном **«Повторить»** (URL в очередь; J-626), полные действия файла/папки/редактора — в таблице очереди и pop-out; open учитывает финальный файл после merge и Windows UTF-8 stdout; pop-out — вторичный режим для редких settings.
 - [~] ffprobe-инспектор: в **главном редакторе** под таймлайном — только **короткая строка** видео/аудио (`VideoTimeline`); полная сводка, таблица дорожек, главы, JSON и экспорт — в **отдельном окне** инспектора; Dolby/HDR side_data summary, контекстные действия — там же.
-- [~] Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`68 test files / 705 tests`**; `npm run check` / `check:quiet` проходят (lint, typecheck, тесты, `trusted_hashes`, `check:journal`, `check:checklist`, secrets guard; J-1009). Покрыты парсеры/сервисы yt-dlp §6, ffmpeg export/batch §7 (`ffmpeg-export-batch-*`, `ffmpeg-export-hw-decode`, `ffmpeg-hw-encoder-probe`, `ffmpeg-export-vaapi-vf`), ffprobe §9, knowledge §15, terminal §8, diagnostics, UI helpers (`timeline-ruler`, `waveform-peaks`, `ui-text`-связанные контракты).
+- [~] Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`127 test files / 1353 tests`**; `npm run check` / `check:quiet` проходят (lint, typecheck, тесты, `trusted_hashes`, `check:journal`, `check:checklist`, secrets guard; J-1009). Покрыты парсеры/сервисы yt-dlp §6, ffmpeg export/batch §7 (`ffmpeg-export-batch-*`, `ffmpeg-export-hw-decode`, `ffmpeg-hw-encoder-probe`, `ffmpeg-export-vaapi-vf`), ffprobe §9, knowledge §15, terminal §8, diagnostics, UI helpers (`timeline-ruler`, `waveform-peaks`, `ui-text`-связанные контракты).
 
 ## Журнал решений и проверок
 
@@ -44,10 +44,11 @@
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый; подробности фиксировать ниже в тематических § и в `IMPLEMENTATION_JOURNAL.md`.
 
 - [~] §8: терминал — IntelliSense ✅; recall ✅; UI copy в `locales/*/terminal.json`; при правках `summary` — `locales:terminal-summaries-ru`.
-- [~] §9/§18: packaged/ffprobe smoke ✅ (container registry + stream detail); редкие tag/stream — по мере ffprobe.
+- [~] §9/§18: packaged/ffprobe smoke ✅ (+`stream.codec_type`); редкие tag/stream — по мере ffprobe.
 - [~] §19/§3: verify+release smoke ✅; `check:release:local`; platform hints (mac/linux) в Support ZIP; engines manual на non-Win.
 - [x] §15: knowledge — пакет закрыт (RU/EN Help, `data:` assets, fluxhelp, About→справка); далее tooltips/PNG по UI.
-- [~] §2.2/§5: uiLocale hot-reload ✅; `locales` shards incl. `editor`/`downloads` + `check:locales-json`; DPI ✅ hints; §1.1 focus (J-977–J-1007).
+- [x] §4.1/§19: runtime только `<installRoot>/app-data/` (Electron userData/cache/temp); NSIS+ZIP, `Uninstall FluxAlloy.cmd`, optional wipe app-data; без legacy-миграции в коде (J-924).
+- [~] §2.2/§5: uiLocale hot-reload ✅; `locales` 15 shards + `check:locales-json`; DPI ✅ hints; §1.1 focus (J-977–J-1007).
 
 ---
 
@@ -190,6 +191,7 @@
 
 ### §4.1 Запоминание настроек
 
+- [x] Политика **single-root**: весь runtime в `<installRoot>/app-data/` (`configurePortableAppDataPaths`); не `%AppData%` / системный `%TEMP%`; продуктовый `Data/` отдельно.
 - [x] `settings.json` для темы.
 - [~] Последний открытый локальный файл (`lastOpenedSourcePath`) + мягкий restore превью при старте + геометрия main/downloads в `settings.json`; без полного session.json.
 - [x] Сохранять размеры/позиции окон.
@@ -489,7 +491,7 @@
 - [x] Dependabot: `.github/dependabot.yml` (npm weekly, GitHub Actions monthly); разовые настройки Actions и расшифровка писем CI — `docs/RELEASE.md` §5.
 - [ ] Настроить нормальную иконку приложения вместо placeholder/default.
 - [ ] Windows NSIS: проверить installer вручную.
-- [~] Windows portable/zip: в `electron-builder.yml` цели `portable` и `zip` рядом с NSIS; после `pack:dir`/`check:release` — автопроверка дерева `dist/win-unpacked` (`verify:win-unpacked`: exe + `resources/bin` + extraResources); полный интерактивный smoke — позже.
+- [~] Windows NSIS + ZIP (без цели `portable` — single-root); `installer.nsh` / `Uninstall FluxAlloy.cmd` — опциональное удаление `app-data/` (по умолчанию нет); `verify:win-unpacked` после `pack:dir`; интерактивный smoke — позже.
 - [ ] macOS dmg/zip.
 - [ ] Linux AppImage/deb/tar.
 - [ ] Подпись Windows — отдельное решение.
@@ -527,7 +529,7 @@
 - [x] `npm run build:win` проходит.
 - [x] `npm run dev`: после перезагрузки PATH подхватывает Node/npm без ручной правки сессии (проверено вызовом `node`/`npm` из PowerShell).
 - [ ] Рабочий Windows installer с реальными ресурсами.
-- [~] Рабочий portable/zip (NSIS + portable + zip в конфиге; приёмка — позже).
+- [~] Рабочий NSIS + ZIP рядом с `app-data/` (приёмка установщика — позже).
 - [ ] macOS артефакты.
 - [ ] Linux артефакты.
 - [x] Версия в «О программе» (вместе с Electron/Chromium/Node).
