@@ -350,6 +350,11 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | structural | 505 | src/main/ffmpeg-export-service.ts | 4 | `ffmpeg-export-service-public.ts` + `ffmpeg-export-service-job-resolve|job.ts` + entry | ✅ J-837 |
 | structural | 504 | src/main/settings-ipc-persist-ffmpeg.ts | 4 | `settings-ipc-persist-ffmpeg-core|output|presets.ts` + orchestrator | ✅ J-838 |
 | structural | 489 | src/renderer/src/components/editor/EditorFfmpegSettingsRailVideoSection.tsx | 4 | `EditorFfmpegSettingsRailVideoCodecFields|FilterFields.tsx` + section shell | ✅ J-839 |
+| structural | 480 | src/shared/knowledge-markdown.ts | 4 | `knowledge-markdown-types|assets|inlines|parse.ts` + entry re-export | ✅ J-840 |
+| structural | 456 | src/main/ffprobe-track-detail-by-codec.ts | 4 | `ffprobe-track-detail-by-codec-video|audio|subtitle|other.ts` + barrel | ✅ J-841 |
+| structural | 456 | src/renderer/src/components/TerminalWorkspacePanel.tsx | 5 | `terminal-workspace-panel-props.ts` + `TerminalWorkspacePanelIntro|Command|History|Hints.tsx` + shell | ✅ J-842 |
+| structural | 455 | src/renderer/src/use-editor-export-settings.ts | 4 | `use-editor-export-settings-state.ts` + entry orchestrator | ✅ J-843 |
+| structural | 452 | src/renderer/src/InspectorStandaloneApp.tsx | 4 | `use-inspector-standalone-app.ts` + `InspectorStandaloneAppTopbar|Main.tsx` + entry | ✅ J-844 |
 
 ---
 
