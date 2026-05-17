@@ -377,6 +377,11 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | many-standalone-it | 27 | tests/main/ytdlp-progress-parser-queue-failure.test.ts | 3 | `ytdlp-progress-parser-queue-failure-cases` + `it.each` | ✅ J-864 |
 | many-export-parse | 12 | src/main/settings-store-load-parse-ffmpeg.ts | 4 | → `settings-store-load-parse-ffmpeg-registry.ts` (audit path) | ✅ J-864 |
 | many-export-parse | 12 | src/main/settings-store-load-parse-ytdlp.ts | 4 | → `settings-store-load-parse-ytdlp-registry.ts` (audit path) | ✅ J-864 |
+| structural | 2717 | src/main/downloads-window-html.ts | 4 | `downloads-window-html-styles|body|script.ts` + entry `buildDownloadsHtml` | ✅ J-865 |
+| structural | 1480 | src/main/downloads-window-html-script.ts | 4 | 5× `downloads-window-html-script-fragment-*` + entry (~101) | ✅ J-866 |
+| structural | 845 | src/main/downloads-window-html-styles.ts | 4 | `downloads-window-html-styles-{theme,dpi,layout-*,narrow}.ts` + entry (~14) | ✅ J-867 |
+| structural | 1615 | tests/shared/ffmpeg-export-argv.test.ts | 4 | 7× `ffmpeg-export-argv-{encode-audio,filters,codecs,hwaccel,build-trim,preview-pass,filters-metadata}.test.ts` | ✅ J-868 |
+| structural | 845 | src/shared/ffprobe-container-field-registry.ts | 4 | `ffprobe-container-field-registry-parse|format.ts` + entry re-export | ✅ J-869 |
 
 ---
 

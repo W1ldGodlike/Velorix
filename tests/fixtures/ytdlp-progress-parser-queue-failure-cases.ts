@@ -174,7 +174,12 @@ export const YTDLP_SKIP_QUEUE_RETRIES_CASES: readonly YtdlpSkipQueueRetriesCase[
     expected: true
   },
   { label: 'ffmpeg missing', errorHint: 'ffmpeg: not found', stderrFallback: null, expected: true },
-  { label: 'no formats', errorHint: 'No video formats found', stderrFallback: null, expected: true },
+  {
+    label: 'no formats',
+    errorHint: 'No video formats found',
+    stderrFallback: null,
+    expected: true
+  },
   {
     label: 'format unavailable',
     errorHint: null,
@@ -220,7 +225,12 @@ export const YTDLP_CLASSIFY_TRANSIENT_CASES: readonly YtdlpClassifyFailureCase[]
     stderrFallback: null,
     expected: 'transient_network'
   },
-  { label: 'broken pipe', errorHint: null, stderrFallback: 'Broken pipe', expected: 'transient_network' },
+  {
+    label: 'broken pipe',
+    errorHint: null,
+    stderrFallback: 'Broken pipe',
+    expected: 'transient_network'
+  },
   {
     label: '502',
     errorHint: null,

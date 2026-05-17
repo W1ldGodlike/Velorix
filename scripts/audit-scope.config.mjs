@@ -45,6 +45,6 @@ export const AUDIT_LARGE_MODULE_CANDIDATES = [
   'src/shared/ffmpeg-export-argv.ts',
   'src/shared/terminal-contract.ts',
   'tests/shared/terminal-contract-scenarios.test.ts',
-  'tests/main/ytdlp-progress-parser.test.ts',
-  'tests/shared/ffmpeg-export-argv.test.ts'
+  'tests/main/ytdlp-progress-parser-download.test.ts',
+  'tests/shared/ffmpeg-export-argv-encode-audio.test.ts'
 ]
