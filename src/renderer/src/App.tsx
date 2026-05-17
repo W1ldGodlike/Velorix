@@ -1,16 +1,7 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { JSX, SyntheticEvent } from 'react'
 
-import { AboutDialog } from './components/AboutDialog'
-import { KnowledgeDialog } from './components/KnowledgeDialog'
-import { DownloadsSettingsRail } from './components/downloads/DownloadsSettingsRail'
-import { DownloadsWorkspaceMain } from './components/downloads/DownloadsWorkspaceMain'
-import { EditorBatchExportBar } from './components/editor/EditorBatchExportBar'
-import { EditorPreviewSection } from './components/editor/EditorPreviewSection'
-import { EditorFfmpegSettingsRail } from './components/editor/EditorFfmpegSettingsRail'
-import { EditorQuickYtdlpBar } from './components/editor/EditorQuickYtdlpBar'
-import { TerminalWorkspacePanel } from './components/TerminalWorkspacePanel'
-import Versions from './components/Versions'
+import { AppShellLayout } from './components/shell/AppShellLayout'
 import {
   applyPersistedUiLocale,
   setUiLocaleForSession,
@@ -18,32 +9,11 @@ import {
   uiText,
   uiTextVars
 } from './locales/ui-text'
-import {
-  IconBan,
-  IconBook,
-  IconCircleHelp,
-  IconCloudDownload,
-  IconDownload,
-  IconFilm,
-  IconFolder,
-  IconFolderOpen,
-  IconMoon,
-  IconSettings,
-  IconSun,
-  IconWorkspaceEditor,
-  IconWorkspaceTerminal
-} from './components/LucideMiniIcons'
 import type { EngineId } from '../../shared/engine-contract'
-import { ENGINE_IDS } from '../../shared/engine-contract'
 import type { ResolvedAppTheme } from '../../shared/settings-contract'
 import type { RestoredSourceInfo } from '../../shared/preview-dialog-contract'
 import type { MediaProbeSuccess } from '../../shared/ffprobe-contract'
 import type { DownloadsWindowUiLocale } from '../../shared/downloads-window-ui-locale'
-import type {
-  ProcessingHistoryEntry,
-  ProcessingHistoryFilter,
-  ProcessingHistoryWeeklySummary
-} from '../../shared/processing-history-contract'
 import {
   useDownloadsWindowUiPanels,
   type DownloadsRailPanelKey
@@ -51,6 +21,9 @@ import {
 import { useMainWindowUiPanels } from './use-main-window-ui-panels'
 import { useEditorExportSettings } from './use-editor-export-settings'
 import { useEditorExportPipeline } from './use-editor-export-pipeline'
+import { useAppWorkspaceMainProps } from './use-app-workspace-main-props'
+import { useAppShellLayoutProps } from './use-app-shell-layout-props'
+import { useAppProcessingHistory } from './use-app-processing-history'
 import { useFfmpegExportBatch } from './use-ffmpeg-export-batch'
 import { useTerminalWorkspace } from './use-terminal-workspace'
 import { useDownloadsUrlActions } from './use-downloads-url-actions'
@@ -58,8 +31,6 @@ import { useDownloadsWorkspace } from './use-downloads-workspace'
 import {
   type EnginePathsDraft,
   type EngineSummary,
-  engineLabel,
-  engineSummaryText,
   formatEngineVersionsLine,
   summarizeEngines
 } from './app-engines-ui'
@@ -68,7 +39,7 @@ import {
   domTargetIsTextField,
   previewVideoMediaErrorDetailLabel
 } from './app-shell-ui-helpers'
-import { KNOWLEDGE_SLUG_FFMPEG_TERMINAL_HINTS, type WorkspaceTab } from './app-terminal-hint-ui'
+import type { WorkspaceTab } from './app-terminal-hint-ui'
 import {
   type DownloadsQueueRowView,
   type DownloadsStatusFilter,
@@ -136,13 +107,17 @@ function App(): JSX.Element {
     exportVisibleDownloadsHistory,
     refreshDownloadsOutputDirectory
   } = useDownloadsWorkspace({ setStatusHint })
-  const [processingHistory, setProcessingHistory] = useState<ProcessingHistoryEntry[]>([])
-  const [processingHistoryBusy, setProcessingHistoryBusy] = useState(false)
-  const [processingHistoryFilter, setProcessingHistoryFilter] = useState<ProcessingHistoryFilter>(
-    {}
-  )
-  const [processingHistoryWeeklySummary, setProcessingHistoryWeeklySummary] =
-    useState<ProcessingHistoryWeeklySummary | null>(null)
+  const {
+    processingHistory,
+    setProcessingHistory,
+    processingHistoryBusy,
+    processingHistoryFilter,
+    processingHistoryWeeklySummary,
+    setProcessingHistoryWeeklySummary,
+    refreshProcessingHistory,
+    applyProcessingHistoryFilter,
+    exportVisibleProcessingHistory
+  } = useAppProcessingHistory({ setStatusHint })
   const {
     downloadsEmbeddedHistoryOpen,
     downloadsEmbeddedLogOpen,
@@ -328,51 +303,6 @@ function App(): JSX.Element {
     []
   )
 
-  const refreshProcessingHistory = useCallback(
-    async (filter: ProcessingHistoryFilter = processingHistoryFilter): Promise<void> => {
-      setProcessingHistoryBusy(true)
-      try {
-        const [rows, summary] = await Promise.all([
-          window.fluxalloy.processingHistory.get({ ...filter, limit: 100 }),
-          window.fluxalloy.processingHistory.weeklySummary()
-        ])
-        setProcessingHistory(rows)
-        setProcessingHistoryWeeklySummary(summary)
-      } finally {
-        setProcessingHistoryBusy(false)
-      }
-    },
-    [processingHistoryFilter]
-  )
-
-  const applyProcessingHistoryFilter = useCallback(
-    (next: ProcessingHistoryFilter): void => {
-      setProcessingHistoryFilter(next)
-      void refreshProcessingHistory(next)
-    },
-    [refreshProcessingHistory]
-  )
-
-  const exportVisibleProcessingHistory = useCallback(async (): Promise<void> => {
-    const payload = {
-      schema: 1,
-      exportedAt: Date.now(),
-      filter: processingHistoryFilter,
-      weeklySummary: processingHistoryWeeklySummary,
-      entries: processingHistory
-    }
-    const res = await window.fluxalloy.saveTextWithDialog({
-      title: uiText('processingHistoryExportDialogTitle'),
-      defaultFileName: 'fluxalloy-processing-history.json',
-      content: JSON.stringify(payload, null, 2)
-    })
-    if (res.ok) {
-      setStatusHint(uiText('processingHistoryExportSaved'))
-    } else if ('error' in res) {
-      setStatusHint(res.error)
-    }
-  }, [processingHistory, processingHistoryFilter, processingHistoryWeeklySummary])
-
   const handleDownloadsRailSectionToggle = useCallback(
     (key: DownloadsRailPanelKey) => {
       return (e: SyntheticEvent<HTMLDetailsElement>): void => {
@@ -518,23 +448,6 @@ function App(): JSX.Element {
       unsubscribe()
     }
   }, [])
-
-  useEffect(() => {
-    let mounted = true
-    void Promise.all([
-      window.fluxalloy.processingHistory.get({ limit: 100 }),
-      window.fluxalloy.processingHistory.weeklySummary()
-    ]).then(([rows, summary]) => {
-      if (mounted) {
-        setProcessingHistory(rows)
-        setProcessingHistoryWeeklySummary(summary)
-      }
-    })
-    return () => {
-      mounted = false
-    }
-  }, [])
-
 
   useEffect(() => {
     trimSnapshotRef.current = null
@@ -804,7 +717,6 @@ function App(): JSX.Element {
     }
   }, [applyPreview])
 
-
   const {
     batchSnapshot,
     batchDragRowId,
@@ -1045,904 +957,351 @@ function App(): JSX.Element {
     applyPreview(granted)
   }
 
-  const editorFfmpegDetailBusy = exportBusy || snapshotBusy || exportCancelBusy || probePending
+  const appWorkspaceMainProps = useAppWorkspaceMainProps({
+    shell: {
+      workspaceTab,
+      panelOpen,
+      persistMainWindowUiPanelToggle,
+      downloadsSettingsRailRef
+    },
+    knowledge: {
+      setKnowledgeInitialSlug,
+      setKnowledgeOpen
+    },
+    busy: {
+      engineDownloadBusy,
+      exportBusy,
+      snapshotBusy,
+      probePending,
+      exportCancelBusy,
+      batchExportBusy,
+      downloadsOptionsBusy,
+      downloadsHistoryBusy
+    },
+    editorQuick: {
+      downloadsUrl,
+      setDownloadsUrl,
+      editorUrlPasteBehavior,
+      setEditorUrlPasteBehavior,
+      handleQuickYtdlpEnqueueLines,
+      handleDownloadFirstUrlOpenInEditor
+    },
+    editorBatch: {
+      batchExportBusy,
+      batchSnapshot,
+      batchOutputSuffix,
+      setBatchOutputSuffix,
+      batchOutputDirectory,
+      batchDragRowId,
+      setBatchDragRowId,
+      previewPath: preview?.path,
+      setStatusHint,
+      handleBatchDropFiles,
+      handleBatchPickOutputFolder,
+      handleBatchRevealSharedOutputFolder,
+      handleBatchClearOutputDirectory,
+      handleBatchPickFiles,
+      handleBatchPickFolder,
+      handleBatchAddCurrentPreview,
+      handleBatchAddDownloadsDone,
+      handleBatchStart,
+      handleBatchCancel,
+      handleBatchRetryFailed,
+      handleBatchRetryFailedAndStart,
+      handleBatchClearCompleted,
+      handleBatchCopyInputPaths,
+      handleBatchCopyOutputPaths,
+      handleBatchSaveReport,
+      handleBatchRemoveWaiting,
+      handleBatchOpenOutput,
+      handleBatchOpenInput,
+      handleBatchCopyRowPath
+    },
+    editorPreview: {
+      preview,
+      previewPlaybackUrl,
+      previewStackRef,
+      videoRef,
+      probeInfo,
+      probePending,
+      exportBusy,
+      snapshotBusy,
+      handlePreviewDrop,
+      handlePreviewVideoLoaded,
+      handlePreviewVideoError,
+      onTrimRangeSnapshot,
+      jumpToTrimExport,
+      handleExport,
+      handleSnapshot
+    },
+    editorFfmpeg: {
+      setStatusHint,
+      exportBusy,
+      exportCancelBusy,
+      snapshotBusy,
+      probePending,
+      exportEncodePreset,
+      setExportEncodePreset,
+      exportVideoCodec,
+      setExportVideoCodec,
+      exportContainer,
+      setExportContainer,
+      exportCrf,
+      setExportCrf,
+      exportVideoBitrate,
+      setExportVideoBitrate,
+      exportAudioMode,
+      setExportAudioMode,
+      exportAudioBitrate,
+      setExportAudioBitrate,
+      exportFps,
+      setExportFps,
+      exportVideoTransform,
+      setExportVideoTransform,
+      exportCropPreset,
+      setExportCropPreset,
+      exportScalePreset,
+      setExportScalePreset,
+      exportTwoPass,
+      setExportTwoPass,
+      exportEconomyMode,
+      setExportEconomyMode,
+      exportHwDecode,
+      setExportHwDecode,
+      exportExtraArgsLine,
+      setExportExtraArgsLine,
+      exportAudioGainDb,
+      setExportAudioGainDb,
+      exportStripMetadata,
+      setExportStripMetadata,
+      exportStripChapters,
+      setExportStripChapters,
+      exportSubtitleMode,
+      setExportSubtitleMode,
+      exportVideoDeinterlace,
+      setExportVideoDeinterlace,
+      exportVideoDenoise,
+      setExportVideoDenoise,
+      exportVideoDeband,
+      setExportVideoDeband,
+      exportVideoHisteq,
+      setExportVideoHisteq,
+      exportVideoLut3d,
+      setExportVideoLut3d,
+      exportVideoSharpen,
+      setExportVideoSharpen,
+      exportVideoEqPreset,
+      setExportVideoEqPreset,
+      exportVideoHue,
+      setExportVideoHue,
+      exportVideoGrain,
+      setExportVideoGrain,
+      exportVideoVignette,
+      setExportVideoVignette,
+      exportVideoBlur,
+      setExportVideoBlur,
+      exportAudioNormalize,
+      setExportAudioNormalize,
+      exportUserPresets,
+      selectedUserPresetId,
+      setSelectedUserPresetId,
+      selectedExportUserPreset,
+      lastExportPath,
+      lastSnapshotPath,
+      snapshotFormat,
+      setSnapshotFormat,
+      ffmpegExportSelectOptions,
+      exportExtraArgsParsed,
+      hydrateExportFieldsFromSettings,
+      bumpManualExportEdit,
+      handleSaveExportUserPreset,
+      handleDeleteExportUserPreset,
+      handleRenameExportUserPreset,
+      handleOverwriteExportUserPreset,
+      exportPreview,
+      exportPreviewCommand,
+      exportPreviewHint,
+      handleCopyExportPreview,
+      handleOpenLastExport,
+      handleCopyLastExportPath,
+      handleOpenLastSnapshot,
+      handleCopyLastSnapshotPath,
+      processingHistory,
+      setProcessingHistory,
+      processingHistoryBusy,
+      processingHistoryFilter,
+      processingHistoryWeeklySummary,
+      setProcessingHistoryWeeklySummary,
+      applyProcessingHistoryFilter,
+      refreshProcessingHistory,
+      exportVisibleProcessingHistory,
+      reportBatchPathsAdded,
+      hwEncoderProbe
+    },
+    terminal: {
+      terminalBusy,
+      terminalLine,
+      setTerminalLine,
+      terminalCommandInputId,
+      terminalInlineSuggestions,
+      terminalSuggestFocus,
+      setTerminalSuggestFocus,
+      terminalSuggestActiveIndex,
+      setTerminalSuggestIndex,
+      terminalSuggestBlurTimeoutRef,
+      currentSourcePath,
+      runTerminalLine,
+      applyTerminalSuggest,
+      appendTerminalToken,
+      terminalHistory,
+      copyTerminalOutputLine,
+      terminalHintsSearchFieldId,
+      terminalHintFilter,
+      setTerminalHintFilter,
+      visibleTerminalHints
+    },
+    downloads: {
+      main: {
+        downloadsOptionsBusy,
+        downloadsHistoryBusy,
+        downloadsUrl,
+        setDownloadsUrl,
+        downloadsMainUrlFieldId,
+        downloadsNarrowLayout,
+        downloadsStats,
+        downloadsStatusFilter,
+        setDownloadsStatusFilter,
+        downloadsStatusFilterChips,
+        downloadsRows,
+        visibleDownloadsRows,
+        setStatusHint,
+        downloadsEmbeddedHistoryOpen,
+        persistDownloadsEmbeddedHistoryOpen,
+        visibleDownloadsHistory,
+        downloadsHistoryCount: downloadsHistory.length,
+        downloadsHistoryOutcomeFilter,
+        setDownloadsHistoryOutcomeFilter,
+        downloadsHistoryWeeklySummary: downloadsHistoryWeeklySummary ?? {
+          since: 0,
+          until: 0,
+          total: 0,
+          success: 0,
+          error: 0,
+          cancelled: 0
+        },
+        refreshDownloadsHistory,
+        setDownloadsHistory,
+        exportVisibleDownloadsHistory,
+        downloadsEmbeddedLogOpen,
+        persistDownloadsEmbeddedLogOpen,
+        downloadsLogTargetRowId,
+        downloadsLogLines,
+        setDownloadsLogLines,
+        setDownloadsLogTargetRowId
+      },
+      settings: {
+        downloadsOptionsBusy,
+        downloadsHistoryBusy,
+        downloadsOptions,
+        setDownloadsOptions,
+        downloadsRailPanels,
+        onRailSectionToggle: handleDownloadsRailSectionToggle,
+        applyDownloadsOptionsPatch,
+        downloadsOutputDirectory,
+        setDownloadsOutputDirectory,
+        refreshDownloadsOutputDirectory,
+        setStatusHint,
+        downloadsExpertHintFilter,
+        setDownloadsExpertHintFilter,
+        ytdlpCommandHintsFilteredByCategory,
+        appendDownloadsExtraArgsToken,
+        refreshDownloadsOptions
+      },
+      setWorkspaceTab,
+      handleAddDownloadsFromMain,
+      handleBatchAddDownloadsDone
+    }
+  })
+  const appShellLayoutProps = useAppShellLayoutProps({
+    chromeBusy: {
+      engineDownloadBusy,
+      engineSummary,
+      probePending,
+      exportBusy,
+      snapshotBusy,
+      exportCancelBusy,
+      terminalBusy,
+      batchExportBusy,
+      exportPresetSaving,
+      enginePathsSaving,
+      downloadsOptionsBusy,
+      downloadsHistoryBusy
+    },
+    topbar: {
+      workspaceTab,
+      setWorkspaceTab,
+      engineDownloadBusy,
+      engineSummary,
+      previewPath: preview?.path,
+      exportBusy,
+      exportCancelBusy,
+      enginesOfferDownload,
+      theme,
+      setKnowledgeInitialSlug,
+      setKnowledgeOpen,
+      setAboutInfo,
+      setAboutOpen,
+      setEnginePathsOpen,
+      handleOpenVideoFolderToolbar,
+      handleOpenToolbar,
+      handleCancelExport,
+      handleEnginesDownload,
+      handleUiLocaleToggle,
+      toggleTheme
+    },
+    statusbar: {
+      workspaceTab,
+      engineDownloadBusy,
+      engineSummary,
+      engineVersionsLine,
+      exportCodecStatusbarLabel,
+      exportBusy,
+      snapshotBusy,
+      exportCancelBusy,
+      probePending,
+      batchExportBusy,
+      statusHint
+    },
+    overlay: {
+      aboutOpen,
+      aboutInfo,
+      setAboutOpen,
+      knowledgeOpen,
+      knowledgeInitialSlug,
+      setKnowledgeOpen,
+      setKnowledgeInitialSlug,
+      uiLocaleRenderTick,
+      onStatusHint: setStatusHint
+    },
+    exportPreset: {
+      dialog: exportPresetNameDialog,
+      exportPresetSaving,
+      setDialog: setExportPresetNameDialog,
+      handleSubmitExportPresetName
+    },
+    enginePaths: {
+      enginePathsSaving,
+      engineDownloadBusy,
+      enginePathsDraft,
+      setEnginePathsDraft,
+      setEnginePathsOpen,
+      handlePickEngine,
+      handleClearDownloadedEngines,
+      handleSaveEnginePaths
+    }
+  })
 
-  const editorPreviewRegionBusy =
-    exportBusy || snapshotBusy || probePending || exportCancelBusy || batchExportBusy
-
-  const appChromeBusy =
-    engineDownloadBusy ||
-    engineSummary === 'checking' ||
-    probePending ||
-    exportBusy ||
-    snapshotBusy ||
-    exportCancelBusy ||
-    terminalBusy ||
-    batchExportBusy ||
-    exportPresetSaving ||
-    enginePathsSaving ||
-    downloadsOptionsBusy ||
-    downloadsHistoryBusy
-
-  return (
-    <div className="app-shell" aria-label={uiText('appMainShellAria')} aria-busy={appChromeBusy}>
-      <header
-        className="app-topbar"
-        aria-label={uiText('topbarHeaderAria')}
-        aria-busy={appChromeBusy}
-      >
-        <div
-          className="app-topbar-brand"
-          aria-label={uiText('topbarProductName')}
-          aria-busy={engineDownloadBusy || engineSummary === 'checking'}
-        >
-          <span className="app-topbar-mark" aria-hidden>
-            ◇
-          </span>
-          <span className="app-topbar-title">{uiText('topbarProductName')}</span>
-        </div>
-        <nav
-          className="app-workspace-tabs"
-          aria-label={uiText('workspaceTabsAria')}
-          role="tablist"
-          aria-orientation="horizontal"
-          aria-busy={appChromeBusy}
-        >
-          <button
-            type="button"
-            id="workspace-tab-editor"
-            className={`app-workspace-tab${workspaceTab === 'editor' ? ' app-workspace-tab-active' : ''}`}
-            role="tab"
-            aria-selected={workspaceTab === 'editor'}
-            aria-controls="workspace-panel-editor"
-            aria-describedby="workspace-tab-editor-desc"
-            title={uiText('workspaceTabEditorTooltip')}
-            onClick={() => {
-              setWorkspaceTab('editor')
-            }}
-          >
-            <span aria-hidden className="app-workspace-tab-glyph">
-              <IconWorkspaceEditor title="" size={16} />
-            </span>
-            {uiText('workspaceTabEditor')}
-            <span id="workspace-tab-editor-desc" className="app-visually-hidden">
-              {uiText('editorWorkbenchAria')}
-            </span>
-          </button>
-          <button
-            type="button"
-            id="workspace-tab-downloads"
-            className={`app-workspace-tab${workspaceTab === 'downloads' ? ' app-workspace-tab-active' : ''}`}
-            role="tab"
-            aria-selected={workspaceTab === 'downloads'}
-            aria-controls="workspace-panel-downloads"
-            aria-describedby="workspace-tab-downloads-desc"
-            onClick={() => {
-              setWorkspaceTab('downloads')
-            }}
-            title={uiText('workspaceTabDownloadsTooltip')}
-          >
-            <span aria-hidden className="app-workspace-tab-glyph">
-              <IconDownload title="" size={16} />
-            </span>
-            {uiText('workspaceTabDownloads')}
-            <span id="workspace-tab-downloads-desc" className="app-visually-hidden">
-              {uiText('downloadsWorkbenchAria')}
-            </span>
-          </button>
-          <button
-            type="button"
-            id="workspace-tab-terminal"
-            className={`app-workspace-tab${workspaceTab === 'terminal' ? ' app-workspace-tab-active' : ''}`}
-            role="tab"
-            aria-selected={workspaceTab === 'terminal'}
-            aria-controls="workspace-panel-terminal"
-            aria-describedby="workspace-tab-terminal-desc"
-            onClick={() => {
-              setWorkspaceTab('terminal')
-            }}
-            title={uiText('workspaceTabTerminalTooltip')}
-          >
-            <span aria-hidden className="app-workspace-tab-glyph">
-              <IconWorkspaceTerminal title="" size={16} />
-            </span>
-            {uiText('workspaceTabTerminal')}
-            <span id="workspace-tab-terminal-desc" className="app-visually-hidden">
-              {uiText('terminalWorkbenchAria')}
-            </span>
-          </button>
-        </nav>
-        <div
-          className="app-topbar-trailing"
-          role="group"
-          aria-label={uiText('topbarTrailingGroupAria')}
-          aria-busy={appChromeBusy}
-        >
-          <div
-            className="app-topbar-actions"
-            role="toolbar"
-            aria-orientation="horizontal"
-            aria-label={uiText('topbarActionsToolbarAria')}
-            aria-busy={appChromeBusy}
-          >
-            <button
-              type="button"
-              className="app-icon-btn"
-              onClick={() => {
-                void handleOpenVideoFolderToolbar()
-              }}
-              title={uiText('topbarOpenVideoFolderTitle')}
-            >
-              <IconFolder />
-              <span className="app-visually-hidden">{uiText('topbarOpenVideoFolderLabel')}</span>
-            </button>
-            <button
-              type="button"
-              className="app-icon-btn"
-              onClick={() => {
-                void handleOpenToolbar()
-              }}
-              title={uiText('topbarOpenFileTitle')}
-            >
-              <IconFolderOpen />
-              <span className="app-visually-hidden">{uiText('topbarOpenFileLabel')}</span>
-            </button>
-            <button
-              type="button"
-              className="app-icon-btn"
-              onClick={() => {
-                void window.fluxalloy.inspector.openWindow(preview?.path ?? null)
-              }}
-              title={uiText('topbarInspectorTitle')}
-            >
-              <IconFilm />
-              <span className="app-visually-hidden">{uiText('topbarInspectorLabel')}</span>
-            </button>
-            {exportBusy ? (
-              <button
-                type="button"
-                className="app-icon-btn app-icon-btn-warn"
-                disabled={exportCancelBusy}
-                aria-label={
-                  exportCancelBusy
-                    ? uiText('topbarExportCancelBusy')
-                    : uiText('topbarExportCancelReady')
-                }
-                onClick={() => {
-                  void handleCancelExport()
-                }}
-                title={uiText('topbarExportCancelTitle')}
-              >
-                <IconBan
-                  title={
-                    exportCancelBusy
-                      ? uiText('topbarExportCancelBusy')
-                      : uiText('topbarExportCancelReady')
-                  }
-                />
-              </button>
-            ) : null}
-            {enginesOfferDownload ? (
-              <button
-                type="button"
-                className="app-icon-btn app-icon-btn-warn"
-                disabled={engineDownloadBusy}
-                aria-label={
-                  engineDownloadBusy
-                    ? uiText('topbarEnginesDownloadBusy')
-                    : uiText('topbarEnginesDownloadReady')
-                }
-                onClick={() => {
-                  void handleEnginesDownload()
-                }}
-                title={uiText('topbarEnginesDownloadTitle')}
-              >
-                <IconCloudDownload
-                  title={
-                    engineDownloadBusy
-                      ? uiText('topbarEnginesDownloadBusy')
-                      : uiText('topbarEnginesDownloadReady')
-                  }
-                />
-              </button>
-            ) : null}
-            <button
-              type="button"
-              className="app-icon-btn"
-              onClick={() => {
-                setEnginePathsOpen(true)
-              }}
-              title={uiText('topbarEnginePathsTitle')}
-            >
-              <IconSettings />
-              <span className="app-visually-hidden">{uiText('topbarEnginePathsLabel')}</span>
-            </button>
-            <button
-              type="button"
-              className="app-icon-btn"
-              onClick={() => {
-                setKnowledgeInitialSlug(null)
-                setKnowledgeOpen(true)
-              }}
-              title={uiText('knowledgeTopbarTooltip')}
-            >
-              <IconBook />
-              <span className="app-visually-hidden">{uiText('topbarKnowledgeLabel')}</span>
-            </button>
-            <button
-              type="button"
-              className="app-icon-btn"
-              onClick={() => {
-                void window.fluxalloy.about.getInfo().then((info) => {
-                  setAboutInfo(info)
-                  setAboutOpen(true)
-                })
-              }}
-              title={uiText('topbarAboutTitle')}
-            >
-              <IconCircleHelp />
-              <span className="app-visually-hidden">{uiText('topbarAboutLabel')}</span>
-            </button>
-            <button
-              type="button"
-              className="app-icon-btn app-locale-badge"
-              onClick={handleUiLocaleToggle}
-              title={
-                getUiLocale() === 'ru'
-                  ? uiText('topbarUiLocaleSwitchToEnglishTitle')
-                  : uiText('topbarUiLocaleSwitchToRussianTitle')
-              }
-            >
-              <span aria-hidden>{getUiLocale() === 'ru' ? 'RU' : 'EN'}</span>
-              <span className="app-visually-hidden">
-                {getUiLocale() === 'ru'
-                  ? uiText('topbarUiLocaleVisuallyHiddenRu')
-                  : uiText('topbarUiLocaleVisuallyHiddenEn')}
-              </span>
-            </button>
-            <button
-              type="button"
-              className="app-icon-btn"
-              onClick={toggleTheme}
-              title={uiText('topbarThemeToggleTitle')}
-            >
-              {theme === 'dark' ? <IconSun /> : <IconMoon />}
-              <span className="app-visually-hidden">
-                {theme === 'dark' ? uiText('topbarThemeUseLight') : uiText('topbarThemeUseDark')}
-              </span>
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {workspaceTab === 'editor' ? (
-        <EditorQuickYtdlpBar
-          open={panelOpen('quickYtdlp')}
-          onOpenChange={(open) => {
-            persistMainWindowUiPanelToggle('quickYtdlp', open)
-          }}
-          chromeBusy={engineDownloadBusy || downloadsOptionsBusy || downloadsHistoryBusy}
-          downloadsUrl={downloadsUrl}
-          setDownloadsUrl={setDownloadsUrl}
-          editorUrlPasteBehavior={editorUrlPasteBehavior}
-          setEditorUrlPasteBehavior={setEditorUrlPasteBehavior}
-          onEnqueueLines={() => {
-            void handleQuickYtdlpEnqueueLines()
-          }}
-          onDownloadFirstUrlOpenInEditor={() => {
-            void handleDownloadFirstUrlOpenInEditor()
-          }}
-        />
-      ) : null}
-
-      {workspaceTab === 'editor' ? (
-        <EditorBatchExportBar
-          open={panelOpen('batchExport')}
-          onOpenChange={(open) => {
-            persistMainWindowUiPanelToggle('batchExport', open)
-          }}
-          batchExportBusy={batchExportBusy}
-          batchSnapshot={batchSnapshot}
-          batchOutputSuffix={batchOutputSuffix}
-          setBatchOutputSuffix={setBatchOutputSuffix}
-          batchOutputDirectory={batchOutputDirectory}
-          batchDragRowId={batchDragRowId}
-          setBatchDragRowId={setBatchDragRowId}
-          previewPath={preview?.path}
-          setStatusHint={setStatusHint}
-          handleBatchDropFiles={handleBatchDropFiles}
-          handleBatchPickOutputFolder={handleBatchPickOutputFolder}
-          handleBatchRevealSharedOutputFolder={handleBatchRevealSharedOutputFolder}
-          handleBatchClearOutputDirectory={handleBatchClearOutputDirectory}
-          handleBatchPickFiles={handleBatchPickFiles}
-          handleBatchPickFolder={handleBatchPickFolder}
-          handleBatchAddCurrentPreview={handleBatchAddCurrentPreview}
-          handleBatchAddDownloadsDone={() => {
-            void handleBatchAddDownloadsDone()
-          }}
-          handleBatchStart={handleBatchStart}
-          handleBatchCancel={handleBatchCancel}
-          handleBatchRetryFailed={handleBatchRetryFailed}
-          handleBatchRetryFailedAndStart={handleBatchRetryFailedAndStart}
-          handleBatchClearCompleted={handleBatchClearCompleted}
-          handleBatchCopyInputPaths={handleBatchCopyInputPaths}
-          handleBatchCopyOutputPaths={handleBatchCopyOutputPaths}
-          handleBatchSaveReport={handleBatchSaveReport}
-          handleBatchRemoveWaiting={handleBatchRemoveWaiting}
-          handleBatchOpenOutput={handleBatchOpenOutput}
-          handleBatchOpenInput={handleBatchOpenInput}
-          handleBatchCopyRowPath={handleBatchCopyRowPath}
-        />
-      ) : null}
-
-      {workspaceTab === 'editor' ? (
-        <main
-          id="workspace-panel-editor"
-          role="tabpanel"
-          aria-labelledby="workspace-tab-editor"
-          aria-busy={
-            exportBusy || snapshotBusy || probePending || exportCancelBusy || batchExportBusy
-          }
-          className={`app-main app-workbench${panelOpen('ffmpegSettingsRailOpen') ? '' : ' app-workbench-ffmpeg-collapsed'}`}
-        >
-          <EditorPreviewSection
-            editorPreviewRegionBusy={editorPreviewRegionBusy}
-            preview={preview}
-            previewPlaybackUrl={previewPlaybackUrl}
-            previewStackRef={previewStackRef}
-            videoRef={videoRef}
-            probeInfo={probeInfo}
-            probePending={probePending}
-            exportBusy={exportBusy}
-            snapshotBusy={snapshotBusy}
-            ffmpegSettingsRailOpen={panelOpen('ffmpegSettingsRailOpen')}
-            onShowFfmpegSettingsRail={() => {
-              persistMainWindowUiPanelToggle('ffmpegSettingsRailOpen', true)
-            }}
-            handlePreviewDrop={handlePreviewDrop}
-            handlePreviewVideoLoaded={handlePreviewVideoLoaded}
-            handlePreviewVideoError={handlePreviewVideoError}
-            onTrimRangeSnapshot={onTrimRangeSnapshot}
-            jumpToTrimExport={jumpToTrimExport}
-            handleExport={handleExport}
-            handleSnapshot={handleSnapshot}
-          />
-          {panelOpen('ffmpegSettingsRailOpen') ? (
-            <EditorFfmpegSettingsRail
-              panelOpen={panelOpen}
-              persistMainWindowUiPanelToggle={persistMainWindowUiPanelToggle}
-              onCollapseRail={() => {
-                persistMainWindowUiPanelToggle('ffmpegSettingsRailOpen', false)
-              }}
-              setStatusHint={setStatusHint}
-              editorFfmpegDetailBusy={editorFfmpegDetailBusy}
-              exportBusy={exportBusy}
-              exportCancelBusy={exportCancelBusy}
-              snapshotBusy={snapshotBusy}
-              probePending={probePending}
-              hwEncoderProbe={hwEncoderProbe}
-              exportEncodePreset={exportEncodePreset}
-              setExportEncodePreset={setExportEncodePreset}
-              exportVideoCodec={exportVideoCodec}
-              setExportVideoCodec={setExportVideoCodec}
-              exportContainer={exportContainer}
-              setExportContainer={setExportContainer}
-              exportCrf={exportCrf}
-              setExportCrf={setExportCrf}
-              exportVideoBitrate={exportVideoBitrate}
-              setExportVideoBitrate={setExportVideoBitrate}
-              exportAudioMode={exportAudioMode}
-              setExportAudioMode={setExportAudioMode}
-              exportAudioBitrate={exportAudioBitrate}
-              setExportAudioBitrate={setExportAudioBitrate}
-              exportFps={exportFps}
-              setExportFps={setExportFps}
-              exportVideoTransform={exportVideoTransform}
-              setExportVideoTransform={setExportVideoTransform}
-              exportCropPreset={exportCropPreset}
-              setExportCropPreset={setExportCropPreset}
-              exportScalePreset={exportScalePreset}
-              setExportScalePreset={setExportScalePreset}
-              exportTwoPass={exportTwoPass}
-              setExportTwoPass={setExportTwoPass}
-              exportEconomyMode={exportEconomyMode}
-              setExportEconomyMode={setExportEconomyMode}
-              exportHwDecode={exportHwDecode}
-              setExportHwDecode={setExportHwDecode}
-              exportExtraArgsLine={exportExtraArgsLine}
-              setExportExtraArgsLine={setExportExtraArgsLine}
-              exportAudioGainDb={exportAudioGainDb}
-              setExportAudioGainDb={setExportAudioGainDb}
-              exportStripMetadata={exportStripMetadata}
-              setExportStripMetadata={setExportStripMetadata}
-              exportStripChapters={exportStripChapters}
-              setExportStripChapters={setExportStripChapters}
-              exportSubtitleMode={exportSubtitleMode}
-              setExportSubtitleMode={setExportSubtitleMode}
-              exportVideoDeinterlace={exportVideoDeinterlace}
-              setExportVideoDeinterlace={setExportVideoDeinterlace}
-              exportVideoDenoise={exportVideoDenoise}
-              setExportVideoDenoise={setExportVideoDenoise}
-              exportVideoDeband={exportVideoDeband}
-              setExportVideoDeband={setExportVideoDeband}
-              exportVideoHisteq={exportVideoHisteq}
-              setExportVideoHisteq={setExportVideoHisteq}
-              exportVideoLut3d={exportVideoLut3d}
-              setExportVideoLut3d={setExportVideoLut3d}
-              exportVideoSharpen={exportVideoSharpen}
-              setExportVideoSharpen={setExportVideoSharpen}
-              exportVideoEqPreset={exportVideoEqPreset}
-              setExportVideoEqPreset={setExportVideoEqPreset}
-              exportVideoHue={exportVideoHue}
-              setExportVideoHue={setExportVideoHue}
-              exportVideoGrain={exportVideoGrain}
-              setExportVideoGrain={setExportVideoGrain}
-              exportVideoVignette={exportVideoVignette}
-              setExportVideoVignette={setExportVideoVignette}
-              exportVideoBlur={exportVideoBlur}
-              setExportVideoBlur={setExportVideoBlur}
-              exportAudioNormalize={exportAudioNormalize}
-              setExportAudioNormalize={setExportAudioNormalize}
-              exportUserPresets={exportUserPresets}
-              selectedUserPresetId={selectedUserPresetId}
-              setSelectedUserPresetId={setSelectedUserPresetId}
-              selectedExportUserPreset={selectedExportUserPreset}
-              lastExportPath={lastExportPath}
-              lastSnapshotPath={lastSnapshotPath}
-              snapshotFormat={snapshotFormat}
-              setSnapshotFormat={setSnapshotFormat}
-              ffmpegExportSelectOptions={ffmpegExportSelectOptions}
-              exportExtraArgsParsed={exportExtraArgsParsed}
-              hydrateExportFieldsFromSettings={hydrateExportFieldsFromSettings}
-              bumpManualExportEdit={bumpManualExportEdit}
-              handleSaveExportUserPreset={handleSaveExportUserPreset}
-              handleDeleteExportUserPreset={handleDeleteExportUserPreset}
-              handleRenameExportUserPreset={handleRenameExportUserPreset}
-              handleOverwriteExportUserPreset={handleOverwriteExportUserPreset}
-              exportPreview={exportPreview}
-              exportPreviewCommand={exportPreviewCommand}
-              exportPreviewHint={exportPreviewHint}
-              handleCopyExportPreview={handleCopyExportPreview}
-              handleOpenLastExport={handleOpenLastExport}
-              handleCopyLastExportPath={handleCopyLastExportPath}
-              handleOpenLastSnapshot={handleOpenLastSnapshot}
-              handleCopyLastSnapshotPath={handleCopyLastSnapshotPath}
-              processingHistory={processingHistory}
-              setProcessingHistory={setProcessingHistory}
-              processingHistoryBusy={processingHistoryBusy}
-              processingHistoryFilter={processingHistoryFilter}
-              processingHistoryWeeklySummary={processingHistoryWeeklySummary}
-              setProcessingHistoryWeeklySummary={setProcessingHistoryWeeklySummary}
-              applyProcessingHistoryFilter={applyProcessingHistoryFilter}
-              refreshProcessingHistory={refreshProcessingHistory}
-              exportVisibleProcessingHistory={exportVisibleProcessingHistory}
-              reportBatchPathsAdded={reportBatchPathsAdded}
-            />
-          ) : null}
-        </main>
-      ) : workspaceTab === 'terminal' ? (
-        <TerminalWorkspacePanel
-          terminalBusy={terminalBusy}
-          terminalLine={terminalLine}
-          setTerminalLine={setTerminalLine}
-          terminalCommandInputId={terminalCommandInputId}
-          terminalInlineSuggestions={terminalInlineSuggestions}
-          terminalSuggestFocus={terminalSuggestFocus}
-          setTerminalSuggestFocus={setTerminalSuggestFocus}
-          terminalSuggestActiveIndex={terminalSuggestActiveIndex}
-          setTerminalSuggestIndex={setTerminalSuggestIndex}
-          terminalSuggestBlurTimeoutRef={terminalSuggestBlurTimeoutRef}
-          currentSourcePath={currentSourcePath}
-          runTerminalLine={runTerminalLine}
-          applyTerminalSuggest={applyTerminalSuggest}
-          appendTerminalToken={appendTerminalToken}
-          terminalHistory={terminalHistory}
-          copyTerminalOutputLine={copyTerminalOutputLine}
-          terminalHintsSearchFieldId={terminalHintsSearchFieldId}
-          terminalHintFilter={terminalHintFilter}
-          setTerminalHintFilter={setTerminalHintFilter}
-          visibleTerminalHints={visibleTerminalHints}
-          onOpenTerminalKnowledge={() => {
-            setKnowledgeInitialSlug(KNOWLEDGE_SLUG_FFMPEG_TERMINAL_HINTS)
-            setKnowledgeOpen(true)
-          }}
-        />
-      ) : (
-        <main
-          id="workspace-panel-downloads"
-          role="tabpanel"
-          aria-labelledby="workspace-tab-downloads"
-          aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
-          className="app-main app-downloads-workspace"
-        >
-          <DownloadsWorkspaceMain
-            downloadsOptionsBusy={downloadsOptionsBusy}
-            downloadsHistoryBusy={downloadsHistoryBusy}
-            downloadsUrl={downloadsUrl}
-            setDownloadsUrl={setDownloadsUrl}
-            downloadsMainUrlFieldId={downloadsMainUrlFieldId}
-            onAddToQueue={() => {
-              void handleAddDownloadsFromMain()
-            }}
-            downloadsNarrowLayout={downloadsNarrowLayout}
-            onScrollToSettings={() => {
-              downloadsSettingsRailRef.current?.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-              })
-            }}
-            downloadsStats={downloadsStats}
-            downloadsStatusFilter={downloadsStatusFilter}
-            setDownloadsStatusFilter={setDownloadsStatusFilter}
-            downloadsStatusFilterChips={downloadsStatusFilterChips}
-            downloadsRows={downloadsRows}
-            visibleDownloadsRows={visibleDownloadsRows}
-            setStatusHint={setStatusHint}
-            onBatchAddDownloadsDone={(rowIds) => {
-              void handleBatchAddDownloadsDone(rowIds)
-            }}
-            onSelectDownloadsTab={() => {
-              setWorkspaceTab('downloads')
-            }}
-            downloadsEmbeddedHistoryOpen={downloadsEmbeddedHistoryOpen}
-            persistDownloadsEmbeddedHistoryOpen={persistDownloadsEmbeddedHistoryOpen}
-            visibleDownloadsHistory={visibleDownloadsHistory}
-            downloadsHistoryCount={downloadsHistory.length}
-            downloadsHistoryOutcomeFilter={downloadsHistoryOutcomeFilter}
-            setDownloadsHistoryOutcomeFilter={setDownloadsHistoryOutcomeFilter}
-            downloadsHistoryWeeklySummary={
-              downloadsHistoryWeeklySummary ?? {
-                since: 0,
-                until: 0,
-                total: 0,
-                success: 0,
-                error: 0,
-                cancelled: 0
-              }
-            }
-            refreshDownloadsHistory={refreshDownloadsHistory}
-            setDownloadsHistory={setDownloadsHistory}
-            exportVisibleDownloadsHistory={exportVisibleDownloadsHistory}
-            downloadsEmbeddedLogOpen={downloadsEmbeddedLogOpen}
-            persistDownloadsEmbeddedLogOpen={persistDownloadsEmbeddedLogOpen}
-            downloadsLogTargetRowId={downloadsLogTargetRowId}
-            downloadsLogLines={downloadsLogLines}
-            setDownloadsLogLines={setDownloadsLogLines}
-            setDownloadsLogTargetRowId={setDownloadsLogTargetRowId}
-          />
-          <DownloadsSettingsRail
-            ref={downloadsSettingsRailRef}
-            downloadsOptionsBusy={downloadsOptionsBusy}
-            downloadsHistoryBusy={downloadsHistoryBusy}
-            downloadsOptions={downloadsOptions}
-            setDownloadsOptions={setDownloadsOptions}
-            downloadsRailPanels={downloadsRailPanels}
-            onRailSectionToggle={handleDownloadsRailSectionToggle}
-            applyDownloadsOptionsPatch={applyDownloadsOptionsPatch}
-            downloadsOutputDirectory={downloadsOutputDirectory}
-            setDownloadsOutputDirectory={setDownloadsOutputDirectory}
-            refreshDownloadsOutputDirectory={refreshDownloadsOutputDirectory}
-            setStatusHint={setStatusHint}
-            downloadsExpertHintFilter={downloadsExpertHintFilter}
-            setDownloadsExpertHintFilter={setDownloadsExpertHintFilter}
-            ytdlpCommandHintsFilteredByCategory={ytdlpCommandHintsFilteredByCategory}
-            appendDownloadsExtraArgsToken={appendDownloadsExtraArgsToken}
-            refreshDownloadsOptions={refreshDownloadsOptions}
-          />
-        </main>
-      )}
-
-      <footer
-        className="app-statusbar"
-        aria-label={uiText('appStatusbarAria')}
-        aria-busy={appChromeBusy}
-      >
-        <div
-          role="group"
-          aria-label={uiText('statusbarEnginesClusterAria')}
-          className="app-statusbar-cluster"
-          aria-busy={engineDownloadBusy || engineSummary === 'checking'}
-        >
-          <span>{engineSummaryText(engineSummary)}</span>
-          {engineVersionsLine ? (
-            <>
-              <span className="app-statusbar-sep" aria-hidden />
-              <span className="app-statusbar-engines" title={engineVersionsLine}>
-                {engineVersionsLine}
-              </span>
-            </>
-          ) : null}
-        </div>
-        {workspaceTab === 'editor' ? (
-          <div
-            role="group"
-            aria-label={uiText('statusbarExportCodecClusterAria')}
-            className="app-statusbar-cluster"
-            aria-busy={
-              exportBusy || snapshotBusy || exportCancelBusy || probePending || batchExportBusy
-            }
-          >
-            <span className="app-statusbar-sep" aria-hidden />
-            <span className="app-statusbar-codec" title={exportCodecStatusbarLabel}>
-              {exportCodecStatusbarLabel}
-            </span>
-          </div>
-        ) : null}
-        {statusHint ? (
-          <>
-            <span className="app-statusbar-sep" aria-hidden />
-            <span className="app-statusbar-extra" role="status" aria-live="polite">
-              {statusHint}
-            </span>
-          </>
-        ) : null}
-        <span className="app-statusbar-sep" aria-hidden />
-        <Versions statusBusy={engineDownloadBusy || engineSummary === 'checking'} />
-      </footer>
-
-      <AboutDialog
-        open={aboutOpen}
-        aboutInfo={aboutInfo}
-        onClose={() => {
-          setAboutOpen(false)
-        }}
-        onDiagnosticStatus={(message) => {
-          setStatusHint(message)
-        }}
-        onOpenKnowledgeArticle={(slug) => {
-          setAboutOpen(false)
-          setKnowledgeInitialSlug(slug)
-          setKnowledgeOpen(true)
-        }}
-      />
-
-      <KnowledgeDialog
-        open={knowledgeOpen}
-        initialSlug={knowledgeInitialSlug}
-        localeVersion={uiLocaleRenderTick}
-        onClose={() => {
-          setKnowledgeOpen(false)
-          setKnowledgeInitialSlug(null)
-        }}
-        onStatus={(message) => {
-          setStatusHint(message)
-        }}
-      />
-
-      {exportPresetNameDialog ? (
-        <div
-          className="app-modal-backdrop"
-          role="presentation"
-          onMouseDown={(e) => {
-            if (exportPresetSaving) {
-              return
-            }
-            if (e.target === e.currentTarget) {
-              setExportPresetNameDialog(null)
-            }
-          }}
-        >
-          <form
-            className="app-modal app-modal-narrow"
-            role="dialog"
-            aria-modal="true"
-            aria-busy={exportPresetSaving}
-            aria-labelledby="export-preset-name-title"
-            aria-describedby="export-preset-name-hint"
-            onMouseDown={(e) => {
-              e.stopPropagation()
-            }}
-            onSubmit={(e) => {
-              e.preventDefault()
-              void handleSubmitExportPresetName()
-            }}
-          >
-            <h2 id="export-preset-name-title" className="app-modal-title">
-              {exportPresetNameDialog.mode === 'create'
-                ? uiText('editorExportPresetDialogTitleCreate')
-                : uiText('editorExportPresetDialogTitleRename')}
-            </h2>
-            <p id="export-preset-name-hint" className="app-modal-hint">
-              {uiText('editorExportPresetDialogHint')}
-            </p>
-            <div
-              role="group"
-              aria-label={uiText('exportPresetNameFieldGroupAria')}
-              aria-busy={exportPresetSaving}
-            >
-              <label className="app-engine-path-row">
-                <span className="app-engine-path-label">
-                  {uiText('editorExportPresetNameLabel')}
-                </span>
-                <input
-                  className="app-engine-path-input"
-                  type="text"
-                  maxLength={64}
-                  autoFocus
-                  disabled={exportPresetSaving}
-                  value={exportPresetNameDialog.value}
-                  aria-invalid={exportPresetNameDialog.error !== null}
-                  aria-describedby={
-                    exportPresetNameDialog.error
-                      ? 'export-preset-name-hint export-preset-name-error'
-                      : 'export-preset-name-hint'
-                  }
-                  onChange={(e) => {
-                    setExportPresetNameDialog((prev) =>
-                      prev === null ? null : { ...prev, value: e.target.value, error: null }
-                    )
-                  }}
-                />
-              </label>
-            </div>
-            {exportPresetNameDialog.error ? (
-              <p
-                id="export-preset-name-error"
-                className="app-modal-hint app-modal-error"
-                role="alert"
-              >
-                {exportPresetNameDialog.error}
-              </p>
-            ) : null}
-            <div
-              className="app-modal-footer"
-              role="toolbar"
-              aria-orientation="horizontal"
-              aria-label={uiText('exportPresetDialogFooterToolbarAria')}
-              aria-busy={exportPresetSaving}
-            >
-              <button
-                type="button"
-                className="app-btn"
-                disabled={exportPresetSaving}
-                onClick={() => {
-                  setExportPresetNameDialog(null)
-                }}
-              >
-                {uiText('appDialogCancel')}
-              </button>
-              <button
-                type="submit"
-                className="app-btn app-btn-primary"
-                disabled={exportPresetSaving}
-              >
-                {uiText('appDialogSave')}
-              </button>
-            </div>
-          </form>
-        </div>
-      ) : null}
-
-      {enginePathsOpen ? (
-        <div
-          className="app-modal-backdrop"
-          role="presentation"
-          onMouseDown={(e) => {
-            if (enginePathsSaving) {
-              return
-            }
-            if (e.target === e.currentTarget) {
-              setEnginePathsOpen(false)
-            }
-          }}
-        >
-          <div
-            className="app-modal"
-            role="dialog"
-            aria-modal="true"
-            aria-busy={enginePathsSaving}
-            aria-labelledby="engine-paths-title"
-            aria-describedby="engine-paths-hint"
-            onMouseDown={(e) => {
-              e.stopPropagation()
-            }}
-          >
-            <h2 id="engine-paths-title" className="app-modal-title">
-              {uiText('editorEnginePathsDialogTitle')}
-            </h2>
-            <p id="engine-paths-hint" className="app-modal-hint">
-              {uiText('editorEnginePathsDialogHint')}
-            </p>
-            <div
-              className="app-engine-path-rows"
-              role="group"
-              aria-label={uiText('enginePathsDialogRowsGroupAria')}
-              aria-busy={enginePathsSaving}
-            >
-              {ENGINE_IDS.map((id) => (
-                <div key={id} className="app-engine-path-row">
-                  <label className="app-engine-path-label" htmlFor={`engine-path-${id}`}>
-                    {engineLabel(id)}
-                  </label>
-                  <input
-                    id={`engine-path-${id}`}
-                    className="app-engine-path-input"
-                    type="text"
-                    spellCheck={false}
-                    disabled={enginePathsSaving}
-                    placeholder={uiText('editorEnginePathPlaceholderAuto')}
-                    value={enginePathsDraft[id]}
-                    onChange={(e) => {
-                      setEnginePathsDraft((prev) => ({ ...prev, [id]: e.target.value }))
-                    }}
-                  />
-                  <div
-                    className="app-engine-path-actions"
-                    role="toolbar"
-                    aria-orientation="horizontal"
-                    aria-label={uiTextVars('editorEnginePathRowToolbarAriaTemplate', {
-                      engine: engineLabel(id)
-                    })}
-                    aria-busy={enginePathsSaving}
-                  >
-                    <button
-                      type="button"
-                      className="app-btn app-btn-compact"
-                      disabled={enginePathsSaving}
-                      onClick={() => {
-                        void handlePickEngine(id)
-                      }}
-                    >
-                      {uiText('editorEnginePathBrowse')}
-                    </button>
-                    <button
-                      type="button"
-                      className="app-btn app-btn-compact"
-                      disabled={enginePathsSaving}
-                      onClick={() => {
-                        setEnginePathsDraft((prev) => ({ ...prev, [id]: '' }))
-                      }}
-                    >
-                      {uiText('editorEnginePathClear')}
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div
-              className="app-modal-footer"
-              role="toolbar"
-              aria-orientation="horizontal"
-              aria-label={uiText('enginePathsDialogFooterToolbarAria')}
-              aria-busy={enginePathsSaving}
-            >
-              <button
-                type="button"
-                className="app-btn app-btn-danger"
-                disabled={engineDownloadBusy || enginePathsSaving}
-                title={uiText('editorEnginePathsRemoveDownloadedTooltip')}
-                onClick={() => {
-                  void handleClearDownloadedEngines()
-                }}
-              >
-                {uiText('editorEnginePathsRemoveDownloaded')}
-              </button>
-              <button
-                type="button"
-                className="app-btn"
-                disabled={enginePathsSaving}
-                onClick={() => {
-                  setEnginePathsOpen(false)
-                }}
-              >
-                {uiText('appDialogCancel')}
-              </button>
-              <button
-                type="button"
-                className="app-btn app-btn-primary"
-                disabled={enginePathsSaving}
-                onClick={() => {
-                  void handleSaveEnginePaths()
-                }}
-              >
-                {uiText('appDialogSave')}
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
-    </div>
-  )
+  return <AppShellLayout workspaceMain={appWorkspaceMainProps} {...appShellLayoutProps} />
 }
 
 export default App

@@ -58,11 +58,13 @@ const EXPORT_VIDEO_BITRATES = ['1000k', '2500k', '5000k', '8000k', '12000k', '20
 const EXPORT_AUDIO_BITRATES = ['96k', '128k', '160k', '192k', '256k', '320k']
 const EXPORT_FPS_OPTIONS = [24, 25, 30, 50, 60]
 
-type ExportPresetNameDialog = {
+export type ExportPresetNameDialogState = {
   mode: 'create' | 'rename'
   value: string
   error: string | null
 } | null
+
+type ExportPresetNameDialog = ExportPresetNameDialogState
 
 export type UseEditorExportSettingsDeps = {
   setStatusHint: (hint: string | null) => void
