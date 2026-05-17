@@ -130,6 +130,7 @@ export function EditorPreviewSection(props: EditorPreviewSectionProps): JSX.Elem
               className="app-preview-caption"
               title={preview.path}
               aria-label={uiText('editorPreviewCaptionAria')}
+              aria-describedby="editor-preview-transport-hint editor-video-timeline-hint"
               aria-busy={editorPreviewRegionBusy}
             >
               {preview.name}
@@ -158,6 +159,7 @@ export function EditorPreviewSection(props: EditorPreviewSectionProps): JSX.Elem
             onShowFfmpegSettingsRail()
           }}
           title={uiText('editorFfmpegRailShowTitle')}
+          aria-describedby="editor-ffmpeg-settings-hint"
         >
           <IconChevronLeft title="" size={18} />
           <span className="app-ffmpeg-rail-restore-text">

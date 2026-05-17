@@ -51,6 +51,7 @@ export function EditorFfmpegSettingsRailAudioSection(props: EditorFfmpegSettings
     <details
       className="app-settings-section"
       aria-label={uiText('editorFfmpegSectionAudio')}
+      aria-describedby="editor-ffmpeg-settings-hint"
       aria-busy={editorFfmpegDetailBusy}
       open={panelOpen('ffmpegAudio')}
       onToggle={(e) => {
@@ -63,11 +64,14 @@ export function EditorFfmpegSettingsRailAudioSection(props: EditorFfmpegSettings
       <p id="ffmpegAudioSectionHint" className="app-settings-section-hint">
         {uiText('editorFfmpegSectionAudioHint')}
       </p>
-      <div className="app-settings-grid" aria-describedby="ffmpegAudioSectionHint">
+      <div
+        className="app-settings-grid"
+        aria-describedby="ffmpegAudioSectionHint editor-ffmpeg-settings-hint"
+      >
         <label
           className="app-field"
           title={uiText('editorTooltipAudioMode')}
-          aria-describedby="ffmpegAudioSectionHint ffmpegAudioModeSelectHint"
+          aria-describedby="ffmpegAudioSectionHint ffmpegAudioModeSelectHint editor-ffmpeg-settings-hint"
         >
           <span>{uiText('editorFieldAudioMode')}</span>
           <select
@@ -255,13 +259,14 @@ export function EditorFfmpegSettingsRailAudioSection(props: EditorFfmpegSettings
           role="toolbar"
           aria-orientation="horizontal"
           aria-label={uiText('editorSnapshotLastActionsToolbarAria')}
+          aria-describedby="ffmpegAudioSectionHint editor-ffmpeg-settings-hint"
           aria-busy={exportBusy || snapshotBusy || probePending}
         >
           <button
             type="button"
             className="app-btn app-btn-compact"
             disabled={exportBusy || snapshotBusy}
-            aria-describedby="ffmpegAudioSectionHint"
+            aria-describedby="ffmpegAudioSectionHint editor-ffmpeg-settings-hint"
             title={uiText('editorTooltipSnapshotLastFile')}
             onClick={() => {
               void handleOpenLastSnapshot('file')
@@ -273,7 +278,7 @@ export function EditorFfmpegSettingsRailAudioSection(props: EditorFfmpegSettings
             type="button"
             className="app-btn app-btn-compact"
             disabled={exportBusy || snapshotBusy}
-            aria-describedby="ffmpegAudioSectionHint"
+            aria-describedby="ffmpegAudioSectionHint editor-ffmpeg-settings-hint"
             title={uiText('editorTooltipSnapshotLastFolder')}
             onClick={() => {
               void handleOpenLastSnapshot('folder')
@@ -285,7 +290,7 @@ export function EditorFfmpegSettingsRailAudioSection(props: EditorFfmpegSettings
             type="button"
             className="app-btn app-btn-compact"
             disabled={exportBusy || snapshotBusy}
-            aria-describedby="ffmpegAudioSectionHint"
+            aria-describedby="ffmpegAudioSectionHint editor-ffmpeg-settings-hint"
             title={uiText('editorTooltipSnapshotCopyPath')}
             onClick={() => {
               void handleCopyLastSnapshotPath()

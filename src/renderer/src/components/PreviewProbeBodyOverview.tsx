@@ -23,6 +23,7 @@ export function PreviewProbeBodyOverview({ ctx }: { ctx: PreviewProbeBodyCtx }):
         className="app-preview-probe-summary-line"
         role="group"
         aria-label={uiText('probeSummaryReadoutGroupAria')}
+        aria-describedby="probePanelOverviewHint"
         aria-busy={probeRefreshing}
       >
         <span title={formatTooltip}>
@@ -51,6 +52,7 @@ export function PreviewProbeBodyOverview({ ctx }: { ctx: PreviewProbeBodyCtx }):
       <nav
         className="app-doc-inline-links app-preview-probe-doc-links"
         aria-label={uiText('probeFfprobeDocNavAria')}
+        aria-describedby="probePanelOverviewHint"
         aria-busy={probeRefreshing}
       >
         <a href={FFPROBE_DOC_ALL} target="_blank" rel="noreferrer">

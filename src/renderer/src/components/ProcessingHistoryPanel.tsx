@@ -100,6 +100,7 @@ export function ProcessingHistoryPanel({
     <details
       className="app-settings-section app-processing-history-panel"
       aria-label={uiText('processingHistorySectionAria')}
+      aria-describedby="processingHistorySectionHint"
       aria-busy={busy}
       open={open}
       onToggle={(event) => {
@@ -118,6 +119,7 @@ export function ProcessingHistoryPanel({
           className="app-processing-history-summary"
           role="region"
           aria-label={uiText('processingHistoryWeeklyAria')}
+          aria-describedby="processingHistorySectionHint"
           aria-busy={busy}
         >
           <span>
@@ -209,6 +211,7 @@ export function ProcessingHistoryPanel({
         role="toolbar"
         aria-orientation="horizontal"
         aria-label={uiText('processingHistoryActionsToolbarAria')}
+        aria-describedby="processingHistorySectionHint"
         aria-busy={busy}
       >
         <button
@@ -240,6 +243,7 @@ export function ProcessingHistoryPanel({
         className="app-processing-history-list"
         role="region"
         aria-label={uiText('processingHistoryListRegionAria')}
+        aria-describedby="processingHistorySectionHint"
         aria-busy={busy}
       >
         {entries.length === 0 ? (
@@ -257,6 +261,7 @@ export function ProcessingHistoryPanel({
                   index: idx + 1,
                   label
                 })}
+                aria-describedby="processingHistorySectionHint"
                 aria-busy={busy}
               >
                 <div className="app-downloads-history-head">
@@ -298,6 +303,7 @@ export function ProcessingHistoryPanel({
                   aria-label={uiTextVars('processingHistoryCardSourceToolbarAriaTemplate', {
                     id: entry.id.length > 10 ? `${entry.id.slice(0, 8)}…` : entry.id
                   })}
+                  aria-describedby="processingHistorySectionHint"
                   aria-busy={busy}
                 >
                   <button
@@ -327,6 +333,7 @@ export function ProcessingHistoryPanel({
                     aria-label={uiTextVars('processingHistoryCardOutputToolbarAriaTemplate', {
                       id: entry.id.length > 10 ? `${entry.id.slice(0, 8)}…` : entry.id
                     })}
+                    aria-describedby="processingHistorySectionHint"
                     aria-busy={busy}
                   >
                     <button

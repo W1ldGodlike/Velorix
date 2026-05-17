@@ -21,6 +21,7 @@ export function PreviewProbeBodyExportSummarySection({
     <details
       className="app-probe-details"
       aria-label={uiText('probeSectionExportSummary')}
+      aria-describedby="probeExportSummaryHint probePanelOverviewHint"
       aria-busy={probeRefreshing}
       open={sectionOpen('exportSummary')}
       onToggle={(e) => {
@@ -30,7 +31,11 @@ export function PreviewProbeBodyExportSummarySection({
       <summary className="app-probe-summary" aria-controls={probeExportSummaryRegionId}>
         {uiText('probeSectionExportSummary')}
       </summary>
-      <div id={probeExportSummaryRegionId} aria-busy={probeRefreshing}>
+      <div
+        id={probeExportSummaryRegionId}
+        aria-describedby="probeExportSummaryHint probePanelOverviewHint"
+        aria-busy={probeRefreshing}
+      >
         <p id="probeExportSummaryHint" className="app-probe-toolbar-hint">
           {uiText('probeSectionExportSummaryHint')}
         </p>
@@ -39,6 +44,7 @@ export function PreviewProbeBodyExportSummarySection({
           role="toolbar"
           aria-orientation="horizontal"
           aria-label={uiText('probeExportSummaryToolbarAria')}
+          aria-describedby="probeExportSummaryHint probePanelOverviewHint"
           aria-busy={probeRefreshing}
         >
           <button

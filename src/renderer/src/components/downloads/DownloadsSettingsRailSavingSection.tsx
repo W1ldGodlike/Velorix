@@ -56,6 +56,7 @@ export function DownloadsSettingsRailSavingSection(props: DownloadsSettingsRailP
             role="toolbar"
             aria-orientation="horizontal"
             aria-label={uiText('downloadsOutputDirActionsToolbarAria')}
+            aria-describedby="downloads-page-hint"
             aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
           >
             <button

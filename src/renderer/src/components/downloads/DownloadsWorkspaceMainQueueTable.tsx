@@ -178,6 +178,7 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
                       aria-label={uiTextVars('downloadsQueueRowActionsToolbarAriaTemplate', {
                         id: String(row.id)
                       })}
+                      aria-describedby="downloads-page-hint"
                       aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
                     >
                       <button

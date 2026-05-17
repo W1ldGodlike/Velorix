@@ -25,6 +25,7 @@ export function EditorFfmpegSettingsRailPresetsSection(props: EditorFfmpegSettin
     <details
       className="app-settings-section"
       aria-label={uiText('editorFfmpegSectionPresets')}
+      aria-describedby="editor-ffmpeg-settings-hint"
       aria-busy={editorFfmpegDetailBusy}
       open={panelOpen('ffmpegPresets')}
       onToggle={(e) => {
@@ -37,7 +38,10 @@ export function EditorFfmpegSettingsRailPresetsSection(props: EditorFfmpegSettin
       <p id="ffmpegPresetsSectionHint" className="app-settings-section-hint">
         {uiText('editorFfmpegSectionPresetsHint')}
       </p>
-      <div className="app-settings-stack" aria-describedby="ffmpegPresetsSectionHint">
+      <div
+        className="app-settings-stack"
+        aria-describedby="ffmpegPresetsSectionHint editor-ffmpeg-settings-hint"
+      >
         <label
           className="app-field"
           title={
@@ -86,13 +90,14 @@ export function EditorFfmpegSettingsRailPresetsSection(props: EditorFfmpegSettin
           role="toolbar"
           aria-orientation="horizontal"
           aria-label={uiText('editorExportPresetsActionsToolbarAria')}
+          aria-describedby="ffmpegPresetsSectionHint editor-ffmpeg-settings-hint"
           aria-busy={exportBusy || snapshotBusy || probePending}
         >
           <button
             type="button"
             className="app-btn app-btn-compact"
             disabled={exportBusy || snapshotBusy}
-            aria-describedby="ffmpegPresetsSectionHint"
+            aria-describedby="ffmpegPresetsSectionHint editor-ffmpeg-settings-hint"
             title={uiText('editorTooltipPresetAdd')}
             onClick={() => {
               handleSaveExportUserPreset()
@@ -109,7 +114,7 @@ export function EditorFfmpegSettingsRailPresetsSection(props: EditorFfmpegSettin
               !selectedUserPresetId ||
               (selectedUserPresetId != null && isBuiltinExportUserPresetId(selectedUserPresetId))
             }
-            aria-describedby="ffmpegPresetsSectionHint"
+            aria-describedby="ffmpegPresetsSectionHint editor-ffmpeg-settings-hint"
             title={uiText('editorTooltipPresetRename')}
             onClick={() => {
               handleRenameExportUserPreset()
@@ -126,7 +131,7 @@ export function EditorFfmpegSettingsRailPresetsSection(props: EditorFfmpegSettin
               !selectedUserPresetId ||
               (selectedUserPresetId != null && isBuiltinExportUserPresetId(selectedUserPresetId))
             }
-            aria-describedby="ffmpegPresetsSectionHint"
+            aria-describedby="ffmpegPresetsSectionHint editor-ffmpeg-settings-hint"
             title={uiText('editorTooltipPresetOverwrite')}
             onClick={() => {
               handleOverwriteExportUserPreset()
@@ -143,7 +148,7 @@ export function EditorFfmpegSettingsRailPresetsSection(props: EditorFfmpegSettin
               !selectedUserPresetId ||
               (selectedUserPresetId != null && isBuiltinExportUserPresetId(selectedUserPresetId))
             }
-            aria-describedby="ffmpegPresetsSectionHint"
+            aria-describedby="ffmpegPresetsSectionHint editor-ffmpeg-settings-hint"
             title={uiText('editorTooltipPresetDelete')}
             onClick={() => {
               handleDeleteExportUserPreset()

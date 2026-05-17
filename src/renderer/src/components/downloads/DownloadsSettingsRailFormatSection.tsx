@@ -22,6 +22,7 @@ export function DownloadsSettingsRailFormatSection(props: DownloadsSettingsRailP
     <details
       className="app-downloads-rail-section"
       aria-label={uiText('downloadsRailFormatSummary')}
+      aria-describedby="downloads-page-hint downloadsFormatHint"
       aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
       open={downloadsRailPanels.format}
       onToggle={handleDownloadsRailSectionToggle('format')}

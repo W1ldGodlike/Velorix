@@ -39,6 +39,7 @@ export function EditorFfmpegSettingsRailFormatSection(props: EditorFfmpegSetting
     <details
       className="app-settings-section"
       aria-label={uiText('editorFfmpegSectionFrameLayout')}
+      aria-describedby="editor-ffmpeg-settings-hint"
       aria-busy={editorFfmpegDetailBusy}
       open={panelOpen('ffmpegFormat')}
       onToggle={(e) => {
@@ -51,7 +52,10 @@ export function EditorFfmpegSettingsRailFormatSection(props: EditorFfmpegSetting
       <p id="ffmpegFormatSectionHint" className="app-settings-section-hint">
         {uiText('editorFfmpegSectionFrameLayoutHint')}
       </p>
-      <div className="app-settings-grid" aria-describedby="ffmpegFormatSectionHint">
+      <div
+        className="app-settings-grid"
+        aria-describedby="ffmpegFormatSectionHint editor-ffmpeg-settings-hint"
+      >
         <label className="app-field" title={uiText('editorTooltipResolution')}>
           <span>{uiText('editorFieldResolution')}</span>
           <select

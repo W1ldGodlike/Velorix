@@ -38,6 +38,7 @@ describe('packaged-ffprobe-smoke', () => {
     const candidates = listPackagedFfprobeCandidatePaths('C:\\repo')
     const lines = buildSupportZipFfprobeSmokeLines('C:\\repo', (p) => p === candidates[0])
     expect(lines[0]).toContain('smoke:packaged-ffprobe')
+    expect(lines.some((l) => l.includes('FLUXALLOY_SKIP_FFPROBE_SMOKE'))).toBe(true)
     expect(lines.some((l) => l.includes('registry optional'))).toBe(true)
     expect(lines.some((l) => l.includes('format_long_name'))).toBe(true)
     expect(lines.some((l) => l.includes('start_time, start_time_real'))).toBe(true)
@@ -272,6 +273,16 @@ describe('packaged-ffprobe-smoke', () => {
         streams: [{}],
         format: {
           format_name: 'mp4',
+          nb_streams: '1',
+          start_time_real: 'not-a-number'
+        }
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
+        format: {
+          format_name: 'mp4',
           format_long_name: 'QuickTime / MOV',
           nb_streams: '1',
           tags: {
@@ -337,6 +348,12 @@ describe('packaged-ffprobe-smoke', () => {
     expect(
       isPackagedFfprobeProbeJsonParsableByContainerRegistry({
         streams: [{}],
+        format: { format_name: 'mp4', nb_streams: '1', nb_programs: 'not-a-number' }
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
         format: { format_name: 'mp4', nb_streams: '1', size: 'not-a-number' }
       })
     ).toBe(false)
@@ -370,6 +387,12 @@ describe('packaged-ffprobe-smoke', () => {
       isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
         ...base,
         streams: [{ time_base: 'not-a-fraction' }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ codec_time_base: 'not-a-fraction' }]
       })
     ).toBe(false)
     expect(

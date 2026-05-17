@@ -27,6 +27,7 @@ export function PreviewProbeBodyRawJsonSection({
     <details
       className="app-probe-details"
       aria-label={uiText('probeSectionRawJson')}
+      aria-describedby="probeRawJsonHint probePanelOverviewHint"
       aria-busy={probeRefreshing}
       open={sectionOpen('rawJson')}
       onToggle={(e) => {
@@ -36,7 +37,10 @@ export function PreviewProbeBodyRawJsonSection({
       <summary className="app-probe-summary" aria-controls={probeRawJsonRegionId}>
         {uiText('probeSectionRawJson')}
       </summary>
-      <div id={probeRawJsonRegionId}>
+      <div
+        id={probeRawJsonRegionId}
+        aria-describedby="probeRawJsonHint probePanelOverviewHint"
+      >
         <p id="probeRawJsonHint" className="app-probe-toolbar-hint">
           {uiText('probeRawJsonHint')}
         </p>
@@ -45,6 +49,7 @@ export function PreviewProbeBodyRawJsonSection({
           role="toolbar"
           aria-orientation="horizontal"
           aria-label={uiText('probeRawJsonToolbarAria')}
+          aria-describedby="probeRawJsonHint probePanelOverviewHint"
           aria-busy={probeRefreshing}
         >
           <button

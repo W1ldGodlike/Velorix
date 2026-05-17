@@ -18,12 +18,14 @@ export function TerminalWorkspacePanelIntroBand(
       className="app-downloads-band"
       role="region"
       aria-label={uiText('terminalIntroBandAria')}
+      aria-describedby="terminal-intro-hint"
       aria-busy={terminalBusy}
     >
       <div
         className="app-downloads-band-copy"
         role="group"
         aria-label={uiText('downloadsBandHeadingCopyGroupAria')}
+        aria-describedby="terminal-intro-hint"
         aria-busy={terminalBusy}
       >
         <h2 className="app-downloads-title">{uiText('terminalTitle')}</h2>
@@ -38,12 +40,14 @@ export function TerminalWorkspacePanelIntroBand(
         <nav
           className="app-terminal-intro-knowledge"
           aria-label={uiText('terminalIntroKnowledgeNavAria')}
+          aria-describedby="terminal-intro-hint"
           aria-busy={terminalBusy}
         >
           <button
             type="button"
             className="app-knowledge-link"
             title={uiText('terminalKnowledgeDeepLinkTooltip')}
+            aria-describedby="terminal-intro-hint"
             onClick={() => {
               onOpenTerminalKnowledge()
             }}

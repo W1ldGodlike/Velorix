@@ -21,6 +21,7 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
           <div
             role="region"
             aria-label={uiText('batchExportQueueTableZoneAria')}
+            aria-describedby="batch-export-panel-hint batch-export-drop-hint"
             aria-busy={batchExportBusy}
           >
             {batchSnapshot && batchSnapshot.rows.length > 0 ? (
@@ -28,6 +29,7 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                 className="app-batch-export-table-wrap"
                 role="group"
                 aria-label={uiText('batchExportTableWrapGroupAria')}
+                aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                 aria-busy={batchExportBusy}
               >
                 <table className="app-batch-export-table" aria-busy={batchExportBusy}>
@@ -120,6 +122,7 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                             aria-label={uiTextVars('batchExportRowActionsToolbarAriaTemplate', {
                               n: String(rowIndex + 1)
                             })}
+                            aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                             aria-busy={batchExportBusy}
                           >
                             <button

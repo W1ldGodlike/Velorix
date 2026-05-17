@@ -27,6 +27,7 @@ export function EditorFfmpegSettingsRailOutputSection(props: EditorFfmpegSetting
       id="editor-ffmpeg-export-output"
       className="app-settings-section"
       aria-label={uiText('editorFfmpegSectionOutput')}
+      aria-describedby="editor-ffmpeg-settings-hint"
       aria-busy={editorFfmpegDetailBusy}
       open={panelOpen('ffmpegOutput')}
       onToggle={(e) => {
@@ -39,7 +40,10 @@ export function EditorFfmpegSettingsRailOutputSection(props: EditorFfmpegSetting
       <p id="ffmpegOutputSectionHint" className="app-settings-section-hint">
         {uiText('editorFfmpegSectionOutputHint')}
       </p>
-      <div className="app-settings-stack" aria-describedby="ffmpegOutputSectionHint">
+      <div
+        className="app-settings-stack"
+        aria-describedby="ffmpegOutputSectionHint editor-ffmpeg-settings-hint"
+      >
         <label className="app-field app-field-block" title={uiText('editorExportExtraArgsHint')}>
           <span>{uiText('editorExportExtraArgsLabel')}</span>
           <textarea
@@ -67,6 +71,7 @@ export function EditorFfmpegSettingsRailOutputSection(props: EditorFfmpegSetting
         <details
           className="app-export-preview app-export-preview-nested"
           aria-label={uiText('editorExportPreviewDetailsAria')}
+          aria-describedby="ffmpegOutputSectionHint editor-ffmpeg-settings-hint"
           aria-busy={editorFfmpegDetailBusy}
           open={panelOpen('exportCommandPreview')}
           onToggle={(e) => {
@@ -83,6 +88,7 @@ export function EditorFfmpegSettingsRailOutputSection(props: EditorFfmpegSetting
             className="app-export-preview-body"
             role="region"
             aria-label={uiText('editorExportPreviewBodyRegionAria')}
+            aria-describedby="exportCommandPreviewHint ffmpegOutputSectionHint editor-ffmpeg-settings-hint"
             aria-busy={exportBusy || snapshotBusy || probePending}
           >
             <pre
@@ -99,6 +105,7 @@ export function EditorFfmpegSettingsRailOutputSection(props: EditorFfmpegSetting
               role="toolbar"
               aria-orientation="horizontal"
               aria-label={uiText('editorExportPreviewActionsToolbarAria')}
+              aria-describedby="exportCommandPreviewHint ffmpegOutputSectionHint editor-ffmpeg-settings-hint"
               aria-busy={exportBusy || snapshotBusy || probePending}
             >
               <button
@@ -124,13 +131,14 @@ export function EditorFfmpegSettingsRailOutputSection(props: EditorFfmpegSetting
             role="toolbar"
             aria-orientation="horizontal"
             aria-label={uiText('editorExportLastOutputActionsToolbarAria')}
+            aria-describedby="ffmpegOutputSectionHint editor-ffmpeg-settings-hint"
             aria-busy={exportBusy || snapshotBusy || probePending}
           >
             <button
               type="button"
               className="app-btn app-btn-compact"
               disabled={exportBusy || snapshotBusy}
-              aria-describedby="ffmpegOutputSectionHint"
+              aria-describedby="ffmpegOutputSectionHint editor-ffmpeg-settings-hint"
               title={uiText('editorTooltipExportLastFile')}
               onClick={() => {
                 void handleOpenLastExport('file')
@@ -142,7 +150,7 @@ export function EditorFfmpegSettingsRailOutputSection(props: EditorFfmpegSetting
               type="button"
               className="app-btn app-btn-compact"
               disabled={exportBusy || snapshotBusy}
-              aria-describedby="ffmpegOutputSectionHint"
+              aria-describedby="ffmpegOutputSectionHint editor-ffmpeg-settings-hint"
               title={uiText('editorTooltipExportLastFolder')}
               onClick={() => {
                 void handleOpenLastExport('folder')
@@ -154,7 +162,7 @@ export function EditorFfmpegSettingsRailOutputSection(props: EditorFfmpegSetting
               type="button"
               className="app-btn app-btn-compact"
               disabled={exportBusy || snapshotBusy}
-              aria-describedby="ffmpegOutputSectionHint"
+              aria-describedby="ffmpegOutputSectionHint editor-ffmpeg-settings-hint"
               title={uiText('editorTooltipExportOpenPreview')}
               onClick={() => {
                 void handleOpenLastExport('preview')
@@ -166,7 +174,7 @@ export function EditorFfmpegSettingsRailOutputSection(props: EditorFfmpegSetting
               type="button"
               className="app-btn app-btn-compact"
               disabled={exportBusy || snapshotBusy}
-              aria-describedby="ffmpegOutputSectionHint"
+              aria-describedby="ffmpegOutputSectionHint editor-ffmpeg-settings-hint"
               title={uiText('editorTooltipCopyExportPath')}
               onClick={() => {
                 void handleCopyLastExportPath()

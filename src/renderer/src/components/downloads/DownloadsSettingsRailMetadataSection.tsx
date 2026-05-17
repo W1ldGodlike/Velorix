@@ -179,6 +179,7 @@ export function DownloadsSettingsRailMetadataSection(props: DownloadsSettingsRai
           className="app-downloads-output-dir"
           role="group"
           aria-label={uiText('downloadsCookiesFileGroupAria')}
+          aria-describedby="downloads-page-hint downloadsCookiesProfileHint"
           aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
         >
           <span className="app-field-help">{uiText('downloadsCookiesNetscapeHelp')}</span>
@@ -191,6 +192,7 @@ export function DownloadsSettingsRailMetadataSection(props: DownloadsSettingsRai
             role="toolbar"
             aria-orientation="horizontal"
             aria-label={uiText('downloadsCookiesFileActionsToolbarAria')}
+            aria-describedby="downloads-page-hint downloadsCookiesProfileHint"
             aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
           >
             <button

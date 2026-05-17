@@ -62,6 +62,7 @@ export function DownloadsHistoryPanel({
         className="app-processing-history-summary"
         role="region"
         aria-label={uiText('downloadsHistoryWeeklyAria')}
+        aria-describedby="downloads-page-hint"
         aria-busy={busy}
       >
         <span>
@@ -82,6 +83,7 @@ export function DownloadsHistoryPanel({
         role="toolbar"
         aria-orientation="horizontal"
         aria-label={uiText('downloadsHistoryActionsToolbarAria')}
+        aria-describedby="downloads-page-hint"
         aria-busy={busy}
       >
         <div className="app-downloads-history-filter">
@@ -132,6 +134,7 @@ export function DownloadsHistoryPanel({
         className="app-downloads-history-list"
         role="region"
         aria-label={uiText('downloadsHistoryListRegionAria')}
+        aria-describedby="downloads-page-hint"
         aria-busy={busy}
       >
         {entries.length === 0 ? (
@@ -145,6 +148,7 @@ export function DownloadsHistoryPanel({
                 index: idx + 1,
                 title: entry.shortLabel
               })}
+              aria-describedby="downloads-page-hint"
               aria-busy={busy}
             >
               <div className="app-downloads-history-head">
@@ -156,6 +160,7 @@ export function DownloadsHistoryPanel({
                   aria-label={uiTextVars('downloadsHistoryCardToolbarAriaTemplate', {
                     title: entry.shortLabel
                   })}
+                  aria-describedby="downloads-page-hint"
                   aria-busy={busy}
                 >
                   <span

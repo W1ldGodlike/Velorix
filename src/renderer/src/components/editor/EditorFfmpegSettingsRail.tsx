@@ -43,6 +43,7 @@ export function EditorFfmpegSettingsRail(props: EditorFfmpegSettingsRailProps) {
         className="app-settings-panel-head"
         role="group"
         aria-label={uiText('editorFfmpegPanelHeadGroupAria')}
+        aria-describedby="editor-ffmpeg-settings-hint"
         aria-busy={exportBusy || snapshotBusy || exportCancelBusy || probePending}
       >
         <div>

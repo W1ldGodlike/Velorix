@@ -35,6 +35,7 @@ export function PreviewProbeBodyTracksSection({
       aria-label={uiTextVars('probeSectionTracksTemplate', {
         count: probeInfo.tracks.length
       })}
+      aria-describedby="probePanelOverviewHint"
       aria-busy={probeRefreshing}
       open={sectionOpen('tracks')}
       onToggle={(e) => {
@@ -49,6 +50,7 @@ export function PreviewProbeBodyTracksSection({
         className="app-probe-table-wrap"
         role="group"
         aria-label={uiText('probeTracksTableWrapGroupAria')}
+        aria-describedby="probePanelOverviewHint"
         aria-busy={probeRefreshing}
       >
         <table className="app-probe-table" aria-busy={probeRefreshing}>

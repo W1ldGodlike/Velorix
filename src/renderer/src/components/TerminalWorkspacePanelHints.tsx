@@ -30,7 +30,7 @@ export function TerminalWorkspacePanelHints(
     <aside
       className="app-terminal-hints"
       aria-label={uiText('terminalHintsPanelAria')}
-      aria-describedby="terminal-hints-filter-hint terminal-main-split-hint"
+      aria-describedby="terminal-hints-filter-hint terminal-intro-hint terminal-main-split-hint"
       aria-busy={terminalBusy}
     >
       <div className="app-field">
@@ -54,7 +54,7 @@ export function TerminalWorkspacePanelHints(
       <ul
         className="app-terminal-hint-list"
         aria-label={uiText('terminalHintsInsertListAria')}
-        aria-describedby="terminal-hints-filter-hint"
+        aria-describedby="terminal-hints-filter-hint terminal-intro-hint"
         aria-busy={terminalBusy}
       >
         {visibleTerminalHints.map((hint) => (
@@ -63,6 +63,7 @@ export function TerminalWorkspacePanelHints(
               type="button"
               className="app-terminal-hint"
               disabled={terminalBusy}
+              aria-describedby="terminal-hints-filter-hint terminal-intro-hint"
               aria-label={terminalHintInsertAccessibleDescription(hint)}
               onClick={() => {
                 if (hint.fullLine !== undefined && hint.fullLine.length > 0) {
