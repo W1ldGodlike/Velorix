@@ -34,12 +34,16 @@ export function TerminalWorkspacePanelHints(
     >
       <div className="app-field">
         <label htmlFor={terminalHintsSearchFieldId}>{uiText('terminalHintsSearchLabel')}</label>
+        <p id="terminal-hints-filter-hint" className="app-downloads-hint">
+          {uiText('terminalHintsSearchHint')}
+        </p>
         <input
           id={terminalHintsSearchFieldId}
           className="app-control"
           value={terminalHintFilter}
           spellCheck={false}
           placeholder={uiText('terminalHintsSearchPlaceholder')}
+          aria-describedby="terminal-hints-filter-hint"
           disabled={terminalBusy}
           onChange={(e) => {
             setTerminalHintFilter(e.target.value)

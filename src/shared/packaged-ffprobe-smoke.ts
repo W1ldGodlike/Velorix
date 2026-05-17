@@ -11,6 +11,7 @@ import {
 import type { FfprobeFormatJsonSlice } from './ffprobe-container-field-registry'
 import { parseFfprobeFormatTagScalar } from './ffprobe-format-tag-registry'
 import { formatFfprobeCodecLongNameDetail } from './ffprobe-codec-long-name'
+import { formatFfprobeDispositionSummary } from './ffprobe-disposition'
 import { parseFfprobeTickCount } from './ffprobe-stream-duration-ts'
 import { formatFfprobeStreamStereoModeDetail } from './ffprobe-stream-stereo-mode'
 import { isFfprobeChaptersArrayOkForSmoke } from './ffprobe-chapters'
@@ -46,6 +47,34 @@ type FfprobeSmokeStreamSlice = {
   display_aspect_ratio?: string
   channel_layout?: string
   channels?: string | number
+  sample_rate?: string | number
+  sample_fmt?: string
+  profile?: string
+  level?: string | number
+  bits_per_sample?: string | number
+  start_pts?: string | number
+  codec_tag?: string | number
+  codec_tag_string?: string
+  color_space?: string
+  color_primaries?: string
+  color_transfer?: string
+  color_trc?: string
+  color_range?: string
+  field_order?: string
+  chroma_location?: string
+  bits_per_raw_sample?: string | number
+  bits_per_coded_sample?: string | number
+  coded_width?: string | number
+  coded_height?: string | number
+  extradata_size?: string | number
+  refs?: string | number
+  has_b_frames?: string | number
+  closed_captions?: string | number
+  is_avc?: string | number
+  ticks_per_frame?: string | number
+  initial_padding?: string | number
+  index?: string | number
+  disposition?: unknown
   side_data_list?: unknown
   tags?: Record<string, string | number | undefined>
 }
@@ -181,6 +210,58 @@ function smokeOptionalStreamDurationTsField(raw: string | number | undefined): b
   return parseFfprobeTickCount(raw) !== null
 }
 
+function smokeOptionalStreamDispositionField(raw: unknown): boolean {
+  if (raw === undefined || raw === null) {
+    return true
+  }
+  if (typeof raw !== 'object' || Array.isArray(raw)) {
+    return false
+  }
+  const o = raw as Record<string, unknown>
+  for (const v of Object.values(o)) {
+    if (v === undefined || v === null) {
+      continue
+    }
+    if (typeof v === 'boolean') {
+      continue
+    }
+    if (typeof v === 'number' && Number.isFinite(v)) {
+      continue
+    }
+    if (typeof v === 'string') {
+      const t = v.trim()
+      if (t === '' || /^n\/a$/i.test(t)) {
+        continue
+      }
+      const n = Number.parseInt(t, 10)
+      if (Number.isFinite(n)) {
+        continue
+      }
+      return false
+    }
+    return false
+  }
+  return true
+}
+
+function smokeOptionalStreamCodecTagField(raw: string | number | undefined): boolean {
+  if (raw === undefined || raw === null) {
+    return true
+  }
+  if (typeof raw === 'number') {
+    return Number.isFinite(raw)
+  }
+  const t = raw.trim()
+  if (t === '' || /^n\/a$/i.test(t) || t === '0' || t === '0x0') {
+    return true
+  }
+  if (/^0x[0-9a-f]+$/i.test(t.replace(/\s+/g, ''))) {
+    return true
+  }
+  const n = Number.parseInt(t, 10)
+  return Number.isFinite(n)
+}
+
 /** Smoke: опциональные поля stream detail (§9) не ломают парсеры при наличии в JSON. */
 export function isPackagedFfprobeProbeJsonParsableByStreamDetailFields(parsed: unknown): boolean {
   if (!isMinimalFfprobeProbeJson(parsed)) {
@@ -240,6 +321,96 @@ export function isPackagedFfprobeProbeJsonParsableByStreamDetailFields(parsed: u
     if (!smokeOptionalStreamPositiveIntField(stream.channels)) {
       return false
     }
+    if (!smokeOptionalFfprobeScalarStringField(stream.codec_name)) {
+      return false
+    }
+    if (!smokeOptionalStreamPositiveIntField(stream.sample_rate)) {
+      return false
+    }
+    if (!smokeOptionalFfprobeScalarStringField(stream.sample_fmt)) {
+      return false
+    }
+    if (!smokeOptionalFfprobeScalarStringField(stream.profile)) {
+      return false
+    }
+    if (!smokeOptionalStreamNumericField(stream.level)) {
+      return false
+    }
+    if (!smokeOptionalStreamPositiveIntField(stream.bits_per_sample)) {
+      return false
+    }
+    if (!smokeOptionalStreamDurationTsField(stream.start_pts)) {
+      return false
+    }
+    if (!smokeOptionalFfprobeScalarStringField(stream.codec_tag_string)) {
+      return false
+    }
+    if (!smokeOptionalStreamCodecTagField(stream.codec_tag)) {
+      return false
+    }
+    if (!smokeOptionalFormatTagsField(stream.tags)) {
+      return false
+    }
+    if (!smokeOptionalFfprobeScalarStringField(stream.color_space)) {
+      return false
+    }
+    if (!smokeOptionalFfprobeScalarStringField(stream.color_primaries)) {
+      return false
+    }
+    if (!smokeOptionalFfprobeScalarStringField(stream.color_transfer)) {
+      return false
+    }
+    if (!smokeOptionalFfprobeScalarStringField(stream.color_trc)) {
+      return false
+    }
+    if (!smokeOptionalFfprobeScalarStringField(stream.color_range)) {
+      return false
+    }
+    if (!smokeOptionalFfprobeScalarStringField(stream.field_order)) {
+      return false
+    }
+    if (!smokeOptionalFfprobeScalarStringField(stream.chroma_location)) {
+      return false
+    }
+    if (!smokeOptionalStreamNumericField(stream.bits_per_raw_sample)) {
+      return false
+    }
+    if (!smokeOptionalStreamNumericField(stream.bits_per_coded_sample)) {
+      return false
+    }
+    if (!smokeOptionalStreamPositiveIntField(stream.coded_width)) {
+      return false
+    }
+    if (!smokeOptionalStreamPositiveIntField(stream.coded_height)) {
+      return false
+    }
+    if (!smokeOptionalStreamNbFramesField(stream.extradata_size)) {
+      return false
+    }
+    if (!smokeOptionalStreamNbFramesField(stream.refs)) {
+      return false
+    }
+    if (!smokeOptionalStreamNbFramesField(stream.has_b_frames)) {
+      return false
+    }
+    if (!smokeOptionalStreamNbFramesField(stream.closed_captions)) {
+      return false
+    }
+    if (!smokeOptionalStreamNbFramesField(stream.is_avc)) {
+      return false
+    }
+    if (!smokeOptionalStreamNbFramesField(stream.ticks_per_frame)) {
+      return false
+    }
+    if (!smokeOptionalStreamNbFramesField(stream.initial_padding)) {
+      return false
+    }
+    if (!smokeOptionalStreamNbFramesField(stream.index)) {
+      return false
+    }
+    if (!smokeOptionalStreamDispositionField(stream.disposition)) {
+      return false
+    }
     if (!isFfprobeSideDataListStructureOkForSmoke(stream.side_data_list)) {
       return false
     }
@@ -254,6 +425,7 @@ export function isPackagedFfprobeProbeJsonParsableByStreamDetailFields(parsed: u
       formatFfprobeCodecLongNameDetail(stream.codec_name, longRaw)
     }
     formatFfprobeStreamStereoModeDetail(stream.tags)
+    formatFfprobeDispositionSummary(stream.disposition)
   }
   return true
 }
@@ -430,7 +602,7 @@ export function formatPackagedFfprobeSmokeDiagnosticLines(): string[] {
     'check: isMinimalFfprobeProbeJson + isPackagedFfprobeProbeJsonParsableForSmoke (format + stream detail)',
     'registry optional: format.duration, duration_ts, time_base, size, probe_size, flags, probe_score, filename, bit_rate, start_time, start_time_real, nb_programs, nb_chapters, format.tags.* (parseFfprobeFormatTagScalar)',
     'probe optional: chapters[] (buildChapterRowsFromFfprobeJson / isFfprobeChaptersArrayOkForSmoke)',
-    'stream detail optional: codec_type, duration, duration_ts, start_time, fps, bit_rate, nb_frames, width/height/pix_fmt, sample_aspect_ratio, display_aspect_ratio, channel_layout, channels, side_data_list, time_base, codec_long_name, tags.stereo_mode',
+    'stream detail optional: codec_type, codec_name, duration, duration_ts, start_time, start_pts, fps, bit_rate, nb_frames, width/height/pix_fmt, color_*, field_order, chroma_location, bits_per_*_sample, coded_width/height, extradata_size, refs, has_b_frames, closed_captions, is_avc, ticks_per_frame, initial_padding, index, disposition, sample_aspect_ratio, display_aspect_ratio, channel_layout, channels, sample_rate, sample_fmt, profile, level, bits_per_sample, codec_tag, codec_tag_string, stream.tags.*, side_data_list, time_base, codec_long_name, tags.stereo_mode',
     'ui/export: formatFfprobeContainerDiagnostics* (filename + probe layout + offset/timing)',
     'env: FLUXALLOY_SKIP_FFPROBE_SMOKE, FLUXALLOY_FFPROBE_SMOKE_PROBE=0, FLUXALLOY_FFPROBE_PATH'
   ]

@@ -49,6 +49,7 @@ export function TerminalWorkspacePanelCommandStack(
       className="app-terminal-command-stack"
       role="region"
       aria-label={uiText('terminalCommandStackAria')}
+      aria-describedby="terminal-intro-hint"
       aria-busy={terminalBusy}
     >
       <div
@@ -56,6 +57,7 @@ export function TerminalWorkspacePanelCommandStack(
         role="toolbar"
         aria-orientation="horizontal"
         aria-label={uiText('terminalCommandToolbarAria')}
+        aria-describedby="terminal-intro-hint"
         aria-busy={terminalBusy}
       >
         <label htmlFor={terminalCommandInputId} className="app-visually-hidden">

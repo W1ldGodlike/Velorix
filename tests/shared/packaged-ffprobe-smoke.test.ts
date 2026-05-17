@@ -47,6 +47,13 @@ describe('packaged-ffprobe-smoke', () => {
     expect(lines.some((l) => l.includes('bit_rate'))).toBe(true)
     expect(lines.some((l) => l.includes('codec_type'))).toBe(true)
     expect(lines.some((l) => l.includes('sample_aspect_ratio'))).toBe(true)
+    expect(lines.some((l) => l.includes('sample_rate'))).toBe(true)
+    expect(lines.some((l) => l.includes('bits_per_sample'))).toBe(true)
+    expect(lines.some((l) => l.includes('start_pts'))).toBe(true)
+    expect(lines.some((l) => l.includes('stream.tags'))).toBe(true)
+    expect(lines.some((l) => l.includes('color_*'))).toBe(true)
+    expect(lines.some((l) => l.includes('extradata_size'))).toBe(true)
+    expect(lines.some((l) => l.includes('disposition'))).toBe(true)
     expect(lines.some((l) => l.includes('ParsableForSmoke'))).toBe(true)
     expect(lines.some((l) => l.includes('formatFfprobeContainerDiagnostics'))).toBe(true)
     expect(lines).toContain(`candidate: ${candidates[0]} (present)`)
@@ -405,6 +412,119 @@ describe('packaged-ffprobe-smoke', () => {
       isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
         ...base,
         streams: [{ channels: '0' }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [
+          {
+            codec_name: 'aac',
+            sample_rate: '48000',
+            sample_fmt: 'fltp',
+            profile: 'LC',
+            level: '1',
+            bits_per_sample: '16'
+          }
+        ]
+      })
+    ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ sample_rate: 'not-hz' }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ profile: 42 }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [
+          {
+            start_pts: '1024',
+            codec_tag_string: 'avc1',
+            codec_tag: '0x31637661',
+            tags: { language: 'eng', stereo_mode: '2' }
+          }
+        ]
+      })
+    ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ start_pts: 'not-ticks' }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ codec_tag: 'not-a-tag' }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ tags: 'not-an-object' }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [
+          {
+            color_space: 'bt709',
+            color_primaries: 'bt709',
+            color_transfer: 'bt709',
+            color_range: 'tv',
+            field_order: 'progressive',
+            chroma_location: 'left',
+            bits_per_raw_sample: '8',
+            bits_per_coded_sample: '10',
+            coded_width: '1920',
+            coded_height: '1080',
+            extradata_size: '48'
+          }
+        ]
+      })
+    ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ color_space: 42 }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ coded_width: '0' }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [
+          {
+            index: '0',
+            refs: '4',
+            has_b_frames: '2',
+            closed_captions: '0',
+            is_avc: '1',
+            ticks_per_frame: '2',
+            initial_padding: '0',
+            disposition: { default: 1, forced: 0 }
+          }
+        ]
+      })
+    ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ disposition: { default: 'yes' } }]
       })
     ).toBe(false)
     expect(

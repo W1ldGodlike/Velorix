@@ -20,8 +20,12 @@ export function TerminalWorkspacePanelHistory(
     <section
       className="app-terminal-history"
       aria-label={uiText('terminalHistoryAria')}
+      aria-describedby="terminal-history-hint"
       aria-busy={terminalBusy}
     >
+      <p id="terminal-history-hint" className="app-visually-hidden">
+        {uiText('terminalHistoryHint')}
+      </p>
       {terminalHistory.length === 0 ? (
         <p className="app-downloads-empty" role="status" aria-live="polite">
           {uiText('terminalHistoryEmpty')}

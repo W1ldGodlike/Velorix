@@ -22,6 +22,7 @@ export function TerminalWorkspacePanel(props: TerminalWorkspacePanelProps): JSX.
       <section
         className="app-terminal-panel"
         aria-label={uiText('terminalPanelSectionAria')}
+        aria-describedby="terminal-intro-hint"
         aria-busy={terminalBusy}
       >
         <TerminalWorkspacePanelIntroBand {...props} />
@@ -30,8 +31,12 @@ export function TerminalWorkspacePanel(props: TerminalWorkspacePanelProps): JSX.
           className="app-terminal-layout"
           role="region"
           aria-label={uiText('terminalMainSplitAria')}
+          aria-describedby="terminal-main-split-hint"
           aria-busy={terminalBusy}
         >
+          <p id="terminal-main-split-hint" className="app-visually-hidden">
+            {uiText('terminalMainSplitHint')}
+          </p>
           <TerminalWorkspacePanelHistory {...props} />
           <TerminalWorkspacePanelHints {...props} />
         </div>
