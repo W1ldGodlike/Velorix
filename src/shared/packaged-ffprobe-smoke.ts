@@ -1,6 +1,8 @@
 /**
- * §9/§19 — разрешение пути к bundled ffprobe и минимальная проверка JSON probe.
+ * §9/§18/§19 — разрешение пути к bundled ffprobe и проверка JSON probe (+ registry контейнера).
  */
+import { parseFfprobeContainerFieldsFromFormat } from './ffprobe-container-format'
+import type { FfprobeFormatJsonSlice } from './ffprobe-container-field-registry'
 import { join } from 'node:path'
 
 export function listPackagedFfprobeCandidatePaths(rootDir: string): string[] {
@@ -47,4 +49,20 @@ export function isMinimalFfprobeProbeJson(parsed: unknown): boolean {
     return false
   }
   return true
+}
+
+/** Smoke: реальный ffprobe JSON проходит `parseFfprobeContainerFieldsFromFormat` (связка с §9 registry). */
+export function isPackagedFfprobeProbeJsonParsableByContainerRegistry(parsed: unknown): boolean {
+  if (!isMinimalFfprobeProbeJson(parsed)) {
+    return false
+  }
+  const format = (parsed as { format: FfprobeFormatJsonSlice }).format
+  const formatNameRaw = (format as { format_name?: string }).format_name
+  const formatName = typeof formatNameRaw === 'string' ? formatNameRaw.trim() : ''
+  if (formatName.length === 0) {
+    return false
+  }
+  const container = parseFfprobeContainerFieldsFromFormat(format)
+  const nbStreams = container.containerNbStreams
+  return typeof nbStreams === 'number' && nbStreams >= 1
 }

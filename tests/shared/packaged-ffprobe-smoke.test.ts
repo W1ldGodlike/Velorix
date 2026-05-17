@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import {
   isMinimalFfprobeProbeJson,
+  isPackagedFfprobeProbeJsonParsableByContainerRegistry,
   listPackagedFfprobeCandidatePaths
 } from '../../src/shared/packaged-ffprobe-smoke'
 
@@ -28,5 +29,25 @@ describe('packaged-ffprobe-smoke', () => {
     expect(isMinimalFfprobeProbeJson({ streams: [], format: {} })).toBe(false)
     expect(isMinimalFfprobeProbeJson({ streams: [{}] })).toBe(false)
     expect(isMinimalFfprobeProbeJson(null)).toBe(false)
+  })
+
+  it('isPackagedFfprobeProbeJsonParsableByContainerRegistry', () => {
+    const ok = {
+      streams: [{}, {}],
+      format: { format_name: 'mov,mp4,m4a,3gp,3g2,mj2', nb_streams: '2' }
+    }
+    expect(isPackagedFfprobeProbeJsonParsableByContainerRegistry(ok)).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
+        format: { format_name: 'mp4', nb_streams: '0' }
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
+        format: { nb_streams: '1' }
+      })
+    ).toBe(false)
   })
 })

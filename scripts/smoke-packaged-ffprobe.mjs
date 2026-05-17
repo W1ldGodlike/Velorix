@@ -16,6 +16,7 @@ import { promisify } from 'node:util'
 import { firstVersionLineFromWinEngineExe } from './engines-exe-version-line.mjs'
 import {
   isMinimalFfprobeProbeJson,
+  isPackagedFfprobeProbeJsonParsableByContainerRegistry,
   listPackagedFfmpegCandidatePaths,
   listPackagedFfprobeCandidatePaths,
   pickFirstExistingEngine
@@ -161,8 +162,13 @@ async function main() {
     if (!isMinimalFfprobeProbeJson(parsed)) {
       throw new Error('ffprobe JSON не содержит format и streams')
     }
+    if (!isPackagedFfprobeProbeJsonParsableByContainerRegistry(parsed)) {
+      throw new Error(
+        'ffprobe JSON: format_name или parseFfprobeContainerFieldsFromFormat (container registry)'
+      )
+    }
     const streams = /** @type {{ streams: unknown[] }} */ (parsed).streams
-    log(`OK: probe ${streams.length} stream(s)`)
+    log(`OK: probe ${streams.length} stream(s), container registry`)
   } finally {
     await rm(workDir, { recursive: true, force: true })
   }

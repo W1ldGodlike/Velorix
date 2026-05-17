@@ -4,6 +4,7 @@ import { stat } from 'node:fs/promises'
 
 export {
   isMinimalFfprobeProbeJson,
+  isPackagedFfprobeProbeJsonParsableByContainerRegistry,
   listPackagedFfmpegCandidatePaths,
   listPackagedFfprobeCandidatePaths
 } from '../src/shared/packaged-ffprobe-smoke.ts'
