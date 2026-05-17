@@ -1,7 +1,11 @@
 /**
  * §9/§18/§19 — разрешение пути к bundled ffprobe и проверка JSON probe (+ registry контейнера).
  */
-import { parseFfprobeContainerFieldsFromFormat } from './ffprobe-container-format'
+import {
+  parseFfprobeContainerFieldsFromFormat,
+  parseFfprobeFormatBitRateKbps,
+  parseFfprobeFormatDurationSec
+} from './ffprobe-container-format'
 import type { FfprobeFormatJsonSlice } from './ffprobe-container-field-registry'
 import { join } from 'node:path'
 
@@ -49,6 +53,24 @@ export function isMinimalFfprobeProbeJson(parsed: unknown): boolean {
     return false
   }
   return true
+}
+
+function smokeOptionalContainerStartTimeField(
+  raw: string | number | undefined,
+  parsedSec: number | null
+): boolean {
+  if (raw === undefined || raw === null) {
+    return true
+  }
+  const t = String(raw).trim()
+  if (t === '' || /^n\/a$/i.test(t)) {
+    return true
+  }
+  const sec = Number.parseFloat(t.replace(',', '.'))
+  if (Number.isFinite(sec) && Math.abs(sec) < 0.0005) {
+    return true
+  }
+  return parsedSec !== null
 }
 
 /** Smoke: реальный ffprobe JSON проходит `parseFfprobeContainerFieldsFromFormat` (связка с §9 registry). */
@@ -104,6 +126,27 @@ export function isPackagedFfprobeProbeJsonParsableByContainerRegistry(parsed: un
       return false
     }
   }
+  const bitRateRaw = (format as { bit_rate?: string | number }).bit_rate
+  if (bitRateRaw !== undefined && bitRateRaw !== null && String(bitRateRaw).trim() !== '') {
+    if (parseFfprobeFormatBitRateKbps(bitRateRaw) === null) {
+      return false
+    }
+  }
+  const durationRaw = (format as { duration?: string | number }).duration
+  if (durationRaw !== undefined && durationRaw !== null && String(durationRaw).trim() !== '') {
+    const t = String(durationRaw).trim()
+    if (!/^n\/a$/i.test(t) && parseFfprobeFormatDurationSec(durationRaw) === null) {
+      return false
+    }
+  }
+  const startRaw = (format as { start_time?: string | number }).start_time
+  if (!smokeOptionalContainerStartTimeField(startRaw, container.containerStartTimeSec)) {
+    return false
+  }
+  const startRealRaw = (format as { start_time_real?: string | number }).start_time_real
+  if (!smokeOptionalContainerStartTimeField(startRealRaw, container.containerStartTimeRealSec)) {
+    return false
+  }
   return true
 }
 
@@ -112,9 +155,9 @@ export function formatPackagedFfprobeSmokeDiagnosticLines(): string[] {
   return [
     'command: npm run smoke:packaged-ffprobe (part of smoke:packaged-engines)',
     'check: isMinimalFfprobeProbeJson + isPackagedFfprobeProbeJsonParsableByContainerRegistry',
-    'registry optional: format.duration_ts, time_base, probe_size, flags, probe_score, filename (parse must not fail)',
+    'registry optional: format.duration, duration_ts, time_base, probe_size, flags, probe_score, filename, bit_rate, start_time, start_time_real (parse must not fail)',
     'stream detail optional: codec_time_base (ctb when distinct from time_base)',
-    'ui/export: formatFfprobeContainerDiagnostics* (probe layout + offset/timing compact)',
+    'ui/export: formatFfprobeContainerDiagnostics* (filename + probe layout + offset/timing)',
     'env: FLUXALLOY_SKIP_FFPROBE_SMOKE, FLUXALLOY_FFPROBE_SMOKE_PROBE=0, FLUXALLOY_FFPROBE_PATH'
   ]
 }

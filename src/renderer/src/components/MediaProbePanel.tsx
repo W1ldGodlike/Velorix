@@ -9,7 +9,6 @@ import type {
 } from '../../../shared/ffprobe-contract'
 import { formatFfprobeCreationTimeBrief } from '../../../shared/ffprobe-creation-time-brief'
 import {
-  formatFfprobeContainerFilenameCompact,
   formatFfprobeContainerDiagnosticsCompactLine
 } from '../../../shared/ffprobe-container-format'
 import { collectFfprobeFormatScalarTagInspectorBriefs } from '../../../shared/ffprobe-format-tag-registry'
@@ -208,7 +207,11 @@ export function PreviewProbeBody({
   const [probeToolbarTip, setProbeToolbarTip] = useState<string | null>(null)
   const [probeTableMenu, setProbeTableMenu] = useState<ProbeTableContextMenu>(null)
   const probeTableMenuRef = useRef<HTMLDivElement | null>(null)
-  const bitrateLabel = formatBitrateLine(probeInfo.bitrateKbps)
+  const diagnosticsCompact = formatFfprobeContainerDiagnosticsCompactLine(probeInfo)
+  const bitrateLabel =
+    diagnosticsCompact?.includes('br ') === true
+      ? null
+      : formatBitrateLine(probeInfo.bitrateKbps)
   const formatTooltip =
     probeInfo.formatLongName && probeInfo.formatName !== probeInfo.formatLongName
       ? probeInfo.formatLongName
@@ -340,10 +343,6 @@ export function PreviewProbeBody({
               ? uiTextVars('probeSummaryAudioFragmentTemplate', { codec: probeInfo.audioCodec })
               : ''}
             {probeInfo.formatName ? ` · ${probeInfo.formatName}` : ''}
-            {(() => {
-              const file = formatFfprobeContainerFilenameCompact(probeInfo.containerFilename)
-              return file ? ` · ${file}` : ''
-            })()}
             {probeInfo.containerMajorBrand ? ` · ${probeInfo.containerMajorBrand}` : ''}
             {(() => {
               const created = formatFfprobeCreationTimeBrief(
@@ -354,10 +353,7 @@ export function PreviewProbeBody({
               return created ? ` · ${created}` : ''
             })()}
             {collectFfprobeFormatScalarTagInspectorBriefs(probeInfo).join('')}
-            {(() => {
-              const diag = formatFfprobeContainerDiagnosticsCompactLine(probeInfo)
-              return diag ? ` · ${diag}` : ''
-            })()}
+            {diagnosticsCompact ? ` · ${diagnosticsCompact}` : ''}
             {bitrateLabel ? ` · ${bitrateLabel}` : ''}
           </span>
         </div>

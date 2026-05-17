@@ -10,14 +10,15 @@ import {
 import { createMediaProbeSuccessBase } from '../fixtures/media-probe-success-base'
 
 describe('formatFfprobeContainerTimingProbeCompactLine', () => {
-  it('joins duration_ts, time_base and probe_io', () => {
+  it('joins duration, duration_ts, time_base and probe_io', () => {
     expect(
       formatFfprobeContainerTimingProbeCompactLine({
+        containerDurationSec: 125.5,
         containerDurationTs: 90000,
         containerTimeBase: '1/90000',
         containerProbeSizeBytes: 4096
       })
-    ).toBe('dur_ts 90000 · tb 1/90000 · probe_io 4.00 KiB')
+    ).toBe('dur 2:05.500 · dur_ts 90000 · tb 1/90000 · probe_io 4.00 KiB')
   })
 
   it('returns null when all fields empty', () => {
@@ -40,9 +41,15 @@ describe('formatFfprobeContainerDiagnosticsCompactLine', () => {
         containerSizeBytes: 4096,
         containerFormatFlags: '0x0',
         containerDurationTs: 90000,
-        containerTimeBase: '1/90000'
+        containerTimeBase: '1/90000',
+        containerFilename: 'C:\\clips\\Demo.mkv',
+        bitrateKbps: 4500,
+        durationSec: 125.5
       })
     )
+    expect(line).toContain('file Demo.mkv')
+    expect(line).toContain('dur 2:05')
+    expect(line).toContain('br 4500')
     expect(line).toContain('probe 100')
     expect(line).toContain('dur_ts 90000')
   })

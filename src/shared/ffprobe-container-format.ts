@@ -7,9 +7,11 @@ import type { MediaProbeSuccess } from './ffprobe-contract'
 export {
   parseFfprobeFormatCompatibleBrands,
   parseFfprobeFormatCreationTime,
+  parseFfprobeFormatDurationSec,
   parseFfprobeFormatDurationTs,
   parseFfprobeFormatTimeBase,
   parseFfprobeFormatProbeSize,
+  parseFfprobeFormatBitRateKbps,
   parseFfprobeFormatFilename,
   parseFfprobeFormatFlags,
   parseFfprobeFormatMajorBrand,
@@ -19,8 +21,12 @@ export {
   parseFfprobeFormatSize,
   parseFfprobeFormatStartTimeSec,
   parseFfprobeContainerFieldsFromFormat,
+  formatFfprobeContainerBitRateCompact,
+  formatFfprobeContainerBitRateExportLine,
   formatFfprobeContainerBrandExportLine,
   formatFfprobeContainerCreationTimeExportLine,
+  formatFfprobeContainerDurationSecCompact,
+  formatFfprobeContainerDurationSecExportLine,
   formatFfprobeContainerDurationTsCompact,
   formatFfprobeContainerDurationTsExportLine,
   formatFfprobeContainerTimeBaseExportLine,
@@ -32,7 +38,9 @@ export {
   formatFfprobeContainerOffsetTimingExportLine,
   formatFfprobeContainerDiagnosticsCompactLine,
   formatFfprobeContainerDiagnosticsExportLine,
+  formatFfprobeContainerFilenameCompact,
   formatFfprobeContainerFilenameExportLine,
+  ffprobeContainerFilenameBasename,
   formatFfprobeContainerSizeCompact,
   formatFfprobeContainerSizeExportLine,
   formatFfprobeContainerStartTimeCompact,
@@ -50,23 +58,6 @@ export {
   collectFfprobeContainerScalarExportLines
 } from './ffprobe-container-field-registry'
 export { formatFfprobeContainerTimeBaseCompact } from './ffprobe-stream-time-base'
-
-/** Basename для краткой строки инспектора. */
-export function ffprobeContainerFilenameBasename(filename: string): string {
-  const normalized = filename.replace(/\\/g, '/')
-  const base = normalized.split('/').pop() ?? filename
-  const t = base.trim()
-  return t.length > 0 ? t : filename
-}
-
-/** §9 — `format.filename` в краткой сводке инспектора. */
-export function formatFfprobeContainerFilenameCompact(filename: string | null): string | null {
-  if (filename === null) {
-    return null
-  }
-  const base = ffprobeContainerFilenameBasename(filename)
-  return base.length > 0 ? `file ${base}` : null
-}
 
 /** §7 — краткая строка «Видео» под таймлайном: разрешение, кодек, опц. major_brand. */
 export function formatFfprobeEditorVideoFactLine(

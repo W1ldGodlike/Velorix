@@ -15,7 +15,10 @@ import {
   formatFfprobeContainerFormatFlagsCompact,
   formatFfprobeContainerProbeLayoutCompactLine,
   formatFfprobeContainerProbeLayoutExportLine,
+  formatFfprobeContainerBitRateCompact,
   formatFfprobeContainerDiagnosticsExportLine,
+  parseFfprobeFormatBitRateKbps,
+  parseFfprobeFormatDurationSec,
   formatFfprobeFormatFlagsExportLine,
   formatFfprobeNbProgramsExportLine,
   formatFfprobeNbStreamsExportLine,
@@ -25,6 +28,7 @@ import {
   parseFfprobeFormatCompatibleBrands,
   parseFfprobeFormatCreationTime,
   parseFfprobeFormatDurationTs,
+  formatFfprobeContainerDurationSecCompact,
   formatFfprobeContainerDurationTsCompact,
   formatFfprobeContainerDurationTsExportLine,
   formatFfprobeContainerTimeBaseCompact,
@@ -47,6 +51,30 @@ import { createMediaProbeSuccessBase } from '../fixtures/media-probe-success-bas
 const probeBase = createMediaProbeSuccessBase()
 
 describe('ffprobe-container-format', () => {
+  it('formatFfprobeContainerDurationSecCompact', () => {
+    expect(formatFfprobeContainerDurationSecCompact(125.5)).toBe('dur 2:05.500')
+    expect(formatFfprobeContainerDurationSecCompact(null)).toBeNull()
+  })
+
+  it('parseFfprobeFormatDurationSec', () => {
+    expect(parseFfprobeFormatDurationSec('125.5')).toBe(125.5)
+    expect(parseFfprobeFormatDurationSec(90)).toBe(90)
+    expect(parseFfprobeFormatDurationSec('N/A')).toBeNull()
+    expect(parseFfprobeFormatDurationSec('bad')).toBeNull()
+  })
+
+  it('parseFfprobeFormatBitRateKbps', () => {
+    expect(parseFfprobeFormatBitRateKbps('4500000')).toBe(4500)
+    expect(parseFfprobeFormatBitRateKbps(2_500_000)).toBe(2500)
+    expect(parseFfprobeFormatBitRateKbps('')).toBeNull()
+    expect(parseFfprobeFormatBitRateKbps('n/a')).toBeNull()
+  })
+
+  it('formatFfprobeContainerBitRateCompact', () => {
+    expect(formatFfprobeContainerBitRateCompact(4500)).toBe('br 4500 kb/s')
+    expect(formatFfprobeContainerBitRateCompact(null)).toBeNull()
+  })
+
   it('formatFfprobeContainerFormatFlagsCompact', () => {
     expect(formatFfprobeContainerFormatFlagsCompact('0x0')).toBe('flags 0x0')
     expect(formatFfprobeContainerFormatFlagsCompact(null)).toBeNull()
@@ -74,13 +102,19 @@ describe('ffprobe-container-format', () => {
         containerTimeBase: '1/90000',
         containerStartTimeSec: 0.5,
         containerStartTimeRealSec: 0.5,
+        containerFilename: 'D:\\clips\\Demo.mkv',
+        bitrateKbps: 4500,
+        durationSec: 125.5,
         tracks: [{ index: 0 }, { index: 1 }] as typeof probeBase.tracks
       },
       'ru'
     )
+    expect(line).toContain('filename')
+    expect(line).toContain('duration):')
+    expect(line).toContain('bit_rate')
     expect(line).toContain('probe_score')
     expect(line).toContain('duration_ts')
-    expect(line!.split(' · ').length).toBeGreaterThanOrEqual(3)
+    expect(line!.split(' · ').length).toBeGreaterThanOrEqual(5)
   })
 
   it('formatFfprobeContainerProbeLayoutExportLine', () => {

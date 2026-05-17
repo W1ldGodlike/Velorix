@@ -9,8 +9,8 @@ import { formatProbeChapterTimecode } from './ffprobe-timecode'
 import {
   formatFfprobeContainerBrandExportLine,
   formatFfprobeContainerCreationTimeExportLine,
-  formatFfprobeContainerDiagnosticsExportLine,
-  formatFfprobeContainerFilenameExportLine
+  formatFfprobeContainerBitRateExportLine,
+  formatFfprobeContainerDiagnosticsExportLine
 } from './ffprobe-container-format'
 import { collectFfprobeFormatScalarTagExportLines } from './ffprobe-format-tag-registry'
 
@@ -126,6 +126,8 @@ export function formatProbeSummaryPlainText(
 ): string {
   const b = ffprobeSummaryStrings(locale)
   const bitrateLabel = formatFfprobeBitrateLabelFromKbps(info.bitrateKbps, locale)
+  const containerBitrateInDiagnostics =
+    formatFfprobeContainerBitRateExportLine(info.bitrateKbps, locale) !== null
   const fpsSummary =
     info.video !== null ? formatVideoFpsApproxForSummary(info.videoFpsApprox, locale) : null
   const lines: string[] = [
@@ -142,7 +144,9 @@ export function formatProbeSummaryPlainText(
     info.formatLongName && info.formatLongName !== info.formatName
       ? `${b.formatLongPrefix}${info.formatLongName}`
       : null,
-    bitrateLabel ? `${b.bitrateEstPrefix}${bitrateLabel}` : null,
+    bitrateLabel && !containerBitrateInDiagnostics
+      ? `${b.bitrateEstPrefix}${bitrateLabel}`
+      : null,
     formatFfprobeContainerBrandExportLine(
       info.containerMajorBrand,
       info.containerCompatibleBrands,
@@ -151,7 +155,6 @@ export function formatProbeSummaryPlainText(
     formatFfprobeContainerCreationTimeExportLine(info.containerCreationTime, locale),
     ...collectFfprobeFormatScalarTagExportLines(info, locale),
     formatFfprobeContainerDiagnosticsExportLine(info, locale),
-    formatFfprobeContainerFilenameExportLine(info.containerFilename, locale),
     '',
     ffprobeSummaryFill(b.streamsCountTemplate, { count: info.tracks.length }),
     ''
@@ -198,6 +201,8 @@ export function formatProbeSummaryHtmlDocument(
 ): string {
   const b = ffprobeSummaryStrings(locale)
   const bitrateLabel = formatFfprobeBitrateLabelFromKbps(info.bitrateKbps, locale)
+  const containerBitrateInDiagnostics =
+    formatFfprobeContainerBitRateExportLine(info.bitrateKbps, locale) !== null
   const rows = info.tracks
     .map(
       (row) =>
@@ -256,11 +261,9 @@ ${chapterRows}
       const diag = formatFfprobeContainerDiagnosticsExportLine(info, locale)
       return diag ? `<li>${escapeHtml(diag)}</li>` : ''
     })(),
-    (() => {
-      const fn = formatFfprobeContainerFilenameExportLine(info.containerFilename, locale)
-      return fn ? `<li>${escapeHtml(fn)}</li>` : ''
-    })(),
-    bitrateLabel ? `<li>${b.bitratePlainPrefix}${escapeHtml(bitrateLabel)}</li>` : ''
+    bitrateLabel && !containerBitrateInDiagnostics
+      ? `<li>${b.bitratePlainPrefix}${escapeHtml(bitrateLabel)}</li>`
+      : ''
   ].filter(Boolean)
 
   return `<!DOCTYPE html>

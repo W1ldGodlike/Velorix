@@ -7833,8 +7833,8 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     tool: 'ffprobe',
     token: '· контейнер: offset+timing',
     summary:
-      'Контейнер: start_time, start_time_real, duration_ts, time_base и probe_size (поля format: смещение, тики, база времени и зондирование); путь к медиа подставляется из превью.',
-    fullLine: `ffprobe -hide_banner -show_entries format=start_time,start_time_real,duration_ts,time_base,probe_size -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+      'Контейнер: start_time, start_time_real, duration, duration_ts, time_base и probe_size (поля format: смещение, длительность, тики, база времени и зондирование); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format=start_time,start_time_real,duration,duration_ts,time_base,probe_size -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
@@ -7854,8 +7854,8 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     tool: 'ffprobe',
     token: '· контейнер: diagnostics',
     summary:
-      'Контейнер: probe_score, streams, flags, size, start/real, duration_ts, time_base и probe_size (поля format: сводка как в инспекторе FluxAlloy); путь к медиа подставляется из превью.',
-    fullLine: `ffprobe -hide_banner -show_entries format=probe_score,nb_streams,nb_programs,flags,size,start_time,start_time_real,duration_ts,time_base,probe_size -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+      'Контейнер: filename, probe_score, streams, flags, size, bit_rate, duration, start/real, duration_ts, time_base и probe_size (поля format: сводка как в инспекторе FluxAlloy); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format=filename,probe_score,nb_streams,nb_programs,flags,size,bit_rate,duration,start_time,start_time_real,duration_ts,time_base,probe_size -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffmpeg',

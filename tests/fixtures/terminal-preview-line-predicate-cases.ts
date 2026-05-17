@@ -415,9 +415,9 @@ export const TERMINAL_PREVIEW_LINE_PREDICATES: readonly TerminalPreviewLinePredi
     needPlaceholder: true
   },
   {
-    label: 'format offset+timing · show_entries format=start_time,start_time_real,duration_ts,time_base,probe_size',
+    label: 'format offset+timing · show_entries format=start_time,start_time_real,duration,duration_ts,time_base,probe_size',
     includes: [
-      'show_entries format=start_time,start_time_real,duration_ts,time_base,probe_size',
+      'show_entries format=start_time,start_time_real,duration,duration_ts,time_base,probe_size',
       'default=nw=1:nk=1'
     ] as const,
     needPlaceholder: true
@@ -436,9 +436,9 @@ export const TERMINAL_PREVIEW_LINE_PREDICATES: readonly TerminalPreviewLinePredi
     needPlaceholder: true
   },
   {
-    label: 'format diagnostics · show_entries format=probe_score,nb_streams,flags,size,start_time,duration_ts',
+    label: 'format diagnostics · show_entries format=filename,probe_score,nb_streams,flags,size,start_time,duration_ts',
     includes: [
-      'show_entries format=probe_score,nb_streams,nb_programs,flags,size,start_time',
+      'show_entries format=filename,probe_score,nb_streams,nb_programs,flags,size,bit_rate,duration,start_time',
       'duration_ts,time_base,probe_size',
       'default=nw=1:nk=1'
     ] as const,

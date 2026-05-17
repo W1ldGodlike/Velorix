@@ -129,7 +129,8 @@ describe('ffprobe-summary-export', () => {
     expect(t).toContain('bt709')
     expect(t).toContain('\ttv\t')
     expect(t).toContain('192 кбит/с')
-    expect(t).toContain('Битрейт (оценка): 4500 кбит/с')
+    expect(t).toContain('bit_rate): 4500 кбит/с')
+    expect(t).not.toContain('Битрейт (оценка):')
     expect(t).toContain('по умолчанию')
     expect(t).toContain('Видео\t')
     expect(t).toContain('eng')
@@ -174,13 +175,23 @@ describe('ffprobe-summary-export', () => {
     expect(t).toContain('filename): D:\\clips\\Demo.mkv')
   })
 
-  it('plain text: одна строка diagnostics (layout + offset/timing)', () => {
+  it('plain text: одна строка diagnostics (filename + layout + offset/timing)', () => {
     const t = formatProbeSummaryPlainText(sampleProbe, 'ru')
     const merged = t
       .split('\n')
-      .filter((line) => line.includes('probe_score') && line.includes('duration_ts'))
+      .filter(
+        (line) =>
+          line.includes('probe_score') &&
+          line.includes('duration):') &&
+          line.includes('duration_ts') &&
+          line.includes('filename') &&
+          line.includes('bit_rate')
+      )
     expect(merged).toHaveLength(1)
     expect(merged[0]).toContain(' · ')
+    const filenameOnly = t.split('\n').filter((line) => line.includes('filename):'))
+    expect(filenameOnly).toHaveLength(1)
+    expect(t.split('\n').some((line) => line.startsWith('Битрейт (оценка):'))).toBe(false)
   })
 
   it('formatProbeSummaryPlainText и HTML включают главы', () => {
@@ -211,7 +222,8 @@ describe('ffprobe-summary-export', () => {
     expect(t).toContain('FPS (approx., video): 24 fps')
     expect(t).toContain('\tVideo\t')
     expect(t).toContain('192 kb/s')
-    expect(t).toContain('Bitrate (estimate): 4500 kb/s')
+    expect(t).toContain('Container bitrate (bit_rate): 4500 kb/s')
+    expect(t).not.toContain('Bitrate (estimate):')
   })
 
   it('formatProbeSummaryHtmlDocument экранирует detail и содержит таблицу', () => {

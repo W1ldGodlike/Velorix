@@ -8,6 +8,7 @@ import { formatFfprobeStreamStartTime } from './ffprobe-stream-start-time'
 import {
   type FfprobeSummaryLocale,
   type FfprobeSummaryStrings,
+  formatFfprobeBitrateLabelFromKbps,
   ffprobeSummaryFill,
   ffprobeSummaryStrings
 } from './ffprobe-summary-export-locale'
@@ -24,12 +25,15 @@ export type FfprobeFormatJsonSlice = {
   flags?: string | number
   start_time?: string | number
   start_time_real?: string | number
+  /** Длительность контейнера в секундах (строка float). */
+  duration?: string | number
   /** Длительность контейнера в тиках time_base. */
   duration_ts?: string | number
   /** База времени контейнера. */
   time_base?: string
   /** Байты, прочитанные при зондировании (диагностика глубины probe). */
   probe_size?: string | number
+  bit_rate?: string | number
   size?: string | number
   nb_streams?: string | number
   nb_programs?: string | number
@@ -100,6 +104,22 @@ export function parseFfprobeFormatFlags(raw: string | number | undefined): strin
   return null
 }
 
+/** `format.duration` (секунды), если ffprobe отдал. */
+export function parseFfprobeFormatDurationSec(raw: string | number | undefined): number | null {
+  if (typeof raw === 'number' && Number.isFinite(raw) && raw >= 0) {
+    return raw
+  }
+  if (typeof raw === 'string') {
+    const t = raw.trim()
+    if (t === '' || /^n\/a$/i.test(t)) {
+      return null
+    }
+    const sec = Number.parseFloat(t.replace(',', '.'))
+    return Number.isFinite(sec) && sec >= 0 ? sec : null
+  }
+  return null
+}
+
 export function parseFfprobeFormatStartTimeSec(raw: string | number | undefined): number | null {
   if (typeof raw === 'number' && Number.isFinite(raw)) {
     return Math.abs(raw) < 0.0005 ? null : raw
@@ -116,6 +136,27 @@ export function parseFfprobeFormatStartTimeSec(raw: string | number | undefined)
     return sec
   }
   return null
+}
+
+function parseFfprobeFormatPositiveNumber(raw: string | number | undefined): number | null {
+  if (typeof raw === 'number' && Number.isFinite(raw) && raw > 0) {
+    return raw
+  }
+  if (typeof raw === 'string') {
+    const t = raw.trim()
+    if (t === '') {
+      return null
+    }
+    const n = Number.parseFloat(t.replace(',', '.'))
+    return Number.isFinite(n) && n > 0 ? n : null
+  }
+  return null
+}
+
+/** `format.bit_rate` (бит/с) → килобиты/с для UI и registry smoke. */
+export function parseFfprobeFormatBitRateKbps(raw: string | number | undefined): number | null {
+  const bps = parseFfprobeFormatPositiveNumber(raw)
+  return bps === null ? null : bps / 1000
 }
 
 export function parseFfprobeFormatSize(raw: string | number | undefined): number | null {
@@ -251,11 +292,6 @@ const FFPROBE_CONTAINER_SCALAR_EXPORT_SPECS: readonly FfprobeContainerScalarExpo
     read: (info) => info.containerFormatFlags
   },
   {
-    localeTemplateKey: 'containerFilenameTemplate',
-    fillKey: 'filename',
-    read: (info) => info.containerFilename
-  },
-  {
     localeTemplateKey: 'containerDurationTsTemplate',
     fillKey: 'ticks',
     read: (info) => info.containerDurationTs
@@ -342,6 +378,40 @@ export function formatFfprobeContainerFormatFlagsCompact(flags: string | null): 
   return flags === null ? null : `flags ${flags}`
 }
 
+/** Basename для краткой строки `format.filename`. */
+export function ffprobeContainerFilenameBasename(filename: string): string {
+  const normalized = filename.replace(/\\/g, '/')
+  const base = normalized.split('/').pop() ?? filename
+  const t = base.trim()
+  return t.length > 0 ? t : filename
+}
+
+/** §9 — `format.bit_rate` в краткой сводке инспектора (англ. аббревиатура, как size/str.). */
+export function formatFfprobeContainerBitRateCompact(kbps: number | null): string | null {
+  const label = formatFfprobeBitrateLabelFromKbps(kbps, 'en')
+  return label === null ? null : `br ${label}`
+}
+
+export function formatFfprobeContainerBitRateExportLine(
+  kbps: number | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  const label = formatFfprobeBitrateLabelFromKbps(kbps, locale)
+  if (label === null) {
+    return null
+  }
+  return ffprobeSummaryFill(ffprobeSummaryStrings(locale).containerBitRateTemplate, { label })
+}
+
+/** §9 — `format.filename` в краткой сводке (basename). */
+export function formatFfprobeContainerFilenameCompact(filename: string | null): string | null {
+  if (filename === null) {
+    return null
+  }
+  const base = ffprobeContainerFilenameBasename(filename)
+  return base.length > 0 ? `file ${base}` : null
+}
+
 /** §9 — probe_score, nb_streams/programs, size и flags одной строкой инспектора. */
 export function formatFfprobeContainerProbeLayoutCompactLine(info: {
   probeScore: number | null
@@ -349,6 +419,7 @@ export function formatFfprobeContainerProbeLayoutCompactLine(info: {
   containerNbPrograms: number | null
   containerSizeBytes: number | null
   containerFormatFlags: string | null
+  bitrateKbps?: number | null
 }): string | null {
   const parts: string[] = []
   if (info.probeScore !== null) {
@@ -362,6 +433,10 @@ export function formatFfprobeContainerProbeLayoutCompactLine(info: {
   }
   if (info.containerSizeBytes !== null) {
     parts.push(formatFfprobeContainerSizeCompact(info.containerSizeBytes))
+  }
+  const br = formatFfprobeContainerBitRateCompact(info.bitrateKbps ?? null)
+  if (br) {
+    parts.push(br)
   }
   const flags = formatFfprobeContainerFormatFlagsCompact(info.containerFormatFlags)
   if (flags) {
@@ -380,6 +455,7 @@ export function formatFfprobeContainerProbeLayoutExportLine(
     formatFfprobeNbStreamsExportLine(info.containerNbStreams, info.tracks.length, locale),
     formatFfprobeNbProgramsExportLine(info.containerNbPrograms, locale),
     formatFfprobeContainerSizeExportLine(info.containerSizeBytes, locale),
+    formatFfprobeContainerBitRateExportLine(info.bitrateKbps, locale),
     formatFfprobeFormatFlagsExportLine(info.containerFormatFlags, locale)
   ].filter((x): x is string => x !== null)
   return parts.length > 0 ? parts.join(' · ') : null
@@ -486,6 +562,7 @@ export function formatFfprobeContainerStartOffsetCompactLine(info: {
 
 /** §9 — краткая строка инспектора: timing probe + start offset (порядок как в сводке). */
 export function formatFfprobeContainerOffsetTimingCompactLine(info: {
+  containerDurationSec?: number | null
   containerDurationTs: number | null
   containerTimeBase: string | null
   containerProbeSizeBytes: number | null
@@ -535,6 +612,27 @@ export function formatFfprobeContainerStartOffsetExportLine(
     }
   }
   return parts.length > 0 ? parts.join(' · ') : null
+}
+
+/** §9 — `format.duration` (секунды) в краткой сводке инспектора. */
+export function formatFfprobeContainerDurationSecCompact(sec: number | null): string | null {
+  if (sec === null || !Number.isFinite(sec) || sec < 0) {
+    return null
+  }
+  return `dur ${formatProbeChapterTimecode(sec)}`
+}
+
+export function formatFfprobeContainerDurationSecExportLine(
+  sec: number | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (sec === null || !Number.isFinite(sec) || sec < 0) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerDurationTemplate, {
+    time: formatProbeChapterTimecode(sec)
+  })
 }
 
 export function formatFfprobeContainerDurationTsCompact(ticks: number | null): string | null {
@@ -589,13 +687,18 @@ export function formatFfprobeContainerProbeSizeExportLine(
   })
 }
 
-/** §9 — краткая строка инспектора: duration_ts + time_base + probe_size без дублирования отдельных IIFE. */
+/** §9 — краткая строка инспектора: duration + duration_ts + time_base + probe_size. */
 export function formatFfprobeContainerTimingProbeCompactLine(info: {
+  containerDurationSec?: number | null
   containerDurationTs: number | null
   containerTimeBase: string | null
   containerProbeSizeBytes: number | null
 }): string | null {
   const parts: string[] = []
+  const dur = formatFfprobeContainerDurationSecCompact(info.containerDurationSec ?? null)
+  if (dur) {
+    parts.push(dur)
+  }
   const dts = formatFfprobeContainerDurationTsCompact(info.containerDurationTs)
   if (dts) {
     parts.push(dts)
@@ -614,6 +717,7 @@ export function formatFfprobeContainerTimingProbeCompactLine(info: {
 /** §9 — локализованная строка экспорта TXT/HTML: timing probe + start offset (как в инспекторе). */
 export function formatFfprobeContainerOffsetTimingExportLine(
   info: {
+    containerDurationSec?: number | null
     containerDurationTs: number | null
     containerTimeBase: string | null
     containerProbeSizeBytes: number | null
@@ -634,35 +738,58 @@ export function formatFfprobeContainerOffsetTimingExportLine(
   return parts.length > 0 ? parts.join(' · ') : null
 }
 
-/** §9 — краткая строка инспектора: probe layout + offset/timing. */
+/** §9 — краткая строка инспектора: filename + probe layout + offset/timing. */
 export function formatFfprobeContainerDiagnosticsCompactLine(info: MediaProbeSuccess): string | null {
   const parts: string[] = []
+  const file = formatFfprobeContainerFilenameCompact(info.containerFilename)
+  if (file) {
+    parts.push(file)
+  }
   const layout = formatFfprobeContainerProbeLayoutCompactLine(info)
   if (layout) {
     parts.push(layout)
   }
-  const offsetTiming = formatFfprobeContainerOffsetTimingCompactLine(info)
+  const offsetTiming = formatFfprobeContainerOffsetTimingCompactLine({
+    containerDurationSec: info.durationSec,
+    containerDurationTs: info.containerDurationTs,
+    containerTimeBase: info.containerTimeBase,
+    containerProbeSizeBytes: info.containerProbeSizeBytes,
+    containerStartTimeSec: info.containerStartTimeSec,
+    containerStartTimeRealSec: info.containerStartTimeRealSec
+  })
   if (offsetTiming) {
     parts.push(offsetTiming)
   }
   return parts.length > 0 ? parts.join(' · ') : null
 }
 
-/** §9 — локализованная строка экспорта TXT/HTML: probe layout + offset/timing. */
+/** §9 — локализованная строка экспорта TXT/HTML: filename + probe layout + offset/timing. */
 export function formatFfprobeContainerDiagnosticsExportLine(
   info: MediaProbeSuccess,
   locale: FfprobeSummaryLocale
 ): string | null {
   const parts = [
+    formatFfprobeContainerFilenameExportLine(info.containerFilename, locale),
     formatFfprobeContainerProbeLayoutExportLine(info, locale),
-    formatFfprobeContainerOffsetTimingExportLine(info, locale)
+    formatFfprobeContainerOffsetTimingExportLine(
+      {
+        containerDurationSec: info.durationSec,
+        containerDurationTs: info.containerDurationTs,
+        containerTimeBase: info.containerTimeBase,
+        containerProbeSizeBytes: info.containerProbeSizeBytes,
+        containerStartTimeSec: info.containerStartTimeSec,
+        containerStartTimeRealSec: info.containerStartTimeRealSec
+      },
+      locale
+    )
   ].filter((x): x is string => x !== null)
   return parts.length > 0 ? parts.join(' · ') : null
 }
 
-/** §9 — локализованная строка экспорта TXT/HTML: duration_ts · time_base · probe_size. */
+/** §9 — локализованная строка экспорта TXT/HTML: duration · duration_ts · time_base · probe_size. */
 export function formatFfprobeContainerTimingProbeExportLine(
   info: {
+    containerDurationSec?: number | null
     containerDurationTs: number | null
     containerTimeBase: string | null
     containerProbeSizeBytes: number | null
@@ -670,6 +797,7 @@ export function formatFfprobeContainerTimingProbeExportLine(
   locale: FfprobeSummaryLocale
 ): string | null {
   const parts = [
+    formatFfprobeContainerDurationSecExportLine(info.containerDurationSec ?? null, locale),
     formatFfprobeContainerDurationTsExportLine(info.containerDurationTs, locale),
     formatFfprobeContainerTimeBaseExportLine(info.containerTimeBase, locale),
     formatFfprobeContainerProbeSizeExportLine(info.containerProbeSizeBytes, locale)

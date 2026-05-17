@@ -24,7 +24,11 @@ import {
   formatFfprobeVideoSdrTransferBrief
 } from '../shared/ffprobe-video-color-brief'
 import { formatFfprobeCreationTimeBrief } from '../shared/ffprobe-creation-time-brief'
-import { parseFfprobeContainerFieldsFromFormat } from '../shared/ffprobe-container-format'
+import {
+  parseFfprobeContainerFieldsFromFormat,
+  parseFfprobeFormatBitRateKbps,
+  parseFfprobeFormatDurationSec
+} from '../shared/ffprobe-container-format'
 import { parseFfprobeFormatScalarTagsFromFfprobe } from '../shared/ffprobe-format-tag-registry'
 import type {
   MediaProbeResult,
@@ -955,15 +959,7 @@ export async function probeMediaFile(
     return { ok: false, error: S.ffprobeInvalidJson }
   }
 
-  const durRaw = parsed.format?.duration
-  const durationSec =
-    typeof durRaw === 'string' && durRaw.trim() !== ''
-      ? Number.parseFloat(durRaw)
-      : typeof durRaw === 'number'
-        ? durRaw
-        : NaN
-
-  const durationSecResolved = Number.isFinite(durationSec) ? durationSec : null
+  const durationSecResolved = parseFfprobeFormatDurationSec(parsed.format?.duration)
 
   let video: MediaProbeSuccess['video'] = null
   let videoFpsApprox: number | null = null
@@ -1010,7 +1006,7 @@ export async function probeMediaFile(
         ? (parsed.format.format_name.split(',')[0]?.trim() ?? null)
         : null,
     formatLongName: formatLong,
-    bitrateKbps: formatBitrateKbps(parsed.format?.bit_rate),
+    bitrateKbps: parseFfprobeFormatBitRateKbps(parsed.format?.bit_rate),
     ...parseFfprobeContainerFieldsFromFormat(parsed.format),
     ...parseFfprobeFormatScalarTagsFromFfprobe(parsed.format?.tags),
     tracks: buildTrackRows(parsed.streams, durationSecResolved, locale),

@@ -138,6 +138,10 @@ export const FFPROBE_SUMMARY_CONTAINER_TEMPLATE_SPECS = {
     ru: 'Размер файла (format.size): {label} ({bytes} B)',
     en: 'File size (format.size): {label} ({bytes} B)'
   },
+  containerBitRateTemplate: {
+    ru: 'Битрейт контейнера (bit_rate): {label}',
+    en: 'Container bitrate (bit_rate): {label}'
+  },
   containerStartTimeTemplate: {
     ru: 'Смещение контейнера (start_time): {time}',
     en: 'Container start offset (start_time): {time}'
@@ -149,6 +153,10 @@ export const FFPROBE_SUMMARY_CONTAINER_TEMPLATE_SPECS = {
   containerStartTimeRealMismatchTemplate: {
     ru: 'Реальное смещение (start_time_real): {real} (start_time: {nominal})',
     en: 'Real start offset (start_time_real): {real} (start_time: {nominal})'
+  },
+  containerDurationTemplate: {
+    ru: 'Длительность контейнера (duration): {time}',
+    en: 'Container duration (duration): {time}'
   },
   containerDurationTsTemplate: {
     ru: 'Длительность контейнера (duration_ts): {ticks} тиков',
