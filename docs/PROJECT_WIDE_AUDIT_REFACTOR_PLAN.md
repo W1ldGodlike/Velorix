@@ -355,6 +355,11 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | structural | 456 | src/renderer/src/components/TerminalWorkspacePanel.tsx | 5 | `terminal-workspace-panel-props.ts` + `TerminalWorkspacePanelIntro|Command|History|Hints.tsx` + shell | ✅ J-842 |
 | structural | 455 | src/renderer/src/use-editor-export-settings.ts | 4 | `use-editor-export-settings-state.ts` + entry orchestrator | ✅ J-843 |
 | structural | 452 | src/renderer/src/InspectorStandaloneApp.tsx | 4 | `use-inspector-standalone-app.ts` + `InspectorStandaloneAppTopbar|Main.tsx` + entry | ✅ J-844 |
+| structural | 499 | src/renderer/src/components/use-video-timeline-controller.ts | 4 | `use-video-timeline-media-sync|trim-controls.ts` + entry orchestrator | ✅ J-845 |
+| structural | 411 | src/renderer/src/use-app-composition-state.ts | 4 | `use-app-composition-local-state|integrations.ts` + entry spread merge | ✅ J-846 |
+| structural | 418 | src/renderer/src/use-editor-export-settings-state.ts | 4 | `editor-export-settings-field-state.ts` + `use-editor-export-settings-derived.ts` + entry | ✅ J-847 |
+| structural | 409 | src/renderer/src/use-app-main-window-effects.ts | 4 | `use-app-main-window-effects-deps|bootstrap|runtime.ts` + entry | ✅ J-848 |
+| structural | 404 | src/renderer/src/components/PreviewProbeBodySections.tsx | 5 | `PreviewProbeBodyExportSummary|Tracks|Chapters|RawJsonSection.tsx` + orchestrator | ✅ J-849 |
 
 ---
 

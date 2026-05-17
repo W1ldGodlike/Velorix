@@ -1,0 +1,113 @@
+import { useEffect } from 'react'
+
+import type { ResolvedAppTheme } from '../../shared/settings-contract'
+import { applyPersistedUiLocale, setUiLocaleForSession } from './locales/ui-text'
+import { sanitizeDownloadsRows } from './downloads-queue-view'
+import type { UseAppMainWindowEffectsDeps } from './use-app-main-window-effects-deps'
+
+export function useAppMainWindowEffectsBootstrap(
+  deps: UseAppMainWindowEffectsDeps,
+  actions: { applyTheme: (value: ResolvedAppTheme) => void }
+): void {
+  const {
+    trimSnapshotRef,
+    currentSourcePath,
+    setDownloadsRows,
+    setUiLocaleRenderTick,
+    hydrateExportFieldsFromSettings,
+    hydrateMainWindowUiPanels,
+    hydrateDownloadsWindowUiPanels,
+    setExportUserPresets,
+    setSnapshotFormat,
+    applyPreview
+  } = deps
+  const { applyTheme } = actions
+
+  useEffect(() => {
+    let mounted = true
+    void window.fluxalloy.downloads.getSnapshot().then((rows) => {
+      if (mounted) {
+        setDownloadsRows(sanitizeDownloadsRows(rows))
+      }
+    })
+    const unsubscribe = window.fluxalloy.downloads.onSnapshot((rows) => {
+      setDownloadsRows(sanitizeDownloadsRows(rows))
+    })
+    return () => {
+      mounted = false
+      unsubscribe()
+    }
+  }, [setDownloadsRows])
+
+  useEffect(() => {
+    trimSnapshotRef.current = null
+  }, [currentSourcePath, trimSnapshotRef])
+
+  useEffect(() => {
+    let cleanupTheme: (() => void) | undefined
+    let cleanupUiPanels: (() => void) | undefined
+    void (async () => {
+      const loaded = await window.fluxalloy.settings.get()
+      const { resolved, shouldPersist } = applyPersistedUiLocale(loaded)
+      setUiLocaleRenderTick((n) => n + 1)
+      if (shouldPersist) {
+        void window.fluxalloy.settings.setUiLocale(resolved)
+      }
+      applyTheme(loaded.effectiveTheme)
+      hydrateExportFieldsFromSettings(loaded)
+      hydrateMainWindowUiPanels(loaded.mainWindowUiPanels)
+      hydrateDownloadsWindowUiPanels(loaded.downloadsWindowUiPanels)
+      setExportUserPresets(loaded.ffmpegExportUserPresets ?? [])
+      if (loaded.ffmpegSnapshotFormat === 'jpg') {
+        setSnapshotFormat('jpg')
+      }
+      cleanupTheme = window.fluxalloy.onThemeChanged((next) => {
+        applyTheme(next)
+      })
+      cleanupUiPanels = window.fluxalloy.onMainWindowUiPanelsChanged((panels) => {
+        hydrateMainWindowUiPanels(panels)
+      })
+    })().catch(console.error)
+
+    return (): void => {
+      cleanupTheme?.()
+      cleanupUiPanels?.()
+    }
+  }, [
+    applyTheme,
+    hydrateDownloadsWindowUiPanels,
+    hydrateExportFieldsFromSettings,
+    hydrateMainWindowUiPanels,
+    setExportUserPresets,
+    setSnapshotFormat,
+    setUiLocaleRenderTick
+  ])
+
+  useEffect(() => {
+    const off = window.fluxalloy.onUiLocaleChanged((loc) => {
+      setUiLocaleForSession(loc)
+      setUiLocaleRenderTick((n) => n + 1)
+    })
+    return off
+  }, [setUiLocaleRenderTick])
+
+  useEffect(() => {
+    const off = window.fluxalloy.downloads.onDownloadsWindowUiPanelsChanged((panels) => {
+      hydrateDownloadsWindowUiPanels(panels)
+    })
+    return off
+  }, [hydrateDownloadsWindowUiPanels])
+
+  useEffect(() => {
+    let cancelled = false
+    void window.fluxalloy.session.restoreLastSource().then((restored) => {
+      if (cancelled || !restored) {
+        return
+      }
+      applyPreview(restored)
+    })
+    return (): void => {
+      cancelled = true
+    }
+  }, [applyPreview])
+}
