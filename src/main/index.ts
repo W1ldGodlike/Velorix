@@ -2,7 +2,6 @@ import { existsSync, statSync } from 'fs'
 import { basename, dirname, isAbsolute, join, normalize, resolve } from 'path'
 import {
   BrowserWindow,
-  Menu,
   app,
   clipboard,
   dialog,
@@ -40,22 +39,18 @@ import {
   broadcastDownloadsOutputDirectorySnapshot,
   broadcastDownloadsWindowUiPanelsSnapshot,
   configureDownloadsWindowBoundsHooks,
-  focusOrCreateDownloadsWindow,
-  isDownloadsWindow,
   registerDownloadsWindowIpcHandlers,
   syncDownloadsPopoutHtmlToLocale
 } from './downloads-window'
 import {
   configureInspectorWindowHooks,
-  focusOrCreateInspectorWindow,
   isInspectorWindow,
   registerInspectorWindowIpcHandlers
 } from './inspector-window'
 import {
-  listDiagnosticsFolders,
-  openDiagnosticsFolder,
-  type DiagnosticsFolderEntry
-} from './diagnostics-paths'
+  buildApplicationMenu,
+  configureMainApplicationMenu
+} from './main-application-menu'
 import {
   attachProcessErrorHandlers,
   getMainLogBackupFilePath,
@@ -97,7 +92,6 @@ import { setEnginePathOverridesSnapshot } from './engine-path-sync'
 import { ENGINE_IDS, getEnginesStatus, resolveEngineExecutablePath } from './engine-service'
 import { grantMediaPath, registerFluxMediaPrivileges, registerFluxMediaProtocol } from './media-protocol'
 import { registerFluxHelpPrivileges, registerFluxHelpProtocol } from './help-assets-protocol'
-import { openVideoFolderWithDialog, openVideoWithDialog } from './preview-dialog'
 import type {
   AppSettings,
   AppSettingsView,
@@ -740,17 +734,6 @@ function setTheme(pref: AppTheme): AppSettingsView {
   return settingsIpcPersist.persistThemePreference(pref)
 }
 
-function buildDiagnosticsFolderSubmenu(): Electron.MenuItemConstructorOptions[] {
-  const entries = listDiagnosticsFolders(mainDownloadsUiLocale())
-  return entries.map((entry: DiagnosticsFolderEntry) => ({
-    label: entry.label,
-    enabled: entry.exists,
-    click: (): void => {
-      void openDiagnosticsFolder(entry.id)
-    }
-  }))
-}
-
 function getCrashDumpsPathSafe(): string | null {
   try {
     return app.getPath('crashDumps')
@@ -1002,260 +985,6 @@ async function showProcessErrorDialog(
   }
 }
 
-function buildApplicationMenu(): void {
-  const win = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0] ?? undefined
-  const isMac = process.platform === 'darwin'
-  const themePref = cachedSettings.theme
-  const uiLoc = mainDownloadsUiLocale()
-  const isSystem = themePref === 'system'
-  const isDarkPref = themePref === 'dark'
-  const isLightPref = themePref === 'light'
-  const downloadsFocused = isDownloadsWindow(win)
-  const inspectorFocused = isInspectorWindow(win)
-  const auxiliaryFocused = downloadsFocused || inspectorFocused
-  const mainUiWindow =
-    mainWindowRef && !mainWindowRef.isDestroyed()
-      ? mainWindowRef
-      : BrowserWindow.getAllWindows().find((w) => !isDownloadsWindow(w) && !isInspectorWindow(w))
-
-  const getMainUiWindow = (): BrowserWindow | undefined =>
-    mainUiWindow && !mainUiWindow.isDestroyed() ? mainUiWindow : undefined
-
-  const m = mainAppStr()
-
-  // Меню пересобирается после смены темы, чтобы radio-состояния оставались честными.
-  const template: Electron.MenuItemConstructorOptions[] = []
-
-  if (isMac) {
-    template.push({
-      label: app.name,
-      submenu: [
-        { role: 'about' },
-        { type: 'separator' },
-        { role: 'services' },
-        { type: 'separator' },
-        { role: 'hide' },
-        { role: 'hideOthers' },
-        { role: 'unhide' },
-        { type: 'separator' },
-        { role: 'quit' }
-      ]
-    })
-  }
-
-  template.push(
-    {
-      label: m.menuFile,
-      submenu: [
-        {
-          label: m.menuOpen,
-          accelerator: 'CmdOrCtrl+O',
-          click: async (): Promise<void> => {
-            const target = getMainUiWindow()
-            if (!target || target.isDestroyed()) {
-              return
-            }
-            target.focus()
-            const def = previewOpenDialogOptsFromSettings()
-            const result = await openVideoWithDialog(target, mainDownloadsUiLocale(), def)
-            if (!result.ok) {
-              return
-            }
-            persistLastOpenedSource(result.path)
-            target.webContents.send(mw.previewOpened, result)
-          }
-        },
-        {
-          label: m.menuOpenVideoFolder,
-          accelerator: 'CmdOrCtrl+Shift+O',
-          click: async (): Promise<void> => {
-            const target = getMainUiWindow()
-            if (!target || target.isDestroyed()) {
-              return
-            }
-            target.focus()
-            const def = previewOpenDialogOptsFromSettings()
-            const result = await openVideoFolderWithDialog(target, mainDownloadsUiLocale(), def)
-            if (!result.ok) {
-              if (
-                'error' in result &&
-                typeof result.error === 'string' &&
-                result.error.length > 0
-              ) {
-                void dialog.showMessageBox(target, {
-                  type: 'warning',
-                  title: m.openVideoFolderDialogTitle,
-                  message: result.error
-                })
-              }
-              return
-            }
-            persistLastOpenedSource(result.path)
-            target.webContents.send(mw.previewOpened, result)
-          }
-        },
-        {
-          label: m.menuDownloadsManager,
-          accelerator: 'CmdOrCtrl+Shift+Y',
-          enabled: !auxiliaryFocused,
-          click: (): void => {
-            focusOrCreateDownloadsWindow(undefined)
-          }
-        },
-        {
-          label: m.menuPasteUrlDownloads,
-          accelerator: 'CmdOrCtrl+Shift+V',
-          enabled: !auxiliaryFocused,
-          click: (): void => {
-            const t = clipboard.readText().trim()
-            focusOrCreateDownloadsWindow(t.length > 0 ? t : undefined)
-          }
-        },
-        { type: 'separator' },
-        isMac ? { role: 'close' } : { role: 'quit' }
-      ]
-    },
-    {
-      label: m.menuSettings,
-      submenu: [
-        {
-          label: m.menuEnginePaths,
-          click: (): void => {
-            const target = getMainUiWindow()
-            if (!target || target.isDestroyed()) {
-              return
-            }
-            target.focus()
-            target.webContents.send(mw.openEnginePaths)
-          }
-        }
-      ]
-    },
-    {
-      label: m.menuTools,
-      submenu: [
-        {
-          label: m.menuInspector,
-          enabled: !auxiliaryFocused,
-          click: (): void => {
-            focusOrCreateInspectorWindow(undefined)
-          }
-        },
-        { type: 'separator' },
-        {
-          label: m.menuOpenFolder,
-          submenu: buildDiagnosticsFolderSubmenu()
-        },
-        {
-          label: m.menuOpenMainLog,
-          click: (): void => {
-            void openMainLogFile()
-          }
-        },
-        {
-          label: m.menuOpenSessionLog,
-          click: (): void => {
-            void openSessionLogFile()
-          }
-        },
-        {
-          label: m.menuSupportZip,
-          click: (): void => {
-            const target = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0]
-            void createSupportBundleWithDialog(target && !target.isDestroyed() ? target : undefined)
-          }
-        }
-      ]
-    },
-    {
-      label: m.menuView,
-      submenu: [
-        {
-          label: m.menuTheme,
-          submenu: [
-            {
-              label: m.menuThemeSystem,
-              type: 'radio',
-              checked: isSystem,
-              click: (): void => {
-                void setTheme('system')
-              }
-            },
-            {
-              label: m.menuThemeDark,
-              type: 'radio',
-              checked: isDarkPref,
-              click: (): void => {
-                void setTheme('dark')
-              }
-            },
-            {
-              label: m.menuThemeLight,
-              type: 'radio',
-              checked: isLightPref,
-              click: (): void => {
-                void setTheme('light')
-              }
-            }
-          ]
-        },
-        {
-          label: m.menuInterfaceLanguage,
-          submenu: [
-            {
-              label: m.menuUiLangRussian,
-              type: 'radio',
-              checked: uiLoc === 'ru',
-              click: (): void => {
-                void settingsIpcPersist.persistUiLocale('ru')
-              }
-            },
-            {
-              label: m.menuUiLangEnglish,
-              type: 'radio',
-              checked: uiLoc === 'en',
-              click: (): void => {
-                void settingsIpcPersist.persistUiLocale('en')
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      label: m.menuHelp,
-      submenu: [
-        {
-          label: m.menuAbout,
-          click: (): void => {
-            const target = getMainUiWindow()
-            if (!target || target.isDestroyed()) {
-              return
-            }
-            target.focus()
-            target.webContents.send(mw.openAbout)
-          }
-        },
-        {
-          label: m.menuDocumentation,
-          click: (): void => {
-            const tzPath = technicalSpecPath()
-            if (existsSync(tzPath)) {
-              void shell.openPath(tzPath)
-            }
-          }
-        }
-      ]
-    }
-  )
-
-  const menu = Menu.buildFromTemplate(template)
-  Menu.setApplicationMenu(menu)
-  if (win && !win.isDestroyed()) {
-    win.setMenuBarVisibility(true)
-  }
-}
-
 function createWindow(): void {
   const savedMain = cachedSettings.windowBounds?.main
   const rect = savedMain ? rectifyBoundsForRestore(savedMain) : null
@@ -1410,6 +1139,26 @@ app.whenReady().then(() => {
   logStartupBanner()
   pruneDiagnosticsOnStartup()
   cachedSettings = loadSettings(settingsPath())
+  configureMainApplicationMenu({
+    getThemePref: () => cachedSettings.theme,
+    getMainWindowRef: () => mainWindowRef,
+    mainDownloadsUiLocale,
+    mainAppStr,
+    previewOpenDialogOptsFromSettings,
+    persistLastOpenedSource,
+    setTheme: (pref) => {
+      void setTheme(pref)
+    },
+    persistUiLocale: (locale) => {
+      void settingsIpcPersist.persistUiLocale(locale)
+    },
+    technicalSpecPath,
+    openMainLogFile,
+    openSessionLogFile,
+    createSupportBundleWithDialog: (win) => {
+      void createSupportBundleWithDialog(win)
+    }
+  })
   settingsIpcPersist = createSettingsIpcPersist(mainSettingsAccess, {
     resolveEffectiveTheme,
     buildApplicationMenu,

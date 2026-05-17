@@ -297,6 +297,7 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 **Структурные (≥400 строк, фаза 4):** `terminal-contract.ts` (13008), `downloads-window.ts` (4074), `ui-text.ts` (2848), `index.ts` (2141→срез: preview-proxy + ytdlp-cli-merge), `ffmpeg-export-argv.ts` (1055), `ffprobe-service.ts` (1017), `App.tsx` (820). Полный список: `npm run audit:structural`.
 
 | structural | 2141 | src/main/index.ts | 4 | `preview-proxy-service.ts` + `ytdlp-download-cli-merge.ts` | ✅ J-786 |
+| structural | ~1900 | src/main/index.ts | 4 | `main-application-menu.ts` (buildApplicationMenu + diagnostics submenu) | ✅ J-787 |
 
 ---
 
