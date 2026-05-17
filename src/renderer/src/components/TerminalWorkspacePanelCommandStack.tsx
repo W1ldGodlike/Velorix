@@ -165,6 +165,7 @@ export function TerminalWorkspacePanelCommandStack(
           type="button"
           className="app-btn"
           disabled={terminalBusy || !currentSourcePath}
+          aria-describedby="terminal-intro-hint"
           title={
             currentSourcePath
               ? formatTerminalPreviewTooltip(TERMINAL_CURRENT_FILE_PLACEHOLDER)
@@ -178,6 +179,7 @@ export function TerminalWorkspacePanelCommandStack(
           type="button"
           className="app-btn app-btn-primary"
           disabled={terminalBusy || terminalLine.trim().length === 0}
+          aria-describedby="terminal-intro-hint"
           onClick={() => {
             void runTerminalLine()
           }}

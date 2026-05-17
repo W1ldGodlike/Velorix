@@ -54,6 +54,7 @@ export function EditorPreviewSection(props: EditorPreviewSectionProps): JSX.Elem
     <section
       className="app-preview"
       aria-label={uiText('editorPreviewDropzoneAria')}
+      aria-describedby={preview ? undefined : 'editor-preview-empty-hint'}
       aria-busy={editorPreviewRegionBusy}
       onDragOver={(event) => {
         event.preventDefault()
@@ -72,6 +73,7 @@ export function EditorPreviewSection(props: EditorPreviewSectionProps): JSX.Elem
             ref={previewStackRef}
             role="region"
             aria-label={uiText('editorPreviewStackAria')}
+            aria-describedby="editor-preview-transport-hint editor-video-timeline-hint"
             aria-busy={editorPreviewRegionBusy}
           >
             <div
@@ -138,10 +140,13 @@ export function EditorPreviewSection(props: EditorPreviewSectionProps): JSX.Elem
           className="app-preview-placeholder"
           role="region"
           aria-label={uiText('editorPreviewPlaceholderAria')}
+          aria-describedby="editor-preview-empty-hint"
           aria-busy={probePending}
         >
           {uiText('editorPreviewEmptyLead')}
-          <p className="app-preview-hint">{uiText('editorPreviewEmptyHint')}</p>
+          <p id="editor-preview-empty-hint" className="app-preview-hint">
+            {uiText('editorPreviewEmptyHint')}
+          </p>
         </div>
       )}
       {!ffmpegSettingsRailOpen ? (

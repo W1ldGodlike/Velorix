@@ -39,6 +39,7 @@ describe('packaged-ffprobe-smoke', () => {
     const lines = buildSupportZipFfprobeSmokeLines('C:\\repo', (p) => p === candidates[0])
     expect(lines[0]).toContain('smoke:packaged-ffprobe')
     expect(lines.some((l) => l.includes('registry optional'))).toBe(true)
+    expect(lines.some((l) => l.includes('format_long_name'))).toBe(true)
     expect(lines.some((l) => l.includes('start_time, start_time_real'))).toBe(true)
     expect(lines.some((l) => l.includes('format.tags'))).toBe(true)
     expect(lines.some((l) => l.includes('chapters[]'))).toBe(true)
@@ -54,6 +55,7 @@ describe('packaged-ffprobe-smoke', () => {
     expect(lines.some((l) => l.includes('color_*'))).toBe(true)
     expect(lines.some((l) => l.includes('extradata_size'))).toBe(true)
     expect(lines.some((l) => l.includes('disposition'))).toBe(true)
+    expect(lines.some((l) => l.includes('codec_name, id,'))).toBe(true)
     expect(lines.some((l) => l.includes('ParsableForSmoke'))).toBe(true)
     expect(lines.some((l) => l.includes('formatFfprobeContainerDiagnostics'))).toBe(true)
     expect(lines).toContain(`candidate: ${candidates[0]} (present)`)
@@ -246,11 +248,18 @@ describe('packaged-ffprobe-smoke', () => {
         streams: [{}],
         format: {
           format_name: 'mp4',
+          format_long_name: 'QuickTime / MOV',
           nb_streams: '1',
           tags: { major_brand: 'isom', encoder: 'Lavf61.0' }
         }
       })
     ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
+        format: { format_name: 'mp4', nb_streams: '1', format_long_name: 42 }
+      })
+    ).toBe(false)
     expect(
       isPackagedFfprobeProbeJsonParsableByContainerRegistry({
         streams: [{}],
@@ -525,6 +534,18 @@ describe('packaged-ffprobe-smoke', () => {
       isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
         ...base,
         streams: [{ disposition: { default: 'yes' } }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ id: '0x1e0' }]
+      })
+    ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ id: 'not-hex' }]
       })
     ).toBe(false)
     expect(

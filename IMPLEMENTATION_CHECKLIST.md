@@ -44,11 +44,11 @@
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый; подробности фиксировать ниже в тематических § и в `IMPLEMENTATION_JOURNAL.md`.
 
 - [~] §8: терминал — IntelliSense ✅; recall ✅; UI copy в `locales/*/terminal.json`; при правках `summary` — `locales:terminal-summaries-ru`.
-- [~] §9/§18: packaged/ffprobe smoke ✅ (+`stream.codec_type`); редкие tag/stream — по мере ffprobe.
-- [~] §19/§3: verify+release smoke ✅; `check:release:local`; platform hints (mac/linux) в Support ZIP; engines manual на non-Win.
+- [~] §9/§18: packaged/ffprobe smoke ✅ (stream/container optional fields, J-926..934); редкие tag/stream — по мере ffprobe.
+- [~] §19/§3: verify+release smoke ✅; `check:release:local`; Support ZIP — platform + `FLUXALLOY_SKIP_*` (J-932..934); engines manual на non-Win.
 - [x] §15: knowledge — пакет закрыт (RU/EN Help, `data:` assets, fluxhelp, About→справка); далее tooltips/PNG по UI.
 - [x] §4.1/§19: runtime только `<installRoot>/app-data/` (Electron userData/cache/temp); NSIS+ZIP, `Uninstall FluxAlloy.cmd`, optional wipe app-data; без legacy-миграции в коде (J-924).
-- [~] §2.2/§5: uiLocale hot-reload ✅; `locales` 15 shards + `check:locales-json`; DPI ✅ hints; §1.1 focus — терминал `aria-describedby` (intro/stack/split/history/hints, J-925..930).
+- [~] §2.2/§5: uiLocale hot-reload ✅; `locales` 15 shards + `check:locales-json`; DPI ✅ hints; §1.1 focus — терминал + превью transport/empty (J-925..933).
 
 ---
 

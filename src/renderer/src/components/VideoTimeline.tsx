@@ -10,12 +10,17 @@ export default function VideoTimeline(props: VideoTimelineProps): React.JSX.Elem
   const ctl = useVideoTimelineController(props)
 
   return (
-    <div
-      className="app-timeline-stack"
-      role="region"
-      aria-label={uiText('videoTimelineStackAria')}
-      aria-busy={ctl.pipelineBusy}
-    >
+    <>
+      <p id="editor-video-timeline-hint" className="app-visually-hidden">
+        {uiText('videoTimelineStackHint')}
+      </p>
+      <div
+        className="app-timeline-stack"
+        role="region"
+        aria-label={uiText('videoTimelineStackAria')}
+        aria-describedby="editor-video-timeline-hint"
+        aria-busy={ctl.pipelineBusy}
+      >
       {ctl.duration > 0 ? (
         <VideoTimelineToolbar
           duration={ctl.duration}
@@ -64,5 +69,6 @@ export default function VideoTimeline(props: VideoTimelineProps): React.JSX.Elem
         />
       ) : null}
     </div>
+    </>
   )
 }

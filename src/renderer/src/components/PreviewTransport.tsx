@@ -129,13 +129,18 @@ export default function PreviewTransport({
   }
 
   return (
-    <div
-      className="app-preview-transport"
-      role="toolbar"
-      aria-orientation="horizontal"
-      aria-label={uiText('previewTransportToolbarAria')}
-      aria-busy={disabled}
-    >
+    <>
+      <p id="editor-preview-transport-hint" className="app-visually-hidden">
+        {uiText('previewTransportHint')}
+      </p>
+      <div
+        className="app-preview-transport"
+        role="toolbar"
+        aria-orientation="horizontal"
+        aria-label={uiText('previewTransportToolbarAria')}
+        aria-describedby="editor-preview-transport-hint"
+        aria-busy={disabled}
+      >
       <div
         className="app-preview-transport-cluster"
         role="group"
@@ -231,6 +236,7 @@ export default function PreviewTransport({
             step={0.02}
             value={volumeUi}
             disabled={disabled}
+            aria-describedby="editor-preview-transport-hint"
             aria-valuetext={`${Math.round(volumeUi * 100)}%`}
             onChange={(e) => {
               const v = videoRef.current
@@ -261,5 +267,6 @@ export default function PreviewTransport({
         </button>
       </div>
     </div>
+    </>
   )
 }

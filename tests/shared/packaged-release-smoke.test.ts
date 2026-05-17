@@ -14,6 +14,7 @@ describe('packaged-release-smoke §19', () => {
     expect(lines.some((l) => l.includes('app-candidate:') && l.includes('present'))).toBe(true)
     expect(lines.some((l) => l.startsWith('layout: FluxAlloy.exe'))).toBe(true)
     expect(lines.some((l) => l.includes('FLUXALLOY_SKIP_PACK_VERIFY'))).toBe(true)
+    expect(lines.some((l) => l.includes('FLUXALLOY_SKIP_FFPROBE_SMOKE'))).toBe(true)
     expect(lines.some((l) => l.includes('check:release:local'))).toBe(true)
     expect(lines.some((l) => l.includes('build:mac'))).toBe(true)
     expect(lines.some((l) => l.includes('build:linux'))).toBe(true)

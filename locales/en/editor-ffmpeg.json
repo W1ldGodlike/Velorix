@@ -3,6 +3,8 @@
   "editorPreviewVideoAriaTemplate": "Preview: {name}",
   "editorPreviewMediaCardGroupAria": "Preview video and transport controls",
   "editorPreviewStackAria": "Preview stack: video, timeline, and ffprobe panel",
+  "previewTransportHint": "Playback and ±5 s seek; volume and fullscreen on the right. Use this bar only — native video controls are disabled.",
+  "videoTimelineStackHint": "In/out, scrub window zoom, time ruler, and frame export; clicking the track seeks within the visible window.",
   "editorWorkbenchAria": "Editor: preview area and FFmpeg panel",
   "editorPreviewCaptionAria": "Preview caption with file name",
   "editorPreviewPlaceholderAria": "Preview without a file",

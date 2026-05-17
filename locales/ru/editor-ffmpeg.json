@@ -3,6 +3,8 @@
   "editorPreviewVideoAriaTemplate": "Предпросмотр: {name}",
   "editorPreviewMediaCardGroupAria": "Видео предпросмотра и панель управления",
   "editorPreviewStackAria": "Стек превью: видео, таймлайн и панель ffprobe",
+  "previewTransportHint": "Воспроизведение и перемотка на ±5 с; громкость и полноэкранный режим справа. Управление только через эту панель, не через нативные controls у видео.",
+  "videoTimelineStackHint": "In/out, масштаб окна scrub, линейка времени и экспорт кадра; клик по дорожке перематывает в пределах видимого окна.",
   "editorWorkbenchAria": "Редактор: область превью и панель FFmpeg",
   "editorPreviewCaptionAria": "Подпись к превью с именем файла",
   "editorPreviewPlaceholderAria": "Превью без файла",
