@@ -46,50 +46,79 @@ import {
   parseFfprobeFormatSize,
   parseFfprobeFormatStartTimeSec
 } from '../../src/shared/ffprobe-container-format'
+import {
+  FFPROBE_BITRATE_COMPACT_CASES,
+  FFPROBE_BITRATE_KBPS_PARSE_CASES,
+  FFPROBE_BRAND_EXPORT_CASES,
+  FFPROBE_CREATION_TIME_TAGS,
+  FFPROBE_DIAGNOSTICS_EXPORT_CONTAINS,
+  FFPROBE_DURATION_SEC_COMPACT_CASES,
+  FFPROBE_DURATION_SEC_PARSE_CASES,
+  FFPROBE_DURATION_TS_CASES,
+  FFPROBE_FILENAME_BASENAME_CASES,
+  FFPROBE_FILENAME_COMPACT_CASES,
+  FFPROBE_FILENAME_PARSE_CASES,
+  FFPROBE_FLAGS_RAW_PARSED,
+  FFPROBE_FORMAT_FLAGS_COMPACT_CASES,
+  FFPROBE_MAJOR_BRAND_TAGS,
+  FFPROBE_NB_PROGRAMS_PARSE_EXPORT_CASES,
+  FFPROBE_NB_STREAMS_PARSE_EXPORT_CASES,
+  FFPROBE_PROBE_LAYOUT_COMPACT_EXPECTED,
+  FFPROBE_PROBE_LAYOUT_COMPACT_INPUT,
+  FFPROBE_PROBE_LAYOUT_EXPORT_CONTAINS,
+  FFPROBE_PROBE_SCORE_EXPORT_CASES,
+  FFPROBE_PROBE_SCORE_PARSE_CASES,
+  FFPROBE_PROBE_SIZE_CASES,
+  FFPROBE_SIZE_CASES,
+  FFPROBE_START_OFFSET_COMPACT_CASES,
+  FFPROBE_START_OFFSET_EXPORT_CASES,
+  FFPROBE_START_TIME_CASES,
+  FFPROBE_TIME_BASE_CASES
+} from '../fixtures/ffprobe-container-format-cases'
 import { createMediaProbeSuccessBase } from '../fixtures/media-probe-success-base'
 
 const probeBase = createMediaProbeSuccessBase()
 
 describe('ffprobe-container-format', () => {
-  it('formatFfprobeContainerDurationSecCompact', () => {
-    expect(formatFfprobeContainerDurationSecCompact(125.5)).toBe('dur 2:05.500')
-    expect(formatFfprobeContainerDurationSecCompact(null)).toBeNull()
-  })
+  it.each(FFPROBE_DURATION_SEC_COMPACT_CASES)(
+    'formatFfprobeContainerDurationSecCompact $label',
+    ({ input, expected }) => {
+      expect(formatFfprobeContainerDurationSecCompact(input)).toBe(expected)
+    }
+  )
 
-  it('parseFfprobeFormatDurationSec', () => {
-    expect(parseFfprobeFormatDurationSec('125.5')).toBe(125.5)
-    expect(parseFfprobeFormatDurationSec(90)).toBe(90)
-    expect(parseFfprobeFormatDurationSec('N/A')).toBeNull()
-    expect(parseFfprobeFormatDurationSec('bad')).toBeNull()
-  })
+  it.each(FFPROBE_DURATION_SEC_PARSE_CASES)(
+    'parseFfprobeFormatDurationSec $label',
+    ({ input, expected }) => {
+      expect(parseFfprobeFormatDurationSec(input)).toBe(expected)
+    }
+  )
 
-  it('parseFfprobeFormatBitRateKbps', () => {
-    expect(parseFfprobeFormatBitRateKbps('4500000')).toBe(4500)
-    expect(parseFfprobeFormatBitRateKbps(2_500_000)).toBe(2500)
-    expect(parseFfprobeFormatBitRateKbps('')).toBeNull()
-    expect(parseFfprobeFormatBitRateKbps('n/a')).toBeNull()
-  })
+  it.each(FFPROBE_BITRATE_KBPS_PARSE_CASES)(
+    'parseFfprobeFormatBitRateKbps $label',
+    ({ input, expected }) => {
+      expect(parseFfprobeFormatBitRateKbps(input)).toBe(expected)
+    }
+  )
 
-  it('formatFfprobeContainerBitRateCompact', () => {
-    expect(formatFfprobeContainerBitRateCompact(4500)).toBe('br 4500 kb/s')
-    expect(formatFfprobeContainerBitRateCompact(null)).toBeNull()
-  })
+  it.each(FFPROBE_BITRATE_COMPACT_CASES)(
+    'formatFfprobeContainerBitRateCompact $label',
+    ({ input, expected }) => {
+      expect(formatFfprobeContainerBitRateCompact(input)).toBe(expected)
+    }
+  )
 
-  it('formatFfprobeContainerFormatFlagsCompact', () => {
-    expect(formatFfprobeContainerFormatFlagsCompact('0x0')).toBe('flags 0x0')
-    expect(formatFfprobeContainerFormatFlagsCompact(null)).toBeNull()
-  })
+  it.each(FFPROBE_FORMAT_FLAGS_COMPACT_CASES)(
+    'formatFfprobeContainerFormatFlagsCompact $label',
+    ({ input, expected }) => {
+      expect(formatFfprobeContainerFormatFlagsCompact(input)).toBe(expected)
+    }
+  )
 
   it('formatFfprobeContainerProbeLayoutCompactLine', () => {
-    expect(
-      formatFfprobeContainerProbeLayoutCompactLine({
-        probeScore: 100,
-        containerNbStreams: 2,
-        containerNbPrograms: 1,
-        containerSizeBytes: 4096,
-        containerFormatFlags: '0x0'
-      })
-    ).toBe('probe 100 · 2 str. · 1 prog. · 4.00 KiB · flags 0x0')
+    expect(formatFfprobeContainerProbeLayoutCompactLine(FFPROBE_PROBE_LAYOUT_COMPACT_INPUT)).toBe(
+      FFPROBE_PROBE_LAYOUT_COMPACT_EXPECTED
+    )
   })
 
   it('formatFfprobeContainerDiagnosticsExportLine', () => {
@@ -109,11 +138,9 @@ describe('ffprobe-container-format', () => {
       },
       'ru'
     )
-    expect(line).toContain('filename')
-    expect(line).toContain('duration):')
-    expect(line).toContain('bit_rate')
-    expect(line).toContain('probe_score')
-    expect(line).toContain('duration_ts')
+    for (const part of FFPROBE_DIAGNOSTICS_EXPORT_CONTAINS) {
+      expect(line).toContain(part)
+    }
     expect(line!.split(' · ').length).toBeGreaterThanOrEqual(5)
   })
 
@@ -130,22 +157,22 @@ describe('ffprobe-container-format', () => {
       },
       'ru'
     )
-    expect(line).toContain('probe_score')
-    expect(line).toContain('nb_streams')
+    for (const part of FFPROBE_PROBE_LAYOUT_EXPORT_CONTAINS) {
+      expect(line).toContain(part)
+    }
     expect(line!.split(' · ').length).toBeGreaterThanOrEqual(4)
   })
 
-  it('parseFfprobeFormatProbeScore', () => {
-    expect(parseFfprobeFormatProbeScore('100')).toBe(100)
-    expect(parseFfprobeFormatProbeScore(42)).toBe(42)
-    expect(parseFfprobeFormatProbeScore('101')).toBeNull()
-    expect(parseFfprobeFormatProbeScore('')).toBeNull()
-  })
+  it.each(FFPROBE_PROBE_SCORE_PARSE_CASES)(
+    'parseFfprobeFormatProbeScore $label',
+    ({ input, expected }) => {
+      expect(parseFfprobeFormatProbeScore(input)).toBe(expected)
+    }
+  )
 
   it('parseFfprobeFormatMajorBrand и compatible_brands', () => {
-    const tags = { major_brand: 'isom', compatible_brands: 'mp41iso2' }
-    expect(parseFfprobeFormatMajorBrand(tags)).toBe('isom')
-    expect(parseFfprobeFormatCompatibleBrands(tags)).toBe('mp41iso2')
+    expect(parseFfprobeFormatMajorBrand(FFPROBE_MAJOR_BRAND_TAGS)).toBe('isom')
+    expect(parseFfprobeFormatCompatibleBrands(FFPROBE_MAJOR_BRAND_TAGS)).toBe('mp41iso2')
   })
 
   it('formatFfprobeEditorVideoFactLine добавляет major_brand', () => {
@@ -157,115 +184,156 @@ describe('ffprobe-container-format', () => {
   })
 
   it('parseFfprobeFormatFlags', () => {
-    expect(parseFfprobeFormatFlags('32768')).toBe('0x8000')
-    expect(formatFfprobeFormatFlagsExportLine('0x8000', 'en')).toContain('0x8000')
+    expect(parseFfprobeFormatFlags(FFPROBE_FLAGS_RAW_PARSED.raw)).toBe(
+      FFPROBE_FLAGS_RAW_PARSED.parsed
+    )
+    expect(formatFfprobeFormatFlagsExportLine(FFPROBE_FLAGS_RAW_PARSED.parsed, 'en')).toContain(
+      FFPROBE_FLAGS_RAW_PARSED.parsed
+    )
   })
 
-  it('parseFfprobeFormatNbStreams и export line', () => {
-    expect(parseFfprobeFormatNbStreams('3')).toBe(3)
-    expect(formatFfprobeNbStreamsExportLine(2, 2, 'ru')).toContain('2')
-    expect(formatFfprobeNbStreamsExportLine(3, 2, 'en')).toContain('parsed tracks: 2')
-  })
+  it.each(FFPROBE_NB_STREAMS_PARSE_EXPORT_CASES)(
+    'parseFfprobeFormatNbStreams $label',
+    ({ raw, parsed, exportNb, tracks, locale, contains }) => {
+      expect(parseFfprobeFormatNbStreams(raw)).toBe(parsed)
+      expect(formatFfprobeNbStreamsExportLine(exportNb, tracks, locale)).toContain(contains)
+    }
+  )
 
-  it('parseFfprobeFormatNbPrograms и export line', () => {
-    expect(parseFfprobeFormatNbPrograms('2')).toBe(2)
-    expect(formatFfprobeNbProgramsExportLine(2, 'ru')).toContain('nb_programs')
-  })
+  it.each(FFPROBE_NB_PROGRAMS_PARSE_EXPORT_CASES)(
+    'parseFfprobeFormatNbPrograms $label',
+    ({ raw, parsed, exportNb, locale, contains }) => {
+      expect(parseFfprobeFormatNbPrograms(raw)).toBe(parsed)
+      expect(formatFfprobeNbProgramsExportLine(exportNb, locale)).toContain(contains)
+    }
+  )
 
-  it('formatFfprobeContainerFilenameCompact', () => {
-    expect(formatFfprobeContainerFilenameCompact('C:\\clips\\Demo.mkv')).toBe('file Demo.mkv')
-    expect(formatFfprobeContainerFilenameCompact(null)).toBeNull()
-  })
+  it.each(FFPROBE_FILENAME_COMPACT_CASES)(
+    'formatFfprobeContainerFilenameCompact $label',
+    ({ input, expected }) => {
+      expect(formatFfprobeContainerFilenameCompact(input)).toBe(expected)
+    }
+  )
 
-  it('parseFfprobeFormatFilename и export line', () => {
-    expect(parseFfprobeFormatFilename('C:\\clips\\demo.mp4')).toBe('C:\\clips\\demo.mp4')
-    expect(ffprobeContainerFilenameBasename('C:\\clips\\demo.mp4')).toBe('demo.mp4')
+  it.each(FFPROBE_FILENAME_PARSE_CASES)(
+    'parseFfprobeFormatFilename $label',
+    ({ input, expected }) => {
+      expect(parseFfprobeFormatFilename(input)).toBe(expected)
+    }
+  )
+
+  it.each(FFPROBE_FILENAME_BASENAME_CASES)(
+    'ffprobeContainerFilenameBasename $label',
+    ({ input, expected }) => {
+      expect(ffprobeContainerFilenameBasename(input)).toBe(expected)
+    }
+  )
+
+  it('formatFfprobeContainerFilenameExportLine', () => {
     expect(formatFfprobeContainerFilenameExportLine('demo.mp4', 'ru')).toContain('filename')
   })
 
-  it('parseFfprobeFormatProbeSize и export line', () => {
-    expect(parseFfprobeFormatProbeSize('4096')).toBe(4096)
-    expect(formatFfprobeContainerProbeSizeCompact(4096)).toBe('probe_io 4.00 KiB')
-    expect(formatFfprobeContainerProbeSizeExportLine(4096, 'ru')).toContain('probe_size')
-  })
+  it.each(FFPROBE_PROBE_SIZE_CASES)(
+    'parseFfprobeFormatProbeSize $label',
+    ({ raw, parsed, compact, exportContains }) => {
+      expect(parseFfprobeFormatProbeSize(raw)).toBe(parsed)
+      expect(formatFfprobeContainerProbeSizeCompact(parsed)).toBe(compact)
+      expect(formatFfprobeContainerProbeSizeExportLine(parsed, 'ru')).toContain(exportContains)
+    }
+  )
 
-  it('parseFfprobeFormatTimeBase и export line', () => {
-    expect(parseFfprobeFormatTimeBase('1/90000')).toBe('1/90000')
-    expect(parseFfprobeFormatTimeBase('1/1')).toBeNull()
-    expect(formatFfprobeContainerTimeBaseCompact('1/90000')).toBe('tb 1/90000')
-    expect(formatFfprobeContainerTimeBaseExportLine('1/90000', 'en')).toContain('1/90000')
-  })
+  it.each(FFPROBE_TIME_BASE_CASES)(
+    'parseFfprobeFormatTimeBase $label',
+    ({ raw, parsed, compact, exportContains }) => {
+      expect(parseFfprobeFormatTimeBase(raw)).toBe(parsed)
+      if (compact) {
+        expect(formatFfprobeContainerTimeBaseCompact(parsed!)).toBe(compact)
+      }
+      if (exportContains) {
+        expect(formatFfprobeContainerTimeBaseExportLine(parsed!, 'en')).toContain(exportContains)
+      }
+    }
+  )
 
-  it('parseFfprobeFormatDurationTs и export line', () => {
-    expect(parseFfprobeFormatDurationTs('90000')).toBe(90000)
-    expect(formatFfprobeContainerDurationTsCompact(90000)).toBe('dur_ts 90000')
-    expect(formatFfprobeContainerDurationTsExportLine(90000, 'ru')).toContain('90000')
-  })
+  it.each(FFPROBE_DURATION_TS_CASES)(
+    'parseFfprobeFormatDurationTs $label',
+    ({ raw, parsed, compact, exportContains }) => {
+      expect(parseFfprobeFormatDurationTs(raw)).toBe(parsed)
+      expect(formatFfprobeContainerDurationTsCompact(parsed)).toBe(compact)
+      expect(formatFfprobeContainerDurationTsExportLine(parsed, 'ru')).toContain(exportContains)
+    }
+  )
 
-  it('parseFfprobeFormatStartTimeSec и export line', () => {
-    expect(parseFfprobeFormatStartTimeSec('0')).toBeNull()
-    expect(parseFfprobeFormatStartTimeSec('1.5')).toBe(1.5)
-    expect(formatFfprobeContainerStartTimeCompact(1.5)).toContain('start')
-    expect(formatFfprobeContainerStartTimeExportLine(1.5, 'ru')).toContain('start_time')
-    expect(formatFfprobeContainerStartTimeRealExportLine(2, 1.5, 'en')).toContain('start_time_real')
-  })
+  it.each(FFPROBE_START_TIME_CASES)(
+    'parseFfprobeFormatStartTimeSec $label',
+    ({ raw, parsed, compactContains, exportContains, realExportContains }) => {
+      expect(parseFfprobeFormatStartTimeSec(raw)).toBe(parsed)
+      if (compactContains) {
+        expect(formatFfprobeContainerStartTimeCompact(parsed!)).toContain(compactContains)
+      }
+      if (exportContains) {
+        expect(formatFfprobeContainerStartTimeExportLine(parsed!, 'ru')).toContain(exportContains)
+        expect(formatFfprobeContainerStartTimeRealExportLine(2, parsed!, 'en')).toContain(
+          realExportContains!
+        )
+      }
+    }
+  )
 
-  it('parseFfprobeFormatSize и export line', () => {
-    expect(parseFfprobeFormatSize('1048576')).toBe(1048576)
-    expect(formatFfprobeContainerSizeCompact(1048576)).toBe('1.00 MiB')
-    expect(formatFfprobeContainerSizeExportLine(1024, 'ru')).toContain('1024 B')
-  })
+  it.each(FFPROBE_SIZE_CASES)(
+    'parseFfprobeFormatSize $label',
+    ({ raw, parsed, compact, exportContains }) => {
+      expect(parseFfprobeFormatSize(raw)).toBe(parsed)
+      expect(formatFfprobeContainerSizeCompact(parsed)).toBe(compact)
+      expect(formatFfprobeContainerSizeExportLine(1024, 'ru')).toContain(exportContains)
+    }
+  )
 
   it('parseFfprobeFormatCreationTime и export line', () => {
-    const tags = { creation_time: '2024-01-15T12:00:00.000000Z' }
-    expect(parseFfprobeFormatCreationTime(tags)).toContain('2024-01-15')
+    expect(parseFfprobeFormatCreationTime(FFPROBE_CREATION_TIME_TAGS)).toContain('2024-01-15')
     expect(formatFfprobeContainerCreationTimeExportLine('2024-01-15', 'ru')).toContain(
       'creation_time'
     )
   })
 
-  it('formatFfprobeContainerBrandExportLine RU/EN', () => {
-    expect(formatFfprobeContainerBrandExportLine('isom', 'mp41', 'ru')).toContain('isom')
-    expect(formatFfprobeContainerBrandExportLine('isom', null, 'en')).toContain(
-      'Container brand: isom'
-    )
-    expect(formatFfprobeProbeScoreExportLine(99, 'ru')).toContain('99')
-  })
+  it.each(FFPROBE_BRAND_EXPORT_CASES)(
+    'formatFfprobeContainerBrandExportLine $label',
+    ({ major, compatible, locale, contains }) => {
+      expect(formatFfprobeContainerBrandExportLine(major, compatible, locale)).toContain(contains)
+    }
+  )
 
-  it('formatFfprobeContainerStartOffsetExportLine', () => {
-    const mismatch = formatFfprobeContainerStartOffsetExportLine(
-      { containerStartTimeSec: 0.5, containerStartTimeRealSec: 0.75 },
-      'ru'
-    )
-    expect(mismatch).toContain('start_time')
-    expect(mismatch).toContain('start_time_real')
-    expect(mismatch!.split(' · ').length).toBe(2)
-    const same = formatFfprobeContainerStartOffsetExportLine(
-      { containerStartTimeSec: 0.5, containerStartTimeRealSec: 0.5 },
-      'ru'
-    )
-    expect(same).toContain('start_time')
-    expect(same!.split(' · ').length).toBe(1)
-  })
+  it.each(FFPROBE_PROBE_SCORE_EXPORT_CASES)(
+    'formatFfprobeProbeScoreExportLine $label',
+    ({ input, expected }) => {
+      expect(formatFfprobeProbeScoreExportLine(input, 'ru')).toContain(expected)
+    }
+  )
 
-  it('formatFfprobeContainerStartOffsetCompactLine', () => {
-    expect(
-      formatFfprobeContainerStartOffsetCompactLine({
-        containerStartTimeSec: 0.5,
-        containerStartTimeRealSec: 0.75
-      })
-    ).toBe('start +500ms · real +750ms')
-    expect(
-      formatFfprobeContainerStartOffsetCompactLine({
-        containerStartTimeSec: 0.5,
-        containerStartTimeRealSec: 0.5
-      })
-    ).toBe('start +500ms')
-    expect(
-      formatFfprobeContainerStartOffsetCompactLine({
-        containerStartTimeSec: null,
-        containerStartTimeRealSec: null
-      })
-    ).toBeNull()
-  })
+  it.each(FFPROBE_START_OFFSET_EXPORT_CASES)(
+    'formatFfprobeContainerStartOffsetExportLine $label',
+    ({ startSec, startRealSec, locale, partCount }) => {
+      const line = formatFfprobeContainerStartOffsetExportLine(
+        { containerStartTimeSec: startSec, containerStartTimeRealSec: startRealSec },
+        locale
+      )
+      expect(line).toContain('start_time')
+      if (partCount === 2) {
+        expect(line).toContain('start_time_real')
+      }
+      expect(line!.split(' · ').length).toBe(partCount)
+    }
+  )
+
+  it.each(FFPROBE_START_OFFSET_COMPACT_CASES)(
+    'formatFfprobeContainerStartOffsetCompactLine $label',
+    ({ startSec, startRealSec, expected }) => {
+      expect(
+        formatFfprobeContainerStartOffsetCompactLine({
+          containerStartTimeSec: startSec,
+          containerStartTimeRealSec: startRealSec
+        })
+      ).toBe(expected)
+    }
+  )
 })
