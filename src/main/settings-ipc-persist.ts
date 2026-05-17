@@ -20,7 +20,6 @@ import {
 } from '../shared/downloads-window-ui-locale'
 import { parseFfmpegSnapshotFormat } from './ffmpeg-frame-snapshot-service'
 import {
-  mergeFfmpegExportSnapshotIntoAppSettings,
   parseFfmpegExportAudioNormalize,
   parseFfmpegExportContainer,
   parseFfmpegExportCropPreset,
@@ -52,6 +51,7 @@ import {
   parseFfmpegExportEconomyMode,
   parseFfmpegExportTwoPass
 } from './ffmpeg-export-service'
+import { mergeFfmpegExportSnapshotIntoAppSettings } from './ffmpeg-export-app-settings-merge'
 import {
   ENGINE_IDS,
   type EnginePathOverrides,

@@ -62,8 +62,8 @@ import {
   parseFfmpegSnapshotFormat,
   runFfmpegSnapshotFrame
 } from '../ffmpeg-frame-snapshot-service'
+import { ensureFfmpegExportExtension } from '../ffmpeg-export-app-settings-merge'
 import {
-  ensureFfmpegExportExtension,
   parseFfmpegExportTrim,
   parseFfmpegExportVideoLut3d,
   runFfmpegExportJob,

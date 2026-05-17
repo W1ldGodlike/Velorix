@@ -1,9 +1,7 @@
-import { spawn } from 'child_process'
 import { mkdtempSync, rmSync } from 'fs'
 import { tmpdir } from 'os'
 import { join } from 'path'
 
-import type { AppSettings } from '../shared/settings-contract'
 import type {
   FfmpegExportAudioModeId,
   FfmpegExportAudioNormalizeId,
@@ -13,7 +11,6 @@ import type {
   FfmpegExportProgressPayload,
   FfmpegExportScalePresetId,
   FfmpegExportSubtitleModeId,
-  FfmpegExportUserPresetSnapshot,
   FfmpegExportVideoCodecId,
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDeinterlaceId,
@@ -48,7 +45,6 @@ import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-loca
 import { getMainApplicationStrings } from '../shared/main-application-locale'
 import { buildFfmpegExportArgv, shouldApplyFfmpegExportTrim } from '../shared/ffmpeg-export-argv'
 
-import { logExternalProcessLine } from './external-process-log'
 import { resolveFfmpegExportLutCubeAbsPath } from './ffmpeg-export-lut-path'
 import { parseFfmpegExportExtraArgsLine } from '../shared/ffmpeg-export-extra-args'
 import {
@@ -65,10 +61,6 @@ import {
   parseFfmpegExportStripFlag,
   parseFfmpegExportVideoBitrate
 } from '../shared/ffmpeg-export-stored-parse'
-import {
-  parseFfmpegSpeedToken,
-  parseFfmpegTimeSeconds
-} from '../shared/ffmpeg-export-progress-parse'
 
 export type {
   FfmpegExportAudioModeId,
@@ -186,362 +178,18 @@ export {
   parseFfmpegTimeSeconds
 } from '../shared/ffmpeg-export-progress-parse'
 
-export function inferFfmpegExportContainerFromPath(path: string): FfmpegExportContainerId {
-  const lower = path.trim().toLowerCase()
-  if (lower.endsWith('.mkv')) {
-    return 'mkv'
-  }
-  if (lower.endsWith('.mov')) {
-    return 'mov'
-  }
-  return 'mp4'
-}
+export {
+  inferFfmpegExportContainerFromPath,
+  ensureFfmpegExportExtension,
+  mergeFfmpegExportSnapshotIntoAppSettings
+} from './ffmpeg-export-app-settings-merge'
+export {
+  isFfmpegExportProgressStatusLine,
+  resolveExportSegmentDurationSec,
+  runFfmpegExportOnce
+} from './ffmpeg-export-spawn-once'
 
-export function ensureFfmpegExportExtension(
-  path: string,
-  fallback: FfmpegExportContainerId
-): string {
-  const trimmed = path.trim()
-  if (/\.(mp4|mkv|mov)$/i.test(trimmed)) {
-    return trimmed
-  }
-  return `${trimmed}.${parseFfmpegExportContainer(fallback)}`
-}
-
-/**
- * §7.2 — записать снимок в сериализуемые поля `AppSettings` (те же правила delete при «по умолчанию», что и точечные IPC).
- */
-export function mergeFfmpegExportSnapshotIntoAppSettings(
-  base: AppSettings,
-  snapshot: FfmpegExportUserPresetSnapshot
-): AppSettings {
-  const next: AppSettings = { ...base }
-  next.ffmpegExportEncodePreset = snapshot.encodePreset
-  const snapV = parseFfmpegExportVideoCodec(snapshot.videoCodec)
-  if (snapV === 'libx264') {
-    delete next.ffmpegExportVideoCodec
-  } else {
-    next.ffmpegExportVideoCodec = snapV
-  }
-  next.ffmpegExportContainer = snapshot.container
-  if (snapshot.crf === null) {
-    delete next.ffmpegExportCrf
-  } else {
-    next.ffmpegExportCrf = snapshot.crf
-  }
-  if (snapshot.videoBitrate === null) {
-    delete next.ffmpegExportVideoBitrate
-  } else {
-    next.ffmpegExportVideoBitrate = snapshot.videoBitrate
-  }
-  next.ffmpegExportAudioBitrate = snapshot.audioBitrate
-  if (snapshot.audioMode === 'aac') {
-    delete next.ffmpegExportAudioMode
-  } else {
-    next.ffmpegExportAudioMode = snapshot.audioMode
-  }
-  if (snapshot.fps === null) {
-    delete next.ffmpegExportFps
-  } else {
-    next.ffmpegExportFps = snapshot.fps
-  }
-  if (snapshot.scalePreset === 'source') {
-    delete next.ffmpegExportScalePreset
-  } else {
-    next.ffmpegExportScalePreset = snapshot.scalePreset
-  }
-  if (snapshot.videoTransform === 'none') {
-    delete next.ffmpegExportVideoTransform
-  } else {
-    next.ffmpegExportVideoTransform = snapshot.videoTransform
-  }
-  if (snapshot.cropPreset === 'none') {
-    delete next.ffmpegExportCropPreset
-  } else {
-    next.ffmpegExportCropPreset = snapshot.cropPreset
-  }
-  const snapCodec = parseFfmpegExportVideoCodec(snapshot.videoCodec)
-  if (snapshot.twoPass === true && snapCodec === 'libx264' && snapshot.videoBitrate !== null) {
-    next.ffmpegExportTwoPass = true
-  } else {
-    delete next.ffmpegExportTwoPass
-  }
-  if (snapshot.economyMode === true) {
-    next.ffmpegExportEconomyMode = true
-  } else {
-    delete next.ffmpegExportEconomyMode
-  }
-  if (snapshot.hwDecode === true) {
-    next.ffmpegExportHwDecode = true
-  } else {
-    delete next.ffmpegExportHwDecode
-  }
-  if (typeof snapshot.extraArgsLine === 'string' && snapshot.extraArgsLine.trim().length > 0) {
-    next.ffmpegExportExtraArgsLine = snapshot.extraArgsLine.trim()
-  } else {
-    delete next.ffmpegExportExtraArgsLine
-  }
-  if (typeof snapshot.audioGainDb === 'number' && snapshot.audioGainDb !== 0) {
-    next.ffmpegExportAudioGainDb = snapshot.audioGainDb
-  } else {
-    delete next.ffmpegExportAudioGainDb
-  }
-  if (snapshot.stripMetadata === true) {
-    next.ffmpegExportStripMetadata = true
-  } else {
-    delete next.ffmpegExportStripMetadata
-  }
-  if (snapshot.stripChapters === true) {
-    next.ffmpegExportStripChapters = true
-  } else {
-    delete next.ffmpegExportStripChapters
-  }
-  if (snapshot.subtitleMode === 'copy') {
-    next.ffmpegExportSubtitleMode = 'copy'
-  } else {
-    delete next.ffmpegExportSubtitleMode
-  }
-  if (
-    snapshot.videoDenoise === 'light' ||
-    snapshot.videoDenoise === 'medium' ||
-    snapshot.videoDenoise === 'strong'
-  ) {
-    next.ffmpegExportVideoDenoise = snapshot.videoDenoise
-  } else {
-    delete next.ffmpegExportVideoDenoise
-  }
-  if (
-    snapshot.videoDeband === 'light' ||
-    snapshot.videoDeband === 'medium' ||
-    snapshot.videoDeband === 'strong'
-  ) {
-    next.ffmpegExportVideoDeband = snapshot.videoDeband
-  } else {
-    delete next.ffmpegExportVideoDeband
-  }
-  if (
-    snapshot.videoHisteq === 'light' ||
-    snapshot.videoHisteq === 'medium' ||
-    snapshot.videoHisteq === 'strong'
-  ) {
-    next.ffmpegExportVideoHisteq = snapshot.videoHisteq
-  } else {
-    delete next.ffmpegExportVideoHisteq
-  }
-  if (
-    snapshot.videoLut3d === 'film-warm' ||
-    snapshot.videoLut3d === 'film-cool' ||
-    snapshot.videoLut3d === 'punch'
-  ) {
-    next.ffmpegExportVideoLut3d = snapshot.videoLut3d
-  } else {
-    delete next.ffmpegExportVideoLut3d
-  }
-  if (
-    snapshot.videoSharpen === 'light' ||
-    snapshot.videoSharpen === 'medium' ||
-    snapshot.videoSharpen === 'strong'
-  ) {
-    next.ffmpegExportVideoSharpen = snapshot.videoSharpen
-  } else {
-    delete next.ffmpegExportVideoSharpen
-  }
-  if (
-    snapshot.videoEqPreset === 'warm' ||
-    snapshot.videoEqPreset === 'cool' ||
-    snapshot.videoEqPreset === 'vivid' ||
-    snapshot.videoEqPreset === 'flat'
-  ) {
-    next.ffmpegExportVideoEqPreset = snapshot.videoEqPreset
-  } else {
-    delete next.ffmpegExportVideoEqPreset
-  }
-  if (
-    snapshot.videoHue === 'warmShift' ||
-    snapshot.videoHue === 'coolShift' ||
-    snapshot.videoHue === 'satBoost'
-  ) {
-    next.ffmpegExportVideoHue = snapshot.videoHue
-  } else {
-    delete next.ffmpegExportVideoHue
-  }
-  if (
-    snapshot.videoGrain === 'light' ||
-    snapshot.videoGrain === 'medium' ||
-    snapshot.videoGrain === 'strong'
-  ) {
-    next.ffmpegExportVideoGrain = snapshot.videoGrain
-  } else {
-    delete next.ffmpegExportVideoGrain
-  }
-  if (
-    snapshot.videoVignette === 'light' ||
-    snapshot.videoVignette === 'medium' ||
-    snapshot.videoVignette === 'strong'
-  ) {
-    next.ffmpegExportVideoVignette = snapshot.videoVignette
-  } else {
-    delete next.ffmpegExportVideoVignette
-  }
-  if (
-    snapshot.videoBlur === 'light' ||
-    snapshot.videoBlur === 'medium' ||
-    snapshot.videoBlur === 'strong'
-  ) {
-    next.ffmpegExportVideoBlur = snapshot.videoBlur
-  } else {
-    delete next.ffmpegExportVideoBlur
-  }
-  if (snapshot.videoDeinterlace === 'frame' || snapshot.videoDeinterlace === 'field') {
-    next.ffmpegExportVideoDeinterlace = snapshot.videoDeinterlace
-  } else {
-    delete next.ffmpegExportVideoDeinterlace
-  }
-  if (snapshot.audioNormalize === 'loudnorm' || snapshot.audioNormalize === 'dynaudnorm') {
-    next.ffmpegExportAudioNormalize = snapshot.audioNormalize
-  } else {
-    delete next.ffmpegExportAudioNormalize
-  }
-  return next
-}
-
-/**
- * §7.1 — показывать в статусбаре только строки статистики `-stats` или явные ошибки;
- * отфильтровываем баннер версии, конфиг-декларации и прочий шум без `time=`/`frame=`.
- */
-export function isFfmpegExportProgressStatusLine(line: string): boolean {
-  const t = line.trim()
-  if (t.length === 0) {
-    return false
-  }
-  if (/\[(?:error|fatal)\]/i.test(t)) {
-    return true
-  }
-  if (/\berror while\b|\bfailed to\b|\binvalid\b|\bcannot\b/i.test(t)) {
-    return true
-  }
-  return /\b(?:frame=\s*\d|fps=\s*[\d.]+|L?size=\s*|time=\s*\d|bitrate=\s*|speed=\s*[\d.N/A]+)/i.test(
-    t
-  )
-}
-
-export function resolveExportSegmentDurationSec(
-  trim: MediaExportTrimPayload | undefined,
-  applyTrim: boolean,
-  probeDurationSec: number | null | undefined
-): number {
-  if (applyTrim && trim) {
-    return Math.max(0.01, trim.outSec - trim.inSec)
-  }
-  if (
-    probeDurationSec !== null &&
-    probeDurationSec !== undefined &&
-    Number.isFinite(probeDurationSec) &&
-    probeDurationSec > 0
-  ) {
-    return probeDurationSec
-  }
-  return 0
-}
-
-/**
- * Один запуск ffmpeg без shell: только массив аргументов §7 / §21.
- * Прогресс — по `time=` в stderr; `mapPercent` масштабирует процент для двухпроходного режима.
- */
-function runFfmpegExportOnce(params: {
-  ffmpegPath: string
-  args: string[]
-  signal: AbortSignal
-  segmentDur: number
-  onProgress?: (p: FfmpegExportProgressPayload) => void
-  mapPercent?: (rawPercent: number) => number
-  uiLocale?: DownloadsWindowUiLocale
-}): Promise<{ ok: true } | { ok: false; error: string }> {
-  const locStrings = getMainApplicationStrings(params.uiLocale ?? 'ru')
-  return new Promise((resolve) => {
-    const child = spawn(params.ffmpegPath, params.args, {
-      windowsHide: true,
-      stdio: ['ignore', 'ignore', 'pipe'],
-      signal: params.signal
-    })
-    logExternalProcessLine('ffmpeg-export', 'lifecycle', 'started')
-
-    let stderrTail = ''
-    let lastSpeed: string | null = null
-
-    function emitLine(line: string): void {
-      const trimmed = line.trimEnd()
-      if (trimmed.length === 0) {
-        return
-      }
-      logExternalProcessLine('ffmpeg-export', 'stderr', trimmed)
-      const spd = parseFfmpegSpeedToken(trimmed)
-      if (spd !== null) {
-        lastSpeed = spd
-      }
-      if (!isFfmpegExportProgressStatusLine(trimmed)) {
-        return
-      }
-      const t = parseFfmpegTimeSeconds(trimmed)
-      let pct = -1
-      if (t !== null && params.segmentDur > 0.05) {
-        pct = Math.min(99.9, Math.max(0, (t / params.segmentDur) * 100))
-      }
-      const msg = trimmed.length > 140 ? `${trimmed.slice(0, 138)}…` : trimmed
-      const outPct = pct >= 0 && params.mapPercent !== undefined ? params.mapPercent(pct) : pct
-      params.onProgress?.({
-        percent: outPct,
-        message: msg,
-        ...(lastSpeed !== null ? { speed: lastSpeed } : {})
-      })
-    }
-
-    child.stderr?.setEncoding('utf8')
-    child.stderr?.on('data', (chunk: string) => {
-      stderrTail += chunk
-      const parts = stderrTail.split(/\r|\n/)
-      stderrTail = parts.pop() ?? ''
-      for (const part of parts) {
-        const t = part.trimEnd()
-        if (t.length > 0) {
-          emitLine(t)
-        }
-      }
-    })
-
-    child.on('error', (err) => {
-      logExternalProcessLine('ffmpeg-export', 'lifecycle', `error ${err.message}`)
-      if (params.signal.aborted || err.name === 'AbortError') {
-        resolve({ ok: false, error: FFMPEG_EXPORT_CANCELLED_ERROR })
-        return
-      }
-      resolve({ ok: false, error: err.message })
-    })
-
-    child.on('close', (code) => {
-      logExternalProcessLine('ffmpeg-export', 'lifecycle', `closed exitCode=${code ?? '?'}`)
-      if (stderrTail.trim().length > 0) {
-        emitLine(stderrTail)
-        stderrTail = ''
-      }
-      if (params.signal.aborted) {
-        resolve({ ok: false, error: FFMPEG_EXPORT_CANCELLED_ERROR })
-        return
-      }
-      if (code === 0) {
-        resolve({ ok: true })
-      } else {
-        resolve({
-          ok: false,
-          error: locStrings.exportFfmpegExitedWithCode.replace(
-            '{code}',
-            code === null || code === undefined ? '?' : String(code)
-          )
-        })
-      }
-    })
-  })
-}
+import { runFfmpegExportOnce, resolveExportSegmentDurationSec } from './ffmpeg-export-spawn-once'
 
 /**
  * §7 — экспорт: один или два прохода libx264; двухпроход только с валидным `videoBitrate`.

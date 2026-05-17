@@ -309,6 +309,11 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | structural | ~411 | src/main/index.ts | 4 | `main-window-runtime-state.ts` + `main-application-bootstrap.ts` (`whenReady` orchestration) | ✅ J-796 |
 | structural | 819 | src/renderer/src/App.tsx | 4 | `use-app-composition.ts` (hooks + `useAppShellProps` assembly) | ✅ J-797 |
 | structural | ~815 | src/renderer/src/use-app-composition.ts | 4 | split: `use-app-composition-state` + `use-app-shell-props-input` + orchestrator | ✅ J-798 |
+| structural | 857 | src/main/ffmpeg-export-service.ts | 4 | `ffmpeg-export-app-settings-merge.ts` + `ffmpeg-export-spawn-once.ts` | ✅ J-800 |
+| structural | 1017 | src/main/ffprobe-service.ts | 4 | `ffprobe-track-detail-builder.ts` + `ffprobe-probe-json.ts` | ✅ J-801 |
+| structural | 1055 | src/shared/ffmpeg-export-argv.ts | 4 | `ffmpeg-export-argv-filters.ts` + `ffmpeg-export-argv-build.ts` | ✅ J-802 |
+| structural | 610 | src/main/settings-store.ts | 4 | `settings-store-load-parse.ts` (whitelist parsers) + entry load/save | ✅ J-803 |
+| structural | 896 | src/main/ytdlp-progress-parser.ts | 4 | `ytdlp-progress-parser-download.ts` + `ytdlp-progress-parser-queue.ts` | ✅ J-804 |
 
 ---
 
