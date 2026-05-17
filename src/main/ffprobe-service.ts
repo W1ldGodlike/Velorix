@@ -10,7 +10,11 @@ import {
   extractFfprobeDisplayMatrixRotation,
   summarizeFfprobeSideDataList
 } from '../shared/ffprobe-side-data'
+import { formatFfprobeCodecLongNameDetail } from '../shared/ffprobe-codec-long-name'
 import { formatFfprobeStreamDurationDetail } from '../shared/ffprobe-stream-duration-detail'
+import { formatFfprobeStreamDurationTsDetail } from '../shared/ffprobe-stream-duration-ts'
+import { formatFfprobeStreamStereoModeDetail } from '../shared/ffprobe-stream-stereo-mode'
+import { formatFfprobeStreamTimeBaseDetail } from '../shared/ffprobe-stream-time-base'
 import { formatFfprobeStreamStartTime } from '../shared/ffprobe-stream-start-time'
 import {
   formatFfprobeVideoFullRangeBrief,
@@ -57,6 +61,7 @@ interface FfprobeJson {
     index?: number
     codec_type?: string
     codec_name?: string
+    codec_long_name?: string
     width?: number
     height?: number
     channels?: number
@@ -113,6 +118,8 @@ interface FfprobeJson {
     start_pts?: string | number
     /** Длительность дорожки (секунды строкой); может отличаться от `format.duration`. */
     duration?: string
+    /** Длительность в тиках `time_base` дорожки. */
+    duration_ts?: string | number
     bit_rate?: string
     /** Пиковый/макс. битрейт потока (ffprobe), если отличается от `bit_rate`. */
     max_bit_rate?: string
@@ -417,6 +424,13 @@ function buildTrackDetail(
   locale: DownloadsWindowUiLocale
 ): string {
   const parts: string[] = []
+  const codecLong = formatFfprobeCodecLongNameDetail(
+    typeof stream.codec_name === 'string' ? stream.codec_name : undefined,
+    typeof stream.codec_long_name === 'string' ? stream.codec_long_name : undefined
+  )
+  if (codecLong) {
+    parts.push(codecLong)
+  }
   const ct = stream.codec_type
   const streamDur = formatFfprobeStreamDurationDetail(stream.duration, containerDurationSec)
 
@@ -442,6 +456,10 @@ function buildTrackDetail(
       parts.push(`matrix ${label}°`)
     } else if (tagRotDeg !== null) {
       parts.push(`rot ${tagRotDeg}°`)
+    }
+    const stereoMode = formatFfprobeStreamStereoModeDetail(stream.tags)
+    if (stereoMode) {
+      parts.push(stereoMode)
     }
     const fpsLine = formatFfprobeVideoFpsDetail(stream.avg_frame_rate, stream.r_frame_rate, locale)
     if (fpsLine !== null) {
@@ -801,6 +819,18 @@ function buildTrackDetail(
     if (oCreated) {
       parts.push(oCreated)
     }
+  }
+
+  const ptsShowsTimeBase =
+    formatFfprobeStartPtsDetail(stream.start_pts, stream.time_base) !== null
+  const streamTb = formatFfprobeStreamTimeBaseDetail(stream.time_base, ptsShowsTimeBase)
+  if (streamTb) {
+    parts.push(streamTb)
+  }
+
+  const streamDurTs = formatFfprobeStreamDurationTsDetail(stream.duration_ts)
+  if (streamDurTs) {
+    parts.push(streamDurTs)
   }
 
   return parts.length > 0 ? parts.join(' · ') : '—'

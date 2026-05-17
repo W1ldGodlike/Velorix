@@ -18,6 +18,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
 import { packagedWinUnpackedRoot } from '../shared/packaged-app-smoke'
+import { buildSupportZipFfprobeSmokeLines } from '../shared/packaged-ffprobe-smoke'
 import { resolveAppPaths } from './app-paths'
 import { buildKnowledgeHelpDirCandidates, resolveKnowledgeHelpDirectory } from './knowledge-service'
 import { registerKnowledgeDiagnosticsIpcHandlers } from './ipc/register-knowledge-diagnostics-ipc'
@@ -1002,6 +1003,7 @@ async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRuntimeInfo
       ? `win-unpacked: ${unpackedExe}`
       : `win-unpacked: not built (${unpackedRoot})`
   ]
+  const ffprobeSmokeLines = buildSupportZipFfprobeSmokeLines(paths.appRoot, existsSync)
 
   return {
     appVersion: app.getVersion(),
@@ -1025,7 +1027,8 @@ async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRuntimeInfo
     terminalCliLogFile: resolveTerminalCliSessionLogPath(paths.userData),
     crashDumps: getCrashDumpsPathSafe(),
     engineDiagnosticLines,
-    releaseSmokeLines
+    releaseSmokeLines,
+    ffprobeSmokeLines
   }
 }
 

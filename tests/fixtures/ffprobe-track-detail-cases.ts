@@ -12,6 +12,87 @@ export type FfprobeTrackDetailCase = {
 
 export const FFPROBE_TRACK_DETAIL_CASES: readonly FfprobeTrackDetailCase[] = [
   {
+    label: 'video time_base без start_pts',
+    streams: [
+      {
+        index: 0,
+        codec_type: 'video',
+        codec_name: 'h264',
+        width: 1280,
+        height: 720,
+        time_base: '1/90000'
+      }
+    ],
+    duration: null,
+    row: 0,
+    contains: ['tb 1/90000'],
+    notContains: ['pts ']
+  },
+  {
+    label: 'video stream_tags stereo_mode',
+    streams: [
+      {
+        index: 0,
+        codec_type: 'video',
+        codec_name: 'h264',
+        width: 1920,
+        height: 1080,
+        tags: { stereo_mode: 'left_right' }
+      }
+    ],
+    duration: null,
+    row: 0,
+    contains: ['stereo left_right']
+  },
+  {
+    label: 'audio duration_ts в detail',
+    streams: [
+      {
+        index: 0,
+        codec_type: 'audio',
+        codec_name: 'aac',
+        channels: 2,
+        sample_rate: '48000',
+        duration_ts: '2304000'
+      }
+    ],
+    duration: 48,
+    row: 0,
+    contains: ['dur_ts 2304000']
+  },
+  {
+    label: 'video codec_long_name в detail',
+    streams: [
+      {
+        index: 0,
+        codec_type: 'video',
+        codec_name: 'h264',
+        codec_long_name: 'H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10',
+        width: 1920,
+        height: 1080
+      }
+    ],
+    duration: null,
+    row: 0,
+    contains: ['H.264 / AVC / MPEG-4 AVC']
+  },
+  {
+    label: 'audio codec_long_name в detail',
+    streams: [
+      {
+        index: 0,
+        codec_type: 'audio',
+        codec_name: 'aac',
+        codec_long_name: 'AAC (Advanced Audio Coding)',
+        channels: 2,
+        sample_rate: '48000'
+      }
+    ],
+    duration: null,
+    row: 0,
+    contains: ['AAC (Advanced Audio Coding)']
+  },
+  {
     label: 'audio FourCC mp4a',
     streams: [
       {

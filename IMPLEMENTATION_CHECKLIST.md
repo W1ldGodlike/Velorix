@@ -46,7 +46,7 @@
 - [x] Рефактор ф.4 P1: invoke IPC вынесен из `index.ts` → `src/main/ipc/register-*` (102 handle); `index.ts` — lifecycle + `ipcMain.on`.
 - [x] Ф.4 P2: `settings-ipc-persist` (✓); `App.tsx` split (~7.6k→~0.82k): hooks + `AppShellLayout`; оркестрация state/hooks в `App.tsx`.
 - [~] §8: терминал — редкие сценарии/argv по факту; при правках `summary` — `npm run locales:terminal-summaries-ru` (дважды до 0/0).
-- [~] §9/§18: packaged/ffprobe smoke (+ container registry в `smoke:packaged-ffprobe`); редкие поля ffprobe; Support ZIP.
+- [~] §9/§18: packaged/ffprobe smoke (+ registry); Support ZIP `ffprobeSmoke:`; редкие поля ffprobe (codec_long_name, duration_ts, stereo_mode, time_base в detail).
 - [~] §19/§3: `check:release`, `verify:win-unpacked`, SHA/JSON; packaged smoke; macOS/Linux engines и targets.
 - [x] §15: knowledge — пакет закрыт (RU/EN Help, `data:` assets, fluxhelp, About→справка); далее tooltips/PNG по UI.
 - [~] §2.2/§5: `locales/**` JSON + смена языка без перезапуска; DPI-матрица 100–200%; §1.1 — контраст/focus после `aria-busy` (J-977–J-1007).

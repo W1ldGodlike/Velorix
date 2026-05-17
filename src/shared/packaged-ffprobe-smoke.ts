@@ -66,3 +66,24 @@ export function isPackagedFfprobeProbeJsonParsableByContainerRegistry(parsed: un
   const nbStreams = container.containerNbStreams
   return typeof nbStreams === 'number' && nbStreams >= 1
 }
+
+/** §18 Support ZIP — подсказки smoke без запуска ffprobe. */
+export function formatPackagedFfprobeSmokeDiagnosticLines(): string[] {
+  return [
+    'command: npm run smoke:packaged-ffprobe (part of smoke:packaged-engines)',
+    'check: isMinimalFfprobeProbeJson + isPackagedFfprobeProbeJsonParsableByContainerRegistry',
+    'env: FLUXALLOY_SKIP_FFPROBE_SMOKE, FLUXALLOY_FFPROBE_SMOKE_PROBE=0, FLUXALLOY_FFPROBE_PATH'
+  ]
+}
+
+export function buildSupportZipFfprobeSmokeLines(
+  rootDir: string,
+  fileExists: (path: string) => boolean
+): string[] {
+  return [
+    ...formatPackagedFfprobeSmokeDiagnosticLines(),
+    ...listPackagedFfprobeCandidatePaths(rootDir).map(
+      (p) => `candidate: ${p} (${fileExists(p) ? 'present' : 'missing'})`
+    )
+  ]
+}

@@ -43,6 +43,8 @@ export interface SupportBundleRuntimeInfo {
   engineDiagnosticLines: readonly string[]
   /** §19 — подсказки `smoke:packaged-release` и наличие `dist/win-unpacked`. */
   releaseSmokeLines: readonly string[]
+  /** §9/§18 — packaged ffprobe smoke: кандидаты путей и команда проверки. */
+  ffprobeSmokeLines: readonly string[]
 }
 
 export interface DiagnosticsPruneOptions {
@@ -360,6 +362,9 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
       : []),
     ...(info.releaseSmokeLines.length > 0
       ? ['', 'releaseSmoke:', ...info.releaseSmokeLines]
+      : []),
+    ...(info.ffprobeSmokeLines.length > 0
+      ? ['', 'ffprobeSmoke:', ...info.ffprobeSmokeLines]
       : [])
   ].join('\n')
 }

@@ -92,6 +92,11 @@ describe('createSupportBundleZip', () => {
       releaseSmokeLines: [
         'command: npm run smoke:packaged-release (after npm run pack:dir)',
         'win-unpacked: not built (C:\\repo\\dist\\win-unpacked)'
+      ],
+      ffprobeSmokeLines: [
+        'command: npm run smoke:packaged-ffprobe (part of smoke:packaged-engines)',
+        'check: isMinimalFfprobeProbeJson + isPackagedFfprobeProbeJsonParsableByContainerRegistry',
+        'candidate: C:\\bin\\ffprobe.exe (present)'
       ]
     })
 
@@ -115,6 +120,9 @@ describe('createSupportBundleZip', () => {
     expect(zip.includes(Buffer.from('ffprobe: ready'))).toBe(true)
     expect(zip.includes(Buffer.from('releaseSmoke:'))).toBe(true)
     expect(zip.includes(Buffer.from('smoke:packaged-release'))).toBe(true)
+    expect(zip.includes(Buffer.from('ffprobeSmoke:'))).toBe(true)
+    expect(zip.includes(Buffer.from('smoke:packaged-ffprobe'))).toBe(true)
+    expect(zip.includes(Buffer.from('ParsableByContainerRegistry'))).toBe(true)
   })
 })
 

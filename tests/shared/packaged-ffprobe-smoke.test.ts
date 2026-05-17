@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  buildSupportZipFfprobeSmokeLines,
   isMinimalFfprobeProbeJson,
   isPackagedFfprobeProbeJsonParsableByContainerRegistry,
   listPackagedFfprobeCandidatePaths
@@ -29,6 +30,14 @@ describe('packaged-ffprobe-smoke', () => {
     expect(isMinimalFfprobeProbeJson({ streams: [], format: {} })).toBe(false)
     expect(isMinimalFfprobeProbeJson({ streams: [{}] })).toBe(false)
     expect(isMinimalFfprobeProbeJson(null)).toBe(false)
+  })
+
+  it('buildSupportZipFfprobeSmokeLines annotates candidates', () => {
+    const candidates = listPackagedFfprobeCandidatePaths('C:\\repo')
+    const lines = buildSupportZipFfprobeSmokeLines('C:\\repo', (p) => p === candidates[0])
+    expect(lines[0]).toContain('smoke:packaged-ffprobe')
+    expect(lines).toContain(`candidate: ${candidates[0]} (present)`)
+    expect(lines).toContain(`candidate: ${candidates[1]} (missing)`)
   })
 
   it('isPackagedFfprobeProbeJsonParsableByContainerRegistry', () => {
