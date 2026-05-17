@@ -10,10 +10,8 @@ import type {
   DiagnosticsSupportZipResult
 } from '../shared/diagnostics-contract'
 import type { EngineDownloadProgress } from '../shared/engine-download-contract'
-import {
-  parseDownloadsWindowUiLocale,
-  type DownloadsWindowUiLocale
-} from '../shared/downloads-window-ui-locale'
+import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import { coerceUiLocaleBroadcastPayload } from '../shared/ui-locale-runtime'
 import type { AppAboutInfo } from '../shared/about-contract'
 import type { EnginesStatusSnapshot } from '../shared/engine-contract'
 import type { MediaProbeResult } from '../shared/ffprobe-contract'
@@ -211,7 +209,7 @@ export const fluxalloy = {
   onUiLocaleChanged: (listener: (locale: DownloadsWindowUiLocale) => void): (() => void) => {
     const channel = mw.uiLocaleChanged
     const handler = (_: unknown, raw: unknown): void => {
-      const loc = parseDownloadsWindowUiLocale(raw)
+      const loc = coerceUiLocaleBroadcastPayload(raw)
       if (loc !== undefined) {
         listener(loc)
       }

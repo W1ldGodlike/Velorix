@@ -19,7 +19,8 @@ export default defineConfig({
     resolve: {
       alias: {
         // Алиас нужен, чтобы будущие UI-модули не строили длинные относительные импорты из renderer.
-        '@renderer': resolve('src/renderer/src')
+        '@renderer': resolve('src/renderer/src'),
+        '@locales': resolve('locales')
       }
     },
     plugins: [react()]

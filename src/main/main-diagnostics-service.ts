@@ -5,6 +5,8 @@ import { app, BrowserWindow, clipboard, dialog, screen, shell } from 'electron'
 
 import { buildSupportZipFfprobeSmokeLines } from '../shared/packaged-ffprobe-smoke'
 import { buildSupportZipPackagedReleaseLines } from '../shared/packaged-release-smoke'
+import { formatLocaleJsonCatalogDiagnosticLines } from '../shared/locale-json-catalog'
+import { formatUiLocaleIpcDiagnosticLines } from '../shared/ui-locale-runtime'
 import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
 import {
   formatMainProcessErrorClipboardHeader,
@@ -105,6 +107,8 @@ export async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRunt
 
   const releaseSmokeLines = buildSupportZipPackagedReleaseLines(paths.appRoot, existsSync)
   const ffprobeSmokeLines = buildSupportZipFfprobeSmokeLines(paths.appRoot, existsSync)
+  const uiLocaleIpcLines = formatUiLocaleIpcDiagnosticLines()
+  const localeJsonCatalogLines = formatLocaleJsonCatalogDiagnosticLines()
 
   return {
     appVersion: app.getVersion(),
@@ -129,7 +133,9 @@ export async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRunt
     crashDumps: getCrashDumpsPathSafe(),
     engineDiagnosticLines,
     releaseSmokeLines,
-    ffprobeSmokeLines
+    ffprobeSmokeLines,
+    uiLocaleIpcLines,
+    localeJsonCatalogLines
   }
 }
 

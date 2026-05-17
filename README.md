@@ -33,7 +33,8 @@ npm install
 npm run dev
 npm run check            # см. выше + trusted_hashes + journal + secrets
 npm run engines:doctor   # Windows: verify bin + SHA + версии (см. docs/RELEASE.md)
-npm run check:release    # Windows: prepare → doctor → build → pack:dir → audit; распакованный smoke — dist/win-unpacked/ (см. docs/RELEASE.md)
+npm run check:release    # Windows: check + prepare → doctor → build → pack:dir → smoke → audit (см. docs/RELEASE.md)
+npm run check:release:local  # повторный локальный прогон: doctor → build → pack:dir → smoke → audit (bin/ уже есть)
 npm run agent:once   # один прогон Cursor SDK automation
 npm run agent:loop   # цикл; число продолжений: -- --max-steps N или MAX_STEPS в .env
 npm run build

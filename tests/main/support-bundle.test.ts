@@ -98,6 +98,14 @@ describe('createSupportBundleZip', () => {
         'command: npm run smoke:packaged-ffprobe (part of smoke:packaged-engines)',
         'check: isMinimalFfprobeProbeJson + isPackagedFfprobeProbeJsonParsableForSmoke (format + stream detail)',
         'candidate: C:\\bin\\ffprobe.exe (present)'
+      ],
+      uiLocaleIpcLines: [
+        'invoke: fluxalloy:settings-set-ui-locale → persist settings.json uiLocale',
+        'event: fluxalloy:ui-locale-changed → all BrowserWindow webContents'
+      ],
+      localeJsonCatalogLines: [
+        'catalog: locales/ru/*.json + locales/en/*.json (flat string values)',
+        'guard: npm run check:locales-json (ru/en key parity per shard)'
       ]
     })
 
@@ -125,6 +133,10 @@ describe('createSupportBundleZip', () => {
     expect(zip.includes(Buffer.from('ffprobeSmoke:'))).toBe(true)
     expect(zip.includes(Buffer.from('smoke:packaged-ffprobe'))).toBe(true)
     expect(zip.includes(Buffer.from('ParsableForSmoke'))).toBe(true)
+    expect(zip.includes(Buffer.from('uiLocale:'))).toBe(true)
+    expect(zip.includes(Buffer.from('ui-locale-changed'))).toBe(true)
+    expect(zip.includes(Buffer.from('localeJson:'))).toBe(true)
+    expect(zip.includes(Buffer.from('check:locales-json'))).toBe(true)
   })
 })
 

@@ -1,4 +1,6 @@
-/** Merged UI_TEXT tables (ru/en) from split parts. */
+/** Merged UI_TEXT tables (ru/en) from split parts + §2.2 JSON shards (`locales/{locale}/*.json`). */
+import ruCommon from '@locales/ru/common.json'
+import enCommon from '@locales/en/common.json'
 import { uiTextStringsRuPart01 } from './ui-text-strings-ru-01'
 import { uiTextStringsRuPart02 } from './ui-text-strings-ru-02'
 import { uiTextStringsRuPart03 } from './ui-text-strings-ru-03'
@@ -24,7 +26,8 @@ const uiTextStringsRu = {
   ...uiTextStringsRuPart05,
   ...uiTextStringsRuPart06,
   ...uiTextStringsRuPart07,
-  ...uiTextStringsRuPart08
+  ...uiTextStringsRuPart08,
+  ...ruCommon
 } as const
 
 const uiTextStringsEn = {
@@ -35,7 +38,8 @@ const uiTextStringsEn = {
   ...uiTextStringsEnPart05,
   ...uiTextStringsEnPart06,
   ...uiTextStringsEnPart07,
-  ...uiTextStringsEnPart08
+  ...uiTextStringsEnPart08,
+  ...enCommon
 } as const
 
 export const UI_TEXT = {

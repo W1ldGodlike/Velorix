@@ -70,6 +70,12 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
       : []),
     ...(info.ffprobeSmokeLines.length > 0
       ? ['', 'ffprobeSmoke:', ...info.ffprobeSmokeLines]
+      : []),
+    ...(info.uiLocaleIpcLines.length > 0
+      ? ['', 'uiLocale:', ...info.uiLocaleIpcLines]
+      : []),
+    ...(info.localeJsonCatalogLines.length > 0
+      ? ['', 'localeJson:', ...info.localeJsonCatalogLines]
       : [])
   ].join('\n')
 }

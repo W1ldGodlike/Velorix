@@ -44,10 +44,10 @@
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый; подробности фиксировать ниже в тематических § и в `IMPLEMENTATION_JOURNAL.md`.
 
 - [~] §8: терминал — IntelliSense ✅; recall команд ↑/↓ в argv (`terminal-command-recall`); при правках `summary` — `locales:terminal-summaries-ru`.
-- [~] §9/§18: packaged/ffprobe smoke ✅ (+`side_data_list`, `format.tags`, `chapters[]`, `nb_chapters`); прочие редкие поля format — дальше.
-- [~] §19/§3: verify+release smoke ✅; `engines:doctor`/trusted_hashes в Support ZIP + chain guard; `check:release` локально; macOS/Linux.
+- [~] §9/§18: packaged/ffprobe smoke ✅ (container registry + stream detail); редкие tag/stream — по мере ffprobe.
+- [~] §19/§3: verify+release smoke ✅; `check:release:local` (doctor→pack→smoke); `engines:doctor`/trusted_hashes в Support ZIP; macOS/Linux.
 - [x] §15: knowledge — пакет закрыт (RU/EN Help, `data:` assets, fluxhelp, About→справка); далее tooltips/PNG по UI.
-- [~] §2.2/§5: `locales/**` JSON + смена языка без перезапуска; DPI-матрица 100–200%; §1.1 — контраст/focus после `aria-busy` (J-977–J-1007).
+- [~] §2.2/§5: uiLocale hot-reload ✅; `locales/{ru,en}/*.json` + `check:locales-json` + overlay `common`; DPI 100–200%; §1.1 focus (J-977–J-1007).
 
 ---
 

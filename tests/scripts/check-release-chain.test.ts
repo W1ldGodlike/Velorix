@@ -33,4 +33,14 @@ describe('check:release script chain §19', () => {
     expect(buildAt).toBeGreaterThan(doctorAt)
     expect(cmd).toContain('engines:prepare:win')
   })
+
+  it('check:release:local skips check and prepare:win', () => {
+    const cmd = scripts['check:release:local'] ?? ''
+    expect(cmd).not.toContain('npm run check')
+    expect(cmd).not.toContain('engines:prepare:win')
+    expect(cmd).toContain('engines:doctor')
+    expect(cmd).toContain('pack:dir')
+    expect(cmd).toContain('smoke:packaged-release')
+    expect(cmd).toContain('audit:moderate')
+  })
 })

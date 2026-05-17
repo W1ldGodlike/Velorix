@@ -31,6 +31,9 @@ export interface SupportBundleRuntimeInfo {
   releaseSmokeLines: readonly string[]
   /** §9/§18 — packaged ffprobe smoke: кандидаты путей и команда проверки. */
   ffprobeSmokeLines: readonly string[]
+  /** §2.2 — hot-reload uiLocale (IPC + renderer session). */
+  uiLocaleIpcLines: readonly string[]
+  localeJsonCatalogLines: readonly string[]
 }
 
 export interface DiagnosticsPruneOptions {

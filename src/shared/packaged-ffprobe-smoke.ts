@@ -5,7 +5,8 @@ import {
   parseFfprobeContainerFieldsFromFormat,
   parseFfprobeFormatBitRateKbps,
   parseFfprobeFormatDurationSec,
-  parseFfprobeFormatNbChapters
+  parseFfprobeFormatNbChapters,
+  parseFfprobeFormatNbPrograms
 } from './ffprobe-container-format'
 import type { FfprobeFormatJsonSlice } from './ffprobe-container-field-registry'
 import { parseFfprobeFormatTagScalar } from './ffprobe-format-tag-registry'
@@ -333,6 +334,22 @@ export function isPackagedFfprobeProbeJsonParsableByContainerRegistry(parsed: un
   if (!smokeOptionalFormatTagsField(tagsRaw)) {
     return false
   }
+  const sizeRaw = (format as { size?: string | number }).size
+  if (sizeRaw !== undefined && sizeRaw !== null && String(sizeRaw).trim() !== '') {
+    if (container.containerSizeBytes === null) {
+      return false
+    }
+  }
+  const nbProgramsRaw = (format as { nb_programs?: string | number }).nb_programs
+  if (
+    nbProgramsRaw !== undefined &&
+    nbProgramsRaw !== null &&
+    String(nbProgramsRaw).trim() !== ''
+  ) {
+    if (parseFfprobeFormatNbPrograms(nbProgramsRaw) === null) {
+      return false
+    }
+  }
   const nbChaptersRaw = (format as { nb_chapters?: string | number }).nb_chapters
   if (
     nbChaptersRaw !== undefined &&
@@ -360,7 +377,7 @@ export function formatPackagedFfprobeSmokeDiagnosticLines(): string[] {
   return [
     'command: npm run smoke:packaged-ffprobe (part of smoke:packaged-engines)',
     'check: isMinimalFfprobeProbeJson + isPackagedFfprobeProbeJsonParsableForSmoke (format + stream detail)',
-    'registry optional: format.duration, duration_ts, time_base, probe_size, flags, probe_score, filename, bit_rate, start_time, start_time_real, nb_chapters, format.tags.* (parseFfprobeFormatTagScalar)',
+    'registry optional: format.duration, duration_ts, time_base, size, probe_size, flags, probe_score, filename, bit_rate, start_time, start_time_real, nb_programs, nb_chapters, format.tags.* (parseFfprobeFormatTagScalar)',
     'probe optional: chapters[] (buildChapterRowsFromFfprobeJson / isFfprobeChaptersArrayOkForSmoke)',
     'stream detail optional: duration, duration_ts, start_time, fps, bit_rate, nb_frames, width/height/pix_fmt, side_data_list, time_base, codec_long_name, tags.stereo_mode',
     'ui/export: formatFfprobeContainerDiagnostics* (filename + probe layout + offset/timing)',

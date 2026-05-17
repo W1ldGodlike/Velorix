@@ -43,6 +43,7 @@ describe('packaged-ffprobe-smoke', () => {
     expect(lines.some((l) => l.includes('format.tags'))).toBe(true)
     expect(lines.some((l) => l.includes('chapters[]'))).toBe(true)
     expect(lines.some((l) => l.includes('nb_chapters'))).toBe(true)
+    expect(lines.some((l) => l.includes('nb_programs'))).toBe(true)
     expect(lines.some((l) => l.includes('bit_rate'))).toBe(true)
     expect(lines.some((l) => l.includes('ParsableForSmoke'))).toBe(true)
     expect(lines.some((l) => l.includes('formatFfprobeContainerDiagnostics'))).toBe(true)
@@ -267,6 +268,18 @@ describe('packaged-ffprobe-smoke', () => {
       isPackagedFfprobeProbeJsonParsableByContainerRegistry({
         streams: [{}],
         format: { format_name: 'mp4', nb_streams: '1', nb_chapters: 'n/a' }
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
+        format: { format_name: 'mp4', nb_streams: '1', size: '1048576', nb_programs: '2' }
+      })
+    ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
+        format: { format_name: 'mp4', nb_streams: '1', size: 'not-a-number' }
       })
     ).toBe(false)
   })

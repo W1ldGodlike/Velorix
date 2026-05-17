@@ -14,6 +14,7 @@ describe('packaged-release-smoke §19', () => {
     expect(lines.some((l) => l.includes('app-candidate:') && l.includes('present'))).toBe(true)
     expect(lines.some((l) => l.startsWith('layout: FluxAlloy.exe'))).toBe(true)
     expect(lines.some((l) => l.includes('FLUXALLOY_SKIP_PACK_VERIFY'))).toBe(true)
+    expect(lines.some((l) => l.includes('check:release:local'))).toBe(true)
     expect(lines.some((l) => l.includes('engines:doctor'))).toBe(true)
     expect(lines.some((l) => l.includes('trusted_hashes.json'))).toBe(true)
     expect(lines.filter((l) => l.startsWith('command:')).length).toBe(1)
