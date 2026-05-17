@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  formatFfprobeContainerOffsetTimingCompactLine,
+  formatFfprobeContainerOffsetTimingExportLine,
   formatFfprobeContainerTimingProbeCompactLine,
   formatFfprobeContainerTimingProbeExportLine
 } from '../../src/shared/ffprobe-container-format'
@@ -24,6 +26,38 @@ describe('formatFfprobeContainerTimingProbeCompactLine', () => {
         containerProbeSizeBytes: null
       })
     ).toBeNull()
+  })
+})
+
+describe('formatFfprobeContainerOffsetTimingCompactLine', () => {
+  it('joins timing probe and start offset', () => {
+    expect(
+      formatFfprobeContainerOffsetTimingCompactLine({
+        containerDurationTs: 90000,
+        containerTimeBase: '1/90000',
+        containerProbeSizeBytes: 4096,
+        containerStartTimeSec: 0.5,
+        containerStartTimeRealSec: 0.75
+      })
+    ).toBe('dur_ts 90000 · tb 1/90000 · probe_io 4.00 KiB · start +500ms · real +750ms')
+  })
+})
+
+describe('formatFfprobeContainerOffsetTimingExportLine', () => {
+  it('joins timing and start export fragments', () => {
+    const line = formatFfprobeContainerOffsetTimingExportLine(
+      {
+        containerDurationTs: 90000,
+        containerTimeBase: '1/90000',
+        containerProbeSizeBytes: 4096,
+        containerStartTimeSec: 0.5,
+        containerStartTimeRealSec: 0.75
+      },
+      'ru'
+    )
+    expect(line).toContain('duration_ts')
+    expect(line).toContain('start_time_real')
+    expect(line!.split(' · ').length).toBeGreaterThanOrEqual(3)
   })
 })
 

@@ -7,6 +7,8 @@ import {
   formatFfprobeContainerSizeCompact,
   formatFfprobeContainerSizeExportLine,
   formatFfprobeContainerStartTimeCompact,
+  formatFfprobeContainerStartOffsetCompactLine,
+  formatFfprobeContainerStartOffsetExportLine,
   formatFfprobeContainerStartTimeExportLine,
   formatFfprobeContainerStartTimeRealExportLine,
   formatFfprobeEditorVideoFactLine,
@@ -130,5 +132,42 @@ describe('ffprobe-container-format', () => {
       'Container brand: isom'
     )
     expect(formatFfprobeProbeScoreExportLine(99, 'ru')).toContain('99')
+  })
+
+  it('formatFfprobeContainerStartOffsetExportLine', () => {
+    const mismatch = formatFfprobeContainerStartOffsetExportLine(
+      { containerStartTimeSec: 0.5, containerStartTimeRealSec: 0.75 },
+      'ru'
+    )
+    expect(mismatch).toContain('start_time')
+    expect(mismatch).toContain('start_time_real')
+    expect(mismatch!.split(' · ').length).toBe(2)
+    const same = formatFfprobeContainerStartOffsetExportLine(
+      { containerStartTimeSec: 0.5, containerStartTimeRealSec: 0.5 },
+      'ru'
+    )
+    expect(same).toContain('start_time')
+    expect(same!.split(' · ').length).toBe(1)
+  })
+
+  it('formatFfprobeContainerStartOffsetCompactLine', () => {
+    expect(
+      formatFfprobeContainerStartOffsetCompactLine({
+        containerStartTimeSec: 0.5,
+        containerStartTimeRealSec: 0.75
+      })
+    ).toBe('start +500ms · real +750ms')
+    expect(
+      formatFfprobeContainerStartOffsetCompactLine({
+        containerStartTimeSec: 0.5,
+        containerStartTimeRealSec: 0.5
+      })
+    ).toBe('start +500ms')
+    expect(
+      formatFfprobeContainerStartOffsetCompactLine({
+        containerStartTimeSec: null,
+        containerStartTimeRealSec: null
+      })
+    ).toBeNull()
   })
 })

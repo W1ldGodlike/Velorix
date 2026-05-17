@@ -11,8 +11,7 @@ import { formatFfprobeCreationTimeBrief } from '../../../shared/ffprobe-creation
 import {
   ffprobeContainerFilenameBasename,
   formatFfprobeContainerSizeCompact,
-  formatFfprobeContainerTimingProbeCompactLine,
-  formatFfprobeContainerStartTimeCompact
+  formatFfprobeContainerOffsetTimingCompactLine
 } from '../../../shared/ffprobe-container-format'
 import { collectFfprobeFormatScalarTagInspectorBriefs } from '../../../shared/ffprobe-format-tag-registry'
 import {
@@ -356,9 +355,7 @@ export function PreviewProbeBody({
             })()}
             {collectFfprobeFormatScalarTagInspectorBriefs(probeInfo).join('')}
             {probeInfo.probeScore !== null ? ` · probe ${probeInfo.probeScore}` : ''}
-            {probeInfo.containerNbStreams !== null
-              ? ` · ${probeInfo.containerNbStreams} str.`
-              : ''}
+            {probeInfo.containerNbStreams !== null ? ` · ${probeInfo.containerNbStreams} str.` : ''}
             {probeInfo.containerNbPrograms !== null && probeInfo.containerNbPrograms > 0
               ? ` · ${probeInfo.containerNbPrograms} prog.`
               : ''}
@@ -366,27 +363,8 @@ export function PreviewProbeBody({
               ? ` · ${formatFfprobeContainerSizeCompact(probeInfo.containerSizeBytes)}`
               : ''}
             {(() => {
-              const timing = formatFfprobeContainerTimingProbeCompactLine(probeInfo)
-              return timing ? ` · ${timing}` : ''
-            })()}
-            {(() => {
-              const startLabel = formatFfprobeContainerStartTimeCompact(
-                probeInfo.containerStartTimeSec
-              )
-              return startLabel ? ` · ${startLabel}` : ''
-            })()}
-            {(() => {
-              const real = probeInfo.containerStartTimeRealSec
-              const nominal = probeInfo.containerStartTimeSec
-              if (
-                real === null ||
-                nominal === null ||
-                Math.abs(real - nominal) < 0.0005
-              ) {
-                return ''
-              }
-              const realLabel = formatFfprobeContainerStartTimeCompact(real)
-              return realLabel ? ` · real ${realLabel.replace(/^start /, '')}` : ''
+              const offsetTiming = formatFfprobeContainerOffsetTimingCompactLine(probeInfo)
+              return offsetTiming ? ` · ${offsetTiming}` : ''
             })()}
             {bitrateLabel ? ` · ${bitrateLabel}` : ''}
           </span>

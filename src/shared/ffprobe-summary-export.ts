@@ -9,10 +9,8 @@ import { formatProbeChapterTimecode } from './ffprobe-timecode'
 import {
   formatFfprobeContainerBrandExportLine,
   formatFfprobeContainerCreationTimeExportLine,
-  formatFfprobeContainerTimingProbeExportLine,
   formatFfprobeContainerSizeExportLine,
-  formatFfprobeContainerStartTimeExportLine,
-  formatFfprobeContainerStartTimeRealExportLine,
+  formatFfprobeContainerOffsetTimingExportLine,
   formatFfprobeContainerFilenameExportLine,
   formatFfprobeFormatFlagsExportLine,
   formatFfprobeNbProgramsExportLine,
@@ -162,13 +160,7 @@ export function formatProbeSummaryPlainText(
     formatFfprobeNbProgramsExportLine(info.containerNbPrograms, locale),
     formatFfprobeFormatFlagsExportLine(info.containerFormatFlags, locale),
     formatFfprobeContainerSizeExportLine(info.containerSizeBytes, locale),
-    formatFfprobeContainerStartTimeExportLine(info.containerStartTimeSec, locale),
-    formatFfprobeContainerStartTimeRealExportLine(
-      info.containerStartTimeRealSec,
-      info.containerStartTimeSec,
-      locale
-    ),
-    formatFfprobeContainerTimingProbeExportLine(info, locale),
+    formatFfprobeContainerOffsetTimingExportLine(info, locale),
     formatFfprobeContainerFilenameExportLine(info.containerFilename, locale),
     '',
     ffprobeSummaryFill(b.streamsCountTemplate, { count: info.tracks.length }),
@@ -295,20 +287,8 @@ ${chapterRows}
       return sz ? `<li>${escapeHtml(sz)}</li>` : ''
     })(),
     (() => {
-      const st = formatFfprobeContainerStartTimeExportLine(info.containerStartTimeSec, locale)
-      return st ? `<li>${escapeHtml(st)}</li>` : ''
-    })(),
-    (() => {
-      const str = formatFfprobeContainerStartTimeRealExportLine(
-        info.containerStartTimeRealSec,
-        info.containerStartTimeSec,
-        locale
-      )
-      return str ? `<li>${escapeHtml(str)}</li>` : ''
-    })(),
-    (() => {
-      const timing = formatFfprobeContainerTimingProbeExportLine(info, locale)
-      return timing ? `<li>${escapeHtml(timing)}</li>` : ''
+      const offsetTiming = formatFfprobeContainerOffsetTimingExportLine(info, locale)
+      return offsetTiming ? `<li>${escapeHtml(offsetTiming)}</li>` : ''
     })(),
     (() => {
       const fn = formatFfprobeContainerFilenameExportLine(info.containerFilename, locale)

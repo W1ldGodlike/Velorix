@@ -415,6 +415,80 @@ export function formatFfprobeContainerStartTimeCompact(startSec: number | null):
   return formatFfprobeStreamStartTime(String(startSec))
 }
 
+/** §9 — краткая строка инспектора: start_time и real при расхождении. */
+export function formatFfprobeContainerStartOffsetCompactLine(info: {
+  containerStartTimeSec: number | null
+  containerStartTimeRealSec: number | null
+}): string | null {
+  const parts: string[] = []
+  const startLabel = formatFfprobeContainerStartTimeCompact(info.containerStartTimeSec)
+  if (startLabel) {
+    parts.push(startLabel)
+  }
+  const real = info.containerStartTimeRealSec
+  const nominal = info.containerStartTimeSec
+  if (real !== null && nominal !== null && Math.abs(real - nominal) >= 0.0005) {
+    const realLabel = formatFfprobeContainerStartTimeCompact(real)
+    if (realLabel) {
+      parts.push(`real ${realLabel.replace(/^start /, '')}`)
+    }
+  }
+  return parts.length > 0 ? parts.join(' · ') : null
+}
+
+/** §9 — краткая строка инспектора: timing probe + start offset (порядок как в сводке). */
+export function formatFfprobeContainerOffsetTimingCompactLine(info: {
+  containerDurationTs: number | null
+  containerTimeBase: string | null
+  containerProbeSizeBytes: number | null
+  containerStartTimeSec: number | null
+  containerStartTimeRealSec: number | null
+}): string | null {
+  const parts: string[] = []
+  const timing = formatFfprobeContainerTimingProbeCompactLine(info)
+  if (timing) {
+    parts.push(timing)
+  }
+  const start = formatFfprobeContainerStartOffsetCompactLine(info)
+  if (start) {
+    parts.push(start)
+  }
+  return parts.length > 0 ? parts.join(' · ') : null
+}
+
+/** §9 — локализованная строка экспорта TXT/HTML: start_time и start_time_real без дубля. */
+export function formatFfprobeContainerStartOffsetExportLine(
+  info: {
+    containerStartTimeSec: number | null
+    containerStartTimeRealSec: number | null
+  },
+  locale: FfprobeSummaryLocale
+): string | null {
+  const real = info.containerStartTimeRealSec
+  const nominal = info.containerStartTimeSec
+  const mismatch =
+    real !== null && nominal !== null && Math.abs(real - nominal) >= 0.0005
+  const parts: string[] = []
+  if (mismatch) {
+    const start = formatFfprobeContainerStartTimeExportLine(nominal, locale)
+    const realLine = formatFfprobeContainerStartTimeRealExportLine(real, nominal, locale)
+    if (start) {
+      parts.push(start)
+    }
+    if (realLine) {
+      parts.push(realLine)
+    }
+  } else {
+    const line =
+      formatFfprobeContainerStartTimeRealExportLine(real, nominal, locale) ??
+      formatFfprobeContainerStartTimeExportLine(nominal, locale)
+    if (line) {
+      parts.push(line)
+    }
+  }
+  return parts.length > 0 ? parts.join(' · ') : null
+}
+
 export function formatFfprobeContainerDurationTsCompact(ticks: number | null): string | null {
   if (ticks === null || ticks <= 0) {
     return null
@@ -485,6 +559,29 @@ export function formatFfprobeContainerTimingProbeCompactLine(info: {
   const probeIo = formatFfprobeContainerProbeSizeCompact(info.containerProbeSizeBytes)
   if (probeIo) {
     parts.push(probeIo)
+  }
+  return parts.length > 0 ? parts.join(' · ') : null
+}
+
+/** §9 — локализованная строка экспорта TXT/HTML: timing probe + start offset (как в инспекторе). */
+export function formatFfprobeContainerOffsetTimingExportLine(
+  info: {
+    containerDurationTs: number | null
+    containerTimeBase: string | null
+    containerProbeSizeBytes: number | null
+    containerStartTimeSec: number | null
+    containerStartTimeRealSec: number | null
+  },
+  locale: FfprobeSummaryLocale
+): string | null {
+  const parts: string[] = []
+  const timing = formatFfprobeContainerTimingProbeExportLine(info, locale)
+  if (timing) {
+    parts.push(timing)
+  }
+  const start = formatFfprobeContainerStartOffsetExportLine(info, locale)
+  if (start) {
+    parts.push(start)
   }
   return parts.length > 0 ? parts.join(' · ') : null
 }

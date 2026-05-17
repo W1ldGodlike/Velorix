@@ -212,6 +212,9 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
         expect(r.tracks[0]?.detail).toContain('tb 1/90000')
         expect(r.tracks[0]?.detail).toContain('ctb 1/50')
         expect(r.tracks[0]?.detail).toContain('dur_ts 90000')
+        expect(r.containerDurationTs).toBe(90000)
+        expect(r.containerStartTimeSec).toBe(0.5)
+        expect(r.containerStartTimeRealSec).toBe(0.75)
       }
     } finally {
       cleanup()

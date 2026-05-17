@@ -7823,6 +7823,20 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     fullLine: `ffprobe -hide_banner -show_entries format=start_time,duration_ts,time_base,probe_size -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
+    tool: 'ffprobe',
+    token: '· контейнер: start+start_real',
+    summary:
+      'Контейнер: start_time и start_time_real (поля format: номинальное и реальное смещение начала; сверка при перепаковке); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format=start_time,start_time_real -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· контейнер: offset+timing',
+    summary:
+      'Контейнер: start_time, start_time_real, duration_ts, time_base и probe_size (поля format: смещение, тики, база времени и зондирование); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format=start_time,start_time_real,duration_ts,time_base,probe_size -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
     tool: 'ffmpeg',
     token: '· ffmpeg: масштаб 320, 1 с, пустой выход',
     summary:
