@@ -314,6 +314,11 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | structural | 1055 | src/shared/ffmpeg-export-argv.ts | 4 | `ffmpeg-export-argv-filters.ts` + `ffmpeg-export-argv-build.ts` | ✅ J-802 |
 | structural | 610 | src/main/settings-store.ts | 4 | `settings-store-load-parse.ts` (whitelist parsers) + entry load/save | ✅ J-803 |
 | structural | 896 | src/main/ytdlp-progress-parser.ts | 4 | `ytdlp-progress-parser-download.ts` + `ytdlp-progress-parser-queue.ts` | ✅ J-804 |
+| structural | 775 | src/preload/index.ts | 4 | `preload-sanitize.ts` + `preload-fluxalloy-settings.ts` + `preload-fluxalloy-bridge.ts` | ✅ J-805 |
+| structural | 727 | src/main/downloads-queue-runner.ts | 4 | `downloads-queue-runner-state.ts` + `downloads-queue-runner-ytdlp-row.ts` | ✅ J-806 |
+| structural | 720 | src/main/ipc/register-export-batch-ipc.ts | 4 | `register-single-export-ipc.ts` + `register-batch-export-queue-ipc.ts` | ✅ J-807 |
+| structural | 868 | src/main/ffprobe-track-detail-builder.ts | 4 | `ffprobe-json-types.ts` + `ffprobe-track-detail-helpers.ts` + `ffprobe-track-detail-build.ts` (entry re-export) | ✅ J-808 |
+| structural | 505 | src/main/ffprobe-track-detail-build.ts | 4 | `ffprobe-track-detail-by-codec.ts` (video/audio/subtitle/other append*) + orchestrator | ✅ J-809 |
 
 ---
 

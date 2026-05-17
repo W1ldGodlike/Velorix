@@ -111,7 +111,10 @@ export function registerSettingsIpcHandlers(deps: SettingsIpcDeps): void {
 
   ipcMain.handle(mw.settingsGet, (): AppSettingsView => deps.getSettingsView())
 
-  ipcMain.handle(mw.settingsSetUiLocale, (_, raw: unknown): AppSettings => deps.persistUiLocale(raw))
+  ipcMain.handle(
+    mw.settingsSetUiLocale,
+    (_, raw: unknown): AppSettings => deps.persistUiLocale(raw)
+  )
 
   ipcMain.handle(mw.settingsSetTheme, (_, theme: unknown): AppSettingsView => {
     let next: AppTheme = 'dark'

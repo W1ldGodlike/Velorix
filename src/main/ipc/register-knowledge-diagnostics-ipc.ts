@@ -11,7 +11,11 @@ import {
   cleanDiagnosticsMaintenance,
   getDiagnosticsMaintenanceSnapshot
 } from '../diagnostics-maintenance'
-import { isDiagnosticsFolderId, listDiagnosticsFolders, openDiagnosticsFolder } from '../diagnostics-paths'
+import {
+  isDiagnosticsFolderId,
+  listDiagnosticsFolders,
+  openDiagnosticsFolder
+} from '../diagnostics-paths'
 import {
   buildKnowledgeHelpDirCandidates,
   listKnowledgeArticles,
