@@ -174,6 +174,15 @@ describe('ffprobe-summary-export', () => {
     expect(t).toContain('filename): D:\\clips\\Demo.mkv')
   })
 
+  it('plain text: одна строка diagnostics (layout + offset/timing)', () => {
+    const t = formatProbeSummaryPlainText(sampleProbe, 'ru')
+    const merged = t
+      .split('\n')
+      .filter((line) => line.includes('probe_score') && line.includes('duration_ts'))
+    expect(merged).toHaveLength(1)
+    expect(merged[0]).toContain(' · ')
+  })
+
   it('formatProbeSummaryPlainText и HTML включают главы', () => {
     const withChapters: MediaProbeSuccess = {
       ...sampleProbe,

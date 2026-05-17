@@ -634,6 +634,32 @@ export function formatFfprobeContainerOffsetTimingExportLine(
   return parts.length > 0 ? parts.join(' · ') : null
 }
 
+/** §9 — краткая строка инспектора: probe layout + offset/timing. */
+export function formatFfprobeContainerDiagnosticsCompactLine(info: MediaProbeSuccess): string | null {
+  const parts: string[] = []
+  const layout = formatFfprobeContainerProbeLayoutCompactLine(info)
+  if (layout) {
+    parts.push(layout)
+  }
+  const offsetTiming = formatFfprobeContainerOffsetTimingCompactLine(info)
+  if (offsetTiming) {
+    parts.push(offsetTiming)
+  }
+  return parts.length > 0 ? parts.join(' · ') : null
+}
+
+/** §9 — локализованная строка экспорта TXT/HTML: probe layout + offset/timing. */
+export function formatFfprobeContainerDiagnosticsExportLine(
+  info: MediaProbeSuccess,
+  locale: FfprobeSummaryLocale
+): string | null {
+  const parts = [
+    formatFfprobeContainerProbeLayoutExportLine(info, locale),
+    formatFfprobeContainerOffsetTimingExportLine(info, locale)
+  ].filter((x): x is string => x !== null)
+  return parts.length > 0 ? parts.join(' · ') : null
+}
+
 /** §9 — локализованная строка экспорта TXT/HTML: duration_ts · time_base · probe_size. */
 export function formatFfprobeContainerTimingProbeExportLine(
   info: {

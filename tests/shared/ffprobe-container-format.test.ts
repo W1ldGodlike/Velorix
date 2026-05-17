@@ -15,11 +15,13 @@ import {
   formatFfprobeContainerFormatFlagsCompact,
   formatFfprobeContainerProbeLayoutCompactLine,
   formatFfprobeContainerProbeLayoutExportLine,
+  formatFfprobeContainerDiagnosticsExportLine,
   formatFfprobeFormatFlagsExportLine,
   formatFfprobeNbProgramsExportLine,
   formatFfprobeNbStreamsExportLine,
   formatFfprobeProbeScoreExportLine,
   ffprobeContainerFilenameBasename,
+  formatFfprobeContainerFilenameCompact,
   parseFfprobeFormatCompatibleBrands,
   parseFfprobeFormatCreationTime,
   parseFfprobeFormatDurationTs,
@@ -60,6 +62,25 @@ describe('ffprobe-container-format', () => {
         containerFormatFlags: '0x0'
       })
     ).toBe('probe 100 · 2 str. · 1 prog. · 4.00 KiB · flags 0x0')
+  })
+
+  it('formatFfprobeContainerDiagnosticsExportLine', () => {
+    const line = formatFfprobeContainerDiagnosticsExportLine(
+      {
+        ...probeBase,
+        probeScore: 100,
+        containerNbStreams: 2,
+        containerDurationTs: 90000,
+        containerTimeBase: '1/90000',
+        containerStartTimeSec: 0.5,
+        containerStartTimeRealSec: 0.5,
+        tracks: [{ index: 0 }, { index: 1 }] as typeof probeBase.tracks
+      },
+      'ru'
+    )
+    expect(line).toContain('probe_score')
+    expect(line).toContain('duration_ts')
+    expect(line!.split(' · ').length).toBeGreaterThanOrEqual(3)
   })
 
   it('formatFfprobeContainerProbeLayoutExportLine', () => {
@@ -115,6 +136,11 @@ describe('ffprobe-container-format', () => {
   it('parseFfprobeFormatNbPrograms и export line', () => {
     expect(parseFfprobeFormatNbPrograms('2')).toBe(2)
     expect(formatFfprobeNbProgramsExportLine(2, 'ru')).toContain('nb_programs')
+  })
+
+  it('formatFfprobeContainerFilenameCompact', () => {
+    expect(formatFfprobeContainerFilenameCompact('C:\\clips\\Demo.mkv')).toBe('file Demo.mkv')
+    expect(formatFfprobeContainerFilenameCompact(null)).toBeNull()
   })
 
   it('parseFfprobeFormatFilename и export line', () => {

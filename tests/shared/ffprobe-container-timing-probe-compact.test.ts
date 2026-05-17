@@ -1,11 +1,13 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  formatFfprobeContainerDiagnosticsCompactLine,
   formatFfprobeContainerOffsetTimingCompactLine,
   formatFfprobeContainerOffsetTimingExportLine,
   formatFfprobeContainerTimingProbeCompactLine,
   formatFfprobeContainerTimingProbeExportLine
 } from '../../src/shared/ffprobe-container-format'
+import { createMediaProbeSuccessBase } from '../fixtures/media-probe-success-base'
 
 describe('formatFfprobeContainerTimingProbeCompactLine', () => {
   it('joins duration_ts, time_base and probe_io', () => {
@@ -26,6 +28,23 @@ describe('formatFfprobeContainerTimingProbeCompactLine', () => {
         containerProbeSizeBytes: null
       })
     ).toBeNull()
+  })
+})
+
+describe('formatFfprobeContainerDiagnosticsCompactLine', () => {
+  it('joins probe layout and offset timing', () => {
+    const line = formatFfprobeContainerDiagnosticsCompactLine(
+      createMediaProbeSuccessBase({
+        probeScore: 100,
+        containerNbStreams: 2,
+        containerSizeBytes: 4096,
+        containerFormatFlags: '0x0',
+        containerDurationTs: 90000,
+        containerTimeBase: '1/90000'
+      })
+    )
+    expect(line).toContain('probe 100')
+    expect(line).toContain('dur_ts 90000')
   })
 })
 

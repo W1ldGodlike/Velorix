@@ -92,6 +92,18 @@ export function isPackagedFfprobeProbeJsonParsableByContainerRegistry(parsed: un
       return false
     }
   }
+  const probeScoreRaw = (format as { probe_score?: string | number }).probe_score
+  if (probeScoreRaw !== undefined && probeScoreRaw !== null && String(probeScoreRaw).trim() !== '') {
+    if (container.probeScore === null) {
+      return false
+    }
+  }
+  const filenameRaw = (format as { filename?: string }).filename
+  if (typeof filenameRaw === 'string' && filenameRaw.trim().length > 0) {
+    if (container.containerFilename === null) {
+      return false
+    }
+  }
   return true
 }
 
@@ -100,8 +112,9 @@ export function formatPackagedFfprobeSmokeDiagnosticLines(): string[] {
   return [
     'command: npm run smoke:packaged-ffprobe (part of smoke:packaged-engines)',
     'check: isMinimalFfprobeProbeJson + isPackagedFfprobeProbeJsonParsableByContainerRegistry',
-    'registry optional: format.duration_ts, format.time_base, format.probe_size, format.flags (parse must not fail)',
+    'registry optional: format.duration_ts, time_base, probe_size, flags, probe_score, filename (parse must not fail)',
     'stream detail optional: codec_time_base (ctb when distinct from time_base)',
+    'ui/export: formatFfprobeContainerDiagnostics* (probe layout + offset/timing compact)',
     'env: FLUXALLOY_SKIP_FFPROBE_SMOKE, FLUXALLOY_FFPROBE_SMOKE_PROBE=0, FLUXALLOY_FFPROBE_PATH'
   ]
 }

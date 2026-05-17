@@ -30,6 +30,8 @@ export {
   formatFfprobeContainerTimingProbeExportLine,
   formatFfprobeContainerOffsetTimingCompactLine,
   formatFfprobeContainerOffsetTimingExportLine,
+  formatFfprobeContainerDiagnosticsCompactLine,
+  formatFfprobeContainerDiagnosticsExportLine,
   formatFfprobeContainerFilenameExportLine,
   formatFfprobeContainerSizeCompact,
   formatFfprobeContainerSizeExportLine,
@@ -55,6 +57,15 @@ export function ffprobeContainerFilenameBasename(filename: string): string {
   const base = normalized.split('/').pop() ?? filename
   const t = base.trim()
   return t.length > 0 ? t : filename
+}
+
+/** §9 — `format.filename` в краткой сводке инспектора. */
+export function formatFfprobeContainerFilenameCompact(filename: string | null): string | null {
+  if (filename === null) {
+    return null
+  }
+  const base = ffprobeContainerFilenameBasename(filename)
+  return base.length > 0 ? `file ${base}` : null
 }
 
 /** §7 — краткая строка «Видео» под таймлайном: разрешение, кодек, опц. major_brand. */

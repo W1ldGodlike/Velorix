@@ -7844,6 +7844,20 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     fullLine: `ffprobe -hide_banner -show_entries format=flags -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
+    tool: 'ffprobe',
+    token: '· контейнер: probe layout',
+    summary:
+      'Контейнер: probe_score, nb_streams, nb_programs, flags и size (поля format: оценка демультиплексора и сводка контейнера); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format=probe_score,nb_streams,nb_programs,flags,size -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
+    tool: 'ffprobe',
+    token: '· контейнер: diagnostics',
+    summary:
+      'Контейнер: probe_score, streams, flags, size, start/real, duration_ts, time_base и probe_size (поля format: сводка как в инспекторе FluxAlloy); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format=probe_score,nb_streams,nb_programs,flags,size,start_time,start_time_real,duration_ts,time_base,probe_size -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
     tool: 'ffmpeg',
     token: '· ffmpeg: масштаб 320, 1 с, пустой выход',
     summary:

@@ -799,3 +799,8 @@
 - [J-771] 2026-05-17 05:55:46 [Assistant]: §9 — `formatFfprobeContainerProbeLayoutCompactLine` (probe/str/prog/size/flags); `MediaProbePanel` — один IIFE; Vitest. Чеклист спринт. `npm run check:quiet`.
 - [J-772] 2026-05-17 06:02:45 [Assistant]: §9 — `formatFfprobeContainerProbeLayoutExportLine` (TXT/HTML одной строкой: probe_score, streams, size, flags); Vitest. Чеклист спринт. `npm run check:quiet`.
 - [J-773] 2026-05-17 06:05:04 [Assistant]: marathon cadence **145** — §9/§8 J-769–772: `format.flags` compact+smoke, probe layout compact/export (инспектор+TXT/HTML), терминал flags; packaged smoke registry. `npm run check:quiet`; коммит.
+- [J-774] 2026-05-17 06:11:15 [Assistant]: §9/§18 — `formatFfprobeContainerDiagnosticsCompactLine` / `DiagnosticsExportLine` (layout+offset/timing); инспектор+TXT/HTML один блок; smoke registry (+`probe_score`). Vitest. Чеклист спринт. `npm run check:quiet`.
+- [J-775] 2026-05-17 06:14:53 [Assistant]: §8 — терминал `· контейнер: probe layout` + smoke; §9 — Vitest `formatFfprobeContainerDiagnosticsExportLine`. Чеклист спринт. `npm run check:quiet`.
+- [J-776] 2026-05-17 06:19:32 [Assistant]: §8 — терминал `· контейнер: diagnostics` (полный набор format) + smoke; §18 — Support ZIP hint `Diagnostics*`; §9 — export test одной строки diagnostics. Чеклист спринт. `npm run check:quiet`.
+- [J-777] 2026-05-17 06:22:58 [Assistant]: §9/§18 — `format.filename` compact (`file …`) в инспекторе; packaged smoke registry (+filename); Vitest. Чеклист спринт. `npm run check:quiet`.
+- [J-778] 2026-05-17 06:27:23 [Assistant]: marathon cadence **150** — §9/§8 J-774–777: Diagnostics compact/export, терминал probe layout/diagnostics, smoke (+probe_score/filename); инспектор unified. `npm run check:quiet`; коммит + push + re-anchor.

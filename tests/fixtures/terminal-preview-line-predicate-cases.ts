@@ -428,6 +428,23 @@ export const TERMINAL_PREVIEW_LINE_PREDICATES: readonly TerminalPreviewLinePredi
     needPlaceholder: true
   },
   {
+    label: 'format probe layout · show_entries format=probe_score,nb_streams,nb_programs,flags,size',
+    includes: [
+      'show_entries format=probe_score,nb_streams,nb_programs,flags,size',
+      'default=nw=1:nk=1'
+    ] as const,
+    needPlaceholder: true
+  },
+  {
+    label: 'format diagnostics · show_entries format=probe_score,nb_streams,flags,size,start_time,duration_ts',
+    includes: [
+      'show_entries format=probe_score,nb_streams,nb_programs,flags,size,start_time',
+      'duration_ts,time_base,probe_size',
+      'default=nw=1:nk=1'
+    ] as const,
+    needPlaceholder: true
+  },
+  {
     label: 'v:0 stereo_mode / a:0 duration_ts / format size+bit_rate+nb_streams / aresample · -af aresample=44100 + -t 3',
     includes: ['-af aresample=44100', '-t 3', '-vn -sn'] as const
   },

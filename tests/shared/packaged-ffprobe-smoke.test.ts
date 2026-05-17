@@ -37,8 +37,9 @@ describe('packaged-ffprobe-smoke', () => {
     const lines = buildSupportZipFfprobeSmokeLines('C:\\repo', (p) => p === candidates[0])
     expect(lines[0]).toContain('smoke:packaged-ffprobe')
     expect(lines.some((l) => l.includes('registry optional'))).toBe(true)
-    expect(lines.some((l) => l.includes('format.flags'))).toBe(true)
+    expect(lines.some((l) => l.includes('flags, probe_score'))).toBe(true)
     expect(lines.some((l) => l.includes('codec_time_base'))).toBe(true)
+    expect(lines.some((l) => l.includes('formatFfprobeContainerDiagnostics'))).toBe(true)
     expect(lines).toContain(`candidate: ${candidates[0]} (present)`)
     expect(lines).toContain(`candidate: ${candidates[1]} (missing)`)
   })
@@ -123,5 +124,35 @@ describe('packaged-ffprobe-smoke', () => {
         }
       })
     ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
+        format: {
+          format_name: 'mp4',
+          nb_streams: '1',
+          probe_score: 101
+        }
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
+        format: {
+          format_name: 'mp4',
+          nb_streams: '1',
+          probe_score: 99
+        }
+      })
+    ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
+        format: {
+          format_name: 'mp4',
+          nb_streams: '1',
+          filename: 'clip.mp4'
+        }
+      })
+    ).toBe(true)
   })
 })

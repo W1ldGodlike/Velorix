@@ -9,9 +9,8 @@ import { formatProbeChapterTimecode } from './ffprobe-timecode'
 import {
   formatFfprobeContainerBrandExportLine,
   formatFfprobeContainerCreationTimeExportLine,
-  formatFfprobeContainerOffsetTimingExportLine,
-  formatFfprobeContainerFilenameExportLine,
-  formatFfprobeContainerProbeLayoutExportLine
+  formatFfprobeContainerDiagnosticsExportLine,
+  formatFfprobeContainerFilenameExportLine
 } from './ffprobe-container-format'
 import { collectFfprobeFormatScalarTagExportLines } from './ffprobe-format-tag-registry'
 
@@ -151,8 +150,7 @@ export function formatProbeSummaryPlainText(
     ),
     formatFfprobeContainerCreationTimeExportLine(info.containerCreationTime, locale),
     ...collectFfprobeFormatScalarTagExportLines(info, locale),
-    formatFfprobeContainerProbeLayoutExportLine(info, locale),
-    formatFfprobeContainerOffsetTimingExportLine(info, locale),
+    formatFfprobeContainerDiagnosticsExportLine(info, locale),
     formatFfprobeContainerFilenameExportLine(info.containerFilename, locale),
     '',
     ffprobeSummaryFill(b.streamsCountTemplate, { count: info.tracks.length }),
@@ -255,12 +253,8 @@ ${chapterRows}
       (line) => `<li>${escapeHtml(line)}</li>`
     ),
     (() => {
-      const layout = formatFfprobeContainerProbeLayoutExportLine(info, locale)
-      return layout ? `<li>${escapeHtml(layout)}</li>` : ''
-    })(),
-    (() => {
-      const offsetTiming = formatFfprobeContainerOffsetTimingExportLine(info, locale)
-      return offsetTiming ? `<li>${escapeHtml(offsetTiming)}</li>` : ''
+      const diag = formatFfprobeContainerDiagnosticsExportLine(info, locale)
+      return diag ? `<li>${escapeHtml(diag)}</li>` : ''
     })(),
     (() => {
       const fn = formatFfprobeContainerFilenameExportLine(info.containerFilename, locale)

@@ -9,9 +9,8 @@ import type {
 } from '../../../shared/ffprobe-contract'
 import { formatFfprobeCreationTimeBrief } from '../../../shared/ffprobe-creation-time-brief'
 import {
-  ffprobeContainerFilenameBasename,
-  formatFfprobeContainerProbeLayoutCompactLine,
-  formatFfprobeContainerOffsetTimingCompactLine
+  formatFfprobeContainerFilenameCompact,
+  formatFfprobeContainerDiagnosticsCompactLine
 } from '../../../shared/ffprobe-container-format'
 import { collectFfprobeFormatScalarTagInspectorBriefs } from '../../../shared/ffprobe-format-tag-registry'
 import {
@@ -341,9 +340,10 @@ export function PreviewProbeBody({
               ? uiTextVars('probeSummaryAudioFragmentTemplate', { codec: probeInfo.audioCodec })
               : ''}
             {probeInfo.formatName ? ` · ${probeInfo.formatName}` : ''}
-            {probeInfo.containerFilename
-              ? ` · ${ffprobeContainerFilenameBasename(probeInfo.containerFilename)}`
-              : ''}
+            {(() => {
+              const file = formatFfprobeContainerFilenameCompact(probeInfo.containerFilename)
+              return file ? ` · ${file}` : ''
+            })()}
             {probeInfo.containerMajorBrand ? ` · ${probeInfo.containerMajorBrand}` : ''}
             {(() => {
               const created = formatFfprobeCreationTimeBrief(
@@ -355,12 +355,8 @@ export function PreviewProbeBody({
             })()}
             {collectFfprobeFormatScalarTagInspectorBriefs(probeInfo).join('')}
             {(() => {
-              const layout = formatFfprobeContainerProbeLayoutCompactLine(probeInfo)
-              return layout ? ` · ${layout}` : ''
-            })()}
-            {(() => {
-              const offsetTiming = formatFfprobeContainerOffsetTimingCompactLine(probeInfo)
-              return offsetTiming ? ` · ${offsetTiming}` : ''
+              const diag = formatFfprobeContainerDiagnosticsCompactLine(probeInfo)
+              return diag ? ` · ${diag}` : ''
             })()}
             {bitrateLabel ? ` · ${bitrateLabel}` : ''}
           </span>
