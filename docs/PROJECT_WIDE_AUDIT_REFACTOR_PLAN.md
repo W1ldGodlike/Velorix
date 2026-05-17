@@ -294,7 +294,9 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | many-export-parse | 13 | src/main/ffmpeg-export-service.ts | 2 | stored/user-preset/progress parse modules | ✅ J-705 |
 | whitelist-if-chains | 4 | src/main/ytdlp-download-options.ts | 2 | Реестр whitelist chains + тесты; убрать 4× if-chain | ✅ J-704 |
 
-**Структурные (≥400 строк, фаза 4):** `terminal-contract.ts` (12959), `App.tsx` (7650), `index.ts` (4152), `downloads-window.ts` (4074), `ui-text.ts` (2848), `ffmpeg-export-argv.ts` (1055), `ffprobe-service.ts` (978), `MediaProbePanel.tsx` (985). Полный список: `npm run audit:structural`.
+**Структурные (≥400 строк, фаза 4):** `terminal-contract.ts` (13008), `downloads-window.ts` (4074), `ui-text.ts` (2848), `index.ts` (2141→срез: preview-proxy + ytdlp-cli-merge), `ffmpeg-export-argv.ts` (1055), `ffprobe-service.ts` (1017), `App.tsx` (820). Полный список: `npm run audit:structural`.
+
+| structural | 2141 | src/main/index.ts | 4 | `preview-proxy-service.ts` + `ytdlp-download-cli-merge.ts` | ✅ J-786 |
 
 ---
 

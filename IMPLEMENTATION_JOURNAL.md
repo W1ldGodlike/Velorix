@@ -811,3 +811,4 @@
 - [J-783] 2026-05-17 07:19:37 [Assistant]: marathon cadence **155** — §9/§8 J-779–782: diagnostics (filename, bit_rate, duration), registry parse+smoke, offset/timing compact/export, терминал; инспектор/экспорт без дублей. `npm run check:quiet`; коммит `fdb7790`.
 - [J-784] 2026-05-17 08:20:29 [Assistant]: PROGRAM GATE синхрон (план, rules, AGENTS, marathon, checklist, SDK contract, SOURCES_OF_TRUTH); возобновление программы с фазы 3 (не с 0); push origin. `npm run check:quiet`.
 - [J-785] 2026-05-17 08:37:26 [Assistant]: Фаза 3 ✅ — `ffprobe-container-format-cases` + `it.each` (48 тестов); `audit:copy-paste` без hotspots; manifest 362; верификация фаз 0–2 (`field-registries`, ipc-architecture); §9 плана → фаза 4. `npm run check:quiet`.
+- [J-786] 2026-05-17 08:41:34 [Assistant]: Фаза 4 P1 — `preview-proxy-service.ts`, `ytdlp-download-cli-merge.ts` из `index.ts`; `ARCHITECTURE.md`; §6 structural hotspot. `npm run check:quiet`.

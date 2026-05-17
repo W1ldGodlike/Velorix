@@ -1,7 +1,5 @@
-import { execFile } from 'child_process'
-import { createHash } from 'crypto'
-import { existsSync, mkdirSync, rmSync, statSync } from 'fs'
-import { basename, dirname, extname, isAbsolute, join, normalize, resolve } from 'path'
+import { existsSync, statSync } from 'fs'
+import { basename, dirname, isAbsolute, join, normalize, resolve } from 'path'
 import {
   BrowserWindow,
   Menu,
@@ -87,7 +85,12 @@ import {
   hydrateFfmpegExportBatchQueueFromDisk
 } from './ffmpeg-export-batch-persist'
 import { isFfmpegExportBatchActive, runFfmpegExportBatchQueue } from './ffmpeg-export-batch-runner'
-import { scanFolderForFfmpegExportBatchVideos } from './ffmpeg-export-batch-folder-scan'
+import {
+  configurePreviewProxyService,
+  ensurePreviewPlayableMedia,
+  resolveUserPathToPreviewSourceFile
+} from './preview-proxy-service'
+import { mergeYtdlpDownloadCliPatchOntoSettings } from './ytdlp-download-cli-merge'
 import { appendProcessingHistoryEntry } from './processing-history'
 import { resolveTerminalCliSessionLogPath } from './terminal-service'
 import { setEnginePathOverridesSnapshot } from './engine-path-sync'
@@ -119,24 +122,16 @@ import {
   buildYtdlpCommandPreviewContext,
   buildYtdlpRunOptionsSnapshot,
   normalizeYtdlpPreviewOutputDirectory,
-  parseYtdlpSubtitlePreset,
   payloadFromSnapshot,
-  validateFilenameTemplate,
   validateYtdlpCookiesFilePath,
-  validateYtdlpRateLimit,
-  validateYtdlpFragmentRetriesLine,
-  validateYtdlpRetriesLine,
-  validateYtdlpSubLangs,
   type YtdlpDownloadOptionsPatch
 } from './ytdlp-download-options'
 import type { YtdlpGetCliOptionsParams } from '../shared/ytdlp-download-contract'
-import { parseExtraYtdlpArgsLine, validateYtdlpCookiesBrowserProfile } from './ytdlp-extra-args'
 import {
   getYtdlpRunOptionsSnapshot,
   refreshYtdlpRunOptionsSnapshot
 } from './ytdlp-run-options-sync'
 import { isFfmpegExportBatchVideoPath } from '../shared/ffmpeg-export-batch-video-ext'
-import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
 import {
   autoExportProgressMessage,
@@ -547,201 +542,6 @@ function persistClearYtdlpCookiesFile(): void {
   saveSettings(settingsPath(), cachedSettings)
   refreshYtdlpRunOptionsSnapshot(cachedSettings, mainDownloadsUiLocale())
   broadcastDownloadsCliOptionsChanged()
-}
-
-/**
- * §6.2 — слияние патча CLI yt-dlp с базовыми настройками без записи на диск;
- * используется при сохранении и для черновика превью argv §6.3.
- */
-function mergeYtdlpDownloadCliPatchOntoSettings(
-  base: AppSettings,
-  patch: YtdlpDownloadOptionsPatch,
-  uiLocale: DownloadsWindowUiLocale = 'ru'
-): { ok: true; settings: AppSettings } | { ok: false; error: string } {
-  const M = getYtdlpCliValidationCopy(uiLocale)
-  const merged: AppSettings = { ...base }
-  if (patch.filenameTemplate !== undefined) {
-    if (typeof patch.filenameTemplate !== 'string') {
-      return { ok: false, error: M.patchFilenameTemplateMustBeString }
-    }
-    const ft = patch.filenameTemplate
-    if (ft.trim() === '') {
-      delete merged.ytdlpFilenameTemplate
-    } else {
-      const v = validateFilenameTemplate(ft, uiLocale)
-      if (!v.ok) {
-        return v
-      }
-      merged.ytdlpFilenameTemplate = v.value
-    }
-  }
-  if (patch.formatPreset !== undefined) {
-    merged.ytdlpFormatPreset = patch.formatPreset
-  }
-  if (patch.downloadPlaylist !== undefined) {
-    if (patch.downloadPlaylist) {
-      merged.ytdlpDownloadPlaylist = true
-    } else {
-      delete merged.ytdlpDownloadPlaylist
-    }
-  }
-  if (patch.audioOnly !== undefined) {
-    if (patch.audioOnly) {
-      merged.ytdlpAudioOnly = true
-    } else {
-      delete merged.ytdlpAudioOnly
-    }
-  }
-  if (patch.subtitlePreset !== undefined) {
-    const id = parseYtdlpSubtitlePreset(patch.subtitlePreset)
-    if (id === 'none') {
-      delete merged.ytdlpSubtitlePreset
-    } else {
-      merged.ytdlpSubtitlePreset = id
-    }
-  }
-  if (patch.subLangs !== undefined) {
-    if (typeof patch.subLangs !== 'string') {
-      return { ok: false, error: M.patchSubLangsMustBeString }
-    }
-    const sv = validateYtdlpSubLangs(patch.subLangs, uiLocale)
-    if (!sv.ok) {
-      return sv
-    }
-    if (sv.value === '') {
-      delete merged.ytdlpSubLangs
-    } else {
-      merged.ytdlpSubLangs = sv.value
-    }
-  }
-  if (patch.cookiesBrowser !== undefined) {
-    if (patch.cookiesBrowser === 'none') {
-      delete merged.ytdlpCookiesBrowser
-      delete merged.ytdlpCookiesBrowserProfile
-    } else {
-      merged.ytdlpCookiesBrowser = patch.cookiesBrowser
-      delete merged.ytdlpCookiesFile
-    }
-  }
-  if (patch.cookiesBrowserProfile !== undefined) {
-    if (typeof patch.cookiesBrowserProfile !== 'string') {
-      return { ok: false, error: M.patchCookiesBrowserProfileMustBeString }
-    }
-    const pv = validateYtdlpCookiesBrowserProfile(patch.cookiesBrowserProfile, uiLocale)
-    if (!pv.ok) {
-      return pv
-    }
-    if (pv.value === '') {
-      delete merged.ytdlpCookiesBrowserProfile
-    } else {
-      merged.ytdlpCookiesBrowserProfile = pv.value
-    }
-  }
-  if (patch.impersonate !== undefined) {
-    if (patch.impersonate === 'none') {
-      delete merged.ytdlpImpersonate
-    } else {
-      merged.ytdlpImpersonate = patch.impersonate
-    }
-  }
-  if (patch.rateLimit !== undefined) {
-    if (typeof patch.rateLimit !== 'string') {
-      return { ok: false, error: M.patchRateLimitMustBeString }
-    }
-    const rv = validateYtdlpRateLimit(patch.rateLimit, uiLocale)
-    if (!rv.ok) {
-      return rv
-    }
-    if (rv.value === '') {
-      delete merged.ytdlpRateLimit
-    } else {
-      merged.ytdlpRateLimit = rv.value
-    }
-  }
-  if (patch.retriesLine !== undefined) {
-    if (typeof patch.retriesLine !== 'string') {
-      return { ok: false, error: M.patchRetriesLineMustBeString }
-    }
-    const rt = validateYtdlpRetriesLine(patch.retriesLine, uiLocale)
-    if (!rt.ok) {
-      return rt
-    }
-    if (rt.value === null) {
-      delete merged.ytdlpRetries
-    } else {
-      merged.ytdlpRetries = rt.value
-    }
-  }
-  if (patch.fragmentRetriesLine !== undefined) {
-    if (typeof patch.fragmentRetriesLine !== 'string') {
-      return { ok: false, error: M.patchFragmentRetriesLineMustBeString }
-    }
-    const frt = validateYtdlpFragmentRetriesLine(patch.fragmentRetriesLine, uiLocale)
-    if (!frt.ok) {
-      return frt
-    }
-    if (frt.value === null) {
-      delete merged.ytdlpFragmentRetries
-    } else {
-      merged.ytdlpFragmentRetries = frt.value
-    }
-  }
-  if (patch.extraArgsLine !== undefined) {
-    if (typeof patch.extraArgsLine !== 'string') {
-      return { ok: false, error: M.patchExtraArgsLineMustBeString }
-    }
-    const trimmed = patch.extraArgsLine.trim()
-    if (trimmed === '') {
-      delete merged.ytdlpExtraArgsLine
-    } else {
-      const pe = parseExtraYtdlpArgsLine(trimmed, uiLocale)
-      if (!pe.ok) {
-        return pe
-      }
-      merged.ytdlpExtraArgsLine = trimmed
-    }
-  }
-  if (patch.queueRetryProfile !== undefined) {
-    const id = parseYtdlpQueueRetryProfile(patch.queueRetryProfile)
-    if (id === 'off') {
-      delete merged.ytdlpQueueRetryProfile
-    } else {
-      merged.ytdlpQueueRetryProfile = id
-    }
-  }
-  if (patch.openInHandlerOnComplete !== undefined) {
-    if (patch.openInHandlerOnComplete) {
-      merged.ytdlpOpenInHandlerOnComplete = true
-    } else {
-      delete merged.ytdlpOpenInHandlerOnComplete
-      delete merged.ytdlpAutoExportAfterOpenInHandler
-    }
-  }
-  if (patch.autoExportAfterOpenInHandler !== undefined) {
-    if (patch.autoExportAfterOpenInHandler) {
-      merged.ytdlpAutoExportAfterOpenInHandler = true
-      merged.ytdlpOpenInHandlerOnComplete = true
-    } else {
-      delete merged.ytdlpAutoExportAfterOpenInHandler
-    }
-  }
-  if (patch.enqueueBatchOnDownloadComplete !== undefined) {
-    if (patch.enqueueBatchOnDownloadComplete) {
-      merged.ytdlpEnqueueBatchOnDownloadComplete = true
-    } else {
-      delete merged.ytdlpEnqueueBatchOnDownloadComplete
-      delete merged.ytdlpAutoStartBatchAfterEnqueue
-    }
-  }
-  if (patch.autoStartBatchAfterEnqueue !== undefined) {
-    if (patch.autoStartBatchAfterEnqueue) {
-      merged.ytdlpAutoStartBatchAfterEnqueue = true
-      merged.ytdlpEnqueueBatchOnDownloadComplete = true
-    } else {
-      delete merged.ytdlpAutoStartBatchAfterEnqueue
-    }
-  }
-  return { ok: true, settings: merged }
 }
 
 function launchFfmpegExportBatchRunner(
@@ -1563,151 +1363,6 @@ function createWindow(): void {
   }
 }
 
-function isLikelyBrowserPlayableMedia(filePath: string): boolean {
-  const ext = extname(filePath).toLowerCase()
-  return ['.mp4', '.m4v', '.webm', '.ogg', '.ogv', '.mp3', '.wav', '.flac'].includes(ext)
-}
-
-const previewProxyJobs = new Map<string, Promise<string>>()
-
-function runFfmpegPreviewProxy(ffmpeg: string, input: string, output: string): Promise<void> {
-  const args = [
-    '-y',
-    '-i',
-    input,
-    '-map',
-    '0:v:0',
-    '-map',
-    '0:a?',
-    '-c:v',
-    'libvpx',
-    '-deadline',
-    'realtime',
-    '-cpu-used',
-    '5',
-    '-b:v',
-    '2500k',
-    '-vf',
-    "scale=w='min(1280,iw)':h=-2",
-    '-c:a',
-    'libopus',
-    '-b:a',
-    '128k',
-    output
-  ]
-
-  return new Promise((resolvePromise, reject) => {
-    execFile(
-      ffmpeg,
-      args,
-      { timeout: 20 * 60_000, windowsHide: true },
-      (error, _stdout, stderr) => {
-        if (error) {
-          reject(new Error(stderr.trim() || error.message))
-          return
-        }
-        resolvePromise()
-      }
-    )
-  })
-}
-
-function isUsablePreviewCache(filePath: string): boolean {
-  if (!existsSync(filePath)) {
-    return false
-  }
-  try {
-    const st = statSync(filePath)
-    return st.isFile() && st.size > 0
-  } catch {
-    return false
-  }
-}
-
-async function createWebmPreviewProxy(
-  ffmpeg: string,
-  absoluteFile: string,
-  output: string
-): Promise<string> {
-  rmSync(output, { force: true })
-  logInfo('preview', `creating webm preview proxy for ${absoluteFile}`)
-  await runFfmpegPreviewProxy(ffmpeg, absoluteFile, output)
-  if (!isUsablePreviewCache(output)) {
-    throw new Error(getMainApplicationStrings(mainDownloadsUiLocale()).previewWebmNotCreated)
-  }
-  logInfo('preview', `webm preview proxy ready: ${output}`)
-  return output
-}
-
-function resolveUserPathToPreviewSourceFile(rawPath: string):
-  | { ok: true; path: string }
-  | {
-      ok: false
-      error: string
-    } {
-  const P = mainAppStr()
-  const normalized = normalize(rawPath.trim())
-  if (!existsSync(normalized)) {
-    return { ok: false, error: P.previewGrantOpenFailed }
-  }
-  try {
-    const st = statSync(normalized)
-    if (st.isDirectory()) {
-      const scanned = scanFolderForFfmpegExportBatchVideos(normalized)
-      if (scanned.length === 0) {
-        return { ok: false, error: P.batchExportFolderEmpty }
-      }
-      return { ok: true, path: scanned[0]! }
-    }
-    if (!st.isFile()) {
-      return { ok: false, error: P.previewGrantOpenFailed }
-    }
-    return { ok: true, path: normalized }
-  } catch (error) {
-    return {
-      ok: false,
-      error: error instanceof Error ? error.message : String(error)
-    }
-  }
-}
-
-async function ensurePreviewPlayableMedia(absoluteFile: string): Promise<string> {
-  if (isLikelyBrowserPlayableMedia(absoluteFile)) {
-    return absoluteFile
-  }
-
-  const paths = resolveAppPaths()
-  const ffmpeg = resolveEngineExecutablePath(paths, 'ffmpeg', cachedSettings.engineExecutablePaths)
-  if (!ffmpeg) {
-    throw new Error(getMainApplicationStrings(mainDownloadsUiLocale()).previewFfmpegMissingForWebm)
-  }
-
-  const st = statSync(absoluteFile)
-  const key = createHash('sha256')
-    .update(absoluteFile)
-    .update(String(st.mtimeMs))
-    .update(String(st.size))
-    .digest('hex')
-    .slice(0, 24)
-  const cacheDir = join(paths.userData, 'preview-cache')
-  mkdirSync(cacheDir, { recursive: true })
-  const output = join(cacheDir, `${key}.webm`)
-  if (isUsablePreviewCache(output)) {
-    return output
-  }
-  rmSync(output, { force: true })
-
-  const existingJob = previewProxyJobs.get(output)
-  if (existingJob) {
-    return existingJob
-  }
-  const job = createWebmPreviewProxy(ffmpeg, absoluteFile, output).finally(() => {
-    previewProxyJobs.delete(output)
-  })
-  previewProxyJobs.set(output, job)
-  return job
-}
-
 async function openDownloadedFileInMainHandler(
   absoluteFile: string
 ): Promise<{ ok: true } | { ok: false; error: string }> {
@@ -2046,6 +1701,11 @@ app.whenReady().then(() => {
   )
   registerDownloadsWindowIpcHandlers()
   registerInspectorWindowIpcHandlers()
+  configurePreviewProxyService({
+    getEnginePathOverrides: () => cachedSettings.engineExecutablePaths ?? {},
+    getUiLocale: mainDownloadsUiLocale,
+    getMainAppStrings: mainAppStr
+  })
   registerKnowledgeDiagnosticsIpcHandlers({
     mainDownloadsUiLocale,
     mainAppStr,
