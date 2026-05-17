@@ -813,3 +813,4 @@
 - [J-785] 2026-05-17 08:37:26 [Assistant]: Фаза 3 ✅ — `ffprobe-container-format-cases` + `it.each` (48 тестов); `audit:copy-paste` без hotspots; manifest 362; верификация фаз 0–2 (`field-registries`, ipc-architecture); §9 плана → фаза 4. `npm run check:quiet`.
 - [J-786] 2026-05-17 08:41:34 [Assistant]: Фаза 4 P1 — `preview-proxy-service.ts`, `ytdlp-download-cli-merge.ts` из `index.ts`; `ARCHITECTURE.md`; §6 structural hotspot. `npm run check:quiet`.
 - [J-787] 2026-05-17 08:44:02 [Assistant]: Фаза 4 P1 — `main-application-menu.ts` (`buildApplicationMenu`, diagnostics submenu); `configureMainApplicationMenu` в bootstrap; `ARCHITECTURE.md`. `npm run check:quiet`.
+- [J-788] 2026-05-17 08:46:16 [Assistant]: Фаза 4 P1 — `main-diagnostics-service.ts` (support ZIP runtime, logs, process error dialog, prune); `ARCHITECTURE.md`. `npm run check:quiet`.

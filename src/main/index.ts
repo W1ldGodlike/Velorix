@@ -3,19 +3,15 @@ import { basename, dirname, isAbsolute, join, normalize, resolve } from 'path'
 import {
   BrowserWindow,
   app,
-  clipboard,
   dialog,
   ipcMain,
   nativeTheme,
-  screen,
   shell
 } from 'electron'
 import type { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
-import { packagedWinUnpackedRoot } from '../shared/packaged-app-smoke'
-import { buildSupportZipFfprobeSmokeLines } from '../shared/packaged-ffprobe-smoke'
 import { resolveAppPaths } from './app-paths'
 import { buildKnowledgeHelpDirCandidates, resolveKnowledgeHelpDirectory } from './knowledge-service'
 import { registerKnowledgeDiagnosticsIpcHandlers } from './ipc/register-knowledge-diagnostics-ipc'
@@ -52,21 +48,20 @@ import {
   configureMainApplicationMenu
 } from './main-application-menu'
 import {
+  configureMainDiagnosticsService,
+  createSupportBundleWithDialog,
+  openMainLogFile,
+  openMainLogForUser,
+  openSessionLogFile,
+  pruneDiagnosticsOnStartup,
+  showProcessErrorDialog
+} from './main-diagnostics-service'
+import {
   attachProcessErrorHandlers,
-  getMainLogBackupFilePath,
-  getMainLogFilePath,
-  getSessionLogFilePath,
-  logError,
   logFromRendererSafe,
-  logInfo,
   logStartupBanner,
   setProcessErrorReporter
 } from './logger-service'
-import {
-  createSupportBundleZip,
-  pruneOldDiagnosticFiles,
-  type SupportBundleRuntimeInfo
-} from './support-bundle'
 import { runFfmpegExportJob, type FfmpegExportProgressPayload } from './ffmpeg-export-service'
 import { FFMPEG_EXPORT_CANCELLED_ERROR } from '../shared/ffmpeg-export-contract'
 import { resolveOpenMediaDialogDefaultPath } from '../shared/preview-open-dialog-default-path'
@@ -87,9 +82,8 @@ import {
 } from './preview-proxy-service'
 import { mergeYtdlpDownloadCliPatchOntoSettings } from './ytdlp-download-cli-merge'
 import { appendProcessingHistoryEntry } from './processing-history'
-import { resolveTerminalCliSessionLogPath } from './terminal-service'
 import { setEnginePathOverridesSnapshot } from './engine-path-sync'
-import { ENGINE_IDS, getEnginesStatus, resolveEngineExecutablePath } from './engine-service'
+import { resolveEngineExecutablePath } from './engine-service'
 import { grantMediaPath, registerFluxMediaPrivileges, registerFluxMediaProtocol } from './media-protocol'
 import { registerFluxHelpPrivileges, registerFluxHelpProtocol } from './help-assets-protocol'
 import type {
@@ -151,10 +145,7 @@ import {
   parseDownloadsWindowUiLocale,
   type DownloadsWindowUiLocale
 } from '../shared/downloads-window-ui-locale'
-import {
-  formatMainProcessErrorClipboardHeader,
-  getMainApplicationStrings
-} from '../shared/main-application-locale'
+import { getMainApplicationStrings } from '../shared/main-application-locale'
 
 /** Кастомная схема для локального видеопревью; привилегии обязаны зарегистрироваться до `app.whenReady`. */
 attachProcessErrorHandlers()
@@ -734,256 +725,7 @@ function setTheme(pref: AppTheme): AppSettingsView {
   return settingsIpcPersist.persistThemePreference(pref)
 }
 
-function getCrashDumpsPathSafe(): string | null {
-  try {
-    return app.getPath('crashDumps')
-  } catch {
-    return null
-  }
-}
-
-async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRuntimeInfo> {
-  const paths = resolveAppPaths()
-  const engines = await getEnginesStatus(paths)
-  const engineDiagnosticLines = ENGINE_IDS.map((id) => {
-    const e = engines.engines[id]
-    const pathPart = e.path ?? '-'
-    const detail = e.version ?? (e.message && e.message.length > 0 ? e.message : e.state)
-    return `  ${id}: ${e.state} | ${pathPart} | ${detail}`
-  })
-  let appLocale = '?'
-  let systemLocale = '?'
-  try {
-    appLocale = app.getLocale()
-  } catch {
-    /* ignore */
-  }
-  try {
-    systemLocale =
-      typeof app.getSystemLocale === 'function' ? app.getSystemLocale() : app.getLocale()
-  } catch {
-    systemLocale = appLocale
-  }
-
-  let primaryDisplayLine = '-'
-  try {
-    const d = screen.getPrimaryDisplay()
-    const { width: bw, height: bh } = d.bounds
-    const { width: ww, height: wh } = d.workAreaSize
-    primaryDisplayLine = `${bw}×${bh}@${d.scaleFactor.toFixed(2)} work ${ww}×${wh}`
-  } catch {
-    /* headless / not ready */
-  }
-
-  const unpackedRoot = packagedWinUnpackedRoot(paths.appRoot)
-  const unpackedExe = join(
-    unpackedRoot,
-    process.platform === 'win32' ? 'FluxAlloy.exe' : 'FluxAlloy'
-  )
-  const releaseSmokeLines: string[] = [
-    'command: npm run smoke:packaged-release (after npm run pack:dir)',
-    existsSync(unpackedExe)
-      ? `win-unpacked: ${unpackedExe}`
-      : `win-unpacked: not built (${unpackedRoot})`
-  ]
-  const ffprobeSmokeLines = buildSupportZipFfprobeSmokeLines(paths.appRoot, existsSync)
-
-  return {
-    appVersion: app.getVersion(),
-    electronVersion: process.versions.electron ?? '?',
-    chromeVersion: process.versions.chrome ?? '?',
-    nodeVersion: process.versions.node ?? '?',
-    platform: process.platform,
-    arch: process.arch,
-    appLocale,
-    systemLocale,
-    processId: process.pid,
-    currentWorkingDirectory: process.cwd(),
-    execBasename: basename(process.execPath),
-    packaged: app.isPackaged,
-    primaryDisplayLine,
-    userData: paths.userData,
-    resources: paths.resources,
-    logFile: getMainLogFilePath(),
-    logBackupFile: getMainLogBackupFilePath(),
-    sessionLogFile: getSessionLogFilePath(),
-    terminalCliLogFile: resolveTerminalCliSessionLogPath(paths.userData),
-    crashDumps: getCrashDumpsPathSafe(),
-    engineDiagnosticLines,
-    releaseSmokeLines,
-    ffprobeSmokeLines
-  }
-}
-
-function pruneDiagnosticsOnStartup(): void {
-  const removed = pruneOldDiagnosticFiles({
-    directory: getCrashDumpsPathSafe(),
-    maxAgeMs: 30 * 24 * 60 * 60 * 1000,
-    keepNewest: 20,
-    fileNamePattern: /\.(dmp|dump|txt|log)$/i
-  })
-  if (removed > 0) {
-    logInfo('diagnostics', `pruned old crash dump files: ${removed}`)
-  }
-}
-
-/** §17/§18 — открыть main.log; результат для IPC «О программе» и для меню без дублирования логики. */
-async function openMainLogForUser(): Promise<{ ok: true } | { ok: false; error: string }> {
-  const S = mainAppStr()
-  const file = getMainLogFilePath()
-  if (!file) {
-    return { ok: false, error: S.mainLogPathUnavailable }
-  }
-  if (!existsSync(file)) {
-    logInfo('diagnostics', 'main.log does not exist yet')
-    return { ok: false, error: S.mainLogNotCreatedYet }
-  }
-  const result = await shell.openPath(file)
-  if (result.length > 0) {
-    logError('diagnostics', 'open main.log failed', result)
-    return { ok: false, error: result }
-  }
-  return { ok: true }
-}
-
-async function openMainLogFile(): Promise<void> {
-  await openMainLogForUser()
-}
-
-async function openSessionLogFile(): Promise<void> {
-  const file = getSessionLogFilePath()
-  if (!file) {
-    return
-  }
-  if (!existsSync(file)) {
-    logInfo('diagnostics', 'session.log does not exist yet')
-    return
-  }
-  const result = await shell.openPath(file)
-  if (result.length > 0) {
-    logError('diagnostics', 'open session.log failed', result)
-  }
-}
-
-/** Исход диалога сохранения Support ZIP: отмена отделена от ошибки записи (для IPC из renderer). */
-type SupportBundleDialogOutcome =
-  | { outcome: 'saved'; path: string }
-  | { outcome: 'cancelled' }
-  | { outcome: 'failed'; message: string }
-
-async function createSupportBundleWithDialog(
-  parent?: BrowserWindow
-): Promise<SupportBundleDialogOutcome> {
-  const S = mainAppStr()
-  const stamp = new Date().toISOString().replace(/[:.]/g, '-')
-  const saveOptions = {
-    title: S.supportZipSaveTitle,
-    defaultPath: `fluxalloy-support-${stamp}.zip`,
-    filters: [{ name: 'ZIP', extensions: ['zip'] }]
-  }
-  const result = parent
-    ? await dialog.showSaveDialog(parent, saveOptions)
-    : await dialog.showSaveDialog(saveOptions)
-  if (result.canceled || !result.filePath) {
-    return { outcome: 'cancelled' }
-  }
-  try {
-    createSupportBundleZip(result.filePath, await buildSupportBundleRuntimeInfo())
-    logInfo('diagnostics', 'support zip created', result.filePath)
-    return { outcome: 'saved', path: result.filePath }
-  } catch (err) {
-    logError('diagnostics', 'support zip failed', err)
-    const detail = err instanceof Error ? err.message : String(err)
-    const messageOptions = {
-      type: 'error',
-      title: S.supportZipFailTitle,
-      message: S.supportZipFailMessage,
-      detail
-    } as const
-    void (parent
-      ? dialog.showMessageBox(parent, messageOptions)
-      : dialog.showMessageBox(messageOptions))
-    return { outcome: 'failed', message: detail }
-  }
-}
-
-function formatProcessErrorDetails(
-  kind: 'uncaughtException' | 'unhandledRejection',
-  reason: unknown,
-  locale: DownloadsWindowUiLocale
-): string {
-  let serialized: string | null = null
-  try {
-    serialized = JSON.stringify(reason, null, 2)
-  } catch {
-    serialized = null
-  }
-  const body =
-    reason instanceof Error
-      ? (reason.stack ?? `${reason.name}: ${reason.message}`)
-      : typeof reason === 'string'
-        ? reason
-        : (serialized ?? String(reason))
-  const meta = formatMainProcessErrorClipboardHeader(
-    locale,
-    kind,
-    app.getVersion(),
-    process.platform,
-    process.arch
-  )
-  return [
-    meta.typeLine,
-    meta.timeLine,
-    meta.versionLine,
-    meta.platformLine,
-    '',
-    body ?? String(reason)
-  ].join('\n')
-}
-
-let processErrorDialogOpen = false
 let mainWindowRef: BrowserWindow | null = null
-
-async function showProcessErrorDialog(
-  kind: 'uncaughtException' | 'unhandledRejection',
-  reason: unknown
-): Promise<void> {
-  if (processErrorDialogOpen || !app.isReady()) {
-    return
-  }
-  processErrorDialogOpen = true
-  const win = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0]
-  const loc = mainDownloadsUiLocale()
-  const S = getMainApplicationStrings(loc)
-  const detail = formatProcessErrorDetails(kind, reason, loc)
-  const messageBoxOptions: Electron.MessageBoxOptions = {
-    type: 'error',
-    title: S.processErrorTitle,
-    message: S.processErrorMessage,
-    detail,
-    buttons: [
-      S.processErrorCopyDetails,
-      S.processErrorOpenLog,
-      S.processErrorSupportZip,
-      S.processErrorClose
-    ],
-    defaultId: 3,
-    cancelId: 3,
-    noLink: true
-  }
-  const result =
-    win !== undefined
-      ? await dialog.showMessageBox(win, messageBoxOptions)
-      : await dialog.showMessageBox(messageBoxOptions)
-  processErrorDialogOpen = false
-  if (result.response === 0) {
-    clipboard.writeText(detail)
-  } else if (result.response === 1) {
-    await openMainLogFile()
-  } else if (result.response === 2) {
-    void createSupportBundleWithDialog(win)
-  }
-}
 
 function createWindow(): void {
   const savedMain = cachedSettings.windowBounds?.main
@@ -1139,6 +881,10 @@ app.whenReady().then(() => {
   logStartupBanner()
   pruneDiagnosticsOnStartup()
   cachedSettings = loadSettings(settingsPath())
+  configureMainDiagnosticsService({
+    mainDownloadsUiLocale,
+    mainAppStr
+  })
   configureMainApplicationMenu({
     getThemePref: () => cachedSettings.theme,
     getMainWindowRef: () => mainWindowRef,

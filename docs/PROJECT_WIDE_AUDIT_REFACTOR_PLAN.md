@@ -298,6 +298,7 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 
 | structural | 2141 | src/main/index.ts | 4 | `preview-proxy-service.ts` + `ytdlp-download-cli-merge.ts` | ✅ J-786 |
 | structural | ~1900 | src/main/index.ts | 4 | `main-application-menu.ts` (buildApplicationMenu + diagnostics submenu) | ✅ J-787 |
+| structural | ~1650 | src/main/index.ts | 4 | `main-diagnostics-service.ts` (support ZIP, logs, process error dialog) | ✅ J-788 |
 
 ---
 
