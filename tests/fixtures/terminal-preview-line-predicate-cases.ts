@@ -423,6 +423,11 @@ export const TERMINAL_PREVIEW_LINE_PREDICATES: readonly TerminalPreviewLinePredi
     needPlaceholder: true
   },
   {
+    label: 'format flags · show_entries format=flags',
+    includes: ['show_entries format=flags', 'default=nw=1:nk=1'] as const,
+    needPlaceholder: true
+  },
+  {
     label: 'v:0 stereo_mode / a:0 duration_ts / format size+bit_rate+nb_streams / aresample · -af aresample=44100 + -t 3',
     includes: ['-af aresample=44100', '-t 3', '-vn -sn'] as const
   },

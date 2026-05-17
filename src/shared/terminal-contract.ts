@@ -7837,6 +7837,13 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA: TerminalCommandHintEntry[] =
     fullLine: `ffprobe -hide_banner -show_entries format=start_time,start_time_real,duration_ts,time_base,probe_size -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
+    tool: 'ffprobe',
+    token: '· контейнер: flags',
+    summary:
+      'Контейнер: format.flags (поле format: битовая маска флагов демультиплексора); путь к медиа подставляется из превью.',
+    fullLine: `ffprobe -hide_banner -show_entries format=flags -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
+  },
+  {
     tool: 'ffmpeg',
     token: '· ffmpeg: масштаб 320, 1 с, пустой выход',
     summary:

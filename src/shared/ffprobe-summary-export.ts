@@ -9,13 +9,9 @@ import { formatProbeChapterTimecode } from './ffprobe-timecode'
 import {
   formatFfprobeContainerBrandExportLine,
   formatFfprobeContainerCreationTimeExportLine,
-  formatFfprobeContainerSizeExportLine,
   formatFfprobeContainerOffsetTimingExportLine,
   formatFfprobeContainerFilenameExportLine,
-  formatFfprobeFormatFlagsExportLine,
-  formatFfprobeNbProgramsExportLine,
-  formatFfprobeNbStreamsExportLine,
-  formatFfprobeProbeScoreExportLine
+  formatFfprobeContainerProbeLayoutExportLine
 } from './ffprobe-container-format'
 import { collectFfprobeFormatScalarTagExportLines } from './ffprobe-format-tag-registry'
 
@@ -155,11 +151,7 @@ export function formatProbeSummaryPlainText(
     ),
     formatFfprobeContainerCreationTimeExportLine(info.containerCreationTime, locale),
     ...collectFfprobeFormatScalarTagExportLines(info, locale),
-    formatFfprobeProbeScoreExportLine(info.probeScore, locale),
-    formatFfprobeNbStreamsExportLine(info.containerNbStreams, info.tracks.length, locale),
-    formatFfprobeNbProgramsExportLine(info.containerNbPrograms, locale),
-    formatFfprobeFormatFlagsExportLine(info.containerFormatFlags, locale),
-    formatFfprobeContainerSizeExportLine(info.containerSizeBytes, locale),
+    formatFfprobeContainerProbeLayoutExportLine(info, locale),
     formatFfprobeContainerOffsetTimingExportLine(info, locale),
     formatFfprobeContainerFilenameExportLine(info.containerFilename, locale),
     '',
@@ -263,28 +255,8 @@ ${chapterRows}
       (line) => `<li>${escapeHtml(line)}</li>`
     ),
     (() => {
-      const score = formatFfprobeProbeScoreExportLine(info.probeScore, locale)
-      return score ? `<li>${escapeHtml(score)}</li>` : ''
-    })(),
-    (() => {
-      const nb = formatFfprobeNbStreamsExportLine(
-        info.containerNbStreams,
-        info.tracks.length,
-        locale
-      )
-      return nb ? `<li>${escapeHtml(nb)}</li>` : ''
-    })(),
-    (() => {
-      const np = formatFfprobeNbProgramsExportLine(info.containerNbPrograms, locale)
-      return np ? `<li>${escapeHtml(np)}</li>` : ''
-    })(),
-    (() => {
-      const fl = formatFfprobeFormatFlagsExportLine(info.containerFormatFlags, locale)
-      return fl ? `<li>${escapeHtml(fl)}</li>` : ''
-    })(),
-    (() => {
-      const sz = formatFfprobeContainerSizeExportLine(info.containerSizeBytes, locale)
-      return sz ? `<li>${escapeHtml(sz)}</li>` : ''
+      const layout = formatFfprobeContainerProbeLayoutExportLine(info, locale)
+      return layout ? `<li>${escapeHtml(layout)}</li>` : ''
     })(),
     (() => {
       const offsetTiming = formatFfprobeContainerOffsetTimingExportLine(info, locale)

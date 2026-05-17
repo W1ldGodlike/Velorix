@@ -35,6 +35,7 @@ export const TERMINAL_PREVIEW_LINE_SUBSTRINGS = [
   'show_entries format=start_time,start_time_real,duration_ts,time_base,probe_size',
   'show_entries format=filename',
   'show_entries format=probe_size',
+  'show_entries format=flags',
   'show_entries format=size,duration',
   'stream=index,codec_type,disposition',
   'stream_tags=filename,mimetype',

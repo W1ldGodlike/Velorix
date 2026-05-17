@@ -12,6 +12,9 @@ import {
   formatFfprobeContainerStartTimeExportLine,
   formatFfprobeContainerStartTimeRealExportLine,
   formatFfprobeEditorVideoFactLine,
+  formatFfprobeContainerFormatFlagsCompact,
+  formatFfprobeContainerProbeLayoutCompactLine,
+  formatFfprobeContainerProbeLayoutExportLine,
   formatFfprobeFormatFlagsExportLine,
   formatFfprobeNbProgramsExportLine,
   formatFfprobeNbStreamsExportLine,
@@ -42,6 +45,41 @@ import { createMediaProbeSuccessBase } from '../fixtures/media-probe-success-bas
 const probeBase = createMediaProbeSuccessBase()
 
 describe('ffprobe-container-format', () => {
+  it('formatFfprobeContainerFormatFlagsCompact', () => {
+    expect(formatFfprobeContainerFormatFlagsCompact('0x0')).toBe('flags 0x0')
+    expect(formatFfprobeContainerFormatFlagsCompact(null)).toBeNull()
+  })
+
+  it('formatFfprobeContainerProbeLayoutCompactLine', () => {
+    expect(
+      formatFfprobeContainerProbeLayoutCompactLine({
+        probeScore: 100,
+        containerNbStreams: 2,
+        containerNbPrograms: 1,
+        containerSizeBytes: 4096,
+        containerFormatFlags: '0x0'
+      })
+    ).toBe('probe 100 · 2 str. · 1 prog. · 4.00 KiB · flags 0x0')
+  })
+
+  it('formatFfprobeContainerProbeLayoutExportLine', () => {
+    const line = formatFfprobeContainerProbeLayoutExportLine(
+      {
+        ...probeBase,
+        probeScore: 100,
+        containerNbStreams: 2,
+        containerNbPrograms: 1,
+        containerSizeBytes: 4096,
+        containerFormatFlags: '0x0',
+        tracks: [{ index: 0 }, { index: 1 }] as typeof probeBase.tracks
+      },
+      'ru'
+    )
+    expect(line).toContain('probe_score')
+    expect(line).toContain('nb_streams')
+    expect(line!.split(' · ').length).toBeGreaterThanOrEqual(4)
+  })
+
   it('parseFfprobeFormatProbeScore', () => {
     expect(parseFfprobeFormatProbeScore('100')).toBe(100)
     expect(parseFfprobeFormatProbeScore(42)).toBe(42)

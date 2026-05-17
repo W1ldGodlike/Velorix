@@ -10,7 +10,7 @@ import type {
 import { formatFfprobeCreationTimeBrief } from '../../../shared/ffprobe-creation-time-brief'
 import {
   ffprobeContainerFilenameBasename,
-  formatFfprobeContainerSizeCompact,
+  formatFfprobeContainerProbeLayoutCompactLine,
   formatFfprobeContainerOffsetTimingCompactLine
 } from '../../../shared/ffprobe-container-format'
 import { collectFfprobeFormatScalarTagInspectorBriefs } from '../../../shared/ffprobe-format-tag-registry'
@@ -354,14 +354,10 @@ export function PreviewProbeBody({
               return created ? ` · ${created}` : ''
             })()}
             {collectFfprobeFormatScalarTagInspectorBriefs(probeInfo).join('')}
-            {probeInfo.probeScore !== null ? ` · probe ${probeInfo.probeScore}` : ''}
-            {probeInfo.containerNbStreams !== null ? ` · ${probeInfo.containerNbStreams} str.` : ''}
-            {probeInfo.containerNbPrograms !== null && probeInfo.containerNbPrograms > 0
-              ? ` · ${probeInfo.containerNbPrograms} prog.`
-              : ''}
-            {probeInfo.containerSizeBytes !== null
-              ? ` · ${formatFfprobeContainerSizeCompact(probeInfo.containerSizeBytes)}`
-              : ''}
+            {(() => {
+              const layout = formatFfprobeContainerProbeLayoutCompactLine(probeInfo)
+              return layout ? ` · ${layout}` : ''
+            })()}
             {(() => {
               const offsetTiming = formatFfprobeContainerOffsetTimingCompactLine(probeInfo)
               return offsetTiming ? ` · ${offsetTiming}` : ''

@@ -337,6 +337,54 @@ export function formatFfprobeFormatFlagsExportLine(
   )
 }
 
+/** §9 — `format.flags` в краткой сводке инспектора. */
+export function formatFfprobeContainerFormatFlagsCompact(flags: string | null): string | null {
+  return flags === null ? null : `flags ${flags}`
+}
+
+/** §9 — probe_score, nb_streams/programs, size и flags одной строкой инспектора. */
+export function formatFfprobeContainerProbeLayoutCompactLine(info: {
+  probeScore: number | null
+  containerNbStreams: number | null
+  containerNbPrograms: number | null
+  containerSizeBytes: number | null
+  containerFormatFlags: string | null
+}): string | null {
+  const parts: string[] = []
+  if (info.probeScore !== null) {
+    parts.push(`probe ${info.probeScore}`)
+  }
+  if (info.containerNbStreams !== null) {
+    parts.push(`${info.containerNbStreams} str.`)
+  }
+  if (info.containerNbPrograms !== null && info.containerNbPrograms > 0) {
+    parts.push(`${info.containerNbPrograms} prog.`)
+  }
+  if (info.containerSizeBytes !== null) {
+    parts.push(formatFfprobeContainerSizeCompact(info.containerSizeBytes))
+  }
+  const flags = formatFfprobeContainerFormatFlagsCompact(info.containerFormatFlags)
+  if (flags) {
+    parts.push(flags)
+  }
+  return parts.length > 0 ? parts.join(' · ') : null
+}
+
+/** §9 — локализованная строка экспорта TXT/HTML: probe_score · streams · programs · size · flags. */
+export function formatFfprobeContainerProbeLayoutExportLine(
+  info: MediaProbeSuccess,
+  locale: FfprobeSummaryLocale
+): string | null {
+  const parts = [
+    formatFfprobeProbeScoreExportLine(info.probeScore, locale),
+    formatFfprobeNbStreamsExportLine(info.containerNbStreams, info.tracks.length, locale),
+    formatFfprobeNbProgramsExportLine(info.containerNbPrograms, locale),
+    formatFfprobeContainerSizeExportLine(info.containerSizeBytes, locale),
+    formatFfprobeFormatFlagsExportLine(info.containerFormatFlags, locale)
+  ].filter((x): x is string => x !== null)
+  return parts.length > 0 ? parts.join(' · ') : null
+}
+
 export function formatFfprobeContainerFilenameExportLine(
   filename: string | null,
   locale: FfprobeSummaryLocale
