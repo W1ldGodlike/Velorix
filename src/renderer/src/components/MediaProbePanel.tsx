@@ -10,6 +10,9 @@ import type {
 import { formatFfprobeCreationTimeBrief } from '../../../shared/ffprobe-creation-time-brief'
 import {
   ffprobeContainerFilenameBasename,
+  formatFfprobeContainerDurationTsCompact,
+  formatFfprobeContainerTimeBaseCompact,
+  formatFfprobeContainerProbeSizeCompact,
   formatFfprobeContainerSizeCompact,
   formatFfprobeContainerStartTimeCompact
 } from '../../../shared/ffprobe-container-format'
@@ -364,6 +367,20 @@ export function PreviewProbeBody({
             {probeInfo.containerSizeBytes !== null
               ? ` · ${formatFfprobeContainerSizeCompact(probeInfo.containerSizeBytes)}`
               : ''}
+            {(() => {
+              const durTs = formatFfprobeContainerDurationTsCompact(probeInfo.containerDurationTs)
+              return durTs ? ` · ${durTs}` : ''
+            })()}
+            {(() => {
+              const tb = formatFfprobeContainerTimeBaseCompact(probeInfo.containerTimeBase)
+              return tb ? ` · ${tb}` : ''
+            })()}
+            {(() => {
+              const probeIo = formatFfprobeContainerProbeSizeCompact(
+                probeInfo.containerProbeSizeBytes
+              )
+              return probeIo ? ` · ${probeIo}` : ''
+            })()}
             {(() => {
               const startLabel = formatFfprobeContainerStartTimeCompact(
                 probeInfo.containerStartTimeSec

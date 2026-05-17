@@ -11,6 +11,8 @@ import {
   ffprobeSummaryFill,
   ffprobeSummaryStrings
 } from './ffprobe-summary-export-locale'
+import { parseFfprobeTickCount } from './ffprobe-stream-duration-ts'
+import { parseFfprobeNontrivialTimeBase } from './ffprobe-stream-time-base'
 import { formatProbeChapterTimecode } from './ffprobe-timecode'
 
 export type FfprobeFormatJsonSlice = {
@@ -19,6 +21,12 @@ export type FfprobeFormatJsonSlice = {
   flags?: string | number
   start_time?: string | number
   start_time_real?: string | number
+  /** Длительность контейнера в тиках time_base. */
+  duration_ts?: string | number
+  /** База времени контейнера. */
+  time_base?: string
+  /** Байты, прочитанные при зондировании (диагностика глубины probe). */
+  probe_size?: string | number
   size?: string | number
   nb_streams?: string | number
   nb_programs?: string | number
@@ -143,6 +151,19 @@ export function parseFfprobeFormatNbPrograms(raw: string | number | undefined): 
   return parseFfprobeFormatNbStreams(raw)
 }
 
+export function parseFfprobeFormatDurationTs(raw: string | number | undefined): number | null {
+  return parseFfprobeTickCount(raw)
+}
+
+export function parseFfprobeFormatTimeBase(raw: string | undefined): string | null {
+  return parseFfprobeNontrivialTimeBase(raw)
+}
+
+export function parseFfprobeFormatProbeSize(raw: string | number | undefined): number | null {
+  const n = parseFfprobeFormatSize(raw)
+  return n === null || n <= 0 ? null : n
+}
+
 /** Все поля контейнера из `format` JSON ffprobe (кроме scalar tags — отдельный реестр). */
 export function parseFfprobeContainerFieldsFromFormat(
   format: FfprobeFormatJsonSlice | undefined
@@ -158,6 +179,9 @@ export function parseFfprobeContainerFieldsFromFormat(
   | 'containerSizeBytes'
   | 'containerStartTimeSec'
   | 'containerStartTimeRealSec'
+  | 'containerDurationTs'
+  | 'containerTimeBase'
+  | 'containerProbeSizeBytes'
   | 'containerFilename'
 > {
   const tags = format?.tags
@@ -172,6 +196,9 @@ export function parseFfprobeContainerFieldsFromFormat(
     containerSizeBytes: parseFfprobeFormatSize(format?.size),
     containerStartTimeSec: parseFfprobeFormatStartTimeSec(format?.start_time),
     containerStartTimeRealSec: parseFfprobeFormatStartTimeSec(format?.start_time_real),
+    containerDurationTs: parseFfprobeFormatDurationTs(format?.duration_ts),
+    containerTimeBase: parseFfprobeFormatTimeBase(format?.time_base),
+    containerProbeSizeBytes: parseFfprobeFormatProbeSize(format?.probe_size),
     containerFilename: parseFfprobeFormatFilename(format?.filename)
   }
 }
@@ -224,6 +251,16 @@ const FFPROBE_CONTAINER_SCALAR_EXPORT_SPECS: readonly FfprobeContainerScalarExpo
     localeTemplateKey: 'containerFilenameTemplate',
     fillKey: 'filename',
     read: (info) => info.containerFilename
+  },
+  {
+    localeTemplateKey: 'containerDurationTsTemplate',
+    fillKey: 'ticks',
+    read: (info) => info.containerDurationTs
+  },
+  {
+    localeTemplateKey: 'containerTimeBaseTemplate',
+    fillKey: 'timeBase',
+    read: (info) => info.containerTimeBase
   }
 ]
 
@@ -373,6 +410,58 @@ export function formatFfprobeContainerStartTimeCompact(startSec: number | null):
     return null
   }
   return formatFfprobeStreamStartTime(String(startSec))
+}
+
+export function formatFfprobeContainerDurationTsCompact(ticks: number | null): string | null {
+  if (ticks === null || ticks <= 0) {
+    return null
+  }
+  return `dur_ts ${ticks}`
+}
+
+export function formatFfprobeContainerDurationTsExportLine(
+  ticks: number | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  return formatScalarTemplateExportLineFromValue(
+    'containerDurationTsTemplate',
+    'ticks',
+    ticks,
+    locale
+  )
+}
+
+export function formatFfprobeContainerTimeBaseExportLine(
+  timeBase: string | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  return formatScalarTemplateExportLineFromValue(
+    'containerTimeBaseTemplate',
+    'timeBase',
+    timeBase,
+    locale
+  )
+}
+
+export function formatFfprobeContainerProbeSizeCompact(bytes: number | null): string | null {
+  if (bytes === null || bytes <= 0) {
+    return null
+  }
+  return `probe_io ${formatFfprobeContainerSizeCompact(bytes)}`
+}
+
+export function formatFfprobeContainerProbeSizeExportLine(
+  bytes: number | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  if (bytes === null) {
+    return null
+  }
+  const b = ffprobeSummaryStrings(locale)
+  return ffprobeSummaryFill(b.containerProbeSizeTemplate, {
+    label: formatFfprobeContainerSizeCompact(bytes),
+    bytes
+  })
 }
 
 export function formatFfprobeContainerStartTimeRealExportLine(

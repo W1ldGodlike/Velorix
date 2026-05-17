@@ -17,6 +17,15 @@ import {
   ffprobeContainerFilenameBasename,
   parseFfprobeFormatCompatibleBrands,
   parseFfprobeFormatCreationTime,
+  parseFfprobeFormatDurationTs,
+  formatFfprobeContainerDurationTsCompact,
+  formatFfprobeContainerDurationTsExportLine,
+  formatFfprobeContainerTimeBaseCompact,
+  formatFfprobeContainerTimeBaseExportLine,
+  parseFfprobeFormatTimeBase,
+  parseFfprobeFormatProbeSize,
+  formatFfprobeContainerProbeSizeCompact,
+  formatFfprobeContainerProbeSizeExportLine,
   parseFfprobeFormatFlags,
   parseFfprobeFormatFilename,
   parseFfprobeFormatMajorBrand,
@@ -72,6 +81,25 @@ describe('ffprobe-container-format', () => {
     expect(parseFfprobeFormatFilename('C:\\clips\\demo.mp4')).toBe('C:\\clips\\demo.mp4')
     expect(ffprobeContainerFilenameBasename('C:\\clips\\demo.mp4')).toBe('demo.mp4')
     expect(formatFfprobeContainerFilenameExportLine('demo.mp4', 'ru')).toContain('filename')
+  })
+
+  it('parseFfprobeFormatProbeSize и export line', () => {
+    expect(parseFfprobeFormatProbeSize('4096')).toBe(4096)
+    expect(formatFfprobeContainerProbeSizeCompact(4096)).toBe('probe_io 4.00 KiB')
+    expect(formatFfprobeContainerProbeSizeExportLine(4096, 'ru')).toContain('probe_size')
+  })
+
+  it('parseFfprobeFormatTimeBase и export line', () => {
+    expect(parseFfprobeFormatTimeBase('1/90000')).toBe('1/90000')
+    expect(parseFfprobeFormatTimeBase('1/1')).toBeNull()
+    expect(formatFfprobeContainerTimeBaseCompact('1/90000')).toBe('tb 1/90000')
+    expect(formatFfprobeContainerTimeBaseExportLine('1/90000', 'en')).toContain('1/90000')
+  })
+
+  it('parseFfprobeFormatDurationTs и export line', () => {
+    expect(parseFfprobeFormatDurationTs('90000')).toBe(90000)
+    expect(formatFfprobeContainerDurationTsCompact(90000)).toBe('dur_ts 90000')
+    expect(formatFfprobeContainerDurationTsExportLine(90000, 'ru')).toContain('90000')
   })
 
   it('parseFfprobeFormatStartTimeSec и export line', () => {

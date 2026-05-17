@@ -54,6 +54,9 @@ interface FfprobeJson {
     size?: string | number
     start_time?: string | number
     start_time_real?: string | number
+    duration_ts?: string | number
+    time_base?: string
+    probe_size?: string | number
     filename?: string
     tags?: Record<string, string | number | undefined>
   }

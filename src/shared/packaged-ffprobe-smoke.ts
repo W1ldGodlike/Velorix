@@ -64,7 +64,29 @@ export function isPackagedFfprobeProbeJsonParsableByContainerRegistry(parsed: un
   }
   const container = parseFfprobeContainerFieldsFromFormat(format)
   const nbStreams = container.containerNbStreams
-  return typeof nbStreams === 'number' && nbStreams >= 1
+  if (typeof nbStreams !== 'number' || nbStreams < 1) {
+    return false
+  }
+  const durationTsRaw = (format as { duration_ts?: string | number }).duration_ts
+  if (durationTsRaw !== undefined && durationTsRaw !== null && String(durationTsRaw).trim() !== '') {
+    if (container.containerDurationTs === null) {
+      return false
+    }
+  }
+  const timeBaseRaw = (format as { time_base?: string }).time_base
+  if (typeof timeBaseRaw === 'string' && timeBaseRaw.trim().length > 0) {
+    const norm = timeBaseRaw.trim().replace(/\s+/g, '')
+    if (norm !== '0/1' && norm !== '1/1' && container.containerTimeBase === null) {
+      return false
+    }
+  }
+  const probeSizeRaw = (format as { probe_size?: string | number }).probe_size
+  if (probeSizeRaw !== undefined && probeSizeRaw !== null && String(probeSizeRaw).trim() !== '') {
+    if (container.containerProbeSizeBytes === null) {
+      return false
+    }
+  }
+  return true
 }
 
 /** §18 Support ZIP — подсказки smoke без запуска ffprobe. */

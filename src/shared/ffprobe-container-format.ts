@@ -7,6 +7,9 @@ import type { MediaProbeSuccess } from './ffprobe-contract'
 export {
   parseFfprobeFormatCompatibleBrands,
   parseFfprobeFormatCreationTime,
+  parseFfprobeFormatDurationTs,
+  parseFfprobeFormatTimeBase,
+  parseFfprobeFormatProbeSize,
   parseFfprobeFormatFilename,
   parseFfprobeFormatFlags,
   parseFfprobeFormatMajorBrand,
@@ -18,6 +21,11 @@ export {
   parseFfprobeContainerFieldsFromFormat,
   formatFfprobeContainerBrandExportLine,
   formatFfprobeContainerCreationTimeExportLine,
+  formatFfprobeContainerDurationTsCompact,
+  formatFfprobeContainerDurationTsExportLine,
+  formatFfprobeContainerTimeBaseExportLine,
+  formatFfprobeContainerProbeSizeCompact,
+  formatFfprobeContainerProbeSizeExportLine,
   formatFfprobeContainerFilenameExportLine,
   formatFfprobeContainerSizeCompact,
   formatFfprobeContainerSizeExportLine,
@@ -30,6 +38,7 @@ export {
   formatFfprobeProbeScoreExportLine,
   collectFfprobeContainerScalarExportLines
 } from './ffprobe-container-field-registry'
+export { formatFfprobeContainerTimeBaseCompact } from './ffprobe-stream-time-base'
 
 /** Basename для краткой строки инспектора. */
 export function ffprobeContainerFilenameBasename(filename: string): string {

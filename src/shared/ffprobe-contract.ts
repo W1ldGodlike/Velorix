@@ -130,6 +130,12 @@ export interface MediaProbeSuccess {
   containerStartTimeSec: number | null
   /** `format.start_time_real` (секунды), если ffprobe отдал ненулевое значение. */
   containerStartTimeRealSec: number | null
+  /** `format.duration_ts` (тики time_base), если ffprobe отдал. */
+  containerDurationTs: number | null
+  /** `format.time_base`, если ffprobe отдал нетривиальное значение. */
+  containerTimeBase: string | null
+  /** `format.probe_size` (байты I/O при зондировании), если ffprobe отдал. */
+  containerProbeSizeBytes: number | null
   /** `format.filename` (путь/имя входа ffprobe), если отдал. */
   containerFilename: string | null
   /** Все потоки в порядке индекса ffprobe. */

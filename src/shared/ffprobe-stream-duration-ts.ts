@@ -1,16 +1,14 @@
 /**
- * §9 — `stream.duration_ts` (длительность в тиках time_base) в компактной строке detail.
+ * §9 — `duration_ts` (тики time_base) для stream/format в detail и контейнере.
  */
 
-export function formatFfprobeStreamDurationTsDetail(
-  durationTs: string | number | undefined
-): string | null {
-  if (typeof durationTs === 'number' && Number.isFinite(durationTs)) {
-    const n = Math.trunc(durationTs)
-    return n > 0 ? `dur_ts ${n}` : null
+export function parseFfprobeTickCount(raw: string | number | undefined): number | null {
+  if (typeof raw === 'number' && Number.isFinite(raw)) {
+    const n = Math.trunc(raw)
+    return n > 0 ? n : null
   }
-  if (typeof durationTs === 'string') {
-    const t = durationTs.trim()
+  if (typeof raw === 'string') {
+    const t = raw.trim()
     if (t.length === 0 || /^n\/a$/i.test(t)) {
       return null
     }
@@ -18,7 +16,14 @@ export function formatFfprobeStreamDurationTsDetail(
     if (!Number.isFinite(n) || n <= 0) {
       return null
     }
-    return `dur_ts ${Math.trunc(n)}`
+    return Math.trunc(n)
   }
   return null
+}
+
+export function formatFfprobeStreamDurationTsDetail(
+  durationTs: string | number | undefined
+): string | null {
+  const n = parseFfprobeTickCount(durationTs)
+  return n === null ? null : `dur_ts ${n}`
 }

@@ -91,6 +91,9 @@ const sampleProbe: MediaProbeSuccess = {
   containerSizeBytes: 12_345_678,
   containerStartTimeSec: 1.25,
   containerStartTimeRealSec: 1.5,
+  containerDurationTs: 11_250_000,
+  containerTimeBase: '1/90000',
+  containerProbeSizeBytes: 5_242_880,
   containerFilename: 'D:\\clips\\Demo.mkv'
 }
 
@@ -165,6 +168,9 @@ describe('ffprobe-summary-export', () => {
     expect(t).toContain('12345678 B')
     expect(t).toContain('start_time)')
     expect(t).toContain('start_time_real')
+    expect(t).toContain('duration_ts): 11250000')
+    expect(t).toContain('time_base): 1/90000')
+    expect(t).toContain('probe_size)')
     expect(t).toContain('filename): D:\\clips\\Demo.mkv')
   })
 

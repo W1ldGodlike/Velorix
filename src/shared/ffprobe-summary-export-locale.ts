@@ -72,6 +72,9 @@ export type FfprobeSummaryStrings = {
   containerStartTimeTemplate: string
   containerStartTimeRealTemplate: string
   containerStartTimeRealMismatchTemplate: string
+  containerDurationTsTemplate: string
+  containerTimeBaseTemplate: string
+  containerProbeSizeTemplate: string
   containerFilenameTemplate: string
   bitrateEstPrefix: string
   bitratePlainPrefix: string

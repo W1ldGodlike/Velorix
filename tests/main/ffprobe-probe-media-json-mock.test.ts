@@ -100,6 +100,9 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
         size: '2048',
         start_time: '0.500000',
         start_time_real: '0.750000',
+        duration_ts: '90000',
+        time_base: '1/90000',
+        probe_size: '4096',
         filename: 'C:\\clips\\clip.mp4',
         tags: {
           major_brand: 'isom',
@@ -196,6 +199,9 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
         expect(r.containerSizeBytes).toBe(2048)
         expect(r.containerStartTimeSec).toBe(0.5)
         expect(r.containerStartTimeRealSec).toBe(0.75)
+        expect(r.containerDurationTs).toBe(90000)
+        expect(r.containerTimeBase).toBe('1/90000')
+        expect(r.containerProbeSizeBytes).toBe(4096)
         expect(r.containerFilename).toBe('C:\\clips\\clip.mp4')
       }
     } finally {

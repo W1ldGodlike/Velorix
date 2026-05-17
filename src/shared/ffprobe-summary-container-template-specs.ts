@@ -150,6 +150,18 @@ export const FFPROBE_SUMMARY_CONTAINER_TEMPLATE_SPECS = {
     ru: 'Реальное смещение (start_time_real): {real} (start_time: {nominal})',
     en: 'Real start offset (start_time_real): {real} (start_time: {nominal})'
   },
+  containerDurationTsTemplate: {
+    ru: 'Длительность контейнера (duration_ts): {ticks} тиков',
+    en: 'Container duration (duration_ts): {ticks} ticks'
+  },
+  containerTimeBaseTemplate: {
+    ru: 'База времени контейнера (time_base): {timeBase}',
+    en: 'Container time base (time_base): {timeBase}'
+  },
+  containerProbeSizeTemplate: {
+    ru: 'Объём зондирования (probe_size): {label} ({bytes} B)',
+    en: 'Probe I/O (probe_size): {label} ({bytes} B)'
+  },
   containerFilenameTemplate: {
     ru: 'Имя входа ffprobe (filename): {filename}',
     en: 'Ffprobe input name (filename): {filename}'
