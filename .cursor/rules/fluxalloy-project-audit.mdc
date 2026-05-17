@@ -1,46 +1,41 @@
 ---
-description: Программа полного аудита/рефактора (временно, до фазы 9 плана)
+description: Постоянный аудит репозитория (после программы 2026-05)
 alwaysApply: true
 ---
 
-# Программа «весь репозиторий»
+# Аудит репозитория (поддержка)
 
 Глоссарий: [`fluxalloy-rules-explicit.mdc`](fluxalloy-rules-explicit.mdc).  
-План фаз: [`docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md`](../../docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md).
+Scope: [`scripts/audit-scope.config.mjs`](../../scripts/audit-scope.config.mjs).  
+Счётчик файлов: [`docs/audit-manifest.json`](../../docs/audit-manifest.json) (`npm run audit:inventory`).
 
-## PROGRAM GATE (владелец)
+## Обязательно перед marathon-коммитом
 
-**Если** файл плана существует **и** в §9 плана не все фазы ✅ **то:**
+`npm run check:quiet` — exit code 0 (включает `audit:copy-paste`, `audit:structural`, `audit:todo-debt`, `audit:dead-type-reexports`, `audit:ipc-architecture`, `audit:shared-contracts`, `audit:inventory-sync`).
 
-- **Запрещено:** спринт-TODO, §6–§9 ТЗ, ffprobe/smoke/терминал «ещё поле», product-фичи, marathon-cadence коммит off-program diff.
-- **Обязательно:** первый ⬜ в §4 плана → §8 workflow → одна `J-*` на срез программы.
-- **«Продолжай»** трактуется как срез программы, **не** как `## Ближайший TODO спринта`.
+## При изменении scope
 
-## Слой A (во время программы)
+**Если** правите `scripts/audit-scope.config.mjs` **то** в том же коммите: `npm run audit:inventory` и обновить `docs/audit-manifest.json`.
 
-**Запрещено:** **сужение scope**; **микро-J**; новая **копипаста-парсер**; завершать итерацию без **check:quiet зелёный**; пропускать `tests/` и `scripts/` в audit.
+## Слой A (постоянно)
 
-## Слой B (закрытие зоны)
+**Запрещено:** **сужение scope** при запросе «весь проект»; **микро-J**; новая **копипаста-парсер**; завершать итерацию без **check:quiet зелёный**; пропускать `tests/` и `scripts/` в audit.
 
-**Если** строка hotspot log (§6 плана) со статусом ✅ **то** в **том же коммите** выполнить **≥1** из:
+## Слой B (регрессии)
 
-1. Ужесточить `scripts/check-field-registries.mjs` под закрытый паттерн.
-2. Ужесточить `scripts/audit-copy-paste-patterns.mjs` (warning → fail).
-3. Дописать однозначный буллет в `.cursor/rules/*.mdc` (формат — `fluxalloy-rules-explicit.mdc`).
+**Если** закрыли паттерн копипасты/реестра **то** в том же коммите: ужесточить `check:field-registries.mjs` или `audit-copy-paste-patterns.mjs`, либо буллет здесь.
 
-## Обязательно каждую итерацию программы
+## Обязательно при широком рефакторе
 
-1. Работать по **первому чекбоксу ⬜** в **§9** плана (статус программы).
-2. **Если** добавлены файлы в `AUDIT_CODE_ROOTS` **то** `npm run audit:inventory`.
-3. `npm run audit:copy-paste`; **если** **номер фазы аудита** ≥ 1 (глоссарий) **то** `npm run audit:structural` (exit 1, если файл из `AUDIT_LARGE_MODULE_CANDIDATES` >500 строк).
-4. **Если** **номер фазы аудита** ≥ 5 (глоссарий) **то** `npm run audit:todo-debt` (exit 1 при `TODO|FIXME|HACK` в `src/` или `tests/`).
-5. **Если** **номер фазы аудита** ≥ 5 **то** `npm run audit:dead-type-reexports` (exit 1 при неиспользуемом `export type {…} from` в `src/main/`).
+1. `npm run audit:inventory` при новых корнях в scope.
+2. `npm run audit:copy-paste` и `npm run audit:structural`.
+3. Одна `J-*` на итерацию; IPC — `docs/ARCHITECTURE.md` + `ipc-channels.ts`.
 
-## Scripts maint (после ф.6)
+## Scripts maint
 
-**Если** правите `scripts/**/*.mjs`, который читает файлы репо по относительному пути **то** используйте `REPO_ROOT` / `readRepoUtf8` / `readRepoLines` из `scripts/lib/repo-root.mjs`. **Запрещено:** вычислять корень репо через `fileURLToPath(import.meta.url)` + `'..'` (кроме самого `scripts/lib/repo-root.mjs`).
+**Если** `scripts/**/*.mjs` читает файлы репо **то** `REPO_ROOT` / `readRepoUtf8` из `scripts/lib/repo-root.mjs`.
 
 ## Запрещено
 
-- Удалять `PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md` до фазы 9 (все чекбоксы §9 ✅).
-- Писать в отчёте число файлов без `audit-manifest.json` или вывода `audit:inventory`.
+- Писать в отчёте число файлов без `audit-manifest.json` или `audit:inventory`.
+- Ослаблять `audit:copy-paste` hotspots до warning (exit 1 при hotspot).

@@ -1,8 +1,6 @@
 Ты работаешь в репозитории FluxAlloy (Electron + TypeScript + React).
 
-**Если** `docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md` существует и в §9 не все фазы ✅: **только** срез программы аудита (первый ⬜ в §9). Спринт, §6–§9 ТЗ, ffprobe/smoke/терминал — **СТОП**.
-
-**Иначе:** крупный блок по `## Ближайший TODO спринта` в `IMPLEMENTATION_CHECKLIST.md`.
+Крупный блок по `## Ближайший TODO спринта` в `IMPLEMENTATION_CHECKLIST.md`.
 
 Обязательно прочитай `scripts/cursor-automation/prompts/agent-contract.txt` (канон SDK; не перечитывай целиком на каждом «продолжай» без причины).
 

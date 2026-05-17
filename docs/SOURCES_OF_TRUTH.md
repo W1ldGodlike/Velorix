@@ -10,7 +10,7 @@
 | 2 | Шапка [`IMPLEMENTATION_JOURNAL.md`](../IMPLEMENTATION_JOURNAL.md) | Канон **формата** журнала (`J-NNN`, время, одна сводная за итерацию). |
 | 3 | Шапка [`IMPLEMENTATION_CHECKLIST.md`](../IMPLEMENTATION_CHECKLIST.md) | Канон **формата** чеклиста и блока «Ближайший TODO спринта». |
 | 4 | [`docs/AGENT_MARATHON.md`](AGENT_MARATHON.md) | Marathon / «продолжай»: итерация, cadence, re-anchor, отчёты. |
-| 4a | [`docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md`](PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md) (пока §9 не все ✅) | **PROGRAM GATE:** приоритет над спринт-TODO и SDK sprint; «продолжай» = срез программы. Канон также в `fluxalloy-project-audit.mdc`, `AGENTS.md`. |
+| 4a | [`fluxalloy-project-audit.mdc`](../.cursor/rules/fluxalloy-project-audit.mdc) | Постоянный audit scope, `check:quiet` audit-скрипты, `audit-manifest.json`. Программа 2026-05 закрыта (J-887). |
 | 5 | [`FLUXALLOY_TZ.md`](../FLUXALLOY_TZ.md) | Канон **продукта** (требования). В rules **не** копируется целиком — только чтение нужного §. **Не редактировать** без явной просьбы владельца. |
 | 6 | [`docs/AGENT_OPERATIONAL_NOTES.md`](AGENT_OPERATIONAL_NOTES.md) | **Operational notes** (CSP, медиа, yt-dlp). Исполняемое — `fluxalloy-agent-runtime.mdc`. При расхождении с 1–4 — побеждают 1–4. |
 | 7 | [`scripts/cursor-automation/prompts/agent-contract.txt`](../scripts/cursor-automation/prompts/agent-contract.txt) | То же поведение для SDK-агента; синхронизировать с 1–4 при смене процесса. |
@@ -34,8 +34,7 @@
 | Спринт-TODO | шапка `IMPLEMENTATION_CHECKLIST.md`, `fluxalloy-checklist.mdc`, `docs/AGENT_MARATHON.md`, `agent-contract.txt` |
 | Marathon (коммит/push/re-anchor) | `docs/AGENT_MARATHON.md`, `fluxalloy-marathon.mdc`, `continue.txt`, `agent-contract.txt` |
 | Итерация / пакет / anti-micro | `fluxalloy-iteration-batch.mdc`, шапка журнала, `fluxalloy-journal.mdc`, § журнал в `agent-contract.txt` |
-| Полный аудит/рефактор репо (временно) | `docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md`, `fluxalloy-project-audit.mdc`, `fluxalloy-marathon.mdc` (PROGRAM GATE), `AGENTS.md`, `IMPLEMENTATION_CHECKLIST.md` (блокер спринта), `docs/AGENT_MARATHON.md`, `agent-contract.txt`, `scripts/audit-scope.config.mjs`, `audit:inventory` / `audit:copy-paste` / `audit:structural` |
-| PROGRAM GATE (возобновление, не фаза 0) | §9 плана + `audit:copy-paste`; см. «Возобновление после off-program» в плане |
+| Audit репозитория | `fluxalloy-project-audit.mdc`, `scripts/audit-scope.config.mjs`, `docs/audit-manifest.json`, `npm run audit:inventory` / `audit:inventory-sync` / `audit:copy-paste` / `audit:structural` |
 | Стек / IPC / main | `fluxalloy-core.mdc`, `fluxalloy-electron.mdc`, `fluxalloy-react.mdc`, при IPC — `docs/ARCHITECTURE.md` |
 | Язык правил (однозначность) | `fluxalloy-rules-explicit.mdc`, `npm run check:rules-explicit`; при правке любого `.mdc` — сверка глоссария |
 | Cadence marathon / continue_count | `fluxalloy-marathon.mdc`, `docs/AGENT_MARATHON.md`, `agent-contract.txt`, `continue.txt`, глоссарий (bump → `%5`/`%10`) |

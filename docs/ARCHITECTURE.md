@@ -33,23 +33,47 @@
 
 ## IPC и контракты
 
-- Реестр имён каналов: [`src/shared/ipc-channels.ts`](../src/shared/ipc-channels.ts) (`mainWindowIpc`, `downloadsIpc`) — **156** строковых каналов (invoke + push-события).
-- Регистрация `ipcMain.handle` (инвентаризация фазы 1, `npm run audit:ipc-architecture`):
+- Реестр имён каналов: [`src/shared/ipc-channels.ts`](../src/shared/ipc-channels.ts) (`mainWindowIpc`, `downloadsIpc`) — **156** каналов (invoke + push + `logRenderer` через `ipcMain.on`).
+- Проверка связности: `npm run audit:ipc-architecture` — каждый invoke-канал имеет `ipcMain.handle` (или loop `FFMPEG_EXPORT_SETTING_CHANNELS`) в `src/main/` и `ipcRenderer.invoke` / `send` в `src/preload/`; push-каналы — в `PUSH_KEYS` скрипта.
+- Регистрация `ipcMain.handle` (строки `ipcMain.handle(`; эффективных handle **139** с учётом loop ffmpeg settings):
 
-| Файл | `ipcMain.handle` |
-|------|------------------|
-| [`src/main/index.ts`](../src/main/index.ts) | 0 |
-| [`src/main/downloads-window.ts`](../src/main/downloads-window.ts) | 35 |
-| [`src/main/ipc/register-export-batch-ipc.ts`](../src/main/ipc/register-export-batch-ipc.ts) | 29 |
-| [`src/main/ipc/register-settings-ipc.ts`](../src/main/ipc/register-settings-ipc.ts) | 42 |
+| Файл | строк `ipcMain.handle(` |
+|------|---------------------------|
+| [`src/main/ipc/register-batch-export-queue-ipc-mutate.ts`](../src/main/ipc/register-batch-export-queue-ipc-mutate.ts) | 12 |
 | [`src/main/ipc/register-engines-preview-ipc.ts`](../src/main/ipc/register-engines-preview-ipc.ts) | 12 |
+| [`src/main/register-downloads-queue-ipc.ts`](../src/main/register-downloads-queue-ipc.ts) | 12 |
 | [`src/main/ipc/register-main-utilities-ipc.ts`](../src/main/ipc/register-main-utilities-ipc.ts) | 11 |
 | [`src/main/ipc/register-knowledge-diagnostics-ipc.ts`](../src/main/ipc/register-knowledge-diagnostics-ipc.ts) | 8 |
+| [`src/main/ipc/register-batch-export-queue-ipc-ingest.ts`](../src/main/ipc/register-batch-export-queue-ipc-ingest.ts) | 7 |
+| [`src/main/register-downloads-runner-ipc.ts`](../src/main/register-downloads-runner-ipc.ts) | 7 |
+| [`src/main/ipc/register-settings-ipc.ts`](../src/main/ipc/register-settings-ipc.ts) | 6 (+37 в `FFMPEG_EXPORT_SETTING_CHANNELS`) |
+| [`src/main/ipc/register-single-export-ipc.ts`](../src/main/ipc/register-single-export-ipc.ts) | 5 |
+| [`src/main/register-downloads-bridge-ipc.ts`](../src/main/register-downloads-bridge-ipc.ts) | 5 |
+| [`src/main/ipc/register-batch-export-queue-ipc-run.ts`](../src/main/ipc/register-batch-export-queue-ipc-run.ts) | 4 |
+| [`src/main/register-downloads-options-ipc-output.ts`](../src/main/register-downloads-options-ipc-output.ts) | 4 |
+| [`src/main/register-downloads-snapshot-ipc.ts`](../src/main/register-downloads-snapshot-ipc.ts) | 3 |
 | [`src/main/inspector-window.ts`](../src/main/inspector-window.ts) | 2 |
+| [`src/main/register-downloads-options-ipc-cli.ts`](../src/main/register-downloads-options-ipc-cli.ts) | 2 |
+| [`src/main/register-downloads-options-ipc-cookies.ts`](../src/main/register-downloads-options-ipc-cookies.ts) | 2 |
+| [`src/main/ipc/register-export-batch-ipc.ts`](../src/main/ipc/register-export-batch-ipc.ts) | 1 |
 
-**Итого invoke-handle:** 139. `npm run audit:ipc-architecture` считает вхождения `ipcMain.handle(` в тексте (в `register-settings-ipc` — 6 строк + 37 через `FFMPEG_EXPORT_SETTING_CHANNELS`).
+Остальные каналы реестра — `webContents.send` / `ipcMain.on` (прогресс, снимки очереди, тема, UI panels, `logRenderer`).
 
-Остальные каналы реестра — `webContents.send` / broadcast (прогресс, снимки очереди, тема, UI panels).
+## Shared contracts (один домен — явные файлы)
+
+| Домен | Файлы `src/shared/` | Примечание |
+|-------|---------------------|------------|
+| IPC | `ipc-channels.ts` | единственный реестр строк каналов |
+| Settings | `settings-contract.ts` | view/persist типы |
+| ffmpeg export | `ffmpeg-export-contract.ts`, `ffmpeg-export-resolve-contract.ts`, `ffmpeg-export-batch-contract.ts` | типы UI/spawn, resolve job, batch queue — не сливать в один файл |
+| ffprobe | `ffprobe-contract.ts` | probe JSON / UI |
+| yt-dlp | `ytdlp-download-contract.ts`, `ytdlp-history-contract.ts` | download + history |
+| Terminal | `terminal-contract.ts` (barrel), `terminal-contract-types.ts`, `terminal-contract-hints-*` | hints после split ф.4 |
+| Engines | `engine-contract.ts`, `engine-download-contract.ts` | paths + download |
+| Diagnostics / about | `diagnostics-contract.ts`, `about-contract.ts` | support bundle UI |
+| Downloads log | `downloads-log-contract.ts` | pop-out log lines |
+
+Проверка списка: `npm run audit:shared-contracts` (неизвестный `*-contract.ts` в `src/shared/` → fail).
 - Настройки экспорта ffmpeg идут отдельными `settings-set-ffmpeg-export-*` каналами; значения проходят whitelist-парсеры main перед записью и spawn.
 - Пакетный экспорт и очередь yt-dlp — отдельные IPC/сервисы с persist в `userData` (`queue.json` и аналоги для batch).
 - Каталог вывода yt-dlp, CLI/options и раскрытие панелей загрузок: push `downloadsOutputDirectoryChanged` / `downloadsCliOptionsChanged` / `downloadsWindowUiPanelsChanged` из main во вкладку «Загрузки» и pop-out.

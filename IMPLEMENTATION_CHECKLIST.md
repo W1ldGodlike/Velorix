@@ -41,13 +41,9 @@
 
 ## Ближайший TODO спринта
 
-> **PROGRAM GATE (2026-05-16):** пока [`docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md`](docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md) §9 не полностью ✅ — агенты **не** берут пункты ниже; только срезы программы аудита. Спринт возобновляется после фазы 9.
-
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый; подробности фиксировать ниже в тематических § и в `IMPLEMENTATION_JOURNAL.md`.
 
-- [x] Рефактор ф.4 P1: invoke IPC вынесен из `index.ts` → `src/main/ipc/register-*` (102 handle); `index.ts` — lifecycle + `ipcMain.on`.
-- [x] Ф.4 P2: `settings-ipc-persist` (✓); `App.tsx` split (~7.6k→~0.82k): hooks + `AppShellLayout`; оркестрация state/hooks в `App.tsx`.
-- [~] §8: терминал — редкие сценарии/argv по факту; при правках `summary` — `npm run locales:terminal-summaries-ru` (дважды до 0/0).
+- [~] §8: терминал — IntelliSense/история; Vitest: `terminal-service` run+parse, `terminal-service-hints` Data JSON; при правках `summary` — `locales:terminal-summaries-ru` (2× до 0/0).
 - [~] §9/§18: packaged/ffprobe smoke (+ registry полей format/stream); Support ZIP `ffprobeSmoke:`; редкие поля ffprobe (detail + format registry).
 - [~] §19/§3: `check:release`, `verify:win-unpacked`, SHA/JSON; packaged smoke; macOS/Linux engines и targets.
 - [x] §15: knowledge — пакет закрыт (RU/EN Help, `data:` assets, fluxhelp, About→справка); далее tooltips/PNG по UI.

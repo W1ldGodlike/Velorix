@@ -142,10 +142,11 @@ if (regressions.length > 0) {
 console.log(`[audit:copy-paste] scope: ${files.length} files (${AUDIT_CODE_ROOTS.join(', ')}, …)`)
 
 if (report.length > 0) {
-  console.log('[audit:copy-paste] hotspots (см. docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md):')
+  console.error('[audit:copy-paste] FAIL: hotspots above threshold (не warning):')
   for (const row of report.sort((a, b) => b.count - a.count)) {
-    console.log(`  ${row.kind} ×${row.count}  ${row.file}`)
+    console.error(`  ${row.kind} ×${row.count}  ${row.file}`)
   }
+  exitCode = 1
 } else {
   console.log('[audit:copy-paste] no hotspots above threshold')
 }

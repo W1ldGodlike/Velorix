@@ -58,6 +58,8 @@ jobs:
       - name: Install
         run: npm ci
 
+      # Полный check; marathon check:quiet включает audit:structural (ф.8).
+      # При изменении scripts/audit-scope.config.mjs — npm run audit:inventory + docs/audit-manifest.json.
       - name: Check (lint + typecheck + tests + secrets)
         run: npm run check
 

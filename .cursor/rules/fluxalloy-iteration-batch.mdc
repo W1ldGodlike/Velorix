@@ -28,8 +28,8 @@ alwaysApply: true
 **Если** пользователь написал «весь проект» / «всё» / «все файлы» **то:**
 
 1. **Запрещено:** **сужение scope** (глоссарий).
-2. **Обязательно:** `npm run audit:inventory` + `npm run audit:copy-paste`; фаза — первая с ⬜ в [`docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md`](../../docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md) §9.
-3. **Обязательно:** **hotspot log (план среза)** (глоссарий) — колонка «срез» в §6 плана; **затем** код + **одна J**.
+2. **Обязательно:** `npm run audit:inventory` + `npm run audit:copy-paste` + `npm run audit:structural`.
+3. **Обязательно:** один **крупный срез (marathon)** (глоссарий `fluxalloy-rules-explicit.mdc`) по спринту или задаче владельца; **одна J**.
 
 ## Реестры (вместо копипасты)
 

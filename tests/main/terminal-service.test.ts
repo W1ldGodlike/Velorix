@@ -14,15 +14,16 @@ vi.mock('@electron-toolkit/utils', () => ({
   is: { dev: true }
 }))
 
-const { execFileMock } = vi.hoisted(() => ({
-  execFileMock: vi.fn()
+const { execFileMock, resolveEnginePathMock } = vi.hoisted(() => ({
+  execFileMock: vi.fn(),
+  resolveEnginePathMock: vi.fn((): string | null => 'C:\\tools\\ffmpeg.exe')
 }))
 vi.mock('child_process', () => ({
   execFile: execFileMock
 }))
 
 vi.mock('../../src/main/engine-service', () => ({
-  resolveEngineExecutablePath: () => 'C:\\tools\\ffmpeg.exe'
+  resolveEngineExecutablePath: (): string | null => resolveEnginePathMock() as string | null
 }))
 
 import {
@@ -90,17 +91,20 @@ describe('resolveTerminalCurrentFileArgs', () => {
   })
 })
 
+const terminalPaths = {
+  appRoot: 'C:\\app',
+  resources: 'C:\\app',
+  userData: 'C:\\app\\userData',
+  bundledBin: 'C:\\app\\bin',
+  userBin: 'C:\\app\\userData\\bin'
+}
+
 describe('runTerminalCommand', () => {
   it('принимает tool-префикс в любом регистре', async () => {
+    resolveEnginePathMock.mockReturnValue('C:\\tools\\ffmpeg.exe')
     execFileMock.mockImplementation((_path, _argv, _opts, cb) => cb(null, 'ok', ''))
     const result = await runTerminalCommand({
-      paths: {
-        appRoot: 'C:\\app',
-        resources: 'C:\\app',
-        userData: 'C:\\app\\userData',
-        bundledBin: 'C:\\app\\bin',
-        userBin: 'C:\\app\\userData\\bin'
-      },
+      paths: terminalPaths,
       line: 'FFMPEG -version',
       currentFilePath: null,
       locale: 'ru'
@@ -112,5 +116,75 @@ describe('runTerminalCommand', () => {
       expect(result.code).toBe(0)
     }
     expect(execFileMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('ffprobe: отдельный бинарник и argv', async () => {
+    resolveEnginePathMock.mockReturnValue('C:\\tools\\ffprobe.exe')
+    execFileMock.mockImplementation((_path, _argv, _opts, cb) => cb(null, '{}', ''))
+    const result = await runTerminalCommand({
+      paths: terminalPaths,
+      line: 'ffprobe -hide_banner -show_format',
+      currentFilePath: null,
+      locale: 'ru'
+    })
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.tool).toBe('ffprobe')
+      expect(result.args).toEqual(['-hide_banner', '-show_format'])
+    }
+    expect(execFileMock.mock.calls[0]?.[0]).toBe('C:\\tools\\ffprobe.exe')
+  })
+
+  it('yt-dlp: tool id с дефисом', async () => {
+    resolveEnginePathMock.mockReturnValue('C:\\tools\\yt-dlp.exe')
+    execFileMock.mockImplementation((_path, _argv, _opts, cb) => cb(null, '', ''))
+    const result = await runTerminalCommand({
+      paths: terminalPaths,
+      line: 'yt-dlp --version',
+      currentFilePath: null,
+      locale: 'en'
+    })
+    expect(result.ok).toBe(true)
+    if (result.ok) {
+      expect(result.tool).toBe('yt-dlp')
+      expect(result.args).toEqual(['--version'])
+    }
+  })
+
+  it('блокирует неизвестный tool', async () => {
+    const result = await runTerminalCommand({
+      paths: terminalPaths,
+      line: 'curl https://example.com',
+      currentFilePath: null,
+      locale: 'ru'
+    })
+    expect(result.ok).toBe(false)
+    expect(execFileMock).not.toHaveBeenCalled()
+  })
+
+  it('блокирует shell-метасимволы в argv', async () => {
+    const result = await runTerminalCommand({
+      paths: terminalPaths,
+      line: 'ffmpeg -i a.mp4 | del',
+      currentFilePath: null,
+      locale: 'ru'
+    })
+    expect(result.ok).toBe(false)
+    expect(execFileMock).not.toHaveBeenCalled()
+  })
+
+  it('ошибка если движок не найден в настройках', async () => {
+    resolveEnginePathMock.mockImplementation(() => null)
+    const result = await runTerminalCommand({
+      paths: terminalPaths,
+      line: 'ffmpeg -version',
+      currentFilePath: null,
+      locale: 'ru'
+    })
+    expect(result.ok).toBe(false)
+    if (!result.ok) {
+      expect(result.error.length).toBeGreaterThan(0)
+    }
+    expect(execFileMock).not.toHaveBeenCalled()
   })
 })

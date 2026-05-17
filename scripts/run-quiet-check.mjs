@@ -14,6 +14,10 @@ const steps = [
   ['audit:copy-paste', ['run', 'audit:copy-paste']],
   ['audit:todo-debt', ['run', 'audit:todo-debt']],
   ['audit:dead-type-reexports', ['run', 'audit:dead-type-reexports']],
+  ['audit:ipc-architecture', ['run', 'audit:ipc-architecture']],
+  ['audit:shared-contracts', ['run', 'audit:shared-contracts']],
+  ['audit:structural', ['run', 'audit:structural']],
+  ['audit:inventory-sync', ['run', 'audit:inventory-sync']],
   ['journal', ['run', 'check:journal']],
   ['checklist', ['run', 'check:checklist']],
   ['secrets', ['run', 'check:secrets']]
