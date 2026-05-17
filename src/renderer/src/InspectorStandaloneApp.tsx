@@ -36,12 +36,20 @@ export function InspectorStandaloneApp(): JSX.Element {
         aria-busy={probePending}
       >
         {statusHint ? (
-          <span className="app-statusbar-extra" role="status" aria-live="polite">
+          <span
+            className="app-statusbar-extra"
+            role="status"
+            aria-live="polite"
+            aria-describedby="inspector-standalone-empty-hint"
+          >
             {statusHint}
           </span>
         ) : null}
         {statusHint ? <span className="app-statusbar-sep" aria-hidden /> : null}
-        <Versions statusBusy={probePending} />
+        <Versions
+          statusBusy={probePending}
+          ariaDescribedBy="inspector-standalone-empty-hint"
+        />
       </footer>
       <AboutDialog
         open={aboutOpen}

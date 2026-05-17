@@ -253,7 +253,13 @@ export function ProcessingHistoryPanel({
         aria-busy={busy}
       >
         {entries.length === 0 ? (
-          <p className="app-downloads-history-empty">{uiText('processingHistoryEmpty')}</p>
+          <p
+            className="app-downloads-history-empty"
+            role="status"
+            aria-describedby="processingHistorySectionHint"
+          >
+            {uiText('processingHistoryEmpty')}
+          </p>
         ) : (
           entries.slice(0, 10).map((entry, idx) => {
             const primary =
@@ -300,7 +306,13 @@ export function ProcessingHistoryPanel({
                   <span>{entry.status}</span>
                 </div>
                 {entry.errorHint ? (
-                  <p className="app-downloads-warning">{entry.errorHint}</p>
+                  <p
+                    className="app-downloads-warning"
+                    role="alert"
+                    aria-describedby="processingHistorySectionHint"
+                  >
+                    {entry.errorHint}
+                  </p>
                 ) : null}
                 <div
                   className="app-downloads-history-actions"

@@ -82,7 +82,12 @@ export function ExportPresetNameDialog(props: ExportPresetNameDialogProps): JSX.
           </label>
         </div>
         {dialog.error ? (
-          <p id="export-preset-name-error" className="app-modal-hint app-modal-error" role="alert">
+          <p
+            id="export-preset-name-error"
+            className="app-modal-hint app-modal-error"
+            role="alert"
+            aria-describedby="export-preset-name-hint"
+          >
             {dialog.error}
           </p>
         ) : null}

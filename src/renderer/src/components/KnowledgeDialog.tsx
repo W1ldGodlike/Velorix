@@ -259,12 +259,21 @@ export function KnowledgeDialog({
             }
           >
             {loading ? (
-              <p className="app-modal-hint" role="status" aria-live="polite">
+              <p
+                className="app-modal-hint"
+                role="status"
+                aria-live="polite"
+                aria-describedby="knowledge-dialog-hint"
+              >
                 {uiText('loading')}
               </p>
             ) : null}
             {error ? (
-              <p className="app-modal-hint app-error-text" role="alert">
+              <p
+                className="app-modal-hint app-error-text"
+                role="alert"
+                aria-describedby="knowledge-dialog-hint"
+              >
                 {error}
               </p>
             ) : null}

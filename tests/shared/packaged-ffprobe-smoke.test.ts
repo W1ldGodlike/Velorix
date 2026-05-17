@@ -698,6 +698,12 @@ describe('packaged-ffprobe-smoke', () => {
     expect(
       isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
         ...base,
+        streams: [{ channel_layout: { stereo: true } }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
         streams: [
           {
             start_pts: '1024',
@@ -712,6 +718,18 @@ describe('packaged-ffprobe-smoke', () => {
       isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
         ...base,
         streams: [{ tags: { title: { nested: true } } }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ tags: { handler_name: { nested: true } } }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ tags: { rotate: { deg: 90 } } }]
       })
     ).toBe(false)
     expect(
@@ -869,6 +887,37 @@ describe('packaged-ffprobe-smoke', () => {
         streams: [{}],
         format: { format_name: 'mp4', nb_streams: '1' },
         chapters: [{ start_time: 'nope', end_time: '1' }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableForSmoke({
+        streams: [{}],
+        format: { format_name: 'mp4', nb_streams: '1' },
+        chapters: [{ start_time: '0', end_time: '1', tags: 'not-an-object' }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableForSmoke({
+        streams: [{}],
+        format: { format_name: 'mp4', nb_streams: '1' },
+        chapters: [[]]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableForSmoke({
+        streams: [{}],
+        format: { format_name: 'mp4', nb_streams: '1' },
+        chapters: {}
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
+        format: {
+          format_name: 'mp4',
+          nb_streams: '1',
+          tags: { major_brand: { not: 'scalar' } }
+        }
       })
     ).toBe(false)
   })

@@ -68,7 +68,11 @@ export function DownloadsSettingsRailExpertSection(props: DownloadsSettingsRailP
           <span className="app-field-help">{uiText('downloadsExtraArgsHelp')}</span>
         </label>
         {downloadsOptions.extraArgsParseWarning ? (
-          <p className="app-downloads-warning" role="alert">
+          <p
+            className="app-downloads-warning"
+            role="alert"
+            aria-describedby="downloads-page-hint downloadsHintCatalogIntro"
+          >
             {downloadsOptions.extraArgsParseWarning}
           </p>
         ) : null}
@@ -143,21 +147,42 @@ export function DownloadsSettingsRailExpertSection(props: DownloadsSettingsRailP
         <nav
           className="app-doc-inline-links app-downloads-doc-links"
           aria-label={uiText('downloadsRailExpertDocNavAria')}
+          aria-describedby="downloads-page-hint downloadsHintCatalogIntro"
           aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
         >
-          <a href={YTDLP_DOC_README} target="_blank" rel="noreferrer">
+          <a
+            href={YTDLP_DOC_README}
+            target="_blank"
+            rel="noreferrer"
+            aria-describedby="downloads-page-hint downloadsHintCatalogIntro"
+          >
             {uiText('docLinkYtDlpReadme')}
           </a>
           {' · '}
-          <a href={YTDLP_DOC_FORMAT_SELECTION} target="_blank" rel="noreferrer">
+          <a
+            href={YTDLP_DOC_FORMAT_SELECTION}
+            target="_blank"
+            rel="noreferrer"
+            aria-describedby="downloads-page-hint downloadsHintCatalogIntro"
+          >
             {uiText('quickYtdlpDocFormats')}
           </a>
           {' · '}
-          <a href={YTDLP_DOC_OUTPUT_TEMPLATE} target="_blank" rel="noreferrer">
+          <a
+            href={YTDLP_DOC_OUTPUT_TEMPLATE}
+            target="_blank"
+            rel="noreferrer"
+            aria-describedby="downloads-page-hint downloadsHintCatalogIntro"
+          >
             {uiText('downloadsRailDocOutput')}
           </a>
           {' · '}
-          <a href={YTDLP_DOC_POSTPROCESS} target="_blank" rel="noreferrer">
+          <a
+            href={YTDLP_DOC_POSTPROCESS}
+            target="_blank"
+            rel="noreferrer"
+            aria-describedby="downloads-page-hint downloadsHintCatalogIntro"
+          >
             {uiText('downloadsRailDocPostprocess')}
           </a>
         </nav>
@@ -171,6 +196,7 @@ export function DownloadsSettingsRailExpertSection(props: DownloadsSettingsRailP
             aria-live="polite"
             aria-relevant="text"
             aria-labelledby="downloads-command-preview-help"
+            aria-describedby="downloads-page-hint downloads-command-preview-help"
           >
             {downloadsOptions.commandPreview}
           </pre>

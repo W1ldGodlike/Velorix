@@ -303,7 +303,13 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                 </table>
               </div>
             ) : (
-              <p className="app-url-hint">{uiText('batchExportEmpty')}</p>
+              <p
+                className="app-url-hint"
+                role="status"
+                aria-describedby="batch-export-panel-hint batch-export-drop-hint"
+              >
+                {uiText('batchExportEmpty')}
+              </p>
             )}
           </div>
   )

@@ -66,7 +66,11 @@ export function EditorFfmpegSettingsRailOutputSection(props: EditorFfmpegSetting
           />
           <span className="app-settings-section-hint">{uiText('editorExportExtraArgsHint')}</span>
           {!exportExtraArgsParsed.ok ? (
-            <span className="app-field-error" role="alert">
+            <span
+              className="app-field-error"
+              role="alert"
+              aria-describedby="ffmpegOutputSectionHint editor-ffmpeg-settings-hint"
+            >
               {uiTextVars('editorExportExtraArgsParseError', {
                 detail: exportExtraArgsParsed.error
               })}

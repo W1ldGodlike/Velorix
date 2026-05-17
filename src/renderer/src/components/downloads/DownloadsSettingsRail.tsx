@@ -46,7 +46,13 @@ export const DownloadsSettingsRail = forwardRef<HTMLElement, DownloadsSettingsRa
             <DownloadsSettingsRailNetworkSection {...props} />
             <DownloadsSettingsRailExpertSection {...props} />
             {downloadsOptions.cookiesWarning ? (
-              <p className="app-downloads-warning">{downloadsOptions.cookiesWarning}</p>
+              <p
+                className="app-downloads-warning"
+                role="alert"
+                aria-describedby="downloads-page-hint"
+              >
+                {downloadsOptions.cookiesWarning}
+              </p>
             ) : null}
           </div>
         ) : (

@@ -111,15 +111,30 @@ export function EditorQuickYtdlpBar(props: EditorQuickYtdlpBarProps): JSX.Elemen
             aria-describedby="quickYtdlpUrlHint"
             aria-busy={chromeBusy}
           >
-            <a href={YTDLP_DOC_README} target="_blank" rel="noreferrer">
+            <a
+              href={YTDLP_DOC_README}
+              target="_blank"
+              rel="noreferrer"
+              aria-describedby="quickYtdlpUrlHint"
+            >
               {uiText('docLinkYtDlpReadme')}
             </a>
             {' · '}
-            <a href={YTDLP_DOC_FORMAT_SELECTION} target="_blank" rel="noreferrer">
+            <a
+              href={YTDLP_DOC_FORMAT_SELECTION}
+              target="_blank"
+              rel="noreferrer"
+              aria-describedby="quickYtdlpUrlHint"
+            >
               {uiText('quickYtdlpDocFormats')}
             </a>
             {' · '}
-            <a href={YTDLP_DOC_OUTPUT_TEMPLATE} target="_blank" rel="noreferrer">
+            <a
+              href={YTDLP_DOC_OUTPUT_TEMPLATE}
+              target="_blank"
+              rel="noreferrer"
+              aria-describedby="quickYtdlpUrlHint"
+            >
               {uiText('quickYtdlpDocOutputTemplate')}
             </a>
           </nav>

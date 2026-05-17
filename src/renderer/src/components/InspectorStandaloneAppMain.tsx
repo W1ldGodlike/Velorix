@@ -46,7 +46,11 @@ export function InspectorStandaloneAppMain(props: InspectorStandaloneAppModel): 
         />
       ) : null}
       {displayedProbeError ? (
-        <p className="app-preview-probe-error" role="alert">
+        <p
+          className="app-preview-probe-error"
+          role="alert"
+          aria-describedby="inspector-standalone-empty-hint"
+        >
           {displayedProbeError}
         </p>
       ) : null}
@@ -80,6 +84,7 @@ export function InspectorStandaloneAppMain(props: InspectorStandaloneAppModel): 
           className="inspector-standalone-path"
           title={mediaPath}
           aria-label={uiText('inspectorStandalonePathFooterAria')}
+          aria-describedby="inspector-standalone-empty-hint"
           aria-busy={probePending}
         >
           {mediaPath}

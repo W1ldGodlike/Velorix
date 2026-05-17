@@ -83,13 +83,23 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
         <tbody>
           {downloadsRows.length === 0 ? (
             <tr>
-              <td colSpan={9} className="app-downloads-empty">
+              <td
+                colSpan={9}
+                className="app-downloads-empty"
+                role="status"
+                aria-describedby="downloads-page-hint"
+              >
                 {uiText('downloadsEmptyQueue')}
               </td>
             </tr>
           ) : visibleDownloadsRows.length === 0 ? (
             <tr>
-              <td colSpan={9} className="app-downloads-empty">
+              <td
+                colSpan={9}
+                className="app-downloads-empty"
+                role="status"
+                aria-describedby="downloads-page-hint"
+              >
                 {uiText('downloadsEmptyFilter')}
               </td>
             </tr>

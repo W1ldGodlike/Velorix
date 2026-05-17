@@ -52,6 +52,7 @@ function renderInline(
             type="button"
             className="app-knowledge-link"
             title={uiText('knowledgeMdInternalLinkTooltip')}
+            aria-describedby="knowledge-dialog-hint"
             onClick={() => {
               onOpenSlug(slug)
             }}
@@ -69,6 +70,7 @@ function renderInline(
             target="_blank"
             rel="noreferrer noopener"
             title={uiText('knowledgeMdExternalLinkTooltip')}
+            aria-describedby="knowledge-dialog-hint"
           >
             {renderInline(n.children, `${k}-a`, onOpenSlug)}
           </a>

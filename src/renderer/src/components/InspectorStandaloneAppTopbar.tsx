@@ -89,6 +89,7 @@ export function InspectorStandaloneAppTopbar(props: InspectorStandaloneAppModel)
           <button
             type="button"
             className="app-icon-btn"
+            aria-describedby="inspector-standalone-empty-hint"
             disabled={!mediaPath}
             onClick={() => {
               setProbeRefreshNonce((n) => n + 1)

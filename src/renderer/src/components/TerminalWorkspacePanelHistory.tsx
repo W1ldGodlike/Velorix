@@ -27,7 +27,12 @@ export function TerminalWorkspacePanelHistory(
         {uiText('terminalHistoryHint')}
       </p>
       {terminalHistory.length === 0 ? (
-        <p className="app-downloads-empty" role="status" aria-live="polite">
+        <p
+          className="app-downloads-empty"
+          role="status"
+          aria-live="polite"
+          aria-describedby="terminal-history-hint terminal-intro-hint"
+        >
           {uiText('terminalHistoryEmpty')}
         </p>
       ) : (
@@ -93,7 +98,13 @@ export function TerminalWorkspacePanelHistory(
                   ))}
                 </div>
               ) : (
-                <p className="app-downloads-warning">{entry.result.error}</p>
+                <p
+                  className="app-downloads-warning"
+                  role="alert"
+                  aria-describedby="terminal-history-hint terminal-intro-hint"
+                >
+                  {entry.result.error}
+                </p>
               )}
             </article>
           )

@@ -70,6 +70,7 @@ export function PreviewProbeBodyOverview({ ctx }: { ctx: PreviewProbeBodyCtx }):
           role="status"
           aria-live="polite"
           aria-label={uiText('probeToolbarFeedbackAria')}
+          aria-describedby="probePanelOverviewHint"
           aria-busy={probeRefreshing}
         >
           {probeToolbarTip}

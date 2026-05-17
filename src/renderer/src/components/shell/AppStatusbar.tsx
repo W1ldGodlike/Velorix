@@ -87,7 +87,12 @@ export function AppStatusbar(props: AppStatusbarProps): JSX.Element {
       {statusHint ? (
         <>
           <span className="app-statusbar-sep" aria-hidden />
-          <span className="app-statusbar-extra" role="status" aria-live="polite">
+          <span
+            className="app-statusbar-extra"
+            role="status"
+            aria-live="polite"
+            aria-describedby={workspaceTabDescId}
+          >
             {statusHint}
           </span>
         </>

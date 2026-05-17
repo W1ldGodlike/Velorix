@@ -142,7 +142,13 @@ export function DownloadsHistoryPanel({
         aria-busy={busy}
       >
         {entries.length === 0 ? (
-          <p className="app-downloads-history-empty">{uiText('downloadsHistoryEmpty')}</p>
+          <p
+            className="app-downloads-history-empty"
+            role="status"
+            aria-describedby="downloads-page-hint"
+          >
+            {uiText('downloadsHistoryEmpty')}
+          </p>
         ) : (
           entries.slice(0, 8).map((entry, idx) => (
             <article
@@ -188,7 +194,15 @@ export function DownloadsHistoryPanel({
                 <span>{formatDownloadsHistoryTime(entry.finishedAt)}</span>
                 <span>{entry.status}</span>
               </div>
-              {entry.errorHint ? <p className="app-downloads-warning">{entry.errorHint}</p> : null}
+              {entry.errorHint ? (
+                <p
+                  className="app-downloads-warning"
+                  role="alert"
+                  aria-describedby="downloads-page-hint"
+                >
+                  {entry.errorHint}
+                </p>
+              ) : null}
             </article>
           ))
         )}

@@ -161,7 +161,12 @@ export function AboutDialog({
             </div>
           </dl>
         ) : (
-          <p className="app-modal-hint" role="status" aria-live="polite">
+          <p
+            className="app-modal-hint"
+            role="status"
+            aria-live="polite"
+            aria-describedby="about-dialog-desc"
+          >
             {uiText('loading')}
           </p>
         )}
@@ -333,15 +338,30 @@ export function AboutDialog({
               aria-describedby="about-dialog-desc"
               aria-busy={aboutShellBusy}
             >
-              <a href={YTDLP_DOC_README} target="_blank" rel="noreferrer">
+              <a
+                href={YTDLP_DOC_README}
+                target="_blank"
+                rel="noreferrer"
+                aria-describedby="about-dialog-desc"
+              >
                 {uiText('docLinkYtDlpReadme')}
               </a>
               {' · '}
-              <a href={YTDLP_DOC_FORMAT_SELECTION} target="_blank" rel="noreferrer">
+              <a
+                href={YTDLP_DOC_FORMAT_SELECTION}
+                target="_blank"
+                rel="noreferrer"
+                aria-describedby="about-dialog-desc"
+              >
                 {uiText('formatSelectionDoc')}
               </a>
               {' · '}
-              <a href={FFPROBE_DOC_ALL} target="_blank" rel="noreferrer">
+              <a
+                href={FFPROBE_DOC_ALL}
+                target="_blank"
+                rel="noreferrer"
+                aria-describedby="about-dialog-desc"
+              >
                 {uiText('docLinkFfprobeShort')}
               </a>
             </nav>
