@@ -335,6 +335,11 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | structural | 745 | src/renderer/src/components/editor/EditorBatchExportBar.tsx | 4 | `editor-batch-export-bar-props.ts` + `EditorBatchExportBarToolbar|QueueTable.tsx` | ✅ J-822 |
 | structural | 830 | src/renderer/src/components/MediaProbePanel.tsx | 4 | `use-preview-probe-body.ts` + `PreviewProbeBodyOverview|Sections|ContextMenu.tsx` | ✅ J-823 |
 | structural | 683 | src/main/settings-ipc-persist.ts | 4 | `settings-ipc-persist-core.ts` + `settings-ipc-persist-shell|ffmpeg.ts` + orchestrator | ✅ J-824 |
+| structural | 743 | tests/main/ffprobe-service.test.ts | 4 | entry `it.each` + `ffprobe-service-track-rows-fields|color-meta|side-data.test.ts` | ✅ J-825 |
+| structural | 595 | src/main/ytdlp-download-options.ts | 4 | `ytdlp-download-options-preview|validate|snapshot.ts` + entry re-export | ✅ J-826 |
+| structural | 645 | tests/main/ffmpeg-export-service.test.ts | 4 | entry helpers + `ffmpeg-export-service-user-preset|snapshot-merge|presets-catalog.test.ts` | ✅ J-827 |
+| structural | 632 | src/renderer/src/use-editor-export-settings.ts | 4 | `editor-export-settings-snapshot-build.ts` + `use-editor-export-user-preset-actions.ts` | ✅ J-828 |
+| structural | 609 | tests/main/ytdlp-progress-parser.test.ts | 4 | `ytdlp-progress-parser-download|info-display|queue-failure|output-path.test.ts` | ✅ J-829 |
 
 ---
 

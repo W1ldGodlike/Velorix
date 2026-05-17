@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { isBuiltinExportUserPresetId } from '../../shared/builtin-ffmpeg-export-user-presets'
 import {
-  FFMPEG_EXPORT_USER_ADDED_PRESETS_MAX,
-  FFMPEG_EXPORT_USER_PRESETS_MAX_ENTRIES,
   type FfmpegExportAudioModeId,
   type FfmpegExportAudioNormalizeId,
   type FfmpegExportContainerId,
@@ -12,7 +9,6 @@ import {
   type FfmpegExportScalePresetId,
   type FfmpegExportSubtitleModeId,
   type FfmpegExportUserPreset,
-  type FfmpegExportUserPresetSnapshot,
   type FfmpegExportVideoCodecId,
   type FfmpegExportVideoDebandId,
   type FfmpegExportVideoDeinterlaceId,
@@ -46,14 +42,16 @@ import {
   buildEditorExportSelectOptions,
   type FfmpegExportSelectOptions
 } from './editor-export-select-options'
+import {
+  buildEditorExportUserPresetSnapshot,
+  buildEditorFfmpegExportOverrides
+} from './editor-export-settings-snapshot-build'
+import type { ExportPresetNameDialogState } from './editor-export-settings-types'
 import { hydrateEditorExportFieldsFromSettings } from './editor-export-settings-hydrate'
-import { getUiLocale, uiText, uiTextVars } from './locales/ui-text'
+import { getUiLocale, uiTextVars } from './locales/ui-text'
+import { useEditorExportUserPresetActions } from './use-editor-export-user-preset-actions'
 
-export type ExportPresetNameDialogState = {
-  mode: 'create' | 'rename'
-  value: string
-  error: string | null
-} | null
+export type { ExportPresetNameDialogState } from './editor-export-settings-types'
 
 type ExportPresetNameDialog = ExportPresetNameDialogState
 
@@ -251,243 +249,39 @@ export function useEditorExportSettings(deps: UseEditorExportSettingsDeps) {
     setSelectedUserPresetId(null)
   }, [])
 
-  const buildCurrentExportSnapshot = useCallback((): FfmpegExportUserPresetSnapshot => {
-    return {
-      encodePreset: exportEncodePreset,
-      ...(exportVideoCodec !== 'libx264' ? { videoCodec: exportVideoCodec } : {}),
-      container: exportContainer,
-      crf: exportCrf,
-      videoBitrate: exportVideoBitrate,
-      audioMode: exportAudioMode,
-      audioBitrate: exportAudioBitrate,
-      fps: exportFps,
-      scalePreset: exportScalePreset,
-      videoTransform: exportVideoTransform,
-      cropPreset: exportCropPreset,
-      ...(exportTwoPass && exportVideoCodec === 'libx264' ? { twoPass: true as const } : {}),
-      ...(exportEconomyMode ? { economyMode: true as const } : {}),
-      ...(exportHwDecode ? { hwDecode: true as const } : {}),
-      ...(exportExtraArgsLine.trim().length > 0
-        ? { extraArgsLine: exportExtraArgsLine.trim() }
-        : {}),
-      ...(exportAudioGainDb !== 0 ? { audioGainDb: exportAudioGainDb } : {}),
-      ...(exportStripMetadata ? { stripMetadata: true } : {}),
-      ...(exportStripChapters ? { stripChapters: true } : {}),
-      ...(exportSubtitleMode === 'copy' ? { subtitleMode: 'copy' as const } : {}),
-      ...(exportVideoDeinterlace !== 'off' ? { videoDeinterlace: exportVideoDeinterlace } : {}),
-      ...(exportVideoDenoise !== 'off' ? { videoDenoise: exportVideoDenoise } : {}),
-      ...(exportVideoDeband !== 'off' ? { videoDeband: exportVideoDeband } : {}),
-      ...(exportVideoHisteq !== 'off' ? { videoHisteq: exportVideoHisteq } : {}),
-      ...(exportVideoLut3d !== 'off' ? { videoLut3d: exportVideoLut3d } : {}),
-      ...(exportVideoSharpen !== 'off' ? { videoSharpen: exportVideoSharpen } : {}),
-      ...(exportVideoEqPreset !== 'off' ? { videoEqPreset: exportVideoEqPreset } : {}),
-      ...(exportVideoHue !== 'off' ? { videoHue: exportVideoHue } : {}),
-      ...(exportVideoGrain !== 'off' ? { videoGrain: exportVideoGrain } : {}),
-      ...(exportVideoVignette !== 'off' ? { videoVignette: exportVideoVignette } : {}),
-      ...(exportVideoBlur !== 'off' ? { videoBlur: exportVideoBlur } : {}),
-      ...(exportAudioNormalize !== 'off' ? { audioNormalize: exportAudioNormalize } : {})
-    }
-  }, [
-    exportEncodePreset,
-    exportVideoCodec,
-    exportContainer,
-    exportCrf,
-    exportVideoBitrate,
-    exportAudioMode,
-    exportAudioBitrate,
-    exportFps,
-    exportScalePreset,
-    exportVideoTransform,
-    exportCropPreset,
-    exportTwoPass,
-    exportEconomyMode,
-    exportHwDecode,
-    exportExtraArgsLine,
-    exportAudioGainDb,
-    exportStripMetadata,
-    exportStripChapters,
-    exportSubtitleMode,
-    exportVideoDeinterlace,
-    exportVideoDenoise,
-    exportVideoDeband,
-    exportVideoHisteq,
-    exportVideoLut3d,
-    exportVideoSharpen,
-    exportVideoEqPreset,
-    exportVideoHue,
-    exportVideoGrain,
-    exportVideoVignette,
-    exportVideoBlur,
-    exportAudioNormalize
-  ])
-
-  const handleSaveExportUserPreset = useCallback(() => {
-    if (exportUserPresets.length >= FFMPEG_EXPORT_USER_PRESETS_MAX_ENTRIES) {
-      setStatusHint(uiText('editorExportUserPresetsMaxTotalStatus'))
-      return
-    }
-    const userAdded = exportUserPresets.filter((p) => !isBuiltinExportUserPresetId(p.id)).length
-    if (userAdded >= FFMPEG_EXPORT_USER_ADDED_PRESETS_MAX) {
-      setStatusHint(uiText('editorExportUserPresetsMaxStatus'))
-      return
-    }
-    setExportPresetNameDialog({
-      mode: 'create',
-      value: uiText('editorExportPresetDefaultName'),
-      error: null
-    })
-  }, [exportUserPresets])
-
-  const handleDeleteExportUserPreset = useCallback(() => {
-    if (!selectedUserPresetId) {
-      return
-    }
-    if (isBuiltinExportUserPresetId(selectedUserPresetId)) {
-      setStatusHint(uiText('editorBuiltinPresetLockedHint'))
-      return
-    }
-    const next = exportUserPresets.filter((p) => p.id !== selectedUserPresetId)
-    void window.fluxalloy.settings
-      .setFfmpegExportUserPresets(next)
-      .then((s) => {
-        setExportUserPresets(s.ffmpegExportUserPresets ?? [])
-        setSelectedUserPresetId(null)
-      })
-      .catch(console.error)
-  }, [exportUserPresets, selectedUserPresetId])
-
-  const handleRenameExportUserPreset = useCallback(() => {
-    if (!selectedUserPresetId) {
-      return
-    }
-    if (isBuiltinExportUserPresetId(selectedUserPresetId)) {
-      setStatusHint(uiText('editorBuiltinPresetLockedHint'))
-      return
-    }
-    const current = exportUserPresets.find((p) => p.id === selectedUserPresetId)
-    if (!current) {
-      return
-    }
-    setExportPresetNameDialog({ mode: 'rename', value: current.label, error: null })
-  }, [exportUserPresets, selectedUserPresetId])
-
-  const handleSubmitExportPresetName = useCallback(async () => {
-    if (!exportPresetNameDialog) {
-      return
-    }
-    const label = exportPresetNameDialog.value.trim()
-    if (label.length === 0) {
-      setExportPresetNameDialog((prev) =>
-        prev === null ? null : { ...prev, error: uiText('editorExportPresetErrorEmpty') }
-      )
-      return
-    }
-    const safeLabel = label.slice(0, 64)
-    if (exportPresetNameDialog.mode === 'create') {
-      if (exportUserPresets.length >= FFMPEG_EXPORT_USER_PRESETS_MAX_ENTRIES) {
-        setExportPresetNameDialog((prev) =>
-          prev === null ? null : { ...prev, error: uiText('editorExportPresetErrorMaxTotal') }
-        )
-        return
-      }
-      const userAdded = exportUserPresets.filter((p) => !isBuiltinExportUserPresetId(p.id)).length
-      if (userAdded >= FFMPEG_EXPORT_USER_ADDED_PRESETS_MAX) {
-        setExportPresetNameDialog((prev) =>
-          prev === null ? null : { ...prev, error: uiText('editorExportPresetErrorMax') }
-        )
-        return
-      }
-      const id = crypto.randomUUID()
-      const next = [
-        ...exportUserPresets,
-        { id, label: safeLabel, snapshot: buildCurrentExportSnapshot() }
-      ]
-      setExportPresetSaving(true)
-      try {
-        const s = await window.fluxalloy.settings.setFfmpegExportUserPresets(next)
-        setExportUserPresets(s.ffmpegExportUserPresets ?? [])
-        setSelectedUserPresetId(id)
-        setExportPresetNameDialog(null)
-      } catch (error) {
-        console.error(error)
-      } finally {
-        setExportPresetSaving(false)
-      }
-      return
-    }
-
-    if (!selectedUserPresetId) {
-      setExportPresetNameDialog(null)
-      return
-    }
-    const next = exportUserPresets.map((p) =>
-      p.id === selectedUserPresetId ? { ...p, label: safeLabel } : p
-    )
-    setExportPresetSaving(true)
-    try {
-      const s = await window.fluxalloy.settings.setFfmpegExportUserPresets(next)
-      setExportUserPresets(s.ffmpegExportUserPresets ?? [])
-      setExportPresetNameDialog(null)
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setExportPresetSaving(false)
-    }
-  }, [buildCurrentExportSnapshot, exportPresetNameDialog, exportUserPresets, selectedUserPresetId])
-
-  const handleOverwriteExportUserPreset = useCallback(() => {
-    if (!selectedUserPresetId) {
-      return
-    }
-    if (isBuiltinExportUserPresetId(selectedUserPresetId)) {
-      setStatusHint(uiText('editorBuiltinPresetLockedHint'))
-      return
-    }
-    const snap = buildCurrentExportSnapshot()
-    const next = exportUserPresets.map((p) =>
-      p.id === selectedUserPresetId ? { ...p, snapshot: snap } : p
-    )
-    void window.fluxalloy.settings
-      .setFfmpegExportUserPresets(next)
-      .then((s) => {
-        setExportUserPresets(s.ffmpegExportUserPresets ?? [])
-      })
-      .catch(console.error)
-  }, [buildCurrentExportSnapshot, exportUserPresets, selectedUserPresetId])
-
-  const buildCurrentFfmpegExportOverrides = useCallback(
+  const exportSnapshotFields = useMemo(
     () => ({
-      encodePreset: exportEncodePreset,
-      videoCodec: exportVideoCodec,
-      container: exportContainer,
-      crf: exportCrf,
-      videoBitrate: exportVideoBitrate,
-      audioMode: exportAudioMode,
-      audioBitrate: exportAudioBitrate,
-      fps: exportFps,
-      scalePreset: exportScalePreset,
-      videoTransform: exportVideoTransform,
-      cropPreset: exportCropPreset,
-      twoPass: exportTwoPass && exportVideoBitrate !== null && exportVideoCodec === 'libx264',
-      economyMode: exportEconomyMode,
-      hwDecode: exportHwDecode,
-      extraArgsLine: exportExtraArgsLine,
-      audioGainDb: exportAudioGainDb === 0 ? null : exportAudioGainDb,
-      stripMetadata: exportStripMetadata,
-      stripChapters: exportStripChapters,
-      subtitleMode: exportSubtitleMode,
-      videoDeinterlace: exportVideoDeinterlace,
-      videoDenoise: exportVideoDenoise,
-      videoDeband: exportVideoDeband,
-      videoHisteq: exportVideoHisteq,
-      videoLut3d: exportVideoLut3d,
-      videoSharpen: exportVideoSharpen,
-      videoEqPreset: exportVideoEqPreset,
-      videoHue: exportVideoHue,
-      videoGrain: exportVideoGrain,
-      videoVignette: exportVideoVignette,
-      videoBlur: exportVideoBlur,
-      audioNormalize: exportAudioNormalize
+      exportEncodePreset,
+      exportVideoCodec,
+      exportContainer,
+      exportCrf,
+      exportVideoBitrate,
+      exportAudioMode,
+      exportAudioBitrate,
+      exportFps,
+      exportScalePreset,
+      exportVideoTransform,
+      exportCropPreset,
+      exportTwoPass,
+      exportEconomyMode,
+      exportHwDecode,
+      exportExtraArgsLine,
+      exportAudioGainDb,
+      exportStripMetadata,
+      exportStripChapters,
+      exportSubtitleMode,
+      exportVideoDeinterlace,
+      exportVideoDenoise,
+      exportVideoDeband,
+      exportVideoHisteq,
+      exportVideoLut3d,
+      exportVideoSharpen,
+      exportVideoEqPreset,
+      exportVideoHue,
+      exportVideoGrain,
+      exportVideoVignette,
+      exportVideoBlur,
+      exportAudioNormalize
     }),
     [
       exportEncodePreset,
@@ -523,6 +317,35 @@ export function useEditorExportSettings(deps: UseEditorExportSettingsDeps) {
       exportAudioNormalize
     ]
   )
+
+  const buildCurrentExportSnapshot = useCallback(
+    () => buildEditorExportUserPresetSnapshot(exportSnapshotFields),
+    [exportSnapshotFields]
+  )
+
+  const buildCurrentFfmpegExportOverrides = useCallback(
+    () => buildEditorFfmpegExportOverrides(exportSnapshotFields),
+    [exportSnapshotFields]
+  )
+
+  const {
+    handleSaveExportUserPreset,
+    handleDeleteExportUserPreset,
+    handleRenameExportUserPreset,
+    handleSubmitExportPresetName,
+    handleOverwriteExportUserPreset
+  } = useEditorExportUserPresetActions({
+    setStatusHint,
+    exportUserPresets,
+    setExportUserPresets,
+    selectedUserPresetId,
+    setSelectedUserPresetId,
+    exportPresetNameDialog,
+    setExportPresetNameDialog,
+    exportPresetSaving,
+    setExportPresetSaving,
+    buildCurrentExportSnapshot
+  })
   return {
     exportEncodePreset,
     setExportEncodePreset,
