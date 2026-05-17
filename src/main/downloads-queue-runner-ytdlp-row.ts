@@ -1,90 +1,33 @@
 import type { AppPaths } from './app-paths'
-import { resolveAllowedYtdlpDownloadOutputFile } from './ytdlp-download-output'
 import { getEnginePathOverridesSnapshot } from './engine-path-sync'
-import { getDownloadsQueueRowById, shortUrlLabel, updateDownloadsRow } from './downloads-queue'
+import { getDownloadsQueueRowById, updateDownloadsRow } from './downloads-queue'
 import { emitDownloadsLog } from './downloads-log-ipc'
 import {
   classifyYtdlpQueueFailureKind,
-  displayLabelFromYtdlpOutputPath,
-  extractYtdlpErrorSummary,
-  extractYtdlpOutputPath,
-  formatTorrentStyleSpeedFromBps,
-  formatYtdlpProgressCell,
   formatYtdlpQueueFailureStatus,
-  parseYtdlpDownloadProgressLine,
-  parseYtdlpInfoDownloadingTitlePrefix,
-  parseYtdlpInfoQueueSizeHint,
-  parseYtdlpQueueFormatHint,
-  parseYtdlpProgressPercentNumber,
-  parseYtdlpSpeedToBytesPerSec,
   runYtdlpOnce,
-  shouldSkipQueueRetriesForFailureKind,
-  type YtdlpDownloadProgressParts
+  shouldSkipQueueRetriesForFailureKind
 } from './ytdlp-download-service'
 import { appendYtdlpDownloadHistoryEntry, outcomeFromQueueStatus } from './ytdlp-download-history'
 import { resolveYtdlpQueueRetryPlan } from './ytdlp-queue-retry'
 import { getYtdlpRunOptionsSnapshot } from './ytdlp-run-options-sync'
 import {
-  downloadsRunnerAbortMessage,
-  fluxLogAutoOpenSkippedBadPath,
-  fluxLogAutoOpenSkippedNoHandler,
-  fluxLogBatchEnqueueSkippedBadPath,
   fluxLogQueueRetriesCancelled,
   formatFluxLogAttemptExitCode,
-  formatFluxLogAutoOpenFailed,
   formatFluxLogQueueRetryDelay
 } from '../shared/downloads-flux-log-locale'
 import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
 import {
   isYtdlpQueueStatusWaiting,
   YTDLP_QUEUE_STATUS_CANCELLED,
-  YTDLP_QUEUE_STATUS_DONE,
   YTDLP_QUEUE_STATUS_RUNNING,
   YTDLP_QUEUE_STATUS_ERROR_PREFIX,
   YTDLP_QUEUE_STATUS_RETRY_PAUSE_PREFIX
 } from '../shared/ytdlp-queue-status'
 import { downloadsQueueRunnerState } from './downloads-queue-runner-state'
-
-/** Реже дергать таблицу/IPC: полоса и подпись прогресса обновляются не чаще этого интервала. */
-const DOWNLOADS_PROGRESS_UI_MIN_INTERVAL_MS = 1000
-/** В лог UI: строки `[download] … NN%` — не чаще чем на этот шаг по проценту (плюс «тишина» ниже). */
-const DOWNLOADS_PROGRESS_LOG_MIN_PERCENT_STEP = 0.1
-/** …или раз в столько мс, если процент почти не двигается (чтобы лог не «замер»). */
-const DOWNLOADS_PROGRESS_LOG_MAX_SILENCE_MS = 2500
-
-function isAbort(e: unknown): boolean {
-  return e instanceof Error && e.name === 'AbortError'
-}
-
-function abortErr(locale: DownloadsWindowUiLocale): Error {
-  const e = new Error(downloadsRunnerAbortMessage(locale))
-  e.name = 'AbortError'
-  return e
-}
-
-/** Пауза между повторами §6.4; отмена — тем же `AbortSignal`, что и у текущей загрузки. */
-function delayWithAbort(
-  ms: number,
-  signal: AbortSignal,
-  locale: DownloadsWindowUiLocale
-): Promise<void> {
-  return new Promise((resolve, reject) => {
-    if (signal.aborted) {
-      reject(abortErr(locale))
-      return
-    }
-    const timer = setTimeout(() => {
-      signal.removeEventListener('abort', onAbort)
-      resolve()
-    }, ms)
-    const onAbort = (): void => {
-      clearTimeout(timer)
-      signal.removeEventListener('abort', onAbort)
-      reject(abortErr(locale))
-    }
-    signal.addEventListener('abort', onAbort, { once: true })
-  })
-}
+import { applyYtdlpRowDownloadSuccessActions } from './downloads-queue-runner-ytdlp-row-completion'
+import { delayWithAbort, isAbort } from './downloads-queue-runner-ytdlp-row-helpers'
+import { createYtdlpRowProgressBridge } from './downloads-queue-runner-ytdlp-row-progress'
 
 export async function runYtdlpForWaitingRow(
   paths: AppPaths,
@@ -119,214 +62,7 @@ export async function runYtdlpForWaitingRow(
 
   emitDownloadsLog({ kind: 'reset', rowId })
 
-  let lastProgressCell: string | null = null
-  let lastErrorSummary: string | null = null
-  let lastOutputPath: string | null = snap.outputPath ?? null
-  let lastStderrLine: string | null = null
-  /** Сэмплирование лога по числовому % (меньше спама в панели лога). */
-  let lastYtDlpProgressLogPercent: number | null = null
-  let lastYtDlpProgressLogEmittedAtMs = 0
-
-  let progressFlushTimer: ReturnType<typeof setTimeout> | null = null
-  let latestProgressParsed: YtdlpDownloadProgressParts | null = null
-  let latestSizeFromProgress: string | undefined
-  let smoothedSpeedBps: number | null = null
-  let lastProgressFlushMs = 0
-
-  const clearProgressFlushTimer = (): void => {
-    if (progressFlushTimer !== null) {
-      clearTimeout(progressFlushTimer)
-      progressFlushTimer = null
-    }
-  }
-
-  const flushProgressUiNow = (): void => {
-    const parsed = latestProgressParsed
-    if (!parsed) {
-      return
-    }
-    const rawSpeed = parsed.speed?.trim() ?? ''
-    const bpsSample = parseYtdlpSpeedToBytesPerSec(rawSpeed)
-    let displaySpeed: string | null = null
-    if (bpsSample !== null) {
-      smoothedSpeedBps =
-        smoothedSpeedBps === null ? bpsSample : smoothedSpeedBps * 0.78 + bpsSample * 0.22
-      displaySpeed = formatTorrentStyleSpeedFromBps(smoothedSpeedBps)
-    } else if (rawSpeed.length > 0 && !/^unknown(\s+speed)?$/i.test(rawSpeed)) {
-      smoothedSpeedBps = null
-      displaySpeed = rawSpeed
-    } else {
-      smoothedSpeedBps = null
-    }
-
-    const partsForCell: YtdlpDownloadProgressParts = {
-      percent: parsed.percent,
-      speed: displaySpeed !== null && displaySpeed.length > 0 ? displaySpeed : null,
-      eta: parsed.eta
-    }
-    const cell = formatYtdlpProgressCell(partsForCell, locale)
-    if (cell.length === 0) {
-      return
-    }
-    lastProgressCell = cell
-    const patch: {
-      progress: string
-      queueSize?: string
-      queueSpeed?: string
-      queueEta?: string
-    } = { progress: cell }
-    const st = (latestSizeFromProgress ?? parsed.sizeTotal)?.trim() ?? ''
-    if (st.length > 0) {
-      patch.queueSize = st
-    }
-    if (displaySpeed !== null && displaySpeed.length > 0) {
-      patch.queueSpeed = displaySpeed
-    }
-    const et = parsed.eta?.trim() ?? ''
-    if (et.length > 0 && !/^unknown$/i.test(et)) {
-      patch.queueEta = et
-    }
-    updateDownloadsRow(rowId, patch)
-    downloadsQueueRunnerState.notifySnapshot()
-    lastProgressFlushMs = Date.now()
-  }
-
-  const scheduleProgressFlush = (): void => {
-    const now = Date.now()
-    const due = DOWNLOADS_PROGRESS_UI_MIN_INTERVAL_MS - (now - lastProgressFlushMs)
-    if (due <= 0) {
-      clearProgressFlushTimer()
-      flushProgressUiNow()
-      return
-    }
-    if (progressFlushTimer !== null) {
-      return
-    }
-    progressFlushTimer = setTimeout(() => {
-      progressFlushTimer = null
-      flushProgressUiNow()
-    }, due)
-  }
-
-  const flushPendingProgressUI = (): void => {
-    clearProgressFlushTimer()
-    flushProgressUiNow()
-  }
-
-  const rememberStderrLine = (line: string): void => {
-    const t = line.trimEnd()
-    if (t.length === 0) {
-      return
-    }
-    lastStderrLine = t.length > 400 ? `${t.slice(0, 397)}…` : t
-  }
-
-  const applyProgressLine = (line: string): void => {
-    const parsed = parseYtdlpDownloadProgressLine(line, locale)
-    if (!parsed) {
-      return
-    }
-    const cellProbe = formatYtdlpProgressCell(parsed, locale)
-    if (cellProbe.length === 0) {
-      return
-    }
-    latestProgressParsed = parsed
-    const st0 = parsed.sizeTotal?.trim() ?? ''
-    if (st0.length > 0) {
-      latestSizeFromProgress = st0
-    }
-    scheduleProgressFlush()
-  }
-
-  const emitStreamLineForDownloadsLog = (stream: 'stdout' | 'stderr', line: string): void => {
-    const parsed = parseYtdlpDownloadProgressLine(line, locale)
-    if (!parsed) {
-      emitDownloadsLog({ kind: 'line', rowId, stream, text: line })
-      return
-    }
-    const p = parseYtdlpProgressPercentNumber(parsed.percent)
-    if (p === null) {
-      emitDownloadsLog({ kind: 'line', rowId, stream, text: line })
-      return
-    }
-    const now = Date.now()
-    const silent = now - lastYtDlpProgressLogEmittedAtMs
-    const stepOk =
-      lastYtDlpProgressLogPercent === null ||
-      Math.abs(p - lastYtDlpProgressLogPercent) >= DOWNLOADS_PROGRESS_LOG_MIN_PERCENT_STEP ||
-      silent >= DOWNLOADS_PROGRESS_LOG_MAX_SILENCE_MS
-    if (!stepOk) {
-      return
-    }
-    lastYtDlpProgressLogPercent = p
-    lastYtDlpProgressLogEmittedAtMs = now
-    emitDownloadsLog({ kind: 'line', rowId, stream, text: line })
-  }
-
-  const applyQueueTitleHint = (line: string): void => {
-    const title = parseYtdlpInfoDownloadingTitlePrefix(line)
-    if (!title) {
-      return
-    }
-    const row = getDownloadsQueueRowById(rowId)
-    if (!row) {
-      return
-    }
-    if (row.shortLabel !== shortUrlLabel(row.url)) {
-      return
-    }
-    updateDownloadsRow(rowId, { shortLabel: title })
-    downloadsQueueRunnerState.notifySnapshot()
-  }
-
-  const applyYtDlpQueueCellHints = (line: string): void => {
-    let changed = false
-    const fmt = parseYtdlpQueueFormatHint(line, locale)
-    if (fmt) {
-      updateDownloadsRow(rowId, { queueFmt: fmt })
-      changed = true
-    }
-    const sz = parseYtdlpInfoQueueSizeHint(line)
-    if (sz) {
-      const snapRow = getDownloadsQueueRowById(rowId)
-      if ((snapRow?.queueSize?.trim() ?? '').length === 0) {
-        updateDownloadsRow(rowId, { queueSize: sz })
-        changed = true
-      }
-    }
-    if (changed) {
-      downloadsQueueRunnerState.notifySnapshot()
-    }
-  }
-
-  const noteErrorLine = (line: string): void => {
-    const s = extractYtdlpErrorSummary(line)
-    if (s) {
-      lastErrorSummary = s
-    }
-  }
-
-  const noteOutputPathLine = (line: string): void => {
-    const p = extractYtdlpOutputPath(line)
-    if (!p) {
-      return
-    }
-    lastOutputPath = p
-    const snapRow = getDownloadsQueueRowById(rowId)
-    const nice = displayLabelFromYtdlpOutputPath(p)
-    const url = snapRow?.url ?? ''
-    const curShort = snapRow?.shortLabel ?? ''
-    const patch: Parameters<typeof updateDownloadsRow>[1] = { outputPath: p }
-    if (
-      nice &&
-      url.length > 0 &&
-      (curShort === shortUrlLabel(url) || curShort.length < Math.min(nice.length, 14))
-    ) {
-      patch.shortLabel = nice
-    }
-    updateDownloadsRow(rowId, patch)
-    downloadsQueueRunnerState.notifySnapshot()
-  }
+  const progress = createYtdlpRowProgressBridge(rowId, locale, snap.outputPath ?? null)
 
   const cli = getYtdlpRunOptionsSnapshot()
   const retryPlan = resolveYtdlpQueueRetryPlan(cli.queueRetryProfile)
@@ -334,10 +70,9 @@ export async function runYtdlpForWaitingRow(
 
   try {
     for (let runIndex = 0; runIndex < maxRuns; runIndex++) {
-      lastStderrLine = null
-      lastErrorSummary = null
+      progress.resetErrorStateForRetry()
       if (runIndex > 0) {
-        flushPendingProgressUI()
+        progress.flushPendingProgressUI()
         const delayMs = retryPlan.delaysMs[runIndex - 1] ?? 2000
         const sec = Math.round(delayMs / 100) / 10
         emitDownloadsLog({
@@ -348,25 +83,20 @@ export async function runYtdlpForWaitingRow(
         })
         updateDownloadsRow(rowId, {
           status: `${YTDLP_QUEUE_STATUS_RETRY_PAUSE_PREFIX} (${runIndex}/${retryPlan.extraAttempts})…`,
-          progress: lastProgressCell ?? '—'
+          progress: progress.lastProgressCell ?? '—'
         })
         downloadsQueueRunnerState.notifySnapshot()
         try {
           await delayWithAbort(delayMs, signal, locale)
         } catch {
-          flushPendingProgressUI()
+          progress.flushPendingProgressUI()
           updateDownloadsRow(rowId, {
             status: YTDLP_QUEUE_STATUS_CANCELLED,
-            progress: lastProgressCell ?? '—'
+            progress: progress.lastProgressCell ?? '—'
           })
           break
         }
-        clearProgressFlushTimer()
-        latestProgressParsed = null
-        latestSizeFromProgress = undefined
-        smoothedSpeedBps = null
-        lastYtDlpProgressLogPercent = null
-        lastYtDlpProgressLogEmittedAtMs = 0
+        progress.resetSamplingAfterRetry()
         updateDownloadsRow(rowId, {
           status: YTDLP_QUEUE_STATUS_RUNNING,
           progress: '…',
@@ -390,21 +120,10 @@ export async function runYtdlpForWaitingRow(
               shouldRecordHistory = true
             },
             onStdoutLine: (line) => {
-              emitStreamLineForDownloadsLog('stdout', line)
-              noteErrorLine(line)
-              noteOutputPathLine(line)
-              applyYtDlpQueueCellHints(line)
-              applyQueueTitleHint(line)
-              applyProgressLine(line)
+              progress.onYtDlpStreamLine('stdout', line)
             },
             onStderrLine: (line) => {
-              rememberStderrLine(line)
-              emitStreamLineForDownloadsLog('stderr', line)
-              noteErrorLine(line)
-              noteOutputPathLine(line)
-              applyYtDlpQueueCellHints(line)
-              applyQueueTitleHint(line)
-              applyProgressLine(line)
+              progress.onYtDlpStreamLine('stderr', line)
             }
           },
           getEnginePathOverridesSnapshot(),
@@ -429,12 +148,12 @@ export async function runYtdlpForWaitingRow(
       } catch (e) {
         const aborted = isAbort(e)
         const msg = e instanceof Error ? e.message : String(e)
-        flushPendingProgressUI()
+        progress.flushPendingProgressUI()
         updateDownloadsRow(rowId, {
           status: aborted
             ? YTDLP_QUEUE_STATUS_CANCELLED
             : `${YTDLP_QUEUE_STATUS_ERROR_PREFIX}: ${msg.slice(0, 140)}`,
-          progress: lastProgressCell ?? '—'
+          progress: progress.lastProgressCell ?? '—'
         })
         finalExitCode = null
         break
@@ -443,72 +162,16 @@ export async function runYtdlpForWaitingRow(
       finalExitCode = result.exitCode
 
       if (result.exitCode === 0) {
-        flushPendingProgressUI()
-        updateDownloadsRow(rowId, {
-          status: YTDLP_QUEUE_STATUS_DONE,
-          progress: lastProgressCell ?? '100%'
-        })
-        const cliOpen = getYtdlpRunOptionsSnapshot()
-        if (cliOpen.enqueueBatchOnDownloadComplete) {
-          const batchCand = lastOutputPath ?? getDownloadsQueueRowById(rowId)?.outputPath ?? null
-          const batchSafe =
-            batchCand !== null && batchCand.length > 0
-              ? resolveAllowedYtdlpDownloadOutputFile(batchCand, paths.userData)
-              : null
-          if (!batchSafe) {
-            emitDownloadsLog({
-              kind: 'line',
-              rowId,
-              stream: 'stderr',
-              text: fluxLogBatchEnqueueSkippedBadPath(locale)
-            })
-          } else {
-            downloadsQueueRunnerState.afterDownloadEnqueueBatchHook?.(batchSafe, rowId)
-          }
-        }
-        if (cliOpen.openInHandlerOnComplete) {
-          const cand = lastOutputPath ?? getDownloadsQueueRowById(rowId)?.outputPath ?? null
-          const safe =
-            cand !== null && cand.length > 0
-              ? resolveAllowedYtdlpDownloadOutputFile(cand, paths.userData)
-              : null
-          if (!downloadsQueueRunnerState.openDownloadedFileInMainHandlerHook) {
-            emitDownloadsLog({
-              kind: 'line',
-              rowId,
-              stream: 'stderr',
-              text: fluxLogAutoOpenSkippedNoHandler(locale)
-            })
-          } else if (!safe) {
-            emitDownloadsLog({
-              kind: 'line',
-              rowId,
-              stream: 'stderr',
-              text: fluxLogAutoOpenSkippedBadPath(locale)
-            })
-          } else {
-            const openResult =
-              await downloadsQueueRunnerState.openDownloadedFileInMainHandlerHook(safe)
-            if (!openResult.ok) {
-              emitDownloadsLog({
-                kind: 'line',
-                rowId,
-                stream: 'stderr',
-                text: formatFluxLogAutoOpenFailed(locale, openResult.error)
-              })
-            } else if (
-              cliOpen.autoExportAfterOpenInHandler &&
-              downloadsQueueRunnerState.afterDownloadOpenedInMainHandlerHook
-            ) {
-              downloadsQueueRunnerState.afterDownloadOpenedInMainHandlerHook(safe, rowId)
-            }
-          }
-        }
+        await applyYtdlpRowDownloadSuccessActions(paths, rowId, locale, progress)
         break
       }
 
       const code = result.exitCode
-      const failureKind = classifyYtdlpQueueFailureKind(lastErrorSummary, lastStderrLine, code)
+      const failureKind = classifyYtdlpQueueFailureKind(
+        progress.lastErrorSummary,
+        progress.lastStderrLine,
+        code
+      )
       emitDownloadsLog({
         kind: 'line',
         rowId,
@@ -523,39 +186,39 @@ export async function runYtdlpForWaitingRow(
           stream: 'stderr',
           text: fluxLogQueueRetriesCancelled(locale)
         })
-        flushPendingProgressUI()
+        progress.flushPendingProgressUI()
         updateDownloadsRow(rowId, {
           status: formatYtdlpQueueFailureStatus(
             code,
             result.signal,
-            lastErrorSummary,
-            lastStderrLine,
+            progress.lastErrorSummary,
+            progress.lastStderrLine,
             failureKind,
             locale
           ),
-          progress: lastProgressCell ?? '—'
+          progress: progress.lastProgressCell ?? '—'
         })
         break
       }
 
       if (runIndex >= maxRuns - 1) {
-        flushPendingProgressUI()
+        progress.flushPendingProgressUI()
         updateDownloadsRow(rowId, {
           status: formatYtdlpQueueFailureStatus(
             code,
             result.signal,
-            lastErrorSummary,
-            lastStderrLine,
+            progress.lastErrorSummary,
+            progress.lastStderrLine,
             failureKind,
             locale
           ),
-          progress: lastProgressCell ?? '—'
+          progress: progress.lastProgressCell ?? '—'
         })
         break
       }
     }
   } finally {
-    clearProgressFlushTimer()
+    progress.clearProgressFlushTimer()
     if (shouldRecordHistory) {
       const finalRow = getDownloadsQueueRowById(rowId)
       if (finalRow) {
@@ -567,8 +230,8 @@ export async function runYtdlpForWaitingRow(
           outcome: outcomeFromQueueStatus(finalRow.status),
           status: finalRow.status,
           exitCode: finalExitCode,
-          errorHint: lastErrorSummary,
-          outputPath: finalRow.outputPath ?? lastOutputPath
+          errorHint: progress.lastErrorSummary,
+          outputPath: finalRow.outputPath ?? progress.lastOutputPath
         })
       }
     }
@@ -577,7 +240,3 @@ export async function runYtdlpForWaitingRow(
     downloadsQueueRunnerState.notifySnapshot()
   }
 }
-
-/**
- * Последовательно обрабатывает строки со статусом «Ожидание». Отмена — через cancelDownloadsRunner().
- */

@@ -340,6 +340,11 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | structural | 645 | tests/main/ffmpeg-export-service.test.ts | 4 | entry helpers + `ffmpeg-export-service-user-preset|snapshot-merge|presets-catalog.test.ts` | ✅ J-827 |
 | structural | 632 | src/renderer/src/use-editor-export-settings.ts | 4 | `editor-export-settings-snapshot-build.ts` + `use-editor-export-user-preset-actions.ts` | ✅ J-828 |
 | structural | 609 | tests/main/ytdlp-progress-parser.test.ts | 4 | `ytdlp-progress-parser-download|info-display|queue-failure|output-path.test.ts` | ✅ J-829 |
+| structural | 541 | src/renderer/src/components/LucideMiniIcons.tsx | 4 | `lucide-mini-icons-core.ts` + `lucide-mini-icons-downloads|editor.tsx` + barrel | ✅ J-830 |
+| structural | 584 | src/main/downloads-queue-runner-ytdlp-row.ts | 4 | `downloads-queue-runner-ytdlp-row-helpers|progress|completion.ts` + orchestrator | ✅ J-831 |
+| structural | 494 | src/renderer/src/use-app-shell-props-input-workspace.ts | 4 | `use-app-shell-props-input-workspace-types|shell|editor|terminal-downloads.ts` + orchestrator | ✅ J-832 |
+| structural | 566 | src/shared/main-application-locale.ts | 4 | `main-application-locale-types.ts` + `main-application-locale-strings-ru|en.ts` + entry | ✅ J-833 |
+| structural | 549 | src/renderer/src/components/VideoTimeline.tsx | 4 | `video-timeline-props.ts` + `use-video-timeline-controller.ts` + entry | ✅ J-834 |
 
 ---
 

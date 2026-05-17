@@ -1,4 +1,4 @@
-import type { AppShellPropsInputCtx } from './use-app-shell-props-input-workspace'
+import type { AppShellPropsInputCtx } from './use-app-shell-props-input-workspace-types'
 import type { UseAppShellLayoutPropsInput } from './use-app-shell-layout-props'
 
 export function buildAppShellPropsInputLayout(
