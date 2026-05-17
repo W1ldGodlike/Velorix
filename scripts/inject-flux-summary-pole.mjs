@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 /**
  * Adds "(поле …)" gloss inside summary strings that mention flux-ytdlp-*.txt
  * when missing. Does not change fullLine. Safe to run repeatedly.
@@ -11,8 +12,9 @@ import fs from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import { listTerminalContractHintFiles } from './terminal-contract-hint-paths.mjs'
+
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const p = join(__dirname, '../src/shared/terminal-contract.ts')
 
 export function glossFluxPrintToFileSummary(inner) {
   if (!inner.includes('flux-ytdlp') || inner.includes('(поле ')) return inner
@@ -93,21 +95,30 @@ export function glossFluxPrintToFileSummary(inner) {
   return t
 }
 
-function main() {
-  let s = fs.readFileSync(p, 'utf8')
+function glossSummariesInText(s) {
   const summaryRe = /summary: '((?:[^'\\]|\\.)*)'/g
   let glossHits = 0
-  s = s.replace(summaryRe, (full, inner) => {
-    const next = glossFluxPrintToFileSummary(inner)
-    if (next !== inner) {
+  const next = s.replace(summaryRe, (full, inner) => {
+    const glossed = glossFluxPrintToFileSummary(inner)
+    if (glossed !== inner) {
       glossHits++
-      return `summary: '${next}'`
+      return `summary: '${glossed}'`
     }
     return full
   })
+  return { s: next, glossHits }
+}
 
-  fs.writeFileSync(p, s, 'utf8')
-  console.log('OK', p, 'summaries glossed:', glossHits)
+function main() {
+  let glossTotal = 0
+  for (const filePath of listTerminalContractHintFiles()) {
+    let s = fs.readFileSync(filePath, 'utf8')
+    const { s: next, glossHits } = glossSummariesInText(s)
+    glossTotal += glossHits
+    fs.writeFileSync(filePath, next, 'utf8')
+    console.log('file', filePath.replace(/\\/g, '/'), 'summaries glossed:', glossHits)
+  }
+  console.log('OK terminal-contract hints', 'summaries glossed:', glossTotal)
 }
 
 const ranAsCli = process.argv[1]?.replace(/\\/g, '/').endsWith('inject-flux-summary-pole.mjs')

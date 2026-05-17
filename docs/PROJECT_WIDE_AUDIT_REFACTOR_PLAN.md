@@ -388,6 +388,11 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | structural | 442 | tests/fixtures/terminal-preview-line-predicate-cases-stream.ts | 4 | `terminal-preview-line-predicate-cases-stream-{a,b}.ts` (~209+235) + entry | ✅ J-872 |
 | structural | 423 | src/shared/ffprobe-container-field-registry-format-timing.ts | 4 | `format-timing-{layout,metrics}.ts` + entry re-export | ✅ J-873 |
 | structural | 683 | scripts/cursor-automation/src/run-loop.ts | 6 | `run-loop-{cli,retry,verbose}.ts` + entry `main` (~149+187+135+238) | ✅ J-874 |
+| structural | 13008 | src/shared/terminal-contract.ts | 4 | `terminal-contract-types` + hints downloads×18 + preview×15 + barrel entry (~11) | ✅ J-875 |
+| structural | 419 | src/shared/terminal-contract-hints-downloads-*.ts (10×) | 4 | пересборка downloads 18→20 частей (<400 строк/файл) | ✅ J-876 |
+| structural | 2848 | src/renderer/src/locales/ui-text.ts | 4 | `ui-text-session` + strings ru/en×8 частей + `ui-text-api` + barrel entry | ✅ J-877 |
+| structural | 1087 | scripts/apply-terminal-summary-ru.mjs | 4 | pairs×6 data-модуля + runner по `terminal-contract-hints-*.ts`; sync `inject-flux-summary-pole` | ✅ J-878 |
+| phase-4 | — | `AUDIT_LARGE_MODULE_CANDIDATES` + §9 | 4 | критерий ≤500: `audit:structural` exit 1 при нарушении; inventory; фаза 4 ✅ | ✅ J-879 |
 
 ---
 
@@ -430,7 +435,7 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 - [x] Фаза 1 — инвентаризация (таблицы долгов, ARCHITECTURE↔IPC, `audit:ipc-architecture`)  
 - [x] Фаза 2 — src registries + side-data/summary locale + §6/§7 batch/hw/ytdlp filename (J-704–718; `audit:copy-paste` src без hotspots)  
 - [x] Фаза 3 — tests: `it.each`/fixtures; `audit:copy-paste` без hotspots (J-706–708, J-785; верификация 0–2 2026-05-17)  
-- [ ] Фаза 4 — крупные модули (след.: P1 `index.ts` IPC split — частично J-739; structural ≥400 строк)  
+- [x] Фаза 4 — крупные модули (structural ≥400: 0; candidates ≤500; J-786–878, terminal-contract/ui-text/apply-terminal-summary)  
 - [ ] Фаза 5 — TODO/временное  
 - [ ] Фаза 6 — scripts  
 - [ ] Фаза 7 — ARCHITECTURE/contracts  

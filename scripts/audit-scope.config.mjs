@@ -35,16 +35,13 @@ export const AUDIT_SKIP_DIR_NAMES = new Set([
 /** Расширения исполняемого/проверяемого кода. */
 export const AUDIT_CODE_EXTENSIONS = /\.(ts|tsx|mjs|cjs|js)$/
 
-/** Зоны Phase 4+ (крупные модули) — обновлять по мере инвентаризации. */
+/** Зоны Phase 4+ (крупные модули) — файлы ближе к порогу 500 строк; обновлять по инвентаризации. */
 export const AUDIT_LARGE_MODULE_CANDIDATES = [
-  'src/main/index.ts',
-  'src/main/ffmpeg-export-service.ts',
-  'src/main/ffprobe-service.ts',
-  'src/main/settings-store.ts',
-  'src/renderer/src/App.tsx',
-  'src/shared/ffmpeg-export-argv.ts',
-  'src/shared/terminal-contract.ts',
-  'tests/shared/terminal-contract-scenarios.test.ts',
-  'tests/main/ytdlp-progress-parser-download.test.ts',
-  'tests/shared/ffmpeg-export-argv-encode-audio.test.ts'
+  'src/shared/terminal-contract-hints-preview-media-01.ts',
+  'tests/fixtures/ffprobe-track-detail-cases.ts',
+  'src/renderer/src/components/downloads/DownloadsWorkspaceMainQueueTable.tsx',
+  'src/main/downloads-window-html-body.ts',
+  'tests/fixtures/ytdlp-progress-parser-queue-failure-cases.ts',
+  'src/main/downloads-window-html-script-fragment-queue.ts',
+  'tests/shared/ffmpeg-export-argv-filters-metadata.test.ts'
 ]

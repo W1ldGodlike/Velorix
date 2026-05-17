@@ -79,15 +79,31 @@ for (const row of large.slice(0, 25)) {
   console.log(`  [${flag}] ${row.lines} lines  todos=${row.todos}  ${row.file}`)
 }
 
+const LINE_LARGE_MODULE_MAX = 500
+
 console.log('[audit:structural] configured large-module candidates:')
+let largeModuleFail = false
 for (const p of AUDIT_LARGE_MODULE_CANDIDATES) {
   const abs = join(AUDIT_REPO_ROOT, p)
   try {
     const lines = readFileSync(abs, 'utf8').split(/\r?\n/).length
-    console.log(`  ${lines}  ${p}`)
+    const over = lines > LINE_LARGE_MODULE_MAX
+    console.log(`  ${over ? '!' : ' '} ${lines}  ${p}`)
+    if (over) {
+      largeModuleFail = true
+      console.error(
+        `[audit:structural] FAIL ${p}: ${lines} lines (max ${LINE_LARGE_MODULE_MAX} per phase-4 criterion)`
+      )
+    }
   } catch {
     console.log(`  ?  ${p} (missing)`)
+    largeModuleFail = true
+    console.error(`[audit:structural] FAIL missing large-module candidate: ${p}`)
   }
+}
+
+if (largeModuleFail) {
+  process.exit(1)
 }
 
 console.log('[audit:structural] OK (informational)')

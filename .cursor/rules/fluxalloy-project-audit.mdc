@@ -32,7 +32,7 @@ alwaysApply: true
 
 1. Работать по **первому чекбоксу ⬜** в **§9** плана (статус программы).
 2. **Если** добавлены файлы в `AUDIT_CODE_ROOTS` **то** `npm run audit:inventory`.
-3. `npm run audit:copy-paste`; **если** **номер фазы аудита** ≥ 1 (глоссарий) **то** `npm run audit:structural`.
+3. `npm run audit:copy-paste`; **если** **номер фазы аудита** ≥ 1 (глоссарий) **то** `npm run audit:structural` (exit 1, если файл из `AUDIT_LARGE_MODULE_CANDIDATES` >500 строк).
 
 ## Запрещено
 
