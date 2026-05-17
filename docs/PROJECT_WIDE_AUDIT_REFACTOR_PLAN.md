@@ -360,6 +360,11 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | structural | 418 | src/renderer/src/use-editor-export-settings-state.ts | 4 | `editor-export-settings-field-state.ts` + `use-editor-export-settings-derived.ts` + entry | ✅ J-847 |
 | structural | 409 | src/renderer/src/use-app-main-window-effects.ts | 4 | `use-app-main-window-effects-deps|bootstrap|runtime.ts` + entry | ✅ J-848 |
 | structural | 404 | src/renderer/src/components/PreviewProbeBodySections.tsx | 5 | `PreviewProbeBodyExportSummary|Tracks|Chapters|RawJsonSection.tsx` + orchestrator | ✅ J-849 |
+| structural | 405 | src/renderer/src/use-ffmpeg-export-batch.ts | 4 | `use-ffmpeg-export-batch-deps|snapshot|handlers-ingest|handlers-run.ts` + entry | ✅ J-850 |
+| structural | 401 | src/renderer/src/use-editor-export-pipeline.ts | 4 | `use-editor-export-pipeline-deps|preview|handlers.ts` + entry | ✅ J-851 |
+| structural | 405 | src/shared/lucide-downloads-icons.ts | 5 | `lucide-downloads-icons-types|queue|clusters|editor|emit.ts` + entry re-export | ✅ J-852 |
+| structural | 389 | src/main/ipc/register-batch-export-queue-ipc.ts | 4 | `register-batch-export-queue-ipc-mutate|ingest|run.ts` + entry orchestrator | ✅ J-853 |
+| structural | 384 | src/main/support-bundle.ts | 4 | `support-bundle-types|zip|collect.ts` + entry `createSupportBundleZip` | ✅ J-854 |
 
 ---
 
