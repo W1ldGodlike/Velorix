@@ -247,6 +247,24 @@ export function extractFfprobeDisplayMatrixRotation(sideDataList: unknown): numb
   return null
 }
 
+/** Smoke §9/§19: `stream.side_data_list` — массив объектов с непустым `side_data_type`. */
+export function isFfprobeSideDataListStructureOkForSmoke(sideDataList: unknown): boolean {
+  if (sideDataList === undefined || sideDataList === null) {
+    return true
+  }
+  if (!Array.isArray(sideDataList)) {
+    return false
+  }
+  for (const item of sideDataList) {
+    const o = recordFromUnknown(item)
+    if (o === null || scalarToken(o, 'side_data_type') === null) {
+      return false
+    }
+  }
+  summarizeFfprobeSideDataList(sideDataList, 'en')
+  return true
+}
+
 export function summarizeFfprobeSideDataList(
   raw: unknown,
   locale: FfprobeSummaryLocale = 'ru'

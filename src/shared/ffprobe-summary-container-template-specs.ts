@@ -130,6 +130,10 @@ export const FFPROBE_SUMMARY_CONTAINER_TEMPLATE_SPECS = {
     ru: 'Программ в контейнере (nb_programs): {count}',
     en: 'Container programs (nb_programs): {count}'
   },
+  containerNbChaptersTemplate: {
+    ru: 'Глав в контейнере (nb_chapters): {count}',
+    en: 'Container chapters (nb_chapters): {count}'
+  },
   containerFormatFlagsTemplate: {
     ru: 'Флаги контейнера (flags): {flags}',
     en: 'Container flags (flags): {flags}'

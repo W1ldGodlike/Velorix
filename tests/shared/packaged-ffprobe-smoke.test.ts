@@ -40,6 +40,9 @@ describe('packaged-ffprobe-smoke', () => {
     expect(lines[0]).toContain('smoke:packaged-ffprobe')
     expect(lines.some((l) => l.includes('registry optional'))).toBe(true)
     expect(lines.some((l) => l.includes('start_time, start_time_real'))).toBe(true)
+    expect(lines.some((l) => l.includes('format.tags'))).toBe(true)
+    expect(lines.some((l) => l.includes('chapters[]'))).toBe(true)
+    expect(lines.some((l) => l.includes('nb_chapters'))).toBe(true)
     expect(lines.some((l) => l.includes('bit_rate'))).toBe(true)
     expect(lines.some((l) => l.includes('ParsableForSmoke'))).toBe(true)
     expect(lines.some((l) => l.includes('formatFfprobeContainerDiagnostics'))).toBe(true)
@@ -228,6 +231,44 @@ describe('packaged-ffprobe-smoke', () => {
         }
       })
     ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
+        format: {
+          format_name: 'mp4',
+          nb_streams: '1',
+          tags: { major_brand: 'isom', encoder: 'Lavf61.0' }
+        }
+      })
+    ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
+        format: {
+          format_name: 'mp4',
+          nb_streams: '1',
+          tags: { encoder: '   ' }
+        }
+      })
+    ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
+        format: { format_name: 'mp4', nb_streams: '1', tags: 'not-an-object' }
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
+        format: { format_name: 'mp4', nb_streams: '1', nb_chapters: '4' }
+      })
+    ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
+        format: { format_name: 'mp4', nb_streams: '1', nb_chapters: 'n/a' }
+      })
+    ).toBe(false)
   })
 
   it('isPackagedFfprobeProbeJsonParsableByStreamDetailFields', () => {
@@ -309,10 +350,40 @@ describe('packaged-ffprobe-smoke', () => {
       })
     ).toBe(false)
     expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [
+          {
+            side_data_list: [{ side_data_type: 'Mastering display metadata', max_luminance: '1000' }]
+          }
+        ]
+      })
+    ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ side_data_list: [{}] }]
+      })
+    ).toBe(false)
+    expect(
       isPackagedFfprobeProbeJsonParsableForSmoke({
         streams: [{ start_time: '1.0' }],
         format: { format_name: 'mp4', nb_streams: '1' }
       })
     ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableForSmoke({
+        streams: [{}],
+        format: { format_name: 'mp4', nb_streams: '1' },
+        chapters: [{ id: 0, start_time: '0', end_time: '12.5', tags: { title: 'A' } }]
+      })
+    ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableForSmoke({
+        streams: [{}],
+        format: { format_name: 'mp4', nb_streams: '1' },
+        chapters: [{ start_time: 'nope', end_time: '1' }]
+      })
+    ).toBe(false)
   })
 })

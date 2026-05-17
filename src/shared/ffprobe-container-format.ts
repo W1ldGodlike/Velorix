@@ -16,6 +16,7 @@ export {
   parseFfprobeFormatFlags,
   parseFfprobeFormatMajorBrand,
   parseFfprobeFormatNbPrograms,
+  parseFfprobeFormatNbChapters,
   parseFfprobeFormatNbStreams,
   parseFfprobeFormatProbeScore,
   parseFfprobeFormatSize,
@@ -53,6 +54,7 @@ export {
   formatFfprobeContainerProbeLayoutCompactLine,
   formatFfprobeContainerProbeLayoutExportLine,
   formatFfprobeNbProgramsExportLine,
+  formatFfprobeNbChaptersExportLine,
   formatFfprobeNbStreamsExportLine,
   formatFfprobeProbeScoreExportLine,
   collectFfprobeContainerScalarExportLines

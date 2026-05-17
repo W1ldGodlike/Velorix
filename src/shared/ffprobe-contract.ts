@@ -122,6 +122,8 @@ export interface MediaProbeSuccess {
   containerNbStreams: number | null
   /** `format.nb_programs`, если ffprobe отдал. */
   containerNbPrograms: number | null
+  /** `format.nb_chapters`, если ffprobe отдал. */
+  containerNbChapters: number | null
   /** `format.flags` (hex-строка для UI/экспорта), если ffprobe отдал. */
   containerFormatFlags: string | null
   /** `format.size` в байтах, если ffprobe отдал. */

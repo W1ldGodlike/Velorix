@@ -14,6 +14,7 @@ describe('ffprobe-container-field-registry', () => {
       probe_score: 42,
       size: '1048576',
       nb_streams: '2',
+      nb_chapters: '3',
       duration_ts: '90000',
       time_base: '1/90000',
       probe_size: '8192',
@@ -24,6 +25,7 @@ describe('ffprobe-container-field-registry', () => {
     expect(parsed.probeScore).toBe(42)
     expect(parsed.containerSizeBytes).toBe(1048576)
     expect(parsed.containerNbStreams).toBe(2)
+    expect(parsed.containerNbChapters).toBe(3)
     expect(parsed.containerDurationTs).toBe(90000)
     expect(parsed.containerTimeBase).toBe('1/90000')
     expect(parsed.containerProbeSizeBytes).toBe(8192)

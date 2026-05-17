@@ -4,12 +4,16 @@
 import {
   parseFfprobeContainerFieldsFromFormat,
   parseFfprobeFormatBitRateKbps,
-  parseFfprobeFormatDurationSec
+  parseFfprobeFormatDurationSec,
+  parseFfprobeFormatNbChapters
 } from './ffprobe-container-format'
 import type { FfprobeFormatJsonSlice } from './ffprobe-container-field-registry'
+import { parseFfprobeFormatTagScalar } from './ffprobe-format-tag-registry'
 import { formatFfprobeCodecLongNameDetail } from './ffprobe-codec-long-name'
 import { parseFfprobeTickCount } from './ffprobe-stream-duration-ts'
 import { formatFfprobeStreamStereoModeDetail } from './ffprobe-stream-stereo-mode'
+import { isFfprobeChaptersArrayOkForSmoke } from './ffprobe-chapters'
+import { isFfprobeSideDataListStructureOkForSmoke } from './ffprobe-side-data'
 import { parseFfprobeRationalFps } from './ffprobe-video-fps'
 import {
   listPackagedFfmpegCandidatePaths,
@@ -34,6 +38,7 @@ type FfprobeSmokeStreamSlice = {
   width?: string | number
   height?: string | number
   pix_fmt?: string
+  side_data_list?: unknown
   tags?: Record<string, string | number | undefined>
 }
 
@@ -183,6 +188,9 @@ export function isPackagedFfprobeProbeJsonParsableByStreamDetailFields(parsed: u
     if (!smokeOptionalStreamPixFmtField(stream.pix_fmt)) {
       return false
     }
+    if (!isFfprobeSideDataListStructureOkForSmoke(stream.side_data_list)) {
+      return false
+    }
     if (!smokeStreamTimeBaseFractionOk(stream.codec_time_base)) {
       return false
     }
@@ -194,6 +202,29 @@ export function isPackagedFfprobeProbeJsonParsableByStreamDetailFields(parsed: u
       formatFfprobeCodecLongNameDetail(stream.codec_name, longRaw)
     }
     formatFfprobeStreamStereoModeDetail(stream.tags)
+  }
+  return true
+}
+
+function smokeOptionalFormatTagsField(tags: unknown): boolean {
+  if (tags === undefined || tags === null) {
+    return true
+  }
+  if (typeof tags !== 'object' || Array.isArray(tags)) {
+    return false
+  }
+  const rec = tags as Record<string, string | number | undefined>
+  for (const [key, val] of Object.entries(rec)) {
+    if (val === undefined || val === null) {
+      continue
+    }
+    if (typeof val === 'string' && val.trim() === '') {
+      continue
+    }
+    const parsed = parseFfprobeFormatTagScalar(rec, key)
+    if (parsed === null && !(typeof val === 'number' && Number.isFinite(val))) {
+      return false
+    }
   }
   return true
 }
@@ -298,6 +329,24 @@ export function isPackagedFfprobeProbeJsonParsableByContainerRegistry(parsed: un
   if (!smokeOptionalContainerStartTimeField(startRealRaw, container.containerStartTimeRealSec)) {
     return false
   }
+  const tagsRaw = (format as { tags?: unknown }).tags
+  if (!smokeOptionalFormatTagsField(tagsRaw)) {
+    return false
+  }
+  const nbChaptersRaw = (format as { nb_chapters?: string | number }).nb_chapters
+  if (
+    nbChaptersRaw !== undefined &&
+    nbChaptersRaw !== null &&
+    String(nbChaptersRaw).trim() !== ''
+  ) {
+    if (parseFfprobeFormatNbChapters(nbChaptersRaw) === null) {
+      return false
+    }
+  }
+  const chaptersRaw = (parsed as { chapters?: unknown }).chapters
+  if (!isFfprobeChaptersArrayOkForSmoke(chaptersRaw)) {
+    return false
+  }
   return isPackagedFfprobeProbeJsonParsableByStreamDetailFields(parsed)
 }
 
@@ -311,8 +360,9 @@ export function formatPackagedFfprobeSmokeDiagnosticLines(): string[] {
   return [
     'command: npm run smoke:packaged-ffprobe (part of smoke:packaged-engines)',
     'check: isMinimalFfprobeProbeJson + isPackagedFfprobeProbeJsonParsableForSmoke (format + stream detail)',
-    'registry optional: format.duration, duration_ts, time_base, probe_size, flags, probe_score, filename, bit_rate, start_time, start_time_real (parse must not fail)',
-    'stream detail optional: duration, duration_ts, start_time, fps, bit_rate, max_bit_rate, nb_frames, time_base, codec_long_name, tags.stereo_mode',
+    'registry optional: format.duration, duration_ts, time_base, probe_size, flags, probe_score, filename, bit_rate, start_time, start_time_real, nb_chapters, format.tags.* (parseFfprobeFormatTagScalar)',
+    'probe optional: chapters[] (buildChapterRowsFromFfprobeJson / isFfprobeChaptersArrayOkForSmoke)',
+    'stream detail optional: duration, duration_ts, start_time, fps, bit_rate, nb_frames, width/height/pix_fmt, side_data_list, time_base, codec_long_name, tags.stereo_mode',
     'ui/export: formatFfprobeContainerDiagnostics* (filename + probe layout + offset/timing)',
     'env: FLUXALLOY_SKIP_FFPROBE_SMOKE, FLUXALLOY_FFPROBE_SMOKE_PROBE=0, FLUXALLOY_FFPROBE_PATH'
   ]

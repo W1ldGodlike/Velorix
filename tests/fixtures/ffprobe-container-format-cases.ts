@@ -85,6 +85,10 @@ export const FFPROBE_NB_PROGRAMS_PARSE_EXPORT_CASES = [
   { label: 'programs', raw: '2', parsed: 2, exportNb: 2, locale: 'ru' as const, contains: 'nb_programs' }
 ] as const
 
+export const FFPROBE_NB_CHAPTERS_PARSE_EXPORT_CASES = [
+  { label: 'chapters', raw: '12', parsed: 12, exportNb: 12, locale: 'ru' as const, contains: 'nb_chapters' }
+] as const
+
 export const FFPROBE_FILENAME_COMPACT_CASES: readonly FfprobeUnaryCase<string | null, string | null>[] =
   [
     { label: 'windows path', input: 'C:\\clips\\Demo.mkv', expected: 'file Demo.mkv' },

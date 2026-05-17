@@ -87,6 +87,7 @@ const sampleProbe: MediaProbeSuccess = {
   probeScore: 100,
   containerNbStreams: 2,
   containerNbPrograms: 1,
+  containerNbChapters: null,
   containerFormatFlags: '0x0',
   containerSizeBytes: 12_345_678,
   containerStartTimeSec: 1.25,

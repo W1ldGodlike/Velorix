@@ -14,6 +14,7 @@ export {
   parseFfprobeFormatFlags,
   parseFfprobeFormatMajorBrand,
   parseFfprobeFormatNbPrograms,
+  parseFfprobeFormatNbChapters,
   parseFfprobeFormatNbStreams,
   parseFfprobeFormatProbeScore,
   parseFfprobeFormatProbeSize,
@@ -55,6 +56,7 @@ export {
   formatFfprobeContainerTimingProbeExportLine,
   formatFfprobeFormatFlagsExportLine,
   formatFfprobeNbProgramsExportLine,
+  formatFfprobeNbChaptersExportLine,
   formatFfprobeNbStreamsExportLine,
   formatFfprobeProbeScoreExportLine
 } from './ffprobe-container-field-registry-format'

@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest'
 
-import { buildChapterRowsFromFfprobeJson } from '../../src/shared/ffprobe-chapters'
+import {
+  buildChapterRowsFromFfprobeJson,
+  isFfprobeChaptersArrayOkForSmoke
+} from '../../src/shared/ffprobe-chapters'
 
 describe('ffprobe-chapters', () => {
   it('пустой или не массив → []', () => {
@@ -27,6 +30,19 @@ describe('ffprobe-chapters', () => {
       { id: 0, start_time: '0', end_time: '5' }
     ])
     expect(rows.map((r) => r.index)).toEqual([0, 1])
+  })
+
+  it('isFfprobeChaptersArrayOkForSmoke', () => {
+    expect(isFfprobeChaptersArrayOkForSmoke(undefined)).toBe(true)
+    expect(
+      isFfprobeChaptersArrayOkForSmoke([
+        { id: 0, start_time: '0', end_time: '10', tags: { title: 'Intro' } }
+      ])
+    ).toBe(true)
+    expect(isFfprobeChaptersArrayOkForSmoke([{ start_time: 'bad', end_time: '1' }])).toBe(false)
+    expect(isFfprobeChaptersArrayOkForSmoke([{}])).toBe(true)
+    expect(isFfprobeChaptersArrayOkForSmoke('not-array')).toBe(false)
+    expect(isFfprobeChaptersArrayOkForSmoke([{ tags: 'bad' }])).toBe(false)
   })
 
   it('подставляет порядковый id при отсутствии поля id', () => {

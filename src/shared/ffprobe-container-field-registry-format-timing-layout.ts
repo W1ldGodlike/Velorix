@@ -13,6 +13,7 @@ import {
   formatFfprobeContainerFormatFlagsCompact,
   formatFfprobeContainerSizeCompact,
   formatFfprobeFormatFlagsExportLine,
+  formatFfprobeNbChaptersExportLine,
   formatFfprobeNbProgramsExportLine,
   formatFfprobeNbStreamsExportLine,
   formatFfprobeProbeScoreExportLine,
@@ -23,6 +24,7 @@ export function formatFfprobeContainerProbeLayoutCompactLine(info: {
   probeScore: number | null
   containerNbStreams: number | null
   containerNbPrograms: number | null
+  containerNbChapters?: number | null
   containerSizeBytes: number | null
   containerFormatFlags: string | null
   bitrateKbps?: number | null
@@ -36,6 +38,10 @@ export function formatFfprobeContainerProbeLayoutCompactLine(info: {
   }
   if (info.containerNbPrograms !== null && info.containerNbPrograms > 0) {
     parts.push(`${info.containerNbPrograms} prog.`)
+  }
+  const nbChapters = info.containerNbChapters ?? null
+  if (nbChapters !== null && nbChapters > 0) {
+    parts.push(`${nbChapters} ch.`)
   }
   if (info.containerSizeBytes !== null) {
     parts.push(formatFfprobeContainerSizeCompact(info.containerSizeBytes))
@@ -60,6 +66,7 @@ export function formatFfprobeContainerProbeLayoutExportLine(
     formatFfprobeProbeScoreExportLine(info.probeScore, locale),
     formatFfprobeNbStreamsExportLine(info.containerNbStreams, info.tracks.length, locale),
     formatFfprobeNbProgramsExportLine(info.containerNbPrograms, locale),
+    formatFfprobeNbChaptersExportLine(info.containerNbChapters, locale),
     formatFfprobeContainerSizeExportLine(info.containerSizeBytes, locale),
     formatFfprobeContainerBitRateExportLine(info.bitrateKbps, locale),
     formatFfprobeFormatFlagsExportLine(info.containerFormatFlags, locale)

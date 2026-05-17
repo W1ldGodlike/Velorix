@@ -44,6 +44,7 @@ export function createMediaProbeSuccessBase(
     probeScore: null,
     containerNbStreams: null,
     containerNbPrograms: null,
+    containerNbChapters: null,
     containerFormatFlags: null,
     containerSizeBytes: null,
     containerStartTimeSec: null,

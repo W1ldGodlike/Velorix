@@ -67,6 +67,7 @@ export type FfprobeSummaryStrings = {
   containerNbStreamsTemplate: string
   containerNbStreamsMismatchTemplate: string
   containerNbProgramsTemplate: string
+  containerNbChaptersTemplate: string
   containerFormatFlagsTemplate: string
   containerSizeTemplate: string
   containerBitRateTemplate: string

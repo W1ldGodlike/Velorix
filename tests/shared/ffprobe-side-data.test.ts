@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { FFPROBE_SIDE_DATA_SUMMARY_CASES } from '../fixtures/ffprobe-side-data-cases'
 import {
   extractFfprobeDisplayMatrixRotation,
+  isFfprobeSideDataListStructureOkForSmoke,
   summarizeFfprobeSideDataList
 } from '../../src/shared/ffprobe-side-data'
 
@@ -110,5 +111,16 @@ describe('ffprobe-side-data', () => {
         { side_data_type: 'Spherical Mapping' }
       ])
     ).toBe('360°')
+  })
+
+  it('isFfprobeSideDataListStructureOkForSmoke', () => {
+    expect(isFfprobeSideDataListStructureOkForSmoke(undefined)).toBe(true)
+    expect(
+      isFfprobeSideDataListStructureOkForSmoke([
+        { side_data_type: 'DOVI configuration record', dv_profile: 8 }
+      ])
+    ).toBe(true)
+    expect(isFfprobeSideDataListStructureOkForSmoke([{ rotation: 90 }])).toBe(false)
+    expect(isFfprobeSideDataListStructureOkForSmoke({})).toBe(false)
   })
 })

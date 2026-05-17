@@ -25,6 +25,7 @@ export type FfprobeFormatJsonSlice = {
   size?: string | number
   nb_streams?: string | number
   nb_programs?: string | number
+  nb_chapters?: string | number
   tags?: Record<string, string | number | undefined>
 }
 
@@ -183,6 +184,10 @@ export function parseFfprobeFormatNbPrograms(raw: string | number | undefined): 
   return parseFfprobeFormatNbStreams(raw)
 }
 
+export function parseFfprobeFormatNbChapters(raw: string | number | undefined): number | null {
+  return parseFfprobeFormatNbStreams(raw)
+}
+
 export function parseFfprobeFormatDurationTs(raw: string | number | undefined): number | null {
   return parseFfprobeTickCount(raw)
 }
@@ -207,6 +212,7 @@ export function parseFfprobeContainerFieldsFromFormat(
   | 'probeScore'
   | 'containerNbStreams'
   | 'containerNbPrograms'
+  | 'containerNbChapters'
   | 'containerFormatFlags'
   | 'containerSizeBytes'
   | 'containerStartTimeSec'
@@ -224,6 +230,7 @@ export function parseFfprobeContainerFieldsFromFormat(
     probeScore: parseFfprobeFormatProbeScore(format?.probe_score),
     containerNbStreams: parseFfprobeFormatNbStreams(format?.nb_streams),
     containerNbPrograms: parseFfprobeFormatNbPrograms(format?.nb_programs),
+    containerNbChapters: parseFfprobeFormatNbChapters(format?.nb_chapters),
     containerFormatFlags: parseFfprobeFormatFlags(format?.flags),
     containerSizeBytes: parseFfprobeFormatSize(format?.size),
     containerStartTimeSec: parseFfprobeFormatStartTimeSec(format?.start_time),

@@ -8,6 +8,7 @@ export interface FfprobeJson {
     probe_score?: string | number
     nb_streams?: string | number
     nb_programs?: string | number
+    nb_chapters?: string | number
     flags?: string | number
     size?: string | number
     start_time?: string | number

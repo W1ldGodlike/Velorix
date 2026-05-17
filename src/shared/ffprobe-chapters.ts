@@ -24,6 +24,39 @@ function chapterTitleFromTags(tags: unknown): string | null {
   return typeof t === 'string' && t.trim() !== '' ? t.trim() : null
 }
 
+/** Smoke §9/§19: корневой `chapters` из ffprobe JSON (`-show_chapters`). */
+export function isFfprobeChaptersArrayOkForSmoke(chapters: unknown): boolean {
+  if (chapters === undefined || chapters === null) {
+    return true
+  }
+  if (!Array.isArray(chapters)) {
+    return false
+  }
+  for (const raw of chapters) {
+    if (raw === null || typeof raw !== 'object' || Array.isArray(raw)) {
+      return false
+    }
+    const o = raw as Record<string, unknown>
+    const tags = o['tags']
+    if (tags !== undefined && tags !== null && (typeof tags !== 'object' || Array.isArray(tags))) {
+      return false
+    }
+    const startRaw = o['start_time'] ?? o['start']
+    const endRaw = o['end_time'] ?? o['end']
+    const hasStart =
+      startRaw !== undefined && startRaw !== null && String(startRaw).trim() !== ''
+    const hasEnd = endRaw !== undefined && endRaw !== null && String(endRaw).trim() !== ''
+    if (hasStart && parseChapterSeconds(startRaw) === null) {
+      return false
+    }
+    if (hasEnd && parseChapterSeconds(endRaw) === null) {
+      return false
+    }
+  }
+  buildChapterRowsFromFfprobeJson(chapters)
+  return true
+}
+
 /** Строит строки глав для IPC/UI; при ошибках полей строка пропускается. */
 export function buildChapterRowsFromFfprobeJson(chapters: unknown): MediaProbeChapterRow[] {
   if (!Array.isArray(chapters)) {

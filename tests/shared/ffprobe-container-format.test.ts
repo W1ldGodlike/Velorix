@@ -20,6 +20,7 @@ import {
   parseFfprobeFormatBitRateKbps,
   parseFfprobeFormatDurationSec,
   formatFfprobeFormatFlagsExportLine,
+  formatFfprobeNbChaptersExportLine,
   formatFfprobeNbProgramsExportLine,
   formatFfprobeNbStreamsExportLine,
   formatFfprobeProbeScoreExportLine,
@@ -41,6 +42,7 @@ import {
   parseFfprobeFormatFilename,
   parseFfprobeFormatMajorBrand,
   parseFfprobeFormatNbPrograms,
+  parseFfprobeFormatNbChapters,
   parseFfprobeFormatNbStreams,
   parseFfprobeFormatProbeScore,
   parseFfprobeFormatSize,
@@ -61,6 +63,7 @@ import {
   FFPROBE_FLAGS_RAW_PARSED,
   FFPROBE_FORMAT_FLAGS_COMPACT_CASES,
   FFPROBE_MAJOR_BRAND_TAGS,
+  FFPROBE_NB_CHAPTERS_PARSE_EXPORT_CASES,
   FFPROBE_NB_PROGRAMS_PARSE_EXPORT_CASES,
   FFPROBE_NB_STREAMS_PARSE_EXPORT_CASES,
   FFPROBE_PROBE_LAYOUT_COMPACT_EXPECTED,
@@ -205,6 +208,14 @@ describe('ffprobe-container-format', () => {
     ({ raw, parsed, exportNb, locale, contains }) => {
       expect(parseFfprobeFormatNbPrograms(raw)).toBe(parsed)
       expect(formatFfprobeNbProgramsExportLine(exportNb, locale)).toContain(contains)
+    }
+  )
+
+  it.each(FFPROBE_NB_CHAPTERS_PARSE_EXPORT_CASES)(
+    'parseFfprobeFormatNbChapters $label',
+    ({ raw, parsed, exportNb, locale, contains }) => {
+      expect(parseFfprobeFormatNbChapters(raw)).toBe(parsed)
+      expect(formatFfprobeNbChaptersExportLine(exportNb, locale)).toContain(contains)
     }
   )
 

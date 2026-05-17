@@ -9,6 +9,7 @@ export {
   formatFfprobeContainerSizeCompact,
   formatFfprobeFormatFlagsExportLine,
   formatFfprobeNbProgramsExportLine,
+  formatFfprobeNbChaptersExportLine,
   formatFfprobeNbStreamsExportLine,
   formatFfprobeProbeScoreExportLine
 } from './ffprobe-container-field-registry-format-scalar'

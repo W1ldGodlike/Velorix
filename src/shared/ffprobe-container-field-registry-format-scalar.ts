@@ -47,6 +47,11 @@ const FFPROBE_CONTAINER_SCALAR_EXPORT_SPECS: readonly FfprobeContainerScalarExpo
     read: (info) => info.containerNbPrograms
   },
   {
+    localeTemplateKey: 'containerNbChaptersTemplate',
+    fillKey: 'count',
+    read: (info) => info.containerNbChapters
+  },
+  {
     localeTemplateKey: 'containerFormatFlagsTemplate',
     fillKey: 'flags',
     read: (info) => info.containerFormatFlags
@@ -117,6 +122,18 @@ export function formatFfprobeNbProgramsExportLine(
     'containerNbProgramsTemplate',
     'count',
     nbPrograms,
+    locale
+  )
+}
+
+export function formatFfprobeNbChaptersExportLine(
+  nbChapters: number | null,
+  locale: FfprobeSummaryLocale
+): string | null {
+  return formatScalarTemplateExportLineFromValue(
+    'containerNbChaptersTemplate',
+    'count',
+    nbChapters,
     locale
   )
 }
