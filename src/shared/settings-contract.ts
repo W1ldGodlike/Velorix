@@ -91,11 +91,11 @@ export interface AppSettings {
   uiLocale?: DownloadsWindowUiLocale
   /** §4.1: последний успешно открытый локальный файл для мягкого восстановления сессии. */
   lastOpenedSourcePath?: string
-  /** §3: полные пути к exe движков; имеют приоритет над bundled и userData/bin. */
+  /** §3: полные пути к exe движков; имеют приоритет над bundled и app-data/bin. */
   engineExecutablePaths?: EnginePathOverrides
   /** §4.1: последние размеры/позиции окон (main, менеджер загрузок, инспектор §9). */
   windowBounds?: WindowBoundsConfig
-  /** §6.2: абсолютный каталог для `-o` yt-dlp; если нет — `userData/downloads/ytdlp`. */
+  /** §6.2: абсолютный каталог для `-o` yt-dlp; если нет — `app-data/downloads/ytdlp`. */
   ytdlpDownloadDirectory?: string
   /** §6.2: относительный шаблон `-o` внутри каталога загрузки; см. `ytdlp-download-options`. */
   ytdlpFilenameTemplate?: string

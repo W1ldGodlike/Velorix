@@ -140,7 +140,7 @@ export const fluxalloy = {
   },
   log: {
     /**
-     * §18 — отправить запись в `userData/logs/main.log` через main-логгер.
+     * §18 — отправить запись в `app-data/logs/main.log` через main-логгер.
      * Без ответа: это «fire and forget», промахнувшийся payload отбрасывается на стороне main.
      */
     send: (entry: { level: 'info' | 'warn' | 'error'; scope?: string; message: string }): void => {

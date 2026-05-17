@@ -1,7 +1,6 @@
-import { getDownloadsQueueRowById, shortUrlLabel, updateDownloadsRow } from './downloads-queue'
+import { getDownloadsQueueRowById, updateDownloadsRow } from './downloads-queue'
 import { emitDownloadsLog } from './downloads-log-ipc'
 import {
-  displayLabelFromYtdlpOutputPath,
   extractYtdlpErrorSummary,
   extractYtdlpOutputPath,
   formatTorrentStyleSpeedFromBps,
@@ -14,6 +13,11 @@ import {
   parseYtdlpSpeedToBytesPerSec,
   type YtdlpDownloadProgressParts
 } from './ytdlp-download-service'
+import {
+  pickYtdlpQueueShortLabelForOutputPath,
+  shouldApplyYtdlpInfoTitleShortLabel,
+  shouldPreferYtdlpOutputPathShortLabel
+} from './ytdlp-queue-short-label'
 import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
 import { downloadsQueueRunnerState } from './downloads-queue-runner-state'
 import {
@@ -111,6 +115,7 @@ export function createYtdlpRowProgressBridge(
     if (et.length > 0 && !/^unknown$/i.test(et)) {
       patch.queueEta = et
     }
+    tryRefreshQueueShortLabelFromOutputPath()
     updateDownloadsRow(rowId, patch)
     downloadsQueueRunnerState.notifySnapshot()
     lastProgressFlushMs = Date.now()
@@ -202,6 +207,22 @@ export function createYtdlpRowProgressBridge(
     emitDownloadsLog({ kind: 'line', rowId, stream, text: line })
   }
 
+  const tryRefreshQueueShortLabelFromOutputPath = (): void => {
+    const p = lastOutputPath?.trim()
+    if (!p) {
+      return
+    }
+    const row = getDownloadsQueueRowById(rowId)
+    if (!row) {
+      return
+    }
+    const nice = pickYtdlpQueueShortLabelForOutputPath(p)
+    if (!nice || !shouldPreferYtdlpOutputPathShortLabel(row.shortLabel, nice, row.url)) {
+      return
+    }
+    updateDownloadsRow(rowId, { shortLabel: nice })
+  }
+
   const applyQueueTitleHint = (line: string): void => {
     const title = parseYtdlpInfoDownloadingTitlePrefix(line)
     if (!title) {
@@ -211,7 +232,7 @@ export function createYtdlpRowProgressBridge(
     if (!row) {
       return
     }
-    if (row.shortLabel !== shortUrlLabel(row.url)) {
+    if (!shouldApplyYtdlpInfoTitleShortLabel(title, row.url, row.shortLabel)) {
       return
     }
     updateDownloadsRow(rowId, { shortLabel: title })
@@ -252,15 +273,11 @@ export function createYtdlpRowProgressBridge(
     }
     lastOutputPath = p
     const snapRow = getDownloadsQueueRowById(rowId)
-    const nice = displayLabelFromYtdlpOutputPath(p)
+    const nice = pickYtdlpQueueShortLabelForOutputPath(p)
     const url = snapRow?.url ?? ''
     const curShort = snapRow?.shortLabel ?? ''
     const patch: Parameters<typeof updateDownloadsRow>[1] = { outputPath: p }
-    if (
-      nice &&
-      url.length > 0 &&
-      (curShort === shortUrlLabel(url) || curShort.length < Math.min(nice.length, 14))
-    ) {
+    if (nice && url.length > 0 && shouldPreferYtdlpOutputPathShortLabel(curShort, nice, url)) {
       patch.shortLabel = nice
     }
     updateDownloadsRow(rowId, patch)

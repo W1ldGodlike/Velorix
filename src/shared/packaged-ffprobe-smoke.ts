@@ -23,7 +23,10 @@ import {
 
 export { listPackagedFfmpegCandidatePaths, listPackagedFfprobeCandidatePaths }
 
+const FFPROBE_SMOKE_CODEC_TYPES = new Set(['video', 'audio', 'subtitle', 'data', 'attachment'])
+
 type FfprobeSmokeStreamSlice = {
+  codec_type?: string
   codec_name?: string
   codec_long_name?: string
   codec_time_base?: string
@@ -68,6 +71,20 @@ export function isMinimalFfprobeProbeJson(parsed: unknown): boolean {
     return false
   }
   return true
+}
+
+function smokeOptionalStreamCodecTypeField(raw: string | undefined): boolean {
+  if (raw === undefined || raw === null) {
+    return true
+  }
+  if (typeof raw !== 'string') {
+    return false
+  }
+  const t = raw.trim().toLowerCase()
+  if (t === '' || /^n\/a$/i.test(t)) {
+    return true
+  }
+  return FFPROBE_SMOKE_CODEC_TYPES.has(t)
 }
 
 function smokeOptionalStreamNumericField(raw: string | number | undefined): boolean {
@@ -156,6 +173,9 @@ export function isPackagedFfprobeProbeJsonParsableByStreamDetailFields(parsed: u
       continue
     }
     const stream = item as FfprobeSmokeStreamSlice
+    if (!smokeOptionalStreamCodecTypeField(stream.codec_type)) {
+      return false
+    }
     if (!smokeOptionalStreamDurationTsField(stream.duration_ts)) {
       return false
     }
@@ -379,7 +399,7 @@ export function formatPackagedFfprobeSmokeDiagnosticLines(): string[] {
     'check: isMinimalFfprobeProbeJson + isPackagedFfprobeProbeJsonParsableForSmoke (format + stream detail)',
     'registry optional: format.duration, duration_ts, time_base, size, probe_size, flags, probe_score, filename, bit_rate, start_time, start_time_real, nb_programs, nb_chapters, format.tags.* (parseFfprobeFormatTagScalar)',
     'probe optional: chapters[] (buildChapterRowsFromFfprobeJson / isFfprobeChaptersArrayOkForSmoke)',
-    'stream detail optional: duration, duration_ts, start_time, fps, bit_rate, nb_frames, width/height/pix_fmt, side_data_list, time_base, codec_long_name, tags.stereo_mode',
+    'stream detail optional: codec_type, duration, duration_ts, start_time, fps, bit_rate, nb_frames, width/height/pix_fmt, side_data_list, time_base, codec_long_name, tags.stereo_mode',
     'ui/export: formatFfprobeContainerDiagnostics* (filename + probe layout + offset/timing)',
     'env: FLUXALLOY_SKIP_FFPROBE_SMOKE, FLUXALLOY_FFPROBE_SMOKE_PROBE=0, FLUXALLOY_FFPROBE_PATH'
   ]

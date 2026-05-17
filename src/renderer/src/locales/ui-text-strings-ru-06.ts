@@ -42,13 +42,13 @@ export const uiTextStringsRuPart06 = {
   exportPresetDialogFooterToolbarAria: 'Действия диалога имени пресета',
   editorEnginePathsDialogTitle: 'Пути к движкам',
   editorEnginePathsDialogHint:
-    'Полный путь к каждому исполняемому файлу имеет приоритет над встроенным каталогом и загрузкой в userData/bin. Оставьте поле пустым и сохраните — сброс на авто-поиск.',
+    'Полный путь к каждому исполняемому файлу имеет приоритет над встроенным каталогом и загрузкой в app-data/bin. Оставьте поле пустым и сохраните — сброс на авто-поиск.',
   editorEnginePathPlaceholderAuto: 'Авто',
   editorEnginePathBrowse: 'Выбрать…',
   editorEnginePathClear: 'Сбросить',
   editorEnginePathRowToolbarAriaTemplate: 'Путь к {engine}: обзор и сброс',
   editorEnginePathsRemoveDownloadedTooltip:
-    'Удалить только скачанные копии из userData/bin. Встроенные resources/bin и ручные пути не трогаются.',
+    'Удалить только скачанные копии из app-data/bin. Встроенные resources/bin и ручные пути не трогаются.',
   editorEnginePathsRemoveDownloaded: 'Удалить скачанные',
   enginePathsDialogRowsGroupAria: 'Поля путей к исполняемым файлам движков',
   enginePathsDialogFooterToolbarAria: 'Действия диалога путей к движкам',

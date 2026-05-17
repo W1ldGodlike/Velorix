@@ -4,6 +4,10 @@ import ruCommon from '@locales/ru/common.json'
 import ruDownloads from '@locales/ru/downloads.json'
 import ruDownloadsSettings from '@locales/ru/downloads-settings.json'
 import ruEditor from '@locales/ru/editor.json'
+import ruEditorFfmpeg from '@locales/ru/editor-ffmpeg.json'
+import ruShell from '@locales/ru/shell.json'
+import ruStatus from '@locales/ru/status.json'
+import ruBatchExport from '@locales/ru/batch-export.json'
 import ruFormatting from '@locales/ru/formatting.json'
 import ruKnowledge from '@locales/ru/knowledge.json'
 import ruMaintenance from '@locales/ru/maintenance.json'
@@ -15,6 +19,10 @@ import enCommon from '@locales/en/common.json'
 import enDownloads from '@locales/en/downloads.json'
 import enDownloadsSettings from '@locales/en/downloads-settings.json'
 import enEditor from '@locales/en/editor.json'
+import enEditorFfmpeg from '@locales/en/editor-ffmpeg.json'
+import enShell from '@locales/en/shell.json'
+import enStatus from '@locales/en/status.json'
+import enBatchExport from '@locales/en/batch-export.json'
 import enFormatting from '@locales/en/formatting.json'
 import enKnowledge from '@locales/en/knowledge.json'
 import enMaintenance from '@locales/en/maintenance.json'
@@ -57,7 +65,11 @@ const uiTextStringsRu = {
   ...ruDownloads,
   ...ruDownloadsSettings,
   ...ruWorkspace,
-  ...ruEditor
+  ...ruEditor,
+  ...ruShell,
+  ...ruEditorFfmpeg,
+  ...ruStatus,
+  ...ruBatchExport
 } as const
 
 const uiTextStringsEn = {
@@ -79,7 +91,11 @@ const uiTextStringsEn = {
   ...enDownloads,
   ...enDownloadsSettings,
   ...enWorkspace,
-  ...enEditor
+  ...enEditor,
+  ...enShell,
+  ...enEditorFfmpeg,
+  ...enStatus,
+  ...enBatchExport
 } as const
 
 export const UI_TEXT = {

@@ -2,7 +2,7 @@
  * Первая итерация авто-bootstrap движков §3 (приоритет Windows).
  *
  * Серверная часть: скачивает yt-dlp и архив FFmpeg, опционально сверяет SHA256 по JSON,
- * раскладывает `ffmpeg.exe`/`ffprobe.exe` в `userData/bin`. На других ОС загрузчик пока явно отклоняется.
+ * раскладывает `ffmpeg.exe`/`ffprobe.exe` в `app-data/bin`. На других ОС загрузчик пока явно отклоняется.
  * Таймаут HTTP: `FLUXALLOY_ENGINE_DOWNLOAD_TIMEOUT_MS` (см. `docs/RELEASE.md`).
  */
 
@@ -144,7 +144,7 @@ function findCaseInsensitiveExe(rootDir: string, fileName: string): string | nul
 }
 
 /**
- * Автоматическая подтяжка движков в `userData/bin` под Windows согласно §3 ТЗ.
+ * Автоматическая подтяжка движков в `app-data/bin` под Windows согласно §3 ТЗ.
  *
  * macOS/Linux оставлены заглушкой: матрица URL и упаковка отличаются, их лучше добавить
  * отдельным шагом вместе с CI и тестовой платформой.
@@ -284,7 +284,7 @@ function fileExistsNonEmpty(candidate: string): boolean {
   }
 }
 
-/** `true`, если хотя бы один из трёх движков недоступен с учётом override, bundled и userData/bin. */
+/** `true`, если хотя бы один из трёх движков недоступен с учётом override, bundled и app-data/bin. */
 export function isAnyEngineMissing(paths: AppPaths, overrides?: EnginePathOverrides): boolean {
   const suffix = process.platform === 'win32' ? '.exe' : ''
   return ENGINE_IDS.some((id) => {

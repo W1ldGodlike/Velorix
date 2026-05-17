@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-17T14:04:18.282Z",
+  "generatedAt": "2026-05-17T17:32:01.883Z",
   "repoRoot": "C:\\Users\\truno\\FluxAlloy",
   "codeRoots": [
     "src",
@@ -18,7 +18,7 @@
     ".cursor",
     "coverage"
   ],
-  "fileCount": 753,
+  "fileCount": 758,
   "files": [
     "electron.vite.config.ts",
     "eslint.config.mjs",
@@ -118,6 +118,8 @@
     "scripts/verify-win-unpacked-layout-lib.mjs",
     "scripts/verify-win-unpacked-layout.mjs",
     "src/main/about-info.ts",
+    "src/main/app-data-root-paths.ts",
+    "src/main/app-data-root.ts",
     "src/main/app-paths.ts",
     "src/main/diagnostics-maintenance.ts",
     "src/main/diagnostics-paths.ts",
@@ -289,6 +291,7 @@
     "src/main/ytdlp-progress-parser-queue.ts",
     "src/main/ytdlp-progress-parser.ts",
     "src/main/ytdlp-queue-retry.ts",
+    "src/main/ytdlp-queue-short-label.ts",
     "src/main/ytdlp-run-options-sync.ts",
     "src/preload/downloads-window.ts",
     "src/preload/index.d.ts",
@@ -644,6 +647,7 @@
     "tests/fixtures/ytdlp-progress-parse-cases.ts",
     "tests/fixtures/ytdlp-progress-parser-queue-failure-cases.ts",
     "tests/knowledge-markdown.test.ts",
+    "tests/main/app-data-root.test.ts",
     "tests/main/diagnostics-maintenance.test.ts",
     "tests/main/downloads-queue.test.ts",
     "tests/main/downloads-window-ui-panels-broadcast.test.ts",
@@ -689,6 +693,7 @@
     "tests/main/ytdlp-progress-parser-output-path.test.ts",
     "tests/main/ytdlp-progress-parser-queue-failure.test.ts",
     "tests/main/ytdlp-queue-retry.test.ts",
+    "tests/main/ytdlp-queue-short-label.test.ts",
     "tests/scripts/audit-inventory-sync.test.ts",
     "tests/scripts/audit-ipc-architecture.test.ts",
     "tests/scripts/audit-phase5-guards.test.ts",

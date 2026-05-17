@@ -42,13 +42,13 @@ export const uiTextStringsEnPart06 = {
   exportPresetDialogFooterToolbarAria: 'Export preset name dialog actions',
   editorEnginePathsDialogTitle: 'Engine paths',
   editorEnginePathsDialogHint:
-    'A full path to each executable overrides the bundled directory and downloads in userData/bin. Leave empty and save to reset to auto-discovery.',
+    'A full path to each executable overrides the bundled directory and downloads in app-data/bin. Leave empty and save to reset to auto-discovery.',
   editorEnginePathPlaceholderAuto: 'Auto',
   editorEnginePathBrowse: 'Browse…',
   editorEnginePathClear: 'Clear',
   editorEnginePathRowToolbarAriaTemplate: '{engine} path: browse and reset',
   editorEnginePathsRemoveDownloadedTooltip:
-    'Remove only downloaded copies from userData/bin. Bundled resources/bin and manual paths are untouched.',
+    'Remove only downloaded copies from app-data/bin. Bundled resources/bin and manual paths are untouched.',
   editorEnginePathsRemoveDownloaded: 'Remove downloaded',
   enginePathsDialogRowsGroupAria: 'Per-engine executable path fields',
   enginePathsDialogFooterToolbarAria: 'Engine paths dialog actions',

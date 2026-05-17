@@ -1,6 +1,7 @@
 import { mkdirSync, writeFileSync } from 'fs'
 import { dirname, join } from 'path'
 
+import { resolveAppTempDirectory } from './app-data-root-paths'
 import { getDiagnosticsMaintenanceSnapshot } from './diagnostics-maintenance'
 import {
   collectDirectoryUsage,
@@ -24,6 +25,7 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
     appRoot: info.resources,
     resources: info.resources,
     userData: info.userData,
+    appTemp: resolveAppTempDirectory(info.userData),
     bundledBin: join(info.resources, 'bin'),
     userBin: join(info.userData, 'bin')
   })

@@ -61,6 +61,7 @@ export type UseAppShellLayoutPropsInput = {
     handleSubmitExportPresetName: () => Promise<void>
   }
   enginePaths: {
+    open: boolean
     enginePathsSaving: boolean
     engineDownloadBusy: boolean
     enginePathsDraft: EnginePathsDraft
@@ -231,6 +232,7 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
   )
 
   const {
+    open: enginePathsOpen,
     enginePathsSaving,
     engineDownloadBusy: enginePathsEngineDownloadBusy,
     enginePathsDraft,
@@ -243,6 +245,7 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
 
   const enginePathsProps = useMemo(
     (): EnginePathsDialogProps => ({
+      open: enginePathsOpen,
       enginePathsSaving,
       engineDownloadBusy: enginePathsEngineDownloadBusy,
       enginePathsDraft,
@@ -264,6 +267,7 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
       closeEnginePathsOpen,
       enginePathsDraft,
       enginePathsEngineDownloadBusy,
+      enginePathsOpen,
       enginePathsSaving,
       handleClearDownloadedEngines,
       handlePickEngine,

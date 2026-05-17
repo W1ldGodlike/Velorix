@@ -1,7 +1,8 @@
-import { mkdtempSync, rmSync } from 'fs'
+import { mkdirSync, mkdtempSync, rmSync } from 'fs'
 import { tmpdir } from 'os'
 import { join } from 'path'
 
+import { FLUXALLOY_APP_DATA_ENV, resolveAppTempDirectory } from './app-data-root-paths'
 import type { FfmpegExportVideoCodecId } from '../shared/ffmpeg-export-contract'
 import { FFMPEG_EXPORT_CANCELLED_ERROR } from '../shared/ffmpeg-export-contract'
 import { buildFfmpegExportArgv } from '../shared/ffmpeg-export-argv'
@@ -49,7 +50,12 @@ export async function runFfmpegExportJob(
 
   let tmpDir: string | null = null
   try {
-    tmpDir = mkdtempSync(join(tmpdir(), 'fa-x264tw-'))
+    const appDataRoot = process.env[FLUXALLOY_APP_DATA_ENV]
+    const appTemp = appDataRoot
+      ? resolveAppTempDirectory(appDataRoot)
+      : join(tmpdir(), 'fluxalloy-export-temp')
+    mkdirSync(appTemp, { recursive: true })
+    tmpDir = mkdtempSync(join(appTemp, 'fa-x264tw-'))
     const passlogBase = join(tmpDir, 'pass')
     const nullSink = process.platform === 'win32' ? 'NUL' : '/dev/null'
 

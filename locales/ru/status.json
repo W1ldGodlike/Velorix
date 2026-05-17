@@ -1,0 +1,23 @@
+{
+  "statusTerminalCliExitOk": "Терминал: код {code}",
+  "statusTerminalCliFailed": "Терминал: {error}",
+  "statusTerminalOutputLineCopied": "Строка вывода скопирована",
+  "statusTerminalOutputLineCopyFailed": "Не удалось скопировать строку",
+  "statusVideoMediaErrAborted": "загрузка отменена",
+  "statusVideoMediaErrNetwork": "сетевая ошибка",
+  "statusVideoMediaErrDecode": "ошибка декодирования",
+  "statusVideoMediaErrSrcNotSupported": "формат не поддерживается",
+  "statusVideoMediaErrUnknown": "неизвестная ошибка",
+  "statusVideoPlayFailed": "Видео не удалось воспроизвести: {detail}",
+  "statusVideoDirectOpenFailedBlobTrying": "Видео не открылось напрямую, пробую безопасный предпросмотр через временный URL (blob)…",
+  "statusVideoBlobFallbackActive": "Видео переведено на предпросмотр через временный URL (blob).",
+  "statusVideoPlayFailedAfterFallback": "Видео не удалось воспроизвести: {detail}; запасной вариант тоже не сработал.",
+  "statusPreviewProbeFailedTemplate": "Метаданные ffprobe недоступны: {error}",
+  "statusDownloadsUrlsAdded": "Добавлено в очередь URL: {n}",
+  "statusDownloadsQueueNoUrlsParsed": "В тексте не найдено ни одного URL для очереди.",
+  "statusDownloadOpenEditorWorking": "Скачиваю первый URL из поля…",
+  "statusDownloadOpenEditorSuccess": "Файл открыт в редакторе.",
+  "statusDownloadOpenEditorNeedUrl": "Введите URL в поле выше.",
+  "statusExportProgress": "Экспорт · {tail}",
+  "statusExportBatchRow": "Пакет #{id}"
+}

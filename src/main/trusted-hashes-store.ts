@@ -13,7 +13,7 @@ import { is } from '@electron-toolkit/utils'
 export interface TrustedHashesWindows {
   'yt-dlp.exe'?: string
   /**
-   * SHA256 готовых `ffmpeg.exe` / `ffprobe.exe` в `bin/` или `userData/bin` после распаковки.
+   * SHA256 готовых `ffmpeg.exe` / `ffprobe.exe` в `bin/` или `app-data/bin` после распаковки.
    * Используется для релизной верификации (`scripts/verify-bundled-engines-hashes.mjs`, UI-загрузка в main).
    */
   'ffmpeg.exe'?: string

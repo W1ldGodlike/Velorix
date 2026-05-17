@@ -1,6 +1,6 @@
 /**
  * Состояние очереди URL для окна менеджера загрузок §6.
- * Живая очередь дополнительно пишется в `userData/downloads/queue.json` (см. `ytdlp-download-queue-persist.ts`).
+ * Живая очередь дополнительно пишется в `app-data/downloads/queue.json` (см. `ytdlp-download-queue-persist.ts`).
  */
 
 import {

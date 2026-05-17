@@ -73,7 +73,7 @@ export const uiTextStringsRuPart03 = {
     'Каталог загрузок: открыть, выбрать или сбросить на умолчание',
   downloadsOutputDirLabel: 'Каталог загрузок',
   downloadsOutputPathLoading: 'Загружаю путь…',
-  downloadsOutputUseDefaultUserdata: 'Используется каталог по умолчанию в userData.',
+  downloadsOutputUseDefaultUserdata: 'Используется каталог по умолчанию: app-data/downloads/ytdlp.',
   downloadsOutputUseCustom: 'Используется выбранный пользователем каталог.',
   downloadsRailOpenFolder: 'Открыть',
   downloadsOutputDefaultButton: 'По умолчанию',

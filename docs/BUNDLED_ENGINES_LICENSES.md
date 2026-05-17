@@ -38,4 +38,4 @@ Before distributing an installer:
 
 1. Manual path override in settings.
 2. Bundled `resources/bin`.
-3. Downloaded/updated `userData/bin`.
+3. Downloaded/updated `app-data/bin`.

@@ -2,13 +2,20 @@ import { app } from 'electron'
 import { join } from 'path'
 import { is } from '@electron-toolkit/utils'
 
+import { resolveAppTempDirectory } from './app-data-root-paths'
+
 export interface AppPaths {
   /** Корень приложения как его видит Electron: в dev это проект, в prod — app.asar/пакет. */
   appRoot: string
   /** Каталог, из которого можно читать bundled ресурсы (`Data`, `Help`, будущий `bin`). */
   resources: string
-  /** Пользовательский каталог Electron для настроек, кэшей и скачанных runtime-ресурсов. */
+  /**
+   * Каталог runtime-данных (`<installRoot>/app-data`): настройки, логи, очереди, загрузки по умолчанию.
+   * Задаётся в `configurePortableAppDataPaths()` до старта приложения.
+   */
   userData: string
+  /** Временные каталоги обработки (`app-data/temp`), не системный %TEMP%. */
+  appTemp: string
   /** `bin` внутри поставки приложения: сюда попадут проверенные ffmpeg/ffprobe/yt-dlp. */
   bundledBin: string
   /** `bin` внутри userData: резерв для автообновления движков без пересборки приложения. */
@@ -31,6 +38,7 @@ export function resolveAppPaths(): AppPaths {
     appRoot,
     resources,
     userData,
+    appTemp: resolveAppTempDirectory(userData),
     // В релизной сборке `bin` попадает из `electron-builder.yml extraResources`.
     // Это основной источник движков; `userBin` ниже нужен для обновлений/fallback без переустановки.
     bundledBin: join(resources, 'bin'),

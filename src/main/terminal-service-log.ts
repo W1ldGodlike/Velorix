@@ -9,7 +9,7 @@ import {
   TERMINAL_CLI_LOG_MAX_BYTES
 } from './terminal-service-constants'
 
-/** Путь к журналу прогонов вкладки «Терминал» (`logs/` внутри userData). */
+/** Путь к журналу прогонов вкладки «Терминал» (`app-data/logs/terminal-cli.log`). */
 export function resolveTerminalCliSessionLogPath(userData: string): string {
   return join(userData, 'logs', 'terminal-cli.log')
 }

@@ -1,5 +1,5 @@
 /**
- * §7.3 — разбор JSON `userData/ffmpeg-export-batch/queue.json` (Vitest-безопасно).
+ * §7.3 — разбор JSON `app-data/ffmpeg-export-batch/queue.json` (Vitest-безопасно).
  */
 
 import type { FfmpegExportBatchRow } from '../shared/ffmpeg-export-batch-contract'

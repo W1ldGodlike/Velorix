@@ -5,6 +5,7 @@ import { engineLabel, type EnginePathsDraft } from '../../app-engines-ui'
 import { uiText, uiTextVars } from '../../locales/ui-text'
 
 export type EnginePathsDialogProps = {
+  open: boolean
   enginePathsSaving: boolean
   engineDownloadBusy: boolean
   enginePathsDraft: EnginePathsDraft
@@ -15,8 +16,9 @@ export type EnginePathsDialogProps = {
   onSave: () => void
 }
 
-export function EnginePathsDialog(props: EnginePathsDialogProps): JSX.Element {
+export function EnginePathsDialog(props: EnginePathsDialogProps): JSX.Element | null {
   const {
+    open,
     enginePathsSaving,
     engineDownloadBusy,
     enginePathsDraft,
@@ -26,6 +28,10 @@ export function EnginePathsDialog(props: EnginePathsDialogProps): JSX.Element {
     onClearDownloadedEngines,
     onSave
   } = props
+
+  if (!open) {
+    return null
+  }
 
   return (
     <div

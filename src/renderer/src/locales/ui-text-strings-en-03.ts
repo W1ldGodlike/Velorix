@@ -72,7 +72,7 @@ export const uiTextStringsEnPart03 = {
     'Download directory: open in explorer, pick folder, or reset to default',
   downloadsOutputDirLabel: 'Download directory',
   downloadsOutputPathLoading: 'Loading path…',
-  downloadsOutputUseDefaultUserdata: 'Using the default directory under userData.',
+  downloadsOutputUseDefaultUserdata: 'Using the default directory: app-data/downloads/ytdlp.',
   downloadsOutputUseCustom: 'Using a user-selected directory.',
   downloadsRailOpenFolder: 'Open',
   downloadsOutputDefaultButton: 'Default',

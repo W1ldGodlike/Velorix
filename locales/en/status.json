@@ -1,0 +1,23 @@
+{
+  "statusTerminalCliExitOk": "CLI: exit code {code}",
+  "statusTerminalCliFailed": "CLI: {error}",
+  "statusTerminalOutputLineCopied": "Output line copied",
+  "statusTerminalOutputLineCopyFailed": "Could not copy output line",
+  "statusVideoMediaErrAborted": "aborted",
+  "statusVideoMediaErrNetwork": "network error",
+  "statusVideoMediaErrDecode": "decode error",
+  "statusVideoMediaErrSrcNotSupported": "format not supported",
+  "statusVideoMediaErrUnknown": "unknown error",
+  "statusVideoPlayFailed": "Could not play video: {detail}",
+  "statusVideoDirectOpenFailedBlobTrying": "Direct playback failed; trying a safe blob fallback…",
+  "statusVideoBlobFallbackActive": "Switched preview to blob fallback.",
+  "statusVideoPlayFailedAfterFallback": "Could not play video: {detail}; blob fallback also failed.",
+  "statusPreviewProbeFailedTemplate": "ffprobe metadata unavailable: {error}",
+  "statusDownloadsUrlsAdded": "Added URLs: {n}",
+  "statusDownloadsQueueNoUrlsParsed": "No URLs found for the queue.",
+  "statusDownloadOpenEditorWorking": "Downloading the first URL from the field…",
+  "statusDownloadOpenEditorSuccess": "File opened in the editor.",
+  "statusDownloadOpenEditorNeedUrl": "Enter a URL in the field above.",
+  "statusExportProgress": "Export · {tail}",
+  "statusExportBatchRow": "Batch #{id}"
+}

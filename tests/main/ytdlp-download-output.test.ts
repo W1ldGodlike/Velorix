@@ -6,6 +6,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import {
   deleteIncompleteDownloadArtifactsForQueueRow,
   resolveAllowedYtdlpDownloadOutputFile,
+  resolveYtdlpFolderRevealTarget,
   syncYtdlpDownloadDirectoryFromSettings
 } from '../../src/main/ytdlp-download-output'
 import {
@@ -19,7 +20,7 @@ afterEach(() => {
 })
 
 describe('resolveAllowedYtdlpDownloadOutputFile', () => {
-  it('принимает файл внутри каталога по умолчанию userData/downloads/ytdlp', () => {
+  it('принимает файл внутри каталога по умолчанию app-data/downloads/ytdlp', () => {
     const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-out-'))
     const outDir = join(root, 'downloads', 'ytdlp')
     mkdirSync(outDir, { recursive: true })
@@ -69,6 +70,46 @@ describe('resolveAllowedYtdlpDownloadOutputFile', () => {
     const outside = join(root, 'outside [dCoZhhCIhXo].mp4')
 
     expect(resolveAllowedYtdlpDownloadOutputFile(outside, root)).toBeNull()
+    rmSync(root, { recursive: true, force: true })
+  })
+})
+
+describe('resolveYtdlpFolderRevealTarget', () => {
+  it('без outputPath открывает корень каталога загрузок', () => {
+    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-reveal-root-'))
+    const outDir = join(root, 'downloads', 'ytdlp')
+    mkdirSync(outDir, { recursive: true })
+    expect(resolveYtdlpFolderRevealTarget('', root)).toEqual({
+      kind: 'directory',
+      path: outDir
+    })
+    rmSync(root, { recursive: true, force: true })
+  })
+
+  it('при активной загрузке находит .part и открывает его в проводнике', () => {
+    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-reveal-part-'))
+    const outDir = join(root, 'downloads', 'ytdlp')
+    mkdirSync(outDir, { recursive: true })
+    const finalPath = join(outDir, 'clip.mp4')
+    const partPath = join(outDir, 'clip.mp4.part')
+    writeFileSync(partPath, 'partial')
+    expect(resolveYtdlpFolderRevealTarget(finalPath, root)).toEqual({
+      kind: 'file',
+      path: partPath
+    })
+    rmSync(root, { recursive: true, force: true })
+  })
+
+  it('при известном пути без файла открывает родительский каталог', () => {
+    const root = mkdtempSync(join(tmpdir(), 'flux-ytdlp-reveal-dir-'))
+    const outDir = join(root, 'downloads', 'ytdlp')
+    const sub = join(outDir, 'Channel')
+    mkdirSync(sub, { recursive: true })
+    const finalPath = join(sub, 'episode.mp4')
+    expect(resolveYtdlpFolderRevealTarget(finalPath, root)).toEqual({
+      kind: 'directory',
+      path: sub
+    })
     rmSync(root, { recursive: true, force: true })
   })
 })

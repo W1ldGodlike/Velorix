@@ -45,6 +45,7 @@ describe('packaged-ffprobe-smoke', () => {
     expect(lines.some((l) => l.includes('nb_chapters'))).toBe(true)
     expect(lines.some((l) => l.includes('nb_programs'))).toBe(true)
     expect(lines.some((l) => l.includes('bit_rate'))).toBe(true)
+    expect(lines.some((l) => l.includes('codec_type'))).toBe(true)
     expect(lines.some((l) => l.includes('ParsableForSmoke'))).toBe(true)
     expect(lines.some((l) => l.includes('formatFfprobeContainerDiagnostics'))).toBe(true)
     expect(lines).toContain(`candidate: ${candidates[0]} (present)`)
@@ -326,6 +327,18 @@ describe('packaged-ffprobe-smoke', () => {
         ]
       })
     ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ codec_type: 'audio' }]
+      })
+    ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ codec_type: 'not-a-kind' }]
+      })
+    ).toBe(false)
     expect(
       isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
         ...base,

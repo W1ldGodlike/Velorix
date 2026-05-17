@@ -1,6 +1,7 @@
 import { existsSync, readdirSync, rmSync, statSync, type Dirent, type Stats } from 'fs'
-import { tmpdir } from 'os'
 import { basename, join } from 'path'
+
+import { resolveAppTempDirectory } from './app-data-root-paths'
 
 import type { AppPaths } from './app-paths'
 import { resolveYtdlpOutputDirectory } from './ytdlp-download-output'
@@ -106,7 +107,7 @@ function targetSpecs(paths: AppPaths): TargetSpec[] {
     {
       id: 'ffmpegTemp',
       label: 'Old ffmpeg temp dirs',
-      path: tmpdir(),
+      path: resolveAppTempDirectory(paths.userData),
       rootEntryFilter: isOldFfmpegTempDirectory
     }
   ]

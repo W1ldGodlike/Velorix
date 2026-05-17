@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync } from 'fs'
-import { tmpdir } from 'os'
 import { join } from 'path'
+
+import { resolveAppTempDirectory } from './app-data-root-paths'
 import { shell } from 'electron'
 
 import { resolveAppPaths } from './app-paths'
@@ -55,7 +56,7 @@ function resolveDiagnosticsFolderPath(id: DiagnosticsFolderId): string {
     case 'ytdlpDownloads':
       return resolveYtdlpOutputDirectory(paths.userData)
     case 'systemTemp':
-      return tmpdir()
+      return resolveAppTempDirectory(paths.userData)
   }
 }
 

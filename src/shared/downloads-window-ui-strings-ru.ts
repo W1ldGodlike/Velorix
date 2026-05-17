@@ -47,7 +47,7 @@ export const downloadsWindowUiStringsRu: DownloadsWindowUiStrings = {
   thActions: 'Действия',
   historySummary: 'История загрузок',
   historySectionHint:
-    'Завершённые загрузки из userData §6; обновление и очистка трогают файл истории, фильтр «Исход» — только отображение таблицы.',
+    'Завершённые загрузки из папки app-data рядом с программой; обновление и очистка трогают файл истории, фильтр «Исход» — только отображение таблицы.',
   refreshHistory: 'Обновить',
   clearHistory: 'Очистить историю',
   historyOutcomeLabel: 'Исход',
@@ -76,7 +76,7 @@ export const downloadsWindowUiStringsRu: DownloadsWindowUiStrings = {
     'Секции совпадают со встроенной вкладкой «Загрузки»: формат, метаданные, сохранение, сеть.',
   formatSummary: 'Формат',
   formatSectionHint:
-    'Пресеты -f/-x, субтитры и сохранённые опции yt-dlp (userData/settings.json); шаблон -o ниже должен содержать %(ext)s.',
+    'Пресеты -f/-x, субтитры и сохранённые опции yt-dlp (app-data/settings.json); шаблон -o ниже должен содержать %(ext)s.',
   formatQualityLabel: 'Формат / качество (-f)',
   playlistAudioGroupAria: 'Плейлист и аудио',
   wholePlaylistLabel: 'Весь плейлист',
@@ -115,12 +115,12 @@ export const downloadsWindowUiStringsRu: DownloadsWindowUiStrings = {
   autoStartBatchAria: 'Запустить пакетный экспорт после добавления в очередь',
   savingSummary: 'Сохранение',
   savingSectionHint:
-    'Целевой каталог yt-dlp, шаблон имени (-o); кнопка «Сохранить параметры» записывает настройки в userData/settings.json §6.',
+    'Целевой каталог yt-dlp, шаблон имени (-o); кнопка «Сохранить параметры» записывает настройки в app-data/settings.json.',
   outDirLabel: 'Каталог загрузок:',
   openOutTitle: 'Открыть текущий каталог загрузок в проводнике',
   openOut: 'Открыть',
   pickOut: 'Выбрать…',
-  resetOutTitle: 'Использовать каталог по умолчанию в userData',
+  resetOutTitle: 'Каталог по умолчанию (app-data/downloads/ytdlp)',
   resetOut: 'По умолчанию',
   tmplLabel: 'Шаблон имени (-o)',
   applyOpts: 'Сохранить параметры',

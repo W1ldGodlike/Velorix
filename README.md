@@ -57,7 +57,7 @@ FluxAlloy работает поверх внешних движков:
 - **ffmpeg** / **ffprobe**
 
 Политика проекта: **bundled-first** — в релизе должны лежать проверенные бинарники в `resources/bin`,
-а `userData/bin` используется как fallback/update (см. [`bin/README.md`](./bin/README.md)).
+а `app-data/bin` рядом с программой — fallback/update (см. [`bin/README.md`](./bin/README.md)).
 
 Для разработки на Windows движки можно подтянуть автоматически:
 
@@ -85,13 +85,13 @@ npm run engines:doctor   # по желанию: наличие exe, SHA256 в л
 
 ## Логи и диагностика
 
-- **`main.log`**, **`session.log`**: `userData/logs/` (в Windows это обычно `%AppData%\\FluxAlloy\\logs\\`).
+- **`main.log`**, **`session.log`**: `<папка программы>/app-data/logs/` (в dev — `app-data/logs/` в корне репозитория).
 - В UI: **«О программе» → Папка логов / main.log / Support ZIP…**.
 - **Support ZIP**: архив с `diagnostics.txt` и логами для отладки.
 
 ## Сброс настроек
 
-Удалите файл `userData/settings.json` (в Windows обычно `%AppData%\\FluxAlloy\\settings.json`), затем перезапустите приложение.
+Удалите `app-data/settings.json` рядом с программой (в dev — `app-data/settings.json` в корне репозитория), затем перезапустите приложение.
 
 ## Полезное
 
@@ -99,5 +99,6 @@ npm run engines:doctor   # по желанию: наличие exe, SHA256 в л
 - `Data/`, `Help/` — материалы для UI и конфигураций (**§3** ТЗ и подсказки).
 - Правки русских `summary` встроенных сценариев терминала (`src/shared/terminal-contract.ts`): **`npm run locales:terminal-summaries-ru`** (дважды, пока второй прогон не покажет **0** замен и **0** gloss) — см. [`Help/ffmpeg-terminal-hints.md`](./Help/ffmpeg-terminal-hints.md).
 - Автоцикл по чеклисту через Cursor SDK (не IDE-чат): см. [`scripts/cursor-automation/README.md`](./scripts/cursor-automation/README.md).
-- Файлы yt-dlp из окна загрузок по умолчанию: `%AppData%\<FluxAlloy>\downloads\ytdlp` (Electron `userData/downloads/ytdlp`).
+- Файлы yt-dlp по умолчанию: `<папка программы>/app-data/downloads/ytdlp`.
+- Деинсталлятор NSIS спрашивает, удалять ли папку `app-data/` (по умолчанию **нет**). В ZIP-распаковке — `Uninstall FluxAlloy.cmd` с тем же выбором.
 - **Настоятельно используйте `contextIsolation`** и узкий IPC; тяжёлая работа только в **main process** (§2 ТЗ).

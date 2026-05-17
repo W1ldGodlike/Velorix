@@ -15,6 +15,7 @@ export function buildAppShellPropsInputLayout(
     batchExportBusy,
     exportPresetSaving,
     enginePathsSaving,
+    enginePathsOpen,
     downloadsOptionsBusy,
     downloadsHistoryBusy,
     workspaceTab,
@@ -120,6 +121,7 @@ export function buildAppShellPropsInputLayout(
       handleSubmitExportPresetName
     },
     enginePaths: {
+      open: enginePathsOpen,
       enginePathsSaving,
       engineDownloadBusy,
       enginePathsDraft,

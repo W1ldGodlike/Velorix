@@ -1,10 +1,14 @@
+import { mkdirSync } from 'fs'
 import { shell } from 'electron'
 
 import { resolveAppPaths } from './app-paths'
 import { getActiveDownloadsRunnerRowId } from './downloads-queue-runner'
 import { getDownloadsQueueSnapshot } from './downloads-queue'
 import { getActiveYtdlpPauseState } from './ytdlp-download-service'
-import { resolveAllowedYtdlpDownloadOutputFile } from './ytdlp-download-output'
+import {
+  resolveAllowedYtdlpDownloadOutputFile,
+  resolveYtdlpFolderRevealTarget
+} from './ytdlp-download-output'
 import type { DownloadsWindowIpcStrings } from '../shared/downloads-window-ipc-locale'
 import { getDownloadsBoundsHooks } from './downloads-window-runtime-hooks'
 
@@ -24,15 +28,29 @@ export async function openDownloadOutputPath(
   mode: DownloadOutputOpenMode,
   ipc: DownloadsWindowIpcStrings
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  const file = resolveAllowedDownloadOutputPath(rawPath)
+  const paths = resolveAppPaths()
+  if (mode === 'folder') {
+    const target = resolveYtdlpFolderRevealTarget(rawPath, paths.userData)
+    if (!target) {
+      return { ok: false, error: ipc.fileOutsideDownloadDir }
+    }
+    try {
+      if (target.kind === 'file') {
+        shell.showItemInFolder(target.path)
+        return { ok: true }
+      }
+      mkdirSync(target.path, { recursive: true })
+      const err = await shell.openPath(target.path)
+      return err ? { ok: false, error: err } : { ok: true }
+    } catch (err) {
+      return { ok: false, error: err instanceof Error ? err.message : String(err) }
+    }
+  }
+  const file = resolveAllowedYtdlpDownloadOutputFile(rawPath, paths.userData)
   if (!file) {
     return { ok: false, error: ipc.fileOutsideDownloadDir }
   }
   try {
-    if (mode === 'folder') {
-      shell.showItemInFolder(file)
-      return { ok: true }
-    }
     const err = await shell.openPath(file)
     return err ? { ok: false, error: err } : { ok: true }
   } catch (err) {

@@ -29,20 +29,23 @@ extraResources:
     to: bin
 win:
   executableName: FluxAlloy
+  # Распаковка: zip / win-unpacked (всё в одной папке + app-data/). Цель portable — один exe с распаковкой в %TEMP%; для single-root не использовать.
   target:
     - nsis
-    - portable
     - target: zip
       arch: [x64]
+  extraFiles:
+    - from: build/Uninstall-FluxAlloy.cmd
+      to: Uninstall FluxAlloy.cmd
   # Значение по умолчанию electron-builder: подпись/правка exe при упаковке. После перезагрузки и
   # выдачи `SeCreateSymbolicLinkPrivilege` / Developer Mode распаковка winCodeSign снова должна проходить.
-portable:
-  artifactName: ${name}-${version}-portable.${ext}
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
+  deleteAppDataOnUninstall: false
+  include: build/installer.nsh
 mac:
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:

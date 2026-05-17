@@ -17,7 +17,7 @@
 | yt-dlp Windows | UTF-8 stdout для путей с кириллицей; не откатывать обёртки без причины |
 | Очередь загрузок | `{ ok, error }` в IPC; снапшоты — main window и downloads, **если** оба окна в сценарии |
 | Движки | bundled-first, `npm run engines:prepare:win`, `Data/trusted_hashes.json` — не ослаблять (§3 ТЗ, `fluxalloy-core.mdc`) |
-| Долгие jobs | Превью, transcode, export — статус в UI и `userData/logs/main.log` |
+| Долгие jobs | Превью, transcode, export — статус в UI и `app-data/logs/main.log` |
 
 **Если** меняете поведение по строке таблицы **и** владелец ведёт playbook **то** обновить эту таблицу **или** `docs/ARCHITECTURE.md` в том же коммите.
 

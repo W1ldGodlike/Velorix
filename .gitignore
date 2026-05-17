@@ -31,6 +31,9 @@ yarn.lock
 # Временные файлы сообщений коммитов (PowerShell не поддерживает heredoc, ред-сценарий через --file).
 .git-commit-msg.tmp
 
+# Runtime-данные (настройки, логи, загрузки) — `<installRoot>/app-data/`, не в Git.
+/app-data/
+
 # Счётчик marathon-итераций агента (локально).
 docs/.agent-session.json
 

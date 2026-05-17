@@ -315,9 +315,16 @@ export function displayLabelFromYtdlpOutputPath(rawPath: string): string | null 
   const normalized = t.replace(/[/\\]+$/, '')
   const sep = normalized.includes('\\') ? '\\' : '/'
   const parts = normalized.split(sep)
-  const base = parts[parts.length - 1] ?? ''
+  let base = parts[parts.length - 1] ?? ''
   if (base.length < 2) {
     return null
+  }
+  const lowerBase = base.toLowerCase()
+  for (const suffix of ['.part', '.ytdl', '.temp', '.tmp']) {
+    if (lowerBase.endsWith(suffix)) {
+      base = base.slice(0, -suffix.length)
+      break
+    }
   }
   const dot = base.lastIndexOf('.')
   const stem = dot > 0 ? base.slice(0, dot) : base

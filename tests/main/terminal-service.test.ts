@@ -95,6 +95,7 @@ const terminalPaths = {
   appRoot: 'C:\\app',
   resources: 'C:\\app',
   userData: 'C:\\app\\userData',
+  appTemp: 'C:\\app\\userData\\temp',
   bundledBin: 'C:\\app\\bin',
   userBin: 'C:\\app\\userData\\bin'
 }

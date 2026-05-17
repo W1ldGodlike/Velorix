@@ -11,12 +11,14 @@ import {
 
 function tmpPaths(): { paths: AppPaths; cleanup: () => void } {
   const root = mkdtempSync(join(tmpdir(), 'flux-maint-'))
+  const userData = join(root, 'userData')
   const paths: AppPaths = {
     appRoot: root,
     resources: root,
-    userData: join(root, 'userData'),
+    userData,
+    appTemp: join(userData, 'temp'),
     bundledBin: join(root, 'resources', 'bin'),
-    userBin: join(root, 'userData', 'bin')
+    userBin: join(userData, 'bin')
   }
   mkdirSync(paths.userData, { recursive: true })
   return {
@@ -108,8 +110,9 @@ describe('diagnostics-maintenance', () => {
 
   it('чистит только старые orphan temp-директории ffmpeg', () => {
     const { paths, cleanup } = tmpPaths()
-    const oldDir = mkdtempSync(join(tmpdir(), 'fa-x264tw-'))
-    const freshDir = mkdtempSync(join(tmpdir(), 'fa-x264tw-'))
+    mkdirSync(paths.appTemp, { recursive: true })
+    const oldDir = mkdtempSync(join(paths.appTemp, 'fa-x264tw-'))
+    const freshDir = mkdtempSync(join(paths.appTemp, 'fa-x264tw-'))
     try {
       const oldFile = join(oldDir, 'pass-0.log')
       const freshFile = join(freshDir, 'pass-0.log')

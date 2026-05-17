@@ -39,7 +39,7 @@ Runtime resolution order is:
 
 1. Manual path override from settings.
 2. Bundled `resources/bin`.
-3. Downloaded/updated `userData/bin`.
+3. Downloaded/updated `app-data/bin` next to the application.
 
 Keep a note of the source, version, license variant, and SHA256 used for each released binary.
 

@@ -6,6 +6,13 @@
 
 Десктопная оболочка вокруг **ffmpeg**, **ffprobe** и **yt-dlp** на **Electron + React + TypeScript**. Нормативные требования зафиксированы в корневом [`FLUXALLOY_TZ.md`](../FLUXALLOY_TZ.md).
 
+## Каталоги на диске (single-root)
+
+- **Установка / распаковка:** `FluxAlloy.exe`, `resources/` (в т.ч. bundled `bin`, `Data`, `Help`).
+- **Runtime-данные:** только `<installRoot>/app-data/` — настройки, логи, очереди, история, кэш превью, загрузки yt-dlp по умолчанию, `app-data/bin`, временные каталоги ffmpeg (`app-data/temp`). Задаётся в [`app-data-root.ts`](../src/main/app-data-root.ts) (`configurePortableAppDataPaths` до `app.whenReady`).
+- **Код** по-прежнему обращается к полю `AppPaths.userData` — это путь к `app-data/`, не `%AppData%`.
+- **Штатные JSON:** `Data/` в репо → `resources/Data` в сборке; с `app-data/` не смешиваются.
+
 ## Точки входа (что это и зачем)
 
 **Точка входа** — файл или команда, с которой начинается выполнение кода для данного «слоя» приложения. По ним видно, как живёт процесс от запуска до UI.
@@ -75,7 +82,7 @@
 
 Проверка списка: `npm run audit:shared-contracts` (неизвестный `*-contract.ts` в `src/shared/` → fail).
 - Настройки экспорта ffmpeg идут отдельными `settings-set-ffmpeg-export-*` каналами; значения проходят whitelist-парсеры main перед записью и spawn.
-- Пакетный экспорт и очередь yt-dlp — отдельные IPC/сервисы с persist в `userData` (`queue.json` и аналоги для batch).
+- Пакетный экспорт и очередь yt-dlp — отдельные IPC/сервисы с persist в `app-data/` (`queue.json` и аналоги для batch).
 - Каталог вывода yt-dlp, CLI/options и раскрытие панелей загрузок: push `downloadsOutputDirectoryChanged` / `downloadsCliOptionsChanged` / `downloadsWindowUiPanelsChanged` из main во вкладку «Загрузки» и pop-out.
 - Терминал: allowlist команд и подсказки из `Data/*_commands.json` + [`terminal-contract.ts`](../src/shared/terminal-contract.ts); не произвольный shell.
 - Принцип: **узкий whitelist** — нет произвольного «выполни команду» или чтения произвольных путей без проверок.

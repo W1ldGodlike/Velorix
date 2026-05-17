@@ -19,6 +19,7 @@ function tmpAppPaths(): { paths: AppPaths; cleanup: () => void } {
     appRoot: root,
     resources: root,
     userData,
+    appTemp: join(userData, 'temp'),
     bundledBin,
     userBin
   }

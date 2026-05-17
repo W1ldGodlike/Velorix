@@ -46,7 +46,7 @@ export const downloadsWindowUiStringsEn: DownloadsWindowUiStrings = {
   thActions: 'Actions',
   historySummary: 'Download history',
   historySectionHint:
-    'Finished downloads from userData; refresh/clear touch the history file. The outcome filter is display-only.',
+    'Finished downloads from the app-data folder next to the app; refresh/clear touch the history file. The outcome filter is display-only.',
   refreshHistory: 'Refresh',
   clearHistory: 'Clear history',
   historyOutcomeLabel: 'Outcome',
@@ -74,7 +74,7 @@ export const downloadsWindowUiStringsEn: DownloadsWindowUiStrings = {
   railSubtitle: 'Sections mirror the in-app tab: format, metadata, saving, network.',
   formatSummary: 'Format',
   formatSectionHint:
-    'Presets for -f/-x, subtitles, and saved yt-dlp options (userData/settings.json). The -o template below must include %(ext)s.',
+    'Presets for -f/-x, subtitles, and saved yt-dlp options (app-data/settings.json). The -o template below must include %(ext)s.',
   formatQualityLabel: 'Format / quality (-f)',
   playlistAudioGroupAria: 'Playlist and audio',
   wholePlaylistLabel: 'Full playlist',
@@ -113,12 +113,12 @@ export const downloadsWindowUiStringsEn: DownloadsWindowUiStrings = {
   autoStartBatchAria: 'Start batch export after enqueue',
   savingSummary: 'Saving',
   savingSectionHint:
-    'yt-dlp output directory and filename template (-o). “Save settings” writes to userData/settings.json.',
+    'yt-dlp output directory and filename template (-o). “Save settings” writes to app-data/settings.json.',
   outDirLabel: 'Download folder:',
   openOutTitle: 'Open the current download folder in the file manager',
   openOut: 'Open',
   pickOut: 'Choose…',
-  resetOutTitle: 'Use the default folder under userData',
+  resetOutTitle: 'Default folder (app-data/downloads/ytdlp)',
   resetOut: 'Default',
   tmplLabel: 'Filename template (-o)',
   applyOpts: 'Save settings',

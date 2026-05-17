@@ -12,7 +12,7 @@ import {
   YTDLP_QUEUE_STATUS_WAITING
 } from '../shared/ytdlp-queue-status'
 
-/** Схема файла `userData/downloads/queue.json`. */
+/** Схема файла `app-data/downloads/queue.json`. */
 export const YTDLP_DOWNLOAD_QUEUE_PERSIST_SCHEMA = 1
 const YTDLP_DOWNLOAD_QUEUE_MAX_ROWS = 300
 

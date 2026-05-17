@@ -7,7 +7,7 @@ import { pruneOldDiagnosticFiles } from './support-bundle'
 /**
  * §18 — простой файловый логгер main без внешних зависимостей.
  *
- * Назначение: чтобы при сбоях ffmpeg/yt-dlp/IPC у нас оставался след в `userData/logs/main.log`,
+ * Назначение: чтобы при сбоях ffmpeg/yt-dlp/IPC у нас оставался след в `app-data/logs/main.log`,
  * а не только эпизодические `console.error`. Логгер сознательно минимален:
  *
  * - запись синхронная (`appendFileSync`) — потеря строк после жёсткого падения нежелательна;
@@ -272,7 +272,7 @@ export function logFromRendererSafe(raw: unknown): void {
 
 /**
  * Подвязать перехват необработанных ошибок процесса.
- * Регистрируем на уровне модуля main: `ensureLogFilePath` лениво создаст `userData/logs`
+ * Регистрируем на уровне модуля main: `ensureLogFilePath` лениво создаст `app-data/logs`
  * только в момент реальной записи, зато ранние падения до `app.whenReady` не пропадут.
  */
 export function attachProcessErrorHandlers(): void {

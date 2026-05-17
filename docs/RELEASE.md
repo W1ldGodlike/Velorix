@@ -58,7 +58,7 @@ $env:FLUXALLOY_ENGINES_STRICT = '1'
 npm run engines:verify-bundled
 ```
 
-В `windows-x64` можно задавать хеши архивов FFmpeg (как раньше) и отдельно `ffmpeg.exe` / `ffprobe.exe` для проверки уже извлечённых бинарников (bootstrap, CI, загрузка в `userData/bin` из main).
+В `windows-x64` можно задавать хеши архивов FFmpeg (как раньше) и отдельно `ffmpeg.exe` / `ffprobe.exe` для проверки уже извлечённых бинарников (bootstrap, CI, загрузка в `app-data/bin` из main).
 
 Заполнить три exe-хеша после свежего `engines:prepare:win`:
 

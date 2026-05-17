@@ -18,7 +18,11 @@ export const LOCALE_JSON_SHARDS = [
   'downloads',
   'workspace',
   'editor',
-  'downloads-settings'
+  'downloads-settings',
+  'shell',
+  'editor-ffmpeg',
+  'status',
+  'batch-export'
 ] as const
 export type LocaleJsonShard = (typeof LOCALE_JSON_SHARDS)[number]
 

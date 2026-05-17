@@ -1,5 +1,5 @@
 import { existsSync, readdirSync, statSync, unlinkSync } from 'fs'
-import { basename, extname, isAbsolute, join, normalize, relative, resolve } from 'path'
+import { basename, dirname, extname, isAbsolute, join, normalize, relative, resolve } from 'path'
 
 import { isYtdlpQueueStatusDone, isYtdlpQueueStatusWaiting } from '../shared/ytdlp-queue-status'
 
@@ -20,7 +20,7 @@ export function getYtdlpDownloadDirectoryOverride(): string | null {
   return overrideAbsolute
 }
 
-/** Использовать ли встроенный путь `userData/downloads/ytdlp`. */
+/** Использовать ли встроенный путь `app-data/downloads/ytdlp`. */
 export function isYtdlpDownloadDirectoryDefault(): boolean {
   return overrideAbsolute === null
 }
@@ -135,6 +135,53 @@ export function resolveAllowedYtdlpDownloadOutputFile(
     /* fall through to best-effort lookup below */
   }
   return resolveExistingSiblingByMediaId(outDir, file)
+}
+
+const YTDLP_PARTIAL_SUFFIXES = ['.part', '.ytdl', '.temp', '.tmp'] as const
+
+export type YtdlpFolderRevealTarget =
+  | { kind: 'file'; path: string }
+  | { kind: 'directory'; path: string }
+
+/**
+ * Цель для «показать в папке» / открыть каталог вывода: готовый файл, частичная загрузка
+ * или родительский каталог ожидаемого пути (пока финальный файл ещё не записан).
+ */
+export function resolveYtdlpFolderRevealTarget(
+  raw: unknown,
+  userDataRoot: string
+): YtdlpFolderRevealTarget | null {
+  const outDir = resolve(resolveYtdlpOutputDirectory(userDataRoot))
+  if (typeof raw !== 'string' || raw.trim().length === 0) {
+    return { kind: 'directory', path: outDir }
+  }
+  if (!isAbsolute(raw) || raw.length > 4096) {
+    return null
+  }
+  const file = resolve(raw.trim())
+  const parent = dirname(file)
+  if (!isInsideDirectory(outDir, file) && !isInsideDirectory(outDir, parent) && parent !== outDir) {
+    return null
+  }
+  const ready = resolveAllowedYtdlpDownloadOutputFile(raw, userDataRoot)
+  if (ready) {
+    return { kind: 'file', path: ready }
+  }
+  for (const suffix of YTDLP_PARTIAL_SUFFIXES) {
+    const partial = `${file}${suffix}`
+    try {
+      if (existsSync(partial) && statSync(partial).isFile()) {
+        return { kind: 'file', path: partial }
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+  const dirResolved = resolve(parent)
+  if (dirResolved === outDir || isInsideDirectory(outDir, dirResolved)) {
+    return { kind: 'directory', path: dirResolved }
+  }
+  return { kind: 'directory', path: outDir }
 }
 
 function tryUnlinkFileInsideYtdlpOutDir(absPath: string, outDirResolved: string): void {
