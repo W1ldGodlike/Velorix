@@ -7,11 +7,11 @@
  * `FLUXALLOY_FFMPEG_SMOKE_ENCODERS=0` — только `-version`.
  */
 import { execFile } from 'node:child_process'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 
 import { firstVersionLineFromWinEngineExe } from './engines-exe-version-line.mjs'
+import { REPO_ROOT } from './lib/repo-root.mjs'
+import { WIN_ENGINE_EXE_OPTS_LARGE } from './lib/win-exec-file-opts.mjs'
 import {
   isMinimalFfmpegEncodersOutput,
   listPackagedFfmpegCandidatePaths,
@@ -19,13 +19,7 @@ import {
 } from './smoke-packaged-ffmpeg-lib.mjs'
 
 const execFileAsync = promisify(execFile)
-const rootDir = join(dirname(fileURLToPath(import.meta.url)), '..')
-
-const WIN_EXE_OPTS = {
-  timeout: 120_000,
-  windowsHide: true,
-  maxBuffer: 16 * 1024 * 1024
-}
+const rootDir = REPO_ROOT
 
 function log(message) {
   console.log(`[ffmpeg:smoke] ${message}`)
@@ -59,7 +53,7 @@ async function runEncodersList(ffmpegPath) {
   const { stdout } = await execFileAsync(
     ffmpegPath,
     ['-hide_banner', '-encoders'],
-    WIN_EXE_OPTS
+    WIN_ENGINE_EXE_OPTS_LARGE
   )
   return stdout
 }

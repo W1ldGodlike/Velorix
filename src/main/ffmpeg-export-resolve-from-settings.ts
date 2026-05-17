@@ -12,8 +12,6 @@ import {
   parseFfmpegExportBatchOutputSuffixTemplate
 } from '../shared/ffmpeg-export-batch-output-suffix'
 
-export type { ResolvedFfmpegExportJobOptions } from '../shared/ffmpeg-export-resolve-contract'
-
 /**
  * Те же правила, что IPC `exportStart`: поля из `overrides` при наличии, иначе из `settings`.
  */

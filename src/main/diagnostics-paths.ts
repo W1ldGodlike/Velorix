@@ -9,7 +9,7 @@ import type { DiagnosticsFolderEntry, DiagnosticsFolderId } from '../shared/diag
 import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
 
-export type { DiagnosticsFolderEntry, DiagnosticsFolderId } from '../shared/diagnostics-contract'
+export type { DiagnosticsFolderEntry } from '../shared/diagnostics-contract'
 
 /**
  * §17/§18 — белый список диагностических каталогов, которые приложение готово открыть в проводнике.

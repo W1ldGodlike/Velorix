@@ -11,7 +11,7 @@ import {
 import type { SupportBundleRuntimeInfo } from './support-bundle-types'
 import { buildStoredZipBuffer } from './support-bundle-zip'
 
-export type { SupportBundleRuntimeInfo, DiagnosticsPruneOptions } from './support-bundle-types'
+export type { SupportBundleRuntimeInfo } from './support-bundle-types'
 export { pruneOldDiagnosticFiles } from './support-bundle-collect'
 export { buildStoredZipBuffer } from './support-bundle-zip'
 

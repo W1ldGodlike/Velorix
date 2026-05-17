@@ -8,8 +8,6 @@ import type { PreviewDialogResult } from '../shared/preview-dialog-contract'
 import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
 
-export type { PreviewDialogResult } from '../shared/preview-dialog-contract'
-
 /**
  * Системный диалог выбора локального видео (§4.B). Путь сразу регистрируется в allowlist
  * `fluxmedia://`, чтобы `<video>` мог безопасно стримить файл и в dev (Vite), и в prod.

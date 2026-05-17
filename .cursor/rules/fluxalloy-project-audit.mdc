@@ -33,6 +33,12 @@ alwaysApply: true
 1. Работать по **первому чекбоксу ⬜** в **§9** плана (статус программы).
 2. **Если** добавлены файлы в `AUDIT_CODE_ROOTS` **то** `npm run audit:inventory`.
 3. `npm run audit:copy-paste`; **если** **номер фазы аудита** ≥ 1 (глоссарий) **то** `npm run audit:structural` (exit 1, если файл из `AUDIT_LARGE_MODULE_CANDIDATES` >500 строк).
+4. **Если** **номер фазы аудита** ≥ 5 (глоссарий) **то** `npm run audit:todo-debt` (exit 1 при `TODO|FIXME|HACK` в `src/` или `tests/`).
+5. **Если** **номер фазы аудита** ≥ 5 **то** `npm run audit:dead-type-reexports` (exit 1 при неиспользуемом `export type {…} from` в `src/main/`).
+
+## Scripts maint (после ф.6)
+
+**Если** правите `scripts/**/*.mjs`, который читает файлы репо по относительному пути **то** используйте `REPO_ROOT` / `readRepoUtf8` / `readRepoLines` из `scripts/lib/repo-root.mjs`. **Запрещено:** вычислять корень репо через `fileURLToPath(import.meta.url)` + `'..'` (кроме самого `scripts/lib/repo-root.mjs`).
 
 ## Запрещено
 

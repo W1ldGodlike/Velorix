@@ -11,12 +11,6 @@ import type {
   YtdlpSubtitlePresetId
 } from '../shared/ytdlp-download-contract'
 
-export type {
-  YtdlpCookiesBrowserId,
-  YtdlpImpersonateId,
-  YtdlpSubtitlePresetId
-} from '../shared/ytdlp-download-contract'
-
 const YTDLP_COOKIES_BROWSER_PROFILE_MAX_LEN = 200
 
 function cookiesBrowserProfileHasControlChars(s: string): boolean {

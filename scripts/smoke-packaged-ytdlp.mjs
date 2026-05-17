@@ -7,11 +7,11 @@
  * `FLUXALLOY_YTDLP_SMOKE_EXTRACTORS=0` — только `--version`.
  */
 import { execFile } from 'node:child_process'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 
 import { firstVersionLineFromWinEngineExe } from './engines-exe-version-line.mjs'
+import { REPO_ROOT } from './lib/repo-root.mjs'
+import { WIN_ENGINE_EXE_OPTS } from './lib/win-exec-file-opts.mjs'
 import {
   isMinimalYtdlpExtractorsOutput,
   listPackagedYtdlpCandidatePaths,
@@ -19,13 +19,7 @@ import {
 } from './smoke-packaged-ytdlp-lib.mjs'
 
 const execFileAsync = promisify(execFile)
-const rootDir = join(dirname(fileURLToPath(import.meta.url)), '..')
-
-const WIN_EXE_OPTS = {
-  timeout: 120_000,
-  windowsHide: true,
-  maxBuffer: 8 * 1024 * 1024
-}
+const rootDir = REPO_ROOT
 
 function log(message) {
   console.log(`[ytdlp:smoke] ${message}`)
@@ -56,7 +50,7 @@ function printHelp() {
  * @param {string} ytdlpPath
  */
 async function runListExtractors(ytdlpPath) {
-  const { stdout } = await execFileAsync(ytdlpPath, ['--list-extractors'], WIN_EXE_OPTS)
+  const { stdout } = await execFileAsync(ytdlpPath, ['--list-extractors'], WIN_ENGINE_EXE_OPTS)
   return stdout
 }
 

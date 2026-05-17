@@ -6,7 +6,6 @@ import {
 } from './main-application-menu-deps'
 import { buildApplicationMenuTemplate } from './main-application-menu-template'
 
-export type { MainApplicationMenuDeps } from './main-application-menu-types'
 export { configureMainApplicationMenu }
 
 export function buildApplicationMenu(): void {

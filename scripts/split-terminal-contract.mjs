@@ -6,9 +6,11 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-const sharedDir = path.join('src/shared')
+import { REPO_ROOT, readRepoLines } from './lib/repo-root.mjs'
+
+const sharedDir = path.join(REPO_ROOT, 'src/shared')
 const srcPath = path.join(sharedDir, 'terminal-contract.ts')
-const lines = fs.readFileSync(srcPath, 'utf8').split(/\r?\n/)
+const lines = readRepoLines('src/shared/terminal-contract.ts')
 
 const dlIdx = lines.findIndex((l) => l.includes('TERMINAL_SCENARIO_HINTS_DOWNLOADS'))
 const pvIdx = lines.findIndex((l) => l.includes('TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA'))

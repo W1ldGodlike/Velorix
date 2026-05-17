@@ -8,7 +8,7 @@ import type { FfmpegHwEncodersProbeResult } from '../../shared/ffmpeg-hw-encoder
 import type { DownloadsWindowUiLocale } from '../../shared/downloads-window-ui-locale'
 import { formatPickEngineExecutableTitle } from '../../shared/main-application-locale'
 import { resolveAppPaths } from '../app-paths'
-import type { EngineDownloadProgress } from '../engine-download'
+import type { EngineDownloadProgress } from '../../shared/engine-download-contract'
 import { downloadEnginesWindows, isAnyEngineMissing } from '../engine-download'
 import {
   ENGINE_IDS,

@@ -1,8 +1,4 @@
-export type {
-  MainSettingsAccess,
-  SettingsIpcPersistApi,
-  SettingsIpcPersistHooks
-} from './settings-ipc-persist-core'
+export type { SettingsIpcPersistApi } from './settings-ipc-persist-core'
 export { commit, snapshot } from './settings-ipc-persist-core'
 
 import type { MainSettingsAccess, SettingsIpcPersistApi, SettingsIpcPersistHooks } from './settings-ipc-persist-core'

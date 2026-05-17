@@ -2,8 +2,6 @@ import { app } from 'electron'
 
 import type { AppAboutInfo } from '../shared/about-contract'
 
-export type { AppAboutInfo } from '../shared/about-contract'
-
 export function getAppAboutInfo(): AppAboutInfo {
   return {
     appName: app.getName(),

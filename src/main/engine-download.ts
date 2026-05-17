@@ -37,11 +37,6 @@ import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-loca
 import { getMainApplicationStrings } from '../shared/main-application-locale'
 import type { EngineDownloadProgress } from '../shared/engine-download-contract'
 
-export type {
-  EngineDownloadPhase,
-  EngineDownloadProgress
-} from '../shared/engine-download-contract'
-
 function userAgent(): string {
   return 'FluxAlloy/0.1.0 (engine downloader; Electron)'
 }

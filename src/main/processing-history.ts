@@ -10,14 +10,6 @@ import type {
   ProcessingHistoryWeeklySummary
 } from '../shared/processing-history-contract'
 
-export type {
-  ProcessingHistoryEntry,
-  ProcessingHistoryFilter,
-  ProcessingHistoryKind,
-  ProcessingHistoryOutcome,
-  ProcessingHistoryWeeklySummary
-} from '../shared/processing-history-contract'
-
 export const PROCESSING_HISTORY_SCHEMA = 1
 export const PROCESSING_HISTORY_MAX_ENTRIES = 500
 

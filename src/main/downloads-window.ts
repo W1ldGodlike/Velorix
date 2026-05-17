@@ -34,7 +34,6 @@ export {
   DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL
 } from './downloads-window-runtime'
 export { registerDownloadsWindowIpcHandlers } from './register-downloads-window-ipc'
-export type { DownloadsWindowBoundsHooks } from './downloads-window-runtime'
 
 
 

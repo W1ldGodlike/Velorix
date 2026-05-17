@@ -6,9 +6,11 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-const localesDir = path.join('src/renderer/src/locales')
+import { REPO_ROOT, readRepoLines } from './lib/repo-root.mjs'
+
+const localesDir = path.join(REPO_ROOT, 'src/renderer/src/locales')
 const srcPath = path.join(localesDir, 'ui-text.ts')
-const lines = fs.readFileSync(srcPath, 'utf8').split(/\r?\n/)
+const lines = readRepoLines('src/renderer/src/locales/ui-text.ts')
 
 const uiTextConstOpen = lines.findIndex((l) => l.startsWith('const UI_TEXT'))
 const ruOpen = lines.findIndex((l) => l.trim() === 'ru: {')

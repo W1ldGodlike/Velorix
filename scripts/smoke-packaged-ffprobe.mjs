@@ -9,11 +9,12 @@
 import { execFile } from 'node:child_process'
 import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { join } from 'node:path'
 import { promisify } from 'node:util'
 
 import { firstVersionLineFromWinEngineExe } from './engines-exe-version-line.mjs'
+import { REPO_ROOT } from './lib/repo-root.mjs'
+import { WIN_ENGINE_EXE_OPTS } from './lib/win-exec-file-opts.mjs'
 import {
   isMinimalFfprobeProbeJson,
   isPackagedFfprobeProbeJsonParsableByContainerRegistry,
@@ -23,13 +24,7 @@ import {
 } from './smoke-packaged-ffprobe-lib.mjs'
 
 const execFileAsync = promisify(execFile)
-const rootDir = join(dirname(fileURLToPath(import.meta.url)), '..')
-
-const WIN_EXE_OPTS = {
-  timeout: 120_000,
-  windowsHide: true,
-  maxBuffer: 8 * 1024 * 1024
-}
+const rootDir = REPO_ROOT
 
 function log(message) {
   console.log(`[ffprobe:smoke] ${message}`)
@@ -85,7 +80,7 @@ async function synthesizeSmokeClip(ffmpegPath, destPath) {
       '-shortest',
       destPath
     ],
-    WIN_EXE_OPTS
+    WIN_ENGINE_EXE_OPTS
   )
 }
 
@@ -106,7 +101,7 @@ async function runFfprobeJsonProbe(ffprobePath, mediaPath) {
       'json',
       mediaPath
     ],
-    WIN_EXE_OPTS
+    WIN_ENGINE_EXE_OPTS
   )
   return JSON.parse(stdout)
 }

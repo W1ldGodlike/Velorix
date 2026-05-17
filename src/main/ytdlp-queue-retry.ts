@@ -7,7 +7,6 @@
 
 import type { YtdlpQueueRetryProfileId } from '../shared/ytdlp-download-contract'
 
-export type { YtdlpQueueRetryProfileId } from '../shared/ytdlp-download-contract'
 export { parseYtdlpQueueRetryProfile } from '../shared/ytdlp-download-stored-parse'
 
 export interface YtdlpQueueRetryPlan {

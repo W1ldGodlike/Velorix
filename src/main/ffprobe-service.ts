@@ -8,11 +8,6 @@ import {
 } from '../shared/ffprobe-container-format'
 import { parseFfprobeFormatScalarTagsFromFfprobe } from '../shared/ffprobe-format-tag-registry'
 import type { MediaProbeResult, MediaProbeSuccess } from '../shared/ffprobe-contract'
-export type {
-  MediaProbeResult,
-  MediaProbeSuccess,
-  MediaProbeTrackRow
-} from '../shared/ffprobe-contract'
 import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
 import { resolveVideoFpsApprox } from '../shared/ffprobe-video-fps'

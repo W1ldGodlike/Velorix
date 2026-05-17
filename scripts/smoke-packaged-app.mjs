@@ -8,10 +8,10 @@
  * `FLUXALLOY_APP_SMOKE_NODE=0` — только stat exe/asar.
  */
 import { execFile } from 'node:child_process'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 
+import { REPO_ROOT } from './lib/repo-root.mjs'
+import { WIN_ENGINE_EXE_OPTS_APP } from './lib/win-exec-file-opts.mjs'
 import {
   isMinimalPackagedAppElectronVersionOutput,
   isNonEmptyFile,
@@ -21,13 +21,7 @@ import {
 } from './smoke-packaged-app-lib.mjs'
 
 const execFileAsync = promisify(execFile)
-const rootDir = join(dirname(fileURLToPath(import.meta.url)), '..')
-
-const WIN_EXE_OPTS = {
-  timeout: 90_000,
-  windowsHide: true,
-  maxBuffer: 512 * 1024
-}
+const rootDir = REPO_ROOT
 
 function log(message) {
   console.log(`[app:smoke] ${message}`)
@@ -62,7 +56,7 @@ async function runElectronNodeProbe(appExe) {
     appExe,
     ['-e', 'process.stdout.write(String(process.versions.electron || "")); process.exit(0)'],
     {
-      ...WIN_EXE_OPTS,
+      ...WIN_ENGINE_EXE_OPTS_APP,
       env: { ...process.env, ELECTRON_RUN_AS_NODE: '1' }
     }
   )

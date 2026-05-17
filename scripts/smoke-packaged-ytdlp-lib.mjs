@@ -5,4 +5,4 @@ export {
   listPackagedYtdlpCandidatePaths
 } from '../src/shared/packaged-ytdlp-smoke.ts'
 
-export { pickFirstExistingEngine } from './smoke-packaged-ffprobe-lib.mjs'
+export { pickFirstExistingEngine } from './lib/smoke-packaged-engine.mjs'

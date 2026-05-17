@@ -13,7 +13,6 @@ export {
   setDownloadsPopoutWindow,
   setLastDownloadsWindowResolvedUiLocale
 } from './downloads-window-runtime-hooks'
-export type { DownloadsWindowBoundsHooks } from './downloads-window-runtime-hooks'
 export {
   getDownloadsQueueSnapshotForRenderer,
   isDownloadOutputOpenMode,

@@ -9,8 +9,6 @@ import type { YtdlpCommandHintEntry } from '../shared/ytdlp-download-contract'
 import { ytdlpHintTokenCategory } from '../shared/ytdlp-command-hint-token-categories'
 import { categorySortRank, ytdlpHintsMiscCategoryLabel } from '../shared/ytdlp-hint-category-order'
 
-export type { YtdlpCommandHintEntry } from '../shared/ytdlp-download-contract'
-
 type RawYtdlpHintRow = {
   token: string
   summary: string

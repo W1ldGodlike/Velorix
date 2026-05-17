@@ -6,12 +6,8 @@ import type { FfmpegExportVideoCodecId } from '../shared/ffmpeg-export-contract'
 import { FFMPEG_EXPORT_CANCELLED_ERROR } from '../shared/ffmpeg-export-contract'
 import { buildFfmpegExportArgv } from '../shared/ffmpeg-export-argv'
 import { runFfmpegExportOnce } from './ffmpeg-export-spawn-once'
-import {
-  resolveFfmpegExportJobPlan,
-  type FfmpegExportJobParams
-} from './ffmpeg-export-service-job-resolve'
-
-export type { FfmpegExportJobParams } from './ffmpeg-export-service-job-resolve'
+import { resolveFfmpegExportJobPlan } from './ffmpeg-export-service-job-resolve'
+import type { FfmpegExportJobParams } from './ffmpeg-export-service-job-resolve-types'
 
 /**
  * §7 — экспорт: один или два прохода libx264; двухпроход только с валидным `videoBitrate`.

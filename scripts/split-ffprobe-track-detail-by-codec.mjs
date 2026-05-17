@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
+import { REPO_ROOT } from './lib/repo-root.mjs'
 
-const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
+const root = REPO_ROOT
 const buildPath = path.join(root, 'src/main/ffprobe-track-detail-build.ts')
 const lines = fs.readFileSync(buildPath, 'utf8').split(/\r?\n/)
 

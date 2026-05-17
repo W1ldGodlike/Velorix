@@ -17,8 +17,6 @@ import { registerSingleExportIpcHandlers } from './register-single-export-ipc'
 
 let ipcRegistered = false
 
-export type { ExportBatchIpcHost } from './export-batch-ipc-host'
-
 export function registerExportBatchIpcHandlers(host: ExportBatchIpcHost): void {
   if (ipcRegistered) {
     return

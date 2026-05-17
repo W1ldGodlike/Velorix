@@ -21,7 +21,7 @@ import {
 } from '../shared/processing-history-status-locale'
 import { resolveAppPaths } from './app-paths'
 import { emitDownloadsLog } from './downloads-log-ipc'
-import type { FfmpegExportProgressPayload } from './ffmpeg-export-service'
+import type { FfmpegExportProgressPayload } from '../shared/ffmpeg-export-contract'
 import { runFfmpegExportJob } from './ffmpeg-export-service'
 import {
   pickUniqueAutoExportOutputPath,

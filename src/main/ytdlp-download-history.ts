@@ -9,12 +9,6 @@ import type {
 } from '../shared/ytdlp-history-contract'
 import { YTDLP_QUEUE_STATUS_CANCELLED, YTDLP_QUEUE_STATUS_DONE } from '../shared/ytdlp-queue-status'
 
-export type {
-  YtdlpDownloadHistoryEntry,
-  YtdlpDownloadHistoryOutcome,
-  YtdlpDownloadHistoryWeeklySummary
-} from '../shared/ytdlp-history-contract'
-
 /**
  * §6.4 — персистентная история завершённых загрузок yt-dlp (отдельно от живой очереди).
  *

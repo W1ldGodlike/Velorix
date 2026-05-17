@@ -110,7 +110,7 @@ export async function runFfmpegExportBatchQueue(deps: {
       lutResourcesRoot: deps.lutResourcesRoot,
       signal,
       uiLocale: deps.uiLocale,
-      onProgress: (p) => {
+      onProgress: (p: FfmpegExportProgressPayload) => {
         const label =
           p.percent >= 0
             ? `${Math.round(p.percent)}%`

@@ -9,12 +9,8 @@
  * Prefer `npm run locales:terminal-summaries-ru` so URL→ссылка runs before this gloss.
  */
 import fs from 'node:fs'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 
 import { listTerminalContractHintFiles } from './terminal-contract-hint-paths.mjs'
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export function glossFluxPrintToFileSummary(inner) {
   if (!inner.includes('flux-ytdlp') || inner.includes('(поле ')) return inner

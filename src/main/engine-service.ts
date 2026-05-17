@@ -17,8 +17,6 @@ export type {
   EngineId,
   EnginePathOverrides,
   EnginePathOverridesPatch,
-  EngineState,
-  EngineStatus,
   EnginesStatusSnapshot
 } from '../shared/engine-contract'
 
@@ -152,7 +150,7 @@ export async function getEnginesStatus(
   overrides?: EnginePathOverrides,
   locale: DownloadsWindowUiLocale = 'ru'
 ): Promise<EnginesStatusSnapshot> {
-  // TODO(§3): после загрузчика хешей добавить сюда состояние `checking`/progress для длительных проверок.
+  // §3 deferred: после загрузчика хешей — состояние `checking`/progress для длительных проверок.
   const statuses = await Promise.all(
     ENGINE_IDS.map((id) => checkEngine(paths, id, overrides, locale))
   )

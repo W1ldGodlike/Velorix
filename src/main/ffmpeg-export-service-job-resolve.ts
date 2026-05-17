@@ -9,8 +9,6 @@ import type {
 } from './ffmpeg-export-service-job-resolve-types'
 import { resolveFfmpegExportJobVideo } from './ffmpeg-export-service-job-resolve-video'
 
-export type { FfmpegExportJobParams, FfmpegExportJobResolved } from './ffmpeg-export-service-job-resolve-types'
-
 export async function resolveFfmpegExportJobPlan(
   params: FfmpegExportJobParams
 ): Promise<FfmpegExportJobResolved> {

@@ -17,7 +17,7 @@
 | Слой B при закрытии зоны (rules/CI) | Marathon-cadence коммит **только** off-program diff |
 | Одна сводная `J-*` на срез программы | Микро-J на одно поле/тег/предикат |
 
-**«Продолжай»** = следующий срез **программы** (сейчас: **фаза 4** — P1 `index.ts` / крупные модули по `audit:structural`), **не** спринт и не ffprobe.
+**«Продолжай»** = следующий срез **программы** (сейчас: **фаза 6** — `scripts/lib`, cursor-automation prompts, smoke-lib), **не** спринт и не ffprobe.
 
 **Приоритет над:** `IMPLEMENTATION_CHECKLIST.md` (спринт), `agent-contract.txt` (SDK sprint), marathon cadence по продукту.
 
@@ -27,9 +27,9 @@
 
 **Запрещено:** сбрасывать чекбоксы §9 фаз 0–2; заново проходить фазы 0–2 «потому что агент ушёл в спринт»; откатывать уже закоммиченные срезы программы без явной просьбы владельца.
 
-**Обязательно:** `npm run audit:copy-paste` → первый hotspot/⬜ **текущей** фазы (сейчас **фаза 4**: structural ≥400 / критерий `AUDIT_LARGE_MODULE_CANDIDATES`); `npm run check:quiet` перед срезом.
+**Обязательно:** `npm run audit:copy-paste` → первый hotspot/⬜ **текущей** фазы (сейчас **фаза 6**: `scripts/lib`, automation prompts, smoke-lib); `npm run check:quiet` перед срезом.
 
-**Итог:** программа **продолжается** с фазы 4, а не перезапускается с фазы 0.
+**Итог:** программа **продолжается** с текущей незакрытой фазы (§9), а не перезапускается с фазы 0.
 
 ---
 
@@ -145,7 +145,7 @@
 
 | Файл | Тип | Суть |
 |------|-----|------|
-| `src/main/engine-service.ts` | `TODO(§3)` | progress/checking при длительной проверке хешей |
+| `src/main/engine-service.ts` | `§3 deferred` | progress/checking при длительной проверке хешей (J-880) |
 | `src/main/engine-download.ts` | комментарий | macOS/Linux загрузчики — заглушка, §3 |
 | `scripts/cursor-automation/src/run-loop.ts` | текст промпта | не технический долг |
 
@@ -393,6 +393,11 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | structural | 2848 | src/renderer/src/locales/ui-text.ts | 4 | `ui-text-session` + strings ru/en×8 частей + `ui-text-api` + barrel entry | ✅ J-877 |
 | structural | 1087 | scripts/apply-terminal-summary-ru.mjs | 4 | pairs×6 data-модуля + runner по `terminal-contract-hints-*.ts`; sync `inject-flux-summary-pole` | ✅ J-878 |
 | phase-4 | — | `AUDIT_LARGE_MODULE_CANDIDATES` + §9 | 4 | критерий ≤500: `audit:structural` exit 1 при нарушении; inventory; фаза 4 ✅ | ✅ J-879 |
+| phase-5 | 1 | src/main/engine-service.ts | 5 | `TODO(§3)` → `§3 deferred`; `audit:todo-debt` (src/tests, exit 1) | ✅ J-880 |
+| phase-5 | 4 | src/main/* type re-exports | 5 | убрать неиспользуемые `export type {…} from`; `audit:dead-type-reexports`; IPC import из contract | ✅ J-881 |
+| phase-5 | — | §9 закрытие ф.5 | 5 | `audit:todo-debt` + `audit:dead-type-reexports` в CI; тест guards; 5.3 journal-consolidate без MERGE | ✅ J-882 |
+| phase-6 | — | `scripts/lib` + smoke + continue.txt | 6 | `repo-root.mjs` + `smoke-packaged-engine.mjs`; hint-paths/split-ui-text; continue.txt → PROGRAM GATE; тест lib | ✅ J-883 |
+| phase-6 | — | smoke runners + split + initial.txt | 6 | `win-exec-file-opts.mjs`; smoke-* на REPO_ROOT; split-terminal/ffprobe + inject; initial.txt PROGRAM GATE; §9 ф.6 ✅; rule scripts/lib | ✅ J-884 |
 
 ---
 
@@ -436,8 +441,8 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 - [x] Фаза 2 — src registries + side-data/summary locale + §6/§7 batch/hw/ytdlp filename (J-704–718; `audit:copy-paste` src без hotspots)  
 - [x] Фаза 3 — tests: `it.each`/fixtures; `audit:copy-paste` без hotspots (J-706–708, J-785; верификация 0–2 2026-05-17)  
 - [x] Фаза 4 — крупные модули (structural ≥400: 0; candidates ≤500; J-786–878, terminal-contract/ui-text/apply-terminal-summary)  
-- [ ] Фаза 5 — TODO/временное  
-- [ ] Фаза 6 — scripts  
+- [x] Фаза 5 — TODO/временное (`audit:todo-debt`, `audit:dead-type-reexports`; J-880–882; 5.3 journal-consolidate не запускали)  
+- [x] Фаза 6 — scripts (`scripts/lib`, smoke runners, initial/continue prompts; J-883–884)  
 - [ ] Фаза 7 — ARCHITECTURE/contracts  
 - [ ] Фаза 8 — CI hardening  
 - [ ] Фаза 9 — закрытие  
