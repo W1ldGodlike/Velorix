@@ -55,6 +55,7 @@ export function ExportPresetNameDialog(props: ExportPresetNameDialogProps): JSX.
         <div
           role="group"
           aria-label={uiText('exportPresetNameFieldGroupAria')}
+          aria-describedby="export-preset-name-hint"
           aria-busy={exportPresetSaving}
         >
           <label className="app-engine-path-row">
@@ -90,6 +91,7 @@ export function ExportPresetNameDialog(props: ExportPresetNameDialogProps): JSX.
           role="toolbar"
           aria-orientation="horizontal"
           aria-label={uiText('exportPresetDialogFooterToolbarAria')}
+          aria-describedby="export-preset-name-hint"
           aria-busy={exportPresetSaving}
         >
           <button

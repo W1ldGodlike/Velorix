@@ -65,12 +65,14 @@ export function VideoTimelineUnifiedPane({
           className="app-timeline-pane"
           role="group"
           aria-label={uiText('videoTimelinePaneGroupAria')}
+          aria-describedby="editor-video-timeline-hint"
           aria-busy={pipelineBusy}
         >
           <div
             className="app-timeline-pane-visuals"
             role="group"
             aria-label={uiText('videoTimelinePaneVisualsGroupAria')}
+            aria-describedby="editor-video-timeline-hint"
             aria-busy={pipelineBusy}
           >
             <div className="app-timeline-ruler" aria-hidden="true">
@@ -90,6 +92,7 @@ export function VideoTimelineUnifiedPane({
               className="app-timeline-waveform-passive"
               role="group"
               aria-label={uiText('videoTimelineWaveformClusterAria')}
+              aria-describedby="editor-video-timeline-hint"
               aria-busy={pipelineBusy}
             >
               <TimelineWaveform
@@ -108,6 +111,7 @@ export function VideoTimelineUnifiedPane({
             tabIndex={0}
             role="slider"
             aria-label={uiText('videoTimelineUnifiedPaneAria')}
+            aria-describedby="editor-video-timeline-hint"
             aria-busy={pipelineBusy}
             aria-valuemin={0}
             aria-valuemax={1000}
@@ -163,12 +167,14 @@ export function VideoTimelineUnifiedPane({
       <div
         className="app-timeline-footer"
         aria-label={uiText('videoTimelineFooterAria')}
+        aria-describedby="editor-video-timeline-hint"
         aria-busy={pipelineBusy}
       >
         <div
           className="app-timeline-footer-spec"
           role="group"
           aria-label={uiText('videoTimelineFooterSpecGroupAria')}
+          aria-describedby="editor-video-timeline-hint"
           aria-busy={pipelineBusy}
         >
           <span title={uiText('videoTimelineVideoStreamTitle')}>

@@ -136,6 +136,7 @@ export function AboutDialog({
           <dl
             className="app-about-dl"
             aria-label={uiText('aboutRuntimeDetailsAria')}
+            aria-describedby="about-dialog-desc"
             aria-busy={aboutShellBusy}
           >
             <div className="app-about-row">
@@ -168,12 +169,14 @@ export function AboutDialog({
           className="app-modal-footer app-modal-footer-split"
           role="region"
           aria-label={uiText('aboutModalFooterSplitAria')}
+          aria-describedby="about-dialog-desc"
           aria-busy={aboutShellBusy}
         >
           <div
             className="app-about-footer-left"
             role="group"
             aria-label={uiText('aboutFooterLeftGroupAria')}
+            aria-describedby="about-dialog-desc"
             aria-busy={aboutShellBusy}
           >
             <div
@@ -181,6 +184,7 @@ export function AboutDialog({
               role="toolbar"
               aria-orientation="horizontal"
               aria-label={uiText('aboutDiagnosticsToolbarAria')}
+              aria-describedby="about-dialog-desc"
               aria-busy={aboutShellBusy}
             >
               <button
@@ -318,6 +322,7 @@ export function AboutDialog({
             <nav
               className="app-doc-inline-links app-about-doc-links"
               aria-label={uiText('aboutExternalDocsNavAria')}
+              aria-describedby="about-dialog-desc"
               aria-busy={aboutShellBusy}
             >
               <a href={YTDLP_DOC_README} target="_blank" rel="noreferrer">
@@ -337,6 +342,7 @@ export function AboutDialog({
                 className="app-about-knowledge-link"
                 role="region"
                 aria-label={uiText('aboutKnowledgeArticleRegionAria')}
+                aria-describedby="about-dialog-desc"
                 aria-busy={aboutShellBusy}
               >
                 <button
@@ -357,6 +363,7 @@ export function AboutDialog({
             role="toolbar"
             aria-orientation="horizontal"
             aria-label={uiText('aboutDialogCloseToolbarAria')}
+            aria-describedby="about-dialog-desc"
             aria-busy={aboutShellBusy}
           >
             <button

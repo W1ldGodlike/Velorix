@@ -65,6 +65,13 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
     onToggleTheme
   } = props
 
+  const workspaceTabDescId =
+    workspaceTab === 'editor'
+      ? 'workspace-tab-editor-desc'
+      : workspaceTab === 'downloads'
+        ? 'workspace-tab-downloads-desc'
+        : 'workspace-tab-terminal-desc'
+
   return (
     <header
       className="app-topbar"
@@ -156,6 +163,7 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
         className="app-topbar-trailing"
         role="group"
         aria-label={uiText('topbarTrailingGroupAria')}
+        aria-describedby={workspaceTabDescId}
         aria-busy={appChromeBusy}
       >
         <div
@@ -163,6 +171,7 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
           role="toolbar"
           aria-orientation="horizontal"
           aria-label={uiText('topbarActionsToolbarAria')}
+          aria-describedby={workspaceTabDescId}
           aria-busy={appChromeBusy}
         >
           <button

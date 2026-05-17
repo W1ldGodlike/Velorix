@@ -158,6 +158,7 @@ export function KnowledgeDialog({
           className="app-modal-header-row"
           role="group"
           aria-label={uiText('knowledgeDialogHeaderRowAria')}
+          aria-describedby="knowledge-dialog-hint"
           aria-busy={loading}
         >
           <div>
@@ -172,6 +173,7 @@ export function KnowledgeDialog({
             role="toolbar"
             aria-orientation="horizontal"
             aria-label={uiText('knowledgeDialogActionsToolbarAria')}
+            aria-describedby="knowledge-dialog-hint"
             aria-busy={loading}
           >
             <button
@@ -190,11 +192,13 @@ export function KnowledgeDialog({
           className="app-knowledge-grid"
           role="group"
           aria-label={uiText('knowledgeDialogGridAria')}
+          aria-describedby="knowledge-dialog-hint"
           aria-busy={loading}
         >
           <aside
             className="app-knowledge-sidebar"
             aria-label={uiText('knowledgeTocAria')}
+            aria-describedby="knowledge-dialog-hint"
             aria-busy={loading}
           >
             <label htmlFor={knowledgeSearchFieldId} className="app-visually-hidden">
@@ -206,6 +210,7 @@ export function KnowledgeDialog({
               value={filter}
               placeholder={uiText('knowledgeSearchPlaceholder')}
               title={uiText('knowledgeSearchTooltip')}
+              aria-describedby="knowledge-dialog-hint"
               onChange={(e) => {
                 setFilter(e.target.value)
               }}
@@ -214,6 +219,7 @@ export function KnowledgeDialog({
               className="app-knowledge-list"
               role="group"
               aria-label={uiText('knowledgeTocListAria')}
+              aria-describedby="knowledge-dialog-hint"
               aria-busy={loading}
             >
               {visibleArticles.map((article) => (
@@ -226,6 +232,7 @@ export function KnowledgeDialog({
                       : 'app-knowledge-item'
                   }
                   aria-current={article.slug === selectedSlug ? 'page' : undefined}
+                  aria-describedby="knowledge-dialog-hint"
                   title={`${article.fileName} · ${article.slug}`}
                   onClick={() => {
                     setSelectedSlug(article.slug)
@@ -241,6 +248,7 @@ export function KnowledgeDialog({
           <article
             className="app-knowledge-article"
             role="region"
+            aria-describedby="knowledge-dialog-hint"
             aria-busy={loading}
             aria-labelledby={knowledgeArticleRegionLabelledBy}
             aria-label={

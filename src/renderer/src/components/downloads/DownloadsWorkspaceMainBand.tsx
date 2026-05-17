@@ -50,6 +50,7 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
           role="toolbar"
           aria-orientation="horizontal"
           aria-label={uiText('downloadsBandToolbarAria')}
+          aria-describedby="downloads-page-hint"
           aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
         >
           <button
@@ -83,6 +84,7 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
         className="app-downloads-url-row"
         role="group"
         aria-label={uiText('downloadsUrlRowGroupAria')}
+        aria-describedby="downloads-page-hint downloads-main-url-hint"
         aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
       >
         <div className="app-downloads-url-field">

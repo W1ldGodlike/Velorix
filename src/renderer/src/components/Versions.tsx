@@ -2,17 +2,24 @@ import { useState } from 'react'
 import { uiText } from '../locales/ui-text'
 
 function Versions({
-  statusBusy = false
+  statusBusy = false,
+  ariaDescribedBy
 }: {
   /** Обновление рантайм-версий или проверка движков затрагивает статусбар. */
   statusBusy?: boolean
+  ariaDescribedBy?: string
 }): React.JSX.Element {
   // Версии Electron/Chromium/Node оставляем в статусбаре как быстрый диагностический минимум.
   // Для support ZIP (§18) эти же значения позже пойдут в manifest вместе с ОС и билдом.
   const [versions] = useState(window.electron.process.versions)
 
   return (
-    <ul className="versions-inline" aria-label={uiText('versionsAriaLabel')} aria-busy={statusBusy}>
+    <ul
+      className="versions-inline"
+      aria-label={uiText('versionsAriaLabel')}
+      aria-describedby={ariaDescribedBy}
+      aria-busy={statusBusy}
+    >
       <li>
         {uiText('aboutRuntimeElectronLabel')} {versions['electron']}
       </li>

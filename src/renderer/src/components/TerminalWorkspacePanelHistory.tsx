@@ -48,11 +48,13 @@ export function TerminalWorkspacePanelHistory(
                 index: entryIdx + 1,
                 line: entryBrief
               })}
+              aria-describedby="terminal-history-hint terminal-intro-hint"
             >
               <div
                 className="app-terminal-entry-head"
                 role="group"
                 aria-label={uiText('terminalEntryHeadGroupAria')}
+                aria-describedby="terminal-history-hint"
               >
                 <code>{entry.line}</code>
                 <span>
@@ -68,6 +70,7 @@ export function TerminalWorkspacePanelHistory(
                   aria-label={uiTextVars('terminalEntryOutputLogAriaTemplate', {
                     index: entryIdx + 1
                   })}
+                  aria-describedby="terminal-history-hint"
                 >
                   {lines.map((line, lineIdx) => (
                     <div key={`${entry.id}:${lineIdx}`} className="app-terminal-output-line">

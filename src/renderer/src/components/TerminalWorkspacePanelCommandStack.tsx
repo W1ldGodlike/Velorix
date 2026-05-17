@@ -193,6 +193,7 @@ export function TerminalWorkspacePanelCommandStack(
           className="app-terminal-suggest"
           role="listbox"
           aria-label={uiText('terminalInlineSuggestAria')}
+          aria-describedby="terminal-intro-hint"
           aria-busy={terminalBusy}
           onMouseDown={(ev) => {
             ev.preventDefault()
@@ -205,6 +206,7 @@ export function TerminalWorkspacePanelCommandStack(
               role="option"
               aria-selected={idx === terminalSuggestActiveIndex}
               aria-label={terminalHintInsertAccessibleDescription(hint)}
+              aria-describedby="terminal-intro-hint"
               className={`app-terminal-suggest-item${
                 idx === terminalSuggestActiveIndex ? ' app-terminal-suggest-item-active' : ''
               }`}

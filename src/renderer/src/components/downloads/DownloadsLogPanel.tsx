@@ -49,6 +49,7 @@ export function DownloadsLogPanel({
           role="toolbar"
           aria-orientation="horizontal"
           aria-label={uiText('downloadsLogActionsToolbarAria')}
+          aria-describedby="downloads-page-hint"
           aria-busy={tabBusy}
         >
           <button
@@ -72,6 +73,7 @@ export function DownloadsLogPanel({
           className="app-downloads-log-pre"
           role="log"
           aria-label={uiText('downloadsLogViewportAria')}
+          aria-describedby="downloads-page-hint"
           aria-live="polite"
           aria-busy={tabBusy}
         >

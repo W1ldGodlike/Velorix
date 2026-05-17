@@ -67,6 +67,7 @@ export function VideoTimelineToolbar(props: VideoTimelineToolbarProps) {
         className="app-timeline-toolbar-primary"
         role="group"
         aria-label={uiText('videoTimelineTrimGroupAria')}
+        aria-describedby="editor-video-timeline-hint"
         aria-busy={pipelineBusy}
       >
         <button
@@ -129,6 +130,7 @@ export function VideoTimelineToolbar(props: VideoTimelineToolbarProps) {
         className="app-timeline-toolbar-center"
         role="group"
         aria-label={uiText('videoTimelineStatusReadoutGroupAria')}
+        aria-describedby="editor-video-timeline-hint"
         aria-busy={pipelineBusy}
         title={uiTextVars('videoTimelineToolbarCenterTitle', {
           dur: formatTimelineTimeWithMs(trimSpanSec),
@@ -149,6 +151,7 @@ export function VideoTimelineToolbar(props: VideoTimelineToolbarProps) {
         className="app-timeline-toolbar-export-cluster"
         role="group"
         aria-label={uiText('videoTimelineExportSnapshotGroupAria')}
+        aria-describedby="editor-video-timeline-hint"
         aria-busy={pipelineBusy}
       >
         <button
@@ -184,6 +187,7 @@ export function VideoTimelineToolbar(props: VideoTimelineToolbarProps) {
         className="app-timeline-toolbar-zoom"
         role="group"
         aria-label={uiText('videoTimelineZoomRowAria')}
+        aria-describedby="editor-video-timeline-hint"
         aria-busy={pipelineBusy}
       >
         <button

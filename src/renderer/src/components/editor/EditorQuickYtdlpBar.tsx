@@ -56,6 +56,7 @@ export function EditorQuickYtdlpBar(props: EditorQuickYtdlpBarProps): JSX.Elemen
         className="app-url-body"
         role="region"
         aria-labelledby="quick-ytdlp-region-title"
+        aria-describedby="quickYtdlpUrlHint"
         aria-busy={chromeBusy}
       >
         <h3 id="quick-ytdlp-region-title" className="app-visually-hidden">
@@ -65,6 +66,7 @@ export function EditorQuickYtdlpBar(props: EditorQuickYtdlpBarProps): JSX.Elemen
           className="app-url-field"
           role="group"
           aria-label={uiText('quickYtdlpUrlFieldGroupAria')}
+          aria-describedby="quickYtdlpUrlHint"
           aria-busy={chromeBusy}
         >
           <textarea
@@ -122,6 +124,7 @@ export function EditorQuickYtdlpBar(props: EditorQuickYtdlpBarProps): JSX.Elemen
           role="toolbar"
           aria-orientation="horizontal"
           aria-label={uiText('quickYtdlpAria')}
+          aria-describedby="quickYtdlpUrlHint"
           aria-busy={chromeBusy}
         >
           <button

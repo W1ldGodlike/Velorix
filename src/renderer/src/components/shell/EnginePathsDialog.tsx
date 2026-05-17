@@ -67,6 +67,7 @@ export function EnginePathsDialog(props: EnginePathsDialogProps): JSX.Element | 
           className="app-engine-path-rows"
           role="group"
           aria-label={uiText('enginePathsDialogRowsGroupAria')}
+          aria-describedby="engine-paths-hint"
           aria-busy={enginePathsSaving}
         >
           {ENGINE_IDS.map((id) => (
@@ -93,12 +94,14 @@ export function EnginePathsDialog(props: EnginePathsDialogProps): JSX.Element | 
                 aria-label={uiTextVars('editorEnginePathRowToolbarAriaTemplate', {
                   engine: engineLabel(id)
                 })}
+                aria-describedby="engine-paths-hint"
                 aria-busy={enginePathsSaving}
               >
                 <button
                   type="button"
                   className="app-btn app-btn-compact"
                   disabled={enginePathsSaving}
+                  aria-describedby="engine-paths-hint"
                   onClick={() => {
                     onPickEngine(id)
                   }}
@@ -124,6 +127,7 @@ export function EnginePathsDialog(props: EnginePathsDialogProps): JSX.Element | 
           role="toolbar"
           aria-orientation="horizontal"
           aria-label={uiText('enginePathsDialogFooterToolbarAria')}
+          aria-describedby="engine-paths-hint"
           aria-busy={enginePathsSaving}
         >
           <button

@@ -25,6 +25,7 @@ export function DownloadsSettingsRailMetadataSection(props: DownloadsSettingsRai
     <details
       className="app-downloads-rail-section"
       aria-label={uiText('downloadsRailMetadataSummary')}
+      aria-describedby="downloads-page-hint downloadsCookiesProfileHint"
       aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
       open={downloadsRailPanels.metadata}
       onToggle={handleDownloadsRailSectionToggle('metadata')}

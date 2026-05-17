@@ -37,16 +37,25 @@ export function AppStatusbar(props: AppStatusbarProps): JSX.Element {
     statusHint
   } = props
 
+  const workspaceTabDescId =
+    workspaceTab === 'editor'
+      ? 'workspace-tab-editor-desc'
+      : workspaceTab === 'downloads'
+        ? 'workspace-tab-downloads-desc'
+        : 'workspace-tab-terminal-desc'
+
   return (
     <footer
       className="app-statusbar"
       aria-label={uiText('appStatusbarAria')}
+      aria-describedby={workspaceTabDescId}
       aria-busy={appChromeBusy}
     >
       <div
         role="group"
         aria-label={uiText('statusbarEnginesClusterAria')}
         className="app-statusbar-cluster"
+        aria-describedby={workspaceTabDescId}
         aria-busy={engineDownloadBusy || engineSummary === 'checking'}
       >
         <span>{engineSummaryText(engineSummary)}</span>
@@ -64,6 +73,7 @@ export function AppStatusbar(props: AppStatusbarProps): JSX.Element {
           role="group"
           aria-label={uiText('statusbarExportCodecClusterAria')}
           className="app-statusbar-cluster"
+          aria-describedby="workspace-tab-editor-desc"
           aria-busy={
             exportBusy || snapshotBusy || exportCancelBusy || probePending || batchExportBusy
           }
@@ -83,7 +93,10 @@ export function AppStatusbar(props: AppStatusbarProps): JSX.Element {
         </>
       ) : null}
       <span className="app-statusbar-sep" aria-hidden />
-      <Versions statusBusy={engineDownloadBusy || engineSummary === 'checking'} />
+      <Versions
+        statusBusy={engineDownloadBusy || engineSummary === 'checking'}
+        ariaDescribedBy={workspaceTabDescId}
+      />
     </footer>
   )
 }

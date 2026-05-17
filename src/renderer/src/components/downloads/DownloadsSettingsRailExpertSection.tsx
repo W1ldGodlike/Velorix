@@ -31,6 +31,7 @@ export function DownloadsSettingsRailExpertSection(props: DownloadsSettingsRailP
     <details
       className="app-downloads-rail-section"
       aria-label={uiText('downloadsRailExpertSummary')}
+      aria-describedby="downloads-page-hint downloadsHintCatalogIntro"
       aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
       open={downloadsRailPanels.expert}
       onToggle={handleDownloadsRailSectionToggle('expert')}
@@ -91,6 +92,7 @@ export function DownloadsSettingsRailExpertSection(props: DownloadsSettingsRailP
           className="app-downloads-hint-list"
           role="list"
           aria-label={uiText('downloadsHintListAria')}
+          aria-describedby="downloads-page-hint downloadsHintCatalogIntro"
           aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
         >
           {!downloadsOptions.commandHints?.length ? (
@@ -118,6 +120,7 @@ export function DownloadsSettingsRailExpertSection(props: DownloadsSettingsRailP
                       className="app-downloads-hint-token"
                       title={h.summary || h.token}
                       aria-label={downloadsCatalogHintTokenAccessibleDescription(cat, h)}
+                      aria-describedby="downloadsHintCatalogIntro"
                       disabled={downloadsOptionsBusy}
                       onClick={() => appendDownloadsExtraArgsToken(h.token)}
                     >

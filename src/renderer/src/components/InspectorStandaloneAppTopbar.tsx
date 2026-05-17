@@ -46,6 +46,7 @@ export function InspectorStandaloneAppTopbar(props: InspectorStandaloneAppModel)
         className="inspector-topbar-trailing"
         role="group"
         aria-label={uiText('inspectorTopbarTrailingGroupAria')}
+        aria-describedby="inspector-standalone-empty-hint"
         aria-busy={probePending && mediaPath !== null}
       >
         <div className="inspector-topbar-spacer" aria-hidden />
@@ -54,6 +55,7 @@ export function InspectorStandaloneAppTopbar(props: InspectorStandaloneAppModel)
           role="toolbar"
           aria-orientation="horizontal"
           aria-label={uiText('inspectorTopbarActionsToolbarAria')}
+          aria-describedby="inspector-standalone-empty-hint"
           aria-busy={probePending && mediaPath !== null}
         >
           <button

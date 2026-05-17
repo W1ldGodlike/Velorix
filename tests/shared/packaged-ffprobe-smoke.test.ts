@@ -140,6 +140,16 @@ describe('packaged-ffprobe-smoke', () => {
         format: {
           format_name: 'mp4',
           nb_streams: '1',
+          probe_size: 'not-a-number'
+        }
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
+        format: {
+          format_name: 'mp4',
+          nb_streams: '1',
           flags: 4
         }
       })
@@ -263,6 +273,16 @@ describe('packaged-ffprobe-smoke', () => {
         format: {
           format_name: 'mp4',
           nb_streams: '1',
+          duration: 'not-a-number'
+        }
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
+        format: {
+          format_name: 'mp4',
+          nb_streams: '1',
           start_time_real: '2.5',
           start_time: '1.0'
         }
@@ -337,6 +357,12 @@ describe('packaged-ffprobe-smoke', () => {
       isPackagedFfprobeProbeJsonParsableByContainerRegistry({
         streams: [{}],
         format: { format_name: 'mp4', nb_streams: '1', nb_chapters: 'n/a' }
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
+        format: { format_name: 'mp4', nb_streams: '1', nb_chapters: 'not-a-number' }
       })
     ).toBe(false)
     expect(
@@ -440,7 +466,19 @@ describe('packaged-ffprobe-smoke', () => {
     expect(
       isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
         ...base,
+        streams: [{ nb_frames: 'not-a-number' }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
         streams: [{ bit_rate: 'not-bps' }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ max_bit_rate: 'not-bps' }]
       })
     ).toBe(false)
     expect(
@@ -484,6 +522,12 @@ describe('packaged-ffprobe-smoke', () => {
       isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
         ...base,
         streams: [{ channels: '0' }]
+      })
+    ).toBe(false)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ channels: 'not-a-number' }]
       })
     ).toBe(false)
     expect(

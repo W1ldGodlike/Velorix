@@ -76,6 +76,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
                 className="app-batch-export-dir-row"
                 role="group"
                 aria-label={uiText('batchExportOutputDirRowGroupAria')}
+                aria-describedby="batch-export-panel-hint batch-export-outdir-hint"
                 aria-busy={batchExportBusy}
               >
                 <input
@@ -163,6 +164,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
               role="toolbar"
               aria-orientation="horizontal"
               aria-label={uiText('batchExportActionsToolbarAria')}
+              aria-describedby="batch-export-panel-hint batch-export-drop-hint"
               aria-busy={batchExportBusy}
             >
               <button

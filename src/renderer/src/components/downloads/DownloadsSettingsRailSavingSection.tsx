@@ -25,6 +25,7 @@ export function DownloadsSettingsRailSavingSection(props: DownloadsSettingsRailP
     <details
       className="app-downloads-rail-section"
       aria-label={uiText('downloadsRailSavingSummary')}
+      aria-describedby="downloads-page-hint"
       aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
       open={downloadsRailPanels.saving}
       onToggle={handleDownloadsRailSectionToggle('saving')}
@@ -40,6 +41,7 @@ export function DownloadsSettingsRailSavingSection(props: DownloadsSettingsRailP
           className="app-downloads-output-dir"
           role="group"
           aria-label={uiText('downloadsOutputDirAria')}
+          aria-describedby="downloads-page-hint"
           aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
         >
           <span className="app-field-help">{uiText('downloadsOutputDirLabel')}</span>

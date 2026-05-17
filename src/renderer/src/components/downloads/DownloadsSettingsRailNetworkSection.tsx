@@ -21,6 +21,7 @@ export function DownloadsSettingsRailNetworkSection(props: DownloadsSettingsRail
     <details
       className="app-downloads-rail-section"
       aria-label={uiText('downloadsRailNetworkSummary')}
+      aria-describedby="downloads-page-hint"
       aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
       open={downloadsRailPanels.network}
       onToggle={handleDownloadsRailSectionToggle('network')}
