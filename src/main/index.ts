@@ -10,7 +10,6 @@ import {
 } from 'electron'
 import type { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
 
 import { resolveAppPaths } from './app-paths'
 import { buildKnowledgeHelpDirCandidates, resolveKnowledgeHelpDirectory } from './knowledge-service'
@@ -21,7 +20,6 @@ import { registerMainUtilitiesIpcHandlers } from './ipc/register-main-utilities-
 import { registerExportBatchIpcHandlers } from './ipc/register-export-batch-ipc'
 import { createSettingsIpcPersist, type SettingsIpcPersistApi } from './settings-ipc-persist'
 import { getYtdlpCliValidationCopy } from '../shared/ytdlp-cli-validation-locale'
-import { installExternalNavigationGuard, openAllowedExternalUrl } from './external-url'
 import {
   cancelDownloadsRunner,
   configureDownloadsQueueRunnerHooks,
@@ -94,14 +92,8 @@ import type {
   WindowBoundsConfig
 } from './settings-store'
 import { loadSettings, saveSettings } from './settings-store'
-import { resolvePreloadOutFile } from './preload-resolve'
-import {
-  defaultMainEditorSize,
-  displayMatchingRestoreRect,
-  logicalScaleFactor,
-  mainEditorMinLogicalSize
-} from './window-hidpi'
-import { boundsFromBrowserWindow, rectifyBoundsForRestore } from './window-bounds'
+import { createMainWindow } from './main-window'
+import { boundsFromBrowserWindow } from './window-bounds'
 import {
   resolveYtdlpOutputDirectory,
   syncYtdlpDownloadDirectoryFromSettings
@@ -728,110 +720,37 @@ function setTheme(pref: AppTheme): AppSettingsView {
 let mainWindowRef: BrowserWindow | null = null
 
 function createWindow(): void {
-  const savedMain = cachedSettings.windowBounds?.main
-  const rect = savedMain ? rectifyBoundsForRestore(savedMain) : null
-  const mainDisp = displayMatchingRestoreRect(rect)
-  const mainScale = logicalScaleFactor(mainDisp)
-  const mainMin = mainEditorMinLogicalSize(mainScale)
-  const mainDefault = defaultMainEditorSize(
-    mainDisp.size.width,
-    mainDisp.size.height,
-    mainMin.minWidth,
-    mainMin.minHeight
-  )
-
-  const mainWindow = new BrowserWindow({
-    width: rect?.width ?? mainDefault.width,
-    height: rect?.height ?? mainDefault.height,
-    minWidth: mainMin.minWidth,
-    minHeight: mainMin.minHeight,
-    ...(rect ? { x: rect.x, y: rect.y } : {}),
-    show: false,
-    autoHideMenuBar: false,
-    ...(process.platform === 'linux' ? { icon } : {}),
-    webPreferences: {
-      preload: resolvePreloadOutFile('index', __dirname),
-      sandbox: false,
-      // Renderer не получает Node API напрямую; вся работа с FS/процессами пойдёт через whitelist IPC.
-      contextIsolation: true,
-      nodeIntegration: false
-    }
+  createMainWindow({
+    mainDirname: __dirname,
+    getSavedMainBounds: () => cachedSettings.windowBounds?.main,
+    attachBoundsPersistence: attachMainWindowBoundsPersistence,
+    onMainWindowCreated: (win, webContentsId) => {
+      mainWindowRef = win
+      allowMainWindowClose = false
+      mainWindowWebContentsId = webContentsId
+    },
+    onMainWindowClosed: (win, webContentsId) => {
+      if (mainWindowRef?.id === win.id) {
+        mainWindowRef = null
+      }
+      if (mainWindowWebContentsId === webContentsId) {
+        mainWindowWebContentsId = null
+      }
+      rendererLogBuckets.delete(webContentsId)
+    },
+    getAllowMainWindowClose: () => allowMainWindowClose,
+    setAllowMainWindowClose: (value) => {
+      allowMainWindowClose = value
+    },
+    isExportBusy: () => activeExportAbort !== null,
+    isDownloadsBusy: () => isDownloadsRunnerBusy(),
+    onQuitAbortConfirmed: () => {
+      activeExportAbort?.abort()
+      cancelDownloadsRunner()
+    },
+    mainAppStr,
+    buildApplicationMenu
   })
-  mainWindowRef = mainWindow
-
-  mainWindow.on('closed', () => {
-    if (mainWindowRef?.id === mainWindow.id) {
-      mainWindowRef = null
-    }
-  })
-
-  allowMainWindowClose = false
-  const mainWebContentsId = mainWindow.webContents.id
-  mainWindowWebContentsId = mainWebContentsId
-  mainWindow.on('closed', () => {
-    if (mainWindowWebContentsId === mainWebContentsId) {
-      mainWindowWebContentsId = null
-    }
-    rendererLogBuckets.delete(mainWebContentsId)
-  })
-  mainWindow.on('close', (e) => {
-    if (allowMainWindowClose) {
-      return
-    }
-    const exportBusy = activeExportAbort !== null
-    const downloadsBusy = isDownloadsRunnerBusy()
-    if (!exportBusy && !downloadsBusy) {
-      return
-    }
-    e.preventDefault()
-    const q = mainAppStr()
-    const msg =
-      exportBusy && downloadsBusy
-        ? q.quitConfirmBoth
-        : exportBusy
-          ? q.quitConfirmExport
-          : q.quitConfirmDownloads
-
-    void dialog
-      .showMessageBox(mainWindow, {
-        type: 'warning',
-        buttons: [q.quitStay, q.quitAbort],
-        defaultId: 0,
-        cancelId: 0,
-        title: q.quitDialogTitle,
-        message: msg,
-        noLink: true
-      })
-      .then(({ response }) => {
-        if (response !== 1) {
-          return
-        }
-        activeExportAbort?.abort()
-        cancelDownloadsRunner()
-        allowMainWindowClose = true
-        mainWindow.close()
-      })
-  })
-
-  attachMainWindowBoundsPersistence(mainWindow)
-
-  mainWindow.on('ready-to-show', () => {
-    mainWindow.show()
-    buildApplicationMenu()
-  })
-
-  mainWindow.webContents.setWindowOpenHandler((details) => {
-    // Внешние ссылки не открываем внутри Electron-окна: так renderer не получает незапланированную навигацию.
-    openAllowedExternalUrl(details.url)
-    return { action: 'deny' }
-  })
-  installExternalNavigationGuard(mainWindow.webContents)
-
-  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
-  } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
-  }
 }
 
 async function openDownloadedFileInMainHandler(
