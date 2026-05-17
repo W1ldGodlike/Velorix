@@ -54,21 +54,7 @@ export function shouldApplyFfmpegExportTrim(
   return true
 }
 
-/** CRF и `-preset` x264 для системного пресета §7.2 (только белый список). */
-
-export function resolveFfmpegExportEncodeParams(preset: FfmpegExportEncodePresetId): {
-  crf: string
-  x264preset: string
-} {
-  switch (preset) {
-    case 'smaller':
-      return { crf: '28', x264preset: 'fast' }
-    case 'quality':
-      return { crf: '18', x264preset: 'medium' }
-    default:
-      return { crf: '23', x264preset: 'fast' }
-  }
-}
+export { resolveFfmpegExportEncodeParams } from './ffmpeg-export-argv-build-encode'
 
 export * from './ffmpeg-export-argv-filters'
 export { buildFfmpegExportArgv, type FfmpegExportArgvParams } from './ffmpeg-export-argv-build'

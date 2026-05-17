@@ -345,6 +345,11 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | structural | 494 | src/renderer/src/use-app-shell-props-input-workspace.ts | 4 | `use-app-shell-props-input-workspace-types|shell|editor|terminal-downloads.ts` + orchestrator | ✅ J-832 |
 | structural | 566 | src/shared/main-application-locale.ts | 4 | `main-application-locale-types.ts` + `main-application-locale-strings-ru|en.ts` + entry | ✅ J-833 |
 | structural | 549 | src/renderer/src/components/VideoTimeline.tsx | 4 | `video-timeline-props.ts` + `use-video-timeline-controller.ts` + entry | ✅ J-834 |
+| structural | 548 | src/shared/ffmpeg-export-argv-build.ts | 4 | `ffmpeg-export-argv-build-types|vf-chain|codec-audio.ts` + entry | ✅ J-835 |
+| structural | 542 | src/main/ytdlp-progress-parser-queue.ts | 4 | `ytdlp-progress-parser-queue-info|failure|path.ts` + barrel | ✅ J-836 |
+| structural | 505 | src/main/ffmpeg-export-service.ts | 4 | `ffmpeg-export-service-public.ts` + `ffmpeg-export-service-job-resolve|job.ts` + entry | ✅ J-837 |
+| structural | 504 | src/main/settings-ipc-persist-ffmpeg.ts | 4 | `settings-ipc-persist-ffmpeg-core|output|presets.ts` + orchestrator | ✅ J-838 |
+| structural | 489 | src/renderer/src/components/editor/EditorFfmpegSettingsRailVideoSection.tsx | 4 | `EditorFfmpegSettingsRailVideoCodecFields|FilterFields.tsx` + section shell | ✅ J-839 |
 
 ---
 
