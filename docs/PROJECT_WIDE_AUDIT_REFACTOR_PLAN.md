@@ -382,6 +382,12 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | structural | 845 | src/main/downloads-window-html-styles.ts | 4 | `downloads-window-html-styles-{theme,dpi,layout-*,narrow}.ts` + entry (~14) | ✅ J-867 |
 | structural | 1615 | tests/shared/ffmpeg-export-argv.test.ts | 4 | 7× `ffmpeg-export-argv-{encode-audio,filters,codecs,hwaccel,build-trim,preview-pass,filters-metadata}.test.ts` | ✅ J-868 |
 | structural | 845 | src/shared/ffprobe-container-field-registry.ts | 4 | `ffprobe-container-field-registry-parse|format.ts` + entry re-export | ✅ J-869 |
+| structural | 611 | src/shared/ffprobe-container-field-registry-format.ts | 4 | `ffprobe-container-field-registry-format-{scalar,timing}.ts` + entry re-export | ✅ J-870 |
+| structural | 837 | tests/fixtures/terminal-preview-line-predicate-cases.ts | 4 | 3× `terminal-preview-line-predicate-cases-{json,stream,format}.ts` + entry concat | ✅ J-871 |
+| structural | 991 | tests/fixtures/terminal-downloads-line-batches.ts | 4 | 3× `terminal-downloads-line-batches-{a,b,c}.ts` + types + entry concat | ✅ J-872 |
+| structural | 442 | tests/fixtures/terminal-preview-line-predicate-cases-stream.ts | 4 | `terminal-preview-line-predicate-cases-stream-{a,b}.ts` (~209+235) + entry | ✅ J-872 |
+| structural | 423 | src/shared/ffprobe-container-field-registry-format-timing.ts | 4 | `format-timing-{layout,metrics}.ts` + entry re-export | ✅ J-873 |
+| structural | 683 | scripts/cursor-automation/src/run-loop.ts | 6 | `run-loop-{cli,retry,verbose}.ts` + entry `main` (~149+187+135+238) | ✅ J-874 |
 
 ---
 

@@ -5,7 +5,7 @@ import {
   TERMINAL_SCENARIO_HINTS_DOWNLOADS,
   TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA
 } from '../../src/shared/terminal-contract'
-import type { TerminalPreviewLinePredicate } from './terminal-preview-line-predicate-cases'
+import type { TerminalPreviewLinePredicate } from './terminal-preview-line-predicate-cases-types'
 
 export function downloadsScenarioFullLines(): string[] {
   return TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => h.fullLine ?? '')

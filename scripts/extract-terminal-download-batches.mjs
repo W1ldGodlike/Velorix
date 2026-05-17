@@ -3,6 +3,7 @@
  * Maint: merge pure `expect(lines).toContain` downloads tests into line-batches fixture.
  * Run: node scripts/extract-terminal-download-batches.mjs
  */
+import { execSync } from 'node:child_process'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 
 const testPath = 'tests/shared/terminal-contract-scenarios.test.ts'
@@ -133,6 +134,7 @@ ${b.lines.map((l) => `      '${esc(l)}',`).join('\n')}
 `
 
 writeFileSync(fixturePath, batchTs, 'utf8')
+execSync('node scripts/split-terminal-downloads-line-batches.mjs', { stdio: 'inherit' })
 
 for (const { start, end } of removeRanges.sort((a, b) => b.start - a.start)) {
   t = t.slice(0, start) + t.slice(end)

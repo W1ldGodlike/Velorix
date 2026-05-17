@@ -3,6 +3,7 @@
  * Collect compound preview `lines.some` expects into predicate cases.
  * Run: node scripts/collect-terminal-preview-predicates.mjs
  */
+import { execSync } from 'node:child_process'
 import { readFileSync, writeFileSync } from 'node:fs'
 
 const t = readFileSync('tests/shared/terminal-contract-scenarios.test.ts', 'utf8')
@@ -99,6 +100,7 @@ ${lines.join(',\n')}
 `
 
 writeFileSync('tests/fixtures/terminal-preview-line-predicate-cases.ts', out, 'utf8')
+execSync('node scripts/split-terminal-preview-line-predicate-cases.mjs', { stdio: 'inherit' })
 console.log(
   `[collect-preview-predicates] cases=${cases.length} previewBlocks=${markers.length - 1}`
 )
