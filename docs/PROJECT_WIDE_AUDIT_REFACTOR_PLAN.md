@@ -301,6 +301,10 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | structural | ~1650 | src/main/index.ts | 4 | `main-diagnostics-service.ts` (support ZIP, logs, process error dialog) | ✅ J-788 |
 | structural | ~1400 | src/main/index.ts | 4 | `main-window.ts` (createMainWindow, close guard, preload load) | ✅ J-789 |
 | structural | ~1200 | src/main/index.ts | 4 | `main-export-output-paths.ts` (grant set, open export output, dialog defaults) | ✅ J-790 |
+| structural | ~1100 | src/main/index.ts | 4 | `main-ytdlp-settings-persist.ts` + `main-ffmpeg-export-batch-host.ts` | ✅ J-791 |
+| structural | ~967 | src/main/index.ts | 4 | `main-ytdlp-download-main-handler.ts` (open in main + auto-export after yt-dlp) | ✅ J-792 |
+| structural | ~785 | src/main/index.ts | 4 | `main-downloads-window-bounds-bootstrap.ts` (configureDownloadsWindowBoundsHooks deps) | ✅ J-793 |
+| structural | ~678 | src/main/index.ts | 4 | `main-bootstrap-ipc-helpers.ts` (locale, IPC parsers, renderer log rate-limit) | ✅ J-794 |
 
 ---
 

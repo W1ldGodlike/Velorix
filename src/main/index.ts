@@ -1,13 +1,6 @@
 import { existsSync, statSync } from 'fs'
-import { basename, isAbsolute, join, normalize, resolve } from 'path'
-import {
-  BrowserWindow,
-  app,
-  dialog,
-  ipcMain,
-  nativeTheme
-} from 'electron'
-import type { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
+import { join, normalize, resolve } from 'path'
+import { BrowserWindow, app, nativeTheme } from 'electron'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 
 import { resolveAppPaths } from './app-paths'
@@ -18,32 +11,35 @@ import { registerEnginesPreviewIpcHandlers } from './ipc/register-engines-previe
 import { registerMainUtilitiesIpcHandlers } from './ipc/register-main-utilities-ipc'
 import { registerExportBatchIpcHandlers } from './ipc/register-export-batch-ipc'
 import { createSettingsIpcPersist, type SettingsIpcPersistApi } from './settings-ipc-persist'
-import { getYtdlpCliValidationCopy } from '../shared/ytdlp-cli-validation-locale'
 import {
   cancelDownloadsRunner,
   configureDownloadsQueueRunnerHooks,
   isDownloadsRunnerBusy
 } from './downloads-queue-runner'
-import { emitDownloadsLog } from './downloads-log-ipc'
-import { getDownloadsQueueSnapshot } from './downloads-queue'
-import { filterExistingVideoPathsForBatch } from './ffmpeg-export-batch-grant-paths'
 import {
   broadcastDownloadsCliOptionsChanged,
   broadcastDownloadsOutputDirectorySnapshot,
   broadcastDownloadsWindowUiPanelsSnapshot,
-  configureDownloadsWindowBoundsHooks,
   registerDownloadsWindowIpcHandlers,
   syncDownloadsPopoutHtmlToLocale
 } from './downloads-window'
+import { configureMainDownloadsWindowBoundsBootstrap } from './main-downloads-window-bounds-bootstrap'
+import {
+  clearRendererLogBucket,
+  configureMainBootstrapIpcHelpers,
+  ipcDownloadsUiLocale,
+  isMainWindowUiPanelSender,
+  mainAppStr,
+  mainDownloadsUiLocale,
+  parseDownloadsOpenRequest,
+  parseSaveTextDialogPayload,
+  registerMainRendererLogIpcHandler
+} from './main-bootstrap-ipc-helpers'
 import {
   configureInspectorWindowHooks,
-  isInspectorWindow,
   registerInspectorWindowIpcHandlers
 } from './inspector-window'
-import {
-  buildApplicationMenu,
-  configureMainApplicationMenu
-} from './main-application-menu'
+import { buildApplicationMenu, configureMainApplicationMenu } from './main-application-menu'
 import {
   configureMainDiagnosticsService,
   createSupportBundleWithDialog,
@@ -55,33 +51,32 @@ import {
 } from './main-diagnostics-service'
 import {
   attachProcessErrorHandlers,
-  logFromRendererSafe,
   logStartupBanner,
   setProcessErrorReporter
 } from './logger-service'
-import { runFfmpegExportJob, type FfmpegExportProgressPayload } from './ffmpeg-export-service'
-import { FFMPEG_EXPORT_CANCELLED_ERROR } from '../shared/ffmpeg-export-contract'
 import { resolveOpenMediaDialogDefaultPath } from '../shared/preview-open-dialog-default-path'
-import {
-  pickUniqueAutoExportOutputPath,
-  resolveFfmpegExportJobOptionsFromAppSettings
-} from './ffmpeg-export-resolve-from-settings'
-import { addFfmpegExportBatchPaths, getFfmpegExportBatchSnapshot } from './ffmpeg-export-batch-queue'
 import {
   attachFfmpegExportBatchQueuePersist,
   hydrateFfmpegExportBatchQueueFromDisk
 } from './ffmpeg-export-batch-persist'
-import { isFfmpegExportBatchActive, runFfmpegExportBatchQueue } from './ffmpeg-export-batch-runner'
 import {
   configurePreviewProxyService,
   ensurePreviewPlayableMedia,
   resolveUserPathToPreviewSourceFile
 } from './preview-proxy-service'
-import { mergeYtdlpDownloadCliPatchOntoSettings } from './ytdlp-download-cli-merge'
-import { appendProcessingHistoryEntry } from './processing-history'
+import {
+  configureMainYtdlpDownloadMainHandler,
+  openDownloadedFileInMainHandler,
+  scheduleAutoExportAfterSuccessfulYtdlpOpen
+} from './main-ytdlp-download-main-handler'
+import {
+  configureMainFfmpegExportBatchHost,
+  launchFfmpegExportBatchRunner,
+  scheduleEnqueueBatchAfterDownload
+} from './main-ffmpeg-export-batch-host'
+import { configureMainYtdlpSettingsPersist } from './main-ytdlp-settings-persist'
 import { setEnginePathOverridesSnapshot } from './engine-path-sync'
-import { resolveEngineExecutablePath } from './engine-service'
-import { grantMediaPath, registerFluxMediaPrivileges, registerFluxMediaProtocol } from './media-protocol'
+import { registerFluxMediaPrivileges, registerFluxMediaProtocol } from './media-protocol'
 import { registerFluxHelpPrivileges, registerFluxHelpProtocol } from './help-assets-protocol'
 import type {
   AppSettings,
@@ -103,141 +98,9 @@ import {
   rememberedSnapshotDefaultPath
 } from './main-export-output-paths'
 import { boundsFromBrowserWindow } from './window-bounds'
-import {
-  resolveYtdlpOutputDirectory,
-  syncYtdlpDownloadDirectoryFromSettings
-} from './ytdlp-download-output'
-import {
-  buildYtdlpCommandPreviewContext,
-  buildYtdlpRunOptionsSnapshot,
-  normalizeYtdlpPreviewOutputDirectory,
-  payloadFromSnapshot,
-  validateYtdlpCookiesFilePath,
-  type YtdlpDownloadOptionsPatch
-} from './ytdlp-download-options'
-import type { YtdlpGetCliOptionsParams } from '../shared/ytdlp-download-contract'
-import {
-  getYtdlpRunOptionsSnapshot,
-  refreshYtdlpRunOptionsSnapshot
-} from './ytdlp-run-options-sync'
-import { isFfmpegExportBatchVideoPath } from '../shared/ffmpeg-export-batch-video-ext'
+import { syncYtdlpDownloadDirectoryFromSettings } from './ytdlp-download-output'
+import { refreshYtdlpRunOptionsSnapshot } from './ytdlp-run-options-sync'
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
-import {
-  autoExportProgressMessage,
-  fluxLogAutoExportCancelled,
-  fluxLogAutoExportFfmpegMissing,
-  fluxLogAutoExportSkippedBusy,
-  fluxLogAutoExportSkippedMainWindow,
-  formatFluxLogAutoExportDone,
-  formatFluxLogAutoExportFailed,
-  formatFluxLogBatchEnqueueAdded,
-  fluxLogBatchAutoStartFfmpegMissing,
-  fluxLogBatchAutoStartLaunched,
-  fluxLogBatchAutoStartSkippedBusy,
-  fluxLogBatchEnqueueSkippedNotVideo
-} from '../shared/downloads-flux-log-locale'
-import {
-  processingHistoryAutoExportCancelled,
-  processingHistoryAutoExportFailed,
-  processingHistoryAutoExportSuccess
-} from '../shared/processing-history-status-locale'
-import {
-  downloadsWindowUiLocaleFromSystemLocale,
-  parseDownloadsWindowUiLocale,
-  type DownloadsWindowUiLocale
-} from '../shared/downloads-window-ui-locale'
-import { getMainApplicationStrings } from '../shared/main-application-locale'
-
-/** Кастомная схема для локального видеопревью; привилегии обязаны зарегистрироваться до `app.whenReady`. */
-attachProcessErrorHandlers()
-registerFluxMediaPrivileges()
-registerFluxHelpPrivileges()
-
-function mainDownloadsUiLocale(): DownloadsWindowUiLocale {
-  try {
-    const fromSettings = parseDownloadsWindowUiLocale(cachedSettings.uiLocale)
-    if (fromSettings !== undefined) {
-      return fromSettings
-    }
-    return downloadsWindowUiLocaleFromSystemLocale(app.getLocale())
-  } catch {
-    return 'ru'
-  }
-}
-
-function mainAppStr(): ReturnType<typeof getMainApplicationStrings> {
-  return getMainApplicationStrings(mainDownloadsUiLocale())
-}
-
-function ipcDownloadsUiLocale(raw: unknown): DownloadsWindowUiLocale {
-  return raw === 'en' || raw === 'ru' ? raw : mainDownloadsUiLocale()
-}
-
-function parseDownloadsOpenRequest(raw: unknown): {
-  mergeText: string | null
-  uiLocale?: DownloadsWindowUiLocale
-} {
-  if (raw === null || raw === undefined) {
-    return { mergeText: null }
-  }
-  if (typeof raw === 'string') {
-    const t = raw.trim()
-    return { mergeText: t.length > 0 ? t : null }
-  }
-  if (typeof raw === 'object' && raw !== null) {
-    const o = raw as Record<string, unknown>
-    let mergeText: string | null = null
-    if (typeof o['text'] === 'string') {
-      const t = o['text'].trim()
-      if (t.length > 0) {
-        mergeText = t
-      }
-    }
-    const parsed = parseDownloadsWindowUiLocale(o['uiLocale'])
-    const out: { mergeText: string | null; uiLocale?: DownloadsWindowUiLocale } = { mergeText }
-    if (parsed !== undefined) {
-      out.uiLocale = parsed
-    }
-    return out
-  }
-  return { mergeText: null }
-}
-
-/** Совпадает с лимитом буфера обмена в main: защита от огромных строк из renderer. */
-const SAVE_TEXT_DIALOG_MAX_CHARS = 24 * 1024 * 1024
-
-function parseSaveTextDialogPayload(
-  raw: unknown,
-  locale: DownloadsWindowUiLocale
-):
-  | { ok: true; title: string; defaultFileName: string; content: string }
-  | { ok: false; error: string } {
-  const S = getMainApplicationStrings(locale)
-  if (!raw || typeof raw !== 'object') {
-    return { ok: false, error: S.saveTextInvalidRequest }
-  }
-  const o = raw as Record<string, unknown>
-  const titleRaw = typeof o['title'] === 'string' ? o['title'].trim() : ''
-  const title = titleRaw.length > 0 ? titleRaw : S.saveFileDefaultTitle
-  const fnRaw = typeof o['defaultFileName'] === 'string' ? o['defaultFileName'].trim() : ''
-  const baseFromPayload = basename(fnRaw.replace(/\\/g, '/'))
-  let safeName =
-    baseFromPayload.length > 0 && baseFromPayload !== '.' && baseFromPayload !== '..'
-      ? baseFromPayload
-      : 'fluxalloy-export.json'
-  if (!/\.[a-z0-9]+$/i.test(safeName)) {
-    safeName = `${safeName}.json`
-  }
-  if (typeof o['content'] !== 'string') {
-    return { ok: false, error: S.saveTextInvalidContent }
-  }
-  const content = o['content']
-  if (content.length > SAVE_TEXT_DIALOG_MAX_CHARS) {
-    return { ok: false, error: S.saveTextTooLarge }
-  }
-  return { ok: true, title, defaultFileName: safeName, content }
-}
-
 /**
  * Путь настроек в userData.
  *
@@ -288,46 +151,10 @@ let mainWindowWebContentsId: number | null = null
 /** §7.4 — push `batchExportSnapshot` после enqueue из downloads-runner (до createWindow IPC). */
 let broadcastFfmpegExportBatchSnapshot: ((win?: BrowserWindow | null) => void) | null = null
 
-interface RendererLogBucket {
-  tokens: number
-  updatedAtMs: number
-}
-
-const RENDERER_LOG_BUCKET_CAPACITY = 30
-const RENDERER_LOG_REFILL_PER_SECOND = 10
-const rendererLogBuckets = new Map<number, RendererLogBucket>()
-
-function consumeRendererLogToken(senderId: number): boolean {
-  const now = Date.now()
-  const bucket = rendererLogBuckets.get(senderId) ?? {
-    tokens: RENDERER_LOG_BUCKET_CAPACITY,
-    updatedAtMs: now
-  }
-  const elapsedMs = Math.max(0, now - bucket.updatedAtMs)
-  bucket.tokens = Math.min(
-    RENDERER_LOG_BUCKET_CAPACITY,
-    bucket.tokens + (elapsedMs / 1000) * RENDERER_LOG_REFILL_PER_SECOND
-  )
-  bucket.updatedAtMs = now
-  if (bucket.tokens < 1) {
-    rendererLogBuckets.set(senderId, bucket)
-    return false
-  }
-  bucket.tokens -= 1
-  rendererLogBuckets.set(senderId, bucket)
-  return true
-}
-
-function isMainWindowSender(event: IpcMainEvent): boolean {
-  return mainWindowWebContentsId !== null && event.sender.id === mainWindowWebContentsId
-}
-
-function isMainWindowUiPanelSender(event: IpcMainInvokeEvent): boolean {
-  if (mainWindowWebContentsId !== null && event.sender.id === mainWindowWebContentsId) {
-    return true
-  }
-  return isInspectorWindow(BrowserWindow.fromWebContents(event.sender))
-}
+/** Кастомная схема для локального видеопревью; привилегии обязаны зарегистрироваться до `app.whenReady`. */
+attachProcessErrorHandlers()
+registerFluxMediaPrivileges()
+registerFluxHelpPrivileges()
 
 function resolveEffectiveTheme(pref: AppTheme): ResolvedAppTheme {
   if (pref === 'system') {
@@ -380,202 +207,6 @@ function attachMainWindowBoundsPersistence(win: BrowserWindow): void {
     }
     flush()
   })
-}
-
-function persistYtdlpDownloadDirectory(abs: string | null): void {
-  const merged: AppSettings = { ...cachedSettings }
-  if (abs === null || abs.trim() === '') {
-    delete merged.ytdlpDownloadDirectory
-  } else {
-    const n = normalize(abs.trim())
-    if (!isAbsolute(n)) {
-      return
-    }
-    merged.ytdlpDownloadDirectory = n
-  }
-  cachedSettings = merged
-  saveSettings(settingsPath(), cachedSettings)
-  syncYtdlpDownloadDirectoryFromSettings(cachedSettings.ytdlpDownloadDirectory)
-  buildApplicationMenu()
-  broadcastDownloadsOutputDirectorySnapshot()
-}
-
-/** §6.2 — выбор файла Netscape cookies; взаимоисключающий с --cookies-from-browser. */
-function persistYtdlpCookiesFileFromPicker(
-  absPath: string
-): { ok: true } | { ok: false; error: string } {
-  const v = validateYtdlpCookiesFilePath(absPath, mainDownloadsUiLocale())
-  if (!v.ok) {
-    return v
-  }
-  const merged: AppSettings = { ...cachedSettings }
-  merged.ytdlpCookiesFile = v.path
-  delete merged.ytdlpCookiesBrowser
-  cachedSettings = merged
-  saveSettings(settingsPath(), cachedSettings)
-  refreshYtdlpRunOptionsSnapshot(cachedSettings, mainDownloadsUiLocale())
-  broadcastDownloadsCliOptionsChanged()
-  return { ok: true }
-}
-
-function persistClearYtdlpCookiesFile(): void {
-  const merged: AppSettings = { ...cachedSettings }
-  delete merged.ytdlpCookiesFile
-  cachedSettings = merged
-  saveSettings(settingsPath(), cachedSettings)
-  refreshYtdlpRunOptionsSnapshot(cachedSettings, mainDownloadsUiLocale())
-  broadcastDownloadsCliOptionsChanged()
-}
-
-function launchFfmpegExportBatchRunner(
-  rawExportOverrides?: unknown,
-  progressTargetWin?: BrowserWindow | null
-): boolean {
-  if (activeExportAbort !== null || isFfmpegExportBatchActive()) {
-    return false
-  }
-  const snap = getFfmpegExportBatchSnapshot()
-  if (!snap.rows.some((r) => r.status === 'waiting')) {
-    return false
-  }
-  const paths = resolveAppPaths()
-  const ffmpeg = resolveEngineExecutablePath(paths, 'ffmpeg', cachedSettings.engineExecutablePaths)
-  if (!ffmpeg) {
-    return false
-  }
-  const loc = mainDownloadsUiLocale()
-  void runFfmpegExportBatchQueue({
-    ffmpegPath: ffmpeg,
-    settings: cachedSettings,
-    lutResourcesRoot: paths.resources,
-    rawExportOverrides,
-    userDataRoot: paths.userData,
-    rememberExportOutputPath,
-    rememberFfmpegExportDirectory,
-    uiLocale: loc,
-    pushRowProgress: (rowId, p) => {
-      if (progressTargetWin && !progressTargetWin.isDestroyed()) {
-        progressTargetWin.webContents.send(mw.exportProgress, { ...p, batchRowId: rowId })
-        return
-      }
-      for (const w of BrowserWindow.getAllWindows()) {
-        if (!w.isDestroyed()) {
-          w.webContents.send(mw.exportProgress, { ...p, batchRowId: rowId })
-        }
-      }
-    }
-  }).finally(() => {
-    broadcastFfmpegExportBatchSnapshot?.(progressTargetWin ?? undefined)
-  })
-  broadcastFfmpegExportBatchSnapshot?.(progressTargetWin ?? undefined)
-  return true
-}
-
-function scheduleEnqueueBatchAfterDownload(absoluteFile: string, rowId: number): void {
-  void (async () => {
-    const loc = mainDownloadsUiLocale()
-    grantMediaPath(absoluteFile)
-    if (!isFfmpegExportBatchVideoPath(absoluteFile)) {
-      emitDownloadsLog({
-        kind: 'line',
-        rowId,
-        stream: 'stderr',
-        text: fluxLogBatchEnqueueSkippedNotVideo(loc)
-      })
-      return
-    }
-    const granted = filterExistingVideoPathsForBatch([absoluteFile])
-    if (granted.length === 0) {
-      return
-    }
-    const { added } = addFfmpegExportBatchPaths(granted)
-    if (added > 0) {
-      emitDownloadsLog({
-        kind: 'line',
-        rowId,
-        stream: 'stderr',
-        text: formatFluxLogBatchEnqueueAdded(loc, absoluteFile)
-      })
-      revealMainWindowBatchExportPanel()
-    }
-    broadcastFfmpegExportBatchSnapshot?.()
-    const cli = getYtdlpRunOptionsSnapshot()
-    if (!cli.autoStartBatchAfterEnqueue) {
-      return
-    }
-    if (activeExportAbort !== null || isFfmpegExportBatchActive()) {
-      emitDownloadsLog({
-        kind: 'line',
-        rowId,
-        stream: 'stderr',
-        text: fluxLogBatchAutoStartSkippedBusy(loc)
-      })
-      return
-    }
-    const paths = resolveAppPaths()
-    const ffmpeg = resolveEngineExecutablePath(
-      paths,
-      'ffmpeg',
-      cachedSettings.engineExecutablePaths
-    )
-    if (!ffmpeg) {
-      emitDownloadsLog({
-        kind: 'line',
-        rowId,
-        stream: 'stderr',
-        text: fluxLogBatchAutoStartFfmpegMissing(loc)
-      })
-      return
-    }
-    if (launchFfmpegExportBatchRunner(undefined)) {
-      emitDownloadsLog({
-        kind: 'line',
-        rowId,
-        stream: 'stderr',
-        text: fluxLogBatchAutoStartLaunched(loc)
-      })
-    }
-  })()
-}
-
-function parseYtdlpGetCliOptionsParams(raw: unknown): YtdlpGetCliOptionsParams | undefined {
-  if (raw === undefined || raw === null) {
-    return undefined
-  }
-  if (typeof raw !== 'object') {
-    return undefined
-  }
-  const o = raw as Record<string, unknown>
-  const out: YtdlpGetCliOptionsParams = {}
-  if (typeof o['previewOutputDirectory'] === 'string') {
-    out.previewOutputDirectory = o['previewOutputDirectory']
-  }
-  const dr = o['draft']
-  if (dr !== undefined && dr !== null && typeof dr === 'object') {
-    out.draft = dr as YtdlpDownloadOptionsPatch
-  }
-  const parsedUi = parseDownloadsWindowUiLocale(o['uiLocale'])
-  if (parsedUi !== undefined) {
-    out.uiLocale = parsedUi
-  }
-  return Object.keys(out).length > 0 ? out : undefined
-}
-
-/** §6.2 — шаблон `-o` и белый список `-f`; синхронно обновляет снимок для downloads-queue-runner. */
-function persistYtdlpDownloadCliOptionsPatch(
-  patch: YtdlpDownloadOptionsPatch,
-  uiLocale?: DownloadsWindowUiLocale
-): { ok: true } | { ok: false; error: string } {
-  const loc = uiLocale ?? mainDownloadsUiLocale()
-  const merged = mergeYtdlpDownloadCliPatchOntoSettings(cachedSettings, patch, loc)
-  if (!merged.ok) {
-    return merged
-  }
-  cachedSettings = merged.settings
-  saveSettings(settingsPath(), cachedSettings)
-  refreshYtdlpRunOptionsSnapshot(cachedSettings, mainDownloadsUiLocale())
-  broadcastDownloadsCliOptionsChanged()
-  return { ok: true }
 }
 
 function persistLastOpenedSource(absolutePath: string | null): void {
@@ -642,7 +273,7 @@ function createWindow(): void {
       if (mainWindowWebContentsId === webContentsId) {
         mainWindowWebContentsId = null
       }
-      rendererLogBuckets.delete(webContentsId)
+      clearRendererLogBucket(webContentsId)
     },
     getAllowMainWindowClose: () => allowMainWindowClose,
     setAllowMainWindowClose: (value) => {
@@ -659,45 +290,6 @@ function createWindow(): void {
   })
 }
 
-async function openDownloadedFileInMainHandler(
-  absoluteFile: string
-): Promise<{ ok: true } | { ok: false; error: string }> {
-  const H = mainAppStr()
-  let previewFile: string
-  try {
-    previewFile = await ensurePreviewPlayableMedia(absoluteFile)
-  } catch (error) {
-    return { ok: false, error: error instanceof Error ? error.message : String(error) }
-  }
-  const mediaUrl = grantMediaPath(previewFile)
-  if (!mediaUrl) {
-    return { ok: false, error: H.previewCannotOpenInPreview }
-  }
-  if (!grantMediaPath(absoluteFile)) {
-    return { ok: false, error: H.previewCannotOpenSourceInEditor }
-  }
-  const target =
-    mainWindowWebContentsId === null
-      ? null
-      : BrowserWindow.getAllWindows().find((w) => w.webContents.id === mainWindowWebContentsId)
-  if (!target || target.isDestroyed()) {
-    return { ok: false, error: H.previewMainWindowMissing }
-  }
-  persistLastOpenedSource(absoluteFile)
-  target.show()
-  target.focus()
-  target.webContents.send(mw.previewOpened, {
-    ok: true,
-    path: absoluteFile,
-    mediaUrl,
-    name:
-      previewFile === absoluteFile
-        ? basename(absoluteFile)
-        : `${basename(absoluteFile)} · preview WebM`
-  })
-  return { ok: true }
-}
-
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.fluxalloy')
   setProcessErrorReporter((kind, reason) => {
@@ -706,6 +298,10 @@ app.whenReady().then(() => {
   logStartupBanner()
   pruneDiagnosticsOnStartup()
   cachedSettings = loadSettings(settingsPath())
+  configureMainBootstrapIpcHelpers({
+    getMainWindowWebContentsId: () => mainWindowWebContentsId,
+    getUiLocaleFromSettings: () => cachedSettings.uiLocale
+  })
   configureMainDiagnosticsService({
     mainDownloadsUiLocale,
     mainAppStr
@@ -750,6 +346,51 @@ app.whenReady().then(() => {
     },
     openDownloadedFileInMainHandler
   })
+  configureMainYtdlpSettingsPersist({
+    getSettings: () => cachedSettings,
+    replaceSettings: (settings) => {
+      cachedSettings = settings
+    },
+    persistSettings: () => {
+      saveSettings(settingsPath(), cachedSettings)
+    },
+    mainDownloadsUiLocale,
+    onDownloadDirectoryChanged: (directory) => {
+      syncYtdlpDownloadDirectoryFromSettings(directory)
+      buildApplicationMenu()
+      broadcastDownloadsOutputDirectorySnapshot()
+    },
+    onCliOptionsChanged: () => {
+      refreshYtdlpRunOptionsSnapshot(cachedSettings, mainDownloadsUiLocale())
+      broadcastDownloadsCliOptionsChanged()
+    }
+  })
+  configureMainFfmpegExportBatchHost({
+    isExportBusy: () => activeExportAbort !== null,
+    getSettings: () => cachedSettings,
+    getEnginePathOverrides: () => cachedSettings.engineExecutablePaths ?? {},
+    mainDownloadsUiLocale,
+    rememberExportOutputPath,
+    rememberFfmpegExportDirectory,
+    broadcastBatchSnapshot: (win) => {
+      broadcastFfmpegExportBatchSnapshot?.(win)
+    },
+    revealMainWindowBatchExportPanel
+  })
+  configureMainYtdlpDownloadMainHandler({
+    mainAppStr,
+    mainDownloadsUiLocale,
+    getSettings: () => cachedSettings,
+    getEnginePathOverrides: () => cachedSettings.engineExecutablePaths ?? {},
+    getMainWindowWebContentsId: () => mainWindowWebContentsId,
+    persistLastOpenedSource,
+    isExportBusy: () => activeExportAbort !== null,
+    setActiveExportAbort: (ac) => {
+      activeExportAbort = ac
+    },
+    rememberExportOutputPath,
+    rememberFfmpegExportDirectory
+  })
   refreshEnginePathOverridesSnapshot()
   syncYtdlpDownloadDirectoryFromSettings(cachedSettings.ytdlpDownloadDirectory)
   refreshYtdlpRunOptionsSnapshot(cachedSettings, mainDownloadsUiLocale())
@@ -767,102 +408,14 @@ app.whenReady().then(() => {
     }
     buildApplicationMenu()
   })
-  configureDownloadsWindowBoundsHooks({
-    isMainWindowSender: (sender) => sender.id === mainWindowWebContentsId,
+  configureMainDownloadsWindowBoundsBootstrap({
+    getMainWindowWebContentsId: () => mainWindowWebContentsId,
     getSavedDownloadsBounds: () => cachedSettings.windowBounds?.downloads,
     persistDownloadsBounds: (r) => {
       patchWindowBounds({ downloads: r })
     },
-    pickYtdlpOutputDirectory: async (win: BrowserWindow) => {
-      const Y = getYtdlpCliValidationCopy(mainDownloadsUiLocale())
-      const result = await dialog.showOpenDialog(win, {
-        properties: ['openDirectory', 'createDirectory'],
-        title: Y.dialogYtdlpOutputDirTitle
-      })
-      if (result.canceled || result.filePaths.length === 0 || !result.filePaths[0]) {
-        return { ok: false, cancelled: true }
-      }
-      const picked = normalize(result.filePaths[0])
-      if (!isAbsolute(picked)) {
-        return { ok: false, error: Y.pickerOutputDirNeedAbsolute }
-      }
-      persistYtdlpDownloadDirectory(picked)
-      return {
-        ok: true,
-        path: resolveYtdlpOutputDirectory(resolveAppPaths().userData)
-      }
-    },
-    clearYtdlpOutputDirectoryOverride: (): void => {
-      persistYtdlpDownloadDirectory(null)
-    },
-    pickYtdlpCookiesFile: async (win: BrowserWindow) => {
-      const Y = getYtdlpCliValidationCopy(mainDownloadsUiLocale())
-      const result = await dialog.showOpenDialog(win, {
-        properties: ['openFile'],
-        title: Y.dialogYtdlpCookiesFileTitle,
-        filters: [
-          { name: Y.dialogFilterTextFiles, extensions: ['txt'] },
-          { name: Y.dialogFilterAllFiles, extensions: ['*'] }
-        ]
-      })
-      if (result.canceled || result.filePaths.length === 0 || !result.filePaths[0]) {
-        return { ok: false, cancelled: true }
-      }
-      const picked = normalize(result.filePaths[0])
-      if (!isAbsolute(picked)) {
-        return { ok: false, error: Y.pickerCookiesNeedAbsoluteFile }
-      }
-      const saved = persistYtdlpCookiesFileFromPicker(picked)
-      if (!saved.ok) {
-        return saved
-      }
-      return { ok: true, path: picked }
-    },
-    clearYtdlpCookiesFile: (): void => {
-      persistClearYtdlpCookiesFile()
-    },
-    getYtdlpDownloadCliOptions: (raw?: unknown, ipcUiLocale?: DownloadsWindowUiLocale) => {
-      const req = parseYtdlpGetCliOptionsParams(raw)
-      const loc = req?.uiLocale ?? ipcUiLocale ?? mainDownloadsUiLocale()
-      const paths = resolveAppPaths()
-      const rows = getDownloadsQueueSnapshot()
-      const hit = rows.find((r) => r.url.trim().length > 0)
-      const previewParams: {
-        userDataRoot: string
-        sampleUrl?: string
-        outputDirectoryOverride?: string | null
-      } = {
-        userDataRoot: paths.userData
-      }
-      if (hit !== undefined) {
-        previewParams.sampleUrl = hit.url
-      }
-      if (
-        req?.previewOutputDirectory !== undefined &&
-        req.previewOutputDirectory.trim().length > 0
-      ) {
-        const n = normalizeYtdlpPreviewOutputDirectory(req.previewOutputDirectory)
-        if (n !== null) {
-          previewParams.outputDirectoryOverride = n
-        }
-      }
-      let settings = cachedSettings
-      if (req?.draft) {
-        const merged = mergeYtdlpDownloadCliPatchOntoSettings(cachedSettings, req.draft, loc)
-        if (merged.ok) {
-          settings = merged.settings
-        }
-      }
-      return payloadFromSnapshot(
-        buildYtdlpRunOptionsSnapshot(settings, loc),
-        buildYtdlpCommandPreviewContext(previewParams),
-        loc
-      )
-    },
-    applyYtdlpDownloadCliPatch: (patch, uiLocale?: DownloadsWindowUiLocale) =>
-      persistYtdlpDownloadCliOptionsPatch(patch, uiLocale),
-    openDownloadedFileInHandler: (absoluteFile) => openDownloadedFileInMainHandler(absoluteFile),
-    getDownloadsWindowUiPanelsSnapshot: () => cachedSettings.downloadsWindowUiPanels,
+    mainDownloadsUiLocale,
+    getSettings: () => cachedSettings,
     mergeDownloadsWindowUiPanelsPatch: (patch) => {
       const prev = cachedSettings.downloadsWindowUiPanels ?? {}
       cachedSettings = {
@@ -872,139 +425,9 @@ app.whenReady().then(() => {
       saveSettings(settingsPath(), cachedSettings)
       broadcastDownloadsWindowUiPanelsSnapshot(cachedSettings.downloadsWindowUiPanels ?? {})
     },
-    getAppTheme: (): ResolvedAppTheme => resolveEffectiveTheme(cachedSettings.theme),
-    getDownloadsUiLocale: (): DownloadsWindowUiLocale => mainDownloadsUiLocale()
+    resolveEffectiveTheme,
+    openDownloadedFileInMainHandler
   })
-  function scheduleAutoExportAfterSuccessfulYtdlpOpen(absoluteInput: string, rowId: number): void {
-    void (async () => {
-      const loc = mainDownloadsUiLocale()
-      if (cachedSettings.ytdlpAutoExportAfterOpenInHandler !== true) {
-        return
-      }
-      if (activeExportAbort !== null) {
-        emitDownloadsLog({
-          kind: 'line',
-          rowId,
-          stream: 'stderr',
-          text: fluxLogAutoExportSkippedBusy(loc)
-        })
-        return
-      }
-      const paths = resolveAppPaths()
-      const ffmpeg = resolveEngineExecutablePath(
-        paths,
-        'ffmpeg',
-        cachedSettings.engineExecutablePaths
-      )
-      if (!ffmpeg) {
-        emitDownloadsLog({
-          kind: 'line',
-          rowId,
-          stream: 'stderr',
-          text: fluxLogAutoExportFfmpegMissing(loc)
-        })
-        return
-      }
-      const exportOpts = resolveFfmpegExportJobOptionsFromAppSettings(cachedSettings, undefined)
-      const outPath = pickUniqueAutoExportOutputPath(absoluteInput, exportOpts.container)
-      const targetWin =
-        mainWindowWebContentsId === null
-          ? null
-          : BrowserWindow.getAllWindows().find((w) => w.webContents.id === mainWindowWebContentsId)
-      if (!targetWin || targetWin.isDestroyed()) {
-        emitDownloadsLog({
-          kind: 'line',
-          rowId,
-          stream: 'stderr',
-          text: fluxLogAutoExportSkippedMainWindow(loc)
-        })
-        return
-      }
-      const ac = new AbortController()
-      activeExportAbort = ac
-      const startedAt = Date.now()
-      const pushProgress = (p: FfmpegExportProgressPayload): void => {
-        if (!targetWin.isDestroyed()) {
-          targetWin.webContents.send(mw.exportProgress, p)
-        }
-      }
-      try {
-        pushProgress({ percent: -1, message: autoExportProgressMessage(loc) })
-        const result = await runFfmpegExportJob({
-          ffmpegPath: ffmpeg,
-          inputPath: absoluteInput,
-          outputPath: outPath,
-          probeDurationSec: null,
-          ...exportOpts,
-          lutResourcesRoot: paths.resources,
-          signal: ac.signal,
-          onProgress: pushProgress,
-          uiLocale: loc
-        })
-        if (result.ok) {
-          rememberExportOutputPath(outPath)
-          rememberFfmpegExportDirectory(outPath)
-          appendProcessingHistoryEntry(paths.userData, {
-            kind: 'autoExport',
-            startedAt,
-            finishedAt: Date.now(),
-            inputPath: absoluteInput,
-            outputPath: outPath,
-            outcome: 'success',
-            status: processingHistoryAutoExportSuccess(loc),
-            errorHint: null,
-            exportVideoCodecUsed: result.videoCodecUsed
-          })
-          emitDownloadsLog({
-            kind: 'line',
-            rowId,
-            stream: 'stderr',
-            text: formatFluxLogAutoExportDone(loc, outPath)
-          })
-          return
-        }
-        if (result.error === FFMPEG_EXPORT_CANCELLED_ERROR) {
-          appendProcessingHistoryEntry(paths.userData, {
-            kind: 'autoExport',
-            startedAt,
-            finishedAt: Date.now(),
-            inputPath: absoluteInput,
-            outputPath: outPath,
-            outcome: 'cancelled',
-            status: processingHistoryAutoExportCancelled(loc),
-            errorHint: null,
-            exportVideoCodecUsed: result.videoCodecUsed
-          })
-          emitDownloadsLog({
-            kind: 'line',
-            rowId,
-            stream: 'stderr',
-            text: fluxLogAutoExportCancelled(loc)
-          })
-          return
-        }
-        appendProcessingHistoryEntry(paths.userData, {
-          kind: 'autoExport',
-          startedAt,
-          finishedAt: Date.now(),
-          inputPath: absoluteInput,
-          outputPath: outPath,
-          outcome: 'error',
-          status: processingHistoryAutoExportFailed(loc),
-          errorHint: result.error,
-          exportVideoCodecUsed: result.videoCodecUsed
-        })
-        emitDownloadsLog({
-          kind: 'line',
-          rowId,
-          stream: 'stderr',
-          text: formatFluxLogAutoExportFailed(loc, result.error)
-        })
-      } finally {
-        activeExportAbort = null
-      }
-    })()
-  }
   configureDownloadsQueueRunnerHooks({
     openDownloadedFileInHandler: (absoluteFile) => openDownloadedFileInMainHandler(absoluteFile),
     afterDownloadOpenedInMainHandler: scheduleAutoExportAfterSuccessfulYtdlpOpen,
@@ -1110,12 +533,7 @@ app.whenReady().then(() => {
     parseDownloadsOpenRequest
   })
 
-  ipcMain.on(mw.logRenderer, (event, raw: unknown) => {
-    if (!isMainWindowSender(event) || !consumeRendererLogToken(event.sender.id)) {
-      return
-    }
-    logFromRendererSafe(raw)
-  })
+  registerMainRendererLogIpcHandler()
 
   buildApplicationMenu()
   createWindow()
