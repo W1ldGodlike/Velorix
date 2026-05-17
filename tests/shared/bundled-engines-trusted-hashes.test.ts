@@ -13,5 +13,6 @@ describe('bundled-engines-trusted-hashes §19', () => {
     expect(lines.some((l) => l.includes(BUNDLED_ENGINE_EXE_JSON_KEYS[0]!))).toBe(true)
     expect(lines.some((l) => l.includes('FLUXALLOY_ENGINES_STRICT'))).toBe(true)
     expect(lines.some((l) => l.includes('FLUXALLOY_SKIP_FFPROBE_SMOKE'))).toBe(true)
+    expect(lines.some((l) => l.includes('check:terminal-summaries-ru'))).toBe(true)
   })
 })

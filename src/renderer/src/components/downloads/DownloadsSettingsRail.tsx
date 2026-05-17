@@ -25,6 +25,7 @@ export const DownloadsSettingsRail = forwardRef<HTMLElement, DownloadsSettingsRa
         id="downloads-ytdlp-settings-rail"
         className="app-downloads-rail"
         aria-label={uiText('downloadsRailAria')}
+        aria-describedby="downloads-page-hint"
         aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
       >
         <h3 className="app-settings-title">{uiText('downloadsRailTitle')}</h3>
@@ -37,6 +38,7 @@ export const DownloadsSettingsRail = forwardRef<HTMLElement, DownloadsSettingsRa
             role="region"
             aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
             aria-label={uiText('downloadsSettingsSectionsStackAria')}
+            aria-describedby="downloads-page-hint"
           >
             <DownloadsSettingsRailFormatSection {...props} />
             <DownloadsSettingsRailMetadataSection {...props} />
@@ -55,6 +57,7 @@ export const DownloadsSettingsRail = forwardRef<HTMLElement, DownloadsSettingsRa
           role="toolbar"
           aria-orientation="horizontal"
           aria-label={uiText('downloadsRailFooterToolbarAria')}
+          aria-describedby="downloads-page-hint"
           aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
         >
           <button

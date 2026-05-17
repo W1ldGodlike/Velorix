@@ -20,6 +20,7 @@ describe('packaged-release-smoke §19', () => {
     expect(lines.some((l) => l.includes('build:linux'))).toBe(true)
     expect(lines.some((l) => l.includes('engines:doctor'))).toBe(true)
     expect(lines.some((l) => l.includes('trusted_hashes.json'))).toBe(true)
+    expect(lines.some((l) => l.includes('check:terminal-summaries-ru'))).toBe(true)
     expect(lines.filter((l) => l.startsWith('command:')).length).toBe(1)
   })
 })

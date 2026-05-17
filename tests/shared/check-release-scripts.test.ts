@@ -13,5 +13,6 @@ describe('check-release-scripts', () => {
     expect(lines.some((l) => l.includes(CHECK_RELEASE_LOCAL_NPM_SCRIPT))).toBe(true)
     expect(lines.some((l) => l.includes('engines:prepare:win'))).toBe(true)
     expect(lines.some((l) => l.includes('FLUXALLOY_SKIP_FFPROBE_SMOKE'))).toBe(true)
+    expect(lines.some((l) => l.includes('check:terminal-summaries-ru'))).toBe(true)
   })
 })

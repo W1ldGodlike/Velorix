@@ -59,6 +59,8 @@ describe('packaged-ffprobe-smoke', () => {
     expect(lines.some((l) => l.includes('stream_index'))).toBe(true)
     expect(lines.some((l) => l.includes('nb_read_frames'))).toBe(true)
     expect(lines.some((l) => l.includes('nb_read_packets'))).toBe(true)
+    expect(lines.some((l) => l.includes('compatible_brands'))).toBe(true)
+    expect(lines.some((l) => l.includes('handler_name'))).toBe(true)
     expect(lines.some((l) => l.includes('ParsableForSmoke'))).toBe(true)
     expect(lines.some((l) => l.includes('formatFfprobeContainerDiagnostics'))).toBe(true)
     expect(lines).toContain(`candidate: ${candidates[0]} (present)`)
@@ -133,6 +135,12 @@ describe('packaged-ffprobe-smoke', () => {
           nb_streams: '1',
           flags: 4
         }
+      })
+    ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
+        format: { format_name: 'mp4', nb_streams: '1', flags: '0x4' }
       })
     ).toBe(true)
     expect(
@@ -253,10 +261,26 @@ describe('packaged-ffprobe-smoke', () => {
           format_name: 'mp4',
           format_long_name: 'QuickTime / MOV',
           nb_streams: '1',
-          tags: { major_brand: 'isom', minor_version: '512', encoder: 'Lavf61.0' }
+          tags: {
+            major_brand: 'isom',
+            minor_version: '512',
+            creation_time: '2024-01-02T03:04:05.000000Z',
+            compatible_brands: 'isomiso2avc1mp41',
+            encoder: 'Lavf61.0'
+          }
         }
       })
     ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByContainerRegistry({
+        streams: [{}],
+        format: {
+          format_name: 'mp4',
+          nb_streams: '1',
+          tags: { compatible_brands: { not: 'scalar' } }
+        }
+      })
+    ).toBe(false)
     expect(
       isPackagedFfprobeProbeJsonParsableByContainerRegistry({
         streams: [{}],
@@ -461,11 +485,17 @@ describe('packaged-ffprobe-smoke', () => {
             start_pts: '1024',
             codec_tag_string: 'avc1',
             codec_tag: '0x31637661',
-            tags: { language: 'eng', stereo_mode: '2', rotate: '90' }
+            tags: { language: 'eng', stereo_mode: '2', rotate: '90', title: 'Clip', handler_name: 'VideoHandler' }
           }
         ]
       })
     ).toBe(true)
+    expect(
+      isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
+        ...base,
+        streams: [{ tags: { title: { nested: true } } }]
+      })
+    ).toBe(false)
     expect(
       isPackagedFfprobeProbeJsonParsableByStreamDetailFields({
         ...base,

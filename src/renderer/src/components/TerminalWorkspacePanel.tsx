@@ -16,6 +16,7 @@ export function TerminalWorkspacePanel(props: TerminalWorkspacePanelProps): JSX.
       id="workspace-panel-terminal"
       role="tabpanel"
       aria-labelledby="workspace-tab-terminal"
+      aria-describedby="terminal-intro-hint"
       aria-busy={terminalBusy}
       className="app-main app-terminal-workspace"
     >

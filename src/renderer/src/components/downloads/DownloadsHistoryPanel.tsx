@@ -47,6 +47,7 @@ export function DownloadsHistoryPanel({
       open={open}
       aria-busy={busy}
       aria-label={uiText('downloadsHistoryDetailsAria')}
+      aria-describedby="downloads-page-hint"
       onToggle={(event) => {
         onToggle(event.currentTarget.open)
       }}

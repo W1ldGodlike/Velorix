@@ -106,6 +106,7 @@ export function AppWorkspaceMain({
           id="workspace-panel-downloads"
           role="tabpanel"
           aria-labelledby="workspace-tab-downloads"
+          aria-describedby="downloads-page-hint"
           aria-busy={downloadsWorkspaceAriaBusy}
           className="app-main app-downloads-workspace"
         >

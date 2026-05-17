@@ -30,6 +30,7 @@ export function TerminalWorkspacePanelHints(
     <aside
       className="app-terminal-hints"
       aria-label={uiText('terminalHintsPanelAria')}
+      aria-describedby="terminal-hints-filter-hint terminal-main-split-hint"
       aria-busy={terminalBusy}
     >
       <div className="app-field">
@@ -53,6 +54,7 @@ export function TerminalWorkspacePanelHints(
       <ul
         className="app-terminal-hint-list"
         aria-label={uiText('terminalHintsInsertListAria')}
+        aria-describedby="terminal-hints-filter-hint"
         aria-busy={terminalBusy}
       >
         {visibleTerminalHints.map((hint) => (

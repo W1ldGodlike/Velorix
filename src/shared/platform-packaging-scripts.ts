@@ -14,6 +14,7 @@ export function formatPlatformPackagingDiagnosticLines(): string[] {
     `linux: npm run ${BUILD_LINUX_NPM_SCRIPT} (AppImage + deb; engines/bin вручную)`,
     'engines: авто-загрузка prepare — Windows x64; macOS/Linux: положить ffmpeg/ffprobe/yt-dlp в bin/ + engines:doctor',
     'smoke skips: FLUXALLOY_SKIP_PACK_VERIFY, FLUXALLOY_SKIP_FFPROBE_SMOKE, FLUXALLOY_SKIP_FFMPEG_SMOKE, FLUXALLOY_SKIP_YTDLP_SMOKE',
+    'dev quiet: npm run check:quiet includes check:terminal-summaries-ru (§8 terminal RU summaries 0/0)',
     'config: electron-builder.yml targets win (nsis/portable/zip), mac (dmg), linux (AppImage, deb)'
   ]
 }

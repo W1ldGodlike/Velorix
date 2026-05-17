@@ -36,6 +36,7 @@ export function DownloadsWorkspaceMainLowerStack(props: DownloadsWorkspaceMainPr
       className="app-downloads-lower-stack"
       role="region"
       aria-label={uiText('downloadsLowerStackAria')}
+      aria-describedby="downloads-page-hint"
       aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
     >
       <DownloadsHistoryPanel

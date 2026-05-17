@@ -41,6 +41,7 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
       className="app-downloads-table-wrap"
       role="group"
       aria-label={uiText('downloadsQueueTableWrapGroupAria')}
+      aria-describedby="downloads-page-hint"
       aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
     >
       <table

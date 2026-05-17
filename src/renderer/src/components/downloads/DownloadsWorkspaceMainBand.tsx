@@ -108,6 +108,7 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
           role="toolbar"
           aria-orientation="horizontal"
           aria-label={uiText('downloadsUrlActionsToolbarAria')}
+          aria-describedby="downloads-page-hint downloads-main-url-hint"
           aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
         >
           <button

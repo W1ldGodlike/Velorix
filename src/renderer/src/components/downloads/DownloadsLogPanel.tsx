@@ -33,6 +33,7 @@ export function DownloadsLogPanel({
       className="app-downloads-log-panel"
       open={open}
       aria-label={uiText('downloadsLogDetailsAria')}
+      aria-describedby="downloads-page-hint"
       aria-busy={tabBusy}
       onToggle={(event) => {
         onToggle(event.currentTarget.open)
