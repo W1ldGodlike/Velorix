@@ -27,9 +27,9 @@
 
 **Запрещено:** сбрасывать чекбоксы §9 фаз 0–2; заново проходить фазы 0–2 «потому что агент ушёл в спринт»; откатывать уже закоммиченные срезы программы без явной просьбы владельца.
 
-**Обязательно:** `npm run audit:copy-paste` → первый hotspot/⬜ **текущей** фазы (сейчас фаза 3: `tests/shared/ffprobe-container-format.test.ts`); `npm run check:quiet` перед срезом.
+**Обязательно:** `npm run audit:copy-paste` → первый hotspot/⬜ **текущей** фазы (сейчас **фаза 4**: structural ≥400 / критерий `AUDIT_LARGE_MODULE_CANDIDATES`); `npm run check:quiet` перед срезом.
 
-**Итог:** программа **продолжается** с фазы 3, а не перезапускается с фазы 0.
+**Итог:** программа **продолжается** с фазы 4, а не перезапускается с фазы 0.
 
 ---
 
@@ -191,7 +191,7 @@
 | `ytdlp-progress-parser.test.ts` (77 it) | ✅ | `ytdlp-progress-parse-cases` + `it.each` |
 | `ffmpeg-export-argv.test.ts` (67 it) | ✅ | `ffmpeg-export-argv-cases` + `it.each` (filter/trim/encode) |
 | `ffprobe-service.test.ts` (29 it + it.each) | ✅ | track-detail-cases |
-| Остальные `many-standalone-it` | ⬜ | по убыванию count из audit |
+| Остальные `many-standalone-it` | ✅ | `ytdlp-progress-parser-queue-failure-cases` + `it.each` (J-864) |
 
 | Шаг | Действие |
 |-----|----------|
@@ -370,6 +370,13 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | structural | 310 | src/main/settings-store.ts | 4 | `settings-store-hydrate.ts` + `settings-store-load.ts` + entry `saveSettings` | ✅ J-857 |
 | structural | 325 | src/main/ffmpeg-export-service-job-resolve.ts | 4 | `ffmpeg-export-service-job-resolve-types|video|argv.ts` + entry `resolveFfmpegExportJobPlan` | ✅ J-858 |
 | structural | 350 | src/main/ytdlp-download-options-snapshot.ts | 4 | `ytdlp-download-options-snapshot-types|build|payload.ts` + entry re-export | ✅ J-859 |
+| structural | 347 | src/main/main-application-bootstrap.ts | 4 | `main-application-bootstrap-state|hosts|ipc.ts` + entry `runMainApplicationBootstrap` | ✅ J-860 |
+| structural | 339 | src/main/settings-store-load-parse.ts | 4 | `settings-store-load-parse-layout|ytdlp|ffmpeg.ts` + entry re-export | ✅ J-861 |
+| structural | 348 | src/main/downloads-window-runtime.ts | 4 | `downloads-window-runtime-hooks|actions|broadcast.ts` + entry re-export | ✅ J-862 |
+| structural | 350 | src/main/main-application-menu.ts | 4 | `main-application-menu-types|deps|template.ts` + entry `buildApplicationMenu` | ✅ J-863 |
+| many-standalone-it | 27 | tests/main/ytdlp-progress-parser-queue-failure.test.ts | 3 | `ytdlp-progress-parser-queue-failure-cases` + `it.each` | ✅ J-864 |
+| many-export-parse | 12 | src/main/settings-store-load-parse-ffmpeg.ts | 4 | → `settings-store-load-parse-ffmpeg-registry.ts` (audit path) | ✅ J-864 |
+| many-export-parse | 12 | src/main/settings-store-load-parse-ytdlp.ts | 4 | → `settings-store-load-parse-ytdlp-registry.ts` (audit path) | ✅ J-864 |
 
 ---
 
