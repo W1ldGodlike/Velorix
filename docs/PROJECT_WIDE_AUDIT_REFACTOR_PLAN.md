@@ -305,6 +305,10 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | structural | ~967 | src/main/index.ts | 4 | `main-ytdlp-download-main-handler.ts` (open in main + auto-export after yt-dlp) | ✅ J-792 |
 | structural | ~785 | src/main/index.ts | 4 | `main-downloads-window-bounds-bootstrap.ts` (configureDownloadsWindowBoundsHooks deps) | ✅ J-793 |
 | structural | ~678 | src/main/index.ts | 4 | `main-bootstrap-ipc-helpers.ts` (locale, IPC parsers, renderer log rate-limit) | ✅ J-794 |
+| structural | ~552 | src/main/index.ts | 4 | `main-cached-settings-host.ts` (settings.json cache, bounds, dialog defaults, TZ path) | ✅ J-795 |
+| structural | ~411 | src/main/index.ts | 4 | `main-window-runtime-state.ts` + `main-application-bootstrap.ts` (`whenReady` orchestration) | ✅ J-796 |
+| structural | 819 | src/renderer/src/App.tsx | 4 | `use-app-composition.ts` (hooks + `useAppShellProps` assembly) | ✅ J-797 |
+| structural | ~815 | src/renderer/src/use-app-composition.ts | 4 | split: `use-app-composition-state` + `use-app-shell-props-input` + orchestrator | ✅ J-798 |
 
 ---
 
