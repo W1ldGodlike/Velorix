@@ -35,5 +35,7 @@
   "terminalHintsPanelAria": "CLI hints",
   "terminalHintsSearchLabel": "Filter hints",
   "terminalHintsSearchPlaceholder": "--help, -i, crop",
-  "terminalHintsInsertListAria": "Hints: insert a token or full line into the command"
+  "terminalHintsInsertListAria": "Hints: insert a token or full line into the command",
+  "terminalHintInsertButtonAriaTemplate": "Insert {token}, tool {tool}. {summary}",
+  "terminalHintInsertButtonAriaNoSummaryTemplate": "Insert {token}, tool {tool}"
 }

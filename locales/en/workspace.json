@@ -1,0 +1,13 @@
+{
+  "workspaceTabsAria": "Workspace tabs",
+  "appStatusbarAria": "Status bar",
+  "statusbarEnginesClusterAria": "Engine readiness and tool versions",
+  "statusbarExportCodecClusterAria": "Editor export codec summary",
+  "workspaceTabEditor": "Editor",
+  "workspaceTabDownloads": "Downloads",
+  "workspaceTabTerminal": "Terminal",
+  "workspaceTabEditorTooltip": "Editor: open a video from your PC, preview it, pick a range on the timeline, and save a finished file. The FFmpeg panel on the right sets picture quality, audio, and file format.",
+  "workspaceTabDownloadsTooltip": "Downloads: a queue of links, a live log, and settings for how downloads work — quality, save folder, subtitles, and what to do when the network drops.",
+  "workspaceTabTerminalTooltip": "Terminal: run one command at a time for the built-in tools (processing and downloading). For the common “open a file and export” flow, use the Editor tab.",
+  "terminalWorkbenchAria": "Terminal tab: command input, log, and hints"
+}

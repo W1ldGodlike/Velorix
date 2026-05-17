@@ -1,0 +1,22 @@
+{
+  "quickYtdlpAria": "Быстрая загрузка yt-dlp",
+  "quickYtdlpUrlFieldGroupAria": "Поле URL, поведение вставки и документация",
+  "quickYtdlpSummary": "Быстрая загрузка yt-dlp",
+  "quickYtdlpPlaceholder": "URL или несколько URL по строкам (для кнопки ниже берётся первый)",
+  "quickYtdlpHint": "Кнопка ниже скачивает первый распознанный URL текущими настройками yt-dlp и открывает готовый файл в этом редакторе. Параллельно с другой загрузкой нельзя — дождитесь окончания или отмените её на вкладке «Загрузки».",
+  "quickYtdlpDownloadOpenEditor": "Скачать и добавить в редактор",
+  "quickYtdlpDocNavAria": "Ссылки на документацию yt-dlp",
+  "quickYtdlpDocFormats": "Форматы",
+  "quickYtdlpDocOutputTemplate": "Шаблон -o",
+  "editorUrlPasteBehaviorLabel": "Ctrl+V с URL",
+  "editorUrlPasteBehaviorDownloads": "Окно загрузок",
+  "editorUrlPasteBehaviorOpenEditor": "Скачать в редактор",
+  "batchExportOutputSuffixLabel": "Имя выхода",
+  "batchExportOutputSuffixHint": "Токены {stem}, {name}, {ext}; расширение контейнера добавится отдельно.",
+  "batchExportOutputDirLabel": "Папка выхода",
+  "batchExportOutputDirHint": "Пусто — файл рядом с каждым исходником; иначе все готовые файлы пакета в эту папку.",
+  "batchExportOutputDirPick": "Выбрать…",
+  "batchExportOutputDirClear": "Рядом с файлом",
+  "batchExportOutputDirOpen": "Показать папку",
+  "batchExportOutputDirPlaceholder": "Рядом с исходным файлом"
+}

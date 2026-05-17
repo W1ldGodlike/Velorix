@@ -13,7 +13,12 @@ export const LOCALE_JSON_SHARDS = [
   'maintenance',
   'formatting',
   'knowledge',
-  'terminal'
+  'terminal',
+  'processing',
+  'downloads',
+  'workspace',
+  'editor',
+  'downloads-settings'
 ] as const
 export type LocaleJsonShard = (typeof LOCALE_JSON_SHARDS)[number]
 

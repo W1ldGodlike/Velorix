@@ -1,5 +1,18 @@
 {
   "appLabel": "Приложение",
   "versionLabel": "Версия",
-  "loading": "Загрузка…"
+  "loading": "Загрузка…",
+  "rendererLogWindowErrorFallback": "Неизвестная ошибка окна",
+  "rendererLogUnhandledRejectionFallback": "Неизвестное отклонение промиса",
+  "closeButton": "Закрыть",
+  "versionsAriaLabel": "Версии среды",
+  "enginesSummaryReady": "Движки: готовы",
+  "enginesSummaryMissing": "Движки: не найдены",
+  "enginesSummaryError": "Движки: ошибка проверки",
+  "enginesSummaryChecking": "Движки: проверка…",
+  "engineDisplayNameFfmpeg": "ffmpeg",
+  "engineDisplayNameFfprobe": "ffprobe",
+  "engineDisplayNameYtdlp": "yt-dlp",
+  "commonUnicodeEllipsis": "…",
+  "enginesVersionLineErrorMark": "!"
 }

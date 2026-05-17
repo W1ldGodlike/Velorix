@@ -1,0 +1,22 @@
+{
+  "quickYtdlpAria": "Quick yt-dlp download",
+  "quickYtdlpUrlFieldGroupAria": "URL field, paste behavior, and documentation links",
+  "quickYtdlpSummary": "Quick yt-dlp download",
+  "quickYtdlpPlaceholder": "One URL per line (the button below uses the first recognized URL)",
+  "quickYtdlpHint": "The button below downloads the first recognized URL with your current yt-dlp settings and opens the finished file in this editor. You cannot run it while another download is active — wait or cancel it on the Downloads tab.",
+  "quickYtdlpDownloadOpenEditor": "Download and open in editor",
+  "quickYtdlpDocNavAria": "yt-dlp documentation links",
+  "quickYtdlpDocFormats": "Formats",
+  "quickYtdlpDocOutputTemplate": "-o template",
+  "editorUrlPasteBehaviorLabel": "Ctrl+V with URL",
+  "editorUrlPasteBehaviorDownloads": "Downloads window",
+  "editorUrlPasteBehaviorOpenEditor": "Download to editor",
+  "batchExportOutputSuffixLabel": "Output name",
+  "batchExportOutputSuffixHint": "Tokens {stem}, {name}, {ext}; container extension is appended.",
+  "batchExportOutputDirLabel": "Output folder",
+  "batchExportOutputDirHint": "Empty — next to each source file; otherwise all batch outputs go here.",
+  "batchExportOutputDirPick": "Choose…",
+  "batchExportOutputDirClear": "Next to source",
+  "batchExportOutputDirOpen": "Open folder",
+  "batchExportOutputDirPlaceholder": "Next to source file"
+}

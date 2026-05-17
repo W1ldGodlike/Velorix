@@ -1,5 +1,18 @@
 {
   "appLabel": "Application",
   "versionLabel": "Version",
-  "loading": "Loading…"
+  "loading": "Loading…",
+  "rendererLogWindowErrorFallback": "Unknown window error",
+  "rendererLogUnhandledRejectionFallback": "Unknown promise rejection",
+  "closeButton": "Close",
+  "versionsAriaLabel": "Runtime versions",
+  "enginesSummaryReady": "Engines: ready",
+  "enginesSummaryMissing": "Engines: not found",
+  "enginesSummaryError": "Engines: check error",
+  "enginesSummaryChecking": "Engines: checking…",
+  "engineDisplayNameFfmpeg": "ffmpeg",
+  "engineDisplayNameFfprobe": "ffprobe",
+  "engineDisplayNameYtdlp": "yt-dlp",
+  "commonUnicodeEllipsis": "…",
+  "enginesVersionLineErrorMark": "!"
 }

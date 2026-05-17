@@ -1,16 +1,26 @@
 /** Merged UI_TEXT tables (ru/en) from split parts + §2.2 JSON shards (`locales/{locale}/*.json`). */
 import ruAbout from '@locales/ru/about.json'
 import ruCommon from '@locales/ru/common.json'
+import ruDownloads from '@locales/ru/downloads.json'
+import ruDownloadsSettings from '@locales/ru/downloads-settings.json'
+import ruEditor from '@locales/ru/editor.json'
 import ruFormatting from '@locales/ru/formatting.json'
 import ruKnowledge from '@locales/ru/knowledge.json'
 import ruMaintenance from '@locales/ru/maintenance.json'
+import ruProcessing from '@locales/ru/processing.json'
 import ruTerminal from '@locales/ru/terminal.json'
+import ruWorkspace from '@locales/ru/workspace.json'
 import enAbout from '@locales/en/about.json'
 import enCommon from '@locales/en/common.json'
+import enDownloads from '@locales/en/downloads.json'
+import enDownloadsSettings from '@locales/en/downloads-settings.json'
+import enEditor from '@locales/en/editor.json'
 import enFormatting from '@locales/en/formatting.json'
 import enKnowledge from '@locales/en/knowledge.json'
 import enMaintenance from '@locales/en/maintenance.json'
+import enProcessing from '@locales/en/processing.json'
 import enTerminal from '@locales/en/terminal.json'
+import enWorkspace from '@locales/en/workspace.json'
 import { uiTextStringsRuPart01 } from './ui-text-strings-ru-01'
 import { uiTextStringsRuPart02 } from './ui-text-strings-ru-02'
 import { uiTextStringsRuPart03 } from './ui-text-strings-ru-03'
@@ -42,7 +52,12 @@ const uiTextStringsRu = {
   ...ruMaintenance,
   ...ruFormatting,
   ...ruKnowledge,
-  ...ruTerminal
+  ...ruTerminal,
+  ...ruProcessing,
+  ...ruDownloads,
+  ...ruDownloadsSettings,
+  ...ruWorkspace,
+  ...ruEditor
 } as const
 
 const uiTextStringsEn = {
@@ -59,7 +74,12 @@ const uiTextStringsEn = {
   ...enMaintenance,
   ...enFormatting,
   ...enKnowledge,
-  ...enTerminal
+  ...enTerminal,
+  ...enProcessing,
+  ...enDownloads,
+  ...enDownloadsSettings,
+  ...enWorkspace,
+  ...enEditor
 } as const
 
 export const UI_TEXT = {

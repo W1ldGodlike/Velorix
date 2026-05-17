@@ -35,5 +35,7 @@
   "terminalHintsPanelAria": "Панель подсказок терминала",
   "terminalHintsSearchLabel": "Поиск подсказок",
   "terminalHintsSearchPlaceholder": "--help, -i, crop",
-  "terminalHintsInsertListAria": "Подсказки: вставить токен или строку в команду"
+  "terminalHintsInsertListAria": "Подсказки: вставить токен или строку в команду",
+  "terminalHintInsertButtonAriaTemplate": "Вставить {token}, инструмент {tool}. {summary}",
+  "terminalHintInsertButtonAriaNoSummaryTemplate": "Вставить {token}, инструмент {tool}"
 }

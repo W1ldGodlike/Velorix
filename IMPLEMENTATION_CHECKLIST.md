@@ -47,7 +47,7 @@
 - [~] §9/§18: packaged/ffprobe smoke ✅ (container registry + stream detail); редкие tag/stream — по мере ffprobe.
 - [~] §19/§3: verify+release smoke ✅; `check:release:local`; platform hints (mac/linux) в Support ZIP; engines manual на non-Win.
 - [x] §15: knowledge — пакет закрыт (RU/EN Help, `data:` assets, fluxhelp, About→справка); далее tooltips/PNG по UI.
-- [~] §2.2/§5: uiLocale hot-reload ✅; `locales` shards incl. `terminal` + `check:locales-json`; DPI ✅ hints; §1.1 focus (J-977–J-1007).
+- [~] §2.2/§5: uiLocale hot-reload ✅; `locales` shards incl. `editor`/`downloads` + `check:locales-json`; DPI ✅ hints; §1.1 focus (J-977–J-1007).
 
 ---
 
