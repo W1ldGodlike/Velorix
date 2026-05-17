@@ -26,6 +26,8 @@ export {
   formatFfprobeContainerTimeBaseExportLine,
   formatFfprobeContainerProbeSizeCompact,
   formatFfprobeContainerProbeSizeExportLine,
+  formatFfprobeContainerTimingProbeCompactLine,
+  formatFfprobeContainerTimingProbeExportLine,
   formatFfprobeContainerFilenameExportLine,
   formatFfprobeContainerSizeCompact,
   formatFfprobeContainerSizeExportLine,

@@ -29,6 +29,8 @@ export const TERMINAL_PREVIEW_LINE_SUBSTRINGS = [
   'sample_aspect_ratio,display_aspect_ratio',
   'show_entries format=bit_rate',
   'show_entries format=duration_ts',
+  'show_entries format=duration_ts,time_base,probe_size',
+  'show_entries format=start_time,duration_ts,time_base,probe_size',
   'show_entries format=filename',
   'show_entries format=probe_size',
   'show_entries format=size,duration',

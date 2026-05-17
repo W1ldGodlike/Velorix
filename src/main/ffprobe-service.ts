@@ -14,6 +14,7 @@ import { formatFfprobeCodecLongNameDetail } from '../shared/ffprobe-codec-long-n
 import { formatFfprobeStreamDurationDetail } from '../shared/ffprobe-stream-duration-detail'
 import { formatFfprobeStreamDurationTsDetail } from '../shared/ffprobe-stream-duration-ts'
 import { formatFfprobeStreamStereoModeDetail } from '../shared/ffprobe-stream-stereo-mode'
+import { formatFfprobeStreamCodecTimeBaseDetail } from '../shared/ffprobe-stream-codec-time-base'
 import { formatFfprobeStreamTimeBaseDetail } from '../shared/ffprobe-stream-time-base'
 import { formatFfprobeStreamStartTime } from '../shared/ffprobe-stream-start-time'
 import {
@@ -117,6 +118,8 @@ interface FfprobeJson {
     start_time?: string
     /** Таймбаза потока; вместе с `start_pts` помогает диагностировать сдвиги timestamp. */
     time_base?: string
+    /** База времени кодека; может отличаться от `time_base` дорожки в контейнере. */
+    codec_time_base?: string
     /** Начальный PTS в единицах `time_base`; показываем только нетривиальные значения. */
     start_pts?: string | number
     /** Длительность дорожки (секунды строкой); может отличаться от `format.duration`. */
@@ -829,6 +832,13 @@ function buildTrackDetail(
   const streamTb = formatFfprobeStreamTimeBaseDetail(stream.time_base, ptsShowsTimeBase)
   if (streamTb) {
     parts.push(streamTb)
+  }
+  const codecTb = formatFfprobeStreamCodecTimeBaseDetail(
+    stream.codec_time_base,
+    stream.time_base
+  )
+  if (codecTb) {
+    parts.push(codecTb)
   }
 
   const streamDurTs = formatFfprobeStreamDurationTsDetail(stream.duration_ts)

@@ -36,6 +36,8 @@ describe('packaged-ffprobe-smoke', () => {
     const candidates = listPackagedFfprobeCandidatePaths('C:\\repo')
     const lines = buildSupportZipFfprobeSmokeLines('C:\\repo', (p) => p === candidates[0])
     expect(lines[0]).toContain('smoke:packaged-ffprobe')
+    expect(lines.some((l) => l.includes('registry optional'))).toBe(true)
+    expect(lines.some((l) => l.includes('codec_time_base'))).toBe(true)
     expect(lines).toContain(`candidate: ${candidates[0]} (present)`)
     expect(lines).toContain(`candidate: ${candidates[1]} (missing)`)
   })

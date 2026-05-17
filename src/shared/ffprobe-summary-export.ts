@@ -9,9 +9,7 @@ import { formatProbeChapterTimecode } from './ffprobe-timecode'
 import {
   formatFfprobeContainerBrandExportLine,
   formatFfprobeContainerCreationTimeExportLine,
-  formatFfprobeContainerDurationTsExportLine,
-  formatFfprobeContainerTimeBaseExportLine,
-  formatFfprobeContainerProbeSizeExportLine,
+  formatFfprobeContainerTimingProbeExportLine,
   formatFfprobeContainerSizeExportLine,
   formatFfprobeContainerStartTimeExportLine,
   formatFfprobeContainerStartTimeRealExportLine,
@@ -170,9 +168,7 @@ export function formatProbeSummaryPlainText(
       info.containerStartTimeSec,
       locale
     ),
-    formatFfprobeContainerDurationTsExportLine(info.containerDurationTs, locale),
-    formatFfprobeContainerTimeBaseExportLine(info.containerTimeBase, locale),
-    formatFfprobeContainerProbeSizeExportLine(info.containerProbeSizeBytes, locale),
+    formatFfprobeContainerTimingProbeExportLine(info, locale),
     formatFfprobeContainerFilenameExportLine(info.containerFilename, locale),
     '',
     ffprobeSummaryFill(b.streamsCountTemplate, { count: info.tracks.length }),
@@ -311,16 +307,8 @@ ${chapterRows}
       return str ? `<li>${escapeHtml(str)}</li>` : ''
     })(),
     (() => {
-      const dts = formatFfprobeContainerDurationTsExportLine(info.containerDurationTs, locale)
-      return dts ? `<li>${escapeHtml(dts)}</li>` : ''
-    })(),
-    (() => {
-      const tb = formatFfprobeContainerTimeBaseExportLine(info.containerTimeBase, locale)
-      return tb ? `<li>${escapeHtml(tb)}</li>` : ''
-    })(),
-    (() => {
-      const ps = formatFfprobeContainerProbeSizeExportLine(info.containerProbeSizeBytes, locale)
-      return ps ? `<li>${escapeHtml(ps)}</li>` : ''
+      const timing = formatFfprobeContainerTimingProbeExportLine(info, locale)
+      return timing ? `<li>${escapeHtml(timing)}</li>` : ''
     })(),
     (() => {
       const fn = formatFfprobeContainerFilenameExportLine(info.containerFilename, locale)

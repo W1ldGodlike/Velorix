@@ -140,9 +140,13 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
           index: 0,
           codec_type: 'video',
           codec_name: 'h264',
+          codec_long_name: 'H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10',
           width: 320,
           height: 240,
-          avg_frame_rate: '24/1'
+          avg_frame_rate: '24/1',
+          time_base: '1/90000',
+          codec_time_base: '1/50',
+          duration_ts: '90000'
         }
       ]
     }
@@ -203,6 +207,11 @@ describe('probeMediaFile invalid JSON (mocked execFile)', () => {
         expect(r.containerTimeBase).toBe('1/90000')
         expect(r.containerProbeSizeBytes).toBe(4096)
         expect(r.containerFilename).toBe('C:\\clips\\clip.mp4')
+        expect(r.tracks).toHaveLength(1)
+        expect(r.tracks[0]?.detail).toContain('H.264 / AVC')
+        expect(r.tracks[0]?.detail).toContain('tb 1/90000')
+        expect(r.tracks[0]?.detail).toContain('ctb 1/50')
+        expect(r.tracks[0]?.detail).toContain('dur_ts 90000')
       }
     } finally {
       cleanup()

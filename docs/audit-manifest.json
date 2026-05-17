@@ -18,7 +18,7 @@
     ".cursor",
     "coverage"
   ],
-  "fileCount": 279,
+  "fileCount": 282,
   "files": [
     "electron.vite.config.ts",
     "eslint.config.mjs",
@@ -168,6 +168,7 @@
     "src/shared/ffmpeg-snapshot-contract.ts",
     "src/shared/ffprobe-chapters.ts",
     "src/shared/ffprobe-codec-long-name.ts",
+    "src/shared/ffprobe-stream-codec-time-base.ts",
     "src/shared/ffprobe-container-field-registry.ts",
     "src/shared/ffprobe-container-format.ts",
     "src/shared/ffprobe-contract.ts",
@@ -272,8 +273,10 @@
     "tests/shared/ffmpeg-hw-encoder-probe.test.ts",
     "tests/shared/ffprobe-chapters.test.ts",
     "tests/shared/ffprobe-codec-long-name.test.ts",
+    "tests/shared/ffprobe-stream-codec-time-base.test.ts",
     "tests/shared/ffprobe-container-field-registry.test.ts",
     "tests/shared/ffprobe-container-format.test.ts",
+    "tests/shared/ffprobe-container-timing-probe-compact.test.ts",
     "tests/shared/ffprobe-creation-time-brief.test.ts",
     "tests/shared/ffprobe-disposition.test.ts",
     "tests/shared/ffprobe-format-tag-registry.test.ts",

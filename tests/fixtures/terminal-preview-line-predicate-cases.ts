@@ -394,6 +394,22 @@ export const TERMINAL_PREVIEW_LINE_PREDICATES: readonly TerminalPreviewLinePredi
     includes: ['format=size,bit_rate,nb_streams', 'default=nw=1:nk=1'] as const
   },
   {
+    label: 'format duration_ts+time_base+probe_size · show_entries format=duration_ts,time_base,probe_size',
+    includes: [
+      'show_entries format=duration_ts,time_base,probe_size',
+      'default=nw=1:nk=1'
+    ] as const,
+    needPlaceholder: true
+  },
+  {
+    label: 'format start+timing · show_entries format=start_time,duration_ts,time_base,probe_size',
+    includes: [
+      'show_entries format=start_time,duration_ts,time_base,probe_size',
+      'default=nw=1:nk=1'
+    ] as const,
+    needPlaceholder: true
+  },
+  {
     label: 'v:0 stereo_mode / a:0 duration_ts / format size+bit_rate+nb_streams / aresample · -af aresample=44100 + -t 3',
     includes: ['-af aresample=44100', '-t 3', '-vn -sn'] as const
   },

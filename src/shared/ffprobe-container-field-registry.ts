@@ -12,7 +12,10 @@ import {
   ffprobeSummaryStrings
 } from './ffprobe-summary-export-locale'
 import { parseFfprobeTickCount } from './ffprobe-stream-duration-ts'
-import { parseFfprobeNontrivialTimeBase } from './ffprobe-stream-time-base'
+import {
+  formatFfprobeContainerTimeBaseCompact,
+  parseFfprobeNontrivialTimeBase
+} from './ffprobe-stream-time-base'
 import { formatProbeChapterTimecode } from './ffprobe-timecode'
 
 export type FfprobeFormatJsonSlice = {
@@ -462,6 +465,45 @@ export function formatFfprobeContainerProbeSizeExportLine(
     label: formatFfprobeContainerSizeCompact(bytes),
     bytes
   })
+}
+
+/** §9 — краткая строка инспектора: duration_ts + time_base + probe_size без дублирования отдельных IIFE. */
+export function formatFfprobeContainerTimingProbeCompactLine(info: {
+  containerDurationTs: number | null
+  containerTimeBase: string | null
+  containerProbeSizeBytes: number | null
+}): string | null {
+  const parts: string[] = []
+  const dts = formatFfprobeContainerDurationTsCompact(info.containerDurationTs)
+  if (dts) {
+    parts.push(dts)
+  }
+  const tb = formatFfprobeContainerTimeBaseCompact(info.containerTimeBase)
+  if (tb) {
+    parts.push(tb)
+  }
+  const probeIo = formatFfprobeContainerProbeSizeCompact(info.containerProbeSizeBytes)
+  if (probeIo) {
+    parts.push(probeIo)
+  }
+  return parts.length > 0 ? parts.join(' · ') : null
+}
+
+/** §9 — локализованная строка экспорта TXT/HTML: duration_ts · time_base · probe_size. */
+export function formatFfprobeContainerTimingProbeExportLine(
+  info: {
+    containerDurationTs: number | null
+    containerTimeBase: string | null
+    containerProbeSizeBytes: number | null
+  },
+  locale: FfprobeSummaryLocale
+): string | null {
+  const parts = [
+    formatFfprobeContainerDurationTsExportLine(info.containerDurationTs, locale),
+    formatFfprobeContainerTimeBaseExportLine(info.containerTimeBase, locale),
+    formatFfprobeContainerProbeSizeExportLine(info.containerProbeSizeBytes, locale)
+  ].filter((x): x is string => x !== null)
+  return parts.length > 0 ? parts.join(' · ') : null
 }
 
 export function formatFfprobeContainerStartTimeRealExportLine(

@@ -29,6 +29,23 @@ export const FFPROBE_TRACK_DETAIL_CASES: readonly FfprobeTrackDetailCase[] = [
     notContains: ['pts ']
   },
   {
+    label: 'video codec_time_base отличен от time_base',
+    streams: [
+      {
+        index: 0,
+        codec_type: 'video',
+        codec_name: 'h264',
+        width: 1280,
+        height: 720,
+        time_base: '1/90000',
+        codec_time_base: '1/50'
+      }
+    ],
+    duration: null,
+    row: 0,
+    contains: ['tb 1/90000', 'ctb 1/50']
+  },
+  {
     label: 'video stream_tags stereo_mode',
     streams: [
       {

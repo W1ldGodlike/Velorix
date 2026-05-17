@@ -10,10 +10,8 @@ import type {
 import { formatFfprobeCreationTimeBrief } from '../../../shared/ffprobe-creation-time-brief'
 import {
   ffprobeContainerFilenameBasename,
-  formatFfprobeContainerDurationTsCompact,
-  formatFfprobeContainerTimeBaseCompact,
-  formatFfprobeContainerProbeSizeCompact,
   formatFfprobeContainerSizeCompact,
+  formatFfprobeContainerTimingProbeCompactLine,
   formatFfprobeContainerStartTimeCompact
 } from '../../../shared/ffprobe-container-format'
 import { collectFfprobeFormatScalarTagInspectorBriefs } from '../../../shared/ffprobe-format-tag-registry'
@@ -368,18 +366,8 @@ export function PreviewProbeBody({
               ? ` · ${formatFfprobeContainerSizeCompact(probeInfo.containerSizeBytes)}`
               : ''}
             {(() => {
-              const durTs = formatFfprobeContainerDurationTsCompact(probeInfo.containerDurationTs)
-              return durTs ? ` · ${durTs}` : ''
-            })()}
-            {(() => {
-              const tb = formatFfprobeContainerTimeBaseCompact(probeInfo.containerTimeBase)
-              return tb ? ` · ${tb}` : ''
-            })()}
-            {(() => {
-              const probeIo = formatFfprobeContainerProbeSizeCompact(
-                probeInfo.containerProbeSizeBytes
-              )
-              return probeIo ? ` · ${probeIo}` : ''
+              const timing = formatFfprobeContainerTimingProbeCompactLine(probeInfo)
+              return timing ? ` · ${timing}` : ''
             })()}
             {(() => {
               const startLabel = formatFfprobeContainerStartTimeCompact(
