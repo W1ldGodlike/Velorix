@@ -42,8 +42,27 @@ type FfprobeSmokeStreamSlice = {
   width?: string | number
   height?: string | number
   pix_fmt?: string
+  sample_aspect_ratio?: string
+  display_aspect_ratio?: string
+  channel_layout?: string
+  channels?: string | number
   side_data_list?: unknown
   tags?: Record<string, string | number | undefined>
+}
+
+/** Smoke: опциональные ffprobe-строки (SAR/DAR/layout и т.п.) — как ffprobeScalarDisplay в main. */
+function smokeOptionalFfprobeScalarStringField(raw: string | undefined): boolean {
+  if (raw === undefined) {
+    return true
+  }
+  if (typeof raw !== 'string') {
+    return false
+  }
+  const t = raw.trim()
+  if (t === '' || /^n\/a$/i.test(t)) {
+    return true
+  }
+  return t.length > 0
 }
 
 function smokeStreamTimeBaseFractionOk(raw: string | undefined): boolean {
@@ -207,6 +226,18 @@ export function isPackagedFfprobeProbeJsonParsableByStreamDetailFields(parsed: u
       return false
     }
     if (!smokeOptionalStreamPixFmtField(stream.pix_fmt)) {
+      return false
+    }
+    if (!smokeOptionalFfprobeScalarStringField(stream.sample_aspect_ratio)) {
+      return false
+    }
+    if (!smokeOptionalFfprobeScalarStringField(stream.display_aspect_ratio)) {
+      return false
+    }
+    if (!smokeOptionalFfprobeScalarStringField(stream.channel_layout)) {
+      return false
+    }
+    if (!smokeOptionalStreamPositiveIntField(stream.channels)) {
       return false
     }
     if (!isFfprobeSideDataListStructureOkForSmoke(stream.side_data_list)) {
@@ -399,7 +430,7 @@ export function formatPackagedFfprobeSmokeDiagnosticLines(): string[] {
     'check: isMinimalFfprobeProbeJson + isPackagedFfprobeProbeJsonParsableForSmoke (format + stream detail)',
     'registry optional: format.duration, duration_ts, time_base, size, probe_size, flags, probe_score, filename, bit_rate, start_time, start_time_real, nb_programs, nb_chapters, format.tags.* (parseFfprobeFormatTagScalar)',
     'probe optional: chapters[] (buildChapterRowsFromFfprobeJson / isFfprobeChaptersArrayOkForSmoke)',
-    'stream detail optional: codec_type, duration, duration_ts, start_time, fps, bit_rate, nb_frames, width/height/pix_fmt, side_data_list, time_base, codec_long_name, tags.stereo_mode',
+    'stream detail optional: codec_type, duration, duration_ts, start_time, fps, bit_rate, nb_frames, width/height/pix_fmt, sample_aspect_ratio, display_aspect_ratio, channel_layout, channels, side_data_list, time_base, codec_long_name, tags.stereo_mode',
     'ui/export: formatFfprobeContainerDiagnostics* (filename + probe layout + offset/timing)',
     'env: FLUXALLOY_SKIP_FFPROBE_SMOKE, FLUXALLOY_FFPROBE_SMOKE_PROBE=0, FLUXALLOY_FFPROBE_PATH'
   ]

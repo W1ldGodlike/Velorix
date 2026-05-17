@@ -27,7 +27,7 @@ export function TerminalWorkspacePanelIntroBand(
         aria-busy={terminalBusy}
       >
         <h2 className="app-downloads-title">{uiText('terminalTitle')}</h2>
-        <p className="app-downloads-hint">
+        <p id="terminal-intro-hint" className="app-downloads-hint">
           {uiText('terminalIntroLead')}
           <code>{TERMINAL_CURRENT_FILE_PLACEHOLDER}</code>
           {formatTerminalIntroTail({

@@ -172,6 +172,11 @@
   background: color-mix(in srgb, var(--fa-accent) 10%, transparent);
 }
 
+.app-terminal-suggest-item:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 1px;
+}
+
 .app-terminal-suggest-item small {
   grid-column: 1 / -1;
   color: var(--fa-text-muted);
@@ -322,6 +327,11 @@
 
 .app-terminal-hint:hover {
   border-color: var(--fa-accent);
+}
+
+.app-terminal-hint:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 1px;
 }
 
 .app-terminal-hint small {
@@ -3076,6 +3086,11 @@ button.app-downloads-hint-token:disabled {
 
 .app-knowledge-link:hover {
   color: color-mix(in srgb, var(--fa-accent) 88%, var(--fa-text-primary));
+}
+
+.app-knowledge-link:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 2px;
 }
 
 .app-knowledge-link-denied {

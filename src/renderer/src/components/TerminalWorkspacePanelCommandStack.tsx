@@ -68,6 +68,7 @@ export function TerminalWorkspacePanelCommandStack(
           spellCheck={false}
           autoComplete="off"
           placeholder={uiText('terminalCommandPlaceholder')}
+          aria-describedby="terminal-intro-hint"
           aria-expanded={terminalInlineSuggestions.length > 0 && terminalSuggestFocus}
           aria-controls="terminal-inline-suggest-list"
           aria-autocomplete="list"
