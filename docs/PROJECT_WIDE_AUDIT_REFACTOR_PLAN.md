@@ -365,6 +365,11 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | structural | 405 | src/shared/lucide-downloads-icons.ts | 5 | `lucide-downloads-icons-types|queue|clusters|editor|emit.ts` + entry re-export | ✅ J-852 |
 | structural | 389 | src/main/ipc/register-batch-export-queue-ipc.ts | 4 | `register-batch-export-queue-ipc-mutate|ingest|run.ts` + entry orchestrator | ✅ J-853 |
 | structural | 384 | src/main/support-bundle.ts | 4 | `support-bundle-types|zip|collect.ts` + entry `createSupportBundleZip` | ✅ J-854 |
+| structural | 304 | src/main/register-downloads-options-ipc.ts | 4 | `ytdlp-download-options-ipc-patch.ts` + `register-downloads-options-ipc-output|cli|cookies.ts` + entry | ✅ J-855 |
+| structural | 344 | src/main/terminal-service.ts | 4 | `terminal-service-log|parse|hints|run.ts` + entry re-export | ✅ J-856 |
+| structural | 310 | src/main/settings-store.ts | 4 | `settings-store-hydrate.ts` + `settings-store-load.ts` + entry `saveSettings` | ✅ J-857 |
+| structural | 325 | src/main/ffmpeg-export-service-job-resolve.ts | 4 | `ffmpeg-export-service-job-resolve-types|video|argv.ts` + entry `resolveFfmpegExportJobPlan` | ✅ J-858 |
+| structural | 350 | src/main/ytdlp-download-options-snapshot.ts | 4 | `ytdlp-download-options-snapshot-types|build|payload.ts` + entry re-export | ✅ J-859 |
 
 ---
 
