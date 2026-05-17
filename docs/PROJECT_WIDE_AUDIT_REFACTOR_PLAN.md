@@ -330,6 +330,11 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | structural | 1282 | src/main/downloads-window.ts | 4 | `downloads-window-runtime.ts` + `register-downloads-window-ipc.ts` (IPC handlers) | ✅ J-817 |
 | structural | 830 | src/renderer/src/components/downloads/DownloadsSettingsRail.tsx | 4 | `downloads-settings-rail-props.ts` + `DownloadsSettingsRail*Section.tsx` (format/metadata/saving/network/expert) | ✅ J-818 |
 | structural | 769 | src/renderer/src/components/downloads/DownloadsWorkspaceMain.tsx | 4 | `downloads-workspace-main-props.ts` + Band/Overview/QueueTable/LowerStack sections | ✅ J-819 |
+| structural | 919 | src/main/register-downloads-window-ipc.ts | 4 | `register-downloads-*-ipc.ts` (snapshot/options/queue+history/runner/bridge) + orchestrator | ✅ J-820 |
+| structural | 704 | src/shared/downloads-window-ui-locale.ts | 4 | `downloads-window-ui-locale-types.ts` + `downloads-window-ui-strings-ru|en.ts` + entry re-export | ✅ J-821 |
+| structural | 745 | src/renderer/src/components/editor/EditorBatchExportBar.tsx | 4 | `editor-batch-export-bar-props.ts` + `EditorBatchExportBarToolbar|QueueTable.tsx` | ✅ J-822 |
+| structural | 830 | src/renderer/src/components/MediaProbePanel.tsx | 4 | `use-preview-probe-body.ts` + `PreviewProbeBodyOverview|Sections|ContextMenu.tsx` | ✅ J-823 |
+| structural | 683 | src/main/settings-ipc-persist.ts | 4 | `settings-ipc-persist-core.ts` + `settings-ipc-persist-shell|ffmpeg.ts` + orchestrator | ✅ J-824 |
 
 ---
 
