@@ -7,36 +7,35 @@ import {
   parseFfprobeFormatDurationSec
 } from './ffprobe-container-format'
 import type { FfprobeFormatJsonSlice } from './ffprobe-container-field-registry'
-import { join } from 'node:path'
+import { formatFfprobeCodecLongNameDetail } from './ffprobe-codec-long-name'
+import { parseFfprobeTickCount } from './ffprobe-stream-duration-ts'
+import { formatFfprobeStreamStereoModeDetail } from './ffprobe-stream-stereo-mode'
+import {
+  listPackagedFfmpegCandidatePaths,
+  listPackagedFfprobeCandidatePaths
+} from './packaged-engine-candidate-paths'
 
-export function listPackagedFfprobeCandidatePaths(rootDir: string): string[] {
-  const fromEnv =
-    typeof process.env['FLUXALLOY_FFPROBE_PATH'] === 'string'
-      ? process.env['FLUXALLOY_FFPROBE_PATH'].trim()
-      : ''
-  const winName = process.platform === 'win32' ? 'ffprobe.exe' : 'ffprobe'
-  const candidates: string[] = []
-  if (fromEnv.length > 0) {
-    candidates.push(fromEnv)
-  }
-  candidates.push(join(rootDir, 'dist', 'win-unpacked', 'resources', 'bin', winName))
-  candidates.push(join(rootDir, 'bin', winName))
-  return candidates
+export { listPackagedFfmpegCandidatePaths, listPackagedFfprobeCandidatePaths }
+
+type FfprobeSmokeStreamSlice = {
+  codec_name?: string
+  codec_long_name?: string
+  codec_time_base?: string
+  time_base?: string
+  duration_ts?: string | number
+  start_time?: string | number
+  tags?: Record<string, string | number | undefined>
 }
 
-export function listPackagedFfmpegCandidatePaths(rootDir: string): string[] {
-  const fromEnv =
-    typeof process.env['FLUXALLOY_FFMPEG_PATH'] === 'string'
-      ? process.env['FLUXALLOY_FFMPEG_PATH'].trim()
-      : ''
-  const winName = process.platform === 'win32' ? 'ffmpeg.exe' : 'ffmpeg'
-  const candidates: string[] = []
-  if (fromEnv.length > 0) {
-    candidates.push(fromEnv)
+function smokeStreamTimeBaseFractionOk(raw: string | undefined): boolean {
+  if (typeof raw !== 'string' || raw.trim().length === 0 || /^n\/a$/i.test(raw.trim())) {
+    return true
   }
-  candidates.push(join(rootDir, 'dist', 'win-unpacked', 'resources', 'bin', winName))
-  candidates.push(join(rootDir, 'bin', winName))
-  return candidates
+  const norm = raw.trim().replace(/\s+/g, '')
+  if (norm === '0/1' || norm === '1/1') {
+    return true
+  }
+  return /^\d+\s*\/\s*\d+$/.test(norm)
 }
 
 export function isMinimalFfprobeProbeJson(parsed: unknown): boolean {
@@ -51,6 +50,60 @@ export function isMinimalFfprobeProbeJson(parsed: unknown): boolean {
   const format = o['format']
   if (format === null || typeof format !== 'object') {
     return false
+  }
+  return true
+}
+
+function smokeOptionalStreamNumericField(raw: string | number | undefined): boolean {
+  if (raw === undefined || raw === null) {
+    return true
+  }
+  const t = String(raw).trim()
+  if (t === '' || /^n\/a$/i.test(t)) {
+    return true
+  }
+  return Number.isFinite(Number.parseFloat(t.replace(',', '.')))
+}
+
+function smokeOptionalStreamDurationTsField(raw: string | number | undefined): boolean {
+  if (raw === undefined || raw === null) {
+    return true
+  }
+  const t = String(raw).trim()
+  if (t === '' || /^n\/a$/i.test(t)) {
+    return true
+  }
+  return parseFfprobeTickCount(raw) !== null
+}
+
+/** Smoke: опциональные поля stream detail (§9) не ломают парсеры при наличии в JSON. */
+export function isPackagedFfprobeProbeJsonParsableByStreamDetailFields(parsed: unknown): boolean {
+  if (!isMinimalFfprobeProbeJson(parsed)) {
+    return false
+  }
+  const streams = (parsed as { streams: unknown[] }).streams
+  for (const item of streams) {
+    if (item === null || typeof item !== 'object') {
+      continue
+    }
+    const stream = item as FfprobeSmokeStreamSlice
+    if (!smokeOptionalStreamDurationTsField(stream.duration_ts)) {
+      return false
+    }
+    if (!smokeOptionalStreamNumericField(stream.start_time)) {
+      return false
+    }
+    if (!smokeStreamTimeBaseFractionOk(stream.codec_time_base)) {
+      return false
+    }
+    if (!smokeStreamTimeBaseFractionOk(stream.time_base)) {
+      return false
+    }
+    const longRaw = stream.codec_long_name
+    if (typeof longRaw === 'string' && longRaw.trim().length > 0) {
+      formatFfprobeCodecLongNameDetail(stream.codec_name, longRaw)
+    }
+    formatFfprobeStreamStereoModeDetail(stream.tags)
   }
   return true
 }
@@ -90,7 +143,11 @@ export function isPackagedFfprobeProbeJsonParsableByContainerRegistry(parsed: un
     return false
   }
   const durationTsRaw = (format as { duration_ts?: string | number }).duration_ts
-  if (durationTsRaw !== undefined && durationTsRaw !== null && String(durationTsRaw).trim() !== '') {
+  if (
+    durationTsRaw !== undefined &&
+    durationTsRaw !== null &&
+    String(durationTsRaw).trim() !== ''
+  ) {
     if (container.containerDurationTs === null) {
       return false
     }
@@ -115,7 +172,11 @@ export function isPackagedFfprobeProbeJsonParsableByContainerRegistry(parsed: un
     }
   }
   const probeScoreRaw = (format as { probe_score?: string | number }).probe_score
-  if (probeScoreRaw !== undefined && probeScoreRaw !== null && String(probeScoreRaw).trim() !== '') {
+  if (
+    probeScoreRaw !== undefined &&
+    probeScoreRaw !== null &&
+    String(probeScoreRaw).trim() !== ''
+  ) {
     if (container.probeScore === null) {
       return false
     }
@@ -147,16 +208,21 @@ export function isPackagedFfprobeProbeJsonParsableByContainerRegistry(parsed: un
   if (!smokeOptionalContainerStartTimeField(startRealRaw, container.containerStartTimeRealSec)) {
     return false
   }
-  return true
+  return isPackagedFfprobeProbeJsonParsableByStreamDetailFields(parsed)
+}
+
+/** §9 smoke-скрипт: format registry + stream detail optional fields. */
+export function isPackagedFfprobeProbeJsonParsableForSmoke(parsed: unknown): boolean {
+  return isPackagedFfprobeProbeJsonParsableByContainerRegistry(parsed)
 }
 
 /** §18 Support ZIP — подсказки smoke без запуска ffprobe. */
 export function formatPackagedFfprobeSmokeDiagnosticLines(): string[] {
   return [
     'command: npm run smoke:packaged-ffprobe (part of smoke:packaged-engines)',
-    'check: isMinimalFfprobeProbeJson + isPackagedFfprobeProbeJsonParsableByContainerRegistry',
+    'check: isMinimalFfprobeProbeJson + isPackagedFfprobeProbeJsonParsableForSmoke (format + stream detail)',
     'registry optional: format.duration, duration_ts, time_base, probe_size, flags, probe_score, filename, bit_rate, start_time, start_time_real (parse must not fail)',
-    'stream detail optional: codec_time_base (ctb when distinct from time_base)',
+    'stream detail optional: duration_ts, start_time, codec_time_base, time_base, codec_long_name, tags.stereo_mode',
     'ui/export: formatFfprobeContainerDiagnostics* (filename + probe layout + offset/timing)',
     'env: FLUXALLOY_SKIP_FFPROBE_SMOKE, FLUXALLOY_FFPROBE_SMOKE_PROBE=0, FLUXALLOY_FFPROBE_PATH'
   ]

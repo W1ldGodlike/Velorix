@@ -43,9 +43,9 @@
 
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый; подробности фиксировать ниже в тематических § и в `IMPLEMENTATION_JOURNAL.md`.
 
-- [~] §8: терминал — IntelliSense/история; Vitest: `terminal-service` run+parse, `terminal-service-hints` Data JSON; при правках `summary` — `locales:terminal-summaries-ru` (2× до 0/0).
-- [~] §9/§18: packaged/ffprobe smoke (+ registry полей format/stream); Support ZIP `ffprobeSmoke:`; редкие поля ffprobe (detail + format registry).
-- [~] §19/§3: `check:release`, `verify:win-unpacked`, SHA/JSON; packaged smoke; macOS/Linux engines и targets.
+- [~] §8: терминал — IntelliSense/история в UI; Vitest §8 ✅ (`terminal-service`, `terminal-service-hints`); при правках `summary` — `locales:terminal-summaries-ru`.
+- [~] §9/§18: packaged/ffprobe smoke ✅ Vitest+Support ZIP (`ParsableForSmoke`, stream detail); редкие поля ffprobe (detail + format registry) — дальше.
+- [~] §19/§3: verify+release smoke ✅ Vitest (`win-unpacked-layout`, `packaged-release`, `check-release-chain`, smoke --help); `check:release` локально; SHA/JSON; macOS/Linux.
 - [x] §15: knowledge — пакет закрыт (RU/EN Help, `data:` assets, fluxhelp, About→справка); далее tooltips/PNG по UI.
 - [~] §2.2/§5: `locales/**` JSON + смена языка без перезапуска; DPI-матрица 100–200%; §1.1 — контраст/focus после `aria-busy` (J-977–J-1007).
 

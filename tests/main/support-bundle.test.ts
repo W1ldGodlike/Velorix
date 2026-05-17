@@ -90,12 +90,13 @@ describe('createSupportBundleZip', () => {
         '  ffprobe: ready | C:\\bin\\ffprobe.exe | ffprobe version 7.0'
       ],
       releaseSmokeLines: [
-        'command: npm run smoke:packaged-release (after npm run pack:dir)',
-        'win-unpacked: not built (C:\\repo\\dist\\win-unpacked)'
+        'command: npm run smoke:packaged-release (check:release after pack:dir)',
+        'steps: verify:win-unpacked → smoke:packaged-app → smoke:packaged-engines (ffprobe, yt-dlp, ffmpeg)',
+        'layout: FluxAlloy.exe (missing)'
       ],
       ffprobeSmokeLines: [
         'command: npm run smoke:packaged-ffprobe (part of smoke:packaged-engines)',
-        'check: isMinimalFfprobeProbeJson + isPackagedFfprobeProbeJsonParsableByContainerRegistry',
+        'check: isMinimalFfprobeProbeJson + isPackagedFfprobeProbeJsonParsableForSmoke (format + stream detail)',
         'candidate: C:\\bin\\ffprobe.exe (present)'
       ]
     })
@@ -120,9 +121,10 @@ describe('createSupportBundleZip', () => {
     expect(zip.includes(Buffer.from('ffprobe: ready'))).toBe(true)
     expect(zip.includes(Buffer.from('releaseSmoke:'))).toBe(true)
     expect(zip.includes(Buffer.from('smoke:packaged-release'))).toBe(true)
+    expect(zip.includes(Buffer.from('verify:win-unpacked'))).toBe(true)
     expect(zip.includes(Buffer.from('ffprobeSmoke:'))).toBe(true)
     expect(zip.includes(Buffer.from('smoke:packaged-ffprobe'))).toBe(true)
-    expect(zip.includes(Buffer.from('ParsableByContainerRegistry'))).toBe(true)
+    expect(zip.includes(Buffer.from('ParsableForSmoke'))).toBe(true)
   })
 })
 

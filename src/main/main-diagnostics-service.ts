@@ -1,10 +1,10 @@
 import { existsSync } from 'fs'
-import { basename, join } from 'path'
+import { basename } from 'path'
 
 import { app, BrowserWindow, clipboard, dialog, screen, shell } from 'electron'
 
-import { packagedWinUnpackedRoot } from '../shared/packaged-app-smoke'
 import { buildSupportZipFfprobeSmokeLines } from '../shared/packaged-ffprobe-smoke'
+import { buildSupportZipPackagedReleaseLines } from '../shared/packaged-release-smoke'
 import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
 import {
   formatMainProcessErrorClipboardHeader,
@@ -103,17 +103,7 @@ export async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRunt
     /* headless / not ready */
   }
 
-  const unpackedRoot = packagedWinUnpackedRoot(paths.appRoot)
-  const unpackedExe = join(
-    unpackedRoot,
-    process.platform === 'win32' ? 'FluxAlloy.exe' : 'FluxAlloy'
-  )
-  const releaseSmokeLines: string[] = [
-    'command: npm run smoke:packaged-release (after npm run pack:dir)',
-    existsSync(unpackedExe)
-      ? `win-unpacked: ${unpackedExe}`
-      : `win-unpacked: not built (${unpackedRoot})`
-  ]
+  const releaseSmokeLines = buildSupportZipPackagedReleaseLines(paths.appRoot, existsSync)
   const ffprobeSmokeLines = buildSupportZipFfprobeSmokeLines(paths.appRoot, existsSync)
 
   return {

@@ -12,12 +12,6 @@ import { promisify } from 'node:util'
 import { firstVersionLineFromWinEngineExe } from './engines-exe-version-line.mjs'
 import { REPO_ROOT } from './lib/repo-root.mjs'
 import { WIN_ENGINE_EXE_OPTS } from './lib/win-exec-file-opts.mjs'
-import {
-  isMinimalYtdlpExtractorsOutput,
-  listPackagedYtdlpCandidatePaths,
-  pickFirstExistingEngine
-} from './smoke-packaged-ytdlp-lib.mjs'
-
 const execFileAsync = promisify(execFile)
 const rootDir = REPO_ROOT
 
@@ -54,11 +48,9 @@ async function runListExtractors(ytdlpPath) {
   return stdout
 }
 
-async function main() {
-  if (process.argv.includes('--help')) {
-    printHelp()
-    return
-  }
+async function run() {
+  const { isMinimalYtdlpExtractorsOutput, listPackagedYtdlpCandidatePaths, pickFirstExistingEngine } =
+    await import('./smoke-packaged-ytdlp-lib.mjs')
 
   if (skipRequested()) {
     log('FLUXALLOY_SKIP_YTDLP_SMOKE — пропуск')
@@ -100,9 +92,13 @@ async function main() {
   log(`OK: ${count} extractor name(s)`)
 }
 
-main().catch((error) => {
-  console.error(
-    `[ytdlp:smoke] failed: ${error instanceof Error ? error.stack || error.message : String(error)}`
-  )
-  process.exitCode = 1
-})
+if (process.argv.includes('--help')) {
+  printHelp()
+} else {
+  run().catch((error) => {
+    console.error(
+      `[ytdlp:smoke] failed: ${error instanceof Error ? error.stack || error.message : String(error)}`
+    )
+    process.exitCode = 1
+  })
+}

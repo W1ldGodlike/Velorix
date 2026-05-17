@@ -15,14 +15,6 @@ import { promisify } from 'node:util'
 import { firstVersionLineFromWinEngineExe } from './engines-exe-version-line.mjs'
 import { REPO_ROOT } from './lib/repo-root.mjs'
 import { WIN_ENGINE_EXE_OPTS } from './lib/win-exec-file-opts.mjs'
-import {
-  isMinimalFfprobeProbeJson,
-  isPackagedFfprobeProbeJsonParsableByContainerRegistry,
-  listPackagedFfmpegCandidatePaths,
-  listPackagedFfprobeCandidatePaths,
-  pickFirstExistingEngine
-} from './smoke-packaged-ffprobe-lib.mjs'
-
 const execFileAsync = promisify(execFile)
 const rootDir = REPO_ROOT
 
@@ -106,11 +98,14 @@ async function runFfprobeJsonProbe(ffprobePath, mediaPath) {
   return JSON.parse(stdout)
 }
 
-async function main() {
-  if (process.argv.includes('--help')) {
-    printHelp()
-    return
-  }
+async function run() {
+  const {
+    isMinimalFfprobeProbeJson,
+    isPackagedFfprobeProbeJsonParsableForSmoke,
+    listPackagedFfmpegCandidatePaths,
+    listPackagedFfprobeCandidatePaths,
+    pickFirstExistingEngine
+  } = await import('./smoke-packaged-ffprobe-lib.mjs')
 
   if (skipRequested()) {
     log('FLUXALLOY_SKIP_FFPROBE_SMOKE — пропуск')
@@ -157,21 +152,25 @@ async function main() {
     if (!isMinimalFfprobeProbeJson(parsed)) {
       throw new Error('ffprobe JSON не содержит format и streams')
     }
-    if (!isPackagedFfprobeProbeJsonParsableByContainerRegistry(parsed)) {
+    if (!isPackagedFfprobeProbeJsonParsableForSmoke(parsed)) {
       throw new Error(
-        'ffprobe JSON: format_name или parseFfprobeContainerFieldsFromFormat (container registry)'
+        'ffprobe JSON: container registry или stream detail (duration_ts, time_base, start_time)'
       )
     }
     const streams = /** @type {{ streams: unknown[] }} */ (parsed).streams
-    log(`OK: probe ${streams.length} stream(s), container registry`)
+    log(`OK: probe ${streams.length} stream(s), format + stream detail smoke`)
   } finally {
     await rm(workDir, { recursive: true, force: true })
   }
 }
 
-main().catch((error) => {
-  console.error(
-    `[ffprobe:smoke] failed: ${error instanceof Error ? error.stack || error.message : String(error)}`
-  )
-  process.exitCode = 1
-})
+if (process.argv.includes('--help')) {
+  printHelp()
+} else {
+  run().catch((error) => {
+    console.error(
+      `[ffprobe:smoke] failed: ${error instanceof Error ? error.stack || error.message : String(error)}`
+    )
+    process.exitCode = 1
+  })
+}

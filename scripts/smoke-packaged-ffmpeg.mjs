@@ -12,12 +12,6 @@ import { promisify } from 'node:util'
 import { firstVersionLineFromWinEngineExe } from './engines-exe-version-line.mjs'
 import { REPO_ROOT } from './lib/repo-root.mjs'
 import { WIN_ENGINE_EXE_OPTS_LARGE } from './lib/win-exec-file-opts.mjs'
-import {
-  isMinimalFfmpegEncodersOutput,
-  listPackagedFfmpegCandidatePaths,
-  pickFirstExistingEngine
-} from './smoke-packaged-ffmpeg-lib.mjs'
-
 const execFileAsync = promisify(execFile)
 const rootDir = REPO_ROOT
 
@@ -58,11 +52,9 @@ async function runEncodersList(ffmpegPath) {
   return stdout
 }
 
-async function main() {
-  if (process.argv.includes('--help')) {
-    printHelp()
-    return
-  }
+async function run() {
+  const { isMinimalFfmpegEncodersOutput, listPackagedFfmpegCandidatePaths, pickFirstExistingEngine } =
+    await import('./smoke-packaged-ffmpeg-lib.mjs')
 
   if (skipRequested()) {
     log('FLUXALLOY_SKIP_FFMPEG_SMOKE — пропуск')
@@ -100,9 +92,13 @@ async function main() {
   log('OK: encoders list')
 }
 
-main().catch((error) => {
-  console.error(
-    `[ffmpeg:smoke] failed: ${error instanceof Error ? error.stack || error.message : String(error)}`
-  )
-  process.exitCode = 1
-})
+if (process.argv.includes('--help')) {
+  printHelp()
+} else {
+  run().catch((error) => {
+    console.error(
+      `[ffmpeg:smoke] failed: ${error instanceof Error ? error.stack || error.message : String(error)}`
+    )
+    process.exitCode = 1
+  })
+}
