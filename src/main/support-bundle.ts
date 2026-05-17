@@ -76,7 +76,8 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
       : []),
     ...(info.localeJsonCatalogLines.length > 0
       ? ['', 'localeJson:', ...info.localeJsonCatalogLines]
-      : [])
+      : []),
+    ...(info.uiDpiLines.length > 0 ? ['', 'uiDpi:', ...info.uiDpiLines] : [])
   ].join('\n')
 }
 

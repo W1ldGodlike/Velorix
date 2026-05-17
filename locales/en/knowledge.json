@@ -1,0 +1,21 @@
+{
+  "knowledgeTitle": "Knowledge base",
+  "knowledgeHint": "Local Help/*.md articles. With EN UI chrome, matching Help/en/*.md replaces article body when present (otherwise RU). External https links open in the browser; links to other .md files stay inside the app.",
+  "knowledgeSearchPlaceholder": "Search articles",
+  "knowledgeSearchTooltip": "Filter the article list by title, file name, or slug (case-insensitive).",
+  "knowledgeSearchInputAria": "Search articles in the table of contents",
+  "knowledgeCloseTooltip": "Close help (Esc or click the backdrop).",
+  "knowledgeCloseButtonAria": "Close help window",
+  "knowledgeDialogActionsToolbarAria": "Knowledge base window actions",
+  "knowledgeDialogHeaderRowAria": "Knowledge base dialog title and actions",
+  "knowledgeDialogGridAria": "Table of contents and article",
+  "knowledgeTopbarTooltip": "Open the local knowledge base (Help/*.md articles).",
+  "knowledgeTocAria": "Help table of contents",
+  "knowledgeArticleRegionAria": "Selected article body",
+  "knowledgeArticleBodyGroupAria": "Article body (Markdown)",
+  "knowledgeTocListAria": "Article list for selection",
+  "knowledgeArticleTerminalHintsLink": "Knowledge: terminal hints (ffmpeg / yt-dlp)",
+  "terminalKnowledgeDeepLinkTooltip": "Open the ffmpeg / yt-dlp hints article for the Terminal tab.",
+  "knowledgeMdInternalLinkTooltip": "Open the linked article here.",
+  "knowledgeMdExternalLinkTooltip": "Open link in the browser (new tab)."
+}

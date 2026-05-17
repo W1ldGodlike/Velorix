@@ -34,6 +34,7 @@ export interface SupportBundleRuntimeInfo {
   /** §2.2 — hot-reload uiLocale (IPC + renderer session). */
   uiLocaleIpcLines: readonly string[]
   localeJsonCatalogLines: readonly string[]
+  uiDpiLines: readonly string[]
 }
 
 export interface DiagnosticsPruneOptions {

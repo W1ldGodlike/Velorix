@@ -92,6 +92,8 @@ describe('createSupportBundleZip', () => {
       releaseSmokeLines: [
         'command: npm run smoke:packaged-release (check:release after pack:dir)',
         'steps: verify:win-unpacked → smoke:packaged-app → smoke:packaged-engines (ffprobe, yt-dlp, ffmpeg)',
+        'mac: npm run build:mac (electron-builder --mac; dmg; engines/bin вручную)',
+        'linux: npm run build:linux (AppImage + deb; engines/bin вручную)',
         'layout: FluxAlloy.exe (missing)'
       ],
       ffprobeSmokeLines: [
@@ -106,7 +108,8 @@ describe('createSupportBundleZip', () => {
       localeJsonCatalogLines: [
         'catalog: locales/ru/*.json + locales/en/*.json (flat string values)',
         'guard: npm run check:locales-json (ru/en key parity per shard)'
-      ]
+      ],
+      uiDpiLines: ['CSS HiDPI: @media 120dpi (125%), 144dpi (150%), 168dpi (175%), 192dpi (200%) — main.css + downloads HTML']
     })
 
     const zip = readFileSync(out)
@@ -137,6 +140,8 @@ describe('createSupportBundleZip', () => {
     expect(zip.includes(Buffer.from('ui-locale-changed'))).toBe(true)
     expect(zip.includes(Buffer.from('localeJson:'))).toBe(true)
     expect(zip.includes(Buffer.from('check:locales-json'))).toBe(true)
+    expect(zip.includes(Buffer.from('uiDpi:'))).toBe(true)
+    expect(zip.includes(Buffer.from('build:linux'))).toBe(true)
   })
 })
 

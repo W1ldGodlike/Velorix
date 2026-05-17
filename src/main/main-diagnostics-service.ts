@@ -6,6 +6,7 @@ import { app, BrowserWindow, clipboard, dialog, screen, shell } from 'electron'
 import { buildSupportZipFfprobeSmokeLines } from '../shared/packaged-ffprobe-smoke'
 import { buildSupportZipPackagedReleaseLines } from '../shared/packaged-release-smoke'
 import { formatLocaleJsonCatalogDiagnosticLines } from '../shared/locale-json-catalog'
+import { formatWindowHidpiDiagnosticLines } from '../main/window-hidpi'
 import { formatUiLocaleIpcDiagnosticLines } from '../shared/ui-locale-runtime'
 import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
 import {
@@ -109,6 +110,7 @@ export async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRunt
   const ffprobeSmokeLines = buildSupportZipFfprobeSmokeLines(paths.appRoot, existsSync)
   const uiLocaleIpcLines = formatUiLocaleIpcDiagnosticLines()
   const localeJsonCatalogLines = formatLocaleJsonCatalogDiagnosticLines()
+  const uiDpiLines = formatWindowHidpiDiagnosticLines()
 
   return {
     appVersion: app.getVersion(),
@@ -135,7 +137,8 @@ export async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRunt
     releaseSmokeLines,
     ffprobeSmokeLines,
     uiLocaleIpcLines,
-    localeJsonCatalogLines
+    localeJsonCatalogLines,
+    uiDpiLines
   }
 }
 

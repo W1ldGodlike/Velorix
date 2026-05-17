@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-17T13:56:15.409Z",
+  "generatedAt": "2026-05-17T14:04:18.282Z",
   "repoRoot": "C:\\Users\\truno\\FluxAlloy",
   "codeRoots": [
     "src",
@@ -18,7 +18,7 @@
     ".cursor",
     "coverage"
   ],
-  "fileCount": 750,
+  "fileCount": 753,
   "files": [
     "electron.vite.config.ts",
     "eslint.config.mjs",
@@ -551,6 +551,7 @@
     "src/shared/packaged-release-smoke.ts",
     "src/shared/packaged-ytdlp-smoke.ts",
     "src/shared/parse-whitelist.ts",
+    "src/shared/platform-packaging-scripts.ts",
     "src/shared/preview-dialog-contract.ts",
     "src/shared/preview-open-dialog-default-path.ts",
     "src/shared/processing-history-contract.ts",
@@ -674,6 +675,7 @@
     "tests/main/support-bundle.test.ts",
     "tests/main/terminal-service-hints.test.ts",
     "tests/main/terminal-service.test.ts",
+    "tests/main/window-hidpi-diagnostic.test.ts",
     "tests/main/window-hidpi.test.ts",
     "tests/main/ytdlp-commands-hints.test.ts",
     "tests/main/ytdlp-download-history.test.ts",
@@ -751,6 +753,7 @@
     "tests/shared/packaged-ffprobe-smoke.test.ts",
     "tests/shared/packaged-release-smoke.test.ts",
     "tests/shared/packaged-ytdlp-smoke.test.ts",
+    "tests/shared/platform-packaging-scripts.test.ts",
     "tests/shared/preview-open-dialog-default-path.test.ts",
     "tests/shared/settings-stored-parse.test.ts",
     "tests/shared/terminal-command-recall.test.ts",

@@ -7,7 +7,14 @@ export const LOCALE_JSON_LOCALES = ['ru', 'en'] as const
 export type LocaleJsonLocale = (typeof LOCALE_JSON_LOCALES)[number]
 
 /** Имена shard-файлов без `.json` (расширять при миграции из ui-text-strings). */
-export const LOCALE_JSON_SHARDS = ['common'] as const
+export const LOCALE_JSON_SHARDS = [
+  'common',
+  'about',
+  'maintenance',
+  'formatting',
+  'knowledge',
+  'terminal'
+] as const
 export type LocaleJsonShard = (typeof LOCALE_JSON_SHARDS)[number]
 
 export function localeJsonShardPath(

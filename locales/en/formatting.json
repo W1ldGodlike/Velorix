@@ -1,0 +1,10 @@
+{
+  "formatSelectionDoc": "Format selection",
+  "docLinkYtDlpReadme": "yt-dlp README",
+  "docLinkFfprobeShort": "ffprobe",
+  "byteSizeZero": "0 B",
+  "byteSizeUnitB": "B",
+  "byteSizeUnitKiB": "KiB",
+  "byteSizeUnitMiB": "MiB",
+  "byteSizeUnitGiB": "GiB"
+}

@@ -1,0 +1,21 @@
+{
+  "knowledgeTitle": "База знаний",
+  "knowledgeHint": "Локальные статьи из Help/*.md; при интерфейсе EN, если есть пара Help/en/*.md, подставляется английский текст (иначе RU). Внешние https-ссылки открываются в браузере; ссылки на другие .md — внутри приложения.",
+  "knowledgeSearchPlaceholder": "Поиск по статьям",
+  "knowledgeSearchTooltip": "Фильтр списка статей по заголовку, имени файла или короткому имени (slug) без учёта регистра.",
+  "knowledgeSearchInputAria": "Поиск по статьям в оглавлении",
+  "knowledgeCloseTooltip": "Закрыть окно справки (Esc или щелчок по фону).",
+  "knowledgeCloseButtonAria": "Закрыть окно справки",
+  "knowledgeDialogActionsToolbarAria": "Действия в окне базы знаний",
+  "knowledgeDialogHeaderRowAria": "Заголовок и действия окна базы знаний",
+  "knowledgeDialogGridAria": "Оглавление и текст статьи",
+  "knowledgeTopbarTooltip": "Открыть локальную базу знаний (статьи из Help/*.md).",
+  "knowledgeTocAria": "Оглавление справки",
+  "knowledgeArticleRegionAria": "Текст выбранной статьи",
+  "knowledgeArticleBodyGroupAria": "Содержимое статьи (Markdown)",
+  "knowledgeTocListAria": "Список статей для выбора",
+  "knowledgeArticleTerminalHintsLink": "База знаний: подсказки терминала (ffmpeg / yt-dlp)",
+  "terminalKnowledgeDeepLinkTooltip": "Открыть статью с подсказками ffmpeg / yt-dlp для вкладки «Терминал».",
+  "knowledgeMdInternalLinkTooltip": "Открыть связанную статью в этом окне.",
+  "knowledgeMdExternalLinkTooltip": "Открыть ссылку в браузере (новая вкладка)."
+}

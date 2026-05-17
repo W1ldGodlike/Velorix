@@ -12,6 +12,7 @@ describe('window-hidpi', () => {
     expect(downloadsWindowMinLogicalSize(1)).toEqual({ minWidth: 520, minHeight: 420 })
     expect(downloadsWindowMinLogicalSize(1.25)).toEqual({ minWidth: 580, minHeight: 430 })
     expect(downloadsWindowMinLogicalSize(1.75)).toEqual({ minWidth: 620, minHeight: 460 })
+    expect(downloadsWindowMinLogicalSize(2)).toEqual({ minWidth: 620, minHeight: 460 })
   })
 
   it('повышает min-размеры главного редактора при 125% и 150%', () => {

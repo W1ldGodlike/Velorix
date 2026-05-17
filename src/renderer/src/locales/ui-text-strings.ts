@@ -1,6 +1,16 @@
 /** Merged UI_TEXT tables (ru/en) from split parts + §2.2 JSON shards (`locales/{locale}/*.json`). */
+import ruAbout from '@locales/ru/about.json'
 import ruCommon from '@locales/ru/common.json'
+import ruFormatting from '@locales/ru/formatting.json'
+import ruKnowledge from '@locales/ru/knowledge.json'
+import ruMaintenance from '@locales/ru/maintenance.json'
+import ruTerminal from '@locales/ru/terminal.json'
+import enAbout from '@locales/en/about.json'
 import enCommon from '@locales/en/common.json'
+import enFormatting from '@locales/en/formatting.json'
+import enKnowledge from '@locales/en/knowledge.json'
+import enMaintenance from '@locales/en/maintenance.json'
+import enTerminal from '@locales/en/terminal.json'
 import { uiTextStringsRuPart01 } from './ui-text-strings-ru-01'
 import { uiTextStringsRuPart02 } from './ui-text-strings-ru-02'
 import { uiTextStringsRuPart03 } from './ui-text-strings-ru-03'
@@ -27,7 +37,12 @@ const uiTextStringsRu = {
   ...uiTextStringsRuPart06,
   ...uiTextStringsRuPart07,
   ...uiTextStringsRuPart08,
-  ...ruCommon
+  ...ruCommon,
+  ...ruAbout,
+  ...ruMaintenance,
+  ...ruFormatting,
+  ...ruKnowledge,
+  ...ruTerminal
 } as const
 
 const uiTextStringsEn = {
@@ -39,7 +54,12 @@ const uiTextStringsEn = {
   ...uiTextStringsEnPart06,
   ...uiTextStringsEnPart07,
   ...uiTextStringsEnPart08,
-  ...enCommon
+  ...enCommon,
+  ...enAbout,
+  ...enMaintenance,
+  ...enFormatting,
+  ...enKnowledge,
+  ...enTerminal
 } as const
 
 export const UI_TEXT = {
