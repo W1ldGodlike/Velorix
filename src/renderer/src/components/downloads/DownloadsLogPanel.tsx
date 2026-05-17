@@ -39,7 +39,7 @@ export function DownloadsLogPanel({
         onToggle(event.currentTarget.open)
       }}
     >
-      <summary aria-controls={downloadsLogRegionId}>
+      <summary aria-controls={downloadsLogRegionId} aria-describedby="downloads-page-hint">
         {uiText('downloadsLogTitle')}
         <span>{targetRowId !== null ? `#${targetRowId}` : uiText('uiPlaceholderDash')}</span>
       </summary>
@@ -55,6 +55,7 @@ export function DownloadsLogPanel({
           <button
             type="button"
             className="app-btn app-btn-compact app-btn-icon-leading"
+            aria-describedby="downloads-page-hint"
             disabled={lines.length === 0}
             onClick={onClear}
           >
@@ -63,6 +64,7 @@ export function DownloadsLogPanel({
           <button
             type="button"
             className="app-btn app-btn-compact app-btn-icon-leading"
+            aria-describedby="downloads-page-hint"
             disabled={lines.length === 0}
             onClick={onSave}
           >

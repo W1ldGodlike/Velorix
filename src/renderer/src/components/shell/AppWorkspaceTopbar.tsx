@@ -76,11 +76,13 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
     <header
       className="app-topbar"
       aria-label={uiText('topbarHeaderAria')}
+      aria-describedby={workspaceTabDescId}
       aria-busy={appChromeBusy}
     >
       <div
         className="app-topbar-brand"
         aria-label={uiText('topbarProductName')}
+        aria-describedby={workspaceTabDescId}
         aria-busy={engineDownloadBusy || engineSummary === 'checking'}
       >
         <span className="app-topbar-mark" aria-hidden>
@@ -91,6 +93,7 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
       <nav
         className="app-workspace-tabs"
         aria-label={uiText('workspaceTabsAria')}
+        aria-describedby={workspaceTabDescId}
         role="tablist"
         aria-orientation="horizontal"
         aria-busy={appChromeBusy}
@@ -177,6 +180,7 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
           <button
             type="button"
             className="app-icon-btn"
+            aria-describedby={workspaceTabDescId}
             onClick={() => {
               onOpenVideoFolder()
             }}
@@ -188,6 +192,7 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
           <button
             type="button"
             className="app-icon-btn"
+            aria-describedby={workspaceTabDescId}
             onClick={() => {
               onOpenFile()
             }}
@@ -199,6 +204,7 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
           <button
             type="button"
             className="app-icon-btn"
+            aria-describedby={workspaceTabDescId}
             onClick={() => {
               void window.fluxalloy.inspector.openWindow(previewPath ?? null)
             }}
@@ -211,6 +217,7 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
             <button
               type="button"
               className="app-icon-btn app-icon-btn-warn"
+              aria-describedby={workspaceTabDescId}
               disabled={exportCancelBusy}
               aria-label={
                 exportCancelBusy
@@ -235,6 +242,7 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
             <button
               type="button"
               className="app-icon-btn app-icon-btn-warn"
+              aria-describedby={workspaceTabDescId}
               disabled={engineDownloadBusy}
               aria-label={
                 engineDownloadBusy
@@ -258,6 +266,7 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
           <button
             type="button"
             className="app-icon-btn"
+            aria-describedby={workspaceTabDescId}
             onClick={() => {
               onOpenEnginePaths()
             }}
@@ -269,6 +278,7 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
           <button
             type="button"
             className="app-icon-btn"
+            aria-describedby={workspaceTabDescId}
             onClick={() => {
               onOpenKnowledge()
             }}
@@ -280,6 +290,7 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
           <button
             type="button"
             className="app-icon-btn"
+            aria-describedby={workspaceTabDescId}
             onClick={() => {
               onOpenAbout()
             }}
@@ -291,6 +302,7 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
           <button
             type="button"
             className="app-icon-btn app-locale-badge"
+            aria-describedby={workspaceTabDescId}
             onClick={onUiLocaleToggle}
             title={
               getUiLocale() === 'ru'
@@ -308,6 +320,7 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
           <button
             type="button"
             className="app-icon-btn"
+            aria-describedby={workspaceTabDescId}
             onClick={onToggleTheme}
             title={uiText('topbarThemeToggleTitle')}
           >

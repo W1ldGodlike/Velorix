@@ -48,7 +48,7 @@
 - [~] §19/§3: verify+release smoke ✅; `check:release:local`; Support ZIP — all engines + release merge + quiet hints (J-932..950); engines manual на non-Win.
 - [x] §15: knowledge — пакет закрыт (RU/EN Help, `data:` assets, fluxhelp, About→справка); далее tooltips/PNG по UI.
 - [x] §4.1/§19: runtime только `<installRoot>/app-data/` (Electron userData/cache/temp); NSIS+ZIP, `Uninstall FluxAlloy.cmd`, optional wipe app-data; без legacy-миграции в коде (J-924).
-- [~] §2.2/§5: uiLocale hot-reload ✅; `locales` 15 shards + `check:locales-json`; DPI ✅ hints; §1.1 focus — редактор + терминал + downloads (J-925..960).
+- [~] §2.2/§5: uiLocale hot-reload ✅; `locales` 15 shards + `check:locales-json`; DPI ✅ hints; §1.1 focus — редактор + терминал + downloads (J-925..965).
 
 ---
 

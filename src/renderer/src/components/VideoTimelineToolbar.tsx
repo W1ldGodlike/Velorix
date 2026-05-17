@@ -72,6 +72,7 @@ export function VideoTimelineToolbar(props: VideoTimelineToolbarProps) {
       >
         <button
           type="button"
+          aria-describedby="editor-video-timeline-hint"
           className="app-btn app-btn-compact app-btn-timeline-in"
           disabled={duration <= 0}
           onClick={onCaptureIn}
@@ -81,6 +82,7 @@ export function VideoTimelineToolbar(props: VideoTimelineToolbarProps) {
         </button>
         <button
           type="button"
+          aria-describedby="editor-video-timeline-hint"
           className="app-btn app-btn-compact app-btn-timeline-out"
           disabled={duration <= 0}
           onClick={onCaptureOut}
@@ -90,6 +92,7 @@ export function VideoTimelineToolbar(props: VideoTimelineToolbarProps) {
         </button>
         <button
           type="button"
+          aria-describedby="editor-video-timeline-hint"
           className="app-btn app-btn-compact app-btn-timeline-trim"
           disabled={duration <= 0}
           onClick={() => {
@@ -102,6 +105,7 @@ export function VideoTimelineToolbar(props: VideoTimelineToolbarProps) {
         </button>
         <button
           type="button"
+          aria-describedby="editor-video-timeline-hint"
           className="app-btn app-btn-compact"
           disabled={duration <= 0}
           onClick={onResetTrim}
@@ -156,6 +160,7 @@ export function VideoTimelineToolbar(props: VideoTimelineToolbarProps) {
       >
         <button
           type="button"
+          aria-describedby="editor-video-timeline-hint"
           className="app-btn app-btn-compact app-btn-timeline-snapshot"
           disabled={duration <= 0 || saveFrameDisabled}
           onClick={() => {
@@ -172,6 +177,7 @@ export function VideoTimelineToolbar(props: VideoTimelineToolbarProps) {
         </button>
         <button
           type="button"
+          aria-describedby="editor-video-timeline-hint"
           className="app-btn app-btn-compact app-btn-timeline-export"
           disabled={duration <= 0}
           onClick={() => {
@@ -193,6 +199,7 @@ export function VideoTimelineToolbar(props: VideoTimelineToolbarProps) {
         <button
           type="button"
           className="app-icon-btn app-timeline-zoom-ico"
+          aria-describedby="editor-video-timeline-hint"
           disabled={duration <= 0 || timelineZoomMul <= 1}
           onClick={onZoomOut}
           title={uiText('videoTimelineZoomOutTitle')}
@@ -203,6 +210,7 @@ export function VideoTimelineToolbar(props: VideoTimelineToolbarProps) {
         <button
           type="button"
           className="app-icon-btn app-timeline-zoom-ico"
+          aria-describedby="editor-video-timeline-hint"
           disabled={duration <= 0 || timelineZoomMul >= TIMELINE_ZOOM_MAX}
           onClick={onZoomIn}
           title={uiText('videoTimelineZoomInTitle')}

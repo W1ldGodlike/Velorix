@@ -34,7 +34,11 @@ export function EditorFfmpegSettingsRailOutputSection(props: EditorFfmpegSetting
         persistMainWindowUiPanelToggle('ffmpegOutput', e.currentTarget.open)
       }}
     >
-      <summary className="app-settings-summary" title={uiText('editorTooltipSectionOutput')}>
+      <summary
+        className="app-settings-summary"
+        title={uiText('editorTooltipSectionOutput')}
+        aria-describedby="ffmpegOutputSectionHint editor-ffmpeg-settings-hint"
+      >
         {uiText('editorFfmpegSectionOutput')}
       </summary>
       <p id="ffmpegOutputSectionHint" className="app-settings-section-hint">
@@ -81,6 +85,7 @@ export function EditorFfmpegSettingsRailOutputSection(props: EditorFfmpegSetting
           <summary
             className="app-export-preview-summary"
             title={uiText('editorTooltipExportCommandPreview')}
+            aria-describedby="exportCommandPreviewHint ffmpegOutputSectionHint editor-ffmpeg-settings-hint"
           >
             {uiText('editorExportCommandPreviewSummary')}
           </summary>

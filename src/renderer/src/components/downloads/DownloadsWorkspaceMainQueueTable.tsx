@@ -184,6 +184,7 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
                       <button
                         type="button"
                         className="app-icon-btn"
+                        aria-describedby="downloads-page-hint"
                         aria-label={uiText('downloadsQueueAriaMoveUp')}
                         title={uiText('downloadsQueueAriaMoveUp')}
                         onClick={() => {
@@ -199,6 +200,7 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
                       <button
                         type="button"
                         className="app-icon-btn"
+                        aria-describedby="downloads-page-hint"
                         aria-label={uiText('downloadsQueueAriaMoveDown')}
                         title={uiText('downloadsQueueAriaMoveDown')}
                         onClick={() => {
@@ -214,6 +216,7 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
                       <button
                         type="button"
                         className="app-icon-btn app-icon-btn-primary"
+                        aria-describedby="downloads-page-hint"
                         aria-label={
                           isYtdlpQueueStatusErrorLike(row.status)
                             ? uiText('downloadsQueueAriaRetryRow')
@@ -246,6 +249,7 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
                           <button
                             type="button"
                             className="app-icon-btn"
+                            aria-describedby="downloads-page-hint"
                             aria-label={uiText('downloadsQueueAriaOpenFile')}
                             title={uiText('downloadsQueueAriaOpenFile')}
                             onClick={() => {
@@ -263,6 +267,7 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
                           <button
                             type="button"
                             className="app-icon-btn"
+                            aria-describedby="downloads-page-hint"
                             aria-label={uiText('downloadsQueueAriaOpenFolder')}
                             title={uiText('downloadsQueueAriaOpenFolder')}
                             onClick={() => {
@@ -280,6 +285,7 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
                           <button
                             type="button"
                             className="app-icon-btn"
+                            aria-describedby="downloads-page-hint"
                             aria-label={uiText('downloadsQueueAriaOpenInEditor')}
                             title={uiText('downloadsQueueAriaOpenInEditor')}
                             onClick={() => {
@@ -317,6 +323,7 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
                         <button
                           type="button"
                           className="app-icon-btn"
+                          aria-describedby="downloads-page-hint"
                           aria-label={uiText('downloadsQueueOpenDownloadDirTitle')}
                           title={uiText('downloadsQueueOpenDownloadDirTitle')}
                           onClick={() => {
@@ -336,6 +343,7 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
                         <button
                           type="button"
                           className="app-icon-btn"
+                          aria-describedby="downloads-page-hint"
                           disabled={
                             row.ytdlpPauseSupported !== true || row.ytdlpPauseChildActive !== true
                           }
@@ -374,6 +382,7 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
                       <button
                         type="button"
                         className="app-icon-btn app-icon-btn-warn"
+                        aria-describedby="downloads-page-hint"
                         aria-label={uiText('downloadsQueueAriaRemoveRow')}
                         title={uiText('downloadsQueueAriaRemoveRow')}
                         onClick={() => {

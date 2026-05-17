@@ -58,7 +58,11 @@ export function EditorFfmpegSettingsRailAudioSection(props: EditorFfmpegSettings
         persistMainWindowUiPanelToggle('ffmpegAudio', e.currentTarget.open)
       }}
     >
-      <summary className="app-settings-summary" title={uiText('editorTooltipSectionAudio')}>
+      <summary
+        className="app-settings-summary"
+        title={uiText('editorTooltipSectionAudio')}
+        aria-describedby="ffmpegAudioSectionHint editor-ffmpeg-settings-hint"
+      >
         {uiText('editorFfmpegSectionAudio')}
       </summary>
       <p id="ffmpegAudioSectionHint" className="app-settings-section-hint">

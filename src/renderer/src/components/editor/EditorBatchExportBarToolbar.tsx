@@ -92,6 +92,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
                 <button
                   type="button"
                   className="app-btn app-btn-icon-leading"
+                  aria-describedby="batch-export-panel-hint batch-export-outdir-hint batch-export-drop-hint"
                   disabled={batchExportBusy}
                   onClick={() => {
                     void handleBatchPickOutputFolder()
@@ -103,6 +104,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
                 <button
                   type="button"
                   className="app-btn app-btn-icon-leading"
+                  aria-describedby="batch-export-panel-hint batch-export-outdir-hint batch-export-drop-hint"
                   disabled={batchExportBusy || batchOutputDirectory.length === 0}
                   onClick={() => {
                     void handleBatchRevealSharedOutputFolder()
@@ -114,6 +116,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
                 <button
                   type="button"
                   className="app-btn app-btn-icon-leading"
+                  aria-describedby="batch-export-panel-hint batch-export-outdir-hint batch-export-drop-hint"
                   disabled={batchExportBusy || batchOutputDirectory.length === 0}
                   onClick={() => {
                     void handleBatchClearOutputDirectory()
@@ -170,6 +173,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
               <button
                 type="button"
                 className="app-btn app-btn-icon-leading"
+                aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                 disabled={batchExportBusy}
                 onClick={() => {
                   void handleBatchPickFiles()
@@ -181,6 +185,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
               <button
                 type="button"
                 className="app-btn app-btn-icon-leading"
+                aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                 disabled={batchExportBusy}
                 onClick={() => {
                   void handleBatchPickFolder()
@@ -192,6 +197,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
               <button
                 type="button"
                 className="app-btn app-btn-icon-leading"
+                aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                 disabled={batchExportBusy || !previewPath}
                 onClick={() => {
                   void handleBatchAddCurrentPreview()
@@ -203,6 +209,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
               <button
                 type="button"
                 className="app-btn app-btn-icon-leading"
+                aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                 disabled={batchExportBusy}
                 onClick={() => {
                   void handleBatchAddDownloadsDone()
@@ -214,6 +221,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
               <button
                 type="button"
                 className="app-btn app-btn-primary app-btn-icon-leading"
+                aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                 disabled={batchExportBusy || (batchSnapshot?.rows.length ?? 0) === 0}
                 onClick={() => {
                   void handleBatchStart()
@@ -225,6 +233,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
               <button
                 type="button"
                 className="app-btn app-btn-icon-leading"
+                aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                 disabled={!batchExportBusy}
                 onClick={() => {
                   void handleBatchCancel()
@@ -236,6 +245,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
               <button
                 type="button"
                 className="app-btn app-btn-icon-leading"
+                aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                 disabled={batchExportBusy || (batchSnapshot?.completedError ?? 0) === 0}
                 onClick={() => {
                   void handleBatchRetryFailed()
@@ -247,6 +257,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
               <button
                 type="button"
                 className="app-btn app-btn-icon-leading"
+                aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                 disabled={batchExportBusy || (batchSnapshot?.completedError ?? 0) === 0}
                 onClick={() => {
                   void handleBatchRetryFailedAndStart()
@@ -258,6 +269,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
               <button
                 type="button"
                 className="app-btn app-btn-icon-leading"
+                aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                 disabled={batchExportBusy || (batchSnapshot?.completedOk ?? 0) === 0}
                 onClick={() => {
                   void handleBatchClearCompleted()
@@ -269,6 +281,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
               <button
                 type="button"
                 className="app-btn app-btn-icon-leading"
+                aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                 disabled={batchExportBusy || (batchSnapshot?.rows.length ?? 0) === 0}
                 onClick={() => {
                   void window.fluxalloy.batchExport.clear().catch(console.error)
@@ -280,6 +293,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
               <button
                 type="button"
                 className="app-btn app-btn-icon-leading"
+                aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                 disabled={(batchSnapshot?.rows.length ?? 0) === 0}
                 onClick={() => {
                   void handleBatchCopyInputPaths()
@@ -291,6 +305,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
               <button
                 type="button"
                 className="app-btn app-btn-icon-leading"
+                aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                 disabled={
                   !(
                     batchSnapshot?.rows.some(
@@ -308,6 +323,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
               <button
                 type="button"
                 className="app-btn app-btn-icon-leading"
+                aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                 disabled={(batchSnapshot?.rows.length ?? 0) === 0}
                 onClick={() => {
                   void handleBatchSaveReport()
@@ -319,6 +335,7 @@ export function EditorBatchExportBarToolbar(props: EditorBatchExportBarProps): J
               <button
                 type="button"
                 className="app-btn app-btn-icon-leading"
+                aria-describedby="batch-export-panel-hint batch-export-drop-hint"
                 disabled={batchExportBusy}
                 onClick={() => {
                   void handleBatchRemoveWaiting()

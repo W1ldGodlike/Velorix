@@ -42,7 +42,11 @@ export function PreviewProbeBodyChaptersSection({
         persistOrLocalSectionToggle('chapters', e.currentTarget.open)
       }}
     >
-      <summary className="app-probe-summary" aria-controls={probeChaptersRegionId}>
+      <summary
+        className="app-probe-summary"
+        aria-controls={probeChaptersRegionId}
+        aria-describedby="probePanelOverviewHint"
+      >
         {uiTextVars('probeSectionChaptersTemplate', { count: probeInfo.chapters.length })}
       </summary>
       <div

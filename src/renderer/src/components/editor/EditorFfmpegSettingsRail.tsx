@@ -67,6 +67,7 @@ export function EditorFfmpegSettingsRail(props: EditorFfmpegSettingsRailProps) {
           <button
             type="button"
             className="app-icon-btn app-settings-rail-collapse-btn"
+            aria-describedby="editor-ffmpeg-settings-hint"
             onClick={() => {
               onCollapseRail()
             }}

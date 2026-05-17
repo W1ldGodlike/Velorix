@@ -181,6 +181,7 @@ export function KnowledgeDialog({
               className="app-btn"
               onClick={onClose}
               aria-label={uiText('knowledgeCloseButtonAria')}
+              aria-describedby="knowledge-dialog-hint"
               title={uiText('knowledgeCloseTooltip')}
             >
               {uiText('closeButton')}

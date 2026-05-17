@@ -39,6 +39,7 @@ export function DownloadsSettingsRailExpertSection(props: DownloadsSettingsRailP
       <summary
         className="app-downloads-rail-summary"
         title={uiText('downloadsTooltipSectionExpert')}
+        aria-describedby="downloads-page-hint downloadsHintCatalogIntro"
       >
         {uiText('downloadsRailExpertSummary')}
       </summary>

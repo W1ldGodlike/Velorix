@@ -32,7 +32,11 @@ export function EditorFfmpegSettingsRailPresetsSection(props: EditorFfmpegSettin
         persistMainWindowUiPanelToggle('ffmpegPresets', e.currentTarget.open)
       }}
     >
-      <summary className="app-settings-summary" title={uiText('editorTooltipSectionPresets')}>
+      <summary
+        className="app-settings-summary"
+        title={uiText('editorTooltipSectionPresets')}
+        aria-describedby="ffmpegPresetsSectionHint editor-ffmpeg-settings-hint"
+      >
         {uiText('editorFfmpegSectionPresets')}
       </summary>
       <p id="ffmpegPresetsSectionHint" className="app-settings-section-hint">

@@ -107,7 +107,7 @@ export function ProcessingHistoryPanel({
         onToggle(event.currentTarget.open)
       }}
     >
-      <summary className="app-settings-summary">
+      <summary className="app-settings-summary" aria-describedby="processingHistorySectionHint">
         {uiText('processingHistoryTitle')}{' '}
         <span className="app-processing-history-count">{entries.length}</span>
       </summary>
@@ -156,6 +156,7 @@ export function ProcessingHistoryPanel({
             id={processingHistoryKindFilterId}
             className="app-control"
             value={filter.kind ?? ''}
+            aria-describedby="processingHistorySectionHint"
             disabled={busy}
             onChange={(event) => {
               const value = event.currentTarget.value as '' | ProcessingHistoryKind
@@ -177,6 +178,7 @@ export function ProcessingHistoryPanel({
             id={processingHistoryOutcomeFilterId}
             className="app-control"
             value={filter.outcome ?? ''}
+            aria-describedby="processingHistorySectionHint"
             disabled={busy}
             onChange={(event) => {
               const value = event.currentTarget.value as '' | ProcessingHistoryOutcome
@@ -198,6 +200,7 @@ export function ProcessingHistoryPanel({
             id={processingHistoryQueryFilterId}
             className="app-control"
             value={filter.query ?? ''}
+            aria-describedby="processingHistorySectionHint"
             disabled={busy}
             placeholder={uiText('processingHistoryQueryPlaceholder')}
             onChange={(event) => {
@@ -217,6 +220,7 @@ export function ProcessingHistoryPanel({
         <button
           type="button"
           className="app-btn app-btn-compact"
+          aria-describedby="processingHistorySectionHint"
           disabled={busy}
           onClick={onRefresh}
         >
@@ -309,6 +313,7 @@ export function ProcessingHistoryPanel({
                   <button
                     type="button"
                     className="app-btn app-btn-compact"
+                    aria-describedby="processingHistorySectionHint"
                     disabled={busy}
                     onClick={() => onOpenInputInHandler(entry.id)}
                   >
@@ -318,6 +323,7 @@ export function ProcessingHistoryPanel({
                     <button
                       type="button"
                       className="app-btn app-btn-compact"
+                      aria-describedby="processingHistorySectionHint"
                       disabled={busy}
                       onClick={() => onAddInputToBatch(entry.id)}
                     >
@@ -339,6 +345,7 @@ export function ProcessingHistoryPanel({
                     <button
                       type="button"
                       className="app-btn app-btn-compact"
+                      aria-describedby="processingHistorySectionHint"
                       disabled={busy}
                       onClick={() => onOpenOutput(entry.id, 'file')}
                     >
@@ -347,6 +354,7 @@ export function ProcessingHistoryPanel({
                     <button
                       type="button"
                       className="app-btn app-btn-compact"
+                      aria-describedby="processingHistorySectionHint"
                       disabled={busy}
                       onClick={() => onOpenOutput(entry.id, 'folder')}
                     >
@@ -355,6 +363,7 @@ export function ProcessingHistoryPanel({
                     <button
                       type="button"
                       className="app-btn app-btn-compact"
+                      aria-describedby="processingHistorySectionHint"
                       disabled={busy}
                       onClick={() => onOpenOutput(entry.id, 'preview')}
                     >

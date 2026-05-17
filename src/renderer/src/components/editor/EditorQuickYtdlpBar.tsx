@@ -48,7 +48,11 @@ export function EditorQuickYtdlpBar(props: EditorQuickYtdlpBarProps): JSX.Elemen
         onOpenChange(e.currentTarget.open)
       }}
     >
-      <summary className="app-url-summary" aria-controls={quickYtdlpBarRegionBodyId}>
+      <summary
+        className="app-url-summary"
+        aria-controls={quickYtdlpBarRegionBodyId}
+        aria-describedby="quickYtdlpUrlHint"
+      >
         {uiText('quickYtdlpSummary')}
       </summary>
       <div
@@ -104,6 +108,7 @@ export function EditorQuickYtdlpBar(props: EditorQuickYtdlpBarProps): JSX.Elemen
           <nav
             className="app-doc-inline-links app-url-bar-doc-links"
             aria-label={uiText('quickYtdlpDocNavAria')}
+            aria-describedby="quickYtdlpUrlHint"
             aria-busy={chromeBusy}
           >
             <a href={YTDLP_DOC_README} target="_blank" rel="noreferrer">

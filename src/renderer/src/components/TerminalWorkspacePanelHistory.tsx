@@ -82,6 +82,7 @@ export function TerminalWorkspacePanelHistory(
                         className="app-terminal-output-line-copy"
                         title={uiText('terminalCopyLineTitle')}
                         aria-label={formatTerminalCopyLineAria(lineIdx + 1)}
+                        aria-describedby="terminal-history-hint"
                         onClick={() => {
                           void copyTerminalOutputLine(line)
                         }}

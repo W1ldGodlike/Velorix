@@ -46,7 +46,11 @@ export function EditorFfmpegSettingsRailFormatSection(props: EditorFfmpegSetting
         persistMainWindowUiPanelToggle('ffmpegFormat', e.currentTarget.open)
       }}
     >
-      <summary className="app-settings-summary" title={uiText('editorTooltipSectionFormat')}>
+      <summary
+        className="app-settings-summary"
+        title={uiText('editorTooltipSectionFormat')}
+        aria-describedby="ffmpegFormatSectionHint editor-ffmpeg-settings-hint"
+      >
         {uiText('editorFfmpegSectionFrameLayout')}
       </summary>
       <p id="ffmpegFormatSectionHint" className="app-settings-section-hint">

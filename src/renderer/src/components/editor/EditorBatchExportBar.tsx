@@ -28,7 +28,11 @@ export function EditorBatchExportBar(props: EditorBatchExportBarProps): JSX.Elem
         onOpenChange(e.currentTarget.open)
       }}
     >
-      <summary className="app-url-summary" aria-controls={batchExportBarRegionBodyId}>
+      <summary
+        className="app-url-summary"
+        aria-controls={batchExportBarRegionBodyId}
+        aria-describedby="batch-export-panel-hint batch-export-drop-hint"
+      >
         {uiText('batchExportSummary')}
       </summary>
       <div

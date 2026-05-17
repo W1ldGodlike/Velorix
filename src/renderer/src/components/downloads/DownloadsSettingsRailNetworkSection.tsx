@@ -29,6 +29,7 @@ export function DownloadsSettingsRailNetworkSection(props: DownloadsSettingsRail
       <summary
         className="app-downloads-rail-summary"
         title={uiText('downloadsTooltipSectionNetwork')}
+        aria-describedby="downloads-page-hint"
       >
         {uiText('downloadsRailNetworkSummary')}
       </summary>

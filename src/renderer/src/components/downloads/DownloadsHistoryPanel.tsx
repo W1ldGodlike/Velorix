@@ -52,7 +52,7 @@ export function DownloadsHistoryPanel({
         onToggle(event.currentTarget.open)
       }}
     >
-      <summary>
+      <summary aria-describedby="downloads-page-hint">
         {uiText('downloadsHistoryTitle')}
         <span>
           {entries.length}/{totalEntries}
@@ -94,6 +94,7 @@ export function DownloadsHistoryPanel({
             id={downloadsHistoryOutcomeFilterId}
             className="app-control"
             value={outcomeFilter}
+            aria-describedby="downloads-page-hint"
             disabled={busy}
             onChange={(event) => {
               onOutcomeFilterChange(event.currentTarget.value as typeof outcomeFilter)
@@ -108,6 +109,7 @@ export function DownloadsHistoryPanel({
         <button
           type="button"
           className="app-btn app-btn-compact app-btn-icon-leading"
+          aria-describedby="downloads-page-hint"
           disabled={busy}
           onClick={onRefresh}
         >
@@ -116,6 +118,7 @@ export function DownloadsHistoryPanel({
         <button
           type="button"
           className="app-btn app-btn-compact app-btn-warn app-btn-icon-leading"
+          aria-describedby="downloads-page-hint"
           disabled={busy || entries.length === 0}
           onClick={onClear}
         >
@@ -124,6 +127,7 @@ export function DownloadsHistoryPanel({
         <button
           type="button"
           className="app-btn app-btn-compact app-btn-icon-leading"
+          aria-describedby="downloads-page-hint"
           disabled={busy || entries.length === 0}
           onClick={onExportVisible}
         >
@@ -171,6 +175,7 @@ export function DownloadsHistoryPanel({
                   <button
                     type="button"
                     className="app-btn app-btn-compact app-btn-icon-leading"
+                    aria-describedby="downloads-page-hint"
                     disabled={busy}
                     onClick={() => onRepeat(entry.url)}
                   >

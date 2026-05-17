@@ -30,6 +30,7 @@ export function DownloadsSettingsRailFormatSection(props: DownloadsSettingsRailP
       <summary
         className="app-downloads-rail-summary"
         title={uiText('downloadsTooltipSectionFormat')}
+        aria-describedby="downloads-page-hint downloadsFormatHint"
       >
         {uiText('downloadsRailFormatSummary')}
       </summary>

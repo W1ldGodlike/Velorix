@@ -42,7 +42,11 @@ export function PreviewProbeBodyTracksSection({
         persistOrLocalSectionToggle('tracks', e.currentTarget.open)
       }}
     >
-      <summary className="app-probe-summary" aria-controls={probeTracksRegionId}>
+      <summary
+        className="app-probe-summary"
+        aria-controls={probeTracksRegionId}
+        aria-describedby="probePanelOverviewHint"
+      >
         {uiTextVars('probeSectionTracksTemplate', { count: probeInfo.tracks.length })}
       </summary>
       <div

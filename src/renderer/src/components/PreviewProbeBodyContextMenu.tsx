@@ -22,6 +22,7 @@ export function PreviewProbeBodyContextMenu({
           ref={probeTableMenuRef}
           role="menu"
           aria-label={uiText('probeContextMenuAria')}
+          aria-describedby="probePanelOverviewHint"
           className="app-probe-context-menu"
           style={{ left: probeTableMenu.x, top: probeTableMenu.y }}
         >
@@ -31,6 +32,7 @@ export function PreviewProbeBodyContextMenu({
                 type="button"
                 role="menuitem"
                 className="app-probe-context-menu-item"
+                aria-describedby="probePanelOverviewHint"
                 onClick={() => {
                   void copyProbeCellAndDismiss(formatProbeTrackRowTsv(probeTableMenu.row))
                 }}
@@ -41,6 +43,7 @@ export function PreviewProbeBodyContextMenu({
                 type="button"
                 role="menuitem"
                 className="app-probe-context-menu-item"
+                aria-describedby="probePanelOverviewHint"
                 onClick={() => {
                   void copyProbeCellAndDismiss(probeTableMenu.row.codec)
                 }}
@@ -52,6 +55,7 @@ export function PreviewProbeBodyContextMenu({
                   type="button"
                   role="menuitem"
                   className="app-probe-context-menu-item"
+                  aria-describedby="probePanelOverviewHint"
                   onClick={() => {
                     void copyProbeCellAndDismiss(probeTableMenu.row.pixelFormat ?? '')
                   }}
@@ -64,6 +68,7 @@ export function PreviewProbeBodyContextMenu({
                   type="button"
                   role="menuitem"
                   className="app-probe-context-menu-item"
+                  aria-describedby="probePanelOverviewHint"
                   onClick={() => {
                     void copyProbeCellAndDismiss(probeTableMenu.row.sampleAspectRatio ?? '')
                   }}
@@ -76,6 +81,7 @@ export function PreviewProbeBodyContextMenu({
                   type="button"
                   role="menuitem"
                   className="app-probe-context-menu-item"
+                  aria-describedby="probePanelOverviewHint"
                   onClick={() => {
                     void copyProbeCellAndDismiss(probeTableMenu.row.displayAspectRatio ?? '')
                   }}
@@ -88,6 +94,7 @@ export function PreviewProbeBodyContextMenu({
                   type="button"
                   role="menuitem"
                   className="app-probe-context-menu-item"
+                  aria-describedby="probePanelOverviewHint"
                   onClick={() => {
                     void copyProbeCellAndDismiss(probeTableMenu.row.colorSpace ?? '')
                   }}
@@ -100,6 +107,7 @@ export function PreviewProbeBodyContextMenu({
                   type="button"
                   role="menuitem"
                   className="app-probe-context-menu-item"
+                  aria-describedby="probePanelOverviewHint"
                   onClick={() => {
                     void copyProbeCellAndDismiss(probeTableMenu.row.colorPrimaries ?? '')
                   }}
@@ -112,6 +120,7 @@ export function PreviewProbeBodyContextMenu({
                   type="button"
                   role="menuitem"
                   className="app-probe-context-menu-item"
+                  aria-describedby="probePanelOverviewHint"
                   onClick={() => {
                     void copyProbeCellAndDismiss(probeTableMenu.row.colorTransfer ?? '')
                   }}
@@ -124,6 +133,7 @@ export function PreviewProbeBodyContextMenu({
                   type="button"
                   role="menuitem"
                   className="app-probe-context-menu-item"
+                  aria-describedby="probePanelOverviewHint"
                   onClick={() => {
                     void copyProbeCellAndDismiss(probeTableMenu.row.colorRange ?? '')
                   }}
@@ -136,6 +146,7 @@ export function PreviewProbeBodyContextMenu({
                   type="button"
                   role="menuitem"
                   className="app-probe-context-menu-item"
+                  aria-describedby="probePanelOverviewHint"
                   onClick={() => {
                     void copyProbeCellAndDismiss(
                       formatProbeBitrateLine(probeTableMenu.row.streamBitrateKbps) ?? ''
@@ -150,6 +161,7 @@ export function PreviewProbeBodyContextMenu({
                   type="button"
                   role="menuitem"
                   className="app-probe-context-menu-item"
+                  aria-describedby="probePanelOverviewHint"
                   onClick={() => {
                     void copyProbeCellAndDismiss(probeTableMenu.row.dispositionSummary)
                   }}
@@ -161,6 +173,7 @@ export function PreviewProbeBodyContextMenu({
                 type="button"
                 role="menuitem"
                 className="app-probe-context-menu-item"
+                aria-describedby="probePanelOverviewHint"
                 onClick={() => {
                   void copyProbeCellAndDismiss(probeTableMenu.row.detail)
                 }}
@@ -172,6 +185,7 @@ export function PreviewProbeBodyContextMenu({
                   type="button"
                   role="menuitem"
                   className="app-probe-context-menu-item"
+                  aria-describedby="probePanelOverviewHint"
                   onClick={() => {
                     void copyProbeCellAndDismiss(probeTableMenu.row.language ?? '')
                   }}
@@ -184,6 +198,7 @@ export function PreviewProbeBodyContextMenu({
                   type="button"
                   role="menuitem"
                   className="app-probe-context-menu-item"
+                  aria-describedby="probePanelOverviewHint"
                   onClick={() => {
                     void copyProbeCellAndDismiss(probeTableMenu.row.titleTag ?? '')
                   }}
@@ -198,6 +213,7 @@ export function PreviewProbeBodyContextMenu({
                 type="button"
                 role="menuitem"
                 className="app-probe-context-menu-item"
+                aria-describedby="probePanelOverviewHint"
                 onClick={() => {
                   void copyProbeCellAndDismiss(formatProbeChapterRowTsv(probeTableMenu.row))
                 }}
@@ -209,6 +225,7 @@ export function PreviewProbeBodyContextMenu({
                   type="button"
                   role="menuitem"
                   className="app-probe-context-menu-item"
+                  aria-describedby="probePanelOverviewHint"
                   onClick={() => {
                     void copyProbeCellAndDismiss(probeTableMenu.row.title ?? '')
                   }}

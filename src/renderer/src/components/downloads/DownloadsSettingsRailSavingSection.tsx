@@ -33,6 +33,7 @@ export function DownloadsSettingsRailSavingSection(props: DownloadsSettingsRailP
       <summary
         className="app-downloads-rail-summary"
         title={uiText('downloadsTooltipSectionSaving')}
+        aria-describedby="downloads-page-hint"
       >
         {uiText('downloadsRailSavingSummary')}
       </summary>
@@ -64,6 +65,7 @@ export function DownloadsSettingsRailSavingSection(props: DownloadsSettingsRailP
             <button
               type="button"
               className="app-btn app-btn-compact app-btn-icon-leading"
+              aria-describedby="downloads-page-hint"
               title={uiText('downloadsTooltipOutputOpenFolder')}
               onClick={() => {
                 void window.fluxalloy.downloads.openOutputDirectory().then((res) => {
@@ -79,6 +81,7 @@ export function DownloadsSettingsRailSavingSection(props: DownloadsSettingsRailP
             <button
               type="button"
               className="app-btn app-btn-compact app-btn-icon-leading"
+              aria-describedby="downloads-page-hint"
               title={uiText('downloadsTooltipOutputPick')}
               onClick={() => {
                 void window.fluxalloy.downloads.pickOutputDirectory().then((res) => {
@@ -98,6 +101,7 @@ export function DownloadsSettingsRailSavingSection(props: DownloadsSettingsRailP
             <button
               type="button"
               className="app-btn app-btn-compact app-btn-icon-leading"
+              aria-describedby="downloads-page-hint"
               title={uiText('downloadsTooltipOutputDefault')}
               onClick={() => {
                 void window.fluxalloy.downloads.clearOutputDirectory().then((res) => {

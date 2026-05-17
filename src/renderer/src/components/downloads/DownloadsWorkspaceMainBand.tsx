@@ -56,6 +56,7 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
           <button
             type="button"
             className="app-btn app-btn-icon-leading"
+            aria-describedby="downloads-page-hint"
             onClick={() => {
               void window.fluxalloy.downloads.openWindow({
                 ...(downloadsUrl.trim().length > 0 ? { text: downloadsUrl } : {}),
@@ -70,6 +71,7 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
             <button
               type="button"
               className="app-btn app-btn-icon-leading"
+              aria-describedby="downloads-page-hint"
               onClick={() => {
                 onScrollToSettings()
               }}
@@ -116,6 +118,7 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
           <button
             type="button"
             className="app-btn app-btn-primary app-btn-icon-leading"
+            aria-describedby="downloads-page-hint downloads-main-url-hint"
             onClick={() => {
               onAddToQueue()
             }}
@@ -126,6 +129,7 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
           <button
             type="button"
             className="app-btn app-btn-warn app-btn-icon-leading"
+            aria-describedby="downloads-page-hint downloads-main-url-hint"
             title={uiText('downloadsStopQueueTooltip')}
             onClick={() => {
               void window.fluxalloy.downloads.cancelQueue().then((res) => {
@@ -141,6 +145,7 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
           <button
             type="button"
             className="app-btn app-btn-icon-leading"
+            aria-describedby="downloads-page-hint downloads-main-url-hint"
             disabled={downloadsRows.length === 0}
             onClick={() => {
               void window.fluxalloy.downloads.clearFinished().then((res) => {
@@ -162,6 +167,7 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
           <button
             type="button"
             className="app-btn app-btn-warn app-btn-icon-leading"
+            aria-describedby="downloads-page-hint downloads-main-url-hint"
             disabled={downloadsRows.length === 0}
             onClick={() => {
               void window.fluxalloy.downloads.clearQueue().then((res) => {

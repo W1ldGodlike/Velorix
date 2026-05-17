@@ -63,6 +63,7 @@ export const DownloadsSettingsRail = forwardRef<HTMLElement, DownloadsSettingsRa
           <button
             type="button"
             className="app-btn app-btn-icon-leading"
+            aria-describedby="downloads-page-hint"
             disabled={downloadsOptionsBusy}
             title={uiText('downloadsTooltipRefreshFooter')}
             onClick={() => {

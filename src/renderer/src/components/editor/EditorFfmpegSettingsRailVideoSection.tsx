@@ -18,7 +18,11 @@ export function EditorFfmpegSettingsRailVideoSection(props: EditorFfmpegSettings
         persistMainWindowUiPanelToggle('ffmpegVideo', e.currentTarget.open)
       }}
     >
-      <summary className="app-settings-summary" title={uiText('editorTooltipSectionVideo')}>
+      <summary
+        className="app-settings-summary"
+        title={uiText('editorTooltipSectionVideo')}
+        aria-describedby="ffmpegVideoSectionHint editor-ffmpeg-settings-hint"
+      >
         {uiText('editorFfmpegSectionVideo')}
       </summary>
       <p id="ffmpegVideoSectionHint" className="app-settings-section-hint">

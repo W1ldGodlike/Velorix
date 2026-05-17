@@ -190,6 +190,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className="app-btn app-btn-compact"
+                aria-describedby="about-dialog-desc"
                 disabled={aboutShellBusy}
                 title={uiText('aboutTooltipLogsFolder')}
                 onClick={() => {
@@ -210,6 +211,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className="app-btn app-btn-compact"
+                aria-describedby="about-dialog-desc"
                 disabled={aboutShellBusy}
                 title={uiText('aboutTooltipMainLog')}
                 onClick={() => {
@@ -225,6 +227,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className="app-btn app-btn-compact"
+                aria-describedby="about-dialog-desc"
                 disabled={aboutShellBusy}
                 title={uiText('aboutTooltipSupportZip')}
                 onClick={() => {
@@ -247,6 +250,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className="app-btn app-btn-compact"
+                aria-describedby="about-dialog-desc"
                 disabled={aboutShellBusy}
                 title={uiText('aboutTooltipMaintenanceSummary')}
                 onClick={() => {
@@ -261,6 +265,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className={`app-btn app-btn-compact${maintenanceConfirm === 'all' ? ' app-btn-danger' : ''}`}
+                aria-describedby="about-dialog-desc"
                 disabled={aboutShellBusy}
                 title={uiText('aboutTooltipMaintenanceCleanAll')}
                 onClick={() => {
@@ -276,6 +281,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className={`app-btn app-btn-compact${maintenanceConfirm === 'previewCache' ? ' app-btn-danger' : ''}`}
+                aria-describedby="about-dialog-desc"
                 disabled={aboutShellBusy}
                 title={uiText('aboutTooltipMaintenanceCleanPreview')}
                 onClick={() => {
@@ -291,6 +297,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className={`app-btn app-btn-compact${maintenanceConfirm === 'ytdlpPartials' ? ' app-btn-danger' : ''}`}
+                aria-describedby="about-dialog-desc"
                 disabled={aboutShellBusy}
                 title={uiText('aboutTooltipMaintenanceCleanPartials')}
                 onClick={() => {
@@ -306,6 +313,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className={`app-btn app-btn-compact${maintenanceConfirm === 'ffmpegTemp' ? ' app-btn-danger' : ''}`}
+                aria-describedby="about-dialog-desc"
                 disabled={aboutShellBusy}
                 title={uiText('aboutTooltipMaintenanceCleanFfmpegTemp')}
                 onClick={() => {
@@ -348,6 +356,7 @@ export function AboutDialog({
                 <button
                   type="button"
                   className="app-btn app-btn-compact"
+                  aria-describedby="about-dialog-desc"
                   disabled={aboutShellBusy}
                   title={uiText('aboutKnowledgeSupportArticleTooltip')}
                   onClick={() => {
@@ -369,6 +378,7 @@ export function AboutDialog({
             <button
               type="button"
               className="app-btn app-btn-primary"
+              aria-describedby="about-dialog-desc"
               title={uiText('aboutTooltipCloseAbout')}
               onClick={onClose}
             >

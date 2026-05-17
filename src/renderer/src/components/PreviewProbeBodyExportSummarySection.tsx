@@ -28,7 +28,11 @@ export function PreviewProbeBodyExportSummarySection({
         persistOrLocalSectionToggle('exportSummary', e.currentTarget.open)
       }}
     >
-      <summary className="app-probe-summary" aria-controls={probeExportSummaryRegionId}>
+      <summary
+        className="app-probe-summary"
+        aria-controls={probeExportSummaryRegionId}
+        aria-describedby="probeExportSummaryHint probePanelOverviewHint"
+      >
         {uiText('probeSectionExportSummary')}
       </summary>
       <div

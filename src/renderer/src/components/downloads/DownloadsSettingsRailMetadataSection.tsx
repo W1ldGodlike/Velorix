@@ -33,6 +33,7 @@ export function DownloadsSettingsRailMetadataSection(props: DownloadsSettingsRai
       <summary
         className="app-downloads-rail-summary"
         title={uiText('downloadsTooltipSectionMetadata')}
+        aria-describedby="downloads-page-hint downloadsCookiesProfileHint"
       >
         {uiText('downloadsRailMetadataSummary')}
       </summary>
@@ -199,6 +200,7 @@ export function DownloadsSettingsRailMetadataSection(props: DownloadsSettingsRai
             <button
               type="button"
               className="app-btn app-btn-compact app-btn-icon-leading"
+              aria-describedby="downloads-page-hint downloadsCookiesProfileHint"
               disabled={downloadsOptionsBusy}
               title={uiText('downloadsTooltipCookiesPick')}
               onClick={() => {
@@ -219,6 +221,7 @@ export function DownloadsSettingsRailMetadataSection(props: DownloadsSettingsRai
             <button
               type="button"
               className="app-btn app-btn-compact app-btn-icon-leading"
+              aria-describedby="downloads-page-hint downloadsCookiesProfileHint"
               disabled={downloadsOptionsBusy || downloadsOptions.cookiesFilePathStored.length === 0}
               title={uiText('downloadsTooltipCookiesClear')}
               onClick={() => {

@@ -29,11 +29,13 @@ export function InspectorStandaloneAppTopbar(props: InspectorStandaloneAppModel)
     <header
       className="app-topbar"
       aria-label={uiText('inspectorStandaloneTopbarAria')}
+      aria-describedby="inspector-standalone-empty-hint"
       aria-busy={probePending}
     >
       <div
         className="app-topbar-brand inspector-toolbar-brand"
         aria-label={uiText('inspectorStandaloneBrandAria')}
+        aria-describedby="inspector-standalone-empty-hint"
         aria-busy={probePending}
       >
         <span className="app-topbar-mark inspector-topbar-mark-icon" aria-hidden>
@@ -61,6 +63,7 @@ export function InspectorStandaloneAppTopbar(props: InspectorStandaloneAppModel)
           <button
             type="button"
             className="app-icon-btn"
+            aria-describedby="inspector-standalone-empty-hint"
             onClick={() => {
               void handleOpenFolderDialog()
             }}
@@ -72,11 +75,11 @@ export function InspectorStandaloneAppTopbar(props: InspectorStandaloneAppModel)
           <button
             type="button"
             className="app-icon-btn app-icon-btn-primary"
+            aria-describedby="inspector-standalone-empty-hint"
             onClick={() => {
               void handleOpenDialog()
             }}
             title={uiText('inspectorStandaloneOpenPickTitle')}
-            aria-describedby="inspector-standalone-empty-hint"
           >
             <IconFolderOpen title={miniIconTitle('miniIconFolderOpenEllipsis')} />
             <span className="app-visually-hidden">
@@ -110,6 +113,7 @@ export function InspectorStandaloneAppTopbar(props: InspectorStandaloneAppModel)
           <button
             type="button"
             className="app-icon-btn"
+            aria-describedby="inspector-standalone-empty-hint"
             onClick={openAboutDialog}
             title={uiText('inspectorStandaloneAboutDiagnosticsTitle')}
           >
@@ -119,6 +123,7 @@ export function InspectorStandaloneAppTopbar(props: InspectorStandaloneAppModel)
           <button
             type="button"
             className="app-icon-btn app-locale-badge"
+            aria-describedby="inspector-standalone-empty-hint"
             onClick={handleUiLocaleToggle}
             title={
               getUiLocale() === 'ru'
@@ -136,6 +141,7 @@ export function InspectorStandaloneAppTopbar(props: InspectorStandaloneAppModel)
           <button
             type="button"
             className="app-icon-btn"
+            aria-describedby="inspector-standalone-empty-hint"
             onClick={() => {
               void toggleTheme()
             }}

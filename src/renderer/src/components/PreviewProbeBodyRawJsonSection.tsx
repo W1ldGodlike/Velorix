@@ -34,7 +34,11 @@ export function PreviewProbeBodyRawJsonSection({
         persistOrLocalSectionToggle('rawJson', e.currentTarget.open)
       }}
     >
-      <summary className="app-probe-summary" aria-controls={probeRawJsonRegionId}>
+      <summary
+        className="app-probe-summary"
+        aria-controls={probeRawJsonRegionId}
+        aria-describedby="probeRawJsonHint probePanelOverviewHint"
+      >
         {uiText('probeSectionRawJson')}
       </summary>
       <div

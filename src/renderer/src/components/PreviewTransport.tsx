@@ -151,6 +151,7 @@ export default function PreviewTransport({
         <button
           type="button"
           className="app-icon-btn"
+          aria-describedby="editor-preview-transport-hint"
           disabled={disabled}
           onClick={() => {
             seekToFraction(0)
@@ -163,6 +164,7 @@ export default function PreviewTransport({
         <button
           type="button"
           className="app-icon-btn"
+          aria-describedby="editor-preview-transport-hint"
           disabled={disabled}
           onClick={() => {
             seek(-STEP_SEC)
@@ -175,6 +177,7 @@ export default function PreviewTransport({
         <button
           type="button"
           className="app-icon-btn app-icon-btn-primary"
+          aria-describedby="editor-preview-transport-hint"
           disabled={disabled}
           onClick={togglePlayPause}
           title={playing ? miniIconTitle('miniIconPauseUi') : miniIconTitle('miniIconPlay')}
@@ -187,6 +190,7 @@ export default function PreviewTransport({
         <button
           type="button"
           className="app-icon-btn"
+          aria-describedby="editor-preview-transport-hint"
           disabled={disabled}
           onClick={() => {
             seek(STEP_SEC)
@@ -199,6 +203,7 @@ export default function PreviewTransport({
         <button
           type="button"
           className="app-icon-btn"
+          aria-describedby="editor-preview-transport-hint"
           disabled={disabled}
           onClick={() => {
             seekToFraction(1)
@@ -219,6 +224,7 @@ export default function PreviewTransport({
         <button
           type="button"
           className="app-icon-btn"
+          aria-describedby="editor-preview-transport-hint"
           disabled={disabled}
           onClick={toggleMute}
           title={muted ? uiText('previewTransportUnmuteTitle') : miniIconTitle('miniIconVolumeX')}
@@ -258,6 +264,7 @@ export default function PreviewTransport({
         <button
           type="button"
           className="app-icon-btn"
+          aria-describedby="editor-preview-transport-hint"
           disabled={disabled}
           onClick={() => {
             void toggleFullscreen()
