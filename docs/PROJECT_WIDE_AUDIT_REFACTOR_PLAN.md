@@ -325,6 +325,11 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | structural | 919 | src/renderer/src/use-editor-export-settings.ts | 4 | `editor-export-select-options.ts` + `editor-export-settings-hydrate.ts` + `editor-export-settings-constants.ts` | ✅ J-812 |
 | structural | 1602 | src/renderer/src/components/editor/EditorFfmpegSettingsRail.tsx | 4 | `editor-ffmpeg-settings-rail-props.ts` + `EditorFfmpegSettingsRailVideoSection.tsx` + `editor-ffmpeg-settings-rail-constants.ts` | ✅ J-813 |
 | structural | 934 | src/renderer/src/components/editor/EditorFfmpegSettingsRail.tsx | 4 | `EditorFfmpegSettingsRailFormat/Audio/Presets/OutputSection.tsx` (остальные `<details>`) | ✅ J-814 |
+| structural | 907 | src/renderer/src/components/VideoTimeline.tsx | 4 | `video-timeline-helpers.ts` + `VideoTimelineToolbar.tsx` + `VideoTimelineUnifiedPane.tsx` | ✅ J-815 |
+| structural | 4074 | src/main/downloads-window.ts | 4 | `downloads-window-html.ts` (`buildDownloadsHtml` pop-out static HTML) | ✅ J-816 |
+| structural | 1282 | src/main/downloads-window.ts | 4 | `downloads-window-runtime.ts` + `register-downloads-window-ipc.ts` (IPC handlers) | ✅ J-817 |
+| structural | 830 | src/renderer/src/components/downloads/DownloadsSettingsRail.tsx | 4 | `downloads-settings-rail-props.ts` + `DownloadsSettingsRail*Section.tsx` (format/metadata/saving/network/expert) | ✅ J-818 |
+| structural | 769 | src/renderer/src/components/downloads/DownloadsWorkspaceMain.tsx | 4 | `downloads-workspace-main-props.ts` + Band/Overview/QueueTable/LowerStack sections | ✅ J-819 |
 
 ---
 

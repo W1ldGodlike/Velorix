@@ -10,128 +10,19 @@ import {
 } from 'react'
 
 import type { MediaProbeSuccess } from '../../../shared/ffprobe-contract'
-import { formatFfprobeEditorVideoFactLine } from '../../../shared/ffprobe-container-format'
 import { buildTimelineRulerTicks, pickTimelineRulerStepSec } from '../../../shared/timeline-ruler'
 import { snapSeekTimeSec } from '../../../shared/video-frame-snap'
-import { miniIconTitle, uiText, uiTextVars } from '../locales/ui-text'
-import { IconImage, IconSave, IconScissors, IconZoomIn, IconZoomOut } from './LucideMiniIcons'
-import TimelineWaveform from './TimelineWaveform'
-
-const MIN_TRIM_GAP_SEC = 0.05
-
-const TIMELINE_ZOOM_MAX = 8
-/** Минимальное смещение указателя (px), после которого жест считается выделением In–Out, а не щелчком. */
-const TRIM_DRAG_THRESHOLD_PX = 4
-/** Зона нажатия у вертикали маркера In/Out (ручка), от края выделения в px. */
-const TRIM_HANDLE_HIT_PX = 11
-
-function formatTime(sec: number): string {
-  if (!Number.isFinite(sec) || sec < 0) {
-    return '0:00'
-  }
-  const s = Math.floor(sec % 60)
-  const m = Math.floor((sec / 60) % 60)
-  const h = Math.floor(sec / 3600)
-  const pad = (n: number): string => n.toString().padStart(2, '0')
-  return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`
-}
-
-/** Время для бейджей In/Out и длительности фрагмента — с миллисекундами (m:ss.mmm или h:mm:ss.mmm). */
-function formatTimeWithMs(sec: number): string {
-  if (!Number.isFinite(sec) || sec < 0) {
-    return '0:00.000'
-  }
-  const ms = Math.floor(sec * 1000) % 1000
-  const whole = Math.floor(sec)
-  const s = whole % 60
-  const m = Math.floor(whole / 60) % 60
-  const h = Math.floor(whole / 3600)
-  const pad2 = (n: number): string => n.toString().padStart(2, '0')
-  const pad3 = (n: number): string => n.toString().padStart(3, '0')
-  const frac = pad3(ms)
-  return h > 0 ? `${h}:${pad2(m)}:${pad2(s)}.${frac}` : `${m}:${pad2(s)}.${frac}`
-}
-
-function minEffectiveGap(duration: number): number {
-  return Math.min(MIN_TRIM_GAP_SEC, Math.max(duration * 0.002, 1 / 60))
-}
-
-function approxVideoFpsFromProbe(probe: MediaProbeSuccess | null): number | null {
-  if (!probe) {
-    return null
-  }
-  const fromProbe = probe.videoFpsApprox
-  if (fromProbe !== null && Number.isFinite(fromProbe) && fromProbe > 0 && fromProbe < 1000) {
-    return fromProbe
-  }
-  const row = probe.tracks.find((t) => t.kind === 'video')
-  if (!row) {
-    return null
-  }
-  const mm = /(\d+(?:\.\d+)?)\s*(?:fps|к\/с)\b/i.exec(row.detail)
-  if (!mm?.[1]) {
-    return null
-  }
-  const v = Number(mm[1])
-  if (!Number.isFinite(v) || v <= 0 || v >= 1000) {
-    return null
-  }
-  return v
-}
-
-function formatProbeVideoFact(probe: MediaProbeSuccess | null): string {
-  return formatFfprobeEditorVideoFactLine(probe, uiText('uiPlaceholderDash'))
-}
-
-function formatProbeAudioFact(probe: MediaProbeSuccess | null): string {
-  if (!probe) {
-    return uiText('uiPlaceholderDash')
-  }
-  if (probe.audioCodec && probe.audioCodec.trim().length > 0) {
-    return probe.audioCodec
-  }
-  const row = probe.tracks.find((t) => t.kind === 'audio')
-  return row?.codec ?? uiText('uiPlaceholderDash')
-}
-
-function formatProbePositionLine(
-  currentSec: number,
-  durationSec: number,
-  fps: number | null
-): string {
-  const base = `${formatTime(currentSec)} / ${formatTime(durationSec)}`
-  if (fps !== null && durationSec > 0 && Number.isFinite(currentSec)) {
-    const snapped = snapSeekTimeSec(currentSec, durationSec, fps)
-    const f = Math.round(snapped * fps)
-    const fMax = Math.max(0, Math.round(snapSeekTimeSec(durationSec, durationSec, fps) * fps))
-    const frame = Math.min(Math.max(f, 0), fMax)
-    return `${base}${uiTextVars('videoTimelineFrameApproxSuffixTemplate', { frame })}`
-  }
-  return base
-}
-
-function clampTrimRange(
-  inSec: number,
-  outSec: number,
-  duration: number
-): { inSec: number; outSec: number } {
-  if (!Number.isFinite(duration) || duration <= 0) {
-    return { inSec: 0, outSec: 0 }
-  }
-  let a = Math.min(Math.max(0, inSec), duration)
-  let b = Math.min(Math.max(0, outSec), duration)
-  if (b < a) {
-    ;[a, b] = [b, a]
-  }
-  const minGap = minEffectiveGap(duration)
-  if (b - a < minGap) {
-    b = Math.min(duration, a + minGap)
-    if (b > duration - 1e-6) {
-      a = Math.max(0, b - minGap)
-    }
-  }
-  return { inSec: a, outSec: b }
-}
+import { uiText } from '../locales/ui-text'
+import {
+  approxVideoFpsFromProbe,
+  clampTrimRange,
+  minEffectiveTrimGap,
+  TIMELINE_ZOOM_MAX,
+  TRIM_DRAG_THRESHOLD_PX,
+  TRIM_HANDLE_HIT_PX
+} from './video-timeline-helpers'
+import { VideoTimelineToolbar } from './VideoTimelineToolbar'
+import { VideoTimelineUnifiedPane } from './VideoTimelineUnifiedPane'
 
 interface TrimMarks {
   inSec: number
@@ -383,7 +274,7 @@ export default function VideoTimeline({
     }
     const fps = approxVideoFpsFromProbe(probe)
     const t = snapSeekTimeSec(v.currentTime, duration, fps)
-    const maxIn = Math.max(0, markerGeometry.outSec - minEffectiveGap(duration))
+    const maxIn = Math.max(0, markerGeometry.outSec - minEffectiveTrimGap(duration))
     const nextIn = Math.min(t, maxIn)
     setTrim((prev) => {
       const out = prev.outSec ?? duration
@@ -399,7 +290,7 @@ export default function VideoTimeline({
     }
     const fps = approxVideoFpsFromProbe(probe)
     const t = snapSeekTimeSec(v.currentTime, duration, fps)
-    const gap = minEffectiveGap(duration)
+    const gap = minEffectiveTrimGap(duration)
     const minOut = Math.min(duration, markerGeometry.inSec + gap)
     const nextOut = Math.max(t, minOut)
     setTrim((prev) => {
@@ -606,300 +497,51 @@ export default function VideoTimeline({
       aria-busy={pipelineBusy}
     >
       {duration > 0 ? (
-        <div
-          className="app-timeline-toolbar"
-          role="toolbar"
-          aria-orientation="horizontal"
-          aria-label={uiText('videoTimelineToolbarAria')}
-          aria-busy={pipelineBusy}
-        >
-          <div
-            className="app-timeline-toolbar-primary"
-            role="group"
-            aria-label={uiText('videoTimelineTrimGroupAria')}
-            aria-busy={pipelineBusy}
-          >
-            <button
-              type="button"
-              className="app-btn app-btn-compact app-btn-timeline-in"
-              disabled={duration <= 0}
-              onClick={captureInFromPlayhead}
-              title={uiText('videoTimelineInHereTitle')}
-            >
-              {uiText('videoTimelineToolbarIn')}
-            </button>
-            <button
-              type="button"
-              className="app-btn app-btn-compact app-btn-timeline-out"
-              disabled={duration <= 0}
-              onClick={captureOutFromPlayhead}
-              title={uiText('videoTimelineOutHereTitle')}
-            >
-              {uiText('videoTimelineToolbarOut')}
-            </button>
-            <button
-              type="button"
-              className="app-btn app-btn-compact app-btn-timeline-trim"
-              disabled={duration <= 0}
-              onClick={() => {
-                onJumpToTrimExport?.()
-              }}
-              title={uiText('videoTimelineExportJumpTitle')}
-            >
-              <IconScissors title="" size={15} />
-              <span>{uiText('videoTimelineToolbarTrim')}</span>
-            </button>
-            <button
-              type="button"
-              className="app-btn app-btn-compact"
-              disabled={duration <= 0}
-              onClick={resetTrimToFull}
-              title={uiText('videoTimelineResetTrimTitle')}
-            >
-              {uiText('videoTimelineResetTrimButton')}
-            </button>
-            <span
-              className="app-timeline-badge app-timeline-badge--in"
-              aria-label={uiTextVars('videoTimelineBadgeInAriaTemplate', {
-                t: formatTimeWithMs(displayIn)
-              })}
-            >
-              {uiTextVars('videoTimelineBadgeInTemplate', { t: formatTimeWithMs(displayIn) })}
-            </span>
-            <span
-              className="app-timeline-badge app-timeline-badge--out"
-              aria-label={uiTextVars('videoTimelineBadgeOutAriaTemplate', {
-                t: formatTimeWithMs(displayOut)
-              })}
-            >
-              {uiTextVars('videoTimelineBadgeOutTemplate', { t: formatTimeWithMs(displayOut) })}
-            </span>
-          </div>
-          <div
-            className="app-timeline-toolbar-center"
-            role="group"
-            aria-label={uiText('videoTimelineStatusReadoutGroupAria')}
-            aria-busy={pipelineBusy}
-            title={uiTextVars('videoTimelineToolbarCenterTitle', {
-              dur: formatTimeWithMs(trimSpanSec),
-              pos: formatProbePositionLine(current, duration, fpsProbeHint)
-            })}
-          >
-            <span className="app-timeline-toolbar-center-line">
-              {uiTextVars('videoTimelineTrimDurationToolbar', {
-                span: formatTimeWithMs(trimSpanSec)
-              })}
-            </span>
-            <span className="app-timeline-toolbar-center-line app-timeline-toolbar-center-line--muted">
-              <strong>{uiText('videoTimelinePositionLabel')}</strong>{' '}
-              {formatProbePositionLine(current, duration, fpsProbeHint)}
-            </span>
-          </div>
-          <div
-            className="app-timeline-toolbar-export-cluster"
-            role="group"
-            aria-label={uiText('videoTimelineExportSnapshotGroupAria')}
-            aria-busy={pipelineBusy}
-          >
-            <button
-              type="button"
-              className="app-btn app-btn-compact app-btn-timeline-snapshot"
-              disabled={duration <= 0 || saveFrameDisabled}
-              onClick={() => {
-                onSaveFrame?.()
-              }}
-              title={uiText('videoTimelineSaveFrameTitle')}
-            >
-              <IconImage title="" size={15} />
-              <span>
-                {saveFrameBusy
-                  ? uiText('videoTimelineSaveFrameBusy')
-                  : uiText('videoTimelineSaveFrame')}
-              </span>
-            </button>
-            <button
-              type="button"
-              className="app-btn app-btn-compact app-btn-timeline-export"
-              disabled={duration <= 0}
-              onClick={() => {
-                onStartExport?.()
-              }}
-              title={uiText('videoTimelineStartExportTitle')}
-            >
-              <IconSave title="" size={15} />
-              <span>{uiText('videoTimelineStartExport')}</span>
-            </button>
-          </div>
-          <div
-            className="app-timeline-toolbar-zoom"
-            role="group"
-            aria-label={uiText('videoTimelineZoomRowAria')}
-            aria-busy={pipelineBusy}
-          >
-            <button
-              type="button"
-              className="app-icon-btn app-timeline-zoom-ico"
-              disabled={duration <= 0 || timelineZoomMul <= 1}
-              onClick={handleTimelineZoomOut}
-              title={uiText('videoTimelineZoomOutTitle')}
-            >
-              <IconZoomOut />
-              <span className="app-visually-hidden">{miniIconTitle('miniIconZoomOut')}</span>
-            </button>
-            <button
-              type="button"
-              className="app-icon-btn app-timeline-zoom-ico"
-              disabled={duration <= 0 || timelineZoomMul >= TIMELINE_ZOOM_MAX}
-              onClick={handleTimelineZoomIn}
-              title={uiText('videoTimelineZoomInTitle')}
-            >
-              <IconZoomIn />
-              <span className="app-visually-hidden">{miniIconTitle('miniIconZoomIn')}</span>
-            </button>
-            <span
-              className="app-timeline-zoom-readout"
-              title={uiText('videoTimelineZoomReadoutTitle')}
-              role="status"
-              aria-live="polite"
-            >
-              {uiTextVars('videoTimelineZoomReadoutTemplate', {
-                mul: timelineZoomMul,
-                start: formatTime(winStartEff),
-                end: formatTime(Math.min(duration, winStartEff + windowLenSec))
-              })}
-            </span>
-          </div>
-        </div>
+        <VideoTimelineToolbar
+          duration={duration}
+          pipelineBusy={pipelineBusy}
+          displayIn={displayIn}
+          displayOut={displayOut}
+          trimSpanSec={trimSpanSec}
+          current={current}
+          fpsProbeHint={fpsProbeHint}
+          timelineZoomMul={timelineZoomMul}
+          winStartEff={winStartEff}
+          windowLenSec={windowLenSec}
+          saveFrameDisabled={saveFrameDisabled}
+          saveFrameBusy={saveFrameBusy}
+          onCaptureIn={captureInFromPlayhead}
+          onCaptureOut={captureOutFromPlayhead}
+          onResetTrim={resetTrimToFull}
+          onJumpToTrimExport={onJumpToTrimExport}
+          onSaveFrame={onSaveFrame}
+          onStartExport={onStartExport}
+          onZoomIn={handleTimelineZoomIn}
+          onZoomOut={handleTimelineZoomOut}
+        />
       ) : null}
-
       {duration > 0 ? (
-        <div
-          className="app-timeline-unified"
-          role="region"
-          aria-label={uiText('videoTimelineUnifiedRegionAria')}
-          aria-busy={pipelineBusy}
-        >
-          <div
-            className="app-timeline-pane"
-            role="group"
-            aria-label={uiText('videoTimelinePaneGroupAria')}
-            aria-busy={pipelineBusy}
-          >
-            <div
-              className="app-timeline-pane-visuals"
-              role="group"
-              aria-label={uiText('videoTimelinePaneVisualsGroupAria')}
-              aria-busy={pipelineBusy}
-            >
-              <div className="app-timeline-ruler" aria-hidden="true">
-                <div className="app-timeline-ruler-track">
-                  {rulerTicks.map((t) => (
-                    <span
-                      key={`ruler-tick-${String(t)}`}
-                      className="app-timeline-ruler-tick"
-                      style={{ left: `${((t - winStartEff) / windowLenSec) * 100}%` }}
-                    >
-                      <span className="app-timeline-ruler-label">{formatTime(t)}</span>
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div
-                className="app-timeline-waveform-passive"
-                role="group"
-                aria-label={uiText('videoTimelineWaveformClusterAria')}
-                aria-busy={pipelineBusy}
-              >
-                <TimelineWaveform
-                  key={mediaKey}
-                  mediaKey={mediaKey}
-                  mediaUrl={mediaUrl}
-                  durationSec={duration}
-                  windowStartSec={winStartEff}
-                  windowLenSec={windowLenSec}
-                />
-              </div>
-            </div>
-            <div
-              ref={timelinePaneRef}
-              className={`app-timeline-interaction-glass${markersDisjointZoomWindow ? ' app-timeline-interaction-glass-idle' : ''}`}
-              tabIndex={0}
-              role="slider"
-              aria-label={uiText('videoTimelineUnifiedPaneAria')}
-              aria-busy={pipelineBusy}
-              aria-valuemin={0}
-              aria-valuemax={1000}
-              aria-valuenow={Math.round(Math.min(1, Math.max(0, ratio)) * 1000)}
-              aria-valuetext={uiTextVars('videoTimelineRulerValuetextTemplate', {
-                current: formatTime(current),
-                winStart: formatTime(winStartEff),
-                winEnd: formatTime(Math.min(duration, winStartEff + windowLenSec))
-              })}
-              title={
-                markersDisjointZoomWindow
-                  ? uiText('videoTimelineMarkersOutsideWindowTitle')
-                  : uiText('videoTimelineUnifiedPaneHintTitle')
-              }
-              onPointerDownCapture={onTimelinePanePointerDownCapture}
-              onPointerMove={onTimelinePanePointerMove}
-              onPointerUp={onTimelinePanePointerUpOrCancel}
-              onPointerCancel={onTimelinePanePointerUpOrCancel}
-              onLostPointerCapture={onTimelinePaneLostPointerCapture}
-              onKeyDown={handleTimelinePaneKeyDown}
-            >
-              {rulerPlayheadPct !== null && rulerPlayheadPct >= -1 && rulerPlayheadPct <= 101 ? (
-                <span
-                  className="app-timeline-pane-playhead"
-                  style={{ left: `${Math.min(100, Math.max(0, rulerPlayheadPct))}%` }}
-                  aria-hidden
-                />
-              ) : null}
-              {markerZoomOverlay ? (
-                <>
-                  <div
-                    className="app-timeline-marker-selection"
-                    style={{
-                      left: `${markerZoomOverlay.leftPct}%`,
-                      width: `${markerZoomOverlay.widthPct}%`
-                    }}
-                  />
-                  <div
-                    className="app-timeline-handle app-timeline-handle--in"
-                    style={{ left: `${markerZoomOverlay.leftPct}%` }}
-                    title={uiText('videoTimelineInHandleDragTitle')}
-                  />
-                  <div
-                    className="app-timeline-handle app-timeline-handle--out"
-                    style={{ left: `${markerZoomOverlay.leftPct + markerZoomOverlay.widthPct}%` }}
-                    title={uiText('videoTimelineOutHandleDragTitle')}
-                  />
-                </>
-              ) : null}
-            </div>
-          </div>
-        </div>
-      ) : null}
-
-      {duration > 0 ? (
-        <div
-          className="app-timeline-footer"
-          aria-label={uiText('videoTimelineFooterAria')}
-          aria-busy={pipelineBusy}
-        >
-          <div
-            className="app-timeline-footer-spec"
-            role="group"
-            aria-label={uiText('videoTimelineFooterSpecGroupAria')}
-            aria-busy={pipelineBusy}
-          >
-            <span title={uiText('videoTimelineVideoStreamTitle')}>
-              <strong>{uiText('videoTimelineVideoLabel')}</strong> {formatProbeVideoFact(probe)}
-            </span>
-            <span title={uiText('videoTimelineAudioStreamTitle')}>
-              <strong>{uiText('videoTimelineAudioLabel')}</strong> {formatProbeAudioFact(probe)}
-            </span>
-          </div>
-        </div>
+        <VideoTimelineUnifiedPane
+          duration={duration}
+          pipelineBusy={pipelineBusy}
+          mediaKey={mediaKey}
+          mediaUrl={mediaUrl}
+          winStartEff={winStartEff}
+          windowLenSec={windowLenSec}
+          rulerTicks={rulerTicks}
+          timelinePaneRef={timelinePaneRef}
+          markersDisjointZoomWindow={markersDisjointZoomWindow}
+          ratio={ratio}
+          current={current}
+          markerZoomOverlay={markerZoomOverlay}
+          rulerPlayheadPct={rulerPlayheadPct}
+          probe={probe}
+          onPointerDownCapture={onTimelinePanePointerDownCapture}
+          onPointerMove={onTimelinePanePointerMove}
+          onPointerUpOrCancel={onTimelinePanePointerUpOrCancel}
+          onLostPointerCapture={onTimelinePaneLostPointerCapture}
+          onKeyDown={handleTimelinePaneKeyDown}
+        />
       ) : null}
     </div>
   )
