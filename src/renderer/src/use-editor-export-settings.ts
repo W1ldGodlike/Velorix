@@ -1,9 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { isBuiltinExportUserPresetId } from '../../shared/builtin-ffmpeg-export-user-presets'
 import {
@@ -35,28 +30,24 @@ import {
 import { parseFfmpegExportExtraArgsLine } from '../../shared/ffmpeg-export-extra-args'
 import {
   DEFAULT_EDITOR_URL_PASTE_BEHAVIOR,
-  parseEditorUrlPasteBehavior,
   type EditorUrlPasteBehaviorId
 } from '../../shared/editor-url-paste-behavior'
 import { DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX } from '../../shared/ffmpeg-export-batch-output-suffix'
 import { resolveFfmpegExportHwaccelForDecode } from '../../shared/ffmpeg-export-hw-decode'
-import { FFMPEG_HW_VIDEO_ENCODER_IDS, type FfmpegHwEncodersProbeResult } from '../../shared/ffmpeg-hw-encoder-probe'
-import { ffmpegExportAudioModeRequiresMkv } from '../../shared/ffmpeg-export-audio-mode'
+import { type FfmpegHwEncodersProbeResult } from '../../shared/ffmpeg-hw-encoder-probe'
 import {
-  cpuFfmpegVideoCodecRequiresMkv,
-  ffmpegExportVideoCodecRequiresMov,
   isFfmpegHwExportVideoCodec,
-  parseFfmpegExportVideoCodec,
   probeSnapshotOrEmpty,
   resolveFfmpegExportVideoCodecForArgv
 } from '../../shared/ffmpeg-export-video-codec'
 import type { FfmpegSnapshotFormatId } from '../../shared/ffmpeg-snapshot-contract'
 import type { AppSettings } from '../../shared/settings-contract'
+import {
+  buildEditorExportSelectOptions,
+  type FfmpegExportSelectOptions
+} from './editor-export-select-options'
+import { hydrateEditorExportFieldsFromSettings } from './editor-export-settings-hydrate'
 import { getUiLocale, uiText, uiTextVars } from './locales/ui-text'
-
-const EXPORT_VIDEO_BITRATES = ['1000k', '2500k', '5000k', '8000k', '12000k', '20000k']
-const EXPORT_AUDIO_BITRATES = ['96k', '128k', '160k', '192k', '256k', '320k']
-const EXPORT_FPS_OPTIONS = [24, 25, 30, 50, 60]
 
 export type ExportPresetNameDialogState = {
   mode: 'create' | 'rename'
@@ -155,165 +146,7 @@ export function useEditorExportSettings(deps: UseEditorExportSettingsDeps) {
   const [snapshotBusy, setSnapshotBusy] = useState(false)
 
   const ffmpegExportSelectOptions = useMemo(
-    () => ({
-      encodePresets: [
-        { id: 'balance', label: uiText('editorExportEncodeBalance') },
-        { id: 'smaller', label: uiText('editorExportEncodeSmaller') },
-        { id: 'quality', label: uiText('editorExportEncodeQuality') }
-      ] as Array<{ id: FfmpegExportEncodePresetId; label: string }>,
-      videoCodecs: (() => {
-        const v: Array<{ id: FfmpegExportVideoCodecId; label: string }> = [
-          { id: 'libx264', label: uiText('editorExportCodecH264') },
-          { id: 'libx265', label: uiText('editorExportCodecH265') },
-          { id: 'libvpx-vp9', label: uiText('editorExportCodecVp9') },
-          { id: 'libsvtav1', label: uiText('editorExportCodecSvtav1') },
-          { id: 'libaom-av1', label: uiText('editorExportCodecAomav1') },
-          { id: 'librav1e', label: uiText('editorExportCodecLibrav1e') },
-          { id: 'prores_ks', label: uiText('editorExportCodecProresKs') },
-          { id: 'dnxhd', label: uiText('editorExportCodecDnxhd') },
-          { id: 'ffv1', label: uiText('editorExportCodecFfv1') },
-          { id: 'hw_auto', label: uiText('editorExportCodecHwAuto') },
-          { id: 'hw_auto_hevc', label: uiText('editorExportCodecHwAutoHevc') }
-        ]
-        if (hwEncoderProbe?.ok === true) {
-          for (const id of FFMPEG_HW_VIDEO_ENCODER_IDS) {
-            if (hwEncoderProbe.snapshot[id]) {
-              v.push({ id, label: id })
-            }
-          }
-        } else if (isFfmpegHwExportVideoCodec(exportVideoCodec)) {
-          v.push({ id: exportVideoCodec, label: `${exportVideoCodec} (?)` })
-        }
-        return v
-      })(),
-      containers: [
-        { id: 'mp4', label: uiText('editorExportContainerMp4') },
-        { id: 'mkv', label: uiText('editorExportContainerMkv') },
-        { id: 'mov', label: uiText('editorExportContainerMov') }
-      ] as Array<{ id: FfmpegExportContainerId; label: string }>,
-      scalePresets: [
-        { id: 'source', label: uiText('editorExportScaleSource') },
-        { id: '480p', label: uiText('editorExportScale480p') },
-        { id: '720p', label: uiText('editorExportScale720p') },
-        { id: '1080p', label: uiText('editorExportScale1080p') }
-      ] as Array<{ id: FfmpegExportScalePresetId; label: string }>,
-      videoTransforms: [
-        { id: 'none', label: uiText('editorExportTransformNone') },
-        { id: 'cw90', label: uiText('editorExportTransformCw90') },
-        { id: 'ccw90', label: uiText('editorExportTransformCcw90') },
-        { id: 'r180', label: uiText('editorExportTransformR180') },
-        { id: 'hflip', label: uiText('editorExportTransformHflip') },
-        { id: 'vflip', label: uiText('editorExportTransformVflip') }
-      ] as Array<{ id: FfmpegExportVideoTransformId; label: string }>,
-      cropPresets: [
-        { id: 'none', label: uiText('editorExportCropNone') },
-        { id: 'center-square', label: uiText('editorExportCropCenterSquare') },
-        { id: 'center-16-9', label: uiText('editorExportCropCenter169') },
-        { id: 'center-4-3', label: uiText('editorExportCropCenter43') }
-      ] as Array<{ id: FfmpegExportCropPresetId; label: string }>,
-      audioGainOptions: [
-        { value: -12, label: uiText('editorExportAudioGainM12') },
-        { value: -9, label: uiText('editorExportAudioGainM9') },
-        { value: -6, label: uiText('editorExportAudioGainM6') },
-        { value: -3, label: uiText('editorExportAudioGainM3') },
-        { value: 0, label: uiText('editorExportAudioGain0') },
-        { value: 3, label: uiText('editorExportAudioGainP3') },
-        { value: 6, label: uiText('editorExportAudioGainP6') },
-        { value: 9, label: uiText('editorExportAudioGainP9') },
-        { value: 12, label: uiText('editorExportAudioGainP12') }
-      ],
-      subtitleModes: [
-        { id: 'drop', label: uiText('editorExportSubtitleDrop') },
-        { id: 'copy', label: uiText('editorExportSubtitleCopy') }
-      ] as Array<{ id: FfmpegExportSubtitleModeId; label: string }>,
-      videoDeinterlace: [
-        { id: 'off', label: uiText('editorExportDeinterlaceOff') },
-        { id: 'frame', label: uiText('editorExportDeinterlaceFrame') },
-        { id: 'field', label: uiText('editorExportDeinterlaceField') }
-      ] as Array<{ id: FfmpegExportVideoDeinterlaceId; label: string }>,
-      videoDenoise: [
-        { id: 'off', label: uiText('editorExportDenoiseOff') },
-        { id: 'light', label: uiText('editorExportDenoiseLight') },
-        { id: 'medium', label: uiText('editorExportDenoiseMedium') },
-        { id: 'strong', label: uiText('editorExportDenoiseStrong') }
-      ] as Array<{ id: FfmpegExportVideoDenoiseId; label: string }>,
-      videoSharpen: [
-        { id: 'off', label: uiText('editorExportSharpenOff') },
-        { id: 'light', label: uiText('editorExportSharpenLight') },
-        { id: 'medium', label: uiText('editorExportSharpenMedium') },
-        { id: 'strong', label: uiText('editorExportSharpenStrong') }
-      ] as Array<{ id: FfmpegExportVideoSharpenId; label: string }>,
-      videoDeband: [
-        { id: 'off', label: uiText('editorExportDebandOff') },
-        { id: 'light', label: uiText('editorExportDebandLight') },
-        { id: 'medium', label: uiText('editorExportDebandMedium') },
-        { id: 'strong', label: uiText('editorExportDebandStrong') }
-      ] as Array<{ id: FfmpegExportVideoDebandId; label: string }>,
-      videoHisteq: [
-        { id: 'off', label: uiText('editorExportHisteqOff') },
-        { id: 'light', label: uiText('editorExportHisteqLight') },
-        { id: 'medium', label: uiText('editorExportHisteqMedium') },
-        { id: 'strong', label: uiText('editorExportHisteqStrong') }
-      ] as Array<{ id: FfmpegExportVideoHisteqId; label: string }>,
-      videoLut3d: [
-        { id: 'off', label: uiText('editorExportLut3dOff') },
-        { id: 'film-warm', label: uiText('editorExportLut3dFilmWarm') },
-        { id: 'film-cool', label: uiText('editorExportLut3dFilmCool') },
-        { id: 'punch', label: uiText('editorExportLut3dPunch') }
-      ] as Array<{ id: FfmpegExportVideoLut3dId; label: string }>,
-      videoEq: [
-        { id: 'off', label: uiText('editorExportEqOff') },
-        { id: 'warm', label: uiText('editorExportEqWarm') },
-        { id: 'cool', label: uiText('editorExportEqCool') },
-        { id: 'vivid', label: uiText('editorExportEqVivid') },
-        { id: 'flat', label: uiText('editorExportEqFlat') }
-      ] as Array<{ id: FfmpegExportVideoEqPresetId; label: string }>,
-      videoHue: [
-        { id: 'off', label: uiText('editorExportHueOff') },
-        { id: 'warmShift', label: uiText('editorExportHueWarmShift') },
-        { id: 'coolShift', label: uiText('editorExportHueCoolShift') },
-        { id: 'satBoost', label: uiText('editorExportHueSatBoost') }
-      ] as Array<{ id: FfmpegExportVideoHueId; label: string }>,
-      videoGrain: [
-        { id: 'off', label: uiText('editorExportGrainOff') },
-        { id: 'light', label: uiText('editorExportGrainLight') },
-        { id: 'medium', label: uiText('editorExportGrainMedium') },
-        { id: 'strong', label: uiText('editorExportGrainStrong') }
-      ] as Array<{ id: FfmpegExportVideoGrainId; label: string }>,
-      videoVignette: [
-        { id: 'off', label: uiText('editorExportVignetteOff') },
-        { id: 'light', label: uiText('editorExportVignetteLight') },
-        { id: 'medium', label: uiText('editorExportVignetteMedium') },
-        { id: 'strong', label: uiText('editorExportVignetteStrong') }
-      ] as Array<{ id: FfmpegExportVideoVignetteId; label: string }>,
-      videoBlur: [
-        { id: 'off', label: uiText('editorExportBlurOff') },
-        { id: 'light', label: uiText('editorExportBlurLight') },
-        { id: 'medium', label: uiText('editorExportBlurMedium') },
-        { id: 'strong', label: uiText('editorExportBlurStrong') }
-      ] as Array<{ id: FfmpegExportVideoBlurId; label: string }>,
-      audioNormalize: [
-        { id: 'off', label: uiText('editorExportAudioNormOff') },
-        { id: 'loudnorm', label: uiText('editorExportAudioNormLoudnorm') },
-        { id: 'dynaudnorm', label: uiText('editorExportAudioNormDynaudnorm') }
-      ] as Array<{ id: FfmpegExportAudioNormalizeId; label: string }>,
-      audioModes: [
-        { id: 'aac', label: uiText('editorExportAudioModeAac') },
-        { id: 'libmp3lame', label: uiText('editorExportAudioModeLibmp3lame') },
-        { id: 'ac3', label: uiText('editorExportAudioModeAc3') },
-        { id: 'copy', label: uiText('editorExportAudioModeCopy') },
-        { id: 'pcm_s16le', label: uiText('editorExportAudioModePcmS16le') },
-        { id: 'libvorbis', label: uiText('editorExportAudioModeLibvorbis') },
-        { id: 'libopus', label: uiText('editorExportAudioModeLibopus') },
-        { id: 'flac', label: uiText('editorExportAudioModeFlac') },
-        { id: 'alac', label: uiText('editorExportAudioModeAlac') },
-        { id: 'none', label: uiText('editorExportAudioModeNone') }
-      ] as Array<{ id: FfmpegExportAudioModeId; label: string }>,
-      snapshotFormats: [
-        { id: 'png', label: uiText('editorExportSnapshotPng') },
-        { id: 'jpg', label: uiText('editorExportSnapshotJpg') }
-      ] as Array<{ id: FfmpegSnapshotFormatId; label: string }>
-    }),
+    () => buildEditorExportSelectOptions(hwEncoderProbe, exportVideoCodec),
     [hwEncoderProbe, exportVideoCodec]
   )
   const exportVideoCodecResolvedForPreview = useMemo(
@@ -364,160 +197,42 @@ export function useEditorExportSettings(deps: UseEditorExportSettingsDeps) {
   }, [refetchHwEncoders])
 
   const hydrateExportFieldsFromSettings = useCallback((loaded: AppSettings) => {
-    const ep = loaded.ffmpegExportEncodePreset
-    if (ep === 'balance' || ep === 'smaller' || ep === 'quality') {
-      setExportEncodePreset(ep)
-    }
-    const ec = loaded.ffmpegExportContainer
-    if (
-      typeof loaded.ffmpegExportCrf === 'number' &&
-      Number.isInteger(loaded.ffmpegExportCrf) &&
-      loaded.ffmpegExportCrf >= 0 &&
-      loaded.ffmpegExportCrf <= 51
-    ) {
-      setExportCrf(loaded.ffmpegExportCrf)
-    } else {
-      setExportCrf(null)
-    }
-    if (
-      typeof loaded.ffmpegExportVideoBitrate === 'string' &&
-      EXPORT_VIDEO_BITRATES.includes(loaded.ffmpegExportVideoBitrate)
-    ) {
-      setExportVideoBitrate(loaded.ffmpegExportVideoBitrate)
-    } else {
-      setExportVideoBitrate(null)
-    }
-    const bitrateOk =
-      typeof loaded.ffmpegExportVideoBitrate === 'string' &&
-      EXPORT_VIDEO_BITRATES.includes(loaded.ffmpegExportVideoBitrate)
-    const vcodec = parseFfmpegExportVideoCodec(loaded.ffmpegExportVideoCodec)
-    setExportVideoCodec(vcodec)
-    let nextContainer: FfmpegExportContainerId =
-      ec === 'mp4' || ec === 'mkv' || ec === 'mov' ? ec : 'mp4'
-    if (cpuFfmpegVideoCodecRequiresMkv(vcodec) && nextContainer !== 'mkv') {
-      nextContainer = 'mkv'
-      void window.fluxalloy.settings.setFfmpegExportContainer('mkv').catch(console.error)
-    }
-    if (ffmpegExportVideoCodecRequiresMov(vcodec) && nextContainer !== 'mov') {
-      nextContainer = 'mov'
-      void window.fluxalloy.settings.setFfmpegExportContainer('mov').catch(console.error)
-    }
-    let nextAudioMode: FfmpegExportAudioModeId = 'aac'
-    if (loaded.ffmpegExportAudioMode === 'none') {
-      nextAudioMode = 'none'
-    } else if (loaded.ffmpegExportAudioMode === 'libmp3lame') {
-      nextAudioMode = 'libmp3lame'
-    } else if (loaded.ffmpegExportAudioMode === 'ac3') {
-      nextAudioMode = 'ac3'
-    } else if (loaded.ffmpegExportAudioMode === 'copy') {
-      nextAudioMode = 'copy'
-    } else if (loaded.ffmpegExportAudioMode === 'pcm_s16le') {
-      nextAudioMode = 'pcm_s16le'
-    } else if (loaded.ffmpegExportAudioMode === 'libvorbis') {
-      nextAudioMode = 'libvorbis'
-    } else if (loaded.ffmpegExportAudioMode === 'libopus') {
-      nextAudioMode = 'libopus'
-    } else if (loaded.ffmpegExportAudioMode === 'flac') {
-      nextAudioMode = 'flac'
-    } else if (loaded.ffmpegExportAudioMode === 'alac') {
-      nextAudioMode = 'alac'
-    }
-    if (ffmpegExportAudioModeRequiresMkv(nextAudioMode) && nextContainer !== 'mkv') {
-      nextContainer = 'mkv'
-      void window.fluxalloy.settings.setFfmpegExportContainer('mkv').catch(console.error)
-    }
-    setExportContainer(nextContainer)
-    setExportAudioMode(nextAudioMode)
-    setExportTwoPass(loaded.ffmpegExportTwoPass === true && bitrateOk && vcodec === 'libx264')
-    setExportEconomyMode(loaded.ffmpegExportEconomyMode === true)
-    setExportHwDecode(loaded.ffmpegExportHwDecode === true)
-    setExportExtraArgsLine(
-      typeof loaded.ffmpegExportExtraArgsLine === 'string' ? loaded.ffmpegExportExtraArgsLine : ''
-    )
-    setEditorUrlPasteBehavior(parseEditorUrlPasteBehavior(loaded.editorUrlPasteBehavior))
-    setBatchOutputSuffix(
-      typeof loaded.ffmpegExportBatchOutputSuffix === 'string' &&
-        loaded.ffmpegExportBatchOutputSuffix.trim().length > 0
-        ? loaded.ffmpegExportBatchOutputSuffix.trim()
-        : DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX
-    )
-    setBatchOutputDirectory(
-      typeof loaded.ffmpegExportBatchOutputDirectory === 'string'
-        ? loaded.ffmpegExportBatchOutputDirectory.trim()
-        : ''
-    )
-    if (
-      typeof loaded.ffmpegExportAudioBitrate === 'string' &&
-      EXPORT_AUDIO_BITRATES.includes(loaded.ffmpegExportAudioBitrate)
-    ) {
-      setExportAudioBitrate(loaded.ffmpegExportAudioBitrate)
-    }
-    if (
-      typeof loaded.ffmpegExportFps === 'number' &&
-      EXPORT_FPS_OPTIONS.includes(loaded.ffmpegExportFps)
-    ) {
-      setExportFps(loaded.ffmpegExportFps)
-    } else {
-      setExportFps(null)
-    }
-    const vt = loaded.ffmpegExportVideoTransform
-    if (vt === 'cw90' || vt === 'ccw90' || vt === 'r180' || vt === 'hflip' || vt === 'vflip') {
-      setExportVideoTransform(vt)
-    } else {
-      setExportVideoTransform('none')
-    }
-    const crop = loaded.ffmpegExportCropPreset
-    if (crop === 'center-square' || crop === 'center-16-9' || crop === 'center-4-3') {
-      setExportCropPreset(crop)
-    } else {
-      setExportCropPreset('none')
-    }
-    const scale = loaded.ffmpegExportScalePreset
-    if (scale === '480p' || scale === '720p' || scale === '1080p') {
-      setExportScalePreset(scale)
-    } else {
-      setExportScalePreset('source')
-    }
-    if (
-      typeof loaded.ffmpegExportAudioGainDb === 'number' &&
-      Number.isInteger(loaded.ffmpegExportAudioGainDb) &&
-      loaded.ffmpegExportAudioGainDb >= -24 &&
-      loaded.ffmpegExportAudioGainDb <= 24 &&
-      loaded.ffmpegExportAudioGainDb !== 0
-    ) {
-      setExportAudioGainDb(loaded.ffmpegExportAudioGainDb)
-    } else {
-      setExportAudioGainDb(0)
-    }
-    setExportStripMetadata(loaded.ffmpegExportStripMetadata === true)
-    setExportStripChapters(loaded.ffmpegExportStripChapters === true)
-    setExportSubtitleMode(loaded.ffmpegExportSubtitleMode === 'copy' ? 'copy' : 'drop')
-    const deint = loaded.ffmpegExportVideoDeinterlace
-    setExportVideoDeinterlace(deint === 'frame' || deint === 'field' ? deint : 'off')
-    const dn = loaded.ffmpegExportVideoDenoise
-    setExportVideoDenoise(dn === 'light' || dn === 'medium' || dn === 'strong' ? dn : 'off')
-    const db = loaded.ffmpegExportVideoDeband
-    setExportVideoDeband(db === 'light' || db === 'medium' || db === 'strong' ? db : 'off')
-    const hi = loaded.ffmpegExportVideoHisteq
-    setExportVideoHisteq(hi === 'light' || hi === 'medium' || hi === 'strong' ? hi : 'off')
-    const sh = loaded.ffmpegExportVideoSharpen
-    setExportVideoSharpen(sh === 'light' || sh === 'medium' || sh === 'strong' ? sh : 'off')
-    const eq = loaded.ffmpegExportVideoEqPreset
-    setExportVideoEqPreset(
-      eq === 'warm' || eq === 'cool' || eq === 'vivid' || eq === 'flat' ? eq : 'off'
-    )
-    const hu = loaded.ffmpegExportVideoHue
-    setExportVideoHue(hu === 'warmShift' || hu === 'coolShift' || hu === 'satBoost' ? hu : 'off')
-    const gr = loaded.ffmpegExportVideoGrain
-    setExportVideoGrain(gr === 'light' || gr === 'medium' || gr === 'strong' ? gr : 'off')
-    const vg = loaded.ffmpegExportVideoVignette
-    setExportVideoVignette(vg === 'light' || vg === 'medium' || vg === 'strong' ? vg : 'off')
-    const bl = loaded.ffmpegExportVideoBlur
-    setExportVideoBlur(bl === 'light' || bl === 'medium' || bl === 'strong' ? bl : 'off')
-    const an = loaded.ffmpegExportAudioNormalize
-    setExportAudioNormalize(an === 'loudnorm' || an === 'dynaudnorm' ? an : 'off')
-    const lut = loaded.ffmpegExportVideoLut3d
-    setExportVideoLut3d(lut === 'film-warm' || lut === 'film-cool' || lut === 'punch' ? lut : 'off')
+    hydrateEditorExportFieldsFromSettings(loaded, {
+      setExportEncodePreset,
+      setExportCrf,
+      setExportVideoBitrate,
+      setExportVideoCodec,
+      setExportContainer,
+      setExportAudioMode,
+      setExportTwoPass,
+      setExportEconomyMode,
+      setExportHwDecode,
+      setExportExtraArgsLine,
+      setEditorUrlPasteBehavior,
+      setBatchOutputSuffix,
+      setBatchOutputDirectory,
+      setExportAudioBitrate,
+      setExportFps,
+      setExportVideoTransform,
+      setExportCropPreset,
+      setExportScalePreset,
+      setExportAudioGainDb,
+      setExportStripMetadata,
+      setExportStripChapters,
+      setExportSubtitleMode,
+      setExportVideoDeinterlace,
+      setExportVideoDenoise,
+      setExportVideoDeband,
+      setExportVideoHisteq,
+      setExportVideoSharpen,
+      setExportVideoEqPreset,
+      setExportVideoHue,
+      setExportVideoGrain,
+      setExportVideoVignette,
+      setExportVideoBlur,
+      setExportAudioNormalize,
+      setExportVideoLut3d
+    })
   }, [])
 
   useEffect(() => {
@@ -913,6 +628,4 @@ export function useEditorExportSettings(deps: UseEditorExportSettingsDeps) {
   }
 }
 
-export type FfmpegExportSelectOptions = ReturnType<
-  typeof useEditorExportSettings
->['ffmpegExportSelectOptions']
+export type { FfmpegExportSelectOptions }

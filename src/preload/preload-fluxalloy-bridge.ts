@@ -10,54 +10,19 @@ import type {
   DiagnosticsSupportZipResult
 } from '../shared/diagnostics-contract'
 import type { EngineDownloadProgress } from '../shared/engine-download-contract'
-import type {
-  FfmpegExportProgressPayload,
-  FfmpegExportVideoLut3dId,
-  MediaExportRequestPayload,
-  MediaExportStartResult
-} from '../shared/ffmpeg-export-contract'
-import type {
-  FfmpegExportBatchAddPathsResult,
-  FfmpegExportBatchOpenInputResult,
-  FfmpegExportBatchPickFilesResult,
-  FfmpegExportBatchSnapshot,
-  FfmpegExportBatchConcurrency,
-  FfmpegExportBatchStartResult
-} from '../shared/ffmpeg-export-batch-contract'
 import {
   parseDownloadsWindowUiLocale,
   type DownloadsWindowUiLocale
 } from '../shared/downloads-window-ui-locale'
 import type { AppAboutInfo } from '../shared/about-contract'
 import type { EnginesStatusSnapshot } from '../shared/engine-contract'
-import { sanitizeDownloadsOutputDirectorySnapshot } from '../shared/downloads-output-directory-snapshot'
-import type { DownloadsOutputDirectorySnapshot } from '../shared/downloads-output-directory-snapshot'
 import type { MediaProbeResult } from '../shared/ffprobe-contract'
 import type { PreviewDialogResult, RestoredSourceInfo } from '../shared/preview-dialog-contract'
-import type {
-  DownloadsWindowUiPanelState,
-  MainWindowUiPanelState,
-  ResolvedAppTheme
-} from '../shared/settings-contract'
+import type { MainWindowUiPanelState, ResolvedAppTheme } from '../shared/settings-contract'
 import type {
   SaveTextDialogPayload,
   SaveTextDialogResult
 } from '../shared/save-text-dialog-contract'
-import type {
-  YtdlpDownloadOptionsPatch,
-  YtdlpDownloadOptionsPayload,
-  YtdlpGetCliOptionsParams
-} from '../shared/ytdlp-download-contract'
-import type {
-  YtdlpDownloadHistoryEntry,
-  YtdlpDownloadHistoryWeeklySummary
-} from '../shared/ytdlp-history-contract'
-import type {
-  ProcessingHistoryEntry,
-  ProcessingHistoryFilter,
-  ProcessingHistoryWeeklySummary
-} from '../shared/processing-history-contract'
-import type { DownloadsLogPayload } from '../shared/downloads-log-contract'
 import type {
   TerminalCommandHintEntry,
   TerminalRunRequest,
@@ -70,16 +35,18 @@ import type {
   KnowledgeReadArticleRequest
 } from '../shared/knowledge-contract'
 import type { FfmpegHwEncodersProbeResult } from '../shared/ffmpeg-hw-encoder-probe'
-import { downloadsIpc as d, mainWindowIpc as mw } from '../shared/ipc-channels'
+import { mainWindowIpc as mw } from '../shared/ipc-channels'
 
 type PreviewOpenedPayload = Extract<PreviewDialogResult, { ok: true }>
 
-import { fluxalloySettings } from './preload-fluxalloy-settings'
+import { fluxalloyDownloads } from './preload-fluxalloy-downloads'
 import {
-  sanitizeDownloadsWindowUiPanelState,
-  sanitizeMainWindowUiPanelState,
-  isDownloadsLogPayload
-} from './preload-sanitize'
+  fluxalloyBatchExport,
+  fluxalloyExport,
+  fluxalloyProcessingHistory
+} from './preload-fluxalloy-export'
+import { fluxalloySettings } from './preload-fluxalloy-settings'
+import { sanitizeMainWindowUiPanelState } from './preload-sanitize'
 
 /** Единственная публичная поверхность приложения в renderer (§ preload). */
 export const fluxalloy = {
@@ -111,155 +78,7 @@ export const fluxalloy = {
     restoreLastSource: (): Promise<RestoredSourceInfo | null> =>
       ipcRenderer.invoke(mw.restoreLastSource)
   },
-  downloads: {
-    openWindow: (
-      initial?: string | { text?: string; uiLocale?: 'ru' | 'en' } | null
-    ): Promise<void> => ipcRenderer.invoke(mw.openDownloadsWindow, initial ?? null),
-    addLines: (text: string): Promise<{ ok: true; added: number } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.addLines, text),
-    downloadFirstUrlOpenInMainEditor: (
-      text: string
-    ): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.downloadFirstUrlOpenInMainEditor, text),
-    getSnapshot: (): Promise<unknown[]> => ipcRenderer.invoke(d.getSnapshot),
-    clearQueue: (): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.clear),
-    clearFinished: (): Promise<{ ok: true; removed: number } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.clearFinished),
-    removeRow: (id: number): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.remove, id),
-    moveRow: (
-      id: number,
-      direction: -1 | 1
-    ): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.move, id, direction),
-    getOutputDirectory: (): Promise<{ path: string; isDefault: boolean }> =>
-      ipcRenderer.invoke(d.getOutputDir),
-    openOutputDirectory: (): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.openOutputDir),
-    pickOutputDirectory: (): Promise<
-      { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
-    > => ipcRenderer.invoke(d.pickOutputDir),
-    clearOutputDirectory: (): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.clearOutputDir),
-    pickCookiesFile: (): Promise<
-      { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
-    > => ipcRenderer.invoke(d.pickCookiesFile),
-    clearCookiesFile: (): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.clearCookiesFile),
-    onSnapshot: (listener: (rows: unknown[]) => void): (() => void) => {
-      const handler = (_event: unknown, rows: unknown): void => {
-        listener(Array.isArray(rows) ? rows : [])
-      }
-      ipcRenderer.on(d.queueSnapshot, handler)
-      return (): void => {
-        ipcRenderer.removeListener(d.queueSnapshot, handler)
-      }
-    },
-    startQueue: (): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.startQueue),
-    startRow: (id: number): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.startRow, id),
-    retryRow: (id: number): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.retryRow, id),
-    cancelQueue: (): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.cancelRun),
-    getYtdlpPauseState: (): Promise<{
-      supported: boolean
-      active: boolean
-      paused: boolean
-    }> => ipcRenderer.invoke(d.getYtdlpPauseState),
-    pauseYtdlp: (): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.pauseYtdlp),
-    resumeYtdlp: (): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.resumeYtdlp),
-    openQueueOutput: (
-      id: number,
-      mode: 'file' | 'folder'
-    ): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.openQueueOutput, id, mode),
-    openQueueOutputInHandler: (id: number): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.openQueueOutputInHandler, id),
-    getCliOptions: (
-      params?: YtdlpGetCliOptionsParams
-    ): Promise<{ ok: true; payload: YtdlpDownloadOptionsPayload } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.getCliOptions, params),
-    setCliOptions: (
-      patch: YtdlpDownloadOptionsPatch
-    ): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.setCliOptions, patch),
-    getHistory: (): Promise<YtdlpDownloadHistoryEntry[]> => ipcRenderer.invoke(d.getHistory),
-    getHistoryWeeklySummary: (): Promise<YtdlpDownloadHistoryWeeklySummary> =>
-      ipcRenderer.invoke(d.getHistoryWeeklySummary),
-    clearHistory: (): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.clearHistory),
-    openHistoryOutput: (
-      id: string,
-      mode: 'file' | 'folder'
-    ): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.openHistoryOutput, id, mode),
-    openHistoryOutputInHandler: (
-      id: string
-    ): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.openHistoryOutputInHandler, id),
-    saveVisibleLog: (
-      text: string
-    ): Promise<{ ok: true; path: string } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.saveVisibleLog, text),
-    onLog: (listener: (payload: DownloadsLogPayload) => void): (() => void) => {
-      const handler = (_event: unknown, raw: unknown): void => {
-        if (isDownloadsLogPayload(raw)) {
-          listener(raw)
-        }
-      }
-      ipcRenderer.on(d.log, handler)
-      return (): void => {
-        ipcRenderer.removeListener(d.log, handler)
-      }
-    },
-    /** Общее с pop-out §6: `downloadsWindowUiPanels` в settings (санитайз в main). */
-    mergeUiPanels: (
-      patch: Partial<DownloadsWindowUiPanelState>
-    ): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(d.mergeUiPanels, patch),
-    /** Main → renderer: полный снимок панелей после merge (вкладка «Загрузки» и pop-out). */
-    onDownloadsWindowUiPanelsChanged: (
-      listener: (panels: DownloadsWindowUiPanelState) => void
-    ): (() => void) => {
-      const channel = mw.downloadsWindowUiPanelsChanged
-      const handler = (_: unknown, raw: unknown): void => {
-        listener(sanitizeDownloadsWindowUiPanelState(raw))
-      }
-      ipcRenderer.on(channel, handler)
-      return (): void => {
-        ipcRenderer.removeListener(channel, handler)
-      }
-    },
-    /** Main → renderer: каталог вывода yt-dlp после pick/clear (вкладка «Загрузки» ↔ pop-out). */
-    onDownloadsOutputDirectoryChanged: (
-      listener: (snap: DownloadsOutputDirectorySnapshot) => void
-    ): (() => void) => {
-      const channel = mw.downloadsOutputDirectoryChanged
-      const handler = (_: unknown, raw: unknown): void => {
-        listener(sanitizeDownloadsOutputDirectorySnapshot(raw))
-      }
-      ipcRenderer.on(channel, handler)
-      return (): void => {
-        ipcRenderer.removeListener(channel, handler)
-      }
-    },
-    /** Main → renderer: yt-dlp CLI/options изменились (вызовите getCliOptions). */
-    onDownloadsCliOptionsChanged: (listener: () => void): (() => void) => {
-      const channel = mw.downloadsCliOptionsChanged
-      const handler = (): void => {
-        listener()
-      }
-      ipcRenderer.on(channel, handler)
-      return (): void => {
-        ipcRenderer.removeListener(channel, handler)
-      }
-    }
-  },
+  downloads: fluxalloyDownloads,
   /** §9 §363 — отдельное окно инспектора (тот же preload, что главное окно). */
   inspector: {
     openWindow: (absoluteMediaPath?: string | null): Promise<void> =>
@@ -356,123 +175,9 @@ export const fluxalloy = {
       }
     }
   },
-  export: {
-    start: (payload: MediaExportRequestPayload): Promise<MediaExportStartResult> =>
-      ipcRenderer.invoke(mw.exportStart, payload),
-    resolveBundledLutCubePath: (preset: FfmpegExportVideoLut3dId): Promise<string | null> =>
-      ipcRenderer.invoke(mw.exportResolveBundledLutCubePath, preset),
-    cancel: (): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(mw.exportCancel),
-    openOutput: (
-      path: string,
-      mode: 'file' | 'folder' | 'preview'
-    ): Promise<{ ok: true; path: string } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(mw.exportOpenOutput, { path, mode }),
-    onProgress: (listener: (progress: FfmpegExportProgressPayload) => void): (() => void) => {
-      const channel = mw.exportProgress
-      const handler = (_event: unknown, raw: unknown): void => {
-        if (!raw || typeof raw !== 'object') {
-          return
-        }
-        listener(raw as FfmpegExportProgressPayload)
-      }
-      ipcRenderer.on(channel, handler)
-      return (): void => {
-        ipcRenderer.removeListener(channel, handler)
-      }
-    }
-  },
-  batchExport: {
-    getSnapshot: (): Promise<FfmpegExportBatchSnapshot> =>
-      ipcRenderer.invoke(mw.batchExportGetSnapshot),
-    listInputPaths: (): Promise<{ ok: true; paths: string[] }> =>
-      ipcRenderer.invoke(mw.batchExportListInputPaths),
-    listOutputPaths: (): Promise<{ ok: true; paths: string[] }> =>
-      ipcRenderer.invoke(mw.batchExportListOutputPaths),
-    removeWaiting: (): Promise<{ ok: true; removed: number } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(mw.batchExportRemoveWaiting),
-    pickFiles: (): Promise<FfmpegExportBatchPickFilesResult> =>
-      ipcRenderer.invoke(mw.batchExportPickFiles),
-    pickFolder: (): Promise<FfmpegExportBatchPickFilesResult> =>
-      ipcRenderer.invoke(mw.batchExportPickFolder),
-    pickOutputFolder: (): Promise<{ ok: true; path: string } | { ok: false; cancelled: true }> =>
-      ipcRenderer.invoke(mw.batchExportPickOutputFolder),
-    revealSharedOutputFolder: (): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(mw.batchExportRevealSharedOutputFolder),
-    addPaths: (paths: string[]): Promise<FfmpegExportBatchAddPathsResult> =>
-      ipcRenderer.invoke(mw.batchExportAddPaths, paths),
-    openInput: (
-      path: string,
-      mode: 'file' | 'folder' | 'preview'
-    ): Promise<FfmpegExportBatchOpenInputResult> =>
-      ipcRenderer.invoke(mw.batchExportOpenInput, { path, mode }),
-    removeRows: (ids: number[]): Promise<{ ok: true; removed: number }> =>
-      ipcRenderer.invoke(mw.batchExportRemoveRows, ids),
-    clear: (): Promise<{ ok: true }> => ipcRenderer.invoke(mw.batchExportClear),
-    moveRow: (
-      id: number,
-      direction: 'up' | 'down'
-    ): Promise<{ ok: true; moved: boolean } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(mw.batchExportMoveRow, { id, direction }),
-    reorderRow: (
-      id: number,
-      toIndex: number
-    ): Promise<{ ok: true; moved: boolean } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(mw.batchExportReorderRow, { id, toIndex }),
-    setConcurrency: (value: FfmpegExportBatchConcurrency): Promise<{ ok: true }> =>
-      ipcRenderer.invoke(mw.batchExportSetConcurrency, value),
-    start: (rawExportOverrides?: unknown): Promise<FfmpegExportBatchStartResult> =>
-      ipcRenderer.invoke(mw.batchExportStart, rawExportOverrides ?? null),
-    cancel: (): Promise<{ ok: true }> => ipcRenderer.invoke(mw.batchExportCancel),
-    retryFailed: (): Promise<{ ok: true; reset: number } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(mw.batchExportRetryFailed),
-    retryRows: (
-      ids: number[]
-    ): Promise<{ ok: true; reset: number } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(mw.batchExportRetryRows, ids),
-    clearCompleted: (): Promise<{ ok: true; removed: number } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(mw.batchExportClearCompleted),
-    addFromDownloadsDone: (
-      ids?: number[]
-    ): Promise<{ ok: true; added: number } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(mw.batchExportAddFromDownloadsDone, ids ?? []),
-    addFromHistoryInputs: (
-      ids: string[]
-    ): Promise<{ ok: true; added: number } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(mw.batchExportAddFromHistoryInputs, ids),
-    retryFailedAndStart: (rawExportOverrides?: unknown): Promise<FfmpegExportBatchStartResult> =>
-      ipcRenderer.invoke(mw.batchExportRetryFailedAndStart, rawExportOverrides ?? null),
-    onSnapshot: (listener: (snapshot: FfmpegExportBatchSnapshot) => void): (() => void) => {
-      const channel = mw.batchExportSnapshot
-      const handler = (_event: unknown, raw: unknown): void => {
-        if (!raw || typeof raw !== 'object') {
-          return
-        }
-        listener(raw as FfmpegExportBatchSnapshot)
-      }
-      ipcRenderer.on(channel, handler)
-      return (): void => {
-        ipcRenderer.removeListener(channel, handler)
-      }
-    }
-  },
-  processingHistory: {
-    get: (
-      filter?: ProcessingHistoryFilter & { limit?: number }
-    ): Promise<ProcessingHistoryEntry[]> =>
-      ipcRenderer.invoke(mw.processingHistoryGet, filter ?? {}),
-    weeklySummary: (): Promise<ProcessingHistoryWeeklySummary> =>
-      ipcRenderer.invoke(mw.processingHistoryWeeklySummary),
-    clear: (): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(mw.processingHistoryClear),
-    openOutput: (
-      id: string,
-      mode: 'file' | 'folder' | 'preview'
-    ): Promise<{ ok: true; path: string } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(mw.processingHistoryOpenOutput, { id, mode }),
-    openInputInHandler: (id: string): Promise<{ ok: true } | { ok: false; error: string }> =>
-      ipcRenderer.invoke(mw.processingHistoryOpenInputInHandler, id)
-  },
+  export: fluxalloyExport,
+  batchExport: fluxalloyBatchExport,
+  processingHistory: fluxalloyProcessingHistory,
   onPreviewOpened: (listener: (payload: PreviewOpenedPayload) => void): (() => void) => {
     const channel = mw.previewOpened
     const handler = (_event: unknown, raw: unknown): void => {

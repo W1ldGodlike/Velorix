@@ -319,6 +319,12 @@ _Заполняется из `npm run audit:copy-paste` + structural. Дата b
 | structural | 720 | src/main/ipc/register-export-batch-ipc.ts | 4 | `register-single-export-ipc.ts` + `register-batch-export-queue-ipc.ts` | ✅ J-807 |
 | structural | 868 | src/main/ffprobe-track-detail-builder.ts | 4 | `ffprobe-json-types.ts` + `ffprobe-track-detail-helpers.ts` + `ffprobe-track-detail-build.ts` (entry re-export) | ✅ J-808 |
 | structural | 505 | src/main/ffprobe-track-detail-build.ts | 4 | `ffprobe-track-detail-by-codec.ts` (video/audio/subtitle/other append*) + orchestrator | ✅ J-809 |
+| structural | 569 | src/preload/preload-fluxalloy-bridge.ts | 4 | `preload-fluxalloy-downloads.ts` + `preload-fluxalloy-export.ts` (orchestrator) | ✅ J-810 |
+| structural | 810 | src/renderer/src/use-app-shell-props-input.ts | 4 | `use-app-shell-props-input-hooks.ts` + `use-app-shell-props-input-workspace.ts` + `use-app-shell-props-input-layout.ts` | ✅ J-811 |
+| structural | 814 | src/renderer/src/components/MediaProbePanel.tsx | 4 | `media-probe-panel-helpers.ts` (table IDs, menu, format/TSV); `PreviewProbeBody` in panel | ✅ J-811 |
+| structural | 919 | src/renderer/src/use-editor-export-settings.ts | 4 | `editor-export-select-options.ts` + `editor-export-settings-hydrate.ts` + `editor-export-settings-constants.ts` | ✅ J-812 |
+| structural | 1602 | src/renderer/src/components/editor/EditorFfmpegSettingsRail.tsx | 4 | `editor-ffmpeg-settings-rail-props.ts` + `EditorFfmpegSettingsRailVideoSection.tsx` + `editor-ffmpeg-settings-rail-constants.ts` | ✅ J-813 |
+| structural | 934 | src/renderer/src/components/editor/EditorFfmpegSettingsRail.tsx | 4 | `EditorFfmpegSettingsRailFormat/Audio/Presets/OutputSection.tsx` (остальные `<details>`) | ✅ J-814 |
 
 ---
 
