@@ -5,6 +5,7 @@ html:not([data-theme]) {
   --fa-bg: #020407;
   --fa-surface: #070a0f;
   --fa-surface-elevated: #0d1219;
+  --fa-bg-elevated: var(--fa-surface-elevated);
   --fa-border: #202936;
   --fa-border-subtle: #151c27;
   --fa-text-primary: #e8edf5;
@@ -14,13 +15,20 @@ html:not([data-theme]) {
   --fa-accent-contrast: #ffffff;
   --fa-danger: #ef4444;
   --fa-success: #22c55e;
-  --fa-focus-ring: rgba(47, 140, 255, 0.45);
+  --fa-hover: color-mix(in srgb, var(--fa-accent) 14%, var(--fa-surface-elevated) 86%);
+  --fa-focus: rgba(47, 140, 255, 0.45);
+  --fa-focus-ring: var(--fa-focus);
+  --fa-disabled: #3d4654;
+  --fa-scrim: #000000;
+  --fa-preview-video-bg: #000000;
+  --fa-preview-card-bg: var(--fa-bg);
 }
 
 html[data-theme='light'] {
   --fa-bg: #f3f4f6;
   --fa-surface: #e8eaef;
   --fa-surface-elevated: #ffffff;
+  --fa-bg-elevated: var(--fa-surface-elevated);
   --fa-border: #cfd2d9;
   --fa-border-subtle: #dfe1e8;
   --fa-text-primary: #1f2229;
@@ -30,7 +38,13 @@ html[data-theme='light'] {
   --fa-accent-contrast: #ffffff;
   --fa-danger: #c43333;
   --fa-success: #29875f;
-  --fa-focus-ring: rgba(47, 111, 235, 0.4);
+  --fa-hover: color-mix(in srgb, var(--fa-accent) 10%, var(--fa-surface-elevated) 90%);
+  --fa-focus: rgba(47, 111, 235, 0.4);
+  --fa-focus-ring: var(--fa-focus);
+  --fa-disabled: #a8adb8;
+  --fa-scrim: #000000;
+  --fa-preview-video-bg: #000000;
+  --fa-preview-card-bg: var(--fa-surface);
 }
 
 /* Глобальный reset минимальный: не спорим с компонентами, только убираем неожиданные браузерные отступы. */

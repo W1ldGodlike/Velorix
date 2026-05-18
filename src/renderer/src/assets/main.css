@@ -24,7 +24,7 @@
   /* v0-референс: «высота topbar около 70px» — целевой коридор без раздувания actions. */
   min-height: 62px;
   padding: 0.48rem 0.75rem;
-  background: color-mix(in srgb, var(--fa-bg) 86%, #111827 14%);
+  background: color-mix(in srgb, var(--fa-bg) 86%, var(--fa-surface) 14%);
   border-bottom: 1px solid var(--fa-border-subtle);
   flex-shrink: 0;
 }
@@ -145,7 +145,7 @@
   border: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-bg-elevated) 92%, transparent);
   padding: 0.35rem;
-  box-shadow: 0 10px 28px color-mix(in srgb, #000 22%, transparent);
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--fa-scrim) 22%, transparent);
 }
 
 .app-terminal-suggest-item {
@@ -210,7 +210,7 @@
   gap: 0.45rem;
   padding: 0.75rem;
   border-radius: 12px;
-  background: color-mix(in srgb, var(--fa-bg) 82%, #111827 18%);
+  background: color-mix(in srgb, var(--fa-bg) 82%, var(--fa-surface) 18%);
 }
 
 .app-terminal-entry + .app-terminal-entry {
@@ -232,7 +232,7 @@
   overflow: auto;
   border-radius: 10px;
   color: var(--fa-text-primary);
-  background: color-mix(in srgb, #020617 64%, var(--fa-bg) 36%);
+  background: color-mix(in srgb, var(--fa-surface) 64%, var(--fa-bg) 36%);
   font-family:
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
     monospace;
@@ -445,16 +445,17 @@
 
 .app-icon-btn:hover:not(:disabled) {
   border-color: var(--fa-border);
-  background: var(--fa-surface-elevated);
+  background: var(--fa-hover);
 }
 
 .app-icon-btn:disabled {
-  opacity: 0.45;
+  color: var(--fa-disabled);
+  opacity: 0.72;
   cursor: not-allowed;
 }
 
 .app-icon-btn:focus-visible {
-  outline: 2px solid var(--fa-accent);
+  outline: 2px solid var(--fa-focus-ring);
   outline-offset: 2px;
 }
 
@@ -523,12 +524,13 @@
 }
 
 .app-toolbar-select:disabled {
-  opacity: 0.45;
+  color: var(--fa-disabled);
+  opacity: 0.72;
   cursor: not-allowed;
 }
 
 .app-toolbar-select:focus-visible {
-  outline: 2px solid var(--fa-accent);
+  outline: 2px solid var(--fa-focus-ring);
   outline-offset: 2px;
 }
 
@@ -711,13 +713,16 @@
   white-space: nowrap;
 }
 
-.app-btn:hover {
-  background: var(--fa-surface);
+.app-btn:hover:not(:disabled) {
+  background: var(--fa-hover);
   border-color: var(--fa-border);
 }
 
 .app-btn:disabled {
-  opacity: 0.45;
+  color: var(--fa-disabled);
+  background: var(--fa-surface);
+  border-color: var(--fa-border-subtle);
+  opacity: 0.72;
   cursor: not-allowed;
 }
 
@@ -1899,7 +1904,8 @@ button.app-downloads-hint-token:disabled {
 }
 
 .app-pill-switch:disabled {
-  opacity: 0.45;
+  color: var(--fa-disabled);
+  opacity: 0.72;
   cursor: not-allowed;
 }
 
@@ -1920,7 +1926,7 @@ button.app-downloads-hint-token:disabled {
 
 .app-pill-switch-on .app-pill-switch-knob {
   transform: translateX(0.8rem);
-  background: #fff;
+  background: var(--fa-accent-contrast);
 }
 
 .app-pill-switch-text {
@@ -1983,7 +1989,8 @@ button.app-downloads-hint-token:disabled {
 }
 
 .app-control:disabled {
-  opacity: 0.48;
+  color: var(--fa-disabled);
+  opacity: 0.72;
   cursor: not-allowed;
 }
 
@@ -2191,7 +2198,7 @@ button.app-downloads-hint-token:disabled {
   border-radius: 8px;
   border: 1px solid color-mix(in srgb, var(--fa-border-subtle) 88%, var(--fa-bg) 12%);
   overflow: hidden;
-  background: #0a0a0c;
+  background: var(--fa-preview-card-bg);
   box-shadow: 0 1px 0 color-mix(in srgb, var(--fa-border-subtle) 55%, transparent);
 }
 
@@ -2201,12 +2208,12 @@ button.app-downloads-hint-token:disabled {
   min-height: 220px;
   max-height: 100%;
   object-fit: contain;
-  background: #000000;
+  background: var(--fa-preview-video-bg);
 }
 
 .app-preview-media-card .app-preview-transport {
-  border-top: 1px solid color-mix(in srgb, var(--fa-border-subtle) 70%, #000 30%);
-  background: color-mix(in srgb, var(--fa-surface) 94%, #000 6%);
+  border-top: 1px solid color-mix(in srgb, var(--fa-border-subtle) 70%, var(--fa-scrim) 30%);
+  background: color-mix(in srgb, var(--fa-surface) 94%, var(--fa-scrim) 6%);
 }
 
 /* §1.1 / v0: транспорт под превью — единая панель управления без дублирующих нативных controls у `<video>`. */
@@ -2769,7 +2776,7 @@ button.app-downloads-hint-token:disabled {
 }
 
 .app-preview-probe-error {
-  color: color-mix(in srgb, #f87171 82%, var(--fa-text-muted));
+  color: color-mix(in srgb, var(--fa-danger) 82%, var(--fa-text-muted));
 }
 
 /* §9: сворачиваемая таблица дорожек под строкой ffprobe */

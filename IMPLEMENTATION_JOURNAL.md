@@ -1116,3 +1116,8 @@
 - [J-1088] 2026-05-18 13:05:39 [Assistant]: Owner-smoke hub — «Открыть планировщик» / «Открыть конструктор» из настроек (Сервис); Help; sprint. `npm run check:quiet`.
 - [J-1089] 2026-05-18 13:11:27 [Assistant]: Owner-smoke — заголовок report (версия/buildId/electron) при копировании пакета; `owner-manual-smoke-bundle-report-header`; sprint hub UI → `[x]`. `npm run check:quiet`.
 - [J-1090] 2026-05-18 13:16:10 [Assistant]: Cadence 465 — коммит J-1086..1089: owner-smoke hub превью, jump, Сервис, report header; Help/locales; audit 1048. `npm run check:quiet`.
+- [J-1091] 2026-05-18 13:23:01 [Assistant]: §5 — полный набор CSS-токенов (hover/focus/disabled, alias bg-elevated); Vitest `theme-css-tokens`; чеклист §14 owner-smoke код vs прогон; sprint §5. `npm run check:quiet`.
+- [J-1092] 2026-05-18 13:29:46 [Assistant]: §5 — app-btn/icon/control/pill: `--fa-hover`/`--fa-focus-ring`/`--fa-disabled`; `theme-control-focus-css` + Vitest; audit 1051. `npm run check:quiet`.
+- [J-1093] 2026-05-18 13:35:06 [Assistant]: §5 — toolbar-select/workspace-tab focus; topbar/terminal без #111827/#020617; guard hex в `theme-control-focus-css` test. `npm run check:quiet`.
+- [J-1094] 2026-05-18 13:41:49 [Assistant]: §5 — токены preview/scrim; превью-карточка/видео/pill/probe-error без сырых hex; расширен hex-guard. `npm run check:quiet`.
+- [J-1095] 2026-05-18 13:46:11 [Assistant]: Cadence 470 — коммит J-1091..1094: §5 CSS-токены, контролы hover/focus/disabled, preview/scrim, hex-guard Vitest; audit 1051. `npm run check:quiet`.

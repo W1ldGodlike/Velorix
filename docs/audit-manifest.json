@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-18T10:11:27.563Z",
+  "generatedAt": "2026-05-18T10:29:47.398Z",
   "repoRoot": "C:\\Users\\truno\\FluxAlloy",
   "codeRoots": [
     "src",
@@ -18,7 +18,7 @@
     ".cursor",
     "coverage"
   ],
-  "fileCount": 1048,
+  "fileCount": 1051,
   "files": [
     "electron.vite.config.ts",
     "eslint.config.mjs",
@@ -771,6 +771,7 @@
     "src/shared/terminal-hint-json-display.ts",
     "src/shared/terminal-hints-catalog.ts",
     "src/shared/terminal-inline-suggest.ts",
+    "src/shared/theme-control-focus-css.ts",
     "src/shared/timeline-ruler.ts",
     "src/shared/ui-hidpi-scale-tiers.ts",
     "src/shared/ui-locale-runtime.ts",
@@ -1035,6 +1036,8 @@
     "tests/shared/terminal-hint-json-display.test.ts",
     "tests/shared/terminal-hints-catalog.test.ts",
     "tests/shared/terminal-inline-suggest.test.ts",
+    "tests/shared/theme-control-focus-css.test.ts",
+    "tests/shared/theme-css-tokens.test.ts",
     "tests/shared/timeline-ruler.test.ts",
     "tests/shared/ui-hidpi-scale-tiers.test.ts",
     "tests/shared/ui-locale-runtime.test.ts",

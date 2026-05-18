@@ -44,6 +44,7 @@
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый.
 
 - [~] §16/§10/§3: owner-smoke **прогон на железе** — владелец (чеклисты отмечать в IMPLEMENTATION_CHECKLIST).
+- [~] §5: CSS-токены — превью/scrim + контролы (J-1092..1094); контрасты — дальше.
 - [x] owner-smoke hub UI: превью, jump, Сервис, заголовок копии (J-1081..1089).
 - [x] §11/§14 owner-smoke: чеклисты в IMPLEMENTATION_CHECKLIST + `ownerManualSmoke:` (J-1080).
 - [x] §14 код: меню + OpenWith + default apps (J-1073/1074/1077).
@@ -250,11 +251,11 @@
 - [x] Две темы: тёмная/светлая.
 - [x] Сохранение выбранной темы.
 - [x] Меню переключения темы.
-- [~] CSS-токены есть.
-- [ ] Довести полный набор токенов: Background, Surface, SurfaceElevated, Border, BorderSubtle, TextPrimary, TextSecondary, TextMuted, Accent, Danger, Success, Hover, Focus, Disabled.
+- [~] CSS-токены: полный набор имён в `base.css` (J-1091); контрасты/focus на всех экранах — дальше.
+- [x] Имена токенов §5: Background…Disabled + alias `--fa-bg-elevated` (J-1091).
 - [ ] Проверить контрасты.
-- [ ] Проверить focus state всех controls.
-- [ ] Исключить стили вне токенов.
+- [~] Focus/hover/disabled на основных контролах (`theme-control-focus-css`, J-1092); редкие панели — дальше.
+- [~] Исключить стили вне токенов: guard hex + topbar/terminal (J-1093); хвост main.css — дальше.
 - [ ] Проверить единые радиусы/отступы на всех будущих экранах.
 
 ## §6. Окно менеджера загрузок (yt-dlp)
@@ -465,10 +466,8 @@
 
 Канон: `locales/*/windows-shell-manual-smoke.json` → `ownerManualSmoke:` (блок «Windows shell» на Win).
 
-- [ ] Контекстное меню: регистрация, «Открыть в FluxAlloy», повторный shell-open без второго процесса.
-- [ ] «Открыть с помощью»: FluxAlloy в списке для видео.
-- [ ] «Приложения по умолчанию…» открывает параметры Windows.
-- [ ] (Опц.) NSIS install/uninstall register/unregister.
+- [x] Код: контекстное меню, OpenWith, default apps, NSIS (J-1061..1077).
+- [ ] Прогон владельца: shell smoke в ownerManualSmoke (Win).
 
 ## §15. База знаний и подсказки
 
