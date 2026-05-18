@@ -4,8 +4,8 @@ CI tests cover **ffmpeg argv**, not your real GPU or display scale. Before you r
 
 ## Where to find it
 
-1. **Settings → Dependencies** — **Owner manual smoke** block and **Copy full bundle** (HiDPI + HW + scenarios + packaged smoke for your OS + scheduler + Windows shell + dpi snapshot).
-2. Below that: separate panels (each with a deep-link to this article): **NVENC/VAAPI**, **HiDPI** (General tab), **packaged smoke**, **Windows Explorer**; task planner and scenario builder — under **Service** menu.
+1. **Settings → Dependencies** — **Owner manual smoke**: expand section previews (HiDPI, HW, scenario, packaged, scheduler, shell), then **Copy full bundle** (same text in Support ZIP `ownerManualSmoke:`). **Jump to …** buttons switch the settings tab and scroll to HW, packaged, HiDPI, or Explorer panels.
+2. Below: separate panels (each deep-links here): **NVENC/VAAPI**, **packaged smoke**; **HiDPI** and **Windows Explorer** — **General** tab. From the hub: **Open task planner** / **Open scenario builder** (same as **Service** menu).
 3. **Support ZIP** — `ownerManualSmoke:` section inside `diagnostics.txt`.
 
 ## What to verify

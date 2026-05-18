@@ -1111,3 +1111,8 @@
 - [J-1083] 2026-05-18 12:20:25 [Assistant]: §11/§16 — конструктор + HW smoke: deep-link owner-smoke, подсказки про единый пакет; locales RU/EN. `npm run check:quiet`.
 - [J-1084] 2026-05-18 12:26:00 [Assistant]: §1.1/§3 — packaged + HiDPI панели: deep-link owner-smoke и подсказки ownerManualSmoke; Help owner-manual-smoke; sprint hub UI. `npm run check:quiet`.
 - [J-1085] 2026-05-18 12:30:39 [Assistant]: Cadence 460 — коммит J-1081..1084: packaged owner-smoke в bundle; deep-links планировщик/конструктор/HW/packaged/HiDPI; Support ZIP platform; sprint hub UI. `npm run check:quiet`.
+- [J-1086] 2026-05-18 12:45:11 [Assistant]: Owner-smoke hub — превью секций (HiDPI/HW/сценарий/packaged/OS/shell), jump к HW; `owner-manual-smoke-checklist-summary`; чеклист §11 код vs прогон владельца; audit 1046. `npm run check:quiet`.
+- [J-1087] 2026-05-18 12:56:57 [Assistant]: Owner-smoke — jump packaged/HiDPI/shell (смена вкладки настроек + якоря); `platform` в packaged-section; Help RU/EN; hint Dependencies. `npm run check:quiet`.
+- [J-1088] 2026-05-18 13:05:39 [Assistant]: Owner-smoke hub — «Открыть планировщик» / «Открыть конструктор» из настроек (Сервис); Help; sprint. `npm run check:quiet`.
+- [J-1089] 2026-05-18 13:11:27 [Assistant]: Owner-smoke — заголовок report (версия/buildId/electron) при копировании пакета; `owner-manual-smoke-bundle-report-header`; sprint hub UI → `[x]`. `npm run check:quiet`.
+- [J-1090] 2026-05-18 13:16:10 [Assistant]: Cadence 465 — коммит J-1086..1089: owner-smoke hub превью, jump, Сервис, report header; Help/locales; audit 1048. `npm run check:quiet`.

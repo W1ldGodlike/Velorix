@@ -14,6 +14,7 @@ import { getLinuxPackagedManualSmokeChecklistForUiLocale } from '../../linux-pac
 import { getMacosPackagedManualSmokeChecklistForUiLocale } from '../../macos-packaged-manual-smoke-checklist-locale'
 import { getWinPackagedManualSmokeChecklistForUiLocale } from '../../win-packaged-manual-smoke-checklist-locale'
 import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
+import { APP_SETTINGS_PACKAGED_SMOKE_ANCHOR } from './app-settings-smoke-anchors'
 
 export type PackagedSmokePlatform = 'win' | 'linux' | 'macos'
 
@@ -122,6 +123,7 @@ export function AppSettingsPackagedSmokePanel(props: {
 
   return (
     <section
+      id={APP_SETTINGS_PACKAGED_SMOKE_ANCHOR[props.platform]}
       className="app-settings-fieldset app-settings-hw-smoke-panel"
       aria-describedby={props.sectionHintId}
     >

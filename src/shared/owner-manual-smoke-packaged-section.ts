@@ -12,7 +12,10 @@ import {
 } from './native-main-platform'
 import { formatWinPackagedManualSmokeChecklistLines } from './win-packaged-manual-smoke-checklist'
 
+export type OwnerManualSmokePackagedPlatform = 'win' | 'linux' | 'macos'
+
 export type OwnerManualSmokePackagedSection = {
+  platform: OwnerManualSmokePackagedPlatform
   heading: string
   lines: readonly string[]
 }
@@ -20,18 +23,21 @@ export type OwnerManualSmokePackagedSection = {
 function sectionForFamily(family: NativeMainPlatformFamily): OwnerManualSmokePackagedSection | null {
   if (family === 'windows') {
     return {
+      platform: 'win',
       heading: '=== Packaged Win (pack:dir) ===',
       lines: formatWinPackagedManualSmokeChecklistLines()
     }
   }
   if (family === 'linux') {
     return {
+      platform: 'linux',
       heading: '=== Packaged Linux (pack:linux:dir) ===',
       lines: formatLinuxPackagedManualSmokeChecklistLines()
     }
   }
   if (family === 'macos') {
     return {
+      platform: 'macos',
       heading: '=== Packaged macOS (pack:mac:dir) ===',
       lines: formatMacosPackagedManualSmokeChecklistLines()
     }

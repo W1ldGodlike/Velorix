@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState, type JSX } from 'react'
 import { KNOWLEDGE_SLUG_WINDOWS_SHELL_INTEGRATION } from '../../../../shared/knowledge-contract'
 import { uiText } from '../../locales/ui-text'
 import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
+import { APP_SETTINGS_WIN_SHELL_ANCHOR } from './app-settings-smoke-anchors'
 
 export function WindowsExplorerContextMenuSettings(props: {
   sectionHintId: string
@@ -42,7 +43,12 @@ export function WindowsExplorerContextMenuSettings(props: {
   const disabled = shellBusy || busy
 
   return (
-    <fieldset className="app-settings-fieldset" disabled={disabled} aria-describedby={sectionHintId}>
+    <fieldset
+      id={APP_SETTINGS_WIN_SHELL_ANCHOR}
+      className="app-settings-fieldset"
+      disabled={disabled}
+      aria-describedby={sectionHintId}
+    >
       <div className="app-settings-hw-smoke-header">
         <h3 className="app-settings-hidpi-title">{uiText('appSettingsExplorerMenuLegend')}</h3>
         {onOpenKnowledgeArticle ? (

@@ -43,7 +43,8 @@
 
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый.
 
-- [~] §16/§10/§3: owner-smoke **прогон на железе** — владелец; hub + deep-links (J-1081..1085, cadence 460).
+- [~] §16/§10/§3: owner-smoke **прогон на железе** — владелец (чеклисты отмечать в IMPLEMENTATION_CHECKLIST).
+- [x] owner-smoke hub UI: превью, jump, Сервис, заголовок копии (J-1081..1089).
 - [x] §11/§14 owner-smoke: чеклисты в IMPLEMENTATION_CHECKLIST + `ownerManualSmoke:` (J-1080).
 - [x] §14 код: меню + OpenWith + default apps (J-1073/1074/1077).
 - [x] §11 код: конструктор v1 reorder/add/link (J-1074/1076/1078).
@@ -425,10 +426,10 @@
 
 Канон: `locales/*/workflow-scenario-manual-smoke.json` → `ownerManualSmoke:` (блок «Scenario builder»).
 
-- [ ] Конструктор: add/remove, drag-reorder, drag-and-link → `edges` в JSON.
-- [ ] «Сохранить» / перезагрузка — те же nodes/edges.
-- [ ] Редактор → «Запустить сценарий» — запись `workflowScenario` в истории.
-- [ ] (Опц.) URL-сценарий и watch-folder + OS scheduler (см. §10).
+- [x] Код: add/remove, drag-reorder, drag-and-link → `edges` в JSON (J-1076/1078).
+- [ ] Прогон владельца: «Сохранить» / перезагрузка — те же nodes/edges.
+- [ ] Прогон владельца: редактор → «Запустить сценарий» — `workflowScenario` в истории.
+- [ ] (Опц.) URL-сценарий и watch-folder + OS scheduler (§10).
 
 ## §12. Очистка кэша и обслуживание
 

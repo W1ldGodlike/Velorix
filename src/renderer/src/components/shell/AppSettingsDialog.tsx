@@ -63,6 +63,8 @@ export type AppSettingsDialogProps = {
   setEditorUrlPasteBehavior: Dispatch<SetStateAction<EditorUrlPasteBehaviorId>>
   setWorkspaceTab: Dispatch<SetStateAction<'editor' | 'downloads' | 'terminal'>>
   onOpenAbout: () => void
+  onOpenWorkflowPlanner?: () => void
+  onOpenWorkflowScenarioBuilder?: () => void
   onOpenKnowledgeArticle?: (slug: string) => void
   enginePathsSaving: boolean
   engineDownloadBusy: boolean
@@ -89,6 +91,8 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
     setEditorUrlPasteBehavior,
     setWorkspaceTab,
     onOpenAbout,
+    onOpenWorkflowPlanner,
+    onOpenWorkflowScenarioBuilder,
     onOpenKnowledgeArticle,
     enginePathsSaving,
     engineDownloadBusy,
@@ -280,6 +284,10 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
                 />
                 <AppSettingsOwnerSmokeBundlePanel
                   sectionHintId={sectionHintId}
+                  settingsSection={section}
+                  onSettingsSectionChange={onSectionChange}
+                  {...(onOpenWorkflowPlanner ? { onOpenWorkflowPlanner } : {})}
+                  {...(onOpenWorkflowScenarioBuilder ? { onOpenWorkflowScenarioBuilder } : {})}
                   {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
                 />
                 <AppSettingsHwManualSmokePanel

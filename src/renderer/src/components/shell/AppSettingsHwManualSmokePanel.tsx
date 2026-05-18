@@ -12,6 +12,7 @@ import {
 import { getUiLocale, uiText } from '../../locales/ui-text'
 import { getFfmpegHwManualSmokeChecklistForUiLocale } from '../../hw-manual-smoke-checklist-locale'
 import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
+import { APP_SETTINGS_HW_SMOKE_ANCHOR } from './app-settings-smoke-anchors'
 
 export function AppSettingsHwManualSmokePanel(props: {
   sectionHintId: string
@@ -44,6 +45,7 @@ export function AppSettingsHwManualSmokePanel(props: {
 
   return (
     <section
+      id={APP_SETTINGS_HW_SMOKE_ANCHOR}
       className="app-settings-fieldset app-settings-hw-smoke-panel"
       aria-describedby={props.sectionHintId}
     >

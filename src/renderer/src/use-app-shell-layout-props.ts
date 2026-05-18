@@ -326,6 +326,12 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
           appSettings.setAboutOpen(true)
         })
       },
+      onOpenWorkflowPlanner: () => {
+        workflowPlanner.setOpen(true)
+      },
+      onOpenWorkflowScenarioBuilder: () => {
+        workflowScenarioBuilder.setOpen(true)
+      },
       enginePathsSaving: appSettings.enginePathsSaving,
       engineDownloadBusy: appSettings.engineDownloadBusy,
       enginePathsDraft: appSettings.enginePathsDraft,
@@ -349,7 +355,7 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
         appSettings.setKnowledgeOpen(true)
       }
     }
-  }, [appSettings])
+  }, [appSettings, workflowPlanner, workflowScenarioBuilder])
 
   const externalFilterScriptProps = useMemo(
     () => ({

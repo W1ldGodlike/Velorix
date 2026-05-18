@@ -3266,6 +3266,40 @@ button.app-downloads-hint-token:disabled {
   color: var(--fa-text-muted);
 }
 
+.app-settings-owner-smoke-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.app-settings-owner-smoke-preview-block {
+  border: 1px solid var(--fa-border-subtle);
+  border-radius: 10px;
+  padding: 0.45rem 0.55rem;
+  background: color-mix(in srgb, var(--fa-bg-elevated) 88%, transparent);
+}
+
+.app-settings-owner-smoke-preview-summary {
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--fa-text-primary);
+}
+
+.app-settings-owner-smoke-preview-meta {
+  font-weight: 400;
+  color: var(--fa-text-muted);
+}
+
+.app-settings-owner-smoke-mono-lines code {
+  font-family: var(--fa-font-mono, ui-monospace, monospace);
+  font-size: 0.72rem;
+}
+
+.app-settings-owner-smoke-jump {
+  align-self: flex-start;
+}
+
 .workflow-scenario-flow-wrap {
   margin: 0.5rem 0 0.75rem;
 }

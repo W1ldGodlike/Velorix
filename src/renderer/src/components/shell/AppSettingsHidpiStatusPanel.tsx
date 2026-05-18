@@ -8,6 +8,7 @@ import { uiText, uiTextVars } from '../../locales/ui-text'
 import { UI_HIDPI_CSS_MEDIA_TIERS } from '../../../../shared/ui-hidpi-scale-tiers'
 import { readUiHidpiRuntimeStatus, type UiHidpiRuntimeStatus } from '../../ui-hidpi-runtime-status'
 import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
+import { APP_SETTINGS_HIDPI_ANCHOR } from './app-settings-smoke-anchors'
 
 function formatActiveTierLine(status: UiHidpiRuntimeStatus): string {
   if (status.activeWindowsScalePercent !== null && status.activeCssTierDpi !== null) {
@@ -49,6 +50,7 @@ export function AppSettingsHidpiStatusPanel(props: {
 
   return (
     <section
+      id={APP_SETTINGS_HIDPI_ANCHOR}
       className="app-settings-fieldset app-settings-hidpi-panel"
       aria-describedby={props.sectionHintId}
     >

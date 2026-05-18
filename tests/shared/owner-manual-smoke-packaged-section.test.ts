@@ -6,6 +6,7 @@ import { getOwnerManualSmokePackagedSection } from '../../src/shared/owner-manua
 describe('owner-manual-smoke-packaged-section §3', () => {
   it('returns Win packaged section on win32', () => {
     const section = getOwnerManualSmokePackagedSection('win32')
+    expect(section?.platform).toBe('win')
     expect(section?.heading).toContain('Packaged Win')
     expect(section?.lines.join('\n')).toContain('step [launch]')
   })
