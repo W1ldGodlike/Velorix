@@ -7,5 +7,6 @@ describe('check:packaged-e2e-scenarios-registry §21', () => {
       encoding: 'utf8'
     })
     expect(result).toContain('[check:packaged-e2e-scenarios-registry] OK')
+    expect(result).toContain('CI expansions')
   })
 })

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-18T22:26:14.830Z",
+  "generatedAt": "2026-05-18T23:16:43.804Z",
   "repoRoot": "C:\\Users\\truno\\FluxAlloy",
   "codeRoots": [
     "src",
@@ -18,7 +18,7 @@
     ".cursor",
     "coverage"
   ],
-  "fileCount": 1154,
+  "fileCount": 1155,
   "files": [
     "electron.vite.config.ts",
     "eslint.config.mjs",
@@ -1109,6 +1109,7 @@
     "tests/shared/owner-manual-smoke-theme-lines.test.ts",
     "tests/shared/owner-manual-smoke-visual-locale.test.ts",
     "tests/shared/packaged-app-smoke.test.ts",
+    "tests/shared/packaged-e2e-smoke-registry.test.ts",
     "tests/shared/packaged-e2e-smoke-scenarios.test.ts",
     "tests/shared/packaged-ffmpeg-smoke.test.ts",
     "tests/shared/packaged-ffprobe-smoke-container-registry.test.ts",

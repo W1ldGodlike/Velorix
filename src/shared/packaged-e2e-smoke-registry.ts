@@ -89,3 +89,13 @@ export const PACKAGED_E2E_SMOKE_REGISTRY: readonly PackagedE2eSmokeScenario[] = 
     note: 'Settings → Dependencies engine paths → resources/bin'
   }
 ]
+
+/** Составные npm-скрипты → leaf-команды, как в `.github/workflows/ci.yml` (без импортов — Node check). */
+export const PACKAGED_E2E_CI_SMOKE_SCRIPT_EXPANSIONS: Readonly<Record<string, readonly string[]>> =
+  {
+    'smoke:packaged-engines': [
+      'smoke:packaged-ffprobe',
+      'smoke:packaged-ytdlp',
+      'smoke:packaged-ffmpeg'
+    ]
+  }

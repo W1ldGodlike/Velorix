@@ -9,7 +9,7 @@
 - Проверьте, что **движок yt-dlp** найден: [engines-update-paths.md](engines-update-paths.md).
 - Для сайтов с входом — **куки** в панели загрузок: [downloads-settings-rail.md](downloads-settings-rail.md).
 - Посмотрите текст ошибки в строке очереди и лог: [logging-and-diagnostics.md](logging-and-diagnostics.md).
-- Если нужна диагностика для поддержки — [about-support-logs.md](about-support-logs.md) (Support ZIP).
+- Если нужна диагностика для поддержки — [about-support-logs.md](about-support-logs.md) (Support ZIP: `ownerManualSmoke:`, `releaseSmoke:` с §21 per-step `e2e <id>:`; ручной smoke — [owner-manual-smoke.md](owner-manual-smoke.md)).
 
 ## Видео скачалось, но не открывается в редакторе
 

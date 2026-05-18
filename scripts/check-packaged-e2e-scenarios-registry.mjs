@@ -6,6 +6,7 @@ import path from 'node:path'
 
 import { PACKAGED_E2E_SMOKE_REGISTRY } from '../src/shared/packaged-e2e-smoke-registry.ts'
 import { PACKAGED_MANUAL_SMOKE_STEPS } from '../src/shared/packaged-manual-smoke-step-ids.ts'
+import { PACKAGED_E2E_CI_SMOKE_SCRIPT_EXPANSIONS } from '../src/shared/packaged-e2e-smoke-registry.ts'
 import { REPO_ROOT } from './lib/repo-root.mjs'
 
 const packageScripts = JSON.parse(
@@ -55,10 +56,28 @@ for (const scenario of PACKAGED_E2E_SMOKE_REGISTRY) {
   }
 }
 
+for (const [parent, children] of Object.entries(PACKAGED_E2E_CI_SMOKE_SCRIPT_EXPANSIONS)) {
+  if (!Object.hasOwn(packageScripts, parent)) {
+    failed = true
+    console.error(
+      `[check:packaged-e2e-scenarios-registry] expansion parent missing npm script "${parent}"`
+    )
+  }
+  for (const child of children) {
+    if (!Object.hasOwn(packageScripts, child)) {
+      failed = true
+      console.error(
+        `[check:packaged-e2e-scenarios-registry] expansion ${parent} → unknown child "${child}"`
+      )
+    }
+  }
+}
+
 if (failed) {
   process.exit(1)
 }
 
+const expansionCount = Object.keys(PACKAGED_E2E_CI_SMOKE_SCRIPT_EXPANSIONS).length
 console.log(
-  `[check:packaged-e2e-scenarios-registry] OK (${registryIds.length} scenarios ↔ manual smoke steps)`
+  `[check:packaged-e2e-scenarios-registry] OK (${registryIds.length} scenarios ↔ manual smoke steps; ${expansionCount} CI expansions)`
 )

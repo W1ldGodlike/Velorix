@@ -6,7 +6,7 @@
 
 ## Готовность полного итога
 
-- **Оценка: ~62%** (J-1184; §21 per-step e2e + registry↔CI scripts + Help/guards). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16, утилиты §17, диагностика §18, CI/release + owner/packaging/e2e guards в `check:quiet`. Крупно впереди: приёмка owner-smoke на железе, `bin/` macOS/Linux, GUI Playwright §21.
+- **Оценка: ~63%** (J-1189; §21 registry/guards/Help cross-links; GUI e2e позже). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16, утилиты §17, диагностика §18, CI/release + owner/packaging/e2e guards в `check:quiet`. Крупно впереди: приёмка owner-smoke на железе, `bin/` macOS/Linux, GUI Playwright §21.
 
 ## Легенда
 
@@ -33,7 +33,7 @@
 - [x] Локализация: `ui-text` + `locales/**` (hot-reload ✅); единый словарь `AppUiLocale`; pop-out загрузок = React `#downloads` (J-978..984).
 - [~] Основная вкладка `Загрузки` в React уже закрывает очередь, старт/stop/retry/pause, настройки yt-dlp, каталог/cookies/network, live log, историю; **компактная панель «История»** — в основном **«Повторить»** (URL в очередь; J-626), полные действия файла/папки/редактора — в таблице очереди и pop-out; open учитывает финальный файл после merge и Windows UTF-8 stdout; pop-out — вторичный режим для редких settings.
 - [~] ffprobe-инспектор: в **главном редакторе** под таймлайном — только **короткая строка** видео/аудио (`VideoTimeline`); полная сводка, таблица дорожек, главы, JSON и экспорт — в **отдельном окне** инспектора; Dolby/HDR side_data summary, контекстные действия — там же.
-- [x] Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`264 test files / 1781 tests`** (J-1185); `npm run check:quiet` (lint, typecheck, тесты, audit-скрипты, guards, journal, checklist, secrets). Домены: yt-dlp §6, ffmpeg export/batch/HW §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, governance guards.
+- [x] Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`265 test files / 1784 tests`** (J-1187); `npm run check:quiet` (lint, typecheck, тесты, audit-скрипты, guards, journal, checklist, secrets). Домены: yt-dlp §6, ffmpeg export/batch/HW §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, governance guards.
 
 ## Журнал решений и проверок
 
@@ -44,10 +44,10 @@
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый.
 
 - [ ] §16/§19: owner-smoke на железе (visual + HiDPI + packaged win/linux/macos + спрайт + mini-player); приёмка владельца.
-- [~] §2.2/§7.5: длинные UI-строки в `locales/**` без дублей TS; export hints [x]; owner theme/HiDPI/packaged meta RU+EN + guards; Help/RELEASE/bin §21 per-step `e2e <id>:` (owner/about + UI hint).
+- [x] §2.2/§7.5: длинные UI-строки в `locales/**` без дублей TS; export hints [x]; owner theme/HiDPI/packaged meta RU+EN + guards; Help/RELEASE/bin §21 per-step `e2e <id>:` (owner/about/packaged/appearance + UI hint).
 - [~] §4.3: Mini Player [x] код (J-1153–1157); owner-smoke §4.3 в hub; приёмка visual/HiDPI на железе — владелец.
 - [~] §19: macOS/Linux — `pack:*:dir` + `verify:*` + parity guard; `releaseSmoke:` layout win/linux/macos; owner bundle RU+EN; `bin/` вручную; CI linux-packaging [x].
-- [~] §21: e2e packaged smoke — реестр + guard (`ciSmokeScript` ↔ package.json, per-step в `releaseSmoke:`); GUI Playwright — позже.
+- [~] §21: e2e packaged smoke — реестр + guards + per-step/`ci.yml` [x]; GUI Playwright (open/preview/export, yt-dlp queue) — позже.
 
 ---
 
@@ -603,7 +603,7 @@
 - [~] Вынести модели shared: часть IPC/доменов уже в `src/shared/*-contract.ts`; остальное по мере выноса сервисов.
 - [x] Unit tests: **`242` файла / `1725` тестов** (Vitest); домены — снимок «Тестовый раннер» и `tests/main|shared|scripts/`. Дальше — e2e packaged smoke.
 - [x] Выбрать Vitest/Jest: Vitest подключён (`npm run test`/`test:watch`, `tsconfig.tests.json`).
-- [~] E2e packaged smoke: реестр §21 + guard в `check:quiet`; GUI Playwright (open → preview → export; URL → yt-dlp) — позже.
+- [~] E2e packaged smoke: реестр §21 + guards + per-step/`ci.yml` в `check:quiet` [x]; GUI Playwright — позже.
 - [~] Комментарии на русском для публичных API и сложной логики: базовые комментарии добавлены; дальше писать чуть развёрнутее, чтобы следующему проходу агента было понятно «зачем» и «где границы», не только «что делает строка».
 - [~] Не использовать shell string для runtime внешних процессов: ffmpeg/ffprobe/yt-dlp идут через `spawn`/`execFile` с argv-массивами; остаётся периодически аудировать новые сервисы/скрипты и терминальный §8.
 

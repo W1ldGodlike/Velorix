@@ -15,3 +15,7 @@
 ## Проверка целостности
 
 Для сборки под Windows можно включить строгую проверку контрольных сумм — это защищает от подмены бинарников. Подробности для сопровождения — в документации сборки в репозитории проекта.
+
+## Packaged smoke (§19 / §21)
+
+После `npm run pack:dir` (Windows) или `pack:linux:dir` / `pack:mac:dir` проверьте бинарники в `dist/*-unpacked` (`smoke:packaged-*` в CI). Ручной чеклист владельца и §21 e2e (per-step `e2e <id>:` в Support ZIP `releaseSmoke:`) — [owner-manual-smoke.md](owner-manual-smoke.md), [packaged-windows-smoke.md](packaged-windows-smoke.md). Dev: `npm run check:packaged-e2e-scenarios-registry`, см. `bin/README.md`.

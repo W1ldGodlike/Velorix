@@ -12,6 +12,13 @@ Each launch also writes a compact **session** log — easy to attach when you de
 
 The **Tools** menu has entries to open the log in your viewer and to build a **support archive** (one zip with several helpful files).
 
+`diagnostics.txt` in the zip includes:
+
+- **`ownerManualSmoke:`** — full owner manual smoke bundle (theme, HiDPI, HW, packaged, §21 e2e per-step `e2e <id>:`); see [owner-manual-smoke.md](owner-manual-smoke.md).
+- **`releaseSmoke:`** — CI packaged pipeline, win/linux/macos layout, and the same §21 e2e plan; see [about-support-logs.md](about-support-logs.md).
+
+Dev: `npm run check:packaged-e2e-scenarios-registry` (in `check:quiet`).
+
 ## About dialog extras
 
 Temporary cleanup buttons and folder sizes live in [about-support-logs.md](about-support-logs.md).

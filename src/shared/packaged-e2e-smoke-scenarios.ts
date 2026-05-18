@@ -5,6 +5,7 @@
 
 import { PACKAGED_MANUAL_SMOKE_STEPS } from './packaged-manual-smoke-step-ids'
 import {
+  PACKAGED_E2E_CI_SMOKE_SCRIPT_EXPANSIONS,
   PACKAGED_E2E_SMOKE_REGISTRY,
   type PackagedE2eAutomationKind,
   type PackagedE2eSmokeScenario
@@ -24,15 +25,7 @@ export const PACKAGED_E2E_CI_SMOKE_SCRIPTS: readonly string[] = [
   )
 ]
 
-/** Составные скрипты → leaf-команды, как в `.github/workflows/ci.yml`. */
-export const PACKAGED_E2E_CI_SMOKE_SCRIPT_EXPANSIONS: Readonly<Record<string, readonly string[]>> =
-  {
-    'smoke:packaged-engines': [
-      'smoke:packaged-ffprobe',
-      'smoke:packaged-ytdlp',
-      'smoke:packaged-ffmpeg'
-    ]
-  }
+export { PACKAGED_E2E_CI_SMOKE_SCRIPT_EXPANSIONS }
 
 export function expandPackagedE2eCiSmokeScriptsForWorkflow(
   scripts: readonly string[] = PACKAGED_E2E_CI_SMOKE_SCRIPTS

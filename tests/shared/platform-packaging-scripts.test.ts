@@ -26,6 +26,7 @@ describe('platform-packaging-scripts §19', () => {
     expect(lines.some((l) => l.includes('check:platform-packaging-scripts'))).toBe(true)
     expect(lines.some((l) => l.includes('check:packaged-e2e-scenarios-registry'))).toBe(true)
     expect(lines.some((l) => l.includes('per-step e2e'))).toBe(true)
+    expect(lines.some((l) => l.includes('smoke:packaged-release'))).toBe(true)
     expect(lines.some((l) => l.includes('releaseSmoke: win/linux/macos'))).toBe(true)
     expect(lines.some((l) => l.includes('FLUXALLOY_SKIP_FFPROBE_SMOKE'))).toBe(true)
     expect(lines.some((l) => l.includes('check:terminal-summaries-ru'))).toBe(true)
