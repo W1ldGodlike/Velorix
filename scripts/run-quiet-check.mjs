@@ -27,6 +27,7 @@ const steps = [
   ['audit:structural', ['run', 'audit:structural']],
   ['audit:inventory-sync', ['run', 'audit:inventory-sync']],
   ['journal', ['run', 'check:journal']],
+  ['docs-governance', ['run', 'check:docs-governance']],
   ['ui-surfaces-guard', ['run', 'check:ui-surfaces-guard']],
   ['native-main-platform-guard', ['run', 'check:native-main-platform-guard']],
   ['renderer-state-approach', ['run', 'check:renderer-state-approach']],

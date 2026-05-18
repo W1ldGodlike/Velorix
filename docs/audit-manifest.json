@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-18T18:50:12.149Z",
+  "generatedAt": "2026-05-18T20:10:40.430Z",
   "repoRoot": "C:\\Users\\truno\\FluxAlloy",
   "codeRoots": [
     "src",
@@ -18,7 +18,7 @@
     ".cursor",
     "coverage"
   ],
-  "fileCount": 1099,
+  "fileCount": 1101,
   "files": [
     "electron.vite.config.ts",
     "eslint.config.mjs",
@@ -47,6 +47,7 @@
     "scripts/audit-structural.mjs",
     "scripts/audit-todo-debt.mjs",
     "scripts/check-checklist-sprint.mjs",
+    "scripts/check-docs-governance.mjs",
     "scripts/check-field-registries.mjs",
     "scripts/check-journal-numbering.mjs",
     "scripts/check-line-endings.mjs",
@@ -940,6 +941,7 @@
     "tests/scripts/audit-ipc-architecture.test.ts",
     "tests/scripts/audit-phase5-guards.test.ts",
     "tests/scripts/audit-shared-contracts.test.ts",
+    "tests/scripts/check-docs-governance.test.ts",
     "tests/scripts/check-line-endings.test.ts",
     "tests/scripts/check-locales-json.test.ts",
     "tests/scripts/check-locales-ts-overlap.test.ts",

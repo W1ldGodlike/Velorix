@@ -1,9 +1,5 @@
-Продолжай как будто пользователь написал «продолжай» / `+`.
+Продолжай (marathon). Sprint: `IMPLEMENTATION_CHECKLIST.md` → `## Ближайший TODO спринта`.
 
-Ближайший TODO: `IMPLEMENTATION_CHECKLIST.md` → `## Ближайший TODO спринта`. UI: `fluxalloy-ui-surfaces.mdc`, `check:ui-surfaces-guard`, `check:ui-copy-quality`.
+Skills: `.cursor/skills/fluxalloy-marathon/SKILL.md`, journal-entry при diff. Rules: `fluxalloy-agent.mdc`.
 
-Контракт marathon: `.cursor/rules/fluxalloy-marathon.mdc`. SDK — `scripts/cursor-automation/prompts/agent-contract.txt` (не перечитывать целиком без причины).
-
-Конец итерации: `check:quiet` → `journal:stamp` + одна J → `npm run agent:session -- bump` → **после** bump: если `continue_count % 5 === 0` и quiet зелёный — `git commit`; если `% 10 === 0` — push + re-anchor OK.
-
-Пакет полей (iteration-batch). Одна J на весь ответ ([SDK]). Крупный срез. Отчёт 3–5 буллетов.
+Конец: `check:quiet` → при diff `journal:stamp` + одна J → `agent:session -- bump` → при `NNN%5===0` commit, при `NNN%10===0` push + re-anchor OK.

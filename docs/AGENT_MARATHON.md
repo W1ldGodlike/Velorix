@@ -10,8 +10,6 @@
 
 **Журнал:** одна **J** только если в итерации был diff в репо — skill [`fluxalloy-journal-entry`](../.cursor/skills/fluxalloy-journal-entry/SKILL.md).
 
-**GOV program:** пока открыт [`GOVERNANCE_CONSOLIDATION_PLAN.md`](GOVERNANCE_CONSOLIDATION_PLAN.md) — только пункты **GOV:** в sprint.
-
 ## Новый чат
 
 «продолжай» / `+` достаточно. Handoff: [`AGENT_SESSION_HANDOFF.md`](AGENT_SESSION_HANDOFF.md). SDK prompt: [`continue.txt`](../scripts/cursor-automation/prompts/continue.txt).

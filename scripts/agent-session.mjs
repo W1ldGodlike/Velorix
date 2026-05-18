@@ -4,7 +4,8 @@
  * Владельцу ничего создавать не нужно — первый вызов создаёт файл.
  *
  *   npm run agent:session          # статус
- *   npm run agent:session -- bump  # +1 после итерации
+ *   npm run agent:session -- bump   # +1 после итерации
+ *   npm run agent:session -- reset  # сброс счётчика (фаза F governance plan)
  */
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -44,10 +45,17 @@ if (cmd === 'bump') {
   process.exit(0)
 }
 
+if (cmd === 'reset') {
+  const next = defaultState()
+  save(next)
+  console.log('[agent-session] reset (continue_count=0)')
+  process.exit(0)
+}
+
 if (cmd === 'status') {
   console.log(`[agent-session] continue_count=${state.continue_count}`)
   process.exit(0)
 }
 
-console.error('[agent-session] usage: npm run agent:session [-- bump|status]')
+console.error('[agent-session] usage: npm run agent:session [-- bump|status|reset]')
 process.exit(1)

@@ -8,8 +8,6 @@ alwaysApply: true
 Глоссарий: [`fluxalloy-rules-explicit.mdc`](fluxalloy-rules-explicit.mdc).  
 Skills: [`.cursor/skills/fluxalloy-marathon/SKILL.md`](../../.cursor/skills/fluxalloy-marathon/SKILL.md), [`fluxalloy-journal-entry`](../../.cursor/skills/fluxalloy-journal-entry/SKILL.md), [`fluxalloy-checklist-audit`](../../.cursor/skills/fluxalloy-checklist-audit/SKILL.md), [`fluxalloy-release`](../../.cursor/skills/fluxalloy-release/SKILL.md).
 
-**Если** активен [`docs/GOVERNANCE_CONSOLIDATION_PLAN.md`](../../docs/GOVERNANCE_CONSOLIDATION_PLAN.md) (`governance_plan: open`) **то** только пункты **GOV:** в sprint ([`fluxalloy-governance-plan-gate.mdc`](fluxalloy-governance-plan-gate.mdc)).
-
 ## Итерация и журнал
 
 - **Если** в итерации есть diff в репо **то** ровно **1** строка `J-NNN` (`npm run journal:stamp`); skill **fluxalloy-journal-entry**.

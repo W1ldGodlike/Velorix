@@ -6,6 +6,6 @@
 
 Журнал: последние 30–50 строк `IMPLEMENTATION_JOURNAL.md` — последний `J-NNN`, без дубля. Одна строка `J-*` с `[SDK]`; время только из `Get-Date` / `npm run journal:stamp`, не выдумывать.
 
-Конец итерации: `npm run check:quiet` → journal → `npm run agent:session -- bump` → cadence commit/push по `continue_count` (см. `fluxalloy-marathon.mdc`).
+Конец итерации: `check:quiet` → journal (если diff) → `agent:session -- bump` → cadence по J (`NNN%5` commit, `NNN%10` push); skill `fluxalloy-marathon`.
 
 `FLUXALLOY_TZ.md` — не редактировать без явной просьбы пользователя.

@@ -1,6 +1,6 @@
 # Operational notes (FluxAlloy)
 
-**Исполняемое поведение агента** — только в [`.cursor/rules/`](../.cursor/rules/), в первую очередь [`fluxalloy-agent-runtime.mdc`](../.cursor/rules/fluxalloy-agent-runtime.mdc) (alwaysApply). Карта: [`AGENTS.md`](../AGENTS.md), иерархия: [`SOURCES_OF_TRUTH.md`](SOURCES_OF_TRUTH.md).
+**Исполняемое поведение агента** — [`.cursor/rules/fluxalloy-agent.mdc`](../.cursor/rules/fluxalloy-agent.mdc) + skills [`.cursor/skills/fluxalloy-*/`](../.cursor/skills/). Карта: [`AGENTS.md`](../AGENTS.md), иерархия: [`SOURCES_OF_TRUTH.md`](SOURCES_OF_TRUTH.md).
 
 **Этот файл** — заметки при отладке конкретных зон. **Не** дублирует rules. **При конфликте** побеждают `.mdc` + шапки `IMPLEMENTATION_*`.
 
@@ -26,4 +26,4 @@
 
 ---
 
-_2026-05-16: исполняемое → `fluxalloy-agent-runtime.mdc`. Бывш. `AGENT_INSTRUCTIONS_AND_AGREEMENTS.md` → `AGENT_OPERATIONAL_NOTES.md`._
+_2026-05-16: бывш. `AGENT_INSTRUCTIONS_AND_AGREEMENTS.md` → `AGENT_OPERATIONAL_NOTES.md`. Исполняемое: `fluxalloy-agent.mdc` (J-1132 GOV B)._

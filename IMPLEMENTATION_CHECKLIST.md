@@ -6,7 +6,7 @@
 
 ## Готовность полного итога
 
-- **Оценка: ~45%**. Рабочее ядро Electron/React, preview/ffmpeg, **пакетный экспорт §7.3** (каркас), расширенный yt-dlp, **терминал §8 (v1)**, ffprobe-инспектор, база знаний §15, **HW auto/manual §16** (частично), диагностика и CI/release guardrails; крупно не закрыты планировщик/конструктор сценариев, **плоские `locales/**` и смена языка без перезапуска**, полировка цепочек NVENC/AMF/QSV/VAAPI, утилиты §17.5, ручной packaged smoke и macOS/Linux packaging.
+- **Оценка: ~52%** (ревиз GOV C, J-1133; сверка journal J-500+). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16 (код + argv-smoke), утилиты §17, диагностика §18, CI/release. Крупно впереди: owner-smoke на железе/packaged/visual, спрайты §7.5, полный вынос длинных UI-строк в `locales/**`, Mini Player §4.3, macOS/Linux packaging, e2e packaged.
 
 ## Легенда
 
@@ -25,15 +25,15 @@
 - [x] Есть `src/main`, `src/preload`, `src/renderer`.
 - [x] Renderer изолирован: `contextIsolation: true`, `nodeIntegration: false`.
 - [x] Есть базовая тёмная/светлая тема и режим **как в системе** (`theme: system` + `nativeTheme`), сохранение в `app-data/settings.json`, меню `Вид -> Тема`.
-- [~] Есть главное окно 1920x1080 (FHD) по умолчанию и единый workspace `Редактор` / `Загрузки`; редактор содержит toolbar, видеопредпросмотр (`fluxmedia://` allowlist + byte-range streaming для `<video>`), DnD/«Открыть», транспорт, timeline/waveform и статусбар.
+- [~] Главное окно 1920×1080 (FHD) по умолчанию; workspace `Редактор` / `Загрузки` / `Терминал` (Zustand); preview (`fluxmedia://`), DnD, транспорт, timeline/waveform, статусбар.
 - [~] Есть `Data/`, `Help/`, `FLUXALLOY_TZ.md`, `IMPLEMENTATION_CHECKLIST.md`, [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md), упаковка `Data/`, `Help/`, ТЗ через `extraResources` (журнал в установщик пока не включаем — только для разработки).
 - [x] Windows: `electron-builder` с режимом sign по умолчанию; после перезагрузки проверены `build:unpack`/`winCodeSign`.
-- [~] Есть ffmpeg export MP4/MKV/MOV, trim In/Out, crop/rotate/flip/scale/FPS/CRF/bitrate, пользовательские пресеты и snapshot PNG/JPEG; batch, HW encode и расширенные фильтры ещё впереди. Политика движков — bundled-first (`resources/bin`) с кнопкой скачивания/обновления и очисткой скачанных копий в `app-data/bin`, есть проверка `--version`.
+- [~] ffmpeg export MP4/MKV/MOV, trim, crop/rotate/flip/scale/FPS/CRF/bitrate, пользовательские пресеты, snapshot; **пакетный экспорт §7.3** и **HW auto/manual §16** (код); полировка HW-цепочек и редкие фильтры — дальше. Движки bundled-first + UI загрузки в `userData/bin`.
 - [~] Автозагрузка движков **Windows x64** (yt-dlp GitHub + ffmpeg zip mirror/fallback), SHA256 опционально через `Data/trusted_hashes.json`; `npm run engines:prepare:win` / `engines:prepare:win:force` / `predev` наполняет локальный `bin/`, а установщик берёт `resources/bin` (`extraResources`) для заранее проверенных bundled `ffmpeg.exe`/`ffprobe.exe`/`yt-dlp.exe`; бинарники в Git не коммитятся.
 - [x] Локализация: `ui-text` + `locales/**` (hot-reload ✅); единый словарь `AppUiLocale`; pop-out загрузок = React `#downloads` (J-978..984).
 - [~] Основная вкладка `Загрузки` в React уже закрывает очередь, старт/stop/retry/pause, настройки yt-dlp, каталог/cookies/network, live log, историю; **компактная панель «История»** — в основном **«Повторить»** (URL в очередь; J-626), полные действия файла/папки/редактора — в таблице очереди и pop-out; open учитывает финальный файл после merge и Windows UTF-8 stdout; pop-out — вторичный режим для редких settings.
 - [~] ffprobe-инспектор: в **главном редакторе** под таймлайном — только **короткая строка** видео/аудио (`VideoTimeline`); полная сводка, таблица дорожек, главы, JSON и экспорт — в **отдельном окне** инспектора; Dolby/HDR side_data summary, контекстные действия — там же.
-- [~] Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`187 test files / 1560 tests`** (J-1037); `npm run check` / `check:quiet` проходят (lint, typecheck, тесты, `trusted_hashes`, `check:journal`, `check:checklist`, secrets guard; J-1009). Покрыты парсеры/сервисы yt-dlp §6, ffmpeg export/batch §7 (`ffmpeg-export-batch-*`, `ffmpeg-export-hw-decode`, `ffmpeg-hw-encoder-probe`, `ffmpeg-export-vaapi-vf`), ffprobe §9, knowledge §15, terminal §8, diagnostics, UI helpers (`timeline-ruler`, `waveform-peaks`, `ui-text`-связанные контракты).
+- [x] Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`242 test files / 1725 tests`** (J-1133); `npm run check:quiet` (lint, typecheck, тесты, audit-скрипты, guards, journal, checklist, secrets). Домены: yt-dlp §6, ffmpeg export/batch/HW §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, governance guards.
 
 ## Журнал решений и проверок
 
@@ -43,12 +43,11 @@
 
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый.
 
-- [~] §16/§10/§3: owner-smoke **прогон на железе** — владелец (чеклисты в этом файле).
-- [~] §5 visual на железе — владелец; канон UI/Help/owner bundle [x] (J-1116..1119, §5 visual ниже).
-- [x] §2.2 post-Zustand: editor orchestration + уборка gate/чеклиста (J-1126..1128).
-- [x] owner-smoke hub + theme block в `ownerManualSmoke:` (J-1081..1089, J-1107).
-- [x] §11/§14 код и owner-smoke чеклисты (J-1073..1080).
-- [x] §12/§13: temp + истории (J-1064..1071).
+- [ ] §16/§19: owner-smoke packaged + visual + HiDPI на реальном железе (приёмка владельца).
+- [~] §2.2/§7.5: длинные UI-строки в `locales/**` без дублей TS; спрайты и подсказки экспорта.
+- [ ] §4.3: Mini Player, `session.json`, политика закрытия при активной очереди yt-dlp.
+- [ ] §19: macOS/Linux — `bin/` вручную, `pack:*:dir`, CI/релизные артефакты по `docs/RELEASE.md`.
+- [ ] §21: e2e packaged smoke (открыть → preview → export; URL → yt-dlp → ffmpeg) после стабилизации спринта.
 
 ---
 
@@ -60,29 +59,27 @@
 - [x] Стек проекта переведён в Electron + TypeScript + React.
 - [x] Базовые темы и IPC настроек заведены.
 - [x] Локальный Git-репозиторий создан.
-- [ ] Перед каждым крупным этапом сверять этот файл и обновлять статусы.
-- [ ] После каждого завершённого пункта обновлять чек-лист.
-- [ ] Не менять `FLUXALLOY_TZ.md` без прямого запроса пользователя.
+- [x] Процесс обновления чеклиста и журнала — skill `fluxalloy-checklist-audit`, глоссарий (J при diff); **запрещено** правки `FLUXALLOY_TZ.md` без явной просьбы владельца.
 
 ### Этапы
 
-1. [x] Инициализация проекта: структура, `.cursor/rules`, Electron + TS + React, темы, рабочий главный workspace (редактор/загрузки), IPC.
-2. [~] Управление зависимостями: Windows-загрузка и опциональный SHA256; bundled `bin`/macOS/Linux — дальше.
-3. [~] Главное окно и глобальные элементы: меню/превью частично; сессии, закрытие, Mini Player — дальше.
-4. [~] Главное окно обработки: файл/DnD, таймлайн (scrub + in/out), ffprobe-сводка, экспорт MP4/MKV/MOV и snapshot; пресеты/расширенный ffmpeg/batch — дальше.
-5. [~] Менеджер yt-dlp: основная вкладка `Загрузки` + pop-out; очередь, каталог, cookies, network, настройки argv, live log, история, retry/error handling, pause/resume и авто-preview есть; полноценные сценарии/терминал — дальше.
-6. [~] Терминал и CLI с IntelliSense: v1 в строке argv (выпадающий список, Tab/стрелки); полноценный список по JSON как в ТЗ — дальше.
-7. [ ] Инспектор, планировщик, конструктор сценариев.
-8. [ ] Очистка кэша, история, статистика, утилиты.
-9. [~] Логирование и диагностика.
-10. [~] Система дистрибуции: electron-builder настроен, но ресурсная/бинарная матрица не готова.
+1. [x] Инициализация: Electron + TS + React, Zustand, themes, workspace Редактор/Загрузки/Терминал, IPC.
+2. [~] Движки: Windows prepare/doctor + bundled `resources/bin`; macOS/Linux авто-загрузка — дальше.
+3. [~] Главное окно: preview/toolbar/statusbar/settings; Mini Player, `session.json`, политика закрытия очередей — дальше.
+4. [~] Обработка ffmpeg: export + batch §7.3 + snapshot; полировка UI/HW — дальше.
+5. [x] yt-dlp: вкладка + React pop-out `#downloads`; очередь, rail, log, history, pause/resume.
+6. [~] Терминал §8: v1 inline-suggest + RU summaries; расширение подсказок — дальше.
+7. [~] Инспектор §9 [x]; планировщик §10 и конструктор §11 [x] в коде; owner-smoke OS/сценарии — владелец.
+8. [~] Обслуживание §12 [x]; истории §13 [x]; утилиты §17 в основном [x].
+9. [~] Логирование/диагностика §18 — каркас [x], ротация/библиотека — дальше.
+10. [~] Дистрибуция §19: Win NSIS/ZIP + CI; macOS/Linux артефакты и подпись — дальше.
 
 ## §1. Общая концепция
 
 - [x] Назначение продукта зафиксировано: графический комбайн yt-dlp + ffmpeg.
 - [x] Целевые платформы зафиксированы: Windows приоритет, macOS, Linux.
 - [x] Лицензия есть в `LICENSE`.
-- [~] UI уже не каркас: есть рабочий editor/downloads workspace и инженерные rail/table/log/history паттерны (v0 используется только как ориентир для нужных UI-правок); до целевой глубины продукта не хватает **JSON-локализации/смены языка**, polish базы знаний (tooltips/скриншоты), терминала/сценариев, HW/batch и ручной DPI-полировки.
+- [~] Рабочий editor/downloads/terminal workspace (v0 — ориентир); **смена языка без перезапуска** [x] (J-1018); длинные шарды UI → `locales/**` частично; owner visual/HiDPI/HW smoke; Mini Player; спрайты §7.5.
 - [~] Держать основной UX как единый workspace с вкладками `Редактор` / `Загрузки`; логика очереди и обработки остаётся разделённой по сервисам, pop-out окна — вторичный режим.
 
 ### §1.1 UI и UX
@@ -115,12 +112,12 @@
 - [x] Main process отвечает за окна и настройки.
 - [x] Preload работает через `contextBridge`.
 - [x] Renderer не получает Node API напрямую.
-- [~] Добавить доменные сервисы: `engines`, `ffprobe-service`, `ffmpeg-export/snapshot`, `yt-dlp` очередь/опции/история и `logger-service` есть; впереди presets, sessions, batch и дальнейшее разбиение main.
+- [~] Доменные сервисы main: engines, ffprobe, ffmpeg export/snapshot/**batch**, yt-dlp, workflows, diagnostics, logger; Zustand в renderer; дальше — `session.json`, Mini Player, дальнейшее разбиение main.
 - [x] Подход к состоянию renderer: **Zustand** (`renderer-state-approach.ts`, `src/renderer/src/stores/*`, `AppRoot` + `check:renderer-state-approach`).
 - [x] Миграция Zustand закрыта (**J-1126**); временные gate/чеклист удалены (**J-1128**).
 - [x] Локализация `locales/ru|en/*.json`: 20 шардов, UI_TEXT из JSON; `ui-text-strings-*` пустые, guard TS↔JSON (J-1017..1020).
 - [x] Смена языка без перезапуска (все окна renderer + меню, J-1018).
-- [~] `.cursor/rules/` обновлены под Electron/TS.
+- [x] Governance/docs: `fluxalloy-agent.mdc` + skills; `check:docs-governance`; программа GOV закрыта (J-1137); канон — `docs/SOURCES_OF_TRUTH.md`.
 - [~] Вспомогательный пакет `scripts/cursor-automation`: цикл `@cursor/sdk` по промптам до `MAX_STEPS` (см. README там; не IDE-чат); единый комментированный конфиг `src/sdk-settings.ts`; long-loop режется на короткие `Agent.create` сессии через `SDK_SESSION_STEPS`/`--session-steps` (дефолт 1) для минимизации cache-read; `check:quiet` печатает короткий summary успешных проверок; локальный `STOP=0/1`; retry SDK/transport + быстрых transient error-run, полный повтор любого `status=error` только через `LOOP_RETRY_RUN_ERROR=1`; `continue.txt` работает как чат-команда `+`/compact handoff (не перечитывает весь контекст без причины), журнал требует `J-NNN` и проверяется `check:journal`.
 
 ### §2.3 Устаревший стек
@@ -188,9 +185,9 @@
 ### §4.A Разделение ролей окон
 
 - [~] Главное окно существует и сфокусировано на preview/ffmpeg обработке; верхний toolbar сокращён до основных действий, FFmpeg-настройки вынесены в правую сворачиваемую панель.
-- [~] Главное окно стало единым workspace: `Редактор` остаётся ffmpeg/preview центром, `Загрузки` — основная вкладка yt-dlp; pop-out окно загрузок остаётся вторичным режимом для редких настроек и расширенной HTML-панели.
-- [~] Пункт меню «Менеджер загрузок (yt-dlp)…» + IPC открытия pop-out; главный topbar переключает встроенную вкладку `Загрузки`.
-- [~] Отдельное BrowserWindow под менеджер: сейчас HTML pop-out (legacy); **план:** фаза A программы выше — React `#downloads`, тот же UI что вкладка; до миграции — sync IPC/тема/локаль.
+- [x] Единый workspace `Редактор` / `Загрузки` / `Терминал`; pop-out загрузок — вторичный режим (редкие длинные settings).
+- [x] Меню «Менеджер загрузок (yt-dlp)…» + IPC; topbar переключает вкладку `Загрузки`.
+- [x] Pop-out `BrowserWindow` — тот же React-бандл, hash `#downloads` (legacy HTML удалён, J-984); sync темы/локали/очереди.
 
 ### §4.B Единая зона источника
 
@@ -218,7 +215,7 @@
 - [x] Статусбар: текущий язык RU/EN (J-1011).
 - [x] Статусбар: текущий кодировщик CPU/NVENC/AMF/QSV (строка «Обработка: …»; J-1038).
 - [x] Статусбар: tooltip GPU/драйвер/лимиты NVENC + цепочка HW-декода (J-1038).
-- [ ] Все строки UI вынести в локализацию.
+- [~] UI через `ui-text` + `locales/**` (J-1017..1020); остаток литералов и массовый вынос длинных шардов — дальше.
 - [~] Добавить единый набор иконок: топбар редактора (folder + **rotate-ccw/cw + scissors** + **снимок/экспорт/отмена/облако (`EDITOR_TOPBAR_ACTION_ICONS`)** + **sun/moon (`EDITOR_THEME_ICONS`)**, `circle-help`/загрузки из shared) + **окно загрузок** + **вкладки** + транспорт + очередь yt-dlp + **вкладка «Загрузки»**: `clipboard`/`popOutWindow`, **URL-band**, **нижние панели** (`refreshCw`/`save`/`x`/`trash`/`file`/`folder`/`outbound`) + **инспектор §9**: `folder-open`/`refreshCw`/`circle-help`/тема — **общий `IconCircleHelp` из shared**, **диалог «О программе» — общий компонент `AboutDialog`**; при необходимости дальнейшее выравнивание панелей.
 
 ### §4.1 Запоминание настроек
@@ -603,7 +600,7 @@
 - [x] IPC contracts: `ipc-channels.ts`; перечисленные `src/shared/*-contract.ts` (в т.ч. ffprobe, save-text-dialog, settings, engine, about, preview-dialog, ffmpeg export, yt-dlp окно/лог/история, диагностика, engine-download, snapshot) — главный preload импортирует типы из `src/shared`, не из `main`; дальше — новые домены по мере IPC.
 - [ ] Вынести сервисы main (упорядочить без дублирования с текущими модулями).
 - [~] Вынести модели shared: часть IPC/доменов уже в `src/shared/*-contract.ts`; остальное по мере выноса сервисов.
-- [~] Unit tests для чистых модулей: каталог `tests/` — **68 файлов / 705 тестов** (Vitest); перечень доменов — в снимке «Тестовый раннер» выше и в `tests/main|shared/`. Дальше — e2e smoke и контракты под новые IPC.
+- [x] Unit tests: **`242` файла / `1725` тестов** (Vitest); домены — снимок «Тестовый раннер» и `tests/main|shared|scripts/`. Дальше — e2e packaged smoke.
 - [x] Выбрать Vitest/Jest: Vitest подключён (`npm run test`/`test:watch`, `tsconfig.tests.json`).
 - [ ] Добавить e2e smoke позже.
 - [~] Комментарии на русском для публичных API и сложной логики: базовые комментарии добавлены; дальше писать чуть развёрнутее, чтобы следующему проходу агента было понятно «зачем» и «где границы», не только «что делает строка».

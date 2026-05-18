@@ -51,6 +51,7 @@
     "journal:consolidate": "node scripts/journal-consolidate.mjs",
     "agent:session": "node scripts/agent-session.mjs",
     "check:checklist": "node scripts/check-checklist-sprint.mjs",
+    "check:docs-governance": "node scripts/check-docs-governance.mjs",
     "check:ui-surfaces-guard": "node scripts/check-ui-surfaces-guard.mjs",
     "check:native-main-platform-guard": "node scripts/check-native-main-platform-guard.mjs",
     "check:renderer-state-approach": "node scripts/check-renderer-state-approach.mjs",

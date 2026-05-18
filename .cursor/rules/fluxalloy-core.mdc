@@ -1,30 +1,25 @@
 ---
-description: FluxAlloy — hub (стек, карта файлов, источники истины)
+description: FluxAlloy — вход, карта артефактов, стек
 alwaysApply: true
 ---
 
 # FluxAlloy — ядро
 
-Глоссарий терминов: [`fluxalloy-rules-explicit.mdc`](fluxalloy-rules-explicit.mdc).  
-Синхронизация артефактов: [`docs/SOURCES_OF_TRUTH.md`](../../docs/SOURCES_OF_TRUTH.md) — при смене договорённости **один коммит**: rules + шапка артефакта + `docs/AGENT_MARATHON.md` + `agent-contract.txt`.
+Глоссарий: [`fluxalloy-rules-explicit.mdc`](fluxalloy-rules-explicit.mdc).  
+Индекс: [`docs/SOURCES_OF_TRUTH.md`](../../docs/SOURCES_OF_TRUTH.md).  
+Исполняемое: [`fluxalloy-agent.mdc`](fluxalloy-agent.mdc).
 
-| Артефакт | Роль | Обязательная проверка |
-|----------|------|------------------------|
-| [`FLUXALLOY_TZ.md`](../../FLUXALLOY_TZ.md) | Канон продукта | Читать **один §** по задаче. **Запрещено:** правки без **явной просьбы владельца**. |
-| [`IMPLEMENTATION_CHECKLIST.md`](../../IMPLEMENTATION_CHECKLIST.md) | Спринт | Блок `## Ближайший TODO спринта`; `npm run check:checklist`. |
-| [`fluxalloy-ui-surfaces.mdc`](fluxalloy-ui-surfaces.mdc) | UI (постоянно) | Один renderer на фичу; без HTML-pop-out дублей; `check:ui-surfaces-guard` в `check:quiet`. |
-| [`IMPLEMENTATION_JOURNAL.md`](../../IMPLEMENTATION_JOURNAL.md) | Хроника | **Одна J за итерацию**; `npm run journal:stamp`; `npm run check:journal`. |
-| [`docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md) | IPC | **Если** добавлен канал в `ipc-channels.ts` **то** обновить ARCHITECTURE в том же коммите. |
+| Артефакт | Роль |
+|----------|------|
+| [`FLUXALLOY_TZ.md`](../../FLUXALLOY_TZ.md) | Продукт; **запрещено** правки без **явной просьбы владельца** |
+| [`IMPLEMENTATION_CHECKLIST.md`](../../IMPLEMENTATION_CHECKLIST.md) | Sprint `## Ближайший TODO спринта`; `npm run check:checklist` |
+| [`IMPLEMENTATION_JOURNAL.md`](../../IMPLEMENTATION_JOURNAL.md) | Хроника; J при diff — skill journal-entry |
+| [`docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md) | IPC/renderer; обновлять при новом канале |
 
-**Если** сообщение = «продолжай» / marathon **то** [`docs/AGENT_MARATHON.md`](../../docs/AGENT_MARATHON.md) + `fluxalloy-marathon.mdc` + `fluxalloy-iteration-batch.mdc`.
+**Стек:** Electron + React + TypeScript; main/preload/renderer; Zustand — [`renderer-state-approach.ts`](../../src/shared/renderer-state-approach.ts).
 
-**Автономность run:** **Запрещено** спрашивать разрешение на `npm run`, установки, перезапуск dev. **Если** **неясность по ТЗ** **то** один вопрос владельцу, код не менять до ответа.
+**Запрещено:** WinUI без просьбы владельца; ослаблять `Data/trusted_hashes.json`; **drive-by рефактор** (глоссарий).
 
-**Стек:** Electron + React + TypeScript (§2 ТЗ). **Запрещено:** WinUI / `Microsoft.WindowsAppSDK` без **явной просьбы владельца**. ffmpeg, yt-dlp, FS — только `src/main/` + whitelist IPC; preload — `contextBridge`.
+**Автономность:** **запрещено** спрашивать «запустить npm?» — запускать `npm run` самому.
 
-**Запрещено:** ослаблять `Data/trusted_hashes.json` (§3 ТЗ).
-
-**Если** diff по одному файлу **>400** строк **то** **подсрез >400 строк** (глоссарий): **≥2** commit в **той же** итерации, **одна J** в конце.
-
-**Среда, дифф, проверки, ответ:** [`fluxalloy-agent-runtime.mdc`](fluxalloy-agent-runtime.mdc).  
-**Operational notes (CSP, yt-dlp):** [`docs/AGENT_OPERATIONAL_NOTES.md`](../../docs/AGENT_OPERATIONAL_NOTES.md) — открывать при отладке, не копировать в чат.
+**Если** неясность по ТЗ **то** один вопрос владельцу, код не менять.

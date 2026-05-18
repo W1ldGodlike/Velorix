@@ -11,7 +11,7 @@ description: Runs FluxAlloy marathon iterations (продолжай, agent loop,
 
 ## Каждая итерация
 
-1. `IMPLEMENTATION_CHECKLIST.md` → `## Ближайший TODO спринта` (при GOV: только строки **GOV:**).
+1. `IMPLEMENTATION_CHECKLIST.md` → `## Ближайший TODO спринта`.
 2. Один § `FLUXALLOY_TZ.md` при продуктовой работе; ТЗ без запроса владельца не править.
 3. **Крупный срез** (глоссарий: прогресс sprint **или** `src/`/`tests/` + зелёный quiet).
 4. `npm run check:quiet` → exit 0 до Git cadence.

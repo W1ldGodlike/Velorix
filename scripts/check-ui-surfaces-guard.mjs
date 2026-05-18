@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /**
  * UI-программа: пока gate open — временные артефакты на месте;
- * после F — ноль мусора программы; постоянно — fluxalloy-ui-surfaces + этот check.
+ * после F — ноль мусора программы; постоянно — fluxalloy-agent (UI §) + этот check.
  */
 import fs from 'node:fs'
 import path from 'node:path'
@@ -9,7 +9,7 @@ import { readRepoUtf8, REPO_ROOT } from './lib/repo-root.mjs'
 
 const PLAN_PATH = 'docs/UI_CONSOLIDATION_AND_COPY_PROGRAM.md'
 const PROGRAM_GATE_RULE = '.cursor/rules/fluxalloy-program-gate.mdc'
-const UI_SURFACES_RULE = '.cursor/rules/fluxalloy-ui-surfaces.mdc'
+const UI_SURFACES_RULE = '.cursor/rules/fluxalloy-agent.mdc'
 const CHECKLIST_PATH = 'IMPLEMENTATION_CHECKLIST.md'
 const QUIET_CHECK_PATH = 'scripts/run-quiet-check.mjs'
 const PACKAGE_JSON_PATH = 'package.json'

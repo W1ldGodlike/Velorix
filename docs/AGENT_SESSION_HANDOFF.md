@@ -2,7 +2,7 @@
 
 **Владельцу заполнять не нужно.** Агент обновляет этот файл **только** по **явной просьбе владельца** («сделай handoff» / «новый чат с handoff»).
 
-**Обычный режим:** новый чат + «продолжай» — [`AGENT_MARATHON.md`](AGENT_MARATHON.md) + `fluxalloy-marathon.mdc`.
+**Обычный режим:** новый чат + «продолжай» — [`AGENT_MARATHON.md`](AGENT_MARATHON.md) + skill [`fluxalloy-marathon`](../.cursor/skills/fluxalloy-marathon/SKILL.md).
 
 | Поле             | Значение |
 | ---------------- | -------- |

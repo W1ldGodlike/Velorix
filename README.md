@@ -2,52 +2,62 @@
 
 Десктопное приложение (Electron + React + TypeScript): оболочка вокруг **ffmpeg** и **yt‑dlp** по [`FLUXALLOY_TZ.md`](./FLUXALLOY_TZ.md).
 
-## Требования
+## Быстрый старт (разработчик)
 
-- **Node.js** **≥ 20.19** (см. `engines` в `package.json` и [electron-vite](https://electron-vite.org/guide/)); в репозитории зафиксирован ориентир **`.nvmrc`** (`nvm use` / `fnm use`).
-- **npm** в `PATH` (ставится вместе с Node.js). Альтернативы: **pnpm** / **yarn** — команды ниже адаптируйте.
+```bash
+git clone <url> FluxAlloy && cd FluxAlloy
+npm install
+npm run check:quiet   # lint, typecheck, тесты, guards — краткий свод
+npm run dev           # Electron + Vite (predev подтянет движки на Windows)
+```
+
+- **Node.js** **≥ 20.19** (`engines` в `package.json`, ориентир [`.nvmrc`](./.nvmrc) — `24`).
+- **Renderer:** Zustand (`src/renderer/src/stores/*`), один бандл UI; pop-out загрузок/инспектора — тот же renderer + hash `#downloads` / `#inspector` (см. [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md)).
+- **Агент Cursor:** [`AGENTS.md`](./AGENTS.md) → [`docs/SOURCES_OF_TRUTH.md`](./docs/SOURCES_OF_TRUTH.md) (marathon и skills — там, без дубля в README).
 
 ### Первичная настройка окружения
 
-1. Установите [Node.js](https://nodejs.org/) LTS (подходит 20.x, 22.x или 24.x).
-2. В корне репозитория: `npm install` (postinstall подтянет **electron-builder** native deps).
-3. Проверка: `npm run check` — **ESLint**, **TypeScript** (main/web/tests), **Vitest**, `trusted_hashes.json`, нумерация журнала, валидатор спринт-TODO чеклиста, guard секретов (см. `docs/RELEASE.md` §1). Краткий сводный вывод: `npm run check:quiet`.
-4. Разработка: `npm run dev` (lifecycle **`predev`** → `engines:prepare:win` для `bin/`; отдельно **`engines:doctor`** не вызывается — при необходимости вручную).
-5. Рекомендуемые расширения VS Code / Cursor перечислены в [`.vscode/extensions.json`](./.vscode/extensions.json); для форматирования и ESLint см. [`.vscode/settings.json`](./.vscode/settings.json).
+1. Установите [Node.js](https://nodejs.org/) LTS (20.x, 22.x или 24.x).
+2. В корне: `npm install` (postinstall — native deps **electron-builder**).
+3. Полная проверка: `npm run check` — ESLint, TypeScript, Vitest, trusted hashes, journal, checklist, secrets и audit-скрипты (см. [`docs/RELEASE.md`](./docs/RELEASE.md) §1). Краткий вывод: `npm run check:quiet`.
+4. Разработка: `npm run dev` (`predev` → `engines:prepare:win` для `bin/`; `engines:doctor` — вручную при необходимости).
+5. Расширения VS Code / Cursor: [`.vscode/extensions.json`](./.vscode/extensions.json), настройки: [`.vscode/settings.json`](./.vscode/settings.json).
 
 ### Windows / PowerShell: «выполнение сценариев отключено» для `npm.ps1`
 
-1. В корне репозитория выполните:
+1. В корне:
    `powershell -ExecutionPolicy Bypass -File .\scripts\fix-powershell-npm.ps1`
-   Скрипт сам: снимает **Mark-of-the-Web** с `npm.ps1`/`npx.ps1`, пытается выставить **RemoteSigned** для текущего пользователя и **дописывает алиасы** `npm`/`npx` → `npm.cmd`/`npx.cmd` в профили:
-   `Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1` и `Documents\PowerShell\Microsoft.PowerShell_profile.ps1` (блок не дублируется). Перезапустите терминал.
+   Скрипт снимает Mark-of-the-Web с `npm.ps1`/`npx.ps1`, выставляет RemoteSigned и дописывает алиасы `npm`/`npx` → `npm.cmd`/`npx.cmd` в профили PowerShell. Перезапустите терминал.
 
-2. Если **GPO** запрещает менять политику — алиасы из п.1 всё равно делают обычный вызов `npm` рабочим.
+2. Если GPO запрещает менять политику — алиасы из п.1 всё равно делают `npm` рабочим.
 
-3. Вручную без скрипта: `npm.cmd run dev` или алиасы в `$PROFILE` (см. скрипт как образец).
+3. Вручную: `npm.cmd run dev` или алиасы в `$PROFILE` (см. скрипт).
 
 ## Команды
 
 ```bash
 npm install
 npm run dev
-npm run check            # см. выше + trusted_hashes + journal + secrets
-npm run engines:doctor   # Windows: verify bin + SHA + версии (см. docs/RELEASE.md)
-npm run check:release    # Windows: check + prepare → doctor → build → pack:dir → smoke → audit (см. docs/RELEASE.md)
-npm run check:release:local  # повторный локальный прогон: doctor → build → pack:dir → smoke → audit (bin/ уже есть)
-npm run agent:once   # один прогон Cursor SDK automation
-npm run agent:loop   # цикл; число продолжений: -- --max-steps N или MAX_STEPS в .env
+npm run check              # полный gate перед релизом
+npm run check:quiet        # тот же набор, краткий лог (CI-локально)
+npm run test               # Vitest
+npm run test:coverage      # Vitest + coverage/ (очистка post-script)
+npm run engines:doctor     # Windows: bin + SHA + версии (docs/RELEASE.md)
+npm run check:release      # Windows: check + prepare → doctor → build → smoke
+npm run check:release:local
+npm run agent:once         # один прогон Cursor SDK automation
+npm run agent:loop         # цикл; -- --max-steps N или MAX_STEPS в .env
 npm run build
-npm run build:win    # Windows installer + artifacts
+npm run build:win
 npm run build:mac
 npm run build:linux
 ```
 
 ## Секреты и .env
 
-- `scripts/cursor-automation/.env` содержит **CURSOR_API_KEY** и **не должен попадать в Git**.
-- Для примера используйте `scripts/cursor-automation/.env.example`.
-- В CI есть базовый guard: `node scripts/check-no-secrets.mjs` (проверяет только tracked файлы).
+- `scripts/cursor-automation/.env` — **CURSOR_API_KEY**, не в Git.
+- Пример: `scripts/cursor-automation/.env.example`.
+- Guard: `node scripts/check-no-secrets.mjs` (tracked файлы).
 
 ## Зависимости приложения (движки)
 
@@ -56,49 +66,48 @@ FluxAlloy работает поверх внешних движков:
 - **yt-dlp**
 - **ffmpeg** / **ffprobe**
 
-Политика проекта: **bundled-first** — в релизе должны лежать проверенные бинарники в `resources/bin`,
-а `app-data/bin` рядом с программой — fallback/update (см. [`bin/README.md`](./bin/README.md)).
+Политика: **bundled-first** — в релизе проверенные бинарники в `resources/bin`, `app-data/bin` — fallback/update ([`bin/README.md`](./bin/README.md)).
 
-Для разработки на Windows движки можно подтянуть автоматически:
+Windows (разработка):
 
 ```powershell
 npm run engines:prepare:win
-npm run engines:doctor   # по желанию: наличие exe, SHA256 в лог, первая строка версии (см. docs/RELEASE.md)
+npm run engines:doctor
 ```
 
-## Архитектура и точки входа
+## Архитектура
 
-Описание слоёв (main / preload / renderer), IPC, Cursor SDK automation и таблица **точек входа**: [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md). Документ следует обновлять при смене контрактов IPC или способа сборки.
+Слои main / preload / renderer, IPC, pop-out hash routes, Zustand: [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md). Обновляйте при смене IPC или сборки.
 
 ## Релиз
 
-- Release checklist: [`docs/RELEASE.md`](./docs/RELEASE.md) (в т.ч. ручной запуск workflow **`ci`** на GitHub Actions).
-- Лицензии и источники bundled движков: [`docs/BUNDLED_ENGINES_LICENSES.md`](./docs/BUNDLED_ENGINES_LICENSES.md).
-- Полная цепочка Windows (prepare → **`engines:doctor`** → build → `electron-builder --win`): `npm run release:win` или `npm run release:win:force`.
+- [`docs/RELEASE.md`](./docs/RELEASE.md) — checklist, workflow **`ci`** на GitHub Actions.
+- [`docs/BUNDLED_ENGINES_LICENSES.md`](./docs/BUNDLED_ENGINES_LICENSES.md) — лицензии bundled движков.
+- Windows: `npm run release:win` или `release:win:force`.
 
 ## Горячие клавиши (базовые)
 
 - **CmdOrCtrl+O**: открыть файл в редактор.
-- **CmdOrCtrl+Shift+Y**: открыть pop-out менеджер загрузок yt-dlp.
-- **CmdOrCtrl+Shift+V**: вставить URL из буфера в менеджер загрузок.
-- **CmdOrCtrl+V** (когда фокус не в текстовом поле): если в буфере список URL — открыть менеджер загрузок.
+- **CmdOrCtrl+Shift+Y**: pop-out менеджер загрузок yt-dlp (`#downloads`).
+- **CmdOrCtrl+Shift+V**: вставить URL в менеджер загрузок.
+- **CmdOrCtrl+V** (вне текстового поля): список URL в буфере → менеджер загрузок.
 
 ## Логи и диагностика
 
-- **`main.log`**, **`session.log`**: `<папка программы>/app-data/logs/` (в dev — `app-data/logs/` в корне репозитория).
-- В UI: **«О программе» → Папка логов / main.log / Support ZIP…**.
-- **Support ZIP**: архив с `diagnostics.txt` и логами для отладки.
+- **`main.log`**, **`session.log`**: `<папка программы>/app-data/logs/` (dev — `app-data/logs/` в корне репо).
+- UI: **«О программе» → Папка логов / main.log / Support ZIP…**.
+- **Support ZIP**: архив с `diagnostics.txt` и логами.
 
 ## Сброс настроек
 
-Удалите `app-data/settings.json` рядом с программой (в dev — `app-data/settings.json` в корне репозитория), затем перезапустите приложение.
+Удалите `app-data/settings.json` рядом с программой (dev — в корне репо), перезапустите приложение.
 
 ## Полезное
 
-- Агент (Cursor / marathon): [`AGENTS.md`](./AGENTS.md), [`docs/AGENT_MARATHON.md`](./docs/AGENT_MARATHON.md), [`docs/SOURCES_OF_TRUTH.md`](./docs/SOURCES_OF_TRUTH.md).
-- `Data/`, `Help/` — материалы для UI и конфигураций (**§3** ТЗ и подсказки).
-- Правки русских `summary` встроенных сценариев терминала (`src/shared/terminal-contract.ts`): **`npm run locales:terminal-summaries-ru`** (дважды, пока второй прогон не покажет **0** замен и **0** gloss) — см. [`Help/ffmpeg-terminal-hints.md`](./Help/ffmpeg-terminal-hints.md).
-- Автоцикл по чеклисту через Cursor SDK (не IDE-чат): см. [`scripts/cursor-automation/README.md`](./scripts/cursor-automation/README.md).
-- Файлы yt-dlp по умолчанию: `<папка программы>/app-data/downloads/ytdlp`.
-- Деинсталлятор NSIS спрашивает, удалять ли папку `app-data/` (по умолчанию **нет**). В ZIP-распаковке — `Uninstall FluxAlloy.cmd` с тем же выбором.
-- **Настоятельно используйте `contextIsolation`** и узкий IPC; тяжёлая работа только в **main process** (§2 ТЗ).
+- Агент: [`AGENTS.md`](./AGENTS.md), [`docs/SOURCES_OF_TRUTH.md`](./docs/SOURCES_OF_TRUTH.md).
+- `Data/`, `Help/` — конфиги и подсказки UI.
+- Русские `summary` терминала: **`npm run locales:terminal-summaries-ru`** (дважды до 0 замен) — [`Help/ffmpeg-terminal-hints.md`](./Help/ffmpeg-terminal-hints.md).
+- SDK automation: [`scripts/cursor-automation/README.md`](./scripts/cursor-automation/README.md).
+- yt-dlp по умолчанию: `<папка программы>/app-data/downloads/ytdlp`.
+- NSIS спрашивает про удаление `app-data/`; в ZIP — `Uninstall FluxAlloy.cmd`.
+- **contextIsolation** + узкий IPC; тяжёлая работа только в **main process**.
