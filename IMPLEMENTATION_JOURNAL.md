@@ -28,6 +28,22 @@
 <!-- journal-toc: auto -->
 ## Оглавление (последние записи)
 
+- [J-1150](#j-1150)
+- [J-1149](#j-1149)
+- [J-1148](#j-1148)
+- [J-1147](#j-1147)
+- [J-1146](#j-1146)
+- [J-1145](#j-1145)
+- [J-1144](#j-1144)
+- [J-1143](#j-1143)
+- [J-1142](#j-1142)
+- [J-1141](#j-1141)
+- [J-1140](#j-1140)
+- [J-1139](#j-1139)
+- [J-1138](#j-1138)
+- [J-1137](#j-1137)
+- [J-1136](#j-1136)
+- [J-1135](#j-1135)
 - [J-1134](#j-1134)
 - [J-1133](#j-1133)
 - [J-1132](#j-1132)
@@ -52,24 +68,9 @@
 - [J-1113](#j-1113)
 - [J-1112](#j-1112)
 - [J-1111](#j-1111)
-- [J-1110](#j-1110)
-- [J-1109](#j-1109)
-- [J-1108](#j-1108)
-- [J-1107](#j-1107)
-- [J-1106](#j-1106)
-- [J-1105](#j-1105)
-- [J-1104](#j-1104)
-- [J-1103](#j-1103)
-- [J-1102](#j-1102)
-- [J-1101](#j-1101)
-- [J-1100](#j-1100)
-- [J-1099](#j-1099)
-- [J-1098](#j-1098)
-- [J-1097](#j-1097)
-- [J-1096](#j-1096)
-- [J-1095](#j-1095)
 
 <!-- /journal-toc -->
+
 
 
 
@@ -1222,3 +1223,8 @@
 - [J-1143] 2026-05-18 23:39:04 [Assistant]: §2.2 locales guards/docs — `ARCHITECTURE.md` (JSON-only build, J-1142); `check:locales-ts-overlap` запрет возврата `ui-text-strings-{ru|en}-NN.ts`; `check:renderer-state-approach` сверка ARCHITECTURE+`useDownloadsDerivedState`; Vitest history filter ref; комментарий HW codec UI. `npm run check:quiet` (244 files / 1730 tests).
 - [J-1144] 2026-05-18 23:41:59 [Assistant]: §7.5 спрайты — `ffmpeg-video-sprite-{contract,schedule,argv}` (fps+scale+tile, ≤200 ячеек); RU/EN `editorVideoSprite*` в `editor.json`; чеклист §7.5/§2.2 locales; `audit:inventory` 1094. `npm run check:quiet` (246 files / 1735 tests).
 - [J-1145] 2026-05-18 23:47:35 [Assistant]: §7.5 спрайты IPC+UI — `fluxalloy:generate-video-sprite` (`register-export-video-sprite-ipc`, runner, parse); preload/renderer `EditorVideoSpritePanel`; catch-up J-1141..1144 (Zustand `useDownloadsDerivedState`, locales JSON-only, guards). `audit:inventory` 1100. `npm run check:quiet` (247 files / 1737 tests).
+- [J-1146] 2026-05-18 23:50:20 [Assistant]: §7.5 спрайты — `burnTimestamps` (drawtext PTS hms перед tile); чекбокс в `EditorVideoSpritePanel`; `ARCHITECTURE.md` §7.5 IPC/contract. `npm run check:quiet` (247 files / 1739 tests).
+- [J-1147] 2026-05-18 23:52:50 [Assistant]: §7.5 спрайты [x] — `packaged-video-sprite-smoke` (offline guard -vf + диагностика); чеклист §7.5/спринт; `packaged-ffmpeg-smoke` ссылка на §7.5. `audit:inventory` 1102. `npm run check:quiet` (248 files / 1742 tests).
+- [J-1148] 2026-05-18 23:55:34 [Assistant]: §2.2/§7 — `editor-export-preview-hint-keys` + `check:export-preview-hints-locale` (6 ключей в `editor-ffmpeg.json` RU/EN, quiet); `ARCHITECTURE.md`; `EditorVideoSpritePanel` `title` на Run; catch-up J-1146..1147 (burnTimestamps, packaged-video-sprite-smoke). `audit:inventory` 1105. `npm run check:quiet` (249 files / 1743 tests).
+- [J-1149] 2026-05-18 23:58:43 [Assistant]: §2.2/§7.2 — `editor-export-preview-hint-resolve` (чистая логика подсказок превью ffmpeg); hook `use-editor-export-pipeline-preview` без inline-ключей; guard расширен; Vitest coverage всех 6 ключей. `audit:inventory` 1107. `npm run check:quiet` (250 files / 1745 tests).
+- [J-1150] 2026-05-19 00:00:46 [Assistant]: Cadence 1150 — коммит+push J-1146..1149: §7.5 спрайты burnTimestamps + packaged smoke; §2.2 export preview hints (keys, resolve, locale guard); re-anchor `AGENT_MARATHON`/`SOURCES_OF_TRUTH`/чеклист ~53%. `npm run check:quiet` (250 files / 1745 tests).

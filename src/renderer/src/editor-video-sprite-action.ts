@@ -12,6 +12,7 @@ export function buildEditorVideoSpritePayload(params: {
   format: FfmpegSnapshotFormatId
   columnsText: string
   rowsText: string
+  burnTimestamps: boolean
 }): FfmpegVideoSpriteRequestPayload | null {
   const columns = Number.parseInt(params.columnsText, 10)
   const rows = Number.parseInt(params.rowsText, 10)
@@ -24,6 +25,7 @@ export function buildEditorVideoSpritePayload(params: {
     columns,
     rows,
     format: params.format,
+    ...(params.burnTimestamps ? { burnTimestamps: true } : {}),
     uiLocale: getUiLocale()
   }
 }

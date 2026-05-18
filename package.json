@@ -58,6 +58,7 @@
     "audit:orphan-scripts": "node scripts/audit-orphan-scripts.mjs",
     "check:locales-json": "node scripts/check-locales-json.mjs",
     "check:locales-ts-overlap": "node scripts/check-locales-ts-overlap.mjs",
+    "check:export-preview-hints-locale": "node scripts/check-export-preview-hints-locale.mjs",
     "check:terminal-summaries-ru": "node scripts/check-terminal-summaries-ru.mjs",
     "check:terminal-data-summaries": "node scripts/check-terminal-data-summaries-quality.mjs",
     "check:terminal-scenario-summaries": "node scripts/check-terminal-scenario-summaries-quality.mjs",

@@ -14,6 +14,7 @@ export function parseFfmpegVideoSpriteRequest(
     columns?: unknown
     rows?: unknown
     format?: unknown
+    burnTimestamps?: unknown
     uiLocale?: unknown
   }
   const inputPath = typeof o.inputPath === 'string' ? o.inputPath.trim() : ''
@@ -35,6 +36,7 @@ export function parseFfmpegVideoSpriteRequest(
     columns,
     rows,
     format: parseFfmpegSnapshotFormatId(o.format),
+    ...(o.burnTimestamps === true ? { burnTimestamps: true } : {}),
     ...(uiLoc !== undefined ? { uiLocale: uiLoc } : {})
   }
   return { ok: true, payload }

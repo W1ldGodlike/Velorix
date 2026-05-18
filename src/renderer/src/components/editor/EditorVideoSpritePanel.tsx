@@ -39,6 +39,7 @@ export function EditorVideoSpritePanel(props: EditorFfmpegSettingsRailProps): JS
 
   const [columns, setColumns] = useState('4')
   const [rows, setRows] = useState('3')
+  const [burnTimestamps, setBurnTimestamps] = useState(true)
 
   const chromeBusy =
     exportBusy || exportCancelBusy || batchExportBusy || snapshotBusy || extractFramesBusy
@@ -53,7 +54,8 @@ export function EditorVideoSpritePanel(props: EditorFfmpegSettingsRailProps): JS
       durationSec,
       format: snapshotFormat,
       columnsText: columns,
-      rowsText: rows
+      rowsText: rows,
+      burnTimestamps
     })
     if (payload === null) {
       setStatusHint(editorVideoSpriteScheduleErrorHint('invalid_grid'))
@@ -70,6 +72,7 @@ export function EditorVideoSpritePanel(props: EditorFfmpegSettingsRailProps): JS
     extractFramesBusy,
     inputPath,
     rows,
+    burnTimestamps,
     setExtractFramesBusy,
     setStatusHint,
     snapshotFormat
@@ -118,12 +121,27 @@ export function EditorVideoSpritePanel(props: EditorFfmpegSettingsRailProps): JS
             }}
           />
         </label>
+        <label
+          className="app-field app-field-checkbox"
+          title={uiText('editorVideoSpriteBurnTimestampsTitle')}
+        >
+          <input
+            type="checkbox"
+            checked={burnTimestamps}
+            disabled={chromeBusy}
+            onChange={(e) => {
+              setBurnTimestamps(e.target.checked)
+            }}
+          />
+          <span className="app-field-label">{uiText('editorVideoSpriteBurnTimestampsLabel')}</span>
+        </label>
       </div>
       <div className="app-settings-benchmark-actions">
         <button
           type="button"
           className="app-btn app-btn-primary"
           disabled={!canRun}
+          title={uiText('editorVideoSpriteRunTitle')}
           onClick={handleGenerate}
         >
           {extractFramesBusy ? uiText('editorVideoSpriteBusy') : uiText('editorVideoSpriteRun')}

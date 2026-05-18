@@ -18,11 +18,35 @@ function snapshotEncodeTail(format: FfmpegSnapshotFormatId, outputPath: string):
   return ['-y', outputPath]
 }
 
+/** Цепочка -vf: fps → optional drawtext → scale → tile. */
+export function buildFfmpegVideoSpriteVideoFilter(params: {
+  sampleFps: number
+  columns: number
+  rows: number
+  burnTimestamps: boolean
+}): string {
+  const fps = params.sampleFps.toFixed(6).replace(/\.?0+$/, '')
+  const parts = [`fps=${fps}`]
+  if (params.burnTimestamps) {
+    parts.push(
+      "drawtext=text='%{pts\\:hms}':fontsize=14:fontcolor=white:box=1:boxcolor=black@0.5:x=4:y=h-th-6"
+    )
+  }
+  parts.push(
+    `scale=${FFMPEG_VIDEO_SPRITE_CELL_WIDTH_PX}:-2:flags=lanczos`,
+    `tile=${params.columns}x${params.rows}`
+  )
+  return parts.join(',')
+}
+
 /** §7.5 — один выходной файл: fps + scale + tile (равномерная выборка по длительности). */
 export function buildFfmpegVideoSpriteArgv(params: {
   inputPath: string
   outputPath: string
-  request: Pick<FfmpegVideoSpriteRequestPayload, 'durationSec' | 'columns' | 'rows' | 'format'>
+  request: Pick<
+    FfmpegVideoSpriteRequestPayload,
+    'durationSec' | 'columns' | 'rows' | 'format' | 'burnTimestamps'
+  >
 }):
   | { ok: true; argv: string[] }
   | { ok: false; error: Extract<FfmpegVideoSpriteSchedule, { ok: false }>['error'] } {
@@ -35,8 +59,12 @@ export function buildFfmpegVideoSpriteArgv(params: {
     return { ok: false, error: schedule.error }
   }
 
-  const fps = schedule.sampleFps.toFixed(6).replace(/\.?0+$/, '')
-  const vf = `fps=${fps},scale=${FFMPEG_VIDEO_SPRITE_CELL_WIDTH_PX}:-2:flags=lanczos,tile=${schedule.columns}x${schedule.rows}`
+  const vf = buildFfmpegVideoSpriteVideoFilter({
+    sampleFps: schedule.sampleFps,
+    columns: schedule.columns,
+    rows: schedule.rows,
+    burnTimestamps: params.request.burnTimestamps === true
+  })
   const base = [
     '-hide_banner',
     '-loglevel',

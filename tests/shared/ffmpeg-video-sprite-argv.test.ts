@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest'
 
-import { buildFfmpegVideoSpriteArgv } from '../../src/shared/ffmpeg-video-sprite-argv'
+import {
+  buildFfmpegVideoSpriteArgv,
+  buildFfmpegVideoSpriteVideoFilter
+} from '../../src/shared/ffmpeg-video-sprite-argv'
 
 describe('buildFfmpegVideoSpriteArgv', () => {
   it('builds fps+scale+tile filter for png output', () => {
@@ -16,6 +19,18 @@ describe('buildFfmpegVideoSpriteArgv', () => {
       expect(vf).toBe('fps=0.2,scale=320:-2:flags=lanczos,tile=3x2')
       expect(r.argv.at(-1)).toBe('C:\\out\\sprite.png')
     }
+  })
+
+  it('adds drawtext when burnTimestamps is set', () => {
+    const vf = buildFfmpegVideoSpriteVideoFilter({
+      sampleFps: 0.2,
+      columns: 3,
+      rows: 2,
+      burnTimestamps: true
+    })
+    expect(vf).toContain('drawtext=')
+    expect(vf).toContain('%{pts\\:hms}')
+    expect(vf).toContain('tile=3x2')
   })
 
   it('uses jpg quality flags', () => {

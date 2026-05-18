@@ -35,5 +35,6 @@ describe('packaged-ffmpeg-smoke', () => {
     expect(lines[0]).toContain('smoke:packaged-ffmpeg')
     expect(lines.some((l) => l.includes('FLUXALLOY_SKIP_FFMPEG_SMOKE'))).toBe(true)
     expect(lines.some((l) => l.includes('check:terminal-summaries-ru'))).toBe(true)
+    expect(lines.some((l) => l.includes('video sprite'))).toBe(true)
   })
 })

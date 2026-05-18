@@ -14,6 +14,8 @@ export type FfmpegVideoSpriteRequestPayload = {
   columns: number
   rows: number
   format: FfmpegSnapshotFormatId
+  /** Подпись PTS (hms) в углу каждого кадра до tile. */
+  burnTimestamps?: boolean
   uiLocale?: AppUiLocale
 }
 

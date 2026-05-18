@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { buildFfmpegExportPreviewCommand } from '../../shared/ffmpeg-export-argv'
+import { resolveEditorExportPreviewHint } from '../../shared/editor-export-preview-hint-resolve'
 import { uiText, uiTextVars } from './locales/ui-text'
 import type {
   EditorExportPipelinePreviewDeps,
@@ -160,36 +161,24 @@ export function useEditorExportPipelinePreview(deps: EditorExportPipelinePreview
   const exportPreviewCommand = exportPreview.command
 
   function exportPreviewHint(): string {
-    if (!exportExtraArgsParsed.ok) {
-      return uiTextVars('editorExportExtraArgsParseError', { detail: exportExtraArgsParsed.error })
+    const resolved = resolveEditorExportPreviewHint({
+      extraArgsOk: exportExtraArgsParsed.ok,
+      hasPreviewSource: preview !== null && preview !== undefined,
+      externalFilterKind: externalFilterForPreview.kind,
+      externalFilterScriptAbsPath: externalFilterForPreview.scriptAbsPath,
+      pass1Command: exportPreview.pass1Command,
+      appliedTrim: exportPreview.appliedTrim,
+      trimRange,
+      probeDurationSec: probeInfo?.durationSec
+    })
+    if (resolved.kind === 'extraArgsError') {
+      const detail = exportExtraArgsParsed.ok ? '' : exportExtraArgsParsed.error
+      return uiTextVars('editorExportExtraArgsParseError', { detail })
     }
-    if (!preview) {
-      return uiText('editorExportPreviewHintNoSource')
+    if (resolved.vars) {
+      return uiTextVars(resolved.key, resolved.vars)
     }
-    if (
-      (externalFilterForPreview.kind === 'avisynth' ||
-        externalFilterForPreview.kind === 'vapoursynth') &&
-      externalFilterForPreview.scriptAbsPath
-    ) {
-      return uiTextVars('editorExportPreviewHintExternalFilter', {
-        kind: externalFilterForPreview.kind,
-        path: externalFilterForPreview.scriptAbsPath
-      })
-    }
-    if (exportPreview.pass1Command) {
-      return uiText('editorExportPreviewHintTwoPass')
-    }
-    if (exportPreview.appliedTrim && trimRange !== null) {
-      const span = Math.max(0, trimRange.outSec - trimRange.inSec)
-      return uiTextVars('editorExportPreviewHintTrimAppliedTemplate', {
-        in: trimRange.inSec.toFixed(2),
-        t: span.toFixed(2)
-      })
-    }
-    if (trimRange !== null && probeInfo?.durationSec) {
-      return uiText('editorExportPreviewHintTrimFull')
-    }
-    return uiText('editorExportPreviewHintTrimWaiting')
+    return uiText(resolved.key)
   }
 
   return { exportPreview, exportPreviewCommand, exportPreviewHint }

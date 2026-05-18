@@ -25,6 +25,21 @@ describe('parseFfmpegVideoSpriteRequest', () => {
     }
   })
 
+  it('parses burnTimestamps flag', () => {
+    const r = parseFfmpegVideoSpriteRequest({
+      inputPath: 'a.mp4',
+      durationSec: 10,
+      columns: 2,
+      rows: 2,
+      format: 'png',
+      burnTimestamps: true
+    })
+    expect(r.ok).toBe(true)
+    if (r.ok) {
+      expect(r.payload.burnTimestamps).toBe(true)
+    }
+  })
+
   it('rejects invalid grid', () => {
     const r = parseFfmpegVideoSpriteRequest({
       inputPath: 'a.mp4',

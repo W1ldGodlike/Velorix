@@ -15,6 +15,7 @@ const steps = [
   ['field-registries', ['run', 'check:field-registries']],
   ['locales-json', ['run', 'check:locales-json']],
   ['locales-ts-overlap', ['run', 'check:locales-ts-overlap']],
+  ['export-preview-hints-locale', ['run', 'check:export-preview-hints-locale']],
   ['terminal-summaries-ru', ['run', 'check:terminal-summaries-ru']],
   ['terminal-data-summaries', ['run', 'check:terminal-data-summaries']],
   ['terminal-scenario-summaries', ['run', 'check:terminal-scenario-summaries']],

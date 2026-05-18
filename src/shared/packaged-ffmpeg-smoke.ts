@@ -20,6 +20,7 @@ export function formatPackagedFfmpegSmokeDiagnosticLines(): string[] {
   return [
     'command: npm run smoke:packaged-ffmpeg (part of smoke:packaged-engines)',
     'check: ffmpeg -hide_banner -encoders offline (isMinimalFfmpegEncodersOutput)',
+    'check: §7.5 video sprite -vf guard (packaged-video-sprite-smoke)',
     'env: FLUXALLOY_FFMPEG_PATH, FLUXALLOY_SKIP_FFMPEG_SMOKE',
     'dev quiet: npm run check:quiet includes check:terminal-summaries-ru (§8 terminal RU summaries 0/0)'
   ]

@@ -6,7 +6,7 @@
 
 ## Готовность полного итога
 
-- **Оценка: ~52%** (ревиз GOV C, J-1133; сверка journal J-500+). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16 (код + argv-smoke), утилиты §17, диагностика §18, CI/release. Крупно впереди: owner-smoke на железе/packaged/visual, спрайты §7.5, полный вынос длинных UI-строк в `locales/**`, Mini Player §4.3, macOS/Linux packaging, e2e packaged.
+- **Оценка: ~53%** (J-1150; спрайты §7.5 [x] J-1147). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16 (код + argv-smoke), утилиты §17, диагностика §18, CI/release. Крупно впереди: owner-smoke на железе/packaged/visual, полный вынос длинных UI-строк в `locales/**`, Mini Player §4.3, macOS/Linux packaging, e2e packaged.
 
 ## Легенда
 
@@ -25,7 +25,7 @@
 - [x] Есть `src/main`, `src/preload`, `src/renderer`.
 - [x] Renderer изолирован: `contextIsolation: true`, `nodeIntegration: false`.
 - [x] Есть базовая тёмная/светлая тема и режим **как в системе** (`theme: system` + `nativeTheme`), сохранение в `app-data/settings.json`, меню `Вид -> Тема`.
-- [~] Главное окно 1920×1080 (FHD) по умолчанию; workspace `Редактор` / `Загрузки` / `Терминал` (Zustand); preview (`fluxmedia://`), DnD, транспорт, timeline/waveform, статусбар. Снимок тестов — **247 / 1737** (J-1145).
+- [~] Главное окно 1920×1080 (FHD) по умолчанию; workspace `Редактор` / `Загрузки` / `Терминал` (Zustand); preview (`fluxmedia://`), DnD, транспорт, timeline/waveform, статусбар. Снимок тестов — **250 / 1745** (J-1149).
 - [~] Есть `Data/`, `Help/`, `FLUXALLOY_TZ.md`, `IMPLEMENTATION_CHECKLIST.md`, [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md), упаковка `Data/`, `Help/`, ТЗ через `extraResources` (журнал в установщик пока не включаем — только для разработки).
 - [x] Windows: `electron-builder` с режимом sign по умолчанию; после перезагрузки проверены `build:unpack`/`winCodeSign`.
 - [~] ffmpeg export MP4/MKV/MOV, trim, crop/rotate/flip/scale/FPS/CRF/bitrate, пользовательские пресеты, snapshot; **пакетный экспорт §7.3** и **HW auto/manual §16** (код); полировка HW-цепочек и редкие фильтры — дальше. Движки bundled-first + UI загрузки в `userData/bin`.
@@ -33,7 +33,7 @@
 - [x] Локализация: `ui-text` + `locales/**` (hot-reload ✅); единый словарь `AppUiLocale`; pop-out загрузок = React `#downloads` (J-978..984).
 - [~] Основная вкладка `Загрузки` в React уже закрывает очередь, старт/stop/retry/pause, настройки yt-dlp, каталог/cookies/network, live log, историю; **компактная панель «История»** — в основном **«Повторить»** (URL в очередь; J-626), полные действия файла/папки/редактора — в таблице очереди и pop-out; open учитывает финальный файл после merge и Windows UTF-8 stdout; pop-out — вторичный режим для редких settings.
 - [~] ffprobe-инспектор: в **главном редакторе** под таймлайном — только **короткая строка** видео/аудио (`VideoTimeline`); полная сводка, таблица дорожек, главы, JSON и экспорт — в **отдельном окне** инспектора; Dolby/HDR side_data summary, контекстные действия — там же.
-- [x] Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`242 test files / 1725 tests`** (J-1133); `npm run check:quiet` (lint, typecheck, тесты, audit-скрипты, guards, journal, checklist, secrets). Домены: yt-dlp §6, ffmpeg export/batch/HW §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, governance guards.
+- [x] Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`250 test files / 1745 tests`** (J-1150); `npm run check:quiet` (lint, typecheck, тесты, audit-скрипты, guards, journal, checklist, secrets). Домены: yt-dlp §6, ffmpeg export/batch/HW §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, governance guards.
 
 ## Журнал решений и проверок
 
@@ -44,7 +44,7 @@
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый.
 
 - [ ] §16/§19: owner-smoke packaged + visual + HiDPI на реальном железе (приёмка владельца).
-- [~] §2.2/§7.5: длинные UI-строки в `locales/**` без дублей TS; спрайты и подсказки экспорта.
+- [~] §2.2/§7.5: длинные UI-строки в `locales/**` без дублей TS; подсказки экспорта (resolve+guard, спрайты [x] J-1147).
 - [ ] §4.3: Mini Player, `session.json`, политика закрытия при активной очереди yt-dlp.
 - [ ] §19: macOS/Linux — `bin/` вручную, `pack:*:dir`, CI/релизные артефакты по `docs/RELEASE.md`.
 - [ ] §21: e2e packaged smoke (открыть → preview → export; URL → yt-dlp → ffmpeg) после стабилизации спринта.
@@ -382,7 +382,7 @@
 ### §7.5 Изображения
 
 - [~] Извлечение/конвертация изображений (одиночная конвертация JPEG/PNG/WebP в «О программе» — J-1012).
-- [~] Спрайты: contract + IPC `generateVideoSprite` + панель в редакторе (J-1145); подписи времени на ячейках — дальше.
+- [x] Спрайты: IPC `generateVideoSprite`, UI, PTS drawtext, packaged smoke guard (J-1145..1147).
 - [ ] Слайды.
 - [ ] Набор форматов JPG/PNG/WebP/etc.
 
