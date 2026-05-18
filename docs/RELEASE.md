@@ -125,6 +125,8 @@ $env:CSC_IDENTITY_AUTO_DISCOVERY = 'false'
 npm run build:win
 ```
 
+Support ZIP (`diagnostics.txt` → `releaseSmoke:`) на любой ОС перечисляет layout win/linux/macos unpacked (present/missing) и сводку §21 e2e — см. [about-support-logs](../Help/about-support-logs.md).
+
 Перед публикацией пройдите **ручной smoke** (не заменяет `verify:win-unpacked` / `smoke:packaged-release`):
 
 1. В приложении: **Настройки → Зависимости → Ручной smoke Windows (pack:dir)** — чеклист с копированием (тот же текст в Support ZIP как `winPackagedSmoke:`).
@@ -159,7 +161,7 @@ npm run verify:linux-unpacked
 3. Те же сценарии, что в §4 для Windows: движки, редактор, загрузки, снимок, экспорт, спрайт §7.5, мини-плеер §4.3 (при busy-задачах), база знаний, Support ZIP.
 4. Убедитесь, что в логах и артефактах нет секретов.
 
-Справка: `Help/packaged-linux-smoke.md`.
+Справка: `Help/packaged-linux-smoke.md`. В Support ZIP `releaseSmoke:` — layout `dist/linux-unpacked/` и `resources/*` (present/missing без запуска verify на другой ОС).
 
 ### 4.2 macOS (pack:mac:dir)
 
@@ -176,7 +178,7 @@ npm run verify:mac-unpacked
 3. Сценарии как в §4 (включая спрайт §7.5 и мини-плеер §4.3); пути движков — `Contents/Resources/bin`.
 4. Нет секретов в логах и артефактах.
 
-Справка: `Help/packaged-macos-smoke.md`.
+Справка: `Help/packaged-macos-smoke.md`. В Support ZIP `releaseSmoke:` — кандидаты `dist/mac*/FluxAlloy.app` и layout `Contents/Resources/*` (present/missing без запуска verify на Windows).
 
 **Локали owner/packaged smoke (dev, в `check:quiet`):**
 

@@ -29,4 +29,6 @@ The folder must contain `fluxalloy` or `FluxAlloy` and `resources/bin/{yt-dlp,ff
 
 Details: [`docs/RELEASE.md`](../../docs/RELEASE.md) §4.1.
 
+On any OS, Support ZIP `releaseSmoke:` lists `dist/linux-unpacked/` and `resources/*` layout lines (present/missing) — useful after `pack:linux:dir` without re-running verify locally.
+
 See also [about-support-logs.md](about-support-logs.md) and [packaged-windows-smoke.md](../packaged-windows-smoke.md).

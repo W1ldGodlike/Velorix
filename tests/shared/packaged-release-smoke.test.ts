@@ -29,5 +29,19 @@ describe('packaged-release-smoke §19', () => {
     expect(lines.some((l) => l.includes('§21 packaged e2e registry'))).toBe(true)
     expect(lines.some((l) => l.includes('check:packaged-e2e-scenarios-registry'))).toBe(true)
     expect(lines.some((l) => l.includes('ci-headless'))).toBe(true)
+    expect(lines.some((l) => l.includes('verify:mac-unpacked'))).toBe(true)
+    expect(lines.some((l) => l.includes('FluxAlloy.app'))).toBe(true)
+    expect(lines.some((l) => l.includes('verify:linux-unpacked'))).toBe(true)
+    expect(lines.some((l) => l.includes('linux-unpacked'))).toBe(true)
+  })
+
+  it('includes win/linux/macos layout tails when dist artifacts are absent', () => {
+    const repo = 'C:\\repo'
+    const lines = buildSupportZipPackagedReleaseLines(repo, () => false)
+    const joined = lines.join('\n')
+    expect(joined).toContain('layout: FluxAlloy.exe')
+    expect(joined).toContain('linux-unpacked')
+    expect(joined).toContain('mac-arm64/FluxAlloy.app')
+    expect(joined).toContain('§21 packaged e2e registry')
   })
 })

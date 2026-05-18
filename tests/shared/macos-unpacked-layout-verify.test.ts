@@ -3,8 +3,10 @@ import { describe, expect, it } from 'vitest'
 
 import {
   collectMacosUnpackedLayoutFailures,
+  formatMacosUnpackedLayoutVerifyDiagnosticLines,
   macosAppBundleCandidates,
-  resolveMacosAppBundleRoot
+  resolveMacosAppBundleRoot,
+  resolveMacosAppBundleRootSync
 } from '../../src/shared/macos-unpacked-layout-verify'
 
 describe('macos-unpacked-layout-verify §2.1', () => {
@@ -39,5 +41,20 @@ describe('macos-unpacked-layout-verify §2.1', () => {
       dirExists: (p) => present.has(p)
     })
     expect(failures).toEqual([])
+  })
+
+  it('formatMacosUnpackedLayoutVerifyDiagnosticLines reports layout present/missing', () => {
+    const bundle = join(repo, 'dist', 'mac-arm64', 'FluxAlloy.app')
+    const binDir = join(bundle, 'Contents', 'Resources', 'bin')
+    const lines = formatMacosUnpackedLayoutVerifyDiagnosticLines(
+      repo,
+      (p) => p === bundle || p === binDir
+    )
+    expect(lines.some((l) => l.includes('verify:mac-unpacked'))).toBe(true)
+    expect(lines.some((l) => l.includes('FluxAlloy.app') && l.includes(bundle))).toBe(true)
+    expect(lines.some((l) => l.includes('Contents/Resources/bin') && l.includes('present'))).toBe(
+      true
+    )
+    expect(resolveMacosAppBundleRootSync(repo, (p) => p === bundle)).toBe(bundle)
   })
 })

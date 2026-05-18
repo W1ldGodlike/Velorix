@@ -28,4 +28,6 @@ npm run verify:mac-unpacked
 
 Подробности — [`docs/RELEASE.md`](../docs/RELEASE.md) §4.2.
 
+Support ZIP `releaseSmoke:` на любой ОС перечисляет кандидаты `FluxAlloy.app` и layout `Contents/Resources/*` (present/missing) — удобно приложить к отчёту после `pack:mac:dir`.
+
 См. также [about-support-logs.md](about-support-logs.md) и [packaged-windows-smoke.md](packaged-windows-smoke.md).

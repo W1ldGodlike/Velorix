@@ -19,6 +19,7 @@ const REQUIRED_SNIPPETS = [
   'owner-manual-smoke.md',
   'packaged-manual-smoke-parity',
   'packaged-e2e-scenarios-registry',
+  'present/missing',
   '§4.3',
   'owner:'
 ]

@@ -28,4 +28,6 @@ The bundle must contain `Contents/MacOS/FluxAlloy` and `Contents/Resources/bin/`
 
 Details: [`docs/RELEASE.md`](../../docs/RELEASE.md) §4.2.
 
+On any OS, Support ZIP `releaseSmoke:` lists `FluxAlloy.app` candidates and `Contents/Resources/*` layout lines (present/missing) — useful after `pack:mac:dir` without re-running verify locally.
+
 See also [about-support-logs.md](about-support-logs.md) and [packaged-windows-smoke.md](../packaged-windows-smoke.md).

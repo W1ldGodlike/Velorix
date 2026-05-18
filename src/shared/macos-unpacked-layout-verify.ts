@@ -99,11 +99,41 @@ export async function collectMacosUnpackedLayoutFailures(
   return errors
 }
 
-export function formatMacosUnpackedLayoutVerifyDiagnosticLines(repoRoot: string): string[] {
+export function resolveMacosAppBundleRootSync(
+  repoRoot: string,
+  existsSync: (path: string) => boolean
+): string | null {
+  for (const path of macosAppBundleCandidates(repoRoot)) {
+    if (existsSync(path)) {
+      return path
+    }
+  }
+  return null
+}
+
+/** §18 Support ZIP — подсказки verify:mac-unpacked без запуска pack:mac:dir. */
+export function formatMacosUnpackedLayoutVerifyDiagnosticLines(
+  repoRoot: string,
+  existsSync: (path: string) => boolean
+): string[] {
+  const bundleRoot = resolveMacosAppBundleRootSync(repoRoot, existsSync)
+  const layoutLines =
+    bundleRoot === null
+      ? macosAppBundleCandidates(repoRoot).map((p) => {
+          const label = p.split(/[/\\]/).slice(-2).join('/')
+          return `layout: ${label} (missing)`
+        })
+      : [
+          `layout: FluxAlloy.app (${bundleRoot})`,
+          ...listMacosUnpackedLayoutChecks(bundleRoot).map((check) => {
+            const present = existsSync(check.path)
+            return `layout: ${check.label} (${present ? 'present' : 'missing'})`
+          })
+        ]
   return [
     'command: npm run verify:mac-unpacked (после pack:mac:dir на macOS)',
     'checks: FluxAlloy.app/Contents/MacOS, Resources/bin, FLUXALLOY_TZ.md, Data, Help',
     'env: FLUXALLOY_SKIP_PACK_VERIFY',
-    `candidates: ${macosAppBundleCandidates(repoRoot).join(' | ')}`
+    ...layoutLines
   ]
 }

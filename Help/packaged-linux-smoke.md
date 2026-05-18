@@ -29,4 +29,6 @@ npm run verify:linux-unpacked
 
 Подробности — [`docs/RELEASE.md`](../docs/RELEASE.md) §4.1.
 
+Support ZIP `releaseSmoke:` на любой ОС перечисляет `dist/linux-unpacked/` и layout `resources/*` (present/missing) — удобно приложить к отчёту после `pack:linux:dir`.
+
 См. также [about-support-logs.md](about-support-logs.md) и [packaged-windows-smoke.md](packaged-windows-smoke.md).

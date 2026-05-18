@@ -1,5 +1,5 @@
 /**
- * §19/§18 — Support ZIP: цепочка `smoke:packaged-release` и layout `dist/win-unpacked/`.
+ * §19/§18 — Support ZIP: цепочка `smoke:packaged-release` и layout win/linux/macos unpacked.
  */
 import { formatCheckReleaseScriptDiagnosticLines } from './check-release-scripts'
 import { formatPlatformPackagingDiagnosticLines } from './platform-packaging-scripts'
@@ -12,6 +12,8 @@ import { formatPackagedFfmpegSmokeDiagnosticLines } from './packaged-ffmpeg-smok
 import { formatPackagedFfprobeSmokeDiagnosticLines } from './packaged-ffprobe-smoke'
 import { formatPackagedYtdlpSmokeDiagnosticLines } from './packaged-ytdlp-smoke'
 import { formatPackagedE2eSmokeDiagnosticLines } from './packaged-e2e-smoke-scenarios'
+import { formatLinuxUnpackedLayoutVerifyDiagnosticLines } from './linux-unpacked-layout-verify'
+import { formatMacosUnpackedLayoutVerifyDiagnosticLines } from './macos-unpacked-layout-verify'
 import { formatWinUnpackedLayoutVerifyDiagnosticLines } from './win-unpacked-layout-verify'
 
 /** §18 Support ZIP — `releaseSmoke:` без запуска pack:dir. */
@@ -19,8 +21,12 @@ export function buildSupportZipPackagedReleaseLines(
   repoRoot: string,
   existsSync: (path: string) => boolean
 ): string[] {
-  const layout = formatWinUnpackedLayoutVerifyDiagnosticLines(repoRoot, existsSync)
-  const layoutTail = layout.filter((line) => !line.startsWith('command: npm run verify'))
+  const winLayout = formatWinUnpackedLayoutVerifyDiagnosticLines(repoRoot, existsSync)
+  const winLayoutTail = winLayout.filter((line) => !line.startsWith('command: npm run verify'))
+  const macLayout = formatMacosUnpackedLayoutVerifyDiagnosticLines(repoRoot, existsSync)
+  const macLayoutTail = macLayout.filter((line) => !line.startsWith('command: npm run verify'))
+  const linuxLayout = formatLinuxUnpackedLayoutVerifyDiagnosticLines(repoRoot, existsSync)
+  const linuxLayoutTail = linuxLayout.filter((line) => !line.startsWith('command: npm run verify'))
   return [
     ...formatCheckReleaseScriptDiagnosticLines(),
     ...formatPlatformPackagingDiagnosticLines(),
@@ -35,7 +41,9 @@ export function buildSupportZipPackagedReleaseLines(
     ...listPackagedAppExeCandidatePaths(repoRoot).map(
       (p) => `app-candidate: ${p} (${existsSync(p) ? 'present' : 'missing'})`
     ),
-    ...layoutTail,
+    ...winLayoutTail,
+    ...macLayoutTail,
+    ...linuxLayoutTail,
     '',
     ...formatPackagedE2eSmokeDiagnosticLines()
   ]

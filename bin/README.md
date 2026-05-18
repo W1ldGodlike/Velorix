@@ -50,6 +50,7 @@ Runtime resolution order is:
 - GitHub Actions: **windows-latest** — `engines:prepare:win` + packaged smokes; **ubuntu-latest** — `pack:linux:dir` + `verify:linux-unpacked` (движки в `bin/` для CI не обязательны). См. `docs/ARCHITECTURE.md` § Bundled engines и CI.
 - Packaged owner-smoke locales (win/linux/macos): `npm run check:packaged-manual-smoke-parity` — в `check:quiet`; UI copy — Настройки → Зависимости.
 - §21 packaged e2e registry: `npm run check:packaged-e2e-scenarios-registry` (12 manual steps ↔ CI headless / planned GUI); сводка в Support ZIP `releaseSmoke:`.
+- Support ZIP `releaseSmoke:` (About → архив): layout **present/missing** для `dist/win-unpacked/`, `dist/linux-unpacked/`, `FluxAlloy.app` — без повторного `verify:*` на другой ОС.
 
 Keep a note of the source, version, license variant, and SHA256 used for each released binary.
 
