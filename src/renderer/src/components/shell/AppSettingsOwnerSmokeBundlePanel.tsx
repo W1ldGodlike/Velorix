@@ -23,6 +23,7 @@ import {
   getWorkflowOsSchedulerManualSmokeChecklistForUiLocale,
   type WorkflowOsSchedulerSmokeCapabilities
 } from '../../workflow-os-scheduler-manual-smoke-checklist-locale'
+import { getEditorVideoSpriteManualSmokeChecklistForUiLocale } from '../../editor-video-sprite-manual-smoke-checklist-locale'
 import { getWorkflowScenarioManualSmokeChecklistForUiLocale } from '../../workflow-scenario-manual-smoke-checklist-locale'
 import { getWindowsShellManualSmokeChecklistForUiLocale } from '../../windows-shell-manual-smoke-checklist-locale'
 import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
@@ -188,6 +189,16 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
     [scenarioSections]
   )
 
+  const videoSpriteSections = useMemo(
+    () => getEditorVideoSpriteManualSmokeChecklistForUiLocale(locale),
+    [locale]
+  )
+
+  const videoSpritePlainText = useMemo(
+    () => formatFfmpegHwManualSmokeChecklistPlainText(videoSpriteSections),
+    [videoSpriteSections]
+  )
+
   const shellSections = useMemo(() => {
     if (!shellSupported) {
       return []
@@ -228,12 +239,20 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
         hidpiLines: formatHidpiLinesForUiLocale(),
         hwPlainText,
         scenarioPlainText,
+        videoSpritePlainText,
         osPlainText,
         shellPlainText,
         packagedPlainText,
         uiDpiSnapshot: formatUiDpiSnapshotLines()
       }),
-    [hwPlainText, osPlainText, scenarioPlainText, shellPlainText, packagedPlainText]
+    [
+      hwPlainText,
+      osPlainText,
+      scenarioPlainText,
+      videoSpritePlainText,
+      shellPlainText,
+      packagedPlainText
+    ]
   )
 
   const plainTextForCopy = useMemo(
@@ -350,6 +369,10 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
           }}
         />
       ) : null}
+      <OwnerManualSmokeChecklistSectionsPreview
+        sections={videoSpriteSections}
+        summaryLabel={uiText('appSettingsOwnerSmokePreviewSectionVideoSprite')}
+      />
       {packagedSection ? (
         <details className="app-settings-owner-smoke-preview-block">
           <summary className="app-settings-owner-smoke-preview-summary">

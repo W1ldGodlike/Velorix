@@ -1,0 +1,10 @@
+{
+  "miniPlayerWindowDocumentTitle": "FluxAlloy — Mini Player",
+  "miniPlayerStatusIdle": "No active tasks",
+  "miniPlayerStatusExport": "ffmpeg export…",
+  "miniPlayerStatusDownload": "yt-dlp download…",
+  "miniPlayerAlwaysOnTop": "Always on top",
+  "miniPlayerRestoreMain": "Restore main window",
+  "miniPlayerClose": "Close Mini Player",
+  "miniPlayerContextMenuAria": "Mini player menu"
+}

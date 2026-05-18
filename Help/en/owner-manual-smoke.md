@@ -16,6 +16,7 @@ CI tests cover **ffmpeg argv**, not your real GPU or display scale. Before you r
 | HiDPI            | Windows scale 100–200 %: editor, downloads, modals, status bar                       |
 | HW encode        | NVENC (Win) or VAAPI (Linux): probe, manual codec, hw_auto, benchmark                |
 | Scenario builder | Builder UI, JSON edges, run from editor / URL                                        |
+| Video sprite §7.5 | FFmpeg rail → preview sprite sheet: grid, PTS burn-in, PNG/JPEG save; offline test guard |
 | Packaged         | `dist/win-unpacked` / `linux-unpacked` / `.app` — see the packaged panel in Settings |
 | OS scheduler     | Watch-folder + Task Scheduler / launchd / systemd user timer                         |
 | Windows shell    | Explorer menu, Open with, Default apps (Windows only)                                |

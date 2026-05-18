@@ -1,0 +1,12 @@
+{
+  "editorVideoSpriteSmokeSectionTitle": "Preview sprite sheet from video (§7.5, dev/packaged)",
+  "editorVideoSpriteSmokePrereq0": "A local video file is open in the editor (fluxmedia:// preview).",
+  "editorVideoSpriteSmokePrereq1": "Bundled ffmpeg on PATH (Settings → Dependencies → doctor OK).",
+  "editorVideoSpriteSmokeStep_open_panel": "Editor → FFmpeg rail → “Preview sprite” block: cols×rows grid, PNG/JPEG format.",
+  "editorVideoSpriteSmokeStep_burn_timestamps": "(Optional) Enable “PTS on frames” — drawtext before tile; check readability.",
+  "editorVideoSpriteSmokeStep_generate": "“Build sprite sheet” → save dialog; wait for done (not cancel).",
+  "editorVideoSpriteSmokeStep_verify_file": "Open output: frame grid, ≤200 cells; on failure — status/log message.",
+  "editorVideoSpriteSmokePass0": "Without source Run is disabled; export preview hints unchanged.",
+  "editorVideoSpriteSmokePass1": "Packaged: `npm run test` — packaged-video-sprite-smoke (offline -vf guard).",
+  "editorVideoSpriteSmokePass2": "Support ZIP ownerManualSmoke: Video sprite block + sample -vf."
+}

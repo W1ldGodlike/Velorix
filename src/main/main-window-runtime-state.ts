@@ -9,8 +9,12 @@ import {
 } from './main-bootstrap-ipc-helpers'
 import { attachMainWindowBoundsPersistence, getCachedSettings } from './main-cached-settings-host'
 import { buildApplicationMenu } from './main-application-menu'
+import { focusOrCreateMiniPlayerWindow } from './mini-player-window'
 import { createMainWindow } from './main-window'
+import { setMainWindowFocusAccessor } from './main-window-focus'
 import { tryFulfillPendingWindowsExplorerShellLaunch } from './windows-explorer-shell-launch-schedule'
+
+setMainWindowFocusAccessor(() => mainWindowRef)
 
 export let mainWindowRef: BrowserWindow | null = null
 
@@ -64,6 +68,13 @@ export function createMainApplicationWindow(): void {
     onQuitAbortConfirmed: () => {
       activeExportAbort?.abort()
       cancelDownloadsRunner()
+    },
+    onQuitMiniPlayerChosen: () => {
+      const win = mainWindowRef
+      if (win && !win.isDestroyed()) {
+        win.hide()
+      }
+      focusOrCreateMiniPlayerWindow()
     },
     mainAppStr,
     buildApplicationMenu

@@ -57,6 +57,7 @@ export const mainApplicationStringsEn: MainApplicationStrings = {
   settingsBackupImportCancel: 'Cancel',
   menuTools: 'Tools',
   menuInspector: 'Media inspector (ffprobe)…',
+  menuMiniPlayer: 'Mini Player (task progress)…',
   menuOpenFolder: 'Open folder…',
   menuOpenFolderHint:
     'Whitelisted folders: app-data, logs, yt-dlp downloads, engines, and temp files.',
@@ -79,6 +80,7 @@ export const mainApplicationStringsEn: MainApplicationStrings = {
   quitConfirmExport: 'Video export is running. Quit and cancel export?',
   quitConfirmDownloads: 'An active yt-dlp download is running. Quit and cancel the download?',
   quitStay: 'Stay',
+  quitMiniPlayer: 'Mini Player',
   quitAbort: 'Quit and cancel',
   quitDialogTitle: 'FluxAlloy',
   previewWebmNotCreated: 'WebM preview was not created.',

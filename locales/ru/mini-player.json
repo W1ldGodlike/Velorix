@@ -1,0 +1,10 @@
+{
+  "miniPlayerWindowDocumentTitle": "FluxAlloy — мини-плеер",
+  "miniPlayerStatusIdle": "Нет активных задач",
+  "miniPlayerStatusExport": "Экспорт ffmpeg…",
+  "miniPlayerStatusDownload": "Загрузка yt-dlp…",
+  "miniPlayerAlwaysOnTop": "Поверх всех окон",
+  "miniPlayerRestoreMain": "Развернуть главное окно",
+  "miniPlayerClose": "Закрыть мини-плеер",
+  "miniPlayerContextMenuAria": "Меню мини-плеера"
+}

@@ -14,6 +14,7 @@ import { isNativeMainMacos } from './platform'
 import type { AppSettingsDialogSection } from '../shared/app-settings-dialog-section'
 import { focusOrCreateDownloadsWindow, isDownloadsWindow } from './downloads-window'
 import { focusOrCreateInspectorWindow, isInspectorWindow } from './inspector-window'
+import { focusOrCreateMiniPlayerWindow, isMiniPlayerWindow } from './mini-player-window'
 import { openVideoFolderWithDialog, openVideoWithDialog } from './preview-dialog'
 import { buildDiagnosticsFolderSubmenu } from './main-application-menu-deps'
 import type { MainApplicationMenuDeps } from './main-application-menu-types'
@@ -30,12 +31,15 @@ export function buildApplicationMenuTemplate(
   const isLightPref = themePref === 'light'
   const downloadsFocused = isDownloadsWindow(win)
   const inspectorFocused = isInspectorWindow(win)
-  const auxiliaryFocused = downloadsFocused || inspectorFocused
+  const miniPlayerFocused = isMiniPlayerWindow(win)
+  const auxiliaryFocused = downloadsFocused || inspectorFocused || miniPlayerFocused
   const mainWindowRef = d.getMainWindowRef()
   const mainUiWindow =
     mainWindowRef && !mainWindowRef.isDestroyed()
       ? mainWindowRef
-      : BrowserWindow.getAllWindows().find((w) => !isDownloadsWindow(w) && !isInspectorWindow(w))
+      : BrowserWindow.getAllWindows().find(
+          (w) => !isDownloadsWindow(w) && !isInspectorWindow(w) && !isMiniPlayerWindow(w)
+        )
 
   const getMainUiWindow = (): BrowserWindow | undefined =>
     mainUiWindow && !mainUiWindow.isDestroyed() ? mainUiWindow : undefined
@@ -224,6 +228,13 @@ export function buildApplicationMenuTemplate(
           enabled: !auxiliaryFocused,
           click: (): void => {
             focusOrCreateInspectorWindow(undefined)
+          }
+        },
+        {
+          label: m.menuMiniPlayer,
+          enabled: !auxiliaryFocused,
+          click: (): void => {
+            focusOrCreateMiniPlayerWindow()
           }
         },
         { type: 'separator' },

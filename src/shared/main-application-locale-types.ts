@@ -54,6 +54,7 @@ export type MainApplicationStrings = {
   settingsBackupImportCancel: string
   menuTools: string
   menuInspector: string
+  menuMiniPlayer: string
   menuOpenFolder: string
   menuOpenFolderHint: string
   menuOpenMainLog: string
@@ -74,6 +75,7 @@ export type MainApplicationStrings = {
   quitConfirmExport: string
   quitConfirmDownloads: string
   quitStay: string
+  quitMiniPlayer: string
   quitAbort: string
   quitDialogTitle: string
   previewWebmNotCreated: string

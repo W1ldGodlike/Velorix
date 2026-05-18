@@ -97,6 +97,12 @@ export const mainWindowIpc = {
   windowsFileAssociationUnregister: 'fluxalloy:windows-file-association-unregister',
   openWindowsDefaultAppsSettings: 'fluxalloy:open-windows-default-apps-settings',
   openDownloadsWindow: 'fluxalloy:open-downloads-window',
+  /** §4.3 — компактное окно прогресса (`#mini-player`). */
+  miniPlayerShow: 'fluxalloy:mini-player-show',
+  miniPlayerHide: 'fluxalloy:mini-player-hide',
+  miniPlayerGetSnapshot: 'fluxalloy:mini-player-get-snapshot',
+  miniPlayerSetAlwaysOnTop: 'fluxalloy:mini-player-set-always-on-top',
+  miniPlayerFocusMain: 'fluxalloy:mini-player-focus-main',
   /** §9 — отдельное окно инспектора ffprobe (`#inspector`). */
   openInspectorWindow: 'fluxalloy:open-inspector-window',
   inspectorBootstrap: 'fluxalloy:inspector-bootstrap',

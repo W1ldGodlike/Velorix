@@ -9,6 +9,7 @@ export type FfmpegHwManualSmokePlatformId =
   | 'linux-scheduler'
   | 'win-shell'
   | 'scenario-builder'
+  | 'video-sprite'
 
 export type FfmpegHwManualSmokeChecklistStep = {
   id: string

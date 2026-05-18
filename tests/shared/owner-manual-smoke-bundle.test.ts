@@ -24,6 +24,8 @@ describe('owner-manual-smoke-bundle', () => {
     expect(joined).toContain('nvenc-probe')
     expect(joined).toContain('=== Scenario builder ===')
     expect(joined).toContain('step [add-link]')
+    expect(joined).toContain('=== Video sprite §7.5 ===')
+    expect(joined).toContain('step [generate]')
     expect(joined).toContain('=== Packaged Win')
     expect(joined).toContain('=== OS scheduler ===')
     expect(joined).toContain('devicePixelRatio: 1.25')

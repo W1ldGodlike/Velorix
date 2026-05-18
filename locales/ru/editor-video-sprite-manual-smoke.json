@@ -1,0 +1,12 @@
+{
+  "editorVideoSpriteSmokeSectionTitle": "Спрайт превью из видео (§7.5, dev/packaged)",
+  "editorVideoSpriteSmokePrereq0": "Открыт локальный видеофайл в редакторе (preview fluxmedia://).",
+  "editorVideoSpriteSmokePrereq1": "Bundled ffmpeg в PATH (Настройки → Зависимости → doctor OK).",
+  "editorVideoSpriteSmokeStep_open_panel": "Редактор → FFmpeg rail → блок «Спрайт превью»: сетка cols×rows, формат PNG/JPEG.",
+  "editorVideoSpriteSmokeStep_burn_timestamps": "(Опц.) Включить «PTS на кадрах» — drawtext перед tile; проверить читаемость.",
+  "editorVideoSpriteSmokeStep_generate": "«Собрать спрайт» → диалог сохранения; дождаться done (не cancel).",
+  "editorVideoSpriteSmokeStep_verify_file": "Открыть файл: сетка кадров, размер ≤200 ячеек; при ошибке — текст в статусе/логе.",
+  "editorVideoSpriteSmokePass0": "Без источника кнопка Run disabled; подсказка «нет источника» в превью экспорта не мешает.",
+  "editorVideoSpriteSmokePass1": "Packaged: `npm run test` — packaged-video-sprite-smoke (offline -vf guard).",
+  "editorVideoSpriteSmokePass2": "Support ZIP ownerManualSmoke: блок Video sprite + sample -vf."
+}

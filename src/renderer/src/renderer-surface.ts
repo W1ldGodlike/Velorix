@@ -1,5 +1,5 @@
 /** Hash-route surfaces in `index.html` (same bundle + main preload). */
-export type RendererSurfaceHash = 'inspector' | 'downloads' | null
+export type RendererSurfaceHash = 'inspector' | 'downloads' | 'mini-player' | null
 
 export function getRendererSurfaceHash(): RendererSurfaceHash {
   if (typeof window === 'undefined') {
@@ -12,7 +12,14 @@ export function getRendererSurfaceHash(): RendererSurfaceHash {
   if (raw === 'downloads') {
     return 'downloads'
   }
+  if (raw === 'mini-player') {
+    return 'mini-player'
+  }
   return null
+}
+
+export function isMiniPlayerStandaloneSurface(): boolean {
+  return getRendererSurfaceHash() === 'mini-player'
 }
 
 export function isInspectorStandaloneSurface(): boolean {

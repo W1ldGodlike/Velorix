@@ -6,6 +6,7 @@ import ruDownloadsSettings from '@locales/ru/downloads-settings.json'
 import ruEditor from '@locales/ru/editor.json'
 import ruVideo from '@locales/ru/video.json'
 import ruMini from '@locales/ru/mini.json'
+import ruMiniPlayer from '@locales/ru/mini-player.json'
 import ruEditorFfmpeg from '@locales/ru/editor-ffmpeg.json'
 import ruShell from '@locales/ru/shell.json'
 import ruStatus from '@locales/ru/status.json'
@@ -27,6 +28,7 @@ import enDownloadsSettings from '@locales/en/downloads-settings.json'
 import enEditor from '@locales/en/editor.json'
 import enVideo from '@locales/en/video.json'
 import enMini from '@locales/en/mini.json'
+import enMiniPlayer from '@locales/en/mini-player.json'
 import enEditorFfmpeg from '@locales/en/editor-ffmpeg.json'
 import enShell from '@locales/en/shell.json'
 import enStatus from '@locales/en/status.json'
@@ -57,6 +59,7 @@ export function buildUiTextTables() {
     ...ruEditor,
     ...ruVideo,
     ...ruMini,
+    ...ruMiniPlayer,
     ...ruShell,
     ...ruEditorFfmpeg,
     ...ruStatus,
@@ -80,6 +83,7 @@ export function buildUiTextTables() {
     ...enEditor,
     ...enVideo,
     ...enMini,
+    ...enMiniPlayer,
     ...enShell,
     ...enEditorFfmpeg,
     ...enStatus,

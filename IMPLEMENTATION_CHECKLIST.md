@@ -25,7 +25,7 @@
 - [x] Есть `src/main`, `src/preload`, `src/renderer`.
 - [x] Renderer изолирован: `contextIsolation: true`, `nodeIntegration: false`.
 - [x] Есть базовая тёмная/светлая тема и режим **как в системе** (`theme: system` + `nativeTheme`), сохранение в `app-data/settings.json`, меню `Вид -> Тема`.
-- [~] Главное окно 1920×1080 (FHD) по умолчанию; workspace `Редактор` / `Загрузки` / `Терминал` (Zustand); preview (`fluxmedia://`), DnD, транспорт, timeline/waveform, статусбар. Снимок тестов — **250 / 1745** (J-1149).
+- [~] Главное окно 1920×1080 (FHD) по умолчанию; workspace `Редактор` / `Загрузки` / `Терминал` (Zustand); preview (`fluxmedia://`), DnD, транспорт, timeline/waveform, статусбар. Снимок тестов — **253 / 1752** (J-1153).
 - [~] Есть `Data/`, `Help/`, `FLUXALLOY_TZ.md`, `IMPLEMENTATION_CHECKLIST.md`, [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md), упаковка `Data/`, `Help/`, ТЗ через `extraResources` (журнал в установщик пока не включаем — только для разработки).
 - [x] Windows: `electron-builder` с режимом sign по умолчанию; после перезагрузки проверены `build:unpack`/`winCodeSign`.
 - [~] ffmpeg export MP4/MKV/MOV, trim, crop/rotate/flip/scale/FPS/CRF/bitrate, пользовательские пресеты, snapshot; **пакетный экспорт §7.3** и **HW auto/manual §16** (код); полировка HW-цепочек и редкие фильтры — дальше. Движки bundled-first + UI загрузки в `userData/bin`.
@@ -43,9 +43,9 @@
 
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый.
 
-- [ ] §16/§19: owner-smoke packaged + visual + HiDPI на реальном железе (приёмка владельца).
+- [ ] §16/§19: owner-smoke packaged + visual + HiDPI + спрайт §7.5 на железе (приёмка владельца; чеклист J-1151).
 - [~] §2.2/§7.5: длинные UI-строки в `locales/**` без дублей TS; подсказки экспорта (resolve+guard, спрайты [x] J-1147).
-- [ ] §4.3: Mini Player, `session.json`, политика закрытия при активной очереди yt-dlp.
+- [~] §4.3: Mini Player (J-1153–1155: каркас, закрытие→мини-плеер, ПКМ topmost); дальше — полировка UX/скорость в плашке.
 - [ ] §19: macOS/Linux — `bin/` вручную, `pack:*:dir`, CI/релизные артефакты по `docs/RELEASE.md`.
 - [ ] §21: e2e packaged smoke (открыть → preview → export; URL → yt-dlp → ffmpeg) после стабилизации спринта.
 
@@ -153,7 +153,7 @@
 
 Канон: `locales/*/win-packaged-manual-smoke.json` (и linux/macos) + блок в `ownerManualSmoke:` (J-1081); отдельные панели в Настройках.
 
-- [ ] `dist/win-unpacked` / `linux-unpacked` / `.app`: запуск exe, движки, редактор, загрузки, Support ZIP.
+- [ ] `dist/win-unpacked` / `linux-unpacked` / `.app`: запуск exe, движки, редактор, загрузки, экспорт, **спрайт §7.5** (J-1152), Support ZIP.
 - [ ] Отдельные `winPackagedSmoke:` / `linuxPackagedSmoke:` / `macosPackagedSmoke:` в Support ZIP остаются (дубль OK).
 
 ### Ручной smoke владельца — тема и HiDPI (§5, не CI)
@@ -227,7 +227,7 @@
 - [~] Сохранять раскрытые панели: главное окно + окно §9 (**push** снимка `mainWindowUiPanels` после сохранения; IPC только main/inspector + preload whitelist) + yt-dlp (`downloadsWindowUiPanels`, **toggle-сохранение только от жеста пользователя** — не при программном открытии журнала; **встроенная вкладка «Загрузки»** пишет `history`/`log` тем же IPC `fluxalloy-downloads-merge-ui-panels`); FFmpeg-секции только в редакторе (`ffmpegSettingsRailOpen` + секции §7), `probe*` — shared с инспектором.
 - [~] Сохранять выбранные папки (каталог yt-dlp, последняя папка ffmpeg export и snapshot; прочие диалоги — позже).
 - [~] Сохранять состояние очередей: yt-dlp живой `queue.json` §6 (атомарная запись, гидратация при старте main, дедупликация id, `will-quit` flush); полный `session.json` и прочие очереди — позже.
-- [ ] Сохранять `session.json`.
+- [~] Сохранять `session.json` (miniPlayer bounds/topmost, J-1153).
 - [~] Восстанавливать состояние после перезапуска: очередь yt-dlp восстанавливается из `queue.json` без active-status и duplicate id; полное восстановление сессии редактор/preview/`session.json` — позже.
 
 ### §4.2 Подтверждение закрытия
@@ -238,10 +238,10 @@
 
 ### §4.3 Mini Player
 
-- [ ] Спроектировать Mini Player.
-- [ ] Показать прогресс активной загрузки/обработки.
-- [ ] Topmost режим.
-- [ ] Контекстные действия.
+- [~] §4.3 (J-1153–1155): `session.json`, `#mini-player`, snapshot+`alwaysOnTop`; busy-close→мини-плеер; ПКМ topmost; полировка — дальше.
+- [~] Показать прогресс активной загрузки/обработки (push snapshot из main).
+- [x] Topmost режим (toggle + persist `session.json`).
+- [~] Контекстные действия (кнопки; ПКМ — дальше).
 
 ### §4.4 Производительность интерфейса
 
@@ -383,6 +383,7 @@
 
 - [~] Извлечение/конвертация изображений (одиночная конвертация JPEG/PNG/WebP в «О программе» — J-1012).
 - [x] Спрайты: IPC `generateVideoSprite`, UI, PTS drawtext, packaged smoke guard (J-1145..1147).
+- [~] Owner-smoke чеклист спрайта в `ownerManualSmoke:` (J-1151); прогон на железе — владелец.
 - [ ] Слайды.
 - [ ] Набор форматов JPG/PNG/WebP/etc.
 

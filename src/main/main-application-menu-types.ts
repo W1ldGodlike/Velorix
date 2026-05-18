@@ -25,6 +25,7 @@ export type MainApplicationMenuDeps = {
     menuImportSettings: string
     menuTools: string
     menuInspector: string
+    menuMiniPlayer: string
     menuOpenFolder: string
     menuOpenFolderHint: string
     menuOpenMainLog: string

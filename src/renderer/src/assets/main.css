@@ -5083,3 +5083,49 @@ button.app-downloads-hint-token:disabled {
     scroll-behavior: auto !important;
   }
 }
+
+/* §4.3 — компактное окно Mini Player (`#mini-player`). */
+.app-mini-player {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fa-space-gap-sm);
+  padding: var(--fa-space-gap-sm);
+  min-height: 100vh;
+  box-sizing: border-box;
+  background: var(--fa-bg);
+  color: var(--fa-text-primary);
+}
+
+.app-mini-player-bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fa-space-gap-xs);
+}
+
+.app-mini-player-status {
+  font-size: var(--fa-font-size-body);
+  line-height: var(--fa-line-height-body);
+}
+
+.app-mini-player-progress {
+  height: 6px;
+  border-radius: var(--fa-radius-xs);
+  background: var(--fa-border-subtle);
+  overflow: hidden;
+}
+
+.app-mini-player-progress-fill {
+  height: 100%;
+  background: var(--fa-accent);
+  transition: width 0.25s ease;
+}
+
+.app-mini-player-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fa-space-gap-xs);
+}
+
+.app-mini-player-context-menu {
+  z-index: 10000;
+}

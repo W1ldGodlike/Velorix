@@ -31,6 +31,11 @@ const INSPECTOR_WINDOW_TITLE: Record<AppUiLocale, string> = {
   en: 'FluxAlloy — Inspector'
 }
 
+const MINI_PLAYER_WINDOW_TITLE: Record<AppUiLocale, string> = {
+  ru: 'FluxAlloy — мини-плеер',
+  en: 'FluxAlloy — Mini Player'
+}
+
 /** Заголовок главного окна (Electron `BrowserWindow`) — синхрон с `mainWindowDocumentTitle` в renderer. */
 export function getMainWindowTitle(locale: AppUiLocale): string {
   return MAIN_WINDOW_TITLE[locale]
@@ -44,4 +49,9 @@ export function getDownloadsPopoutWindowTitle(locale: AppUiLocale): string {
 /** Заголовок окна инспектора — синхрон с `inspectorWindowDocumentTitle` в renderer JSON. */
 export function getInspectorWindowTitle(locale: AppUiLocale): string {
   return INSPECTOR_WINDOW_TITLE[locale]
+}
+
+/** §4.3 — заголовок Mini Player (`#mini-player`). */
+export function getMiniPlayerWindowTitle(locale: AppUiLocale): string {
+  return MINI_PLAYER_WINDOW_TITLE[locale]
 }

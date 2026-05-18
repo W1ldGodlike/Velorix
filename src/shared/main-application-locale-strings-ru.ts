@@ -57,6 +57,7 @@ export const mainApplicationStringsRu: MainApplicationStrings = {
   settingsBackupImportCancel: 'Отмена',
   menuTools: 'Инструменты',
   menuInspector: 'Инспектор медиа (ffprobe)…',
+  menuMiniPlayer: 'Мини-плеер (прогресс задач)…',
   menuOpenFolder: 'Открыть папку…',
   menuOpenFolderHint:
     'Каталоги из белого списка: app-data, журналы, загрузки yt-dlp, движки и временные файлы.',
@@ -79,6 +80,7 @@ export const mainApplicationStringsRu: MainApplicationStrings = {
   quitConfirmExport: 'Идёт экспорт видео. Закрыть приложение и прервать экспорт?',
   quitConfirmDownloads: 'Идёт активная загрузка yt-dlp. Закрыть приложение и прервать загрузку?',
   quitStay: 'Остаться',
+  quitMiniPlayer: 'Мини-плеер',
   quitAbort: 'Закрыть и прервать',
   quitDialogTitle: 'FluxAlloy',
   previewWebmNotCreated: 'Превью WebM не было создано.',

@@ -16,6 +16,7 @@
 | HiDPI            | Масштаб Windows 100–200 %: редактор, загрузки, модалки, статусбар                            |
 | HW encode        | NVENC (Win) или VAAPI (Linux): probe, ручной кодек, hw_auto, «Оценить»                       |
 | Scenario builder | Конструктор, JSON edges, запуск из редактора / URL                                           |
+| Video sprite §7.5 | FFmpeg rail → спрайт превью: сетка, PTS, сохранение PNG/JPEG; offline guard в тестах          |
 | Packaged         | `dist/win-unpacked` / `linux-unpacked` / `.app` — см. отдельную панель packaged в настройках |
 | OS scheduler     | Watch-folder + Task Scheduler / launchd / systemd user timer                                 |
 | Windows shell    | Контекстное меню, «Открыть с помощью», «Приложения по умолчанию…» (только Win)               |

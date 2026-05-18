@@ -49,6 +49,7 @@ import {
   fluxalloyExport,
   fluxalloyProcessingHistory
 } from './preload-fluxalloy-export'
+import { fluxalloyMiniPlayer } from './preload-fluxalloy-mini-player'
 import { fluxalloySettings } from './preload-fluxalloy-settings'
 import { sanitizeMainWindowUiPanelState } from './preload-sanitize'
 
@@ -83,6 +84,7 @@ export const fluxalloy = {
       ipcRenderer.invoke(mw.restoreLastSource)
   },
   downloads: fluxalloyDownloads,
+  miniPlayer: fluxalloyMiniPlayer,
   /** §9 §363 — отдельное окно инспектора (тот же preload, что главное окно). */
   inspector: {
     openWindow: (absoluteMediaPath?: string | null): Promise<void> =>

@@ -9,6 +9,7 @@ import { getOwnerManualSmokePackagedSection } from './owner-manual-smoke-package
 import { isNativeMainWindows } from './native-main-platform'
 import { formatWindowsShellManualSmokeChecklistLines } from './windows-shell-manual-smoke-checklist'
 import { formatWorkflowOsSchedulerManualSmokeChecklistLines } from './workflow-os-scheduler-manual-smoke-checklist'
+import { formatEditorVideoSpriteManualSmokeChecklistLines } from './editor-video-sprite-manual-smoke-checklist'
 import { formatWorkflowScenarioManualSmokeChecklistLines } from './workflow-scenario-manual-smoke-checklist'
 
 export function formatOwnerManualSmokeBundlePlainText(parts: {
@@ -17,6 +18,7 @@ export function formatOwnerManualSmokeBundlePlainText(parts: {
   hwPlainText: string
   osPlainText: string | null
   scenarioPlainText: string
+  videoSpritePlainText: string
   shellPlainText: string | null
   packagedPlainText: string | null
   uiDpiSnapshot?: readonly string[]
@@ -32,6 +34,7 @@ export function formatOwnerManualSmokeBundlePlainText(parts: {
     parts.hwPlainText
   ]
   blocks.push('', '=== Scenario builder ===', parts.scenarioPlainText)
+  blocks.push('', '=== Video sprite §7.5 ===', parts.videoSpritePlainText)
   if (parts.packagedPlainText && parts.packagedPlainText.trim().length > 0) {
     blocks.push('', parts.packagedPlainText)
   }
@@ -59,8 +62,8 @@ export function buildOwnerManualSmokeBundleLines(opts?: {
     : []
   const packaged = getOwnerManualSmokePackagedSection(opts?.platform)
   return [
-    'ownerManualSmoke: Theme + HiDPI + HW + scenario + packaged + OS scheduler + Win shell (owner, not CI)',
-    'UI: Settings → Dependencies → «Owner smoke» copy; sub-panels Theme / HW / HiDPI / packaged / planner / Explorer',
+    'ownerManualSmoke: Theme + HiDPI + HW + scenario + video sprite + packaged + OS scheduler + Win shell (owner, not CI)',
+    'UI: Settings → Dependencies → «Owner smoke» copy; Theme / HW / HiDPI / sprite / packaged / planner / Explorer',
     '',
     '=== Theme ===',
     ...formatOwnerManualSmokeThemeChecklistLines(),
@@ -73,6 +76,9 @@ export function buildOwnerManualSmokeBundleLines(opts?: {
     '',
     '=== Scenario builder ===',
     ...formatWorkflowScenarioManualSmokeChecklistLines(),
+    '',
+    '=== Video sprite §7.5 ===',
+    ...formatEditorVideoSpriteManualSmokeChecklistLines(),
     ...(packaged ? ['', packaged.heading, ...packaged.lines] : []),
     '',
     '=== OS scheduler ===',

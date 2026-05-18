@@ -21,6 +21,7 @@ describe('win-packaged-manual-smoke-checklist §3', () => {
     const lines = formatWinPackagedManualSmokeChecklistLines()
     expect(lines.some((l) => l.includes('docs/RELEASE.md'))).toBe(true)
     expect(lines.some((l) => l.includes('step [launch]'))).toBe(true)
+    expect(lines.some((l) => l.includes('step [video-sprite]'))).toBe(true)
     expect(WIN_PACKAGED_MANUAL_SMOKE_CHECKLIST[0]?.title.length).toBeGreaterThan(0)
   })
 })

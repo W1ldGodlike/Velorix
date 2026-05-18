@@ -40,6 +40,7 @@ export function buildPackagedManualSmokeChecklistFromLocaleShard(
         { id: 'editor-dl', text: t(shard, `${p}Step_editor_from_dl`) },
         { id: 'snapshot', text: t(shard, `${p}Step_snapshot`) },
         { id: 'export', text: t(shard, `${p}Step_export`) },
+        { id: 'video-sprite', text: t(shard, `${p}Step_video_sprite`) },
         { id: 'knowledge', text: t(shard, `${p}Step_knowledge`) },
         { id: 'support-zip', text: t(shard, `${p}Step_support_zip`) },
         { id: 'settings', text: t(shard, `${p}Step_settings`) }

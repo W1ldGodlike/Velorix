@@ -12,6 +12,7 @@ import { registerDownloadsWindowIpcHandlers } from './downloads-window'
 import { registerExternalFilterScriptIpcHandlers } from './register-external-filter-script-ipc'
 import { configureMainInspectorWindowBootstrap } from './main-inspector-window-bootstrap'
 import { registerInspectorWindowIpcHandlers } from './inspector-window'
+import { registerMiniPlayerWindowIpcHandlers } from './mini-player-window'
 import {
   ipcDownloadsUiLocale,
   isMainWindowUiPanelSender,
@@ -73,6 +74,7 @@ export function registerMainApplicationBootstrapIpc(): void {
   registerDownloadsWindowIpcHandlers()
   registerExternalFilterScriptIpcHandlers()
   registerInspectorWindowIpcHandlers()
+  registerMiniPlayerWindowIpcHandlers()
   configurePreviewProxyService({
     getEnginePathOverrides: () => getCachedSettings().engineExecutablePaths ?? {},
     getUiLocale: mainDownloadsUiLocale,
