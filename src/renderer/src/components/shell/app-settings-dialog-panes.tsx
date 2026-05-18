@@ -285,7 +285,11 @@ export function AppSettingsLogsPane(props: {
               onStatus(uiText('supportZipSaved'))
             } else if (!('cancelled' in r && r.cancelled)) {
               onStatus(
-                'error' in r ? r.error : uiTextVars('statusErrorWithDetail', { detail: 'вЂ¦' })
+                'error' in r
+                  ? r.error
+                  : uiTextVars('statusErrorWithDetail', {
+                      detail: uiText('statusErrorDetailFallback')
+                    })
               )
             }
           })
@@ -344,7 +348,11 @@ export function AppSettingsResetPane(props: {
                 onStatus(uiText('appSettingsExportDone'))
               } else if (!('cancelled' in r && r.cancelled)) {
                 onStatus(
-                  'error' in r ? r.error : uiTextVars('statusErrorWithDetail', { detail: 'вЂ¦' })
+                  'error' in r
+                    ? r.error
+                    : uiTextVars('statusErrorWithDetail', {
+                        detail: uiText('statusErrorDetailFallback')
+                      })
                 )
               }
             })
@@ -363,7 +371,11 @@ export function AppSettingsResetPane(props: {
                 onClose()
               } else if (!('cancelled' in r && r.cancelled)) {
                 onStatus(
-                  'error' in r ? r.error : uiTextVars('statusErrorWithDetail', { detail: 'вЂ¦' })
+                  'error' in r
+                    ? r.error
+                    : uiTextVars('statusErrorWithDetail', {
+                        detail: uiText('statusErrorDetailFallback')
+                      })
                 )
               }
             })
@@ -395,7 +407,9 @@ export function AppSettingsResetPane(props: {
               onStatus(
                 err instanceof Error
                   ? err.message
-                  : uiTextVars('statusErrorWithDetail', { detail: 'вЂ¦' })
+                  : uiTextVars('statusErrorWithDetail', {
+                      detail: uiText('statusErrorDetailFallback')
+                    })
               )
             })
             .finally(() => {

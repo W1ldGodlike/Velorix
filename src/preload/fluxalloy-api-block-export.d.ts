@@ -42,6 +42,9 @@ export type FluxAlloyApiExportBlock = {
         progress: import('../shared/ffmpeg-frames-extract-contract').FfmpegFramesExtractProgressPayload
       ) => void
     ) => () => void
+    generateVideoSprite: (
+      payload: import('../shared/ffmpeg-video-sprite-contract').FfmpegVideoSpriteRequestPayload
+    ) => Promise<import('../shared/ffmpeg-video-sprite-contract').FfmpegVideoSpriteResult>
   }
   batchExport: {
     getSnapshot: () => Promise<FfmpegExportBatchSnapshot>

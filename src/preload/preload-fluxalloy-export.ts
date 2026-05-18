@@ -17,6 +17,10 @@ import type {
   FfmpegFramesExtractResult
 } from '../shared/ffmpeg-frames-extract-contract'
 import type {
+  FfmpegVideoSpriteRequestPayload,
+  FfmpegVideoSpriteResult
+} from '../shared/ffmpeg-video-sprite-contract'
+import type {
   FfmpegExportBatchAddPathsResult,
   FfmpegExportBatchOpenInputResult,
   FfmpegExportBatchPickFilesResult,
@@ -41,6 +45,9 @@ export const fluxalloyExport = {
     ipcRenderer.invoke(mw.exportBenchmarkEncoders, payload),
   extractFrames: (payload: FfmpegFramesExtractRequestPayload): Promise<FfmpegFramesExtractResult> =>
     ipcRenderer.invoke(mw.extractFrames, payload),
+  generateVideoSprite: (
+    payload: FfmpegVideoSpriteRequestPayload
+  ): Promise<FfmpegVideoSpriteResult> => ipcRenderer.invoke(mw.generateVideoSprite, payload),
   resolveBundledLutCubePath: (preset: FfmpegExportVideoLut3dId): Promise<string | null> =>
     ipcRenderer.invoke(mw.exportResolveBundledLutCubePath, preset),
   cancel: (): Promise<{ ok: true } | { ok: false; error: string }> =>

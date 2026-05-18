@@ -1,15 +1,10 @@
-import { useMemo } from 'react'
-
 import type { YtdlpDownloadHistoryEntry } from '../../shared/ytdlp-history-contract'
+import { useDownloadsDerivedState } from './use-downloads-derived-state'
 import {
   useDownloadsStore,
-  selectVisibleDownloadsHistory,
   selectYtdlpCommandHintsFilteredByCategory,
-  type DownloadsStoreSlice,
-  type DownloadsStoreState
+  type DownloadsStoreSlice
 } from './stores/downloads-store'
-import { getUiLocale } from './locales/ui-text'
-import { useAppShellStore } from './stores/app-shell-store'
 
 export type { DownloadsHistoryOutcomeFilter } from './stores/downloads-store'
 
@@ -27,30 +22,8 @@ export function useDownloadsWorkspace(
 ): UseDownloadsWorkspaceResult {
   void deps
   const store = useDownloadsStore()
-  const {
-    downloadsHistory,
-    downloadsHistoryOutcomeFilter,
-    downloadsOptions,
-    downloadsExpertHintFilter
-  } = store
-  useAppShellStore((s) => s.uiLocaleRenderTick)
-  const uiLocale = getUiLocale()
-  const visibleDownloadsHistory = useMemo(
-    () =>
-      selectVisibleDownloadsHistory({
-        downloadsHistory,
-        downloadsHistoryOutcomeFilter
-      } as DownloadsStoreState),
-    [downloadsHistory, downloadsHistoryOutcomeFilter]
-  )
-  const ytdlpCommandHintsFilteredByCategory = useMemo(
-    () =>
-      selectYtdlpCommandHintsFilteredByCategory(
-        { downloadsOptions, downloadsExpertHintFilter },
-        uiLocale
-      ),
-    [downloadsOptions, downloadsExpertHintFilter, uiLocale]
-  )
+  const { visibleDownloadsHistory, ytdlpCommandHintsFilteredByCategory } =
+    useDownloadsDerivedState(store)
   return {
     ...store,
     visibleDownloadsHistory,

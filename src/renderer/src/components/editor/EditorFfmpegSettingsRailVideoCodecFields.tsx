@@ -25,6 +25,7 @@ import {
 import type { EditorFfmpegSettingsRailProps } from './editor-ffmpeg-settings-rail-props'
 import { EditorFfmpegBenchmarkPanel } from './EditorFfmpegBenchmarkPanel'
 import { EditorExtractFramesPanel } from './EditorExtractFramesPanel'
+import { EditorVideoSpritePanel } from './EditorVideoSpritePanel'
 
 export function EditorFfmpegSettingsRailVideoCodecFields(
   props: EditorFfmpegSettingsRailProps
@@ -143,6 +144,7 @@ export function EditorFfmpegSettingsRailVideoCodecFields(
       ) : null}
       <EditorFfmpegBenchmarkPanel {...props} />
       <EditorExtractFramesPanel {...props} />
+      <EditorVideoSpritePanel {...props} />
       <label className="app-field" title={uiText('editorTooltipEncodePreset')}>
         <span>{uiText('editorFieldEncodePreset')}</span>
         <select

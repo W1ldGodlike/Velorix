@@ -38,6 +38,7 @@ import type {
 } from '../../shared/ffmpeg-frames-extract-contract'
 import { runFfmpegFramesExtract } from '../ffmpeg-frames-extract-runner'
 import { resolveFfmpegFramesExtractDurationSec } from '../ffmpeg-frames-extract-resolve-duration'
+import { registerExportVideoSpriteIpc } from './register-export-video-sprite-ipc'
 import { probeMediaFile } from '../ffprobe-service'
 import {
   parseFfmpegExportTrim,
@@ -359,6 +360,7 @@ export function registerSingleExportIpcHandlers(ctx: ExportBatchIpcContext): voi
       }
     }
   )
+  registerExportVideoSpriteIpc(ctx)
   ipcMain.handle(
     mw.exportOpenOutput,
     async (

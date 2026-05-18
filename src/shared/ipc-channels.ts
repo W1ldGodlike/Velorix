@@ -107,6 +107,7 @@ export const mainWindowIpc = {
   exportBenchmarkProgress: 'fluxalloy:export-benchmark-progress',
   extractFrames: 'fluxalloy:extract-frames',
   extractFramesProgress: 'fluxalloy:extract-frames-progress',
+  generateVideoSprite: 'fluxalloy:generate-video-sprite',
   mediaUtilitiesRepairRemux: 'fluxalloy:media-utilities-repair-remux',
   mediaUtilitiesCheckIntegrity: 'fluxalloy:media-utilities-check-integrity',
   mediaUtilitiesGenerateNoise: 'fluxalloy:media-utilities-generate-noise',

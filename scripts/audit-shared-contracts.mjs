@@ -20,6 +20,7 @@ const ALLOWED_CONTRACT_FILES = new Set([
   'ffmpeg-export-resolve-contract.ts',
   'ffmpeg-snapshot-contract.ts',
   'ffmpeg-frames-extract-contract.ts',
+  'ffmpeg-video-sprite-contract.ts',
   'ffmpeg-cover-extract-contract.ts',
   'external-filter-script-contract.ts',
   'media-utilities-contract.ts',

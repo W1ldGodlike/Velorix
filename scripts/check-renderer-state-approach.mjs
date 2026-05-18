@@ -16,6 +16,16 @@ const STORES_DIR = join(REPO_ROOT, 'src', 'renderer', 'src', 'stores')
 const BANNED_COMPOSITION_RE =
   /\b(useAppComposition|useAppCompositionState|useAppCompositionLocalState|useAppCompositionIntegrations)\b/
 
+const BANNED_NODE_PATH_IMPORT_RE = /from\s+['"]path['"]/
+
+const UNSTABLE_DOWNLOADS_SELECTOR_IN_HOOK_RE =
+  /\buseMemo\s*\(\s*\(\)\s*=>[\s\S]*?\bselectYtdlpCommandHintsFilteredByCategory\b/
+
+const FILES_MUST_USE_DOWNLOADS_DERIVED = [
+  'src/renderer/src/use-renderer-app-state.ts',
+  'src/renderer/src/use-downloads-workspace.ts'
+]
+
 const REQUIRED_STORE_FILES = [
   'app-shell-store.ts',
   'downloads-store.ts',
@@ -51,9 +61,17 @@ function main() {
   const approach = approachSrc.match(/export const RENDERER_STATE_APPROACH = '([^']+)'/)?.[1]
   const shellEntry = approachSrc.match(/export const RENDERER_SHELL_ENTRY = '([^']+)'/)?.[1]
   const stores = extractConstArray(approachSrc, 'RENDERER_ZUSTAND_STORES')
+  const derivedHooks = extractConstArray(approachSrc, 'RENDERER_DERIVED_STATE_HOOKS')
 
-  if (approach !== 'zustand' || !shellEntry || !stores?.length) {
+  if (approach !== 'zustand' || !shellEntry || !stores?.length || !derivedHooks?.length) {
     violations.push('renderer-state-approach.ts: missing zustand constants')
+  }
+
+  const derivedHookPath = join(REPO_ROOT, 'src/renderer/src/use-downloads-derived-state.ts')
+  try {
+    readFileSync(derivedHookPath, 'utf8')
+  } catch {
+    violations.push('missing use-downloads-derived-state.ts')
   }
 
   const appRootBody = readFileSync(APP_ROOT, 'utf8')
@@ -107,20 +125,53 @@ function main() {
 
   const rendererRoot = join(REPO_ROOT, 'src', 'renderer', 'src')
   const storesRoot = join(rendererRoot, 'stores') + join('')
+  const derivedStatePath = join(rendererRoot, 'use-downloads-derived-state.ts')
+  for (const rel of FILES_MUST_USE_DOWNLOADS_DERIVED) {
+    const body = readFileSync(join(REPO_ROOT, rel), 'utf8')
+    if (!body.includes('useDownloadsDerivedState')) {
+      violations.push(`${rel}: must call useDownloadsDerivedState (unstable Zustand selectors)`)
+    }
+    if (UNSTABLE_DOWNLOADS_SELECTOR_IN_HOOK_RE.test(body)) {
+      violations.push(
+        `${rel}: inline useMemo+selectYtdlpCommandHintsFilteredByCategory — use useDownloadsDerivedState`
+      )
+    }
+  }
   for (const full of walkTs(rendererRoot)) {
+    const body = readFileSync(full, 'utf8')
+    if (BANNED_NODE_PATH_IMPORT_RE.test(body)) {
+      const rel = full.startsWith(REPO_ROOT) ? full.slice(REPO_ROOT.length + 1) : full
+      violations.push(`${rel}: Node path import banned in renderer (use src/shared/path-lite.ts)`)
+    }
     if (full.startsWith(storesRoot)) {
       continue
     }
-    const body = readFileSync(full, 'utf8')
+    if (full === derivedStatePath) {
+      continue
+    }
     if (BANNED_COMPOSITION_RE.test(body)) {
       const rel = full.startsWith(REPO_ROOT) ? full.slice(REPO_ROOT.length + 1) : full
       violations.push(`${rel}: legacy useAppComposition* is banned`)
+    }
+    if (/\buseDownloadsStore\s*\(\s*selectYtdlpCommandHintsFilteredByCategory\b/.test(body)) {
+      const rel = full.startsWith(REPO_ROOT) ? full.slice(REPO_ROOT.length + 1) : full
+      violations.push(
+        `${rel}: useDownloadsStore(selectYtdlpCommandHintsFilteredByCategory) causes infinite re-render`
+      )
     }
   }
 
   const arch = readFileSync(ARCHITECTURE_PATH, 'utf8')
   if (!arch.includes('Zustand') || !arch.includes('renderer-state-approach.ts')) {
     violations.push('ARCHITECTURE.md: missing § Состояние renderer / Zustand')
+  }
+  if (arch.includes('ui-text-strings-{ru|en}-NN') && !arch.includes('(J-1142)')) {
+    violations.push(
+      'ARCHITECTURE.md: § Локализация must document removed legacy ui-text-strings parts (J-1142+)'
+    )
+  }
+  if (!arch.includes('useDownloadsDerivedState')) {
+    violations.push('ARCHITECTURE.md: missing useDownloadsDerivedState in § Состояние renderer')
   }
 
   if (violations.length > 0) {

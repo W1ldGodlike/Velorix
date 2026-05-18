@@ -11,3 +11,15 @@ describe('ytdlp command hints grouping (renderer useMemo)', () => {
     expect(a).toEqual(b)
   })
 })
+
+/** Mirrors `selectVisibleDownloadsHistory` when outcome filter is not `all`. */
+describe('downloads history filter (useDownloadsDerivedState useMemo)', () => {
+  it('filter() yields new array reference each call', () => {
+    const history: { outcome: 'success' | 'failed' }[] = []
+    const outcomeFilter = 'success' as const
+    const a = history.filter((e) => e.outcome === outcomeFilter)
+    const b = history.filter((e) => e.outcome === outcomeFilter)
+    expect(a).not.toBe(b)
+    expect(a).toEqual(b)
+  })
+})

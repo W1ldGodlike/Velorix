@@ -28,6 +28,9 @@ export const RENDERER_ORCHESTRATION_HOOKS = [
   'useAppMainWindowEffects'
 ] as const
 
+/** Производное состояние из сторов — только useMemo (нестабильные селекторы Zustand). */
+export const RENDERER_DERIVED_STATE_HOOKS = ['useDownloadsDerivedState'] as const
+
 /** События main/preload → store actions (`uiLocaleRenderTick`, dev HMR JSON). */
 export const RENDERER_CROSS_CUTTING_TICKS = [
   'uiLocaleRenderTick',
@@ -44,6 +47,8 @@ export function formatRendererStateDiagnosticLines(): string[] {
     'standalone surfaces: DownloadsStandaloneApp / InspectorStandaloneApp (shared stores where applicable)',
     'persist: settings IPC (uiLocale, theme, panels, export fields) — not duplicated across stores',
     'devtools: zustand/middleware devtools in DEV via create-renderer-store (Redux DevTools extension in Chromium)',
+    `derived: ${RENDERER_DERIVED_STATE_HOOKS.join(', ')} (useMemo; ban useStore(unstableSelector))`,
+    'paths: src/shared/path-lite.ts in renderer — no Node path import',
     'docs: ARCHITECTURE.md § Состояние renderer'
   ]
 }

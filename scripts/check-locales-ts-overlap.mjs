@@ -1,5 +1,5 @@
 /**
- * §2.2 — запрет дублирования ключей в ui-text-strings-*-NN.ts и locales/*.json.
+ * §2.2 — канон строк в locales JSON-шардах; запрет legacy ui-text-strings-{ru|en}-NN.ts и дублей TS+JSON.
  */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import fs from 'node:fs'
@@ -10,6 +10,7 @@ import { REPO_ROOT } from './lib/repo-root.mjs'
 import { parseUiTextTsPart } from './lib/parse-ui-text-ts-part.mjs'
 
 const localesDir = path.join(REPO_ROOT, 'src/renderer/src/locales')
+const LEGACY_PART_RE = /^ui-text-strings-(ru|en)-\d+\.ts$/
 
 function loadJsonKeys(locale) {
   const keys = new Set()
@@ -27,6 +28,15 @@ function loadJsonKeys(locale) {
 }
 
 let failed = false
+for (const file of fs.readdirSync(localesDir)) {
+  if (LEGACY_PART_RE.test(file)) {
+    failed = true
+    console.error(
+      `[check:locales-ts-overlap] legacy part file banned: src/renderer/src/locales/${file} (use locales/**/*.json only)`
+    )
+  }
+}
+
 for (const locale of LOCALE_JSON_LOCALES) {
   const jsonKeys = loadJsonKeys(locale)
   const suffix = locale === 'ru' ? '-ru-' : '-en-'

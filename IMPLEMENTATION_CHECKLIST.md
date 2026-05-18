@@ -25,7 +25,7 @@
 - [x] Есть `src/main`, `src/preload`, `src/renderer`.
 - [x] Renderer изолирован: `contextIsolation: true`, `nodeIntegration: false`.
 - [x] Есть базовая тёмная/светлая тема и режим **как в системе** (`theme: system` + `nativeTheme`), сохранение в `app-data/settings.json`, меню `Вид -> Тема`.
-- [~] Главное окно 1920×1080 (FHD) по умолчанию; workspace `Редактор` / `Загрузки` / `Терминал` (Zustand); preview (`fluxmedia://`), DnD, транспорт, timeline/waveform, статусбар.
+- [~] Главное окно 1920×1080 (FHD) по умолчанию; workspace `Редактор` / `Загрузки` / `Терминал` (Zustand); preview (`fluxmedia://`), DnD, транспорт, timeline/waveform, статусбар. Снимок тестов — **247 / 1737** (J-1145).
 - [~] Есть `Data/`, `Help/`, `FLUXALLOY_TZ.md`, `IMPLEMENTATION_CHECKLIST.md`, [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md), упаковка `Data/`, `Help/`, ТЗ через `extraResources` (журнал в установщик пока не включаем — только для разработки).
 - [x] Windows: `electron-builder` с режимом sign по умолчанию; после перезагрузки проверены `build:unpack`/`winCodeSign`.
 - [~] ffmpeg export MP4/MKV/MOV, trim, crop/rotate/flip/scale/FPS/CRF/bitrate, пользовательские пресеты, snapshot; **пакетный экспорт §7.3** и **HW auto/manual §16** (код); полировка HW-цепочек и редкие фильтры — дальше. Движки bundled-first + UI загрузки в `userData/bin`.
@@ -115,7 +115,7 @@
 - [~] Доменные сервисы main: engines, ffprobe, ffmpeg export/snapshot/**batch**, yt-dlp, workflows, diagnostics, logger; Zustand в renderer; дальше — `session.json`, Mini Player, дальнейшее разбиение main.
 - [x] Подход к состоянию renderer: **Zustand** (`renderer-state-approach.ts`, `src/renderer/src/stores/*`, `AppRoot` + `check:renderer-state-approach`).
 - [x] Миграция Zustand закрыта (**J-1126**); временные gate/чеклист удалены (**J-1128**).
-- [x] Локализация `locales/ru|en/*.json`: 20 шардов, UI_TEXT из JSON; `ui-text-strings-*` пустые, guard TS↔JSON (J-1017..1020).
+- [x] Локализация `locales/ru|en/*.json`: 20 шардов, `ui-text-strings-build` только JSON (legacy `ui-text-strings-{ru|en}-NN.ts` удалены J-1142); guards TS↔JSON + ban legacy parts (J-1143).
 - [x] Смена языка без перезапуска (все окна renderer + меню, J-1018).
 - [x] Governance/docs: `fluxalloy-agent.mdc` + skills; `check:docs-governance`; программа GOV закрыта (J-1137); канон — `docs/SOURCES_OF_TRUTH.md`.
 - [~] Вспомогательный пакет `scripts/cursor-automation`: цикл `@cursor/sdk` по промптам до `MAX_STEPS` (см. README там; не IDE-чат); единый комментированный конфиг `src/sdk-settings.ts`; long-loop режется на короткие `Agent.create` сессии через `SDK_SESSION_STEPS`/`--session-steps` (дефолт 1) для минимизации cache-read; `check:quiet` печатает короткий summary успешных проверок; локальный `STOP=0/1`; retry SDK/transport + быстрых transient error-run, полный повтор любого `status=error` только через `LOOP_RETRY_RUN_ERROR=1`; `continue.txt` работает как чат-команда `+`/compact handoff (не перечитывает весь контекст без причины), журнал требует `J-NNN` и проверяется `check:journal`.
@@ -382,7 +382,7 @@
 ### §7.5 Изображения
 
 - [~] Извлечение/конвертация изображений (одиночная конвертация JPEG/PNG/WebP в «О программе» — J-1012).
-- [ ] Спрайты.
+- [~] Спрайты: contract + IPC `generateVideoSprite` + панель в редакторе (J-1145); подписи времени на ячейках — дальше.
 - [ ] Слайды.
 - [ ] Набор форматов JPG/PNG/WebP/etc.
 

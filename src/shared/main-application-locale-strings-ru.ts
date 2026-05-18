@@ -135,6 +135,12 @@ export const mainApplicationStringsRu: MainApplicationStrings = {
     'Укажите временные метки в секундах (через запятую или с новой строки), не больше 200.',
   extractFramesAllFailed: 'Не удалось сохранить ни одного кадра.',
   extractFramesHistorySuccessTemplate: 'Извлечено кадров: {n}',
+  videoSpriteSaveDialogTitle: 'Сохранить спрайт из видео',
+  videoSpriteTooManyCells:
+    'Слишком много ячеек в одном спрайте (лимит 200). Уменьшите число столбцов или строк.',
+  videoSpriteInvalidGrid: 'Укажите столбцы и строки (минимум 1×1).',
+  videoSpriteDurationTooShort: 'Видео слишком короткое для построения спрайта.',
+  videoSpriteHistorySuccessTemplate: 'Спрайт из видео сохранён',
   mediaUtilitiesRepairSaveTitle: 'Сохранить восстановленный файл',
   mediaUtilitiesRepairSaveFilter: 'Видео',
   mediaUtilitiesNoiseSaveTitle: 'Сохранить WAV',

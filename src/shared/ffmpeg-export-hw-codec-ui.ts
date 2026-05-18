@@ -13,7 +13,7 @@ import { isFfmpegHwExportVideoCodec } from './ffmpeg-export-video-codec'
 
 export type FfmpegHwEncoderFamily = 'nvenc' | 'amf' | 'qsv' | 'vaapi' | 'videotoolbox'
 
-/** Ключи `ui-text` для подписи в списке (ru/en в ui-text-strings-*-05). */
+/** Ключи ui-text для подписи в списке (locales editor-ffmpeg.json). */
 export const FFMPEG_HW_ENCODER_LABEL_UI_KEYS = {
   h264_nvenc: 'editorExportCodecHwH264Nvenc',
   hevc_nvenc: 'editorExportCodecHwHevcNvenc',

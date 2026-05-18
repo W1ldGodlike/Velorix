@@ -19,6 +19,7 @@
   "statusEnginesUserBinNothingRemoved": "Скачанных движков в app-data/bin не было",
   "statusEnginesUserBinRemovedCount": "Удалено скачанных движков: {n}",
   "statusErrorWithDetail": "Ошибка: {detail}",
+  "statusErrorDetailFallback": "…",
   "statusExportBatchRow": "Пакет #{id}",
   "statusExportCancelled": "Экспорт отменён",
   "statusExportCancelling": "Отмена экспорта…",

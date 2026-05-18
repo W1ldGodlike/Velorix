@@ -125,6 +125,11 @@ export type MainApplicationStrings = {
   extractFramesInvalidManual: string
   extractFramesAllFailed: string
   extractFramesHistorySuccessTemplate: string
+  videoSpriteSaveDialogTitle: string
+  videoSpriteTooManyCells: string
+  videoSpriteInvalidGrid: string
+  videoSpriteDurationTooShort: string
+  videoSpriteHistorySuccessTemplate: string
   mediaUtilitiesRepairSaveTitle: string
   mediaUtilitiesRepairSaveFilter: string
   mediaUtilitiesNoiseSaveTitle: string

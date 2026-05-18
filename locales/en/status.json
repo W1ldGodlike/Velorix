@@ -19,6 +19,7 @@
   "statusEnginesUserBinNothingRemoved": "No downloaded engines in app-data/bin",
   "statusEnginesUserBinRemovedCount": "Removed downloaded engine files: {n}",
   "statusErrorWithDetail": "Error: {detail}",
+  "statusErrorDetailFallback": "…",
   "statusExportBatchRow": "Batch #{id}",
   "statusExportCancelled": "Export cancelled",
   "statusExportCancelling": "Cancelling export…",

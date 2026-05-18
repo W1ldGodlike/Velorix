@@ -1,4 +1,4 @@
-/** Merged UI_TEXT tables (ru/en) from split parts + §2.2 JSON shards (`locales/{locale}/*.json`). */
+/** Merged UI_TEXT tables (ru/en) from §2.2 JSON shards (`locales/{locale}/*.json`). */
 import { notifyUiTextShardsUpdated } from './ui-text-hot-reload'
 import { buildUiTextTables, type UiTextTables } from './ui-text-strings-build'
 
