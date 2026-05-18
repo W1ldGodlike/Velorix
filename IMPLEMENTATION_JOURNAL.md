@@ -1141,3 +1141,8 @@
 - [J-1113] 2026-05-18 17:13:03 [Assistant]: §5 — focus/disabled на `.app-benchmark-codec-pick`; toolbar actions layout; `app-btn` в бенчмарке; `THEME_RARE_PANEL_CONTROL_CSS_ASSERTIONS` + Vitest. `npm run check:quiet`.
 - [J-1114] 2026-05-18 17:22:19 [Assistant]: §5 — `.app-settings-select` chrome + focus/disabled; rare-panel assertions; `theme:tokenize-main-css` npm script; чеклист §5 guards [x]. `npm run check:quiet`.
 - [J-1115] 2026-05-18 17:28:39 [Assistant]: Cadence 490 — коммит J-1111..1114: line-height/font-size em, rare-panel focus, `app-settings-select`, theme tokenize script; push + re-anchor. `npm run check:quiet`.
+- [J-1116] 2026-05-18 17:39:26 [Assistant]: §5 visual owner — чеклист «Ручной smoke — тема §5» в IMPLEMENTATION_CHECKLIST; sprint §5 code/visual split; Help owner-manual-smoke RU/EN (Theme row + hub). `npm run check:quiet`.
+- [J-1117] 2026-05-18 17:55:43 [Assistant]: §5 — `APP_SETTINGS_THEME_CHECKLIST_KEYS`; чеклист в `AppSettingsThemePanel` + deep-link owner smoke; owner bundle/чеклист §5 visual синхронизированы с HiDPI; Vitest локалей. `npm run check:quiet`.
+- [J-1118] 2026-05-18 18:10:57 [Assistant]: §5/§1.1 — `APP_SETTINGS_HIDPI_CHECKLIST_KEYS`; HiDPI panel/owner bundle/preview на реестре; Vitest hidpi keys + owner-manual-smoke-hidpi-lines. `npm run check:quiet`.
+- [J-1119] 2026-05-18 18:19:26 [Assistant]: §5 — `formatOwnerManualSmokeChecklistSectionLines` (theme/HiDPI DRY); Help appearance-language-theme RU/EN (визуальный чеклист темы + ссылка owner-manual-smoke). `npm run check:quiet`.
+- [J-1120] 2026-05-18 18:26:13 [Assistant]: Cadence 495 — коммит J-1116..1119: §5 visual чеклисты, реестры theme/HiDPI, Help cross-links, `app-settings-visual-smoke-checklists`; Vitest help cross-links. `npm run check:quiet`.

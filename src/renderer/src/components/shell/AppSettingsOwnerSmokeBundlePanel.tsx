@@ -13,6 +13,8 @@ import {
 } from '../../../../shared/owner-manual-smoke-bundle-report-header'
 import { getOwnerManualSmokePackagedSection } from '../../../../shared/owner-manual-smoke-packaged-section'
 import { formatOwnerManualSmokeHidpiChecklistLines } from '../../../../shared/owner-manual-smoke-hidpi-lines'
+import { APP_SETTINGS_HIDPI_CHECKLIST_KEYS } from '../../../../shared/app-settings-hidpi-checklist-keys'
+import { APP_SETTINGS_THEME_CHECKLIST_KEYS } from '../../../../shared/app-settings-theme-checklist-keys'
 import { formatOwnerManualSmokeThemeChecklistLines } from '../../../../shared/owner-manual-smoke-theme-lines'
 import { getFfmpegHwManualSmokeChecklistForUiLocale } from '../../hw-manual-smoke-checklist-locale'
 import { getUiLocale, uiText } from '../../locales/ui-text'
@@ -45,13 +47,7 @@ function formatThemeLinesForUiLocale(): string[] {
     'owner: Theme / dark·light·system (not CI)',
     uiText('appSettingsThemeManualHint'),
     uiText('appSettingsThemeChecklistIntro'),
-    `- ${uiText('appSettingsThemeCheckAccent')}`,
-    `- ${uiText('appSettingsThemeCheckFocus')}`,
-    `- ${uiText('appSettingsThemeCheckDisabled')}`,
-    `- ${uiText('appSettingsThemeCheckModals')}`,
-    `- ${uiText('appSettingsThemeCheckWorkflow')}`,
-    `- ${uiText('appSettingsThemeCheckDownloadsPopout')}`,
-    `- ${uiText('appSettingsThemeCheckInspector')}`
+    ...APP_SETTINGS_THEME_CHECKLIST_KEYS.map((key) => `- ${uiText(key)}`)
   ]
 }
 
@@ -63,10 +59,7 @@ function formatHidpiLinesForUiLocale(): string[] {
     'owner: HiDPI / window scale 100–200% (not CI)',
     uiText('appSettingsHidpiManualHint'),
     uiText('appSettingsHidpiChecklistIntro'),
-    `- ${uiText('appSettingsHidpiCheckEditor')}`,
-    `- ${uiText('appSettingsHidpiCheckDownloads')}`,
-    `- ${uiText('appSettingsHidpiCheckModals')}`,
-    `- ${uiText('appSettingsHidpiCheckStatusbar')}`
+    ...APP_SETTINGS_HIDPI_CHECKLIST_KEYS.map((key) => `- ${uiText(key)}`)
   ]
 }
 
@@ -222,27 +215,12 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
   }, [packagedSection])
 
   const themeCheckLines = useMemo(
-    () =>
-      [
-        uiText('appSettingsThemeCheckAccent'),
-        uiText('appSettingsThemeCheckFocus'),
-        uiText('appSettingsThemeCheckDisabled'),
-        uiText('appSettingsThemeCheckModals'),
-        uiText('appSettingsThemeCheckWorkflow'),
-        uiText('appSettingsThemeCheckDownloadsPopout'),
-        uiText('appSettingsThemeCheckInspector')
-      ],
+    () => APP_SETTINGS_THEME_CHECKLIST_KEYS.map((key) => uiText(key)),
     []
   )
 
   const hidpiCheckLines = useMemo(
-    () =>
-      [
-        uiText('appSettingsHidpiCheckEditor'),
-        uiText('appSettingsHidpiCheckDownloads'),
-        uiText('appSettingsHidpiCheckModals'),
-        uiText('appSettingsHidpiCheckStatusbar')
-      ],
+    () => APP_SETTINGS_HIDPI_CHECKLIST_KEYS.map((key) => uiText(key)),
     []
   )
 

@@ -3,26 +3,18 @@
  */
 
 import ruSettings from '../../locales/ru/settings.json'
-
-function t(shard: Record<string, string>, key: string): string {
-  const v = shard[key]
-  if (typeof v !== 'string' || v.trim().length === 0) {
-    throw new Error(`owner-manual-smoke-hidpi missing key: ${key}`)
-  }
-  return v
-}
+import { APP_SETTINGS_HIDPI_CHECKLIST_KEYS } from './app-settings-hidpi-checklist-keys'
+import { formatOwnerManualSmokeChecklistSectionLines } from './owner-manual-smoke-checklist-lines'
 
 /** Строки ручного HiDPI-smoke для `ownerManualSmoke:` / копирования владельцу. */
 export function formatOwnerManualSmokeHidpiChecklistLines(): string[] {
-  const shard = ruSettings as Record<string, string>
-  return [
-    'owner: HiDPI / масштаб окна 100–200% (не CI)',
-    'ui: Настройки → Общие → HiDPI; Help appearance-language-theme',
-    `intro: ${t(shard, 'appSettingsHidpiManualHint')}`,
-    `check: ${t(shard, 'appSettingsHidpiChecklistIntro')}`,
-    `  - ${t(shard, 'appSettingsHidpiCheckEditor')}`,
-    `  - ${t(shard, 'appSettingsHidpiCheckDownloads')}`,
-    `  - ${t(shard, 'appSettingsHidpiCheckModals')}`,
-    `  - ${t(shard, 'appSettingsHidpiCheckStatusbar')}`
-  ]
+  return formatOwnerManualSmokeChecklistSectionLines({
+    shard: ruSettings as Record<string, string>,
+    label: 'owner-manual-smoke-hidpi',
+    headerLine: 'owner: HiDPI / масштаб окна 100–200% (не CI)',
+    uiLine: 'ui: Настройки → Общие → HiDPI; Help appearance-language-theme',
+    introKey: 'appSettingsHidpiManualHint',
+    checkIntroKey: 'appSettingsHidpiChecklistIntro',
+    checklistKeys: APP_SETTINGS_HIDPI_CHECKLIST_KEYS
+  })
 }

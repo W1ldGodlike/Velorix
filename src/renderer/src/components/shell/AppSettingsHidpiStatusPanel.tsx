@@ -1,5 +1,6 @@
 import { useEffect, useState, type JSX } from 'react'
 
+import { APP_SETTINGS_HIDPI_CHECKLIST_KEYS } from '../../../../shared/app-settings-hidpi-checklist-keys'
 import {
   KNOWLEDGE_SLUG_APPEARANCE_LANGUAGE_THEME,
   KNOWLEDGE_SLUG_OWNER_MANUAL_SMOKE
@@ -98,10 +99,9 @@ export function AppSettingsHidpiStatusPanel(props: {
         {uiText('appSettingsHidpiChecklistIntro')}
       </p>
       <ul className="app-settings-hidpi-checklist">
-        <li>{uiText('appSettingsHidpiCheckEditor')}</li>
-        <li>{uiText('appSettingsHidpiCheckDownloads')}</li>
-        <li>{uiText('appSettingsHidpiCheckModals')}</li>
-        <li>{uiText('appSettingsHidpiCheckStatusbar')}</li>
+        {APP_SETTINGS_HIDPI_CHECKLIST_KEYS.map((key) => (
+          <li key={key}>{uiText(key)}</li>
+        ))}
       </ul>
     </section>
   )

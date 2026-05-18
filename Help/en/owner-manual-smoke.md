@@ -4,7 +4,7 @@ CI tests cover **ffmpeg argv**, not your real GPU or display scale. Before you r
 
 ## Where to find it
 
-1. **Settings → Dependencies** — **Owner manual smoke**: expand section previews (HiDPI, HW, scenario, packaged, scheduler, shell), then **Copy full bundle** (same text in Support ZIP `ownerManualSmoke:`). **Jump to …** buttons switch the settings tab and scroll to HW, packaged, HiDPI, or Explorer panels.
+1. **Settings → Dependencies** — **Owner manual smoke**: expand section previews (**Theme**, HiDPI, HW, scenario, packaged, scheduler, shell), then **Copy full bundle** (same text in Support ZIP `ownerManualSmoke:`). **Jump to …** buttons switch the settings tab and scroll to theme, HiDPI, HW, packaged, or Explorer panels.
 2. Below: separate panels (each deep-links here): **NVENC/VAAPI**, **packaged smoke**; **HiDPI** and **Windows Explorer** — **General** tab. From the hub: **Open task planner** / **Open scenario builder** (same as **Service** menu).
 3. **Support ZIP** — `ownerManualSmoke:` section inside `diagnostics.txt`.
 
@@ -12,6 +12,7 @@ CI tests cover **ffmpeg argv**, not your real GPU or display scale. Before you r
 
 | Block | Goal |
 |-------|------|
+| Theme | Dark / light / match system: contrast, focus, modals, downloads pop-out, inspector |
 | HiDPI | Windows scale 100–200 %: editor, downloads, modals, status bar |
 | HW encode | NVENC (Win) or VAAPI (Linux): probe, manual codec, hw_auto, benchmark |
 | Scenario builder | Builder UI, JSON edges, run from editor / URL |

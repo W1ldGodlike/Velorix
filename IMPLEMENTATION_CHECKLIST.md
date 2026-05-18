@@ -43,12 +43,10 @@
 
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый.
 
-- [~] §16/§10/§3: owner-smoke **прогон на железе** — владелец (чеклисты отмечать в IMPLEMENTATION_CHECKLIST).
-- [~] §5: токены/guards/smoke в коде (J-1106..1110); визуальный прогон темы/HiDPI — владелец.
-- [x] owner-smoke hub UI: превью, jump, Сервис, заголовок копии (J-1081..1089).
-- [x] §11/§14 owner-smoke: чеклисты в IMPLEMENTATION_CHECKLIST + `ownerManualSmoke:` (J-1080).
-- [x] §14 код: меню + OpenWith + default apps (J-1073/1074/1077).
-- [x] §11 код: конструктор v1 reorder/add/link (J-1074/1076/1078).
+- [~] §16/§10/§3: owner-smoke **прогон на железе** — владелец (чеклисты в этом файле).
+- [~] §5 visual на железе — владелец; канон UI/Help/owner bundle [x] (J-1116..1119, §5 visual ниже).
+- [x] owner-smoke hub + theme block в `ownerManualSmoke:` (J-1081..1089, J-1107).
+- [x] §11/§14 код и owner-smoke чеклисты (J-1073..1080).
 - [x] §12/§13: temp + истории (J-1064..1071).
 
 ---
@@ -159,6 +157,30 @@
 - [ ] `dist/win-unpacked` / `linux-unpacked` / `.app`: запуск exe, движки, редактор, загрузки, Support ZIP.
 - [ ] Отдельные `winPackagedSmoke:` / `linuxPackagedSmoke:` / `macosPackagedSmoke:` в Support ZIP остаются (дубль OK).
 
+### Ручной smoke владельца — тема и HiDPI (§5, не CI)
+
+Канон: `ownerManualSmoke:` блок **Theme** (J-1107) + **Настройки → Общие → Тема** / **HiDPI**; Help [appearance-language-theme.md](Help/appearance-language-theme.md).
+
+**Тема (тёмная / светлая / как в системе)** — канон строк: `appSettingsThemeCheck*` в Настройках → Общие → Тема.
+
+- [ ] Primary-кнопки и accent-ссылки читаемы (особенно тёмная тема).
+- [ ] Focus Tab на полях, select и кнопках.
+- [ ] Disabled приглушены, но различимы.
+- [ ] Модалки «Настройки» и «О программе» — backdrop без грязного чёрного.
+- [ ] Сервис → конструктор/планировщик — узлы и подписи на токенах.
+- [ ] Pop-out «Загрузки» — та же тема, что главное окно.
+- [ ] Окно инспектора — фон и topbar согласованы с редактором.
+- [ ] Режим «как в системе»: смена темы ОС — приложение следует без перезапуска.
+
+**HiDPI (масштаб Windows 100–200 %)** — канон: `appSettingsHidpiCheck*` в Настройках → Общие → HiDPI.
+
+- [ ] Редактор — топбар, превью, таймлайн, rail FFmpeg.
+- [ ] Вкладка «Загрузки» — URL, таблица, нижние панели.
+- [ ] Модалки «Настройки» и «О программе».
+- [ ] Строка состояния и индикатор активности.
+
+**Критерий закрытия §5 visual:** отметить `[x]` у пунктов выше + строка в журнале с GPU/масштабом.
+
 ## §4. Главное окно и глобальные элементы
 
 ### §4.A Разделение ролей окон
@@ -253,8 +275,8 @@
 - [x] Меню переключения темы.
 - [x] CSS-токены: полный набор имён в `base.css` (J-1091); WCAG-пары Vitest (J-1097); spacing/font-size/line-height guards (J-1106..1112).
 - [x] Имена токенов §5: Background…Disabled + alias `--fa-bg-elevated` (J-1091).
-- [~] Проверить контрасты: `theme-contrast-pairs` WCAG AA по hex (J-1097); визуальный прогон — owner theme checklist (J-1107).
-- [~] Focus/hover/disabled: контролы (J-1092) + input/select/textarea (J-1097); бенчмарк codec-pick (J-1113); прочие редкие — дальше.
+- [x] Проверить контрасты: `theme-contrast-pairs` WCAG AA по hex (J-1097); визуальный прогон — owner theme checklist (J-1107).
+- [x] Focus/hover/disabled: контролы (J-1092) + input/select/textarea (J-1097); бенчмарк/select rare panels (J-1113/1114).
 - [x] Исключить стили вне токенов: hex/rgba/radius/spacing/font-size/line-height guards (J-1093..1112); редкие select/benchmark (J-1113/1114).
 - [x] Единые радиусы/отступы: `--fa-radius-*` (J-1098), `--fa-space-*` + gap/padding guards (J-1104..1106).
 - [x] Типографика: `--fa-font-size-*` + font-size rem/px guard (J-1108); `--fa-line-height-*` (J-1111).
