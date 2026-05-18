@@ -24,6 +24,20 @@ export type YtdlpQueueProgressStrings = {
   progressWritingMetadata: string
   progressRateLimitSleep: string
   progressDeletingOriginal: string
+  progressPostMerge: string
+  progressPostAudio: string
+  progressPostRemux: string
+  progressPostConvert: string
+  progressPostEmbedSubtitle: string
+  progressPostEmbedThumbnail: string
+  progressPostMetadataEmbed: string
+  progressPostConcat: string
+  progressPostMoveFile: string
+  progressPostFixup: string
+  progressPostSponsorBlock: string
+  progressPostSubConvert: string
+  progressPostProcessing: string
+  progressPostFfmpegDestination: string
   formatHintMerge: string
   formatHintAudio: string
   formatHintRemux: string
@@ -61,6 +75,20 @@ export const YTDLP_QUEUE_PROGRESS_STRINGS_RU: YtdlpQueueProgressStrings = {
   progressWritingMetadata: 'метаданные',
   progressRateLimitSleep: 'лимит скорости · пауза {sec} с',
   progressDeletingOriginal: 'удаление исходника',
+  progressPostMerge: 'слияние форматов',
+  progressPostAudio: 'извлечение аудио',
+  progressPostRemux: 'перепаковка',
+  progressPostConvert: 'перекодирование',
+  progressPostEmbedSubtitle: 'встраивание субтитров',
+  progressPostEmbedThumbnail: 'миниатюра в файл',
+  progressPostMetadataEmbed: 'метаданные в файл',
+  progressPostConcat: 'склейка',
+  progressPostMoveFile: 'перемещение',
+  progressPostFixup: 'исправление контейнера',
+  progressPostSponsorBlock: 'SponsorBlock',
+  progressPostSubConvert: 'конвертация субтитров',
+  progressPostProcessing: 'постобработка ffmpeg',
+  progressPostFfmpegDestination: 'ffmpeg · запись',
   formatHintMerge: 'слияние',
   formatHintAudio: 'аудио',
   formatHintRemux: 'перепаковка (remux)',
@@ -98,6 +126,20 @@ export const YTDLP_QUEUE_PROGRESS_STRINGS_EN: YtdlpQueueProgressStrings = {
   progressWritingMetadata: 'metadata',
   progressRateLimitSleep: 'rate limit · pause {sec} s',
   progressDeletingOriginal: 'deleting original',
+  progressPostMerge: 'merging formats',
+  progressPostAudio: 'extracting audio',
+  progressPostRemux: 'remuxing',
+  progressPostConvert: 'converting',
+  progressPostEmbedSubtitle: 'embedding subtitles',
+  progressPostEmbedThumbnail: 'embedding thumbnail',
+  progressPostMetadataEmbed: 'embedding metadata',
+  progressPostConcat: 'concatenating',
+  progressPostMoveFile: 'moving file',
+  progressPostFixup: 'container fixup',
+  progressPostSponsorBlock: 'SponsorBlock',
+  progressPostSubConvert: 'subtitle conversion',
+  progressPostProcessing: 'ffmpeg post-processing',
+  progressPostFfmpegDestination: 'ffmpeg · writing',
   formatHintMerge: 'merge',
   formatHintAudio: 'audio',
   formatHintRemux: 'remux',

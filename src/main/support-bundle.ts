@@ -86,6 +86,9 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
     ...(info.uiDpiLines.length > 0 ? ['', 'uiDpi:', ...info.uiDpiLines] : []),
     ...(info.hwManualSmokeChecklistLines.length > 0
       ? ['', 'hwManualSmoke:', ...info.hwManualSmokeChecklistLines]
+      : []),
+    ...(info.winPackagedSmokeChecklistLines.length > 0
+      ? ['', 'winPackagedSmoke:', ...info.winPackagedSmokeChecklistLines]
       : [])
   ].join('\n')
 }

@@ -23,6 +23,7 @@ export {
   parseYtdlpInfoFormatSnippet,
   parseYtdlpQueueFormatHint,
   parseYtdlpInfoQueueSizeHint,
+  parseYtdlpQueuePostProcessProgressLine,
   formatYtdlpQueueFailureStatus,
   classifyYtdlpQueueFailureKind,
   shouldSkipQueueRetriesForFailureKind,

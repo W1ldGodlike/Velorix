@@ -5,6 +5,7 @@ import { app, BrowserWindow, clipboard, dialog, screen, shell } from 'electron'
 
 import { buildSupportZipFfprobeSmokeLines } from '../shared/packaged-ffprobe-smoke'
 import { formatFfmpegHwManualSmokeChecklistLines } from '../shared/ffmpeg-hw-manual-smoke-checklist'
+import { formatWinPackagedManualSmokeChecklistLines } from '../shared/win-packaged-manual-smoke-checklist'
 import { buildSupportZipPackagedReleaseLines } from '../shared/packaged-release-smoke'
 import { buildSupportZipBuildInfoLines, readAppBuildInfo } from '../shared/app-build-info'
 import { formatLocaleJsonCatalogDiagnosticLines } from '../shared/locale-json-catalog'
@@ -116,6 +117,7 @@ export async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRunt
   const rendererStateLines = formatRendererStateDiagnosticLines()
   const uiDpiLines = formatWindowHidpiDiagnosticLines()
   const hwManualSmokeChecklistLines = formatFfmpegHwManualSmokeChecklistLines()
+  const winPackagedSmokeChecklistLines = formatWinPackagedManualSmokeChecklistLines()
 
   return {
     appVersion: app.getVersion(),
@@ -146,7 +148,8 @@ export async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRunt
     localeJsonCatalogLines,
     rendererStateLines,
     uiDpiLines,
-    hwManualSmokeChecklistLines
+    hwManualSmokeChecklistLines,
+    winPackagedSmokeChecklistLines
   }
 }
 

@@ -39,6 +39,8 @@ export interface SupportBundleRuntimeInfo {
   uiDpiLines: readonly string[]
   /** §16 — ручной smoke HW encode (чеклист владельца, не CI). */
   hwManualSmokeChecklistLines: readonly string[]
+  /** §3 — ручной smoke packaged Win (чеклист владельца, не CI UI). */
+  winPackagedSmokeChecklistLines: readonly string[]
 }
 
 export interface DiagnosticsPruneOptions {

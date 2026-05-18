@@ -10,7 +10,7 @@ The dialog links to the **log folder**. Files stay small; you can attach them to
 
 ## Support archive
 
-The **archive** button packs several diagnostic files into one zip so you do not have to pick them manually.
+The **archive** button packs several diagnostic files into one zip so you do not have to pick them manually. After a manual Windows packaged smoke run, the zip includes a `winPackagedSmoke:` block (checklist from settings) — see [packaged-windows-smoke.md](packaged-windows-smoke.md).
 
 ## Temporary data
 

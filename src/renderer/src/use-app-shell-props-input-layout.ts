@@ -173,6 +173,8 @@ export function buildAppShellPropsInputLayout(
       section: appSettingsSection,
       setSection: setAppSettingsSection,
       setOpen: setAppSettingsOpen,
+      setKnowledgeOpen,
+      setKnowledgeInitialSlug,
       theme,
       setTheme,
       editorUrlPasteBehavior,

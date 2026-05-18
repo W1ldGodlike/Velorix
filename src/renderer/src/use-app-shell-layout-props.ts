@@ -92,6 +92,8 @@ export type UseAppShellLayoutPropsInput = {
     handleClearDownloadedEngines: () => Promise<void>
     handleSaveEnginePaths: () => Promise<void>
     onStatus: (message: string) => void
+    setKnowledgeOpen: Dispatch<SetStateAction<boolean>>
+    setKnowledgeInitialSlug: Dispatch<SetStateAction<string | null>>
   }
   externalFilterScript: {
     open: boolean
@@ -320,7 +322,11 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
         void appSettings.handleSaveEnginePaths()
       },
       resetBusy: appSettings.settingsResetBusy,
-      setResetBusy: appSettings.setSettingsResetBusy
+      setResetBusy: appSettings.setSettingsResetBusy,
+      onOpenKnowledgeArticle: (slug) => {
+        appSettings.setKnowledgeInitialSlug(slug)
+        appSettings.setKnowledgeOpen(true)
+      }
     }
   }, [appSettings])
 

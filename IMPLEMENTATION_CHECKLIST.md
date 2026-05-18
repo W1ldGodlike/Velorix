@@ -43,10 +43,13 @@
 
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый.
 
-- [x] §2.2: hooks-composition зафиксирован (`renderer-state-approach` + guard; J-1037).
-- [~] §16: чеклист NVENC/VAAPI в «Настройки → Зависимости» + ru/en JSON (J-1040); прогон на железе — владелец.
-- [~] §1.1: ручная сверка HiDPI 100–200% — панель в «Настройки → Общие» + чеклист (J-1039); прогон на мониторе — владелец.
-- [x] §4.C: tooltip кодека/GPU в статусбаре редактора — «Обработка: …», общий tooltip с rail, aria (J-1038).
+- [~] §16: чеклист NVENC/VAAPI в настройках + Help/deep-link (J-1040/1041); прогон на железе — владелец.
+- [~] §1.1: панель HiDPI + Help/deep-link (J-1039/1041); прогон 100–200% на мониторе — владелец.
+- [x] §15: Help `packaged-windows-smoke` (RU+EN) + deep-link из панели Win smoke (J-1045); прочие статьи — J-1041.
+- [x] §3: packaged smoke Win — чеклист, Support ZIP, `RELEASE.md` §4, Help/deep-link (J-1044/1045).
+- [ ] §8: терминал — сценарии/summary RU пакетом (следующий кодовый срез).
+- [ ] §7: планировщик/конструктор сценариев (каркас).
+- [ ] §3: packaged smoke Linux/macOS — чеклист по аналогии Win (после owner-прогона Win).
 
 ---
 
@@ -289,7 +292,7 @@
 
 ### §6.4 Прогресс, лог, комбинированный режим
 
-- [~] Парсинг прогресса yt-dlp: процент + скорость + оставшееся время (в UI «Осталось»; в сыром логе yt-dlp по-прежнему токен `ETA`) + размер `of …`/`of ~ …` + `fragment X of Y` + `(frag N/M)` без процентов в строке + `Total progress:` + `Downloading video|item X of Y` + вариант `N of M videos` + `Sleeping … seconds` / `Waiting for reconnect` / прочие `[download] Waiting for …` / `Resuming download at byte …` / `Retrying (N/M)` и `Retrying fragment X (N/M)` + подготовка `Downloading m3u8 information` / player API JSON / `Downloading webpage` + post-processing (`Writing thumbnail/subtitles/metadata`, rate limit sleep, `Deleting original file`); прочие редкие строки — по мере заметок.
+- [x] Парсинг прогресса yt-dlp: процент + скорость + «Осталось» + фрагменты/плейлист/retry/HLS prep + редкие `[download]` + post-processing в колонке «Прогресс» (`parseYtdlpQueuePostProcessProgressLine`: merge, audio, remux, convert, embed, concat, fixup, SponsorBlock…; J-1043).
 - [~] Лог stdout/stderr: IPC `fluxalloy-downloads-log` fan-out в главное окно и pop-out; вкладка `Загрузки` показывает live log, очистку и сохранение видимого текста; pop-out сохраняет compact-layout со счётчиком размера и обрезкой DOM.
 - [x] «Скачать и открыть»: готовый файл можно открыть/показать в папке или отправить в обработчик FluxAlloy из очереди и истории.
 - [x] «Скачать и сразу обработать» (настройка §6.4: после успеха yt-dlp авто-открытие в главном preview, если известен безопасный путь в каталоге загрузок; неуспех авто-открытия пишется в лог строки).
@@ -442,7 +445,7 @@
 - [x] Оглавление: 7 разделов `knowledge-toc-registry` + FAQ RU/EN (J-983).
 - [x] Поиск.
 - [x] Язык UI и база: `listArticles`/`readKnowledgeArticle` с `preferredUiLocale` — при EN заголовки оглавления из `Help/en/*.md` при наличии; тела статей — `Help/en/{slug}.md` или fallback на `Help/{slug}.md`; сообщения об ошибках чтения статьи — по тому же языку; при смене языка интерфейса список/статья перезапрашиваются.
-- [x] **Help:** 23 статьи RU+EN + FAQ; стабильные SVG в `Help/assets/` + `help-assets-references.test.ts`; deep-link: terminal, downloads/ffmpeg rail, batch, probe (J-983, J-990).
+- [x] **Help:** 23 статьи RU+EN + FAQ; стабильные SVG в `Help/assets/` + `help-assets-references.test.ts`; deep-link: terminal, downloads/ffmpeg rail, batch, probe, **настройки HiDPI/HW** (J-983, J-990, J-1041).
 - [~] **Tooltips / copy:** `check:ui-copy-quality`, humanize terminal summaries; хвост E4 icon-only.
 - [x] Пары `Help/*.md` / `Help/en/*.md` для основных slug’ов (без смешения RU/EN в одном файле); дальше — **массовое** добавление статей по фазе E5, не точечные правки.
 

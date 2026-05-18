@@ -4,6 +4,7 @@ export {
   parseYtdlpQueueFormatHint,
   parseYtdlpInfoQueueSizeHint
 } from './ytdlp-progress-parser-queue-info'
+export { parseYtdlpQueuePostProcessProgressLine } from './ytdlp-progress-parser-postprocess-progress'
 export {
   formatYtdlpQueueFailureStatus,
   classifyYtdlpQueueFailureKind,

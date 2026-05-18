@@ -33,5 +33,11 @@
   "knowledgeDeepLinkBatchExportLabel": "Справка: пакетный экспорт",
   "knowledgeDeepLinkBatchExportTooltip": "Открыть статью об очередях и пакетной обработке.",
   "knowledgeDeepLinkProbeLabel": "Справка: инспектор ffprobe",
-  "knowledgeDeepLinkProbeTooltip": "Открыть статью о сводке дорожек, главах и сыром JSON."
+  "knowledgeDeepLinkProbeTooltip": "Открыть статью о сводке дорожек, главах и сыром JSON.",
+  "knowledgeDeepLinkHidpiLabel": "Справка: масштаб и HiDPI",
+  "knowledgeDeepLinkHidpiTooltip": "Открыть статью о теме, языке и проверке масштаба Windows.",
+  "knowledgeDeepLinkHwSmokeLabel": "Справка: аппаратное кодирование",
+  "knowledgeDeepLinkHwSmokeTooltip": "Открыть статью о NVENC, VAAPI и ручном smoke-тесте.",
+  "knowledgeDeepLinkPackagedWinLabel": "Справка: smoke Windows (pack:dir)",
+  "knowledgeDeepLinkPackagedWinTooltip": "Открыть статью о ручной проверке dist/win-unpacked после сборки."
 }

@@ -117,6 +117,10 @@ describe('createSupportBundleZip', () => {
       hwManualSmokeChecklistLines: [
         'section: win-nvenc — Windows — NVENC (NVIDIA)',
         '  step [nvenc-manual]: manual h264_nvenc'
+      ],
+      winPackagedSmokeChecklistLines: [
+        'doc: docs/RELEASE.md §4',
+        '  step [launch]: Run dist/win-unpacked/FluxAlloy.exe'
       ]
     })
 
@@ -153,6 +157,7 @@ describe('createSupportBundleZip', () => {
     expect(zip.includes(Buffer.from('uiDpi:'))).toBe(true)
     expect(zip.includes(Buffer.from('build:linux'))).toBe(true)
     expect(zip.includes(Buffer.from('hwManualSmoke:'))).toBe(true)
+    expect(zip.includes(Buffer.from('winPackagedSmoke:'))).toBe(true)
     expect(zip.includes(Buffer.from('win-nvenc'))).toBe(true)
   })
 })

@@ -1979,10 +1979,6 @@ button.app-downloads-hint-token:disabled {
   vertical-align: middle;
 }
 
-.app-batch-export-table tbody tr.app-batch-export-row-draggable {
-  cursor: grab;
-}
-
 .app-batch-export-table tbody tr.app-batch-export-row-dragging {
   opacity: 0.55;
   cursor: grabbing;
@@ -1995,6 +1991,43 @@ button.app-downloads-hint-token:disabled {
 .app-batch-export-table tbody tr:focus-visible {
   outline: 2px solid var(--fa-focus-ring);
   outline-offset: -2px;
+}
+
+.app-batch-export-reorder-cell {
+  width: 2.25rem;
+  padding-inline: 0.2rem;
+  text-align: center;
+}
+
+.app-batch-export-drag-handle {
+  cursor: grab;
+  touch-action: none;
+}
+
+.app-batch-export-drag-handle:active {
+  cursor: grabbing;
+}
+
+.app-batch-export-drag-handle:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.app-batch-export-drag-handle-glyph {
+  display: inline-block;
+  font-size: 0.72rem;
+  line-height: 1;
+  letter-spacing: -0.12em;
+  color: var(--fa-text-muted);
+}
+
+.app-batch-export-queue-focus:focus {
+  outline: none;
+}
+
+.app-batch-export-queue-focus:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 2px;
 }
 
 .app-batch-export-table tbody tr.app-batch-export-row-error {

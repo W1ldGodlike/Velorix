@@ -1,13 +1,17 @@
-import { useId } from 'react'
-import type { JSX } from 'react'
+import { useCallback, useEffect, useId, useMemo, useRef, type JSX } from 'react'
 
 import { KNOWLEDGE_SLUG_SESSION_AND_QUEUES } from '../../../../shared/knowledge-contract'
-import { uiText, uiTextVars } from '../../locales/ui-text'
+import { formatEditorBatchExportCompletionAnnouncement } from '../../editor-batch-export-completion-ui'
+import { uiText } from '../../locales/ui-text'
 import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
 import { EditorBatchExportBarQueueTable } from './EditorBatchExportBarQueueTable'
 import { EditorBatchExportBarToolbar } from './EditorBatchExportBarToolbar'
 export type { EditorBatchExportBarProps } from './editor-batch-export-bar-props'
 import type { EditorBatchExportBarProps } from './editor-batch-export-bar-props'
+
+function focusBatchExportQueueRegion(el: HTMLElement | null): void {
+  el?.focus()
+}
 
 export function EditorBatchExportBar(props: EditorBatchExportBarProps): JSX.Element {
   const {
@@ -16,10 +20,55 @@ export function EditorBatchExportBar(props: EditorBatchExportBarProps): JSX.Elem
     batchExportBusy,
     batchSnapshot,
     handleBatchDropFiles,
-    onOpenKnowledgeArticle
+    onOpenKnowledgeArticle,
+    handleBatchStart,
+    handleBatchRetryFailedAndStart
   } = props
 
   const batchExportBarRegionBodyId = useId()
+  const queueFocusRef = useRef<HTMLDivElement>(null)
+  const completionLiveRef = useRef<HTMLParagraphElement>(null)
+  const wasRunningRef = useRef(false)
+
+  const setQueueRegionNode = useCallback((node: HTMLDivElement | null) => {
+    queueFocusRef.current = node
+  }, [])
+
+  const visibleCompletionSummary = useMemo(() => {
+    if (!batchSnapshot || batchSnapshot.running) {
+      return null
+    }
+    return formatEditorBatchExportCompletionAnnouncement(batchSnapshot)
+  }, [batchSnapshot])
+
+  const focusQueueAfterSubmit = (): void => {
+    window.requestAnimationFrame(() => {
+      focusBatchExportQueueRegion(queueFocusRef.current)
+    })
+  }
+
+  const barProps: EditorBatchExportBarProps = {
+    ...props,
+    handleBatchStart: async () => {
+      await handleBatchStart()
+      focusQueueAfterSubmit()
+    },
+    handleBatchRetryFailedAndStart: async () => {
+      await handleBatchRetryFailedAndStart()
+      focusQueueAfterSubmit()
+    }
+  }
+
+  useEffect(() => {
+    const running = batchSnapshot?.running === true
+    if (wasRunningRef.current && !running && visibleCompletionSummary) {
+      window.requestAnimationFrame(() => {
+        completionLiveRef.current?.focus()
+      })
+    }
+    wasRunningRef.current = running
+  }, [batchSnapshot?.running, visibleCompletionSummary])
+
   return (
     <details
       className="app-url-bar app-batch-export-bar"
@@ -43,7 +92,7 @@ export function EditorBatchExportBar(props: EditorBatchExportBarProps): JSX.Elem
         className="app-url-body"
         role="region"
         aria-labelledby="batch-export-region-title"
-        aria-describedby="batch-export-panel-hint batch-export-drop-hint"
+        aria-describedby="batch-export-panel-hint batch-export-drop-hint batch-export-completion-live"
         aria-busy={batchExportBusy}
       >
         <h3 id="batch-export-region-title" className="app-visually-hidden">
@@ -72,11 +121,27 @@ export function EditorBatchExportBar(props: EditorBatchExportBarProps): JSX.Elem
         <p id="batch-export-drop-hint" className="app-url-hint">
           {uiText('batchExportDragHint')}
         </p>
+        <p
+          id="batch-export-completion-live"
+          ref={completionLiveRef}
+          className={
+            visibleCompletionSummary
+              ? 'app-batch-export-summary app-url-hint'
+              : 'app-visually-hidden'
+          }
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          aria-label={uiText('batchExportCompletionLiveAria')}
+          tabIndex={-1}
+        >
+          {visibleCompletionSummary ?? ''}
+        </p>
         <div
           className="app-batch-export-dropzone"
           aria-label={uiText('batchExportDropzoneAria')}
           aria-busy={batchExportBusy}
-          aria-describedby="batch-export-panel-hint batch-export-drop-hint"
+          aria-describedby="batch-export-panel-hint batch-export-drop-hint batch-export-completion-live"
           onDragOver={(e) => {
             e.preventDefault()
             e.stopPropagation()
@@ -87,24 +152,18 @@ export function EditorBatchExportBar(props: EditorBatchExportBarProps): JSX.Elem
             void handleBatchDropFiles(e.dataTransfer.files)
           }}
         >
-          <EditorBatchExportBarToolbar {...props} />
-          <EditorBatchExportBarQueueTable {...props} />
-          {batchSnapshot && !batchSnapshot.running && batchSnapshot.completedError > 0 ? (
-            <p
-              className="app-batch-export-summary app-url-hint"
-              role="status"
-              aria-describedby="batch-export-panel-hint batch-export-drop-hint"
-            >
-              {uiTextVars('batchExportErrorSummary', {
-                failed: String(batchSnapshot.completedError),
-                total: String(
-                  batchSnapshot.completedOk +
-                    batchSnapshot.completedError +
-                    batchSnapshot.completedCancelled
-                )
-              })}
-            </p>
-          ) : null}
+          <EditorBatchExportBarToolbar {...barProps} />
+          <div
+            ref={setQueueRegionNode}
+            tabIndex={-1}
+            className="app-batch-export-queue-focus"
+            role="region"
+            aria-label={uiText('batchExportQueueTableZoneAria')}
+            aria-describedby="batch-export-panel-hint batch-export-drop-hint batch-export-completion-live"
+            aria-busy={batchExportBusy}
+          >
+            <EditorBatchExportBarQueueTable {...barProps} />
+          </div>
         </div>
       </div>
     </details>

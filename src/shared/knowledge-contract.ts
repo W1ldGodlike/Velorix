@@ -42,3 +42,12 @@ export const KNOWLEDGE_SLUG_PROBE_AND_INSPECTOR = 'probe-and-inspector-basics'
 
 /** FAQ — `Help/faq-troubleshooting.md`. */
 export const KNOWLEDGE_SLUG_FAQ_TROUBLESHOOTING = 'faq-troubleshooting'
+
+/** §16 — аппаратные кодеры и ручной smoke в настройках. */
+export const KNOWLEDGE_SLUG_HARDWARE_ENCODING = 'hardware-encoding'
+
+/** §1.1 — тема, язык, HiDPI-панель в настройках. */
+export const KNOWLEDGE_SLUG_APPEARANCE_LANGUAGE_THEME = 'appearance-language-theme'
+
+/** §3 — ручной smoke packaged Win после pack:dir. */
+export const KNOWLEDGE_SLUG_PACKAGED_WINDOWS_SMOKE = 'packaged-windows-smoke'

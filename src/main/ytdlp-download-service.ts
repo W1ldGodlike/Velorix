@@ -34,6 +34,7 @@ export {
   parseYtdlpInfoFormatSnippet,
   parseYtdlpInfoQueueSizeHint,
   parseYtdlpQueueFormatHint,
+  parseYtdlpQueuePostProcessProgressLine,
   parseYtdlpProgressPercentNumber,
   parseYtdlpSpeedToBytesPerSec,
   shouldSkipQueueRetriesForFailureKind,

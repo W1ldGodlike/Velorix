@@ -1,0 +1,19 @@
+{
+  "winPackagedSmokeSectionTitle": "Manual Windows packaged smoke (pack:dir)",
+  "winPackagedSmokePrereq0": "Locally: npm run check:release (or pack:dir + verify:win-unpacked + smoke:packaged-release).",
+  "winPackagedSmokePrereq1": "Folder dist/win-unpacked/ with FluxAlloy.exe and resources/bin/*.exe.",
+  "winPackagedSmokePrereq2": "Clean userData profile (first launch) or intentional test over an existing profile.",
+  "winPackagedSmokeStep_launch": "Run dist/win-unpacked/FluxAlloy.exe (not npm run dev).",
+  "winPackagedSmokeStep_engines": "Status bar: yt-dlp / ffmpeg / ffprobe versions with no “not found” errors.",
+  "winPackagedSmokeStep_open_file": "Editor: open a local MP4/MKV; preview plays and scrub works.",
+  "winPackagedSmokeStep_ytdlp": "Downloads: short URL (10–30 s), queue reaches Done, log has no ERROR.",
+  "winPackagedSmokeStep_editor_from_dl": "From queue/history: Open in editor for a finished file.",
+  "winPackagedSmokeStep_snapshot": "Frame snapshot saves as PNG/JPEG.",
+  "winPackagedSmokeStep_export": "MP4 segment export (libx264) completes without error.",
+  "winPackagedSmokeStep_knowledge": "Knowledge base: open an article; internal .md link works.",
+  "winPackagedSmokeStep_support_zip": "About → Support ZIP: archive is created; no secrets in the text.",
+  "winPackagedSmokeStep_settings": "Settings → Dependencies: engine paths point at resources/bin.",
+  "winPackagedSmokePass0": "No crash when closing the main window and relaunching the exe.",
+  "winPackagedSmokePass1": "Download progress column shows labels during post-processing merge/embed.",
+  "winPackagedSmokePass2": "userData/logs have no tokens/passwords; dist/ artifacts have no .env."
+}

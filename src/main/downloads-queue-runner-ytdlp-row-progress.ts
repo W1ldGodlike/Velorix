@@ -9,6 +9,7 @@ import {
   parseYtdlpInfoDownloadingTitlePrefix,
   parseYtdlpInfoQueueSizeHint,
   parseYtdlpQueueFormatHint,
+  parseYtdlpQueuePostProcessProgressLine,
   parseYtdlpProgressPercentNumber,
   parseYtdlpSpeedToBytesPerSec,
   type YtdlpDownloadProgressParts
@@ -166,7 +167,9 @@ export function createYtdlpRowProgressBridge(
   }
 
   const applyProgressLine = (line: string): void => {
-    const parsed = parseYtdlpDownloadProgressLine(line, locale)
+    const parsed =
+      parseYtdlpDownloadProgressLine(line, locale) ??
+      parseYtdlpQueuePostProcessProgressLine(line, locale)
     if (!parsed) {
       return
     }

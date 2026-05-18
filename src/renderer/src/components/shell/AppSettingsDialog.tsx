@@ -20,6 +20,7 @@ import {
 import type { UiTextKey } from '../../locales/ui-text-strings'
 import { AppSettingsHidpiStatusPanel } from './AppSettingsHidpiStatusPanel'
 import { AppSettingsHwManualSmokePanel } from './AppSettingsHwManualSmokePanel'
+import { AppSettingsWinPackagedSmokePanel } from './AppSettingsWinPackagedSmokePanel'
 import { EnginePathsSettingsSection } from './EnginePathsSettingsSection'
 
 const SECTION_HINT_KEYS: Record<AppSettingsDialogSection, UiTextKey> = {
@@ -60,6 +61,7 @@ export type AppSettingsDialogProps = {
   setEditorUrlPasteBehavior: Dispatch<SetStateAction<EditorUrlPasteBehaviorId>>
   setWorkspaceTab: Dispatch<SetStateAction<'editor' | 'downloads' | 'terminal'>>
   onOpenAbout: () => void
+  onOpenKnowledgeArticle?: (slug: string) => void
   enginePathsSaving: boolean
   engineDownloadBusy: boolean
   enginePathsDraft: EnginePathsDraft
@@ -85,6 +87,7 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
     setEditorUrlPasteBehavior,
     setWorkspaceTab,
     onOpenAbout,
+    onOpenKnowledgeArticle,
     enginePathsSaving,
     engineDownloadBusy,
     enginePathsDraft,
@@ -242,6 +245,7 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
                 onUiLocalePersisted={onUiLocalePersisted}
                 editorUrlPasteBehavior={editorUrlPasteBehavior}
                 setEditorUrlPasteBehavior={setEditorUrlPasteBehavior}
+                {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
               />
             ) : null}
 
@@ -271,7 +275,14 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
                   onCheckEngineUpdates={onCheckEngineUpdates}
                   onSave={onSaveEnginePaths}
                 />
-                <AppSettingsHwManualSmokePanel sectionHintId={sectionHintId} />
+                <AppSettingsHwManualSmokePanel
+                  sectionHintId={sectionHintId}
+                  {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
+                />
+                <AppSettingsWinPackagedSmokePanel
+                  sectionHintId={sectionHintId}
+                  {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
+                />
               </div>
             ) : null}
 
@@ -328,6 +339,7 @@ function AppSettingsGeneralPane(props: {
   onUiLocalePersisted: (locale: AppUiLocale) => void
   editorUrlPasteBehavior: EditorUrlPasteBehaviorId
   setEditorUrlPasteBehavior: Dispatch<SetStateAction<EditorUrlPasteBehaviorId>>
+  onOpenKnowledgeArticle?: (slug: string) => void
 }): JSX.Element {
   const {
     sectionHintId,
@@ -336,7 +348,8 @@ function AppSettingsGeneralPane(props: {
     onThemePrefChange,
     onUiLocalePersisted,
     editorUrlPasteBehavior,
-    setEditorUrlPasteBehavior
+    setEditorUrlPasteBehavior,
+    onOpenKnowledgeArticle
   } = props
   const locale = getUiLocale()
 
@@ -410,7 +423,10 @@ function AppSettingsGeneralPane(props: {
         </select>
       </label>
 
-      <AppSettingsHidpiStatusPanel sectionHintId={sectionHintId} />
+      <AppSettingsHidpiStatusPanel
+        sectionHintId={sectionHintId}
+        {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
+      />
     </div>
   )
 }

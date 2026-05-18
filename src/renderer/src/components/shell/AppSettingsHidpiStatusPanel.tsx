@@ -1,8 +1,10 @@
 import { useEffect, useState, type JSX } from 'react'
 
+import { KNOWLEDGE_SLUG_APPEARANCE_LANGUAGE_THEME } from '../../../../shared/knowledge-contract'
 import { uiText, uiTextVars } from '../../locales/ui-text'
 import { UI_HIDPI_CSS_MEDIA_TIERS } from '../../../../shared/ui-hidpi-scale-tiers'
 import { readUiHidpiRuntimeStatus, type UiHidpiRuntimeStatus } from '../../ui-hidpi-runtime-status'
+import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
 
 function formatActiveTierLine(status: UiHidpiRuntimeStatus): string {
   if (status.activeWindowsScalePercent !== null && status.activeCssTierDpi !== null) {
@@ -14,7 +16,10 @@ function formatActiveTierLine(status: UiHidpiRuntimeStatus): string {
   return uiText('appSettingsHidpiBaseTier')
 }
 
-export function AppSettingsHidpiStatusPanel(props: { sectionHintId: string }): JSX.Element {
+export function AppSettingsHidpiStatusPanel(props: {
+  sectionHintId: string
+  onOpenKnowledgeArticle?: (slug: string) => void
+}): JSX.Element {
   const [status, setStatus] = useState<UiHidpiRuntimeStatus>(() => readUiHidpiRuntimeStatus())
 
   useEffect(() => {
@@ -44,7 +49,19 @@ export function AppSettingsHidpiStatusPanel(props: { sectionHintId: string }): J
       className="app-settings-fieldset app-settings-hidpi-panel"
       aria-describedby={props.sectionHintId}
     >
-      <h3 className="app-settings-hidpi-title">{uiText('appSettingsHidpiLegend')}</h3>
+      <div className="app-settings-hw-smoke-header">
+        <h3 className="app-settings-hidpi-title">{uiText('appSettingsHidpiLegend')}</h3>
+        {props.onOpenKnowledgeArticle ? (
+          <KnowledgeDeepLinkButton
+            label={uiText('knowledgeDeepLinkHidpiLabel')}
+            tooltip={uiText('knowledgeDeepLinkHidpiTooltip')}
+            ariaDescribedBy={props.sectionHintId}
+            onOpen={() => {
+              props.onOpenKnowledgeArticle?.(KNOWLEDGE_SLUG_APPEARANCE_LANGUAGE_THEME)
+            }}
+          />
+        ) : null}
+      </div>
       <p className="app-modal-hint">
         {uiTextVars('appSettingsHidpiDevicePixelRatio', {
           ratio: status.devicePixelRatio.toFixed(2)

@@ -39,12 +39,7 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
   }
 
   return (
-    <div
-      role="region"
-      aria-label={uiText('batchExportQueueTableZoneAria')}
-      aria-describedby="batch-export-panel-hint batch-export-drop-hint"
-      aria-busy={batchExportBusy}
-    >
+    <>
       {batchSnapshot && batchSnapshot.rows.length > 0 ? (
         <div
           className="app-batch-export-table-wrap"
@@ -57,6 +52,9 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
             <caption className="app-visually-hidden">{uiText('batchExportTableCaption')}</caption>
             <thead>
               <tr>
+                <th scope="col" id={BATCH_EXPORT_TABLE_HEADER_IDS.reorder} className="app-visually-hidden">
+                  {uiText('batchExportColReorder')}
+                </th>
                 <th scope="col" id={BATCH_EXPORT_TABLE_HEADER_IDS.file}>
                   {uiText('batchExportColFile')}
                 </th>
@@ -90,7 +88,6 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                   batchDragRowId !== row.id
                 const rowClassName = [
                   row.status === 'error' ? 'app-batch-export-row-error' : '',
-                  canDrag ? 'app-batch-export-row-draggable' : '',
                   isDragging ? 'app-batch-export-row-dragging' : '',
                   isDropTarget ? 'app-batch-export-row-drop-target' : ''
                 ]
@@ -120,15 +117,10 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                   <tr
                     key={row.id}
                     className={rowClassName || undefined}
-                    tabIndex={canDrag || row.status === 'error' ? 0 : undefined}
+                    tabIndex={row.status === 'error' ? 0 : undefined}
                     aria-label={rowAriaLabel}
                     aria-describedby={rowDescribedBy}
-                    title={
-                      canDrag
-                        ? uiText('batchExportDragRow')
-                        : uiText('batchExportRowDoubleClickTitle')
-                    }
-                    draggable={canDrag}
+                    title={uiText('batchExportRowDoubleClickTitle')}
                     onDoubleClick={(e) => {
                       if ((e.target as HTMLElement).closest('button')) {
                         return
@@ -142,12 +134,6 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                         return
                       }
                       void handleBatchOpenInput(row.inputPath, 'preview')
-                    }}
-                    onDragStart={() => {
-                      setBatchDragRowId(row.id)
-                    }}
-                    onDragEnd={() => {
-                      clearDragVisual()
                     }}
                     onDragOver={(e) => {
                       if (!canDrag) {
@@ -175,6 +161,32 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                         .catch(console.error)
                     }}
                   >
+                    <td headers={BATCH_EXPORT_TABLE_HEADER_IDS.reorder} className="app-batch-export-reorder-cell">
+                      <button
+                        type="button"
+                        className="app-btn app-btn-icon app-batch-export-drag-handle"
+                        draggable={canDrag}
+                        disabled={!canDrag}
+                        aria-label={uiTextVars('batchExportDragHandleAria', {
+                          n: String(rowIndex + 1),
+                          file: row.shortLabel
+                        })}
+                        aria-describedby={rowDescribedBy}
+                        {...(isDragging ? { 'aria-grabbed': true as const } : {})}
+                        title={uiText('batchExportDragRow')}
+                        onDragStart={(e) => {
+                          e.stopPropagation()
+                          setBatchDragRowId(row.id)
+                        }}
+                        onDragEnd={() => {
+                          clearDragVisual()
+                        }}
+                      >
+                        <span className="app-batch-export-drag-handle-glyph" aria-hidden>
+                          ⋮⋮
+                        </span>
+                      </button>
+                    </td>
                     <th scope="row" headers={BATCH_EXPORT_TABLE_HEADER_IDS.file} title={row.inputPath}>
                       {row.shortLabel}
                     </th>
@@ -410,6 +422,6 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
           {uiText('batchExportEmpty')}
         </p>
       )}
-    </div>
+    </>
   )
 }
