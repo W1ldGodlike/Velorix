@@ -157,5 +157,7 @@ export const fluxalloySettings = {
   registerWindowsFileAssociationNow: (): Promise<{ ok: true } | { ok: false; error: string }> =>
     ipcRenderer.invoke(mw.windowsFileAssociationRegisterNow),
   unregisterWindowsFileAssociation: (): Promise<{ ok: true }> =>
-    ipcRenderer.invoke(mw.windowsFileAssociationUnregister)
+    ipcRenderer.invoke(mw.windowsFileAssociationUnregister),
+  openWindowsDefaultAppsSettings: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke(mw.openWindowsDefaultAppsSettings)
 }

@@ -3287,6 +3287,7 @@ button.app-downloads-hint-token:disabled {
 }
 
 .workflow-scenario-flow-node {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
@@ -3359,6 +3360,91 @@ button.app-downloads-hint-token:disabled {
 
 .workflow-scenario-flow-item[draggable='true']:active .workflow-scenario-flow-node {
   cursor: grabbing;
+}
+
+.workflow-scenario-flow-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.35rem 0 0.5rem;
+}
+
+.workflow-scenario-flow-remove {
+  position: absolute;
+  top: 0.15rem;
+  right: 0.15rem;
+  min-width: 1.4rem;
+  min-height: 1.4rem;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.workflow-scenario-flow-port {
+  flex-shrink: 0;
+  width: 0.75rem;
+  height: 0.75rem;
+  padding: 0;
+  border: 2px solid var(--fa-accent, #4a9eff);
+  border-radius: 50%;
+  background: var(--fa-surface-elevated, #0d1219);
+  cursor: crosshair;
+}
+
+.workflow-scenario-flow-port-in {
+  margin-right: 0.15rem;
+}
+
+.workflow-scenario-flow-port-out {
+  margin-left: 0.15rem;
+}
+
+.workflow-scenario-flow-port-source {
+  background: var(--fa-accent, #4a9eff);
+}
+
+.workflow-scenario-flow-port-active {
+  outline: 2px solid var(--fa-success, #22c55e);
+  outline-offset: 2px;
+}
+
+.workflow-scenario-flow-item-link-target .workflow-scenario-flow-port-in {
+  border-color: var(--fa-success, #22c55e);
+}
+
+.workflow-scenario-flow-arrow-btn {
+  font: inherit;
+  color: var(--fa-text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0 0.1rem;
+}
+
+.workflow-scenario-flow-arrow-btn:hover {
+  color: var(--fa-accent, #4a9eff);
+}
+
+.workflow-scenario-flow-gap {
+  font-size: 1rem;
+  color: var(--fa-text-muted);
+  user-select: none;
+  padding: 0 0.15rem;
+}
+
+.workflow-scenario-flow-extra-edges {
+  margin: 0.35rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.75rem;
+  color: var(--fa-text-secondary);
+}
+
+.workflow-scenario-flow-extra-edge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
 }
 
 .workflow-planner-add-form {

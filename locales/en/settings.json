@@ -30,7 +30,7 @@
   "appSettingsSectionHintDefaults": "Download folder and batch export output directory.",
   "appSettingsSectionHintDependencies": "Engine paths, update check, and manual NVENC/VAAPI smoke checklist on your hardware.",
   "appSettingsOwnerSmokeLegend": "Owner manual smoke",
-  "appSettingsOwnerSmokeIntro": "Copies one checklist: HiDPI, hardware encoding, and OS scheduler for your platform. The same text is in Support ZIP (ownerManualSmoke:).",
+  "appSettingsOwnerSmokeIntro": "Copies one checklist: HiDPI, HW, scenario builder, OS scheduler, and (on Windows) Explorer shell. The same text is in Support ZIP (ownerManualSmoke:).",
   "appSettingsOwnerSmokeCopy": "Copy full bundle",
   "appSettingsOwnerSmokeCopied": "Smoke bundle copied to clipboard.",
   "appSettingsOwnerSmokeCopyFailed": "Could not copy — select text manually.",
@@ -110,5 +110,7 @@
   "appSettingsOpenWithDisabledDone": "Open with disabled",
   "appSettingsOpenWithRegisterDone": "Open with registered",
   "appSettingsOpenWithUnregisterDone": "Open with removed",
-  "appSettingsOpenWithRegisteredStatus": "FluxAlloy is listed in Open with for video extensions"
+  "appSettingsOpenWithRegisteredStatus": "FluxAlloy is listed in Open with for video extensions",
+  "appSettingsOpenWithDefaultApps": "Default apps…",
+  "appSettingsOpenWithDefaultAppsDone": "Opened Windows default apps settings."
 }

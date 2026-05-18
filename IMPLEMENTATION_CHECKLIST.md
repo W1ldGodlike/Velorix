@@ -43,11 +43,11 @@
 
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый.
 
-- [~] §16/§1.1/§10: owner-smoke hub + Support ZIP (J-1072); прогон на железе — владелец.
-- [x] §14: меню + OpenWith + Help/deep-link (J-1073/1074); default app — вручную в Windows.
-- [~] §11: drag-reorder блоков v1 (J-1074); полный canvas drag-and-link — позже.
-- [x] §12: очистка temp — partials, снимок с числом файлов, Help/tooltip (J-1064/1071).
-- [x] §13: история processing/downloads — live-refresh, export v2, Help, chips-фильтры.
+- [~] §16/§10/§3: owner-smoke прогон (HW NVENC/VAAPI, OS scheduler, packaged Win/Linux) — владелец; hub J-1072/1079.
+- [~] §11/§14 owner-smoke: чеклисты в IMPLEMENTATION_CHECKLIST + `ownerManualSmoke:` (J-1080).
+- [x] §14 код: меню + OpenWith + default apps (J-1073/1074/1077).
+- [x] §11 код: конструктор v1 reorder/add/link (J-1074/1076/1078).
+- [x] §12/§13: temp + истории (J-1064..1071).
 
 ---
 
@@ -412,7 +412,16 @@
 - [x] Load/save/delete в UI + `userData/workflows/scenarios.json`.
 - [x] Валидация схемы (кнопка «Проверить», `workflow-scenario-parse`).
 - [x] Deep-link Help из редактора и конструктора (J-1056).
-- [~] Drag-reorder блоков в блок-схеме → JSON edges (J-1074); canvas drag-and-link — позже.
+- [x] Reorder/add/remove и drag-and-link (порты + `edges` JSON, J-1074/1076/1078).
+
+### Ручной smoke владельца — конструктор (§11, не CI)
+
+Канон: `locales/*/workflow-scenario-manual-smoke.json` → `ownerManualSmoke:` (блок «Scenario builder»).
+
+- [ ] Конструктор: add/remove, drag-reorder, drag-and-link → `edges` в JSON.
+- [ ] «Сохранить» / перезагрузка — те же nodes/edges.
+- [ ] Редактор → «Запустить сценарий» — запись `workflowScenario` в истории.
+- [ ] (Опц.) URL-сценарий и watch-folder + OS scheduler (см. §10).
 
 ## §12. Очистка кэша и обслуживание
 
@@ -442,7 +451,16 @@
 - [x] NSIS post-install register / uninstall unregister (`installer.nsh`, headless CLI, J-1062).
 - [x] Single-instance: повторный shell-open в работающее окно (J-1062).
 - [x] «Открыть с помощью»: HKCU OpenWithProgids + Applications SupportedTypes; настройки, NSIS, headless CLI (J-1073).
-- [ ] Приложение по умолчанию для видео — только вручную через параметры Windows (не reg hash).
+- [x] Приложение по умолчанию: кнопка «Приложения по умолчанию…» → `ms-settings:defaultapps` (J-1077); reg UserChoice — не делаем.
+
+### Ручной smoke владельца — Windows shell (§14, не CI)
+
+Канон: `locales/*/windows-shell-manual-smoke.json` → `ownerManualSmoke:` (блок «Windows shell» на Win).
+
+- [ ] Контекстное меню: регистрация, «Открыть в FluxAlloy», повторный shell-open без второго процесса.
+- [ ] «Открыть с помощью»: FluxAlloy в списке для видео.
+- [ ] «Приложения по умолчанию…» открывает параметры Windows.
+- [ ] (Опц.) NSIS install/uninstall register/unregister.
 
 ## §15. База знаний и подсказки
 

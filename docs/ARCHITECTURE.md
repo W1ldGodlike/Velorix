@@ -58,7 +58,7 @@
 | [`src/main/ipc/register-single-export-ipc.ts`](../src/main/ipc/register-single-export-ipc.ts) | 5 |
 | [`src/main/register-downloads-bridge-ipc.ts`](../src/main/register-downloads-bridge-ipc.ts) | 5 |
 | [`src/main/ipc/register-batch-export-queue-ipc-run.ts`](../src/main/ipc/register-batch-export-queue-ipc-run.ts) | 4 |
-| [`src/main/ipc/register-windows-shell-context-menu-ipc.ts`](../src/main/ipc/register-windows-shell-context-menu-ipc.ts) | 8 |
+| [`src/main/ipc/register-windows-shell-context-menu-ipc.ts`](../src/main/ipc/register-windows-shell-context-menu-ipc.ts) | 9 |
 | [`src/main/register-downloads-options-ipc-output.ts`](../src/main/register-downloads-options-ipc-output.ts) | 4 |
 | [`src/main/register-downloads-snapshot-ipc.ts`](../src/main/register-downloads-snapshot-ipc.ts) | 3 |
 | [`src/main/inspector-window.ts`](../src/main/inspector-window.ts) | 2 |

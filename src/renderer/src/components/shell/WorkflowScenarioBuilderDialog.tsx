@@ -14,6 +14,12 @@ import { KNOWLEDGE_SLUG_WORKFLOWS_PLANNER_SCENARIOS } from '../../../../shared/k
 import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
 import { uiText } from '../../locales/ui-text'
 import type { UiTextKey } from '../../locales/ui-text-strings'
+import {
+  allocateWorkflowScenarioNodeId,
+  appendWorkflowScenarioNode,
+  removeWorkflowScenarioNode
+} from '../../../../shared/workflow-scenario-editor-mutations'
+import { workflowScenarioNodeKindLabelKey } from '../../../../shared/workflow-scenario-layout'
 import { WorkflowScenarioFlowDiagram } from './WorkflowScenarioFlowDiagram'
 
 export type WorkflowScenarioBuilderDialogProps = {
@@ -202,11 +208,51 @@ export function WorkflowScenarioBuilderDialog(
         <p id="workflow-scenario-builder-hint" className="app-modal-hint">
           {uiText('workflowScenarioBuilderDialogHint')}
         </p>
+        {parsedScenario ? (
+          <div
+            className="workflow-scenario-flow-toolbar"
+            role="toolbar"
+            aria-orientation="horizontal"
+            aria-label={uiText('workflowScenarioAddBlockToolbarAria')}
+          >
+            {(['download', 'process', 'save'] as const).map((kind) => (
+              <button
+                key={kind}
+                type="button"
+                className="app-btn app-btn-compact"
+                disabled={busy}
+                title={uiText('workflowScenarioAddBlock')}
+                onClick={() => {
+                  const id = allocateWorkflowScenarioNodeId(kind, parsedScenario.nodes)
+                  const label = uiText(workflowScenarioNodeKindLabelKey(kind))
+                  const next = appendWorkflowScenarioNode(parsedScenario, { id, kind, label })
+                  setJsonText(JSON.stringify(next, null, 2))
+                }}
+              >
+                {uiText('workflowScenarioAddBlock')} — {uiText(workflowScenarioNodeKindLabelKey(kind))}
+              </button>
+            ))}
+          </div>
+        ) : null}
         <WorkflowScenarioFlowDiagram
           scenario={parsedScenario}
           editable={parsedScenario !== null && !busy}
           onReorder={(next) => {
             setJsonText(JSON.stringify(next, null, 2))
+          }}
+          onConnect={(next) => {
+            setJsonText(JSON.stringify(next, null, 2))
+          }}
+          onRemoveNode={(nodeId) => {
+            if (!parsedScenario) {
+              return
+            }
+            const next = removeWorkflowScenarioNode(parsedScenario, nodeId)
+            if (next) {
+              setJsonText(JSON.stringify(next, null, 2))
+            } else {
+              onStatus(uiText('workflowScenarioRemoveBlockLast'))
+            }
           }}
         />
         <div className="app-settings-field-row">

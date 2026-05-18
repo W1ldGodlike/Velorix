@@ -15,6 +15,8 @@ import {
   getWorkflowOsSchedulerManualSmokeChecklistForUiLocale,
   type WorkflowOsSchedulerSmokeCapabilities
 } from '../../workflow-os-scheduler-manual-smoke-checklist-locale'
+import { getWorkflowScenarioManualSmokeChecklistForUiLocale } from '../../workflow-scenario-manual-smoke-checklist-locale'
+import { getWindowsShellManualSmokeChecklistForUiLocale } from '../../windows-shell-manual-smoke-checklist-locale'
 import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
 
 function formatHidpiLinesForUiLocale(): string[] {
@@ -54,6 +56,7 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
 }): JSX.Element {
   const [copyHint, setCopyHint] = useState<string | null>(null)
   const [osCaps, setOsCaps] = useState<WorkflowOsSchedulerSmokeCapabilities | null>(null)
+  const [shellSupported, setShellSupported] = useState(false)
   const locale = getUiLocale()
 
   useEffect(() => {
@@ -67,6 +70,11 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
         macosLaunchd: res.macosLaunchd,
         linuxSystemdUserTimer: res.linuxSystemdUserTimer
       })
+    })
+    void window.fluxalloy.settings.windowsExplorerContextMenuStatus().then((st) => {
+      if (!cancelled) {
+        setShellSupported(st.supported)
+      }
     })
     return (): void => {
       cancelled = true
@@ -93,15 +101,30 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
     return formatFfmpegHwManualSmokeChecklistPlainText(sections)
   }, [locale, osCaps])
 
+  const scenarioPlainText = useMemo(() => {
+    const sections = getWorkflowScenarioManualSmokeChecklistForUiLocale(locale)
+    return formatFfmpegHwManualSmokeChecklistPlainText(sections)
+  }, [locale])
+
+  const shellPlainText = useMemo(() => {
+    if (!shellSupported) {
+      return null
+    }
+    const sections = getWindowsShellManualSmokeChecklistForUiLocale(locale)
+    return formatFfmpegHwManualSmokeChecklistPlainText(sections)
+  }, [locale, shellSupported])
+
   const plainText = useMemo(
     () =>
       formatOwnerManualSmokeBundlePlainText({
         hidpiLines: formatHidpiLinesForUiLocale(),
         hwPlainText,
+        scenarioPlainText,
         osPlainText,
+        shellPlainText,
         uiDpiSnapshot: formatUiDpiSnapshotLines()
       }),
-    [hwPlainText, osPlainText]
+    [hwPlainText, osPlainText, scenarioPlainText, shellPlainText]
   )
 
   const onCopy = (): void => {

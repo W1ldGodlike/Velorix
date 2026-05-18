@@ -33,7 +33,9 @@ export const LOCALE_JSON_SHARDS = [
   'linux-packaged-manual-smoke',
   'macos-packaged-manual-smoke',
   'workflow',
-  'workflow-os-scheduler-manual-smoke'
+  'workflow-os-scheduler-manual-smoke',
+  'workflow-scenario-manual-smoke',
+  'windows-shell-manual-smoke'
 ] as const
 export type LocaleJsonShard = (typeof LOCALE_JSON_SHARDS)[number]
 

@@ -15,7 +15,7 @@ Common video extensions are supported (`.mp4`, `.mkv`, `.webm`, …). The `Setup
 
 The separate **Show in Open with** option lists FluxAlloy for video files. It does **not** set a default app.
 
-To pick a default player or editor: **Windows Settings → Apps → Default apps**.
+To pick a default player or editor: use **Default apps…** in Settings (or **Windows Settings → Apps → Default apps**).
 
 ## Second instance
 

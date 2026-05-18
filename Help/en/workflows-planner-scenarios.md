@@ -15,7 +15,7 @@ Poll interval: **15–86400** seconds. Task Scheduler rounds to whole minutes; L
 
 ## Scenario builder
 
-**Download → Process → Save** chain (JSON + flow diagram). In the builder you can **drag blocks** to reorder — JSON order and arrows update as a linear chain.
+**Download → Process → Save** chain (JSON + flow diagram). In the builder: **Add** a block, **×** remove (not the last one), **drag** to reorder (linear arrows rebuild), **link** blocks with left/right dots — edges are written to JSON; click **→** to remove an edge; skip links appear under extra connections.
 
 | Template | Purpose |
 |----------|---------|

@@ -1,0 +1,15 @@
+{
+  "workflowScenarioSmokeSectionTitle": "Конструктор сценариев (§11, dev/packaged)",
+  "workflowScenarioSmokePrereq0": "Сохранён сценарий с блоками «Скачать» → «Обработать» → «Сохранить».",
+  "workflowScenarioSmokePrereq1": "Локальный медиафайл для прогона «Запустить сценарий» в редакторе.",
+  "workflowScenarioSmokePrereq2": "(Опц.) URL для «Запустить URL-сценарий» (sourceUrl в блоке «Скачать»).",
+  "workflowScenarioSmokeStep_open_builder": "Сервис → Конструктор сценариев: блок-схема, JSON, «Проверить» без ошибки.",
+  "workflowScenarioSmokeStep_add_link": "«Добавить» блок, перетащить порядок, связать кружками — edges в JSON.",
+  "workflowScenarioSmokeStep_save": "«Сохранить» — сценарий в списке; перезагрузка конструктора показывает те же nodes/edges.",
+  "workflowScenarioSmokeStep_editor_run": "Редактор → FFmpeg rail → «Запустить сценарий» по открытому файлу — запись workflowScenario в истории.",
+  "workflowScenarioSmokeStep_url_run": "(Опц.) «Запустить URL-сценарий» — yt-dlp, затем ffmpeg (без авто-open в редакторе).",
+  "workflowScenarioSmokeStep_planner": "(Опц.) Watch-folder + «Запускать сценарий» — см. чеклист OS scheduler.",
+  "workflowScenarioSmokePass0": "Удаление блока × не оставляет висячих edges в JSON.",
+  "workflowScenarioSmokePass1": "Повтор сценария из истории обработки ставит задачу снова.",
+  "workflowScenarioSmokePass2": "Help «Планировщик и сценарии» открывается из конструктора (deep-link)."
+}

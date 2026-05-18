@@ -96,6 +96,7 @@ export const mainWindowIpc = {
   windowsFileAssociationSetEnabled: 'fluxalloy:windows-file-association-set-enabled',
   windowsFileAssociationRegisterNow: 'fluxalloy:windows-file-association-register-now',
   windowsFileAssociationUnregister: 'fluxalloy:windows-file-association-unregister',
+  openWindowsDefaultAppsSettings: 'fluxalloy:open-windows-default-apps-settings',
   openDownloadsWindow: 'fluxalloy:open-downloads-window',
   /** §9 — отдельное окно инспектора ffprobe (`#inspector`). */
   openInspectorWindow: 'fluxalloy:open-inspector-window',

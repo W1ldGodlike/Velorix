@@ -16,6 +16,7 @@ import {
   syncWindowsFileAssociationEnabled,
   unregisterWindowsFileAssociation
 } from '../windows-file-association-sync'
+import { openWindowsDefaultAppsSettings } from '../windows-default-apps-settings'
 
 let ipcRegistered = false
 
@@ -139,5 +140,9 @@ export function registerWindowsShellContextMenuIpc(deps: WindowsShellContextMenu
     await unregisterWindowsFileAssociation(process.execPath)
     setOpenWithEnabledFlag(deps, false)
     return { ok: true as const }
+  })
+
+  ipcMain.handle(mw.openWindowsDefaultAppsSettings, async () => {
+    return openWindowsDefaultAppsSettings()
   })
 }

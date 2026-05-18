@@ -201,6 +201,21 @@ export function WindowsExplorerContextMenuSettings(props: {
         >
           {uiText('appSettingsOpenWithUnregister')}
         </button>
+        <button
+          type="button"
+          className="app-btn app-btn-compact"
+          title={uiText('appSettingsOpenWithDefaultApps')}
+          disabled={disabled}
+          onClick={() => {
+            void window.fluxalloy.settings.openWindowsDefaultAppsSettings().then((res) => {
+              onStatus(
+                res.ok ? uiText('appSettingsOpenWithDefaultAppsDone') : res.error
+              )
+            })
+          }}
+        >
+          {uiText('appSettingsOpenWithDefaultApps')}
+        </button>
       </div>
       {openWithRegistered ? (
         <p className="app-modal-hint" role="status">
