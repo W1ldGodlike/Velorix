@@ -79,10 +79,7 @@ function formatUiDpiSnapshotLines(): string[] {
   return lines
 }
 
-function OwnerSmokeJumpButton(props: {
-  label: string
-  onClick: () => void
-}): JSX.Element {
+function OwnerSmokeJumpButton(props: { label: string; onClick: () => void }): JSX.Element {
   return (
     <button
       type="button"
@@ -320,7 +317,9 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
             <li key={line}>{line}</li>
           ))}
         </ul>
-        <p className="app-settings-hw-smoke-label">{uiText('appSettingsOwnerSmokePreviewUiDpiLabel')}</p>
+        <p className="app-settings-hw-smoke-label">
+          {uiText('appSettingsOwnerSmokePreviewUiDpiLabel')}
+        </p>
         <ul className="app-settings-hidpi-checklist app-settings-owner-smoke-mono-lines">
           {formatUiDpiSnapshotLines().map((line) => (
             <li key={line}>

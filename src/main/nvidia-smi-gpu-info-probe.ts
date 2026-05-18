@@ -1,14 +1,8 @@
 import { execFile } from 'child_process'
 
-import {
-  parseNvidiaSmiGpuInfo,
-  type NvidiaSmiGpuInfo
-} from '../shared/nvidia-smi-gpu-info-parse'
+import { parseNvidiaSmiGpuInfo, type NvidiaSmiGpuInfo } from '../shared/nvidia-smi-gpu-info-parse'
 
-const QUERY_ARGS = [
-  '--query-gpu=name,driver_version',
-  '--format=csv,noheader,nounits'
-] as const
+const QUERY_ARGS = ['--query-gpu=name,driver_version', '--format=csv,noheader,nounits'] as const
 
 const EXEC_OPTS = {
   timeout: 4000,

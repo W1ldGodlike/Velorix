@@ -173,5 +173,4 @@ describe('shared ffmpeg export argv — argv build, trim, preview helpers', () =
     expect(explicitOff.argv).not.toContain('-t')
     expect(explicitOff.appliedTrim).toBe(false)
   })
-
 })

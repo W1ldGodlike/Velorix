@@ -22,10 +22,7 @@ import {
 import { probeFfmpegHwEncoders } from '../ffmpeg-hw-encoder-probe-main'
 import { probeMediaFile } from '../ffprobe-service'
 import { grantMediaPath, isGrantedMediaPath } from '../media-protocol'
-import {
-  nativeMainEngineExecutableSuffix,
-  nativeMainEngineOpenDialogFilters
-} from '../platform'
+import { nativeMainEngineExecutableSuffix, nativeMainEngineOpenDialogFilters } from '../platform'
 import type { EnginesCheckUpdatesAndDownloadResult } from '../../shared/engine-update-check-contract'
 import { openVideoFolderWithDialog, openVideoWithDialog } from '../preview-dialog'
 

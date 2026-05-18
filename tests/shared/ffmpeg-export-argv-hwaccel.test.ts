@@ -20,12 +20,7 @@ describe('shared ffmpeg export argv — hwaccel and hardware encode', () => {
       container: 'mp4'
     })
     const i = argv.indexOf('-i')
-    expect(argv.slice(i - 4, i)).toEqual([
-      '-hwaccel',
-      'cuda',
-      '-hwaccel_output_format',
-      'cuda'
-    ])
+    expect(argv.slice(i - 4, i)).toEqual(['-hwaccel', 'cuda', '-hwaccel_output_format', 'cuda'])
   })
 
   it('hwaccelDecode qsv: output format qsv перед -i', () => {
@@ -168,12 +163,7 @@ describe('shared ffmpeg export argv — hwaccel and hardware encode', () => {
       videoTransform: 'hflip'
     })
     const i = argv.indexOf('-i')
-    expect(argv.slice(i - 4, i)).toEqual([
-      '-hwaccel',
-      'cuda',
-      '-hwaccel_output_format',
-      'cuda'
-    ])
+    expect(argv.slice(i - 4, i)).toEqual(['-hwaccel', 'cuda', '-hwaccel_output_format', 'cuda'])
     const vf = argv[argv.indexOf('-vf') + 1] ?? ''
     expect(vf.startsWith('format=nv12,hwupload_cuda,')).toBe(true)
     expect(vf).toContain('hflip')
@@ -198,12 +188,7 @@ describe('shared ffmpeg export argv — hwaccel and hardware encode', () => {
       cropPreset: 'center-square'
     })
     const i = argv.indexOf('-i')
-    expect(argv.slice(i - 4, i)).toEqual([
-      '-hwaccel',
-      'vaapi',
-      '-hwaccel_output_format',
-      'vaapi'
-    ])
+    expect(argv.slice(i - 4, i)).toEqual(['-hwaccel', 'vaapi', '-hwaccel_output_format', 'vaapi'])
     const vf = argv[argv.indexOf('-vf') + 1] ?? ''
     expect(vf.startsWith('format=nv12,hwupload,')).toBe(true)
     expect(vf).toContain('crop=')
@@ -291,5 +276,4 @@ describe('shared ffmpeg export argv — hwaccel and hardware encode', () => {
     expect(argv).toContain('-q:v')
     expect(typeof argv[argv.indexOf('-q:v') + 1]).toBe('string')
   })
-
 })

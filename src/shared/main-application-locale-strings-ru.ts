@@ -127,7 +127,8 @@ export const mainApplicationStringsRu: MainApplicationStrings = {
   exportFilterAll: 'Все файлы',
   snapshotSaveDialogTitle: 'Сохранить кадр',
   extractFramesPickFolderTitle: 'Папка для извлечённых кадров',
-  extractFramesTooMany: 'Слишком много кадров (лимит 200). Увеличьте интервал или уменьшите количество.',
+  extractFramesTooMany:
+    'Слишком много кадров (лимит 200). Увеличьте интервал или уменьшите количество.',
   extractFramesDurationTooShort: 'Видео слишком короткое для извлечения кадров.',
   extractFramesInvalidCount: 'Укажите число кадров от 1 до 200.',
   extractFramesInvalidManual:
@@ -245,4 +246,3 @@ export const mainApplicationStringsRu: MainApplicationStrings = {
   windowsExplorerContextMenuQuickMp4: 'Быстро конвертировать в MP4',
   windowsFileAssociationTypeName: 'Видео FluxAlloy'
 }
-

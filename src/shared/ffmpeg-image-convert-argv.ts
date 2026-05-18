@@ -6,15 +6,7 @@ export function buildFfmpegConvertImageArgv(
   outputPath: string,
   format: MediaUtilitiesImageFormatId
 ): string[] {
-  const base = [
-    '-hide_banner',
-    '-loglevel',
-    'error',
-    '-i',
-    inputPath,
-    '-frames:v',
-    '1'
-  ]
+  const base = ['-hide_banner', '-loglevel', 'error', '-i', inputPath, '-frames:v', '1']
   if (format === 'jpg') {
     return [...base, '-q:v', '2', '-y', outputPath]
   }

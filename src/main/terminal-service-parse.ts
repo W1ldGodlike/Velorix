@@ -1,10 +1,7 @@
 import { normalize, resolve } from 'path'
 
 import { getMainApplicationStrings } from '../shared/main-application-locale'
-import {
-  TERMINAL_CURRENT_FILE_PLACEHOLDER,
-  type TerminalToolId
-} from '../shared/terminal-contract'
+import { TERMINAL_CURRENT_FILE_PLACEHOLDER, type TerminalToolId } from '../shared/terminal-contract'
 import {
   TERMINAL_ALLOWED_TOOLS,
   TERMINAL_MAX_LINE_CHARS,

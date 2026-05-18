@@ -6,11 +6,7 @@
  *   node scripts/journal-consolidate.mjs --write
  */
 import { readFileSync, writeFileSync } from 'node:fs'
-import {
-  formatEntryLine,
-  parseJournalEntries,
-  readLocalStamp
-} from './journal-lib.mjs'
+import { formatEntryLine, parseJournalEntries, readLocalStamp } from './journal-lib.mjs'
 
 const journalPath = 'IMPLEMENTATION_JOURNAL.md'
 const write = process.argv.includes('--write')

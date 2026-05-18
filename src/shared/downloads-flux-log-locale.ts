@@ -30,10 +30,7 @@ export function fluxLogAutoOpenSkippedBadPath(locale: AppUiLocale): string {
     : `${BR} Авто-открытие в обработчике пропущено: путь результата неизвестен или вне каталога загрузок.`
 }
 
-export function formatFluxLogAutoOpenFailed(
-  locale: AppUiLocale,
-  error: string
-): string {
+export function formatFluxLogAutoOpenFailed(locale: AppUiLocale, error: string): string {
   return locale === 'en'
     ? `${BR} Auto-open in handler failed: ${error}`
     : `${BR} Авто-открытие в обработчике не удалось: ${error}`
@@ -75,10 +72,7 @@ export function fluxLogAutoExportSkippedMainWindow(locale: AppUiLocale): string 
     : `${BR} Авто-экспорт пропущен: главное окно недоступно.`
 }
 
-export function formatFluxLogAutoExportDone(
-  locale: AppUiLocale,
-  outPath: string
-): string {
+export function formatFluxLogAutoExportDone(locale: AppUiLocale, outPath: string): string {
   return locale === 'en'
     ? `${BR} Auto-export finished: ${outPath}`
     : `${BR} Авто-экспорт завершён: ${outPath}`
@@ -88,19 +82,13 @@ export function fluxLogAutoExportCancelled(locale: AppUiLocale): string {
   return locale === 'en' ? `${BR} Auto-export cancelled.` : `${BR} Авто-экспорт отменён.`
 }
 
-export function formatFluxLogAutoExportFailed(
-  locale: AppUiLocale,
-  error: string
-): string {
+export function formatFluxLogAutoExportFailed(locale: AppUiLocale, error: string): string {
   return locale === 'en'
     ? `${BR} Auto-export failed: ${error}`
     : `${BR} Авто-экспорт не удался: ${error}`
 }
 
-export function formatFluxLogBatchEnqueueAdded(
-  locale: AppUiLocale,
-  path: string
-): string {
+export function formatFluxLogBatchEnqueueAdded(locale: AppUiLocale, path: string): string {
   return locale === 'en'
     ? `${BR} Added to batch export queue: ${path}`
     : `${BR} Добавлено в пакетный экспорт: ${path}`

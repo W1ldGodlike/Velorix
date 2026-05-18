@@ -36,6 +36,11 @@
 - Обновите сводку ffprobe; см. [probe-and-inspector-basics.md](probe-and-inspector-basics.md).
 - Сырой JSON — для опытных; для обычной работы достаточно блоков «дорожки» и «главы».
 
+## Текст обрезается, тема «грязная» или не та в pop-out
+
+- Масштаб Windows 100–200 %: чеклист в [appearance-language-theme.md](appearance-language-theme.md) и **Настройки → Общие → HiDPI**; полный пакет — [owner-manual-smoke.md](owner-manual-smoke.md).
+- Тёмная/светлая тема и «как в системе»: [appearance-language-theme.md](appearance-language-theme.md), **Настройки → Общие → Тема** или меню **Вид → Тема**.
+
 ## Язык справки не совпадает с интерфейсом
 
 Смените язык UI (RU/EN) и снова откройте справку — подтянется `Help/en/*.md` при наличии пары: [knowledge-base-howto.md](knowledge-base-howto.md).

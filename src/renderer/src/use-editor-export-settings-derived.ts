@@ -14,13 +14,15 @@ import {
   buildEditorFfmpegExportOverrides
 } from './editor-export-settings-snapshot-build'
 import type { EditorExportSettingsFieldState } from './editor-export-settings-field-state'
+import type { EditorExportSettingsDerivedBundle } from './editor-export-settings-derived-types'
 import { resolveExternalFilterScriptForPreview } from '../../shared/external-filter-script-resolve-preview'
 import { hydrateEditorExportFieldsFromSettings } from './editor-export-settings-hydrate'
 import { buildEditorExportStatusbarCodecDisplay } from './editor-export-statusbar-codec'
 import { getUiLocale, uiText, uiTextVars } from './locales/ui-text'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- derived export-settings bundle
-export function useEditorExportSettingsDerived(fields: EditorExportSettingsFieldState) {
+export function useEditorExportSettingsDerived(
+  fields: EditorExportSettingsFieldState
+): EditorExportSettingsDerivedBundle {
   const {
     exportEncodePreset,
     setExportEncodePreset,

@@ -131,10 +131,7 @@ export const YTDLP_HINT_TOKEN_CATEGORY_EN: Readonly<Record<string, string>> = {
   '--no-warnings': 'Output & logging'
 }
 
-export function ytdlpHintTokenCategory(
-  token: string,
-  locale: AppUiLocale
-): string | undefined {
+export function ytdlpHintTokenCategory(token: string, locale: AppUiLocale): string | undefined {
   const m = locale === 'en' ? YTDLP_HINT_TOKEN_CATEGORY_EN : YTDLP_HINT_TOKEN_CATEGORY_RU
   return m[token]
 }

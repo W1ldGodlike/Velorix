@@ -23,9 +23,7 @@ export type UseEditorExportUserPresetActionsParams = {
   buildCurrentExportSnapshot: () => FfmpegExportUserPresetSnapshot
 }
 
-export function useEditorExportUserPresetActions(
-  params: UseEditorExportUserPresetActionsParams
-): {
+export function useEditorExportUserPresetActions(params: UseEditorExportUserPresetActionsParams): {
   handleSaveExportUserPreset: () => void
   handleDeleteExportUserPreset: () => void
   handleRenameExportUserPreset: () => void
@@ -77,7 +75,13 @@ export function useEditorExportUserPresetActions(
         setSelectedUserPresetId(null)
       })
       .catch(console.error)
-  }, [exportUserPresets, selectedUserPresetId, setExportUserPresets, setSelectedUserPresetId, setStatusHint])
+  }, [
+    exportUserPresets,
+    selectedUserPresetId,
+    setExportUserPresets,
+    setSelectedUserPresetId,
+    setStatusHint
+  ])
 
   const handleRenameExportUserPreset = useCallback(() => {
     if (!selectedUserPresetId) {

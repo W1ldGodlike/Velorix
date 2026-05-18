@@ -112,12 +112,8 @@ export function WorkflowScenarioFlowDiagram(props: {
       }}
     >
       <p className="app-settings-hw-smoke-label">{uiText('workflowScenarioFlowLabel')}</p>
-      {canDrag ? (
-        <p className="app-modal-hint">{uiText('workflowScenarioFlowDragHint')}</p>
-      ) : null}
-      {canLink ? (
-        <p className="app-modal-hint">{uiText('workflowScenarioFlowLinkHint')}</p>
-      ) : null}
+      {canDrag ? <p className="app-modal-hint">{uiText('workflowScenarioFlowDragHint')}</p> : null}
+      {canLink ? <p className="app-modal-hint">{uiText('workflowScenarioFlowLinkHint')}</p> : null}
       <ol className="workflow-scenario-flow">
         {ordered.map((node, index) => {
           const nextNode = ordered[index + 1]
@@ -285,7 +281,10 @@ export function WorkflowScenarioFlowDiagram(props: {
         })}
       </ol>
       {canLink && extraEdges.length > 0 ? (
-        <ul className="workflow-scenario-flow-extra-edges" aria-label={uiText('workflowScenarioFlowExtraEdgesAria')}>
+        <ul
+          className="workflow-scenario-flow-extra-edges"
+          aria-label={uiText('workflowScenarioFlowExtraEdgesAria')}
+        >
           {extraEdges.map((edge) => (
             <li key={`${edge.from}-${edge.to}`} className="workflow-scenario-flow-extra-edge">
               <span>

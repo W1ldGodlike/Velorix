@@ -2,7 +2,11 @@ import { BrowserWindow } from 'electron'
 
 import { cancelDownloadsRunner, isDownloadsRunnerBusy } from './downloads-queue-runner'
 import { getMainWindowTitle } from '../shared/app-ui-locale'
-import { clearRendererLogBucket, mainAppStr, mainDownloadsUiLocale } from './main-bootstrap-ipc-helpers'
+import {
+  clearRendererLogBucket,
+  mainAppStr,
+  mainDownloadsUiLocale
+} from './main-bootstrap-ipc-helpers'
 import { attachMainWindowBoundsPersistence, getCachedSettings } from './main-cached-settings-host'
 import { buildApplicationMenu } from './main-application-menu'
 import { createMainWindow } from './main-window'

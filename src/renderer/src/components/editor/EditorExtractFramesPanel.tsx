@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+import type { JSX } from 'react'
 
 import type { FfmpegFramesExtractModeId } from '../../../../shared/ffmpeg-frames-extract-contract'
 import {
@@ -10,8 +11,7 @@ import { useEditorExtractFramesInput } from '../../use-editor-extract-frames-inp
 import { uiText, uiTextVars } from '../../locales/ui-text'
 import type { EditorFfmpegSettingsRailProps } from './editor-ffmpeg-settings-rail-props'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- panel fragment
-export function EditorExtractFramesPanel(props: EditorFfmpegSettingsRailProps) {
+export function EditorExtractFramesPanel(props: EditorFfmpegSettingsRailProps): JSX.Element {
   const {
     previewMediaPath,
     previewProbeDurationSec,
@@ -118,7 +118,10 @@ export function EditorExtractFramesPanel(props: EditorFfmpegSettingsRailProps) {
         aria-label={uiText('editorExtractFramesSourceAria')}
       >
         <span className="app-field-label">{uiText('editorExtractFramesSourceLabel')}</span>
-        <p className="app-modal-hint app-settings-extract-frames-source-path" title={inputPath ?? ''}>
+        <p
+          className="app-modal-hint app-settings-extract-frames-source-path"
+          title={inputPath ?? ''}
+        >
           {inputDisplayName}
         </p>
         <div
@@ -201,7 +204,10 @@ export function EditorExtractFramesPanel(props: EditorFfmpegSettingsRailProps) {
         ) : null}
       </div>
       {mode === 'manual' ? (
-        <label className="app-field app-field--full" title={uiText('editorExtractFramesManualTitle')}>
+        <label
+          className="app-field app-field--full"
+          title={uiText('editorExtractFramesManualTitle')}
+        >
           <span className="app-field-label">{uiText('editorExtractFramesManualLabel')}</span>
           <textarea
             className="app-input app-input-multiline"
@@ -253,10 +259,7 @@ export function EditorExtractFramesPanel(props: EditorFfmpegSettingsRailProps) {
               aria-valuenow={progressIndex}
               aria-label={uiText('editorExtractFramesProgressAria')}
             >
-              <span
-                className="app-downloads-progress-fill"
-                style={{ width: `${progressPct}%` }}
-              />
+              <span className="app-downloads-progress-fill" style={{ width: `${progressPct}%` }} />
             </span>
             <span className="app-downloads-progress-pct">{progressPct}%</span>
           </div>

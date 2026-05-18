@@ -12,10 +12,7 @@ import {
   resolveFfmpegExportBatchRowProgressDisplay
 } from './ffmpeg-export-batch-row-display'
 
-function batchStatusLabel(
-  status: FfmpegExportBatchStatus,
-  locale: AppUiLocale
-): string {
+function batchStatusLabel(status: FfmpegExportBatchStatus, locale: AppUiLocale): string {
   if (locale === 'en') {
     switch (status) {
       case 'waiting':

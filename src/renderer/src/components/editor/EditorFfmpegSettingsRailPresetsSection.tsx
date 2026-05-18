@@ -1,9 +1,12 @@
+import type { JSX } from 'react'
+
 import { isBuiltinExportUserPresetId } from '../../../../shared/builtin-ffmpeg-export-user-presets'
 import { uiText } from '../../locales/ui-text'
 import type { EditorFfmpegSettingsRailProps } from './editor-ffmpeg-settings-rail-props'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- JSX section
-export function EditorFfmpegSettingsRailPresetsSection(props: EditorFfmpegSettingsRailProps) {
+export function EditorFfmpegSettingsRailPresetsSection(
+  props: EditorFfmpegSettingsRailProps
+): JSX.Element {
   const {
     panelOpen,
     persistMainWindowUiPanelToggle,

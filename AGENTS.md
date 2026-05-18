@@ -7,6 +7,7 @@
 3. **Marathon / «продолжай»:** [`docs/AGENT_MARATHON.md`](docs/AGENT_MARATHON.md) — `bump` в конце; cadence **после** bump: коммит при `% 5 === 0`, push при `% 10 === 0`
 4. **Продукт:** [`FLUXALLOY_TZ.md`](FLUXALLOY_TZ.md) — **запрещено** правки без явной просьбы владельца в чате
 5. **Спринт:** [`IMPLEMENTATION_CHECKLIST.md`](IMPLEMENTATION_CHECKLIST.md) → `## Ближайший TODO спринта`
+   5b. **Renderer state:** Zustand-сторы в `src/renderer/src/stores/`; канон [`renderer-state-approach.ts`](src/shared/renderer-state-approach.ts) + `docs/ARCHITECTURE.md` § Состояние renderer
 6. **Журнал:** [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md) — **одна** `J-NNN` на итерацию
 7. **Operational notes:** [`docs/AGENT_OPERATIONAL_NOTES.md`](docs/AGENT_OPERATIONAL_NOTES.md) — CSP, медиа, yt-dlp (открывать при отладке)
 8. **SDK:** [`scripts/cursor-automation/prompts/agent-contract.txt`](scripts/cursor-automation/prompts/agent-contract.txt)

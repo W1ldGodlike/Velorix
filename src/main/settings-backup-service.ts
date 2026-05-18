@@ -11,10 +11,7 @@ import {
   extractSettingsPayloadFromBackupJson
 } from '../shared/settings-backup-parse'
 import type { AppSettings, AppTheme, ResolvedAppTheme } from './settings-store'
-import {
-  hydrateAppSettingsFromPartial,
-  settingsStoreDefaults
-} from './settings-store-hydrate'
+import { hydrateAppSettingsFromPartial, settingsStoreDefaults } from './settings-store-hydrate'
 
 export type SettingsBackupServiceHooks = {
   getSettings: () => AppSettings
@@ -104,10 +101,12 @@ export function applyImportedAppSettings(partial: Record<string, unknown>): AppS
 
 export async function exportSettingsBackupWithDialog(
   win?: BrowserWindowType
-): Promise<{ ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }> {
+): Promise<
+  { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
+> {
   const h = requireHooks()
   const M = h.mainAppStr()
-  const parent = win && !win.isDestroyed() ? win : BrowserWindow.getFocusedWindow() ?? undefined
+  const parent = win && !win.isDestroyed() ? win : (BrowserWindow.getFocusedWindow() ?? undefined)
   if (!parent) {
     return { ok: false, error: M.exportNoActiveWindow }
   }
@@ -141,7 +140,7 @@ export async function importSettingsBackupWithDialog(
 ): Promise<{ ok: true } | { ok: false; cancelled: true } | { ok: false; error: string }> {
   const h = requireHooks()
   const M = h.mainAppStr()
-  const parent = win && !win.isDestroyed() ? win : BrowserWindow.getFocusedWindow() ?? undefined
+  const parent = win && !win.isDestroyed() ? win : (BrowserWindow.getFocusedWindow() ?? undefined)
   if (!parent) {
     return { ok: false, error: M.exportNoActiveWindow }
   }

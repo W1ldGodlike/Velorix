@@ -71,11 +71,9 @@ export function parseFfmpegExportBenchmarkRequest(
     }
   }
   const pd = (raw as { probeDurationSec?: unknown }).probeDurationSec
-  const probeDurationSec =
-    typeof pd === 'number' && Number.isFinite(pd) && pd > 0 ? pd : null
+  const probeDurationSec = typeof pd === 'number' && Number.isFinite(pd) && pd > 0 ? pd : null
   const ulocRaw = (raw as { uiLocale?: unknown }).uiLocale
-  const uiLocaleParsed =
-    ulocRaw === 'en' || ulocRaw === 'ru' ? ulocRaw : uiLocale
+  const uiLocaleParsed = ulocRaw === 'en' || ulocRaw === 'ru' ? ulocRaw : uiLocale
   return {
     ok: true,
     payload: {

@@ -151,9 +151,7 @@ export async function ensurePreviewPlayableMedia(absoluteFile: string): Promise<
   const paths = resolveAppPaths()
   const ffmpeg = resolveEngineExecutablePath(paths, 'ffmpeg', svc.getEnginePathOverrides())
   if (!ffmpeg) {
-    throw new Error(
-      getMainApplicationStrings(svc.getUiLocale()).previewFfmpegMissingForWebm
-    )
+    throw new Error(getMainApplicationStrings(svc.getUiLocale()).previewFfmpegMissingForWebm)
   }
 
   const st = statSync(absoluteFile)

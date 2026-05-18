@@ -7,7 +7,9 @@ export function useWorkflowWatchFolderStatus(setStatusHint: (hint: string | null
   useEffect(() => {
     const offDetect = window.fluxalloy.workflows.onWatchFolderDetected((payload) => {
       const base = payload.filePath.replace(/^.*[/\\]/, '')
-      setStatusHint(uiTextVars('workflowWatchFolderDetectedStatus', { file: base, task: payload.taskTitle }))
+      setStatusHint(
+        uiTextVars('workflowWatchFolderDetectedStatus', { file: base, task: payload.taskTitle })
+      )
     })
     const offRun = window.fluxalloy.workflows.onWatchFolderRunFinished((payload) => {
       const base = payload.filePath.replace(/^.*[/\\]/, '')

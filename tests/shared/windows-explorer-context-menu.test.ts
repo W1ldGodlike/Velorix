@@ -19,25 +19,17 @@ describe('windows-explorer-context-menu §14', () => {
 
   it('parses shell argv', () => {
     expect(
-      parseWindowsExplorerShellArgv([
-        'electron.exe',
-        FLUXALLOY_SHELL_OPEN_ARG,
-        'C:\\in\\a.mp4'
-      ])
+      parseWindowsExplorerShellArgv(['electron.exe', FLUXALLOY_SHELL_OPEN_ARG, 'C:\\in\\a.mp4'])
     ).toEqual({ mode: 'open', filePath: 'C:\\in\\a.mp4' })
     expect(
-      parseWindowsExplorerShellArgv([
-        'electron.exe',
-        FLUXALLOY_SHELL_QUICK_MP4_ARG,
-        'D:/b.webm'
-      ])
+      parseWindowsExplorerShellArgv(['electron.exe', FLUXALLOY_SHELL_QUICK_MP4_ARG, 'D:/b.webm'])
     ).toEqual({ mode: 'quick-mp4', filePath: 'D:/b.webm' })
   })
 
   it('detects installer headless argv', () => {
-    expect(isWindowsExplorerShellHeadlessArgv(['app.exe', FLUXALLOY_INSTALL_REGISTER_EXPLORER_MENU])).toBe(
-      'register'
-    )
+    expect(
+      isWindowsExplorerShellHeadlessArgv(['app.exe', FLUXALLOY_INSTALL_REGISTER_EXPLORER_MENU])
+    ).toBe('register')
   })
 
   it('builds reg command and association path', () => {

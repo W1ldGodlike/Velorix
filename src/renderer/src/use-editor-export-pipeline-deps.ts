@@ -36,10 +36,7 @@ export type UseEditorExportPipelineDeps = {
   buildCurrentFfmpegExportOverrides: () => Record<string, unknown>
   exportContainer: FfmpegExportContainerId
   exportEncodePreset: Parameters<typeof buildFfmpegExportPreviewCommand>[0]['encodePreset']
-  exportVideoCodecResolvedForPreview: Exclude<
-    FfmpegExportVideoCodecId,
-    'hw_auto' | 'hw_auto_hevc'
-  >
+  exportVideoCodecResolvedForPreview: Exclude<FfmpegExportVideoCodecId, 'hw_auto' | 'hw_auto_hevc'>
   exportCrf: number | null
   exportVideoBitrate: string | null
   exportAudioMode: Parameters<typeof buildFfmpegExportPreviewCommand>[0]['audioMode']

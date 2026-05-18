@@ -51,7 +51,9 @@
     "token": "-select_streams",
     "summary": "Какую дорожку смотреть: v:0 — первое видео, a:0 — первое аудио, s:0 — субтитры (индексы как в ffmpeg).",
     "summaryEn": "Which stream to inspect: v:0 first video, a:0 first audio, s:0 subtitles (ffmpeg indices).",
-    "examples": ["ffprobe -select_streams v:0 -show_entries stream=codec_name,width,height file.mp4"],
+    "examples": [
+      "ffprobe -select_streams v:0 -show_entries stream=codec_name,width,height file.mp4"
+    ],
     "docUrl": "https://ffmpeg.org/ffprobe.html#Main-options",
     "tool": "ffprobe"
   },
@@ -85,7 +87,9 @@
     "token": "-count_frames",
     "summary": "Подсчёт кадров в выбранной дорожке (медленная операция).",
     "summaryEn": "Count frames in the selected stream (slow).",
-    "examples": ["ffprobe -count_frames -select_streams v:0 -show_entries stream=nb_read_frames file.mp4"],
+    "examples": [
+      "ffprobe -count_frames -select_streams v:0 -show_entries stream=nb_read_frames file.mp4"
+    ],
     "docUrl": "https://ffmpeg.org/ffprobe.html#Main-options",
     "tool": "ffprobe"
   },

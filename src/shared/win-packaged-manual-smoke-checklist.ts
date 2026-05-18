@@ -7,15 +7,14 @@ import ruWinPackagedManualSmoke from '../../locales/ru/win-packaged-manual-smoke
 import { buildWinPackagedManualSmokeChecklistFromLocaleShard } from './win-packaged-manual-smoke-checklist-build'
 import { formatPackagedManualSmokeChecklistLines } from './packaged-manual-smoke-checklist-format'
 
-export {
-  buildWinPackagedManualSmokeChecklistFromLocaleShard
-} from './win-packaged-manual-smoke-checklist-build'
+export { buildWinPackagedManualSmokeChecklistFromLocaleShard } from './win-packaged-manual-smoke-checklist-build'
 
 export { formatFfmpegHwManualSmokeChecklistPlainText as formatWinPackagedManualSmokeChecklistPlainText } from './ffmpeg-hw-manual-smoke-checklist-build'
 
-export const WIN_PACKAGED_MANUAL_SMOKE_CHECKLIST = buildWinPackagedManualSmokeChecklistFromLocaleShard(
-  ruWinPackagedManualSmoke as Record<string, string>
-)
+export const WIN_PACKAGED_MANUAL_SMOKE_CHECKLIST =
+  buildWinPackagedManualSmokeChecklistFromLocaleShard(
+    ruWinPackagedManualSmoke as Record<string, string>
+  )
 
 /** Строки для Support ZIP (winPackagedSmoke:) и копирования владельцу. */
 export function formatWinPackagedManualSmokeChecklistLines(): string[] {

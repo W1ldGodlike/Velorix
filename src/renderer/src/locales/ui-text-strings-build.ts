@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/** Сборка таблиц `UI_TEXT` из TS-частей (legacy) и JSON-шардов `locales/{locale}/*.json`. */
+/** Сборка таблиц `UI_TEXT` из TS-частей и JSON-шардов `locales/{locale}/*.json`. */
 import ruAbout from '@locales/ru/about.json'
 import ruCommon from '@locales/ru/common.json'
 import ruDownloads from '@locales/ru/downloads.json'
@@ -124,3 +123,5 @@ export function buildUiTextTables() {
   } as const
   return { ru, en } as const
 }
+
+export type UiTextTables = ReturnType<typeof buildUiTextTables>

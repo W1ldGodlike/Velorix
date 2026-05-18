@@ -1,7 +1,6 @@
 import {
   useCallback,
   useRef,
-  useState,
   type Dispatch,
   type MutableRefObject,
   type SetStateAction
@@ -17,6 +16,7 @@ import type { EditorUrlPasteBehaviorId } from '../../shared/editor-url-paste-beh
 import type { MediaProbeSuccess } from '../../shared/ffprobe-contract'
 import type { RestoredSourceInfo } from '../../shared/preview-dialog-contract'
 import type { MainWindowUiPanelKey } from './use-main-window-ui-panels'
+import { useAppShellStore } from './stores/app-shell-store'
 
 type PreviewOpenedPayload = RestoredSourceInfo
 
@@ -61,19 +61,19 @@ export function useAppPreviewWorkspace(deps: UseAppPreviewWorkspaceDeps): {
     setDownloadsUrl
   } = deps
 
+  const previewTrimPath = useAppShellStore((s) => s.previewTrimPath)
+  const previewTrimRange = useAppShellStore((s) => s.previewTrimRange)
+  const setPreviewTrimSnapshot = useAppShellStore((s) => s.setPreviewTrimSnapshot)
+
   const trimSnapshotRef = useRef<{
     path: string | null
     range: { inSec: number; outSec: number }
   } | null>(null)
 
-  const [trimState, setTrimState] = useState<{
-    path: string | null
-    range: { inSec: number; outSec: number } | null
-  }>({ path: null, range: null })
-
   const currentSourcePath = preview?.path ?? null
   const previewPlaybackUrl = previewBlobUrl ?? preview?.mediaUrl ?? null
-  const trimRange = trimState.path === currentSourcePath ? trimState.range : null
+  const trimRange =
+    previewTrimPath === currentSourcePath && previewTrimRange !== null ? previewTrimRange : null
 
   const applyPreview = useCallback(
     (payload: PreviewOpenedPayload): void => {
@@ -154,19 +154,17 @@ export function useAppPreviewWorkspace(deps: UseAppPreviewWorkspaceDeps): {
   const onTrimRangeSnapshot = useCallback(
     (range: { inSec: number; outSec: number }) => {
       trimSnapshotRef.current = { path: currentSourcePath, range }
-      setTrimState((prev) => {
-        if (
-          prev.path === currentSourcePath &&
-          prev.range !== null &&
-          Math.abs(prev.range.inSec - range.inSec) < 1e-3 &&
-          Math.abs(prev.range.outSec - range.outSec) < 1e-3
-        ) {
-          return prev
-        }
-        return { path: currentSourcePath, range: { inSec: range.inSec, outSec: range.outSec } }
-      })
+      if (
+        previewTrimPath === currentSourcePath &&
+        previewTrimRange !== null &&
+        Math.abs(previewTrimRange.inSec - range.inSec) < 1e-3 &&
+        Math.abs(previewTrimRange.outSec - range.outSec) < 1e-3
+      ) {
+        return
+      }
+      setPreviewTrimSnapshot(currentSourcePath, range)
     },
-    [currentSourcePath]
+    [currentSourcePath, previewTrimPath, previewTrimRange, setPreviewTrimSnapshot]
   )
 
   const jumpToTrimExport = useCallback((): void => {

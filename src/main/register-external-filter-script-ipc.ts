@@ -28,7 +28,9 @@ export function registerExternalFilterScriptIpcHandlers(): void {
       )
       const uiLocale =
         parseAppUiLocale(
-          typeof raw === 'object' && raw !== null ? (raw as { uiLocale?: unknown }).uiLocale : undefined
+          typeof raw === 'object' && raw !== null
+            ? (raw as { uiLocale?: unknown }).uiLocale
+            : undefined
         ) ?? mainDownloadsUiLocale()
       const M = getMainApplicationStrings(uiLocale)
       const ext = externalFilterScriptExtensionForKind(kind)
@@ -44,7 +46,10 @@ export function registerExternalFilterScriptIpcHandlers(): void {
         properties: ['openFile'],
         filters: [
           {
-            name: kind === 'avisynth' ? M.externalFilterScriptFilterAvs : M.externalFilterScriptFilterVpy,
+            name:
+              kind === 'avisynth'
+                ? M.externalFilterScriptFilterAvs
+                : M.externalFilterScriptFilterVpy,
             extensions: [ext.slice(1)]
           }
         ]
@@ -61,7 +66,9 @@ export function registerExternalFilterScriptIpcHandlers(): void {
   ipcMain.handle(mw.externalFilterScriptApply, async (_event, raw: unknown) => {
     const uiLocale =
       parseAppUiLocale(
-        typeof raw === 'object' && raw !== null ? (raw as { uiLocale?: unknown }).uiLocale : undefined
+        typeof raw === 'object' && raw !== null
+          ? (raw as { uiLocale?: unknown }).uiLocale
+          : undefined
       ) ?? mainDownloadsUiLocale()
     const payload =
       typeof raw === 'object' && raw !== null

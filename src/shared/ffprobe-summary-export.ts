@@ -144,9 +144,7 @@ export function formatProbeSummaryPlainText(
     info.formatLongName && info.formatLongName !== info.formatName
       ? `${b.formatLongPrefix}${info.formatLongName}`
       : null,
-    bitrateLabel && !containerBitrateInDiagnostics
-      ? `${b.bitrateEstPrefix}${bitrateLabel}`
-      : null,
+    bitrateLabel && !containerBitrateInDiagnostics ? `${b.bitrateEstPrefix}${bitrateLabel}` : null,
     formatFfprobeContainerBrandExportLine(
       info.containerMajorBrand,
       info.containerCompatibleBrands,

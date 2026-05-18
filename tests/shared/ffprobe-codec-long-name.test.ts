@@ -4,9 +4,9 @@ import { formatFfprobeCodecLongNameDetail } from '../../src/shared/ffprobe-codec
 
 describe('formatFfprobeCodecLongNameDetail', () => {
   it('returns long name when it adds information', () => {
-    expect(formatFfprobeCodecLongNameDetail('h264', 'H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10')).toBe(
-      'H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10'
-    )
+    expect(
+      formatFfprobeCodecLongNameDetail('h264', 'H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10')
+    ).toBe('H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10')
     expect(formatFfprobeCodecLongNameDetail('subrip', 'SubRip subtitle')).toBe('SubRip subtitle')
   })
 

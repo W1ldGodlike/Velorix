@@ -17,15 +17,15 @@ import {
   type ProbeTableContextMenu
 } from './media-probe-panel-helpers'
 import type { PreviewProbeBodyProps } from './preview-probe-body-props'
+import type { PreviewProbeBodyCtx } from './preview-probe-body-ctx'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- ReturnType exported as PreviewProbeBodyCtx
 export function usePreviewProbeBody({
   probeInfo,
   mediaPathForDefaultSave,
   probeSectionOpen,
   onProbeSectionToggle,
   probeRefreshing = false
-}: PreviewProbeBodyProps) {
+}: PreviewProbeBodyProps): PreviewProbeBodyCtx {
   const persistedProbeSections = typeof onProbeSectionToggle === 'function'
   const [localProbeSections, setLocalProbeSections] = useState(PREVIEW_PROBE_SECTION_DEFAULTS)
 
@@ -188,4 +188,4 @@ export function usePreviewProbeBody({
   }
 }
 
-export type PreviewProbeBodyCtx = ReturnType<typeof usePreviewProbeBody>
+export type { PreviewProbeBodyCtx } from './preview-probe-body-ctx'

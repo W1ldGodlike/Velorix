@@ -90,7 +90,11 @@ export function pickYtdlpQueueShortLabelForOutputPath(outputPath: string): strin
 }
 
 /** Можно ли подставить title из ранней строки `[info] …: Downloading N format(s)`. */
-export function shouldApplyYtdlpInfoTitleShortLabel(title: string, url: string, curShort: string): boolean {
+export function shouldApplyYtdlpInfoTitleShortLabel(
+  title: string,
+  url: string,
+  curShort: string
+): boolean {
   if (curShort !== shortUrlLabel(url)) {
     return false
   }

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 /**
  * Phase 7.2: shared `*-contract.ts` files must match the domain table in ARCHITECTURE.md.
  */
@@ -40,8 +39,7 @@ const ALLOWED_CONTRACT_FILES = new Set([
 
 const ALLOWED_TERMINAL_AUX = new Set(['terminal-contract.ts', 'terminal-contract-types.ts'])
 
-const TERMINAL_HINT_SHARD_RE =
-  /^terminal-contract-hints-(downloads|preview-media)(|-\d{2})\.ts$/
+const TERMINAL_HINT_SHARD_RE = /^terminal-contract-hints-(downloads|preview-media)(|-\d{2})\.ts$/
 
 const sharedDir = join(REPO_ROOT, 'src/shared')
 const unknown = []

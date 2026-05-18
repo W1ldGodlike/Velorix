@@ -154,8 +154,6 @@ export const YTDLP_QUEUE_PROGRESS_STRINGS_EN: YtdlpQueueProgressStrings = {
   failureKindDownloadLimit: ' · download limit'
 }
 
-export function getYtdlpQueueProgressStrings(
-  locale: AppUiLocale
-): YtdlpQueueProgressStrings {
+export function getYtdlpQueueProgressStrings(locale: AppUiLocale): YtdlpQueueProgressStrings {
   return locale === 'en' ? YTDLP_QUEUE_PROGRESS_STRINGS_EN : YTDLP_QUEUE_PROGRESS_STRINGS_RU
 }

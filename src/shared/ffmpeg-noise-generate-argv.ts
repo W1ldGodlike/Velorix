@@ -2,7 +2,10 @@
 
 import type { MediaUtilitiesNoiseKind } from './media-utilities-contract'
 
-export function buildFfmpegNoiseLavfiSource(kind: MediaUtilitiesNoiseKind, durationSec: number): string {
+export function buildFfmpegNoiseLavfiSource(
+  kind: MediaUtilitiesNoiseKind,
+  durationSec: number
+): string {
   const d = String(durationSec)
   switch (kind) {
     case 'white':

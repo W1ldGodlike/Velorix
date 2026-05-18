@@ -28,8 +28,6 @@ describe('theme rem tokenize §5', () => {
 
   it('maps line-height unitless literals to --fa-line-height-*', () => {
     expect(tokenizeLineHeightLiterals('1.35')).toBe('var(--fa-line-height-body)')
-    expect(tokenizeLineHeightLiterals('var(--fa-line-height-ui)')).toBe(
-      'var(--fa-line-height-ui)'
-    )
+    expect(tokenizeLineHeightLiterals('var(--fa-line-height-ui)')).toBe('var(--fa-line-height-ui)')
   })
 })

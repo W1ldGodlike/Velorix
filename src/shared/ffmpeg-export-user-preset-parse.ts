@@ -1,7 +1,10 @@
 /**
  * §7.2 — парсинг пользовательских пресетов export (snapshot + список в settings).
  */
-import type { FfmpegExportUserPreset, FfmpegExportUserPresetSnapshot } from './ffmpeg-export-contract'
+import type {
+  FfmpegExportUserPreset,
+  FfmpegExportUserPresetSnapshot
+} from './ffmpeg-export-contract'
 import { FFMPEG_EXPORT_USER_PRESETS_MAX_ENTRIES } from './ffmpeg-export-contract'
 import { parseFfmpegExportHwDecode } from './ffmpeg-export-hw-decode'
 import {

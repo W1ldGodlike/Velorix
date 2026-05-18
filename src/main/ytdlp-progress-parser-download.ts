@@ -214,9 +214,7 @@ export function parseYtdlpDownloadProgressLine(
     }
   }
 
-  const dlFormatSingleMatch = t.match(
-    /\[download\]\s+Downloading\s+format\s+(\d+(?:\+\d+)*)/i
-  )
+  const dlFormatSingleMatch = t.match(/\[download\]\s+Downloading\s+format\s+(\d+(?:\+\d+)*)/i)
   const singleIds = dlFormatSingleMatch?.[1]
   if (singleIds !== undefined && singleIds.length > 0) {
     return {

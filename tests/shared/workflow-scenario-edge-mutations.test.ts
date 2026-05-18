@@ -12,10 +12,7 @@ describe('workflow-scenario-edge-mutations §11', () => {
     const doc = WORKFLOW_SCENARIO_TEMPLATE_V1
     expect(addWorkflowScenarioEdge(doc, 'download-1', 'save-1')).toEqual({
       ...doc,
-      edges: [
-        ...doc.edges,
-        { from: 'download-1', to: 'save-1' }
-      ]
+      edges: [...doc.edges, { from: 'download-1', to: 'save-1' }]
     })
     const withSkip = addWorkflowScenarioEdge(doc, 'download-1', 'save-1')!
     expect(removeWorkflowScenarioEdge(withSkip, 'download-1', 'save-1')!.edges).toEqual(doc.edges)

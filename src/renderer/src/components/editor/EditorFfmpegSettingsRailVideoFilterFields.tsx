@@ -1,3 +1,5 @@
+import type { JSX } from 'react'
+
 import type {
   FfmpegExportVideoDebandId,
   FfmpegExportVideoDeinterlaceId,
@@ -14,8 +16,9 @@ import type {
 import { uiText } from '../../locales/ui-text'
 import type { EditorFfmpegSettingsRailProps } from './editor-ffmpeg-settings-rail-props'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- field grid fragment
-export function EditorFfmpegSettingsRailVideoFilterFields(props: EditorFfmpegSettingsRailProps) {
+export function EditorFfmpegSettingsRailVideoFilterFields(
+  props: EditorFfmpegSettingsRailProps
+): JSX.Element {
   const {
     exportBusy,
     snapshotBusy,

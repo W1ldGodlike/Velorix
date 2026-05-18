@@ -1,3 +1,5 @@
+import type { JSX } from 'react'
+
 import {
   YTDLP_DOC_FORMAT_SELECTION,
   YTDLP_DOC_OUTPUT_TEMPLATE,
@@ -8,8 +10,9 @@ import { downloadsCatalogHintTokenAccessibleDescription } from '../../app-termin
 import { uiText } from '../../locales/ui-text'
 import type { DownloadsSettingsRailProps } from './downloads-settings-rail-props'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- JSX section
-export function DownloadsSettingsRailExpertSection(props: DownloadsSettingsRailProps) {
+export function DownloadsSettingsRailExpertSection(
+  props: DownloadsSettingsRailProps
+): JSX.Element | null {
   const {
     downloadsOptionsBusy,
     downloadsHistoryBusy,

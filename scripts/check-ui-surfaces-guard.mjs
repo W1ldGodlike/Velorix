@@ -43,7 +43,11 @@ const LEGACY_PRODUCT_PATHS = [
 const FORBIDDEN_TEXT_WHEN_PROGRAM_ENDED = [
   {
     rel: 'AGENTS.md',
-    patterns: [/fluxalloy-program-gate\.mdc/i, /PROGRAM GATE.*открыт/i, /UI_CONSOLIDATION_AND_COPY_PROGRAM/i]
+    patterns: [
+      /fluxalloy-program-gate\.mdc/i,
+      /PROGRAM GATE.*открыт/i,
+      /UI_CONSOLIDATION_AND_COPY_PROGRAM/i
+    ]
   },
   {
     rel: 'scripts/cursor-automation/prompts/agent-contract.txt',
@@ -110,7 +114,9 @@ function extractSprintSection(checklistText) {
 /** @param {string} checklistText */
 function sprintMentionsClosurePhases(checklistText) {
   const section = extractSprintSection(checklistText)
-  return /PROGRAM\s+GATE[^\n]*фаза\s+F/i.test(section) && /PROGRAM\s+GATE[^\n]*фаза\s+G/i.test(section)
+  return (
+    /PROGRAM\s+GATE[^\n]*фаза\s+F/i.test(section) && /PROGRAM\s+GATE[^\n]*фаза\s+G/i.test(section)
+  )
 }
 
 /** @param {string} checklistText */
@@ -184,7 +190,9 @@ function main() {
     }
     const mainDownloads = readRepoOptional('src/main/downloads-window.ts')
     if (mainDownloads && /buildDownloadsHtml|data:text\/html/i.test(mainDownloads)) {
-      errors.push('program ended: downloads-window.ts still uses buildDownloadsHtml or data:text/html')
+      errors.push(
+        'program ended: downloads-window.ts still uses buildDownloadsHtml or data:text/html'
+      )
     }
     for (const { rel, patterns } of FORBIDDEN_TEXT_WHEN_PROGRAM_ENDED) {
       const text = readRepoOptional(rel)

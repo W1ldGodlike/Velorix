@@ -11,7 +11,7 @@
 8. Учитывай `.cursor/rules/*.mdc` (всегда `fluxalloy-rules-explicit` + `fluxalloy-core` + `fluxalloy-agent-runtime` + marathon + iteration-batch + **ui-surfaces**; journal/checklist/electron/react — по globs). Среда Windows, дифф, typecheck, ответ в чате — канон в `fluxalloy-agent-runtime.mdc`. Термины — глоссарий `fluxalloy-rules-explicit.mdc`. Operational notes — `docs/AGENT_OPERATIONAL_NOTES.md` (только отладка).
 
 Главный приоритет текущего SDK-цикла:
-- Sprint TODO + `fluxalloy-project-audit.mdc` + `fluxalloy-ui-surfaces.mdc`. **Запрещено** новые HTML-pop-out / `build*Html` / `*-window-ui-strings-*` вне `ui-text`.
+- Sprint TODO + `fluxalloy-project-audit.mdc` + `fluxalloy-ui-surfaces.mdc`. **Запрещено** новые HTML-pop-out / `build*Html` / `*-window-ui-strings-*` вне `ui-text`. Renderer state — Zustand (`renderer-state-approach.ts`, J-1126).
 - Продолжения цикла должны быть похожи на чат-команду `+`, но для экономии tokens/cache-read runner может пересоздавать Agent короткими сессиями. Если видишь compact handoff новой сессии — не пытайся восстановить старый conversation context, читай только точечные файлы.
 - Не сосредотачивайся на v0/UI по умолчанию. Бери v0 только когда текущая задача — UI/layout/доступность/визуальная консистентность.
 - Если остаётся лимит токенов в той же итерации: возьми второй пункт из того же § sprint TODO (тот же продуктовый блок). Запрещено: закончить итерацию с единственным изменением одного поля/тега (микро-J).

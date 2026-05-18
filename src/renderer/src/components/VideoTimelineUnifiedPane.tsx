@@ -1,4 +1,5 @@
 import type { KeyboardEvent, PointerEvent, RefObject } from 'react'
+import type { JSX } from 'react'
 import type { MediaProbeSuccess } from '../../../shared/ffprobe-contract'
 import { uiText, uiTextVars } from '../locales/ui-text'
 import {
@@ -30,7 +31,6 @@ export interface VideoTimelineUnifiedPaneProps {
   onKeyDown: (e: KeyboardEvent<HTMLDivElement>) => void
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- pane JSX
 export function VideoTimelineUnifiedPane({
   duration,
   pipelineBusy,
@@ -51,7 +51,7 @@ export function VideoTimelineUnifiedPane({
   onPointerUpOrCancel,
   onLostPointerCapture,
   onKeyDown
-}: VideoTimelineUnifiedPaneProps) {
+}: VideoTimelineUnifiedPaneProps): JSX.Element {
   return (
     <>
       <div

@@ -65,6 +65,12 @@ jobs:
       - name: Check (lint + typecheck + tests + secrets)
         run: npm run check
 
+      - name: Test coverage (shared + main thresholds)
+        run: npm run test:coverage
+
+      - name: npm audit (moderate+)
+        run: npm run audit:moderate
+
       - name: Prepare Windows engines (CI smoke)
         run: npm run engines:prepare:win
 

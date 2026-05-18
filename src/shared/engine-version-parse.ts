@@ -30,7 +30,10 @@ function versionNumberParts(token: string): number[] {
  * Сравнение версий движков: отрицательное — `left` старее, 0 — равны, положительное — `left` новее.
  * `null`, если сравнить нельзя.
  */
-export function compareEngineVersionTokens(left: string | null, right: string | null): number | null {
+export function compareEngineVersionTokens(
+  left: string | null,
+  right: string | null
+): number | null {
   if (left == null || right == null) {
     return null
   }
@@ -50,10 +53,7 @@ export function compareEngineVersionTokens(left: string | null, right: string | 
   return 0
 }
 
-export function isEngineUpdateAvailable(
-  current: string | null,
-  latest: string | null
-): boolean {
+export function isEngineUpdateAvailable(current: string | null, latest: string | null): boolean {
   if (latest == null || latest.trim() === '') {
     return false
   }

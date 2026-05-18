@@ -6,6 +6,8 @@ const maxFailureOutputChars = Number.parseInt(process.env.CHECK_QUIET_FAILURE_CH
 
 const steps = [
   ['lint', ['run', 'lint']],
+  ['line-endings', ['run', 'check:line-endings']],
+  ['maint-scripts-layout', ['run', 'check:maint-scripts-layout']],
   ['typecheck', ['run', 'typecheck']],
   ['test', ['run', 'test']],
   ['trusted-hashes', ['run', 'check:trusted-hashes']],
@@ -28,6 +30,7 @@ const steps = [
   ['ui-surfaces-guard', ['run', 'check:ui-surfaces-guard']],
   ['native-main-platform-guard', ['run', 'check:native-main-platform-guard']],
   ['renderer-state-approach', ['run', 'check:renderer-state-approach']],
+  ['tz-artifacts', ['run', 'check:tz-artifacts']],
   ['checklist', ['run', 'check:checklist']],
   ['secrets', ['run', 'check:secrets']]
 ]

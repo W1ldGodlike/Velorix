@@ -118,7 +118,8 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_10: TerminalCommandHintE
   {
     tool: 'ffprobe',
     token: '· кадры v:0 best_effort_ts 4',
-    summary: 'Первые четыре кадра первой видеодорожки (v:0): best_effort_timestamp_time (-show_frames -read_intervals %+#4); путь к медиа подставляется из превью.',
+    summary:
+      'Первые четыре кадра первой видеодорожки (v:0): best_effort_timestamp_time (-show_frames -read_intervals %+#4); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_frames -read_intervals %+#4 -show_entries frame=best_effort_timestamp_time -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -152,7 +153,8 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_10: TerminalCommandHintE
   {
     tool: 'ffprobe',
     token: '· пакет v:0 duration 1',
-    summary: 'Первый пакет первой видеодорожки (v:0): duration (-show_packets -read_intervals %+#1 -show_entries packet=duration); путь к медиа подставляется из превью.',
+    summary:
+      'Первый пакет первой видеодорожки (v:0): duration (-show_packets -read_intervals %+#1 -show_entries packet=duration); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_packets -read_intervals %+#1 -show_entries packet=duration -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -354,7 +356,8 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_10: TerminalCommandHintE
   {
     tool: 'ffprobe',
     token: '· пакет v:0 flags 1',
-    summary: 'Первый пакет первой видеодорожки (v:0): flags (-show_packets -read_intervals %+#1 -show_entries packet=flags); путь к медиа подставляется из превью.',
+    summary:
+      'Первый пакет первой видеодорожки (v:0): flags (-show_packets -read_intervals %+#1 -show_entries packet=flags); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_packets -read_intervals %+#1 -show_entries packet=flags -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {

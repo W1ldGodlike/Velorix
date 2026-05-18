@@ -1,3 +1,5 @@
+import type { JSX } from 'react'
+
 import { miniIconTitle, uiText, uiTextVars } from '../locales/ui-text'
 import {
   formatProbePositionLine,
@@ -30,8 +32,7 @@ export interface VideoTimelineToolbarProps {
   onZoomOut: () => void
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- toolbar JSX
-export function VideoTimelineToolbar(props: VideoTimelineToolbarProps) {
+export function VideoTimelineToolbar(props: VideoTimelineToolbarProps): JSX.Element {
   const {
     duration,
     pipelineBusy,

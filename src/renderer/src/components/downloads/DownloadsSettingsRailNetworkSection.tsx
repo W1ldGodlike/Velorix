@@ -1,9 +1,12 @@
+import type { JSX } from 'react'
+
 import type { YtdlpQueueRetryProfileId } from '../../../../shared/ytdlp-download-contract'
 import { uiText } from '../../locales/ui-text'
 import type { DownloadsSettingsRailProps } from './downloads-settings-rail-props'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- JSX section
-export function DownloadsSettingsRailNetworkSection(props: DownloadsSettingsRailProps) {
+export function DownloadsSettingsRailNetworkSection(
+  props: DownloadsSettingsRailProps
+): JSX.Element | null {
   const {
     downloadsOptionsBusy,
     downloadsHistoryBusy,

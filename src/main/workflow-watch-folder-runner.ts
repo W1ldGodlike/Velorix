@@ -1,18 +1,12 @@
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 
-import type {
-  ScheduledTaskBackend,
-  ScheduledTaskDocument
-} from '../shared/scheduled-task-contract'
+import type { ScheduledTaskBackend, ScheduledTaskDocument } from '../shared/scheduled-task-contract'
 import { detectNewWatchFolderFiles } from '../shared/watch-folder-scan'
 import { logInfo } from './logger-service'
 import { scanWatchFolderDirectory } from './watch-folder-scan-main'
 import { broadcastWorkflowWatchFolderDetected } from './workflow-watch-folder-broadcast'
-import {
-  getWatchFolderSeenFiles,
-  setWatchFolderSeenFiles
-} from './workflow-watch-folder-state'
+import { getWatchFolderSeenFiles, setWatchFolderSeenFiles } from './workflow-watch-folder-state'
 import { enqueueWorkflowScenarioRun } from './workflow-scenario-runner'
 import {
   getScheduledTask,

@@ -26,7 +26,10 @@ export type WindowsShellContextMenuIpcDeps = {
   mainUiLocale: () => import('../../shared/app-ui-locale').AppUiLocale
 }
 
-function setOpenWithEnabledFlag(deps: WindowsShellContextMenuIpcDeps, enabled: boolean): AppSettings {
+function setOpenWithEnabledFlag(
+  deps: WindowsShellContextMenuIpcDeps,
+  enabled: boolean
+): AppSettings {
   return deps.mutateSettings((prev) => {
     const next = { ...prev }
     if (enabled) {

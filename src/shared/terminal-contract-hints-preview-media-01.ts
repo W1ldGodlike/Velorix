@@ -76,7 +76,8 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_01: TerminalCommandHintE
   {
     tool: 'ffprobe',
     token: '· субтитры s:0 кратко',
-    summary: 'Дорожка субтитров (s:0): кодек и строка тега кодека (поля ffprobe: codec_name — кодек, codec_tag_string — строка тега кодека; одно поле на строку (шаблон default=nw=1)); путь к медиа подставляется из превью.',
+    summary:
+      'Дорожка субтитров (s:0): кодек и строка тега кодека (поля ffprobe: codec_name — кодек, codec_tag_string — строка тега кодека; одно поле на строку (шаблон default=nw=1)); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=codec_name,codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -124,7 +125,8 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_01: TerminalCommandHintE
   {
     tool: 'ffprobe',
     token: '· субтитры s:0 теги',
-    summary: 'Дорожка субтитров (s:0): теги заголовка и языка субтитров (поля stream_tags: title — заголовок дорожки, language — язык); путь к медиа подставляется из превью.',
+    summary:
+      'Дорожка субтитров (s:0): теги заголовка и языка субтитров (поля stream_tags: title — заголовок дорожки, language — язык); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream_tags=title,language -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -235,7 +237,8 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_01: TerminalCommandHintE
   {
     tool: 'ffprobe',
     token: '· субтитры s:0 атрибуты дорожки',
-    summary: 'Дорожка субтитров (s:0): disposition (поле ffprobe: default, forced, hearing_impaired для слабослышащих и т. д.); путь к медиа подставляется из превью.',
+    summary:
+      'Дорожка субтитров (s:0): disposition (поле ffprobe: default, forced, hearing_impaired для слабослышащих и т. д.); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=disposition -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {

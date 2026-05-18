@@ -4,7 +4,11 @@ import {
   resyncAllLinuxSystemdUserTimers,
   syncLinuxSystemdUserTimer
 } from './linux-systemd-user-timer-sync'
-import { deleteMacosLaunchdTask, resyncAllMacosLaunchdTasks, syncMacosLaunchdTask } from './macos-launchd-sync'
+import {
+  deleteMacosLaunchdTask,
+  resyncAllMacosLaunchdTasks,
+  syncMacosLaunchdTask
+} from './macos-launchd-sync'
 import {
   deleteWindowsScheduledTask,
   resyncAllWindowsScheduledTasks,

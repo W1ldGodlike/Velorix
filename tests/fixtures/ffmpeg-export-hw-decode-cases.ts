@@ -9,7 +9,11 @@ export const FFMPEG_HWACCEL_DECODE_CASES = [
   { vcodec: 'h264_nvenc' as const, hwaccels: ['cuda', 'dxva2'], expected: 'cuda' },
   { vcodec: 'hevc_nvenc' as const, hwaccels: ['cuda'], expected: 'cuda' },
   { vcodec: 'av1_nvenc' as const, hwaccels: ['cuda', 'qsv'], expected: 'cuda' },
-  { vcodec: 'h264_videotoolbox' as const, hwaccels: ['videotoolbox', 'qsv'], expected: 'videotoolbox' },
+  {
+    vcodec: 'h264_videotoolbox' as const,
+    hwaccels: ['videotoolbox', 'qsv'],
+    expected: 'videotoolbox'
+  },
   { vcodec: 'hevc_videotoolbox' as const, hwaccels: ['videotoolbox'], expected: 'videotoolbox' },
   { vcodec: 'h264_amf' as const, hwaccels: ['cuda', 'd3d11va', 'dxva2'], expected: 'd3d11va' },
   { vcodec: 'hevc_amf' as const, hwaccels: ['d3d11va'], expected: 'd3d11va' },

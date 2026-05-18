@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 /** Re-export для smoke-скрипта (реализация в shared — Vitest/typecheck). */
 export {
   listPackagedFfmpegCandidatePaths,

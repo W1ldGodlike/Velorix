@@ -311,9 +311,7 @@ export function formatFfprobeFormatScalarTagInspectorBrief(
   return ` · ${spec.inspectorBriefPrefix} ${trimmed}`
 }
 
-export function collectFfprobeFormatScalarTagInspectorBriefs(
-  info: MediaProbeSuccess
-): string[] {
+export function collectFfprobeFormatScalarTagInspectorBriefs(info: MediaProbeSuccess): string[] {
   const parts: string[] = []
   for (const spec of FFPROBE_FORMAT_SCALAR_TAG_SPECS) {
     const value = info[spec.probeField]

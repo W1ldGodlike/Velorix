@@ -118,9 +118,7 @@ async function executeRun(item: PendingRun): Promise<void> {
       exportVideoCodecUsed: result.videoCodecUsed,
       workflowScenarioId: payload.scenarioId
     })
-    broadcastWorkflowWatchFolderRunFinished(
-      finishPayload(payload, 'success', outPath, null)
-    )
+    broadcastWorkflowWatchFolderRunFinished(finishPayload(payload, 'success', outPath, null))
     return
   }
   appendProcessingHistoryEntry(paths.userData, {
@@ -135,9 +133,7 @@ async function executeRun(item: PendingRun): Promise<void> {
     exportVideoCodecUsed: result.videoCodecUsed,
     workflowScenarioId: payload.scenarioId
   })
-  broadcastWorkflowWatchFolderRunFinished(
-    finishPayload(payload, 'error', outPath, result.error)
-  )
+  broadcastWorkflowWatchFolderRunFinished(finishPayload(payload, 'error', outPath, result.error))
 }
 
 async function drainQueue(): Promise<void> {
@@ -156,9 +152,7 @@ async function drainQueue(): Promise<void> {
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err)
         logInfo('workflow', `scenario run error: ${msg}`)
-        broadcastWorkflowWatchFolderRunFinished(
-          finishPayload(item.payload, 'error', null, msg)
-        )
+        broadcastWorkflowWatchFolderRunFinished(finishPayload(item.payload, 'error', null, msg))
       }
     }
   } finally {

@@ -10,15 +10,15 @@
 
 ## Что проверить
 
-| Блок | Смысл |
-|------|--------|
-| Theme | Тёмная / светлая / системная тема: контраст, focus, modals, pop-out загрузок, инспектор |
-| HiDPI | Масштаб Windows 100–200 %: редактор, загрузки, модалки, статусбар |
-| HW encode | NVENC (Win) или VAAPI (Linux): probe, ручной кодек, hw_auto, «Оценить» |
-| Scenario builder | Конструктор, JSON edges, запуск из редактора / URL |
-| Packaged | `dist/win-unpacked` / `linux-unpacked` / `.app` — см. отдельную панель packaged в настройках |
-| OS scheduler | Watch-folder + Task Scheduler / launchd / systemd user timer |
-| Windows shell | Контекстное меню, «Открыть с помощью», «Приложения по умолчанию…» (только Win) |
+| Блок             | Смысл                                                                                        |
+| ---------------- | -------------------------------------------------------------------------------------------- |
+| Theme            | Тёмная / светлая / системная тема: контраст, focus, modals, pop-out загрузок, инспектор      |
+| HiDPI            | Масштаб Windows 100–200 %: редактор, загрузки, модалки, статусбар                            |
+| HW encode        | NVENC (Win) или VAAPI (Linux): probe, ручной кодек, hw_auto, «Оценить»                       |
+| Scenario builder | Конструктор, JSON edges, запуск из редактора / URL                                           |
+| Packaged         | `dist/win-unpacked` / `linux-unpacked` / `.app` — см. отдельную панель packaged в настройках |
+| OS scheduler     | Watch-folder + Task Scheduler / launchd / systemd user timer                                 |
+| Windows shell    | Контекстное меню, «Открыть с помощью», «Приложения по умолчанию…» (только Win)               |
 
 Подробности: [hardware-encoding.md](hardware-encoding.md), [appearance-language-theme.md](appearance-language-theme.md), [workflows-planner-scenarios.md](workflows-planner-scenarios.md), [windows-shell-integration.md](windows-shell-integration.md).
 

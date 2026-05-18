@@ -63,7 +63,11 @@ export function runFfmpegExportBenchmarkTrial(params: {
     })
 
     child.on('close', (code) => {
-      logExternalProcessLine('ffmpeg-export-benchmark', 'lifecycle', `closed exitCode=${code ?? '?'}`)
+      logExternalProcessLine(
+        'ffmpeg-export-benchmark',
+        'lifecycle',
+        `closed exitCode=${code ?? '?'}`
+      )
       const cpuLoad = cpuSampler.stop()
       const gpuLoad = gpuSampler?.stop() ?? { peakPercent: null, avgPercent: null }
       if (params.signal.aborted) {

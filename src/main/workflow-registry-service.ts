@@ -2,7 +2,10 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 import { resolveAppPaths } from './app-paths'
-import type { ScheduledTaskDocument, ScheduledTaskListItem } from '../shared/scheduled-task-contract'
+import type {
+  ScheduledTaskDocument,
+  ScheduledTaskListItem
+} from '../shared/scheduled-task-contract'
 import {
   emptyScheduledTaskRegistry,
   parseScheduledTaskRegistry

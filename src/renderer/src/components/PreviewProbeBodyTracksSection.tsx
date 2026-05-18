@@ -168,10 +168,7 @@ export function PreviewProbeBodyTracksSection({
                 >
                   {row.colorTransfer ?? dash}
                 </td>
-                <td
-                  className="app-probe-table-mono"
-                  headers={PROBE_TRACKS_TABLE_HEADER_IDS.range}
-                >
+                <td className="app-probe-table-mono" headers={PROBE_TRACKS_TABLE_HEADER_IDS.range}>
                   {row.colorRange ?? dash}
                 </td>
                 <td
@@ -182,9 +179,7 @@ export function PreviewProbeBodyTracksSection({
                 </td>
                 <td
                   headers={PROBE_TRACKS_TABLE_HEADER_IDS.disposition}
-                  title={
-                    row.dispositionSummary.trim() !== '' ? row.dispositionSummary : undefined
-                  }
+                  title={row.dispositionSummary.trim() !== '' ? row.dispositionSummary : undefined}
                 >
                   {row.dispositionSummary.trim() !== '' ? row.dispositionSummary : dash}
                 </td>

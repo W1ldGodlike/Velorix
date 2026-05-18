@@ -54,7 +54,9 @@ export function buildOwnerManualSmokeBundleLines(opts?: {
   platform?: NodeJS.Platform
 }): string[] {
   const uiDpi = opts?.uiDpiLines ?? []
-  const shellBlock = isNativeMainWindows(opts?.platform) ? formatWindowsShellManualSmokeChecklistLines() : []
+  const shellBlock = isNativeMainWindows(opts?.platform)
+    ? formatWindowsShellManualSmokeChecklistLines()
+    : []
   const packaged = getOwnerManualSmokePackagedSection(opts?.platform)
   return [
     'ownerManualSmoke: Theme + HiDPI + HW + scenario + packaged + OS scheduler + Win shell (owner, not CI)',

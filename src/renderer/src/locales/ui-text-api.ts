@@ -14,6 +14,7 @@ import {
 } from '../../../shared/ytdlp-queue-status'
 
 import { getUiLocale } from './ui-text-session'
+import { resolveUiTextKey } from '../../../shared/resolve-ui-text'
 import { getUiTextTables, type UiTextKey, type UiTextTables } from './ui-text-strings'
 
 function table(): UiTextTables['ru'] {
@@ -31,7 +32,7 @@ export function miniIconTitle(key: MiniIconTitleKey): string {
 }
 
 export function uiText(key: UiTextKey): string {
-  return table()[key]
+  return resolveUiTextKey(getUiTextTables(), getUiLocale(), key)
 }
 
 export function uiTextVars(key: UiTextKey, vars: Record<string, string | number>): string {
@@ -48,8 +49,8 @@ export type TerminalIntroTailVars = {
 }
 
 export function formatTerminalIntroTail(vars: TerminalIntroTailVars): string {
-  return table().terminalIntroTailTemplate
-    .replace(/\{pageStep\}/g, String(vars.pageStep))
+  return table()
+    .terminalIntroTailTemplate.replace(/\{pageStep\}/g, String(vars.pageStep))
     .replace(/\{maxInline\}/g, String(vars.maxInline))
 }
 
@@ -60,21 +61,18 @@ export function formatTerminalPreviewTooltip(token: string): string {
 export function formatTerminalExitLine(code: number | null | undefined, ms: number): string {
   const codeStr =
     code === null || code === undefined ? uiText('commonNotApplicableShort') : String(code)
-  return table().terminalExitCodeMsTemplate
-    .replace(/\{code\}/g, codeStr)
+  return table()
+    .terminalExitCodeMsTemplate.replace(/\{code\}/g, codeStr)
     .replace(/\{ms\}/g, String(ms))
 }
 
 export function formatTerminalCopyLineAria(lineNumber1Based: number): string {
-  return table().terminalCopyLineAriaTemplate.replace(
-    /\{n\}/g,
-    String(lineNumber1Based)
-  )
+  return table().terminalCopyLineAriaTemplate.replace(/\{n\}/g, String(lineNumber1Based))
 }
 
 export function formatMaintenanceCleanDone(files: number, bytes: string): string {
-  return table().maintenanceCleanDoneTemplate
-    .replace(/\{files\}/g, String(files))
+  return table()
+    .maintenanceCleanDoneTemplate.replace(/\{files\}/g, String(files))
     .replace(/\{bytes\}/g, bytes)
 }
 

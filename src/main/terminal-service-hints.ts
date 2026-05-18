@@ -59,7 +59,8 @@ function readHints(fileName: string, fallbackTool: EngineId): TerminalCommandHin
         if (typeof src.fullLine === 'string') {
           const fl = src.fullLine.trim()
           if (fl.length > 0) {
-            fullLine = fl.length > TERMINAL_MAX_LINE_CHARS ? fl.slice(0, TERMINAL_MAX_LINE_CHARS) : fl
+            fullLine =
+              fl.length > TERMINAL_MAX_LINE_CHARS ? fl.slice(0, TERMINAL_MAX_LINE_CHARS) : fl
           }
         }
         const entry: TerminalCommandHintEntry = { token, summary, tool }

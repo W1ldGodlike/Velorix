@@ -188,8 +188,6 @@ export const DOWNLOADS_WINDOW_IPC_STRINGS_EN: DownloadsWindowIpcStrings = {
   logYtdlpResumedSigcont: '[FluxAlloy] yt-dlp process resumed (SIGCONT).'
 }
 
-export function getDownloadsWindowIpcStrings(
-  locale: AppUiLocale
-): DownloadsWindowIpcStrings {
+export function getDownloadsWindowIpcStrings(locale: AppUiLocale): DownloadsWindowIpcStrings {
   return locale === 'en' ? DOWNLOADS_WINDOW_IPC_STRINGS_EN : DOWNLOADS_WINDOW_IPC_STRINGS_RU
 }

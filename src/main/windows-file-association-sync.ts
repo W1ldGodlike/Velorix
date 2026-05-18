@@ -42,11 +42,9 @@ export async function isWindowsFileAssociationRegistered(): Promise<boolean> {
     return false
   }
   try {
-    const { stdout } = await execFileAsync(
-      regExe(),
-      ['query', `HKCU\\${openWith}`],
-      { windowsHide: true }
-    )
+    const { stdout } = await execFileAsync(regExe(), ['query', `HKCU\\${openWith}`], {
+      windowsHide: true
+    })
     return stdout.includes(WINDOWS_FILE_ASSOCIATION_PROG_ID)
   } catch {
     return false
@@ -66,33 +64,12 @@ export async function registerWindowsFileAssociation(
   const appKey = windowsFileAssociationApplicationKey(exeFileName)
   try {
     await runReg(['add', `HKCU\\${progIdKey}`, '/ve', '/d', typeLabel, '/f'])
-    await runReg([
-      'add',
-      `HKCU\\${progIdKey}\\shell\\open\\command`,
-      '/ve',
-      '/d',
-      openCmd,
-      '/f'
-    ])
-    await runReg([
-      'add',
-      `HKCU\\${appKey}\\shell\\open\\command`,
-      '/ve',
-      '/d',
-      openCmd,
-      '/f'
-    ])
+    await runReg(['add', `HKCU\\${progIdKey}\\shell\\open\\command`, '/ve', '/d', openCmd, '/f'])
+    await runReg(['add', `HKCU\\${appKey}\\shell\\open\\command`, '/ve', '/d', openCmd, '/f'])
     for (const ext of WINDOWS_FILE_ASSOCIATION_VIDEO_EXTENSIONS) {
       const openWithKey = `${windowsFileAssociationOpenWithProgidsKey(ext)}\\${WINDOWS_FILE_ASSOCIATION_PROG_ID}`
       await runReg(['add', `HKCU\\${openWithKey}`, '/ve', '/d', '', '/f'])
-      await runReg([
-        'add',
-        `HKCU\\${appKey}\\SupportedTypes\\${ext}`,
-        '/ve',
-        '/d',
-        '',
-        '/f'
-      ])
+      await runReg(['add', `HKCU\\${appKey}\\SupportedTypes\\${ext}`, '/ve', '/d', '', '/f'])
     }
     logInfo('shell', 'file association OpenWith registered')
     return { ok: true }

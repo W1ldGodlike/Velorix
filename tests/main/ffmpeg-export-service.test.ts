@@ -110,5 +110,4 @@ describe('ffmpeg export pure helpers', () => {
     expect(parseFfmpegExportTrim({ inSec: Number.NaN, outSec: 7 })).toBeUndefined()
     expect(parseFfmpegExportTrim({ inSec: '2', outSec: 7 })).toBeUndefined()
   })
-
 })

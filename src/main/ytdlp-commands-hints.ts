@@ -126,9 +126,7 @@ function buildYtdlpCommandHintsForLocale(locale: AppUiLocale): YtdlpCommandHintE
  * Необязательное поле `summaryEn` задаёт текст подсказки для UI на английском; без него для `en` используется `summary`.
  * Ошибки чтения не роняют процесс: возвращается пустой список.
  */
-export function getYtdlpCommandHints(
-  locale: AppUiLocale = 'ru'
-): YtdlpCommandHintEntry[] {
+export function getYtdlpCommandHints(locale: AppUiLocale = 'ru'): YtdlpCommandHintEntry[] {
   const cached = builtMemo[locale]
   if (cached !== undefined) {
     return cached

@@ -1,3 +1,5 @@
+import type { JSX } from 'react'
+
 import { KNOWLEDGE_SLUG_FFMPEG_RAIL_PRESETS } from '../../../../shared/knowledge-contract'
 import { ProcessingHistoryPanel } from '../ProcessingHistoryPanel'
 import { IconChevronRight } from '../LucideMiniIcons'
@@ -17,8 +19,7 @@ import { EditorFfmpegSettingsRailVideoSection } from './EditorFfmpegSettingsRail
 export type { EditorFfmpegSettingsRailProps } from './editor-ffmpeg-settings-rail-props'
 import type { EditorFfmpegSettingsRailProps } from './editor-ffmpeg-settings-rail-props'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- flat rail API for App.tsx
-export function EditorFfmpegSettingsRail(props: EditorFfmpegSettingsRailProps) {
+export function EditorFfmpegSettingsRail(props: EditorFfmpegSettingsRailProps): JSX.Element {
   const {
     panelOpen,
     persistMainWindowUiPanelToggle,

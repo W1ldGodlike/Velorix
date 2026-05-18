@@ -82,4 +82,3 @@ export function DownloadsStandaloneAppTopbar(props: DownloadsStandaloneAppModel)
     </header>
   )
 }
-

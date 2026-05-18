@@ -34,11 +34,7 @@ export function buildWorkflowOsSchedulerManualSmokeChecklistFromLocaleShard(
       return {
         id: spec.sectionId,
         title: t(shard, `${p}SectionTitle`),
-        prerequisites: [
-          t(shard, `${p}Prereq0`),
-          t(shard, `${p}Prereq1`),
-          t(shard, `${p}Prereq2`)
-        ],
+        prerequisites: [t(shard, `${p}Prereq0`), t(shard, `${p}Prereq1`), t(shard, `${p}Prereq2`)],
         steps: [
           { id: 'planner-task', text: t(shard, `${p}Step_planner_task`) },
           { id: 'verify-os', text: t(shard, `${p}Step_verify_os`) },
@@ -47,11 +43,7 @@ export function buildWorkflowOsSchedulerManualSmokeChecklistFromLocaleShard(
           { id: 'headless-tick', text: t(shard, `${p}Step_headless_tick`) },
           { id: 'url-scenario', text: t(shard, `${p}Step_url_scenario`) }
         ],
-        pass: [
-          t(shard, `${p}Pass0`),
-          t(shard, `${p}Pass1`),
-          t(shard, `${p}Pass2`)
-        ]
+        pass: [t(shard, `${p}Pass0`), t(shard, `${p}Pass1`), t(shard, `${p}Pass2`)]
       }
     }
   )

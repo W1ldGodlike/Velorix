@@ -60,7 +60,9 @@ function resolveDiagnosticsFolderPath(id: DiagnosticsFolderId): string {
   }
 }
 
-function diagnosticsFolderStrings(locale: AppUiLocale): ReturnType<typeof getMainApplicationStrings> {
+function diagnosticsFolderStrings(
+  locale: AppUiLocale
+): ReturnType<typeof getMainApplicationStrings> {
   return getMainApplicationStrings(locale)
 }
 

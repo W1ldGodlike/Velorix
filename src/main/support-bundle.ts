@@ -68,15 +68,9 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
     ...(info.engineDiagnosticLines.length > 0
       ? ['', 'engines:', ...info.engineDiagnosticLines]
       : []),
-    ...(info.releaseSmokeLines.length > 0
-      ? ['', 'releaseSmoke:', ...info.releaseSmokeLines]
-      : []),
-    ...(info.ffprobeSmokeLines.length > 0
-      ? ['', 'ffprobeSmoke:', ...info.ffprobeSmokeLines]
-      : []),
-    ...(info.uiLocaleIpcLines.length > 0
-      ? ['', 'uiLocale:', ...info.uiLocaleIpcLines]
-      : []),
+    ...(info.releaseSmokeLines.length > 0 ? ['', 'releaseSmoke:', ...info.releaseSmokeLines] : []),
+    ...(info.ffprobeSmokeLines.length > 0 ? ['', 'ffprobeSmoke:', ...info.ffprobeSmokeLines] : []),
+    ...(info.uiLocaleIpcLines.length > 0 ? ['', 'uiLocale:', ...info.uiLocaleIpcLines] : []),
     ...(info.localeJsonCatalogLines.length > 0
       ? ['', 'localeJson:', ...info.localeJsonCatalogLines]
       : []),

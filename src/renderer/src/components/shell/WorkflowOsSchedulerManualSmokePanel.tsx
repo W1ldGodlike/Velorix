@@ -26,15 +26,10 @@ export function WorkflowOsSchedulerManualSmokePanel(props: {
   const locale = getUiLocale()
   const sections = useMemo(
     () =>
-      hasAny
-        ? getWorkflowOsSchedulerManualSmokeChecklistForUiLocale(locale, capabilities)
-        : [],
+      hasAny ? getWorkflowOsSchedulerManualSmokeChecklistForUiLocale(locale, capabilities) : [],
     [hasAny, locale, capabilities]
   )
-  const plainText = useMemo(
-    () => formatFfmpegHwManualSmokeChecklistPlainText(sections),
-    [sections]
-  )
+  const plainText = useMemo(() => formatFfmpegHwManualSmokeChecklistPlainText(sections), [sections])
 
   if (!hasAny) {
     return null

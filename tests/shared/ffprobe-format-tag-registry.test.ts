@@ -94,7 +94,9 @@ describe('ffprobe-format-tag-registry', () => {
     expect(collectFfprobeFormatScalarTagExportLines(probe, 'en').join('\n')).toContain('artist')
     expect(collectFfprobeFormatScalarTagExportLines(probe, 'en').join('\n')).toContain('genre')
     expect(collectFfprobeFormatScalarTagInspectorBriefs(probe).join('')).toContain('art A')
-    expect(collectFfprobeFormatScalarTagInspectorBriefs(probe).join('')).toContain('gen Documentary')
+    expect(collectFfprobeFormatScalarTagInspectorBriefs(probe).join('')).toContain(
+      'gen Documentary'
+    )
   })
 
   it('parseFfprobeFormatTagScalar — пустые значения', () => {

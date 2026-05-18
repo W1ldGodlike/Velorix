@@ -41,10 +41,7 @@ export function PreviewProbeBodyRawJsonSection({
       >
         {uiText('probeSectionRawJson')}
       </summary>
-      <div
-        id={probeRawJsonRegionId}
-        aria-describedby="probeRawJsonHint probePanelOverviewHint"
-      >
+      <div id={probeRawJsonRegionId} aria-describedby="probeRawJsonHint probePanelOverviewHint">
         <p id="probeRawJsonHint" className="app-probe-toolbar-hint">
           {uiText('probeRawJsonHint')}
         </p>

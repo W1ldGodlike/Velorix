@@ -118,7 +118,8 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_06: TerminalCommandHintE
   {
     tool: 'ffprobe',
     token: '· субтитры s:0 codec_long_name',
-    summary: 'Дорожка субтитров (s:0): codec_long_name (поле ffprobe: длинное имя кодека субтитров); путь к медиа подставляется из превью.',
+    summary:
+      'Дорожка субтитров (s:0): codec_long_name (поле ffprobe: длинное имя кодека субтитров); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=codec_long_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {

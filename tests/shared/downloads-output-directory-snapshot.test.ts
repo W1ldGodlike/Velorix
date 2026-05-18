@@ -30,8 +30,6 @@ describe('downloads output directory snapshot', () => {
   })
 
   it('downloadsCliOptionsChanged channel is stable', () => {
-    expect(mainWindowIpc.downloadsCliOptionsChanged).toBe(
-      'fluxalloy:downloads-cli-options-changed'
-    )
+    expect(mainWindowIpc.downloadsCliOptionsChanged).toBe('fluxalloy:downloads-cli-options-changed')
   })
 })

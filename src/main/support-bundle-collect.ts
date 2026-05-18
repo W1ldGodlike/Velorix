@@ -1,11 +1,4 @@
-import {
-  existsSync,
-  readdirSync,
-  readFileSync,
-  statSync,
-  unlinkSync,
-  type Stats
-} from 'fs'
+import { existsSync, readdirSync, readFileSync, statSync, unlinkSync, type Stats } from 'fs'
 import { basename, join } from 'path'
 
 import type {

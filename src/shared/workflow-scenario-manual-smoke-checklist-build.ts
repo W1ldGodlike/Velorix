@@ -21,11 +21,7 @@ export function buildWorkflowScenarioManualSmokeChecklistFromLocaleShard(
     {
       id: 'scenario-builder',
       title: t(shard, `${p}SectionTitle`),
-      prerequisites: [
-        t(shard, `${p}Prereq0`),
-        t(shard, `${p}Prereq1`),
-        t(shard, `${p}Prereq2`)
-      ],
+      prerequisites: [t(shard, `${p}Prereq0`), t(shard, `${p}Prereq1`), t(shard, `${p}Prereq2`)],
       steps: [
         { id: 'open-builder', text: t(shard, `${p}Step_open_builder`) },
         { id: 'add-link', text: t(shard, `${p}Step_add_link`) },

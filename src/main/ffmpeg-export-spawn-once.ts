@@ -12,6 +12,7 @@ import {
   parseFfmpegTimeSeconds
 } from '../shared/ffmpeg-export-progress-parse'
 import { logExternalProcessLine } from './external-process-log'
+import { appendProcessStreamBuffer } from './process-stream-buffer'
 
 /**
  * §7.1 — показывать в статусбаре только строки статистики `-stats` или явные ошибки;
@@ -109,7 +110,7 @@ export function runFfmpegExportOnce(params: {
 
     child.stderr?.setEncoding('utf8')
     child.stderr?.on('data', (chunk: string) => {
-      stderrTail += chunk
+      stderrTail = appendProcessStreamBuffer(stderrTail, chunk)
       const parts = stderrTail.split(/\r|\n/)
       stderrTail = parts.pop() ?? ''
       for (const part of parts) {

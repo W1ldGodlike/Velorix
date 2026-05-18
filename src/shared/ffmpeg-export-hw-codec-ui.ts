@@ -8,10 +8,7 @@ import {
   resolveFfmpegHwUploadFilterChain
 } from './ffmpeg-export-vaapi-vf'
 import { resolveFfmpegExportHwaccelForDecode } from './ffmpeg-export-hw-decode'
-import {
-  FFMPEG_HW_VIDEO_ENCODER_IDS,
-  type FfmpegHwVideoEncoderId
-} from './ffmpeg-hw-encoder-probe'
+import { FFMPEG_HW_VIDEO_ENCODER_IDS, type FfmpegHwVideoEncoderId } from './ffmpeg-hw-encoder-probe'
 import { isFfmpegHwExportVideoCodec } from './ffmpeg-export-video-codec'
 
 export type FfmpegHwEncoderFamily = 'nvenc' | 'amf' | 'qsv' | 'vaapi' | 'videotoolbox'

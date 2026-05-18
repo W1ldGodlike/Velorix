@@ -158,7 +158,10 @@ type FfprobeSideDataRule = {
 
 /** Порядок важен: первое совпадение wins; `null` — не показывать в сводке (Display Matrix). */
 const FFPROBE_SIDE_DATA_RULES: readonly FfprobeSideDataRule[] = [
-  { match: (low) => low.includes('dovi') || low.includes('dolby vision'), summarize: summarizeDolbyVision },
+  {
+    match: (low) => low.includes('dovi') || low.includes('dolby vision'),
+    summarize: summarizeDolbyVision
+  },
   { match: (low) => low.includes('mastering display'), summarize: summarizeMasteringDisplay },
   { match: (low) => low.includes('content light'), summarize: summarizeContentLight },
   {
@@ -187,7 +190,10 @@ const FFPROBE_SIDE_DATA_RULES: readonly FfprobeSideDataRule[] = [
     match: (low) => low.includes('gop') && low.includes('timecode'),
     summarize: summarizeGopTimecode
   },
-  { match: (low) => low.includes('producer reference time'), summarize: summarizeProducerReferenceTime },
+  {
+    match: (low) => low.includes('producer reference time'),
+    summarize: summarizeProducerReferenceTime
+  },
   {
     match: (low) => low.includes('film grain'),
     summarize: (o) => summarizeFilmGrain((scalarToken(o, 'side_data_type') ?? '').toLowerCase())

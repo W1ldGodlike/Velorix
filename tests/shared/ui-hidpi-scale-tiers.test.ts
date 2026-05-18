@@ -54,9 +54,7 @@ describe('ui-hidpi-scale-tiers', () => {
     const css = readFileSync(MAIN_CSS_PATH, 'utf8')
     for (const tier of UI_HIDPI_CSS_MEDIA_TIERS) {
       expect(css).toContain(`(min-resolution: ${tier.minResolutionDpi}dpi)`)
-      expect(css).toContain(
-        `(-webkit-min-device-pixel-ratio: ${tier.minDevicePixelRatio})`
-      )
+      expect(css).toContain(`(-webkit-min-device-pixel-ratio: ${tier.minDevicePixelRatio})`)
     }
     const block125 = extractMainCssMediaBlock(css, 120)
     expect(block125.length).toBeGreaterThan(200)

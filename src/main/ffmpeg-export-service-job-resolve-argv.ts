@@ -115,7 +115,11 @@ export function resolveFfmpegExportJobArgv(
       videoCodecUsed: videoCodec
     }
   }
-  const segmentDur = resolveExportSegmentDurationSec(params.trim, applyTrim, params.probeDurationSec)
+  const segmentDur = resolveExportSegmentDurationSec(
+    params.trim,
+    applyTrim,
+    params.probeDurationSec
+  )
   const audioMode = parseFfmpegExportAudioMode(params.audioMode)
 
   const baseArgvParams: FfmpegExportArgvParams = {

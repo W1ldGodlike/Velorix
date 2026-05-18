@@ -93,7 +93,11 @@ export function WindowsExplorerContextMenuSettings(props: {
         />
         <span>{uiText('appSettingsExplorerMenuCheckbox')}</span>
       </label>
-      <div className="app-settings-row-actions" role="group" aria-label={uiText('appSettingsExplorerMenuLegend')}>
+      <div
+        className="app-settings-row-actions"
+        role="group"
+        aria-label={uiText('appSettingsExplorerMenuLegend')}
+      >
         <button
           type="button"
           className="app-btn app-btn-compact"
@@ -121,13 +125,16 @@ export function WindowsExplorerContextMenuSettings(props: {
           disabled={disabled || !registered}
           onClick={() => {
             setBusy(true)
-            void window.fluxalloy.settings.unregisterWindowsExplorerContextMenu().then(() => {
-              setEnabled(false)
-              refresh()
-              onStatus(uiText('appSettingsExplorerMenuUnregisterDone'))
-            }).finally(() => {
-              setBusy(false)
-            })
+            void window.fluxalloy.settings
+              .unregisterWindowsExplorerContextMenu()
+              .then(() => {
+                setEnabled(false)
+                refresh()
+                onStatus(uiText('appSettingsExplorerMenuUnregisterDone'))
+              })
+              .finally(() => {
+                setBusy(false)
+              })
           }}
         >
           {uiText('appSettingsExplorerMenuUnregister')}
@@ -138,7 +145,9 @@ export function WindowsExplorerContextMenuSettings(props: {
           {uiText('appSettingsExplorerMenuRegisteredStatus')}
         </p>
       ) : null}
-      <p className="app-modal-hint app-settings-section-hint">{uiText('appSettingsOpenWithHint')}</p>
+      <p className="app-modal-hint app-settings-section-hint">
+        {uiText('appSettingsOpenWithHint')}
+      </p>
       <label className="app-settings-checkbox-row">
         <input
           type="checkbox"
@@ -168,7 +177,11 @@ export function WindowsExplorerContextMenuSettings(props: {
         />
         <span>{uiText('appSettingsOpenWithCheckbox')}</span>
       </label>
-      <div className="app-settings-row-actions" role="group" aria-label={uiText('appSettingsOpenWithLegend')}>
+      <div
+        className="app-settings-row-actions"
+        role="group"
+        aria-label={uiText('appSettingsOpenWithLegend')}
+      >
         <button
           type="button"
           className="app-btn app-btn-compact"
@@ -196,13 +209,16 @@ export function WindowsExplorerContextMenuSettings(props: {
           disabled={disabled || !openWithRegistered}
           onClick={() => {
             setBusy(true)
-            void window.fluxalloy.settings.unregisterWindowsFileAssociation().then(() => {
-              setOpenWithEnabled(false)
-              refresh()
-              onStatus(uiText('appSettingsOpenWithUnregisterDone'))
-            }).finally(() => {
-              setBusy(false)
-            })
+            void window.fluxalloy.settings
+              .unregisterWindowsFileAssociation()
+              .then(() => {
+                setOpenWithEnabled(false)
+                refresh()
+                onStatus(uiText('appSettingsOpenWithUnregisterDone'))
+              })
+              .finally(() => {
+                setBusy(false)
+              })
           }}
         >
           {uiText('appSettingsOpenWithUnregister')}
@@ -214,9 +230,7 @@ export function WindowsExplorerContextMenuSettings(props: {
           disabled={disabled}
           onClick={() => {
             void window.fluxalloy.settings.openWindowsDefaultAppsSettings().then((res) => {
-              onStatus(
-                res.ok ? uiText('appSettingsOpenWithDefaultAppsDone') : res.error
-              )
+              onStatus(res.ok ? uiText('appSettingsOpenWithDefaultAppsDone') : res.error)
             })
           }}
         >

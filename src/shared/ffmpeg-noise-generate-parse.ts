@@ -16,8 +16,17 @@ export function parseMediaUtilitiesNoiseKind(raw: unknown): MediaUtilitiesNoiseK
 }
 
 export function parseMediaUtilitiesNoiseDurationSec(raw: unknown): number | null {
-  const n = typeof raw === 'number' ? raw : typeof raw === 'string' ? Number.parseFloat(raw.trim()) : Number.NaN
-  if (!Number.isFinite(n) || n < MEDIA_UTILITIES_NOISE_DURATION_SEC_MIN || n > MEDIA_UTILITIES_NOISE_DURATION_SEC_MAX) {
+  const n =
+    typeof raw === 'number'
+      ? raw
+      : typeof raw === 'string'
+        ? Number.parseFloat(raw.trim())
+        : Number.NaN
+  if (
+    !Number.isFinite(n) ||
+    n < MEDIA_UTILITIES_NOISE_DURATION_SEC_MIN ||
+    n > MEDIA_UTILITIES_NOISE_DURATION_SEC_MAX
+  ) {
     return null
   }
   return Math.round(n * 1000) / 1000

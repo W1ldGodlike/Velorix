@@ -1,10 +1,13 @@
+import type { JSX } from 'react'
+
 import { uiText } from '../../locales/ui-text'
 import type { EditorFfmpegSettingsRailProps } from './editor-ffmpeg-settings-rail-props'
 import { EditorFfmpegSettingsRailVideoCodecFields } from './EditorFfmpegSettingsRailVideoCodecFields'
 import { EditorFfmpegSettingsRailVideoFilterFields } from './EditorFfmpegSettingsRailVideoFilterFields'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- JSX section
-export function EditorFfmpegSettingsRailVideoSection(props: EditorFfmpegSettingsRailProps) {
+export function EditorFfmpegSettingsRailVideoSection(
+  props: EditorFfmpegSettingsRailProps
+): JSX.Element {
   const { panelOpen, persistMainWindowUiPanelToggle, editorFfmpegDetailBusy } = props
 
   return (

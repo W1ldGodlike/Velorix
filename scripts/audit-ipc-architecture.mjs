@@ -95,8 +95,7 @@ for (const file of walkTs(join(REPO_ROOT, 'src/main'))) {
 
 const rawHandleLines = Object.values(byFile).reduce((a, b) => a + b, 0)
 const ffmpegLoopExtra =
-  (readRepoUtf8('src/main/ipc/register-settings-ipc.ts').match(/channel:\s*mw\./g) ?? [])
-    .length - 1
+  (readRepoUtf8('src/main/ipc/register-settings-ipc.ts').match(/channel:\s*mw\./g) ?? []).length - 1
 const handleTotal = rawHandleLines + Math.max(0, ffmpegLoopExtra)
 
 function mainRegistersKey(key, scope) {
@@ -110,8 +109,7 @@ function mainRegistersKey(key, scope) {
   }
   if (
     scope === 'main' &&
-    (settingsIpcText.includes(`channel: ${ref}`) ||
-      settingsIpcText.includes(`channel: ${ref},`))
+    (settingsIpcText.includes(`channel: ${ref}`) || settingsIpcText.includes(`channel: ${ref},`))
   ) {
     return true
   }

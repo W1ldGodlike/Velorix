@@ -2,10 +2,7 @@ import { spawn } from 'child_process'
 
 import { parseNvidiaSmiGpuUtilizationPercent } from '../shared/nvidia-smi-gpu-util-parse'
 
-const NVIDIA_SMI_QUERY = [
-  '--query-gpu=utilization.gpu',
-  '--format=csv,noheader,nounits'
-] as const
+const NVIDIA_SMI_QUERY = ['--query-gpu=utilization.gpu', '--format=csv,noheader,nounits'] as const
 
 /**
  * Периодический опрос `nvidia-smi` во время encode (NVIDIA; иначе null).

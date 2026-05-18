@@ -9,7 +9,5 @@ export function resolveDownloadsHistoryVisibleEntries<T>(
   entries: T[],
   listMode: DownloadsHistoryListMode
 ): T[] {
-  return listMode === 'full'
-    ? entries
-    : entries.slice(0, DOWNLOADS_HISTORY_COMPACT_VISIBLE_COUNT)
+  return listMode === 'full' ? entries : entries.slice(0, DOWNLOADS_HISTORY_COMPACT_VISIBLE_COUNT)
 }

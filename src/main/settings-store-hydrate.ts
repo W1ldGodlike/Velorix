@@ -67,16 +67,24 @@ export function hydrateAppSettingsFromPartial(parsed: Partial<AppSettings>): App
   const ytdlpDownloadDirectory = parseYtdlpDownloadDirectory(parsed.ytdlpDownloadDirectory)
   const ytdlpFilenameTemplate = parseYtdlpFilenameTemplateStored(parsed.ytdlpFilenameTemplate)
   const ytdlpFormatPreset = parseYtdlpFormatPresetStored(parsed.ytdlpFormatPreset)
-  const ffmpegExportEncodePreset = parseFfmpegExportEncodePresetStored(parsed.ffmpegExportEncodePreset)
+  const ffmpegExportEncodePreset = parseFfmpegExportEncodePresetStored(
+    parsed.ffmpegExportEncodePreset
+  )
   const ffmpegExportVideoCodec = parseFfmpegExportVideoCodecStored(parsed.ffmpegExportVideoCodec)
   const ffmpegExportContainer = parseFfmpegExportContainerStored(parsed.ffmpegExportContainer)
   const ffmpegExportCrf = parseFfmpegExportCrfStored(parsed.ffmpegExportCrf)
-  const ffmpegExportVideoBitrate = parseFfmpegExportVideoBitrateStored(parsed.ffmpegExportVideoBitrate)
-  const ffmpegExportAudioBitrate = parseFfmpegExportAudioBitrateStored(parsed.ffmpegExportAudioBitrate)
+  const ffmpegExportVideoBitrate = parseFfmpegExportVideoBitrateStored(
+    parsed.ffmpegExportVideoBitrate
+  )
+  const ffmpegExportAudioBitrate = parseFfmpegExportAudioBitrateStored(
+    parsed.ffmpegExportAudioBitrate
+  )
   const ffmpegExportAudioMode = parseFfmpegExportAudioModeStored(parsed.ffmpegExportAudioMode)
   const ffmpegExportFps = parseFfmpegExportFpsStored(parsed.ffmpegExportFps)
   const ffmpegExportScalePreset = parseFfmpegExportScalePresetStored(parsed.ffmpegExportScalePreset)
-  const ffmpegExportVideoTransform = parseFfmpegExportVideoTransform(parsed.ffmpegExportVideoTransform)
+  const ffmpegExportVideoTransform = parseFfmpegExportVideoTransform(
+    parsed.ffmpegExportVideoTransform
+  )
   const ffmpegExportCropPreset = parseFfmpegExportCropPreset(parsed.ffmpegExportCropPreset)
   const ffmpegExportDirectory = parseFfmpegExportDirectoryStored(parsed.ffmpegExportDirectory)
   const ffmpegSnapshotDirectory = parseFfmpegSnapshotDirectoryStored(parsed.ffmpegSnapshotDirectory)
@@ -141,7 +149,9 @@ export function hydrateAppSettingsFromPartial(parsed: Partial<AppSettings>): App
     typeof parsed.ffmpegExportBatchOutputSuffix === 'string' &&
     parsed.ffmpegExportBatchOutputSuffix.trim().length > 0
   ) {
-    const suffixParsed = parseFfmpegExportBatchOutputSuffixTemplate(parsed.ffmpegExportBatchOutputSuffix)
+    const suffixParsed = parseFfmpegExportBatchOutputSuffixTemplate(
+      parsed.ffmpegExportBatchOutputSuffix
+    )
     if (suffixParsed.ok && suffixParsed.template !== DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX) {
       base.ffmpegExportBatchOutputSuffix = suffixParsed.template
     }
@@ -247,7 +257,10 @@ export function hydrateAppSettingsFromPartial(parsed: Partial<AppSettings>): App
   const uiLocaleParsed = parseAppUiLocale(parsed.uiLocale)
   const presetUiLocale: 'ru' | 'en' = uiLocaleParsed === 'en' ? 'en' : 'ru'
   const fromFile = parseFfmpegExportUserPresetsList(parsed.ffmpegExportUserPresets)
-  base.ffmpegExportUserPresets = mergeBuiltinFfmpegExportUserPresetsFromFile(fromFile, presetUiLocale)
+  base.ffmpegExportUserPresets = mergeBuiltinFfmpegExportUserPresetsFromFile(
+    fromFile,
+    presetUiLocale
+  )
   const mainWindowUiPanels = parseMainWindowUiPanels(parsed.mainWindowUiPanels)
   if (mainWindowUiPanels !== undefined) {
     base.mainWindowUiPanels = mainWindowUiPanels
@@ -260,7 +273,9 @@ export function hydrateAppSettingsFromPartial(parsed: Partial<AppSettings>): App
     base.uiLocale = uiLocaleParsed
   }
   const externalKind = parseExternalFilterScriptKind(parsed.ffmpegExportExternalFilterKind)
-  const externalPath = parseExternalFilterScriptPathStored(parsed.ffmpegExportExternalFilterScriptPath)
+  const externalPath = parseExternalFilterScriptPathStored(
+    parsed.ffmpegExportExternalFilterScriptPath
+  )
   if (externalKind !== 'off' && externalPath !== null) {
     base.ffmpegExportExternalFilterKind = externalKind
     base.ffmpegExportExternalFilterScriptPath = externalPath

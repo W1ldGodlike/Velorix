@@ -13,6 +13,15 @@ export default defineConfig({
     include: ['tests/**/*.test.ts'],
     reporters: ['default'],
     passWithNoTests: false,
-    clearMocks: true
+    clearMocks: true,
+    coverage: {
+      provider: 'v8',
+      clean: true,
+      reporter: ['text', 'json-summary'],
+      include: ['src/shared/**/*.ts', 'src/main/**/*.ts'],
+      thresholds: {
+        lines: 50
+      }
+    }
   }
 })

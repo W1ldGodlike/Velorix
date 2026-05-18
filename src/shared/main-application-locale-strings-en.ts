@@ -130,8 +130,7 @@ export const mainApplicationStringsEn: MainApplicationStrings = {
   extractFramesTooMany: 'Too many frames (limit 200). Increase the interval or lower the count.',
   extractFramesDurationTooShort: 'Video is too short to extract frames.',
   extractFramesInvalidCount: 'Enter a frame count from 1 to 200.',
-  extractFramesInvalidManual:
-    'Enter timestamps in seconds (comma- or line-separated), up to 200.',
+  extractFramesInvalidManual: 'Enter timestamps in seconds (comma- or line-separated), up to 200.',
   extractFramesAllFailed: 'Could not save any frames.',
   extractFramesHistorySuccessTemplate: 'Frames extracted: {n}',
   mediaUtilitiesRepairSaveTitle: 'Save repaired file',
@@ -212,8 +211,7 @@ export const mainApplicationStringsEn: MainApplicationStrings = {
   diagFolderHintLogs: 'main.log, session.log, and session logs; created on first open.',
   diagFolderHintYtdlpDownloads:
     'yt-dlp output files; same folder as Downloads tab output settings.',
-  diagFolderHintSystemTemp:
-    'Preview, ffmpeg, and maintenance temp files; clean up in About below.',
+  diagFolderHintSystemTemp: 'Preview, ffmpeg, and maintenance temp files; clean up in About below.',
   diagnosticsMaintenanceNoTargets: 'No maintenance categories selected',
   knowledgeHelpNotFound: 'Help folder not found',
   knowledgeInvalidArticle: 'Invalid help article',

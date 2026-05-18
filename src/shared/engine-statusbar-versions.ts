@@ -20,8 +20,7 @@ export function formatEngineVersionsLineFromSnapshot(
     if (e.state === 'ready' && e.version) {
       const token = parseEngineVersionToken(id, e.version)
       const display =
-        token ??
-        (e.version.length > 24 ? `${e.version.slice(0, 22)}${labels.ellipsis}` : e.version)
+        token ?? (e.version.length > 24 ? `${e.version.slice(0, 22)}${labels.ellipsis}` : e.version)
       return `${name}: ${display}`
     }
     if (e.state === 'missing') {

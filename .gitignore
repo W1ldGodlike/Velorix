@@ -4,6 +4,7 @@ node_modules
 # Результаты сборки electron-vite/electron-builder; их можно пересоздать командами npm run build*.
 dist
 out
+coverage
 .DS_Store
 
 # Runtime-движки кладём в bin/ перед релизной сборкой, но сами бинарники в Git не храним.

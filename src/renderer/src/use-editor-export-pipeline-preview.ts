@@ -7,9 +7,7 @@ import type {
   FfmpegExportPreviewInput
 } from './use-editor-export-pipeline-deps'
 
-export function useEditorExportPipelinePreview(
-  deps: EditorExportPipelinePreviewDeps
-): {
+export function useEditorExportPipelinePreview(deps: EditorExportPipelinePreviewDeps): {
   exportPreview: ReturnType<typeof buildFfmpegExportPreviewCommand>
   exportPreviewCommand: string
   exportPreviewHint: () => string

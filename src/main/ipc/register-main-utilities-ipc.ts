@@ -225,7 +225,10 @@ export function registerMainUtilitiesIpcHandlers(deps: MainUtilitiesIpcDeps): vo
 
   ipcMain.handle(
     mw.processingHistoryRepeatWorkflowScenario,
-    async (_event, raw: unknown): Promise<
+    async (
+      _event,
+      raw: unknown
+    ): Promise<
       | { ok: true }
       | { ok: false; error: string }
       | {

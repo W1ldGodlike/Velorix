@@ -1,17 +1,15 @@
-import type { UseAppWorkspaceMainPropsInput } from './use-app-workspace-main-props'
+import type { UseAppWorkspaceEditorPropsInput } from './use-app-workspace-editor-props'
 import { buildAppShellPropsInputWorkspaceEditor } from './use-app-shell-props-input-workspace-editor'
-import { buildAppShellPropsInputWorkspaceShell } from './use-app-shell-props-input-workspace-shell'
-import { buildAppShellPropsInputWorkspaceTerminalDownloads } from './use-app-shell-props-input-workspace-terminal-downloads'
+import { buildAppShellPropsInputWorkspaceEditorShared } from './use-app-shell-props-input-workspace-shell'
 import type { AppShellPropsInputCtx } from './use-app-shell-props-input-workspace-types'
 
 export type { AppShellPropsInputCtx } from './use-app-shell-props-input-workspace-types'
 
 export function buildAppShellPropsInputWorkspace(
   ctx: AppShellPropsInputCtx
-): UseAppWorkspaceMainPropsInput {
+): UseAppWorkspaceEditorPropsInput {
   return {
-    ...buildAppShellPropsInputWorkspaceShell(ctx),
-    ...buildAppShellPropsInputWorkspaceEditor(ctx),
-    ...buildAppShellPropsInputWorkspaceTerminalDownloads(ctx)
+    ...buildAppShellPropsInputWorkspaceEditorShared(ctx),
+    ...buildAppShellPropsInputWorkspaceEditor(ctx)
   }
 }

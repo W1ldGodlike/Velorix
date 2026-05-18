@@ -96,10 +96,7 @@ export function parseYtdlpInfoFormatSnippet(line: string): string | null {
  * §6/v0 — подпись колонки «Формат»: `[info]` (см. `parseYtdlpInfoFormatSnippet`)
  * плюс типичные строки post-processing (`merge`, audio extract, remux/convert).
  */
-export function parseYtdlpQueueFormatHint(
-  line: string,
-  locale: AppUiLocale = 'ru'
-): string | null {
+export function parseYtdlpQueueFormatHint(line: string, locale: AppUiLocale = 'ru'): string | null {
   const P = getYtdlpQueueProgressStrings(locale)
   const fromInfo = parseYtdlpInfoFormatSnippet(line)
   if (fromInfo) {

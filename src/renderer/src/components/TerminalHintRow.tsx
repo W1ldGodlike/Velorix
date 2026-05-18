@@ -34,10 +34,7 @@ export function TerminalHintRow(props: {
     hint.fullLine !== undefined && hint.fullLine.length > 0 ? hint.fullLine.trimEnd() : hint.token
 
   return (
-    <div
-      className="app-terminal-hint-card"
-      role={role === 'option' ? 'presentation' : undefined}
-    >
+    <div className="app-terminal-hint-card" role={role === 'option' ? 'presentation' : undefined}>
       <button
         type="button"
         className={className}
@@ -55,7 +52,9 @@ export function TerminalHintRow(props: {
         <small>{hint.summary}</small>
         {example !== undefined ? (
           <small className="app-terminal-hint-example">
-            <span className="app-terminal-hint-example-label">{uiText('terminalHintExampleLabel')}</span>
+            <span className="app-terminal-hint-example-label">
+              {uiText('terminalHintExampleLabel')}
+            </span>
             <code>{example}</code>
           </small>
         ) : null}

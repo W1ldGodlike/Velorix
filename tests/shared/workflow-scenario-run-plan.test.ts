@@ -5,10 +5,7 @@ import { buildWorkflowScenarioRunPlan } from '../../src/shared/workflow-scenario
 
 describe('workflow-scenario-run-plan §11', () => {
   it('builds ffmpeg-export plan for template', () => {
-    const plan = buildWorkflowScenarioRunPlan(
-      WORKFLOW_SCENARIO_TEMPLATE_V1,
-      'C:\\in\\clip.mp4'
-    )
+    const plan = buildWorkflowScenarioRunPlan(WORKFLOW_SCENARIO_TEMPLATE_V1, 'C:\\in\\clip.mp4')
     expect(plan?.saveDirectory).toBeTruthy()
     expect(plan?.steps.some((s) => s.kind === 'ffmpeg-export')).toBe(true)
     expect(plan?.steps[0]?.kind).toBe('passthrough-local')

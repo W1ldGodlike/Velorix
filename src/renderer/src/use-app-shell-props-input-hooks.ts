@@ -12,12 +12,27 @@ import { useDownloadsUrlActions } from './use-downloads-url-actions'
 import {
   type DownloadsStatusFilter,
   downloadsRowMatchesStatus,
-  summarizeDownloadsRows
+  summarizeDownloadsRows,
+  type DownloadsQueueRowView
 } from './downloads-queue-view'
-import type { AppCompositionState } from './use-app-composition-state'
+import type { RendererAppState } from './use-renderer-app-state'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- AppShellPropsInputHookBag = ReturnType below
-export function useAppShellPropsInputHooks(state: AppCompositionState) {
+export type AppShellPropsInputHookBag = ReturnType<typeof useAppPreviewWorkspace> &
+  ReturnType<typeof useTerminalWorkspace> &
+  ReturnType<typeof useDownloadsUrlActions> &
+  ReturnType<typeof useAppMainWindowEffects> &
+  ReturnType<typeof useFfmpegExportBatch> &
+  ReturnType<typeof useEditorExportPipeline> &
+  ReturnType<typeof useAppToolbarEngineActions> & {
+    downloadsStats: ReturnType<typeof summarizeDownloadsRows>
+    visibleDownloadsRows: DownloadsQueueRowView[]
+    downloadsStatusFilterChips: Array<{ id: DownloadsStatusFilter; label: string }>
+    handleDownloadsRailSectionToggle: (
+      key: DownloadsRailPanelKey
+    ) => (e: SyntheticEvent<HTMLDetailsElement>) => void
+  }
+
+export function useAppShellPropsInputHooks(state: RendererAppState): AppShellPropsInputHookBag {
   const {
     trimSnapshotRef,
     trimRange,
@@ -103,7 +118,7 @@ export function useAppShellPropsInputHooks(state: AppCompositionState) {
         state.persistDownloadsRailPanelToggle(key, open)
       }
     },
-    [state.persistDownloadsRailPanelToggle]
+    [state]
   )
 
   const {
@@ -189,7 +204,9 @@ export function useAppShellPropsInputHooks(state: AppCompositionState) {
     previewPath: state.preview?.path,
     exportBusy: state.exportBusy,
     setBatchOutputDirectory: state.setBatchOutputDirectory,
-    onBatchRunFinished: state.refreshProcessingHistory
+    onBatchRunFinished: () => {
+      void state.refreshProcessingHistory(undefined, { silent: true })
+    }
   })
 
   const {
@@ -375,5 +392,3 @@ export function useAppShellPropsInputHooks(state: AppCompositionState) {
     handlePickEngine
   }
 }
-
-export type AppShellPropsInputHookBag = ReturnType<typeof useAppShellPropsInputHooks>

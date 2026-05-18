@@ -1,4 +1,7 @@
-import type { FfmpegExportContainerId, FfmpegExportVideoCodecId } from '../shared/ffmpeg-export-contract'
+import type {
+  FfmpegExportContainerId,
+  FfmpegExportVideoCodecId
+} from '../shared/ffmpeg-export-contract'
 import {
   exportAudioModeMkvOnlyErrorMessage,
   ffmpegExportAudioModeRequiresMkv
@@ -13,7 +16,10 @@ import {
   pickFfmpegHwAutoHevcEncoder
 } from '../shared/ffmpeg-export-video-codec'
 import { createEmptyFfmpegHwEncodersSnapshot } from '../shared/ffmpeg-hw-encoder-probe'
-import { parseFfmpegExportAudioMode, parseFfmpegExportContainer } from '../shared/ffmpeg-export-parse-registry'
+import {
+  parseFfmpegExportAudioMode,
+  parseFfmpegExportContainer
+} from '../shared/ffmpeg-export-parse-registry'
 import {
   parseFfmpegExportHwDecode,
   resolveFfmpegExportHwaccelForDecode
@@ -31,7 +37,10 @@ export type FfmpegExportJobVideoResolve =
     }
 
 export async function resolveFfmpegExportJobVideo(
-  params: Pick<FfmpegExportJobParams, 'ffmpegPath' | 'videoCodec' | 'hwDecode' | 'audioMode' | 'container'>
+  params: Pick<
+    FfmpegExportJobParams,
+    'ffmpegPath' | 'videoCodec' | 'hwDecode' | 'audioMode' | 'container'
+  >
 ): Promise<FfmpegExportJobVideoResolve> {
   const parsedVideoCodec = parseFfmpegExportVideoCodec(params.videoCodec)
   let videoCodec: FfmpegExportVideoCodecId = parsedVideoCodec

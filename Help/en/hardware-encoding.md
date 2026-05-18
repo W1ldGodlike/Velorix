@@ -10,11 +10,11 @@ The editor already exposes **hardware** video codecs in the right **Format** rai
 
 ## Modes
 
-| Mode | When to use |
-|------|-------------|
-| Manual HW codec | You need a specific NVENC / AMF / QSV / VAAPI |
-| **hw_auto** | Let the app pick the best available HW codec at export |
-| Software (libx264, etc.) | Maximum compatibility and fine CRF control |
+| Mode                     | When to use                                            |
+| ------------------------ | ------------------------------------------------------ |
+| Manual HW codec          | You need a specific NVENC / AMF / QSV / VAAPI          |
+| **hw_auto**              | Let the app pick the best available HW codec at export |
+| Software (libx264, etc.) | Maximum compatibility and fine CRF control             |
 
 The **Benchmark** panel (15 s) compares candidates by speed and CPU/GPU load.
 

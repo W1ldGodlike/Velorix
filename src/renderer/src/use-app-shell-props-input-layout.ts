@@ -1,6 +1,3 @@
-import type { AppUiLocale } from '../../shared/app-ui-locale'
-import { getUiLocale, uiText } from './locales/ui-text'
-import { buildStatusbarActivityDisplay } from './statusbar-activity-resolve'
 import type { AppShellPropsInputCtx } from './use-app-shell-props-input-workspace-types'
 import type { UseAppShellLayoutPropsInput } from './use-app-shell-layout-props'
 
@@ -8,15 +5,6 @@ export function buildAppShellPropsInputLayout(
   ctx: AppShellPropsInputCtx
 ): UseAppShellLayoutPropsInput {
   const {
-    engineDownloadBusy,
-    engineSummary,
-    probePending,
-    exportBusy,
-    snapshotBusy,
-    extractFramesBusy,
-    exportCancelBusy,
-    terminalBusy,
-    batchExportBusy,
     exportPresetSaving,
     enginePathsSaving,
     appSettingsOpen,
@@ -25,14 +13,7 @@ export function buildAppShellPropsInputLayout(
     externalFilterScriptOpen,
     workflowPlannerOpen,
     workflowScenarioBuilderOpen,
-    downloadsOptionsBusy,
-    downloadsHistoryBusy,
-    downloadsStats,
-    workspaceTab,
     setWorkspaceTab,
-    preview,
-    enginesOfferDownload,
-    theme,
     setKnowledgeInitialSlug,
     setKnowledgeOpen,
     setAboutInfo,
@@ -54,11 +35,9 @@ export function buildAppShellPropsInputLayout(
     handleEnginesDownload,
     handleUiLocaleToggle,
     toggleTheme,
-    engineVersionsLine,
     exportCodecStatusbarLabel,
     exportCodecStatusbarTitle,
     exportCodecStatusbarAria,
-    statusHint,
     aboutOpen,
     aboutInfo,
     knowledgeOpen,
@@ -74,54 +53,13 @@ export function buildAppShellPropsInputLayout(
     handleEnginesCheckUpdates,
     handleClearDownloadedEngines,
     handleSaveEnginePaths,
-    hydrateExportFieldsFromSettings
+    hydrateExportFieldsFromSettings,
+    theme,
+    engineDownloadBusy
   } = ctx
 
-  const uiLocale = getUiLocale() as AppUiLocale
-  const statusbarActivity = buildStatusbarActivityDisplay(
-    {
-      engineDownloadBusy,
-      engineSummaryChecking: engineSummary === 'checking',
-      exportBusy,
-      snapshotBusy,
-      extractFramesBusy,
-      exportCancelBusy,
-      probePending,
-      batchExportBusy,
-      terminalBusy,
-      downloadsRunning: downloadsStats.running,
-      downloadsOptionsBusy,
-      downloadsHistoryBusy
-    },
-    (key: string) => uiText(key as Parameters<typeof uiText>[0])
-  )
-
   return {
-    chromeBusy: {
-      engineDownloadBusy,
-      engineSummary,
-      probePending,
-      exportBusy,
-      snapshotBusy,
-      extractFramesBusy,
-      exportCancelBusy,
-      terminalBusy,
-      batchExportBusy,
-      exportPresetSaving,
-      enginePathsSaving,
-      downloadsOptionsBusy,
-      downloadsHistoryBusy
-    },
     topbar: {
-      workspaceTab,
-      setWorkspaceTab,
-      engineDownloadBusy,
-      engineSummary,
-      previewPath: preview?.path,
-      exportBusy,
-      exportCancelBusy,
-      enginesOfferDownload,
-      theme,
       setKnowledgeInitialSlug,
       setKnowledgeOpen,
       setAboutInfo,
@@ -137,23 +75,9 @@ export function buildAppShellPropsInputLayout(
       toggleTheme
     },
     statusbar: {
-      workspaceTab,
-      engineDownloadBusy,
-      engineSummary,
-      engineVersionsLine,
       exportCodecStatusbarLabel,
       exportCodecStatusbarTitle,
-      exportCodecStatusbarAria,
-      exportBusy,
-      snapshotBusy,
-      exportCancelBusy,
-      probePending,
-      batchExportBusy,
-      statusHint,
-      uiLocale,
-      statusbarActivityLabel: statusbarActivity.label,
-      statusbarActivityTitle: statusbarActivity.title,
-      statusbarActivityActive: statusbarActivity.active
+      exportCodecStatusbarAria
     },
     overlay: {
       aboutOpen,

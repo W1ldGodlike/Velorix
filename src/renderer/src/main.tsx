@@ -7,6 +7,7 @@ import App from './App'
 import { DownloadsStandaloneApp } from './DownloadsStandaloneApp'
 import { InspectorStandaloneApp } from './InspectorStandaloneApp'
 import { uiText } from './locales/ui-text'
+import { useAppShellStore } from './stores/app-shell-store'
 import { isDownloadsStandaloneSurface, isInspectorStandaloneSurface } from './renderer-surface'
 
 // Renderer bootstrap intentionally small.
@@ -42,17 +43,27 @@ function describeError(err: unknown, fallback: string): string {
   }
 }
 
+function reportRendererFault(scope: string, message: string): void {
+  safeLog('error', scope, message)
+  try {
+    const shell = useAppShellStore.getState()
+    shell.setLastRendererError(message)
+    const short = message.trim().split(/\r?\n/)[0]?.slice(0, 240) ?? message.slice(0, 240)
+    shell.setStatusHint(short || uiText('rendererLogWindowErrorFallback'))
+  } catch {
+    /* store ещё не инициализирован (редкий ранний сбой) */
+  }
+}
+
 window.addEventListener('error', (event) => {
-  safeLog(
-    'error',
+  reportRendererFault(
     'window.error',
     describeError(event.error, event.message || uiText('rendererLogWindowErrorFallback'))
   )
 })
 
 window.addEventListener('unhandledrejection', (event) => {
-  safeLog(
-    'error',
+  reportRendererFault(
     'window.unhandledrejection',
     describeError(event.reason, uiText('rendererLogUnhandledRejectionFallback'))
   )

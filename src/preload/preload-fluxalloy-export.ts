@@ -39,9 +39,7 @@ export const fluxalloyExport = {
     payload: FfmpegExportBenchmarkRequestPayload
   ): Promise<FfmpegExportBenchmarkResult> =>
     ipcRenderer.invoke(mw.exportBenchmarkEncoders, payload),
-  extractFrames: (
-    payload: FfmpegFramesExtractRequestPayload
-  ): Promise<FfmpegFramesExtractResult> =>
+  extractFrames: (payload: FfmpegFramesExtractRequestPayload): Promise<FfmpegFramesExtractResult> =>
     ipcRenderer.invoke(mw.extractFrames, payload),
   resolveBundledLutCubePath: (preset: FfmpegExportVideoLut3dId): Promise<string | null> =>
     ipcRenderer.invoke(mw.exportResolveBundledLutCubePath, preset),

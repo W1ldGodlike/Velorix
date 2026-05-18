@@ -197,7 +197,10 @@ export function WorkflowPlannerDialog(props: WorkflowPlannerDialogProps): JSX.El
           {uiText('workflowPlannerDialogHint')}
         </p>
         {addOpen ? (
-          <section className="workflow-planner-add-form" aria-label={uiText('workflowPlannerAddTitle')}>
+          <section
+            className="workflow-planner-add-form"
+            aria-label={uiText('workflowPlannerAddTitle')}
+          >
             <h3 className="app-settings-hidpi-title">{uiText('workflowPlannerAddTitle')}</h3>
             <div className="app-settings-stack">
               <div className="app-settings-field-row">
@@ -346,13 +349,22 @@ export function WorkflowPlannerDialog(props: WorkflowPlannerDialogProps): JSX.El
               >
                 {uiText('workflowPlannerAddSave')}
               </button>
-              <button type="button" className="app-btn" disabled={busy} onClick={() => setAddOpen(false)}>
+              <button
+                type="button"
+                className="app-btn"
+                disabled={busy}
+                onClick={() => setAddOpen(false)}
+              >
                 {uiText('workflowPlannerAddCancel')}
               </button>
             </div>
           </section>
         ) : null}
-        <div className="app-settings-table-wrap" role="region" aria-label={uiText('workflowPlannerDialogTitle')}>
+        <div
+          className="app-settings-table-wrap"
+          role="region"
+          aria-label={uiText('workflowPlannerDialogTitle')}
+        >
           <table className="app-settings-table">
             <thead>
               <tr>
@@ -385,7 +397,9 @@ export function WorkflowPlannerDialog(props: WorkflowPlannerDialogProps): JSX.El
                           void toggleEnabled(row.id, !row.enabled)
                         }}
                       >
-                        {row.enabled ? uiText('workflowPlannerEnabledOn') : uiText('workflowPlannerEnabledOff')}
+                        {row.enabled
+                          ? uiText('workflowPlannerEnabledOn')
+                          : uiText('workflowPlannerEnabledOff')}
                       </button>
                     </td>
                     <td title={row.watchFolderPath}>
@@ -394,7 +408,8 @@ export function WorkflowPlannerDialog(props: WorkflowPlannerDialogProps): JSX.El
                         : '—'}
                     </td>
                     <td title={row.scenarioId}>
-                      {(scenarios.find((s) => s.id === row.scenarioId)?.title ?? row.scenarioId) || '—'}
+                      {(scenarios.find((s) => s.id === row.scenarioId)?.title ?? row.scenarioId) ||
+                        '—'}
                     </td>
                     <td>{scheduledTaskBackendLabel(row.backend)}</td>
                     <td>
@@ -434,7 +449,12 @@ export function WorkflowPlannerDialog(props: WorkflowPlannerDialogProps): JSX.El
           <button type="button" className="app-btn" disabled={busy || addOpen} onClick={openAdd}>
             {uiText('workflowPlannerAddTask')}
           </button>
-          <button type="button" className="app-btn app-btn-primary" disabled={busy} onClick={() => onClose()}>
+          <button
+            type="button"
+            className="app-btn app-btn-primary"
+            disabled={busy}
+            onClick={() => onClose()}
+          >
             {uiText('workflowScenarioClose')}
           </button>
         </div>

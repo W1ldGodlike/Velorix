@@ -7,9 +7,7 @@ import ruWorkflowScenarioManualSmoke from '../../locales/ru/workflow-scenario-ma
 import { buildWorkflowScenarioManualSmokeChecklistFromLocaleShard } from './workflow-scenario-manual-smoke-checklist-build'
 import { formatPackagedManualSmokeChecklistLines } from './packaged-manual-smoke-checklist-format'
 
-export {
-  buildWorkflowScenarioManualSmokeChecklistFromLocaleShard
-} from './workflow-scenario-manual-smoke-checklist-build'
+export { buildWorkflowScenarioManualSmokeChecklistFromLocaleShard } from './workflow-scenario-manual-smoke-checklist-build'
 
 export const WORKFLOW_SCENARIO_MANUAL_SMOKE_CHECKLIST =
   buildWorkflowScenarioManualSmokeChecklistFromLocaleShard(

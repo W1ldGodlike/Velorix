@@ -6,9 +6,7 @@ import { parseWorkflowScenarioDocument } from '../../shared/workflow-scenario-pa
 import { parseScheduledTaskDocument } from '../../shared/scheduled-task-parse'
 import { runWorkflowScenarioOnFile } from '../workflow-run-scenario-on-file'
 import { runWorkflowScenarioOnUrl } from '../workflow-run-scenario-on-url'
-import {
-  clearWatchFolderTaskState
-} from '../workflow-watch-folder-state'
+import { clearWatchFolderTaskState } from '../workflow-watch-folder-state'
 import {
   isNativeMainLinux,
   isNativeMainMacos,
@@ -127,24 +125,27 @@ export function registerWorkflowIpcHandlers(): void {
     return removed ? { ok: true as const } : { ok: false as const, error: 'not-found' }
   })
 
-  ipcMain.handle(mw.scheduledTasksSetEnabled, async (_event, rawId: unknown, rawEnabled: unknown) => {
-    const id = typeof rawId === 'string' ? rawId.trim() : ''
-    if (!id || typeof rawEnabled !== 'boolean') {
-      return { ok: false as const, error: 'bad-args' }
+  ipcMain.handle(
+    mw.scheduledTasksSetEnabled,
+    async (_event, rawId: unknown, rawEnabled: unknown) => {
+      const id = typeof rawId === 'string' ? rawId.trim() : ''
+      if (!id || typeof rawEnabled !== 'boolean') {
+        return { ok: false as const, error: 'bad-args' }
+      }
+      const updated = setScheduledTaskEnabled(id, rawEnabled)
+      if (!updated) {
+        return { ok: false as const, error: 'not-found' }
+      }
+      const task = getScheduledTask(id)
+      if (task) {
+        const sync = await syncScheduledTaskOsScheduler(task)
+        return sync.ok
+          ? { ok: true as const }
+          : { ok: true as const, osSchedulerWarning: sync.error }
+      }
+      return { ok: true as const }
     }
-    const updated = setScheduledTaskEnabled(id, rawEnabled)
-    if (!updated) {
-      return { ok: false as const, error: 'not-found' }
-    }
-    const task = getScheduledTask(id)
-    if (task) {
-      const sync = await syncScheduledTaskOsScheduler(task)
-      return sync.ok
-        ? { ok: true as const }
-        : { ok: true as const, osSchedulerWarning: sync.error }
-    }
-    return { ok: true as const }
-  })
+  )
 
   ipcMain.handle(
     mw.workflowRunScenarioOnFile,

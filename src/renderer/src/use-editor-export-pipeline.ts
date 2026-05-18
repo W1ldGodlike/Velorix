@@ -1,11 +1,18 @@
 export type { UseEditorExportPipelineDeps } from './use-editor-export-pipeline-deps'
 
 import type { UseEditorExportPipelineDeps } from './use-editor-export-pipeline-deps'
-import { useEditorExportPipelineHandlers } from './use-editor-export-pipeline-handlers'
+import {
+  useEditorExportPipelineHandlers,
+  type EditorExportPipelineHandlers
+} from './use-editor-export-pipeline-handlers'
 import { useEditorExportPipelinePreview } from './use-editor-export-pipeline-preview'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- flat pipeline API for App.tsx
-export function useEditorExportPipeline(deps: UseEditorExportPipelineDeps) {
+export type EditorExportPipelineResult = EditorExportPipelineHandlers &
+  ReturnType<typeof useEditorExportPipelinePreview>
+
+export function useEditorExportPipeline(
+  deps: UseEditorExportPipelineDeps
+): EditorExportPipelineResult {
   const { exportPreview, exportPreviewCommand, exportPreviewHint } =
     useEditorExportPipelinePreview(deps)
 

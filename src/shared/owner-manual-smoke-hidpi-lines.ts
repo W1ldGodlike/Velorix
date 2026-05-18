@@ -3,7 +3,7 @@
  */
 
 import ruSettings from '../../locales/ru/settings.json'
-import { APP_SETTINGS_HIDPI_CHECKLIST_KEYS } from './app-settings-hidpi-checklist-keys'
+import { APP_SETTINGS_HIDPI_CHECKLIST_KEYS } from './app-settings-visual-smoke-checklists'
 import { formatOwnerManualSmokeChecklistSectionLines } from './owner-manual-smoke-checklist-lines'
 
 /** Строки ручного HiDPI-smoke для `ownerManualSmoke:` / копирования владельцу. */

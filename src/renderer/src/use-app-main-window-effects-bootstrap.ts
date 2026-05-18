@@ -30,7 +30,7 @@ export function useAppMainWindowEffectsBootstrap(
   } = deps
   const { applyTheme } = actions
 
-  useUiTextHotReloadBump(setUiLocaleRenderTick)
+  useUiTextHotReloadBump()
 
   useEffect(() => {
     let mounted = true
@@ -69,10 +69,7 @@ export function useAppMainWindowEffectsBootstrap(
       hydrateMainWindowUiPanels(loaded.mainWindowUiPanels)
       hydrateDownloadsWindowUiPanels(loaded.downloadsWindowUiPanels)
       setExportUserPresets(loaded.ffmpegExportUserPresets ?? [])
-      if (
-        loaded.ffmpegSnapshotFormat === 'jpg' ||
-        loaded.ffmpegSnapshotFormat === 'webp'
-      ) {
+      if (loaded.ffmpegSnapshotFormat === 'jpg' || loaded.ffmpegSnapshotFormat === 'webp') {
         setSnapshotFormat(loaded.ffmpegSnapshotFormat)
       }
       cleanupTheme = window.fluxalloy.onThemeChanged((next) => {
@@ -112,10 +109,7 @@ export function useAppMainWindowEffectsBootstrap(
         hydrateMainWindowUiPanels(loaded.mainWindowUiPanels)
         hydrateDownloadsWindowUiPanels(loaded.downloadsWindowUiPanels)
         setExportUserPresets(loaded.ffmpegExportUserPresets ?? [])
-        if (
-          loaded.ffmpegSnapshotFormat === 'jpg' ||
-          loaded.ffmpegSnapshotFormat === 'webp'
-        ) {
+        if (loaded.ffmpegSnapshotFormat === 'jpg' || loaded.ffmpegSnapshotFormat === 'webp') {
           setSnapshotFormat(loaded.ffmpegSnapshotFormat)
         }
         void refetchHwEncoders()

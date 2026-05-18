@@ -20,7 +20,9 @@ export type OwnerManualSmokePackagedSection = {
   lines: readonly string[]
 }
 
-function sectionForFamily(family: NativeMainPlatformFamily): OwnerManualSmokePackagedSection | null {
+function sectionForFamily(
+  family: NativeMainPlatformFamily
+): OwnerManualSmokePackagedSection | null {
   if (family === 'windows') {
     return {
       platform: 'win',

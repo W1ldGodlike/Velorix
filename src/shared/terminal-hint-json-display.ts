@@ -4,9 +4,7 @@ export const TERMINAL_HINT_MAX_EXAMPLES = 2
 export const TERMINAL_HINT_MAX_EXAMPLE_CHARS = 220
 export const TERMINAL_HINT_MAX_DOC_URL_CHARS = 400
 
-export function primaryTerminalHintExample(
-  hint: TerminalCommandHintEntry
-): string | undefined {
+export function primaryTerminalHintExample(hint: TerminalCommandHintEntry): string | undefined {
   const first = hint.examples?.[0]?.trim()
   return first !== undefined && first.length > 0 ? first : undefined
 }

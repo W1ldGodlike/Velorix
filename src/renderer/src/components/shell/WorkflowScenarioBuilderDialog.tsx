@@ -43,7 +43,9 @@ export function WorkflowScenarioBuilderDialog(
   const [templateId, setTemplateId] = useState<WorkflowScenarioTemplateId>(
     WORKFLOW_SCENARIO_TEMPLATES[0]?.id ?? 'local-file-process'
   )
-  const [jsonText, setJsonText] = useState(() => JSON.stringify(WORKFLOW_SCENARIO_TEMPLATE_V1, null, 2))
+  const [jsonText, setJsonText] = useState(() =>
+    JSON.stringify(WORKFLOW_SCENARIO_TEMPLATE_V1, null, 2)
+  )
   const parsedScenario = useMemo((): WorkflowScenarioDocument | null => {
     try {
       return parseWorkflowScenarioDocument(JSON.parse(jsonText) as unknown)
@@ -75,26 +77,23 @@ export function WorkflowScenarioBuilderDialog(
     }
   }, [open])
 
-  const loadScenario = useCallback(
-    async (id: string): Promise<void> => {
-      if (!id) {
-        setJsonText(JSON.stringify(WORKFLOW_SCENARIO_TEMPLATE_V1, null, 2))
-        setSelectedId('')
-        return
+  const loadScenario = useCallback(async (id: string): Promise<void> => {
+    if (!id) {
+      setJsonText(JSON.stringify(WORKFLOW_SCENARIO_TEMPLATE_V1, null, 2))
+      setSelectedId('')
+      return
+    }
+    setBusy(true)
+    try {
+      const res = await window.fluxalloy.workflows.getScenario(id)
+      if (res.ok) {
+        setSelectedId(res.scenario.id)
+        setJsonText(JSON.stringify(res.scenario, null, 2))
       }
-      setBusy(true)
-      try {
-        const res = await window.fluxalloy.workflows.getScenario(id)
-        if (res.ok) {
-          setSelectedId(res.scenario.id)
-          setJsonText(JSON.stringify(res.scenario, null, 2))
-        }
-      } finally {
-        setBusy(false)
-      }
-    },
-    []
-  )
+    } finally {
+      setBusy(false)
+    }
+  }, [])
 
   const validateJson = useCallback((): boolean => {
     let raw: unknown
@@ -248,7 +247,8 @@ export function WorkflowScenarioBuilderDialog(
                   setJsonText(JSON.stringify(next, null, 2))
                 }}
               >
-                {uiText('workflowScenarioAddBlock')} — {uiText(workflowScenarioNodeKindLabelKey(kind))}
+                {uiText('workflowScenarioAddBlock')} —{' '}
+                {uiText(workflowScenarioNodeKindLabelKey(kind))}
               </button>
             ))}
           </div>
@@ -345,7 +345,12 @@ export function WorkflowScenarioBuilderDialog(
           />
         </div>
         <div className="app-modal-actions" role="toolbar" aria-orientation="horizontal">
-          <button type="button" className="app-btn app-btn-compact" disabled={busy} onClick={validateJson}>
+          <button
+            type="button"
+            className="app-btn app-btn-compact"
+            disabled={busy}
+            onClick={validateJson}
+          >
             {uiText('workflowScenarioValidate')}
           </button>
           <button
@@ -368,7 +373,12 @@ export function WorkflowScenarioBuilderDialog(
           >
             {uiText('workflowScenarioDelete')}
           </button>
-          <button type="button" className="app-btn app-btn-primary" disabled={busy} onClick={() => onClose()}>
+          <button
+            type="button"
+            className="app-btn app-btn-primary"
+            disabled={busy}
+            onClick={() => onClose()}
+          >
             {uiText('workflowScenarioClose')}
           </button>
         </div>

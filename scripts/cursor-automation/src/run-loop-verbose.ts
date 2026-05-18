@@ -21,7 +21,10 @@ export function normalizeVerboseMode(opts: { verbose: boolean; maxSteps: number 
   return false
 }
 
-export function warnIfExpensiveSessionConfig(opts: { maxSteps: number; sessionMaxSteps: number }): void {
+export function warnIfExpensiveSessionConfig(opts: {
+  maxSteps: number
+  sessionMaxSteps: number
+}): void {
   if (
     opts.maxSteps > SDK_AUTOMATION_SETTINGS.verboseLongLoopMaxSteps &&
     opts.sessionMaxSteps >= SDK_AUTOMATION_SETTINGS.sessionStepsLongLoopWarnAt
@@ -133,4 +136,3 @@ export function buildSessionRestartPrompt(args: {
     args.continuePrompt
   ].join('\n')
 }
-

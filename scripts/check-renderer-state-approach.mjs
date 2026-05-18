@@ -1,31 +1,28 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /**
- * §2.2 — renderer остаётся на hooks-composition (канон renderer-state-approach.ts).
+ * §2.2 — renderer на Zustand (канон renderer-state-approach.ts).
  */
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 
 import { REPO_ROOT } from './lib/repo-root.mjs'
 
 const APPROACH_PATH = join(REPO_ROOT, 'src', 'shared', 'renderer-state-approach.ts')
+const APP_ROOT = join(REPO_ROOT, 'src', 'renderer', 'src', 'components', 'shell', 'AppRoot.tsx')
 const APP_TSX = join(REPO_ROOT, 'src', 'renderer', 'src', 'App.tsx')
-const COMPOSITION_PATH = join(REPO_ROOT, 'src', 'renderer', 'src', 'use-app-composition.ts')
 const ARCHITECTURE_PATH = join(REPO_ROOT, 'docs', 'ARCHITECTURE.md')
+const STORES_DIR = join(REPO_ROOT, 'src', 'renderer', 'src', 'stores')
 
-const HOOK_FILES = {
-  useAppCompositionLocalState: 'src/renderer/src/use-app-composition-local-state.ts',
-  useAppCompositionIntegrations: 'src/renderer/src/use-app-composition-integrations.ts',
-  useAppCompositionState: 'src/renderer/src/use-app-composition-state.ts',
-  useAppShellPropsInput: 'src/renderer/src/use-app-shell-props-input.ts',
-  useAppShellProps: 'src/renderer/src/use-app-shell-props.ts'
-}
+const BANNED_COMPOSITION_RE =
+  /\b(useAppComposition|useAppCompositionState|useAppCompositionLocalState|useAppCompositionIntegrations)\b/
 
-const BANNED_STORE_RE =
-  /\b(from\s+['"](?:zustand|jotai|@reduxjs\/toolkit|redux|react-redux)['"]|require\s*\(\s*['"](?:zustand|jotai|redux)['"]\s*\))/
-
-function readRepo(rel) {
-  return readFileSync(join(REPO_ROOT, rel), 'utf8')
-}
+const REQUIRED_STORE_FILES = [
+  'app-shell-store.ts',
+  'downloads-store.ts',
+  'export-settings-store.ts',
+  'panels-store.ts',
+  'reset-all-stores.ts'
+]
 
 function extractConstArray(source, name) {
   const re = new RegExp(`export const ${name} = \\[([\\s\\S]*?)\\] as const`)
@@ -36,56 +33,94 @@ function extractConstArray(source, name) {
   return [...m[1].matchAll(/'([^']+)'/g)].map((x) => x[1])
 }
 
+function walkTs(dir, acc = []) {
+  for (const name of readdirSync(dir)) {
+    const full = join(dir, name)
+    if (statSync(full).isDirectory()) {
+      walkTs(full, acc)
+    } else if (/\.(ts|tsx)$/.test(name)) {
+      acc.push(full)
+    }
+  }
+  return acc
+}
+
 function main() {
   const violations = []
   const approachSrc = readFileSync(APPROACH_PATH, 'utf8')
-  const rootHook = approachSrc.match(
-    /export const RENDERER_COMPOSITION_ROOT_HOOK = '([^']+)'/
-  )?.[1]
-  const layerHooks = extractConstArray(approachSrc, 'RENDERER_STATE_LAYER_HOOKS')
   const approach = approachSrc.match(/export const RENDERER_STATE_APPROACH = '([^']+)'/)?.[1]
+  const shellEntry = approachSrc.match(/export const RENDERER_SHELL_ENTRY = '([^']+)'/)?.[1]
+  const stores = extractConstArray(approachSrc, 'RENDERER_ZUSTAND_STORES')
 
-  if (approach !== 'hooks-composition' || !rootHook || !layerHooks?.length) {
-    violations.push('renderer-state-approach.ts: missing hooks-composition constants')
+  if (approach !== 'zustand' || !shellEntry || !stores?.length) {
+    violations.push('renderer-state-approach.ts: missing zustand constants')
   }
 
-  for (const hook of layerHooks ?? []) {
-    const rel = HOOK_FILES[hook]
-    if (!rel) {
-      violations.push(`RENDERER_STATE_LAYER_HOOKS: no file map for ${hook}`)
-      continue
-    }
-    const body = readRepo(rel)
-    if (!new RegExp(`export function ${hook}\\b`).test(body)) {
-      violations.push(`${rel}: expected export function ${hook}`)
-    }
+  const appRootBody = readFileSync(APP_ROOT, 'utf8')
+  if (!appRootBody.includes('AppStoreBootstrap') || !appRootBody.includes('<AppShellLayout')) {
+    violations.push('AppRoot.tsx: must bootstrap stores and render AppShellLayout')
   }
-
-  const compositionBody = readFileSync(COMPOSITION_PATH, 'utf8')
-  if (!new RegExp(`export function ${rootHook}\\b`).test(compositionBody)) {
-    violations.push(`use-app-composition.ts: expected export function ${rootHook}`)
-  }
-  if (!compositionBody.includes('useAppCompositionState')) {
-    violations.push('use-app-composition.ts: must call useAppCompositionState')
+  if (appRootBody.includes('useAppShellController')) {
+    violations.push('AppRoot.tsx: useAppShellController belongs inside AppShellLayout')
   }
 
   const appBody = readFileSync(APP_TSX, 'utf8')
-  if (!appBody.includes(`import { ${rootHook} }`)) {
-    violations.push('App.tsx: must import composition root hook')
+  if (!appBody.includes('AppRoot')) {
+    violations.push('App.tsx: must render AppRoot')
   }
-  if (/\buseState\s*\(/.test(appBody) || /\buseReducer\s*\(/.test(appBody)) {
-    violations.push('App.tsx: keep state in composition hooks, not App.tsx')
+  if (BANNED_COMPOSITION_RE.test(appBody)) {
+    violations.push('App.tsx: legacy useAppComposition* is banned')
+  }
+
+  for (const file of REQUIRED_STORE_FILES) {
+    try {
+      readFileSync(join(STORES_DIR, file), 'utf8')
+    } catch {
+      violations.push(`missing store file: src/renderer/src/stores/${file}`)
+    }
+  }
+
+  for (const rel of [
+    'src/renderer/src/use-app-composition.ts',
+    'src/renderer/src/use-app-composition-state.ts',
+    'src/renderer/src/use-app-composition-local-state.ts',
+    'src/renderer/src/use-app-composition-integrations.ts',
+    'src/renderer/src/use-app-shell-props.ts',
+    'src/renderer/src/use-app-shell-props-input.ts',
+    'src/renderer/src/use-app-shell-controller.ts',
+    'src/renderer/src/use-app-shell-props-input-workspace-terminal-downloads.ts',
+    'docs/ZUSTAND_MIGRATION_CHECKLIST.md',
+    'docs/ZUSTAND_MIGRATION_CHECKLIST_DONE.md',
+    'scripts/check-zustand-migration-gate.mjs',
+    'src/renderer/src/app-workspace-main-props-types.ts',
+    'src/renderer/src/use-app-workspace-main-props.ts',
+    'src/renderer/src/use-app-workspace-main-container.ts',
+    'src/renderer/src/locales/resolve-ui-text.ts'
+  ]) {
+    try {
+      readFileSync(join(REPO_ROOT, rel), 'utf8')
+      violations.push(`legacy file must be removed: ${rel}`)
+    } catch {
+      /* ok */
+    }
+  }
+
+  const rendererRoot = join(REPO_ROOT, 'src', 'renderer', 'src')
+  const storesRoot = join(rendererRoot, 'stores') + join('')
+  for (const full of walkTs(rendererRoot)) {
+    if (full.startsWith(storesRoot)) {
+      continue
+    }
+    const body = readFileSync(full, 'utf8')
+    if (BANNED_COMPOSITION_RE.test(body)) {
+      const rel = full.startsWith(REPO_ROOT) ? full.slice(REPO_ROOT.length + 1) : full
+      violations.push(`${rel}: legacy useAppComposition* is banned`)
+    }
   }
 
   const arch = readFileSync(ARCHITECTURE_PATH, 'utf8')
-  if (!arch.includes('hooks-composition') || !arch.includes('renderer-state-approach.ts')) {
-    violations.push('ARCHITECTURE.md: missing § Состояние renderer / renderer-state-approach')
-  }
-
-  for (const rel of Object.values(HOOK_FILES)) {
-    if (BANNED_STORE_RE.test(readRepo(rel))) {
-      violations.push(`${rel}: global store library import is banned (§2.2)`)
-    }
+  if (!arch.includes('Zustand') || !arch.includes('renderer-state-approach.ts')) {
+    violations.push('ARCHITECTURE.md: missing § Состояние renderer / Zustand')
   }
 
   if (violations.length > 0) {

@@ -125,13 +125,15 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_11: TerminalCommandHintE
   {
     tool: 'ffprobe',
     token: '· кадры v:0 coded_pic 3',
-    summary: 'Первые три кадра первой видеодорожки (v:0): coded_picture_number (-show_frames -read_intervals %+#3); путь к медиа подставляется из превью.',
+    summary:
+      'Первые три кадра первой видеодорожки (v:0): coded_picture_number (-show_frames -read_intervals %+#3); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_frames -read_intervals %+#3 -show_entries frame=coded_picture_number -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· пакет v:0 size 1',
-    summary: 'Первый пакет первой видеодорожки (v:0): size (-show_packets -read_intervals %+#1 -show_entries packet=size); путь к медиа подставляется из превью.',
+    summary:
+      'Первый пакет первой видеодорожки (v:0): size (-show_packets -read_intervals %+#1 -show_entries packet=size); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_packets -read_intervals %+#1 -show_entries packet=size -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -340,7 +342,8 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_11: TerminalCommandHintE
   {
     tool: 'ffprobe',
     token: '· кадры v:0 display_pic 4',
-    summary: 'Первые четыре кадра первой видеодорожки (v:0): display_picture_number (-show_frames -read_intervals %+#4); путь к медиа подставляется из превью.',
+    summary:
+      'Первые четыре кадра первой видеодорожки (v:0): display_picture_number (-show_frames -read_intervals %+#4); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_frames -read_intervals %+#4 -show_entries frame=display_picture_number -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -353,7 +356,8 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_11: TerminalCommandHintE
   {
     tool: 'ffprobe',
     token: '· пакет v:0 pos 1',
-    summary: 'Первый пакет первой видеодорожки (v:0): pos (-show_packets -read_intervals %+#1 -show_entries packet=pos); путь к медиа подставляется из превью.',
+    summary:
+      'Первый пакет первой видеодорожки (v:0): pos (-show_packets -read_intervals %+#1 -show_entries packet=pos); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_packets -read_intervals %+#1 -show_entries packet=pos -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {

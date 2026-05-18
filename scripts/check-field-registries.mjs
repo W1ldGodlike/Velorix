@@ -66,9 +66,7 @@ if (
   /function summarizeSideDataItem[\s\S]*?if\s*\(\s*low\.includes/.test(ffprobeSideData) ||
   !ffprobeSideData.includes('FFPROBE_SIDE_DATA_RULES')
 ) {
-  failures.push(
-    'ffprobe-side-data.ts: matchers — только FFPROBE_SIDE_DATA_RULES (table-driven)'
-  )
+  failures.push('ffprobe-side-data.ts: matchers — только FFPROBE_SIDE_DATA_RULES (table-driven)')
 }
 
 const batchContract = readFileSync('src/shared/ffmpeg-export-batch-contract.ts', 'utf8')
@@ -103,9 +101,9 @@ for (const testFile of walkTests(testsDir)) {
 }
 
 const resolveFromSettings = readFileSync('src/main/ffmpeg-export-resolve-from-settings.ts', 'utf8')
-const resolveRawBlocks = [
-  ...resolveFromSettings.matchAll(/const \w+Raw = raw\['([^']+)'\]/g)
-].map((m) => m[1])
+const resolveRawBlocks = [...resolveFromSettings.matchAll(/const \w+Raw = raw\['([^']+)'\]/g)].map(
+  (m) => m[1]
+)
 const allowedResolveRawKeys = new Set(['twoPass', 'extraArgsLine'])
 const illegalResolveRaw = resolveRawBlocks.filter((k) => !allowedResolveRawKeys.has(k))
 if (illegalResolveRaw.length > 0) {

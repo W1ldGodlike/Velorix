@@ -7,8 +7,16 @@ import {
   FFMPEG_EXPORT_QSV_HWUPLOAD_FILTER
 } from '../../src/shared/ffmpeg-export-vaapi-vf'
 
-const AMF_CODECS = ['h264_amf', 'hevc_amf', 'av1_amf'] as const satisfies readonly FfmpegExportVideoCodecId[]
-const QSV_CODECS = ['h264_qsv', 'hevc_qsv', 'av1_qsv'] as const satisfies readonly FfmpegExportVideoCodecId[]
+const AMF_CODECS = [
+  'h264_amf',
+  'hevc_amf',
+  'av1_amf'
+] as const satisfies readonly FfmpegExportVideoCodecId[]
+const QSV_CODECS = [
+  'h264_qsv',
+  'hevc_qsv',
+  'av1_qsv'
+] as const satisfies readonly FfmpegExportVideoCodecId[]
 
 describe('ffmpeg-export AMF argv smoke (table)', () => {
   it.each(AMF_CODECS)('%s: d3d11va decode + AMF hwupload + rate control', (videoCodec) => {
@@ -29,12 +37,7 @@ describe('ffmpeg-export AMF argv smoke (table)', () => {
       cropPreset: 'center-16-9'
     })
     const i = argv.indexOf('-i')
-    expect(argv.slice(i - 4, i)).toEqual([
-      '-hwaccel',
-      'd3d11va',
-      '-hwaccel_output_format',
-      'd3d11'
-    ])
+    expect(argv.slice(i - 4, i)).toEqual(['-hwaccel', 'd3d11va', '-hwaccel_output_format', 'd3d11'])
     const vf = argv[argv.indexOf('-vf') + 1] ?? ''
     expect(vf.startsWith(`${FFMPEG_EXPORT_AMF_HWUPLOAD_FILTER},`)).toBe(true)
     expect(vf).toContain('crop=')

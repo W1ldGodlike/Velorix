@@ -50,7 +50,10 @@ export function AppSettingsThemePanel(props: {
           </div>
         ) : null}
       </div>
-      <fieldset className="app-settings-fieldset app-settings-theme-radios" disabled={props.shellBusy}>
+      <fieldset
+        className="app-settings-fieldset app-settings-theme-radios"
+        disabled={props.shellBusy}
+      >
         <legend className="app-visually-hidden">{uiText('appSettingsThemeLegend')}</legend>
         {(['system', 'dark', 'light'] as const).map((pref) => (
           <label key={pref} className="app-settings-radio-row">

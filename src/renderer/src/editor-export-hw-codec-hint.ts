@@ -48,7 +48,10 @@ export function formatEditorExportHwCodecHint(
   const snapProbe = probeSnapshotOrEmpty(hwEncoderProbe)
   const resolved = resolveFfmpegExportVideoCodecForArgv(exportVideoCodec, snapProbe)
 
-  if (!isFfmpegHwAutoVideoCodec(exportVideoCodec) && !isFfmpegHwExportVideoCodec(exportVideoCodec)) {
+  if (
+    !isFfmpegHwAutoVideoCodec(exportVideoCodec) &&
+    !isFfmpegHwExportVideoCodec(exportVideoCodec)
+  ) {
     return null
   }
 

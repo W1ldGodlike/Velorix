@@ -22,7 +22,9 @@ function loadShard(locale, shard) {
   }
   const table = parseLocaleJsonShard(parsed)
   if (table === null) {
-    throw new Error(`[check:locales-json] invalid shard ${locale}/${shard}.json (non-empty strings only)`)
+    throw new Error(
+      `[check:locales-json] invalid shard ${locale}/${shard}.json (non-empty strings only)`
+    )
   }
   return table
 }

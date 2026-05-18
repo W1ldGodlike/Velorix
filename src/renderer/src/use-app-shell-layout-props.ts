@@ -1,7 +1,16 @@
 import { useCallback, useMemo } from 'react'
 import type { Dispatch, SetStateAction } from 'react'
 
-import type { EngineSummary } from './app-engines-ui'
+import { downloadsRowMatchesStatus } from './downloads-queue-view'
+import { useAppChromeBusy } from './hooks/use-app-chrome-busy'
+import {
+  useAppStatusbarActivity,
+  useAppStatusbarUiLocale
+} from './hooks/use-app-statusbar-activity'
+import { useBatchExportStore, selectBatchExportBusy } from './stores/batch-export-store'
+import { useAppShellStore } from './stores/app-shell-store'
+import { useExportSettingsStore } from './stores/export-settings-store'
+
 import type { AppOverlayDialogsProps } from './components/shell/AppOverlayDialogs'
 import type { AppStatusbarProps } from './components/shell/AppStatusbar'
 import type { AppWorkspaceTopbarProps } from './components/shell/AppWorkspaceTopbar'
@@ -17,31 +26,7 @@ import type { EngineId } from '../../shared/engine-contract'
 import type { ExportPresetNameDialogState } from './use-editor-export-settings'
 
 export type UseAppShellLayoutPropsInput = {
-  chromeBusy: {
-    engineDownloadBusy: boolean
-    engineSummary: EngineSummary
-    probePending: boolean
-    exportBusy: boolean
-    snapshotBusy: boolean
-    extractFramesBusy: boolean
-    exportCancelBusy: boolean
-    terminalBusy: boolean
-    batchExportBusy: boolean
-    exportPresetSaving: boolean
-    enginePathsSaving: boolean
-    downloadsOptionsBusy: boolean
-    downloadsHistoryBusy: boolean
-  }
   topbar: {
-    workspaceTab: WorkspaceTab
-    setWorkspaceTab: Dispatch<SetStateAction<WorkspaceTab>>
-    engineDownloadBusy: boolean
-    engineSummary: EngineSummary
-    previewPath: string | undefined
-    exportBusy: boolean
-    exportCancelBusy: boolean
-    enginesOfferDownload: boolean
-    theme: ResolvedAppTheme
     setKnowledgeInitialSlug: Dispatch<SetStateAction<string | null>>
     setKnowledgeOpen: Dispatch<SetStateAction<boolean>>
     setAboutInfo: Dispatch<
@@ -58,7 +43,10 @@ export type UseAppShellLayoutPropsInput = {
     handleUiLocaleToggle: () => void
     toggleTheme: () => Promise<void>
   }
-  statusbar: Omit<AppStatusbarProps, 'appChromeBusy'>
+  statusbar: Pick<
+    AppStatusbarProps,
+    'exportCodecStatusbarLabel' | 'exportCodecStatusbarTitle' | 'exportCodecStatusbarAria'
+  >
   overlay: AppOverlayDialogsProps
   exportPreset: {
     dialog: ExportPresetNameDialogState
@@ -137,9 +125,10 @@ export type AppShellLayoutChromeProps = {
   }
 }
 
-export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppShellLayoutChromeProps {
+export function useAppShellLayoutProps(
+  input: UseAppShellLayoutPropsInput
+): AppShellLayoutChromeProps {
   const {
-    chromeBusy,
     topbar: topbarInput,
     statusbar,
     overlay,
@@ -150,15 +139,6 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
     workflowScenarioBuilder
   } = input
   const {
-    workspaceTab,
-    setWorkspaceTab,
-    engineDownloadBusy: topbarEngineDownloadBusy,
-    engineSummary: topbarEngineSummary,
-    previewPath,
-    exportBusy: topbarExportBusy,
-    exportCancelBusy: topbarExportCancelBusy,
-    enginesOfferDownload,
-    theme,
     setKnowledgeInitialSlug,
     setKnowledgeOpen,
     setAboutInfo,
@@ -173,23 +153,28 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
     handleUiLocaleToggle,
     toggleTheme
   } = topbarInput
-  const appChromeBusy = useMemo(
-    () =>
-      chromeBusy.engineDownloadBusy ||
-      chromeBusy.engineSummary === 'checking' ||
-      chromeBusy.probePending ||
-      chromeBusy.exportBusy ||
-      chromeBusy.snapshotBusy ||
-      chromeBusy.extractFramesBusy ||
-      chromeBusy.exportCancelBusy ||
-      chromeBusy.terminalBusy ||
-      chromeBusy.batchExportBusy ||
-      chromeBusy.exportPresetSaving ||
-      chromeBusy.enginePathsSaving ||
-      chromeBusy.downloadsOptionsBusy ||
-      chromeBusy.downloadsHistoryBusy,
-    [chromeBusy]
+  const appChromeBusy = useAppChromeBusy()
+  const workspaceTab = useAppShellStore((s) => s.workspaceTab)
+  const setWorkspaceTab = useAppShellStore((s) => s.setWorkspaceTab)
+  const engineDownloadBusy = useAppShellStore((s) => s.engineDownloadBusy)
+  const engineSummary = useAppShellStore((s) => s.engineSummary)
+  const enginesOfferDownload = useAppShellStore((s) => s.enginesOfferDownload)
+  const theme = useAppShellStore((s) => s.theme)
+  const previewPath = useAppShellStore((s) => s.preview?.path)
+  const exportBusy = useAppShellStore((s) => s.exportBusy)
+  const exportCancelBusy = useAppShellStore((s) => s.exportCancelBusy)
+  const probePending = useAppShellStore((s) => s.probePending)
+  const statusHint = useAppShellStore((s) => s.statusHint)
+  const engineVersionsLine = useAppShellStore((s) => s.engineVersionsLine)
+  const downloadsRows = useAppShellStore((s) => s.downloadsRows)
+  const snapshotBusy = useExportSettingsStore((s) => s.snapshotBusy)
+  const batchExportBusy = useBatchExportStore((s) => selectBatchExportBusy(s))
+  const downloadsRunning = useMemo(
+    () => downloadsRows.filter((row) => downloadsRowMatchesStatus(row, 'running')).length,
+    [downloadsRows]
   )
+  const statusbarActivity = useAppStatusbarActivity(downloadsRunning)
+  const uiLocale = useAppStatusbarUiLocale()
 
   const onOpenVideoFolder = useCallback((): void => {
     void handleOpenVideoFolderToolbar()
@@ -233,11 +218,11 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
       appChromeBusy,
       workspaceTab,
       setWorkspaceTab,
-      engineDownloadBusy: topbarEngineDownloadBusy,
-      engineSummary: topbarEngineSummary,
+      engineDownloadBusy,
+      engineSummary,
       previewPath,
-      exportBusy: topbarExportBusy,
-      exportCancelBusy: topbarExportCancelBusy,
+      exportBusy,
+      exportCancelBusy,
       enginesOfferDownload,
       theme,
       onOpenVideoFolder,
@@ -253,8 +238,13 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
     }),
     [
       appChromeBusy,
+      engineDownloadBusy,
+      engineSummary,
       enginesOfferDownload,
+      exportBusy,
+      exportCancelBusy,
       handleExtractFrames,
+      handleUiLocaleToggle,
       onCancelExport,
       onEnginesDownload,
       onOpenAbout,
@@ -263,14 +253,9 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
       onOpenKnowledge,
       onOpenVideoFolder,
       onToggleTheme,
-      handleUiLocaleToggle,
       previewPath,
       setWorkspaceTab,
       theme,
-      topbarEngineDownloadBusy,
-      topbarEngineSummary,
-      topbarExportBusy,
-      topbarExportCancelBusy,
       workspaceTab
     ]
   )
@@ -278,9 +263,42 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
   const statusbarProps = useMemo(
     (): AppStatusbarProps => ({
       appChromeBusy,
-      ...statusbar
+      workspaceTab,
+      engineDownloadBusy,
+      engineSummary,
+      engineVersionsLine,
+      exportCodecStatusbarLabel: statusbar.exportCodecStatusbarLabel,
+      exportCodecStatusbarTitle: statusbar.exportCodecStatusbarTitle,
+      exportCodecStatusbarAria: statusbar.exportCodecStatusbarAria,
+      exportBusy,
+      snapshotBusy,
+      exportCancelBusy,
+      probePending,
+      batchExportBusy,
+      statusHint,
+      uiLocale,
+      statusbarActivityLabel: statusbarActivity.label,
+      statusbarActivityTitle: statusbarActivity.title,
+      statusbarActivityActive: statusbarActivity.active
     }),
-    [appChromeBusy, statusbar]
+    [
+      appChromeBusy,
+      batchExportBusy,
+      engineDownloadBusy,
+      engineSummary,
+      engineVersionsLine,
+      exportBusy,
+      exportCancelBusy,
+      probePending,
+      snapshotBusy,
+      statusHint,
+      statusbar,
+      statusbarActivity.active,
+      statusbarActivity.label,
+      statusbarActivity.title,
+      uiLocale,
+      workspaceTab
+    ]
   )
 
   const {

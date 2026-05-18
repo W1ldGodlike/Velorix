@@ -7,10 +7,7 @@ export function parseHexColor(raw: string): RgbTriplet | null {
   if (!/^[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(hex)) {
     return null
   }
-  const expanded =
-    hex.length === 3
-      ? [...hex].map((ch) => ch + ch).join('')
-      : hex
+  const expanded = hex.length === 3 ? [...hex].map((ch) => ch + ch).join('') : hex
   const value = Number.parseInt(expanded, 16)
   return {
     r: (value >> 16) & 255,

@@ -34,7 +34,10 @@ describe('platform-packaging-scripts §19', () => {
   })
 
   it('package.json exposes build:mac and build:linux', () => {
-    const scripts = JSON.parse(readFileSync('package.json', 'utf8')).scripts as Record<string, string>
+    const scripts = JSON.parse(readFileSync('package.json', 'utf8')).scripts as Record<
+      string,
+      string
+    >
     expect(scripts[BUILD_MAC_NPM_SCRIPT]).toContain('electron-builder --mac')
     expect(scripts[BUILD_LINUX_NPM_SCRIPT]).toContain('electron-builder --linux')
     expect(scripts[PACK_MAC_DIR_NPM_SCRIPT]).toContain('electron-builder --mac --dir')

@@ -1,12 +1,9 @@
 import type { AppShellPropsInputCtx } from './use-app-shell-props-input-workspace-types'
-import type { UseAppWorkspaceMainPropsInput } from './use-app-workspace-main-props'
+import type { UseAppWorkspaceEditorPropsInput } from './use-app-workspace-editor-props'
 
 export function buildAppShellPropsInputWorkspaceEditor(
   ctx: AppShellPropsInputCtx
-): Pick<
-  UseAppWorkspaceMainPropsInput,
-  'editorBatch' | 'editorPreview' | 'editorFfmpeg'
-> {
+): Pick<UseAppWorkspaceEditorPropsInput, 'editorBatch' | 'editorPreview' | 'editorFfmpeg'> {
   const {
     batchExportBusy,
     buildCurrentFfmpegExportOverrides,

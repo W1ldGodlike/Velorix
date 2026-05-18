@@ -24,8 +24,7 @@ export function parseFfmpegFramesExtractRequest(
   }
   const durationSec =
     typeof o.durationSec === 'number' && Number.isFinite(o.durationSec) ? o.durationSec : 0
-  const mode =
-    o.mode === 'interval' || o.mode === 'count' || o.mode === 'manual' ? o.mode : null
+  const mode = o.mode === 'interval' || o.mode === 'count' || o.mode === 'manual' ? o.mode : null
   if (mode === null) {
     return { ok: false, error: 'invalid_mode' }
   }

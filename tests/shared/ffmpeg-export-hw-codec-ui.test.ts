@@ -25,11 +25,7 @@ describe('ffmpeg-export-hw-codec-ui', () => {
   })
 
   it('buildFfmpegHwEncoderChainSnapshot — AMF upload и cuda decode', () => {
-    const snap = buildFfmpegHwEncoderChainSnapshot(
-      'h264_amf',
-      ['cuda', 'd3d11va', 'dxva2'],
-      true
-    )
+    const snap = buildFfmpegHwEncoderChainSnapshot('h264_amf', ['cuda', 'd3d11va', 'dxva2'], true)
     expect(snap?.decodeHwaccel).toBe('d3d11va')
     expect(snap?.uploadFilter).toBe(FFMPEG_EXPORT_AMF_HWUPLOAD_FILTER)
     expect(snap?.familyHintKey).toBe('editorExportCodecHintAmf')

@@ -245,10 +245,7 @@ export function resolveFfmpegExportFieldFromSettings<T>(
 export function resolveFfmpegExportJobOptionsFromRegistry(
   raw: Record<string, unknown>,
   settings: AppSettings
-): Omit<
-  ResolvedFfmpegExportJobOptions,
-  'twoPass' | 'extraArgsLine'
-> {
+): Omit<ResolvedFfmpegExportJobOptions, 'twoPass' | 'extraArgsLine'> {
   const out = {} as Omit<ResolvedFfmpegExportJobOptions, 'twoPass' | 'extraArgsLine'>
   for (const spec of FFMPEG_EXPORT_RESOLVE_FIELD_SPECS) {
     ;(out as Record<string, unknown>)[spec.resultKey] = resolveFfmpegExportFieldFromSettings(

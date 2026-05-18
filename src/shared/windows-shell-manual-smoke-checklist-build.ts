@@ -21,11 +21,7 @@ export function buildWindowsShellManualSmokeChecklistFromLocaleShard(
     {
       id: 'win-shell',
       title: t(shard, `${p}SectionTitle`),
-      prerequisites: [
-        t(shard, `${p}Prereq0`),
-        t(shard, `${p}Prereq1`),
-        t(shard, `${p}Prereq2`)
-      ],
+      prerequisites: [t(shard, `${p}Prereq0`), t(shard, `${p}Prereq1`), t(shard, `${p}Prereq2`)],
       steps: [
         { id: 'enable-menu', text: t(shard, `${p}Step_enable_menu`) },
         { id: 'context-open', text: t(shard, `${p}Step_context_open`) },

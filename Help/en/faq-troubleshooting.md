@@ -35,6 +35,11 @@ Short answers to common questions. Details live in sections 1–6 in the help ta
 - Pick a **local file** on disk.
 - Refresh ffprobe summary: [probe-and-inspector-basics.md](probe-and-inspector-basics.md).
 
+## Text clips, muddy theme, or pop-out looks wrong
+
+- Windows scale 100–200 %: checklist in [appearance-language-theme.md](appearance-language-theme.md) and **Settings → General → HiDPI**; full bundle — [owner-manual-smoke.md](owner-manual-smoke.md).
+- Dark/light/match system theme: [appearance-language-theme.md](appearance-language-theme.md), **Settings → General → Theme**, or **View → Theme**.
+
 ## Help language does not match UI
 
 Switch UI language (RU/EN) and reopen help: [knowledge-base-howto.md](knowledge-base-howto.md).

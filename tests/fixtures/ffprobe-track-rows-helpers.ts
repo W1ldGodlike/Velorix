@@ -16,9 +16,7 @@ export function trackDetailAt(
     ...s
   }))
   return (
-    buildTrackRows(
-      normalized as Parameters<typeof buildTrackRows>[0],
-      duration
-    )[rowIndex]?.detail ?? ''
+    buildTrackRows(normalized as Parameters<typeof buildTrackRows>[0], duration)[rowIndex]
+      ?.detail ?? ''
   )
 }

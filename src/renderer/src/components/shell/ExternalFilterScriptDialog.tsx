@@ -10,7 +10,9 @@ export type ExternalFilterScriptDialogProps = {
   onApplied: () => void
 }
 
-export function ExternalFilterScriptDialog(props: ExternalFilterScriptDialogProps): JSX.Element | null {
+export function ExternalFilterScriptDialog(
+  props: ExternalFilterScriptDialogProps
+): JSX.Element | null {
   const { open, onClose, onStatus, onApplied } = props
   const [kind, setKind] = useState<ExternalFilterScriptKind>('off')
   const [scriptPath, setScriptPath] = useState('')
@@ -22,9 +24,7 @@ export function ExternalFilterScriptDialog(props: ExternalFilterScriptDialogProp
     }
     void window.fluxalloy.settings.get().then((s) => {
       const storedKind = s.ffmpegExportExternalFilterKind ?? 'off'
-      setKind(
-        storedKind === 'avisynth' || storedKind === 'vapoursynth' ? storedKind : 'off'
-      )
+      setKind(storedKind === 'avisynth' || storedKind === 'vapoursynth' ? storedKind : 'off')
       setScriptPath(s.ffmpegExportExternalFilterScriptPath ?? '')
     })
   }, [open])
@@ -72,6 +72,7 @@ export function ExternalFilterScriptDialog(props: ExternalFilterScriptDialogProp
             ? uiText('externalFilterScriptCleared')
             : uiText('externalFilterScriptSaved')
         )
+        onApplied()
         onClose()
       } else if ('error' in res) {
         onStatus(res.error)

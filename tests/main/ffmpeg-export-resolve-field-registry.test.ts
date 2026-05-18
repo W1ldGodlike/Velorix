@@ -7,10 +7,7 @@ import {
 import type { ResolvedFfmpegExportJobOptions } from '../../src/shared/ffmpeg-export-resolve-contract'
 import { createAppSettingsBase } from '../fixtures/app-settings-base'
 
-type ResolveRegistryKey = Exclude<
-  keyof ResolvedFfmpegExportJobOptions,
-  'twoPass' | 'extraArgsLine'
->
+type ResolveRegistryKey = Exclude<keyof ResolvedFfmpegExportJobOptions, 'twoPass' | 'extraArgsLine'>
 
 const base = createAppSettingsBase()
 

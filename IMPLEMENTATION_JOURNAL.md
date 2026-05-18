@@ -25,6 +25,53 @@
 
 ---
 
+<!-- journal-toc: auto -->
+## Оглавление (последние записи)
+
+- [J-1130](#j-1130)
+- [J-1129](#j-1129)
+- [J-1128](#j-1128)
+- [J-1127](#j-1127)
+- [J-1126](#j-1126)
+- [J-1125](#j-1125)
+- [J-1124](#j-1124)
+- [J-1123](#j-1123)
+- [J-1122](#j-1122)
+- [J-1121](#j-1121)
+- [J-1120](#j-1120)
+- [J-1119](#j-1119)
+- [J-1118](#j-1118)
+- [J-1117](#j-1117)
+- [J-1116](#j-1116)
+- [J-1115](#j-1115)
+- [J-1114](#j-1114)
+- [J-1113](#j-1113)
+- [J-1112](#j-1112)
+- [J-1111](#j-1111)
+- [J-1110](#j-1110)
+- [J-1109](#j-1109)
+- [J-1108](#j-1108)
+- [J-1107](#j-1107)
+- [J-1106](#j-1106)
+- [J-1105](#j-1105)
+- [J-1104](#j-1104)
+- [J-1103](#j-1103)
+- [J-1102](#j-1102)
+- [J-1101](#j-1101)
+- [J-1100](#j-1100)
+- [J-1099](#j-1099)
+- [J-1098](#j-1098)
+- [J-1097](#j-1097)
+- [J-1096](#j-1096)
+- [J-1095](#j-1095)
+- [J-1094](#j-1094)
+- [J-1093](#j-1093)
+- [J-1092](#j-1092)
+- [J-1091](#j-1091)
+
+<!-- /journal-toc -->
+
+
 ## Записи
 - [J-001] 2026-05-11 19:54:45 [Assistant]: повторно проверено окружение перед разработкой. Node/npm/Git доступны через установленный Node.js/Git; `npm install`, `npm run check`, `npm run build`, `npm audit --audit-level=moderate` проходят, уязвимостей `0`.
 - [J-002] 2026-05-11 19:55:45 [Assistant]: `dist/`, `out/`, `.eslintcache` — только сгенерированные артефакты проверок/сборки; удалены из рабочей папки после аудита, остаются в `.gitignore`.
@@ -1146,3 +1193,13 @@
 - [J-1118] 2026-05-18 18:10:57 [Assistant]: §5/§1.1 — `APP_SETTINGS_HIDPI_CHECKLIST_KEYS`; HiDPI panel/owner bundle/preview на реестре; Vitest hidpi keys + owner-manual-smoke-hidpi-lines. `npm run check:quiet`.
 - [J-1119] 2026-05-18 18:19:26 [Assistant]: §5 — `formatOwnerManualSmokeChecklistSectionLines` (theme/HiDPI DRY); Help appearance-language-theme RU/EN (визуальный чеклист темы + ссылка owner-manual-smoke). `npm run check:quiet`.
 - [J-1120] 2026-05-18 18:26:13 [Assistant]: Cadence 495 — коммит J-1116..1119: §5 visual чеклисты, реестры theme/HiDPI, Help cross-links, `app-settings-visual-smoke-checklists`; Vitest help cross-links. `npm run check:quiet`.
+- [J-1121] 2026-05-18 18:37:22 [Assistant]: §5/§15 Help — getting-started RU/EN → appearance + owner-manual-smoke; импорты чеклистов через `app-settings-visual-smoke-checklists`; Vitest cross-links. `npm run check:quiet`.
+- [J-1122] 2026-05-18 18:45:57 [Assistant]: §15 Help — knowledge-base-howto + FAQ RU/EN (тема/HiDPI); cross-links test на slug из `knowledge-contract`. `npm run check:quiet`.
+- [J-1123] 2026-05-18 19:22:23 [Assistant]: §2.2 — полный переход renderer на **Zustand**: сторы `src/renderer/src/stores/*`, `AppRoot` + `AppStoreBootstrap`, удалены `useAppComposition*`; guard `check:renderer-state-approach` + `check:tz-artifacts`; §6.1–6.4/6.6–6.8 (ошибки UI, буферы процессов, EN fallback `uiText`, CI `audit:moderate`, `test:coverage`, `journal:toc`); `ARCHITECTURE.md` / `AGENTS.md` / чеклист §2.2. `audit:inventory` 1097 files. `npm run check:quiet` (234 files / 1716 tests).
+- [J-1124] 2026-05-18 19:28:00 [Assistant]: §2.2/§6 — Zustand devtools (`create-renderer-store`, без ломающего ReturnType), probe generation+AbortController §6.3, `src/shared/resolve-ui-text.ts`+тест §6.4, `process-stream-buffer` §6.2, `AppRoot`/`AppShellLayout`. `audit:inventory` 1103. `npm run check:quiet`.
+- [J-1125] 2026-05-18 19:44:42 [Assistant]: §2.2 Zustand — `useTerminalStore`+IPC, trim preview в `useAppShellStore`, topbar/statusbar читают сторы (`useAppChromeBusy`), `#downloads` `DownloadsStandaloneStoreBootstrap`. `audit:inventory` 1107. `npm run check:quiet`.
+- [J-1126] 2026-05-18 19:56:46 [Assistant]: §2.2 — закрыт gate Zustand: workspace без drilling через layout (`useAppShellLayoutController`, `AppWorkspaceMain`+`DownloadsWorkspaceConnected`/`TerminalWorkspacePanelConnected`, editor `useAppWorkspaceMainContainer`), standalone на `useAppShellStore`/`useAppRefsStore`; уборка (`fluxalloy-zustand-migration-gate.mdc` удалён, gate вне `check:quiet`, архив `docs/ZUSTAND_MIGRATION_CHECKLIST_DONE.md`); CI `test:coverage`; `resetAllRendererStores` dev-only в ARCHITECTURE. `audit:inventory` 1113. `npm run check` + `check:quiet` + `test:coverage`.
+- [J-1127] 2026-05-18 20:03:35 [Assistant]: §2.2 post-Zustand — editor-only `useAppWorkspaceEditorProps`/`AppWorkspaceEditorProps` (без downloads/terminal в bridge); удалены `use-app-shell-props*`, `use-app-shell-controller`, `workspace-terminal-downloads`; guard + `ARCHITECTURE.md`; `.gitignore` coverage. `audit:inventory` 1109. `npm run check:quiet`.
+- [J-1128] 2026-05-18 20:10:17 [Assistant]: уборка Zustand temp — удалены `ZUSTAND_MIGRATION_CHECKLIST_DONE.md`, `check:zustand-migration-gate`; переименованы `use-app-workspace-editor-*`; shim `locales/resolve-ui-text.ts`; **41** one-shot скриптов → `scripts/archive/phase4-one-shot/`; `npm run audit:orphan-scripts`; guard запрет legacy paths. `audit:inventory` 1068. `npm run check:quiet`.
+- [J-1129] 2026-05-18 20:12:09 [Assistant]: исправление J-1128 — `scripts/archive/` удалён целиком (**41** split/migrate/splice, не архив); `ARCHITECTURE.md`. `audit:inventory` 1068 (архив не входил в scope). `npm run check:quiet`.
+- [J-1130] 2026-05-18 21:58:20 [Assistant]: catch-up с последнего push (J-1115..1129 не были на remote): §2.2 Zustand финал (`stores/*`, `AppRoot`/`AppStoreBootstrap`, `useAppShellLayoutController`, `DownloadsWorkspaceConnected`/`TerminalWorkspacePanelConnected`, preload `fluxalloy-api-block-*.d.ts`, явные типы вместо `eslint-disable`/`ReturnType` на хуках); §6 structural — `AppSettingsDialog` без дубля pane (~741→321, канон `app-settings-dialog-panes.tsx`), `ProcessingHistoryPanel`+`WeeklySummary`/`EntryCard`/`Filters`/`Actions`, ffprobe smoke split; **удалены** 51 one-shot `scripts/split-*|migrate-*|…` (не хранить в репо); инфра — `check:line-endings`, `check:maint-scripts-layout`, `clean-coverage-dir` после `test:coverage`, `.gitattributes` LF, `npm run format` по репо; guards в `check:quiet`. `audit:inventory` 1099. `npm run check:quiet` (241 files / 1724 tests).

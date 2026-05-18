@@ -20,10 +20,7 @@ export function buildEditorExportStatusbarCodecDisplay(
   } & EditorExportCodecUiText
 ): { label: string; title: string; ariaLabel: string } {
   const { uiText, uiTextVars } = params
-  const encoderSummary = resolveEditorExportStatusbarEncoderSummary(
-    params.resolvedCodec,
-    uiText
-  )
+  const encoderSummary = resolveEditorExportStatusbarEncoderSummary(params.resolvedCodec, uiText)
   let label = uiTextVars('editorStatusbarProcessing', { encoder: encoderSummary })
   if (isFfmpegHwAutoVideoCodec(params.exportVideoCodec)) {
     label += ` ${uiText('editorExportCodecHwAutoBadge')}`

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 /**
  * §8 фаза E — guard русских summary в Data/*_commands.json.
  */

@@ -7,9 +7,7 @@ import ruMacosPackagedManualSmoke from '../../locales/ru/macos-packaged-manual-s
 import { buildMacosPackagedManualSmokeChecklistFromLocaleShard } from './macos-packaged-manual-smoke-checklist-build'
 import { formatPackagedManualSmokeChecklistLines } from './packaged-manual-smoke-checklist-format'
 
-export {
-  buildMacosPackagedManualSmokeChecklistFromLocaleShard
-} from './macos-packaged-manual-smoke-checklist-build'
+export { buildMacosPackagedManualSmokeChecklistFromLocaleShard } from './macos-packaged-manual-smoke-checklist-build'
 
 export const MACOS_PACKAGED_MANUAL_SMOKE_CHECKLIST =
   buildMacosPackagedManualSmokeChecklistFromLocaleShard(

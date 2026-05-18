@@ -37,17 +37,7 @@ export function parseFfmpegExportContainer(raw: unknown): FfmpegExportContainerI
 export function parseFfmpegExportAudioMode(raw: unknown): FfmpegExportAudioModeId {
   return parseWhitelistEnum(
     raw,
-    [
-      'none',
-      'libmp3lame',
-      'ac3',
-      'copy',
-      'pcm_s16le',
-      'libvorbis',
-      'libopus',
-      'flac',
-      'alac'
-    ],
+    ['none', 'libmp3lame', 'ac3', 'copy', 'pcm_s16le', 'libvorbis', 'libopus', 'flac', 'alac'],
     'aac'
   )
 }

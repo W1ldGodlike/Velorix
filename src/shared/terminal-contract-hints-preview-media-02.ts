@@ -209,7 +209,8 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_02: TerminalCommandHintE
   {
     tool: 'ffprobe',
     token: '· субтитры s:0 таймбаза кодека',
-    summary: 'Дорожка субтитров (s:0): таймбаза кодека и дорожки (поля ffprobe: codec_time_base — база времени кодека субтитров, time_base — база времени дорожки); путь к медиа подставляется из превью.',
+    summary:
+      'Дорожка субтитров (s:0): таймбаза кодека и дорожки (поля ffprobe: codec_time_base — база времени кодека субтитров, time_base — база времени дорожки); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=codec_time_base,time_base -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -250,7 +251,8 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_02: TerminalCommandHintE
   {
     tool: 'ffprobe',
     token: '· субтитры s:0 длительность в теге',
-    summary: 'Дорожка субтитров (s:0): теги дорожки stream_tags duration (длительность субтитров, если записана в контейнере); путь к медиа подставляется из превью.',
+    summary:
+      'Дорожка субтитров (s:0): теги дорожки stream_tags duration (длительность субтитров, если записана в контейнере); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream_tags=duration -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {

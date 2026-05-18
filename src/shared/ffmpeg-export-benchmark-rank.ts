@@ -32,7 +32,9 @@ function rowUnderLoadThreshold(row: FfmpegExportBenchmarkRow, thresholdPercent: 
   return peak <= thresholdPercent
 }
 
-function pickFastestRow(rows: readonly FfmpegExportBenchmarkRow[]): FfmpegExportBenchmarkRow | null {
+function pickFastestRow(
+  rows: readonly FfmpegExportBenchmarkRow[]
+): FfmpegExportBenchmarkRow | null {
   let best: FfmpegExportBenchmarkRow | null = null
   for (const row of rows) {
     if (!row.ok || row.elapsedMs === null) {

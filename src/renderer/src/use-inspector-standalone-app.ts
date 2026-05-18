@@ -15,9 +15,9 @@ import {
 } from './locales/ui-text'
 import { useUiTextHotReloadBump } from './locales/use-ui-text-hot-reload-bump'
 import { PROBE_UI_DEFAULTS, probePanelsFromSettings } from './inspector-standalone-probe-ui'
+import type { InspectorStandaloneAppModel } from './use-inspector-standalone-app-model'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- inspector standalone controller
-export function useInspectorStandaloneApp() {
+export function useInspectorStandaloneApp(): InspectorStandaloneAppModel {
   const [theme, setTheme] = useState<ResolvedAppTheme>('dark')
   const [mediaPath, setMediaPath] = useState<string | null>(null)
   /** Сброс кэша React при повторном ffprobe того же файла («Обновить ffprobe»). */
@@ -31,7 +31,7 @@ export function useInspectorStandaloneApp() {
   const [probeUiPanels, setProbeUiPanels] = useState(PROBE_UI_DEFAULTS)
   const [, setUiLocaleRenderTick] = useState(0)
 
-  useUiTextHotReloadBump(setUiLocaleRenderTick)
+  useUiTextHotReloadBump()
 
   const applyTheme = useCallback((value: ResolvedAppTheme) => {
     document.documentElement.dataset['theme'] = value
@@ -169,9 +169,7 @@ export function useInspectorStandaloneApp() {
   }, [])
 
   const handleOpenDialog = useCallback(async (): Promise<void> => {
-    const result = await window.fluxalloy.preview.openFileDialog(
-      getUiLocale() as AppUiLocale
-    )
+    const result = await window.fluxalloy.preview.openFileDialog(getUiLocale() as AppUiLocale)
     if (result.ok) {
       setMediaPath(result.path)
       setStatusHint(result.name)
@@ -223,4 +221,4 @@ export function useInspectorStandaloneApp() {
   }
 }
 
-export type InspectorStandaloneAppModel = ReturnType<typeof useInspectorStandaloneApp>
+export type { InspectorStandaloneAppModel } from './use-inspector-standalone-app-model'

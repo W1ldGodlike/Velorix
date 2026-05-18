@@ -27,13 +27,17 @@ export function OwnerManualSmokeChecklistSectionsPreview(props: {
       {props.sections.map((section) => (
         <article key={section.id} className="app-settings-hw-smoke-section">
           <h4 className="app-settings-hw-smoke-section-title">{section.title}</h4>
-          <p className="app-settings-hw-smoke-label">{uiText('appSettingsHwManualSmokePrereqLabel')}</p>
+          <p className="app-settings-hw-smoke-label">
+            {uiText('appSettingsHwManualSmokePrereqLabel')}
+          </p>
           <ul className="app-settings-hidpi-checklist">
             {section.prerequisites.map((line) => (
               <li key={line}>{line}</li>
             ))}
           </ul>
-          <p className="app-settings-hw-smoke-label">{uiText('appSettingsHwManualSmokeStepsLabel')}</p>
+          <p className="app-settings-hw-smoke-label">
+            {uiText('appSettingsHwManualSmokeStepsLabel')}
+          </p>
           <ol className="app-settings-hw-smoke-steps">
             {section.steps.map((step) => (
               <li key={step.id}>
@@ -41,7 +45,9 @@ export function OwnerManualSmokeChecklistSectionsPreview(props: {
               </li>
             ))}
           </ol>
-          <p className="app-settings-hw-smoke-label">{uiText('appSettingsHwManualSmokePassLabel')}</p>
+          <p className="app-settings-hw-smoke-label">
+            {uiText('appSettingsHwManualSmokePassLabel')}
+          </p>
           <ul className="app-settings-hidpi-checklist">
             {section.pass.map((line) => (
               <li key={line}>{line}</li>

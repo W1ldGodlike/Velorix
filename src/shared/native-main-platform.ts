@@ -52,13 +52,13 @@ export function nativeMainPathEnvSeparator(
   return isNativeMainWindows(platform) ? ';' : ':'
 }
 
-export function nativeMainDevNullPath(platform: NodeJS.Platform = process.platform): 'NUL' | '/dev/null' {
+export function nativeMainDevNullPath(
+  platform: NodeJS.Platform = process.platform
+): 'NUL' | '/dev/null' {
   return isNativeMainWindows(platform) ? 'NUL' : '/dev/null'
 }
 
-export function nativeMainPathSeparator(
-  platform: NodeJS.Platform = process.platform
-): '\\' | '/' {
+export function nativeMainPathSeparator(platform: NodeJS.Platform = process.platform): '\\' | '/' {
   return isNativeMainWindows(platform) ? '\\' : '/'
 }
 

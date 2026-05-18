@@ -6,7 +6,8 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_03: TerminalCommandHintE
   {
     tool: 'ffprobe',
     token: '· субтитры s:0: таймбаза и старт меток',
-    summary: 'Дорожка субтитров (s:0): тактовая сетка и стартовая метка субтитров (поля ffprobe: time_base, start_pts — смещение относительно видео); путь к медиа подставляется из превью.',
+    summary:
+      'Дорожка субтитров (s:0): тактовая сетка и стартовая метка субтитров (поля ffprobe: time_base, start_pts — смещение относительно видео); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=time_base,start_pts -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -75,7 +76,8 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_03: TerminalCommandHintE
   {
     tool: 'ffprobe',
     token: '· субтитры s:0 длинное имя кодека',
-    summary: 'Дорожка субтитров (s:0): codec_long_name (поле ffprobe: тип субтитров в контейнере); путь к медиа подставляется из превью.',
+    summary:
+      'Дорожка субтитров (s:0): codec_long_name (поле ffprobe: тип субтитров в контейнере); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=codec_long_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -88,7 +90,8 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_03: TerminalCommandHintE
   {
     tool: 'ffprobe',
     token: '· аудио a:1 кодировщик (тег дорожки)',
-    summary: 'Вторая аудиодорожка (a:1): тег encoder в stream_tags (поле дорожки второй аудио, если записан в контейнере); путь к медиа подставляется из превью.',
+    summary:
+      'Вторая аудиодорожка (a:1): тег encoder в stream_tags (поле дорожки второй аудио, если записан в контейнере); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:1 -show_entries stream_tags=encoder -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -206,7 +209,8 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_03: TerminalCommandHintE
   {
     tool: 'ffprobe',
     token: '· аудио a:1 расклад и формат сэмпла',
-    summary: 'Вторая аудиодорожка (a:1): расклад и формат сэмпла (поля ffprobe: channel_layout, sample_fmt — например s16, fltp при PCM); путь к медиа подставляется из превью.',
+    summary:
+      'Вторая аудиодорожка (a:1): расклад и формат сэмпла (поля ffprobe: channel_layout, sample_fmt — например s16, fltp при PCM); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:1 -show_entries stream=channel_layout,sample_fmt -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {

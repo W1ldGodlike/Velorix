@@ -85,8 +85,7 @@ export const mainWindowIpc = {
   processingHistoryClear: 'fluxalloy:processing-history-clear',
   processingHistoryOpenOutput: 'fluxalloy:processing-history-open-output',
   processingHistoryOpenInputInHandler: 'fluxalloy:processing-history-open-input-in-handler',
-  processingHistoryRepeatWorkflowScenario:
-    'fluxalloy:processing-history-repeat-workflow-scenario',
+  processingHistoryRepeatWorkflowScenario: 'fluxalloy:processing-history-repeat-workflow-scenario',
   processingHistoryChanged: 'fluxalloy:processing-history-changed',
   windowsExplorerContextMenuStatus: 'fluxalloy:windows-explorer-context-menu-status',
   windowsExplorerContextMenuSetEnabled: 'fluxalloy:windows-explorer-context-menu-set-enabled',

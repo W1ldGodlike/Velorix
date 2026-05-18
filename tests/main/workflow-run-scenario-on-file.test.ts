@@ -26,7 +26,8 @@ vi.mock('../../src/main/media-protocol', () => ({
 describe('workflow-run-scenario-on-file §11', () => {
   it('queues manual editor run', async () => {
     enqueueMock.mockClear()
-    const { runWorkflowScenarioOnFile } = await import('../../src/main/workflow-run-scenario-on-file')
+    const { runWorkflowScenarioOnFile } =
+      await import('../../src/main/workflow-run-scenario-on-file')
     const res = runWorkflowScenarioOnFile('scenario-new', 'C:\\in\\clip.mp4', 'Редактор')
     expect(res).toEqual({ ok: true })
     expect(enqueueMock).toHaveBeenCalledOnce()
@@ -41,7 +42,8 @@ describe('workflow-run-scenario-on-file §11', () => {
   })
 
   it('rejects missing scenario', async () => {
-    const { runWorkflowScenarioOnFile } = await import('../../src/main/workflow-run-scenario-on-file')
+    const { runWorkflowScenarioOnFile } =
+      await import('../../src/main/workflow-run-scenario-on-file')
     expect(runWorkflowScenarioOnFile('missing', 'C:\\in\\clip.mp4', 'x')).toEqual({
       ok: false,
       error: 'scenario-not-found'

@@ -143,9 +143,7 @@ if (tail.length >= 5) {
   }
   const first = deltas[0]
   const grid =
-    first > 0 &&
-    deltas.every((d) => d === first) &&
-    (first % 60_000 === 0 || first % 120_000 === 0)
+    first > 0 && deltas.every((d) => d === first) && (first % 60_000 === 0 || first % 120_000 === 0)
   if (grid) {
     console.error(
       `[journal] last ${tail.length} entries have identical ${first / 1000}s step — invented timestamps; one summary line per iteration via \`npm run journal:stamp\``

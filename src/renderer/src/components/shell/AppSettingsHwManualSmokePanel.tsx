@@ -20,10 +20,7 @@ export function AppSettingsHwManualSmokePanel(props: {
 }): JSX.Element {
   const [copyHint, setCopyHint] = useState<string | null>(null)
   const locale = getUiLocale()
-  const sections = useMemo(
-    () => getFfmpegHwManualSmokeChecklistForUiLocale(locale),
-    [locale]
-  )
+  const sections = useMemo(() => getFfmpegHwManualSmokeChecklistForUiLocale(locale), [locale])
   const primaryId = useMemo(() => resolvePrimaryHwManualSmokeSectionId(), [])
   const ordered = useMemo(
     () => orderHwManualSmokeSectionsForDisplay(sections, primaryId),
@@ -51,7 +48,11 @@ export function AppSettingsHwManualSmokePanel(props: {
     >
       <div className="app-settings-hw-smoke-header">
         <h3 className="app-settings-hidpi-title">{uiText('appSettingsHwManualSmokeLegend')}</h3>
-        <div className="app-settings-panel-head-trailing" role="toolbar" aria-orientation="horizontal">
+        <div
+          className="app-settings-panel-head-trailing"
+          role="toolbar"
+          aria-orientation="horizontal"
+        >
           {props.onOpenKnowledgeArticle ? (
             <>
               <KnowledgeDeepLinkButton
@@ -105,13 +106,17 @@ export function AppSettingsHwManualSmokePanel(props: {
           }
         >
           <h4 className="app-settings-hw-smoke-section-title">{section.title}</h4>
-          <p className="app-settings-hw-smoke-label">{uiText('appSettingsHwManualSmokePrereqLabel')}</p>
+          <p className="app-settings-hw-smoke-label">
+            {uiText('appSettingsHwManualSmokePrereqLabel')}
+          </p>
           <ul className="app-settings-hidpi-checklist">
             {section.prerequisites.map((line) => (
               <li key={line}>{line}</li>
             ))}
           </ul>
-          <p className="app-settings-hw-smoke-label">{uiText('appSettingsHwManualSmokeStepsLabel')}</p>
+          <p className="app-settings-hw-smoke-label">
+            {uiText('appSettingsHwManualSmokeStepsLabel')}
+          </p>
           <ol className="app-settings-hw-smoke-steps">
             {section.steps.map((step) => (
               <li key={step.id}>
@@ -119,7 +124,9 @@ export function AppSettingsHwManualSmokePanel(props: {
               </li>
             ))}
           </ol>
-          <p className="app-settings-hw-smoke-label">{uiText('appSettingsHwManualSmokePassLabel')}</p>
+          <p className="app-settings-hw-smoke-label">
+            {uiText('appSettingsHwManualSmokePassLabel')}
+          </p>
           <ul className="app-settings-hidpi-checklist">
             {section.pass.map((line) => (
               <li key={line}>{line}</li>

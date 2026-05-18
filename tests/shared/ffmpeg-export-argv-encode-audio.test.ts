@@ -244,5 +244,4 @@ describe('shared ffmpeg export argv — encode preset and audio modes', () => {
     expect(argv.slice(i, i + 2)).toEqual(['-c:a', 'alac'])
     expect(argv.includes('-b:a')).toBe(false)
   })
-
 })

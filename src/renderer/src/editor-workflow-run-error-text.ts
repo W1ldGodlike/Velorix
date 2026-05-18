@@ -4,9 +4,7 @@ import type {
 } from '../../shared/workflow-watch-folder-contract'
 import { uiText } from './locales/ui-text'
 
-export function workflowRunScenarioOnFileErrorText(
-  code: WorkflowRunScenarioOnFileError
-): string {
+export function workflowRunScenarioOnFileErrorText(code: WorkflowRunScenarioOnFileError): string {
   switch (code) {
     case 'bad-args':
       return uiText('editorWorkflowRunErrorBadArgs')

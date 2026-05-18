@@ -1,8 +1,11 @@
+import type { JSX } from 'react'
+
 import { uiText, uiTextVars } from '../../locales/ui-text'
 import type { EditorFfmpegSettingsRailProps } from './editor-ffmpeg-settings-rail-props'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- JSX section
-export function EditorFfmpegSettingsRailOutputSection(props: EditorFfmpegSettingsRailProps) {
+export function EditorFfmpegSettingsRailOutputSection(
+  props: EditorFfmpegSettingsRailProps
+): JSX.Element {
   const {
     panelOpen,
     persistMainWindowUiPanelToggle,

@@ -4,7 +4,13 @@ import type { MediaProbeSuccess } from '../../src/shared/ffprobe-contract'
 import { resolveFfmpegFramesExtractDurationSec } from '../../src/main/ffmpeg-frames-extract-resolve-duration'
 
 function probeSuccess(durationSec: number): MediaProbeSuccess {
-  return { ok: true, durationSec, tracks: [], chapters: [], rawJson: '{}' } as unknown as MediaProbeSuccess
+  return {
+    ok: true,
+    durationSec,
+    tracks: [],
+    chapters: [],
+    rawJson: '{}'
+  } as unknown as MediaProbeSuccess
 }
 
 describe('resolveFfmpegFramesExtractDurationSec', () => {

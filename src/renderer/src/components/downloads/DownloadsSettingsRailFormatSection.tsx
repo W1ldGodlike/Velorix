@@ -1,10 +1,16 @@
-import type { YtdlpFormatPresetId, YtdlpSubtitlePresetId } from '../../../../shared/ytdlp-download-contract'
+import type { JSX } from 'react'
+
+import type {
+  YtdlpFormatPresetId,
+  YtdlpSubtitlePresetId
+} from '../../../../shared/ytdlp-download-contract'
 import { uiText } from '../../locales/ui-text'
 import { PillSwitch } from '../PillSwitch'
 import type { DownloadsSettingsRailProps } from './downloads-settings-rail-props'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- JSX section
-export function DownloadsSettingsRailFormatSection(props: DownloadsSettingsRailProps) {
+export function DownloadsSettingsRailFormatSection(
+  props: DownloadsSettingsRailProps
+): JSX.Element | null {
   const {
     downloadsOptionsBusy,
     downloadsHistoryBusy,

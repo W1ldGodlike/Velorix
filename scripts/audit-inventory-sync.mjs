@@ -57,7 +57,9 @@ let manifest
 try {
   manifest = JSON.parse(readFileSync(manifestPath, 'utf8'))
 } catch {
-  console.error('[audit:inventory-sync] FAIL: missing docs/audit-manifest.json — run npm run audit:inventory')
+  console.error(
+    '[audit:inventory-sync] FAIL: missing docs/audit-manifest.json — run npm run audit:inventory'
+  )
   process.exit(1)
 }
 
@@ -68,7 +70,9 @@ const onlyInManifest = expected.filter((f) => !live.includes(f))
 const onlyInLive = live.filter((f) => !expected.includes(f))
 
 if (onlyInManifest.length > 0 || onlyInLive.length > 0) {
-  console.error('[audit:inventory-sync] FAIL: audit-manifest.json out of sync with audit-scope.config.mjs')
+  console.error(
+    '[audit:inventory-sync] FAIL: audit-manifest.json out of sync with audit-scope.config.mjs'
+  )
   console.error(`  manifest: ${expected.length} files, live scope: ${live.length} files`)
   for (const f of onlyInManifest.slice(0, 12)) {
     console.error(`  - removed from repo/scope: ${f}`)
@@ -77,7 +81,9 @@ if (onlyInManifest.length > 0 || onlyInLive.length > 0) {
     console.error(`  + added in repo/scope: ${f}`)
   }
   if (onlyInManifest.length + onlyInLive.length > 24) {
-    console.error(`  … and ${onlyInManifest.length + onlyInLive.length - 24} more — run npm run audit:inventory`)
+    console.error(
+      `  … and ${onlyInManifest.length + onlyInLive.length - 24} more — run npm run audit:inventory`
+    )
   }
   process.exit(1)
 }

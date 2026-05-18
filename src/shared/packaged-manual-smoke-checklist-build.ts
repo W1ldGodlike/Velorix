@@ -31,11 +31,7 @@ export function buildPackagedManualSmokeChecklistFromLocaleShard(
     {
       id: opts.sectionId,
       title: t(shard, `${p}SectionTitle`),
-      prerequisites: [
-        t(shard, `${p}Prereq0`),
-        t(shard, `${p}Prereq1`),
-        t(shard, `${p}Prereq2`)
-      ],
+      prerequisites: [t(shard, `${p}Prereq0`), t(shard, `${p}Prereq1`), t(shard, `${p}Prereq2`)],
       steps: [
         { id: 'launch', text: t(shard, `${p}Step_launch`) },
         { id: 'engines', text: t(shard, `${p}Step_engines`) },
@@ -48,11 +44,7 @@ export function buildPackagedManualSmokeChecklistFromLocaleShard(
         { id: 'support-zip', text: t(shard, `${p}Step_support_zip`) },
         { id: 'settings', text: t(shard, `${p}Step_settings`) }
       ],
-      pass: [
-        t(shard, `${p}Pass0`),
-        t(shard, `${p}Pass1`),
-        t(shard, `${p}Pass2`)
-      ]
+      pass: [t(shard, `${p}Pass0`), t(shard, `${p}Pass1`), t(shard, `${p}Pass2`)]
     }
   ]
 }

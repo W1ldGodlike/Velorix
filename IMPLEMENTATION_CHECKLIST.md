@@ -45,6 +45,7 @@
 
 - [~] §16/§10/§3: owner-smoke **прогон на железе** — владелец (чеклисты в этом файле).
 - [~] §5 visual на железе — владелец; канон UI/Help/owner bundle [x] (J-1116..1119, §5 visual ниже).
+- [x] §2.2 post-Zustand: editor orchestration + уборка gate/чеклиста (J-1126..1128).
 - [x] owner-smoke hub + theme block в `ownerManualSmoke:` (J-1081..1089, J-1107).
 - [x] §11/§14 код и owner-smoke чеклисты (J-1073..1080).
 - [x] §12/§13: temp + истории (J-1064..1071).
@@ -115,7 +116,8 @@
 - [x] Preload работает через `contextBridge`.
 - [x] Renderer не получает Node API напрямую.
 - [~] Добавить доменные сервисы: `engines`, `ffprobe-service`, `ffmpeg-export/snapshot`, `yt-dlp` очередь/опции/история и `logger-service` есть; впереди presets, sessions, batch и дальнейшее разбиение main.
-- [x] Подход к состоянию renderer: **hooks-composition** (`renderer-state-approach.ts`, `useAppComposition`, guard `check:renderer-state-approach`; J-1037).
+- [x] Подход к состоянию renderer: **Zustand** (`renderer-state-approach.ts`, `src/renderer/src/stores/*`, `AppRoot` + `check:renderer-state-approach`).
+- [x] Миграция Zustand закрыта (**J-1126**); временные gate/чеклист удалены (**J-1128**).
 - [x] Локализация `locales/ru|en/*.json`: 20 шардов, UI_TEXT из JSON; `ui-text-strings-*` пустые, guard TS↔JSON (J-1017..1020).
 - [x] Смена языка без перезапуска (все окна renderer + меню, J-1018).
 - [~] `.cursor/rules/` обновлены под Electron/TS.

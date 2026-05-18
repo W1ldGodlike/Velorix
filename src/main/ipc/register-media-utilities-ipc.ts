@@ -81,7 +81,9 @@ export function registerMediaUtilitiesIpcHandlers(host: ExportBatchIpcHost): voi
       const pick = await dialog.showSaveDialog(win, {
         title: M.mediaUtilitiesRepairSaveTitle,
         defaultPath: `${stem}_fixed${extname(absIn) || '.mp4'}`,
-        filters: [{ name: M.mediaUtilitiesRepairSaveFilter, extensions: ['mp4', 'mkv', 'mov', 'webm'] }]
+        filters: [
+          { name: M.mediaUtilitiesRepairSaveFilter, extensions: ['mp4', 'mkv', 'mov', 'webm'] }
+        ]
       })
       if (pick.canceled || !pick.filePath) {
         return { ok: false, cancelled: true }
@@ -196,10 +198,7 @@ export function registerMediaUtilitiesIpcHandlers(host: ExportBatchIpcHost): voi
       try {
         const { md5, sha256 } = await computeMediaFileHashes(absIn)
         const fileName = basename(absIn)
-        logInfo(
-          'media-utilities',
-          `file hash ${fileName}: md5=${md5} sha256=${sha256}`
-        )
+        logInfo('media-utilities', `file hash ${fileName}: md5=${md5} sha256=${sha256}`)
         return { ok: true, fileName, md5, sha256 }
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err)

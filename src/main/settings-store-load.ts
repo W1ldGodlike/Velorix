@@ -1,10 +1,7 @@
 import { existsSync, readFileSync } from 'fs'
 
 import type { AppSettings } from '../shared/settings-contract'
-import {
-  hydrateAppSettingsFromPartial,
-  settingsStoreDefaults
-} from './settings-store-hydrate'
+import { hydrateAppSettingsFromPartial, settingsStoreDefaults } from './settings-store-hydrate'
 
 /**
  * Читает настройки терпимо.

@@ -59,5 +59,8 @@ export function removeWorkflowScenarioNode(
   const ordered = orderWorkflowScenarioNodes(scenario.nodes, scenario.edges).filter(
     (n) => n.id !== nodeId
   )
-  return applyWorkflowScenarioNodeOrder({ ...scenario, nodes }, ordered.map((n) => n.id))
+  return applyWorkflowScenarioNodeOrder(
+    { ...scenario, nodes },
+    ordered.map((n) => n.id)
+  )
 }

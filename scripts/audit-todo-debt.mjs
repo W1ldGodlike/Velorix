@@ -54,7 +54,9 @@ if (hits.length > 0) {
   for (const h of hits) {
     console.error(`  ${h.file}:${h.line}  ${h.text.slice(0, 120)}`)
   }
-  console.error('[audit:todo-debt] fix code, or document §N deferred without TODO/FIXME/HACK tokens')
+  console.error(
+    '[audit:todo-debt] fix code, or document §N deferred without TODO/FIXME/HACK tokens'
+  )
   process.exit(1)
 }
 

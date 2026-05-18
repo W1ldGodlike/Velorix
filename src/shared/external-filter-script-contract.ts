@@ -12,6 +12,4 @@ export type ExternalFilterScriptPickResult =
   | { ok: false; cancelled: true }
   | { ok: false; error: string }
 
-export type ExternalFilterScriptApplyResult =
-  | { ok: true }
-  | { ok: false; error: string }
+export type ExternalFilterScriptApplyResult = { ok: true } | { ok: false; error: string }

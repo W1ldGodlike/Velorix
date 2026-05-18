@@ -1,3 +1,5 @@
+import type { JSX } from 'react'
+
 import type {
   FfmpegExportCropPresetId,
   FfmpegExportScalePresetId,
@@ -8,8 +10,9 @@ import { uiText, uiTextVars } from '../../locales/ui-text'
 import { EXPORT_FPS_OPTIONS } from '../../editor-ffmpeg-settings-rail-constants'
 import type { EditorFfmpegSettingsRailProps } from './editor-ffmpeg-settings-rail-props'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- JSX section
-export function EditorFfmpegSettingsRailFormatSection(props: EditorFfmpegSettingsRailProps) {
+export function EditorFfmpegSettingsRailFormatSection(
+  props: EditorFfmpegSettingsRailProps
+): JSX.Element {
   const {
     panelOpen,
     persistMainWindowUiPanelToggle,

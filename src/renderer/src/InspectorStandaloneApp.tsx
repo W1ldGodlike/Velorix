@@ -14,14 +14,7 @@ import { useInspectorStandaloneApp } from './use-inspector-standalone-app'
  */
 export function InspectorStandaloneApp(): JSX.Element {
   const model = useInspectorStandaloneApp()
-  const {
-    probePending,
-    statusHint,
-    aboutOpen,
-    setAboutOpen,
-    aboutInfo,
-    setStatusHint
-  } = model
+  const { probePending, statusHint, aboutOpen, setAboutOpen, aboutInfo, setStatusHint } = model
   const [knowledgeOpen, setKnowledgeOpen] = useState(false)
   const [knowledgeInitialSlug, setKnowledgeInitialSlug] = useState<string | null>(null)
   const onOpenKnowledgeArticle = useCallback((slug: string): void => {
@@ -54,10 +47,7 @@ export function InspectorStandaloneApp(): JSX.Element {
           </span>
         ) : null}
         {statusHint ? <span className="app-statusbar-sep" aria-hidden /> : null}
-        <Versions
-          statusBusy={probePending}
-          ariaDescribedBy="inspector-standalone-empty-hint"
-        />
+        <Versions statusBusy={probePending} ariaDescribedBy="inspector-standalone-empty-hint" />
       </footer>
       <AboutDialog
         open={aboutOpen}

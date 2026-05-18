@@ -11,9 +11,9 @@ import {
 
 describe('windows-file-association §14', () => {
   it('detects installer headless argv', () => {
-    expect(isWindowsFileAssociationHeadlessArgv(['app.exe', FLUXALLOY_INSTALL_REGISTER_OPEN_WITH])).toBe(
-      'register'
-    )
+    expect(
+      isWindowsFileAssociationHeadlessArgv(['app.exe', FLUXALLOY_INSTALL_REGISTER_OPEN_WITH])
+    ).toBe('register')
   })
 
   it('builds open command and registry paths', () => {

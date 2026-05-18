@@ -73,9 +73,7 @@ export function useAppToolbarEngineActions(deps: UseAppToolbarEngineActionsDeps)
   }, [setUiLocaleRenderTick])
 
   const handleOpenToolbar = useCallback(async (): Promise<void> => {
-    const result = await window.fluxalloy.preview.openFileDialog(
-      getUiLocale() as AppUiLocale
-    )
+    const result = await window.fluxalloy.preview.openFileDialog(getUiLocale() as AppUiLocale)
     if (result.ok) {
       applyPreview(result)
     }

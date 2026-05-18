@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 /**
  * Запуск `prepare-engines-win.mjs` с `FLUXALLOY_ENGINES_FORCE=1` (§19): перекачать движки в `bin/`,
  * даже если exe уже есть (актуально после смены upstream `latest` или битого кэша CI).

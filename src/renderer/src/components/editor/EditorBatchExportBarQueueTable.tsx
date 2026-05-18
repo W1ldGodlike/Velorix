@@ -52,7 +52,11 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
             <caption className="app-visually-hidden">{uiText('batchExportTableCaption')}</caption>
             <thead>
               <tr>
-                <th scope="col" id={BATCH_EXPORT_TABLE_HEADER_IDS.reorder} className="app-visually-hidden">
+                <th
+                  scope="col"
+                  id={BATCH_EXPORT_TABLE_HEADER_IDS.reorder}
+                  className="app-visually-hidden"
+                >
                   {uiText('batchExportColReorder')}
                 </th>
                 <th scope="col" id={BATCH_EXPORT_TABLE_HEADER_IDS.file}>
@@ -127,8 +131,7 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                       }
                       const td = (e.target as HTMLElement).closest('td')
                       const idx = td?.cellIndex ?? -1
-                      const out =
-                        typeof row.outputPath === 'string' ? row.outputPath.trim() : ''
+                      const out = typeof row.outputPath === 'string' ? row.outputPath.trim() : ''
                       if (idx === 2 && out.length > 0) {
                         void handleBatchOpenOutput(out, 'preview')
                         return
@@ -161,7 +164,10 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                         .catch(console.error)
                     }}
                   >
-                    <td headers={BATCH_EXPORT_TABLE_HEADER_IDS.reorder} className="app-batch-export-reorder-cell">
+                    <td
+                      headers={BATCH_EXPORT_TABLE_HEADER_IDS.reorder}
+                      className="app-batch-export-reorder-cell"
+                    >
                       <button
                         type="button"
                         className="app-btn app-btn-icon app-batch-export-drag-handle"
@@ -187,7 +193,11 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                         </span>
                       </button>
                     </td>
-                    <th scope="row" headers={BATCH_EXPORT_TABLE_HEADER_IDS.file} title={row.inputPath}>
+                    <th
+                      scope="row"
+                      headers={BATCH_EXPORT_TABLE_HEADER_IDS.file}
+                      title={row.inputPath}
+                    >
                       {row.shortLabel}
                     </th>
                     <td
@@ -198,15 +208,16 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                     >
                       {statusLabel}
                     </td>
-                    <td headers={BATCH_EXPORT_TABLE_HEADER_IDS.output} title={row.outputPath ?? undefined}>
+                    <td
+                      headers={BATCH_EXPORT_TABLE_HEADER_IDS.output}
+                      title={row.outputPath ?? undefined}
+                    >
                       {row.outputPath ? row.outputPath.replace(/^.*[\\/]/, '') : '—'}
                     </td>
                     <td
                       headers={BATCH_EXPORT_TABLE_HEADER_IDS.progress}
                       className={row.status === 'error' ? 'app-batch-export-cell-error' : undefined}
-                      title={
-                        errorDetail ?? (row.status === 'running' ? row.progress : undefined)
-                      }
+                      title={errorDetail ?? (row.status === 'running' ? row.progress : undefined)}
                       id={rowErrorDescribedById}
                       {...(row.status === 'running'
                         ? { role: 'status' as const, 'aria-live': 'polite' as const }
@@ -340,21 +351,19 @@ export function EditorBatchExportBarQueueTable(props: EditorBatchExportBarProps)
                             aria-label={uiText('batchExportRetryRow')}
                             disabled={batchExportBusy}
                             onClick={() => {
-                              void window.fluxalloy.batchExport
-                                .retryRows([row.id])
-                                .then((res) => {
-                                  if (!res.ok) {
-                                    setStatusHint(res.error)
-                                    return
-                                  }
-                                  if (res.reset > 0) {
-                                    setStatusHint(
-                                      uiTextVars('batchExportRetriedFailed', {
-                                        count: String(res.reset)
-                                      })
-                                    )
-                                  }
-                                })
+                              void window.fluxalloy.batchExport.retryRows([row.id]).then((res) => {
+                                if (!res.ok) {
+                                  setStatusHint(res.error)
+                                  return
+                                }
+                                if (res.reset > 0) {
+                                  setStatusHint(
+                                    uiTextVars('batchExportRetriedFailed', {
+                                      count: String(res.reset)
+                                    })
+                                  )
+                                }
+                              })
                             }}
                           >
                             <IconQueueRetry aria-hidden />

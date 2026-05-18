@@ -1,7 +1,11 @@
 import { BrowserWindow, ipcMain } from 'electron'
 
 import { downloadsIpc as d } from '../shared/ipc-channels'
-import { getDownloadsBoundsHooks, ipcStr, isDownloadsOrMainSender } from './downloads-window-runtime'
+import {
+  getDownloadsBoundsHooks,
+  ipcStr,
+  isDownloadsOrMainSender
+} from './downloads-window-runtime'
 
 export function registerDownloadsOptionsIpcCookiesHandlers(): void {
   ipcMain.handle(

@@ -27,8 +27,6 @@ describe('workflow-scenario-url', () => {
   })
 
   it('resolveWorkflowScenarioDownloadSourceUrl returns null without download url', () => {
-    expect(
-      resolveWorkflowScenarioDownloadSourceUrl([{ kind: 'download' }])
-    ).toBeNull()
+    expect(resolveWorkflowScenarioDownloadSourceUrl([{ kind: 'download' }])).toBeNull()
   })
 })

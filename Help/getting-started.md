@@ -18,4 +18,5 @@
 - Очередь и быстрые действия — [downloads-workflow.md](downloads-workflow.md)
 - Превью, таймлайн и вывод — [editor-workflow.md](editor-workflow.md) и [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md)
 - Справка внутри программы — [knowledge-base-howto.md](knowledge-base-howto.md)
+- Тема, язык и масштаб Windows — [appearance-language-theme.md](appearance-language-theme.md); полный ручной smoke — [owner-manual-smoke.md](owner-manual-smoke.md)
 - Частые проблемы — [faq-troubleshooting.md](faq-troubleshooting.md)

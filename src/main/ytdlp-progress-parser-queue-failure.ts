@@ -4,10 +4,7 @@ import { YTDLP_QUEUE_STATUS_ERROR_PREFIX } from '../shared/ytdlp-queue-status'
 
 import type { YtdlpQueueFailureKind } from './ytdlp-progress-parser-download'
 
-function ytdlpQueueFailureKindSuffix(
-  kind: YtdlpQueueFailureKind,
-  locale: AppUiLocale
-): string {
+function ytdlpQueueFailureKindSuffix(kind: YtdlpQueueFailureKind, locale: AppUiLocale): string {
   const P = getYtdlpQueueProgressStrings(locale)
   switch (kind) {
     case 'transient_network':

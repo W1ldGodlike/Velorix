@@ -43,5 +43,12 @@ export default defineConfig(
       ...eslintPluginReactRefresh.configs.vite.rules
     }
   },
+  {
+    files: ['src/renderer/src/locales/ui-text-strings-build.ts'],
+    rules: {
+      // Единственная точка merge сотен ключей `as const`; тип — `UiTextTables = ReturnType<typeof buildUiTextTables>`.
+      '@typescript-eslint/explicit-function-return-type': 'off'
+    }
+  },
   eslintConfigPrettier
 )

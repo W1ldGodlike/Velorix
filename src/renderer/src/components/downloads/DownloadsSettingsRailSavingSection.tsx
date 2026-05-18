@@ -1,9 +1,12 @@
+import type { JSX } from 'react'
+
 import { uiText } from '../../locales/ui-text'
 import { IconFolderOpen, IconHome, IconQueuePlus } from '../LucideMiniIcons'
 import type { DownloadsSettingsRailProps } from './downloads-settings-rail-props'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- JSX section
-export function DownloadsSettingsRailSavingSection(props: DownloadsSettingsRailProps) {
+export function DownloadsSettingsRailSavingSection(
+  props: DownloadsSettingsRailProps
+): JSX.Element | null {
   const {
     downloadsOptionsBusy,
     downloadsHistoryBusy,

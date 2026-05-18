@@ -21,6 +21,8 @@ Scope: [`scripts/audit-scope.config.mjs`](../../scripts/audit-scope.config.mjs).
 
 **Запрещено:** **сужение scope** при запросе «весь проект»; **микро-J**; новая **копипаста-парсер**; завершать итерацию без **check:quiet зелёный**; пропускать `tests/` и `scripts/` в audit.
 
+**Запрещено:** новый или выросший файл в scope `audit-scope.config.mjs` (`src/`, `tests/`, `scripts/`, корневые tsconfig/eslint) **> `AUDIT_STRUCTURAL_MAX_LINES`** (500) без split в **той же** итерации. **Если** превышение обосновано (единая таблица/генерация, split ломает контракт) **то** только запись `{ glob, reason }` в `AUDIT_STRUCTURAL_OVERSIZE_JUSTIFIED` (glob + `reason` ≥20 символов), не список путей «разрешить файл». **Иначе** — split. Проверка: `npm run audit:structural`.
+
 ## Слой B (регрессии)
 
 **Если** закрыли паттерн копипасты/реестра **то** в том же коммите: ужесточить `check:field-registries.mjs` или `audit-copy-paste-patterns.mjs`, либо буллет здесь.

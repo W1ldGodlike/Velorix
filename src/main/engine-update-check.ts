@@ -6,10 +6,7 @@ import type {
   EngineUpdateCheckItem,
   EnginesCheckUpdatesAndDownloadResult
 } from '../shared/engine-update-check-contract'
-import {
-  isEngineUpdateAvailable,
-  parseEngineVersionToken
-} from '../shared/engine-version-parse'
+import { isEngineUpdateAvailable, parseEngineVersionToken } from '../shared/engine-version-parse'
 import type { EngineDownloadProgress } from '../shared/engine-download-contract'
 import {
   fetchLatestFfmpegVersionToken,

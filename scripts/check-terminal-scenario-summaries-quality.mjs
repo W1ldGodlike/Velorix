@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 /**
  * §8 фаза E — guard summary в `terminal-contract-hints-*.ts`.
  */

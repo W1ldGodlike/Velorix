@@ -1,8 +1,8 @@
 /** Merged UI_TEXT tables (ru/en) from split parts + §2.2 JSON shards (`locales/{locale}/*.json`). */
 import { notifyUiTextShardsUpdated } from './ui-text-hot-reload'
-import { buildUiTextTables } from './ui-text-strings-build'
+import { buildUiTextTables, type UiTextTables } from './ui-text-strings-build'
 
-export type UiTextTables = ReturnType<typeof buildUiTextTables>
+export type { UiTextTables }
 
 let uiTextTables: UiTextTables = buildUiTextTables()
 

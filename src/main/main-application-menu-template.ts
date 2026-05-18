@@ -12,19 +12,15 @@ import {
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
 import { isNativeMainMacos } from './platform'
 import type { AppSettingsDialogSection } from '../shared/app-settings-dialog-section'
-import {
-  focusOrCreateDownloadsWindow,
-  isDownloadsWindow
-} from './downloads-window'
-import {
-  focusOrCreateInspectorWindow,
-  isInspectorWindow
-} from './inspector-window'
+import { focusOrCreateDownloadsWindow, isDownloadsWindow } from './downloads-window'
+import { focusOrCreateInspectorWindow, isInspectorWindow } from './inspector-window'
 import { openVideoFolderWithDialog, openVideoWithDialog } from './preview-dialog'
 import { buildDiagnosticsFolderSubmenu } from './main-application-menu-deps'
 import type { MainApplicationMenuDeps } from './main-application-menu-types'
 
-export function buildApplicationMenuTemplate(d: MainApplicationMenuDeps): MenuItemConstructorOptions[] {
+export function buildApplicationMenuTemplate(
+  d: MainApplicationMenuDeps
+): MenuItemConstructorOptions[] {
   const win = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0] ?? undefined
   const isMac = isNativeMainMacos()
   const themePref = d.getThemePref()
@@ -159,7 +155,10 @@ export function buildApplicationMenuTemplate(d: MainApplicationMenuDeps): MenuIt
               return
             }
             target.focus()
-            target.webContents.send(mw.openSettings, 'dependencies' satisfies AppSettingsDialogSection)
+            target.webContents.send(
+              mw.openSettings,
+              'dependencies' satisfies AppSettingsDialogSection
+            )
           }
         }
       ]
@@ -249,7 +248,9 @@ export function buildApplicationMenuTemplate(d: MainApplicationMenuDeps): MenuIt
           label: m.menuSupportZip,
           click: (): void => {
             const target = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0]
-            void d.createSupportBundleWithDialog(target && !target.isDestroyed() ? target : undefined)
+            void d.createSupportBundleWithDialog(
+              target && !target.isDestroyed() ? target : undefined
+            )
           }
         }
       ]

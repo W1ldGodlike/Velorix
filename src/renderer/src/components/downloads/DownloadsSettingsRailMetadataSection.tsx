@@ -1,11 +1,17 @@
-import type { YtdlpCookiesBrowserId, YtdlpImpersonateId } from '../../../../shared/ytdlp-download-contract'
+import type { JSX } from 'react'
+
+import type {
+  YtdlpCookiesBrowserId,
+  YtdlpImpersonateId
+} from '../../../../shared/ytdlp-download-contract'
 import { uiText } from '../../locales/ui-text'
 import { PillSwitch } from '../PillSwitch'
 import { IconQueueFile, IconQueueX } from '../LucideMiniIcons'
 import type { DownloadsSettingsRailProps } from './downloads-settings-rail-props'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- JSX section
-export function DownloadsSettingsRailMetadataSection(props: DownloadsSettingsRailProps) {
+export function DownloadsSettingsRailMetadataSection(
+  props: DownloadsSettingsRailProps
+): JSX.Element | null {
   const {
     downloadsOptionsBusy,
     downloadsHistoryBusy,

@@ -11,6 +11,18 @@ import {
 import type { FfmpegSnapshotFormatId } from '../../shared/ffmpeg-snapshot-contract'
 import { getUiLocale, uiText, uiTextVars } from './locales/ui-text'
 
+export type EditorExportPipelineHandlers = {
+  handleSnapshot: () => Promise<void>
+  handleExtractFrames: () => Promise<void>
+  handleExport: () => Promise<void>
+  handleCancelExport: () => Promise<void>
+  handleOpenLastExport: (mode: 'file' | 'folder' | 'preview') => Promise<void>
+  handleCopyLastExportPath: () => Promise<void>
+  handleOpenLastSnapshot: (mode: 'file' | 'folder') => Promise<void>
+  handleCopyLastSnapshotPath: () => Promise<void>
+  handleCopyExportPreview: () => Promise<void>
+}
+
 export function useEditorExportPipelineHandlers({
   setStatusHint,
   preview,
@@ -62,17 +74,7 @@ export function useEditorExportPipelineHandlers({
   setLastSnapshotPath: (path: string | null) => void
   exportPreview: ReturnType<typeof buildFfmpegExportPreviewCommand>
   exportPreviewCommand: string
-}): {
-  handleSnapshot: () => Promise<void>
-  handleExtractFrames: () => Promise<void>
-  handleExport: () => Promise<void>
-  handleCancelExport: () => Promise<void>
-  handleOpenLastExport: (mode: 'file' | 'folder' | 'preview') => Promise<void>
-  handleCopyLastExportPath: () => Promise<void>
-  handleOpenLastSnapshot: (mode: 'file' | 'folder') => Promise<void>
-  handleCopyLastSnapshotPath: () => Promise<void>
-  handleCopyExportPreview: () => Promise<void>
-} {
+}): EditorExportPipelineHandlers {
   async function handleSnapshot(): Promise<void> {
     if (!preview || exportBusy || snapshotBusy) {
       return

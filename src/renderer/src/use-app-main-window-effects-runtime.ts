@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 
+import { useAppShellStore } from './stores/app-shell-store'
 import { clipboardLooksLikeDownloadsPayload, domTargetIsTextField } from './app-shell-ui-helpers'
 import { getUiLocale, uiText, uiTextVars } from './locales/ui-text'
 import type { UseAppMainWindowEffectsDeps } from './use-app-main-window-effects-deps'
@@ -51,10 +52,14 @@ export function useAppMainWindowEffectsRuntime(
       queueMicrotask(() => setProbePending(false))
       return
     }
+    const probeGeneration = useAppShellStore.getState().bumpPreviewProbeGeneration()
+    const ac = new AbortController()
     queueMicrotask(() => setProbePending(true))
-    let cancelled = false
     void window.fluxalloy.preview.probe(previewPath).then((r) => {
-      if (cancelled) {
+      if (ac.signal.aborted) {
+        return
+      }
+      if (useAppShellStore.getState().previewProbeGeneration !== probeGeneration) {
         return
       }
       setProbePending(false)
@@ -66,7 +71,7 @@ export function useAppMainWindowEffectsRuntime(
       }
     })
     return (): void => {
-      cancelled = true
+      ac.abort()
     }
   }, [previewPath, setProbeInfo, setProbePending, setStatusHint])
 

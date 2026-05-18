@@ -32,8 +32,7 @@ export function buildEditorExtractFramesPayload(params: {
     params.ui.mode === 'interval'
       ? Number.parseFloat(params.ui.intervalSec.replace(',', '.'))
       : null
-  const count =
-    params.ui.mode === 'count' ? Number.parseInt(params.ui.frameCount, 10) : null
+  const count = params.ui.mode === 'count' ? Number.parseInt(params.ui.frameCount, 10) : null
   let manualTimesSec: number[] | null = null
   if (params.ui.mode === 'manual') {
     const times = parseFfmpegManualTimesText(params.ui.manualTimesText)

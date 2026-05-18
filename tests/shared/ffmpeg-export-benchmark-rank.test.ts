@@ -42,7 +42,12 @@ describe('pickFfmpegExportBenchmarkRecommended', () => {
   it('uses GPU peak when CPU is under threshold but GPU exceeds', () => {
     const rec = pickFfmpegExportBenchmarkRecommended(
       [
-        row({ videoCodec: 'libx264', elapsedMs: 5000, cpuLoadPeakPercent: 50, gpuLoadPeakPercent: null }),
+        row({
+          videoCodec: 'libx264',
+          elapsedMs: 5000,
+          cpuLoadPeakPercent: 50,
+          gpuLoadPeakPercent: null
+        }),
         row({
           videoCodec: 'h264_nvenc',
           elapsedMs: 1200,

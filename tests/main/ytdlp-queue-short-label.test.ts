@@ -29,37 +29,25 @@ describe('looksLikeYtdlpTechnicalShortLabel', () => {
 describe('shouldPreferYtdlpOutputPathShortLabel', () => {
   it('заменяет технический id из [info] на имя из Destination', () => {
     const nice = 'Rimworld. нормальное имя'
-    expect(
-      shouldPreferYtdlpOutputPathShortLabel('-12875570_456240933', nice, VK_URL)
-    ).toBe(true)
+    expect(shouldPreferYtdlpOutputPathShortLabel('-12875570_456240933', nice, VK_URL)).toBe(true)
   })
 
   it('оставляет уже нормальную подпись', () => {
     const nice = 'Другое имя'
-    expect(shouldPreferYtdlpOutputPathShortLabel('Уже нормальное имя', nice, VK_URL)).toBe(
-      false
-    )
+    expect(shouldPreferYtdlpOutputPathShortLabel('Уже нормальное имя', nice, VK_URL)).toBe(false)
   })
 })
 
 describe('shouldApplyYtdlpInfoTitleShortLabel', () => {
   it('не подставляет технический title из [info]', () => {
     expect(
-      shouldApplyYtdlpInfoTitleShortLabel(
-        '-12875570_456240933',
-        VK_URL,
-        shortUrlLabel(VK_URL)
-      )
+      shouldApplyYtdlpInfoTitleShortLabel('-12875570_456240933', VK_URL, shortUrlLabel(VK_URL))
     ).toBe(false)
   })
 
   it('подставляет человеческий title пока подпись — URL', () => {
     expect(
-      shouldApplyYtdlpInfoTitleShortLabel(
-        'Какой-то ролик',
-        VK_URL,
-        shortUrlLabel(VK_URL)
-      )
+      shouldApplyYtdlpInfoTitleShortLabel('Какой-то ролик', VK_URL, shortUrlLabel(VK_URL))
     ).toBe(true)
   })
 })
@@ -91,8 +79,6 @@ describe('pickYtdlpQueueShortLabelForOutputPath', () => {
 
 describe('displayLabelFromYtdlpOutputPath partial suffix', () => {
   it('убирает .part перед разбором расширения', () => {
-    expect(
-      displayLabelFromYtdlpOutputPath('C:\\dl\\My Video.mp4.part')
-    ).toBe('My Video')
+    expect(displayLabelFromYtdlpOutputPath('C:\\dl\\My Video.mp4.part')).toBe('My Video')
   })
 })

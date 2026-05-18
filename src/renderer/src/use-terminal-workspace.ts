@@ -1,10 +1,8 @@
 import {
   useCallback,
-  useEffect,
   useId,
   useMemo,
   useRef,
-  useState,
   type Dispatch,
   type MutableRefObject,
   type SetStateAction
@@ -40,12 +38,9 @@ import {
   type WorkspaceTab
 } from './app-terminal-hint-ui'
 import { getUiLocale, uiText, uiTextVars } from './locales/ui-text'
+import { useTerminalStore, type TerminalHistoryEntry } from './stores/terminal-store'
 
-export type TerminalHistoryEntry = {
-  id: number
-  line: string
-  result: TerminalRunResult
-}
+export type { TerminalHistoryEntry }
 
 export type UseTerminalWorkspaceDeps = {
   workspaceTab: WorkspaceTab
@@ -81,14 +76,21 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
 } {
   const { workspaceTab, currentSourcePath, setStatusHint } = deps
 
-  const [terminalLine, setTerminalLine] = useState('ffmpeg -version')
-  const [terminalBusy, setTerminalBusy] = useState(false)
-  const [terminalHints, setTerminalHints] = useState<TerminalCommandHintEntry[]>([])
-  const [terminalHintFilter, setTerminalHintFilter] = useState('')
-  const [terminalHintToolFilter, setTerminalHintToolFilter] = useState<TerminalHintToolFilter>('all')
-  const [terminalHistory, setTerminalHistory] = useState<TerminalHistoryEntry[]>([])
-  const [terminalSuggestFocus, setTerminalSuggestFocus] = useState(false)
-  const [terminalSuggestIndex, setTerminalSuggestIndex] = useState(0)
+  const terminalLine = useTerminalStore((s) => s.terminalLine)
+  const setTerminalLineRaw = useTerminalStore((s) => s.setTerminalLine)
+  const terminalBusy = useTerminalStore((s) => s.terminalBusy)
+  const setTerminalBusy = useTerminalStore((s) => s.setTerminalBusy)
+  const terminalHints = useTerminalStore((s) => s.terminalHints)
+  const terminalHintFilter = useTerminalStore((s) => s.terminalHintFilter)
+  const setTerminalHintFilter = useTerminalStore((s) => s.setTerminalHintFilter)
+  const terminalHintToolFilter = useTerminalStore((s) => s.terminalHintToolFilter)
+  const setTerminalHintToolFilter = useTerminalStore((s) => s.setTerminalHintToolFilter)
+  const terminalHistory = useTerminalStore((s) => s.terminalHistory)
+  const appendTerminalHistory = useTerminalStore((s) => s.appendTerminalHistory)
+  const terminalSuggestFocus = useTerminalStore((s) => s.terminalSuggestFocus)
+  const setTerminalSuggestFocus = useTerminalStore((s) => s.setTerminalSuggestFocus)
+  const terminalSuggestIndex = useTerminalStore((s) => s.terminalSuggestIndex)
+  const setTerminalSuggestIndex = useTerminalStore((s) => s.setTerminalSuggestIndex)
 
   const terminalHintsSearchFieldId = useId()
   const terminalCommandInputId = useId()
@@ -100,25 +102,13 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
     terminalRecallRef.current = { index: null, draft: null }
   }, [])
 
-  const setTerminalLineWithRecallReset = useCallback(
+  const setTerminalLine = useCallback(
     (action: SetStateAction<string>) => {
       resetTerminalRecall()
-      setTerminalLine(action)
+      setTerminalLineRaw(action)
     },
-    [resetTerminalRecall]
+    [resetTerminalRecall, setTerminalLineRaw]
   )
-
-  useEffect(() => {
-    let mounted = true
-    void window.fluxalloy.terminal.getHints().then((hints) => {
-      if (mounted) {
-        setTerminalHints(hints)
-      }
-    })
-    return () => {
-      mounted = false
-    }
-  }, [])
 
   const terminalMergedSortedHints = useMemo(() => {
     const ext = previewPathExtensionLower(currentSourcePath)
@@ -146,7 +136,11 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
 
   const terminalHintCatalogFiltered = useMemo(
     () =>
-      filterTerminalHintCatalog(terminalMergedSortedHints, terminalHintFilter, terminalHintToolFilter),
+      filterTerminalHintCatalog(
+        terminalMergedSortedHints,
+        terminalHintFilter,
+        terminalHintToolFilter
+      ),
     [terminalHintFilter, terminalHintToolFilter, terminalMergedSortedHints]
   )
 
@@ -189,24 +183,24 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
 
   const appendTerminalToken = useCallback(
     (token: string) => {
-      setTerminalLineWithRecallReset((line) => {
+      setTerminalLine((line) => {
         const trimmed = line.trimEnd()
         return trimmed ? `${trimmed} ${token}` : token
       })
     },
-    [setTerminalLineWithRecallReset]
+    [setTerminalLine]
   )
 
   const applyTerminalSuggest = useCallback(
     (hint: TerminalCommandHintEntry) => {
-      setTerminalLineWithRecallReset((prev) => applyTerminalInlinePick({ line: prev, hint }))
+      setTerminalLine((prev) => applyTerminalInlinePick({ line: prev, hint }))
     },
-    [setTerminalLineWithRecallReset]
+    [setTerminalLine]
   )
 
   const recallTerminalCommand = useCallback(
     (direction: 'up' | 'down') => {
-      setTerminalLine((current) => {
+      setTerminalLineRaw((current) => {
         const result = applyTerminalRecallStep(
           terminalRecallRef.current,
           current,
@@ -217,7 +211,7 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
         return result.line
       })
     },
-    [terminalRecallLines]
+    [setTerminalLineRaw, terminalRecallLines]
   )
 
   const runTerminalLine = useCallback(async (): Promise<void> => {
@@ -227,15 +221,13 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
     }
     setTerminalBusy(true)
     try {
-      const result = await window.fluxalloy.terminal.run({
+      const result: TerminalRunResult = await window.fluxalloy.terminal.run({
         line,
         currentFilePath: currentSourcePath,
         uiLocale: getUiLocale() as AppUiLocale
       })
       resetTerminalRecall()
-      setTerminalHistory((rows) =>
-        [{ id: terminalHistoryNextIdRef.current++, line, result }, ...rows].slice(0, 20)
-      )
+      appendTerminalHistory({ line, result }, terminalHistoryNextIdRef.current++)
       setStatusHint(
         result.ok
           ? uiTextVars('statusTerminalCliExitOk', {
@@ -246,7 +238,15 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
     } finally {
       setTerminalBusy(false)
     }
-  }, [currentSourcePath, resetTerminalRecall, setStatusHint, terminalBusy, terminalLine])
+  }, [
+    appendTerminalHistory,
+    currentSourcePath,
+    resetTerminalRecall,
+    setStatusHint,
+    setTerminalBusy,
+    terminalBusy,
+    terminalLine
+  ])
 
   const copyTerminalOutputLine = useCallback(
     async (line: string): Promise<void> => {
@@ -262,7 +262,7 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
 
   return {
     terminalLine,
-    setTerminalLine: setTerminalLineWithRecallReset,
+    setTerminalLine,
     terminalBusy,
     terminalHintFilter,
     setTerminalHintFilter,

@@ -7,11 +7,12 @@ export const APP_SETTINGS_THEME_ANCHOR = 'app-settings-general-theme'
 export const APP_SETTINGS_HIDPI_ANCHOR = 'app-settings-general-hidpi'
 export const APP_SETTINGS_WIN_SHELL_ANCHOR = 'app-settings-general-win-shell'
 
-export const APP_SETTINGS_PACKAGED_SMOKE_ANCHOR: Record<OwnerManualSmokePackagedPlatform, string> = {
-  win: 'app-settings-deps-packaged-win',
-  linux: 'app-settings-deps-packaged-linux',
-  macos: 'app-settings-deps-packaged-macos'
-}
+export const APP_SETTINGS_PACKAGED_SMOKE_ANCHOR: Record<OwnerManualSmokePackagedPlatform, string> =
+  {
+    win: 'app-settings-deps-packaged-win',
+    linux: 'app-settings-deps-packaged-linux',
+    macos: 'app-settings-deps-packaged-macos'
+  }
 
 export type AppSettingsSmokeJumpTarget = {
   section: AppSettingsDialogSection
@@ -30,7 +31,10 @@ export function jumpToAppSettingsSmokeTarget(
   if (currentSection !== target.section) {
     onSectionChange(target.section)
   }
-  window.setTimeout(() => {
-    scrollToSettingsAnchor(target.anchorId)
-  }, currentSection === target.section ? 0 : 48)
+  window.setTimeout(
+    () => {
+      scrollToSettingsAnchor(target.anchorId)
+    },
+    currentSection === target.section ? 0 : 48
+  )
 }

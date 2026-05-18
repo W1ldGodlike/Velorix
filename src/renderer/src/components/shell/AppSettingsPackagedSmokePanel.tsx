@@ -99,10 +99,7 @@ export function AppSettingsPackagedSmokePanel(props: {
     () => PACKAGED_SMOKE_CONFIG[props.platform].getSections(locale),
     [props.platform, locale]
   )
-  const plainText = useMemo(
-    () => formatFfmpegHwManualSmokeChecklistPlainText(sections),
-    [sections]
-  )
+  const plainText = useMemo(() => formatFfmpegHwManualSmokeChecklistPlainText(sections), [sections])
 
   const onCopy = (): void => {
     void navigator.clipboard
@@ -129,7 +126,11 @@ export function AppSettingsPackagedSmokePanel(props: {
     >
       <div className="app-settings-hw-smoke-header">
         <h3 className="app-settings-hidpi-title">{uiText(config.legendKey)}</h3>
-        <div className="app-settings-panel-head-trailing" role="toolbar" aria-orientation="horizontal">
+        <div
+          className="app-settings-panel-head-trailing"
+          role="toolbar"
+          aria-orientation="horizontal"
+        >
           {props.onOpenKnowledgeArticle ? (
             <>
               <KnowledgeDeepLinkButton
@@ -164,13 +165,17 @@ export function AppSettingsPackagedSmokePanel(props: {
       ) : null}
       <article className="app-settings-hw-smoke-section app-settings-hw-smoke-section--primary">
         <h4 className="app-settings-hw-smoke-section-title">{section.title}</h4>
-        <p className="app-settings-hw-smoke-label">{uiText('appSettingsHwManualSmokePrereqLabel')}</p>
+        <p className="app-settings-hw-smoke-label">
+          {uiText('appSettingsHwManualSmokePrereqLabel')}
+        </p>
         <ul className="app-settings-hidpi-checklist">
           {section.prerequisites.map((line) => (
             <li key={line}>{line}</li>
           ))}
         </ul>
-        <p className="app-settings-hw-smoke-label">{uiText('appSettingsHwManualSmokeStepsLabel')}</p>
+        <p className="app-settings-hw-smoke-label">
+          {uiText('appSettingsHwManualSmokeStepsLabel')}
+        </p>
         <ol className="app-settings-hw-smoke-steps">
           {section.steps.map((step) => (
             <li key={step.id}>

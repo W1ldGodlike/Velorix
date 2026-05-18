@@ -20,6 +20,10 @@ When you open an article, the app **inlines** small files (up to ~512 KiB) as em
 
 Blue buttons jump to other in-app articles. Links that start with `https` open in your external browser.
 
+## Theme and display scale
+
+See [appearance-language-theme.md](appearance-language-theme.md) and [owner-manual-smoke.md](owner-manual-smoke.md) for checklists in **Settings → General** (theme, HiDPI) and the full **Owner manual smoke** bundle for Support ZIP. New users can start from [getting-started.md](getting-started.md).
+
 ## Tables
 
 The help viewer **does not** render Markdown pipe tables. For “shortcut → action” style content, use a **bullet list** and bold the first part, for example: `- **Ctrl+O** — open a file…`

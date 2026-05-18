@@ -29,12 +29,14 @@ import type { FfmpegHwEncodersProbeResult } from '../../shared/ffmpeg-hw-encoder
 import { isFfmpegHwExportVideoCodec } from '../../shared/ffmpeg-export-video-codec'
 import { uiText, uiTextVars } from './locales/ui-text'
 import type { UiTextKey } from './locales/ui-text-strings'
+import type { FfmpegExportSelectOptions } from './editor-export-select-options-types'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- FfmpegExportSelectOptions = ReturnType below
+export type { FfmpegExportSelectOptions } from './editor-export-select-options-types'
+
 export function buildEditorExportSelectOptions(
   hwEncoderProbe: FfmpegHwEncodersProbeResult | null,
   exportVideoCodec: FfmpegExportVideoCodecId
-) {
+): FfmpegExportSelectOptions {
   return {
     encodePresets: [
       { id: 'balance', label: uiText('editorExportEncodeBalance') },
@@ -203,5 +205,3 @@ export function buildEditorExportSelectOptions(
     ] as Array<{ id: FfmpegSnapshotFormatId; label: string }>
   }
 }
-
-export type FfmpegExportSelectOptions = ReturnType<typeof buildEditorExportSelectOptions>

@@ -1,5 +1,8 @@
 import type { FfmpegExportSelectOptions } from './editor-export-select-options'
-import { useEditorExportSettingsState } from './use-editor-export-settings-state'
+import {
+  useEditorExportSettingsState,
+  type EditorExportSettingsStateBundle
+} from './use-editor-export-settings-state'
 import { useEditorExportUserPresetActions } from './use-editor-export-user-preset-actions'
 
 export type { ExportPresetNameDialogState } from './editor-export-settings-types'
@@ -9,9 +12,12 @@ export type UseEditorExportSettingsDeps = {
   setStatusHint: (hint: string | null) => void
 }
 
-// Return shape is consumed via destructuring in App.tsx (large flat API).
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- flat export-settings surface
-export function useEditorExportSettings(deps: UseEditorExportSettingsDeps) {
+export type UseEditorExportSettingsResult = EditorExportSettingsStateBundle &
+  ReturnType<typeof useEditorExportUserPresetActions>
+
+export function useEditorExportSettings(
+  deps: UseEditorExportSettingsDeps
+): UseEditorExportSettingsResult {
   const { setStatusHint } = deps
   const state = useEditorExportSettingsState()
 

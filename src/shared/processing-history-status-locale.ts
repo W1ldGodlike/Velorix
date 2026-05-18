@@ -83,9 +83,7 @@ export function processingHistoryFfmpegBatchExportSuccess(locale: AppUiLocale): 
   return pickProcessingHistoryStrings(locale).processingHistoryFfmpegBatchExportSuccess
 }
 
-export function processingHistoryFfmpegBatchExportCancelled(
-  locale: AppUiLocale
-): string {
+export function processingHistoryFfmpegBatchExportCancelled(locale: AppUiLocale): string {
   return pickProcessingHistoryStrings(locale).processingHistoryFfmpegBatchExportCancelled
 }
 

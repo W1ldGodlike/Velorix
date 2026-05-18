@@ -4,7 +4,8 @@ export const FLUXALLOY_SHELL_OPEN_ARG = '--fluxalloy-shell-open'
 export const FLUXALLOY_SHELL_QUICK_MP4_ARG = '--fluxalloy-shell-quick-mp4'
 /** NSIS post-install / portable: зарегистрировать меню и выйти (headless). */
 export const FLUXALLOY_INSTALL_REGISTER_EXPLORER_MENU = '--fluxalloy-install-register-explorer-menu'
-export const FLUXALLOY_INSTALL_UNREGISTER_EXPLORER_MENU = '--fluxalloy-install-unregister-explorer-menu'
+export const FLUXALLOY_INSTALL_UNREGISTER_EXPLORER_MENU =
+  '--fluxalloy-install-unregister-explorer-menu'
 
 export function isWindowsExplorerShellHeadlessArgv(
   argv: readonly string[] = process.argv

@@ -68,8 +68,7 @@ export function DownloadsHistoryPanel({
     topEntryIdRef.current = topId
     listRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
   }, [open, visibleEntries])
-  const showListModeToggle =
-    entries.length > visibleEntries.length || listMode === 'full'
+  const showListModeToggle = entries.length > visibleEntries.length || listMode === 'full'
   return (
     <details
       className="app-downloads-history-panel"
@@ -81,7 +80,10 @@ export function DownloadsHistoryPanel({
         onToggle(event.currentTarget.open)
       }}
     >
-      <summary className="app-downloads-history-summary-head" aria-describedby="downloads-page-hint">
+      <summary
+        className="app-downloads-history-summary-head"
+        aria-describedby="downloads-page-hint"
+      >
         <span>
           {uiText('downloadsHistoryTitle')}
           <span>

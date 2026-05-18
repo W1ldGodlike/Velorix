@@ -128,30 +128,41 @@ export const fluxalloy = {
     pickFile: (payload: {
       kind: import('../shared/external-filter-script-contract').ExternalFilterScriptKind
       uiLocale?: import('../shared/app-ui-locale').AppUiLocale
-    }): Promise<import('../shared/external-filter-script-contract').ExternalFilterScriptPickResult> =>
-      ipcRenderer.invoke(mw.externalFilterScriptPickFile, payload),
+    }): Promise<
+      import('../shared/external-filter-script-contract').ExternalFilterScriptPickResult
+    > => ipcRenderer.invoke(mw.externalFilterScriptPickFile, payload),
     apply: (
       payload: import('../shared/external-filter-script-contract').ExternalFilterScriptApplyPayload & {
         uiLocale?: import('../shared/app-ui-locale').AppUiLocale
       }
-    ): Promise<import('../shared/external-filter-script-contract').ExternalFilterScriptApplyResult> =>
-      ipcRenderer.invoke(mw.externalFilterScriptApply, payload)
+    ): Promise<
+      import('../shared/external-filter-script-contract').ExternalFilterScriptApplyResult
+    > => ipcRenderer.invoke(mw.externalFilterScriptApply, payload)
   },
   workflows: {
     listScenarios: (): Promise<
-      | { ok: true; items: import('../shared/workflow-scenario-contract').WorkflowScenarioListItem[] }
+      | {
+          ok: true
+          items: import('../shared/workflow-scenario-contract').WorkflowScenarioListItem[]
+        }
       | { ok: false; error: string }
     > => ipcRenderer.invoke(mw.workflowScenariosList),
     getScenario: (
       id: string
     ): Promise<
-      | { ok: true; scenario: import('../shared/workflow-scenario-contract').WorkflowScenarioDocument }
+      | {
+          ok: true
+          scenario: import('../shared/workflow-scenario-contract').WorkflowScenarioDocument
+        }
       | { ok: false; error: string }
     > => ipcRenderer.invoke(mw.workflowScenariosGet, id),
     saveScenario: (
       doc: import('../shared/workflow-scenario-contract').WorkflowScenarioDocument
     ): Promise<
-      | { ok: true; scenario: import('../shared/workflow-scenario-contract').WorkflowScenarioDocument }
+      | {
+          ok: true
+          scenario: import('../shared/workflow-scenario-contract').WorkflowScenarioDocument
+        }
       | { ok: false; error: string }
     > => ipcRenderer.invoke(mw.workflowScenariosSave, doc),
     deleteScenario: (id: string): Promise<{ ok: true } | { ok: false; error: string }> =>
@@ -194,17 +205,25 @@ export const fluxalloy = {
       taskTitle: string
     ): Promise<
       | { ok: true }
-      | { ok: false; error: import('../shared/workflow-watch-folder-contract').WorkflowRunScenarioOnFileError }
+      | {
+          ok: false
+          error: import('../shared/workflow-watch-folder-contract').WorkflowRunScenarioOnFileError
+        }
     > => ipcRenderer.invoke(mw.workflowRunScenarioOnFile, scenarioId, filePath, taskTitle),
     runScenarioOnUrl: (
       scenarioId: string,
       taskTitle: string
     ): Promise<
       | { ok: true; rowId: number; started: boolean }
-      | { ok: false; error: import('../shared/workflow-watch-folder-contract').WorkflowRunScenarioOnUrlError }
+      | {
+          ok: false
+          error: import('../shared/workflow-watch-folder-contract').WorkflowRunScenarioOnUrlError
+        }
     > => ipcRenderer.invoke(mw.workflowRunScenarioOnUrl, scenarioId, taskTitle),
     onWatchFolderDetected: (
-      listener: (payload: import('../shared/workflow-watch-folder-contract').WorkflowWatchFolderDetectedPayload) => void
+      listener: (
+        payload: import('../shared/workflow-watch-folder-contract').WorkflowWatchFolderDetectedPayload
+      ) => void
     ): (() => void) => {
       const handler = (
         _event: Electron.IpcRendererEvent,
@@ -289,9 +308,7 @@ export const fluxalloy = {
     getStatus: (uiLocale?: AppUiLocale): Promise<EnginesStatusSnapshot> =>
       ipcRenderer.invoke(mw.enginesStatus, uiLocale),
     shouldOfferDownload: (): Promise<boolean> => ipcRenderer.invoke(mw.enginesShouldOfferDownload),
-    download: (
-      uiLocale?: AppUiLocale
-    ): Promise<{ ok: true } | { ok: false; error: string }> =>
+    download: (uiLocale?: AppUiLocale): Promise<{ ok: true } | { ok: false; error: string }> =>
       ipcRenderer.invoke(mw.enginesDownload, uiLocale),
     checkUpdatesAndDownload: (
       uiLocale?: AppUiLocale

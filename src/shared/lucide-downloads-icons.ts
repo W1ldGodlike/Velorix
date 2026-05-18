@@ -6,10 +6,7 @@
 export type { StrokePrim } from './lucide-downloads-icons-types'
 export { SVG_NS, escapeXmlAttr } from './lucide-downloads-icons-types'
 
-export {
-  QUEUE_ROW_ACTION_ICONS,
-  type QueueRowActionIconKey
-} from './lucide-downloads-icons-queue'
+export { QUEUE_ROW_ACTION_ICONS, type QueueRowActionIconKey } from './lucide-downloads-icons-queue'
 
 export {
   DOWNLOADS_TOPBAR_CLUSTER_ICONS,

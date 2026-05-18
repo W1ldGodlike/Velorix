@@ -49,8 +49,11 @@ async function runListExtractors(ytdlpPath) {
 }
 
 async function run() {
-  const { isMinimalYtdlpExtractorsOutput, listPackagedYtdlpCandidatePaths, pickFirstExistingEngine } =
-    await import('./smoke-packaged-ytdlp-lib.mjs')
+  const {
+    isMinimalYtdlpExtractorsOutput,
+    listPackagedYtdlpCandidatePaths,
+    pickFirstExistingEngine
+  } = await import('./smoke-packaged-ytdlp-lib.mjs')
 
   if (skipRequested()) {
     log('FLUXALLOY_SKIP_YTDLP_SMOKE — пропуск')

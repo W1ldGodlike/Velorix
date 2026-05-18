@@ -148,9 +148,9 @@ describe('processing-history', () => {
       workflowScenarioId: 'scenario-1'
     })
     expect(readProcessingHistoryNewestFirst(root)[0]?.workflowScenarioId).toBe('scenario-1')
-    expect(readProcessingHistoryNewestFirst(root, { query: 'scenario-1' }).map((e) => e.id)).toEqual(
-      ['with-scenario']
-    )
+    expect(
+      readProcessingHistoryNewestFirst(root, { query: 'scenario-1' }).map((e) => e.id)
+    ).toEqual(['with-scenario'])
   })
 
   it('находит запись по id для безопасного открытия результата из main', () => {

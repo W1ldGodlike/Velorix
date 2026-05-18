@@ -49,12 +49,7 @@ export async function fulfillPendingWindowsExplorerShellLaunch(deps: {
     return
   }
   const exportOpts = resolveFfmpegExportJobOptionsFromAppSettings(settings, undefined)
-  const outPath = pickUniqueAutoExportOutputPath(
-    pending.filePath,
-    'mp4',
-    '_quick',
-    undefined
-  )
+  const outPath = pickUniqueAutoExportOutputPath(pending.filePath, 'mp4', '_quick', undefined)
   const ac = new AbortController()
   deps.setActiveExportAbort(ac)
   const startedAt = Date.now()

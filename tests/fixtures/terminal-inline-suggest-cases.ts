@@ -5,7 +5,13 @@ import type { TerminalCommandHintEntry } from '../../src/shared/terminal-contrac
 type SuggestStep = 'up' | 'down' | 'home' | 'end' | 'pageUp' | 'pageDown'
 
 export const TERMINAL_STEP_SUGGEST_INDEX_CASES = [
-  { index: 99, length: 3, direction: 'up' as SuggestStep, pageSize: undefined as number | undefined, expected: 1 },
+  {
+    index: 99,
+    length: 3,
+    direction: 'up' as SuggestStep,
+    pageSize: undefined as number | undefined,
+    expected: 1
+  },
   { index: 99, length: 5, direction: 'down' as SuggestStep, pageSize: undefined, expected: 4 },
   { index: 50, length: 4, direction: 'home' as SuggestStep, pageSize: undefined, expected: 0 },
   { index: 50, length: 4, direction: 'end' as SuggestStep, pageSize: undefined, expected: 3 },

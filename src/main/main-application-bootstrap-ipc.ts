@@ -31,10 +31,7 @@ import {
   saveCachedSettingsToDisk
 } from './main-cached-settings-host'
 import { buildApplicationMenu } from './main-application-menu'
-import {
-  createSupportBundleWithDialog,
-  openMainLogForUser
-} from './main-diagnostics-service'
+import { createSupportBundleWithDialog, openMainLogForUser } from './main-diagnostics-service'
 import {
   configurePreviewProxyService,
   ensurePreviewPlayableMedia,

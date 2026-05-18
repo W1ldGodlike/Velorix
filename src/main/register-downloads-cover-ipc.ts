@@ -8,11 +8,7 @@ import { downloadsIpc as d } from '../shared/ipc-channels'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
 import { resolveAppPaths } from './app-paths'
 import { getDownloadsQueueRowById } from './downloads-queue'
-import {
-  ipcStr,
-  ipcUiLocale,
-  isDownloadsOrMainSender
-} from './downloads-window-runtime'
+import { ipcStr, ipcUiLocale, isDownloadsOrMainSender } from './downloads-window-runtime'
 import { resolveEngineExecutablePath } from './engine-service'
 import { runFfmpegCoverExtract } from './ffmpeg-cover-extract-runner'
 import { getCachedSettings } from './main-cached-settings-host'

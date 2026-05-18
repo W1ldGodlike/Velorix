@@ -74,8 +74,7 @@ export function registerSingleExportIpcHandlers(ctx: ExportBatchIpcContext): voi
       return { ok: false, error: base.exportInvalidRequest }
     }
     const exportUiLocale =
-      parseAppUiLocale((raw as { uiLocale?: unknown }).uiLocale) ??
-      host.mainDownloadsUiLocale()
+      parseAppUiLocale((raw as { uiLocale?: unknown }).uiLocale) ?? host.mainDownloadsUiLocale()
     const M = getMainApplicationStrings(exportUiLocale)
     const inputRaw = (raw as { inputPath?: unknown }).inputPath
     if (typeof inputRaw !== 'string' || inputRaw.trim().length === 0) {
@@ -199,8 +198,7 @@ export function registerSingleExportIpcHandlers(ctx: ExportBatchIpcContext): voi
         return { ok: false, error: base.exportAlreadyRunning }
       }
       const exportUiLocale =
-        parseAppUiLocale((raw as { uiLocale?: unknown })?.uiLocale) ??
-        host.mainDownloadsUiLocale()
+        parseAppUiLocale((raw as { uiLocale?: unknown })?.uiLocale) ?? host.mainDownloadsUiLocale()
       const parsedReq = parseFfmpegExportBenchmarkRequest(raw, exportUiLocale)
       if (!parsedReq.ok) {
         return { ok: false, error: parsedReq.error }
@@ -256,8 +254,7 @@ export function registerSingleExportIpcHandlers(ctx: ExportBatchIpcContext): voi
         return { ok: false, error: base.exportAlreadyRunning }
       }
       const exportUiLocale =
-        parseAppUiLocale((raw as { uiLocale?: unknown })?.uiLocale) ??
-        host.mainDownloadsUiLocale()
+        parseAppUiLocale((raw as { uiLocale?: unknown })?.uiLocale) ?? host.mainDownloadsUiLocale()
       const M = getMainApplicationStrings(exportUiLocale)
       const parsedReq = parseFfmpegFramesExtractRequest(raw)
       if (!parsedReq.ok) {
@@ -337,10 +334,7 @@ export function registerSingleExportIpcHandlers(ctx: ExportBatchIpcContext): voi
         })
         if (result.ok) {
           host.rememberFfmpegSnapshotDirectory(outputDir)
-          const status = M.extractFramesHistorySuccessTemplate.replace(
-            '{n}',
-            String(result.saved)
-          )
+          const status = M.extractFramesHistorySuccessTemplate.replace('{n}', String(result.saved))
           appendProcessingHistoryEntry(paths.userData, {
             kind: 'ffmpegSnapshot',
             startedAt,
@@ -394,8 +388,7 @@ export function registerSingleExportIpcHandlers(ctx: ExportBatchIpcContext): voi
         return { ok: false, error: host.mainAppStr().ipcInvalidRequest }
       }
       const snapUiLocale =
-        parseAppUiLocale((raw as { uiLocale?: unknown }).uiLocale) ??
-        host.mainDownloadsUiLocale()
+        parseAppUiLocale((raw as { uiLocale?: unknown }).uiLocale) ?? host.mainDownloadsUiLocale()
       const M = getMainApplicationStrings(snapUiLocale)
       const inputRaw = (raw as { inputPath?: unknown }).inputPath
       const timeRaw = (raw as { timeSec?: unknown }).timeSec

@@ -3,7 +3,7 @@
  */
 
 import ruSettings from '../../locales/ru/settings.json'
-import { APP_SETTINGS_THEME_CHECKLIST_KEYS } from './app-settings-theme-checklist-keys'
+import { APP_SETTINGS_THEME_CHECKLIST_KEYS } from './app-settings-visual-smoke-checklists'
 import { formatOwnerManualSmokeChecklistSectionLines } from './owner-manual-smoke-checklist-lines'
 
 /** Строки ручного theme-smoke для `ownerManualSmoke:` / копирования владельцу. */

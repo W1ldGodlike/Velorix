@@ -35,7 +35,9 @@ export function DiagnosticsFoldersPanel({
       aria-busy={busy || folders === null}
     >
       <h3 className="app-about-folders-title">{uiText('aboutDiagnosticsFoldersHeading')}</h3>
-      <p className="app-modal-hint app-about-folders-intro">{uiText('aboutDiagnosticsFoldersIntro')}</p>
+      <p className="app-modal-hint app-about-folders-intro">
+        {uiText('aboutDiagnosticsFoldersIntro')}
+      </p>
       {folders === null ? (
         <p className="app-modal-hint" role="status" aria-live="polite">
           {uiText('loading')}

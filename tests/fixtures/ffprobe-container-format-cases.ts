@@ -69,7 +69,15 @@ export const FFPROBE_FLAGS_RAW_PARSED = {
 } as const
 
 export const FFPROBE_NB_STREAMS_PARSE_EXPORT_CASES = [
-  { label: 'parse 3', raw: '3', parsed: 3, exportNb: 2, tracks: 2, locale: 'ru' as const, contains: '2' },
+  {
+    label: 'parse 3',
+    raw: '3',
+    parsed: 3,
+    exportNb: 2,
+    tracks: 2,
+    locale: 'ru' as const,
+    contains: '2'
+  },
   {
     label: 'export en mismatch',
     raw: '3',
@@ -82,18 +90,34 @@ export const FFPROBE_NB_STREAMS_PARSE_EXPORT_CASES = [
 ] as const
 
 export const FFPROBE_NB_PROGRAMS_PARSE_EXPORT_CASES = [
-  { label: 'programs', raw: '2', parsed: 2, exportNb: 2, locale: 'ru' as const, contains: 'nb_programs' }
+  {
+    label: 'programs',
+    raw: '2',
+    parsed: 2,
+    exportNb: 2,
+    locale: 'ru' as const,
+    contains: 'nb_programs'
+  }
 ] as const
 
 export const FFPROBE_NB_CHAPTERS_PARSE_EXPORT_CASES = [
-  { label: 'chapters', raw: '12', parsed: 12, exportNb: 12, locale: 'ru' as const, contains: 'nb_chapters' }
+  {
+    label: 'chapters',
+    raw: '12',
+    parsed: 12,
+    exportNb: 12,
+    locale: 'ru' as const,
+    contains: 'nb_chapters'
+  }
 ] as const
 
-export const FFPROBE_FILENAME_COMPACT_CASES: readonly FfprobeUnaryCase<string | null, string | null>[] =
-  [
-    { label: 'windows path', input: 'C:\\clips\\Demo.mkv', expected: 'file Demo.mkv' },
-    { label: 'null', input: null, expected: null }
-  ]
+export const FFPROBE_FILENAME_COMPACT_CASES: readonly FfprobeUnaryCase<
+  string | null,
+  string | null
+>[] = [
+  { label: 'windows path', input: 'C:\\clips\\Demo.mkv', expected: 'file Demo.mkv' },
+  { label: 'null', input: null, expected: null }
+]
 
 export const FFPROBE_FILENAME_PARSE_CASES: readonly FfprobeUnaryCase<string, string>[] = [
   { label: 'path', input: 'C:\\clips\\demo.mp4', expected: 'C:\\clips\\demo.mp4' }
@@ -168,7 +192,13 @@ export const FFPROBE_CREATION_TIME_TAGS = {
 } as const
 
 export const FFPROBE_BRAND_EXPORT_CASES = [
-  { label: 'ru both', major: 'isom', compatible: 'mp41' as string | null, locale: 'ru' as const, contains: 'isom' },
+  {
+    label: 'ru both',
+    major: 'isom',
+    compatible: 'mp41' as string | null,
+    locale: 'ru' as const,
+    contains: 'isom'
+  },
   {
     label: 'en major only',
     major: 'isom',

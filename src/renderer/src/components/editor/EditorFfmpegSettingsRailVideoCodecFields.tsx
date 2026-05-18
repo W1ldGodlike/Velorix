@@ -1,3 +1,5 @@
+import type { JSX } from 'react'
+
 import { ffmpegExportAudioModeRequiresMkv } from '../../../../shared/ffmpeg-export-audio-mode'
 import type {
   FfmpegExportContainerId,
@@ -11,7 +13,10 @@ import {
 } from '../../../../shared/ffmpeg-export-video-codec'
 import { buildEditorExportCodecDetailTooltip } from '../../editor-export-codec-tooltip'
 import { formatEditorExportHwCodecHint } from '../../editor-export-hw-codec-hint'
-import { probeSnapshotOrEmpty, resolveFfmpegExportVideoCodecForArgv } from '../../../../shared/ffmpeg-export-video-codec'
+import {
+  probeSnapshotOrEmpty,
+  resolveFfmpegExportVideoCodecForArgv
+} from '../../../../shared/ffmpeg-export-video-codec'
 import { uiText, uiTextVars } from '../../locales/ui-text'
 import {
   EXPORT_CRF_OPTIONS,
@@ -21,8 +26,9 @@ import type { EditorFfmpegSettingsRailProps } from './editor-ffmpeg-settings-rai
 import { EditorFfmpegBenchmarkPanel } from './EditorFfmpegBenchmarkPanel'
 import { EditorExtractFramesPanel } from './EditorExtractFramesPanel'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- field grid fragment
-export function EditorFfmpegSettingsRailVideoCodecFields(props: EditorFfmpegSettingsRailProps) {
+export function EditorFfmpegSettingsRailVideoCodecFields(
+  props: EditorFfmpegSettingsRailProps
+): JSX.Element {
   const {
     exportBusy,
     snapshotBusy,

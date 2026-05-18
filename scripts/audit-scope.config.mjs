@@ -35,13 +35,14 @@ export const AUDIT_SKIP_DIR_NAMES = new Set([
 /** Расширения исполняемого/проверяемого кода. */
 export const AUDIT_CODE_EXTENSIONS = /\.(ts|tsx|mjs|cjs|js)$/
 
-/** Зоны Phase 4+ (крупные модули) — файлы ближе к порогу 500 строк; обновлять по инвентаризации. */
-export const AUDIT_LARGE_MODULE_CANDIDATES = [
-  'src/shared/terminal-contract-hints-preview-media-01.ts',
-  'tests/fixtures/ffprobe-track-detail-cases.ts',
-  'src/renderer/src/components/downloads/DownloadsWorkspaceMainQueueTable.tsx',
-  'src/renderer/src/use-downloads-standalone-app.ts',
-  'tests/fixtures/ytdlp-progress-parser-queue-failure-cases.ts',
-  'src/main/downloads-window.ts',
-  'tests/shared/ffmpeg-export-argv-filters-metadata.test.ts'
-]
+/** Фаза 4: целевой максимум строк на файл (весь scope `AUDIT_CODE_ROOTS` + `AUDIT_CODE_ROOT_FILES`). */
+export const AUDIT_STRUCTURAL_MAX_LINES = 500
+
+/**
+ * Файлы > `AUDIT_STRUCTURAL_MAX_LINES` допустимы только при совпадении glob и непустом `reason`
+ * (категория/архитектура, не «разрешить этот путь»). Иначе — split в той же итерации.
+ * Glob: `**`, `*`; не список отдельных путей без обоснования.
+ *
+ * @type {ReadonlyArray<{ glob: string; reason: string }>}
+ */
+export const AUDIT_STRUCTURAL_OVERSIZE_JUSTIFIED = []

@@ -53,8 +53,11 @@ async function runEncodersList(ffmpegPath) {
 }
 
 async function run() {
-  const { isMinimalFfmpegEncodersOutput, listPackagedFfmpegCandidatePaths, pickFirstExistingEngine } =
-    await import('./smoke-packaged-ffmpeg-lib.mjs')
+  const {
+    isMinimalFfmpegEncodersOutput,
+    listPackagedFfmpegCandidatePaths,
+    pickFirstExistingEngine
+  } = await import('./smoke-packaged-ffmpeg-lib.mjs')
 
   if (skipRequested()) {
     log('FLUXALLOY_SKIP_FFMPEG_SMOKE — пропуск')

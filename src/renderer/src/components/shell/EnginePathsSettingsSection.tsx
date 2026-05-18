@@ -112,7 +112,8 @@ function EnginePathRow(props: {
   setEnginePathsDraft: Dispatch<SetStateAction<EnginePathsDraft>>
   onPickEngine: (id: EngineId) => void
 }): JSX.Element {
-  const { hintId, id, enginePathsSaving, enginePathsDraft, setEnginePathsDraft, onPickEngine } = props
+  const { hintId, id, enginePathsSaving, enginePathsDraft, setEnginePathsDraft, onPickEngine } =
+    props
   return (
     <div className="app-engine-path-row">
       <label className="app-engine-path-label" htmlFor={`${hintId}-engine-path-${id}`}>

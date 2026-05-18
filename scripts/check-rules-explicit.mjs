@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 /**
  * Проверяет .cursor/rules/*.mdc на запрещённые размытые формулировки.
  */
@@ -39,7 +38,9 @@ for (const name of readdirSync(RULES_DIR)) {
       if (allow && allow.test(line)) {
         continue
       }
-      failures.push(`${path}:${i + 1}: размытая фраза «${phrase}» — см. fluxalloy-rules-explicit.mdc`)
+      failures.push(
+        `${path}:${i + 1}: размытая фраза «${phrase}» — см. fluxalloy-rules-explicit.mdc`
+      )
     }
   }
 }

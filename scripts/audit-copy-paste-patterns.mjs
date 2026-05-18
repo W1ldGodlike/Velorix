@@ -16,8 +16,7 @@ const WHITELIST_IF_CHAIN = /if\s*\(\s*raw\s*===\s*'[^']+'\s*\|\|/g
 const EXPORT_PARSE_FN = /export function (parse\w+)/g
 const FORMAT_EXPORT_LINE = /export function format\w+ExportLine/g
 const INLINE_PROBE_BASE = /const\s+probeBase:\s*MediaProbeSuccess\s*=\s*\{/
-const INLINE_APP_SETTINGS_BASE =
-  /const\s+base:\s*AppSettings\s*=\s*\{\s*\r?\n\s*uiLocale:\s*'ru'/
+const INLINE_APP_SETTINGS_BASE = /const\s+base:\s*AppSettings\s*=\s*\{\s*\r?\n\s*uiLocale:\s*'ru'/
 
 const THRESHOLDS = {
   whitelistIfChains: 4,

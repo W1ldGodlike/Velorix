@@ -1,9 +1,11 @@
 import { useVideoTimelineMediaSync } from './use-video-timeline-media-sync'
 import { useVideoTimelineTrimControls } from './use-video-timeline-trim-controls'
 import type { VideoTimelineProps } from './video-timeline-props'
+import type { VideoTimelineControllerResult } from './video-timeline-controller-result'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- controller bag for VideoTimeline entry
-export function useVideoTimelineController(props: VideoTimelineProps) {
+export function useVideoTimelineController(
+  props: VideoTimelineProps
+): VideoTimelineControllerResult {
   const {
     mediaKey,
     mediaUrl,

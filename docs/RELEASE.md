@@ -182,11 +182,11 @@ npm run verify:mac-unpacked
 
 После packaged smoke (§4–§4.2) при необходимости проверьте **фоновый tick** watch-folder (не в CI):
 
-| ОС | Backend в планировщике | Проверка |
-|----|------------------------|----------|
-| Windows | Windows Task Scheduler | `schtasks /Query /TN \FluxAlloy\watch-<taskId>`; tick: `FluxAlloy.exe --workflow-watch-folder-tick` |
-| macOS | macOS LaunchAgent | `~/Library/LaunchAgents/com.fluxalloy.watch.<taskId>.plist`; лог `~/Library/Logs/FluxAlloy/watch-<taskId>.log` |
-| Linux | Linux systemd user timer | `systemctl --user status fluxalloy-watch-<taskId>.timer`; `journalctl --user -u fluxalloy-watch-<taskId>.service` |
+| ОС      | Backend в планировщике   | Проверка                                                                                                          |
+| ------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| Windows | Windows Task Scheduler   | `schtasks /Query /TN \FluxAlloy\watch-<taskId>`; tick: `FluxAlloy.exe --workflow-watch-folder-tick`               |
+| macOS   | macOS LaunchAgent        | `~/Library/LaunchAgents/com.fluxalloy.watch.<taskId>.plist`; лог `~/Library/Logs/FluxAlloy/watch-<taskId>.log`    |
+| Linux   | Linux systemd user timer | `systemctl --user status fluxalloy-watch-<taskId>.timer`; `journalctl --user -u fluxalloy-watch-<taskId>.service` |
 
 Общий сценарий: **Сервис → Планировщик задач** — задача watch-folder, backend OS, интервал 15–86400 с, сценарий с блоком «Обработать»; положить тестовый файл в папку — событие в статусбаре и запись `workflowScenario` в истории.
 

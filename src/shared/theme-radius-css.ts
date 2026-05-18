@@ -8,5 +8,4 @@ export const THEME_RADIUS_PANEL_TOKEN = '--fa-radius-panel'
 export const THEME_RADIUS_LG_TOKEN = '--fa-radius-lg'
 
 /** Запрещены литералы px/% в border-radius main.css. */
-export const THEME_FORBIDDEN_MAIN_CSS_RADIUS_LITERAL =
-  /border-radius:[^;]*(?:\d+px|\d+%)/g
+export const THEME_FORBIDDEN_MAIN_CSS_RADIUS_LITERAL = /border-radius:[^;]*(?:\d+px|\d+%)/g

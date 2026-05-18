@@ -38,7 +38,9 @@ export function extractSettingsPayloadFromBackupJson(raw: unknown): Record<strin
   return null
 }
 
-export function buildSettingsBackupFileV1(settings: SettingsBackupFileV1['settings']): SettingsBackupFileV1 {
+export function buildSettingsBackupFileV1(
+  settings: SettingsBackupFileV1['settings']
+): SettingsBackupFileV1 {
   return {
     fluxalloySettingsBackup: true,
     formatVersion: SETTINGS_BACKUP_FORMAT_VERSION,

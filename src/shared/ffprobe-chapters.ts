@@ -43,8 +43,7 @@ export function isFfprobeChaptersArrayOkForSmoke(chapters: unknown): boolean {
     }
     const startRaw = o['start_time'] ?? o['start']
     const endRaw = o['end_time'] ?? o['end']
-    const hasStart =
-      startRaw !== undefined && startRaw !== null && String(startRaw).trim() !== ''
+    const hasStart = startRaw !== undefined && startRaw !== null && String(startRaw).trim() !== ''
     const hasEnd = endRaw !== undefined && endRaw !== null && String(endRaw).trim() !== ''
     if (hasStart && parseChapterSeconds(startRaw) === null) {
       return false

@@ -50,7 +50,9 @@ function saveState(state: WatchFolderStateFile): void {
   writeFileSync(statePath(), `${JSON.stringify(state, null, 2)}\n`, 'utf8')
 }
 
-export function getWatchFolderSeenFiles(taskId: string): Record<string, { mtimeMs: number; size: number }> {
+export function getWatchFolderSeenFiles(
+  taskId: string
+): Record<string, { mtimeMs: number; size: number }> {
   const state = loadState()
   return state.tasks[taskId]?.files ?? {}
 }

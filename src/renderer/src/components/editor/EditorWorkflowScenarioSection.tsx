@@ -39,9 +39,7 @@ export function EditorWorkflowScenarioSection(props: EditorFfmpegSettingsRailPro
       setScenarioHasUrl(false)
       return
     }
-    setScenarioHasUrl(
-      Boolean(resolveWorkflowScenarioDownloadSourceUrl(res.scenario.nodes))
-    )
+    setScenarioHasUrl(Boolean(resolveWorkflowScenarioDownloadSourceUrl(res.scenario.nodes)))
   }, [])
 
   const loadScenarios = useCallback(async (): Promise<void> => {
@@ -52,8 +50,7 @@ export function EditorWorkflowScenarioSection(props: EditorFfmpegSettingsRailPro
     setScenarios(res.items)
     let nextId = ''
     setScenarioId((prev) => {
-      nextId =
-        prev && res.items.some((s) => s.id === prev) ? prev : (res.items[0]?.id ?? '')
+      nextId = prev && res.items.some((s) => s.id === prev) ? prev : (res.items[0]?.id ?? '')
       return nextId
     })
     await refreshScenarioUrlFlag(nextId)

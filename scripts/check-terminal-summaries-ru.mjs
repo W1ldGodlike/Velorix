@@ -23,7 +23,9 @@ function runApplyPass(passLabel) {
   const output = `${result.stdout ?? ''}${result.stderr ?? ''}`
   const counts = parseCounts(output)
   if (result.status !== 0 || counts === null) {
-    console.error(`[check:terminal-summaries-ru] pass ${passLabel} failed (exit ${result.status ?? '?'})`)
+    console.error(
+      `[check:terminal-summaries-ru] pass ${passLabel} failed (exit ${result.status ?? '?'})`
+    )
     console.error(output)
     process.exit(1)
   }

@@ -7,7 +7,9 @@ import {
 
 describe('workflow-cli-args §10', () => {
   it('detects tick argv', () => {
-    expect(isWorkflowWatchFolderTickArgv(['node', 'app', WORKFLOW_CLI_WATCH_FOLDER_TICK])).toBe(true)
+    expect(isWorkflowWatchFolderTickArgv(['node', 'app', WORKFLOW_CLI_WATCH_FOLDER_TICK])).toBe(
+      true
+    )
     expect(isWorkflowWatchFolderTickArgv(['node', 'app'])).toBe(false)
   })
 })

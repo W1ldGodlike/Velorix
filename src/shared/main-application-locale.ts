@@ -6,20 +6,14 @@ export { getMainApplicationStrings } from './main-runtime-locale'
 
 import { getMainApplicationStrings } from './main-runtime-locale'
 
-export function formatTerminalEngineMissingInSettings(
-  locale: AppUiLocale,
-  tool: string
-): string {
+export function formatTerminalEngineMissingInSettings(locale: AppUiLocale, tool: string): string {
   return getMainApplicationStrings(locale).terminalEngineMissingInSettings.replace(
     /\{tool\}/g,
     tool
   )
 }
 
-export function formatPickEngineExecutableTitle(
-  locale: AppUiLocale,
-  engineId: string
-): string {
+export function formatPickEngineExecutableTitle(locale: AppUiLocale, engineId: string): string {
   return locale === 'en'
     ? `Select executable: ${engineId}`
     : `Выберите исполняемый файл: ${engineId}`

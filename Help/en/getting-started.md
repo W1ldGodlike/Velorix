@@ -18,4 +18,5 @@ For a file on disk open the **Editor** tab, drop the file on the preview zone, o
 - Queue and quick actions — [downloads-workflow.md](downloads-workflow.md)
 - Preview, timeline, export — [editor-workflow.md](editor-workflow.md) and [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md)
 - Using this help window — [knowledge-base-howto.md](knowledge-base-howto.md)
+- Theme, language, and Windows scaling — [appearance-language-theme.md](appearance-language-theme.md); full owner smoke checklist — [owner-manual-smoke.md](owner-manual-smoke.md)
 - Common issues — [faq-troubleshooting.md](faq-troubleshooting.md)

@@ -30,8 +30,7 @@ describe('getTerminalCommandHints §8', () => {
     for (let i = 1; i < hints.length; i++) {
       const prev = hints[i - 1]!
       const cur = hints[i]!
-      const cmp =
-        prev.tool.localeCompare(cur.tool) || prev.token.localeCompare(cur.token, 'ru')
+      const cmp = prev.tool.localeCompare(cur.tool) || prev.token.localeCompare(cur.token, 'ru')
       expect(cmp).toBeLessThanOrEqual(0)
     }
   })

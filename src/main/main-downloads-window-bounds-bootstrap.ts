@@ -132,10 +132,8 @@ export function configureMainDownloadsWindowBoundsBootstrap(
         loc
       )
     },
-    applyYtdlpDownloadCliPatch: (
-      patch: YtdlpDownloadOptionsPatch,
-      uiLocale?: AppUiLocale
-    ) => persistYtdlpDownloadCliOptionsPatch(patch, uiLocale),
+    applyYtdlpDownloadCliPatch: (patch: YtdlpDownloadOptionsPatch, uiLocale?: AppUiLocale) =>
+      persistYtdlpDownloadCliOptionsPatch(patch, uiLocale),
     openDownloadedFileInHandler: (absoluteFile) =>
       access.openDownloadedFileInMainHandler(absoluteFile),
     getDownloadsWindowUiPanelsSnapshot: () => access.getSettings().downloadsWindowUiPanels,

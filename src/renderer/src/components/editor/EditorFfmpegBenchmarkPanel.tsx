@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import type { JSX } from 'react'
 
 import type { FfmpegExportBenchmarkResult } from '../../../../shared/ffmpeg-export-benchmark-contract'
 import { FFMPEG_EXPORT_BENCHMARK_SAMPLE_SEC } from '../../../../shared/ffmpeg-export-benchmark-contract'
@@ -21,8 +22,7 @@ function codecLabel(
   return options.videoCodecs.find((p) => p.id === codec)?.label ?? codec
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- panel fragment
-export function EditorFfmpegBenchmarkPanel(props: EditorFfmpegSettingsRailProps) {
+export function EditorFfmpegBenchmarkPanel(props: EditorFfmpegSettingsRailProps): JSX.Element {
   const {
     previewMediaPath,
     previewProbeDurationSec,

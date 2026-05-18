@@ -1,7 +1,11 @@
 export type { SettingsIpcPersistApi } from './settings-ipc-persist-core'
 export { commit, snapshot } from './settings-ipc-persist-core'
 
-import type { MainSettingsAccess, SettingsIpcPersistApi, SettingsIpcPersistHooks } from './settings-ipc-persist-core'
+import type {
+  MainSettingsAccess,
+  SettingsIpcPersistApi,
+  SettingsIpcPersistHooks
+} from './settings-ipc-persist-core'
 import { createFfmpegExportSettingsPersisters } from './settings-ipc-persist-ffmpeg'
 import { createSettingsShellPersist } from './settings-ipc-persist-shell'
 

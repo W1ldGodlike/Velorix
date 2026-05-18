@@ -5,6 +5,7 @@ import { join } from 'path'
 import type { AppPaths } from './app-paths'
 import { resolveEngineExecutablePath, type EnginePathOverrides } from './engine-service'
 import { logExternalProcessLine } from './external-process-log'
+import { appendProcessStreamBuffer } from './process-stream-buffer'
 import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
 import { isNativeMainYtdlpKillProcessTreeSupported } from './platform'
@@ -305,7 +306,7 @@ export function runYtdlpOnce(
       let buf = ''
       stream.setEncoding('utf8')
       stream.on('data', (chunk: string) => {
-        buf += chunk
+        buf = appendProcessStreamBuffer(buf, chunk)
         const parts = buf.split(/\r?\n/)
         buf = parts.pop() ?? ''
         for (const line of parts) {

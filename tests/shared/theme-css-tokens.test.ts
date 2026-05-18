@@ -42,10 +42,7 @@ const REQUIRED_THEME_TOKENS = [
 
 describe('theme-css-tokens §5', () => {
   it('base.css defines the full semantic token set for dark and light', () => {
-    const css = readFileSync(
-      join(process.cwd(), 'src/renderer/src/assets/base.css'),
-      'utf8'
-    )
+    const css = readFileSync(join(process.cwd(), 'src/renderer/src/assets/base.css'), 'utf8')
     for (const token of REQUIRED_THEME_TOKENS) {
       expect(css, `missing ${token}`).toMatch(new RegExp(`${token.replace(/-/g, '\\-')}:`))
     }

@@ -18,7 +18,10 @@ import {
   resolveTerminalCurrentFileArgs,
   trimTerminalOutput
 } from './terminal-service-parse'
-import { TERMINAL_CLI_LOG_STDERR_CAP, TERMINAL_MAX_OUTPUT_CHARS } from './terminal-service-constants'
+import {
+  TERMINAL_CLI_LOG_STDERR_CAP,
+  TERMINAL_MAX_OUTPUT_CHARS
+} from './terminal-service-constants'
 
 export function runTerminalCommand(params: {
   paths: AppPaths

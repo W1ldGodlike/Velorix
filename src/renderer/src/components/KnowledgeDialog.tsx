@@ -128,10 +128,7 @@ export function KnowledgeDialog({
     )
   }, [articles, filter])
 
-  const tocSections = useMemo(
-    () => groupKnowledgeArticlesByToc(visibleArticles),
-    [visibleArticles]
-  )
+  const tocSections = useMemo(() => groupKnowledgeArticlesByToc(visibleArticles), [visibleArticles])
 
   if (!open) {
     return null

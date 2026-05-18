@@ -1,17 +1,10 @@
 import type { AppShellPropsInputCtx } from './use-app-shell-props-input-workspace-types'
-import type { UseAppWorkspaceMainPropsInput } from './use-app-workspace-main-props'
+import type { UseAppWorkspaceEditorPropsInput } from './use-app-workspace-editor-props'
 
-export function buildAppShellPropsInputWorkspaceShell(
+export function buildAppShellPropsInputWorkspaceEditorShared(
   ctx: AppShellPropsInputCtx
-): Pick<
-  UseAppWorkspaceMainPropsInput,
-  'shell' | 'knowledge' | 'busy' | 'editorQuick'
-> {
+): Pick<UseAppWorkspaceEditorPropsInput, 'knowledge' | 'busy' | 'editorQuick'> {
   const {
-    workspaceTab,
-    panelOpen,
-    persistMainWindowUiPanelToggle,
-    downloadsSettingsRailRef,
     setKnowledgeInitialSlug,
     setKnowledgeOpen,
     engineDownloadBusy,
@@ -31,12 +24,6 @@ export function buildAppShellPropsInputWorkspaceShell(
   } = ctx
 
   return {
-    shell: {
-      workspaceTab,
-      panelOpen,
-      persistMainWindowUiPanelToggle,
-      downloadsSettingsRailRef
-    },
     knowledge: {
       setKnowledgeInitialSlug,
       setKnowledgeOpen

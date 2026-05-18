@@ -4,8 +4,15 @@ import { buildFfmpegExportArgv } from '../../src/shared/ffmpeg-export-argv'
 import type { FfmpegExportVideoCodecId } from '../../src/shared/ffmpeg-export-contract'
 import { FFMPEG_EXPORT_NVENC_HWUPLOAD_FILTER } from '../../src/shared/ffmpeg-export-vaapi-vf'
 
-const NVENC_CODECS = ['h264_nvenc', 'hevc_nvenc', 'av1_nvenc'] as const satisfies readonly FfmpegExportVideoCodecId[]
-const VTB_CODECS = ['h264_videotoolbox', 'hevc_videotoolbox'] as const satisfies readonly FfmpegExportVideoCodecId[]
+const NVENC_CODECS = [
+  'h264_nvenc',
+  'hevc_nvenc',
+  'av1_nvenc'
+] as const satisfies readonly FfmpegExportVideoCodecId[]
+const VTB_CODECS = [
+  'h264_videotoolbox',
+  'hevc_videotoolbox'
+] as const satisfies readonly FfmpegExportVideoCodecId[]
 
 describe('ffmpeg-export NVENC argv smoke (table)', () => {
   it.each(NVENC_CODECS)('%s: cuda decode + hwupload_cuda при CPU vf + VBR cq', (videoCodec) => {
@@ -26,12 +33,7 @@ describe('ffmpeg-export NVENC argv smoke (table)', () => {
       videoTransform: 'hflip'
     })
     const i = argv.indexOf('-i')
-    expect(argv.slice(i - 4, i)).toEqual([
-      '-hwaccel',
-      'cuda',
-      '-hwaccel_output_format',
-      'cuda'
-    ])
+    expect(argv.slice(i - 4, i)).toEqual(['-hwaccel', 'cuda', '-hwaccel_output_format', 'cuda'])
     const vf = argv[argv.indexOf('-vf') + 1] ?? ''
     expect(vf.startsWith(`${FFMPEG_EXPORT_NVENC_HWUPLOAD_FILTER},`)).toBe(true)
     expect(vf).toContain('hflip')

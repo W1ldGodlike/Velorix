@@ -6,7 +6,9 @@ import {
   type WatchFolderDirEntry
 } from '../shared/watch-folder-scan'
 
-export function scanWatchFolderDirectory(folderPath: string): ReturnType<typeof collectWatchFolderMediaEntries> {
+export function scanWatchFolderDirectory(
+  folderPath: string
+): ReturnType<typeof collectWatchFolderMediaEntries> {
   let names: string[]
   try {
     names = readdirSync(folderPath)

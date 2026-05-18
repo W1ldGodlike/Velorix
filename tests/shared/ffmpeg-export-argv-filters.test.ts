@@ -53,5 +53,4 @@ describe('shared ffmpeg export argv — scale, transform, crop filters', () => {
       'transpose=1,crop=min(iw\\,ih):min(iw\\,ih),scale=-2:720,fps=30'
     )
   })
-
 })

@@ -40,13 +40,15 @@ export function resolveEditorExportStatusbarEncoderSummary(
 }
 
 /** Детальный tooltip кодека/GPU для статусбара и поля «Видеокодек». */
-export function buildEditorExportCodecDetailTooltip(params: {
-  exportVideoCodec: FfmpegExportVideoCodecId
-  resolvedCodec: FfmpegExportVideoCodecId
-  hwEncoderProbe: FfmpegHwEncodersProbeResult | null
-  exportHwDecode: boolean
-  exportHwaccelDecode: string | null
-} & EditorExportCodecUiText): string {
+export function buildEditorExportCodecDetailTooltip(
+  params: {
+    exportVideoCodec: FfmpegExportVideoCodecId
+    resolvedCodec: FfmpegExportVideoCodecId
+    hwEncoderProbe: FfmpegHwEncodersProbeResult | null
+    exportHwDecode: boolean
+    exportHwaccelDecode: string | null
+  } & EditorExportCodecUiText
+): string {
   const { uiText, uiTextVars } = params
   const displayCodec = resolveEditorExportCodecDisplayName(params.resolvedCodec, uiText)
   const titleParts: string[] = []
@@ -61,9 +63,7 @@ export function buildEditorExportCodecDetailTooltip(params: {
     )
   }
 
-  titleParts.push(
-    uiTextVars('editorStatusbarTitleSelectedCodec', { codec: displayCodec })
-  )
+  titleParts.push(uiTextVars('editorStatusbarTitleSelectedCodec', { codec: displayCodec }))
 
   if (isFfmpegHwExportVideoCodec(params.resolvedCodec)) {
     const family = getFfmpegHwEncoderFamily(params.resolvedCodec)
@@ -97,8 +97,7 @@ export function buildEditorExportCodecDetailTooltip(params: {
     )
     if (
       hasNvenc &&
-      (params.resolvedCodec.endsWith('_nvenc') ||
-        isFfmpegHwAutoVideoCodec(params.exportVideoCodec))
+      (params.resolvedCodec.endsWith('_nvenc') || isFfmpegHwAutoVideoCodec(params.exportVideoCodec))
     ) {
       titleParts.push(uiText('editorStatusbarTitleNvencSessions'))
     }
@@ -107,9 +106,7 @@ export function buildEditorExportCodecDetailTooltip(params: {
       const names = available.map((id) =>
         resolveEditorExportCodecDisplayName(id as FfmpegHwVideoEncoderId, uiText)
       )
-      titleParts.push(
-        uiTextVars('editorStatusbarTitleHwEncoders', { list: names.join(', ') })
-      )
+      titleParts.push(uiTextVars('editorStatusbarTitleHwEncoders', { list: names.join(', ') }))
     }
     if (probe.hwaccels.length > 0) {
       titleParts.push(

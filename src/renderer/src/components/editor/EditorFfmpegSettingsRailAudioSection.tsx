@@ -1,3 +1,5 @@
+import type { JSX } from 'react'
+
 import {
   ffmpegExportAudioModeAllowsFilters,
   ffmpegExportAudioModeRequiresMkv,
@@ -14,8 +16,9 @@ import { uiText } from '../../locales/ui-text'
 import { EXPORT_AUDIO_BITRATES } from '../../editor-ffmpeg-settings-rail-constants'
 import type { EditorFfmpegSettingsRailProps } from './editor-ffmpeg-settings-rail-props'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- JSX section
-export function EditorFfmpegSettingsRailAudioSection(props: EditorFfmpegSettingsRailProps) {
+export function EditorFfmpegSettingsRailAudioSection(
+  props: EditorFfmpegSettingsRailProps
+): JSX.Element {
   const {
     panelOpen,
     persistMainWindowUiPanelToggle,

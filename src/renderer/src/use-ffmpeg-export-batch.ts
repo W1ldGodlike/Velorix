@@ -1,16 +1,18 @@
 export type { UseFfmpegExportBatchDeps } from './use-ffmpeg-export-batch-deps'
 
+import type { SetStateAction } from 'react'
+
 import type { FfmpegExportBatchSnapshot } from '../../shared/ffmpeg-export-batch-contract'
 import type { UseFfmpegExportBatchDeps } from './use-ffmpeg-export-batch-deps'
 import { useBatchAddStatusHint } from './use-ffmpeg-export-batch-deps'
 import { useFfmpegExportBatchHandlersIngest } from './use-ffmpeg-export-batch-handlers-ingest'
 import { useFfmpegExportBatchHandlersRun } from './use-ffmpeg-export-batch-handlers-run'
-import { useFfmpegExportBatchSnapshot } from './use-ffmpeg-export-batch-snapshot'
+import { selectBatchExportBusy, useBatchExportStore } from './stores/batch-export-store'
 
 export function useFfmpegExportBatch(deps: UseFfmpegExportBatchDeps): {
   batchSnapshot: FfmpegExportBatchSnapshot | null
   batchDragRowId: number | null
-  setBatchDragRowId: (id: number | null) => void
+  setBatchDragRowId: (next: SetStateAction<number | null>) => void
   batchExportBusy: boolean
   handleBatchOpenOutput: (outputPath: string, mode: 'file' | 'folder' | 'preview') => Promise<void>
   handleBatchOpenInput: (inputPath: string, mode: 'file' | 'folder' | 'preview') => Promise<void>
@@ -40,13 +42,14 @@ export function useFfmpegExportBatch(deps: UseFfmpegExportBatchDeps): {
     buildExportOverrides,
     previewPath,
     exportBusy,
-    setBatchOutputDirectory,
-    onBatchRunFinished
+    setBatchOutputDirectory
   } = deps
 
   const setBatchAddStatusHint = useBatchAddStatusHint(setStatusHint)
-  const { batchSnapshot, batchDragRowId, setBatchDragRowId, batchExportBusy } =
-    useFfmpegExportBatchSnapshot(onBatchRunFinished)
+  const batchSnapshot = useBatchExportStore((s) => s.batchSnapshot)
+  const batchDragRowId = useBatchExportStore((s) => s.batchDragRowId)
+  const setBatchDragRowId = useBatchExportStore((s) => s.setBatchDragRowId)
+  const batchExportBusy = useBatchExportStore((s) => selectBatchExportBusy(s))
   const pipelineBusy = exportBusy || batchExportBusy
 
   const ingest = useFfmpegExportBatchHandlersIngest({

@@ -82,11 +82,7 @@ export async function runFfmpegConvertImage(params: {
   outputPath: string
   targetFormat: MediaUtilitiesImageFormatId
 }): Promise<MediaUtilitiesConvertImageResult> {
-  const args = buildFfmpegConvertImageArgv(
-    params.inputPath,
-    params.outputPath,
-    params.targetFormat
-  )
+  const args = buildFfmpegConvertImageArgv(params.inputPath, params.outputPath, params.targetFormat)
   const result = await runFfmpegCommand({
     ffmpegPath: params.ffmpegPath,
     args,
