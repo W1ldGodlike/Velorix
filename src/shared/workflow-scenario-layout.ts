@@ -1,4 +1,5 @@
 import type {
+  WorkflowScenarioDocument,
   WorkflowScenarioEdge,
   WorkflowScenarioNode,
   WorkflowScenarioNodeKind
@@ -58,6 +59,45 @@ export function orderWorkflowScenarioNodes(
     }
   }
   return ordered
+}
+
+/** Линейная цепочка рёбер по порядку узлов (drag-reorder v1). */
+export function buildLinearWorkflowScenarioEdges(
+  nodeIdsInOrder: readonly string[]
+): WorkflowScenarioEdge[] {
+  const edges: WorkflowScenarioEdge[] = []
+  for (let i = 0; i + 1 < nodeIdsInOrder.length; i++) {
+    const from = nodeIdsInOrder[i]
+    const to = nodeIdsInOrder[i + 1]
+    if (from && to) {
+      edges.push({ from, to })
+    }
+  }
+  return edges
+}
+
+/** Переставить узлы и пересобрать рёбра в линейную цепочку. */
+export function applyWorkflowScenarioNodeOrder(
+  scenario: WorkflowScenarioDocument,
+  orderedIds: readonly string[]
+): WorkflowScenarioDocument | null {
+  if (orderedIds.length !== scenario.nodes.length) {
+    return null
+  }
+  const byId = new Map(scenario.nodes.map((n) => [n.id, n]))
+  const nodes: WorkflowScenarioNode[] = []
+  for (const id of orderedIds) {
+    const node = byId.get(id)
+    if (!node) {
+      return null
+    }
+    nodes.push(node)
+  }
+  return {
+    ...scenario,
+    nodes,
+    edges: buildLinearWorkflowScenarioEdges(orderedIds)
+  }
 }
 
 export function workflowScenarioNodeKindLabelKey(

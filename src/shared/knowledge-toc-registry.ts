@@ -24,6 +24,7 @@ export const KNOWLEDGE_TOC_SECTIONS: readonly KnowledgeTocSectionSpec[] = [
     titleKey: 'knowledgeTocSectionStart',
     slugs: [
       'getting-started',
+      'windows-shell-integration',
       'workspace-tabs',
       'appearance-language-theme',
       'keyboard-shortcuts',
@@ -70,6 +71,7 @@ export const KNOWLEDGE_TOC_SECTIONS: readonly KnowledgeTocSectionSpec[] = [
     slugs: [
       'engines-update-paths',
       'hardware-encoding',
+      'owner-manual-smoke',
       'packaged-windows-smoke',
       'packaged-linux-smoke',
       'packaged-macos-smoke',

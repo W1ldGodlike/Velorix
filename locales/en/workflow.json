@@ -80,6 +80,8 @@
   "workflowTemplateUrlHint": "sourceUrl on Download; yt-dlp then the same ffmpeg chain.",
   "workflowScenarioFlowLabel": "Flow diagram",
   "workflowScenarioFlowAria": "Visual scenario diagram",
+  "workflowScenarioFlowDragHint": "Drag a block to reorder — JSON order and arrows update as a linear chain.",
+  "workflowScenarioFlowDragNodeTitle": "Drag to reorder blocks",
   "workflowScenarioKindDownload": "Download",
   "workflowScenarioKindProcess": "Process",
   "workflowScenarioKindSave": "Save",

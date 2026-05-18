@@ -8,6 +8,7 @@ import { formatFfmpegHwManualSmokeChecklistLines } from '../shared/ffmpeg-hw-man
 import { formatLinuxPackagedManualSmokeChecklistLines } from '../shared/linux-packaged-manual-smoke-checklist'
 import { formatMacosPackagedManualSmokeChecklistLines } from '../shared/macos-packaged-manual-smoke-checklist'
 import { formatWinPackagedManualSmokeChecklistLines } from '../shared/win-packaged-manual-smoke-checklist'
+import { buildOwnerManualSmokeBundleLines } from '../shared/owner-manual-smoke-bundle'
 import { formatWorkflowOsSchedulerManualSmokeChecklistLines } from '../shared/workflow-os-scheduler-manual-smoke-checklist'
 import { buildSupportZipPackagedReleaseLines } from '../shared/packaged-release-smoke'
 import { buildSupportZipBuildInfoLines, readAppBuildInfo } from '../shared/app-build-info'
@@ -124,6 +125,7 @@ export async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRunt
   const linuxPackagedSmokeChecklistLines = formatLinuxPackagedManualSmokeChecklistLines()
   const macosPackagedSmokeChecklistLines = formatMacosPackagedManualSmokeChecklistLines()
   const workflowOsSchedulerSmokeChecklistLines = formatWorkflowOsSchedulerManualSmokeChecklistLines()
+  const ownerManualSmokeBundleLines = buildOwnerManualSmokeBundleLines({ uiDpiLines: uiDpiLines })
 
   return {
     appVersion: app.getVersion(),
@@ -158,7 +160,8 @@ export async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRunt
     winPackagedSmokeChecklistLines,
     linuxPackagedSmokeChecklistLines,
     macosPackagedSmokeChecklistLines,
-    workflowOsSchedulerSmokeChecklistLines
+    workflowOsSchedulerSmokeChecklistLines,
+    ownerManualSmokeBundleLines
   }
 }
 

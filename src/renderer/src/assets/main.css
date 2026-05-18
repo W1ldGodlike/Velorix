@@ -3336,6 +3336,31 @@ button.app-downloads-hint-token:disabled {
   user-select: none;
 }
 
+.workflow-scenario-flow-item-drop-target .workflow-scenario-flow-node {
+  outline: 2px dashed var(--fa-accent, #4a9eff);
+  outline-offset: 2px;
+}
+
+.workflow-scenario-flow-node-dragging {
+  opacity: 0.55;
+}
+
+.workflow-scenario-flow-drag-glyph {
+  font-size: 0.65rem;
+  line-height: 1;
+  color: var(--fa-text-muted);
+  cursor: grab;
+  user-select: none;
+}
+
+.workflow-scenario-flow-item[draggable='true'] .workflow-scenario-flow-node {
+  cursor: grab;
+}
+
+.workflow-scenario-flow-item[draggable='true']:active .workflow-scenario-flow-node {
+  cursor: grabbing;
+}
+
 .workflow-planner-add-form {
   margin-bottom: 0.75rem;
   padding: 0.55rem 0.65rem;

@@ -10,6 +10,12 @@ import {
   syncWindowsExplorerContextMenuEnabled,
   unregisterWindowsExplorerContextMenu
 } from '../windows-explorer-context-menu-sync'
+import {
+  isWindowsFileAssociationRegistered,
+  registerWindowsFileAssociation,
+  syncWindowsFileAssociationEnabled,
+  unregisterWindowsFileAssociation
+} from '../windows-file-association-sync'
 
 let ipcRegistered = false
 
@@ -17,6 +23,18 @@ export type WindowsShellContextMenuIpcDeps = {
   getSettings: () => AppSettings
   mutateSettings: (mutate: (prev: AppSettings) => AppSettings) => AppSettings
   mainUiLocale: () => import('../../shared/app-ui-locale').AppUiLocale
+}
+
+function setOpenWithEnabledFlag(deps: WindowsShellContextMenuIpcDeps, enabled: boolean): AppSettings {
+  return deps.mutateSettings((prev) => {
+    const next = { ...prev }
+    if (enabled) {
+      next.windowsOpenWithFluxAlloy = true
+    } else {
+      delete next.windowsOpenWithFluxAlloy
+    }
+    return next
+  })
 }
 
 function setExplorerMenuEnabledFlag(
@@ -83,6 +101,43 @@ export function registerWindowsShellContextMenuIpc(deps: WindowsShellContextMenu
   ipcMain.handle(mw.windowsExplorerContextMenuUnregister, async () => {
     await unregisterWindowsExplorerContextMenu()
     setExplorerMenuEnabledFlag(deps, false)
+    return { ok: true as const }
+  })
+
+  ipcMain.handle(mw.windowsFileAssociationStatus, async () => {
+    const settings = deps.getSettings()
+    return {
+      supported: isNativeMainWindows(),
+      enabledInSettings: settings.windowsOpenWithFluxAlloy === true,
+      registered: await isWindowsFileAssociationRegistered()
+    }
+  })
+
+  ipcMain.handle(mw.windowsFileAssociationSetEnabled, async (_, raw: unknown) => {
+    if (!isNativeMainWindows()) {
+      return { ok: true as const }
+    }
+    const enabled = raw === true
+    const M = getMainApplicationStrings(deps.mainUiLocale())
+    const sync = await syncWindowsFileAssociationEnabled(enabled, M.windowsFileAssociationTypeName)
+    if (!sync.ok) {
+      return sync
+    }
+    setOpenWithEnabledFlag(deps, enabled)
+    return { ok: true as const }
+  })
+
+  ipcMain.handle(mw.windowsFileAssociationRegisterNow, async () => {
+    if (!isNativeMainWindows()) {
+      return { ok: true as const }
+    }
+    const M = getMainApplicationStrings(deps.mainUiLocale())
+    return registerWindowsFileAssociation(process.execPath, M.windowsFileAssociationTypeName)
+  })
+
+  ipcMain.handle(mw.windowsFileAssociationUnregister, async () => {
+    await unregisterWindowsFileAssociation(process.execPath)
+    setOpenWithEnabledFlag(deps, false)
     return { ok: true as const }
   })
 }

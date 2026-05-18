@@ -29,6 +29,11 @@
   "appSettingsSectionGeneral": "Общие",
   "appSettingsSectionHintDefaults": "Каталог загрузок yt-dlp и папка вывода пакетного экспорта.",
   "appSettingsSectionHintDependencies": "Пути к движкам, проверка обновлений и чеклист ручного smoke NVENC/VAAPI на вашем железе.",
+  "appSettingsOwnerSmokeLegend": "Ручной smoke (владелец)",
+  "appSettingsOwnerSmokeIntro": "Копирует единый чеклист: HiDPI, аппаратное кодирование и планировщик ОС для вашей платформы. Тот же текст — в Support ZIP (ownerManualSmoke:).",
+  "appSettingsOwnerSmokeCopy": "Скопировать весь пакет",
+  "appSettingsOwnerSmokeCopied": "Пакет smoke скопирован в буфер обмена.",
+  "appSettingsOwnerSmokeCopyFailed": "Не удалось скопировать — выделите текст вручную.",
   "appSettingsHwManualSmokeLegend": "Ручной smoke NVENC / VAAPI (§16)",
   "appSettingsHwManualSmokeIntro": "Прогон на реальной GPU не автоматизируется в CI. Отметьте шаги здесь или скопируйте чеклист в отчёт (также в Support ZIP как hwManualSmoke:).",
   "appSettingsHwManualSmokeCopy": "Скопировать чеклист",
@@ -95,5 +100,15 @@
   "appSettingsExplorerMenuDisabledDone": "Меню Проводника отключено",
   "appSettingsExplorerMenuRegisterDone": "Меню зарегистрировано",
   "appSettingsExplorerMenuUnregisterDone": "Меню удалено",
-  "appSettingsExplorerMenuRegisteredStatus": "Пункты меню зарегистрированы для расширений видео"
+  "appSettingsExplorerMenuRegisteredStatus": "Пункты меню зарегистрированы для расширений видео",
+  "appSettingsOpenWithLegend": "Открыть с помощью",
+  "appSettingsOpenWithHint": "Добавляет FluxAlloy в список «Открыть с помощью» для видео (HKCU). Приложением по умолчанию не становится — выбор в параметрах Windows.",
+  "appSettingsOpenWithCheckbox": "Показывать в «Открыть с помощью»",
+  "appSettingsOpenWithRegister": "Зарегистрировать OpenWith",
+  "appSettingsOpenWithUnregister": "Удалить OpenWith",
+  "appSettingsOpenWithEnabledDone": "«Открыть с помощью» включено",
+  "appSettingsOpenWithDisabledDone": "«Открыть с помощью» отключено",
+  "appSettingsOpenWithRegisterDone": "OpenWith зарегистрирован",
+  "appSettingsOpenWithUnregisterDone": "OpenWith удалён",
+  "appSettingsOpenWithRegisteredStatus": "FluxAlloy в списке «Открыть с помощью» для видео"
 }

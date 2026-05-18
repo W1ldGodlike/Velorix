@@ -224,4 +224,5 @@ export type MainApplicationStrings = {
   /** §14 — подписи пунктов контекстного меню Проводника (HKCU). */
   windowsExplorerContextMenuOpen: string
   windowsExplorerContextMenuQuickMp4: string
+  windowsFileAssociationTypeName: string
 }

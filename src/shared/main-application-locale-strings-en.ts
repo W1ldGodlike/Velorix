@@ -243,5 +243,6 @@ export const mainApplicationStringsEn: MainApplicationStrings = {
   terminalBlockedLogToolLine: '{tool} …',
   terminalLogTruncatedOlder: '[FluxAlloy] truncated older terminal-cli.log entries\n\n',
   windowsExplorerContextMenuOpen: 'Open in FluxAlloy',
-  windowsExplorerContextMenuQuickMp4: 'Quick convert to MP4'
+  windowsExplorerContextMenuQuickMp4: 'Quick convert to MP4',
+  windowsFileAssociationTypeName: 'FluxAlloy video'
 }

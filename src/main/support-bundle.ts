@@ -98,6 +98,9 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
       : []),
     ...(info.workflowOsSchedulerSmokeChecklistLines.length > 0
       ? ['', 'workflowOsSchedulerSmoke:', ...info.workflowOsSchedulerSmokeChecklistLines]
+      : []),
+    ...(info.ownerManualSmokeBundleLines.length > 0
+      ? ['', 'ownerManualSmoke:', ...info.ownerManualSmokeBundleLines]
       : [])
   ].join('\n')
 }

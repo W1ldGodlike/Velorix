@@ -58,7 +58,7 @@
 | [`src/main/ipc/register-single-export-ipc.ts`](../src/main/ipc/register-single-export-ipc.ts) | 5 |
 | [`src/main/register-downloads-bridge-ipc.ts`](../src/main/register-downloads-bridge-ipc.ts) | 5 |
 | [`src/main/ipc/register-batch-export-queue-ipc-run.ts`](../src/main/ipc/register-batch-export-queue-ipc-run.ts) | 4 |
-| [`src/main/ipc/register-windows-shell-context-menu-ipc.ts`](../src/main/ipc/register-windows-shell-context-menu-ipc.ts) | 4 |
+| [`src/main/ipc/register-windows-shell-context-menu-ipc.ts`](../src/main/ipc/register-windows-shell-context-menu-ipc.ts) | 8 |
 | [`src/main/register-downloads-options-ipc-output.ts`](../src/main/register-downloads-options-ipc-output.ts) | 4 |
 | [`src/main/register-downloads-snapshot-ipc.ts`](../src/main/register-downloads-snapshot-ipc.ts) | 3 |
 | [`src/main/inspector-window.ts`](../src/main/inspector-window.ts) | 2 |
@@ -84,7 +84,7 @@
 | Terminal | `terminal-contract.ts` (barrel), `terminal-contract-types.ts`, `terminal-contract-hints-*` | hints после split ф.4 |
 | Engines | `engine-contract.ts`, `engine-download-contract.ts`, `engine-update-check-contract.ts` | paths, download, check updates |
 | Diagnostics / about | `diagnostics-contract.ts`, `about-contract.ts` | support bundle UI |
-| Windows shell §14 | `windows-explorer-context-menu.ts` | HKCU context menu, CLI `--fluxalloy-shell-*`, headless install register; main: `windows-explorer-context-menu-sync`, `windows-explorer-shell-fulfill`, `processing-history` entries on quick MP4 |
+| Windows shell §14 | `windows-explorer-context-menu.ts`, `windows-file-association.ts` | HKCU context menu + OpenWithProgids; CLI `--fluxalloy-shell-*`, `--fluxalloy-install-register-open-with`; IPC `register-windows-shell-context-menu-ipc.ts` (8 handle); main: `windows-explorer-context-menu-sync`, `windows-file-association-sync`, `windows-explorer-shell-fulfill` |
 | Downloads log | `downloads-log-contract.ts` | pop-out log lines |
 
 Проверка списка: `npm run audit:shared-contracts` (неизвестный `*-contract.ts` в `src/shared/` → fail).

@@ -242,6 +242,7 @@ export const mainApplicationStringsRu: MainApplicationStrings = {
   terminalBlockedLogToolLine: '{tool} …',
   terminalLogTruncatedOlder: '[FluxAlloy] усечены старые записи журнала terminal-cli.log\n\n',
   windowsExplorerContextMenuOpen: 'Открыть в FluxAlloy',
-  windowsExplorerContextMenuQuickMp4: 'Быстро конвертировать в MP4'
+  windowsExplorerContextMenuQuickMp4: 'Быстро конвертировать в MP4',
+  windowsFileAssociationTypeName: 'Видео FluxAlloy'
 }
 

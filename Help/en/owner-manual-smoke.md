@@ -1,0 +1,21 @@
+# Manual smoke on your hardware
+
+CI tests cover **ffmpeg argv**, not your real GPU or display scale. Before you rely on a release build, run the owner checklist bundle on your machine.
+
+## Where to find it
+
+1. **Settings → Dependencies** — **Owner manual smoke** block and **Copy full bundle** (HiDPI + HW + OS scheduler + dpi snapshot).
+2. Below that: separate panels for **NVENC/VAAPI**, **HiDPI** (General tab), **packaged smoke**, and OS scheduler steps in the **task planner**.
+3. **Support ZIP** — `ownerManualSmoke:` section inside `diagnostics.txt`.
+
+## What to verify
+
+| Block | Goal |
+|-------|------|
+| HiDPI | Windows scale 100–200 %: editor, downloads, modals, status bar |
+| HW encode | NVENC (Win) or VAAPI (Linux): probe, manual codec, hw_auto, benchmark |
+| OS scheduler | Watch-folder + Task Scheduler / launchd / systemd user timer |
+
+Details: [hardware-encoding.md](hardware-encoding.md), [appearance-language-theme.md](appearance-language-theme.md), [workflows-planner-scenarios.md](workflows-planner-scenarios.md).
+
+After the run, tick items in `IMPLEMENTATION_CHECKLIST.md` (owner smoke section) and attach a Support ZIP if you contact support.

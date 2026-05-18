@@ -20,6 +20,7 @@ import {
 import type { UiTextKey } from '../../locales/ui-text-strings'
 import { AppSettingsHidpiStatusPanel } from './AppSettingsHidpiStatusPanel'
 import { AppSettingsHwManualSmokePanel } from './AppSettingsHwManualSmokePanel'
+import { AppSettingsOwnerSmokeBundlePanel } from './AppSettingsOwnerSmokeBundlePanel'
 import { AppSettingsPackagedSmokePanel } from './AppSettingsPackagedSmokePanel'
 import { EnginePathsSettingsSection } from './EnginePathsSettingsSection'
 import { WindowsExplorerContextMenuSettings } from './WindowsExplorerContextMenuSettings'
@@ -277,6 +278,10 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
                   onCheckEngineUpdates={onCheckEngineUpdates}
                   onSave={onSaveEnginePaths}
                 />
+                <AppSettingsOwnerSmokeBundlePanel
+                  sectionHintId={sectionHintId}
+                  {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
+                />
                 <AppSettingsHwManualSmokePanel
                   sectionHintId={sectionHintId}
                   {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
@@ -442,6 +447,7 @@ function AppSettingsGeneralPane(props: {
         sectionHintId={sectionHintId}
         shellBusy={shellBusy}
         onStatus={onStatus}
+        {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
       />
 
       <AppSettingsHidpiStatusPanel

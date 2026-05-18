@@ -173,6 +173,16 @@ export interface FluxAlloyApi {
     ) => Promise<{ ok: true } | { ok: false; error: string }>
     registerWindowsExplorerContextMenuNow: () => Promise<{ ok: true } | { ok: false; error: string }>
     unregisterWindowsExplorerContextMenu: () => Promise<{ ok: true }>
+    windowsFileAssociationStatus: () => Promise<{
+      supported: boolean
+      enabledInSettings: boolean
+      registered: boolean
+    }>
+    setWindowsFileAssociationEnabled: (
+      enabled: boolean
+    ) => Promise<{ ok: true } | { ok: false; error: string }>
+    registerWindowsFileAssociationNow: () => Promise<{ ok: true } | { ok: false; error: string }>
+    unregisterWindowsFileAssociation: () => Promise<{ ok: true }>
   }
   preview: {
     openFileDialog: (uiLocale?: AppUiLocale) => Promise<PreviewDialogResult>

@@ -92,6 +92,10 @@ export const mainWindowIpc = {
   windowsExplorerContextMenuSetEnabled: 'fluxalloy:windows-explorer-context-menu-set-enabled',
   windowsExplorerContextMenuRegisterNow: 'fluxalloy:windows-explorer-context-menu-register-now',
   windowsExplorerContextMenuUnregister: 'fluxalloy:windows-explorer-context-menu-unregister',
+  windowsFileAssociationStatus: 'fluxalloy:windows-file-association-status',
+  windowsFileAssociationSetEnabled: 'fluxalloy:windows-file-association-set-enabled',
+  windowsFileAssociationRegisterNow: 'fluxalloy:windows-file-association-register-now',
+  windowsFileAssociationUnregister: 'fluxalloy:windows-file-association-unregister',
   openDownloadsWindow: 'fluxalloy:open-downloads-window',
   /** §9 — отдельное окно инспектора ffprobe (`#inspector`). */
   openInspectorWindow: 'fluxalloy:open-inspector-window',

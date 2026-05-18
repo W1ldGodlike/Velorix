@@ -144,5 +144,18 @@ export const fluxalloySettings = {
   registerWindowsExplorerContextMenuNow: (): Promise<{ ok: true } | { ok: false; error: string }> =>
     ipcRenderer.invoke(mw.windowsExplorerContextMenuRegisterNow),
   unregisterWindowsExplorerContextMenu: (): Promise<{ ok: true }> =>
-    ipcRenderer.invoke(mw.windowsExplorerContextMenuUnregister)
+    ipcRenderer.invoke(mw.windowsExplorerContextMenuUnregister),
+  windowsFileAssociationStatus: (): Promise<{
+    supported: boolean
+    enabledInSettings: boolean
+    registered: boolean
+  }> => ipcRenderer.invoke(mw.windowsFileAssociationStatus),
+  setWindowsFileAssociationEnabled: (
+    enabled: boolean
+  ): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke(mw.windowsFileAssociationSetEnabled, enabled),
+  registerWindowsFileAssociationNow: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke(mw.windowsFileAssociationRegisterNow),
+  unregisterWindowsFileAssociation: (): Promise<{ ok: true }> =>
+    ipcRenderer.invoke(mw.windowsFileAssociationUnregister)
 }

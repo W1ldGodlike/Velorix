@@ -202,7 +202,13 @@ export function WorkflowScenarioBuilderDialog(
         <p id="workflow-scenario-builder-hint" className="app-modal-hint">
           {uiText('workflowScenarioBuilderDialogHint')}
         </p>
-        <WorkflowScenarioFlowDiagram scenario={parsedScenario} />
+        <WorkflowScenarioFlowDiagram
+          scenario={parsedScenario}
+          editable={parsedScenario !== null && !busy}
+          onReorder={(next) => {
+            setJsonText(JSON.stringify(next, null, 2))
+          }}
+        />
         <div className="app-settings-field-row">
           <label className="app-settings-label" htmlFor="workflow-scenario-template">
             {uiText('workflowScenarioTemplateLabel')}

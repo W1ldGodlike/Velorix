@@ -43,10 +43,10 @@
 
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый.
 
-- [~] §16/§1.1/§10/§11: owner-smoke на железе (NVENC/VAAPI, HiDPI, OS scheduler; J-1057).
-- [~] §14: file associations Win — позже; меню Проводника — [x] (J-1061/1062).
-- [~] §11: drag-and-link конструктор блоков — позже.
-- [~] §12: полировка очистки temp — partials .crdownload/.aria2 + детали снимка (J-1064).
+- [~] §16/§1.1/§10: owner-smoke hub + Support ZIP (J-1072); прогон на железе — владелец.
+- [x] §14: меню + OpenWith + Help/deep-link (J-1073/1074); default app — вручную в Windows.
+- [~] §11: drag-reorder блоков v1 (J-1074); полный canvas drag-and-link — позже.
+- [x] §12: очистка temp — partials, снимок с числом файлов, Help/tooltip (J-1064/1071).
 - [x] §13: история processing/downloads — live-refresh, export v2, Help, chips-фильтры.
 
 ---
@@ -412,21 +412,21 @@
 - [x] Load/save/delete в UI + `userData/workflows/scenarios.json`.
 - [x] Валидация схемы (кнопка «Проверить», `workflow-scenario-parse`).
 - [x] Deep-link Help из редактора и конструктора (J-1056).
-- [ ] Drag-and-link редактор блоков — позже.
+- [~] Drag-reorder блоков в блок-схеме → JSON edges (J-1074); canvas drag-and-link — позже.
 
 ## §12. Очистка кэша и обслуживание
 
-- [~] Категории кэша: `preview-cache`, частичные загрузки (`.part`, `.ytdl`, `.temp`, `.tmp`, `.frag`, `.crdownload`, `.aria2`) и старые orphan `fa-x264tw-*` в `diagnostics-maintenance`.
+- [x] Категории кэша: `preview-cache`, частичные загрузки (`.part`, `.ytdl`, `.temp`, `.tmp`, `.frag`, `.crdownload`, `.aria2`) и старые orphan `fa-x264tw-*` в `diagnostics-maintenance`.
 - [x] Подсчёт размеров: IPC/preload `diagnostics.maintenanceSnapshot()` + кнопка «Размер временных» в «О программе» показывает total и разбивку `preview-cache`/`.part`/ffmpeg temp.
 - [x] Выборочная очистка: сервис принимает target ids; UI даёт отдельные двухшаговые кнопки для общего набора, `preview-cache`, частичных yt-dlp файлов и старых ffmpeg temp.
 - [x] Подтверждение опасных действий: очистка временного в «О программе» требует второго клика («Подтвердить очистку») и показывает статус-предупреждение.
-- [~] Очистка временных файлов загрузки/обработки: `diagnostics.cleanMaintenance()` удаляет `preview-cache`, частичные yt-dlp файлы и старые `fa-x264tw-*`; готовые медиа и свежие temp не трогает.
+- [x] Очистка временных: `diagnostics.cleanMaintenance()` — preview-cache, partials, старые `fa-x264tw-*`; готовые медиа и свежие temp не трогает.
 
 ## §13. История и статистика
 
-- [~] Журнал задач: `processing/history.json` пишет export/snapshot/auto-export из main; правая FFmpeg-панель показывает последние записи.
+- [x] Журнал задач: `processing/history.json` пишет export/snapshot/auto-export/workflowScenario из main; панель + live-refresh (J-1063..1069).
 - [x] Фильтры: kind/outcome/query (**в т.ч. `workflowScenario`**, `exportVideoCodecUsed`); загрузки — по outcome.
-- [~] Повторить загрузку: история yt-dlp в pop-out и встроенной панели умеет вернуть URL в очередь.
+- [x] Повторить загрузку: история yt-dlp в pop-out и встроенной панели возвращает URL в очередь (J-1067/1068).
 - [x] Повторить обработку: «Повторить» / «Повторить сценарий» (file + URL по `sourceUrl`, J-1059/1060).
 - [x] Недельная сводка: 7 дней + chips-фильтры по клику (J-1069).
 - [x] Экспорт истории: JSON schema 2 + `uiLocale` для processing и downloads (J-1066/1067).
@@ -441,6 +441,8 @@
 - [x] macOS/Linux: отложено (UI скрыт, `supported: false`).
 - [x] NSIS post-install register / uninstall unregister (`installer.nsh`, headless CLI, J-1062).
 - [x] Single-instance: повторный shell-open в работающее окно (J-1062).
+- [x] «Открыть с помощью»: HKCU OpenWithProgids + Applications SupportedTypes; настройки, NSIS, headless CLI (J-1073).
+- [ ] Приложение по умолчанию для видео — только вручную через параметры Windows (не reg hash).
 
 ## §15. База знаний и подсказки
 

@@ -14,7 +14,7 @@ The **archive** button packs several diagnostic files into one zip so you do not
 
 ## Temporary data
 
-You also get an estimate of **temporary** data (preview cache, incomplete downloads, old helper folders). Cleanup uses a two-step confirm so you do not remove something you still need.
+You also get an estimate of **temporary** data (preview cache, incomplete downloads such as `.part` / `.crdownload` / `.aria2`, old ffmpeg temp folders). **Temp size** shows per-category bytes and file counts. Cleanup uses a two-step confirm; finished media files are not removed.
 
 ## Diagnostics
 

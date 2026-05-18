@@ -80,6 +80,8 @@
   "workflowTemplateUrlHint": "sourceUrl в «Скачать»; yt-dlp, затем та же ffmpeg-цепочка.",
   "workflowScenarioFlowLabel": "Блок-схема",
   "workflowScenarioFlowAria": "Визуальная схема сценария",
+  "workflowScenarioFlowDragHint": "Перетащите блок на новое место — порядок и стрелки в JSON обновятся (линейная цепочка).",
+  "workflowScenarioFlowDragNodeTitle": "Перетащите, чтобы изменить порядок блоков",
   "workflowScenarioKindDownload": "Скачать",
   "workflowScenarioKindProcess": "Обработать",
   "workflowScenarioKindSave": "Сохранить",

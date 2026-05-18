@@ -22,6 +22,7 @@ import {
   uiTextVars
 } from '../locales/ui-text'
 import { DiagnosticsFoldersPanel } from './DiagnosticsFoldersPanel'
+import { KnowledgeDeepLinkButton } from './KnowledgeDeepLinkButton'
 import { MediaFileUtilitiesPanel } from './MediaFileUtilitiesPanel'
 
 type MaintenanceCleanChoice = 'all' | DiagnosticsMaintenanceTargetId
@@ -284,6 +285,17 @@ export function AboutDialog({
               >
                 {uiText('supportZipButton')}
               </button>
+              {onOpenKnowledgeArticle ? (
+                <KnowledgeDeepLinkButton
+                  label={uiText('knowledgeDeepLinkMaintenanceLabel')}
+                  tooltip={uiText('knowledgeDeepLinkMaintenanceTooltip')}
+                  ariaDescribedBy="about-dialog-desc"
+                  disabled={aboutShellBusy}
+                  onOpen={() => {
+                    onOpenKnowledgeArticle(KNOWLEDGE_SLUG_ABOUT_SUPPORT_LOGS)
+                  }}
+                />
+              ) : null}
               <button
                 type="button"
                 className="app-btn app-btn-compact"

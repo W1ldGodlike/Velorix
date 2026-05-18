@@ -61,6 +61,7 @@ import { startWorkflowWatchFolderRunner } from './workflow-watch-folder-runner'
 import { listScheduledTaskDocuments } from './workflow-registry-service'
 import { resyncAllScheduledTaskOsSchedulers } from './scheduled-task-os-sync'
 import { syncWindowsExplorerContextMenuEnabled } from './windows-explorer-context-menu-sync'
+import { syncWindowsFileAssociationEnabled } from './windows-file-association-sync'
 import { getMainApplicationStrings } from '../shared/main-runtime-locale'
 import {
   configureMainExportOutputPaths,
@@ -270,5 +271,9 @@ export function bootstrapMainApplicationHosts(): void {
       open: shellM.windowsExplorerContextMenuOpen,
       quickMp4: shellM.windowsExplorerContextMenuQuickMp4
     }
+  )
+  void syncWindowsFileAssociationEnabled(
+    getCachedSettings().windowsOpenWithFluxAlloy === true,
+    shellM.windowsFileAssociationTypeName
   )
 }
