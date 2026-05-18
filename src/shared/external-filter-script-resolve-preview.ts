@@ -1,6 +1,5 @@
-import { isAbsolute, normalize, resolve } from 'path'
-
 import type { AppSettings } from './settings-contract'
+import { pathIsAbsolute, pathNormalize, pathResolveForPreview } from './path-lite'
 import type { ExternalFilterScriptKind } from './external-filter-script-contract'
 import {
   externalFilterScriptPathMatchesKind,
@@ -23,7 +22,9 @@ export function resolveExternalFilterScriptForPreview(
   if (kind === 'off' || rawPath === null) {
     return { kind: 'off', scriptAbsPath: null }
   }
-  const abs = isAbsolute(rawPath) ? normalize(rawPath) : resolve(normalize(rawPath))
+  const abs = pathIsAbsolute(rawPath)
+    ? pathNormalize(rawPath)
+    : pathResolveForPreview(pathNormalize(rawPath))
   if (!externalFilterScriptPathMatchesKind(abs, kind)) {
     return { kind: 'off', scriptAbsPath: null }
   }

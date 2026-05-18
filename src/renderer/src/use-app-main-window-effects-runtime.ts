@@ -39,9 +39,10 @@ export function useAppMainWindowEffectsRuntime(
   useEffect(() => {
     queueMicrotask(() => {
       setPreviewBlobUrl((current) => {
-        if (current) {
-          URL.revokeObjectURL(current)
+        if (!current) {
+          return current
         }
+        URL.revokeObjectURL(current)
         return null
       })
     })

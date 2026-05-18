@@ -1,6 +1,5 @@
-import { extname } from 'path'
-
 import type { MediaUtilitiesImageFormatId } from './media-utilities-contract'
+import { pathExtname } from './path-lite'
 
 const IMAGE_INPUT_EXTENSIONS = new Set([
   '.jpg',
@@ -27,7 +26,7 @@ export function parseMediaUtilitiesImageFormatId(raw: unknown): MediaUtilitiesIm
 }
 
 export function isMediaUtilitiesImageInputPath(filePath: string): boolean {
-  const ext = extname(filePath).toLowerCase()
+  const ext = pathExtname(filePath)
   return IMAGE_INPUT_EXTENSIONS.has(ext)
 }
 

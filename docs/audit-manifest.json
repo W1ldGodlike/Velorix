@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-18T20:10:40.430Z",
+  "generatedAt": "2026-05-18T20:29:12.456Z",
   "repoRoot": "C:\\Users\\truno\\FluxAlloy",
   "codeRoots": [
     "src",
@@ -18,7 +18,7 @@
     ".cursor",
     "coverage"
   ],
-  "fileCount": 1101,
+  "fileCount": 1104,
   "files": [
     "electron.vite.config.ts",
     "eslint.config.mjs",
@@ -733,6 +733,7 @@
     "src/shared/packaged-release-smoke.ts",
     "src/shared/packaged-ytdlp-smoke.ts",
     "src/shared/parse-whitelist.ts",
+    "src/shared/path-lite.ts",
     "src/shared/platform-packaging-scripts.ts",
     "src/shared/preview-dialog-contract.ts",
     "src/shared/preview-open-dialog-default-path.ts",
@@ -930,6 +931,7 @@
     "tests/main/ytdlp-progress-parser-queue-failure.test.ts",
     "tests/main/ytdlp-queue-retry.test.ts",
     "tests/main/ytdlp-queue-short-label.test.ts",
+    "tests/renderer/downloads-derived-selectors.test.ts",
     "tests/renderer/downloads-history-display.test.ts",
     "tests/renderer/editor-export-codec-tooltip.test.ts",
     "tests/renderer/editor-export-statusbar-codec.test.ts",
@@ -1068,6 +1070,7 @@
     "tests/shared/packaged-manual-smoke-checklist.test.ts",
     "tests/shared/packaged-release-smoke.test.ts",
     "tests/shared/packaged-ytdlp-smoke.test.ts",
+    "tests/shared/path-lite.test.ts",
     "tests/shared/platform-packaging-scripts.test.ts",
     "tests/shared/preview-open-dialog-default-path.test.ts",
     "tests/shared/renderer-state-approach.test.ts",

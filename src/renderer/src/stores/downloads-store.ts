@@ -222,11 +222,12 @@ export function selectVisibleDownloadsHistory(
 }
 
 export function selectYtdlpCommandHintsFilteredByCategory(
-  state: DownloadsStoreState
+  state: Pick<DownloadsStoreState, 'downloadsOptions' | 'downloadsExpertHintFilter'>,
+  uiLocale: AppUiLocale
 ): ReturnType<typeof groupYtdlpCommandHintsByCategory> {
   return groupYtdlpCommandHintsByCategory(
     state.downloadsOptions?.commandHints,
     state.downloadsExpertHintFilter,
-    getUiLocale() as AppUiLocale
+    uiLocale
   )
 }

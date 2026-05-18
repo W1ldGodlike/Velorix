@@ -53,10 +53,25 @@ export function useAppMainWindowEffectsBootstrap(
   }, [currentSourcePath, trimSnapshotRef])
 
   useEffect(() => {
-    let cleanupTheme: (() => void) | undefined
-    let cleanupUiPanels: (() => void) | undefined
+    const offTheme = window.fluxalloy.onThemeChanged((next) => {
+      applyTheme(next)
+    })
+    const offPanels = window.fluxalloy.onMainWindowUiPanelsChanged((panels) => {
+      hydrateMainWindowUiPanels(panels)
+    })
+    return (): void => {
+      offTheme()
+      offPanels()
+    }
+  }, [applyTheme, hydrateMainWindowUiPanels])
+
+  useEffect(() => {
+    let cancelled = false
     void (async () => {
       const loaded = await window.fluxalloy.settings.get()
+      if (cancelled) {
+        return
+      }
       const { resolved, shouldPersist } = applyPersistedUiLocale(loaded)
       syncDocumentUiLocale(resolved)
       document.title = uiText('mainWindowDocumentTitle')
@@ -72,17 +87,10 @@ export function useAppMainWindowEffectsBootstrap(
       if (loaded.ffmpegSnapshotFormat === 'jpg' || loaded.ffmpegSnapshotFormat === 'webp') {
         setSnapshotFormat(loaded.ffmpegSnapshotFormat)
       }
-      cleanupTheme = window.fluxalloy.onThemeChanged((next) => {
-        applyTheme(next)
-      })
-      cleanupUiPanels = window.fluxalloy.onMainWindowUiPanelsChanged((panels) => {
-        hydrateMainWindowUiPanels(panels)
-      })
     })().catch(console.error)
 
     return (): void => {
-      cleanupTheme?.()
-      cleanupUiPanels?.()
+      cancelled = true
     }
   }, [
     applyTheme,
