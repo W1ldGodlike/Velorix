@@ -11,6 +11,7 @@
   "winPackagedSmokeStep_snapshot": "Frame snapshot saves as PNG/JPEG.",
   "winPackagedSmokeStep_export": "MP4 segment export (libx264) completes without error.",
   "winPackagedSmokeStep_video_sprite": "§7.5: FFmpeg rail → preview sprite sheet (PNG/JPEG); grid file saves; see ownerManualSmoke Video sprite.",
+  "winPackagedSmokeStep_mini_player": "§4.3: while export/yt-dlp is busy — Service → Mini Player; %/speed, RMB always-on-top, restore main; see ownerManualSmoke Mini Player.",
   "winPackagedSmokeStep_knowledge": "Knowledge base: open an article; internal .md link works.",
   "winPackagedSmokeStep_support_zip": "About → Support ZIP: archive is created; no secrets in the text.",
   "winPackagedSmokeStep_settings": "Settings → Dependencies: engine paths point at resources/bin.",

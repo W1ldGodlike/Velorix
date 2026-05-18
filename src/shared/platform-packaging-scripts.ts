@@ -29,6 +29,7 @@ export function formatPlatformPackagingDiagnosticLines(): string[] {
     `ci: windows-latest (${ENGINES_PREPARE_WIN_NPM_SCRIPT} + packaged smokes); ${ENGINES_CI_LINUX_RUNNER} (${PACK_LINUX_DIR_NPM_SCRIPT} + ${VERIFY_LINUX_UNPACKED_NPM_SCRIPT}, без engines prepare); mac — job нет`,
     'smoke skips: FLUXALLOY_SKIP_PACK_VERIFY, FLUXALLOY_SKIP_FFPROBE_SMOKE, FLUXALLOY_SKIP_FFMPEG_SMOKE, FLUXALLOY_SKIP_YTDLP_SMOKE',
     'dev quiet: npm run check:quiet includes check:terminal-summaries-ru (§8 terminal RU summaries 0/0)',
-    'config: electron-builder.yml targets win (nsis/portable/zip), mac (dmg), linux (AppImage, deb)'
+    'config: electron-builder.yml targets win (nsis/portable/zip), mac (dmg), linux (AppImage, deb)',
+    'packaged owner-smoke: npm run check:packaged-manual-smoke-parity (win/linux/macos Step_* incl. mini_player)'
   ]
 }

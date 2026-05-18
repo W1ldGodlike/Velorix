@@ -2,6 +2,7 @@ import { basename } from 'path'
 
 import { BrowserWindow } from 'electron'
 
+import { sendExportProgress } from './export-progress-broadcast'
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
 import type { AppUiLocale } from '../shared/app-ui-locale'
 import {
@@ -162,7 +163,7 @@ export function scheduleAutoExportAfterSuccessfulYtdlpOpen(
     const startedAt = Date.now()
     const pushProgress = (p: FfmpegExportProgressPayload): void => {
       if (!targetWin.isDestroyed()) {
-        targetWin.webContents.send(mw.exportProgress, p)
+        sendExportProgress(targetWin.webContents, p)
       }
     }
     try {

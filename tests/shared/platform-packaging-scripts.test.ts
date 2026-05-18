@@ -20,6 +20,7 @@ describe('platform-packaging-scripts §19', () => {
     expect(lines.some((l) => l.includes(BUILD_MAC_NPM_SCRIPT))).toBe(true)
     expect(lines.some((l) => l.includes(BUILD_LINUX_NPM_SCRIPT))).toBe(true)
     expect(lines.some((l) => l.includes('electron-builder.yml'))).toBe(true)
+    expect(lines.some((l) => l.includes('check:packaged-manual-smoke-parity'))).toBe(true)
     expect(lines.some((l) => l.includes('FLUXALLOY_SKIP_FFPROBE_SMOKE'))).toBe(true)
     expect(lines.some((l) => l.includes('check:terminal-summaries-ru'))).toBe(true)
     expect(lines.some((l) => l.includes(ENGINES_PREPARE_WIN_NPM_SCRIPT))).toBe(true)

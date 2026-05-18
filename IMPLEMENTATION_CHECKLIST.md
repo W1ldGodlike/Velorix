@@ -6,7 +6,7 @@
 
 ## Готовность полного итога
 
-- **Оценка: ~53%** (J-1150; спрайты §7.5 [x] J-1147). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16 (код + argv-smoke), утилиты §17, диагностика §18, CI/release. Крупно впереди: owner-smoke на железе/packaged/visual, полный вынос длинных UI-строк в `locales/**`, Mini Player §4.3, macOS/Linux packaging, e2e packaged.
+- **Оценка: ~55%** (J-1160; Mini Player §4.3 код [x] J-1153–1159; спрайты §7.5 [x] J-1147). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16 (код + argv-smoke), утилиты §17, диагностика §18, CI/release + `check:packaged-manual-smoke-parity`. Крупно впереди: owner-smoke на железе/visual/HiDPI, полный вынос UI в `locales/**`, macOS/Linux packaging, e2e packaged.
 
 ## Легенда
 
@@ -43,10 +43,10 @@
 
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый.
 
-- [ ] §16/§19: owner-smoke packaged + visual + HiDPI + спрайт §7.5 на железе (приёмка владельца; чеклист J-1151).
+- [ ] §16/§19: owner-smoke на железе (visual + HiDPI + packaged win/linux/macos + спрайт + mini-player); приёмка владельца.
 - [~] §2.2/§7.5: длинные UI-строки в `locales/**` без дублей TS; подсказки экспорта (resolve+guard, спрайты [x] J-1147).
-- [~] §4.3: Mini Player (J-1153–1155: каркас, закрытие→мини-плеер, ПКМ topmost); дальше — полировка UX/скорость в плашке.
-- [ ] §19: macOS/Linux — `bin/` вручную, `pack:*:dir`, CI/релизные артефакты по `docs/RELEASE.md`.
+- [~] §4.3: Mini Player [x] код (J-1153–1157); owner-smoke §4.3 в hub; приёмка visual/HiDPI на железе — владелец.
+- [~] §19: macOS/Linux — `pack:*:dir` + `verify:*` + guard `check:packaged-manual-smoke-parity`; `bin/` вручную; CI linux-packaging [x].
 - [ ] §21: e2e packaged smoke (открыть → preview → export; URL → yt-dlp → ffmpeg) после стабилизации спринта.
 
 ---
@@ -238,7 +238,7 @@
 
 ### §4.3 Mini Player
 
-- [~] §4.3 (J-1153–1155): `session.json`, `#mini-player`, snapshot+`alwaysOnTop`; busy-close→мини-плеер; ПКМ topmost; полировка — дальше.
+- [x] §4.3 (J-1153–1157): mini-player + owner-smoke; snapshot %/speed; busy-close; ПКМ topmost.
 - [~] Показать прогресс активной загрузки/обработки (push snapshot из main).
 - [x] Topmost режим (toggle + persist `session.json`).
 - [~] Контекстные действия (кнопки; ПКМ — дальше).

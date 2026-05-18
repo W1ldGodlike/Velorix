@@ -26,6 +26,8 @@ describe('owner-manual-smoke-bundle', () => {
     expect(joined).toContain('step [add-link]')
     expect(joined).toContain('=== Video sprite §7.5 ===')
     expect(joined).toContain('step [generate]')
+    expect(joined).toContain('=== Mini Player §4.3 ===')
+    expect(joined).toContain('step [open]')
     expect(joined).toContain('=== Packaged Win')
     expect(joined).toContain('=== OS scheduler ===')
     expect(joined).toContain('devicePixelRatio: 1.25')

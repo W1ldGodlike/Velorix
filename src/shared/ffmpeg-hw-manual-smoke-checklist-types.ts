@@ -10,6 +10,7 @@ export type FfmpegHwManualSmokePlatformId =
   | 'win-shell'
   | 'scenario-builder'
   | 'video-sprite'
+  | 'mini-player'
 
 export type FfmpegHwManualSmokeChecklistStep = {
   id: string

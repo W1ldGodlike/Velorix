@@ -9,6 +9,7 @@ import {
 } from './main-bootstrap-ipc-helpers'
 import { attachMainWindowBoundsPersistence, getCachedSettings } from './main-cached-settings-host'
 import { buildApplicationMenu } from './main-application-menu'
+import { clearMiniPlayerExportProgress } from './export-progress-broadcast'
 import { focusOrCreateMiniPlayerWindow } from './mini-player-window'
 import { createMainWindow } from './main-window'
 import { setMainWindowFocusAccessor } from './main-window-focus'
@@ -30,6 +31,9 @@ export let broadcastFfmpegExportBatchSnapshot: ((win?: BrowserWindow | null) => 
 
 export function setActiveExportAbort(ac: AbortController | null): void {
   activeExportAbort = ac
+  if (ac === null) {
+    clearMiniPlayerExportProgress()
+  }
 }
 
 export function bindFfmpegExportBatchSnapshotBroadcast(

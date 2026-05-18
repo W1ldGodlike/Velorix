@@ -24,6 +24,7 @@ import {
   type WorkflowOsSchedulerSmokeCapabilities
 } from '../../workflow-os-scheduler-manual-smoke-checklist-locale'
 import { getEditorVideoSpriteManualSmokeChecklistForUiLocale } from '../../editor-video-sprite-manual-smoke-checklist-locale'
+import { getMiniPlayerManualSmokeChecklistForUiLocale } from '../../mini-player-manual-smoke-checklist-locale'
 import { getWorkflowScenarioManualSmokeChecklistForUiLocale } from '../../workflow-scenario-manual-smoke-checklist-locale'
 import { getWindowsShellManualSmokeChecklistForUiLocale } from '../../windows-shell-manual-smoke-checklist-locale'
 import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
@@ -199,6 +200,16 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
     [videoSpriteSections]
   )
 
+  const miniPlayerSections = useMemo(
+    () => getMiniPlayerManualSmokeChecklistForUiLocale(locale),
+    [locale]
+  )
+
+  const miniPlayerPlainText = useMemo(
+    () => formatFfmpegHwManualSmokeChecklistPlainText(miniPlayerSections),
+    [miniPlayerSections]
+  )
+
   const shellSections = useMemo(() => {
     if (!shellSupported) {
       return []
@@ -240,6 +251,7 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
         hwPlainText,
         scenarioPlainText,
         videoSpritePlainText,
+        miniPlayerPlainText,
         osPlainText,
         shellPlainText,
         packagedPlainText,
@@ -250,6 +262,7 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
       osPlainText,
       scenarioPlainText,
       videoSpritePlainText,
+      miniPlayerPlainText,
       shellPlainText,
       packagedPlainText
     ]
@@ -372,6 +385,10 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
       <OwnerManualSmokeChecklistSectionsPreview
         sections={videoSpriteSections}
         summaryLabel={uiText('appSettingsOwnerSmokePreviewSectionVideoSprite')}
+      />
+      <OwnerManualSmokeChecklistSectionsPreview
+        sections={miniPlayerSections}
+        summaryLabel={uiText('appSettingsOwnerSmokePreviewSectionMiniPlayer')}
       />
       {packagedSection ? (
         <details className="app-settings-owner-smoke-preview-block">

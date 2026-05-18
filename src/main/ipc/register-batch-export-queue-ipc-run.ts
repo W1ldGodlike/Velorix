@@ -1,5 +1,6 @@
 import { BrowserWindow, ipcMain } from 'electron'
 
+import { sendExportProgress } from '../export-progress-broadcast'
 import { mainWindowIpc as mw } from '../../shared/ipc-channels'
 import type { FfmpegExportBatchStartResult } from '../../shared/ffmpeg-export-batch-contract'
 import {
@@ -103,7 +104,7 @@ export function registerBatchExportQueueIpcRunHandlers(ctx: ExportBatchIpcContex
         uiLocale: loc,
         pushRowProgress: (rowId, p) => {
           if (win && !win.isDestroyed()) {
-            win.webContents.send(mw.exportProgress, { ...p, batchRowId: rowId })
+            sendExportProgress(win.webContents, { ...p, batchRowId: rowId })
           }
         }
       }).finally(() => {

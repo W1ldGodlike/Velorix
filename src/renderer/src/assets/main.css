@@ -5105,6 +5105,9 @@ button.app-downloads-hint-token:disabled {
 .app-mini-player-status {
   font-size: var(--fa-font-size-body);
   line-height: var(--fa-line-height-body);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .app-mini-player-progress {

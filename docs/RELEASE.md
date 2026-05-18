@@ -156,7 +156,7 @@ npm run verify:linux-unpacked
 
 1. В приложении: **Настройки → Зависимости → Ручной smoke Linux (pack:linux:dir)** — чеклист с копированием (Support ZIP: `linuxPackagedSmoke:`).
 2. Запустите бинарник из `dist/linux-unpacked/` (не `npm run dev`).
-3. Те же сценарии, что в §4 для Windows: движки, редактор, загрузки, снимок, экспорт, база знаний, Support ZIP.
+3. Те же сценарии, что в §4 для Windows: движки, редактор, загрузки, снимок, экспорт, спрайт §7.5, мини-плеер §4.3 (при busy-задачах), база знаний, Support ZIP.
 4. Убедитесь, что в логах и артефактах нет секретов.
 
 Справка: `Help/packaged-linux-smoke.md`.
@@ -173,7 +173,7 @@ npm run verify:mac-unpacked
 
 1. **Настройки → Зависимости → Ручной smoke macOS (pack:mac:dir)** — чеклист (Support ZIP: `macosPackagedSmoke:`).
 2. Откройте `FluxAlloy.app` (не `npm run dev`).
-3. Сценарии как в §4; пути движков — `Contents/Resources/bin`.
+3. Сценарии как в §4 (включая спрайт §7.5 и мини-плеер §4.3); пути движков — `Contents/Resources/bin`.
 4. Нет секретов в логах и артефактах.
 
 Справка: `Help/packaged-macos-smoke.md`.

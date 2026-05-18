@@ -35,6 +35,14 @@ describe('Help owner-smoke cross-links §5', () => {
     }
   })
 
+  it('owner-manual-smoke documents mini player §4.3 (ru + en)', () => {
+    for (const rel of ['owner-manual-smoke.md', 'en/owner-manual-smoke.md']) {
+      const md = readFileSync(join(HELP_ROOT, rel), 'utf8')
+      expect(md, rel).toMatch(/Mini Player|Мини-плеер/)
+      expect(md, rel).toContain('§4.3')
+    }
+  })
+
   it('getting-started links appearance and owner-manual-smoke (ru + en)', () => {
     for (const rel of ['getting-started.md', 'en/getting-started.md']) {
       const md = readFileSync(join(HELP_ROOT, rel), 'utf8')

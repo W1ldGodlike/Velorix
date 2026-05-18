@@ -10,16 +10,16 @@
 
 **Журнал:** одна **J** только если в итерации был diff в репо — skill [`fluxalloy-journal-entry`](../.cursor/skills/fluxalloy-journal-entry/SKILL.md).
 
-## Re-anchor (J-1150)
+## Re-anchor (J-1160)
 
 | Поле | Значение |
 | --- | --- |
-| Дата | 2026-05-18 |
+| Дата | 2026-05-19 |
 | Ветка | `main` |
-| Снимок тестов | **250** files / **1745** tests |
-| Спринт | owner-smoke §16; §2.2 locales + export preview hints [~]; Mini Player §4.3; macOS/Linux §19; e2e §21 |
+| Снимок тестов | **256** files / **1760** tests |
+| Спринт | owner-smoke §16 (hub+packaged, приёмка владельца); §2.2 locales [~]; Mini Player §4.3 [x] код; §19 parity guard [~]; e2e §21 |
 
-**Последние J:** [J-1148](../IMPLEMENTATION_JOURNAL.md#j-1148) export preview hint keys + locale guard; [J-1149](../IMPLEMENTATION_JOURNAL.md#j-1149) `editor-export-preview-hint-resolve`; [J-1150](../IMPLEMENTATION_JOURNAL.md#j-1150) cadence commit/push J-1146..1149.
+**Последние J:** [J-1158](../IMPLEMENTATION_JOURNAL.md) packaged `Step_mini_player`; [J-1159](../IMPLEMENTATION_JOURNAL.md) `check:packaged-manual-smoke-parity`; [J-1160](../IMPLEMENTATION_JOURNAL.md) cadence commit/push J-1156..1159.
 
 ## Новый чат
 

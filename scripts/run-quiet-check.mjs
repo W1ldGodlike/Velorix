@@ -16,6 +16,7 @@ const steps = [
   ['locales-json', ['run', 'check:locales-json']],
   ['locales-ts-overlap', ['run', 'check:locales-ts-overlap']],
   ['export-preview-hints-locale', ['run', 'check:export-preview-hints-locale']],
+  ['packaged-manual-smoke-parity', ['run', 'check:packaged-manual-smoke-parity']],
   ['terminal-summaries-ru', ['run', 'check:terminal-summaries-ru']],
   ['terminal-data-summaries', ['run', 'check:terminal-data-summaries']],
   ['terminal-scenario-summaries', ['run', 'check:terminal-scenario-summaries']],

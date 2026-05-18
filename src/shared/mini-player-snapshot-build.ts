@@ -12,12 +12,42 @@ function parseProgressPercent(progress: string): number | null {
   return Math.max(0, Math.min(100, n))
 }
 
+function formatExportDetail(input: {
+  exportPercent: number | null
+  exportMessage: string | null
+  exportSpeed: string | null
+}): { detailLine: string; progressPercent: number | null } {
+  const pct = input.exportPercent !== null && input.exportPercent >= 0 ? input.exportPercent : null
+  const parts: string[] = []
+  if (pct !== null) {
+    const rounded = Math.round(pct * 10) / 10
+    parts.push(Number.isInteger(rounded) ? `${rounded}%` : `${rounded.toFixed(1)}%`)
+  }
+  const speed = input.exportSpeed?.trim()
+  if (speed) {
+    parts.push(speed)
+  }
+  if (parts.length === 0) {
+    const msg = input.exportMessage?.trim()
+    if (msg) {
+      parts.push(msg.length > 96 ? `${msg.slice(0, 94)}…` : msg)
+    }
+  }
+  return {
+    detailLine: parts.join(' · '),
+    progressPercent: pct
+  }
+}
+
 export function buildMiniPlayerSnapshot(input: {
   exportActive: boolean
   downloadActive: boolean
   downloadProgress: string | null
   downloadSpeed: string | null
   downloadStatus: string | null
+  exportPercent: number | null
+  exportMessage: string | null
+  exportSpeed: string | null
 }): Omit<MiniPlayerSnapshot, 'alwaysOnTop'> {
   const exportActive = input.exportActive
   const downloadActive = input.downloadActive
@@ -26,12 +56,29 @@ export function buildMiniPlayerSnapshot(input: {
   let detailLine = ''
   let progressPercent: number | null = null
 
+  const exportDetail = exportActive
+    ? formatExportDetail({
+        exportPercent: input.exportPercent,
+        exportMessage: input.exportMessage,
+        exportSpeed: input.exportSpeed
+      })
+    : null
+
   if (exportActive && downloadActive) {
-    detailLine = [input.downloadStatus, input.downloadProgress].filter(Boolean).join(' · ')
-    progressPercent = input.downloadProgress ? parseProgressPercent(input.downloadProgress) : null
-  } else if (exportActive) {
-    detailLine = 'ffmpeg export'
-    progressPercent = null
+    const downloadParts = [
+      input.downloadStatus,
+      input.downloadProgress,
+      input.downloadSpeed
+    ].filter((p) => typeof p === 'string' && p.trim() !== '')
+    const downloadLine = downloadParts.join(' · ')
+    detailLine = [exportDetail?.detailLine, downloadLine]
+      .filter((p) => p && p.length > 0)
+      .join(' · ')
+    const downloadPct = input.downloadProgress ? parseProgressPercent(input.downloadProgress) : null
+    progressPercent = downloadPct ?? exportDetail?.progressPercent ?? null
+  } else if (exportActive && exportDetail) {
+    detailLine = exportDetail.detailLine
+    progressPercent = exportDetail.progressPercent
   } else if (downloadActive) {
     const parts = [input.downloadStatus, input.downloadProgress, input.downloadSpeed].filter(
       (p) => typeof p === 'string' && p.trim() !== ''

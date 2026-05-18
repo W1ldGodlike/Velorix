@@ -1,6 +1,6 @@
 import { BrowserWindow } from 'electron'
 
-import { mainWindowIpc as mw } from '../shared/ipc-channels'
+import { sendExportProgress } from './export-progress-broadcast'
 import type { AppUiLocale } from '../shared/app-ui-locale'
 import {
   fluxLogBatchAutoStartFfmpegMissing,
@@ -78,12 +78,12 @@ export function launchFfmpegExportBatchRunner(
     uiLocale: loc,
     pushRowProgress: (rowId, p) => {
       if (progressTargetWin && !progressTargetWin.isDestroyed()) {
-        progressTargetWin.webContents.send(mw.exportProgress, { ...p, batchRowId: rowId })
+        sendExportProgress(progressTargetWin.webContents, { ...p, batchRowId: rowId })
         return
       }
       for (const w of BrowserWindow.getAllWindows()) {
         if (!w.isDestroyed()) {
-          w.webContents.send(mw.exportProgress, { ...p, batchRowId: rowId })
+          sendExportProgress(w.webContents, { ...p, batchRowId: rowId })
         }
       }
     }

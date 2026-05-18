@@ -3,6 +3,7 @@ import { basename, normalize, resolve } from 'path'
 
 import { BrowserWindow, dialog, ipcMain } from 'electron'
 
+import { sendExportProgress } from '../export-progress-broadcast'
 import { mainWindowIpc as mw } from '../../shared/ipc-channels'
 import {
   FFMPEG_EXPORT_CANCELLED_ERROR,
@@ -129,7 +130,7 @@ export function registerSingleExportIpcHandlers(ctx: ExportBatchIpcContext): voi
     host.setActiveExportAbort(ac)
     const startedAt = Date.now()
     const pushProgress = (p: FfmpegExportProgressPayload): void => {
-      win.webContents.send(mw.exportProgress, p)
+      sendExportProgress(win.webContents, p)
     }
     try {
       pushProgress({ percent: -1, message: exportProgressLaunchingFfmpeg(exportUiLocale) })
