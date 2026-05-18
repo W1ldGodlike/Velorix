@@ -20,7 +20,7 @@ import {
 import type { UiTextKey } from '../../locales/ui-text-strings'
 import { AppSettingsHidpiStatusPanel } from './AppSettingsHidpiStatusPanel'
 import { AppSettingsHwManualSmokePanel } from './AppSettingsHwManualSmokePanel'
-import { AppSettingsWinPackagedSmokePanel } from './AppSettingsWinPackagedSmokePanel'
+import { AppSettingsPackagedSmokePanel } from './AppSettingsPackagedSmokePanel'
 import { EnginePathsSettingsSection } from './EnginePathsSettingsSection'
 
 const SECTION_HINT_KEYS: Record<AppSettingsDialogSection, UiTextKey> = {
@@ -279,7 +279,18 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
                   sectionHintId={sectionHintId}
                   {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
                 />
-                <AppSettingsWinPackagedSmokePanel
+                <AppSettingsPackagedSmokePanel
+                  platform="win"
+                  sectionHintId={sectionHintId}
+                  {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
+                />
+                <AppSettingsPackagedSmokePanel
+                  platform="linux"
+                  sectionHintId={sectionHintId}
+                  {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
+                />
+                <AppSettingsPackagedSmokePanel
+                  platform="macos"
                   sectionHintId={sectionHintId}
                   {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
                 />

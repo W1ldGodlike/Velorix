@@ -101,6 +101,15 @@ export type UseAppShellLayoutPropsInput = {
     onStatus: (message: string) => void
     onApplied: () => void
   }
+  workflowPlanner: {
+    open: boolean
+    setOpen: Dispatch<SetStateAction<boolean>>
+  }
+  workflowScenarioBuilder: {
+    open: boolean
+    setOpen: Dispatch<SetStateAction<boolean>>
+    onStatus: (message: string) => void
+  }
 }
 
 export type AppShellLayoutChromeProps = {
@@ -116,6 +125,16 @@ export type AppShellLayoutChromeProps = {
     onStatus: (message: string) => void
     onApplied: () => void
   }
+  workflowPlanner: {
+    open: boolean
+    onClose: () => void
+    onStatus?: (message: string) => void
+  }
+  workflowScenarioBuilder: {
+    open: boolean
+    onClose: () => void
+    onStatus: (message: string) => void
+  }
 }
 
 export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppShellLayoutChromeProps {
@@ -126,7 +145,9 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
     overlay,
     exportPreset,
     appSettings,
-    externalFilterScript
+    externalFilterScript,
+    workflowPlanner,
+    workflowScenarioBuilder
   } = input
   const {
     workspaceTab,
@@ -342,6 +363,28 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
     [externalFilterScript]
   )
 
+  const workflowPlannerProps = useMemo(
+    () => ({
+      open: workflowPlanner.open,
+      onClose: () => {
+        workflowPlanner.setOpen(false)
+      },
+      onStatus: workflowScenarioBuilder.onStatus
+    }),
+    [workflowPlanner, workflowScenarioBuilder.onStatus]
+  )
+
+  const workflowScenarioBuilderProps = useMemo(
+    () => ({
+      open: workflowScenarioBuilder.open,
+      onClose: () => {
+        workflowScenarioBuilder.setOpen(false)
+      },
+      onStatus: workflowScenarioBuilder.onStatus
+    }),
+    [workflowScenarioBuilder]
+  )
+
   return {
     appChromeBusy,
     topbar: topbarProps,
@@ -349,6 +392,8 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
     overlay,
     exportPreset: exportPresetProps,
     appSettings: appSettingsProps,
-    externalFilterScript: externalFilterScriptProps
+    externalFilterScript: externalFilterScriptProps,
+    workflowPlanner: workflowPlannerProps,
+    workflowScenarioBuilder: workflowScenarioBuilderProps
   }
 }

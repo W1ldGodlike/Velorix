@@ -178,6 +178,28 @@ export function buildApplicationMenuTemplate(d: MainApplicationMenuDeps): MenuIt
             target.webContents.send(mw.openExternalFilterScript)
           }
         },
+        {
+          label: m.menuWorkflowPlanner,
+          click: (): void => {
+            const target = getMainUiWindow()
+            if (!target || target.isDestroyed()) {
+              return
+            }
+            target.focus()
+            target.webContents.send(mw.openWorkflowPlanner)
+          }
+        },
+        {
+          label: m.menuWorkflowScenarioBuilder,
+          click: (): void => {
+            const target = getMainUiWindow()
+            if (!target || target.isDestroyed()) {
+              return
+            }
+            target.focus()
+            target.webContents.send(mw.openWorkflowScenarioBuilder)
+          }
+        },
         { type: 'separator' },
         {
           label: m.menuExportSettings,

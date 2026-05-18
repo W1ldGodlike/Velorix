@@ -137,6 +137,75 @@ export const fluxalloy = {
     ): Promise<import('../shared/external-filter-script-contract').ExternalFilterScriptApplyResult> =>
       ipcRenderer.invoke(mw.externalFilterScriptApply, payload)
   },
+  workflows: {
+    listScenarios: (): Promise<
+      | { ok: true; items: import('../shared/workflow-scenario-contract').WorkflowScenarioListItem[] }
+      | { ok: false; error: string }
+    > => ipcRenderer.invoke(mw.workflowScenariosList),
+    getScenario: (
+      id: string
+    ): Promise<
+      | { ok: true; scenario: import('../shared/workflow-scenario-contract').WorkflowScenarioDocument }
+      | { ok: false; error: string }
+    > => ipcRenderer.invoke(mw.workflowScenariosGet, id),
+    saveScenario: (
+      doc: import('../shared/workflow-scenario-contract').WorkflowScenarioDocument
+    ): Promise<
+      | { ok: true; scenario: import('../shared/workflow-scenario-contract').WorkflowScenarioDocument }
+      | { ok: false; error: string }
+    > => ipcRenderer.invoke(mw.workflowScenariosSave, doc),
+    deleteScenario: (id: string): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(mw.workflowScenariosDelete, id),
+    listScheduledTasks: (): Promise<
+      | { ok: true; items: import('../shared/scheduled-task-contract').ScheduledTaskListItem[] }
+      | { ok: false; error: string }
+    > => ipcRenderer.invoke(mw.scheduledTasksList),
+    saveScheduledTask: (
+      doc: import('../shared/scheduled-task-contract').ScheduledTaskDocument
+    ): Promise<
+      | { ok: true; task: import('../shared/scheduled-task-contract').ScheduledTaskDocument }
+      | { ok: false; error: string }
+    > => ipcRenderer.invoke(mw.scheduledTasksSave, doc),
+    deleteScheduledTask: (id: string): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(mw.scheduledTasksDelete, id),
+    setScheduledTaskEnabled: (
+      id: string,
+      enabled: boolean
+    ): Promise<{ ok: true } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(mw.scheduledTasksSetEnabled, id, enabled),
+    pickWatchFolder: (): Promise<{ ok: true; path: string } | { ok: false; error: string }> =>
+      ipcRenderer.invoke(mw.workflowPickWatchFolder),
+    onWatchFolderDetected: (
+      listener: (payload: import('../shared/workflow-watch-folder-contract').WorkflowWatchFolderDetectedPayload) => void
+    ): (() => void) => {
+      const handler = (
+        _event: Electron.IpcRendererEvent,
+        payload: import('../shared/workflow-watch-folder-contract').WorkflowWatchFolderDetectedPayload
+      ): void => {
+        listener(payload)
+      }
+      ipcRenderer.on(mw.workflowWatchFolderDetected, handler)
+      return () => {
+        ipcRenderer.removeListener(mw.workflowWatchFolderDetected, handler)
+      }
+    },
+    onWatchFolderRunFinished: (
+      listener: (
+        payload: import('../shared/workflow-watch-folder-contract').WorkflowWatchFolderRunFinishedPayload
+      ) => void
+    ): (() => void) => {
+      const handler = (
+        _event: Electron.IpcRendererEvent,
+        payload: import('../shared/workflow-watch-folder-contract').WorkflowWatchFolderRunFinishedPayload
+      ): void => {
+        listener(payload)
+      }
+      ipcRenderer.on(mw.workflowWatchFolderRunFinished, handler)
+      return () => {
+        ipcRenderer.removeListener(mw.workflowWatchFolderRunFinished, handler)
+      }
+    }
+  },
   utilities: {
     repairRemux: (
       payload: import('../shared/media-utilities-contract').MediaUtilitiesRepairRequestPayload
@@ -316,6 +385,26 @@ export const fluxalloy = {
   },
   onOpenExternalFilterScript: (listener: () => void): (() => void) => {
     const channel = mw.openExternalFilterScript
+    const handler = (): void => {
+      listener()
+    }
+    ipcRenderer.on(channel, handler)
+    return (): void => {
+      ipcRenderer.removeListener(channel, handler)
+    }
+  },
+  onOpenWorkflowPlanner: (listener: () => void): (() => void) => {
+    const channel = mw.openWorkflowPlanner
+    const handler = (): void => {
+      listener()
+    }
+    ipcRenderer.on(channel, handler)
+    return (): void => {
+      ipcRenderer.removeListener(channel, handler)
+    }
+  },
+  onOpenWorkflowScenarioBuilder: (listener: () => void): (() => void) => {
+    const channel = mw.openWorkflowScenarioBuilder
     const handler = (): void => {
       listener()
     }

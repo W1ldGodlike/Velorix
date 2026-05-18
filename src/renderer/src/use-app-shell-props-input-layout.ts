@@ -23,6 +23,8 @@ export function buildAppShellPropsInputLayout(
     appSettingsSection,
     settingsResetBusy,
     externalFilterScriptOpen,
+    workflowPlannerOpen,
+    workflowScenarioBuilderOpen,
     downloadsOptionsBusy,
     downloadsHistoryBusy,
     downloadsStats,
@@ -43,6 +45,8 @@ export function buildAppShellPropsInputLayout(
     editorUrlPasteBehavior,
     setUiLocaleRenderTick,
     setExternalFilterScriptOpen,
+    setWorkflowPlannerOpen,
+    setWorkflowScenarioBuilderOpen,
     handleOpenVideoFolderToolbar,
     handleOpenToolbar,
     handleCancelExport,
@@ -204,6 +208,15 @@ export function buildAppShellPropsInputLayout(
           hydrateExportFieldsFromSettings(loaded)
         })
       }
+    },
+    workflowPlanner: {
+      open: workflowPlannerOpen,
+      setOpen: setWorkflowPlannerOpen
+    },
+    workflowScenarioBuilder: {
+      open: workflowScenarioBuilderOpen,
+      setOpen: setWorkflowScenarioBuilderOpen,
+      onStatus: setStatusHint
     }
   }
 }

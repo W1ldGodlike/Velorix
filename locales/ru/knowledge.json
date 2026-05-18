@@ -39,5 +39,9 @@
   "knowledgeDeepLinkHwSmokeLabel": "Справка: аппаратное кодирование",
   "knowledgeDeepLinkHwSmokeTooltip": "Открыть статью о NVENC, VAAPI и ручном smoke-тесте.",
   "knowledgeDeepLinkPackagedWinLabel": "Справка: smoke Windows (pack:dir)",
-  "knowledgeDeepLinkPackagedWinTooltip": "Открыть статью о ручной проверке dist/win-unpacked после сборки."
+  "knowledgeDeepLinkPackagedWinTooltip": "Открыть статью о ручной проверке dist/win-unpacked после сборки.",
+  "knowledgeDeepLinkPackagedLinuxLabel": "Справка: smoke Linux (pack:linux:dir)",
+  "knowledgeDeepLinkPackagedLinuxTooltip": "Открыть статью о ручной проверке dist/linux-unpacked после pack:linux:dir.",
+  "knowledgeDeepLinkPackagedMacosLabel": "Справка: smoke macOS (pack:mac:dir)",
+  "knowledgeDeepLinkPackagedMacosTooltip": "Открыть статью о ручной проверке FluxAlloy.app после pack:mac:dir."
 }

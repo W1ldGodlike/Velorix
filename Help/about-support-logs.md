@@ -10,7 +10,7 @@
 
 ## Архив для поддержки
 
-Кнопка **архива** собирает несколько служебных файлов в один zip — удобно отправить целиком, не выбирая вручную. После ручного smoke Windows в архиве есть блок `winPackagedSmoke:` (чеклист из настроек) — см. [packaged-windows-smoke.md](packaged-windows-smoke.md).
+Кнопка **архива** собирает несколько служебных файлов в один zip — удобно отправить целиком, не выбирая вручную. После ручного packaged smoke в архиве есть блоки `winPackagedSmoke:`, `linuxPackagedSmoke:`, `macosPackagedSmoke:` (чеклисты из настроек) — см. [packaged-windows-smoke.md](packaged-windows-smoke.md), [packaged-linux-smoke.md](packaged-linux-smoke.md), [packaged-macos-smoke.md](packaged-macos-smoke.md).
 
 ## Временные файлы
 

@@ -2,7 +2,7 @@
 
 For everyday use you only need to know: the **Terminal** tab suggests safe argv fragments, shows an example, and can open upstream docs in a browser. The sections below are for people who edit the bundled data files or scenario code.
 
-The **Terminal** tab loads `Data/ytdlp_commands.json` and `Data/ffmpeg_commands.json`. Each entry describes a token, a short description, an example argv string, and a `docUrl` pointing to upstream documentation.
+The **Terminal** tab loads `Data/ytdlp_commands.json` and `Data/ffmpeg_commands.json`. Each entry describes a token, a short description, an example argv string, and a `docUrl` pointing to upstream documentation. The hint catalog’s **Scenarios** chip lists only built-in lines with `fullLine`, not JSON tokens.
 
 You can extend the JSON without rebuilding: the files ship next to `FluxAlloy.exe` as `Data\*.json`.
 

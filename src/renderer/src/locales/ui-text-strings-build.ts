@@ -20,6 +20,7 @@ import ruMaintenance from '@locales/ru/maintenance.json'
 import ruProcessing from '@locales/ru/processing.json'
 import ruTerminal from '@locales/ru/terminal.json'
 import ruWorkspace from '@locales/ru/workspace.json'
+import ruWorkflow from '@locales/ru/workflow.json'
 import enAbout from '@locales/en/about.json'
 import enCommon from '@locales/en/common.json'
 import enDownloads from '@locales/en/downloads.json'
@@ -40,6 +41,7 @@ import enMaintenance from '@locales/en/maintenance.json'
 import enProcessing from '@locales/en/processing.json'
 import enTerminal from '@locales/en/terminal.json'
 import enWorkspace from '@locales/en/workspace.json'
+import enWorkflow from '@locales/en/workflow.json'
 import { uiTextStringsRuPart01 } from './ui-text-strings-ru-01'
 import { uiTextStringsRuPart02 } from './ui-text-strings-ru-02'
 import { uiTextStringsRuPart03 } from './ui-text-strings-ru-03'
@@ -86,7 +88,8 @@ export function buildUiTextTables() {
     ...ruBatchExport,
     ...ruSettings,
     ...ruInspector,
-    ...ruInspectorProbe
+    ...ruInspectorProbe,
+    ...ruWorkflow
   } as const
   const en = {
     ...uiTextStringsEnPart01,
@@ -116,7 +119,8 @@ export function buildUiTextTables() {
     ...enBatchExport,
     ...enSettings,
     ...enInspector,
-    ...enInspectorProbe
+    ...enInspectorProbe,
+    ...enWorkflow
   } as const
   return { ru, en } as const
 }

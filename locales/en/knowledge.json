@@ -39,5 +39,9 @@
   "knowledgeDeepLinkHwSmokeLabel": "Help: hardware encoding",
   "knowledgeDeepLinkHwSmokeTooltip": "Open the article about NVENC, VAAPI, and manual smoke testing.",
   "knowledgeDeepLinkPackagedWinLabel": "Help: Windows packaged smoke",
-  "knowledgeDeepLinkPackagedWinTooltip": "Open the article about manual testing of dist/win-unpacked after a build."
+  "knowledgeDeepLinkPackagedWinTooltip": "Open the article about manual testing of dist/win-unpacked after a build.",
+  "knowledgeDeepLinkPackagedLinuxLabel": "Help: Linux packaged smoke",
+  "knowledgeDeepLinkPackagedLinuxTooltip": "Open the article about manual testing of dist/linux-unpacked after pack:linux:dir.",
+  "knowledgeDeepLinkPackagedMacosLabel": "Help: macOS packaged smoke",
+  "knowledgeDeepLinkPackagedMacosTooltip": "Open the article about manual testing of FluxAlloy.app after pack:mac:dir."
 }

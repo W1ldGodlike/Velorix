@@ -9,6 +9,8 @@ import { AppWorkspaceMain } from './AppWorkspaceMain'
 import { AppWorkspaceTopbar } from './AppWorkspaceTopbar'
 import { AppSettingsDialog } from './AppSettingsDialog'
 import { ExternalFilterScriptDialog } from './ExternalFilterScriptDialog'
+import { WorkflowPlannerDialog } from './WorkflowPlannerDialog'
+import { WorkflowScenarioBuilderDialog } from './WorkflowScenarioBuilderDialog'
 import { ExportPresetNameDialog } from './ExportPresetNameDialog'
 
 export type AppShellLayoutProps = AppShellLayoutChromeProps & {
@@ -23,7 +25,9 @@ export function AppShellLayout({
   overlay,
   exportPreset,
   appSettings,
-  externalFilterScript
+  externalFilterScript,
+  workflowPlanner,
+  workflowScenarioBuilder
 }: AppShellLayoutProps): JSX.Element {
   return (
     <div className="app-shell" aria-label={uiText('appMainShellAria')} aria-busy={appChromeBusy}>
@@ -34,6 +38,8 @@ export function AppShellLayout({
       <ExportPresetNameDialog {...exportPreset} />
       <AppSettingsDialog {...appSettings} />
       <ExternalFilterScriptDialog {...externalFilterScript} />
+      <WorkflowPlannerDialog {...workflowPlanner} />
+      <WorkflowScenarioBuilderDialog {...workflowScenarioBuilder} />
     </div>
   )
 }

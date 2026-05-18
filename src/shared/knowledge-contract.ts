@@ -51,3 +51,9 @@ export const KNOWLEDGE_SLUG_APPEARANCE_LANGUAGE_THEME = 'appearance-language-the
 
 /** §3 — ручной smoke packaged Win после pack:dir. */
 export const KNOWLEDGE_SLUG_PACKAGED_WINDOWS_SMOKE = 'packaged-windows-smoke'
+
+/** §3 — ручной smoke packaged Linux после pack:linux:dir. */
+export const KNOWLEDGE_SLUG_PACKAGED_LINUX_SMOKE = 'packaged-linux-smoke'
+
+/** §3 — ручной smoke packaged macOS после pack:mac:dir. */
+export const KNOWLEDGE_SLUG_PACKAGED_MACOS_SMOKE = 'packaged-macos-smoke'

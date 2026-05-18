@@ -41,6 +41,10 @@ export interface SupportBundleRuntimeInfo {
   hwManualSmokeChecklistLines: readonly string[]
   /** §3 — ручной smoke packaged Win (чеклист владельца, не CI UI). */
   winPackagedSmokeChecklistLines: readonly string[]
+  /** §3 — ручной smoke packaged Linux. */
+  linuxPackagedSmokeChecklistLines: readonly string[]
+  /** §3 — ручной smoke packaged macOS. */
+  macosPackagedSmokeChecklistLines: readonly string[]
 }
 
 export interface DiagnosticsPruneOptions {

@@ -40,7 +40,7 @@
 
 ## IPC и контракты
 
-- Реестр имён каналов: [`src/shared/ipc-channels.ts`](../src/shared/ipc-channels.ts) (`mainWindowIpc`, `downloadsIpc`) — **157** каналов (invoke + push + `logRenderer` через `ipcMain.on`).
+- Реестр имён каналов: [`src/shared/ipc-channels.ts`](../src/shared/ipc-channels.ts) (`mainWindowIpc`, `downloadsIpc`) — invoke + push + `logRenderer` через `ipcMain.on` (см. `npm run audit:ipc-architecture`).
 - Проверка связности: `npm run audit:ipc-architecture` — каждый invoke-канал имеет `ipcMain.handle` (или loop `FFMPEG_EXPORT_SETTING_CHANNELS`) в `src/main/` и `ipcRenderer.invoke` / `send` в `src/preload/`; push-каналы — в `PUSH_KEYS` скрипта.
 - Регистрация `ipcMain.handle` (строки `ipcMain.handle(`; эффективных handle **139** с учётом loop ffmpeg settings):
 
@@ -50,6 +50,7 @@
 | [`src/main/ipc/register-engines-preview-ipc.ts`](../src/main/ipc/register-engines-preview-ipc.ts) | 12 |
 | [`src/main/register-downloads-queue-ipc.ts`](../src/main/register-downloads-queue-ipc.ts) | 12 |
 | [`src/main/ipc/register-main-utilities-ipc.ts`](../src/main/ipc/register-main-utilities-ipc.ts) | 11 |
+| [`src/main/ipc/register-workflow-ipc.ts`](../src/main/ipc/register-workflow-ipc.ts) | 5 |
 | [`src/main/ipc/register-knowledge-diagnostics-ipc.ts`](../src/main/ipc/register-knowledge-diagnostics-ipc.ts) | 8 |
 | [`src/main/ipc/register-batch-export-queue-ipc-ingest.ts`](../src/main/ipc/register-batch-export-queue-ipc-ingest.ts) | 7 |
 | [`src/main/register-downloads-runner-ipc.ts`](../src/main/register-downloads-runner-ipc.ts) | 7 |
@@ -78,6 +79,7 @@
 | external filter script | `external-filter-script-contract.ts` | §17 AviSynth/VapourSynth в `-vf` экспорта + меню «Сервис» |
 | ffprobe | `ffprobe-contract.ts` | probe JSON / UI |
 | yt-dlp | `ytdlp-download-contract.ts`, `ytdlp-history-contract.ts` | download + history |
+| Workflows §10/§11 | `workflow-scenario-contract.ts`, `scheduled-task-contract.ts`, `workflow-watch-folder-contract.ts`, `workflow-scenario-run-plan.ts`, `watch-folder-scan.ts`, `workflow-watch-folder-runner.ts`, `workflow-scenario-runner.ts` | JSON сценарии/задачи в `userData/workflows/`; in-app watch-folder runner (poll + state) → push `workflowWatchFolderDetected`; при `executeScenarioOnDetect` очередь `workflow-scenario-runner` (ffmpeg export v1, `processing-history` kind `workflowScenario`) → push `workflowWatchFolderRunFinished`; планировщик (мастер задачи) и блок-схема в конструкторе |
 | Terminal | `terminal-contract.ts` (barrel), `terminal-contract-types.ts`, `terminal-contract-hints-*` | hints после split ф.4 |
 | Engines | `engine-contract.ts`, `engine-download-contract.ts`, `engine-update-check-contract.ts` | paths, download, check updates |
 | Diagnostics / about | `diagnostics-contract.ts`, `about-contract.ts` | support bundle UI |

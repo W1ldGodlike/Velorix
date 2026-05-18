@@ -4,7 +4,9 @@
 
 The **Terminal** tab builds a command from hints and validates it before launch. Only three tool families are allowed — the link downloader, the media encoder, and the media analyzer — so you never accidentally spawn unrelated software.
 
-Hints come from bundled lists plus **built-in scenarios** for common tasks. Maintainer-focused detail lives in [ffmpeg-terminal-hints.md](ffmpeg-terminal-hints.md).
+Hints come from bundled lists plus **built-in scenarios** for common tasks (ready-made command line and Russian `summary`). The catalog on the right has a **Scenarios** chip that lists only scenario hints, not JSON tokens.
+
+Scenario copy lives in `src/shared/terminal-contract-hints-*.ts`; after editing `summary`, run **`npm run locales:terminal-summaries-ru`** twice until **0** replacements, then **`npm run locales:terminal-scenario-stream-gloss`** if needed. See [ffmpeg-terminal-hints.md](ffmpeg-terminal-hints.md).
 
 ## Inspector
 

@@ -56,6 +56,8 @@ import {
   scheduleEnqueueBatchAfterDownload
 } from './main-ffmpeg-export-batch-host'
 import { configureMainYtdlpSettingsPersist } from './main-ytdlp-settings-persist'
+import { configureWorkflowScenarioRunnerHost } from './workflow-scenario-runner-host'
+import { startWorkflowWatchFolderRunner } from './workflow-watch-folder-runner'
 import {
   configureMainExportOutputPaths,
   rememberExportOutputPath,
@@ -246,4 +248,13 @@ export function bootstrapMainApplicationHosts(): void {
     afterDownloadOpenedInMainHandler: scheduleAutoExportAfterSuccessfulYtdlpOpen,
     afterDownloadEnqueueBatch: scheduleEnqueueBatchAfterDownload
   })
+  configureWorkflowScenarioRunnerHost({
+    isExportBusy: () => activeExportAbort !== null,
+    getSettings: getCachedSettings,
+    getEnginePathOverrides: () => getCachedSettings().engineExecutablePaths ?? {},
+    mainUiLocale: () => getCachedSettings().uiLocale ?? 'ru',
+    rememberExportOutputPath,
+    rememberFfmpegExportDirectory
+  })
+  startWorkflowWatchFolderRunner()
 }

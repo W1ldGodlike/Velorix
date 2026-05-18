@@ -1,0 +1,19 @@
+{
+  "linuxPackagedSmokeSectionTitle": "Manual Linux packaged smoke (pack:linux:dir)",
+  "linuxPackagedSmokePrereq0": "On Linux: npm run build && npm run pack:linux:dir, then npm run verify:linux-unpacked (bundled engines in bin/ may be filled before release).",
+  "linuxPackagedSmokePrereq1": "Folder dist/linux-unpacked/ with fluxalloy or FluxAlloy and resources/bin/{yt-dlp,ffmpeg,ffprobe}.",
+  "linuxPackagedSmokePrereq2": "Clean userData profile (first launch) or intentional test over an existing profile.",
+  "linuxPackagedSmokeStep_launch": "Run dist/linux-unpacked/fluxalloy or FluxAlloy (not npm run dev).",
+  "linuxPackagedSmokeStep_engines": "Status bar: yt-dlp / ffmpeg / ffprobe versions with no “not found” errors.",
+  "linuxPackagedSmokeStep_open_file": "Editor: open a local MP4/MKV; preview plays and scrub works.",
+  "linuxPackagedSmokeStep_ytdlp": "Downloads: short URL (10–30 s), queue reaches Done, log has no ERROR.",
+  "linuxPackagedSmokeStep_editor_from_dl": "From queue/history: Open in editor for a finished file.",
+  "linuxPackagedSmokeStep_snapshot": "Frame snapshot saves as PNG/JPEG.",
+  "linuxPackagedSmokeStep_export": "MP4 segment export (libx264) completes without error.",
+  "linuxPackagedSmokeStep_knowledge": "Knowledge base: open an article; internal .md link works.",
+  "linuxPackagedSmokeStep_support_zip": "About → Support ZIP: archive is created; no secrets in the text.",
+  "linuxPackagedSmokeStep_settings": "Settings → Dependencies: engine paths point at resources/bin.",
+  "linuxPackagedSmokePass0": "No crash when closing the main window and relaunching the binary.",
+  "linuxPackagedSmokePass1": "Download progress column shows labels during post-processing merge/embed.",
+  "linuxPackagedSmokePass2": "userData/logs have no tokens/passwords; dist/ artifacts have no .env."
+}

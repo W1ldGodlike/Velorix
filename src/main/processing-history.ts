@@ -43,7 +43,8 @@ function isKind(raw: unknown): raw is ProcessingHistoryKind {
     raw === 'ffmpegExport' ||
     raw === 'ffmpegBatchExport' ||
     raw === 'ffmpegSnapshot' ||
-    raw === 'autoExport'
+    raw === 'autoExport' ||
+    raw === 'workflowScenario'
   )
 }
 
@@ -214,6 +215,7 @@ export function getProcessingHistoryWeeklySummary(
     ffmpegBatchExport: 0,
     ffmpegSnapshot: 0,
     autoExport: 0,
+    workflowScenario: 0,
     totalDurationMs: 0
   }
   for (const entry of loadEntries(userDataRoot)) {

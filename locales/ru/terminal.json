@@ -30,6 +30,7 @@
   "terminalHintsSearchLabel": "Поиск подсказок",
   "terminalHintsSearchPlaceholder": "--help, -i, пример crop",
   "terminalHintsToolAll": "Все",
+  "terminalHintsToolScenarios": "Сценарии",
   "terminalHintsToolFfmpeg": "ffmpeg",
   "terminalHintsToolFfprobe": "ffprobe",
   "terminalHintsToolFilterAria": "Фильтр подсказок по инструменту",

@@ -5,6 +5,8 @@ import { app, BrowserWindow, clipboard, dialog, screen, shell } from 'electron'
 
 import { buildSupportZipFfprobeSmokeLines } from '../shared/packaged-ffprobe-smoke'
 import { formatFfmpegHwManualSmokeChecklistLines } from '../shared/ffmpeg-hw-manual-smoke-checklist'
+import { formatLinuxPackagedManualSmokeChecklistLines } from '../shared/linux-packaged-manual-smoke-checklist'
+import { formatMacosPackagedManualSmokeChecklistLines } from '../shared/macos-packaged-manual-smoke-checklist'
 import { formatWinPackagedManualSmokeChecklistLines } from '../shared/win-packaged-manual-smoke-checklist'
 import { buildSupportZipPackagedReleaseLines } from '../shared/packaged-release-smoke'
 import { buildSupportZipBuildInfoLines, readAppBuildInfo } from '../shared/app-build-info'
@@ -118,6 +120,8 @@ export async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRunt
   const uiDpiLines = formatWindowHidpiDiagnosticLines()
   const hwManualSmokeChecklistLines = formatFfmpegHwManualSmokeChecklistLines()
   const winPackagedSmokeChecklistLines = formatWinPackagedManualSmokeChecklistLines()
+  const linuxPackagedSmokeChecklistLines = formatLinuxPackagedManualSmokeChecklistLines()
+  const macosPackagedSmokeChecklistLines = formatMacosPackagedManualSmokeChecklistLines()
 
   return {
     appVersion: app.getVersion(),
@@ -149,7 +153,9 @@ export async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRunt
     rendererStateLines,
     uiDpiLines,
     hwManualSmokeChecklistLines,
-    winPackagedSmokeChecklistLines
+    winPackagedSmokeChecklistLines,
+    linuxPackagedSmokeChecklistLines,
+    macosPackagedSmokeChecklistLines
   }
 }
 

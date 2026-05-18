@@ -29,7 +29,10 @@ export const LOCALE_JSON_SHARDS = [
   'inspector',
   'inspector-probe',
   'hw-manual-smoke',
-  'win-packaged-manual-smoke'
+  'win-packaged-manual-smoke',
+  'linux-packaged-manual-smoke',
+  'macos-packaged-manual-smoke',
+  'workflow'
 ] as const
 export type LocaleJsonShard = (typeof LOCALE_JSON_SHARDS)[number]
 

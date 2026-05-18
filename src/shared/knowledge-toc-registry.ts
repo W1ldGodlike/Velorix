@@ -69,6 +69,8 @@ export const KNOWLEDGE_TOC_SECTIONS: readonly KnowledgeTocSectionSpec[] = [
       'engines-update-paths',
       'hardware-encoding',
       'packaged-windows-smoke',
+      'packaged-linux-smoke',
+      'packaged-macos-smoke',
       'logging-and-diagnostics',
       'about-support-logs'
     ]

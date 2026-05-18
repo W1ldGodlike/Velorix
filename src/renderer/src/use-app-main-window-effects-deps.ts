@@ -49,6 +49,8 @@ export type UseAppMainWindowEffectsDeps = {
   setAppSettingsOpen: Dispatch<SetStateAction<boolean>>
   setAppSettingsSection: Dispatch<SetStateAction<AppSettingsDialogSection>>
   setExternalFilterScriptOpen: Dispatch<SetStateAction<boolean>>
+  setWorkflowPlannerOpen: Dispatch<SetStateAction<boolean>>
+  setWorkflowScenarioBuilderOpen: Dispatch<SetStateAction<boolean>>
   setAboutInfo: Dispatch<
     SetStateAction<Awaited<ReturnType<typeof window.fluxalloy.about.getInfo>> | null>
   >

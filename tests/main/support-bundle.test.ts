@@ -121,6 +121,14 @@ describe('createSupportBundleZip', () => {
       winPackagedSmokeChecklistLines: [
         'doc: docs/RELEASE.md §4',
         '  step [launch]: Run dist/win-unpacked/FluxAlloy.exe'
+      ],
+      linuxPackagedSmokeChecklistLines: [
+        'doc: docs/RELEASE.md §4.1',
+        '  step [launch]: Run dist/linux-unpacked/fluxalloy'
+      ],
+      macosPackagedSmokeChecklistLines: [
+        'doc: docs/RELEASE.md §4.2',
+        '  step [launch]: Open FluxAlloy.app'
       ]
     })
 
@@ -158,6 +166,8 @@ describe('createSupportBundleZip', () => {
     expect(zip.includes(Buffer.from('build:linux'))).toBe(true)
     expect(zip.includes(Buffer.from('hwManualSmoke:'))).toBe(true)
     expect(zip.includes(Buffer.from('winPackagedSmoke:'))).toBe(true)
+    expect(zip.includes(Buffer.from('linuxPackagedSmoke:'))).toBe(true)
+    expect(zip.includes(Buffer.from('macosPackagedSmoke:'))).toBe(true)
     expect(zip.includes(Buffer.from('win-nvenc'))).toBe(true)
   })
 })

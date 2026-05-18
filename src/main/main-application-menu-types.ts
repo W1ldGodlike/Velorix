@@ -19,6 +19,8 @@ export type MainApplicationMenuDeps = {
     menuEnginePaths: string
     menuService: string
     menuExternalFilterScript: string
+    menuWorkflowPlanner: string
+    menuWorkflowScenarioBuilder: string
     menuExportSettings: string
     menuImportSettings: string
     menuTools: string

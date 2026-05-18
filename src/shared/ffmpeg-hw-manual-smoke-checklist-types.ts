@@ -1,4 +1,9 @@
-export type FfmpegHwManualSmokePlatformId = 'win-nvenc' | 'linux-vaapi' | 'win-packaged'
+export type FfmpegHwManualSmokePlatformId =
+  | 'win-nvenc'
+  | 'linux-vaapi'
+  | 'win-packaged'
+  | 'linux-packaged'
+  | 'macos-packaged'
 
 export type FfmpegHwManualSmokeChecklistStep = {
   id: string

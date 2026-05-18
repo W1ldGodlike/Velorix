@@ -147,6 +147,22 @@ export const mainWindowIpc = {
   openExternalFilterScript: 'fluxalloy:open-external-filter-script',
   externalFilterScriptPickFile: 'fluxalloy:external-filter-script-pick-file',
   externalFilterScriptApply: 'fluxalloy:external-filter-script-apply',
+  /** §10/§11 — реестр сценариев и задач в userData/workflows. */
+  workflowScenariosList: 'fluxalloy:workflow-scenarios-list',
+  workflowScenariosGet: 'fluxalloy:workflow-scenarios-get',
+  workflowScenariosSave: 'fluxalloy:workflow-scenarios-save',
+  workflowScenariosDelete: 'fluxalloy:workflow-scenarios-delete',
+  scheduledTasksList: 'fluxalloy:scheduled-tasks-list',
+  scheduledTasksSave: 'fluxalloy:scheduled-tasks-save',
+  scheduledTasksDelete: 'fluxalloy:scheduled-tasks-delete',
+  scheduledTasksSetEnabled: 'fluxalloy:scheduled-tasks-set-enabled',
+  workflowPickWatchFolder: 'fluxalloy:workflow-pick-watch-folder',
+  /** Main → renderer: новый файл в папке задачи watch-folder. */
+  workflowWatchFolderDetected: 'fluxalloy:workflow-watch-folder-detected',
+  workflowWatchFolderRunFinished: 'fluxalloy:workflow-watch-folder-run-finished',
+  /** Main → renderer: открыть планировщик / конструктор сценариев. */
+  openWorkflowPlanner: 'fluxalloy:open-workflow-planner',
+  openWorkflowScenarioBuilder: 'fluxalloy:open-workflow-scenario-builder',
   /** Main → все окна с главным preload: актуальный снимок `mainWindowUiPanels` после merge §4.1. */
   mainWindowUiPanelsChanged: 'fluxalloy:main-window-ui-panels-changed',
   /** Main → главное окно: снимок `downloadsWindowUiPanels` после merge (вкладка «Загрузки» ↔ pop-out). */

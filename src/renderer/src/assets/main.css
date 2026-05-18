@@ -3216,6 +3216,83 @@ button.app-downloads-hint-token:disabled {
   color: var(--fa-text-muted);
 }
 
+.workflow-scenario-flow-wrap {
+  margin: 0.5rem 0 0.75rem;
+}
+
+.workflow-scenario-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+  list-style: none;
+  margin: 0.25rem 0 0;
+  padding: 0;
+}
+
+.workflow-scenario-flow-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.workflow-scenario-flow-node {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 6.5rem;
+  max-width: 12rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: var(--fa-radius-sm, 4px);
+  border: 1px solid var(--fa-border-subtle);
+  background: var(--fa-surface-elevated, rgba(255, 255, 255, 0.04));
+  font-size: 0.78rem;
+}
+
+.workflow-scenario-flow-node--download {
+  border-left: 3px solid #4a9eff;
+}
+
+.workflow-scenario-flow-node--process {
+  border-left: 3px solid #e8a838;
+}
+
+.workflow-scenario-flow-node--save {
+  border-left: 3px solid #5cb85c;
+}
+
+.workflow-scenario-flow-kind {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--fa-text-muted);
+}
+
+.workflow-scenario-flow-label {
+  font-weight: 500;
+  color: var(--fa-text-primary);
+}
+
+.workflow-scenario-flow-meta {
+  font-size: 0.68rem;
+  color: var(--fa-text-secondary);
+  word-break: break-all;
+}
+
+.workflow-scenario-flow-arrow {
+  font-size: 1.1rem;
+  color: var(--fa-text-muted);
+  user-select: none;
+}
+
+.workflow-planner-add-form {
+  margin-bottom: 0.75rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--fa-border-subtle);
+  border-radius: var(--fa-radius-sm, 4px);
+}
+
 .app-settings-radio-row {
   display: flex;
   align-items: center;

@@ -146,6 +146,8 @@ export function useAppShellPropsInputHooks(state: AppCompositionState) {
     setAppSettingsSection: state.setAppSettingsSection,
     setEnginePathsDraft: state.setEnginePathsDraft,
     setExternalFilterScriptOpen: state.setExternalFilterScriptOpen,
+    setWorkflowPlannerOpen: state.setWorkflowPlannerOpen,
+    setWorkflowScenarioBuilderOpen: state.setWorkflowScenarioBuilderOpen,
     setAboutInfo: state.setAboutInfo,
     setAboutOpen: state.setAboutOpen,
     editorUrlPasteBehavior: state.editorUrlPasteBehavior,

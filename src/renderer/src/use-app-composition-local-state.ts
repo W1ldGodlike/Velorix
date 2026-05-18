@@ -24,6 +24,8 @@ export function useAppCompositionLocalState() {
   )
   const [settingsResetBusy, setSettingsResetBusy] = useState(false)
   const [externalFilterScriptOpen, setExternalFilterScriptOpen] = useState(false)
+  const [workflowPlannerOpen, setWorkflowPlannerOpen] = useState(false)
+  const [workflowScenarioBuilderOpen, setWorkflowScenarioBuilderOpen] = useState(false)
   /** Сброс дерева после `applyPersistedUiLocale` — строки из `ui-text` читают `getUiLocale()` из модуля. */
   const [uiLocaleRenderTick, setUiLocaleRenderTick] = useState(0)
   const [knowledgeOpen, setKnowledgeOpen] = useState(false)
@@ -73,6 +75,10 @@ export function useAppCompositionLocalState() {
     setSettingsResetBusy,
     externalFilterScriptOpen,
     setExternalFilterScriptOpen,
+    workflowPlannerOpen,
+    setWorkflowPlannerOpen,
+    workflowScenarioBuilderOpen,
+    setWorkflowScenarioBuilderOpen,
     uiLocaleRenderTick,
     setUiLocaleRenderTick,
     knowledgeOpen,

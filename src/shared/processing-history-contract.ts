@@ -3,6 +3,7 @@ export type ProcessingHistoryKind =
   | 'ffmpegBatchExport'
   | 'ffmpegSnapshot'
   | 'autoExport'
+  | 'workflowScenario'
 export type ProcessingHistoryOutcome = 'success' | 'error' | 'cancelled'
 
 export interface ProcessingHistoryEntry {
@@ -36,5 +37,6 @@ export interface ProcessingHistoryWeeklySummary {
   ffmpegBatchExport: number
   ffmpegSnapshot: number
   autoExport: number
+  workflowScenario: number
   totalDurationMs: number
 }

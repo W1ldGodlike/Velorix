@@ -4,12 +4,19 @@ import type { TerminalCommandHintEntry } from '../../src/shared/terminal-contrac
 import {
   capTerminalHintCatalogVisible,
   filterTerminalHintCatalog,
+  isTerminalScenarioHint,
   TERMINAL_HINT_CATALOG_PANEL_IDLE_MAX,
   TERMINAL_HINT_CATALOG_PANEL_MAX
 } from '../../src/shared/terminal-hints-catalog'
 
 const SAMPLE: TerminalCommandHintEntry[] = [
   { tool: 'ffmpeg', token: '-i', summary: 'input' },
+  {
+    tool: 'ffmpeg',
+    token: '· smoke',
+    summary: 'decode smoke',
+    fullLine: 'ffmpeg -nostats -i __CURRENT_FILE__ -t 10 -f null -'
+  },
   { tool: 'ffmpeg', token: '-c:v', summary: 'video codec' },
   { tool: 'ffprobe', token: '-show_format', summary: 'format' },
   { tool: 'yt-dlp', token: '-F', summary: 'formats' }
@@ -20,6 +27,13 @@ describe('terminal-hints-catalog', () => {
     const r = filterTerminalHintCatalog(SAMPLE, '', 'ffprobe')
     expect(r).toHaveLength(1)
     expect(r[0]?.token).toBe('-show_format')
+  })
+
+  it('filterTerminalHintCatalog by scenarios chip', () => {
+    const r = filterTerminalHintCatalog(SAMPLE, '', 'scenarios')
+    expect(r).toHaveLength(1)
+    expect(r[0]?.fullLine).toContain('__CURRENT_FILE__')
+    expect(isTerminalScenarioHint(r[0]!)).toBe(true)
   })
 
   it('filterTerminalHintCatalog by text', () => {

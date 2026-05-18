@@ -32,7 +32,10 @@ const ALLOWED_CONTRACT_FILES = new Set([
   'settings-contract.ts',
   'settings-backup-contract.ts',
   'ytdlp-download-contract.ts',
-  'ytdlp-history-contract.ts'
+  'ytdlp-history-contract.ts',
+  'workflow-scenario-contract.ts',
+  'workflow-watch-folder-contract.ts',
+  'scheduled-task-contract.ts'
 ])
 
 const ALLOWED_TERMINAL_AUX = new Set(['terminal-contract.ts', 'terminal-contract-types.ts'])

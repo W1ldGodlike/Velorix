@@ -36,6 +36,8 @@ export const mainApplicationStringsEn: MainApplicationStrings = {
   menuEnginePaths: 'Engine paths…',
   menuService: 'Service',
   menuExternalFilterScript: 'AviSynth/VapourSynth script…',
+  menuWorkflowPlanner: 'Task planner…',
+  menuWorkflowScenarioBuilder: 'Scenario builder…',
   menuExportSettings: 'Export settings…',
   menuImportSettings: 'Import settings…',
   settingsBackupExportTitle: 'Export FluxAlloy settings',

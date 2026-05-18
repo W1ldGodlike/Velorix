@@ -7,9 +7,15 @@ import type { TerminalWorkspacePanelProps } from './terminal-workspace-panel-pro
 
 const TERMINAL_HINT_TOOL_CHIPS: ReadonlyArray<{
   id: TerminalHintToolFilter
-  labelKey: 'terminalHintsToolAll' | 'terminalHintsToolFfmpeg' | 'terminalHintsToolFfprobe' | 'terminalHintsToolYtdlp'
+  labelKey:
+    | 'terminalHintsToolAll'
+    | 'terminalHintsToolScenarios'
+    | 'terminalHintsToolFfmpeg'
+    | 'terminalHintsToolFfprobe'
+    | 'terminalHintsToolYtdlp'
 }> = [
   { id: 'all', labelKey: 'terminalHintsToolAll' },
+  { id: 'scenarios', labelKey: 'terminalHintsToolScenarios' },
   { id: 'ffmpeg', labelKey: 'terminalHintsToolFfmpeg' },
   { id: 'ffprobe', labelKey: 'terminalHintsToolFfprobe' },
   { id: 'yt-dlp', labelKey: 'terminalHintsToolYtdlp' }

@@ -6,11 +6,13 @@ import { useEditorExportSettings } from './use-editor-export-settings'
 import { useAppProcessingHistory } from './use-app-processing-history'
 import { useDownloadsWorkspace } from './use-downloads-workspace'
 import type { AppCompositionLocalState } from './use-app-composition-local-state'
+import { useWorkflowWatchFolderStatus } from './use-workflow-watch-folder-status'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- workspace + export hook bundle
 export function useAppCompositionIntegrations({
   setStatusHint
 }: Pick<AppCompositionLocalState, 'setStatusHint'>) {
+  useWorkflowWatchFolderStatus(setStatusHint)
   const downloadsWorkspace = useDownloadsWorkspace({ setStatusHint })
   const processingHistory = useAppProcessingHistory({ setStatusHint })
   const downloadsWindowUiPanels = useDownloadsWindowUiPanels()

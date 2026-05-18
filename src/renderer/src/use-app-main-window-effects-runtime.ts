@@ -22,6 +22,8 @@ export function useAppMainWindowEffectsRuntime(
     setAppSettingsOpen,
     setAppSettingsSection,
     setExternalFilterScriptOpen,
+    setWorkflowPlannerOpen,
+    setWorkflowScenarioBuilderOpen,
     setAboutInfo,
     setAboutOpen,
     editorUrlPasteBehavior,
@@ -115,12 +117,20 @@ export function useAppMainWindowEffectsRuntime(
     const offExternalFilter = window.fluxalloy.onOpenExternalFilterScript(() => {
       setExternalFilterScriptOpen(true)
     })
+    const offWorkflowPlanner = window.fluxalloy.onOpenWorkflowPlanner(() => {
+      setWorkflowPlannerOpen(true)
+    })
+    const offWorkflowScenarioBuilder = window.fluxalloy.onOpenWorkflowScenarioBuilder(() => {
+      setWorkflowScenarioBuilderOpen(true)
+    })
     return (): void => {
       offEnginePaths()
       offSettings()
       offSynced()
       offAbout()
       offExternalFilter()
+      offWorkflowPlanner()
+      offWorkflowScenarioBuilder()
     }
   }, [
     refreshEngineUi,
@@ -128,7 +138,9 @@ export function useAppMainWindowEffectsRuntime(
     setAboutOpen,
     setAppSettingsOpen,
     setAppSettingsSection,
-    setExternalFilterScriptOpen
+    setExternalFilterScriptOpen,
+    setWorkflowPlannerOpen,
+    setWorkflowScenarioBuilderOpen
   ])
 
   useEffect(() => {

@@ -298,6 +298,51 @@ export interface FluxAlloyApi {
       }
     ) => Promise<import('../shared/external-filter-script-contract').ExternalFilterScriptApplyResult>
   }
+  workflows: {
+    listScenarios: () => Promise<
+      | { ok: true; items: import('../shared/workflow-scenario-contract').WorkflowScenarioListItem[] }
+      | { ok: false; error: string }
+    >
+    getScenario: (
+      id: string
+    ) => Promise<
+      | { ok: true; scenario: import('../shared/workflow-scenario-contract').WorkflowScenarioDocument }
+      | { ok: false; error: string }
+    >
+    saveScenario: (
+      doc: import('../shared/workflow-scenario-contract').WorkflowScenarioDocument
+    ) => Promise<
+      | { ok: true; scenario: import('../shared/workflow-scenario-contract').WorkflowScenarioDocument }
+      | { ok: false; error: string }
+    >
+    deleteScenario: (id: string) => Promise<{ ok: true } | { ok: false; error: string }>
+    listScheduledTasks: () => Promise<
+      | { ok: true; items: import('../shared/scheduled-task-contract').ScheduledTaskListItem[] }
+      | { ok: false; error: string }
+    >
+    saveScheduledTask: (
+      doc: import('../shared/scheduled-task-contract').ScheduledTaskDocument
+    ) => Promise<
+      | { ok: true; task: import('../shared/scheduled-task-contract').ScheduledTaskDocument }
+      | { ok: false; error: string }
+    >
+    deleteScheduledTask: (id: string) => Promise<{ ok: true } | { ok: false; error: string }>
+    setScheduledTaskEnabled: (
+      id: string,
+      enabled: boolean
+    ) => Promise<{ ok: true } | { ok: false; error: string }>
+    pickWatchFolder: () => Promise<{ ok: true; path: string } | { ok: false; error: string }>
+    onWatchFolderDetected: (
+      listener: (
+        payload: import('../shared/workflow-watch-folder-contract').WorkflowWatchFolderDetectedPayload
+      ) => void
+    ) => () => void
+    onWatchFolderRunFinished: (
+      listener: (
+        payload: import('../shared/workflow-watch-folder-contract').WorkflowWatchFolderRunFinishedPayload
+      ) => void
+    ) => () => void
+  }
   utilities: {
     repairRemux: (
       payload: import('../shared/media-utilities-contract').MediaUtilitiesRepairRequestPayload
@@ -433,6 +478,8 @@ export interface FluxAlloyApi {
   onSettingsBackupImported: (listener: () => void) => () => void
   onOpenAbout: (listener: () => void) => () => void
   onOpenExternalFilterScript: (listener: () => void) => () => void
+  onOpenWorkflowPlanner: (listener: () => void) => () => void
+  onOpenWorkflowScenarioBuilder: (listener: () => void) => () => void
   onMainWindowUiPanelsChanged: (
     listener: (panels: MainWindowUiPanelState | undefined) => void
   ) => () => void

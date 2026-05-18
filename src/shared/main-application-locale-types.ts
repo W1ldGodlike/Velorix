@@ -34,6 +34,8 @@ export type MainApplicationStrings = {
   menuEnginePaths: string
   menuService: string
   menuExternalFilterScript: string
+  menuWorkflowPlanner: string
+  menuWorkflowScenarioBuilder: string
   menuExportSettings: string
   menuImportSettings: string
   settingsBackupExportTitle: string

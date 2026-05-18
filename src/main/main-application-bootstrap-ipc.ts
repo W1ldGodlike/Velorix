@@ -5,6 +5,7 @@ import { registerKnowledgeDiagnosticsIpcHandlers } from './ipc/register-knowledg
 import { registerSettingsIpcHandlers } from './ipc/register-settings-ipc'
 import { registerEnginesPreviewIpcHandlers } from './ipc/register-engines-preview-ipc'
 import { registerMainUtilitiesIpcHandlers } from './ipc/register-main-utilities-ipc'
+import { registerWorkflowIpcHandlers } from './ipc/register-workflow-ipc'
 import { registerExportBatchIpcHandlers } from './ipc/register-export-batch-ipc'
 import { registerDownloadsWindowIpcHandlers } from './downloads-window'
 import { registerExternalFilterScriptIpcHandlers } from './register-external-filter-script-ipc'
@@ -114,6 +115,7 @@ export function registerMainApplicationBootstrapIpc(): void {
     openExportOutputPath,
     openDownloadedFileInMainHandler
   })
+  registerWorkflowIpcHandlers()
   registerExportBatchIpcHandlers({
     getActiveExportAbort: () => activeExportAbort,
     setActiveExportAbort,

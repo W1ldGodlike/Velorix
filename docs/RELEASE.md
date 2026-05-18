@@ -144,6 +144,40 @@ npm run build:win
 - `О программе -> Support ZIP`;
 - отсутствие секретов в артефактах и логах.
 
+### 4.1 Linux (pack:linux:dir)
+
+После `npm run pack:linux:dir` появляется **`dist/linux-unpacked/`** (исполняемый `fluxalloy` или `FluxAlloy`). Автоматическая проверка дерева:
+
+```bash
+npm run verify:linux-unpacked
+```
+
+Перед публикацией пройдите **ручной smoke** (не заменяет `verify:linux-unpacked`):
+
+1. В приложении: **Настройки → Зависимости → Ручной smoke Linux (pack:linux:dir)** — чеклист с копированием (Support ZIP: `linuxPackagedSmoke:`).
+2. Запустите бинарник из `dist/linux-unpacked/` (не `npm run dev`).
+3. Те же сценарии, что в §4 для Windows: движки, редактор, загрузки, снимок, экспорт, база знаний, Support ZIP.
+4. Убедитесь, что в логах и артефактах нет секретов.
+
+Справка: `Help/packaged-linux-smoke.md`.
+
+### 4.2 macOS (pack:mac:dir)
+
+После `npm run pack:mac:dir` ищите **`FluxAlloy.app`** в `dist/mac-arm64/`, `dist/mac/` или `dist/mac-x64/`. Автоматическая проверка дерева:
+
+```bash
+npm run verify:mac-unpacked
+```
+
+Перед публикацией пройдите **ручной smoke**:
+
+1. **Настройки → Зависимости → Ручной smoke macOS (pack:mac:dir)** — чеклист (Support ZIP: `macosPackagedSmoke:`).
+2. Откройте `FluxAlloy.app` (не `npm run dev`).
+3. Сценарии как в §4; пути движков — `Contents/Resources/bin`.
+4. Нет секретов в логах и артефактах.
+
+Справка: `Help/packaged-macos-smoke.md`.
+
 ## 5. GitHub
 
 Репозиторий: `https://github.com/W1ldGodlike/FluxAlloy`.

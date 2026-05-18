@@ -89,6 +89,12 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
       : []),
     ...(info.winPackagedSmokeChecklistLines.length > 0
       ? ['', 'winPackagedSmoke:', ...info.winPackagedSmokeChecklistLines]
+      : []),
+    ...(info.linuxPackagedSmokeChecklistLines.length > 0
+      ? ['', 'linuxPackagedSmoke:', ...info.linuxPackagedSmokeChecklistLines]
+      : []),
+    ...(info.macosPackagedSmokeChecklistLines.length > 0
+      ? ['', 'macosPackagedSmoke:', ...info.macosPackagedSmokeChecklistLines]
       : [])
   ].join('\n')
 }

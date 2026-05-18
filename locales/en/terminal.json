@@ -30,6 +30,7 @@
   "terminalHintsSearchLabel": "Filter hints",
   "terminalHintsSearchPlaceholder": "--help, -i, example crop",
   "terminalHintsToolAll": "All",
+  "terminalHintsToolScenarios": "Scenarios",
   "terminalHintsToolFfmpeg": "ffmpeg",
   "terminalHintsToolFfprobe": "ffprobe",
   "terminalHintsToolFilterAria": "Filter hints by CLI tool",

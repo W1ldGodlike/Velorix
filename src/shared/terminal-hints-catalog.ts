@@ -11,14 +11,22 @@ export const TERMINAL_HINT_CATALOG_PANEL_MAX = 240
 /** Максимум строк без фильтра (первые по сортировке workspace). */
 export const TERMINAL_HINT_CATALOG_PANEL_IDLE_MAX = 48
 
-export type TerminalHintToolFilter = 'all' | TerminalToolId
+export type TerminalHintToolFilter = 'all' | 'scenarios' | TerminalToolId
+
+export function isTerminalScenarioHint(hint: TerminalCommandHintEntry): boolean {
+  return hint.fullLine !== undefined && hint.fullLine.trim().length > 0
+}
 
 export function hintMatchesTerminalCatalogFilter(
   hint: TerminalCommandHintEntry,
   query: string,
   toolFilter: TerminalHintToolFilter
 ): boolean {
-  if (toolFilter !== 'all' && hint.tool !== toolFilter) {
+  if (toolFilter === 'scenarios') {
+    if (!isTerminalScenarioHint(hint)) {
+      return false
+    }
+  } else if (toolFilter !== 'all' && hint.tool !== toolFilter) {
     return false
   }
   const q = query.trim().toLowerCase()
