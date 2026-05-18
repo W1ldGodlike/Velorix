@@ -112,7 +112,7 @@
 .app-terminal-panel {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: var(--fa-space-stack);
   min-height: 0;
 }
 
@@ -123,7 +123,7 @@
 .app-terminal-command-stack {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--fa-space-1);
   align-self: stretch;
   position: relative;
   z-index: 2;
@@ -132,13 +132,13 @@
 .app-terminal-command-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
-  gap: 0.65rem;
+  gap: var(--fa-space-row);
   align-items: center;
 }
 
 .app-terminal-suggest {
   display: grid;
-  gap: 0.25rem;
+  gap: var(--fa-space-1);
   max-height: 14rem;
   overflow: auto;
   border-radius: var(--fa-radius-lg);
@@ -151,7 +151,7 @@
 .app-terminal-suggest-item {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 0.2rem 0.45rem;
+  gap: var(--fa-space-gap-2) var(--fa-space-snug);
   width: 100%;
   text-align: left;
   border: 1px solid transparent;
@@ -191,7 +191,7 @@
 .app-terminal-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(18rem, 26rem);
-  gap: 0.85rem;
+  gap: var(--fa-space-stack);
   min-height: 0;
 }
 
@@ -220,7 +220,7 @@
 .app-terminal-entry-head {
   display: flex;
   justify-content: space-between;
-  gap: 0.65rem;
+  gap: var(--fa-space-row);
   color: var(--fa-text-muted);
   font-size: 0.72rem;
 }
@@ -243,7 +243,7 @@
 .app-terminal-output-line {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 0.35rem;
+  gap: var(--fa-space-compact);
   align-items: start;
   padding: 0.12rem 0.25rem;
   margin: 0 -0.15rem;
@@ -314,7 +314,7 @@
 .app-terminal-hint {
   display: grid;
   grid-template-columns: auto auto;
-  gap: 0.25rem 0.55rem;
+  gap: var(--fa-space-1) var(--fa-space-inline);
   width: 100%;
   text-align: left;
   border: 1px solid var(--fa-border-subtle);
@@ -343,7 +343,7 @@
 .app-terminal-hint-card {
   position: relative;
   display: grid;
-  gap: 0.2rem;
+  gap: var(--fa-space-gap-2);
   min-width: 0;
 }
 
@@ -388,7 +388,7 @@
   align-items: center;
   justify-content: flex-end;
   justify-self: end;
-  gap: 0.52rem;
+  gap: var(--fa-space-2h);
   min-width: 0;
   flex-wrap: wrap;
 }
@@ -410,7 +410,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 0.35rem;
+  gap: var(--fa-space-compact);
   min-width: 0;
   overflow: hidden;
 }
@@ -434,7 +434,7 @@
   min-width: 2rem;
   height: 2rem;
   padding: 0 0.42rem;
-  gap: 0.35rem;
+  gap: var(--fa-space-compact);
   border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-surface-elevated) 88%, transparent);
@@ -487,7 +487,7 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: var(--fa-space-3);
   padding: 0.65rem 0.85rem;
   background: var(--fa-surface);
   border-bottom: 1px solid var(--fa-border-subtle);
@@ -544,7 +544,7 @@
 .app-url-summary {
   cursor: pointer;
   list-style: none;
-  padding: 0.38rem 0.75rem;
+  padding: var(--fa-space-compact) var(--fa-space-3);
   color: var(--fa-text-secondary);
   font-size: 0.72rem;
   font-weight: 600;
@@ -558,7 +558,7 @@
 .app-url-summary::before {
   content: '▸';
   display: inline-block;
-  margin-right: 0.45rem;
+  margin-right: var(--fa-space-snug);
   color: var(--fa-text-muted);
   transition: transform 0.12s ease;
 }
@@ -576,8 +576,8 @@
 .app-url-body {
   display: flex;
   align-items: flex-start;
-  gap: 0.5rem;
-  padding: 0 0.75rem 0.55rem;
+  gap: var(--fa-space-2);
+  padding: 0 var(--fa-space-3) var(--fa-space-inline);
 }
 
 .app-url-field {
@@ -585,7 +585,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.22rem;
+  gap: var(--fa-space-gap-xs);
 }
 
 .app-url-hint {
@@ -605,7 +605,7 @@
 .app-export-preview-summary {
   cursor: pointer;
   list-style: none;
-  padding: 0.4rem 0.85rem;
+  padding: var(--fa-space-gap-sm) var(--fa-space-stack);
   font-size: 0.72rem;
   font-weight: 600;
   color: var(--fa-text-secondary);
@@ -619,7 +619,7 @@
 .app-export-preview-summary::before {
   content: '▸';
   display: inline-block;
-  margin-right: 0.4rem;
+  margin-right: var(--fa-space-gap-sm);
   font-size: 0.65rem;
   opacity: 0.75;
   transition: transform 0.12s ease;
@@ -637,22 +637,22 @@
 
 /* Вложение в секцию «Вывод» боковой панели: без нижней лишней линии у корневого блока страницы. */
 .app-export-preview-nested {
-  margin-bottom: 0.35rem;
+  margin-bottom: var(--fa-space-compact);
   border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border-subtle);
   overflow: hidden;
 }
 
 .app-export-preview-body {
-  padding: 0.25rem 0.85rem 0.55rem;
+  padding: var(--fa-space-1) var(--fa-space-stack) var(--fa-space-inline);
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: var(--fa-space-gap-sm);
 }
 
 .app-export-preview-pre {
   margin: 0;
-  padding: 0.5rem 0.65rem;
+  padding: var(--fa-space-2) var(--fa-space-row);
   border-radius: var(--fa-radius-md);
   border: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-bg) 88%, transparent);
@@ -669,7 +669,7 @@
 .app-export-preview-actions {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: var(--fa-space-gap-md);
   flex-wrap: wrap;
 }
 
@@ -744,7 +744,7 @@
 
 /* §6 — текстовые кнопки с lucide-глифом слева (вкладка «Загрузки», тот же stroke-stack). */
 .app-btn-icon-leading {
-  gap: 0.42rem;
+  gap: var(--fa-space-gap-leading);
 }
 
 .app-btn-icon-leading svg {
@@ -753,7 +753,7 @@
 }
 
 .app-btn-compact.app-btn-icon-leading {
-  gap: 0.32rem;
+  gap: var(--fa-space-gap-toolbar);
   min-height: 28px;
   padding: 0 0.48rem;
 }
@@ -786,7 +786,7 @@
   display: flex;
   flex-direction: column;
   padding: 0.75rem;
-  gap: 0.75rem;
+  gap: var(--fa-space-3);
 }
 
 .app-workbench {
@@ -852,8 +852,8 @@
 .app-downloads-lower-stack {
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
-  padding: 0.55rem 0.85rem 0.75rem;
+  gap: var(--fa-space-inline);
+  padding: var(--fa-space-inline) var(--fa-space-stack) var(--fa-space-3);
   border-top: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-bg) 36%, var(--fa-surface));
   min-height: 0;
@@ -870,7 +870,7 @@
 .app-downloads-rail {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: var(--fa-space-stack);
   padding: 0.8rem;
   overflow: auto;
 }
@@ -880,7 +880,7 @@
   flex-wrap: wrap;
   gap: var(--fa-space-snug);
   margin-top: auto;
-  padding-top: 0.35rem;
+  padding-top: var(--fa-space-compact);
   border-top: 1px solid var(--fa-border-subtle);
 }
 
@@ -888,7 +888,7 @@
   display: flex;
   min-width: 0;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: var(--fa-space-inline);
 }
 
 .app-downloads-rail-section {
@@ -900,7 +900,7 @@
 
 .app-downloads-rail-summary {
   cursor: pointer;
-  padding: 0.52rem 0.65rem;
+  padding: var(--fa-space-2h) var(--fa-space-row);
   list-style: none;
   font-size: 0.72rem;
   font-weight: 800;
@@ -914,7 +914,7 @@
 
 .app-downloads-rail-summary::before {
   display: inline-block;
-  margin-right: 0.45rem;
+  margin-right: var(--fa-space-snug);
   color: var(--fa-text-muted);
   transition: transform 0.12s ease;
   content: '▸';
@@ -933,8 +933,8 @@
   display: flex;
   min-width: 0;
   flex-direction: column;
-  gap: 0.65rem;
-  padding: 0 0.65rem 0.65rem;
+  gap: var(--fa-space-row);
+  padding: 0 var(--fa-space-row) var(--fa-space-row);
   border-top: 1px solid var(--fa-border-subtle);
 }
 
@@ -987,7 +987,7 @@
 .app-downloads-hint-item {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 0.18rem;
+  gap: var(--fa-space-gap-2xs);
   padding: 0.42rem 0.55rem;
   border-bottom: 1px solid var(--fa-border-subtle);
 }
@@ -1038,7 +1038,7 @@ button.app-downloads-hint-token:disabled {
 .app-downloads-select-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 0.65rem;
+  gap: var(--fa-space-row);
 }
 
 .app-downloads-template-input {
@@ -1049,7 +1049,7 @@ button.app-downloads-hint-token:disabled {
   display: flex;
   min-width: 0;
   flex-direction: column;
-  gap: 0.28rem;
+  gap: var(--fa-space-gap-tight);
   padding: 0.58rem 0.65rem;
   border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border-subtle);
@@ -1074,7 +1074,7 @@ button.app-downloads-hint-token:disabled {
 
 .app-downloads-command-preview summary {
   cursor: pointer;
-  padding: 0.55rem 0.65rem;
+  padding: var(--fa-space-inline) var(--fa-space-row);
   color: var(--fa-text-secondary);
   font-size: 0.68rem;
   font-weight: 800;
@@ -1090,7 +1090,7 @@ button.app-downloads-hint-token:disabled {
   margin: 0;
   max-height: 7rem;
   overflow: auto;
-  padding: 0 0.65rem 0.65rem;
+  padding: 0 var(--fa-space-row) var(--fa-space-row);
   color: var(--fa-text-muted);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.62rem;
@@ -1116,16 +1116,16 @@ button.app-downloads-hint-token:disabled {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.35rem;
+  gap: var(--fa-space-compact);
 }
 
 .app-downloads-history-panel summary {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
+  gap: var(--fa-space-2);
   cursor: pointer;
-  padding: 0.55rem 0.65rem;
+  padding: var(--fa-space-inline) var(--fa-space-row);
   color: var(--fa-text-secondary);
   font-size: 0.68rem;
   font-weight: 800;
@@ -1139,7 +1139,7 @@ button.app-downloads-hint-token:disabled {
 .app-downloads-history-actions {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: var(--fa-space-gap-sm);
   flex-wrap: wrap;
   padding: 0 0.65rem 0.55rem;
 }
@@ -1148,7 +1148,7 @@ button.app-downloads-hint-token:disabled {
 .app-processing-history-filter-field {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: var(--fa-space-compact);
   color: var(--fa-text-muted);
   font-size: 0.66rem;
   font-weight: 700;
@@ -1166,9 +1166,9 @@ button.app-downloads-hint-token:disabled {
   max-height: 18rem;
   min-width: 0;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: var(--fa-space-inline);
   overflow: auto;
-  padding: 0 0.65rem 0.65rem;
+  padding: 0 var(--fa-space-row) var(--fa-space-row);
 }
 
 .app-downloads-history-empty {
@@ -1190,7 +1190,7 @@ button.app-downloads-hint-token:disabled {
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
-  gap: 0.35rem;
+  gap: var(--fa-space-compact);
 }
 
 .app-downloads-history-card p {
@@ -1209,7 +1209,7 @@ button.app-downloads-hint-token:disabled {
   min-width: 0;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
+  gap: var(--fa-space-2);
   flex-wrap: wrap;
 }
 
@@ -1264,9 +1264,9 @@ button.app-downloads-hint-token:disabled {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
+  gap: var(--fa-space-2);
   cursor: pointer;
-  padding: 0.55rem 0.65rem;
+  padding: var(--fa-space-inline) var(--fa-space-row);
   color: var(--fa-text-secondary);
   font-size: 0.68rem;
   font-weight: 800;
@@ -1280,7 +1280,7 @@ button.app-downloads-hint-token:disabled {
 .app-downloads-log-actions {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: var(--fa-space-gap-sm);
   flex-wrap: wrap;
   padding: 0 0.65rem 0.55rem;
 }
@@ -1289,7 +1289,7 @@ button.app-downloads-hint-token:disabled {
   margin: 0;
   max-height: 14rem;
   overflow: auto;
-  padding: 0 0.65rem 0.65rem;
+  padding: 0 var(--fa-space-row) var(--fa-space-row);
   color: var(--fa-text-muted);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.62rem;
@@ -1302,7 +1302,7 @@ button.app-downloads-hint-token:disabled {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 0.8rem;
+  gap: var(--fa-space-gutter);
   padding: 0.75rem 0.85rem;
   border-bottom: 1px solid var(--fa-border-subtle);
 }
@@ -1351,7 +1351,7 @@ button.app-downloads-hint-token:disabled {
 .app-downloads-url-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 0.65rem;
+  gap: var(--fa-space-row);
   padding: 0.75rem 0.85rem;
   border-bottom: 1px solid var(--fa-border-subtle);
 }
@@ -1359,7 +1359,7 @@ button.app-downloads-hint-token:disabled {
 .app-downloads-url-field {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: var(--fa-space-compact);
   min-width: 0;
 }
 
@@ -1371,7 +1371,7 @@ button.app-downloads-hint-token:disabled {
   border: 1px solid var(--fa-border);
   background: var(--fa-surface);
   color: var(--fa-text-primary);
-  padding: 0.55rem 0.65rem;
+  padding: var(--fa-space-inline) var(--fa-space-row);
   font-size: 0.8rem;
   line-height: 1.4;
 }
@@ -1388,7 +1388,7 @@ button.app-downloads-hint-token:disabled {
 .app-downloads-overview-stats {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 0.55rem;
+  gap: var(--fa-space-inline);
   list-style: none;
   margin: 0;
   padding: 0;
@@ -1499,7 +1499,7 @@ button.app-downloads-hint-token:disabled {
   display: flex;
   min-width: 7rem;
   flex-direction: column;
-  gap: 0.22rem;
+  gap: var(--fa-space-gap-xs);
 }
 
 /* v0: одна строка — дорожка тянется, проценты справа табличными цифрами. */
@@ -1507,7 +1507,7 @@ button.app-downloads-hint-token:disabled {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: 0.42rem;
+  gap: var(--fa-space-gap-leading);
 }
 
 .app-downloads-progress-track {
@@ -1555,7 +1555,7 @@ button.app-downloads-hint-token:disabled {
 .app-downloads-status {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: var(--fa-space-compact);
   max-width: 10rem;
   color: var(--fa-text-secondary);
 }
@@ -1589,7 +1589,7 @@ button.app-downloads-hint-token:disabled {
   .app-downloads-workspace {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: minmax(0, 1fr) auto;
-    gap: 0.55rem;
+    gap: var(--fa-space-inline);
     min-height: 0;
     /* Вертикальная прокрутка всей вкладки: `scrollIntoView` к `#downloads-ytdlp-settings-rail` из шапки. */
     overflow-x: hidden;
@@ -1663,7 +1663,7 @@ button.app-downloads-hint-token:disabled {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 0.75rem;
+  gap: var(--fa-space-3);
   padding: 0.7rem 0.8rem;
   border-bottom: 1px solid var(--fa-border-subtle);
 }
@@ -1688,7 +1688,7 @@ button.app-downloads-hint-token:disabled {
   flex-direction: column;
   min-height: auto !important;
   padding: 0.38rem 0.35rem !important;
-  gap: 0.12rem;
+  gap: var(--fa-space-gap-3xs);
 }
 
 .app-ffmpeg-rail-restore-text {
@@ -1750,7 +1750,7 @@ button.app-downloads-hint-token:disabled {
 .app-settings-summary::before {
   content: '▸';
   display: inline-block;
-  margin-right: 0.45rem;
+  margin-right: var(--fa-space-snug);
   color: var(--fa-text-muted);
   font-size: 0.65rem;
   transition: transform 0.12s ease;
@@ -1778,7 +1778,7 @@ button.app-downloads-hint-token:disabled {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.35rem;
+  gap: var(--fa-space-compact);
 }
 
 .app-processing-history-panel .app-processing-history-summary-label {
@@ -1794,13 +1794,13 @@ button.app-downloads-hint-token:disabled {
 
 .app-processing-history-panel .app-processing-history-count {
   float: none;
-  margin-left: 0.35rem;
+  margin-left: var(--fa-space-compact);
 }
 
 .app-processing-history-summary {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
+  gap: var(--fa-space-compact);
   padding: 0 0.8rem 0.55rem;
 }
 
@@ -1863,7 +1863,7 @@ button.app-downloads-hint-token:disabled {
   max-height: 20rem;
   min-width: 0;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: var(--fa-space-inline);
   overflow: auto;
   padding: 0 0.8rem 0.8rem;
 }
@@ -1937,21 +1937,21 @@ button.app-downloads-hint-token:disabled {
 .app-settings-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.65rem;
+  gap: var(--fa-space-row);
   padding: 0 0.8rem 0.8rem;
 }
 
 .app-settings-stack {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: var(--fa-space-row);
   padding: 0 0.8rem 0.8rem;
 }
 
 .app-field {
   display: flex;
   flex-direction: column;
-  gap: 0.28rem;
+  gap: var(--fa-space-gap-tight);
   min-width: 0;
   color: var(--fa-text-muted);
   font-size: 0.68rem;
@@ -1967,7 +1967,7 @@ button.app-downloads-hint-token:disabled {
 .app-field-label-row {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: var(--fa-space-compact);
   min-width: 0;
 }
 
@@ -2002,7 +2002,7 @@ button.app-downloads-hint-token:disabled {
 .app-settings-actions {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: var(--fa-space-gap-sm);
   flex-wrap: wrap;
   padding: 0 0.8rem 0.8rem;
 }
@@ -2010,7 +2010,7 @@ button.app-downloads-hint-token:disabled {
 .app-batch-export-dir-row {
   display: flex;
   align-items: stretch;
-  gap: 0.4rem;
+  gap: var(--fa-space-gap-sm);
   flex-wrap: wrap;
 }
 
@@ -2113,7 +2113,7 @@ button.app-downloads-hint-token:disabled {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem 0.75rem;
+  gap: var(--fa-space-2) var(--fa-space-3);
 }
 
 .app-benchmark-hint {
@@ -2123,7 +2123,7 @@ button.app-downloads-hint-token:disabled {
 .app-benchmark-threshold {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: var(--fa-space-compact);
   margin: 0;
 }
 
@@ -2156,7 +2156,7 @@ button.app-downloads-hint-token:disabled {
 .app-benchmark-codec-pick {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: var(--fa-space-1);
   padding: 0;
   border: none;
   background: transparent;
@@ -2232,14 +2232,14 @@ button.app-downloads-hint-token:disabled {
 .app-preview-transport-cluster {
   display: flex;
   align-items: center;
-  gap: 0.18rem;
+  gap: var(--fa-space-gap-2xs);
   flex-wrap: wrap;
 }
 
 .app-preview-transport-end {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: var(--fa-space-1);
   flex-wrap: wrap;
   margin-left: auto;
 }
@@ -2276,7 +2276,7 @@ button.app-downloads-hint-token:disabled {
 .app-timeline-stack {
   display: flex;
   flex-direction: column;
-  gap: 0.28rem;
+  gap: var(--fa-space-gap-tight);
   flex-shrink: 0;
   border-top: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-surface) 94%, transparent);
@@ -2286,8 +2286,8 @@ button.app-downloads-hint-token:disabled {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.38rem 0.55rem;
-  padding: 0.32rem 0.55rem 0.22rem;
+  gap: var(--fa-space-compact) var(--fa-space-inline);
+  padding: var(--fa-space-gap-toolbar) var(--fa-space-inline) var(--fa-space-gap-xs);
   border-bottom: 1px solid color-mix(in srgb, var(--fa-border-subtle) 65%, transparent);
 }
 
@@ -2295,7 +2295,7 @@ button.app-downloads-hint-token:disabled {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.32rem;
+  gap: var(--fa-space-gap-toolbar);
   min-width: 0;
 }
 
@@ -2312,7 +2312,7 @@ button.app-downloads-hint-token:disabled {
 .app-timeline-toolbar-zoom {
   display: flex;
   align-items: center;
-  gap: 0.08rem;
+  gap: var(--fa-space-gap-4xs);
   margin-left: auto;
   flex-wrap: nowrap;
   min-width: 0;
@@ -2413,7 +2413,7 @@ button.app-downloads-hint-token:disabled {
 .app-btn-timeline-trim {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: var(--fa-space-gap-trim);
   border-color: color-mix(in srgb, var(--fa-accent) 38%, var(--fa-border-subtle) 62%);
   color: var(--fa-text-primary);
 }
@@ -2425,14 +2425,14 @@ button.app-downloads-hint-token:disabled {
 }
 
 .app-timeline-unified {
-  margin: 0 0.55rem;
-  padding: 0.12rem 0.38rem 0.38rem;
+  margin: 0 var(--fa-space-inline);
+  padding: var(--fa-space-gap-3xs) var(--fa-space-compact) var(--fa-space-compact);
   border-radius: var(--fa-radius-control);
   border: 1px solid color-mix(in srgb, var(--fa-border-subtle) 82%, var(--fa-bg) 18%);
   background: color-mix(in srgb, var(--fa-bg) 42%, var(--fa-surface) 58%);
   display: flex;
   flex-direction: column;
-  gap: 0.12rem;
+  gap: var(--fa-space-gap-3xs);
   min-width: 0;
 }
 
@@ -2541,7 +2541,7 @@ button.app-downloads-hint-token:disabled {
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: 0.32rem 0.75rem;
+  gap: var(--fa-space-gap-toolbar) var(--fa-space-3);
   padding: 0.2rem 0.55rem 0.08rem;
   font-size: 0.664rem;
   line-height: 1.42;
@@ -2553,7 +2553,7 @@ button.app-downloads-hint-token:disabled {
 .app-timeline-footer-spec {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.26rem 0.78rem;
+  gap: var(--fa-space-gap-tight) var(--fa-space-gap-footer-x);
   min-width: 0;
 }
 
@@ -2681,7 +2681,7 @@ button.app-downloads-hint-token:disabled {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 0.28rem 0.82rem;
+  gap: var(--fa-space-gap-tight) var(--fa-space-3h);
   padding: 0.18rem 0.6rem 0.06rem;
   font-size: 0.664rem;
   line-height: 1.42;
@@ -2737,7 +2737,7 @@ button.app-downloads-hint-token:disabled {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.45rem 0.65rem;
+  gap: var(--fa-space-snug) var(--fa-space-row);
   padding: 0 0.6rem 0.45rem;
   font-size: 0.72rem;
   color: var(--fa-text-muted);
@@ -2752,7 +2752,7 @@ button.app-downloads-hint-token:disabled {
 .app-timeline-io-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
+  gap: var(--fa-space-compact);
   margin-left: auto;
 }
 
@@ -2768,7 +2768,7 @@ button.app-downloads-hint-token:disabled {
 .app-preview-probe-stack {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: var(--fa-space-compact);
 }
 
 .app-preview-probe-summary-line {
@@ -2890,7 +2890,7 @@ button.app-downloads-hint-token:disabled {
 .app-probe-json-toolbar {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--fa-space-2);
   flex-wrap: wrap;
   padding: 0.25rem 0.45rem;
   border-bottom: 1px solid var(--fa-border-subtle);
@@ -2935,13 +2935,13 @@ button.app-downloads-hint-token:disabled {
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: var(--fa-space-inline);
 }
 
 .app-about-row {
   display: grid;
   grid-template-columns: 7rem 1fr;
-  gap: 0.35rem 0.65rem;
+  gap: var(--fa-space-compact) var(--fa-space-row);
   align-items: baseline;
   font-size: 0.8125rem;
 }
@@ -2990,8 +2990,8 @@ button.app-downloads-hint-token:disabled {
 .app-statusbar {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.35rem 0.75rem;
+  gap: var(--fa-space-3);
+  padding: var(--fa-space-compact) var(--fa-space-3);
   background: var(--fa-surface);
   border-top: 1px solid var(--fa-border-subtle);
   flex-shrink: 0;
@@ -3023,7 +3023,7 @@ button.app-downloads-hint-token:disabled {
 .app-statusbar-activity {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: var(--fa-space-gap-sm);
   flex-shrink: 0;
 }
 
@@ -3124,7 +3124,7 @@ button.app-downloads-hint-token:disabled {
 .app-settings-dialog-grid {
   display: grid;
   grid-template-columns: minmax(160px, 200px) minmax(0, 1fr);
-  gap: 1rem;
+  gap: var(--fa-space-4);
   flex: 1;
   min-height: 0;
   overflow: hidden;
@@ -3133,7 +3133,7 @@ button.app-downloads-hint-token:disabled {
 .app-settings-dialog-nav {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: var(--fa-space-compact);
   min-height: 0;
   overflow: auto;
 }
@@ -3176,7 +3176,7 @@ button.app-downloads-hint-token:disabled {
 .app-settings-stack {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: var(--fa-space-stack);
 }
 
 .app-settings-fieldset {
@@ -3189,7 +3189,7 @@ button.app-downloads-hint-token:disabled {
 .app-settings-hidpi-panel {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: var(--fa-space-compact);
 }
 
 .app-settings-hidpi-title {
@@ -3217,7 +3217,7 @@ button.app-downloads-hint-token:disabled {
 .app-settings-hw-smoke-panel {
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: var(--fa-space-inline);
 }
 
 .app-settings-hw-smoke-header {
@@ -3225,7 +3225,7 @@ button.app-downloads-hint-token:disabled {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
+  gap: var(--fa-space-2);
 }
 
 .app-settings-hw-smoke-primary {
@@ -3315,7 +3315,7 @@ button.app-downloads-hint-token:disabled {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.35rem 0.5rem;
+  gap: var(--fa-space-compact) var(--fa-space-2);
   list-style: none;
   margin: 0.25rem 0 0;
   padding: 0;
@@ -3324,7 +3324,7 @@ button.app-downloads-hint-token:disabled {
 .workflow-scenario-flow-item {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: var(--fa-space-compact);
 }
 
 .workflow-scenario-flow-node {
@@ -3406,7 +3406,7 @@ button.app-downloads-hint-token:disabled {
 .workflow-scenario-flow-toolbar {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
+  gap: var(--fa-space-compact);
   margin: 0.35rem 0 0.5rem;
 }
 
@@ -3484,13 +3484,13 @@ button.app-downloads-hint-token:disabled {
 .workflow-scenario-flow-extra-edge {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--fa-space-2);
   margin-top: 0.25rem;
 }
 
 .workflow-planner-add-form {
   margin-bottom: 0.75rem;
-  padding: 0.55rem 0.65rem;
+  padding: var(--fa-space-inline) var(--fa-space-row);
   border: 1px solid var(--fa-border-subtle);
   border-radius: var(--fa-radius-sm);
 }
@@ -3507,7 +3507,7 @@ button.app-downloads-hint-token:disabled {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem 0.75rem;
+  gap: var(--fa-space-2) var(--fa-space-3);
 }
 
 .app-settings-row-label {
@@ -3518,7 +3518,7 @@ button.app-downloads-hint-token:disabled {
 
 .app-settings-row-actions {
   display: flex;
-  gap: 0.35rem;
+  gap: var(--fa-space-compact);
 }
 
 .app-settings-select {
@@ -3528,7 +3528,7 @@ button.app-downloads-hint-token:disabled {
 .app-settings-path-row {
   display: grid;
   grid-template-columns: minmax(8rem, 12rem) minmax(0, 1fr) auto;
-  gap: 0.5rem;
+  gap: var(--fa-space-2);
   align-items: center;
 }
 
@@ -3547,7 +3547,7 @@ button.app-downloads-hint-token:disabled {
 .app-settings-dialog-section-footer {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--fa-space-2);
   justify-content: flex-end;
   margin-top: 0.75rem;
 }
@@ -3578,7 +3578,7 @@ button.app-downloads-hint-token:disabled {
 .app-modal-header-row {
   display: flex;
   justify-content: space-between;
-  gap: 1rem;
+  gap: var(--fa-space-4);
   align-items: flex-start;
 }
 
@@ -3633,7 +3633,7 @@ button.app-downloads-hint-token:disabled {
   display: grid;
   grid-template-columns: minmax(190px, 260px) minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr);
-  gap: 0.85rem;
+  gap: var(--fa-space-stack);
   flex: 1;
   min-height: 0;
   overflow: hidden;
@@ -3650,7 +3650,7 @@ button.app-downloads-hint-token:disabled {
 .app-knowledge-sidebar {
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: var(--fa-space-inline);
   padding: 0.65rem;
   overflow: hidden;
 }
@@ -3662,7 +3662,7 @@ button.app-downloads-hint-token:disabled {
 .app-knowledge-toc-section {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--fa-space-1);
   margin-bottom: var(--fa-space-3);
 }
 
@@ -3679,7 +3679,7 @@ button.app-downloads-hint-token:disabled {
 .app-knowledge-list {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: var(--fa-space-compact);
   flex: 1;
   min-height: 0;
   overflow: auto;
@@ -3802,7 +3802,7 @@ button.app-downloads-hint-token:disabled {
 
 .app-knowledge-pre {
   margin: 0 0 0.65rem;
-  padding: 0.55rem 0.65rem;
+  padding: var(--fa-space-inline) var(--fa-space-row);
   border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-surface) 92%, var(--fa-border));
@@ -3823,7 +3823,7 @@ button.app-downloads-hint-token:disabled {
 .app-knowledge-pre-lang {
   font-size: 0.68rem;
   color: var(--fa-text-muted);
-  margin-bottom: 0.35rem;
+  margin-bottom: var(--fa-space-compact);
 }
 
 .app-knowledge-a {
@@ -3879,13 +3879,13 @@ button.app-downloads-hint-token:disabled {
 .app-engine-path-rows {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: var(--fa-space-stack);
 }
 
 .app-engine-path-row {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: var(--fa-space-compact);
 }
 
 .app-engine-path-label {
@@ -3922,7 +3922,7 @@ button.app-downloads-hint-token:disabled {
 .app-modal-footer {
   display: flex;
   justify-content: flex-end;
-  gap: 0.55rem;
+  gap: var(--fa-space-inline);
   margin-top: 1.15rem;
   padding-top: 0.85rem;
   border-top: 1px solid var(--fa-border-subtle);
@@ -3940,7 +3940,7 @@ button.app-downloads-hint-token:disabled {
   min-width: 0;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.35rem;
+  gap: var(--fa-space-compact);
 }
 
 .app-about-diagnostics {
@@ -3969,7 +3969,7 @@ button.app-downloads-hint-token:disabled {
 .app-about-folder-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: var(--fa-space-gap-sm);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -4042,7 +4042,7 @@ button.app-downloads-hint-token:disabled {
 .inspector-toolbar-brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.42rem;
+  gap: var(--fa-space-gap-leading);
 }
 
 .inspector-topbar-spacer {
@@ -4158,13 +4158,13 @@ button.app-downloads-hint-token:disabled {
 
   /* Превью-транспорт + таймлайн под 125 % Windows: без смены rem, только целевые touch/readability. */
   .app-preview-transport {
-    gap: 0.5rem;
+    gap: var(--fa-space-2);
     padding: 0.38rem 0.62rem;
     min-height: 2.6rem;
   }
 
   .app-preview-transport-cluster {
-    gap: 0.22rem;
+    gap: var(--fa-space-gap-xs);
   }
 
   .app-preview-transport-volume-range {
@@ -4197,12 +4197,12 @@ button.app-downloads-hint-token:disabled {
   }
 
   .app-timeline-stack {
-    gap: 0.4rem;
+    gap: var(--fa-space-gap-sm);
   }
 
   .app-timeline-toolbar {
     padding: 0.3rem 0.62rem 0.24rem;
-    gap: 0.42rem 0.58rem;
+    gap: var(--fa-space-gap-leading) var(--fa-space-inline);
   }
 
   .app-timeline-zoom-ico.app-icon-btn {
@@ -4232,12 +4232,12 @@ button.app-downloads-hint-token:disabled {
 
   .app-timeline-io {
     font-size: 0.736rem;
-    gap: 0.48rem 0.68rem;
+    gap: var(--fa-space-gap-leading) var(--fa-space-row);
     padding: 0 0.62rem 0.5rem;
   }
 
   .app-timeline-io-actions {
-    gap: 0.38rem;
+    gap: var(--fa-space-compact);
   }
 
   /* Плотнее сводки ffprobe сразу под таймлайном. */
@@ -4336,7 +4336,7 @@ button.app-downloads-hint-token:disabled {
   }
 
   .app-downloads-lower-stack {
-    gap: 0.58rem;
+    gap: var(--fa-space-inline);
     padding: 0.58rem 0.9rem 0.78rem;
   }
 
@@ -4353,7 +4353,7 @@ button.app-downloads-hint-token:disabled {
 
   .app-downloads-rail {
     padding: 0.85rem;
-    gap: 0.88rem;
+    gap: var(--fa-space-stack);
   }
 
   .app-downloads-rail-summary {
@@ -4362,7 +4362,7 @@ button.app-downloads-hint-token:disabled {
   }
 
   .app-downloads-rail-section-body {
-    gap: 0.68rem;
+    gap: var(--fa-space-row);
     padding: 0 0.68rem 0.68rem;
   }
 
@@ -4403,7 +4403,7 @@ button.app-downloads-hint-token:disabled {
   }
 
   .app-terminal-command-row {
-    gap: 0.72rem;
+    gap: var(--fa-space-3h);
   }
 
   .app-terminal-input {
@@ -4576,7 +4576,7 @@ button.app-downloads-hint-token:disabled {
   .app-preview-transport {
     min-height: 2.7rem;
     padding: 0.4rem 0.66rem;
-    gap: 0.5rem;
+    gap: var(--fa-space-2);
   }
 
   .app-preview-transport .app-icon-btn {
@@ -4747,7 +4747,7 @@ button.app-downloads-hint-token:disabled {
   .app-preview-transport {
     min-height: 2.78rem;
     padding: 0.42rem 0.68rem;
-    gap: 0.54rem;
+    gap: var(--fa-space-2h);
   }
 
   .app-preview-transport .app-icon-btn {
@@ -5025,7 +5025,7 @@ button.app-downloads-hint-token:disabled {
 .app-field-label-inline {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: var(--fa-space-compact);
   flex-wrap: wrap;
   margin-bottom: 0.2rem;
 }

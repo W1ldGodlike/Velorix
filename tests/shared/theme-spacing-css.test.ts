@@ -3,6 +3,7 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
 import {
+  THEME_FORBIDDEN_MAIN_CSS_GAP_REM,
   THEME_FORBIDDEN_MAIN_CSS_MARGIN_PADDING_PX,
   THEME_SHELL_SPACING_ASSERTIONS
 } from '../../src/shared/theme-spacing-css'
@@ -16,6 +17,14 @@ const SPACE_TOKENS = [
   '--fa-space-2',
   '--fa-space-3',
   '--fa-space-4',
+  '--fa-space-compact',
+  '--fa-space-row',
+  '--fa-space-stack',
+  '--fa-space-gap-xs',
+  '--fa-space-gap-sm',
+  '--fa-space-gap-md',
+  '--fa-space-gap-tight',
+  '--fa-space-gutter',
   '--fa-space-overlap-hairline'
 ] as const
 
@@ -45,6 +54,12 @@ describe('theme-spacing-css §5', () => {
   it('main.css does not use px literals in margin/padding', () => {
     const css = readFileSync(MAIN_CSS_PATH, 'utf8')
     const matches = css.match(THEME_FORBIDDEN_MAIN_CSS_MARGIN_PADDING_PX) ?? []
+    expect(matches).toEqual([])
+  })
+
+  it('main.css does not use rem literals in gap', () => {
+    const css = readFileSync(MAIN_CSS_PATH, 'utf8')
+    const matches = css.match(THEME_FORBIDDEN_MAIN_CSS_GAP_REM) ?? []
     expect(matches).toEqual([])
   })
 })
