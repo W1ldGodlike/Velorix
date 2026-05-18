@@ -14,8 +14,10 @@ import {
   buildEditorFfmpegExportOverrides
 } from './editor-export-settings-snapshot-build'
 import type { EditorExportSettingsFieldState } from './editor-export-settings-field-state'
+import { resolveExternalFilterScriptForPreview } from '../../shared/external-filter-script-resolve-preview'
 import { hydrateEditorExportFieldsFromSettings } from './editor-export-settings-hydrate'
-import { getUiLocale, uiTextVars } from './locales/ui-text'
+import { buildEditorExportStatusbarCodecDisplay } from './editor-export-statusbar-codec'
+import { getUiLocale, uiText, uiTextVars } from './locales/ui-text'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- derived export-settings bundle
 export function useEditorExportSettingsDerived(fields: EditorExportSettingsFieldState) {
@@ -48,6 +50,7 @@ export function useEditorExportSettingsDerived(fields: EditorExportSettingsField
     setExportTwoPass,
     exportEconomyMode,
     setExportEconomyMode,
+    setExportBenchmarkLoadThreshold,
     exportHwDecode,
     setExportHwDecode,
     exportExtraArgsLine,
@@ -88,7 +91,11 @@ export function useEditorExportSettingsDerived(fields: EditorExportSettingsField
     setExportVideoBlur,
     exportAudioNormalize,
     setExportAudioNormalize,
-    setSelectedUserPresetId
+    setSelectedUserPresetId,
+    exportExternalFilterKind,
+    exportExternalFilterScriptPath,
+    setExportExternalFilterKind,
+    setExportExternalFilterScriptPath
   } = fields
 
   const ffmpegExportSelectOptions = useMemo(
@@ -111,13 +118,37 @@ export function useEditorExportSettingsDerived(fields: EditorExportSettingsField
     const hwaccels = hwEncoderProbe?.ok === true ? hwEncoderProbe.hwaccels : []
     return resolveFfmpegExportHwaccelForDecode(exportVideoCodecResolvedForPreview, hwaccels)
   }, [exportHwDecode, hwEncoderProbe, exportVideoCodecResolvedForPreview])
-  const exportCodecStatusbarLabel = useMemo(() => {
-    let label = uiTextVars('editorStatusbarCodec', { codec: exportVideoCodecResolvedForPreview })
-    if (exportHwaccelDecodeForPreview) {
-      label += uiTextVars('editorStatusbarHwDecode', { method: exportHwaccelDecodeForPreview })
-    }
-    return label
-  }, [exportVideoCodecResolvedForPreview, exportHwaccelDecodeForPreview])
+  const externalFilterForPreview = useMemo(
+    () =>
+      resolveExternalFilterScriptForPreview({
+        ffmpegExportExternalFilterKind: exportExternalFilterKind,
+        ffmpegExportExternalFilterScriptPath: exportExternalFilterScriptPath
+      }),
+    [exportExternalFilterKind, exportExternalFilterScriptPath]
+  )
+  const exportCodecStatusbarCodec = useMemo(
+    () =>
+      buildEditorExportStatusbarCodecDisplay({
+        exportVideoCodec,
+        resolvedCodec: exportVideoCodecResolvedForPreview,
+        hwEncoderProbe,
+        exportHwDecode,
+        exportHwaccelDecode: exportHwaccelDecodeForPreview,
+        uiText: (key: string) => (uiText as (k: string) => string)(key),
+        uiTextVars: (key: string, vars: Record<string, string>) =>
+          (uiTextVars as (k: string, v: Record<string, string>) => string)(key, vars)
+      }),
+    [
+      exportVideoCodec,
+      exportVideoCodecResolvedForPreview,
+      hwEncoderProbe,
+      exportHwDecode,
+      exportHwaccelDecodeForPreview
+    ]
+  )
+  const exportCodecStatusbarLabel = exportCodecStatusbarCodec.label
+  const exportCodecStatusbarTitle = exportCodecStatusbarCodec.title
+  const exportCodecStatusbarAria = exportCodecStatusbarCodec.ariaLabel
 
   const refetchHwEncoders = useCallback((): Promise<void> => {
     return window.fluxalloy.engines.probeHwEncoders().then((r) => {
@@ -152,6 +183,7 @@ export function useEditorExportSettingsDerived(fields: EditorExportSettingsField
       setExportAudioMode,
       setExportTwoPass,
       setExportEconomyMode,
+      setExportBenchmarkLoadThreshold,
       setExportHwDecode,
       setExportExtraArgsLine,
       setEditorUrlPasteBehavior,
@@ -177,7 +209,9 @@ export function useEditorExportSettingsDerived(fields: EditorExportSettingsField
       setExportVideoVignette,
       setExportVideoBlur,
       setExportAudioNormalize,
-      setExportVideoLut3d
+      setExportVideoLut3d,
+      setExportExternalFilterKind,
+      setExportExternalFilterScriptPath
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only hydrate (pre-split)
   }, [])
@@ -283,10 +317,13 @@ export function useEditorExportSettingsDerived(fields: EditorExportSettingsField
     exportExtraArgsParsed,
     exportHwaccelDecodeForPreview,
     exportCodecStatusbarLabel,
+    exportCodecStatusbarTitle,
+    exportCodecStatusbarAria,
     refetchHwEncoders,
     hydrateExportFieldsFromSettings,
     bumpManualExportEdit,
     buildCurrentExportSnapshot,
-    buildCurrentFfmpegExportOverrides
+    buildCurrentFfmpegExportOverrides,
+    externalFilterForPreview
   }
 }

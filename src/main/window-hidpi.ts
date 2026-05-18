@@ -1,5 +1,9 @@
 import { screen, type Display } from 'electron'
 
+import {
+  UI_HIDPI_WINDOWS_SCALE_PERCENTS,
+  formatUiHidpiScaleDiagnosticLine
+} from '../shared/ui-hidpi-scale-tiers'
 import type { StoredWindowRect } from './settings-store'
 
 /**
@@ -87,8 +91,10 @@ export const WINDOW_LOGICAL_SCALE_TIERS = [1, 1.25, 1.5, 1.75, 2] as const
 export function formatWindowHidpiDiagnosticLines(): string[] {
   return [
     'window min sizes: logicalScaleFactor thresholds >=1.25 and >=1.5 (main, downloads, inspector)',
-    'CSS HiDPI: @media 120dpi (125%), 144dpi (150%), 168dpi (175%), 192dpi (200%) — main.css + downloads HTML',
-    `tiers tested: ${WINDOW_LOGICAL_SCALE_TIERS.join(', ')} (see tests/main/window-hidpi.test.ts)`
+    'CSS HiDPI: @media 120/144/168/192dpi — main.css (editor, downloads, terminal, modals, knowledge, probe, history)',
+    `tiers tested: ${WINDOW_LOGICAL_SCALE_TIERS.join(', ')} (see tests/main/window-hidpi.test.ts)`,
+    `Windows display scale %: ${UI_HIDPI_WINDOWS_SCALE_PERCENTS.join('/')}`,
+    formatUiHidpiScaleDiagnosticLine()
   ]
 }
 

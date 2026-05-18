@@ -5,6 +5,7 @@ import { attachProcessErrorHandlers } from './logger-service'
 import { runMainApplicationBootstrap } from './main-application-bootstrap'
 import { registerFluxMediaPrivileges } from './media-protocol'
 import { registerFluxHelpPrivileges } from './help-assets-protocol'
+import { isNativeMainQuitOnLastWindowClosed } from './platform'
 
 /** Все runtime-данные — в `<installRoot>/app-data`, не в %AppData%. */
 configurePortableAppDataPaths()
@@ -19,7 +20,7 @@ app.whenReady().then(() => {
 })
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+  if (isNativeMainQuitOnLastWindowClosed()) {
     app.quit()
   }
 })

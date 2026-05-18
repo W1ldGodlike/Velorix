@@ -1,5 +1,7 @@
-import { ENGINE_IDS, type EngineId } from '../../shared/engine-contract'
-import { uiText } from './locales/ui-text'
+import { type EngineId } from '../../shared/engine-contract'
+import type { EngineUpdateCheckItem } from '../../shared/engine-update-check-contract'
+import { formatEngineVersionsLineFromSnapshot } from '../../shared/engine-statusbar-versions'
+import { uiText, uiTextVars } from './locales/ui-text'
 
 export type EngineSummary = 'checking' | 'ready' | 'missing' | 'error'
 
@@ -21,25 +23,13 @@ export function engineLabel(id: EngineId): string {
 }
 
 export function formatEngineVersionsLine(snapshot: EnginesSnapshot): string {
-  const parts = ENGINE_IDS.map((id) => {
-    const e = snapshot.engines[id]
-    const name = engineLabel(id)
-    if (e.state === 'ready' && e.version) {
-      const cut =
-        e.version.length > 30
-          ? `${e.version.slice(0, 28)}${uiText('commonUnicodeEllipsis')}`
-          : e.version
-      return `${name}: ${cut}`
-    }
-    if (e.state === 'missing') {
-      return `${name}: ${uiText('uiPlaceholderDash')}`
-    }
-    if (e.state === 'error') {
-      return `${name}: ${uiText('enginesVersionLineErrorMark')}`
-    }
-    return `${name}: ${uiText('commonUnicodeEllipsis')}`
+  return formatEngineVersionsLineFromSnapshot(snapshot, {
+    dash: uiText('uiPlaceholderDash'),
+    errorMark: uiText('enginesVersionLineErrorMark'),
+    checking: uiText('commonUnicodeEllipsis'),
+    ellipsis: uiText('commonUnicodeEllipsis'),
+    engineName: engineLabel
   })
-  return parts.join(' · ')
 }
 
 /**
@@ -57,6 +47,43 @@ export function summarizeEngines(
     return 'missing'
   }
   return 'ready'
+}
+
+/** Сравнение с GitHub без авто-загрузки (macOS/Linux). */
+export function formatEngineUpdateCompareOnlyHint(items: EngineUpdateCheckItem[]): string {
+  const parts = items
+    .filter((item) => item.updateAvailable)
+    .map((item) => {
+      const name = engineLabel(item.id)
+      const from = item.currentVersion ?? uiText('uiPlaceholderDash')
+      const to = item.latestVersion ?? uiText('uiPlaceholderDash')
+      return `${name} ${from}→${to}`
+    })
+  if (parts.length === 0) {
+    return uiText('statusEnginesUpdateUpToDate')
+  }
+  return uiTextVars('statusEnginesUpdateCompareOnlyTemplate', { detail: parts.join('; ') })
+}
+
+export function formatEngineUpdateStatusHint(
+  items: EngineUpdateCheckItem[],
+  downloaded: boolean
+): string {
+  if (!downloaded) {
+    return uiText('statusEnginesUpdateUpToDate')
+  }
+  const parts = items
+    .filter((item) => item.updateAvailable)
+    .map((item) => {
+      const name = engineLabel(item.id)
+      const from = item.currentVersion ?? uiText('uiPlaceholderDash')
+      const to = item.latestVersion ?? uiText('uiPlaceholderDash')
+      return `${name} ${from}→${to}`
+    })
+  if (parts.length === 0) {
+    return uiText('statusEnginesDownloadedOk')
+  }
+  return uiTextVars('statusEnginesUpdateDownloadedTemplate', { detail: parts.join('; ') })
 }
 
 export function engineSummaryText(summary: EngineSummary): string {

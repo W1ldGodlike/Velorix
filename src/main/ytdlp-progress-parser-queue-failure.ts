@@ -1,4 +1,4 @@
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getYtdlpQueueProgressStrings } from '../shared/ytdlp-queue-progress-locale'
 import { YTDLP_QUEUE_STATUS_ERROR_PREFIX } from '../shared/ytdlp-queue-status'
 
@@ -6,7 +6,7 @@ import type { YtdlpQueueFailureKind } from './ytdlp-progress-parser-download'
 
 function ytdlpQueueFailureKindSuffix(
   kind: YtdlpQueueFailureKind,
-  locale: DownloadsWindowUiLocale
+  locale: AppUiLocale
 ): string {
   const P = getYtdlpQueueProgressStrings(locale)
   switch (kind) {
@@ -36,7 +36,7 @@ export function formatYtdlpQueueFailureStatus(
   errorHint: string | null | undefined,
   stderrFallback: string | null | undefined,
   failureKind?: YtdlpQueueFailureKind,
-  locale: DownloadsWindowUiLocale = 'ru'
+  locale: AppUiLocale = 'ru'
 ): string {
   const P = getYtdlpQueueProgressStrings(locale)
   let base: string

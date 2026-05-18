@@ -29,4 +29,5 @@ export type DownloadsSettingsRailProps = {
   ytdlpCommandHintsFilteredByCategory: ReturnType<typeof groupYtdlpCommandHintsByCategory>
   appendDownloadsExtraArgsToken: (token: string) => void
   refreshDownloadsOptions: () => Promise<void>
+  onOpenKnowledgeArticle?: (slug: string) => void
 }

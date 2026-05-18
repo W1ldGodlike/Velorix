@@ -1,3 +1,5 @@
+# CI: windows-latest (prepare + packaged smokes) + ubuntu-latest (linux --dir layout).
+# macOS electron-builder — local/manual; see docs/ARCHITECTURE.md § Bundled engines и CI.
 name: ci
 
 permissions:
@@ -75,5 +77,50 @@ jobs:
       - name: Packaging smoke (electron-builder --dir)
         run: npm run pack:dir
 
-      - name: Packaged release smoke (layout + app + engines)
-        run: npm run smoke:packaged-release
+      - name: Verify win-unpacked layout (§19)
+        run: npm run verify:win-unpacked
+
+      - name: Packaged app smoke (§19)
+        run: npm run smoke:packaged-app
+
+      - name: Packaged ffprobe smoke (§19)
+        run: npm run smoke:packaged-ffprobe
+
+      - name: Packaged ffmpeg smoke (§19)
+        run: npm run smoke:packaged-ffmpeg
+
+      - name: Packaged yt-dlp smoke (§19)
+        run: npm run smoke:packaged-ytdlp
+
+  linux-packaging:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      FLUXALLOY_TRUSTED_HASHES_STRICT_UNKNOWN: '1'
+      FLUXALLOY_TRUSTED_HASHES_REQUIRE_SHA256_HEX: '1'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Quiet check (cross-platform, no Windows engines)
+        run: npm run check:quiet
+
+      - name: Build
+        run: npm run build
+
+      - name: Packaging smoke (electron-builder --linux --dir)
+        run: npm run pack:linux:dir
+
+      - name: Verify linux-unpacked layout (§19)
+        run: npm run verify:linux-unpacked

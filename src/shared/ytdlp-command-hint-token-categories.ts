@@ -1,4 +1,4 @@
-import type { DownloadsWindowUiLocale } from './downloads-window-ui-locale'
+import type { AppUiLocale } from './app-ui-locale'
 
 /** Fallback category when token is absent from maps and JSON has no `category`. */
 export const YTDLP_HINT_TOKEN_CATEGORY_RU: Readonly<Record<string, string>> = {
@@ -133,7 +133,7 @@ export const YTDLP_HINT_TOKEN_CATEGORY_EN: Readonly<Record<string, string>> = {
 
 export function ytdlpHintTokenCategory(
   token: string,
-  locale: DownloadsWindowUiLocale
+  locale: AppUiLocale
 ): string | undefined {
   const m = locale === 'en' ? YTDLP_HINT_TOKEN_CATEGORY_EN : YTDLP_HINT_TOKEN_CATEGORY_RU
   return m[token]

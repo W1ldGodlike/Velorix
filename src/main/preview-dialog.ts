@@ -5,7 +5,7 @@ import { BrowserWindow, dialog } from 'electron'
 import { grantMediaPath } from './media-protocol'
 import { scanFolderForFfmpegExportBatchVideos } from './ffmpeg-export-batch-folder-scan'
 import type { PreviewDialogResult } from '../shared/preview-dialog-contract'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
 
 /**
@@ -14,7 +14,7 @@ import { getMainApplicationStrings } from '../shared/main-application-locale'
  */
 export async function openVideoWithDialog(
   browserWindow: BrowserWindow,
-  locale: DownloadsWindowUiLocale = 'ru',
+  locale: AppUiLocale = 'ru',
   opts?: { defaultPath?: string }
 ): Promise<PreviewDialogResult> {
   const S = getMainApplicationStrings(locale)
@@ -46,7 +46,7 @@ export async function openVideoWithDialog(
 /** §4.B — диалог папки: первое видео после того же рекурсивного scan, что и пакет/DnD. */
 export async function openVideoFolderWithDialog(
   browserWindow: BrowserWindow,
-  locale: DownloadsWindowUiLocale = 'ru',
+  locale: AppUiLocale = 'ru',
   opts?: { defaultPath?: string }
 ): Promise<PreviewDialogResult> {
   const S = getMainApplicationStrings(locale)

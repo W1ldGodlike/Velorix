@@ -28,35 +28,35 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_01: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· видео v:0 кратко',
     summary:
-      'Поток v:0: ширина, высота, частота кадров и формат пикселей (поля ffprobe: width — ширина кадра, height — высота кадра, r_frame_rate — номинальная частота кадров, pix_fmt — формат пикселей; одно поле на строку (шаблон default=nw=1)); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): ширина, высота, частота кадров и формат пикселей (поля ffprobe: width — ширина кадра, height — высота кадра, r_frame_rate — номинальная частота кадров, pix_fmt — формат пикселей; одно поле на строку (шаблон default=nw=1)); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=width,height,r_frame_rate,pix_fmt -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· видео v:0 цвет',
     summary:
-      'Поток v:0: цветовое пространство, первичные цвета и кривая переноса (поля ffprobe: color_space — цветовое пространство, color_primaries — первичные цвета, color_transfer — кривая переноса; диагностика HDR и SDR); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): цветовое пространство, первичные цвета и кривая переноса (поля ffprobe: color_space — цветовое пространство, color_primaries — первичные цвета, color_transfer — кривая переноса; диагностика HDR и SDR); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=color_space,color_primaries,color_transfer -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· видео v:0 битрейт и частота кадров',
     summary:
-      'Поток v:0: битрейт и средняя частота кадров (поля ffprobe: bit_rate — битрейт дорожки, avg_frame_rate — средняя частота кадров; сверка с r_frame_rate из компактного шаблона); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): битрейт и средняя частота кадров (поля ffprobe: bit_rate — битрейт дорожки, avg_frame_rate — средняя частота кадров; сверка с r_frame_rate из компактного шаблона); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=bit_rate,avg_frame_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· видео v:0 sar и dar',
     summary:
-      'Поток v:0: SAR и DAR (поля ffprobe: sample_aspect_ratio — выборочное соотношение сторон пикселя, display_aspect_ratio — соотношение сторон кадра; анаморф и неквадратные пиксели); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): SAR и DAR (поля ffprobe: sample_aspect_ratio — выборочное соотношение сторон пикселя, display_aspect_ratio — соотношение сторон кадра; анаморф и неквадратные пиксели); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=sample_aspect_ratio,display_aspect_ratio -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· аудио a:0 кратко',
     summary:
-      'Поток a:0: кодек, частота дискретизации и число каналов (поля ffprobe: codec_name — кодек, sample_rate — частота дискретизации, channels — число каналов; одно поле на строку (шаблон default=nw=1)); путь к медиа подставляется из превью.',
+      'Первая аудиодорожка (a:0): кодек, частота дискретизации и число каналов (поля ffprobe: codec_name — кодек, sample_rate — частота дискретизации, channels — число каналов; одно поле на строку (шаблон default=nw=1)); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=codec_name,sample_rate,channels -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -70,14 +70,13 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_01: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· аудио a:0 икм (без сжатия)',
     summary:
-      'Поток a:0: битность сэмпла и формат сэмпла (поля ffprobe: bits_per_sample — битность сэмпла, sample_fmt — формат сэмпла; PCM и глубина); путь к медиа подставляется из превью.',
+      'Первая аудиодорожка (a:0): битность сэмпла и формат сэмпла (поля ffprobe: bits_per_sample — битность сэмпла, sample_fmt — формат сэмпла; PCM и глубина); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=bits_per_sample,sample_fmt -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· субтитры s:0 кратко',
-    summary:
-      'Поток s:0: кодек и строка тега кодека (поля ffprobe: codec_name — кодек, codec_tag_string — строка тега кодека; одно поле на строку (шаблон default=nw=1)); путь к медиа подставляется из превью.',
+    summary: 'Дорожка субтитров (s:0): кодек и строка тега кодека (поля ffprobe: codec_name — кодек, codec_tag_string — строка тега кодека; одно поле на строку (шаблон default=nw=1)); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=codec_name,codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -119,14 +118,13 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_01: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· видео v:0 поле и диапазон',
     summary:
-      'Поток v:0: порядок полей кадра и диапазон яркости (поля ffprobe: field_order — порядок полей кадра, color_range — диапазон яркости; чересстрочность и полный диапазон яркости — в терминах full range); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): порядок полей кадра и диапазон яркости (поля ffprobe: field_order — порядок полей кадра, color_range — диапазон яркости; чересстрочность и полный диапазон яркости — в терминах full range); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=field_order,color_range -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· субтитры s:0 теги',
-    summary:
-      'Поток s:0: теги заголовка и языка субтитров (поля stream_tags: title — заголовок дорожки, language — язык); путь к медиа подставляется из превью.',
+    summary: 'Дорожка субтитров (s:0): теги заголовка и языка субтитров (поля stream_tags: title — заголовок дорожки, language — язык); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream_tags=title,language -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -140,14 +138,14 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_01: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· видео v:0 теги дорожки',
     summary:
-      'Поток v:0: теги дорожки handler_name и encoder (поля stream_tags: имя обработчика и кодировщик; отдельно от тегов контейнера); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): теги дорожки handler_name и encoder (поля stream_tags: имя обработчика и кодировщик; отдельно от тегов контейнера); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream_tags=handler_name,encoder -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· видео v:0 кадры и длительность',
     summary:
-      'Поток v:0: число кадров и длительность дорожки (поля ffprobe: nb_frames — оценка числа кадров, duration — длительность дорожки); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): число кадров и длительность дорожки (поля ffprobe: nb_frames — оценка числа кадров, duration — длительность дорожки); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=nb_frames,duration -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -168,21 +166,21 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_01: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· видео v:0 профиль',
     summary:
-      'Поток v:0: кодек, профиль и уровень (поля ffprobe: codec_name, profile, level — для транскодинга); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): кодек, профиль и уровень (поля ffprobe: codec_name, profile, level — для транскодинга); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=codec_name,profile,level -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· аудио a:0 профиль и битрейт',
     summary:
-      'Поток a:0: кодек, профиль и битрейт (поля ffprobe: codec_name, profile, bit_rate); путь к медиа подставляется из превью.',
+      'Первая аудиодорожка (a:0): кодек, профиль и битрейт (поля ffprobe: codec_name, profile, bit_rate); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=codec_name,profile,bit_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· видео v:0 опорные и двунаправленные кадры',
     summary:
-      'Поток v:0: число опорных кадров и наличие B-кадров (поля ffprobe: refs — число опорных кадров, has_b_frames — есть ли двунаправленные кадры; сложность GOP); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): число опорных кадров и наличие B-кадров (поля ffprobe: refs — число опорных кадров, has_b_frames — есть ли двунаправленные кадры; сложность GOP); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=refs,has_b_frames -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -203,28 +201,28 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_01: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· видео v:0 пересчёт кадров',
     summary:
-      'Точный пересчёт кадров v:0 (-count_frames, поле ffprobe nb_read_frames — реально прочитанные кадры); медленно, но даёт реальный счёт; путь к медиа подставляется из превью.',
+      'Точный пересчёт кадров первой видеодорожки (v:0) (-count_frames, поле ffprobe nb_read_frames — реально прочитанные кадры); медленно, но даёт реальный счёт; путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -count_frames -select_streams v:0 -show_entries stream=nb_read_frames -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· аудио a:0 атрибуты дорожки',
     summary:
-      'Поток a:0: раскладка дорожки disposition (поле ffprobe: default, forced, comment и др. — флаги назначения дорожки); путь к медиа подставляется из превью.',
+      'Первая аудиодорожка (a:0): раскладка дорожки disposition (поле ffprobe: default, forced, comment и др. — флаги назначения дорожки); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=disposition -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· видео v:0 пиксели и цвет',
     summary:
-      'Поток v:0: формат пикселей и цвет (поля ffprobe: pix_fmt — формат пикселей, color_space — цветовое пространство, color_range — диапазон яркости; контекст SDR и HDR без отдельного color_transfer); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): формат пикселей и цвет (поля ffprobe: pix_fmt — формат пикселей, color_space — цветовое пространство, color_range — диапазон яркости; контекст SDR и HDR без отдельного color_transfer); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=pix_fmt,color_space,color_range -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· видео v:0 размер кадра: хранение и отображение',
     summary:
-      'Поток v:0: размеры хранения и отображения (поля ffprobe: coded_width и coded_height — сетка кодека, width и height — размер отображения; анаморф); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): размеры хранения и отображения (поля ffprobe: coded_width и coded_height — сетка кодека, width и height — размер отображения; анаморф); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=coded_width,coded_height,width,height -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -237,29 +235,28 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_01: TerminalCommandHintE
   {
     tool: 'ffprobe',
     token: '· субтитры s:0 атрибуты дорожки',
-    summary:
-      'Поток s:0: disposition (поле ffprobe: default, forced, hearing_impaired для слабослышащих и т. д.); путь к медиа подставляется из превью.',
+    summary: 'Дорожка субтитров (s:0): disposition (поле ffprobe: default, forced, hearing_impaired для слабослышащих и т. д.); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=disposition -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· видео v:0: таймбаза и старт меток',
     summary:
-      'Поток v:0: тактовая сетка и стартовая метка (поля ffprobe: time_base — знаменатель базы времени, start_pts — первый PTS дорожки); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): тактовая сетка и стартовая метка (поля ffprobe: time_base — знаменатель базы времени, start_pts — первый PTS дорожки); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=time_base,start_pts -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· аудио a:0: таймбаза и старт меток',
     summary:
-      'Поток a:0: тактовая сетка и стартовая метка аудио (поля ffprobe: time_base — база времени, start_pts — смещение первого тика); путь к медиа подставляется из превью.',
+      'Первая аудиодорожка (a:0): тактовая сетка и стартовая метка аудио (поля ffprobe: time_base — база времени, start_pts — смещение первого тика); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=time_base,start_pts -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· видео v:0 битрейт и максимум',
     summary:
-      'Поток v:0: битрейт и максимальный битрейт (поля ffprobe: bit_rate — средний, max_bit_rate — пик при VBR); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): битрейт и максимальный битрейт (поля ffprobe: bit_rate — средний, max_bit_rate — пик при VBR); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=bit_rate,max_bit_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -280,7 +277,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_01: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· аудио a:0 расклад и битрейт',
     summary:
-      'Поток a:0: расклад каналов и битрейт (поля ffprobe: channel_layout — строка расклада вроде stereo, bit_rate — битрейт дорожки); путь к медиа подставляется из превью.',
+      'Первая аудиодорожка (a:0): расклад каналов и битрейт (поля ffprobe: channel_layout — строка расклада вроде stereo, bit_rate — битрейт дорожки); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=channel_layout,bit_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -294,7 +291,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_01: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· аудио a:0 название и обработчик',
     summary:
-      'Поток a:0: теги title и handler_name дорожки (поля stream_tags: название и обработчик дорожки); путь к медиа подставляется из превью.',
+      'Первая аудиодорожка (a:0): теги title и handler_name дорожки (поля stream_tags: название и обработчик дорожки); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream_tags=title,handler_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -322,7 +319,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_01: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· видео v:0: встроенные субтитры и avc',
     summary:
-      'Поток v:0: признаки субтитров и AVC (поля ffprobe: closed_captions — встроенные субтитры в потоке, is_avc — элементарный поток AVC; контекст CEA-608 и CEA-708); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): признаки субтитров и AVC (поля ffprobe: closed_captions — встроенные субтитры в потоке, is_avc — элементарный поток AVC; контекст CEA-608 и CEA-708); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=closed_captions,is_avc -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -343,7 +340,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_01: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· видео v:0: четырёхбуквенный тег кодека',
     summary:
-      'Поток v:0: codec_tag_string (поле ffprobe: четырёхбуквенный идентификатор FourCC — бренд сырого кодека); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): codec_tag_string (поле ffprobe: четырёхбуквенный идентификатор FourCC — бренд сырого кодека); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=codec_tag_string -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -385,7 +382,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_01: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· видео v:0 расположение цветности',
     summary:
-      'Поток v:0: chroma_location (поле ffprobe: расположение субдискретизации цветности, напр. 4:2:0); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): chroma_location (поле ffprobe: расположение субдискретизации цветности, напр. 4:2:0); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=chroma_location -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {

@@ -6,6 +6,7 @@
  * (`parseFfmpegExport*`): сюда приходят только уже нормализованные значения.
  */
 
+import type { ExternalFilterScriptKind } from './external-filter-script-contract'
 import type {
   FfmpegExportAudioModeId,
   FfmpegExportAudioNormalizeId,
@@ -124,6 +125,9 @@ export interface FfmpegExportPreviewInput {
   videoBlur?: FfmpegExportVideoBlurId
   videoDeinterlace?: FfmpegExportVideoDeinterlaceId
   audioNormalize?: FfmpegExportAudioNormalizeId
+  /** §17 — внешний AviSynth/VapourSynth в `-vf` (как в spawn). */
+  externalFilterKind?: ExternalFilterScriptKind
+  externalFilterScriptAbsPath?: string | null
 }
 
 export interface FfmpegExportPreviewResult {
@@ -215,6 +219,15 @@ export function buildFfmpegExportPreviewCommand(
       : {}),
     ...(input.extraArgs !== undefined && input.extraArgs.length > 0
       ? { extraArgs: input.extraArgs }
+      : {}),
+    ...(input.externalFilterKind === 'avisynth' || input.externalFilterKind === 'vapoursynth'
+      ? typeof input.externalFilterScriptAbsPath === 'string' &&
+        input.externalFilterScriptAbsPath.length > 0
+        ? {
+            externalFilterKind: input.externalFilterKind,
+            externalFilterScriptAbsPath: input.externalFilterScriptAbsPath
+          }
+        : {}
       : {})
   }
 

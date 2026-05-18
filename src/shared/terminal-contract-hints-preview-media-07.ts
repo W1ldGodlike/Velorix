@@ -154,7 +154,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_07: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· видео v:0 первые 10 pict_type',
     summary:
-      'Типы кадров I/B/P первых 10 кадров v:0 (-show_frames, поле pict_type, -read_intervals %+#10); путь к медиа подставляется из превью.',
+      'Типы кадров I/B/P первых 10 кадров первой видеодорожки (v:0) (-show_frames, поле pict_type, -read_intervals %+#10); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_frames -show_entries frame=pict_type -read_intervals %+#10 -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -266,7 +266,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_07: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· аудио a:0 sample_aspect_ratio',
     summary:
-      'Поток a:0: sample_aspect_ratio (поле ffprobe: формальный SAR у аудио, часто N/A); путь к медиа подставляется из превью.',
+      'Первая аудиодорожка (a:0): sample_aspect_ratio (поле ffprobe: формальный SAR у аудио, часто N/A); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=sample_aspect_ratio -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -343,7 +343,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_07: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· видео v:0 codec_tag',
     summary:
-      'Поток v:0: codec_tag (поле ffprobe: числовой тег кодека вместе с codec_tag_string); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): codec_tag (поле ffprobe: числовой тег кодека вместе с codec_tag_string); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=codec_tag -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -371,7 +371,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_07: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· видео v:0 bt601 709 цвет',
     summary:
-      'Поток v:0: color_space, color_transfer и color_primaries одной строкой (поля ffprobe; сводка HDR/SDR); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): color_space, color_transfer и color_primaries одной строкой (поля ffprobe; сводка HDR/SDR); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=color_space,color_transfer,color_primaries -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {

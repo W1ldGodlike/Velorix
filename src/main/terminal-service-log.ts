@@ -2,7 +2,7 @@ import { appendFileSync, existsSync, mkdirSync, readFileSync, statSync, writeFil
 import { app } from 'electron'
 import { join } from 'path'
 
-import { downloadsWindowUiLocaleFromSystemLocale } from '../shared/downloads-window-ui-locale'
+import { appUiLocaleFromSystemLocale } from '../shared/app-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
 import {
   TERMINAL_CLI_LOG_KEEP_BYTES,
@@ -29,7 +29,7 @@ export function appendTerminalCliSessionLog(params: { userData: string; block: s
       const st = statSync(file)
       if (st.size > TERMINAL_CLI_LOG_MAX_BYTES) {
         const raw = readFileSync(file)
-        const loc = downloadsWindowUiLocaleFromSystemLocale(app.getLocale())
+        const loc = appUiLocaleFromSystemLocale(app.getLocale())
         const head = Buffer.from(getMainApplicationStrings(loc).terminalLogTruncatedOlder, 'utf8')
         const tail = raw.subarray(Math.max(0, raw.length - TERMINAL_CLI_LOG_KEEP_BYTES))
         writeFileSync(file, Buffer.concat([head, tail]))

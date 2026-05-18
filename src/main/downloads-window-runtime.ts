@@ -3,7 +3,7 @@ export {
   DOWNLOADS_QUEUE_SNAPSHOT_CHANNEL,
   getDownloadsBoundsHooks,
   getDownloadsPopoutWindow,
-  getLastDownloadsWindowResolvedUiLocale,
+  getLastDownloadsPopoutResolvedUiLocale,
   ipcStr,
   ipcUiLocale,
   isDownloadsOrMainSender,
@@ -11,7 +11,7 @@ export {
   isDownloadsWindow,
   resolveMainEditorWindow,
   setDownloadsPopoutWindow,
-  setLastDownloadsWindowResolvedUiLocale
+  setLastDownloadsPopoutResolvedUiLocale
 } from './downloads-window-runtime-hooks'
 export {
   getDownloadsQueueSnapshotForRenderer,

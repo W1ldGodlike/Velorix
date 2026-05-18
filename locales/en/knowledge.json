@@ -17,5 +17,21 @@
   "knowledgeArticleTerminalHintsLink": "Knowledge: terminal hints (ffmpeg / yt-dlp)",
   "terminalKnowledgeDeepLinkTooltip": "Open the ffmpeg / yt-dlp hints article for the Terminal tab.",
   "knowledgeMdInternalLinkTooltip": "Open the linked article here.",
-  "knowledgeMdExternalLinkTooltip": "Open link in the browser (new tab)."
+  "knowledgeMdExternalLinkTooltip": "Open link in the browser (new tab).",
+  "knowledgeTocSectionStart": "1. Start and interface",
+  "knowledgeTocSectionDownloads": "2. yt-dlp downloads",
+  "knowledgeTocSectionEditor": "3. Editor and ffmpeg export",
+  "knowledgeTocSectionTerminal": "4. Terminal and commands",
+  "knowledgeTocSectionInspector": "5. Inspector and media",
+  "knowledgeTocSectionEngines": "6. Engines, paths, diagnostics",
+  "knowledgeTocSectionFaq": "7. FAQ and troubleshooting",
+  "knowledgeTocSectionOther": "Other",
+  "knowledgeDeepLinkDownloadsRailLabel": "Help: download settings",
+  "knowledgeDeepLinkDownloadsRailTooltip": "Open the article about the downloads rail (format, network, cookies, expert).",
+  "knowledgeDeepLinkFfmpegRailLabel": "Help: ffmpeg presets",
+  "knowledgeDeepLinkFfmpegRailTooltip": "Open the article about the export rail and presets.",
+  "knowledgeDeepLinkBatchExportLabel": "Help: batch export",
+  "knowledgeDeepLinkBatchExportTooltip": "Open the article about queues and batch processing.",
+  "knowledgeDeepLinkProbeLabel": "Help: ffprobe inspector",
+  "knowledgeDeepLinkProbeTooltip": "Open the article about track summary, chapters, and raw JSON."
 }

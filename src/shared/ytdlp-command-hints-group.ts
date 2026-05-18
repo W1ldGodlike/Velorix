@@ -1,4 +1,4 @@
-import type { DownloadsWindowUiLocale } from './downloads-window-ui-locale'
+import type { AppUiLocale } from './app-ui-locale'
 import type { YtdlpCommandHintEntry } from './ytdlp-download-contract'
 import {
   compareYtdlpHintCategoryKeys,
@@ -12,7 +12,7 @@ import {
 export function groupYtdlpCommandHintsByCategory(
   hints: readonly YtdlpCommandHintEntry[] | undefined,
   query?: string,
-  uiLocale: DownloadsWindowUiLocale = 'ru'
+  uiLocale: AppUiLocale = 'ru'
 ): Array<[string, YtdlpCommandHintEntry[]]> {
   if (!hints?.length) return []
   const q = query?.trim().toLowerCase() ?? ''

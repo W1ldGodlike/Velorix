@@ -7,7 +7,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_09: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· кадры v:0 key_frame 5',
     summary:
-      'Первые пять кадров v:0: признак ключевого кадра key_frame (-show_frames -read_intervals %+#5); путь к медиа подставляется из превью.',
+      'Первые пять кадров первой видеодорожки (v:0): признак ключевого кадра key_frame (-show_frames -read_intervals %+#5); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_frames -read_intervals %+#5 -show_entries frame=key_frame -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -153,8 +153,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_09: TerminalCommandHintE
   {
     tool: 'ffprobe',
     token: '· кадры v:0 interlaced 4',
-    summary:
-      'Первые четыре кадра v:0: признак interlaced_frame (-show_frames -read_intervals %+#4); путь к медиа подставляется из превью.',
+    summary: 'Первые четыре кадра первой видеодорожки (v:0): признак interlaced_frame (-show_frames -read_intervals %+#4); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_frames -read_intervals %+#4 -show_entries frame=interlaced_frame -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -181,8 +180,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_09: TerminalCommandHintE
   {
     tool: 'ffprobe',
     token: '· пакет v:0 dts_time 1',
-    summary:
-      'Первый пакет v:0: dts_time (-show_packets -read_intervals %+#1 -show_entries packet=dts_time); путь к медиа подставляется из превью.',
+    summary: 'Первый пакет первой видеодорожки (v:0): dts_time (-show_packets -read_intervals %+#1 -show_entries packet=dts_time); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_packets -read_intervals %+#1 -show_entries packet=dts_time -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -321,8 +319,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_09: TerminalCommandHintE
   {
     tool: 'ffprobe',
     token: '· кадры v:0 pkt_size 3',
-    summary:
-      'Первые три кадра v:0: размер пакета pkt_size (-show_frames -read_intervals %+#3); путь к медиа подставляется из превью.',
+    summary: 'Первые три кадра первой видеодорожки (v:0): размер пакета pkt_size (-show_frames -read_intervals %+#3); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_frames -read_intervals %+#3 -show_entries frame=pkt_size -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -356,8 +353,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_09: TerminalCommandHintE
   {
     tool: 'ffprobe',
     token: '· пакет v:0 pts_time 1',
-    summary:
-      'Первый пакет v:0: pts_time (-show_packets -read_intervals %+#1 -show_entries packet=pts_time); путь к медиа подставляется из превью.',
+    summary: 'Первый пакет первой видеодорожки (v:0): pts_time (-show_packets -read_intervals %+#1 -show_entries packet=pts_time); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_packets -read_intervals %+#1 -show_entries packet=pts_time -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {

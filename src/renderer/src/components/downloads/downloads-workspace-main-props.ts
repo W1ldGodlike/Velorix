@@ -10,6 +10,7 @@ import type {
   DownloadsQueueStats,
   DownloadsStatusFilter
 } from '../../downloads-queue-view'
+import type { DownloadsHistoryListMode } from '../../../../shared/settings-contract'
 import type { DownloadsHistoryOutcomeFilter } from '../../use-downloads-workspace'
 
 export type DownloadsWorkspaceMainProps = {
@@ -32,6 +33,8 @@ export type DownloadsWorkspaceMainProps = {
   onSelectDownloadsTab: () => void
   downloadsEmbeddedHistoryOpen: boolean
   persistDownloadsEmbeddedHistoryOpen: (nextOpen: boolean) => void
+  downloadsHistoryListMode: DownloadsHistoryListMode
+  persistDownloadsHistoryListMode: (nextMode: DownloadsHistoryListMode) => void
   visibleDownloadsHistory: YtdlpDownloadHistoryEntry[]
   downloadsHistoryCount: number
   downloadsHistoryOutcomeFilter: DownloadsHistoryOutcomeFilter

@@ -1,4 +1,4 @@
-import type { DownloadsWindowUiLocale } from './downloads-window-ui-locale'
+import type { AppUiLocale } from './app-ui-locale'
 
 /**
  * §6.3 — порядок групп справочника argv (вкладка «Загрузки», pop-out, выпадающий список).
@@ -29,15 +29,15 @@ export const YTDLP_HINT_CATEGORY_ORDER_EN: readonly string[] = [
   'Other'
 ]
 
-export function ytdlpHintsMiscCategoryLabel(locale: DownloadsWindowUiLocale): string {
+export function ytdlpHintsMiscCategoryLabel(locale: AppUiLocale): string {
   return locale === 'en' ? 'Other' : 'Прочее'
 }
 
-export function getYtdlpHintCategoryOrder(locale: DownloadsWindowUiLocale): readonly string[] {
+export function getYtdlpHintCategoryOrder(locale: AppUiLocale): readonly string[] {
   return locale === 'en' ? YTDLP_HINT_CATEGORY_ORDER_EN : YTDLP_HINT_CATEGORY_ORDER
 }
 
-export function categorySortRank(category: string, locale: DownloadsWindowUiLocale = 'ru'): number {
+export function categorySortRank(category: string, locale: AppUiLocale = 'ru'): number {
   const order = getYtdlpHintCategoryOrder(locale)
   const idx = order.indexOf(category)
   return idx === -1 ? order.length - 1 : idx
@@ -47,7 +47,7 @@ export function categorySortRank(category: string, locale: DownloadsWindowUiLoca
 export function compareYtdlpHintCategoryKeys(
   a: string,
   b: string,
-  locale: DownloadsWindowUiLocale = 'ru'
+  locale: AppUiLocale = 'ru'
 ): number {
   const ra = categorySortRank(a, locale)
   const rb = categorySortRank(b, locale)

@@ -33,7 +33,11 @@ import {
   trustedHashForFfmpegZipWin,
   trustedHashForYtDlpWin
 } from './trusted-hashes-store'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
+import {
+  isNativeMainEngineAutoDownloadSupported,
+  nativeMainEngineExecutableSuffix
+} from './platform'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
 import type { EngineDownloadProgress } from '../shared/engine-download-contract'
 
@@ -56,7 +60,7 @@ async function sha256File(filePath: string): Promise<string> {
 async function assertSha256Optional(
   filePath: string,
   expected: string | undefined,
-  locale: DownloadsWindowUiLocale
+  locale: AppUiLocale
 ): Promise<void> {
   const S = getMainApplicationStrings(locale)
   if (expected === undefined || expected.trim() === '') {
@@ -79,7 +83,7 @@ async function downloadToFile(
   url: string,
   destPath: string,
   onFraction: (f: number) => void,
-  locale: DownloadsWindowUiLocale
+  locale: AppUiLocale
 ): Promise<void> {
   const S = getMainApplicationStrings(locale)
   const response = await fetch(url, {
@@ -153,10 +157,10 @@ export async function downloadEnginesWindows(
   paths: AppPaths,
   trusted: TrustedHashesFile,
   onProgress: (p: EngineDownloadProgress) => void,
-  locale: DownloadsWindowUiLocale = 'ru'
+  locale: AppUiLocale = 'ru'
 ): Promise<void> {
   const S = getMainApplicationStrings(locale)
-  if (process.platform !== 'win32') {
+  if (!isNativeMainEngineAutoDownloadSupported()) {
     throw new Error(S.engineDownloadWindowsOnly)
   }
 
@@ -286,7 +290,7 @@ function fileExistsNonEmpty(candidate: string): boolean {
 
 /** `true`, если хотя бы один из трёх движков недоступен с учётом override, bundled и app-data/bin. */
 export function isAnyEngineMissing(paths: AppPaths, overrides?: EnginePathOverrides): boolean {
-  const suffix = process.platform === 'win32' ? '.exe' : ''
+  const suffix = nativeMainEngineExecutableSuffix()
   return ENGINE_IDS.some((id) => {
     const manual = overrides?.[id]
     if (typeof manual === 'string' && manual.trim() !== '' && fileExistsNonEmpty(manual.trim())) {

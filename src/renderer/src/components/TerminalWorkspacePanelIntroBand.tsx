@@ -47,6 +47,7 @@ export function TerminalWorkspacePanelIntroBand(
             type="button"
             className="app-knowledge-link"
             title={uiText('terminalKnowledgeDeepLinkTooltip')}
+            aria-label={uiText('knowledgeArticleTerminalHintsLink')}
             aria-describedby="terminal-intro-hint"
             onClick={() => {
               onOpenTerminalKnowledge()

@@ -25,6 +25,8 @@ Scope: [`scripts/audit-scope.config.mjs`](../../scripts/audit-scope.config.mjs).
 
 **Если** закрыли паттерн копипасты/реестра **то** в том же коммите: ужесточить `check:field-registries.mjs` или `audit-copy-paste-patterns.mjs`, либо буллет здесь.
 
+**Если** вернули HTML-pop-out / `buildDownloadsHtml` / `*-window-ui-strings-*` **то** `check:ui-surfaces-guard` → exit 1 (`gate=no-plan`).
+
 ## Обязательно при широком рефакторе
 
 1. `npm run audit:inventory` при новых корнях в scope.

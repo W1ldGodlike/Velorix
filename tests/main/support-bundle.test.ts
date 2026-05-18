@@ -66,6 +66,7 @@ describe('createSupportBundleZip', () => {
 
     createSupportBundleZip(out, {
       appVersion: '0.1.0',
+      buildInfoLines: ['buildId: 4f14f86', 'builtAtUtc: 2026-05-18 06:00:00 UTC'],
       electronVersion: '1',
       chromeVersion: '2',
       nodeVersion: '3',
@@ -109,11 +110,20 @@ describe('createSupportBundleZip', () => {
         'catalog: locales/ru/*.json + locales/en/*.json (flat string values)',
         'guard: npm run check:locales-json (ru/en key parity per shard)'
       ],
-      uiDpiLines: ['CSS HiDPI: @media 120dpi (125%), 144dpi (150%), 168dpi (175%), 192dpi (200%) — main.css + downloads HTML']
+      rendererStateLines: ['approach: hooks-composition'],
+      uiDpiLines: [
+        'CSS HiDPI: @media 120/144/168/192dpi — main.css (editor, downloads, terminal, modals, knowledge, probe, history)'
+      ],
+      hwManualSmokeChecklistLines: [
+        'section: win-nvenc — Windows — NVENC (NVIDIA)',
+        '  step [nvenc-manual]: manual h264_nvenc'
+      ]
     })
 
     const zip = readFileSync(out)
     expect(zip.includes(Buffer.from('diagnostics.txt'))).toBe(true)
+    expect(zip.includes(Buffer.from('buildId: 4f14f86'))).toBe(true)
+    expect(zip.includes(Buffer.from('builtAtUtc: 2026-05-18 06:00:00 UTC'))).toBe(true)
     expect(zip.includes(Buffer.from('logs/main.log'))).toBe(true)
     expect(zip.includes(Buffer.from('hello log'))).toBe(true)
     expect(zip.includes(Buffer.from('logs/session.log'))).toBe(true)
@@ -142,6 +152,8 @@ describe('createSupportBundleZip', () => {
     expect(zip.includes(Buffer.from('check:locales-json'))).toBe(true)
     expect(zip.includes(Buffer.from('uiDpi:'))).toBe(true)
     expect(zip.includes(Buffer.from('build:linux'))).toBe(true)
+    expect(zip.includes(Buffer.from('hwManualSmoke:'))).toBe(true)
+    expect(zip.includes(Buffer.from('win-nvenc'))).toBe(true)
   })
 })
 

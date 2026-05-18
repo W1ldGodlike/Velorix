@@ -2,6 +2,7 @@ import type { Dispatch, MutableRefObject, SetStateAction } from 'react'
 
 import type { EnginePathsDraft, EngineSummary } from './app-engines-ui'
 import type { WorkspaceTab } from './app-terminal-hint-ui'
+import type { AppSettingsDialogSection } from '../../shared/app-settings-dialog-section'
 import type { EditorUrlPasteBehaviorId } from '../../shared/editor-url-paste-behavior'
 import type { FfmpegExportUserPreset } from '../../shared/ffmpeg-export-contract'
 import type { FfmpegSnapshotFormatId } from '../../shared/ffmpeg-snapshot-contract'
@@ -42,9 +43,12 @@ export type UseAppMainWindowEffectsDeps = {
   setEngineVersionsLine: Dispatch<SetStateAction<string>>
   setEnginesOfferDownload: Dispatch<SetStateAction<boolean>>
   engineSummary: EngineSummary
-  enginePathsOpen: boolean
+  appSettingsOpen: boolean
+  appSettingsSection: AppSettingsDialogSection
   setEnginePathsDraft: Dispatch<SetStateAction<EnginePathsDraft>>
-  setEnginePathsOpen: Dispatch<SetStateAction<boolean>>
+  setAppSettingsOpen: Dispatch<SetStateAction<boolean>>
+  setAppSettingsSection: Dispatch<SetStateAction<AppSettingsDialogSection>>
+  setExternalFilterScriptOpen: Dispatch<SetStateAction<boolean>>
   setAboutInfo: Dispatch<
     SetStateAction<Awaited<ReturnType<typeof window.fluxalloy.about.getInfo>> | null>
   >

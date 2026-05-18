@@ -1,7 +1,8 @@
 import { useCallback, useMemo } from 'react'
 import type { Dispatch, SetStateAction } from 'react'
 
-import { KNOWLEDGE_SLUG_FFMPEG_TERMINAL_HINTS, type WorkspaceTab } from './app-terminal-hint-ui'
+import type { WorkspaceTab } from './app-terminal-hint-ui'
+import { KNOWLEDGE_SLUG_FFMPEG_TERMINAL_HINTS } from '../../shared/knowledge-contract'
 import type { AppWorkspaceMainProps } from './components/shell/AppWorkspaceMain'
 import type { DownloadsSettingsRailProps } from './components/downloads/DownloadsSettingsRail'
 import type { DownloadsWorkspaceMainProps } from './components/downloads/DownloadsWorkspaceMain'
@@ -118,8 +119,17 @@ export function useAppWorkspaceMainProps(
     [downloadsHistoryBusy, downloadsOptionsBusy, editorQuick, engineDownloadBusy]
   )
 
+  const onOpenKnowledgeArticle = useCallback(
+    (slug: string): void => {
+      setKnowledgeInitialSlug(slug)
+      setKnowledgeOpen(true)
+    },
+    [setKnowledgeInitialSlug, setKnowledgeOpen]
+  )
+
   const editorBatchProps = useMemo(
     (): AppWorkspaceMainProps['editorBatch'] => ({
+      onOpenKnowledgeArticle,
       batchExportBusy: editorBatch.batchExportBusy,
       batchSnapshot: editorBatch.batchSnapshot,
       batchOutputSuffix: editorBatch.batchOutputSuffix,
@@ -152,7 +162,7 @@ export function useAppWorkspaceMainProps(
       handleBatchOpenInput: editorBatch.handleBatchOpenInput,
       handleBatchCopyRowPath: editorBatch.handleBatchCopyRowPath
     }),
-    [editorBatch]
+    [editorBatch, onOpenKnowledgeArticle]
   )
 
   const editorPreviewProps = useMemo(
@@ -167,15 +177,15 @@ export function useAppWorkspaceMainProps(
   const editorFfmpegProps = useMemo(
     (): AppWorkspaceMainProps['editorFfmpeg'] => ({
       ...editorFfmpeg,
-      editorFfmpegDetailBusy: exportBusy || snapshotBusy || exportCancelBusy || probePending
+      editorFfmpegDetailBusy: exportBusy || snapshotBusy || exportCancelBusy || probePending,
+      onOpenKnowledgeArticle
     }),
-    [editorFfmpeg, exportBusy, exportCancelBusy, probePending, snapshotBusy]
+    [editorFfmpeg, exportBusy, exportCancelBusy, onOpenKnowledgeArticle, probePending, snapshotBusy]
   )
 
   const onOpenTerminalKnowledge = useCallback((): void => {
-    setKnowledgeInitialSlug(KNOWLEDGE_SLUG_FFMPEG_TERMINAL_HINTS)
-    setKnowledgeOpen(true)
-  }, [setKnowledgeInitialSlug, setKnowledgeOpen])
+    onOpenKnowledgeArticle(KNOWLEDGE_SLUG_FFMPEG_TERMINAL_HINTS)
+  }, [onOpenKnowledgeArticle])
 
   const terminalProps = useMemo(
     (): AppWorkspaceMainProps['terminal'] => ({
@@ -200,6 +210,14 @@ export function useAppWorkspaceMainProps(
     setWorkspaceTab('downloads')
   }, [setWorkspaceTab])
 
+  const downloadsSettingsWithKnowledge = useMemo(
+    (): UseAppWorkspaceMainPropsInput['downloads']['settings'] => ({
+      ...downloadsSettings,
+      onOpenKnowledgeArticle
+    }),
+    [downloadsSettings, onOpenKnowledgeArticle]
+  )
+
   const downloadsMainProps = useMemo(
     (): AppWorkspaceMainProps['downloadsMain'] => ({
       ...downloadsMainInput,
@@ -221,7 +239,7 @@ export function useAppWorkspaceMainProps(
     editorFfmpeg: editorFfmpegProps,
     terminal: terminalProps,
     downloadsMain: downloadsMainProps,
-    downloadsSettings,
+    downloadsSettings: downloadsSettingsWithKnowledge,
     downloadsWorkspaceAriaBusy
   }
 }

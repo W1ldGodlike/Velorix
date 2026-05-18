@@ -8,7 +8,7 @@ import {
 } from '../shared/ffprobe-container-format'
 import { parseFfprobeFormatScalarTagsFromFfprobe } from '../shared/ffprobe-format-tag-registry'
 import type { MediaProbeResult, MediaProbeSuccess } from '../shared/ffprobe-contract'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
 import { resolveVideoFpsApprox } from '../shared/ffprobe-video-fps'
 
@@ -20,7 +20,7 @@ export async function probeMediaFile(
   paths: AppPaths,
   absoluteMediaPath: string,
   engineOverrides?: EnginePathOverrides,
-  locale: DownloadsWindowUiLocale = 'ru'
+  locale: AppUiLocale = 'ru'
 ): Promise<MediaProbeResult> {
   const S = getMainApplicationStrings(locale)
   const ffprobe = resolveEngineExecutablePath(paths, 'ffprobe', engineOverrides)

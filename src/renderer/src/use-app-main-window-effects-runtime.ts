@@ -16,9 +16,12 @@ export function useAppMainWindowEffectsRuntime(
     setProbePending,
     setStatusHint,
     engineSummary,
-    enginePathsOpen,
+    appSettingsOpen,
+    appSettingsSection,
     setEnginePathsDraft,
-    setEnginePathsOpen,
+    setAppSettingsOpen,
+    setAppSettingsSection,
+    setExternalFilterScriptOpen,
     setAboutInfo,
     setAboutOpen,
     editorUrlPasteBehavior,
@@ -79,7 +82,7 @@ export function useAppMainWindowEffectsRuntime(
   }, [refreshEngineUi])
 
   useEffect(() => {
-    if (!enginePathsOpen) {
+    if (!appSettingsOpen || appSettingsSection !== 'dependencies') {
       return
     }
     void window.fluxalloy.settings.get().then((s) => {
@@ -89,11 +92,16 @@ export function useAppMainWindowEffectsRuntime(
         'yt-dlp': s.engineExecutablePaths?.['yt-dlp'] ?? ''
       })
     })
-  }, [enginePathsOpen, setEnginePathsDraft])
+  }, [appSettingsOpen, appSettingsSection, setEnginePathsDraft])
 
   useEffect(() => {
-    const offMenu = window.fluxalloy.onOpenEnginePaths(() => {
-      setEnginePathsOpen(true)
+    const offEnginePaths = window.fluxalloy.onOpenEnginePaths(() => {
+      setAppSettingsSection('dependencies')
+      setAppSettingsOpen(true)
+    })
+    const offSettings = window.fluxalloy.onOpenSettings((sec) => {
+      setAppSettingsSection(sec)
+      setAppSettingsOpen(true)
     })
     const offSynced = window.fluxalloy.onEnginePathsChanged(() => {
       void refreshEngineUi()
@@ -104,12 +112,24 @@ export function useAppMainWindowEffectsRuntime(
         setAboutOpen(true)
       })
     })
+    const offExternalFilter = window.fluxalloy.onOpenExternalFilterScript(() => {
+      setExternalFilterScriptOpen(true)
+    })
     return (): void => {
-      offMenu()
+      offEnginePaths()
+      offSettings()
       offSynced()
       offAbout()
+      offExternalFilter()
     }
-  }, [refreshEngineUi, setAboutInfo, setAboutOpen, setEnginePathsOpen])
+  }, [
+    refreshEngineUi,
+    setAboutInfo,
+    setAboutOpen,
+    setAppSettingsOpen,
+    setAppSettingsSection,
+    setExternalFilterScriptOpen
+  ])
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent): void {

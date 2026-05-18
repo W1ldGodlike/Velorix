@@ -3,7 +3,7 @@
  * жёсткая фильтрация опасных символов и конфликтующих ключей с основным конвейером.
  */
 
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getYtdlpCliValidationCopy } from '../shared/ytdlp-cli-validation-locale'
 import type {
   YtdlpCookiesBrowserId,
@@ -26,7 +26,7 @@ function cookiesBrowserProfileHasControlChars(s: string): boolean {
 /** §6.2 — суффикс `BROWSER:…` для `--cookies-from-browser` (один argv-токен после сборки). */
 export function validateYtdlpCookiesBrowserProfile(
   raw: string,
-  uiLocale: DownloadsWindowUiLocale = 'ru'
+  uiLocale: AppUiLocale = 'ru'
 ): { ok: true; value: string } | { ok: false; error: string } {
   const V = getYtdlpCliValidationCopy(uiLocale)
   const t = raw.trim()
@@ -163,7 +163,7 @@ function tokenViolationReason(
  */
 export function parseExtraYtdlpArgsLine(
   raw: string,
-  uiLocale: DownloadsWindowUiLocale = 'ru'
+  uiLocale: AppUiLocale = 'ru'
 ): { ok: true; args: string[] } | { ok: false; error: string } {
   const V = getYtdlpCliValidationCopy(uiLocale)
   const line = raw.trim()

@@ -5,6 +5,11 @@ import { is } from '@electron-toolkit/utils'
 
 import type { EngineId } from './engine-service'
 import type { TerminalCommandHintEntry, TerminalToolId } from '../shared/terminal-contract'
+import {
+  TERMINAL_HINT_MAX_DOC_URL_CHARS,
+  TERMINAL_HINT_MAX_EXAMPLE_CHARS,
+  TERMINAL_HINT_MAX_EXAMPLES
+} from '../shared/terminal-hint-json-display'
 import { TERMINAL_ALLOWED_TOOLS, TERMINAL_MAX_LINE_CHARS } from './terminal-service-constants'
 
 let hintsMemo: TerminalCommandHintEntry[] | undefined
@@ -36,7 +41,14 @@ function readHints(fileName: string, fallbackTool: EngineId): TerminalCommandHin
       if (!row || typeof row !== 'object') {
         continue
       }
-      const src = row as { token?: unknown; summary?: unknown; tool?: unknown; fullLine?: unknown }
+      const src = row as {
+        token?: unknown
+        summary?: unknown
+        tool?: unknown
+        fullLine?: unknown
+        examples?: unknown
+        docUrl?: unknown
+      }
       const tool = TERMINAL_ALLOWED_TOOLS.includes(src.tool as TerminalToolId)
         ? (src.tool as TerminalToolId)
         : fallbackTool
@@ -54,6 +66,30 @@ function readHints(fileName: string, fallbackTool: EngineId): TerminalCommandHin
         if (fullLine !== undefined) {
           entry.fullLine = fullLine
         }
+        if (Array.isArray(src.examples)) {
+          const examples = src.examples
+            .filter((ex): ex is string => typeof ex === 'string')
+            .map((ex) => ex.trim())
+            .filter((ex) => ex.length > 0)
+            .slice(0, TERMINAL_HINT_MAX_EXAMPLES)
+            .map((ex) =>
+              ex.length > TERMINAL_HINT_MAX_EXAMPLE_CHARS
+                ? ex.slice(0, TERMINAL_HINT_MAX_EXAMPLE_CHARS)
+                : ex
+            )
+          if (examples.length > 0) {
+            entry.examples = examples
+          }
+        }
+        if (typeof src.docUrl === 'string') {
+          const docUrl = src.docUrl.trim()
+          if (docUrl.startsWith('https://') || docUrl.startsWith('http://')) {
+            entry.docUrl =
+              docUrl.length > TERMINAL_HINT_MAX_DOC_URL_CHARS
+                ? docUrl.slice(0, TERMINAL_HINT_MAX_DOC_URL_CHARS)
+                : docUrl
+          }
+        }
         out.push(entry)
       }
     }
@@ -69,6 +105,7 @@ export function getTerminalCommandHints(): TerminalCommandHintEntry[] {
   }
   hintsMemo = [
     ...readHints('ffmpeg_commands.json', 'ffmpeg'),
+    ...readHints('ffprobe_commands.json', 'ffprobe'),
     ...readHints('ytdlp_commands.json', 'yt-dlp')
   ].sort((a, b) => a.tool.localeCompare(b.tool) || a.token.localeCompare(b.token, 'ru'))
   return hintsMemo

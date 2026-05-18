@@ -5,7 +5,7 @@ import type {
   DiagnosticsOpenMainLogResult,
   DiagnosticsSupportZipResult
 } from '../../shared/diagnostics-contract'
-import type { DownloadsWindowUiLocale } from '../../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../../shared/app-ui-locale'
 import { resolveAppPaths } from '../app-paths'
 import {
   cleanDiagnosticsMaintenance,
@@ -25,7 +25,7 @@ import {
 let ipcRegistered = false
 
 export type KnowledgeDiagnosticsIpcDeps = {
-  mainDownloadsUiLocale: () => DownloadsWindowUiLocale
+  mainDownloadsUiLocale: () => AppUiLocale
   mainAppStr: () => { diagnosticsUnknownFolder: string }
   openMainLogForUser: () => Promise<DiagnosticsOpenMainLogResult>
   createSupportBundleWithDialog: (

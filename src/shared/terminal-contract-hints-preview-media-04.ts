@@ -7,7 +7,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_04: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· видео v:0 режим альфы',
     summary:
-      'Поток v:0: теги дорожки stream_tags alpha_mode (альфа-канал VP9 и AV1 в WebM и MKV); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): теги дорожки stream_tags alpha_mode (альфа-канал VP9 и AV1 в WebM и MKV); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream_tags=alpha_mode -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -49,7 +49,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_04: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· аудио a:0 битность кодированного сэмпла',
     summary:
-      'Поток a:0: bits_per_coded_sample (поле ffprobe: глубина закодированного PCM при наличии); путь к медиа подставляется из превью.',
+      'Первая аудиодорожка (a:0): bits_per_coded_sample (поле ffprobe: глубина закодированного PCM при наличии); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=bits_per_coded_sample -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -105,7 +105,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_04: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· видео v:0 таймбазы кодека и потока',
     summary:
-      'Поток v:0: codec_time_base и time_base (поля ffprobe: codec_time_base кодека, time_base дорожки в контейнере); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): codec_time_base и time_base (поля ffprobe: codec_time_base кодека, time_base дорожки в контейнере); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=codec_time_base,time_base -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -168,7 +168,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_04: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· аудио a:0 каналы и расклад',
     summary:
-      'Поток a:0: число каналов и расклад (поля ffprobe: channels — число каналов, channel_layout — строка расклада); путь к медиа подставляется из превью.',
+      'Первая аудиодорожка (a:0): число каналов и расклад (поля ffprobe: channels — число каналов, channel_layout — строка расклада); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=channels,channel_layout -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {

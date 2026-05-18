@@ -9,6 +9,7 @@ import {
   IconRefreshCw,
   IconSun
 } from './LucideMiniIcons'
+import { formatStatusbarLocaleShort } from '../statusbar-locale-display'
 import { getUiLocale, miniIconTitle, uiText } from '../locales/ui-text'
 import type { InspectorStandaloneAppModel } from '../use-inspector-standalone-app'
 
@@ -132,7 +133,7 @@ export function InspectorStandaloneAppTopbar(props: InspectorStandaloneAppModel)
                 : uiText('topbarUiLocaleSwitchToRussianTitle')
             }
           >
-            <span aria-hidden>{getUiLocale() === 'ru' ? 'RU' : 'EN'}</span>
+            <span aria-hidden>{formatStatusbarLocaleShort(getUiLocale())}</span>
             <span className="app-visually-hidden">
               {getUiLocale() === 'ru'
                 ? uiText('topbarUiLocaleVisuallyHiddenRu')

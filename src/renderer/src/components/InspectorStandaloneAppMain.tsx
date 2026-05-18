@@ -4,7 +4,11 @@ import { PreviewProbeBody } from './MediaProbePanel'
 import { uiText } from '../locales/ui-text'
 import type { InspectorStandaloneAppModel } from '../use-inspector-standalone-app'
 
-export function InspectorStandaloneAppMain(props: InspectorStandaloneAppModel): JSX.Element {
+export function InspectorStandaloneAppMain(
+  props: InspectorStandaloneAppModel & {
+    onOpenKnowledgeArticle?: (slug: string) => void
+  }
+): JSX.Element {
   const {
     mediaPath,
     probePending,
@@ -12,7 +16,8 @@ export function InspectorStandaloneAppMain(props: InspectorStandaloneAppModel): 
     displayedProbeError,
     probeUiPanels,
     persistProbeSection,
-    handleDrop
+    handleDrop,
+    onOpenKnowledgeArticle
   } = props
 
   return (
@@ -45,11 +50,16 @@ export function InspectorStandaloneAppMain(props: InspectorStandaloneAppModel): 
           aria-busy={probePending}
         />
       ) : null}
+      {mediaPath && !displayedProbeInfo ? (
+        <p id="inspector-standalone-probe-hint" className="app-visually-hidden">
+          {uiText('probePanelOverviewHint')}
+        </p>
+      ) : null}
       {displayedProbeError ? (
         <p
           className="app-preview-probe-error"
           role="alert"
-          aria-describedby="inspector-standalone-empty-hint"
+          aria-describedby="inspector-standalone-probe-hint inspector-standalone-empty-hint"
         >
           {displayedProbeError}
         </p>
@@ -65,6 +75,7 @@ export function InspectorStandaloneAppMain(props: InspectorStandaloneAppModel): 
         >
           <PreviewProbeBody
             probeInfo={displayedProbeInfo}
+            {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
             probeRefreshing={probePending && mediaPath !== null}
             probeSectionOpen={{
               exportSummary: probeUiPanels.probeExportSummary,

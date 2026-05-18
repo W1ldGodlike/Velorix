@@ -55,6 +55,7 @@ export function PreviewProbeBodyExportSummarySection({
             type="button"
             className="app-btn app-btn-compact"
             aria-describedby="probeExportSummaryHint"
+            title={uiText('probeSaveSummaryTxtButton')}
             onClick={() => {
               void handleSaveSummaryTxt()
             }}
@@ -65,6 +66,7 @@ export function PreviewProbeBodyExportSummarySection({
             type="button"
             className="app-btn app-btn-compact"
             aria-describedby="probeExportSummaryHint"
+            title={uiText('probeSaveSummaryHtmlButton')}
             onClick={() => {
               void handleSaveSummaryHtml()
             }}

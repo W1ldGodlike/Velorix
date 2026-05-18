@@ -60,6 +60,7 @@ export function PreviewProbeBodyRawJsonSection({
             type="button"
             className="app-btn app-btn-compact"
             aria-describedby="probeRawJsonHint"
+            title={uiText('probeCopyJsonButton')}
             onClick={() => {
               void handleCopyProbeJson()
             }}
@@ -70,6 +71,7 @@ export function PreviewProbeBodyRawJsonSection({
             type="button"
             className="app-btn app-btn-compact"
             aria-describedby="probeRawJsonHint"
+            title={uiText('probeSaveJsonButton')}
             onClick={() => {
               void handleSaveProbeJson()
             }}

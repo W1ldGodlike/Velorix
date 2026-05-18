@@ -17,5 +17,21 @@
   "knowledgeArticleTerminalHintsLink": "База знаний: подсказки терминала (ffmpeg / yt-dlp)",
   "terminalKnowledgeDeepLinkTooltip": "Открыть статью с подсказками ffmpeg / yt-dlp для вкладки «Терминал».",
   "knowledgeMdInternalLinkTooltip": "Открыть связанную статью в этом окне.",
-  "knowledgeMdExternalLinkTooltip": "Открыть ссылку в браузере (новая вкладка)."
+  "knowledgeMdExternalLinkTooltip": "Открыть ссылку в браузере (новая вкладка).",
+  "knowledgeTocSectionStart": "1. Старт и интерфейс",
+  "knowledgeTocSectionDownloads": "2. Загрузки yt-dlp",
+  "knowledgeTocSectionEditor": "3. Редактор и экспорт ffmpeg",
+  "knowledgeTocSectionTerminal": "4. Терминал и команды",
+  "knowledgeTocSectionInspector": "5. Инспектор и медиа",
+  "knowledgeTocSectionEngines": "6. Движки, пути, диагностика",
+  "knowledgeTocSectionFaq": "7. FAQ и устранение неполадок",
+  "knowledgeTocSectionOther": "Прочее",
+  "knowledgeDeepLinkDownloadsRailLabel": "Справка: настройки загрузки",
+  "knowledgeDeepLinkDownloadsRailTooltip": "Открыть статью о правой панели загрузок (формат, сеть, куки, эксперт).",
+  "knowledgeDeepLinkFfmpegRailLabel": "Справка: пресеты ffmpeg",
+  "knowledgeDeepLinkFfmpegRailTooltip": "Открыть статью о правой панели экспорта и пресетах.",
+  "knowledgeDeepLinkBatchExportLabel": "Справка: пакетный экспорт",
+  "knowledgeDeepLinkBatchExportTooltip": "Открыть статью об очередях и пакетной обработке.",
+  "knowledgeDeepLinkProbeLabel": "Справка: инспектор ffprobe",
+  "knowledgeDeepLinkProbeTooltip": "Открыть статью о сводке дорожек, главах и сыром JSON."
 }

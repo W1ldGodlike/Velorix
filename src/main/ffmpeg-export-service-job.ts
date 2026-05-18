@@ -7,6 +7,7 @@ import type { FfmpegExportVideoCodecId } from '../shared/ffmpeg-export-contract'
 import { FFMPEG_EXPORT_CANCELLED_ERROR } from '../shared/ffmpeg-export-contract'
 import { buildFfmpegExportArgv } from '../shared/ffmpeg-export-argv'
 import { runFfmpegExportOnce } from './ffmpeg-export-spawn-once'
+import { nativeMainDevNullPath } from './platform'
 import { resolveFfmpegExportJobPlan } from './ffmpeg-export-service-job-resolve'
 import type { FfmpegExportJobParams } from './ffmpeg-export-service-job-resolve-types'
 
@@ -43,6 +44,7 @@ export async function runFfmpegExportJob(
       signal: params.signal,
       segmentDur,
       uiLocale: uloc,
+      ...(baseArgvParams.economyMode === true ? { lowProcessPriority: true } : {}),
       ...(jobOnProgress !== undefined ? { onProgress: jobOnProgress } : {})
     })
     return r.ok ? doneOk() : doneErr(r.error)
@@ -57,7 +59,7 @@ export async function runFfmpegExportJob(
     mkdirSync(appTemp, { recursive: true })
     tmpDir = mkdtempSync(join(appTemp, 'fa-x264tw-'))
     const passlogBase = join(tmpDir, 'pass')
-    const nullSink = process.platform === 'win32' ? 'NUL' : '/dev/null'
+    const nullSink = nativeMainDevNullPath()
 
     const argsPass1 = buildFfmpegExportArgv({
       ...baseArgvParams,
@@ -70,6 +72,7 @@ export async function runFfmpegExportJob(
       segmentDur,
       uiLocale: uloc,
       mapPercent: (p) => p * 0.5,
+      ...(baseArgvParams.economyMode === true ? { lowProcessPriority: true } : {}),
       ...(jobOnProgress !== undefined ? { onProgress: jobOnProgress } : {})
     })
     if (!r1.ok) {
@@ -92,6 +95,7 @@ export async function runFfmpegExportJob(
       segmentDur,
       uiLocale: uloc,
       mapPercent: (p) => 50 + p * 0.5,
+      ...(baseArgvParams.economyMode === true ? { lowProcessPriority: true } : {}),
       ...(jobOnProgress !== undefined ? { onProgress: jobOnProgress } : {})
     })
     return r2.ok ? doneOk() : doneErr(r2.error)

@@ -25,7 +25,7 @@ import type {
   FfmpegExportVideoSharpenId,
   FfmpegExportVideoTransformId
 } from '../shared/ffmpeg-export-contract'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import type { EngineId, EnginePathOverridesPatch } from '../shared/engine-contract'
 import type {
   AppSettings,
@@ -38,7 +38,7 @@ import { mainWindowIpc as mw } from '../shared/ipc-channels'
 /** settings.* — IPC setters ffmpeg/ytdlp/theme (main preload). */
 export const fluxalloySettings = {
   get: (): Promise<AppSettingsView> => ipcRenderer.invoke(mw.settingsGet),
-  setUiLocale: (locale: DownloadsWindowUiLocale): Promise<AppSettings> =>
+  setUiLocale: (locale: AppUiLocale): Promise<AppSettings> =>
     ipcRenderer.invoke(mw.settingsSetUiLocale, locale),
   setTheme: (theme: AppTheme): Promise<AppSettingsView> =>
     ipcRenderer.invoke(mw.settingsSetTheme, theme),
@@ -60,6 +60,8 @@ export const fluxalloySettings = {
     ipcRenderer.invoke(mw.settingsSetFfmpegExportTwoPass, enabled),
   setFfmpegExportEconomyMode: (enabled: boolean): Promise<AppSettings> =>
     ipcRenderer.invoke(mw.settingsSetFfmpegExportEconomyMode, enabled),
+  setFfmpegExportBenchmarkLoadThreshold: (percent: number): Promise<AppSettings> =>
+    ipcRenderer.invoke(mw.settingsSetFfmpegExportBenchmarkLoadThreshold, percent),
   setFfmpegExportHwDecode: (enabled: boolean): Promise<AppSettings> =>
     ipcRenderer.invoke(mw.settingsSetFfmpegExportHwDecode, enabled),
   setFfmpegExportExtraArgsLine: (line: string): Promise<AppSettings> =>
@@ -122,5 +124,12 @@ export const fluxalloySettings = {
   setFfmpegSnapshotFormat: (format: FfmpegSnapshotFormatId): Promise<AppSettings> =>
     ipcRenderer.invoke(mw.settingsSetFfmpegSnapshotFormat, format),
   mergeMainWindowUiPanels: (patch: Partial<MainWindowUiPanelState>): Promise<AppSettings> =>
-    ipcRenderer.invoke(mw.settingsMergeMainWindowUiPanels, patch)
+    ipcRenderer.invoke(mw.settingsMergeMainWindowUiPanels, patch),
+  exportBackup: (): Promise<
+    { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
+  > => ipcRenderer.invoke(mw.settingsBackupExport),
+  importBackup: (): Promise<
+    { ok: true } | { ok: false; cancelled: true } | { ok: false; error: string }
+  > => ipcRenderer.invoke(mw.settingsBackupImport),
+  resetToDefaults: (): Promise<AppSettings> => ipcRenderer.invoke(mw.settingsResetToDefaults)
 }

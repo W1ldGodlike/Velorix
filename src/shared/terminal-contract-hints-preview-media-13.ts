@@ -189,14 +189,14 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_13: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· кадры v:0 best_effort 5',
     summary:
-      'Первые пять кадров v:0: best_effort_timestamp_time (-show_frames -read_intervals %+#5); путь к медиа подставляется из превью.',
+      'Первые пять кадров первой видеодорожки (v:0): best_effort_timestamp_time (-show_frames -read_intervals %+#5); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_frames -read_intervals %+#5 -show_entries frame=best_effort_timestamp_time -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· пакеты v:0 dts 2',
     summary:
-      'Первые два пакета v:0: dts_time (-show_packets -read_intervals %+#2 -show_entries packet=dts_time); путь к медиа подставляется из превью.',
+      'Первые два пакета первой видеодорожки (v:0): dts_time (-show_packets -read_intervals %+#2 -show_entries packet=dts_time); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_packets -read_intervals %+#2 -show_entries packet=dts_time -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {

@@ -10,7 +10,13 @@ import type {
   DiagnosticsSupportZipResult
 } from '../shared/diagnostics-contract'
 import type { EngineDownloadProgress } from '../shared/engine-download-contract'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { EnginesCheckUpdatesAndDownloadResult } from '../shared/engine-update-check-contract'
+import type { AppUiLocale } from '../shared/app-ui-locale'
+import {
+  DEFAULT_APP_SETTINGS_DIALOG_SECTION,
+  parseAppSettingsDialogSection,
+  type AppSettingsDialogSection
+} from '../shared/app-settings-dialog-section'
 import { coerceUiLocaleBroadcastPayload } from '../shared/ui-locale-runtime'
 import type { AppAboutInfo } from '../shared/about-contract'
 import type { EnginesStatusSnapshot } from '../shared/engine-contract'
@@ -50,9 +56,9 @@ import { sanitizeMainWindowUiPanelState } from './preload-sanitize'
 export const fluxalloy = {
   settings: fluxalloySettings,
   preview: {
-    openFileDialog: (uiLocale?: DownloadsWindowUiLocale): Promise<PreviewDialogResult> =>
+    openFileDialog: (uiLocale?: AppUiLocale): Promise<PreviewDialogResult> =>
       ipcRenderer.invoke(mw.openVideoDialog, uiLocale),
-    openVideoFolderDialog: (uiLocale?: DownloadsWindowUiLocale): Promise<PreviewDialogResult> =>
+    openVideoFolderDialog: (uiLocale?: AppUiLocale): Promise<PreviewDialogResult> =>
       ipcRenderer.invoke(mw.openVideoFolderDialog, uiLocale),
     grantPath: (
       absolutePath: string
@@ -118,6 +124,41 @@ export const fluxalloy = {
   about: {
     getInfo: (): Promise<AppAboutInfo> => ipcRenderer.invoke(mw.appAboutInfo)
   },
+  externalFilterScript: {
+    pickFile: (payload: {
+      kind: import('../shared/external-filter-script-contract').ExternalFilterScriptKind
+      uiLocale?: import('../shared/app-ui-locale').AppUiLocale
+    }): Promise<import('../shared/external-filter-script-contract').ExternalFilterScriptPickResult> =>
+      ipcRenderer.invoke(mw.externalFilterScriptPickFile, payload),
+    apply: (
+      payload: import('../shared/external-filter-script-contract').ExternalFilterScriptApplyPayload & {
+        uiLocale?: import('../shared/app-ui-locale').AppUiLocale
+      }
+    ): Promise<import('../shared/external-filter-script-contract').ExternalFilterScriptApplyResult> =>
+      ipcRenderer.invoke(mw.externalFilterScriptApply, payload)
+  },
+  utilities: {
+    repairRemux: (
+      payload: import('../shared/media-utilities-contract').MediaUtilitiesRepairRequestPayload
+    ): Promise<import('../shared/media-utilities-contract').MediaUtilitiesRepairResult> =>
+      ipcRenderer.invoke(mw.mediaUtilitiesRepairRemux, payload),
+    checkIntegrity: (
+      payload: import('../shared/media-utilities-contract').MediaUtilitiesIntegrityRequestPayload
+    ): Promise<import('../shared/media-utilities-contract').MediaUtilitiesIntegrityResult> =>
+      ipcRenderer.invoke(mw.mediaUtilitiesCheckIntegrity, payload),
+    generateNoise: (
+      payload: import('../shared/media-utilities-contract').MediaUtilitiesGenerateNoiseRequestPayload
+    ): Promise<import('../shared/media-utilities-contract').MediaUtilitiesGenerateNoiseResult> =>
+      ipcRenderer.invoke(mw.mediaUtilitiesGenerateNoise, payload),
+    computeFileHash: (
+      payload: import('../shared/media-utilities-contract').MediaUtilitiesFileHashRequestPayload
+    ): Promise<import('../shared/media-utilities-contract').MediaUtilitiesFileHashResult> =>
+      ipcRenderer.invoke(mw.mediaUtilitiesComputeFileHash, payload),
+    convertImage: (
+      payload: import('../shared/media-utilities-contract').MediaUtilitiesConvertImageRequestPayload
+    ): Promise<import('../shared/media-utilities-contract').MediaUtilitiesConvertImageResult> =>
+      ipcRenderer.invoke(mw.mediaUtilitiesConvertImage, payload)
+  },
   diagnostics: {
     listFolders: (): Promise<DiagnosticsFolderEntry[]> =>
       ipcRenderer.invoke(mw.diagnosticsListFolders),
@@ -148,13 +189,17 @@ export const fluxalloy = {
     }
   },
   engines: {
-    getStatus: (uiLocale?: DownloadsWindowUiLocale): Promise<EnginesStatusSnapshot> =>
+    getStatus: (uiLocale?: AppUiLocale): Promise<EnginesStatusSnapshot> =>
       ipcRenderer.invoke(mw.enginesStatus, uiLocale),
     shouldOfferDownload: (): Promise<boolean> => ipcRenderer.invoke(mw.enginesShouldOfferDownload),
     download: (
-      uiLocale?: DownloadsWindowUiLocale
+      uiLocale?: AppUiLocale
     ): Promise<{ ok: true } | { ok: false; error: string }> =>
       ipcRenderer.invoke(mw.enginesDownload, uiLocale),
+    checkUpdatesAndDownload: (
+      uiLocale?: AppUiLocale
+    ): Promise<EnginesCheckUpdatesAndDownloadResult> =>
+      ipcRenderer.invoke(mw.enginesCheckUpdatesAndDownload, uiLocale),
     clearUserBin: (): Promise<{ ok: true; removed: number } | { ok: false; error: string }> =>
       ipcRenderer.invoke(mw.enginesClearUserBin),
     probeHwEncoders: (): Promise<FfmpegHwEncodersProbeResult> =>
@@ -206,7 +251,7 @@ export const fluxalloy = {
       ipcRenderer.removeListener(channel, handler)
     }
   },
-  onUiLocaleChanged: (listener: (locale: DownloadsWindowUiLocale) => void): (() => void) => {
+  onUiLocaleChanged: (listener: (locale: AppUiLocale) => void): (() => void) => {
     const channel = mw.uiLocaleChanged
     const handler = (_: unknown, raw: unknown): void => {
       const loc = coerceUiLocaleBroadcastPayload(raw)
@@ -229,6 +274,16 @@ export const fluxalloy = {
       ipcRenderer.removeListener(channel, handler)
     }
   },
+  onOpenSettings: (listener: (section: AppSettingsDialogSection) => void): (() => void) => {
+    const channel = mw.openSettings
+    const handler = (_: unknown, raw: unknown): void => {
+      listener(parseAppSettingsDialogSection(raw) ?? DEFAULT_APP_SETTINGS_DIALOG_SECTION)
+    }
+    ipcRenderer.on(channel, handler)
+    return (): void => {
+      ipcRenderer.removeListener(channel, handler)
+    }
+  },
   onEnginePathsChanged: (listener: () => void): (() => void) => {
     const channel = mw.enginePathsChanged
     const handler = (): void => {
@@ -239,8 +294,28 @@ export const fluxalloy = {
       ipcRenderer.removeListener(channel, handler)
     }
   },
+  onSettingsBackupImported: (listener: () => void): (() => void) => {
+    const channel = mw.settingsBackupImported
+    const handler = (): void => {
+      listener()
+    }
+    ipcRenderer.on(channel, handler)
+    return (): void => {
+      ipcRenderer.removeListener(channel, handler)
+    }
+  },
   onOpenAbout: (listener: () => void): (() => void) => {
     const channel = mw.openAbout
+    const handler = (): void => {
+      listener()
+    }
+    ipcRenderer.on(channel, handler)
+    return (): void => {
+      ipcRenderer.removeListener(channel, handler)
+    }
+  },
+  onOpenExternalFilterScript: (listener: () => void): (() => void) => {
+    const channel = mw.openExternalFilterScript
     const handler = (): void => {
       listener()
     }

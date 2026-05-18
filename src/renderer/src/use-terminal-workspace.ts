@@ -10,7 +10,7 @@ import {
   type SetStateAction
 } from 'react'
 
-import type { DownloadsWindowUiLocale } from '../../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../../shared/app-ui-locale'
 import {
   TERMINAL_SCENARIO_HINTS_DOWNLOADS,
   TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA,
@@ -22,6 +22,11 @@ import {
   listTerminalRecallLines,
   type TerminalRecallState
 } from '../../shared/terminal-command-recall'
+import {
+  capTerminalHintCatalogVisible,
+  filterTerminalHintCatalog,
+  type TerminalHintToolFilter
+} from '../../shared/terminal-hints-catalog'
 import {
   applyTerminalInlinePick,
   DEFAULT_TERMINAL_INLINE_SUGGEST_MAX,
@@ -54,6 +59,10 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
   terminalBusy: boolean
   terminalHintFilter: string
   setTerminalHintFilter: Dispatch<SetStateAction<string>>
+  terminalHintToolFilter: TerminalHintToolFilter
+  setTerminalHintToolFilter: Dispatch<SetStateAction<TerminalHintToolFilter>>
+  terminalHintCatalogTotal: number
+  terminalHintCatalogCapped: boolean
   terminalHistory: TerminalHistoryEntry[]
   terminalSuggestFocus: boolean
   setTerminalSuggestFocus: Dispatch<SetStateAction<boolean>>
@@ -76,6 +85,7 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
   const [terminalBusy, setTerminalBusy] = useState(false)
   const [terminalHints, setTerminalHints] = useState<TerminalCommandHintEntry[]>([])
   const [terminalHintFilter, setTerminalHintFilter] = useState('')
+  const [terminalHintToolFilter, setTerminalHintToolFilter] = useState<TerminalHintToolFilter>('all')
   const [terminalHistory, setTerminalHistory] = useState<TerminalHistoryEntry[]>([])
   const [terminalSuggestFocus, setTerminalSuggestFocus] = useState(false)
   const [terminalSuggestIndex, setTerminalSuggestIndex] = useState(0)
@@ -134,21 +144,25 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
     })
   }, [terminalHints, currentSourcePath, workspaceTab])
 
-  const visibleTerminalHints = useMemo(() => {
-    const q = terminalHintFilter.trim().toLowerCase()
-    const filtered = terminalMergedSortedHints.filter((hint) => {
-      if (q === '') {
-        return true
-      }
-      return (
-        hint.tool.toLowerCase().includes(q) ||
-        hint.token.toLowerCase().includes(q) ||
-        hint.summary.toLowerCase().includes(q) ||
-        (hint.fullLine !== undefined && hint.fullLine.toLowerCase().includes(q))
-      )
-    })
-    return filtered.slice(0, 36)
-  }, [terminalHintFilter, terminalMergedSortedHints])
+  const terminalHintCatalogFiltered = useMemo(
+    () =>
+      filterTerminalHintCatalog(terminalMergedSortedHints, terminalHintFilter, terminalHintToolFilter),
+    [terminalHintFilter, terminalHintToolFilter, terminalMergedSortedHints]
+  )
+
+  const terminalHintCatalogSlice = useMemo(
+    () =>
+      capTerminalHintCatalogVisible(
+        terminalHintCatalogFiltered,
+        terminalHintFilter,
+        terminalHintToolFilter
+      ),
+    [terminalHintCatalogFiltered, terminalHintFilter, terminalHintToolFilter]
+  )
+
+  const visibleTerminalHints = terminalHintCatalogSlice.visible
+  const terminalHintCatalogTotal = terminalHintCatalogSlice.total
+  const terminalHintCatalogCapped = terminalHintCatalogSlice.capped
 
   const terminalInlineSuggestions = useMemo(
     () =>
@@ -216,7 +230,7 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
       const result = await window.fluxalloy.terminal.run({
         line,
         currentFilePath: currentSourcePath,
-        uiLocale: getUiLocale() as DownloadsWindowUiLocale
+        uiLocale: getUiLocale() as AppUiLocale
       })
       resetTerminalRecall()
       setTerminalHistory((rows) =>
@@ -252,6 +266,10 @@ export function useTerminalWorkspace(deps: UseTerminalWorkspaceDeps): {
     terminalBusy,
     terminalHintFilter,
     setTerminalHintFilter,
+    terminalHintToolFilter,
+    setTerminalHintToolFilter,
+    terminalHintCatalogTotal,
+    terminalHintCatalogCapped,
     terminalHistory,
     terminalSuggestFocus,
     setTerminalSuggestFocus,

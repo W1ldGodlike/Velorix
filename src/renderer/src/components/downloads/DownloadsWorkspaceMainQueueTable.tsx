@@ -14,6 +14,7 @@ import {
 import { formatDownloadsQueueRowStatus, uiText, uiTextVars } from '../../locales/ui-text'
 import {
   IconFolderOpen,
+  IconImage,
   IconPauseUi,
   IconPlay,
   IconQueueChevronDown,
@@ -292,6 +293,37 @@ export function DownloadsWorkspaceMainQueueTable(props: DownloadsWorkspaceMainPr
                           >
                             <IconFolderOpen title="" size={18} />
                           </button>
+                          {isYtdlpQueueStatusDone(row.status) ? (
+                            <button
+                              type="button"
+                              className="app-icon-btn"
+                              aria-describedby="downloads-page-hint"
+                              aria-label={uiText('downloadsQueueAriaExtractCover')}
+                              title={uiText('downloadsQueueExtractCoverTitle')}
+                              onClick={() => {
+                                setStatusHint(uiText('downloadsCoverExtractBusy'))
+                                void window.fluxalloy.downloads
+                                  .extractQueueCover(row.id)
+                                  .then((res) => {
+                                    if (res.ok) {
+                                      setStatusHint(
+                                        uiTextVars('downloadsCoverExtractDone', {
+                                          path: res.outputPath
+                                        })
+                                      )
+                                    } else if ('noCover' in res && res.noCover) {
+                                      setStatusHint(uiText('downloadsCoverExtractNoCover'))
+                                    } else if ('cancelled' in res && res.cancelled) {
+                                      setStatusHint(uiText('downloadsCoverExtractCancelled'))
+                                    } else if ('error' in res) {
+                                      setStatusHint(res.error)
+                                    }
+                                  })
+                              }}
+                            >
+                              <IconImage title="" size={18} />
+                            </button>
+                          ) : null}
                           <button
                             type="button"
                             className="app-icon-btn"

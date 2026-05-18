@@ -1,12 +1,12 @@
 import { existsSync, statSync } from 'fs'
 import { isAbsolute, join, normalize, relative, resolve, sep } from 'path'
 
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getYtdlpCliValidationCopy } from '../shared/ytdlp-cli-validation-locale'
 /** Проверка перед сохранением пути и после диалога выбора файла §6.2. */
 export function validateYtdlpCookiesFilePath(
   raw: string,
-  uiLocale: DownloadsWindowUiLocale = 'ru'
+  uiLocale: AppUiLocale = 'ru'
 ): { ok: true; path: string } | { ok: false; error: string } {
   const V = getYtdlpCliValidationCopy(uiLocale)
   const t = raw.trim()
@@ -36,7 +36,7 @@ export function validateYtdlpCookiesFilePath(
 /** Одна строка без пробелов — станет вторым токеном после `--sub-langs`. */
 export function validateYtdlpSubLangs(
   raw: string,
-  uiLocale: DownloadsWindowUiLocale = 'ru'
+  uiLocale: AppUiLocale = 'ru'
 ): { ok: true; value: string } | { ok: false; error: string } {
   const V = getYtdlpCliValidationCopy(uiLocale)
   const t = raw.trim()
@@ -57,7 +57,7 @@ export function validateYtdlpSubLangs(
 
 export function validateYtdlpRateLimit(
   raw: string,
-  uiLocale: DownloadsWindowUiLocale = 'ru'
+  uiLocale: AppUiLocale = 'ru'
 ): { ok: true; value: string } | { ok: false; error: string } {
   const V = getYtdlpCliValidationCopy(uiLocale)
   const t = raw.trim()
@@ -78,7 +78,7 @@ export function validateYtdlpRateLimit(
 
 export function validateYtdlpRetriesLine(
   raw: string,
-  uiLocale: DownloadsWindowUiLocale = 'ru'
+  uiLocale: AppUiLocale = 'ru'
 ): { ok: true; value: number | null; line: string } | { ok: false; error: string } {
   const V = getYtdlpCliValidationCopy(uiLocale)
   const t = raw.trim()
@@ -97,7 +97,7 @@ export function validateYtdlpRetriesLine(
 
 export function validateYtdlpFragmentRetriesLine(
   raw: string,
-  uiLocale: DownloadsWindowUiLocale = 'ru'
+  uiLocale: AppUiLocale = 'ru'
 ): { ok: true; value: number | null; line: string } | { ok: false; error: string } {
   const V = getYtdlpCliValidationCopy(uiLocale)
   const parsed = validateYtdlpRetriesLine(raw, uiLocale)
@@ -151,7 +151,7 @@ export function resolveSafeYtdlpOutputPattern(outputDir: string, template: strin
 
 export function validateFilenameTemplate(
   template: string,
-  uiLocale: DownloadsWindowUiLocale = 'ru'
+  uiLocale: AppUiLocale = 'ru'
 ): { ok: true; value: string } | { ok: false; error: string } {
   const V = getYtdlpCliValidationCopy(uiLocale)
   const t = template.trim()

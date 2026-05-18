@@ -6,7 +6,7 @@ import type {
   KnowledgeArticleListResult,
   KnowledgeArticleResult
 } from '../shared/knowledge-contract'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
 import { isKnowledgeSafeAssetImageHref } from '../shared/knowledge-markdown'
 
@@ -137,14 +137,14 @@ export function buildKnowledgeHelpDirCandidates(opts: {
 
 export function listKnowledgeArticles(
   helpDirCandidates: readonly string[],
-  locale: DownloadsWindowUiLocale = 'ru'
+  locale: AppUiLocale = 'ru'
 ): KnowledgeArticleListResult {
   const helpDir = resolveKnowledgeHelpDirectory(helpDirCandidates)
   if (helpDir === null) {
     return { ok: false, error: getMainApplicationStrings(locale).knowledgeHelpNotFound }
   }
   const articles: KnowledgeArticleListItem[] = []
-  const listLocale: DownloadsWindowUiLocale = locale
+  const listLocale: AppUiLocale = locale
   const enDir = normalize(join(helpDir, HELP_EN_SUBDIR))
   const enRoot = normalize(helpDir)
   const hasEnDir = enDir.startsWith(enRoot) && existsSync(enDir) && statSync(enDir).isDirectory()
@@ -174,7 +174,7 @@ export function listKnowledgeArticles(
 export function readKnowledgeArticle(
   helpDirCandidates: readonly string[],
   raw: unknown,
-  fallbackLocale: DownloadsWindowUiLocale = 'ru'
+  fallbackLocale: AppUiLocale = 'ru'
 ): KnowledgeArticleResult {
   const { slug: rawSlug, preferredUiLocale } = parseReadArticleRequest(raw)
   const locale = preferredUiLocale ?? fallbackLocale

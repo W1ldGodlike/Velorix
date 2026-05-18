@@ -1,7 +1,9 @@
 import { useId } from 'react'
 import type { JSX } from 'react'
 
+import { KNOWLEDGE_SLUG_SESSION_AND_QUEUES } from '../../../../shared/knowledge-contract'
 import { uiText, uiTextVars } from '../../locales/ui-text'
+import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
 import { EditorBatchExportBarQueueTable } from './EditorBatchExportBarQueueTable'
 import { EditorBatchExportBarToolbar } from './EditorBatchExportBarToolbar'
 export type { EditorBatchExportBarProps } from './editor-batch-export-bar-props'
@@ -13,7 +15,8 @@ export function EditorBatchExportBar(props: EditorBatchExportBarProps): JSX.Elem
     onOpenChange,
     batchExportBusy,
     batchSnapshot,
-    handleBatchDropFiles
+    handleBatchDropFiles,
+    onOpenKnowledgeArticle
   } = props
 
   const batchExportBarRegionBodyId = useId()
@@ -49,6 +52,23 @@ export function EditorBatchExportBar(props: EditorBatchExportBarProps): JSX.Elem
         <p id="batch-export-panel-hint" className="app-url-hint">
           {uiText('batchExportHint')}
         </p>
+        {onOpenKnowledgeArticle ? (
+          <nav
+            className="app-batch-export-knowledge"
+            aria-label={uiText('knowledgeDeepLinkBatchExportLabel')}
+            aria-describedby="batch-export-panel-hint"
+          >
+            <KnowledgeDeepLinkButton
+              label={uiText('knowledgeDeepLinkBatchExportLabel')}
+              tooltip={uiText('knowledgeDeepLinkBatchExportTooltip')}
+              ariaDescribedBy="batch-export-panel-hint"
+              disabled={batchExportBusy}
+              onOpen={() => {
+                onOpenKnowledgeArticle(KNOWLEDGE_SLUG_SESSION_AND_QUEUES)
+              }}
+            />
+          </nav>
+        ) : null}
         <p id="batch-export-drop-hint" className="app-url-hint">
           {uiText('batchExportDragHint')}
         </p>

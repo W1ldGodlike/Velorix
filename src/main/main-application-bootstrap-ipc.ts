@@ -7,6 +7,7 @@ import { registerEnginesPreviewIpcHandlers } from './ipc/register-engines-previe
 import { registerMainUtilitiesIpcHandlers } from './ipc/register-main-utilities-ipc'
 import { registerExportBatchIpcHandlers } from './ipc/register-export-batch-ipc'
 import { registerDownloadsWindowIpcHandlers } from './downloads-window'
+import { registerExternalFilterScriptIpcHandlers } from './register-external-filter-script-ipc'
 import { configureMainInspectorWindowBootstrap } from './main-inspector-window-bootstrap'
 import { registerInspectorWindowIpcHandlers } from './inspector-window'
 import {
@@ -69,6 +70,7 @@ export function registerMainApplicationBootstrapIpc(): void {
     )
   )
   registerDownloadsWindowIpcHandlers()
+  registerExternalFilterScriptIpcHandlers()
   registerInspectorWindowIpcHandlers()
   configurePreviewProxyService({
     getEnginePathOverrides: () => getCachedSettings().engineExecutablePaths ?? {},

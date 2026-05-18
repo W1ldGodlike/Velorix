@@ -1,5 +1,6 @@
 export interface SupportBundleRuntimeInfo {
   appVersion: string
+  buildInfoLines: readonly string[]
   electronVersion: string
   chromeVersion: string
   nodeVersion: string
@@ -34,7 +35,10 @@ export interface SupportBundleRuntimeInfo {
   /** §2.2 — hot-reload uiLocale (IPC + renderer session). */
   uiLocaleIpcLines: readonly string[]
   localeJsonCatalogLines: readonly string[]
+  rendererStateLines: readonly string[]
   uiDpiLines: readonly string[]
+  /** §16 — ручной smoke HW encode (чеклист владельца, не CI). */
+  hwManualSmokeChecklistLines: readonly string[]
 }
 
 export interface DiagnosticsPruneOptions {

@@ -34,4 +34,5 @@ export type EditorBatchExportBarProps = {
   handleBatchOpenOutput: (outputPath: string, mode: 'file' | 'folder' | 'preview') => Promise<void>
   handleBatchOpenInput: (inputPath: string, mode: 'file' | 'folder' | 'preview') => Promise<void>
   handleBatchCopyRowPath: (path: string, kind: 'in' | 'out') => Promise<void>
+  onOpenKnowledgeArticle?: (slug: string) => void
 }

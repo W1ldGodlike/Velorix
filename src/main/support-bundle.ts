@@ -31,6 +31,7 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
   })
   return [
     `FluxAlloy ${info.appVersion}`,
+    ...(info.buildInfoLines.length > 0 ? [...info.buildInfoLines] : []),
     `Electron ${info.electronVersion}`,
     `Chrome ${info.chromeVersion}`,
     `Node ${info.nodeVersion}`,
@@ -79,7 +80,13 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
     ...(info.localeJsonCatalogLines.length > 0
       ? ['', 'localeJson:', ...info.localeJsonCatalogLines]
       : []),
-    ...(info.uiDpiLines.length > 0 ? ['', 'uiDpi:', ...info.uiDpiLines] : [])
+    ...(info.rendererStateLines.length > 0
+      ? ['', 'rendererState:', ...info.rendererStateLines]
+      : []),
+    ...(info.uiDpiLines.length > 0 ? ['', 'uiDpi:', ...info.uiDpiLines] : []),
+    ...(info.hwManualSmokeChecklistLines.length > 0
+      ? ['', 'hwManualSmoke:', ...info.hwManualSmokeChecklistLines]
+      : [])
   ].join('\n')
 }
 

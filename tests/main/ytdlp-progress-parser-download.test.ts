@@ -4,6 +4,7 @@ import {
   YTDLP_PROGRESS_EQUAL_CASES,
   YTDLP_PROGRESS_NULL_LINES
 } from '../fixtures/ytdlp-progress-parse-cases'
+import { YTDLP_PROGRESS_RARE_CASES } from '../fixtures/ytdlp-progress-parser-rare-cases'
 import {
   parseYtdlpDownloadProgressLine,
   parseYtdlpQueueFormatHint
@@ -16,6 +17,10 @@ describe('parseYtdlpDownloadProgressLine', () => {
 
   it.each(YTDLP_PROGRESS_EQUAL_CASES)('$label', ({ line, expected }) => {
     expect(parseYtdlpDownloadProgressLine(line)).toEqual(expected)
+  })
+
+  it.each(YTDLP_PROGRESS_RARE_CASES)('редкие §6.4: $label', ({ line, locale, expected }) => {
+    expect(parseYtdlpDownloadProgressLine(line, locale ?? 'ru')).toEqual(expected)
   })
 
   it('парсит размер с отдельным символом приблизительности "~"', () => {

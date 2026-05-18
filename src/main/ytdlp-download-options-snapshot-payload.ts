@@ -1,6 +1,6 @@
 import { join, normalize } from 'path'
 
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import {
   buildYtdlpFormatPresetChoices,
   buildYtdlpQueueRetryProfileChoices
@@ -19,7 +19,7 @@ import {
 export function payloadFromSnapshot(
   snap: YtdlpRunOptionsSnapshot,
   previewCtx?: YtdlpCommandPreviewContext,
-  uiLocale: DownloadsWindowUiLocale = 'ru'
+  uiLocale: AppUiLocale = 'ru'
 ): YtdlpDownloadOptionsPayload {
   let outputPattern: string
   let urlArg: string

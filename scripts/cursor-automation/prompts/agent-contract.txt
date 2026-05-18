@@ -2,15 +2,16 @@
 
 Обязательные источники контекста:
 1. На первой итерации прочитай этот контракт целиком; на продолжениях используй уже загруженный контракт и не перечитывай его без причины.
-2. Иерархия без противоречий: `docs/SOURCES_OF_TRUTH.md`. Marathon: `docs/AGENT_MARATHON.md` (re-anchor каждые 10 итераций, коммит каждые 5, push каждые 10, одна сводная J-* каждую итерацию). Счётчик: `npm run agent:session -- bump` (файл создаёт скрипт, вручную не заводить).
-3. `FLUXALLOY_TZ.md` — канон требований; читай только нужный раздел, не весь файл, и не редактируй без прямого запроса пользователя.
-4. `IMPLEMENTATION_CHECKLIST.md` — рабочий навигатор; обычно достаточно блока `## Ближайший TODO спринта` и связанного тематического §.
-5. `IMPLEMENTATION_JOURNAL.md` — читать только последние 30–50 строк, чтобы увидеть последние J-номера и не дублировать работу.
-6. `docs/UX_REFERENCE_V0.md` читать только если текущий блок реально касается UI/layout/v0-паритета. v0 — ориентир, не центр спринта.
-7. Учитывай `.cursor/rules/*.mdc` (всегда `fluxalloy-rules-explicit` + `fluxalloy-core` + `fluxalloy-agent-runtime` + marathon + iteration-batch; journal/checklist/electron/react — по globs). Среда Windows, дифф, typecheck, ответ в чате — канон в `fluxalloy-agent-runtime.mdc`. Термины — глоссарий `fluxalloy-rules-explicit.mdc`. Operational notes — `docs/AGENT_OPERATIONAL_NOTES.md` (только отладка).
+2. Sprint: `IMPLEMENTATION_CHECKLIST.md` → `## Ближайший TODO спринта`. UI: `fluxalloy-ui-surfaces.mdc`, `npm run check:ui-surfaces-guard`, `check:ui-copy-quality`.
+3. Иерархия без противоречий: `docs/SOURCES_OF_TRUTH.md`. Marathon: `docs/AGENT_MARATHON.md` (re-anchor каждые 10 итераций, коммит каждые 5, push каждые 10, одна сводная J-* каждую итерацию). Счётчик: `npm run agent:session -- bump` (файл создаёт скрипт, вручную не заводить).
+4. `FLUXALLOY_TZ.md` — канон требований; читай только нужный раздел, не весь файл, и не редактируй без прямого запроса пользователя.
+5. `IMPLEMENTATION_CHECKLIST.md` — рабочий навигатор; `## Ближайший TODO спринта` (3–7 пунктов).
+6. `IMPLEMENTATION_JOURNAL.md` — читать только последние 30–50 строк, чтобы увидеть последние J-номера и не дублировать работу.
+7. `docs/UX_REFERENCE_V0.md` читать только если текущий блок реально касается UI/layout/v0-паритета. v0 — ориентир, не центр спринта.
+8. Учитывай `.cursor/rules/*.mdc` (всегда `fluxalloy-rules-explicit` + `fluxalloy-core` + `fluxalloy-agent-runtime` + marathon + iteration-batch + **ui-surfaces**; journal/checklist/electron/react — по globs). Среда Windows, дифф, typecheck, ответ в чате — канон в `fluxalloy-agent-runtime.mdc`. Термины — глоссарий `fluxalloy-rules-explicit.mdc`. Operational notes — `docs/AGENT_OPERATIONAL_NOTES.md` (только отладка).
 
 Главный приоритет текущего SDK-цикла:
-- Работай крупными связными блоками по `## Ближайший TODO спринта` в `IMPLEMENTATION_CHECKLIST.md` (`fluxalloy-project-audit.mdc` — постоянные audit-ограничения).
+- Sprint TODO + `fluxalloy-project-audit.mdc` + `fluxalloy-ui-surfaces.mdc`. **Запрещено** новые HTML-pop-out / `build*Html` / `*-window-ui-strings-*` вне `ui-text`.
 - Продолжения цикла должны быть похожи на чат-команду `+`, но для экономии tokens/cache-read runner может пересоздавать Agent короткими сессиями. Если видишь compact handoff новой сессии — не пытайся восстановить старый conversation context, читай только точечные файлы.
 - Не сосредотачивайся на v0/UI по умолчанию. Бери v0 только когда текущая задача — UI/layout/доступность/визуальная консистентность.
 - Если остаётся лимит токенов в той же итерации: возьми второй пункт из того же § sprint TODO (тот же продуктовый блок). Запрещено: закончить итерацию с единственным изменением одного поля/тега (микро-J).

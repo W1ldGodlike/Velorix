@@ -63,42 +63,42 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_06: TerminalCommandHintE
     tool: 'ffmpeg',
     token: '· ffmpeg: map v:0 null 2с',
     summary:
-      'Декод только первой видеодорожки (-map 0:v:0) первых 2 с в null; дымовая проверка -map индекса; путь к медиа подставляется из превью.',
+      'Декод только первой видеодорожки (-map 0:v:0 — индекс в команде) первых 2 с в null; дымовая проверка -map индекса; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -map 0:v:0 -t 2 -an -sn -f null -`
   },
   {
     tool: 'ffprobe',
     token: '· видео v:0 только color_primaries',
     summary:
-      'Поток v:0: только color_primaries (поле ffprobe: первичные цвета дисплея); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): только color_primaries (поле ffprobe: первичные цвета дисплея); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=color_primaries -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· видео v:0 только color_space',
     summary:
-      'Поток v:0: только color_space (поле ffprobe: цветовое пространство bt709 и др.); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): только color_space (поле ffprobe: цветовое пространство bt709 и др.); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=color_space -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· видео v:0 duration_ts',
     summary:
-      'Поток v:0: длительность в тиках time_base (поле ffprobe duration_ts; сверка с duration в секундах); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): длительность в тиках time_base (поле ffprobe duration_ts; сверка с duration в секундах); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=duration_ts -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· видео v:0 pix_fmt и profile',
     summary:
-      'Поток v:0: pix_fmt и profile (поля ffprobe: формат пикселей и профиль кодека); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): pix_fmt и profile (поля ffprobe: формат пикселей и профиль кодека); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=pix_fmt,profile -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· видео v:0 первые 2 пакета',
     summary:
-      'Первые два пакета v:0 (-read_intervals %+#2 — только два пакета, -show_packets); путь к медиа подставляется из превью.',
+      'Первые два пакета первой видеодорожки (v:0) (-read_intervals %+#2 — только два пакета, -show_packets); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_packets -read_intervals %+#2 -of compact=p=0:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -112,21 +112,20 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_06: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· аудио a:0 max_bit_rate',
     summary:
-      'Поток a:0: max_bit_rate (поле ffprobe: пиковый битрейт при VBR, если задан); путь к медиа подставляется из превью.',
+      'Первая аудиодорожка (a:0): max_bit_rate (поле ffprobe: пиковый битрейт при VBR, если задан); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=max_bit_rate -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· субтитры s:0 codec_long_name',
-    summary:
-      'Поток s:0: codec_long_name (поле ffprobe: длинное имя кодека субтитров); путь к медиа подставляется из превью.',
+    summary: 'Дорожка субтитров (s:0): codec_long_name (поле ffprobe: длинное имя кодека субтитров); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams s:0 -show_entries stream=codec_long_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffmpeg',
     token: '· ffmpeg: map a:0 null 2с',
     summary:
-      'Декод только первой аудиодорожки (-map 0:a:0) первых 2 с в null; дымовая проверка -map аудио; путь к медиа подставляется из превью.',
+      'Декод только первой аудиодорожки (-map 0:a:0 — индекс в команде) первых 2 с в null; дымовая проверка -map аудио; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -map 0:a:0 -t 2 -vn -sn -f null -`
   },
   {
@@ -245,14 +244,14 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_06: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· видео v:0 start_pts',
     summary:
-      'Поток v:0: только start_pts (поле ffprobe: первая метка времени видео в тиках time_base); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): только start_pts (поле ffprobe: первая метка времени видео в тиках time_base); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=start_pts -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· аудио a:0 index',
     summary:
-      'Поток a:0: только index (поле ffprobe: порядковый индекс дорожки в контейнере); путь к медиа подставляется из превью.',
+      'Первая аудиодорожка (a:0): только index (поле ffprobe: порядковый индекс дорожки в контейнере); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream=index -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -273,7 +272,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_06: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· видео v:0 color_range',
     summary:
-      'Поток v:0: только color_range (поле ffprobe: tv или pc и др.); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): только color_range (поле ffprobe: tv или pc и др.); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=color_range -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -385,7 +384,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_06: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· видео v:0 field_order',
     summary:
-      'Поток v:0: только field_order (поле ffprobe: чересстрочность tff/bff/progressive); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): только field_order (поле ffprobe: чересстрочность tff/bff/progressive); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=field_order -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {

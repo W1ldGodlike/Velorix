@@ -12,7 +12,7 @@ import type {
   DiagnosticsMaintenanceTarget,
   DiagnosticsMaintenanceTargetId
 } from '../shared/diagnostics-contract'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
 
 interface UsageStats {
@@ -251,7 +251,7 @@ export function getDiagnosticsMaintenanceSnapshot(paths: AppPaths): DiagnosticsM
 export function cleanDiagnosticsMaintenance(
   paths: AppPaths,
   request?: DiagnosticsCleanMaintenanceRequest,
-  locale: DownloadsWindowUiLocale = 'ru'
+  locale: AppUiLocale = 'ru'
 ): DiagnosticsCleanMaintenanceResult {
   const requested = new Set<DiagnosticsMaintenanceTargetId>(
     request?.targets !== undefined ? request.targets : defaultTargets

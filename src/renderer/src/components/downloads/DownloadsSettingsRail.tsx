@@ -1,6 +1,8 @@
 import { forwardRef } from 'react'
 
+import { KNOWLEDGE_SLUG_DOWNLOADS_SETTINGS_RAIL } from '../../../../shared/knowledge-contract'
 import { uiText } from '../../locales/ui-text'
+import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
 import { IconRefreshCw } from '../LucideMiniIcons'
 import { DownloadsSettingsRailExpertSection } from './DownloadsSettingsRailExpertSection'
 import { DownloadsSettingsRailFormatSection } from './DownloadsSettingsRailFormatSection'
@@ -16,7 +18,8 @@ export const DownloadsSettingsRail = forwardRef<HTMLElement, DownloadsSettingsRa
       downloadsOptionsBusy,
       downloadsHistoryBusy,
       downloadsOptions,
-      refreshDownloadsOptions
+      refreshDownloadsOptions,
+      onOpenKnowledgeArticle
     } = props
 
     return (
@@ -28,10 +31,31 @@ export const DownloadsSettingsRail = forwardRef<HTMLElement, DownloadsSettingsRa
         aria-describedby="downloads-page-hint"
         aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
       >
-        <h3 className="app-settings-title">{uiText('downloadsRailTitle')}</h3>
-        <p className="app-settings-subtitle" title={uiText('downloadsRailIntroTooltip')}>
-          {uiText('downloadsRailSubtitle')}
-        </p>
+        <div className="app-settings-panel-head">
+          <div>
+            <h3 className="app-settings-title">{uiText('downloadsRailTitle')}</h3>
+            <p className="app-settings-subtitle" title={uiText('downloadsRailIntroTooltip')}>
+              {uiText('downloadsRailSubtitle')}
+            </p>
+          </div>
+          {onOpenKnowledgeArticle ? (
+            <nav
+              className="app-downloads-rail-knowledge"
+              aria-label={uiText('knowledgeDeepLinkDownloadsRailLabel')}
+              aria-describedby="downloads-page-hint"
+            >
+              <KnowledgeDeepLinkButton
+                label={uiText('knowledgeDeepLinkDownloadsRailLabel')}
+                tooltip={uiText('knowledgeDeepLinkDownloadsRailTooltip')}
+                ariaDescribedBy="downloads-page-hint"
+                disabled={downloadsOptionsBusy || downloadsHistoryBusy}
+                onOpen={() => {
+                  onOpenKnowledgeArticle(KNOWLEDGE_SLUG_DOWNLOADS_SETTINGS_RAIL)
+                }}
+              />
+            </nav>
+          ) : null}
+        </div>
         {downloadsOptions ? (
           <div
             className="app-downloads-settings-stack"

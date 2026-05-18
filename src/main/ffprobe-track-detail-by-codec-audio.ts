@@ -1,4 +1,4 @@
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { summarizeFfprobeSideDataList } from '../shared/ffprobe-side-data'
 import { formatFfprobeStreamStartTime } from '../shared/ffprobe-stream-start-time'
 import { formatFfprobeCreationTimeBrief } from '../shared/ffprobe-creation-time-brief'
@@ -23,7 +23,7 @@ export function appendFfprobeAudioTrackDetailParts(
   _containerDurationSec: number | null,
   streamDur: string | null,
   audioChannelsSuffixTemplate: string,
-  locale: DownloadsWindowUiLocale
+  locale: AppUiLocale
 ): void {
   const ch = stream.channels
   if (typeof ch === 'number') {

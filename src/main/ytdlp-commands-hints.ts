@@ -4,7 +4,7 @@ import { join } from 'path'
 import { app } from 'electron'
 import { is } from '@electron-toolkit/utils'
 
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import type { YtdlpCommandHintEntry } from '../shared/ytdlp-download-contract'
 import { ytdlpHintTokenCategory } from '../shared/ytdlp-command-hint-token-categories'
 import { categorySortRank, ytdlpHintsMiscCategoryLabel } from '../shared/ytdlp-hint-category-order'
@@ -18,7 +18,7 @@ type RawYtdlpHintRow = {
 }
 
 let rawMemo: RawYtdlpHintRow[] | undefined
-const builtMemo: Partial<Record<DownloadsWindowUiLocale, YtdlpCommandHintEntry[]>> = {}
+const builtMemo: Partial<Record<AppUiLocale, YtdlpCommandHintEntry[]>> = {}
 
 function resolveYtdlpCommandsJsonPath(): string | null {
   const resourcesPath = process.resourcesPath
@@ -93,7 +93,7 @@ function loadRawYtdlpCommandHints(): RawYtdlpHintRow[] {
 /** Сортировка для UI: сначала порядок группы, затем токен. Экспорт для unit-тестов. */
 export function sortYtdlpCommandHintsForUi(
   entries: YtdlpCommandHintEntry[],
-  locale: DownloadsWindowUiLocale = 'ru'
+  locale: AppUiLocale = 'ru'
 ): YtdlpCommandHintEntry[] {
   return [...entries].sort((a, b) => {
     const ra = categorySortRank(a.category, locale)
@@ -105,7 +105,7 @@ export function sortYtdlpCommandHintsForUi(
   })
 }
 
-function buildYtdlpCommandHintsForLocale(locale: DownloadsWindowUiLocale): YtdlpCommandHintEntry[] {
+function buildYtdlpCommandHintsForLocale(locale: AppUiLocale): YtdlpCommandHintEntry[] {
   const misc = ytdlpHintsMiscCategoryLabel(locale)
   const raw = loadRawYtdlpCommandHints()
   const out: YtdlpCommandHintEntry[] = []
@@ -127,7 +127,7 @@ function buildYtdlpCommandHintsForLocale(locale: DownloadsWindowUiLocale): Ytdlp
  * Ошибки чтения не роняют процесс: возвращается пустой список.
  */
 export function getYtdlpCommandHints(
-  locale: DownloadsWindowUiLocale = 'ru'
+  locale: AppUiLocale = 'ru'
 ): YtdlpCommandHintEntry[] {
   const cached = builtMemo[locale]
   if (cached !== undefined) {

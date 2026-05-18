@@ -29,6 +29,9 @@ export type UseEditorExportPipelineDeps = {
   batchExportBusy: boolean
   snapshotBusy: boolean
   setSnapshotBusy: (busy: boolean) => void
+  extractFramesBusy: boolean
+  setExtractFramesBusy: (busy: boolean) => void
+  snapshotFormat: import('../../shared/ffmpeg-snapshot-contract').FfmpegSnapshotFormatId
   refreshProcessingHistory: () => Promise<void>
   buildCurrentFfmpegExportOverrides: () => Record<string, unknown>
   exportContainer: FfmpegExportContainerId
@@ -65,6 +68,10 @@ export type UseEditorExportPipelineDeps = {
   exportVideoVignette: Parameters<typeof buildFfmpegExportPreviewCommand>[0]['videoVignette']
   exportVideoBlur: Parameters<typeof buildFfmpegExportPreviewCommand>[0]['videoBlur']
   exportAudioNormalize: Parameters<typeof buildFfmpegExportPreviewCommand>[0]['audioNormalize']
+  externalFilterForPreview: {
+    kind: 'off' | 'avisynth' | 'vapoursynth'
+    scriptAbsPath: string | null
+  }
   lastExportPath: string | null
   setLastExportPath: (path: string | null) => void
   lastSnapshotPath: string | null
@@ -107,6 +114,7 @@ export type EditorExportPipelinePreviewDeps = Pick<
   | 'exportVideoVignette'
   | 'exportVideoBlur'
   | 'exportAudioNormalize'
+  | 'externalFilterForPreview'
 >
 
 export type { FfmpegExportPreviewInput }

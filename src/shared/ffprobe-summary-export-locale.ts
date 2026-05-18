@@ -107,7 +107,7 @@ export type FfprobeSummaryStrings = {
   htmlFooter: string
 }
 
-const RU: FfprobeSummaryStrings = {
+export const FFPROBE_SUMMARY_STRINGS_RU: FfprobeSummaryStrings = {
   plainDocTitle: 'FluxAlloy — сводка ffprobe',
   plainDivider: '========================',
   durationPrefix: 'Длительность',
@@ -155,7 +155,7 @@ const RU: FfprobeSummaryStrings = {
   htmlFooter: 'FluxAlloy'
 }
 
-const EN: FfprobeSummaryStrings = {
+export const FFPROBE_SUMMARY_STRINGS_EN: FfprobeSummaryStrings = {
   plainDocTitle: 'FluxAlloy — ffprobe summary',
   plainDivider: '========================',
   durationPrefix: 'Duration',
@@ -204,7 +204,7 @@ const EN: FfprobeSummaryStrings = {
 }
 
 export function ffprobeSummaryStrings(locale: FfprobeSummaryLocale): FfprobeSummaryStrings {
-  return locale === 'en' ? EN : RU
+  return locale === 'en' ? FFPROBE_SUMMARY_STRINGS_EN : FFPROBE_SUMMARY_STRINGS_RU
 }
 
 export function ffprobeSummaryFill(

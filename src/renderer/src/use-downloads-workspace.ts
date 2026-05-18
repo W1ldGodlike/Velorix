@@ -11,7 +11,7 @@ import {
 import type { DownloadsLogLineView } from './components/downloads/DownloadsLogPanel'
 import { getUiLocale, uiText } from './locales/ui-text'
 import type { DownloadsLogPayload } from '../../shared/downloads-log-contract'
-import type { DownloadsWindowUiLocale } from '../../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../../shared/app-ui-locale'
 import { groupYtdlpCommandHintsByCategory } from '../../shared/ytdlp-command-hints-group'
 import type {
   YtdlpDownloadOptionsPatch,
@@ -78,7 +78,7 @@ export function useDownloadsWorkspace(deps: UseDownloadsWorkspaceDeps): {
 
   const downloadsLogNextIdRef = useRef(1)
 
-  const downloadsHintUiLocale = getUiLocale() as DownloadsWindowUiLocale
+  const downloadsHintUiLocale = getUiLocale() as AppUiLocale
 
   const visibleDownloadsHistory = useMemo(
     () =>
@@ -90,7 +90,7 @@ export function useDownloadsWorkspace(deps: UseDownloadsWorkspaceDeps): {
 
   const refreshDownloadsOptions = useCallback(async (): Promise<void> => {
     const res = await window.fluxalloy.downloads.getCliOptions({
-      uiLocale: getUiLocale() as DownloadsWindowUiLocale
+      uiLocale: getUiLocale() as AppUiLocale
     })
     if (res.ok) {
       setDownloadsOptions(res.payload)
@@ -197,7 +197,7 @@ export function useDownloadsWorkspace(deps: UseDownloadsWorkspaceDeps): {
   useEffect(() => {
     let mounted = true
     void window.fluxalloy.downloads
-      .getCliOptions({ uiLocale: getUiLocale() as DownloadsWindowUiLocale })
+      .getCliOptions({ uiLocale: getUiLocale() as AppUiLocale })
       .then((res) => {
         if (!mounted) {
           return

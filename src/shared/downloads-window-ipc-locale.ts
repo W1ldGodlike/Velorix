@@ -1,4 +1,4 @@
-import type { DownloadsWindowUiLocale } from './downloads-window-ui-locale'
+import type { AppUiLocale } from './app-ui-locale'
 
 /** User-visible IPC / dialog strings for downloads (main process). */
 export type DownloadsWindowIpcStrings = {
@@ -64,7 +64,7 @@ export type DownloadsWindowIpcStrings = {
   logYtdlpResumedSigcont: string
 }
 
-const RU: DownloadsWindowIpcStrings = {
+export const DOWNLOADS_WINDOW_IPC_STRINGS_RU: DownloadsWindowIpcStrings = {
   fileOutsideDownloadDir: 'Файл не найден или находится вне каталога загрузок.',
   handlerNotConnected: 'Обработчик FluxAlloy не подключён.',
   invalidSender: 'Недопустимый отправитель',
@@ -128,7 +128,7 @@ const RU: DownloadsWindowIpcStrings = {
   logYtdlpResumedSigcont: '[FluxAlloy] Процесс yt-dlp возобновлён (SIGCONT).'
 }
 
-const EN: DownloadsWindowIpcStrings = {
+export const DOWNLOADS_WINDOW_IPC_STRINGS_EN: DownloadsWindowIpcStrings = {
   fileOutsideDownloadDir: 'File not found or outside the download directory.',
   handlerNotConnected: 'FluxAlloy handler is not connected.',
   invalidSender: 'Invalid sender',
@@ -189,7 +189,7 @@ const EN: DownloadsWindowIpcStrings = {
 }
 
 export function getDownloadsWindowIpcStrings(
-  locale: DownloadsWindowUiLocale
+  locale: AppUiLocale
 ): DownloadsWindowIpcStrings {
-  return locale === 'en' ? EN : RU
+  return locale === 'en' ? DOWNLOADS_WINDOW_IPC_STRINGS_EN : DOWNLOADS_WINDOW_IPC_STRINGS_RU
 }

@@ -9,12 +9,17 @@ import {
   ffmpegExportVideoCodecRequiresMov,
   isFfmpegHwAutoVideoCodec
 } from '../../../../shared/ffmpeg-export-video-codec'
-import { uiText } from '../../locales/ui-text'
+import { buildEditorExportCodecDetailTooltip } from '../../editor-export-codec-tooltip'
+import { formatEditorExportHwCodecHint } from '../../editor-export-hw-codec-hint'
+import { probeSnapshotOrEmpty, resolveFfmpegExportVideoCodecForArgv } from '../../../../shared/ffmpeg-export-video-codec'
+import { uiText, uiTextVars } from '../../locales/ui-text'
 import {
   EXPORT_CRF_OPTIONS,
   EXPORT_VIDEO_BITRATES
 } from '../../editor-ffmpeg-settings-rail-constants'
 import type { EditorFfmpegSettingsRailProps } from './editor-ffmpeg-settings-rail-props'
+import { EditorFfmpegBenchmarkPanel } from './EditorFfmpegBenchmarkPanel'
+import { EditorExtractFramesPanel } from './EditorExtractFramesPanel'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- field grid fragment
 export function EditorFfmpegSettingsRailVideoCodecFields(props: EditorFfmpegSettingsRailProps) {
@@ -37,20 +42,44 @@ export function EditorFfmpegSettingsRailVideoCodecFields(props: EditorFfmpegSett
     setExportCrf,
     exportVideoBitrate,
     setExportVideoBitrate,
+    exportHwDecode,
     ffmpegExportSelectOptions
   } = props
 
+  const codecUi = {
+    uiText: (key: string) => (uiText as (k: string) => string)(key),
+    uiTextVars: (key: string, vars: Record<string, string>) =>
+      (uiTextVars as (k: string, v: Record<string, string>) => string)(key, vars)
+  }
+  const hwCodecHint = formatEditorExportHwCodecHint(
+    exportVideoCodec,
+    hwEncoderProbe,
+    exportHwDecode,
+    codecUi
+  )
+  const resolvedVideoCodec = resolveFfmpegExportVideoCodecForArgv(
+    exportVideoCodec,
+    probeSnapshotOrEmpty(hwEncoderProbe)
+  )
+  const videoCodecFieldTitle =
+    uiText('editorTooltipVideoCodec') +
+    '\n\n' +
+    buildEditorExportCodecDetailTooltip({
+      exportVideoCodec,
+      resolvedCodec: resolvedVideoCodec,
+      hwEncoderProbe,
+      exportHwDecode,
+      exportHwaccelDecode: null,
+      ...codecUi
+    })
+  const videoCodecDescribedBy =
+    hwCodecHint !== null
+      ? 'ffmpegVideoSectionHint ffmpegHwCodecHint editor-ffmpeg-settings-hint'
+      : 'ffmpegVideoSectionHint editor-ffmpeg-settings-hint'
+
   return (
     <>
-      <label
-        className="app-field"
-        title={
-          uiText('editorTooltipVideoCodec') +
-          (hwEncoderProbe?.ok === true && hwEncoderProbe.hwaccels.length > 0
-            ? `\n${uiText('editorExportHwaccelsTitle')}: ${hwEncoderProbe.hwaccels.join(', ')}`
-            : '')
-        }
-      >
+      <label className="app-field" title={videoCodecFieldTitle}>
         <span className="app-field-label-inline">
           {uiText('editorFieldVideoCodec')}
           {isFfmpegHwAutoVideoCodec(exportVideoCodec) ? (
@@ -70,7 +99,7 @@ export function EditorFfmpegSettingsRailVideoCodecFields(props: EditorFfmpegSett
         </span>
         <select
           className="app-control"
-          aria-describedby="ffmpegVideoSectionHint editor-ffmpeg-settings-hint"
+          aria-describedby={videoCodecDescribedBy}
           value={exportVideoCodec}
           disabled={exportBusy || snapshotBusy}
           onChange={(e) => {
@@ -101,6 +130,13 @@ export function EditorFfmpegSettingsRailVideoCodecFields(props: EditorFfmpegSett
           ))}
         </select>
       </label>
+      {hwCodecHint !== null ? (
+        <p id="ffmpegHwCodecHint" className="app-settings-section-hint">
+          {hwCodecHint}
+        </p>
+      ) : null}
+      <EditorFfmpegBenchmarkPanel {...props} />
+      <EditorExtractFramesPanel {...props} />
       <label className="app-field" title={uiText('editorTooltipEncodePreset')}>
         <span>{uiText('editorFieldEncodePreset')}</span>
         <select

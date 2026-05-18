@@ -30,10 +30,10 @@
 - [x] Windows: `electron-builder` с режимом sign по умолчанию; после перезагрузки проверены `build:unpack`/`winCodeSign`.
 - [~] Есть ffmpeg export MP4/MKV/MOV, trim In/Out, crop/rotate/flip/scale/FPS/CRF/bitrate, пользовательские пресеты и snapshot PNG/JPEG; batch, HW encode и расширенные фильтры ещё впереди. Политика движков — bundled-first (`resources/bin`) с кнопкой скачивания/обновления и очисткой скачанных копий в `app-data/bin`, есть проверка `--version`.
 - [~] Автозагрузка движков **Windows x64** (yt-dlp GitHub + ffmpeg zip mirror/fallback), SHA256 опционально через `Data/trusted_hashes.json`; `npm run engines:prepare:win` / `engines:prepare:win:force` / `predev` наполняет локальный `bin/`, а установщик берёт `resources/bin` (`extraResources`) для заранее проверенных bundled `ffmpeg.exe`/`ffprobe.exe`/`yt-dlp.exe`; бинарники в Git не коммитятся.
-- [~] Локализация: основной слой RU/EN в `src/renderer/src/locales/ui-text.ts` (вкл. редактор, загрузки, терминал, статусбар, подсказки); плоские `locales/ru|en/*.json` и смена языка без перезапуска — позже (см. §2.2/§5).
+- [x] Локализация: `ui-text` + `locales/**` (hot-reload ✅); единый словарь `AppUiLocale`; pop-out загрузок = React `#downloads` (J-978..984).
 - [~] Основная вкладка `Загрузки` в React уже закрывает очередь, старт/stop/retry/pause, настройки yt-dlp, каталог/cookies/network, live log, историю; **компактная панель «История»** — в основном **«Повторить»** (URL в очередь; J-626), полные действия файла/папки/редактора — в таблице очереди и pop-out; open учитывает финальный файл после merge и Windows UTF-8 stdout; pop-out — вторичный режим для редких settings.
 - [~] ffprobe-инспектор: в **главном редакторе** под таймлайном — только **короткая строка** видео/аудио (`VideoTimeline`); полная сводка, таблица дорожек, главы, JSON и экспорт — в **отдельном окне** инспектора; Dolby/HDR side_data summary, контекстные действия — там же.
-- [~] Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`127 test files / 1353 tests`**; `npm run check` / `check:quiet` проходят (lint, typecheck, тесты, `trusted_hashes`, `check:journal`, `check:checklist`, secrets guard; J-1009). Покрыты парсеры/сервисы yt-dlp §6, ffmpeg export/batch §7 (`ffmpeg-export-batch-*`, `ffmpeg-export-hw-decode`, `ffmpeg-hw-encoder-probe`, `ffmpeg-export-vaapi-vf`), ffprobe §9, knowledge §15, terminal §8, diagnostics, UI helpers (`timeline-ruler`, `waveform-peaks`, `ui-text`-связанные контракты).
+- [~] Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`187 test files / 1560 tests`** (J-1037); `npm run check` / `check:quiet` проходят (lint, typecheck, тесты, `trusted_hashes`, `check:journal`, `check:checklist`, secrets guard; J-1009). Покрыты парсеры/сервисы yt-dlp §6, ffmpeg export/batch §7 (`ffmpeg-export-batch-*`, `ffmpeg-export-hw-decode`, `ffmpeg-hw-encoder-probe`, `ffmpeg-export-vaapi-vf`), ffprobe §9, knowledge §15, terminal §8, diagnostics, UI helpers (`timeline-ruler`, `waveform-peaks`, `ui-text`-связанные контракты).
 
 ## Журнал решений и проверок
 
@@ -41,14 +41,12 @@
 
 ## Ближайший TODO спринта
 
-Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый; подробности фиксировать ниже в тематических § и в `IMPLEMENTATION_JOURNAL.md`.
+Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый.
 
-- [~] §8: терминал — IntelliSense ✅; recall ✅; UI copy в `locales/*/terminal.json`; `check:terminal-summaries-ru` в `check:quiet` + ARCHITECTURE + Support ZIP hints (0/0, J-936..950).
-- [~] §9/§18: packaged/ffprobe smoke ✅ (stream/container optional fields, J-926..950); редкие tag/stream — по мере ffprobe.
-- [~] §19/§3: verify+release smoke ✅; `check:release:local`; Support ZIP — all engines + release merge + quiet hints (J-932..950); engines manual на non-Win.
-- [x] §15: knowledge — пакет закрыт (RU/EN Help, `data:` assets, fluxhelp, About→справка); далее tooltips/PNG по UI.
-- [x] §4.1/§19: runtime только `<installRoot>/app-data/` (Electron userData/cache/temp); NSIS+ZIP, `Uninstall FluxAlloy.cmd`, optional wipe app-data; без legacy-миграции в коде (J-924).
-- [~] §2.2/§5: uiLocale hot-reload ✅; `locales` 15 shards + `check:locales-json`; DPI ✅ hints; §1.1 focus — редактор + терминал + downloads (a11y sweep, J-925+).
+- [x] §2.2: hooks-composition зафиксирован (`renderer-state-approach` + guard; J-1037).
+- [~] §16: чеклист NVENC/VAAPI в «Настройки → Зависимости» + ru/en JSON (J-1040); прогон на железе — владелец.
+- [~] §1.1: ручная сверка HiDPI 100–200% — панель в «Настройки → Общие» + чеклист (J-1039); прогон на мониторе — владелец.
+- [x] §4.C: tooltip кодека/GPU в статусбаре редактора — «Обработка: …», общий tooltip с rail, aria (J-1038).
 
 ---
 
@@ -88,15 +86,15 @@
 ### §1.1 UI и UX
 
 - [~] Построить главное окно вокруг крупного предпросмотра: базовая зона preview есть, финальная компоновка панелей — дальше.
-- [~] Таймлайн под превью (базовый range + синхрон с `<video>`); **масштаб окна scrub (×1…×8)**, **waveform** (≤~180 s и ≤96 MiB ответа) и **линейка времени** по видимому окну (`timeline-ruler`), клик/клавиатура → seek в окне zoom; **снап к кадру** по `probe.videoFpsApprox` (`resolveVideoFpsApprox`: avg/r-дробь, иначе `nb_frames`/duration) или по regex в `detail` дорожки; сводки §9 дополняются строкой FPS; transport strip и HiDPI в `main.css`; **нативные `<video controls>` отключены** — воспроизведение только через `PreviewTransport`/таймлайн (J-627); дальше — ручная матрица DPI и редкие контейнеры без fps/`nb_frames`.
+- [~] Таймлайн под превью (базовый range + синхрон с `<video>`); **масштаб окна scrub (×1…×8)**, **waveform** (≤~180 s и ≤96 MiB ответа) и **линейка времени** по видимому окну (`timeline-ruler`), клик/клавиатура → seek в окне zoom; **снап к кадру** по `probe.videoFpsApprox` (`resolveVideoFpsApprox`: avg/r-дробь, иначе `nb_frames`/duration) или по regex в `detail` дорожки; сводки §9 дополняются строкой FPS; transport strip и HiDPI `@120/144/168/192dpi` в `main.css` (J-627, J-991); **нативные `<video controls>` отключены** — воспроизведение только через `PreviewTransport`/таймлайн; дальше — редкие контейнеры без fps/`nb_frames`.
 - [~] Панели кодирования справа: **сворачиваемые секции** + **целиком rail FFmpeg** (`ffmpegSettingsRailOpen` в `mainWindowUiPanels`); persist в `settings.json`; полировка и инспектор — дальше.
 - [~] Сформировать вкладку `Загрузки` в едином workspace: React слой уже показывает URL-band + живую queue table через общий snapshot broadcast + summary cards + filter chips + progress bars + управление строками/очисткой + pause/resume + встроенный rail основных yt-dlp настроек/network/каталога/cookies + pop-out; **«История» и «Живой лог» под строкой таблицы**; при **узкой ширине** rail **не скрывается**, а уходит **под** журнал (`@media (max-width: 1100px)`), якорь **`#downloads-ytdlp-settings-rail`** и кнопка **«К настройкам»**; ошибки действий показываются в статусе вместо тихого no-op; pop-out — редкие/длинные settings; дальше — ручная DPI-матрица.
 - [~] Реализовать прогрессивное раскрытие сложных параметров: `details` для **быстрой yt-dlp-полосы** (**`app-url-summary`**, **`quickYtdlpUrlHint`**: поле URL + **«Скачать и добавить в редактор»** + короткие ссылки на справку; **`aria-describedby`**; отдельные кнопки «Из буфера» на вкладках **убраны** — вставка через меню/глобальный Ctrl+V и автодобавление из буфера при фокусе, J-624) + **rail FFmpeg** (секционные hints + **`aria-describedby`**, развёрнутые `title`/PillSwitch J-636) + **превью команды ffmpeg** (`exportCommandPreview`); общая система панелей — дальше.
 - [~] Базовые токены темы есть; тёмная палитра главного окна приведена к компактному инженерному стилю, v0-референс больше не является центром спринта.
 - [~] Бинарные настройки переводить в **pill switch** с русской подсказкой, а не в select из двух вариантов: общий React `PillSwitch` применён к `Без аудио`, `Весь плейлист`, `Только аудио`, `Открыть после успеха`; **2-pass libx264** во вкладке редактора (rail «Формат», только с видеобитрейтом) + двойной spawn/main + превью двух команд; дальше — HW encode и прочие бинарные настройки по тому же паттерну.
-- [~] Довести палитру, типографику, отступы, радиусы и focus-состояния на всех экранах: главный renderer и downloads (токены `--fa-*`/`focus-ring`) сближены; **редактор: focus-ring на полосе быстрого yt-dlp — `app-url-summary`, `app-url-input`, `app-btn` в теле полосы**; **`<video>` предпросмотра — `aria-label` с basename пути**; **окно загрузок: кольцо фокуса на сворачиваемых `summary` (история, журнал, hints) + rail** + **контекстные `aria-describedby` у нижних панелей**; второе окно загрузок — тема синхронна; инспектор: topbar-хром как редактор + `probe*` секции синхронны с главным через `mergeMainWindowUiPanels`.
-- [~] Убрать все литералы интерфейса в единый слой: `src/renderer/src/locales/ui-text.ts` (`ru/en`) покрывает редактор, вкладку «Загрузки», терминал, статусбар, диалоги, истории и др. (J-528+); дальше — добить редкие строки/inspector и при необходимости вынести в `locales/**` JSON без дублирования.
-- [ ] Проверить масштабирование 100/125/150/200%.
+- [~] Довести палитру, типографику, отступы, радиусы и focus-состояния на всех экранах: главный renderer и downloads (токены `--fa-*`/`focus-ring`) сближены; **редактор: focus-ring на полосе быстрого yt-dlp — `app-url-summary`, `app-url-input`, `app-btn` в теле полосы**; **`<video>` предпросмотра — `aria-label` с basename пути**; **окно загрузок: кольцо фокуса на сворачиваемых `summary` (история, журнал, hints) + rail** + **контекстные `aria-describedby` у нижних панелей**; **редкие панели** (бенчмарк, About-утилиты, внешний скрипт) — `role="group"`/`toolbar`, `title`/`aria-label` (J-1023); второе окно загрузок — тема синхронна; инспектор: topbar-хром как редактор + `probe*` секции синхронны с главным через `mergeMainWindowUiPanels`.
+- [~] Убрать все литералы интерфейса в единый слой: `src/renderer/src/locales/ui-text.ts` (`ru/en`) покрывает редактор, вкладку «Загрузки», терминал, статусбар, диалоги, истории, инспектор и HW-кодеки (J-528+, J-1015); дальше — вынести длинные шарды в `locales/**` JSON без дублирования по мере роста словаря.
+- [x] Масштабирование 100/125/150/200%: `ui-hidpi-scale-tiers` + HiDPI для `AppSettingsDialog`/статусбара в `main.css` (J-1016); ручная сверка на мониторе — по желанию.
 
 ## §2. Среда, инструменты и проект
 
@@ -104,9 +102,9 @@
 
 - [x] Windows dev-сборка проверена.
 - [~] `electron-builder` содержит цели Win/macOS/Linux.
-- [ ] Проверить macOS targets на macOS-среде.
-- [ ] Проверить Linux targets в Linux/CI-среде.
-- [ ] Выделить слой `platform` / `nativeMain` для различий ОС.
+- [~] Проверить macOS targets на macOS-среде (`pack:mac:dir` + `verify:mac-unpacked`; CI job нет; J-1032).
+- [~] Проверить Linux targets в Linux/CI-среде (`pack:linux:dir` + `verify:linux-unpacked` в CI; полный `build:linux` + `verify:linux-release` — локально; J-1032).
+- [x] Выделить слой `platform` / `nativeMain` для различий ОС (`native-main-platform`, `check:native-main-platform-guard`; J-1031).
 - [ ] Заложить дорожную карту подписи/notarization для macOS.
 
 ### §2.2 Технологический стек
@@ -116,9 +114,9 @@
 - [x] Preload работает через `contextBridge`.
 - [x] Renderer не получает Node API напрямую.
 - [~] Добавить доменные сервисы: `engines`, `ffprobe-service`, `ffmpeg-export/snapshot`, `yt-dlp` очередь/опции/история и `logger-service` есть; впереди presets, sessions, batch и дальнейшее разбиение main.
-- [ ] Выбрать подход к состоянию renderer: hooks/context/Zustand/Jotai и зафиксировать в коде.
-- [ ] Добавить локализацию `locales/ru/*.json`, `locales/en/*.json`.
-- [ ] Добавить смену языка без перезапуска.
+- [x] Подход к состоянию renderer: **hooks-composition** (`renderer-state-approach.ts`, `useAppComposition`, guard `check:renderer-state-approach`; J-1037).
+- [x] Локализация `locales/ru|en/*.json`: 20 шардов, UI_TEXT из JSON; `ui-text-strings-*` пустые, guard TS↔JSON (J-1017..1020).
+- [x] Смена языка без перезапуска (все окна renderer + меню, J-1018).
 - [~] `.cursor/rules/` обновлены под Electron/TS.
 - [~] Вспомогательный пакет `scripts/cursor-automation`: цикл `@cursor/sdk` по промптам до `MAX_STEPS` (см. README там; не IDE-чат); единый комментированный конфиг `src/sdk-settings.ts`; long-loop режется на короткие `Agent.create` сессии через `SDK_SESSION_STEPS`/`--session-steps` (дефолт 1) для минимизации cache-read; `check:quiet` печатает короткий summary успешных проверок; локальный `STOP=0/1`; retry SDK/transport + быстрых transient error-run, полный повтор любого `status=error` только через `LOOP_RETRY_RUN_ERROR=1`; `continue.txt` работает как чат-команда `+`/compact handoff (не перечитывает весь контекст без причины), журнал требует `J-NNN` и проверяется `check:journal`.
 
@@ -147,9 +145,9 @@
 - [x] `Data/trusted_hashes.json` с `schema` и веткой `windows-x64`.
 - [x] Формат `trusted_hashes.json` для Win-x64 + совместимость с плоскими полями.
 - [~] Редактирование доверенных хешей без перекомпиляции: через `extraResources`/копию `Data/trusted_hashes.json`; авто-обновление файла из сети не делалось.
-- [ ] Настройки: кнопка «Проверить обновления».
+- [x] Настройки: кнопка «Проверить обновления» (J-1035).
 - [x] Настройки: ручной override путей к движкам.
-- [~] UI: показать версии движков в статусбаре — пока только краткая сводка (готовы / не найдены / ошибка).
+- [x] UI: версии движков в статусбаре (краткая сводка + строка `ffmpeg`/`ffprobe`/`yt-dlp` с токенами версий; J-1036).
 
 ## §4. Главное окно и глобальные элементы
 
@@ -158,7 +156,7 @@
 - [~] Главное окно существует и сфокусировано на preview/ffmpeg обработке; верхний toolbar сокращён до основных действий, FFmpeg-настройки вынесены в правую сворачиваемую панель.
 - [~] Главное окно стало единым workspace: `Редактор` остаётся ffmpeg/preview центром, `Загрузки` — основная вкладка yt-dlp; pop-out окно загрузок остаётся вторичным режимом для редких настроек и расширенной HTML-панели.
 - [~] Пункт меню «Менеджер загрузок (yt-dlp)…» + IPC открытия pop-out; главный topbar переключает встроенную вкладку `Загрузки`.
-- [~] Отдельное BrowserWindow под менеджер: HTML + очередь/лог/история/settings yt-dlp §6; v0-компоновка: table + **под ней** вертикальный блок история→журнал + правый settings rail; persist раскрытия секций rail/log/history (**автораскрытие журнала при старте строки не перетирает** сохранённое «свёрнут» в `settings`); без React, вторичный pop-out.
+- [~] Отдельное BrowserWindow под менеджер: сейчас HTML pop-out (legacy); **план:** фаза A программы выше — React `#downloads`, тот же UI что вкладка; до миграции — sync IPC/тема/локаль.
 
 ### §4.B Единая зона источника
 
@@ -174,18 +172,18 @@
 ### §4.C Прочее
 
 - [~] Стартовый размер главного окна 1920×1080 (FHD) на подходящем дисплее; на меньших экранах fallback от размера дисплея и `min*` из `scaleFactor` (`src/main/window-hidpi.ts`); сохранённые bounds важнее.
-- [~] Проверить адаптивность и DPI: окно yt-dlp + главное + инспектор — общий helper `window-hidpi` для `displayMatching`/`min*`; renderer — точечный @media для `app-topbar`/`app-toolbar`/`app-icon-btn` и **вкладки «Загрузки»** (`app-downloads-*`, в т.ч. **192dpi** для ~200%); полная ручная матрица 100–200% — позже.
+- [x] Адаптивность и DPI 125–200 %: `window-hidpi` + `@120/144/168/192dpi` в `main.css` (редактор, загрузки, терминал, модалки, справка, probe, история; J-989–991); pop-out загрузок = React `#downloads`.
 - [~] Верхнее меню есть частично.
 - [~] Меню `Файл`: «Открыть…» и «Менеджер загрузок…» есть; при фокусе дочерних окон рекурсивное открытие отключается; финальные сценарии — позже.
 - [~] Меню `Инструменты`: инспектор/подменю «Открыть папку…» (userData / logs / yt-dlp / bin / resources) через whitelist; при фокусе дочерних окон повторное открытие инспектора отключается; анализировать/терминал/очистка кэша — позже.
-- [ ] Меню `Сервис`: планировщик, конструктор, импорт/экспорт.
+- [~] Меню `Сервис`: планировщик, конструктор; импорт/экспорт JSON — J-1013.
 - [~] Меню `Справка`: ТЗ + «О программе» (модалка, версия/Electron); база знаний в приложении и история — позже.
 - [~] Статусбар есть частично.
-- [~] Статусбар: краткая строка `--version` ffmpeg/ffprobe/yt-dlp (обрезка); без tooltip GPU §4.C.
-- [ ] Статусбар: индикатор активности.
-- [ ] Статусбар: текущий язык.
-- [ ] Статусбар: текущий кодировщик CPU/NVENC/AMF/QSV/etc.
-- [ ] Статусбар: tooltip GPU/драйвер/лимиты.
+- [x] Статусбар: строка версий ffmpeg/ffprobe/yt-dlp с токенами (`engine-statusbar-versions`; J-1036); tooltip GPU в строке кодека — J-1002 / §4.C sprint.
+- [x] Статусбар: индикатор активности (точка + подпись; J-1011).
+- [x] Статусбар: текущий язык RU/EN (J-1011).
+- [x] Статусбар: текущий кодировщик CPU/NVENC/AMF/QSV (строка «Обработка: …»; J-1038).
+- [x] Статусбар: tooltip GPU/драйвер/лимиты NVENC + цепочка HW-декода (J-1038).
 - [ ] Все строки UI вынести в локализацию.
 - [~] Добавить единый набор иконок: топбар редактора (folder + **rotate-ccw/cw + scissors** + **снимок/экспорт/отмена/облако (`EDITOR_TOPBAR_ACTION_ICONS`)** + **sun/moon (`EDITOR_THEME_ICONS`)**, `circle-help`/загрузки из shared) + **окно загрузок** + **вкладки** + транспорт + очередь yt-dlp + **вкладка «Загрузки»**: `clipboard`/`popOutWindow`, **URL-band**, **нижние панели** (`refreshCw`/`save`/`x`/`trash`/`file`/`folder`/`outbound`) + **инспектор §9**: `folder-open`/`refreshCw`/`circle-help`/тема — **общий `IconCircleHelp` из shared**, **диалог «О программе» — общий компонент `AboutDialog`**; при необходимости дальнейшее выравнивание панелей.
 
@@ -218,25 +216,25 @@
 
 - [ ] Отложенная загрузка тяжёлых панелей.
 - [ ] Отключение дорогих анимаций под нагрузкой.
-- [ ] Уважать системный reduced motion.
+- [x] Уважать системный reduced motion (`prefers-reduced-motion` в `main.css`; J-1034).
 
 ### §4.5 О программе и версия
 
 - [~] Окно «О программе»: модальное окно в renderer по пункту меню.
 - [x] Версия из `package.json` (`app.getVersion()`).
-- [ ] Build number / дата сборки.
+- [x] Build number / дата сборки (`app-build-info.json`, `write-app-build-info.mjs`, About + Support ZIP; J-1033).
 - [x] Кнопка «Открыть папку логов».
 - [x] Кнопка экспорта support ZIP.
 
 ### §4.6 Настройки
 
-- [ ] Окно настроек.
-- [ ] Раздел «Общие».
-- [ ] Раздел «По умолчанию».
-- [ ] Раздел «Зависимости».
-- [ ] Раздел «Горячие клавиши».
-- [ ] Раздел «Логи/диагностика».
-- [ ] Сброс настроек.
+- [x] Окно настроек (модалка с навигацией, J-1014).
+- [x] Раздел «Общие» (тема, язык, Ctrl+V URL).
+- [x] Раздел «По умолчанию» (yt-dlp каталог, batch output).
+- [x] Раздел «Зависимости» (пути движков).
+- [x] Раздел «Горячие клавиши» (таблица ускорителей).
+- [x] Раздел «Логи/диагностика» (журнал, Support ZIP, О программе).
+- [x] Сброс настроек + экспорт/импорт JSON в разделе «Сброс».
 
 ## §5. Темизация
 
@@ -254,7 +252,7 @@
 
 ### §6.1 Основная панель
 
-- [~] Основной менеджер загрузок — вкладка `Загрузки` в React workspace; отдельное окно (data HTML + свой preload IPC) оставлено вторичным pop-out режимом; встроенная вкладка: таблица очереди, под ней «История»→«Живой лог», справа/снизу настройки (rail).
+- [x] Основной менеджер загрузок — вкладка `Загрузки` + pop-out `#downloads` (один React UI); таблица очереди, история→лог, settings rail; legacy HTML удалён (J-984).
 - [x] Многострочное поле URL.
 - [x] Добавление распознанных строк в простую очередь (таблица в том же документе).
 - [x] Drag-and-Drop URL/текста на поле ввода и на свободную область окна загрузок (не перехватываем drop на `textarea`/`select`/текстовых `input`).
@@ -291,7 +289,7 @@
 
 ### §6.4 Прогресс, лог, комбинированный режим
 
-- [~] Парсинг прогресса yt-dlp: процент + скорость + оставшееся время (в UI «Осталось»; в сыром логе yt-dlp по-прежнему токен `ETA`) + размер `of …`/`of ~ …` + `fragment X of Y` + `(frag N/M)` без процентов в строке + `Total progress:` + `Downloading video|item X of Y` + вариант `N of M videos` + `Sleeping … seconds` / `Waiting for reconnect` / прочие `[download] Waiting for …` / `Resuming download at byte …` / `Retrying (N/M)` и `Retrying fragment X (N/M)` + подготовка `Downloading m3u8 information` / player API JSON / `Downloading webpage`; прочие редкие строки — по мере заметок.
+- [~] Парсинг прогресса yt-dlp: процент + скорость + оставшееся время (в UI «Осталось»; в сыром логе yt-dlp по-прежнему токен `ETA`) + размер `of …`/`of ~ …` + `fragment X of Y` + `(frag N/M)` без процентов в строке + `Total progress:` + `Downloading video|item X of Y` + вариант `N of M videos` + `Sleeping … seconds` / `Waiting for reconnect` / прочие `[download] Waiting for …` / `Resuming download at byte …` / `Retrying (N/M)` и `Retrying fragment X (N/M)` + подготовка `Downloading m3u8 information` / player API JSON / `Downloading webpage` + post-processing (`Writing thumbnail/subtitles/metadata`, rate limit sleep, `Deleting original file`); прочие редкие строки — по мере заметок.
 - [~] Лог stdout/stderr: IPC `fluxalloy-downloads-log` fan-out в главное окно и pop-out; вкладка `Загрузки` показывает live log, очистку и сохранение видимого текста; pop-out сохраняет compact-layout со счётчиком размера и обрезкой DOM.
 - [x] «Скачать и открыть»: готовый файл можно открыть/показать в папке или отправить в обработчик FluxAlloy из очереди и истории.
 - [x] «Скачать и сразу обработать» (настройка §6.4: после успеха yt-dlp авто-открытие в главном preview, если известен безопасный путь в каталоге загрузок; неуспех авто-открытия пишется в лог строки).
@@ -341,6 +339,7 @@
 - [~] Параллелизм 1/2/4/auto.
 - [~] Очередь статусов (waiting/running/done/error/cancelled); **persist `userData/ffmpeg-export-batch/queue.json`**.
 - [~] Сводка ошибок после завершения; **drag-reorder**; economy/history/open; **retry failed** + **clear completed** + retry строки; **копировать пути (вход/выход)** и **по строке** / **сохранить отчёт** (TSV + колонка ошибки) / **убрать ожидающие**; открыть **готовый файл пакета в редакторе**; двойной щелчок по строке / по ячейке **«Выход»** — **исходник / результат в редакторе**; **шаблон имени выхода** (`ffmpegExportBatchOutputSuffix`); **общая папка выхода** (`ffmpegExportBatchOutputDirectory`, открыть в проводнике); авто-раскрытие панели при auto-enqueue §7.4.
+- [x] UX ошибок в очереди и отчёте: `resolveFfmpegExportBatchRow*` (progress/error, title, aria) — J-993.
 
 ### §7.4 Комбинированный режим
 
@@ -350,7 +349,7 @@
 
 ### §7.5 Изображения
 
-- [ ] Извлечение/конвертация изображений.
+- [~] Извлечение/конвертация изображений (одиночная конвертация JPEG/PNG/WebP в «О программе» — J-1012).
 - [ ] Спрайты.
 - [ ] Слайды.
 - [ ] Набор форматов JPG/PNG/WebP/etc.
@@ -366,14 +365,17 @@
 - [x] Окно терминала/CLI внутри Electron.
 - [x] PATH на bundled `bin`.
 - [x] Разрешить только безопасные инструментальные команды/префиксы.
-- [x] Подсказки из `Data/ffmpeg_commands.json`.
-- [x] Подсказки из `Data/ytdlp_commands.json`.
+- [x] Подсказки из `Data/ffmpeg_commands.json` (+ `examples`, `docUrl` в карточке и tooltip, J-1024).
+- [x] Подсказки из `Data/ytdlp_commands.json` (+ `examples`, `docUrl`, J-1024).
+- [x] Подсказки из `Data/ffprobe_commands.json` (J-995; поля JSON — J-1024).
+- [x] Панель каталога: чипы ffmpeg/ffprobe/yt-dlp, до 240 при фильтре, счётчик «показано/всего» (J-995).
 - [x] Подстановка текущего файла/превью.
 - [x] История команд.
 - [x] Логирование команд и результата.
 - [~] IntelliSense в строке argv (v1): до 14 подсказок из merge JSON+сценариев, Tab/Enter/↑↓/Shift+Tab/Home/End/PgUp/PgDn (шаг 5), Escape, навигация при сужении списка (clamp stale-индекса), полный список до 240: фильтр + клавиатура (↑↓/Home/End/PgUp/PgDn/Enter, Escape — сброс фильтра) и подсветка активной строки, `shared/terminal-inline-suggest` + Vitest.
 - [~] Вкладка «Терминал»: подписи, help-intro (lead + `<code>` токен + tail с числами), кнопки, плейсхолдеры, aria, история/копирование строк — через `ui-text` (ru/en по `navigator`) и форматтеры `formatTerminalIntroTail` / `formatTerminalExitLine` / `formatTerminalCopyLineAria`.
 - [x] RU в полях `summary` сценариев `src/shared/terminal-contract.ts` (в т.ч. «ссылка» вместо «URL» и глосс `(поле …)` для `--print-to-file` → `flux-ytdlp-*.txt`): `npm run locales:terminal-summaries-ru` (`scripts/apply-terminal-summary-ru.mjs` + пост-глосс из `inject-flux-summary-pole.mjs`), при необходимости только глосс — `npm run locales:terminal-flux-pole`; после мерджа прогонять дважды, пока второй раз не даст **0** замен и **0** gloss; `fullLine` скриптами не меняется; регрессия в `terminal-contract-scenarios.test`. Журнал: **J-573**.
+- [x] **Фаза E (терминал):** guards data + scenario summaries, `locales:terminal-scenario-stream-gloss` (J-1025..1026); `check:terminal-summaries-ru`; tooltips — J-996 (**E3–E4** `[x]`).
 
 ## §9. Инспектор видеофайлов
 
@@ -437,34 +439,60 @@
 
 - [x] Файлы `Help/*.md` есть.
 - [~] Viewer внутри приложения (markdown body: blockquote/`>`, `---`/thematic break, списки `-`/`+`/нумерация + перенос пункта с отступом 4+, внутренние `.md` и внешние `https`, **картинки** `![alt](assets/…)` — при `readKnowledgeArticle` мелкие файлы из `Help/assets/**` (до ~512 KiB) **встраиваются** в markdown как `data:image/*;base64` (стабильно в dev и сборке); парсер допускает только whitelist `data:`; `fluxhelp:` + CSP `img-src` остаются как запасной путь.
-- [x] Оглавление.
+- [x] Оглавление: 7 разделов `knowledge-toc-registry` + FAQ RU/EN (J-983).
 - [x] Поиск.
 - [x] Язык UI и база: `listArticles`/`readKnowledgeArticle` с `preferredUiLocale` — при EN заголовки оглавления из `Help/en/*.md` при наличии; тела статей — `Help/en/{slug}.md` или fallback на `Help/{slug}.md`; сообщения об ошибках чтения статьи — по тому же языку; при смене языка интерфейса список/статья перезапрашиваются.
-- [~] Открытие статей из подсказок (inline help вне Knowledge): deep-link в `KnowledgeDialog` (`initialSlug`); первая точка — вкладка «Терминал» → `ffmpeg-terminal-hints`; в `tools-terminal-inspector.md` (RU/EN) — отсылка к разделу встроенных сценариев (`terminal-contract.ts`, npm `locales:terminal-summaries-ru`).
-- [~] Tooltips на ключевых контролах (база знаний: топбар, диалог поиск/закрыть/TOC, markdown внутр./внешние ссылки; deep-link из «Терминала»).
-- [x] Пары `Help/*.md` / `Help/en/*.md` для основных slug’ов (без смешения RU/EN в одном файле); дальше — новые статьи и скриншоты в `Help/assets/` по мере стабилизации UI.
+- [x] **Help:** 23 статьи RU+EN + FAQ; стабильные SVG в `Help/assets/` + `help-assets-references.test.ts`; deep-link: terminal, downloads/ffmpeg rail, batch, probe (J-983, J-990).
+- [~] **Tooltips / copy:** `check:ui-copy-quality`, humanize terminal summaries; хвост E4 icon-only.
+- [x] Пары `Help/*.md` / `Help/en/*.md` для основных slug’ов (без смешения RU/EN в одном файле); дальше — **массовое** добавление статей по фазе E5, не точечные правки.
 
 ## §16. Аппаратное ускорение
 
-- [~] Диагностика GPU: в ответе `probeHwEncoders` добавлен список `hwaccels` (`ffmpeg -hwaccels`), показ в tooltip у поля «Видеокодек».
+- [~] Диагностика GPU: `probeHwEncoders` — hwaccels + nvidia-smi name/driver; tooltip статусбара и кодека (J-1002).
 - [~] Определение доступных кодировщиков: парсер `ffmpeg -encoders`, IPC `probeHwEncoders`, список кодеков в rail «Формат» по снимку; при отсутствии кодека в сборке — откат на libx264; **hw_auto** / **hw_auto_hevc** в UI и spawn.
 - [~] Auto mode: `hw_auto` — H.264 NVENC → AMF → QSV → VideoToolbox → VAAPI, затем AV1 NVENC/AMF/QSV → libx264; `hw_auto_hevc` — HEVC NVENC → … → VAAPI, затем AV1 → libx265; резолв в `runFfmpegExportJob` и превью.
-- [~] Manual mode: выбор HW из whitelist (NVENC/AMF/QSV/VideoToolbox/VAAPI + **av1_vaapi**), argv в `ffmpeg-export-argv`.
-- [ ] NVENC.
-- [ ] AMF.
-- [ ] QSV.
-- [~] VideoToolbox для macOS: `h264_videotoolbox` / `hevc_videotoolbox` в пробе и argv (`-q:v`).
-- [ ] VAAPI/прочее для Linux по возможности.
-- [~] Индикатор `[АВТО]`: бейдж у выбора кодека при `hw_auto` / `hw_auto_hevc` + подсказка.
-- [ ] Режим экономии CPU/threads/priority.
-- [ ] Кнопка «Оценить».
+- [~] Manual mode: выбор HW из whitelist (NVENC/AMF/QSV/VideoToolbox/VAAPI + **av1_vaapi**), argv в `ffmpeg-export-argv`; подписи и подсказки по семействам + цепочка decode/upload (J-994).
+- [x] NVENC: argv smoke h264/hevc/av1_nvenc + cuda decode; hwupload_cuda только с CPU vf (J-1001).
+- [x] AMF: argv smoke h264/hevc/av1_amf + d3d11va decode/upload; hints (J-1000).
+- [x] QSV: argv smoke h264/hevc/av1_qsv + qsv decode/upload; hints (J-1000).
+- [x] VideoToolbox для macOS: argv smoke h264/hevc_videotoolbox + videotoolbox decode, `-q:v` (J-1001).
+- [x] VAAPI/прочее для Linux: argv smoke `h264/hevc/av1_vaapi` + hwaccel (J-999); чеклист ручного smoke — `ffmpeg-hw-manual-smoke-checklist` (J-1030).
+- [~] Индикатор `[АВТО]`: бейдж у выбора кодека при `hw_auto` / `hw_auto_hevc` + подсказка; в статусбаре — человекочитаемый кодек, `[АВТО]`, tooltip HW (J-996).
+- [x] Режим экономии CPU/threads/priority (`-threads 1` + `belowNormal` при spawn; J-998).
+- [x] Кнопка «Оценить» (семпл 15 с, таблица fps/ETA/размер, рекомендация, выбор кодека по клику; J-997).
+- [x] Порог нагрузки CPU/GPU в бенчмарке: nvidia-smi, колонка GPU, max(cpu,gpu) для «Рекомендовано» (J-999).
+
+### Ручной smoke владельца (железо, не CI)
+
+Канон шагов: [`src/shared/ffmpeg-hw-manual-smoke-checklist.ts`](src/shared/ffmpeg-hw-manual-smoke-checklist.ts) (дублируется в Support ZIP как `hwManualSmoke:`). Автоматизированные argv-smoke: `tests/shared/ffmpeg-export-nvenc-vtb-argv-table.test.ts`, `ffmpeg-export-vaapi-linux-argv-table.test.ts`.
+
+**Windows — NVENC**
+
+- [ ] Probe: tooltip/статусбар показывает GPU NVIDIA.
+- [ ] Ручной `h264_nvenc` / `hevc_nvenc`, экспорт 10 с — файл OK, в логе `-hwaccel cuda` + кодек NVENC.
+- [ ] `hw_auto` без тихого отката на libx264.
+- [ ] «Оценить» 15 с: строка NVENC, при наличии — колонка GPU.
+- [ ] Экспорт с vf (hflip/crop): `hwupload_cuda` в цепочке.
+
+**Linux — VAAPI**
+
+- [ ] Probe: доступны `h264_vaapi` / `hevc_vaapi` (или подсказка VAAPI).
+- [ ] Ручной `h264_vaapi`, экспорт 10 с — в логе `vaapi` + `hwupload` + кодер.
+- [ ] `hw_auto` выбирает VAAPI до CPU fallback.
+- [ ] `av1_vaapi` — по возможности GPU, иначе N/A в заметке.
+- [ ] «Оценить» на Linux без падения ffmpeg.
+
+**Критерий закрытия:** отметить `[x]` у пунктов выше в этом разделе + строка в `IMPLEMENTATION_JOURNAL.md` с датой и GPU/драйвером.
 
 ## §17. Дополнительные утилиты
 
-- [~] Меню утилит: подменю «Инструменты → Открыть папку…» с whitelist каталогов (`diagnostics-paths`); `enabled` пересчитывается при фокусе окна и после изменения путей; внешние ссылки из renderer/data-окон проходят `openAllowedExternalUrl`/`installExternalNavigationGuard` (`http(s)` only, без `file:`/`javascript:`).
-- [ ] Извлечь кадры.
-- [ ] Конвертер/служебные операции по ТЗ.
-- [~] Открыть папки ресурсов/логов: меню + IPC `fluxalloy:diagnostics-open-folder` (userData, logs, ytdlpDownloads, systemTemp, userBin, bundledBin, resources); в «О программе» — кнопки папки логов, main.log, Support ZIP, размер временных и двухшаговая очистка по категориям; отдельное окно настроек — позже.
+- [x] Меню утилит: «Открыть папку…» — hint/toolTip на пунктах + панель в «О программе» (J-1003); enabled при фокусе — как раньше.
+- [x] Извлечь кадры §7.6 (J-1004–1006): режимы, WebP, topbar, выбор файла, progress-bar.
+- [x] Обслуживание файлов: remux repair + проверка целостности (J-1007).
+- [x] Генератор шума/тишины WAV + хеши MD5/SHA256 (J-1008).
+- [x] Извлечь обложку в очереди загрузок (J-1009).
+- [x] Плагины AviSynth/VapourSynth: меню «Сервис», настройки, `-vf` экспорта (J-1010).
+- [~] Открыть папки ресурсов/логов: полный список в «О программе» + быстрые кнопки logs/ZIP (J-1003); отдельное окно настроек — позже.
 - [~] Диагностические команды/утилиты обслуживания: IPC/preload для `maintenanceSnapshot`/`cleanMaintenance`, тесты `diagnostics-maintenance`; дальше — отдельное окно настроек и расширение категорий.
 
 ## §18. Логирование и диагностика

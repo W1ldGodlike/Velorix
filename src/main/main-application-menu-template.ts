@@ -10,6 +10,8 @@ import {
 } from 'electron'
 
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
+import { isNativeMainMacos } from './platform'
+import type { AppSettingsDialogSection } from '../shared/app-settings-dialog-section'
 import {
   focusOrCreateDownloadsWindow,
   isDownloadsWindow
@@ -24,7 +26,7 @@ import type { MainApplicationMenuDeps } from './main-application-menu-types'
 
 export function buildApplicationMenuTemplate(d: MainApplicationMenuDeps): MenuItemConstructorOptions[] {
   const win = BrowserWindow.getFocusedWindow() ?? BrowserWindow.getAllWindows()[0] ?? undefined
-  const isMac = process.platform === 'darwin'
+  const isMac = isNativeMainMacos()
   const themePref = d.getThemePref()
   const uiLoc = d.mainDownloadsUiLocale()
   const isSystem = themePref === 'system'
@@ -139,6 +141,17 @@ export function buildApplicationMenuTemplate(d: MainApplicationMenuDeps): MenuIt
       label: m.menuSettings,
       submenu: [
         {
+          label: m.menuOpenAppSettings,
+          click: (): void => {
+            const target = getMainUiWindow()
+            if (!target || target.isDestroyed()) {
+              return
+            }
+            target.focus()
+            target.webContents.send(mw.openSettings, 'general' satisfies AppSettingsDialogSection)
+          }
+        },
+        {
           label: m.menuEnginePaths,
           click: (): void => {
             const target = getMainUiWindow()
@@ -146,7 +159,38 @@ export function buildApplicationMenuTemplate(d: MainApplicationMenuDeps): MenuIt
               return
             }
             target.focus()
-            target.webContents.send(mw.openEnginePaths)
+            target.webContents.send(mw.openSettings, 'dependencies' satisfies AppSettingsDialogSection)
+          }
+        }
+      ]
+    },
+    {
+      label: m.menuService,
+      submenu: [
+        {
+          label: m.menuExternalFilterScript,
+          click: (): void => {
+            const target = getMainUiWindow()
+            if (!target || target.isDestroyed()) {
+              return
+            }
+            target.focus()
+            target.webContents.send(mw.openExternalFilterScript)
+          }
+        },
+        { type: 'separator' },
+        {
+          label: m.menuExportSettings,
+          click: (): void => {
+            const target = getMainUiWindow() ?? win
+            void d.exportSettingsBackup(target)
+          }
+        },
+        {
+          label: m.menuImportSettings,
+          click: (): void => {
+            const target = getMainUiWindow() ?? win
+            void d.importSettingsBackup(target)
           }
         }
       ]
@@ -164,6 +208,7 @@ export function buildApplicationMenuTemplate(d: MainApplicationMenuDeps): MenuIt
         { type: 'separator' },
         {
           label: m.menuOpenFolder,
+          toolTip: m.menuOpenFolderHint,
           submenu: buildDiagnosticsFolderSubmenu()
         },
         {

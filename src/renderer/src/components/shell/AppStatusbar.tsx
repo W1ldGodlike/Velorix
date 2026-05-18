@@ -5,6 +5,8 @@ import type { EngineSummary } from '../../app-engines-ui'
 import { engineSummaryText } from '../../app-engines-ui'
 import type { WorkspaceTab } from '../../app-terminal-hint-ui'
 import { uiText } from '../../locales/ui-text'
+import type { AppUiLocale } from '../../../../shared/app-ui-locale'
+import { formatStatusbarLocaleShort } from '../../statusbar-locale-display'
 
 export type AppStatusbarProps = {
   appChromeBusy: boolean
@@ -13,12 +15,18 @@ export type AppStatusbarProps = {
   engineSummary: EngineSummary
   engineVersionsLine: string
   exportCodecStatusbarLabel: string
+  exportCodecStatusbarTitle: string
+  exportCodecStatusbarAria: string
   exportBusy: boolean
   snapshotBusy: boolean
   exportCancelBusy: boolean
   probePending: boolean
   batchExportBusy: boolean
   statusHint: string | null
+  uiLocale: AppUiLocale
+  statusbarActivityLabel: string
+  statusbarActivityTitle: string
+  statusbarActivityActive: boolean
 }
 
 export function AppStatusbar(props: AppStatusbarProps): JSX.Element {
@@ -29,12 +37,18 @@ export function AppStatusbar(props: AppStatusbarProps): JSX.Element {
     engineSummary,
     engineVersionsLine,
     exportCodecStatusbarLabel,
+    exportCodecStatusbarTitle,
+    exportCodecStatusbarAria,
     exportBusy,
     snapshotBusy,
     exportCancelBusy,
     probePending,
     batchExportBusy,
-    statusHint
+    statusHint,
+    uiLocale,
+    statusbarActivityLabel,
+    statusbarActivityTitle,
+    statusbarActivityActive
   } = props
 
   const workspaceTabDescId =
@@ -44,6 +58,10 @@ export function AppStatusbar(props: AppStatusbarProps): JSX.Element {
         ? 'workspace-tab-downloads-desc'
         : 'workspace-tab-terminal-desc'
 
+  const localeShort = formatStatusbarLocaleShort(uiLocale)
+  const localeTitle =
+    uiLocale === 'en' ? uiText('statusbarLocaleTitleEn') : uiText('statusbarLocaleTitleRu')
+
   return (
     <footer
       className="app-statusbar"
@@ -51,6 +69,36 @@ export function AppStatusbar(props: AppStatusbarProps): JSX.Element {
       aria-describedby={workspaceTabDescId}
       aria-busy={appChromeBusy}
     >
+      <div
+        role="group"
+        aria-label={uiText('statusbarActivityClusterAria')}
+        className="app-statusbar-cluster app-statusbar-activity"
+        aria-describedby={workspaceTabDescId}
+      >
+        <span
+          className={
+            statusbarActivityActive
+              ? 'app-statusbar-activity-dot app-statusbar-activity-dot--active'
+              : 'app-statusbar-activity-dot'
+          }
+          aria-hidden
+        />
+        <span className="app-statusbar-activity-label" title={statusbarActivityTitle}>
+          {statusbarActivityLabel}
+        </span>
+      </div>
+      <span className="app-statusbar-sep" aria-hidden />
+      <div
+        role="group"
+        aria-label={uiText('statusbarLocaleClusterAria')}
+        className="app-statusbar-cluster"
+        aria-describedby={workspaceTabDescId}
+      >
+        <span className="app-statusbar-locale" title={localeTitle} lang={uiLocale}>
+          {localeShort}
+        </span>
+      </div>
+      <span className="app-statusbar-sep" aria-hidden />
       <div
         role="group"
         aria-label={uiText('statusbarEnginesClusterAria')}
@@ -79,7 +127,11 @@ export function AppStatusbar(props: AppStatusbarProps): JSX.Element {
           }
         >
           <span className="app-statusbar-sep" aria-hidden />
-          <span className="app-statusbar-codec" title={exportCodecStatusbarLabel}>
+          <span
+            className="app-statusbar-codec"
+            title={exportCodecStatusbarTitle}
+            aria-label={exportCodecStatusbarAria}
+          >
             {exportCodecStatusbarLabel}
           </span>
         </div>

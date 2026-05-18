@@ -11,6 +11,7 @@
 | 3 | Шапка [`IMPLEMENTATION_CHECKLIST.md`](../IMPLEMENTATION_CHECKLIST.md) | Канон **формата** чеклиста и блока «Ближайший TODO спринта». |
 | 4 | [`docs/AGENT_MARATHON.md`](AGENT_MARATHON.md) | Marathon / «продолжай»: итерация, cadence, re-anchor, отчёты. |
 | 4a | [`fluxalloy-project-audit.mdc`](../.cursor/rules/fluxalloy-project-audit.mdc) | Постоянный audit scope, `check:quiet` audit-скрипты, `audit-manifest.json`. Программа 2026-05 закрыта (J-887). |
+| 4b | [`fluxalloy-ui-surfaces.mdc`](../.cursor/rules/fluxalloy-ui-surfaces.mdc) + `check:ui-surfaces-guard` | Один renderer на фичу, один словарь (`ui-text` / `locales/**`), Help TOC + deep-link; без HTML-pop-out (J-984). |
 | 5 | [`FLUXALLOY_TZ.md`](../FLUXALLOY_TZ.md) | Канон **продукта** (требования). В rules **не** копируется целиком — только чтение нужного §. **Не редактировать** без явной просьбы владельца. |
 | 6 | [`docs/AGENT_OPERATIONAL_NOTES.md`](AGENT_OPERATIONAL_NOTES.md) | **Operational notes** (CSP, медиа, yt-dlp). Исполняемое — `fluxalloy-agent-runtime.mdc`. При расхождении с 1–4 — побеждают 1–4. |
 | 7 | [`scripts/cursor-automation/prompts/agent-contract.txt`](../scripts/cursor-automation/prompts/agent-contract.txt) | То же поведение для SDK-агента; синхронизировать с 1–4 при смене процесса. |
@@ -35,6 +36,7 @@
 | Marathon (коммит/push/re-anchor) | `docs/AGENT_MARATHON.md`, `fluxalloy-marathon.mdc`, `continue.txt`, `agent-contract.txt` |
 | Итерация / пакет / anti-micro | `fluxalloy-iteration-batch.mdc`, шапка журнала, `fluxalloy-journal.mdc`, § журнал в `agent-contract.txt` |
 | Audit репозитория | `fluxalloy-project-audit.mdc`, `scripts/audit-scope.config.mjs`, `docs/audit-manifest.json`, `npm run audit:inventory` / `audit:inventory-sync` / `audit:copy-paste` / `audit:structural` |
+| UI-поверхности / copy / Help | `fluxalloy-ui-surfaces.mdc`, `scripts/check-ui-surfaces-guard.mjs`, `knowledge-toc-registry.ts`, `check:ui-copy-quality`, итог в чеклист §6/§15 |
 | Стек / IPC / main | `fluxalloy-core.mdc`, `fluxalloy-electron.mdc`, `fluxalloy-react.mdc`, при IPC — `docs/ARCHITECTURE.md` |
 | Язык правил (однозначность) | `fluxalloy-rules-explicit.mdc`, `npm run check:rules-explicit`; при правке любого `.mdc` — сверка глоссария |
 | Cadence marathon / continue_count | `fluxalloy-marathon.mdc`, `docs/AGENT_MARATHON.md`, `agent-contract.txt`, `continue.txt`, глоссарий (bump → `%5`/`%10`) |

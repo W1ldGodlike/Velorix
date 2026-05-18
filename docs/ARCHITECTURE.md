@@ -40,7 +40,7 @@
 
 ## IPC и контракты
 
-- Реестр имён каналов: [`src/shared/ipc-channels.ts`](../src/shared/ipc-channels.ts) (`mainWindowIpc`, `downloadsIpc`) — **156** каналов (invoke + push + `logRenderer` через `ipcMain.on`).
+- Реестр имён каналов: [`src/shared/ipc-channels.ts`](../src/shared/ipc-channels.ts) (`mainWindowIpc`, `downloadsIpc`) — **157** каналов (invoke + push + `logRenderer` через `ipcMain.on`).
 - Проверка связности: `npm run audit:ipc-architecture` — каждый invoke-канал имеет `ipcMain.handle` (или loop `FFMPEG_EXPORT_SETTING_CHANNELS`) в `src/main/` и `ipcRenderer.invoke` / `send` в `src/preload/`; push-каналы — в `PUSH_KEYS` скрипта.
 - Регистрация `ipcMain.handle` (строки `ipcMain.handle(`; эффективных handle **139** с учётом loop ffmpeg settings):
 
@@ -72,11 +72,14 @@
 |-------|---------------------|------------|
 | IPC | `ipc-channels.ts` | единственный реестр строк каналов |
 | Settings | `settings-contract.ts` | view/persist типы |
-| ffmpeg export | `ffmpeg-export-contract.ts`, `ffmpeg-export-resolve-contract.ts`, `ffmpeg-export-batch-contract.ts` | типы UI/spawn, resolve job, batch queue — не сливать в один файл |
+| ffmpeg export | `ffmpeg-export-contract.ts`, `ffmpeg-export-resolve-contract.ts`, `ffmpeg-export-batch-contract.ts`, `ffmpeg-export-benchmark-contract.ts`, `ffmpeg-frames-extract-contract.ts` | типы UI/spawn, resolve job, batch queue, бенчмарк §7.2.1, пакетное извлечение кадров §7.6 — не сливать в один файл |
+| media utilities | `media-utilities-contract.ts` | §17 remux/integrity, генератор WAV (lavfi), хеши MD5/SHA256 — отдельно от export/extract |
+| cover extract | `ffmpeg-cover-extract-contract.ts` | §17 обложка из очереди загрузок (`downloadsIpc.extractQueueCover`) |
+| external filter script | `external-filter-script-contract.ts` | §17 AviSynth/VapourSynth в `-vf` экспорта + меню «Сервис» |
 | ffprobe | `ffprobe-contract.ts` | probe JSON / UI |
 | yt-dlp | `ytdlp-download-contract.ts`, `ytdlp-history-contract.ts` | download + history |
 | Terminal | `terminal-contract.ts` (barrel), `terminal-contract-types.ts`, `terminal-contract-hints-*` | hints после split ф.4 |
-| Engines | `engine-contract.ts`, `engine-download-contract.ts` | paths + download |
+| Engines | `engine-contract.ts`, `engine-download-contract.ts`, `engine-update-check-contract.ts` | paths, download, check updates |
 | Diagnostics / about | `diagnostics-contract.ts`, `about-contract.ts` | support bundle UI |
 | Downloads log | `downloads-log-contract.ts` | pop-out log lines |
 
@@ -91,6 +94,58 @@
 
 - Кастомная схема **`fluxmedia://`** и множество **`allowedMediaPaths`** (реальный путь после `realpath`): см. [`src/main/media-protocol.ts`](../src/main/media-protocol.ts). Renderer не может открыть произвольный `file://` без регистрации пути через main.
 - **ffprobe** и экспорт допускаются только для путей, прошедших **`isGrantedMediaPath`** (открытие через диалог / явная выдача доступа из main).
+
+## Локализация UI (§2.2)
+
+- **Канон строк:** `locales/ru/*.json` и `locales/en/*.json` — плоские объекты `ключ → строка` (без вложенности). Список имён шардов — [`LOCALE_JSON_SHARDS`](../src/shared/locale-json-catalog.ts) (20 файлов на локаль: `common`, `about`, `maintenance`, `formatting`, `knowledge`, `terminal`, `processing`, `downloads`, `workspace`, `editor`, `video`, `mini`, `downloads-settings`, `shell`, `editor-ffmpeg`, `status`, `batch-export`, `settings`, `inspector`, `inspector-probe`). Паритет ru/en: `npm run check:locales-json`.
+- **Сборка в renderer:** [`ui-text-strings-build.ts`](../src/renderer/src/locales/ui-text-strings-build.ts) — `buildUiTextTables()`: сначала пустые legacy-части `ui-text-strings-{ru|en}-NN.ts`, затем JSON-шарды **в порядке импорта** (поздний spread перекрывает ранний при коллизии ключей). Тип ключей `UiTextKey` — `keyof` таблицы `ru`.
+- **Чтение в UI:** [`ui-text-api.ts`](../src/renderer/src/locales/ui-text-api.ts) — `uiText(key)` → `getUiTextTables()[getUiLocale()][key]`; сессия локали — [`ui-text-session.ts`](../src/renderer/src/locales/ui-text-session.ts) (`settings.json` / `navigator`).
+- **Смена языка без reload:** main `settings.setUiLocale` → `uiLocaleChanged` на все окна → `setUiLocaleForSession` + `uiLocaleRenderTick` (см. [`ui-locale-runtime.ts`](../src/shared/ui-locale-runtime.ts)); заголовки окон — `syncBrowserWindowTitlesToLocale`.
+- **Dev hot-reload JSON:** Vite alias `@locales` → корень `locales/` ([`electron.vite.config.ts`](../electron.vite.config.ts)). Правка любого `locales/**/*.json` инвалидирует [`ui-text-strings.ts`](../src/renderer/src/locales/ui-text-strings.ts): `import.meta.hot.accept` → `reloadUiTextTablesFromModules()` → `notifyUiTextShardsUpdated()` → хук [`use-ui-text-hot-reload-bump.ts`](../src/renderer/src/locales/use-ui-text-hot-reload-bump.ts) увеличивает `uiLocaleRenderTick` (главное окно, `#downloads`, `#inspector`). Перезапуск Electron не нужен.
+- **Main/preload UI** (меню, диалоги ОС): отдельные таблицы [`main-application-locale-strings-*`](../src/shared/main-application-locale.ts), не `locales/**`.
+- **Guards:** `check:locales-ts-overlap` (запрет дублей TS+JSON), миграции `scripts/migrate-locales-*.mjs`.
+
+## Состояние renderer (§2.2)
+
+**Решение:** **`hooks-composition`** — без Zustand, Jotai, Redux и без React Context для глобального store. Канон в [`renderer-state-approach.ts`](../src/shared/renderer-state-approach.ts).
+
+| Слой | Назначение | Примеры |
+|------|------------|---------|
+| Composition root | Один вход в shell | [`useAppComposition`](../src/renderer/src/use-app-composition.ts) → `useAppCompositionState` → `useAppShellPropsInput` → `useAppShellProps` → [`AppShellLayout`](../src/renderer/src/components/shell/AppShellLayout.tsx) |
+| Локальный UI-state | Вкладки, модалки, ticks | [`useAppCompositionLocalState`](../src/renderer/src/use-app-composition-local-state.ts) (`uiLocaleRenderTick`, theme, workspace tab) |
+| Domain hooks | Фича + IPC | `useEditorExportSettings`, `useFfmpegExportBatch`, `useDownloadsWorkspace`, `useTerminalWorkspace`, `useMainWindowUiPanels`, `useAppPreviewWorkspace` |
+| Standalone окна | Свой мини-корень | [`useDownloadsStandaloneApp`](../src/renderer/src/use-downloads-standalone-app.ts), [`useInspectorStandaloneApp`](../src/renderer/src/use-inspector-standalone-app.ts) |
+
+**Persist и события main:** настройки и снимки панелей — через `window.fluxalloy.settings.*` и push-каналы (`onThemeChanged`, `onUiLocaleChanged`, …); renderer держит копию в `useState`, не в глобальном store.
+
+**i18n / dev:** `getUiLocale()` + `uiText()`; смена языка и HMR JSON — `uiLocaleRenderTick` + [`useUiTextHotReloadBump`](../src/renderer/src/locales/use-ui-text-hot-reload-bump.ts).
+
+**Когда добавлять библиотеку store:** только по явной просьбе владельца и с обновлением `renderer-state-approach.ts` + этого раздела.
+
+## nativeMain / platform (§2.1)
+
+Различия ОС для main и smoke — единый модуль [`src/shared/native-main-platform.ts`](../src/shared/native-main-platform.ts); в main импорт через [`src/main/platform/index.ts`](../src/main/platform/index.ts).
+
+| API | Назначение |
+|-----|------------|
+| `isNativeMainWindows` / `Macos` / `Linux` | Ветвление по `process.platform` |
+| `nativeMainEngineExecutableSuffix` / `nativeMainEngineBinaryName` | Имена ffmpeg/ffprobe/yt-dlp в `bin/` |
+| `nativeMainPathEnvSeparator`, `nativeMainDevNullPath`, `nativeMainPathSeparator` | PATH, null sink, help URL |
+| `isNativeMainYtdlpOsPauseSupported`, `isNativeMainYtdlpKillProcessTreeSupported` | §6.4 yt-dlp |
+| `isNativeMainEngineAutoDownloadSupported` | §3 загрузчик Windows |
+| `isNativeMainQuitOnLastWindowClosed`, `isNativeMainBrowserWindowNeedsIcon` | Electron shell |
+
+**Allowlist** сырого `process.platform` в `src/main/`: `app-data-root-paths.ts`, `app-data-root.ts`, `logger-service.ts`, `main-diagnostics-service.ts`. Регрессия: `npm run check:native-main-platform-guard`.
+
+## Bundled engines и CI (§3 / §19)
+
+| Платформа | `engines:prepare:*` | CI (`.github/workflows/ci.yml`) | Упаковка |
+|-----------|---------------------|----------------------------------|----------|
+| Windows x64 | `npm run engines:prepare:win` (`predev`, `prebuild:win`) | **Да** — `windows-latest`, prepare + `engines:doctor` + packaged smokes | `release:win*`, `check:release` |
+| macOS | **Нет** авто-prepare | **Нет** job | `pack:mac:dir` + `verify:mac-unpacked`; релиз `build:mac` (dmg) — бинарники в `bin/` вручную |
+| Linux | **Нет** авто-prepare | **Да** — `ubuntu-latest`: `check:quiet` + `build` + `pack:linux:dir` + `verify:linux-unpacked` | `build:linux` + `verify:linux-release` (AppImage/deb) локально; бинарники в `bin/` вручную |
+
+Диагностика: [`platform-packaging-scripts.ts`](../src/shared/platform-packaging-scripts.ts) (`formatPlatformPackagingDiagnosticLines`). Локально: [`bin/README.md`](../bin/README.md), релиз: [`docs/RELEASE.md`](../docs/RELEASE.md).
 
 ## Внешние процессы
 

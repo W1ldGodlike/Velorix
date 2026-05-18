@@ -1,9 +1,9 @@
-import type { DownloadsWindowUiLocale } from './downloads-window-ui-locale'
+import type { AppUiLocale } from './app-ui-locale'
 import type { YtdlpFormatPresetId, YtdlpQueueRetryProfileId } from './ytdlp-download-contract'
 
 /** `<select>` labels for yt-dlp download options payload (main-safe). */
 export function buildYtdlpFormatPresetChoices(
-  locale: DownloadsWindowUiLocale
+  locale: AppUiLocale
 ): Array<{ id: YtdlpFormatPresetId; label: string }> {
   if (locale === 'en') {
     return [
@@ -22,7 +22,7 @@ export function buildYtdlpFormatPresetChoices(
 }
 
 export function buildYtdlpQueueRetryProfileChoices(
-  locale: DownloadsWindowUiLocale
+  locale: AppUiLocale
 ): Array<{ id: YtdlpQueueRetryProfileId; label: string }> {
   if (locale === 'en') {
     return [

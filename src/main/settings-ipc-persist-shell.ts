@@ -5,7 +5,8 @@ import { BrowserWindow } from 'electron'
 
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
 import type { MainWindowUiPanelState } from '../shared/settings-contract'
-import { parseDownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import { parseAppUiLocale } from '../shared/app-ui-locale'
+import { patchAppSettingsUiLocale } from '../shared/ui-locale-settings-patch'
 import {
   ENGINE_IDS,
   type EnginePathOverrides,
@@ -140,11 +141,11 @@ export function createSettingsShellPersist(
   }
 
   function persistUiLocale(raw: unknown): AppSettings {
-    const v = parseDownloadsWindowUiLocale(raw)
+    const v = parseAppUiLocale(raw)
     if (v === undefined) {
       return snapshot(access)
     }
-    const next = { ...access.get(), uiLocale: v }
+    const next = patchAppSettingsUiLocale(access.get(), v)
     access.set(next)
     access.save()
     hooks.buildApplicationMenu()

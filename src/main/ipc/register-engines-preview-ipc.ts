@@ -5,11 +5,13 @@ import { BrowserWindow, dialog, ipcMain } from 'electron'
 
 import { mainWindowIpc as mw } from '../../shared/ipc-channels'
 import type { FfmpegHwEncodersProbeResult } from '../../shared/ffmpeg-hw-encoder-probe'
-import type { DownloadsWindowUiLocale } from '../../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../../shared/app-ui-locale'
 import { formatPickEngineExecutableTitle } from '../../shared/main-application-locale'
 import { resolveAppPaths } from '../app-paths'
 import type { EngineDownloadProgress } from '../../shared/engine-download-contract'
 import { downloadEnginesWindows, isAnyEngineMissing } from '../engine-download'
+import { runEnginesCheckUpdatesAndDownload } from '../engine-update-check'
+import { loadTrustedHashes, resolveTrustedHashesPath } from '../trusted-hashes-store'
 import {
   ENGINE_IDS,
   getEnginesStatus,
@@ -20,8 +22,12 @@ import {
 import { probeFfmpegHwEncoders } from '../ffmpeg-hw-encoder-probe-main'
 import { probeMediaFile } from '../ffprobe-service'
 import { grantMediaPath, isGrantedMediaPath } from '../media-protocol'
+import {
+  nativeMainEngineExecutableSuffix,
+  nativeMainEngineOpenDialogFilters
+} from '../platform'
+import type { EnginesCheckUpdatesAndDownloadResult } from '../../shared/engine-update-check-contract'
 import { openVideoFolderWithDialog, openVideoWithDialog } from '../preview-dialog'
-import { loadTrustedHashes, resolveTrustedHashesPath } from '../trusted-hashes-store'
 
 let ipcRegistered = false
 
@@ -39,8 +45,8 @@ export type EnginesPreviewIpcDeps = {
     mediaProbePathMissing: string
     mediaProbeNotGranted: string
   }
-  mainDownloadsUiLocale: () => DownloadsWindowUiLocale
-  ipcDownloadsUiLocale: (raw?: unknown) => DownloadsWindowUiLocale
+  mainDownloadsUiLocale: () => AppUiLocale
+  ipcDownloadsUiLocale: (raw?: unknown) => AppUiLocale
   getEnginePathOverrides: () => EnginePathOverrides
   getLastOpenedSourcePath: () => string | undefined
   buildApplicationMenu: () => void
@@ -72,13 +78,10 @@ export function registerEnginesPreviewIpcHandlers(deps: EnginesPreviewIpcDeps): 
       const result = await dialog.showOpenDialog(win, {
         title: formatPickEngineExecutableTitle(deps.mainDownloadsUiLocale(), id),
         properties: ['openFile'],
-        filters:
-          process.platform === 'win32'
-            ? [
-                { name: I.filterExecutables, extensions: ['exe'] },
-                { name: I.exportFilterAll, extensions: ['*'] }
-              ]
-            : [{ name: I.exportFilterAll, extensions: ['*'] }]
+        filters: nativeMainEngineOpenDialogFilters({
+          executables: I.filterExecutables,
+          all: I.exportFilterAll
+        })
       })
       if (result.canceled || result.filePaths.length === 0) {
         return null
@@ -128,10 +131,29 @@ export function registerEnginesPreviewIpcHandlers(deps: EnginesPreviewIpcDeps): 
   )
 
   ipcMain.handle(
+    mw.enginesCheckUpdatesAndDownload,
+    async (event, raw?: unknown): Promise<EnginesCheckUpdatesAndDownloadResult> => {
+      const win = BrowserWindow.fromWebContents(event.sender)
+      const paths = resolveAppPaths()
+      const trusted = loadTrustedHashes(resolveTrustedHashesPath())
+      const loc = deps.ipcDownloadsUiLocale(raw)
+      return runEnginesCheckUpdatesAndDownload(
+        paths,
+        trusted,
+        deps.getEnginePathOverrides(),
+        (p: EngineDownloadProgress) => {
+          win?.webContents.send(mw.enginesProgress, p)
+        },
+        loc
+      )
+    }
+  )
+
+  ipcMain.handle(
     mw.enginesClearUserBin,
     async (): Promise<{ ok: true; removed: number } | { ok: false; error: string }> => {
       const paths = resolveAppPaths()
-      const suffix = process.platform === 'win32' ? '.exe' : ''
+      const suffix = nativeMainEngineExecutableSuffix()
       let removed = 0
       try {
         for (const id of ENGINE_IDS) {

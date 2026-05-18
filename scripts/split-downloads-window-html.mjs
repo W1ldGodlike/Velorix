@@ -39,7 +39,7 @@ export const DOWNLOADS_WINDOW_HTML_STYLE_BLOCK = \`${escTpl(styleBlock)}\`
 `
 
 const bodyTs = `import type { DownloadsWindowUiPanelState } from '../shared/settings-contract'
-import type { DownloadsWindowUiStrings } from '../shared/downloads-window-ui-locale'
+import type { DownloadsWindowUiStrings } from '../shared/app-ui-locale'
 import {
   YTDLP_DOC_FORMAT_SELECTION,
   YTDLP_DOC_OUTPUT_TEMPLATE,
@@ -90,11 +90,11 @@ export function buildDownloadsWindowHtmlScript(ctx: DownloadsWindowHtmlScriptCon
 `
 
 const entryTs = `import type { DownloadsWindowUiPanelState, ResolvedAppTheme } from '../shared/settings-contract'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import {
   buildDownloadsWindowScriptI18nJson,
-  getDownloadsWindowUiStrings
-} from '../shared/downloads-window-ui-locale'
+  REMOVED_getDownloadsWindowUiStrings
+} from '../shared/app-ui-locale'
 import { getYtdlpHintCategoryOrder } from '../shared/ytdlp-hint-category-order'
 import { buildDownloadsWindowHtmlBody } from './downloads-window-html-body'
 import { DOWNLOADS_WINDOW_HTML_STYLE_BLOCK } from './downloads-window-html-styles'
@@ -103,9 +103,9 @@ import { buildDownloadsWindowHtmlScript } from './downloads-window-html-script'
 export function buildDownloadsHtml(
   panelState?: DownloadsWindowUiPanelState,
   appTheme: ResolvedAppTheme = 'dark',
-  uiLocale: DownloadsWindowUiLocale = 'ru'
+  uiLocale: AppUiLocale = 'ru'
 ): string {
-  const L = getDownloadsWindowUiStrings(uiLocale)
+  const L = REMOVED_getDownloadsWindowUiStrings(uiLocale)
   const dlScriptI18nJson = buildDownloadsWindowScriptI18nJson(uiLocale)
   const dlLocaleCmpJson = JSON.stringify(uiLocale === 'en' ? 'en' : 'ru')
   const ytdlpHintCatOrderJson = JSON.stringify([...getYtdlpHintCategoryOrder(uiLocale)])

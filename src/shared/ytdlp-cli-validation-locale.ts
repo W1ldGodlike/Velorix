@@ -1,4 +1,4 @@
-import type { DownloadsWindowUiLocale } from './downloads-window-ui-locale'
+import type { AppUiLocale } from './app-ui-locale'
 
 /** User-facing validation copy for yt-dlp CLI fields (main-safe). */
 export type YtdlpCliValidationCopy = {
@@ -64,7 +64,7 @@ export type YtdlpCliValidationCopy = {
   pickerCookiesNeedAbsoluteFile: string
 }
 
-const ru: YtdlpCliValidationCopy = {
+export const YTDLP_CLI_VALIDATION_COPY_RU: YtdlpCliValidationCopy = {
   cookiesProfileTooLong: (maxLen) =>
     `Профиль браузера для cookies слишком длинный (макс. ${maxLen} символов).`,
   cookiesProfileControlChars:
@@ -141,7 +141,7 @@ const ru: YtdlpCliValidationCopy = {
   pickerCookiesNeedAbsoluteFile: 'Нужен абсолютный путь к файлу'
 }
 
-const en: YtdlpCliValidationCopy = {
+export const YTDLP_CLI_VALIDATION_COPY_EN: YtdlpCliValidationCopy = {
   cookiesProfileTooLong: (maxLen) =>
     `Browser cookies profile is too long (max ${maxLen} characters).`,
   cookiesProfileControlChars: 'Browser cookies profile must not contain control characters.',
@@ -216,6 +216,6 @@ const en: YtdlpCliValidationCopy = {
   pickerCookiesNeedAbsoluteFile: 'An absolute file path is required.'
 }
 
-export function getYtdlpCliValidationCopy(locale: DownloadsWindowUiLocale): YtdlpCliValidationCopy {
-  return locale === 'en' ? en : ru
+export function getYtdlpCliValidationCopy(locale: AppUiLocale): YtdlpCliValidationCopy {
+  return locale === 'en' ? YTDLP_CLI_VALIDATION_COPY_EN : YTDLP_CLI_VALIDATION_COPY_RU
 }

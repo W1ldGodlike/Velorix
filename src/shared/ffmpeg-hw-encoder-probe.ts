@@ -3,6 +3,8 @@
  * Только whitelist имён; spawn/IPC — в main (`ffmpeg-hw-encoder-probe-main.ts`).
  */
 
+import type { NvidiaSmiGpuInfo } from './nvidia-smi-gpu-info-parse'
+
 export const FFMPEG_HW_VIDEO_ENCODER_IDS = [
   'h264_nvenc',
   'hevc_nvenc',
@@ -28,7 +30,13 @@ export type FfmpegHwEncodersSnapshot = { [K in FfmpegHwVideoEncoderId]: boolean 
 }
 
 export type FfmpegHwEncodersProbeResult =
-  | { ok: true; snapshot: FfmpegHwEncodersSnapshot; hwaccels: readonly string[] }
+  | {
+      ok: true
+      snapshot: FfmpegHwEncodersSnapshot
+      hwaccels: readonly string[]
+      /** Модель и драйвер NVIDIA (§4.C статусбар); `null` если nvidia-smi недоступен. */
+      nvidiaGpu: NvidiaSmiGpuInfo | null
+    }
   | { ok: false; error: string }
 
 const HW_ALT_PATTERN = FFMPEG_HW_VIDEO_ENCODER_IDS.map((id) =>

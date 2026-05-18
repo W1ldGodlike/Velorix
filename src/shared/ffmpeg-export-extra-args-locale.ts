@@ -2,7 +2,7 @@
  * §7.2 — тексты ошибок парсера дополнительных argv ffmpeg-экспорта.
  */
 
-import type { DownloadsWindowUiLocale } from './downloads-window-ui-locale'
+import type { AppUiLocale } from './app-ui-locale'
 
 export type FfmpegExportExtraArgsCopy = {
   lineTooLong: (max: number) => string
@@ -13,7 +13,7 @@ export type FfmpegExportExtraArgsCopy = {
   tokenForbidden: (token: string) => string
 }
 
-const RU: FfmpegExportExtraArgsCopy = {
+export const FFMPEG_EXPORT_EXTRA_ARGS_COPY_RU: FfmpegExportExtraArgsCopy = {
   lineTooLong: (max) => `Строка длиннее ${max} символов`,
   tooManyTokens: (max) => `Слишком много токенов (макс. ${max})`,
   tokenTooLong: (max) => `Токен длиннее ${max} символов`,
@@ -22,7 +22,7 @@ const RU: FfmpegExportExtraArgsCopy = {
   tokenForbidden: (t) => `Токен запрещён (конфликт с экспортом): ${t}`
 }
 
-const EN: FfmpegExportExtraArgsCopy = {
+export const FFMPEG_EXPORT_EXTRA_ARGS_COPY_EN: FfmpegExportExtraArgsCopy = {
   lineTooLong: (max) => `Line is longer than ${max} characters`,
   tooManyTokens: (max) => `Too many tokens (max ${max})`,
   tokenTooLong: (max) => `Token is longer than ${max} characters`,
@@ -32,7 +32,7 @@ const EN: FfmpegExportExtraArgsCopy = {
 }
 
 export function getFfmpegExportExtraArgsCopy(
-  locale: DownloadsWindowUiLocale = 'ru'
+  locale: AppUiLocale = 'ru'
 ): FfmpegExportExtraArgsCopy {
-  return locale === 'en' ? EN : RU
+  return locale === 'en' ? FFMPEG_EXPORT_EXTRA_ARGS_COPY_EN : FFMPEG_EXPORT_EXTRA_ARGS_COPY_RU
 }

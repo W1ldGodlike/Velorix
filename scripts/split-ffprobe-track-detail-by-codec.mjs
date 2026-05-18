@@ -32,7 +32,7 @@ function dedentBlock(start, end) {
     .join('\n')
 }
 
-const sharedImports = `import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+const sharedImports = `import type { AppUiLocale } from '../shared/app-ui-locale'
 import { formatFfprobeVideoFpsDetail } from '../shared/ffprobe-video-fps'
 import {
   extractFfprobeDisplayMatrixRotation,
@@ -77,7 +77,7 @@ const funcHeader = (name) => `export function ${name}(
   containerDurationSec: number | null,
   streamDur: string | null,
   audioChannelsSuffixTemplate: string,
-  locale: DownloadsWindowUiLocale
+  locale: AppUiLocale
 ): void {
 `
 
@@ -121,7 +121,7 @@ function buildTrackDetail(
   stream: FfprobeStream,
   containerDurationSec: number | null,
   audioChannelsSuffixTemplate: string,
-  locale: DownloadsWindowUiLocale
+  locale: AppUiLocale
 ): string {
   const parts: string[] = []
   const codecLong = formatFfprobeCodecLongNameDetail(

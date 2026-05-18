@@ -12,6 +12,7 @@ alwaysApply: true
 |----------|------|------------------------|
 | [`FLUXALLOY_TZ.md`](../../FLUXALLOY_TZ.md) | Канон продукта | Читать **один §** по задаче. **Запрещено:** правки без **явной просьбы владельца**. |
 | [`IMPLEMENTATION_CHECKLIST.md`](../../IMPLEMENTATION_CHECKLIST.md) | Спринт | Блок `## Ближайший TODO спринта`; `npm run check:checklist`. |
+| [`fluxalloy-ui-surfaces.mdc`](fluxalloy-ui-surfaces.mdc) | UI (постоянно) | Один renderer на фичу; без HTML-pop-out дублей; `check:ui-surfaces-guard` в `check:quiet`. |
 | [`IMPLEMENTATION_JOURNAL.md`](../../IMPLEMENTATION_JOURNAL.md) | Хроника | **Одна J за итерацию**; `npm run journal:stamp`; `npm run check:journal`. |
 | [`docs/ARCHITECTURE.md`](../../docs/ARCHITECTURE.md) | IPC | **Если** добавлен канал в `ipc-channels.ts` **то** обновить ARCHITECTURE в том же коммите. |
 

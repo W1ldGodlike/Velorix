@@ -1,5 +1,7 @@
+import { KNOWLEDGE_SLUG_FFMPEG_RAIL_PRESETS } from '../../../../shared/knowledge-contract'
 import { ProcessingHistoryPanel } from '../ProcessingHistoryPanel'
 import { IconChevronRight } from '../LucideMiniIcons'
+import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
 import { uiText } from '../../locales/ui-text'
 import { EditorFfmpegSettingsRailAudioSection } from './EditorFfmpegSettingsRailAudioSection'
 import { EditorFfmpegSettingsRailFormatSection } from './EditorFfmpegSettingsRailFormatSection'
@@ -30,7 +32,8 @@ export function EditorFfmpegSettingsRail(props: EditorFfmpegSettingsRailProps) {
     applyProcessingHistoryFilter,
     refreshProcessingHistory,
     exportVisibleProcessingHistory,
-    reportBatchPathsAdded
+    reportBatchPathsAdded,
+    onOpenKnowledgeArticle
   } = props
   return (
     <aside
@@ -64,6 +67,17 @@ export function EditorFfmpegSettingsRail(props: EditorFfmpegSettingsRailProps) {
           aria-describedby="editor-ffmpeg-settings-hint"
           aria-busy={exportBusy || snapshotBusy || exportCancelBusy || probePending}
         >
+          {onOpenKnowledgeArticle ? (
+            <KnowledgeDeepLinkButton
+              label={uiText('knowledgeDeepLinkFfmpegRailLabel')}
+              tooltip={uiText('knowledgeDeepLinkFfmpegRailTooltip')}
+              ariaDescribedBy="editor-ffmpeg-settings-hint"
+              disabled={exportBusy || snapshotBusy || exportCancelBusy || probePending}
+              onOpen={() => {
+                onOpenKnowledgeArticle(KNOWLEDGE_SLUG_FFMPEG_RAIL_PRESETS)
+              }}
+            />
+          ) : null}
           <button
             type="button"
             className="app-icon-btn app-settings-rail-collapse-btn"

@@ -22,11 +22,13 @@ import type {
 } from '../../shared/ffmpeg-export-contract'
 import type { FfmpegSnapshotFormatId } from '../../shared/ffmpeg-snapshot-contract'
 import {
-  FFMPEG_HW_VIDEO_ENCODER_IDS,
-  type FfmpegHwEncodersProbeResult
-} from '../../shared/ffmpeg-hw-encoder-probe'
+  FFMPEG_HW_ENCODER_LABEL_UI_KEYS,
+  FFMPEG_HW_VIDEO_ENCODER_SELECT_ORDER
+} from '../../shared/ffmpeg-export-hw-codec-ui'
+import type { FfmpegHwEncodersProbeResult } from '../../shared/ffmpeg-hw-encoder-probe'
 import { isFfmpegHwExportVideoCodec } from '../../shared/ffmpeg-export-video-codec'
-import { uiText } from './locales/ui-text'
+import { uiText, uiTextVars } from './locales/ui-text'
+import type { UiTextKey } from './locales/ui-text-strings'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- FfmpegExportSelectOptions = ReturnType below
 export function buildEditorExportSelectOptions(
@@ -54,13 +56,20 @@ export function buildEditorExportSelectOptions(
         { id: 'hw_auto_hevc', label: uiText('editorExportCodecHwAutoHevc') }
       ]
       if (hwEncoderProbe?.ok === true) {
-        for (const id of FFMPEG_HW_VIDEO_ENCODER_IDS) {
+        for (const id of FFMPEG_HW_VIDEO_ENCODER_SELECT_ORDER) {
           if (hwEncoderProbe.snapshot[id]) {
-            v.push({ id, label: id })
+            const labelKey = FFMPEG_HW_ENCODER_LABEL_UI_KEYS[id]
+            v.push({ id, label: uiText(labelKey as UiTextKey) })
           }
         }
       } else if (isFfmpegHwExportVideoCodec(exportVideoCodec)) {
-        v.push({ id: exportVideoCodec, label: `${exportVideoCodec} (?)` })
+        const labelKey = FFMPEG_HW_ENCODER_LABEL_UI_KEYS[exportVideoCodec]
+        v.push({
+          id: exportVideoCodec,
+          label: uiTextVars('editorExportCodecHwProbeUnknownLabel', {
+            label: uiText(labelKey as UiTextKey)
+          })
+        })
       }
       return v
     })(),
@@ -189,7 +198,8 @@ export function buildEditorExportSelectOptions(
     ] as Array<{ id: FfmpegExportAudioModeId; label: string }>,
     snapshotFormats: [
       { id: 'png', label: uiText('editorExportSnapshotPng') },
-      { id: 'jpg', label: uiText('editorExportSnapshotJpg') }
+      { id: 'jpg', label: uiText('editorExportSnapshotJpg') },
+      { id: 'webp', label: uiText('editorExportSnapshotWebp') }
     ] as Array<{ id: FfmpegSnapshotFormatId; label: string }>
   }
 }

@@ -1,6 +1,6 @@
 import type { AppSettings, AppSettingsView, AppTheme, ResolvedAppTheme } from './settings-store'
 import type { FfmpegExportSettingsPersisters } from './ipc/register-settings-ipc'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import type { EnginePathOverridesPatch } from './engine-service'
 
 export type MainSettingsAccess = {
@@ -12,7 +12,7 @@ export type MainSettingsAccess = {
 export type SettingsIpcPersistHooks = {
   resolveEffectiveTheme: (pref: AppTheme) => ResolvedAppTheme
   buildApplicationMenu: () => void
-  syncDownloadsPopoutHtmlToLocale: (locale: DownloadsWindowUiLocale) => void
+  syncDownloadsPopoutHtmlToLocale: (locale: AppUiLocale) => void
   refreshEnginePathOverridesSnapshot: () => void
 }
 

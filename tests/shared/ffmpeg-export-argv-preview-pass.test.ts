@@ -132,4 +132,20 @@ describe('shared ffmpeg export argv — preview command and two-pass', () => {
     }
   )
 
+  it('buildFfmpegExportPreviewCommand включает внешний скрипт в -vf', () => {
+    const preview = buildFfmpegExportPreviewCommand({
+      encodePreset: 'balance',
+      crf: null,
+      videoBitrate: null,
+      audioMode: 'aac',
+      audioBitrate: '192k',
+      fps: null,
+      scalePreset: 'source',
+      externalFilterKind: 'vapoursynth',
+      externalFilterScriptAbsPath: 'C:/scripts/x.vpy'
+    })
+    const vfIdx = preview.argv.indexOf('-vf')
+    expect(vfIdx).toBeGreaterThan(-1)
+    expect(preview.argv[vfIdx + 1]).toContain('vapoursynth=filename=')
+  })
 })

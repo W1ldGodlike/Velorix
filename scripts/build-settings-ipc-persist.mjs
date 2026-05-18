@@ -105,9 +105,9 @@ import {
 import { parseFfmpegExportHwDecode } from '../shared/ffmpeg-export-hw-decode'
 import type { MainWindowUiPanelState } from '../shared/settings-contract'
 import {
-  parseDownloadsWindowUiLocale,
-  type DownloadsWindowUiLocale
-} from '../shared/downloads-window-ui-locale'
+  parseAppUiLocale,
+  type AppUiLocale
+} from '../shared/app-ui-locale'
 import { parseFfmpegSnapshotFormat } from './ffmpeg-frame-snapshot-service'
 import {
   mergeFfmpegExportSnapshotIntoAppSettings,
@@ -164,7 +164,7 @@ export type MainSettingsAccess = {
 export type SettingsIpcPersistHooks = {
   resolveEffectiveTheme: (pref: AppTheme) => ResolvedAppTheme
   buildApplicationMenu: () => void
-  syncDownloadsPopoutHtmlToLocale: (locale: DownloadsWindowUiLocale) => void
+  syncDownloadsPopoutHtmlToLocale: (locale: AppUiLocale) => void
   refreshEnginePathOverridesSnapshot: () => void
 }
 

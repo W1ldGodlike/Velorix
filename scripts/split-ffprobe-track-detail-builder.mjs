@@ -21,12 +21,12 @@ const buildBlock = lines.slice(buildStart, rowsStart).join('\n')
 const rowsBlock = lines.slice(rowsStart).join('\n')
 
 const helpersImports = `import type { MediaProbeTrackRow } from '../shared/ffprobe-contract'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { formatFfprobeBitrateLabelFromKbps } from '../shared/ffprobe-summary-export-locale'
 `
 
 const buildImports = `import type { MediaProbeTrackRow } from '../shared/ffprobe-contract'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { formatFfprobeDispositionSummary } from '../shared/ffprobe-disposition'
 import { formatFfprobeVideoFpsDetail } from '../shared/ffprobe-video-fps'
 import {

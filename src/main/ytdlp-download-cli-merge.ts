@@ -1,4 +1,4 @@
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getYtdlpCliValidationCopy } from '../shared/ytdlp-cli-validation-locale'
 import { parseExtraYtdlpArgsLine, validateYtdlpCookiesBrowserProfile } from './ytdlp-extra-args'
 import {
@@ -20,7 +20,7 @@ import type { AppSettings } from './settings-store'
 export function mergeYtdlpDownloadCliPatchOntoSettings(
   base: AppSettings,
   patch: YtdlpDownloadOptionsPatch,
-  uiLocale: DownloadsWindowUiLocale = 'ru'
+  uiLocale: AppUiLocale = 'ru'
 ): { ok: true; settings: AppSettings } | { ok: false; error: string } {
   const M = getYtdlpCliValidationCopy(uiLocale)
   const merged: AppSettings = { ...base }

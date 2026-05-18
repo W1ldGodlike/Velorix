@@ -5,8 +5,8 @@ import { BrowserWindow, clipboard, dialog, ipcMain } from 'electron'
 import { mainWindowIpc as mw } from '../../shared/ipc-channels'
 import type { SaveTextDialogResult } from '../../shared/save-text-dialog-contract'
 import type { TerminalCommandHintEntry, TerminalRunResult } from '../../shared/terminal-contract'
-import type { DownloadsWindowUiLocale } from '../../shared/downloads-window-ui-locale'
-import { parseDownloadsWindowUiLocale } from '../../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../../shared/app-ui-locale'
+import { parseAppUiLocale } from '../../shared/app-ui-locale'
 import { resolveAppPaths } from '../app-paths'
 import type { EnginePathOverrides } from '../engine-service'
 import { getAppAboutInfo } from '../about-info'
@@ -37,11 +37,11 @@ export type MainUtilitiesIpcDeps = {
     processingHistoryNoOutput: string
     processingHistoryEntryNotFound: string
   }
-  mainDownloadsUiLocale: () => DownloadsWindowUiLocale
+  mainDownloadsUiLocale: () => AppUiLocale
   getEnginePathOverrides: () => EnginePathOverrides
   parseSaveTextDialogPayload: (
     raw: unknown,
-    locale: DownloadsWindowUiLocale
+    locale: AppUiLocale
   ) =>
     | { ok: true; title: string; defaultFileName: string; content: string }
     | { ok: false; error: string }
@@ -67,7 +67,7 @@ export function registerMainUtilitiesIpcHandlers(deps: MainUtilitiesIpcDeps): vo
   ipcMain.handle(mw.terminalRun, async (_, raw: unknown): Promise<TerminalRunResult> => {
     const loc =
       raw && typeof raw === 'object'
-        ? (parseDownloadsWindowUiLocale((raw as { uiLocale?: unknown }).uiLocale) ??
+        ? (parseAppUiLocale((raw as { uiLocale?: unknown }).uiLocale) ??
           deps.mainDownloadsUiLocale())
         : deps.mainDownloadsUiLocale()
     const line =

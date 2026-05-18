@@ -56,6 +56,7 @@ export function DownloadsLogPanel({
             type="button"
             className="app-btn app-btn-compact app-btn-icon-leading"
             aria-describedby="downloads-page-hint"
+            title={uiText('downloadsHistoryClear')}
             disabled={lines.length === 0}
             onClick={onClear}
           >
@@ -65,6 +66,7 @@ export function DownloadsLogPanel({
             type="button"
             className="app-btn app-btn-compact app-btn-icon-leading"
             aria-describedby="downloads-page-hint"
+            title={uiText('downloadsLogSave')}
             disabled={lines.length === 0}
             onClick={onSave}
           >

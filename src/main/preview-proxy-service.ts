@@ -3,7 +3,7 @@ import { createHash } from 'crypto'
 import { existsSync, mkdirSync, rmSync, statSync } from 'fs'
 import { extname, join, normalize } from 'path'
 
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
 import { resolveAppPaths } from './app-paths'
 import type { EnginePathOverrides } from './engine-service'
@@ -13,7 +13,7 @@ import { logInfo } from './logger-service'
 
 export type PreviewProxyServiceAccess = {
   getEnginePathOverrides: () => EnginePathOverrides
-  getUiLocale: () => DownloadsWindowUiLocale
+  getUiLocale: () => AppUiLocale
   getMainAppStrings: () => {
     batchExportFolderEmpty: string
     previewGrantOpenFailed: string

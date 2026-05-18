@@ -3,15 +3,17 @@ import { useCallback, useEffect, useState } from 'react'
 import type { AppAboutInfo } from '../../shared/about-contract'
 import type { MediaProbeSuccess } from '../../shared/ffprobe-contract'
 import type { ResolvedAppTheme } from '../../shared/settings-contract'
-import type { DownloadsWindowUiLocale } from '../../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../../shared/app-ui-locale'
 import type { PreviewProbeSectionKey } from './components/MediaProbePanel'
 import {
   applyPersistedUiLocale,
   getUiLocale,
   setUiLocaleForSession,
+  syncDocumentUiLocale,
   uiText,
   uiTextVars
 } from './locales/ui-text'
+import { useUiTextHotReloadBump } from './locales/use-ui-text-hot-reload-bump'
 import { PROBE_UI_DEFAULTS, probePanelsFromSettings } from './inspector-standalone-probe-ui'
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- inspector standalone controller
@@ -28,6 +30,8 @@ export function useInspectorStandaloneApp() {
   const [aboutInfo, setAboutInfo] = useState<AppAboutInfo | null>(null)
   const [probeUiPanels, setProbeUiPanels] = useState(PROBE_UI_DEFAULTS)
   const [, setUiLocaleRenderTick] = useState(0)
+
+  useUiTextHotReloadBump(setUiLocaleRenderTick)
 
   const applyTheme = useCallback((value: ResolvedAppTheme) => {
     document.documentElement.dataset['theme'] = value
@@ -51,11 +55,12 @@ export function useInspectorStandaloneApp() {
   }, [])
 
   const handleUiLocaleToggle = useCallback((): void => {
-    const next: DownloadsWindowUiLocale = getUiLocale() === 'ru' ? 'en' : 'ru'
+    const next: AppUiLocale = getUiLocale() === 'ru' ? 'en' : 'ru'
     void window.fluxalloy.settings
       .setUiLocale(next)
       .then(() => {
         setUiLocaleForSession(next)
+        syncDocumentUiLocale(next)
         setUiLocaleRenderTick((n) => n + 1)
       })
       .catch(console.error)
@@ -64,6 +69,7 @@ export function useInspectorStandaloneApp() {
   useEffect(() => {
     const off = window.fluxalloy.onUiLocaleChanged((loc) => {
       setUiLocaleForSession(loc)
+      syncDocumentUiLocale(loc)
       setUiLocaleRenderTick((n) => n + 1)
     })
     return off
@@ -77,6 +83,7 @@ export function useInspectorStandaloneApp() {
       .get()
       .then((loaded) => {
         const { resolved, shouldPersist } = applyPersistedUiLocale(loaded)
+        syncDocumentUiLocale(resolved)
         setUiLocaleRenderTick((n) => n + 1)
         if (shouldPersist) {
           void window.fluxalloy.settings.setUiLocale(resolved)
@@ -151,7 +158,7 @@ export function useInspectorStandaloneApp() {
 
   const handleOpenFolderDialog = useCallback(async (): Promise<void> => {
     const result = await window.fluxalloy.preview.openVideoFolderDialog(
-      getUiLocale() as DownloadsWindowUiLocale
+      getUiLocale() as AppUiLocale
     )
     if (result.ok) {
       setMediaPath(result.path)
@@ -163,7 +170,7 @@ export function useInspectorStandaloneApp() {
 
   const handleOpenDialog = useCallback(async (): Promise<void> => {
     const result = await window.fluxalloy.preview.openFileDialog(
-      getUiLocale() as DownloadsWindowUiLocale
+      getUiLocale() as AppUiLocale
     )
     if (result.ok) {
       setMediaPath(result.path)

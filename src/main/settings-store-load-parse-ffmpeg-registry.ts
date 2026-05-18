@@ -19,8 +19,8 @@ export function parseFfmpegSnapshotDirectoryStored(raw: unknown): string | undef
   return parseFfmpegExportDirectoryStored(raw)
 }
 
-export function parseFfmpegSnapshotFormatStored(raw: unknown): 'png' | 'jpg' | undefined {
-  return parseStoredWhitelistEnum(raw, ['png', 'jpg'])
+export function parseFfmpegSnapshotFormatStored(raw: unknown): 'png' | 'jpg' | 'webp' | undefined {
+  return parseStoredWhitelistEnum(raw, ['png', 'jpg', 'webp'])
 }
 
 export function parseFfmpegExportEncodePresetStored(raw: unknown): string | undefined {

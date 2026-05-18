@@ -7,6 +7,16 @@ import type {
   MediaExportStartResult
 } from '../shared/ffmpeg-export-contract'
 import type {
+  FfmpegExportBenchmarkProgressPayload,
+  FfmpegExportBenchmarkRequestPayload,
+  FfmpegExportBenchmarkResult
+} from '../shared/ffmpeg-export-benchmark-contract'
+import type {
+  FfmpegFramesExtractProgressPayload,
+  FfmpegFramesExtractRequestPayload,
+  FfmpegFramesExtractResult
+} from '../shared/ffmpeg-frames-extract-contract'
+import type {
   FfmpegExportBatchAddPathsResult,
   FfmpegExportBatchOpenInputResult,
   FfmpegExportBatchPickFilesResult,
@@ -25,6 +35,14 @@ import { mainWindowIpc as mw } from '../shared/ipc-channels'
 export const fluxalloyExport = {
   start: (payload: MediaExportRequestPayload): Promise<MediaExportStartResult> =>
     ipcRenderer.invoke(mw.exportStart, payload),
+  runBenchmark: (
+    payload: FfmpegExportBenchmarkRequestPayload
+  ): Promise<FfmpegExportBenchmarkResult> =>
+    ipcRenderer.invoke(mw.exportBenchmarkEncoders, payload),
+  extractFrames: (
+    payload: FfmpegFramesExtractRequestPayload
+  ): Promise<FfmpegFramesExtractResult> =>
+    ipcRenderer.invoke(mw.extractFrames, payload),
   resolveBundledLutCubePath: (preset: FfmpegExportVideoLut3dId): Promise<string | null> =>
     ipcRenderer.invoke(mw.exportResolveBundledLutCubePath, preset),
   cancel: (): Promise<{ ok: true } | { ok: false; error: string }> =>
@@ -41,6 +59,36 @@ export const fluxalloyExport = {
         return
       }
       listener(raw as FfmpegExportProgressPayload)
+    }
+    ipcRenderer.on(channel, handler)
+    return (): void => {
+      ipcRenderer.removeListener(channel, handler)
+    }
+  },
+  onBenchmarkProgress: (
+    listener: (progress: FfmpegExportBenchmarkProgressPayload) => void
+  ): (() => void) => {
+    const channel = mw.exportBenchmarkProgress
+    const handler = (_event: unknown, raw: unknown): void => {
+      if (!raw || typeof raw !== 'object') {
+        return
+      }
+      listener(raw as FfmpegExportBenchmarkProgressPayload)
+    }
+    ipcRenderer.on(channel, handler)
+    return (): void => {
+      ipcRenderer.removeListener(channel, handler)
+    }
+  },
+  onExtractFramesProgress: (
+    listener: (progress: FfmpegFramesExtractProgressPayload) => void
+  ): (() => void) => {
+    const channel = mw.extractFramesProgress
+    const handler = (_event: unknown, raw: unknown): void => {
+      if (!raw || typeof raw !== 'object') {
+        return
+      }
+      listener(raw as FfmpegFramesExtractProgressPayload)
     }
     ipcRenderer.on(channel, handler)
     return (): void => {

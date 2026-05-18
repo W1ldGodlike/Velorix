@@ -1,0 +1,33 @@
+---
+description: Постоянно — один UI на фичу, один словарь, понятный копирайт
+alwaysApply: true
+---
+
+# UI-поверхности и копирайт (постоянно)
+
+Глоссарий: [`fluxalloy-rules-explicit.mdc`](fluxalloy-rules-explicit.mdc).  
+Итог программы UI/copy 2026-05 (J-978..983) — [`IMPLEMENTATION_CHECKLIST.md`](../../IMPLEMENTATION_CHECKLIST.md) §6/§15.
+
+## Слой A (всегда)
+
+**Запрещено:** второй UI для фичи из renderer: `data:text/html`, inline HTML/CSS/JS в `src/main/` для экрана пользователя, `build*Html` pop-out.
+
+**Если** отдельное `BrowserWindow` **то** тот же бандл renderer + hash/route (`#inspector`, `#downloads`).
+
+**Запрещено:** параллельный `*-window-ui-strings-*` / `DL_I18N` вне `ui-text` / `locales/**`.
+
+**Запрещено:** icon-only без `title` / tooltip.
+
+**Help:** оглавление по `knowledge-toc-registry.ts` (7 разделов); новые статьи — в существующий раздел; deep-link из UI через `KnowledgeDialog` + `initialSlug`.
+
+## Слой B (регрессии)
+
+**Если** закрыли дубль UI/локали **то** в том же коммите ужесточить [`scripts/check-ui-surfaces-guard.mjs`](../../scripts/check-ui-surfaces-guard.mjs) или буллет здесь.
+
+**Обязательно:** `npm run check:ui-surfaces-guard` в `check:quiet` (`gate=no-plan` после J-984).
+
+**Обязательно:** `check:terminal-summaries-ru` и `check:ui-copy-quality` для терминала и user-facing copy.
+
+## Запрещено (артефакты разовой программы)
+
+- `fluxalloy-program-gate.mdc`, `docs/UI_CONSOLIDATION_*`, `check-program-gate`, sprint `PROGRAM GATE`, legacy `downloads-window-html*` / `*-window-ui-strings-*` (`check:ui-surfaces-guard` → exit 1).

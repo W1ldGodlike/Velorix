@@ -3,7 +3,7 @@ import { basename } from 'path'
 import { BrowserWindow } from 'electron'
 
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import {
   autoExportProgressMessage,
   fluxLogAutoExportCancelled,
@@ -40,7 +40,7 @@ export type MainYtdlpDownloadMainHandlerAccess = {
     previewCannotOpenSourceInEditor: string
     previewMainWindowMissing: string
   }
-  mainDownloadsUiLocale: () => DownloadsWindowUiLocale
+  mainDownloadsUiLocale: () => AppUiLocale
   getSettings: () => AppSettings
   getEnginePathOverrides: () => EnginePathOverrides
   getMainWindowWebContentsId: () => number | null

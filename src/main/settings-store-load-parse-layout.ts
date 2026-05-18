@@ -86,7 +86,7 @@ const DOWNLOADS_UI_PANEL_KEYS = [
   'network',
   'expert',
   'hints'
-] as const satisfies ReadonlyArray<keyof DownloadsWindowUiPanelState>
+] as const satisfies ReadonlyArray<Exclude<keyof DownloadsWindowUiPanelState, 'historyListMode'>>
 
 export function parseDownloadsWindowUiPanels(
   raw: unknown
@@ -100,6 +100,9 @@ export function parseDownloadsWindowUiPanels(
     if (typeof o[k] === 'boolean') {
       out[k] = o[k]
     }
+  }
+  if (o['historyListMode'] === 'compact' || o['historyListMode'] === 'full') {
+    out.historyListMode = o['historyListMode']
   }
   return Object.keys(out).length > 0 ? out : undefined
 }

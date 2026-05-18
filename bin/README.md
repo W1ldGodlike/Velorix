@@ -41,6 +41,14 @@ Runtime resolution order is:
 2. Bundled `resources/bin`.
 3. Downloaded/updated `app-data/bin` next to the application.
 
+### macOS / Linux (gap)
+
+- Авто-скрипта `engines:prepare:mac` / `engines:prepare:linux` **нет** (только `engines:prepare:win`).
+- Перед `npm run build:mac` / `build:linux` положите `ffmpeg`, `ffprobe`, `yt-dlp` в этот `bin/` вручную, затем `npm run engines:doctor`.
+- **macOS (локально):** `npm run build && npm run pack:mac:dir` → `npm run verify:mac-unpacked` (проверка `dist/mac*/FluxAlloy.app`).
+- **Linux (локально):** быстрый smoke — `pack:linux:dir` + `verify:linux-unpacked` (как в CI); полный релиз — `npm run build:linux` → `npm run verify:linux-release` (`.AppImage` + `.deb` в `dist/`).
+- GitHub Actions: **windows-latest** — `engines:prepare:win` + packaged smokes; **ubuntu-latest** — `pack:linux:dir` + `verify:linux-unpacked` (движки в `bin/` для CI не обязательны). См. `docs/ARCHITECTURE.md` § Bundled engines и CI.
+
 Keep a note of the source, version, license variant, and SHA256 used for each released binary.
 
 Release/license notes: `docs/BUNDLED_ENGINES_LICENSES.md`.

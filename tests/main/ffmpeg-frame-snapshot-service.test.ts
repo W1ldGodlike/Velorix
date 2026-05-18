@@ -10,7 +10,7 @@ describe('ffmpeg-frame-snapshot-service helpers', () => {
     expect(parseFfmpegSnapshotFormat('png')).toBe('png')
     expect(parseFfmpegSnapshotFormat('jpg')).toBe('jpg')
     expect(parseFfmpegSnapshotFormat('jpeg')).toBe('jpg')
-    expect(parseFfmpegSnapshotFormat('webp')).toBe('png')
+    expect(parseFfmpegSnapshotFormat('webp')).toBe('webp')
     expect(parseFfmpegSnapshotFormat(null)).toBe('png')
   })
 

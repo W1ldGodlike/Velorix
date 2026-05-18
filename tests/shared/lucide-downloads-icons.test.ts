@@ -12,7 +12,7 @@ import {
   emitDownloadsTopbarClusterHtml,
   emitInlineStrokeSvg
 } from '../../src/shared/lucide-downloads-icons'
-import { getDownloadsWindowUiStrings } from '../../src/shared/downloads-window-ui-locale'
+import { DOWNLOADS_TOPBAR_CLUSTER_COPY_RU } from '../../src/shared/lucide-downloads-topbar-cluster-copy'
 
 describe('lucide-downloads-icons', () => {
   it('эмит RowIco включает все ключи таблицы очереди', () => {
@@ -30,7 +30,7 @@ describe('lucide-downloads-icons', () => {
     const svg = emitInlineStrokeSvg(DOWNLOADS_TOPBAR_CLUSTER_ICONS.film, 18)
     expect(svg.startsWith('<svg')).toBe(true)
     expect(svg).toContain('viewBox="0 0 24 24"')
-    const html = emitDownloadsTopbarClusterHtml(18, getDownloadsWindowUiStrings('ru').topbarCluster)
+    const html = emitDownloadsTopbarClusterHtml(18, DOWNLOADS_TOPBAR_CLUSTER_COPY_RU)
     expect(html).toContain('id="dlTopFilm"')
     expect(html).toContain('id="dlTopUrl"')
     expect(html).toContain('role="toolbar"')

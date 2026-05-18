@@ -132,7 +132,7 @@ export function sanitizeDownloadsUiPanelPatch(raw: unknown): Partial<DownloadsWi
   if (!raw || typeof raw !== 'object') {
     return {}
   }
-  const keys: (keyof DownloadsWindowUiPanelState)[] = [
+  const keys = [
     'history',
     'log',
     'format',
@@ -141,13 +141,16 @@ export function sanitizeDownloadsUiPanelPatch(raw: unknown): Partial<DownloadsWi
     'network',
     'expert',
     'hints'
-  ]
+  ] as const satisfies ReadonlyArray<Exclude<keyof DownloadsWindowUiPanelState, 'historyListMode'>>
   const o = raw as Record<string, unknown>
   const out: Partial<DownloadsWindowUiPanelState> = {}
   for (const k of keys) {
     if (typeof o[k] === 'boolean') {
       out[k] = o[k]
     }
+  }
+  if (o['historyListMode'] === 'compact' || o['historyListMode'] === 'full') {
+    out.historyListMode = o['historyListMode']
   }
   return out
 }

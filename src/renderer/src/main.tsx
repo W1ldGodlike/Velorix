@@ -1,11 +1,13 @@
 import './assets/base.css'
 import './assets/main.css'
 
-import { StrictMode } from 'react'
+import { StrictMode, type JSX } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
+import { DownloadsStandaloneApp } from './DownloadsStandaloneApp'
 import { InspectorStandaloneApp } from './InspectorStandaloneApp'
 import { uiText } from './locales/ui-text'
+import { isDownloadsStandaloneSurface, isInspectorStandaloneSurface } from './renderer-surface'
 
 // Renderer bootstrap intentionally small.
 // Здесь только React и CSS: вся работа с Electron/FS/процессами идёт через preload API,
@@ -57,9 +59,14 @@ window.addEventListener('unhandledrejection', (event) => {
 })
 
 const rootEl = document.getElementById('root')!
-const isInspectorSurface =
-  typeof window !== 'undefined' && window.location.hash.replace(/^#\/?/, '') === 'inspector'
+function renderSurfaceApp(): JSX.Element {
+  if (isInspectorStandaloneSurface()) {
+    return <InspectorStandaloneApp />
+  }
+  if (isDownloadsStandaloneSurface()) {
+    return <DownloadsStandaloneApp />
+  }
+  return <App />
+}
 
-createRoot(rootEl).render(
-  <StrictMode>{isInspectorSurface ? <InspectorStandaloneApp /> : <App />}</StrictMode>
-)
+createRoot(rootEl).render(<StrictMode>{renderSurfaceApp()}</StrictMode>)

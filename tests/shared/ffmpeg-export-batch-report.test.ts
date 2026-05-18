@@ -53,6 +53,29 @@ describe('ffmpeg-export-batch-report', () => {
     expect(text).toContain('Error')
   })
 
+  it('подставляет ошибку из progress, если row.error пуст', () => {
+    const onlyProgress: FfmpegExportBatchSnapshot = {
+      rows: [
+        {
+          id: 1,
+          inputPath: 'C:\\in\\c.mp4',
+          shortLabel: 'c.mp4',
+          status: 'error',
+          progress: 'encoder exit 1'
+        }
+      ],
+      running: false,
+      concurrency: 1,
+      completedOk: 0,
+      completedError: 1,
+      completedCancelled: 0
+    }
+    const text = formatFfmpegExportBatchReportText(onlyProgress, 'en')
+    expect(text).toContain('encoder exit 1')
+    const cols = text.trim().split('\n').pop()!.split('\t')
+    expect(cols[cols.length - 1]).toBe('encoder exit 1')
+  })
+
   it('санитизирует табы и переносы в ячейках', () => {
     const messy: FfmpegExportBatchSnapshot = {
       rows: [
@@ -60,12 +83,19 @@ describe('ffmpeg-export-batch-report', () => {
           id: 1,
           inputPath: 'C:\\bad\tname.mp4',
           shortLabel: 'x',
+          status: 'running',
+          progress: 'a\nb'
+        },
+        {
+          id: 2,
+          inputPath: 'C:\\in\\b.mp4',
+          shortLabel: 'b.mp4',
           status: 'error',
-          progress: 'a\nb',
+          progress: 'ignored',
           error: 'e\tf'
         }
       ],
-      running: false,
+      running: true,
       concurrency: 1,
       completedOk: 0,
       completedError: 1,

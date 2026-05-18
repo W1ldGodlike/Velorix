@@ -1,17 +1,13 @@
-import type { DownloadsWindowUiLocale } from './downloads-window-ui-locale'
+import type { AppUiLocale } from './app-ui-locale'
 
 export type { MainApplicationStrings } from './main-application-locale-types'
 
-import type { MainApplicationStrings } from './main-application-locale-types'
-import { mainApplicationStringsEn } from './main-application-locale-strings-en'
-import { mainApplicationStringsRu } from './main-application-locale-strings-ru'
+export { getMainApplicationStrings } from './main-runtime-locale'
 
-export function getMainApplicationStrings(locale: DownloadsWindowUiLocale): MainApplicationStrings {
-  return locale === 'en' ? mainApplicationStringsEn : mainApplicationStringsRu
-}
+import { getMainApplicationStrings } from './main-runtime-locale'
 
 export function formatTerminalEngineMissingInSettings(
-  locale: DownloadsWindowUiLocale,
+  locale: AppUiLocale,
   tool: string
 ): string {
   return getMainApplicationStrings(locale).terminalEngineMissingInSettings.replace(
@@ -21,7 +17,7 @@ export function formatTerminalEngineMissingInSettings(
 }
 
 export function formatPickEngineExecutableTitle(
-  locale: DownloadsWindowUiLocale,
+  locale: AppUiLocale,
   engineId: string
 ): string {
   return locale === 'en'
@@ -30,7 +26,7 @@ export function formatPickEngineExecutableTitle(
 }
 
 export function formatMainProcessErrorClipboardHeader(
-  locale: DownloadsWindowUiLocale,
+  locale: AppUiLocale,
   kind: 'uncaughtException' | 'unhandledRejection',
   appVersion: string,
   platform: string,
@@ -44,4 +40,3 @@ export function formatMainProcessErrorClipboardHeader(
     platformLine: `${s.processErrorMetaPlatform}: ${platform}/${arch}`
   }
 }
-

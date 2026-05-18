@@ -3,9 +3,11 @@ import type { JSX } from 'react'
 
 import type { KnowledgeArticleListItem } from '../../../shared/knowledge-contract'
 import { parseKnowledgeMarkdown } from '../../../shared/knowledge-markdown'
+import { groupKnowledgeArticlesByToc } from '../../../shared/knowledge-toc-registry'
 
 import { KnowledgeMarkdownBody } from './KnowledgeMarkdownBody'
 import { getUiLocale, uiText } from '../locales/ui-text'
+import type { UiTextKey } from '../locales/ui-text-strings'
 
 export function KnowledgeDialog({
   open,
@@ -126,6 +128,11 @@ export function KnowledgeDialog({
     )
   }, [articles, filter])
 
+  const tocSections = useMemo(
+    () => groupKnowledgeArticlesByToc(visibleArticles),
+    [visibleArticles]
+  )
+
   if (!open) {
     return null
   }
@@ -223,25 +230,36 @@ export function KnowledgeDialog({
               aria-describedby="knowledge-dialog-hint"
               aria-busy={loading}
             >
-              {visibleArticles.map((article) => (
-                <button
-                  key={article.slug}
-                  type="button"
-                  className={
-                    article.slug === selectedSlug
-                      ? 'app-knowledge-item app-knowledge-item-active'
-                      : 'app-knowledge-item'
-                  }
-                  aria-current={article.slug === selectedSlug ? 'page' : undefined}
-                  aria-describedby="knowledge-dialog-hint"
-                  title={`${article.fileName} · ${article.slug}`}
-                  onClick={() => {
-                    setSelectedSlug(article.slug)
-                  }}
+              {tocSections.map((section) => (
+                <section
+                  key={section.spec.id}
+                  className="app-knowledge-toc-section"
+                  aria-label={uiText(section.spec.titleKey as UiTextKey)}
                 >
-                  <strong>{article.title}</strong>
-                  <span>{article.fileName}</span>
-                </button>
+                  <h3 className="app-knowledge-toc-section-title">
+                    {uiText(section.spec.titleKey as UiTextKey)}
+                  </h3>
+                  {section.articles.map((article) => (
+                    <button
+                      key={article.slug}
+                      type="button"
+                      className={
+                        article.slug === selectedSlug
+                          ? 'app-knowledge-item app-knowledge-item-active'
+                          : 'app-knowledge-item'
+                      }
+                      aria-current={article.slug === selectedSlug ? 'page' : undefined}
+                      aria-describedby="knowledge-dialog-hint"
+                      title={`${article.fileName} · ${article.slug}`}
+                      onClick={() => {
+                        setSelectedSlug(article.slug)
+                      }}
+                    >
+                      <strong>{article.title}</strong>
+                      <span>{article.fileName}</span>
+                    </button>
+                  ))}
+                </section>
               ))}
             </div>
           </aside>

@@ -5,7 +5,7 @@
 
 import type { EditorUrlPasteBehaviorId } from './editor-url-paste-behavior'
 import type { EnginePathOverrides } from './engine-contract'
-import type { DownloadsWindowUiLocale } from './downloads-window-ui-locale'
+import type { AppUiLocale } from './app-ui-locale'
 import type {
   FfmpegExportAudioNormalizeId,
   FfmpegExportCropPresetId,
@@ -72,7 +72,10 @@ export interface MainWindowUiPanelState {
   probeRawJson?: boolean
 }
 
-/** §4.1 / v0 — раскрытие секций окна загрузок (data HTML + `details`). */
+/** Сколько карточек показывать в панели истории загрузок (вкладка и отдельное окно). */
+export type DownloadsHistoryListMode = 'compact' | 'full'
+
+/** §4.1 / v0 — раскрытие секций окна загрузок (React `#downloads`). */
 export interface DownloadsWindowUiPanelState {
   history?: boolean
   log?: boolean
@@ -82,13 +85,14 @@ export interface DownloadsWindowUiPanelState {
   network?: boolean
   expert?: boolean
   hints?: boolean
+  historyListMode?: DownloadsHistoryListMode
 }
 
 export interface AppSettings {
   /** Тема хранится в main; `system` синхронизируется с `nativeTheme.shouldUseDarkColors`. */
   theme: AppTheme
   /** Язык интерфейса (main-меню, строки IPC, окно загрузок по умолчанию); при отсутствии — эвристика как в renderer. */
-  uiLocale?: DownloadsWindowUiLocale
+  uiLocale?: AppUiLocale
   /** §4.1: последний успешно открытый локальный файл для мягкого восстановления сессии. */
   lastOpenedSourcePath?: string
   /** §3: полные пути к exe движков; имеют приоритет над bundled и app-data/bin. */
@@ -149,6 +153,8 @@ export interface AppSettings {
   ffmpegExportTwoPass?: boolean
   /** §7.3 — экономный режим: `-threads 1` в argv ffmpeg. */
   ffmpegExportEconomyMode?: boolean
+  /** §16 / ТЗ — порог пиковой загрузки CPU (%) для «Рекомендовано» в бенчмарке; по умолчанию 80. */
+  ffmpegExportBenchmarkLoadThresholdPercent?: number
   /** §7.2 — аппаратное декодирование исходника (`-hwaccel`) при экспорте. */
   ffmpegExportHwDecode?: boolean
   /** §7.2 — дополнительные argv ffmpeg перед выходным файлом (пробелы между токенами). */
@@ -220,7 +226,11 @@ export interface AppSettings {
   /** §7.6: последняя папка успешного снимка кадра; используется как defaultPath save dialog. */
   ffmpegSnapshotDirectory?: string
   /** §7.6: формат снимка кадра по умолчанию. */
-  ffmpegSnapshotFormat?: 'png' | 'jpg'
+  ffmpegSnapshotFormat?: 'png' | 'jpg' | 'webp'
+  /** §17: AviSynth/VapourSynth скрипт в `-vf` экспорта (`off` — поле не пишем). */
+  ffmpegExportExternalFilterKind?: 'off' | 'avisynth' | 'vapoursynth'
+  /** §17: абсолютный путь к `.avs` / `.vpy`. */
+  ffmpegExportExternalFilterScriptPath?: string
   /** §4.1 — сохранённое раскрытие панелей главного окна (см. `MainWindowUiPanelState`). */
   mainWindowUiPanels?: MainWindowUiPanelState
   /** §4.1 — сохранённое раскрытие панелей окна yt-dlp. */

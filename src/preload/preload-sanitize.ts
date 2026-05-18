@@ -34,7 +34,7 @@ export function sanitizeMainWindowUiPanelState(raw: unknown): MainWindowUiPanelS
   return Object.keys(out).length > 0 ? out : undefined
 }
 
-export const DOWNLOADS_WINDOW_UI_PANEL_KEYS: (keyof DownloadsWindowUiPanelState)[] = [
+export const DOWNLOADS_WINDOW_UI_PANEL_KEYS = [
   'history',
   'log',
   'format',
@@ -43,7 +43,7 @@ export const DOWNLOADS_WINDOW_UI_PANEL_KEYS: (keyof DownloadsWindowUiPanelState)
   'network',
   'expert',
   'hints'
-]
+] as const satisfies ReadonlyArray<Exclude<keyof DownloadsWindowUiPanelState, 'historyListMode'>>
 
 export function sanitizeDownloadsWindowUiPanelState(raw: unknown): DownloadsWindowUiPanelState {
   if (!raw || typeof raw !== 'object') {
@@ -55,6 +55,9 @@ export function sanitizeDownloadsWindowUiPanelState(raw: unknown): DownloadsWind
     if (typeof src[key] === 'boolean') {
       out[key] = src[key]
     }
+  }
+  if (src['historyListMode'] === 'compact' || src['historyListMode'] === 'full') {
+    out.historyListMode = src['historyListMode']
   }
   return out
 }

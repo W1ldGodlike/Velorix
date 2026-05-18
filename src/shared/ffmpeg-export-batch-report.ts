@@ -6,11 +6,15 @@ import type {
   FfmpegExportBatchSnapshot,
   FfmpegExportBatchStatus
 } from './ffmpeg-export-batch-contract'
-import type { DownloadsWindowUiLocale } from './downloads-window-ui-locale'
+import type { AppUiLocale } from './app-ui-locale'
+import {
+  resolveFfmpegExportBatchRowErrorDetail,
+  resolveFfmpegExportBatchRowProgressDisplay
+} from './ffmpeg-export-batch-row-display'
 
 function batchStatusLabel(
   status: FfmpegExportBatchStatus,
-  locale: DownloadsWindowUiLocale
+  locale: AppUiLocale
 ): string {
   if (locale === 'en') {
     switch (status) {
@@ -55,7 +59,7 @@ function sanitizeReportCell(raw: string): string {
 /** TSV-подобный отчёт для буфера обмена / сохранения в файл. */
 export function formatFfmpegExportBatchReportText(
   snap: FfmpegExportBatchSnapshot,
-  locale: DownloadsWindowUiLocale = 'ru'
+  locale: AppUiLocale = 'ru'
 ): string {
   const header =
     locale === 'en'
@@ -72,8 +76,8 @@ export function formatFfmpegExportBatchReportText(
   const lines = snap.rows.map((row) => {
     const status = batchStatusLabel(row.status, locale)
     const out = row.outputPath ?? ''
-    const prog = sanitizeReportCell(row.progress)
-    const err = sanitizeReportCell(typeof row.error === 'string' ? row.error : '')
+    const prog = sanitizeReportCell(resolveFfmpegExportBatchRowProgressDisplay(row))
+    const err = sanitizeReportCell(resolveFfmpegExportBatchRowErrorDetail(row) ?? '')
     return `${sanitizeReportCell(status)}\t${sanitizeReportCell(row.inputPath)}\t${sanitizeReportCell(
       out
     )}\t${prog}\t${err}`

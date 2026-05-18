@@ -2,9 +2,10 @@ import { spawn } from 'child_process'
 
 import { logExternalProcessLine } from './external-process-log'
 import type { FfmpegSnapshotFormatId } from '../shared/ffmpeg-snapshot-contract'
+import { parseFfmpegSnapshotFormatId } from '../shared/ffmpeg-snapshot-format-parse'
 
 export function parseFfmpegSnapshotFormat(raw: unknown): FfmpegSnapshotFormatId {
-  return raw === 'jpg' || raw === 'jpeg' ? 'jpg' : 'png'
+  return parseFfmpegSnapshotFormatId(raw)
 }
 
 export function ensureFfmpegSnapshotExtension(
@@ -31,6 +32,7 @@ export function runFfmpegSnapshotFrame(params: {
   const t = Number.isFinite(params.timeSec) ? Math.max(0, params.timeSec) : 0
   const lower = params.outputPath.toLowerCase()
   const jpeg = lower.endsWith('.jpg') || lower.endsWith('.jpeg')
+  const webp = lower.endsWith('.webp')
 
   const args: string[] = [
     '-hide_banner',
@@ -45,6 +47,8 @@ export function runFfmpegSnapshotFrame(params: {
   ]
   if (jpeg) {
     args.push('-q:v', '2')
+  } else if (webp) {
+    args.push('-quality', '82')
   }
   args.push('-y', params.outputPath)
 

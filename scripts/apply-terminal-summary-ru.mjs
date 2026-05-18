@@ -27,6 +27,21 @@ function applyPairsToText(s, pairs) {
   return { s, total }
 }
 
+/** Apply replace pairs only inside `summary: '…'` (never fullLine / token). */
+function applyPairsToSummariesInFile(s, pairs) {
+  const summaryRe = /summary:\s*'((?:[^'\\]|\\.)*)'/g
+  let total = 0
+  const next = s.replace(summaryRe, (full, inner) => {
+    const applied = applyPairsToText(inner, pairs)
+    total += applied.total
+    if (applied.s === inner) {
+      return full
+    }
+    return `summary: '${applied.s}'`
+  })
+  return { s: next, total }
+}
+
 function glossSummariesInText(s) {
   const summaryRe = /summary: '((?:[^'\\]|\\.)*)'/g
   let glossHits = 0
@@ -45,7 +60,7 @@ let replacements = 0
 let glossTotal = 0
 for (const filePath of listTerminalContractHintFiles()) {
   let s = fs.readFileSync(filePath, 'utf8')
-  const applied = applyPairsToText(s, TERMINAL_SUMMARY_RU_PAIRS)
+  const applied = applyPairsToSummariesInFile(s, TERMINAL_SUMMARY_RU_PAIRS)
   s = applied.s
   replacements += applied.total
   const glossed = glossSummariesInText(s)

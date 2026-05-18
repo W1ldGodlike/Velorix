@@ -8,4 +8,5 @@ export type PreviewProbeBodyProps = {
   onProbeSectionToggle?: (key: PreviewProbeSectionKey, open: boolean) => void
   /** Текущее обновление ffprobe выбранного файла (инспектор / будущие встраивания). */
   probeRefreshing?: boolean
+  onOpenKnowledgeArticle?: (slug: string) => void
 }

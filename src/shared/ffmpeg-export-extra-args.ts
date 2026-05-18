@@ -2,7 +2,7 @@
  * §7.2 — дополнительные argv ffmpeg-экспорта (без shell), вставка перед выходным файлом.
  */
 
-import type { DownloadsWindowUiLocale } from './downloads-window-ui-locale'
+import type { AppUiLocale } from './app-ui-locale'
 import { getFfmpegExportExtraArgsCopy } from './ffmpeg-export-extra-args-locale'
 
 const MAX_LINE_CHARS = 1200
@@ -80,7 +80,7 @@ function tokenViolationReason(
 
 export function parseFfmpegExportExtraArgsLine(
   raw: string,
-  uiLocale: DownloadsWindowUiLocale = 'ru'
+  uiLocale: AppUiLocale = 'ru'
 ): { ok: true; args: string[] } | { ok: false; error: string } {
   const V = getFfmpegExportExtraArgsCopy(uiLocale)
   const line = raw.trim()

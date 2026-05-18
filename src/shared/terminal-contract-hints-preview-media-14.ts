@@ -14,14 +14,14 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_14: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· кадры v:0 pkt_duration 5',
     summary:
-      'Первые пять кадров v:0: pkt_duration_time (-show_frames -read_intervals %+#5); путь к медиа подставляется из превью.',
+      'Первые пять кадров первой видеодорожки (v:0): pkt_duration_time (-show_frames -read_intervals %+#5); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_frames -read_intervals %+#5 -show_entries frame=pkt_duration_time -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· пакеты v:0 pts 2',
     summary:
-      'Первые два пакета v:0: pts_time (-show_packets -read_intervals %+#2 -show_entries packet=pts_time); путь к медиа подставляется из превью.',
+      'Первые два пакета первой видеодорожки (v:0): pts_time (-show_packets -read_intervals %+#2 -show_entries packet=pts_time); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_packets -read_intervals %+#2 -show_entries packet=pts_time -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -229,14 +229,14 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_14: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· кадры v:0 pict_type 6',
     summary:
-      'Первые шесть кадров v:0: pict_type (-show_frames -read_intervals %+#6); путь к медиа подставляется из превью.',
+      'Первые шесть кадров первой видеодорожки (v:0): pict_type (-show_frames -read_intervals %+#6); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_frames -read_intervals %+#6 -show_entries frame=pict_type -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· пакеты v:0 size 2',
     summary:
-      'Первые два пакета v:0: size (-show_packets -read_intervals %+#2 -show_entries packet=size); путь к медиа подставляется из превью.',
+      'Первые два пакета первой видеодорожки (v:0): size (-show_packets -read_intervals %+#2 -show_entries packet=size); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_packets -read_intervals %+#2 -show_entries packet=size -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {

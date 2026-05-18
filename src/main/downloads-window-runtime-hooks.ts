@@ -8,7 +8,7 @@ import type {
   YtdlpDownloadOptionsPatch
 } from './ytdlp-download-options'
 import { isInspectorWindow } from './inspector-window'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import {
   getDownloadsWindowIpcStrings,
   type DownloadsWindowIpcStrings
@@ -39,24 +39,24 @@ export interface DownloadsWindowBoundsHooks {
   /** §6.2 — шаблон `-o` и пресет `-f`; persisted в `settings.json` из index.ts; raw — опции превью argv §6.3. */
   getYtdlpDownloadCliOptions?: (
     raw?: unknown,
-    uiLocale?: DownloadsWindowUiLocale
+    uiLocale?: AppUiLocale
   ) => YtdlpDownloadOptionsPayload
   applyYtdlpDownloadCliPatch?: (
     patch: YtdlpDownloadOptionsPatch,
-    uiLocale?: DownloadsWindowUiLocale
+    uiLocale?: AppUiLocale
   ) => { ok: true } | { ok: false; error: string }
   /** §6.4 — открыть готовый файл из yt-dlp в основном обработчике/preview FluxAlloy. */
   openDownloadedFileInHandler?: (
     absoluteFile: string
   ) => Promise<{ ok: true } | { ok: false; error: string }>
-  /** §4.1 — снимок раскрытых секций для первичной разметки `buildDownloadsHtml`. */
+  /** §4.1 — снимок раскрытых секций для React pop-out / вкладки «Загрузки». */
   getDownloadsWindowUiPanelsSnapshot?: () => DownloadsWindowUiPanelState | undefined
   /** §4.1 — сохранить частичное состояние раскрытых секций в `settings.json`. */
   mergeDownloadsWindowUiPanelsPatch?: (patch: Partial<DownloadsWindowUiPanelState>) => void
   /** Текущая тема приложения — начальное `data-theme` и синхрон с меню главного окна. */
   getAppTheme?: () => ResolvedAppTheme
   /** UI locale when renderer does not pass `uiLocale` in `openDownloadsWindow`. */
-  getDownloadsUiLocale?: () => DownloadsWindowUiLocale
+  getDownloadsUiLocale?: () => AppUiLocale
 }
 
 let downloadsBoundsHooks: DownloadsWindowBoundsHooks = {}
@@ -73,11 +73,11 @@ export function configureDownloadsWindowBoundsHooks(hooks: DownloadsWindowBounds
 let downloadsWindow: BrowserWindow | null = null
 
 /** Locale last used when opening the pop-out; drives IPC copy for downloads-window sender. */
-let lastDownloadsWindowResolvedUiLocale: DownloadsWindowUiLocale = 'ru'
+let lastDownloadsPopoutResolvedUiLocale: AppUiLocale = 'ru'
 
-export function ipcUiLocale(sender: WebContents): DownloadsWindowUiLocale {
+export function ipcUiLocale(sender: WebContents): AppUiLocale {
   if (isDownloadsSender(sender)) {
-    return lastDownloadsWindowResolvedUiLocale
+    return lastDownloadsPopoutResolvedUiLocale
   }
   return downloadsBoundsHooks.getDownloadsUiLocale?.() ?? 'ru'
 }
@@ -140,10 +140,10 @@ export function getDownloadsPopoutWebContents(): WebContents | null {
   return downloadsWindow.webContents
 }
 
-export function getLastDownloadsWindowResolvedUiLocale(): DownloadsWindowUiLocale {
-  return lastDownloadsWindowResolvedUiLocale
+export function getLastDownloadsPopoutResolvedUiLocale(): AppUiLocale {
+  return lastDownloadsPopoutResolvedUiLocale
 }
 
-export function setLastDownloadsWindowResolvedUiLocale(loc: DownloadsWindowUiLocale): void {
-  lastDownloadsWindowResolvedUiLocale = loc
+export function setLastDownloadsPopoutResolvedUiLocale(loc: AppUiLocale): void {
+  lastDownloadsPopoutResolvedUiLocale = loc
 }

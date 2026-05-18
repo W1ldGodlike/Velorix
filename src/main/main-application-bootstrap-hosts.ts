@@ -63,6 +63,11 @@ import {
 } from './main-export-output-paths'
 import { syncYtdlpDownloadDirectoryFromSettings } from './ytdlp-download-output'
 import { refreshYtdlpRunOptionsSnapshot } from './ytdlp-run-options-sync'
+import {
+  configureSettingsBackupService,
+  exportSettingsBackupWithDialog,
+  importSettingsBackupWithDialog
+} from './settings-backup-service'
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
 import {
   activeExportAbort,
@@ -93,6 +98,23 @@ export function bootstrapMainApplicationHosts(): void {
     mainDownloadsUiLocale,
     mainAppStr
   })
+  configureSettingsBackupService({
+    getSettings: getCachedSettings,
+    replaceSettings: setCachedSettings,
+    saveSettings: saveCachedSettingsToDisk,
+    resolveEffectiveTheme,
+    buildApplicationMenu,
+    refreshEnginePathOverridesSnapshot,
+    refreshYtdlpFromSettings: () => {
+      const settings = getCachedSettings()
+      refreshYtdlpRunOptionsSnapshot(settings, mainDownloadsUiLocale())
+      broadcastDownloadsCliOptionsChanged()
+      syncYtdlpDownloadDirectoryFromSettings(settings.ytdlpDownloadDirectory)
+      broadcastDownloadsOutputDirectorySnapshot()
+    },
+    syncDownloadsPopoutHtmlToLocale,
+    mainAppStr
+  })
   configureMainApplicationMenu({
     getThemePref: () => getCachedSettings().theme,
     getMainWindowRef: () => mainWindowRef,
@@ -111,6 +133,12 @@ export function bootstrapMainApplicationHosts(): void {
     openSessionLogFile,
     createSupportBundleWithDialog: (win) => {
       void createSupportBundleWithDialog(win)
+    },
+    exportSettingsBackup: (win) => {
+      void exportSettingsBackupWithDialog(win)
+    },
+    importSettingsBackup: (win) => {
+      void importSettingsBackupWithDialog(win)
     }
   })
   setMainApplicationSettingsIpcPersist(

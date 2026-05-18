@@ -11,6 +11,7 @@ import {
   YTDLP_DOC_FORMAT_SELECTION,
   YTDLP_DOC_README
 } from '../../../shared/external-doc-urls'
+import { formatAboutBuildIdDisplay, formatBuiltAtUtcLine } from '../../../shared/app-build-info'
 import {
   formatMaintenanceCleanDone,
   formatMaintenanceConfirmHint,
@@ -19,6 +20,8 @@ import {
   uiText,
   uiTextVars
 } from '../locales/ui-text'
+import { DiagnosticsFoldersPanel } from './DiagnosticsFoldersPanel'
+import { MediaFileUtilitiesPanel } from './MediaFileUtilitiesPanel'
 
 type MaintenanceCleanChoice = 'all' | DiagnosticsMaintenanceTargetId
 
@@ -148,6 +151,16 @@ export function AboutDialog({
               <dd className="app-about-mono">{aboutInfo.appVersion}</dd>
             </div>
             <div className="app-about-row">
+              <dt>{uiText('aboutBuildIdLabel')}</dt>
+              <dd className="app-about-mono">{formatAboutBuildIdDisplay(aboutInfo.buildId)}</dd>
+            </div>
+            {formatBuiltAtUtcLine(aboutInfo.builtAtUtc) ? (
+              <div className="app-about-row">
+                <dt>{uiText('aboutBuiltAtLabel')}</dt>
+                <dd className="app-about-mono">{formatBuiltAtUtcLine(aboutInfo.builtAtUtc)}</dd>
+              </div>
+            ) : null}
+            <div className="app-about-row">
               <dt>{uiText('aboutRuntimeElectronLabel')}</dt>
               <dd className="app-about-mono">{aboutInfo.electronVersion}</dd>
             </div>
@@ -170,6 +183,16 @@ export function AboutDialog({
             {uiText('loading')}
           </p>
         )}
+        <DiagnosticsFoldersPanel
+          busy={aboutShellBusy}
+          describedById="about-dialog-desc"
+          onStatus={pushStatus}
+        />
+        <MediaFileUtilitiesPanel
+          disabled={aboutShellBusy || maintenanceBusy}
+          describedById="about-dialog-desc"
+          onStatus={pushStatus}
+        />
         <div
           className="app-modal-footer app-modal-footer-split"
           role="region"

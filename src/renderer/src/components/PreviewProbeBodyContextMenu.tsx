@@ -6,8 +6,32 @@ import {
   formatProbeBitrateLine
 } from './media-probe-panel-helpers'
 import { uiText } from '../locales/ui-text'
+import type { UiTextKey } from '../locales/ui-text-strings'
 
 import type { PreviewProbeBodyCtx } from './use-preview-probe-body'
+
+function ProbeContextMenuItem({
+  labelKey,
+  onClick
+}: {
+  labelKey: UiTextKey
+  onClick: () => void
+}): JSX.Element {
+  const label = uiText(labelKey)
+  return (
+    <button
+      type="button"
+      role="menuitem"
+      className="app-probe-context-menu-item"
+      aria-describedby="probePanelOverviewHint"
+      title={label}
+      aria-label={label}
+      onClick={onClick}
+    >
+      {label}
+    </button>
+  )
+}
 
 export function PreviewProbeBodyContextMenu({
   ctx
@@ -28,210 +52,130 @@ export function PreviewProbeBodyContextMenu({
         >
           {probeTableMenu.variant === 'track' ? (
             <>
-              <button
-                type="button"
-                role="menuitem"
-                className="app-probe-context-menu-item"
-                aria-describedby="probePanelOverviewHint"
+              <ProbeContextMenuItem
+                labelKey="probeCtxCopyRowTab"
                 onClick={() => {
                   void copyProbeCellAndDismiss(formatProbeTrackRowTsv(probeTableMenu.row))
                 }}
-              >
-                {uiText('probeCtxCopyRowTab')}
-              </button>
-              <button
-                type="button"
-                role="menuitem"
-                className="app-probe-context-menu-item"
-                aria-describedby="probePanelOverviewHint"
+              />
+              <ProbeContextMenuItem
+                labelKey="probeCtxCopyCodec"
                 onClick={() => {
                   void copyProbeCellAndDismiss(probeTableMenu.row.codec)
                 }}
-              >
-                {uiText('probeCtxCopyCodec')}
-              </button>
+              />
               {probeTableMenu.row.pixelFormat ? (
-                <button
-                  type="button"
-                  role="menuitem"
-                  className="app-probe-context-menu-item"
-                  aria-describedby="probePanelOverviewHint"
+                <ProbeContextMenuItem
+                  labelKey="probeCtxCopyPixFmt"
                   onClick={() => {
                     void copyProbeCellAndDismiss(probeTableMenu.row.pixelFormat ?? '')
                   }}
-                >
-                  {uiText('probeCtxCopyPixFmt')}
-                </button>
+                />
               ) : null}
               {probeTableMenu.row.sampleAspectRatio ? (
-                <button
-                  type="button"
-                  role="menuitem"
-                  className="app-probe-context-menu-item"
-                  aria-describedby="probePanelOverviewHint"
+                <ProbeContextMenuItem
+                  labelKey="probeCtxCopySar"
                   onClick={() => {
                     void copyProbeCellAndDismiss(probeTableMenu.row.sampleAspectRatio ?? '')
                   }}
-                >
-                  {uiText('probeCtxCopySar')}
-                </button>
+                />
               ) : null}
               {probeTableMenu.row.displayAspectRatio ? (
-                <button
-                  type="button"
-                  role="menuitem"
-                  className="app-probe-context-menu-item"
-                  aria-describedby="probePanelOverviewHint"
+                <ProbeContextMenuItem
+                  labelKey="probeCtxCopyDar"
                   onClick={() => {
                     void copyProbeCellAndDismiss(probeTableMenu.row.displayAspectRatio ?? '')
                   }}
-                >
-                  {uiText('probeCtxCopyDar')}
-                </button>
+                />
               ) : null}
               {probeTableMenu.row.colorSpace ? (
-                <button
-                  type="button"
-                  role="menuitem"
-                  className="app-probe-context-menu-item"
-                  aria-describedby="probePanelOverviewHint"
+                <ProbeContextMenuItem
+                  labelKey="probeCtxCopyColorSpace"
                   onClick={() => {
                     void copyProbeCellAndDismiss(probeTableMenu.row.colorSpace ?? '')
                   }}
-                >
-                  {uiText('probeCtxCopyColorSpace')}
-                </button>
+                />
               ) : null}
               {probeTableMenu.row.colorPrimaries ? (
-                <button
-                  type="button"
-                  role="menuitem"
-                  className="app-probe-context-menu-item"
-                  aria-describedby="probePanelOverviewHint"
+                <ProbeContextMenuItem
+                  labelKey="probeCtxCopyColorPrimaries"
                   onClick={() => {
                     void copyProbeCellAndDismiss(probeTableMenu.row.colorPrimaries ?? '')
                   }}
-                >
-                  {uiText('probeCtxCopyColorPrimaries')}
-                </button>
+                />
               ) : null}
               {probeTableMenu.row.colorTransfer ? (
-                <button
-                  type="button"
-                  role="menuitem"
-                  className="app-probe-context-menu-item"
-                  aria-describedby="probePanelOverviewHint"
+                <ProbeContextMenuItem
+                  labelKey="probeCtxCopyColorTransfer"
                   onClick={() => {
                     void copyProbeCellAndDismiss(probeTableMenu.row.colorTransfer ?? '')
                   }}
-                >
-                  {uiText('probeCtxCopyColorTransfer')}
-                </button>
+                />
               ) : null}
               {probeTableMenu.row.colorRange ? (
-                <button
-                  type="button"
-                  role="menuitem"
-                  className="app-probe-context-menu-item"
-                  aria-describedby="probePanelOverviewHint"
+                <ProbeContextMenuItem
+                  labelKey="probeCtxCopyColorRange"
                   onClick={() => {
                     void copyProbeCellAndDismiss(probeTableMenu.row.colorRange ?? '')
                   }}
-                >
-                  {uiText('probeCtxCopyColorRange')}
-                </button>
+                />
               ) : null}
               {formatProbeBitrateLine(probeTableMenu.row.streamBitrateKbps) ? (
-                <button
-                  type="button"
-                  role="menuitem"
-                  className="app-probe-context-menu-item"
-                  aria-describedby="probePanelOverviewHint"
+                <ProbeContextMenuItem
+                  labelKey="probeCtxCopyBitrate"
                   onClick={() => {
                     void copyProbeCellAndDismiss(
                       formatProbeBitrateLine(probeTableMenu.row.streamBitrateKbps) ?? ''
                     )
                   }}
-                >
-                  {uiText('probeCtxCopyBitrate')}
-                </button>
+                />
               ) : null}
               {probeTableMenu.row.dispositionSummary.trim() !== '' ? (
-                <button
-                  type="button"
-                  role="menuitem"
-                  className="app-probe-context-menu-item"
-                  aria-describedby="probePanelOverviewHint"
+                <ProbeContextMenuItem
+                  labelKey="probeCtxCopyDisposition"
                   onClick={() => {
                     void copyProbeCellAndDismiss(probeTableMenu.row.dispositionSummary)
                   }}
-                >
-                  {uiText('probeCtxCopyDisposition')}
-                </button>
+                />
               ) : null}
-              <button
-                type="button"
-                role="menuitem"
-                className="app-probe-context-menu-item"
-                aria-describedby="probePanelOverviewHint"
+              <ProbeContextMenuItem
+                labelKey="probeCtxCopyDetail"
                 onClick={() => {
                   void copyProbeCellAndDismiss(probeTableMenu.row.detail)
                 }}
-              >
-                {uiText('probeCtxCopyDetail')}
-              </button>
+              />
               {probeTableMenu.row.language ? (
-                <button
-                  type="button"
-                  role="menuitem"
-                  className="app-probe-context-menu-item"
-                  aria-describedby="probePanelOverviewHint"
+                <ProbeContextMenuItem
+                  labelKey="probeCtxCopyLanguage"
                   onClick={() => {
                     void copyProbeCellAndDismiss(probeTableMenu.row.language ?? '')
                   }}
-                >
-                  {uiText('probeCtxCopyLanguage')}
-                </button>
+                />
               ) : null}
               {probeTableMenu.row.titleTag ? (
-                <button
-                  type="button"
-                  role="menuitem"
-                  className="app-probe-context-menu-item"
-                  aria-describedby="probePanelOverviewHint"
+                <ProbeContextMenuItem
+                  labelKey="probeCtxCopyTrackTitle"
                   onClick={() => {
                     void copyProbeCellAndDismiss(probeTableMenu.row.titleTag ?? '')
                   }}
-                >
-                  {uiText('probeCtxCopyTrackTitle')}
-                </button>
+                />
               ) : null}
             </>
           ) : (
             <>
-              <button
-                type="button"
-                role="menuitem"
-                className="app-probe-context-menu-item"
-                aria-describedby="probePanelOverviewHint"
+              <ProbeContextMenuItem
+                labelKey="probeCtxCopyRowTab"
                 onClick={() => {
                   void copyProbeCellAndDismiss(formatProbeChapterRowTsv(probeTableMenu.row))
                 }}
-              >
-                {uiText('probeCtxCopyRowTab')}
-              </button>
+              />
               {probeTableMenu.row.title ? (
-                <button
-                  type="button"
-                  role="menuitem"
-                  className="app-probe-context-menu-item"
-                  aria-describedby="probePanelOverviewHint"
+                <ProbeContextMenuItem
+                  labelKey="probeCtxCopyChapterTitle"
                   onClick={() => {
                     void copyProbeCellAndDismiss(probeTableMenu.row.title ?? '')
                   }}
-                >
-                  {uiText('probeCtxCopyChapterTitle')}
-                </button>
+                />
               ) : null}
             </>
           )}

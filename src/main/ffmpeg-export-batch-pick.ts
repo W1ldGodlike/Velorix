@@ -5,7 +5,7 @@ import { BrowserWindow, dialog } from 'electron'
 import { FFMPEG_EXPORT_BATCH_VIDEO_EXTENSIONS } from '../shared/ffmpeg-export-batch-video-ext'
 import { grantMediaPath } from './media-protocol'
 import { scanFolderForFfmpegExportBatchVideos } from './ffmpeg-export-batch-folder-scan'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
 
 function grantBatchVideoPaths(
@@ -31,7 +31,7 @@ function grantBatchVideoPaths(
 
 export async function pickFfmpegExportBatchInputFiles(
   browserWindow: BrowserWindow,
-  locale: DownloadsWindowUiLocale = 'ru',
+  locale: AppUiLocale = 'ru',
   opts?: { defaultPath?: string }
 ): Promise<
   { ok: true; paths: string[] } | { ok: false; cancelled: true } | { ok: false; error: string }
@@ -62,7 +62,7 @@ export async function pickFfmpegExportBatchInputFiles(
 
 export async function pickFfmpegExportBatchInputFolder(
   browserWindow: BrowserWindow,
-  locale: DownloadsWindowUiLocale = 'ru',
+  locale: AppUiLocale = 'ru',
   opts?: { defaultPath?: string }
 ): Promise<
   { ok: true; paths: string[] } | { ok: false; cancelled: true } | { ok: false; error: string }
@@ -87,7 +87,7 @@ export async function pickFfmpegExportBatchInputFolder(
 /** §7.3 — папка сохранения результатов пакета (без сканирования файлов). */
 export async function pickFfmpegExportBatchOutputFolder(
   browserWindow: BrowserWindow,
-  locale: DownloadsWindowUiLocale = 'ru',
+  locale: AppUiLocale = 'ru',
   opts?: { defaultPath?: string }
 ): Promise<{ ok: true; path: string } | { ok: false; cancelled: true }> {
   const S = getMainApplicationStrings(locale)

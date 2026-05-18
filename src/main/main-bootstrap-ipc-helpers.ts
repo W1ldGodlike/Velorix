@@ -5,10 +5,10 @@ import type { IpcMainEvent, IpcMainInvokeEvent } from 'electron'
 
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
 import {
-  downloadsWindowUiLocaleFromSystemLocale,
-  parseDownloadsWindowUiLocale,
-  type DownloadsWindowUiLocale
-} from '../shared/downloads-window-ui-locale'
+  appUiLocaleFromSystemLocale,
+  parseAppUiLocale,
+  type AppUiLocale
+} from '../shared/app-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
 import { isInspectorWindow } from './inspector-window'
 import { logFromRendererSafe } from './logger-service'
@@ -44,13 +44,13 @@ function requireAccess(): MainBootstrapIpcHelpersAccess {
   return access
 }
 
-export function mainDownloadsUiLocale(): DownloadsWindowUiLocale {
+export function mainDownloadsUiLocale(): AppUiLocale {
   try {
-    const fromSettings = parseDownloadsWindowUiLocale(requireAccess().getUiLocaleFromSettings())
+    const fromSettings = parseAppUiLocale(requireAccess().getUiLocaleFromSettings())
     if (fromSettings !== undefined) {
       return fromSettings
     }
-    return downloadsWindowUiLocaleFromSystemLocale(app.getLocale())
+    return appUiLocaleFromSystemLocale(app.getLocale())
   } catch {
     return 'ru'
   }
@@ -60,13 +60,13 @@ export function mainAppStr(): ReturnType<typeof getMainApplicationStrings> {
   return getMainApplicationStrings(mainDownloadsUiLocale())
 }
 
-export function ipcDownloadsUiLocale(raw: unknown): DownloadsWindowUiLocale {
+export function ipcDownloadsUiLocale(raw: unknown): AppUiLocale {
   return raw === 'en' || raw === 'ru' ? raw : mainDownloadsUiLocale()
 }
 
 export function parseDownloadsOpenRequest(raw: unknown): {
   mergeText: string | null
-  uiLocale?: DownloadsWindowUiLocale
+  uiLocale?: AppUiLocale
 } {
   if (raw === null || raw === undefined) {
     return { mergeText: null }
@@ -84,8 +84,8 @@ export function parseDownloadsOpenRequest(raw: unknown): {
         mergeText = t
       }
     }
-    const parsed = parseDownloadsWindowUiLocale(o['uiLocale'])
-    const out: { mergeText: string | null; uiLocale?: DownloadsWindowUiLocale } = { mergeText }
+    const parsed = parseAppUiLocale(o['uiLocale'])
+    const out: { mergeText: string | null; uiLocale?: AppUiLocale } = { mergeText }
     if (parsed !== undefined) {
       out.uiLocale = parsed
     }
@@ -96,7 +96,7 @@ export function parseDownloadsOpenRequest(raw: unknown): {
 
 export function parseSaveTextDialogPayload(
   raw: unknown,
-  locale: DownloadsWindowUiLocale
+  locale: AppUiLocale
 ):
   | { ok: true; title: string; defaultFileName: string; content: string }
   | { ok: false; error: string } {

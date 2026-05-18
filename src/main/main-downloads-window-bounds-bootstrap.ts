@@ -3,7 +3,7 @@ import { isAbsolute, normalize } from 'path'
 import { BrowserWindow, dialog } from 'electron'
 
 import { getYtdlpCliValidationCopy } from '../shared/ytdlp-cli-validation-locale'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { resolveAppPaths } from './app-paths'
 import { configureDownloadsWindowBoundsHooks } from './downloads-window'
 import { getDownloadsQueueSnapshot } from './downloads-queue'
@@ -30,7 +30,7 @@ export type MainDownloadsWindowBoundsBootstrapAccess = {
   getMainWindowWebContentsId: () => number | null
   getSavedDownloadsBounds: () => StoredWindowRect | undefined
   persistDownloadsBounds: (rect: StoredWindowRect) => void
-  mainDownloadsUiLocale: () => DownloadsWindowUiLocale
+  mainDownloadsUiLocale: () => AppUiLocale
   getSettings: () => AppSettings
   mergeDownloadsWindowUiPanelsPatch: (patch: Partial<DownloadsWindowUiPanelState>) => void
   resolveEffectiveTheme: (pref: AppSettings['theme']) => ResolvedAppTheme
@@ -94,7 +94,7 @@ export function configureMainDownloadsWindowBoundsBootstrap(
     clearYtdlpCookiesFile: (): void => {
       persistClearYtdlpCookiesFile()
     },
-    getYtdlpDownloadCliOptions: (raw?: unknown, ipcUiLocale?: DownloadsWindowUiLocale) => {
+    getYtdlpDownloadCliOptions: (raw?: unknown, ipcUiLocale?: AppUiLocale) => {
       const req = parseYtdlpGetCliOptionsParams(raw)
       const loc = req?.uiLocale ?? ipcUiLocale ?? access.mainDownloadsUiLocale()
       const paths = resolveAppPaths()
@@ -134,7 +134,7 @@ export function configureMainDownloadsWindowBoundsBootstrap(
     },
     applyYtdlpDownloadCliPatch: (
       patch: YtdlpDownloadOptionsPatch,
-      uiLocale?: DownloadsWindowUiLocale
+      uiLocale?: AppUiLocale
     ) => persistYtdlpDownloadCliOptionsPatch(patch, uiLocale),
     openDownloadedFileInHandler: (absoluteFile) =>
       access.openDownloadedFileInMainHandler(absoluteFile),

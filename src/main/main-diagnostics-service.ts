@@ -4,11 +4,14 @@ import { basename } from 'path'
 import { app, BrowserWindow, clipboard, dialog, screen, shell } from 'electron'
 
 import { buildSupportZipFfprobeSmokeLines } from '../shared/packaged-ffprobe-smoke'
+import { formatFfmpegHwManualSmokeChecklistLines } from '../shared/ffmpeg-hw-manual-smoke-checklist'
 import { buildSupportZipPackagedReleaseLines } from '../shared/packaged-release-smoke'
+import { buildSupportZipBuildInfoLines, readAppBuildInfo } from '../shared/app-build-info'
 import { formatLocaleJsonCatalogDiagnosticLines } from '../shared/locale-json-catalog'
+import { formatRendererStateDiagnosticLines } from '../shared/renderer-state-approach'
 import { formatWindowHidpiDiagnosticLines } from '../main/window-hidpi'
 import { formatUiLocaleIpcDiagnosticLines } from '../shared/ui-locale-runtime'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import {
   formatMainProcessErrorClipboardHeader,
   getMainApplicationStrings
@@ -35,7 +38,7 @@ export type SupportBundleDialogOutcome =
   | { outcome: 'failed'; message: string }
 
 export type MainDiagnosticsServiceAccess = {
-  mainDownloadsUiLocale: () => DownloadsWindowUiLocale
+  mainDownloadsUiLocale: () => AppUiLocale
   mainAppStr: () => {
     mainLogPathUnavailable: string
     mainLogNotCreatedYet: string
@@ -110,10 +113,13 @@ export async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRunt
   const ffprobeSmokeLines = buildSupportZipFfprobeSmokeLines(paths.appRoot, existsSync)
   const uiLocaleIpcLines = formatUiLocaleIpcDiagnosticLines()
   const localeJsonCatalogLines = formatLocaleJsonCatalogDiagnosticLines()
+  const rendererStateLines = formatRendererStateDiagnosticLines()
   const uiDpiLines = formatWindowHidpiDiagnosticLines()
+  const hwManualSmokeChecklistLines = formatFfmpegHwManualSmokeChecklistLines()
 
   return {
     appVersion: app.getVersion(),
+    buildInfoLines: buildSupportZipBuildInfoLines(readAppBuildInfo()),
     electronVersion: process.versions.electron ?? '?',
     chromeVersion: process.versions.chrome ?? '?',
     nodeVersion: process.versions.node ?? '?',
@@ -138,7 +144,9 @@ export async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRunt
     ffprobeSmokeLines,
     uiLocaleIpcLines,
     localeJsonCatalogLines,
-    uiDpiLines
+    rendererStateLines,
+    uiDpiLines,
+    hwManualSmokeChecklistLines
   }
 }
 
@@ -231,7 +239,7 @@ export async function createSupportBundleWithDialog(
 function formatProcessErrorDetails(
   kind: 'uncaughtException' | 'unhandledRejection',
   reason: unknown,
-  locale: DownloadsWindowUiLocale
+  locale: AppUiLocale
 ): string {
   let serialized: string | null = null
   try {

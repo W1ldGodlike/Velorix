@@ -1,0 +1,23 @@
+{
+  "inspectorStandaloneAboutDiagnosticsTitle": "О программе и быстрые действия диагностики",
+  "inspectorStandaloneBrandAria": "FluxAlloy инспектор",
+  "inspectorStandaloneEmptyHint": "Перетащите видеофайл сюда или нажмите «Открыть…». При запуске из меню подставляется последний файл из превью (если он ещё на диске).",
+  "inspectorStandaloneEmptyRegionAria": "Подсказка, когда файл ещё не открыт",
+  "inspectorStandaloneFfprobeRefreshDisabledTitle": "Нет файла для обновления",
+  "inspectorStandaloneFfprobeRefreshTitle": "Повторно запустить ffprobe для текущего файла",
+  "inspectorStandaloneFfprobeRefreshVisuallyHidden": "Обновить ffprobe",
+  "inspectorStandaloneHeaderTitle": "Инспектор",
+  "inspectorStandaloneMainAria": "Область инспектора: подсказка, ошибка и сводка ffprobe",
+  "inspectorStandaloneOpenPickTitle": "Выбрать локальный медиафайл (тот же белый список расширений, что у превью)",
+  "inspectorStandaloneOpenVisuallyHidden": "Открыть файл…",
+  "inspectorStandalonePathFooterAria": "Полный путь к открытому файлу",
+  "inspectorStandaloneProbeStackAria": "Результат ffprobe для текущего файла",
+  "inspectorStandaloneShellAria": "Отдельное окно инспектора ffprobe",
+  "inspectorStandaloneStatusbarStatusAria": "Краткий статус инспектора",
+  "inspectorStandaloneThemeToggleTitle": "Переключить тему (синхронно с главным окном)",
+  "inspectorStandaloneTopbarAria": "Верхняя панель окна инспектора",
+  "inspectorStandaloneTopbarEngineLabel": "ffprobe",
+  "inspectorTopbarActionsToolbarAria": "Панель инспектора: файл, обновление, справка",
+  "inspectorTopbarTrailingGroupAria": "Зона действий справа от заголовка инспектора",
+  "inspectorWindowDocumentTitle": "FluxAlloy — инспектор"
+}

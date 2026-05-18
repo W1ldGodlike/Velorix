@@ -37,7 +37,7 @@ ${enBlock}
 `
 )
 
-const entry = `import type { DownloadsWindowUiLocale } from './downloads-window-ui-locale'
+const entry = `import type { AppUiLocale } from './app-ui-locale'
 
 export type { MainApplicationStrings } from './main-application-locale-types'
 

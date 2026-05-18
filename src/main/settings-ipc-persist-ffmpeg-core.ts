@@ -8,6 +8,7 @@ import {
   DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX,
   parseFfmpegExportBatchOutputSuffixTemplate
 } from '../shared/ffmpeg-export-batch-output-suffix'
+import { parseFfmpegExportBenchmarkLoadThreshold } from '../shared/ffmpeg-export-benchmark-load-threshold'
 import { parseFfmpegExportHwDecode } from '../shared/ffmpeg-export-hw-decode'
 import {
   parseFfmpegExportAudioBitrate,
@@ -37,6 +38,7 @@ export function createFfmpegExportSettingsPersistersCore(
   | 'videoBitrate'
   | 'twoPass'
   | 'economyMode'
+  | 'benchmarkLoadThreshold'
   | 'hwDecode'
   | 'extraArgsLine'
   | 'batchOutputSuffix'
@@ -135,6 +137,12 @@ export function createFfmpegExportSettingsPersistersCore(
     return commit(access, next)
   }
 
+  function persistFfmpegExportBenchmarkLoadThreshold(raw: unknown): AppSettings {
+    const next = { ...access.get() }
+    next.ffmpegExportBenchmarkLoadThresholdPercent = parseFfmpegExportBenchmarkLoadThreshold(raw)
+    return commit(access, next)
+  }
+
   function persistFfmpegExportHwDecode(raw: unknown): AppSettings {
     const next = { ...access.get() }
     if (parseFfmpegExportHwDecode(raw)) {
@@ -213,6 +221,7 @@ export function createFfmpegExportSettingsPersistersCore(
     videoBitrate: persistFfmpegExportVideoBitrate,
     twoPass: persistFfmpegExportTwoPass,
     economyMode: persistFfmpegExportEconomyMode,
+    benchmarkLoadThreshold: persistFfmpegExportBenchmarkLoadThreshold,
     hwDecode: persistFfmpegExportHwDecode,
     extraArgsLine: persistFfmpegExportExtraArgsLine,
     batchOutputSuffix: persistFfmpegExportBatchOutputSuffix,

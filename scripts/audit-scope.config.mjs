@@ -40,8 +40,8 @@ export const AUDIT_LARGE_MODULE_CANDIDATES = [
   'src/shared/terminal-contract-hints-preview-media-01.ts',
   'tests/fixtures/ffprobe-track-detail-cases.ts',
   'src/renderer/src/components/downloads/DownloadsWorkspaceMainQueueTable.tsx',
-  'src/main/downloads-window-html-body.ts',
+  'src/renderer/src/use-downloads-standalone-app.ts',
   'tests/fixtures/ytdlp-progress-parser-queue-failure-cases.ts',
-  'src/main/downloads-window-html-script-fragment-queue.ts',
+  'src/main/downloads-window.ts',
   'tests/shared/ffmpeg-export-argv-filters-metadata.test.ts'
 ]

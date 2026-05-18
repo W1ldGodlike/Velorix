@@ -3,11 +3,19 @@ import { FFPROBE_DOC_ALL } from '../../../shared/external-doc-urls'
 import { formatFfprobeCreationTimeBrief } from '../../../shared/ffprobe-creation-time-brief'
 import { collectFfprobeFormatScalarTagInspectorBriefs } from '../../../shared/ffprobe-format-tag-registry'
 import { formatProbeDurationLabel } from './media-probe-panel-helpers'
+import { KNOWLEDGE_SLUG_PROBE_AND_INSPECTOR } from '../../../shared/knowledge-contract'
 import { uiText, uiTextVars } from '../locales/ui-text'
+import { KnowledgeDeepLinkButton } from './KnowledgeDeepLinkButton'
 
 import type { PreviewProbeBodyCtx } from './use-preview-probe-body'
 
-export function PreviewProbeBodyOverview({ ctx }: { ctx: PreviewProbeBodyCtx }): JSX.Element {
+export function PreviewProbeBodyOverview({
+  ctx,
+  onOpenKnowledgeArticle
+}: {
+  ctx: PreviewProbeBodyCtx
+  onOpenKnowledgeArticle?: (slug: string) => void
+}): JSX.Element {
   const {
     probeInfo,
     probeRefreshing,
@@ -55,6 +63,17 @@ export function PreviewProbeBodyOverview({ ctx }: { ctx: PreviewProbeBodyCtx }):
         aria-describedby="probePanelOverviewHint"
         aria-busy={probeRefreshing}
       >
+        {onOpenKnowledgeArticle ? (
+          <KnowledgeDeepLinkButton
+            label={uiText('knowledgeDeepLinkProbeLabel')}
+            tooltip={uiText('knowledgeDeepLinkProbeTooltip')}
+            ariaDescribedBy="probePanelOverviewHint"
+            disabled={probeRefreshing}
+            onOpen={() => {
+              onOpenKnowledgeArticle(KNOWLEDGE_SLUG_PROBE_AND_INSPECTOR)
+            }}
+          />
+        ) : null}
         <a
           href={FFPROBE_DOC_ALL}
           target="_blank"

@@ -84,6 +84,10 @@ export const fluxalloyDownloads = {
     ipcRenderer.invoke(d.openQueueOutput, id, mode),
   openQueueOutputInHandler: (id: number): Promise<{ ok: true } | { ok: false; error: string }> =>
     ipcRenderer.invoke(d.openQueueOutputInHandler, id),
+  extractQueueCover: (
+    id: number
+  ): Promise<import('../shared/ffmpeg-cover-extract-contract').FfmpegCoverExtractResult> =>
+    ipcRenderer.invoke(d.extractQueueCover, id),
   getCliOptions: (
     params?: YtdlpGetCliOptionsParams
   ): Promise<{ ok: true; payload: YtdlpDownloadOptionsPayload } | { ok: false; error: string }> =>
@@ -160,5 +164,15 @@ export const fluxalloyDownloads = {
     return (): void => {
       ipcRenderer.removeListener(channel, handler)
     }
-  }
+  },
+  bridgeOpenInspector: (
+    mediaPath?: string | null
+  ): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke(d.bridgeOpenInspector, mediaPath ?? null),
+  bridgeFocusMainEditor: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke(d.bridgeFocusMainEditor),
+  bridgeOpenEnginePaths: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke(d.bridgeOpenEnginePaths),
+  bridgeOpenAbout: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke(d.bridgeOpenAbout)
 }

@@ -15,7 +15,9 @@ import {
   inspectorWindowMinLogicalSize,
   logicalScaleFactor
 } from './window-hidpi'
+import { getInspectorWindowTitle } from '../shared/app-ui-locale'
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
+import { mainDownloadsUiLocale } from './main-bootstrap-ipc-helpers'
 
 /** Стартовый путь для `inspectorBootstrap`; не одноразовый из-за двойного mount в React StrictMode. */
 let pendingInspectorInitialPath: string | null = null
@@ -120,7 +122,7 @@ export function focusOrCreateInspectorWindow(requestedMediaPath?: unknown): void
     minHeight: inspMin.minHeight,
     ...(rect ? { x: rect.x, y: rect.y } : {}),
     show: false,
-    title: 'FluxAlloy — инспектор',
+    title: getInspectorWindowTitle(mainDownloadsUiLocale()),
     webPreferences: {
       preload: resolvePreloadOutFile('index', __dirname),
       sandbox: false,

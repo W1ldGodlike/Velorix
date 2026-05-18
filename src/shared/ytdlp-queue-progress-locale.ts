@@ -1,4 +1,4 @@
-import type { DownloadsWindowUiLocale } from './downloads-window-ui-locale'
+import type { AppUiLocale } from './app-ui-locale'
 
 /** Подписи §6.4 для колонки прогресса / формата / статуса ошибки очереди yt-dlp. */
 export type YtdlpQueueProgressStrings = {
@@ -14,6 +14,16 @@ export type YtdlpQueueProgressStrings = {
   progressRetryFragment: string
   progressRetry: string
   progressRetryInSec: string
+  progressPlaylistSkip: string
+  progressRenameFailed: string
+  progressFormatSelect: string
+  progressAlreadyDownloaded: string
+  progressGivingUpRetries: string
+  progressWritingThumbnail: string
+  progressWritingSubtitles: string
+  progressWritingMetadata: string
+  progressRateLimitSleep: string
+  progressDeletingOriginal: string
   formatHintMerge: string
   formatHintAudio: string
   formatHintRemux: string
@@ -28,7 +38,7 @@ export type YtdlpQueueProgressStrings = {
   failureKindDownloadLimit: string
 }
 
-const RU: YtdlpQueueProgressStrings = {
+export const YTDLP_QUEUE_PROGRESS_STRINGS_RU: YtdlpQueueProgressStrings = {
   progressPlaylist: 'плейлист {a}/{b}',
   progressFragment: 'фрагмент {a}/{b}',
   progressPauseSec: 'пауза {sec} с',
@@ -41,6 +51,16 @@ const RU: YtdlpQueueProgressStrings = {
   progressRetryFragment: 'повтор фрагмента {frag} · {a}/{b}',
   progressRetry: 'повтор {a}/{b}',
   progressRetryInSec: 'повтор через {sec} с',
+  progressPlaylistSkip: 'пропуск {a}/{b}',
+  progressRenameFailed: 'не удалось переименовать',
+  progressFormatSelect: 'формат {ids}',
+  progressAlreadyDownloaded: 'уже скачано',
+  progressGivingUpRetries: 'отмена · попытки {n}',
+  progressWritingThumbnail: 'миниатюра',
+  progressWritingSubtitles: 'субтитры',
+  progressWritingMetadata: 'метаданные',
+  progressRateLimitSleep: 'лимит скорости · пауза {sec} с',
+  progressDeletingOriginal: 'удаление исходника',
   formatHintMerge: 'слияние',
   formatHintAudio: 'аудио',
   formatHintRemux: 'перепаковка (remux)',
@@ -55,7 +75,7 @@ const RU: YtdlpQueueProgressStrings = {
   failureKindDownloadLimit: ' · лимит загрузок'
 }
 
-const EN: YtdlpQueueProgressStrings = {
+export const YTDLP_QUEUE_PROGRESS_STRINGS_EN: YtdlpQueueProgressStrings = {
   progressPlaylist: 'playlist {a}/{b}',
   progressFragment: 'fragment {a}/{b}',
   progressPauseSec: 'pause {sec} s',
@@ -68,6 +88,16 @@ const EN: YtdlpQueueProgressStrings = {
   progressRetryFragment: 'retry fragment {frag} · {a}/{b}',
   progressRetry: 'retry {a}/{b}',
   progressRetryInSec: 'retry in {sec} s',
+  progressPlaylistSkip: 'skip {a}/{b}',
+  progressRenameFailed: 'rename failed',
+  progressFormatSelect: 'format {ids}',
+  progressAlreadyDownloaded: 'already downloaded',
+  progressGivingUpRetries: 'giving up · {n} retries',
+  progressWritingThumbnail: 'thumbnail',
+  progressWritingSubtitles: 'subtitles',
+  progressWritingMetadata: 'metadata',
+  progressRateLimitSleep: 'rate limit · pause {sec} s',
+  progressDeletingOriginal: 'deleting original',
   formatHintMerge: 'merge',
   formatHintAudio: 'audio',
   formatHintRemux: 'remux',
@@ -83,7 +113,7 @@ const EN: YtdlpQueueProgressStrings = {
 }
 
 export function getYtdlpQueueProgressStrings(
-  locale: DownloadsWindowUiLocale
+  locale: AppUiLocale
 ): YtdlpQueueProgressStrings {
-  return locale === 'en' ? EN : RU
+  return locale === 'en' ? YTDLP_QUEUE_PROGRESS_STRINGS_EN : YTDLP_QUEUE_PROGRESS_STRINGS_RU
 }

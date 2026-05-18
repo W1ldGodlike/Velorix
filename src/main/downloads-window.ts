@@ -1,10 +1,13 @@
+import { join } from 'path'
+
 import { BrowserWindow } from 'electron'
+import { is } from '@electron-toolkit/utils'
 
 import { appendUrlsFromMultilineBlock } from './downloads-queue'
 import { setDownloadsLogSink } from './downloads-log-ipc'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
-import { getDownloadsWindowUiStrings } from '../shared/downloads-window-ui-locale'
-import { buildDownloadsHtml } from './downloads-window-html'
+import type { AppUiLocale } from '../shared/app-ui-locale'
+import { getDownloadsPopoutWindowTitle } from '../shared/app-ui-locale'
+import { syncBrowserWindowTitlesToLocale } from './window-title-locale'
 import { resolvePreloadOutFile } from './preload-resolve'
 import { installExternalNavigationGuard, openAllowedExternalUrl } from './external-url'
 import {
@@ -14,15 +17,13 @@ import {
   logicalScaleFactor
 } from './window-hidpi'
 import { boundsFromBrowserWindow, rectifyBoundsForRestore } from './window-bounds'
-import { logError } from './logger-service'
 import {
   broadcastDownloadsSnapshot,
   broadcastDownloadsLogPayload,
   getDownloadsBoundsHooks,
   getDownloadsPopoutWindow,
-  getLastDownloadsWindowResolvedUiLocale,
   setDownloadsPopoutWindow,
-  setLastDownloadsWindowResolvedUiLocale
+  setLastDownloadsPopoutResolvedUiLocale
 } from './downloads-window-runtime'
 export {
   configureDownloadsWindowBoundsHooks,
@@ -35,45 +36,22 @@ export {
 } from './downloads-window-runtime'
 export { registerDownloadsWindowIpcHandlers } from './register-downloads-window-ipc'
 
-
-
 /**
- * Обновить язык статического HTML pop-out загрузок: при открытом окне — `loadURL` с новой разметкой;
- * при закрытом — только `lastDownloadsWindowResolvedUiLocale` для согласованности с `settings.json`.
+ * Синхронизировать язык pop-out загрузок: React-слой слушает `uiLocaleChanged`;
+ * здесь обновляем кэш IPC и заголовок окна.
  */
-export function syncDownloadsPopoutHtmlToLocale(resolvedLocale: DownloadsWindowUiLocale): void {
-  const popoutEarly = getDownloadsPopoutWindow()
-  if (!popoutEarly || popoutEarly.isDestroyed()) {
-    setLastDownloadsWindowResolvedUiLocale(resolvedLocale)
-    return
-  }
-  if (resolvedLocale === getLastDownloadsWindowResolvedUiLocale()) {
-    return
-  }
-  setLastDownloadsWindowResolvedUiLocale(resolvedLocale)
-  const winTitle = getDownloadsWindowUiStrings(resolvedLocale).windowTitle
-  popoutEarly.setTitle(winTitle)
-  const dataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(
-    buildDownloadsHtml(
-      getDownloadsBoundsHooks().getDownloadsWindowUiPanelsSnapshot?.(),
-      getDownloadsBoundsHooks().getAppTheme?.() ?? 'dark',
-      resolvedLocale
-    )
-  )}`
-  void popoutEarly.loadURL(dataUrl).catch((err: unknown) => {
-    logError('downloads-window', 'syncDownloadsPopoutHtmlToLocale loadURL failed', err)
-  })
+export function syncDownloadsPopoutHtmlToLocale(resolvedLocale: AppUiLocale): void {
+  setLastDownloadsPopoutResolvedUiLocale(resolvedLocale)
+  syncBrowserWindowTitlesToLocale(resolvedLocale)
 }
 
 /**
- * Открыть или сфокусировать окно менеджера загрузок.
- * Непустой `mergeText` добавляет распознанные URL-строки в очередь (как при вставке из буфера).
- * `uiLocale` задаёт язык при первом создании; при повторном фокусе HTML пересобирается, если язык
- * (явный аргумент или `getDownloadsUiLocale`) отличается от последнего загруженного в pop-out.
+ * Открыть или сфокусировать окно менеджера загрузок (`index.html#downloads`).
+ * Непустой `mergeText` добавляет распознанные URL-строки в очередь.
  */
 export function focusOrCreateDownloadsWindow(
   mergeText?: string | null,
-  uiLocale?: DownloadsWindowUiLocale
+  uiLocale?: AppUiLocale
 ): void {
   const chunk = mergeText?.trim() ?? ''
   if (chunk.length > 0) {
@@ -90,23 +68,14 @@ export function focusOrCreateDownloadsWindow(
     return
   }
 
-  setLastDownloadsWindowResolvedUiLocale(resolvedLocale)
-  const winTitle = getDownloadsWindowUiStrings(resolvedLocale).windowTitle
-
-  const dataUrl = `data:text/html;charset=utf-8,${encodeURIComponent(
-    buildDownloadsHtml(
-      getDownloadsBoundsHooks().getDownloadsWindowUiPanelsSnapshot?.(),
-      getDownloadsBoundsHooks().getAppTheme?.() ?? 'dark',
-      resolvedLocale
-    )
-  )}`
+  setLastDownloadsPopoutResolvedUiLocale(resolvedLocale)
+  const winTitle = getDownloadsPopoutWindowTitle(resolvedLocale)
 
   const savedDl = getDownloadsBoundsHooks().getSavedDownloadsBounds?.()
   const dlRect = savedDl ? rectifyBoundsForRestore(savedDl) : null
 
   const targetDisp = displayMatchingRestoreRect(dlRect)
   const dispScale = logicalScaleFactor(targetDisp)
-  /** На 125%+ логические px уже «мельче» физически — поднимаем минимум, чтобы таблица очереди не ломалась при первом открытии. */
   const { minWidth: minDownloadsW, minHeight: minDownloadsH } =
     downloadsWindowMinLogicalSize(dispScale)
   const areaW = targetDisp.workAreaSize.width
@@ -123,9 +92,9 @@ export function focusOrCreateDownloadsWindow(
     title: winTitle,
     webPreferences: {
       contextIsolation: true,
-      sandbox: true,
+      sandbox: false,
       nodeIntegration: false,
-      preload: resolvePreloadOutFile('downloadsWindow', __dirname)
+      preload: resolvePreloadOutFile('index', __dirname)
     }
   })
 
@@ -168,7 +137,14 @@ export function focusOrCreateDownloadsWindow(
   installExternalNavigationGuard(popoutWin.webContents)
 
   setDownloadsPopoutWindow(popoutWin)
-  void popoutWin.loadURL(dataUrl)
+
+  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+    const base = process.env['ELECTRON_RENDERER_URL'].replace(/\/$/, '')
+    void popoutWin.loadURL(`${base}#downloads`)
+  } else {
+    void popoutWin.loadFile(join(__dirname, '../renderer/index.html'), { hash: 'downloads' })
+  }
+
   popoutWin.once('ready-to-show', () => {
     if (popoutWin && !popoutWin.isDestroyed()) {
       setDownloadsLogSink(broadcastDownloadsLogPayload)

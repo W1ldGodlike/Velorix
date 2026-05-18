@@ -1,4 +1,4 @@
-import type { DownloadsTopbarClusterCopy } from './downloads-window-ui-locale'
+import type { DownloadsTopbarClusterCopy } from './lucide-downloads-topbar-cluster-copy'
 import {
   DOWNLOADS_TOPBAR_CLUSTER_ICONS,
   type DownloadsTopbarClusterIconKey

@@ -143,7 +143,7 @@ export function DownloadsSettingsRailExpertSection(props: DownloadsSettingsRailP
             ))
           )}
         </div>
-        <span className="app-field-help">{uiText('downloadsHintsSameAsPopoutHelp')}</span>
+        <span className="app-field-help">{uiText('downloadsHintCatalogScopeHelp')}</span>
         <nav
           className="app-doc-inline-links app-downloads-doc-links"
           aria-label={uiText('downloadsRailExpertDocNavAria')}

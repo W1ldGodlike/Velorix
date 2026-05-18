@@ -1,7 +1,12 @@
-import { ipcMain } from 'electron'
+import { BrowserWindow, ipcMain } from 'electron'
 import type { IpcMainInvokeEvent } from 'electron'
 
 import { mainWindowIpc as mw } from '../../shared/ipc-channels'
+import {
+  exportSettingsBackupWithDialog,
+  importSettingsBackupWithDialog,
+  resetAppSettingsToDefaultsKeepingWindowBounds
+} from '../settings-backup-service'
 import type { AppSettings, AppSettingsView, AppTheme } from '../settings-store'
 import type { EnginePathOverridesPatch } from '../engine-service'
 
@@ -19,6 +24,7 @@ export type FfmpegExportSettingsPersisters = {
   videoBitrate: PersistSetting
   twoPass: PersistSetting
   economyMode: PersistSetting
+  benchmarkLoadThreshold: PersistSetting
   hwDecode: PersistSetting
   extraArgsLine: PersistSetting
   batchOutputSuffix: PersistSetting
@@ -62,6 +68,10 @@ const FFMPEG_EXPORT_SETTING_CHANNELS: ReadonlyArray<{
   { channel: mw.settingsSetFfmpegExportVideoBitrate, key: 'videoBitrate' },
   { channel: mw.settingsSetFfmpegExportTwoPass, key: 'twoPass' },
   { channel: mw.settingsSetFfmpegExportEconomyMode, key: 'economyMode' },
+  {
+    channel: mw.settingsSetFfmpegExportBenchmarkLoadThreshold,
+    key: 'benchmarkLoadThreshold'
+  },
   { channel: mw.settingsSetFfmpegExportHwDecode, key: 'hwDecode' },
   { channel: mw.settingsSetFfmpegExportExtraArgsLine, key: 'extraArgsLine' },
   { channel: mw.settingsSetFfmpegExportBatchOutputSuffix, key: 'batchOutputSuffix' },
@@ -142,5 +152,19 @@ export function registerSettingsIpcHandlers(deps: SettingsIpcDeps): void {
       return deps.copyCachedSettings()
     }
     return deps.persistMainWindowUiPanelsMerge(raw)
+  })
+
+  ipcMain.handle(mw.settingsBackupExport, async (event) => {
+    const win = BrowserWindow.fromWebContents(event.sender) ?? undefined
+    return exportSettingsBackupWithDialog(win)
+  })
+
+  ipcMain.handle(mw.settingsBackupImport, async (event) => {
+    const win = BrowserWindow.fromWebContents(event.sender) ?? undefined
+    return importSettingsBackupWithDialog(win)
+  })
+
+  ipcMain.handle(mw.settingsResetToDefaults, (): AppSettings => {
+    return resetAppSettingsToDefaultsKeepingWindowBounds()
   })
 }

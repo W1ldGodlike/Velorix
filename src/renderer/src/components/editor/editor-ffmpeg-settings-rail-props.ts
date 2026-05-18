@@ -43,7 +43,13 @@ export type EditorFfmpegSettingsRailProps = {
   editorFfmpegDetailBusy: boolean
   exportBusy: boolean
   exportCancelBusy: boolean
+  batchExportBusy: boolean
   snapshotBusy: boolean
+  extractFramesBusy: boolean
+  setExtractFramesBusy: (busy: boolean) => void
+  previewMediaPath: string | null
+  previewProbeDurationSec: number | null
+  buildCurrentFfmpegExportOverrides: () => Record<string, unknown>
   probePending: boolean
   hwEncoderProbe: FfmpegHwEncodersProbeResult | null
   exportEncodePreset: FfmpegExportEncodePresetId
@@ -72,6 +78,8 @@ export type EditorFfmpegSettingsRailProps = {
   setExportTwoPass: Dispatch<SetStateAction<boolean>>
   exportEconomyMode: boolean
   setExportEconomyMode: Dispatch<SetStateAction<boolean>>
+  exportBenchmarkLoadThreshold: number
+  setExportBenchmarkLoadThreshold: Dispatch<SetStateAction<number>>
   exportHwDecode: boolean
   setExportHwDecode: Dispatch<SetStateAction<boolean>>
   exportExtraArgsLine: string
@@ -142,4 +150,5 @@ export type EditorFfmpegSettingsRailProps = {
   refreshProcessingHistory: (filter?: ProcessingHistoryFilter) => Promise<void>
   exportVisibleProcessingHistory: () => Promise<void>
   reportBatchPathsAdded: (counts: { added: number; skipped: number }, emptyMsg?: string) => void
+  onOpenKnowledgeArticle?: (slug: string) => void
 }

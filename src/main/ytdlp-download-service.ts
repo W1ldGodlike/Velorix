@@ -5,8 +5,9 @@ import { join } from 'path'
 import type { AppPaths } from './app-paths'
 import { resolveEngineExecutablePath, type EnginePathOverrides } from './engine-service'
 import { logExternalProcessLine } from './external-process-log'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
+import { isNativeMainYtdlpKillProcessTreeSupported } from './platform'
 import { isYtdlpOsPauseSupported } from './ytdlp-os-pause-support'
 import { buildYtdlpSpawnArgvTokens } from './ytdlp-extra-args'
 import { downloadsRunnerAbortMessage } from '../shared/downloads-flux-log-locale'
@@ -41,7 +42,7 @@ export {
   type YtdlpQueueFailureKind
 } from './ytdlp-progress-parser'
 
-function abortErr(locale: DownloadsWindowUiLocale): Error {
+function abortErr(locale: AppUiLocale): Error {
   const e = new Error(downloadsRunnerAbortMessage(locale))
   e.name = 'AbortError'
   return e
@@ -66,7 +67,7 @@ function resolveWindowsTaskkillExe(): string {
 function killYtdlpSpawnTreeOrForce(child: ChildProcess): void {
   const pid = child.pid
   try {
-    if (process.platform === 'win32' && typeof pid === 'number' && pid > 0) {
+    if (isNativeMainYtdlpKillProcessTreeSupported() && typeof pid === 'number' && pid > 0) {
       const argv = ['/PID', String(pid), '/T', '/F']
       const opts = { windowsHide: true as const, stdio: 'ignore' as const }
       try {
@@ -114,7 +115,7 @@ export function getActiveYtdlpPauseState(): {
  * Пауза/возобновление на уровне ОС: Windows не поддерживает доставку SIGSTOP дочерним процессам как в POSIX.
  */
 export function pauseActiveYtdlpProcess(
-  locale: DownloadsWindowUiLocale = 'ru'
+  locale: AppUiLocale = 'ru'
 ): { ok: true } | { ok: false; error: string } {
   const P = getDownloadsWindowIpcStrings(locale)
   if (!isYtdlpOsPauseSupported()) {
@@ -140,7 +141,7 @@ export function pauseActiveYtdlpProcess(
 }
 
 export function resumeActiveYtdlpProcess(
-  locale: DownloadsWindowUiLocale = 'ru'
+  locale: AppUiLocale = 'ru'
 ): { ok: true } | { ok: false; error: string } {
   const P = getDownloadsWindowIpcStrings(locale)
   if (!isYtdlpOsPauseSupported()) {
@@ -201,7 +202,7 @@ export function runYtdlpOnce(
     | 'fragmentRetries'
     | 'extraArgs'
   >,
-  locale: DownloadsWindowUiLocale = 'ru'
+  locale: AppUiLocale = 'ru'
 ): Promise<{ exitCode: number | null; signal: NodeJS.Signals | null }> {
   const S = getMainApplicationStrings(locale)
   const ytDlp = resolveEngineExecutablePath(paths, 'yt-dlp', engineOverrides)

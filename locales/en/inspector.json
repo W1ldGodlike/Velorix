@@ -1,0 +1,23 @@
+{
+  "inspectorStandaloneAboutDiagnosticsTitle": "About and quick diagnostics actions",
+  "inspectorStandaloneBrandAria": "FluxAlloy inspector",
+  "inspectorStandaloneEmptyHint": "Drop a video file here or click “Open…”. When launched from the menu, the last preview file is used if it is still on disk.",
+  "inspectorStandaloneEmptyRegionAria": "Hint when no file is open yet",
+  "inspectorStandaloneFfprobeRefreshDisabledTitle": "No file to refresh",
+  "inspectorStandaloneFfprobeRefreshTitle": "Run ffprobe again for the current file",
+  "inspectorStandaloneFfprobeRefreshVisuallyHidden": "Refresh ffprobe",
+  "inspectorStandaloneHeaderTitle": "Inspector",
+  "inspectorStandaloneMainAria": "Inspector workspace: hint, error, and ffprobe summary",
+  "inspectorStandaloneOpenPickTitle": "Pick a local media file (same allowlist as preview)",
+  "inspectorStandaloneOpenVisuallyHidden": "Open file…",
+  "inspectorStandalonePathFooterAria": "Full path of the open file",
+  "inspectorStandaloneProbeStackAria": "ffprobe results for the current file",
+  "inspectorStandaloneShellAria": "Standalone ffprobe inspector window",
+  "inspectorStandaloneStatusbarStatusAria": "Inspector status message",
+  "inspectorStandaloneThemeToggleTitle": "Toggle theme (in sync with the main window)",
+  "inspectorStandaloneTopbarAria": "Inspector window top bar",
+  "inspectorStandaloneTopbarEngineLabel": "ffprobe",
+  "inspectorTopbarActionsToolbarAria": "Inspector toolbar: file, refresh, help",
+  "inspectorTopbarTrailingGroupAria": "Actions beside the inspector title",
+  "inspectorWindowDocumentTitle": "FluxAlloy — Inspector"
+}

@@ -1,5 +1,9 @@
 import { useId, useState } from 'react'
 
+import {
+  DEFAULT_APP_SETTINGS_DIALOG_SECTION,
+  type AppSettingsDialogSection
+} from '../../shared/app-settings-dialog-section'
 import type { ResolvedAppTheme } from '../../shared/settings-contract'
 import type { RestoredSourceInfo } from '../../shared/preview-dialog-contract'
 import type { MediaProbeSuccess } from '../../shared/ffprobe-contract'
@@ -14,7 +18,12 @@ export function useAppCompositionLocalState() {
   const [engineSummary, setEngineSummary] = useState<EngineSummary>('checking')
   const [enginesOfferDownload, setEnginesOfferDownload] = useState(false)
   const [engineDownloadBusy, setEngineDownloadBusy] = useState(false)
-  const [enginePathsOpen, setEnginePathsOpen] = useState(false)
+  const [appSettingsOpen, setAppSettingsOpen] = useState(false)
+  const [appSettingsSection, setAppSettingsSection] = useState<AppSettingsDialogSection>(
+    DEFAULT_APP_SETTINGS_DIALOG_SECTION
+  )
+  const [settingsResetBusy, setSettingsResetBusy] = useState(false)
+  const [externalFilterScriptOpen, setExternalFilterScriptOpen] = useState(false)
   /** Сброс дерева после `applyPersistedUiLocale` — строки из `ui-text` читают `getUiLocale()` из модуля. */
   const [uiLocaleRenderTick, setUiLocaleRenderTick] = useState(0)
   const [knowledgeOpen, setKnowledgeOpen] = useState(false)
@@ -56,8 +65,14 @@ export function useAppCompositionLocalState() {
     setEnginesOfferDownload,
     engineDownloadBusy,
     setEngineDownloadBusy,
-    enginePathsOpen,
-    setEnginePathsOpen,
+    appSettingsOpen,
+    setAppSettingsOpen,
+    appSettingsSection,
+    setAppSettingsSection,
+    settingsResetBusy,
+    setSettingsResetBusy,
+    externalFilterScriptOpen,
+    setExternalFilterScriptOpen,
     uiLocaleRenderTick,
     setUiLocaleRenderTick,
     knowledgeOpen,

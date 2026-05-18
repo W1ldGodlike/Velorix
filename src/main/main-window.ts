@@ -13,6 +13,7 @@ import {
   logicalScaleFactor,
   mainEditorMinLogicalSize
 } from './window-hidpi'
+import { isNativeMainBrowserWindowNeedsIcon } from './platform'
 import { rectifyBoundsForRestore } from './window-bounds'
 
 export type MainWindowCreateDeps = {
@@ -58,7 +59,7 @@ export function createMainWindow(deps: MainWindowCreateDeps): BrowserWindow {
     ...(rect ? { x: rect.x, y: rect.y } : {}),
     show: false,
     autoHideMenuBar: false,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    ...(isNativeMainBrowserWindowNeedsIcon() ? { icon } : {}),
     webPreferences: {
       preload: resolvePreloadOutFile('index', deps.mainDirname),
       sandbox: false,

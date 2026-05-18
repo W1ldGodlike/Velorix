@@ -10,6 +10,7 @@ import {
   IconFilm,
   IconFolder,
   IconFolderOpen,
+  IconImage,
   IconMoon,
   IconSettings,
   IconSun,
@@ -18,6 +19,7 @@ import {
 } from '../LucideMiniIcons'
 import type { WorkspaceTab } from '../../app-terminal-hint-ui'
 import type { EngineSummary } from '../../app-engines-ui'
+import { formatStatusbarLocaleShort } from '../../statusbar-locale-display'
 import { getUiLocale, uiText } from '../../locales/ui-text'
 
 export type AppWorkspaceTopbarProps = {
@@ -34,6 +36,7 @@ export type AppWorkspaceTopbarProps = {
   onOpenVideoFolder: () => void
   onOpenFile: () => void
   onCancelExport: () => void
+  onExtractFrames: () => Promise<void>
   onEnginesDownload: () => void
   onOpenEnginePaths: () => void
   onOpenKnowledge: () => void
@@ -57,6 +60,7 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
     onOpenVideoFolder,
     onOpenFile,
     onCancelExport,
+    onExtractFrames,
     onEnginesDownload,
     onOpenEnginePaths,
     onOpenKnowledge,
@@ -205,6 +209,19 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
             type="button"
             className="app-icon-btn"
             aria-describedby={workspaceTabDescId}
+            disabled={!previewPath || exportBusy}
+            onClick={() => {
+              void onExtractFrames()
+            }}
+            title={uiText('topbarExtractFramesTitle')}
+          >
+            <IconImage title="" size={16} />
+            <span className="app-visually-hidden">{uiText('topbarExtractFramesLabel')}</span>
+          </button>
+          <button
+            type="button"
+            className="app-icon-btn"
+            aria-describedby={workspaceTabDescId}
             onClick={() => {
               void window.fluxalloy.inspector.openWindow(previewPath ?? null)
             }}
@@ -310,7 +327,7 @@ export function AppWorkspaceTopbar(props: AppWorkspaceTopbarProps): JSX.Element 
                 : uiText('topbarUiLocaleSwitchToRussianTitle')
             }
           >
-            <span aria-hidden>{getUiLocale() === 'ru' ? 'RU' : 'EN'}</span>
+            <span aria-hidden>{formatStatusbarLocaleShort(getUiLocale())}</span>
             <span className="app-visually-hidden">
               {getUiLocale() === 'ru'
                 ? uiText('topbarUiLocaleVisuallyHiddenRu')

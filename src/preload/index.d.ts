@@ -46,7 +46,7 @@ import type {
   FfmpegExportBatchSnapshot,
   FfmpegExportBatchStartResult
 } from '../shared/ffmpeg-export-batch-contract'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import type { AppAboutInfo } from '../shared/about-contract'
 import type {
   EngineId,
@@ -109,7 +109,7 @@ export interface FluxAlloyApi {
   // Имена IPC-каналов — `src/shared/ipc-channels.ts`; держать этот интерфейс синхронным с `src/preload/index.ts`.
   settings: {
     get: () => Promise<AppSettingsView>
-    setUiLocale: (locale: DownloadsWindowUiLocale) => Promise<AppSettings>
+    setUiLocale: (locale: AppUiLocale) => Promise<AppSettings>
     setTheme: (theme: AppTheme) => Promise<AppSettingsView>
     setEngineExecutablePaths: (patch: EnginePathOverridesPatch) => Promise<AppSettings>
     pickEngineExecutable: (engineId: EngineId) => Promise<string | null>
@@ -120,6 +120,7 @@ export interface FluxAlloyApi {
     setFfmpegExportVideoBitrate: (bitrate: string | null) => Promise<AppSettings>
     setFfmpegExportTwoPass: (enabled: boolean) => Promise<AppSettings>
     setFfmpegExportEconomyMode: (enabled: boolean) => Promise<AppSettings>
+    setFfmpegExportBenchmarkLoadThreshold: (percent: number) => Promise<AppSettings>
     setFfmpegExportHwDecode: (enabled: boolean) => Promise<AppSettings>
     setFfmpegExportExtraArgsLine: (line: string) => Promise<AppSettings>
     setFfmpegExportBatchOutputSuffix: (suffix: string) => Promise<AppSettings>
@@ -155,10 +156,17 @@ export interface FluxAlloyApi {
     applyFfmpegExportSnapshot: (snapshot: FfmpegExportUserPresetSnapshot) => Promise<AppSettings>
     setFfmpegSnapshotFormat: (format: FfmpegSnapshotFormatId) => Promise<AppSettings>
     mergeMainWindowUiPanels: (patch: Partial<MainWindowUiPanelState>) => Promise<AppSettings>
+    exportBackup: () => Promise<
+      { ok: true; path: string } | { ok: false; cancelled: true } | { ok: false; error: string }
+    >
+    importBackup: () => Promise<
+      { ok: true } | { ok: false; cancelled: true } | { ok: false; error: string }
+    >
+    resetToDefaults: () => Promise<AppSettings>
   }
   preview: {
-    openFileDialog: (uiLocale?: DownloadsWindowUiLocale) => Promise<PreviewDialogResult>
-    openVideoFolderDialog: (uiLocale?: DownloadsWindowUiLocale) => Promise<PreviewDialogResult>
+    openFileDialog: (uiLocale?: AppUiLocale) => Promise<PreviewDialogResult>
+    openVideoFolderDialog: (uiLocale?: AppUiLocale) => Promise<PreviewDialogResult>
     grantPath: (
       absolutePath: string
     ) => Promise<
@@ -218,6 +226,9 @@ export interface FluxAlloyApi {
       mode: 'file' | 'folder'
     ) => Promise<{ ok: true } | { ok: false; error: string }>
     openQueueOutputInHandler: (id: number) => Promise<{ ok: true } | { ok: false; error: string }>
+    extractQueueCover: (
+      id: number
+    ) => Promise<import('../shared/ffmpeg-cover-extract-contract').FfmpegCoverExtractResult>
     getCliOptions: (
       params?: YtdlpGetCliOptionsParams
     ) => Promise<{ ok: true; payload: YtdlpDownloadOptionsPayload } | { ok: false; error: string }>
@@ -248,6 +259,12 @@ export interface FluxAlloyApi {
       ) => void
     ) => () => void
     onDownloadsCliOptionsChanged: (listener: () => void) => () => void
+    bridgeOpenInspector: (
+      mediaPath?: string | null
+    ) => Promise<{ ok: true } | { ok: false; error: string }>
+    bridgeFocusMainEditor: () => Promise<{ ok: true } | { ok: false; error: string }>
+    bridgeOpenEnginePaths: () => Promise<{ ok: true } | { ok: false; error: string }>
+    bridgeOpenAbout: () => Promise<{ ok: true } | { ok: false; error: string }>
   }
   inspector: {
     openWindow: (absoluteMediaPath?: string | null) => Promise<void>
@@ -270,6 +287,34 @@ export interface FluxAlloyApi {
   about: {
     getInfo: () => Promise<AppAboutInfo>
   }
+  externalFilterScript: {
+    pickFile: (payload: {
+      kind: import('../shared/external-filter-script-contract').ExternalFilterScriptKind
+      uiLocale?: import('../shared/app-ui-locale').AppUiLocale
+    }) => Promise<import('../shared/external-filter-script-contract').ExternalFilterScriptPickResult>
+    apply: (
+      payload: import('../shared/external-filter-script-contract').ExternalFilterScriptApplyPayload & {
+        uiLocale?: import('../shared/app-ui-locale').AppUiLocale
+      }
+    ) => Promise<import('../shared/external-filter-script-contract').ExternalFilterScriptApplyResult>
+  }
+  utilities: {
+    repairRemux: (
+      payload: import('../shared/media-utilities-contract').MediaUtilitiesRepairRequestPayload
+    ) => Promise<import('../shared/media-utilities-contract').MediaUtilitiesRepairResult>
+    checkIntegrity: (
+      payload: import('../shared/media-utilities-contract').MediaUtilitiesIntegrityRequestPayload
+    ) => Promise<import('../shared/media-utilities-contract').MediaUtilitiesIntegrityResult>
+    generateNoise: (
+      payload: import('../shared/media-utilities-contract').MediaUtilitiesGenerateNoiseRequestPayload
+    ) => Promise<import('../shared/media-utilities-contract').MediaUtilitiesGenerateNoiseResult>
+    computeFileHash: (
+      payload: import('../shared/media-utilities-contract').MediaUtilitiesFileHashRequestPayload
+    ) => Promise<import('../shared/media-utilities-contract').MediaUtilitiesFileHashResult>
+    convertImage: (
+      payload: import('../shared/media-utilities-contract').MediaUtilitiesConvertImageRequestPayload
+    ) => Promise<import('../shared/media-utilities-contract').MediaUtilitiesConvertImageResult>
+  }
   diagnostics: {
     listFolders: () => Promise<DiagnosticsFolderEntry[]>
     openFolder: (
@@ -286,17 +331,27 @@ export interface FluxAlloyApi {
     send: (entry: { level: 'info' | 'warn' | 'error'; scope?: string; message: string }) => void
   }
   engines: {
-    getStatus: (uiLocale?: DownloadsWindowUiLocale) => Promise<EnginesStatusSnapshot>
+    getStatus: (uiLocale?: AppUiLocale) => Promise<EnginesStatusSnapshot>
     shouldOfferDownload: () => Promise<boolean>
     download: (
-      uiLocale?: DownloadsWindowUiLocale
+      uiLocale?: AppUiLocale
     ) => Promise<{ ok: true } | { ok: false; error: string }>
+    checkUpdatesAndDownload: (
+      uiLocale?: AppUiLocale
+    ) => Promise<
+      import('../shared/engine-update-check-contract').EnginesCheckUpdatesAndDownloadResult
+    >
     clearUserBin: () => Promise<{ ok: true; removed: number } | { ok: false; error: string }>
     probeHwEncoders: () => Promise<FfmpegHwEncodersProbeResult>
     onDownloadProgress: (listener: (progress: EngineDownloadProgress) => void) => () => void
   }
   export: {
     start: (payload: MediaExportRequestPayload) => Promise<MediaExportStartResult>
+    runBenchmark: (
+      payload: import('../shared/ffmpeg-export-benchmark-contract').FfmpegExportBenchmarkRequestPayload
+    ) => Promise<
+      import('../shared/ffmpeg-export-benchmark-contract').FfmpegExportBenchmarkResult
+    >
     resolveBundledLutCubePath: (preset: FfmpegExportVideoLut3dId) => Promise<string | null>
     cancel: () => Promise<{ ok: true } | { ok: false; error: string }>
     openOutput: (
@@ -304,6 +359,19 @@ export interface FluxAlloyApi {
       mode: 'file' | 'folder' | 'preview'
     ) => Promise<{ ok: true; path: string } | { ok: false; error: string }>
     onProgress: (listener: (progress: FfmpegExportProgressPayload) => void) => () => void
+    onBenchmarkProgress: (
+      listener: (
+        progress: import('../shared/ffmpeg-export-benchmark-contract').FfmpegExportBenchmarkProgressPayload
+      ) => void
+    ) => () => void
+    extractFrames: (
+      payload: import('../shared/ffmpeg-frames-extract-contract').FfmpegFramesExtractRequestPayload
+    ) => Promise<import('../shared/ffmpeg-frames-extract-contract').FfmpegFramesExtractResult>
+    onExtractFramesProgress: (
+      listener: (
+        progress: import('../shared/ffmpeg-frames-extract-contract').FfmpegFramesExtractProgressPayload
+      ) => void
+    ) => () => void
   }
   batchExport: {
     getSnapshot: () => Promise<FfmpegExportBatchSnapshot>
@@ -356,10 +424,15 @@ export interface FluxAlloyApi {
   }
   onPreviewOpened: (listener: (payload: PreviewOpenedPayload) => void) => () => void
   onThemeChanged: (listener: (theme: ResolvedAppTheme) => void) => () => void
-  onUiLocaleChanged: (listener: (locale: DownloadsWindowUiLocale) => void) => () => void
+  onUiLocaleChanged: (listener: (locale: AppUiLocale) => void) => () => void
   onOpenEnginePaths: (listener: () => void) => () => void
+  onOpenSettings: (
+    listener: (section: import('../shared/app-settings-dialog-section').AppSettingsDialogSection) => void
+  ) => () => void
   onEnginePathsChanged: (listener: () => void) => () => void
+  onSettingsBackupImported: (listener: () => void) => () => void
   onOpenAbout: (listener: () => void) => () => void
+  onOpenExternalFilterScript: (listener: () => void) => () => void
   onMainWindowUiPanelsChanged: (
     listener: (panels: MainWindowUiPanelState | undefined) => void
   ) => () => void

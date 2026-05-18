@@ -1,7 +1,7 @@
 import { isAbsolute, normalize } from 'path'
 
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
-import { parseDownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
+import { parseAppUiLocale } from '../shared/app-ui-locale'
 import type { YtdlpGetCliOptionsParams } from '../shared/ytdlp-download-contract'
 import {
   validateYtdlpCookiesFilePath,
@@ -14,7 +14,7 @@ export type MainYtdlpSettingsPersistAccess = {
   getSettings: () => AppSettings
   replaceSettings: (settings: AppSettings) => void
   persistSettings: () => void
-  mainDownloadsUiLocale: () => DownloadsWindowUiLocale
+  mainDownloadsUiLocale: () => AppUiLocale
   onDownloadDirectoryChanged: (directory: string | undefined) => void
   onCliOptionsChanged: () => void
 }
@@ -92,7 +92,7 @@ export function parseYtdlpGetCliOptionsParams(raw: unknown): YtdlpGetCliOptionsP
   if (dr !== undefined && dr !== null && typeof dr === 'object') {
     out.draft = dr as YtdlpDownloadOptionsPatch
   }
-  const parsedUi = parseDownloadsWindowUiLocale(o['uiLocale'])
+  const parsedUi = parseAppUiLocale(o['uiLocale'])
   if (parsedUi !== undefined) {
     out.uiLocale = parsedUi
   }
@@ -102,7 +102,7 @@ export function parseYtdlpGetCliOptionsParams(raw: unknown): YtdlpGetCliOptionsP
 /** §6.2 — шаблон `-o` и белый список `-f`; синхронно обновляет снимок для downloads-queue-runner. */
 export function persistYtdlpDownloadCliOptionsPatch(
   patch: YtdlpDownloadOptionsPatch,
-  uiLocale?: DownloadsWindowUiLocale
+  uiLocale?: AppUiLocale
 ): { ok: true } | { ok: false; error: string } {
   const d = requireAccess()
   const loc = uiLocale ?? d.mainDownloadsUiLocale()

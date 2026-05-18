@@ -25,6 +25,7 @@ export function buildDiagnosticsFolderSubmenu(): MenuItemConstructorOptions[] {
   const entries = listDiagnosticsFolders(d.mainDownloadsUiLocale())
   return entries.map((entry: DiagnosticsFolderEntry) => ({
     label: entry.label,
+    toolTip: entry.hint,
     enabled: entry.exists,
     click: (): void => {
       void openDiagnosticsFolder(entry.id)

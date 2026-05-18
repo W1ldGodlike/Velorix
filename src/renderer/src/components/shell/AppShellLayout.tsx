@@ -7,7 +7,8 @@ import { AppOverlayDialogs } from './AppOverlayDialogs'
 import { AppStatusbar } from './AppStatusbar'
 import { AppWorkspaceMain } from './AppWorkspaceMain'
 import { AppWorkspaceTopbar } from './AppWorkspaceTopbar'
-import { EnginePathsDialog } from './EnginePathsDialog'
+import { AppSettingsDialog } from './AppSettingsDialog'
+import { ExternalFilterScriptDialog } from './ExternalFilterScriptDialog'
 import { ExportPresetNameDialog } from './ExportPresetNameDialog'
 
 export type AppShellLayoutProps = AppShellLayoutChromeProps & {
@@ -21,7 +22,8 @@ export function AppShellLayout({
   statusbar,
   overlay,
   exportPreset,
-  enginePaths
+  appSettings,
+  externalFilterScript
 }: AppShellLayoutProps): JSX.Element {
   return (
     <div className="app-shell" aria-label={uiText('appMainShellAria')} aria-busy={appChromeBusy}>
@@ -30,7 +32,8 @@ export function AppShellLayout({
       <AppStatusbar {...statusbar} />
       <AppOverlayDialogs {...overlay} />
       <ExportPresetNameDialog {...exportPreset} />
-      <EnginePathsDialog {...enginePaths} />
+      <AppSettingsDialog {...appSettings} />
+      <ExternalFilterScriptDialog {...externalFilterScript} />
     </div>
   )
 }

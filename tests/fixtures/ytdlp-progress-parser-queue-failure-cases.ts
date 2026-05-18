@@ -1,4 +1,4 @@
-import type { DownloadsWindowUiLocale } from '../../src/shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../../src/shared/app-ui-locale'
 import type { YtdlpQueueFailureKind } from '../../src/main/ytdlp-progress-parser'
 
 export type YtdlpQueueFailureStatusCase = {
@@ -8,7 +8,7 @@ export type YtdlpQueueFailureStatusCase = {
   errorHint: string | null
   stderrFallback: string | null
   failureKind?: YtdlpQueueFailureKind
-  locale?: DownloadsWindowUiLocale
+  locale?: AppUiLocale
   expected: string
 }
 

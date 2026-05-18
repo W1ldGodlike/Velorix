@@ -8,6 +8,7 @@ import type {
   FfmpegExportAudioNormalizeId,
   FfmpegExportSubtitleModeId
 } from '../../../../shared/ffmpeg-export-contract'
+import { parseFfmpegSnapshotFormatId } from '../../../../shared/ffmpeg-snapshot-format-parse'
 import { PillSwitch } from '../PillSwitch'
 import { uiText } from '../../locales/ui-text'
 import { EXPORT_AUDIO_BITRATES } from '../../editor-ffmpeg-settings-rail-constants'
@@ -190,7 +191,7 @@ export function EditorFfmpegSettingsRailAudioSection(props: EditorFfmpegSettings
             value={snapshotFormat}
             disabled={exportBusy || snapshotBusy}
             onChange={(e) => {
-              const v = e.target.value === 'jpg' ? 'jpg' : 'png'
+              const v = parseFfmpegSnapshotFormatId(e.target.value)
               setSnapshotFormat(v)
               void window.fluxalloy.settings.setFfmpegSnapshotFormat(v).catch(console.error)
             }}

@@ -147,14 +147,14 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_05: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· поток v:0 side_data list',
     summary:
-      'Список side_data у v:0 (-show_entries stream_side_data_list — HDR10+, DOVI и др. без разбора каждого поля); путь к медиа подставляется из превью.',
+      'Список side_data у первой видеодорожки (v:0) (-show_entries stream_side_data_list — HDR10+, DOVI и др. без разбора каждого поля); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream_side_data_list -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
     tool: 'ffprobe',
     token: '· поток a:0 side_data list',
     summary:
-      'Список side_data у a:0 (например метаданные объёмного звука); путь к медиа подставляется из превью.',
+      'Список side_data у первой аудиодорожки (a:0) (например метаданные объёмного звука); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams a:0 -show_entries stream_side_data_list -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -231,7 +231,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_05: TerminalCommandHintE
     tool: 'ffmpeg',
     token: '· ffmpeg: демультиплекс a:0 в pcm 2с',
     summary:
-      'Извлечь первую аудиодорожку в сырой PCM первых 2 с (-map 0:a:0 -f s16le); дымовая проверка -map и pcm без кавычек в argv; путь к медиа подставляется из превью.',
+      'Извлечь первую аудиодорожку в сырой PCM (-map 0:a:0 — первая аудиодорожка) первых 2 с (-f s16le); дымовая проверка -map и pcm без кавычек в argv; путь к медиа подставляется из превью.',
     fullLine: `ffmpeg -hide_banner -nostats -i ${TERMINAL_CURRENT_FILE_PLACEHOLDER} -map 0:a:0 -t 2 -vn -sn -f s16le -`
   },
   {
@@ -252,7 +252,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_05: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· видео v:0 только color_transfer',
     summary:
-      'Поток v:0: только color_transfer (поле ffprobe: кривая переноса, PQ, HLG и др.; отдельно от color_space); путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0): только color_transfer (поле ffprobe: кривая переноса, PQ, HLG и др.; отдельно от color_space); путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -select_streams v:0 -show_entries stream=color_transfer -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {
@@ -322,7 +322,7 @@ export const TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA_PART_05: TerminalCommandHintE
     tool: 'ffprobe',
     token: '· видео v:0 с приватными полями',
     summary:
-      'Поток v:0 с флагом -show_private_data (дополнительные поля кодека, если демультиплексор их отдаёт) и codec_name; путь к медиа подставляется из превью.',
+      'Первая видеодорожка (v:0) с флагом -show_private_data (дополнительные поля кодека, если демультиплексор их отдаёт) и codec_name; путь к медиа подставляется из превью.',
     fullLine: `ffprobe -hide_banner -show_private_data -select_streams v:0 -show_entries stream=codec_name -of default=nw=1:nk=1 ${TERMINAL_CURRENT_FILE_PLACEHOLDER}`
   },
   {

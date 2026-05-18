@@ -10,9 +10,7 @@ export const YTDLP_PROGRESS_NULL_LINES: readonly string[] = [
   '[info] some',
   'random output',
   '',
-  '[download] Destination: video.mp4',
-  '[download] Skipping 3 of 10 videos',
-  '[download] Unable to rename file'
+  '[download] Destination: video.mp4'
 ]
 
 export const YTDLP_PROGRESS_EQUAL_CASES: readonly ProgressCase[] = [

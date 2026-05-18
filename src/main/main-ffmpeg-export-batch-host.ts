@@ -1,7 +1,7 @@
 import { BrowserWindow } from 'electron'
 
 import { mainWindowIpc as mw } from '../shared/ipc-channels'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import {
   fluxLogBatchAutoStartFfmpegMissing,
   fluxLogBatchAutoStartLaunched,
@@ -28,7 +28,7 @@ export type MainFfmpegExportBatchHostAccess = {
   isExportBusy: () => boolean
   getSettings: () => AppSettings
   getEnginePathOverrides: () => EnginePathOverrides
-  mainDownloadsUiLocale: () => DownloadsWindowUiLocale
+  mainDownloadsUiLocale: () => AppUiLocale
   rememberExportOutputPath: (filePath: string) => void
   rememberFfmpegExportDirectory: (outputPath: string) => void
   broadcastBatchSnapshot: (win?: BrowserWindow | null) => void

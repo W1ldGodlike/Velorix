@@ -24,3 +24,21 @@ export type KnowledgeListArticlesRequest = { preferredUiLocale?: 'ru' | 'en' } |
 
 /** Deep-link из UI в базу знаний: логи, Support ZIP, диагностика (`Help/about-support-logs.md`). */
 export const KNOWLEDGE_SLUG_ABOUT_SUPPORT_LOGS = 'about-support-logs'
+
+/** §15 / терминал — `Help/ffmpeg-terminal-hints.md`. */
+export const KNOWLEDGE_SLUG_FFMPEG_TERMINAL_HINTS = 'ffmpeg-terminal-hints'
+
+/** Правая панель загрузок — `Help/downloads-settings-rail.md`. */
+export const KNOWLEDGE_SLUG_DOWNLOADS_SETTINGS_RAIL = 'downloads-settings-rail'
+
+/** Пресеты и rail ffmpeg — `Help/ffmpeg-rail-presets.md`. */
+export const KNOWLEDGE_SLUG_FFMPEG_RAIL_PRESETS = 'ffmpeg-rail-presets'
+
+/** Пакетный экспорт и очереди — `Help/session-and-queues.md`. */
+export const KNOWLEDGE_SLUG_SESSION_AND_QUEUES = 'session-and-queues'
+
+/** Инспектор ffprobe — `Help/probe-and-inspector-basics.md`. */
+export const KNOWLEDGE_SLUG_PROBE_AND_INSPECTOR = 'probe-and-inspector-basics'
+
+/** FAQ — `Help/faq-troubleshooting.md`. */
+export const KNOWLEDGE_SLUG_FAQ_TROUBLESHOOTING = 'faq-troubleshooting'

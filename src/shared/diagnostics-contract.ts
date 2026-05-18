@@ -11,8 +11,10 @@ export type DiagnosticsFolderId =
 
 export interface DiagnosticsFolderEntry {
   id: DiagnosticsFolderId
-  /** Короткая русская подпись для пункта меню/UI. */
+  /** Короткая подпись для пункта меню/UI (локаль main). */
   label: string
+  /** Подсказка: назначение каталога (title меню / aria в renderer). */
+  hint: string
   /** Абсолютный путь, который будет передан в `shell.openPath`. */
   path: string
   /** Существует ли каталог в момент перечисления (для disabled-состояния пункта меню). */

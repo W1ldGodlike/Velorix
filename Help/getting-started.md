@@ -18,3 +18,4 @@
 - Очередь и быстрые действия — [downloads-workflow.md](downloads-workflow.md)
 - Превью, таймлайн и вывод — [editor-workflow.md](editor-workflow.md) и [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md)
 - Справка внутри программы — [knowledge-base-howto.md](knowledge-base-howto.md)
+- Частые проблемы — [faq-troubleshooting.md](faq-troubleshooting.md)

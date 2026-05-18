@@ -1,0 +1,134 @@
+[
+  {
+    "token": "-hide_banner",
+    "summary": "Скрыть баннер ffprobe в начале вывода.",
+    "summaryEn": "Hide the ffprobe banner at the start of output.",
+    "examples": ["ffprobe -hide_banner -show_format file.mp4"],
+    "docUrl": "https://ffmpeg.org/ffprobe.html",
+    "tool": "ffprobe"
+  },
+  {
+    "token": "-show_format",
+    "summary": "Секция format: контейнер, длительность, битрейт, теги.",
+    "summaryEn": "Format section: container, duration, bitrate, tags.",
+    "examples": ["ffprobe -hide_banner -show_format file.mkv"],
+    "docUrl": "https://ffmpeg.org/ffprobe.html#Main-options",
+    "tool": "ffprobe"
+  },
+  {
+    "token": "-show_streams",
+    "summary": "Секция streams: кодеки, разрешение, fps, каналы аудио.",
+    "summaryEn": "Streams section: codecs, resolution, fps, audio channels.",
+    "examples": ["ffprobe -hide_banner -show_streams file.mp4"],
+    "docUrl": "https://ffmpeg.org/ffprobe.html#Main-options",
+    "tool": "ffprobe"
+  },
+  {
+    "token": "-show_chapters",
+    "summary": "Список глав (если есть в файле).",
+    "summaryEn": "Chapter list when present in the file.",
+    "examples": ["ffprobe -hide_banner -show_chapters file.mkv"],
+    "docUrl": "https://ffmpeg.org/ffprobe.html#Main-options",
+    "tool": "ffprobe"
+  },
+  {
+    "token": "-print_format",
+    "summary": "Формат вывода: json (по умолчанию в FluxAlloy), xml, flat.",
+    "summaryEn": "Output format: json (FluxAlloy default), xml, flat.",
+    "examples": ["ffprobe -print_format json -show_format -show_streams file.mp4"],
+    "docUrl": "https://ffmpeg.org/ffprobe.html#Writers",
+    "tool": "ffprobe"
+  },
+  {
+    "token": "json",
+    "summary": "JSON-вывод (удобно для копирования и инспектора).",
+    "summaryEn": "JSON output (handy for copy and the inspector).",
+    "examples": ["ffprobe -v error -print_format json -show_format -show_streams file.mp4"],
+    "docUrl": "https://ffmpeg.org/ffprobe.html#json",
+    "tool": "ffprobe"
+  },
+  {
+    "token": "-select_streams",
+    "summary": "Какую дорожку смотреть: v:0 — первое видео, a:0 — первое аудио, s:0 — субтитры (индексы как в ffmpeg).",
+    "summaryEn": "Which stream to inspect: v:0 first video, a:0 first audio, s:0 subtitles (ffmpeg indices).",
+    "examples": ["ffprobe -select_streams v:0 -show_entries stream=codec_name,width,height file.mp4"],
+    "docUrl": "https://ffmpeg.org/ffprobe.html#Main-options",
+    "tool": "ffprobe"
+  },
+  {
+    "token": "-show_entries",
+    "summary": "Только нужные поля (stream=…, format=…).",
+    "summaryEn": "Only selected fields (stream=…, format=…).",
+    "examples": [
+      "ffprobe -show_entries format=duration,bit_rate -show_entries stream=codec_name -of default=nw=1 file.mp4"
+    ],
+    "docUrl": "https://ffmpeg.org/ffprobe.html#Main-options",
+    "tool": "ffprobe"
+  },
+  {
+    "token": "-read_intervals",
+    "summary": "Проба интервала времени (%+10 или 00:01:00%+#5).",
+    "summaryEn": "Probe a time interval (%+10 or 00:01:00%+#5).",
+    "examples": ["ffprobe -read_intervals %+30 -show_frames file.mp4"],
+    "docUrl": "https://ffmpeg.org/ffprobe.html#Main-options",
+    "tool": "ffprobe"
+  },
+  {
+    "token": "-show_frames",
+    "summary": "Покадровая информация (тяжёлый вывод).",
+    "summaryEn": "Per-frame metadata (heavy output).",
+    "examples": ["ffprobe -show_frames -select_streams v:0 -read_intervals %+5 file.mp4"],
+    "docUrl": "https://ffmpeg.org/ffprobe.html#Main-options",
+    "tool": "ffprobe"
+  },
+  {
+    "token": "-count_frames",
+    "summary": "Подсчёт кадров в выбранной дорожке (медленная операция).",
+    "summaryEn": "Count frames in the selected stream (slow).",
+    "examples": ["ffprobe -count_frames -select_streams v:0 -show_entries stream=nb_read_frames file.mp4"],
+    "docUrl": "https://ffmpeg.org/ffprobe.html#Main-options",
+    "tool": "ffprobe"
+  },
+  {
+    "token": "-v",
+    "summary": "Уровень лога: quiet, error, warning, info.",
+    "summaryEn": "Log level: quiet, error, warning, info.",
+    "examples": ["ffprobe -v error -show_format file.mp4"],
+    "docUrl": "https://ffmpeg.org/ffprobe.html#Generic-options",
+    "tool": "ffprobe"
+  },
+  {
+    "token": "error",
+    "summary": "Только ошибки в stderr (типично для скриптов).",
+    "summaryEn": "Errors only on stderr (typical for scripts).",
+    "examples": ["ffprobe -v error -print_format json -show_format -show_streams file.mp4"],
+    "docUrl": "https://ffmpeg.org/ffprobe.html#Generic-options",
+    "tool": "ffprobe"
+  },
+  {
+    "token": "-version",
+    "summary": "Версия ffprobe и сборки ffmpeg.",
+    "summaryEn": "ffprobe and ffmpeg build version.",
+    "examples": ["ffprobe -version"],
+    "docUrl": "https://ffmpeg.org/ffprobe.html",
+    "tool": "ffprobe"
+  },
+  {
+    "token": "-of",
+    "summary": "Короткий алиас для -print_format (default, json, flat).",
+    "summaryEn": "Short alias for -print_format (default, json, flat).",
+    "examples": ["ffprobe -of json -show_format -show_streams file.mp4"],
+    "docUrl": "https://ffmpeg.org/ffprobe.html#Writers",
+    "tool": "ffprobe"
+  },
+  {
+    "token": "default=nw=1",
+    "summary": "Плоский вывод без обёртки section/stream (nw=1).",
+    "summaryEn": "Flat key=value lines without section wrappers (nw=1).",
+    "examples": [
+      "ffprobe -v error -show_entries stream=codec_name,width,height -of default=nw=1 file.mp4"
+    ],
+    "docUrl": "https://ffmpeg.org/ffprobe.html#flat",
+    "tool": "ffprobe"
+  }
+]

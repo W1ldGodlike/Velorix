@@ -151,6 +151,7 @@ export function EditorQuickYtdlpBar(props: EditorQuickYtdlpBarProps): JSX.Elemen
             type="button"
             className="app-btn app-btn-primary app-btn-icon-leading"
             aria-describedby="quickYtdlpUrlHint"
+            title={uiText('quickYtdlpEnqueueLines')}
             onClick={() => {
               onEnqueueLines()
             }}
@@ -162,6 +163,7 @@ export function EditorQuickYtdlpBar(props: EditorQuickYtdlpBarProps): JSX.Elemen
             type="button"
             className="app-btn app-btn-icon-leading"
             aria-describedby="quickYtdlpUrlHint"
+            title={uiText('quickYtdlpDownloadOpenEditor')}
             onClick={() => {
               onDownloadFirstUrlOpenInEditor()
             }}

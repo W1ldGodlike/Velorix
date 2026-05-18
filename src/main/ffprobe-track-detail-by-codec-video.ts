@@ -1,4 +1,4 @@
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { formatFfprobeVideoFpsDetail } from '../shared/ffprobe-video-fps'
 import {
   extractFfprobeDisplayMatrixRotation,
@@ -35,7 +35,7 @@ export function appendFfprobeVideoTrackDetailParts(
   _containerDurationSec: number | null,
   streamDur: string | null,
   _audioChannelsSuffixTemplate: string,
-  locale: DownloadsWindowUiLocale
+  locale: AppUiLocale
 ): void {
   const w = stream.width
   const h = stream.height

@@ -18,7 +18,7 @@ import {
   shouldApplyYtdlpInfoTitleShortLabel,
   shouldPreferYtdlpOutputPathShortLabel
 } from './ytdlp-queue-short-label'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { downloadsQueueRunnerState } from './downloads-queue-runner-state'
 import {
   DOWNLOADS_PROGRESS_LOG_MAX_SILENCE_MS,
@@ -46,7 +46,7 @@ export type YtdlpRowProgressBridge = {
 
 export function createYtdlpRowProgressBridge(
   rowId: number,
-  locale: DownloadsWindowUiLocale,
+  locale: AppUiLocale,
   initialOutputPath: string | null
 ): YtdlpRowProgressBridge {
   let lastProgressCell: string | null = null

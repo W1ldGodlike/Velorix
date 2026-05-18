@@ -67,7 +67,7 @@ export function registerDownloadsBridgeIpcHandlers(): void {
     if (!w || w.isDestroyed()) {
       return { ok: false, error: P.mainWindowNotFound }
     }
-    w.webContents.send(mw.openEnginePaths)
+    w.webContents.send(mw.openSettings, 'dependencies')
     w.show()
     w.focus()
     return { ok: true }

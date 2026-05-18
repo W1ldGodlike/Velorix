@@ -313,7 +313,7 @@
   },
   {
     "token": "--ap-mso",
-    "summary": "Apple MSO/Device token для некоторых Apple TV-потоков.",
+    "summary": "Токен Apple MSO/Device для отдельных источников Apple TV.",
     "summaryEn": "Apple MSO/device token for some Apple TV streams.",
     "examples": ["yt-dlp --ap-mso … URL"],
     "docUrl": "https://github.com/yt-dlp/yt-dlp#authentication-options",

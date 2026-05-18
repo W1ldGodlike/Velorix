@@ -1,5 +1,5 @@
 import type { MediaProbeTrackRow } from '../shared/ffprobe-contract'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { formatFfprobeBitrateLabelFromKbps } from '../shared/ffprobe-summary-export-locale'
 export function parsePositiveNumber(raw: string | undefined): number | null {
   if (typeof raw !== 'string' || raw.trim() === '') {
@@ -78,7 +78,7 @@ export function appendMaxBitrateDetailIfNotable(
   parts: string[],
   bitRate: string | undefined,
   maxBitRate: string | undefined,
-  locale: DownloadsWindowUiLocale
+  locale: AppUiLocale
 ): void {
   const brKbps = formatBitrateKbps(typeof bitRate === 'string' ? bitRate : undefined)
   const maxKbps = formatBitrateKbps(typeof maxBitRate === 'string' ? maxBitRate : undefined)

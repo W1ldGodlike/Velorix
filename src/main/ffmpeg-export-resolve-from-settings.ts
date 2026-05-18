@@ -5,6 +5,7 @@ import type { AppSettings } from '../shared/settings-contract'
 import type { FfmpegExportContainerId } from '../shared/ffmpeg-export-contract'
 import type { ResolvedFfmpegExportJobOptions } from '../shared/ffmpeg-export-resolve-contract'
 import { parseFfmpegExportTwoPass } from './ffmpeg-export-service'
+import { resolveExternalFilterScriptFromSettings } from '../shared/external-filter-script-resolve-from-settings'
 import { resolveFfmpegExportJobOptionsFromRegistry } from './ffmpeg-export-resolve-field-registry'
 import {
   buildFfmpegExportBatchOutputBasename,
@@ -40,10 +41,14 @@ export function resolveFfmpegExportJobOptionsFromAppSettings(
         ? settings.ffmpegExportExtraArgsLine
         : ''
 
+  const external = resolveExternalFilterScriptFromSettings(settings)
+
   return {
     ...resolved,
     twoPass,
-    extraArgsLine
+    extraArgsLine,
+    externalFilterKind: external.kind,
+    externalFilterScriptAbsPath: external.scriptAbsPath
   }
 }
 

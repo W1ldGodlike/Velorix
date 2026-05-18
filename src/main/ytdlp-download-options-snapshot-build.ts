@@ -2,7 +2,7 @@ import { existsSync, statSync } from 'fs'
 import { isAbsolute, normalize } from 'path'
 
 import type { AppSettings } from './settings-store'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getYtdlpCliValidationCopy } from '../shared/ytdlp-cli-validation-locale'
 import type { YtdlpCookiesBrowserId, YtdlpImpersonateId } from '../shared/ytdlp-download-contract'
 import { parseExtraYtdlpArgsLine, validateYtdlpCookiesBrowserProfile } from './ytdlp-extra-args'
@@ -28,7 +28,7 @@ import {
 
 export function buildYtdlpRunOptionsSnapshot(
   settings: AppSettings,
-  uiLocale: DownloadsWindowUiLocale = 'ru'
+  uiLocale: AppUiLocale = 'ru'
 ): YtdlpRunOptionsSnapshot {
   const V = getYtdlpCliValidationCopy(uiLocale)
   const preset = parseYtdlpFormatPreset(settings.ytdlpFormatPreset)

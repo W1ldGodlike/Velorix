@@ -1,4 +1,4 @@
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { downloadsRunnerAbortMessage } from '../shared/downloads-flux-log-locale'
 
 /** Реже дергать таблицу/IPC: полоса и подпись прогресса обновляются не чаще этого интервала. */
@@ -12,7 +12,7 @@ export function isAbort(e: unknown): boolean {
   return e instanceof Error && e.name === 'AbortError'
 }
 
-export function abortErr(locale: DownloadsWindowUiLocale): Error {
+export function abortErr(locale: AppUiLocale): Error {
   const e = new Error(downloadsRunnerAbortMessage(locale))
   e.name = 'AbortError'
   return e
@@ -22,7 +22,7 @@ export function abortErr(locale: DownloadsWindowUiLocale): Error {
 export function delayWithAbort(
   ms: number,
   signal: AbortSignal,
-  locale: DownloadsWindowUiLocale
+  locale: AppUiLocale
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     if (signal.aborted) {

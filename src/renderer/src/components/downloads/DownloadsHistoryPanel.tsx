@@ -1,6 +1,8 @@
 import { useId, type JSX } from 'react'
 
+import type { DownloadsHistoryListMode } from '../../../../shared/settings-contract'
 import type { YtdlpDownloadHistoryEntry } from '../../../../shared/ytdlp-history-contract'
+import { resolveDownloadsHistoryVisibleEntries } from './downloads-history-display'
 import {
   formatDownloadsHistoryOutcomeLabel,
   formatDownloadsHistoryTime,
@@ -11,19 +13,24 @@ import {
 export function DownloadsHistoryPanel({
   open,
   busy,
+  listMode,
   entries,
   totalEntries,
   outcomeFilter,
   weeklySummary,
   onToggle,
+  onListModeChange,
   onOutcomeFilterChange,
   onRefresh,
   onClear,
   onExportVisible,
-  onRepeat
+  onRepeat,
+  onOpenOutput,
+  onOpenInEditor
 }: {
   open: boolean
   busy: boolean
+  listMode: DownloadsHistoryListMode
   entries: YtdlpDownloadHistoryEntry[]
   totalEntries: number
   outcomeFilter: 'all' | YtdlpDownloadHistoryEntry['outcome']
@@ -34,13 +41,19 @@ export function DownloadsHistoryPanel({
     cancelled: number
   }
   onToggle: (nextOpen: boolean) => void
+  onListModeChange: (nextMode: DownloadsHistoryListMode) => void
   onOutcomeFilterChange: (next: 'all' | YtdlpDownloadHistoryEntry['outcome']) => void
   onRefresh: () => void
   onClear: () => void
   onExportVisible: () => void
   onRepeat: (url: string) => void
+  onOpenOutput: (id: string, mode: 'file' | 'folder') => void
+  onOpenInEditor: (id: string) => void
 }): JSX.Element {
   const downloadsHistoryOutcomeFilterId = useId()
+  const visibleEntries = resolveDownloadsHistoryVisibleEntries(entries, listMode)
+  const showListModeToggle =
+    entries.length > visibleEntries.length || listMode === 'full'
   return (
     <details
       className="app-downloads-history-panel"
@@ -55,7 +68,7 @@ export function DownloadsHistoryPanel({
       <summary aria-describedby="downloads-page-hint">
         {uiText('downloadsHistoryTitle')}
         <span>
-          {entries.length}/{totalEntries}
+          {visibleEntries.length}/{totalEntries}
         </span>
       </summary>
       <div
@@ -106,10 +119,32 @@ export function DownloadsHistoryPanel({
             <option value="cancelled">{uiText('downloadsHistoryFilterCancelled')}</option>
           </select>
         </div>
+        {showListModeToggle ? (
+          <button
+            type="button"
+            className="app-btn app-btn-compact app-btn-icon-leading"
+            aria-pressed={listMode === 'full'}
+            aria-describedby="downloads-page-hint"
+            title={
+              listMode === 'full'
+                ? uiText('downloadsHistoryShowCompactList')
+                : uiText('downloadsHistoryShowFullList')
+            }
+            disabled={busy}
+            onClick={() => {
+              onListModeChange(listMode === 'full' ? 'compact' : 'full')
+            }}
+          >
+            {listMode === 'full'
+              ? uiText('downloadsHistoryShowCompactList')
+              : uiText('downloadsHistoryShowFullList')}
+          </button>
+        ) : null}
         <button
           type="button"
           className="app-btn app-btn-compact app-btn-icon-leading"
           aria-describedby="downloads-page-hint"
+          title={uiText('downloadsHistoryRefresh')}
           disabled={busy}
           onClick={onRefresh}
         >
@@ -119,6 +154,7 @@ export function DownloadsHistoryPanel({
           type="button"
           className="app-btn app-btn-compact app-btn-warn app-btn-icon-leading"
           aria-describedby="downloads-page-hint"
+          title={uiText('downloadsHistoryClear')}
           disabled={busy || entries.length === 0}
           onClick={onClear}
         >
@@ -128,6 +164,7 @@ export function DownloadsHistoryPanel({
           type="button"
           className="app-btn app-btn-compact app-btn-icon-leading"
           aria-describedby="downloads-page-hint"
+          title={uiText('downloadsHistoryExportJson')}
           disabled={busy || entries.length === 0}
           onClick={onExportVisible}
         >
@@ -141,7 +178,7 @@ export function DownloadsHistoryPanel({
         aria-describedby="downloads-page-hint"
         aria-busy={busy}
       >
-        {entries.length === 0 ? (
+        {visibleEntries.length === 0 ? (
           <p
             className="app-downloads-history-empty"
             role="status"
@@ -150,7 +187,7 @@ export function DownloadsHistoryPanel({
             {uiText('downloadsHistoryEmpty')}
           </p>
         ) : (
-          entries.slice(0, 8).map((entry, idx) => (
+          visibleEntries.map((entry, idx) => (
             <article
               key={entry.id}
               className="app-downloads-history-card"
@@ -182,6 +219,7 @@ export function DownloadsHistoryPanel({
                     type="button"
                     className="app-btn app-btn-compact app-btn-icon-leading"
                     aria-describedby="downloads-page-hint"
+                    title={uiText('downloadsHistoryRepeat')}
                     disabled={busy}
                     onClick={() => onRepeat(entry.url)}
                   >
@@ -202,6 +240,47 @@ export function DownloadsHistoryPanel({
                 >
                   {entry.errorHint}
                 </p>
+              ) : null}
+              {entry.outputPath && entry.outcome === 'success' ? (
+                <div
+                  className="app-downloads-history-actions"
+                  role="toolbar"
+                  aria-orientation="horizontal"
+                  aria-label={uiText('downloadsHistoryActionsToolbarAria')}
+                  aria-describedby="downloads-page-hint"
+                  aria-busy={busy}
+                >
+                  <button
+                    type="button"
+                    className="app-btn app-btn-compact"
+                    aria-describedby="downloads-page-hint"
+                    title={uiText('downloadsHistoryOpenFile')}
+                    disabled={busy}
+                    onClick={() => onOpenOutput(entry.id, 'file')}
+                  >
+                    {uiText('downloadsHistoryOpenFile')}
+                  </button>
+                  <button
+                    type="button"
+                    className="app-btn app-btn-compact"
+                    aria-describedby="downloads-page-hint"
+                    title={uiText('downloadsHistoryOpenFolder')}
+                    disabled={busy}
+                    onClick={() => onOpenOutput(entry.id, 'folder')}
+                  >
+                    {uiText('downloadsHistoryOpenFolder')}
+                  </button>
+                  <button
+                    type="button"
+                    className="app-btn app-btn-compact"
+                    aria-describedby="downloads-page-hint"
+                    title={uiText('downloadsHistoryOpenInEditor')}
+                    disabled={busy}
+                    onClick={() => onOpenInEditor(entry.id)}
+                  >
+                    {uiText('downloadsHistoryOpenInEditor')}
+                  </button>
+                </div>
               ) : null}
             </article>
           ))

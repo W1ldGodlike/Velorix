@@ -47,6 +47,7 @@ export type EditorExportSettingsHydrateSetters = {
   setExportAudioMode: (v: FfmpegExportAudioModeId) => void
   setExportTwoPass: (v: boolean) => void
   setExportEconomyMode: (v: boolean) => void
+  setExportBenchmarkLoadThreshold: (v: number) => void
   setExportHwDecode: (v: boolean) => void
   setExportExtraArgsLine: (v: string) => void
   setEditorUrlPasteBehavior: (v: EditorUrlPasteBehaviorId) => void
@@ -73,6 +74,8 @@ export type EditorExportSettingsHydrateSetters = {
   setExportVideoBlur: (v: FfmpegExportVideoBlurId) => void
   setExportAudioNormalize: (v: FfmpegExportAudioNormalizeId) => void
   setExportVideoLut3d: (v: FfmpegExportVideoLut3dId) => void
+  setExportExternalFilterKind: (v: 'off' | 'avisynth' | 'vapoursynth') => void
+  setExportExternalFilterScriptPath: (v: string) => void
 }
 
 export function hydrateEditorExportFieldsFromSettings(
@@ -145,6 +148,11 @@ export function hydrateEditorExportFieldsFromSettings(
   s.setExportAudioMode(nextAudioMode)
   s.setExportTwoPass(loaded.ffmpegExportTwoPass === true && bitrateOk && vcodec === 'libx264')
   s.setExportEconomyMode(loaded.ffmpegExportEconomyMode === true)
+  s.setExportBenchmarkLoadThreshold(
+    typeof loaded.ffmpegExportBenchmarkLoadThresholdPercent === 'number'
+      ? Math.min(100, Math.max(10, Math.round(loaded.ffmpegExportBenchmarkLoadThresholdPercent)))
+      : 80
+  )
   s.setExportHwDecode(loaded.ffmpegExportHwDecode === true)
   s.setExportExtraArgsLine(
     typeof loaded.ffmpegExportExtraArgsLine === 'string' ? loaded.ffmpegExportExtraArgsLine : ''
@@ -233,4 +241,13 @@ export function hydrateEditorExportFieldsFromSettings(
   s.setExportAudioNormalize(an === 'loudnorm' || an === 'dynaudnorm' ? an : 'off')
   const lut = loaded.ffmpegExportVideoLut3d
   s.setExportVideoLut3d(lut === 'film-warm' || lut === 'film-cool' || lut === 'punch' ? lut : 'off')
+  const fk = loaded.ffmpegExportExternalFilterKind
+  s.setExportExternalFilterKind(
+    fk === 'avisynth' || fk === 'vapoursynth' || fk === 'off' ? fk : 'off'
+  )
+  s.setExportExternalFilterScriptPath(
+    typeof loaded.ffmpegExportExternalFilterScriptPath === 'string'
+      ? loaded.ffmpegExportExternalFilterScriptPath
+      : ''
+  )
 }

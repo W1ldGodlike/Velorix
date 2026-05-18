@@ -1,7 +1,8 @@
 import { BrowserWindow } from 'electron'
 
 import { cancelDownloadsRunner, isDownloadsRunnerBusy } from './downloads-queue-runner'
-import { clearRendererLogBucket, mainAppStr } from './main-bootstrap-ipc-helpers'
+import { getMainWindowTitle } from '../shared/app-ui-locale'
+import { clearRendererLogBucket, mainAppStr, mainDownloadsUiLocale } from './main-bootstrap-ipc-helpers'
 import { attachMainWindowBoundsPersistence, getCachedSettings } from './main-cached-settings-host'
 import { buildApplicationMenu } from './main-application-menu'
 import { createMainWindow } from './main-window'
@@ -37,6 +38,7 @@ export function createMainApplicationWindow(): void {
       mainWindowRef = win
       allowMainWindowClose = false
       mainWindowWebContentsId = webContentsId
+      win.setTitle(getMainWindowTitle(mainDownloadsUiLocale()))
     },
     onMainWindowClosed: (win, webContentsId) => {
       if (mainWindowRef?.id === win.id) {

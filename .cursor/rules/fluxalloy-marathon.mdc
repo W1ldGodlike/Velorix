@@ -12,10 +12,11 @@ alwaysApply: true
 
 ## Каждую итерацию
 
-1. **Обязательно:** **крупный срез** (глоссарий) + **одна J за итерацию** (`npm run journal:stamp`).
-2. **Обязательно:** отчёт в чате — **3–5** буллетов; **запрещено** копировать тело журнала.
-3. **Обязательно:** `npm run check:quiet` → exit code 0 **до** cadence-коммита.
-4. **Обязательно:** `npm run agent:session -- bump` — **последний** шаг итерации.
+1. **Крупный срез** (глоссарий) по [`IMPLEMENTATION_CHECKLIST.md`](../../IMPLEMENTATION_CHECKLIST.md) → **`## Ближайший TODO спринта`**; ТЗ — один § [`FLUXALLOY_TZ.md`](../../FLUXALLOY_TZ.md).
+2. **Обязательно:** **одна J за итерацию** (`npm run journal:stamp`).
+3. **Обязательно:** отчёт в чате — **3–5** буллетов; **запрещено** копировать тело журнала.
+4. **Обязательно:** `npm run check:quiet` → exit code 0 **до** cadence-коммита.
+5. **Обязательно:** `npm run agent:session -- bump` — **последний** шаг итерации.
 
 ## Cadence (считать **после** bump)
 
@@ -32,6 +33,7 @@ alwaysApply: true
 ## Запрещено в marathon
 
 - **Микро-J** и **микро-срез** (глоссарий).
+- Новые HTML-pop-out / `build*Html` / `*-window-ui-strings-*` вне `ui-text` (`fluxalloy-ui-surfaces.mdc`).
 - **Копипаста-парсер** вместо реестра (глоссарий).
 - Правки `FLUXALLOY_TZ.md` без **явной просьбы владельца**.
 - **Лишний .md** (глоссарий).

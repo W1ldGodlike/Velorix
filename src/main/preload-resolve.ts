@@ -1,7 +1,7 @@
 import { existsSync } from 'fs'
 import { join } from 'path'
 
-export type PreloadStem = 'index' | 'downloadsWindow'
+export type PreloadStem = 'index'
 
 /** После сборки electron-vite кладёт preloads как `.mjs`; в некоторых конфигурациях встречался `.js`. */
 export function resolvePreloadOutFile(stem: PreloadStem, mainDirname: string): string {

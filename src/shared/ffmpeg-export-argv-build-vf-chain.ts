@@ -14,12 +14,23 @@ import {
   resolveFfmpegExportVideoVignetteFilter,
   resolveFfmpegExportVideoTransformFilters
 } from './ffmpeg-export-argv-filters'
+import { buildFfmpegExternalScriptVideoFilter } from './ffmpeg-export-external-script-vf'
 import type { FfmpegExportArgvParams } from './ffmpeg-export-argv-build-types'
 
 export function buildFfmpegExportVideoFilterChain(params: FfmpegExportArgvParams): string[] {
   const filters: string[] = []
   const transform = resolveFfmpegExportVideoTransformFilters(params.videoTransform ?? 'none')
   filters.push(...transform)
+  const externalScript =
+    params.externalFilterKind !== undefined && params.externalFilterScriptAbsPath
+      ? buildFfmpegExternalScriptVideoFilter(
+          params.externalFilterKind,
+          params.externalFilterScriptAbsPath
+        )
+      : null
+  if (externalScript !== null) {
+    filters.push(externalScript)
+  }
   const crop = resolveFfmpegExportCropFilter(params.cropPreset ?? 'none')
   if (crop !== null) {
     filters.push(crop)

@@ -1,5 +1,7 @@
 # Editor: preview and timeline
 
+![Preview, transport, timeline, and FFmpeg rail (diagram)](assets/editor-preview-timeline.svg)
+
 ## Open a file
 
 Use **File → Open…**, the folder button on the toolbar, or drop a file on the preview area. Common video formats that the built-in player supports will work.

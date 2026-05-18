@@ -1,5 +1,5 @@
 import type { DownloadsWindowIpcStrings } from '../shared/downloads-window-ipc-locale'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import {
   parseYtdlpCookiesBrowser,
   parseYtdlpFormatPreset,
@@ -13,7 +13,7 @@ import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
 export function parseYtdlpDownloadOptionsIpcPatch(
   raw: unknown,
   P: DownloadsWindowIpcStrings,
-  loc: DownloadsWindowUiLocale
+  loc: AppUiLocale
 ): { ok: true; patch: YtdlpDownloadOptionsPatch } | { ok: false; error: string } {
   if (!raw || typeof raw !== 'object') {
     return { ok: false, error: P.invalidData }

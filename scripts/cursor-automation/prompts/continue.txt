@@ -1,9 +1,9 @@
 Продолжай как будто пользователь написал «продолжай» / `+`.
 
-Ближайший TODO: `IMPLEMENTATION_CHECKLIST.md` (`## Ближайший TODO спринта`). Audit-ограничения: `fluxalloy-project-audit.mdc`, `fluxalloy-iteration-batch.mdc`.
+Ближайший TODO: `IMPLEMENTATION_CHECKLIST.md` → `## Ближайший TODO спринта`. UI: `fluxalloy-ui-surfaces.mdc`, `check:ui-surfaces-guard`, `check:ui-copy-quality`.
 
 Контракт marathon: `.cursor/rules/fluxalloy-marathon.mdc`. SDK — `scripts/cursor-automation/prompts/agent-contract.txt` (не перечитывать целиком без причины).
 
 Конец итерации: `check:quiet` → `journal:stamp` + одна J → `npm run agent:session -- bump` → **после** bump: если `continue_count % 5 === 0` и quiet зелёный — `git commit`; если `% 10 === 0` — push + re-anchor OK.
 
-Пакет полей (iteration-batch). Одна J на весь ответ ([SDK]). Крупный срез. Реестр вместо копипасты. Отчёт 3–5 буллетов.
+Пакет полей (iteration-batch). Одна J на весь ответ ([SDK]). Крупный срез. Отчёт 3–5 буллетов.

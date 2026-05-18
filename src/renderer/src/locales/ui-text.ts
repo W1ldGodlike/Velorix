@@ -1,5 +1,10 @@
 /** Barrel: renderer UI strings and formatters. */
-export { applyPersistedUiLocale, getUiLocale, setUiLocaleForSession } from './ui-text-session'
+export {
+  applyPersistedUiLocale,
+  getUiLocale,
+  setUiLocaleForSession,
+  syncDocumentUiLocale
+} from './ui-text-session'
 export type { UiLocale } from './ui-text-session'
 export {
   formatDownloadsHistoryOutcomeLabel,

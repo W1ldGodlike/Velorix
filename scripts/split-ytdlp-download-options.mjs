@@ -14,7 +14,7 @@ ${lines.slice(45, 104).join('\n')}
 const validate = `import { existsSync, statSync } from 'fs'
 import { isAbsolute, join, normalize, relative, resolve, sep } from 'path'
 
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getYtdlpCliValidationCopy } from '../shared/ytdlp-cli-validation-locale'
 ${lines.slice(173, 277).join('\n')}
 
@@ -25,7 +25,7 @@ const snapshotFixed = `import { existsSync, statSync } from 'fs'
 import { isAbsolute, join, normalize } from 'path'
 
 import type { AppSettings } from './settings-store'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getYtdlpCliValidationCopy } from '../shared/ytdlp-cli-validation-locale'
 import {
   buildYtdlpFormatPresetChoices,

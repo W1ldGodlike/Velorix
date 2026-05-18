@@ -1,13 +1,14 @@
 import { execFile } from 'child_process'
 import { dirname } from 'path'
 
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import {
   formatTerminalEngineMissingInSettings,
   getMainApplicationStrings
 } from '../shared/main-application-locale'
 import type { TerminalRunResult } from '../shared/terminal-contract'
 import type { AppPaths } from './app-paths'
+import { nativeMainPathEnvSeparator } from './platform'
 import { resolveEngineExecutablePath, type EnginePathOverrides } from './engine-service'
 import { logInfo, logWarn } from './logger-service'
 import { isGrantedMediaPath } from './media-protocol'
@@ -24,7 +25,7 @@ export function runTerminalCommand(params: {
   overrides?: EnginePathOverrides | undefined
   line: unknown
   currentFilePath?: string | null
-  locale: DownloadsWindowUiLocale
+  locale: AppUiLocale
 }): Promise<TerminalRunResult> {
   const ud = params.paths.userData
   const S = getMainApplicationStrings(params.locale)
@@ -83,7 +84,7 @@ export function runTerminalCommand(params: {
         maxBuffer: TERMINAL_MAX_OUTPUT_CHARS * 4,
         env: {
           ...process.env,
-          PATH: `${dirname(executablePath)}${process.platform === 'win32' ? ';' : ':'}${process.env['PATH'] ?? ''}`
+          PATH: `${dirname(executablePath)}${nativeMainPathEnvSeparator()}${process.env['PATH'] ?? ''}`
         }
       },
       (error, stdout, stderr) => {

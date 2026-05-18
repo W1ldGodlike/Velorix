@@ -4,12 +4,14 @@
  */
 import { join } from 'node:path'
 
+import { nativeMainEngineBinaryName } from './native-main-platform'
+
 export function listPackagedFfprobeCandidatePaths(rootDir: string): string[] {
   const fromEnv =
     typeof process.env['FLUXALLOY_FFPROBE_PATH'] === 'string'
       ? process.env['FLUXALLOY_FFPROBE_PATH'].trim()
       : ''
-  const winName = process.platform === 'win32' ? 'ffprobe.exe' : 'ffprobe'
+  const winName = nativeMainEngineBinaryName('ffprobe')
   const candidates: string[] = []
   if (fromEnv.length > 0) {
     candidates.push(fromEnv)
@@ -24,7 +26,7 @@ export function listPackagedFfmpegCandidatePaths(rootDir: string): string[] {
     typeof process.env['FLUXALLOY_FFMPEG_PATH'] === 'string'
       ? process.env['FLUXALLOY_FFMPEG_PATH'].trim()
       : ''
-  const winName = process.platform === 'win32' ? 'ffmpeg.exe' : 'ffmpeg'
+  const winName = nativeMainEngineBinaryName('ffmpeg')
   const candidates: string[] = []
   if (fromEnv.length > 0) {
     candidates.push(fromEnv)
@@ -39,7 +41,7 @@ export function listPackagedYtdlpCandidatePaths(rootDir: string): string[] {
     typeof process.env['FLUXALLOY_YTDLP_PATH'] === 'string'
       ? process.env['FLUXALLOY_YTDLP_PATH'].trim()
       : ''
-  const winName = process.platform === 'win32' ? 'yt-dlp.exe' : 'yt-dlp'
+  const winName = nativeMainEngineBinaryName('yt-dlp')
   const candidates: string[] = []
   if (fromEnv.length > 0) {
     candidates.push(fromEnv)

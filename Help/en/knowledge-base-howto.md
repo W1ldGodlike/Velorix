@@ -12,6 +12,8 @@ Illustrations live under `Help/assets`. In Markdown use only this form:
 
 `![Short caption](assets/file-name.png)`
 
+Bundled UI diagrams: `workspace-tabs-diagram.svg`, `downloads-queue-overview.svg`, `editor-preview-timeline.svg`, `knowledge-dialog-toc.svg` (see `assets/README.txt`).
+
 When you open an article, the app **inlines** small files (up to ~512 KiB) as embedded image data so diagrams work in dev and in packaged builds. The caption appears if the image cannot load.
 
 ## Links

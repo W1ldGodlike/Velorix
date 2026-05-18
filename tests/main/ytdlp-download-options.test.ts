@@ -34,6 +34,7 @@ import {
   validateYtdlpRetriesLine,
   YTDLP_DEFAULT_FILENAME_TEMPLATE
 } from '../../src/main/ytdlp-download-options'
+import { YTDLP_COMMAND_PREVIEW_CASES } from '../fixtures/ytdlp-command-preview-cases'
 import {
   YTDLP_RATE_LIMIT_CASES,
   YTDLP_RETRIES_LINE_CASES
@@ -224,6 +225,37 @@ describe('payloadFromSnapshot §6.3 превью argv', () => {
       expect(p.commandPreview).toContain('example.com')
     } finally {
       rmSync(base, { recursive: true, force: true })
+    }
+  })
+
+  it('sanitize sampleUrl убирает управляющие символы из preview', () => {
+    const base = mkdtempSync(join(tmpdir(), 'flux-ytdlp-preview-sanitize-'))
+    try {
+      const snap = buildYtdlpRunOptionsSnapshot({ theme: 'dark' })
+      const p = payloadFromSnapshot(
+        snap,
+        buildYtdlpCommandPreviewContext({
+          userDataRoot: base,
+          sampleUrl: 'https://site.test/v\u0000id=1'
+        })
+      )
+      expect(p.commandPreview).toContain('site.test/vid=1')
+      expect(p.commandPreview.includes('\u0000')).toBe(false)
+    } finally {
+      rmSync(base, { recursive: true, force: true })
+    }
+  })
+})
+
+describe('payloadFromSnapshot §6.2 редкие пресеты и command preview', () => {
+  it.each(YTDLP_COMMAND_PREVIEW_CASES)('$name', (row) => {
+    const snap = buildYtdlpRunOptionsSnapshot(row.settings)
+    const p = payloadFromSnapshot(snap, row.previewCtx, 'ru')
+    for (const token of row.mustContain) {
+      expect(p.commandPreview, row.name).toContain(token)
+    }
+    for (const token of row.mustNotContain ?? []) {
+      expect(p.commandPreview, row.name).not.toContain(token)
     }
   })
 })

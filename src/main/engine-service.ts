@@ -3,7 +3,7 @@ import { execFile } from 'child_process'
 import { basename, join, normalize, resolve } from 'path'
 
 import type { AppPaths } from './app-paths'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
 import {
   ENGINE_IDS,
@@ -12,6 +12,7 @@ import {
   type EngineStatus,
   type EnginesStatusSnapshot
 } from '../shared/engine-contract'
+import { nativeMainEngineExecutableSuffix } from './platform'
 
 export type {
   EngineId,
@@ -29,9 +30,7 @@ const engineDisplayNames: Record<EngineId, string> = {
 }
 
 function executableName(id: EngineId): string {
-  // yt-dlp тоже имеет `.exe` на Windows, поэтому правило единое для всех трёх движков.
-  const suffix = process.platform === 'win32' ? '.exe' : ''
-  return `${id}${suffix}`
+  return `${id}${nativeMainEngineExecutableSuffix()}`
 }
 
 function firstExistingPath(paths: string[]): string | null {
@@ -92,7 +91,7 @@ async function checkEngine(
   paths: AppPaths,
   id: EngineId,
   overrides: EnginePathOverrides | undefined,
-  locale: DownloadsWindowUiLocale
+  locale: AppUiLocale
 ): Promise<EngineStatus> {
   const S = getMainApplicationStrings(locale)
   const exe = executableName(id)
@@ -148,7 +147,7 @@ async function checkEngine(
 export async function getEnginesStatus(
   paths: AppPaths,
   overrides?: EnginePathOverrides,
-  locale: DownloadsWindowUiLocale = 'ru'
+  locale: AppUiLocale = 'ru'
 ): Promise<EnginesStatusSnapshot> {
   // §3 deferred: после загрузчика хешей — состояние `checking`/progress для длительных проверок.
   const statuses = await Promise.all(

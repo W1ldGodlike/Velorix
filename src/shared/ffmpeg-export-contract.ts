@@ -3,7 +3,7 @@
  * Используются в preload/renderer и в main-сервисе; парсеры и runner остаются в `ffmpeg-export-service`.
  */
 
-import type { DownloadsWindowUiLocale } from './downloads-window-ui-locale'
+import type { AppUiLocale } from './app-ui-locale'
 import type { FfmpegHwVideoEncoderId } from './ffmpeg-hw-encoder-probe'
 
 /** Диапазон экспорта по маркерам §7.1 (секунды на шкале исходника). */
@@ -192,7 +192,7 @@ export interface FfmpegExportUserPreset {
 export interface MediaExportRequestPayload {
   inputPath: string
   /** Локаль UI рендерера: статусы истории обработки и прогресс. */
-  uiLocale?: DownloadsWindowUiLocale
+  uiLocale?: AppUiLocale
   trim?: MediaExportTrimPayload
   probeDurationSec?: number | null
   /** Если не задан — в main берётся из `settings.json`. */

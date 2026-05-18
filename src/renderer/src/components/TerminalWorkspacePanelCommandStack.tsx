@@ -2,8 +2,8 @@ import type { JSX } from 'react'
 
 import { TERMINAL_CURRENT_FILE_PLACEHOLDER } from '../../../shared/terminal-contract'
 import { stepTerminalSuggestIndex } from '../../../shared/terminal-inline-suggest'
-import { terminalHintInsertAccessibleDescription } from '../app-terminal-hint-ui'
 import { formatTerminalPreviewTooltip, uiText } from '../locales/ui-text'
+import { TerminalHintRow } from './TerminalHintRow'
 import type { TerminalWorkspacePanelProps } from './terminal-workspace-panel-props'
 
 export function TerminalWorkspacePanelCommandStack(
@@ -70,6 +70,7 @@ export function TerminalWorkspacePanelCommandStack(
           spellCheck={false}
           autoComplete="off"
           placeholder={uiText('terminalCommandPlaceholder')}
+          title={uiText('terminalCommandInputTooltip')}
           aria-describedby="terminal-intro-hint"
           aria-expanded={terminalInlineSuggestions.length > 0 && terminalSuggestFocus}
           aria-controls="terminal-inline-suggest-list"
@@ -180,6 +181,8 @@ export function TerminalWorkspacePanelCommandStack(
           className="app-btn app-btn-primary"
           disabled={terminalBusy || terminalLine.trim().length === 0}
           aria-describedby="terminal-intro-hint"
+          aria-label={uiText('terminalRunButtonAria')}
+          title={uiText('terminalRunButtonTooltip')}
           onClick={() => {
             void runTerminalLine()
           }}
@@ -200,31 +203,23 @@ export function TerminalWorkspacePanelCommandStack(
           }}
         >
           {terminalInlineSuggestions.map((hint, idx) => (
-            <button
+            <TerminalHintRow
               key={`inline:${hint.tool}:${hint.token}:${hint.fullLine ?? ''}:${idx}`}
-              type="button"
-              role="option"
-              aria-selected={idx === terminalSuggestActiveIndex}
-              aria-label={terminalHintInsertAccessibleDescription(hint)}
-              aria-describedby="terminal-intro-hint"
+              hint={hint}
+              disabled={terminalBusy}
               className={`app-terminal-suggest-item${
                 idx === terminalSuggestActiveIndex ? ' app-terminal-suggest-item-active' : ''
               }`}
+              role="option"
+              ariaSelected={idx === terminalSuggestActiveIndex}
+              describedById="terminal-intro-hint"
               onMouseEnter={() => {
                 setTerminalSuggestIndex(idx)
               }}
-              onClick={() => {
+              onActivate={() => {
                 applyTerminalSuggest(hint)
               }}
-            >
-              <code>
-                {hint.fullLine !== undefined && hint.fullLine.length > 0
-                  ? hint.fullLine.trimEnd()
-                  : hint.token}
-              </code>
-              <span>{hint.tool}</span>
-              <small>{hint.summary}</small>
-            </button>
+            />
           ))}
         </div>
       ) : null}

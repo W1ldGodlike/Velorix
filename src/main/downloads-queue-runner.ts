@@ -13,7 +13,7 @@ import {
 } from './downloads-queue-runner-state'
 import { resolveYtdlpOutputDirectory } from './ytdlp-download-output'
 import { getDownloadsWindowIpcStrings } from '../shared/downloads-window-ipc-locale'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { isYtdlpQueueStatusWaiting } from '../shared/ytdlp-queue-status'
 
 export {
@@ -71,7 +71,7 @@ export function isDownloadsRunnerBusy(): boolean {
  * Последовательно обрабатывает строки со статусом «Ожидание». Отмена — через cancelDownloadsRunner().
  */
 export function startDownloadsSequential(
-  locale: DownloadsWindowUiLocale = 'ru'
+  locale: AppUiLocale = 'ru'
 ): { ok: true } | { ok: false; error: string } {
   const P = getDownloadsWindowIpcStrings(locale)
   if (downloadsQueueRunnerState.sequentialBusy) {
@@ -109,7 +109,7 @@ export function startDownloadsSequential(
  */
 export async function startDownloadSingleRow(
   rowId: number,
-  locale: DownloadsWindowUiLocale = 'ru'
+  locale: AppUiLocale = 'ru'
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const P = getDownloadsWindowIpcStrings(locale)
   if (downloadsQueueRunnerState.sequentialBusy) {

@@ -1,4 +1,5 @@
 import type { TerminalCommandHintEntry } from '../../shared/terminal-contract'
+import { primaryTerminalHintExample } from '../../shared/terminal-hint-json-display'
 import type { YtdlpCommandHintEntry } from '../../shared/ytdlp-download-contract'
 import { uiText, uiTextVars } from './locales/ui-text'
 
@@ -37,8 +38,7 @@ export const TERMINAL_HINT_AUDIO_EXTS = new Set([
   'wma'
 ])
 
-/** §15 — slug `Help/ffmpeg-terminal-hints.md` для deep-link из подсказок UI. */
-export const KNOWLEDGE_SLUG_FFMPEG_TERMINAL_HINTS = 'ffmpeg-terminal-hints'
+export { KNOWLEDGE_SLUG_FFMPEG_TERMINAL_HINTS } from '../../shared/knowledge-contract'
 
 export function previewPathExtensionLower(path: string | null): string | null {
   if (typeof path !== 'string' || path.trim().length === 0) {
@@ -72,11 +72,19 @@ export function terminalHintInsertAccessibleDescription(hint: TerminalCommandHin
     summaryRaw.length > 180
       ? `${summaryRaw.slice(0, 178)}${uiText('commonUnicodeEllipsis')}`
       : summaryRaw
+  const example = primaryTerminalHintExample(hint)
+  const exampleShort =
+    example !== undefined && example.length > 80
+      ? `${example.slice(0, 78)}${uiText('commonUnicodeEllipsis')}`
+      : example
   if (summary.length > 0) {
     return uiTextVars('terminalHintInsertButtonAriaTemplate', {
       token: hint.token,
       tool: hint.tool,
-      summary
+      summary:
+        exampleShort !== undefined && exampleShort.length > 0
+          ? `${summary}. ${uiText('terminalHintExampleLabel')} ${exampleShort}`
+          : summary
     })
   }
   return uiTextVars('terminalHintInsertButtonAriaNoSummaryTemplate', {

@@ -118,8 +118,8 @@ fs.writeFileSync(path.join(localesDir, 'ui-text-strings.ts'), stringsFile)
 
 const sessionBlockExported = sessionBlock.replace(/^type UiLocale /m, 'export type UiLocale ')
 
-const sessionFile = `import type { DownloadsWindowUiLocale } from '../../../shared/downloads-window-ui-locale'
-import { parseDownloadsWindowUiLocale } from '../../../shared/downloads-window-ui-locale'
+const sessionFile = `import type { AppUiLocale } from '../../../shared/app-ui-locale'
+import { parseAppUiLocale } from '../../../shared/app-ui-locale'
 
 ${sessionBlockExported}
 
@@ -132,10 +132,10 @@ export function getUiLocale(): UiLocale {
  * Caller should bump React state after this so components re-read \`getUiLocale()\` / \`uiText()\`.
  */
 export function applyPersistedUiLocale(loaded: { uiLocale?: unknown }): {
-  resolved: DownloadsWindowUiLocale
+  resolved: AppUiLocale
   shouldPersist: boolean
 } {
-  const fromFile = parseDownloadsWindowUiLocale(loaded.uiLocale)
+  const fromFile = parseAppUiLocale(loaded.uiLocale)
   if (fromFile !== undefined) {
     uiLocaleOverride = fromFile
     return { resolved: fromFile, shouldPersist: false }
@@ -146,7 +146,7 @@ export function applyPersistedUiLocale(loaded: { uiLocale?: unknown }): {
 }
 
 /** После \`settings.setUiLocale\` или события main \`uiLocaleChanged\`. */
-export function setUiLocaleForSession(locale: DownloadsWindowUiLocale): void {
+export function setUiLocaleForSession(locale: AppUiLocale): void {
   uiLocaleOverride = locale
 }
 `

@@ -1,3 +1,4 @@
+import type { ExternalFilterScriptKind } from './external-filter-script-contract'
 import type {
   FfmpegExportAudioModeId,
   FfmpegExportAudioNormalizeId,
@@ -42,6 +43,9 @@ export interface FfmpegExportArgvParams {
   /** Если `null` — частота кадров оставляется исходной. */
   fps: number | null
   scalePreset: FfmpegExportScalePresetId
+  /** §17 — внешний скрипт в `-vf` после transform. */
+  externalFilterKind?: ExternalFilterScriptKind
+  externalFilterScriptAbsPath?: string | null
   /** До масштабирования и fps; по умолчанию без трансформа. */
   videoTransform?: FfmpegExportVideoTransformId
   /** После transform и до scale/fps; по умолчанию без crop. */

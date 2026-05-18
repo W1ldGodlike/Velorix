@@ -3,6 +3,8 @@ import { extname, join, normalize } from 'path'
 
 import { protocol } from 'electron'
 
+import { nativeMainPathSeparator } from './platform'
+
 const HELP_IMAGE_MIME: Record<string, string> = {
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
@@ -52,7 +54,7 @@ export function registerFluxHelpProtocol(getHelpDir: () => string | null): void 
     }
     const abs = normalize(join(helpDir, rel))
     const assetsRoot = normalize(join(helpDir, 'assets'))
-    const sep = process.platform === 'win32' ? '\\' : '/'
+    const sep = nativeMainPathSeparator()
     if (abs !== assetsRoot && !abs.startsWith(assetsRoot + sep)) {
       return new Response('Forbidden', { status: 403 })
     }

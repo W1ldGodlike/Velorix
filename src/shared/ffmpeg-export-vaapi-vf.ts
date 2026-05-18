@@ -13,7 +13,7 @@ export const FFMPEG_EXPORT_AMF_HWUPLOAD_FILTER = 'format=nv12,hwupload,format=d3
 /** §16 — NVIDIA NVENC: upload в CUDA только если есть CPU `-vf` (без фильтров nvenc принимает RAM). */
 export const FFMPEG_EXPORT_NVENC_HWUPLOAD_FILTER = 'format=nv12,hwupload_cuda'
 
-function resolveFfmpegHwUploadFilterChain(vcodec: FfmpegExportVideoCodecId): string | null {
+export function resolveFfmpegHwUploadFilterChain(vcodec: FfmpegExportVideoCodecId): string | null {
   if (vcodec.endsWith('_vaapi')) {
     return FFMPEG_EXPORT_VAAPI_HWUPLOAD_FILTER
   }

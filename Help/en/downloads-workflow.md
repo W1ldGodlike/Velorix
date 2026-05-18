@@ -1,5 +1,7 @@
 # Downloads tab: queue
 
+![Downloads queue, log, and yt-dlp settings rail (diagram)](assets/downloads-queue-overview.svg)
+
 ## Table
 
 Each row is one address. Columns show progress: format, size, percent, speed, and **time left**. Row actions include start, pause (when the OS allows), retry after errors, delete, open file, or open folder.

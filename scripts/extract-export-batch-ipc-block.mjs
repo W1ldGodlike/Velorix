@@ -62,9 +62,9 @@ import {
   processingHistorySnapshotSuccess
 } from '../../shared/processing-history-status-locale'
 import {
-  parseDownloadsWindowUiLocale,
-  type DownloadsWindowUiLocale
-} from '../../shared/downloads-window-ui-locale'
+  parseAppUiLocale,
+  type AppUiLocale
+} from '../../shared/app-ui-locale'
 import { getMainApplicationStrings } from '../../shared/main-application-locale'
 import { resolveAppPaths } from '../app-paths'
 import { filterExistingVideoPathsForBatch } from '../ffmpeg-export-batch-grant-paths'
@@ -134,7 +134,7 @@ export type ExportBatchIpcHost = {
   bindBatchSnapshotBroadcast: (fn: (win?: BrowserWindow | null) => void) => void
   launchFfmpegExportBatchRunner: (raw: unknown, win?: BrowserWindow | null) => boolean
   mainAppStr: () => ReturnType<typeof getMainApplicationStrings>
-  mainDownloadsUiLocale: () => DownloadsWindowUiLocale
+  mainDownloadsUiLocale: () => AppUiLocale
   previewOpenDialogOptsFromSettings: () => { defaultPath: string } | undefined
   batchExportOutputFolderPickOptsFromSettings: () => { defaultPath: string } | undefined
   rememberedExportDefaultPath: (fileName: string) => string
@@ -151,7 +151,7 @@ export type ExportBatchIpcHost = {
   ) => Promise<{ ok: true } | { ok: false; error: string }>
   parseDownloadsOpenRequest: (raw: unknown) => {
     mergeText: string | null
-    uiLocale?: DownloadsWindowUiLocale
+    uiLocale?: AppUiLocale
   }
 }
 

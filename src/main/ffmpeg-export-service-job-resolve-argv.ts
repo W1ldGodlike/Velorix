@@ -1,5 +1,5 @@
 import type { FfmpegExportVideoCodecId } from '../shared/ffmpeg-export-contract'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
 import type { FfmpegExportArgvParams } from '../shared/ffmpeg-export-argv'
 import { shouldApplyFfmpegExportTrim } from '../shared/ffmpeg-export-argv'
@@ -52,7 +52,7 @@ export function resolveFfmpegExportJobArgv(
   videoCodec: FfmpegExportVideoCodecId,
   hwaccelDecode: string | null,
   container: FfmpegExportContainerId,
-  uloc: DownloadsWindowUiLocale
+  uloc: AppUiLocale
 ): FfmpegExportJobArgvResolve {
   const S = getMainApplicationStrings(uloc)
   const applyTrim = shouldApplyFfmpegExportTrim(params.trim ?? null, params.probeDurationSec)
@@ -150,6 +150,15 @@ export function resolveFfmpegExportJobArgv(
     ...(videoBlur !== 'off' ? { videoBlur } : {}),
     ...(videoDeinterlace !== 'off' ? { videoDeinterlace } : {}),
     ...(audioNormalize !== 'off' ? { audioNormalize } : {}),
+    ...(params.externalFilterKind === 'avisynth' || params.externalFilterKind === 'vapoursynth'
+      ? typeof params.externalFilterScriptAbsPath === 'string' &&
+        params.externalFilterScriptAbsPath.length > 0
+        ? {
+            externalFilterKind: params.externalFilterKind,
+            externalFilterScriptAbsPath: params.externalFilterScriptAbsPath
+          }
+        : {}
+      : {}),
     ...(economyMode ? { economyMode: true } : {}),
     ...(hwaccelDecode !== null ? { hwaccelDecode } : {}),
     ...(extraParsed.args.length > 0 ? { extraArgs: extraParsed.args } : {})

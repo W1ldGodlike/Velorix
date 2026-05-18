@@ -27,6 +27,7 @@ alwaysApply: true
 | Дословный дубликат другого rule в том же коммите | Удалить копию; смысл уже в оставшемся файле (в commit message указать «дубль → …»). |
 | **Явная просьба владельца** удалить конкретный rule/пункт | Удалить только названное. |
 | Временный план-файл `docs/PROJECT_WIDE_AUDIT_REFACTOR_PLAN.md` | Удалён после программы 2026-05 (J-887); канон в `fluxalloy-project-audit.mdc` + `audit-*`. |
+| Временный план `docs/UI_CONSOLIDATION_AND_COPY_PROGRAM.md` | Удалён J-984 (2026-05); канон — `fluxalloy-ui-surfaces.mdc` + чеклист §6/§15; `check:ui-surfaces-guard` → `gate=no-plan`. |
 
 ## Формат каждого требования
 
@@ -50,6 +51,7 @@ alwaysApply: true
 | **Итерация** | Ровно **один** цикл: (а) сообщение «продолжай» / `+` и ответ до конца turn; (б) **или** один запуск SDK-агента до `agent:session -- bump`; (в) **или** один полный ответ в обычном чате до завершения turn. **Запрещено:** два `bump` за один логический срез. |
 | **check:quiet зелёный** | `npm run check:quiet` вернул **exit code 0**. |
 | **continue_count** | Поле `continue_count` в `docs/.agent-session.json`. **Обязательно:** `npm run agent:session -- bump` **в конце** итерации (+1). Cadence (`% 5` / `% 10`) смотреть **после** bump по новому значению. |
+| **UI-поверхности (постоянно)** | [`fluxalloy-ui-surfaces.mdc`](fluxalloy-ui-surfaces.mdc): один renderer на фичу; **запрещены** HTML-pop-out дубли и параллельные `*-window-ui-strings-*`; `check:ui-surfaces-guard` + `check:ui-copy-quality`. |
 | **Коммит marathon cadence** | **Если** после bump `continue_count % 5 === 0` **и** **check:quiet зелёный** **то** `git commit`. На 10, 20, … — также push/re-anchor (см. marathon). **Не** «пятый коммит за всё время». |
 | **Режим marathon** | Пользователь написал «продолжай» / `+` **или** SDK по `agent-contract.txt`. **Тогда** cadence-коммит/push из marathon **не** требуют отдельной просьбы «сделай commit» в чате. |
 | **Явная просьба владельца** | В сообщении пользователя в **этом** чате: «правь/измени/добавь» + путь к файлу; **или** «редактируй ТЗ» / `FLUXALLOY_TZ.md`; **или** «удали rule …». Фраза **«явная договорённость»** в шапках `IMPLEMENTATION_*` = **тот же** порог для `FLUXALLOY_TZ.md`. |

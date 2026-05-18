@@ -16,12 +16,12 @@ const infoBody = [...lines.slice(6, 30), '', unquoteFn, '', ...lines.slice(30, 1
 const failureBlock = lines.slice(163, 395).join('\n')
 const pathBlock = lines.slice(408, 541).join('\n')
 
-const infoImports = `import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+const infoImports = `import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getYtdlpQueueProgressStrings } from '../shared/ytdlp-queue-progress-locale'
 
 `
 
-const failureImports = `import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+const failureImports = `import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getYtdlpQueueProgressStrings } from '../shared/ytdlp-queue-progress-locale'
 import { YTDLP_QUEUE_STATUS_ERROR_PREFIX } from '../shared/ytdlp-queue-status'
 

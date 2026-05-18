@@ -9,6 +9,7 @@ import {
 import { setDownloadsRunnerNotifier } from './downloads-queue-runner'
 import { registerDownloadsBridgeIpcHandlers } from './register-downloads-bridge-ipc'
 import { registerDownloadsOptionsIpcHandlers } from './register-downloads-options-ipc'
+import { registerDownloadsCoverIpcHandlers } from './register-downloads-cover-ipc'
 import { registerDownloadsQueueIpcHandlers } from './register-downloads-queue-ipc'
 import { registerDownloadsRunnerIpcHandlers } from './register-downloads-runner-ipc'
 import { registerDownloadsSnapshotIpcHandlers } from './register-downloads-snapshot-ipc'
@@ -37,6 +38,7 @@ export function registerDownloadsWindowIpcHandlers(): void {
   registerDownloadsSnapshotIpcHandlers()
   registerDownloadsOptionsIpcHandlers()
   registerDownloadsQueueIpcHandlers()
+  registerDownloadsCoverIpcHandlers()
   registerDownloadsRunnerIpcHandlers()
   registerDownloadsBridgeIpcHandlers()
 }

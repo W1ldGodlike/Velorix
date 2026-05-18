@@ -340,6 +340,49 @@
   line-height: 1.35;
 }
 
+.app-terminal-hint-card {
+  position: relative;
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.app-terminal-hint-doc {
+  justify-self: end;
+  font-size: 0.68rem;
+  color: var(--fa-accent);
+  text-decoration: none;
+  padding: 0 0.15rem;
+}
+
+.app-terminal-hint-doc:hover,
+.app-terminal-hint-doc:focus-visible {
+  text-decoration: underline;
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 1px;
+}
+
+.app-terminal-hint-example {
+  display: block;
+}
+
+.app-terminal-hint-example-label {
+  margin-right: 0.35rem;
+}
+
+.app-terminal-hint-example code {
+  font-size: 0.72rem;
+  word-break: break-all;
+}
+
+.app-terminal-suggest .app-terminal-hint-card {
+  margin: 0;
+}
+
+.app-terminal-suggest .app-terminal-hint-doc {
+  padding-right: 0.35rem;
+}
+
 .app-topbar-trailing {
   display: inline-flex;
   align-items: center;
@@ -1918,6 +1961,130 @@ button.app-downloads-hint-token:disabled {
   flex: 1 1 12rem;
 }
 
+.app-batch-export-table-wrap {
+  overflow: auto;
+  max-height: min(42vh, 28rem);
+}
+
+.app-batch-export-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.app-batch-export-table th,
+.app-batch-export-table td {
+  padding: 0.35rem 0.45rem;
+  border-bottom: 1px solid var(--fa-border-subtle);
+  vertical-align: middle;
+}
+
+.app-batch-export-table tbody tr.app-batch-export-row-draggable {
+  cursor: grab;
+}
+
+.app-batch-export-table tbody tr.app-batch-export-row-dragging {
+  opacity: 0.55;
+  cursor: grabbing;
+}
+
+.app-batch-export-table tbody tr.app-batch-export-row-drop-target {
+  box-shadow: inset 0 0 0 2px var(--fa-accent);
+}
+
+.app-batch-export-table tbody tr:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: -2px;
+}
+
+.app-batch-export-table tbody tr.app-batch-export-row-error {
+  background: color-mix(in srgb, var(--fa-danger) 8%, transparent);
+}
+
+.app-batch-export-table td.app-batch-export-cell-error,
+.app-batch-export-table th.app-batch-export-cell-error {
+  color: var(--fa-danger);
+  max-width: 18rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-batch-export-table .app-btn-icon:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 1px;
+}
+
+.app-field-benchmark {
+  grid-column: 1 / -1;
+}
+
+.app-benchmark-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.app-benchmark-hint {
+  margin: 0;
+}
+
+.app-benchmark-threshold {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+}
+
+.app-benchmark-threshold .app-control-narrow {
+  width: 4.2rem;
+}
+
+.app-benchmark-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  margin-top: 0.35rem;
+}
+
+.app-benchmark-table th,
+.app-benchmark-table td {
+  padding: 0.28rem 0.4rem;
+  text-align: left;
+  border-bottom: 1px solid var(--fa-border-subtle);
+}
+
+.app-benchmark-row-recommended {
+  background: color-mix(in srgb, var(--fa-accent) 12%, transparent);
+}
+
+.app-benchmark-row-error td {
+  color: var(--fa-danger);
+}
+
+.app-benchmark-codec-pick {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.app-benchmark-codec-pick:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.app-benchmark-recommended-badge {
+  color: var(--fa-success);
+}
+
 .app-preview-stack {
   flex: 1;
   min-height: 0;
@@ -2763,6 +2930,37 @@ button.app-downloads-hint-token:disabled {
   text-overflow: ellipsis;
 }
 
+.app-statusbar-activity {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.app-statusbar-activity-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--fa-border-subtle);
+  flex-shrink: 0;
+}
+
+.app-statusbar-activity-dot--active {
+  background: var(--fa-accent, #5b9fd4);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--fa-accent, #5b9fd4) 28%, transparent);
+}
+
+.app-statusbar-activity-label {
+  white-space: nowrap;
+}
+
+.app-statusbar-locale {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  font-size: 0.7rem;
+  color: var(--fa-text-muted);
+}
+
 .app-statusbar-engines {
   max-width: 42vw;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -2824,6 +3022,245 @@ button.app-downloads-hint-token:disabled {
 
 .app-modal-wide {
   width: min(980px, 100%);
+}
+
+.app-settings-dialog {
+  display: flex;
+  flex-direction: column;
+  max-height: min(90vh, 720px);
+  overflow: hidden;
+}
+
+.app-settings-dialog-grid {
+  display: grid;
+  grid-template-columns: minmax(160px, 200px) minmax(0, 1fr);
+  gap: 1rem;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.app-settings-dialog-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-height: 0;
+  overflow: auto;
+}
+
+.app-settings-dialog-nav-btn {
+  text-align: left;
+  padding: 0.45rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--fa-text-secondary);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.app-settings-dialog-nav-btn:hover {
+  background: var(--fa-surface);
+  color: var(--fa-text-primary);
+}
+
+.app-settings-dialog-nav-btn-active {
+  border-color: var(--fa-border);
+  background: var(--fa-surface);
+  color: var(--fa-text-primary);
+  font-weight: 600;
+}
+
+.app-settings-dialog-pane {
+  min-height: 0;
+  overflow: auto;
+  padding-right: 0.15rem;
+}
+
+.app-settings-dialog-pane-title {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.app-settings-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.app-settings-fieldset {
+  border: 1px solid var(--fa-border);
+  border-radius: 8px;
+  padding: 0.65rem 0.75rem;
+  margin: 0;
+}
+
+.app-settings-hidpi-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.app-settings-hidpi-title {
+  margin: 0 0 0.15rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--fa-text-primary);
+}
+
+.app-settings-hidpi-checklist {
+  margin: 0.15rem 0 0 1.1rem;
+  padding: 0;
+  font-size: 0.78rem;
+  color: var(--fa-text-secondary);
+}
+
+.app-settings-hidpi-checklist li {
+  margin: 0.2rem 0;
+}
+
+.app-settings-hidpi-active {
+  color: var(--fa-text-primary);
+}
+
+.app-settings-hw-smoke-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.app-settings-hw-smoke-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.app-settings-hw-smoke-primary {
+  color: var(--fa-accent);
+}
+
+.app-settings-hw-smoke-section {
+  border-top: 1px solid var(--fa-border-subtle);
+  padding-top: 0.55rem;
+  margin-top: 0.25rem;
+}
+
+.app-settings-hw-smoke-section--primary {
+  border-left: 3px solid var(--fa-accent);
+  padding-left: 0.55rem;
+}
+
+.app-settings-hw-smoke-section-title {
+  margin: 0 0 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.app-settings-hw-smoke-label {
+  margin: 0.35rem 0 0.15rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--fa-text-secondary);
+}
+
+.app-settings-hw-smoke-steps {
+  margin: 0.15rem 0 0 1.1rem;
+  padding: 0;
+  font-size: 0.78rem;
+  color: var(--fa-text-secondary);
+}
+
+.app-settings-hw-smoke-steps li {
+  margin: 0.35rem 0;
+}
+
+.app-settings-hw-smoke-step-id {
+  font-family: var(--fa-font-mono, ui-monospace, monospace);
+  font-size: 0.72rem;
+  color: var(--fa-text-muted);
+}
+
+.app-settings-radio-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0.35rem 0;
+  font-size: 0.82rem;
+}
+
+.app-settings-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.app-settings-row-label {
+  font-size: 0.8rem;
+  color: var(--fa-text-secondary);
+  min-width: 8rem;
+}
+
+.app-settings-row-actions {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.app-settings-select {
+  max-width: min(100%, 320px);
+}
+
+.app-settings-path-row {
+  display: grid;
+  grid-template-columns: minmax(8rem, 12rem) minmax(0, 1fr) auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.app-settings-path-value {
+  font-size: 0.75rem;
+  word-break: break-all;
+  color: var(--fa-text-secondary);
+}
+
+.app-settings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.app-settings-dialog-section-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+}
+
+.app-settings-hotkeys-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.app-settings-hotkeys-table th,
+.app-settings-hotkeys-table td {
+  border-bottom: 1px solid var(--fa-border-subtle);
+  padding: 0.4rem 0.35rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.app-settings-hotkeys-table kbd {
+  font-family: inherit;
+  font-size: 0.75rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  border: 1px solid var(--fa-border);
+  background: var(--fa-surface);
 }
 
 .app-modal-header-row {
@@ -2908,6 +3345,23 @@ button.app-downloads-hint-token:disabled {
 
 .app-knowledge-search {
   flex-shrink: 0;
+}
+
+.app-knowledge-toc-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.app-knowledge-toc-section-title {
+  margin: 0 0 4px;
+  padding: 0 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--app-muted-fg, #8a8f98);
 }
 
 .app-knowledge-list {
@@ -3183,6 +3637,36 @@ button.app-downloads-hint-token:disabled {
   gap: 0.45rem;
 }
 
+.app-about-folders {
+  margin: 0.75rem 0 0;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--fa-border-subtle);
+}
+
+.app-about-folders-title {
+  margin: 0 0 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--fa-text-secondary);
+}
+
+.app-about-folders-intro {
+  margin: 0 0 0.5rem;
+}
+
+.app-about-folder-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.app-about-folder-list li {
+  margin: 0;
+}
+
 .app-about-knowledge-link {
   margin: 0.15rem 0 0;
 }
@@ -3215,6 +3699,30 @@ button.app-downloads-hint-token:disabled {
 
 .app-downloads-doc-links {
   padding: 0.05rem 0 0.35rem;
+}
+
+/* §6 — отдельное окно загрузок (`#downloads`). */
+.downloads-standalone-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.downloads-standalone-main {
+  flex: 1;
+  overflow: auto;
+}
+
+.downloads-standalone-mark-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 0;
+}
+
+.downloads-standalone-mark-icon svg {
+  display: block;
 }
 
 /* §9 §363 — отдельное окно инспектора (`#inspector`). */
@@ -3576,6 +4084,167 @@ button.app-downloads-hint-token:disabled {
     min-height: 1.78rem;
     font-size: 0.704rem;
   }
+
+  /* §1.1 — terminal / batch / inspector под 125 % Windows. */
+  .app-terminal-workspace {
+    padding: 1.05rem;
+  }
+
+  .app-terminal-command-row {
+    gap: 0.72rem;
+  }
+
+  .app-terminal-input {
+    min-height: 2.1rem;
+    font-size: 0.86rem;
+  }
+
+  .app-terminal-suggest-item {
+    padding: 0.5rem 0.56rem;
+  }
+
+  .app-terminal-suggest-item small {
+    font-size: 0.74rem;
+  }
+
+  .app-terminal-hint {
+    min-height: 1.82rem;
+    padding: 0.42rem 0.52rem;
+    font-size: 0.8rem;
+  }
+
+  .app-terminal-output {
+    font-size: 0.74rem;
+  }
+
+  .app-batch-export-dir-row .app-control {
+    min-height: 2.05rem;
+    font-size: 0.86rem;
+  }
+
+  .inspector-standalone-main {
+    padding: 11px 15px 15px;
+  }
+
+  .inspector-standalone-hint {
+    font-size: 0.9rem;
+  }
+
+  .inspector-standalone-probe .app-probe-table-wrap {
+    max-height: min(44vh, 25rem);
+  }
+
+  /* §1.1 — модалки, справка, история обработки, probe (125 %). */
+  .app-modal-title {
+    font-size: 1.08rem;
+  }
+
+  .app-modal-hint {
+    font-size: 0.8rem;
+  }
+
+  .app-modal-footer .app-btn {
+    min-height: 2.05rem;
+  }
+
+  .app-settings-dialog {
+    max-height: min(92vh, 740px);
+  }
+
+  .app-settings-dialog-nav-btn {
+    min-height: 2rem;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.82rem;
+  }
+
+  .app-settings-dialog-pane-title {
+    font-size: 1rem;
+  }
+
+  .app-settings-hotkeys-table {
+    font-size: 0.82rem;
+  }
+
+  .app-settings-hotkeys-table th,
+  .app-settings-hotkeys-table td {
+    padding: 0.45rem 0.4rem;
+  }
+
+  .app-settings-hotkeys-table kbd {
+    font-size: 0.78rem;
+    padding: 0.12rem 0.38rem;
+  }
+
+  .app-settings-radio-row {
+    font-size: 0.84rem;
+  }
+
+  .app-settings-row-label {
+    font-size: 0.82rem;
+  }
+
+  .app-settings-path-value {
+    font-size: 0.78rem;
+  }
+
+  .app-settings-dialog-section-footer .app-btn {
+    min-height: 2.05rem;
+  }
+
+  .app-statusbar-activity-dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .app-statusbar-activity-label {
+    font-size: 0.74rem;
+  }
+
+  .app-statusbar-locale {
+    font-size: 0.72rem;
+  }
+
+  .app-knowledge-item {
+    padding: 0.54rem 0.58rem;
+  }
+
+  .app-knowledge-item span {
+    font-size: 0.74rem;
+  }
+
+  .app-knowledge-body {
+    font-size: 0.87rem;
+  }
+
+  .app-knowledge-search .app-control {
+    min-height: 2.05rem;
+  }
+
+  .app-processing-history-summary span {
+    font-size: 0.66rem;
+  }
+
+  .app-processing-history-controls .app-control {
+    min-height: 2rem;
+  }
+
+  .app-probe-table {
+    font-size: 0.74rem;
+  }
+
+  .app-probe-table th,
+  .app-probe-table td {
+    padding: 0.42rem 0.48rem;
+  }
+
+  .app-probe-json-pre {
+    font-size: 0.7rem;
+  }
+
+  .app-about-row dt,
+  .app-about-row dd {
+    font-size: 0.84rem;
+  }
 }
 
 @media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) {
@@ -3671,6 +4340,66 @@ button.app-downloads-hint-token:disabled {
   .app-filter-chip {
     min-height: 1.82rem;
     font-size: 0.72rem;
+  }
+
+  .app-terminal-input {
+    min-height: 2.12rem;
+    font-size: 0.87rem;
+  }
+
+  .app-terminal-hint {
+    min-height: 1.84rem;
+    font-size: 0.81rem;
+  }
+
+  .app-batch-export-dir-row .app-btn {
+    min-height: 2.1rem;
+  }
+
+  .inspector-standalone-hint {
+    font-size: 0.91rem;
+  }
+
+  .app-modal-hint {
+    font-size: 0.82rem;
+  }
+
+  .app-settings-dialog-nav-btn {
+    min-height: 2.06rem;
+    font-size: 0.84rem;
+  }
+
+  .app-settings-dialog-pane-title {
+    font-size: 1.02rem;
+  }
+
+  .app-settings-hotkeys-table {
+    font-size: 0.84rem;
+  }
+
+  .app-statusbar-activity-dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .app-statusbar-activity-label {
+    font-size: 0.75rem;
+  }
+
+  .app-knowledge-body {
+    font-size: 0.89rem;
+  }
+
+  .app-knowledge-toc-section-title {
+    font-size: 11.5px;
+  }
+
+  .app-processing-history-controls .app-control {
+    min-height: 2.06rem;
+  }
+
+  .app-probe-table {
+    font-size: 0.76rem;
   }
 }
 
@@ -3854,6 +4583,44 @@ button.app-downloads-hint-token:disabled {
   .app-downloads-extra-args {
     font-size: 0.756rem;
   }
+
+  .app-terminal-input {
+    min-height: 2.14rem;
+    font-size: 0.88rem;
+  }
+
+  .app-terminal-suggest {
+    max-height: 15rem;
+  }
+
+  .app-modal-footer .app-btn {
+    min-height: 2.12rem;
+  }
+
+  .app-settings-dialog-nav-btn {
+    min-height: 2.08rem;
+    font-size: 0.85rem;
+  }
+
+  .app-settings-dialog-section-footer .app-btn {
+    min-height: 2.1rem;
+  }
+
+  .app-statusbar-activity-label {
+    font-size: 0.756rem;
+  }
+
+  .app-knowledge-dialog {
+    max-height: min(92vh, 680px);
+  }
+
+  .app-probe-json-pre {
+    font-size: 0.72rem;
+  }
+
+  .app-processing-history-list {
+    max-height: 21rem;
+  }
 }
 
 /* §4.C / §6 — ~200 % (devicePixelRatio 2): вкладка «Загрузки» без дублирования всего 168dpi-блока. */
@@ -3881,6 +4648,65 @@ button.app-downloads-hint-token:disabled {
     width: 19px;
     height: 19px;
   }
+
+  .app-terminal-command-row .app-btn {
+    min-height: 2.15rem;
+  }
+
+  .app-batch-export-dir-row .app-btn {
+    min-height: 2.15rem;
+  }
+
+  .app-modal-footer .app-btn {
+    min-height: 2.18rem;
+  }
+
+  .app-settings-dialog {
+    max-height: min(94vh, 760px);
+  }
+
+  .app-settings-dialog-grid {
+    grid-template-columns: minmax(170px, 210px) minmax(0, 1fr);
+  }
+
+  .app-settings-dialog-nav-btn {
+    min-height: 2.12rem;
+    font-size: 0.86rem;
+  }
+
+  .app-settings-dialog-pane-title {
+    font-size: 1.04rem;
+  }
+
+  .app-settings-hotkeys-table kbd {
+    font-size: 0.8rem;
+  }
+
+  .app-settings-dialog-section-footer .app-btn {
+    min-height: 2.18rem;
+  }
+
+  .app-statusbar-activity-dot {
+    width: 9px;
+    height: 9px;
+  }
+
+  .app-statusbar-activity-label {
+    font-size: 0.76rem;
+  }
+
+  .app-statusbar-locale {
+    font-size: 0.74rem;
+  }
+
+  .app-knowledge-item {
+    padding: 0.58rem 0.62rem;
+  }
+
+  .app-probe-context-menu-item {
+    padding: 0.48rem 0.58rem;
+    font-size: 0.8rem;
+  }
 }
 
 /* §16 — метка «АВТО» у выбора кодека; список hwaccels в title у label. */
@@ -3901,4 +4727,17 @@ button.app-downloads-hint-token:disabled {
   border: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-bg) 70%, var(--fa-accent) 30%);
   color: var(--fa-text-primary);
+}
+
+/* §4.4 — «Уменьшить движение» в ОС: мгновенные transition/animation, без плавного прогресса. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }
 }

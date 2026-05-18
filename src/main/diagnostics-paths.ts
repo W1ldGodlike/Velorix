@@ -7,7 +7,7 @@ import { shell } from 'electron'
 import { resolveAppPaths } from './app-paths'
 import { resolveYtdlpOutputDirectory } from './ytdlp-download-output'
 import type { DiagnosticsFolderEntry, DiagnosticsFolderId } from '../shared/diagnostics-contract'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
 
 export type { DiagnosticsFolderEntry } from '../shared/diagnostics-contract'
@@ -60,8 +60,12 @@ function resolveDiagnosticsFolderPath(id: DiagnosticsFolderId): string {
   }
 }
 
-function diagnosticsFolderLabel(id: DiagnosticsFolderId, locale: DownloadsWindowUiLocale): string {
-  const s = getMainApplicationStrings(locale)
+function diagnosticsFolderStrings(locale: AppUiLocale): ReturnType<typeof getMainApplicationStrings> {
+  return getMainApplicationStrings(locale)
+}
+
+function diagnosticsFolderLabel(id: DiagnosticsFolderId, locale: AppUiLocale): string {
+  const s = diagnosticsFolderStrings(locale)
   switch (id) {
     case 'userData':
       return s.diagFolderUserData
@@ -80,6 +84,26 @@ function diagnosticsFolderLabel(id: DiagnosticsFolderId, locale: DownloadsWindow
   }
 }
 
+function diagnosticsFolderHint(id: DiagnosticsFolderId, locale: AppUiLocale): string {
+  const s = diagnosticsFolderStrings(locale)
+  switch (id) {
+    case 'userData':
+      return s.diagFolderHintUserData
+    case 'resources':
+      return s.diagFolderHintResources
+    case 'bundledBin':
+      return s.diagFolderHintBundledBin
+    case 'userBin':
+      return s.diagFolderHintUserBin
+    case 'logs':
+      return s.diagFolderHintLogs
+    case 'ytdlpDownloads':
+      return s.diagFolderHintYtdlpDownloads
+    case 'systemTemp':
+      return s.diagFolderHintSystemTemp
+  }
+}
+
 const DIAGNOSTICS_FOLDER_ORDER: DiagnosticsFolderId[] = [
   'userData',
   'logs',
@@ -91,12 +115,13 @@ const DIAGNOSTICS_FOLDER_ORDER: DiagnosticsFolderId[] = [
 ]
 
 /** Снимок диагностических каталогов для построения меню «Инструменты». */
-export function listDiagnosticsFolders(locale: DownloadsWindowUiLocale): DiagnosticsFolderEntry[] {
+export function listDiagnosticsFolders(locale: AppUiLocale): DiagnosticsFolderEntry[] {
   return DIAGNOSTICS_FOLDER_ORDER.map((id) => {
     const path = resolveDiagnosticsFolderPath(id)
     return {
       id,
       label: diagnosticsFolderLabel(id, locale),
+      hint: diagnosticsFolderHint(id, locale),
       path,
       exists: existsSync(path)
     }

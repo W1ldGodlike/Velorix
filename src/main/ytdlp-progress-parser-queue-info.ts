@@ -1,4 +1,4 @@
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getYtdlpQueueProgressStrings } from '../shared/ytdlp-queue-progress-locale'
 
 function isYtdlpInfoLine(t: string): boolean {
@@ -98,7 +98,7 @@ export function parseYtdlpInfoFormatSnippet(line: string): string | null {
  */
 export function parseYtdlpQueueFormatHint(
   line: string,
-  locale: DownloadsWindowUiLocale = 'ru'
+  locale: AppUiLocale = 'ru'
 ): string | null {
   const P = getYtdlpQueueProgressStrings(locale)
   const fromInfo = parseYtdlpInfoFormatSnippet(line)

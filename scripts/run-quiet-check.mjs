@@ -12,7 +12,11 @@ const steps = [
   ['rules-explicit', ['run', 'check:rules-explicit']],
   ['field-registries', ['run', 'check:field-registries']],
   ['locales-json', ['run', 'check:locales-json']],
+  ['locales-ts-overlap', ['run', 'check:locales-ts-overlap']],
   ['terminal-summaries-ru', ['run', 'check:terminal-summaries-ru']],
+  ['terminal-data-summaries', ['run', 'check:terminal-data-summaries']],
+  ['terminal-scenario-summaries', ['run', 'check:terminal-scenario-summaries']],
+  ['ui-copy-quality', ['run', 'check:ui-copy-quality']],
   ['audit:copy-paste', ['run', 'audit:copy-paste']],
   ['audit:todo-debt', ['run', 'audit:todo-debt']],
   ['audit:dead-type-reexports', ['run', 'audit:dead-type-reexports']],
@@ -21,6 +25,9 @@ const steps = [
   ['audit:structural', ['run', 'audit:structural']],
   ['audit:inventory-sync', ['run', 'audit:inventory-sync']],
   ['journal', ['run', 'check:journal']],
+  ['ui-surfaces-guard', ['run', 'check:ui-surfaces-guard']],
+  ['native-main-platform-guard', ['run', 'check:native-main-platform-guard']],
+  ['renderer-state-approach', ['run', 'check:renderer-state-approach']],
   ['checklist', ['run', 'check:checklist']],
   ['secrets', ['run', 'check:secrets']]
 ]

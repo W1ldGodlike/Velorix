@@ -1,3 +1,4 @@
+import type { ExternalFilterScriptKind } from '../shared/external-filter-script-contract'
 import type {
   FfmpegExportAudioModeId,
   FfmpegExportAudioNormalizeId,
@@ -22,7 +23,7 @@ import type {
   FfmpegExportVideoVignetteId,
   MediaExportTrimPayload
 } from '../shared/ffmpeg-export-contract'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import type { FfmpegExportArgvParams } from '../shared/ffmpeg-export-argv'
 
 export type FfmpegExportJobParams = {
@@ -64,9 +65,11 @@ export type FfmpegExportJobParams = {
   videoBlur?: FfmpegExportVideoBlurId | null
   videoDeinterlace?: FfmpegExportVideoDeinterlaceId | null
   audioNormalize?: FfmpegExportAudioNormalizeId | null
+  externalFilterKind?: ExternalFilterScriptKind | null
+  externalFilterScriptAbsPath?: string | null
   signal: AbortSignal
   onProgress?: (p: FfmpegExportProgressPayload) => void
-  uiLocale?: DownloadsWindowUiLocale
+  uiLocale?: AppUiLocale
 }
 
 export type FfmpegExportJobResolved =
@@ -77,7 +80,7 @@ export type FfmpegExportJobResolved =
       wantTwoPass: boolean
       baseArgvParams: FfmpegExportArgvParams
       segmentDur: number
-      uloc: DownloadsWindowUiLocale
+      uloc: AppUiLocale
       secondPassProgressMessage: string
       jobOnProgress?: (p: FfmpegExportProgressPayload) => void
       doneOk: () => { ok: true; videoCodecUsed: FfmpegExportVideoCodecId }

@@ -1,6 +1,6 @@
 import { spawn } from 'child_process'
 
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import {
   FFMPEG_EXPORT_CANCELLED_ERROR,
   type FfmpegExportProgressPayload,
@@ -63,14 +63,17 @@ export function runFfmpegExportOnce(params: {
   segmentDur: number
   onProgress?: (p: FfmpegExportProgressPayload) => void
   mapPercent?: (rawPercent: number) => number
-  uiLocale?: DownloadsWindowUiLocale
+  uiLocale?: AppUiLocale
+  /** §16 — режим экономии: снизить приоритет процесса ffmpeg. */
+  lowProcessPriority?: boolean
 }): Promise<{ ok: true } | { ok: false; error: string }> {
   const locStrings = getMainApplicationStrings(params.uiLocale ?? 'ru')
   return new Promise((resolve) => {
     const child = spawn(params.ffmpegPath, params.args, {
       windowsHide: true,
       stdio: ['ignore', 'ignore', 'pipe'],
-      signal: params.signal
+      signal: params.signal,
+      ...(params.lowProcessPriority === true ? { priority: 'belowNormal' as const } : {})
     })
     logExternalProcessLine('ffmpeg-export', 'lifecycle', 'started')
 

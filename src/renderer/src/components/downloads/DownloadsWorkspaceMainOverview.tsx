@@ -22,10 +22,14 @@ export function DownloadsWorkspaceMainOverview(props: DownloadsWorkspaceMainProp
         aria-describedby="downloads-page-hint"
         aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
       >
+        <p id="downloads-overview-stats-hint" className="app-visually-hidden">
+          {uiText('downloadsOverviewStatsHint')}
+        </p>
         <div
           className="app-downloads-overview-stats"
           role="list"
           aria-label={uiText('downloadsOverviewStatsGroupAria')}
+          aria-describedby="downloads-page-hint downloads-overview-stats-hint"
           aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
         >
           <div className="app-downloads-stat" role="listitem">
@@ -66,7 +70,8 @@ export function DownloadsWorkspaceMainOverview(props: DownloadsWorkspaceMainProp
             type="button"
             className={`app-filter-chip${downloadsStatusFilter === filter.id ? ' app-filter-chip-active' : ''}`}
             aria-pressed={downloadsStatusFilter === filter.id}
-            aria-describedby="downloads-page-hint"
+            aria-describedby="downloads-page-hint downloads-overview-stats-hint"
+            title={filter.label}
             onClick={() => {
               setDownloadsStatusFilter(filter.id)
             }}

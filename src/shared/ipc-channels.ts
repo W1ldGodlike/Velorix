@@ -17,6 +17,8 @@ export const mainWindowIpc = {
   settingsSetFfmpegExportVideoBitrate: 'fluxalloy:settings-set-ffmpeg-export-video-bitrate',
   settingsSetFfmpegExportTwoPass: 'fluxalloy:settings-set-ffmpeg-export-two-pass',
   settingsSetFfmpegExportEconomyMode: 'fluxalloy:settings-set-ffmpeg-export-economy-mode',
+  settingsSetFfmpegExportBenchmarkLoadThreshold:
+    'fluxalloy:settings-set-ffmpeg-export-benchmark-load-threshold',
   settingsSetFfmpegExportHwDecode: 'fluxalloy:settings-set-ffmpeg-export-hw-decode',
   settingsSetFfmpegExportExtraArgsLine: 'fluxalloy:settings-set-ffmpeg-export-extra-args-line',
   settingsSetFfmpegExportBatchOutputSuffix:
@@ -54,6 +56,7 @@ export const mainWindowIpc = {
   enginesStatus: 'fluxalloy:engines-status',
   enginesShouldOfferDownload: 'fluxalloy:engines-should-offer-download',
   enginesDownload: 'fluxalloy:engines-download',
+  enginesCheckUpdatesAndDownload: 'fluxalloy:engines-check-updates-and-download',
   enginesClearUserBin: 'fluxalloy:engines-clear-user-bin',
   enginesProbeHwEncoders: 'fluxalloy:engines-probe-hw-encoders',
   enginesProgress: 'fluxalloy:engines-progress',
@@ -89,6 +92,15 @@ export const mainWindowIpc = {
   /** Main → renderer окна инспектора: проанализировать указанный путь. */
   inspectorTargetMediaPath: 'fluxalloy:inspector-target-media-path',
   exportStart: 'fluxalloy:export-start',
+  exportBenchmarkEncoders: 'fluxalloy:export-benchmark-encoders',
+  exportBenchmarkProgress: 'fluxalloy:export-benchmark-progress',
+  extractFrames: 'fluxalloy:extract-frames',
+  extractFramesProgress: 'fluxalloy:extract-frames-progress',
+  mediaUtilitiesRepairRemux: 'fluxalloy:media-utilities-repair-remux',
+  mediaUtilitiesCheckIntegrity: 'fluxalloy:media-utilities-check-integrity',
+  mediaUtilitiesGenerateNoise: 'fluxalloy:media-utilities-generate-noise',
+  mediaUtilitiesComputeFileHash: 'fluxalloy:media-utilities-compute-file-hash',
+  mediaUtilitiesConvertImage: 'fluxalloy:media-utilities-convert-image',
   exportResolveBundledLutCubePath: 'fluxalloy:export-resolve-bundled-lut-cube-path',
   exportCancel: 'fluxalloy:export-cancel',
   exportOpenOutput: 'fluxalloy:export-open-output',
@@ -123,8 +135,18 @@ export const mainWindowIpc = {
   themeChanged: 'fluxalloy:theme-changed',
   uiLocaleChanged: 'fluxalloy:ui-locale-changed',
   openEnginePaths: 'fluxalloy:open-engine-paths',
+  /** Main → renderer: открыть единое окно настроек; payload — `AppSettingsDialogSection` или пусто. */
+  openSettings: 'fluxalloy:open-settings',
   enginePathsChanged: 'fluxalloy:engine-paths-changed',
+  settingsBackupExport: 'fluxalloy:settings-backup-export',
+  settingsBackupImport: 'fluxalloy:settings-backup-import',
+  settingsResetToDefaults: 'fluxalloy:settings-reset-to-defaults',
+  /** Main → renderer: полная замена settings.json после импорта из меню «Сервис». */
+  settingsBackupImported: 'fluxalloy:settings-backup-imported',
   openAbout: 'fluxalloy:open-about',
+  openExternalFilterScript: 'fluxalloy:open-external-filter-script',
+  externalFilterScriptPickFile: 'fluxalloy:external-filter-script-pick-file',
+  externalFilterScriptApply: 'fluxalloy:external-filter-script-apply',
   /** Main → все окна с главным preload: актуальный снимок `mainWindowUiPanels` после merge §4.1. */
   mainWindowUiPanelsChanged: 'fluxalloy:main-window-ui-panels-changed',
   /** Main → главное окно: снимок `downloadsWindowUiPanels` после merge (вкладка «Загрузки» ↔ pop-out). */
@@ -160,6 +182,7 @@ export const downloadsIpc = {
   openQueueOutput: 'fluxalloy-downloads-open-queue-output',
   openHistoryOutput: 'fluxalloy-downloads-open-history-output',
   openQueueOutputInHandler: 'fluxalloy-downloads-open-queue-output-in-handler',
+  extractQueueCover: 'fluxalloy-downloads-extract-queue-cover',
   openHistoryOutputInHandler: 'fluxalloy-downloads-open-history-output-in-handler',
   remove: 'fluxalloy-downloads-remove',
   move: 'fluxalloy-downloads-move',

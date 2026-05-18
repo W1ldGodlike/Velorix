@@ -1,8 +1,14 @@
 import { useEffect } from 'react'
 
 import type { ResolvedAppTheme } from '../../shared/settings-contract'
-import { applyPersistedUiLocale, setUiLocaleForSession } from './locales/ui-text'
+import {
+  applyPersistedUiLocale,
+  setUiLocaleForSession,
+  syncDocumentUiLocale,
+  uiText
+} from './locales/ui-text'
 import { sanitizeDownloadsRows } from './downloads-queue-view'
+import { useUiTextHotReloadBump } from './locales/use-ui-text-hot-reload-bump'
 import type { UseAppMainWindowEffectsDeps } from './use-app-main-window-effects-deps'
 
 export function useAppMainWindowEffectsBootstrap(
@@ -19,9 +25,12 @@ export function useAppMainWindowEffectsBootstrap(
     hydrateDownloadsWindowUiPanels,
     setExportUserPresets,
     setSnapshotFormat,
-    applyPreview
+    applyPreview,
+    refetchHwEncoders
   } = deps
   const { applyTheme } = actions
+
+  useUiTextHotReloadBump(setUiLocaleRenderTick)
 
   useEffect(() => {
     let mounted = true
@@ -49,6 +58,8 @@ export function useAppMainWindowEffectsBootstrap(
     void (async () => {
       const loaded = await window.fluxalloy.settings.get()
       const { resolved, shouldPersist } = applyPersistedUiLocale(loaded)
+      syncDocumentUiLocale(resolved)
+      document.title = uiText('mainWindowDocumentTitle')
       setUiLocaleRenderTick((n) => n + 1)
       if (shouldPersist) {
         void window.fluxalloy.settings.setUiLocale(resolved)
@@ -58,8 +69,11 @@ export function useAppMainWindowEffectsBootstrap(
       hydrateMainWindowUiPanels(loaded.mainWindowUiPanels)
       hydrateDownloadsWindowUiPanels(loaded.downloadsWindowUiPanels)
       setExportUserPresets(loaded.ffmpegExportUserPresets ?? [])
-      if (loaded.ffmpegSnapshotFormat === 'jpg') {
-        setSnapshotFormat('jpg')
+      if (
+        loaded.ffmpegSnapshotFormat === 'jpg' ||
+        loaded.ffmpegSnapshotFormat === 'webp'
+      ) {
+        setSnapshotFormat(loaded.ffmpegSnapshotFormat)
       }
       cleanupTheme = window.fluxalloy.onThemeChanged((next) => {
         applyTheme(next)
@@ -84,12 +98,53 @@ export function useAppMainWindowEffectsBootstrap(
   ])
 
   useEffect(() => {
-    const off = window.fluxalloy.onUiLocaleChanged((loc) => {
-      setUiLocaleForSession(loc)
-      setUiLocaleRenderTick((n) => n + 1)
+    const off = window.fluxalloy.onSettingsBackupImported(() => {
+      void window.fluxalloy.settings.get().then((loaded) => {
+        const { resolved, shouldPersist } = applyPersistedUiLocale(loaded)
+        syncDocumentUiLocale(resolved)
+        document.title = uiText('mainWindowDocumentTitle')
+        setUiLocaleRenderTick((n) => n + 1)
+        if (shouldPersist) {
+          void window.fluxalloy.settings.setUiLocale(resolved)
+        }
+        applyTheme(loaded.effectiveTheme)
+        hydrateExportFieldsFromSettings(loaded)
+        hydrateMainWindowUiPanels(loaded.mainWindowUiPanels)
+        hydrateDownloadsWindowUiPanels(loaded.downloadsWindowUiPanels)
+        setExportUserPresets(loaded.ffmpegExportUserPresets ?? [])
+        if (
+          loaded.ffmpegSnapshotFormat === 'jpg' ||
+          loaded.ffmpegSnapshotFormat === 'webp'
+        ) {
+          setSnapshotFormat(loaded.ffmpegSnapshotFormat)
+        }
+        void refetchHwEncoders()
+      })
     })
     return off
-  }, [setUiLocaleRenderTick])
+  }, [
+    applyTheme,
+    hydrateDownloadsWindowUiPanels,
+    hydrateExportFieldsFromSettings,
+    hydrateMainWindowUiPanels,
+    refetchHwEncoders,
+    setExportUserPresets,
+    setSnapshotFormat,
+    setUiLocaleRenderTick
+  ])
+
+  useEffect(() => {
+    const off = window.fluxalloy.onUiLocaleChanged((loc) => {
+      setUiLocaleForSession(loc)
+      syncDocumentUiLocale(loc)
+      document.title = uiText('mainWindowDocumentTitle')
+      setUiLocaleRenderTick((n) => n + 1)
+      void window.fluxalloy.settings.get().then((s) => {
+        setExportUserPresets(s.ffmpegExportUserPresets ?? [])
+      })
+    })
+    return off
+  }, [setExportUserPresets, setUiLocaleRenderTick])
 
   useEffect(() => {
     const off = window.fluxalloy.downloads.onDownloadsWindowUiPanelsChanged((panels) => {

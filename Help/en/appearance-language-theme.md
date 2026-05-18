@@ -6,7 +6,7 @@ Use the **View** menu to pick dark, light, or **match the system**. The choice p
 
 ## Interface language
 
-Language changes button labels, status messages, and **this help text**. After switching language, reload the open article or close and reopen the help window so the left-hand titles refresh too.
+Language changes button labels, built-in FFmpeg export presets, status messages, and **this help text**. Switching language from the top bar or **View** menu applies immediately without restarting the app; an open help window refreshes the table of contents and article text automatically.
 
 ## Windows scaling
 

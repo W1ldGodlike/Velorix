@@ -18,11 +18,15 @@ vi.mock('@electron-toolkit/utils', () => ({
 import { getTerminalCommandHints } from '../../src/main/terminal-service-hints'
 
 describe('getTerminalCommandHints §8', () => {
-  it('читает ffmpeg_commands.json и ytdlp_commands.json из Data/', () => {
+  it('читает ffmpeg/ffprobe/ytdlp_commands.json из Data/', () => {
     const hints = getTerminalCommandHints()
     expect(hints.length).toBeGreaterThan(10)
     expect(hints.some((h) => h.tool === 'ffmpeg' && h.token.length > 0)).toBe(true)
+    expect(hints.some((h) => h.tool === 'ffprobe' && h.token.length > 0)).toBe(true)
     expect(hints.some((h) => h.tool === 'yt-dlp' && h.token.length > 0)).toBe(true)
+    const ffmpegI = hints.find((h) => h.tool === 'ffmpeg' && h.token === '-i')
+    expect(ffmpegI?.examples?.length).toBeGreaterThan(0)
+    expect(ffmpegI?.docUrl?.startsWith('http')).toBe(true)
     for (let i = 1; i < hints.length; i++) {
       const prev = hints[i - 1]!
       const cur = hints[i]!

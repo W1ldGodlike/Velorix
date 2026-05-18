@@ -1,5 +1,5 @@
 ﻿import type { MediaProbeTrackRow } from '../shared/ffprobe-contract'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { formatFfprobeDispositionSummary } from '../shared/ffprobe-disposition'
 import { formatFfprobeCodecLongNameDetail } from '../shared/ffprobe-codec-long-name'
 import { formatFfprobeStreamDurationDetail } from '../shared/ffprobe-stream-duration-detail'
@@ -28,7 +28,7 @@ function buildTrackDetail(
   stream: FfprobeStream,
   containerDurationSec: number | null,
   audioChannelsSuffixTemplate: string,
-  locale: DownloadsWindowUiLocale
+  locale: AppUiLocale
 ): string {
   const parts: string[] = []
   const codecLong = formatFfprobeCodecLongNameDetail(
@@ -100,7 +100,7 @@ function buildTrackDetail(
 export function buildTrackRows(
   streams: FfprobeJson['streams'],
   containerDurationSec: number | null,
-  uiLocale: DownloadsWindowUiLocale = 'ru'
+  uiLocale: AppUiLocale = 'ru'
 ): MediaProbeTrackRow[] {
   const audioChSuffix = getMainApplicationStrings(uiLocale).ffprobeAudioChannelsSuffix
   const list = streams ?? []

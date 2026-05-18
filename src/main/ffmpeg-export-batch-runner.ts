@@ -13,7 +13,7 @@ import {
   FFMPEG_EXPORT_BATCH_STATUS_RUNNING,
   resolveFfmpegExportBatchConcurrencyLimit
 } from '../shared/ffmpeg-export-batch-contract'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import {
   processingHistoryFfmpegBatchExportCancelled,
   processingHistoryFfmpegBatchExportFailed,
@@ -60,7 +60,7 @@ export async function runFfmpegExportBatchQueue(deps: {
   rememberExportOutputPath: (filePath: string) => void
   rememberFfmpegExportDirectory: (filePath: string) => void
   pushRowProgress: (rowId: number, payload: FfmpegExportProgressPayload) => void
-  uiLocale: DownloadsWindowUiLocale
+  uiLocale: AppUiLocale
 }): Promise<void> {
   if (isFfmpegExportBatchRunnerBusy()) {
     return

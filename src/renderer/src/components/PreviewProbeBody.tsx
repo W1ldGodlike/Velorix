@@ -22,7 +22,12 @@ export function PreviewProbeBody(props: PreviewProbeBodyProps): JSX.Element {
         <p id="probePanelOverviewHint" className="app-visually-hidden">
           {uiText('probePanelOverviewHint')}
         </p>
-        <PreviewProbeBodyOverview ctx={ctx} />
+        <PreviewProbeBodyOverview
+          ctx={ctx}
+          {...(props.onOpenKnowledgeArticle
+            ? { onOpenKnowledgeArticle: props.onOpenKnowledgeArticle }
+            : {})}
+        />
         <PreviewProbeBodySections ctx={ctx} />
       </div>
       <PreviewProbeBodyContextMenu ctx={ctx} />

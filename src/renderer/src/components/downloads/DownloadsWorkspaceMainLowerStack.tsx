@@ -15,6 +15,8 @@ export function DownloadsWorkspaceMainLowerStack(props: DownloadsWorkspaceMainPr
     onSelectDownloadsTab,
     downloadsEmbeddedHistoryOpen,
     persistDownloadsEmbeddedHistoryOpen,
+    downloadsHistoryListMode,
+    persistDownloadsHistoryListMode,
     visibleDownloadsHistory,
     downloadsHistoryCount,
     downloadsHistoryOutcomeFilter,
@@ -42,6 +44,7 @@ export function DownloadsWorkspaceMainLowerStack(props: DownloadsWorkspaceMainPr
       <DownloadsHistoryPanel
         open={downloadsEmbeddedHistoryOpen}
         busy={downloadsHistoryBusy}
+        listMode={downloadsHistoryListMode}
         entries={visibleDownloadsHistory}
         totalEntries={downloadsHistoryCount}
         outcomeFilter={downloadsHistoryOutcomeFilter}
@@ -49,6 +52,7 @@ export function DownloadsWorkspaceMainLowerStack(props: DownloadsWorkspaceMainPr
         onToggle={(next) => {
           persistDownloadsEmbeddedHistoryOpen(next)
         }}
+        onListModeChange={persistDownloadsHistoryListMode}
         onOutcomeFilterChange={setDownloadsHistoryOutcomeFilter}
         onRefresh={() => {
           void refreshDownloadsHistory()
@@ -77,6 +81,22 @@ export function DownloadsWorkspaceMainLowerStack(props: DownloadsWorkspaceMainPr
                 ? uiText('downloadsHistoryRepeatQueued')
                 : uiText('downloadsHistoryRepeatNotAdded')
             )
+          })
+        }}
+        onOpenOutput={(id, mode) => {
+          void window.fluxalloy.downloads.openHistoryOutput(id, mode).then((res) => {
+            if (!res.ok) {
+              setStatusHint(res.error)
+            }
+          })
+        }}
+        onOpenInEditor={(id) => {
+          void window.fluxalloy.downloads.openHistoryOutputInHandler(id).then((res) => {
+            if (!res.ok) {
+              setStatusHint(res.error)
+              return
+            }
+            setStatusHint(uiText('downloadsHistoryOpenHandlerDone'))
           })
         }}
       />

@@ -3,6 +3,12 @@ import type { MutableRefObject, RefObject } from 'react'
 import { buildFfmpegExportPreviewCommand } from '../../shared/ffmpeg-export-argv'
 import type { RestoredSourceInfo } from '../../shared/preview-dialog-contract'
 import type { MediaProbeSuccess } from '../../shared/ffprobe-contract'
+import {
+  buildEditorExtractFramesPayload,
+  DEFAULT_EDITOR_EXTRACT_FRAMES_UI,
+  runEditorExtractFrames
+} from './editor-extract-frames-action'
+import type { FfmpegSnapshotFormatId } from '../../shared/ffmpeg-snapshot-contract'
 import { getUiLocale, uiText, uiTextVars } from './locales/ui-text'
 
 export function useEditorExportPipelineHandlers({
@@ -18,6 +24,9 @@ export function useEditorExportPipelineHandlers({
   batchExportBusy,
   snapshotBusy,
   setSnapshotBusy,
+  extractFramesBusy,
+  setExtractFramesBusy,
+  snapshotFormat,
   refreshProcessingHistory,
   buildCurrentFfmpegExportOverrides,
   lastExportPath,
@@ -42,6 +51,9 @@ export function useEditorExportPipelineHandlers({
   batchExportBusy: boolean
   snapshotBusy: boolean
   setSnapshotBusy: (busy: boolean) => void
+  extractFramesBusy: boolean
+  setExtractFramesBusy: (busy: boolean) => void
+  snapshotFormat: FfmpegSnapshotFormatId
   refreshProcessingHistory: () => Promise<void>
   buildCurrentFfmpegExportOverrides: () => Record<string, unknown>
   lastExportPath: string | null
@@ -52,6 +64,7 @@ export function useEditorExportPipelineHandlers({
   exportPreviewCommand: string
 }): {
   handleSnapshot: () => Promise<void>
+  handleExtractFrames: () => Promise<void>
   handleExport: () => Promise<void>
   handleCancelExport: () => Promise<void>
   handleOpenLastExport: (mode: 'file' | 'folder' | 'preview') => Promise<void>
@@ -91,6 +104,30 @@ export function useEditorExportPipelineHandlers({
       setStatusHint(e instanceof Error ? e.message : uiText('statusSnapshotExceptionGeneric'))
     } finally {
       setSnapshotBusy(false)
+    }
+  }
+
+  async function handleExtractFrames(): Promise<void> {
+    if (!preview || exportBusy || batchExportBusy || snapshotBusy || extractFramesBusy) {
+      return
+    }
+    const durationSec = probeInfo?.durationSec ?? 0
+    const payload = buildEditorExtractFramesPayload({
+      inputPath: preview.path,
+      durationSec,
+      format: snapshotFormat,
+      ui: DEFAULT_EDITOR_EXTRACT_FRAMES_UI
+    })
+    if (payload === null) {
+      return
+    }
+    setExtractFramesBusy(true)
+    setStatusHint(uiText('editorExtractFramesStarting'))
+    try {
+      await runEditorExtractFrames({ payload, onProgress: () => {}, setStatusHint })
+      void refreshProcessingHistory()
+    } finally {
+      setExtractFramesBusy(false)
     }
   }
 
@@ -196,6 +233,7 @@ export function useEditorExportPipelineHandlers({
 
   return {
     handleSnapshot,
+    handleExtractFrames,
     handleExport,
     handleCancelExport,
     handleOpenLastExport,

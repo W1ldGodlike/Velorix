@@ -118,7 +118,7 @@ describe('settings-store yt-dlp fields', () => {
     expect(loaded.ffmpegExportCropPreset).toBeUndefined()
     expect(loaded.ffmpegExportDirectory).toBeUndefined()
     expect(loaded.ffmpegSnapshotDirectory).toBeUndefined()
-    expect(loaded.ffmpegSnapshotFormat).toBeUndefined()
+    expect(loaded.ffmpegSnapshotFormat).toBe('webp')
   })
 
   it('создаёт каталог при сохранении settings.json', () => {
@@ -151,6 +151,7 @@ describe('settings-store yt-dlp fields', () => {
         downloadsWindowUiPanels: {
           log: false,
           format: true,
+          historyListMode: 'full',
           extra: false
         }
       }),
@@ -166,7 +167,7 @@ describe('settings-store yt-dlp fields', () => {
         processingHistory: true,
         probeTracks: true
       },
-      downloadsWindowUiPanels: { log: false, format: true }
+      downloadsWindowUiPanels: { log: false, format: true, historyListMode: 'full' }
     })
   })
 

@@ -16,7 +16,7 @@ import {
   formatFluxLogAttemptExitCode,
   formatFluxLogQueueRetryDelay
 } from '../shared/downloads-flux-log-locale'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import {
   isYtdlpQueueStatusWaiting,
   YTDLP_QUEUE_STATUS_CANCELLED,
@@ -33,7 +33,7 @@ export async function runYtdlpForWaitingRow(
   paths: AppPaths,
   outputDir: string,
   rowId: number,
-  locale: DownloadsWindowUiLocale
+  locale: AppUiLocale
 ): Promise<void> {
   const snap = getDownloadsQueueRowById(rowId)
   if (!snap || !isYtdlpQueueStatusWaiting(snap.status)) {

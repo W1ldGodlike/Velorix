@@ -30,10 +30,30 @@ export type MainApplicationStrings = {
   menuDownloadsManager: string
   menuPasteUrlDownloads: string
   menuSettings: string
+  menuOpenAppSettings: string
   menuEnginePaths: string
+  menuService: string
+  menuExternalFilterScript: string
+  menuExportSettings: string
+  menuImportSettings: string
+  settingsBackupExportTitle: string
+  settingsBackupExportFilter: string
+  settingsBackupImportTitle: string
+  settingsBackupImportFilter: string
+  settingsBackupExportOkTitle: string
+  settingsBackupExportOkMessage: string
+  settingsBackupImportOkTitle: string
+  settingsBackupImportOkMessage: string
+  settingsBackupParseErrorTitle: string
+  settingsBackupParseErrorMessage: string
+  settingsBackupImportConfirmTitle: string
+  settingsBackupImportConfirmMessage: string
+  settingsBackupImportConfirm: string
+  settingsBackupImportCancel: string
   menuTools: string
   menuInspector: string
   menuOpenFolder: string
+  menuOpenFolderHint: string
   menuOpenMainLog: string
   menuOpenSessionLog: string
   menuSupportZip: string
@@ -94,6 +114,31 @@ export type MainApplicationStrings = {
   exportFilterMov: string
   exportFilterAll: string
   snapshotSaveDialogTitle: string
+  extractFramesPickFolderTitle: string
+  extractFramesTooMany: string
+  extractFramesDurationTooShort: string
+  extractFramesInvalidCount: string
+  extractFramesInvalidManual: string
+  extractFramesAllFailed: string
+  extractFramesHistorySuccessTemplate: string
+  mediaUtilitiesRepairSaveTitle: string
+  mediaUtilitiesRepairSaveFilter: string
+  mediaUtilitiesNoiseSaveTitle: string
+  mediaUtilitiesNoiseSaveFilter: string
+  mediaUtilitiesImageSaveTitle: string
+  mediaUtilitiesImageSaveFilterJpeg: string
+  mediaUtilitiesImageSaveFilterPng: string
+  mediaUtilitiesImageSaveFilterWebp: string
+  mediaUtilitiesImageNotImage: string
+  downloadsCoverSaveTitle: string
+  downloadsCoverSaveFilterJpg: string
+  downloadsCoverSaveFilterPng: string
+  externalFilterScriptPickTitle: string
+  externalFilterScriptFilterAvs: string
+  externalFilterScriptFilterVpy: string
+  externalFilterScriptPickRequiresKind: string
+  externalFilterScriptPathMissing: string
+  externalFilterScriptExtensionMismatch: string
   snapshotFilterPng: string
   snapshotFilterJpeg: string
   exportCancelNoActive: string
@@ -129,6 +174,7 @@ export type MainApplicationStrings = {
   engineDownloadFfmpegZipMissingBinaries: string
   engineDownloadDone: string
   engineDownloadSha256MismatchTemplate: string
+  engineUpdateCheckFailedTemplate: string
   engineStatusMissingTemplate: string
   engineStatusRunFailedGeneric: string
   filterExecutables: string
@@ -141,6 +187,13 @@ export type MainApplicationStrings = {
   diagFolderLogs: string
   diagFolderYtdlpDownloads: string
   diagFolderSystemTemp: string
+  diagFolderHintUserData: string
+  diagFolderHintResources: string
+  diagFolderHintBundledBin: string
+  diagFolderHintUserBin: string
+  diagFolderHintLogs: string
+  diagFolderHintYtdlpDownloads: string
+  diagFolderHintSystemTemp: string
   diagnosticsMaintenanceNoTargets: string
   knowledgeHelpNotFound: string
   knowledgeInvalidArticle: string

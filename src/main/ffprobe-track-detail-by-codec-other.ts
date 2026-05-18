@@ -1,4 +1,4 @@
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { formatFfprobeStreamStartTime } from '../shared/ffprobe-stream-start-time'
 import { formatFfprobeCreationTimeBrief } from '../shared/ffprobe-creation-time-brief'
 import {
@@ -20,7 +20,7 @@ export function appendFfprobeOtherTrackDetailParts(
   _containerDurationSec: number | null,
   streamDur: string | null,
   _audioChannelsSuffixTemplate: string,
-  locale: DownloadsWindowUiLocale
+  locale: AppUiLocale
 ): void {
   const otherCodec = ffprobeScalarDisplay(
     typeof stream.codec_name === 'string' ? stream.codec_name : undefined

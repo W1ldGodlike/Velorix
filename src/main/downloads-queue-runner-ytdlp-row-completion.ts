@@ -9,7 +9,7 @@ import {
   fluxLogBatchEnqueueSkippedBadPath,
   formatFluxLogAutoOpenFailed
 } from '../shared/downloads-flux-log-locale'
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { YTDLP_QUEUE_STATUS_DONE } from '../shared/ytdlp-queue-status'
 import { downloadsQueueRunnerState } from './downloads-queue-runner-state'
 import type { YtdlpRowProgressBridge } from './downloads-queue-runner-ytdlp-row-progress'
@@ -17,7 +17,7 @@ import type { YtdlpRowProgressBridge } from './downloads-queue-runner-ytdlp-row-
 export async function applyYtdlpRowDownloadSuccessActions(
   paths: AppPaths,
   rowId: number,
-  locale: DownloadsWindowUiLocale,
+  locale: AppUiLocale,
   progress: YtdlpRowProgressBridge
 ): Promise<void> {
   progress.flushPendingProgressUI()

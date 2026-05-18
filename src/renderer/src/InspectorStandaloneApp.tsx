@@ -1,6 +1,7 @@
-import type { JSX } from 'react'
+import { useCallback, useState, type JSX } from 'react'
 
 import { AboutDialog } from './components/AboutDialog'
+import { KnowledgeDialog } from './components/KnowledgeDialog'
 import { InspectorStandaloneAppMain } from './components/InspectorStandaloneAppMain'
 import { InspectorStandaloneAppTopbar } from './components/InspectorStandaloneAppTopbar'
 import Versions from './components/Versions'
@@ -21,6 +22,12 @@ export function InspectorStandaloneApp(): JSX.Element {
     aboutInfo,
     setStatusHint
   } = model
+  const [knowledgeOpen, setKnowledgeOpen] = useState(false)
+  const [knowledgeInitialSlug, setKnowledgeInitialSlug] = useState<string | null>(null)
+  const onOpenKnowledgeArticle = useCallback((slug: string): void => {
+    setKnowledgeInitialSlug(slug)
+    setKnowledgeOpen(true)
+  }, [])
 
   return (
     <div
@@ -29,7 +36,7 @@ export function InspectorStandaloneApp(): JSX.Element {
       aria-busy={probePending}
     >
       <InspectorStandaloneAppTopbar {...model} />
-      <InspectorStandaloneAppMain {...model} />
+      <InspectorStandaloneAppMain {...model} onOpenKnowledgeArticle={onOpenKnowledgeArticle} />
       <footer
         className="app-statusbar"
         aria-label={uiText('appStatusbarAria')}
@@ -40,6 +47,7 @@ export function InspectorStandaloneApp(): JSX.Element {
             className="app-statusbar-extra"
             role="status"
             aria-live="polite"
+            aria-label={uiText('inspectorStandaloneStatusbarStatusAria')}
             aria-describedby="inspector-standalone-empty-hint"
           >
             {statusHint}
@@ -58,6 +66,18 @@ export function InspectorStandaloneApp(): JSX.Element {
           setAboutOpen(false)
         }}
         onDiagnosticStatus={(message) => {
+          setStatusHint(message)
+        }}
+        onOpenKnowledgeArticle={onOpenKnowledgeArticle}
+      />
+      <KnowledgeDialog
+        open={knowledgeOpen}
+        initialSlug={knowledgeInitialSlug}
+        onClose={() => {
+          setKnowledgeOpen(false)
+          setKnowledgeInitialSlug(null)
+        }}
+        onStatus={(message) => {
           setStatusHint(message)
         }}
       />

@@ -1,5 +1,5 @@
 ﻿import type { EngineId } from './engine-contract'
-import type { DownloadsWindowUiLocale } from './downloads-window-ui-locale'
+import type { AppUiLocale } from './app-ui-locale'
 
 /** argv-токен: main подставляет абсолютный путь текущего превью (`isGrantedMediaPath`). */
 export const TERMINAL_CURRENT_FILE_PLACEHOLDER = '__CURRENT_FILE__'
@@ -12,6 +12,10 @@ export type TerminalCommandHintEntry = {
   tool: TerminalToolId
   /** Если задано, щелчок по подсказке подставляет целую argv-строку вместо одного токена. */
   fullLine?: string
+  /** Примеры из `Data/*_commands.json` (ТЗ §8). */
+  examples?: readonly string[]
+  /** Ссылка на документацию из JSON-каталога. */
+  docUrl?: string
 }
 
 export type TerminalRunRequest = {
@@ -19,7 +23,7 @@ export type TerminalRunRequest = {
   /** Путь открытого в редакторе файла; подставляется вместо `TERMINAL_CURRENT_FILE_PLACEHOLDER` в argv. */
   currentFilePath?: string | null
   /** Локаль UI для текстов ошибок валидации (main). */
-  uiLocale?: DownloadsWindowUiLocale
+  uiLocale?: AppUiLocale
 }
 
 export type TerminalRunResult =

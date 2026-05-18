@@ -221,6 +221,7 @@ export function ProcessingHistoryPanel({
           type="button"
           className="app-btn app-btn-compact"
           aria-describedby="processingHistorySectionHint"
+          title={uiText('processingHistoryRefresh')}
           disabled={busy}
           onClick={onRefresh}
         >
@@ -230,6 +231,7 @@ export function ProcessingHistoryPanel({
           type="button"
           className="app-btn app-btn-compact app-btn-warn"
           aria-describedby="processingHistorySectionHint"
+          title={uiText('processingHistoryClear')}
           disabled={busy || entries.length === 0}
           onClick={onClear}
         >
@@ -239,6 +241,7 @@ export function ProcessingHistoryPanel({
           type="button"
           className="app-btn app-btn-compact"
           aria-describedby="processingHistorySectionHint"
+          title={uiText('processingHistoryExportJson')}
           disabled={busy || entries.length === 0}
           onClick={onExportVisible}
         >
@@ -328,6 +331,7 @@ export function ProcessingHistoryPanel({
                     type="button"
                     className="app-btn app-btn-compact"
                     aria-describedby="processingHistorySectionHint"
+                    title={uiText('processingHistoryRepeat')}
                     disabled={busy}
                     onClick={() => onOpenInputInHandler(entry.id)}
                   >
@@ -338,6 +342,7 @@ export function ProcessingHistoryPanel({
                       type="button"
                       className="app-btn app-btn-compact"
                       aria-describedby="processingHistorySectionHint"
+                      title={uiText('batchExportAddHistoryInput')}
                       disabled={busy}
                       onClick={() => onAddInputToBatch(entry.id)}
                     >
@@ -360,6 +365,7 @@ export function ProcessingHistoryPanel({
                       type="button"
                       className="app-btn app-btn-compact"
                       aria-describedby="processingHistorySectionHint"
+                      title={uiText('processingHistoryOpenFile')}
                       disabled={busy}
                       onClick={() => onOpenOutput(entry.id, 'file')}
                     >
@@ -369,6 +375,7 @@ export function ProcessingHistoryPanel({
                       type="button"
                       className="app-btn app-btn-compact"
                       aria-describedby="processingHistorySectionHint"
+                      title={uiText('processingHistoryOpenFolder')}
                       disabled={busy}
                       onClick={() => onOpenOutput(entry.id, 'folder')}
                     >
@@ -378,6 +385,7 @@ export function ProcessingHistoryPanel({
                       type="button"
                       className="app-btn app-btn-compact"
                       aria-describedby="processingHistorySectionHint"
+                      title={uiText('processingHistoryOpenPreview')}
                       disabled={busy}
                       onClick={() => onOpenOutput(entry.id, 'preview')}
                     >

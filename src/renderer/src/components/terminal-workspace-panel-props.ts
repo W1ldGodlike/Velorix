@@ -1,6 +1,7 @@
 import type { Dispatch, MutableRefObject, SetStateAction } from 'react'
 
 import type { TerminalCommandHintEntry } from '../../../shared/terminal-contract'
+import type { TerminalHintToolFilter } from '../../../shared/terminal-hints-catalog'
 import type { TerminalHistoryEntry } from '../use-terminal-workspace'
 
 export type TerminalWorkspacePanelProps = {
@@ -24,6 +25,10 @@ export type TerminalWorkspacePanelProps = {
   terminalHintsSearchFieldId: string
   terminalHintFilter: string
   setTerminalHintFilter: Dispatch<SetStateAction<string>>
+  terminalHintToolFilter: TerminalHintToolFilter
+  setTerminalHintToolFilter: Dispatch<SetStateAction<TerminalHintToolFilter>>
+  terminalHintCatalogTotal: number
+  terminalHintCatalogCapped: boolean
   visibleTerminalHints: TerminalCommandHintEntry[]
   onOpenTerminalKnowledge: () => void
 }

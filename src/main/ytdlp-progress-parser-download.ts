@@ -1,4 +1,4 @@
-import type { DownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getYtdlpQueueProgressStrings } from '../shared/ytdlp-queue-progress-locale'
 
 /** Поля прогресса из строк stderr/stdout yt-dlp с префиксом «[download]». */
@@ -47,7 +47,7 @@ export type YtdlpQueueFailureKind =
  */
 export function parseYtdlpDownloadProgressLine(
   line: string,
-  locale: DownloadsWindowUiLocale = 'ru'
+  locale: AppUiLocale = 'ru'
 ): YtdlpDownloadProgressParts | null {
   const P = getYtdlpQueueProgressStrings(locale)
   const t = line.trimEnd()
@@ -184,6 +184,87 @@ export function parseYtdlpDownloadProgressLine(
     const sec = retryingInMatch[1]
     if (sec !== undefined) {
       return { percent: null, speed: P.progressRetryInSec.replace('{sec}', sec), eta: null }
+    }
+  }
+
+  const skipVideosMatch = t.match(/\[download\]\s+Skipping\s+(\d+)\s+of\s+(\d+)\s+videos?\b/i)
+  if (skipVideosMatch) {
+    const a = skipVideosMatch[1]
+    const b = skipVideosMatch[2]
+    if (a !== undefined && b !== undefined) {
+      return {
+        percent: null,
+        speed: P.progressPlaylistSkip.replace('{a}', a).replace('{b}', b),
+        eta: null
+      }
+    }
+  }
+
+  if (/\[download\]\s+Unable to rename file/i.test(t)) {
+    return { percent: null, speed: P.progressRenameFailed, eta: null }
+  }
+
+  const dlFormatsMatch = t.match(/\[download\]\s+Downloading\s+\d+\s+format\(s\):\s*(\S+)/i)
+  const dlFormatIds = dlFormatsMatch?.[1]
+  if (dlFormatIds !== undefined && dlFormatIds.length > 0) {
+    return {
+      percent: null,
+      speed: P.progressFormatSelect.replace('{ids}', dlFormatIds),
+      eta: null
+    }
+  }
+
+  const dlFormatSingleMatch = t.match(
+    /\[download\]\s+Downloading\s+format\s+(\d+(?:\+\d+)*)/i
+  )
+  const singleIds = dlFormatSingleMatch?.[1]
+  if (singleIds !== undefined && singleIds.length > 0) {
+    return {
+      percent: null,
+      speed: P.progressFormatSelect.replace('{ids}', singleIds),
+      eta: null
+    }
+  }
+
+  if (/\[download\]\s+.+\s+has already been downloaded/i.test(t)) {
+    return { percent: '100%', speed: P.progressAlreadyDownloaded, eta: null }
+  }
+
+  if (/\[download\]\s+Writing thumbnail to:/i.test(t)) {
+    return { percent: null, speed: P.progressWritingThumbnail, eta: null }
+  }
+
+  if (/\[download\]\s+Writing (?:video )?subtitles to:/i.test(t)) {
+    return { percent: null, speed: P.progressWritingSubtitles, eta: null }
+  }
+
+  if (/\[download\]\s+Writing metadata to:/i.test(t)) {
+    return { percent: null, speed: P.progressWritingMetadata, eta: null }
+  }
+
+  const rateLimitSleepMatch = t.match(
+    /\[download\]\s+Download rate limit reached, sleeping for\s+([\d.]+)/i
+  )
+  const rateLimitSec = rateLimitSleepMatch?.[1]
+  if (rateLimitSec !== undefined) {
+    return {
+      percent: null,
+      speed: P.progressRateLimitSleep.replace('{sec}', rateLimitSec),
+      eta: null
+    }
+  }
+
+  if (/\[download\]\s+Deleting original file\b/i.test(t)) {
+    return { percent: null, speed: P.progressDeletingOriginal, eta: null }
+  }
+
+  const giveUpMatch = t.match(/\[download\]\s+Giving up after\s+(\d+)\s+retries/i)
+  const giveUpN = giveUpMatch?.[1]
+  if (giveUpN !== undefined) {
+    return {
+      percent: null,
+      speed: P.progressGivingUpRetries.replace('{n}', giveUpN),
+      eta: null
     }
   }
 
@@ -338,7 +419,7 @@ export function displayLabelFromYtdlpOutputPath(rawPath: string): string | null 
 /** Компактная подпись для ячейки: «42.1% · 1.2 MiB/s · Осталось 00:15». */
 export function formatYtdlpProgressCell(
   parts: YtdlpDownloadProgressParts,
-  locale: DownloadsWindowUiLocale = 'ru'
+  locale: AppUiLocale = 'ru'
 ): string {
   const P = getYtdlpQueueProgressStrings(locale)
   const bits: string[] = []

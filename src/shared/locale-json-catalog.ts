@@ -18,11 +18,17 @@ export const LOCALE_JSON_SHARDS = [
   'downloads',
   'workspace',
   'editor',
+  'video',
+  'mini',
   'downloads-settings',
   'shell',
   'editor-ffmpeg',
   'status',
-  'batch-export'
+  'batch-export',
+  'settings',
+  'inspector',
+  'inspector-probe',
+  'hw-manual-smoke'
 ] as const
 export type LocaleJsonShard = (typeof LOCALE_JSON_SHARDS)[number]
 
@@ -53,6 +59,8 @@ export function formatLocaleJsonCatalogDiagnosticLines(): string[] {
     'catalog: locales/ru/*.json + locales/en/*.json (flat string values)',
     `shards: ${LOCALE_JSON_SHARDS.join(', ')}`,
     'guard: npm run check:locales-json (ru/en key parity per shard)',
-    'renderer: @locales/* overlay in ui-text-strings (§2.2 migration)'
+    'guard: npm run check:locales-ts-overlap (no duplicate keys in TS parts)',
+    'renderer: buildUiTextTables + getUiTextTables; dev HMR reloadUiTextTablesFromModules',
+    'docs: ARCHITECTURE.md § Локализация UI'
   ]
 }

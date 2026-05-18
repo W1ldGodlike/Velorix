@@ -5,7 +5,10 @@ import type { EngineSummary } from './app-engines-ui'
 import type { AppOverlayDialogsProps } from './components/shell/AppOverlayDialogs'
 import type { AppStatusbarProps } from './components/shell/AppStatusbar'
 import type { AppWorkspaceTopbarProps } from './components/shell/AppWorkspaceTopbar'
-import type { EnginePathsDialogProps } from './components/shell/EnginePathsDialog'
+import type { AppSettingsDialogProps } from './components/shell/AppSettingsDialog'
+import type { AppSettingsDialogSection } from '../../shared/app-settings-dialog-section'
+import type { AppUiLocale } from '../../shared/app-ui-locale'
+import type { EditorUrlPasteBehaviorId } from '../../shared/editor-url-paste-behavior'
 import type { ExportPresetNameDialogProps } from './components/shell/ExportPresetNameDialog'
 import type { WorkspaceTab } from './app-terminal-hint-ui'
 import type { ResolvedAppTheme } from '../../shared/settings-contract'
@@ -20,6 +23,7 @@ export type UseAppShellLayoutPropsInput = {
     probePending: boolean
     exportBusy: boolean
     snapshotBusy: boolean
+    extractFramesBusy: boolean
     exportCancelBusy: boolean
     terminalBusy: boolean
     batchExportBusy: boolean
@@ -44,10 +48,12 @@ export type UseAppShellLayoutPropsInput = {
       SetStateAction<Awaited<ReturnType<typeof window.fluxalloy.about.getInfo>> | null>
     >
     setAboutOpen: Dispatch<SetStateAction<boolean>>
-    setEnginePathsOpen: Dispatch<SetStateAction<boolean>>
+    setAppSettingsOpen: Dispatch<SetStateAction<boolean>>
+    setAppSettingsSection: Dispatch<SetStateAction<AppSettingsDialogSection>>
     handleOpenVideoFolderToolbar: () => Promise<void>
     handleOpenToolbar: () => Promise<void>
     handleCancelExport: () => Promise<void>
+    handleExtractFrames: () => Promise<void>
     handleEnginesDownload: () => Promise<void>
     handleUiLocaleToggle: () => void
     toggleTheme: () => Promise<void>
@@ -60,16 +66,38 @@ export type UseAppShellLayoutPropsInput = {
     setDialog: Dispatch<SetStateAction<ExportPresetNameDialogState>>
     handleSubmitExportPresetName: () => Promise<void>
   }
-  enginePaths: {
+  appSettings: {
     open: boolean
+    section: AppSettingsDialogSection
+    setSection: Dispatch<SetStateAction<AppSettingsDialogSection>>
+    setOpen: Dispatch<SetStateAction<boolean>>
+    theme: ResolvedAppTheme
+    setTheme: Dispatch<SetStateAction<ResolvedAppTheme>>
+    editorUrlPasteBehavior: EditorUrlPasteBehaviorId
+    setEditorUrlPasteBehavior: Dispatch<SetStateAction<EditorUrlPasteBehaviorId>>
+    setUiLocaleRenderTick: Dispatch<SetStateAction<number>>
     enginePathsSaving: boolean
     engineDownloadBusy: boolean
     enginePathsDraft: EnginePathsDraft
     setEnginePathsDraft: Dispatch<SetStateAction<EnginePathsDraft>>
-    setEnginePathsOpen: Dispatch<SetStateAction<boolean>>
+    settingsResetBusy: boolean
+    setSettingsResetBusy: Dispatch<SetStateAction<boolean>>
+    setWorkspaceTab: Dispatch<SetStateAction<WorkspaceTab>>
+    setAboutInfo: Dispatch<
+      SetStateAction<Awaited<ReturnType<typeof window.fluxalloy.about.getInfo>> | null>
+    >
+    setAboutOpen: Dispatch<SetStateAction<boolean>>
     handlePickEngine: (id: EngineId) => Promise<void>
+    handleEnginesCheckUpdates: () => Promise<void>
     handleClearDownloadedEngines: () => Promise<void>
     handleSaveEnginePaths: () => Promise<void>
+    onStatus: (message: string) => void
+  }
+  externalFilterScript: {
+    open: boolean
+    setOpen: Dispatch<SetStateAction<boolean>>
+    onStatus: (message: string) => void
+    onApplied: () => void
   }
 }
 
@@ -79,11 +107,25 @@ export type AppShellLayoutChromeProps = {
   statusbar: AppStatusbarProps
   overlay: AppOverlayDialogsProps
   exportPreset: ExportPresetNameDialogProps
-  enginePaths: EnginePathsDialogProps
+  appSettings: AppSettingsDialogProps
+  externalFilterScript: {
+    open: boolean
+    onClose: () => void
+    onStatus: (message: string) => void
+    onApplied: () => void
+  }
 }
 
 export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppShellLayoutChromeProps {
-  const { chromeBusy, topbar: topbarInput, statusbar, overlay, exportPreset, enginePaths } = input
+  const {
+    chromeBusy,
+    topbar: topbarInput,
+    statusbar,
+    overlay,
+    exportPreset,
+    appSettings,
+    externalFilterScript
+  } = input
   const {
     workspaceTab,
     setWorkspaceTab,
@@ -98,10 +140,12 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
     setKnowledgeOpen,
     setAboutInfo,
     setAboutOpen,
-    setEnginePathsOpen,
+    setAppSettingsOpen,
+    setAppSettingsSection,
     handleOpenVideoFolderToolbar,
     handleOpenToolbar,
     handleCancelExport,
+    handleExtractFrames,
     handleEnginesDownload,
     handleUiLocaleToggle,
     toggleTheme
@@ -113,6 +157,7 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
       chromeBusy.probePending ||
       chromeBusy.exportBusy ||
       chromeBusy.snapshotBusy ||
+      chromeBusy.extractFramesBusy ||
       chromeBusy.exportCancelBusy ||
       chromeBusy.terminalBusy ||
       chromeBusy.batchExportBusy ||
@@ -140,8 +185,9 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
   }, [handleEnginesDownload])
 
   const onOpenEnginePaths = useCallback((): void => {
-    setEnginePathsOpen(true)
-  }, [setEnginePathsOpen])
+    setAppSettingsSection('dependencies')
+    setAppSettingsOpen(true)
+  }, [setAppSettingsOpen, setAppSettingsSection])
 
   const onOpenKnowledge = useCallback((): void => {
     setKnowledgeInitialSlug(null)
@@ -174,6 +220,7 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
       onOpenVideoFolder,
       onOpenFile,
       onCancelExport,
+      onExtractFrames: handleExtractFrames,
       onEnginesDownload,
       onOpenEnginePaths,
       onOpenKnowledge,
@@ -184,6 +231,7 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
     [
       appChromeBusy,
       enginesOfferDownload,
+      handleExtractFrames,
       onCancelExport,
       onEnginesDownload,
       onOpenAbout,
@@ -231,49 +279,61 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
     [exportPresetDialog, exportPresetSaving, handleSubmitExportPresetName, setExportPresetDialog]
   )
 
-  const {
-    open: enginePathsOpen,
-    enginePathsSaving,
-    engineDownloadBusy: enginePathsEngineDownloadBusy,
-    enginePathsDraft,
-    setEnginePathsDraft,
-    setEnginePathsOpen: closeEnginePathsOpen,
-    handlePickEngine,
-    handleClearDownloadedEngines,
-    handleSaveEnginePaths
-  } = enginePaths
-
-  const enginePathsProps = useMemo(
-    (): EnginePathsDialogProps => ({
-      open: enginePathsOpen,
-      enginePathsSaving,
-      engineDownloadBusy: enginePathsEngineDownloadBusy,
-      enginePathsDraft,
-      setEnginePathsDraft,
+  const appSettingsProps = useMemo((): AppSettingsDialogProps => {
+    const onUiLocalePersisted = (locale: AppUiLocale): void => {
+      appSettings.setUiLocaleRenderTick((n) => n + 1)
+      void locale
+    }
+    return {
+      open: appSettings.open,
+      section: appSettings.section,
+      onSectionChange: appSettings.setSection,
       onClose: () => {
-        closeEnginePathsOpen(false)
+        appSettings.setOpen(false)
       },
+      onStatus: appSettings.onStatus,
+      setTheme: appSettings.setTheme,
+      onUiLocalePersisted,
+      editorUrlPasteBehavior: appSettings.editorUrlPasteBehavior,
+      setEditorUrlPasteBehavior: appSettings.setEditorUrlPasteBehavior,
+      setWorkspaceTab: appSettings.setWorkspaceTab,
+      onOpenAbout: () => {
+        void window.fluxalloy.about.getInfo().then((info) => {
+          appSettings.setAboutInfo(info)
+          appSettings.setAboutOpen(true)
+        })
+      },
+      enginePathsSaving: appSettings.enginePathsSaving,
+      engineDownloadBusy: appSettings.engineDownloadBusy,
+      enginePathsDraft: appSettings.enginePathsDraft,
+      setEnginePathsDraft: appSettings.setEnginePathsDraft,
       onPickEngine: (id) => {
-        void handlePickEngine(id)
+        void appSettings.handlePickEngine(id)
       },
       onClearDownloadedEngines: () => {
-        void handleClearDownloadedEngines()
+        void appSettings.handleClearDownloadedEngines()
       },
-      onSave: () => {
-        void handleSaveEnginePaths()
-      }
+      onCheckEngineUpdates: () => {
+        void appSettings.handleEnginesCheckUpdates()
+      },
+      onSaveEnginePaths: () => {
+        void appSettings.handleSaveEnginePaths()
+      },
+      resetBusy: appSettings.settingsResetBusy,
+      setResetBusy: appSettings.setSettingsResetBusy
+    }
+  }, [appSettings])
+
+  const externalFilterScriptProps = useMemo(
+    () => ({
+      open: externalFilterScript.open,
+      onClose: () => {
+        externalFilterScript.setOpen(false)
+      },
+      onStatus: externalFilterScript.onStatus,
+      onApplied: externalFilterScript.onApplied
     }),
-    [
-      closeEnginePathsOpen,
-      enginePathsDraft,
-      enginePathsEngineDownloadBusy,
-      enginePathsOpen,
-      enginePathsSaving,
-      handleClearDownloadedEngines,
-      handlePickEngine,
-      handleSaveEnginePaths,
-      setEnginePathsDraft
-    ]
+    [externalFilterScript]
   )
 
   return {
@@ -282,6 +342,7 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
     statusbar: statusbarProps,
     overlay,
     exportPreset: exportPresetProps,
-    enginePaths: enginePathsProps
+    appSettings: appSettingsProps,
+    externalFilterScript: externalFilterScriptProps
   }
 }

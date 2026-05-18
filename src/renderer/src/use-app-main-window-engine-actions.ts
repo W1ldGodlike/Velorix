@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 
 import { formatEngineVersionsLine, summarizeEngines } from './app-engines-ui'
 import { getUiLocale } from './locales/ui-text'
-import type { DownloadsWindowUiLocale } from '../../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../../shared/app-ui-locale'
 import type { ResolvedAppTheme } from '../../shared/settings-contract'
 import type { UseAppMainWindowEffectsDeps } from './use-app-main-window-effects-deps'
 
@@ -37,7 +37,7 @@ export function useAppMainWindowEngineActions(
 
   const refreshEngineUi = useCallback(async (): Promise<void> => {
     try {
-      const loc = getUiLocale() as DownloadsWindowUiLocale
+      const loc = getUiLocale() as AppUiLocale
       const snapshot = await window.fluxalloy.engines.getStatus(loc)
       setEngineSummary(summarizeEngines(snapshot.engines))
       setEngineVersionsLine(formatEngineVersionsLine(snapshot))

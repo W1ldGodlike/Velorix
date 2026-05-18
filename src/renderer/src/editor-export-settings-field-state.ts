@@ -52,6 +52,7 @@ export function useEditorExportSettingsFieldState() {
   const [exportScalePreset, setExportScalePreset] = useState<FfmpegExportScalePresetId>('source')
   const [exportTwoPass, setExportTwoPass] = useState(false)
   const [exportEconomyMode, setExportEconomyMode] = useState(false)
+  const [exportBenchmarkLoadThreshold, setExportBenchmarkLoadThreshold] = useState(80)
   const [exportHwDecode, setExportHwDecode] = useState(false)
   const [exportExtraArgsLine, setExportExtraArgsLine] = useState('')
   const [editorUrlPasteBehavior, setEditorUrlPasteBehavior] = useState<EditorUrlPasteBehaviorId>(
@@ -95,6 +96,11 @@ export function useEditorExportSettingsFieldState() {
   const [lastSnapshotPath, setLastSnapshotPath] = useState<string | null>(null)
   const [snapshotFormat, setSnapshotFormat] = useState<FfmpegSnapshotFormatId>('png')
   const [snapshotBusy, setSnapshotBusy] = useState(false)
+  const [extractFramesBusy, setExtractFramesBusy] = useState(false)
+  const [exportExternalFilterKind, setExportExternalFilterKind] = useState<
+    'off' | 'avisynth' | 'vapoursynth'
+  >('off')
+  const [exportExternalFilterScriptPath, setExportExternalFilterScriptPath] = useState('')
 
   return {
     exportEncodePreset,
@@ -125,6 +131,8 @@ export function useEditorExportSettingsFieldState() {
     setExportTwoPass,
     exportEconomyMode,
     setExportEconomyMode,
+    exportBenchmarkLoadThreshold,
+    setExportBenchmarkLoadThreshold,
     exportHwDecode,
     setExportHwDecode,
     exportExtraArgsLine,
@@ -185,7 +193,13 @@ export function useEditorExportSettingsFieldState() {
     snapshotFormat,
     setSnapshotFormat,
     snapshotBusy,
-    setSnapshotBusy
+    setSnapshotBusy,
+    extractFramesBusy,
+    setExtractFramesBusy,
+    exportExternalFilterKind,
+    setExportExternalFilterKind,
+    exportExternalFilterScriptPath,
+    setExportExternalFilterScriptPath
   }
 }
 

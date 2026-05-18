@@ -8,6 +8,7 @@ import {
   IconSettings
 } from '../LucideMiniIcons'
 import { getUiLocale, uiText, uiTextVars } from '../../locales/ui-text'
+import { isDownloadsStandaloneSurface } from '../../renderer-surface'
 import type { DownloadsWorkspaceMainProps } from './downloads-workspace-main-props'
 
 export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): JSX.Element {
@@ -23,6 +24,9 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
     downloadsRows,
     setStatusHint
   } = props
+
+  const standaloneSurface = isDownloadsStandaloneSurface()
+  const pageHintKey = standaloneSurface ? 'downloadsStandalonePageHint' : 'downloadsPageHint'
 
   return (
     <>
@@ -42,7 +46,7 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
         >
           <h2 className="app-downloads-title">{uiText('downloadsPageTitle')}</h2>
           <p id="downloads-page-hint" className="app-downloads-hint">
-            {uiText('downloadsPageHint')}
+            {uiText(pageHintKey)}
           </p>
         </div>
         <div
@@ -53,25 +57,29 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
           aria-describedby="downloads-page-hint"
           aria-busy={downloadsOptionsBusy || downloadsHistoryBusy}
         >
-          <button
-            type="button"
-            className="app-btn app-btn-icon-leading"
-            aria-describedby="downloads-page-hint"
-            onClick={() => {
-              void window.fluxalloy.downloads.openWindow({
-                ...(downloadsUrl.trim().length > 0 ? { text: downloadsUrl } : {}),
-                uiLocale: getUiLocale()
-              })
-            }}
-          >
-            <IconPopOutWindow title="" size={17} />
-            {uiText('downloadsPopOut')}
-          </button>
+          {standaloneSurface ? null : (
+            <button
+              type="button"
+              className="app-btn app-btn-icon-leading"
+              aria-describedby="downloads-page-hint"
+              title={uiText('downloadsPopOut')}
+              onClick={() => {
+                void window.fluxalloy.downloads.openWindow({
+                  ...(downloadsUrl.trim().length > 0 ? { text: downloadsUrl } : {}),
+                  uiLocale: getUiLocale()
+                })
+              }}
+            >
+              <IconPopOutWindow title="" size={17} />
+              {uiText('downloadsPopOut')}
+            </button>
+          )}
           {downloadsNarrowLayout ? (
             <button
               type="button"
               className="app-btn app-btn-icon-leading"
               aria-describedby="downloads-page-hint"
+              title={uiText('downloadsScrollToSettings')}
               onClick={() => {
                 onScrollToSettings()
               }}
@@ -119,6 +127,7 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
             type="button"
             className="app-btn app-btn-primary app-btn-icon-leading"
             aria-describedby="downloads-page-hint downloads-main-url-hint"
+            title={uiText('downloadsAddToQueue')}
             onClick={() => {
               onAddToQueue()
             }}
@@ -146,6 +155,7 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
             type="button"
             className="app-btn app-btn-icon-leading"
             aria-describedby="downloads-page-hint downloads-main-url-hint"
+            title={uiText('downloadsRemoveFinished')}
             disabled={downloadsRows.length === 0}
             onClick={() => {
               void window.fluxalloy.downloads.clearFinished().then((res) => {
@@ -168,6 +178,7 @@ export function DownloadsWorkspaceMainBand(props: DownloadsWorkspaceMainProps): 
             type="button"
             className="app-btn app-btn-warn app-btn-icon-leading"
             aria-describedby="downloads-page-hint downloads-main-url-hint"
+            title={uiText('downloadsClearQueue')}
             disabled={downloadsRows.length === 0}
             onClick={() => {
               void window.fluxalloy.downloads.clearQueue().then((res) => {

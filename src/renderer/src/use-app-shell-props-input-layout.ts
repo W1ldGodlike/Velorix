@@ -1,3 +1,6 @@
+import type { AppUiLocale } from '../../shared/app-ui-locale'
+import { getUiLocale, uiText } from './locales/ui-text'
+import { buildStatusbarActivityDisplay } from './statusbar-activity-resolve'
 import type { AppShellPropsInputCtx } from './use-app-shell-props-input-workspace-types'
 import type { UseAppShellLayoutPropsInput } from './use-app-shell-layout-props'
 
@@ -10,14 +13,19 @@ export function buildAppShellPropsInputLayout(
     probePending,
     exportBusy,
     snapshotBusy,
+    extractFramesBusy,
     exportCancelBusy,
     terminalBusy,
     batchExportBusy,
     exportPresetSaving,
     enginePathsSaving,
-    enginePathsOpen,
+    appSettingsOpen,
+    appSettingsSection,
+    settingsResetBusy,
+    externalFilterScriptOpen,
     downloadsOptionsBusy,
     downloadsHistoryBusy,
+    downloadsStats,
     workspaceTab,
     setWorkspaceTab,
     preview,
@@ -27,15 +35,25 @@ export function buildAppShellPropsInputLayout(
     setKnowledgeOpen,
     setAboutInfo,
     setAboutOpen,
-    setEnginePathsOpen,
+    setAppSettingsOpen,
+    setAppSettingsSection,
+    setSettingsResetBusy,
+    setTheme,
+    setEditorUrlPasteBehavior,
+    editorUrlPasteBehavior,
+    setUiLocaleRenderTick,
+    setExternalFilterScriptOpen,
     handleOpenVideoFolderToolbar,
     handleOpenToolbar,
     handleCancelExport,
+    handleExtractFrames,
     handleEnginesDownload,
     handleUiLocaleToggle,
     toggleTheme,
     engineVersionsLine,
     exportCodecStatusbarLabel,
+    exportCodecStatusbarTitle,
+    exportCodecStatusbarAria,
     statusHint,
     aboutOpen,
     aboutInfo,
@@ -49,9 +67,30 @@ export function buildAppShellPropsInputLayout(
     enginePathsDraft,
     setEnginePathsDraft,
     handlePickEngine,
+    handleEnginesCheckUpdates,
     handleClearDownloadedEngines,
-    handleSaveEnginePaths
+    handleSaveEnginePaths,
+    hydrateExportFieldsFromSettings
   } = ctx
+
+  const uiLocale = getUiLocale() as AppUiLocale
+  const statusbarActivity = buildStatusbarActivityDisplay(
+    {
+      engineDownloadBusy,
+      engineSummaryChecking: engineSummary === 'checking',
+      exportBusy,
+      snapshotBusy,
+      extractFramesBusy,
+      exportCancelBusy,
+      probePending,
+      batchExportBusy,
+      terminalBusy,
+      downloadsRunning: downloadsStats.running,
+      downloadsOptionsBusy,
+      downloadsHistoryBusy
+    },
+    (key: string) => uiText(key as Parameters<typeof uiText>[0])
+  )
 
   return {
     chromeBusy: {
@@ -60,6 +99,7 @@ export function buildAppShellPropsInputLayout(
       probePending,
       exportBusy,
       snapshotBusy,
+      extractFramesBusy,
       exportCancelBusy,
       terminalBusy,
       batchExportBusy,
@@ -82,10 +122,12 @@ export function buildAppShellPropsInputLayout(
       setKnowledgeOpen,
       setAboutInfo,
       setAboutOpen,
-      setEnginePathsOpen,
+      setAppSettingsOpen,
+      setAppSettingsSection,
       handleOpenVideoFolderToolbar,
       handleOpenToolbar,
       handleCancelExport,
+      handleExtractFrames,
       handleEnginesDownload,
       handleUiLocaleToggle,
       toggleTheme
@@ -96,12 +138,18 @@ export function buildAppShellPropsInputLayout(
       engineSummary,
       engineVersionsLine,
       exportCodecStatusbarLabel,
+      exportCodecStatusbarTitle,
+      exportCodecStatusbarAria,
       exportBusy,
       snapshotBusy,
       exportCancelBusy,
       probePending,
       batchExportBusy,
-      statusHint
+      statusHint,
+      uiLocale,
+      statusbarActivityLabel: statusbarActivity.label,
+      statusbarActivityTitle: statusbarActivity.title,
+      statusbarActivityActive: statusbarActivity.active
     },
     overlay: {
       aboutOpen,
@@ -120,16 +168,40 @@ export function buildAppShellPropsInputLayout(
       setDialog: setExportPresetNameDialog,
       handleSubmitExportPresetName
     },
-    enginePaths: {
-      open: enginePathsOpen,
+    appSettings: {
+      open: appSettingsOpen,
+      section: appSettingsSection,
+      setSection: setAppSettingsSection,
+      setOpen: setAppSettingsOpen,
+      theme,
+      setTheme,
+      editorUrlPasteBehavior,
+      setEditorUrlPasteBehavior,
+      setUiLocaleRenderTick,
       enginePathsSaving,
       engineDownloadBusy,
       enginePathsDraft,
       setEnginePathsDraft,
-      setEnginePathsOpen,
+      settingsResetBusy,
+      setSettingsResetBusy,
+      setWorkspaceTab,
+      setAboutInfo,
+      setAboutOpen,
       handlePickEngine,
+      handleEnginesCheckUpdates,
       handleClearDownloadedEngines,
-      handleSaveEnginePaths
+      handleSaveEnginePaths,
+      onStatus: setStatusHint
+    },
+    externalFilterScript: {
+      open: externalFilterScriptOpen,
+      setOpen: setExternalFilterScriptOpen,
+      onStatus: setStatusHint,
+      onApplied: () => {
+        void window.fluxalloy.settings.get().then((loaded) => {
+          hydrateExportFieldsFromSettings(loaded)
+        })
+      }
     }
   }
 }

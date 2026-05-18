@@ -1,3 +1,4 @@
+import type { ExternalFilterScriptKind } from './external-filter-script-contract'
 import type {
   FfmpegExportAudioModeId,
   FfmpegExportAudioNormalizeId,
@@ -54,4 +55,6 @@ export type ResolvedFfmpegExportJobOptions = {
   videoBlur: FfmpegExportVideoBlurId | null
   videoDeinterlace: FfmpegExportVideoDeinterlaceId | null
   audioNormalize: FfmpegExportAudioNormalizeId | null
+  externalFilterKind: ExternalFilterScriptKind
+  externalFilterScriptAbsPath: string | null
 }

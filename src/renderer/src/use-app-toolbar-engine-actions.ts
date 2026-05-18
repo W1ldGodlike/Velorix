@@ -1,9 +1,19 @@
 import { useCallback, type Dispatch, type SetStateAction } from 'react'
 
-import type { EnginePathsDraft } from './app-engines-ui'
-import { getUiLocale, setUiLocaleForSession, uiText, uiTextVars } from './locales/ui-text'
+import {
+  formatEngineUpdateCompareOnlyHint,
+  formatEngineUpdateStatusHint,
+  type EnginePathsDraft
+} from './app-engines-ui'
+import {
+  getUiLocale,
+  setUiLocaleForSession,
+  syncDocumentUiLocale,
+  uiText,
+  uiTextVars
+} from './locales/ui-text'
 import type { EngineId } from '../../shared/engine-contract'
-import type { DownloadsWindowUiLocale } from '../../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../../shared/app-ui-locale'
 import type { RestoredSourceInfo } from '../../shared/preview-dialog-contract'
 
 export type UseAppToolbarEngineActionsDeps = {
@@ -14,7 +24,7 @@ export type UseAppToolbarEngineActionsDeps = {
   setEngineDownloadBusy: Dispatch<SetStateAction<boolean>>
   enginePathsDraft: EnginePathsDraft
   setEnginePathsDraft: Dispatch<SetStateAction<EnginePathsDraft>>
-  setEnginePathsOpen: Dispatch<SetStateAction<boolean>>
+  setAppSettingsOpen: Dispatch<SetStateAction<boolean>>
   setEnginePathsSaving: Dispatch<SetStateAction<boolean>>
 }
 
@@ -24,6 +34,7 @@ export function useAppToolbarEngineActions(deps: UseAppToolbarEngineActionsDeps)
   handleOpenToolbar: () => Promise<void>
   handleOpenVideoFolderToolbar: () => Promise<void>
   handleEnginesDownload: () => Promise<void>
+  handleEnginesCheckUpdates: () => Promise<void>
   handleClearDownloadedEngines: () => Promise<void>
   handleSaveEnginePaths: () => Promise<void>
   handlePickEngine: (id: EngineId) => Promise<void>
@@ -36,7 +47,7 @@ export function useAppToolbarEngineActions(deps: UseAppToolbarEngineActionsDeps)
     setEngineDownloadBusy,
     enginePathsDraft,
     setEnginePathsDraft,
-    setEnginePathsOpen,
+    setAppSettingsOpen,
     setEnginePathsSaving
   } = deps
 
@@ -50,11 +61,12 @@ export function useAppToolbarEngineActions(deps: UseAppToolbarEngineActionsDeps)
   }, [])
 
   const handleUiLocaleToggle = useCallback((): void => {
-    const next: DownloadsWindowUiLocale = getUiLocale() === 'ru' ? 'en' : 'ru'
+    const next: AppUiLocale = getUiLocale() === 'ru' ? 'en' : 'ru'
     void window.fluxalloy.settings
       .setUiLocale(next)
       .then(() => {
         setUiLocaleForSession(next)
+        syncDocumentUiLocale(next)
         setUiLocaleRenderTick((n) => n + 1)
       })
       .catch(console.error)
@@ -62,7 +74,7 @@ export function useAppToolbarEngineActions(deps: UseAppToolbarEngineActionsDeps)
 
   const handleOpenToolbar = useCallback(async (): Promise<void> => {
     const result = await window.fluxalloy.preview.openFileDialog(
-      getUiLocale() as DownloadsWindowUiLocale
+      getUiLocale() as AppUiLocale
     )
     if (result.ok) {
       applyPreview(result)
@@ -71,7 +83,7 @@ export function useAppToolbarEngineActions(deps: UseAppToolbarEngineActionsDeps)
 
   const handleOpenVideoFolderToolbar = useCallback(async (): Promise<void> => {
     const result = await window.fluxalloy.preview.openVideoFolderDialog(
-      getUiLocale() as DownloadsWindowUiLocale
+      getUiLocale() as AppUiLocale
     )
     if (result.ok) {
       applyPreview(result)
@@ -84,7 +96,7 @@ export function useAppToolbarEngineActions(deps: UseAppToolbarEngineActionsDeps)
     setEngineDownloadBusy(true)
     setStatusHint(uiText('statusEnginesDownloadPreparing'))
     try {
-      const res = await window.fluxalloy.engines.download(getUiLocale() as DownloadsWindowUiLocale)
+      const res = await window.fluxalloy.engines.download(getUiLocale() as AppUiLocale)
       if (!res.ok) {
         setStatusHint(uiTextVars('statusErrorWithDetail', { detail: res.error }))
         return
@@ -92,6 +104,33 @@ export function useAppToolbarEngineActions(deps: UseAppToolbarEngineActionsDeps)
 
       await refreshEngineUi()
       setStatusHint(uiText('statusEnginesDownloadedOk'))
+    } catch (error) {
+      setStatusHint(
+        error instanceof Error ? error.message : uiText('statusEnginesDownloadFailedGeneric')
+      )
+    } finally {
+      setEngineDownloadBusy(false)
+    }
+  }, [refreshEngineUi, setEngineDownloadBusy, setStatusHint])
+
+  const handleEnginesCheckUpdates = useCallback(async (): Promise<void> => {
+    setEngineDownloadBusy(true)
+    setStatusHint(uiText('statusEnginesUpdateChecking'))
+    try {
+      const res = await window.fluxalloy.engines.checkUpdatesAndDownload(
+        getUiLocale() as AppUiLocale
+      )
+      if (!res.ok) {
+        setStatusHint(uiTextVars('statusErrorWithDetail', { detail: res.error }))
+        return
+      }
+      if (!res.platformSupported) {
+        await refreshEngineUi()
+        setStatusHint(formatEngineUpdateCompareOnlyHint(res.items))
+        return
+      }
+      await refreshEngineUi()
+      setStatusHint(formatEngineUpdateStatusHint(res.items, res.downloaded))
     } catch (error) {
       setStatusHint(
         error instanceof Error ? error.message : uiText('statusEnginesDownloadFailedGeneric')
@@ -131,12 +170,12 @@ export function useAppToolbarEngineActions(deps: UseAppToolbarEngineActionsDeps)
         'yt-dlp': enginePathsDraft['yt-dlp'].trim() || null
       })
       await refreshEngineUi()
-      setEnginePathsOpen(false)
+      setAppSettingsOpen(false)
       setStatusHint(uiText('statusEnginePathsSaved'))
     } finally {
       setEnginePathsSaving(false)
     }
-  }, [enginePathsDraft, refreshEngineUi, setEnginePathsOpen, setEnginePathsSaving, setStatusHint])
+  }, [enginePathsDraft, refreshEngineUi, setAppSettingsOpen, setEnginePathsSaving, setStatusHint])
 
   const handlePickEngine = useCallback(
     async (id: EngineId): Promise<void> => {
@@ -155,6 +194,7 @@ export function useAppToolbarEngineActions(deps: UseAppToolbarEngineActionsDeps)
     handleOpenToolbar,
     handleOpenVideoFolderToolbar,
     handleEnginesDownload,
+    handleEnginesCheckUpdates,
     handleClearDownloadedEngines,
     handleSaveEnginePaths,
     handlePickEngine

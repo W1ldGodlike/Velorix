@@ -5,7 +5,7 @@ import {
   parseFfmpegExportVideoTransform
 } from './ffmpeg-export-service'
 import { parseYtdlpQueueRetryProfile } from './ytdlp-queue-retry'
-import { parseDownloadsWindowUiLocale } from '../shared/downloads-window-ui-locale'
+import { parseAppUiLocale } from '../shared/app-ui-locale'
 import {
   getBuiltinFfmpegExportUserPresets,
   mergeBuiltinFfmpegExportUserPresetsFromFile
@@ -14,6 +14,10 @@ import {
   DEFAULT_FFMPEG_EXPORT_BATCH_OUTPUT_SUFFIX,
   parseFfmpegExportBatchOutputSuffixTemplate
 } from '../shared/ffmpeg-export-batch-output-suffix'
+import {
+  parseExternalFilterScriptKind,
+  parseExternalFilterScriptPathStored
+} from '../shared/external-filter-script-parse'
 import { parseStoredTheme as parseAppThemeFromRaw } from '../shared/settings-stored-parse'
 import { parseYtdlpFilenameTemplateStored } from '../shared/ytdlp-download-stored-parse'
 import {
@@ -234,7 +238,7 @@ export function hydrateAppSettingsFromPartial(parsed: Partial<AppSettings>): App
   if (qrp !== 'off') {
     base.ytdlpQueueRetryProfile = qrp
   }
-  const uiLocaleParsed = parseDownloadsWindowUiLocale(parsed.uiLocale)
+  const uiLocaleParsed = parseAppUiLocale(parsed.uiLocale)
   const presetUiLocale: 'ru' | 'en' = uiLocaleParsed === 'en' ? 'en' : 'ru'
   const fromFile = parseFfmpegExportUserPresetsList(parsed.ffmpegExportUserPresets)
   base.ffmpegExportUserPresets = mergeBuiltinFfmpegExportUserPresetsFromFile(fromFile, presetUiLocale)
@@ -248,6 +252,12 @@ export function hydrateAppSettingsFromPartial(parsed: Partial<AppSettings>): App
   }
   if (uiLocaleParsed !== undefined) {
     base.uiLocale = uiLocaleParsed
+  }
+  const externalKind = parseExternalFilterScriptKind(parsed.ffmpegExportExternalFilterKind)
+  const externalPath = parseExternalFilterScriptPathStored(parsed.ffmpegExportExternalFilterScriptPath)
+  if (externalKind !== 'off' && externalPath !== null) {
+    base.ffmpegExportExternalFilterKind = externalKind
+    base.ffmpegExportExternalFilterScriptPath = externalPath
   }
   return base
 }

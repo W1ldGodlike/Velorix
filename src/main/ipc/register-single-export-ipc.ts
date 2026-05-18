@@ -17,7 +17,7 @@ import {
   processingHistorySnapshotFailed,
   processingHistorySnapshotSuccess
 } from '../../shared/processing-history-status-locale'
-import { parseDownloadsWindowUiLocale } from '../../shared/downloads-window-ui-locale'
+import { parseAppUiLocale } from '../../shared/app-ui-locale'
 import { getMainApplicationStrings } from '../../shared/main-application-locale'
 import { resolveAppPaths } from '../app-paths'
 import {
@@ -27,10 +27,24 @@ import {
 } from '../ffmpeg-frame-snapshot-service'
 import { ensureFfmpegExportExtension } from '../ffmpeg-export-app-settings-merge'
 import {
+  parseFfmpegExportBenchmarkRequest,
+  type FfmpegExportBenchmarkProgressPayload,
+  type FfmpegExportBenchmarkResult
+} from '../../shared/ffmpeg-export-benchmark-contract'
+import { parseFfmpegFramesExtractRequest } from '../../shared/ffmpeg-frames-extract-request-parse'
+import type {
+  FfmpegFramesExtractProgressPayload,
+  FfmpegFramesExtractResult
+} from '../../shared/ffmpeg-frames-extract-contract'
+import { runFfmpegFramesExtract } from '../ffmpeg-frames-extract-runner'
+import { resolveFfmpegFramesExtractDurationSec } from '../ffmpeg-frames-extract-resolve-duration'
+import { probeMediaFile } from '../ffprobe-service'
+import {
   parseFfmpegExportTrim,
   parseFfmpegExportVideoLut3d,
   runFfmpegExportJob
 } from '../ffmpeg-export-service'
+import { runFfmpegExportBenchmark } from '../ffmpeg-export-benchmark-runner'
 import { resolveFfmpegExportJobOptionsFromAppSettings } from '../ffmpeg-export-resolve-from-settings'
 import { resolveFfmpegExportLutCubeAbsPath } from '../ffmpeg-export-lut-path'
 import { resolveEngineExecutablePath } from '../engine-service'
@@ -60,7 +74,7 @@ export function registerSingleExportIpcHandlers(ctx: ExportBatchIpcContext): voi
       return { ok: false, error: base.exportInvalidRequest }
     }
     const exportUiLocale =
-      parseDownloadsWindowUiLocale((raw as { uiLocale?: unknown }).uiLocale) ??
+      parseAppUiLocale((raw as { uiLocale?: unknown }).uiLocale) ??
       host.mainDownloadsUiLocale()
     const M = getMainApplicationStrings(exportUiLocale)
     const inputRaw = (raw as { inputPath?: unknown }).inputPath
@@ -178,6 +192,180 @@ export function registerSingleExportIpcHandlers(ctx: ExportBatchIpcContext): voi
     }
   })
   ipcMain.handle(
+    mw.exportBenchmarkEncoders,
+    async (event, raw: unknown): Promise<FfmpegExportBenchmarkResult> => {
+      const base = host.mainAppStr()
+      if (host.getActiveExportAbort() !== null || isFfmpegExportBatchActive()) {
+        return { ok: false, error: base.exportAlreadyRunning }
+      }
+      const exportUiLocale =
+        parseAppUiLocale((raw as { uiLocale?: unknown })?.uiLocale) ??
+        host.mainDownloadsUiLocale()
+      const parsedReq = parseFfmpegExportBenchmarkRequest(raw, exportUiLocale)
+      if (!parsedReq.ok) {
+        return { ok: false, error: parsedReq.error }
+      }
+      const abs = resolve(normalize(parsedReq.payload.inputPath))
+      if (!existsSync(abs)) {
+        return { ok: false, error: getMainApplicationStrings(exportUiLocale).exportFileNotFound }
+      }
+      if (!isGrantedMediaPath(abs)) {
+        return {
+          ok: false,
+          error: getMainApplicationStrings(exportUiLocale).exportNotGrantedPath
+        }
+      }
+      const paths = resolveAppPaths()
+      const ffmpeg = resolveEngineExecutablePath(
+        paths,
+        'ffmpeg',
+        host.getSettings().engineExecutablePaths
+      )
+      if (!ffmpeg) {
+        return { ok: false, error: getMainApplicationStrings(exportUiLocale).exportFfmpegMissing }
+      }
+      const win = BrowserWindow.fromWebContents(event.sender)
+      if (!win) {
+        return { ok: false, error: getMainApplicationStrings(exportUiLocale).exportNoActiveWindow }
+      }
+      const ac = new AbortController()
+      host.setActiveExportAbort(ac)
+      const pushBenchmarkProgress = (p: FfmpegExportBenchmarkProgressPayload): void => {
+        win.webContents.send(mw.exportBenchmarkProgress, p)
+      }
+      try {
+        return await runFfmpegExportBenchmark({
+          ffmpegPath: ffmpeg,
+          inputPath: abs,
+          settings: host.getSettings(),
+          request: parsedReq.payload,
+          lutResourcesRoot: paths.resources,
+          signal: ac.signal,
+          onProgress: pushBenchmarkProgress
+        })
+      } finally {
+        host.setActiveExportAbort(null)
+      }
+    }
+  )
+  ipcMain.handle(
+    mw.extractFrames,
+    async (event, raw: unknown): Promise<FfmpegFramesExtractResult> => {
+      const base = host.mainAppStr()
+      if (host.getActiveExportAbort() !== null || isFfmpegExportBatchActive()) {
+        return { ok: false, error: base.exportAlreadyRunning }
+      }
+      const exportUiLocale =
+        parseAppUiLocale((raw as { uiLocale?: unknown })?.uiLocale) ??
+        host.mainDownloadsUiLocale()
+      const M = getMainApplicationStrings(exportUiLocale)
+      const parsedReq = parseFfmpegFramesExtractRequest(raw)
+      if (!parsedReq.ok) {
+        return { ok: false, error: M.ipcInvalidRequest }
+      }
+      const abs = resolve(normalize(parsedReq.payload.inputPath))
+      if (!existsSync(abs)) {
+        return { ok: false, error: M.exportFileNotFound }
+      }
+      if (!isGrantedMediaPath(abs)) {
+        return { ok: false, error: M.exportNotGrantedPath }
+      }
+      const win = BrowserWindow.fromWebContents(event.sender)
+      if (!win) {
+        return { ok: false, error: M.exportNoActiveWindow }
+      }
+      const pick = await dialog.showOpenDialog(win, {
+        title: M.extractFramesPickFolderTitle,
+        properties: ['openDirectory', 'createDirectory']
+      })
+      if (pick.canceled || !pick.filePaths[0]) {
+        return { ok: false, cancelled: true }
+      }
+      const outputDir = pick.filePaths[0]
+      const paths = resolveAppPaths()
+      const ffmpeg = resolveEngineExecutablePath(
+        paths,
+        'ffmpeg',
+        host.getSettings().engineExecutablePaths
+      )
+      if (!ffmpeg) {
+        return { ok: false, error: M.exportFfmpegMissing }
+      }
+      const ac = new AbortController()
+      host.setActiveExportAbort(ac)
+      const pushProgress = (p: FfmpegFramesExtractProgressPayload): void => {
+        win.webContents.send(mw.extractFramesProgress, p)
+      }
+      const startedAt = Date.now()
+      const mapScheduleError = (code: string): string => {
+        switch (code) {
+          case 'too_many_frames':
+            return M.extractFramesTooMany
+          case 'duration_too_short':
+            return M.extractFramesDurationTooShort
+          case 'invalid_count':
+            return M.extractFramesInvalidCount
+          case 'invalid_manual':
+            return M.extractFramesInvalidManual
+          default:
+            return M.ipcInvalidRequest
+        }
+      }
+      try {
+        const durationResolved = await resolveFfmpegFramesExtractDurationSec({
+          durationSecFromClient: parsedReq.payload.durationSec,
+          probeMedia: () =>
+            probeMediaFile(paths, abs, host.getSettings().engineExecutablePaths, exportUiLocale)
+        })
+        if (!durationResolved.ok) {
+          if (durationResolved.error === 'duration_too_short') {
+            return { ok: false, error: M.extractFramesDurationTooShort }
+          }
+          return { ok: false, error: durationResolved.error }
+        }
+        const result = await runFfmpegFramesExtract({
+          ffmpegPath: ffmpeg,
+          outputDir,
+          request: {
+            ...parsedReq.payload,
+            inputPath: abs,
+            durationSec: durationResolved.durationSec
+          },
+          signal: ac.signal,
+          onProgress: pushProgress,
+          mapScheduleError
+        })
+        if (result.ok) {
+          host.rememberFfmpegSnapshotDirectory(outputDir)
+          const status = M.extractFramesHistorySuccessTemplate.replace(
+            '{n}',
+            String(result.saved)
+          )
+          appendProcessingHistoryEntry(paths.userData, {
+            kind: 'ffmpegSnapshot',
+            startedAt,
+            finishedAt: Date.now(),
+            inputPath: abs,
+            outputPath: result.paths[0] ?? outputDir,
+            outcome: 'success',
+            status,
+            errorHint: null
+          })
+          return result
+        }
+        if ('cancelled' in result && result.cancelled) {
+          return result
+        }
+        if ('error' in result && result.error === 'all_frames_failed') {
+          return { ok: false, error: M.extractFramesAllFailed }
+        }
+        return result
+      } finally {
+        host.setActiveExportAbort(null)
+      }
+    }
+  )
+  ipcMain.handle(
     mw.exportOpenOutput,
     async (
       _event,
@@ -206,7 +394,7 @@ export function registerSingleExportIpcHandlers(ctx: ExportBatchIpcContext): voi
         return { ok: false, error: host.mainAppStr().ipcInvalidRequest }
       }
       const snapUiLocale =
-        parseDownloadsWindowUiLocale((raw as { uiLocale?: unknown }).uiLocale) ??
+        parseAppUiLocale((raw as { uiLocale?: unknown }).uiLocale) ??
         host.mainDownloadsUiLocale()
       const M = getMainApplicationStrings(snapUiLocale)
       const inputRaw = (raw as { inputPath?: unknown }).inputPath

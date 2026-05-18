@@ -12,13 +12,18 @@ const channelsText = readRepoUtf8('src/shared/ipc-channels.ts')
 /** Main → renderer push (no ipcMain.handle). */
 const PUSH_KEYS = new Set([
   'exportProgress',
+  'exportBenchmarkProgress',
+  'extractFramesProgress',
   'enginesProgress',
   'previewOpened',
   'themeChanged',
   'uiLocaleChanged',
   'openEnginePaths',
+  'openSettings',
   'enginePathsChanged',
   'openAbout',
+  'openExternalFilterScript',
+  'settingsBackupImported',
   'mainWindowUiPanelsChanged',
   'downloadsWindowUiPanelsChanged',
   'downloadsOutputDirectoryChanged',

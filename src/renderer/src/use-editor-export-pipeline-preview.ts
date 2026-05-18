@@ -48,7 +48,8 @@ export function useEditorExportPipelinePreview(
     exportVideoGrain,
     exportVideoVignette,
     exportVideoBlur,
-    exportAudioNormalize
+    exportAudioNormalize,
+    externalFilterForPreview
   } = deps
 
   /**
@@ -105,6 +106,15 @@ export function useEditorExportPipelinePreview(
       videoVignette: exportVideoVignette,
       videoBlur: exportVideoBlur,
       audioNormalize: exportAudioNormalize,
+      ...(externalFilterForPreview.kind === 'avisynth' ||
+      externalFilterForPreview.kind === 'vapoursynth'
+        ? externalFilterForPreview.scriptAbsPath
+          ? {
+              externalFilterKind: externalFilterForPreview.kind,
+              externalFilterScriptAbsPath: externalFilterForPreview.scriptAbsPath
+            }
+          : {}
+        : {}),
       inputPath: sourcePath,
       outputPath,
       trim: trimRange,
@@ -144,6 +154,7 @@ export function useEditorExportPipelinePreview(
     exportVideoVignette,
     exportVideoBlur,
     exportAudioNormalize,
+    externalFilterForPreview,
     trimRange,
     probeInfo?.durationSec
   ])
@@ -156,6 +167,16 @@ export function useEditorExportPipelinePreview(
     }
     if (!preview) {
       return uiText('editorExportPreviewHintNoSource')
+    }
+    if (
+      (externalFilterForPreview.kind === 'avisynth' ||
+        externalFilterForPreview.kind === 'vapoursynth') &&
+      externalFilterForPreview.scriptAbsPath
+    ) {
+      return uiTextVars('editorExportPreviewHintExternalFilter', {
+        kind: externalFilterForPreview.kind,
+        path: externalFilterForPreview.scriptAbsPath
+      })
     }
     if (exportPreview.pass1Command) {
       return uiText('editorExportPreviewHintTwoPass')

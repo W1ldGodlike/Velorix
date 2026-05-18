@@ -1,7 +1,7 @@
-import type { DownloadsWindowUiLocale } from '../../../shared/downloads-window-ui-locale'
-import { parseDownloadsWindowUiLocale } from '../../../shared/downloads-window-ui-locale'
+import type { AppUiLocale } from '../../../shared/app-ui-locale'
+import { parseAppUiLocale } from '../../../shared/app-ui-locale'
 
-export type UiLocale = 'ru' | 'en'
+export type UiLocale = AppUiLocale
 
 /** Set from `settings.json` after preload `settings.get()`; until then — `navigator`. */
 let uiLocaleOverride: UiLocale | undefined
@@ -22,10 +22,10 @@ export function getUiLocale(): UiLocale {
  * Caller should bump React state after this so components re-read `getUiLocale()` / `uiText()`.
  */
 export function applyPersistedUiLocale(loaded: { uiLocale?: unknown }): {
-  resolved: DownloadsWindowUiLocale
+  resolved: AppUiLocale
   shouldPersist: boolean
 } {
-  const fromFile = parseDownloadsWindowUiLocale(loaded.uiLocale)
+  const fromFile = parseAppUiLocale(loaded.uiLocale)
   if (fromFile !== undefined) {
     uiLocaleOverride = fromFile
     return { resolved: fromFile, shouldPersist: false }
@@ -36,6 +36,14 @@ export function applyPersistedUiLocale(loaded: { uiLocale?: unknown }): {
 }
 
 /** После `settings.setUiLocale` или события main `uiLocaleChanged`. */
-export function setUiLocaleForSession(locale: DownloadsWindowUiLocale): void {
+export function setUiLocaleForSession(locale: AppUiLocale): void {
   uiLocaleOverride = locale
+}
+
+/** Синхронизировать `<html lang>` без перезагрузки окна (§2.2). */
+export function syncDocumentUiLocale(locale: AppUiLocale): void {
+  if (typeof document === 'undefined') {
+    return
+  }
+  document.documentElement.lang = locale
 }
