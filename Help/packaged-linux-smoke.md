@@ -4,13 +4,16 @@
 
 ## Подготовка
 
+1. Положите `ffmpeg`, `ffprobe`, `yt-dlp` в `bin/` (см. [`bin/README.md`](../bin/README.md)), затем `npm run engines:doctor`.
+2. Сборка и layout:
+
 ```bash
 npm run build
 npm run pack:linux:dir
 npm run verify:linux-unpacked
 ```
 
-В каталоге должны быть `fluxalloy` или `FluxAlloy` и `resources/bin/{yt-dlp,ffmpeg,ffprobe}` (движки в `bin/` перед упаковкой могут понадобиться для релиза).
+В каталоге должны быть `fluxalloy` или `FluxAlloy` и `resources/bin/{yt-dlp,ffmpeg,ffprobe}`.
 
 ## Чеклист в приложении
 

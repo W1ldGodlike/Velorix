@@ -38,7 +38,7 @@ export function formatPlatformPackagingDiagnosticLines(): string[] {
     `mac: npm run ${BUILD_MAC_NPM_SCRIPT} (dmg) или ${PACK_MAC_DIR_NPM_SCRIPT} + ${VERIFY_MAC_UNPACKED_NPM_SCRIPT}; engines/bin вручную`,
     `linux: npm run ${BUILD_LINUX_NPM_SCRIPT} + ${VERIFY_LINUX_RELEASE_NPM_SCRIPT} или ${PACK_LINUX_DIR_NPM_SCRIPT} + ${VERIFY_LINUX_UNPACKED_NPM_SCRIPT}; engines/bin вручную`,
     `engines prepare: npm run ${ENGINES_PREPARE_WIN_NPM_SCRIPT} (Windows x64 only; predev/prebuild:win)`,
-    'engines mac/linux: нет engines:prepare:mac|linux — положить бинарники в bin/ вручную, затем engines:doctor',
+    'engines mac/linux: нет engines:prepare:mac|linux — bin/ вручную → engines:doctor → pack:*:dir (см. bin/README.md, Help packaged mac/linux)',
     `ci: windows-latest (${ENGINES_PREPARE_WIN_NPM_SCRIPT} + packaged smokes); ${ENGINES_CI_LINUX_RUNNER} (${PACK_LINUX_DIR_NPM_SCRIPT} + ${VERIFY_LINUX_UNPACKED_NPM_SCRIPT}, без engines prepare); mac — job нет`,
     'smoke skips: FLUXALLOY_SKIP_PACK_VERIFY, FLUXALLOY_SKIP_FFPROBE_SMOKE, FLUXALLOY_SKIP_FFMPEG_SMOKE, FLUXALLOY_SKIP_YTDLP_SMOKE',
     'dev quiet: npm run check:quiet includes check:terminal-summaries-ru (§8 terminal RU summaries 0/0)',
@@ -46,6 +46,7 @@ export function formatPlatformPackagingDiagnosticLines(): string[] {
     'packaged owner-smoke: npm run check:packaged-manual-smoke-parity (win/linux/macos Step_* + meta)',
     'owner visual smoke: npm run check:owner-visual-smoke-locale (theme/HiDPI settings.json ru/en)',
     'packaging scripts: npm run check:platform-packaging-scripts (PLATFORM_PACKAGING_NPM_SCRIPTS)',
+    'help workflow smoke: npm run check:help-workflow-smoke-crosslinks (8 Help articles ↔ owner/packaged §21)',
     '§21 e2e registry: npm run check:packaged-e2e-scenarios-registry (ciSmokeScript ↔ package.json; per-step e2e <id>:)',
     'CI packaged: npm run smoke:packaged-release (verify:win-unpacked + app + engines leaf smokes)',
     'Support ZIP releaseSmoke: win/linux/macos layout (present/missing) + §21 e2e per-step lines'

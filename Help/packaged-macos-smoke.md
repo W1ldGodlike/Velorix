@@ -4,6 +4,9 @@
 
 ## Подготовка
 
+1. Положите `ffmpeg`, `ffprobe`, `yt-dlp` в `bin/` (см. [`bin/README.md`](../bin/README.md)), затем `npm run engines:doctor`.
+2. Сборка и layout:
+
 ```bash
 npm run build
 npm run pack:mac:dir

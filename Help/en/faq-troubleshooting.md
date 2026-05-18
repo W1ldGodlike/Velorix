@@ -34,6 +34,7 @@ Short answers to common questions. Details live in sections 1–6 in the help ta
 
 - Pick a **local file** on disk.
 - Refresh ffprobe summary: [probe-and-inspector-basics.md](probe-and-inspector-basics.md).
+- After `pack:dir`, verify bundled **ffprobe** — [packaged-windows-smoke.md](../packaged-windows-smoke.md); §21 e2e per-step `e2e <id>:` in `releaseSmoke:`.
 
 ## Text clips, muddy theme, or pop-out looks wrong
 

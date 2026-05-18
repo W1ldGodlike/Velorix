@@ -21,3 +21,7 @@ Below the table you will find **history** (re-queue with one click) and a **live
 ## Settings on the right
 
 Details — [downloads-settings-rail.md](downloads-settings-rail.md). Clipboard and drag-and-drop — [downloads-dragdrop.md](downloads-dragdrop.md).
+
+## Packaged smoke (§19 / §21)
+
+Owner manual checklist for the queue and **yt-dlp** — [owner-manual-smoke.md](owner-manual-smoke.md). After `npm run pack:dir` — **ytdlp** step in [packaged-windows-smoke.md](../packaged-windows-smoke.md) (Linux/macOS — sibling articles); §21 e2e per-step `e2e <id>:` in Support ZIP `releaseSmoke:` (see [about-support-logs.md](about-support-logs.md)).

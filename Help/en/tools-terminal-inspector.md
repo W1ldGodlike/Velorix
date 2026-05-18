@@ -13,3 +13,7 @@ Scenario copy lives in `src/shared/terminal-contract-hints-*.ts`; after editing 
 The **Tools** menu opens a separate window with track tables and the raw analyzer report. **Copy JSON** is available for support tickets.
 
 See also [probe-and-inspector-basics.md](probe-and-inspector-basics.md).
+
+## Packaged smoke (§19 / §21)
+
+After `npm run pack:dir`, verify bundled ffprobe/ffmpeg in [packaged-windows-smoke.md](../packaged-windows-smoke.md). Full owner bundle and per-step `e2e <id>:` in Support ZIP `releaseSmoke:` — [owner-manual-smoke.md](owner-manual-smoke.md), [about-support-logs.md](about-support-logs.md).

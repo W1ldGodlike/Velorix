@@ -16,4 +16,4 @@ You can **open the file** in the editor or **only reveal the folder**, depending
 
 Keep downloads only, then start encoding yourself once the file is on disk.
 
-See also [downloads-workflow.md](downloads-workflow.md).
+See also [downloads-workflow.md](downloads-workflow.md). Packaged smoke **ytdlp** step (§21 planned GUI) and owner bundle — [owner-manual-smoke.md](owner-manual-smoke.md), [packaged-windows-smoke.md](../packaged-windows-smoke.md).

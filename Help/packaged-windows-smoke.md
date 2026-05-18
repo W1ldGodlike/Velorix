@@ -4,6 +4,9 @@
 
 ## Подготовка
 
+1. Движки в `bin/`: `npm run engines:prepare:win`, затем `npm run engines:doctor` (см. [`bin/README.md`](../bin/README.md)).
+2. Сборка:
+
 ```powershell
 npm run check:release
 ```

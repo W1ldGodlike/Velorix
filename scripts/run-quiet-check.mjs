@@ -21,6 +21,7 @@ const steps = [
   ['platform-packaging-scripts', ['run', 'check:platform-packaging-scripts']],
   ['help-packaged-smoke-docs', ['run', 'check:help-packaged-smoke-docs']],
   ['help-owner-smoke-docs', ['run', 'check:help-owner-smoke-docs']],
+  ['help-workflow-smoke-crosslinks', ['run', 'check:help-workflow-smoke-crosslinks']],
   ['packaged-e2e-scenarios-registry', ['run', 'check:packaged-e2e-scenarios-registry']],
   ['terminal-summaries-ru', ['run', 'check:terminal-summaries-ru']],
   ['terminal-data-summaries', ['run', 'check:terminal-data-summaries']],

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-18T23:16:43.804Z",
+  "generatedAt": "2026-05-18T23:37:00.848Z",
   "repoRoot": "C:\\Users\\truno\\FluxAlloy",
   "codeRoots": [
     "src",
@@ -18,7 +18,7 @@
     ".cursor",
     "coverage"
   ],
-  "fileCount": 1155,
+  "fileCount": 1157,
   "files": [
     "electron.vite.config.ts",
     "eslint.config.mjs",
@@ -52,6 +52,7 @@
     "scripts/check-field-registries.mjs",
     "scripts/check-help-owner-smoke-docs.mjs",
     "scripts/check-help-packaged-smoke-docs.mjs",
+    "scripts/check-help-workflow-smoke-crosslinks.mjs",
     "scripts/check-journal-numbering.mjs",
     "scripts/check-line-endings.mjs",
     "scripts/check-locales-json.mjs",
@@ -978,6 +979,7 @@
     "tests/scripts/check-export-preview-hints-locale.test.ts",
     "tests/scripts/check-help-owner-smoke-docs.test.ts",
     "tests/scripts/check-help-packaged-smoke-docs.test.ts",
+    "tests/scripts/check-help-workflow-smoke-crosslinks.test.ts",
     "tests/scripts/check-line-endings.test.ts",
     "tests/scripts/check-locales-json.test.ts",
     "tests/scripts/check-locales-ts-overlap.test.ts",

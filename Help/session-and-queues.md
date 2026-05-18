@@ -16,4 +16,4 @@
 
 Оставьте только скачивание, а перекодирование запускайте сами, когда файл уже на диске.
 
-См. также [downloads-workflow.md](downloads-workflow.md).
+См. также [downloads-workflow.md](downloads-workflow.md). Packaged smoke шага **ytdlp** (§21 planned GUI) и owner bundle — [owner-manual-smoke.md](owner-manual-smoke.md), [packaged-windows-smoke.md](packaged-windows-smoke.md).

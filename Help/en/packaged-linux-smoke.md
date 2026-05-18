@@ -4,13 +4,16 @@ Test the **built** app from `dist/linux-unpacked/`, not the Vite dev server. Lay
 
 ## Preparation
 
+1. Place `ffmpeg`, `ffprobe`, `yt-dlp` in `bin/` (see [`bin/README.md`](../../bin/README.md)), then `npm run engines:doctor`.
+2. Build and layout:
+
 ```bash
 npm run build
 npm run pack:linux:dir
 npm run verify:linux-unpacked
 ```
 
-The folder must contain `fluxalloy` or `FluxAlloy` and `resources/bin/{yt-dlp,ffmpeg,ffprobe}` (fill project `bin/` before packaging for a release build).
+The folder must contain `fluxalloy` or `FluxAlloy` and `resources/bin/{yt-dlp,ffmpeg,ffprobe}`.
 
 ## In-app checklist
 

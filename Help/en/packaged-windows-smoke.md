@@ -4,6 +4,9 @@ Exercise the **built** app from `dist/win-unpacked/`, not the Vite dev server. A
 
 ## Preparation
 
+1. Engines in `bin/`: `npm run engines:prepare:win`, then `npm run engines:doctor` (see [`bin/README.md`](../../bin/README.md)).
+2. Build:
+
 ```powershell
 npm run check:release
 ```

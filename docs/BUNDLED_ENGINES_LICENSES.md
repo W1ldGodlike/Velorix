@@ -39,3 +39,7 @@ Before distributing an installer:
 1. Manual path override in settings.
 2. Bundled `resources/bin`.
 3. Downloaded/updated `app-data/bin`.
+
+## macOS / Linux packaging
+
+Нет `engines:prepare:mac|linux` — бинарники в `bin/` вручную, затем `npm run engines:doctor`, `pack:*:dir`, owner/packaged smoke. См. [`bin/README.md`](../bin/README.md), `Help/packaged-macos-smoke.md`, `Help/packaged-linux-smoke.md`.

@@ -13,3 +13,7 @@
 ## Связь с терминалом
 
 Подсказки для вкладки «Терминал» и ссылки на встроенные сценарии — в [tools-terminal-inspector.md](tools-terminal-inspector.md) и [ffmpeg-terminal-hints.md](ffmpeg-terminal-hints.md).
+
+## Packaged smoke (§19 / §21)
+
+Ручной чеклист **ffprobe** — [owner-manual-smoke.md](owner-manual-smoke.md). После `npm run pack:dir` — шаг **ffprobe** в [packaged-windows-smoke.md](packaged-windows-smoke.md); §21 e2e per-step `e2e <id>:` в Support ZIP `releaseSmoke:`.

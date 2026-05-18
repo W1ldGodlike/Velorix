@@ -17,3 +17,7 @@ Build a command for the bundled tools, browse hints, and keep a log. For a simpl
 ## Tooltips
 
 Hover buttons and switches — many show a longer plain-language explanation.
+
+## Next
+
+[getting-started.md](getting-started.md) · [downloads-workflow.md](downloads-workflow.md) · [editor-workflow.md](editor-workflow.md). Owner smoke and §21 e2e — [owner-manual-smoke.md](owner-manual-smoke.md); packaged after build — [packaged-windows-smoke.md](../packaged-windows-smoke.md).

@@ -21,3 +21,5 @@
 ## Дальше
 
 Настройки вывода и пресеты — [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md).
+
+Packaged smoke (open-file, snapshot, export) — [packaged-windows-smoke.md](packaged-windows-smoke.md) и соседние статьи для Linux/macOS; полный owner bundle + §21 e2e в Support ZIP — [owner-manual-smoke.md](owner-manual-smoke.md).

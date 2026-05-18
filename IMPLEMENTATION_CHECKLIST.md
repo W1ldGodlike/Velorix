@@ -44,9 +44,9 @@
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый.
 
 - [ ] §16/§19: owner-smoke на железе (visual + HiDPI + packaged win/linux/macos + спрайт + mini-player); приёмка владельца.
-- [x] §2.2/§7.5: длинные UI-строки в `locales/**` без дублей TS; export hints [x]; owner theme/HiDPI/packaged meta RU+EN + guards; Help/RELEASE/bin §21 per-step `e2e <id>:` (owner/about/packaged/appearance + UI hint).
+- [x] §2.2/§7.5: `locales/**` без дублей TS; export hints [x]; owner theme/HiDPI/packaged RU+EN + guards; Help §21 `e2e <id>:` (owner/about/packaged/workflow + UI hint).
 - [~] §4.3: Mini Player [x] код (J-1153–1157); owner-smoke §4.3 в hub; приёмка visual/HiDPI на железе — владелец.
-- [~] §19: macOS/Linux — `pack:*:dir` + `verify:*` + parity guard; `releaseSmoke:` layout win/linux/macos; owner bundle RU+EN; `bin/` вручную; CI linux-packaging [x].
+- [~] §19: macOS/Linux — `pack:*:dir` + `verify:*`; `bin/`→`engines:doctor`/`prepare:win` в Help/bin; `releaseSmoke:` layout; CI linux-packaging [x]; приёмка packaged на железе — владелец.
 - [~] §21: e2e packaged smoke — реестр + guards + per-step/`ci.yml` [x]; GUI Playwright (open/preview/export, yt-dlp queue) — позже.
 
 ---

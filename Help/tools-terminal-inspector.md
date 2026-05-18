@@ -13,3 +13,7 @@
 Пункт меню **«Инструменты»** открывает отдельное окно с таблицами дорожек и сырым отчётом анализатора. Оттуда же удобно **копировать JSON** в буфер обмена.
 
 См. также [probe-and-inspector-basics.md](probe-and-inspector-basics.md).
+
+## Packaged smoke (§19 / §21)
+
+После `npm run pack:dir` проверьте bundled ffprobe/ffmpeg в [packaged-windows-smoke.md](packaged-windows-smoke.md). Полный owner bundle и per-step `e2e <id>:` в Support ZIP `releaseSmoke:` — [owner-manual-smoke.md](owner-manual-smoke.md), [about-support-logs.md](about-support-logs.md).

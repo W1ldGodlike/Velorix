@@ -34,6 +34,7 @@
 
 - Выберите **файл на диске** (не только URL без локального файла).
 - Обновите сводку ffprobe; см. [probe-and-inspector-basics.md](probe-and-inspector-basics.md).
+- После `pack:dir` проверьте bundled **ffprobe** — [packaged-windows-smoke.md](packaged-windows-smoke.md); §21 e2e per-step `e2e <id>:` в `releaseSmoke:`.
 - Сырой JSON — для опытных; для обычной работы достаточно блоков «дорожки» и «главы».
 
 ## Текст обрезается, тема «грязная» или не та в pop-out

@@ -64,6 +64,7 @@
     "check:platform-packaging-scripts": "node scripts/check-platform-packaging-scripts.mjs",
     "check:help-packaged-smoke-docs": "node scripts/check-help-packaged-smoke-docs.mjs",
     "check:help-owner-smoke-docs": "node scripts/check-help-owner-smoke-docs.mjs",
+    "check:help-workflow-smoke-crosslinks": "node scripts/check-help-workflow-smoke-crosslinks.mjs",
     "check:packaged-e2e-scenarios-registry": "node scripts/check-packaged-e2e-scenarios-registry.mjs",
     "check:terminal-summaries-ru": "node scripts/check-terminal-summaries-ru.mjs",
     "check:terminal-data-summaries": "node scripts/check-terminal-data-summaries-quality.mjs",

@@ -44,7 +44,7 @@ Runtime resolution order is:
 ### macOS / Linux (gap)
 
 - Авто-скрипта `engines:prepare:mac` / `engines:prepare:linux` **нет** (только `engines:prepare:win`).
-- Перед `npm run build:mac` / `build:linux` положите `ffmpeg`, `ffprobe`, `yt-dlp` в этот `bin/` вручную, затем `npm run engines:doctor`.
+- **Порядок владельца:** (1) положить `ffmpeg`, `ffprobe`, `yt-dlp` в этот `bin/` (без `.exe`); (2) `npm run engines:doctor`; (3) `build` + `pack:*:dir` + `verify:*`; (4) UI packaged smoke + [owner-manual-smoke](../Help/owner-manual-smoke.md) (§21 e2e в Support ZIP).
 - **macOS (локально):** `npm run build && npm run pack:mac:dir` → `npm run verify:mac-unpacked` (проверка `dist/mac*/FluxAlloy.app`).
 - **Linux (локально):** быстрый smoke — `pack:linux:dir` + `verify:linux-unpacked` (как в CI); полный релиз — `npm run build:linux` → `npm run verify:linux-release` (`.AppImage` + `.deb` в `dist/`).
 - GitHub Actions: **windows-latest** — `engines:prepare:win` + packaged smokes; **ubuntu-latest** — `pack:linux:dir` + `verify:linux-unpacked` (движки в `bin/` для CI не обязательны). См. `docs/ARCHITECTURE.md` § Bundled engines и CI.

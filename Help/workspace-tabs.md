@@ -17,3 +17,7 @@
 ## Подсказки
 
 Наведите курсор на кнопки и переключатели — у многих есть длинное пояснение простыми словами.
+
+## Дальше
+
+[getting-started.md](getting-started.md) · [downloads-workflow.md](downloads-workflow.md) · [editor-workflow.md](editor-workflow.md). Ручной smoke и §21 e2e — [owner-manual-smoke.md](owner-manual-smoke.md); packaged после сборки — [packaged-windows-smoke.md](packaged-windows-smoke.md).

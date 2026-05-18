@@ -4,6 +4,9 @@ Test the **built** `FluxAlloy.app` under `dist/mac-arm64/` (or `dist/mac/`, `dis
 
 ## Preparation
 
+1. Place `ffmpeg`, `ffprobe`, `yt-dlp` in `bin/` (see [`bin/README.md`](../../bin/README.md)), then `npm run engines:doctor`.
+2. Build and layout:
+
 ```bash
 npm run build
 npm run pack:mac:dir

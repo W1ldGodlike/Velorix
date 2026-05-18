@@ -21,3 +21,5 @@ Below the timeline you get a **short line** for **video / audio** (frame size an
 ## Next
 
 Export settings and presets — [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md).
+
+Packaged smoke (open-file, snapshot, export) — [packaged-windows-smoke.md](../packaged-windows-smoke.md) and Linux/macOS articles; full owner bundle + §21 e2e in Support ZIP — [owner-manual-smoke.md](owner-manual-smoke.md).

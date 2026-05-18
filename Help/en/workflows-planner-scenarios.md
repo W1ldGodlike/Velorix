@@ -37,4 +37,4 @@ For watch-folder with **Run scenario**, a local file runs the **Process** block 
 - Run results appear in the status bar and in **Processing history** (kind `workflowScenario`).
 - macOS LaunchAgent logs: `~/Library/Logs/FluxAlloy/watch-<taskId>.log`.
 - Linux timer: `journalctl --user -u fluxalloy-watch-<taskId>.service`.
-- Full owner-smoke bundle (scheduler + §21 e2e per-step in Support ZIP): **Settings → Dependencies → Owner manual smoke**, or the planner deep-link — [owner-manual-smoke.md](owner-manual-smoke.md).
+- Full owner-smoke bundle (scheduler): **Settings → Dependencies → Owner manual smoke**, or the planner deep-link — [owner-manual-smoke.md](owner-manual-smoke.md). Packaged ffmpeg/ytdlp after `pack:dir` — [packaged-windows-smoke.md](../packaged-windows-smoke.md); §21 e2e per-step `e2e <id>:` in `releaseSmoke:`.
