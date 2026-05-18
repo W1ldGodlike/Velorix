@@ -118,6 +118,7 @@ export function EditorFfmpegSettingsRail(props: EditorFfmpegSettingsRailProps) {
         entries={processingHistory}
         filter={processingHistoryFilter}
         weeklySummary={processingHistoryWeeklySummary}
+        {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
         onToggle={(nextOpen) => {
           persistMainWindowUiPanelToggle('processingHistory', nextOpen)
         }}

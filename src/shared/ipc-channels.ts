@@ -204,6 +204,7 @@ export const downloadsIpc = {
   clearFinished: 'fluxalloy-downloads-clear-finished',
   getHistory: 'fluxalloy-downloads-get-history',
   getHistoryWeeklySummary: 'fluxalloy-downloads-get-history-weekly-summary',
+  downloadsHistoryChanged: 'fluxalloy-downloads-history-changed',
   clearHistory: 'fluxalloy-downloads-clear-history',
   saveVisibleLog: 'fluxalloy-downloads-save-visible-log',
   openQueueOutput: 'fluxalloy-downloads-open-queue-output',

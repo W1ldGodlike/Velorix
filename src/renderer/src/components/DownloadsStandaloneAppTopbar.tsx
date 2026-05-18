@@ -1,12 +1,13 @@
 import type { JSX } from 'react'
 
-import { IconDownload, IconMoon, IconSun } from './LucideMiniIcons'
+import { IconBook, IconDownload, IconMoon, IconSun } from './LucideMiniIcons'
 import { formatStatusbarLocaleShort } from '../statusbar-locale-display'
 import { getUiLocale, miniIconTitle, uiText } from '../locales/ui-text'
 import type { DownloadsStandaloneAppModel } from '../use-downloads-standalone-app'
 
 export function DownloadsStandaloneAppTopbar(props: DownloadsStandaloneAppModel): JSX.Element {
-  const { theme, downloadsWorkspaceAriaBusy, handleUiLocaleToggle, toggleTheme } = props
+  const { theme, downloadsWorkspaceAriaBusy, handleUiLocaleToggle, toggleTheme, onOpenKnowledge } =
+    props
 
   return (
     <header
@@ -50,6 +51,18 @@ export function DownloadsStandaloneAppTopbar(props: DownloadsStandaloneAppModel)
               ? uiText('topbarUiLocaleVisuallyHiddenRu')
               : uiText('topbarUiLocaleVisuallyHiddenEn')}
           </span>
+        </button>
+        <button
+          type="button"
+          className="app-icon-btn"
+          aria-describedby="downloads-page-hint"
+          onClick={() => {
+            onOpenKnowledge()
+          }}
+          title={uiText('knowledgeTopbarTooltip')}
+        >
+          <IconBook title="" size={18} />
+          <span className="app-visually-hidden">{uiText('topbarKnowledgeLabel')}</span>
         </button>
         <button
           type="button"

@@ -269,6 +269,7 @@ export interface FluxAlloyApi {
       ) => void
     ) => () => void
     onDownloadsCliOptionsChanged: (listener: () => void) => () => void
+    onDownloadsHistoryChanged: (listener: () => void) => () => void
     bridgeOpenInspector: (
       mediaPath?: string | null
     ) => Promise<{ ok: true } | { ok: false; error: string }>

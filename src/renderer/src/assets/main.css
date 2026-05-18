@@ -1107,6 +1107,13 @@ button.app-downloads-hint-token:disabled {
   background: color-mix(in srgb, var(--fa-bg) 64%, var(--fa-surface-elevated));
 }
 
+.app-downloads-history-panel summary.app-downloads-history-summary-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+}
+
 .app-downloads-history-panel summary {
   display: flex;
   align-items: center;
@@ -1762,10 +1769,27 @@ button.app-downloads-hint-token:disabled {
   line-height: 1.35;
 }
 
+.app-processing-history-panel > .app-settings-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+}
+
+.app-processing-history-panel .app-processing-history-summary-label {
+  flex: 1;
+  min-width: 0;
+}
+
 .app-processing-history-count {
   float: right;
   color: var(--fa-text-muted);
   font-size: 0.66rem;
+}
+
+.app-processing-history-panel .app-processing-history-count {
+  float: none;
+  margin-left: 0.35rem;
 }
 
 .app-processing-history-summary {
@@ -1775,7 +1799,8 @@ button.app-downloads-hint-token:disabled {
   padding: 0 0.8rem 0.55rem;
 }
 
-.app-processing-history-summary span {
+.app-processing-history-summary span,
+.app-processing-history-summary button.app-processing-history-summary-chip {
   border-radius: 999px;
   border: 1px solid var(--fa-border-subtle);
   padding: 0.18rem 0.45rem;
@@ -1783,6 +1808,31 @@ button.app-downloads-hint-token:disabled {
   color: var(--fa-text-secondary);
   font-size: 0.62rem;
   font-weight: 700;
+}
+
+.app-processing-history-summary button.app-processing-history-summary-chip {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.app-processing-history-summary button.app-processing-history-summary-chip:hover:not(:disabled) {
+  border-color: var(--fa-border-strong);
+  color: var(--fa-text-primary);
+}
+
+.app-processing-history-summary button.app-processing-history-summary-chip:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 2px;
+}
+
+.app-processing-history-summary button.app-processing-history-summary-chip-active {
+  border-color: var(--fa-accent);
+  color: var(--fa-text-primary);
+}
+
+.app-processing-history-summary button.app-processing-history-summary-chip:disabled {
+  cursor: default;
+  opacity: 0.85;
 }
 
 .app-processing-history-controls,

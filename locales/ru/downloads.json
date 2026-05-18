@@ -18,6 +18,7 @@
   "downloadsHistoryChipCancelled": "Отмена",
   "downloadsHistoryChipErrors": "Ошибки",
   "downloadsHistoryChipOk": "ОК",
+  "downloadsHistoryWeeklyChipFilterTitle": "Фильтр списка: {label}",
   "downloadsHistoryClear": "Очистить",
   "downloadsHistoryDetailsAria": "История завершённых загрузок",
   "downloadsHistoryEmpty": "История пока пуста. После завершения строк здесь появятся последние результаты.",

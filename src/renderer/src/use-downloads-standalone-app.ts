@@ -43,6 +43,8 @@ export function useDownloadsStandaloneApp() {
   const [downloadsStatusFilter, setDownloadsStatusFilter] = useState<DownloadsStatusFilter>('all')
   const [downloadsNarrowLayout, setDownloadsNarrowLayout] = useState(false)
   const [uiLocaleRenderTick, setUiLocaleRenderTick] = useState(0)
+  const [knowledgeOpen, setKnowledgeOpen] = useState(false)
+  const [knowledgeInitialSlug, setKnowledgeInitialSlug] = useState<string | null>(null)
   const downloadsMainUrlFieldId = useId()
   const downloadsSettingsRailRef = useRef<HTMLElement | null>(null)
 
@@ -75,6 +77,16 @@ export function useDownloadsStandaloneApp() {
   }, [applyTheme, theme])
 
   const noopWorkspaceTab = useCallback((): void => {}, [])
+
+  const onOpenKnowledgeArticle = useCallback((slug: string): void => {
+    setKnowledgeInitialSlug(slug)
+    setKnowledgeOpen(true)
+  }, [])
+
+  const onOpenKnowledge = useCallback((): void => {
+    setKnowledgeInitialSlug(null)
+    setKnowledgeOpen(true)
+  }, [])
 
   const { handleAddDownloadsFromMain } = useDownloadsUrlActions({
     downloadsUrl,
@@ -163,6 +175,7 @@ export function useDownloadsStandaloneApp() {
       refreshDownloadsHistory: downloadsWorkspace.refreshDownloadsHistory,
       setDownloadsHistory: downloadsWorkspace.setDownloadsHistory,
       exportVisibleDownloadsHistory: downloadsWorkspace.exportVisibleDownloadsHistory,
+      onOpenKnowledgeArticle,
       downloadsEmbeddedLogOpen: downloadsWindowUiPanels.downloadsEmbeddedLogOpen,
       persistDownloadsEmbeddedLogOpen: downloadsWindowUiPanels.persistDownloadsEmbeddedLogOpen,
       downloadsLogTargetRowId: downloadsWorkspace.downloadsLogTargetRowId,
@@ -183,6 +196,7 @@ export function useDownloadsStandaloneApp() {
       handleAddDownloadsFromMain,
       handleBatchAddDownloadsDone,
       noopWorkspaceTab,
+      onOpenKnowledgeArticle,
       visibleDownloadsRows
     ]
   )
@@ -204,9 +218,15 @@ export function useDownloadsStandaloneApp() {
       setDownloadsExpertHintFilter: downloadsWorkspace.setDownloadsExpertHintFilter,
       ytdlpCommandHintsFilteredByCategory: downloadsWorkspace.ytdlpCommandHintsFilteredByCategory,
       appendDownloadsExtraArgsToken: downloadsWorkspace.appendDownloadsExtraArgsToken,
-      refreshDownloadsOptions: downloadsWorkspace.refreshDownloadsOptions
+      refreshDownloadsOptions: downloadsWorkspace.refreshDownloadsOptions,
+      onOpenKnowledgeArticle
     }),
-    [downloadsWorkspace, downloadsWindowUiPanels.downloadsRailPanels, handleDownloadsRailSectionToggle]
+    [
+      downloadsWorkspace,
+      downloadsWindowUiPanels.downloadsRailPanels,
+      handleDownloadsRailSectionToggle,
+      onOpenKnowledgeArticle
+    ]
   )
 
   const downloadsWorkspaceAriaBusy =
@@ -290,6 +310,12 @@ export function useDownloadsStandaloneApp() {
     setStatusHint,
     handleUiLocaleToggle,
     toggleTheme,
+    knowledgeOpen,
+    setKnowledgeOpen,
+    knowledgeInitialSlug,
+    setKnowledgeInitialSlug,
+    onOpenKnowledge,
+    onOpenKnowledgeArticle,
     downloadsMainProps,
     downloadsSettingsProps,
     downloadsSettingsRailRef,

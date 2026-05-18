@@ -37,6 +37,9 @@ export const KNOWLEDGE_SLUG_FFMPEG_RAIL_PRESETS = 'ffmpeg-rail-presets'
 /** Пакетный экспорт и очереди — `Help/session-and-queues.md`. */
 export const KNOWLEDGE_SLUG_SESSION_AND_QUEUES = 'session-and-queues'
 
+/** §6.4 — история загрузок yt-dlp (вкладка и pop-out). */
+export const KNOWLEDGE_SLUG_DOWNLOADS_WORKFLOW = 'downloads-workflow'
+
 /** Инспектор ffprobe — `Help/probe-and-inspector-basics.md`. */
 export const KNOWLEDGE_SLUG_PROBE_AND_INSPECTOR = 'probe-and-inspector-basics'
 
@@ -60,3 +63,6 @@ export const KNOWLEDGE_SLUG_PACKAGED_MACOS_SMOKE = 'packaged-macos-smoke'
 
 /** §10/§11 — планировщик, watch-folder, сценарии, запуск из редактора. */
 export const KNOWLEDGE_SLUG_WORKFLOWS_PLANNER_SCENARIOS = 'workflows-planner-scenarios'
+
+/** §13 — история обработки в правой FFmpeg-панели. */
+export const KNOWLEDGE_SLUG_PROCESSING_HISTORY = 'processing-history'

@@ -7,6 +7,7 @@ import {
   appendYtdlpDownloadHistoryEntry,
   clearYtdlpDownloadHistory,
   getYtdlpDownloadHistoryWeeklySummary,
+  onYtdlpDownloadHistoryChanged,
   outcomeFromQueueStatus,
   readYtdlpDownloadHistoryNewestFirst,
   YTDLP_DOWNLOAD_HISTORY_SCHEMA
@@ -144,5 +145,28 @@ describe('ytdlp download history persistence', () => {
       error: 1,
       cancelled: 0
     })
+  })
+
+  it('уведомляет подписчиков при append и clear', () => {
+    const root = makeTempRoot()
+    let count = 0
+    const off = onYtdlpDownloadHistoryChanged(() => {
+      count += 1
+    })
+    appendYtdlpDownloadHistoryEntry(root, {
+      id: 'a',
+      startedAt: 1,
+      finishedAt: 2,
+      url: 'https://example.com/a',
+      shortLabel: 'a',
+      outcome: 'success',
+      status: 'ok',
+      exitCode: 0,
+      errorHint: null
+    })
+    expect(count).toBe(1)
+    clearYtdlpDownloadHistory(root)
+    expect(count).toBe(2)
+    off()
   })
 })

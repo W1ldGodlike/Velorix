@@ -1,6 +1,8 @@
-import { useId, type JSX } from 'react'
+import { useEffect, useId, useRef, type JSX } from 'react'
 
+import { KNOWLEDGE_SLUG_DOWNLOADS_WORKFLOW } from '../../../../shared/knowledge-contract'
 import type { DownloadsHistoryListMode } from '../../../../shared/settings-contract'
+import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
 import type { YtdlpDownloadHistoryEntry } from '../../../../shared/ytdlp-history-contract'
 import { resolveDownloadsHistoryVisibleEntries } from './downloads-history-display'
 import {
@@ -26,7 +28,8 @@ export function DownloadsHistoryPanel({
   onExportVisible,
   onRepeat,
   onOpenOutput,
-  onOpenInEditor
+  onOpenInEditor,
+  onOpenKnowledgeArticle
 }: {
   open: boolean
   busy: boolean
@@ -49,9 +52,22 @@ export function DownloadsHistoryPanel({
   onRepeat: (url: string) => void
   onOpenOutput: (id: string, mode: 'file' | 'folder') => void
   onOpenInEditor: (id: string) => void
+  onOpenKnowledgeArticle?: (slug: string) => void
 }): JSX.Element {
   const downloadsHistoryOutcomeFilterId = useId()
+  const listRef = useRef<HTMLDivElement | null>(null)
+  const topEntryIdRef = useRef<string | null>(null)
   const visibleEntries = resolveDownloadsHistoryVisibleEntries(entries, listMode)
+
+  useEffect(() => {
+    const topId = visibleEntries[0]?.id ?? null
+    if (!open || topId === null || topId === topEntryIdRef.current) {
+      topEntryIdRef.current = topId
+      return
+    }
+    topEntryIdRef.current = topId
+    listRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [open, visibleEntries])
   const showListModeToggle =
     entries.length > visibleEntries.length || listMode === 'full'
   return (
@@ -65,11 +81,24 @@ export function DownloadsHistoryPanel({
         onToggle(event.currentTarget.open)
       }}
     >
-      <summary aria-describedby="downloads-page-hint">
-        {uiText('downloadsHistoryTitle')}
+      <summary className="app-downloads-history-summary-head" aria-describedby="downloads-page-hint">
         <span>
-          {visibleEntries.length}/{totalEntries}
+          {uiText('downloadsHistoryTitle')}
+          <span>
+            {visibleEntries.length}/{totalEntries}
+          </span>
         </span>
+        {onOpenKnowledgeArticle ? (
+          <KnowledgeDeepLinkButton
+            label={uiText('knowledgeDeepLinkDownloadsHistoryLabel')}
+            tooltip={uiText('knowledgeDeepLinkDownloadsHistoryTooltip')}
+            ariaDescribedBy="downloads-page-hint"
+            disabled={busy}
+            onOpen={() => {
+              onOpenKnowledgeArticle(KNOWLEDGE_SLUG_DOWNLOADS_WORKFLOW)
+            }}
+          />
+        ) : null}
       </summary>
       <div
         className="app-processing-history-summary"
@@ -78,18 +107,62 @@ export function DownloadsHistoryPanel({
         aria-describedby="downloads-page-hint"
         aria-busy={busy}
       >
-        <span>
+        <button
+          type="button"
+          className={`app-processing-history-summary-chip${outcomeFilter === 'all' ? ' app-processing-history-summary-chip-active' : ''}`}
+          disabled={busy || weeklySummary.total === 0}
+          title={uiTextVars('downloadsHistoryWeeklyChipFilterTitle', {
+            label: uiText('downloadsHistoryFilterAll')
+          })}
+          aria-pressed={outcomeFilter === 'all'}
+          onClick={() => {
+            onOutcomeFilterChange('all')
+          }}
+        >
           {uiText('downloadsHistory7dPrefix')} {weeklySummary.total}
-        </span>
-        <span>
+        </button>
+        <button
+          type="button"
+          className={`app-processing-history-summary-chip${outcomeFilter === 'success' ? ' app-processing-history-summary-chip-active' : ''}`}
+          disabled={busy || weeklySummary.success === 0}
+          title={uiTextVars('downloadsHistoryWeeklyChipFilterTitle', {
+            label: uiText('downloadsHistoryFilterSuccess')
+          })}
+          aria-pressed={outcomeFilter === 'success'}
+          onClick={() => {
+            onOutcomeFilterChange('success')
+          }}
+        >
           {uiText('downloadsHistoryChipOk')} {weeklySummary.success}
-        </span>
-        <span>
+        </button>
+        <button
+          type="button"
+          className={`app-processing-history-summary-chip${outcomeFilter === 'error' ? ' app-processing-history-summary-chip-active' : ''}`}
+          disabled={busy || weeklySummary.error === 0}
+          title={uiTextVars('downloadsHistoryWeeklyChipFilterTitle', {
+            label: uiText('downloadsHistoryFilterError')
+          })}
+          aria-pressed={outcomeFilter === 'error'}
+          onClick={() => {
+            onOutcomeFilterChange('error')
+          }}
+        >
           {uiText('downloadsHistoryChipErrors')} {weeklySummary.error}
-        </span>
-        <span>
+        </button>
+        <button
+          type="button"
+          className={`app-processing-history-summary-chip${outcomeFilter === 'cancelled' ? ' app-processing-history-summary-chip-active' : ''}`}
+          disabled={busy || weeklySummary.cancelled === 0}
+          title={uiTextVars('downloadsHistoryWeeklyChipFilterTitle', {
+            label: uiText('downloadsHistoryFilterCancelled')
+          })}
+          aria-pressed={outcomeFilter === 'cancelled'}
+          onClick={() => {
+            onOutcomeFilterChange('cancelled')
+          }}
+        >
           {uiText('downloadsHistoryChipCancelled')} {weeklySummary.cancelled}
-        </span>
+        </button>
       </div>
       <div
         className="app-downloads-history-actions"
@@ -172,6 +245,7 @@ export function DownloadsHistoryPanel({
         </button>
       </div>
       <div
+        ref={listRef}
         className="app-downloads-history-list"
         role="region"
         aria-label={uiText('downloadsHistoryListRegionAria')}

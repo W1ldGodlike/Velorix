@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-18T07:04:35.581Z",
+  "generatedAt": "2026-05-18T07:28:26.109Z",
   "repoRoot": "C:\\Users\\truno\\FluxAlloy",
   "codeRoots": [
     "src",
@@ -18,7 +18,7 @@
     ".cursor",
     "coverage"
   ],
-  "fileCount": 1016,
+  "fileCount": 1017,
   "files": [
     "electron.vite.config.ts",
     "eslint.config.mjs",
@@ -145,6 +145,7 @@
     "src/main/app-paths.ts",
     "src/main/diagnostics-maintenance.ts",
     "src/main/diagnostics-paths.ts",
+    "src/main/downloads-history-broadcast.ts",
     "src/main/downloads-log-ipc.ts",
     "src/main/downloads-queue-runner-state.ts",
     "src/main/downloads-queue-runner-ytdlp-row-completion.ts",

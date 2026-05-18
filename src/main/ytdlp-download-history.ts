@@ -20,6 +20,21 @@ import { YTDLP_QUEUE_STATUS_CANCELLED, YTDLP_QUEUE_STATUS_DONE } from '../shared
 export const YTDLP_DOWNLOAD_HISTORY_SCHEMA = 1
 export const YTDLP_DOWNLOAD_HISTORY_MAX_ENTRIES = 500
 
+const downloadsHistoryChangedListeners = new Set<() => void>()
+
+export function onYtdlpDownloadHistoryChanged(listener: () => void): () => void {
+  downloadsHistoryChangedListeners.add(listener)
+  return (): void => {
+    downloadsHistoryChangedListeners.delete(listener)
+  }
+}
+
+function notifyYtdlpDownloadHistoryChanged(): void {
+  for (const listener of downloadsHistoryChangedListeners) {
+    listener()
+  }
+}
+
 interface HistoryFileShape {
   schema: number
   entries: YtdlpDownloadHistoryEntry[]
@@ -201,6 +216,7 @@ export function appendYtdlpDownloadHistoryEntry(
     entries
   }
   writeHistoryFileAtomic(file, payload, 'write history.json failed')
+  notifyYtdlpDownloadHistoryChanged()
 }
 
 /** Последние `limit` записей в порядке от новых к старым. */
@@ -251,4 +267,5 @@ export function clearYtdlpDownloadHistory(userDataRoot: string): void {
     { schema: YTDLP_DOWNLOAD_HISTORY_SCHEMA, entries: [] },
     'clear history.json failed'
   )
+  notifyYtdlpDownloadHistoryChanged()
 }

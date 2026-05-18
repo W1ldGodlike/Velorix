@@ -12,6 +12,7 @@
   "processingHistoryChipCancelled": "Cancelled",
   "processingHistoryChipTime": "Time",
   "processingHistoryChipWorkflow": "Scenarios",
+  "processingHistoryWeeklyChipFilterTitle": "Filter list: {label}",
   "processingHistoryKindAll": "All types",
   "processingHistoryKindExport": "Export",
   "processingHistoryKindSnapshot": "Frames",

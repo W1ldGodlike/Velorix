@@ -165,6 +165,16 @@ export const fluxalloyDownloads = {
       ipcRenderer.removeListener(channel, handler)
     }
   },
+  onDownloadsHistoryChanged: (listener: () => void): (() => void) => {
+    const channel = d.downloadsHistoryChanged
+    const handler = (): void => {
+      listener()
+    }
+    ipcRenderer.on(channel, handler)
+    return (): void => {
+      ipcRenderer.removeListener(channel, handler)
+    }
+  },
   bridgeOpenInspector: (
     mediaPath?: string | null
   ): Promise<{ ok: true } | { ok: false; error: string }> =>

@@ -139,8 +139,10 @@ export function useDownloadsWorkspace(deps: UseDownloadsWorkspaceDeps): {
     [downloadsOptions, applyDownloadsOptionsPatch]
   )
 
-  const refreshDownloadsHistory = useCallback(async (): Promise<void> => {
-    setDownloadsHistoryBusy(true)
+  const refreshDownloadsHistory = useCallback(async (opts?: { silent?: boolean }): Promise<void> => {
+    if (!opts?.silent) {
+      setDownloadsHistoryBusy(true)
+    }
     try {
       const [rows, summary] = await Promise.all([
         window.fluxalloy.downloads.getHistory(),
@@ -149,15 +151,20 @@ export function useDownloadsWorkspace(deps: UseDownloadsWorkspaceDeps): {
       setDownloadsHistory(rows)
       setDownloadsHistoryWeeklySummary(summary)
     } finally {
-      setDownloadsHistoryBusy(false)
+      if (!opts?.silent) {
+        setDownloadsHistoryBusy(false)
+      }
     }
   }, [])
 
   const exportVisibleDownloadsHistory = useCallback(async (): Promise<void> => {
     const payload = {
-      schema: 1,
+      schema: 2,
       exportedAt: Date.now(),
+      uiLocale: getUiLocale(),
+      entryCount: visibleDownloadsHistory.length,
       outcomeFilter: downloadsHistoryOutcomeFilter,
+      weeklySummary: downloadsHistoryWeeklySummary,
       entries: visibleDownloadsHistory
     }
     const res = await window.fluxalloy.saveTextWithDialog({
@@ -170,7 +177,12 @@ export function useDownloadsWorkspace(deps: UseDownloadsWorkspaceDeps): {
     } else if ('error' in res) {
       setStatusHint(res.error)
     }
-  }, [downloadsHistoryOutcomeFilter, setStatusHint, visibleDownloadsHistory])
+  }, [
+    downloadsHistoryOutcomeFilter,
+    downloadsHistoryWeeklySummary,
+    setStatusHint,
+    visibleDownloadsHistory
+  ])
 
   const handleDownloadsLogPayload = useCallback((payload: DownloadsLogPayload): void => {
     if (payload.kind === 'reset') {
@@ -252,6 +264,13 @@ export function useDownloadsWorkspace(deps: UseDownloadsWorkspaceDeps): {
     })
     return off
   }, [refreshDownloadsOptions])
+
+  useEffect(() => {
+    const off = window.fluxalloy.downloads.onDownloadsHistoryChanged(() => {
+      void refreshDownloadsHistory({ silent: true })
+    })
+    return off
+  }, [refreshDownloadsHistory])
 
   return {
     downloadsOptions,

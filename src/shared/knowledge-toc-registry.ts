@@ -48,6 +48,7 @@ export const KNOWLEDGE_TOC_SECTIONS: readonly KnowledgeTocSectionSpec[] = [
       'editor-workflow',
       'workflows-planner-scenarios',
       'ffmpeg-rail-presets',
+      'processing-history',
       'processing-social-presets',
       'processing-advanced-fields',
       'extract-frames'

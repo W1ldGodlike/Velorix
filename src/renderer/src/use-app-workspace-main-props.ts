@@ -223,9 +223,10 @@ export function useAppWorkspaceMainProps(
       ...downloadsMainInput,
       onAddToQueue,
       onBatchAddDownloadsDone,
-      onSelectDownloadsTab
+      onSelectDownloadsTab,
+      onOpenKnowledgeArticle
     }),
-    [downloadsMainInput, onAddToQueue, onBatchAddDownloadsDone, onSelectDownloadsTab]
+    [downloadsMainInput, onAddToQueue, onBatchAddDownloadsDone, onOpenKnowledgeArticle, onSelectDownloadsTab]
   )
 
   const downloadsWorkspaceAriaBusy = downloadsOptionsBusy || downloadsHistoryBusy

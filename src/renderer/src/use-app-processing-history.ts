@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 
-import { uiText } from './locales/ui-text'
+import { getUiLocale, uiText } from './locales/ui-text'
 import type {
   ProcessingHistoryEntry,
   ProcessingHistoryFilter,
@@ -65,8 +65,10 @@ export function useAppProcessingHistory(deps: UseAppProcessingHistoryDeps): {
 
   const exportVisibleProcessingHistory = useCallback(async (): Promise<void> => {
     const payload = {
-      schema: 1,
+      schema: 2,
       exportedAt: Date.now(),
+      uiLocale: getUiLocale(),
+      entryCount: processingHistory.length,
       filter: processingHistoryFilter,
       weeklySummary: processingHistoryWeeklySummary,
       entries: processingHistory

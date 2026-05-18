@@ -18,6 +18,7 @@
   "downloadsHistoryChipCancelled": "Cancelled",
   "downloadsHistoryChipErrors": "Errors",
   "downloadsHistoryChipOk": "OK",
+  "downloadsHistoryWeeklyChipFilterTitle": "Filter list: {label}",
   "downloadsHistoryClear": "Clear",
   "downloadsHistoryDetailsAria": "Completed downloads history",
   "downloadsHistoryEmpty": "No entries yet. Finished queue rows will appear here as they complete.",

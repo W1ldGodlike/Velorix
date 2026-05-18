@@ -12,6 +12,7 @@
   "processingHistoryChipCancelled": "Отмена",
   "processingHistoryChipTime": "Время",
   "processingHistoryChipWorkflow": "Сценарии",
+  "processingHistoryWeeklyChipFilterTitle": "Фильтр списка: {label}",
   "processingHistoryKindAll": "Все типы",
   "processingHistoryKindExport": "Экспорт",
   "processingHistoryKindSnapshot": "Кадры",

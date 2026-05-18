@@ -29,6 +29,7 @@ const PUSH_KEYS = new Set([
   'workflowWatchFolderRunFinished',
   'settingsBackupImported',
   'processingHistoryChanged',
+  'downloadsHistoryChanged',
   'mainWindowUiPanelsChanged',
   'downloadsWindowUiPanelsChanged',
   'downloadsOutputDirectoryChanged',

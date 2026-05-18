@@ -3,6 +3,7 @@ import type { JSX } from 'react'
 import { DownloadsSettingsRail } from './components/downloads/DownloadsSettingsRail'
 import { DownloadsWorkspaceMain } from './components/downloads/DownloadsWorkspaceMain'
 import { DownloadsStandaloneAppTopbar } from './components/DownloadsStandaloneAppTopbar'
+import { KnowledgeDialog } from './components/KnowledgeDialog'
 import Versions from './components/Versions'
 import { uiText } from './locales/ui-text'
 import { useDownloadsStandaloneApp } from './use-downloads-standalone-app'
@@ -18,7 +19,12 @@ export function DownloadsStandaloneApp(): JSX.Element {
     downloadsSettingsProps,
     downloadsSettingsRailRef,
     downloadsWorkspaceAriaBusy,
-    statusHint
+    statusHint,
+    knowledgeOpen,
+    setKnowledgeOpen,
+    knowledgeInitialSlug,
+    setKnowledgeInitialSlug,
+    setStatusHint
   } = model
 
   return (
@@ -64,6 +70,17 @@ export function DownloadsStandaloneApp(): JSX.Element {
           ariaDescribedBy="downloads-page-hint"
         />
       </footer>
+      <KnowledgeDialog
+        open={knowledgeOpen}
+        initialSlug={knowledgeInitialSlug}
+        onClose={() => {
+          setKnowledgeOpen(false)
+          setKnowledgeInitialSlug(null)
+        }}
+        onStatus={(message) => {
+          setStatusHint(message)
+        }}
+      />
     </div>
   )
 }

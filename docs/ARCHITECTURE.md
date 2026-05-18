@@ -66,7 +66,7 @@
 | [`src/main/register-downloads-options-ipc-cookies.ts`](../src/main/register-downloads-options-ipc-cookies.ts) | 2 |
 | [`src/main/ipc/register-export-batch-ipc.ts`](../src/main/ipc/register-export-batch-ipc.ts) | 1 |
 
-Остальные каналы реестра — `webContents.send` / `ipcMain.on` (прогресс, снимки очереди, тема, UI panels, `processingHistoryChanged`, `logRenderer`).
+Остальные каналы реестра — `webContents.send` / `ipcMain.on` (прогресс, снимки очереди, тема, UI panels, `processingHistoryChanged`, `downloadsHistoryChanged`, `logRenderer`).
 
 ## Shared contracts (один домен — явные файлы)
 

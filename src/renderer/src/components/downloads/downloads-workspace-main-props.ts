@@ -43,6 +43,7 @@ export type DownloadsWorkspaceMainProps = {
   refreshDownloadsHistory: () => Promise<void>
   setDownloadsHistory: Dispatch<SetStateAction<YtdlpDownloadHistoryEntry[]>>
   exportVisibleDownloadsHistory: () => Promise<void>
+  onOpenKnowledgeArticle?: (slug: string) => void
   downloadsEmbeddedLogOpen: boolean
   persistDownloadsEmbeddedLogOpen: (nextOpen: boolean) => void
   downloadsLogTargetRowId: number | null

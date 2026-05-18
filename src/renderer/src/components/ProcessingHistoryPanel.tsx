@@ -1,4 +1,7 @@
-import { useId, type JSX } from 'react'
+import { useEffect, useId, useRef, type JSX } from 'react'
+
+import { KNOWLEDGE_SLUG_PROCESSING_HISTORY } from '../../../shared/knowledge-contract'
+import { KnowledgeDeepLinkButton } from './KnowledgeDeepLinkButton'
 
 import type {
   ProcessingHistoryEntry,
@@ -62,7 +65,8 @@ export function ProcessingHistoryPanel({
   onExportVisible,
   onOpenOutput,
   onOpenInputInHandler,
-  onAddInputToBatch
+  onAddInputToBatch,
+  onOpenKnowledgeArticle
 }: {
   open: boolean
   busy: boolean
@@ -77,7 +81,20 @@ export function ProcessingHistoryPanel({
   onOpenOutput: (id: string, mode: 'file' | 'folder' | 'preview') => void
   onOpenInputInHandler: (id: string) => void
   onAddInputToBatch?: (id: string) => void
+  onOpenKnowledgeArticle?: (slug: string) => void
 }): JSX.Element {
+  const listRef = useRef<HTMLDivElement | null>(null)
+  const topEntryIdRef = useRef<string | null>(null)
+
+  useEffect(() => {
+    const topId = entries[0]?.id ?? null
+    if (!open || topId === null || topId === topEntryIdRef.current) {
+      topEntryIdRef.current = topId
+      return
+    }
+    topEntryIdRef.current = topId
+    listRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [entries, open])
   const kindOptions: Array<{ value: '' | ProcessingHistoryKind; label: string }> = [
     { value: '', label: uiText('processingHistoryKindAll') },
     { value: 'ffmpegExport', label: uiText('processingHistoryKindExport') },
@@ -109,8 +126,21 @@ export function ProcessingHistoryPanel({
       }}
     >
       <summary className="app-settings-summary" aria-describedby="processingHistorySectionHint">
-        {uiText('processingHistoryTitle')}{' '}
-        <span className="app-processing-history-count">{entries.length}</span>
+        <span className="app-processing-history-summary-label">
+          {uiText('processingHistoryTitle')}{' '}
+          <span className="app-processing-history-count">{entries.length}</span>
+        </span>
+        {onOpenKnowledgeArticle ? (
+          <KnowledgeDeepLinkButton
+            label={uiText('knowledgeDeepLinkProcessingHistoryLabel')}
+            tooltip={uiText('knowledgeDeepLinkProcessingHistoryTooltip')}
+            ariaDescribedBy="processingHistorySectionHint"
+            disabled={busy}
+            onOpen={() => {
+              onOpenKnowledgeArticle(KNOWLEDGE_SLUG_PROCESSING_HISTORY)
+            }}
+          />
+        ) : null}
       </summary>
       <p id="processingHistorySectionHint" className="app-settings-section-hint">
         {uiText('processingHistorySectionHint')}
@@ -123,26 +153,81 @@ export function ProcessingHistoryPanel({
           aria-describedby="processingHistorySectionHint"
           aria-busy={busy}
         >
-          <span>
+          <button
+            type="button"
+            className={`app-processing-history-summary-chip${filter.outcome === undefined && filter.kind === undefined ? ' app-processing-history-summary-chip-active' : ''}`}
+            disabled={busy || weeklySummary.total === 0}
+            title={uiTextVars('processingHistoryWeeklyChipFilterTitle', {
+              label: uiText('processingHistoryKindAll')
+            })}
+            aria-pressed={filter.outcome === undefined && filter.kind === undefined}
+            onClick={() => {
+              onFilterChange(mergeFilter(filter, { kind: '', outcome: '' }))
+            }}
+          >
             {uiText('processingHistory7dPrefix')} {weeklySummary.total}
-          </span>
-          <span>
+          </button>
+          <button
+            type="button"
+            className={`app-processing-history-summary-chip${filter.outcome === 'success' ? ' app-processing-history-summary-chip-active' : ''}`}
+            disabled={busy || weeklySummary.success === 0}
+            title={uiTextVars('processingHistoryWeeklyChipFilterTitle', {
+              label: uiText('processingOutcomeSuccess')
+            })}
+            aria-pressed={filter.outcome === 'success'}
+            onClick={() => {
+              onFilterChange(mergeFilter(filter, { outcome: 'success' }))
+            }}
+          >
             {uiText('processingHistoryChipOk')} {weeklySummary.success}
-          </span>
-          <span>
+          </button>
+          <button
+            type="button"
+            className={`app-processing-history-summary-chip${filter.outcome === 'error' ? ' app-processing-history-summary-chip-active' : ''}`}
+            disabled={busy || weeklySummary.error === 0}
+            title={uiTextVars('processingHistoryWeeklyChipFilterTitle', {
+              label: uiText('processingOutcomeError')
+            })}
+            aria-pressed={filter.outcome === 'error'}
+            onClick={() => {
+              onFilterChange(mergeFilter(filter, { outcome: 'error' }))
+            }}
+          >
             {uiText('processingHistoryChipErrors')} {weeklySummary.error}
-          </span>
-          <span>
+          </button>
+          <button
+            type="button"
+            className={`app-processing-history-summary-chip${filter.outcome === 'cancelled' ? ' app-processing-history-summary-chip-active' : ''}`}
+            disabled={busy || weeklySummary.cancelled === 0}
+            title={uiTextVars('processingHistoryWeeklyChipFilterTitle', {
+              label: uiText('processingOutcomeCancelled')
+            })}
+            aria-pressed={filter.outcome === 'cancelled'}
+            onClick={() => {
+              onFilterChange(mergeFilter(filter, { outcome: 'cancelled' }))
+            }}
+          >
             {uiText('processingHistoryChipCancelled')} {weeklySummary.cancelled}
-          </span>
+          </button>
           <span>
             {uiText('processingHistoryChipTime')}{' '}
             {formatProcessingDurationLabel(weeklySummary.totalDurationMs)}
           </span>
           {weeklySummary.workflowScenario > 0 ? (
-            <span>
+            <button
+              type="button"
+              className={`app-processing-history-summary-chip${filter.kind === 'workflowScenario' ? ' app-processing-history-summary-chip-active' : ''}`}
+              disabled={busy}
+              title={uiTextVars('processingHistoryWeeklyChipFilterTitle', {
+                label: uiText('processingHistoryKindWorkflowScenario')
+              })}
+              aria-pressed={filter.kind === 'workflowScenario'}
+              onClick={() => {
+                onFilterChange(mergeFilter(filter, { kind: 'workflowScenario' }))
+              }}
+            >
               {uiText('processingHistoryChipWorkflow')} {weeklySummary.workflowScenario}
-            </span>
+            </button>
           ) : null}
         </div>
       ) : null}
@@ -255,6 +340,7 @@ export function ProcessingHistoryPanel({
         </button>
       </div>
       <div
+        ref={listRef}
         className="app-processing-history-list"
         role="region"
         aria-label={uiText('processingHistoryListRegionAria')}

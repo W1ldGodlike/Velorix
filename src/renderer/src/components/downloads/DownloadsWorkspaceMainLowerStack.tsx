@@ -25,6 +25,7 @@ export function DownloadsWorkspaceMainLowerStack(props: DownloadsWorkspaceMainPr
     refreshDownloadsHistory,
     setDownloadsHistory,
     exportVisibleDownloadsHistory,
+    onOpenKnowledgeArticle,
     downloadsEmbeddedLogOpen,
     persistDownloadsEmbeddedLogOpen,
     downloadsLogTargetRowId,
@@ -49,6 +50,7 @@ export function DownloadsWorkspaceMainLowerStack(props: DownloadsWorkspaceMainPr
         totalEntries={downloadsHistoryCount}
         outcomeFilter={downloadsHistoryOutcomeFilter}
         weeklySummary={downloadsHistoryWeeklySummary}
+        {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
         onToggle={(next) => {
           persistDownloadsEmbeddedHistoryOpen(next)
         }}
@@ -64,6 +66,7 @@ export function DownloadsWorkspaceMainLowerStack(props: DownloadsWorkspaceMainPr
               return
             }
             setDownloadsHistory([])
+            void refreshDownloadsHistory()
           })
         }}
         onExportVisible={() => {

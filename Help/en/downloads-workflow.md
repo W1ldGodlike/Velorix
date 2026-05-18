@@ -16,7 +16,7 @@ Runs proceed **top to bottom**: while one row is active, others wait. This avoid
 
 ## History and log
 
-Below the table you will find **history** (re-queue with one click) and a **live log** of downloader text. History includes a compact multi-day summary.
+Below the table you will find **history** (re-queue with one click) and a **live log** of downloader text. History includes a compact multi-day summary, outcome filter, **JSON export of visible rows**, and automatic refresh when a download finishes.
 
 ## Settings on the right
 
