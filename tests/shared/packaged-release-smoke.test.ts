@@ -26,5 +26,8 @@ describe('packaged-release-smoke §19', () => {
     expect(lines.some((l) => l.includes('smoke:packaged-ffmpeg'))).toBe(true)
     expect(lines.some((l) => l.includes('smoke:packaged-ffprobe'))).toBe(true)
     expect(lines.filter((l) => l.startsWith('command:')).length).toBe(5)
+    expect(lines.some((l) => l.includes('§21 packaged e2e registry'))).toBe(true)
+    expect(lines.some((l) => l.includes('check:packaged-e2e-scenarios-registry'))).toBe(true)
+    expect(lines.some((l) => l.includes('ci-headless'))).toBe(true)
   })
 })

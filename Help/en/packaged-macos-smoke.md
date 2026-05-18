@@ -18,7 +18,7 @@ The bundle must contain `Contents/MacOS/FluxAlloy` and `Contents/Resources/bin/`
 
 ## Copy format and locales
 
-**Copy** matches Support ZIP (`owner:` / `step [id]:`). English UI — `locales/en/macos-packaged-manual-smoke.json`. Full owner bundle — [owner-manual-smoke.md](owner-manual-smoke.md). Dev: `check:packaged-manual-smoke-parity`.
+**Copy** matches Support ZIP (`owner:` / `step [id]:`). English UI — `locales/en/macos-packaged-manual-smoke.json`. Full owner bundle — [owner-manual-smoke.md](owner-manual-smoke.md). Dev: `check:packaged-manual-smoke-parity`, `check:packaged-e2e-scenarios-registry` (§21; summary in Support ZIP `releaseSmoke:`) — in `check:quiet`.
 
 ## Short order
 

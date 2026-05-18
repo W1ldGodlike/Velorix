@@ -143,7 +143,7 @@
 | macOS       | **Нет** авто-prepare                                     | **Нет** job                                                                                    | `pack:mac:dir` + `verify:mac-unpacked`; релиз `build:mac` (dmg) — бинарники в `bin/` вручную |
 | Linux       | **Нет** авто-prepare                                     | **Да** — `ubuntu-latest`: `check:quiet` + `build` + `pack:linux:dir` + `verify:linux-unpacked` | `build:linux` + `verify:linux-release` (AppImage/deb) локально; бинарники в `bin/` вручную   |
 
-Диагностика: [`platform-packaging-scripts.ts`](../src/shared/platform-packaging-scripts.ts) (`formatPlatformPackagingDiagnosticLines`, реестр `PLATFORM_PACKAGING_NPM_SCRIPTS` → `check:platform-packaging-scripts`). Packaged owner-smoke locales: `check:packaged-manual-smoke-parity`, `check:owner-visual-smoke-locale` (в `check:quiet`). Локально: [`bin/README.md`](../bin/README.md), релиз: [`docs/RELEASE.md`](../docs/RELEASE.md).
+Диагностика: [`platform-packaging-scripts.ts`](../src/shared/platform-packaging-scripts.ts) (`formatPlatformPackagingDiagnosticLines`, реестр `PLATFORM_PACKAGING_NPM_SCRIPTS` → `check:platform-packaging-scripts`). Packaged owner-smoke locales: `check:packaged-manual-smoke-parity`, `check:owner-visual-smoke-locale` (в `check:quiet`). §21 e2e: [`packaged-e2e-smoke-registry.ts`](../src/shared/packaged-e2e-smoke-registry.ts) + `check:packaged-e2e-scenarios-registry` (12 manual steps ↔ ci-headless / planned GUI). Локально: [`bin/README.md`](../bin/README.md), релиз: [`docs/RELEASE.md`](../docs/RELEASE.md).
 
 ## Внешние процессы
 

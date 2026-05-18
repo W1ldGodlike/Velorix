@@ -31,5 +31,8 @@ describe('owner-manual-smoke-bundle', () => {
     expect(joined).toContain('=== Packaged Win')
     expect(joined).toContain('=== OS scheduler ===')
     expect(joined).toContain('devicePixelRatio: 1.25')
+    expect(joined).toContain('=== §21 packaged e2e (CI vs owner) ===')
+    expect(joined).toContain('ci-headless')
+    expect(joined).toContain('check:packaged-e2e-scenarios-registry')
   })
 })

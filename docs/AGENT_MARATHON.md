@@ -10,16 +10,16 @@
 
 **Журнал:** одна **J** только если в итерации был diff в репо — skill [`fluxalloy-journal-entry`](../.cursor/skills/fluxalloy-journal-entry/SKILL.md).
 
-## Re-anchor (J-1170)
+## Re-anchor (J-1175)
 
 | Поле | Значение |
 | --- | --- |
 | Дата | 2026-05-19 |
-| Ветка | `main` |
-| Снимок тестов | **261** files / **1769** tests |
-| Спринт | owner-smoke locales+Help+guards [x] код; приёмка на железе; §19 packaging; e2e §21 |
+| Ветка | `main` (cadence commit J-1171..1175) |
+| Снимок тестов | **264** files / **1775** tests |
+| Спринт | §21 e2e registry + owner bundle/Help/UI; приёмка на железе; §19 macOS/Linux; GUI e2e позже |
 
-**Последние J:** [J-1168](../IMPLEMENTATION_JOURNAL.md) `check:help-packaged-smoke-docs`; [J-1169](../IMPLEMENTATION_JOURNAL.md) Help about-support-logs; [J-1170](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1166..1169.
+**Последние J:** [J-1173](../IMPLEMENTATION_JOURNAL.md) UI e2e guard hints; [J-1174](../IMPLEMENTATION_JOURNAL.md) owner bundle §21 appendix; [J-1175](../IMPLEMENTATION_JOURNAL.md) cadence commit J-1171..1175.
 
 ## Новый чат
 

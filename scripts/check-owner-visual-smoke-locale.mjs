@@ -20,6 +20,7 @@ const META_KEYS = [
   'appSettingsHidpiManualHint',
   'appSettingsHidpiChecklistIntro',
   'appSettingsPackagedSmokeParityGuardHint',
+  'appSettingsPackagedE2eRegistryGuardHint',
   'appSettingsOwnerSmokeLocaleGuardHint'
 ]
 

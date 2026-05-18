@@ -45,6 +45,7 @@ export function formatPlatformPackagingDiagnosticLines(): string[] {
     'config: electron-builder.yml targets win (nsis/portable/zip), mac (dmg), linux (AppImage, deb)',
     'packaged owner-smoke: npm run check:packaged-manual-smoke-parity (win/linux/macos Step_* + meta)',
     'owner visual smoke: npm run check:owner-visual-smoke-locale (theme/HiDPI settings.json ru/en)',
-    'packaging scripts: npm run check:platform-packaging-scripts (PLATFORM_PACKAGING_NPM_SCRIPTS)'
+    'packaging scripts: npm run check:platform-packaging-scripts (PLATFORM_PACKAGING_NPM_SCRIPTS)',
+    '§21 e2e registry: npm run check:packaged-e2e-scenarios-registry (manual steps ↔ ci-headless/planned-gui-e2e)'
   ]
 }

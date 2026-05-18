@@ -16,6 +16,7 @@
 
 - **`ownerManualSmoke:`** — единый пакет владельца (тема, HiDPI, HW, сценарий, спрайт §7.5, мини-плеер §4.3, packaged для вашей ОС, планировщик, Windows shell); канон **ru**, см. [owner-manual-smoke.md](owner-manual-smoke.md) и копирование в **Настройки → Ручной smoke** (при EN UI в буфере — EN-строки из locales).
 - **`winPackagedSmoke:`** / **`linuxPackagedSmoke:`** / **`macosPackagedSmoke:`** — packaged-чеклисты (Windows всегда в ZIP; Linux/macOS — при сборке на соответствующей ОС); см. [packaged-windows-smoke.md](packaged-windows-smoke.md), [packaged-linux-smoke.md](packaged-linux-smoke.md), [packaged-macos-smoke.md](packaged-macos-smoke.md).
+- **`releaseSmoke:`** — CI packaged pipeline (`smoke:packaged-release`) и реестр §21 e2e: 12 шагов owner packaged smoke ↔ `ci-headless` (`smoke:packaged-app`, `smoke:packaged-engines`) или `planned-gui-e2e` / `manual-owner` (GUI Playwright — позже); dev: `npm run check:packaged-e2e-scenarios-registry`.
 
 ## Временные файлы
 

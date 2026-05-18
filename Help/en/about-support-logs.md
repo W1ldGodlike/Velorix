@@ -16,6 +16,7 @@ The **archive** button packs several diagnostic files into one zip so you do not
 
 - **`ownerManualSmoke:`** — full owner bundle (theme, HiDPI, HW, scenario, §7.5 sprite, §4.3 mini player, packaged for your OS, scheduler, Windows shell); **ru** canon in the zip — see [owner-manual-smoke.md](owner-manual-smoke.md) and **Settings → Owner manual smoke → Copy full bundle** (English UI copies EN locale strings).
 - **`winPackagedSmoke:`** / **`linuxPackagedSmoke:`** / **`macosPackagedSmoke:`** — packaged checklists (Windows always; Linux/macOS when built on that OS); see [packaged-windows-smoke.md](../packaged-windows-smoke.md), [packaged-linux-smoke.md](../packaged-linux-smoke.md), [packaged-macos-smoke.md](../packaged-macos-smoke.md).
+- **`releaseSmoke:`** — CI packaged pipeline (`smoke:packaged-release`) and §21 e2e registry: 12 owner packaged steps ↔ `ci-headless` (`smoke:packaged-app`, `smoke:packaged-engines`) or `planned-gui-e2e` / `manual-owner` (GUI Playwright later); dev: `npm run check:packaged-e2e-scenarios-registry`.
 
 ## Temporary data
 

@@ -4,9 +4,9 @@ CI tests cover **ffmpeg argv**, not your real GPU or display scale. Before you r
 
 ## Where to find it
 
-1. **Settings → Dependencies** — **Owner manual smoke**: expand section previews (**Theme**, HiDPI, HW, scenario, video sprite §7.5, mini player §4.3, packaged, scheduler, shell), then **Copy full bundle** (same text in Support ZIP `ownerManualSmoke:`; with **English UI** — EN strings from `locales/en/settings.json` and packaged shards). **Jump to …** buttons switch the settings tab and scroll to theme, HiDPI, HW, packaged, or Explorer. Panel hints mention dev guards: `check:owner-visual-smoke-locale`, `check:packaged-manual-smoke-parity`.
+1. **Settings → Dependencies** — **Owner manual smoke**: expand section previews (**Theme**, HiDPI, HW, scenario, video sprite §7.5, mini player §4.3, packaged, scheduler, shell), then **Copy full bundle** (same text in Support ZIP `ownerManualSmoke:`; with **English UI** — EN strings from `locales/en/settings.json` and packaged shards). **Jump to …** buttons switch the settings tab and scroll to theme, HiDPI, HW, packaged, or Explorer. Panel hints mention dev guards: `check:owner-visual-smoke-locale`, `check:packaged-manual-smoke-parity`, `check:packaged-e2e-scenarios-registry` (§21: 12 packaged steps ↔ CI headless or planned GUI e2e).
 2. Below: separate panels (each deep-links here): **NVENC/VAAPI**, **packaged smoke**; **HiDPI** and **Windows Explorer** — **General** tab. From the hub: **Open task planner** / **Open scenario builder** (same as **Service** menu).
-3. **Support ZIP** — `ownerManualSmoke:` section inside `diagnostics.txt`.
+3. **Support ZIP** — `ownerManualSmoke:` in `diagnostics.txt`; `releaseSmoke:` — CI packaged pipeline and §21 e2e plan (see [about-support-logs.md](about-support-logs.md)).
 
 ## What to verify
 
@@ -23,5 +23,7 @@ CI tests cover **ffmpeg argv**, not your real GPU or display scale. Before you r
 | Windows shell    | Explorer menu, Open with, Default apps (Windows only)                                |
 
 Details: [hardware-encoding.md](hardware-encoding.md), [appearance-language-theme.md](appearance-language-theme.md), [workflows-planner-scenarios.md](workflows-planner-scenarios.md), [windows-shell-integration.md](windows-shell-integration.md).
+
+**Copy full bundle** and Support ZIP `ownerManualSmoke:` end with a **§21 packaged e2e** summary (CI headless vs planned GUI / manual-owner); the same plan appears under `releaseSmoke:`.
 
 After the run, tick items in `IMPLEMENTATION_CHECKLIST.md` (owner smoke section) and attach a Support ZIP if you contact support.

@@ -11,6 +11,7 @@ import {
 import { formatPackagedFfmpegSmokeDiagnosticLines } from './packaged-ffmpeg-smoke'
 import { formatPackagedFfprobeSmokeDiagnosticLines } from './packaged-ffprobe-smoke'
 import { formatPackagedYtdlpSmokeDiagnosticLines } from './packaged-ytdlp-smoke'
+import { formatPackagedE2eSmokeDiagnosticLines } from './packaged-e2e-smoke-scenarios'
 import { formatWinUnpackedLayoutVerifyDiagnosticLines } from './win-unpacked-layout-verify'
 
 /** §18 Support ZIP — `releaseSmoke:` без запуска pack:dir. */
@@ -34,6 +35,8 @@ export function buildSupportZipPackagedReleaseLines(
     ...listPackagedAppExeCandidatePaths(repoRoot).map(
       (p) => `app-candidate: ${p} (${existsSync(p) ? 'present' : 'missing'})`
     ),
-    ...layoutTail
+    ...layoutTail,
+    '',
+    ...formatPackagedE2eSmokeDiagnosticLines()
   ]
 }

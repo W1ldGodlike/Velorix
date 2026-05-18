@@ -18,7 +18,7 @@ The folder must contain `fluxalloy` or `FluxAlloy` and `resources/bin/{yt-dlp,ff
 
 ## Copy format and locales
 
-**Copy** in the packaged panel matches Support ZIP (`owner:` / `step [id]:`). English UI — `locales/en/linux-packaged-manual-smoke.json`. Full owner bundle — [owner-manual-smoke.md](owner-manual-smoke.md). Dev: `check:packaged-manual-smoke-parity`.
+**Copy** in the packaged panel matches Support ZIP (`owner:` / `step [id]:`). English UI — `locales/en/linux-packaged-manual-smoke.json`. Full owner bundle — [owner-manual-smoke.md](owner-manual-smoke.md). Dev: `check:packaged-manual-smoke-parity`, `check:packaged-e2e-scenarios-registry` (§21; summary in Support ZIP `releaseSmoke:`) — in `check:quiet`.
 
 ## Short order
 

@@ -6,7 +6,7 @@
 
 ## Готовность полного итога
 
-- **Оценка: ~57%** (J-1170; owner-smoke locales+Help+guards). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15 (owner/packaged smoke docs), HW §16, утилиты §17, диагностика §18, CI/release + три owner/packaging locale guards в `check:quiet`. Крупно впереди: приёмка owner-smoke на железе, macOS/Linux packaging, e2e §21.
+- **Оценка: ~59%** (J-1175; §21 e2e в owner bundle + Help/guards). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16, утилиты §17, диагностика §18, CI/release + owner/packaging/e2e guards в `check:quiet`. Крупно впереди: приёмка owner-smoke на железе, macOS/Linux packaging, GUI Playwright §21.
 
 ## Легенда
 
@@ -44,10 +44,10 @@
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый.
 
 - [ ] §16/§19: owner-smoke на железе (visual + HiDPI + packaged win/linux/macos + спрайт + mini-player); приёмка владельца.
-- [~] §2.2/§7.5: длинные UI-строки в `locales/**` без дублей TS; export hints [x]; owner theme/HiDPI/packaged meta RU+EN + guards в quiet; Help/RELEASE cross-links.
+- [~] §2.2/§7.5: длинные UI-строки в `locales/**` без дублей TS; export hints [x]; owner theme/HiDPI/packaged meta RU+EN + guards в quiet; Help/RELEASE cross-links (§21 e2e в owner/packaged/about Help).
 - [~] §4.3: Mini Player [x] код (J-1153–1157); owner-smoke §4.3 в hub; приёмка visual/HiDPI на железе — владелец.
 - [~] §19: macOS/Linux — `pack:*:dir` + `verify:*` + parity guard (Step_* + meta locales); owner bundle packaged RU+EN; `bin/` вручную; CI linux-packaging [x].
-- [ ] §21: e2e packaged smoke (открыть → preview → export; URL → yt-dlp → ffmpeg) после стабилизации спринта.
+- [~] §21: e2e packaged smoke — реестр `packaged-e2e-smoke-scenarios` + `check:packaged-e2e-scenarios-registry` (12 шагов ↔ ci-headless/planned); GUI Playwright — позже.
 
 ---
 
@@ -603,7 +603,7 @@
 - [~] Вынести модели shared: часть IPC/доменов уже в `src/shared/*-contract.ts`; остальное по мере выноса сервисов.
 - [x] Unit tests: **`242` файла / `1725` тестов** (Vitest); домены — снимок «Тестовый раннер» и `tests/main|shared|scripts/`. Дальше — e2e packaged smoke.
 - [x] Выбрать Vitest/Jest: Vitest подключён (`npm run test`/`test:watch`, `tsconfig.tests.json`).
-- [ ] Добавить e2e smoke позже.
+- [~] E2e packaged smoke: реестр §21 + guard в `check:quiet`; GUI Playwright (open → preview → export; URL → yt-dlp) — позже.
 - [~] Комментарии на русском для публичных API и сложной логики: базовые комментарии добавлены; дальше писать чуть развёрнутее, чтобы следующему проходу агента было понятно «зачем» и «где границы», не только «что делает строка».
 - [~] Не использовать shell string для runtime внешних процессов: ffmpeg/ffprobe/yt-dlp идут через `spawn`/`execFile` с argv-массивами; остаётся периодически аудировать новые сервисы/скрипты и терминальный §8.
 

@@ -29,4 +29,11 @@ describe('owner-manual-smoke visual locale §2.2/§16', () => {
       en.filter((l) => l.startsWith('  - ')).length
     )
   })
+
+  it('settings shards expose packaged e2e registry guard hint', () => {
+    expect(enSettings.appSettingsPackagedE2eRegistryGuardHint).toContain(
+      'check:packaged-e2e-scenarios-registry'
+    )
+    expect(ruSettings.appSettingsPackagedE2eRegistryGuardHint).toContain('releaseSmoke:')
+  })
 })

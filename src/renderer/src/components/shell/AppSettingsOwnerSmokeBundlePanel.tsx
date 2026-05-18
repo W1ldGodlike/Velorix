@@ -309,6 +309,8 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
       <p className="app-modal-hint">{uiText('appSettingsOwnerSmokeIntro')}</p>
       <p className="app-modal-hint">{uiText('appSettingsOwnerSmokePreviewHint')}</p>
       <p className="app-modal-hint">{uiText('appSettingsOwnerSmokeLocaleGuardHint')}</p>
+      <p className="app-modal-hint">{uiText('appSettingsPackagedSmokeParityGuardHint')}</p>
+      <p className="app-modal-hint">{uiText('appSettingsPackagedE2eRegistryGuardHint')}</p>
       {copyHint ? (
         <p className="app-modal-hint" role="status" aria-live="polite">
           {copyHint}

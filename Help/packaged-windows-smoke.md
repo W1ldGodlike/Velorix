@@ -18,7 +18,7 @@ npm run check:release
 
 ## Копирование и локали
 
-Кнопка **Скопировать** в packaged-панели выдаёт тот же формат, что Support ZIP: `owner:`, `automated:`, `doc:`, `ui:`, затем `step [id]:`. При **английском UI** — строки из `locales/en/win-packaged-manual-smoke.json`. Блок packaged в полном пакете владельца — [owner-manual-smoke.md](owner-manual-smoke.md). Dev: `npm run check:packaged-manual-smoke-parity` (входит в `check:quiet`).
+Кнопка **Скопировать** в packaged-панели выдаёт тот же формат, что Support ZIP: `owner:`, `automated:`, `doc:`, `ui:`, затем `step [id]:`. При **английском UI** — строки из `locales/en/win-packaged-manual-smoke.json`. Блок packaged в полном пакете владельца — [owner-manual-smoke.md](owner-manual-smoke.md). Dev: `npm run check:packaged-manual-smoke-parity`, `npm run check:packaged-e2e-scenarios-registry` (§21: шаги ↔ CI headless / planned GUI e2e; сводка в `releaseSmoke:` Support ZIP) — в `check:quiet`.
 
 ## Краткий порядок
 

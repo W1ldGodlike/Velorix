@@ -20,6 +20,8 @@ const steps = [
   ['owner-visual-smoke-locale', ['run', 'check:owner-visual-smoke-locale']],
   ['platform-packaging-scripts', ['run', 'check:platform-packaging-scripts']],
   ['help-packaged-smoke-docs', ['run', 'check:help-packaged-smoke-docs']],
+  ['help-owner-smoke-docs', ['run', 'check:help-owner-smoke-docs']],
+  ['packaged-e2e-scenarios-registry', ['run', 'check:packaged-e2e-scenarios-registry']],
   ['terminal-summaries-ru', ['run', 'check:terminal-summaries-ru']],
   ['terminal-data-summaries', ['run', 'check:terminal-data-summaries']],
   ['terminal-scenario-summaries', ['run', 'check:terminal-scenario-summaries']],
