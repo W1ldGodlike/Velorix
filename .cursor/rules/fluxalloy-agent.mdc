@@ -1,0 +1,40 @@
+---
+description: Исполняемое — marathon, пакеты, audit, UI, среда агента
+alwaysApply: true
+---
+
+# Agent (исполняемое)
+
+Глоссарий: [`fluxalloy-rules-explicit.mdc`](fluxalloy-rules-explicit.mdc).  
+Skills: [`.cursor/skills/fluxalloy-marathon/SKILL.md`](../../.cursor/skills/fluxalloy-marathon/SKILL.md), [`fluxalloy-journal-entry`](../../.cursor/skills/fluxalloy-journal-entry/SKILL.md), [`fluxalloy-checklist-audit`](../../.cursor/skills/fluxalloy-checklist-audit/SKILL.md), [`fluxalloy-release`](../../.cursor/skills/fluxalloy-release/SKILL.md).
+
+**Если** активен [`docs/GOVERNANCE_CONSOLIDATION_PLAN.md`](../../docs/GOVERNANCE_CONSOLIDATION_PLAN.md) (`governance_plan: open`) **то** только пункты **GOV:** в sprint ([`fluxalloy-governance-plan-gate.mdc`](fluxalloy-governance-plan-gate.mdc)).
+
+## Итерация и журнал
+
+- **Если** в итерации есть diff в репо **то** ровно **1** строка `J-NNN` (`npm run journal:stamp`); skill **fluxalloy-journal-entry**.
+- **Если** только обсуждение без diff **то** журнал **не** дописывать.
+- **Запрещено:** **микро-J**, **микро-срез** (глоссарий); пакет полей/IPC — таблица в skill marathon / глоссарий.
+
+## Marathon
+
+**Если** «продолжай» / `+` / SDK loop **то** skill **fluxalloy-marathon** + [`docs/AGENT_MARATHON.md`](../../docs/AGENT_MARATHON.md). **Крупный срез** по sprint; `npm run check:quiet` до cadence; `npm run agent:session -- bump` — последний шаг.
+
+## Cadence Git
+
+- **Если** в итерации записана новая `J-NNN` и `NNN % 5 === 0` и **check:quiet зелёный** **то** `git commit` (**обязательно** — Cursor-чат, marathon, SDK; отдельная просьба «commit» **не** нужна).
+- **Если** `NNN % 10 === 0` **то** также `git push` (без force main/master) + re-anchor → в отчёте **`re-anchor OK`**.
+- **Запрещено:** привязывать commit/push к marathon или к `continue_count`.
+- `continue_count` — метрика loop (`agent:session -- bump`), **не** триггер Git.
+
+## UI
+
+**Запрещено:** `data:text/html`, `build*Html` pop-out, `*-window-ui-strings-*` вне `ui-text` / `locales/**`. **Если** `BrowserWindow` **то** тот же renderer + hash (`#inspector`, `#downloads`). **Обязательно:** `check:ui-surfaces-guard`, `check:ui-copy-quality` в `check:quiet`.
+
+## Audit
+
+**Обязательно:** `npm run check:quiet` перед cadence-commit. Scope: [`scripts/audit-scope.config.mjs`](../../scripts/audit-scope.config.mjs). **Запрещено:** файл в scope **>500** строк без split (`npm run audit:structural`). Реестры вместо копипасты `parseX` — `npm run check:field-registries`.
+
+## Среда (Windows)
+
+PowerShell; абсолютные пути в tools; **запрещено** bash-only heredoc для обязательных шагов. **Если** `git commit` **то** here-string `$msg = @'…'@`. **Если** меняли `src/`/`tests/` **то** `npm run typecheck`. Operational: [`docs/AGENT_OPERATIONAL_NOTES.md`](../../docs/AGENT_OPERATIONAL_NOTES.md).

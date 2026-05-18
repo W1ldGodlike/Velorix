@@ -13,7 +13,7 @@
 
 Нумерация записей в разделе **«Записи»** ниже: префикс **`[J-NNN]`** сразу после маркера списка (`- [J-042] 2026-…`). Номера идут подряд по мере добавления строк в журнал; **перед дописыванием смотреть последнюю строку раздела и взять следующий номер** (например, после **J-255** идёт **J-256**). При вставке нескольких записей за раз нумеровать по возрастанию без пропусков и без повторов. После **J-999** допускается **J-1000** и четырёхзначные номера.
 
-**Итерация = одно «продолжай» (один ответ агента / один шаг SDK).** В журнал — **ровно одна** строка `J-NNN` со **всем** сделанным в этом ответе — по **всему проекту** (`src`, `tests`, `scripts`), не «одно поле / тег / IPC / smoke = один J». Правило: `.cursor/rules/fluxalloy-iteration-batch.mdc`. Реестры: `ffprobe-*-registry`, `ffmpeg-export-parse-registry`, `settings-stored-parse`; фикстуры `tests/fixtures/`; `npm run check:field-registries`, `npm run audit:copy-paste`; число файлов — `docs/audit-manifest.json`.
+**Журнал:** **если** в итерации есть изменения в репо (код, `tests/`, `scripts/`, governance, чеклист по задаче) **то** **ровно одна** строка `J-NNN` со всем сделанным в этом ответе. **Если** только обсуждение/план без diff **то** строку **не** добавлять. Не «одно поле / тег / IPC = один J». Исполняемое: skill `.cursor/skills/fluxalloy-journal-entry/SKILL.md`, [`fluxalloy-agent.mdc`](.cursor/rules/fluxalloy-agent.mdc).
 
 **Время:** только **честное локальное** в момент дописывания этой строки: `npm run journal:stamp` (предпочтительно) или `Get-Date -Format "yyyy-MM-dd HH:mm:ss"`. Запрещено: выдумывать время, копировать соседнюю метку, шаг «+2 мин» / «:00 сек» на пачку. **Привязка к git для новых записей не используется.** `npm run journal:consolidate` — **только** по **явной просьбе владельца** (сжатие старых диапазонов; метка сводной = время сжатия, в тексте — «бывш. J-…»).
 
@@ -28,6 +28,10 @@
 <!-- journal-toc: auto -->
 ## Оглавление (последние записи)
 
+- [J-1134](#j-1134)
+- [J-1133](#j-1133)
+- [J-1132](#j-1132)
+- [J-1131](#j-1131)
 - [J-1130](#j-1130)
 - [J-1129](#j-1129)
 - [J-1128](#j-1128)
@@ -64,12 +68,12 @@
 - [J-1097](#j-1097)
 - [J-1096](#j-1096)
 - [J-1095](#j-1095)
-- [J-1094](#j-1094)
-- [J-1093](#j-1093)
-- [J-1092](#j-1092)
-- [J-1091](#j-1091)
 
 <!-- /journal-toc -->
+
+
+
+
 
 
 ## Записи
@@ -1203,3 +1207,8 @@
 - [J-1128] 2026-05-18 20:10:17 [Assistant]: уборка Zustand temp — удалены `ZUSTAND_MIGRATION_CHECKLIST_DONE.md`, `check:zustand-migration-gate`; переименованы `use-app-workspace-editor-*`; shim `locales/resolve-ui-text.ts`; **41** one-shot скриптов → `scripts/archive/phase4-one-shot/`; `npm run audit:orphan-scripts`; guard запрет legacy paths. `audit:inventory` 1068. `npm run check:quiet`.
 - [J-1129] 2026-05-18 20:12:09 [Assistant]: исправление J-1128 — `scripts/archive/` удалён целиком (**41** split/migrate/splice, не архив); `ARCHITECTURE.md`. `audit:inventory` 1068 (архив не входил в scope). `npm run check:quiet`.
 - [J-1130] 2026-05-18 21:58:20 [Assistant]: catch-up с последнего push (J-1115..1129 не были на remote): §2.2 Zustand финал (`stores/*`, `AppRoot`/`AppStoreBootstrap`, `useAppShellLayoutController`, `DownloadsWorkspaceConnected`/`TerminalWorkspacePanelConnected`, preload `fluxalloy-api-block-*.d.ts`, явные типы вместо `eslint-disable`/`ReturnType` на хуках); §6 structural — `AppSettingsDialog` без дубля pane (~741→321, канон `app-settings-dialog-panes.tsx`), `ProcessingHistoryPanel`+`WeeklySummary`/`EntryCard`/`Filters`/`Actions`, ffprobe smoke split; **удалены** 51 one-shot `scripts/split-*|migrate-*|…` (не хранить в репо); инфра — `check:line-endings`, `check:maint-scripts-layout`, `clean-coverage-dir` после `test:coverage`, `.gitattributes` LF, `npm run format` по репо; guards в `check:quiet`. `audit:inventory` 1099. `npm run check:quiet` (241 files / 1724 tests).
+- [J-1131] 2026-05-18 22:39:46 [Assistant]: GOV фаза A — `docs/GOVERNANCE_CONSOLIDATION_PLAN.md` (фазы A–F, полный чеклист/README/ARCHITECTURE, J-cadence 5/10, journal J≥500); `fluxalloy-governance-plan-gate.mdc`; `check:governance-plan-gate` + тест + `check:quiet`; sprint только GOV; `AGENTS.md`/`SOURCES_OF_TRUTH`; `agent:session -- reset`. `npm run check:governance-plan-gate` + `check:checklist`.
+- [J-1132] 2026-05-18 22:46:13 [Assistant]: GOV фаза B — `fluxalloy-agent.mdc` + ужатый `fluxalloy-core.mdc`; удалены 5 legacy rules; skills `.cursor/skills/fluxalloy-{marathon,journal-entry,checklist-audit,release}`; тонкий `agent-contract.txt`/`continue.txt`; `AGENT_MARATHON` narrative; глоссарий J только при diff + Cadence Git J%%5/10; `check-ui-surfaces-guard`→`fluxalloy-agent`; `audit:inventory` 1101. `npm run check:quiet`.
+- [J-1133] 2026-05-18 22:52:40 [Assistant]: GOV фаза C — полный ревиз `IMPLEMENTATION_CHECKLIST.md` (сверка J-500+): готовность ~52%, снимок **242/1725** tests, §0 этапы, §4.A React `#downloads`, §2.2 Zustand/locales, убраны устаревшие batch/HTML-pop-out/hooks; §21 tests; sprint GOV→фаза D. `npm run check:checklist` + `check:quiet`.
+- [J-1134] 2026-05-18 22:55:30 [Assistant]: GOV фаза D — `README.md` (быстрый старт, check:quiet/test/coverage, Zustand/hash pop-out, агент→SOURCES); `ARCHITECTURE.md` — починена таблица точек входа, один preload, pop-out React, убраны legacy HTML/`downloads-window-ui-strings`/`use-app-shell-props*`, IPC→`audit:ipc-architecture`. `npm run check:quiet`.
+- [J-1135] 2026-05-18 22:59:31 [Assistant]: уточнение governance — Cadence Git J%%5/10 для **любого** чата (убрана привязка к marathon/явной просьбе commit); `SOURCES_OF_TRUTH` — правило «не копировать ТЗ/чеклист/журнал в .mdc» в строку иерархии; skills RU-тело + EN frontmatter; sync agent/checklist/GOV plan. `npm run check:quiet`.
