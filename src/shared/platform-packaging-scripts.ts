@@ -46,7 +46,7 @@ export function formatPlatformPackagingDiagnosticLines(): string[] {
     'packaged owner-smoke: npm run check:packaged-manual-smoke-parity (win/linux/macos Step_* + meta)',
     'owner visual smoke: npm run check:owner-visual-smoke-locale (theme/HiDPI settings.json ru/en)',
     'packaging scripts: npm run check:platform-packaging-scripts (PLATFORM_PACKAGING_NPM_SCRIPTS)',
-    '§21 e2e registry: npm run check:packaged-e2e-scenarios-registry (manual steps ↔ ci-headless/planned-gui-e2e)',
-    'Support ZIP releaseSmoke: win/linux/macos unpacked layout (present/missing) + §21 e2e summary'
+    '§21 e2e registry: npm run check:packaged-e2e-scenarios-registry (ciSmokeScript ↔ package.json; per-step e2e <id>:)',
+    'Support ZIP releaseSmoke: win/linux/macos layout (present/missing) + §21 e2e per-step lines'
   ]
 }

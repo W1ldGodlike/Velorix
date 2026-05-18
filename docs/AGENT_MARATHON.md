@@ -10,16 +10,16 @@
 
 **Журнал:** одна **J** только если в итерации был diff в репо — skill [`fluxalloy-journal-entry`](../.cursor/skills/fluxalloy-journal-entry/SKILL.md).
 
-## Re-anchor (J-1180)
+## Re-anchor (J-1185)
 
 | Поле | Значение |
 | --- | --- |
 | Дата | 2026-05-19 |
-| Ветка | `main` (cadence commit+push J-1176..1180) |
-| Снимок тестов | **264** files / **1777** tests |
-| Спринт | §19 `releaseSmoke:` layout win/linux/macos + Help/guards; §21 e2e registry; приёмка owner-smoke на железе; GUI Playwright позже |
+| Ветка | `main` (cadence commit J-1181..1185) |
+| Снимок тестов | **264** files / **1781** tests |
+| Спринт | §21 per-step e2e + registry↔CI; Help/guards/locales; §19 releaseSmoke; приёмка на железе; GUI Playwright позже |
 
-**Последние J:** [J-1178](../IMPLEMENTATION_JOURNAL.md) Help/guards `releaseSmoke:` layout; [J-1179](../IMPLEMENTATION_JOURNAL.md) packaged intro RU+EN + Vitest triple layout; [J-1180](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1176..1180.
+**Последние J:** [J-1183](../IMPLEMENTATION_JOURNAL.md) packaged Help×6 + owner intro; [J-1184](../IMPLEMENTATION_JOURNAL.md) `PACKAGED_E2E_CI_SMOKE_SCRIPTS` ↔ `ci.yml`; [J-1185](../IMPLEMENTATION_JOURNAL.md) cadence commit J-1181..1185.
 
 ## Новый чат
 

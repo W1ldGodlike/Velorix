@@ -24,6 +24,6 @@
 
 Подробности: [hardware-encoding.md](hardware-encoding.md), [appearance-language-theme.md](appearance-language-theme.md), [workflows-planner-scenarios.md](workflows-planner-scenarios.md), [windows-shell-integration.md](windows-shell-integration.md).
 
-В конце **«Скопировать весь пакет»** и в Support ZIP `ownerManualSmoke:` добавляется сводка **§21 packaged e2e** (какие шаги уже в CI headless, какие — planned GUI / manual-owner); дублируется в `releaseSmoke:`.
+В конце **«Скопировать весь пакет»** и в Support ZIP `ownerManualSmoke:` добавляется сводка **§21 packaged e2e** (группы ci-headless / planned-gui-e2e / manual-owner) и **12 строк** `e2e <stepId>: <automation> script=…` (например `e2e launch: ci-headless script=smoke:packaged-app`); тот же блок в `releaseSmoke:`.
 
 После прогона отметьте пункты в `IMPLEMENTATION_CHECKLIST.md` (раздел «Ручной smoke владельца») и приложите Support ZIP при обращении в поддержку.

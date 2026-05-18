@@ -15,11 +15,16 @@ const OWNER_SNIPPETS = [
   'packaged-e2e-scenarios-registry',
   'releaseSmoke:',
   'ownerManualSmoke:',
-  '§21 e2e'
+  '§21 e2e',
+  'e2e launch:'
 ]
 
 const ABOUT_SNIPPETS = [
-  ...OWNER_SNIPPETS,
+  'packaged-e2e-scenarios-registry',
+  'releaseSmoke:',
+  'ownerManualSmoke:',
+  '§21 e2e',
+  'e2e <id>:',
   'win-unpacked',
   'linux-unpacked',
   'FluxAlloy.app',

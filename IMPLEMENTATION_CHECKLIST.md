@@ -6,7 +6,7 @@
 
 ## Готовность полного итога
 
-- **Оценка: ~61%** (J-1180; cadence §19 `releaseSmoke:` triple layout + Help/guards/locales). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16, утилиты §17, диагностика §18, CI/release + owner/packaging/e2e guards в `check:quiet`. Крупно впереди: приёмка owner-smoke на железе, `bin/` macOS/Linux, GUI Playwright §21.
+- **Оценка: ~62%** (J-1184; §21 per-step e2e + registry↔CI scripts + Help/guards). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16, утилиты §17, диагностика §18, CI/release + owner/packaging/e2e guards в `check:quiet`. Крупно впереди: приёмка owner-smoke на железе, `bin/` macOS/Linux, GUI Playwright §21.
 
 ## Легенда
 
@@ -33,7 +33,7 @@
 - [x] Локализация: `ui-text` + `locales/**` (hot-reload ✅); единый словарь `AppUiLocale`; pop-out загрузок = React `#downloads` (J-978..984).
 - [~] Основная вкладка `Загрузки` в React уже закрывает очередь, старт/stop/retry/pause, настройки yt-dlp, каталог/cookies/network, live log, историю; **компактная панель «История»** — в основном **«Повторить»** (URL в очередь; J-626), полные действия файла/папки/редактора — в таблице очереди и pop-out; open учитывает финальный файл после merge и Windows UTF-8 stdout; pop-out — вторичный режим для редких settings.
 - [~] ffprobe-инспектор: в **главном редакторе** под таймлайном — только **короткая строка** видео/аудио (`VideoTimeline`); полная сводка, таблица дорожек, главы, JSON и экспорт — в **отдельном окне** инспектора; Dolby/HDR side_data summary, контекстные действия — там же.
-- [x] Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`264 test files / 1777 tests`** (J-1180); `npm run check:quiet` (lint, typecheck, тесты, audit-скрипты, guards, journal, checklist, secrets). Домены: yt-dlp §6, ffmpeg export/batch/HW §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, governance guards.
+- [x] Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`264 test files / 1781 tests`** (J-1185); `npm run check:quiet` (lint, typecheck, тесты, audit-скрипты, guards, journal, checklist, secrets). Домены: yt-dlp §6, ffmpeg export/batch/HW §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, governance guards.
 
 ## Журнал решений и проверок
 
@@ -44,10 +44,10 @@
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый.
 
 - [ ] §16/§19: owner-smoke на железе (visual + HiDPI + packaged win/linux/macos + спрайт + mini-player); приёмка владельца.
-- [~] §2.2/§7.5: длинные UI-строки в `locales/**` без дублей TS; export hints [x]; owner theme/HiDPI/packaged meta RU+EN + guards в quiet; Help/RELEASE cross-links (§21 e2e в owner/packaged/about Help).
+- [~] §2.2/§7.5: длинные UI-строки в `locales/**` без дублей TS; export hints [x]; owner theme/HiDPI/packaged meta RU+EN + guards; Help/RELEASE/bin §21 per-step `e2e <id>:` (owner/about + UI hint).
 - [~] §4.3: Mini Player [x] код (J-1153–1157); owner-smoke §4.3 в hub; приёмка visual/HiDPI на железе — владелец.
 - [~] §19: macOS/Linux — `pack:*:dir` + `verify:*` + parity guard; `releaseSmoke:` layout win/linux/macos; owner bundle RU+EN; `bin/` вручную; CI linux-packaging [x].
-- [~] §21: e2e packaged smoke — реестр `packaged-e2e-smoke-scenarios` + `check:packaged-e2e-scenarios-registry` (12 шагов ↔ ci-headless/planned); GUI Playwright — позже.
+- [~] §21: e2e packaged smoke — реестр + guard (`ciSmokeScript` ↔ package.json, per-step в `releaseSmoke:`); GUI Playwright — позже.
 
 ---
 

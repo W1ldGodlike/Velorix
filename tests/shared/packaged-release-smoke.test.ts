@@ -28,6 +28,9 @@ describe('packaged-release-smoke §19', () => {
     expect(lines.filter((l) => l.startsWith('command:')).length).toBe(5)
     expect(lines.some((l) => l.includes('§21 packaged e2e registry'))).toBe(true)
     expect(lines.some((l) => l.includes('check:packaged-e2e-scenarios-registry'))).toBe(true)
+    expect(lines.some((l) => l.includes('e2e launch: ci-headless script=smoke:packaged-app'))).toBe(
+      true
+    )
     expect(lines.some((l) => l.includes('ci-headless'))).toBe(true)
     expect(lines.some((l) => l.includes('verify:mac-unpacked'))).toBe(true)
     expect(lines.some((l) => l.includes('FluxAlloy.app'))).toBe(true)

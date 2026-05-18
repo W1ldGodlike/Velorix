@@ -34,5 +34,7 @@ describe('owner-manual-smoke-bundle', () => {
     expect(joined).toContain('=== §21 packaged e2e (CI vs owner) ===')
     expect(joined).toContain('ci-headless')
     expect(joined).toContain('check:packaged-e2e-scenarios-registry')
+    expect(joined).toContain('e2e launch: ci-headless script=smoke:packaged-app')
+    expect(joined).toContain('e2e mini-player: manual-owner')
   })
 })

@@ -6,7 +6,7 @@
 
 1. Откройте короткий клип H.264 (10–30 с) в редакторе.
 2. Дождитесь probe в rail «Формат» — в списке кодеков появятся доступные HW-варианты.
-3. Для проверки на своей видеокарте: **Настройки → Зависимости → Ручной smoke NVENC / VAAPI** — пошаговый чеклист и кнопка копирования (тот же текст попадает в Support ZIP). Полный пакет (тема, HiDPI, HW, спрайт §7.5, мини-плеер, packaged) — [owner-manual-smoke.md](owner-manual-smoke.md); после `pack:dir` — [packaged-windows-smoke.md](packaged-windows-smoke.md) и соседние статьи для Linux/macOS.
+3. Для проверки на своей видеокарте: **Настройки → Зависимости → Ручной smoke NVENC / VAAPI** — пошаговый чеклист и кнопка копирования (тот же текст попадает в Support ZIP). Полный пакет (тема, HiDPI, HW, спрайт §7.5, мини-плеер, packaged) — [owner-manual-smoke.md](owner-manual-smoke.md) (в конце §21 e2e: per-step `e2e <id>:` в `ownerManualSmoke:` / `releaseSmoke:`); после `pack:dir` — [packaged-windows-smoke.md](packaged-windows-smoke.md) и соседние статьи для Linux/macOS.
 
 ## Режимы
 

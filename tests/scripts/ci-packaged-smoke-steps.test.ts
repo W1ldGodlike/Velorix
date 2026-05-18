@@ -1,6 +1,8 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
+import { expandPackagedE2eCiSmokeScriptsForWorkflow } from '../../src/shared/packaged-e2e-smoke-scenarios'
+
 describe('ci packaged smoke steps §19', () => {
   const workflow = readFileSync('.github/workflows/ci.yml', 'utf8')
 
@@ -34,5 +36,14 @@ describe('ci packaged smoke steps §19', () => {
     expect(linuxJob).toContain('npm run pack:linux:dir')
     expect(linuxJob).toContain('npm run verify:linux-unpacked')
     expect(linuxJob).not.toContain('engines:prepare:win')
+  })
+
+  it('§21 registry ciSmokeScript npm scripts appear in CI workflow', () => {
+    const scripts = expandPackagedE2eCiSmokeScriptsForWorkflow()
+    expect(scripts).toContain('smoke:packaged-app')
+    expect(scripts).toContain('smoke:packaged-ffprobe')
+    for (const script of scripts) {
+      expect(workflow).toContain(`npm run ${script}`)
+    }
   })
 })
