@@ -164,6 +164,16 @@ async function drainQueue(): Promise<void> {
   }
 }
 
+/** Дождаться опустошения очереди (headless tick перед `app.quit`). */
+export async function whenWorkflowScenarioRunnerIdle(): Promise<void> {
+  for (let i = 0; i < 600; i += 1) {
+    if (!draining && queue.length === 0) {
+      return
+    }
+    await new Promise((resolve) => setTimeout(resolve, 250))
+  }
+}
+
 /** §11 — поставить прогон сценария в очередь (последовательно, один ffmpeg). */
 export function enqueueWorkflowScenarioRun(
   payload: WorkflowWatchFolderDetectedPayload,

@@ -48,7 +48,7 @@
 - [x] §15: Help `packaged-windows-smoke` (RU+EN) + deep-link из панели Win smoke (J-1045); прочие статьи — J-1041.
 - [x] §3: packaged smoke Win — чеклист, Support ZIP, `RELEASE.md` §4, Help/deep-link (J-1044/1045).
 - [x] §8: терминал — чип «Сценарии» в каталоге + Help про RU summary/скрипты (J-1046).
-- [~] §10/§11: watch-folder + исполнение ffmpeg-сценария v1 (J-1049/1050); Task Scheduler backend и ytdlp-шаги — позже.
+- [~] §10/§11: watch-folder + ffmpeg + редактор + OS schedulers (Win/macOS/Linux) + URL yt-dlp→ffmpeg + шаблоны (J-1049..1055); прогон schedulers на железе — владелец.
 - [x] §3: packaged smoke Linux/macOS — чеклисты, панели, Support ZIP, Help, RELEASE §4.1/§4.2 (J-1048); owner-прогон на железе — владелец.
 
 ---
@@ -396,7 +396,7 @@
 ## §10. Планировщик задач
 
 - [~] Модель задач + реестр `userData/workflows/scheduled-tasks.json`; UI планировщик, in-app watch-folder runner, авто-ffmpeg при detect (J-1047/1049/1050); Task Scheduler backend — позже.
-- [ ] Windows Task Scheduler backend.
+- [~] Windows Task Scheduler backend v1 (`schtasks`, `--workflow-watch-folder-tick`, J-1052); macOS/Linux — позже.
 - [x] Watch folder in-app (poll, detect IPC, опция `executeScenarioOnDetect`, ffmpeg v1).
 - [ ] JSON сценарий обработки.
 - [ ] Интервал/триггеры.
@@ -406,7 +406,8 @@
 
 ## §11. Конструктор сценариев
 
-- [~] Редактор JSON + блок-схема + run-plan ffmpeg v1 при watch-folder (J-1047/1049/1050); drag-and-link редактор — позже.
+- [~] JSON + блок-схема + ffmpeg v1 (watch-folder и кнопка в редакторе, J-1047..1051); drag-and-link — позже.
+- [x] Запуск сценария из главного окна по открытому файлу (§11, J-1051).
 - [ ] Шаблоны.
 - [ ] Load/save/save as.
 - [ ] Валидация схемы.

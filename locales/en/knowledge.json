@@ -43,5 +43,7 @@
   "knowledgeDeepLinkPackagedLinuxLabel": "Help: Linux packaged smoke",
   "knowledgeDeepLinkPackagedLinuxTooltip": "Open the article about manual testing of dist/linux-unpacked after pack:linux:dir.",
   "knowledgeDeepLinkPackagedMacosLabel": "Help: macOS packaged smoke",
-  "knowledgeDeepLinkPackagedMacosTooltip": "Open the article about manual testing of FluxAlloy.app after pack:mac:dir."
+  "knowledgeDeepLinkPackagedMacosTooltip": "Open the article about manual testing of FluxAlloy.app after pack:mac:dir.",
+  "knowledgeDeepLinkWorkflows": "Help: planner and scenarios",
+  "knowledgeDeepLinkWorkflowsTooltip": "Watch-folder, Task Scheduler, builder, and editor run."
 }

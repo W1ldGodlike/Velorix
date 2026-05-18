@@ -13,6 +13,7 @@ import type { AppUiLocale } from '../shared/app-ui-locale'
 import { YTDLP_QUEUE_STATUS_DONE } from '../shared/ytdlp-queue-status'
 import { downloadsQueueRunnerState } from './downloads-queue-runner-state'
 import type { YtdlpRowProgressBridge } from './downloads-queue-runner-ytdlp-row-progress'
+import { tryRunWorkflowScenarioAfterYtdlpDownload } from './workflow-scenario-ytdlp-complete'
 
 export async function applyYtdlpRowDownloadSuccessActions(
   paths: AppPaths,
@@ -45,15 +46,20 @@ export async function applyYtdlpRowDownloadSuccessActions(
     }
   }
 
-  if (!cliOpen.openInHandlerOnComplete) {
-    return
-  }
-
   const cand = progress.lastOutputPath ?? getDownloadsQueueRowById(rowId)?.outputPath ?? null
   const safe =
     cand !== null && cand.length > 0
       ? resolveAllowedYtdlpDownloadOutputFile(cand, paths.userData)
       : null
+
+  if (safe && tryRunWorkflowScenarioAfterYtdlpDownload(rowId, safe)) {
+    return
+  }
+
+  if (!cliOpen.openInHandlerOnComplete) {
+    return
+  }
+
   if (!downloadsQueueRunnerState.openDownloadedFileInMainHandlerHook) {
     emitDownloadsLog({
       kind: 'line',

@@ -157,6 +157,10 @@ export const mainWindowIpc = {
   scheduledTasksDelete: 'fluxalloy:scheduled-tasks-delete',
   scheduledTasksSetEnabled: 'fluxalloy:scheduled-tasks-set-enabled',
   workflowPickWatchFolder: 'fluxalloy:workflow-pick-watch-folder',
+  /** Renderer → main: поставить прогон сценария по уже открытому медиафайлу. */
+  workflowRunScenarioOnFile: 'fluxalloy:workflow-run-scenario-on-file',
+  workflowRunScenarioOnUrl: 'fluxalloy:workflow-run-scenario-on-url',
+  workflowCapabilities: 'fluxalloy:workflow-capabilities',
   /** Main → renderer: новый файл в папке задачи watch-folder. */
   workflowWatchFolderDetected: 'fluxalloy:workflow-watch-folder-detected',
   workflowWatchFolderRunFinished: 'fluxalloy:workflow-watch-folder-run-finished',

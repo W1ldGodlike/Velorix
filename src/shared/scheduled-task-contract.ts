@@ -4,7 +4,12 @@ export const SCHEDULED_TASK_FORMAT_VERSION = 1
 export const SCHEDULED_TASK_TRIGGERS = ['watch-folder'] as const
 export type ScheduledTaskTrigger = (typeof SCHEDULED_TASK_TRIGGERS)[number]
 
-export const SCHEDULED_TASK_BACKENDS = ['in-app', 'windows-task-scheduler'] as const
+export const SCHEDULED_TASK_BACKENDS = [
+  'in-app',
+  'windows-task-scheduler',
+  'macos-launchd',
+  'linux-systemd-user-timer'
+] as const
 export type ScheduledTaskBackend = (typeof SCHEDULED_TASK_BACKENDS)[number]
 
 export type ScheduledTaskDocument = {

@@ -1,7 +1,10 @@
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 
-import type { ScheduledTaskDocument } from '../shared/scheduled-task-contract'
+import type {
+  ScheduledTaskBackend,
+  ScheduledTaskDocument
+} from '../shared/scheduled-task-contract'
 import { detectNewWatchFolderFiles } from '../shared/watch-folder-scan'
 import { logInfo } from './logger-service'
 import { scanWatchFolderDirectory } from './watch-folder-scan-main'
@@ -64,19 +67,38 @@ function runTaskTick(task: ScheduledTaskDocument): void {
   }
 }
 
-function runnerTick(): void {
-  const nowMs = Date.now()
+function listWatchFolderTasksForBackend(backend: ScheduledTaskBackend): ScheduledTaskDocument[] {
+  const out: ScheduledTaskDocument[] = []
   for (const item of listScheduledTasks()) {
-    if (!item.enabled || item.backend !== 'in-app' || item.trigger !== 'watch-folder') {
+    if (!item.enabled || item.backend !== backend || item.trigger !== 'watch-folder') {
       continue
     }
     const full = getScheduledTask(item.id)
-    if (!full || !shouldRunTask(full, nowMs)) {
+    if (full) {
+      out.push(full)
+    }
+  }
+  return out
+}
+
+function runnerTickForBackend(backend: ScheduledTaskBackend, respectPollInterval: boolean): void {
+  const nowMs = Date.now()
+  for (const full of listWatchFolderTasksForBackend(backend)) {
+    if (respectPollInterval && !shouldRunTask(full, nowMs)) {
       continue
     }
-    taskTicks.set(item.id, { lastRunMs: nowMs })
+    taskTicks.set(full.id, { lastRunMs: nowMs })
     runTaskTick(full)
   }
+}
+
+function runnerTick(): void {
+  runnerTickForBackend('in-app', true)
+}
+
+/** §10 — один проход для Task Scheduler (приложение стартует с `--workflow-watch-folder-tick`). */
+export function runWorkflowWatchFolderHeadlessTick(): void {
+  runnerTickForBackend('windows-task-scheduler', false)
 }
 
 /** §10 — in-app мониторинг папок (poll по `pollIntervalSec`). */

@@ -369,9 +369,13 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
       onClose: () => {
         workflowPlanner.setOpen(false)
       },
-      onStatus: workflowScenarioBuilder.onStatus
+      onStatus: workflowScenarioBuilder.onStatus,
+      onOpenKnowledgeArticle: (slug: string) => {
+        setKnowledgeInitialSlug(slug)
+        setKnowledgeOpen(true)
+      }
     }),
-    [workflowPlanner, workflowScenarioBuilder.onStatus]
+    [workflowPlanner, workflowScenarioBuilder.onStatus, setKnowledgeInitialSlug, setKnowledgeOpen]
   )
 
   const workflowScenarioBuilderProps = useMemo(

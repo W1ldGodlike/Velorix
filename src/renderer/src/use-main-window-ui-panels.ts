@@ -11,6 +11,7 @@ export const MAIN_WINDOW_UI_PANEL_DEFAULTS: Required<MainWindowUiPanelState> = {
   ffmpegFormat: true,
   ffmpegAudio: false,
   ffmpegPresets: false,
+  workflowScenario: false,
   ffmpegOutput: true,
   exportCommandPreview: true,
   processingHistory: false,

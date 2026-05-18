@@ -4,12 +4,20 @@ import { mainWindowIpc as mw } from '../../shared/ipc-channels'
 import type { WorkflowScenarioDocument } from '../../shared/workflow-scenario-contract'
 import { parseWorkflowScenarioDocument } from '../../shared/workflow-scenario-parse'
 import { parseScheduledTaskDocument } from '../../shared/scheduled-task-parse'
+import { runWorkflowScenarioOnFile } from '../workflow-run-scenario-on-file'
+import { runWorkflowScenarioOnUrl } from '../workflow-run-scenario-on-url'
 import {
   clearWatchFolderTaskState
 } from '../workflow-watch-folder-state'
 import {
+  isNativeMainLinux,
+  isNativeMainMacos,
+  isNativeMainWindows
+} from '../../shared/native-main-platform'
+import {
   deleteScheduledTask,
   deleteWorkflowScenario,
+  getScheduledTask,
   getWorkflowScenario,
   listScheduledTasks,
   listWorkflowScenarios,
@@ -17,6 +25,10 @@ import {
   saveWorkflowScenario,
   setScheduledTaskEnabled
 } from '../workflow-registry-service'
+import {
+  deleteScheduledTaskOsSchedulers,
+  syncScheduledTaskOsScheduler
+} from '../scheduled-task-os-sync'
 
 let ipcRegistered = false
 
@@ -69,11 +81,20 @@ export function registerWorkflowIpcHandlers(): void {
     return removed ? { ok: true as const } : { ok: false as const, error: 'not-found' }
   })
 
+  ipcMain.handle(mw.workflowCapabilities, () => {
+    return {
+      ok: true as const,
+      windowsTaskScheduler: isNativeMainWindows(),
+      macosLaunchd: isNativeMainMacos(),
+      linuxSystemdUserTimer: isNativeMainLinux()
+    }
+  })
+
   ipcMain.handle(mw.scheduledTasksList, () => {
     return { ok: true as const, items: listScheduledTasks() }
   })
 
-  ipcMain.handle(mw.scheduledTasksSave, (_event, raw: unknown) => {
+  ipcMain.handle(mw.scheduledTasksSave, async (_event, raw: unknown) => {
     const doc = parseScheduledTaskDocument(raw)
     if (!doc) {
       return { ok: false as const, error: 'invalid-task' }
@@ -85,10 +106,15 @@ export function registerWorkflowIpcHandlers(): void {
       return { ok: false as const, error: 'scenario-not-found' }
     }
     saveScheduledTask(doc)
-    return { ok: true as const, task: doc }
+    const sync = await syncScheduledTaskOsScheduler(doc)
+    return {
+      ok: true as const,
+      task: doc,
+      ...(sync.ok ? {} : { osSchedulerWarning: sync.error })
+    }
   })
 
-  ipcMain.handle(mw.scheduledTasksDelete, (_event, rawId: unknown) => {
+  ipcMain.handle(mw.scheduledTasksDelete, async (_event, rawId: unknown) => {
     const id = typeof rawId === 'string' ? rawId.trim() : ''
     if (!id) {
       return { ok: false as const, error: 'bad-id' }
@@ -96,18 +122,43 @@ export function registerWorkflowIpcHandlers(): void {
     const removed = deleteScheduledTask(id)
     if (removed) {
       clearWatchFolderTaskState(id)
+      await deleteScheduledTaskOsSchedulers(id)
     }
     return removed ? { ok: true as const } : { ok: false as const, error: 'not-found' }
   })
 
-  ipcMain.handle(mw.scheduledTasksSetEnabled, (_event, rawId: unknown, rawEnabled: unknown) => {
+  ipcMain.handle(mw.scheduledTasksSetEnabled, async (_event, rawId: unknown, rawEnabled: unknown) => {
     const id = typeof rawId === 'string' ? rawId.trim() : ''
     if (!id || typeof rawEnabled !== 'boolean') {
       return { ok: false as const, error: 'bad-args' }
     }
     const updated = setScheduledTaskEnabled(id, rawEnabled)
-    return updated ? { ok: true as const } : { ok: false as const, error: 'not-found' }
+    if (!updated) {
+      return { ok: false as const, error: 'not-found' }
+    }
+    const task = getScheduledTask(id)
+    if (task) {
+      const sync = await syncScheduledTaskOsScheduler(task)
+      return sync.ok
+        ? { ok: true as const }
+        : { ok: true as const, osSchedulerWarning: sync.error }
+    }
+    return { ok: true as const }
   })
+
+  ipcMain.handle(
+    mw.workflowRunScenarioOnFile,
+    (_event, rawScenarioId: unknown, rawFilePath: unknown, rawTaskTitle: unknown) => {
+      return runWorkflowScenarioOnFile(rawScenarioId, rawFilePath, rawTaskTitle)
+    }
+  )
+
+  ipcMain.handle(
+    mw.workflowRunScenarioOnUrl,
+    (_event, rawScenarioId: unknown, rawTaskTitle: unknown) => {
+      return runWorkflowScenarioOnUrl(rawScenarioId, rawTaskTitle)
+    }
+  )
 
   ipcMain.handle(mw.workflowPickWatchFolder, async () => {
     const parent = resolveDialogParent()

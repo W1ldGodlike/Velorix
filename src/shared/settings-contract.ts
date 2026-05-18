@@ -60,6 +60,8 @@ export interface MainWindowUiPanelState {
   ffmpegFormat?: boolean
   ffmpegAudio?: boolean
   ffmpegPresets?: boolean
+  /** §11 — блок «Сценарий» в правой панели FFmpeg. */
+  workflowScenario?: boolean
   ffmpegOutput?: boolean
   /** §4.1 / v0 — блок превью argv ffmpeg в секции «Вывод». */
   exportCommandPreview?: boolean

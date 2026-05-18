@@ -1,0 +1,39 @@
+# Планировщик и сценарии
+
+## Планировщик (Сервис)
+
+Мониторинг папки **watch-folder**: при появлении нового медиафайла приложение фиксирует событие и при включённой опции **«Запускать сценарий»** ставит ffmpeg-обработку в очередь.
+
+| Backend | Когда использовать |
+|--------|---------------------|
+| **In-app** | Пока FluxAlloy запущен: опрос папки каждые N секунд из процесса приложения. |
+| **Windows Task Scheduler** | Только Windows: задача в Планировщике Windows запускает `FluxAlloy.exe --workflow-watch-folder-tick` по интервалу (минуты), даже если главное окно закрыто. |
+| **macOS LaunchAgent** | Только macOS: plist в `~/Library/LaunchAgents/` с `StartInterval` (секунды) и тем же CLI-тиком. |
+| **Linux systemd user timer** | Только Linux: юниты `~/.config/systemd/user/fluxalloy-watch-<id>.service` + `.timer`, `OnUnitActiveSec` по интервалу задачи. |
+
+Интервал опроса: **15–86400** секунд. Task Scheduler округляет до минут; LaunchAgent и systemd timer — в секундах (`StartInterval` / `OnUnitActiveSec`).
+
+## Конструктор сценариев
+
+Цепочка **Скачать → Обработать → Сохранить** (JSON + блок-схема).
+
+| Шаблон | Назначение |
+|--------|------------|
+| **Локальный файл → ffmpeg** | Watch-folder или файл редактора; блок «Скачать» без URL. |
+| **URL → скачать → ffmpeg** | В блоке «Скачать» поле `sourceUrl` (http/https); yt-dlp, затем ffmpeg. |
+
+При watch-folder и **«Запустить сценарий»** для локального файла выполняется блок **«Обработать»** (ffmpeg). Шаг «Скачать» без URL не вызывает yt-dlp.
+
+## Запуск из редактора
+
+Правая панель **Настройки FFmpeg → Сценарий**:
+
+- **Запустить сценарий** — ffmpeg по открытому файлу (тот же runner, что watch-folder).
+- **Запустить URL-сценарий** — если в сценарии задан `sourceUrl`: очередь yt-dlp, после успеха — ffmpeg (без авто-open в редакторе).
+
+## Диагностика
+
+- События и ошибки — в логе приложения (`workflow`).
+- Итог прогона — строка состояния и запись в **Истории обработки** (тип `workflowScenario`).
+- macOS LaunchAgent: логи в `~/Library/Logs/FluxAlloy/watch-<taskId>.log`.
+- Linux timer: `journalctl --user -u fluxalloy-watch-<taskId>.service`.

@@ -8,6 +8,8 @@ export type WorkflowScenarioNode = {
   id: string
   kind: WorkflowScenarioNodeKind
   label: string
+  /** Для `download`: URL для yt-dlp (цепочка «скачать → обработать»). */
+  sourceUrl?: string
   /** Зарезервировано: id пресета yt-dlp из настроек. */
   ytdlpPresetRef?: string
   /** Зарезервировано: id пользовательского пресета ffmpeg. */

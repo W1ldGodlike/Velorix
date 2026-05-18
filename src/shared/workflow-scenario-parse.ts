@@ -7,6 +7,7 @@ import {
   type WorkflowScenarioNode,
   type WorkflowScenarioRegistryV1
 } from './workflow-scenario-contract'
+import { normalizeWorkflowScenarioSourceUrl } from './workflow-scenario-url'
 
 const NODE_ID_RE = /^[a-z][a-z0-9_-]{0,63}$/
 
@@ -68,6 +69,13 @@ function parseWorkflowScenarioNode(raw: unknown): WorkflowScenarioNode | null {
   }
   if (outputDirectory !== undefined) {
     node.outputDirectory = outputDirectory
+  }
+  const sourceUrlRaw = parseOptionalString(r['sourceUrl'], 2048)
+  if (sourceUrlRaw !== undefined) {
+    const normalized = normalizeWorkflowScenarioSourceUrl(sourceUrlRaw)
+    if (normalized) {
+      node.sourceUrl = normalized
+    }
   }
   return node
 }

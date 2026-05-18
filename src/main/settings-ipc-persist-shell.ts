@@ -84,6 +84,7 @@ export function createSettingsShellPersist(
       'ffmpegFormat',
       'ffmpegAudio',
       'ffmpegPresets',
+      'workflowScenario',
       'ffmpegOutput',
       'exportCommandPreview',
       'processingHistory',

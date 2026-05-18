@@ -58,6 +58,8 @@ import {
 import { configureMainYtdlpSettingsPersist } from './main-ytdlp-settings-persist'
 import { configureWorkflowScenarioRunnerHost } from './workflow-scenario-runner-host'
 import { startWorkflowWatchFolderRunner } from './workflow-watch-folder-runner'
+import { listScheduledTaskDocuments } from './workflow-registry-service'
+import { resyncAllScheduledTaskOsSchedulers } from './scheduled-task-os-sync'
 import {
   configureMainExportOutputPaths,
   rememberExportOutputPath,
@@ -257,4 +259,5 @@ export function bootstrapMainApplicationHosts(): void {
     rememberFfmpegExportDirectory
   })
   startWorkflowWatchFolderRunner()
+  void resyncAllScheduledTaskOsSchedulers(listScheduledTaskDocuments())
 }

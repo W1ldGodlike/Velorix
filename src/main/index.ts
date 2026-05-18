@@ -3,6 +3,7 @@ import { app } from 'electron'
 import { configurePortableAppDataPaths } from './app-data-root'
 import { attachProcessErrorHandlers } from './logger-service'
 import { runMainApplicationBootstrap } from './main-application-bootstrap'
+import { runWorkflowHeadlessTickIfRequested } from './workflow-headless-bootstrap'
 import { registerFluxMediaPrivileges } from './media-protocol'
 import { registerFluxHelpPrivileges } from './help-assets-protocol'
 import { isNativeMainQuitOnLastWindowClosed } from './platform'
@@ -15,8 +16,12 @@ attachProcessErrorHandlers()
 registerFluxMediaPrivileges()
 registerFluxHelpPrivileges()
 
-app.whenReady().then(() => {
-  runMainApplicationBootstrap()
+void runWorkflowHeadlessTickIfRequested().then((handled) => {
+  if (!handled) {
+    app.whenReady().then(() => {
+      runMainApplicationBootstrap()
+    })
+  }
 })
 
 app.on('window-all-closed', () => {

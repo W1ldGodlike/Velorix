@@ -46,6 +46,7 @@ export const KNOWLEDGE_TOC_SECTIONS: readonly KnowledgeTocSectionSpec[] = [
     titleKey: 'knowledgeTocSectionEditor',
     slugs: [
       'editor-workflow',
+      'workflows-planner-scenarios',
       'ffmpeg-rail-presets',
       'processing-social-presets',
       'processing-advanced-fields',

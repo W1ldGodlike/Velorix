@@ -323,15 +323,43 @@ export interface FluxAlloyApi {
     saveScheduledTask: (
       doc: import('../shared/scheduled-task-contract').ScheduledTaskDocument
     ) => Promise<
-      | { ok: true; task: import('../shared/scheduled-task-contract').ScheduledTaskDocument }
+      | {
+          ok: true
+          task: import('../shared/scheduled-task-contract').ScheduledTaskDocument
+          osSchedulerWarning?: string
+        }
       | { ok: false; error: string }
     >
     deleteScheduledTask: (id: string) => Promise<{ ok: true } | { ok: false; error: string }>
     setScheduledTaskEnabled: (
       id: string,
       enabled: boolean
-    ) => Promise<{ ok: true } | { ok: false; error: string }>
+    ) => Promise<{ ok: true; osSchedulerWarning?: string } | { ok: false; error: string }>
+    capabilities: () => Promise<
+      | {
+          ok: true
+          windowsTaskScheduler: boolean
+          macosLaunchd: boolean
+          linuxSystemdUserTimer: boolean
+        }
+      | { ok: false; error: string }
+    >
     pickWatchFolder: () => Promise<{ ok: true; path: string } | { ok: false; error: string }>
+    runScenarioOnFile: (
+      scenarioId: string,
+      filePath: string,
+      taskTitle: string
+    ) => Promise<
+      | { ok: true }
+      | { ok: false; error: import('../shared/workflow-watch-folder-contract').WorkflowRunScenarioOnFileError }
+    >
+    runScenarioOnUrl: (
+      scenarioId: string,
+      taskTitle: string
+    ) => Promise<
+      | { ok: true; rowId: number; started: boolean }
+      | { ok: false; error: import('../shared/workflow-watch-folder-contract').WorkflowRunScenarioOnUrlError }
+    >
     onWatchFolderDetected: (
       listener: (
         payload: import('../shared/workflow-watch-folder-contract').WorkflowWatchFolderDetectedPayload

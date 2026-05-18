@@ -57,3 +57,6 @@ export const KNOWLEDGE_SLUG_PACKAGED_LINUX_SMOKE = 'packaged-linux-smoke'
 
 /** §3 — ручной smoke packaged macOS после pack:mac:dir. */
 export const KNOWLEDGE_SLUG_PACKAGED_MACOS_SMOKE = 'packaged-macos-smoke'
+
+/** §10/§11 — планировщик, watch-folder, сценарии, запуск из редактора. */
+export const KNOWLEDGE_SLUG_WORKFLOWS_PLANNER_SCENARIOS = 'workflows-planner-scenarios'

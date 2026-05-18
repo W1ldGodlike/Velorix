@@ -93,6 +93,10 @@ export function deleteWorkflowScenario(id: string): boolean {
   return true
 }
 
+export function listScheduledTaskDocuments(): ScheduledTaskDocument[] {
+  return [...loadScheduledRegistry().tasks]
+}
+
 export function listScheduledTasks(): ScheduledTaskListItem[] {
   return loadScheduledRegistry().tasks.map((t) => ({
     id: t.id,

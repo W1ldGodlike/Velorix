@@ -156,6 +156,15 @@ export const fluxalloy = {
     > => ipcRenderer.invoke(mw.workflowScenariosSave, doc),
     deleteScenario: (id: string): Promise<{ ok: true } | { ok: false; error: string }> =>
       ipcRenderer.invoke(mw.workflowScenariosDelete, id),
+    capabilities: (): Promise<
+      | {
+          ok: true
+          windowsTaskScheduler: boolean
+          macosLaunchd: boolean
+          linuxSystemdUserTimer: boolean
+        }
+      | { ok: false; error: string }
+    > => ipcRenderer.invoke(mw.workflowCapabilities),
     listScheduledTasks: (): Promise<
       | { ok: true; items: import('../shared/scheduled-task-contract').ScheduledTaskListItem[] }
       | { ok: false; error: string }
@@ -163,7 +172,11 @@ export const fluxalloy = {
     saveScheduledTask: (
       doc: import('../shared/scheduled-task-contract').ScheduledTaskDocument
     ): Promise<
-      | { ok: true; task: import('../shared/scheduled-task-contract').ScheduledTaskDocument }
+      | {
+          ok: true
+          task: import('../shared/scheduled-task-contract').ScheduledTaskDocument
+          osSchedulerWarning?: string
+        }
       | { ok: false; error: string }
     > => ipcRenderer.invoke(mw.scheduledTasksSave, doc),
     deleteScheduledTask: (id: string): Promise<{ ok: true } | { ok: false; error: string }> =>
@@ -171,10 +184,25 @@ export const fluxalloy = {
     setScheduledTaskEnabled: (
       id: string,
       enabled: boolean
-    ): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ): Promise<{ ok: true; osSchedulerWarning?: string } | { ok: false; error: string }> =>
       ipcRenderer.invoke(mw.scheduledTasksSetEnabled, id, enabled),
     pickWatchFolder: (): Promise<{ ok: true; path: string } | { ok: false; error: string }> =>
       ipcRenderer.invoke(mw.workflowPickWatchFolder),
+    runScenarioOnFile: (
+      scenarioId: string,
+      filePath: string,
+      taskTitle: string
+    ): Promise<
+      | { ok: true }
+      | { ok: false; error: import('../shared/workflow-watch-folder-contract').WorkflowRunScenarioOnFileError }
+    > => ipcRenderer.invoke(mw.workflowRunScenarioOnFile, scenarioId, filePath, taskTitle),
+    runScenarioOnUrl: (
+      scenarioId: string,
+      taskTitle: string
+    ): Promise<
+      | { ok: true; rowId: number; started: boolean }
+      | { ok: false; error: import('../shared/workflow-watch-folder-contract').WorkflowRunScenarioOnUrlError }
+    > => ipcRenderer.invoke(mw.workflowRunScenarioOnUrl, scenarioId, taskTitle),
     onWatchFolderDetected: (
       listener: (payload: import('../shared/workflow-watch-folder-contract').WorkflowWatchFolderDetectedPayload) => void
     ): (() => void) => {

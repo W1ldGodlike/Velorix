@@ -42,6 +42,9 @@ export function WorkflowScenarioFlowDiagram(props: {
                 {uiText(workflowScenarioNodeKindLabelKey(node.kind))}
               </span>
               <span className="workflow-scenario-flow-label">{node.label}</span>
+              {node.kind === 'download' && node.sourceUrl ? (
+                <span className="workflow-scenario-flow-meta">{node.sourceUrl}</span>
+              ) : null}
               {node.kind === 'save' && node.outputDirectory ? (
                 <span className="workflow-scenario-flow-meta">{node.outputDirectory}</span>
               ) : null}

@@ -7,6 +7,7 @@ import { EditorFfmpegSettingsRailAudioSection } from './EditorFfmpegSettingsRail
 import { EditorFfmpegSettingsRailFormatSection } from './EditorFfmpegSettingsRailFormatSection'
 import { EditorFfmpegSettingsRailOutputSection } from './EditorFfmpegSettingsRailOutputSection'
 import { EditorFfmpegSettingsRailPresetsSection } from './EditorFfmpegSettingsRailPresetsSection'
+import { EditorWorkflowScenarioSection } from './EditorWorkflowScenarioSection'
 import { EditorFfmpegSettingsRailVideoSection } from './EditorFfmpegSettingsRailVideoSection'
 export type { EditorFfmpegSettingsRailProps } from './editor-ffmpeg-settings-rail-props'
 import type { EditorFfmpegSettingsRailProps } from './editor-ffmpeg-settings-rail-props'
@@ -103,6 +104,7 @@ export function EditorFfmpegSettingsRail(props: EditorFfmpegSettingsRailProps) {
         <EditorFfmpegSettingsRailFormatSection {...props} />
         <EditorFfmpegSettingsRailAudioSection {...props} />
         <EditorFfmpegSettingsRailPresetsSection {...props} />
+        <EditorWorkflowScenarioSection {...props} />
         <EditorFfmpegSettingsRailOutputSection {...props} />
       </div>
       <ProcessingHistoryPanel

@@ -11,6 +11,7 @@ export const MAIN_UI_PANEL_KEYS = [
   'ffmpegFormat',
   'ffmpegAudio',
   'ffmpegPresets',
+  'workflowScenario',
   'ffmpegOutput',
   'exportCommandPreview',
   'processingHistory',

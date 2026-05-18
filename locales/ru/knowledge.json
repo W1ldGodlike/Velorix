@@ -43,5 +43,7 @@
   "knowledgeDeepLinkPackagedLinuxLabel": "Справка: smoke Linux (pack:linux:dir)",
   "knowledgeDeepLinkPackagedLinuxTooltip": "Открыть статью о ручной проверке dist/linux-unpacked после pack:linux:dir.",
   "knowledgeDeepLinkPackagedMacosLabel": "Справка: smoke macOS (pack:mac:dir)",
-  "knowledgeDeepLinkPackagedMacosTooltip": "Открыть статью о ручной проверке FluxAlloy.app после pack:mac:dir."
+  "knowledgeDeepLinkPackagedMacosTooltip": "Открыть статью о ручной проверке FluxAlloy.app после pack:mac:dir.",
+  "knowledgeDeepLinkWorkflows": "Справка: планировщик и сценарии",
+  "knowledgeDeepLinkWorkflowsTooltip": "Watch-folder, Task Scheduler, конструктор и запуск из редактора."
 }

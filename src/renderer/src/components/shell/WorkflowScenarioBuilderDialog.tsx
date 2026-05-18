@@ -6,7 +6,12 @@ import {
   type WorkflowScenarioListItem
 } from '../../../../shared/workflow-scenario-contract'
 import { parseWorkflowScenarioDocument } from '../../../../shared/workflow-scenario-parse'
+import {
+  WORKFLOW_SCENARIO_TEMPLATES,
+  type WorkflowScenarioTemplateId
+} from '../../../../shared/workflow-scenario-templates'
 import { uiText } from '../../locales/ui-text'
+import type { UiTextKey } from '../../locales/ui-text-strings'
 import { WorkflowScenarioFlowDiagram } from './WorkflowScenarioFlowDiagram'
 
 export type WorkflowScenarioBuilderDialogProps = {
@@ -23,6 +28,9 @@ export function WorkflowScenarioBuilderDialog(
   const [busy, setBusy] = useState(false)
   const [items, setItems] = useState<WorkflowScenarioListItem[]>([])
   const [selectedId, setSelectedId] = useState('')
+  const [templateId, setTemplateId] = useState<WorkflowScenarioTemplateId>(
+    WORKFLOW_SCENARIO_TEMPLATES[0]?.id ?? 'local-file-process'
+  )
   const [jsonText, setJsonText] = useState(() => JSON.stringify(WORKFLOW_SCENARIO_TEMPLATE_V1, null, 2))
   const parsedScenario = useMemo((): WorkflowScenarioDocument | null => {
     try {
@@ -179,6 +187,39 @@ export function WorkflowScenarioBuilderDialog(
           {uiText('workflowScenarioBuilderDialogHint')}
         </p>
         <WorkflowScenarioFlowDiagram scenario={parsedScenario} />
+        <div className="app-settings-field-row">
+          <label className="app-settings-label" htmlFor="workflow-scenario-template">
+            {uiText('workflowScenarioTemplateLabel')}
+          </label>
+          <select
+            id="workflow-scenario-template"
+            className="app-settings-select"
+            disabled={busy}
+            value={templateId}
+            title={uiText('workflowScenarioTemplateLabel')}
+            onChange={(e) => {
+              const next = e.target.value as WorkflowScenarioTemplateId
+              setTemplateId(next)
+              const spec = WORKFLOW_SCENARIO_TEMPLATES.find((t) => t.id === next)
+              if (spec) {
+                setSelectedId('')
+                setJsonText(JSON.stringify(spec.build(), null, 2))
+              }
+            }}
+          >
+            {WORKFLOW_SCENARIO_TEMPLATES.map((t) => (
+              <option key={t.id} value={t.id}>
+                {uiText(t.titleKey as UiTextKey)}
+              </option>
+            ))}
+          </select>
+          <p className="app-settings-section-hint">
+            {uiText(
+              (WORKFLOW_SCENARIO_TEMPLATES.find((t) => t.id === templateId)?.hintKey ??
+                'workflowTemplateLocalHint') as UiTextKey
+            )}
+          </p>
+        </div>
         <div className="app-settings-field-row">
           <label className="app-settings-label" htmlFor="workflow-scenario-pick">
             {uiText('workflowScenarioPickLabel')}

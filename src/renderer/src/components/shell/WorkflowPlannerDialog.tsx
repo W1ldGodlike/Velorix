@@ -5,23 +5,43 @@ import {
   type ScheduledTaskListItem
 } from '../../../../shared/scheduled-task-contract'
 import type { WorkflowScenarioListItem } from '../../../../shared/workflow-scenario-contract'
+import { KNOWLEDGE_SLUG_WORKFLOWS_PLANNER_SCENARIOS } from '../../../../shared/knowledge-contract'
+import type { ScheduledTaskBackend } from '../../../../shared/scheduled-task-contract'
 import { parseScheduledTaskDocument } from '../../../../shared/scheduled-task-parse'
+import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
 import { uiText } from '../../locales/ui-text'
 
 function newTaskId(): string {
   return `task-watch-${Math.random().toString(36).slice(2, 8)}`
 }
 
+function scheduledTaskBackendLabel(backend: ScheduledTaskBackend): string {
+  if (backend === 'windows-task-scheduler') {
+    return uiText('workflowPlannerBackendWindows')
+  }
+  if (backend === 'macos-launchd') {
+    return uiText('workflowPlannerBackendMacos')
+  }
+  if (backend === 'linux-systemd-user-timer') {
+    return uiText('workflowPlannerBackendLinux')
+  }
+  return uiText('workflowPlannerBackendInApp')
+}
+
 export type WorkflowPlannerDialogProps = {
   open: boolean
   onClose: () => void
   onStatus?: (message: string) => void
+  onOpenKnowledgeArticle?: (slug: string) => void
 }
 
 export function WorkflowPlannerDialog(props: WorkflowPlannerDialogProps): JSX.Element | null {
-  const { open, onClose, onStatus } = props
+  const { open, onClose, onStatus, onOpenKnowledgeArticle } = props
   const [tasks, setTasks] = useState<ScheduledTaskListItem[]>([])
   const [scenarios, setScenarios] = useState<WorkflowScenarioListItem[]>([])
+  const [windowsTaskScheduler, setWindowsTaskScheduler] = useState(false)
+  const [macosLaunchd, setMacosLaunchd] = useState(false)
+  const [linuxSystemdUserTimer, setLinuxSystemdUserTimer] = useState(false)
   const [addOpen, setAddOpen] = useState(false)
   const [busy, setBusy] = useState(false)
   const [draft, setDraft] = useState(() => ({
@@ -49,8 +69,9 @@ export function WorkflowPlannerDialog(props: WorkflowPlannerDialogProps): JSX.El
     let cancelled = false
     void Promise.all([
       window.fluxalloy.workflows.listScheduledTasks(),
-      window.fluxalloy.workflows.listScenarios()
-    ]).then(([taskRes, scenRes]) => {
+      window.fluxalloy.workflows.listScenarios(),
+      window.fluxalloy.workflows.capabilities()
+    ]).then(([taskRes, scenRes, capRes]) => {
       if (cancelled) {
         return
       }
@@ -59,6 +80,11 @@ export function WorkflowPlannerDialog(props: WorkflowPlannerDialogProps): JSX.El
       }
       if (scenRes.ok) {
         setScenarios(scenRes.items)
+      }
+      if (capRes.ok) {
+        setWindowsTaskScheduler(capRes.windowsTaskScheduler)
+        setMacosLaunchd(capRes.macosLaunchd)
+        setLinuxSystemdUserTimer(capRes.linuxSystemdUserTimer)
       }
     })
     return (): void => {
@@ -85,7 +111,11 @@ export function WorkflowPlannerDialog(props: WorkflowPlannerDialogProps): JSX.El
     try {
       const res = await window.fluxalloy.workflows.saveScheduledTask(doc)
       if (res.ok) {
-        onStatus?.(uiText('workflowPlannerTaskSaved'))
+        onStatus?.(
+          res.osSchedulerWarning
+            ? uiText('workflowPlannerTaskSavedSchedulerWarn')
+            : uiText('workflowPlannerTaskSaved')
+        )
         setAddOpen(false)
         await reload()
       } else {
@@ -149,9 +179,19 @@ export function WorkflowPlannerDialog(props: WorkflowPlannerDialogProps): JSX.El
           e.stopPropagation()
         }}
       >
-        <h2 id="workflow-planner-title" className="app-modal-title">
-          {uiText('workflowPlannerDialogTitle')}
-        </h2>
+        <div className="app-modal-title-row">
+          <h2 id="workflow-planner-title" className="app-modal-title">
+            {uiText('workflowPlannerDialogTitle')}
+          </h2>
+          {onOpenKnowledgeArticle ? (
+            <KnowledgeDeepLinkButton
+              label={uiText('knowledgeDeepLinkWorkflows')}
+              tooltip={uiText('knowledgeDeepLinkWorkflowsTooltip')}
+              ariaDescribedBy="workflow-planner-hint"
+              onOpen={() => onOpenKnowledgeArticle(KNOWLEDGE_SLUG_WORKFLOWS_PLANNER_SCENARIOS)}
+            />
+          ) : null}
+        </div>
         <p id="workflow-planner-hint" className="app-modal-hint">
           {uiText('workflowPlannerDialogHint')}
         </p>
@@ -217,6 +257,41 @@ export function WorkflowPlannerDialog(props: WorkflowPlannerDialogProps): JSX.El
                   ))}
                 </select>
               </div>
+              {windowsTaskScheduler || macosLaunchd || linuxSystemdUserTimer ? (
+                <div className="app-settings-field-row">
+                  <label className="app-settings-label" htmlFor="wf-task-backend">
+                    {uiText('workflowPlannerFieldBackend')}
+                  </label>
+                  <select
+                    id="wf-task-backend"
+                    className="app-settings-select"
+                    disabled={busy}
+                    value={draft.backend}
+                    title={uiText('workflowPlannerFieldBackendHint')}
+                    onChange={(e) =>
+                      setDraft((p) => ({
+                        ...p,
+                        backend: e.target.value as ScheduledTaskBackend
+                      }))
+                    }
+                  >
+                    <option value="in-app">{uiText('workflowPlannerBackendInApp')}</option>
+                    {windowsTaskScheduler ? (
+                      <option value="windows-task-scheduler">
+                        {uiText('workflowPlannerBackendWindows')}
+                      </option>
+                    ) : null}
+                    {macosLaunchd ? (
+                      <option value="macos-launchd">{uiText('workflowPlannerBackendMacos')}</option>
+                    ) : null}
+                    {linuxSystemdUserTimer ? (
+                      <option value="linux-systemd-user-timer">
+                        {uiText('workflowPlannerBackendLinux')}
+                      </option>
+                    ) : null}
+                  </select>
+                </div>
+              ) : null}
               <div className="app-settings-field-row">
                 <label className="app-settings-label" htmlFor="wf-task-interval">
                   {uiText('workflowPlannerFieldInterval')}
@@ -284,6 +359,8 @@ export function WorkflowPlannerDialog(props: WorkflowPlannerDialogProps): JSX.El
                 <th scope="col">{uiText('workflowPlannerColEnabled')}</th>
                 <th scope="col">{uiText('workflowPlannerColFolder')}</th>
                 <th scope="col">{uiText('workflowPlannerColScenario')}</th>
+                <th scope="col">{uiText('workflowPlannerColBackend')}</th>
+                <th scope="col">{uiText('workflowPlannerColAutoRun')}</th>
                 <th scope="col">{uiText('workflowPlannerColInterval')}</th>
                 <th scope="col">{uiText('workflowPlannerColActions')}</th>
               </tr>
@@ -291,7 +368,7 @@ export function WorkflowPlannerDialog(props: WorkflowPlannerDialogProps): JSX.El
             <tbody>
               {tasks.length === 0 ? (
                 <tr>
-                  <td colSpan={6}>{uiText('workflowPlannerEmpty')}</td>
+                  <td colSpan={8}>{uiText('workflowPlannerEmpty')}</td>
                 </tr>
               ) : (
                 tasks.map((row) => (
@@ -315,7 +392,15 @@ export function WorkflowPlannerDialog(props: WorkflowPlannerDialogProps): JSX.El
                         ? row.watchFolderPath.replace(/^.*[/\\]/, '')
                         : '—'}
                     </td>
-                    <td>{row.scenarioId || '—'}</td>
+                    <td title={row.scenarioId}>
+                      {(scenarios.find((s) => s.id === row.scenarioId)?.title ?? row.scenarioId) || '—'}
+                    </td>
+                    <td>{scheduledTaskBackendLabel(row.backend)}</td>
+                    <td>
+                      {row.executeScenarioOnDetect
+                        ? uiText('workflowPlannerEnabledOn')
+                        : uiText('workflowPlannerEnabledOff')}
+                    </td>
                     <td>{row.pollIntervalSec}</td>
                     <td>
                       <button
