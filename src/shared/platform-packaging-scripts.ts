@@ -18,6 +18,19 @@ export const VERIFY_LINUX_UNPACKED_NPM_SCRIPT = 'verify:linux-unpacked'
 export const VERIFY_LINUX_RELEASE_NPM_SCRIPT = 'verify:linux-release'
 export const VERIFY_MAC_UNPACKED_NPM_SCRIPT = 'verify:mac-unpacked'
 
+/** Реестр npm-скриптов §19 для `check:platform-packaging-scripts` и Vitest. */
+export const PLATFORM_PACKAGING_NPM_SCRIPTS = [
+  BUILD_WIN_NPM_SCRIPT,
+  BUILD_MAC_NPM_SCRIPT,
+  BUILD_LINUX_NPM_SCRIPT,
+  ENGINES_PREPARE_WIN_NPM_SCRIPT,
+  PACK_MAC_DIR_NPM_SCRIPT,
+  PACK_LINUX_DIR_NPM_SCRIPT,
+  VERIFY_MAC_UNPACKED_NPM_SCRIPT,
+  VERIFY_LINUX_UNPACKED_NPM_SCRIPT,
+  VERIFY_LINUX_RELEASE_NPM_SCRIPT
+] as const
+
 /** Подсказки без запуска electron-builder. */
 export function formatPlatformPackagingDiagnosticLines(): string[] {
   return [

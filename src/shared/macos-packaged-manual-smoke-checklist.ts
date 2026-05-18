@@ -4,8 +4,8 @@
  */
 
 import ruMacosPackagedManualSmoke from '../../locales/ru/macos-packaged-manual-smoke.json'
+import { formatPackagedManualSmokeChecklistLinesFromLocaleShard } from './packaged-manual-smoke-locale-lines'
 import { buildMacosPackagedManualSmokeChecklistFromLocaleShard } from './macos-packaged-manual-smoke-checklist-build'
-import { formatPackagedManualSmokeChecklistLines } from './packaged-manual-smoke-checklist-format'
 
 export { buildMacosPackagedManualSmokeChecklistFromLocaleShard } from './macos-packaged-manual-smoke-checklist-build'
 
@@ -14,11 +14,18 @@ export const MACOS_PACKAGED_MANUAL_SMOKE_CHECKLIST =
     ruMacosPackagedManualSmoke as Record<string, string>
   )
 
+export function formatMacosPackagedManualSmokeChecklistLinesFromShard(
+  shard: Record<string, string>
+): string[] {
+  return formatPackagedManualSmokeChecklistLinesFromLocaleShard(
+    shard,
+    'macosPackagedSmoke',
+    buildMacosPackagedManualSmokeChecklistFromLocaleShard(shard)
+  )
+}
+
 export function formatMacosPackagedManualSmokeChecklistLines(): string[] {
-  return formatPackagedManualSmokeChecklistLines(MACOS_PACKAGED_MANUAL_SMOKE_CHECKLIST, {
-    ownerLine: 'ручной smoke packaged macOS (FluxAlloy.app), не автоматизируется в CI UI',
-    automatedLine: 'npm run verify:mac-unpacked',
-    docLine: 'docs/RELEASE.md §4.2',
-    uiLine: 'Настройки → Зависимости → Ручной smoke macOS (pack:mac:dir)'
-  })
+  return formatMacosPackagedManualSmokeChecklistLinesFromShard(
+    ruMacosPackagedManualSmoke as Record<string, string>
+  )
 }

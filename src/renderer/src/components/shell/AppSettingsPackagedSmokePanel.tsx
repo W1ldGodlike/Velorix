@@ -1,7 +1,6 @@
 import { useMemo, useState, type JSX } from 'react'
 
 import type { AppUiLocale } from '../../../../shared/app-ui-locale'
-import { formatFfmpegHwManualSmokeChecklistPlainText } from '../../../../shared/ffmpeg-hw-manual-smoke-checklist-build'
 import type { FfmpegHwManualSmokeChecklistSection } from '../../../../shared/ffmpeg-hw-manual-smoke-checklist-types'
 import {
   KNOWLEDGE_SLUG_OWNER_MANUAL_SMOKE,
@@ -12,11 +11,14 @@ import {
 import { getUiLocale, uiText } from '../../locales/ui-text'
 import { getLinuxPackagedManualSmokeChecklistForUiLocale } from '../../linux-packaged-manual-smoke-checklist-locale'
 import { getMacosPackagedManualSmokeChecklistForUiLocale } from '../../macos-packaged-manual-smoke-checklist-locale'
+import { getPackagedManualSmokePlainTextForUiLocale } from '../../../../shared/packaged-manual-smoke-plain-text'
 import { getWinPackagedManualSmokeChecklistForUiLocale } from '../../win-packaged-manual-smoke-checklist-locale'
 import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
 import { APP_SETTINGS_PACKAGED_SMOKE_ANCHOR } from './app-settings-smoke-anchors'
 
-export type PackagedSmokePlatform = 'win' | 'linux' | 'macos'
+import type { PackagedManualSmokePlatform as PackagedSmokePlatform } from '../../../../shared/packaged-manual-smoke-plain-text'
+
+export type { PackagedManualSmokePlatform as PackagedSmokePlatform } from '../../../../shared/packaged-manual-smoke-plain-text'
 
 type PackagedSmokePanelConfig = {
   getSections: (locale: AppUiLocale) => readonly FfmpegHwManualSmokeChecklistSection[]
@@ -99,7 +101,10 @@ export function AppSettingsPackagedSmokePanel(props: {
     () => PACKAGED_SMOKE_CONFIG[props.platform].getSections(locale),
     [props.platform, locale]
   )
-  const plainText = useMemo(() => formatFfmpegHwManualSmokeChecklistPlainText(sections), [sections])
+  const plainText = useMemo(
+    () => getPackagedManualSmokePlainTextForUiLocale(props.platform, locale),
+    [props.platform, locale]
+  )
 
   const onCopy = (): void => {
     void navigator.clipboard
@@ -158,6 +163,7 @@ export function AppSettingsPackagedSmokePanel(props: {
       </div>
       <p className="app-modal-hint">{uiText(config.introKey)}</p>
       <p className="app-modal-hint">{uiText('appSettingsPackagedSmokeOwnerBundleHint')}</p>
+      <p className="app-modal-hint">{uiText('appSettingsPackagedSmokeParityGuardHint')}</p>
       {copyHint ? (
         <p className="app-modal-hint" role="status" aria-live="polite">
           {copyHint}

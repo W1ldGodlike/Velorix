@@ -50,3 +50,21 @@ export function packagedManualSmokeStepLocaleKey(
 ): string {
   return `${prefix}Step_${stepSuffix}`
 }
+
+/** Суффиксы meta-ключей (owner/automated/doc/ui/bundle heading) в packaged-manual-smoke.json. */
+export const PACKAGED_MANUAL_SMOKE_META_SUFFIXES = [
+  'OwnerLine',
+  'AutomatedLine',
+  'DocLine',
+  'UiLine',
+  'BundleHeading'
+] as const
+
+export type PackagedManualSmokeMetaSuffix = (typeof PACKAGED_MANUAL_SMOKE_META_SUFFIXES)[number]
+
+export function packagedManualSmokeMetaLocaleKey(
+  prefix: PackagedManualSmokeLocaleKeyPrefix,
+  metaSuffix: PackagedManualSmokeMetaSuffix
+): string {
+  return `${prefix}${metaSuffix}`
+}

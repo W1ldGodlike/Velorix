@@ -17,5 +17,10 @@
   "winPackagedSmokeStep_settings": "Settings → Dependencies: engine paths point at resources/bin.",
   "winPackagedSmokePass0": "No crash when closing the main window and relaunching the exe.",
   "winPackagedSmokePass1": "Download progress column shows labels during post-processing merge/embed.",
-  "winPackagedSmokePass2": "userData/logs have no tokens/passwords; dist/ artifacts have no .env."
+  "winPackagedSmokePass2": "userData/logs have no tokens/passwords; dist/ artifacts have no .env.",
+  "winPackagedSmokeOwnerLine": "manual Windows packaged smoke (dist/win-unpacked), not automated in CI UI",
+  "winPackagedSmokeAutomatedLine": "npm run verify:win-unpacked && npm run smoke:packaged-release",
+  "winPackagedSmokeDocLine": "docs/RELEASE.md §4",
+  "winPackagedSmokeUiLine": "Settings → Dependencies → Manual Windows smoke (pack:dir)",
+  "winPackagedSmokeBundleHeading": "=== Packaged Win (pack:dir) ==="
 }

@@ -13,16 +13,16 @@ function t(shard: Record<string, string>, key: string, label: string): string {
 export function formatOwnerManualSmokeChecklistSectionLines(opts: {
   shard: Record<string, string>
   label: string
-  headerLine: string
-  uiLine: string
+  headerKey: string
+  uiKey: string
   introKey: string
   checkIntroKey: string
   checklistKeys: readonly string[]
 }): string[] {
   const shard = opts.shard
   return [
-    opts.headerLine,
-    opts.uiLine,
+    t(shard, opts.headerKey, opts.label),
+    t(shard, opts.uiKey, opts.label),
     `intro: ${t(shard, opts.introKey, opts.label)}`,
     `check: ${t(shard, opts.checkIntroKey, opts.label)}`,
     ...opts.checklistKeys.map((key) => `  - ${t(shard, key, opts.label)}`)

@@ -4,8 +4,8 @@
  */
 
 import ruLinuxPackagedManualSmoke from '../../locales/ru/linux-packaged-manual-smoke.json'
+import { formatPackagedManualSmokeChecklistLinesFromLocaleShard } from './packaged-manual-smoke-locale-lines'
 import { buildLinuxPackagedManualSmokeChecklistFromLocaleShard } from './linux-packaged-manual-smoke-checklist-build'
-import { formatPackagedManualSmokeChecklistLines } from './packaged-manual-smoke-checklist-format'
 
 export { buildLinuxPackagedManualSmokeChecklistFromLocaleShard } from './linux-packaged-manual-smoke-checklist-build'
 
@@ -14,11 +14,18 @@ export const LINUX_PACKAGED_MANUAL_SMOKE_CHECKLIST =
     ruLinuxPackagedManualSmoke as Record<string, string>
   )
 
+export function formatLinuxPackagedManualSmokeChecklistLinesFromShard(
+  shard: Record<string, string>
+): string[] {
+  return formatPackagedManualSmokeChecklistLinesFromLocaleShard(
+    shard,
+    'linuxPackagedSmoke',
+    buildLinuxPackagedManualSmokeChecklistFromLocaleShard(shard)
+  )
+}
+
 export function formatLinuxPackagedManualSmokeChecklistLines(): string[] {
-  return formatPackagedManualSmokeChecklistLines(LINUX_PACKAGED_MANUAL_SMOKE_CHECKLIST, {
-    ownerLine: 'ручной smoke packaged Linux (dist/linux-unpacked), не автоматизируется в CI UI',
-    automatedLine: 'npm run verify:linux-unpacked',
-    docLine: 'docs/RELEASE.md §4.1',
-    uiLine: 'Настройки → Зависимости → Ручной smoke Linux (pack:linux:dir)'
-  })
+  return formatLinuxPackagedManualSmokeChecklistLinesFromShard(
+    ruLinuxPackagedManualSmoke as Record<string, string>
+  )
 }

@@ -17,5 +17,10 @@
   "macosPackagedSmokeStep_settings": "Настройки → Зависимости: пути движков указывают на Contents/Resources/bin.",
   "macosPackagedSmokePass0": "Нет crash при выходе из приложения и повторном открытии бандла.",
   "macosPackagedSmokePass1": "Нет пустых колонок прогресса на post-processing merge/embed в загрузках.",
-  "macosPackagedSmokePass2": "Логи userData/logs без токенов/паролей; артефакты dist/ без .env."
+  "macosPackagedSmokePass2": "Логи userData/logs без токенов/паролей; артефакты dist/ без .env.",
+  "macosPackagedSmokeOwnerLine": "ручной smoke packaged macOS (FluxAlloy.app), не автоматизируется в CI UI",
+  "macosPackagedSmokeAutomatedLine": "npm run verify:mac-unpacked",
+  "macosPackagedSmokeDocLine": "docs/RELEASE.md §4.2",
+  "macosPackagedSmokeUiLine": "Настройки → Зависимости → Ручной smoke macOS (pack:mac:dir)",
+  "macosPackagedSmokeBundleHeading": "=== Packaged macOS (pack:mac:dir) ==="
 }

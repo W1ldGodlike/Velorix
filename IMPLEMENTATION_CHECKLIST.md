@@ -6,7 +6,7 @@
 
 ## Готовность полного итога
 
-- **Оценка: ~55%** (J-1160; Mini Player §4.3 код [x] J-1153–1159; спрайты §7.5 [x] J-1147). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16 (код + argv-smoke), утилиты §17, диагностика §18, CI/release + `check:packaged-manual-smoke-parity`. Крупно впереди: owner-smoke на железе/visual/HiDPI, полный вынос UI в `locales/**`, macOS/Linux packaging, e2e packaged.
+- **Оценка: ~56%** (J-1165; owner-smoke locales RU+EN theme/HiDPI/packaged; guards parity/platform). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16 (код + argv-smoke), утилиты §17, диагностика §18, CI/release + `check:packaged-manual-smoke-parity` + `check:owner-visual-smoke-locale` + `check:platform-packaging-scripts`. Крупно впереди: приёмка owner-smoke на железе, macOS/Linux packaging, e2e §21.
 
 ## Легенда
 
@@ -44,9 +44,9 @@
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый.
 
 - [ ] §16/§19: owner-smoke на железе (visual + HiDPI + packaged win/linux/macos + спрайт + mini-player); приёмка владельца.
-- [~] §2.2/§7.5: длинные UI-строки в `locales/**` без дублей TS; подсказки экспорта (resolve+guard, спрайты [x] J-1147).
+- [~] §2.2/§7.5: длинные UI-строки в `locales/**` без дублей TS; подсказки экспорта (resolve+guard, спрайты [x] J-1147); owner theme/HiDPI RU+EN через `settings.json` + `check:owner-visual-smoke-locale`.
 - [~] §4.3: Mini Player [x] код (J-1153–1157); owner-smoke §4.3 в hub; приёмка visual/HiDPI на железе — владелец.
-- [~] §19: macOS/Linux — `pack:*:dir` + `verify:*` + guard `check:packaged-manual-smoke-parity`; `bin/` вручную; CI linux-packaging [x].
+- [~] §19: macOS/Linux — `pack:*:dir` + `verify:*` + parity guard (Step_* + meta locales); owner bundle packaged RU+EN; `bin/` вручную; CI linux-packaging [x].
 - [ ] §21: e2e packaged smoke (открыть → preview → export; URL → yt-dlp → ffmpeg) после стабилизации спринта.
 
 ---

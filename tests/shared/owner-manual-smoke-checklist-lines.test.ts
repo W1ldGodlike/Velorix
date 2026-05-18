@@ -10,13 +10,13 @@ describe('owner-manual-smoke-checklist-lines', () => {
     const lines = formatOwnerManualSmokeChecklistSectionLines({
       shard: ruSettings as Record<string, string>,
       label: 'test-theme',
-      headerLine: 'owner: Theme',
-      uiLine: 'ui: test',
+      headerKey: 'ownerManualSmokeThemeHeader',
+      uiKey: 'ownerManualSmokeThemeUiLine',
       introKey: 'appSettingsThemeManualHint',
       checkIntroKey: 'appSettingsThemeChecklistIntro',
       checklistKeys: APP_SETTINGS_THEME_CHECKLIST_KEYS
     })
-    expect(lines[0]).toBe('owner: Theme')
+    expect(lines[0]).toContain('Theme')
     expect(lines.filter((l) => l.startsWith('  - '))).toHaveLength(
       APP_SETTINGS_THEME_CHECKLIST_KEYS.length
     )
@@ -26,8 +26,8 @@ describe('owner-manual-smoke-checklist-lines', () => {
     const lines = formatOwnerManualSmokeChecklistSectionLines({
       shard: ruSettings as Record<string, string>,
       label: 'test-hidpi',
-      headerLine: 'owner: HiDPI',
-      uiLine: 'ui: test',
+      headerKey: 'ownerManualSmokeHidpiHeader',
+      uiKey: 'ownerManualSmokeHidpiUiLine',
       introKey: 'appSettingsHidpiManualHint',
       checkIntroKey: 'appSettingsHidpiChecklistIntro',
       checklistKeys: APP_SETTINGS_HIDPI_CHECKLIST_KEYS

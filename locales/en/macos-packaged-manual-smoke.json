@@ -17,5 +17,10 @@
   "macosPackagedSmokeStep_settings": "Settings → Dependencies: engine paths point at Contents/Resources/bin.",
   "macosPackagedSmokePass0": "No crash when quitting the app and reopening the bundle.",
   "macosPackagedSmokePass1": "Download progress column shows labels during post-processing merge/embed.",
-  "macosPackagedSmokePass2": "userData/logs have no tokens/passwords; dist/ artifacts have no .env."
+  "macosPackagedSmokePass2": "userData/logs have no tokens/passwords; dist/ artifacts have no .env.",
+  "macosPackagedSmokeOwnerLine": "manual macOS packaged smoke (FluxAlloy.app), not automated in CI UI",
+  "macosPackagedSmokeAutomatedLine": "npm run verify:mac-unpacked",
+  "macosPackagedSmokeDocLine": "docs/RELEASE.md §4.2",
+  "macosPackagedSmokeUiLine": "Settings → Dependencies → Manual macOS smoke (pack:mac:dir)",
+  "macosPackagedSmokeBundleHeading": "=== Packaged macOS (pack:mac:dir) ==="
 }

@@ -17,5 +17,10 @@
   "linuxPackagedSmokeStep_settings": "Settings → Dependencies: engine paths point at resources/bin.",
   "linuxPackagedSmokePass0": "No crash when closing the main window and relaunching the binary.",
   "linuxPackagedSmokePass1": "Download progress column shows labels during post-processing merge/embed.",
-  "linuxPackagedSmokePass2": "userData/logs have no tokens/passwords; dist/ artifacts have no .env."
+  "linuxPackagedSmokePass2": "userData/logs have no tokens/passwords; dist/ artifacts have no .env.",
+  "linuxPackagedSmokeOwnerLine": "manual Linux packaged smoke (dist/linux-unpacked), not automated in CI UI",
+  "linuxPackagedSmokeAutomatedLine": "npm run verify:linux-unpacked",
+  "linuxPackagedSmokeDocLine": "docs/RELEASE.md §4.1",
+  "linuxPackagedSmokeUiLine": "Settings → Dependencies → Manual Linux smoke (pack:linux:dir)",
+  "linuxPackagedSmokeBundleHeading": "=== Packaged Linux (pack:linux:dir) ==="
 }

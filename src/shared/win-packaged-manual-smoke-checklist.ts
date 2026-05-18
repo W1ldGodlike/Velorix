@@ -4,8 +4,8 @@
  */
 
 import ruWinPackagedManualSmoke from '../../locales/ru/win-packaged-manual-smoke.json'
+import { formatPackagedManualSmokeChecklistLinesFromLocaleShard } from './packaged-manual-smoke-locale-lines'
 import { buildWinPackagedManualSmokeChecklistFromLocaleShard } from './win-packaged-manual-smoke-checklist-build'
-import { formatPackagedManualSmokeChecklistLines } from './packaged-manual-smoke-checklist-format'
 
 export { buildWinPackagedManualSmokeChecklistFromLocaleShard } from './win-packaged-manual-smoke-checklist-build'
 
@@ -16,12 +16,19 @@ export const WIN_PACKAGED_MANUAL_SMOKE_CHECKLIST =
     ruWinPackagedManualSmoke as Record<string, string>
   )
 
-/** Строки для Support ZIP (winPackagedSmoke:) и копирования владельцу. */
+/** Строки для Support ZIP (winPackagedSmoke:) и копирования владельцу (канон ru). */
+export function formatWinPackagedManualSmokeChecklistLinesFromShard(
+  shard: Record<string, string>
+): string[] {
+  return formatPackagedManualSmokeChecklistLinesFromLocaleShard(
+    shard,
+    'winPackagedSmoke',
+    buildWinPackagedManualSmokeChecklistFromLocaleShard(shard)
+  )
+}
+
 export function formatWinPackagedManualSmokeChecklistLines(): string[] {
-  return formatPackagedManualSmokeChecklistLines(WIN_PACKAGED_MANUAL_SMOKE_CHECKLIST, {
-    ownerLine: 'ручной smoke packaged Win (dist/win-unpacked), не автоматизируется в CI UI',
-    automatedLine: 'npm run verify:win-unpacked && npm run smoke:packaged-release',
-    docLine: 'docs/RELEASE.md §4',
-    uiLine: 'Настройки → Зависимости → Ручной smoke Windows (pack:dir)'
-  })
+  return formatWinPackagedManualSmokeChecklistLinesFromShard(
+    ruWinPackagedManualSmoke as Record<string, string>
+  )
 }

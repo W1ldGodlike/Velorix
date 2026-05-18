@@ -11,12 +11,14 @@ import {
   formatOwnerManualSmokeBundleReportHeaderLines,
   prependOwnerManualSmokeReportHeader
 } from '../../../../shared/owner-manual-smoke-bundle-report-header'
-import { getOwnerManualSmokePackagedSection } from '../../../../shared/owner-manual-smoke-packaged-section'
-import { formatOwnerManualSmokeHidpiChecklistLines } from '../../../../shared/owner-manual-smoke-hidpi-lines'
+import { getOwnerManualSmokePackagedSectionForUiLocale } from '../../../../shared/owner-manual-smoke-packaged-section'
 import { APP_SETTINGS_HIDPI_CHECKLIST_KEYS } from '../../../../shared/app-settings-hidpi-checklist-keys'
 import { APP_SETTINGS_THEME_CHECKLIST_KEYS } from '../../../../shared/app-settings-theme-checklist-keys'
-import { formatOwnerManualSmokeThemeChecklistLines } from '../../../../shared/owner-manual-smoke-theme-lines'
 import { getFfmpegHwManualSmokeChecklistForUiLocale } from '../../hw-manual-smoke-checklist-locale'
+import {
+  getOwnerManualSmokeHidpiChecklistLinesForUiLocale,
+  getOwnerManualSmokeThemeChecklistLinesForUiLocale
+} from '../../owner-manual-smoke-visual-checklist-locale'
 import { getUiLocale, uiText } from '../../locales/ui-text'
 import { readUiHidpiRuntimeStatus } from '../../ui-hidpi-runtime-status'
 import {
@@ -40,30 +42,6 @@ import {
   type AppSettingsSmokeJumpTarget
 } from './app-settings-smoke-anchors'
 import { OwnerManualSmokeChecklistSectionsPreview } from './OwnerManualSmokeChecklistSectionsPreview'
-
-function formatThemeLinesForUiLocale(): string[] {
-  if (getUiLocale() === 'ru') {
-    return formatOwnerManualSmokeThemeChecklistLines()
-  }
-  return [
-    'owner: Theme / dark·light·system (not CI)',
-    uiText('appSettingsThemeManualHint'),
-    uiText('appSettingsThemeChecklistIntro'),
-    ...APP_SETTINGS_THEME_CHECKLIST_KEYS.map((key) => `- ${uiText(key)}`)
-  ]
-}
-
-function formatHidpiLinesForUiLocale(): string[] {
-  if (getUiLocale() === 'ru') {
-    return formatOwnerManualSmokeHidpiChecklistLines()
-  }
-  return [
-    'owner: HiDPI / window scale 100–200% (not CI)',
-    uiText('appSettingsHidpiManualHint'),
-    uiText('appSettingsHidpiChecklistIntro'),
-    ...APP_SETTINGS_HIDPI_CHECKLIST_KEYS.map((key) => `- ${uiText(key)}`)
-  ]
-}
 
 function formatUiDpiSnapshotLines(): string[] {
   const status = readUiHidpiRuntimeStatus()
@@ -224,7 +202,10 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
     return formatFfmpegHwManualSmokeChecklistPlainText(shellSections)
   }, [shellSections])
 
-  const packagedSection = useMemo(() => getOwnerManualSmokePackagedSection(), [])
+  const packagedSection = useMemo(
+    () => getOwnerManualSmokePackagedSectionForUiLocale(locale),
+    [locale]
+  )
 
   const packagedPlainText = useMemo(() => {
     if (!packagedSection) {
@@ -243,11 +224,21 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
     []
   )
 
+  const themeBundleLines = useMemo(
+    () => getOwnerManualSmokeThemeChecklistLinesForUiLocale(locale),
+    [locale]
+  )
+
+  const hidpiBundleLines = useMemo(
+    () => getOwnerManualSmokeHidpiChecklistLinesForUiLocale(locale),
+    [locale]
+  )
+
   const checklistPlainText = useMemo(
     () =>
       formatOwnerManualSmokeBundlePlainText({
-        themeLines: formatThemeLinesForUiLocale(),
-        hidpiLines: formatHidpiLinesForUiLocale(),
+        themeLines: themeBundleLines,
+        hidpiLines: hidpiBundleLines,
         hwPlainText,
         scenarioPlainText,
         videoSpritePlainText,
@@ -258,6 +249,8 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
         uiDpiSnapshot: formatUiDpiSnapshotLines()
       }),
     [
+      themeBundleLines,
+      hidpiBundleLines,
       hwPlainText,
       osPlainText,
       scenarioPlainText,
@@ -315,6 +308,7 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
       </div>
       <p className="app-modal-hint">{uiText('appSettingsOwnerSmokeIntro')}</p>
       <p className="app-modal-hint">{uiText('appSettingsOwnerSmokePreviewHint')}</p>
+      <p className="app-modal-hint">{uiText('appSettingsOwnerSmokeLocaleGuardHint')}</p>
       {copyHint ? (
         <p className="app-modal-hint" role="status" aria-live="polite">
           {copyHint}

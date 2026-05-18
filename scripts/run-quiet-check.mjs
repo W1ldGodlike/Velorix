@@ -17,6 +17,8 @@ const steps = [
   ['locales-ts-overlap', ['run', 'check:locales-ts-overlap']],
   ['export-preview-hints-locale', ['run', 'check:export-preview-hints-locale']],
   ['packaged-manual-smoke-parity', ['run', 'check:packaged-manual-smoke-parity']],
+  ['owner-visual-smoke-locale', ['run', 'check:owner-visual-smoke-locale']],
+  ['platform-packaging-scripts', ['run', 'check:platform-packaging-scripts']],
   ['terminal-summaries-ru', ['run', 'check:terminal-summaries-ru']],
   ['terminal-data-summaries', ['run', 'check:terminal-data-summaries']],
   ['terminal-scenario-summaries', ['run', 'check:terminal-scenario-summaries']],
