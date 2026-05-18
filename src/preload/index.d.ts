@@ -163,6 +163,16 @@ export interface FluxAlloyApi {
       { ok: true } | { ok: false; cancelled: true } | { ok: false; error: string }
     >
     resetToDefaults: () => Promise<AppSettings>
+    windowsExplorerContextMenuStatus: () => Promise<{
+      supported: boolean
+      enabledInSettings: boolean
+      registered: boolean
+    }>
+    setWindowsExplorerContextMenuEnabled: (
+      enabled: boolean
+    ) => Promise<{ ok: true } | { ok: false; error: string }>
+    registerWindowsExplorerContextMenuNow: () => Promise<{ ok: true } | { ok: false; error: string }>
+    unregisterWindowsExplorerContextMenu: () => Promise<{ ok: true }>
   }
   preview: {
     openFileDialog: (uiLocale?: AppUiLocale) => Promise<PreviewDialogResult>
@@ -516,6 +526,7 @@ export interface FluxAlloyApi {
   ) => () => void
   onEnginePathsChanged: (listener: () => void) => () => void
   onSettingsBackupImported: (listener: () => void) => () => void
+  onProcessingHistoryChanged: (listener: () => void) => () => void
   onOpenAbout: (listener: () => void) => () => void
   onOpenExternalFilterScript: (listener: () => void) => () => void
   onOpenWorkflowPlanner: (listener: () => void) => () => void

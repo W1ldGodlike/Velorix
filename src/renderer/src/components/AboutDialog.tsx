@@ -15,6 +15,7 @@ import { formatAboutBuildIdDisplay, formatBuiltAtUtcLine } from '../../../shared
 import {
   formatMaintenanceCleanDone,
   formatMaintenanceConfirmHint,
+  formatMaintenanceSnapshotTargetDetail,
   formatMaintenanceSummary,
   formatUiBytes,
   uiText,
@@ -25,17 +26,25 @@ import { MediaFileUtilitiesPanel } from './MediaFileUtilitiesPanel'
 
 type MaintenanceCleanChoice = 'all' | DiagnosticsMaintenanceTargetId
 
+function maintenanceSnapshotTargetLabel(id: DiagnosticsMaintenanceTargetId): string {
+  if (id === 'previewCache') {
+    return uiText('maintenanceSnapshotLabelPreviewCache')
+  }
+  if (id === 'ffmpegTemp') {
+    return uiText('maintenanceSnapshotLabelFfmpegTemp')
+  }
+  return uiText('maintenanceSnapshotLabelYtdlpPartials')
+}
+
 function formatMaintenanceSnapshot(snapshot: DiagnosticsMaintenanceSnapshot): string {
   const details = snapshot.targets
-    .map((target) => {
-      const label =
-        target.id === 'previewCache'
-          ? uiText('maintenanceSnapshotLabelPreviewCache')
-          : target.id === 'ffmpegTemp'
-            ? uiText('maintenanceSnapshotLabelFfmpegTemp')
-            : uiText('maintenanceSnapshotLabelYtdlpPartials')
-      return `${label} ${formatUiBytes(target.bytes)}`
-    })
+    .map((target) =>
+      formatMaintenanceSnapshotTargetDetail(
+        maintenanceSnapshotTargetLabel(target.id),
+        formatUiBytes(target.bytes),
+        target.files
+      )
+    )
     .join(', ')
   return formatMaintenanceSummary(formatUiBytes(snapshot.cleanableBytes), details)
 }

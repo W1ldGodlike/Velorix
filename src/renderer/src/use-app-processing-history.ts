@@ -32,8 +32,13 @@ export function useAppProcessingHistory(deps: UseAppProcessingHistoryDeps): {
     useState<ProcessingHistoryWeeklySummary | null>(null)
 
   const refreshProcessingHistory = useCallback(
-    async (filter: ProcessingHistoryFilter = processingHistoryFilter): Promise<void> => {
-      setProcessingHistoryBusy(true)
+    async (
+      filter: ProcessingHistoryFilter = processingHistoryFilter,
+      opts?: { silent?: boolean }
+    ): Promise<void> => {
+      if (!opts?.silent) {
+        setProcessingHistoryBusy(true)
+      }
       try {
         const [rows, summary] = await Promise.all([
           window.fluxalloy.processingHistory.get({ ...filter, limit: 100 }),
@@ -42,7 +47,9 @@ export function useAppProcessingHistory(deps: UseAppProcessingHistoryDeps): {
         setProcessingHistory(rows)
         setProcessingHistoryWeeklySummary(summary)
       } finally {
-        setProcessingHistoryBusy(false)
+        if (!opts?.silent) {
+          setProcessingHistoryBusy(false)
+        }
       }
     },
     [processingHistoryFilter]
@@ -91,6 +98,13 @@ export function useAppProcessingHistory(deps: UseAppProcessingHistoryDeps): {
       mounted = false
     }
   }, [])
+
+  useEffect(() => {
+    const off = window.fluxalloy.onProcessingHistoryChanged(() => {
+      void refreshProcessingHistory(processingHistoryFilter, { silent: true })
+    })
+    return off
+  }, [processingHistoryFilter, refreshProcessingHistory])
 
   return {
     processingHistory,

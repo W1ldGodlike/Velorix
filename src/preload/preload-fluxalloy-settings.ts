@@ -131,5 +131,18 @@ export const fluxalloySettings = {
   importBackup: (): Promise<
     { ok: true } | { ok: false; cancelled: true } | { ok: false; error: string }
   > => ipcRenderer.invoke(mw.settingsBackupImport),
-  resetToDefaults: (): Promise<AppSettings> => ipcRenderer.invoke(mw.settingsResetToDefaults)
+  resetToDefaults: (): Promise<AppSettings> => ipcRenderer.invoke(mw.settingsResetToDefaults),
+  windowsExplorerContextMenuStatus: (): Promise<{
+    supported: boolean
+    enabledInSettings: boolean
+    registered: boolean
+  }> => ipcRenderer.invoke(mw.windowsExplorerContextMenuStatus),
+  setWindowsExplorerContextMenuEnabled: (
+    enabled: boolean
+  ): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke(mw.windowsExplorerContextMenuSetEnabled, enabled),
+  registerWindowsExplorerContextMenuNow: (): Promise<{ ok: true } | { ok: false; error: string }> =>
+    ipcRenderer.invoke(mw.windowsExplorerContextMenuRegisterNow),
+  unregisterWindowsExplorerContextMenu: (): Promise<{ ok: true }> =>
+    ipcRenderer.invoke(mw.windowsExplorerContextMenuUnregister)
 }

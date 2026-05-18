@@ -3,6 +3,7 @@ import { app } from 'electron'
 import { buildKnowledgeHelpDirCandidates, resolveKnowledgeHelpDirectory } from './knowledge-service'
 import { registerKnowledgeDiagnosticsIpcHandlers } from './ipc/register-knowledge-diagnostics-ipc'
 import { registerSettingsIpcHandlers } from './ipc/register-settings-ipc'
+import { registerWindowsShellContextMenuIpc } from './ipc/register-windows-shell-context-menu-ipc'
 import { registerEnginesPreviewIpcHandlers } from './ipc/register-engines-preview-ipc'
 import { registerMainUtilitiesIpcHandlers } from './ipc/register-main-utilities-ipc'
 import { registerWorkflowIpcHandlers } from './ipc/register-workflow-ipc'
@@ -23,9 +24,11 @@ import {
 import {
   batchExportOutputFolderPickOptsFromSettings,
   getCachedSettings,
+  patchCachedSettings,
   persistLastOpenedSource,
   previewOpenDialogOptsFromSettings,
-  resolveEffectiveTheme
+  resolveEffectiveTheme,
+  saveCachedSettingsToDisk
 } from './main-cached-settings-host'
 import { buildApplicationMenu } from './main-application-menu'
 import {
@@ -92,6 +95,15 @@ export function registerMainApplicationBootstrapIpc(): void {
     copyCachedSettings: () => ({ ...getCachedSettings() }),
     isMainWindowUiPanelSender,
     ...getMainApplicationSettingsIpcPersist()
+  })
+  registerWindowsShellContextMenuIpc({
+    getSettings: getCachedSettings,
+    mutateSettings: (mutate) => {
+      patchCachedSettings(mutate)
+      saveCachedSettingsToDisk()
+      return getCachedSettings()
+    },
+    mainUiLocale: () => getCachedSettings().uiLocale ?? 'ru'
   })
   registerEnginesPreviewIpcHandlers({
     mainAppStr,

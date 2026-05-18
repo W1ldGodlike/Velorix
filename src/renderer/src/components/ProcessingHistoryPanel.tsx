@@ -310,6 +310,16 @@ export function ProcessingHistoryPanel({
                       {entry.exportVideoCodecUsed}
                     </span>
                   ) : null}
+                  {entry.workflowScenarioId ? (
+                    <span
+                      className="app-processing-history-scenario-id"
+                      title={entry.workflowScenarioId}
+                    >
+                      {uiTextVars('processingHistoryScenarioIdChip', {
+                        id: entry.workflowScenarioId
+                      })}
+                    </span>
+                  ) : null}
                 </div>
                 <div className="app-downloads-history-meta">
                   <span>{entry.status}</span>

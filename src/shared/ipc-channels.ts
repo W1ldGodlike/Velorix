@@ -87,6 +87,11 @@ export const mainWindowIpc = {
   processingHistoryOpenInputInHandler: 'fluxalloy:processing-history-open-input-in-handler',
   processingHistoryRepeatWorkflowScenario:
     'fluxalloy:processing-history-repeat-workflow-scenario',
+  processingHistoryChanged: 'fluxalloy:processing-history-changed',
+  windowsExplorerContextMenuStatus: 'fluxalloy:windows-explorer-context-menu-status',
+  windowsExplorerContextMenuSetEnabled: 'fluxalloy:windows-explorer-context-menu-set-enabled',
+  windowsExplorerContextMenuRegisterNow: 'fluxalloy:windows-explorer-context-menu-register-now',
+  windowsExplorerContextMenuUnregister: 'fluxalloy:windows-explorer-context-menu-unregister',
   openDownloadsWindow: 'fluxalloy:open-downloads-window',
   /** §9 — отдельное окно инспектора ffprobe (`#inspector`). */
   openInspectorWindow: 'fluxalloy:open-inspector-window',

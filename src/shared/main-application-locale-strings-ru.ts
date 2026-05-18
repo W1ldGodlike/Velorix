@@ -240,6 +240,8 @@ export const mainApplicationStringsRu: MainApplicationStrings = {
     'Текущий файл превью не разрешён для подстановки в команду (откройте через диалог или перетаскивание).',
   terminalEngineMissingInSettings: 'Движок {tool} не найден в настройках или в каталоге bin.',
   terminalBlockedLogToolLine: '{tool} …',
-  terminalLogTruncatedOlder: '[FluxAlloy] усечены старые записи журнала terminal-cli.log\n\n'
+  terminalLogTruncatedOlder: '[FluxAlloy] усечены старые записи журнала terminal-cli.log\n\n',
+  windowsExplorerContextMenuOpen: 'Открыть в FluxAlloy',
+  windowsExplorerContextMenuQuickMp4: 'Быстро конвертировать в MP4'
 }
 

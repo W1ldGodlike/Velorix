@@ -5,7 +5,7 @@
   "maintenanceSummaryButton": "Temp size",
   "maintenanceCleanButton": "Clean temp",
   "maintenanceCleanPreviewButton": "Clean preview",
-  "maintenanceCleanPartialsButton": "Clean .part",
+  "maintenanceCleanPartialsButton": "Clean download partials",
   "maintenanceCleanFfmpegTempButton": "Clean ffmpeg temp",
   "maintenanceConfirmButton": "Confirm cleanup",
   "maintenanceConfirmHintTemplate": "{label}: only temporary data will be removed. Click “Confirm cleanup” once more.",
@@ -14,5 +14,6 @@
   "maintenanceSummaryWithDetailsTemplate": "Temporary data: {bytes} ({details})",
   "maintenanceSnapshotLabelPreviewCache": "preview cache",
   "maintenanceSnapshotLabelFfmpegTemp": "ffmpeg temp",
-  "maintenanceSnapshotLabelYtdlpPartials": "yt-dlp .part"
+  "maintenanceSnapshotLabelYtdlpPartials": "download partials",
+  "maintenanceSnapshotTargetDetailTemplate": "{label} {bytes} ({files} files)"
 }

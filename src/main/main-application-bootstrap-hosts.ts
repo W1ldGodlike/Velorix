@@ -60,6 +60,8 @@ import { configureWorkflowScenarioRunnerHost } from './workflow-scenario-runner-
 import { startWorkflowWatchFolderRunner } from './workflow-watch-folder-runner'
 import { listScheduledTaskDocuments } from './workflow-registry-service'
 import { resyncAllScheduledTaskOsSchedulers } from './scheduled-task-os-sync'
+import { syncWindowsExplorerContextMenuEnabled } from './windows-explorer-context-menu-sync'
+import { getMainApplicationStrings } from '../shared/main-runtime-locale'
 import {
   configureMainExportOutputPaths,
   rememberExportOutputPath,
@@ -260,4 +262,13 @@ export function bootstrapMainApplicationHosts(): void {
   })
   startWorkflowWatchFolderRunner()
   void resyncAllScheduledTaskOsSchedulers(listScheduledTaskDocuments())
+  const shellLoc = getCachedSettings().uiLocale ?? 'ru'
+  const shellM = getMainApplicationStrings(shellLoc)
+  void syncWindowsExplorerContextMenuEnabled(
+    getCachedSettings().windowsExplorerContextMenu === true,
+    {
+      open: shellM.windowsExplorerContextMenuOpen,
+      quickMp4: shellM.windowsExplorerContextMenuQuickMp4
+    }
+  )
 }

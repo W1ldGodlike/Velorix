@@ -221,4 +221,7 @@ export type MainApplicationStrings = {
   terminalEngineMissingInSettings: string
   terminalBlockedLogToolLine: string
   terminalLogTruncatedOlder: string
+  /** §14 — подписи пунктов контекстного меню Проводника (HKCU). */
+  windowsExplorerContextMenuOpen: string
+  windowsExplorerContextMenuQuickMp4: string
 }

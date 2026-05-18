@@ -87,6 +87,8 @@ function isYtdlpTransientFile(name: string): boolean {
     lower.endsWith('.temp') ||
     lower.endsWith('.tmp') ||
     lower.endsWith('.frag') ||
+    lower.endsWith('.crdownload') ||
+    lower.endsWith('.aria2') ||
     base === 'archive.part'
   )
 }

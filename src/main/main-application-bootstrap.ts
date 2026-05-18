@@ -5,9 +5,14 @@ import { bootstrapMainApplicationHosts } from './main-application-bootstrap-host
 import { registerMainApplicationBootstrapIpc } from './main-application-bootstrap-ipc'
 import { buildApplicationMenu } from './main-application-menu'
 import { createMainApplicationWindow } from './main-window-runtime-state'
+import { onProcessingHistoryChanged } from './processing-history'
+import { broadcastProcessingHistoryChanged } from './processing-history-broadcast'
 
 export function runMainApplicationBootstrap(): void {
   bootstrapMainApplicationHosts()
+  onProcessingHistoryChanged(() => {
+    broadcastProcessingHistoryChanged()
+  })
   registerMainApplicationBootstrapIpc()
 
   app.on('browser-window-created', (_, window) => {

@@ -90,6 +90,17 @@ export function formatMaintenanceSummary(bytes: string, details?: string): strin
   return template.replace(/\{bytes\}/g, bytes).replace(/\{details\}/g, details ?? '')
 }
 
+export function formatMaintenanceSnapshotTargetDetail(
+  label: string,
+  bytes: string,
+  files: number
+): string {
+  return table()
+    .maintenanceSnapshotTargetDetailTemplate.replace(/\{label\}/g, label)
+    .replace(/\{bytes\}/g, bytes)
+    .replace(/\{files\}/g, String(files))
+}
+
 /** Двоичные степени 1024 с локализованными суффиксами (см. `byteSize*` в `UI_TEXT`). */
 export function formatUiBytes(bytes: number): string {
   if (!Number.isFinite(bytes) || bytes <= 0) {

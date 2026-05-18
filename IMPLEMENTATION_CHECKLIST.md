@@ -43,13 +43,11 @@
 
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый.
 
-- [~] §16: чеклист NVENC/VAAPI в настройках + Help/deep-link (J-1040/1041); прогон на железе — владелец.
-- [~] §1.1: панель HiDPI + Help/deep-link (J-1039/1041); прогон 100–200% на мониторе — владелец.
-- [x] §15: Help `packaged-windows-smoke` (RU+EN) + deep-link из панели Win smoke (J-1045); прочие статьи — J-1041.
-- [x] §3: packaged smoke Win — чеклист, Support ZIP, `RELEASE.md` §4, Help/deep-link (J-1044/1045).
-- [x] §8: терминал — чип «Сценарии» в каталоге + Help про RU summary/скрипты (J-1046).
-- [~] §10/§11: v1 закрыт; прогон OS scheduler на железе — владелец (J-1057).
-- [~] §13: история workflow — фильтр/повтор file+URL (J-1058..1060); owner-smoke §10/§11/§16/§1.1.
+- [~] §16/§1.1/§10/§11: owner-smoke на железе (NVENC/VAAPI, HiDPI, OS scheduler; J-1057).
+- [~] §14: file associations Win — позже; меню Проводника — [x] (J-1061/1062).
+- [~] §11: drag-and-link конструктор блоков — позже.
+- [~] §12: полировка очистки temp — partials .crdownload/.aria2 + детали снимка (J-1064).
+- [~] §13: экспорт истории/недельная сводка — live-refresh (J-1063); остальная полировка UX.
 
 ---
 
@@ -418,7 +416,7 @@
 
 ## §12. Очистка кэша и обслуживание
 
-- [~] Категории кэша: `preview-cache`, частичные файлы yt-dlp (`.part`, `.ytdl`, `.temp`, `.tmp`, `.frag`) и старые orphan `fa-x264tw-*` в `diagnostics-maintenance`.
+- [~] Категории кэша: `preview-cache`, частичные загрузки (`.part`, `.ytdl`, `.temp`, `.tmp`, `.frag`, `.crdownload`, `.aria2`) и старые orphan `fa-x264tw-*` в `diagnostics-maintenance`.
 - [x] Подсчёт размеров: IPC/preload `diagnostics.maintenanceSnapshot()` + кнопка «Размер временных» в «О программе» показывает total и разбивку `preview-cache`/`.part`/ffmpeg temp.
 - [x] Выборочная очистка: сервис принимает target ids; UI даёт отдельные двухшаговые кнопки для общего набора, `preview-cache`, частичных yt-dlp файлов и старых ffmpeg temp.
 - [x] Подтверждение опасных действий: очистка временного в «О программе» требует второго клика («Подтвердить очистку») и показывает статус-предупреждение.
@@ -435,12 +433,14 @@
 
 ## §14. Контекстное меню Windows
 
-- [ ] Регистрация HKCU пунктов.
-- [ ] «Открыть в FluxAlloy».
-- [ ] Quick MP4.
-- [ ] Ограничение на видеофайлы/ассоциации.
-- [ ] Удаление регистрации.
-- [ ] Эквиваленты/отсрочка для macOS/Linux зафиксировать в чек-листе.
+- [x] Регистрация HKCU пунктов (video `SystemFileAssociations`, J-1061).
+- [x] «Открыть в FluxAlloy» (`--fluxalloy-shell-open`, J-1061).
+- [x] Quick MP4 (`--fluxalloy-shell-quick-mp4`, ffmpeg export, J-1061).
+- [x] Ограничение на видеофайлы (whitelist расширений + parse argv).
+- [x] Удаление регистрации (настройки + IPC unregister).
+- [x] macOS/Linux: отложено (UI скрыт, `supported: false`).
+- [x] NSIS post-install register / uninstall unregister (`installer.nsh`, headless CLI, J-1062).
+- [x] Single-instance: повторный shell-open в работающее окно (J-1062).
 
 ## §15. База знаний и подсказки
 

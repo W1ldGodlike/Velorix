@@ -241,5 +241,7 @@ export const mainApplicationStringsEn: MainApplicationStrings = {
     'The current preview file is not allowed for CLI substitution (open it via the dialog or drag-and-drop).',
   terminalEngineMissingInSettings: 'Engine {tool} was not found in settings/bin.',
   terminalBlockedLogToolLine: '{tool} …',
-  terminalLogTruncatedOlder: '[FluxAlloy] truncated older terminal-cli.log entries\n\n'
+  terminalLogTruncatedOlder: '[FluxAlloy] truncated older terminal-cli.log entries\n\n',
+  windowsExplorerContextMenuOpen: 'Open in FluxAlloy',
+  windowsExplorerContextMenuQuickMp4: 'Quick convert to MP4'
 }

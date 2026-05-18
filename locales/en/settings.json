@@ -85,5 +85,15 @@
   "settingsEnginesCheckUpdatesButton": "Check for updates",
   "settingsEnginesCheckUpdatesTooltip": "Compare yt-dlp and FFmpeg versions with GitHub and download to app-data/bin when newer",
   "enginePathsDialogFooterToolbarAria": "Engine paths dialog actions",
-  "enginePathsDialogRowsGroupAria": "Per-engine executable path fields"
+  "enginePathsDialogRowsGroupAria": "Per-engine executable path fields",
+  "appSettingsExplorerMenuLegend": "Windows Explorer menu",
+  "appSettingsExplorerMenuHint": "Add Open in FluxAlloy and Quick MP4 for video files (current user, HKCU). Portable builds: register manually.",
+  "appSettingsExplorerMenuCheckbox": "Add to Explorer context menu",
+  "appSettingsExplorerMenuRegister": "Register now",
+  "appSettingsExplorerMenuUnregister": "Remove from menu",
+  "appSettingsExplorerMenuEnabledDone": "Explorer menu enabled",
+  "appSettingsExplorerMenuDisabledDone": "Explorer menu disabled",
+  "appSettingsExplorerMenuRegisterDone": "Explorer menu registered",
+  "appSettingsExplorerMenuUnregisterDone": "Explorer menu removed",
+  "appSettingsExplorerMenuRegisteredStatus": "Menu entries are registered for video extensions"
 }

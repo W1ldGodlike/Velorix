@@ -401,6 +401,16 @@ export const fluxalloy = {
       ipcRenderer.removeListener(channel, handler)
     }
   },
+  onProcessingHistoryChanged: (listener: () => void): (() => void) => {
+    const channel = mw.processingHistoryChanged
+    const handler = (): void => {
+      listener()
+    }
+    ipcRenderer.on(channel, handler)
+    return (): void => {
+      ipcRenderer.removeListener(channel, handler)
+    }
+  },
   onOpenAbout: (listener: () => void): (() => void) => {
     const channel = mw.openAbout
     const handler = (): void => {

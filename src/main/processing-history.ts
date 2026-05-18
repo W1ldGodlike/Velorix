@@ -13,6 +13,21 @@ import type {
 export const PROCESSING_HISTORY_SCHEMA = 1
 export const PROCESSING_HISTORY_MAX_ENTRIES = 500
 
+const processingHistoryChangedListeners = new Set<() => void>()
+
+export function onProcessingHistoryChanged(listener: () => void): () => void {
+  processingHistoryChangedListeners.add(listener)
+  return (): void => {
+    processingHistoryChangedListeners.delete(listener)
+  }
+}
+
+function notifyProcessingHistoryChanged(): void {
+  for (const listener of processingHistoryChangedListeners) {
+    listener()
+  }
+}
+
 interface ProcessingHistoryFileShape {
   schema: number
   entries: ProcessingHistoryEntry[]
@@ -169,6 +184,7 @@ export function appendProcessingHistoryEntry(
     entries.shift()
   }
   writeHistoryFile(userDataRoot, entries)
+  notifyProcessingHistoryChanged()
 }
 
 export function readProcessingHistoryNewestFirst(
@@ -243,4 +259,5 @@ export function getProcessingHistoryWeeklySummary(
 
 export function clearProcessingHistory(userDataRoot: string): void {
   writeHistoryFile(userDataRoot, [])
+  notifyProcessingHistoryChanged()
 }

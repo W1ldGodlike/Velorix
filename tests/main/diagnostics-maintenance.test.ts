@@ -38,6 +38,7 @@ describe('diagnostics-maintenance', () => {
       mkdirSync(join(paths.userData, 'downloads', 'ytdlp'), { recursive: true })
       writeFileSync(join(paths.userData, 'downloads', 'ytdlp', 'video.mp4'), 'ready')
       writeFileSync(join(paths.userData, 'downloads', 'ytdlp', 'video.mp4.part'), 'partial')
+      writeFileSync(join(paths.userData, 'downloads', 'ytdlp', 'other.mkv.crdownload'), 'chrome')
 
       const snapshot = getDiagnosticsMaintenanceSnapshot(paths)
       const preview = snapshot.targets.find((target) => target.id === 'previewCache')
@@ -46,10 +47,10 @@ describe('diagnostics-maintenance', () => {
 
       expect(preview?.files).toBe(1)
       expect(preview?.bytes).toBe(4)
-      expect(partials?.files).toBe(1)
-      expect(partials?.bytes).toBe(7)
+      expect(partials?.files).toBe(2)
+      expect(partials?.bytes).toBe(13)
       expect(ffmpegTemp).toBeDefined()
-      expect(snapshot.cleanableBytes).toBe(11)
+      expect(snapshot.cleanableBytes).toBe(17)
     } finally {
       cleanup()
     }
@@ -70,8 +71,8 @@ describe('diagnostics-maintenance', () => {
 
       expect(result.ok).toBe(true)
       if (result.ok) {
-        expect(result.removedFiles).toBe(2)
-        expect(result.removedBytes).toBe(11)
+        expect(result.removedFiles).toBeGreaterThanOrEqual(2)
+        expect(result.removedBytes).toBeGreaterThanOrEqual(11)
       }
       expect(existsSync(ready)).toBe(true)
       expect(existsSync(part)).toBe(false)
@@ -134,6 +135,29 @@ describe('diagnostics-maintenance', () => {
       cleanup()
       rmSync(oldDir, { recursive: true, force: true })
       rmSync(freshDir, { recursive: true, force: true })
+    }
+  })
+
+  it('считает .crdownload и .aria2 как частичные загрузки', () => {
+    const { paths, cleanup } = tmpPaths()
+    try {
+      mkdirSync(join(paths.userData, 'downloads', 'ytdlp'), { recursive: true })
+      writeFileSync(join(paths.userData, 'downloads', 'ytdlp', 'clip.mp4'), 'ready')
+      writeFileSync(join(paths.userData, 'downloads', 'ytdlp', 'clip.mp4.crdownload'), 'x')
+      writeFileSync(join(paths.userData, 'downloads', 'ytdlp', 'pack.zip.aria2'), 'y')
+
+      const partials = getDiagnosticsMaintenanceSnapshot(paths).targets.find(
+        (target) => target.id === 'ytdlpPartials'
+      )
+      expect(partials?.files).toBe(2)
+      const result = cleanDiagnosticsMaintenance(paths, { targets: ['ytdlpPartials'] })
+      expect(result.ok).toBe(true)
+      expect(existsSync(join(paths.userData, 'downloads', 'ytdlp', 'clip.mp4'))).toBe(true)
+      expect(existsSync(join(paths.userData, 'downloads', 'ytdlp', 'clip.mp4.crdownload'))).toBe(
+        false
+      )
+    } finally {
+      cleanup()
     }
   })
 

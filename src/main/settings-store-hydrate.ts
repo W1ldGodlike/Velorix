@@ -186,6 +186,9 @@ export function hydrateAppSettingsFromPartial(parsed: Partial<AppSettings>): App
   if (ffmpegSnapshotFormat !== undefined && ffmpegSnapshotFormat !== 'png') {
     base.ffmpegSnapshotFormat = ffmpegSnapshotFormat
   }
+  if (parsed.windowsExplorerContextMenu === true) {
+    base.windowsExplorerContextMenu = true
+  }
   if (parsed.ytdlpDownloadPlaylist === true) {
     base.ytdlpDownloadPlaylist = true
   }

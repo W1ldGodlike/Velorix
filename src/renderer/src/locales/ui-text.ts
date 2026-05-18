@@ -14,6 +14,7 @@ export {
   formatMaintenanceCleanDone,
   formatMaintenanceConfirmHint,
   formatMaintenanceSummary,
+  formatMaintenanceSnapshotTargetDetail,
   formatProcessingDurationLabel,
   formatProcessingHistoryKindLabel,
   formatProcessingHistoryOutcomeLabel,

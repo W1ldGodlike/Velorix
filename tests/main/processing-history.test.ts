@@ -8,6 +8,7 @@ import {
   clearProcessingHistory,
   findProcessingHistoryEntryById,
   getProcessingHistoryWeeklySummary,
+  onProcessingHistoryChanged,
   PROCESSING_HISTORY_SCHEMA,
   readProcessingHistoryNewestFirst
 } from '../../src/main/processing-history'
@@ -252,5 +253,41 @@ describe('processing-history', () => {
     }
     expect(raw).toEqual({ schema: PROCESSING_HISTORY_SCHEMA, entries: [] })
     expect(readProcessingHistoryNewestFirst(root)).toEqual([])
+  })
+
+  it('уведомляет подписчиков при append и clear', () => {
+    const root = makeTempRoot()
+    let count = 0
+    const off = onProcessingHistoryChanged(() => {
+      count += 1
+    })
+    appendProcessingHistoryEntry(root, {
+      id: 'notify-a',
+      kind: 'workflowScenario',
+      startedAt: 1,
+      finishedAt: 2,
+      inputPath: 'C:/media/in.mp4',
+      outputPath: null,
+      outcome: 'success',
+      status: 'ok',
+      errorHint: null,
+      workflowScenarioId: 'scenario-1'
+    })
+    expect(count).toBe(1)
+    clearProcessingHistory(root)
+    expect(count).toBe(2)
+    off()
+    appendProcessingHistoryEntry(root, {
+      id: 'notify-b',
+      kind: 'ffmpegExport',
+      startedAt: 3,
+      finishedAt: 4,
+      inputPath: 'in',
+      outputPath: 'out',
+      outcome: 'success',
+      status: 'ok',
+      errorHint: null
+    })
+    expect(count).toBe(2)
   })
 })

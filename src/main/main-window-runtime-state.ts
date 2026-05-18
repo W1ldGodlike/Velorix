@@ -6,6 +6,7 @@ import { clearRendererLogBucket, mainAppStr, mainDownloadsUiLocale } from './mai
 import { attachMainWindowBoundsPersistence, getCachedSettings } from './main-cached-settings-host'
 import { buildApplicationMenu } from './main-application-menu'
 import { createMainWindow } from './main-window'
+import { tryFulfillPendingWindowsExplorerShellLaunch } from './windows-explorer-shell-launch-schedule'
 
 export let mainWindowRef: BrowserWindow | null = null
 
@@ -39,6 +40,7 @@ export function createMainApplicationWindow(): void {
       allowMainWindowClose = false
       mainWindowWebContentsId = webContentsId
       win.setTitle(getMainWindowTitle(mainDownloadsUiLocale()))
+      void tryFulfillPendingWindowsExplorerShellLaunch()
     },
     onMainWindowClosed: (win, webContentsId) => {
       if (mainWindowRef?.id === win.id) {

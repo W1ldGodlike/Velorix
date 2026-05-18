@@ -22,6 +22,7 @@ import { AppSettingsHidpiStatusPanel } from './AppSettingsHidpiStatusPanel'
 import { AppSettingsHwManualSmokePanel } from './AppSettingsHwManualSmokePanel'
 import { AppSettingsPackagedSmokePanel } from './AppSettingsPackagedSmokePanel'
 import { EnginePathsSettingsSection } from './EnginePathsSettingsSection'
+import { WindowsExplorerContextMenuSettings } from './WindowsExplorerContextMenuSettings'
 
 const SECTION_HINT_KEYS: Record<AppSettingsDialogSection, UiTextKey> = {
   general: 'appSettingsSectionHintGeneral',
@@ -245,6 +246,7 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
                 onUiLocalePersisted={onUiLocalePersisted}
                 editorUrlPasteBehavior={editorUrlPasteBehavior}
                 setEditorUrlPasteBehavior={setEditorUrlPasteBehavior}
+                onStatus={onStatus}
                 {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
               />
             ) : null}
@@ -351,6 +353,7 @@ function AppSettingsGeneralPane(props: {
   editorUrlPasteBehavior: EditorUrlPasteBehaviorId
   setEditorUrlPasteBehavior: Dispatch<SetStateAction<EditorUrlPasteBehaviorId>>
   onOpenKnowledgeArticle?: (slug: string) => void
+  onStatus: (message: string) => void
 }): JSX.Element {
   const {
     sectionHintId,
@@ -360,7 +363,8 @@ function AppSettingsGeneralPane(props: {
     onUiLocalePersisted,
     editorUrlPasteBehavior,
     setEditorUrlPasteBehavior,
-    onOpenKnowledgeArticle
+    onOpenKnowledgeArticle,
+    onStatus
   } = props
   const locale = getUiLocale()
 
@@ -433,6 +437,12 @@ function AppSettingsGeneralPane(props: {
           <option value="download_open_editor">{uiText('editorUrlPasteBehaviorOpenEditor')}</option>
         </select>
       </label>
+
+      <WindowsExplorerContextMenuSettings
+        sectionHintId={sectionHintId}
+        shellBusy={shellBusy}
+        onStatus={onStatus}
+      />
 
       <AppSettingsHidpiStatusPanel
         sectionHintId={sectionHintId}

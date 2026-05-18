@@ -85,5 +85,15 @@
   "settingsEnginesCheckUpdatesButton": "Проверить обновления",
   "settingsEnginesCheckUpdatesTooltip": "Сравнить версии yt-dlp и FFmpeg с GitHub и при необходимости скачать в app-data/bin",
   "enginePathsDialogFooterToolbarAria": "Действия диалога путей к движкам",
-  "enginePathsDialogRowsGroupAria": "Поля путей к исполняемым файлам движков"
+  "enginePathsDialogRowsGroupAria": "Поля путей к исполняемым файлам движков",
+  "appSettingsExplorerMenuLegend": "Меню Проводника",
+  "appSettingsExplorerMenuHint": "Пункты «Открыть в FluxAlloy» и «Быстро в MP4» для видеофайлов (текущий пользователь, HKCU). Portable: регистрация вручную.",
+  "appSettingsExplorerMenuCheckbox": "Добавить в контекстное меню",
+  "appSettingsExplorerMenuRegister": "Зарегистрировать",
+  "appSettingsExplorerMenuUnregister": "Удалить из меню",
+  "appSettingsExplorerMenuEnabledDone": "Меню Проводника включено",
+  "appSettingsExplorerMenuDisabledDone": "Меню Проводника отключено",
+  "appSettingsExplorerMenuRegisterDone": "Меню зарегистрировано",
+  "appSettingsExplorerMenuUnregisterDone": "Меню удалено",
+  "appSettingsExplorerMenuRegisteredStatus": "Пункты меню зарегистрированы для расширений видео"
 }
