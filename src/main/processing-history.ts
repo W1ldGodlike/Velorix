@@ -87,6 +87,10 @@ function parseEntry(raw: unknown): ProcessingHistoryEntry | null {
   if (typeof codecRaw === 'string' && codecRaw.trim().length > 0) {
     entry.exportVideoCodecUsed = codecRaw.trim().slice(0, 64)
   }
+  const scenarioIdRaw = o['workflowScenarioId']
+  if (typeof scenarioIdRaw === 'string' && scenarioIdRaw.trim().length > 0) {
+    entry.workflowScenarioId = scenarioIdRaw.trim().slice(0, 128)
+  }
   return entry
 }
 
@@ -154,6 +158,12 @@ export function appendProcessingHistoryEntry(
   ) {
     next.exportVideoCodecUsed = partial.exportVideoCodecUsed.trim().slice(0, 64)
   }
+  if (
+    typeof partial.workflowScenarioId === 'string' &&
+    partial.workflowScenarioId.trim().length > 0
+  ) {
+    next.workflowScenarioId = partial.workflowScenarioId.trim().slice(0, 128)
+  }
   entries.push(next)
   while (entries.length > PROCESSING_HISTORY_MAX_ENTRIES) {
     entries.shift()
@@ -180,7 +190,8 @@ export function readProcessingHistoryNewestFirst(
         entry.outputPath ?? '',
         entry.status,
         entry.errorHint ?? '',
-        entry.exportVideoCodecUsed ?? ''
+        entry.exportVideoCodecUsed ?? '',
+        entry.workflowScenarioId ?? ''
       ].some((text) => text.toLowerCase().includes(q))
     })
     .slice(-max)

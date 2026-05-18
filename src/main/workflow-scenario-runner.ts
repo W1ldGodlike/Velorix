@@ -115,7 +115,8 @@ async function executeRun(item: PendingRun): Promise<void> {
       outcome: 'success',
       status: `workflow ${scenario.title}`,
       errorHint: null,
-      exportVideoCodecUsed: result.videoCodecUsed
+      exportVideoCodecUsed: result.videoCodecUsed,
+      workflowScenarioId: payload.scenarioId
     })
     broadcastWorkflowWatchFolderRunFinished(
       finishPayload(payload, 'success', outPath, null)
@@ -131,7 +132,8 @@ async function executeRun(item: PendingRun): Promise<void> {
     outcome: 'error',
     status: `workflow ${scenario.title}`,
     errorHint: result.error,
-    exportVideoCodecUsed: result.videoCodecUsed
+    exportVideoCodecUsed: result.videoCodecUsed,
+    workflowScenarioId: payload.scenarioId
   })
   broadcastWorkflowWatchFolderRunFinished(
     finishPayload(payload, 'error', outPath, result.error)

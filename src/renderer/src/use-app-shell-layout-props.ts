@@ -384,9 +384,13 @@ export function useAppShellLayoutProps(input: UseAppShellLayoutPropsInput): AppS
       onClose: () => {
         workflowScenarioBuilder.setOpen(false)
       },
-      onStatus: workflowScenarioBuilder.onStatus
+      onStatus: workflowScenarioBuilder.onStatus,
+      onOpenKnowledgeArticle: (slug: string) => {
+        setKnowledgeInitialSlug(slug)
+        setKnowledgeOpen(true)
+      }
     }),
-    [workflowScenarioBuilder]
+    [workflowScenarioBuilder, setKnowledgeInitialSlug, setKnowledgeOpen]
   )
 
   return {

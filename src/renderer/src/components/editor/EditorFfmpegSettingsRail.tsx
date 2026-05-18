@@ -2,6 +2,11 @@ import { KNOWLEDGE_SLUG_FFMPEG_RAIL_PRESETS } from '../../../../shared/knowledge
 import { ProcessingHistoryPanel } from '../ProcessingHistoryPanel'
 import { IconChevronRight } from '../LucideMiniIcons'
 import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
+import {
+  workflowRunScenarioOnFileErrorText,
+  workflowRunScenarioOnUrlErrorText
+} from '../../editor-workflow-run-error-text'
+import type { WorkflowRunScenarioOnUrlError } from '../../../../shared/workflow-watch-folder-contract'
 import { uiText } from '../../locales/ui-text'
 import { EditorFfmpegSettingsRailAudioSection } from './EditorFfmpegSettingsRailAudioSection'
 import { EditorFfmpegSettingsRailFormatSection } from './EditorFfmpegSettingsRailFormatSection'
@@ -145,6 +150,27 @@ export function EditorFfmpegSettingsRail(props: EditorFfmpegSettingsRailProps) {
           })
         }}
         onOpenInputInHandler={(id) => {
+          const entry = processingHistory.find((row) => row.id === id)
+          if (entry?.kind === 'workflowScenario' && entry.workflowScenarioId) {
+            setStatusHint(uiText('processingHistoryRepeatWorkflowBusy'))
+            void window.fluxalloy.processingHistory.repeatWorkflowScenario(id).then((res) => {
+              if (res.ok) {
+                setStatusHint(uiText('processingHistoryRepeatWorkflowDone'))
+                return
+              }
+              if ('errorCode' in res) {
+                const code = res.errorCode
+                setStatusHint(
+                  code === 'no-source-url' || code === 'download-start-failed'
+                    ? workflowRunScenarioOnUrlErrorText(code as WorkflowRunScenarioOnUrlError)
+                    : workflowRunScenarioOnFileErrorText(code)
+                )
+                return
+              }
+              setStatusHint(res.error)
+            })
+            return
+          }
           setStatusHint(uiText('processingHistoryOpenInputBusy'))
           void window.fluxalloy.processingHistory.openInputInHandler(id).then((res) => {
             setStatusHint(res.ok ? uiText('processingHistoryOpenInputDone') : res.error)

@@ -18,7 +18,7 @@ describe('locale-json-catalog', () => {
     expect(lines.some((l) => l.includes('check:locales-json'))).toBe(true)
     expect(lines.some((l) => l.includes('common'))).toBe(true)
     expect(lines.some((l) => l.includes('about'))).toBe(true)
-    expect(LOCALE_JSON_SHARDS.length).toBe(25)
+    expect(LOCALE_JSON_SHARDS.length).toBe(26)
     expect(LOCALE_JSON_SHARDS).toContain('maintenance')
     expect(LOCALE_JSON_SHARDS).toContain('formatting')
     expect(LOCALE_JSON_SHARDS).toContain('knowledge')

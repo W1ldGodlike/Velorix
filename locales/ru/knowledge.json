@@ -45,5 +45,5 @@
   "knowledgeDeepLinkPackagedMacosLabel": "Справка: smoke macOS (pack:mac:dir)",
   "knowledgeDeepLinkPackagedMacosTooltip": "Открыть статью о ручной проверке FluxAlloy.app после pack:mac:dir.",
   "knowledgeDeepLinkWorkflows": "Справка: планировщик и сценарии",
-  "knowledgeDeepLinkWorkflowsTooltip": "Watch-folder, Task Scheduler, конструктор и запуск из редактора."
+  "knowledgeDeepLinkWorkflowsTooltip": "Watch-folder, OS schedulers, шаблоны, URL yt-dlp→ffmpeg, запуск из редактора."
 }

@@ -95,6 +95,9 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
       : []),
     ...(info.macosPackagedSmokeChecklistLines.length > 0
       ? ['', 'macosPackagedSmoke:', ...info.macosPackagedSmokeChecklistLines]
+      : []),
+    ...(info.workflowOsSchedulerSmokeChecklistLines.length > 0
+      ? ['', 'workflowOsSchedulerSmoke:', ...info.workflowOsSchedulerSmokeChecklistLines]
       : [])
   ].join('\n')
 }

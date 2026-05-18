@@ -85,6 +85,8 @@ export const mainWindowIpc = {
   processingHistoryClear: 'fluxalloy:processing-history-clear',
   processingHistoryOpenOutput: 'fluxalloy:processing-history-open-output',
   processingHistoryOpenInputInHandler: 'fluxalloy:processing-history-open-input-in-handler',
+  processingHistoryRepeatWorkflowScenario:
+    'fluxalloy:processing-history-repeat-workflow-scenario',
   openDownloadsWindow: 'fluxalloy:open-downloads-window',
   /** §9 — отдельное окно инспектора ffprobe (`#inspector`). */
   openInspectorWindow: 'fluxalloy:open-inspector-window',

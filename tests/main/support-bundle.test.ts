@@ -129,6 +129,10 @@ describe('createSupportBundleZip', () => {
       macosPackagedSmokeChecklistLines: [
         'doc: docs/RELEASE.md §4.2',
         '  step [launch]: Open FluxAlloy.app'
+      ],
+      workflowOsSchedulerSmokeChecklistLines: [
+        'doc: docs/RELEASE.md §4.3',
+        '  step [planner-task]: Planner watch-folder task'
       ]
     })
 

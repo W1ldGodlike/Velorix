@@ -104,6 +104,9 @@ export const mainApplicationStringsRu: MainApplicationStrings = {
   processingHistoryBadAction: 'Некорректное действие',
   processingHistoryNoOutput: 'У записи нет файла результата',
   processingHistoryEntryNotFound: 'Запись истории не найдена',
+  processingHistoryNotWorkflowScenario: 'Запись не относится к сценарию',
+  processingHistoryWorkflowScenarioIdMissing:
+    'В записи нет id сценария — откройте исходник кнопкой «Повторить»',
   exportAlreadyRunning: 'Уже выполняется экспорт',
   exportInvalidRequest: 'Некорректный запрос',
   exportInputMissing: 'Не указан входной файл',

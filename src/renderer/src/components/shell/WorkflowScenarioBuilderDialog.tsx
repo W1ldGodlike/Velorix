@@ -10,6 +10,8 @@ import {
   WORKFLOW_SCENARIO_TEMPLATES,
   type WorkflowScenarioTemplateId
 } from '../../../../shared/workflow-scenario-templates'
+import { KNOWLEDGE_SLUG_WORKFLOWS_PLANNER_SCENARIOS } from '../../../../shared/knowledge-contract'
+import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
 import { uiText } from '../../locales/ui-text'
 import type { UiTextKey } from '../../locales/ui-text-strings'
 import { WorkflowScenarioFlowDiagram } from './WorkflowScenarioFlowDiagram'
@@ -18,12 +20,13 @@ export type WorkflowScenarioBuilderDialogProps = {
   open: boolean
   onClose: () => void
   onStatus: (message: string) => void
+  onOpenKnowledgeArticle?: (slug: string) => void
 }
 
 export function WorkflowScenarioBuilderDialog(
   props: WorkflowScenarioBuilderDialogProps
 ): JSX.Element | null {
-  const { open, onClose, onStatus } = props
+  const { open, onClose, onStatus, onOpenKnowledgeArticle } = props
   const jsonFieldId = useId()
   const [busy, setBusy] = useState(false)
   const [items, setItems] = useState<WorkflowScenarioListItem[]>([])
@@ -180,9 +183,22 @@ export function WorkflowScenarioBuilderDialog(
           e.stopPropagation()
         }}
       >
-        <h2 id="workflow-scenario-builder-title" className="app-modal-title">
-          {uiText('workflowScenarioBuilderDialogTitle')}
-        </h2>
+        <div className="app-modal-title-row">
+          <h2 id="workflow-scenario-builder-title" className="app-modal-title">
+            {uiText('workflowScenarioBuilderDialogTitle')}
+          </h2>
+          {onOpenKnowledgeArticle ? (
+            <KnowledgeDeepLinkButton
+              label={uiText('knowledgeDeepLinkWorkflows')}
+              tooltip={uiText('knowledgeDeepLinkWorkflowsTooltip')}
+              ariaDescribedBy="workflow-scenario-builder-hint"
+              disabled={busy}
+              onOpen={() => {
+                onOpenKnowledgeArticle(KNOWLEDGE_SLUG_WORKFLOWS_PLANNER_SCENARIOS)
+              }}
+            />
+          ) : null}
+        </div>
         <p id="workflow-scenario-builder-hint" className="app-modal-hint">
           {uiText('workflowScenarioBuilderDialogHint')}
         </p>

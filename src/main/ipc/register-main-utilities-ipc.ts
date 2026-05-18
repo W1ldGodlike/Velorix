@@ -17,6 +17,7 @@ import {
   getProcessingHistoryWeeklySummary,
   readProcessingHistoryNewestFirst
 } from '../processing-history'
+import { repeatWorkflowScenarioFromHistoryId } from '../processing-history-repeat-workflow'
 import type { ProcessingHistoryFilter } from '../../shared/processing-history-contract'
 import { getTerminalCommandHints, runTerminalCommand } from '../terminal-service'
 
@@ -36,6 +37,8 @@ export type MainUtilitiesIpcDeps = {
     processingHistoryBadAction: string
     processingHistoryNoOutput: string
     processingHistoryEntryNotFound: string
+    processingHistoryNotWorkflowScenario: string
+    processingHistoryWorkflowScenarioIdMissing: string
   }
   mainDownloadsUiLocale: () => AppUiLocale
   getEnginePathOverrides: () => EnginePathOverrides
@@ -217,6 +220,38 @@ export function registerMainUtilitiesIpcHandlers(deps: MainUtilitiesIpcDeps): vo
         return { ok: false, error: H.processingHistoryEntryNotFound }
       }
       return deps.openDownloadedFileInMainHandler(entry.inputPath)
+    }
+  )
+
+  ipcMain.handle(
+    mw.processingHistoryRepeatWorkflowScenario,
+    async (_event, raw: unknown): Promise<
+      | { ok: true }
+      | { ok: false; error: string }
+      | {
+          ok: false
+          errorCode:
+            | import('../../shared/workflow-watch-folder-contract').WorkflowRunScenarioOnFileError
+            | import('../../shared/workflow-watch-folder-contract').WorkflowRunScenarioOnUrlError
+        }
+    > => {
+      const H = deps.mainAppStr()
+      const result = await repeatWorkflowScenarioFromHistoryId(resolveAppPaths().userData, raw)
+      if (result.ok) {
+        return { ok: true }
+      }
+      switch (result.error) {
+        case 'bad-id':
+          return { ok: false, error: H.processingHistoryIdMissing }
+        case 'entry-not-found':
+          return { ok: false, error: H.processingHistoryEntryNotFound }
+        case 'not-workflow':
+          return { ok: false, error: H.processingHistoryNotWorkflowScenario }
+        case 'no-scenario-id':
+          return { ok: false, error: H.processingHistoryWorkflowScenarioIdMissing }
+        default:
+          return { ok: false, errorCode: result.error }
+      }
     }
   )
 }

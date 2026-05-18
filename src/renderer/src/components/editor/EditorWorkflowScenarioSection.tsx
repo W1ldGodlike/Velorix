@@ -2,39 +2,14 @@ import { useCallback, useState, type JSX } from 'react'
 
 import type { WorkflowScenarioListItem } from '../../../../shared/workflow-scenario-contract'
 import { resolveWorkflowScenarioDownloadSourceUrl } from '../../../../shared/workflow-scenario-url'
-import type {
-  WorkflowRunScenarioOnFileError,
-  WorkflowRunScenarioOnUrlError
-} from '../../../../shared/workflow-watch-folder-contract'
+import { KNOWLEDGE_SLUG_WORKFLOWS_PLANNER_SCENARIOS } from '../../../../shared/knowledge-contract'
+import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
+import {
+  workflowRunScenarioOnFileErrorText,
+  workflowRunScenarioOnUrlErrorText
+} from '../../editor-workflow-run-error-text'
 import { uiText, uiTextVars } from '../../locales/ui-text'
 import type { EditorFfmpegSettingsRailProps } from './editor-ffmpeg-settings-rail-props'
-
-function runScenarioErrorMessage(code: WorkflowRunScenarioOnFileError): string {
-  switch (code) {
-    case 'bad-args':
-      return uiText('editorWorkflowRunErrorBadArgs')
-    case 'scenario-not-found':
-      return uiText('editorWorkflowRunErrorScenario')
-    case 'path-missing':
-      return uiText('editorWorkflowRunErrorNoFile')
-    case 'path-denied':
-      return uiText('editorWorkflowRunErrorPathDenied')
-    case 'no-export-step':
-      return uiText('editorWorkflowRunErrorNoExport')
-    default:
-      return uiText('editorWorkflowRunErrorGeneric')
-  }
-}
-
-function runScenarioUrlErrorMessage(code: WorkflowRunScenarioOnUrlError): string {
-  if (code === 'no-source-url') {
-    return uiText('editorWorkflowRunUrlErrorNoSource')
-  }
-  if (code === 'download-start-failed') {
-    return uiText('editorWorkflowRunUrlErrorDownload')
-  }
-  return runScenarioErrorMessage(code)
-}
 
 /** §11 — запуск сохранённого сценария по файлу редактора или по URL блока «Скачать». */
 export function EditorWorkflowScenarioSection(props: EditorFfmpegSettingsRailProps): JSX.Element {
@@ -46,7 +21,8 @@ export function EditorWorkflowScenarioSection(props: EditorFfmpegSettingsRailPro
     snapshotBusy,
     probePending,
     editorFfmpegDetailBusy,
-    setStatusHint
+    setStatusHint,
+    onOpenKnowledgeArticle
   } = props
   const [scenarios, setScenarios] = useState<WorkflowScenarioListItem[]>([])
   const [scenarioId, setScenarioId] = useState('')
@@ -99,7 +75,7 @@ export function EditorWorkflowScenarioSection(props: EditorFfmpegSettingsRailPro
         setStatusHint(uiText('editorWorkflowRunQueued'))
         return
       }
-      setStatusHint(runScenarioErrorMessage(res.error))
+      setStatusHint(workflowRunScenarioOnFileErrorText(res.error))
     } finally {
       setRunBusy(false)
     }
@@ -124,7 +100,7 @@ export function EditorWorkflowScenarioSection(props: EditorFfmpegSettingsRailPro
         )
         return
       }
-      setStatusHint(runScenarioUrlErrorMessage(res.error))
+      setStatusHint(workflowRunScenarioOnUrlErrorText(res.error))
     } finally {
       setRunBusy(false)
     }
@@ -151,7 +127,22 @@ export function EditorWorkflowScenarioSection(props: EditorFfmpegSettingsRailPro
       <summary className="app-settings-summary" title={uiText('editorWorkflowSectionTitle')}>
         {uiText('editorWorkflowSectionTitle')}
       </summary>
-      <p className="app-settings-section-hint">{uiText('editorWorkflowSectionHint')}</p>
+      <div className="app-settings-hw-smoke-header">
+        <p id="editor-workflow-scenario-hint" className="app-settings-section-hint">
+          {uiText('editorWorkflowSectionHint')}
+        </p>
+        {onOpenKnowledgeArticle ? (
+          <KnowledgeDeepLinkButton
+            label={uiText('knowledgeDeepLinkWorkflows')}
+            tooltip={uiText('knowledgeDeepLinkWorkflowsTooltip')}
+            ariaDescribedBy="editor-workflow-scenario-hint"
+            disabled={busy}
+            onOpen={() => {
+              onOpenKnowledgeArticle(KNOWLEDGE_SLUG_WORKFLOWS_PLANNER_SCENARIOS)
+            }}
+          />
+        ) : null}
+      </div>
       <div className="app-settings-stack" aria-busy={editorFfmpegDetailBusy || runBusy}>
         <label className="app-field app-field-block">
           <span>{uiText('editorWorkflowScenarioLabel')}</span>

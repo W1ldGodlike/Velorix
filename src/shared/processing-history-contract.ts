@@ -18,6 +18,8 @@ export interface ProcessingHistoryEntry {
   errorHint: string | null
   /** Фактический `-c:v` после резолва auto (экспорт ffmpeg / авто-экспорт). */
   exportVideoCodecUsed?: string
+  /** Id сценария для kind `workflowScenario` (повтор из истории §13). */
+  workflowScenarioId?: string
 }
 
 export interface ProcessingHistoryFilter {

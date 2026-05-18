@@ -98,6 +98,8 @@ export type MainApplicationStrings = {
   processingHistoryBadAction: string
   processingHistoryNoOutput: string
   processingHistoryEntryNotFound: string
+  processingHistoryNotWorkflowScenario: string
+  processingHistoryWorkflowScenarioIdMissing: string
   exportAlreadyRunning: string
   exportInvalidRequest: string
   exportInputMissing: string

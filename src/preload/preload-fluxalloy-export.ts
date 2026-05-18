@@ -183,5 +183,17 @@ export const fluxalloyProcessingHistory = {
   ): Promise<{ ok: true; path: string } | { ok: false; error: string }> =>
     ipcRenderer.invoke(mw.processingHistoryOpenOutput, { id, mode }),
   openInputInHandler: (id: string): Promise<{ ok: true } | { ok: false; error: string }> =>
-    ipcRenderer.invoke(mw.processingHistoryOpenInputInHandler, id)
+    ipcRenderer.invoke(mw.processingHistoryOpenInputInHandler, id),
+  repeatWorkflowScenario: (
+    id: string
+  ): Promise<
+    | { ok: true }
+    | { ok: false; error: string }
+    | {
+        ok: false
+        errorCode:
+          | import('../shared/workflow-watch-folder-contract').WorkflowRunScenarioOnFileError
+          | import('../shared/workflow-watch-folder-contract').WorkflowRunScenarioOnUrlError
+      }
+  > => ipcRenderer.invoke(mw.processingHistoryRepeatWorkflowScenario, id)
 }

@@ -45,6 +45,8 @@ export interface SupportBundleRuntimeInfo {
   linuxPackagedSmokeChecklistLines: readonly string[]
   /** §3 — ручной smoke packaged macOS. */
   macosPackagedSmokeChecklistLines: readonly string[]
+  /** §10 — ручной smoke OS scheduler watch-folder. */
+  workflowOsSchedulerSmokeChecklistLines: readonly string[]
 }
 
 export interface DiagnosticsPruneOptions {

@@ -104,6 +104,9 @@ export const mainApplicationStringsEn: MainApplicationStrings = {
   processingHistoryBadAction: 'Invalid action',
   processingHistoryNoOutput: 'This entry has no output file',
   processingHistoryEntryNotFound: 'History entry not found',
+  processingHistoryNotWorkflowScenario: 'Entry is not a workflow scenario run',
+  processingHistoryWorkflowScenarioIdMissing:
+    'Scenario id is missing in this entry — use Retry to open the source file',
   exportAlreadyRunning: 'Export is already running',
   exportInvalidRequest: 'Invalid request',
   exportInputMissing: 'Input file is not specified',

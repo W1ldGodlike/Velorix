@@ -83,7 +83,8 @@ export function ProcessingHistoryPanel({
     { value: 'ffmpegExport', label: uiText('processingHistoryKindExport') },
     { value: 'ffmpegSnapshot', label: uiText('processingHistoryKindSnapshot') },
     { value: 'autoExport', label: uiText('processingHistoryKindAutoExport') },
-    { value: 'ffmpegBatchExport', label: uiText('processingHistoryKindBatchExport') }
+    { value: 'ffmpegBatchExport', label: uiText('processingHistoryKindBatchExport') },
+    { value: 'workflowScenario', label: uiText('processingHistoryKindWorkflowScenario') }
   ]
   const outcomeOptions: Array<{ value: '' | ProcessingHistoryOutcome; label: string }> = [
     { value: '', label: uiText('processingHistoryOutcomeAll') },
@@ -138,6 +139,11 @@ export function ProcessingHistoryPanel({
             {uiText('processingHistoryChipTime')}{' '}
             {formatProcessingDurationLabel(weeklySummary.totalDurationMs)}
           </span>
+          {weeklySummary.workflowScenario > 0 ? (
+            <span>
+              {uiText('processingHistoryChipWorkflow')} {weeklySummary.workflowScenario}
+            </span>
+          ) : null}
         </div>
       ) : null}
       <div
@@ -331,11 +337,17 @@ export function ProcessingHistoryPanel({
                     type="button"
                     className="app-btn app-btn-compact"
                     aria-describedby="processingHistorySectionHint"
-                    title={uiText('processingHistoryRepeat')}
+                    title={
+                      entry.kind === 'workflowScenario' && entry.workflowScenarioId
+                        ? uiText('processingHistoryRepeatWorkflow')
+                        : uiText('processingHistoryRepeat')
+                    }
                     disabled={busy}
                     onClick={() => onOpenInputInHandler(entry.id)}
                   >
-                    {uiText('processingHistoryRepeat')}
+                    {entry.kind === 'workflowScenario' && entry.workflowScenarioId
+                      ? uiText('processingHistoryRepeatWorkflow')
+                      : uiText('processingHistoryRepeat')}
                   </button>
                   {onAddInputToBatch ? (
                     <button

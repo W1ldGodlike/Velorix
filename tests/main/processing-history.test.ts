@@ -85,10 +85,24 @@ describe('processing-history', () => {
       status: 'Ошибка',
       errorHint: 'Invalid data found'
     })
+    appendProcessingHistoryEntry(root, {
+      id: 'scenario-ok',
+      kind: 'workflowScenario',
+      startedAt: 5,
+      finishedAt: 6,
+      inputPath: 'C:/watch/in.mp4',
+      outputPath: 'C:/watch/out.mp4',
+      outcome: 'success',
+      status: 'Сценарий завершён',
+      errorHint: null
+    })
 
     expect(readProcessingHistoryNewestFirst(root, { kind: 'autoExport' }).map((e) => e.id)).toEqual(
       ['auto-ok']
     )
+    expect(
+      readProcessingHistoryNewestFirst(root, { kind: 'workflowScenario' }).map((e) => e.id)
+    ).toEqual(['scenario-ok'])
     expect(readProcessingHistoryNewestFirst(root, { outcome: 'error' }).map((e) => e.id)).toEqual([
       'export-fail'
     ])
@@ -116,6 +130,26 @@ describe('processing-history', () => {
     expect(readProcessingHistoryNewestFirst(root, { query: 'nvenc' }).map((e) => e.id)).toEqual([
       'with-codec'
     ])
+  })
+
+  it('сохраняет workflowScenarioId и ищет по нему', () => {
+    const root = makeTempRoot()
+    appendProcessingHistoryEntry(root, {
+      id: 'with-scenario',
+      kind: 'workflowScenario',
+      startedAt: 1,
+      finishedAt: 2,
+      inputPath: 'C:/watch/in.mp4',
+      outputPath: 'C:/watch/out.mp4',
+      outcome: 'success',
+      status: 'workflow demo',
+      errorHint: null,
+      workflowScenarioId: 'scenario-1'
+    })
+    expect(readProcessingHistoryNewestFirst(root)[0]?.workflowScenarioId).toBe('scenario-1')
+    expect(readProcessingHistoryNewestFirst(root, { query: 'scenario-1' }).map((e) => e.id)).toEqual(
+      ['with-scenario']
+    )
   })
 
   it('находит запись по id для безопасного открытия результата из main', () => {
@@ -172,16 +206,28 @@ describe('processing-history', () => {
       status: 'fail',
       errorHint: 'boom'
     })
+    appendProcessingHistoryEntry(root, {
+      id: 'scenario',
+      kind: 'workflowScenario',
+      startedAt: now - 200,
+      finishedAt: now - 50,
+      inputPath: 'watch-in',
+      outputPath: 'watch-out',
+      outcome: 'success',
+      status: 'scenario ok',
+      errorHint: null
+    })
 
     expect(getProcessingHistoryWeeklySummary(root, now)).toMatchObject({
-      total: 2,
-      success: 1,
+      total: 3,
+      success: 2,
       error: 1,
       cancelled: 0,
       ffmpegExport: 1,
       ffmpegSnapshot: 1,
       autoExport: 0,
-      totalDurationMs: 700
+      workflowScenario: 1,
+      totalDurationMs: 850
     })
   })
 

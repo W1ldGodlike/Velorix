@@ -178,6 +178,24 @@ npm run verify:mac-unpacked
 
 Справка: `Help/packaged-macos-smoke.md`.
 
+### 4.3 Workflows: OS schedulers (watch-folder)
+
+После packaged smoke (§4–§4.2) при необходимости проверьте **фоновый tick** watch-folder (не в CI):
+
+| ОС | Backend в планировщике | Проверка |
+|----|------------------------|----------|
+| Windows | Windows Task Scheduler | `schtasks /Query /TN \FluxAlloy\watch-<taskId>`; tick: `FluxAlloy.exe --workflow-watch-folder-tick` |
+| macOS | macOS LaunchAgent | `~/Library/LaunchAgents/com.fluxalloy.watch.<taskId>.plist`; лог `~/Library/Logs/FluxAlloy/watch-<taskId>.log` |
+| Linux | Linux systemd user timer | `systemctl --user status fluxalloy-watch-<taskId>.timer`; `journalctl --user -u fluxalloy-watch-<taskId>.service` |
+
+Общий сценарий: **Сервис → Планировщик задач** — задача watch-folder, backend OS, интервал 15–86400 с, сценарий с блоком «Обработать»; положить тестовый файл в папку — событие в статусбаре и запись `workflowScenario` в истории.
+
+URL-сценарий: шаблон «URL → скачать → ffmpeg», `sourceUrl` в JSON; **FFmpeg rail → Сценарий → Запустить URL-сценарий**.
+
+Справка: `Help/workflows-planner-scenarios.md` (RU), `Help/en/workflows-planner-scenarios.md` (EN).
+
+В UI: **Сервис → Планировщик задач** — блок «Ручной smoke OS scheduler» (копирование чеклиста; тот же текст в Support ZIP как `workflowOsSchedulerSmoke:`).
+
 ## 5. GitHub
 
 Репозиторий: `https://github.com/W1ldGodlike/FluxAlloy`.

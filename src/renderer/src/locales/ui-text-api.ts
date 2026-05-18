@@ -166,6 +166,9 @@ export function formatProcessingHistoryKindLabel(kind: ProcessingHistoryKind): s
   if (kind === 'ffmpegBatchExport') {
     return uiText('processingHistoryKindBatchExport')
   }
+  if (kind === 'workflowScenario') {
+    return uiText('processingHistoryKindWorkflowScenario')
+  }
   return uiText('processingHistoryKindExport')
 }
 

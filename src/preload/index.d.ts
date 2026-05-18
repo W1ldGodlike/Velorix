@@ -494,6 +494,18 @@ export interface FluxAlloyApi {
       mode: 'file' | 'folder' | 'preview'
     ) => Promise<{ ok: true; path: string } | { ok: false; error: string }>
     openInputInHandler: (id: string) => Promise<{ ok: true } | { ok: false; error: string }>
+    repeatWorkflowScenario: (
+      id: string
+    ) => Promise<
+      | { ok: true }
+      | { ok: false; error: string }
+      | {
+          ok: false
+          errorCode:
+            | import('../shared/workflow-watch-folder-contract').WorkflowRunScenarioOnFileError
+            | import('../shared/workflow-watch-folder-contract').WorkflowRunScenarioOnUrlError
+        }
+    >
   }
   onPreviewOpened: (listener: (payload: PreviewOpenedPayload) => void) => () => void
   onThemeChanged: (listener: (theme: ResolvedAppTheme) => void) => () => void

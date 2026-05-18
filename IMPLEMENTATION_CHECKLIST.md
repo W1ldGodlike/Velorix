@@ -48,8 +48,8 @@
 - [x] §15: Help `packaged-windows-smoke` (RU+EN) + deep-link из панели Win smoke (J-1045); прочие статьи — J-1041.
 - [x] §3: packaged smoke Win — чеклист, Support ZIP, `RELEASE.md` §4, Help/deep-link (J-1044/1045).
 - [x] §8: терминал — чип «Сценарии» в каталоге + Help про RU summary/скрипты (J-1046).
-- [~] §10/§11: watch-folder + ffmpeg + редактор + OS schedulers (Win/macOS/Linux) + URL yt-dlp→ffmpeg + шаблоны (J-1049..1055); прогон schedulers на железе — владелец.
-- [x] §3: packaged smoke Linux/macOS — чеклисты, панели, Support ZIP, Help, RELEASE §4.1/§4.2 (J-1048); owner-прогон на железе — владелец.
+- [~] §10/§11: v1 закрыт; прогон OS scheduler на железе — владелец (J-1057).
+- [~] §13: история workflow — фильтр/повтор file+URL (J-1058..1060); owner-smoke §10/§11/§16/§1.1.
 
 ---
 
@@ -395,23 +395,26 @@
 
 ## §10. Планировщик задач
 
-- [~] Модель задач + реестр `userData/workflows/scheduled-tasks.json`; UI планировщик, in-app watch-folder runner, авто-ffmpeg при detect (J-1047/1049/1050); Task Scheduler backend — позже.
-- [~] Windows Task Scheduler backend v1 (`schtasks`, `--workflow-watch-folder-tick`, J-1052); macOS/Linux — позже.
+- [x] Модель задач + реестр `userData/workflows/scheduled-tasks.json`; UI планировщик, in-app watch-folder runner, авто-ffmpeg при detect (J-1047..1050).
+- [x] OS backends v1: Windows `schtasks`, macOS LaunchAgent, Linux systemd user timer + CLI `--workflow-watch-folder-tick` (J-1052..1055).
 - [x] Watch folder in-app (poll, detect IPC, опция `executeScenarioOnDetect`, ffmpeg v1).
-- [ ] JSON сценарий обработки.
-- [ ] Интервал/триггеры.
-- [ ] Таблица зарегистрированных задач.
-- [ ] Управление задачами.
-- [ ] Валидация полей.
+- [x] Привязка к `scenarioId` (JSON сценария в `scenarios.json`).
+- [x] Интервал опроса 15–86400 с (in-app и OS timer).
+- [x] Таблица задач + мастер «Добавить задачу».
+- [x] Вкл/выкл, удаление, pick folder.
+- [x] Валидация parse (`scheduled-task-parse`, Vitest).
+- [x] Чеклист ручного smoke OS scheduler в планировщике + Support ZIP `workflowOsSchedulerSmoke:` (J-1057).
+- [~] Ручной прогон OS scheduler на Win/macOS/Linux — владелец (`docs/RELEASE.md` §4.3, Help).
 
 ## §11. Конструктор сценариев
 
-- [~] JSON + блок-схема + ffmpeg v1 (watch-folder и кнопка в редакторе, J-1047..1051); drag-and-link — позже.
-- [x] Запуск сценария из главного окна по открытому файлу (§11, J-1051).
-- [ ] Шаблоны.
-- [ ] Load/save/save as.
-- [ ] Валидация схемы.
-- [ ] Визуальная блок-схема Drag-and-Link.
+- [x] JSON + блок-схема + ffmpeg v1 (watch-folder, редактор, URL yt-dlp→ffmpeg, J-1047..1053).
+- [x] Запуск сценария из главного окна по открытому файлу и по URL (§11, J-1051/1053).
+- [x] Шаблоны local/URL (`workflow-scenario-templates`, J-1053).
+- [x] Load/save/delete в UI + `userData/workflows/scenarios.json`.
+- [x] Валидация схемы (кнопка «Проверить», `workflow-scenario-parse`).
+- [x] Deep-link Help из редактора и конструктора (J-1056).
+- [ ] Drag-and-link редактор блоков — позже.
 
 ## §12. Очистка кэша и обслуживание
 
@@ -424,9 +427,9 @@
 ## §13. История и статистика
 
 - [~] Журнал задач: `processing/history.json` пишет export/snapshot/auto-export из main; правая FFmpeg-панель показывает последние записи.
-- [~] Фильтры: история обработок фильтруется по kind/outcome/query (**в т.ч. по `exportVideoCodecUsed`**); встроенная история загрузок — по outcome.
+- [x] Фильтры: kind/outcome/query (**в т.ч. `workflowScenario`**, `exportVideoCodecUsed`); загрузки — по outcome.
 - [~] Повторить загрузку: история yt-dlp в pop-out и встроенной панели умеет вернуть URL в очередь.
-- [~] Повторить обработку: любая запись истории открывает исходник в редакторе кнопкой «Повторить».
+- [x] Повторить обработку: «Повторить» / «Повторить сценарий» (file + URL по `sourceUrl`, J-1059/1060).
 - [~] Недельная сводка: main считает 7 дней для обработок и загрузок; UI показывает chips.
 - [~] Экспорт истории: правая FFmpeg-панель и встроенная история загрузок сохраняют видимые записи в JSON.
 

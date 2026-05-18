@@ -45,5 +45,5 @@
   "knowledgeDeepLinkPackagedMacosLabel": "Help: macOS packaged smoke",
   "knowledgeDeepLinkPackagedMacosTooltip": "Open the article about manual testing of FluxAlloy.app after pack:mac:dir.",
   "knowledgeDeepLinkWorkflows": "Help: planner and scenarios",
-  "knowledgeDeepLinkWorkflowsTooltip": "Watch-folder, Task Scheduler, builder, and editor run."
+  "knowledgeDeepLinkWorkflowsTooltip": "Watch-folder, OS schedulers, templates, URL yt-dlp→ffmpeg, editor run."
 }
