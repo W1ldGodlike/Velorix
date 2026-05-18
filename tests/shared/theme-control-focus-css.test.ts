@@ -3,7 +3,9 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
 import {
+  THEME_FORBIDDEN_FA_VAR_HEX_FALLBACK,
   THEME_FORBIDDEN_MAIN_CSS_HEX,
+  THEME_FORBIDDEN_MAIN_CSS_RGBA_BLACK,
   THEME_PRIMARY_CONTROL_CSS_ASSERTIONS
 } from '../../src/shared/theme-control-focus-css'
 
@@ -30,5 +32,15 @@ describe('theme-control-focus-css §5', () => {
     for (const hex of THEME_FORBIDDEN_MAIN_CSS_HEX) {
       expect(css, hex).not.toContain(hex)
     }
+  })
+
+  it('main.css does not use hex fallbacks on --fa-* custom properties', () => {
+    const matches = css.match(THEME_FORBIDDEN_FA_VAR_HEX_FALLBACK) ?? []
+    expect(matches).toEqual([])
+  })
+
+  it('main.css does not use raw black rgba scrims', () => {
+    const matches = css.match(THEME_FORBIDDEN_MAIN_CSS_RGBA_BLACK) ?? []
+    expect(matches).toEqual([])
   })
 })

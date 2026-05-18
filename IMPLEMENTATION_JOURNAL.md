@@ -1121,3 +1121,8 @@
 - [J-1093] 2026-05-18 13:35:06 [Assistant]: §5 — toolbar-select/workspace-tab focus; topbar/terminal без #111827/#020617; guard hex в `theme-control-focus-css` test. `npm run check:quiet`.
 - [J-1094] 2026-05-18 13:41:49 [Assistant]: §5 — токены preview/scrim; превью-карточка/видео/pill/probe-error без сырых hex; расширен hex-guard. `npm run check:quiet`.
 - [J-1095] 2026-05-18 13:46:11 [Assistant]: Cadence 470 — коммит J-1091..1094: §5 CSS-токены, контролы hover/focus/disabled, preview/scrim, hex-guard Vitest; audit 1051. `npm run check:quiet`.
+- [J-1096] 2026-05-18 14:02:00 [Assistant]: §5/§11 — `--fa-warning`/`--fa-radius-sm`/`--fa-font-mono`; workflow download/process/save и порты без hex-fallback; guard `THEME_FORBIDDEN_FA_VAR_HEX_FALLBACK` + Vitest; probe/knowledge/timeline; sprint §5 workflow. `npm run check:quiet`.
+- [J-1097] 2026-05-18 14:12:00 [Assistant]: §5 — WCAG `theme-contrast-pairs` + правки accent-contrast/disabled; overlay `--fa-modal-backdrop`/`--fa-elevation-lg`; модалки без rgba(0,0,0); focus input/select/textarea; guard rgba-black. `npm run check:quiet`.
+- [J-1098] 2026-05-18 14:18:00 [Assistant]: §5 — лестница `--fa-radius-*` (hairline…preview/pill/circle); main.css без px/% в border-radius; `theme-radius-css` + Vitest; code/knowledge blockquote. `npm run check:quiet`.
+- [J-1099] 2026-05-18 14:28:00 [Assistant]: §5 — `--fa-space-*` (8px-сетка + overlap); topbar/btn/modal/terminal/downloads/knowledge/timeline px→токены; `theme-spacing-css` + Vitest guard margin/padding px. `npm run check:quiet`.
+- [J-1100] 2026-05-18 14:40:00 [Assistant]: Cadence 475 — коммит J-1096..1099: workflow hex-guard, WCAG contrast, overlay/focus, radius/spacing токены + Vitest; audit 1058. `npm run check:quiet`.

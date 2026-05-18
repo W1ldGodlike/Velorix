@@ -32,5 +32,16 @@ export const THEME_FORBIDDEN_MAIN_CSS_HEX = [
   '#020617',
   '#0a0a0c',
   '#000000',
-  '#f87171'
+  '#f87171',
+  '#4a9eff',
+  '#e8a838',
+  '#5cb85c',
+  '#8a8f98'
 ] as const
+
+/** Запрещены hex-fallback внутри var(--fa-*, #…). */
+export const THEME_FORBIDDEN_FA_VAR_HEX_FALLBACK = /var\(--fa-[^)]+,\s*#[0-9a-fA-F]{3,8}/g
+
+/** Запрещены сырые rgba(0,0,0,…) в main.css — только токены scrim/overlay. */
+export const THEME_FORBIDDEN_MAIN_CSS_RGBA_BLACK =
+  /rgba\(\s*0\s*,\s*0\s*,\s*0\s*,/g

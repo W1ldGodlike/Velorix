@@ -20,10 +20,10 @@
   display: grid;
   grid-template-columns: minmax(13rem, auto) 1fr auto;
   align-items: center;
-  gap: 0.62rem;
+  gap: var(--fa-space-2h);
   /* v0-референс: «высота topbar около 70px» — целевой коридор без раздувания actions. */
   min-height: 62px;
-  padding: 0.48rem 0.75rem;
+  padding: var(--fa-space-2) var(--fa-space-3);
   background: color-mix(in srgb, var(--fa-bg) 86%, var(--fa-surface) 14%);
   border-bottom: 1px solid var(--fa-border-subtle);
   flex-shrink: 0;
@@ -32,7 +32,7 @@
 .app-topbar-brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: var(--fa-space-snug);
   min-width: 0;
 }
 
@@ -41,7 +41,7 @@
   place-items: center;
   width: 1.25rem;
   height: 1.25rem;
-  border-radius: 6px;
+  border-radius: var(--fa-radius-md);
   color: var(--fa-accent);
   background: color-mix(in srgb, var(--fa-accent) 15%, transparent);
   font-size: 0.8rem;
@@ -63,7 +63,7 @@
   justify-self: center;
   display: inline-flex;
   align-items: center;
-  gap: 0.15rem;
+  gap: var(--fa-space-tight);
   min-width: 0;
 }
 
@@ -91,13 +91,13 @@
 .app-workspace-tab:focus-visible {
   outline: 2px solid var(--fa-focus-ring);
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: var(--fa-radius-sm);
 }
 
 .app-workspace-tab-glyph {
   display: inline-flex;
   vertical-align: middle;
-  margin-right: 6px;
+  margin-right: var(--fa-space-icon);
 }
 
 .app-workspace-tab-glyph svg {
@@ -105,7 +105,7 @@
 }
 
 .app-terminal-workspace {
-  padding: 1rem;
+  padding: var(--fa-space-4);
   overflow: auto;
 }
 
@@ -141,7 +141,7 @@
   gap: 0.25rem;
   max-height: 14rem;
   overflow: auto;
-  border-radius: 12px;
+  border-radius: var(--fa-radius-lg);
   border: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-bg-elevated) 92%, transparent);
   padding: 0.35rem;
@@ -155,7 +155,7 @@
   width: 100%;
   text-align: left;
   border: 1px solid transparent;
-  border-radius: 10px;
+  border-radius: var(--fa-radius-panel);
   padding: 0.45rem 0.5rem;
   color: var(--fa-text-primary);
   background: transparent;
@@ -199,7 +199,7 @@
 .app-terminal-hints {
   min-width: 0;
   border: 1px solid var(--fa-border-subtle);
-  border-radius: 14px;
+  border-radius: var(--fa-radius-preview);
   background: color-mix(in srgb, var(--fa-bg-elevated) 84%, transparent);
   padding: 0.85rem;
 }
@@ -207,9 +207,9 @@
 .app-terminal-entry {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: var(--fa-space-snug);
   padding: 0.75rem;
-  border-radius: 12px;
+  border-radius: var(--fa-radius-lg);
   background: color-mix(in srgb, var(--fa-bg) 82%, var(--fa-surface) 18%);
 }
 
@@ -230,7 +230,7 @@
   margin: 0;
   padding: 0.45rem 0.55rem;
   overflow: auto;
-  border-radius: 10px;
+  border-radius: var(--fa-radius-panel);
   color: var(--fa-text-primary);
   background: color-mix(in srgb, var(--fa-surface) 64%, var(--fa-bg) 36%);
   font-family:
@@ -247,7 +247,7 @@
   align-items: start;
   padding: 0.12rem 0.25rem;
   margin: 0 -0.15rem;
-  border-radius: 6px;
+  border-radius: var(--fa-radius-md);
 }
 
 .app-terminal-output-line:hover,
@@ -269,7 +269,7 @@
   font-size: 0.68rem;
   line-height: 1.2;
   border: 1px solid transparent;
-  border-radius: 6px;
+  border-radius: var(--fa-radius-md);
   color: var(--fa-text-muted);
   background: transparent;
   cursor: pointer;
@@ -298,7 +298,7 @@
 
 .app-terminal-hint-list {
   display: grid;
-  gap: 0.45rem;
+  gap: var(--fa-space-snug);
   max-height: 32rem;
   overflow: auto;
   list-style: none;
@@ -318,7 +318,7 @@
   width: 100%;
   text-align: left;
   border: 1px solid var(--fa-border-subtle);
-  border-radius: 10px;
+  border-radius: var(--fa-radius-panel);
   padding: 0.55rem;
   color: var(--fa-text-primary);
   background: transparent;
@@ -435,7 +435,7 @@
   height: 2rem;
   padding: 0 0.42rem;
   gap: 0.35rem;
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-surface-elevated) 88%, transparent);
   color: var(--fa-text-primary);
@@ -476,7 +476,7 @@
   width: 1px;
   height: 1px;
   padding: 0;
-  margin: -1px;
+  margin: var(--fa-space-overlap-hairline);
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
@@ -515,7 +515,7 @@
   min-width: 6.5rem;
   min-height: 34px;
   padding: 0 0.5rem;
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border);
   background: var(--fa-surface-elevated);
   color: var(--fa-text-primary);
@@ -570,7 +570,7 @@
 .app-url-summary:focus-visible {
   outline: 2px solid var(--fa-focus-ring);
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: var(--fa-radius-sm);
 }
 
 .app-url-body {
@@ -632,13 +632,13 @@
 .app-export-preview-summary:focus-visible {
   outline: 2px solid var(--fa-focus-ring);
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: var(--fa-radius-sm);
 }
 
 /* Вложение в секцию «Вывод» боковой панели: без нижней лишней линии у корневого блока страницы. */
 .app-export-preview-nested {
   margin-bottom: 0.35rem;
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border-subtle);
   overflow: hidden;
 }
@@ -653,7 +653,7 @@
 .app-export-preview-pre {
   margin: 0;
   padding: 0.5rem 0.65rem;
-  border-radius: 6px;
+  border-radius: var(--fa-radius-md);
   border: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-bg) 88%, transparent);
   color: var(--fa-text-secondary);
@@ -683,7 +683,7 @@
   min-width: 0;
   min-height: 32px;
   padding: 0 0.65rem;
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border);
   background: var(--fa-surface);
   color: var(--fa-text-primary);
@@ -699,10 +699,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
+  gap: var(--fa-space-2);
   min-height: 32px;
-  padding: 0 0.75rem;
-  border-radius: 6px;
+  padding: 0 var(--fa-space-3);
+  border-radius: var(--fa-radius-md);
   border: 1px solid var(--fa-border);
   background: var(--fa-surface-elevated);
   color: var(--fa-text-primary);
@@ -823,7 +823,7 @@
 .app-downloads-rail {
   min-width: 0;
   min-height: 0;
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-surface) 96%, transparent);
   overflow: hidden;
@@ -878,7 +878,7 @@
 .app-downloads-rail-footer {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem;
+  gap: var(--fa-space-snug);
   margin-top: auto;
   padding-top: 0.35rem;
   border-top: 1px solid var(--fa-border-subtle);
@@ -892,7 +892,7 @@
 }
 
 .app-downloads-rail-section {
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-surface) 90%, var(--fa-bg));
   overflow: hidden;
@@ -963,7 +963,7 @@
 .app-downloads-hint-list {
   margin: 0.1rem 0 0;
   padding: 0;
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-bg) 72%, var(--fa-surface-elevated));
   max-height: 220px;
@@ -1020,7 +1020,7 @@ button.app-downloads-hint-token:hover {
 button.app-downloads-hint-token:focus-visible {
   outline: 2px solid var(--fa-focus-ring);
   outline-offset: 2px;
-  border-radius: 6px;
+  border-radius: var(--fa-radius-md);
 }
 
 button.app-downloads-hint-token:disabled {
@@ -1051,7 +1051,7 @@ button.app-downloads-hint-token:disabled {
   flex-direction: column;
   gap: 0.28rem;
   padding: 0.58rem 0.65rem;
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-bg) 64%, var(--fa-surface-elevated));
 }
@@ -1067,7 +1067,7 @@ button.app-downloads-hint-token:disabled {
 }
 
 .app-downloads-command-preview {
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-bg) 64%, var(--fa-surface-elevated));
 }
@@ -1107,7 +1107,7 @@ button.app-downloads-hint-token:disabled {
 }
 
 .app-downloads-history-panel {
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-bg) 64%, var(--fa-surface-elevated));
 }
@@ -1181,7 +1181,7 @@ button.app-downloads-hint-token:disabled {
 .app-downloads-history-card {
   min-width: 0;
   padding: 0.38rem 0.48rem;
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border-subtle);
   background: var(--fa-surface);
 }
@@ -1255,7 +1255,7 @@ button.app-downloads-hint-token:disabled {
 }
 
 .app-downloads-log-panel {
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-bg) 64%, var(--fa-surface-elevated));
 }
@@ -1326,7 +1326,7 @@ button.app-downloads-hint-token:disabled {
 .app-downloads-row-actions {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: var(--fa-space-snug);
   flex-wrap: wrap;
 }
 
@@ -1367,7 +1367,7 @@ button.app-downloads-hint-token:disabled {
   min-width: 0;
   min-height: 4.6rem;
   resize: vertical;
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border);
   background: var(--fa-surface);
   color: var(--fa-text-primary);
@@ -1397,7 +1397,7 @@ button.app-downloads-hint-token:disabled {
 .app-downloads-stat {
   min-width: 0;
   padding: 0.58rem 0.65rem;
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-surface-elevated) 70%, transparent);
 }
@@ -1422,7 +1422,7 @@ button.app-downloads-hint-token:disabled {
 .app-downloads-filterbar {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: var(--fa-space-snug);
   flex-wrap: wrap;
   padding: 0.65rem 0.85rem;
 }
@@ -1430,7 +1430,7 @@ button.app-downloads-hint-token:disabled {
 .app-filter-chip {
   min-height: 1.72rem;
   padding: 0 0.65rem;
-  border-radius: 999px;
+  border-radius: var(--fa-radius-pill);
   border: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-bg) 62%, var(--fa-surface-elevated));
   color: var(--fa-text-muted);
@@ -1516,7 +1516,7 @@ button.app-downloads-hint-token:disabled {
   min-width: 2.25rem;
   height: 0.28rem;
   overflow: hidden;
-  border-radius: 999px;
+  border-radius: var(--fa-radius-pill);
   background: var(--fa-surface-elevated);
 }
 
@@ -1564,7 +1564,7 @@ button.app-downloads-hint-token:disabled {
   width: 0.48rem;
   height: 0.48rem;
   flex: 0 0 auto;
-  border-radius: 999px;
+  border-radius: var(--fa-radius-pill);
   background: var(--fa-text-muted);
 }
 
@@ -1642,7 +1642,7 @@ button.app-downloads-hint-token:disabled {
   position: relative;
   padding: 0;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border-subtle);
   background: var(--fa-surface-elevated);
   color: var(--fa-text-secondary);
@@ -1654,7 +1654,7 @@ button.app-downloads-hint-token:disabled {
   flex-direction: column;
   min-width: 0;
   overflow: auto;
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-surface) 96%, transparent);
 }
@@ -1671,7 +1671,7 @@ button.app-downloads-hint-token:disabled {
 .app-settings-panel-head-trailing {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: var(--fa-space-snug);
   flex-shrink: 0;
 }
 
@@ -1719,7 +1719,7 @@ button.app-downloads-hint-token:disabled {
 .app-settings-badge {
   flex-shrink: 0;
   padding: 0.14rem 0.38rem;
-  border-radius: 999px;
+  border-radius: var(--fa-radius-pill);
   color: var(--fa-accent);
   background: color-mix(in srgb, var(--fa-accent) 14%, transparent);
   font-size: 0.64rem;
@@ -1763,7 +1763,7 @@ button.app-downloads-hint-token:disabled {
 .app-settings-summary:focus-visible {
   outline: 2px solid var(--fa-focus-ring);
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: var(--fa-radius-sm);
 }
 
 .app-settings-section-hint {
@@ -1806,7 +1806,7 @@ button.app-downloads-hint-token:disabled {
 
 .app-processing-history-summary span,
 .app-processing-history-summary button.app-processing-history-summary-chip {
-  border-radius: 999px;
+  border-radius: var(--fa-radius-pill);
   border: 1px solid var(--fa-border-subtle);
   padding: 0.18rem 0.45rem;
   background: color-mix(in srgb, var(--fa-surface-elevated) 80%, var(--fa-bg));
@@ -1844,7 +1844,7 @@ button.app-downloads-hint-token:disabled {
 .app-processing-history-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem;
+  gap: var(--fa-space-snug);
   padding: 0 0.8rem 0.55rem;
 }
 
@@ -1882,11 +1882,11 @@ button.app-downloads-hint-token:disabled {
 .app-pill-switch {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: var(--fa-space-snug);
   width: fit-content;
   min-height: 1.72rem;
   padding: 0 0.5rem 0 0.18rem;
-  border-radius: 999px;
+  border-radius: var(--fa-radius-pill);
   border: 1px solid var(--fa-border-subtle);
   background: var(--fa-surface-elevated);
   color: var(--fa-text-muted);
@@ -1917,7 +1917,7 @@ button.app-downloads-hint-token:disabled {
 .app-pill-switch-knob {
   width: 1.16rem;
   height: 1.16rem;
-  border-radius: 999px;
+  border-radius: var(--fa-radius-pill);
   background: var(--fa-text-muted);
   transition:
     transform 0.12s ease,
@@ -1981,7 +1981,7 @@ button.app-downloads-hint-token:disabled {
   min-width: 0;
   min-height: 32px;
   padding: 0 0.52rem;
-  border-radius: 6px;
+  border-radius: var(--fa-radius-md);
   border: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-bg) 66%, var(--fa-surface-elevated));
   color: var(--fa-text-primary);
@@ -2195,7 +2195,7 @@ button.app-downloads-hint-token:disabled {
   flex-direction: column;
   align-self: stretch;
   margin: 0.42rem 0.55rem 0.28rem;
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   border: 1px solid color-mix(in srgb, var(--fa-border-subtle) 88%, var(--fa-bg) 12%);
   overflow: hidden;
   background: var(--fa-preview-card-bg);
@@ -2222,7 +2222,7 @@ button.app-downloads-hint-token:disabled {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.45rem;
+  gap: var(--fa-space-snug);
   flex-wrap: wrap;
   padding: 0.32rem 0.55rem;
   border-top: 1px solid var(--fa-border-subtle);
@@ -2368,7 +2368,7 @@ button.app-downloads-hint-token:disabled {
   display: inline-flex;
   align-items: center;
   padding: 0.1rem 0.42rem;
-  border-radius: 4px;
+  border-radius: var(--fa-radius-sm);
   font-size: 0.66rem;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -2427,7 +2427,7 @@ button.app-downloads-hint-token:disabled {
 .app-timeline-unified {
   margin: 0 0.55rem;
   padding: 0.12rem 0.38rem 0.38rem;
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   border: 1px solid color-mix(in srgb, var(--fa-border-subtle) 82%, var(--fa-bg) 18%);
   background: color-mix(in srgb, var(--fa-bg) 42%, var(--fa-surface) 58%);
   display: flex;
@@ -2471,7 +2471,7 @@ button.app-downloads-hint-token:disabled {
 .app-timeline-interaction-glass:focus-visible {
   outline: 2px solid var(--fa-focus-ring);
   outline-offset: 1px;
-  border-radius: 3px;
+  border-radius: var(--fa-radius-xs);
 }
 
 .app-timeline-interaction-glass-idle {
@@ -2483,9 +2483,9 @@ button.app-downloads-hint-token:disabled {
   top: 0;
   bottom: 0;
   width: 2px;
-  margin-left: -1px;
+  margin-left: var(--fa-space-overlap-hairline);
   background: var(--fa-accent);
-  border-radius: 1px;
+  border-radius: var(--fa-radius-hairline);
   pointer-events: none;
   opacity: 0.95;
   z-index: 3;
@@ -2496,7 +2496,7 @@ button.app-downloads-hint-token:disabled {
   top: 0;
   bottom: 0;
   width: 16px;
-  margin-left: -8px;
+  margin-left: var(--fa-space-overlap-2);
   z-index: 4;
   cursor: ew-resize;
   touch-action: none;
@@ -2504,7 +2504,7 @@ button.app-downloads-hint-token:disabled {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding-bottom: 3px;
+  padding-bottom: var(--fa-space-micro);
 }
 
 .app-timeline-handle::after {
@@ -2512,7 +2512,7 @@ button.app-downloads-hint-token:disabled {
   display: block;
   width: 6px;
   height: 13px;
-  border-radius: 2px;
+  border-radius: var(--fa-radius-2xs);
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--fa-bg) 55%, transparent);
 }
 
@@ -2599,7 +2599,7 @@ button.app-downloads-hint-token:disabled {
 .app-timeline-waveform-canvas {
   display: block;
   width: 100%;
-  border-radius: 4px;
+  border-radius: var(--fa-radius-sm);
 }
 
 .app-timeline-waveform-hint {
@@ -2639,7 +2639,7 @@ button.app-downloads-hint-token:disabled {
 .app-timeline-ruler-track:focus-visible {
   outline: 2px solid var(--fa-focus-ring);
   outline-offset: 2px;
-  border-radius: 2px;
+  border-radius: var(--fa-radius-2xs);
 }
 
 .app-timeline-ruler-tick {
@@ -2647,7 +2647,7 @@ button.app-downloads-hint-token:disabled {
   top: 0;
   bottom: 0;
   width: 1px;
-  margin-left: -0.5px;
+  margin-left: var(--fa-space-overlap-sub);
   background: color-mix(in srgb, var(--fa-border-subtle) 78%, transparent);
   pointer-events: none;
 }
@@ -2669,9 +2669,9 @@ button.app-downloads-hint-token:disabled {
   top: -3px;
   bottom: -1px;
   width: 2px;
-  margin-left: -1px;
+  margin-left: var(--fa-space-overlap-hairline);
   background: var(--fa-accent);
-  border-radius: 1px;
+  border-radius: var(--fa-radius-hairline);
   pointer-events: none;
   opacity: 0.9;
   z-index: 2;
@@ -2710,7 +2710,7 @@ button.app-downloads-hint-token:disabled {
 .app-timeline-marker-track {
   position: relative;
   height: 12px;
-  border-radius: 4px;
+  border-radius: var(--fa-radius-sm);
   background: var(--fa-border-subtle);
   overflow: hidden;
   cursor: crosshair;
@@ -2781,7 +2781,7 @@ button.app-downloads-hint-token:disabled {
 
 /* §9: сворачиваемая таблица дорожек под строкой ffprobe */
 .app-probe-details {
-  border-radius: 6px;
+  border-radius: var(--fa-radius-md);
   border: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-surface-elevated) 55%, transparent);
   overflow: hidden;
@@ -2817,7 +2817,7 @@ button.app-downloads-hint-token:disabled {
 .app-probe-summary:focus-visible {
   outline: 2px solid var(--fa-focus-ring);
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: var(--fa-radius-sm);
 }
 
 .app-probe-table-wrap {
@@ -2863,7 +2863,7 @@ button.app-downloads-hint-token:disabled {
   padding: 0.2rem 0;
   background: var(--fa-surface);
   border: 1px solid var(--fa-border-subtle);
-  border-radius: 6px;
+  border-radius: var(--fa-radius-md);
   box-shadow: 0 6px 20px color-mix(in srgb, var(--fa-bg) 55%, transparent);
 }
 
@@ -2884,7 +2884,7 @@ button.app-downloads-hint-token:disabled {
 .app-probe-context-menu-item:hover,
 .app-probe-context-menu-item:focus-visible {
   outline: none;
-  background: color-mix(in srgb, var(--fa-surface) 82%, var(--fa-accent, #4c8bf5) 18%);
+  background: color-mix(in srgb, var(--fa-surface) 82%, var(--fa-accent) 18%);
 }
 
 .app-probe-json-toolbar {
@@ -3030,14 +3030,14 @@ button.app-downloads-hint-token:disabled {
 .app-statusbar-activity-dot {
   width: 7px;
   height: 7px;
-  border-radius: 50%;
+  border-radius: var(--fa-radius-circle);
   background: var(--fa-border-subtle);
   flex-shrink: 0;
 }
 
 .app-statusbar-activity-dot--active {
-  background: var(--fa-accent, #5b9fd4);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--fa-accent, #5b9fd4) 28%, transparent);
+  background: var(--fa-accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--fa-accent) 28%, transparent);
 }
 
 .app-statusbar-activity-label {
@@ -3094,20 +3094,20 @@ button.app-downloads-hint-token:disabled {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.25rem;
-  background: color-mix(in srgb, var(--fa-bg) 55%, rgba(0, 0, 0, 0.65));
+  padding: var(--fa-space-5);
+  background: var(--fa-modal-backdrop);
 }
 
 .app-modal {
   width: min(520px, 100%);
   max-height: min(90vh, 640px);
   overflow: auto;
-  border-radius: 12px;
+  border-radius: var(--fa-radius-lg);
   border: 1px solid var(--fa-border);
   background: var(--fa-surface-elevated);
   color: var(--fa-text-primary);
-  padding: 1.1rem 1.25rem 1rem;
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.35);
+  padding: var(--fa-space-4) var(--fa-space-5) var(--fa-space-4);
+  box-shadow: var(--fa-elevation-lg);
 }
 
 .app-modal-wide {
@@ -3141,7 +3141,7 @@ button.app-downloads-hint-token:disabled {
 .app-settings-dialog-nav-btn {
   text-align: left;
   padding: 0.45rem 0.65rem;
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   border: 1px solid transparent;
   background: transparent;
   color: var(--fa-text-secondary);
@@ -3181,7 +3181,7 @@ button.app-downloads-hint-token:disabled {
 
 .app-settings-fieldset {
   border: 1px solid var(--fa-border);
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   padding: 0.65rem 0.75rem;
   margin: 0;
 }
@@ -3268,7 +3268,7 @@ button.app-downloads-hint-token:disabled {
 }
 
 .app-settings-hw-smoke-step-id {
-  font-family: var(--fa-font-mono, ui-monospace, monospace);
+  font-family: var(--fa-font-mono);
   font-size: 0.72rem;
   color: var(--fa-text-muted);
 }
@@ -3276,12 +3276,12 @@ button.app-downloads-hint-token:disabled {
 .app-settings-owner-smoke-panel {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: var(--fa-space-snug);
 }
 
 .app-settings-owner-smoke-preview-block {
   border: 1px solid var(--fa-border-subtle);
-  border-radius: 10px;
+  border-radius: var(--fa-radius-panel);
   padding: 0.45rem 0.55rem;
   background: color-mix(in srgb, var(--fa-bg-elevated) 88%, transparent);
 }
@@ -3299,7 +3299,7 @@ button.app-downloads-hint-token:disabled {
 }
 
 .app-settings-owner-smoke-mono-lines code {
-  font-family: var(--fa-font-mono, ui-monospace, monospace);
+  font-family: var(--fa-font-mono);
   font-size: 0.72rem;
 }
 
@@ -3331,26 +3331,26 @@ button.app-downloads-hint-token:disabled {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  gap: var(--fa-space-tight);
   min-width: 6.5rem;
   max-width: 12rem;
   padding: 0.45rem 0.55rem;
-  border-radius: var(--fa-radius-sm, 4px);
+  border-radius: var(--fa-radius-sm);
   border: 1px solid var(--fa-border-subtle);
-  background: var(--fa-surface-elevated, rgba(255, 255, 255, 0.04));
+  background: var(--fa-surface-elevated);
   font-size: 0.78rem;
 }
 
 .workflow-scenario-flow-node--download {
-  border-left: 3px solid #4a9eff;
+  border-left: 3px solid var(--fa-accent);
 }
 
 .workflow-scenario-flow-node--process {
-  border-left: 3px solid #e8a838;
+  border-left: 3px solid var(--fa-warning);
 }
 
 .workflow-scenario-flow-node--save {
-  border-left: 3px solid #5cb85c;
+  border-left: 3px solid var(--fa-success);
 }
 
 .workflow-scenario-flow-kind {
@@ -3379,7 +3379,7 @@ button.app-downloads-hint-token:disabled {
 }
 
 .workflow-scenario-flow-item-drop-target .workflow-scenario-flow-node {
-  outline: 2px dashed var(--fa-accent, #4a9eff);
+  outline: 2px dashed var(--fa-accent);
   outline-offset: 2px;
 }
 
@@ -3426,9 +3426,9 @@ button.app-downloads-hint-token:disabled {
   width: 0.75rem;
   height: 0.75rem;
   padding: 0;
-  border: 2px solid var(--fa-accent, #4a9eff);
-  border-radius: 50%;
-  background: var(--fa-surface-elevated, #0d1219);
+  border: 2px solid var(--fa-accent);
+  border-radius: var(--fa-radius-circle);
+  background: var(--fa-surface-elevated);
   cursor: crosshair;
 }
 
@@ -3441,16 +3441,16 @@ button.app-downloads-hint-token:disabled {
 }
 
 .workflow-scenario-flow-port-source {
-  background: var(--fa-accent, #4a9eff);
+  background: var(--fa-accent);
 }
 
 .workflow-scenario-flow-port-active {
-  outline: 2px solid var(--fa-success, #22c55e);
+  outline: 2px solid var(--fa-success);
   outline-offset: 2px;
 }
 
 .workflow-scenario-flow-item-link-target .workflow-scenario-flow-port-in {
-  border-color: var(--fa-success, #22c55e);
+  border-color: var(--fa-success);
 }
 
 .workflow-scenario-flow-arrow-btn {
@@ -3463,7 +3463,7 @@ button.app-downloads-hint-token:disabled {
 }
 
 .workflow-scenario-flow-arrow-btn:hover {
-  color: var(--fa-accent, #4a9eff);
+  color: var(--fa-accent);
 }
 
 .workflow-scenario-flow-gap {
@@ -3492,13 +3492,13 @@ button.app-downloads-hint-token:disabled {
   margin-bottom: 0.75rem;
   padding: 0.55rem 0.65rem;
   border: 1px solid var(--fa-border-subtle);
-  border-radius: var(--fa-radius-sm, 4px);
+  border-radius: var(--fa-radius-sm);
 }
 
 .app-settings-radio-row {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: var(--fa-space-snug);
   margin: 0.35rem 0;
   font-size: 0.82rem;
 }
@@ -3541,7 +3541,7 @@ button.app-downloads-hint-token:disabled {
 .app-settings-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem;
+  gap: var(--fa-space-snug);
 }
 
 .app-settings-dialog-section-footer {
@@ -3570,7 +3570,7 @@ button.app-downloads-hint-token:disabled {
   font-family: inherit;
   font-size: 0.75rem;
   padding: 0.1rem 0.35rem;
-  border-radius: 4px;
+  border-radius: var(--fa-radius-sm);
   border: 1px solid var(--fa-border);
   background: var(--fa-surface);
 }
@@ -3606,7 +3606,7 @@ button.app-downloads-hint-token:disabled {
   box-sizing: border-box;
   min-height: 34px;
   padding: 0 0.55rem;
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border);
   background: var(--fa-surface);
   color: var(--fa-text-primary);
@@ -3643,7 +3643,7 @@ button.app-downloads-hint-token:disabled {
 .app-knowledge-article {
   min-height: 0;
   border: 1px solid var(--fa-border-subtle);
-  border-radius: 10px;
+  border-radius: var(--fa-radius-panel);
   background: color-mix(in srgb, var(--fa-surface) 86%, transparent);
 }
 
@@ -3663,17 +3663,17 @@ button.app-downloads-hint-token:disabled {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-bottom: 12px;
+  margin-bottom: var(--fa-space-3);
 }
 
 .app-knowledge-toc-section-title {
-  margin: 0 0 4px;
-  padding: 0 6px;
+  margin: 0 0 var(--fa-space-1);
+  padding: 0 var(--fa-space-icon);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: var(--app-muted-fg, #8a8f98);
+  color: var(--fa-text-muted);
 }
 
 .app-knowledge-list {
@@ -3688,11 +3688,11 @@ button.app-downloads-hint-token:disabled {
 .app-knowledge-item {
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  gap: var(--fa-space-tight);
   width: 100%;
   padding: 0.5rem 0.55rem;
   border: 1px solid transparent;
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   background: transparent;
   color: var(--fa-text-primary);
   text-align: left;
@@ -3734,7 +3734,7 @@ button.app-downloads-hint-token:disabled {
   max-width: 100%;
   height: auto;
   margin: 0.5rem 0 0.75rem;
-  border-radius: 6px;
+  border-radius: var(--fa-radius-md);
   border: 1px solid var(--fa-border-subtle);
 }
 
@@ -3769,7 +3769,7 @@ button.app-downloads-hint-token:disabled {
   margin: 0 0 0.55rem;
   padding: 0.45rem 0.65rem;
   border-left: 3px solid var(--fa-border-subtle);
-  border-radius: 0 6px 6px 0;
+  border-radius: 0 var(--fa-radius-md) var(--fa-radius-md) 0;
   background: color-mix(in srgb, var(--fa-surface) 88%, var(--fa-border-subtle));
   color: var(--fa-text-secondary);
   font-size: 0.92em;
@@ -3795,7 +3795,7 @@ button.app-downloads-hint-token:disabled {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.78em;
   padding: 0.08rem 0.28rem;
-  border-radius: 4px;
+  border-radius: var(--fa-radius-sm);
   background: color-mix(in srgb, var(--fa-surface) 70%, var(--fa-border-subtle));
   color: var(--fa-text-primary);
 }
@@ -3803,7 +3803,7 @@ button.app-downloads-hint-token:disabled {
 .app-knowledge-pre {
   margin: 0 0 0.65rem;
   padding: 0.55rem 0.65rem;
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-surface) 92%, var(--fa-border));
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -3899,7 +3899,7 @@ button.app-downloads-hint-token:disabled {
   box-sizing: border-box;
   min-height: 34px;
   padding: 0 0.55rem;
-  border-radius: 8px;
+  border-radius: var(--fa-radius-control);
   border: 1px solid var(--fa-border);
   background: var(--fa-surface);
   color: var(--fa-text-primary);
@@ -3910,7 +3910,7 @@ button.app-downloads-hint-token:disabled {
 .app-engine-path-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem;
+  gap: var(--fa-space-snug);
 }
 
 .app-btn-compact {
@@ -3946,7 +3946,7 @@ button.app-downloads-hint-token:disabled {
 .app-about-diagnostics {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem;
+  gap: var(--fa-space-snug);
 }
 
 .app-about-folders {
@@ -4067,18 +4067,18 @@ button.app-downloads-hint-token:disabled {
 
 .inspector-standalone-main {
   overflow: auto;
-  padding: 10px 14px 14px;
+  padding: var(--fa-space-2h) var(--fa-space-3h) var(--fa-space-3h);
 }
 
 .inspector-standalone-hint {
-  margin: 0 0 12px;
+  margin: 0 0 var(--fa-space-3);
   opacity: 0.85;
   font-size: 0.875rem;
   line-height: 1.45;
 }
 
 .inspector-standalone-probe {
-  padding-top: 6px;
+  padding-top: var(--fa-space-icon);
 }
 
 .inspector-standalone-probe .app-probe-table-wrap {
@@ -4090,8 +4090,8 @@ button.app-downloads-hint-token:disabled {
 }
 
 .inspector-standalone-path {
-  margin-top: 14px;
-  padding-top: 10px;
+  margin-top: var(--fa-space-3h);
+  padding-top: var(--fa-space-2h);
   border-top: 1px solid var(--fa-border-subtle);
   font-family: ui-monospace, Consolas, Menlo, monospace;
   font-size: 0.75rem;
@@ -4435,7 +4435,7 @@ button.app-downloads-hint-token:disabled {
   }
 
   .inspector-standalone-main {
-    padding: 11px 15px 15px;
+    padding: var(--fa-space-2h) var(--fa-space-4) var(--fa-space-4);
   }
 
   .inspector-standalone-hint {
@@ -4803,7 +4803,7 @@ button.app-downloads-hint-token:disabled {
 
   .app-timeline-ruler-playhead {
     width: 2.5px;
-    margin-left: -1.25px;
+    margin-left: var(--fa-space-overlap-tick);
   }
 
   .app-timeline-footer {
@@ -5035,7 +5035,7 @@ button.app-downloads-hint-token:disabled {
   font-weight: 600;
   letter-spacing: 0.04em;
   padding: 0.08rem 0.28rem;
-  border-radius: 3px;
+  border-radius: var(--fa-radius-xs);
   border: 1px solid var(--fa-border-subtle);
   background: color-mix(in srgb, var(--fa-bg) 70%, var(--fa-accent) 30%);
   color: var(--fa-text-primary);
