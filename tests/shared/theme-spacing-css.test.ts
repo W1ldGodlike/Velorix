@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest'
 import {
   THEME_FORBIDDEN_MAIN_CSS_GAP_REM,
   THEME_FORBIDDEN_MAIN_CSS_MARGIN_PADDING_PX,
+  THEME_FORBIDDEN_MAIN_CSS_PADDING_MARGIN_REM,
   THEME_SHELL_SPACING_ASSERTIONS
 } from '../../src/shared/theme-spacing-css'
 
@@ -60,6 +61,12 @@ describe('theme-spacing-css §5', () => {
   it('main.css does not use rem literals in gap', () => {
     const css = readFileSync(MAIN_CSS_PATH, 'utf8')
     const matches = css.match(THEME_FORBIDDEN_MAIN_CSS_GAP_REM) ?? []
+    expect(matches).toEqual([])
+  })
+
+  it('main.css does not use rem literals in padding/margin', () => {
+    const css = readFileSync(MAIN_CSS_PATH, 'utf8')
+    const matches = css.match(THEME_FORBIDDEN_MAIN_CSS_PADDING_MARGIN_REM) ?? []
     expect(matches).toEqual([])
   })
 })

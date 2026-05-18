@@ -32,3 +32,10 @@ export const THEME_FORBIDDEN_MAIN_CSS_MARGIN_PADDING_PX =
 
 /** Запрещены rem-литералы в gap main.css (допускается `gap: 0`). */
 export const THEME_FORBIDDEN_MAIN_CSS_GAP_REM = /gap:\s*(?!0\b)[^;]*\d+(?:\.\d+)?rem/g
+
+/**
+ * Запрещены rem в padding/margin без var(--fa-space-*).
+ * HiDPI @media с осознанными литералами — исключать по мере миграции.
+ */
+export const THEME_FORBIDDEN_MAIN_CSS_PADDING_MARGIN_REM =
+  /(?:padding|margin)(?:-(?:top|right|bottom|left))?\s*:\s*(?![^;]*var\(--fa-space)[^;]*\d+(?:\.\d+)?rem/g

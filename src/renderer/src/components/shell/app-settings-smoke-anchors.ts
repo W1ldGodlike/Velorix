@@ -3,6 +3,7 @@ import type { OwnerManualSmokePackagedPlatform } from '../../../../shared/owner-
 
 export const APP_SETTINGS_OWNER_SMOKE_BUNDLE_ANCHOR = 'app-settings-deps-owner-smoke'
 export const APP_SETTINGS_HW_SMOKE_ANCHOR = 'app-settings-deps-hw-smoke'
+export const APP_SETTINGS_THEME_ANCHOR = 'app-settings-general-theme'
 export const APP_SETTINGS_HIDPI_ANCHOR = 'app-settings-general-hidpi'
 export const APP_SETTINGS_WIN_SHELL_ANCHOR = 'app-settings-general-win-shell'
 

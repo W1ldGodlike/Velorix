@@ -4,6 +4,7 @@
 
 import { formatFfmpegHwManualSmokeChecklistLines } from './ffmpeg-hw-manual-smoke-checklist'
 import { formatOwnerManualSmokeHidpiChecklistLines } from './owner-manual-smoke-hidpi-lines'
+import { formatOwnerManualSmokeThemeChecklistLines } from './owner-manual-smoke-theme-lines'
 import { getOwnerManualSmokePackagedSection } from './owner-manual-smoke-packaged-section'
 import { isNativeMainWindows } from './native-main-platform'
 import { formatWindowsShellManualSmokeChecklistLines } from './windows-shell-manual-smoke-checklist'
@@ -11,6 +12,7 @@ import { formatWorkflowOsSchedulerManualSmokeChecklistLines } from './workflow-o
 import { formatWorkflowScenarioManualSmokeChecklistLines } from './workflow-scenario-manual-smoke-checklist'
 
 export function formatOwnerManualSmokeBundlePlainText(parts: {
+  themeLines: readonly string[]
   hidpiLines: readonly string[]
   hwPlainText: string
   osPlainText: string | null
@@ -19,7 +21,16 @@ export function formatOwnerManualSmokeBundlePlainText(parts: {
   packagedPlainText: string | null
   uiDpiSnapshot?: readonly string[]
 }): string {
-  const blocks: string[] = ['=== HiDPI ===', ...parts.hidpiLines, '', '=== HW encode ===', parts.hwPlainText]
+  const blocks: string[] = [
+    '=== Theme ===',
+    ...parts.themeLines,
+    '',
+    '=== HiDPI ===',
+    ...parts.hidpiLines,
+    '',
+    '=== HW encode ===',
+    parts.hwPlainText
+  ]
   blocks.push('', '=== Scenario builder ===', parts.scenarioPlainText)
   if (parts.packagedPlainText && parts.packagedPlainText.trim().length > 0) {
     blocks.push('', parts.packagedPlainText)
@@ -46,8 +57,11 @@ export function buildOwnerManualSmokeBundleLines(opts?: {
   const shellBlock = isNativeMainWindows(opts?.platform) ? formatWindowsShellManualSmokeChecklistLines() : []
   const packaged = getOwnerManualSmokePackagedSection(opts?.platform)
   return [
-    'ownerManualSmoke: HiDPI + HW + scenario + packaged + OS scheduler + Win shell (owner, not CI)',
-    'UI: Settings → Dependencies → «Owner smoke» copy; sub-panels HW / HiDPI / packaged / planner / Explorer',
+    'ownerManualSmoke: Theme + HiDPI + HW + scenario + packaged + OS scheduler + Win shell (owner, not CI)',
+    'UI: Settings → Dependencies → «Owner smoke» copy; sub-panels Theme / HW / HiDPI / packaged / planner / Explorer',
+    '',
+    '=== Theme ===',
+    ...formatOwnerManualSmokeThemeChecklistLines(),
     '',
     '=== HiDPI ===',
     ...formatOwnerManualSmokeHidpiChecklistLines(),

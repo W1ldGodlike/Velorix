@@ -19,6 +19,7 @@ describe('owner-manual-smoke-bundle', () => {
     })
     const joined = lines.join('\n')
     expect(joined).toContain('ownerManualSmoke:')
+    expect(joined).toContain('=== Theme ===')
     expect(joined).toContain('=== HW encode ===')
     expect(joined).toContain('nvenc-probe')
     expect(joined).toContain('=== Scenario builder ===')

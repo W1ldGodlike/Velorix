@@ -13,6 +13,7 @@ import {
 } from '../../../../shared/owner-manual-smoke-bundle-report-header'
 import { getOwnerManualSmokePackagedSection } from '../../../../shared/owner-manual-smoke-packaged-section'
 import { formatOwnerManualSmokeHidpiChecklistLines } from '../../../../shared/owner-manual-smoke-hidpi-lines'
+import { formatOwnerManualSmokeThemeChecklistLines } from '../../../../shared/owner-manual-smoke-theme-lines'
 import { getFfmpegHwManualSmokeChecklistForUiLocale } from '../../hw-manual-smoke-checklist-locale'
 import { getUiLocale, uiText } from '../../locales/ui-text'
 import { readUiHidpiRuntimeStatus } from '../../ui-hidpi-runtime-status'
@@ -25,6 +26,7 @@ import { getWindowsShellManualSmokeChecklistForUiLocale } from '../../windows-sh
 import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
 import type { AppSettingsDialogSection } from '../../../../shared/app-settings-dialog-section'
 import {
+  APP_SETTINGS_THEME_ANCHOR,
   APP_SETTINGS_HIDPI_ANCHOR,
   APP_SETTINGS_HW_SMOKE_ANCHOR,
   APP_SETTINGS_OWNER_SMOKE_BUNDLE_ANCHOR,
@@ -34,6 +36,24 @@ import {
   type AppSettingsSmokeJumpTarget
 } from './app-settings-smoke-anchors'
 import { OwnerManualSmokeChecklistSectionsPreview } from './OwnerManualSmokeChecklistSectionsPreview'
+
+function formatThemeLinesForUiLocale(): string[] {
+  if (getUiLocale() === 'ru') {
+    return formatOwnerManualSmokeThemeChecklistLines()
+  }
+  return [
+    'owner: Theme / dark·light·system (not CI)',
+    uiText('appSettingsThemeManualHint'),
+    uiText('appSettingsThemeChecklistIntro'),
+    `- ${uiText('appSettingsThemeCheckAccent')}`,
+    `- ${uiText('appSettingsThemeCheckFocus')}`,
+    `- ${uiText('appSettingsThemeCheckDisabled')}`,
+    `- ${uiText('appSettingsThemeCheckModals')}`,
+    `- ${uiText('appSettingsThemeCheckWorkflow')}`,
+    `- ${uiText('appSettingsThemeCheckDownloadsPopout')}`,
+    `- ${uiText('appSettingsThemeCheckInspector')}`
+  ]
+}
 
 function formatHidpiLinesForUiLocale(): string[] {
   if (getUiLocale() === 'ru') {
@@ -201,6 +221,20 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
     return [packagedSection.heading, ...packagedSection.lines].join('\n')
   }, [packagedSection])
 
+  const themeCheckLines = useMemo(
+    () =>
+      [
+        uiText('appSettingsThemeCheckAccent'),
+        uiText('appSettingsThemeCheckFocus'),
+        uiText('appSettingsThemeCheckDisabled'),
+        uiText('appSettingsThemeCheckModals'),
+        uiText('appSettingsThemeCheckWorkflow'),
+        uiText('appSettingsThemeCheckDownloadsPopout'),
+        uiText('appSettingsThemeCheckInspector')
+      ],
+    []
+  )
+
   const hidpiCheckLines = useMemo(
     () =>
       [
@@ -215,6 +249,7 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
   const checklistPlainText = useMemo(
     () =>
       formatOwnerManualSmokeBundlePlainText({
+        themeLines: formatThemeLinesForUiLocale(),
         hidpiLines: formatHidpiLinesForUiLocale(),
         hwPlainText,
         scenarioPlainText,
@@ -278,6 +313,24 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
           {copyHint}
         </p>
       ) : null}
+      <details className="app-settings-owner-smoke-preview-block" open>
+        <summary className="app-settings-owner-smoke-preview-summary">
+          {uiText('appSettingsOwnerSmokePreviewSectionTheme')}
+        </summary>
+        <p className="app-modal-hint">{uiText('appSettingsThemeManualHint')}</p>
+        <p className="app-settings-hw-smoke-label">{uiText('appSettingsThemeChecklistIntro')}</p>
+        <ul className="app-settings-hidpi-checklist">
+          {themeCheckLines.map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+        <OwnerSmokeJumpButton
+          label={uiText('appSettingsOwnerSmokeJumpTheme')}
+          onClick={() => {
+            jump({ section: 'general', anchorId: APP_SETTINGS_THEME_ANCHOR })
+          }}
+        />
+      </details>
       <details className="app-settings-owner-smoke-preview-block" open>
         <summary className="app-settings-owner-smoke-preview-summary">
           {uiText('appSettingsOwnerSmokePreviewSectionHidpi')}

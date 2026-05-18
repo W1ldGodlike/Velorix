@@ -19,6 +19,7 @@ import {
 } from '../../locales/ui-text'
 import type { UiTextKey } from '../../locales/ui-text-strings'
 import { AppSettingsHidpiStatusPanel } from './AppSettingsHidpiStatusPanel'
+import { AppSettingsThemePanel } from './AppSettingsThemePanel'
 import { AppSettingsHwManualSmokePanel } from './AppSettingsHwManualSmokePanel'
 import { AppSettingsOwnerSmokeBundlePanel } from './AppSettingsOwnerSmokeBundlePanel'
 import { AppSettingsPackagedSmokePanel } from './AppSettingsPackagedSmokePanel'
@@ -383,28 +384,13 @@ function AppSettingsGeneralPane(props: {
 
   return (
     <div className="app-settings-stack" aria-describedby={sectionHintId}>
-      <fieldset className="app-settings-fieldset" disabled={shellBusy}>
-        <legend>{uiText('appSettingsThemeLegend')}</legend>
-        {(['system', 'dark', 'light'] as const).map((pref) => (
-          <label key={pref} className="app-settings-radio-row">
-            <input
-              type="radio"
-              name="app-settings-theme"
-              checked={themePref === pref}
-              onChange={() => {
-                onThemePrefChange(pref)
-              }}
-            />
-            <span>
-              {pref === 'system'
-                ? uiText('appSettingsThemeSystem')
-                : pref === 'dark'
-                  ? uiText('appSettingsThemeDark')
-                  : uiText('appSettingsThemeLight')}
-            </span>
-          </label>
-        ))}
-      </fieldset>
+      <AppSettingsThemePanel
+        sectionHintId={sectionHintId}
+        shellBusy={shellBusy}
+        themePref={themePref}
+        onThemePrefChange={onThemePrefChange}
+        {...(onOpenKnowledgeArticle ? { onOpenKnowledgeArticle } : {})}
+      />
 
       <div className="app-settings-row">
         <span className="app-settings-row-label">{uiText('appSettingsUiLocaleLabel')}</span>

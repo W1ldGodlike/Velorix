@@ -44,7 +44,7 @@
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый.
 
 - [~] §16/§10/§3: owner-smoke **прогон на железе** — владелец (чеклисты отмечать в IMPLEMENTATION_CHECKLIST).
-- [~] §5: CSS-токены — gap guard полный (J-1104); padding rem + визуальный прогон — дальше.
+- [~] §5: токены/guards (J-1106/1108); theme smoke + панель «Тема» (J-1107/1109); визуальный прогон — владелец.
 - [x] owner-smoke hub UI: превью, jump, Сервис, заголовок копии (J-1081..1089).
 - [x] §11/§14 owner-smoke: чеклисты в IMPLEMENTATION_CHECKLIST + `ownerManualSmoke:` (J-1080).
 - [x] §14 код: меню + OpenWith + default apps (J-1073/1074/1077).
@@ -253,10 +253,11 @@
 - [x] Меню переключения темы.
 - [~] CSS-токены: полный набор имён в `base.css` (J-1091); WCAG-пары Vitest (J-1097); хвост main.css — дальше.
 - [x] Имена токенов §5: Background…Disabled + alias `--fa-bg-elevated` (J-1091).
-- [~] Проверить контрасты: `theme-contrast-pairs` WCAG AA по hex (J-1097); визуальный прогон — дальше.
+- [~] Проверить контрасты: `theme-contrast-pairs` WCAG AA по hex (J-1097); визуальный прогон — owner theme checklist (J-1107).
 - [~] Focus/hover/disabled: контролы (J-1092) + input/select/textarea в base.css (J-1097); редкие панели — дальше.
-- [~] Исключить стили вне токенов: hex/rgba/radius guard (J-1093..1098); прочие литералы — дальше.
-- [~] Единые радиусы/отступы: `--fa-radius-*` (J-1098), `--fa-space-*` + gap guard (J-1104); padding rem — дальше.
+- [~] Исключить стили вне токенов: hex/rgba/radius/spacing/font-size guards (J-1093..1108); em/прочее — дальше.
+- [x] Единые радиусы/отступы: `--fa-radius-*` (J-1098), `--fa-space-*` + gap/padding guards (J-1104..1106).
+- [x] Типографика: `--fa-font-size-*` + font-size rem/px guard (J-1108).
 
 ## §6. Окно менеджера загрузок (yt-dlp)
 

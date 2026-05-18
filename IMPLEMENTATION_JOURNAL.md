@@ -1131,3 +1131,8 @@
 - [J-1103] 2026-05-18 15:02:00 [Assistant]: §5 — timeline toolbar/unified + statusbar на `--fa-space-*`; микро-gap токены; массовый хвост gap 0.12–0.52rem. `npm run check:quiet`.
 - [J-1104] 2026-05-18 15:10:00 [Assistant]: §5 — хвост `gap` rem→токены (timeline footer, HiDPI, settings, knowledge); guard `THEME_FORBIDDEN_MAIN_CSS_GAP_REM`; двухкомпонентные gap без литералов. `npm run check:quiet`.
 - [J-1105] 2026-05-18 15:20:00 [Assistant]: Cadence 480 — коммит J-1101..1104: `--fa-space-*` downloads/editor/timeline, gap/margin-padding guards; push + re-anchor. `npm run check:quiet`.
+- [J-1106] 2026-05-18 15:36:00 [Assistant]: §5 — `theme-spacing-rem-tokenize` + padding/margin rem→`--fa-space-*` (main.css); guard `THEME_FORBIDDEN_MAIN_CSS_PADDING_MARGIN_REM`; pad/band/overlap токены. `npm run check:quiet`.
+- [J-1107] 2026-05-18 15:58:17 [Assistant]: §5 owner-smoke — `owner-manual-smoke-theme-lines` + locales; блок Theme в hub/`ownerManualSmoke:` (до HiDPI), jump к теме; Vitest. `npm run check:quiet`.
+- [J-1108] 2026-05-18 16:20:06 [Assistant]: §5 — `--fa-font-size-*` в base.css; `theme-font-size-rem-tokenize` + HiDPI хвост main.css; guards rem/px + Vitest `theme-typography-css`. `npm run check:quiet`.
+- [J-1109] 2026-05-18 16:33:36 [Assistant]: §5 UI — `AppSettingsThemePanel` (manual + owner bundle hints, deep-link Help); Vitest `theme-rem-tokenize`. `npm run check:quiet`.
+- [J-1110] 2026-05-18 16:40:46 [Assistant]: Cadence 485 — коммит J-1106..1109: spacing/font-size rem→токены, owner theme smoke, `AppSettingsThemePanel`, Vitest guards. `npm run check:quiet`.
