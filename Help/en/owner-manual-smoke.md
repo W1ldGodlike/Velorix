@@ -4,7 +4,7 @@ CI tests cover **ffmpeg argv**, not your real GPU or display scale. Before you r
 
 ## Where to find it
 
-1. **Settings → Dependencies** — **Owner manual smoke**: expand section previews (**Theme**, HiDPI, HW, scenario, packaged, scheduler, shell), then **Copy full bundle** (same text in Support ZIP `ownerManualSmoke:`). **Jump to …** buttons switch the settings tab and scroll to theme, HiDPI, HW, packaged, or Explorer panels.
+1. **Settings → Dependencies** — **Owner manual smoke**: expand section previews (**Theme**, HiDPI, HW, scenario, video sprite §7.5, mini player §4.3, packaged, scheduler, shell), then **Copy full bundle** (same text in Support ZIP `ownerManualSmoke:`; with **English UI** — EN strings from `locales/en/settings.json` and packaged shards). **Jump to …** buttons switch the settings tab and scroll to theme, HiDPI, HW, packaged, or Explorer. Panel hints mention dev guards: `check:owner-visual-smoke-locale`, `check:packaged-manual-smoke-parity`.
 2. Below: separate panels (each deep-links here): **NVENC/VAAPI**, **packaged smoke**; **HiDPI** and **Windows Explorer** — **General** tab. From the hub: **Open task planner** / **Open scenario builder** (same as **Service** menu).
 3. **Support ZIP** — `ownerManualSmoke:` section inside `diagnostics.txt`.
 
@@ -18,7 +18,7 @@ CI tests cover **ffmpeg argv**, not your real GPU or display scale. Before you r
 | Scenario builder | Builder UI, JSON edges, run from editor / URL                                        |
 | Video sprite §7.5 | FFmpeg rail → preview sprite sheet: grid, PTS burn-in, PNG/JPEG save; offline test guard |
 | Mini Player §4.3 | Service → mini player while tasks run: %/speed, RMB always-on-top, restore main, `session.json` |
-| Packaged         | `dist/win-unpacked` / `linux-unpacked` / `.app` — see the packaged panel in Settings |
+| Packaged         | `dist/win-unpacked` / `linux-unpacked` / `.app` — packaged panel; **Copy** emits `owner:`/`automated:`/`step [...]` like Support ZIP |
 | OS scheduler     | Watch-folder + Task Scheduler / launchd / systemd user timer                         |
 | Windows shell    | Explorer menu, Open with, Default apps (Windows only)                                |
 

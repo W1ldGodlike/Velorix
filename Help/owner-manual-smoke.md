@@ -4,7 +4,7 @@
 
 ## Где открыть
 
-1. **Настройки → Зависимости** — блок **«Ручной smoke (владелец)»**: разверните превью секций (**Тема**, HiDPI, HW, сценарий, packaged, планировщик, shell), затем **«Скопировать весь пакет»** (тот же текст в Support ZIP `ownerManualSmoke:`). Кнопки **«К …»** переключают вкладку настроек и прокручивают к теме, HiDPI, HW, packaged или Проводнику.
+1. **Настройки → Зависимости** — блок **«Ручной smoke (владелец)»**: разверните превью секций (**Тема**, HiDPI, HW, сценарий, спрайт §7.5, мини-плеер §4.3, packaged, планировщик, shell), затем **«Скопировать весь пакет»** (тот же текст в Support ZIP `ownerManualSmoke:`; при **английском UI** — EN-строки из `locales/en/settings.json` и packaged shards). Кнопки **«К …»** переключают вкладку настроек и прокручивают к теме, HiDPI, HW, packaged или Проводнику. Подсказки в панели упоминают dev-guards: `check:owner-visual-smoke-locale`, `check:packaged-manual-smoke-parity`.
 2. Ниже — отдельные панели (у каждой deep-link на эту статью): **NVENC/VAAPI**, **packaged smoke**; **HiDPI** и **Проводник Windows** — вкладка **«Общие»**. Из hub: **«Открыть планировщик»** / **«Открыть конструктор»** (то же, что меню **Сервис**).
 3. **Архив поддержки** — секция `ownerManualSmoke:` в `diagnostics.txt` (дублирует те же шаги).
 
@@ -18,7 +18,7 @@
 | Scenario builder | Конструктор, JSON edges, запуск из редактора / URL                                           |
 | Video sprite §7.5 | FFmpeg rail → спрайт превью: сетка, PTS, сохранение PNG/JPEG; offline guard в тестах          |
 | Mini Player §4.3 | Сервис → мини-плеер при busy-задачах: %/speed, ПКМ topmost, restore main, `session.json`       |
-| Packaged         | `dist/win-unpacked` / `linux-unpacked` / `.app` — см. отдельную панель packaged в настройках |
+| Packaged         | `dist/win-unpacked` / `linux-unpacked` / `.app` — отдельная панель packaged; **Скопировать** даёт `owner:`/`automated:`/`step [...]` как в Support ZIP |
 | OS scheduler     | Watch-folder + Task Scheduler / launchd / systemd user timer                                 |
 | Windows shell    | Контекстное меню, «Открыть с помощью», «Приложения по умолчанию…» (только Win)               |
 

@@ -62,6 +62,7 @@
     "check:packaged-manual-smoke-parity": "node scripts/check-packaged-manual-smoke-parity.mjs",
     "check:owner-visual-smoke-locale": "node scripts/check-owner-visual-smoke-locale.mjs",
     "check:platform-packaging-scripts": "node scripts/check-platform-packaging-scripts.mjs",
+    "check:help-packaged-smoke-docs": "node scripts/check-help-packaged-smoke-docs.mjs",
     "check:terminal-summaries-ru": "node scripts/check-terminal-summaries-ru.mjs",
     "check:terminal-data-summaries": "node scripts/check-terminal-data-summaries-quality.mjs",
     "check:terminal-scenario-summaries": "node scripts/check-terminal-scenario-summaries-quality.mjs",

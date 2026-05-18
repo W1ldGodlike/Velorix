@@ -10,16 +10,16 @@
 
 **Журнал:** одна **J** только если в итерации был diff в репо — skill [`fluxalloy-journal-entry`](../.cursor/skills/fluxalloy-journal-entry/SKILL.md).
 
-## Re-anchor (J-1165)
+## Re-anchor (J-1170)
 
 | Поле | Значение |
 | --- | --- |
 | Дата | 2026-05-19 |
 | Ветка | `main` |
-| Снимок тестов | **260** files / **1768** tests |
-| Спринт | owner-smoke locales RU+EN (theme/HiDPI/packaged); guards parity/visual/platform; приёмка на железе; §19 packaging; e2e §21 |
+| Снимок тестов | **261** files / **1769** tests |
+| Спринт | owner-smoke locales+Help+guards [x] код; приёмка на железе; §19 packaging; e2e §21 |
 
-**Последние J:** [J-1163](../IMPLEMENTATION_JOURNAL.md) packaged UI copy plain-text; [J-1164](../IMPLEMENTATION_JOURNAL.md) `check:platform-packaging-scripts`; [J-1165](../IMPLEMENTATION_JOURNAL.md) cadence commit J-1161..1164.
+**Последние J:** [J-1168](../IMPLEMENTATION_JOURNAL.md) `check:help-packaged-smoke-docs`; [J-1169](../IMPLEMENTATION_JOURNAL.md) Help about-support-logs; [J-1170](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1166..1169.
 
 ## Новый чат
 

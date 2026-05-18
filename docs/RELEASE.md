@@ -178,6 +178,14 @@ npm run verify:mac-unpacked
 
 Справка: `Help/packaged-macos-smoke.md`.
 
+**Локали owner/packaged smoke (dev, в `check:quiet`):**
+
+- `npm run check:owner-visual-smoke-locale` — theme/HiDPI keys в `locales/{ru,en}/settings.json`;
+- `npm run check:packaged-manual-smoke-parity` — одинаковые `Step_*` и meta (`OwnerLine`, `BundleHeading`, …) в `locales/*/win|linux|macos-packaged-manual-smoke.json`;
+- `npm run check:platform-packaging-scripts` — имена npm-скриптов §19 в `package.json`.
+
+Копирование из UI packaged-панели и блока **Ручной smoke** совпадает с форматом Support ZIP (`owner:` / `automated:` / `step [id]:`). См. `Help/owner-manual-smoke.md`.
+
 ### 4.3 Workflows: OS schedulers (watch-folder)
 
 После packaged smoke (§4–§4.2) при необходимости проверьте **фоновый tick** watch-folder (не в CI):

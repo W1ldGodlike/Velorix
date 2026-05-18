@@ -16,6 +16,10 @@ npm run check:release
 
 **Настройки → Зависимости → Ручной smoke Windows (pack:dir)** — те же шаги можно скопировать в отчёт; они попадают в Support ZIP (`winPackagedSmoke:`).
 
+## Копирование и локали
+
+Кнопка **Скопировать** в packaged-панели выдаёт тот же формат, что Support ZIP: `owner:`, `automated:`, `doc:`, `ui:`, затем `step [id]:`. При **английском UI** — строки из `locales/en/win-packaged-manual-smoke.json`. Блок packaged в полном пакете владельца — [owner-manual-smoke.md](owner-manual-smoke.md). Dev: `npm run check:packaged-manual-smoke-parity` (входит в `check:quiet`).
+
 ## Краткий порядок
 
 1. Запустить `dist/win-unpacked/FluxAlloy.exe`.
@@ -23,9 +27,10 @@ npm run check:release
 3. Редактор: локальный файл, превью, scrub.
 4. Загрузки: короткий URL, очередь до «Готово».
 5. «В редактор» для готового файла.
-6. Снимок кадра и экспорт MP4.
-7. База знаний и Support ZIP.
-8. Закрыть и снова открыть exe — без падения.
+6. Снимок кадра, экспорт MP4, спрайт §7.5 (rail FFmpeg).
+7. При busy export/yt-dlp — мини-плеер §4.3 (Сервис → мини-плеер).
+8. База знаний и Support ZIP.
+9. Закрыть и снова открыть exe — без падения.
 
 Подробности сборки — [`docs/RELEASE.md`](../docs/RELEASE.md) (корень репозитория).
 

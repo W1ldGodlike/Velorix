@@ -19,6 +19,7 @@ const steps = [
   ['packaged-manual-smoke-parity', ['run', 'check:packaged-manual-smoke-parity']],
   ['owner-visual-smoke-locale', ['run', 'check:owner-visual-smoke-locale']],
   ['platform-packaging-scripts', ['run', 'check:platform-packaging-scripts']],
+  ['help-packaged-smoke-docs', ['run', 'check:help-packaged-smoke-docs']],
   ['terminal-summaries-ru', ['run', 'check:terminal-summaries-ru']],
   ['terminal-data-summaries', ['run', 'check:terminal-data-summaries']],
   ['terminal-scenario-summaries', ['run', 'check:terminal-scenario-summaries']],

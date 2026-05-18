@@ -16,10 +16,14 @@ npm run verify:mac-unpacked
 
 **Настройки → Зависимости → Ручной smoke macOS (pack:mac:dir)** — шаги можно скопировать; они попадают в Support ZIP (`macosPackagedSmoke:`).
 
+## Копирование и локали
+
+**Скопировать** — формат Support ZIP (`owner:` / `step [id]:`). EN UI — `locales/en/macos-packaged-manual-smoke.json`. Полный пакет — [owner-manual-smoke.md](owner-manual-smoke.md). Dev: `check:packaged-manual-smoke-parity`.
+
 ## Краткий порядок
 
 1. Открыть `FluxAlloy.app`.
-2. Статусбар, редактор, загрузки, снимок, экспорт, база знаний, Support ZIP.
+2. Статусбар, редактор, загрузки, снимок, экспорт, спрайт §7.5, мини-плеер §4.3 при busy-задачах, база знаний, Support ZIP.
 3. Выйти и снова открыть бандл — без падения.
 
 Подробности — [`docs/RELEASE.md`](../docs/RELEASE.md) §4.2.

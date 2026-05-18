@@ -6,7 +6,7 @@ The editor already exposes **hardware** video codecs in the right **Format** rai
 
 1. Open a short H.264 clip (10–30 s) in the editor.
 2. Wait for probe in the Format rail — available HW codecs appear in the list.
-3. To verify on your GPU: **Settings → Dependencies → Manual NVENC / VAAPI smoke** — step checklist and copy button (same text is in the Support ZIP).
+3. To verify on your GPU: **Settings → Dependencies → Manual NVENC / VAAPI smoke** — step checklist and copy button (same text is in the Support ZIP). Full owner bundle (theme, HiDPI, HW, §7.5 sprite, mini player, packaged) — [owner-manual-smoke.md](owner-manual-smoke.md); after `pack:dir` see [packaged-windows-smoke.md](../packaged-windows-smoke.md) and Linux/macOS articles.
 
 ## Modes
 
@@ -24,4 +24,4 @@ The **Benchmark** panel (15 s) compares candidates by speed and CPU/GPU load.
 - **Linux** — VAAPI (Intel/AMD) when `/dev/dri` and vaapi in `ffmpeg -hwaccels` are available.
 - **macOS** — VideoToolbox in the codec list; manual smoke in Settings targets Win/Linux.
 
-See also [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md) and [faq-troubleshooting.md](faq-troubleshooting.md).
+See also [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md), [owner-manual-smoke.md](owner-manual-smoke.md) and [faq-troubleshooting.md](faq-troubleshooting.md).
