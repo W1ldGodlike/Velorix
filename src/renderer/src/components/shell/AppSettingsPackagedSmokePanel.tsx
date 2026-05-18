@@ -4,6 +4,7 @@ import type { AppUiLocale } from '../../../../shared/app-ui-locale'
 import { formatFfmpegHwManualSmokeChecklistPlainText } from '../../../../shared/ffmpeg-hw-manual-smoke-checklist-build'
 import type { FfmpegHwManualSmokeChecklistSection } from '../../../../shared/ffmpeg-hw-manual-smoke-checklist-types'
 import {
+  KNOWLEDGE_SLUG_OWNER_MANUAL_SMOKE,
   KNOWLEDGE_SLUG_PACKAGED_LINUX_SMOKE,
   KNOWLEDGE_SLUG_PACKAGED_MACOS_SMOKE,
   KNOWLEDGE_SLUG_PACKAGED_WINDOWS_SMOKE
@@ -128,14 +129,24 @@ export function AppSettingsPackagedSmokePanel(props: {
         <h3 className="app-settings-hidpi-title">{uiText(config.legendKey)}</h3>
         <div className="app-settings-panel-head-trailing" role="toolbar" aria-orientation="horizontal">
           {props.onOpenKnowledgeArticle ? (
-            <KnowledgeDeepLinkButton
-              label={uiText(config.deepLinkLabelKey)}
-              tooltip={uiText(config.deepLinkTooltipKey)}
-              ariaDescribedBy={props.sectionHintId}
-              onOpen={() => {
-                props.onOpenKnowledgeArticle?.(config.knowledgeSlug)
-              }}
-            />
+            <>
+              <KnowledgeDeepLinkButton
+                label={uiText('knowledgeDeepLinkOwnerSmokeLabel')}
+                tooltip={uiText('knowledgeDeepLinkOwnerSmokeTooltip')}
+                ariaDescribedBy={props.sectionHintId}
+                onOpen={() => {
+                  props.onOpenKnowledgeArticle?.(KNOWLEDGE_SLUG_OWNER_MANUAL_SMOKE)
+                }}
+              />
+              <KnowledgeDeepLinkButton
+                label={uiText(config.deepLinkLabelKey)}
+                tooltip={uiText(config.deepLinkTooltipKey)}
+                ariaDescribedBy={props.sectionHintId}
+                onOpen={() => {
+                  props.onOpenKnowledgeArticle?.(config.knowledgeSlug)
+                }}
+              />
+            </>
           ) : null}
           <button type="button" className="app-btn app-btn-compact" onClick={onCopy}>
             {uiText(config.copyKey)}
@@ -143,6 +154,7 @@ export function AppSettingsPackagedSmokePanel(props: {
         </div>
       </div>
       <p className="app-modal-hint">{uiText(config.introKey)}</p>
+      <p className="app-modal-hint">{uiText('appSettingsPackagedSmokeOwnerBundleHint')}</p>
       {copyHint ? (
         <p className="app-modal-hint" role="status" aria-live="polite">
           {copyHint}

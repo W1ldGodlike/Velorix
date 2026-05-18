@@ -125,7 +125,10 @@ export async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRunt
   const linuxPackagedSmokeChecklistLines = formatLinuxPackagedManualSmokeChecklistLines()
   const macosPackagedSmokeChecklistLines = formatMacosPackagedManualSmokeChecklistLines()
   const workflowOsSchedulerSmokeChecklistLines = formatWorkflowOsSchedulerManualSmokeChecklistLines()
-  const ownerManualSmokeBundleLines = buildOwnerManualSmokeBundleLines({ uiDpiLines: uiDpiLines })
+  const ownerManualSmokeBundleLines = buildOwnerManualSmokeBundleLines({
+    uiDpiLines,
+    platform: process.platform
+  })
 
   return {
     appVersion: app.getVersion(),

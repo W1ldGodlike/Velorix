@@ -45,7 +45,7 @@
   "knowledgeDeepLinkHwSmokeLabel": "Help: hardware encoding",
   "knowledgeDeepLinkHwSmokeTooltip": "Open the article about NVENC, VAAPI, and manual smoke testing.",
   "knowledgeDeepLinkOwnerSmokeLabel": "Help: owner smoke",
-  "knowledgeDeepLinkOwnerSmokeTooltip": "Open the article about the HiDPI + HW + OS scheduler bundle.",
+  "knowledgeDeepLinkOwnerSmokeTooltip": "Open the article about the full owner bundle: HiDPI, HW, packaged, scenarios, scheduler, and Windows shell.",
   "knowledgeDeepLinkPackagedWinLabel": "Help: Windows packaged smoke",
   "knowledgeDeepLinkPackagedWinTooltip": "Open the article about manual testing of dist/win-unpacked after a build.",
   "knowledgeDeepLinkPackagedLinuxLabel": "Help: Linux packaged smoke",

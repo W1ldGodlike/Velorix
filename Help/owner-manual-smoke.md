@@ -4,8 +4,8 @@
 
 ## Где открыть
 
-1. **Настройки → Зависимости** — блок **«Ручной smoke (владелец)»** и кнопка **«Скопировать весь пакет»** (HiDPI + HW + конструктор сценариев + планировщик ОС + Windows shell + снимок dpi).
-2. Ниже — отдельные панели: **NVENC/VAAPI**, **HiDPI** (вкладка «Общие»), **packaged smoke**, **Проводник Windows**, чеклист OS scheduler в **планировщике задач**.
+1. **Настройки → Зависимости** — блок **«Ручной smoke (владелец)»** и кнопка **«Скопировать весь пакет»** (HiDPI + HW + сценарии + packaged smoke вашей ОС + планировщик + Windows shell + снимок dpi).
+2. Ниже — отдельные панели (у каждой deep-link на эту статью): **NVENC/VAAPI**, **HiDPI** (вкладка «Общие»), **packaged smoke**, **Проводник Windows**; планировщик и конструктор сценариев — в меню **Сервис**.
 3. **Архив поддержки** — секция `ownerManualSmoke:` в `diagnostics.txt` (дублирует те же шаги).
 
 ## Что проверить
@@ -15,6 +15,7 @@
 | HiDPI | Масштаб Windows 100–200 %: редактор, загрузки, модалки, статусбар |
 | HW encode | NVENC (Win) или VAAPI (Linux): probe, ручной кодек, hw_auto, «Оценить» |
 | Scenario builder | Конструктор, JSON edges, запуск из редактора / URL |
+| Packaged | `dist/win-unpacked` / `linux-unpacked` / `.app` — см. отдельную панель packaged в настройках |
 | OS scheduler | Watch-folder + Task Scheduler / launchd / systemd user timer |
 | Windows shell | Контекстное меню, «Открыть с помощью», «Приложения по умолчанию…» (только Win) |
 

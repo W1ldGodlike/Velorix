@@ -37,3 +37,4 @@
 - Итог прогона — строка состояния и запись в **Истории обработки** (тип `workflowScenario`).
 - macOS LaunchAgent: логи в `~/Library/Logs/FluxAlloy/watch-<taskId>.log`.
 - Linux timer: `journalctl --user -u fluxalloy-watch-<taskId>.service`.
+- Единый пакет owner-smoke (включая scheduler): **Настройки → Зависимости → Ручной smoke** или deep-link в планировщике.

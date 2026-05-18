@@ -1,6 +1,9 @@
 import { useEffect, useState, type JSX } from 'react'
 
-import { KNOWLEDGE_SLUG_APPEARANCE_LANGUAGE_THEME } from '../../../../shared/knowledge-contract'
+import {
+  KNOWLEDGE_SLUG_APPEARANCE_LANGUAGE_THEME,
+  KNOWLEDGE_SLUG_OWNER_MANUAL_SMOKE
+} from '../../../../shared/knowledge-contract'
 import { uiText, uiTextVars } from '../../locales/ui-text'
 import { UI_HIDPI_CSS_MEDIA_TIERS } from '../../../../shared/ui-hidpi-scale-tiers'
 import { readUiHidpiRuntimeStatus, type UiHidpiRuntimeStatus } from '../../ui-hidpi-runtime-status'
@@ -52,14 +55,28 @@ export function AppSettingsHidpiStatusPanel(props: {
       <div className="app-settings-hw-smoke-header">
         <h3 className="app-settings-hidpi-title">{uiText('appSettingsHidpiLegend')}</h3>
         {props.onOpenKnowledgeArticle ? (
-          <KnowledgeDeepLinkButton
-            label={uiText('knowledgeDeepLinkHidpiLabel')}
-            tooltip={uiText('knowledgeDeepLinkHidpiTooltip')}
-            ariaDescribedBy={props.sectionHintId}
-            onOpen={() => {
-              props.onOpenKnowledgeArticle?.(KNOWLEDGE_SLUG_APPEARANCE_LANGUAGE_THEME)
-            }}
-          />
+          <div
+            className="app-settings-panel-head-trailing"
+            role="toolbar"
+            aria-orientation="horizontal"
+          >
+            <KnowledgeDeepLinkButton
+              label={uiText('knowledgeDeepLinkOwnerSmokeLabel')}
+              tooltip={uiText('knowledgeDeepLinkOwnerSmokeTooltip')}
+              ariaDescribedBy={props.sectionHintId}
+              onOpen={() => {
+                props.onOpenKnowledgeArticle?.(KNOWLEDGE_SLUG_OWNER_MANUAL_SMOKE)
+              }}
+            />
+            <KnowledgeDeepLinkButton
+              label={uiText('knowledgeDeepLinkHidpiLabel')}
+              tooltip={uiText('knowledgeDeepLinkHidpiTooltip')}
+              ariaDescribedBy={props.sectionHintId}
+              onOpen={() => {
+                props.onOpenKnowledgeArticle?.(KNOWLEDGE_SLUG_APPEARANCE_LANGUAGE_THEME)
+              }}
+            />
+          </div>
         ) : null}
       </div>
       <p className="app-modal-hint">
@@ -74,6 +91,7 @@ export function AppSettingsHidpiStatusPanel(props: {
       </p>
       <p className="app-modal-hint app-settings-hidpi-active">{formatActiveTierLine(status)}</p>
       <p className="app-modal-hint">{uiText('appSettingsHidpiManualHint')}</p>
+      <p className="app-modal-hint">{uiText('appSettingsHidpiOwnerBundleHint')}</p>
       <p className="app-modal-hint app-settings-hidpi-checklist-intro">
         {uiText('appSettingsHidpiChecklistIntro')}
       </p>

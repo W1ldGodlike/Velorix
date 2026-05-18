@@ -13,13 +13,17 @@ describe('owner-manual-smoke-bundle', () => {
   })
 
   it('bundle includes HW, scenario, and OS scheduler sections', () => {
-    const lines = buildOwnerManualSmokeBundleLines({ uiDpiLines: ['devicePixelRatio: 1.25'] })
+    const lines = buildOwnerManualSmokeBundleLines({
+      uiDpiLines: ['devicePixelRatio: 1.25'],
+      platform: 'win32'
+    })
     const joined = lines.join('\n')
     expect(joined).toContain('ownerManualSmoke:')
     expect(joined).toContain('=== HW encode ===')
     expect(joined).toContain('nvenc-probe')
     expect(joined).toContain('=== Scenario builder ===')
     expect(joined).toContain('step [add-link]')
+    expect(joined).toContain('=== Packaged Win')
     expect(joined).toContain('=== OS scheduler ===')
     expect(joined).toContain('devicePixelRatio: 1.25')
   })

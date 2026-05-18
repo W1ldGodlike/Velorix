@@ -7,6 +7,7 @@ import {
 } from '../../../../shared/ffmpeg-hw-manual-smoke-checklist-build'
 import { KNOWLEDGE_SLUG_OWNER_MANUAL_SMOKE } from '../../../../shared/knowledge-contract'
 import { formatOwnerManualSmokeBundlePlainText } from '../../../../shared/owner-manual-smoke-bundle'
+import { getOwnerManualSmokePackagedSection } from '../../../../shared/owner-manual-smoke-packaged-section'
 import { formatOwnerManualSmokeHidpiChecklistLines } from '../../../../shared/owner-manual-smoke-hidpi-lines'
 import { getFfmpegHwManualSmokeChecklistForUiLocale } from '../../hw-manual-smoke-checklist-locale'
 import { getUiLocale, uiText } from '../../locales/ui-text'
@@ -114,6 +115,14 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
     return formatFfmpegHwManualSmokeChecklistPlainText(sections)
   }, [locale, shellSupported])
 
+  const packagedPlainText = useMemo(() => {
+    const section = getOwnerManualSmokePackagedSection()
+    if (!section) {
+      return null
+    }
+    return [section.heading, ...section.lines].join('\n')
+  }, [])
+
   const plainText = useMemo(
     () =>
       formatOwnerManualSmokeBundlePlainText({
@@ -122,9 +131,10 @@ export function AppSettingsOwnerSmokeBundlePanel(props: {
         scenarioPlainText,
         osPlainText,
         shellPlainText,
+        packagedPlainText,
         uiDpiSnapshot: formatUiDpiSnapshotLines()
       }),
-    [hwPlainText, osPlainText, scenarioPlainText, shellPlainText]
+    [hwPlainText, osPlainText, scenarioPlainText, shellPlainText, packagedPlainText]
   )
 
   const onCopy = (): void => {

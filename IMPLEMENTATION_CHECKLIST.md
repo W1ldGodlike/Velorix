@@ -43,8 +43,8 @@
 
 Правило: это короткий навигатор ближайших работ, а не архив прогресса. Держать 3-7 пунктов, не длиннее 220 символов каждый.
 
-- [~] §16/§10/§3: owner-smoke прогон (HW NVENC/VAAPI, OS scheduler, packaged Win/Linux) — владелец; hub J-1072/1079.
-- [~] §11/§14 owner-smoke: чеклисты в IMPLEMENTATION_CHECKLIST + `ownerManualSmoke:` (J-1080).
+- [~] §16/§10/§3: owner-smoke **прогон на железе** — владелец; hub + deep-links (J-1081..1085, cadence 460).
+- [x] §11/§14 owner-smoke: чеклисты в IMPLEMENTATION_CHECKLIST + `ownerManualSmoke:` (J-1080).
 - [x] §14 код: меню + OpenWith + default apps (J-1073/1074/1077).
 - [x] §11 код: конструктор v1 reorder/add/link (J-1074/1076/1078).
 - [x] §12/§13: temp + истории (J-1064..1071).
@@ -149,6 +149,13 @@
 - [x] Настройки: кнопка «Проверить обновления» (J-1035).
 - [x] Настройки: ручной override путей к движкам.
 - [x] UI: версии движков в статусбаре (краткая сводка + строка `ffmpeg`/`ffprobe`/`yt-dlp` с токенами версий; J-1036).
+
+### Ручной smoke владельца — packaged (§3, не CI)
+
+Канон: `locales/*/win-packaged-manual-smoke.json` (и linux/macos) + блок в `ownerManualSmoke:` (J-1081); отдельные панели в Настройках.
+
+- [ ] `dist/win-unpacked` / `linux-unpacked` / `.app`: запуск exe, движки, редактор, загрузки, Support ZIP.
+- [ ] Отдельные `winPackagedSmoke:` / `linuxPackagedSmoke:` / `macosPackagedSmoke:` в Support ZIP остаются (дубль OK).
 
 ## §4. Главное окно и глобальные элементы
 
@@ -402,7 +409,7 @@
 - [x] Вкл/выкл, удаление, pick folder.
 - [x] Валидация parse (`scheduled-task-parse`, Vitest).
 - [x] Чеклист ручного smoke OS scheduler в планировщике + Support ZIP `workflowOsSchedulerSmoke:` (J-1057).
-- [~] Ручной прогон OS scheduler на Win/macOS/Linux — владелец (`docs/RELEASE.md` §4.3, Help).
+- [~] Ручной прогон OS scheduler на Win/macOS/Linux — владелец (`docs/RELEASE.md` §4.3, Help); deep-link owner-smoke в планировщике (J-1082).
 
 ## §11. Конструктор сценариев
 

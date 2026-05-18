@@ -10,7 +10,10 @@ import {
   WORKFLOW_SCENARIO_TEMPLATES,
   type WorkflowScenarioTemplateId
 } from '../../../../shared/workflow-scenario-templates'
-import { KNOWLEDGE_SLUG_WORKFLOWS_PLANNER_SCENARIOS } from '../../../../shared/knowledge-contract'
+import {
+  KNOWLEDGE_SLUG_OWNER_MANUAL_SMOKE,
+  KNOWLEDGE_SLUG_WORKFLOWS_PLANNER_SCENARIOS
+} from '../../../../shared/knowledge-contract'
 import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
 import { uiText } from '../../locales/ui-text'
 import type { UiTextKey } from '../../locales/ui-text-strings'
@@ -194,20 +197,36 @@ export function WorkflowScenarioBuilderDialog(
             {uiText('workflowScenarioBuilderDialogTitle')}
           </h2>
           {onOpenKnowledgeArticle ? (
-            <KnowledgeDeepLinkButton
-              label={uiText('knowledgeDeepLinkWorkflows')}
-              tooltip={uiText('knowledgeDeepLinkWorkflowsTooltip')}
-              ariaDescribedBy="workflow-scenario-builder-hint"
-              disabled={busy}
-              onOpen={() => {
-                onOpenKnowledgeArticle(KNOWLEDGE_SLUG_WORKFLOWS_PLANNER_SCENARIOS)
-              }}
-            />
+            <div
+              className="app-settings-panel-head-trailing"
+              role="toolbar"
+              aria-orientation="horizontal"
+            >
+              <KnowledgeDeepLinkButton
+                label={uiText('knowledgeDeepLinkOwnerSmokeLabel')}
+                tooltip={uiText('knowledgeDeepLinkOwnerSmokeTooltip')}
+                ariaDescribedBy="workflow-scenario-builder-hint"
+                disabled={busy}
+                onOpen={() => {
+                  onOpenKnowledgeArticle(KNOWLEDGE_SLUG_OWNER_MANUAL_SMOKE)
+                }}
+              />
+              <KnowledgeDeepLinkButton
+                label={uiText('knowledgeDeepLinkWorkflows')}
+                tooltip={uiText('knowledgeDeepLinkWorkflowsTooltip')}
+                ariaDescribedBy="workflow-scenario-builder-hint"
+                disabled={busy}
+                onOpen={() => {
+                  onOpenKnowledgeArticle(KNOWLEDGE_SLUG_WORKFLOWS_PLANNER_SCENARIOS)
+                }}
+              />
+            </div>
           ) : null}
         </div>
         <p id="workflow-scenario-builder-hint" className="app-modal-hint">
           {uiText('workflowScenarioBuilderDialogHint')}
         </p>
+        <p className="app-modal-hint">{uiText('workflowScenarioBuilderOwnerBundleHint')}</p>
         {parsedScenario ? (
           <div
             className="workflow-scenario-flow-toolbar"

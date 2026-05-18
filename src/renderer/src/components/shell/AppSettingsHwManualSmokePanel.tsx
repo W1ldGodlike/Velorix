@@ -5,7 +5,10 @@ import {
   orderHwManualSmokeSectionsForDisplay,
   resolvePrimaryHwManualSmokeSectionId
 } from '../../../../shared/ffmpeg-hw-manual-smoke-checklist-build'
-import { KNOWLEDGE_SLUG_HARDWARE_ENCODING } from '../../../../shared/knowledge-contract'
+import {
+  KNOWLEDGE_SLUG_HARDWARE_ENCODING,
+  KNOWLEDGE_SLUG_OWNER_MANUAL_SMOKE
+} from '../../../../shared/knowledge-contract'
 import { getUiLocale, uiText } from '../../locales/ui-text'
 import { getFfmpegHwManualSmokeChecklistForUiLocale } from '../../hw-manual-smoke-checklist-locale'
 import { KnowledgeDeepLinkButton } from '../KnowledgeDeepLinkButton'
@@ -48,14 +51,24 @@ export function AppSettingsHwManualSmokePanel(props: {
         <h3 className="app-settings-hidpi-title">{uiText('appSettingsHwManualSmokeLegend')}</h3>
         <div className="app-settings-panel-head-trailing" role="toolbar" aria-orientation="horizontal">
           {props.onOpenKnowledgeArticle ? (
-            <KnowledgeDeepLinkButton
-              label={uiText('knowledgeDeepLinkHwSmokeLabel')}
-              tooltip={uiText('knowledgeDeepLinkHwSmokeTooltip')}
-              ariaDescribedBy={props.sectionHintId}
-              onOpen={() => {
-                props.onOpenKnowledgeArticle?.(KNOWLEDGE_SLUG_HARDWARE_ENCODING)
-              }}
-            />
+            <>
+              <KnowledgeDeepLinkButton
+                label={uiText('knowledgeDeepLinkOwnerSmokeLabel')}
+                tooltip={uiText('knowledgeDeepLinkOwnerSmokeTooltip')}
+                ariaDescribedBy={props.sectionHintId}
+                onOpen={() => {
+                  props.onOpenKnowledgeArticle?.(KNOWLEDGE_SLUG_OWNER_MANUAL_SMOKE)
+                }}
+              />
+              <KnowledgeDeepLinkButton
+                label={uiText('knowledgeDeepLinkHwSmokeLabel')}
+                tooltip={uiText('knowledgeDeepLinkHwSmokeTooltip')}
+                ariaDescribedBy={props.sectionHintId}
+                onOpen={() => {
+                  props.onOpenKnowledgeArticle?.(KNOWLEDGE_SLUG_HARDWARE_ENCODING)
+                }}
+              />
+            </>
           ) : null}
           <button type="button" className="app-btn app-btn-compact" onClick={onCopy}>
             {uiText('appSettingsHwManualSmokeCopy')}
@@ -63,6 +76,7 @@ export function AppSettingsHwManualSmokePanel(props: {
         </div>
       </div>
       <p className="app-modal-hint">{uiText('appSettingsHwManualSmokeIntro')}</p>
+      <p className="app-modal-hint">{uiText('appSettingsHwManualSmokeOwnerBundleHint')}</p>
       {primaryId !== null ? (
         <p className="app-modal-hint app-settings-hw-smoke-primary">
           {uiText(

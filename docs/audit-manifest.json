@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-18T08:54:54.699Z",
+  "generatedAt": "2026-05-18T09:09:01.431Z",
   "repoRoot": "C:\\Users\\truno\\FluxAlloy",
   "codeRoots": [
     "src",
@@ -18,7 +18,7 @@
     ".cursor",
     "coverage"
   ],
-  "fileCount": 1040,
+  "fileCount": 1042,
   "files": [
     "electron.vite.config.ts",
     "eslint.config.mjs",
@@ -700,6 +700,7 @@
     "src/shared/nvidia-smi-gpu-util-parse.ts",
     "src/shared/owner-manual-smoke-bundle.ts",
     "src/shared/owner-manual-smoke-hidpi-lines.ts",
+    "src/shared/owner-manual-smoke-packaged-section.ts",
     "src/shared/packaged-app-smoke.ts",
     "src/shared/packaged-engine-candidate-paths.ts",
     "src/shared/packaged-ffmpeg-smoke.ts",
@@ -1010,6 +1011,7 @@
     "tests/shared/nvidia-smi-gpu-info-parse.test.ts",
     "tests/shared/nvidia-smi-gpu-util-parse.test.ts",
     "tests/shared/owner-manual-smoke-bundle.test.ts",
+    "tests/shared/owner-manual-smoke-packaged-section.test.ts",
     "tests/shared/packaged-app-smoke.test.ts",
     "tests/shared/packaged-ffmpeg-smoke.test.ts",
     "tests/shared/packaged-ffprobe-smoke.test.ts",

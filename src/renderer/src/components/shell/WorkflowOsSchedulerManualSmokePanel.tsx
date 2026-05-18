@@ -1,6 +1,9 @@
 import { useMemo, useState, type JSX } from 'react'
 
-import { KNOWLEDGE_SLUG_WORKFLOWS_PLANNER_SCENARIOS } from '../../../../shared/knowledge-contract'
+import {
+  KNOWLEDGE_SLUG_OWNER_MANUAL_SMOKE,
+  KNOWLEDGE_SLUG_WORKFLOWS_PLANNER_SCENARIOS
+} from '../../../../shared/knowledge-contract'
 import { formatFfmpegHwManualSmokeChecklistPlainText } from '../../../../shared/ffmpeg-hw-manual-smoke-checklist-build'
 import { getUiLocale, uiText } from '../../locales/ui-text'
 import {
@@ -57,17 +60,32 @@ export function WorkflowOsSchedulerManualSmokePanel(props: {
       <div className="app-settings-hw-smoke-header">
         <h3 className="app-settings-hw-smoke-label">{uiText('workflowPlannerOsSmokeLegend')}</h3>
         {onOpenKnowledgeArticle ? (
-          <KnowledgeDeepLinkButton
-            label={uiText('knowledgeDeepLinkWorkflows')}
-            tooltip={uiText('knowledgeDeepLinkWorkflowsTooltip')}
-            ariaDescribedBy={sectionHintId}
-            onOpen={() => {
-              onOpenKnowledgeArticle(KNOWLEDGE_SLUG_WORKFLOWS_PLANNER_SCENARIOS)
-            }}
-          />
+          <div
+            className="app-settings-panel-head-trailing"
+            role="toolbar"
+            aria-orientation="horizontal"
+          >
+            <KnowledgeDeepLinkButton
+              label={uiText('knowledgeDeepLinkOwnerSmokeLabel')}
+              tooltip={uiText('knowledgeDeepLinkOwnerSmokeTooltip')}
+              ariaDescribedBy={sectionHintId}
+              onOpen={() => {
+                onOpenKnowledgeArticle(KNOWLEDGE_SLUG_OWNER_MANUAL_SMOKE)
+              }}
+            />
+            <KnowledgeDeepLinkButton
+              label={uiText('knowledgeDeepLinkWorkflows')}
+              tooltip={uiText('knowledgeDeepLinkWorkflowsTooltip')}
+              ariaDescribedBy={sectionHintId}
+              onOpen={() => {
+                onOpenKnowledgeArticle(KNOWLEDGE_SLUG_WORKFLOWS_PLANNER_SCENARIOS)
+              }}
+            />
+          </div>
         ) : null}
       </div>
       <p className="app-modal-hint">{uiText('workflowPlannerOsSmokeIntro')}</p>
+      <p className="app-modal-hint">{uiText('workflowPlannerOsSmokeOwnerBundleHint')}</p>
       <button type="button" className="app-btn app-btn-compact" onClick={onCopy}>
         {uiText('workflowPlannerOsSmokeCopy')}
       </button>

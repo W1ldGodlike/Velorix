@@ -45,7 +45,7 @@
   "knowledgeDeepLinkHwSmokeLabel": "Справка: аппаратное кодирование",
   "knowledgeDeepLinkHwSmokeTooltip": "Открыть статью о NVENC, VAAPI и ручном smoke-тесте.",
   "knowledgeDeepLinkOwnerSmokeLabel": "Справка: smoke владельца",
-  "knowledgeDeepLinkOwnerSmokeTooltip": "Открыть статью о едином пакете HiDPI, HW и планировщика ОС.",
+  "knowledgeDeepLinkOwnerSmokeTooltip": "Открыть статью о едином пакете HiDPI, HW, packaged, сценариев, scheduler и Win shell.",
   "knowledgeDeepLinkPackagedWinLabel": "Справка: smoke Windows (pack:dir)",
   "knowledgeDeepLinkPackagedWinTooltip": "Открыть статью о ручной проверке dist/win-unpacked после сборки.",
   "knowledgeDeepLinkPackagedLinuxLabel": "Справка: smoke Linux (pack:linux:dir)",
