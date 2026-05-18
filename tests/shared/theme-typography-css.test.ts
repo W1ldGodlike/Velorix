@@ -3,8 +3,10 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
 import {
+  THEME_FORBIDDEN_MAIN_CSS_FONT_SIZE_EM,
   THEME_FORBIDDEN_MAIN_CSS_FONT_SIZE_PX,
   THEME_FORBIDDEN_MAIN_CSS_FONT_SIZE_REM,
+  THEME_KNOWLEDGE_TYPOGRAPHY_ASSERTIONS,
   THEME_SHELL_TYPOGRAPHY_ASSERTIONS
 } from '../../src/shared/theme-typography-css'
 
@@ -21,7 +23,9 @@ const FONT_SIZE_TOKENS = [
   '--fa-font-size-lg',
   '--fa-font-size-xl',
   '--fa-font-size-base-lg',
-  '--fa-font-size-px-11'
+  '--fa-font-size-px-11',
+  '--fa-font-size-rel-quote',
+  '--fa-font-size-rel-code'
 ] as const
 
 function ruleBlock(css: string, selector: string): string {
@@ -47,9 +51,18 @@ describe('theme-typography-css §5', () => {
     }
   })
 
-  it('main.css has no raw rem or px in font-size', () => {
+  it('knowledge markdown uses em font-size tokens', () => {
+    const css = readFileSync(MAIN_CSS_PATH, 'utf8')
+    for (const { selector, mustInclude } of THEME_KNOWLEDGE_TYPOGRAPHY_ASSERTIONS) {
+      const block = ruleBlock(css, selector)
+      expect(block, selector).toContain(mustInclude)
+    }
+  })
+
+  it('main.css has no raw rem, px, or em in font-size', () => {
     const css = readFileSync(MAIN_CSS_PATH, 'utf8')
     expect(css.match(THEME_FORBIDDEN_MAIN_CSS_FONT_SIZE_REM) ?? []).toEqual([])
     expect(css.match(THEME_FORBIDDEN_MAIN_CSS_FONT_SIZE_PX) ?? []).toEqual([])
+    expect(css.match(THEME_FORBIDDEN_MAIN_CSS_FONT_SIZE_EM) ?? []).toEqual([])
   })
 })

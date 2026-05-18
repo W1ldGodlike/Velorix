@@ -125,7 +125,7 @@ export function EditorFfmpegBenchmarkPanel(props: EditorFfmpegSettingsRailProps)
       >
         <button
           type="button"
-          className="app-button app-button-secondary"
+          className="app-btn app-btn-compact"
           title={uiText('editorExportBenchmarkButtonTitle')}
           disabled={!canRun}
           aria-busy={benchmarkBusy}

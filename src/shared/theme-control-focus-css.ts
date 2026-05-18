@@ -26,6 +26,20 @@ export const THEME_PRIMARY_CONTROL_CSS_ASSERTIONS: ReadonlyArray<{
   { selector: '.app-workspace-tab:focus-visible', mustInclude: THEME_CONTROL_FOCUS_TOKEN }
 ]
 
+/** Редкие панели §5: бенчмарк, About-утилиты, внешний скрипт. */
+export const THEME_RARE_PANEL_CONTROL_CSS_ASSERTIONS: ReadonlyArray<{
+  selector: string
+  mustInclude: string
+}> = [
+  { selector: '.app-benchmark-codec-pick:focus-visible', mustInclude: THEME_CONTROL_FOCUS_TOKEN },
+  {
+    selector: '.app-benchmark-codec-pick:disabled',
+    mustInclude: THEME_CONTROL_DISABLED_TOKEN
+  },
+  { selector: '.app-settings-select:focus-visible', mustInclude: THEME_CONTROL_FOCUS_TOKEN },
+  { selector: '.app-settings-select:disabled', mustInclude: THEME_CONTROL_DISABLED_TOKEN }
+]
+
 /** Запрещённые тёмные hex-литералы в main.css (§5 — только токены). */
 export const THEME_FORBIDDEN_MAIN_CSS_HEX = [
   '#111827',

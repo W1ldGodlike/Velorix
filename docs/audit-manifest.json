@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-18T13:33:57.245Z",
+  "generatedAt": "2026-05-18T14:22:39.822Z",
   "repoRoot": "C:\\Users\\truno\\FluxAlloy",
   "codeRoots": [
     "src",
@@ -18,7 +18,7 @@
     ".cursor",
     "coverage"
   ],
-  "fileCount": 1068,
+  "fileCount": 1073,
   "files": [
     "electron.vite.config.ts",
     "eslint.config.mjs",
@@ -36,6 +36,7 @@
     "scripts/apply-terminal-summary-ru-pairs.mjs",
     "scripts/apply-terminal-summary-ru.mjs",
     "scripts/apply-theme-font-size-rem-tokenize.mjs",
+    "scripts/apply-theme-line-height-tokenize.mjs",
     "scripts/apply-theme-spacing-rem-tokenize.mjs",
     "scripts/audit-copy-paste-patterns.mjs",
     "scripts/audit-dead-type-reexports.mjs",
@@ -130,6 +131,7 @@
     "scripts/split-ytdlp-progress-parser-queue.mjs",
     "scripts/split-ytdlp-progress-parser-test.mjs",
     "scripts/terminal-contract-hint-paths.mjs",
+    "scripts/theme-tokenize-main-css.mjs",
     "scripts/validate-trusted-hashes-json.mjs",
     "scripts/verify-bundled-engines-hashes.mjs",
     "scripts/verify-linux-release-artifacts-lib.mjs",
@@ -779,6 +781,8 @@
     "src/shared/theme-contrast-pairs.ts",
     "src/shared/theme-control-focus-css.ts",
     "src/shared/theme-font-size-rem-tokenize.ts",
+    "src/shared/theme-line-height-css.ts",
+    "src/shared/theme-line-height-tokenize.ts",
     "src/shared/theme-radius-css.ts",
     "src/shared/theme-spacing-css.ts",
     "src/shared/theme-spacing-rem-tokenize.ts",
@@ -1051,6 +1055,7 @@
     "tests/shared/theme-contrast-pairs.test.ts",
     "tests/shared/theme-control-focus-css.test.ts",
     "tests/shared/theme-css-tokens.test.ts",
+    "tests/shared/theme-line-height-css.test.ts",
     "tests/shared/theme-radius-css.test.ts",
     "tests/shared/theme-rem-tokenize.test.ts",
     "tests/shared/theme-spacing-css.test.ts",

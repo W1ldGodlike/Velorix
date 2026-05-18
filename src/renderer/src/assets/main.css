@@ -181,7 +181,7 @@
   grid-column: 1 / -1;
   color: var(--fa-text-muted);
   font-size: var(--fa-font-size-sm);
-  line-height: 1.35;
+  line-height: var(--fa-line-height-body);
 }
 
 .app-terminal-input {
@@ -237,7 +237,7 @@
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
     monospace;
   font-size: var(--fa-font-size-ui-md);
-  line-height: 1.45;
+  line-height: var(--fa-line-height-ui);
 }
 
 .app-terminal-output-line {
@@ -267,7 +267,7 @@
   padding: var(--fa-space-pad-micro) var(--fa-space-compact);
   font: inherit;
   font-size: var(--fa-font-size-xs);
-  line-height: 1.2;
+  line-height: var(--fa-line-height-compact);
   border: 1px solid transparent;
   border-radius: var(--fa-radius-md);
   color: var(--fa-text-muted);
@@ -337,7 +337,7 @@
 .app-terminal-hint small {
   grid-column: 1 / -1;
   color: var(--fa-text-muted);
-  line-height: 1.35;
+  line-height: var(--fa-line-height-body);
 }
 
 .app-terminal-hint-card {
@@ -396,7 +396,7 @@
 .app-topbar-engine-short {
   margin: 0;
   font-size: var(--fa-font-size-2xs);
-  line-height: 1.3;
+  line-height: var(--fa-line-height-normal);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-variant-numeric: tabular-nums;
   color: var(--fa-text-muted);
@@ -592,7 +592,7 @@
   margin: 0;
   color: var(--fa-text-muted);
   font-size: var(--fa-font-size-2xs);
-  line-height: 1.35;
+  line-height: var(--fa-line-height-body);
 }
 
 /* §7.2 — превью команды ffmpeg в виде сворачиваемого блока. */
@@ -659,7 +659,7 @@
   color: var(--fa-text-secondary);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: var(--fa-font-size-sm);
-  line-height: 1.4;
+  line-height: var(--fa-line-height-room);
   white-space: pre-wrap;
   word-break: break-word;
   max-height: 8rem;
@@ -948,7 +948,7 @@
   resize: vertical;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: var(--fa-font-size-sm);
-  line-height: 1.38;
+  line-height: var(--fa-line-height-relaxed);
 }
 
 .app-downloads-expert-hint-select {
@@ -1009,7 +1009,7 @@ button.app-downloads-hint-token {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: var(--fa-font-size-snug);
   font-weight: 700;
-  line-height: 1.35;
+  line-height: var(--fa-line-height-body);
 }
 
 button.app-downloads-hint-token:hover {
@@ -1031,7 +1031,7 @@ button.app-downloads-hint-token:disabled {
 .app-downloads-hint-desc {
   color: var(--fa-text-muted);
   font-size: var(--fa-font-size-caption-sm);
-  line-height: 1.35;
+  line-height: var(--fa-line-height-body);
 }
 
 .app-downloads-switch-grid,
@@ -1094,7 +1094,7 @@ button.app-downloads-hint-token:disabled {
   color: var(--fa-text-muted);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: var(--fa-font-size-2xs);
-  line-height: 1.45;
+  line-height: var(--fa-line-height-ui);
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -1103,7 +1103,7 @@ button.app-downloads-hint-token:disabled {
   margin: 0;
   color: var(--fa-danger);
   font-size: var(--fa-font-size-xs);
-  line-height: 1.35;
+  line-height: var(--fa-line-height-body);
 }
 
 .app-downloads-history-panel {
@@ -1175,7 +1175,7 @@ button.app-downloads-hint-token:disabled {
   margin: 0;
   color: var(--fa-text-muted);
   font-size: var(--fa-font-size-xs);
-  line-height: 1.35;
+  line-height: var(--fa-line-height-body);
 }
 
 .app-downloads-history-card {
@@ -1198,7 +1198,7 @@ button.app-downloads-hint-token:disabled {
   overflow: hidden;
   color: var(--fa-text-muted);
   font-size: var(--fa-font-size-micro);
-  line-height: 1.35;
+  line-height: var(--fa-line-height-body);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -1293,7 +1293,7 @@ button.app-downloads-hint-token:disabled {
   color: var(--fa-text-muted);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: var(--fa-font-size-2xs);
-  line-height: 1.45;
+  line-height: var(--fa-line-height-ui);
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -1318,7 +1318,7 @@ button.app-downloads-hint-token:disabled {
   margin: var(--fa-space-tight) 0 0;
   color: var(--fa-text-muted);
   font-size: var(--fa-font-size-xs);
-  line-height: 1.35;
+  line-height: var(--fa-line-height-body);
 }
 
 .app-downloads-actions,
@@ -1373,7 +1373,7 @@ button.app-downloads-hint-token:disabled {
   color: var(--fa-text-primary);
   padding: var(--fa-space-inline) var(--fa-space-row);
   font-size: var(--fa-font-size-md);
-  line-height: 1.4;
+  line-height: var(--fa-line-height-room);
 }
 
 .app-downloads-url-input:focus-visible {
@@ -1416,7 +1416,7 @@ button.app-downloads-hint-token:disabled {
   margin-top: var(--fa-space-tight);
   color: var(--fa-text-primary);
   font-size: var(--fa-font-size-xl);
-  line-height: 1;
+  line-height: var(--fa-line-height-tight);
 }
 
 .app-downloads-filterbar {
@@ -1547,7 +1547,7 @@ button.app-downloads-hint-token:disabled {
   overflow: hidden;
   color: var(--fa-text-muted);
   font-size: var(--fa-font-size-caption-sm);
-  line-height: 1.35;
+  line-height: var(--fa-line-height-body);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -1697,7 +1697,7 @@ button.app-downloads-hint-token:disabled {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--fa-text-muted);
-  line-height: 1;
+  line-height: var(--fa-line-height-tight);
   max-width: 3.2rem;
   text-align: center;
 }
@@ -1713,7 +1713,7 @@ button.app-downloads-hint-token:disabled {
   margin: var(--fa-space-pad-xs) 0 0;
   color: var(--fa-text-muted);
   font-size: var(--fa-font-size-xs);
-  line-height: 1.35;
+  line-height: var(--fa-line-height-body);
 }
 
 .app-settings-badge {
@@ -1771,7 +1771,7 @@ button.app-downloads-hint-token:disabled {
   padding: var(--fa-space-tight) var(--fa-space-gutter) var(--fa-space-inline);
   color: var(--fa-text-muted);
   font-size: var(--fa-font-size-2xs);
-  line-height: 1.35;
+  line-height: var(--fa-line-height-body);
 }
 
 .app-processing-history-panel > .app-settings-summary {
@@ -1876,7 +1876,7 @@ button.app-downloads-hint-token:disabled {
   margin: var(--fa-space-pad-xs);
   color: var(--fa-text-muted);
   font-size: var(--fa-font-size-2xs);
-  line-height: 1.35;
+  line-height: var(--fa-line-height-body);
 }
 
 .app-pill-switch {
@@ -2073,7 +2073,7 @@ button.app-downloads-hint-token:disabled {
 .app-batch-export-drag-handle-glyph {
   display: inline-block;
   font-size: var(--fa-font-size-sm);
-  line-height: 1;
+  line-height: var(--fa-line-height-tight);
   letter-spacing: -0.12em;
   color: var(--fa-text-muted);
 }
@@ -2109,7 +2109,8 @@ button.app-downloads-hint-token:disabled {
   grid-column: 1 / -1;
 }
 
-.app-benchmark-toolbar {
+.app-benchmark-toolbar,
+.app-settings-benchmark-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -2166,9 +2167,20 @@ button.app-downloads-hint-token:disabled {
   text-align: left;
 }
 
+.app-benchmark-codec-pick:hover:not(:disabled) {
+  color: var(--fa-accent);
+}
+
+.app-benchmark-codec-pick:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--fa-radius-sm);
+}
+
 .app-benchmark-codec-pick:disabled {
   cursor: not-allowed;
   opacity: 0.65;
+  color: var(--fa-disabled);
 }
 
 .app-benchmark-recommended-badge {
@@ -2303,7 +2315,7 @@ button.app-downloads-hint-token:disabled {
   flex: 1 1 10rem;
   text-align: center;
   font-size: var(--fa-font-size-sm);
-  line-height: 1.35;
+  line-height: var(--fa-line-height-body);
   font-variant-numeric: tabular-nums;
   color: var(--fa-text-secondary);
   min-width: 0;
@@ -2329,7 +2341,7 @@ button.app-downloads-hint-token:disabled {
   min-width: 0;
   text-align: center;
   font-size: var(--fa-font-size-sm);
-  line-height: 1.35;
+  line-height: var(--fa-line-height-body);
   font-variant-numeric: tabular-nums;
   color: var(--fa-text-secondary);
 }
@@ -2544,7 +2556,7 @@ button.app-downloads-hint-token:disabled {
   gap: var(--fa-space-gap-toolbar) var(--fa-space-3);
   padding: var(--fa-space-gap-2) var(--fa-space-inline) var(--fa-space-gap-4xs);
   font-size: var(--fa-font-size-caption-sm);
-  line-height: 1.42;
+  line-height: var(--fa-line-height-loose);
   color: var(--fa-text-muted);
   font-variant-numeric: tabular-nums;
   min-width: 0;
@@ -2606,7 +2618,7 @@ button.app-downloads-hint-token:disabled {
   margin: 0;
   padding: var(--fa-space-gap-2) 0 var(--fa-space-pad-micro);
   font-size: var(--fa-font-size-micro);
-  line-height: 1.35;
+  line-height: var(--fa-line-height-body);
   color: var(--fa-text-muted);
 }
 
@@ -2614,7 +2626,7 @@ button.app-downloads-hint-token:disabled {
   margin: 0;
   padding: 0 0 var(--fa-space-gap-3xs);
   font-size: var(--fa-font-size-3xs);
-  line-height: 1.3;
+  line-height: var(--fa-line-height-normal);
   color: color-mix(in srgb, var(--fa-text-muted) 86%, transparent);
 }
 
@@ -2658,7 +2670,7 @@ button.app-downloads-hint-token:disabled {
   top: -0.12rem;
   transform: translateX(-50%);
   font-size: var(--fa-font-size-3xs);
-  line-height: 1.2;
+  line-height: var(--fa-line-height-compact);
   font-variant-numeric: tabular-nums;
   color: var(--fa-text-muted);
   white-space: nowrap;
@@ -2684,7 +2696,7 @@ button.app-downloads-hint-token:disabled {
   gap: var(--fa-space-gap-tight) var(--fa-space-3h);
   padding: var(--fa-space-gap-2xs) 0.6rem 0.06rem;
   font-size: var(--fa-font-size-caption-sm);
-  line-height: 1.42;
+  line-height: var(--fa-line-height-loose);
   color: var(--fa-text-muted);
   font-variant-numeric: tabular-nums;
   min-width: 0;
@@ -2772,7 +2784,7 @@ button.app-downloads-hint-token:disabled {
 }
 
 .app-preview-probe-summary-line {
-  line-height: 1.35;
+  line-height: var(--fa-line-height-body);
 }
 
 .app-preview-probe-error {
@@ -2902,7 +2914,7 @@ button.app-downloads-hint-token:disabled {
   padding: var(--fa-space-1) 0.45rem 0.1rem;
   color: var(--fa-text-muted);
   font-size: var(--fa-font-size-2xs);
-  line-height: 1.35;
+  line-height: var(--fa-line-height-body);
 }
 
 .app-probe-copy-tip {
@@ -2921,7 +2933,7 @@ button.app-downloads-hint-token:disabled {
   padding: var(--fa-space-gap-sm) var(--fa-space-2);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: var(--fa-font-size-2xs);
-  line-height: 1.35;
+  line-height: var(--fa-line-height-body);
   white-space: pre;
   color: var(--fa-text-secondary);
   background: color-mix(in srgb, var(--fa-bg) 88%, transparent);
@@ -3055,7 +3067,7 @@ button.app-downloads-hint-token:disabled {
   max-width: 42vw;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: var(--fa-font-size-xs);
-  line-height: 1.25;
+  line-height: var(--fa-line-height-snug);
   color: var(--fa-text-muted);
   white-space: nowrap;
   overflow: hidden;
@@ -3078,7 +3090,7 @@ button.app-downloads-hint-token:disabled {
   padding: 0 var(--fa-space-inline);
   border-right: 1px solid var(--fa-border-subtle);
   font-size: var(--fa-font-size-snug);
-  line-height: 1;
+  line-height: var(--fa-line-height-tight);
   color: var(--fa-text-muted);
 }
 
@@ -3389,7 +3401,7 @@ button.app-downloads-hint-token:disabled {
 
 .workflow-scenario-flow-drag-glyph {
   font-size: var(--fa-font-size-caption);
-  line-height: 1;
+  line-height: var(--fa-line-height-tight);
   color: var(--fa-text-muted);
   cursor: grab;
   user-select: none;
@@ -3418,7 +3430,7 @@ button.app-downloads-hint-token:disabled {
   min-height: 1.4rem;
   padding: 0;
   font-size: var(--fa-font-size-stack);
-  line-height: 1;
+  line-height: var(--fa-line-height-tight);
 }
 
 .workflow-scenario-flow-port {
@@ -3523,6 +3535,24 @@ button.app-downloads-hint-token:disabled {
 
 .app-settings-select {
   max-width: min(100%, 320px);
+  min-height: 32px;
+  padding: 0 var(--fa-space-row);
+  border-radius: var(--fa-radius-control);
+  border: 1px solid var(--fa-border);
+  background: var(--fa-surface);
+  color: var(--fa-text-primary);
+  font-size: var(--fa-font-size-body);
+}
+
+.app-settings-select:disabled {
+  cursor: not-allowed;
+  color: var(--fa-disabled);
+  opacity: 0.85;
+}
+
+.app-settings-select:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 2px;
 }
 
 .app-settings-path-row {
@@ -3591,7 +3621,7 @@ button.app-downloads-hint-token:disabled {
 .app-modal-hint {
   margin: 0 0 var(--fa-space-4);
   font-size: var(--fa-font-size-ui-md);
-  line-height: 1.45;
+  line-height: var(--fa-line-height-ui);
   color: var(--fa-text-secondary);
 }
 
@@ -3725,7 +3755,7 @@ button.app-downloads-hint-token:disabled {
   margin: 0;
   color: var(--fa-text-secondary);
   font-size: var(--fa-font-size-compact);
-  line-height: 1.55;
+  line-height: var(--fa-line-height-display);
   overflow-wrap: anywhere;
 }
 
@@ -3742,7 +3772,7 @@ button.app-downloads-hint-token:disabled {
   margin: var(--fa-space-stack) 0 var(--fa-space-snug);
   font-weight: 650;
   color: var(--fa-text-primary);
-  line-height: 1.25;
+  line-height: var(--fa-line-height-snug);
 }
 
 .app-knowledge-body .app-knowledge-h:first-child {
@@ -3772,7 +3802,7 @@ button.app-downloads-hint-token:disabled {
   border-radius: 0 var(--fa-radius-md) var(--fa-radius-md) 0;
   background: color-mix(in srgb, var(--fa-surface) 88%, var(--fa-border-subtle));
   color: var(--fa-text-secondary);
-  font-size: 0.92em;
+  font-size: var(--fa-font-size-rel-quote);
 }
 
 .app-knowledge-hr {
@@ -3793,7 +3823,7 @@ button.app-downloads-hint-token:disabled {
 
 .app-knowledge-code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.78em;
+  font-size: var(--fa-font-size-rel-code);
   padding: var(--fa-space-gap-4xs) var(--fa-space-gap-tight);
   border-radius: var(--fa-radius-sm);
   background: color-mix(in srgb, var(--fa-surface) 70%, var(--fa-border-subtle));
@@ -3808,7 +3838,7 @@ button.app-downloads-hint-token:disabled {
   background: color-mix(in srgb, var(--fa-surface) 92%, var(--fa-border));
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: var(--fa-font-size-body-sm);
-  line-height: 1.45;
+  line-height: var(--fa-line-height-ui);
   overflow: auto;
   white-space: pre;
 }
@@ -3987,7 +4017,7 @@ button.app-downloads-hint-token:disabled {
   margin: 0;
   max-width: 100%;
   font-size: var(--fa-font-size-xs);
-  line-height: 1.45;
+  line-height: var(--fa-line-height-ui);
   color: var(--fa-text-muted);
 }
 
@@ -4030,7 +4060,7 @@ button.app-downloads-hint-token:disabled {
   align-items: center;
   justify-content: center;
   padding: 0;
-  line-height: 0;
+  line-height: var(--fa-line-height-none);
 }
 
 .downloads-standalone-mark-icon svg {
@@ -4058,7 +4088,7 @@ button.app-downloads-hint-token:disabled {
   align-items: center;
   justify-content: center;
   padding: 0;
-  line-height: 0;
+  line-height: var(--fa-line-height-none);
 }
 
 .inspector-topbar-mark-icon svg {
@@ -4074,7 +4104,7 @@ button.app-downloads-hint-token:disabled {
   margin: 0 0 var(--fa-space-3);
   opacity: 0.85;
   font-size: var(--fa-font-size-body);
-  line-height: 1.45;
+  line-height: var(--fa-line-height-ui);
 }
 
 .inspector-standalone-probe {

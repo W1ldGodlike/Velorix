@@ -25,3 +25,16 @@ export const THEME_FORBIDDEN_MAIN_CSS_FONT_SIZE_REM =
 /** Запрещены px в font-size без var(--fa-font-size-*). */
 export const THEME_FORBIDDEN_MAIN_CSS_FONT_SIZE_PX =
   /font-size:\s*(?![^;]*var\(--fa-font-size)[^;]*\d+px/g
+
+/** Запрещены em в font-size без var(--fa-font-size-*). */
+export const THEME_FORBIDDEN_MAIN_CSS_FONT_SIZE_EM =
+  /font-size:\s*(?![^;]*var\(--fa-font-size)[^;]*\d+(?:\.\d+)?em/g
+
+/** Knowledge markdown: относительные размеры через em-токены. */
+export const THEME_KNOWLEDGE_TYPOGRAPHY_ASSERTIONS: ReadonlyArray<{
+  selector: string
+  mustInclude: string
+}> = [
+  { selector: '.app-knowledge-bq', mustInclude: '--fa-font-size-rel-quote' },
+  { selector: '.app-knowledge-code', mustInclude: '--fa-font-size-rel-code' }
+]

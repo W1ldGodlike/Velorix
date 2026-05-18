@@ -6,7 +6,8 @@ import {
   THEME_FORBIDDEN_FA_VAR_HEX_FALLBACK,
   THEME_FORBIDDEN_MAIN_CSS_HEX,
   THEME_FORBIDDEN_MAIN_CSS_RGBA_BLACK,
-  THEME_PRIMARY_CONTROL_CSS_ASSERTIONS
+  THEME_PRIMARY_CONTROL_CSS_ASSERTIONS,
+  THEME_RARE_PANEL_CONTROL_CSS_ASSERTIONS
 } from '../../src/shared/theme-control-focus-css'
 
 const MAIN_CSS_PATH = join(process.cwd(), 'src/renderer/src/assets/main.css')
@@ -22,6 +23,14 @@ describe('theme-control-focus-css §5', () => {
 
   it('primary controls use semantic hover/focus/disabled tokens', () => {
     for (const { selector, mustInclude } of THEME_PRIMARY_CONTROL_CSS_ASSERTIONS) {
+      const block = ruleBlock(css, selector)
+      expect(block.length, `missing rule ${selector}`).toBeGreaterThan(0)
+      expect(block, selector).toContain(mustInclude)
+    }
+  })
+
+  it('rare panels use semantic focus/disabled tokens', () => {
+    for (const { selector, mustInclude } of THEME_RARE_PANEL_CONTROL_CSS_ASSERTIONS) {
       const block = ruleBlock(css, selector)
       expect(block.length, `missing rule ${selector}`).toBeGreaterThan(0)
       expect(block, selector).toContain(mustInclude)

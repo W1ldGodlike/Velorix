@@ -59,6 +59,7 @@
     "check:terminal-scenario-summaries": "node scripts/check-terminal-scenario-summaries-quality.mjs",
     "locales:terminal-scenario-stream-gloss": "node scripts/apply-terminal-scenario-stream-gloss.mjs",
     "check:ui-copy-quality": "node scripts/check-ui-copy-quality.mjs",
+    "theme:tokenize-main-css": "node scripts/theme-tokenize-main-css.mjs",
     "check:secrets": "node scripts/check-no-secrets.mjs",
     "locales:terminal-summaries-ru": "node scripts/apply-terminal-summary-ru.mjs",
     "locales:terminal-flux-pole": "node scripts/inject-flux-summary-pole.mjs",

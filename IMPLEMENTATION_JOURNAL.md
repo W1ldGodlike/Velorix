@@ -1136,3 +1136,8 @@
 - [J-1108] 2026-05-18 16:20:06 [Assistant]: §5 — `--fa-font-size-*` в base.css; `theme-font-size-rem-tokenize` + HiDPI хвост main.css; guards rem/px + Vitest `theme-typography-css`. `npm run check:quiet`.
 - [J-1109] 2026-05-18 16:33:36 [Assistant]: §5 UI — `AppSettingsThemePanel` (manual + owner bundle hints, deep-link Help); Vitest `theme-rem-tokenize`. `npm run check:quiet`.
 - [J-1110] 2026-05-18 16:40:46 [Assistant]: Cadence 485 — коммит J-1106..1109: spacing/font-size rem→токены, owner theme smoke, `AppSettingsThemePanel`, Vitest guards. `npm run check:quiet`.
+- [J-1111] 2026-05-18 16:52:53 [Assistant]: §5 — `--fa-line-height-*` + `theme-line-height-tokenize` (main.css); guard unitless line-height; Vitest. `npm run check:quiet`.
+- [J-1112] 2026-05-18 17:01:43 [Assistant]: §5 — `--fa-font-size-rel-quote/code` (em) для knowledge; guard font-size em; Vitest assertions. `npm run check:quiet`.
+- [J-1113] 2026-05-18 17:13:03 [Assistant]: §5 — focus/disabled на `.app-benchmark-codec-pick`; toolbar actions layout; `app-btn` в бенчмарке; `THEME_RARE_PANEL_CONTROL_CSS_ASSERTIONS` + Vitest. `npm run check:quiet`.
+- [J-1114] 2026-05-18 17:22:19 [Assistant]: §5 — `.app-settings-select` chrome + focus/disabled; rare-panel assertions; `theme:tokenize-main-css` npm script; чеклист §5 guards [x]. `npm run check:quiet`.
+- [J-1115] 2026-05-18 17:28:39 [Assistant]: Cadence 490 — коммит J-1111..1114: line-height/font-size em, rare-panel focus, `app-settings-select`, theme tokenize script; push + re-anchor. `npm run check:quiet`.

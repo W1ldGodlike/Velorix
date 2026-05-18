@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { tokenizeFontSizeLiterals } from '../../src/shared/theme-font-size-rem-tokenize'
+import { tokenizeLineHeightLiterals } from '../../src/shared/theme-line-height-tokenize'
 import { tokenizeSpacingRemLiterals } from '../../src/shared/theme-spacing-rem-tokenize'
 
 describe('theme rem tokenize §5', () => {
@@ -23,5 +24,12 @@ describe('theme rem tokenize §5', () => {
 
   it('leaves spacing values that already use tokens', () => {
     expect(tokenizeSpacingRemLiterals('var(--fa-space-3)')).toBe('var(--fa-space-3)')
+  })
+
+  it('maps line-height unitless literals to --fa-line-height-*', () => {
+    expect(tokenizeLineHeightLiterals('1.35')).toBe('var(--fa-line-height-body)')
+    expect(tokenizeLineHeightLiterals('var(--fa-line-height-ui)')).toBe(
+      'var(--fa-line-height-ui)'
+    )
   })
 })
