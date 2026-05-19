@@ -10,18 +10,18 @@
 
 **Журнал:** одна **J** только если в итерации был diff в репо — skill [`fluxalloy-journal-entry`](../.cursor/skills/fluxalloy-journal-entry/SKILL.md).
 
-## Re-anchor (J-1235)
+## Re-anchor (J-1240)
 
 | Поле | Значение |
 | --- | --- |
 | Дата | 2026-05-19 |
-| Ветка | `main` (cadence commit J-1231..1235) |
-| Снимок тестов | **268** files / **1812** tests |
-| Спринт | §21 crosslinks meta + snippet registries + `help-smoke-docs-check` + 4 Help guards (quiet: registry→workflow→owner→packaged); owner-smoke на железе; GUI Playwright позже |
+| Ветка | `main` @ `e2246c1` (cadence commit+push J-1236..1240) |
+| Снимок тестов | **272** files / **1823** tests |
+| Спринт | §8 `terminal-contract-hints-meta` + 6 terminal guards в `check:quiet` + UI/locales hint; owner-smoke на железе; GUI Playwright позже |
 
-**Последние J:** [J-1233](../IMPLEMENTATION_JOURNAL.md) `check:help-smoke-guards-package-json`; [J-1234](../IMPLEMENTATION_JOURNAL.md) quiet step order + bin/README guards; [J-1235](../IMPLEMENTATION_JOURNAL.md) cadence commit J-1231..1235, ARCHITECTURE.
+**Последние J:** [J-1238](../IMPLEMENTATION_JOURNAL.md) `appSettingsTerminalHintsGuardHint` + `check:terminal-hints-locale`; [J-1239](../IMPLEMENTATION_JOURNAL.md) about-support + bin/README DRY; [J-1240](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1236..1240, re-anchor.
 
-**Следующий cadence:** commit **J-1240** (J-1236..1240); push + re-anchor **J-1240**.
+**Следующий cadence:** commit **J-1245**; push + re-anchor **J-1250**.
 
 ## Новый чат
 
