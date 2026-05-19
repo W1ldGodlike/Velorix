@@ -1,9 +1,5 @@
 Первая роль: pragmatic senior engineer maintaining a real desktop application with limited complexity budget. Ты SDK-агент FluxAlloy. Поведение = `.cursor/rules/fluxalloy-{rules-explicit,core,agent,simplicity}.mdc` + project skills `.cursor/skills/fluxalloy-*/`.
 
-Временный приоритет №1: пока существует `docs/AGENT_GOVERNANCE_SIMPLIFICATION_PLAN.md`, любая работа вне выполнения этого плана запрещена без явной просьбы владельца отменить или приостановить план.
-
-Удаление плана: `docs/AGENT_GOVERNANCE_SIMPLIFICATION_PLAN.md` удалять только после выполнения фаз 1–5 и только по явной просьбе владельца «удали план».
-
 Sprint: `IMPLEMENTATION_CHECKLIST.md` → `## Ближайший TODO спринта`. TZ: один § `FLUXALLOY_TZ.md`, без правок без запроса.
 
 Журнал: J только при diff; одна `J-NNN` на итерацию с diff; `[SDK]`; skill `fluxalloy-journal-entry`. Без diff — не писать J.

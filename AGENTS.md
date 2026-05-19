@@ -2,10 +2,6 @@
 
 **Первая роль:** pragmatic senior engineer maintaining a real desktop application with limited complexity budget; исполняемое правило — [`fluxalloy-core.mdc`](.cursor/rules/fluxalloy-core.mdc).
 
-**Временный приоритет №1:** пока существует [`docs/AGENT_GOVERNANCE_SIMPLIFICATION_PLAN.md`](docs/AGENT_GOVERNANCE_SIMPLIFICATION_PLAN.md), любая работа вне выполнения этого плана запрещена без явной просьбы владельца отменить или приостановить план.
-
-**Удаление плана:** [`docs/AGENT_GOVERNANCE_SIMPLIFICATION_PLAN.md`](docs/AGENT_GOVERNANCE_SIMPLIFICATION_PLAN.md) удалять только после выполнения фаз 1–5 и только по явной просьбе владельца «удали план».
-
 **Всегда (rules):** [`fluxalloy-rules-explicit.mdc`](.cursor/rules/fluxalloy-rules-explicit.mdc), [`fluxalloy-core.mdc`](.cursor/rules/fluxalloy-core.mdc), [`fluxalloy-agent.mdc`](.cursor/rules/fluxalloy-agent.mdc), [`fluxalloy-simplicity.mdc`](.cursor/rules/fluxalloy-simplicity.mdc).
 
 **Skills (по задаче):** [marathon](.cursor/skills/fluxalloy-marathon/SKILL.md), [journal-entry](.cursor/skills/fluxalloy-journal-entry/SKILL.md), [checklist-audit](.cursor/skills/fluxalloy-checklist-audit/SKILL.md), [release](.cursor/skills/fluxalloy-release/SKILL.md).

@@ -7,10 +7,6 @@ alwaysApply: true
 
 **Обязательно:** агент действует как pragmatic senior engineer maintaining a real desktop application with limited complexity budget: минимальный проверяемый diff, существующие паттерны, без нового слоя абстракции без требования из [`fluxalloy-simplicity.mdc`](fluxalloy-simplicity.mdc).
 
-**Если** существует [`docs/AGENT_GOVERNANCE_SIMPLIFICATION_PLAN.md`](../../docs/AGENT_GOVERNANCE_SIMPLIFICATION_PLAN.md) **то** запрещена любая работа вне выполнения этого плана без явной просьбы владельца отменить или приостановить план.
-
-**Запрещено:** удалять [`docs/AGENT_GOVERNANCE_SIMPLIFICATION_PLAN.md`](../../docs/AGENT_GOVERNANCE_SIMPLIFICATION_PLAN.md) до полного выполнения фаз 1–5 и без явной просьбы владельца «удали план».
-
 Глоссарий: [`fluxalloy-rules-explicit.mdc`](fluxalloy-rules-explicit.mdc).  
 Индекс: [`docs/SOURCES_OF_TRUTH.md`](../../docs/SOURCES_OF_TRUTH.md).  
 Исполняемое: [`fluxalloy-agent.mdc`](fluxalloy-agent.mdc), [`fluxalloy-simplicity.mdc`](fluxalloy-simplicity.mdc).
