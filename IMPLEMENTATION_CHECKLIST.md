@@ -33,7 +33,7 @@
 - [x] Локализация: `ui-text` + `locales/**` (hot-reload ✅); единый словарь `AppUiLocale`; pop-out загрузок = React `#downloads` (J-978..984).
 - [~] Основная вкладка `Загрузки` в React уже закрывает очередь, старт/stop/retry/pause, настройки yt-dlp, каталог/cookies/network, live log, историю; **компактная панель «История»** — в основном **«Повторить»** (URL в очередь; J-626), полные действия файла/папки/редактора — в таблице очереди и pop-out; open учитывает финальный файл после merge и Windows UTF-8 stdout; pop-out — вторичный режим для редких settings.
 - [~] ffprobe-инспектор: в **главном редакторе** под таймлайном — только **короткая строка** видео/аудио (`VideoTimeline`); полная сводка, таблица дорожек, главы, JSON и экспорт — в **отдельном окне** инспектора; Dolby/HDR side_data summary, контекстные действия — там же.
-- [x] Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`265 test files / 1784 tests`** (J-1187); `npm run check:quiet` (lint, typecheck, тесты, audit-скрипты, guards, journal, checklist, secrets). Домены: yt-dlp §6, ffmpeg export/batch/HW §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, governance guards.
+- [x] Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`266 test files / 1789 tests`** (J-1205); `npm run check:quiet` (lint, typecheck, тесты, audit-скрипты, guards, journal, checklist, secrets). Домены: yt-dlp §6, ffmpeg export/batch/HW §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, governance guards.
 
 ## Журнал решений и проверок
 
@@ -47,7 +47,7 @@
 - [x] §2.2/§7.5: `locales/**` без дублей TS; export hints [x]; owner theme/HiDPI/packaged RU+EN + guards; Help §21 `e2e <id>:` (owner/about/packaged/workflow + UI hint).
 - [~] §4.3: Mini Player [x] код (J-1153–1157); owner-smoke §4.3 в hub; приёмка visual/HiDPI на железе — владелец.
 - [~] §19: `pack:*:dir` + `verify:*`; bin/Help `engines:doctor`/`prepare:win`; Help crosslinks guard 26; CI linux [x]; приёмка packaged на железе — владелец.
-- [~] §21: e2e packaged smoke — реестр + guards + per-step/`ci.yml` [x]; GUI Playwright (open/preview/export, yt-dlp queue) — позже.
+- [~] §21: e2e registry/guards [x] (2 CI, 8 planned GUI, 2 manual-owner); GUI Playwright по `PACKAGED_E2E_PLANNED_GUI_STEP_IDS` — позже.
 
 ---
 

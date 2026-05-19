@@ -1278,3 +1278,8 @@
 - [J-1198] 2026-05-19 02:54:21 [Assistant]: §15/§19 — Help processing-history/downloads-settings-rail/windows-shell → packaged §21 RU+EN; guard 18 статей; ARCHITECTURE Help guards. `npm run check:quiet` (266 / 1785).
 - [J-1199] 2026-05-19 02:57:42 [Assistant]: §15/§8 — Help dragdrop/url-combo/terminal-hints → packaged §21 RU+EN; keyboard→owner; guard 24 статей; ARCHITECTURE/RELEASE sync. `npm run check:quiet` (266 / 1785).
 - [J-1200] 2026-05-19 03:01:08 [Assistant]: Cadence 1200 — commit+push J-1196..1200: Help §21 crosslinks guard 26, processing-advanced-fields; чеклист ~64%; re-anchor `AGENT_MARATHON`. `npm run check:quiet` (266 / 1785).
+- [J-1201] 2026-05-19 03:05:24 [Assistant]: §21 — `listPackagedE2eStepIdsByAutomation`, diagnostics planned GUI scope + Help crosslinks; Vitest; owner-manual-smoke/bin README. `npm run check:quiet` (266 / 1787).
+- [J-1202] 2026-05-19 03:08:59 [Assistant]: §21/§18 — bundle/releaseSmoke Vitest planned GUI; registry automation counts; Help about-support-logs; RELEASE/SOURCES. `npm run check:quiet` (266 / 1788).
+- [J-1203] 2026-05-19 03:13:00 [Assistant]: §2.2/§21 UI — `appSettingsPackagedE2eRegistryGuardHint` (2/8/2 automation, planned GUI scope, Help crosslinks); logging-and-diagnostics; platform-packaging. `npm run check:quiet` (266 / 1788).
+- [J-1204] 2026-05-19 03:17:18 [Assistant]: §21 — `PACKAGED_E2E_*_STEP_IDS` константы; owner intro 2/8/2; packaged-windows planned GUI; ARCHITECTURE/чеклист §21 Playwright roadmap. `npm run check:quiet` (266 / 1789).
+- [J-1205] 2026-05-19 03:20:49 [Assistant]: Cadence 1205 — commit J-1201..1205: §21 planned GUI roadmap (`PACKAGED_E2E_*_STEP_IDS`, UI/locales/diagnostics), Help linux/macos; SOURCES/RELEASE. `npm run check:quiet` (266 / 1789).

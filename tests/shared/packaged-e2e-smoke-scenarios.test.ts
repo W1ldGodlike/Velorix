@@ -6,7 +6,11 @@ import {
   PACKAGED_E2E_SMOKE_SCENARIOS,
   expandPackagedE2eCiSmokeScriptsForWorkflow,
   formatPackagedE2ePerStepDiagnosticLines,
-  formatPackagedE2eSmokeDiagnosticLines
+  formatPackagedE2eSmokeDiagnosticLines,
+  PACKAGED_E2E_CI_HEADLESS_STEP_IDS,
+  PACKAGED_E2E_MANUAL_OWNER_STEP_IDS,
+  PACKAGED_E2E_PLANNED_GUI_STEP_IDS,
+  listPackagedE2eStepIdsByAutomation
 } from '../../src/shared/packaged-e2e-smoke-scenarios'
 
 describe('packaged-e2e-smoke-scenarios §21', () => {
@@ -44,6 +48,40 @@ describe('packaged-e2e-smoke-scenarios §21', () => {
     expect(joined).toContain('check:packaged-e2e-scenarios-registry')
     expect(joined).toContain('ciSmokeScript npm')
     expect(joined).toContain('smoke:packaged-app')
+  })
+
+  it('exports readonly step id arrays by automation kind', () => {
+    expect(PACKAGED_E2E_CI_HEADLESS_STEP_IDS).toEqual(['launch', 'engines'])
+    expect(PACKAGED_E2E_PLANNED_GUI_STEP_IDS).toHaveLength(8)
+    expect(PACKAGED_E2E_MANUAL_OWNER_STEP_IDS).toEqual(['video-sprite', 'mini-player'])
+    expect(listPackagedE2eStepIdsByAutomation('planned-gui-e2e')).toEqual([
+      ...PACKAGED_E2E_PLANNED_GUI_STEP_IDS
+    ])
+  })
+
+  it('lists planned-gui-e2e and manual-owner step ids for §21 roadmap', () => {
+    expect(listPackagedE2eStepIdsByAutomation('planned-gui-e2e')).toEqual([
+      'open-file',
+      'ytdlp',
+      'editor-dl',
+      'snapshot',
+      'export',
+      'knowledge',
+      'support-zip',
+      'settings'
+    ])
+    expect(listPackagedE2eStepIdsByAutomation('manual-owner')).toEqual([
+      'video-sprite',
+      'mini-player'
+    ])
+    expect(listPackagedE2eStepIdsByAutomation('ci-headless')).toEqual(['launch', 'engines'])
+  })
+
+  it('diagnostic lines mention planned GUI scope and Help crosslinks guard', () => {
+    const joined = formatPackagedE2eSmokeDiagnosticLines().join('\n')
+    expect(joined).toContain('planned GUI e2e scope:')
+    expect(joined).toContain('open-file')
+    expect(joined).toContain('check:help-workflow-smoke-crosslinks')
   })
 
   it('per-step diagnostic lines cover every registry entry', () => {

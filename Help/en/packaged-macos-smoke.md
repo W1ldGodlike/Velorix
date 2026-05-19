@@ -33,4 +33,4 @@ Details: [`docs/RELEASE.md`](../../docs/RELEASE.md) §4.2.
 
 On any OS, Support ZIP `releaseSmoke:` lists `FluxAlloy.app` candidates and `Contents/Resources/*` layout lines (present/missing) — useful after `pack:mac:dir` without re-running verify locally.
 
-See also [about-support-logs.md](about-support-logs.md) and [packaged-windows-smoke.md](../packaged-windows-smoke.md).
+See also [about-support-logs.md](about-support-logs.md) and [packaged-windows-smoke.md](../packaged-windows-smoke.md). §21 planned GUI e2e (8 steps) — [owner-manual-smoke.md](owner-manual-smoke.md); canonical ids: `PACKAGED_E2E_PLANNED_GUI_STEP_IDS`.

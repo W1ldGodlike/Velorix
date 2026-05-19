@@ -34,4 +34,4 @@ npm run verify:linux-unpacked
 
 Support ZIP `releaseSmoke:` на любой ОС перечисляет `dist/linux-unpacked/` и layout `resources/*` (present/missing) — удобно приложить к отчёту после `pack:linux:dir`.
 
-См. также [about-support-logs.md](about-support-logs.md) и [packaged-windows-smoke.md](packaged-windows-smoke.md).
+См. также [about-support-logs.md](about-support-logs.md) и [packaged-windows-smoke.md](packaged-windows-smoke.md). §21 planned GUI e2e (8 шагов) — [owner-manual-smoke.md](owner-manual-smoke.md); канон stepId: `PACKAGED_E2E_PLANNED_GUI_STEP_IDS`.

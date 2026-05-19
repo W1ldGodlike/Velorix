@@ -32,6 +32,8 @@ describe('packaged-release-smoke §19', () => {
       true
     )
     expect(lines.some((l) => l.includes('ci-headless'))).toBe(true)
+    expect(lines.some((l) => l.includes('planned GUI e2e scope:'))).toBe(true)
+    expect(lines.some((l) => l.includes('check:help-workflow-smoke-crosslinks'))).toBe(true)
     expect(lines.some((l) => l.includes('verify:mac-unpacked'))).toBe(true)
     expect(lines.some((l) => l.includes('FluxAlloy.app'))).toBe(true)
     expect(lines.some((l) => l.includes('verify:linux-unpacked'))).toBe(true)

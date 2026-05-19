@@ -25,4 +25,12 @@ describe('packaged-e2e-smoke-registry §21 leaf', () => {
     expect(engines?.automation).toBe('ci-headless')
     expect(engines?.ciSmokeScript).toBe('smoke:packaged-engines')
   })
+
+  it('automation kind counts match §21 sprint', () => {
+    const count = (kind: (typeof PACKAGED_E2E_SMOKE_REGISTRY)[number]['automation']): number =>
+      PACKAGED_E2E_SMOKE_REGISTRY.filter((s) => s.automation === kind).length
+    expect(count('ci-headless')).toBe(2)
+    expect(count('planned-gui-e2e')).toBe(8)
+    expect(count('manual-owner')).toBe(2)
+  })
 })

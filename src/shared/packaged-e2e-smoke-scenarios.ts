@@ -60,18 +60,37 @@ export function formatPackagedE2ePerStepDiagnosticLines(): string[] {
   return PACKAGED_E2E_SMOKE_SCENARIOS.map(formatPackagedE2eStepDiagnosticLine)
 }
 
+/** stepId для одного вида automation (§21 registry). */
+export function listPackagedE2eStepIdsByAutomation(
+  automation: PackagedE2eAutomationKind
+): string[] {
+  return PACKAGED_E2E_SMOKE_SCENARIOS.filter((s) => s.automation === automation).map(
+    (s) => s.stepId
+  )
+}
+
+/** Канон stepId по automation (Playwright §21 roadmap, guards, UI). */
+export const PACKAGED_E2E_CI_HEADLESS_STEP_IDS: readonly string[] =
+  listPackagedE2eStepIdsByAutomation('ci-headless')
+export const PACKAGED_E2E_PLANNED_GUI_STEP_IDS: readonly string[] =
+  listPackagedE2eStepIdsByAutomation('planned-gui-e2e')
+export const PACKAGED_E2E_MANUAL_OWNER_STEP_IDS: readonly string[] =
+  listPackagedE2eStepIdsByAutomation('manual-owner')
+
 export function formatPackagedE2eSmokeDiagnosticLines(): string[] {
-  const headless = PACKAGED_E2E_SMOKE_SCENARIOS.filter((s) => s.automation === 'ci-headless')
-  const planned = PACKAGED_E2E_SMOKE_SCENARIOS.filter((s) => s.automation === 'planned-gui-e2e')
-  const manual = PACKAGED_E2E_SMOKE_SCENARIOS.filter((s) => s.automation === 'manual-owner')
+  const headless = PACKAGED_E2E_CI_HEADLESS_STEP_IDS
+  const planned = PACKAGED_E2E_PLANNED_GUI_STEP_IDS
+  const manual = PACKAGED_E2E_MANUAL_OWNER_STEP_IDS
   return [
     `§21 packaged e2e registry: ${PACKAGED_E2E_SMOKE_SCENARIOS.length} steps (aligned with packaged manual smoke)`,
-    `ci-headless (${headless.length}): ${headless.map((s) => s.stepId).join(', ')}`,
-    `planned-gui-e2e (${planned.length}): ${planned.map((s) => s.stepId).join(', ')}`,
-    `manual-owner (${manual.length}): ${manual.map((s) => s.stepId).join(', ')}`,
+    `ci-headless (${headless.length}): ${headless.join(', ')}`,
+    `planned-gui-e2e (${planned.length}): ${planned.join(', ')}`,
+    `manual-owner (${manual.length}): ${manual.join(', ')}`,
     `ciSmokeScript npm (${PACKAGED_E2E_CI_SMOKE_SCRIPTS.length}): ${PACKAGED_E2E_CI_SMOKE_SCRIPTS.join(', ')}`,
     ...formatPackagedE2ePerStepDiagnosticLines(),
     'manual owner-smoke: Help/owner-manual-smoke.md + Settings copy (not automated GUI yet)',
+    `planned GUI e2e scope: ${PACKAGED_E2E_PLANNED_GUI_STEP_IDS.join(', ')} (Playwright later; ytdlp/export have partial CLI smokes)`,
+    'Help crosslinks: npm run check:help-workflow-smoke-crosslinks (26 articles ↔ owner/packaged §21)',
     'check: npm run check:packaged-e2e-scenarios-registry'
   ]
 }

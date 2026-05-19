@@ -34,14 +34,19 @@ describe('owner-manual-smoke visual locale §2.2/§16', () => {
     expect(enSettings.appSettingsPackagedE2eRegistryGuardHint).toContain(
       'check:packaged-e2e-scenarios-registry'
     )
-    expect(ruSettings.appSettingsPackagedE2eRegistryGuardHint).toContain('releaseSmoke:')
-    expect(enSettings.appSettingsPackagedE2eRegistryGuardHint).toContain('e2e launch:')
-    expect(ruSettings.appSettingsPackagedE2eRegistryGuardHint).toContain('e2e launch:')
+    expect(ruSettings.appSettingsPackagedE2eRegistryGuardHint).toContain('planned GUI e2e scope')
+    expect(enSettings.appSettingsPackagedE2eRegistryGuardHint).toContain('planned GUI')
+    expect(ruSettings.appSettingsPackagedE2eRegistryGuardHint).toContain('planned GUI')
+    expect(enSettings.appSettingsPackagedE2eRegistryGuardHint).toContain(
+      'check:help-workflow-smoke-crosslinks'
+    )
   })
 
   it('owner smoke intro mentions per-step e2e appendix', () => {
     expect(enSettings.appSettingsOwnerSmokeIntro).toContain('per-step e2e')
     expect(ruSettings.appSettingsOwnerSmokeIntro).toContain('per-step e2e')
+    expect(enSettings.appSettingsOwnerSmokeIntro).toContain('8 planned GUI')
+    expect(ruSettings.appSettingsOwnerSmokeIntro).toContain('planned GUI')
     expect(enSettings.appSettingsOwnerSmokeIntro).toContain('releaseSmoke:')
   })
 })

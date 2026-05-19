@@ -26,4 +26,6 @@ Details: [hardware-encoding.md](hardware-encoding.md), [appearance-language-them
 
 **Copy full bundle** and Support ZIP `ownerManualSmoke:` end with a **§21 packaged e2e** summary (ci-headless / planned-gui-e2e / manual-owner groups) plus **12 lines** `e2e <stepId>: <automation> script=…` (e.g. `e2e launch: ci-headless script=smoke:packaged-app`); the same block is under `releaseSmoke:`.
 
+**Planned GUI e2e** (Playwright later; manual smoke today): `open-file`, `ytdlp`, `editor-dl`, `snapshot`, `export`, `knowledge`, `support-zip`, `settings`. **manual-owner** without GUI automation: `video-sprite`, `mini-player`. Step Help — [packaged-windows-smoke.md](../packaged-windows-smoke.md) and workflow articles (`check:help-workflow-smoke-crosslinks`).
+
 After the run, tick items in `IMPLEMENTATION_CHECKLIST.md` (owner smoke section) and attach a Support ZIP if you contact support.

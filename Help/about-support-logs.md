@@ -16,7 +16,7 @@
 
 - **`ownerManualSmoke:`** — единый пакет владельца (тема, HiDPI, HW, сценарий, спрайт §7.5, мини-плеер §4.3, packaged для вашей ОС, планировщик, Windows shell); канон **ru**, см. [owner-manual-smoke.md](owner-manual-smoke.md) и копирование в **Настройки → Ручной smoke** (при EN UI в буфере — EN-строки из locales).
 - **`winPackagedSmoke:`** / **`linuxPackagedSmoke:`** / **`macosPackagedSmoke:`** — packaged-чеклисты (Windows всегда в ZIP; Linux/macOS — при сборке на соответствующей ОС); см. [packaged-windows-smoke.md](packaged-windows-smoke.md), [packaged-linux-smoke.md](packaged-linux-smoke.md), [packaged-macos-smoke.md](packaged-macos-smoke.md).
-- **`releaseSmoke:`** — CI packaged pipeline (`smoke:packaged-release`), реестр §21 e2e (в т.ч. per-step `e2e <id>:`), layout **present/missing** для `dist/win-unpacked/`, `dist/linux-unpacked/`, `FluxAlloy.app` (без повторного `verify:*` на другой ОС); dev: `check:packaged-e2e-scenarios-registry`.
+- **`releaseSmoke:`** — CI packaged pipeline (`smoke:packaged-release`), реестр §21 e2e (группы ci-headless / planned-gui-e2e / manual-owner, per-step `e2e <id>:`, строка `planned GUI e2e scope`), layout **present/missing** для `dist/win-unpacked/`, `dist/linux-unpacked/`, `FluxAlloy.app`; dev: `check:packaged-e2e-scenarios-registry`, `check:help-workflow-smoke-crosslinks`.
 
 ## Временные файлы
 
