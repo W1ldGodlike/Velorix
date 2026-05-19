@@ -21,7 +21,7 @@
 
 **Последние J:** [J-1238](../IMPLEMENTATION_JOURNAL.md) `appSettingsTerminalHintsGuardHint` + `check:terminal-hints-locale`; [J-1239](../IMPLEMENTATION_JOURNAL.md) about-support + bin/README DRY; [J-1240](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1236..1240, re-anchor.
 
-**Следующий cadence:** commit **J-1245**; push + re-anchor **J-1250**.
+**Следующий cadence:** commit **J-1250** (push + re-anchor); commit **J-1255**.
 
 ## Новый чат
 

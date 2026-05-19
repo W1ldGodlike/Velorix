@@ -31,6 +31,7 @@ const steps = [
   ['terminal-scenario-summaries', ['run', 'check:terminal-scenario-summaries']],
   ['terminal-contract-hints-shards', ['run', 'check:terminal-contract-hints-shards']],
   ['terminal-hints-locale', ['run', 'check:terminal-hints-locale']],
+  ['support-bundle-terminal-hints', ['run', 'check:support-bundle-terminal-hints']],
   ['ui-copy-quality', ['run', 'check:ui-copy-quality']],
   ['audit:copy-paste', ['run', 'audit:copy-paste']],
   ['audit:todo-debt', ['run', 'audit:todo-debt']],

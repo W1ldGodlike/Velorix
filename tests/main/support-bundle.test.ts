@@ -90,6 +90,11 @@ describe('createSupportBundleZip', () => {
         '  ffmpeg: ready | C:\\bin\\ffmpeg.exe | ffmpeg version 7.0',
         '  ffprobe: ready | C:\\bin\\ffprobe.exe | ffprobe version 7.0'
       ],
+      terminalHintsLines: [
+        'meta: terminal-contract-hints-meta',
+        'npm run check:terminal-contract-hints-shards (20 downloads + 15 preview shards (35 files); 1056+833 hints)',
+        'npm run check:terminal-hints-locale'
+      ],
       releaseSmokeLines: [
         'command: npm run smoke:packaged-release (check:release after pack:dir)',
         'steps: verify:win-unpacked → smoke:packaged-app → smoke:packaged-engines (ffprobe, yt-dlp, ffmpeg)',
@@ -161,6 +166,8 @@ describe('createSupportBundleZip', () => {
     expect(zip.includes(Buffer.from('engines:'))).toBe(true)
     expect(zip.includes(Buffer.from('ffmpeg: ready'))).toBe(true)
     expect(zip.includes(Buffer.from('ffprobe: ready'))).toBe(true)
+    expect(zip.includes(Buffer.from('terminalHints:'))).toBe(true)
+    expect(zip.includes(Buffer.from('check:terminal-contract-hints-shards'))).toBe(true)
     expect(zip.includes(Buffer.from('releaseSmoke:'))).toBe(true)
     expect(zip.includes(Buffer.from('smoke:packaged-release'))).toBe(true)
     expect(zip.includes(Buffer.from('verify:win-unpacked'))).toBe(true)

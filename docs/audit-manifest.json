@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-19T05:14:54.660Z",
+  "generatedAt": "2026-05-19T05:27:33.648Z",
   "repoRoot": "C:\\Users\\truno\\FluxAlloy",
   "codeRoots": [
     "src",
@@ -18,7 +18,7 @@
     ".cursor",
     "coverage"
   ],
-  "fileCount": 1172,
+  "fileCount": 1174,
   "files": [
     "electron.vite.config.ts",
     "eslint.config.mjs",
@@ -68,6 +68,7 @@
     "scripts/check-platform-packaging-scripts.mjs",
     "scripts/check-renderer-state-approach.mjs",
     "scripts/check-rules-explicit.mjs",
+    "scripts/check-support-bundle-terminal-hints.mjs",
     "scripts/check-terminal-contract-hints-shards.mjs",
     "scripts/check-terminal-data-summaries-quality.mjs",
     "scripts/check-terminal-hints-guards-package-json.mjs",
@@ -1002,6 +1003,7 @@
     "tests/scripts/check-platform-packaging-scripts.test.ts",
     "tests/scripts/check-release-chain.test.ts",
     "tests/scripts/check-renderer-state-approach.test.ts",
+    "tests/scripts/check-support-bundle-terminal-hints.test.ts",
     "tests/scripts/check-terminal-data-summaries-quality-script.test.ts",
     "tests/scripts/check-terminal-hints-guards-package-json.test.ts",
     "tests/scripts/check-terminal-hints-locale.test.ts",

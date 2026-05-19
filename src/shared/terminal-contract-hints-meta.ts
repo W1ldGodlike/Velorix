@@ -14,23 +14,38 @@ export const TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT =
 export const TERMINAL_CONTRACT_HINTS_SETTINGS_LOCALE_GUARD_NPM_SCRIPT =
   'check:terminal-hints-locale' as const
 
-/** §8 terminal guards in `check:quiet` (registry → summaries → shards → locale). */
+/** §18 Support ZIP — `diagnostics.txt` block ↔ meta formatters. */
+export const TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_GUARD_NPM_SCRIPT =
+  'check:support-bundle-terminal-hints' as const
+
+/** Heading line in Support ZIP `diagnostics.txt`. */
+export const TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_SECTION_HEADING = 'terminalHints:' as const
+
+/** Sources wired by `check:support-bundle-terminal-hints`. */
+export const TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_SOURCE_PATHS = [
+  'src/main/support-bundle.ts',
+  'src/main/main-diagnostics-service.ts'
+] as const
+
+/** §8 terminal guards in `check:quiet` (registry → summaries → shards → locale → Support ZIP). */
 export const TERMINAL_CONTRACT_HINTS_GUARD_NPM_SCRIPTS = [
   'check:terminal-summaries-ru',
   'check:terminal-data-summaries',
   'check:terminal-scenario-summaries',
   TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT,
-  TERMINAL_CONTRACT_HINTS_SETTINGS_LOCALE_GUARD_NPM_SCRIPT
+  TERMINAL_CONTRACT_HINTS_SETTINGS_LOCALE_GUARD_NPM_SCRIPT,
+  TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_GUARD_NPM_SCRIPT
 ] as const
 
-/** `run-quiet-check.mjs` step labels (registry → summaries → shards → locale). */
+/** `run-quiet-check.mjs` step labels (registry → summaries → shards → locale → Support ZIP). */
 export const TERMINAL_CONTRACT_HINTS_GUARD_QUIET_STEP_LABELS = [
   'terminal-hints-guards-package-json',
   'terminal-summaries-ru',
   'terminal-data-summaries',
   'terminal-scenario-summaries',
   'terminal-contract-hints-shards',
-  'terminal-hints-locale'
+  'terminal-hints-locale',
+  'support-bundle-terminal-hints'
 ] as const
 
 /** Help §8 terminal hints doc guard. */
@@ -40,6 +55,10 @@ export const TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT =
 /** locales/{ru,en}/settings.json key for Settings → Dependencies. */
 export const TERMINAL_CONTRACT_HINTS_SETTINGS_LOCALE_KEY =
   'appSettingsTerminalHintsGuardHint' as const
+
+/** locales/{ru,en}/about.json — Support ZIP diagnostics.txt sections (About aria). */
+export const TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_ZIP_LOCALE_KEY =
+  'aboutSupportZipDiagnosticsSectionsHint' as const
 
 export type TerminalContractHintsLocale = 'en' | 'ru'
 
@@ -65,9 +84,27 @@ export const TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_PATHS = [
 
 /** Required substrings in about-support-logs (diagnostics ZIP / dev guards). */
 export const TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_REQUIRED_SNIPPETS = [
+  'terminalHints:',
+  TERMINAL_CONTRACT_HINTS_META_MODULE,
   TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT,
+  TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_GUARD_NPM_SCRIPT
+] as const
+
+/** Help §18 logging hub — diagnostics.txt blocks (owner/release/terminal). */
+export const TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_PATHS = [
+  'Help/logging-and-diagnostics.md',
+  'Help/en/logging-and-diagnostics.md'
+] as const
+
+/** Required substrings in logging-and-diagnostics (Support ZIP sections). */
+export const TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_REQUIRED_SNIPPETS = [
+  'terminalHints:',
+  TERMINAL_CONTRACT_HINTS_META_MODULE,
+  TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT,
+  TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_GUARD_NPM_SCRIPT,
   TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT,
-  TERMINAL_CONTRACT_HINTS_SETTINGS_LOCALE_GUARD_NPM_SCRIPT
+  'ownerManualSmoke:',
+  'releaseSmoke:'
 ] as const
 
 /** Части terminal-contract-hints-downloads-NN.ts. */
@@ -145,6 +182,15 @@ export function formatTerminalContractHintsDiagnosticLine(): string {
   return `npm run ${TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT} (${formatTerminalContractHintsShardCountEnSnippet()}; ${TERMINAL_CONTRACT_HINTS_DOWNLOADS_HINT_COUNT}+${TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_HINT_COUNT} hints)`
 }
 
+/** `aboutSupportZipDiagnosticsSectionsHint` in locales about.json. */
+export function formatTerminalContractHintsAboutSupportZipSectionsHint(
+  locale: TerminalContractHintsLocale
+): string {
+  return locale === 'ru'
+    ? 'В diagnostics.txt: ownerManualSmoke, releaseSmoke, terminalHints (§8, dev guards).'
+    : 'diagnostics.txt: ownerManualSmoke, releaseSmoke, terminalHints (§8 dev guards).'
+}
+
 /** Tail of `appSettingsTerminalHintsGuardHint` in locales settings.json. */
 export function formatTerminalContractHintsSettingsHelpClause(
   locale: TerminalContractHintsLocale
@@ -156,7 +202,20 @@ export function formatTerminalContractHintsSettingsHelpClause(
   return `Help: ${TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT} (${shardSnippet}).`
 }
 
-/** Markdown bullet for `bin/README.md` (§8 terminal guards in `check:quiet`). */
+/** §18 Support ZIP diagnostics.txt — terminalHints block (dev guards, not runtime). */
+export function formatTerminalContractHintsSupportZipLines(): string[] {
+  return [
+    `meta: ${TERMINAL_CONTRACT_HINTS_META_MODULE}`,
+    formatTerminalContractHintsDiagnosticLine(),
+    `npm run ${TERMINAL_CONTRACT_HINTS_GUARD_REGISTRY_NPM_SCRIPT}`,
+    `npm run ${TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT}`,
+    `npm run ${TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_GUARD_NPM_SCRIPT}`,
+    `npm run ${TERMINAL_CONTRACT_HINTS_SETTINGS_LOCALE_GUARD_NPM_SCRIPT}`,
+    `settings: ${TERMINAL_CONTRACT_HINTS_SETTINGS_LOCALE_KEY}`
+  ]
+}
+
+/** Markdown bullet for bin/README.md (§8 terminal guards in check:quiet). */
 export function formatTerminalContractHintsBinReadmeGuardsLine(): string {
   const docGuards = [
     TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT,

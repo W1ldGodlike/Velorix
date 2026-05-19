@@ -28,6 +28,8 @@ export interface SupportBundleRuntimeInfo {
   crashDumps: string | null
   /** §3/§9 — `ffmpeg` / `ffprobe` / `yt-dlp`: state, путь, первая строка `-version`. */
   engineDiagnosticLines: readonly string[]
+  /** §8 — dev guards для terminal-contract-hints shards (check:quiet). */
+  terminalHintsLines: readonly string[]
   /** §19 — подсказки `smoke:packaged-release` и наличие `dist/win-unpacked`. */
   releaseSmokeLines: readonly string[]
   /** §9/§18 — packaged ffprobe smoke: кандидаты путей и команда проверки. */

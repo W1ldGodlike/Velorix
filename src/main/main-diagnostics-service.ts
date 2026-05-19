@@ -11,6 +11,7 @@ import { formatWinPackagedManualSmokeChecklistLines } from '../shared/win-packag
 import { buildOwnerManualSmokeBundleLines } from '../shared/owner-manual-smoke-bundle'
 import { formatWorkflowOsSchedulerManualSmokeChecklistLines } from '../shared/workflow-os-scheduler-manual-smoke-checklist'
 import { buildSupportZipPackagedReleaseLines } from '../shared/packaged-release-smoke'
+import { formatTerminalContractHintsSupportZipLines } from '../shared/terminal-contract-hints-meta'
 import { buildSupportZipBuildInfoLines, readAppBuildInfo } from '../shared/app-build-info'
 import { formatLocaleJsonCatalogDiagnosticLines } from '../shared/locale-json-catalog'
 import { formatRendererStateDiagnosticLines } from '../shared/renderer-state-approach'
@@ -114,6 +115,7 @@ export async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRunt
     /* headless / not ready */
   }
 
+  const terminalHintsLines = formatTerminalContractHintsSupportZipLines()
   const releaseSmokeLines = buildSupportZipPackagedReleaseLines(paths.appRoot, existsSync)
   const ffprobeSmokeLines = buildSupportZipFfprobeSmokeLines(paths.appRoot, existsSync)
   const uiLocaleIpcLines = formatUiLocaleIpcDiagnosticLines()
@@ -154,6 +156,7 @@ export async function buildSupportBundleRuntimeInfo(): Promise<SupportBundleRunt
     terminalCliLogFile: resolveTerminalCliSessionLogPath(paths.userData),
     crashDumps: getCrashDumpsPathSafe(),
     engineDiagnosticLines,
+    terminalHintsLines,
     releaseSmokeLines,
     ffprobeSmokeLines,
     uiLocaleIpcLines,

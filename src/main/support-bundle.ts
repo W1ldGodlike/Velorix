@@ -1,6 +1,7 @@
 import { mkdirSync, writeFileSync } from 'fs'
 import { dirname, join } from 'path'
 
+import { TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_SECTION_HEADING } from '../shared/terminal-contract-hints-meta'
 import { resolveAppTempDirectory } from './app-data-root-paths'
 import { getDiagnosticsMaintenanceSnapshot } from './diagnostics-maintenance'
 import {
@@ -67,6 +68,9 @@ function diagnosticsText(info: SupportBundleRuntimeInfo): string {
     ),
     ...(info.engineDiagnosticLines.length > 0
       ? ['', 'engines:', ...info.engineDiagnosticLines]
+      : []),
+    ...(info.terminalHintsLines.length > 0
+      ? ['', TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_SECTION_HEADING, ...info.terminalHintsLines]
       : []),
     ...(info.releaseSmokeLines.length > 0 ? ['', 'releaseSmoke:', ...info.releaseSmokeLines] : []),
     ...(info.ffprobeSmokeLines.length > 0 ? ['', 'ffprobeSmoke:', ...info.ffprobeSmokeLines] : []),

@@ -8,6 +8,6 @@ describe('check:terminal-hints-guards-package-json §8', () => {
     })
     expect(result).toContain('[check:terminal-hints-guards-package-json] OK')
     expect(result).toContain('quiet order')
-    expect(result).toContain('6 terminal guards')
+    expect(result).toContain('7 terminal guards')
   })
 })

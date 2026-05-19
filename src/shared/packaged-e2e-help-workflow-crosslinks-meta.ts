@@ -226,6 +226,8 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_REQUIRED_SNIPPETS 
   'packaged-e2e-scenarios-registry',
   'releaseSmoke:',
   'ownerManualSmoke:',
+  'terminalHints:',
+  'check:support-bundle-terminal-hints',
   '§21 e2e',
   'e2e <id>:',
   'win-unpacked',
@@ -240,6 +242,9 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_REQUIRED_SNIPPETS 
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LOGGING_HELP_REQUIRED_SNIPPETS = [
   'check:packaged-e2e-scenarios-registry',
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT,
+  'terminalHints:',
+  'check:support-bundle-terminal-hints',
+  'check:help-terminal-hints-docs',
   '§21 packaged e2e (CI vs owner)',
   'planned GUI e2e scope'
 ] as const

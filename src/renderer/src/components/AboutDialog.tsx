@@ -145,6 +145,9 @@ export function AboutDialog({
         <p id="about-dialog-desc" className="app-visually-hidden">
           {uiText('aboutDialogDescAria')}
         </p>
+        <p id="about-support-zip-hint" className="app-visually-hidden">
+          {uiText('aboutSupportZipDiagnosticsSectionsHint')}
+        </p>
         {aboutInfo ? (
           <dl
             className="app-about-dl"
@@ -265,7 +268,7 @@ export function AboutDialog({
               <button
                 type="button"
                 className="app-btn app-btn-compact"
-                aria-describedby="about-dialog-desc"
+                aria-describedby="about-support-zip-hint"
                 disabled={aboutShellBusy}
                 title={uiText('aboutTooltipSupportZip')}
                 onClick={() => {

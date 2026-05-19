@@ -16,14 +16,18 @@ import {
   TERMINAL_CONTRACT_HINTS_TOOLS_HELP_PATHS,
   TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_PATHS,
   TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_REQUIRED_SNIPPETS,
+  TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_PATHS,
+  TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_REQUIRED_SNIPPETS,
   TERMINAL_CONTRACT_HINTS_BIN_README_PATH,
   TERMINAL_CONTRACT_HINTS_TOOLS_HELP_REQUIRED_SNIPPETS,
+  formatTerminalContractHintsAboutSupportZipSectionsHint,
   formatTerminalContractHintsBinReadmeGuardsLine,
   formatTerminalContractHintsDiagnosticLine,
   formatTerminalContractHintsDownloadsShardBasename,
   formatTerminalContractHintsPreviewMediaShardBasename,
   formatTerminalContractHintsSettingsHelpClause,
-  formatTerminalContractHintsShardCountEnSnippet
+  formatTerminalContractHintsShardCountEnSnippet,
+  formatTerminalContractHintsSupportZipLines
 } from '../../src/shared/terminal-contract-hints-meta'
 import { TERMINAL_SCENARIO_HINTS_DOWNLOADS } from '../../src/shared/terminal-contract-hints-downloads'
 import { TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA } from '../../src/shared/terminal-contract-hints-preview-media'
@@ -56,7 +60,7 @@ describe('terminal-contract-hints-meta §8', () => {
   })
 
   it('guard registries list quiet steps and npm scripts', () => {
-    expect(TERMINAL_CONTRACT_HINTS_GUARD_QUIET_STEP_LABELS.length).toBe(6)
+    expect(TERMINAL_CONTRACT_HINTS_GUARD_QUIET_STEP_LABELS.length).toBe(7)
     expect(TERMINAL_CONTRACT_HINTS_GUARD_NPM_SCRIPTS).toContain(
       TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT
     )
@@ -74,11 +78,36 @@ describe('terminal-contract-hints-meta §8', () => {
     }
   })
 
+  it('formatTerminalContractHintsSupportZipLines cites guards', () => {
+    const lines = formatTerminalContractHintsSupportZipLines()
+    expect(lines.some((l) => l.includes('terminal-contract-hints-meta'))).toBe(true)
+    expect(lines.some((l) => l.includes('check:terminal-contract-hints-shards'))).toBe(true)
+    expect(lines.some((l) => l.includes('check:support-bundle-terminal-hints'))).toBe(true)
+    expect(lines.some((l) => l.includes('appSettingsTerminalHintsGuardHint'))).toBe(true)
+  })
+
   it('formatTerminalContractHintsSettingsHelpClause matches locales', () => {
     const ru = readFileSync('locales/ru/settings.json', 'utf8')
     const en = readFileSync('locales/en/settings.json', 'utf8')
     expect(ru).toContain(formatTerminalContractHintsSettingsHelpClause('ru'))
     expect(en).toContain(formatTerminalContractHintsSettingsHelpClause('en'))
+  })
+
+  it('formatTerminalContractHintsAboutSupportZipSectionsHint matches about.json', () => {
+    const ruAbout = JSON.parse(readFileSync('locales/ru/about.json', 'utf8')) as Record<
+      string,
+      string
+    >
+    const enAbout = JSON.parse(readFileSync('locales/en/about.json', 'utf8')) as Record<
+      string,
+      string
+    >
+    expect(ruAbout['aboutSupportZipDiagnosticsSectionsHint']).toBe(
+      formatTerminalContractHintsAboutSupportZipSectionsHint('ru')
+    )
+    expect(enAbout['aboutSupportZipDiagnosticsSectionsHint']).toBe(
+      formatTerminalContractHintsAboutSupportZipSectionsHint('en')
+    )
   })
 
   it('Help tools-terminal-inspector hub cites meta', () => {
@@ -90,12 +119,18 @@ describe('terminal-contract-hints-meta §8', () => {
     }
   })
 
-  it('bin/README and about-support-logs cite terminal guards', () => {
+  it('bin/README and §18 Help cite terminal guards', () => {
     const binReadme = readFileSync(TERMINAL_CONTRACT_HINTS_BIN_README_PATH, 'utf8')
     expect(binReadme).toContain(formatTerminalContractHintsBinReadmeGuardsLine())
     for (const rel of TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_PATHS) {
       const text = readFileSync(rel, 'utf8')
       for (const snippet of TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_REQUIRED_SNIPPETS) {
+        expect(text, `${rel} missing ${snippet}`).toContain(snippet)
+      }
+    }
+    for (const rel of TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_PATHS) {
+      const text = readFileSync(rel, 'utf8')
+      for (const snippet of TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_REQUIRED_SNIPPETS) {
         expect(text, `${rel} missing ${snippet}`).toContain(snippet)
       }
     }

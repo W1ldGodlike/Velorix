@@ -16,8 +16,9 @@
 
 - **`ownerManualSmoke:`** — полный пакет ручного smoke (тема, HiDPI, HW, packaged, §21 e2e per-step `e2e <id>:`); см. [owner-manual-smoke.md](owner-manual-smoke.md).
 - **`releaseSmoke:`** — CI packaged pipeline, layout win/linux/macos и тот же §21 e2e-план; см. [about-support-logs.md](about-support-logs.md).
+- **`terminalHints:`** — dev §8 (`terminal-contract-hints-meta`, 35 shards / 1056+833 hints, `check:terminal-contract-hints-shards`, `check:support-bundle-terminal-hints` и прочие guards в `check:quiet`); см. [ffmpeg-terminal-hints.md](ffmpeg-terminal-hints.md).
 
-Dev: `npm run check:packaged-e2e-scenarios-registry`, `check:help-workflow-smoke-crosslinks` (34 статьи, в `check:quiet`); §8 terminal — `check:terminal-contract-hints-shards` (35 shards, 1056+833 hints), `check:help-terminal-hints-docs`, `check:terminal-hints-locale` (Настройки → Зависимости). UI **Скопировать** (packaged + owner bundle) дописывает **§21 packaged e2e (CI vs owner)**; в Support ZIP — **planned GUI e2e scope** (8 шагов Playwright позже; 2 manual-owner: sprite, mini-player).
+Dev: `npm run check:packaged-e2e-scenarios-registry`, `check:help-workflow-smoke-crosslinks` (34 статьи, в `check:quiet`); §8 terminal — `check:terminal-contract-hints-shards` (35 shards, 1056+833 hints), `check:help-terminal-hints-docs`, `check:support-bundle-terminal-hints`, `check:terminal-hints-locale` (Настройки → Зависимости). UI **Скопировать** (packaged + owner bundle) дописывает **§21 packaged e2e (CI vs owner)**; в Support ZIP — **planned GUI e2e scope** (8 шагов Playwright позже; 2 manual-owner: sprite, mini-player).
 
 ## Подробнее про «О программе»
 

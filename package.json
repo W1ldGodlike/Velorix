@@ -74,6 +74,7 @@
     "check:terminal-contract-hints-shards": "node scripts/check-terminal-contract-hints-shards.mjs",
     "check:terminal-hints-locale": "node scripts/check-terminal-hints-locale.mjs",
     "check:terminal-hints-guards-package-json": "node scripts/check-terminal-hints-guards-package-json.mjs",
+    "check:support-bundle-terminal-hints": "node scripts/check-support-bundle-terminal-hints.mjs",
     "locales:terminal-scenario-stream-gloss": "node scripts/apply-terminal-scenario-stream-gloss.mjs",
     "check:ui-copy-quality": "node scripts/check-ui-copy-quality.mjs",
     "theme:tokenize-main-css": "node scripts/theme-tokenize-main-css.mjs",

@@ -60,6 +60,7 @@ export function formatPlatformPackagingDiagnosticLines(): string[] {
     `help smoke guards: ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_NPM_SCRIPTS.join(', ')} (check:help-smoke-guards-package-json)`,
     '§21 e2e registry: npm run check:packaged-e2e-scenarios-registry (2 ci-headless, 8 planned-gui-e2e, 2 manual-owner; per-step e2e <id>:)',
     'CI packaged: npm run smoke:packaged-release (verify:win-unpacked + app + engines leaf smokes)',
-    'Support ZIP releaseSmoke: win/linux/macos layout (present/missing) + §21 e2e per-step lines'
+    'Support ZIP releaseSmoke: win/linux/macos layout (present/missing) + §21 e2e per-step lines',
+    'Support ZIP terminalHints: §8 dev guards (formatTerminalContractHintsSupportZipLines; check:support-bundle-terminal-hints)'
   ]
 }
