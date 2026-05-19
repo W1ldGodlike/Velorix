@@ -32,6 +32,6 @@ The folder must contain `fluxalloy` or `FluxAlloy` and `resources/bin/{yt-dlp,ff
 
 Details: [`docs/RELEASE.md`](../../docs/RELEASE.md) §4.1.
 
-On any OS, Support ZIP `releaseSmoke:` lists `dist/linux-unpacked/` and `resources/*` layout lines (present/missing) — useful after `pack:linux:dir` without re-running verify locally.
+On any OS, Support ZIP `releaseSmoke:` lists `dist/linux-unpacked/` and `resources/*` layout lines (present/missing); dev block `terminalHints:` (§8) — useful after `pack:linux:dir` without re-running verify locally.
 
-See also [about-support-logs.md](about-support-logs.md) and [packaged-windows-smoke.md](../packaged-windows-smoke.md). §21 planned GUI e2e (8 steps) — [owner-manual-smoke.md](owner-manual-smoke.md); canonical ids: `PACKAGED_E2E_PLANNED_GUI_STEP_IDS`.
+See also [about-support-logs.md](about-support-logs.md), [logging-and-diagnostics.md](logging-and-diagnostics.md) and [packaged-windows-smoke.md](../packaged-windows-smoke.md). §21 planned GUI e2e (8 steps) — [owner-manual-smoke.md](owner-manual-smoke.md); canonical ids: `PACKAGED_E2E_PLANNED_GUI_STEP_IDS`.

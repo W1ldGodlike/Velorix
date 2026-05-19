@@ -19,9 +19,9 @@
 | Снимок тестов | **273** files / **1827** tests |
 | Спринт | §18 Support ZIP `terminalHints:` + 7 terminal guards + 12 Help; Settings/About ZIP aria; owner-smoke на железе; GUI Playwright позже |
 
-**Последние J:** [J-1248](../IMPLEMENTATION_JOURNAL.md) workflow-hub Help + `check:help-terminal-hints-docs` 12 файлов; [J-1249](../IMPLEMENTATION_JOURNAL.md) `appSettingsTerminalHintsGuardHint` 12 Help + support-bundle; [J-1250](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1246..1249, re-anchor.
+**Последние J:** [J-1252](../IMPLEMENTATION_JOURNAL.md) packaged smoke Help 20 статей; [J-1253](../IMPLEMENTATION_JOURNAL.md) faq-troubleshooting guard 22; [J-1254](../IMPLEMENTATION_JOURNAL.md) owner-manual-smoke guard 24.
 
-**Следующий cadence:** commit **J-1255**; push + re-anchor **J-1260**.
+**Следующий cadence:** push + re-anchor **J-1260** (commit **J-1255** — локально).
 
 ## Новый чат
 

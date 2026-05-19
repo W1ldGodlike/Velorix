@@ -110,6 +110,34 @@ export const TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_PATHS = [
   'Help/en/probe-and-inspector-basics.md'
 ] as const
 
+/** Help §6/§15 downloads workflow — Support ZIP crosslinks. */
+export const TERMINAL_CONTRACT_HINTS_WORKFLOW_DOWNLOADS_HELP_PATHS = [
+  'Help/downloads-workflow.md',
+  'Help/en/downloads-workflow.md'
+] as const
+
+/** Help §16/§19 owner manual smoke — Support ZIP crosslinks (RU+EN). */
+export const TERMINAL_CONTRACT_HINTS_OWNER_MANUAL_SMOKE_HELP_PATHS = [
+  'Help/owner-manual-smoke.md',
+  'Help/en/owner-manual-smoke.md'
+] as const
+
+/** Help FAQ — Support ZIP / terminal crosslinks (RU+EN). */
+export const TERMINAL_CONTRACT_HINTS_FAQ_TROUBLESHOOTING_HELP_PATHS = [
+  'Help/faq-troubleshooting.md',
+  'Help/en/faq-troubleshooting.md'
+] as const
+
+/** Help §19 packaged smoke — Support ZIP crosslinks (win/linux/macos). */
+export const TERMINAL_CONTRACT_HINTS_PACKAGED_SMOKE_HELP_PATHS = [
+  'Help/packaged-windows-smoke.md',
+  'Help/en/packaged-windows-smoke.md',
+  'Help/packaged-linux-smoke.md',
+  'Help/en/packaged-linux-smoke.md',
+  'Help/packaged-macos-smoke.md',
+  'Help/en/packaged-macos-smoke.md'
+] as const
+
 /** Required substrings in logging-and-diagnostics (Support ZIP sections). */
 export const TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_REQUIRED_SNIPPETS = [
   'terminalHints:',
@@ -191,7 +219,11 @@ export const TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT =
   TERMINAL_CONTRACT_HINTS_TOOLS_HELP_PATHS.length +
   TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_PATHS.length +
   TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_PATHS.length +
-  TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_PATHS.length
+  TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_PATHS.length +
+  TERMINAL_CONTRACT_HINTS_WORKFLOW_DOWNLOADS_HELP_PATHS.length +
+  TERMINAL_CONTRACT_HINTS_PACKAGED_SMOKE_HELP_PATHS.length +
+  TERMINAL_CONTRACT_HINTS_FAQ_TROUBLESHOOTING_HELP_PATHS.length +
+  TERMINAL_CONTRACT_HINTS_OWNER_MANUAL_SMOKE_HELP_PATHS.length
 
 export function formatTerminalContractHintsDownloadsShardBasename(partIndex: number): string {
   return `terminal-contract-hints-downloads-${String(partIndex).padStart(2, '0')}.ts`

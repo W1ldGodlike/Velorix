@@ -37,6 +37,6 @@ npm run check:release
 
 Подробности сборки — [`docs/RELEASE.md`](../docs/RELEASE.md) (корень репозитория).
 
-Support ZIP `releaseSmoke:` на любой ОС перечисляет `dist/win-unpacked/` и layout `resources/*` (present/missing) — удобно приложить к отчёту после `pack:dir`.
+Support ZIP `releaseSmoke:` на любой ОС перечисляет `dist/win-unpacked/` и layout `resources/*` (present/missing); dev-блок `terminalHints:` (§8) — удобно приложить к отчёту после `pack:dir`.
 
 См. также [about-support-logs.md](about-support-logs.md) и [logging-and-diagnostics.md](logging-and-diagnostics.md).

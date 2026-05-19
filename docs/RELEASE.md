@@ -190,7 +190,7 @@ npm run verify:mac-unpacked
 - `npm run check:help-packaged-smoke-docs` / `check:help-owner-smoke-docs` — packaged §19/§21 snippets в Help;
 - `npm run check:help-workflow-smoke-crosslinks` — `packaged-e2e-help-workflow-crosslinks-meta` (34 workflow + 6 packaged + 8 anchors + `formatPackagedE2eHelpWorkflowCrosslinksBinReadmeDevLine` в `bin/README.md`); дублирует guard/count с `check:help-owner-smoke-docs`, `check:help-packaged-smoke-docs`, `check:owner-visual-smoke-locale` (`formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause`).
 - `npm run check:terminal-hints-guards-package-json` — registry §8 terminal guards ↔ `package.json` + порядок в `check:quiet`;
-- `npm run check:help-terminal-hints-docs` — 12 Help (ffmpeg-terminal-hints, tools hub, about/logging, getting-started, probe) ↔ `terminal-contract-hints-meta`;
+- `npm run check:help-terminal-hints-docs` — 24 Help (ffmpeg-terminal-hints, tools/about/logging, workflow hubs, downloads, packaged win/linux/macos, faq, owner-manual-smoke) ↔ `terminal-contract-hints-meta`;
 - `npm run check:terminal-contract-hints-shards` — 35 shard-файлов, snapshot 1056+833 hints;
 - `npm run check:terminal-hints-locale` — `appSettingsTerminalHintsGuardHint` в `locales/{ru,en}/settings.json` (`formatTerminalContractHintsSettingsHelpClause`).
 - `npm run check:support-bundle-terminal-hints` — Support ZIP `diagnostics.txt` блок `terminalHints:` ↔ `formatTerminalContractHintsSupportZipLines` (`support-bundle.ts`, `main-diagnostics-service.ts`).

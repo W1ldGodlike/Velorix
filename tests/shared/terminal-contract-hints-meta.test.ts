@@ -21,6 +21,10 @@ import {
   TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_REQUIRED_SNIPPETS,
   TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_PATHS,
   TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_REQUIRED_SNIPPETS,
+  TERMINAL_CONTRACT_HINTS_WORKFLOW_DOWNLOADS_HELP_PATHS,
+  TERMINAL_CONTRACT_HINTS_PACKAGED_SMOKE_HELP_PATHS,
+  TERMINAL_CONTRACT_HINTS_FAQ_TROUBLESHOOTING_HELP_PATHS,
+  TERMINAL_CONTRACT_HINTS_OWNER_MANUAL_SMOKE_HELP_PATHS,
   TERMINAL_CONTRACT_HINTS_BIN_README_PATH,
   TERMINAL_CONTRACT_HINTS_TOOLS_HELP_REQUIRED_SNIPPETS,
   formatTerminalContractHintsAboutSupportZipSectionsHint,
@@ -47,7 +51,7 @@ describe('terminal-contract-hints-meta §8', () => {
       TERMINAL_CONTRACT_HINTS_DOWNLOADS_PART_COUNT +
         TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_PART_COUNT
     )
-    expect(TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT).toBe(12)
+    expect(TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT).toBe(24)
     expect(formatTerminalContractHintsShardCountEnSnippet()).toContain('20 downloads')
     expect(formatTerminalContractHintsDiagnosticLine()).toContain(
       TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT
@@ -116,6 +120,30 @@ describe('terminal-contract-hints-meta §8', () => {
 
   it('Help workflow hubs cite Support ZIP terminalHints', () => {
     for (const rel of TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_PATHS) {
+      const text = readFileSync(rel, 'utf8')
+      for (const snippet of TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_REQUIRED_SNIPPETS) {
+        expect(text, `${rel} missing ${snippet}`).toContain(snippet)
+      }
+    }
+    for (const rel of TERMINAL_CONTRACT_HINTS_WORKFLOW_DOWNLOADS_HELP_PATHS) {
+      const text = readFileSync(rel, 'utf8')
+      for (const snippet of TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_REQUIRED_SNIPPETS) {
+        expect(text, `${rel} missing ${snippet}`).toContain(snippet)
+      }
+    }
+    for (const rel of TERMINAL_CONTRACT_HINTS_PACKAGED_SMOKE_HELP_PATHS) {
+      const text = readFileSync(rel, 'utf8')
+      for (const snippet of TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_REQUIRED_SNIPPETS) {
+        expect(text, `${rel} missing ${snippet}`).toContain(snippet)
+      }
+    }
+    for (const rel of TERMINAL_CONTRACT_HINTS_FAQ_TROUBLESHOOTING_HELP_PATHS) {
+      const text = readFileSync(rel, 'utf8')
+      for (const snippet of TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_REQUIRED_SNIPPETS) {
+        expect(text, `${rel} missing ${snippet}`).toContain(snippet)
+      }
+    }
+    for (const rel of TERMINAL_CONTRACT_HINTS_OWNER_MANUAL_SMOKE_HELP_PATHS) {
       const text = readFileSync(rel, 'utf8')
       for (const snippet of TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_REQUIRED_SNIPPETS) {
         expect(text, `${rel} missing ${snippet}`).toContain(snippet)

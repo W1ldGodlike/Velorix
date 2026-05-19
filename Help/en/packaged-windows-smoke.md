@@ -37,6 +37,6 @@ You should have `FluxAlloy.exe` and `resources/bin/{yt-dlp,ffmpeg,ffprobe}.exe`.
 
 Build details — [`docs/RELEASE.md`](../docs/RELEASE.md) (repository root).
 
-On any OS, Support ZIP `releaseSmoke:` lists `dist/win-unpacked/` and `resources/*` layout lines (present/missing) — useful after `pack:dir` without re-running verify locally.
+On any OS, Support ZIP `releaseSmoke:` lists `dist/win-unpacked/` and `resources/*` layout lines (present/missing); dev block `terminalHints:` (§8) — useful after `pack:dir` without re-running verify locally.
 
 See also [about-support-logs.md](about-support-logs.md) and [logging-and-diagnostics.md](logging-and-diagnostics.md).

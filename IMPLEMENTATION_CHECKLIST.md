@@ -6,7 +6,7 @@
 
 ## Готовность полного итога
 
-- **Оценка: ~65%** (J-1250; §8/§18 Support ZIP `terminalHints:` + 7 guards + 12 Help; push cadence; owner-smoke на железе; GUI Playwright позже). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16, утилиты §17, диагностика §18, CI/release + owner/packaging/e2e guards в `check:quiet`. Впереди: owner-smoke на железе, packaged mac/linux, GUI Playwright §21.
+- **Оценка: ~65%** (J-1255; §8 Help 24 статей (downloads/packaged/faq/owner); owner-smoke на железе; cadence push J-1260). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16, утилиты §17, диагностика §18, CI/release + owner/packaging/e2e guards в `check:quiet`. Впереди: owner-smoke на железе, packaged mac/linux, GUI Playwright §21.
 
 ## Легенда
 
@@ -564,7 +564,7 @@
 - [x] Диалог ошибки: кратко + детали.
 - [x] Копировать детали.
 - [x] Открыть лог.
-- [x] Support ZIP: `diagnostics.txt`, `main.log`, `main.log.1`, `session.log`, последние crash dumps, версия, ОС.
+- [x] Support ZIP: `diagnostics.txt` (`ownerManualSmoke:`, `releaseSmoke:`, `terminalHints:` §8 dev guards), `main.log`, `main.log.1`, `session.log`, последние crash dumps, версия, ОС.
 
 ## §19. Система установки и дистрибуция
 
