@@ -13,7 +13,16 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_WIN_PATHS,
-  pickPackagedE2eHelpWorkflowCrosslinksCountSnippet
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_META_MODULE,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_GUARD_HELP_PATHS,
+  formatPackagedE2eHelpWorkflowCrosslinksBinReadmeDevLine,
+  formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine,
+  formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause,
+  pickPackagedE2eHelpWorkflowCrosslinksCountSnippet,
+  pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale
 } from '../../src/shared/packaged-e2e-help-workflow-crosslinks-meta'
 
 describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
@@ -61,6 +70,53 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
     )
     expect(pickPackagedE2eHelpWorkflowCrosslinksCountSnippet('Help/foo.md')).toBe(
       PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET
+    )
+    expect(pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale('en')).toBe(
+      PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET
+    )
+    expect(pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale('ru')).toBe(
+      PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET
+    )
+  })
+
+  it('exports workflow required snippets for crosslinks guard', () => {
+    expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS).toHaveLength(5)
+    expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS).toContain(
+      'releaseSmoke:'
+    )
+  })
+
+  it('formats settings Help clause and owner Help paths from anchors', () => {
+    expect(formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause('en')).toBe(
+      'Help: check:help-workflow-smoke-crosslinks (34 articles).'
+    )
+    expect(formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause('ru')).toBe(
+      'Help: check:help-workflow-smoke-crosslinks (34 статьи).'
+    )
+    expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_PATHS).toEqual([
+      PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS[0],
+      PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_ANCHOR_PATHS[0]
+    ])
+    expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_PATHS).toHaveLength(2)
+  })
+
+  it('formats bin/README dev line with meta module id', () => {
+    const line = formatPackagedE2eHelpWorkflowCrosslinksBinReadmeDevLine()
+    expect(line).toContain(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_META_MODULE)
+    expect(line).toContain('34 articles')
+    expect(line).toContain('workflow + packaged/owner anchors')
+  })
+
+  it('formats diagnostic line and owner guard paths match anchors', () => {
+    expect(formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine()).toContain(
+      'check:help-workflow-smoke-crosslinks'
+    )
+    expect(formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine('articles')).toContain(
+      '34 articles'
+    )
+    expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_GUARD_HELP_PATHS).toHaveLength(8)
+    expect([...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_GUARD_HELP_PATHS].sort()).toEqual(
+      [...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_ANCHOR_PATHS].sort()
     )
   })
 })

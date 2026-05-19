@@ -6,24 +6,22 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 import {
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_ANCHOR_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_ANCHOR_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LOGGING_HELP_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_GUARD_HELP_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS,
   pickPackagedE2eHelpWorkflowCrosslinksCountSnippet
 } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
 import { REPO_ROOT } from './lib/repo-root.mjs'
 
-const OWNER_HELP_FILES = ['Help/owner-manual-smoke.md', 'Help/en/owner-manual-smoke.md']
-
-const ABOUT_HELP_FILES = ['Help/about-support-logs.md', 'Help/en/about-support-logs.md']
-
-const LOGGING_HELP_FILES = ['Help/logging-and-diagnostics.md', 'Help/en/logging-and-diagnostics.md']
-
-const PLANNER_HELP_FILES = [
-  'Help/workflows-planner-scenarios.md',
-  'Help/en/workflows-planner-scenarios.md'
-]
+const ABOUT_HELP_FILES = [...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_PATHS]
+const LOGGING_HELP_FILES = [...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LOGGING_HELP_PATHS]
+const PLANNER_HELP_FILES = [...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS]
 
 const OWNER_SNIPPETS = [
   'packaged-e2e-scenarios-registry',
@@ -102,8 +100,27 @@ if (
   )
   process.exit(1)
 }
-failed = checkFiles(['Help/owner-manual-smoke.md'], OWNER_SNIPPETS, 'owner-ru') || failed
-failed = checkFiles(['Help/en/owner-manual-smoke.md'], OWNER_SNIPPETS, 'owner-en') || failed
+if (
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_GUARD_HELP_PATHS.length !==
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_ANCHOR_PATHS.length
+) {
+  console.error(
+    '[check:help-owner-smoke-docs] OWNER_GUARD_HELP_PATHS out of sync with COUNT_ANCHOR_PATHS'
+  )
+  process.exit(1)
+}
+failed =
+  checkFiles(
+    [PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_PATHS[0]],
+    OWNER_SNIPPETS,
+    'owner-ru'
+  ) || failed
+failed =
+  checkFiles(
+    [PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_PATHS[1]],
+    OWNER_SNIPPETS,
+    'owner-en'
+  ) || failed
 for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_ANCHOR_PATHS) {
   failed =
     checkCrosslinksCount(
@@ -119,11 +136,7 @@ failed = checkFiles(PLANNER_HELP_FILES, PLANNER_SNIPPETS, 'planner') || failed
 if (failed) {
   process.exit(1)
 }
-const fileCount =
-  OWNER_HELP_FILES.length +
-  ABOUT_HELP_FILES.length +
-  LOGGING_HELP_FILES.length +
-  PLANNER_HELP_FILES.length
+const fileCount = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_GUARD_HELP_PATHS.length
 console.log(
   `[check:help-owner-smoke-docs] OK (${fileCount} files; owner/about/logging/planner + crosslinks count anchors)`
 )

@@ -7,15 +7,21 @@
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT =
   'check:help-workflow-smoke-crosslinks' as const
 
+/** Leaf module id (bin/README, diagnostics). */
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_META_MODULE =
+  'packaged-e2e-help-workflow-crosslinks-meta' as const
+
 /** Dev engines README — workflow crosslinks guard + EN count snippet. */
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH = 'bin/README.md' as const
 
-/** EN vs RU crosslinks count snippet for a Help path (`Help/en/…` → EN). */
-export function pickPackagedE2eHelpWorkflowCrosslinksCountSnippet(helpRelPath: string): string {
-  return helpRelPath.includes('/en/')
-    ? PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET
-    : PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET
-}
+/** Required substrings in each workflow Help article (`check:help-workflow-smoke-crosslinks`). */
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS = [
+  'owner-manual-smoke.md',
+  'packaged-windows-smoke.md',
+  '§21 e2e',
+  'e2e <id>:',
+  'releaseSmoke:'
+] as const
 
 /** RU+EN workflow/export/downloads/terminal/theme/HW/shell/getting-started. */
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS = [
@@ -63,6 +69,49 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET = `${PACKAGE
 
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET = `${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT} статьи`
 
+export type PackagedE2eHelpWorkflowCrosslinksLocale = 'en' | 'ru'
+
+/** EN vs RU crosslinks count snippet for a Help path (`Help/en/…` → EN). */
+export function pickPackagedE2eHelpWorkflowCrosslinksCountSnippet(helpRelPath: string): string {
+  return helpRelPath.includes('/en/')
+    ? PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET
+    : PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET
+}
+
+/** EN vs RU count snippet for `locales/{en,ru}/settings.json` guards. */
+export function pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(
+  locale: PackagedE2eHelpWorkflowCrosslinksLocale
+): string {
+  return locale === 'ru'
+    ? PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET
+    : PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET
+}
+
+/** Tail of `appSettingsPackagedE2eRegistryGuardHint` in locales settings.json. */
+export function formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause(
+  locale: PackagedE2eHelpWorkflowCrosslinksLocale
+): string {
+  return `Help: ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT} (${pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)}).`
+}
+
+/** Platform-packaging / §21 e2e diagnostics (`Help articles` vs `articles` label). */
+export function formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine(
+  articlesWord: 'Help articles' | 'articles' = 'Help articles'
+): string {
+  return `npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT} (${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT} ${articlesWord} ↔ owner/packaged §21)`
+}
+
+/** Required substrings in `bin/README.md` (§21 crosslinks dev line). */
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_REQUIRED_SNIPPETS = [
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_META_MODULE,
+  'workflow + packaged/owner anchors'
+] as const
+
+/** Markdown bullet for `bin/README.md` (sync with guard snippets). */
+export function formatPackagedE2eHelpWorkflowCrosslinksBinReadmeDevLine(): string {
+  return `- Help §21 crosslinks: \`npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` — канон \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_META_MODULE}\` (${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET}: workflow + packaged/owner anchors).`
+}
+
 /** Help §15 anchor articles with explicit crosslinks count (RU). */
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS = [
   'Help/owner-manual-smoke.md',
@@ -103,4 +152,33 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ALL_PACKAGED_HELP_PATHS = [
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_ANCHOR_PATHS = [
   ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS,
   ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_ANCHOR_PATHS
+] as const
+
+/** Owner manual smoke Help (RU+EN) — same paths as count anchors [0]. */
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_PATHS = [
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS[0],
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_ANCHOR_PATHS[0]
+] as const
+
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_PATHS = [
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS[1],
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_ANCHOR_PATHS[1]
+] as const
+
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LOGGING_HELP_PATHS = [
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS[2],
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_ANCHOR_PATHS[2]
+] as const
+
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS = [
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS[3],
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_ANCHOR_PATHS[3]
+] as const
+
+/** All Help files checked by `check:help-owner-smoke-docs` (same 8 as count anchors). */
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_GUARD_HELP_PATHS = [
+  ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_PATHS,
+  ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_PATHS,
+  ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LOGGING_HELP_PATHS,
+  ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS
 ] as const

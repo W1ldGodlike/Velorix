@@ -9,26 +9,23 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ALL_PACKAGED_HELP_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_REQUIRED_SNIPPETS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_ANCHOR_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT,
+  formatPackagedE2eHelpWorkflowCrosslinksBinReadmeDevLine,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS,
   pickPackagedE2eHelpWorkflowCrosslinksCountSnippet
 } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
 import { REPO_ROOT } from './lib/repo-root.mjs'
-
-const SNIPPETS = [
-  'owner-manual-smoke.md',
-  'packaged-windows-smoke.md',
-  '§21 e2e',
-  'e2e <id>:',
-  'releaseSmoke:'
-]
 
 let failed = false
 for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS) {
   const file = path.join(REPO_ROOT, rel)
   const text = fs.readFileSync(file, 'utf8')
-  const missing = SNIPPETS.filter((s) => !text.includes(s))
+  const missing = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS.filter(
+    (s) => !text.includes(s)
+  )
   if (missing.length > 0) {
     failed = true
     console.error(`[check:help-workflow-smoke-crosslinks] ${rel} missing: ${missing.join(', ')}`)
@@ -58,6 +55,21 @@ if (!binReadmeText.includes(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPP
   console.error(
     `[check:help-workflow-smoke-crosslinks] ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH} missing crosslinks count: ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET}`
   )
+}
+const binReadmeDevLine = formatPackagedE2eHelpWorkflowCrosslinksBinReadmeDevLine()
+if (!binReadmeText.includes(binReadmeDevLine)) {
+  failed = true
+  console.error(
+    `[check:help-workflow-smoke-crosslinks] ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH} missing dev line: ${binReadmeDevLine}`
+  )
+}
+for (const snippet of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_REQUIRED_SNIPPETS) {
+  if (!binReadmeText.includes(snippet)) {
+    failed = true
+    console.error(
+      `[check:help-workflow-smoke-crosslinks] ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH} missing: ${snippet}`
+    )
+  }
 }
 
 for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ALL_PACKAGED_HELP_PATHS) {

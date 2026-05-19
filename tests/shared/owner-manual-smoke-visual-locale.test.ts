@@ -1,9 +1,8 @@
 import { describe, expect, it } from 'vitest'
 
 import {
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET,
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET,
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT,
+  formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause
 } from '../../src/shared/packaged-e2e-help-workflow-crosslinks-meta'
 import { formatOwnerManualSmokeHidpiChecklistLinesFromShard } from '../../src/shared/owner-manual-smoke-hidpi-lines'
 import { formatOwnerManualSmokeThemeChecklistLinesFromShard } from '../../src/shared/owner-manual-smoke-theme-lines'
@@ -49,13 +48,13 @@ describe('owner-manual-smoke visual locale §2.2/§16', () => {
       PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT
     )
     expect(enSettings.appSettingsPackagedE2eRegistryGuardHint).toContain(
-      PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET
+      formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause('en')
     )
     expect(enSettings.appSettingsPackagedE2eRegistryGuardHint).toContain(
       'formatPackagedManualSmokeE2eAppendixLines'
     )
     expect(ruSettings.appSettingsPackagedE2eRegistryGuardHint).toContain(
-      PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET
+      formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause('ru')
     )
   })
 

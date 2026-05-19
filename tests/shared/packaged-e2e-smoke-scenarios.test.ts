@@ -11,6 +11,7 @@ import {
   PACKAGED_E2E_MANUAL_OWNER_STEP_IDS,
   PACKAGED_E2E_PLANNED_GUI_STEP_IDS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT,
+  formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine,
   listPackagedE2eStepIdsByAutomation
 } from '../../src/shared/packaged-e2e-smoke-scenarios'
 
@@ -82,8 +83,7 @@ describe('packaged-e2e-smoke-scenarios §21', () => {
     const joined = formatPackagedE2eSmokeDiagnosticLines().join('\n')
     expect(joined).toContain('planned GUI e2e scope:')
     expect(joined).toContain('open-file')
-    expect(joined).toContain('npm run check:help-workflow-smoke-crosslinks')
-    expect(joined).toContain(`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT} articles`)
+    expect(joined).toContain(formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine('articles'))
   })
 
   it('exports Help workflow crosslinks article count from path registry', () => {
