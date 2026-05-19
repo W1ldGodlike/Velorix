@@ -17,7 +17,15 @@ import {
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmeGuardsLine,
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmePackagedQuietLine,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS,
-  pickPackagedE2eHelpWorkflowCrosslinksCountSnippet
+  pickPackagedE2eHelpWorkflowCrosslinksCountSnippet,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS,
+  formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause,
+  formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail,
+  formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWorkflowArticlesClause,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_KNOWLEDGE_HELP_PATHS,
+  formatPackagedE2eHelpWorkflowCrosslinksKnowledgeHubDevClause
 } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
 import { checkHelpSmokeDocFiles, checkHelpSmokeDocSnippet } from './lib/help-smoke-docs-check.mjs'
 import { REPO_ROOT } from './lib/repo-root.mjs'
@@ -116,6 +124,50 @@ for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_ANCHOR_PATHS) {
       rel,
       pickPackagedE2eHelpWorkflowCrosslinksCountSnippet(rel),
       'anchor-count'
+    ) || failed
+}
+for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_PATHS) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWorkflowArticlesClause(locale),
+      'anchor-owner-clause'
+    ) || failed
+}
+for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_PATHS) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause(locale),
+      'anchor-about-dev'
+    ) || failed
+}
+for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail(locale),
+      'anchor-planner-tail'
+    ) || failed
+}
+for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_KNOWLEDGE_HELP_PATHS) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedE2eHelpWorkflowCrosslinksKnowledgeHubDevClause(locale),
+      'knowledge-hub-dev'
     ) || failed
 }
 

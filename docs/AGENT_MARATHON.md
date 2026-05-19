@@ -21,7 +21,7 @@
 
 **Последние J:** [J-1278](../IMPLEMENTATION_JOURNAL.md) downloads-workflow 44 tail; [J-1279](../IMPLEMENTATION_JOURNAL.md) SOURCES/ARCHITECTURE formatters; [J-1280](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1276..1279.
 
-**Следующий cadence:** commit **J-1285**; push + re-anchor **J-1290**.
+**Следующий cadence:** push + re-anchor **J-1290** (commit **J-1285** @ локальный HEAD).
 
 ## Новый чат
 

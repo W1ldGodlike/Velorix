@@ -12,6 +12,10 @@ import {
   TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_PATHS,
   TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_REQUIRED_SNIPPETS,
   TERMINAL_CONTRACT_HINTS_WORKFLOW_DOWNLOADS_HELP_PATHS,
+  TERMINAL_CONTRACT_HINTS_WORKFLOW_APPEARANCE_HELP_PATHS,
+  TERMINAL_CONTRACT_HINTS_WORKFLOW_ABOUT_HELP_PATHS,
+  TERMINAL_CONTRACT_HINTS_WORKFLOW_PLANNER_HELP_PATHS,
+  TERMINAL_CONTRACT_HINTS_WORKFLOW_KNOWLEDGE_HELP_PATHS,
   TERMINAL_CONTRACT_HINTS_PACKAGED_SMOKE_HELP_PATHS,
   TERMINAL_CONTRACT_HINTS_FAQ_TROUBLESHOOTING_HELP_PATHS,
   TERMINAL_CONTRACT_HINTS_OWNER_MANUAL_SMOKE_HELP_PATHS,
@@ -31,6 +35,9 @@ import {
 } from '../src/shared/terminal-contract-hints-meta.ts'
 import {
   formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail,
+  formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWorkflowArticlesClause,
+  formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause,
+  formatPackagedE2eHelpWorkflowCrosslinksKnowledgeHubDevClause,
   formatPackagedE2eHelpWorkflowCrosslinksLoggingClause
 } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
 import { checkHelpSmokeDocFiles, checkHelpSmokeDocSnippet } from './lib/help-smoke-docs-check.mjs'
@@ -175,6 +182,7 @@ failed =
 for (const rel of [
   ...TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_PATHS,
   ...TERMINAL_CONTRACT_HINTS_WORKFLOW_DOWNLOADS_HELP_PATHS,
+  ...TERMINAL_CONTRACT_HINTS_WORKFLOW_APPEARANCE_HELP_PATHS,
   ...TERMINAL_CONTRACT_HINTS_FAQ_TROUBLESHOOTING_HELP_PATHS
 ]) {
   const locale = rel.includes('/en/') ? 'en' : 'ru'
@@ -196,6 +204,54 @@ failed =
     TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_REQUIRED_SNIPPETS,
     'owner-manual-smoke'
   ) || failed
+
+for (const rel of TERMINAL_CONTRACT_HINTS_OWNER_MANUAL_SMOKE_HELP_PATHS) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWorkflowArticlesClause(locale),
+      'owner-workflow-crosslinks'
+    ) || failed
+}
+
+for (const rel of TERMINAL_CONTRACT_HINTS_WORKFLOW_ABOUT_HELP_PATHS) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause(locale),
+      'about-release-smoke-dev'
+    ) || failed
+}
+
+for (const rel of TERMINAL_CONTRACT_HINTS_WORKFLOW_PLANNER_HELP_PATHS) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail(locale),
+      'planner-crosslinks-tail'
+    ) || failed
+}
+
+for (const rel of TERMINAL_CONTRACT_HINTS_WORKFLOW_KNOWLEDGE_HELP_PATHS) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedE2eHelpWorkflowCrosslinksKnowledgeHubDevClause(locale),
+      'knowledge-hub-dev'
+    ) || failed
+}
 
 const binReadmePath = path.join(REPO_ROOT, TERMINAL_CONTRACT_HINTS_BIN_README_PATH)
 const binReadmeText = fs.readFileSync(binReadmePath, 'utf8')

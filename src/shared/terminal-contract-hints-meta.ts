@@ -118,6 +118,30 @@ export const TERMINAL_CONTRACT_HINTS_WORKFLOW_DOWNLOADS_HELP_PATHS = [
   'Help/en/downloads-workflow.md'
 ] as const
 
+/** Help §5 theme/HiDPI — Support ZIP crosslinks (RU+EN). */
+export const TERMINAL_CONTRACT_HINTS_WORKFLOW_APPEARANCE_HELP_PATHS = [
+  'Help/appearance-language-theme.md',
+  'Help/en/appearance-language-theme.md'
+] as const
+
+/** Help §18 about/support — Support ZIP crosslinks anchor (RU+EN). */
+export const TERMINAL_CONTRACT_HINTS_WORKFLOW_ABOUT_HELP_PATHS = [
+  'Help/about-support-logs.md',
+  'Help/en/about-support-logs.md'
+] as const
+
+/** Help §10 planner — Support ZIP crosslinks anchor (RU+EN). */
+export const TERMINAL_CONTRACT_HINTS_WORKFLOW_PLANNER_HELP_PATHS = [
+  'Help/workflows-planner-scenarios.md',
+  'Help/en/workflows-planner-scenarios.md'
+] as const
+
+/** Help §13 knowledge hub — Support ZIP crosslinks (RU+EN). */
+export const TERMINAL_CONTRACT_HINTS_WORKFLOW_KNOWLEDGE_HELP_PATHS = [
+  'Help/knowledge-base-howto.md',
+  'Help/en/knowledge-base-howto.md'
+] as const
+
 /** Help §16/§19 owner manual smoke — Support ZIP crosslinks (RU+EN). */
 export const TERMINAL_CONTRACT_HINTS_OWNER_MANUAL_SMOKE_HELP_PATHS = [
   'Help/owner-manual-smoke.md',

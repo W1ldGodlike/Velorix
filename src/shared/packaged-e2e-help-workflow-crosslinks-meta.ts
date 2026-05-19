@@ -221,6 +221,12 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS = [
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_ANCHOR_PATHS[3]
 ] as const
 
+/** Knowledge hub Help (RU+EN) — §13 workflow crosslinks dev line. */
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_KNOWLEDGE_HELP_PATHS = [
+  'Help/knowledge-base-howto.md',
+  'Help/en/knowledge-base-howto.md'
+] as const
+
 /** All Help files checked by `check:help-owner-smoke-docs` (same 8 as count anchors). */
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_GUARD_HELP_PATHS = [
   ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_PATHS,
@@ -314,6 +320,32 @@ export function formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail(
 
 export const formatPackagedE2eHelpWorkflowCrosslinksFaqSupportZipTail =
   formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail
+
+/** Owner manual smoke — workflow articles crosslinks clause (§16/§21). */
+export function formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWorkflowArticlesClause(
+  locale: PackagedE2eHelpWorkflowCrosslinksLocale
+): string {
+  const countSnippet = pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)
+  return locale === 'ru'
+    ? `workflow-статьи (\`check:help-workflow-smoke-crosslinks\`, ${countSnippet}).`
+    : `workflow articles (\`check:help-workflow-smoke-crosslinks\`, ${countSnippet}).`
+}
+
+/** About support — `releaseSmoke:` dev guards line (§18/§21 anchor). */
+export function formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause(
+  locale: PackagedE2eHelpWorkflowCrosslinksLocale
+): string {
+  const countSnippet = pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)
+  return `dev: \`check:packaged-e2e-scenarios-registry\`, \`check:help-workflow-smoke-crosslinks\` (${countSnippet}).`
+}
+
+/** Knowledge hub — workflow + terminal hints dev guards (§13/§15). */
+export function formatPackagedE2eHelpWorkflowCrosslinksKnowledgeHubDevClause(
+  locale: PackagedE2eHelpWorkflowCrosslinksLocale
+): string {
+  const countSnippet = pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)
+  return `Dev: \`npm run check:help-workflow-smoke-crosslinks\` (${countSnippet}), \`npm run check:help-terminal-hints-docs\`.`
+}
 
 /** Platform-packaging diagnostics — packaged Help crosslinks guard. */
 export function formatPackagedE2eHelpWorkflowCrosslinksPackagedHelpDiagnosticLine(): string {

@@ -21,6 +21,8 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_WIN_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_KNOWLEDGE_HELP_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_REQUIRED_SNIPPETS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_REQUIRED_SNIPPETS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_BASE_REQUIRED_SNIPPETS,
@@ -34,6 +36,9 @@ import {
   formatPackagedE2eHelpWorkflowCrosslinksLoggingClause,
   formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix,
   formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail,
+  formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWorkflowArticlesClause,
+  formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause,
+  formatPackagedE2eHelpWorkflowCrosslinksKnowledgeHubDevClause,
   formatPackagedE2eHelpWorkflowCrosslinksFaqSupportZipTail,
   formatPackagedE2eHelpWorkflowCrosslinksPackagedHelpDiagnosticLine,
   formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause,
@@ -163,11 +168,37 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
       'Help/faq-troubleshooting.md',
       'Help/en/faq-troubleshooting.md',
       'Help/downloads-workflow.md',
-      'Help/en/downloads-workflow.md'
+      'Help/en/downloads-workflow.md',
+      'Help/appearance-language-theme.md',
+      'Help/en/appearance-language-theme.md'
     ]) {
       const locale = rel.includes('/en/') ? 'en' : 'ru'
       const text = readFileSync(rel, 'utf8')
       expect(text).toContain(formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail(locale))
+    }
+    for (const rel of ['Help/owner-manual-smoke.md', 'Help/en/owner-manual-smoke.md']) {
+      const locale = rel.includes('/en/') ? 'en' : 'ru'
+      expect(readFileSync(rel, 'utf8')).toContain(
+        formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWorkflowArticlesClause(locale)
+      )
+    }
+    for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_PATHS) {
+      const locale = rel.includes('/en/') ? 'en' : 'ru'
+      expect(readFileSync(rel, 'utf8')).toContain(
+        formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause(locale)
+      )
+    }
+    for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS) {
+      const locale = rel.includes('/en/') ? 'en' : 'ru'
+      expect(readFileSync(rel, 'utf8')).toContain(
+        formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail(locale)
+      )
+    }
+    for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_KNOWLEDGE_HELP_PATHS) {
+      const locale = rel.includes('/en/') ? 'en' : 'ru'
+      expect(readFileSync(rel, 'utf8')).toContain(
+        formatPackagedE2eHelpWorkflowCrosslinksKnowledgeHubDevClause(locale)
+      )
     }
     expect(formatPackagedE2eHelpWorkflowCrosslinksFaqSupportZipTail('en')).toBe(
       formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail('en')
