@@ -15,7 +15,7 @@
 | Поле | Значение |
 | --- | --- |
 | Дата | 2026-05-19 |
-| Ветка | `main` @ `pending` (cadence commit+push J-1266..1269, J-1270) |
+| Ветка | `main` @ `00f863b` (cadence commit+push J-1266..1269, J-1270) |
 | Снимок тестов | **273** files / **1830** tests |
 | Спринт | §8/§15 workflow Help `terminalHints:` (30 тем); crosslinks guard **44** + `terminalHints:` snippets; `formatPackagedE2eHelpWorkflowCrosslinksLoggingClause`; owner-smoke на железе; GUI Playwright позже |
 
