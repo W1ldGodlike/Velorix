@@ -6,7 +6,7 @@
 
 ## Готовность полного итога
 
-- **Оценка: ~65%** (J-1245; §18 Support ZIP `terminalHints:` + 7 guards закоммичены; owner-smoke на железе; GUI Playwright позже). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16, утилиты §17, диагностика §18, CI/release + owner/packaging/e2e guards в `check:quiet`. Впереди: owner-smoke на железе, packaged mac/linux, GUI Playwright §21.
+- **Оценка: ~65%** (J-1250; §8/§18 Support ZIP `terminalHints:` + 7 guards + 12 Help; push cadence; owner-smoke на железе; GUI Playwright позже). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16, утилиты §17, диагностика §18, CI/release + owner/packaging/e2e guards в `check:quiet`. Впереди: owner-smoke на железе, packaged mac/linux, GUI Playwright §21.
 
 ## Легенда
 
@@ -33,7 +33,7 @@
 - [x] Локализация: `ui-text` + `locales/**` (hot-reload ✅); единый словарь `AppUiLocale`; pop-out загрузок = React `#downloads` (J-978..984).
 - [~] Основная вкладка `Загрузки` в React уже закрывает очередь, старт/stop/retry/pause, настройки yt-dlp, каталог/cookies/network, live log, историю; **компактная панель «История»** — в основном **«Повторить»** (URL в очередь; J-626), полные действия файла/папки/редактора — в таблице очереди и pop-out; open учитывает финальный файл после merge и Windows UTF-8 stdout; pop-out — вторичный режим для редких settings.
 - [~] ffprobe-инспектор: в **главном редакторе** под таймлайном — только **короткая строка** видео/аудио (`VideoTimeline`); полная сводка, таблица дорожек, главы, JSON и экспорт — в **отдельном окне** инспектора; Dolby/HDR side_data summary, контекстные действия — там же.
-- [x] Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`273 test files / 1826 tests`** (J-1244); `npm run check:quiet` (lint, typecheck, тесты, audit-скрипты, guards, journal, checklist, secrets). Домены: yt-dlp §6, ffmpeg export/batch/HW §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, governance guards.
+- [x] Тестовый раннер: Vitest + `npm run test`/`test:watch`; снимок **`273 test files / 1827 tests`** (J-1248); `npm run check:quiet` (lint, typecheck, тесты, audit-скрипты, guards, journal, checklist, secrets). Домены: yt-dlp §6, ffmpeg export/batch/HW §7, ffprobe §9, terminal §8, workflow §10–11, knowledge §15, diagnostics, renderer stores, governance guards.
 
 ## Журнал решений и проверок
 

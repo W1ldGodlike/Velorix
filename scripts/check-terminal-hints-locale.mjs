@@ -9,6 +9,7 @@ import { LOCALE_JSON_LOCALES } from '../src/shared/locale-json-catalog.ts'
 import {
   TERMINAL_CONTRACT_HINTS_SETTINGS_LOCALE_KEY,
   TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT,
+  TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_GUARD_NPM_SCRIPT,
   formatTerminalContractHintsSettingsHelpClause
 } from '../src/shared/terminal-contract-hints-meta.ts'
 import { REPO_ROOT } from './lib/repo-root.mjs'
@@ -40,6 +41,12 @@ for (const locale of LOCALE_JSON_LOCALES) {
     failed = true
     console.error(
       `[check:terminal-hints-locale] locales/${locale}/settings.json ${TERMINAL_CONTRACT_HINTS_SETTINGS_LOCALE_KEY} missing shards guard`
+    )
+  }
+  if (!hint.includes(TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_GUARD_NPM_SCRIPT)) {
+    failed = true
+    console.error(
+      `[check:terminal-hints-locale] locales/${locale}/settings.json ${TERMINAL_CONTRACT_HINTS_SETTINGS_LOCALE_KEY} missing support-bundle guard`
     )
   }
 }

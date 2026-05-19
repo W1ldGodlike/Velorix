@@ -9,6 +9,7 @@ import {
   TERMINAL_CONTRACT_HINTS_META_MODULE,
   TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT,
   TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_SOURCE_PATHS,
+  TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_UI_SOURCE_PATHS,
   TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_SECTION_HEADING,
   formatTerminalContractHintsAboutSupportZipSectionsHint,
   formatTerminalContractHintsSupportZipLines
@@ -61,6 +62,16 @@ if (!diagnosticsText.includes('formatTerminalContractHintsSupportZipLines')) {
 if (!diagnosticsText.includes('terminalHintsLines')) {
   failed = true
   console.error(`[${LOG_PREFIX}] ${diagnosticsRel} must set terminalHintsLines`)
+}
+
+for (const rel of TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_UI_SOURCE_PATHS) {
+  const uiSource = fs.readFileSync(path.join(REPO_ROOT, rel), 'utf8')
+  if (!uiSource.includes(TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_ZIP_LOCALE_KEY)) {
+    failed = true
+    console.error(
+      `[${LOG_PREFIX}] ${rel} must reference ${TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_ZIP_LOCALE_KEY} (uiText)`
+    )
+  }
 }
 
 for (const locale of LOCALE_JSON_LOCALES) {

@@ -13,11 +13,14 @@ import {
   TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_PART_COUNT,
   TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT,
   TERMINAL_CONTRACT_HINTS_SHARD_TOTAL_PART_COUNT,
+  TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT,
   TERMINAL_CONTRACT_HINTS_TOOLS_HELP_PATHS,
   TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_PATHS,
   TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_REQUIRED_SNIPPETS,
   TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_PATHS,
   TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_REQUIRED_SNIPPETS,
+  TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_PATHS,
+  TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_REQUIRED_SNIPPETS,
   TERMINAL_CONTRACT_HINTS_BIN_README_PATH,
   TERMINAL_CONTRACT_HINTS_TOOLS_HELP_REQUIRED_SNIPPETS,
   formatTerminalContractHintsAboutSupportZipSectionsHint,
@@ -44,6 +47,7 @@ describe('terminal-contract-hints-meta §8', () => {
       TERMINAL_CONTRACT_HINTS_DOWNLOADS_PART_COUNT +
         TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_PART_COUNT
     )
+    expect(TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT).toBe(12)
     expect(formatTerminalContractHintsShardCountEnSnippet()).toContain('20 downloads')
     expect(formatTerminalContractHintsDiagnosticLine()).toContain(
       TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT
@@ -110,7 +114,16 @@ describe('terminal-contract-hints-meta §8', () => {
     )
   })
 
-  it('Help tools-terminal-inspector hub cites meta', () => {
+  it('Help workflow hubs cite Support ZIP terminalHints', () => {
+    for (const rel of TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_PATHS) {
+      const text = readFileSync(rel, 'utf8')
+      for (const snippet of TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_REQUIRED_SNIPPETS) {
+        expect(text, `${rel} missing ${snippet}`).toContain(snippet)
+      }
+    }
+  })
+
+  it('Help tools-terminal-inspector hub cites meta and Support ZIP terminalHints', () => {
     for (const rel of TERMINAL_CONTRACT_HINTS_TOOLS_HELP_PATHS) {
       const text = readFileSync(rel, 'utf8')
       for (const snippet of TERMINAL_CONTRACT_HINTS_TOOLS_HELP_REQUIRED_SNIPPETS) {

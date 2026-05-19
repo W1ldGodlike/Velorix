@@ -257,8 +257,12 @@ export function AppSettingsLogsPane(props: {
   onClose: () => void
 }): JSX.Element {
   const { sectionHintId, shellBusy, onStatus, onOpenAbout, onClose } = props
+  const supportZipHintId = `${sectionHintId}-support-zip`
   return (
     <div className="app-settings-actions" role="toolbar" aria-describedby={sectionHintId}>
+      <p id={supportZipHintId} className="app-visually-hidden">
+        {uiText('aboutSupportZipDiagnosticsSectionsHint')}
+      </p>
       <button
         type="button"
         className="app-btn"
@@ -278,6 +282,7 @@ export function AppSettingsLogsPane(props: {
         type="button"
         className="app-btn"
         disabled={shellBusy}
+        aria-describedby={supportZipHintId}
         title={uiText('supportZipButton')}
         onClick={() => {
           void window.fluxalloy.diagnostics.createSupportZip().then((r) => {

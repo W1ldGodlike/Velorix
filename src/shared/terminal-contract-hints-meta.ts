@@ -27,6 +27,12 @@ export const TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_SOURCE_PATHS = [
   'src/main/main-diagnostics-service.ts'
 ] as const
 
+/** Renderer UI — Support ZIP aria hints (`aboutSupportZipDiagnosticsSectionsHint`). */
+export const TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_UI_SOURCE_PATHS = [
+  'src/renderer/src/components/AboutDialog.tsx',
+  'src/renderer/src/components/shell/app-settings-dialog-panes.tsx'
+] as const
+
 /** §8 terminal guards in `check:quiet` (registry → summaries → shards → locale → Support ZIP). */
 export const TERMINAL_CONTRACT_HINTS_GUARD_NPM_SCRIPTS = [
   'check:terminal-summaries-ru',
@@ -96,6 +102,14 @@ export const TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_PATHS = [
   'Help/en/logging-and-diagnostics.md'
 ] as const
 
+/** Help §15 workflow hubs — Support ZIP crosslinks (getting-started, probe). */
+export const TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_PATHS = [
+  'Help/getting-started.md',
+  'Help/en/getting-started.md',
+  'Help/probe-and-inspector-basics.md',
+  'Help/en/probe-and-inspector-basics.md'
+] as const
+
 /** Required substrings in logging-and-diagnostics (Support ZIP sections). */
 export const TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_REQUIRED_SNIPPETS = [
   'terminalHints:',
@@ -105,6 +119,14 @@ export const TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_REQUIRED_SNIPPETS 
   TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT,
   'ownerManualSmoke:',
   'releaseSmoke:'
+] as const
+
+/** Required substrings in getting-started / probe-and-inspector (Support ZIP). */
+export const TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_REQUIRED_SNIPPETS = [
+  'terminalHints:',
+  'releaseSmoke:',
+  'about-support-logs.md',
+  'logging-and-diagnostics.md'
 ] as const
 
 /** Части terminal-contract-hints-downloads-NN.ts. */
@@ -147,6 +169,8 @@ export const TERMINAL_CONTRACT_HINTS_HELP_REQUIRED_SNIPPETS = [
   TERMINAL_CONTRACT_HINTS_META_MODULE,
   'terminal-contract-hints-',
   TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT,
+  TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_GUARD_NPM_SCRIPT,
+  TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_SECTION_HEADING,
   'locales:terminal-summaries-ru',
   'terminal-contract-scenarios.test.ts'
 ] as const
@@ -156,8 +180,18 @@ export const TERMINAL_CONTRACT_HINTS_TOOLS_HELP_REQUIRED_SNIPPETS = [
   TERMINAL_CONTRACT_HINTS_META_MODULE,
   'terminal-contract-hints-',
   'ffmpeg-terminal-hints.md',
-  'locales:terminal-summaries-ru'
+  'locales:terminal-summaries-ru',
+  TERMINAL_CONTRACT_HINTS_SUPPORT_ZIP_SECTION_HEADING,
+  TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_GUARD_NPM_SCRIPT
 ] as const
+
+/** Help files covered by `check:help-terminal-hints-docs` (excluding bin/README). */
+export const TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT =
+  TERMINAL_CONTRACT_HINTS_HELP_PATHS.length +
+  TERMINAL_CONTRACT_HINTS_TOOLS_HELP_PATHS.length +
+  TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_PATHS.length +
+  TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_PATHS.length +
+  TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_PATHS.length
 
 export function formatTerminalContractHintsDownloadsShardBasename(partIndex: number): string {
   return `terminal-contract-hints-downloads-${String(partIndex).padStart(2, '0')}.ts`
@@ -199,7 +233,11 @@ export function formatTerminalContractHintsSettingsHelpClause(
     locale === 'ru'
       ? formatTerminalContractHintsShardCountRuSnippet()
       : formatTerminalContractHintsShardCountEnSnippet()
-  return `Help: ${TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT} (${shardSnippet}).`
+  const helpCountLabel =
+    locale === 'ru'
+      ? `${TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT} статей`
+      : `${TERMINAL_CONTRACT_HINTS_HELP_DOCS_FILE_COUNT} articles`
+  return `Help: ${TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT} (${helpCountLabel}; ${shardSnippet}); Support ZIP: ${TERMINAL_CONTRACT_HINTS_SUPPORT_BUNDLE_GUARD_NPM_SCRIPT}.`
 }
 
 /** §18 Support ZIP diagnostics.txt — terminalHints block (dev guards, not runtime). */

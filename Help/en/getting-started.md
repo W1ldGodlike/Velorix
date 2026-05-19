@@ -19,5 +19,5 @@ For a file on disk open the **Editor** tab, drop the file on the preview zone, o
 - Preview, timeline, export — [editor-workflow.md](editor-workflow.md) and [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md)
 - Using this help window — [knowledge-base-howto.md](knowledge-base-howto.md)
 - Theme, language, and Windows scaling — [appearance-language-theme.md](appearance-language-theme.md); full owner smoke checklist — [owner-manual-smoke.md](owner-manual-smoke.md)
-- Packaged smoke after build — [packaged-windows-smoke.md](../packaged-windows-smoke.md) (Linux/macOS — sibling articles); §21 e2e **§21 packaged e2e (CI vs owner)** (`appendPackagedManualSmokeE2ePlanLines`, per-step `e2e <id>:`) in `releaseSmoke:` — [about-support-logs.md](about-support-logs.md)
+- Packaged smoke after build — [packaged-windows-smoke.md](../packaged-windows-smoke.md) (Linux/macOS — sibling articles); §21 e2e **§21 packaged e2e (CI vs owner)** (`appendPackagedManualSmokeE2ePlanLines`, per-step `e2e <id>:`) in `releaseSmoke:`; Support ZIP also includes `terminalHints:` (§8) — [about-support-logs.md](about-support-logs.md), [logging-and-diagnostics.md](logging-and-diagnostics.md)
 - Common issues — [faq-troubleshooting.md](faq-troubleshooting.md)

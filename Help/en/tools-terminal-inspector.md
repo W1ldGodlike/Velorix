@@ -16,4 +16,4 @@ See also [probe-and-inspector-basics.md](probe-and-inspector-basics.md).
 
 ## Packaged smoke (§19 / §21)
 
-After `npm run pack:dir`, verify bundled ffprobe/ffmpeg in [packaged-windows-smoke.md](../packaged-windows-smoke.md). Full owner bundle and per-step `e2e <id>:` in Support ZIP `releaseSmoke:` — [owner-manual-smoke.md](owner-manual-smoke.md), [about-support-logs.md](about-support-logs.md).
+After `npm run pack:dir`, verify bundled ffprobe/ffmpeg in [packaged-windows-smoke.md](../packaged-windows-smoke.md). Full owner bundle, per-step `e2e <id>:` in Support ZIP `releaseSmoke:`, and dev block `terminalHints:` (§8 guards) — [owner-manual-smoke.md](owner-manual-smoke.md), [about-support-logs.md](about-support-logs.md), [logging-and-diagnostics.md](logging-and-diagnostics.md); guard `npm run check:support-bundle-terminal-hints`.
