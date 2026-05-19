@@ -10,18 +10,18 @@
 
 **Журнал:** одна **J** только если в итерации был diff в репо — skill [`fluxalloy-journal-entry`](../.cursor/skills/fluxalloy-journal-entry/SKILL.md).
 
-## Re-anchor (J-1230)
+## Re-anchor (J-1235)
 
 | Поле | Значение |
 | --- | --- |
 | Дата | 2026-05-19 |
-| Ветка | `main` (cadence commit+push J-1226..1230) |
-| Снимок тестов | **267** files / **1808** tests |
-| Спринт | §21 crosslinks meta (34+6+8, formatters, 4 Help guards); owner-smoke на железе; GUI Playwright позже |
+| Ветка | `main` (cadence commit J-1231..1235) |
+| Снимок тестов | **268** files / **1812** tests |
+| Спринт | §21 crosslinks meta + snippet registries + `help-smoke-docs-check` + 4 Help guards (quiet: registry→workflow→owner→packaged); owner-smoke на железе; GUI Playwright позже |
 
-**Последние J:** [J-1228](../IMPLEMENTATION_JOURNAL.md) diagnostic line + `OWNER_GUARD_HELP_PATHS`; [J-1229](../IMPLEMENTATION_JOURNAL.md) bin/README dev line + owner guard Vitest; [J-1230](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1226..1230, ARCHITECTURE/RELEASE.
+**Последние J:** [J-1233](../IMPLEMENTATION_JOURNAL.md) `check:help-smoke-guards-package-json`; [J-1234](../IMPLEMENTATION_JOURNAL.md) quiet step order + bin/README guards; [J-1235](../IMPLEMENTATION_JOURNAL.md) cadence commit J-1231..1235, ARCHITECTURE.
 
-**Следующий cadence:** commit **J-1235** (J-1231..1235); push + re-anchor **J-1240**.
+**Следующий cadence:** commit **J-1240** (J-1236..1240); push + re-anchor **J-1240**.
 
 ## Новый чат
 

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-19T04:04:01.619Z",
+  "generatedAt": "2026-05-19T04:46:58.149Z",
   "repoRoot": "C:\\Users\\truno\\FluxAlloy",
   "codeRoots": [
     "src",
@@ -18,7 +18,7 @@
     ".cursor",
     "coverage"
   ],
-  "fileCount": 1160,
+  "fileCount": 1163,
   "files": [
     "electron.vite.config.ts",
     "eslint.config.mjs",
@@ -52,6 +52,7 @@
     "scripts/check-field-registries.mjs",
     "scripts/check-help-owner-smoke-docs.mjs",
     "scripts/check-help-packaged-smoke-docs.mjs",
+    "scripts/check-help-smoke-guards-package-json.mjs",
     "scripts/check-help-workflow-smoke-crosslinks.mjs",
     "scripts/check-journal-numbering.mjs",
     "scripts/check-line-endings.mjs",
@@ -87,6 +88,7 @@
     "scripts/journal-lib.mjs",
     "scripts/journal-next-stamp.mjs",
     "scripts/journal-toc.mjs",
+    "scripts/lib/help-smoke-docs-check.mjs",
     "scripts/lib/parse-ui-text-ts-part.mjs",
     "scripts/lib/repo-root.mjs",
     "scripts/lib/smoke-packaged-engine.mjs",
@@ -981,6 +983,7 @@
     "tests/scripts/check-export-preview-hints-locale.test.ts",
     "tests/scripts/check-help-owner-smoke-docs.test.ts",
     "tests/scripts/check-help-packaged-smoke-docs.test.ts",
+    "tests/scripts/check-help-smoke-guards-package-json.test.ts",
     "tests/scripts/check-help-workflow-smoke-crosslinks.test.ts",
     "tests/scripts/check-line-endings.test.ts",
     "tests/scripts/check-locales-json.test.ts",

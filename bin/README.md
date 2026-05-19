@@ -51,6 +51,7 @@ Runtime resolution order is:
 - Packaged owner-smoke locales (win/linux/macos): `npm run check:packaged-manual-smoke-parity` — в `check:quiet`; UI **Скопировать** (packaged + owner bundle) дописывает §21 packaged e2e appendix — Настройки → Зависимости.
 - §21 packaged e2e registry: `npm run check:packaged-e2e-scenarios-registry` (12 steps; `ciSmokeScript` ↔ `package.json`; `PACKAGED_E2E_CI_SMOKE_SCRIPT_EXPANSIONS` parent→leaf, напр. `smoke:packaged-engines` → ffprobe/ytdlp/ffmpeg); Support ZIP — per-step `e2e <id>:`; planned GUI e2e — `listPackagedE2eStepIdsByAutomation('planned-gui-e2e')` в diagnostics.
 - Help §21 crosslinks: `npm run check:help-workflow-smoke-crosslinks` — канон `packaged-e2e-help-workflow-crosslinks-meta` (34 articles: workflow + packaged/owner anchors).
+- Help smoke guards (`check:quiet`): registry `npm run check:help-smoke-guards-package-json`, then `npm run check:help-workflow-smoke-crosslinks`, `npm run check:help-owner-smoke-docs`, `npm run check:help-packaged-smoke-docs`.
 - Support ZIP `releaseSmoke:` (About → архив): layout **present/missing** для `dist/win-unpacked/`, `dist/linux-unpacked/`, `FluxAlloy.app` — без повторного `verify:*` на другой ОС.
 
 Keep a note of the source, version, license variant, and SHA256 used for each released binary.

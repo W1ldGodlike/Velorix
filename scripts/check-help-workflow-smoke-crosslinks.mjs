@@ -14,23 +14,24 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT,
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmeDevLine,
+  formatPackagedE2eHelpWorkflowCrosslinksBinReadmeGuardsLine,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS,
   pickPackagedE2eHelpWorkflowCrosslinksCountSnippet
 } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
+import { checkHelpSmokeDocFiles, checkHelpSmokeDocSnippet } from './lib/help-smoke-docs-check.mjs'
 import { REPO_ROOT } from './lib/repo-root.mjs'
 
+const LOG_PREFIX = 'check:help-workflow-smoke-crosslinks'
+
 let failed = false
-for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS) {
-  const file = path.join(REPO_ROOT, rel)
-  const text = fs.readFileSync(file, 'utf8')
-  const missing = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS.filter(
-    (s) => !text.includes(s)
-  )
-  if (missing.length > 0) {
-    failed = true
-    console.error(`[check:help-workflow-smoke-crosslinks] ${rel} missing: ${missing.join(', ')}`)
-  }
-}
+failed =
+  checkHelpSmokeDocFiles(
+    REPO_ROOT,
+    LOG_PREFIX,
+    [...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS],
+    PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS,
+    'workflow'
+  ) || failed
 
 if (
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS.length !==
@@ -63,6 +64,13 @@ if (!binReadmeText.includes(binReadmeDevLine)) {
     `[check:help-workflow-smoke-crosslinks] ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH} missing dev line: ${binReadmeDevLine}`
   )
 }
+const binReadmeGuardsLine = formatPackagedE2eHelpWorkflowCrosslinksBinReadmeGuardsLine()
+if (!binReadmeText.includes(binReadmeGuardsLine)) {
+  failed = true
+  console.error(
+    `[check:help-workflow-smoke-crosslinks] ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH} missing guards line: ${binReadmeGuardsLine}`
+  )
+}
 for (const snippet of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_REQUIRED_SNIPPETS) {
   if (!binReadmeText.includes(snippet)) {
     failed = true
@@ -73,30 +81,33 @@ for (const snippet of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_REQUIRED_
 }
 
 for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ALL_PACKAGED_HELP_PATHS) {
-  const text = fs.readFileSync(path.join(REPO_ROOT, rel), 'utf8')
-  if (!text.includes(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT)) {
-    failed = true
-    console.error(
-      `[check:help-workflow-smoke-crosslinks] packaged ${rel} missing: ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}`
-    )
-  }
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT,
+      'packaged-guard'
+    ) || failed
 }
 
 for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_ANCHOR_PATHS) {
-  const text = fs.readFileSync(path.join(REPO_ROOT, rel), 'utf8')
-  const countSnippet = pickPackagedE2eHelpWorkflowCrosslinksCountSnippet(rel)
-  if (!text.includes(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT)) {
-    failed = true
-    console.error(
-      `[check:help-workflow-smoke-crosslinks] anchor ${rel} missing: ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}`
-    )
-  }
-  if (!text.includes(countSnippet)) {
-    failed = true
-    console.error(
-      `[check:help-workflow-smoke-crosslinks] anchor ${rel} missing crosslinks count: ${countSnippet}`
-    )
-  }
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT,
+      'anchor-guard'
+    ) || failed
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      pickPackagedE2eHelpWorkflowCrosslinksCountSnippet(rel),
+      'anchor-count'
+    ) || failed
 }
 
 if (failed) {

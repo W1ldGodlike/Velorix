@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 
 import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_NPM_SCRIPTS,
   formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine
 } from '../../src/shared/packaged-e2e-smoke-scenarios'
 import {
@@ -30,6 +31,13 @@ describe('platform-packaging-scripts §19', () => {
     expect(lines.some((l) => l.includes('check:platform-packaging-scripts'))).toBe(true)
     expect(
       lines.some((l) => l.includes(formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine()))
+    ).toBe(true)
+    expect(
+      lines.some((l) =>
+        l.includes(
+          `help smoke guards: ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_NPM_SCRIPTS.join(', ')}`
+        )
+      )
     ).toBe(true)
     expect(lines.some((l) => l.includes('check:packaged-e2e-scenarios-registry'))).toBe(true)
     expect(lines.some((l) => l.includes('per-step e2e'))).toBe(true)

@@ -7,6 +7,25 @@
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT =
   'check:help-workflow-smoke-crosslinks' as const
 
+/** Help §15/§21 guards in `check:quiet` (workflow + owner + packaged). */
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_NPM_SCRIPTS = [
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT,
+  'check:help-owner-smoke-docs',
+  'check:help-packaged-smoke-docs'
+] as const
+
+/** Registry guard: `package.json` scripts ↔ doc guards (runs first in `check:quiet`). */
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_REGISTRY_NPM_SCRIPT =
+  'check:help-smoke-guards-package-json' as const
+
+/** `run-quiet-check.mjs` step labels (registry → workflow → owner → packaged). */
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_QUIET_STEP_LABELS = [
+  'help-smoke-guards-package-json',
+  'help-workflow-smoke-crosslinks',
+  'help-owner-smoke-docs',
+  'help-packaged-smoke-docs'
+] as const
+
 /** Leaf module id (bin/README, diagnostics). */
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_META_MODULE =
   'packaged-e2e-help-workflow-crosslinks-meta' as const
@@ -112,6 +131,14 @@ export function formatPackagedE2eHelpWorkflowCrosslinksBinReadmeDevLine(): strin
   return `- Help §21 crosslinks: \`npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` — канон \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_META_MODULE}\` (${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET}: workflow + packaged/owner anchors).`
 }
 
+/** bin/README — Help smoke guards block in `check:quiet`. */
+export function formatPackagedE2eHelpWorkflowCrosslinksBinReadmeGuardsLine(): string {
+  const docGuards = PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_NPM_SCRIPTS.map(
+    (s) => `\`npm run ${s}\``
+  ).join(', ')
+  return `- Help smoke guards (\`check:quiet\`): registry \`npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_REGISTRY_NPM_SCRIPT}\`, then ${docGuards}.`
+}
+
 /** Help §15 anchor articles with explicit crosslinks count (RU). */
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS = [
   'Help/owner-manual-smoke.md',
@@ -182,3 +209,68 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_GUARD_HELP_PATHS = [
   ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LOGGING_HELP_PATHS,
   ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS
 ] as const
+
+/** Required substrings — `check:help-owner-smoke-docs` / `check:help-packaged-smoke-docs`. */
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_REQUIRED_SNIPPETS = [
+  'packaged-e2e-scenarios-registry',
+  'releaseSmoke:',
+  'ownerManualSmoke:',
+  '§21 e2e',
+  'e2e launch:',
+  '§21 packaged e2e (CI vs owner)',
+  'formatPackagedManualSmokeE2eAppendixLines',
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT
+] as const
+
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_REQUIRED_SNIPPETS = [
+  'packaged-e2e-scenarios-registry',
+  'releaseSmoke:',
+  'ownerManualSmoke:',
+  '§21 e2e',
+  'e2e <id>:',
+  'win-unpacked',
+  'linux-unpacked',
+  'FluxAlloy.app',
+  'present/missing',
+  '§21 packaged e2e (CI vs owner)',
+  'appendPackagedManualSmokeE2ePlanLines',
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT
+] as const
+
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LOGGING_HELP_REQUIRED_SNIPPETS = [
+  'check:packaged-e2e-scenarios-registry',
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT,
+  '§21 packaged e2e (CI vs owner)',
+  'planned GUI e2e scope'
+] as const
+
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_REQUIRED_SNIPPETS = [
+  'owner-manual-smoke.md',
+  'packaged-windows-smoke.md',
+  'formatPackagedManualSmokeE2eAppendixLines',
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT
+] as const
+
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_BASE_REQUIRED_SNIPPETS = [
+  'owner-manual-smoke.md',
+  'packaged-manual-smoke-parity',
+  'packaged-e2e-scenarios-registry',
+  'e2e launch:',
+  'present/missing',
+  '§4.3',
+  'owner:',
+  '§21 packaged e2e (CI vs owner)',
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT
+] as const
+
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_EXTRA_SNIPPETS = [
+  'engines:doctor',
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH
+] as const
+
+/** Parenthetical win packaged Help crosslinks count (`(34 articles)` / `(34 статьи)`). */
+export function formatPackagedE2eHelpWorkflowCrosslinksPackagedWinCountParenthetical(
+  locale: PackagedE2eHelpWorkflowCrosslinksLocale
+): string {
+  return `(${pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)})`
+}
