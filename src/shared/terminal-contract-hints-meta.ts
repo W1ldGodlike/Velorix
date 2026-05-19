@@ -1,0 +1,166 @@
+/**
+ * §8 — канон shard-файлов `terminal-contract-hints-*` (leaf: Node ESM из scripts/*.mjs).
+ */
+
+/** Registry guard: `package.json` scripts ↔ §8 terminal guards (`check:quiet` order). */
+export const TERMINAL_CONTRACT_HINTS_GUARD_REGISTRY_NPM_SCRIPT =
+  'check:terminal-hints-guards-package-json' as const
+
+/** npm guard в `check:quiet` (shard paths + hint counts). */
+export const TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT =
+  'check:terminal-contract-hints-shards' as const
+
+/** Locales guard: `locales/{ru,en}/settings.json` (§8 terminal hints dev line). */
+export const TERMINAL_CONTRACT_HINTS_SETTINGS_LOCALE_GUARD_NPM_SCRIPT =
+  'check:terminal-hints-locale' as const
+
+/** §8 terminal guards in `check:quiet` (registry → summaries → shards → locale). */
+export const TERMINAL_CONTRACT_HINTS_GUARD_NPM_SCRIPTS = [
+  'check:terminal-summaries-ru',
+  'check:terminal-data-summaries',
+  'check:terminal-scenario-summaries',
+  TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT,
+  TERMINAL_CONTRACT_HINTS_SETTINGS_LOCALE_GUARD_NPM_SCRIPT
+] as const
+
+/** `run-quiet-check.mjs` step labels (registry → summaries → shards → locale). */
+export const TERMINAL_CONTRACT_HINTS_GUARD_QUIET_STEP_LABELS = [
+  'terminal-hints-guards-package-json',
+  'terminal-summaries-ru',
+  'terminal-data-summaries',
+  'terminal-scenario-summaries',
+  'terminal-contract-hints-shards',
+  'terminal-hints-locale'
+] as const
+
+/** Help §8 terminal hints doc guard. */
+export const TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT =
+  'check:help-terminal-hints-docs' as const
+
+/** locales/{ru,en}/settings.json key for Settings → Dependencies. */
+export const TERMINAL_CONTRACT_HINTS_SETTINGS_LOCALE_KEY =
+  'appSettingsTerminalHintsGuardHint' as const
+
+export type TerminalContractHintsLocale = 'en' | 'ru'
+
+/** Leaf module id (Help, diagnostics). */
+export const TERMINAL_CONTRACT_HINTS_META_MODULE = 'terminal-contract-hints-meta' as const
+
+/** Dev engines README — terminal guards block in check:quiet. */
+export const TERMINAL_CONTRACT_HINTS_BIN_README_PATH = 'bin/README.md' as const
+
+/** Required substrings in bin/README.md (terminal §8 guards line). */
+export const TERMINAL_CONTRACT_HINTS_BIN_README_REQUIRED_SNIPPETS = [
+  TERMINAL_CONTRACT_HINTS_GUARD_REGISTRY_NPM_SCRIPT,
+  TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT,
+  TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT,
+  TERMINAL_CONTRACT_HINTS_SETTINGS_LOCALE_GUARD_NPM_SCRIPT
+] as const
+
+/** Help §18 about/support — releaseSmoke dev line cites §8 terminal guards. */
+export const TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_PATHS = [
+  'Help/about-support-logs.md',
+  'Help/en/about-support-logs.md'
+] as const
+
+/** Required substrings in about-support-logs (diagnostics ZIP / dev guards). */
+export const TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_REQUIRED_SNIPPETS = [
+  TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT,
+  TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT,
+  TERMINAL_CONTRACT_HINTS_SETTINGS_LOCALE_GUARD_NPM_SCRIPT
+] as const
+
+/** Части terminal-contract-hints-downloads-NN.ts. */
+export const TERMINAL_CONTRACT_HINTS_DOWNLOADS_PART_COUNT = 20
+
+/** Части terminal-contract-hints-preview-media-NN.ts. */
+export const TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_PART_COUNT = 15
+
+/** Snapshot; bump при добавлении/удалении подсказок (Vitest + shards guard). */
+export const TERMINAL_CONTRACT_HINTS_DOWNLOADS_HINT_COUNT = 1056
+
+/** Snapshot; bump при добавлении/удалении подсказок (Vitest + shards guard). */
+export const TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_HINT_COUNT = 833
+
+/** Минимум для регрессии «базового объёма» (≤ snapshot). */
+export const TERMINAL_CONTRACT_HINTS_DOWNLOADS_HINT_COUNT_FLOOR = 805
+
+export const TERMINAL_CONTRACT_HINTS_SHARD_PART_COUNTS = {
+  downloads: TERMINAL_CONTRACT_HINTS_DOWNLOADS_PART_COUNT,
+  previewMedia: TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_PART_COUNT
+} as const
+
+export const TERMINAL_CONTRACT_HINTS_SHARD_TOTAL_PART_COUNT =
+  TERMINAL_CONTRACT_HINTS_DOWNLOADS_PART_COUNT + TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_PART_COUNT
+
+/** Help §8 terminal hints (RU+EN). */
+export const TERMINAL_CONTRACT_HINTS_HELP_PATHS = [
+  'Help/ffmpeg-terminal-hints.md',
+  'Help/en/ffmpeg-terminal-hints.md'
+] as const
+
+/** Help §8 hub (RU+EN) — ссылка на ffmpeg-terminal-hints + guard. */
+export const TERMINAL_CONTRACT_HINTS_TOOLS_HELP_PATHS = [
+  'Help/tools-terminal-inspector.md',
+  'Help/en/tools-terminal-inspector.md'
+] as const
+
+/** Required substrings in terminal hints Help articles. */
+export const TERMINAL_CONTRACT_HINTS_HELP_REQUIRED_SNIPPETS = [
+  TERMINAL_CONTRACT_HINTS_META_MODULE,
+  'terminal-contract-hints-',
+  TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT,
+  'locales:terminal-summaries-ru',
+  'terminal-contract-scenarios.test.ts'
+] as const
+
+/** Required substrings in tools-terminal-inspector Help hub. */
+export const TERMINAL_CONTRACT_HINTS_TOOLS_HELP_REQUIRED_SNIPPETS = [
+  TERMINAL_CONTRACT_HINTS_META_MODULE,
+  'terminal-contract-hints-',
+  'ffmpeg-terminal-hints.md',
+  'locales:terminal-summaries-ru'
+] as const
+
+export function formatTerminalContractHintsDownloadsShardBasename(partIndex: number): string {
+  return `terminal-contract-hints-downloads-${String(partIndex).padStart(2, '0')}.ts`
+}
+
+export function formatTerminalContractHintsPreviewMediaShardBasename(partIndex: number): string {
+  return `terminal-contract-hints-preview-media-${String(partIndex).padStart(2, '0')}.ts`
+}
+
+/** EN count snippet for Help / diagnostics. */
+export function formatTerminalContractHintsShardCountEnSnippet(): string {
+  return `${TERMINAL_CONTRACT_HINTS_DOWNLOADS_PART_COUNT} downloads + ${TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_PART_COUNT} preview shards (${TERMINAL_CONTRACT_HINTS_SHARD_TOTAL_PART_COUNT} files)`
+}
+
+/** RU count snippet for Help / diagnostics. */
+export function formatTerminalContractHintsShardCountRuSnippet(): string {
+  return `${TERMINAL_CONTRACT_HINTS_DOWNLOADS_PART_COUNT} загрузки + ${TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_PART_COUNT} превью (${TERMINAL_CONTRACT_HINTS_SHARD_TOTAL_PART_COUNT} файлов)`
+}
+
+/** Platform-packaging / §8 diagnostics line. */
+export function formatTerminalContractHintsDiagnosticLine(): string {
+  return `npm run ${TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT} (${formatTerminalContractHintsShardCountEnSnippet()}; ${TERMINAL_CONTRACT_HINTS_DOWNLOADS_HINT_COUNT}+${TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_HINT_COUNT} hints)`
+}
+
+/** Tail of `appSettingsTerminalHintsGuardHint` in locales settings.json. */
+export function formatTerminalContractHintsSettingsHelpClause(
+  locale: TerminalContractHintsLocale
+): string {
+  const shardSnippet =
+    locale === 'ru'
+      ? formatTerminalContractHintsShardCountRuSnippet()
+      : formatTerminalContractHintsShardCountEnSnippet()
+  return `Help: ${TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT} (${shardSnippet}).`
+}
+
+/** Markdown bullet for `bin/README.md` (§8 terminal guards in `check:quiet`). */
+export function formatTerminalContractHintsBinReadmeGuardsLine(): string {
+  const docGuards = [
+    TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT,
+    ...TERMINAL_CONTRACT_HINTS_GUARD_NPM_SCRIPTS
+  ].map((s) => `\`npm run ${s}\``)
+  return `- Terminal §8 guards (\`check:quiet\`, канон \`${TERMINAL_CONTRACT_HINTS_META_MODULE}\`): registry \`npm run ${TERMINAL_CONTRACT_HINTS_GUARD_REGISTRY_NPM_SCRIPT}\`, Help ${docGuards.slice(0, 1)}, then ${docGuards.slice(1).join(', ')}.`
+}

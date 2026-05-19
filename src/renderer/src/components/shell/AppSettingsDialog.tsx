@@ -266,6 +266,7 @@ export function AppSettingsDialog(props: AppSettingsDialogProps): JSX.Element | 
                   onCheckEngineUpdates={onCheckEngineUpdates}
                   onSave={onSaveEnginePaths}
                 />
+                <p className="app-modal-hint">{uiText('appSettingsTerminalHintsGuardHint')}</p>
                 <AppSettingsOwnerSmokeBundlePanel
                   sectionHintId={sectionHintId}
                   settingsSection={section}

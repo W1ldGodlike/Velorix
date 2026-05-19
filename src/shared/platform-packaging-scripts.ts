@@ -7,6 +7,10 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_NPM_SCRIPTS,
   formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine
 } from './packaged-e2e-help-workflow-crosslinks-meta'
+import {
+  TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT,
+  formatTerminalContractHintsDiagnosticLine
+} from './terminal-contract-hints-meta'
 
 export {
   BUILD_LINUX_NPM_SCRIPT,
@@ -46,6 +50,8 @@ export function formatPlatformPackagingDiagnosticLines(): string[] {
     `ci: windows-latest (${ENGINES_PREPARE_WIN_NPM_SCRIPT} + packaged smokes); ${ENGINES_CI_LINUX_RUNNER} (${PACK_LINUX_DIR_NPM_SCRIPT} + ${VERIFY_LINUX_UNPACKED_NPM_SCRIPT}, без engines prepare); mac — job нет`,
     'smoke skips: FLUXALLOY_SKIP_PACK_VERIFY, FLUXALLOY_SKIP_FFPROBE_SMOKE, FLUXALLOY_SKIP_FFMPEG_SMOKE, FLUXALLOY_SKIP_YTDLP_SMOKE',
     'dev quiet: npm run check:quiet includes check:terminal-summaries-ru (§8 terminal RU summaries 0/0)',
+    `terminal hints Help: npm run ${TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT}`,
+    `terminal hints shards: ${formatTerminalContractHintsDiagnosticLine()}`,
     'config: electron-builder.yml targets win (nsis/portable/zip), mac (dmg), linux (AppImage, deb)',
     'packaged owner-smoke: npm run check:packaged-manual-smoke-parity (win/linux/macos Step_* + meta)',
     'owner visual smoke: npm run check:owner-visual-smoke-locale (theme/HiDPI settings.json ru/en)',

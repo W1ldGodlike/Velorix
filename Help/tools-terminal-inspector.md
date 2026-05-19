@@ -6,7 +6,7 @@
 
 Подсказки подгружаются из поставляемых списков и из **встроенных сценариев** для типовых задач (готовая строка команды и русский `summary`). В каталоге справа есть чип **«Сценарии»** — показывает только такие подсказки, без токенов из JSON.
 
-Тексты сценариев правят в `src/shared/terminal-contract-hints-*.ts`; после правок `summary` — **`npm run locales:terminal-summaries-ru`** (дважды до **0** замен) и при необходимости **`npm run locales:terminal-scenario-stream-gloss`**. Подробности — в [ffmpeg-terminal-hints.md](ffmpeg-terminal-hints.md).
+Тексты сценариев правят в `src/shared/terminal-contract-hints-*.ts` (канон **`terminal-contract-hints-meta`**, 20 загрузки + 15 превью (35 файлов)); после правок `summary` — **`npm run locales:terminal-summaries-ru`** (дважды до **0** замен) и при необходимости **`npm run locales:terminal-scenario-stream-gloss`**. Подробности — в [ffmpeg-terminal-hints.md](ffmpeg-terminal-hints.md).
 
 ## Инспектор
 

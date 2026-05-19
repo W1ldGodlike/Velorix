@@ -1,0 +1,88 @@
+/**
+ * §8/§15 Help — ffmpeg-terminal-hints + tools-terminal-inspector (meta snippets).
+ */
+import fs from 'node:fs'
+import path from 'node:path'
+
+import {
+  TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_PATHS,
+  TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_REQUIRED_SNIPPETS,
+  TERMINAL_CONTRACT_HINTS_BIN_README_PATH,
+  TERMINAL_CONTRACT_HINTS_BIN_README_REQUIRED_SNIPPETS,
+  TERMINAL_CONTRACT_HINTS_HELP_PATHS,
+  TERMINAL_CONTRACT_HINTS_HELP_REQUIRED_SNIPPETS,
+  TERMINAL_CONTRACT_HINTS_TOOLS_HELP_PATHS,
+  TERMINAL_CONTRACT_HINTS_TOOLS_HELP_REQUIRED_SNIPPETS,
+  formatTerminalContractHintsBinReadmeGuardsLine,
+  formatTerminalContractHintsShardCountEnSnippet,
+  formatTerminalContractHintsShardCountRuSnippet
+} from '../src/shared/terminal-contract-hints-meta.ts'
+import { checkHelpSmokeDocFiles, checkHelpSmokeDocSnippet } from './lib/help-smoke-docs-check.mjs'
+import { REPO_ROOT } from './lib/repo-root.mjs'
+
+const LOG_PREFIX = 'check:help-terminal-hints-docs'
+
+let failed = false
+failed =
+  checkHelpSmokeDocFiles(
+    REPO_ROOT,
+    LOG_PREFIX,
+    [...TERMINAL_CONTRACT_HINTS_HELP_PATHS],
+    TERMINAL_CONTRACT_HINTS_HELP_REQUIRED_SNIPPETS,
+    'ffmpeg-terminal-hints'
+  ) || failed
+
+for (const rel of TERMINAL_CONTRACT_HINTS_HELP_PATHS) {
+  const countSnippet = rel.includes('/en/')
+    ? formatTerminalContractHintsShardCountEnSnippet()
+    : formatTerminalContractHintsShardCountRuSnippet()
+  failed =
+    checkHelpSmokeDocSnippet(REPO_ROOT, LOG_PREFIX, rel, countSnippet, 'shard-count') || failed
+}
+
+failed =
+  checkHelpSmokeDocFiles(
+    REPO_ROOT,
+    LOG_PREFIX,
+    [...TERMINAL_CONTRACT_HINTS_TOOLS_HELP_PATHS],
+    TERMINAL_CONTRACT_HINTS_TOOLS_HELP_REQUIRED_SNIPPETS,
+    'tools-terminal-inspector'
+  ) || failed
+
+failed =
+  checkHelpSmokeDocFiles(
+    REPO_ROOT,
+    LOG_PREFIX,
+    [...TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_PATHS],
+    TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_REQUIRED_SNIPPETS,
+    'about-support-logs'
+  ) || failed
+
+const binReadmePath = path.join(REPO_ROOT, TERMINAL_CONTRACT_HINTS_BIN_README_PATH)
+const binReadmeText = fs.readFileSync(binReadmePath, 'utf8')
+const binReadmeGuardsLine = formatTerminalContractHintsBinReadmeGuardsLine()
+if (!binReadmeText.includes(binReadmeGuardsLine)) {
+  failed = true
+  console.error(
+    `[${LOG_PREFIX}] ${TERMINAL_CONTRACT_HINTS_BIN_README_PATH} missing guards line: ${binReadmeGuardsLine}`
+  )
+}
+for (const snippet of TERMINAL_CONTRACT_HINTS_BIN_README_REQUIRED_SNIPPETS) {
+  if (!binReadmeText.includes(snippet)) {
+    failed = true
+    console.error(`[${LOG_PREFIX}] ${TERMINAL_CONTRACT_HINTS_BIN_README_PATH} missing: ${snippet}`)
+  }
+}
+
+if (failed) {
+  process.exit(1)
+}
+
+const fileCount =
+  TERMINAL_CONTRACT_HINTS_HELP_PATHS.length +
+  TERMINAL_CONTRACT_HINTS_TOOLS_HELP_PATHS.length +
+  TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_PATHS.length
+
+console.log(
+  `[check:help-terminal-hints-docs] OK (${fileCount} Help files + ${TERMINAL_CONTRACT_HINTS_BIN_README_PATH}; meta shard counts)`
+)

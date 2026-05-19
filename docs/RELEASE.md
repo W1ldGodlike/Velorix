@@ -189,6 +189,10 @@ npm run verify:mac-unpacked
 - `npm run check:help-smoke-guards-package-json` — `PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_NPM_SCRIPTS` ↔ `package.json`;
 - `npm run check:help-packaged-smoke-docs` / `check:help-owner-smoke-docs` — packaged §19/§21 snippets в Help;
 - `npm run check:help-workflow-smoke-crosslinks` — `packaged-e2e-help-workflow-crosslinks-meta` (34 workflow + 6 packaged + 8 anchors + `formatPackagedE2eHelpWorkflowCrosslinksBinReadmeDevLine` в `bin/README.md`); дублирует guard/count с `check:help-owner-smoke-docs`, `check:help-packaged-smoke-docs`, `check:owner-visual-smoke-locale` (`formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause`).
+- `npm run check:terminal-hints-guards-package-json` — registry §8 terminal guards ↔ `package.json` + порядок в `check:quiet`;
+- `npm run check:help-terminal-hints-docs` — Help `ffmpeg-terminal-hints` + `tools-terminal-inspector` (RU+EN) ↔ `terminal-contract-hints-meta`;
+- `npm run check:terminal-contract-hints-shards` — 35 shard-файлов, snapshot 1056+833 hints;
+- `npm run check:terminal-hints-locale` — `appSettingsTerminalHintsGuardHint` в `locales/{ru,en}/settings.json` (`formatTerminalContractHintsSettingsHelpClause`).
 
 Копирование из UI packaged-панели и блока **Ручной smoke** совпадает с форматом Support ZIP (`owner:` / `automated:` / `step [id]:`); packaged **Скопировать** и **Скопировать весь пакет** дописывают один блок **§21 packaged e2e (CI vs owner)** (`appendPackagedManualSmokeE2ePlanLines` в `packaged-manual-smoke-plain-text.ts`). В архиве `releaseSmoke:` — CI pipeline (`smoke:packaged-release`), layout win/linux/macos и тот же §21 appendix. См. `Help/owner-manual-smoke.md`, `Help/about-support-logs.md`, `Help/logging-and-diagnostics.md`.
 

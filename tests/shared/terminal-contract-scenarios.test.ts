@@ -18,6 +18,11 @@ import {
   TERMINAL_SCENARIO_HINTS_DOWNLOADS,
   TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA
 } from '../../src/shared/terminal-contract'
+import {
+  TERMINAL_CONTRACT_HINTS_DOWNLOADS_HINT_COUNT,
+  TERMINAL_CONTRACT_HINTS_DOWNLOADS_HINT_COUNT_FLOOR,
+  TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_HINT_COUNT
+} from '../../src/shared/terminal-contract-hints-meta'
 
 /** Парсер вкладки «Терминал» не принимает кавычки в строке команды. */
 function terminalLineAllowsQuotes(line: string): boolean {
@@ -29,8 +34,17 @@ describe('TERMINAL_SCENARIO_HINTS_*', () => {
     const lines = TERMINAL_SCENARIO_HINTS_DOWNLOADS.map((h) => (h.fullLine ?? '').trim())
     const nonEmpty = lines.filter((line) => line.length > 0)
     const unique = new Set(nonEmpty)
-    expect(nonEmpty.length).toBeGreaterThanOrEqual(805)
+    expect(nonEmpty.length).toBe(TERMINAL_CONTRACT_HINTS_DOWNLOADS_HINT_COUNT)
+    expect(nonEmpty.length).toBeGreaterThanOrEqual(
+      TERMINAL_CONTRACT_HINTS_DOWNLOADS_HINT_COUNT_FLOOR
+    )
     expect(unique.size).toBe(nonEmpty.length)
+  })
+
+  it('preview: snapshot hint count', () => {
+    expect(TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.length).toBe(
+      TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_HINT_COUNT
+    )
   })
 
   it('downloads + preview: RU summary — нет «допишите URL»; при flux-ytdlp есть глосс (поле …)', () => {

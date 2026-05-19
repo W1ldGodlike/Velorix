@@ -1,0 +1,103 @@
+import { readFileSync } from 'node:fs'
+import { describe, expect, it } from 'vitest'
+
+import {
+  TERMINAL_CONTRACT_HINTS_DOWNLOADS_HINT_COUNT,
+  TERMINAL_CONTRACT_HINTS_DOWNLOADS_PART_COUNT,
+  TERMINAL_CONTRACT_HINTS_GUARD_NPM_SCRIPTS,
+  TERMINAL_CONTRACT_HINTS_GUARD_QUIET_STEP_LABELS,
+  TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT,
+  TERMINAL_CONTRACT_HINTS_HELP_PATHS,
+  TERMINAL_CONTRACT_HINTS_HELP_REQUIRED_SNIPPETS,
+  TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_HINT_COUNT,
+  TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_PART_COUNT,
+  TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT,
+  TERMINAL_CONTRACT_HINTS_SHARD_TOTAL_PART_COUNT,
+  TERMINAL_CONTRACT_HINTS_TOOLS_HELP_PATHS,
+  TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_PATHS,
+  TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_REQUIRED_SNIPPETS,
+  TERMINAL_CONTRACT_HINTS_BIN_README_PATH,
+  TERMINAL_CONTRACT_HINTS_TOOLS_HELP_REQUIRED_SNIPPETS,
+  formatTerminalContractHintsBinReadmeGuardsLine,
+  formatTerminalContractHintsDiagnosticLine,
+  formatTerminalContractHintsDownloadsShardBasename,
+  formatTerminalContractHintsPreviewMediaShardBasename,
+  formatTerminalContractHintsSettingsHelpClause,
+  formatTerminalContractHintsShardCountEnSnippet
+} from '../../src/shared/terminal-contract-hints-meta'
+import { TERMINAL_SCENARIO_HINTS_DOWNLOADS } from '../../src/shared/terminal-contract-hints-downloads'
+import { TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA } from '../../src/shared/terminal-contract-hints-preview-media'
+
+describe('terminal-contract-hints-meta §8', () => {
+  it('shard basenames and totals', () => {
+    expect(formatTerminalContractHintsDownloadsShardBasename(1)).toBe(
+      'terminal-contract-hints-downloads-01.ts'
+    )
+    expect(formatTerminalContractHintsPreviewMediaShardBasename(15)).toBe(
+      'terminal-contract-hints-preview-media-15.ts'
+    )
+    expect(TERMINAL_CONTRACT_HINTS_SHARD_TOTAL_PART_COUNT).toBe(
+      TERMINAL_CONTRACT_HINTS_DOWNLOADS_PART_COUNT +
+        TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_PART_COUNT
+    )
+    expect(formatTerminalContractHintsShardCountEnSnippet()).toContain('20 downloads')
+    expect(formatTerminalContractHintsDiagnosticLine()).toContain(
+      TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT
+    )
+  })
+
+  it('hint count snapshots match merged arrays', () => {
+    expect(TERMINAL_SCENARIO_HINTS_DOWNLOADS.length).toBe(
+      TERMINAL_CONTRACT_HINTS_DOWNLOADS_HINT_COUNT
+    )
+    expect(TERMINAL_SCENARIO_HINTS_PREVIEW_MEDIA.length).toBe(
+      TERMINAL_CONTRACT_HINTS_PREVIEW_MEDIA_HINT_COUNT
+    )
+  })
+
+  it('guard registries list quiet steps and npm scripts', () => {
+    expect(TERMINAL_CONTRACT_HINTS_GUARD_QUIET_STEP_LABELS.length).toBe(6)
+    expect(TERMINAL_CONTRACT_HINTS_GUARD_NPM_SCRIPTS).toContain(
+      TERMINAL_CONTRACT_HINTS_SHARDS_GUARD_NPM_SCRIPT
+    )
+    expect(formatTerminalContractHintsBinReadmeGuardsLine()).toContain(
+      TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT
+    )
+  })
+
+  it('Help ffmpeg-terminal-hints articles cite meta + guard', () => {
+    for (const rel of TERMINAL_CONTRACT_HINTS_HELP_PATHS) {
+      const text = readFileSync(rel, 'utf8')
+      for (const snippet of TERMINAL_CONTRACT_HINTS_HELP_REQUIRED_SNIPPETS) {
+        expect(text, `${rel} missing ${snippet}`).toContain(snippet)
+      }
+    }
+  })
+
+  it('formatTerminalContractHintsSettingsHelpClause matches locales', () => {
+    const ru = readFileSync('locales/ru/settings.json', 'utf8')
+    const en = readFileSync('locales/en/settings.json', 'utf8')
+    expect(ru).toContain(formatTerminalContractHintsSettingsHelpClause('ru'))
+    expect(en).toContain(formatTerminalContractHintsSettingsHelpClause('en'))
+  })
+
+  it('Help tools-terminal-inspector hub cites meta', () => {
+    for (const rel of TERMINAL_CONTRACT_HINTS_TOOLS_HELP_PATHS) {
+      const text = readFileSync(rel, 'utf8')
+      for (const snippet of TERMINAL_CONTRACT_HINTS_TOOLS_HELP_REQUIRED_SNIPPETS) {
+        expect(text, `${rel} missing ${snippet}`).toContain(snippet)
+      }
+    }
+  })
+
+  it('bin/README and about-support-logs cite terminal guards', () => {
+    const binReadme = readFileSync(TERMINAL_CONTRACT_HINTS_BIN_README_PATH, 'utf8')
+    expect(binReadme).toContain(formatTerminalContractHintsBinReadmeGuardsLine())
+    for (const rel of TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_PATHS) {
+      const text = readFileSync(rel, 'utf8')
+      for (const snippet of TERMINAL_CONTRACT_HINTS_ABOUT_SUPPORT_HELP_REQUIRED_SNIPPETS) {
+        expect(text, `${rel} missing ${snippet}`).toContain(snippet)
+      }
+    }
+  })
+})
