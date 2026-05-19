@@ -7,3 +7,15 @@
 **Индекс:** [`docs/SOURCES_OF_TRUTH.md`](docs/SOURCES_OF_TRUTH.md) · **Marathon:** [`docs/AGENT_MARATHON.md`](docs/AGENT_MARATHON.md) · **Спринт:** [`IMPLEMENTATION_CHECKLIST.md`](IMPLEMENTATION_CHECKLIST.md) · **Журнал:** [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md) · **ТЗ:** [`FLUXALLOY_TZ.md`](FLUXALLOY_TZ.md) (без правок без явной просьбы) · **SDK:** [`agent-contract.txt`](scripts/cursor-automation/prompts/agent-contract.txt)
 
 **Проверки:** `npm run check:quiet` перед cadence-commit (`J-NNN`: `NNN % 5` commit, `NNN % 10` push); полный `npm run check` — релиз или по запросу.
+
+## Cursor Cloud specific instructions
+
+**Окружение:** Node.js 24 (nvm), npm. Зависимости: `npm install`.
+
+**Lint / typecheck / audits:** все проходят на Linux Cloud VM без ограничений. Команды — в `package.json scripts` и README.
+
+**Тесты:** `npm run test` — 267/273 suite pass; 6 файлов (`tests/main/app-data-root.test.ts`, `tests/main/ytdlp-download-options.test.ts`, `tests/main/ffmpeg-progress-smoke.test.ts`, `tests/shared/packaged-ffprobe-smoke-core.test.ts`, `tests/shared/packaged-ffmpeg-smoke.test.ts`, `tests/shared/packaged-ytdlp-smoke.test.ts`) падают из-за Windows-специфичных assert'ов (`.exe` пути, `process.platform === 'win32'`). Это ожидаемо на Linux.
+
+**Build / dev mode:** `npm run dev` и `electron-vite build` не работают на Linux Cloud VM из-за бага в цепочке vite 7.3.3 → esbuild 0.27.7: при формировании SSR-бандла main-процесса строка с кириллицей/§ (`renderer-state-approach.ts`, line 52) обрезается, esbuild видит «Unterminated string literal». Прямой вызов `esbuild.transform` на том же файле — ОК; проблема в том, как vite передаёт chunk. На Windows у автора сборка работает. Для CI-gate на Linux достаточно `npm run lint && npm run typecheck && npm run test`.
+
+**Запуск Electron (если понадобится):** требуется `xvfb-run` (уже установлен). Команда: `xvfb-run --auto-servernum npm run dev`.
