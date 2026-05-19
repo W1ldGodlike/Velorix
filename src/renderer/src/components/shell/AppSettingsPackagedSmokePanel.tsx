@@ -165,6 +165,7 @@ export function AppSettingsPackagedSmokePanel(props: {
       <p className="app-modal-hint">{uiText('appSettingsPackagedSmokeOwnerBundleHint')}</p>
       <p className="app-modal-hint">{uiText('appSettingsPackagedSmokeParityGuardHint')}</p>
       <p className="app-modal-hint">{uiText('appSettingsPackagedE2eRegistryGuardHint')}</p>
+      <p className="app-modal-hint">{uiText('appSettingsPackagedSmokeCopyAppendixHint')}</p>
       {copyHint ? (
         <p className="app-modal-hint" role="status" aria-live="polite">
           {copyHint}

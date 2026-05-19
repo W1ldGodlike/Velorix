@@ -32,7 +32,9 @@ const WORKFLOW_HELP_FILES = [
   'Help/en/processing-url-combo.md',
   'Help/en/ffmpeg-terminal-hints.md',
   'Help/processing-advanced-fields.md',
-  'Help/en/processing-advanced-fields.md'
+  'Help/en/processing-advanced-fields.md',
+  'Help/appearance-language-theme.md',
+  'Help/en/appearance-language-theme.md'
 ]
 
 const SNIPPETS = [

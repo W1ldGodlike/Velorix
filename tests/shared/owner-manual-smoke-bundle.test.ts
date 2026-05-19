@@ -2,6 +2,10 @@ import { describe, expect, it } from 'vitest'
 
 import { buildOwnerManualSmokeBundleLines } from '../../src/shared/owner-manual-smoke-bundle'
 import { formatOwnerManualSmokeHidpiChecklistLines } from '../../src/shared/owner-manual-smoke-hidpi-lines'
+import {
+  appendPackagedManualSmokeE2ePlanLines,
+  getPackagedManualSmokePlainTextForUiLocale
+} from '../../src/shared/packaged-manual-smoke-plain-text'
 
 describe('owner-manual-smoke-bundle', () => {
   it('hidpi lines mention editor and downloads checks', () => {
@@ -39,5 +43,15 @@ describe('owner-manual-smoke-bundle', () => {
     expect(joined).toContain('planned GUI e2e scope:')
     expect(joined).toContain('open-file')
     expect(joined).toContain('check:help-workflow-smoke-crosslinks')
+  })
+
+  it('§21 appendix in owner bundle matches packaged panel copy suffix', () => {
+    const appendixBlocks: string[] = []
+    appendPackagedManualSmokeE2ePlanLines(appendixBlocks)
+    const appendix = appendixBlocks.join('\n')
+    const plain = getPackagedManualSmokePlainTextForUiLocale('win', 'ru')
+    expect(plain.endsWith(appendix)).toBe(true)
+    const bundle = buildOwnerManualSmokeBundleLines({ platform: 'win32' }).join('\n')
+    expect(bundle.endsWith(appendix)).toBe(true)
   })
 })

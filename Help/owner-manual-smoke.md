@@ -18,7 +18,7 @@
 | Scenario builder | Конструктор, JSON edges, запуск из редактора / URL                                           |
 | Video sprite §7.5 | FFmpeg rail → спрайт превью: сетка, PTS, сохранение PNG/JPEG; offline guard в тестах          |
 | Mini Player §4.3 | Сервис → мини-плеер при busy-задачах: %/speed, ПКМ topmost, restore main, `session.json`       |
-| Packaged         | `dist/win-unpacked` / `linux-unpacked` / `.app` — отдельная панель packaged; **Скопировать** даёт `owner:`/`automated:`/`step [...]` как в Support ZIP |
+| Packaged         | `dist/win-unpacked` / `linux-unpacked` / `.app` — отдельная панель packaged; **Скопировать** даёт `owner:`/`automated:`/`step [...]` + **§21 packaged e2e (CI vs owner)** (как в конце полного пакета) |
 | OS scheduler     | Watch-folder + Task Scheduler / launchd / systemd user timer                                 |
 | Windows shell    | Контекстное меню, «Открыть с помощью», «Приложения по умолчанию…» (только Win)               |
 

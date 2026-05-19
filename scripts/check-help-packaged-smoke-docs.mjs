@@ -27,7 +27,8 @@ const BASE_SNIPPETS = [
   'e2e launch:',
   'present/missing',
   '§4.3',
-  'owner:'
+  'owner:',
+  '§21 packaged e2e (CI vs owner)'
 ]
 
 const MAC_LINUX_SNIPPETS = ['engines:doctor', 'bin/README.md']

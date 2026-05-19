@@ -12,15 +12,7 @@ import { formatWorkflowOsSchedulerManualSmokeChecklistLines } from './workflow-o
 import { formatEditorVideoSpriteManualSmokeChecklistLines } from './editor-video-sprite-manual-smoke-checklist'
 import { formatMiniPlayerManualSmokeChecklistLines } from './mini-player-manual-smoke-checklist'
 import { formatWorkflowScenarioManualSmokeChecklistLines } from './workflow-scenario-manual-smoke-checklist'
-import { formatPackagedE2eSmokeDiagnosticLines } from './packaged-e2e-smoke-scenarios'
-
-function appendOwnerManualSmokeE2ePlanLines(blocks: string[]): void {
-  blocks.push(
-    '',
-    '=== §21 packaged e2e (CI vs owner) ===',
-    ...formatPackagedE2eSmokeDiagnosticLines()
-  )
-}
+import { appendPackagedManualSmokeE2ePlanLines } from './packaged-manual-smoke-plain-text'
 
 export function formatOwnerManualSmokeBundlePlainText(parts: {
   themeLines: readonly string[]
@@ -60,7 +52,7 @@ export function formatOwnerManualSmokeBundlePlainText(parts: {
   if (uiDpi.length > 0) {
     blocks.push('', '=== uiDpi snapshot ===', ...uiDpi)
   }
-  appendOwnerManualSmokeE2ePlanLines(blocks)
+  appendPackagedManualSmokeE2ePlanLines(blocks)
   return blocks.join('\n')
 }
 
@@ -102,6 +94,6 @@ export function buildOwnerManualSmokeBundleLines(opts?: {
     ...(shellBlock.length > 0 ? ['', '=== Windows shell ===', ...shellBlock] : []),
     ...(uiDpi.length > 0 ? ['', '=== uiDpi snapshot ===', ...uiDpi] : [])
   ]
-  appendOwnerManualSmokeE2ePlanLines(lines)
+  appendPackagedManualSmokeE2ePlanLines(lines)
   return lines
 }

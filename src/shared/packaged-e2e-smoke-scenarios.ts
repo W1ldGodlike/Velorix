@@ -90,7 +90,7 @@ export function formatPackagedE2eSmokeDiagnosticLines(): string[] {
     ...formatPackagedE2ePerStepDiagnosticLines(),
     'manual owner-smoke: Help/owner-manual-smoke.md + Settings copy (not automated GUI yet)',
     `planned GUI e2e scope: ${PACKAGED_E2E_PLANNED_GUI_STEP_IDS.join(', ')} (Playwright later; ytdlp/export have partial CLI smokes)`,
-    'Help crosslinks: npm run check:help-workflow-smoke-crosslinks (26 articles ↔ owner/packaged §21)',
+    'Help crosslinks: npm run check:help-workflow-smoke-crosslinks (28 articles ↔ owner/packaged §21)',
     'check: npm run check:packaged-e2e-scenarios-registry'
   ]
 }

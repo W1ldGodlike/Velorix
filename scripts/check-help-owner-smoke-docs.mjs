@@ -16,7 +16,8 @@ const OWNER_SNIPPETS = [
   'releaseSmoke:',
   'ownerManualSmoke:',
   '§21 e2e',
-  'e2e launch:'
+  'e2e launch:',
+  '§21 packaged e2e (CI vs owner)'
 ]
 
 const ABOUT_SNIPPETS = [

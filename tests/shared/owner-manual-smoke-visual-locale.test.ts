@@ -42,6 +42,19 @@ describe('owner-manual-smoke visual locale §2.2/§16', () => {
     )
   })
 
+  it('owner hub packaged e2e hint links packaged Copy to appendix', () => {
+    expect(enSettings.appSettingsOwnerSmokePackagedE2eHint).toContain('§21 packaged e2e')
+    expect(ruSettings.appSettingsOwnerSmokePackagedE2eHint).toContain('releaseSmoke:')
+    expect(enSettings.appSettingsOwnerSmokePackagedE2eHint).toContain('Packaged panel')
+  })
+
+  it('packaged copy appendix hint mentions §21 e2e groups', () => {
+    expect(enSettings.appSettingsPackagedSmokeCopyAppendixHint).toContain('§21 packaged e2e')
+    expect(ruSettings.appSettingsPackagedSmokeCopyAppendixHint).toContain('§21 packaged e2e')
+    expect(enSettings.appSettingsPackagedSmokeCopyAppendixHint).toContain('releaseSmoke:')
+    expect(ruSettings.appSettingsPackagedSmokeCopyAppendixHint).toContain('ownerManualSmoke:')
+  })
+
   it('owner smoke intro mentions per-step e2e appendix', () => {
     expect(enSettings.appSettingsOwnerSmokeIntro).toContain('per-step e2e')
     expect(ruSettings.appSettingsOwnerSmokeIntro).toContain('per-step e2e')

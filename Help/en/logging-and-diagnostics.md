@@ -17,7 +17,7 @@ The **Tools** menu has entries to open the log in your viewer and to build a **s
 - **`ownerManualSmoke:`** — full owner manual smoke bundle (theme, HiDPI, HW, packaged, §21 e2e per-step `e2e <id>:`); see [owner-manual-smoke.md](owner-manual-smoke.md).
 - **`releaseSmoke:`** — CI packaged pipeline, win/linux/macos layout, and the same §21 e2e plan; see [about-support-logs.md](about-support-logs.md).
 
-Dev: `npm run check:packaged-e2e-scenarios-registry`, `check:help-workflow-smoke-crosslinks` (in `check:quiet`). Support ZIP includes **planned GUI e2e scope** (8 steps for future Playwright; 2 manual-owner: sprite, mini-player).
+Dev: `npm run check:packaged-e2e-scenarios-registry`, `check:help-workflow-smoke-crosslinks` (28 articles, in `check:quiet`). UI **Copy** (packaged + owner bundle) appends **§21 packaged e2e (CI vs owner)**; Support ZIP includes **planned GUI e2e scope** (8 steps for future Playwright; 2 manual-owner: sprite, mini-player).
 
 ## About dialog extras
 

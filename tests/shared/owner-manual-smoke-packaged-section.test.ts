@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { buildOwnerManualSmokeBundleLines } from '../../src/shared/owner-manual-smoke-bundle'
+import { getPackagedManualSmokePlainTextForUiLocale } from '../../src/shared/packaged-manual-smoke-plain-text'
 import {
   getOwnerManualSmokePackagedSection,
   getOwnerManualSmokePackagedSectionForUiLocale
@@ -27,5 +28,13 @@ describe('owner-manual-smoke-packaged-section §3', () => {
     const joined = section?.lines.join('\n') ?? ''
     expect(joined).toContain('owner: manual Windows packaged smoke')
     expect(joined).toContain('Settings → Dependencies')
+  })
+
+  it('packaged panel plain text extends section lines with §21 e2e', () => {
+    const section = getOwnerManualSmokePackagedSectionForUiLocale('ru', 'win32')
+    const plain = getPackagedManualSmokePlainTextForUiLocale('win', 'ru')
+    const body = section?.lines.join('\n') ?? ''
+    expect(plain.startsWith(body)).toBe(true)
+    expect(plain).toContain('planned GUI e2e scope:')
   })
 })

@@ -18,7 +18,7 @@ CI tests cover **ffmpeg argv**, not your real GPU or display scale. Before you r
 | Scenario builder | Builder UI, JSON edges, run from editor / URL                                        |
 | Video sprite §7.5 | FFmpeg rail → preview sprite sheet: grid, PTS burn-in, PNG/JPEG save; offline test guard |
 | Mini Player §4.3 | Service → mini player while tasks run: %/speed, RMB always-on-top, restore main, `session.json` |
-| Packaged         | `dist/win-unpacked` / `linux-unpacked` / `.app` — packaged panel; **Copy** emits `owner:`/`automated:`/`step [...]` like Support ZIP |
+| Packaged         | `dist/win-unpacked` / `linux-unpacked` / `.app` — packaged panel; **Copy** emits `owner:`/`automated:`/`step [...]` + **§21 packaged e2e (CI vs owner)** (same appendix as full bundle) |
 | OS scheduler     | Watch-folder + Task Scheduler / launchd / systemd user timer                         |
 | Windows shell    | Explorer menu, Open with, Default apps (Windows only)                                |
 
