@@ -17,9 +17,9 @@
 | Дата | 2026-05-19 |
 | Ветка | `main` @ `e1e6f3e` (cadence commit+push J-1286..1289, J-1290) |
 | Снимок тестов | **273** files / **1834** tests |
-| Спринт | §15/§21 workflow Help crosslinks **44** (`HelpCrosslinksCountTail` на 42 workflow + anchors); §8 `terminalHints:` 24 Help; `WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS`; owner-smoke на железе; GUI Playwright позже |
+| Спринт | §15/§21 workflow **44** (partition: tail 42 + ffmpeg + knowledge; FAQ вне 44); §8 `terminalHints:` 24 Help; `bin/README` partition; owner-smoke на железе; GUI Playwright позже |
 
-**Последние J:** [J-1288](../IMPLEMENTATION_JOURNAL.md) workflow tails завершены; [J-1289](../IMPLEMENTATION_JOURNAL.md) union guard 42 paths; [J-1290](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1286..1289.
+**Последние J:** [J-1292](../IMPLEMENTATION_JOURNAL.md) `FfmpegTerminalWorkflowClause`; [J-1293](../IMPLEMENTATION_JOURNAL.md) `bin/README` partition; [J-1294](../IMPLEMENTATION_JOURNAL.md) `README.md`/`AGENTS.md` §21 guards.
 
 **Следующий cadence:** commit **J-1295**; push + re-anchor **J-1300**.
 

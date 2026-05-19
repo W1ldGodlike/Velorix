@@ -33,6 +33,12 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_META_MODULE =
 /** Dev engines README — workflow crosslinks guard + EN count snippet. */
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH = 'bin/README.md' as const
 
+/** Root README — workflow crosslinks partition (§21). */
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ROOT_README_PATH = 'README.md' as const
+
+/** Agent handoff — workflow crosslinks guard (§21). */
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_AGENTS_MD_PATH = 'AGENTS.md' as const
+
 /** Required substrings in each workflow Help article (`check:help-workflow-smoke-crosslinks`). */
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS = [
   'owner-manual-smoke.md',
@@ -95,6 +101,18 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS = [
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT =
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS.length
 
+/** Workflow Help without `HelpCrosslinksCountTail` (§8 ffmpeg-terminal-hints, 24 articles guard). */
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_FFMPEG_TERMINAL_HELP_PATHS = [
+  'Help/ffmpeg-terminal-hints.md',
+  'Help/en/ffmpeg-terminal-hints.md'
+] as const
+
+/** FAQ in workflow tail (`HelpCrosslinksCountTail`) but outside 44 workflow crosslinks articles. */
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_FAQ_HELP_PATHS = [
+  'Help/faq-troubleshooting.md',
+  'Help/en/faq-troubleshooting.md'
+] as const
+
 /** Sync с Help/locales (`44 articles` / `44 статьи`). */
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET = `${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT} articles`
 
@@ -132,17 +150,36 @@ export function formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine(
   return `npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT} (${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT} ${articlesWord} ↔ owner/packaged §21)`
 }
 
+/** bin/README — workflow crosslinks partition (44 = tail−FAQ + ffmpeg + knowledge). */
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET =
+  'tail 42 HelpCrosslinksCountTail + ffmpeg FfmpegTerminalWorkflowClause + knowledge KnowledgeHubDevClause (FAQ 2 in tail, outside 44)' as const
+
 /** Required substrings in `bin/README.md` (§21 crosslinks dev line). */
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_REQUIRED_SNIPPETS = [
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_META_MODULE,
-  'workflow + packaged/owner anchors',
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET,
   'formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix',
   'check:help-packaged-smoke-docs'
 ] as const
 
 /** Markdown bullet for `bin/README.md` (sync with guard snippets). */
 export function formatPackagedE2eHelpWorkflowCrosslinksBinReadmeDevLine(): string {
-  return `- Help §21 crosslinks: \`npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` — канон \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_META_MODULE}\` (${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET}: workflow + packaged/owner anchors).`
+  return `- Help §21 crosslinks: \`npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` — канон \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_META_MODULE}\` (${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET}; packaged/owner anchors).`
+}
+
+/** bin/README — workflow crosslinks partition bullet. */
+export function formatPackagedE2eHelpWorkflowCrosslinksBinReadmeWorkflowPartitionLine(): string {
+  return `- Workflow crosslinks partition (44): ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET}.`
+}
+
+/** Root README — §21 workflow crosslinks (partition). */
+export function formatPackagedE2eHelpWorkflowCrosslinksRootReadmePartitionLine(): string {
+  return `- Help §21: \`npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` (44 workflow; ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET}).`
+}
+
+/** AGENTS.md — §21 workflow crosslinks guard. */
+export function formatPackagedE2eHelpWorkflowCrosslinksAgentsMdHelpLine(): string {
+  return `**Help §21:** \`npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` (44 workflow; ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET}).`
 }
 
 /** bin/README — packaged Help crosslinks quiet suffix (6 articles, 44 workflow). */
@@ -345,6 +382,16 @@ export function formatPackagedE2eHelpWorkflowCrosslinksKnowledgeHubDevClause(
 ): string {
   const countSnippet = pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)
   return `Dev: \`npm run check:help-workflow-smoke-crosslinks\` (${countSnippet}), \`npm run check:help-terminal-hints-docs\`.`
+}
+
+/** ffmpeg-terminal-hints — §21 workflow count + §8 terminal guard (not `HelpCrosslinksCountTail`). */
+export function formatPackagedE2eHelpWorkflowCrosslinksFfmpegTerminalWorkflowClause(
+  locale: PackagedE2eHelpWorkflowCrosslinksLocale
+): string {
+  const countSnippet = pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)
+  return locale === 'ru'
+    ? `; §21 workflow: \`npm run check:help-workflow-smoke-crosslinks\` (${countSnippet}; §8 — \`npm run check:help-terminal-hints-docs\`).`
+    : `; §21 workflow: \`npm run check:help-workflow-smoke-crosslinks\` (${countSnippet}; §8 — \`npm run check:help-terminal-hints-docs\`).`
 }
 
 /** Platform-packaging diagnostics — packaged Help crosslinks guard. */

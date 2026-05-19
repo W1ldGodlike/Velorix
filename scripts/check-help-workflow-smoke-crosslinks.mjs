@@ -16,17 +16,24 @@ import {
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmeDevLine,
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmeGuardsLine,
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmePackagedQuietLine,
+  formatPackagedE2eHelpWorkflowCrosslinksBinReadmeWorkflowPartitionLine,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ROOT_README_PATH,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_AGENTS_MD_PATH,
+  formatPackagedE2eHelpWorkflowCrosslinksRootReadmePartitionLine,
+  formatPackagedE2eHelpWorkflowCrosslinksAgentsMdHelpLine,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS,
   pickPackagedE2eHelpWorkflowCrosslinksCountSnippet,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_PATHS,
-  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS,
   formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause,
   formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail,
   formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWorkflowArticlesClause,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_KNOWLEDGE_HELP_PATHS,
-  formatPackagedE2eHelpWorkflowCrosslinksKnowledgeHubDevClause
+  formatPackagedE2eHelpWorkflowCrosslinksKnowledgeHubDevClause,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_FFMPEG_TERMINAL_HELP_PATHS,
+  formatPackagedE2eHelpWorkflowCrosslinksFfmpegTerminalWorkflowClause
 } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
+import { TERMINAL_CONTRACT_HINTS_WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS } from '../src/shared/terminal-contract-hints-meta.ts'
 import { checkHelpSmokeDocFiles, checkHelpSmokeDocSnippet } from './lib/help-smoke-docs-check.mjs'
 import { REPO_ROOT } from './lib/repo-root.mjs'
 
@@ -80,6 +87,14 @@ if (!binReadmeText.includes(binReadmeGuardsLine)) {
     `[check:help-workflow-smoke-crosslinks] ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH} missing guards line: ${binReadmeGuardsLine}`
   )
 }
+const binReadmePartitionLine =
+  formatPackagedE2eHelpWorkflowCrosslinksBinReadmeWorkflowPartitionLine()
+if (!binReadmeText.includes(binReadmePartitionLine)) {
+  failed = true
+  console.error(
+    `[check:help-workflow-smoke-crosslinks] ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH} missing partition line: ${binReadmePartitionLine}`
+  )
+}
 const binReadmePackagedQuietLine =
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmePackagedQuietLine()
 if (!binReadmeText.includes(binReadmePackagedQuietLine)) {
@@ -95,6 +110,25 @@ for (const snippet of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_REQUIRED_
       `[check:help-workflow-smoke-crosslinks] ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH} missing: ${snippet}`
     )
   }
+}
+
+const rootReadmePath = path.join(REPO_ROOT, PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ROOT_README_PATH)
+const rootReadmeText = fs.readFileSync(rootReadmePath, 'utf8')
+const rootReadmePartitionLine = formatPackagedE2eHelpWorkflowCrosslinksRootReadmePartitionLine()
+if (!rootReadmeText.includes(rootReadmePartitionLine)) {
+  failed = true
+  console.error(
+    `[check:help-workflow-smoke-crosslinks] ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ROOT_README_PATH} missing partition line: ${rootReadmePartitionLine}`
+  )
+}
+const agentsMdPath = path.join(REPO_ROOT, PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_AGENTS_MD_PATH)
+const agentsMdText = fs.readFileSync(agentsMdPath, 'utf8')
+const agentsMdHelpLine = formatPackagedE2eHelpWorkflowCrosslinksAgentsMdHelpLine()
+if (!agentsMdText.includes(agentsMdHelpLine)) {
+  failed = true
+  console.error(
+    `[check:help-workflow-smoke-crosslinks] ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_AGENTS_MD_PATH} missing Help §21 line: ${agentsMdHelpLine}`
+  )
 }
 
 for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ALL_PACKAGED_HELP_PATHS) {
@@ -148,7 +182,7 @@ for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ABOUT_HELP_PATHS) {
       'anchor-about-dev'
     ) || failed
 }
-for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS) {
+for (const rel of TERMINAL_CONTRACT_HINTS_WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS) {
   const locale = rel.includes('/en/') ? 'en' : 'ru'
   failed =
     checkHelpSmokeDocSnippet(
@@ -156,7 +190,7 @@ for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_PATHS) {
       LOG_PREFIX,
       rel,
       formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail(locale),
-      'anchor-planner-tail'
+      'workflow-crosslinks-tail'
     ) || failed
 }
 for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_KNOWLEDGE_HELP_PATHS) {
@@ -168,6 +202,17 @@ for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_KNOWLEDGE_HELP_PATHS) {
       rel,
       formatPackagedE2eHelpWorkflowCrosslinksKnowledgeHubDevClause(locale),
       'knowledge-hub-dev'
+    ) || failed
+}
+for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_FFMPEG_TERMINAL_HELP_PATHS) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedE2eHelpWorkflowCrosslinksFfmpegTerminalWorkflowClause(locale),
+      'ffmpeg-terminal-workflow'
     ) || failed
 }
 
