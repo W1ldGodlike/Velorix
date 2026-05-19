@@ -26,7 +26,7 @@ See [appearance-language-theme.md](appearance-language-theme.md) and [owner-manu
 
 ## Packaged smoke and §21 e2e
 
-Workflow articles (editor, downloads, ffprobe, planner) link to [packaged-windows-smoke.md](../packaged-windows-smoke.md) and Linux/macOS siblings. Support ZIP `releaseSmoke:` includes win/linux/macos layout and per-step `e2e <id>:`; dev block `terminalHints:` (§8, 24 Help articles) — [logging-and-diagnostics.md](logging-and-diagnostics.md), [about-support-logs.md](about-support-logs.md). Dev: `npm run check:help-workflow-smoke-crosslinks` (44 articles; partition: tail 42 + ffmpeg + knowledge, FAQ outside 44), `npm run check:help-terminal-hints-docs`.
+Workflow articles (editor, downloads, ffprobe, planner) link to [packaged-windows-smoke.md](../packaged-windows-smoke.md) and Linux/macOS siblings. Support ZIP `releaseSmoke:` includes win/linux/macos layout and per-step `e2e <id>:`; dev block `terminalHints:` (§8, 24 Help articles) — [logging-and-diagnostics.md](logging-and-diagnostics.md), [about-support-logs.md](about-support-logs.md). Dev: `npm run check:help-workflow-smoke-crosslinks` (44 articles; partition: tail 42 + ffmpeg + knowledge, FAQ outside 44), `npm run check:help-terminal-hints-docs`. UiHintSuffix: `formatPackagedGuiE2ePlaywrightUiHintSuffix` (4 settings + `aboutSupportZipDiagnosticsSectionsHint`; `check:owner-visual-smoke-locale`, `check:support-bundle-terminal-hints`).
 
 ## Tables
 

@@ -12,8 +12,9 @@ import type { AppUiLocale } from '../shared/app-ui-locale'
 import { getMainApplicationStrings } from '../shared/main-application-locale'
 import { resolveVideoFpsApprox } from '../shared/ffprobe-video-fps'
 
-import { buildTrackRows, type FfprobeJson } from './ffprobe-track-detail-builder'
-export { buildTrackRows } from './ffprobe-track-detail-builder'
+import type { FfprobeJson } from './ffprobe-json-types'
+import { buildTrackRows } from './ffprobe-track-detail-build'
+export { buildTrackRows } from './ffprobe-track-detail-build'
 import { runFfprobeJson } from './ffprobe-probe-json'
 
 export async function probeMediaFile(

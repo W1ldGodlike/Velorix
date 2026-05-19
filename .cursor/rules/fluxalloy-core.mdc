@@ -7,7 +7,7 @@ alwaysApply: true
 
 Глоссарий: [`fluxalloy-rules-explicit.mdc`](fluxalloy-rules-explicit.mdc).  
 Индекс: [`docs/SOURCES_OF_TRUTH.md`](../../docs/SOURCES_OF_TRUTH.md).  
-Исполняемое: [`fluxalloy-agent.mdc`](fluxalloy-agent.mdc).
+Исполняемое: [`fluxalloy-agent.mdc`](fluxalloy-agent.mdc), [`fluxalloy-simplicity.mdc`](fluxalloy-simplicity.mdc).
 
 | Артефакт | Роль |
 |----------|------|

@@ -26,7 +26,7 @@
 
 ## Packaged smoke и §21 e2e
 
-Статьи workflow (редактор, загрузки, ffprobe, планировщик) ссылаются на [packaged-windows-smoke.md](packaged-windows-smoke.md) и соседние для Linux/macOS. В Support ZIP `releaseSmoke:` — layout win/linux/macos и per-step `e2e <id>:`; dev-блок `terminalHints:` (§8, 24 статьи Help) — [logging-and-diagnostics.md](logging-and-diagnostics.md), [about-support-logs.md](about-support-logs.md). Dev: `npm run check:help-workflow-smoke-crosslinks` (44 статьи; partition: tail 42 + ffmpeg + knowledge, FAQ вне 44), `npm run check:help-terminal-hints-docs`.
+Статьи workflow (редактор, загрузки, ffprobe, планировщик) ссылаются на [packaged-windows-smoke.md](packaged-windows-smoke.md) и соседние для Linux/macOS. В Support ZIP `releaseSmoke:` — layout win/linux/macos и per-step `e2e <id>:`; dev-блок `terminalHints:` (§8, 24 статьи Help) — [logging-and-diagnostics.md](logging-and-diagnostics.md), [about-support-logs.md](about-support-logs.md). Dev: `npm run check:help-workflow-smoke-crosslinks` (44 статьи; partition: tail 42 + ffmpeg + knowledge, FAQ вне 44), `npm run check:help-terminal-hints-docs`. UiHintSuffix: `formatPackagedGuiE2ePlaywrightUiHintSuffix` (4 settings + `aboutSupportZipDiagnosticsSectionsHint`; `check:owner-visual-smoke-locale`, `check:support-bundle-terminal-hints`).
 
 ## Таблицы
 

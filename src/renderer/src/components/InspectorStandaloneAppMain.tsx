@@ -1,6 +1,6 @@
 import type { JSX } from 'react'
 
-import { PreviewProbeBody } from './MediaProbePanel'
+import { PreviewProbeBody } from './PreviewProbeBody'
 import { uiText } from '../locales/ui-text'
 import type { InspectorStandaloneAppModel } from '../use-inspector-standalone-app'
 

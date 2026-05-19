@@ -1,5 +1,5 @@
 import type { AppUiLocale } from '../../src/shared/app-ui-locale'
-import type { YtdlpQueueFailureKind } from '../../src/main/ytdlp-progress-parser'
+import type { YtdlpQueueFailureKind } from '../../src/main/ytdlp-progress-parser-download'
 
 export type YtdlpQueueFailureStatusCase = {
   label: string

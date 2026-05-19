@@ -4,7 +4,7 @@ import type { AppAboutInfo } from '../../shared/about-contract'
 import type { MediaProbeSuccess } from '../../shared/ffprobe-contract'
 import type { ResolvedAppTheme } from '../../shared/settings-contract'
 import type { AppUiLocale } from '../../shared/app-ui-locale'
-import type { PreviewProbeSectionKey } from './components/MediaProbePanel'
+import type { PreviewProbeSectionKey } from './components/media-probe-panel-helpers'
 import {
   applyPersistedUiLocale,
   getUiLocale,

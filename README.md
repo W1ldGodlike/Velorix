@@ -19,7 +19,7 @@ npm run dev           # Electron + Vite (predev подтянет движки н
 
 1. Установите [Node.js](https://nodejs.org/) LTS (20.x, 22.x или 24.x).
 2. В корне: `npm install` (postinstall — native deps **electron-builder**).
-3. Полная проверка: `npm run check` — ESLint, TypeScript, Vitest, trusted hashes, journal, checklist, secrets и audit-скрипты (см. [`docs/RELEASE.md`](./docs/RELEASE.md) §1). Краткий вывод: `npm run check:quiet`.
+3. Полная проверка: `npm run check` — то же, что `npm run check:quiet` (единый gate: ESLint, TypeScript, Vitest, trusted hashes, journal, checklist, secrets, UI/locale guards и audit-скрипты; см. [`docs/RELEASE.md`](./docs/RELEASE.md) §1).
 4. Разработка: `npm run dev` (`predev` → `engines:prepare:win` для `bin/`; `engines:doctor` — вручную при необходимости).
 5. Расширения VS Code / Cursor: [`.vscode/extensions.json`](./.vscode/extensions.json), настройки: [`.vscode/settings.json`](./.vscode/settings.json).
 
@@ -108,7 +108,7 @@ npm run engines:doctor
 - `Data/`, `Help/` — конфиги и подсказки UI.
 - Русские `summary` терминала: **`npm run locales:terminal-summaries-ru`** (дважды до 0 замен) — [`Help/ffmpeg-terminal-hints.md`](./Help/ffmpeg-terminal-hints.md).
 - Help §21: `npm run check:help-workflow-smoke-crosslinks` (44 workflow; tail 42 HelpCrosslinksCountTail + ffmpeg FfmpegTerminalWorkflowClause + knowledge KnowledgeHubDevClause (FAQ 2 in tail, outside 44)); registry `check:help-smoke-guards-package-json` requires `partition:` in all 44 workflow Help.
-- §21 Playwright GUI e2e (deferred): `npm run check:packaged-gui-e2e-playwright-deferred` — reserved `test:e2e:gui` (8 planned-gui-e2e; not in package.json until wired).
+- §21 Playwright GUI e2e (deferred): `npm run check:packaged-gui-e2e-playwright-deferred` — reserved `test:e2e:gui` (8 planned-gui-e2e; not in package.json until wired). Help UiHintSuffix: AGENTS + 4 §15 anchors + 6 packaged (`formatPackagedGuiE2ePlaywright*HelpUiHintSuffix`; `check:help-owner-smoke-docs`, `check:help-packaged-smoke-docs`).
 - SDK automation: [`scripts/cursor-automation/README.md`](./scripts/cursor-automation/README.md).
 - yt-dlp по умолчанию: `<папка программы>/app-data/downloads/ytdlp`.
 - NSIS спрашивает про удаление `app-data/`; в ZIP — `Uninstall FluxAlloy.cmd`.

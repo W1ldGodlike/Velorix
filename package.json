@@ -30,7 +30,7 @@
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache . --max-warnings 0",
-    "check": "npm run lint && npm run typecheck && npm run test && npm run check:trusted-hashes && npm run check:rules-explicit && npm run check:field-registries && npm run audit:copy-paste && npm run audit:structural && npm run audit:todo-debt && npm run audit:dead-type-reexports && npm run audit:ipc-architecture && npm run audit:shared-contracts && npm run audit:inventory-sync && npm run check:journal && npm run check:checklist && npm run check:secrets",
+    "check": "npm run check:quiet",
     "check:quiet": "node scripts/run-quiet-check.mjs",
     "check:trusted-hashes": "node scripts/validate-trusted-hashes-json.mjs",
     "check:journal": "node scripts/check-journal-numbering.mjs",

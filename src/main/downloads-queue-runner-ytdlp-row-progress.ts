@@ -13,7 +13,7 @@ import {
   parseYtdlpProgressPercentNumber,
   parseYtdlpSpeedToBytesPerSec,
   type YtdlpDownloadProgressParts
-} from './ytdlp-download-service'
+} from './ytdlp-progress-parser'
 import {
   pickYtdlpQueueShortLabelForOutputPath,
   shouldApplyYtdlpInfoTitleShortLabel,

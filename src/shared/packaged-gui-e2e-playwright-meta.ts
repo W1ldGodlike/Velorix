@@ -89,6 +89,24 @@ export function formatPackagedGuiE2ePlaywrightRootReadmeLine(): string {
   return `- §21 Playwright GUI e2e (deferred): \`npm run ${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_CHECK_NPM_SCRIPT}\` — reserved \`${PACKAGED_GUI_E2E_PLAYWRIGHT_DEFERRED_NPM_SCRIPT}\` (${PACKAGED_GUI_E2E_PLAYWRIGHT_PLANNED_STEP_COUNT} planned-gui-e2e; not in package.json until wired).`
 }
 
+/** Root README — Help UiHintSuffix coverage tail (§15/§19). */
+export function formatPackagedGuiE2ePlaywrightRootReadmeHelpUiHintsTail(): string {
+  return ` Help UiHintSuffix: AGENTS + 4 §15 anchors + 6 packaged (\`formatPackagedGuiE2ePlaywright*HelpUiHintSuffix\`; \`check:help-owner-smoke-docs\`, \`check:help-packaged-smoke-docs\`).`
+}
+
+/** Root README — full §21 Playwright bullet (deferred + Help UiHintSuffix). */
+export function formatPackagedGuiE2ePlaywrightRootReadmePlaywrightSection(): string {
+  return (
+    formatPackagedGuiE2ePlaywrightRootReadmeLine() +
+    formatPackagedGuiE2ePlaywrightRootReadmeHelpUiHintsTail()
+  )
+}
+
+/** `docs/SOURCES_OF_TRUTH.md` — Help UiHintSuffix note (§21 playwright-meta row). */
+export function formatPackagedGuiE2ePlaywrightSourcesOfTruthHelpUiHintsNote(): string {
+  return `Help UiHintSuffix (AGENTS, 4 §15 anchors, 6 packaged) — \`formatPackagedGuiE2ePlaywright*HelpUiHintSuffix\``
+}
+
 /** `docs/ARCHITECTURE.md` — Playwright deferred UI hints (settings + about). */
 export function formatPackagedGuiE2ePlaywrightArchitectureUiHintsClause(): string {
   return `Playwright UI hints: ${PACKAGED_GUI_E2E_PLAYWRIGHT_SETTINGS_UI_HINT_KEYS.join(', ')} + ${PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY} via formatPackagedGuiE2ePlaywrightUiHintSuffix (check:owner-visual-smoke-locale, check:support-bundle-terminal-hints)`
@@ -167,6 +185,20 @@ export function formatPackagedGuiE2ePlaywrightPlannerScenariosHelpUiHintSuffix(
 
 /** Packaged smoke Help (win/linux/macos RU+EN) — §19/§21 UI hints on Copy/Dev line. */
 export function formatPackagedGuiE2ePlaywrightPackagedSmokeHelpUiHintSuffix(
+  locale: 'en' | 'ru'
+): string {
+  return formatPackagedGuiE2ePlaywrightHelpCrosslinksUiHintSuffix(locale)
+}
+
+/** `Help/ffmpeg-terminal-hints.md` — §8 + §21 UI hints on workflow crosslinks line. */
+export function formatPackagedGuiE2ePlaywrightFfmpegTerminalHelpUiHintSuffix(
+  locale: 'en' | 'ru'
+): string {
+  return formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix(locale)
+}
+
+/** `Help/knowledge-base-howto.md` — §13/§21 UI hints on packaged e2e dev line. */
+export function formatPackagedGuiE2ePlaywrightKnowledgeHubHelpUiHintSuffix(
   locale: 'en' | 'ru'
 ): string {
   return formatPackagedGuiE2ePlaywrightHelpCrosslinksUiHintSuffix(locale)

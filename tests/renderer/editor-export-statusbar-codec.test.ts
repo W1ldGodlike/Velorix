@@ -1,10 +1,8 @@
 import { describe, expect, it } from 'vitest'
 
 import { createEmptyFfmpegHwEncodersSnapshot } from '../../src/shared/ffmpeg-hw-encoder-probe'
-import {
-  buildEditorExportStatusbarCodecDisplay,
-  resolveEditorExportCodecDisplayName
-} from '../../src/renderer/src/editor-export-statusbar-codec'
+import { resolveEditorExportCodecDisplayName } from '../../src/renderer/src/editor-export-codec-display-name'
+import { buildEditorExportStatusbarCodecDisplay } from '../../src/renderer/src/editor-export-statusbar-codec'
 import { resolveEditorExportStatusbarEncoderSummary } from '../../src/renderer/src/editor-export-codec-tooltip'
 
 const uiText = (key: string): string => key

@@ -16,14 +16,22 @@ import {
   formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix,
   formatPackagedGuiE2ePlaywrightPlannerScenariosHelpUiHintSuffix,
   formatPackagedGuiE2ePlaywrightPackagedSmokeHelpUiHintSuffix,
+  formatPackagedGuiE2ePlaywrightFfmpegTerminalHelpUiHintSuffix,
+  formatPackagedGuiE2ePlaywrightKnowledgeHubHelpUiHintSuffix,
   formatPackagedGuiE2ePlaywrightAgentsMdUiHintsTail,
+  formatPackagedGuiE2ePlaywrightRootReadmePlaywrightSection,
+  formatPackagedGuiE2ePlaywrightSourcesOfTruthHelpUiHintsNote,
   formatPackagedGuiE2ePlaywrightBinReadmeUiHintsLine,
   formatPackagedGuiE2ePlaywrightReleaseCopyAppendixUiTail,
   formatPackagedGuiE2ePlaywrightReleaseDeferredBullet,
   formatPackagedGuiE2ePlaywrightReleaseOwnerVisualSmokeLocaleLine,
   formatPackagedGuiE2ePlaywrightUiHintSuffix
 } from '../src/shared/packaged-gui-e2e-playwright-meta.ts'
-import { PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ALL_PACKAGED_HELP_PATHS } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
+import {
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ALL_PACKAGED_HELP_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_FFMPEG_TERMINAL_HELP_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_KNOWLEDGE_HELP_PATHS
+} from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
 import { PACKAGED_E2E_SMOKE_REGISTRY } from '../src/shared/packaged-e2e-smoke-registry.ts'
 import { REPO_ROOT } from './lib/repo-root.mjs'
 
@@ -53,6 +61,24 @@ const agentsUiTail = formatPackagedGuiE2ePlaywrightAgentsMdUiHintsTail()
 if (!agentsMdText.includes(agentsUiTail)) {
   console.error(
     '[check:packaged-gui-e2e-playwright-deferred] AGENTS.md must include formatPackagedGuiE2ePlaywrightAgentsMdUiHintsTail()'
+  )
+  process.exit(1)
+}
+
+const rootReadmeText = fs.readFileSync(path.join(REPO_ROOT, 'README.md'), 'utf8')
+const rootReadmeSection = formatPackagedGuiE2ePlaywrightRootReadmePlaywrightSection()
+if (!rootReadmeText.includes(rootReadmeSection)) {
+  console.error(
+    '[check:packaged-gui-e2e-playwright-deferred] README.md must include formatPackagedGuiE2ePlaywrightRootReadmePlaywrightSection()'
+  )
+  process.exit(1)
+}
+
+const sourcesText = fs.readFileSync(path.join(REPO_ROOT, 'docs/SOURCES_OF_TRUTH.md'), 'utf8')
+const sourcesNote = formatPackagedGuiE2ePlaywrightSourcesOfTruthHelpUiHintsNote()
+if (!sourcesText.includes(sourcesNote)) {
+  console.error(
+    '[check:packaged-gui-e2e-playwright-deferred] docs/SOURCES_OF_TRUTH.md must include formatPackagedGuiE2ePlaywrightSourcesOfTruthHelpUiHintsNote()'
   )
   process.exit(1)
 }
@@ -97,6 +123,28 @@ for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ALL_PACKAGED_HELP_PATHS)
   if (!packagedHelpText.includes(packagedUiSuffix)) {
     console.error(
       `[check:packaged-gui-e2e-playwright-deferred] ${rel} must include formatPackagedGuiE2ePlaywrightPackagedSmokeHelpUiHintSuffix(${locale})`
+    )
+    process.exit(1)
+  }
+}
+for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_FFMPEG_TERMINAL_HELP_PATHS) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  const ffmpegHelpText = fs.readFileSync(path.join(REPO_ROOT, rel), 'utf8')
+  const ffmpegUiSuffix = formatPackagedGuiE2ePlaywrightFfmpegTerminalHelpUiHintSuffix(locale)
+  if (!ffmpegHelpText.includes(ffmpegUiSuffix)) {
+    console.error(
+      `[check:packaged-gui-e2e-playwright-deferred] ${rel} must include formatPackagedGuiE2ePlaywrightFfmpegTerminalHelpUiHintSuffix(${locale})`
+    )
+    process.exit(1)
+  }
+}
+for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_KNOWLEDGE_HELP_PATHS) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  const knowledgeHelpText = fs.readFileSync(path.join(REPO_ROOT, rel), 'utf8')
+  const knowledgeUiSuffix = formatPackagedGuiE2ePlaywrightKnowledgeHubHelpUiHintSuffix(locale)
+  if (!knowledgeHelpText.includes(knowledgeUiSuffix)) {
+    console.error(
+      `[check:packaged-gui-e2e-playwright-deferred] ${rel} must include formatPackagedGuiE2ePlaywrightKnowledgeHubHelpUiHintSuffix(${locale})`
     )
     process.exit(1)
   }

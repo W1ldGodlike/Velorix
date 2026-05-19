@@ -3,7 +3,7 @@ import type { Dispatch, SetStateAction } from 'react'
 import type { AppAboutInfo } from '../../shared/about-contract'
 import type { MediaProbeSuccess } from '../../shared/ffprobe-contract'
 import type { ResolvedAppTheme } from '../../shared/settings-contract'
-import type { PreviewProbeSectionKey } from './components/MediaProbePanel'
+import type { PreviewProbeSectionKey } from './components/media-probe-panel-helpers'
 import type { ProbeInspectorUiState } from './inspector-standalone-probe-ui'
 
 export type InspectorStandaloneAppModel = {

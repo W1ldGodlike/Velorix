@@ -11,7 +11,7 @@ import { EditorQuickYtdlpBar } from '../editor/EditorQuickYtdlpBar'
 import type { EditorQuickYtdlpBarProps } from '../editor/EditorQuickYtdlpBar'
 import { TerminalWorkspacePanelConnected } from '../TerminalWorkspacePanelConnected'
 import type { WorkspaceTab } from '../../app-terminal-hint-ui'
-import type { MainWindowUiPanelKey } from '../../use-main-window-ui-panels'
+import type { MainWindowUiPanelKey } from '../../stores/panels-store'
 
 export type AppWorkspaceMainProps = {
   workspaceTab: WorkspaceTab

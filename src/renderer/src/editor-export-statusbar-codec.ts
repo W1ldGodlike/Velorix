@@ -8,8 +8,6 @@ import {
 import type { EditorExportCodecUiText } from './editor-export-codec-ui-text'
 import { resolveEditorExportCodecDisplayName } from './editor-export-codec-display-name'
 
-export { resolveEditorExportCodecDisplayName } from './editor-export-codec-display-name'
-
 export function buildEditorExportStatusbarCodecDisplay(
   params: {
     exportVideoCodec: FfmpegExportVideoCodecId

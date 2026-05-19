@@ -10,7 +10,7 @@ You can extend the JSON without rebuilding: the files ship next to `FluxAlloy.ex
 
 Common ffmpeg tags: `-i`, `-map`, `-c:v copy`, `-ss`, `-t`, hardware encoders `*_nvenc`/`*_amf`/`*_qsv`. For yt-dlp: `-F`, `-f`, networking via `--proxy` and auth with `--cookies` / from browser.
 
-Packaged smoke bundled ffprobe/ffmpeg/ytdlp — [tools-terminal-inspector.md](tools-terminal-inspector.md), [packaged-windows-smoke.md](../packaged-windows-smoke.md); §21 e2e per-step `e2e <id>:` in `releaseSmoke:` — [owner-manual-smoke.md](owner-manual-smoke.md); §21 workflow: `npm run check:help-workflow-smoke-crosslinks` (44 articles; partition: tail 42 + ffmpeg + knowledge, FAQ outside 44; §8 — `npm run check:help-terminal-hints-docs`).
+Packaged smoke bundled ffprobe/ffmpeg/ytdlp — [tools-terminal-inspector.md](tools-terminal-inspector.md), [packaged-windows-smoke.md](../packaged-windows-smoke.md); §21 e2e per-step `e2e <id>:` in `releaseSmoke:` — [owner-manual-smoke.md](owner-manual-smoke.md); §21 workflow: `npm run check:help-workflow-smoke-crosslinks` (44 articles; partition: tail 42 + ffmpeg + knowledge, FAQ outside 44; §8 — `npm run check:help-terminal-hints-docs`). UiHintSuffix: `appSettingsTerminalHintsGuardHint` (`check:terminal-hints-locale`); Playwright — `formatPackagedGuiE2ePlaywrightUiHintSuffix` (settings + `aboutSupportZipDiagnosticsSectionsHint`; `check:owner-visual-smoke-locale`, `check:support-bundle-terminal-hints`).
 
 ## Built-in scenarios (developers)
 

@@ -38,6 +38,8 @@ import {
 } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
 import {
   formatPackagedGuiE2ePlaywrightAboutSupportLogsHelpUiHintSuffix,
+  formatPackagedGuiE2ePlaywrightFfmpegTerminalHelpUiHintSuffix,
+  formatPackagedGuiE2ePlaywrightKnowledgeHubHelpUiHintSuffix,
   formatPackagedGuiE2ePlaywrightPlannerScenariosHelpUiHintSuffix
 } from '../src/shared/packaged-gui-e2e-playwright-meta.ts'
 import { TERMINAL_CONTRACT_HINTS_WORKFLOW_HELP_CROSSLINKS_TAIL_HELP_PATHS } from '../src/shared/terminal-contract-hints-meta.ts'
@@ -245,6 +247,14 @@ for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_KNOWLEDGE_HELP_PATHS) {
       formatPackagedE2eHelpWorkflowCrosslinksKnowledgeHubDevClause(locale),
       'knowledge-hub-dev'
     ) || failed
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedGuiE2ePlaywrightKnowledgeHubHelpUiHintSuffix(locale),
+      'knowledge-playwright-ui'
+    ) || failed
 }
 for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_FFMPEG_TERMINAL_HELP_PATHS) {
   const locale = rel.includes('/en/') ? 'en' : 'ru'
@@ -255,6 +265,14 @@ for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_FFMPEG_TERMINAL_HELP_PAT
       rel,
       formatPackagedE2eHelpWorkflowCrosslinksFfmpegTerminalWorkflowClause(locale),
       'ffmpeg-terminal-workflow'
+    ) || failed
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedGuiE2ePlaywrightFfmpegTerminalHelpUiHintSuffix(locale),
+      'ffmpeg-playwright-ui'
     ) || failed
 }
 

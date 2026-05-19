@@ -32,7 +32,7 @@ import type {
   ProcessingHistoryWeeklySummary
 } from '../../../../shared/processing-history-contract'
 import type { AppSettings } from '../../../../shared/settings-contract'
-import type { MainWindowUiPanelKey } from '../../use-main-window-ui-panels'
+import type { MainWindowUiPanelKey } from '../../stores/panels-store'
 import type { FfmpegExportSelectOptions } from '../../use-editor-export-settings'
 
 export type EditorFfmpegSettingsRailProps = {

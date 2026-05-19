@@ -19,31 +19,6 @@ import {
 } from './ytdlp-download-options'
 import { getDownloadsWindowIpcStrings } from '../shared/downloads-window-ipc-locale'
 
-// Чистые парсеры stdout/stderr вынесены в отдельный модуль (без electron),
-// чтобы покрываться юнит-тестами вне Electron-runtime. Здесь — только реэкспорт
-// для совместимости старых импортов; новые места могут импортировать напрямую.
-export {
-  classifyYtdlpQueueFailureKind,
-  extractYtdlpErrorSummary,
-  displayLabelFromYtdlpOutputPath,
-  extractYtdlpOutputPath,
-  formatTorrentStyleSpeedFromBps,
-  formatYtdlpProgressCell,
-  formatYtdlpQueueFailureStatus,
-  parseYtdlpDownloadProgressLine,
-  parseYtdlpInfoDownloadingTitlePrefix,
-  parseYtdlpInfoFormatSnippet,
-  parseYtdlpInfoQueueSizeHint,
-  parseYtdlpQueueFormatHint,
-  parseYtdlpQueuePostProcessProgressLine,
-  parseYtdlpProgressPercentNumber,
-  parseYtdlpSpeedToBytesPerSec,
-  shouldSkipQueueRetriesForFailureKind,
-  shouldSkipYtdlpQueueRetriesAfterFailure,
-  type YtdlpDownloadProgressParts,
-  type YtdlpQueueFailureKind
-} from './ytdlp-progress-parser'
-
 function abortErr(locale: AppUiLocale): Error {
   const e = new Error(downloadsRunnerAbortMessage(locale))
   e.name = 'AbortError'

@@ -13,9 +13,8 @@ const steps = [
   'apply-theme-line-height-tokenize.mjs'
 ]
 
-for (const script of steps) {
-  console.log(`[theme-tokenize-main-css] ${script}`)
-  execSync(`npx tsx scripts/${script}`, { cwd: repoRoot, stdio: 'inherit' })
-}
+const cmd = steps.map((s) => `npx tsx scripts/${s}`).join(' && ')
+console.log(`[theme-tokenize-main-css] ${cmd}`)
+execSync(cmd, { cwd: repoRoot, stdio: 'inherit', shell: true })
 
 console.log('[theme-tokenize-main-css] done')

@@ -15,7 +15,7 @@ import { getUiLocale, uiText, uiTextVars } from './locales/ui-text'
 import type { EditorUrlPasteBehaviorId } from '../../shared/editor-url-paste-behavior'
 import type { MediaProbeSuccess } from '../../shared/ffprobe-contract'
 import type { RestoredSourceInfo } from '../../shared/preview-dialog-contract'
-import type { MainWindowUiPanelKey } from './use-main-window-ui-panels'
+import type { MainWindowUiPanelKey } from './stores/panels-store'
 import { useAppShellStore } from './stores/app-shell-store'
 
 type PreviewOpenedPayload = RestoredSourceInfo

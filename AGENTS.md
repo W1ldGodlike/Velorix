@@ -1,12 +1,12 @@
 # FluxAlloy — инструкции для агента
 
-**Всегда (rules):** [`fluxalloy-rules-explicit.mdc`](.cursor/rules/fluxalloy-rules-explicit.mdc), [`fluxalloy-core.mdc`](.cursor/rules/fluxalloy-core.mdc), [`fluxalloy-agent.mdc`](.cursor/rules/fluxalloy-agent.mdc).
+**Всегда (rules):** [`fluxalloy-rules-explicit.mdc`](.cursor/rules/fluxalloy-rules-explicit.mdc), [`fluxalloy-core.mdc`](.cursor/rules/fluxalloy-core.mdc), [`fluxalloy-agent.mdc`](.cursor/rules/fluxalloy-agent.mdc), [`fluxalloy-simplicity.mdc`](.cursor/rules/fluxalloy-simplicity.mdc).
 
 **Skills (по задаче):** [marathon](.cursor/skills/fluxalloy-marathon/SKILL.md), [journal-entry](.cursor/skills/fluxalloy-journal-entry/SKILL.md), [checklist-audit](.cursor/skills/fluxalloy-checklist-audit/SKILL.md), [release](.cursor/skills/fluxalloy-release/SKILL.md).
 
 **Индекс:** [`docs/SOURCES_OF_TRUTH.md`](docs/SOURCES_OF_TRUTH.md) · **Marathon:** [`docs/AGENT_MARATHON.md`](docs/AGENT_MARATHON.md) · **Спринт:** [`IMPLEMENTATION_CHECKLIST.md`](IMPLEMENTATION_CHECKLIST.md) · **Журнал:** [`IMPLEMENTATION_JOURNAL.md`](IMPLEMENTATION_JOURNAL.md) · **ТЗ:** [`FLUXALLOY_TZ.md`](FLUXALLOY_TZ.md) (без правок без явной просьбы) · **SDK:** [`agent-contract.txt`](scripts/cursor-automation/prompts/agent-contract.txt)
 
-**Проверки:** `npm run check:quiet` перед cadence-commit (`J-NNN`: `NNN % 5` commit, `NNN % 10` push); полный `npm run check` — релиз или по запросу.
+**Проверки:** `npm run check:quiet` перед cadence-commit (`J-NNN`: `NNN % 5` commit, `NNN % 10` push); `npm run check` — алиас на тот же gate (релиз или по запросу).
 
 **Help §21:** `npm run check:help-workflow-smoke-crosslinks` (44 workflow; tail 42 HelpCrosslinksCountTail + ffmpeg FfmpegTerminalWorkflowClause + knowledge KnowledgeHubDevClause (FAQ 2 in tail, outside 44)); registry `check:help-smoke-guards-package-json` requires `partition:` in all 44 workflow Help. **Playwright GUI e2e (deferred):** `check:packaged-gui-e2e-playwright-deferred` — reserved `test:e2e:gui` (8 planned-gui-e2e; not in package.json yet). UI hints: `formatPackagedGuiE2ePlaywrightUiHintSuffix` (`check:owner-visual-smoke-locale`, `check:support-bundle-terminal-hints`).
 

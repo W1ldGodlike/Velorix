@@ -73,7 +73,7 @@ export function formatBitrateKbps(bitRateBitsPerSec: string | undefined): number
   return bps === null ? null : bps / 1000
 }
 
-/** Метка битрейта для колонки «Сведения» (как в `MediaProbePanel` / экспорт сводки). */
+/** Метка битрейта для колонки «Сведения» (как в инспекторе / экспорт сводки). */
 export function appendMaxBitrateDetailIfNotable(
   parts: string[],
   bitRate: string | undefined,

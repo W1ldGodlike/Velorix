@@ -2,12 +2,12 @@ import type { AppPaths } from './app-paths'
 import { getEnginePathOverridesSnapshot } from './engine-path-sync'
 import { getDownloadsQueueRowById, updateDownloadsRow } from './downloads-queue'
 import { emitDownloadsLog } from './downloads-log-ipc'
+import { runYtdlpOnce } from './ytdlp-download-service'
 import {
   classifyYtdlpQueueFailureKind,
   formatYtdlpQueueFailureStatus,
-  runYtdlpOnce,
   shouldSkipQueueRetriesForFailureKind
-} from './ytdlp-download-service'
+} from './ytdlp-progress-parser'
 import { appendYtdlpDownloadHistoryEntry, outcomeFromQueueStatus } from './ytdlp-download-history'
 import { resolveYtdlpQueueRetryPlan } from './ytdlp-queue-retry'
 import { getYtdlpRunOptionsSnapshot } from './ytdlp-run-options-sync'

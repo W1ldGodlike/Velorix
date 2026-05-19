@@ -6,10 +6,7 @@
  * `downloads-queue-runner`) импортируют функции отсюда.
  */
 
-export type {
-  YtdlpDownloadProgressParts,
-  YtdlpQueueFailureKind
-} from './ytdlp-progress-parser-download'
+export type { YtdlpDownloadProgressParts } from './ytdlp-progress-parser-download'
 export {
   parseYtdlpProgressPercentNumber,
   parseYtdlpDownloadProgressLine,

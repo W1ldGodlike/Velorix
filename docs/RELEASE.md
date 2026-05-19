@@ -21,7 +21,7 @@ npm run check:release
 
 После успешного завершения шага `pack:dir` в корне репозитория появится распакованное приложение **`dist/win-unpacked/`** для быстрого ручного smoke (см. §4). Сразу после этого **`npm run check:release`** вызывает **`npm run verify:win-unpacked`** — автоматическая проверка: `FluxAlloy.exe`, непустые `resources/bin/{yt-dlp,ffmpeg,ffprobe}.exe`, `resources/FLUXALLOY_TZ.md`, `resources/Data/trusted_hashes.json`, каталог `resources/Help/` (без запуска приложения). Пропуск: `FLUXALLOY_SKIP_PACK_VERIFY=1`.
 
-`npm run check` включает:
+`npm run check` (алиас на `npm run check:quiet`, см. `scripts/run-quiet-check.mjs`) включает в том числе:
 
 - ESLint;
 - TypeScript для main/web/tests;

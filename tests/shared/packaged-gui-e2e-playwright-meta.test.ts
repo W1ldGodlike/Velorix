@@ -17,6 +17,8 @@ import {
   formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix,
   formatPackagedGuiE2ePlaywrightPlannerScenariosHelpUiHintSuffix,
   formatPackagedGuiE2ePlaywrightPackagedSmokeHelpUiHintSuffix,
+  formatPackagedGuiE2ePlaywrightFfmpegTerminalHelpUiHintSuffix,
+  formatPackagedGuiE2ePlaywrightKnowledgeHubHelpUiHintSuffix,
   formatPackagedGuiE2ePlaywrightHelpCrosslinksUiHintSuffix,
   formatPackagedGuiE2ePlaywrightOwnerHelpUiHintsClause,
   formatPackagedGuiE2ePlaywrightReleaseCopyAppendixUiTail,
@@ -29,6 +31,8 @@ import {
   formatPackagedGuiE2ePlaywrightOwnerIntroHintSuffix,
   formatPackagedGuiE2ePlaywrightOwnerHubHintSuffix,
   formatPackagedGuiE2ePlaywrightRootReadmeLine,
+  formatPackagedGuiE2ePlaywrightRootReadmePlaywrightSection,
+  formatPackagedGuiE2ePlaywrightSourcesOfTruthHelpUiHintsNote,
   formatPackagedGuiE2ePlaywrightSettingsHintSuffix
 } from '../../src/shared/packaged-gui-e2e-playwright-meta'
 import { formatPackagedManualSmokeE2eAppendixLines } from '../../src/shared/packaged-manual-smoke-plain-text'
@@ -86,11 +90,14 @@ describe('packaged-gui-e2e-playwright-meta §21', () => {
     }
   })
 
-  it('formatPackagedGuiE2ePlaywrightRootReadmeLine matches README', () => {
-    const line = formatPackagedGuiE2ePlaywrightRootReadmeLine()
-    expect(line).toContain('check:packaged-gui-e2e-playwright-deferred')
-    expect(line).toContain('test:e2e:gui')
-    expect(readFileSync('README.md', 'utf8')).toContain(line)
+  it('formatPackagedGuiE2ePlaywrightRootReadmePlaywrightSection matches README and SOURCES', () => {
+    const section = formatPackagedGuiE2ePlaywrightRootReadmePlaywrightSection()
+    expect(section).toContain(formatPackagedGuiE2ePlaywrightRootReadmeLine())
+    expect(section).toContain('check:help-packaged-smoke-docs')
+    expect(readFileSync('README.md', 'utf8')).toContain(section)
+    expect(readFileSync('docs/SOURCES_OF_TRUTH.md', 'utf8')).toContain(
+      formatPackagedGuiE2ePlaywrightSourcesOfTruthHelpUiHintsNote()
+    )
   })
 
   it('formatPackagedGuiE2ePlaywrightArchitectureUiHintsClause matches ARCHITECTURE', () => {
@@ -131,7 +138,8 @@ describe('packaged-gui-e2e-playwright-meta §21', () => {
       'Help/en/packaged-macos-smoke.md'
     ]
     for (const locale of ['en', 'ru'] as const) {
-      const aboutRel = locale === 'en' ? 'Help/en/about-support-logs.md' : 'Help/about-support-logs.md'
+      const aboutRel =
+        locale === 'en' ? 'Help/en/about-support-logs.md' : 'Help/about-support-logs.md'
       const aboutSuffix = formatPackagedGuiE2ePlaywrightAboutSupportLogsHelpUiHintSuffix(locale)
       expect(aboutSuffix).toContain(PACKAGED_GUI_E2E_PLAYWRIGHT_ABOUT_UI_HINT_KEY)
       expect(readFileSync(aboutRel, 'utf8')).toContain(aboutSuffix)
@@ -152,6 +160,20 @@ describe('packaged-gui-e2e-playwright-meta §21', () => {
         crosslinksSuffix
       )
       expect(readFileSync(plannerRel, 'utf8')).toContain(crosslinksSuffix)
+
+      const ffmpegRel =
+        locale === 'en' ? 'Help/en/ffmpeg-terminal-hints.md' : 'Help/ffmpeg-terminal-hints.md'
+      const ffmpegSuffix = formatPackagedGuiE2ePlaywrightFfmpegTerminalHelpUiHintSuffix(locale)
+      expect(ffmpegSuffix).toBe(
+        formatPackagedGuiE2ePlaywrightLoggingDiagnosticsHelpUiHintSuffix(locale)
+      )
+      expect(readFileSync(ffmpegRel, 'utf8')).toContain(ffmpegSuffix)
+
+      const knowledgeRel =
+        locale === 'en' ? 'Help/en/knowledge-base-howto.md' : 'Help/knowledge-base-howto.md'
+      const knowledgeSuffix = formatPackagedGuiE2ePlaywrightKnowledgeHubHelpUiHintSuffix(locale)
+      expect(knowledgeSuffix).toBe(crosslinksSuffix)
+      expect(readFileSync(knowledgeRel, 'utf8')).toContain(knowledgeSuffix)
     }
     for (const rel of packagedPaths) {
       const locale = rel.includes('/en/') ? 'en' : 'ru'

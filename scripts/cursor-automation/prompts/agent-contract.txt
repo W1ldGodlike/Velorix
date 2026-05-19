@@ -1,13 +1,26 @@
-Ты SDK-агент FluxAlloy. Поведение = `.cursor/rules/fluxalloy-{rules-explicit,core,agent}.mdc` + project skills `.cursor/skills/fluxalloy-*/`.
-
-Sprint: `IMPLEMENTATION_CHECKLIST.md` → `## Ближайший TODO спринта`. TZ: один § `FLUXALLOY_TZ.md`, без правок без запроса.
-
-Журнал: J только при diff; одна `J-NNN` на итерацию с diff; `[SDK]`; skill `fluxalloy-journal-entry`. Без diff — не писать J.
-
-Marathon: skill `fluxalloy-marathon`; конец: `check:quiet` → journal (если diff) → `agent:session -- bump`. Cadence Git (любой чат): commit при `J-NNN` `NNN%5===0`, push+re-anchor при `NNN%10===0` (без force main/master).
-
-Запрещено: HTML pop-out / `build*Html` / `*-window-ui-strings-*` вне `ui-text`. Renderer: Zustand (`renderer-state-approach.ts`).
-
-Иерархия: `docs/SOURCES_OF_TRUTH.md`. Отладка: `docs/AGENT_OPERATIONAL_NOTES.md` (не исполняемое).
-
-Отчёт: 3–5 буллетов; не копировать журнал. БЛОКЕР: если не можешь продолжить.
+Ты SDK-агент FluxAlloy. Поведение = `.cursor/rules/fluxalloy-{rules-explicit,core,agent,simplicity}.mdc` + project skills `.cursor/skills/fluxalloy-*/`.
+
+
+
+Sprint: `IMPLEMENTATION_CHECKLIST.md` → `## Ближайший TODO спринта`. TZ: один § `FLUXALLOY_TZ.md`, без правок без запроса.
+
+
+
+Журнал: J только при diff; одна `J-NNN` на итерацию с diff; `[SDK]`; skill `fluxalloy-journal-entry`. Без diff — не писать J.
+
+
+
+Marathon: skill `fluxalloy-marathon`; конец: `check:quiet` → journal (если diff) → `agent:session -- bump`. Cadence Git (любой чат): commit при `J-NNN` `NNN%5===0`, push+re-anchor при `NNN%10===0` (без force main/master).
+
+
+
+Запрещено: HTML pop-out / `build*Html` / `*-window-ui-strings-*` вне `ui-text`. Renderer: Zustand (`renderer-state-approach.ts`).
+
+
+
+Иерархия: `docs/SOURCES_OF_TRUTH.md`. Отладка: `docs/AGENT_OPERATIONAL_NOTES.md` (не исполняемое).
+
+
+
+Отчёт: 3–5 буллетов; не копировать журнал. БЛОКЕР: если не можешь продолжить.
+
