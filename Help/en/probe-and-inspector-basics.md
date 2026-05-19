@@ -16,4 +16,4 @@ Hints for the Terminal tab and built-in scenarios are covered in [tools-terminal
 
 ## Packaged smoke (§19 / §21)
 
-Owner manual **ffprobe** checklist — [owner-manual-smoke.md](owner-manual-smoke.md). After `npm run pack:dir` — **ffprobe** step in [packaged-windows-smoke.md](../packaged-windows-smoke.md); §21 e2e per-step `e2e <id>:` in Support ZIP `releaseSmoke:`; dev block `terminalHints:` (§8) — [about-support-logs.md](about-support-logs.md), [logging-and-diagnostics.md](logging-and-diagnostics.md).
+Owner manual **ffprobe** checklist — [owner-manual-smoke.md](owner-manual-smoke.md). After `npm run pack:dir` — **ffprobe** step in [packaged-windows-smoke.md](../packaged-windows-smoke.md); §21 e2e per-step `e2e <id>:` in Support ZIP `releaseSmoke:`; dev block `terminalHints:` (§8) — [about-support-logs.md](about-support-logs.md), [logging-and-diagnostics.md](logging-and-diagnostics.md); Help: `check:help-workflow-smoke-crosslinks` (44 articles).

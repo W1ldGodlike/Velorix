@@ -33,6 +33,9 @@ import {
   formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine,
   formatPackagedE2eHelpWorkflowCrosslinksLoggingClause,
   formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix,
+  formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail,
+  formatPackagedE2eHelpWorkflowCrosslinksFaqSupportZipTail,
+  formatPackagedE2eHelpWorkflowCrosslinksPackagedHelpDiagnosticLine,
   formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause,
   pickPackagedE2eHelpWorkflowCrosslinksCountSnippet,
   pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale
@@ -148,6 +151,32 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
     )
     expect(formatPackagedE2eHelpWorkflowCrosslinksPackagedWinCountParenthetical('en')).toBe(
       '(44 articles)'
+    )
+  })
+
+  it('formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail matches hub Help', () => {
+    for (const rel of [
+      'Help/getting-started.md',
+      'Help/en/getting-started.md',
+      'Help/probe-and-inspector-basics.md',
+      'Help/en/probe-and-inspector-basics.md',
+      'Help/faq-troubleshooting.md',
+      'Help/en/faq-troubleshooting.md',
+      'Help/downloads-workflow.md',
+      'Help/en/downloads-workflow.md'
+    ]) {
+      const locale = rel.includes('/en/') ? 'en' : 'ru'
+      const text = readFileSync(rel, 'utf8')
+      expect(text).toContain(formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail(locale))
+    }
+    expect(formatPackagedE2eHelpWorkflowCrosslinksFaqSupportZipTail('en')).toBe(
+      formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail('en')
+    )
+  })
+
+  it('formatPackagedE2eHelpWorkflowCrosslinksPackagedHelpDiagnosticLine mentions 44 and 6', () => {
+    expect(formatPackagedE2eHelpWorkflowCrosslinksPackagedHelpDiagnosticLine()).toContain(
+      '44 workflow crosslinks, 6 articles'
     )
   })
 

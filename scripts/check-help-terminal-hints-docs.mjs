@@ -29,7 +29,10 @@ import {
   formatTerminalContractHintsShardCountEnSnippet,
   formatTerminalContractHintsShardCountRuSnippet
 } from '../src/shared/terminal-contract-hints-meta.ts'
-import { formatPackagedE2eHelpWorkflowCrosslinksLoggingClause } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
+import {
+  formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail,
+  formatPackagedE2eHelpWorkflowCrosslinksLoggingClause
+} from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
 import { checkHelpSmokeDocFiles, checkHelpSmokeDocSnippet } from './lib/help-smoke-docs-check.mjs'
 import { REPO_ROOT } from './lib/repo-root.mjs'
 
@@ -168,6 +171,22 @@ failed =
     TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_REQUIRED_SNIPPETS,
     'faq-troubleshooting'
   ) || failed
+
+for (const rel of [
+  ...TERMINAL_CONTRACT_HINTS_WORKFLOW_HUB_HELP_PATHS,
+  ...TERMINAL_CONTRACT_HINTS_WORKFLOW_DOWNLOADS_HELP_PATHS,
+  ...TERMINAL_CONTRACT_HINTS_FAQ_TROUBLESHOOTING_HELP_PATHS
+]) {
+  const locale = rel.includes('/en/') ? 'en' : 'ru'
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail(locale),
+      'help-crosslinks-count'
+    ) || failed
+}
 
 failed =
   checkHelpSmokeDocFiles(

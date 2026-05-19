@@ -302,6 +302,24 @@ export function formatPackagedE2eHelpWorkflowCrosslinksPackagedWinCountParenthet
   return `(${pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)})`
 }
 
+/** Workflow hub Help — crosslinks guard count tail (getting-started, probe, faq). */
+export function formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail(
+  locale: PackagedE2eHelpWorkflowCrosslinksLocale
+): string {
+  const countSnippet = pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)
+  return locale === 'ru'
+    ? `; Help: \`check:help-workflow-smoke-crosslinks\` (${countSnippet}).`
+    : `; Help: \`check:help-workflow-smoke-crosslinks\` (${countSnippet}).`
+}
+
+export const formatPackagedE2eHelpWorkflowCrosslinksFaqSupportZipTail =
+  formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail
+
+/** Platform-packaging diagnostics — packaged Help crosslinks guard. */
+export function formatPackagedE2eHelpWorkflowCrosslinksPackagedHelpDiagnosticLine(): string {
+  return `packaged Help docs: npm run check:help-packaged-smoke-docs (${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT} workflow crosslinks, ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ALL_PACKAGED_HELP_PATHS.length} articles)`
+}
+
 /** Packaged smoke Help (win/linux/macos) — workflow crosslinks guard tail in `check:quiet`. */
 export function formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale

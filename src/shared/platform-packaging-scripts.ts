@@ -5,7 +5,8 @@
 import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_NPM_SCRIPTS,
-  formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine
+  formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine,
+  formatPackagedE2eHelpWorkflowCrosslinksPackagedHelpDiagnosticLine
 } from './packaged-e2e-help-workflow-crosslinks-meta'
 import {
   TERMINAL_CONTRACT_HINTS_HELP_DOCS_GUARD_NPM_SCRIPT,
@@ -57,6 +58,7 @@ export function formatPlatformPackagingDiagnosticLines(): string[] {
     'owner visual smoke: npm run check:owner-visual-smoke-locale (theme/HiDPI settings.json ru/en)',
     'packaging scripts: npm run check:platform-packaging-scripts (PLATFORM_PACKAGING_NPM_SCRIPTS)',
     `help workflow smoke: ${formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine()}`,
+    formatPackagedE2eHelpWorkflowCrosslinksPackagedHelpDiagnosticLine(),
     `help smoke guards: ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_NPM_SCRIPTS.join(', ')} (check:help-smoke-guards-package-json)`,
     '§21 e2e registry: npm run check:packaged-e2e-scenarios-registry (2 ci-headless, 8 planned-gui-e2e, 2 manual-owner; per-step e2e <id>:)',
     'CI packaged: npm run smoke:packaged-release (verify:win-unpacked + app + engines leaf smokes)',
