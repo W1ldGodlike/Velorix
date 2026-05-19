@@ -1338,3 +1338,8 @@
 - [J-1258] 2026-05-19 09:14:49 [Assistant]: §16/§18 — About `aboutSupportZipDiagnosticsSectionsHint` RU+EN (24 Help); meta sections hint; hardware-encoding RU+EN `terminalHints:` crosslink. `npm run check:quiet` (273 / 1829).
 - [J-1259] 2026-05-19 09:18:55 [Assistant]: §8/§15 — ffmpeg/tools Help RU+EN Support ZIP (24 Help guards); meta `FfmpegHelpSupportZipLine` + `ToolsHelpPackagedSmokeLine`; HELP/TOOLS snippets; guard snippet checks. `npm run check:quiet` (273 / 1829).
 - [J-1260] 2026-05-19 09:21:38 [Assistant]: Cadence 1260 — commit+push J-1256..1259 (logging/about/ffmpeg/tools Help formatters, About 24 Help, appearance/HW); re-anchor `AGENT_MARATHON`. `npm run check:quiet` (273 / 1829).
+- [J-1261] 2026-05-19 09:24:33 [Assistant]: §16/§21 — owner-manual-smoke manual-owner (sprite/mini-player) + `terminalHints:` 24 Help; RELEASE formatters list; ARCHITECTURE §8 guards. `npm run check:quiet` (273 / 1829).
+- [J-1262] 2026-05-19 09:26:51 [Assistant]: §10/§11/§15 — workflows-planner + editor-workflow RU+EN `terminalHints:` (24 Help); SOURCES formatters row. `npm run check:quiet` (273 / 1829).
+- [J-1263] 2026-05-19 09:29:01 [Assistant]: §7/§14/§15 — ffmpeg-rail-presets, processing-social-presets, windows-shell-integration RU+EN `terminalHints:` crosslinks (workflow Help). `npm run check:quiet` (273 / 1829).
+- [J-1264] 2026-05-19 09:31:43 [Assistant]: §13/§15 — knowledge-base-howto + processing-history RU+EN `terminalHints:` (Support ZIP hub). `npm run check:quiet` (273 / 1829).
+- [J-1265] 2026-05-19 09:33:30 [Assistant]: Cadence 1265 — commit J-1261..1264: workflow Help `terminalHints:` crosslinks (planner/editor/export/shell/knowledge); owner manual-owner sprite/mini-player; RELEASE/ARCHITECTURE/SOURCES. `npm run check:quiet` (273 / 1829).

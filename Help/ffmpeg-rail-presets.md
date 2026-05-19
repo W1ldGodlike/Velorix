@@ -22,4 +22,4 @@
 
 - Поля «дополнительно» — [processing-advanced-fields.md](processing-advanced-fields.md)
 - Аппаратное ускорение (ограничения) — [hardware-encoding.md](hardware-encoding.md)
-- Packaged smoke (export / ffmpeg / ffprobe / snapshot) — [owner-manual-smoke.md](owner-manual-smoke.md), [packaged-windows-smoke.md](packaged-windows-smoke.md); §21 e2e per-step `e2e <id>:` в `releaseSmoke:`.
+- Packaged smoke (export / ffmpeg / ffprobe / snapshot) — [owner-manual-smoke.md](owner-manual-smoke.md), [packaged-windows-smoke.md](packaged-windows-smoke.md); §21 e2e per-step `e2e <id>:` в `releaseSmoke:`; dev-блок `terminalHints:` (§8, 24 статьи) — [logging-and-diagnostics.md](logging-and-diagnostics.md).

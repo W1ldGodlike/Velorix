@@ -194,6 +194,7 @@ npm run verify:mac-unpacked
 - `npm run check:terminal-contract-hints-shards` — 35 shard-файлов, snapshot 1056+833 hints;
 - `npm run check:terminal-hints-locale` — `appSettingsTerminalHintsGuardHint` в `locales/{ru,en}/settings.json` (`formatTerminalContractHintsSettingsHelpClause`).
 - `npm run check:support-bundle-terminal-hints` — Support ZIP `diagnostics.txt` блок `terminalHints:` ↔ `formatTerminalContractHintsSupportZipLines` (`support-bundle.ts`, `main-diagnostics-service.ts`).
+- Help sync formatters в `terminal-contract-hints-meta.ts` (счётчик 24 статей): `formatTerminalContractHintsLoggingHelpDevGuardsLine`, `formatTerminalContractHintsAboutSupportZipTerminalHintsBullet`, `formatTerminalContractHintsFfmpegHelpSupportZipLine`, `formatTerminalContractHintsToolsHelpPackagedSmokeLine`, `formatTerminalContractHintsAboutSupportZipSectionsHint` — guard `check:help-terminal-hints-docs` сверяет snippet’ы в logging/about/ffmpeg/tools Help.
 
 Копирование из UI packaged-панели и блока **Ручной smoke** совпадает с форматом Support ZIP (`owner:` / `automated:` / `step [id]:`); packaged **Скопировать** и **Скопировать весь пакет** дописывают один блок **§21 packaged e2e (CI vs owner)** (`appendPackagedManualSmokeE2ePlanLines` в `packaged-manual-smoke-plain-text.ts`). В архиве `releaseSmoke:` — CI pipeline (`smoke:packaged-release`), layout win/linux/macos и тот же §21 appendix. См. `Help/owner-manual-smoke.md`, `Help/about-support-logs.md`, `Help/logging-and-diagnostics.md`.
 

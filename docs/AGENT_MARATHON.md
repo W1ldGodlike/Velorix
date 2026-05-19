@@ -19,9 +19,9 @@
 | Снимок тестов | **273** files / **1829** tests |
 | Спринт | §8 Help 24 статей + meta formatters (logging/about/ffmpeg/tools); About ZIP hint 24 Help; owner-smoke на железе; GUI Playwright позже |
 
-**Последние J:** [J-1257](../IMPLEMENTATION_JOURNAL.md) about-support `terminalHints:` bullet; [J-1258](../IMPLEMENTATION_JOURNAL.md) About ZIP hint + HW Help; [J-1259](../IMPLEMENTATION_JOURNAL.md) ffmpeg/tools Help 24 guards sync.
+**Последние J:** [J-1262](../IMPLEMENTATION_JOURNAL.md) planner + editor Help; [J-1263](../IMPLEMENTATION_JOURNAL.md) export/shell workflow Help; [J-1264](../IMPLEMENTATION_JOURNAL.md) knowledge + history Help.
 
-**Следующий cadence:** commit **J-1265**; push + re-anchor **J-1270**.
+**Следующий cadence:** push + re-anchor **J-1270** (commit **J-1265** — локально).
 
 ## Новый чат
 
