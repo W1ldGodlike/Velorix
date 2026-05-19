@@ -21,7 +21,7 @@ You should have `FluxAlloy.exe` and `resources/bin/{yt-dlp,ffmpeg,ffprobe}.exe`.
 
 ## Copy format and locales
 
-**Copy** in the packaged panel emits the same layout as Support ZIP: `owner:`, `automated:`, `doc:`, `ui:`, then `step [id]:`, then **§21 packaged e2e (CI vs owner)** (2/8/2 groups and per-step `e2e <id>:`). With **English UI**, strings come from `locales/en/win-packaged-manual-smoke.json`. The packaged block in the full owner bundle — [owner-manual-smoke.md](owner-manual-smoke.md). **Planned GUI e2e** (8 steps, Playwright later): `open-file`, `ytdlp`, `editor-dl`, `snapshot`, `export`, `knowledge`, `support-zip`, `settings`. Dev: `npm run check:packaged-manual-smoke-parity`, `npm run check:packaged-e2e-scenarios-registry` (per-step `e2e launch:` in `releaseSmoke:`), `check:help-workflow-smoke-crosslinks` (34 articles) — in `check:quiet`.
+**Copy** in the packaged panel emits the same layout as Support ZIP: `owner:`, `automated:`, `doc:`, `ui:`, then `step [id]:`, then **§21 packaged e2e (CI vs owner)** (2/8/2 groups and per-step `e2e <id>:`). With **English UI**, strings come from `locales/en/win-packaged-manual-smoke.json`. The packaged block in the full owner bundle — [owner-manual-smoke.md](owner-manual-smoke.md). **Planned GUI e2e** (8 steps, Playwright later): `open-file`, `ytdlp`, `editor-dl`, `snapshot`, `export`, `knowledge`, `support-zip`, `settings`. Dev: `npm run check:packaged-manual-smoke-parity`, `npm run check:packaged-e2e-scenarios-registry` (per-step `e2e launch:` in `releaseSmoke:`), `check:help-workflow-smoke-crosslinks` (44 articles) — in `check:quiet`.
 
 ## Short order
 

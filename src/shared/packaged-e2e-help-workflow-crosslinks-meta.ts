@@ -39,7 +39,9 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS = 
   'packaged-windows-smoke.md',
   '§21 e2e',
   'e2e <id>:',
-  'releaseSmoke:'
+  'releaseSmoke:',
+  'terminalHints:',
+  'logging-and-diagnostics.md'
 ] as const
 
 /** RU+EN workflow/export/downloads/terminal/theme/HW/shell/getting-started. */
@@ -77,13 +79,23 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS = [
   'Help/windows-shell-integration.md',
   'Help/en/windows-shell-integration.md',
   'Help/getting-started.md',
-  'Help/en/getting-started.md'
+  'Help/en/getting-started.md',
+  'Help/editor-workflow.md',
+  'Help/en/editor-workflow.md',
+  'Help/session-and-queues.md',
+  'Help/en/session-and-queues.md',
+  'Help/workspace-tabs.md',
+  'Help/en/workspace-tabs.md',
+  'Help/keyboard-shortcuts.md',
+  'Help/en/keyboard-shortcuts.md',
+  'Help/engines-update-paths.md',
+  'Help/en/engines-update-paths.md'
 ] as const
 
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT =
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS.length
 
-/** Sync с Help/locales (`34 articles` / `34 статьи`). */
+/** Sync с Help/locales (`44 articles` / `44 статьи`). */
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET = `${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT} articles`
 
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET = `${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT} статьи`
@@ -276,9 +288,18 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_EXTRA_SNIP
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH
 ] as const
 
-/** Parenthetical win packaged Help crosslinks count (`(34 articles)` / `(34 статьи)`). */
+/** Parenthetical win packaged Help crosslinks count (`(44 articles)` / `(44 статьи)`). */
 export function formatPackagedE2eHelpWorkflowCrosslinksPackagedWinCountParenthetical(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   return `(${pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)})`
+}
+
+/** §18 logging-and-diagnostics Help — §21 packaged e2e + workflow crosslinks (synced count). */
+export function formatPackagedE2eHelpWorkflowCrosslinksLoggingClause(
+  locale: PackagedE2eHelpWorkflowCrosslinksLocale
+): string {
+  const countSnippet = pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)
+  const quietTail = locale === 'ru' ? 'в `check:quiet`' : 'in `check:quiet`'
+  return `\`npm run check:packaged-e2e-scenarios-registry\`, \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` (${countSnippet}, ${quietTail})`
 }

@@ -18,7 +18,7 @@ The **Tools** menu has entries to open the log in your viewer and to build a **s
 - **`releaseSmoke:`** — CI packaged pipeline, win/linux/macos layout, and the same §21 e2e plan; see [about-support-logs.md](about-support-logs.md).
 - **`terminalHints:`** — dev §8 (`terminal-contract-hints-meta`, 35 shards / 1056+833 hints, `check:terminal-contract-hints-shards`, `check:support-bundle-terminal-hints` and other `check:quiet` guards); see [ffmpeg-terminal-hints.md](ffmpeg-terminal-hints.md).
 
-Dev: `npm run check:packaged-e2e-scenarios-registry`, `check:help-workflow-smoke-crosslinks` (34 articles, in `check:quiet`); §8 terminal — `check:terminal-contract-hints-shards` (35 shards, 1056+833 hints), `check:help-terminal-hints-docs` (24 articles), `check:support-bundle-terminal-hints`, `check:terminal-hints-locale` (Settings → Dependencies). UI **Copy** (packaged + owner bundle) appends **§21 packaged e2e (CI vs owner)**; Support ZIP includes **planned GUI e2e scope** (8 steps for future Playwright; 2 manual-owner: sprite, mini-player).
+Dev: `npm run check:packaged-e2e-scenarios-registry`, `check:help-workflow-smoke-crosslinks` (44 articles, in `check:quiet`); §8 terminal — `check:terminal-contract-hints-shards` (35 shards, 1056+833 hints), `check:help-terminal-hints-docs` (24 articles), `check:support-bundle-terminal-hints`, `check:terminal-hints-locale` (Settings → Dependencies). UI **Copy** (packaged + owner bundle) appends **§21 packaged e2e (CI vs owner)**; Support ZIP includes **planned GUI e2e scope** (8 steps for future Playwright; 2 manual-owner: sprite, mini-player).
 
 ## About dialog extras
 

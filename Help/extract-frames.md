@@ -14,4 +14,4 @@
 
 Пакетное «вытащить много кадров по расписанию» из меню **пока не подключено** — это отдельный сценарий из плана продукта. Сейчас доступен быстрый одиночный снимок из превью.
 
-См. [editor-workflow.md](editor-workflow.md). Packaged smoke шагов **snapshot** / спрайт §7.5 — [packaged-windows-smoke.md](packaged-windows-smoke.md), [owner-manual-smoke.md](owner-manual-smoke.md); §21 e2e per-step `e2e <id>:` в `releaseSmoke:`.
+См. [editor-workflow.md](editor-workflow.md). Packaged smoke шагов **snapshot** / спрайт §7.5 — [packaged-windows-smoke.md](packaged-windows-smoke.md), [owner-manual-smoke.md](owner-manual-smoke.md); §21 e2e per-step `e2e <id>:` в `releaseSmoke:`; dev-блок `terminalHints:` (§8) — [logging-and-diagnostics.md](logging-and-diagnostics.md).

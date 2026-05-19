@@ -20,4 +20,4 @@
 
 ## Дальше
 
-[getting-started.md](getting-started.md) · [downloads-workflow.md](downloads-workflow.md) · [editor-workflow.md](editor-workflow.md). Ручной smoke и §21 e2e — [owner-manual-smoke.md](owner-manual-smoke.md); packaged после сборки — [packaged-windows-smoke.md](packaged-windows-smoke.md).
+[getting-started.md](getting-started.md) · [downloads-workflow.md](downloads-workflow.md) · [editor-workflow.md](editor-workflow.md). Owner smoke и §21 e2e per-step `e2e <id>:` в `releaseSmoke:` — [owner-manual-smoke.md](owner-manual-smoke.md), [packaged-windows-smoke.md](packaged-windows-smoke.md); dev-блок `terminalHints:` (§8) — [logging-and-diagnostics.md](logging-and-diagnostics.md).

@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
 import {
@@ -29,6 +30,7 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_GUARD_HELP_PATHS,
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmeDevLine,
   formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine,
+  formatPackagedE2eHelpWorkflowCrosslinksLoggingClause,
   formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause,
   pickPackagedE2eHelpWorkflowCrosslinksCountSnippet,
   pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale
@@ -39,7 +41,7 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
     expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT).toBe(
       PACKAGED_E2E_HELP_WORKFLOW_CROSSLINK_ARTICLE_PATHS.length
     )
-    expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT).toBe(34)
+    expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT).toBe(44)
   })
 
   it('paths are unique Help markdown files', () => {
@@ -49,8 +51,8 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
   })
 
   it('exports Help/locale count snippets', () => {
-    expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET).toBe('34 articles')
-    expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET).toBe('34 статьи')
+    expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET).toBe('44 articles')
+    expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_SNIPPET).toBe('44 статьи')
   })
 
   it('anchor path lists cover Help count anchors and packaged windows', () => {
@@ -89,7 +91,10 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
   })
 
   it('exports workflow required snippets for crosslinks guard', () => {
-    expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS).toHaveLength(5)
+    expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS).toHaveLength(7)
+    expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS).toContain(
+      'terminalHints:'
+    )
     expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS).toContain(
       'releaseSmoke:'
     )
@@ -97,10 +102,10 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
 
   it('formats settings Help clause and owner Help paths from anchors', () => {
     expect(formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause('en')).toBe(
-      'Help: check:help-workflow-smoke-crosslinks (34 articles).'
+      'Help: check:help-workflow-smoke-crosslinks (44 articles).'
     )
     expect(formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause('ru')).toBe(
-      'Help: check:help-workflow-smoke-crosslinks (34 статьи).'
+      'Help: check:help-workflow-smoke-crosslinks (44 статьи).'
     )
     expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_PATHS).toEqual([
       PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS[0],
@@ -140,14 +145,22 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
       'packaged-manual-smoke-parity'
     )
     expect(formatPackagedE2eHelpWorkflowCrosslinksPackagedWinCountParenthetical('en')).toBe(
-      '(34 articles)'
+      '(44 articles)'
     )
+  })
+
+  it('formatPackagedE2eHelpWorkflowCrosslinksLoggingClause matches logging Help', () => {
+    for (const rel of ['Help/logging-and-diagnostics.md', 'Help/en/logging-and-diagnostics.md']) {
+      const locale = rel.includes('/en/') ? 'en' : 'ru'
+      const text = readFileSync(rel, 'utf8')
+      expect(text).toContain(formatPackagedE2eHelpWorkflowCrosslinksLoggingClause(locale))
+    }
   })
 
   it('formats bin/README dev line with meta module id', () => {
     const line = formatPackagedE2eHelpWorkflowCrosslinksBinReadmeDevLine()
     expect(line).toContain(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_META_MODULE)
-    expect(line).toContain('34 articles')
+    expect(line).toContain('44 articles')
     expect(line).toContain('workflow + packaged/owner anchors')
   })
 
@@ -156,7 +169,7 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
       'check:help-workflow-smoke-crosslinks'
     )
     expect(formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine('articles')).toContain(
-      '34 articles'
+      '44 articles'
     )
     expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_GUARD_HELP_PATHS).toHaveLength(8)
     expect([...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_GUARD_HELP_PATHS].sort()).toEqual(

@@ -26,6 +26,6 @@ Details: [hardware-encoding.md](hardware-encoding.md), [appearance-language-them
 
 **Copy full bundle** and Support ZIP `ownerManualSmoke:` end with **§21 packaged e2e (CI vs owner)** (`formatPackagedManualSmokeE2eAppendixLines`: ci-headless / planned-gui-e2e / manual-owner groups plus **12 lines** `e2e <stepId>: <automation> script=…`, e.g. `e2e launch: ci-headless script=smoke:packaged-app`); `releaseSmoke:` has the same diagnostics without the separate heading line.
 
-**Planned GUI e2e** (Playwright later; manual smoke today): `open-file`, `ytdlp`, `editor-dl`, `snapshot`, `export`, `knowledge`, `support-zip`, `settings`. **manual-owner** without GUI automation: `video-sprite`, `mini-player` (§7.5 / §4.3) — attach Support ZIP `terminalHints:` (§8, `check:help-terminal-hints-docs`, 24 articles). Step Help — [packaged-windows-smoke.md](../packaged-windows-smoke.md) and workflow articles (`check:help-workflow-smoke-crosslinks`, 34 articles).
+**Planned GUI e2e** (Playwright later; manual smoke today): `open-file`, `ytdlp`, `editor-dl`, `snapshot`, `export`, `knowledge`, `support-zip`, `settings`. **manual-owner** without GUI automation: `video-sprite`, `mini-player` (§7.5 / §4.3) — attach Support ZIP `terminalHints:` (§8, `check:help-terminal-hints-docs`, 24 articles). Step Help — [packaged-windows-smoke.md](../packaged-windows-smoke.md) and workflow articles (`check:help-workflow-smoke-crosslinks`, 44 articles).
 
 After the run, tick items in `IMPLEMENTATION_CHECKLIST.md` (owner smoke section) and attach a Support ZIP if you contact support.

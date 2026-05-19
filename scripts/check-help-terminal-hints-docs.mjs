@@ -29,6 +29,7 @@ import {
   formatTerminalContractHintsShardCountEnSnippet,
   formatTerminalContractHintsShardCountRuSnippet
 } from '../src/shared/terminal-contract-hints-meta.ts'
+import { formatPackagedE2eHelpWorkflowCrosslinksLoggingClause } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
 import { checkHelpSmokeDocFiles, checkHelpSmokeDocSnippet } from './lib/help-smoke-docs-check.mjs'
 import { REPO_ROOT } from './lib/repo-root.mjs'
 
@@ -114,6 +115,14 @@ failed =
 
 for (const rel of TERMINAL_CONTRACT_HINTS_LOGGING_DIAGNOSTICS_HELP_PATHS) {
   const locale = rel.includes('/en/') ? 'en' : 'ru'
+  failed =
+    checkHelpSmokeDocSnippet(
+      REPO_ROOT,
+      LOG_PREFIX,
+      rel,
+      formatPackagedE2eHelpWorkflowCrosslinksLoggingClause(locale),
+      'logging-packaged-workflow'
+    ) || failed
   failed =
     checkHelpSmokeDocSnippet(
       REPO_ROOT,

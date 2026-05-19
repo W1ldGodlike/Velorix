@@ -10,18 +10,18 @@
 
 **Журнал:** одна **J** только если в итерации был diff в репо — skill [`fluxalloy-journal-entry`](../.cursor/skills/fluxalloy-journal-entry/SKILL.md).
 
-## Re-anchor (J-1260)
+## Re-anchor (J-1270)
 
 | Поле | Значение |
 | --- | --- |
 | Дата | 2026-05-19 |
-| Ветка | `main` @ `cc119a4` (cadence commit+push J-1256..1259, J-1260) |
-| Снимок тестов | **273** files / **1829** tests |
-| Спринт | §8 Help 24 статей + meta formatters (logging/about/ffmpeg/tools); About ZIP hint 24 Help; owner-smoke на железе; GUI Playwright позже |
+| Ветка | `main` @ `pending` (cadence commit+push J-1266..1269, J-1270) |
+| Снимок тестов | **273** files / **1830** tests |
+| Спринт | §8/§15 workflow Help `terminalHints:` (30 тем); crosslinks guard **44** + `terminalHints:` snippets; `formatPackagedE2eHelpWorkflowCrosslinksLoggingClause`; owner-smoke на железе; GUI Playwright позже |
 
-**Последние J:** [J-1262](../IMPLEMENTATION_JOURNAL.md) planner + editor Help; [J-1263](../IMPLEMENTATION_JOURNAL.md) export/shell workflow Help; [J-1264](../IMPLEMENTATION_JOURNAL.md) knowledge + history Help.
+**Последние J:** [J-1268](../IMPLEMENTATION_JOURNAL.md) docs 44 workflow; [J-1269](../IMPLEMENTATION_JOURNAL.md) §8↔§21 logging DRY; [J-1270](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1266..1269.
 
-**Следующий cadence:** push + re-anchor **J-1270** (commit **J-1265** — локально).
+**Следующий cadence:** commit **J-1275**; push + re-anchor **J-1280**.
 
 ## Новый чат
 

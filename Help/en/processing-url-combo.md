@@ -13,4 +13,4 @@ Above the editor queue you will find a block for **one or more links**. It conne
 
 Matching history rows can be **replayed** — the app reopens this strip with the same address.
 
-See [session-and-queues.md](session-and-queues.md) and [downloads-workflow.md](downloads-workflow.md). Packaged smoke queue/ytdlp — [packaged-windows-smoke.md](../packaged-windows-smoke.md), [owner-manual-smoke.md](owner-manual-smoke.md); §21 e2e `e2e <id>:` in `releaseSmoke:`.
+See [session-and-queues.md](session-and-queues.md) and [downloads-workflow.md](downloads-workflow.md). Packaged smoke queue/ytdlp — [packaged-windows-smoke.md](../packaged-windows-smoke.md), [owner-manual-smoke.md](owner-manual-smoke.md); §21 e2e `e2e <id>:` in `releaseSmoke:`; dev block `terminalHints:` (§8) — [logging-and-diagnostics.md](logging-and-diagnostics.md).

@@ -14,4 +14,4 @@
 
 Отдельное окно **инспектора** открывается из меню **«Инструменты»**. Полный список пользовательских сочетаний с переназначением планируется вместе с окном настроек.
 
-См. также [workspace-tabs.md](workspace-tabs.md), [owner-manual-smoke.md](owner-manual-smoke.md) (полный ручной smoke в Support ZIP).
+См. также [workspace-tabs.md](workspace-tabs.md). Packaged/owner smoke и §21 e2e per-step `e2e <id>:` в `releaseSmoke:` — [owner-manual-smoke.md](owner-manual-smoke.md), [packaged-windows-smoke.md](packaged-windows-smoke.md); dev-блок `terminalHints:` (§8) — [logging-and-diagnostics.md](logging-and-diagnostics.md).

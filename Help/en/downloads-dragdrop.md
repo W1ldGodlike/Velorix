@@ -16,4 +16,4 @@ Drop onto free space on the tab (not directly on the text field):
 
 You can always paste with **Ctrl+V** while the caret is in the URL field, or use the app menu.
 
-More about the queue — [downloads-workflow.md](downloads-workflow.md). Packaged **ytdlp** after `pack:dir` — [packaged-windows-smoke.md](../packaged-windows-smoke.md); §21 e2e per-step `e2e <id>:` in `releaseSmoke:` — [owner-manual-smoke.md](owner-manual-smoke.md).
+More about the queue — [downloads-workflow.md](downloads-workflow.md). Packaged **ytdlp** after `pack:dir` — [packaged-windows-smoke.md](../packaged-windows-smoke.md); §21 e2e per-step `e2e <id>:` in `releaseSmoke:` — [owner-manual-smoke.md](owner-manual-smoke.md); dev block `terminalHints:` (§8) — [logging-and-diagnostics.md](logging-and-diagnostics.md).
