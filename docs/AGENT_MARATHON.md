@@ -10,18 +10,18 @@
 
 **Журнал:** одна **J** только если в итерации был diff в репо — skill [`fluxalloy-journal-entry`](../.cursor/skills/fluxalloy-journal-entry/SKILL.md).
 
-## Re-anchor (J-1290)
+## Re-anchor (J-1300)
 
 | Поле | Значение |
 | --- | --- |
 | Дата | 2026-05-19 |
-| Ветка | `main` @ `e1e6f3e` (cadence commit+push J-1286..1289, J-1290) |
+| Ветка | `main` @ `PLACEHOLDER_HASH` (cadence commit+push J-1296..1300, J-1300) |
 | Снимок тестов | **273** files / **1834** tests |
-| Спринт | §15/§21 workflow **44** (partition: tail 42 + ffmpeg + knowledge; FAQ вне 44); §8 `terminalHints:` 24 Help; `bin/README` partition; owner-smoke на железе; GUI Playwright позже |
+| Спринт | §15/§21 workflow **44** (partition в formatters: packaged/settings/logging/about); §8 `terminalHints:` 24 Help; owner-smoke на железе; GUI Playwright позже |
 
-**Последние J:** [J-1292](../IMPLEMENTATION_JOURNAL.md) `FfmpegTerminalWorkflowClause`; [J-1293](../IMPLEMENTATION_JOURNAL.md) `bin/README` partition; [J-1294](../IMPLEMENTATION_JOURNAL.md) `README.md`/`AGENTS.md` §21 guards.
+**Последние J:** [J-1298](../IMPLEMENTATION_JOURNAL.md) logging `LoggingClause`; [J-1299](../IMPLEMENTATION_JOURNAL.md) about-support partition; [J-1300](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1296..1300.
 
-**Следующий cadence:** commit **J-1295**; push + re-anchor **J-1300**.
+**Следующий cadence:** commit **J-1305**; push + re-anchor **J-1310**.
 
 ## Новый чат
 

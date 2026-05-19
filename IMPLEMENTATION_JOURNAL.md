@@ -1373,3 +1373,8 @@
 - [J-1293] 2026-05-19 11:19:03 [Assistant]: §19/§21 — `WORKFLOW_PARTITION_EN_SNIPPET` + `BinReadmeWorkflowPartitionLine`; guard `bin/README`; `formatPlatformPackagingDiagnosticLines`; `AGENT_MARATHON` sprint. `npm run check:quiet` (273 / 1834).
 - [J-1294] 2026-05-19 11:23:13 [Assistant]: §21 — `RootReadmePartitionLine` + `AgentsMdHelpLine`; guard `README.md`/`AGENTS.md`; Vitest; `AGENT_MARATHON`. `npm run check:quiet` (273 / 1834).
 - [J-1295] 2026-05-19 11:25:59 [Assistant]: Cadence 1295 — commit J-1291..1295: §21 workflow partition (tail 42+ffmpeg+knowledge; FAQ вне 44); guards tail/ffmpeg/README/AGENTS/bin; RELEASE. `npm run check:quiet` (273 / 1834).
+- [J-1296] 2026-05-19 11:31:28 [Assistant]: §19 — `PackagedCrosslinksPartitionNote` в `PackagedCrosslinksQuietSuffix`; Help packaged win/linux/macos RU+EN (6); guard `check:help-packaged-smoke-docs`; RELEASE. `npm run check:quiet` (273 / 1834).
+- [J-1297] 2026-05-19 11:35:33 [Assistant]: §2.2/§21 — `SettingsHelpClause` + partition; `appSettingsPackagedE2eRegistryGuardHint` RU+EN; `check:owner-visual-smoke-locale`; Vitest. `npm run check:quiet` (273 / 1834).
+- [J-1298] 2026-05-19 11:39:18 [Assistant]: §18 — `LoggingClause` + partition; logging-and-diagnostics RU+EN; guard `check:help-terminal-hints-docs`; SOURCES. `npm run check:quiet` (273 / 1834).
+- [J-1299] 2026-05-19 11:42:29 [Assistant]: §18 — `AboutSupportReleaseSmokeDevClause` + partition; about-support-logs RU+EN; guards workflow/owner-smoke. `npm run check:quiet` (273 / 1834).
+- [J-1300] 2026-05-19 11:45:30 [Assistant]: Cadence 1300 — commit+push J-1296..1300: partition в packaged/settings/logging/about formatters; re-anchor `AGENT_MARATHON`. `npm run check:quiet` (273 / 1834).

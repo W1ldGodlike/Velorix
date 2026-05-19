@@ -140,7 +140,9 @@ export function pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(
 export function formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
-  return `Help: ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT} (${pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)}).`
+  const countSnippet = pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)
+  const partition = formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote(locale)
+  return `Help: ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT} (${countSnippet}; ${partition}).`
 }
 
 /** Platform-packaging / §21 e2e diagnostics (`Help articles` vs `articles` label). */
@@ -373,7 +375,8 @@ export function formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeD
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   const countSnippet = pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)
-  return `dev: \`check:packaged-e2e-scenarios-registry\`, \`check:help-workflow-smoke-crosslinks\` (${countSnippet}).`
+  const partition = formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote(locale)
+  return `dev: \`check:packaged-e2e-scenarios-registry\`, \`check:help-workflow-smoke-crosslinks\` (${countSnippet}; ${partition}).`
 }
 
 /** Knowledge hub — workflow + terminal hints dev guards (§13/§15). */
@@ -399,14 +402,24 @@ export function formatPackagedE2eHelpWorkflowCrosslinksPackagedHelpDiagnosticLin
   return `packaged Help docs: npm run check:help-packaged-smoke-docs (${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT} workflow crosslinks, ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ALL_PACKAGED_HELP_PATHS.length} articles)`
 }
 
+/** Packaged smoke Help — workflow crosslinks partition note (§19/§21). */
+export function formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote(
+  locale: PackagedE2eHelpWorkflowCrosslinksLocale
+): string {
+  return locale === 'ru'
+    ? 'partition: tail 42 + ffmpeg + knowledge, FAQ вне 44'
+    : 'partition: tail 42 + ffmpeg + knowledge, FAQ outside 44'
+}
+
 /** Packaged smoke Help (win/linux/macos) — workflow crosslinks guard tail in `check:quiet`. */
 export function formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   const countSnippet = pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)
+  const partition = formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote(locale)
   return locale === 'ru'
-    ? `\`check:help-workflow-smoke-crosslinks\` (${countSnippet}) — в \`check:quiet\``
-    : `\`check:help-workflow-smoke-crosslinks\` (${countSnippet}) — in \`check:quiet\``
+    ? `\`check:help-workflow-smoke-crosslinks\` (${countSnippet}; ${partition}) — в \`check:quiet\``
+    : `\`check:help-workflow-smoke-crosslinks\` (${countSnippet}; ${partition}) — in \`check:quiet\``
 }
 
 /** §18 logging-and-diagnostics Help — §21 packaged e2e + workflow crosslinks (synced count). */
@@ -414,6 +427,7 @@ export function formatPackagedE2eHelpWorkflowCrosslinksLoggingClause(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   const countSnippet = pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)
+  const partition = formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote(locale)
   const quietTail = locale === 'ru' ? 'в `check:quiet`' : 'in `check:quiet`'
-  return `\`npm run check:packaged-e2e-scenarios-registry\`, \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` (${countSnippet}, ${quietTail})`
+  return `\`npm run check:packaged-e2e-scenarios-registry\`, \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` (${countSnippet}; ${partition}, ${quietTail})`
 }

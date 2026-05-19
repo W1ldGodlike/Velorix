@@ -6,7 +6,7 @@
 
 ## Готовность полного итога
 
-- **Оценка: ~67%** (J-1295; §21 workflow partition guards закоммичены; owner-smoke на железе). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16, утилиты §17, диагностика §18, CI/release + owner/packaging/e2e guards в `check:quiet`. Впереди: owner-smoke на железе, packaged mac/linux, GUI Playwright §21.
+- **Оценка: ~67%** (J-1300; §21 partition sync packaged/UI/logging/about; push+re-anchor; owner-smoke на железе). Ядро Electron/React/Zustand, yt-dlp §6, ffmpeg export + **пакет §7.3**, терминал §8, инспектор §9, workflow §10–11, истории §13, shell §14, Help §15, HW §16, утилиты §17, диагностика §18, CI/release + owner/packaging/e2e guards в `check:quiet`. Впереди: owner-smoke на железе, packaged mac/linux, GUI Playwright §21.
 
 ## Легенда
 

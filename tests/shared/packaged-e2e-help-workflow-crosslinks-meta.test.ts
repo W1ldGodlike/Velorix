@@ -46,6 +46,7 @@ import {
   formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine,
   formatPackagedE2eHelpWorkflowCrosslinksLoggingClause,
   formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix,
+  formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote,
   formatPackagedE2eHelpWorkflowCrosslinksHelpCrosslinksCountTail,
   formatPackagedE2eHelpWorkflowCrosslinksOwnerManualSmokeWorkflowArticlesClause,
   formatPackagedE2eHelpWorkflowCrosslinksAboutSupportReleaseSmokeDevClause,
@@ -153,10 +154,10 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
 
   it('formats settings Help clause and owner Help paths from anchors', () => {
     expect(formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause('en')).toBe(
-      'Help: check:help-workflow-smoke-crosslinks (44 articles).'
+      `Help: check:help-workflow-smoke-crosslinks (44 articles; ${formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote('en')}).`
     )
     expect(formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause('ru')).toBe(
-      'Help: check:help-workflow-smoke-crosslinks (44 статьи).'
+      `Help: check:help-workflow-smoke-crosslinks (44 статьи; ${formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote('ru')}).`
     )
     expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_PATHS).toEqual([
       PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_RU_ANCHOR_PATHS[0],
@@ -250,6 +251,9 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
   })
 
   it('formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix matches packaged Help', () => {
+    expect(formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksPartitionNote('en')).toContain(
+      'FAQ outside 44'
+    )
     for (const rel of [
       'Help/packaged-windows-smoke.md',
       'Help/packaged-linux-smoke.md',
