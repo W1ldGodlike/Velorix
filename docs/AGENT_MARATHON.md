@@ -10,18 +10,18 @@
 
 **Журнал:** одна **J** только если в итерации был diff в репо — skill [`fluxalloy-journal-entry`](../.cursor/skills/fluxalloy-journal-entry/SKILL.md).
 
-## Re-anchor (J-1270)
+## Re-anchor (J-1280)
 
 | Поле | Значение |
 | --- | --- |
 | Дата | 2026-05-19 |
-| Ветка | `main` @ `00f863b` (cadence commit+push J-1266..1269, J-1270) |
-| Снимок тестов | **273** files / **1830** tests |
-| Спринт | §8/§15 workflow Help `terminalHints:` (30 тем); crosslinks guard **44** + `terminalHints:` snippets; `formatPackagedE2eHelpWorkflowCrosslinksLoggingClause`; owner-smoke на железе; GUI Playwright позже |
+| Ветка | `main` @ `7be4b9a` (cadence commit+push J-1276..1279, J-1280) |
+| Снимок тестов | **273** files / **1834** tests |
+| Спринт | §15 Help crosslinks **44** (`HelpCrosslinksCountTail`, `PackagedCrosslinksQuietSuffix`, packaged linux/macos); §8 `terminalHints:` guards 24 Help; owner-smoke на железе; GUI Playwright §21 позже |
 
-**Последние J:** [J-1268](../IMPLEMENTATION_JOURNAL.md) docs 44 workflow; [J-1269](../IMPLEMENTATION_JOURNAL.md) §8↔§21 logging DRY; [J-1270](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1266..1269.
+**Последние J:** [J-1278](../IMPLEMENTATION_JOURNAL.md) downloads-workflow 44 tail; [J-1279](../IMPLEMENTATION_JOURNAL.md) SOURCES/ARCHITECTURE formatters; [J-1280](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1276..1279.
 
-**Следующий cadence:** commit **J-1280** (накопленное); push + re-anchor **J-1280**.
+**Следующий cadence:** commit **J-1285**; push + re-anchor **J-1290**.
 
 ## Новый чат
 
