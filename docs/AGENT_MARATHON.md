@@ -15,7 +15,7 @@
 | Поле | Значение |
 | --- | --- |
 | Дата | 2026-05-19 |
-| Ветка | `main` @ `PLACEHOLDER_HASH` (cadence commit+push J-1296..1300, J-1300) |
+| Ветка | `main` @ `ea4b854` (cadence commit+push J-1296..1300, J-1300) |
 | Снимок тестов | **273** files / **1834** tests |
 | Спринт | §15/§21 workflow **44** (partition в formatters: packaged/settings/logging/about); §8 `terminalHints:` 24 Help; owner-smoke на железе; GUI Playwright позже |
 
