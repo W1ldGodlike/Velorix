@@ -12,6 +12,6 @@ describe('check:help-packaged-smoke-docs §15', () => {
     expect(result).toContain(
       `${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ALL_PACKAGED_HELP_PATHS.length} files`
     )
-    expect(result).toContain('win crosslinks count')
+    expect(result).toContain('crosslinks count 44')
   })
 })

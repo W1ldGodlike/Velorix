@@ -15,6 +15,7 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_NPM_SCRIPTS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_QUIET_STEP_LABELS,
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmeGuardsLine,
+  formatPackagedE2eHelpWorkflowCrosslinksBinReadmePackagedQuietLine,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LOGGING_HELP_REQUIRED_SNIPPETS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_REQUIRED_SNIPPETS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_PATHS,
@@ -31,6 +32,7 @@ import {
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmeDevLine,
   formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine,
   formatPackagedE2eHelpWorkflowCrosslinksLoggingClause,
+  formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix,
   formatPackagedE2eHelpWorkflowCrosslinksSettingsHelpClause,
   pickPackagedE2eHelpWorkflowCrosslinksCountSnippet,
   pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale
@@ -149,12 +151,36 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
     )
   })
 
+  it('formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix matches packaged Help', () => {
+    for (const rel of [
+      'Help/packaged-windows-smoke.md',
+      'Help/packaged-linux-smoke.md',
+      'Help/packaged-macos-smoke.md',
+      'Help/en/packaged-windows-smoke.md',
+      'Help/en/packaged-linux-smoke.md',
+      'Help/en/packaged-macos-smoke.md'
+    ]) {
+      const locale = rel.includes('/en/') ? 'en' : 'ru'
+      const text = readFileSync(rel, 'utf8')
+      expect(text).toContain(
+        formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix(locale)
+      )
+    }
+  })
+
   it('formatPackagedE2eHelpWorkflowCrosslinksLoggingClause matches logging Help', () => {
     for (const rel of ['Help/logging-and-diagnostics.md', 'Help/en/logging-and-diagnostics.md']) {
       const locale = rel.includes('/en/') ? 'en' : 'ru'
       const text = readFileSync(rel, 'utf8')
       expect(text).toContain(formatPackagedE2eHelpWorkflowCrosslinksLoggingClause(locale))
     }
+  })
+
+  it('formats bin/README packaged quiet line', () => {
+    const line = formatPackagedE2eHelpWorkflowCrosslinksBinReadmePackagedQuietLine()
+    expect(line).toContain('check:help-packaged-smoke-docs')
+    expect(line).toContain('formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix')
+    expect(readFileSync('bin/README.md', 'utf8')).toContain(line)
   })
 
   it('formats bin/README dev line with meta module id', () => {

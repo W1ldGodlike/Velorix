@@ -87,7 +87,7 @@ describe('packaged-e2e-smoke-scenarios §21', () => {
   })
 
   it('exports Help workflow crosslinks article count from path registry', () => {
-    expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT).toBeGreaterThan(0)
+    expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT).toBe(44)
   })
 
   it('per-step diagnostic lines cover every registry entry', () => {

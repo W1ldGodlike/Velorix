@@ -15,6 +15,7 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT,
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmeDevLine,
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmeGuardsLine,
+  formatPackagedE2eHelpWorkflowCrosslinksBinReadmePackagedQuietLine,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS,
   pickPackagedE2eHelpWorkflowCrosslinksCountSnippet
 } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
@@ -69,6 +70,14 @@ if (!binReadmeText.includes(binReadmeGuardsLine)) {
   failed = true
   console.error(
     `[check:help-workflow-smoke-crosslinks] ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH} missing guards line: ${binReadmeGuardsLine}`
+  )
+}
+const binReadmePackagedQuietLine =
+  formatPackagedE2eHelpWorkflowCrosslinksBinReadmePackagedQuietLine()
+if (!binReadmeText.includes(binReadmePackagedQuietLine)) {
+  failed = true
+  console.error(
+    `[check:help-workflow-smoke-crosslinks] ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH} missing packaged quiet line: ${binReadmePackagedQuietLine}`
   )
 }
 for (const snippet of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_REQUIRED_SNIPPETS) {

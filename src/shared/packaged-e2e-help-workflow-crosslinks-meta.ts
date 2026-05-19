@@ -135,12 +135,19 @@ export function formatPackagedE2eHelpWorkflowCrosslinksDiagnosticLine(
 /** Required substrings in `bin/README.md` (§21 crosslinks dev line). */
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_REQUIRED_SNIPPETS = [
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_META_MODULE,
-  'workflow + packaged/owner anchors'
+  'workflow + packaged/owner anchors',
+  'formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix',
+  'check:help-packaged-smoke-docs'
 ] as const
 
 /** Markdown bullet for `bin/README.md` (sync with guard snippets). */
 export function formatPackagedE2eHelpWorkflowCrosslinksBinReadmeDevLine(): string {
   return `- Help §21 crosslinks: \`npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` — канон \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_META_MODULE}\` (${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET}: workflow + packaged/owner anchors).`
+}
+
+/** bin/README — packaged Help crosslinks quiet suffix (6 articles, 44 workflow). */
+export function formatPackagedE2eHelpWorkflowCrosslinksBinReadmePackagedQuietLine(): string {
+  return `- Packaged Help (win/linux/macos): \`npm run check:help-packaged-smoke-docs\` — \`formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix\` (${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_COUNT_EN_SNIPPET}, 6 articles).`
 }
 
 /** bin/README — Help smoke guards block in `check:quiet`. */
@@ -288,11 +295,21 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_EXTRA_SNIP
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH
 ] as const
 
-/** Parenthetical win packaged Help crosslinks count (`(44 articles)` / `(44 статьи)`). */
+/** Parenthetical packaged Help crosslinks count (`(44 articles)` / `(44 статьи)`). */
 export function formatPackagedE2eHelpWorkflowCrosslinksPackagedWinCountParenthetical(
   locale: PackagedE2eHelpWorkflowCrosslinksLocale
 ): string {
   return `(${pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)})`
+}
+
+/** Packaged smoke Help (win/linux/macos) — workflow crosslinks guard tail in `check:quiet`. */
+export function formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix(
+  locale: PackagedE2eHelpWorkflowCrosslinksLocale
+): string {
+  const countSnippet = pickPackagedE2eHelpWorkflowCrosslinksCountSnippetByLocale(locale)
+  return locale === 'ru'
+    ? `\`check:help-workflow-smoke-crosslinks\` (${countSnippet}) — в \`check:quiet\``
+    : `\`check:help-workflow-smoke-crosslinks\` (${countSnippet}) — in \`check:quiet\``
 }
 
 /** §18 logging-and-diagnostics Help — §21 packaged e2e + workflow crosslinks (synced count). */

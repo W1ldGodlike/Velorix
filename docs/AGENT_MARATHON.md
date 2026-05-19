@@ -21,7 +21,7 @@
 
 **Последние J:** [J-1268](../IMPLEMENTATION_JOURNAL.md) docs 44 workflow; [J-1269](../IMPLEMENTATION_JOURNAL.md) §8↔§21 logging DRY; [J-1270](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1266..1269.
 
-**Следующий cadence:** commit **J-1275**; push + re-anchor **J-1280**.
+**Следующий cadence:** commit **J-1280** (накопленное); push + re-anchor **J-1280**.
 
 ## Новый чат
 

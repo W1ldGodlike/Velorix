@@ -7,7 +7,7 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_EXTRA_SNIPPETS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_PATHS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_WIN_PATHS,
-  formatPackagedE2eHelpWorkflowCrosslinksPackagedWinCountParenthetical
+  formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix
 } from '../src/shared/packaged-e2e-help-workflow-crosslinks-meta.ts'
 import { checkHelpSmokeDocFiles, checkHelpSmokeDocSnippet } from './lib/help-smoke-docs-check.mjs'
 import { REPO_ROOT } from './lib/repo-root.mjs'
@@ -57,15 +57,18 @@ failed =
     PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_EXTRA_SNIPPETS,
     'mac/linux'
   ) || failed
-for (const rel of PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_WIN_PATHS) {
+for (const rel of [
+  ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_WIN_PATHS,
+  ...PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_PATHS
+]) {
   const locale = rel.includes('/en/') ? 'en' : 'ru'
   failed =
     checkHelpSmokeDocSnippet(
       REPO_ROOT,
       LOG_PREFIX,
       rel,
-      formatPackagedE2eHelpWorkflowCrosslinksPackagedWinCountParenthetical(locale),
-      'win-count'
+      formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix(locale),
+      'crosslinks-quiet-suffix'
     ) || failed
 }
 
@@ -73,5 +76,5 @@ if (failed) {
   process.exit(1)
 }
 console.log(
-  `[check:help-packaged-smoke-docs] OK (${PACKAGED_HELP_FILES.length} files; win ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_BASE_REQUIRED_SNIPPETS.length} + mac/linux ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_BASE_REQUIRED_SNIPPETS.length}/${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_EXTRA_SNIPPETS.length} snippets; win crosslinks count)`
+  `[check:help-packaged-smoke-docs] OK (${PACKAGED_HELP_FILES.length} files; win ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_BASE_REQUIRED_SNIPPETS.length} + mac/linux ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_BASE_REQUIRED_SNIPPETS.length}/${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_MAC_LINUX_EXTRA_SNIPPETS.length} snippets; crosslinks count 44)`
 )
