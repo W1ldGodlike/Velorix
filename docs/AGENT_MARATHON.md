@@ -15,7 +15,7 @@
 | Поле | Значение |
 | --- | --- |
 | Дата | 2026-05-19 |
-| Ветка | `main` @ `15d96a4` (cadence J-1326..1330 §21 Playwright UI registry/docs) |
+| Ветка | `main` @ `2188aa9` (cadence J-1326..1330 §21 Playwright UI registry/docs) |
 | Снимок тестов | **276** files / **1851** tests |
 | Спринт | §21 UI hints settings/owner/about/ARCHITECTURE/RELEASE/bin [x]; `test:e2e:gui` в package.json [ ]; owner-smoke/packaged на железе — владелец |
 
