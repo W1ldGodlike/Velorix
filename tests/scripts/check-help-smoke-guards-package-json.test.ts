@@ -9,5 +9,6 @@ describe('check:help-smoke-guards-package-json §15', () => {
     expect(result).toContain('[check:help-smoke-guards-package-json] OK')
     expect(result).toContain('quiet order')
     expect(result).toContain('4 Help guards')
+    expect(result).toContain('partition in 44 workflow')
   })
 })

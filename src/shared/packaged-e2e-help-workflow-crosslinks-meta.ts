@@ -39,6 +39,10 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ROOT_README_PATH = 'README.md
 /** Agent handoff — workflow crosslinks guard (§21). */
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_AGENTS_MD_PATH = 'AGENTS.md' as const
 
+/** Required in each of 44 workflow Help articles (`WORKFLOW_REQUIRED_SNIPPETS` + Vitest). */
+export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_REQUIRED_SNIPPET =
+  'partition:' as const
+
 /** Required substrings in each workflow Help article (`check:help-workflow-smoke-crosslinks`). */
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS = [
   'owner-manual-smoke.md',
@@ -48,7 +52,7 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS = 
   'releaseSmoke:',
   'terminalHints:',
   'logging-and-diagnostics.md',
-  'partition:'
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_REQUIRED_SNIPPET
 ] as const
 
 /** RU+EN workflow/export/downloads/terminal/theme/HW/shell/getting-started. */
@@ -161,6 +165,7 @@ export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET
 export const PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_REQUIRED_SNIPPETS = [
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_META_MODULE,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET,
+  'formatPackagedE2eHelpWorkflowCrosslinksBinReadmePartitionGuardLine',
   'formatPackagedE2eHelpWorkflowCrosslinksPackagedCrosslinksQuietSuffix',
   'check:help-packaged-smoke-docs'
 ] as const
@@ -175,14 +180,14 @@ export function formatPackagedE2eHelpWorkflowCrosslinksBinReadmeWorkflowPartitio
   return `- Workflow crosslinks partition (44): ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET}.`
 }
 
-/** Root README — §21 workflow crosslinks (partition). */
+/** Root README — §21 workflow crosslinks (partition + registry guard). */
 export function formatPackagedE2eHelpWorkflowCrosslinksRootReadmePartitionLine(): string {
-  return `- Help §21: \`npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` (44 workflow; ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET}).`
+  return `- Help §21: \`npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` (44 workflow; ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET}); registry \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_REGISTRY_NPM_SCRIPT}\` requires \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_REQUIRED_SNIPPET}\` in all ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT} workflow Help.`
 }
 
-/** AGENTS.md — §21 workflow crosslinks guard. */
+/** AGENTS.md — §21 workflow crosslinks guard + partition registry. */
 export function formatPackagedE2eHelpWorkflowCrosslinksAgentsMdHelpLine(): string {
-  return `**Help §21:** \`npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` (44 workflow; ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET}).`
+  return `**Help §21:** \`npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_GUARD_NPM_SCRIPT}\` (44 workflow; ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET}); registry \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_REGISTRY_NPM_SCRIPT}\` requires \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_REQUIRED_SNIPPET}\` in all ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT} workflow Help.`
 }
 
 /** bin/README — packaged Help crosslinks quiet suffix (6 articles, 44 workflow). */
@@ -196,6 +201,11 @@ export function formatPackagedE2eHelpWorkflowCrosslinksBinReadmeGuardsLine(): st
     (s) => `\`npm run ${s}\``
   ).join(', ')
   return `- Help smoke guards (\`check:quiet\`): registry \`npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_REGISTRY_NPM_SCRIPT}\`, then ${docGuards}.`
+}
+
+/** bin/README — registry guard requires partition in all workflow Help. */
+export function formatPackagedE2eHelpWorkflowCrosslinksBinReadmePartitionGuardLine(): string {
+  return `- Help workflow partition guard (\`formatPackagedE2eHelpWorkflowCrosslinksBinReadmePartitionGuardLine\`): \`npm run ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_REGISTRY_NPM_SCRIPT}\` requires \`${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_REQUIRED_SNIPPET}\` in all ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ARTICLE_COUNT} workflow Help.`
 }
 
 /** Help §15 anchor articles with explicit crosslinks count (RU). */

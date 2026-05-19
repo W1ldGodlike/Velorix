@@ -1383,3 +1383,8 @@
 - [J-1303] 2026-05-19 12:03:33 [Assistant]: §8/§21 — `FfmpegTerminalWorkflowClause` + partition; ffmpeg-terminal-hints RU+EN; `partition:` в `WORKFLOW_REQUIRED_SNIPPETS` (44 workflow). `npm run check:quiet` (273 / 1834).
 - [J-1304] 2026-05-19 12:08:39 [Assistant]: §21 docs — `ARCHITECTURE`/`SOURCES_OF_TRUTH` partition + `partition:` guard; Vitest 44×`partition:` (merged `it` для audit). `npm run check:quiet` (273 / 1833).
 - [J-1305] 2026-05-19 12:11:20 [Assistant]: Cadence 1305 — commit J-1301..1305: partition во всех 44 workflow (`HelpCrosslinksCountTail`, `FfmpegTerminalWorkflowClause`, knowledge/owner); guards + docs. `npm run check:quiet` (273 / 1833).
+- [J-1306] 2026-05-19 12:17:51 [Assistant]: §21 — `WORKFLOW_PARTITION_REQUIRED_SNIPPET` + registry guard; platform-packaging diagnostic; sprint §21 guards [x], GUI Playwright отдельно. `npm run check:quiet` (273 / 1833).
+- [J-1307] 2026-05-19 12:22:20 [Assistant]: §21 — `BinReadmePartitionGuardLine` + guard loop; bin/README; sprint §21 [x]/GUI отдельно; SOURCES/ARCHITECTURE. `npm run check:quiet` (273 / 1833).
+- [J-1308] 2026-05-19 12:27:39 [Assistant]: §21 — `AgentsMdHelpLine` + partition registry; `BIN_README_REQUIRED_SNIPPETS`; RELEASE/AGENTS; formatter sync. `npm run check:quiet` (273 / 1833).
+- [J-1309] 2026-05-19 12:30:56 [Assistant]: §21 — `RootReadmePartitionLine` + partition registry; `README.md`; RELEASE sync. `npm run check:quiet` (273 / 1833).
+- [J-1310] 2026-05-19 12:33:48 [Assistant]: Cadence 1310 — commit+push J-1306..1310: partition registry guards (meta/bin/README/AGENTS/README); re-anchor `AGENT_MARATHON`. `npm run check:quiet` (273 / 1833).

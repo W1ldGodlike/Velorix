@@ -16,6 +16,7 @@ import {
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmeDevLine,
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmeGuardsLine,
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmePackagedQuietLine,
+  formatPackagedE2eHelpWorkflowCrosslinksBinReadmePartitionGuardLine,
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmeWorkflowPartitionLine,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_ROOT_README_PATH,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_AGENTS_MD_PATH,
@@ -93,6 +94,14 @@ if (!binReadmeText.includes(binReadmePartitionLine)) {
   failed = true
   console.error(
     `[check:help-workflow-smoke-crosslinks] ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH} missing partition line: ${binReadmePartitionLine}`
+  )
+}
+const binReadmePartitionGuardLine =
+  formatPackagedE2eHelpWorkflowCrosslinksBinReadmePartitionGuardLine()
+if (!binReadmeText.includes(binReadmePartitionGuardLine)) {
+  failed = true
+  console.error(
+    `[check:help-workflow-smoke-crosslinks] ${PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_BIN_README_PATH} missing partition guard line: ${binReadmePartitionGuardLine}`
   )
 }
 const binReadmePackagedQuietLine =

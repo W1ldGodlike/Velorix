@@ -8,6 +8,8 @@
 
 **Проверки:** `npm run check:quiet` перед cadence-commit (`J-NNN`: `NNN % 5` commit, `NNN % 10` push); полный `npm run check` — релиз или по запросу.
 
+**Help §21:** `npm run check:help-workflow-smoke-crosslinks` (44 workflow; tail 42 HelpCrosslinksCountTail + ffmpeg FfmpegTerminalWorkflowClause + knowledge KnowledgeHubDevClause (FAQ 2 in tail, outside 44)); registry `check:help-smoke-guards-package-json` requires `partition:` in all 44 workflow Help.
+
 ## Cursor Cloud specific instructions
 
 **Окружение:** Node.js 24 (nvm), npm. Зависимости: `npm install`.

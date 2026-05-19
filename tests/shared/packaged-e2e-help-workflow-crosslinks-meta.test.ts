@@ -22,6 +22,7 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_NPM_SCRIPTS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_HELP_GUARD_QUIET_STEP_LABELS,
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmeGuardsLine,
+  formatPackagedE2eHelpWorkflowCrosslinksBinReadmePartitionGuardLine,
   formatPackagedE2eHelpWorkflowCrosslinksBinReadmePackagedQuietLine,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_LOGGING_HELP_REQUIRED_SNIPPETS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PLANNER_HELP_REQUIRED_SNIPPETS,
@@ -35,6 +36,7 @@ import {
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_PACKAGED_BASE_REQUIRED_SNIPPETS,
   formatPackagedE2eHelpWorkflowCrosslinksPackagedWinCountParenthetical,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_HELP_PATHS,
+  PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_REQUIRED_SNIPPET,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_META_MODULE,
   PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_OWNER_GUARD_HELP_PATHS,
@@ -141,7 +143,9 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
 
   it('exports workflow required snippets for crosslinks guard', () => {
     expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS).toHaveLength(8)
-    expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS).toContain('partition:')
+    expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS).toContain(
+      PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_REQUIRED_SNIPPET
+    )
     expect(PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_REQUIRED_SNIPPETS).toContain(
       'terminalHints:'
     )
@@ -297,10 +301,15 @@ describe('packaged-e2e-help-workflow-crosslinks-meta §15/§21', () => {
     expect(partitionLine).toContain(
       PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_EN_SNIPPET
     )
+    const partitionGuardLine = formatPackagedE2eHelpWorkflowCrosslinksBinReadmePartitionGuardLine()
+    expect(partitionGuardLine).toContain(
+      PACKAGED_E2E_HELP_WORKFLOW_CROSSLINKS_WORKFLOW_PARTITION_REQUIRED_SNIPPET
+    )
     const readme = readFileSync('bin/README.md', 'utf8')
     expect(readme).toContain(quietLine)
     expect(readme).toContain(devLine)
     expect(readme).toContain(partitionLine)
+    expect(readme).toContain(partitionGuardLine)
     const rootLine = formatPackagedE2eHelpWorkflowCrosslinksRootReadmePartitionLine()
     expect(readFileSync('README.md', 'utf8')).toContain(rootLine)
     const agentsLine = formatPackagedE2eHelpWorkflowCrosslinksAgentsMdHelpLine()
