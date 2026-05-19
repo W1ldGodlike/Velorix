@@ -10,16 +10,16 @@
 
 **Журнал:** одна **J** только если в итерации был diff в репо — skill [`fluxalloy-journal-entry`](../.cursor/skills/fluxalloy-journal-entry/SKILL.md).
 
-## Re-anchor (J-1190)
+## Re-anchor (J-1200)
 
 | Поле | Значение |
 | --- | --- |
 | Дата | 2026-05-19 |
-| Ветка | `main` (cadence commit+push J-1186..1190) |
-| Снимок тестов | **265** files / **1784** tests |
-| Спринт | §21 registry/guards/Help [x] в коде; GUI Playwright позже; §19 `bin/` macOS/Linux; owner-smoke на железе |
+| Ветка | `main` (cadence commit+push J-1196..1200) |
+| Снимок тестов | **266** files / **1785** tests |
+| Спринт | Help §21 crosslinks guard **26** статей; owner-smoke на железе; GUI Playwright §21 позже; §19 packaged mac/linux приёмка — владелец |
 
-**Последние J:** [J-1188](../IMPLEMENTATION_JOURNAL.md) logging/workflows Help; [J-1189](../IMPLEMENTATION_JOURNAL.md) engines Help + RELEASE; [J-1190](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1186..1190.
+**Последние J:** [J-1198](../IMPLEMENTATION_JOURNAL.md) processing-history/shell Help; [J-1199](../IMPLEMENTATION_JOURNAL.md) dragdrop/terminal-hints Help; [J-1200](../IMPLEMENTATION_JOURNAL.md) cadence commit+push J-1196..1200.
 
 ## Новый чат
 

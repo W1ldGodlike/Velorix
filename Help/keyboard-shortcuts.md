@@ -14,4 +14,4 @@
 
 Отдельное окно **инспектора** открывается из меню **«Инструменты»**. Полный список пользовательских сочетаний с переназначением планируется вместе с окном настроек.
 
-См. также [workspace-tabs.md](workspace-tabs.md).
+См. также [workspace-tabs.md](workspace-tabs.md), [owner-manual-smoke.md](owner-manual-smoke.md) (полный ручной smoke в Support ZIP).

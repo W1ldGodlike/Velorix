@@ -14,7 +14,25 @@ const WORKFLOW_HELP_FILES = [
   'Help/en/downloads-workflow.md',
   'Help/en/ffmpeg-rail-presets.md',
   'Help/en/probe-and-inspector-basics.md',
-  'Help/en/workflows-planner-scenarios.md'
+  'Help/en/workflows-planner-scenarios.md',
+  'Help/knowledge-base-howto.md',
+  'Help/en/knowledge-base-howto.md',
+  'Help/extract-frames.md',
+  'Help/processing-social-presets.md',
+  'Help/en/extract-frames.md',
+  'Help/en/processing-social-presets.md',
+  'Help/processing-history.md',
+  'Help/downloads-settings-rail.md',
+  'Help/en/processing-history.md',
+  'Help/en/downloads-settings-rail.md',
+  'Help/downloads-dragdrop.md',
+  'Help/processing-url-combo.md',
+  'Help/ffmpeg-terminal-hints.md',
+  'Help/en/downloads-dragdrop.md',
+  'Help/en/processing-url-combo.md',
+  'Help/en/ffmpeg-terminal-hints.md',
+  'Help/processing-advanced-fields.md',
+  'Help/en/processing-advanced-fields.md'
 ]
 
 const SNIPPETS = [

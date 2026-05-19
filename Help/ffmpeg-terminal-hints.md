@@ -10,6 +10,8 @@
 
 Частые теги ffmpeg: `-i`, `-map`, `-c:v copy`, `-ss`, `-t`, аппаратные кодеки `*_nvenc`/`*_amf`/`*_qsv`. yt‑dlp — `-F`, `-f`, сеть через `--proxy` и авторизацию `--cookies`/из браузера.
 
+Packaged smoke bundled ffprobe/ffmpeg/ytdlp — [tools-terminal-inspector.md](tools-terminal-inspector.md), [packaged-windows-smoke.md](packaged-windows-smoke.md); §21 e2e per-step `e2e <id>:` в `releaseSmoke:` — [owner-manual-smoke.md](owner-manual-smoke.md).
+
 ## Встроенные сценарии (для разработчиков)
 
 Подсказки вкладки **Загрузки** и превью частично задаются в коде: `src/shared/terminal-contract.ts` (поля `summary` / `token` / `fullLine`). После правок в `summary` используйте **допишите ссылку**, а не устаревшую **допишите URL**, и пометку `(поле …)` для строк с `--print-to-file` и `flux-ytdlp-*.txt`; затем выполните **`npm run locales:terminal-summaries-ru`** **дважды**, пока второй прогон не выведет **0** замен и **0** gloss; при необходимости только глосс полей — **`npm run locales:terminal-flux-pole`**. Скрипты **не** меняют `fullLine`. Регрессия покрыта в `tests/shared/terminal-contract-scenarios.test.ts`.

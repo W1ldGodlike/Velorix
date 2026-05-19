@@ -186,6 +186,8 @@ npm run verify:mac-unpacked
 - `npm run check:packaged-manual-smoke-parity` — одинаковые `Step_*` и meta (`OwnerLine`, `BundleHeading`, …) в `locales/*/win|linux|macos-packaged-manual-smoke.json`;
 - `npm run check:platform-packaging-scripts` — имена npm-скриптов §19 в `package.json`;
 - `npm run check:packaged-e2e-scenarios-registry` — §21 реестр: 12 шагов ↔ manual smoke; `ci-headless` обязан иметь npm `ciSmokeScript`; `manual-owner` — без скрипта; несуществующие скрипты — fail; `PACKAGED_E2E_CI_SMOKE_SCRIPT_EXPANSIONS` (parent→leaf) сверяется с `package.json`. Уникальные leaf-скрипты — в `.github/workflows/ci.yml` (Vitest `ci-packaged-smoke-steps`). Support ZIP / owner bundle: per-step `e2e <id>: <automation> script=…`.
+- `npm run check:help-packaged-smoke-docs` / `check:help-owner-smoke-docs` — packaged §19/§21 snippets в Help;
+- `npm run check:help-workflow-smoke-crosslinks` — 26 Help workflow/export/downloads/terminal статей ↔ owner/packaged §21.
 
 Копирование из UI packaged-панели и блока **Ручной smoke** совпадает с форматом Support ZIP (`owner:` / `automated:` / `step [id]:`). В архиве `releaseSmoke:` — CI pipeline (`smoke:packaged-release`), layout win/linux/macos и §21 e2e (группы + 12 строк `e2e <id>:`). См. `Help/owner-manual-smoke.md`, `Help/about-support-logs.md`, `Help/logging-and-diagnostics.md`.
 

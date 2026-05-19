@@ -1273,3 +1273,8 @@
 - [J-1193] 2026-05-19 02:37:52 [Assistant]: §15 — Help downloads-workflow/ffmpeg-rail → owner/packaged §21 RU+EN; `check:help-workflow-smoke-crosslinks` в quiet; audit 1157. `npm run check:quiet` (266 files / 1785 tests).
 - [J-1194] 2026-05-19 02:41:14 [Assistant]: §15 — Help probe/workflows/getting-started/faq → packaged ffprobe §21 RU+EN; guard workflow crosslinks 8 файлов; чеклист §2.2 укорочен. `npm run check:quiet` (266 / 1785).
 - [J-1195] 2026-05-19 02:44:19 [Assistant]: Cadence 1195 — commit J-1191..1195: §19 bin/Help packaged guards, workflow smoke crosslinks (8 articles), workspace/terminal Help; platform-packaging diagnostics. `npm run check:quiet` (266 / 1785).
+- [J-1196] 2026-05-19 02:47:20 [Assistant]: §15 — Help knowledge-base §21 packaged; guard 10 статей; RELEASE Help guards; platform-packaging «10 articles». `npm run check:quiet` (266 / 1785).
+- [J-1197] 2026-05-19 02:51:09 [Assistant]: §15/§7 — Help extract-frames/processing-social-presets → snapshot/export packaged §21 RU+EN; guard crosslinks 14 статей; RELEASE/platform-packaging sync. `npm run check:quiet` (266 / 1785).
+- [J-1198] 2026-05-19 02:54:21 [Assistant]: §15/§19 — Help processing-history/downloads-settings-rail/windows-shell → packaged §21 RU+EN; guard 18 статей; ARCHITECTURE Help guards. `npm run check:quiet` (266 / 1785).
+- [J-1199] 2026-05-19 02:57:42 [Assistant]: §15/§8 — Help dragdrop/url-combo/terminal-hints → packaged §21 RU+EN; keyboard→owner; guard 24 статей; ARCHITECTURE/RELEASE sync. `npm run check:quiet` (266 / 1785).
+- [J-1200] 2026-05-19 03:01:08 [Assistant]: Cadence 1200 — commit+push J-1196..1200: Help §21 crosslinks guard 26, processing-advanced-fields; чеклист ~64%; re-anchor `AGENT_MARATHON`. `npm run check:quiet` (266 / 1785).

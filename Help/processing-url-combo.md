@@ -13,4 +13,4 @@
 
 Подходящие записи в журнале можно **повторить** — программа снова откроет этот блок с тем же адресом.
 
-См. [session-and-queues.md](session-and-queues.md) и [downloads-workflow.md](downloads-workflow.md).
+См. [session-and-queues.md](session-and-queues.md) и [downloads-workflow.md](downloads-workflow.md). Packaged smoke очереди/ytdlp — [packaged-windows-smoke.md](packaged-windows-smoke.md), [owner-manual-smoke.md](owner-manual-smoke.md); §21 e2e `e2e <id>:` в `releaseSmoke:`.

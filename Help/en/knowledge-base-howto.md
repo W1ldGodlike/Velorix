@@ -24,6 +24,10 @@ Blue buttons jump to other in-app articles. Links that start with `https` open i
 
 See [appearance-language-theme.md](appearance-language-theme.md) and [owner-manual-smoke.md](owner-manual-smoke.md) for checklists in **Settings → General** (theme, HiDPI) and the full **Owner manual smoke** bundle for Support ZIP. New users can start from [getting-started.md](getting-started.md).
 
+## Packaged smoke and §21 e2e
+
+Workflow articles (editor, downloads, ffprobe, planner) link to [packaged-windows-smoke.md](../packaged-windows-smoke.md) and Linux/macOS siblings. Support ZIP `releaseSmoke:` includes win/linux/macos layout and per-step `e2e <id>:`; see [about-support-logs.md](about-support-logs.md), [logging-and-diagnostics.md](logging-and-diagnostics.md). Dev: `npm run check:help-workflow-smoke-crosslinks`.
+
 ## Tables
 
 The help viewer **does not** render Markdown pipe tables. For “shortcut → action” style content, use a **bullet list** and bold the first part, for example: `- **Ctrl+O** — open a file…`

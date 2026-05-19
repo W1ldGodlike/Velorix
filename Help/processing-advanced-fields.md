@@ -10,4 +10,4 @@
 
 Меняйте значения небольшими шагами и смотрите на предпросмотр — так проще заметить ошибку до долгого кодирования.
 
-См. [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md).
+См. [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md). Packaged smoke **export**/ffmpeg — [packaged-windows-smoke.md](packaged-windows-smoke.md), [owner-manual-smoke.md](owner-manual-smoke.md); §21 e2e per-step `e2e <id>:` в `releaseSmoke:`.

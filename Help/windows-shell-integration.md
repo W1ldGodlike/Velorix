@@ -21,4 +21,4 @@
 
 Если FluxAlloy уже запущен, второй вызов из Проводника передаёт путь в работающее окно (single-instance).
 
-См. также [workflows-planner-scenarios.md](workflows-planner-scenarios.md), [getting-started.md](getting-started.md).
+См. также [workflows-planner-scenarios.md](workflows-planner-scenarios.md), [getting-started.md](getting-started.md). Ручной smoke блока **Windows shell** в Support ZIP — [owner-manual-smoke.md](owner-manual-smoke.md) (`ownerManualSmoke:`); packaged open-file — [packaged-windows-smoke.md](packaged-windows-smoke.md).

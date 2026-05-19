@@ -10,4 +10,4 @@ You can still **tweak** resolution, quality, and filters. Aspect ratios like 9:1
 
 When a file arrives from the **Downloads** tab, open it in the editor and pick a preset — it keeps a consistent look for a channel.
 
-See [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md).
+See [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md). Packaged smoke **export** / ffmpeg — [packaged-windows-smoke.md](../packaged-windows-smoke.md), [owner-manual-smoke.md](owner-manual-smoke.md); §21 e2e `e2e <id>:` in `releaseSmoke:`.

@@ -24,6 +24,10 @@
 
 Статьи [appearance-language-theme.md](appearance-language-theme.md) и [owner-manual-smoke.md](owner-manual-smoke.md) описывают чеклисты в **Настройки → Общие** (тема, HiDPI) и полный пакет **Ручной smoke** для Support ZIP. Точка входа для новичка — также [getting-started.md](getting-started.md).
 
+## Packaged smoke и §21 e2e
+
+Статьи workflow (редактор, загрузки, ffprobe, планировщик) ссылаются на [packaged-windows-smoke.md](packaged-windows-smoke.md) и соседние для Linux/macOS. В Support ZIP `releaseSmoke:` — layout win/linux/macos и per-step `e2e <id>:`; см. [about-support-logs.md](about-support-logs.md), [logging-and-diagnostics.md](logging-and-diagnostics.md). Dev: `npm run check:help-workflow-smoke-crosslinks`.
+
 ## Таблицы
 
 В окне справки **нет** разметки таблиц из символов `|`. Если нужен список «что — к чему», оформляйте **маркированным списком** и выделяйте первую часть жирным, например: `- **Ctrl+O** — открыть файл…`

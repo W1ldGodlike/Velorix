@@ -27,4 +27,4 @@
 
 ## Дальше
 
-Пресеты и вывод — [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md). Сценарии и планировщик — [workflows-planner-scenarios.md](workflows-planner-scenarios.md).
+Пресеты и вывод — [ffmpeg-rail-presets.md](ffmpeg-rail-presets.md). Сценарии и планировщик — [workflows-planner-scenarios.md](workflows-planner-scenarios.md). Packaged smoke export/snapshot — [packaged-windows-smoke.md](packaged-windows-smoke.md), [owner-manual-smoke.md](owner-manual-smoke.md); §21 e2e per-step `e2e <id>:` в `releaseSmoke:`.
